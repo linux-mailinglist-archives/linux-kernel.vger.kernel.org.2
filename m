@@ -2,102 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4179942DDC6
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:13:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7817342DDC2
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:12:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232328AbhJNPPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 11:15:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50168 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232901AbhJNPPJ (ORCPT
+        id S233613AbhJNPOs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 11:14:48 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:41788
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232204AbhJNPOo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 11:15:09 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCDFAC061570
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 08:13:04 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id i20so24905389edj.10
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 08:13:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxtx.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=w45cBwWuxt9fV0sH92Mj0nap7150VQi8dWHb0aDrKOs=;
-        b=YRiavibCQ5dBpR8sEKXV0lV/aSByGm8aH6pXObxa96UKqW2Xp1TgT8UGf5o3j2jT/t
-         jXFZUixi63N0FP3Ws+XLyyvnKGZpUghoP0ahHvAw6VC7pjQcj1jJyHHYr5ise4ey/pRz
-         Z5M9nrJ+4T1D4CggdaoFf9LfYJzN+ShVVq6ug=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=w45cBwWuxt9fV0sH92Mj0nap7150VQi8dWHb0aDrKOs=;
-        b=TNCTLqgIQakJxk2VE1b2acg0VUhyY74yTJM+c9L2vCxOFa01jfP8cHd/+NGLfv8fxg
-         8T4/VXHXAGaUXtN7zUzk841BjYaQ0NRkcI5LQmS2j1VhPwhMHrKeWA7Rp/ztkLWXQDzJ
-         63UbDsf8Aiv5zcgHrzNgWvHESjhSAly+hyjtMxHyrTLoS5CniXzlfr6Uyk9GuK5wtvYz
-         dCMrUNehpN1t8fPoKEAKlDxohFpNK6tAFl2KOBJgmsV0KPryNfc8K8Ld+k4DCicuAfeG
-         V6bOvnK16HgNI8CUZAEeavHzOb6HIrGCvR4AcMVtUEHseDALTUb3/2dW+QqyuzhVCtpF
-         Dm2g==
-X-Gm-Message-State: AOAM532S1zNICJW351ZfosoC+xxxTziKDitwF4OkgNAzuwvJeyAelS/O
-        tZGNwim9S8SjloUP5ET68hKwRgH0xpH6Pfwxj7Ircg==
-X-Google-Smtp-Source: ABdhPJztOK9YaOX30AT6nvALG6RtdQ68Gh/4hLbQNEaGCI4Bs6r5KjWBzetHRYs7WH5ROQK5mxa/IEUBo/AlCydTWlw=
-X-Received: by 2002:a05:6402:35d1:: with SMTP id z17mr9678857edc.174.1634224293743;
- Thu, 14 Oct 2021 08:11:33 -0700 (PDT)
+        Thu, 14 Oct 2021 11:14:44 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id D343C40013;
+        Thu, 14 Oct 2021 15:12:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1634224355;
+        bh=8xwz+QO6zjXKM+v74uWvYq9Z9yoCObRA1yTs9d8sDDI=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=ApQ2YrxAKDVLw42dD5cLUJ3/ymUYA/Y7ZptOas1LNaOWgxMXh1qDEITvpY0eU7WlS
+         2SGdIQYfus8IGaRdWFUfyhlHn/+Xd2HvugGL9+LRfho4n8FbW3tPmLM1QBv7ls39GG
+         nEp1cxxb+wZUw4xF9h6hQxX7LPXz4dviZFpsC61p9WpM35pefPReNm1yzsk6z1uEJk
+         ea/YTQShVC7qMMg58kxEib+Rw1SiXfXlaAHdVDDZ9wDPdVvjpNMh19N8BQEwahFmeQ
+         cU8q51UxPSZL3nXL0aYUo8qSsv97aFKhW0TAMjAMSk+e3NTTff3bxcEW/6r8fp+Q5L
+         Zi4nnnJaD5ekQ==
+From:   Colin King <colin.king@canonical.com>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] media: drivers: cx24113: remove redundant variable r
+Date:   Thu, 14 Oct 2021 16:12:35 +0100
+Message-Id: <20211014151235.62671-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <163238121836.315941.18066358755443618960.stgit@mickey.themaw.net>
-In-Reply-To: <163238121836.315941.18066358755443618960.stgit@mickey.themaw.net>
-From:   Justin Forbes <jmforbes@linuxtx.org>
-Date:   Thu, 14 Oct 2021 10:11:22 -0500
-Message-ID: <CAFxkdAraAe37_5bGLJtTtxZCaKTqgVPh4hTbcVC=08vRt-Zizg@mail.gmail.com>
-Subject: Re: [PATCH] autofs: fix wait name hash calculation in autofs_wait()
-To:     Ian Kent <raven@themaw.net>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        autofs mailing list <autofs@vger.kernel.org>,
-        Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 2:20 AM Ian Kent <raven@themaw.net> wrote:
->
-> There's a mistake in commit 2be7828c9fefc ("get rid of autofs_getpath()")
-> that affects kernels from v5.13.0, basically missed because of me not
-> fully testing the change for Al.
->
-> The problem is that the hash calculation for the wait name qstr hasn't
-> been updated to account for the change to use dentry_path_raw(). This
-> prevents the correct matching an existing wait resulting in multiple
-> notifications being sent to the daemon for the same mount which must
-> not occur.
->
-> The problem wasn't discovered earlier because it only occurs when
-> multiple processes trigger a request for the same mount concurrently
-> so it only shows up in more aggressive testing.
+From: Colin Ian King <colin.king@canonical.com>
 
-I suppose it shows up in more than just testing, as we have a bug
-where this is impacting a user doing regular desktop things.
+Variable r is being assigned values but it is never being
+used. The variable is redundant and can be removed.
 
-Justin
+Addresses-Coverity: ("Unused value")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/media/dvb-frontends/cx24113.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> Fixes: 2be7828c9fefc ("get rid of autofs_getpath()")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Ian Kent <raven@themaw.net>
-> ---
->  fs/autofs/waitq.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/fs/autofs/waitq.c b/fs/autofs/waitq.c
-> index 16b5fca0626e..54c1f8b8b075 100644
-> --- a/fs/autofs/waitq.c
-> +++ b/fs/autofs/waitq.c
-> @@ -358,7 +358,7 @@ int autofs_wait(struct autofs_sb_info *sbi,
->                 qstr.len = strlen(p);
->                 offset = p - name;
->         }
-> -       qstr.hash = full_name_hash(dentry, name, qstr.len);
-> +       qstr.hash = full_name_hash(dentry, qstr.name, qstr.len);
->
->         if (mutex_lock_interruptible(&sbi->wq_mutex)) {
->                 kfree(name);
->
->
+diff --git a/drivers/media/dvb-frontends/cx24113.c b/drivers/media/dvb-frontends/cx24113.c
+index 60a9f70275f7..dd55d314bf9a 100644
+--- a/drivers/media/dvb-frontends/cx24113.c
++++ b/drivers/media/dvb-frontends/cx24113.c
+@@ -378,7 +378,7 @@ static void cx24113_set_nfr(struct cx24113_state *state, u16 n, s32 f, u8 r)
+ 
+ static int cx24113_set_frequency(struct cx24113_state *state, u32 frequency)
+ {
+-	u8 r = 1; /* or 2 */
++	u8 r;
+ 	u16 n = 6;
+ 	s32 f = 0;
+ 
+-- 
+2.32.0
+
