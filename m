@@ -2,187 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D269942DD8C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:07:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF06542DDB6
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:12:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233608AbhJNPJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 11:09:15 -0400
-Received: from mail-dm6nam11on2089.outbound.protection.outlook.com ([40.107.223.89]:39168
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234095AbhJNPIS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 11:08:18 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Qgkum8G1jVN/3nN9mhyw1AtKjUDGHz1YKoni2f8QRLZJkEJUFxGKvIu5T7JtNgruRo7dklQrqasKzeLC+DjkbevVeAEz4jhsUebeMgc20yzzYbho5kYyIfLV+Z6/7+JTouXaDCT85sv1G13JvEw4QoQxiy2E2+aMA8TEOnx+oHbDsjvmTqKEVJQWz1E2WjWBboIPr6EzkgRnf4fA8Z1IVFkan+Gz678yfL1oTHHEgU4tHYkfun0cCV1DTJMaJMnCCNK1PL499aUK7c4XMnufN7Sks/6WkfFR/6JGwMAfADc5Le3cXnH5L60sNzvHam63Q1rnotaCudHwPWrshYoUfg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=uN/a7ZxDYZkFOG28knwcabOWpYq1E0/j850GpRkvnkg=;
- b=MWaa8YFj0J8bHWnD7My6TvQznyBhGK/mJU4s3vKfTjtaOXTMw+7oj2JbfXCVYdfis7Hk4ceMx6vJiN1QKiz1xyo7fH5Zmmp3syikGbpa0gMLtvVzyz/5JCaSw0NTuaMPhsU9qxrN1x3Z7p8nq9DsCvVwjRz2CM3Uq2rtGbGcxaCUJlBbtNFeZP9mp2vaxRhovzqVFfSyTXNQRNqbPKtIUExqY979SJDt8e37EgEWChiOMuBAYavfxRg2S+kEP3MZSxcXaoOL+t+cBV834+cB6sT108XaflyfwfKunTY5aLniCXcQxFhPgtBXgQ/uKEf0i8bEoA6GBC7m3W1SjF06Zg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uN/a7ZxDYZkFOG28knwcabOWpYq1E0/j850GpRkvnkg=;
- b=HP5oVp5FiMB6ycvJLb0f72bqiXJICCdMo5M2/5EHDNmSnziVYWe0WKuxItNQf0KEkZsqp4r4aArEoeqAWJCE1WPeAcuhVAC/lRTtSPkQ9LfR6Z7TJqgbxaG+dQT0seLHceJEsUcWR65bw2zSY0gzP4si9866i3QsN1W6aN6QABtIXOsRFWaxRrYkjLX1SNOEyEAzOId3ZFVcGjwm8vEe5ha4/ZsmuQ5v+bv2poxT4P0m6YQoEHtdENT7guKJt7mGTPpxl5Ymogpg/eZ3Z9H9so0/iIf4+A6jOpJmk2wBUe5/EKD8bcw1ODd6aUHnhVlJFL7CfRvgIVl/LZWi7mgkXA==
-Authentication-Results: gibson.dropbear.id.au; dkim=none (message not signed)
- header.d=none;gibson.dropbear.id.au; dmarc=none action=none
- header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5286.namprd12.prod.outlook.com (2603:10b6:208:31d::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.16; Thu, 14 Oct
- 2021 15:06:11 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95%6]) with mapi id 15.20.4608.017; Thu, 14 Oct 2021
- 15:06:11 +0000
-Date:   Thu, 14 Oct 2021 12:06:10 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     "david@gibson.dropbear.id.au" <david@gibson.dropbear.id.au>
-Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "hch@lst.de" <hch@lst.de>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "lkml@metux.net" <lkml@metux.net>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "lushenming@huawei.com" <lushenming@huawei.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "yi.l.liu@linux.intel.com" <yi.l.liu@linux.intel.com>,
-        "Tian, Jun J" <jun.j.tian@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "dwmw2@infradead.org" <dwmw2@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
-        "nicolinc@nvidia.com" <nicolinc@nvidia.com>
-Subject: Re: [RFC 11/20] iommu/iommufd: Add IOMMU_IOASID_ALLOC/FREE
-Message-ID: <20211014150610.GS2744544@nvidia.com>
-References: <20210921174438.GW327412@nvidia.com>
- <BN9PR11MB543362CEBDAD02DA9F06D8ED8CA29@BN9PR11MB5433.namprd11.prod.outlook.com>
- <20210922140911.GT327412@nvidia.com>
- <YVaoamAaqayk1Hja@yekko>
- <20211001122505.GL964074@nvidia.com>
- <YVfeUkW7PWQeYFJQ@yekko>
- <20211002122542.GW964074@nvidia.com>
- <YWPNoknkNW55KQM4@yekko>
- <20211011171748.GA92207@nvidia.com>
- <YWezEY+CJBRY7uLj@yekko>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YWezEY+CJBRY7uLj@yekko>
-X-ClientProxiedBy: BL1PR13CA0369.namprd13.prod.outlook.com
- (2603:10b6:208:2c0::14) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S233146AbhJNPOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 11:14:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49806 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231997AbhJNPOH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 11:14:07 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77674C0612ED
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 08:09:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=W5pw2CE/uzyiW+aTpQ3ZuIwrhdvcki06u9/0gkIPEBc=; b=euISmwXBiaLKhCbaEMBPqxPsdq
+        daMFJJNgNxPMA2U/OltF7Z7QpwfpX/6jKE/UFAnCglhWVvLz/v+hPrrrp/xHXLhoubB++R1vqnJDs
+        42Epm8kGWy3IhFfZDF5nvMyr+aR1Vq7Fx/8vTRbPh5gPh42KWhuyzPeor/0eWUzbtkYFvGvOsg5w9
+        RId0pNOPM2bOMSuZTls9taTomwj0w44piVkXROyETnV5yrALMq6y0i35+yRtGoiUGgYmYGYifTdd6
+        TaJ6AA2A4x3Wp+bpbl7++RNu/VcGXLiXxn+14v6VoGNLynnC68DA0SSxjkawPFQOoLTDBkgdhk4+6
+        bzAaazgg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mb2Ls-009qwq-Ls; Thu, 14 Oct 2021 15:09:00 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7602F30030B;
+        Thu, 14 Oct 2021 17:08:59 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 6258C20A958AF; Thu, 14 Oct 2021 17:08:59 +0200 (CEST)
+Date:   Thu, 14 Oct 2021 17:08:59 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     kernel test robot <lkp@intel.com>,
+        Yafang Shao <laoar.shao@gmail.com>, llvm@lists.linux.dev,
+        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org
+Subject: Re: [tip:sched/core 14/47] kernel/sched/fair.c:893:22: error:
+ variable 'p' set but not used
+Message-ID: <YWhIC30vBoOgXxie@hirez.programming.kicks-ass.net>
+References: <202110121132.N2z9JrD0-lkp@intel.com>
+ <YWVw/oVd5ztGZDAK@hirez.programming.kicks-ass.net>
+ <YWWPLnaZGybHsTkv@hirez.programming.kicks-ass.net>
+ <YWew3ItdPC5QrL/w@archlinux-ax161>
 MIME-Version: 1.0
-Received: from mlx.ziepe.ca (142.162.113.129) by BL1PR13CA0369.namprd13.prod.outlook.com (2603:10b6:208:2c0::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.7 via Frontend Transport; Thu, 14 Oct 2021 15:06:11 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mb2J8-00Ex4Q-1G; Thu, 14 Oct 2021 12:06:10 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 3539ff5f-53bb-45a6-2ec0-08d98f2428a8
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5286:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL1PR12MB528603C3D8CD5C4B77DC32DCC2B89@BL1PR12MB5286.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: z+3XkRKKQUULRIVmH8pny5JyJ9CJEqxcq+sbKjIkQOeYE7x+f+Cu4wzmtpRBC489S/YA3UEE2nAFOVH9qj77cO1outBGNyThj0rRrgCxAxUZSnPnrmrrPzqUXqHkX+/RhgiImIfa4FzNF0YQAYgrBLgL3xafSAAYEbKStAlItoCwYOU3rIZENnkxfPJPP8xw2IiMGmmzaZz9Mv1nHYgO5k5eD0XS+GC8eBo8w07IVPVD8ZioAohDdUU5b2N/w3LpuCpSW7uK1jHzq3P1/r6m+/av733/CfpbJbI1+Ma7cI904be4RnECwk6BFk4VhjLPE90+Pge+cQY0YIIuTni9lnsN5QJelm6ddrGcGwqtsQJJI0ut7otBn0W5xNCJgDlQ80z6kf0OaU7d2hfcXX2YPI22ooFMOihbdNMtoGAVp4siqwcj69TS2CqYb7hPIL36IiOZEPwnkbFimyHDmDJzpoACggr6C+1O3EwJ1POl7CZ9nbxtzWEA1Ldptg+LJBZ/v5Og6+ZDPP0siJoc+c1OtS0Il5sj4JUVafDVspSEDNfsRZ8Y4m5WRY3ilwBHw9opiMfA9HVGYm8F5hAFh+uraZmFBWsAVjQjgG3aaooiEhRJr6WBCvYAmUFaVn6h7mOMSu1/icoV3UvQTRaZr5BqqAn3obRHm6RGFk+A9RgzSudZc7N7JoLopT84s8+0dVeWeDyASQ5JiH1kgEQg5oCN9A==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(426003)(316002)(2906002)(7416002)(5660300002)(38100700002)(8936002)(83380400001)(508600001)(2616005)(1076003)(66946007)(9786002)(6916009)(86362001)(66476007)(66556008)(186003)(36756003)(4326008)(107886003)(8676002)(33656002)(9746002)(54906003)(26005)(84603001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?uI5CnTu30fEyEe3vzb0hJJ9jNsRk3TEV2Ph/P0vjFLqiNF//kNNO2/s6N2+G?=
- =?us-ascii?Q?/fIxWkzdUSlobA/V9hHGsWNgEc0hooFga2qGm4nkxaHvin6B3YWpOLltoUf6?=
- =?us-ascii?Q?3rd1vVtqTEk7+pSNP8ikdz5aUiF+nGUpgq8nVT07DozzaNfmZy/lZG7Ss/1H?=
- =?us-ascii?Q?5Y2FJa8Vl/ryJUYaaiZvSH5/u+moYvRiiPxGnP1PxTfr2gkcRtPy893QZ9FI?=
- =?us-ascii?Q?DaSXk0vDeUBv1TC/5icjA10tU56wLyAbQhR2/oVocnlByLderSJjsd8GkscK?=
- =?us-ascii?Q?yAJGm4ekazG23U6iIJ5WIQmcE4Iji9p+8dfYDam40UKXveVUa6ctuXj5kLgp?=
- =?us-ascii?Q?QT+OpaUmksDxjPwZoj9iBWotLjXuv7yp7UT0D3TDicJ579SF5iLzJAac5feZ?=
- =?us-ascii?Q?GhJq00dimVoTjmXlKLM0H5VHQXJqswJaVWkUZtcvfoQK7FnSLEgJHQ4KZZkJ?=
- =?us-ascii?Q?auHI4p+kWu0PWOOQgvaHkiuieTsYFkG5U+rQ3knvHvrd7yrNkLJIYi0Cd/pO?=
- =?us-ascii?Q?huoJ50zZfn+MFdnncz+neNMkukcS4XZyxowYxq+qKLjep0YOi+QhaLoT/CoY?=
- =?us-ascii?Q?YsvzOSVbrkDW5k/4+/rkwdkFOHvd/3jfWGgo/DuTYH8iyD/RINr0YUQ21G5+?=
- =?us-ascii?Q?Bp2dmG3TgUxGttHougSGzipG4NDmF+Qnja8tSsM+JwttqyqSHknBCb9F4olz?=
- =?us-ascii?Q?mI9nyshVDNdfoLgr0hFIvwHluplT9MryJXm8O3UqiEflRg/giCvVwNt9a+f7?=
- =?us-ascii?Q?zWko7fP73TERrtzZ27s4KRxddzNW9JaEUW6A9PKEHIBWv1RSjgJfQSmJ8rDF?=
- =?us-ascii?Q?0MqPxmgUQR0PPbEQVVUnzIoWjcmE+3quGqp7LtaB1UUtZFlctgyqXWZpCBnu?=
- =?us-ascii?Q?5u0G2d2vsEq/tznTaJ81TZS1bXiZlZZqVA+j4BdczX0X6aSF4qJV6+ButTZR?=
- =?us-ascii?Q?/CxOlx7APWj98GK9NUORVQj9yJZl26bj9p+ylDyWcetngZx+ejwlLiKW7dk3?=
- =?us-ascii?Q?AGth2b+j6J9T7LdB0bGDO2KexPDNoCxPCHsJ4mrNOtq5QhbzVyf5+zfboH0K?=
- =?us-ascii?Q?Vab7zY5BgvMa9N/hdomabOZ9VUcEi/mF2bsiCDnsLtvhR+TbRqNh6VBPbQx2?=
- =?us-ascii?Q?/Z50XSL/UAkAJbSZbRJWYE63hlbWjVRzi0+bsxMAeIYFvcyJfgDzA6Y5JAHp?=
- =?us-ascii?Q?DmU3c0DVM5T+yprujizivKAKIrBBOoR26V2MeyhxFfvf6b7clnlgPphX8l3e?=
- =?us-ascii?Q?Dj77+uhs+PNiJnI0lphIYPsbs8oJt/yZERhE7PLpcWhSY2K+/9HVn9DlD2yZ?=
- =?us-ascii?Q?erjp/9XkuR6i1sRugs6miC+co6SI/IoRJGUMAms0uSa9Og=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3539ff5f-53bb-45a6-2ec0-08d98f2428a8
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Oct 2021 15:06:11.4924
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: myak+zlqHBr6n9wGoRDwjTW/dvsAxDuJpIffRF+sVhBv1hzUWyIIID0G2rR2Dibh
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5286
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YWew3ItdPC5QrL/w@archlinux-ax161>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 03:33:21PM +1100, david@gibson.dropbear.id.au wrote:
-
-> > If the HW can attach multiple non-overlapping IOAS's to the same
-> > device then the HW is routing to the correct IOAS by using the address
-> > bits. This is not much different from the prior discussion we had
-> > where we were thinking of the PASID as an 80 bit address
+On Wed, Oct 13, 2021 at 09:23:56PM -0700, Nathan Chancellor wrote:
+> On Tue, Oct 12, 2021 at 03:35:42PM +0200, Peter Zijlstra wrote:
+> > On Tue, Oct 12, 2021 at 01:26:54PM +0200, Peter Zijlstra wrote:
+> > 
+> > > Again, I have absolutely no intention of fixing this. IMO this is the
+> > > compiler being a total pain in the arse.
+> > > 
+> > > Please stop reporting this.
+> > 
+> > How's this then?
+> > 
+> > diff --git a/kernel/sched/Makefile b/kernel/sched/Makefile
+> > index 978fcfca5871..b0d9121c5dce 100644
+> > --- a/kernel/sched/Makefile
+> > +++ b/kernel/sched/Makefile
+> > @@ -3,6 +3,10 @@ ifdef CONFIG_FUNCTION_TRACER
+> >  CFLAGS_REMOVE_clock.o = $(CC_FLAGS_FTRACE)
+> >  endif
+> >  
+> > +# The compilers are complaining about unused variables inside an if(0) scope
+> > +# block. This is daft, shut them up.
+> > +ccflags-y += -Wno-unused-but-set-variable
 > 
-> Ah... that might be a workable approach.  And it even helps me get my
-> head around multiple attachment which I was struggling with before.
+> Please consider making this
 > 
-> So, the rule would be that you can attach multiple IOASes to a device,
-> as long as none of them overlap.  The non-overlapping could be because
-> each IOAS covers a disjoint address range, or it could be because
-> there's some attached information - such as a PASID - to disambiguate.
+> ccflags-y += $(call cc-disable-warning, unused-but-set-variable)
 
-Right exactly - it is very parallel to PASID
+Ooh, shiny, will do.
 
-And obviously HW support is required to have multiple page table
-pointers per RID - which sounds like PPC does (high/low pointer?)
- 
-> What remains a question is where the disambiguating information comes
-> from in each case: does it come from properties of the IOAS,
-> propertues of the device, or from extra parameters supplied at attach
-> time.  IIUC, the current draft suggests it always comes at attach time
-> for the PASID information.  Obviously the more consistency we can have
-> here the better.
+> because -Wunused-but-set-variable was only added to clang in the 13
+> release but we support back to 10, meaning this will cause errors for
+> those older compilers.
+> 
+> With that:
+> 
+> Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+> 
+> Additionally, perhaps this could be restricted to just fair.c?
 
-From a generic view point I'd say all are fair game. It is up to the
-IOMMU driver to take the requested set of IOAS's, the "at attachment"
-information (like PASID) and decide what to do, or fail.
+It triggers in a bunch of files, given the right config (defconfig -SCHEDSTATS +SCHED_DEBUG)
 
-> I can also see an additional problem in implementation, once we start
-> looking at hot-adding devices to existing address spaces.  
+(and I have a pile of patches for most of the other warnings somewhere...)
 
-I won't pretend to guess how to implement this :) Just from a modeling
-perspective is something that works logically. If the kernel
-implementation is too hard then PPC should do one of the other ideas.
-
-Personally I'd probably try for a nice multi-domain attachment model
-like PASID and not try to create/destroy domains.
-
-As I said in my last email I think it is up to each IOMMU HW driver to
-make these decisions, the iommufd framework just provides a
-standardized API toward the attaching driver that the IOMMU HW must
-fit into.
-
-Jason
+---
+# make O=defconfig-build/ kernel/sched/ -j8 -s W=1
+../kernel/sched/deadline.c: In function ‘update_stats_wait_start_dl’:
+../kernel/sched/deadline.c:1486:27: warning: variable ‘stats’ set but not used [-Wunused-but-set-variable]
+1486 |  struct sched_statistics *stats;
+|                           ^~~~~
+../kernel/sched/deadline.c: In function ‘update_stats_wait_end_dl’:
+../kernel/sched/deadline.c:1498:27: warning: variable ‘stats’ set but not used [-Wunused-but-set-variable]
+1498 |  struct sched_statistics *stats;
+|                           ^~~~~
+../kernel/sched/deadline.c: In function ‘update_stats_enqueue_sleeper_dl’:
+../kernel/sched/deadline.c:1510:27: warning: variable ‘stats’ set but not used [-Wunused-but-set-variable]
+1510 |  struct sched_statistics *stats;
+|                           ^~~~~
+../kernel/sched/fair.c: In function ‘update_curr’:
+../kernel/sched/fair.c:860:28: warning: variable ‘stats’ set but not used [-Wunused-but-set-variable]
+860 |   struct sched_statistics *stats;
+|                            ^~~~~
+../kernel/sched/fair.c: In function ‘update_stats_wait_start_fair’:
+../kernel/sched/fair.c:893:22: warning: variable ‘p’ set but not used [-Wunused-but-set-variable]
+893 |  struct task_struct *p = NULL;
+|                      ^
+../kernel/sched/fair.c:892:27: warning: variable ‘stats’ set but not used [-Wunused-but-set-variable]
+892 |  struct sched_statistics *stats;
+|                           ^~~~~
+../kernel/sched/fair.c: In function ‘update_stats_wait_end_fair’:
+../kernel/sched/fair.c:910:22: warning: variable ‘p’ set but not used [-Wunused-but-set-variable]
+910 |  struct task_struct *p = NULL;
+|                      ^
+../kernel/sched/fair.c:909:27: warning: variable ‘stats’ set but not used [-Wunused-but-set-variable]
+909 |  struct sched_statistics *stats;
+|                           ^~~~~
+../kernel/sched/fair.c: In function ‘update_stats_enqueue_sleeper_fair’:
+../kernel/sched/fair.c:936:22: warning: variable ‘tsk’ set but not used [-Wunused-but-set-variable]
+936 |  struct task_struct *tsk = NULL;
+|                      ^~~
+../kernel/sched/fair.c:935:27: warning: variable ‘stats’ set but not used [-Wunused-but-set-variable]
+935 |  struct sched_statistics *stats;
+|                           ^~~~~
+../kernel/sched/fair.c: In function ‘set_next_entity’:
+../kernel/sched/fair.c:4450:28: warning: variable ‘stats’ set but not used [-Wunused-but-set-variable]
+4450 |   struct sched_statistics *stats;
+|                            ^~~~~
+../kernel/sched/rt.c:669:6: warning: no previous prototype for ‘sched_rt_bandwidth_account’ [-Wmissing-prototypes]
+669 | bool sched_rt_bandwidth_account(struct rt_rq *rt_rq)
+|      ^~~~~~~~~~~~~~~~~~~~~~~~~~
+../kernel/sched/rt.c: In function ‘update_stats_wait_start_rt’:
+../kernel/sched/rt.c:1292:22: warning: variable ‘p’ set but not used [-Wunused-but-set-variable]
+1292 |  struct task_struct *p = NULL;
+|                      ^
+../kernel/sched/rt.c: In function ‘update_stats_enqueue_sleeper_rt’:
+../kernel/sched/rt.c:1311:22: warning: variable ‘p’ set but not used [-Wunused-but-set-variable]
+1311 |  struct task_struct *p = NULL;
+|                      ^
+../kernel/sched/rt.c: In function ‘update_stats_wait_end_rt’:
+../kernel/sched/rt.c:1341:22: warning: variable ‘p’ set but not used [-Wunused-but-set-variable]
+1341 |  struct task_struct *p = NULL;
+|                      ^
+../kernel/sched/core.c:3420:6: warning: no previous prototype for ‘sched_set_stop_task’ [-Wmissing-prototypes]
+3420 | void sched_set_stop_task(int cpu, struct task_struct *stop)
+|      ^~~~~~~~~~~~~~~~~~~
+../kernel/sched/debug.c: In function ‘print_cfs_group_stats’:
+../kernel/sched/debug.c:466:28: warning: variable ‘stats’ set but not used [-Wunused-but-set-variable]
+466 |   struct sched_statistics *stats;
+|                            ^~~~~
+../kernel/sched/fair.c:8673: warning: Function parameter or member 'sds' not described in 'update_sg_lb_stats'
