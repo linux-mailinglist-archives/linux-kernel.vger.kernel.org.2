@@ -2,180 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8287C42DEFA
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 18:14:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA05F42DEF9
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 18:14:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233153AbhJNQQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 12:16:38 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:42112 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230177AbhJNQQ3 (ORCPT
+        id S231867AbhJNQQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 12:16:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36322 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229823AbhJNQQ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 12:16:29 -0400
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19EG5lgQ028339;
-        Thu, 14 Oct 2021 09:13:51 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=+QxXeGrVygVIkPEaalUtqiu/MljAZOc12wdYnQ3/KUQ=;
- b=q69oNqhOzwUsA0tUGN+3Ger85ZzdxgR2f+LjvQqXU02X8VMWXUClI8EMYdCHkaPJtCng
- ApLN1f7blmLr9bLGdXeFCeol9EU2KvEnXP6AoO+rktBPEQJOFXYWVOD3NXdl8EL/WmAQ
- wkM/akdhcHqMDaaXqYQfj3pxKz5VRrqceyU= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 3bpqs102a8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 14 Oct 2021 09:13:51 -0700
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Thu, 14 Oct 2021 09:13:50 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gipMNRewCzLTcpb7tzoTdV7P+56h4qZ+kCOa2oHLJVsjj8p+OoxPywFwv6ovdNDRwFYZ8R27xsB4G9vTL/vnuOmo5NZ6K/B8I2BfKn3vQuNhAe1cLOMlgA6X3+SUFcCQHt9daoaKEzKY25JE2Jm9JLQEJhhkm2WHApWUfgFuLYaW+stFykaV79YovtGRnddebg9vZ/PjMUaKJOKwHkDovWkmPqL8aUOORtPURRGzhB1KaA5ReJ7SUETQGsjzjwi+uZsgVLkpwK6GdIW0DydErNDPQ1DMeH5ipKfQnM1nFBf2WqkKnQCupoVJPpNycDzHziRYefvn2xqZFKWAzRLQUw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+QxXeGrVygVIkPEaalUtqiu/MljAZOc12wdYnQ3/KUQ=;
- b=MvuBhtFJi6rAcUwPSRJb3p3RxHsZHgE4Nye6kkXgZc+fsGclKPzWNAvqEFOwuC+wArpuCOKPkK3a06VQGnvjrH3QrRzfLhjdZfhKG9eLH3bq33ZHZh5zeE5+0XJDhOB4eMbbRM9hvYGv87lHTMgD52WknQtzY1uKqarRw06XV4tVsC1rBhtVmD5RmejtlyxYM6hjVfyKnFzwiKVe/Goy3Zxids/eNmfWDnw2X3nX56AMP1ziWDzu5WJGffXI6dqNbyqvlY4UVvXIq6FIdoiCIxVNqeqeYWe1PabP/4wgDz5VIiYja9SVM/Yren9lG4R0dyZoAMphIOIod9cC2ldg8Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Authentication-Results: google.com; dkim=none (message not signed)
- header.d=none;google.com; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by BYAPR15MB2664.namprd15.prod.outlook.com (2603:10b6:a03:15a::26) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.22; Thu, 14 Oct
- 2021 16:13:48 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::1052:c025:1e48:7f94]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::1052:c025:1e48:7f94%5]) with mapi id 15.20.4608.016; Thu, 14 Oct 2021
- 16:13:48 +0000
-Date:   Thu, 14 Oct 2021 09:13:43 -0700
-From:   Roman Gushchin <guro@fb.com>
-To:     Shakeel Butt <shakeelb@google.com>
-CC:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Vasily Averin <vvs@virtuozzo.com>,
-        Matthew Wilcox <willy@infradead.org>,
+        Thu, 14 Oct 2021 12:16:28 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 736C7C061570
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 09:14:23 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id ls18-20020a17090b351200b001a00250584aso7299453pjb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 09:14:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=NyW7J3fGaetabJGlg55KQ2jz0KhoAMqc4PRWGXhXp9U=;
+        b=hmeN3UF0kXwn7N7/4WKvMyhvdrui1DF0GouB+UKzYWgSEYJ27YZhrK28k1lZkO+KVY
+         9xexWIbV5z4DLvwstb7yqCn/TDgNIBBMAaVqJYiEXjpMHG5YarZSaEnKNUhNpCQnXV3a
+         aVamiLvnUiwvYoX098saL5rXFP17t31180jk8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NyW7J3fGaetabJGlg55KQ2jz0KhoAMqc4PRWGXhXp9U=;
+        b=1ejjKPPDekZzYBpTFDq3WqbwvIlVFqXSMOeBn0bZyMZjl0yYFvCBhN0AdyXaBW0IN6
+         9F8BWeG+UfkDQbfayeDUWoWybDSPn8za1lQX5JezcmgCMduBxcjHqnQ9GPy+1uQHOAcc
+         qEo/vlJn62gzhdcI8cykENmG7T8UwP1ENeS03xAO/8xxwmNYay1mVFhgE+3hGriRkAmY
+         ajRqJs91DuW8k/v56mnYIvvwr03bR/c0p7Auh/67ipyemWg2vQpYaSE06AKLGe5lnNW2
+         yxNG/7zm6lFJCy8uMxjFIIPj/Vqgoj0oQLED+yOGwQM/eZg2ZpASIFsrGV2atpfcgxQa
+         2f6Q==
+X-Gm-Message-State: AOAM533U6W6a+J8czZN3Xa2hvfnzgdIyYKa8bMnvZmfw5q2/0OqkQQc8
+        YkaZyaQR0R390I236cBAn046eQ==
+X-Google-Smtp-Source: ABdhPJwEAm3/wxLMfpYc1ofSDs5cRduehiISnlbIyNaRJEThyJZu4wkWpPWLh5RgtuS+6mUERlN8kg==
+X-Received: by 2002:a17:90a:d58b:: with SMTP id v11mr7059544pju.207.1634228062854;
+        Thu, 14 Oct 2021 09:14:22 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id z4sm3040338pfz.99.2021.10.14.09.14.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Oct 2021 09:14:22 -0700 (PDT)
+Date:   Thu, 14 Oct 2021 09:14:21 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        acme <acme@kernel.org>, rostedt <rostedt@goodmis.org>,
+        kernel test robot <oliver.sang@intel.com>,
+        0day robot <lkp@intel.com>, Petr Mladek <pmladek@suse.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        lkp <lkp@lists.01.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        <cgroups@vger.kernel.org>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] memcg: page_alloc: skip bulk allocator for
- __GFP_ACCOUNT
-Message-ID: <YWhXN8PPVq0oy2u/@carbon.DHCP.thefacebook.com>
-References: <20211014151607.2171970-1-shakeelb@google.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20211014151607.2171970-1-shakeelb@google.com>
-X-ClientProxiedBy: MWHPR14CA0060.namprd14.prod.outlook.com
- (2603:10b6:300:81::22) To BYAPR15MB4136.namprd15.prod.outlook.com
- (2603:10b6:a03:96::24)
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Qiang Zhang <qiang.zhang@windriver.com>,
+        robdclark <robdclark@chromium.org>,
+        christian <christian@brauner.io>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        bristot <bristot@redhat.com>,
+        aubrey li <aubrey.li@linux.intel.com>,
+        yu c chen <yu.c.chen@intel.com>
+Subject: Re: [sched.h] 317419b91e:
+ perf-sanity-tests.Parse_sched_tracepoints_fields.fail
+Message-ID: <202110140910.295E856@keescook>
+References: <20211010102429.99577-4-laoar.shao@gmail.com>
+ <20211014072707.GA18719@xsang-OptiPlex-9020>
+ <CALOAHbD540exB5DDfB8DDh8WXvsag9JsdMmC0yxriWMaoAVfOg@mail.gmail.com>
+ <1529739526.13983.1634215325995.JavaMail.zimbra@efficios.com>
+ <CALOAHbDGH1vp7a9BYLDKCCrh-W2205O707LXNM+Yvt5tQ7Swag@mail.gmail.com>
+ <173454728.14036.1634216949862.JavaMail.zimbra@efficios.com>
+ <CALOAHbBTxLvuiuT4tT2_7C+jaXBoh0uTjzLRm+njO4tKxCtPwg@mail.gmail.com>
+ <1171592945.14099.1634219447199.JavaMail.zimbra@efficios.com>
+ <CALOAHbAhT1bTAThrmA1zYE5q8shR4dxZf5fqcq_9wVrV+XwVEQ@mail.gmail.com>
 MIME-Version: 1.0
-Received: from carbon.DHCP.thefacebook.com (2620:10d:c090:400::5:1793) by MWHPR14CA0060.namprd14.prod.outlook.com (2603:10b6:300:81::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.14 via Frontend Transport; Thu, 14 Oct 2021 16:13:47 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e7ef036d-7814-43d6-dd13-08d98f2d9aeb
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2664:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB2664D9C6B919C7EA5CD21F7BBEB89@BYAPR15MB2664.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:1107;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Xpy+TrtCU3QZO7qFoxx4TdQ7akc5WBnC/D2/j/67u1Y7K6PYzxXQCulooLMZJqiBuGKFZexYFtk0GwUDN+x7+tjAu1FrjZ9pBkqPezRgsEP0qDgIw8Bv4wbHeHB66/mwQ3YKSfoVrA1eUXSvB1OtN58JHwzqMcep81lpZgPnQUd+VQxSx3mwVI+WtXo3JtsZelsXheAeM4qCAR/G32uu+DYf22XH4/hLG0dJ1mooUAhiETN3ww5gpX7/UiClqIyxGsINcbeGdlah0izRJzSFT0D+SzIFKUshZOhbjfTPxzJsSFgnGR+uIsLHeDXSLSf9xg+/jkZe34kcFPkCkvC8j4eBjqXigslwC8T37vMTFsdZYOjvrlf3eYt+YCrMysSwUFNpgyJ0Zix1NS3VNAErRgT+BNfqwpH8BTba3fKssvXtM5EQTlFnab4ocnj1zZChx88dJsf4P/Q/IZK3Z7NBRSQPYp+yWbmW/CzQus9rHN9pfQIMYLtoE8m5lkyS0XrxE55K//EPB+Ln+/jM3cO8qWiTf4T3fUTXlaOvzrAYlqMU0lXhFqj4mcd1fKNcBw/CYnCyKvXiSgGKXndAdlNJIirQDrA/qn/i1t9/K1CfDg5LYgOGYnr/ept6q71vCSwnAqEqOvyAuq13/eJh3FrUsQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(83380400001)(8936002)(4326008)(316002)(54906003)(186003)(5660300002)(7696005)(6506007)(6916009)(6666004)(52116002)(38100700002)(508600001)(2906002)(7416002)(55016002)(9686003)(86362001)(66476007)(66556008)(66946007)(8676002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?zqvCuTaJ9uASyAC7m+TMb0zdqK+2EASs8fowL95lYtOiDUIjbPjBZz6A77v3?=
- =?us-ascii?Q?H4XlI+WPHwgXY4hg+oeF+rdglHVU1bdIugSnjbAvTaOXuibqtKYnyNLzRm/o?=
- =?us-ascii?Q?kwC5iVnImfdwuyFTrnv7NSANdmrsGu15P180AWiE+6UwmauxL36aBUUR3Fw7?=
- =?us-ascii?Q?0TyH8wqUBVfko8Agw6I4VmYgd88LblxvOT8nWyr+a+gOz72NXBOoe6UeN2VO?=
- =?us-ascii?Q?vLnsQOk9CHqUdTlrGqgd1tNkw75fwTg/pQssngvhIv3sKqFedJ9+AnRMwcND?=
- =?us-ascii?Q?jDpK+HKoXlb9uUFtBembAmxptK05QrsBE2w7UD9uQr+9OxyiY/BrEosVGTrk?=
- =?us-ascii?Q?3Y1aeRvd1N+YCv5MFzrT+BLOZ6k1N2z0V3wXNFFVtSfO1IMOKW2DIEoApHoa?=
- =?us-ascii?Q?0Ce6gqiQh6B9tVEf/cHsoEl7guyOdZyOLZzXjBgvEOBzbfetYfai+fViUVFb?=
- =?us-ascii?Q?h/xwfWT9uphodi7MVhOzvooAiesg0TutK7z8QaA8RxEjDrGueYsYYgoci5uy?=
- =?us-ascii?Q?Ktv6CXxYW4P/Ej5YYII5WUpmDthO2K6lM8ocpCTQHZdNpC1qwSdWTxk6/UwQ?=
- =?us-ascii?Q?QRHXp/qTG1UQhk7Ly2bj8J70KNRPxHio9xAk+ek3haGMWB2xRmVg3Xr955fy?=
- =?us-ascii?Q?NAZy4NYBHdRLX1b2ZkRqM6zMe5fH+3g5sROUrFFFp1kUoug8iw1BPn9qUF4Y?=
- =?us-ascii?Q?m8DkMZgttFHaZjwuKz8ZnNQaoYWeAFbr+uyYKSUiWvfa7ZGizLV1tJhTlqXp?=
- =?us-ascii?Q?z6bkJPzMHXbn5k1lFQ1c6Ol6qy+pPL+CnwSGk9RKDxcJAJfeJxHGt3jlABZm?=
- =?us-ascii?Q?GZ0smx3/3ezoc5r+3UGRHnjmp1LhqAfxznGZNHV+bOBis5bzc7qr270v4Efu?=
- =?us-ascii?Q?byBVHU69acfaWNahNrBUnx5VGxdb8jxOmaIHrDlv6wD9J8qUNxl1WfF7qNKG?=
- =?us-ascii?Q?GcQ7kkHzd5AHtaosAz+eW1pqsgBXJgR6ewYL5B0Z87hML8p/mPw2QmkgZG07?=
- =?us-ascii?Q?imIipFLeJu2FaZYoZjAurhWRbDOvnaznrcdlEyX4rLAGwoM4/siOAgNuq6PE?=
- =?us-ascii?Q?zFZGu4L6aDXr24IZujrVi3pvHhGyWb84/5MXQv3MZ7JC2RVIt2DAG46I/rpz?=
- =?us-ascii?Q?gSDrXwKcQR4Mbapku3QLWo9EDTX04Jt0MlXeBn9/igXuKRuA8VasEfP5RIKX?=
- =?us-ascii?Q?wXvRnkU0ScMABsvrI0uB8vQDnNnWUCaND5sfGmxeB2J/65XlNKxN5lfv/LMx?=
- =?us-ascii?Q?S9V6V05jwqW5AZrNAR5p3V8Dx/gcbMfJNddmQqAwQm9WBXNAW1kga/64MG46?=
- =?us-ascii?Q?XnXg8CezfocjZJK9A49lqyxdQ5vCWjK8BGpvbRq2MBMYKg=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: e7ef036d-7814-43d6-dd13-08d98f2d9aeb
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Oct 2021 16:13:48.7043
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 9aNMe/aob7Dg5tDc/Cc4tf7qJsUnbR2lXxfs2EBkqEEHqaTHdXxt0iHM1Bg5hx9a
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2664
-X-OriginatorOrg: fb.com
-X-Proofpoint-ORIG-GUID: ogMtYNTOgvU6saSulbxPyAwfgKIuUrD1
-X-Proofpoint-GUID: ogMtYNTOgvU6saSulbxPyAwfgKIuUrD1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-14_09,2021-10-14_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- spamscore=0 clxscore=1011 lowpriorityscore=0 phishscore=0 mlxlogscore=941
- mlxscore=0 priorityscore=1501 adultscore=0 bulkscore=0 suspectscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110140095
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALOAHbAhT1bTAThrmA1zYE5q8shR4dxZf5fqcq_9wVrV+XwVEQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 08:16:07AM -0700, Shakeel Butt wrote:
-> The commit 5c1f4e690eec ("mm/vmalloc: switch to bulk allocator in
-> __vmalloc_area_node()") switched to bulk page allocator for order 0
-> allocation backing vmalloc. However bulk page allocator does not support
-> __GFP_ACCOUNT allocations and there are several users of
-> kvmalloc(__GFP_ACCOUNT).
+On Thu, Oct 14, 2021 at 10:40:04PM +0800, Yafang Shao wrote:
+> On Thu, Oct 14, 2021 at 9:50 PM Mathieu Desnoyers
+> <mathieu.desnoyers@efficios.com> wrote:
+> >
+> > ----- On Oct 14, 2021, at 9:11 AM, Yafang Shao laoar.shao@gmail.com wrote:
+> >
+> > > On Thu, Oct 14, 2021 at 9:09 PM Mathieu Desnoyers
+> > > <mathieu.desnoyers@efficios.com> wrote:
+> > >>
+> > >> ----- On Oct 14, 2021, at 9:05 AM, Yafang Shao laoar.shao@gmail.com wrote:
+> > >> [...]
+> > >> >> If it happens that this ABI break is noticed by more than an in-tree test
+> > >> >> program, then
+> > >> >> the kernel's ABI rules will require that this trace field size stays unchanged.
+> > >> >> This brings
+> > >> >> up once more the whole topic of "Tracepoints ABI" which has been discussed
+> > >> >> repeatedly in
+> > >> >> the past.
+> > >> >>
+> > >> >
+> > >> > I will check if any other in-tree tools depends on TASK_COMM_LEN.
+> > >>
+> > >> That's a start, but given this is a userspace ABI, out-of-tree userland
+> > >> tools which depend of this to be fixed-size are also relevant.
+> > >>
+> > >
+> > > TASK_COMM_LEN isn't defined in include/uapi/ directory, so it seems
+> > > that it isn't the uerspace ABI?
+> >
+> > One case where this 16 bytes size is expected by userspace is prctl(2) PR_GET_NAME
+> > and PR_SET_NAME.
+> >
 > 
-> For now make __GFP_ACCOUNT allocations bypass bulk page allocator. In
-> future if there is workload that can be significantly improved with the
-> bulk page allocator with __GFP_ACCCOUNT support, we can revisit the
-> decision.
+> the prctl(2) man page says that:
+> : PR_SET_NAME
+> :        If the length of the string, including the terminating
+> :        null byte, exceeds 16 bytes, the string is silently truncated.
+> : PR_GET_NAME
+> :         The buffer should allow space for up to 16 bytes
+> :          the returned string will be null-terminated.
 > 
-> Fixes: 5c1f4e690eec ("mm/vmalloc: switch to bulk allocator in __vmalloc_area_node()")
-> Signed-off-by: Shakeel Butt <shakeelb@google.com>
-> ---
-> Changes since v1:
-> - do fallback allocation instead of failure, suggested by Michal Hocko.
+> As the string returned to user space is null-terminated, extending
+> task comm won't break the prctl(2) user code.
 
-Acked-by: Roman Gushchin <guro@fb.com>
+If userspace was:
 
-This looks indeed better! Thanks!
+	char comm[16];
+	int important_values;
+
+	...
+
+	prctl(PR_GET_NAME, pid, comm);
+
+the kernel will clobber "important_values", so prctl() must enforce the
+old size (and terminate it correctly). It's not okay for us to expect
+that userspace get recompiled -- old binaries must continue to work
+correctly on kernel kernels.
+
+        case PR_GET_NAME:
+                get_task_comm(comm, me);
+                if (copy_to_user((char __user *)arg2, comm, sizeof(comm)))
+                        return -EFAULT;
+                break;
+
+This looks like it needs to be explicitly NUL terminated at 16 as well.
+
+I'd say we need a TASK_COMM_LEN_V1 to use in all the old hard-coded
+places.
+
+-Kees
 
 > 
->  mm/page_alloc.c | 4 ++++
->  1 file changed, 4 insertions(+)
+> > The other case I am referring to is with ftrace and perf:
+> >
+> > mount -t tracefs nodev /sys/kernel/tracing
+> > cat /sys/kernel/tracing/events/sched/sched_switch/format
+> >
+> > name: sched_switch
+> > ID: 314
+> > format:
+> > [...]
+> >         field:char prev_comm[16];       offset:8;       size:16;        signed:1;
+> > [...]
+> >         field:char next_comm[16];       offset:40;      size:16;        signed:1;
+> >
+> > Both of those fields expose a fixed-size of 16 bytes.
+> >
+> > AFAIK Steven's intent was that by parsing this file, trace viewers could adapt to
+> > changes in the event field layout. Unfortunately, there have been cases where
+> > trace viewers had a hard expectation on the field layout. Hopefully those have
+> > all been fixed a while ago.
+> >
 > 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 668edb16446a..9ca871dc8602 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -5230,6 +5230,10 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
->  	if (unlikely(page_array && nr_pages - nr_populated == 0))
->  		goto out;
->  
-> +	/* Bulk allocator does not support memcg accounting. */
-> +	if (memcg_kmem_enabled() && (gfp & __GFP_ACCOUNT))
-> +		goto failed;
-> +
->  	/* Use the single page allocator for one page. */
->  	if (nr_pages - nr_populated == 1)
->  		goto failed;
+> I don't have a clear idea what will happen to trace viewers if we
+> extend task comm.
+> 
+> Steven, do you have any suggestions ?
+> 
 > -- 
-> 2.33.0.882.g93a45727a2-goog
-> 
+> Thanks
+> Yafang
+
+-- 
+Kees Cook
