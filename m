@@ -2,156 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63AFE42D694
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 11:57:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E25942D693
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 11:57:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230094AbhJNJ70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 05:59:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33760 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbhJNJ7Y (ORCPT
+        id S230097AbhJNJ7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 05:59:05 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:44426 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229468AbhJNJ7D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 05:59:24 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21A4FC061570
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 02:57:20 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id p68so3010733iof.6
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 02:57:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OZvA6vOCLe0vq1IOFdw9MbIuy04wehYkABusPOOkvWs=;
-        b=nj99OwYtQYofo66YE9oGGAlKqR0StH4OFhjgnBjjRxq2BTK0hKdKl+0xq5V4qslSSS
-         vK4CecV8dQlgQoKNOlmmgXmQARHrO/R0W5JKOtvGpdJDTq0TL5LYftjAhG4tthO6nYzK
-         TgxcSUrmgtR/NkokI1+EOFLoIw5UxFoyT+rCG7bRJ+6dkUU9fEyF8Ss1mqOVueOHLyWe
-         HUV03WhwIRM9PKHtgn62irGapZhKVmJz006wMlRGbkn4c0eQX/gHG6IuStGinBVeYgUp
-         jFca117fHhpvzir6AvfrJPYX0ZjiIk5Gnhfuho+dA3GZJL7OJsvCBQ7nrhpF/7GJYsgV
-         PwmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OZvA6vOCLe0vq1IOFdw9MbIuy04wehYkABusPOOkvWs=;
-        b=WxDN5nO4j102jrIamnO9C9/z47daS4yeHsIeq22DLcLEvmJ+iUUeiYxf76qZ92h/Bq
-         Xb0rxBM6vn0aKv8tEWFjMilDhB+rGJIn7/FpFT6cLN+kaJYYoB57sXv3RA38B3PxK6Jk
-         ljQ7X4Vpn+pl0ivnxiZHANMPQlaYjfyz7rlH8+4zgaVumwQ6GBKXdgC5lqSyYrHdQYIj
-         w8ZEQ1mhBL2xSZx0X8pb3J6U8qbxpjYEO6SjgLXHderq3q2lgEtzAXEWc+1L2YNjXg+y
-         iMKp3rrXyF36jzIs9nb/ejN6mpzM1zSy9Pi7JyKbUWvDVYXJmKIF9jYGPgNvau+TxzKD
-         hlTg==
-X-Gm-Message-State: AOAM533uI95PrcOvO41fi+e7hmp/AM3NeljmGOtpQXRW8TKNEyl1yzOG
-        7OJ8xEu1bRtD0rS2a0KXlb8rSjorZm+IHKZXVZk=
-X-Google-Smtp-Source: ABdhPJznhuD2wn/mF3MaGPcGhssi4eCHMwzjrwVERh1LZVOOYW30Yd/TVEo1+T7pC10cFF122/4ltVCS9fJ4oOCEkvM=
-X-Received: by 2002:a02:2124:: with SMTP id e36mr3327316jaa.35.1634205439528;
- Thu, 14 Oct 2021 02:57:19 -0700 (PDT)
+        Thu, 14 Oct 2021 05:59:03 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 37C7E21A7B;
+        Thu, 14 Oct 2021 09:56:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1634205418; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JHEZWtjIFaYGa2u7VcBpTpqyUvSnrIxCc/PVAzBXk8s=;
+        b=mrfOUtPr9c2M6Zwb8A5goWY9bju+0hxdI3E4ORE6i3U3TvCOIqfR8m5bash0mmontOvzJk
+        oFhXPY4p2SWzGuUTm2df+aYUkmRFrCamFstvK+TS2EdZHUxlEGNkAvaBuTtKvF4zSutCXz
+        UlhRCzJNX1GHpetVP13SfFTYBhZClsc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1634205418;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JHEZWtjIFaYGa2u7VcBpTpqyUvSnrIxCc/PVAzBXk8s=;
+        b=KxI37cx/XSINxH22eNzdu3ysxFD52yYq1Xk+5XIzHtiOmR17W54iiuEcqXm17sVDJa/DzL
+        zp6ON+rTrj1B3jBA==
+Received: from quack2.suse.cz (unknown [10.100.224.230])
+        by relay2.suse.de (Postfix) with ESMTP id 28BEDA3B83;
+        Thu, 14 Oct 2021 09:56:58 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id E9E0F1E0C03; Thu, 14 Oct 2021 11:56:57 +0200 (CEST)
+Date:   Thu, 14 Oct 2021 11:56:57 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Shaoying Xu <shaoyi@amazon.com>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        fllinden@amazon.com, benh@amazon.com
+Subject: Re: [PATCH 1/1] ext4: fix lazy initialization next schedule time
+ computation in more granular unit
+Message-ID: <20211014095657.GE15931@quack2.suse.cz>
+References: <20210817225654.30487-1-shaoyi@amazon.com>
+ <20210817225654.30487-2-shaoyi@amazon.com>
 MIME-Version: 1.0
-References: <CAKmqyKMLyx+CvBQbLz-xQvwLS692tx-4xOgU7b-V2J676D29yg@mail.gmail.com>
- <d983217b-e117-361c-0306-b131695bb93f@denx.de> <CAKmqyKOsUcta1cXxamJZnf01G9beCZrDKia068HR+J0AadgNiA@mail.gmail.com>
- <bff9ba97-bc26-f091-ba71-5e639af524d4@denx.de> <CAKmqyKPF3T_Sx+hL=4OSamLdjy=0fwmrTrVeb-GY0Ja9M=mi+Q@mail.gmail.com>
- <ab2b7f4f-3e36-461c-6a6c-02ee7ed6cb99@denx.de> <CAKmqyKN8devNyDvVL5B_dDASU3se1dSui0bsnf6gQ+CkZ_TaKg@mail.gmail.com>
- <YR1Th65KKRS4D/6+@ravnborg.org> <CAKmqyKOBYXiWwO4QJBJ9sEO5ay5QyYmO=yzvT31evB7BKeniYw@mail.gmail.com>
- <YR58MvAYYEjBQ7l5@ravnborg.org> <CAKmqyKOYk=O4ewBcL7hOz+8=gTsNzFb07m_qrNhKq9Bk2ByYrQ@mail.gmail.com>
-In-Reply-To: <CAKmqyKOYk=O4ewBcL7hOz+8=gTsNzFb07m_qrNhKq9Bk2ByYrQ@mail.gmail.com>
-From:   Alistair Francis <alistair23@gmail.com>
-Date:   Thu, 14 Oct 2021 19:56:00 +1000
-Message-ID: <CAKmqyKP0cxOpD6HnuS5mwKbpoP8npQiMvqZNx91e+UmKUv2gRQ@mail.gmail.com>
-Subject: Re: Revert "video: fbdev: mxsfb: Remove driver"
-To:     Sam Ravnborg <sam@ravnborg.org>
-Cc:     Marek Vasut <marex@denx.de>, Fabio Estevam <festevam@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        dl-linux-imx <linux-imx@nxp.com>, b.zolnierkie@samsung.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alistair Francis <alistair@alistair23.me>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210817225654.30487-2-shaoyi@amazon.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 8:36 AM Alistair Francis <alistair23@gmail.com> wrote:
->
-> On Fri, Aug 20, 2021 at 1:43 AM Sam Ravnborg <sam@ravnborg.org> wrote:
-> >
-> > Hi Alistair,
-> >
-> > On Thu, Aug 19, 2021 at 07:10:00PM +1000, Alistair Francis wrote:
-> > > On Thu, Aug 19, 2021 at 4:38 AM Sam Ravnborg <sam@ravnborg.org> wrote:
-> > > >
-> > > > Hi Alistair,
-> > > >
-> > > > >
-> > > > > These are the EINVAL strace tells me in the not working case:
-> > > > >
-> > > > > prctl(PR_CAPBSET_READ, 0x30 /* CAP_??? */) = -1 EINVAL (Invalid argument)
-> > > > > prctl(PR_CAPBSET_READ, 0x2c /* CAP_??? */) = -1 EINVAL (Invalid argument)
-> > > > > prctl(PR_CAPBSET_READ, 0x2a /* CAP_??? */) = -1 EINVAL (Invalid argument)
-> > > > > prctl(PR_CAPBSET_READ, 0x29 /* CAP_??? */) = -1 EINVAL (Invalid argument)
-> > > > > ioctl(5, FBIOPUT_VSCREENINFO, 0x4ce8e0) = -1 EINVAL (Invalid argument)
-> > > > >
-> > > > > I'm guessing it's related to FBIOPUT_VSCREENINFO then, is that
-> > > > > something that could be added to the DRM emulation?
-> > > >
-> > > > If it turns out FBIOPUT_VSCREENINFO is the culprint it would also be
-> > > > good to know why we see EINVAL.
-> > > > One way is to sprinkle a number of printk's in fb_set_var(),
-> > > > then you can see how far you get before it fails.
-> > >
-> > > Thanks for the help.
-> > >
-> > > I see this line:
-> > >
-> > > ret = info->fbops->fb_check_var(var, info);
-> > >
-> > > in fb_set_var()
-> > >
-> > > returning early.
-> >
-> > Super, then next step is to annotate drm_fb_helper_check_var()
-> > to see where it fails.
-> > Try this and let us know the result.
->
-> Thanks!
->
-> After adding some prints, I realised there are already some in there
-> that are disabled by default. After enabling them I see this:
->
-> "fbdev emulation doesn't support changing the pixel clock, value of
-> pixclock is ignored"
->
-> and
->
-> "fb requested width/height/bpp can't fit in current fb request
-> 260x1408-32 (virtual 260x23936) > 334x1405-32"
->
-> which returns EINVAL.
->
-> This is where I'm confused though. The values 334 and 1405 are taken
-> from the vendor and in the working fbdev driver they are using the
-> same values.
->
-> I tried to add a similar print to mxsfb_check_var() for the working
-> version, to check what the values are, but there doesn't seem to be
-> any equivalent of fb->width and friends.
+On Tue 17-08-21 22:56:54, Shaoying Xu wrote:
+> Ext4 file system has default lazy inode table initialization setup once
+> it is mounted. However, it has issue on computing the next schedule time
+> that makes the timeout same amount in jiffies but different real time in
+> secs if with various HZ values. Therefore, fix by measuring the current
+> time in a more granular unit nanoseconds and make the next schedule time
+> independent of the HZ value.
+> 
+> Fixes: bfff68738f1c ("ext4: add support for lazy inode table initialization")
+> Signed-off-by: Shaoying Xu <shaoyi@amazon.com>
+> Cc: stable@vger.kernel.org
 
-I dug into this some more.
+Thanks for the patch. It seems to have fallen through the cracks. It looks
+good just some nits: The timeout will be still dependent on the HZ value
+because we use jiffie-granular timer.  But yes, I guess it is unnecessary
+to make the imprecision 10x worse when we know we are likely dealing with
+small numbers. 
 
-In the working mxsfb and non-working fbdev emulation the userspace
-software sets:
+> @@ -3460,14 +3460,13 @@ static int ext4_run_li_request(struct ext4_li_request *elr)
+>  		ret = 1;
+>  
+>  	if (!ret) {
 
-xres: 260
-yres: 1408
-xres_virtual: 260
-yres_virtual: 23936
+Please add a comment here so that we don't forget. Like:
+		/* Use ns-granular time as init can be really fast */
 
-That passes the old mxsfb_check_var() and works.
+With this feel free to add:
 
-While that fails the new fbdev emulation check. Even increasing the
-width and height from 334x14085 to 260x23936 doesn't help as I get a
-range of other errors and no display. Just removing the check also
-doesn't work and results in kernel panics.
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-It seems there is some difference in handling the resolutions between
-the mxsfb driver and the fbdev emulation on the new DRM driver. I'm
-just not sure what the difference is.
+> -		timeout = jiffies;
+> +		start_time = ktime_get_real_ns();
+>  		ret = ext4_init_inode_table(sb, group,
+>  					    elr->lr_timeout ? 0 : 1);
+>  		trace_ext4_lazy_itable_init(sb, group);
+>  		if (elr->lr_timeout == 0) {
+> -			timeout = (jiffies - timeout) *
+> -				EXT4_SB(elr->lr_super)->s_li_wait_mult;
+> -			elr->lr_timeout = timeout;
+> +			elr->lr_timeout = nsecs_to_jiffies((ktime_get_real_ns() - start_time) *
+> +				EXT4_SB(elr->lr_super)->s_li_wait_mult);
+>  		}
+>  		elr->lr_next_sched = jiffies + elr->lr_timeout;
+>  		elr->lr_next_group = group + 1;
 
-Alistair
+
+								Honza
+
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
