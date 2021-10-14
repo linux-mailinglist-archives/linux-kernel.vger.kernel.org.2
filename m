@@ -2,77 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8194042E2FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 22:57:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B949E42E303
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 22:58:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232721AbhJNU7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 16:59:24 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:41160 "EHLO mail.skyhub.de"
+        id S232733AbhJNVAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 17:00:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50964 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232537AbhJNU7V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 16:59:21 -0400
-Received: from zn.tnic (p200300ec2f0c720083d5cb613c3a152b.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:7200:83d5:cb61:3c3a:152b])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 791FE1EC0136;
-        Thu, 14 Oct 2021 22:57:14 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1634245034;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=K5jVYDYpo2SuHDXGnI+KSEFfIqZ+k70o6c+m/JWkA14=;
-        b=Y0Ef0wi1zvwUrReVx98MNbStY/zKGPpguytZTdgX3bj1INStDwX2F67djlbYHZlJpG40VF
-        1RjVjynrElPOHeR+0SNp2bu28zbZAXjFNNPiq0+xbZp/w4wVmi5rQjB+BZlFtoYhVa4mid
-        ivhnoSqFPNUFZZMHcQxNEX7zl2UdLbs=
-Date:   Thu, 14 Oct 2021 22:57:10 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Koralahalli Channabasappa, Smita" <skoralah@amd.com>
-Cc:     Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>,
-        x86@kernel.org, linux-edac@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Tony Luck <tony.luck@intel.com>,
-        "H . Peter Anvin" <hpa@zytor.com>, yazen.ghannam@amd.com
-Subject: Re: [PATCH 1/5] x86/mce/inject: Check if a bank is unpopulated
- before error simulation
-Message-ID: <YWiZpm/HzKybyOt2@zn.tnic>
-References: <20210915232739.6367-1-Smita.KoralahalliChannabasappa@amd.com>
- <20210915232739.6367-2-Smita.KoralahalliChannabasappa@amd.com>
- <YU2Lm+11Pqg/RBK3@zn.tnic>
- <78bec0e8-a64a-466c-4245-2386de7db5c9@amd.com>
- <YWh1bc6Lol65f0RH@zn.tnic>
- <f6b6b66d-0e6b-e64a-9c97-4e067610a3da@amd.com>
+        id S231308AbhJNVAS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 17:00:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 86DDA60F9E;
+        Thu, 14 Oct 2021 20:58:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634245092;
+        bh=q0dwlCNGa/Hxh5HuJwhdsfDhhj1HIkksM3XfYlf7fZU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=LyJrl9V7d4APSJLu0NY7Bz4az0bKYR1A982hZ3Zlz0xzKs/aiT+qGErYJHm56/WTF
+         EBZNLtwc1TJE4UgFR7zu/fSvU49U81lYSPFYHrqXjq7xOH1OvXQXdQqyHh+W5h7umu
+         vpm2Jb91JREz5GeoSSWaOlSsakP1JP8OhA8sr1VH8N/RkRfXNbXdUZQAQA/iFYQR/s
+         RRSEsLekKq2rhO4mxxua7W3wrosuJNRJP+tiXpuwN2cdcXQK3cZ8PojKHDo++qdYwa
+         tjKt5XT3LLBPhUrDVTJ54ZThVKz8/nTou/hK2E1t37VVIwpESV+YPdXDOwV3lk4Rx1
+         GgltfH0r8Twig==
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, Nathan Chancellor <nathan@kernel.org>
+Subject: [PATCH] Input: touchscreen - Avoid bitwise vs logical OR warning
+Date:   Thu, 14 Oct 2021 13:57:57 -0700
+Message-Id: <20211014205757.3474635-1-nathan@kernel.org>
+X-Mailer: git-send-email 2.33.1.637.gf443b226ca
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <f6b6b66d-0e6b-e64a-9c97-4e067610a3da@amd.com>
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 03:26:13PM -0500, Koralahalli Channabasappa, Smita wrote:
-> My concern was, we need to determine whether the bank is unpopulated or
-> populated before trying to inject the errors on a hw injection, for which
-> we need to read the IPID MSR of that bank.
+A new warning in clang points out a few places in this driver where a
+bitwise OR is being used with boolean types:
 
-Ah, that. Look at the smca_banks[] array in .../mce/amd.c and how
-smca_configure() prepares all banks in there. You could use that array
-to query which SMCA bank on which CPU is initialized, before injecting
-into it.
+drivers/input/touchscreen.c:81:17: warning: use of bitwise '|' with boolean operands [-Wbitwise-instead-of-logical]
+        data_present = touchscreen_get_prop_u32(dev, "touchscreen-min-x",
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-> should be retained inside inj_bank_set() ?
+This use of a bitwise OR is intentional, as bitwise operations do not
+short circuit, which allows all the calls to touchscreen_get_prop_u32()
+to happen so that the last parameter is initialized while coalescing the
+results of the calls to make a decision after they are all evaluated.
 
-And yes, I guess you'll have to do it there because then you know which
-bank and which CPU the hw injection is supposed to happen on.
+To make this clearer to the compiler, use the '|=' operator to assign
+the result of each touchscreen_get_prop_u32() call to data_present,
+which keeps the meaning of the code the same but makes it obvious that
+every one of these calls is expected to happen.
 
-> And inj_ipid_set() should just set m->ipid = val on a SW_INJ as you mentioned
-> above?
+Link: https://github.com/ClangBuiltLinux/linux/issues/1472
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+---
+ drivers/input/touchscreen.c | 42 ++++++++++++++++++-------------------
+ 1 file changed, 21 insertions(+), 21 deletions(-)
 
-Yap.
+diff --git a/drivers/input/touchscreen.c b/drivers/input/touchscreen.c
+index dd18cb917c4d..4620e20d0190 100644
+--- a/drivers/input/touchscreen.c
++++ b/drivers/input/touchscreen.c
+@@ -80,27 +80,27 @@ void touchscreen_parse_properties(struct input_dev *input, bool multitouch,
+ 
+ 	data_present = touchscreen_get_prop_u32(dev, "touchscreen-min-x",
+ 						input_abs_get_min(input, axis_x),
+-						&minimum) |
+-		       touchscreen_get_prop_u32(dev, "touchscreen-size-x",
+-						input_abs_get_max(input,
+-								  axis_x) + 1,
+-						&maximum) |
+-		       touchscreen_get_prop_u32(dev, "touchscreen-fuzz-x",
+-						input_abs_get_fuzz(input, axis_x),
+-						&fuzz);
++						&minimum);
++	data_present |= touchscreen_get_prop_u32(dev, "touchscreen-size-x",
++						 input_abs_get_max(input,
++								   axis_x) + 1,
++						 &maximum);
++	data_present |= touchscreen_get_prop_u32(dev, "touchscreen-fuzz-x",
++						 input_abs_get_fuzz(input, axis_x),
++						 &fuzz);
+ 	if (data_present)
+ 		touchscreen_set_params(input, axis_x, minimum, maximum - 1, fuzz);
+ 
+ 	data_present = touchscreen_get_prop_u32(dev, "touchscreen-min-y",
+ 						input_abs_get_min(input, axis_y),
+-						&minimum) |
+-		       touchscreen_get_prop_u32(dev, "touchscreen-size-y",
+-						input_abs_get_max(input,
+-								  axis_y) + 1,
+-						&maximum) |
+-		       touchscreen_get_prop_u32(dev, "touchscreen-fuzz-y",
+-						input_abs_get_fuzz(input, axis_y),
+-						&fuzz);
++						&minimum);
++	data_present |= touchscreen_get_prop_u32(dev, "touchscreen-size-y",
++						 input_abs_get_max(input,
++								   axis_y) + 1,
++						 &maximum);
++	data_present |= touchscreen_get_prop_u32(dev, "touchscreen-fuzz-y",
++						 input_abs_get_fuzz(input, axis_y),
++						 &fuzz);
+ 	if (data_present)
+ 		touchscreen_set_params(input, axis_y, minimum, maximum - 1, fuzz);
+ 
+@@ -108,11 +108,11 @@ void touchscreen_parse_properties(struct input_dev *input, bool multitouch,
+ 	data_present = touchscreen_get_prop_u32(dev,
+ 						"touchscreen-max-pressure",
+ 						input_abs_get_max(input, axis),
+-						&maximum) |
+-		       touchscreen_get_prop_u32(dev,
+-						"touchscreen-fuzz-pressure",
+-						input_abs_get_fuzz(input, axis),
+-						&fuzz);
++						&maximum);
++	data_present |= touchscreen_get_prop_u32(dev,
++						 "touchscreen-fuzz-pressure",
++						 input_abs_get_fuzz(input, axis),
++						 &fuzz);
+ 	if (data_present)
+ 		touchscreen_set_params(input, axis, 0, maximum, fuzz);
+ 
 
-Thx.
-
+base-commit: a41392e0877a271007e9209e63c34cab7527eb43
 -- 
-Regards/Gruss,
-    Boris.
+2.33.1.637.gf443b226ca
 
-https://people.kernel.org/tglx/notes-about-netiquette
