@@ -2,265 +2,369 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15F5142DFE7
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 19:06:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D2B842DFEB
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 19:06:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233351AbhJNRI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 13:08:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44574 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232331AbhJNRI2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 13:08:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2175761152;
-        Thu, 14 Oct 2021 17:06:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634231183;
-        bh=gHRFogiS7ENQ7g40ZXO7645Y7MTCDeTBdUTC9wUMGTw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=m3sQXvBJ4t8iKB6QoTZGaZtSHLZQRO33s6kuXRUHqgE+plVGXl3/hRmp0inrfOSEQ
-         WG4JHMRngdQVNjCs5casGqGtT1PBIN+VMFs9uIURw61QVhtt64/0hCiBlXVNFciC0Y
-         uhUbsUPoQrVG2e0HkopGtEabRcJY1aZKlJcFkeoFTtuwQRV4ZSKvmNajVa3pkUrJpa
-         lXt8sU8JKJlv+fXYcNgrrp8gW1Dr+YfedI3C9eDcdMuZ+mJrjbdtB0dmADovxPzhWg
-         wm2MCXvPIaRswW/LMoitUorAH6PJnClFC09yNnuRp2tqIX42t8T0NEX37KmhOAC/wH
-         ZwNnyOdxxTTdg==
-Date:   Thu, 14 Oct 2021 10:06:22 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
-Cc:     dan.j.williams@intel.com, hch@lst.de, linux-xfs@vger.kernel.org,
-        david@fromorbit.com, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, nvdimm@lists.linux.dev,
-        rgoldwyn@suse.de, viro@zeniv.linux.org.uk, willy@infradead.org
-Subject: Re: [PATCH v10 7/8] xfs: support CoW in fsdax mode
-Message-ID: <20211014170622.GB24333@magnolia>
-References: <20210928062311.4012070-1-ruansy.fnst@fujitsu.com>
- <20210928062311.4012070-8-ruansy.fnst@fujitsu.com>
+        id S233387AbhJNRIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 13:08:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46197 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233389AbhJNRIg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 13:08:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634231190;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WkEo0g2D3Iide8EWMYtZgdJW1SeTeDXtu6MQ3b8t6EA=;
+        b=YWhwTCubbHxCv53HDpzopIPax1pP2cFEuP82bAXIdW7OsxlvOKvCZ7VvmmCSpDjFceHJ/9
+        RMFztwpW6O06b/z6vQJtywBUeYxHb/QrndVGacP3uLDtYcx/dEookjv8Yex3dZkblt57kE
+        IaAdlcomrbxu+yy/eyjRE9OCZt3LMlM=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-526-E-o-070YMAqh7v3ovwHC1g-1; Thu, 14 Oct 2021 13:06:28 -0400
+X-MC-Unique: E-o-070YMAqh7v3ovwHC1g-1
+Received: by mail-ed1-f70.google.com with SMTP id g28-20020a50d0dc000000b003dae69dfe3aso5757436edf.7
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 10:06:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=WkEo0g2D3Iide8EWMYtZgdJW1SeTeDXtu6MQ3b8t6EA=;
+        b=kS7+6qhdRnJaOGthdnntharEuDr/qEqR9rxIkbqAZwwPPzuderKT/4MUmFmCgzKr99
+         gP7V3EWSu71loa0ZRWzfEynA4bJuNnhFcGm4qvYt83Z9vpAR/YQ60ZDg3fINJV4f1+YX
+         fpbjIS8w1kdTMvTqbv8IOAMRGLE+6ZOUhA6IAcfyFfba3loFXftwMsEgNiufLz39u2Hl
+         PQY2O86CSmhahPG/lhjR30OdrVFEM+qLgYXX1aDfU3IUbgzlSvLmfybhgKFJVNUGXEjx
+         D8uxY8XdKvK2Nd2lXSCaYG9yBT2NvpxUIZ7g3+5cPGWJiUQih4Tv9sspWxGb0kMG4G1b
+         wa9g==
+X-Gm-Message-State: AOAM532cqz208tqm0rh4z7NRPqQGgxbud/J7OfsnbxO8UF1u0V1Z4UeU
+        vrBeiPCLd0JpKvMP4rpAslbNAnj0EX48vcOKzVxQMtDg3tiagIotYjJxDlkLcYlsbulfcFK8ok+
+        ZgukIxTyH3S5ZODjKd8/dASJp
+X-Received: by 2002:a17:906:abd3:: with SMTP id kq19mr125574ejb.285.1634231186287;
+        Thu, 14 Oct 2021 10:06:26 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxgstQu/qRWXHs0pX3nR5Ux3cPgjmduXCXZOgiX8TmnOO+rCltjF10EB1pche+Kzw856l62gw==
+X-Received: by 2002:a17:906:abd3:: with SMTP id kq19mr125510ejb.285.1634231185873;
+        Thu, 14 Oct 2021 10:06:25 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id t6sm2924197edj.27.2021.10.14.10.06.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Oct 2021 10:06:24 -0700 (PDT)
+Subject: Re: [PATCH v3] x86/PCI: Ignore E820 reservations for bridge windows
+ on newer systems
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Myron Stowe <myron.stowe@redhat.com>,
+        Juha-Pekka Heikkila <juhapekka.heikkila@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>, linux-acpi@vger.kernel.org,
+        linux-pci@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org,
+        =?UTF-8?Q?Benoit_Gr=c3=a9goire?= <benoitg@coeus.ca>,
+        Hui Wang <hui.wang@canonical.com>
+References: <20211014154906.GA2029160@bhelgaas>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <49405979-97c2-17ab-7deb-77c8d31092bb@redhat.com>
+Date:   Thu, 14 Oct 2021 19:06:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210928062311.4012070-8-ruansy.fnst@fujitsu.com>
+In-Reply-To: <20211014154906.GA2029160@bhelgaas>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 02:23:10PM +0800, Shiyang Ruan wrote:
-> In fsdax mode, WRITE and ZERO on a shared extent need CoW performed.
-> After that, new allocated extents needs to be remapped to the file.
-> So, add a CoW identification in ->iomap_begin(), and implement
-> ->iomap_end() to do the remapping work.
-> 
-> Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
+Hi Bjorn,
 
-I think this patch looks good, so:
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+Thank you for the review.
 
-A big thank you to Shiyang for persisting in getting this series
-finished! :)
+On 10/14/21 5:49 PM, Bjorn Helgaas wrote:
+> On Thu, Oct 14, 2021 at 01:03:57PM +0200, Hans de Goede wrote:
+>> Some BIOS-es contain a bug where they add addresses which map to system RAM
+>> in the PCI bridge memory window returned by the ACPI _CRS method, see
+>> commit 4dc2287c1805 ("x86: avoid E820 regions when allocating address
+>> space").
+>>
+>> To avoid this Linux by default excludes E820 reservations when allocating
+>> addresses since 2010. Windows however ignores E820 reserved regions for PCI
+>> mem allocations, so in hindsight Linux honoring them is a problem.
+> 
+> This is a problem not because Windows ignores E820, but because the
+> spec does not support excluding based on E820.  We should cite the
+> spec and include the relevant text here.
 
-Judging from the conversation Christoph and I had the last time this
-patchset was submitted, I gather the last big remaining issue is the use
-of page->mapping for hw poison.  So I'll go take a look at "fsdax:
-introduce FS query interface to support reflink" now.
+Ok, for v5 I will replace this with your info on the specs from this email:
+https://lore.kernel.org/linux-pci/20211008110149.GA1313872@bhelgaas/T/#t
 
---D
+> 
+>> Recently (2020) some systems have shown-up with E820 reservations which
+>> cover the entire _CRS returned PCI bridge memory window, causing all
+>> attempts to assign memory to PCI BARs which have not been setup by the
+>> BIOS to fail. For example here are the relevant dmesg bits from a
+>> Lenovo IdeaPad 3 15IIL 81WE:
+>>
+>>  [mem 0x000000004bc50000-0x00000000cfffffff] reserved
+>>  pci_bus 0000:00: root bus resource [mem 0x65400000-0xbfffffff window]
+>>
+>> Ideally Linux would fully stop honoring E820 reservations for PCI mem
+>> allocations, but then the old systems this was added for will regress.
+>> Instead keep the old behavior for old systems, while ignoring the E820
+>> reservations like Windows does for any systems from now on.
+>>
+>> Old systems are defined here as BIOS year < 2018, this was chosen to
+>> make sure that pci_use_e820 will not be set on the currently affected
+>> systems, while at the same time also taking into account that the
+>> systems for which the E820 checking was originally added may have
+>> received BIOS updates for quite a while (esp. CVE related ones),
+>> giving them a more recent BIOS year then 2010.
+>>
+>> Also add pci=no_e820 and pci=use_e820 options to allow overriding
+>> the BIOS year heuristic.
+>>
+>> BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=206459
+>> BugLink: https://bugzilla.redhat.com/show_bug.cgi?id=1868899
+>> BugLink: https://bugzilla.redhat.com/show_bug.cgi?id=1871793
+>> BugLink: https://bugs.launchpad.net/bugs/1878279
+>> BugLink: https://bugs.launchpad.net/bugs/1931715
+>> BugLink: https://bugs.launchpad.net/bugs/1932069
+>> BugLink: https://bugs.launchpad.net/bugs/1921649
+>> Cc: Benoit Grégoire <benoitg@coeus.ca>
+>> Cc: Hui Wang <hui.wang@canonical.com>
+>> Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+>> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+>> ---
+>> Changes in v3:
+>> - Commit msg tweaks (drop dmesg timestamps, typo fix)
+>> - Use "defined(CONFIG_...)" instead of "defined CONFIG_..."
+>> - Add Mika's Reviewed-by
+>>
+>> Changes in v2:
+>> - Replace the per model DMI quirk approach with disabling E820 reservations
+>>   checking for all systems with a BIOS year >= 2018
+>> - Add documentation for the new kernel-parameters to
+>>   Documentation/admin-guide/kernel-parameters.txt
+>> ---
+>> Other patches trying to address the same issue:
+>> https://lore.kernel.org/r/20210624095324.34906-1-hui.wang@canonical.com
+>> https://lore.kernel.org/r/20200617164734.84845-1-mika.westerberg@linux.intel.com
+>> V1 patch:
+>> https://lore.kernel.org/r/20211005150956.303707-1-hdegoede@redhat.com
+>> ---
+>>  .../admin-guide/kernel-parameters.txt         |  6 ++++
+>>  arch/x86/include/asm/pci_x86.h                | 10 +++++++
+>>  arch/x86/kernel/resource.c                    |  4 +++
+>>  arch/x86/pci/acpi.c                           | 29 +++++++++++++++++++
+>>  arch/x86/pci/common.c                         |  6 ++++
+>>  5 files changed, 55 insertions(+)
+>>
+>> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+>> index 43dc35fe5bc0..969cde5d74c8 100644
+>> --- a/Documentation/admin-guide/kernel-parameters.txt
+>> +++ b/Documentation/admin-guide/kernel-parameters.txt
+>> @@ -3949,6 +3949,12 @@
+>>  				please report a bug.
+>>  		nocrs		[X86] Ignore PCI host bridge windows from ACPI.
+>>  				If you need to use this, please report a bug.
+>> +		use_e820	[X86] Honor E820 reservations when allocating
+>> +				PCI host bridge memory. If you need to use this,
+>> +				please report a bug.
+>> +		no_e820		[X86] ignore E820 reservations when allocating
+>> +				PCI host bridge memory. If you need to use this,
+>> +				please report a bug.
+> 
+> Inconsistent capitalization.
+> 
+> Should use same terminology as nocrs, i.e., "PCI host bridge windows",
+> not "PCI host bridge memory".
+> 
+> I don't think "Honor E820 reservations" is the right way to describe
+> this.  It's not a question of upholding something we *should* be
+> doing.  That would be a matter of working around a BIOS defect.
+> Maybe something like this:
+> 
+>   Use E820 reservations to exclude parts of PCI host bridge windows.
+>   This is a workaround for BIOS defects in host bridge _CRS methods.
+>   If you need to use this, please report a bug to
+>   linux-pci@vger.kernel.org so we can apply it automatically.
 
-> ---
->  fs/xfs/xfs_bmap_util.c |  3 +--
->  fs/xfs/xfs_file.c      |  7 ++-----
->  fs/xfs/xfs_iomap.c     | 30 +++++++++++++++++++++++++++-
->  fs/xfs/xfs_iomap.h     | 44 ++++++++++++++++++++++++++++++++++++++++++
->  fs/xfs/xfs_iops.c      |  7 +++----
->  fs/xfs/xfs_reflink.c   |  3 +--
->  6 files changed, 80 insertions(+), 14 deletions(-)
+Ok, that works for me, I'll use the above text for v5.
+
+
+> Not 100% sure we need "no_e820" since that should be the default.  But
+> I guess it's conceivable some system might need it.  I just hate
+> adding additional things for people to try and then spread the
+> resulting misinformation as a "fix" on random forums.
+
+no_e820 will be the default for BIOS-year >= 2018, but on older
+systems my patch preserves the old behavior of use_e820.
+
+So to allow people to easily test if no_e820 behavior helps on
+older systems we need it.
+
+I fully agree with your worry about 'misinformation as a "fix"
+on random forums', but I don't have a solution for that.
+
+I guess we could completely omit both cmdline options, but
+that will make debugging issues a lot header. IMHO it is
+worthwhile to have this options to allow users to quickly
+test things when we ask them to do so.
+
 > 
-> diff --git a/fs/xfs/xfs_bmap_util.c b/fs/xfs/xfs_bmap_util.c
-> index 73a36b7be3bd..0681250e0a5d 100644
-> --- a/fs/xfs/xfs_bmap_util.c
-> +++ b/fs/xfs/xfs_bmap_util.c
-> @@ -1009,8 +1009,7 @@ xfs_free_file_space(
->  		return 0;
->  	if (offset + len > XFS_ISIZE(ip))
->  		len = XFS_ISIZE(ip) - offset;
-> -	error = iomap_zero_range(VFS_I(ip), offset, len, NULL,
-> -			&xfs_buffered_write_iomap_ops);
-> +	error = xfs_iomap_zero_range(ip, offset, len, NULL);
->  	if (error)
->  		return error;
->  
-> diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
-> index 7aa943edfc02..afde4fbefb6f 100644
-> --- a/fs/xfs/xfs_file.c
-> +++ b/fs/xfs/xfs_file.c
-> @@ -704,7 +704,7 @@ xfs_file_dax_write(
->  	pos = iocb->ki_pos;
->  
->  	trace_xfs_file_dax_write(iocb, from);
-> -	ret = dax_iomap_rw(iocb, from, &xfs_direct_write_iomap_ops);
-> +	ret = dax_iomap_rw(iocb, from, &xfs_dax_write_iomap_ops);
->  	if (ret > 0 && iocb->ki_pos > i_size_read(inode)) {
->  		i_size_write(inode, iocb->ki_pos);
->  		error = xfs_setfilesize(ip, pos, ret);
-> @@ -1327,10 +1327,7 @@ __xfs_filemap_fault(
->  		pfn_t pfn;
->  
->  		xfs_ilock(XFS_I(inode), XFS_MMAPLOCK_SHARED);
-> -		ret = dax_iomap_fault(vmf, pe_size, &pfn, NULL,
-> -				(write_fault && !vmf->cow_page) ?
-> -				 &xfs_direct_write_iomap_ops :
-> -				 &xfs_read_iomap_ops);
-> +		ret = xfs_dax_iomap_fault(vmf, pe_size, write_fault, &pfn);
->  		if (ret & VM_FAULT_NEEDDSYNC)
->  			ret = dax_finish_sync_fault(vmf, pe_size, pfn);
->  		xfs_iunlock(XFS_I(inode), XFS_MMAPLOCK_SHARED);
-> diff --git a/fs/xfs/xfs_iomap.c b/fs/xfs/xfs_iomap.c
-> index 093758440ad5..51cb5b713521 100644
-> --- a/fs/xfs/xfs_iomap.c
-> +++ b/fs/xfs/xfs_iomap.c
-> @@ -761,7 +761,8 @@ xfs_direct_write_iomap_begin(
->  
->  		/* may drop and re-acquire the ilock */
->  		error = xfs_reflink_allocate_cow(ip, &imap, &cmap, &shared,
-> -				&lockmode, flags & IOMAP_DIRECT);
-> +				&lockmode,
-> +				(flags & IOMAP_DIRECT) || IS_DAX(inode));
->  		if (error)
->  			goto out_unlock;
->  		if (shared)
-> @@ -854,6 +855,33 @@ const struct iomap_ops xfs_direct_write_iomap_ops = {
->  	.iomap_begin		= xfs_direct_write_iomap_begin,
->  };
->  
-> +static int
-> +xfs_dax_write_iomap_end(
-> +	struct inode		*inode,
-> +	loff_t			pos,
-> +	loff_t			length,
-> +	ssize_t			written,
-> +	unsigned		flags,
-> +	struct iomap		*iomap)
-> +{
-> +	struct xfs_inode	*ip = XFS_I(inode);
-> +
-> +	if (!xfs_is_cow_inode(ip))
-> +		return 0;
-> +
-> +	if (!written) {
-> +		xfs_reflink_cancel_cow_range(ip, pos, length, true);
-> +		return 0;
-> +	}
-> +
-> +	return xfs_reflink_end_cow(ip, pos, written);
-> +}
-> +
-> +const struct iomap_ops xfs_dax_write_iomap_ops = {
-> +	.iomap_begin	= xfs_direct_write_iomap_begin,
-> +	.iomap_end	= xfs_dax_write_iomap_end,
-> +};
-> +
->  static int
->  xfs_buffered_write_iomap_begin(
->  	struct inode		*inode,
-> diff --git a/fs/xfs/xfs_iomap.h b/fs/xfs/xfs_iomap.h
-> index 7d3703556d0e..81726bfbf890 100644
-> --- a/fs/xfs/xfs_iomap.h
-> +++ b/fs/xfs/xfs_iomap.h
-> @@ -7,6 +7,7 @@
->  #define __XFS_IOMAP_H__
->  
->  #include <linux/iomap.h>
-> +#include <linux/dax.h>
->  
->  struct xfs_inode;
->  struct xfs_bmbt_irec;
-> @@ -45,5 +46,48 @@ extern const struct iomap_ops xfs_direct_write_iomap_ops;
->  extern const struct iomap_ops xfs_read_iomap_ops;
->  extern const struct iomap_ops xfs_seek_iomap_ops;
->  extern const struct iomap_ops xfs_xattr_iomap_ops;
-> +extern const struct iomap_ops xfs_dax_write_iomap_ops;
-> +
-> +static inline int
-> +xfs_iomap_zero_range(
-> +	struct xfs_inode	*ip,
-> +	loff_t			pos,
-> +	loff_t			len,
-> +	bool			*did_zero)
-> +{
-> +	struct inode		*inode = VFS_I(ip);
-> +
-> +	return iomap_zero_range(inode, pos, len, did_zero,
-> +			IS_DAX(inode) ?
-> +				&xfs_dax_write_iomap_ops :
-> +				&xfs_buffered_write_iomap_ops);
-> +}
-> +
-> +static inline int
-> +xfs_iomap_truncate_page(
-> +	struct xfs_inode	*ip,
-> +	loff_t			pos,
-> +	bool			*did_zero)
-> +{
-> +	struct inode		*inode = VFS_I(ip);
-> +
-> +	return iomap_truncate_page(inode, pos, did_zero,
-> +			IS_DAX(inode) ?
-> +				&xfs_dax_write_iomap_ops :
-> +				&xfs_buffered_write_iomap_ops);
-> +}
-> +
-> +static inline int
-> +xfs_dax_iomap_fault(
-> +	struct vm_fault		*vmf,
-> +	enum page_entry_size	pe_size,
-> +	bool			write_fault,
-> +	pfn_t			*pfn)
-> +{
-> +	return dax_iomap_fault(vmf, pe_size, pfn, NULL,
-> +			(write_fault && !vmf->cow_page) ?
-> +				&xfs_dax_write_iomap_ops :
-> +				&xfs_read_iomap_ops);
-> +}
->  
->  #endif /* __XFS_IOMAP_H__*/
-> diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
-> index a607d6aca5c4..332e6208dffd 100644
-> --- a/fs/xfs/xfs_iops.c
-> +++ b/fs/xfs/xfs_iops.c
-> @@ -911,8 +911,8 @@ xfs_setattr_size(
->  	 */
->  	if (newsize > oldsize) {
->  		trace_xfs_zero_eof(ip, oldsize, newsize - oldsize);
-> -		error = iomap_zero_range(inode, oldsize, newsize - oldsize,
-> -				&did_zeroing, &xfs_buffered_write_iomap_ops);
-> +		error = xfs_iomap_zero_range(ip, oldsize, newsize - oldsize,
-> +				&did_zeroing);
->  	} else {
->  		/*
->  		 * iomap won't detect a dirty page over an unwritten block (or a
-> @@ -924,8 +924,7 @@ xfs_setattr_size(
->  						     newsize);
->  		if (error)
->  			return error;
-> -		error = iomap_truncate_page(inode, newsize, &did_zeroing,
-> -				&xfs_buffered_write_iomap_ops);
-> +		error = xfs_iomap_truncate_page(ip, newsize, &did_zeroing);
->  	}
->  
->  	if (error)
-> diff --git a/fs/xfs/xfs_reflink.c b/fs/xfs/xfs_reflink.c
-> index 7ecea0311e88..9d876e268734 100644
-> --- a/fs/xfs/xfs_reflink.c
-> +++ b/fs/xfs/xfs_reflink.c
-> @@ -1269,8 +1269,7 @@ xfs_reflink_zero_posteof(
->  		return 0;
->  
->  	trace_xfs_zero_eof(ip, isize, pos - isize);
-> -	return iomap_zero_range(VFS_I(ip), isize, pos - isize, NULL,
-> -			&xfs_buffered_write_iomap_ops);
-> +	return xfs_iomap_zero_range(ip, isize, pos - isize, NULL);
->  }
->  
->  /*
-> -- 
-> 2.33.0
+>>  		routeirq	Do IRQ routing for all PCI devices.
+>>  				This is normally done in pci_enable_device(),
+>>  				so this option is a temporary workaround
+>> diff --git a/arch/x86/include/asm/pci_x86.h b/arch/x86/include/asm/pci_x86.h
+>> index 490411dba438..0bb4e7dd0ffc 100644
+>> --- a/arch/x86/include/asm/pci_x86.h
+>> +++ b/arch/x86/include/asm/pci_x86.h
+>> @@ -39,6 +39,8 @@ do {						\
+>>  #define PCI_ROOT_NO_CRS		0x100000
+>>  #define PCI_NOASSIGN_BARS	0x200000
+>>  #define PCI_BIG_ROOT_WINDOW	0x400000
+>> +#define PCI_USE_E820		0x800000
+>> +#define PCI_NO_E820		0x1000000
+>>  
+>>  extern unsigned int pci_probe;
+>>  extern unsigned long pirq_table_addr;
+>> @@ -64,6 +66,8 @@ void pcibios_scan_specific_bus(int busn);
+>>  
+>>  /* pci-irq.c */
+>>  
+>> +struct pci_dev;
+>> +
+>>  struct irq_info {
+>>  	u8 bus, devfn;			/* Bus, device and function */
+>>  	struct {
+>> @@ -232,3 +236,9 @@ static inline void mmio_config_writel(void __iomem *pos, u32 val)
+>>  # define x86_default_pci_init_irq	NULL
+>>  # define x86_default_pci_fixup_irqs	NULL
+>>  #endif
+>> +
+>> +#if defined(CONFIG_PCI) && defined(CONFIG_ACPI)
+>> +extern bool pci_use_e820;
+>> +#else
+>> +#define pci_use_e820 false
+>> +#endif
+>> diff --git a/arch/x86/kernel/resource.c b/arch/x86/kernel/resource.c
+>> index 9b9fb7882c20..e8dc9bc327bd 100644
+>> --- a/arch/x86/kernel/resource.c
+>> +++ b/arch/x86/kernel/resource.c
+>> @@ -1,6 +1,7 @@
+>>  // SPDX-License-Identifier: GPL-2.0
+>>  #include <linux/ioport.h>
+>>  #include <asm/e820/api.h>
+>> +#include <asm/pci_x86.h>
+>>  
+>>  static void resource_clip(struct resource *res, resource_size_t start,
+>>  			  resource_size_t end)
+>> @@ -28,6 +29,9 @@ static void remove_e820_regions(struct resource *avail)
+>>  	int i;
+>>  	struct e820_entry *entry;
+>>  
+>> +	if (!pci_use_e820)
+>> +		return;
+>> +
+>>  	for (i = 0; i < e820_table->nr_entries; i++) {
+>>  		entry = &e820_table->entries[i];
+>>  
+>> diff --git a/arch/x86/pci/acpi.c b/arch/x86/pci/acpi.c
+>> index 948656069cdd..6c2febe84b6f 100644
+>> --- a/arch/x86/pci/acpi.c
+>> +++ b/arch/x86/pci/acpi.c
+>> @@ -21,6 +21,8 @@ struct pci_root_info {
+>>  
+>>  static bool pci_use_crs = true;
+>>  static bool pci_ignore_seg = false;
+>> +/* Consumed in arch/x86/kernel/resource.c */
+>> +bool pci_use_e820 = false;
+>>  
+>>  static int __init set_use_crs(const struct dmi_system_id *id)
+>>  {
+>> @@ -160,6 +162,33 @@ void __init pci_acpi_crs_quirks(void)
+>>  	       "if necessary, use \"pci=%s\" and report a bug\n",
+>>  	       pci_use_crs ? "Using" : "Ignoring",
+>>  	       pci_use_crs ? "nocrs" : "use_crs");
+>> +
+>> +	/*
+>> +	 * Some BIOS-es contain a bug where they add addresses which map to system
+>> +	 * RAM in the PCI bridge memory window returned by the ACPI _CRS method, see
+>> +	 * commit 4dc2287c1805 ("x86: avoid E820 regions when allocating address space").
+>> +	 * To avoid this Linux by default excludes E820 reservations when allocating
+>> +	 * addresses since 2010. Windows however ignores E820 reserved regions for
+>> +	 * PCI mem allocations, so in hindsight Linux honoring them is a problem.
+>> +	 * In 2020 some systems have shown-up with E820 reservations which cover the
+>> +	 * entire _CRS returned PCI bridge memory window, causing all attempts to
+>> +	 * assign memory to PCI BARs to fail if Linux honors the E820 reservations.
+>> +	 *
+>> +	 * Ideally Linux would fully stop honoring E820 reservations for PCI mem
+>> +	 * allocations, but then the old systems this was added for will regress.
+>> +	 * Instead keep the old behavior for old systems, while ignoring the E820
+>> +	 * reservations like Windows does for any systems from now on.
 > 
+> Wrap this to fit in 80 columns like the rest of the file.  More
+> important for the file to be internally consistent than any new
+> guidelines.
+
+Already fixed in v4 (the only change in v4). I'll also drop the "Windows..."
+sentence which you did not like in the commit msg for v5.
+
 > 
+>> +	 */
+>> +	if (year >= 0 && year < 2018)
+>> +		pci_use_e820 = true;
+>> +
+>> +	if (pci_probe & PCI_NO_E820)
+>> +		pci_use_e820 = false;
+>> +	else if (pci_probe & PCI_USE_E820)
+>> +		pci_use_e820 = true;
+>> +
+>> +	printk(KERN_INFO "PCI: %s E820 reservations for host bridge windows\n",
+>> +	       pci_use_e820 ? "Honoring" : "Ignoring");
+>>  }
+>>  
+>>  #ifdef	CONFIG_PCI_MMCONFIG
+>> diff --git a/arch/x86/pci/common.c b/arch/x86/pci/common.c
+>> index 3507f456fcd0..091ec7e94fcb 100644
+>> --- a/arch/x86/pci/common.c
+>> +++ b/arch/x86/pci/common.c
+>> @@ -595,6 +595,12 @@ char *__init pcibios_setup(char *str)
+>>  	} else if (!strcmp(str, "nocrs")) {
+>>  		pci_probe |= PCI_ROOT_NO_CRS;
+>>  		return NULL;
+>> +	} else if (!strcmp(str, "use_e820")) {
+>> +		pci_probe |= PCI_USE_E820;
+>> +		return NULL;
+>> +	} else if (!strcmp(str, "no_e820")) {
+>> +		pci_probe |= PCI_NO_E820;
+>> +		return NULL;
 > 
+> Why does pci_probe have to be involved here?  Couldn't we just set
+> pci_use_e820 directly?
+
+This code runs early on, before the heuristics which set
+pci_use_e820 gets set based on the BIOS year, so this is
+done indirectly so that the code doing the heuristics
+(and checking DMI quirks/exceptions if we add any)
+can set a default and then these flags are checked to
+override the default.
+
+> Same argument applies to PCI_USE__CRS and PCI_ROOT_NO_CRS of course,
+> and I probably added those, so maybe there was a reason, or maybe I
+> just screwed up that too.
+
+What I wrote above, also applies to the use_crs handling, which is
+handled the same for the same reason :)
+
+Regards,
+
+Hans
+
