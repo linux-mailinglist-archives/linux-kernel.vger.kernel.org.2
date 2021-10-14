@@ -2,139 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D8A142D83E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 13:32:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEADD42D840
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 13:33:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231124AbhJNLee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 07:34:34 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:54992 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230328AbhJNLec (ORCPT
+        id S230429AbhJNLfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 07:35:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55910 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229984AbhJNLfS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 07:34:32 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 9EA0C2198B;
-        Thu, 14 Oct 2021 11:32:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1634211146;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/RwKkctM2kYfnsQns9zuzmOBOyPsbRBTF9oUmtbr7Ms=;
-        b=dpiQAn/loFlbz4yWiqf186W/BaqzQq9wvfy5P7pQQ1YrtwhY4ufluqbf2MexpVoslqCG8e
-        MnM3sydeHKUdJc1AbzfqBMzsGW6Ly1Sg+PmPpNgdc7AyB5L6z7/AA6K8BPr3qyzHz+iPBb
-        TP9uHMHgprnT9qOl8YvF76iMrdiV2+g=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1634211146;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/RwKkctM2kYfnsQns9zuzmOBOyPsbRBTF9oUmtbr7Ms=;
-        b=8EZMvlC6qiw4OcFd+TAafSCyudqB11qMFpd0Qesz9Y+PPuSVxGlI/40rwudPGqcnOs/NrS
-        swhsaH/NDSrcMhBA==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 7593FA3B81;
-        Thu, 14 Oct 2021 11:32:26 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id CAC6DDA7A3; Thu, 14 Oct 2021 13:32:01 +0200 (CEST)
-Date:   Thu, 14 Oct 2021 13:32:01 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Dave Chinner <david@fromorbit.com>, NeilBrown <neilb@suse.de>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mel Gorman <mgorman@suse.de>, Jonathan Corbet <corbet@lwn.net>,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH 2/6] MM: improve documentation for __GFP_NOFAIL
-Message-ID: <20211014113201.GA19582@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Michal Hocko <mhocko@suse.com>,
-        Dave Chinner <david@fromorbit.com>, NeilBrown <neilb@suse.de>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>, Mel Gorman <mgorman@suse.de>,
-        Jonathan Corbet <corbet@lwn.net>, linux-xfs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-References: <YVwyhDnE/HEnoLAi@dhcp22.suse.cz>
- <eba04a07-99da-771a-ab6b-36de41f9f120@suse.cz>
- <20211006231452.GF54211@dread.disaster.area>
- <YV7G7gyfZkmw7/Ae@dhcp22.suse.cz>
- <163364854551.31063.4377741712039731672@noble.neil.brown.name>
- <YV/31+qXwqEgaxJL@dhcp22.suse.cz>
- <20211008223649.GJ54211@dread.disaster.area>
- <YWQmsESyyiea0zle@dhcp22.suse.cz>
- <20211013023231.GV2361455@dread.disaster.area>
- <YWaYUsXgXS6GXM+M@dhcp22.suse.cz>
+        Thu, 14 Oct 2021 07:35:18 -0400
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C78CFC061570
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 04:33:13 -0700 (PDT)
+Received: by mail-il1-x12d.google.com with SMTP id w10so3055473ilc.13
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 04:33:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oY5d/R7UW/oDRHgcTKtDThHEm8aGx2JuqS2Sj7syZ5Q=;
+        b=aNxXcY5qVytN+++Hhyt6gdk23lSkpovawwdwQXeavBV9sVx00SHm0Tp8qHkCkprnPN
+         N+prQI7uRbmlkonp3yTWLG3D0KBJKSgk4QoW09W1Cwu5i1W7tPY9DsxJJYBJSMlbk7Ah
+         Tu0x0PGp0edxU90yGDrwjTaEKsZHfOwT3cCeE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oY5d/R7UW/oDRHgcTKtDThHEm8aGx2JuqS2Sj7syZ5Q=;
+        b=feNh/reaBnAJhJmxCUvVApUWxmC7lQAJliXh/EABGGHahXsL7x53+Tkfmj8dMGFLM+
+         CXFPPNRMYnjDnch+UjtYt0KR8T4Rg0nqkQ37FqD070HG4844Bao6i5hgxPa4BTqzzisN
+         yEH0irmm8m7TZmkIqZfZWy52mFAULkvZOlk/Ci/5/1JyHhcujFjwZ8TKvIiyJV7TSLEu
+         ZnNyUbRHskzNLrMa786DsyNE5Q47f8lJ27JHiPqJGzlueAAYK+wcj/55GJ/YO8D9khlT
+         2l37Ljhe4Ld4lHD5HKQduTicPTdUr9OxskUTswI69osWC+9PCZlDRxHq8G2bs0qnpHvC
+         4fVA==
+X-Gm-Message-State: AOAM532yp6HV9E71MDC/l++UmaNpe2Y0pdFt0APVDYBayZfoyXunHGyC
+        O/O4tDilc7WNtt1blKcewQ4TCmFrh6JRwg==
+X-Google-Smtp-Source: ABdhPJxZG5uy+3XJKQBnB0t/CYqNCVvN/ldvxoEFG04l+Rz1ZwMLLgHzRIzJLDBX4CamcuU/eB+fGQ==
+X-Received: by 2002:a05:6e02:1e02:: with SMTP id g2mr1987905ila.89.1634211192653;
+        Thu, 14 Oct 2021 04:33:12 -0700 (PDT)
+Received: from mail-io1-f41.google.com (mail-io1-f41.google.com. [209.85.166.41])
+        by smtp.gmail.com with ESMTPSA id a12sm1137125ion.0.2021.10.14.04.33.11
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Oct 2021 04:33:12 -0700 (PDT)
+Received: by mail-io1-f41.google.com with SMTP id z69so179998iof.9
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 04:33:11 -0700 (PDT)
+X-Received: by 2002:a02:6027:: with SMTP id i39mr3396022jac.91.1634211191475;
+ Thu, 14 Oct 2021 04:33:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YWaYUsXgXS6GXM+M@dhcp22.suse.cz>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+References: <20211014093112.3852491-1-fshao@chromium.org> <20211014093112.3852491-2-fshao@chromium.org>
+ <CA+Px+wUKXJ7a9th1HyxvCgDTQXL9kHtZH+O9z9oRqCfcF8H-sg@mail.gmail.com>
+In-Reply-To: <CA+Px+wUKXJ7a9th1HyxvCgDTQXL9kHtZH+O9z9oRqCfcF8H-sg@mail.gmail.com>
+From:   Fei Shao <fshao@chromium.org>
+Date:   Thu, 14 Oct 2021 19:32:35 +0800
+X-Gmail-Original-Message-ID: <CAC=S1ngFY_LMQrzGpKXUt9HOJnoBvBoL7MV9sKSUJd0xOHZtZw@mail.gmail.com>
+Message-ID: <CAC=S1ngFY_LMQrzGpKXUt9HOJnoBvBoL7MV9sKSUJd0xOHZtZw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mailbox: mtk-cmdq: Fix local clock ID usage
+To:     Tzung-Bi Shih <tzungbi@google.com>
+Cc:     Jassi Brar <jaswinder.singh@linaro.org>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "jason-jh.lin" <jason-jh.lin@mediatek.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 10:26:58AM +0200, Michal Hocko wrote:
-> > crap like this (found in btrfs):
-> > 
-> >                 /*                                                               
-> >                  * We're holding a transaction handle, so use a NOFS memory      
-> >                  * allocation context to avoid deadlock if reclaim happens.      
-> >                  */                                                              
-> >                 nofs_flag = memalloc_nofs_save();                                
-> >                 value = kmalloc(size, GFP_KERNEL);                               
-> >                 memalloc_nofs_restore(nofs_flag);                                
-> 
-> Yes this looks wrong indeed! If I were to review such a code I would ask
-> why the scope cannot match the transaction handle context. IIRC jbd does
-> that.
-
-Adding the transaction start/end as the NOFS scope is a long term plan
-and going on for years, because it's not a change we would need in
-btrfs, but rather a favor to MM to switch away from "GFP_NOFS everywhere
-because it's easy".
-
-The first step was to convert the easy cases. Almost all safe cases
-switching GFP_NOFS to GFP_KERNEL have happened. Another step is to
-convert GFP_NOFS to memalloc_nofs_save/GFP_KERNEL/memalloc_nofs_restore
-in contexts where we know we'd rely on the transaction NOFS scope in the
-future. Once this is implemented, the memalloc_nofs_* calls are deleted
-and it works as expected.  Now you may argue that the switch could be
-changing GFP_NOFS to GFP_KERNEL at that time but that is not that easy
-to review or reason about in the whole transaction context in all
-allocations.
-
-This leads to code that was found in __btrfs_set_acl and called crap
-or wrong, because perhaps the background and the bigger plan is not
-immediately obvious. I hope the explanation above it puts it to the
-right perspective.
-
-The other class of scoped NOFS protection is around vmalloc-based
-allocations but that's for a different reason, would be solved by the
-same transaction start/end conversion as well.
-
-I'm working on that from time to time but this usually gets pushed down
-in the todo list. It's changing a lot of code, from what I've researched
-so far cannot be done at once and would probably introduce bugs hard to
-hit because of the external conditions (allocator, system load, ...).
-
-I have a plan to do that incrementally, adding assertions and converting
-functions in small batches to be able to catch bugs early, but I'm not
-exactly thrilled to start such endeavour in addition to normal
-development bug hunting.
-
-To get things moving again, I've refreshed the patch adding stubs and
-will try to find the best timing for merg to avoid patch conflicts, but
-no promises.
+On Thu, Oct 14, 2021 at 6:47 PM Tzung-Bi Shih <tzungbi@google.com> wrote:
+>
+> On Thu, Oct 14, 2021 at 05:31:11PM +0800, Fei Shao wrote:
+> > +const char *clk_name = "gce";
+> > +const char *clk_names[] = { "gce0", "gce1" };
+> Does letting them static make more sense?
+Yes, I'll send a v2 later. Thanks!
