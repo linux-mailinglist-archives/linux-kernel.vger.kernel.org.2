@@ -2,104 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCE6B42E0DC
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 20:09:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02E9342E0E5
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 20:10:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233747AbhJNSLX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 14:11:23 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:60781 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232252AbhJNSLU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 14:11:20 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1634234955; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=PaqL+qcUYZsZZQg/ZfKwStuB0Bng0ty0IIvhLrT9KAE=;
- b=TNyu0vFrNXytapvsZDqa0I/R75ml5AgGjq3f7blTRSQyGwcrKCiewI3wpKkUdA5OtMbe2eWR
- reo+M/MbPeUTb2oHwavIcrVil6mgyELOqpb7O2NnxxkGnKoCVt8fxUJwiPf6Fptf/uCTVlJX
- ytLZUMyr0ZbEtUA4XCg/JtD/UL8=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 61687249446c6db0cb8da88a (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 14 Oct 2021 18:09:13
- GMT
-Sender: pmaliset=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 1D361C4360C; Thu, 14 Oct 2021 18:09:13 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: pmaliset)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id ADFBBC43460;
-        Thu, 14 Oct 2021 18:09:12 +0000 (UTC)
+        id S233744AbhJNSMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 14:12:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34430 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233468AbhJNSMw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 14:12:52 -0400
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5F02C061570
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 11:10:47 -0700 (PDT)
+Received: by mail-il1-x12a.google.com with SMTP id d11so4431120ilc.8
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 11:10:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5VsFoMwmZgw4ow4ILXqze88+h8cPA1iMm1uHsa+VhSA=;
+        b=KK5GZQ4wM70tcz2I8BH0qtchBZd0r6YD64AQ3IJcF8A8EFPZwdV1p9E5dNfY8qt1/A
+         GKeRKGvj8Ti7eDvbaEhTk8scgQms0cF7R3DjNc48DG5ZL1cNCWTCTLjDePsCpoHfAWIh
+         azPx3w7BEAVyP+WarM42L9RkyHoK4fCl/UrDs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5VsFoMwmZgw4ow4ILXqze88+h8cPA1iMm1uHsa+VhSA=;
+        b=Rvqh+clz62pZ5kJ2B7+M9KKhQzsmxWYuL1ZoSUxvFv3TNKTYD6kmRpemVgKkxQFyv5
+         S/KfgRj1Ejie5QsxJ9MSqQCbGu2Bs6zzL5DgYOfFp1p+KgHhrnrWt80XQcrF7ZxBSpXf
+         uXPGRyavmb6pFWeKOhPOeTd3WXhkgVrt5JdcNwqxcJCgYTGSerG+oPEz6Ko4w/yWtuPj
+         xd9S8cTdhe9Vt9yP291sdI96xt8XBKCU8fuTXNXQAOHPJ1MpLfw5PsSBsZpwBmu7rEx4
+         huE/Yv+5RlL+2sa4rucbj7Jo3QsZURWMgt3fgvmdWWHgqse6xuOm5suwrrcNmw+cnA8W
+         Yfeg==
+X-Gm-Message-State: AOAM53312kk8OLgMtXGiYgR8PaqFfXTj+cxUNsLadgjAjQa9MvPc3Xau
+        9RFzGXLOl501B5yXoKCe5WGuSQ==
+X-Google-Smtp-Source: ABdhPJzhRVzQHcypXTUjA9g79uHmWpp9PuQpzoQv1rXYU2fZJ0Arl6p67ylIMIqR5d946QL7nZGBxg==
+X-Received: by 2002:a05:6e02:1a8e:: with SMTP id k14mr351293ilv.77.1634235047055;
+        Thu, 14 Oct 2021 11:10:47 -0700 (PDT)
+Received: from shuah-t480s.internal (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id i2sm1716528ilv.63.2021.10.14.11.10.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Oct 2021 11:10:46 -0700 (PDT)
+From:   Shuah Khan <skhan@linuxfoundation.org>
+To:     mcgrof@kernel.org, jeyu@kernel.org
+Cc:     Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
+Subject: [PATCH] module: fix elf_validity_check() warns seen on 32-bit platforms
+Date:   Thu, 14 Oct 2021 12:10:44 -0600
+Message-Id: <20211014181044.24365-1-skhan@linuxfoundation.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 14 Oct 2021 23:39:12 +0530
-From:   Prasad Malisetty <pmaliset@codeaurora.org>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, manivannan.sadhasivam@linaro.org,
-        robh+dt@kernel.org, sanm@codeaurora.org, vbadigan@codeaurora.org
-Subject: Re: [PATCH v1] arm64: dts: qcom: sc7280: Add pcie clock support
-In-Reply-To: <CAE-0n53vBa5Tn4OEey1ZmBrM+kN5KbXv1Spoj-dtHY6jzN_bbA@mail.gmail.com>
-References: <1634042171-31461-1-git-send-email-pmaliset@codeaurora.org>
- <CAE-0n53vBa5Tn4OEey1ZmBrM+kN5KbXv1Spoj-dtHY6jzN_bbA@mail.gmail.com>
-Message-ID: <1d311e617667a2bbda233e423ca0b898@codeaurora.org>
-X-Sender: pmaliset@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-10-12 22:56, Stephen Boyd wrote:
-> Quoting Prasad Malisetty (2021-10-12 05:36:11)
->> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi 
->> b/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> index 39635da..78694c1 100644
->> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> @@ -569,9 +569,10 @@
->>                         reg = <0 0x00100000 0 0x1f0000>;
->>                         clocks = <&rpmhcc RPMH_CXO_CLK>,
->>                                  <&rpmhcc RPMH_CXO_CLK_A>, 
->> <&sleep_clk>,
->> -                                <0>, <0>, <0>, <0>, <0>, <0>;
->> +                                <0>, <&pcie1_lane 0>,
->> +                                <0>, <0>, <0>, <0>;
->>                         clock-names = "bi_tcxo", "bi_tcxo_ao", 
->> "sleep_clk",
->> -                                     "pcie_0_pipe_clk", 
->> "pcie_1_pipe-clk",
->> +                                     "pcie_0_pipe_clk", 
->> "pcie_1_pipe_clk",
-> 
-> It looks like a fix because the name doesn't match the binding. Can you
-> add a Fixes tag?
-> 
-Hi Stephen,
+Fix the following warnings introduced by
 
-Thanks for the review.
+commit: 8b1185a4427b ("module: change to print useful messages from elf_validity_check()")
 
-Yes, I fixed the clock name as per the binding. I have added fixes tag 
-and updated the new pacth.
+warning: format '%llu' expects argument of type 'long long unsigned int',
+but argument 3 has type 'Elf32_Off' {aka 'unsigned int'}
 
-Thanks
--Prasad
+Fix it by tweaking messages to not print ELF64* fields.
 
->>                                       "ufs_phy_rx_symbol_0_clk", 
->> "ufs_phy_rx_symbol_1_clk",
->>                                       "ufs_phy_tx_symbol_0_clk",
->>                                       
->> "usb3_phy_wrapper_gcc_usb30_pipe_clk";
+Fixes: 8b1185a4427b ("module: change to print useful messages from elf_validity_check()")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+---
+ kernel/module.c | 19 +++++++------------
+ 1 file changed, 7 insertions(+), 12 deletions(-)
+
+diff --git a/kernel/module.c b/kernel/module.c
+index d972786b10ba..ebc70239f65a 100644
+--- a/kernel/module.c
++++ b/kernel/module.c
+@@ -2950,8 +2950,8 @@ static int validate_section_offset(struct load_info *info, Elf_Shdr *shdr)
+ 	 */
+ 	secend = shdr->sh_offset + shdr->sh_size;
+ 	if (secend < shdr->sh_offset || secend > info->len) {
+-		pr_err("Invalid ELF section offset/size: secend(%lu) < shdr->sh_offset(%llu) or secend(%lu) > e_shnum(%lu)\n",
+-		       secend, shdr->sh_offset, secend, info->len);
++		pr_err("Invalid ELF section offset/size: sh_offset+sh_size(%lu) < sh_offset || > len(%lu)\n",
++		       secend, info->len);
+ 		return -ENOEXEC;
+ 	}
+ 
+@@ -2971,8 +2971,7 @@ static int elf_validity_check(struct load_info *info)
+ 	int err;
+ 
+ 	if (info->len < sizeof(*(info->hdr))) {
+-		pr_err("Invalid ELF header len %lu < %lu\n", info->len,
+-		       sizeof(*(info->hdr)));
++		pr_err("Invalid ELF header len %lu\n", info->len);
+ 		goto no_exec;
+ 	}
+ 
+@@ -2991,8 +2990,7 @@ static int elf_validity_check(struct load_info *info)
+ 		goto no_exec;
+ 	}
+ 	if (info->hdr->e_shentsize != sizeof(Elf_Shdr)) {
+-		pr_err("Invalid ELF section header size %d != %lu\n",
+-		       info->hdr->e_shentsize, sizeof(Elf_Shdr));
++		pr_err("Invalid ELF section header size\n");
+ 		goto no_exec;
+ 	}
+ 
+@@ -3004,9 +3002,7 @@ static int elf_validity_check(struct load_info *info)
+ 	if (info->hdr->e_shoff >= info->len
+ 	    || (info->hdr->e_shnum * sizeof(Elf_Shdr) >
+ 		info->len - info->hdr->e_shoff)) {
+-		pr_err("Invalid ELF section header overflow: %ld > %llu\n",
+-		       info->hdr->e_shnum * sizeof(Elf_Shdr),
+-		       info->len - info->hdr->e_shoff);
++		pr_err("Invalid ELF section header overflow\n");
+ 		goto no_exec;
+ 	}
+ 
+@@ -3046,9 +3042,8 @@ static int elf_validity_check(struct load_info *info)
+ 	if (info->sechdrs[0].sh_type != SHT_NULL
+ 	    || info->sechdrs[0].sh_size != 0
+ 	    || info->sechdrs[0].sh_addr != 0) {
+-		pr_err("ELF Spec violation: section 0 type!=SH_NULL(%d) or non-zero len(%llu) or addr(%llu)\n",
+-		       info->sechdrs[0].sh_type, info->sechdrs[0].sh_size,
+-		       info->sechdrs[0].sh_addr);
++		pr_err("ELF Spec violation: section 0 type(%d)!=SH_NULL or non-zero len or addr\n",
++		       info->sechdrs[0].sh_type);
+ 		goto no_exec;
+ 	}
+ 
+-- 
+2.30.2
 
