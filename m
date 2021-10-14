@@ -2,127 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85B7742D1EC
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 07:41:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3850042D1F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 07:42:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229933AbhJNFnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 01:43:13 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:19193 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229672AbhJNFnL (ORCPT
+        id S230026AbhJNFod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 01:44:33 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39188 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229672AbhJNFo2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 01:43:11 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1634190067; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=9fdRm3w+EXS1CImmOMXTLhvEwCi0R+qogctHD7rq2Eg=; b=oX4pfoyYgAhcITjLJeftaCD1wmqGR4UEaxM9gzJC1UHwTpglWvEJN9Dnt4R1ZgiYGv7tLTx7
- 80g9c3jV1AVPHvhwoTW8yTa90xBEUGNKQ7rHB+FEoaIwXhu+GVmEWTh65EoJ4TyE1Rvje+UC
- EMzBhqfvyRdg+B4HlKW4YfZNfjw=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 6167c2f2f3e5b80f1fccee19 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 14 Oct 2021 05:41:06
- GMT
-Sender: sanm=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 2EC6BC4361B; Thu, 14 Oct 2021 05:41:06 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.0.106] (unknown [124.123.178.93])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: sanm)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 61060C4360D;
-        Thu, 14 Oct 2021 05:41:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 61060C4360D
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Subject: Re: [PATCH] usb: dwc: host: add xhci_plat_priv quirk
- XHCI_SKIP_PHY_INIT
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ppratap@codeaurora.org,
-        pkondeti@codeaurora.org
-References: <1633946518-13906-1-git-send-email-sanm@codeaurora.org>
- <YWU6IZwm2T24ONW2@kroah.com>
-From:   Sandeep Maheswaram <sanm@codeaurora.org>
-Message-ID: <09477c8a-f242-202c-8ead-eebc4f1cdd7d@codeaurora.org>
-Date:   Thu, 14 Oct 2021 11:10:58 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Thu, 14 Oct 2021 01:44:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634190143;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=VY03GubPFVDdkvSR8SdXXqCAVaPVrTzhj7NluBAU388=;
+        b=PzA0Cuas91a7mf9izDA4td3OIfZMYr7glmocc8jlOvPWiJH+mDFOySbwJKJ1G360yRDbBU
+        d1plIHLyPwFZFCsaJYNVDT6SEWAxB3Vqjxo+J1Na/bKH/W08G3pPUqmMXb2Y/ZiqswIItY
+        prsemgC7gEAvCeHvodTH8bsiVEubgbY=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-474-jAilxBzgNX2iEZSVbD2NCw-1; Thu, 14 Oct 2021 01:42:21 -0400
+X-MC-Unique: jAilxBzgNX2iEZSVbD2NCw-1
+Received: by mail-wr1-f72.google.com with SMTP id k2-20020adfc702000000b0016006b2da9bso3687880wrg.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 22:42:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VY03GubPFVDdkvSR8SdXXqCAVaPVrTzhj7NluBAU388=;
+        b=EcKj9662elw/e5qmK3Nv7394+CRkDlQHbkDluBdo0rAc7o6YIqdLCDiRm4+WHqzIWI
+         XOd0djHasVu/N75+k814DdVKfRhY/VhzEvlcADbub8fBEepBtREaoZGEPXpX/cJ7KNz7
+         XWm7UnmsBsWNHfVpHFFbvc3YQV5XPB4BDcEkqSgzN/FJ67PR1hYeRPqcEIgcRKDXLpcS
+         zHVBOzSoTt8CayzsouvjmwOIVHjSbquRo9zwTq7lhPGd8BKx39Uc7G9xegOy54OTpgVa
+         huKfJ170HTZ7KvukRzoaJzFf8t+28n/BMIcuHx/Thyc6zePzxg0LE08d06i9RTUiHNVK
+         S9Ng==
+X-Gm-Message-State: AOAM5323fUWkS15vrPYb3nEOUudMqbdgmIYW8JpYbtdNco74CHR0OreI
+        bI00B4u8AuBe+LUdmc7rwV/DrYUt9np8bHrJREMC2iqbNDvNck3yQFW9xWty1UpMji/YU90SK6E
+        zPoCqZ3JqcPCHTu2CBjByHGOeW3Hfd0FEcSdNijDi
+X-Received: by 2002:adf:a29c:: with SMTP id s28mr4104547wra.116.1634190140691;
+        Wed, 13 Oct 2021 22:42:20 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwQovMuuTmLhj35z2utXaPHJV063AsII3FyccF8wXMMb7viJYHRoQqfSWAqErXYbz1US8DF/BzbxkOaXmWnGMg=
+X-Received: by 2002:adf:a29c:: with SMTP id s28mr4104529wra.116.1634190140520;
+ Wed, 13 Oct 2021 22:42:20 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YWU6IZwm2T24ONW2@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20211012131836.4e17a031@canb.auug.org.au> <202110141102364478237@zte.com.cn>
+In-Reply-To: <202110141102364478237@zte.com.cn>
+From:   Karol Herbst <kherbst@redhat.com>
+Date:   Thu, 14 Oct 2021 07:42:09 +0200
+Message-ID: <CACO55tsyrnta4z=K_vARsQTTD1t4o8sHA4Svr=Z+sDnvv0jHCQ@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the drm-misc tree
+To:     Luo penghao <luo.penghao@zte.com.cn>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 10/12/2021 1:02 PM, Greg Kroah-Hartman wrote:
-> On Mon, Oct 11, 2021 at 03:31:57PM +0530, Sandeep Maheswaram wrote:
->> dwc3 manages PHY by own DRD driver, so skip the management by
->> HCD core.
->> During runtime suspend phy was not getting suspend because
->> runtime_usage value is 2.
->>
->> Signed-off-by: Sandeep Maheswaram <sanm@codeaurora.org>
->> ---
->>   drivers/usb/dwc3/host.c | 12 ++++++++++++
->>   1 file changed, 12 insertions(+)
->>
->> diff --git a/drivers/usb/dwc3/host.c b/drivers/usb/dwc3/host.c
->> index f29a264..0921f05 100644
->> --- a/drivers/usb/dwc3/host.c
->> +++ b/drivers/usb/dwc3/host.c
->> @@ -11,6 +11,11 @@
->>   #include <linux/platform_device.h>
->>   
->>   #include "core.h"
->> +#include "../host/xhci-plat.h"
-> Why are you tying the dwc3 driver to the xhci driver?
+On Thu, Oct 14, 2021 at 5:02 AM <luo.penghao@zte.com.cn> wrote:
 >
-Can we add a  property usb-skip-phy-init  in drivers/usb/dwc3/host.c
-
-props[prop_idx++] = PROPERTY_ENTRY_BOOL("usb-skip-phy-init");
-
-and set the quirk like this in xhci-plat.c
-
-if (device_property_read_bool(tmpdev, "usb-skip-phy-init"))
-             xhci->quirks |= XHCI_SKIP_PHY_INIT;
-
-as below
-
-if (device_property_read_bool(tmpdev, "usb2-lpm-disable"))
-             xhci->quirks |= XHCI_HW_LPM_DISABLE;
-
-  if (device_property_read_bool(tmpdev, "usb3-lpm-capable"))
-             xhci->quirks |= XHCI_LPM_SUPPORT;
-
-
-
->> +
->> +static const struct xhci_plat_priv xhci_plat_dwc3_xhci = {
->> +	.quirks = XHCI_SKIP_PHY_INIT,
-> If these quirks are now "global", they should go into a
-> include/linux/usb/ .h file, right?
+> Hi,
 >
-> thanks,
+> I review the code.
 >
-> greg k-h
+> It seems I forget to delete the definition of the variable "inst",I'm sry for that.: (
+>
+> I'll submit another patch soon.
+>
+
+I already wrote the patch and pushed it:
+https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit?id=381ba6a6baf104b572379c6b2deab884555104d4
+
+>
+> > Hi all,
+> >
+> > After merging the drm-misc tree, today's linux-next build (x86_64
+> > allmodconfig) failed like this:
+> >
+> > drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmmgp100.c: In function 'gp100_vmm_fault_cancel':
+> > drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmmgp100.c:491:6: error: unused variable 'inst' [-Werror=unused-variable]
+> >   491 |  u32 inst, aper;
+> >       |      ^~~~
+> > cc1: all warnings being treated as errors
+> >
+> > Caused by commit
+> >
+> >   404046cf4805 ("drm/nouveau/mmu/gp100-: drop unneeded assignment in the if condition.")
+> >
+> > I have used the drm-misc tree from next-20211011 for today.
+> >
+> > --
+> > Cheers,
+> > Stephen Rothwell
+
