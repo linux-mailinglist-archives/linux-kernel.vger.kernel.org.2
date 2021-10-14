@@ -2,65 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 383E342E233
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 21:51:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE37142E238
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 21:53:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233733AbhJNTxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 15:53:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57324 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233675AbhJNTxa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 15:53:30 -0400
-Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 568D7C061570
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 12:51:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=SgZrd2Dl7DkxDw3kJKusXJ/WFzczBgnPXkjSStE9MhA=; b=sl7UHSNrpFSAto/vMuhknybO1j
-        wkhvRJGC4kRVz0riuSsTMMzfFg/IdyacPfo0mz2NinA1lQFKyCwzaPFJq/iv+jdBtOWp0tv8Mm+Sr
-        U3NCMuIjAkCTytNQVGOlilCDm/JjHDWCFqUEJ2tCX9NX/bNrgJz7RgMuHEUCUK1yw+l89OEXjJJuJ
-        8iofNT01z+mK+i39CmrJUOSslQ3hMzRgaRm5EYzg83VwTFL8dkJUl7Ew9zGDllcERg+O1ZDtvYMKM
-        xz+msUELgesyk4a/HrKrCf7DDaphRYygw22AyVDtAL2LfGqZx3nNTcIgKhPhnZLBm7p9byWBniLUE
-        VzNZFUmw==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mb6lA-004GWE-8S; Thu, 14 Oct 2021 19:51:24 +0000
-Date:   Thu, 14 Oct 2021 12:51:24 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     jeyu@kernel.org, linux-kernel@vger.kernel.org,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] module: fix elf_validity_check() warns seen on 32-bit
- platforms
-Message-ID: <YWiKPMKh6025c6dW@bombadil.infradead.org>
-References: <20211014181044.24365-1-skhan@linuxfoundation.org>
+        id S233713AbhJNTzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 15:55:21 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:60660 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233018AbhJNTzT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 15:55:19 -0400
+Received: from zn.tnic (p200300ec2f0c7200d22ebf2cfed8089c.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:7200:d22e:bf2c:fed8:89c])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E21991EC01A8;
+        Thu, 14 Oct 2021 21:53:12 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1634241193;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=3D7xO6MeV8Kv77kHjCegi8KGiS9MVKZfaLwempGWLCo=;
+        b=QjClVR3l1r53dQz78jbklIs8DNJyuJUM+kRWKahBX4P5wTLUOTZ89TBQrEuQ2INwf0Qweb
+        fMvv3vLTYTN89zYKqRGaEihtO6obyNcgNAnehM1pRTlXN3pI0og01uljGPY91i/PwZ1H6l
+        6EhZ/+LUbWb+OLY7TI6yExjPWtCr4/w=
+Date:   Thu, 14 Oct 2021 21:53:11 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Naveen Krishna Chatradhi <nchatrad@amd.com>
+Cc:     linux-edac@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, mingo@redhat.com, mchehab@kernel.org,
+        yazen.ghannam@amd.com
+Subject: Re: [PATCH v4 0/4] x86/edac/amd64: Add support for noncpu nodes
+Message-ID: <YWiKpw5MwtAiwNyB@zn.tnic>
+References: <20210823185437.94417-1-nchatrad@amd.com>
+ <20211014185400.10451-1-nchatrad@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20211014181044.24365-1-skhan@linuxfoundation.org>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+In-Reply-To: <20211014185400.10451-1-nchatrad@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 12:10:44PM -0600, Shuah Khan wrote:
-> Fix the following warnings introduced by
+On Fri, Oct 15, 2021 at 12:23:56AM +0530, Naveen Krishna Chatradhi wrote:
+> On newer heterogeneous systems with AMD CPUs the data fabrics of GPUs
+> can be connected directly via custom links.
 > 
-> commit: 8b1185a4427b ("module: change to print useful messages from elf_validity_check()")
+> This patchset does the following
+> 1. amd_nb.c:
+>    a. Add support for northbridges on Aldebaran GPU nodes
+>    b. export AMD node map details to be used by edac and mce modules
+> 	
+> 2. mce_amd module:
+>    a. Identify the node ID where the error occurred and map the node id
+>       to linux enumerated node id.
 > 
-> warning: format '%llu' expects argument of type 'long long unsigned int',
-> but argument 3 has type 'Elf32_Off' {aka 'unsigned int'}
+> 2. Modifies the amd64_edac module
+>    a. Add new family op routines
+>    b. Enumerate UMCs and HBMs on the GPU nodes
 > 
-> Fix it by tweaking messages to not print ELF64* fields.
+> This patchset is rebased on top of
+> "
+> commit 07416cadfdfa38283b840e700427ae3782c76f6b
+> Author: Yazen Ghannam <yazen.ghannam@amd.com>
+> Date:   Tue Oct 5 15:44:19 2021 +0000
 > 
-> Fixes: 8b1185a4427b ("module: change to print useful messages from elf_validity_check()")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+>     EDAC/amd64: Handle three rank interleaving mode
+> "
+> 
+> Muralidhara M K (2):
+>   x86/amd_nb: Add support for northbridges on Aldebaran
+>   EDAC/amd64: Extend family ops functions
+> 
+> Naveen Krishna Chatradhi (2):
+>   EDAC/mce_amd: Extract node id from MCA_IPID
+>   EDAC/amd64: Enumerate memory on Aldebaran GPU nodes
+> 
+>  arch/x86/include/asm/amd_nb.h |   9 +
+>  arch/x86/kernel/amd_nb.c      | 131 +++++++--
+>  drivers/edac/amd64_edac.c     | 517 +++++++++++++++++++++++++---------
+>  drivers/edac/amd64_edac.h     |  33 +++
+>  drivers/edac/mce_amd.c        |  24 +-
+>  include/linux/pci_ids.h       |   1 +
+>  6 files changed, 564 insertions(+), 151 deletions(-)
 
-Actually can I trouble you just fold this in with your older patch, I can just
-drop your old patch and merge this one. No point in merging two patches
-if we can just have one.
+So which v4 should I be looking at - this one or
 
-  Luis
+https://lore.kernel.org/r/20211014185058.9587-1-nchatrad@amd.com
+
+?
+
+Btw, you don't have to do --in-reply-to and keep all patchsets in a
+single thread - just send the new revision as a separate thread.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
