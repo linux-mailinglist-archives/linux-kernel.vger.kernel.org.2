@@ -2,128 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F6D042D5C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 11:13:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D41242D5D0
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 11:16:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229691AbhJNJPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 05:15:30 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:34094 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230118AbhJNJPW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 05:15:22 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 1619621A78;
-        Thu, 14 Oct 2021 09:13:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1634202796; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6qlO0B+dKVbDjD2ahAupf74QzcuBtOf+3HozXO78zVI=;
-        b=TNcMw28JoUbqZZrjTwmFLWtEVPnNV5ytCnksIJIdcU85oBHx2uqflkwC21OnsmYSMeNEMC
-        kYFkvf6iLxxdWYUsCUjTTstLSlPXR1+HgAuC5TKPtflyHbB0YnOvbj/4sp7TYCc11H5GiQ
-        3hThb2kfKCZXvj271cl6oZ0iXmz+5fw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1634202796;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6qlO0B+dKVbDjD2ahAupf74QzcuBtOf+3HozXO78zVI=;
-        b=F4BaV/k078gUywEn1Kt9pDnKXJaHdraB0NCigBl7LVC2HzjgwcBlCnC3EArFqzS4fQ7Sjb
-        P9TBANAUA3ey+kBw==
-Received: from pobox.suse.cz (pobox.suse.cz [10.100.2.14])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id A7F0BA3B8B;
-        Thu, 14 Oct 2021 09:13:13 +0000 (UTC)
-Date:   Thu, 14 Oct 2021 11:13:13 +0200 (CEST)
-From:   Miroslav Benes <mbenes@suse.cz>
-To:     =?ISO-2022-JP?Q?=1B$B2&lV=1B=28J?= <yun.wang@linux.alibaba.com>
-cc:     Guo Ren <guoren@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>, Petr Mladek <pmladek@suse.com>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Jisheng Zhang <jszhang@kernel.org>, linux-csky@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        live-patching@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] ftrace: disable preemption between
- ftrace_test_recursion_trylock/unlock()
-In-Reply-To: <7e4738b5-21d4-c4d0-3136-a096bbb5cd2c@linux.alibaba.com>
-Message-ID: <alpine.LSU.2.21.2110141108150.23710@pobox.suse.cz>
-References: <609b565a-ed6e-a1da-f025-166691b5d994@linux.alibaba.com> <7e4738b5-21d4-c4d0-3136-a096bbb5cd2c@linux.alibaba.com>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S230128AbhJNJSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 05:18:20 -0400
+Received: from foss.arm.com ([217.140.110.172]:51760 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230032AbhJNJSR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 05:18:17 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3316911D4;
+        Thu, 14 Oct 2021 02:16:13 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.73.197])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 629303F66F;
+        Thu, 14 Oct 2021 02:16:09 -0700 (PDT)
+Date:   Thu, 14 Oct 2021 10:13:32 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Ananth N Mavinakayanahalli <ananth@linux.ibm.com>,
+        Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 3/8] arm64: kprobes: Record frame pointer with kretprobe
+ instance
+Message-ID: <20211014091332.GA13770@C02TD0UTHF1T.local>
+References: <163369609308.636038.15295764725220907794.stgit@devnote2>
+ <163369611948.636038.11552166777773804729.stgit@devnote2>
+ <20211013100126.GA3187@C02TD0UTHF1T.local>
+ <20211014170405.f59d287b30086efe7dd7f4d9@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211014170405.f59d287b30086efe7dd7f4d9@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> diff --git a/kernel/livepatch/patch.c b/kernel/livepatch/patch.c
-> index e8029ae..b8d75fb 100644
-> --- a/kernel/livepatch/patch.c
-> +++ b/kernel/livepatch/patch.c
-> @@ -49,14 +49,16 @@ static void notrace klp_ftrace_handler(unsigned long ip,
+On Thu, Oct 14, 2021 at 05:04:05PM +0900, Masami Hiramatsu wrote:
+> On Wed, 13 Oct 2021 11:01:39 +0100
+> Mark Rutland <mark.rutland@arm.com> wrote:
 > 
->  	ops = container_of(fops, struct klp_ops, fops);
+> > On Fri, Oct 08, 2021 at 09:28:39PM +0900, Masami Hiramatsu wrote:
+> > > Record the frame pointer instead of stack address with kretprobe
+> > > instance as the identifier on the instance list.
+> > > Since arm64 always enable CONFIG_FRAME_POINTER, we can use the
+> > > actual frame pointer (x29).
+> > 
+> > Just to check, why do we need to use the FP rather than SP? It wasn't
+> > clear to me if that's necessary later in the series, or if I'm missing
+> > something here.
 > 
-> +	/*
-> +	 *
+> Actually, this is for finding correct return address from the per-task
+> kretprobe instruction list (suppose it as a shadow stack) when it will
+> be searched in stack-backtracing. At that point, the framepointer will
+> be a reliable key.
 
-This empty line is not useful.
+Sure, my question was more "why isn't the SP a reliable key?", because both
+the SP and FP should be balanced at function-entry and function-return
+time. I'm asking because I think I'm missing a subtlety.
 
-> +	 * The ftrace_test_recursion_trylock() will disable preemption,
-> +	 * which is required for the variant of synchronize_rcu() that is
-> +	 * used to allow patching functions where RCU is not watching.
-> +	 * See klp_synchronize_transition() for more details.
-> +	 */
->  	bit = ftrace_test_recursion_trylock(ip, parent_ip);
->  	if (WARN_ON_ONCE(bit < 0))
->  		return;
-> -	/*
-> -	 * A variant of synchronize_rcu() is used to allow patching functions
-> -	 * where RCU is not watching, see klp_synchronize_transition().
-> -	 */
-> -	preempt_disable_notrace();
+I'm perfectly happy to use the FP even if they're equivalent; I just
+want to make sure there's not some issue I'm unaware of that could
+affect unwinding.
+
+Thanks,
+Mark.
+
+> > FWIW, I plan to rework arm64's ftrace bits to use FP for
+> > HAVE_FUNCTION_GRAPH_RET_ADDR_PTR, so I'm happy to do likewise here.
 > 
->  	func = list_first_or_null_rcu(&ops->func_stack, struct klp_func,
->  				      stack_node);
-> @@ -120,7 +122,6 @@ static void notrace klp_ftrace_handler(unsigned long ip,
->  	klp_arch_set_pc(fregs, (unsigned long)func->new_func);
+> Yes, I think you can use FP for that too.
 > 
->  unlock:
-> -	preempt_enable_notrace();
->  	ftrace_test_recursion_unlock(bit);
->  }
-
-Acked-by: Miroslav Benes <mbenes@suse.cz>
-
-for the livepatch part of the patch.
-
-I would also ask you not to submit new versions so often, so that the 
-other reviewers have time to actually review the patch set.
-
-Quoting from Documentation/process/submitting-patches.rst:
-
-"Wait for a minimum of one week before resubmitting or pinging reviewers - 
-possibly longer during busy times like merge windows."
-
-Thanks
-
-Miroslav
+> > 
+> > > Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+> > 
+> > Regardless of the above:
+> > 
+> > Acked-by: Mark Rutland <mark.rutland@arm.com>
+> 
+> Thank you!
+> 
+> > 
+> > Mark.
+> > 
+> > > ---
+> > >  arch/arm64/kernel/probes/kprobes.c |    4 ++--
+> > >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > > 
+> > > diff --git a/arch/arm64/kernel/probes/kprobes.c b/arch/arm64/kernel/probes/kprobes.c
+> > > index e7ad6da980e8..d9dfa82c1f18 100644
+> > > --- a/arch/arm64/kernel/probes/kprobes.c
+> > > +++ b/arch/arm64/kernel/probes/kprobes.c
+> > > @@ -401,14 +401,14 @@ int __init arch_populate_kprobe_blacklist(void)
+> > >  
+> > >  void __kprobes __used *trampoline_probe_handler(struct pt_regs *regs)
+> > >  {
+> > > -	return (void *)kretprobe_trampoline_handler(regs, (void *)kernel_stack_pointer(regs));
+> > > +	return (void *)kretprobe_trampoline_handler(regs, (void *)regs->regs[29]);
+> > >  }
+> > >  
+> > >  void __kprobes arch_prepare_kretprobe(struct kretprobe_instance *ri,
+> > >  				      struct pt_regs *regs)
+> > >  {
+> > >  	ri->ret_addr = (kprobe_opcode_t *)regs->regs[30];
+> > > -	ri->fp = (void *)kernel_stack_pointer(regs);
+> > > +	ri->fp = (void *)regs->regs[29];
+> > >  
+> > >  	/* replace return addr (x30) with trampoline */
+> > >  	regs->regs[30] = (long)&__kretprobe_trampoline;
+> > > 
+> 
+> 
+> -- 
+> Masami Hiramatsu <mhiramat@kernel.org>
