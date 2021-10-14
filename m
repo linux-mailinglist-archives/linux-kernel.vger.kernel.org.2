@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A385042DC57
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:56:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2329042DC2F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:55:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232450AbhJNO6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 10:58:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42680 "EHLO mail.kernel.org"
+        id S232054AbhJNO5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 10:57:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41914 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232323AbhJNO5y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 10:57:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 53D7061183;
-        Thu, 14 Oct 2021 14:55:49 +0000 (UTC)
+        id S231958AbhJNO5H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 10:57:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D7D9610F8;
+        Thu, 14 Oct 2021 14:55:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634223349;
-        bh=sWaWquMstVZ/tf6YcQP+74XX8JCn6l1Yp706SCL3YwQ=;
+        s=korg; t=1634223302;
+        bh=oxs1XX/d9h13Vh7Lz/iK0iOZ0KydbxH4gzup2ehGJMQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=F0r2bTf0av8kUJ7CAjQ/6lm/rCRw80cndhQsfbrSsgE7MJMrMZc+jS4+cBID8rbQc
-         SBRm6AytpG1w/db+JB7qKhxQ2U7PM08hGXfoJAQHPnq72uG9W0dXwUKKY81GvWs6Sq
-         wWyVkUWs/BBSrF+64mvKfY+vQ5ulMykC9d77e5cs=
+        b=yGnXf2VtiIURiSqi1wxovpZNbTeueNsGva6UvlHNRaV5f9hP6A+4XU3vXfJsrfk8C
+         yIPTahExv7GwvK6jHzUHehU6xSeqdcx+8VGocifkazsJmKWww/L34uGzJ46sjOCkva
+         ubqKaccmT8p950wslv/qNOciAEtod6HoJ1WPfP74=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        Nikolay Aleksandrov <nikolay@nvidia.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Jeremy Sowden <jeremy@azazel.net>,
+        Florian Westphal <fw@strlen.de>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 14/25] net: bridge: use nla_total_size_64bit() in br_get_linkxstats_size()
-Date:   Thu, 14 Oct 2021 16:53:45 +0200
-Message-Id: <20211014145208.027416738@linuxfoundation.org>
+Subject: [PATCH 4.4 14/18] netfilter: ip6_tables: zero-initialize fragment offset
+Date:   Thu, 14 Oct 2021 16:53:46 +0200
+Message-Id: <20211014145206.782356107@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211014145207.575041491@linuxfoundation.org>
-References: <20211014145207.575041491@linuxfoundation.org>
+In-Reply-To: <20211014145206.330102860@linuxfoundation.org>
+References: <20211014145206.330102860@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,39 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Jeremy Sowden <jeremy@azazel.net>
 
-[ Upstream commit dbe0b88064494b7bb6a9b2aa7e085b14a3112d44 ]
+[ Upstream commit 310e2d43c3ad429c1fba4b175806cf1f55ed73a6 ]
 
-bridge_fill_linkxstats() is using nla_reserve_64bit().
+ip6tables only sets the `IP6T_F_PROTO` flag on a rule if a protocol is
+specified (`-p tcp`, for example).  However, if the flag is not set,
+`ip6_packet_match` doesn't call `ipv6_find_hdr` for the skb, in which
+case the fragment offset is left uninitialized and a garbage value is
+passed to each matcher.
 
-We must use nla_total_size_64bit() instead of nla_total_size()
-for corresponding data structure.
-
-Fixes: 1080ab95e3c7 ("net: bridge: add support for IGMP/MLD stats and export them via netlink")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Cc: Nikolay Aleksandrov <nikolay@nvidia.com>
-Cc: Vivien Didelot <vivien.didelot@gmail.com>
-Acked-by: Nikolay Aleksandrov <nikolay@nvidia.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
+Reviewed-by: Florian Westphal <fw@strlen.de>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bridge/br_netlink.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/ipv6/netfilter/ip6_tables.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/net/bridge/br_netlink.c b/net/bridge/br_netlink.c
-index 4f831225d34f..ca8757090ae3 100644
---- a/net/bridge/br_netlink.c
-+++ b/net/bridge/br_netlink.c
-@@ -1298,7 +1298,7 @@ static size_t br_get_linkxstats_size(const struct net_device *dev, int attr)
- 	}
- 
- 	return numvls * nla_total_size(sizeof(struct bridge_vlan_xstats)) +
--	       nla_total_size(sizeof(struct br_mcast_stats)) +
-+	       nla_total_size_64bit(sizeof(struct br_mcast_stats)) +
- 	       nla_total_size(0);
- }
- 
+diff --git a/net/ipv6/netfilter/ip6_tables.c b/net/ipv6/netfilter/ip6_tables.c
+index 3057356cfdff..43d26625b80f 100644
+--- a/net/ipv6/netfilter/ip6_tables.c
++++ b/net/ipv6/netfilter/ip6_tables.c
+@@ -339,6 +339,7 @@ ip6t_do_table(struct sk_buff *skb,
+ 	 * things we don't know, ie. tcp syn flag or ports).  If the
+ 	 * rule is also a fragment-specific rule, non-fragments won't
+ 	 * match it. */
++	acpar.fragoff = 0;
+ 	acpar.hotdrop = false;
+ 	acpar.net     = state->net;
+ 	acpar.in      = state->in;
 -- 
 2.33.0
 
