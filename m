@@ -2,403 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E595C42E3F0
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 00:05:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25DDB42E3F2
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 00:08:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234183AbhJNWHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 18:07:42 -0400
-Received: from 82-65-109-163.subs.proxad.net ([82.65.109.163]:48906 "EHLO
-        luna.linkmauve.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229829AbhJNWHj (ORCPT
+        id S234185AbhJNWKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 18:10:31 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:2658 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229829AbhJNWK2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 18:07:39 -0400
-Received: by luna.linkmauve.fr (Postfix, from userid 1000)
-        id 4CC90F407FF; Fri, 15 Oct 2021 00:05:30 +0200 (CEST)
-From:   Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
-To:     Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>,
-        rw-r-r-0644 <r.r.qwertyuiop.r.r@gmail.com>,
-        Ash Logan <ash@heyquark.com>,
-        =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.ne@posteo.net>,
-        linux-kernel@vger.kernel.org, linux-rtc@vger.kernel.org
-Subject: [PATCH] rtc: nintendo: Add a RTC driver for the GameCube, Wii and Wii U
-Date:   Fri, 15 Oct 2021 00:05:24 +0200
-Message-Id: <20211014220524.9988-1-linkmauve@linkmauve.fr>
-X-Mailer: git-send-email 2.33.0
+        Thu, 14 Oct 2021 18:10:28 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19EKbnfb002347;
+        Thu, 14 Oct 2021 18:07:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=gcqkgO7usWMi/qHhToo/mTrw8IHuIq/Ug6jZaEWgIVI=;
+ b=JgkB8ht6SbLw8x+QDKzhIbQVIdeBiEzFQ60lTjaL8bJVj3Z46OuiJ3m3qdM0pI9wM2Pb
+ NTjd6xlcVa8T/oHlBLvduAsy55dlEHVY4lJTWPkNIRI7fMKNSCmAyLWy3CtJjv9KgmuL
+ BjkXLsK9+WrzPaFhOf5Dhxgg8fZRxizWFBpfU570sWXq3Ifea+5qjV3qvou7nwmm+cxr
+ 8Fht8Zr3BhNaq4K/MZ9iicdH0eXmRCfgLxVyq4qwkFXWO7FqGuCv1ur56DG+xmJVUNmE
+ SwmJdTFBanFY3MTB7+GNskmWwanPLtaFYvsZwkeTkcpk58qOjHJpDIe5Y2Cc7oz4lkLq Hg== 
+Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bpurn1t36-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Oct 2021 18:07:58 -0400
+Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
+        by ppma05wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19ELppN7027402;
+        Thu, 14 Oct 2021 22:07:58 GMT
+Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
+        by ppma05wdc.us.ibm.com with ESMTP id 3bk2qctmj4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Oct 2021 22:07:58 +0000
+Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
+        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19EM7vlP42598748
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 14 Oct 2021 22:07:57 GMT
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 942BDB206B;
+        Thu, 14 Oct 2021 22:07:57 +0000 (GMT)
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 70016B2067;
+        Thu, 14 Oct 2021 22:07:56 +0000 (GMT)
+Received: from oc6857751186.ibm.com (unknown [9.65.220.106])
+        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
+        Thu, 14 Oct 2021 22:07:56 +0000 (GMT)
+Subject: Re: [PATCH v2] scsi: ibmvscsi: Use dma_alloc_noncoherent() instead of
+ get_zeroed_page/dma_map_single()
+To:     Cai Huoqing <caihuoqing@baidu.com>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+References: <20211012032317.2360-1-caihuoqing@baidu.com>
+From:   Tyrel Datwyler <tyreld@linux.ibm.com>
+Message-ID: <0a2ef145-b84f-129a-c915-50f32aeeaa1d@linux.ibm.com>
+Date:   Thu, 14 Oct 2021 15:07:55 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211012032317.2360-1-caihuoqing@baidu.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: _j95V1l7K9Lv-zgNFqw8wQ1RBemS559Q
+X-Proofpoint-ORIG-GUID: _j95V1l7K9Lv-zgNFqw8wQ1RBemS559Q
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-14_11,2021-10-14_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 spamscore=0
+ suspectscore=0 impostorscore=0 adultscore=0 lowpriorityscore=0
+ clxscore=1011 bulkscore=0 priorityscore=1501 mlxlogscore=999 mlxscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110140123
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These three consoles share a device, the MX23L4005, which contains a
-clock and 64 bytes of SRAM storage, and is exposed on the EXI bus
-(similar to SPI) on channel 0, device 1.  This driver allows it to be
-used as a Linux RTC device, where time can be read and set.
+On 10/11/21 8:23 PM, Cai Huoqing wrote:
+> Replacing get_zeroed_page/free_page/dma_map_single/dma_unmap_single()
+> with dma_alloc_noncoherent/dma_free_noncoherent() helps to reduce
+> code size, and simplify the code, and the hardware can keeep DMA
+> coherent itsel
+Not sure why the switch from coherent in v1 to noncoherent in v2. I think that
+was unnecessary and I believe requires explicit synchronization via
+dma_sync_single_{for_device|for_cpu} calls.
 
-The hardware also exposes two timers, one which shuts down the console
-and one which powers it on, but these aren’t supported currently.
+Further, as both kernel-bot and Nathan have already pointed out this doesn't
+even compile.
 
-On the Wii U, the counter bias is stored in a XML file, /config/rtc.xml,
-encrypted in the SLC (eMMC storage), using a proprietary filesystem.  In
-order to avoid having to implement all that, this driver assumes a
-bootloader will parse this XML file and write the bias into the SRAM, at
-the same location the other two consoles have it.
+-Tyrel
 
-Signed-off-by: Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
----
- drivers/rtc/Kconfig        |  10 ++
- drivers/rtc/Makefile       |   1 +
- drivers/rtc/rtc-nintendo.c | 305 +++++++++++++++++++++++++++++++++++++
- 3 files changed, 316 insertions(+)
- create mode 100644 drivers/rtc/rtc-nintendo.c
-
-diff --git a/drivers/rtc/Kconfig b/drivers/rtc/Kconfig
-index 914497abeef9..f2a15429e4b1 100644
---- a/drivers/rtc/Kconfig
-+++ b/drivers/rtc/Kconfig
-@@ -1214,6 +1214,16 @@ config RTC_DRV_V3020
- 	  This driver can also be built as a module. If so, the module
- 	  will be called rtc-v3020.
- 
-+config RTC_DRV_NINTENDO
-+	tristate "Nintendo GameCube, Wii and Wii U RTC"
-+	depends on GAMECUBE || WII || WIIU || COMPILE_TEST
-+	help
-+	  If you say yes here you will get support for the RTC subsystem
-+	  of the Nintendo GameCube, Wii and Wii U.
-+
-+	  This driver can also be built as a module. If so, the module
-+	  will be called "rtc-nintendo".
-+
- config RTC_DRV_WM831X
- 	tristate "Wolfson Microelectronics WM831x RTC"
- 	depends on MFD_WM831X
-diff --git a/drivers/rtc/Makefile b/drivers/rtc/Makefile
-index 2dd0dd956b0e..0c7c0e7d9637 100644
---- a/drivers/rtc/Makefile
-+++ b/drivers/rtc/Makefile
-@@ -108,6 +108,7 @@ obj-$(CONFIG_RTC_DRV_MT7622)	+= rtc-mt7622.o
- obj-$(CONFIG_RTC_DRV_MV)	+= rtc-mv.o
- obj-$(CONFIG_RTC_DRV_MXC)	+= rtc-mxc.o
- obj-$(CONFIG_RTC_DRV_MXC_V2)	+= rtc-mxc_v2.o
-+obj-$(CONFIG_RTC_DRV_NINTENDO)	+= rtc-nintendo.o
- obj-$(CONFIG_RTC_DRV_NTXEC)	+= rtc-ntxec.o
- obj-$(CONFIG_RTC_DRV_OMAP)	+= rtc-omap.o
- obj-$(CONFIG_RTC_DRV_OPAL)	+= rtc-opal.o
-diff --git a/drivers/rtc/rtc-nintendo.c b/drivers/rtc/rtc-nintendo.c
-new file mode 100644
-index 000000000000..11bea40ca13d
---- /dev/null
-+++ b/drivers/rtc/rtc-nintendo.c
-@@ -0,0 +1,305 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Nintendo GameCube, Wii and Wii U RTC driver
-+ *
-+ * This driver is for the MX23L4005, more specifically its real-time clock and
-+ * SRAM storage.  The value returned by the RTC counter must be added with the
-+ * offset stored in a bias register in SRAM (on the GameCube and Wii) or in
-+ * /config/rtc.xml (on the Wii U).  The latter being very impractical to access
-+ * from Linux, this driver assumes the bootloader has read it and stored it in
-+ * SRAM like for the other two consoles.
-+ *
-+ * This device sits on a bus named EXI (which is similar to SPI), channel 0,
-+ * device 1.  This driver assumes no other user of the EXI bus, which is
-+ * currently the case but would have to be reworked to add support for other
-+ * GameCube hardware exposed on this bus.
-+ *
-+ * Note that this device is very much not Y2k38 aware.
-+ *
-+ * References:
-+ * - https://wiiubrew.org/wiki/Hardware/RTC
-+ * - https://wiibrew.org/wiki/MX23L4005
-+ *
-+ * Copyright (C) 2018 rw-r-r-0644
-+ * Copyright (C) 2021 Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
-+ *
-+ * Based on rtc-gcn.c
-+ * Copyright (C) 2004-2009 The GameCube Linux Team
-+ * Copyright (C) 2005,2008,2009 Albert Herranz
-+ * Based on gamecube_time.c from Torben Nielsen.
-+ */
-+
-+#include <linux/init.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/of_address.h>
-+#include <linux/platform_device.h>
-+#include <linux/rtc.h>
-+#include <linux/time.h>
-+
-+/* EXI registers */
-+#define EXICSR	0
-+#define EXICR	12
-+#define EXIDATA	16
-+
-+/* EXI register values */
-+#define EXICSR_DEV		0x380
-+	#define EXICSR_DEV1	0x100
-+#define EXICSR_CLK		0x070
-+	#define EXICSR_CLK_1MHZ	0x000
-+	#define EXICSR_CLK_2MHZ	0x010
-+	#define EXICSR_CLK_4MHZ	0x020
-+	#define EXICSR_CLK_8MHZ	0x030
-+	#define EXICSR_CLK_16MHZ 0x040
-+	#define EXICSR_CLK_32MHZ 0x050
-+#define EXICSR_INT		0x008
-+	#define EXICSR_INTSET	0x008
-+
-+#define EXICR_TSTART		0x001
-+#define EXICR_TRSMODE		0x002
-+	#define EXICR_TRSMODE_IMM 0x000
-+#define EXICR_TRSTYPE		0x00C
-+	#define EXICR_TRSTYPE_R	0x000
-+	#define EXICR_TRSTYPE_W	0x004
-+#define EXICR_TLEN		0x030
-+	#define EXICR_TLEN32	0x030
-+
-+/* EXI registers values to access the RTC */
-+#define RTC_EXICSR	(EXICSR_DEV1 | EXICSR_CLK_8MHZ | EXICSR_INTSET)
-+#define RTC_EXICR_W	(EXICR_TSTART | EXICR_TRSMODE_IMM | EXICR_TRSTYPE_W | EXICR_TLEN32)
-+#define RTC_EXICR_R	(EXICR_TSTART | EXICR_TRSMODE_IMM | EXICR_TRSTYPE_R | EXICR_TLEN32)
-+#define RTC_EXIDATA_W	0x80000000
-+
-+/* RTC registers */
-+#define RTC_COUNTER	0x20000000
-+#define RTC_SRAM	0x20000100
-+#define RTC_SRAM_BIAS	0x20000400
-+#define RTC_SNAPSHOT	0x20400000
-+#define RTC_ONTMR	0x21000000
-+#define RTC_OFFTMR	0x21000100
-+#define RTC_TEST0	0x21000400
-+#define RTC_TEST1	0x21000500
-+#define RTC_TEST2	0x21000600
-+#define RTC_TEST3	0x21000700
-+#define RTC_CONTROL0	0x21000C00
-+#define RTC_CONTROL1	0x21000D00
-+
-+struct nintendo_rtc_drvdata {
-+	void __iomem *iob;
-+	u32 rtc_bias;
-+};
-+
-+static u32 exi_read(void __iomem *iob, u32 reg)
-+{
-+	u32 data;
-+
-+	/* The spin loops here loop about 15~16 times each, so there is no need
-+	 * to use a more expensive sleep method. */
-+
-+	/* Write register offset */
-+	iowrite32be(RTC_EXICSR, iob + EXICSR);
-+	iowrite32be(reg, iob + EXIDATA);
-+	iowrite32be(RTC_EXICR_W, iob + EXICR);
-+	while (!(ioread32be(iob + EXICSR) & EXICSR_INTSET))
-+		cpu_relax();
-+
-+	/* Read data */
-+	iowrite32be(RTC_EXICSR, iob + EXICSR);
-+	iowrite32be(RTC_EXICR_R, iob + EXICR);
-+	while (!(ioread32be(iob + EXICSR) & EXICSR_INTSET))
-+		cpu_relax();
-+	data = ioread32be(iob + EXIDATA);
-+
-+	/* Clear channel parameters */
-+	iowrite32be(0, iob + EXICSR);
-+
-+	return data;
-+}
-+
-+static void exi_write(void __iomem *iob, u32 reg, u32 data)
-+{
-+	/* The spin loops here loop about 15~16 times each, so there is no need
-+	 * to use a more expensive sleep method. */
-+
-+	/* Write register offset */
-+	iowrite32be(RTC_EXICSR, iob + EXICSR);
-+	iowrite32be(reg | RTC_EXIDATA_W, iob + EXIDATA);
-+	iowrite32be(RTC_EXICR_W, iob + EXICR);
-+	while (!(ioread32be(iob + EXICSR) & EXICSR_INTSET))
-+		cpu_relax();
-+
-+	/* Write data */
-+	iowrite32be(RTC_EXICSR, iob + EXICSR);
-+	iowrite32be(data, iob + EXIDATA);
-+	iowrite32be(RTC_EXICR_W, iob + EXICR);
-+	while (!(ioread32be(iob + EXICSR) & EXICSR_INTSET))
-+		cpu_relax();
-+
-+	/* Clear channel parameters */
-+	iowrite32be(0, iob + EXICSR);
-+}
-+
-+static int nintendo_rtc_read_time(struct device *dev, struct rtc_time *t)
-+{
-+	time64_t timestamp;
-+	struct nintendo_rtc_drvdata *d = dev_get_drvdata(dev);
-+
-+	/* Add the counter and the bias to obtain the timestamp */
-+	timestamp = exi_read(d->iob, RTC_COUNTER) + d->rtc_bias;
-+	rtc_time64_to_tm(timestamp, t);
-+
-+	return 0;
-+}
-+
-+static int nintendo_rtc_set_time(struct device *dev, struct rtc_time *t)
-+{
-+	time64_t timestamp;
-+	struct nintendo_rtc_drvdata *d = dev_get_drvdata(dev);
-+
-+	/* Subtract the timestamp and the bias to obtain the counter value */
-+	timestamp = rtc_tm_to_time64(t);
-+	exi_write(d->iob, RTC_COUNTER, timestamp - d->rtc_bias);
-+
-+	return 0;
-+}
-+
-+static const struct rtc_class_ops nintendo_rtc_ops = {
-+	.read_time      = nintendo_rtc_read_time,
-+	.set_time       = nintendo_rtc_set_time,
-+};
-+
-+#ifdef DEBUG
-+static void nintendo_rtc_dumpregs(void __iomem *iob)
-+{
-+	int i;
-+	u32 sram_addr = RTC_SRAM;
-+
-+	printk("RTC_COUNTER:  %08X\n", exi_read(iob, RTC_COUNTER));
-+	printk("RTC_SNAPSHOT: %08X\n", exi_read(iob, RTC_SNAPSHOT));
-+	printk("RTC_ONTMR:    %08X\n", exi_read(iob, RTC_ONTMR));
-+	printk("RTC_OFFTMR:   %08X\n", exi_read(iob, RTC_OFFTMR));
-+	printk("RTC_TEST0:    %08X\n", exi_read(iob, RTC_TEST0));
-+	printk("RTC_TEST1:    %08X\n", exi_read(iob, RTC_TEST1));
-+	printk("RTC_TEST2:    %08X\n", exi_read(iob, RTC_TEST2));
-+	printk("RTC_TEST3:    %08X\n", exi_read(iob, RTC_TEST3));
-+	printk("RTC_CONTROL0: %08X\n", exi_read(iob, RTC_CONTROL0));
-+	printk("RTC_CONTROL1: %08X\n", exi_read(iob, RTC_CONTROL1));
-+	printk("RTC_SRAM:\n");
-+	for(i = 0; i < 4; i++) {
-+		printk("%08X %08X %08X %08X\n",
-+		       exi_read(iob, sram_addr + 0x100 * 0),
-+		       exi_read(iob, sram_addr + 0x100 * 1),
-+		       exi_read(iob, sram_addr + 0x100 * 2),
-+		       exi_read(iob, sram_addr + 0x100 * 3));
-+		sram_addr += 0x400;
-+	}
-+}
-+#endif
-+
-+static int nintendo_rtc_read_offset_from_sram(struct nintendo_rtc_drvdata *d)
-+{
-+	struct device_node *np;
-+	int ret;
-+	struct resource res;
-+	void __iomem *hw_srnprot;
-+	u32 old;
-+
-+	np = of_find_compatible_node(NULL, NULL, "nintendo,latte-srnprot");
-+	if (!np) {
-+		pr_err("HW_SRNPROT not found\n");
-+		return -1;
-+	}
-+
-+	ret = of_address_to_resource(np, 0, &res);
-+	if (ret) {
-+		pr_err("no io memory range found\n");
-+		return -1;
-+	}
-+
-+	hw_srnprot = ioremap(res.start, resource_size(&res));
-+	old = ioread32be(hw_srnprot);
-+
-+	/* TODO: figure out why we use this magic constant.  I obtained it by
-+	 * reading the leftover value after boot, after IOSU already ran.
-+	 *
-+	 * On my Wii U, setting this register to 1 prevents the console from
-+	 * rebooting properly, so wiiubrew.org must be missing something.
-+	 *
-+	 * See https://wiiubrew.org/wiki/Hardware/Latte_registers
-+	 */
-+	if (old != 0x7bf)
-+		iowrite32be(0x7bf, hw_srnprot);
-+
-+#ifdef DEBUG
-+	nintendo_rtc_dumpregs(d->iob);
-+#endif
-+
-+	/* Get the offset from RTC SRAM.
-+	 *
-+	 * Its default location on the GameCube and on the Wii is in the SRAM,
-+	 * while on the Wii U the bootloader needs to fill it with the contents
-+	 * of /config/rtc.xml on the SLC (the eMMC).  We don’t do that from
-+	 * Linux since it requires implementing a proprietary filesystem and do
-+	 * file decryption, instead we require the bootloader to fill the same
-+	 * SRAM address as on previous consoles.
-+	 */
-+	d->rtc_bias = exi_read(d->iob, RTC_SRAM_BIAS);
-+
-+	/* Reset SRAM access to how it was before, our job here is done. */
-+	iowrite32be(old, hw_srnprot);
-+	iounmap(hw_srnprot);
-+
-+	return 0;
-+}
-+
-+static int nintendo_rtc_probe(struct platform_device *pdev) {
-+	struct device *dev = &pdev->dev;
-+	struct rtc_device *rtc;
-+	struct resource	*res;
-+	struct nintendo_rtc_drvdata *d;
-+	int ret;
-+
-+	d = devm_kzalloc(dev, sizeof(struct nintendo_rtc_drvdata), GFP_KERNEL);
-+	if (IS_ERR(d))
-+		return PTR_ERR(d);
-+
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	d->iob = devm_ioremap_resource(dev, res);
-+	if (IS_ERR(d->iob))
-+		return PTR_ERR(d->iob);
-+
-+	ret = nintendo_rtc_read_offset_from_sram(d);
-+	if (ret)
-+		return ret;
-+	dev_dbg(dev, "SRAM bias: 0x%x", d->rtc_bias);
-+
-+	dev_set_drvdata(dev, d);
-+
-+	rtc = devm_rtc_device_register(dev, dev_name(dev), &nintendo_rtc_ops,
-+				       THIS_MODULE);
-+	if (IS_ERR(rtc))
-+		return PTR_ERR(rtc);
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id nintendo_rtc_of_match[] = {
-+	{.compatible = "nintendo,latte-exi" },
-+	{.compatible = "nintendo,hollywood-exi" },
-+	{.compatible = "nintendo,flipper-exi" },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, nintendo_rtc_of_match);
-+
-+static struct platform_driver nintendo_rtc_driver = {
-+	.probe		= nintendo_rtc_probe,
-+	.driver		= {
-+		.name	= "rtc-nintendo",
-+		.of_match_table	= nintendo_rtc_of_match,
-+	},
-+};
-+module_platform_driver(nintendo_rtc_driver);
-+
-+MODULE_AUTHOR("Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>");
-+MODULE_DESCRIPTION("Nintendo GameCube, Wii and Wii U RTC driver");
-+MODULE_LICENSE("GPL");
--- 
-2.33.1
+> 
+> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+> ---
+> v1->v2:
+> 	*Change to dma_alloc/free_noncoherent from dma_alloc/free_coherent.
+> 	*Update changelog.
+> 
+>  drivers/scsi/ibmvscsi/ibmvfc.c   | 16 ++++------------
+>  drivers/scsi/ibmvscsi/ibmvscsi.c | 29 +++++++++--------------------
+>  2 files changed, 13 insertions(+), 32 deletions(-)
+> 
+> diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
+> index 1f1586ad48fe..6e95fd02fd25 100644
+> --- a/drivers/scsi/ibmvscsi/ibmvfc.c
+> +++ b/drivers/scsi/ibmvscsi/ibmvfc.c
+> @@ -869,8 +869,8 @@ static void ibmvfc_free_queue(struct ibmvfc_host *vhost,
+>  {
+>  	struct device *dev = vhost->dev;
+>  
+> -	dma_unmap_single(dev, queue->msg_token, PAGE_SIZE, DMA_BIDIRECTIONAL);
+> -	free_page((unsigned long)queue->msgs.handle);
+> +	dma_free_noncoherent(dev, PAGE_SIZE, queue->msgs.handle,
+> +			     queue->msg_token, DMA_BIDIRECTIONAL);
+>  	queue->msgs.handle = NULL;
+>  
+>  	ibmvfc_free_event_pool(vhost, queue);
+> @@ -5663,19 +5663,11 @@ static int ibmvfc_alloc_queue(struct ibmvfc_host *vhost,
+>  		return -ENOMEM;
+>  	}
+>  
+> -	queue->msgs.handle = (void *)get_zeroed_page(GFP_KERNEL);
+> +	queue->msgs.handle = dma_alloc_noncoherent(dev, PAGE_SIZE, &queue->msg_token,
+> +						   DMA_BIDIRECTIONAL, GFP_KERNEL);
+>  	if (!queue->msgs.handle)
+>  		return -ENOMEM;
+>  
+> -	queue->msg_token = dma_map_single(dev, queue->msgs.handle, PAGE_SIZE,
+> -					  DMA_BIDIRECTIONAL);
+> -
+> -	if (dma_mapping_error(dev, queue->msg_token)) {
+> -		free_page((unsigned long)queue->msgs.handle);
+> -		queue->msgs.handle = NULL;
+> -		return -ENOMEM;
+> -	}
+> -
+>  	queue->cur = 0;
+>  	queue->fmt = fmt;
+>  	queue->size = PAGE_SIZE / fmt_size;
+> diff --git a/drivers/scsi/ibmvscsi/ibmvscsi.c b/drivers/scsi/ibmvscsi/ibmvscsi.c
+> index ea8e01f49cba..68409c298c74 100644
+> --- a/drivers/scsi/ibmvscsi/ibmvscsi.c
+> +++ b/drivers/scsi/ibmvscsi/ibmvscsi.c
+> @@ -151,10 +151,8 @@ static void ibmvscsi_release_crq_queue(struct crq_queue *queue,
+>  			msleep(100);
+>  		rc = plpar_hcall_norets(H_FREE_CRQ, vdev->unit_address);
+>  	} while ((rc == H_BUSY) || (H_IS_LONG_BUSY(rc)));
+> -	dma_unmap_single(hostdata->dev,
+> -			 queue->msg_token,
+> -			 queue->size * sizeof(*queue->msgs), DMA_BIDIRECTIONAL);
+> -	free_page((unsigned long)queue->msgs);
+> +	dma_free_noncoherent(hostdata->dev, PAGE_SIZE,
+> +			     queue->msgs, queue->msg_token, DMA_BIDIRECTIONAL);
+>  }
+>  
+>  /**
+> @@ -331,18 +329,12 @@ static int ibmvscsi_init_crq_queue(struct crq_queue *queue,
+>  	int retrc;
+>  	struct vio_dev *vdev = to_vio_dev(hostdata->dev);
+>  
+> -	queue->msgs = (struct viosrp_crq *)get_zeroed_page(GFP_KERNEL);
+> -
+> -	if (!queue->msgs)
+> -		goto malloc_failed;
+>  	queue->size = PAGE_SIZE / sizeof(*queue->msgs);
+> -
+> -	queue->msg_token = dma_map_single(hostdata->dev, queue->msgs,
+> -					  queue->size * sizeof(*queue->msgs),
+> -					  DMA_BIDIRECTIONAL);
+> -
+> -	if (dma_mapping_error(hostdata->dev, queue->msg_token))
+> -		goto map_failed;
+> +	queue->msgs = dma_alloc_noncoherent(hostdata->dev,
+> +					    PAGE_SIZE, &queue->msg_token,
+> +					    DMA_BIDIRECTIONAL, GFP_KERNEL);
+> +	if (!queue->msg)
+> +		goto malloc_failed;
+>  
+>  	gather_partition_info();
+>  	set_adapter_info(hostdata);
+> @@ -395,11 +387,8 @@ static int ibmvscsi_init_crq_queue(struct crq_queue *queue,
+>  		rc = plpar_hcall_norets(H_FREE_CRQ, vdev->unit_address);
+>  	} while ((rc == H_BUSY) || (H_IS_LONG_BUSY(rc)));
+>        reg_crq_failed:
+> -	dma_unmap_single(hostdata->dev,
+> -			 queue->msg_token,
+> -			 queue->size * sizeof(*queue->msgs), DMA_BIDIRECTIONAL);
+> -      map_failed:
+> -	free_page((unsigned long)queue->msgs);
+> +	dma_free_noncoherent(hostdata->dev, PAGE_SIZE, queue->msg,
+> +			     queue->msg_token, DMA_BIDIRECTIONAL);
+>        malloc_failed:
+>  	return -1;
+>  }
+> 
 
