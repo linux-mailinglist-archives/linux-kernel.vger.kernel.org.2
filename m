@@ -2,104 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16A9842DDE4
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:16:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2747242DDE8
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:16:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232922AbhJNPSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 11:18:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51034 "EHLO
+        id S232941AbhJNPS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 11:18:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231171AbhJNPST (ORCPT
+        with ESMTP id S231171AbhJNPS5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 11:18:19 -0400
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD225C061753
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 08:16:14 -0700 (PDT)
-Received: by mail-pl1-x64a.google.com with SMTP id w4-20020a1709029a8400b00138e222b06aso2573117plp.12
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 08:16:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=8lwRp3uP8+IKYysxWAf8gbvxjj8gBa/nFz3RxTvcuPo=;
-        b=oJGw/QMmi9y17ZRzapZ6AW2NqjA67q2aRYewaRrOpIgd5leninbEz/X70fFAv2Tkyr
-         tK4schSZy5xEATUYHCSx4ertgr+8G6lysBxuYmHYCKm01igmwtPNBZL10n9vtUHVoceC
-         O7oUkdYT3NMshazQZbMIaGQsREoQuo5eao+1Z3zZ0z6M7E7FFD2JSQobCOQqG6y+Un5y
-         XTzKDHVN9DkIcxjf9l3ztuNBu5zq+mMErnq7BEW+9GDjPOdw2fBMz1p4RTBFrTeVi6u8
-         Q0sR/ABZD6FSDzNrx4/Hw2+/7E/qpUZ+2z90EwCVBL3U9JP9G7tL22uJ7LCj3EiyYaFS
-         VNPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=8lwRp3uP8+IKYysxWAf8gbvxjj8gBa/nFz3RxTvcuPo=;
-        b=rzXucl1h/l9ZJgOGgb7VGjiP9il1trpThqsO1Zvs5igoNx65LK/HvIAgmA6wZ07Lm/
-         Mww4HLM2i2TBhkrKqyU6UcYpkcssMf4kOcl074NLjKAw5++QvqtD0SI0v5BokwdN+FD1
-         xCDqz3rfGVW+D2SWtWyqa2JNeYYm/lCbZHjNqkHranXbxV32QEm4LkzZnE/KB+5cm673
-         fO5nBWKiT6afc01qjIo44pZ39PHgu4zbgmTPbwG0HulTYKXZ2sv9gSOE2uRZwOTLSHnh
-         qHkYeZidVvaNhBeYM6/jTuhOMHRhybAfqT7tcHhmfRQve6yTMSzAZN6D+EDJYm4KfjvL
-         KhDQ==
-X-Gm-Message-State: AOAM532SDZ/2JrJEVWejJXqB+87kvAXGxboujIZnTeoMJX8orsMDkdgq
-        qYDAp51YsJ6ooLIkDmxi71q6+4OzN42Xjw==
-X-Google-Smtp-Source: ABdhPJw+Wctx4vD1oG672/mLpw+81PzUDFwQ6/X9iV9MtZR4g0zPLuHZt2SN2+IVZ+mEQ6AmxssCTwZmjPSGYg==
-X-Received: from shakeelb.svl.corp.google.com ([2620:15c:2cd:202:1581:9ea1:b658:109a])
- (user=shakeelb job=sendgmr) by 2002:a17:90b:1d0d:: with SMTP id
- on13mr6901295pjb.118.1634224574128; Thu, 14 Oct 2021 08:16:14 -0700 (PDT)
-Date:   Thu, 14 Oct 2021 08:16:07 -0700
-Message-Id: <20211014151607.2171970-1-shakeelb@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.882.g93a45727a2-goog
-Subject: [PATCH v2] memcg: page_alloc: skip bulk allocator for __GFP_ACCOUNT
-From:   Shakeel Butt <shakeelb@google.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        Vasily Averin <vvs@virtuozzo.com>,
-        Roman Gushchin <guro@fb.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Shakeel Butt <shakeelb@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 14 Oct 2021 11:18:57 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3D8CC061570;
+        Thu, 14 Oct 2021 08:16:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=cseqrG4Z2/bDwbx2jL/k2noyTANUtsne2C2Mrg7jeaM=; b=aBjjSaD+khxohZsRlmtgHXs15e
+        ushBAHQiSi2TjnxlWmWnV94/YvQsIXttvFmAQ1+uSUYv7AVI5wuD7Y5+QP9Q4NFkMZ+W3xuRnEGry
+        2FOA03N3vKI0qidu/gVqKj+0r6BeFgDuiRfuB8lqrm49WiNeswejmeaFBYlkYDdkzy56WT4LlBq9z
+        9pYRvR/1LPaNIH+VRRxvkugD3ecZE6CLMpNhkyeJfTFEbupMy4EHC5Xwk7nxXfIZloR84d5eooz+M
+        1mXT25WjLfWU215GYLUWHZGy+uuMD38iz2KmLsKGD1z0RxTRZhFgSTFZ4BlLJAoQl+xkB13R+bAPA
+        ZGlwP1Iw==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mb2TK-003bqK-6T; Thu, 14 Oct 2021 15:16:42 +0000
+Date:   Thu, 14 Oct 2021 08:16:42 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Myron Stowe <myron.stowe@redhat.com>,
+        Juha-Pekka Heikkila <juhapekka.heikkila@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>, linux-acpi@vger.kernel.org,
+        linux-pci@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org,
+        Benoit =?iso-8859-1?Q?Gr=E9goire?= <benoitg@coeus.ca>,
+        Hui Wang <hui.wang@canonical.com>
+Subject: Re: [PATCH v3] x86/PCI: Ignore E820 reservations for bridge windows
+ on newer systems
+Message-ID: <YWhJ2kmGzNMVY+cP@infradead.org>
+References: <20211014110357.17957-1-hdegoede@redhat.com>
+ <YWgzaa9Z4elzoRwL@infradead.org>
+ <40549939-e4c2-7b20-6bb6-0b5a46731b1c@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <40549939-e4c2-7b20-6bb6-0b5a46731b1c@redhat.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The commit 5c1f4e690eec ("mm/vmalloc: switch to bulk allocator in
-__vmalloc_area_node()") switched to bulk page allocator for order 0
-allocation backing vmalloc. However bulk page allocator does not support
-__GFP_ACCOUNT allocations and there are several users of
-kvmalloc(__GFP_ACCOUNT).
+On Thu, Oct 14, 2021 at 05:15:02PM +0200, Hans de Goede wrote:
+> Hi,
+> 
+> On 10/14/21 3:40 PM, Christoph Hellwig wrote:
+> > On Thu, Oct 14, 2021 at 01:03:57PM +0200, Hans de Goede wrote:
+> >> +	 * Some BIOS-es contain a bug where they add addresses which map to system
+> >> +	 * RAM in the PCI bridge memory window returned by the ACPI _CRS method,
+> > 
+> > Please avoid the overly long lines in your comments.
+> 
+> ?
+> 
+> These lines are easily within the new 100 char line-length-limit ?
 
-For now make __GFP_ACCOUNT allocations bypass bulk page allocator. In
-future if there is workload that can be significantly improved with the
-bulk page allocator with __GFP_ACCCOUNT support, we can revisit the
-decision.
+That is an exceptional limit if exceeding 80 improves readability for
+individual lines.
 
-Fixes: 5c1f4e690eec ("mm/vmalloc: switch to bulk allocator in __vmalloc_area_node()")
-Signed-off-by: Shakeel Butt <shakeelb@google.com>
----
-Changes since v1:
-- do fallback allocation instead of failure, suggested by Michal Hocko.
-- Added memcg_kmem_enabled() check, corrected by Vasily Averin
+> And checkpatch also does not complain about this.
 
- mm/page_alloc.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 668edb16446a..9ca871dc8602 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -5230,6 +5230,10 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
- 	if (unlikely(page_array && nr_pages - nr_populated == 0))
- 		goto out;
- 
-+	/* Bulk allocator does not support memcg accounting. */
-+	if (memcg_kmem_enabled() && (gfp & __GFP_ACCOUNT))
-+		goto failed;
-+
- 	/* Use the single page allocator for one page. */
- 	if (nr_pages - nr_populated == 1)
- 		goto failed;
--- 
-2.33.0.882.g93a45727a2-goog
-
+checkpatch has been completely broken for a while and should not be
+relied on in any way.
