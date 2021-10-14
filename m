@@ -2,225 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15A6342D465
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 09:59:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3684542D46D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 10:02:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230272AbhJNIBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 04:01:17 -0400
-Received: from relay11.mail.gandi.net ([217.70.178.231]:60163 "EHLO
-        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230320AbhJNIBO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 04:01:14 -0400
-Received: (Authenticated sender: jacopo@jmondi.org)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 6BEAD100009;
-        Thu, 14 Oct 2021 07:59:07 +0000 (UTC)
-Date:   Thu, 14 Oct 2021 09:59:55 +0200
-From:   Jacopo Mondi <jacopo@jmondi.org>
-To:     Krzysztof =?utf-8?Q?Ha=C5=82asa?= <khalasa@piap.pl>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Sakari Ailus <sakari.ailus@iki.fi>,
-        Matteo Lisi <matteo.lisi@engicam.com>
-Subject: Re: [PATCH v5] Driver for ON Semi AR0521 camera sensor
-Message-ID: <20211014075955.xxbv2bzrx73v45bo@uno.localdomain>
-References: <m3fstfoexa.fsf@t19.piap.pl>
- <20211009102446.jrvrdr7whtd2rv4z@uno.localdomain>
- <m3mtnflpna.fsf@t19.piap.pl>
- <20211011143420.vm6ncl5gdv44nsn3@uno.localdomain>
- <m3a6jel9ce.fsf@t19.piap.pl>
- <20211013082634.53zh5j26gucddome@uno.localdomain>
- <m3y26xjd7p.fsf@t19.piap.pl>
- <20211013151400.i2s3gcshb3xvuy2e@uno.localdomain>
- <m3tuhkjh5l.fsf@t19.piap.pl>
+        id S230126AbhJNIEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 04:04:13 -0400
+Received: from mga12.intel.com ([192.55.52.136]:22585 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230020AbhJNIED (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 04:04:03 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10136"; a="207740443"
+X-IronPort-AV: E=Sophos;i="5.85,372,1624345200"; 
+   d="scan'208";a="207740443"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2021 01:01:57 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,372,1624345200"; 
+   d="scan'208";a="571156405"
+Received: from orsmsx604.amr.corp.intel.com ([10.22.229.17])
+  by fmsmga002.fm.intel.com with ESMTP; 14 Oct 2021 01:01:55 -0700
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX604.amr.corp.intel.com (10.22.229.17) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Thu, 14 Oct 2021 01:01:54 -0700
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12 via Frontend Transport; Thu, 14 Oct 2021 01:01:54 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.171)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.12; Thu, 14 Oct 2021 01:01:54 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eGcFLntTkZBqDHB5xL2YHmLnQcSadvKKjwf0Pk5UeO+qv38IidcsG/2xOIDkO5fLbXZvI2CBZQG0VKGe9d1FzHFLVC30dnIXauGQahnXa6xPJX1MvoUeuq7EpqVHRNDVWEB5wgHfyjYXcPMZlT6vZMZVUQvc6rdrDYXQIXlP6v51DCbTJVI3e9q3gmIgzR3vs2w4zgqMIlszHlEKbQ7QMVoSHHnxmh8UYAuCWONeQ06lKkfSmr4CNRt6iktY/1uwBBC2qrouUsZP8G9ZAvzF5W8WR+wlrG5yhIFCBClUz+k72QQyuojm6MmF3vEd4UsVXbjNXu+a9pwewrXvK997Yw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=cmNjSN1f+shia+GAffoh46m4uUHo3zHayWX+yh+d59w=;
+ b=LH+KU/Vi13Sl90qAl6Mu4OHaaM8iO2cSfcqRWGFvrqGQPGVDwPgeOa4z961YwKYrivx4Bwg9FquwanNzcekit1DEYMVtabAZm1CjJoCNstUXoaCf2bO/CoKaEcP5fri2bbPfp7CYKD7j+IyuVz0CPLdqL9je9NahrAtxqDAdgiLLEF+GGrXZLBjX0dxKn2XoXWygkwb+m95+qMiMv2cRsVdigha9NX/pnftpuzWyJ9GdYIaBeFox8EZVi0tY8R4ZIkbeVT7F2otRfAt1pBBbNk0A5j2IXlAya5xTBx93TAm1H/b3p/QMTtqF+r17pxG34+KyeoZ9Ry6Sbyg92BoNew==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cmNjSN1f+shia+GAffoh46m4uUHo3zHayWX+yh+d59w=;
+ b=xm1W4PtOKru7LgIzZjewysKzqjCeN1pjJ85qDbNoTYLSJxC9c5jN2yOong8IV5n+EZfdaRu1R6d9l1GTu7Cw+HkXwP9PpIZB9YAcoNZyJqWuk6YyQ4pngmeY9ge88dDLipJRxHT7THSbj+O7blguotaKGjEhfnnKQbIYZXViv14=
+Received: from BN9PR11MB5433.namprd11.prod.outlook.com (2603:10b6:408:11e::13)
+ by BN9PR11MB5531.namprd11.prod.outlook.com (2603:10b6:408:104::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.20; Thu, 14 Oct
+ 2021 08:01:49 +0000
+Received: from BN9PR11MB5433.namprd11.prod.outlook.com
+ ([fe80::ddb7:fa7f:2cc:45df]) by BN9PR11MB5433.namprd11.prod.outlook.com
+ ([fe80::ddb7:fa7f:2cc:45df%8]) with mapi id 15.20.4608.016; Thu, 14 Oct 2021
+ 08:01:49 +0000
+From:   "Tian, Kevin" <kevin.tian@intel.com>
+To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
+CC:     Jason Gunthorpe <jgg@nvidia.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
+        "hch@lst.de" <hch@lst.de>, "Jiang, Dave" <dave.jiang@intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "lkml@metux.net" <lkml@metux.net>,
+        "david@gibson.dropbear.id.au" <david@gibson.dropbear.id.au>,
+        "dwmw2@infradead.org" <dwmw2@infradead.org>,
+        "Tian, Jun J" <jun.j.tian@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "lushenming@huawei.com" <lushenming@huawei.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>
+Subject: RE: [RFC 10/20] iommu/iommufd: Add IOMMU_DEVICE_GET_INFO
+Thread-Topic: [RFC 10/20] iommu/iommufd: Add IOMMU_DEVICE_GET_INFO
+Thread-Index: AQHXrSGNbNtRgavabUSKJjvt8l12BauwlhaAgAAouwCAACufAIAAgyUAgAAUFACAAAdkgIAAB/8AgAkqbYCAAEeFAIABQYSQgAAuX4CAFdW7UA==
+Date:   Thu, 14 Oct 2021 08:01:49 +0000
+Message-ID: <BN9PR11MB543330751AD68F70E89BC0FA8CB89@BN9PR11MB5433.namprd11.prod.outlook.com>
+References: <20210922152407.1bfa6ff7.alex.williamson@redhat.com>
+ <20210922234954.GB964074@nvidia.com>
+ <BN9PR11MB543333AD3C81312115686AAA8CA39@BN9PR11MB5433.namprd11.prod.outlook.com>
+ <YUxTvCt1mYDntO8z@myrica> <20210923112716.GE964074@nvidia.com>
+ <BN9PR11MB5433BCFCF3B0CB657E9BFE898CA39@BN9PR11MB5433.namprd11.prod.outlook.com>
+ <20210923122220.GL964074@nvidia.com>
+ <BN9PR11MB5433D75C09C6FDA01C2B7CF48CA99@BN9PR11MB5433.namprd11.prod.outlook.com>
+ <20210929123630.GS964074@nvidia.com>
+ <BN9PR11MB5433C9B5A0CD0B58163859EC8CAA9@BN9PR11MB5433.namprd11.prod.outlook.com>
+ <YVWSaU4CHFHnwEA5@myrica>
+In-Reply-To: <YVWSaU4CHFHnwEA5@myrica>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: linaro.org; dkim=none (message not signed)
+ header.d=none;linaro.org; dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 72c25e27-aa90-44f9-9ab1-08d98ee8e071
+x-ms-traffictypediagnostic: BN9PR11MB5531:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BN9PR11MB55312473980C7043A85894E98CB89@BN9PR11MB5531.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:5236;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: QrGpV4FMCfOndkHEHQMVwqHbz3QT7J7WZPQLu7HkZ08skxiM6Dag4CmbLw2dqRPZz37XAwqK0IAPx76h57BVbSOsXDU2/wBYNq11vLuOBgZeFMSCRzlNIlW8+r0aXCIolrl6Q79Bimq3atQk5ZiC8i2RK/xkZD010voxlf4ex/4CPzj7jc89E+VautxvGsnQC11sN2j9JqNFwdw96VqI+o2hvn+M+ZHiF7pr6B+/3ngPxzGK2iyBatY9jfYS/P7llBf1sWF95prYSYWQq+CIoqJ6UYL4HIYscx/A+dmh8amLYnbtDqtWsKqkO50ZrFbHcNVX2QQZ7pe7bzkBBuQgi6W3mjgobH3LcvhfjFBzoQN+3LgoXzCScb1WNAQktJJYZGHU4UvVuyV8FwRfj7CYz/lv6QQKwfgl5qau4mtblZ8tfXu+tlGAGAbEg5fIwjlvm+QyygqqNBYlFGoHD4Dtdgyw7mdvdFJ8+RInrsae8qHeOdLzMsAF2byutHju+Wy1hhctZAY3UgKSR8BQr3fdqv0vH+b0mq7AtzDOjH+P0JXgxKjEOPcF/JwsT5HvwFGo2ZdgLgDHsfcf+qvAw5D0+eDfqPN6yvAnnC7HqH8Zh4x4KKfe/NkVzOcwVpD5HZeImMNeXWsC4KcCbv9wo2049sBOGTeGIPoEOB5RhcoJHQc1VpnKFluaKDz98Ky0aY83+P7dqjXVQdNXnTcD09wIAA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5433.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(316002)(7416002)(54906003)(76116006)(508600001)(5660300002)(82960400001)(38100700002)(55016002)(66946007)(6916009)(64756008)(38070700005)(66556008)(2906002)(66476007)(122000001)(9686003)(52536014)(7696005)(6506007)(4326008)(4744005)(86362001)(83380400001)(186003)(8936002)(8676002)(66446008)(26005)(33656002)(71200400001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?Q18vn73Dv28pkkbFpe/32kvuN/qQYCTpoJPcH+Z1ErsC8RebVY1dR3jkJ4Aa?=
+ =?us-ascii?Q?lTxPRfHzvyuNA2hstKAm85NigS5eGERRFwXA+4uk268hZGPcSHmO2m60M+/E?=
+ =?us-ascii?Q?KNXhQgVstS1122YXPukRE+grfPPJcgz63SeEbKbhQsbrGoT/i1u1/ZDAP9av?=
+ =?us-ascii?Q?MZ5HWaHHfLY9+cg6/fvVhc43kqwmty++vWUbCrbilS2arRNcGCoVWeLk22Az?=
+ =?us-ascii?Q?o75mEPIS9/hFSWbRmj0ArcZ7N2Xc68zr7CNEDSH/AHi8ADyBmd+qtB2PX+6o?=
+ =?us-ascii?Q?wjGXkQ7/H3EBi5pl2/U2AnE8HdTtDKku5IvEqvsAa8oXmUgFREyxle9BL3NK?=
+ =?us-ascii?Q?JR7BxbGc5O4Z9zgQm+i1Jo30+N3+s235eIaMNVGs9GnNMRxCyW4Mn5VsbFw8?=
+ =?us-ascii?Q?usn0A2B/ti/skwqY2EGQbUNavIXCePU13i8dwix/c46jNNJJW+/qgNemx+++?=
+ =?us-ascii?Q?1zl7YSf7gAmemPgK2MNmHPvq9KytsSUNa4vu4tCC3Xt4ApLsk2LgNCvqdDY2?=
+ =?us-ascii?Q?i+eMLBFFgbXK+Ldttm5iF50WgEL+9hvU370lSwaLw1fbD3FjGPqtczoKKYCz?=
+ =?us-ascii?Q?oreJhOsV5rmNeGMhYACqwYcE4qNT1Dtic3+tPBrD6A90hf+jmfzYH7VgIzHg?=
+ =?us-ascii?Q?s/SoA96aTZQxB1dQr6jQgUZSv4DNd/OLZR3bprPTjFWmIUahNeNxB3kTX6TR?=
+ =?us-ascii?Q?fI5iqxNGp6240tA+1WT7A/gEwvFV6U/Ngg+muYqVCmBnAAOpx/19H+tM04ux?=
+ =?us-ascii?Q?8/44qe8vd6EyXEqM8p5DNMvM+V36K0miP/dWTkCfBsxfS1CBJuQIUV+1593S?=
+ =?us-ascii?Q?EsVXfdMseiyxq66Kx/2Tze0GlKGeYI1n0omSVwNAjgLAvOhFXsvaeq6XL9Ig?=
+ =?us-ascii?Q?ETlhQemSAiMufFYaEQf0PnpSOROE+W7znCDI+gFHGIRzUkw9003Qp8rGNgmi?=
+ =?us-ascii?Q?iF5XBH9eukL9LJdsPrdQtHg2z2eujDCSOxHABhJLEni7ZL0lI0e9kWiq7UP/?=
+ =?us-ascii?Q?bqan0iipCkXt+YCXS0kx5xO/s+k0Py8reh4YUozPs8XA/EBxinIBaEN0m2fd?=
+ =?us-ascii?Q?ucv7SY6OOzVFBcAlfwUCtGcGIlNRWQl/BAb/txJfk630cAN3PK0x7MH4dPOE?=
+ =?us-ascii?Q?pia3D5kn4YnXE4vUNzFJbkc8NotLjNFDkvdXFK198TYJSUkDTCtqtyPmdIa/?=
+ =?us-ascii?Q?SGVWxfJmv9jEJxsdyv1Me720Jm14pdYYvcgIE+COzMESFveeZ9OlK63C6yu6?=
+ =?us-ascii?Q?rVKUTkjxhd0hjAiUVme3QsQXqE9G38ihXmKD/bukAH9GOGN2FVogyCDDvb56?=
+ =?us-ascii?Q?mapjTuWAzdxTHDo0tFJEFh/M?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <m3tuhkjh5l.fsf@t19.piap.pl>
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5433.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 72c25e27-aa90-44f9-9ab1-08d98ee8e071
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Oct 2021 08:01:49.7639
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: orqs/S7eGxLFx0gNtzI9uymlLUVFOLY7iDJnr7xij0OGUxqqYttqgkHxEFcD+QQQOtE0cNstLSmHJNPtGH4qyw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR11MB5531
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> From: Jean-Philippe Brucker <jean-philippe@linaro.org>
+> Sent: Thursday, September 30, 2021 6:33 PM
+>=20
+> The PTE flags define whether the memory access is cache-coherent or not.
+> * WB is cacheable (short for write-back cacheable. Doesn't matter here
+>   what OI or RWA mean.)
+> * NC is non-cacheable.
+>=20
+>          | Normal PCI access | No_snoop PCI access
+>   -------+-------------------+-------------------
+>   PTE WB | Cacheable         | Non-cacheable
+>   PTE NC | Non-cacheable     | Non-cacheable
 
-On Thu, Oct 14, 2021 at 07:43:02AM +0200, Krzysztof Hałasa wrote:
-> Jacopo,
->
-> > To each open file handled is associated a try format, which should be
-> > initialized to some meaningful default.
->
-> I will look at it then.
->
-> > If you operate with a legacy implementation where everything goes
-> > through the video device node, you don't care about the subdev
-> > devnode.
->
-> This can't be done in case of a sensor driver, right? Output from the
-> sensor is MIPI CSI, there is no connection to the memory bus.
->
-> BTW: What SoC (or MIPI receiver etc.) are you using?
->
-> >> > The difference is that the 0x3xxx ones are frame synchronized and
-> >> > apply to 'bad frames' too.
-> >>
-> >> Is it stated in the docs?
-> >
-> > Yes, in the right-most columns of the register tables.
->
-> Right.
-> Interesting - they are marked both "frame sync'd" and "bad frame" (not
-> all of them), where the 0x340 ones are both "N". I will try some tests,
-> but such a combination looks a bit suspicious.
-> (I guess I already tested it, but don't remember the results).
->
-> > Because it's documented as:
-> >
-> > Setting this bit causes the sensor to truncate the current frame at
-> > the end of the current row and start resetting (integrating) the first
-> > row. The delay before the first valid frame is read out is equal to
-> > the integration time.
-> >
-> > and since you're moving from test mode to stream mode, there's no
-> > frame integration going on.
->
-> But there is :-)
-> Remember we're streaming, the whole sensor is working. It's just the
-> LP-11 on the output lines.
->
-> > What do you mean with "Linux from top to the bottom" ?
->
-> Userspace + ioctl on top, the driver/hw on the bottom.
->
-> > What I meant is that the core cannot prevent ioctls and subdev
-> > operations to be called on the sensor while streaming, as the 'is
-> > streaming' state is only kept in the driver and there's no state
-> > keeping in the V4L2 core.
->
-> Exactly, that's what I thought.
->
-> >> while streaming. With certain (most?) drivers only, that's it. Not that
-> >> I actually tested it, but the v4l2 core code suggests it.
-> >
-> > spec says no.
->
-> I'm not aware of it. The specs say a driver *is*allowed* to return
-> EBUSY, if it can't handle the condition.
->
-> > reviewers say no.
->
-> Haven't seen this either. The existing code (other drivers) suggests
-> otherwise.
->
-> > maintainers say no.
->
-> Ditto.
-> Buffers are a completely different thing.
->
-> >> So I'm either to return -EBUSY, or - as others, probably most drivers -
-> >
-> > maybe they just assume they knew better when they got being told
-> > not to do so during review.
->
-> All of the others are wrong?
-> Maybe nobody told them otherwise - because there was no reason?
->
-> >> > I hardly see a case where changing format on the sensor through an
-> >> > operation on the subdev while streaming, is a good idea.
-> >>
-> >> I'm not in control of this.
-> >
-> > As you're not in control of how your driver will be used once merged
->
-> Exactly, it's the very same thing.
->
-> > That's why there are specs, reviews and collective knowledge that
-> > helps enforce a consistent behavior.
->
-> That's correct. Now you tell me I'm not to write to the hw in set_fmt(),
-> while I can clearly see other drivers do exactly that, and nobody else
-> suggests they (I) shouldn't.
->
-> > There's a potential point of failure in every single part of the
-> > capture pipeline, from the on-going transfer in the SoC's DMA engines
-> > to the CSI-2 receiver port.
->
-> I'm not in control of this, why should I set a policy for them? I don't
-> even know if there is a SoC and DMA engines - maybe this goes straight
-> to the antenna or *SDI transmitter? :-)
->
-> > Even without the stop/restart sequence, what happens if you increase
-> > the frame size which is output from the sensor without re-negotiating
-> > buffers or image formats ?
->
-> *I* don't change frame sizes. It's the upper levels which are making
-> such decisions. My code can only comply or return an error.
-> Perhaps the upper levels know what they're doing?
->
-> If they are wrong after all, well - a misprogrammed i.MX6 will corrupt
-> the frames, the output stream will lose sync, and the userspace can get
-> I/O errors on ioctls. The userspace will get what it asked for.
->
-> This is BTW completely orthogonal to the -EBUSY on set_fmt(). The
-> effects will be exactly the same if the e.g. geometry changes come when
-> the sensor is not streaming.
->
+This implies that PCI no-snoop supersedes PTE flags when it's supported
+by the system?
 
-No, this isn't true. Your s_fmt() implementation stops then restart the
-stream. It has an undocumented side effect and will cause undefined
-behaviour.
-
-> > There's no single valid reason to allow such a use case, if not making
-> > out of it a matter of principle like you're doing.
->
-> Then why other drivers do exactly that? Eg. all imx*.
-> Including the newest one imx412, merged 2021-08-04, and:
->     Signed-off-by: Martina Krasteva <martinax.krasteva@intel.com>
->     Acked-by: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
->     Acked-by: Paul J. Murphy <paul.j.murphy@intel.com>
->     Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
->     Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
->
-> Are they really all wrong? Really?
->
-> BTW principles are important to me, yes. One of them is "allow unless
-> required otherwise".
-
-And that's how you will end up accepting the fact a s_fmt() has the
-slightly disruptive side effect of stopping/restarting the stream
-behind the back of the other components of the capture pipeline.
-
-If your s_fmt() has to stop and restart streaming to take effect,
-it means userspace should instead stop the stream, change
-the format where opportune in the pipeline, and then restart the stream.
-This allows the pipeline validation to take place, it allows buffers
-to be negotiated correctly, it makes it impossible to write
-application that rely on a side effect.
-
-There's a lot going on about correctness and avoiding undefined
-behaviours in the kernel these days. This is an example why I think a
-language change won't solve much, not when it comes to correctness
-towards user space. Allowing drivers to implement side-effects and
-what clearly is an example of undefined behaviour is the recipe to
-allow userspace to shot in their foot and makes it impossible to write
-portable software with a predictable behaviour.
-
-I still haven't heard a single reason why you want this, if not again,
-for a matter of principles, which is by the way the less possible
-productive way to carry on a converstation that should be based on
-facts and reasons, not a fight to impose your mindset no
-matter what.
-
-Anyway, since we're not going anywhere here, I'll let this upscale to
-anyone that will pick this driver up.
-
-Thanks again for the contribution, I hope to see this driver in soon.
-Cheers
-   j
-
-> --
-> Krzysztof "Chris" Hałasa
->
-> Sieć Badawcza Łukasiewicz
-> Przemysłowy Instytut Automatyki i Pomiarów PIAP
-> Al. Jerozolimskie 202, 02-486 Warszawa
