@@ -2,98 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEE8E42DACA
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 15:50:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8724B42DAD1
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 15:50:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231703AbhJNNwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 09:52:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57969 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231365AbhJNNwK (ORCPT
+        id S231464AbhJNNwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 09:52:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59380 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231374AbhJNNwk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 09:52:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634219405;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=NU91yXOcSHE5nSjfMfHje2UOd8qpOzLy0LtZp6G93T4=;
-        b=AB7UPs+rwgz2HBsB7WXnX64N2G94HOQEFlbiv2xdh0pSneXqstNHEJYHssiJUkKnCVOo/6
-        SMjvvX90RDakNCd1GX1lgIuVf82iQH9kzs5WTYSvrQOgEBuD6O0TsYenKSZHMY6i/mwfPj
-        TK+4DCysQGNTK9voqG+VzKLuDJMYOXY=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-594-EjE6mZnFNPqeTq_QjYtjQQ-1; Thu, 14 Oct 2021 09:50:03 -0400
-X-MC-Unique: EjE6mZnFNPqeTq_QjYtjQQ-1
-Received: by mail-wr1-f72.google.com with SMTP id r21-20020adfa155000000b001608162e16dso4579387wrr.15
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 06:50:03 -0700 (PDT)
+        Thu, 14 Oct 2021 09:52:40 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09846C061755
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 06:50:34 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id p16so27481596lfa.2
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 06:50:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=FeldPiWn9ag7Oy8X667duUFU5654P/5o0/76FcM7dDw=;
+        b=TdQk31R/CfKlW3MjylkHbKcYtCElhjZRFiJ+0fc5ktCnXv/FZPEcV6SV+JN2K78cWc
+         lJFk5GvJOK2mL88Um0b3o8nSOQ9t+NUcailOc6EK1lStK+t3RhgMxLD3dD9+czJ664LT
+         jn/OD+KgEjbD/jWpFb9v2zFnoMNPYwQeJz5X6WeozK559XJqM3FTWssTpMCQUjuYJX11
+         InQ6LEt9sHuLuVP67UpHcXSUwJg4rQ+Z0htdsSuVSPlUwbdjJ+gKMu45MSc6b4ze2Gb1
+         ttcCWCCuO+cH4qU0aGyX0LbSTLtHGhzhd6CgZdGMsRsetubuqjCY0wu/433ErJrJniWu
+         KC1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=NU91yXOcSHE5nSjfMfHje2UOd8qpOzLy0LtZp6G93T4=;
-        b=wJS6/uzIaNwJYA+NhCaBEUyIYcVdettPVk1yPabilasqGymZT+D3DAALqJRuM6N2Y5
-         yV3lN5OxZtAoP8GxSAlaNRnRniTHMz5+yFWJFcnfaNZ2epVEpRAlU85puK1NPL5QHGpJ
-         BDRkJgU0iHOUKFGM0+v9gXoLRanNaaoTf68bnhIGTy3TDYPqHVGVS/boS8q6MwnAN1Nn
-         vXDogTcFVhJ//lRihn9uhmJgDawsqJske7ZO/Vg4wFxad3NzuWhvif06EW9Zbb74KN6Y
-         eHZYy9TtZzF3jvtyzhhVp4eMxh5cpE2f4TcDc6sjwS6NIhsiWcCC4CjuDXa3Jnvk0M2c
-         bACA==
-X-Gm-Message-State: AOAM53188+PL92NvVpCqI0Za40Wg15Cu1ElpMnhdX3CAa5e6+2kctWRm
-        gys/JwT9Yw/7X2N9lFaHfgkEwQbBuSuTHcLX4IuVm2CkYSoHv9DwdSUUNBrM/yDSindlD+4RrXQ
-        TwNlbhwPsyyedzjfA5EHvfkGF
-X-Received: by 2002:adf:a48c:: with SMTP id g12mr6772220wrb.341.1634219402592;
-        Thu, 14 Oct 2021 06:50:02 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwhasqnkH6VqbFgdvBD0W5Dr+k4Bevu249dEYV/bhzX6RKl2KWbGOdZbqz1wCI3B6WA3SqVvQ==
-X-Received: by 2002:adf:a48c:: with SMTP id g12mr6772182wrb.341.1634219402382;
-        Thu, 14 Oct 2021 06:50:02 -0700 (PDT)
-Received: from gerbillo.redhat.com (146-241-231-16.dyn.eolo.it. [146.241.231.16])
-        by smtp.gmail.com with ESMTPSA id c15sm2496966wrs.19.2021.10.14.06.50.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Oct 2021 06:50:02 -0700 (PDT)
-Message-ID: <f3cc125b2865cce2ea4354b3c93f45c86193545a.camel@redhat.com>
-Subject: Re: [syzbot] BUG: corrupted list in netif_napi_add
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        syzbot <syzbot+62e474dd92a35e3060d8@syzkaller.appspotmail.com>,
-        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        davem@davemloft.net, hawk@kernel.org, john.fastabend@gmail.com,
-        kafai@fb.com, kpsingh@kernel.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
-Cc:     toke@toke.dk, joamaki@gmail.com
-Date:   Thu, 14 Oct 2021 15:50:00 +0200
-In-Reply-To: <f821df00-b3e9-f5a8-3dcb-a235dd473355@iogearbox.net>
-References: <0000000000005639cd05ce3a6d4d@google.com>
-         <f821df00-b3e9-f5a8-3dcb-a235dd473355@iogearbox.net>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=FeldPiWn9ag7Oy8X667duUFU5654P/5o0/76FcM7dDw=;
+        b=kPgtrvG6exBUO4rs0bAwG8WEFT/T9VrfU8Fu7dIR2hbGmPCg4EKHySHlcHBCxPreXY
+         nUmAPmI0V8RMg+GpfO3outtVF2d5IMIYqshEhPkkX++WXbClmcm1lyNSMeBgMTium3x/
+         9ManDBmpw4YNzsdk7qPC38TK9Hcnqw+Wb+Mgtm6ouW7FX4bPKF8ODvVmrY2W7foLU6fn
+         J35rZW4N8oU5kRK3zCdf3i0itA2RNj4hjqh+ryVOZU3YD7B9J/sOIdXfVGK0kl4eTzO7
+         hClhWwr5SCOjSnq/lIF1MkYJlkFKW4ZPrrnP2LNnMFySI9ntimVUc0Z7JUgoK5/iXPYE
+         HvXg==
+X-Gm-Message-State: AOAM530Jr4Rgci0tKUU3d4xFxnArTJdIBQ2KZXq2gY5eH576UwB4jCkZ
+        boiWqkp0KzNSVnkNPDrz0B3/hg==
+X-Google-Smtp-Source: ABdhPJz5acG0GgG3+00Xw4ApUtyake79G7jTdzqYaiPQzIZglPh4q5pDmu5nJWi8EHqxIdEWn0uHBg==
+X-Received: by 2002:a2e:7012:: with SMTP id l18mr5952471ljc.426.1634219432354;
+        Thu, 14 Oct 2021 06:50:32 -0700 (PDT)
+Received: from [192.168.1.211] ([37.153.55.125])
+        by smtp.gmail.com with ESMTPSA id q17sm230771lfp.225.2021.10.14.06.50.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Oct 2021 06:50:31 -0700 (PDT)
+Subject: Re: [PATCH v2 06/11] drm/msm/disp/dpu1: Don't use DSC with mode_3d
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+To:     Vinod Koul <vkoul@kernel.org>, Rob Clark <robdclark@gmail.com>
+Cc:     linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org
+References: <20211007070900.456044-1-vkoul@kernel.org>
+ <20211007070900.456044-7-vkoul@kernel.org>
+ <11becace-7b44-6141-5a8b-1bd6d0673243@linaro.org>
+Message-ID: <35eb95c5-1c42-94d1-3f33-df029f753ab3@linaro.org>
+Date:   Thu, 14 Oct 2021 16:50:31 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <11becace-7b44-6141-5a8b-1bd6d0673243@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-10-13 at 15:35 +0200, Daniel Borkmann wrote:
-> On 10/13/21 1:40 PM, syzbot wrote:
-> > Hello,
-> > 
-> > syzbot found the following issue on:
+On 14/10/2021 16:41, Dmitry Baryshkov wrote:
+> On 07/10/2021 10:08, Vinod Koul wrote:
+>> We cannot enable mode_3d when we are using the DSC. So pass
+>> configuration to detect DSC is enabled and not enable mode_3d
+>> when we are using DSC
+>>
+>> We add a helper dpu_encoder_helper_get_dsc_mode() to detect dsc
+>> enabled and pass this to .setup_intf_cfg()
+>>
+>> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+>> ---
+>> Changes since
+>> v1:
+>>   - Move this patch from 7 to 6
+>>   - Update the changelog
+>>   - Make dsc as int and store the DSC indices
+>>
+>>   drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h     | 11 +++++++++++
+>>   drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c |  2 ++
+>>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c           |  5 +++--
+>>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h           |  2 ++
+>>   4 files changed, 18 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h 
+>> b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
+>> index e7270eb6b84b..fca07ed03317 100644
+>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
+>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
+>> @@ -332,6 +332,17 @@ static inline enum dpu_3d_blend_mode 
+>> dpu_encoder_helper_get_3d_blend_mode(
+>>       return BLEND_3D_NONE;
+>>   }
+>> +static inline bool dpu_encoder_helper_get_dsc_mode(struct 
+>> dpu_encoder_phys *phys_enc)
+>> +{
+>> +    struct drm_encoder *drm_enc = phys_enc->parent;
+>> +    struct msm_drm_private *priv = drm_enc->dev->dev_private;
+>> +
+>> +    if (priv->dsc)
+>> +        return BIT(0) | BIT(1); /* Hardcoding for 2 DSC topology */
 > 
-> [ +Paolo/Toke wrt veth/XDP, +Jussi wrt bond/XDP, please take a look, thanks! ]
+> Please use defined values here rater than just BIT().
 
-For the records: Toke and me are actively investigating this issue and
-the other recent related one. So far we could not find anything
-relevant. 
+Ah, it's a list of DSC blocks used. So the function name is misleading 
+(as it's not a mode). I think we'd better pass DSC_n names here. What 
+about using an array for cfg->dsc?
 
-The onluy note is that the reproducer is not extremelly reliable - I
-could not reproduce locally, and multiple syzbot runs on the same code
-give different results. Anyhow, so far the issue was only observerable
-on a specific 'next' commit which is currently "not reachable" from any
-branch. I'm wondering if the issue was caused by some incosistent
-status of such tree.
+> 
+>> +
+>> +    return 0;
+>> +}
+>> +
+>>   /**
+>>    * dpu_encoder_helper_split_config - split display configuration 
+>> helper function
+>>    *    This helper function may be used by physical encoders to 
+>> configure
+>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c 
+>> b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
+>> index aa01698d6b25..8e5c0911734c 100644
+>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
+>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
+>> @@ -70,6 +70,8 @@ static void _dpu_encoder_phys_cmd_update_intf_cfg(
+>>       intf_cfg.intf_mode_sel = DPU_CTL_MODE_SEL_CMD;
+>>       intf_cfg.stream_sel = cmd_enc->stream_sel;
+>>       intf_cfg.mode_3d = dpu_encoder_helper_get_3d_blend_mode(phys_enc);
+>> +    intf_cfg.dsc = dpu_encoder_helper_get_dsc_mode(phys_enc);
+>> +
+>>       ctl->ops.setup_intf_cfg(ctl, &intf_cfg);
+>>   }
+>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c 
+>> b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
+>> index 64740ddb983e..3c79bd9c2fe5 100644
+>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
+>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
+>> @@ -118,7 +118,7 @@ static u32 dpu_hw_ctl_get_pending_flush(struct 
+>> dpu_hw_ctl *ctx)
+>>       return ctx->pending_flush_mask;
+>>   }
+>> -static inline void dpu_hw_ctl_trigger_flush_v1(struct dpu_hw_ctl *ctx)
+>> +static void dpu_hw_ctl_trigger_flush_v1(struct dpu_hw_ctl *ctx)
+>>   {
+>>       if (ctx->pending_flush_mask & BIT(MERGE_3D_IDX))
+>> @@ -519,7 +519,8 @@ static void dpu_hw_ctl_intf_cfg(struct dpu_hw_ctl 
+>> *ctx,
+>>       intf_cfg |= (cfg->intf & 0xF) << 4;
+>> -    if (cfg->mode_3d) {
+>> +    /* In DSC we can't set merge, so check for dsc too */
+>> +    if (cfg->mode_3d && !cfg->dsc) {
+> 
+> The more I think about this hunk, the more I'm unsure about it.
+> Downstream has the following topoligies defined:
+>   * @SDE_RM_TOPOLOGY_DUALPIPE_3DMERGE_DSC: 2 LM, 2 PP, 3DMux, 1 DSC, 1 
+> INTF/WB
+>   * @SDE_RM_TOPOLOGY_QUADPIPE_3DMERGE_DSC  4 LM, 4 PP, 3DMux, 3 DSC, 2 INTF
+> 
+> While the latter is not supported on sdm845, the former one should be 
+> (by the hardware). So in the driver I think we should make sure that 
+> mode_3d does not get set rather than disallowing it here.
+> 
+>>           intf_cfg |= BIT(19);
+>>           intf_cfg |= (cfg->mode_3d - 0x1) << 20;
+>>       }
+>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h 
+>> b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h
+>> index 806c171e5df2..5dfac5994bd4 100644
+>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h
+>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h
+>> @@ -39,6 +39,7 @@ struct dpu_hw_stage_cfg {
+>>    * @mode_3d:               3d mux configuration
+>>    * @merge_3d:              3d merge block used
+>>    * @intf_mode_sel:         Interface mode, cmd / vid
+>> + * @dsc:                   DSC BIT masks
+>>    * @stream_sel:            Stream selection for multi-stream interfaces
+>>    */
+>>   struct dpu_hw_intf_cfg {
+>> @@ -46,6 +47,7 @@ struct dpu_hw_intf_cfg {
+>>       enum dpu_3d_blend_mode mode_3d;
+>>       enum dpu_merge_3d merge_3d;
+>>       enum dpu_ctl_mode_sel intf_mode_sel;
+>> +    unsigned int dsc;
 
-Cheers,
+I think this should be:
+enum dpu_dsc dsc[MAX_DSCS];
+unsigned int num_dsc;
 
-Paolo
+>>       int stream_sel;
+>>   };
+>>
+> 
+> 
 
+
+-- 
+With best wishes
+Dmitry
