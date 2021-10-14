@@ -2,139 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15FDF42E341
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 23:26:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52CC442E346
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 23:29:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233060AbhJNV2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 17:28:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50488 "EHLO
+        id S233103AbhJNVbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 17:31:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232458AbhJNV2c (ORCPT
+        with ESMTP id S231180AbhJNVbh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 17:28:32 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3746C061753
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 14:26:26 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id gn3so201370pjb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 14:26:26 -0700 (PDT)
+        Thu, 14 Oct 2021 17:31:37 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82A0BC061570
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 14:29:31 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id o20so22777787wro.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 14:29:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=axtens.net; s=google;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=CLaFJ0M9ufD0uCBwTkgOwQCLYTA2acJBA4tvaXF3j60=;
-        b=nySJqlSwO+ULk3udlcOszY6Ia0XQFeH789zFbu7K9HOE2rbb+01FRBlzqYTOfLe01Y
-         UjBibChKl+lLjdMq7H2G6UmdoL4DkJBBd2xPkhVd/NnmKnnR8gnnU7EkmSiSJ0GL6yHC
-         xyAObJJcyavoFkvMN+kslHElYwm+54tEYY9dA=
+        d=ragnatech-se.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DVpe9rApQQrR9b2ZqtV3aUoS43eA6WT0EgrwShVwj6o=;
+        b=f9IMNPKV4pY6KmPaIXeLQg4CptWreqaHYll9EjtWovouBZSNkkUP7nfm3S379UZH23
+         pJUq3QmQ+NgCQJXr7t7uce7ZcgZdjriDwlMB3CmLAE2Nv28e+icZqi0OeNVJhd/K+Sg7
+         9rWkUYlwGEAoZxQZqlcoAZGCjyT33iySJ1CVVGMfPuLA6Oucg+NBlMyKgCSDNgslvO7l
+         /FPXXf7AQbDerfmqNQW5+bF3Nq6apGzpM90rbz78QR+wuFmwpXZXNub6QlSdvjlbRZPZ
+         yNl/6BTJetRp0FVa52sre+1u4/vmpMwVdPu51OYQhAbDBRh43HMU2zcqJGZPosf+HvTd
+         Ukrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=CLaFJ0M9ufD0uCBwTkgOwQCLYTA2acJBA4tvaXF3j60=;
-        b=H+ZTAi0w/VAnP66PlnaSgKcj2RD2jyMsUSA6vg2lir1OICebdPHuWgEGXFGF0P96as
-         nLLvqP3VlBUX3C54yzAqwvabqv8/vfqndz8cJF4zFfbtp30mX1PEs++/VJI11St8kbJz
-         IC0WuWe/kgX8gxXP6mEWhf0Ua8Udf305xksXvgF2TtJcrPIDHy78HE1ygGXTronEws1Y
-         VJGtVUYnkXLIhcPq7ZUHziMlQlTc5VLOAN7oBCYm4DcWwKihFd9Vh7hPMgCNo1CavN4n
-         OORtEUswJIpZlf6dK+tQiOTguGiWxv4SKQmmKmTUFNFQclIvo7+ex5k2zt1urDziv5QS
-         Nblw==
-X-Gm-Message-State: AOAM533EJPEj5PdOz4FG6pskskITi8cdG9M6WwkssFePv0ywCUNmMP5l
-        dcMkQEuUst1nRu3VdJBdZ2sgFQ==
-X-Google-Smtp-Source: ABdhPJw845LVBzEpWwR4bMZtD/PFJA96pgIe4GSulaOTJBUImwok7XHbH5FT4bUDZgXBEMZc0+GWdQ==
-X-Received: by 2002:a17:90a:6a8f:: with SMTP id u15mr22641531pjj.212.1634246786410;
-        Thu, 14 Oct 2021 14:26:26 -0700 (PDT)
-Received: from localhost ([2001:4479:e300:600:4901:2fb9:ed97:3a3e])
-        by smtp.gmail.com with ESMTPSA id i128sm3261169pfc.47.2021.10.14.14.26.25
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DVpe9rApQQrR9b2ZqtV3aUoS43eA6WT0EgrwShVwj6o=;
+        b=gPq3MyiL84nlUGXhJqxqsApZMb0KtjYqWCvQABTB58qhVIkjwJMByyGaoQLz3a/X30
+         JLhMc6Y/iKMP75ahH/gTwX+My6FJ0II4ZpCfw1EYXDL1GLUT6Ky2jI9gBGtg4RGSB1mh
+         rgEpBFT8kNyYVxQoYhtLqnnW2DH8KR5PhCWvc7bkHXpsC6jilzUTvQdCUa+MGbiawPUt
+         8/X1xCT27nFTSHhbrH0vIx8Y2tVYthSZ5W05148e7MryzZMt6S447QddjeDwMxM/gx1v
+         j7K3fT5jO5Lcpl2j2nViO9+5wHfSEy01rfJ4lGabBlLsJWDAmogWWtAdWtGkEtguvk0b
+         o+/g==
+X-Gm-Message-State: AOAM5309YkuZ9u4jAihWbOY9YAOKSDBoRnjvL1383M8BUyisJpmiIv79
+        QGNnE3sPMGbb7opcmUl3u+yAVPJttUFRuw==
+X-Google-Smtp-Source: ABdhPJxnlsPixMoe7wOuqoh4hIRzFb87NFLeGvCq2PZjgvj4t8boVWFrmw9EI85ieDSZO0dnZjxREA==
+X-Received: by 2002:adf:fb44:: with SMTP id c4mr9712889wrs.179.1634246970133;
+        Thu, 14 Oct 2021 14:29:30 -0700 (PDT)
+Received: from bismarck.berto.se (p54ac5892.dip0.t-ipconnect.de. [84.172.88.146])
+        by smtp.googlemail.com with ESMTPSA id p7sm2380927wrm.61.2021.10.14.14.29.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Oct 2021 14:26:25 -0700 (PDT)
-From:   Daniel Axtens <dja@axtens.net>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>, Arnd Bergmann <arnd@arndb.de>,
-        Kees Cook <keescook@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-arch@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org,
-        linux-api@vger.kernel.org
-Subject: Re: [PATCH v2 01/13] powerpc: Move 'struct ppc64_opd_entry' back
- into asm/elf.h
-In-Reply-To: <42d2a571677e60082c0a5b3e52e855aa58c0b1fc.1634190022.git.christophe.leroy@csgroup.eu>
-References: <cover.1634190022.git.christophe.leroy@csgroup.eu>
- <42d2a571677e60082c0a5b3e52e855aa58c0b1fc.1634190022.git.christophe.leroy@csgroup.eu>
-Date:   Fri, 15 Oct 2021 08:26:22 +1100
-Message-ID: <87czo747sx.fsf@dja-thinkpad.axtens.net>
+        Thu, 14 Oct 2021 14:29:29 -0700 (PDT)
+From:   =?UTF-8?q?Niklas=20S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-kernel@vger.kernel.org
+Cc:     =?UTF-8?q?Niklas=20S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>
+Subject: [PATCH] =?UTF-8?q?mailmap:=20Fix=20text=20encoding=20for=20Niklas?= =?UTF-8?q?=20S=C3=B6derlund?=
+Date:   Thu, 14 Oct 2021 23:29:06 +0200
+Message-Id: <20211014212906.2331293-1-niklas.soderlund+renesas@ragnatech.se>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christophe,
+There are a commits that mess up the encoding of 'ö' in Söderlund, add a
+correct entry to .mailmap.
 
-> 'struct ppc64_opd_entry' doesn't belong to uapi/asm/elf.h
->
-> It was initially in module_64.c and commit 2d291e902791 ("Fix compile
-> failure with non modular builds") moved it into asm/elf.h
->
-> But it was by mistake added outside of __KERNEL__ section,
-> therefore commit c3617f72036c ("UAPI: (Scripted) Disintegrate
-> arch/powerpc/include/asm") moved it to uapi/asm/elf.h
+Signed-off-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
+---
+Hi Geert,
 
-As Michael said on v1, I'm a little nervous about moving it out of uAPI
-after so long, although I do take the points of Arnd and Kees that we're
-not breaking compiled binaries, nor should people be using this struct
-to begin with...
-
-I've cc:ed the linux-api@ list.
+Would it be OK for you to pick this fix thru your tree?
 
 Kind regards,
-Daniel
+Niklas Söderlund
+---
+ .mailmap | 1 +
+ 1 file changed, 1 insertion(+)
 
-> Move it back into asm/elf.h, this brings it back in line with
-> IA64 and PARISC architectures.
->
-> Fixes: 2d291e902791 ("Fix compile failure with non modular builds")
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> ---
->  arch/powerpc/include/asm/elf.h      | 6 ++++++
->  arch/powerpc/include/uapi/asm/elf.h | 8 --------
->  2 files changed, 6 insertions(+), 8 deletions(-)
->
-> diff --git a/arch/powerpc/include/asm/elf.h b/arch/powerpc/include/asm/elf.h
-> index b8425e3cfd81..a4406714c060 100644
-> --- a/arch/powerpc/include/asm/elf.h
-> +++ b/arch/powerpc/include/asm/elf.h
-> @@ -176,4 +176,10 @@ do {									\
->  /* Relocate the kernel image to @final_address */
->  void relocate(unsigned long final_address);
->  
-> +/* There's actually a third entry here, but it's unused */
-> +struct ppc64_opd_entry {
-> +	unsigned long funcaddr;
-> +	unsigned long r2;
-> +};
-> +
->  #endif /* _ASM_POWERPC_ELF_H */
-> diff --git a/arch/powerpc/include/uapi/asm/elf.h b/arch/powerpc/include/uapi/asm/elf.h
-> index 860c59291bfc..308857123a08 100644
-> --- a/arch/powerpc/include/uapi/asm/elf.h
-> +++ b/arch/powerpc/include/uapi/asm/elf.h
-> @@ -289,12 +289,4 @@ typedef elf_fpreg_t elf_vsrreghalf_t32[ELF_NVSRHALFREG];
->  /* Keep this the last entry.  */
->  #define R_PPC64_NUM		253
->  
-> -/* There's actually a third entry here, but it's unused */
-> -struct ppc64_opd_entry
-> -{
-> -	unsigned long funcaddr;
-> -	unsigned long r2;
-> -};
-> -
-> -
->  #endif /* _UAPI_ASM_POWERPC_ELF_H */
-> -- 
-> 2.31.1
+diff --git a/.mailmap b/.mailmap
+index 6e849110cb4e3ad6..1c89a44862696a5d 100644
+--- a/.mailmap
++++ b/.mailmap
+@@ -276,6 +276,7 @@ Nicolas Pitre <nico@fluxnic.net> <nicolas.pitre@linaro.org>
+ Nicolas Pitre <nico@fluxnic.net> <nico@linaro.org>
+ Nicolas Saenz Julienne <nsaenz@kernel.org> <nsaenzjulienne@suse.de>
+ Nicolas Saenz Julienne <nsaenz@kernel.org> <nsaenzjulienne@suse.com>
++Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
+ Oleksij Rempel <linux@rempel-privat.de> <bug-track@fisher-privat.net>
+ Oleksij Rempel <linux@rempel-privat.de> <external.Oleksij.Rempel@de.bosch.com>
+ Oleksij Rempel <linux@rempel-privat.de> <fixed-term.Oleksij.Rempel@de.bosch.com>
+-- 
+2.33.0
+
