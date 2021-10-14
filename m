@@ -2,156 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B027042D1DE
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 07:38:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC33242D1E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 07:40:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229541AbhJNFja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 01:39:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42186 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229457AbhJNFj3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 01:39:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634189844;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0LbQ6apDDu1Jq5rKCrmcNIdSI/FmgQ8vn2r7YrYHAG0=;
-        b=U6/T30wNLoGA6MnxO0VuLmfxug7mzdeiTH0iMRs6bXGv+EBYai6wALSdXG/803ByeJAMWW
-        BI3yHxIesBNzibxN9lmhqds2a4xyFTPoJkTCxqE1FeleEF7o/7IXfYzJUUczSIXO4yANr3
-        F+gjvzPNrsynH3fCEK78cnIiyUgDvzQ=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-591-hhflCeY7MWCbcFEtZ4je-A-1; Thu, 14 Oct 2021 01:37:23 -0400
-X-MC-Unique: hhflCeY7MWCbcFEtZ4je-A-1
-Received: by mail-ed1-f71.google.com with SMTP id d11-20020a50cd4b000000b003da63711a8aso4153070edj.20
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 22:37:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0LbQ6apDDu1Jq5rKCrmcNIdSI/FmgQ8vn2r7YrYHAG0=;
-        b=3islevYFEWXtVgM13WwLsT8i8ihQsxJ+/lufgXjPII2CsCyV/u79WcmuihoX9tya6r
-         GO18K1OqcJMnLng+mhb7xNWCqKizF05/80BFylam+TcT4BnIWHCLoyq/cdEFm8uUrzYL
-         KwPiqxJFgnDL49g6l6vM446FCa2BNHyvewrUptzduI+2jUuyyW2vs9U2lTgUyenQdFBy
-         Ck4SEJ0WAQ6GIasMqQvwp3uL0G0pH67MnHv0ZO3R3wzidtkvKrAjR6ES9F1VxCOunV8u
-         eaWW6VNgAn32m4zo9to84Jzj/5LmHchsbmcVt666dFnyhj+rIsABQd1wrZIAtExM0Paq
-         ZvRw==
-X-Gm-Message-State: AOAM533QgL/PSBZAjPpyMWE0s/vIBhku2T/Etjz7fCfrOEv5djz5uK5k
-        RrCqQMVOJd9SnPQU5Yf02s/Uh/ByzDL9X3BCskPIpCj/+IZxQZz2WHss9T78emA37UDIcfqAQK8
-        pdBiBgfpK3AK7bf1Pj20gqbJ0
-X-Received: by 2002:a17:906:3ac6:: with SMTP id z6mr1370211ejd.196.1634189841900;
-        Wed, 13 Oct 2021 22:37:21 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyzUS2cdsI20N+DN9AluhA+OHF5rz0SCoEYzx0PLrE/5HlPqakdFLlMEbDS0i62vgUOvAaTdA==
-X-Received: by 2002:a17:906:3ac6:: with SMTP id z6mr1370191ejd.196.1634189841674;
-        Wed, 13 Oct 2021 22:37:21 -0700 (PDT)
-Received: from redhat.com ([2.55.16.227])
-        by smtp.gmail.com with ESMTPSA id nd36sm1104148ejc.17.2021.10.13.22.37.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Oct 2021 22:37:20 -0700 (PDT)
-Date:   Thu, 14 Oct 2021 01:37:17 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Akira Yokosawa <akys@qa2.so-net.ne.jp>
-Cc:     linux-kernel@vger.kernel.org, paulmck@linux.ibm.com,
-        Akira Yokosawa <akiyks@gmail.com>
-Subject: Re: data dependency naming inconsistency
-Message-ID: <20211014013156-mutt-send-email-mst@kernel.org>
-References: <20211011064233-mutt-send-email-mst@kernel.org>
- <6c362de5-1d79-512c-37d0-81aaf5d335d1@qa2.so-net.ne.jp>
+        id S229650AbhJNFlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 01:41:05 -0400
+Received: from mga12.intel.com ([192.55.52.136]:11317 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229457AbhJNFlE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 01:41:04 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10136"; a="207717377"
+X-IronPort-AV: E=Sophos;i="5.85,371,1624345200"; 
+   d="scan'208";a="207717377"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2021 22:39:00 -0700
+X-IronPort-AV: E=Sophos;i="5.85,371,1624345200"; 
+   d="scan'208";a="481103783"
+Received: from msavu-mobl1.ti.intel.com (HELO pujfalus-desk.ger.corp.intel.com) ([10.249.43.55])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2021 22:38:58 -0700
+From:   Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+To:     apw@canonical.com, joe@perches.com
+Cc:     dwaipayanray1@gmail.com, lukas.bulwahn@gmail.com,
+        peter.ujfalusi@linux.intel.com, linux-kernel@vger.kernel.org
+Subject: [PATCH v6] checkpatch: get default codespell dictionary path from package location
+Date:   Thu, 14 Oct 2021 08:39:08 +0300
+Message-Id: <20211014053908.17293-1-peter.ujfalusi@linux.intel.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6c362de5-1d79-512c-37d0-81aaf5d335d1@qa2.so-net.ne.jp>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 01:43:24PM +0900, Akira Yokosawa wrote:
-> On Mon, 11 Oct 2021 07:07:08 -0400, Michael S. Tsirkin wrote:
-> > Hello Paul, all!
-> 
-> Hello Michael,
-> 
-> I thought Paul would respond soon, but looks like he has not
-> done so.
-> So, I'm trying to give some hint to your findings.
-> 
-> > I've been reading with interest Paul's posts about Rust interactions with LKMM
-> > https://paulmck.livejournal.com/63316.html
-> > and in particular it states:
-> > 		A data dependency involves a load whose return value directly or
-> > 	indirectly determine the value stored by a later store, which results in
-> > 	the load being ordered before the store.
-> > 
-> > This matches the perf book:
-> > 	A data dependency occurs when the value returned by
-> > 	a load instruction is used to compute the data stored by
-> > 	a later store instruction.
-> 
-> You might likely be aware, but these concern "data dependency",
-> not a _barrier_.
-> 
-> > 
-> > however, memory-barriers.txt states:
-> > 
-> >      A data dependency barrier is a partial ordering on interdependent loads
-> >      only; it is not required to have any effect on stores, independent loads
-> >      or overlapping loads.
-> > 
-> > It also says:
-> > 	A data-dependency barrier is not required to order dependent writes
-> > 	because the CPUs that the Linux kernel supports don't do writes
-> > 	until they are certain (1) that the write will actually happen, (2)
-> > 	of the location of the write, and (3) of the value to be written.
-> 
-> These concern the historic "data-dependency barrier", or
-> [smp_]read_barrier_depends(), which existed until Linux kernel v4.14.
-> 
-> > 
-> > so the result it the same: writes are ordered without a barrier,
-> > reads are ordered by a barrier.
-> > 
-> > However, it would seem that a bit more consistency in naming won't
-> > hurt.
-> 
-> So, I don't think the historic term of "data-dependency barrier"
-> can be changed.
-> 
-> I guess the right approach would be to further de-emphasize
-> "data-dependency barrier"/"data dependency barrier" in
-> memory-barriers.txt.
-> 
-> Rewrite by commit 8ca924aeb4f2 ("Documentation/barriers: Remove
-> references to [smp_]read_barrier_depends()") did some of such
-> changes, but it failed to update the introductory section of
-> "VARIETIES OF MEMORY BARRIER".
-> The part Michael quoted above belongs to it.
-> I don't think it has any merit keeping it around.
-> 
-> Also, there remain a couple of ascii-art diagrams concerning
-> <data dependency barrier> in the first part of "EXAMPLES OF MEMORY
-> BARRIER SEQUENCES" section, which, I think, can be removed as well.
-> 
-> Hope this helps clarify the circumstances.
+The standard location of dictionary.txt is under codespell's package, on
+my machine atm (codespell 2.1, Artix Linux):
+/usr/lib/python3.9/site-packages/codespell_lib/data/dictionary.txt
 
-It does, thanks! It might be worth adding a sentence along the lines of
+Since we enable the codespell by default for SOF I have constant:
+No codespell typos will be found - \
+file '/usr/share/codespell/dictionary.txt': No such file or directory
 
-"NB: a data dependency barrier is distinct from a data dependency: it's
-a barrier that used to be required in the presence of a data dependency.
-Since v4.14 Linux no longer offers an API for a data dependency barrier.
-Instead, using READ_ONCE is sufficient for ordering in the presence of a
-data dependency".
+The patch proposes to try to fix up the path following the recommendation
+found here:
+https://github.com/codespell-project/codespell/issues/1540
 
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+---
+Hi,
 
-> Paul, what is your take on the naming of "data dependency"/
-> "data dependency barrier"?
-> 
->         Thanks, Akira
-> 
-> > 
-> > Thanks,
-> > 
-> > -- 
-> > MST
+Changes since v5:
+- move the $python_codespell_dict to local
+- drop extra semicolon
+- execute python, not python3
+
+Changes since v4:
+- Use the readable version suggested by Joe Perches (store the pyhton snippet in
+  python_codespell_dict)
+
+Changes since v3:
+- Do not try to override the use provided codespell file location
+
+Changes since v2:
+- Only try to check for dictionary path it is enabled or when the help is
+  displayed
+ - Move the check after the GetOptions()
+ - Set $help to 2 in case invalid option is passed in order to be able to use
+   correct exitcode and still display the correct path for dictionary.txt
+
+Changes sicne v1:
+- add missing ';' to the line updating the $codespellfile with $codespell_dict
+
+Regards,
+Peter
+ scripts/checkpatch.pl | 31 +++++++++++++++++++++++++++----
+ 1 file changed, 27 insertions(+), 4 deletions(-)
+
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 91798b07c6cb..7e6e3b070c3e 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -63,6 +63,7 @@ my $min_conf_desc_length = 4;
+ my $spelling_file = "$D/spelling.txt";
+ my $codespell = 0;
+ my $codespellfile = "/usr/share/codespell/dictionary.txt";
++my $user_codespellfile = "";
+ my $conststructsfile = "$D/const_structs.checkpatch";
+ my $docsfile = "$D/../Documentation/dev-tools/checkpatch.rst";
+ my $typedefsfile;
+@@ -130,7 +131,7 @@ Options:
+   --ignore-perl-version      override checking of perl version.  expect
+                              runtime errors.
+   --codespell                Use the codespell dictionary for spelling/typos
+-                             (default:/usr/share/codespell/dictionary.txt)
++                             (default:$codespellfile)
+   --codespellfile            Use this codespell dictionary
+   --typedefsfile             Read additional types from this file
+   --color[=WHEN]             Use colors 'always', 'never', or only when output
+@@ -317,7 +318,7 @@ GetOptions(
+ 	'debug=s'	=> \%debug,
+ 	'test-only=s'	=> \$tst_only,
+ 	'codespell!'	=> \$codespell,
+-	'codespellfile=s'	=> \$codespellfile,
++	'codespellfile=s'	=> \$user_codespellfile,
+ 	'typedefsfile=s'	=> \$typedefsfile,
+ 	'color=s'	=> \$color,
+ 	'no-color'	=> \$color,	#keep old behaviors of -nocolor
+@@ -325,9 +326,31 @@ GetOptions(
+ 	'kconfig-prefix=s'	=> \${CONFIG_},
+ 	'h|help'	=> \$help,
+ 	'version'	=> \$help
+-) or help(1);
++) or $help = 2;
+ 
+-help(0) if ($help);
++if ($user_codespellfile) {
++	# Use the user provided codespell file unconditionally
++	$codespellfile = $user_codespellfile;
++} else {
++	# Try to find the codespell install location to use it as default path
++	if (($codespell || $help) && which("codespell") ne "" && which("python") ne "") {
++		my $python_codespell_dict = << "EOF";
++
++import os.path as op
++import codespell_lib
++codespell_dir = op.dirname(codespell_lib.__file__)
++codespell_file = op.join(codespell_dir, 'data', 'dictionary.txt')
++print(codespell_file, end='')
++EOF
++
++		my $codespell_dict = `python -c "$python_codespell_dict" 2> /dev/null`;
++		$codespellfile = $codespell_dict if (-e $codespell_dict);
++	}
++}
++
++# $help is 1 if either -h, --help or --version is passed as option - exitcode: 0
++# $help is 2 if invalid option is passed - exitcode: 1
++help($help - 1) if ($help);
+ 
+ die "$P: --git cannot be used with --file or --fix\n" if ($git && ($file || $fix));
+ die "$P: --verbose cannot be used with --terse\n" if ($verbose && $terse);
+-- 
+2.33.0
 
