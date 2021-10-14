@@ -2,78 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8175242D3C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 09:35:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4149042D3CB
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 09:36:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230081AbhJNHh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 03:37:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38290 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229910AbhJNHh4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 03:37:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7532460FDC;
-        Thu, 14 Oct 2021 07:35:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634196951;
-        bh=6uDUVmn+lPgae2Av9Y+lntZQNsMV/gFXI/gYxOwCBV8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XgpzG/u3e/hTVO+wbHSLmwfDQl3NUCabsXI4+bB3xA/OzBLT2F8Vnw5i1+CD/G1kP
-         42UcHgZj+kypZJ6gacDQ5xwJFyN/03DwSfIdGD7E392XlJvYO7wzbaTdRvoEXICTyO
-         ZhhXZ655jsYaoNRBKANDEKv+zE+mxVvBk4Kc1A1EEQDKCBysG+YMXyZcmYEPAGyRSR
-         IRI5E9AHlxitx/upLlZx3f8eutCePXi0ro5BawBfTyLK1ahwxyVwAhgSXyrQiSlCxb
-         Z88syAJtompnHJ/dqba8dAWl+w+xmji8Vn4ZyNMjJNCIjx35Ikizi9qNpgcacnlj4J
-         094u1VQUxylMQ==
-Date:   Thu, 14 Oct 2021 08:35:45 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Joerg Roedel <joro@8bytes.org>, Arnd Bergmann <arnd@arndb.de>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Yong Wu <yong.wu@mediatek.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Alex Elder <elder@linaro.org>,
-        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] iommu/arm: fix ARM_SMMU_QCOM compilation
-Message-ID: <20211014073545.GA7857@willie-the-truck>
-References: <20211012151841.2639732-1-arnd@kernel.org>
- <20211013075803.GB6701@willie-the-truck>
- <CAK8P3a1GaQ1kjkjOP09eTUu6MR+RjhSDU9s-49MPQ1FSOMUDEg@mail.gmail.com>
- <20211013162024.GA7134@willie-the-truck>
- <CAK8P3a0aLKv76AjuLO4kMa3hDj8LwsGxGhGToX935pdfsr15KQ@mail.gmail.com>
+        id S230177AbhJNHiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 03:38:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57081 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230155AbhJNHiA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 03:38:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634196956;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=LBTwey9hwKfIjUV/CtWBhOrVA1mXd7MU5D+jzS6jbLc=;
+        b=hTetlGdENCmWqMILVsp/9e2dONH43zRswgBOO0l+DF9qlc8V2kJdpJGKye+tLAc7e0F/hp
+        V4AaqL5o3sOpmjMYKooLJ2K8MyFfUwRdjLM/wqE68x2jKLHjYrYCpdyCTlSSIJFId/C5dM
+        DY7bFjrSYU2CN66h9Xjhwv7K7wm11zM=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-476-qhpiA3s4PQqZXyuw20NUog-1; Thu, 14 Oct 2021 03:35:55 -0400
+X-MC-Unique: qhpiA3s4PQqZXyuw20NUog-1
+Received: by mail-wr1-f70.google.com with SMTP id h99-20020adf906c000000b001644add8925so684808wrh.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 00:35:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:organization:in-reply-to
+         :content-transfer-encoding;
+        bh=LBTwey9hwKfIjUV/CtWBhOrVA1mXd7MU5D+jzS6jbLc=;
+        b=CAwmukmeGO+F5jyYkCBFLcMzCh7IELj/1cChoUtryvofiuYjWp/VKg4ujgypJ6QXlk
+         bS5Iq39qA37VGSCBWreQ7oU6od1REttddd8NTbqgC9C2MYIIMjAL9U087aFxvsY7xUf9
+         WpGtva1qqbtmHqm9hy3yUA4DDsAFrrgImw61Qjlsyci4C3DBK+dQJLla5qiUTihX4GCp
+         AoHU0z0PORJPLXIEz3PSmeRenrcUlwplJqa2Egs2Ebh54hF9dvFeANsEIFVIeZ521X+t
+         XfARAiZVEdXdVcyZ5n1e0OLZQbzIU4ONVNB4qG4jL0UmG2gftDNRm1MYsA6kdFwvU0Gm
+         ddEw==
+X-Gm-Message-State: AOAM5326GnC+BvhpjJfUrSSWzjH8x9oWxELcautx8HoVQbuqElmCJv02
+        hVIN6kenmOIq795j1HAqo0oE7MAXVbLQTMJpesTGLgSIwmSEbd0olgG81DNr30Uel4sgH8tfzAV
+        UogGw/Zm3tQVJFaKJaix5xaUe
+X-Received: by 2002:a05:6000:1884:: with SMTP id a4mr4830194wri.356.1634196953911;
+        Thu, 14 Oct 2021 00:35:53 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxSt3YUMGlNcOUbeyioJYcYpj5GtzCUeicYuA6BqOXmIkdWdP8qjlptmdEhgv5wx1bk/22iGA==
+X-Received: by 2002:a05:6000:1884:: with SMTP id a4mr4830188wri.356.1634196953774;
+        Thu, 14 Oct 2021 00:35:53 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c694e.dip0.t-ipconnect.de. [91.12.105.78])
+        by smtp.gmail.com with ESMTPSA id g1sm8149250wmk.2.2021.10.14.00.35.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Oct 2021 00:35:53 -0700 (PDT)
+Message-ID: <37a4b381-6204-6c38-f37c-eb078d768f42@redhat.com>
+Date:   Thu, 14 Oct 2021 09:35:52 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a0aLKv76AjuLO4kMa3hDj8LwsGxGhGToX935pdfsr15KQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH 00/11] PageSlab: eliminate unnecessary compound_head()
+ calls
+Content-Language: en-US
+To:     Johannes Weiner <hannes@cmpxchg.org>,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     linux-mm@kvack.org, Kent Overstreet <kent.overstreet@gmail.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com
+References: <20211012180148.1669685-1-hannes@cmpxchg.org>
+ <YWXgrhRDIxcoBhA1@casper.infradead.org> <YWXwXINogE0Qb0Ip@cmpxchg.org>
+ <YWZQNj+axlIQrD5C@casper.infradead.org> <YWbj6+myCposUKk1@cmpxchg.org>
+ <YWcdoktn30ofnsPO@casper.infradead.org> <YWc0a7zlWAdUSCdT@cmpxchg.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <YWc0a7zlWAdUSCdT@cmpxchg.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 09:31:40PM +0200, Arnd Bergmann wrote:
-> On Wed, Oct 13, 2021 at 6:20 PM Will Deacon <will@kernel.org> wrote:
-> > On Wed, Oct 13, 2021 at 10:33:55AM +0200, Arnd Bergmann wrote:
-> > > On Wed, Oct 13, 2021 at 9:58 AM Will Deacon <will@kernel.org> wrote:
-> > > > On Tue, Oct 12, 2021 at 05:18:00PM +0200, Arnd Bergmann wrote:
+> It's good to have common north stars to set the direction of where to
+> place efforts ("small struct page, dynamically allocated descriptors
+> etc.") but I don't think it makes sense to take on yet more tech debt
+> in this area for a future that may not pan out the way we think now.
 > 
-> > > I was hoping you and Joerg could just pick your preferred patch
-> > > into the iommu fixes tree for v5.15.
-> > >
-> > > I currently have nothing else pending for my asm-generic tree that
-> > > introduced the regression, but I can take it through there if that helps
-> > > you.
-> >
-> > I also don't have any fixes pending, and I don't see any in Joerg's tree so
-> > it's probably quickest if you send it on yourself. Is that ok?
-> 
-> Sure, no problem. I ended up adding it to the arm/fixes branch of the
-> soc tree, as I just merged some other fixes there, and it seems as good
-> as any of the other trees.
 
-Thanks, Arnd!
+That precisely sums up my thoughts, thanks Johannes.
 
-Will
+-- 
+Thanks,
+
+David / dhildenb
+
