@@ -2,77 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16B2D42DE42
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:37:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92DFA42DE4A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:38:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231418AbhJNPjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 11:39:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40622 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230080AbhJNPjj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 11:39:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9128660F59;
-        Thu, 14 Oct 2021 15:37:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634225855;
-        bh=ALDN3MhMFqzTzxdrYEkQyNbrwemtVYPY0TqR71kU+hc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=JF7Ra+Cc9kVoB86llO2MR/kqRsJ4tIssAVpelKH2vnfrtbHajvZmgexooNAetfsuL
-         1u8+hZI0tAebYmeHRugRlG/5aem+tfHCb+0nfOAs8yYOcF6jpqA5QDfM8qexR9ztrn
-         2IYCCeT4WxcYUpqY9Cz4buapxDiD6rkmNtPorvYGtlWbkDt9PJw8bxIdIz2c0SIiR1
-         xymNWZoRHb9F0sEvnQhKPWeerPkDbI/vJc9F6GazO0S2DmjLXo4sWYLL/QdI0sTiur
-         azSs6G5OfMtqzTMMG7jzCSDnXEtqmHgXPh73q9nTUaMW7tU30vQBrp5dytIDL+jsJf
-         T6d8CD4scB/4w==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mark Brown <broonie@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Aswath Govindraju <a-govindraju@ti.com>,
-        Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>,
-        =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] eeprom: 93xx46: fix MODULE_DEVICE_TABLE
-Date:   Thu, 14 Oct 2021 17:37:18 +0200
-Message-Id: <20211014153730.3821376-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S231566AbhJNPkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 11:40:24 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:50958 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230389AbhJNPkV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 11:40:21 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 57BA02197C;
+        Thu, 14 Oct 2021 15:38:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1634225895; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GxLH0z7C+H9xHqrBRI+kBoQatoT6Befch1xXUBOMRvk=;
+        b=wbuuGwLQVKd5RGDVEuiKlyGa4uSDIPQIj3iTwLLGyLMsj1FIXqLCyC4SWZfKz9Y52rxVWX
+        jXSR6UdtN2SQhnvuIhAzM/7S110oBFVEVXWBPV3vnUO19qOAd4fui4K9xCBADnjX1NIDKO
+        kouz2fDzruRykAWYJYRg1X9KxXcNFmY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1634225895;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GxLH0z7C+H9xHqrBRI+kBoQatoT6Befch1xXUBOMRvk=;
+        b=HWNic10Z5eyZjDRof2nMzOceoNhhVXTEui8u/gJbvPKg83g3XcTyKgV28mYXRyPhO4MWOj
+        nV62pu27waEV4ABA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2A73E13D9F;
+        Thu, 14 Oct 2021 15:38:15 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id BIG+CedOaGEwHwAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Thu, 14 Oct 2021 15:38:15 +0000
+Message-ID: <76454f39-8e41-e757-3a71-c85303c6257e@suse.cz>
+Date:   Thu, 14 Oct 2021 17:38:14 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH 6/8] mm/vmscan: Centralise timeout values for
+ reclaim_throttle
+Content-Language: en-US
+To:     Mel Gorman <mgorman@techsingularity.net>,
+        Linux-MM <linux-mm@kvack.org>
+Cc:     NeilBrown <neilb@suse.de>, Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Rik van Riel <riel@surriel.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20211008135332.19567-1-mgorman@techsingularity.net>
+ <20211008135332.19567-7-mgorman@techsingularity.net>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20211008135332.19567-7-mgorman@techsingularity.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On 10/8/21 15:53, Mel Gorman wrote:
+> Neil Brown raised concerns about callers of reclaim_throttle specifying
+> a timeout value. The original timeout values to congestion_wait() were
+> probably pulled out of thin air or copy&pasted from somewhere else.
+> This patch centralises the timeout values and selects a timeout based
+> on the reason for reclaim throttling. These figures are also pulled
+> out of the same thin air but better values may be derived
+> 
+> Running a workload that is throttling for inappropriate periods
+> and tracing mm_vmscan_throttled can be used to pick a more appropriate
+> value. Excessive throttling would pick a lower timeout where as
+> excessive CPU usage in reclaim context would select a larger timeout.
+> Ideally a large value would always be used and the wakeups would
+> occur before a timeout but that requires careful testing.
+> 
+> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
 
-The newly added SPI device ID table does not work because the
-entry is incorrectly copied from the OF device table.
-
-During build testing, this shows as a compile failure when building
-it as a loadable module:
-
-drivers/misc/eeprom/eeprom_93xx46.c:424:1: error: redefinition of '__mod_of__eeprom_93xx46_of_table_device_table'
-MODULE_DEVICE_TABLE(of, eeprom_93xx46_of_table);
-
-Change the entry to refer to the correct symbol.
-
-Fixes: 137879f7ff23 ("eeprom: 93xx46: Add SPI device ID table")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/misc/eeprom/eeprom_93xx46.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/misc/eeprom/eeprom_93xx46.c b/drivers/misc/eeprom/eeprom_93xx46.c
-index 660ee924f8b1..1f15399e5cb4 100644
---- a/drivers/misc/eeprom/eeprom_93xx46.c
-+++ b/drivers/misc/eeprom/eeprom_93xx46.c
-@@ -421,7 +421,7 @@ static const struct spi_device_id eeprom_93xx46_spi_ids[] = {
- 	  .driver_data = (kernel_ulong_t)&microchip_93lc46b_data, },
- 	{}
- };
--MODULE_DEVICE_TABLE(of, eeprom_93xx46_of_table);
-+MODULE_DEVICE_TABLE(spi, eeprom_93xx46_spi_ids);
- 
- static int eeprom_93xx46_probe_dt(struct spi_device *spi)
- {
--- 
-2.29.2
-
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
