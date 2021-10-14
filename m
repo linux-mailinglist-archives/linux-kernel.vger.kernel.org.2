@@ -2,134 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 184D742E330
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 23:22:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C58342E335
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 23:22:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232845AbhJNVYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 17:24:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49458 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230094AbhJNVYC (ORCPT
+        id S233089AbhJNVYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 17:24:33 -0400
+Received: from mail-oi1-f180.google.com ([209.85.167.180]:35771 "EHLO
+        mail-oi1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230094AbhJNVYb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 17:24:02 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E35E9C061570
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 14:21:56 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id u21so29460942lff.8
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 14:21:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=kQwUmmPeJ8Hce507ICCeYLH5aPrCZw/ZIJrPidgd9ZE=;
-        b=HMN7qIWonn2K5R4zTQ2lDey6lWwmzqJlSStqviM7qxSdzciKyT9pSF7PvGKF5nZtKe
-         bIzc4Wim9DKWdo0s7t/S4Stw+bjX4NTSbQrEJXGloTpUc6lXYgElEKn+fmaT+mtRsmGm
-         xGbMRdPYm9U4MsGWGEUCFlmSokKe85X36P7IgBgCqzKY4ZNddAphaTGb0qrQCavQXL1W
-         rKbTCLqs/PIp8yRaN2vjKJ7nxoHhOh98POPoAqbsDljCp1c04VsHN4U+di73gsd3JdGJ
-         EMi0ZmE1nolIZ2ZQmA0xOep6o/wongsjBW0ShfD0eCV2it/KczUx6S47vV01tPsfoEzY
-         f14g==
+        Thu, 14 Oct 2021 17:24:31 -0400
+Received: by mail-oi1-f180.google.com with SMTP id n64so10249664oih.2;
+        Thu, 14 Oct 2021 14:22:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=kQwUmmPeJ8Hce507ICCeYLH5aPrCZw/ZIJrPidgd9ZE=;
-        b=1EJZw5BHlP4uKD2XXoN2tuOBl9kGSxTA7Y9S65s7uhBwBcZcPNvPzGrOefqNGTe5Fa
-         2tQcxpBVWj8jc32giwWc2od363o4acV1MHKYDd+q8070d19eeScOTCbvt7o5uZrh8M1G
-         M7YVmFegZ6NY0BAK0fKPVb4j83XHc0wnIO4ES28VH6iQI2ClgJ7YlxOFXholpYxrT4rn
-         VbdExBN2W2M6QGLz04dRBtepFoOa1lwIqZdsJJTms6Ce59NS5nV3kO3Z/xn6ZBQYYfYI
-         YQOtPxe8ZOCLCvrO9VaPNukn6PbGjP8KayW1hQnUhZ9ERrRP3uavUMsX29FDh3XAgT9y
-         snGA==
-X-Gm-Message-State: AOAM533n875lu7bvTc/r7eUxexvkeDIuPq8U7QoJC86dpFP5fNt/d4ff
-        4BPvx4R6/O5lh/TtyEv9PEOw4k2R/4uMSdFZHk5DSA==
-X-Google-Smtp-Source: ABdhPJzcKBq6vCrkR8ENl9gj9IqS485yrxDyz2P7VIjz8eeAT/1thN0HtZ0Fi2grgZQEmwtsIyFcjiem2P07eTN9XKg=
-X-Received: by 2002:a2e:461a:: with SMTP id t26mr8609302lja.198.1634246515116;
- Thu, 14 Oct 2021 14:21:55 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=sTWbWNVDxXpUr7idNmcVYaWD0Lp1YKhdtqNx+mX5y/Y=;
+        b=gBbMvA5IeQKnB4C93L3FI//FArSWBcQdGjUuboLCpLh994YBnlmZgbbfwU2bH3UhpQ
+         dyRtFXb4jCXJtFt7A8u46UXkL+JYd4O+nmAEFsO2wpt8dw2c1drGBUBFDz8CGyoeIOVG
+         l262+DkPDtgUdI5gAKNYlOqhOEQYWJMN28bVXqQqgIELZxCOeOZUxgXHk3y1hjrZKYfr
+         DiYieJHoQiu1JxpDpMfUsUhxwdUtV7iLqv74rcnYTGr3LSLHDic/UwsKbz+lKhu1xN1R
+         qIu2JW9SAaeyst6c3m0pxlRlQFgNTXWnkhDopmdn7kYUODOSnk8kUhGPJ5a+OeObI0dE
+         3X4g==
+X-Gm-Message-State: AOAM530CN/jsGONSQCk8yPdM3qIcoYu5nqw4n2/Ma74bHhU8oYs86skP
+        tXAlItKV1RzRCdHoXKC3Bw==
+X-Google-Smtp-Source: ABdhPJwIfzrDT9VcaTSgTR101M5RgBewZ7IVrd5UyQNz3PTbvJEEL53NKhSAayf/GEVjkb/6Ffaa/A==
+X-Received: by 2002:a05:6808:1686:: with SMTP id bb6mr5833455oib.40.1634246545627;
+        Thu, 14 Oct 2021 14:22:25 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id s206sm804475oia.33.2021.10.14.14.22.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Oct 2021 14:22:24 -0700 (PDT)
+Received: (nullmailer pid 3961688 invoked by uid 1000);
+        Thu, 14 Oct 2021 21:22:23 -0000
+Date:   Thu, 14 Oct 2021 16:22:23 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        linux-tegra@vger.kernel.org,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v5 1/9] dt-bindings: Relocate DDR bindings
+Message-ID: <YWifjxkY7XYmNqXj@robh.at.kernel.org>
+References: <20211006224659.21434-1-digetx@gmail.com>
+ <20211006224659.21434-2-digetx@gmail.com>
 MIME-Version: 1.0
-References: <20211014211916.3550122-1-nathan@kernel.org>
-In-Reply-To: <20211014211916.3550122-1-nathan@kernel.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 14 Oct 2021 14:21:43 -0700
-Message-ID: <CAKwvOdmSFP98Mc1u2b+=_Dux9eB_yumRvxOx7UTXuyXOYzG3uA@mail.gmail.com>
-Subject: Re: [PATCH] drm/i915: Avoid bitwise vs logical OR warning in snb_wm_latency_quirk()
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        =?UTF-8?B?RMOhdmlkIEJvbHZhbnNrw70=?= <david.bolvansky@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211006224659.21434-2-digetx@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 2:19 PM Nathan Chancellor <nathan@kernel.org> wrote=
-:
->
-> A new warning in clang points out a place in this file where a bitwise
-> OR is being used with boolean types:
->
-> drivers/gpu/drm/i915/intel_pm.c:3066:12: warning: use of bitwise '|' with=
- boolean operands [-Wbitwise-instead-of-logical]
->         changed =3D ilk_increase_wm_latency(dev_priv, dev_priv->wm.pri_la=
-tency, 12) |
->                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~=
-~~~~~~~~~~
->
-> This construct is intentional, as it allows every one of the calls to
-> ilk_increase_wm_latency() to occur (instead of short circuiting with
-> logical OR) while still caring about the result of each call.
->
-> To make this clearer to the compiler, use the '|=3D' operator to assign
-> the result of each ilk_increase_wm_latency() call to changed, which
-> keeps the meaning of the code the same but makes it obvious that every
-> one of these calls is expected to happen.
->
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1473
-> Reported-by: Nick Desaulniers <ndesaulniers@google.com>
-
-Thanks for the patch!
-Suggested-by: D=C3=A1vid Bolvansk=C3=BD <david.bolvansky@gmail.com>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+On Thu, 07 Oct 2021 01:46:51 +0300, Dmitry Osipenko wrote:
+> Move DDR bindings to memory-controllers directory to make them more
+> discoverable.
+> 
+> Suggested-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 > ---
->  drivers/gpu/drm/i915/intel_pm.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/gpu/drm/i915/intel_pm.c b/drivers/gpu/drm/i915/intel=
-_pm.c
-> index f90fe39cf8ca..aaa3a0998e4c 100644
-> --- a/drivers/gpu/drm/i915/intel_pm.c
-> +++ b/drivers/gpu/drm/i915/intel_pm.c
-> @@ -3050,9 +3050,9 @@ static void snb_wm_latency_quirk(struct drm_i915_pr=
-ivate *dev_priv)
->          * The BIOS provided WM memory latency values are often
->          * inadequate for high resolution displays. Adjust them.
->          */
-> -       changed =3D ilk_increase_wm_latency(dev_priv, dev_priv->wm.pri_la=
-tency, 12) |
-> -               ilk_increase_wm_latency(dev_priv, dev_priv->wm.spr_latenc=
-y, 12) |
-> -               ilk_increase_wm_latency(dev_priv, dev_priv->wm.cur_latenc=
-y, 12);
-> +       changed =3D ilk_increase_wm_latency(dev_priv, dev_priv->wm.pri_la=
-tency, 12);
-> +       changed |=3D ilk_increase_wm_latency(dev_priv, dev_priv->wm.spr_l=
-atency, 12);
-> +       changed |=3D ilk_increase_wm_latency(dev_priv, dev_priv->wm.cur_l=
-atency, 12);
->
->         if (!changed)
->                 return;
->
-> base-commit: d73b17465d6da0a94bc0fcc86b150e1e923e8f71
-> --
-> 2.33.1.637.gf443b226ca
->
+>  .../bindings/{ => memory-controllers}/ddr/lpddr2-timings.txt      | 0
+>  .../devicetree/bindings/{ => memory-controllers}/ddr/lpddr2.txt   | 0
+>  .../bindings/{ => memory-controllers}/ddr/lpddr3-timings.txt      | 0
+>  .../devicetree/bindings/{ => memory-controllers}/ddr/lpddr3.txt   | 0
+>  4 files changed, 0 insertions(+), 0 deletions(-)
+>  rename Documentation/devicetree/bindings/{ => memory-controllers}/ddr/lpddr2-timings.txt (100%)
+>  rename Documentation/devicetree/bindings/{ => memory-controllers}/ddr/lpddr2.txt (100%)
+>  rename Documentation/devicetree/bindings/{ => memory-controllers}/ddr/lpddr3-timings.txt (100%)
+>  rename Documentation/devicetree/bindings/{ => memory-controllers}/ddr/lpddr3.txt (100%)
+> 
 
-
---=20
-Thanks,
-~Nick Desaulniers
+Acked-by: Rob Herring <robh@kernel.org>
