@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3992A42DD18
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:02:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2545042DD3D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:03:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231276AbhJNPET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 11:04:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43300 "EHLO mail.kernel.org"
+        id S233276AbhJNPFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 11:05:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45148 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231867AbhJNPC6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 11:02:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CE7ED61212;
-        Thu, 14 Oct 2021 14:59:43 +0000 (UTC)
+        id S232909AbhJNPBy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 11:01:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5BF0060F36;
+        Thu, 14 Oct 2021 14:59:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634223584;
-        bh=tqiKyr37ICcCIa+ia8LLlMSrN+ekonHueUB6OZpEBTE=;
+        s=korg; t=1634223547;
+        bh=Ic1Xl0EJlz1H6BWjK+QotJRMRFnTH66mGwyoc4yMAio=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=D/Bt+as4MgsanzFST4pdnp32pHFfZ4zgO1wBecTnp5g3SUx9z1MaVD1k/O+Mrcsrv
-         LMer1/FgCb2EPxsZLRC1dyy7PweG4tJmXF+XC1aJ8lR7Bkd8MEIW/rBPGCCD4s7mU1
-         2SOyLiOFk1k6AtvL06ObMePNtb1dzmI0fjaqtB18=
+        b=TK3g7Kc60Nf53U+5d0zLWVT3UXfsR5BHbNLXoGxb7KgqA0A3I8aT6o3TgwxAn/QOF
+         dKPFMaXfXTRgsm68VITpZPrlUPvojPmRrfYge9ZDNg13z+hDCp5H1Gxhe7MjH2OH2L
+         NUW3e0EiksgryUxQowHt5DBxdEcQzQ4XnlC2QGoM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Abaci <abaci@linux.alibaba.com>,
-        Michael Wang <yun.wang@linux.alibaba.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 13/22] net: prevent user from passing illegal stab size
+Subject: [PATCH 5.4 16/16] sched: Always inline is_percpu_thread()
 Date:   Thu, 14 Oct 2021 16:54:19 +0200
-Message-Id: <20211014145208.419020014@linuxfoundation.org>
+Message-Id: <20211014145207.835283624@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211014145207.979449962@linuxfoundation.org>
-References: <20211014145207.979449962@linuxfoundation.org>
+In-Reply-To: <20211014145207.314256898@linuxfoundation.org>
+References: <20211014145207.314256898@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,66 +40,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: 王贇 <yun.wang@linux.alibaba.com>
+From: Peter Zijlstra <peterz@infradead.org>
 
-[ Upstream commit b193e15ac69d56f35e1d8e2b5d16cbd47764d053 ]
+[ Upstream commit 83d40a61046f73103b4e5d8f1310261487ff63b0 ]
 
-We observed below report when playing with netlink sock:
+  vmlinux.o: warning: objtool: check_preemption_disabled()+0x81: call to is_percpu_thread() leaves .noinstr.text section
 
-  UBSAN: shift-out-of-bounds in net/sched/sch_api.c:580:10
-  shift exponent 249 is too large for 32-bit type
-  CPU: 0 PID: 685 Comm: a.out Not tainted
-  Call Trace:
-   dump_stack_lvl+0x8d/0xcf
-   ubsan_epilogue+0xa/0x4e
-   __ubsan_handle_shift_out_of_bounds+0x161/0x182
-   __qdisc_calculate_pkt_len+0xf0/0x190
-   __dev_queue_xmit+0x2ed/0x15b0
-
-it seems like kernel won't check the stab log value passing from
-user, and will use the insane value later to calculate pkt_len.
-
-This patch just add a check on the size/cell_log to avoid insane
-calculation.
-
-Reported-by: Abaci <abaci@linux.alibaba.com>
-Signed-off-by: Michael Wang <yun.wang@linux.alibaba.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20210928084218.063371959@infradead.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/net/pkt_sched.h | 1 +
- net/sched/sch_api.c     | 6 ++++++
- 2 files changed, 7 insertions(+)
+ include/linux/sched.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/net/pkt_sched.h b/include/net/pkt_sched.h
-index 2be90a54a404..7e58b4470570 100644
---- a/include/net/pkt_sched.h
-+++ b/include/net/pkt_sched.h
-@@ -11,6 +11,7 @@
- #include <uapi/linux/pkt_sched.h>
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index 5710b80f8050..afee5d5eb945 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -1500,7 +1500,7 @@ extern struct pid *cad_pid;
+ #define tsk_used_math(p)			((p)->flags & PF_USED_MATH)
+ #define used_math()				tsk_used_math(current)
  
- #define DEFAULT_TX_QUEUE_LEN	1000
-+#define STAB_SIZE_LOG_MAX	30
- 
- struct qdisc_walker {
- 	int	stop;
-diff --git a/net/sched/sch_api.c b/net/sched/sch_api.c
-index 54a8c363bcdd..7b24582a8a16 100644
---- a/net/sched/sch_api.c
-+++ b/net/sched/sch_api.c
-@@ -513,6 +513,12 @@ static struct qdisc_size_table *qdisc_get_stab(struct nlattr *opt,
- 		return stab;
- 	}
- 
-+	if (s->size_log > STAB_SIZE_LOG_MAX ||
-+	    s->cell_log > STAB_SIZE_LOG_MAX) {
-+		NL_SET_ERR_MSG(extack, "Invalid logarithmic size of size table");
-+		return ERR_PTR(-EINVAL);
-+	}
-+
- 	stab = kmalloc(sizeof(*stab) + tsize * sizeof(u16), GFP_KERNEL);
- 	if (!stab)
- 		return ERR_PTR(-ENOMEM);
+-static inline bool is_percpu_thread(void)
++static __always_inline bool is_percpu_thread(void)
+ {
+ #ifdef CONFIG_SMP
+ 	return (current->flags & PF_NO_SETAFFINITY) &&
 -- 
 2.33.0
 
