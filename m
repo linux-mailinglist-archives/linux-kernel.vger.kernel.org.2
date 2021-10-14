@@ -2,75 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBBF442E11D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 20:22:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1772642E120
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 20:22:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233929AbhJNSXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 14:23:54 -0400
-Received: from smtp02.smtpout.orange.fr ([80.12.242.124]:52657 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233914AbhJNSXx (ORCPT
+        id S233930AbhJNSYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 14:24:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37142 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231792AbhJNSYq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 14:23:53 -0400
-Received: from pop-os.home ([92.140.161.106])
-        by smtp.orange.fr with ESMTPA
-        id b5MPmB7sXBazob5MPmY6R9; Thu, 14 Oct 2021 20:21:46 +0200
-X-ME-Helo: pop-os.home
-X-ME-Auth: YWZlNiIxYWMyZDliZWIzOTcwYTEyYzlhMmU3ZiQ1M2U2MzfzZDfyZTMxZTBkMTYyNDBjNDJlZmQ3ZQ==
-X-ME-Date: Thu, 14 Oct 2021 20:21:46 +0200
-X-ME-IP: 92.140.161.106
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     minghsiu.tsai@mediatek.com, houlong.wei@mediatek.com,
-        andrew-ct.chen@mediatek.com, tiffany.lin@mediatek.com,
-        mchehab@kernel.org, matthias.bgg@gmail.com
-Cc:     linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] media: mtk-vpu: Remove redundant 'flush_workqueue()' calls
-Date:   Thu, 14 Oct 2021 20:21:43 +0200
-Message-Id: <9788bdfee564000a1c4d68126d25570c7feb1055.1634235609.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        Thu, 14 Oct 2021 14:24:46 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36DBBC061570;
+        Thu, 14 Oct 2021 11:22:41 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0c720076278dcac58b4415.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:7200:7627:8dca:c58b:4415])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 254D11EC01A8;
+        Thu, 14 Oct 2021 20:22:38 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1634235758;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=Hc/czkblm90nyAaSHB84LYcbQ9F8p2MEH3ltwTTSbeM=;
+        b=YmRXcxDB85kE+taKi6h2OcamDiviZwlqU1utqYK61z0vV1wy3Y7FpcFAYCPor887fgf2cN
+        7Gurp7eC0mOajbDGrn99vbhByWOWZUgTV0flObZIHbfcsZeKlYHag4G7e0PaHUoJIBFTr2
+        jUvKzCmAfYYZtPGX3QSrJ6kP7qANvo4=
+Date:   Thu, 14 Oct 2021 20:22:37 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Koralahalli Channabasappa, Smita" <skoralah@amd.com>
+Cc:     Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>,
+        x86@kernel.org, linux-edac@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Tony Luck <tony.luck@intel.com>,
+        "H . Peter Anvin" <hpa@zytor.com>, yazen.ghannam@amd.com
+Subject: Re: [PATCH 1/5] x86/mce/inject: Check if a bank is unpopulated
+ before error simulation
+Message-ID: <YWh1bc6Lol65f0RH@zn.tnic>
+References: <20210915232739.6367-1-Smita.KoralahalliChannabasappa@amd.com>
+ <20210915232739.6367-2-Smita.KoralahalliChannabasappa@amd.com>
+ <YU2Lm+11Pqg/RBK3@zn.tnic>
+ <78bec0e8-a64a-466c-4245-2386de7db5c9@amd.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <78bec0e8-a64a-466c-4245-2386de7db5c9@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'destroy_workqueue()' already drains the queue before destroying it, so
-there is no need to flush it explicitly.
+On Mon, Oct 11, 2021 at 04:12:14PM -0500, Koralahalli Channabasappa, Smita wrote:
+> I do not have the bank number in order to look up the IPID for that bank.
+> I couldn't know the bank number because mce-inject files are synchronized
+> in a way that once the bank number is written the injection starts.
+> Can you please suggest what needs to be done here?
+>
+> Also, the IPID register is read only from the OS, hence the user provided
+> IPID values could be useful for "sw" error injection types. For "hw" error
+> injection types we need to read from the registers to determine the IPID
+> value.
+> 
+> Should there be two cases where on a "sw" injection use the user provided
+> IPID value whereas on "hw" injection read from registers?
 
-Remove the redundant 'flush_workqueue()' calls.
+Right, that's a good point. So the way I see it is, we need to decide
+what is allowed for sw injection and what for hw injection, wrt to IPID
+value.
 
-This was generated with coccinelle:
+I think for sw injection, we probably should say that since this is
+sw only and its purpose is to test the code only, there should not be
+any limitations imposed by the underlying machine. Like using the bank
+number, for example.
 
-@@
-expression E;
-@@
-- 	flush_workqueue(E);
-	destroy_workqueue(E);
+So what you do now for sw injection:
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/media/platform/mtk-vpu/mtk_vpu.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+		if (val && inj_type == SW_INJ)
+			m->ipid = val;
 
-diff --git a/drivers/media/platform/mtk-vpu/mtk_vpu.c b/drivers/media/platform/mtk-vpu/mtk_vpu.c
-index 7f1647da0ade..7bd715fc844d 100644
---- a/drivers/media/platform/mtk-vpu/mtk_vpu.c
-+++ b/drivers/media/platform/mtk-vpu/mtk_vpu.c
-@@ -964,10 +964,8 @@ static int mtk_vpu_remove(struct platform_device *pdev)
- #ifdef CONFIG_DEBUG_FS
- 	debugfs_remove(vpu_debugfs);
- #endif
--	if (vpu->wdt.wq) {
--		flush_workqueue(vpu->wdt.wq);
-+	if (vpu->wdt.wq)
- 		destroy_workqueue(vpu->wdt.wq);
--	}
- 	vpu_free_ext_mem(vpu, P_FW);
- 	vpu_free_ext_mem(vpu, D_FW);
- 	mutex_destroy(&vpu->vpu_mutex);
+should be good enough. User simply sets some IPID value and that value
+will be used for the bank which is written when injecting.
+
+Now, for hw injection, you have two cases:
+
+1. The bank is unpopulated so setting the IPID there doesn't make any sense.
+
+2. The bank *is* populated and the respective IPID MSR has a value
+describing what that bank is.
+
+And in that case, does it even make sense to set the IPID? I don't think
+so because that IP block's type - aka IPID - has been set already by
+hardware/firmware.
+
+So the way I see it, it makes no sense whatsoever to set the IPID of a
+bank during hw injection.
+
+Right?
+
 -- 
-2.30.2
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
