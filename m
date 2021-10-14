@@ -2,160 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9925942D34B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 09:11:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4239F42D34E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 09:11:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230088AbhJNHNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 03:13:16 -0400
-Received: from mail-eopbgr70118.outbound.protection.outlook.com ([40.107.7.118]:50863
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229551AbhJNHNN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 03:13:13 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eHDE4pUbxSOAaIFDKq0iKifWx5+f8FJxKS0eoXbwrFBe8yQ7stVPhJhdIlJuJTunJLqAzxVAHlg6UPPf+hWH99QsqhJ4+u0D4PsfAYGFZxY1X7f/6IjAkziEnMyKpfSp6AdbhyPdBkIG+heb8ZqUp9W+BHj0ROBG1KR0q0HqYbkgfu+XmWNc6dO8SNKnrwLm1qlEPgvDq9ZeTEmCFokc1RgAfwd4vkHF+xQF9CcAF8M/tiu002JLoOqUgmJV03VmEuk0jGSSkmZCMF0KQED/1Kb0RrtMmR79zs5qM69cC+f7xcwEHenh+0kUC4BZFLKDNaymi8XbpdYQC/o3c/UrjQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=p4ETRBHsx5i4D/K6K7sLiad91vJHjBv9R3XWa+PcHcw=;
- b=nScIugaJL5q11Ql3/jPXmrWjkKblX6b2VdZHwiDjTHlIEq4zAJ07PoK1yadPBtYeN2YAiVuAG0P3jesB9iOTg8JlRiNa3mhP0YpeFmSt0uor9PBXPuMmQk4mSgKeU4HljYiM8fS7XjkL1chGkvkvonXrI3v1tirKxLBLvZDWWYkUkXBUcX1C9jJzHuvR84mu0LniXXVnPpvgwZtvSXAa9Qt0T71/pv8L9JqdYYo/nbn8uAdHkWHZ+L2KYCrpzIqzAtAns5IzobGfFrDvMeBj6mIh/YG3jp1FlXbDVErYCymw5UuJzvztqsrq1QWhKh45xYfuzdzXYu5cF/eSKMOQYA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=toradex.com; dmarc=pass action=none header.from=toradex.com;
- dkim=pass header.d=toradex.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=toradex.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=p4ETRBHsx5i4D/K6K7sLiad91vJHjBv9R3XWa+PcHcw=;
- b=l1bAYHmf0bv5b6OYsJzQAKmTeLRr8OAEghV2sNE3tcOh9Gl9nQIvuZS0uy+un4dW/oSREfdVAtozBd0b7BM8kMpvtUOSaYX25EA8Yhlv3+6dgWlFYm2sUQ1aPzhbU/TCFNMvlqSf/ic8Wm2ms/uNwMBm6BzvOSeLXE9vXLYnAbE=
-Authentication-Results: agner.ch; dkim=none (message not signed)
- header.d=none;agner.ch; dmarc=none action=none header.from=toradex.com;
-Received: from HE1PR0501MB2602.eurprd05.prod.outlook.com (2603:10a6:3:6d::13)
- by HE1PR0501MB2780.eurprd05.prod.outlook.com (2603:10a6:3:ca::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.21; Thu, 14 Oct
- 2021 07:11:03 +0000
-Received: from HE1PR0501MB2602.eurprd05.prod.outlook.com
- ([fe80::8463:d3:5cb2:152c]) by HE1PR0501MB2602.eurprd05.prod.outlook.com
- ([fe80::8463:d3:5cb2:152c%4]) with mapi id 15.20.4587.026; Thu, 14 Oct 2021
- 07:11:03 +0000
-From:   Francesco Dolcini <francesco.dolcini@toradex.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Stefan Agner <stefan@agner.ch>
-Cc:     Francesco Dolcini <francesco.dolcini@toradex.com>,
-        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        id S230030AbhJNHN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 03:13:58 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:41486
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229985AbhJNHN4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 03:13:56 -0400
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com [209.85.167.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 1AD5E40021
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 07:11:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1634195511;
+        bh=FM8pSeToFOPUhDjYF23znrZE5dzxI9k0mVFzTSi5BcI=;
+        h=To:Cc:References:From:Subject:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=uN3loL0wxXImJV78Wx8oeqlYiPnAhACEXptB7gsNBCTlSLJavV6RG1eaVwnIAf3cu
+         tZicGVxpPibK8tyigG/zHro1RetDJWlG/t+J7UimtA15T6krcCkVveOJnD/Vre5XtR
+         SM3rNXdlufgGcggJCSebi9iE67r64Lg33vxtjE4aJpWH/Ui/jmv7YJCRLOwVRY91+P
+         uz66VwQQgkLH1nrjvZsQ3ouU4F5DC42p8NMQj3FAGIY4ibGMBWQJBW3g4xZ1v85/5J
+         b99rhIgZvD9ADJVFHLg9R6XLAnT/BHpmpGhM1lcnjgDZ+XeS4OeZ6xncxPG6lNI7Vt
+         s7Sg1NqUCXsRg==
+Received: by mail-lf1-f70.google.com with SMTP id m16-20020a056512115000b003fdb79f743fso1301509lfg.16
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 00:11:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=FM8pSeToFOPUhDjYF23znrZE5dzxI9k0mVFzTSi5BcI=;
+        b=hAbhevs4+y569G20vw0s9DoXk16+KBeAGc2frIdITlJdVUK2L3w80ZZlWMBEPjPm9q
+         htYPHeg6K1kdhFvmA1Fdd5/756uR74FdqaIDdsaJ8Hw+bdxETB1deOpgYcIkRgUESvAR
+         aEu2XYyi1ucXlFU4f2UyAg5nhrlTPj+GmTKozlMD27PQcosrlzIZm71ZN3XL+GvN0fqI
+         EsQyvdiPorE3MzOlqMxzwy8GHu47IMUC4UK8atslXJroLPxBEcKRCBg/+nPqiXZVr1tq
+         cdwlSEdPmkRV50hiHH4UwyG+uE0JNRZK6CZiMSOISh1IXjfvlufV0kjb+qCubEIo3XHZ
+         c3oA==
+X-Gm-Message-State: AOAM530nDQv/lOYsr8cMr+5W+SULMhmMIBwEiSLez1MNPDNNNB8LVZI6
+        OMy+QELyw5Wc3O9hO7JUlh1WRaUUpH42BZMYEl6e4qRE+JsvM2iqfr2jqVCEL3K+TQ224XZy4vG
+        GSLtUzjnANk+LLHCx8EInsH0OLGTRQUFS1GgYzgqjCw==
+X-Received: by 2002:a05:6512:2307:: with SMTP id o7mr3430115lfu.595.1634195509107;
+        Thu, 14 Oct 2021 00:11:49 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwgSsaV15NSk47z5aPcuHSvstgvfiWkc6BkOCzPyQ4J2LhnPiscCdV+nbNisZxYgXByuDZ7Eg==
+X-Received: by 2002:a05:6512:2307:: with SMTP id o7mr3430101lfu.595.1634195508926;
+        Thu, 14 Oct 2021 00:11:48 -0700 (PDT)
+Received: from [192.168.3.161] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
+        by smtp.gmail.com with ESMTPSA id 2sm150078lfz.145.2021.10.14.00.11.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Oct 2021 00:11:48 -0700 (PDT)
+To:     Sam Protsenko <semen.protsenko@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Sumit Semwal <sumit.semwal@linaro.org>,
+        linux-samsung-soc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] serial: imx: disable console clocks on unregister
-Date:   Thu, 14 Oct 2021 09:10:53 +0200
-Message-Id: <20211014071053.568598-3-francesco.dolcini@toradex.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211014071053.568598-1-francesco.dolcini@toradex.com>
-References: <20211014071053.568598-1-francesco.dolcini@toradex.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: ZR0P278CA0130.CHEP278.PROD.OUTLOOK.COM
- (2603:10a6:910:40::9) To HE1PR0501MB2602.eurprd05.prod.outlook.com
- (2603:10a6:3:6d::13)
+References: <20211013202110.31701-1-semen.protsenko@linaro.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Subject: Re: [PATCH v2 1/3] soc: samsung: exynos-chipid: Pass revision reg
+ offsets
+Message-ID: <1cd31098-ba9d-f2e3-e34c-5bada00a2696@canonical.com>
+Date:   Thu, 14 Oct 2021 09:11:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Received: from francesco-nb.toradex.int (31.10.206.124) by ZR0P278CA0130.CHEP278.PROD.OUTLOOK.COM (2603:10a6:910:40::9) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.16 via Frontend Transport; Thu, 14 Oct 2021 07:11:01 +0000
-Received: by francesco-nb.toradex.int (Postfix, from userid 1000)       id 8170C10A3844; Thu, 14 Oct 2021 09:11:00 +0200 (CEST)
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 7b9d0c85-6f66-4792-10da-08d98ee1c77f
-X-MS-TrafficTypeDiagnostic: HE1PR0501MB2780:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <HE1PR0501MB27800695FB41561F16469191E2B89@HE1PR0501MB2780.eurprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: hgnqZqVtvzQSAj0EFePTavyJ4eUz9LSzS82CwjSMRmArDgA4Rev2BvNEsKcAJRhqfMO5WMKHDI7KPVULjLkImLs8LKRR0kdmXN1tg+IviPe+sx01XDjk5DNBkHD4jZzNV93wkophrWAq8Vc7hxqfXKVtE/roAlUaDnRQ63HFL4OBcmY6jlBSQacEyWenydy0F3msQLJL8MqHazzxUCnhhjCAgYeIK1rq1fKA7T7zvNyqmtKxNCwYQ+y7nrhQRpMdwBar6cP4qSZVJSOP5q00kmABYBCoLJ15ql14RRx1tdV92Wut170t/+qj197Cdej1+QGF7MD4raTL1bjouE5Z19xxNNRPK+Qfz7sXbmnkaIey+StpSeqiE9L1z2Y1te+GA1POuVCgZBxPgWyxXBnbkLCjqGjzEoBMFa8jL3jcgbU6g9ndZyx8Q0ticjdzohV396ddIng7xGGymwiFf6PxbmJerNr1UgrCYTL9aYJS9fVMvFYR8PPlNDd3fLE8YME2DKxsJIMELTQQPnN+T/Gm+k4s1i4NipYrQOaWxTbowt0b5XujL0UhvAXm0Mc+UF3+FupQpvoSNdh/H7ucl06nbT9Y16zU/n6//skrDJa4AxSYzFZ+Iem2S1W1Wn3IOe/uHCm/fQAq7nA60wcBKhdYehuDhyUBMEXVr1ntMUqKSAg3PmpSTn/kTxnV53STUPXqH4RR0QXI+MgHJ1VkTTauXQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR0501MB2602.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(36756003)(186003)(52116002)(26005)(316002)(86362001)(6266002)(110136005)(1076003)(508600001)(2616005)(38350700002)(8676002)(66556008)(83380400001)(66946007)(66476007)(5660300002)(8936002)(6666004)(42186006)(7416002)(38100700002)(4326008)(2906002)(44832011);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?00aakVHYGAx2K8YV1UF0taBhy23TnzliXc8fsQax+dnNvXIMjwpofKgBgMZv?=
- =?us-ascii?Q?SpCCBGWsdwZquxXbVGBV6lO4Gh2owymCfT5DSyRtnBcOM61s9YJ0asYr9ODD?=
- =?us-ascii?Q?xoswdXjZF0RSXZcJ0bKteB4681aQHe6OdQ8koZHcxTNtsdBHIP2AuYBGBkey?=
- =?us-ascii?Q?fQbtGpvCGZ6DJatKVeu56jVUo8nu7jHRghDqHwkzw7scwuajaQyOU3vNZCcF?=
- =?us-ascii?Q?RHGO9J/jw8NkYynPtZ0sWIMmS8ZKdLo8BP7de/ShNTbFGTlgmXY9XBIJVYSI?=
- =?us-ascii?Q?GWNa8tcu9+NGT8RvsI9NcwjwtieSH6xqRhCqa5GKxAW6Gy+Rqy8nmFVTiB8+?=
- =?us-ascii?Q?/k5yVea0wepjTrisvagtJ3rx7AHOKW3kHM6ryeHjcgLM5ahudY5DK47BOu5G?=
- =?us-ascii?Q?YA4i0b3JSdbCiu23g5elKDIdBtwL4Z9TKnTzqHrPw2Iu+laHWxrq4s4TfNEG?=
- =?us-ascii?Q?LguIzADq2mqwnSKTA8YJa2TtqD4+mb1BdEWq5jmM3xC11IBeBKhXdxaIpXNU?=
- =?us-ascii?Q?JduWmwOgckrJPLvlhFRL3NNMr+/+O8gk3Mmq3SIU7lRY6AmvOAMk1WEl6sjU?=
- =?us-ascii?Q?t+aP450OlgIc/3TSq8zStwhTe9oM4mEpSt1cHCpcK11w2VbBAA5H3JKoDHRo?=
- =?us-ascii?Q?N/GFjO966dyHjJTvqAOu5pJONn28DD3qrn2CKy/qIKpDGk8sRjUqa0rY07cW?=
- =?us-ascii?Q?+g8lD1jqQ0NLEweE6BkqMiYwxIGNZQCvHbFkOIrJWVjwhC2IIyCV+fK4em7E?=
- =?us-ascii?Q?p/jfAzC49HVttkODMAId2BFyA3d90MgnJzKAr/yu0rB9sspiiHlz4iMGeZlu?=
- =?us-ascii?Q?jRs9rxQMTFEy7PIVPIqMCl3ytdguq53eDmgsas5to5s28/NHZr5w6HSsmJs4?=
- =?us-ascii?Q?AMgM8d+kzVs3lIUbTEufRyrZG6hVwZ7xTH2j+LUon9bDhiTx5frpvGLF7LbO?=
- =?us-ascii?Q?SSeWeKdOca/3BBtPDa5iojClzrVEgl87CLsNuNFCGexma25kyRbmdU6ZihVc?=
- =?us-ascii?Q?9ri+PDBPbDXu1cUgLJWw9ankIdCpYEGYmQaFQ5Vx21T8Cmx+Uzn+JZQ6xL+x?=
- =?us-ascii?Q?sY/MY6FQAgWLtxejMzbIgXHp0TgMhgSllwDp1uaV2hjxrWPfCLU0JOWEnUfl?=
- =?us-ascii?Q?CaJenA5IMt+/PsH6zhZ3/eUNWhWx6YLS8sNhcLvPxiGm3ts0AmhVk+QLP+Ns?=
- =?us-ascii?Q?jvlvxdGqjkULdP0bSBp7CzUETl1ejEE5Zv8RE0EulXRQRtZJnHhuZgTNbK/f?=
- =?us-ascii?Q?w+CHd0jK1+JC4SnLAQp5dGJPHdywd3QVhr34tJ2c9TddseShude41Mc3FRlD?=
- =?us-ascii?Q?r7qrD/6VuC05vFWUoFMLB4Of?=
-X-OriginatorOrg: toradex.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7b9d0c85-6f66-4792-10da-08d98ee1c77f
-X-MS-Exchange-CrossTenant-AuthSource: HE1PR0501MB2602.eurprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Oct 2021 07:11:01.8123
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: d9995866-0d9b-4251-8315-093f062abab4
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: o/3zzgl7j+iiVn/DBUF94ywEg/p6qkuhuHUy/wht+8kRRBZfzNFNwGFXrvdogFPi80zz1ZBzHY0BF6LJSipRQ9cSwq4sekCidIGyIQ9fpKo=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR0501MB2780
+In-Reply-To: <20211013202110.31701-1-semen.protsenko@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During console setup imx_uart_console_setup() enables clocks, but they
-are never disabled when the console is unregistered, this leads to
-clk_prepare_enable() being called multiple times without a matching
-clk_disable_unprepare() in case of unbind/bind.
+On 13/10/2021 22:21, Sam Protsenko wrote:
+> Old Exynos SoCs have both Product ID and Revision ID in one single
+> register, while new SoCs tend to have two separate registers for those
+> IDs. Implement handling of both cases by passing Revision ID register
+> offsets in driver data.
+> 
+> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> ---
+>  drivers/soc/samsung/exynos-chipid.c       | 67 +++++++++++++++++++----
+>  include/linux/soc/samsung/exynos-chipid.h |  6 +-
+>  2 files changed, 58 insertions(+), 15 deletions(-)
+> 
+> diff --git a/drivers/soc/samsung/exynos-chipid.c b/drivers/soc/samsung/exynos-chipid.c
+> index 5c1d0f97f766..7837331fb753 100644
+> --- a/drivers/soc/samsung/exynos-chipid.c
+> +++ b/drivers/soc/samsung/exynos-chipid.c
+> @@ -16,6 +16,7 @@
+>  #include <linux/errno.h>
+>  #include <linux/mfd/syscon.h>
+>  #include <linux/of.h>
+> +#include <linux/of_device.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/regmap.h>
+>  #include <linux/slab.h>
+> @@ -24,6 +25,17 @@
+>  
+>  #include "exynos-asv.h"
+>  
+> +struct exynos_chipid_variant {
+> +	unsigned int rev_reg;		/* revision register offset */
+> +	unsigned int main_rev_shift;	/* main revision offset in rev_reg */
+> +	unsigned int sub_rev_shift;	/* sub revision offset in rev_reg */
+> +};
+> +
+> +struct exynos_chipid_info {
+> +	u32 product_id;
+> +	u32 revision;
+> +};
+> +
+>  static const struct exynos_soc_id {
+>  	const char *name;
+>  	unsigned int id;
+> @@ -49,31 +61,55 @@ static const char *product_id_to_soc_id(unsigned int product_id)
+>  	int i;
+>  
+>  	for (i = 0; i < ARRAY_SIZE(soc_ids); i++)
+> -		if ((product_id & EXYNOS_MASK) == soc_ids[i].id)
+> +		if (product_id == soc_ids[i].id)
+>  			return soc_ids[i].name;
+>  	return NULL;
+>  }
+>  
+> +static int exynos_chipid_get_chipid_info(struct regmap *regmap,
+> +		const struct exynos_chipid_variant *data,
+> +		struct exynos_chipid_info *soc_info)
+> +{
+> +	int ret;
+> +	unsigned int val, main_rev, sub_rev;
+> +
+> +	ret = regmap_read(regmap, EXYNOS_CHIPID_REG_PRO_ID, &val);
+> +	if (ret < 0)
+> +		return ret;
+> +	soc_info->product_id = val & EXYNOS_MASK;
+> +
+> +	ret = regmap_read(regmap, data->rev_reg, &val);
 
-Ensure that clock enable/disable are balanced adding
-clk_disable_unprepare() in the console exit callback.
+Isn't this the same register as EXYNOS_CHIPID_REG_PRO_ID?
 
-Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
----
- drivers/tty/serial/imx.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+> +	if (ret < 0)
+> +		return ret;
+> +	main_rev = (val >> data->main_rev_shift) & EXYNOS_REV_PART_MASK;
+> +	sub_rev = (val >> data->sub_rev_shift) & EXYNOS_REV_PART_MASK;
+> +	soc_info->revision = (main_rev << EXYNOS_REV_PART_SHIFT) | sub_rev;
+> +
+> +	return 0;
+> +}
+> +
+>  static int exynos_chipid_probe(struct platform_device *pdev)
+>  {
+> +	const struct exynos_chipid_variant *drv_data;
+> +	struct exynos_chipid_info soc_info;
+>  	struct soc_device_attribute *soc_dev_attr;
+>  	struct soc_device *soc_dev;
+>  	struct device_node *root;
+>  	struct regmap *regmap;
+> -	u32 product_id;
+> -	u32 revision;
+>  	int ret;
+>  
+> +	drv_data = of_device_get_match_data(&pdev->dev);
+> +	if (!drv_data)
+> +		return -EINVAL;
+> +
+>  	regmap = device_node_to_regmap(pdev->dev.of_node);
+>  	if (IS_ERR(regmap))
+>  		return PTR_ERR(regmap);
+>  
+> -	ret = regmap_read(regmap, EXYNOS_CHIPID_REG_PRO_ID, &product_id);
+> +	ret = exynos_chipid_get_chipid_info(regmap, drv_data, &soc_info);
+>  	if (ret < 0)
+>  		return ret;
+>  
+> -	revision = product_id & EXYNOS_REV_MASK;
+> -
+>  	soc_dev_attr = devm_kzalloc(&pdev->dev, sizeof(*soc_dev_attr),
+>  				    GFP_KERNEL);
+>  	if (!soc_dev_attr)
+> @@ -86,8 +122,8 @@ static int exynos_chipid_probe(struct platform_device *pdev)
+>  	of_node_put(root);
+>  
+>  	soc_dev_attr->revision = devm_kasprintf(&pdev->dev, GFP_KERNEL,
+> -						"%x", revision);
+> -	soc_dev_attr->soc_id = product_id_to_soc_id(product_id);
+> +						"%x", soc_info.revision);
+> +	soc_dev_attr->soc_id = product_id_to_soc_id(soc_info.product_id);
+>  	if (!soc_dev_attr->soc_id) {
+>  		pr_err("Unknown SoC\n");
+>  		return -ENODEV;
+> @@ -106,7 +142,7 @@ static int exynos_chipid_probe(struct platform_device *pdev)
+>  
+>  	dev_info(soc_device_to_device(soc_dev),
+>  		 "Exynos: CPU[%s] PRO_ID[0x%x] REV[0x%x] Detected\n",
+> -		 soc_dev_attr->soc_id, product_id, revision);
+> +		 soc_dev_attr->soc_id, soc_info.product_id, soc_info.revision);
+>  
+>  	return 0;
+>  
+> @@ -125,9 +161,18 @@ static int exynos_chipid_remove(struct platform_device *pdev)
+>  	return 0;
+>  }
+>  
+> +static const struct exynos_chipid_variant exynos4210_chipid_drv_data = {
+> +	.rev_reg	= 0x0,
+> +	.main_rev_shift	= 0,
+> +	.sub_rev_shift	= 4,
 
-diff --git a/drivers/tty/serial/imx.c b/drivers/tty/serial/imx.c
-index 51a9f9423b1a..90f82e6c54e4 100644
---- a/drivers/tty/serial/imx.c
-+++ b/drivers/tty/serial/imx.c
-@@ -2124,12 +2124,24 @@ imx_uart_console_setup(struct console *co, char *options)
- 	return retval;
- }
- 
-+static int
-+imx_uart_console_exit(struct console *co)
-+{
-+	struct imx_port *sport = imx_uart_ports[co->index];
-+
-+	clk_disable_unprepare(sport->clk_per);
-+	clk_disable_unprepare(sport->clk_ipg);
-+
-+	return 0;
-+}
-+
- static struct uart_driver imx_uart_uart_driver;
- static struct console imx_uart_console = {
- 	.name		= DEV_NAME,
- 	.write		= imx_uart_console_write,
- 	.device		= uart_console_device,
- 	.setup		= imx_uart_console_setup,
-+	.exit		= imx_uart_console_exit,
- 	.flags		= CON_PRINTBUFFER,
- 	.index		= -1,
- 	.data		= &imx_uart_uart_driver,
--- 
-2.25.1
+The code does not look correct here. Subrev is at 0:3 bits, mainrev is
+at 4:7.
 
+Did you test it that it produces same result? Looks not - I gave it a
+try and got wrong revision.
+
+
+Best regards,
+Krzysztof
