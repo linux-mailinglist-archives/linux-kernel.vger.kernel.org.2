@@ -2,156 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49EC842E14B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 20:31:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2E5B42E14D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 20:31:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230494AbhJNSdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 14:33:36 -0400
-Received: from mail-dm6nam12on2063.outbound.protection.outlook.com ([40.107.243.63]:15299
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230225AbhJNSdf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 14:33:35 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MEWP1rhbz38kD1pPIBb+TzJmxbQpUq5vcMYEUh0W6tuf47hpS9ldtelRBU/SFMUQxYIvrSaFRq6+jwrEq8hybYQGuVx9VQaNi0uQ3J956fhDNkeRydkg4VpsA7ckH/KVSVL7SKP6H3DBiTZbUbMuyjTeuBldh+3lerrPaXYbywQG4munB3TSFLWtA0BcKIMGX9McrQoDTa+1hUsA2mVnbrYtHNOL6Fe/7+z9pm10T3AICauOrvgGQH1YUA+fj+5ZbzBMMhfT/dIjv4XbBS8masRAzXNFt4O4UGo6jJI6RXUltHE5P6iQSoGS1Q7AIztosEE+k5kjwn6y9N6A2Se1og==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=n46MAC2BObdvCGsc63sawkD7OwMukZEWO/Zo/fOxyII=;
- b=S41OwpX2cSx55z7dvvrhXK8CfBC57BeG6WEH8u8X5vw4ttKoWrONox0VEhYZ6PGSG9FilFzzzzrVkOTSHj5gxjNmt4PY6MeH1E/UvomF25voFXdR2bi5K9aP2cIsX+e96O0YMDLjLbt51u52ZghLAz7OAGPLnvSVkeqblAYOgoD892NLdk1UqRdajv9PTsriVy71cz4RLU2JVj+I3IZ9WQNIU7P40gDjCalxy2hpEXhUH5ZYPG0ey/YUdn6NxE05gP+1kmhVWy9xG4Hho3qnQVA8crNzrDmSDae/vJ7aJ3dNByO4CNfNI7U7mX88E8Z+fGL9e/z7tYuYtGnzDhnoMQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=arndb.de smtp.mailfrom=nvidia.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=nvidia.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=n46MAC2BObdvCGsc63sawkD7OwMukZEWO/Zo/fOxyII=;
- b=qmpvvVJUh40C7NgmyTv7hw7oZrVKJAeNKgejrPWvwVrm5sclcHLYDRqC3NWCKycogdd5SLBEWa0uRvg4aN9Z542YfjWpOMUyCIR3vMLQqTObqaF5kbnu9yp8wjgGVf3VMhS1kyhM1kmaquRdzUSi/r0SFcA19tLey6paLG/uLStH9K5QOB0uyz0x0r/Uj4MdgH3QPWBbTma8AAhipP/TR27TVZQX3AZ2/UeiYdXJAJeIrQkw7lg3DMoAi4P4qTlkmWcc4+E0SwOGmCi6DbD2IruUSMihS87EILF+CHjwidDnrMVWkuEOjO9LFpJ3nnWXTBybQyePDg8B+gNirmuX+g==
-Received: from DM5PR13CA0049.namprd13.prod.outlook.com (2603:10b6:3:117::11)
- by CY4PR1201MB0022.namprd12.prod.outlook.com (2603:10b6:910:1e::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.15; Thu, 14 Oct
- 2021 18:31:29 +0000
-Received: from DM6NAM11FT029.eop-nam11.prod.protection.outlook.com
- (2603:10b6:3:117:cafe::2d) by DM5PR13CA0049.outlook.office365.com
- (2603:10b6:3:117::11) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.10 via Frontend
- Transport; Thu, 14 Oct 2021 18:31:29 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; arndb.de; dkim=none (message not signed)
- header.d=none;arndb.de; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- DM6NAM11FT029.mail.protection.outlook.com (10.13.173.23) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4608.15 via Frontend Transport; Thu, 14 Oct 2021 18:31:29 +0000
-Received: from [10.26.49.14] (172.20.187.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Thu, 14 Oct
- 2021 18:31:25 +0000
-Subject: Re: [PATCH V1] firmware: tegra: fix error application of sizeof to
- pointer
-From:   Jon Hunter <jonathanh@nvidia.com>
-To:     <cgel.zte@gmail.com>, <thierry.reding@gmail.com>, <arnd@arndb.de>
-CC:     <lv.ruyi@zte.com.cn>, <linux-tegra@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Zeal Robot <zealci@zte.com.cn>
-References: <20211009085900.509697-1-lv.ruyi@zte.com.cn>
- <10dd0afe-432e-4798-1680-3edbd2b07bcb@nvidia.com>
-Message-ID: <32c183a5-01bb-f86a-a614-ea46ad405de1@nvidia.com>
-Date:   Thu, 14 Oct 2021 19:31:22 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S231432AbhJNSds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 14:33:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39238 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230499AbhJNSdq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 14:33:46 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70FFEC061570
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 11:31:41 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id np13so5377550pjb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 11:31:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ZOtoUVJrO4cNBuAtSKrwYDvg+7jgQsiUmd1c9X90gTI=;
+        b=cKhphWfr8pcChoAYpqsqwwmSDmFee5Gfbw2C5LhTh0T//9b8U6M0NX69RIZnvvank5
+         F7FEnaAteZ+7wFDe3VaCzlq5iOCrGm0DG7XSKJFCeLQMAM6Gy8LmelPjU00DkXxPbu7j
+         tPnogHSHJLh+AFRKIg9RJNfjJ5NO4PM4AtmysEW6NdOa1o9sZKYsvijMRDOegENdTKlx
+         BfjxjT42ddPVzsU3OpXcBVlS0aWw9SkmmWuh+iVEcSzSeCQRciUK98GJRCUJkRhUgpvQ
+         Q8PAUwyGSMJa4DD5hv9/K7EDb+Yf4sV97Jno5HT1vbSeQaz0riPHqtwjZB4DsvrjTIVN
+         yk8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZOtoUVJrO4cNBuAtSKrwYDvg+7jgQsiUmd1c9X90gTI=;
+        b=6vbLTQhgIIPdJO3A1bI3jv9+tGnrDFTHd3JxcE67fCB+yuWwP/A0pQfmL8lEP8iTlL
+         Ujr685bzAc7vg9tdY1oVh/QpWuhGu7kwmUMa09iiJzaIPxpVq+NgSLZG+LyGxCyC3V5h
+         cExPEK08GbNcfP7Pfomft4M+fWiohs4OT+DVbFji273MZWkO7SWOuNNy5wsmBEVjxrr/
+         TBzadOEl2za/uvTIhkyXn2wAGzAM32FHsRsfHHEyxG6wjVoObjP92K6FPtG0EE+QP4Q2
+         EcM+zwpXKeCx5moeKJeb29sNahlpvLmSAX/X6TVL9c96wwiy9AsPTtDQakxGHjS2dUtm
+         AVHg==
+X-Gm-Message-State: AOAM530pqEAXiQgoUV5Piiwh/yyVBcR90FgM3YzzHnR8HEH3S07H4HTJ
+        dhhCHihPfKOnIgGV+fl1JBvw9Q==
+X-Google-Smtp-Source: ABdhPJx/195vVGDLtpTTDyd8ezSob21GI2+YOc4x+wbtS2Gkb/xiCHDczCRmurz/Vb9GHMVdBR9NZQ==
+X-Received: by 2002:a17:902:9882:b0:13e:1749:daae with SMTP id s2-20020a170902988200b0013e1749daaemr6523086plp.60.1634236300729;
+        Thu, 14 Oct 2021 11:31:40 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id 60sm9304804pjz.11.2021.10.14.11.31.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Oct 2021 11:31:40 -0700 (PDT)
+Date:   Thu, 14 Oct 2021 18:31:36 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Jim Mattson <jmattson@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, torvic9@mailbox.org,
+        "vkuznets@redhat.com" <vkuznets@redhat.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "bp@alien8.de" <bp@alien8.de>
+Subject: Re: [BUG] [5.15] Compilation error in arch/x86/kvm/mmu/spte.h with
+ clang-14
+Message-ID: <YWh3iBoitI9UNmqV@google.com>
+References: <1446878298.170497.1633338512925@office.mailbox.org>
+ <b6abc5a3-39ea-b463-9df5-f50bdcb16d08@redhat.com>
+ <936688112.157288.1633339838738@office.mailbox.org>
+ <c4773ecc-053f-9bc6-03af-5039397a4531@redhat.com>
+ <CAKwvOd=rrM4fGdGMkD5+kdA49a6K+JcUiR4K2-go=MMt++ukPA@mail.gmail.com>
+ <CALMp9eRzadC50n=d=NFm7osVgKr+=UG7r2cWV2nOCfoPN41vvQ@mail.gmail.com>
+ <YWht7v/1RuAiHIvC@archlinux-ax161>
 MIME-Version: 1.0
-In-Reply-To: <10dd0afe-432e-4798-1680-3edbd2b07bcb@nvidia.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [172.20.187.5]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ad8ff414-e1d9-400c-e7ac-08d98f40d6a7
-X-MS-TrafficTypeDiagnostic: CY4PR1201MB0022:
-X-Microsoft-Antispam-PRVS: <CY4PR1201MB00224EA4E7957BBA6A27536CD9B89@CY4PR1201MB0022.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: aXrJj9rTGh7UWIjSI6J30T1/qTx1ClFykD8DUorlfhQci+nHq+twi9v21QvOgBkp46OP+rk6UlR9yQplaTuNe95LoArlXuIan07svH/Uz4ua40XcyFblTQOnurRzf5/Piz4jxbh8MhdWkPsrDNVWLRpfT9VopQr6DKwX3lqiQv1AchrgLByyT1DKjHEbPNbJmvid3J2HMcnVLqvnm0ugzxT+hzMZWJMFg+mjnpABCSCHVS7If5ZAA6RRyCX30HYX3mCzqGL11j7+HIg47QNo4W8WJQg+UKpuffGSdQoKftyw5SaTtf1nshXu8NmpISJ+z6JEYpdIzhOzbAXPmza7bbXuNyEkbW6LcJ6MjInxrSmY9libZzUevIaQKSOOBw651fbReHQyQjK9vNPh4ORYZNCjTm7B8eMsWQUfYxjzsOvkXMVliPpNHN6T/qOS+rCOJXZfrsruIeEkpCW77lhpoxDCyHsBKz3JVcjPCxnI0CJtA65VHogbHm/8wrZ020uNikn8UhVG2c8Igx7Mk48Cccb+FZxLeuXvc8G2drXFeOx0iUagGNSOy30SgFLRCbzhkImDGFhfanJeKcGJzrKVYruhAiqGNiv5pV2YADpOA/6savKLmPiGp2cI0T3otEH1g0/ZOjsj0UD9EpsBGc+JmWdZPldVPq5nEZSwZdd0WNIrNAfMk0jHgwmO7NAqt0hcczTuP72SvfOxElVcP1jMG38wPZBM74iU8PJDIxZX9wU=
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(36840700001)(46966006)(356005)(86362001)(8936002)(53546011)(83380400001)(36756003)(47076005)(82310400003)(31696002)(426003)(36860700001)(16576012)(26005)(5660300002)(4326008)(16526019)(186003)(2906002)(110136005)(54906003)(70206006)(31686004)(36906005)(2616005)(70586007)(6666004)(336012)(8676002)(7636003)(508600001)(316002)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Oct 2021 18:31:29.0593
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: ad8ff414-e1d9-400c-e7ac-08d98f40d6a7
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT029.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR1201MB0022
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YWht7v/1RuAiHIvC@archlinux-ax161>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Oct 14, 2021, Nathan Chancellor wrote:
+> On Mon, Oct 04, 2021 at 10:12:33AM -0700, Jim Mattson wrote:
+> > On Mon, Oct 4, 2021 at 9:13 AM Nick Desaulniers <ndesaulniers@google.com> wrote:
+> > >
+> > > On Mon, Oct 4, 2021 at 2:49 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
+> > > >
+> > > > On 04/10/21 11:30, torvic9@mailbox.org wrote:
+> > > > >
+> > > > >> Paolo Bonzini <pbonzini@redhat.com> hat am 04.10.2021 11:26 geschrieben:
+> > > > >>
+> > > > >>
+> > > > >> On 04/10/21 11:08, torvic9@mailbox.org wrote:
+> > > > >>> I encounter the following issue when compiling 5.15-rc4 with clang-14:
+> > > > >>>
+> > > > >>> In file included from arch/x86/kvm/mmu/mmu.c:27:
+> > > > >>> arch/x86/kvm/mmu/spte.h:318:9: error: use of bitwise '|' with boolean operands [-Werror,-Wbitwise-instead-of-logical]
+> > > > >>>           return __is_bad_mt_xwr(rsvd_check, spte) |
+> > > > >>>                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > > > >>>                                                    ||
+> > > > >>> arch/x86/kvm/mmu/spte.h:318:9: note: cast one or both operands to int to silence this warning
+> > > > >>
+> > > > >> The warning is wrong, as mentioned in the line right above:
+> > 
+> > Casting the bool to an int doesn't seem that onerous.
+> 
+> Alternatively, could we just change both of the functions to return u64?
+> I understand that they are being used in boolean contexts only but it
+> seems like this would make it clear that a boolean or bitwise operator
+> on them is acceptable.
 
-On 14/10/2021 19:26, Jon Hunter wrote:
-> Hi Lv,
-> 
-> On 09/10/2021 09:59, cgel.zte@gmail.com wrote:
->> From: Lv Ruyi <lv.ruyi@zte.com.cn>
->>
->> Application of sizeof to pointer yields the number of bytes of the 
->> pointer,
->> but it should use the length of buffer in the code.
->>
->> Reported-by: Zeal Robot <zealci@zte.com.cn>
->> Signed-off-by: Lv Ruyi <lv.ruyi@zte.com.cn>
->> ---
->>   drivers/firmware/tegra/bpmp-debugfs.c | 5 +++--
->>   1 file changed, 3 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/firmware/tegra/bpmp-debugfs.c 
->> b/drivers/firmware/tegra/bpmp-debugfs.c
->> index 6d66fe03fb6a..fd89899aeeed 100644
->> --- a/drivers/firmware/tegra/bpmp-debugfs.c
->> +++ b/drivers/firmware/tegra/bpmp-debugfs.c
->> @@ -77,13 +77,14 @@ static const char *get_filename(struct tegra_bpmp 
->> *bpmp,
->>       const char *root_path, *filename = NULL;
->>       char *root_path_buf;
->>       size_t root_len;
->> +    size_t root_path_buf_len = 512;
->> -    root_path_buf = kzalloc(512, GFP_KERNEL);
->> +    root_path_buf = kzalloc(root_path_buf_len, GFP_KERNEL);
->>       if (!root_path_buf)
->>           goto out;
->>       root_path = dentry_path(bpmp->debugfs_mirror, root_path_buf,
->> -                sizeof(root_path_buf));
->> +                root_path_buf_len);
->>       if (IS_ERR(root_path))
->>           goto out;
->>
-> 
-> Thanks for fixing this! I just noticed that the debugfs for BPMP is 
-> broken on -next right now and this fixes it. We should add the fixes tag 
-> ...
-> 
-> Fixes: 06c2d9a078ab ("firmware: tegra: Reduce stack usage")
-> 
-> Otherwise ...
-> 
-> Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
-> Tested-by: Jon Hunter <jonathanh@nvidia.com>
-> 
-> Arnd, do you want to pick this up?
+If we want to fix this, my vote is for casting to an int and updating the comment
+in is_rsvd_spte().  I think I'd vote to fix this?  IIRC KVM has had bitwise goofs
+in the past that manifested as real bugs, it would be nice to turn this on.
 
-Nevermind I see that Thierry queued up the offending patch and so I will 
-ask Thierry to pick this up.
+Or maybe add a macro to handle this?  E.g.
 
-Jon
+diff --git a/arch/x86/kvm/mmu/spte.h b/arch/x86/kvm/mmu/spte.h
+index 7c0b09461349..38aeb4b21925 100644
+--- a/arch/x86/kvm/mmu/spte.h
++++ b/arch/x86/kvm/mmu/spte.h
+@@ -307,6 +307,12 @@ static inline bool __is_bad_mt_xwr(struct rsvd_bits_validate *rsvd_check,
+        return rsvd_check->bad_mt_xwr & BIT_ULL(pte & 0x3f);
+ }
 
--- 
-nvpublic
++/*
++ * Macro for intentional bitwise-OR of two booleans, which requires casting at
++ * least one of the results to an int to suppress -Wbitwise-instead-of-logical.
++ */
++#define BITWISE_BOOLEAN_OR(a, b) (!!((int)(a) | (int)(b)))
++
+ static __always_inline bool is_rsvd_spte(struct rsvd_bits_validate *rsvd_check,
+                                         u64 spte, int level)
+ {
+@@ -315,8 +321,8 @@ static __always_inline bool is_rsvd_spte(struct rsvd_bits_validate *rsvd_check,
+         * bits and EPT's invalid memtype/XWR checks to avoid an extra Jcc
+         * (this is extremely unlikely to be short-circuited as true).
+         */
+-       return __is_bad_mt_xwr(rsvd_check, spte) |
+-              __is_rsvd_bits_set(rsvd_check, spte, level);
++       return BITWISE_BOOLEAN_OR(__is_bad_mt_xwr(rsvd_check, spte),
++                                 __is_rsvd_bits_set(rsvd_check, spte, level));
+ }
+
+ static inline bool spte_can_locklessly_be_made_writable(u64 spte)
