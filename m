@@ -2,84 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BC0D42E484
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 01:02:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ACD842E487
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 01:02:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234012AbhJNXER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 19:04:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43652 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230503AbhJNXEQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 19:04:16 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D5E7C061570;
-        Thu, 14 Oct 2021 16:02:11 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id y1so5164162plk.10;
-        Thu, 14 Oct 2021 16:02:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=elTbg3LLUd0tVBsGRe2KL6JIDNTTkS+yo5Y7KpMBtaI=;
-        b=cUpF41cCqBEdQM5Vy4oXPwRIalVbBy7qZLhMjEI1uIlTteb5LmN/H00giAunB22XcQ
-         Rb1T6P5WxAbwd/9Z3VHFzv4bIkr+VLMZVbLZ5qYjwr4VTnONXCk+/+m3hgaIxZSS28Ll
-         UPaRwwh3tga2xx+TEa/l+627I105dRlbE/h5kG91JTNhUTqK8VearSHYK2danHujFqv+
-         /LCziI12wgBbNMkW2eLkVRb1OSr5fL8183BjyY9XTk2En4YutFwbN092cFqqBznkKIaJ
-         UJ/2JRMxeZVoo716OzXfoHL3DgrprJ0Vc0zt8fiv7FwJKbKroFAVG8bG0XDtnjBVsbvs
-         o9vQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=elTbg3LLUd0tVBsGRe2KL6JIDNTTkS+yo5Y7KpMBtaI=;
-        b=sDe710UG/aLkjXrEWhXa2CuyTfc5t0W7r9hYI7MmmgRMivcEZWkeYk+8FRpPDcT4Rb
-         +8EuZJRMGcLAqEoqpjqoQOtWSdIlp/OYIrQMOD9sTf0IvejAJ8AMG+GBiDeYW3DfC9dc
-         uJ8ma6Xl63CoX5ozh9PicgmUSxyvVi854ZUgMiK0ca+j4IxEKarXD9bZxo1N87pIgjXr
-         rYH/AwvWplyvCwJA28pmZmyU4HzHplkfXJTXnX5VU//1mXPCyNbSSoFVo6Uywwk1pfxQ
-         kL1Ci5BtFD4nUVpeVMNbWOnyhN/1YpNfPM/1gpvgFHKZyzjIqPNfjoov2RyG07+3Rd1x
-         jjZA==
-X-Gm-Message-State: AOAM531+pj2if62yzORgwDAkioKZmQ2//AmrSEmiPTxLkDzKkwSm1neH
-        PXzbmGY2zi0ET5Kl00Skl1Q=
-X-Google-Smtp-Source: ABdhPJwF36h78Uv3hhK6clWu6wpJ3llzJ4CbV8Rc0b4yJOcFirr1LmZ637DSMk29qLAaSrvaIgV4yw==
-X-Received: by 2002:a17:90a:8b8d:: with SMTP id z13mr23578422pjn.214.1634252530863;
-        Thu, 14 Oct 2021 16:02:10 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id t11sm3407027pfj.173.2021.10.14.16.02.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Oct 2021 16:02:07 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Thu, 14 Oct 2021 13:02:06 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Yu Kuai <yukuai3@huawei.com>
-Cc:     axboe@kernel.dk, paolo.valente@linaro.org, fchecconi@gmail.com,
-        avanzini.arianna@gmail.com, mkoutny@suse.com,
-        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com
-Subject: Re: [PATCH v2 -next] blk-cgroup: synchoronize blkg creation against
- policy deactivation
-Message-ID: <YWi27oAU0v5v86eN@slm.duckdns.org>
-References: <20211013124456.3186005-1-yukuai3@huawei.com>
+        id S234284AbhJNXEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 19:04:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42690 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230503AbhJNXEt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 19:04:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 291E861053;
+        Thu, 14 Oct 2021 23:02:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634252564;
+        bh=KQhnfft+SeT/c5QZdp7RT0ENepdXT9rmIDodbBGmQKk=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=V987DMuuAu143/QxCL25gnT67YWoLWnzDLrxGaQU2lZE4cKadqwaoj7ZSuvF1ueSH
+         4BFY2IndapYKmGjvJoV1jnI41eVkgUZ1JfE9Ll/CO9Xe52stcM286MeRcND9ugxvQr
+         wNQpjT1xp3meLcjMOcSsUTgg4eJb3JWl7Ve0aCJouIN4G1by8xMOuSZmWso+/FPv5Y
+         bmmxric7fYEBbPbnqdvLHWHbrlmIwZjFqVzdcfX/Vlp9vGJTJ9vy0uy6j4ov3XDBOZ
+         pMfGEADfc88zSMGY/IlJWghPrOzo+tiga7LzpmLXEaJUkGAqI23UrF4tZmmJ9Ez87H
+         5H/aqQSyW2ExA==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211013124456.3186005-1-yukuai3@huawei.com>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAL_Jsq+GHt+DqHa0GeLKWoni+Lghg5wg5ssREZBdSD-=K3XQ1A@mail.gmail.com>
+References: <20210923064137.60722-1-zhang.lyra@gmail.com> <20210923064137.60722-3-zhang.lyra@gmail.com> <YV1XpL7ibF1y4LbV@google.com> <CAL_Jsq+eqqv=qtKOiNdEpYGi2amek_m+Q-Z9A769pXXqJ4R88A@mail.gmail.com> <YWVD0RXHVLxuXEIN@google.com> <CAMuHMdWqYVp1JyzZoidAJhPy9ypRnSOWHJLz5knDUMcFHPOzAw@mail.gmail.com> <YWfSz00Rj5AVhkgT@google.com> <CAL_Jsq+GHt+DqHa0GeLKWoni+Lghg5wg5ssREZBdSD-=K3XQ1A@mail.gmail.com>
+Subject: Re: [PATCH v4 2/4] dt-bindings: mfd: sprd: Add bindings for ums512 global registers
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        linux-clk <linux-clk@vger.kernel.org>, open list:
+        OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS 
+        <devicetree@vger.kernel.org>, Baolin Wang <baolin.wang7@gmail.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>,
+        LKML <linux-kernel@vger.kernel.org>, ;
+Illegal-Object: Syntax error in Cc: address found on vger.kernel.org:
+        Cc:     ;
+                        ^-missing semicolon to end mail group, extraneous tokens in mailbox, missing end of mailbox
+To:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>
+Date:   Thu, 14 Oct 2021 16:02:42 -0700
+Message-ID: <163425256290.1688384.5646232860050218479@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 08:44:56PM +0800, Yu Kuai wrote:
-> @@ -1401,6 +1406,7 @@ void blkcg_deactivate_policy(struct request_queue *q,
->  	if (queue_is_mq(q))
->  		blk_mq_freeze_queue(q);
->  
-> +	mutex_lock(&q->blkg_lock);
->  	spin_lock_irq(&q->queue_lock);
+Quoting Rob Herring (2021-10-14 09:18:16)
+> On Thu, Oct 14, 2021 at 1:48 AM Lee Jones <lee.jones@linaro.org> wrote:
+> >
+> > I don't explicitly build DT documentation.
+> >
+> > Since I use the build bots to let me know if there are strange !(C,
+> > ASM, arm, aarch64, mips, ppc, x86) build issues or ones with odd
+> > configuration possibilities (randconfig) in the repos I maintain, you
+> > might have to convince them that this is important too.
+>=20
+> It's really just a matter of turning on the build in
+> allyesconfig/allmodconfig builds. I've not done that primarily because
+> there's one person I don't want to yell at me, but I could probably
+> make it arm and/or arm64 only. It's really arch and config
+> independent, so doing it multiple times is kind of pointless.
+>=20
+> I assume for bots you mean kernel-ci mainly? Do you run that before
+> stuff gets into linux-next? IMO, that's too late. But still a slight
+> improvement if things go in via one tree. Otherwise, I see the
+> breakage twice, 1st linux-next then the merge window.
+>=20
 
-Given that deactivation drains q_usage_counter through
-blk_mq_freeze_queue(), can't the blkg_conf_prep() just pin the usage count?
-
-Thanks.
-
--- 
-tejun
+I run `make dt_binding_check DT_SCHEMA_FILES=3D"<path to yaml file>"` but
+nowadays this seems to check all the bindings and not just the one
+binding I care to check. Did something break?
