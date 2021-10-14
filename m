@@ -2,122 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4678442D969
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 14:39:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DDFA42D96B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 14:39:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231276AbhJNMlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 08:41:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42738 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230359AbhJNMlC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 08:41:02 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52DE4C061753
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 05:38:57 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id w14so23604726edv.11
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 05:38:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vanguardiasur-com-ar.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8OYfFNdhKlh5vCRuRw3rL+lpyG6Iz3zsndXlWQuOqNI=;
-        b=rO8Cimbu3ArvFcSKskAMaEz7aYPRXYb1TiaXDvaU2b70yNbLMOWMpDmGJFMN1Rnz7G
-         M297CLhdxw2O0YteyYq9YLtuf9NyzJWhkonUS9AlKuTCLX+CrlBF3jbIZ1vLEbv5JyfN
-         cq9XMY7pO8xXwClCitODDk8MvmypSpa56G3dGbCHCnwUA1DHpXSTI+VBZQ5QRFvuARgD
-         rnQqcQgS7V45c7G2eEvq3qx6CxbpHc1h2Zfqt8gRETh7npquNH5NFa9Iv1o2PkOi7Rq2
-         EAzYMngcgh029FfDuYQ8j5b/8ea7PNtfWGsSImewcj1GyCS1CqkK4rdJsai0iuCsWFE0
-         01UQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8OYfFNdhKlh5vCRuRw3rL+lpyG6Iz3zsndXlWQuOqNI=;
-        b=M3Sb/Nj8gboaW7Do+2buHL2S8F2oFABAwcznAGTtwUqa+6hEg60MjKo3GeDaiEuOFE
-         tRkLBpV/H5wNBRf+Ty+lbVYX4hU15Mx853Zlkm+2qGdISE4VHBQfPpxmKlQJOPRro7Xr
-         yzOBjMxQsFpxdIwS1yVy1nbhgK76QF4MN/fzfo43WJM4ccTBZ7eqdHDDVFbOdbZeQQFW
-         onUdm6aKxZZkDCwPnog54rpMG7sJcKBiE8muX2KBGt9rp2TzCgmJl/MDMc5XJ8LdfB9k
-         pAHFxS3QGwuxki/kKUko+8DuEp/xhsdi3dSOZtWzTbn/GUKsmdzXVX93BeJo63O2TRV2
-         rSYw==
-X-Gm-Message-State: AOAM532AfPO2ylp3JltTp4NQHnaizh5VlDjJG0L/7VtUphq/eu3QhPty
-        6bu8mEcJRuBs0fzKeo+oadYqBITeYYsKGhjM6lF5zg==
-X-Google-Smtp-Source: ABdhPJw5RwGlWi8DUKaA9l8+IoPQsOFoPKhiFW27/0Uo29ALZMFUdlPeJGnIjKW+HthuHqOmJG3IW10gLCzTjzFq+d0=
-X-Received: by 2002:a05:6402:40d2:: with SMTP id z18mr8324506edb.362.1634215135566;
- Thu, 14 Oct 2021 05:38:55 -0700 (PDT)
+        id S231493AbhJNMl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 08:41:28 -0400
+Received: from foss.arm.com ([217.140.110.172]:54254 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229994AbhJNMlY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 08:41:24 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 04BB9D6E;
+        Thu, 14 Oct 2021 05:39:20 -0700 (PDT)
+Received: from [10.57.25.70] (unknown [10.57.25.70])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B59D73F70D;
+        Thu, 14 Oct 2021 05:39:18 -0700 (PDT)
+Subject: Re: [PATCH] coresight: trbe: Defer the probe on offline CPUs
+To:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        mathieu.poirier@linaro.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        coresight@lists.linaro.org,
+        Bransilav Rankov <branislav.rankov@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>
+References: <20211013163323.2111579-1-suzuki.poulose@arm.com>
+ <0eda15f2-e879-a7f0-dac0-c4813682608e@arm.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <182b7f5f-f67e-9875-c4a5-26f6153a7f97@arm.com>
+Date:   Thu, 14 Oct 2021 13:39:17 +0100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <20210901083215.25984-1-yunfei.dong@mediatek.com>
- <CAAEAJfDOt_GyDPojcj5P6Wou9HC2GC8YzRt2wYyqdrCOjfeOog@mail.gmail.com>
- <3b9463e88d88ce85205da08f8263252da7726ade.camel@mediatek.com>
- <aba7fb4ffe6e45ac90869b5017468386bce64d28.camel@mediatek.com>
- <b7ed8b71578a98704e9b8ca29cac63c67cc14b3f.camel@mediatek.com>
- <CAAEAJfCHEBFc8B7C0bu7UxtJdffvDarqgA-rset1wPjLOiV01A@mail.gmail.com> <b3fa00e8b66658e120279e37261cbdb5db7edf52.camel@mediatek.com>
-In-Reply-To: <b3fa00e8b66658e120279e37261cbdb5db7edf52.camel@mediatek.com>
-From:   Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Date:   Thu, 14 Oct 2021 09:38:43 -0300
-Message-ID: <CAAEAJfD0=0zNOS8ydu-BwpdoCsADAjdpm1LXBzZ2T8D=JQmYtg@mail.gmail.com>
-Subject: Re: [PATCH v6, 00/15] Using component framework to support multi
- hardware decode
-To:     "yunfei.dong@mediatek.com" <yunfei.dong@mediatek.com>
-Cc:     Alexandre Courbot <acourbot@chromium.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Tzung-Bi Shih <tzungbi@chromium.org>,
-        Tiffany Lin <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Tomasz Figa <tfiga@google.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Fritz Koenig <frkoenig@chromium.org>,
-        Irui Wang <irui.wang@mediatek.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Project_Global_Chrome_Upstream_Group 
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <0eda15f2-e879-a7f0-dac0-c4813682608e@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yunfei,
+On 14/10/2021 04:28, Anshuman Khandual wrote:
+> Hi Suzuki,
+> 
+> On 10/13/21 10:03 PM, Suzuki K Poulose wrote:
+>> If a CPU is offline during the driver init, we could end up causing
+>> a kernel crash trying to register the coresight device for the TRBE
+>> instance.
+> 
+> Which pointer deference fails here exactly ?
+> 
+> static void arm_trbe_register_coresight_cpu(struct trbe_drvdata *drvdata, int cpu)
+> {
+>          struct trbe_cpudata *cpudata = per_cpu_ptr(drvdata->cpudata, cpu);
+>          struct coresight_device *trbe_csdev = coresight_get_percpu_sink(cpu);
+>          struct coresight_desc desc = { 0 };
+>          struct device *dev;
+> 
+>          if (WARN_ON(trbe_csdev))
+>                  return;
+> 
+>          dev = &cpudata->drvdata->pdev->dev;   <---- Fails here
+> 
+> cpudata->drvdata link gets established in arm_trbe_probe_cpu() which
+> would not have run on an offline cpu.
 
-On Tue, 12 Oct 2021 at 22:17, yunfei.dong@mediatek.com
-<yunfei.dong@mediatek.com> wrote:
->
-> Hi Ezequiel,
->
-> Thanks for your feedback,
->
-> The driver can work well now according to your advice with
-> of_platform_populate interface.
->
-> In order to separate parent node with children node, parent node is
-> master device, children node is component device.
->
-> The master and component are registered platform device.
->
->
-> Could you please help to review the patch again when you are free:
->
-> https://patchwork.linuxtv.org/project/linux-media/cover/20211011070247.792-1-yunfei.dong@mediatek.com/
->
+Yes, that is correct.
 
-I'm glad you managed to simplify the driver. I tried applying the patches
-but they don't apply on media master. Please push a branch to gitlab or github
-or somewhere public.
+> 
+>>
+>> e.g:
+> 
+> Should probably also mention the exact point of dereference failure
+> before this error message here.
+> 
+>>
+>> [    0.149999] coresight ete0: CPU0: ete v1.1 initialized
+>> [    0.149999] coresight-etm4x ete_1: ETM arch init failed
+>> [    0.149999] coresight-etm4x: probe of ete_1 failed with error -22
+>> [    0.150085] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000050
+>> [    0.150085] Mem abort info:
+>> [    0.150085]   ESR = 0x96000005
+>> [    0.150085]   EC = 0x25: DABT (current EL), IL = 32 bits
+>> [    0.150085]   SET = 0, FnV = 0
+>> [    0.150085]   EA = 0, S1PTW = 0
+>> [    0.150085] Data abort info:
+>> [    0.150085]   ISV = 0, ISS = 0x00000005
+>> [    0.150085]   CM = 0, WnR = 0
+>> [    0.150085] [0000000000000050] user address but active_mm is swapper
+>> [    0.150085] Internal error: Oops: 96000005 [#1] PREEMPT SMP
+>> [    0.150085] Modules linked in:
+>> [    0.150085] Hardware name: FVP Base RevC (DT)
+>> [    0.150085] pstate: 00800009 (nzcv daif -PAN +UAO -TCO BTYPE=--)
+>> [    0.150155] pc : arm_trbe_register_coresight_cpu+0x74/0x144
+>> [    0.150155] lr : arm_trbe_register_coresight_cpu+0x48/0x144
+>>    ...
+>>
+>> [    0.150237] Call trace:
+>> [    0.150237]  arm_trbe_register_coresight_cpu+0x74/0x144
+>> [    0.150237]  arm_trbe_device_probe+0x1c0/0x2d8
+>> [    0.150259]  platform_drv_probe+0x94/0xbc
+>> [    0.150259]  really_probe+0x1bc/0x4a8
+>> [    0.150266]  driver_probe_device+0x7c/0xb8
+>> [    0.150266]  device_driver_attach+0x6c/0xac
+>> [    0.150266]  __driver_attach+0xc4/0x148
+>> [    0.150266]  bus_for_each_dev+0x7c/0xc8
+>> [    0.150266]  driver_attach+0x24/0x30
+>> [    0.150266]  bus_add_driver+0x100/0x1e0
+>> [    0.150266]  driver_register+0x78/0x110
+>> [    0.150266]  __platform_driver_register+0x44/0x50
+>> [    0.150266]  arm_trbe_init+0x28/0x84
+>> [    0.150266]  do_one_initcall+0x94/0x2bc
+>> [    0.150266]  do_initcall_level+0xa4/0x158
+>> [    0.150266]  do_initcalls+0x54/0x94
+>> [    0.150319]  do_basic_setup+0x24/0x30
+>> [    0.150319]  kernel_init_freeable+0xe8/0x14c
+>> [    0.150319]  kernel_init+0x14/0x18c
+>> [    0.150319]  ret_from_fork+0x10/0x30
+>> [    0.150319] Code: f94012c8 b0004ce2 9134a442 52819801 (f9402917)
+>> [    0.150319] ---[ end trace d23e0cfe5098535e ]---
+>> [    0.150346] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
+>>
+>> Fix this by skipping the step, if we are unable to probe the CPU.
+>>
+>> Fixes: 3fbf7f011f24 ("coresight: sink: Add TRBE driver")
+>> Reported-by: Bransilav Rankov <branislav.rankov@arm.com>
+>> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+>> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+>> Cc: Mike Leach <mike.leach@linaro.org>
+>> Cc: Leo Yan <leo.yan@linaro.org>
+>> Tested-by: Branislav Rankov <branislav.rankov@arm.com>
+>> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+>> ---
+>>   drivers/hwtracing/coresight/coresight-trbe.c | 4 +++-
+>>   1 file changed, 3 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
+>> index 5d350acef798..85ceda68af82 100644
+>> --- a/drivers/hwtracing/coresight/coresight-trbe.c
+>> +++ b/drivers/hwtracing/coresight/coresight-trbe.c
+>> @@ -1286,7 +1286,9 @@ static int arm_trbe_probe_coresight(struct trbe_drvdata *drvdata)
+>>   		return -ENOMEM;
+>>   
+>>   	for_each_cpu(cpu, &drvdata->supported_cpus) {
+>> -		smp_call_function_single(cpu, arm_trbe_probe_cpu, drvdata, 1);
+>> +		/* If we fail to probe the CPU, let us defer it to hotplug callbacks */
+>> +		if (smp_call_function_single(cpu, arm_trbe_probe_cpu, drvdata, 1))
+>> +			continue;
+>>   		if (cpumask_test_cpu(cpu, &drvdata->supported_cpus))
+>>   			arm_trbe_register_coresight_cpu(drvdata, cpu);
+>>   		if (cpumask_test_cpu(cpu, &drvdata->supported_cpus))
+>>
+> 
+> Right, LGTM. Although I guess the following addition might be worthwhile
+> just to highlight the fact that cpudata->drvdata is not valid unless the
+> cpu has gone through arm_trbe_probe_cpu() first.
+> 
+> --- a/drivers/hwtracing/coresight/coresight-trbe.c
+> +++ b/drivers/hwtracing/coresight/coresight-trbe.c
+> @@ -869,6 +869,7 @@ static void arm_trbe_register_coresight_cpu(struct trbe_drvdata *drvdata, int cp
+>          if (WARN_ON(trbe_csdev))
+>                  return;
+>   
+> +       WARN_ON(!cpudata->drvdata);
 
-Keep in mind that when you need people to review your code,
-it's generally good practice to try to make it easy on them.
-The harder you make it, the less inclined people will be to
-spend time on your work.
+Ok, I would rather return here with the warning. I will send
+a revision.
 
-Thanks,
-Ezequiel
+Thanks !
+
+Suzuki
