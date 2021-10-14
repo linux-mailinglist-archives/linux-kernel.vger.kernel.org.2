@@ -2,93 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34C6E42D92A
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 14:16:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 092A442D933
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 14:21:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231477AbhJNMSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 08:18:43 -0400
-Received: from mail-ua1-f53.google.com ([209.85.222.53]:44895 "EHLO
-        mail-ua1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230017AbhJNMSl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 08:18:41 -0400
-Received: by mail-ua1-f53.google.com with SMTP id e7so10768425ual.11;
-        Thu, 14 Oct 2021 05:16:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Lv+vkHGqzWmzedxEMuBmL3E2j3vUbGSejb8Wbt7xQjQ=;
-        b=E/Dzj0NHK/7qHLf4AaVNwFVcJDE5Zqqr9ZPdI4KqNVL/OIHb4j7GrIMH/eucGXdNOm
-         q1lJ/N0+aqX06TJJJSWia0nA3CpeGQHJ73Vjqr2BnxbEyOpi5CWiNi0H0yLk2Nvkv5ve
-         zjbxNmnaT5FGPrgnolvFq7x21ahqUhz0PWiKQBNDPaCZA3PA8xOWHfA3x53T+j1e7s7k
-         rUpjIewQlR1tnoywbO/SU8mCIXDtTiITxw6tzBbAYB466BW4WsPFAbe5S0amGt6sh7IJ
-         4rNgt3NjrcQJPvc17+gEk7mXGZOZq7qnFfUN32ek4+NuljScS/hyt4I7Kz7T7NA2ce1o
-         RjkA==
-X-Gm-Message-State: AOAM532TSJWDZNbFzibyHmft/x7COTDOMVZclppsv/s2HmtTQUO7gYB4
-        p56OrBlOTQc01YMN0n3voeSWcyKK3fsVIe1GbNs=
-X-Google-Smtp-Source: ABdhPJytb1grgGpADeMJOpN6L55FezVAocpFP6q+ahrFSPEWk3sEGcqagbH86QJg0fknDI0IaA3CYQelhZmcKEjwxOk=
-X-Received: by 2002:a67:d583:: with SMTP id m3mr6481019vsj.41.1634213796407;
- Thu, 14 Oct 2021 05:16:36 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210913170436.243-1-alexander.helms.jy@renesas.com>
- <20210913170436.243-2-alexander.helms.jy@renesas.com> <CAMuHMdWZp=7sR+dTL0F8o61weLqqC3k1kkemm_PktvyK8+ONmw@mail.gmail.com>
-In-Reply-To: <CAMuHMdWZp=7sR+dTL0F8o61weLqqC3k1kkemm_PktvyK8+ONmw@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 14 Oct 2021 14:16:25 +0200
-Message-ID: <CAMuHMdXq2NyBf539raFJSoWSGXnwxOAMWcVB_WV-=uf+kOs7rw@mail.gmail.com>
-Subject: Re: [PATCH v6 1/2] dt-bindings: Add binding for Renesas 8T49N241
-To:     Alex Helms <alexander.helms.jy@renesas.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        david.cater.jc@renesas.com, Michal Simek <michal.simek@xilinx.com>,
-        Rob Herring <robh@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S231278AbhJNMXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 08:23:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39564 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229912AbhJNMXJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 08:23:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3165D610D2;
+        Thu, 14 Oct 2021 12:21:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634214064;
+        bh=6MYhIBKkvZclfN4psLIYQ4kVgjVd2GVmYFz+UPiZ/Pg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=WbayizYk7WzsrBZN3HfEWfYgVrARkIds9C9nf24q7826IeXPtMwbZN4UA9hD/5tc7
+         b/raJcYzkouJUdf4POelIDT9Hgwj/oLkLEm6R6wxp56Egb1HQKv4hkalAvtrsRw5E6
+         BpU+8EwrgZQO3GJRbU/KAWRVCdKEfzSMRDZsGlFxQHnAH02A2iw26EAstuC4F1Tm+X
+         Nadwl2uxo+UVH2QwkP3Pq73vy/NosE6GUXaCVzuvLyHlqsmGZYmERx3u/vQxTwDZmN
+         2EFgyPcm0FLurfC7bHj+EJ8CaxE2gW6hNogcRnNZXj5pettC0MwmMuYBybLO9L9AAE
+         A2SDRirGfN1sQ==
+Date:   Thu, 14 Oct 2021 21:21:01 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Beau Belgrave <beaub@linux.microsoft.com>,
+        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] user_events: Enable user processes to create and write
+ to trace events
+Message-Id: <20211014212101.d6bddbac7206cba0401c8675@kernel.org>
+In-Reply-To: <20211013114034.13daac32@gandalf.local.home>
+References: <20211005224428.2551-1-beaub@linux.microsoft.com>
+        <20211007012827.99cd5795140cbb0c932e1b5a@kernel.org>
+        <20211006175611.GA2995@kbox>
+        <20211007231738.0626e348322dc09e7ebbf1d6@kernel.org>
+        <20211007162204.GA30947@kbox>
+        <20211008081249.8fbacc4f5d9fa7cf2e488d21@kernel.org>
+        <20211008000540.GA31220@kbox>
+        <20211008182258.6bf272e6691679d41e7971fc@kernel.org>
+        <20211011162523.GA1542@kbox>
+        <20211014002132.ee7668a4790ea75b0f7a9ceb@kernel.org>
+        <20211013114034.13daac32@gandalf.local.home>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alex,
+On Wed, 13 Oct 2021 11:40:34 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-On Wed, Oct 13, 2021 at 8:02 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> On Mon, Sep 13, 2021 at 7:05 PM Alex Helms
-> <alexander.helms.jy@renesas.com> wrote:
-> > Renesas 8T49N241 has 4 outputs, 1 integral and 3 fractional dividers.
-> > The 8T49N241 accepts up to two differential or single-ended input clocks
-> > and a fundamental-mode crystal input. The internal PLL can lock to either
-> > of the input reference clocks or to the crystal to behave as a frequency
-> > synthesizer.
-> >
-> > Signed-off-by: Alex Helms <alexander.helms.jy@renesas.com>
-> > Reviewed-by: Rob Herring <robh@kernel.org>
->
-> Thanks for your patch!
->
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/clock/renesas,8t49n241.yaml
+> On Thu, 14 Oct 2021 00:21:32 +0900
+> Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> 
+> > > This approach requires an FD returned and either an int for the status
+> > > page or the returend FD could expose the ID via another IOCTL being
+> > > issued.  
+> > 
+> > OK, I would like to suggest you to add events/user-events/*/marker file
+> > (which returns that shared file struct backed FD) so that some simple
+> > user scripts can also send the events (these may not use ioctl, just
+> > write the events.) But this can be done afterwards anyway.
+> > 
+> 
+> I'd prefer we avoid this. It will break some of the semantics of the events
+> directory. One, only "user-events" will have this "marker" file.
 
-> BTW, do you plan to add interrupt and/or GPIO support later?
+Yes, it is only for the user-events.
 
-To clarify, and I really meant to add:
+> Although
+> it will be very similar to the "inject" file, but that's only for debugging
+> anyway.
 
-  interrupts:
-    maxItems: 1
+Oh, do we already the "inject" file?
 
-to the bindings now, and GPIO-related properties and subnodes later.
+> All the files in the events directory is starting to add a bunch of
+> overhead, as they are typically copied into the instances. Although, when
+> we get the eventfs directory created, maybe that will not be as big of a
+> deal. But that still doesn't fix the semantics issue.
 
-Gr{oetje,eeting}s,
+Indeed. OK, making "marker" file for each instances may confuse user because
+the written event itself must be delivered to any instance but the file
+seems to belong to one of them. Please ignore it.
 
-                        Geert
+Thank you,
+
+> 
+> -- Steve
+> 
+
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Masami Hiramatsu <mhiramat@kernel.org>
