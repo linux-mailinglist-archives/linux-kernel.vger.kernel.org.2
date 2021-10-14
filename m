@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0269542DCB5
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:59:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A081F42DCBA
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:59:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233042AbhJNPBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 11:01:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44464 "EHLO mail.kernel.org"
+        id S232599AbhJNPBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 11:01:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44622 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230495AbhJNO7t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 10:59:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D2964611ED;
-        Thu, 14 Oct 2021 14:57:41 +0000 (UTC)
+        id S232579AbhJNPAA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 11:00:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B84CA61151;
+        Thu, 14 Oct 2021 14:57:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634223462;
-        bh=85Oe+SG4YAhT0uGSupy2UunOKLoMQHmt1FAIYw08P3s=;
+        s=korg; t=1634223470;
+        bh=HitNsl+kbzg8iIMflm7duTfEMWkHh7Hl7Po4erb1TTc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uGyrAViFgpDeOJYSMyMg6rk5EcmiXkqxzzXqoPU4gZIQBN/4TQ/8yLBHIXrhP3sk/
-         aYQnwqopDamnN69GUor2niEuR3SCxgz2F5SFD8/wuyH8YVyTSGIPmSa3l1AfNI8pT7
-         J+t2Q8t/FSPW9pVmsHMpGFZm1cfJy7wjM65PwYu0=
+        b=ZWnMPR0U3cEHjbeu1H3WeE6VxkBmRf+xRdsMpVP9x4OCR6GmafZTber2Ouan8M9tR
+         lGinUYy1vUa93akMHcuDiJE/WIqgR3IHLjkrd6E0I8eoxh+pSyiVnODd5CZ55noLg4
+         VckY/RLwVFVpCChB07KOE/XkqdzYRDlhUQTO1kZY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jamie Iles <quic_jiles@quicinc.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 23/33] i2c: acpi: fix resource leak in reconfiguration device addition
-Date:   Thu, 14 Oct 2021 16:53:55 +0200
-Message-Id: <20211014145209.574351338@linuxfoundation.org>
+        stable@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.14 24/33] net: phy: bcm7xxx: Fixed indirect MMD operations
+Date:   Thu, 14 Oct 2021 16:53:56 +0200
+Message-Id: <20211014145209.611498968@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211014145208.775270267@linuxfoundation.org>
 References: <20211014145208.775270267@linuxfoundation.org>
@@ -40,40 +39,148 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jamie Iles <quic_jiles@quicinc.com>
+From: Florian Fainelli <f.fainelli@gmail.com>
 
-[ Upstream commit 6558b646ce1c2a872fe1c2c7cb116f05a2c1950f ]
+commit d88fd1b546ff19c8040cfaea76bf16aed1c5a0bb upstream.
 
-acpi_i2c_find_adapter_by_handle() calls bus_find_device() which takes a
-reference on the adapter which is never released which will result in a
-reference count leak and render the adapter unremovable.  Make sure to
-put the adapter after creating the client in the same manner that we do
-for OF.
+When EEE support was added to the 28nm EPHY it was assumed that it would
+be able to support the standard clause 45 over clause 22 register access
+method. It turns out that the PHY does not support that, which is the
+very reason for using the indirect shadow mode 2 bank 3 access method.
 
-Fixes: 525e6fabeae2 ("i2c / ACPI: add support for ACPI reconfigure notifications")
-Signed-off-by: Jamie Iles <quic_jiles@quicinc.com>
-Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-[wsa: fixed title]
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Implement {read,write}_mmd to allow the standard PHY library routines
+pertaining to EEE querying and configuration to work correctly on these
+PHYs. This forces us to implement a __phy_set_clr_bits() function that
+does not grab the MDIO bus lock since the PHY driver's {read,write}_mmd
+functions are always called with that lock held.
+
+Fixes: 83ee102a6998 ("net: phy: bcm7xxx: add support for 28nm EPHY")
+[florian: adjust locking since phy_{read,write}_mmd are called with no
+PHYLIB locks held]
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/i2c/i2c-core-acpi.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/phy/bcm7xxx.c |   94 ++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 94 insertions(+)
 
-diff --git a/drivers/i2c/i2c-core-acpi.c b/drivers/i2c/i2c-core-acpi.c
-index 52ae674ebf5b..6f42856c1507 100644
---- a/drivers/i2c/i2c-core-acpi.c
-+++ b/drivers/i2c/i2c-core-acpi.c
-@@ -395,6 +395,7 @@ static int i2c_acpi_notify(struct notifier_block *nb, unsigned long value,
- 			break;
+--- a/drivers/net/phy/bcm7xxx.c
++++ b/drivers/net/phy/bcm7xxx.c
+@@ -30,7 +30,12 @@
+ #define MII_BCM7XXX_SHD_2_ADDR_CTRL	0xe
+ #define MII_BCM7XXX_SHD_2_CTRL_STAT	0xf
+ #define MII_BCM7XXX_SHD_2_BIAS_TRIM	0x1a
++#define MII_BCM7XXX_SHD_3_PCS_CTRL	0x0
++#define MII_BCM7XXX_SHD_3_PCS_STATUS	0x1
++#define MII_BCM7XXX_SHD_3_EEE_CAP	0x2
+ #define MII_BCM7XXX_SHD_3_AN_EEE_ADV	0x3
++#define MII_BCM7XXX_SHD_3_EEE_LP	0x4
++#define MII_BCM7XXX_SHD_3_EEE_WK_ERR	0x5
+ #define MII_BCM7XXX_SHD_3_PCS_CTRL_2	0x6
+ #define  MII_BCM7XXX_PCS_CTRL_2_DEF	0x4400
+ #define MII_BCM7XXX_SHD_3_AN_STAT	0xb
+@@ -462,6 +467,93 @@ static int bcm7xxx_28nm_ephy_config_init
+ 	return bcm7xxx_28nm_ephy_apd_enable(phydev);
+ }
  
- 		i2c_acpi_register_device(adapter, adev, &info);
-+		put_device(&adapter->dev);
- 		break;
- 	case ACPI_RECONFIG_DEVICE_REMOVE:
- 		if (!acpi_device_enumerated(adev))
--- 
-2.33.0
-
++#define MII_BCM7XXX_REG_INVALID	0xff
++
++static u8 bcm7xxx_28nm_ephy_regnum_to_shd(u16 regnum)
++{
++	switch (regnum) {
++	case MDIO_CTRL1:
++		return MII_BCM7XXX_SHD_3_PCS_CTRL;
++	case MDIO_STAT1:
++		return MII_BCM7XXX_SHD_3_PCS_STATUS;
++	case MDIO_PCS_EEE_ABLE:
++		return MII_BCM7XXX_SHD_3_EEE_CAP;
++	case MDIO_AN_EEE_ADV:
++		return MII_BCM7XXX_SHD_3_AN_EEE_ADV;
++	case MDIO_AN_EEE_LPABLE:
++		return MII_BCM7XXX_SHD_3_EEE_LP;
++	case MDIO_PCS_EEE_WK_ERR:
++		return MII_BCM7XXX_SHD_3_EEE_WK_ERR;
++	default:
++		return MII_BCM7XXX_REG_INVALID;
++	}
++}
++
++static bool bcm7xxx_28nm_ephy_dev_valid(int devnum)
++{
++	return devnum == MDIO_MMD_AN || devnum == MDIO_MMD_PCS;
++}
++
++static int bcm7xxx_28nm_ephy_read_mmd(struct phy_device *phydev,
++				      int devnum, u16 regnum)
++{
++	u8 shd = bcm7xxx_28nm_ephy_regnum_to_shd(regnum);
++	int ret;
++
++	if (!bcm7xxx_28nm_ephy_dev_valid(devnum) ||
++	    shd == MII_BCM7XXX_REG_INVALID)
++		return -EOPNOTSUPP;
++
++	/* set shadow mode 2 */
++	ret = phy_set_clr_bits(phydev, MII_BCM7XXX_TEST,
++			       MII_BCM7XXX_SHD_MODE_2, 0);
++	if (ret < 0)
++		return ret;
++
++	/* Access the desired shadow register address */
++	ret = phy_write(phydev, MII_BCM7XXX_SHD_2_ADDR_CTRL, shd);
++	if (ret < 0)
++		goto reset_shadow_mode;
++
++	ret = phy_read(phydev, MII_BCM7XXX_SHD_2_CTRL_STAT);
++
++reset_shadow_mode:
++	/* reset shadow mode 2 */
++	phy_set_clr_bits(phydev, MII_BCM7XXX_TEST, 0,
++			 MII_BCM7XXX_SHD_MODE_2);
++	return ret;
++}
++
++static int bcm7xxx_28nm_ephy_write_mmd(struct phy_device *phydev,
++				       int devnum, u16 regnum, u16 val)
++{
++	u8 shd = bcm7xxx_28nm_ephy_regnum_to_shd(regnum);
++	int ret;
++
++	if (!bcm7xxx_28nm_ephy_dev_valid(devnum) ||
++	    shd == MII_BCM7XXX_REG_INVALID)
++		return -EOPNOTSUPP;
++
++	/* set shadow mode 2 */
++	ret = phy_set_clr_bits(phydev, MII_BCM7XXX_TEST,
++			       MII_BCM7XXX_SHD_MODE_2, 0);
++	if (ret < 0)
++		return ret;
++
++	/* Access the desired shadow register address */
++	ret = phy_write(phydev, MII_BCM7XXX_SHD_2_ADDR_CTRL, shd);
++	if (ret < 0)
++		goto reset_shadow_mode;
++
++	/* Write the desired value in the shadow register */
++	phy_write(phydev, MII_BCM7XXX_SHD_2_CTRL_STAT, val);
++
++reset_shadow_mode:
++	/* reset shadow mode 2 */
++	return phy_set_clr_bits(phydev, MII_BCM7XXX_TEST, 0,
++				MII_BCM7XXX_SHD_MODE_2);
++}
++
+ static int bcm7xxx_28nm_ephy_resume(struct phy_device *phydev)
+ {
+ 	int ret;
+@@ -637,6 +729,8 @@ static int bcm7xxx_28nm_probe(struct phy
+ 	.get_strings	= bcm_phy_get_strings,				\
+ 	.get_stats	= bcm7xxx_28nm_get_phy_stats,			\
+ 	.probe		= bcm7xxx_28nm_probe,				\
++	.read_mmd	= bcm7xxx_28nm_ephy_read_mmd,			\
++	.write_mmd	= bcm7xxx_28nm_ephy_write_mmd,			\
+ }
+ 
+ #define BCM7XXX_40NM_EPHY(_oui, _name)					\
 
 
