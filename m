@@ -2,165 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9C4742DEA7
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:51:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3A7E42DEAB
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:52:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231848AbhJNPxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 11:53:42 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:33298
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230109AbhJNPxk (ORCPT
+        id S232333AbhJNPyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 11:54:43 -0400
+Received: from mail-ot1-f53.google.com ([209.85.210.53]:40842 "EHLO
+        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230109AbhJNPyl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 11:53:40 -0400
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com [209.85.208.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id C65E93F077
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 15:51:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1634226693;
-        bh=ibIaPrB4h2yeafzdyejc/m3tdIsM4DZm3oUCx/6wbuk=;
-        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=M7BGNDKG+rN3EsS7z0lbyFU3gtlIVdo63m8DXNJhX8M0IWAwkwuSARfNXEkswg/RN
-         l52tEizDZYQx1AxO9SXeCQskFoyPwjW8+J9s80HkNCBiDEcPJmT7/usqCVFDbC6TXg
-         tGTCJU3r83SQq4uHcg4i4/GnNFkLz0CcWH3ZYGdWdpuWlD+wnStL9rphg1eYQOBsvN
-         DwzgjqyhGDcedzbbjCr5IrntYLZsRiK2OUown51jZYfFGLozi+f08KWllry3V4Fa0t
-         iFrer7zGZnb6ZulYN4InLFaNlzprK+jgFFRK5jGsoTZwx3NFTzIzGzeolgybiL+HGu
-         X8gDkNvlGyh0Q==
-Received: by mail-ed1-f70.google.com with SMTP id z23-20020aa7cf97000000b003db7be405e1so5570434edx.13
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 08:51:33 -0700 (PDT)
+        Thu, 14 Oct 2021 11:54:41 -0400
+Received: by mail-ot1-f53.google.com with SMTP id s18-20020a0568301e1200b0054e77a16651so8819288otr.7;
+        Thu, 14 Oct 2021 08:52:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ibIaPrB4h2yeafzdyejc/m3tdIsM4DZm3oUCx/6wbuk=;
-        b=hgHCHZ0SMLbxlXvdwGuzIZ7LKWYFa3gZxPWap5gCU7NOyULYxAsaqM/Cjo1WsrM9S+
-         RgVQ3v7Ox+7slRN/7DKn4X89qVlsn4VcshFnynD7M7GxElWjuo4wt4zWMYzk37kYqGSP
-         8hpvy+exoAE5H7BlyYx9pQGFBgiiy8GngwXlJCXzdYIpUTAhGjKoY5cBZdGdafnrveBa
-         jFoU6bqRDDKZkndGKdz90buc0h1Iu+vhZkldzm5RYPKOAB/tbNcE17Z+r9kCZHK1E1cA
-         hwbLL929eWxLSZH/DhMgJxL3pva0PLvfaGZDLug+0Il4akzYMD3WTTM+z1OrVfPinckc
-         6Vpw==
-X-Gm-Message-State: AOAM530Hf9VwpTEEeZhclSni6o1ljj52xH5JmDPQjNDDrK6q9uH/vu84
-        MVUIIBjWL1TqgtfG2njt7S1JL/lcSrLWQ6bRFnLToEquuMCroyBYRNpgpxeBhOML678Iw9uSPy3
-        zGz/B/PImimoYC4X7mVBrn2/nNDGWnNkncdOr2GkLK1Dc0/vH9iXfeQ1SDQ==
-X-Received: by 2002:a05:6402:1c85:: with SMTP id cy5mr9872549edb.281.1634226693486;
-        Thu, 14 Oct 2021 08:51:33 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwXSo7KMpganDPs+BD0ZMLrwk86fT+bJ0DDECD+p0nOUGLuBGc0LtUenwo7PGuhya/lJqPfy6zQImYnMjK1vYM=
-X-Received: by 2002:a05:6402:1c85:: with SMTP id cy5mr9872535edb.281.1634226693319;
- Thu, 14 Oct 2021 08:51:33 -0700 (PDT)
+        bh=L3rG/sRTtXDYgB+/nt2HYaRogTaK4bb2teXa+vrJeCk=;
+        b=1U4gQnSjyXikAwF6St5sEY7rY3VoZssNKdKr60gsRio7pvyE4m7lUMmDKirrys/6ms
+         oTgSvaAGxzK5AnzpiYMAcVULs1o/LYMAN+vxA8r0BqD4txnOn31z4i/7VU0W0vBkJGuW
+         Ksn+gn+CmsweZs1WQOWxyRThvPwyH4RWG2rU+09ex4VbtMCcU7khVYpGOovohomdOpAb
+         TPLahM0+hCAcjP180+bqR7JAHcdY93l+P0zXPfkn/Gx1p8y4+nvq1xy467N9padaZuq0
+         tM82662/2FU5gKv/Rvem8nCZX8IL+3/7swsJ3i4PCQIgt5fty2JR76x2m8Lh7Sd6+YZt
+         Ol8Q==
+X-Gm-Message-State: AOAM531oP9W2lEFLBj17CmbKqsC8P1B6FV/avUH1tJzxTLCgcWyo4sQp
+        wdW3ivnUvAiwGKDG0fTWUzBshnZ3/H3L5yjcN/Y=
+X-Google-Smtp-Source: ABdhPJwjOXgFIhpcI73SW02/rOAteIjJr4A/dFdiwl27Gcv3lP7zXtVVYf72HnSCixHn+W5xnhKPRrBYo5UirazXCug=
+X-Received: by 2002:a05:6830:1af0:: with SMTP id c16mr3145511otd.16.1634226756303;
+ Thu, 14 Oct 2021 08:52:36 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210921053356.1705833-1-alexandre.ghiti@canonical.com>
- <DB9PR10MB465252461469340F60A8714780A49@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
- <CA+zEjCvKaS0sE7paCecMDvqpkw-yLM_QFHdF5pgWTAqeH0JAfA@mail.gmail.com>
- <DB9PR10MB46523AE6EF51D6C801B4A9BF80A99@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
- <CAEn-LTqVd8z=kpCtWjiPbKuw24NuHLTQxWzw7g34fEJgDYrp8w@mail.gmail.com>
- <CA+zEjCtQN6c8bikg620PQwoPzJ6T4wGLvzQ413iPs1tCeHif0Q@mail.gmail.com>
- <CA+zEjCtVxDkg8K0iK32j4KO+Wgt+hTjXD15HdRhNeCV2Sjpckw@mail.gmail.com>
- <DB9PR10MB4652294AB444536BF57E320A80AE9@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
- <CA+zEjCsf6m8cctHNPBxJczg-J9XC-piAcdtNDO71qmtCtDj9gw@mail.gmail.com>
- <DB9PR10MB465270EA5D6F25C44E68D1E580B09@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
- <CA+zEjCvFO6Tz+D42wgnstx_TLNEt=HM0eeT5g0-zwaEscGj2vQ@mail.gmail.com>
- <DB9PR10MB46521072770D6A1C75DEE08380B29@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
- <DB9PR10MB46525FC6EAF1610178A20B7580B69@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
-In-Reply-To: <DB9PR10MB46525FC6EAF1610178A20B7580B69@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
-From:   Alexandre Ghiti <alexandre.ghiti@canonical.com>
-Date:   Thu, 14 Oct 2021 17:51:22 +0200
-Message-ID: <CA+zEjCsFif-pT6aW-XwYiSuLsSbBTWVxme6S2rdSN0oQETnZiA@mail.gmail.com>
-Subject: Re: [PATCH] drivers: mfd: da9063: Add restart notifier implementation
-To:     Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Cc:     David Abdurachmanov <david.abdurachmanov@gmail.com>,
-        Support Opensource <Support.Opensource@diasemi.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20211014154032.10103-1-hdegoede@redhat.com>
+In-Reply-To: <20211014154032.10103-1-hdegoede@redhat.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 14 Oct 2021 17:52:25 +0200
+Message-ID: <CAJZ5v0j1xgq1SS5wE6sRgB394ppJ97-vreDU1RZsucpEQxbp9Q@mail.gmail.com>
+Subject: Re: [PATCH] x86/PCI/ACPI: Replace printk calls with pr_info/pr_warn calls
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Myron Stowe <myron.stowe@redhat.com>,
+        Juha-Pekka Heikkila <juhapekka.heikkila@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Adam,
-
-On Tue, Oct 12, 2021 at 12:33 PM Adam Thomson
-<Adam.Thomson.Opensource@diasemi.com> wrote:
+On Thu, Oct 14, 2021 at 5:40 PM Hans de Goede <hdegoede@redhat.com> wrote:
 >
-> On 08 October 2021 10:46, Adam Thomson wrote:
+> The direct use of printk is deprecated, replace the printk calls
+> in arch/x86/pci/acpi.c with pr_info/pr_warn calls.
 >
-> > > > Thanks for the info. So we believe, based on the event registers values
-> > > > provided, it is the RTC event as that's not cleared by a power-cycle (it's in
-> > > > the always-on domain). The other test would be to mask this event
-> > > immediately
-> > > > after an RTC based reboot and see if the long key-press then shuts down the
-> > > > device. I suspect it would in that case, as per you clearing the event.
-> > >
-> > > Indeed if I mask the RTC alarm in IRQ_MASK_A, the intempestive reboot
-> > > disappears. But that's not something we can do: the reset driver will
-> > > actually be implemented in openSBI at some point where the devices are
-> > > probed on-demand (the same applies to u-boot I think), so we cannot
-> > > clear or mask anything at boot.
-> > >
-> > > >
-> > > > I'm still curious as to the 16 seconds though. Would that be when the kernel
-> > > > finally starts and masks/clears events (seems quite a long time)?
-> > >
-> > > No, the kernel is not up yet. Maybe 16sec is not the right value, I
-> > > may have been influenced by the discussion here
-> > > https://www.dialog-semiconductor.com/products/pmics?post_id=10052#tab-
-> > > support_tab_content.
-> > >
-> > > It seems there is some consensus about having this reset driver be a
-> > > SiFive Unmatched board specific thing: quid of the sequence I propose
-> > > in this patch then? It does not mess with the RTC registers, it
-> > > reboots reliably and there's no intempestive reboot: is it dangerous
-> > > to use? Or do you have another alternative?
-> >
-> > Yes, a board specific implementation would be the way to go. We're just checking
-> > through the sequence again to be absolutely sure of any pitfalls that may
-> > present themselves, and will get back to you when we have something more.
+> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+
+Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+
+> ---
+> Note this applies on top of my:
+> "x86/PCI: Ignore E820 reservations for bridge windows on newer systems"
+> patch and was requested by several people during review of that patch.
+
+I would send it as a [2/2] in the same series then, but ...
+
+> ---
+>  arch/x86/pci/acpi.c | 25 +++++++++++++------------
+>  1 file changed, 13 insertions(+), 12 deletions(-)
 >
-> So having examined your sequence again it's now clearer as to what is happening.
-> With the sequence you provided this is only a partial reset whereby all of the
-> output rails are sequenced down then up again and restored to OTP voltages.
-> However the remainder of the chip settings aren't reset as this isn't a true
-> reset of the device going through full reload from OTP, so for example settings
-> of regulator mode GPIO states, or IRQ mask bits would persist on the restart,
-> which could have implications on system operation.
-
-Ok, it's not perfect but I think those are settings that will get
-reinitialized by the corresponding drivers while booting, contrary to
-the RTC registers which are clobbered by the other method.
-
+> diff --git a/arch/x86/pci/acpi.c b/arch/x86/pci/acpi.c
+> index 4537e3561c91..98fbdf4fa698 100644
+> --- a/arch/x86/pci/acpi.c
+> +++ b/arch/x86/pci/acpi.c
+> @@ -1,4 +1,7 @@
+>  // SPDX-License-Identifier: GPL-2.0
+> +
+> +#define pr_fmt(fmt) "PCI: " fmt
+> +
+>  #include <linux/pci.h>
+>  #include <linux/acpi.h>
+>  #include <linux/init.h>
+> @@ -38,7 +41,7 @@ static int __init set_nouse_crs(const struct dmi_system_id *id)
 >
-> In addition the only bits of interest for you should be:
+>  static int __init set_ignore_seg(const struct dmi_system_id *id)
+>  {
+> -       printk(KERN_INFO "PCI: %s detected: ignoring ACPI _SEG\n", id->ident);
+> +       pr_info("%s detected: ignoring ACPI _SEG\n", id->ident);
+>         pci_ignore_seg = true;
+>         return 0;
+>  }
+> @@ -158,10 +161,9 @@ void __init pci_acpi_crs_quirks(void)
+>         else if (pci_probe & PCI_USE__CRS)
+>                 pci_use_crs = true;
 >
->  - CONTROL_F (0x13)
->         WAKE_UP (BIT 2) = 1
->  - CONTROL_A (0x0E)
->         SYSTEM_EN (BIT 0) = 0
+> -       printk(KERN_INFO "PCI: %s host bridge windows from ACPI; "
+> -              "if necessary, use \"pci=%s\" and report a bug\n",
+> -              pci_use_crs ? "Using" : "Ignoring",
+> -              pci_use_crs ? "nocrs" : "use_crs");
+> +       pr_info("%s host bridge windows from ACPI; if necessary, use \"pci=%s\" and report a bug\n",
+> +               pci_use_crs ? "Using" : "Ignoring",
+> +               pci_use_crs ? "nocrs" : "use_crs");
 >
-> Setting those two bits should be enough to trigger the partial reset sequence.
-> The other bits you had in your sequence don't seem to be necessary or relevant.
+>         /*
+>          * Some BIOS-es contain a bug where they add addresses which map to
+> @@ -189,8 +191,8 @@ void __init pci_acpi_crs_quirks(void)
+>         else if (pci_probe & PCI_USE_E820)
+>                 pci_use_e820 = true;
 >
-> One final caveat to this approach is that there is a 16s internal timer (as you
-> noted before, VDD_START) which is started when the device moves to ACTIVE mode.
-> When that 16s timer expires the device will clear the WAKE_UP bit automatically.
-> This means there's the outside chance that you could try the reset command
-> sequence above around the same time, and that could mean you set the WAKE_UP
-> bit, but it's immediately cleared again by this timer expiry before the
-> SYSTEM_EN bit is set low. In that case there would be a need for an external
-> event (e.g. ONKEY) to kick the system to start again.
-
-Ok, the risk exists but the window is quite small.
-
-After all, the solution I first proposed is not perfect, but now we
-know why it works and IMO it has less drawbacks than using the RTC
-registers, so I think we should go for this solution. I'll see if I
-can help Nikita implement this directly in openSBI.
-
-@Adam Thomson I had migrated the DA9063 device tree bindings to yaml,
-I'll push that soon. Thanks for all your help, much appreciated.
-
-Thanks,
-
-Alex
+> -       printk(KERN_INFO "PCI: %s E820 reservations for host bridge windows\n",
+> -              pci_use_e820 ? "Honoring" : "Ignoring");
+> +       pr_info("%s E820 reservations for host bridge windows\n",
+> +               pci_use_e820 ? "Honoring" : "Ignoring");
+>  }
+>
+>  #ifdef CONFIG_PCI_MMCONFIG
+> @@ -365,9 +367,8 @@ struct pci_bus *pci_acpi_scan_root(struct acpi_pci_root *root)
+>                 root->segment = domain = 0;
+>
+>         if (domain && !pci_domains_supported) {
+> -               printk(KERN_WARNING "pci_bus %04x:%02x: "
+> -                      "ignored (multiple domains not supported)\n",
+> -                      domain, busnum);
+> +               pr_warn("pci_bus %04x:%02x: ignored (multiple domains not supported)\n",
+> +                       domain, busnum);
+>                 return NULL;
+>         }
+>
+> @@ -435,7 +436,7 @@ int __init pci_acpi_init(void)
+>         if (acpi_noirq)
+>                 return -ENODEV;
+>
+> -       printk(KERN_INFO "PCI: Using ACPI for IRQ routing\n");
+> +       pr_info("Using ACPI for IRQ routing\n");
+>         acpi_irq_penalty_init();
+>         pcibios_enable_irq = acpi_pci_irq_enable;
+>         pcibios_disable_irq = acpi_pci_irq_disable;
+> @@ -447,7 +448,7 @@ int __init pci_acpi_init(void)
+>                  * also do it here in case there are still broken drivers that
+>                  * don't use pci_enable_device().
+>                  */
+> -               printk(KERN_INFO "PCI: Routing PCI interrupts for all devices because \"pci=routeirq\" specified\n");
+> +               pr_info("Routing PCI interrupts for all devices because \"pci=routeirq\" specified\n");
+>                 for_each_pci_dev(dev)
+>                         acpi_pci_irq_enable(dev);
+>         }
+> --
+> 2.31.1
+>
