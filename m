@@ -2,118 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6730C42DBD4
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:36:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D862342DBE2
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:40:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231348AbhJNOiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 10:38:06 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:3259 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230190AbhJNOiF (ORCPT
+        id S231264AbhJNOmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 10:42:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42694 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229743AbhJNOmL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 10:38:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1634222161; x=1665758161;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=UKR5vWCNAno42pYINcB56F+Pp43CdX14ETbyIT5ZJIE=;
-  b=nTMRZCxtF/9FlO3KQ+OJ8eP+zipDJoNUiJXFesovnC6jGcIP5oyGnPwx
-   f0eUCI02P6WNbUrdBWXpB8C+5Ci3t0nZ3MU7hsHHku5nB9A/e5hk+NjLD
-   4HAwMYZWFLktrVKvOzvN8pdkSZsDzYm8WcRtMaml35NZ8jr6INXIuN48X
-   nqtiBhi8XQ00rxWNPTzOcbafgPKNHNCNYSD+9JvZx9PjnySmdf+Vj0iL/
-   91d/ZM3dUxu5I1UtbEuGx+vkJ+grVqyMPzXjuY5cSrzKul0fUF58lGpW3
-   3zhDtPH9fLcQBVJ/BgOyfdhDINWKH3UEoZaqAlLgUARLKO0f5mMHuGyKC
-   g==;
-IronPort-SDR: d+BId0l/vwLu4oBH7WCcy4CC1hRX5GfLxzG3TEWawvTRBPtcFMbCtQXmqjo8hNdV+IgHLQyvuR
- g96YwPTZVfzII8Z51wwTCgp+297MaRniVrh2iuBLuqJN4VIZ9PdVCau9RMycnZMxcPqyeZYAPF
- bz3Mk/s2FyLHUrNNg+NmSAU4Q2oHrAGxVGYo4ZDXxt4+ZrhdCI0O8L8Ju0nhNjE6w+i7khBxc6
- XlvJ1sbu5NIpsDT9eV06C4LcwA3DL/Kf4BSlV/LPt0h3vMrWTA8yvbZAeSqg0OOlBjrxcXuTPh
- IkFY3b7qthC/QuYMdgxw3JYz
-X-IronPort-AV: E=Sophos;i="5.85,372,1624345200"; 
-   d="scan'208";a="140290254"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 14 Oct 2021 07:36:00 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Thu, 14 Oct 2021 07:36:00 -0700
-Received: from localhost (10.10.115.15) by chn-vm-ex04.mchp-main.com
- (10.10.85.152) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
- Transport; Thu, 14 Oct 2021 07:35:59 -0700
-Date:   Thu, 14 Oct 2021 16:37:33 +0200
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     Philipp Zabel <p.zabel@pengutronix.de>
-CC:     <linus.walleij@linaro.org>, <robh+dt@kernel.org>,
-        <lars.povlsen@microchip.com>, <Steen.Hegelund@microchip.com>,
-        <UNGLinuxDriver@microchip.com>, <linux-gpio@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 2/2] pinctrl: microchip sgpio: use reset driver
-Message-ID: <20211014143733.t2dov6ajjebxlht6@soft-dev3-1.localhost>
-References: <20211014085929.2579695-1-horatiu.vultur@microchip.com>
- <20211014085929.2579695-3-horatiu.vultur@microchip.com>
- <2874212d2f9462880d1b0aae35296162e1277e62.camel@pengutronix.de>
+        Thu, 14 Oct 2021 10:42:11 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4625C061570
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 07:40:06 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id oa4so4921413pjb.2
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 07:40:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=fKc/Clzqj7sN35K6qU3YvgRekqlf6MnRSCTbSDpofrw=;
+        b=ULCZsjdpfuDtLYUWM6IpmVr38GZz6EQaXWOB677Y6cn8iY2QLmJGKj18essQFIYR+y
+         IfjPKxrNed8vV/6olScfYeC2y/kOXWM8hU73fOvinYE4rgjSlFD0XKuJpYykOAgBZGtL
+         0Aeqf+0h1AWLVTQREWhBedEovqfRjJmSCzKwfa6s8Sb8XH1lC51af++gsaIB+If2qnHH
+         RlgdxN7bZ0n54mcMoY7Tzb0aS3GdVUxcRyNCcgdZAVne8gEfbwh93ruawisUdlTXlbT5
+         6eDqS4HV9VNUmBEZbmIKdqphHj9loFNq1qLIGEyWRsdmhFCrzRhXx1NyPImau9g52c0A
+         4X/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=fKc/Clzqj7sN35K6qU3YvgRekqlf6MnRSCTbSDpofrw=;
+        b=D5rJus6VbV31SQYThAN9hDZMBAMCq+gRImrFFCzvYKYN6edUjJ8udrJz1FZQgp2s5a
+         mNEBi01e9U2CgpBV5HeF7OuF7MZgr1RrHRe4gWUE77LqhYBb1h5FHFgWMuxoirA8wvw2
+         qcBaMjX++KXcxscc/Etdng0xBGgeD6G0QWxYB1blF/StYikCtmSU7LZzZ5NEPU2KR3CS
+         2U7QjjxyCF9mlGVRZ3bVuG1vPj3ku2N0UKfRA/VfV9aEzO+q5aCpD9/bpFFNNhEE+DQ/
+         uKZ1FdoRSnZMqWpe9uMFVSkkxgyPFJXfin/UjdNp+TPfHhW0tx1wueNsCHXOILwDya8y
+         Gbxg==
+X-Gm-Message-State: AOAM532sM67lt26YkKo5++r0YLjv6KiH6Q8VIH0wFZ6R2pbBakj7Tk2A
+        7eVHNeQ/tkc+eDLeZ7/xiC4=
+X-Google-Smtp-Source: ABdhPJxUHwi6+gcn+Xmnb5ALvr/yD8d8/I5yvbrVpWSwouV3CJfqgcbAPa1UknDNQCfkB9hZXbTLfg==
+X-Received: by 2002:a17:90b:1d8e:: with SMTP id pf14mr6579148pjb.125.1634222406217;
+        Thu, 14 Oct 2021 07:40:06 -0700 (PDT)
+Received: from Sauravs-MacBook-Air.local ([223.230.99.151])
+        by smtp.gmail.com with ESMTPSA id q8sm9156167pja.52.2021.10.14.07.40.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Oct 2021 07:40:05 -0700 (PDT)
+Date:   Thu, 14 Oct 2021 20:10:00 +0530
+From:   Saurav Girepunje <saurav.girepunje@gmail.com>
+To:     gregkh@linuxfoundation.org, fabioaiuto83@gmail.com,
+        ross.schm.dev@gmail.com, marcocesati@gmail.com,
+        saurav.girepunje@gmail.com, insafonov@gmail.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     saurav.girepunje@hotmail.com
+Subject: [PATCH v3] staging: rtl8723bs: os_dep: simplify the return statement
+Message-ID: <YWhBQF4yUH0/r53A@Sauravs-MacBook-Air.local>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2874212d2f9462880d1b0aae35296162e1277e62.camel@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 10/14/2021 13:47, Philipp Zabel wrote:
-> 
-> Hi Horatiu,
+Remove goto statement where function simply return value without doing
+any cleanup action.
 
-Hi Philipp
-> 
-> > +     reset = devm_reset_control_get_shared(&pdev->dev, "switch");
-> 
-> Please use devm_reset_control_get_optional_shared() for optional resets
-> and handle errors. That will return NULL in case the optional reset is
-> not specified in the device tree.
+Simplify the return using goto label to avoid unneeded 'if' condition
+check.
 
-I will do that.
+Remove the unneeded and redundant check of variable on goto.
 
-> 
-> It seems weird to me that the reset input to the GPIO controller is
-> called "switch" reset. You can request a single unnamed reset with
-> 
->         reset = devm_reset_control_get_shared(&pdev->dev, NULL);
-> 
-> although that would limit future extendability in case this driver will
-> ever require to handle multiple separate resets. If you decide to
-> request the reset control by name, the yaml binding should specify the
-> same name.
+Remove the assignment of NULL on local variable.
 
-I think this requires a little bit more explanation from my side. On
-lan966x we are facing the following issue. When we try to reset just the
-switch core then also the sgpio device was reset and there was no way
-from HW perspective to prevent this.
+Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
+---
 
-So our solutions was to create a reset driver[1] that will be triggered
-only one time, by the sgpio driver or by the switch driver. That is the
-reason why it was called "switch" reset. And that is the purpose of this
-patch to allow the sgpio driver to reset the switch in case is probed
-before the switch driver so it would not get reset after that.
+ChangeLog V3:
 
-> 
-> > +     if (!IS_ERR(reset))
-> > +             reset_control_reset(reset);
-> 
-> With optional resets, this can be just:
-> 
->         reset_control_reset(reset);
+	-Remove goto statement where function simply return value
+	 without doing any cleanup action.
+	-Remove the assignment of NULL on local variable.
+	-Replace the goto statement added after the memcpy on V2.
+	 with return 0 statement.
 
-Great I will do that.
+ChangeLog V2:
 
-> 
-> regards
-> Philipp
+	-Add goto out after the memcpy for no error case return with
+	 ret only. On V1 doing free, which was not required for no error
+	 case.
 
-[1] https://lore.kernel.org/lkml/20211013073807.2282230-1-horatiu.vultur@microchip.com/
+ChangeLog V1:
 
--- 
-/Horatiu
+	-Remove the unneeded and redundant check of variable on
+	 goto out.
+	-Simplify the return using goto label to avoid unneeded if
+	 condition check.
+
+ .../staging/rtl8723bs/os_dep/ioctl_cfg80211.c | 29 ++++++++-----------
+ 1 file changed, 12 insertions(+), 17 deletions(-)
+
+diff --git a/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c b/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
+index 0868f56e2979..217b86bfb722 100644
+--- a/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
++++ b/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
+@@ -2281,19 +2281,16 @@ static int rtw_cfg80211_add_monitor_if(struct adapter *padapter, char *name, str
+ 	struct rtw_wdev_priv *pwdev_priv = adapter_wdev_data(padapter);
+
+ 	if (!name) {
+-		ret = -EINVAL;
+-		goto out;
++		return -EINVAL;
+ 	}
+
+ 	if (pwdev_priv->pmon_ndev) {
+-		ret = -EBUSY;
+-		goto out;
++		return -EBUSY;
+ 	}
+
+ 	mon_ndev = alloc_etherdev(sizeof(struct rtw_netdev_priv_indicator));
+ 	if (!mon_ndev) {
+-		ret = -ENOMEM;
+-		goto out;
++		return -ENOMEM;
+ 	}
+
+ 	mon_ndev->type = ARPHRD_IEEE80211_RADIOTAP;
+@@ -2312,7 +2309,7 @@ static int rtw_cfg80211_add_monitor_if(struct adapter *padapter, char *name, str
+ 	mon_wdev = rtw_zmalloc(sizeof(struct wireless_dev));
+ 	if (!mon_wdev) {
+ 		ret = -ENOMEM;
+-		goto out;
++		goto err_free_mon_ndev;
+ 	}
+
+ 	mon_wdev->wiphy = padapter->rtw_wdev->wiphy;
+@@ -2322,22 +2319,20 @@ static int rtw_cfg80211_add_monitor_if(struct adapter *padapter, char *name, str
+
+ 	ret = cfg80211_register_netdevice(mon_ndev);
+ 	if (ret) {
+-		goto out;
++		goto err_free_mon_wdev;
+ 	}
+
+ 	*ndev = pwdev_priv->pmon_ndev = mon_ndev;
+ 	memcpy(pwdev_priv->ifname_mon, name, IFNAMSIZ+1);
+
+-out:
+-	if (ret && mon_wdev) {
+-		kfree(mon_wdev);
+-		mon_wdev = NULL;
+-	}
++	return 0;
+
+-	if (ret && mon_ndev) {
+-		free_netdev(mon_ndev);
+-		*ndev = mon_ndev = NULL;
+-	}
++err_free_mon_wdev:
++	kfree(mon_wdev);
++
++err_free_mon_ndev:
++	free_netdev(mon_ndev);
++	*ndev = NULL;
+
+ 	return ret;
+ }
+--
+2.33.0
+
