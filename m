@@ -2,77 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C58342E335
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 23:22:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6545142E33A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 23:23:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233089AbhJNVYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 17:24:33 -0400
-Received: from mail-oi1-f180.google.com ([209.85.167.180]:35771 "EHLO
-        mail-oi1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230094AbhJNVYb (ORCPT
+        id S232458AbhJNVZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 17:25:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49906 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230094AbhJNVZy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 17:24:31 -0400
-Received: by mail-oi1-f180.google.com with SMTP id n64so10249664oih.2;
-        Thu, 14 Oct 2021 14:22:26 -0700 (PDT)
+        Thu, 14 Oct 2021 17:25:54 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0476FC061570
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 14:23:49 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id ls18-20020a17090b351200b001a00250584aso7866254pjb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 14:23:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=VSUU/L5fDuJ+ECPOKm0ljaiEhq13igOZMXExTv1jJyU=;
+        b=iPz8uGum5x2Rr5CkOXdxaIJIh8b2rszzTAl2wHw1nJB+qWEMTuwUrStmxiu55shJ1H
+         zg9/kvLswiHKzHJ23jv8Y4Gld6jgM+TF6jVYLbtxMB17EgKpI3OjW/USc9tS3/M+phpA
+         M5Uo1ofWoHl60Y0Po3ZyK9lehtVJazaZTBGOcsBhQGZhXlJ+iAif7Iiwn73uGfqpRFQ6
+         2gftKjdJtD9COMn0O+7aNRblDfNP8kFYRICwnyMYEF5mEB37PLVszRDXsj2tmnayxewx
+         tE/9TulE/ZCTbRAWYug+UzcqutSTgmI76H9NfHnCxC974Iw0l2WK2t440U9w9eSgv8S5
+         7RgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=sTWbWNVDxXpUr7idNmcVYaWD0Lp1YKhdtqNx+mX5y/Y=;
-        b=gBbMvA5IeQKnB4C93L3FI//FArSWBcQdGjUuboLCpLh994YBnlmZgbbfwU2bH3UhpQ
-         dyRtFXb4jCXJtFt7A8u46UXkL+JYd4O+nmAEFsO2wpt8dw2c1drGBUBFDz8CGyoeIOVG
-         l262+DkPDtgUdI5gAKNYlOqhOEQYWJMN28bVXqQqgIELZxCOeOZUxgXHk3y1hjrZKYfr
-         DiYieJHoQiu1JxpDpMfUsUhxwdUtV7iLqv74rcnYTGr3LSLHDic/UwsKbz+lKhu1xN1R
-         qIu2JW9SAaeyst6c3m0pxlRlQFgNTXWnkhDopmdn7kYUODOSnk8kUhGPJ5a+OeObI0dE
-         3X4g==
-X-Gm-Message-State: AOAM530CN/jsGONSQCk8yPdM3qIcoYu5nqw4n2/Ma74bHhU8oYs86skP
-        tXAlItKV1RzRCdHoXKC3Bw==
-X-Google-Smtp-Source: ABdhPJwIfzrDT9VcaTSgTR101M5RgBewZ7IVrd5UyQNz3PTbvJEEL53NKhSAayf/GEVjkb/6Ffaa/A==
-X-Received: by 2002:a05:6808:1686:: with SMTP id bb6mr5833455oib.40.1634246545627;
-        Thu, 14 Oct 2021 14:22:25 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id s206sm804475oia.33.2021.10.14.14.22.24
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=VSUU/L5fDuJ+ECPOKm0ljaiEhq13igOZMXExTv1jJyU=;
+        b=DdiS8yGKIjTun336Cx4apH0VOUF512O9VZdYjHkIOldA0ZGF6/gryH/Wtafe+D2Xei
+         HBBrIJjF0SwFIYWfx+vX4SOFZtUkHbjsPS0y8dgpdaPkoxVR1emFB9yWg+P5VCAT0tvq
+         7yM33CMFP/d0FLrtZU27OpQWYupmM0RQjNuOV1FBHjlqVYlf3Xcxu1299Bzfb1sXdRTD
+         VSDdyniNizJTMVDkaMr+XFvCpUcxMDaTrjSmbccMRVEBFvWRQSAOmsKpTzO05avLPrIF
+         itTzaN53Vujxi43elw1Ia2w23pSeIoHroCGHQmGFUlH6N23teYIXum+eqbfcziJvGE13
+         uGAQ==
+X-Gm-Message-State: AOAM530qjCvSE58uaLuv9ae+SJEUU8HL10dOEN83xdwM/wCZkDiuttos
+        wab4nug2AjaDJh1EAIWYZ38=
+X-Google-Smtp-Source: ABdhPJxaTx/txQIzkBzm6yXMFVyCMpUoBf09VBCz7o1nDLYIMK6IK7rfqdLsz81mQ1VZhxcZJ/xOtw==
+X-Received: by 2002:a17:90b:3a88:: with SMTP id om8mr8843140pjb.164.1634246628323;
+        Thu, 14 Oct 2021 14:23:48 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
+        by smtp.gmail.com with ESMTPSA id me12sm5149636pjb.27.2021.10.14.14.23.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Oct 2021 14:22:24 -0700 (PDT)
-Received: (nullmailer pid 3961688 invoked by uid 1000);
-        Thu, 14 Oct 2021 21:22:23 -0000
-Date:   Thu, 14 Oct 2021 16:22:23 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        linux-tegra@vger.kernel.org,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v5 1/9] dt-bindings: Relocate DDR bindings
-Message-ID: <YWifjxkY7XYmNqXj@robh.at.kernel.org>
-References: <20211006224659.21434-1-digetx@gmail.com>
- <20211006224659.21434-2-digetx@gmail.com>
+        Thu, 14 Oct 2021 14:23:47 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Thu, 14 Oct 2021 11:23:46 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     menglong8.dong@gmail.com
+Cc:     jiangshanlai@gmail.com, linux-kernel@vger.kernel.org,
+        Mengen Sun <mengensun@tencent.com>
+Subject: Re: [PATCH] hotfix: make sysfs of unbound kworker cpumask more clever
+Message-ID: <YWif4n0UhaJTf7cp@slm.duckdns.org>
+References: <20211014030641.2182803-1-mengensun@tencent.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211006224659.21434-2-digetx@gmail.com>
+In-Reply-To: <20211014030641.2182803-1-mengensun@tencent.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 07 Oct 2021 01:46:51 +0300, Dmitry Osipenko wrote:
-> Move DDR bindings to memory-controllers directory to make them more
-> discoverable.
-> 
-> Suggested-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  .../bindings/{ => memory-controllers}/ddr/lpddr2-timings.txt      | 0
->  .../devicetree/bindings/{ => memory-controllers}/ddr/lpddr2.txt   | 0
->  .../bindings/{ => memory-controllers}/ddr/lpddr3-timings.txt      | 0
->  .../devicetree/bindings/{ => memory-controllers}/ddr/lpddr3.txt   | 0
->  4 files changed, 0 insertions(+), 0 deletions(-)
->  rename Documentation/devicetree/bindings/{ => memory-controllers}/ddr/lpddr2-timings.txt (100%)
->  rename Documentation/devicetree/bindings/{ => memory-controllers}/ddr/lpddr2.txt (100%)
->  rename Documentation/devicetree/bindings/{ => memory-controllers}/ddr/lpddr3-timings.txt (100%)
->  rename Documentation/devicetree/bindings/{ => memory-controllers}/ddr/lpddr3.txt (100%)
-> 
+Hello,
 
-Acked-by: Rob Herring <robh@kernel.org>
+On Thu, Oct 14, 2021 at 11:06:41AM +0800, menglong8.dong@gmail.com wrote:
+> diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+> index 1b3eb1e9531f..8216fc45c77b 100644
+> --- a/kernel/workqueue.c
+> +++ b/kernel/workqueue.c
+> @@ -5394,6 +5394,11 @@ int workqueue_set_unbound_cpumask(cpumask_var_t cpumask)
+>  	cpumask_and(cpumask, cpumask, cpu_possible_mask);
+>  	if (!cpumask_empty(cpumask)) {
+>  		apply_wqattrs_lock();
+> +		if (cpumask_equal(cpumask, wq_unbound_cpumask)) {
+> +			apply_wqattrs_unlock();
+> +			free_cpumask_var(saved_cpumask);
+
+A few nitpicks:
+
+* Please replace "hotfix:" with "workqueue:".
+
+* Can you reorganize the code so that it doesn't have to alloc and free the
+  saved_mask?
+
+Thanks.
+
+-- 
+tejun
