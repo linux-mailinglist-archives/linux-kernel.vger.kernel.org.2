@@ -2,36 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71E5842DD05
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:01:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00C4A42DD34
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:03:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232942AbhJNPDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 11:03:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45292 "EHLO mail.kernel.org"
+        id S233760AbhJNPFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 11:05:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50522 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232969AbhJNPCM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 11:02:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 55D44611F2;
-        Thu, 14 Oct 2021 14:59:15 +0000 (UTC)
+        id S233618AbhJNPDd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 11:03:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B234F61245;
+        Thu, 14 Oct 2021 15:00:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634223555;
-        bh=+QRJHM5QE3mSWvX3TiTNJdhjeKXqCOFpAJ2Z/yOlcyY=;
+        s=korg; t=1634223614;
+        bh=AahxwJYG4j4R4CS2jEkZRtOfxGhMYw++Mi15qTpH2NM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RCxNUNn1vmFioSLnDpOnvcMuaR18Rv8u4CslU06EToYn2E8sZOgKIo2wM9IErDYBk
-         0vDqz8ldn0IwOSSDdt4339XI5fMT5fIiZMe6yK+of4e9RaFSZb8zLI/UQoBRY1gqqp
-         dLOK0u9tFO6AKXtrP9Sxb3WljvFMtyaLNmLnTqE4=
+        b=JUi/IrrbTJqod2/wXSvrTC+BfqrP1y99wL4UByvfWHNQ8DbDmT5daAeV/zIdwdoLI
+         RVgo4HdzOxdmzI0E3RRVQNC04xXptVNwuqOWE97cFHzuDXjzcdeWPDEURVRW5HmvT1
+         4G7OyorOSYH9i2+RMj1Oapbl/s37Y/vudNAUc14M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Joshua Dickens <joshua.dickens@wacom.com>,
-        Ping Cheng <ping.cheng@wacom.com>,
-        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 05/16] HID: wacom: Add new Intuos BT (CTL-4100WL/CTL-6100WL) device IDs
-Date:   Thu, 14 Oct 2021 16:54:08 +0200
-Message-Id: <20211014145207.495424334@linuxfoundation.org>
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Rander Wang <rander.wang@intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Bard Liao <bard.liao@intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 03/22] ASoC: Intel: sof_sdw: tag SoundWire BEs as non-atomic
+Date:   Thu, 14 Oct 2021 16:54:09 +0200
+Message-Id: <20211014145208.095354427@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211014145207.314256898@linuxfoundation.org>
-References: <20211014145207.314256898@linuxfoundation.org>
+In-Reply-To: <20211014145207.979449962@linuxfoundation.org>
+References: <20211014145207.979449962@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,47 +44,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joshua-Dickens <Joshua@Joshua-Dickens.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-[ Upstream commit 0c8fbaa553077630e8eae45bd9676cfc01836aeb ]
+[ Upstream commit 58eafe1ff52ee1ce255759fc15729519af180cbb ]
 
-Add the new PIDs to wacom_wac.c to support the new models in the Intuos series.
+The SoundWire BEs make use of 'stream' functions for .prepare and
+.trigger. These functions will in turn force a Bank Switch, which
+implies a wait operation.
 
-[jkosina@suse.cz: fix changelog]
-Signed-off-by: Joshua Dickens <joshua.dickens@wacom.com>
-Reviewed-by: Ping Cheng <ping.cheng@wacom.com>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Mark SoundWire BEs as nonatomic for consistency, but keep all other
+types of BEs as is. The initialization of .nonatomic is done outside
+of the create_sdw_dailink helper to avoid adding more parameters to
+deal with a single exception to the rule that BEs are atomic.
+
+Suggested-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Rander Wang <rander.wang@intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Bard Liao <bard.liao@intel.com>
+Link: https://lore.kernel.org/r/20210907184436.33152-1-pierre-louis.bossart@linux.intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/wacom_wac.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ sound/soc/intel/boards/sof_sdw.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/hid/wacom_wac.c b/drivers/hid/wacom_wac.c
-index d5425bc1ad61..f6be2e70a496 100644
---- a/drivers/hid/wacom_wac.c
-+++ b/drivers/hid/wacom_wac.c
-@@ -4715,6 +4715,12 @@ static const struct wacom_features wacom_features_0x393 =
- 	{ "Wacom Intuos Pro S", 31920, 19950, 8191, 63,
- 	  INTUOSP2S_BT, WACOM_INTUOS3_RES, WACOM_INTUOS3_RES, 7,
- 	  .touch_max = 10 };
-+static const struct wacom_features wacom_features_0x3c6 =
-+	{ "Wacom Intuos BT S", 15200, 9500, 4095, 63,
-+	  INTUOSHT3_BT, WACOM_INTUOS_RES, WACOM_INTUOS_RES, 4 };
-+static const struct wacom_features wacom_features_0x3c8 =
-+	{ "Wacom Intuos BT M", 21600, 13500, 4095, 63,
-+	  INTUOSHT3_BT, WACOM_INTUOS_RES, WACOM_INTUOS_RES, 4 };
+diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
+index 2770e8179983..25548555d8d7 100644
+--- a/sound/soc/intel/boards/sof_sdw.c
++++ b/sound/soc/intel/boards/sof_sdw.c
+@@ -847,6 +847,11 @@ static int create_sdw_dailink(struct device *dev, int *be_index,
+ 			      cpus + *cpu_id, cpu_dai_num,
+ 			      codecs, codec_num,
+ 			      NULL, &sdw_ops);
++		/*
++		 * SoundWire DAILINKs use 'stream' functions and Bank Switch operations
++		 * based on wait_for_completion(), tag them as 'nonatomic'.
++		 */
++		dai_links[*be_index].nonatomic = true;
  
- static const struct wacom_features wacom_features_HID_ANY_ID =
- 	{ "Wacom HID", .type = HID_GENERIC, .oVid = HID_ANY_ID, .oPid = HID_ANY_ID };
-@@ -4888,6 +4894,8 @@ const struct hid_device_id wacom_ids[] = {
- 	{ USB_DEVICE_WACOM(0x37A) },
- 	{ USB_DEVICE_WACOM(0x37B) },
- 	{ BT_DEVICE_WACOM(0x393) },
-+	{ BT_DEVICE_WACOM(0x3c6) },
-+	{ BT_DEVICE_WACOM(0x3c8) },
- 	{ USB_DEVICE_WACOM(0x4001) },
- 	{ USB_DEVICE_WACOM(0x4004) },
- 	{ USB_DEVICE_WACOM(0x5000) },
+ 		ret = set_codec_init_func(link, dai_links + (*be_index)++,
+ 					  playback, group_id);
 -- 
 2.33.0
 
