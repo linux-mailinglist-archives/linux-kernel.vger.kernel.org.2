@@ -2,141 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57AFB42D72B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 12:30:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78AF142D72E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 12:35:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229691AbhJNKcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 06:32:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41392 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229912AbhJNKcU (ORCPT
+        id S230018AbhJNKhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 06:37:36 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:53058 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229513AbhJNKhe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 06:32:20 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE3F5C061570
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 03:30:15 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id i12so17873928wrb.7
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 03:30:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=us6+HCE+GUwum0s7he3QqgDzEk4c+WE4j1FhKg15OwQ=;
-        b=Ghe4/en6QpzuPARQaskuM409QmklUAvGw+F17sjWiRaNSofRKr4Z0gvgfW4hoY+Az0
-         0eWxBA2OLajwd6HR+JbSI1I4Gsr/7WxKQEU+OTt57uVFSXh7rQToDWni4J+2MLVeJK9q
-         TrYjmBzX+ariMNhef5xZ2geesmOnkvHajZq9L2qZkjMLlsBbhbEm6/PHmG9kxhr11I0A
-         PSFq0SIx9UtB3DwjXsKvrnnFWePx50jo8y+Z4iysgAAIXOl+PnLUJ3q7H3vpPz5ABi8T
-         +Nlz5lqy6COrNeOoD3A8riVSDIIHKDWKFDenDXSddjVFXRlwl+dOzRwwDqPW88N2l91e
-         dbaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=us6+HCE+GUwum0s7he3QqgDzEk4c+WE4j1FhKg15OwQ=;
-        b=3CuQ1T5gwhlD9QYLpgOqGt4Hjvi3tNOuUGfJsXVg6wCceeR7yyrQO1vzqXL1PHrVqF
-         gOJ63EUuzH9ckKcDemZNqR+XtSJaRkxu0h6mL5Y500ATyMqIrVqZF/hQBKB3K9glkHyl
-         eWW5NKOKzBr8mNpe/h1zIlXL+ZiD+/JrHGiZsg2tDrKexI+8dWiuZb15JBwACuB38GqS
-         maIsrCJ2GxvmKd7zzkmdNQcvrRPknSBY4q18vCqFuGUIHHwM9VjIADuvAbV8Kpl2dxCW
-         zmVci7jtHXnRb4OPR0aycepQ6Qd1o/tLSym9KrN5Pa8e+H7ORAMMUesjqnY0/KQgJ2Bn
-         tygQ==
-X-Gm-Message-State: AOAM530eSqMDn+/Jgqjno5IUPDXgY1xMvp0Y7m+GkScEzdTM6n6zVXno
-        SV4JYn2jYQ0UqoWJsk7Tp4x+rw==
-X-Google-Smtp-Source: ABdhPJw+YOMsuTTrRgZkFZDux7XgVNdWOpK/aaniXEYtjjI2eu73YUhLPxHoRc0c/ssQtITjRv9Cuw==
-X-Received: by 2002:adf:9787:: with SMTP id s7mr5493617wrb.191.1634207414553;
-        Thu, 14 Oct 2021 03:30:14 -0700 (PDT)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id o26sm7697211wmc.17.2021.10.14.03.30.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Oct 2021 03:30:14 -0700 (PDT)
-Subject: Re: [PATCH RFC linux] dt-bindings: nvmem: Add binding for U-Boot
- environment NVMEM provider
-To:     =?UTF-8?Q?Marek_Beh=c3=ban?= <kabel@kernel.org>
-Cc:     robh+dt@kernel.org, devicetree@vger.kernel.org,
-        U-Boot Mailing List <u-boot@lists.denx.de>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Luka Kovacic <luka.kovacic@sartura.hr>
-References: <20211013232048.16559-1-kabel@kernel.org>
- <629c8ba1-c924-565f-0b3c-8b625f4e5fb0@linaro.org>
- <20211014120601.133e9a84@dellmb>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <857c27a6-5c4b-e0ed-a830-35762799613f@linaro.org>
-Date:   Thu, 14 Oct 2021 11:30:13 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Thu, 14 Oct 2021 06:37:34 -0400
+X-UUID: 34d48e2b00494444a414e17f88bf18b1-20211014
+X-UUID: 34d48e2b00494444a414e17f88bf18b1-20211014
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        (envelope-from <guangming.cao@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 67651227; Thu, 14 Oct 2021 18:35:26 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3;
+ Thu, 14 Oct 2021 18:35:25 +0800
+Received: from mszswglt01.gcn.mediatek.inc (10.16.20.20) by
+ mtkcas11.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.0.1497.2 via Frontend Transport; Thu, 14 Oct 2021 18:35:24 +0800
+From:   <guangming.cao@mediatek.com>
+To:     <christian.koenig@amd.com>, <sumit.semwal@linaro.org>
+CC:     <guangming.cao@mediatek.com>, <dri-devel@lists.freedesktop.org>,
+        <linaro-mm-sig@lists.linaro.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>, <matthias.bgg@gmail.com>,
+        <rdunlap@infradead.org>, <wsd_upstream@mediatek.com>,
+        Guangming Cao <Guangming.Cao@mediatek.com>
+Subject: [PATCH v3] dma-buf: remove restriction of IOCTL:DMA_BUF_SET_NAME
+Date:   Thu, 14 Oct 2021 18:35:24 +0800
+Message-ID: <20211014103524.55368-1-guangming.cao@mediatek.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20211014102551.54983-1-guangming.cao@mediatek.com>
+References: <20211014102551.54983-1-guangming.cao@mediatek.com>
 MIME-Version: 1.0
-In-Reply-To: <20211014120601.133e9a84@dellmb>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Guangming Cao <Guangming.Cao@mediatek.com>
 
-
-On 14/10/2021 11:06, Marek Behún wrote:
-> On Thu, 14 Oct 2021 09:26:27 +0100
-> Srinivas Kandagatla <srinivas.kandagatla@linaro.org> wrote:
+On Wed, 2021-10-13 at 14:20 +0200, Christian König wrote:
+> Am 13.10.21 um 01:56 schrieb Sumit Semwal:
+> > Hello Guangming, Christian,
+> > 
+> > 
+> > 
+> > On Tue, 12 Oct 2021, 14:09 , <guangming.cao@mediatek.com> wrote:
+> > > From: Guangming Cao <Guangming.Cao@mediatek.com>
+> > > 
+> > > > Am 09.10.21 um 07:55 schrieb guangming.cao@mediatek.com:
+> > > > From: Guangming Cao <Guangming.Cao@mediatek.com>
+> > > > >
+> > > > > If dma-buf don't want userspace users to touch the dmabuf
+> > > buffer,
+> > > > > it seems we should add this restriction into
+> > > dma_buf_ops.mmap,
+> > > > > not in this IOCTL:DMA_BUF_SET_NAME.
+> > > > >
+> > > > > With this restriction, we can only know the kernel users of
+> > > the dmabuf
+> > > > > by attachments.
+> > > > > However, for many userspace users, such as userpsace users of
+> > > dma_heap,
+> > > > > they also need to mark the usage of dma-buf, and they don't
+> > > care about
+> > > > > who attached to this dmabuf, and seems it's no meaning to be
+> > > waiting for
+> > > > > IOCTL:DMA_BUF_SET_NAME rather than mmap.
+> > > > 
+> > > > Sounds valid to me, but I have no idea why this restriction was
+> > > added in 
+> > > > the first place.
+> > > > 
+> > > > Can you double check the git history and maybe identify when
+> > > that was 
+> > > > added? Mentioning this change in the commit message then might
+> > > make 
+> > > > things a bit easier to understand.
+> > > > 
+> > > > Thanks,
+> > > > Christian.
+> > > It was add in this patch: 
+> > > https://patchwork.freedesktop.org/patch/310349/.
+> > > However, there is no illustration about it.
+> > > I guess it wants users to set_name when no attachments on the
+> > > dmabuf,
+> > > for case with attachments, we can find owner by device in
+> > > attachments.
+> > > But just I said in commit message, this is might not a good idea.
+> > > 
+> > > Do you have any idea?
+> > > 
+> > 
+> > For the original series, the idea was that allowing name change
+> > mid-use could confuse the users about the dma-buf. However, the
+> > rest of the series also makes sure each dma-buf have a unique
+> > inode, and any accounting should probably use that, without relying
+> > on the name as much.
+> > So I don't have an objection to this change.
+>  
+> I suggest to add that explanation and the original commit id into the
+> commit message.
 > 
->> On 14/10/2021 00:20, Marek Behún wrote:
->>> Add device tree bindings for U-Boot environment NVMEM provider.
->>>
->>> U-Boot environment can be stored at a specific offset of a MTD
->>> device, EEPROM, MMC, NAND or SATA device, on an UBI volume, or in a
->>> file on a filesystem.
->>>
->>> The environment can contain information such as device's MAC
->>> address, which should be used by the ethernet controller node.
->>>    
->>
->> Have you looked at
->> ./Documentation/devicetree/bindings/mtd/partitions/nvmem-cells.yaml ?
+> With that changed the patch has my rb as well.
 > 
-> Hello srini,
-> 
-> yes, I have. What about it? :)
-> 
-> That binding won't work for u-boot-env, because the data are stored
-> in a different way. A cell does not have a constant predetermined
-> offset on the MTD.
+> Regards,
+> Christian.
+>
+updated, thanks!
+Guangming.
 
-Can't you dynamically update the nodes before nvmem-provider is registered?
-
-> The variables are stored as a sequence of values of format
-> "name=value", separated by '\0's, for example:
->    board=turris_mox\0ethaddr=00:11:22:33:44:55\0bootcmd=run distro_bootcmd\0....
-> Chaning lengths of values of variables, or deleting variables, moves
-> the data around. Integers and MAC addresses are stored as strings, and so on.
-> 
-
-Do you already have a provider driver for handing this.
-
-How is pre parsing cell info and post processing data planned to be handled?
-
-Currently in nvmem core we do check for "reg" property for each cell, 
-unless the provider driver is adding/updating dt entries dynamically 
-before registering nvmem provider, It will not work as it is. Alteast 
-this is what I suggested in similar case where cell information is in 
-tlv format.
-
-Secondly mac-address seems to be delimited, we recently introduced post 
-processing callback for provider driver [1], which should help in this case.
-
-If the nvmem-cell names are standard like "mac-address" then you do not 
-need to add a new "type" binding to cell too, you can do post-processing 
-based on name.
-
-[1] 
-https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/drivers/nvmem/imx-ocotp.c?id=823571f8c6f8968d8f14e91972fa350ce200f5db
-
-
---srini
-
-> Also the mtd/partitions/nvmem-cells.yaml doesn't take into account
-> u-boot-env stored on non-MTD devices.
-> 
-> Marek
-> 
->    
-> 
+> > Best,
+> > Sumit.
+> > > > 
+> > > > >
+> > > > > Signed-off-by: Guangming Cao <Guangming.Cao@mediatek.com>
+> > > > > ---
+> > > > >   drivers/dma-buf/dma-buf.c | 14 ++------------
+> > > > >   1 file changed, 2 insertions(+), 12 deletions(-)
+> > > > >
+> > > > > diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-
+> > > buf.c
+> > > > > index 511fe0d217a0..db2f4efdec32 100644
+> > > > > --- a/drivers/dma-buf/dma-buf.c
+> > > > > +++ b/drivers/dma-buf/dma-buf.c
+> > > > > @@ -325,10 +325,8 @@ static __poll_t dma_buf_poll(struct file
+> > > *file, poll_table *poll)
+> > > > >   
+> > > > >   /**
+> > > > >    * dma_buf_set_name - Set a name to a specific dma_buf to
+> > > track the usage.
+> > > > > - * The name of the dma-buf buffer can only be set when the
+> > > dma-buf is not
+> > > > > - * attached to any devices. It could theoritically support
+> > > changing the
+> > > > > - * name of the dma-buf if the same piece of memory is used
+> > > for multiple
+> > > > > - * purpose between different devices.
+> > > > > + * It could theoretically support changing the name of the
+> > > dma-buf if the same
+> > > > > + * piece of memory is used for multiple purpose between
+> > > different devices.
+> > > > >    *
+> > > > >    * @dmabuf: [in]     dmabuf buffer that will be renamed.
+> > > > >    * @buf:    [in]     A piece of userspace memory that
+> > > contains the name of
+> > > > > @@ -346,19 +344,11 @@ static long dma_buf_set_name(struct
+> > > dma_buf *dmabuf, const char __user *buf)
+> > > > >     if (IS_ERR(name))
+> > > > >             return PTR_ERR(name);
+> > > > >   
+> > > > > -   dma_resv_lock(dmabuf->resv, NULL);
+> > > > > -   if (!list_empty(&dmabuf->attachments)) {
+> > > > > -           ret = -EBUSY;
+> > > > > -           kfree(name);
+> > > > > -           goto out_unlock;
+> > > > > -   }
+> > > > >     spin_lock(&dmabuf->name_lock);
+> > > > >     kfree(dmabuf->name);
+> > > > >     dmabuf->name = name;
+> > > > >     spin_unlock(&dmabuf->name_lock);
+> > > > >   
+> > > > > -out_unlock:
+> > > > > -   dma_resv_unlock(dmabuf->resv);
+> > > > >     return ret;
+> > > > >   }
+> > > > >   
+> > > 
+>  
