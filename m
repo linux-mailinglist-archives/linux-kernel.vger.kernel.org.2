@@ -2,172 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E387242DD47
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:03:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49DF942DD48
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:04:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233386AbhJNPF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 11:05:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51562 "EHLO mail.kernel.org"
+        id S233119AbhJNPF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 11:05:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51564 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233440AbhJNPES (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233466AbhJNPES (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 14 Oct 2021 11:04:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BF932611F0;
-        Thu, 14 Oct 2021 15:00:31 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5849F611CE;
+        Thu, 14 Oct 2021 15:00:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634223632;
-        bh=u2jxtzALQhdvq7RFkK6qVrRSNH2zVZ/5KxOHUhzO6vo=;
-        h=From:To:Cc:Subject:Date:From;
-        b=XrkmX2/5+lG1EC/Sen/cHyxkMIVScYSgveZWFkXX2VKyAAqWXps57uVlNwfHfwTlT
-         6Py0yeZm1RJo0rP5R0BTBmAdMque/ccJPqjaHkdsF70VUFK3SyP+Tlk3Y2Q2cHGgfS
-         mxCbSrusOAaiTtWphqJ2N9WFADhhDXl7M2vIidcw=
+        s=korg; t=1634223635;
+        bh=8L2qBI4o4/bdfydKxL/itud8i8SRLBD9j7MQr4AVCow=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=E1Ss3j5wJEfJ311Eug7G4bwHGy0QlfRnEn99QMdjOrxMozUlzFSrVITw1ufvQirbR
+         HD0u0y19JSeNcNC1Ggu1FwV2KDuNs768DFss9+XGfL9cqL+r+GhEYEQgMup8MN4cBr
+         0RJ3FmIjmBCkHN1shG6aZ+sppA64gUQXsYwBGWIA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: [PATCH 5.10 00/22] 5.10.74-rc1 review
+        stable@vger.kernel.org, Zhang Yi <yi.zhang@huawei.com>,
+        Jan Kara <jack@suse.cz>, Theodore Tso <tytso@mit.edu>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 01/30] ext4: check and update i_disksize properly
 Date:   Thu, 14 Oct 2021 16:54:06 +0200
-Message-Id: <20211014145207.979449962@linuxfoundation.org>
+Message-Id: <20211014145209.566779985@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-MIME-Version: 1.0
+In-Reply-To: <20211014145209.520017940@linuxfoundation.org>
+References: <20211014145209.520017940@linuxfoundation.org>
 User-Agent: quilt/0.66
 X-stable: review
 X-Patchwork-Hint: ignore
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.74-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-5.10.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 5.10.74-rc1
-X-KernelTest-Deadline: 2021-10-16T14:52+00:00
+MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the start of the stable review cycle for the 5.10.74 release.
-There are 22 patches in this series, all will be posted as a response
-to this one.  If anyone has any issues with these being applied, please
-let me know.
+From: Zhang Yi <yi.zhang@huawei.com>
 
-Responses should be made by Sat, 16 Oct 2021 14:51:59 +0000.
-Anything received after that time might be too late.
+[ Upstream commit 4df031ff5876d94b48dd9ee486ba5522382a06b2 ]
 
-The whole patch series can be found in one patch at:
-	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.74-rc1.gz
-or in the git tree and branch at:
-	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-and the diffstat can be found below.
+After commit 3da40c7b0898 ("ext4: only call ext4_truncate when size <=
+isize"), i_disksize could always be updated to i_size in ext4_setattr(),
+and we could sure that i_disksize <= i_size since holding inode lock and
+if i_disksize < i_size there are delalloc writes pending in the range
+upto i_size. If the end of the current write is <= i_size, there's no
+need to touch i_disksize since writeback will push i_disksize upto
+i_size eventually. So we can switch to check i_size instead of
+i_disksize in ext4_da_write_end() when write to the end of the file.
+we also could remove ext4_mark_inode_dirty() together because we defer
+inode dirtying to generic_write_end() or ext4_da_write_inline_data_end().
 
-thanks,
+Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Link: https://lore.kernel.org/r/20210716122024.1105856-2-yi.zhang@huawei.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ fs/ext4/inode.c | 34 ++++++++++++++++++----------------
+ 1 file changed, 18 insertions(+), 16 deletions(-)
 
-greg k-h
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 73daf9443e5e..a47ff8ce289b 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -3089,35 +3089,37 @@ static int ext4_da_write_end(struct file *file,
+ 	end = start + copied - 1;
+ 
+ 	/*
+-	 * generic_write_end() will run mark_inode_dirty() if i_size
+-	 * changes.  So let's piggyback the i_disksize mark_inode_dirty
+-	 * into that.
++	 * Since we are holding inode lock, we are sure i_disksize <=
++	 * i_size. We also know that if i_disksize < i_size, there are
++	 * delalloc writes pending in the range upto i_size. If the end of
++	 * the current write is <= i_size, there's no need to touch
++	 * i_disksize since writeback will push i_disksize upto i_size
++	 * eventually. If the end of the current write is > i_size and
++	 * inside an allocated block (ext4_da_should_update_i_disksize()
++	 * check), we need to update i_disksize here as neither
++	 * ext4_writepage() nor certain ext4_writepages() paths not
++	 * allocating blocks update i_disksize.
++	 *
++	 * Note that we defer inode dirtying to generic_write_end() /
++	 * ext4_da_write_inline_data_end().
+ 	 */
+ 	new_i_size = pos + copied;
+-	if (copied && new_i_size > EXT4_I(inode)->i_disksize) {
++	if (copied && new_i_size > inode->i_size) {
+ 		if (ext4_has_inline_data(inode) ||
+-		    ext4_da_should_update_i_disksize(page, end)) {
++		    ext4_da_should_update_i_disksize(page, end))
+ 			ext4_update_i_disksize(inode, new_i_size);
+-			/* We need to mark inode dirty even if
+-			 * new_i_size is less that inode->i_size
+-			 * bu greater than i_disksize.(hint delalloc)
+-			 */
+-			ret = ext4_mark_inode_dirty(handle, inode);
+-		}
+ 	}
+ 
+ 	if (write_mode != CONVERT_INLINE_DATA &&
+ 	    ext4_test_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA) &&
+ 	    ext4_has_inline_data(inode))
+-		ret2 = ext4_da_write_inline_data_end(inode, pos, len, copied,
++		ret = ext4_da_write_inline_data_end(inode, pos, len, copied,
+ 						     page);
+ 	else
+-		ret2 = generic_write_end(file, mapping, pos, len, copied,
++		ret = generic_write_end(file, mapping, pos, len, copied,
+ 							page, fsdata);
+ 
+-	copied = ret2;
+-	if (ret2 < 0)
+-		ret = ret2;
++	copied = ret;
+ 	ret2 = ext4_journal_stop(handle);
+ 	if (unlikely(ret2 && !ret))
+ 		ret = ret2;
+-- 
+2.33.0
 
--------------
-Pseudo-Shortlog of commits:
-
-Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-    Linux 5.10.74-rc1
-
-Brandon Wyman <bjwyman@gmail.com>
-    hwmon: (pmbus/ibm-cffps) max_power_out swap changes
-
-Peter Zijlstra <peterz@infradead.org>
-    sched: Always inline is_percpu_thread()
-
-Song Liu <songliubraving@fb.com>
-    perf/core: fix userpage->time_enabled of inactive events
-
-Colin Ian King <colin.king@canonical.com>
-    scsi: virtio_scsi: Fix spelling mistake "Unsupport" -> "Unsupported"
-
-Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-    scsi: ses: Fix unsigned comparison with less than zero
-
-Leslie Shi <Yuliang.Shi@amd.com>
-    drm/amdgpu: fix gart.bo pin_count leak
-
-Randy Dunlap <rdunlap@infradead.org>
-    net: sun: SUNVNET_COMMON should depend on INET
-
-Linus Torvalds <torvalds@linux-foundation.org>
-    vboxfs: fix broken legacy mount signature checking
-
-MichelleJin <shjy180909@gmail.com>
-    mac80211: check return value of rhashtable_init
-
-王贇 <yun.wang@linux.alibaba.com>
-    net: prevent user from passing illegal stab size
-
-Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-    hwmon: (ltc2947) Properly handle errors when looking for the external clock
-
-Al Viro <viro@zeniv.linux.org.uk>
-    m68k: Handle arrivals of multiple signals correctly
-
-YueHaibing <yuehaibing@huawei.com>
-    mac80211: Drop frames from invalid MAC address in ad-hoc mode
-
-Florian Westphal <fw@strlen.de>
-    netfilter: nf_nat_masquerade: defer conntrack walk to work queue
-
-Florian Westphal <fw@strlen.de>
-    netfilter: nf_nat_masquerade: make async masq_inet6_event handling generic
-
-Marc Herbert <marc.herbert@intel.com>
-    ASoC: SOF: loader: release_firmware() on load failure to avoid batching
-
-Joshua-Dickens <Joshua@Joshua-Dickens.com>
-    HID: wacom: Add new Intuos BT (CTL-4100WL/CTL-6100WL) device IDs
-
-Jeremy Sowden <jeremy@azazel.net>
-    netfilter: ip6_tables: zero-initialize fragment offset
-
-Mizuho Mori <morimolymoly@gmail.com>
-    HID: apple: Fix logical maximum and usage maximum of Magic Keyboard JIS
-
-Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-    ASoC: Intel: sof_sdw: tag SoundWire BEs as non-atomic
-
-Zhang Yi <yi.zhang@huawei.com>
-    ext4: correct the error path of ext4_write_inline_data_end()
-
-Zhang Yi <yi.zhang@huawei.com>
-    ext4: check and update i_disksize properly
-
-
--------------
-
-Diffstat:
-
- Makefile                               |   4 +-
- arch/m68k/kernel/signal.c              |  88 +++++++++--------
- drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c |   3 +-
- drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c  |   3 +-
- drivers/hid/hid-apple.c                |   7 ++
- drivers/hid/wacom_wac.c                |   8 ++
- drivers/hwmon/ltc2947-core.c           |   8 +-
- drivers/hwmon/pmbus/ibm-cffps.c        |  10 +-
- drivers/net/ethernet/sun/Kconfig       |   1 +
- drivers/scsi/ses.c                     |   2 +-
- drivers/scsi/virtio_scsi.c             |   4 +-
- fs/ext4/inline.c                       |  15 +--
- fs/ext4/inode.c                        |  41 ++++----
- fs/vboxsf/super.c                      |  12 +--
- include/linux/perf_event.h             |   4 +-
- include/linux/sched.h                  |   2 +-
- include/net/pkt_sched.h                |   1 +
- kernel/events/core.c                   |  34 ++++++-
- net/ipv6/netfilter/ip6_tables.c        |   1 +
- net/mac80211/mesh_pathtbl.c            |   5 +-
- net/mac80211/rx.c                      |   3 +-
- net/netfilter/nf_nat_masquerade.c      | 168 +++++++++++++++++++--------------
- net/sched/sch_api.c                    |   6 ++
- sound/soc/intel/boards/sof_sdw.c       |   5 +
- sound/soc/sof/core.c                   |   4 +-
- sound/soc/sof/loader.c                 |   2 +
- 26 files changed, 264 insertions(+), 177 deletions(-)
 
 
