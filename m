@@ -2,89 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8508042D926
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 14:16:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34C6E42D92A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 14:16:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231261AbhJNMS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 08:18:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230094AbhJNMS1 (ORCPT
+        id S231477AbhJNMSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 08:18:43 -0400
+Received: from mail-ua1-f53.google.com ([209.85.222.53]:44895 "EHLO
+        mail-ua1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230017AbhJNMSl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 08:18:27 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 496FFC061570
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 05:16:22 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id w14so23336304edv.11
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 05:16:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
-        bh=cOOUdos5ZGp4thSgoTasIX7mROTI+0cVq8wG90LljmY=;
-        b=GnSt6P40Ag6WXwvVQwb4231n8PFn3Z96N+4zY4N4c83VUYW36BojUtE2k6jiFD8fG4
-         YVB2O+bKkMh3yzucRh2rctc0XWxM1/D8Lok3WOBqagEBTTUwv5xl5UrGdiwF9sW7FbFw
-         cls7gh7TKCEmZNvKDI1KB8QmhizXronKvFYN5RU02vdDohvCoyT0405k6+dh8QQ+n01v
-         IGtDP9f2AF/cpXxz74I1kS6KFtN9bVZPmbknyy8tgsaOr4zycVcpPfTR11uy6MvvgWkv
-         OtjJLnx9cMg2WV5AXOoRO5OU89m0UY94+30+rW90dWorhQWwzMkXcR4A4BSxq1tZskS6
-         OLJA==
+        Thu, 14 Oct 2021 08:18:41 -0400
+Received: by mail-ua1-f53.google.com with SMTP id e7so10768425ual.11;
+        Thu, 14 Oct 2021 05:16:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to;
-        bh=cOOUdos5ZGp4thSgoTasIX7mROTI+0cVq8wG90LljmY=;
-        b=DbiCv+Xxl/8eGa6pn+4KhwzMiYJaOoFEanbuedDxsSB9c/JfN8Hr02BWJM7TWlB6EG
-         1ZRtrJ5JpqNJ2h78LE/+UOQ50jeCrjLr9UsTkrSrx+Csqb1Huq5EU4r7r0LYQmlAN7bZ
-         UC+OlFS0VFR+Yf6DJloNCvkKW9tPugB1LwddXOLswLGLhcrVEO4AbeuhtTqxuZcjimiF
-         bQ/3K5oxwitJuM/S4RaMvWlhC/0ys8F1AAyu5BWTKPaTMUWGppaT92rCFUAT3cLTRM4R
-         ORYtr1rwrSxdoqArG3fGXaRiCIc0YRWd/8oOV4Qx9p262jYguza9ckPfBeQDCxSBkJ/e
-         nI4g==
-X-Gm-Message-State: AOAM531hurh/DjHUaEbJTLutW625pumXq63FbdzyI5BRvpe5KeaG/51I
-        9pDagXoznBl3RjyemLY1uqjLO4eD7931/8ytMIc=
-X-Google-Smtp-Source: ABdhPJwVblX03d3iAtu+/5TKu+l16yjoTE8PNcgautVvHzyaYncj9w2UJhdEpERcsW0FF9tclEJr6/1KsvOZ9LztscU=
-X-Received: by 2002:a50:cfc1:: with SMTP id i1mr8192817edk.251.1634213780579;
- Thu, 14 Oct 2021 05:16:20 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Lv+vkHGqzWmzedxEMuBmL3E2j3vUbGSejb8Wbt7xQjQ=;
+        b=E/Dzj0NHK/7qHLf4AaVNwFVcJDE5Zqqr9ZPdI4KqNVL/OIHb4j7GrIMH/eucGXdNOm
+         q1lJ/N0+aqX06TJJJSWia0nA3CpeGQHJ73Vjqr2BnxbEyOpi5CWiNi0H0yLk2Nvkv5ve
+         zjbxNmnaT5FGPrgnolvFq7x21ahqUhz0PWiKQBNDPaCZA3PA8xOWHfA3x53T+j1e7s7k
+         rUpjIewQlR1tnoywbO/SU8mCIXDtTiITxw6tzBbAYB466BW4WsPFAbe5S0amGt6sh7IJ
+         4rNgt3NjrcQJPvc17+gEk7mXGZOZq7qnFfUN32ek4+NuljScS/hyt4I7Kz7T7NA2ce1o
+         RjkA==
+X-Gm-Message-State: AOAM532TSJWDZNbFzibyHmft/x7COTDOMVZclppsv/s2HmtTQUO7gYB4
+        p56OrBlOTQc01YMN0n3voeSWcyKK3fsVIe1GbNs=
+X-Google-Smtp-Source: ABdhPJytb1grgGpADeMJOpN6L55FezVAocpFP6q+ahrFSPEWk3sEGcqagbH86QJg0fknDI0IaA3CYQelhZmcKEjwxOk=
+X-Received: by 2002:a67:d583:: with SMTP id m3mr6481019vsj.41.1634213796407;
+ Thu, 14 Oct 2021 05:16:36 -0700 (PDT)
 MIME-Version: 1.0
-Reply-To: ritaelizabethh01@gmail.com
-Sender: tumogamba01@gmail.com
-Received: by 2002:a17:907:3e8e:0:0:0:0 with HTTP; Thu, 14 Oct 2021 05:16:20
- -0700 (PDT)
-From:   Rita Elizabeth <ritaelizabethh01@gmail.com>
-Date:   Thu, 14 Oct 2021 13:16:20 +0100
-X-Google-Sender-Auth: VCri1Uy1Fh4Rbc44I7rkh7C72tg
-Message-ID: <CAGmxT2fxLv4wgFz3ZYxuSeiH0_zGo3ZOFpv+s4mjcnkFY+Lcqw@mail.gmail.com>
-Subject: My Dear, Can I Trust You For This Project
-To:     undisclosed-recipients:;
+References: <20210913170436.243-1-alexander.helms.jy@renesas.com>
+ <20210913170436.243-2-alexander.helms.jy@renesas.com> <CAMuHMdWZp=7sR+dTL0F8o61weLqqC3k1kkemm_PktvyK8+ONmw@mail.gmail.com>
+In-Reply-To: <CAMuHMdWZp=7sR+dTL0F8o61weLqqC3k1kkemm_PktvyK8+ONmw@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 14 Oct 2021 14:16:25 +0200
+Message-ID: <CAMuHMdXq2NyBf539raFJSoWSGXnwxOAMWcVB_WV-=uf+kOs7rw@mail.gmail.com>
+Subject: Re: [PATCH v6 1/2] dt-bindings: Add binding for Renesas 8T49N241
+To:     Alex Helms <alexander.helms.jy@renesas.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        david.cater.jc@renesas.com, Michal Simek <michal.simek@xilinx.com>,
+        Rob Herring <robh@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-My dear, I am Mrs. Rita Elizabeth, I got your email address from the
-online e-mail Database Directory through the Internet search and it's
-true we do not know each other but My spirit led me to write you this
-email. I am a dying sick woman, i have decided to donate what i have
-to Motherless babies/ Less privileged/ Widows' because i am dying with
-diagnosed cancer about 2 years ago. I have been touched by God
-Almighty to donate from what i have inherited from my late husband to
-you for the good work of God Almighty. I'm write to you with heavy
-tears in my eyes and great sorrow in my heart because my Doctor
-informed me that It will only take the will of God for me to survive
-due to my complicated health issues (CANCER).
+Hi Alex,
 
-I am writing from my sickbed to you, i decided to donate the sum of
-($3.6 million Dollars) to you for the good work of God, and also to
-help the motherless and less privileged and also for the assistance of
-the widows. Based on this, i want to transfer my inheritance fund of
-$3.6 million Dollars that was deposited by my late husband to you,i
-need a faithful and God-fearing person who will use it according to my
-desire and that of my late husband as we have no child after so many
-years of our marriage.
+On Wed, Oct 13, 2021 at 8:02 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> On Mon, Sep 13, 2021 at 7:05 PM Alex Helms
+> <alexander.helms.jy@renesas.com> wrote:
+> > Renesas 8T49N241 has 4 outputs, 1 integral and 3 fractional dividers.
+> > The 8T49N241 accepts up to two differential or single-ended input clocks
+> > and a fundamental-mode crystal input. The internal PLL can lock to either
+> > of the input reference clocks or to the crystal to behave as a frequency
+> > synthesizer.
+> >
+> > Signed-off-by: Alex Helms <alexander.helms.jy@renesas.com>
+> > Reviewed-by: Rob Herring <robh@kernel.org>
+>
+> Thanks for your patch!
+>
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/clock/renesas,8t49n241.yaml
 
-I want you to use the funds for charity causes, while 30% will be kept
-by you as compensation for taking this responsibility to help
-mankind.The disbursements should be made to charities such as
-orphanages, motherless babies homes, poor widows, disabled,
-humanitarian causes.If you are interested in carrying out this task,
-get back to me for more details on this noble project of mine.
+> BTW, do you plan to add interrupt and/or GPIO support later?
 
-Yours Faithfully,
+To clarify, and I really meant to add:
+
+  interrupts:
+    maxItems: 1
+
+to the bindings now, and GPIO-related properties and subnodes later.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
