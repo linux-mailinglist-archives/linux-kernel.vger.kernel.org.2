@@ -2,116 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FD1942E02A
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 19:40:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6870642E092
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 19:54:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233555AbhJNRmx convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 14 Oct 2021 13:42:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55952 "EHLO mail.kernel.org"
+        id S233758AbhJNR4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 13:56:53 -0400
+Received: from mga14.intel.com ([192.55.52.115]:12243 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232779AbhJNRmw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 13:42:52 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EF3A361037;
-        Thu, 14 Oct 2021 17:40:43 +0000 (UTC)
-Date:   Thu, 14 Oct 2021 18:44:55 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Cai Huoqing <caihuoqing@baidu.com>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-iio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        id S229528AbhJNR4v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 13:56:51 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10137"; a="228035322"
+X-IronPort-AV: E=Sophos;i="5.85,373,1624345200"; 
+   d="scan'208";a="228035322"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2021 10:45:37 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,373,1624345200"; 
+   d="scan'208";a="527691585"
+Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.171])
+  by fmsmga008.fm.intel.com with SMTP; 14 Oct 2021 10:45:33 -0700
+Received: by stinkbox (sSMTP sendmail emulation); Thu, 14 Oct 2021 20:45:33 +0300
+Date:   Thu, 14 Oct 2021 20:45:33 +0300
+From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Ser Olmy <ser.olmy@protonmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] iio: imx8qxp-adc: mark PM functions as __maybe_unused
-Message-ID: <20211014184448.474849a9@jic23-huawei>
-In-Reply-To: <50f71530-bab0-58f4-cf90-a7c1b60b9716@infradead.org>
-References: <20211013144338.2261316-1-arnd@kernel.org>
-        <20211014012936.GA2999@LAPTOP-UKSR4ENP.internal.baidu.com>
-        <50f71530-bab0-58f4-cf90-a7c1b60b9716@infradead.org>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+Subject: Re: [regression] commit d298b03506d3 ("x86/fpu: Restore the masking
+ out of reserved MXCSR bits")
+Message-ID: <YWhsvSM5tAvwqprN@intel.com>
+References: <YWgYIYXLriayyezv@intel.com>
+ <YWg+O1AXrWLO3Sf9@zn.tnic>
+ <YWg/5h3OcQKE94Nz@intel.com>
+ <YWhCAqDxAuTh1YwE@intel.com>
+ <YWhFOJCF1pxIBANv@zn.tnic>
+ <YWhG0kv/d/hddf+t@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YWhG0kv/d/hddf+t@intel.com>
+X-Patchwork-Hint: comment
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Oct 2021 18:40:41 -0700
-Randy Dunlap <rdunlap@infradead.org> wrote:
-
-> On 10/13/21 6:29 PM, Cai Huoqing wrote:
-> > On 13 10æœˆ 21 16:43:26, Arnd Bergmann wrote:  
-> >> From: Arnd Bergmann <arnd@arndb.de>
-> >>
-> >> Without CONFIG_PM_SLEEP, the runtime suspend/resume functions
-> >> are unused, producing a warning:
-> >>
-> >> drivers/iio/adc/imx8qxp-adc.c:433:12: error: 'imx8qxp_adc_runtime_resume' defined but not used [-Werror=unused-function]
-> >>    433 | static int imx8qxp_adc_runtime_resume(struct device *dev)
-> >>        |            ^~~~~~~~~~~~~~~~~~~~~~~~~~
-> >> drivers/iio/adc/imx8qxp-adc.c:419:12: error: 'imx8qxp_adc_runtime_suspend' defined but not used [-Werror=unused-function]
-> >>    419 | static int imx8qxp_adc_runtime_suspend(struct device *dev)
-> >>        |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-> >>
-> >> Mark them as __maybe_unused to shut up the compiler.
-> >>
-> >> Fixes: 7bce634d02e6 ("iio: imx8qxp-adc: Add driver support for NXP IMX8QXP ADC")
-> >> Signed-off-by: Arnd Bergmann <arnd@arndb.de>  
+On Thu, Oct 14, 2021 at 06:03:46PM +0300, Ville Syrjälä wrote:
+> On Thu, Oct 14, 2021 at 04:56:56PM +0200, Borislav Petkov wrote:
+> > On Thu, Oct 14, 2021 at 05:43:14PM +0300, Ville Syrjälä wrote:
+> > > Hmm. Actually I just stared at the code a bit more it looks
+> > > a bit funny. Was it supposed to do this instead?
+> > > 
+> > > - fpu->state.fxsave.mxcsr &= ~mxcsr_feature_mask;
+> > > + fpu->state.fxsave.mxcsr &= mxcsr_feature_mask;
 > > 
-> > Reviewed-by: Cai Huoqing <caihuoqing@baidu.com>  
+> > Whoops, I had it like that in the original patch:
+> > 
+> > https://lore.kernel.org/all/163354193576.25758.8132624386883258818.tip-bot2@tip-bot2/
+> > 
+> > I blame tglx. :-)
+> > 
+> > Does it work if you remove the mask negation "~"?
 > 
-> Looks the same as
-> https://lore.kernel.org/all/20211013014658.2798-1-caihuoqing@baidu.com/
-> 
-> but that one is mixing the Fixes: tag.
+> The machine is currently preoccupied with other things. Should free up
+> in an hour or two. Once it does I'll give this a spin and report back.
 
-Given Cai replied to this one and the presence of the fixes tag + my inherent
-laziness, applied this one to the togreg branch of iio.git. I'll push that
-out as testing to let 0-day poke it before pushing it out for next to pick up
-in a day or 2.
+That ~ was indeed the problem. With it gone the machine is happy again.
 
-Thanks,
+I presume you'll turn this into a real patch?
 
-Jonathan
+Tested-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
 
-> 
-> >> ---
-> >>   drivers/iio/adc/imx8qxp-adc.c | 4 ++--
-> >>   1 file changed, 2 insertions(+), 2 deletions(-)
-> >>
-> >> diff --git a/drivers/iio/adc/imx8qxp-adc.c b/drivers/iio/adc/imx8qxp-adc.c
-> >> index 5030e0d8318d..901dd8e1b32f 100644
-> >> --- a/drivers/iio/adc/imx8qxp-adc.c
-> >> +++ b/drivers/iio/adc/imx8qxp-adc.c
-> >> @@ -416,7 +416,7 @@ static int imx8qxp_adc_remove(struct platform_device *pdev)
-> >>   	return 0;
-> >>   }
-> >>   
-> >> -static int imx8qxp_adc_runtime_suspend(struct device *dev)
-> >> +static __maybe_unused int imx8qxp_adc_runtime_suspend(struct device *dev)
-> >>   {
-> >>   	struct iio_dev *indio_dev = dev_get_drvdata(dev);
-> >>   	struct imx8qxp_adc *adc = iio_priv(indio_dev);
-> >> @@ -430,7 +430,7 @@ static int imx8qxp_adc_runtime_suspend(struct device *dev)
-> >>   	return 0;
-> >>   }
-> >>   
-> >> -static int imx8qxp_adc_runtime_resume(struct device *dev)
-> >> +static __maybe_unused int imx8qxp_adc_runtime_resume(struct device *dev)
-> >>   {
-> >>   	struct iio_dev *indio_dev = dev_get_drvdata(dev);
-> >>   	struct imx8qxp_adc *adc = iio_priv(indio_dev);
-> >> --   
-> 
-> 
-> 
-> 
-
+-- 
+Ville Syrjälä
+Intel
