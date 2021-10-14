@@ -2,39 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35A8042DC89
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:57:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77A1542DC48
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:55:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232144AbhJNO7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 10:59:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43508 "EHLO mail.kernel.org"
+        id S232327AbhJNO5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 10:57:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42680 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232391AbhJNO6v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 10:58:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A78D60F36;
-        Thu, 14 Oct 2021 14:56:46 +0000 (UTC)
+        id S232148AbhJNO5h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 10:57:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1CBD261183;
+        Thu, 14 Oct 2021 14:55:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634223406;
-        bh=6Y0GhKeldn9LauG3ZT/NP0B+V5eXDAsTLSeB8Qmv7TU=;
+        s=korg; t=1634223332;
+        bh=YAAPXk5jeIombjigF/GEo2Viy02LuUKA2HQqr3WMBfw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QbJzoLWGfKAH4puNLUxaT1Q8cozDd+aF8Nrh5wCYO4zDO483bDaZflUb67eHx6z2Y
-         TBMRNhgxXtMH3eVnxlPVs7Fx1W622PijnaWXFccTc/I897RxlPSCuc5saunwJYgPYr
-         TePksF28HU2xmi4t1N+9VHxOmaSeKvQ75ZQkVxwY=
+        b=Nc+f9YiX+0O1YQGT8CCj/C0rpdJfKTVNa/yk9HYExyS7VqBfjfSPrYTaS2pi11U4d
+         VSzpr0NG/rtydsn0SMBirsyQsPOXEbpJtL9uxcHNN9IhueUi9t52QSsI6B7GABDAv2
+         lyuKVsYXJoQAT1qY/r+J9cEX0n1bNIKL6GEq9aKY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Piotr Krysiuk <piotras@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
-        Paul Burton <paulburton@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Ovidiu Panait <ovidiu.panait@windriver.com>
-Subject: [PATCH 4.14 10/33] bpf, mips: Validate conditional branch offsets
-Date:   Thu, 14 Oct 2021 16:53:42 +0200
-Message-Id: <20211014145209.119449063@linuxfoundation.org>
+        stable@vger.kernel.org, Jann Horn <jannh@google.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Jan Kara <jack@suse.cz>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Suren Baghdasaryan <surenb@google.com>
+Subject: [PATCH 4.4 11/18] gup: document and work around "COW can break either way" issue
+Date:   Thu, 14 Oct 2021 16:53:43 +0200
+Message-Id: <20211014145206.690315439@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211014145208.775270267@linuxfoundation.org>
-References: <20211014145208.775270267@linuxfoundation.org>
+In-Reply-To: <20211014145206.330102860@linuxfoundation.org>
+References: <20211014145206.330102860@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,267 +46,226 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Piotr Krysiuk <piotras@gmail.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 
-commit 37cb28ec7d3a36a5bace7063a3dba633ab110f8b upstream.
+commit 17839856fd588f4ab6b789f482ed3ffd7c403e1f upstream.
 
-The conditional branch instructions on MIPS use 18-bit signed offsets
-allowing for a branch range of 128 KBytes (backward and forward).
-However, this limit is not observed by the cBPF JIT compiler, and so
-the JIT compiler emits out-of-range branches when translating certain
-cBPF programs. A specific example of such a cBPF program is included in
-the "BPF_MAXINSNS: exec all MSH" test from lib/test_bpf.c that executes
-anomalous machine code containing incorrect branch offsets under JIT.
+Doing a "get_user_pages()" on a copy-on-write page for reading can be
+ambiguous: the page can be COW'ed at any time afterwards, and the
+direction of a COW event isn't defined.
 
-Furthermore, this issue can be abused to craft undesirable machine
-code, where the control flow is hijacked to execute arbitrary Kernel
-code.
+Yes, whoever writes to it will generally do the COW, but if the thread
+that did the get_user_pages() unmapped the page before the write (and
+that could happen due to memory pressure in addition to any outright
+action), the writer could also just take over the old page instead.
 
-The following steps can be used to reproduce the issue:
+End result: the get_user_pages() call might result in a page pointer
+that is no longer associated with the original VM, and is associated
+with - and controlled by - another VM having taken it over instead.
 
-  # echo 1 > /proc/sys/net/core/bpf_jit_enable
-  # modprobe test_bpf test_name="BPF_MAXINSNS: exec all MSH"
+So when doing a get_user_pages() on a COW mapping, the only really safe
+thing to do would be to break the COW when getting the page, even when
+only getting it for reading.
 
-This should produce multiple warnings from build_bimm() similar to:
+At the same time, some users simply don't even care.
 
-  ------------[ cut here ]------------
-  WARNING: CPU: 0 PID: 209 at arch/mips/mm/uasm-mips.c:210 build_insn+0x558/0x590
-  Micro-assembler field overflow
-  Modules linked in: test_bpf(+)
-  CPU: 0 PID: 209 Comm: modprobe Not tainted 5.14.3 #1
-  Stack : 00000000 807bb824 82b33c9c 801843c0 00000000 00000004 00000000 63c9b5ee
-          82b33af4 80999898 80910000 80900000 82fd6030 00000001 82b33a98 82087180
-          00000000 00000000 80873b28 00000000 000000fc 82b3394c 00000000 2e34312e
-          6d6d6f43 809a180f 809a1836 6f6d203a 80900000 00000001 82b33bac 80900000
-          00027f80 00000000 00000000 807bb824 00000000 804ed790 001cc317 00000001
-  [...]
-  Call Trace:
-  [<80108f44>] show_stack+0x38/0x118
-  [<807a7aac>] dump_stack_lvl+0x5c/0x7c
-  [<807a4b3c>] __warn+0xcc/0x140
-  [<807a4c3c>] warn_slowpath_fmt+0x8c/0xb8
-  [<8011e198>] build_insn+0x558/0x590
-  [<8011e358>] uasm_i_bne+0x20/0x2c
-  [<80127b48>] build_body+0xa58/0x2a94
-  [<80129c98>] bpf_jit_compile+0x114/0x1e4
-  [<80613fc4>] bpf_prepare_filter+0x2ec/0x4e4
-  [<8061423c>] bpf_prog_create+0x80/0xc4
-  [<c0a006e4>] test_bpf_init+0x300/0xba8 [test_bpf]
-  [<8010051c>] do_one_initcall+0x50/0x1d4
-  [<801c5e54>] do_init_module+0x60/0x220
-  [<801c8b20>] sys_finit_module+0xc4/0xfc
-  [<801144d0>] syscall_common+0x34/0x58
-  [...]
-  ---[ end trace a287d9742503c645 ]---
+For example, the perf code wants to look up the page not because it
+cares about the page, but because the code simply wants to look up the
+physical address of the access for informational purposes, and doesn't
+really care about races when a page might be unmapped and remapped
+elsewhere.
 
-Then the anomalous machine code executes:
+This adds logic to force a COW event by setting FOLL_WRITE on any
+copy-on-write mapping when FOLL_GET (or FOLL_PIN) is used to get a page
+pointer as a result.
 
-=> 0xc0a18000:  addiu   sp,sp,-16
-   0xc0a18004:  sw      s3,0(sp)
-   0xc0a18008:  sw      s4,4(sp)
-   0xc0a1800c:  sw      s5,8(sp)
-   0xc0a18010:  sw      ra,12(sp)
-   0xc0a18014:  move    s5,a0
-   0xc0a18018:  move    s4,zero
-   0xc0a1801c:  move    s3,zero
+The current semantics end up being:
 
-   # __BPF_STMT(BPF_LDX | BPF_B | BPF_MSH, 0)
-   0xc0a18020:  lui     t6,0x8012
-   0xc0a18024:  ori     t4,t6,0x9e14
-   0xc0a18028:  li      a1,0
-   0xc0a1802c:  jalr    t4
-   0xc0a18030:  move    a0,s5
-   0xc0a18034:  bnez    v0,0xc0a1ffb8           # incorrect branch offset
-   0xc0a18038:  move    v0,zero
-   0xc0a1803c:  andi    s4,s3,0xf
-   0xc0a18040:  b       0xc0a18048
-   0xc0a18044:  sll     s4,s4,0x2
-   [...]
+ - __get_user_pages_fast(): no change. If you don't ask for a write,
+   you won't break COW. You'd better know what you're doing.
 
-   # __BPF_STMT(BPF_LDX | BPF_B | BPF_MSH, 0)
-   0xc0a1ffa0:  lui     t6,0x8012
-   0xc0a1ffa4:  ori     t4,t6,0x9e14
-   0xc0a1ffa8:  li      a1,0
-   0xc0a1ffac:  jalr    t4
-   0xc0a1ffb0:  move    a0,s5
-   0xc0a1ffb4:  bnez    v0,0xc0a1ffb8           # incorrect branch offset
-   0xc0a1ffb8:  move    v0,zero
-   0xc0a1ffbc:  andi    s4,s3,0xf
-   0xc0a1ffc0:  b       0xc0a1ffc8
-   0xc0a1ffc4:  sll     s4,s4,0x2
+ - get_user_pages_fast(): the fast-case "look it up in the page tables
+   without anything getting mmap_sem" now refuses to follow a read-only
+   page, since it might need COW breaking.  Which happens in the slow
+   path - the fast path doesn't know if the memory might be COW or not.
 
-   # __BPF_STMT(BPF_LDX | BPF_B | BPF_MSH, 0)
-   0xc0a1ffc8:  lui     t6,0x8012
-   0xc0a1ffcc:  ori     t4,t6,0x9e14
-   0xc0a1ffd0:  li      a1,0
-   0xc0a1ffd4:  jalr    t4
-   0xc0a1ffd8:  move    a0,s5
-   0xc0a1ffdc:  bnez    v0,0xc0a3ffb8           # correct branch offset
-   0xc0a1ffe0:  move    v0,zero
-   0xc0a1ffe4:  andi    s4,s3,0xf
-   0xc0a1ffe8:  b       0xc0a1fff0
-   0xc0a1ffec:  sll     s4,s4,0x2
-   [...]
+ - get_user_pages() (including the slow-path fallback for gup_fast()):
+   for a COW mapping, turn on FOLL_WRITE for FOLL_GET/FOLL_PIN, with
+   very similar semantics to FOLL_FORCE.
 
-   # epilogue
-   0xc0a3ffb8:  lw      s3,0(sp)
-   0xc0a3ffbc:  lw      s4,4(sp)
-   0xc0a3ffc0:  lw      s5,8(sp)
-   0xc0a3ffc4:  lw      ra,12(sp)
-   0xc0a3ffc8:  addiu   sp,sp,16
-   0xc0a3ffcc:  jr      ra
-   0xc0a3ffd0:  nop
+If it turns out that we want finer granularity (ie "only break COW when
+it might actually matter" - things like the zero page are special and
+don't need to be broken) we might need to push these semantics deeper
+into the lookup fault path.  So if people care enough, it's possible
+that we might end up adding a new internal FOLL_BREAK_COW flag to go
+with the internal FOLL_COW flag we already have for tracking "I had a
+COW".
 
-To mitigate this issue, we assert the branch ranges for each emit call
-that could generate an out-of-range branch.
+Alternatively, if it turns out that different callers might want to
+explicitly control the forced COW break behavior, we might even want to
+make such a flag visible to the users of get_user_pages() instead of
+using the above default semantics.
 
-Fixes: 36366e367ee9 ("MIPS: BPF: Restore MIPS32 cBPF JIT")
-Fixes: c6610de353da ("MIPS: net: Add BPF JIT")
-Signed-off-by: Piotr Krysiuk <piotras@gmail.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Tested-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
-Acked-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
-Cc: Paul Burton <paulburton@kernel.org>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Link: https://lore.kernel.org/bpf/20210915160437.4080-1-piotras@gmail.com
-Signed-off-by: Ovidiu Panait <ovidiu.panait@windriver.com>
+But for now, this is mostly commentary on the issue (this commit message
+being a lot bigger than the patch, and that patch in turn is almost all
+comments), with that minimal "enable COW breaking early" logic using the
+existing FOLL_WRITE behavior.
+
+[ It might be worth noting that we've always had this ambiguity, and it
+  could arguably be seen as a user-space issue.
+
+  You only get private COW mappings that could break either way in
+  situations where user space is doing cooperative things (ie fork()
+  before an execve() etc), but it _is_ surprising and very subtle, and
+  fork() is supposed to give you independent address spaces.
+
+  So let's treat this as a kernel issue and make the semantics of
+  get_user_pages() easier to understand. Note that obviously a true
+  shared mapping will still get a page that can change under us, so this
+  does _not_ mean that get_user_pages() somehow returns any "stable"
+  page ]
+
+[surenb: backport notes
+        Since gup_pgd_range does not exist, made appropriate changes on
+        the the gup_huge_pgd, gup_huge_pd and gup_pud_range calls instead.
+	Replaced (gup_flags | FOLL_WRITE) with write=1 in gup_huge_pgd,
+        gup_huge_pd and gup_pud_range.
+	Removed FOLL_PIN usage in should_force_cow_break since it's missing in
+	the earlier kernels.]
+
+Reported-by: Jann Horn <jannh@google.com>
+Tested-by: Christoph Hellwig <hch@lst.de>
+Acked-by: Oleg Nesterov <oleg@redhat.com>
+Acked-by: Kirill Shutemov <kirill@shutemov.name>
+Acked-by: Jan Kara <jack@suse.cz>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+[surenb: backport to 4.4 kernel]
+Signed-off-by: Suren Baghdasaryan <surenb@google.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/mips/net/bpf_jit.c |   57 ++++++++++++++++++++++++++++++++++++------------
- 1 file changed, 43 insertions(+), 14 deletions(-)
+ mm/gup.c         |   48 ++++++++++++++++++++++++++++++++++++++++--------
+ mm/huge_memory.c |    7 +++----
+ 2 files changed, 43 insertions(+), 12 deletions(-)
 
---- a/arch/mips/net/bpf_jit.c
-+++ b/arch/mips/net/bpf_jit.c
-@@ -662,6 +662,11 @@ static void build_epilogue(struct jit_ct
- 	((int)K < 0 ? ((int)K >= SKF_LL_OFF ? func##_negative : func) : \
- 	 func##_positive)
+--- a/mm/gup.c
++++ b/mm/gup.c
+@@ -59,13 +59,22 @@ static int follow_pfn_pte(struct vm_area
+ }
  
-+static bool is_bad_offset(int b_off)
-+{
-+	return b_off > 0x1ffff || b_off < -0x20000;
+ /*
+- * FOLL_FORCE can write to even unwritable pte's, but only
+- * after we've gone through a COW cycle and they are dirty.
++ * FOLL_FORCE or a forced COW break can write even to unwritable pte's,
++ * but only after we've gone through a COW cycle and they are dirty.
+  */
+ static inline bool can_follow_write_pte(pte_t pte, unsigned int flags)
+ {
+-	return pte_write(pte) ||
+-		((flags & FOLL_FORCE) && (flags & FOLL_COW) && pte_dirty(pte));
++	return pte_write(pte) || ((flags & FOLL_COW) && pte_dirty(pte));
 +}
 +
- static int build_body(struct jit_ctx *ctx)
- {
- 	const struct bpf_prog *prog = ctx->skf;
-@@ -728,7 +733,10 @@ load_common:
- 			/* Load return register on DS for failures */
- 			emit_reg_move(r_ret, r_zero, ctx);
- 			/* Return with error */
--			emit_b(b_imm(prog->len, ctx), ctx);
-+			b_off = b_imm(prog->len, ctx);
-+			if (is_bad_offset(b_off))
-+				return -E2BIG;
-+			emit_b(b_off, ctx);
- 			emit_nop(ctx);
- 			break;
- 		case BPF_LD | BPF_W | BPF_IND:
-@@ -775,8 +783,10 @@ load_ind:
- 			emit_jalr(MIPS_R_RA, r_s0, ctx);
- 			emit_reg_move(MIPS_R_A0, r_skb, ctx); /* delay slot */
- 			/* Check the error value */
--			emit_bcond(MIPS_COND_NE, r_ret, 0,
--				   b_imm(prog->len, ctx), ctx);
-+			b_off = b_imm(prog->len, ctx);
-+			if (is_bad_offset(b_off))
-+				return -E2BIG;
-+			emit_bcond(MIPS_COND_NE, r_ret, 0, b_off, ctx);
- 			emit_reg_move(r_ret, r_zero, ctx);
- 			/* We are good */
- 			/* X <- P[1:K] & 0xf */
-@@ -855,8 +865,10 @@ load_ind:
- 			/* A /= X */
- 			ctx->flags |= SEEN_X | SEEN_A;
- 			/* Check if r_X is zero */
--			emit_bcond(MIPS_COND_EQ, r_X, r_zero,
--				   b_imm(prog->len, ctx), ctx);
-+			b_off = b_imm(prog->len, ctx);
-+			if (is_bad_offset(b_off))
-+				return -E2BIG;
-+			emit_bcond(MIPS_COND_EQ, r_X, r_zero, b_off, ctx);
- 			emit_load_imm(r_ret, 0, ctx); /* delay slot */
- 			emit_div(r_A, r_X, ctx);
- 			break;
-@@ -864,8 +876,10 @@ load_ind:
- 			/* A %= X */
- 			ctx->flags |= SEEN_X | SEEN_A;
- 			/* Check if r_X is zero */
--			emit_bcond(MIPS_COND_EQ, r_X, r_zero,
--				   b_imm(prog->len, ctx), ctx);
-+			b_off = b_imm(prog->len, ctx);
-+			if (is_bad_offset(b_off))
-+				return -E2BIG;
-+			emit_bcond(MIPS_COND_EQ, r_X, r_zero, b_off, ctx);
- 			emit_load_imm(r_ret, 0, ctx); /* delay slot */
- 			emit_mod(r_A, r_X, ctx);
- 			break;
-@@ -926,7 +940,10 @@ load_ind:
- 			break;
- 		case BPF_JMP | BPF_JA:
- 			/* pc += K */
--			emit_b(b_imm(i + k + 1, ctx), ctx);
-+			b_off = b_imm(i + k + 1, ctx);
-+			if (is_bad_offset(b_off))
-+				return -E2BIG;
-+			emit_b(b_off, ctx);
- 			emit_nop(ctx);
- 			break;
- 		case BPF_JMP | BPF_JEQ | BPF_K:
-@@ -1056,12 +1073,16 @@ jmp_cmp:
- 			break;
- 		case BPF_RET | BPF_A:
- 			ctx->flags |= SEEN_A;
--			if (i != prog->len - 1)
-+			if (i != prog->len - 1) {
- 				/*
- 				 * If this is not the last instruction
- 				 * then jump to the epilogue
- 				 */
--				emit_b(b_imm(prog->len, ctx), ctx);
-+				b_off = b_imm(prog->len, ctx);
-+				if (is_bad_offset(b_off))
-+					return -E2BIG;
-+				emit_b(b_off, ctx);
-+			}
- 			emit_reg_move(r_ret, r_A, ctx); /* delay slot */
- 			break;
- 		case BPF_RET | BPF_K:
-@@ -1075,7 +1096,10 @@ jmp_cmp:
- 				 * If this is not the last instruction
- 				 * then jump to the epilogue
- 				 */
--				emit_b(b_imm(prog->len, ctx), ctx);
-+				b_off = b_imm(prog->len, ctx);
-+				if (is_bad_offset(b_off))
-+					return -E2BIG;
-+				emit_b(b_off, ctx);
- 				emit_nop(ctx);
++/*
++ * A (separate) COW fault might break the page the other way and
++ * get_user_pages() would return the page from what is now the wrong
++ * VM. So we need to force a COW break at GUP time even for reads.
++ */
++static inline bool should_force_cow_break(struct vm_area_struct *vma, unsigned int flags)
++{
++	return is_cow_mapping(vma->vm_flags) && (flags & FOLL_GET);
+ }
+ 
+ static struct page *follow_page_pte(struct vm_area_struct *vma,
+@@ -509,12 +518,18 @@ long __get_user_pages(struct task_struct
+ 			if (!vma || check_vma_flags(vma, gup_flags))
+ 				return i ? : -EFAULT;
+ 			if (is_vm_hugetlb_page(vma)) {
++				if (should_force_cow_break(vma, foll_flags))
++					foll_flags |= FOLL_WRITE;
+ 				i = follow_hugetlb_page(mm, vma, pages, vmas,
+ 						&start, &nr_pages, i,
+-						gup_flags);
++						foll_flags);
+ 				continue;
  			}
+ 		}
++
++		if (should_force_cow_break(vma, foll_flags))
++			foll_flags |= FOLL_WRITE;
++
+ retry:
+ 		/*
+ 		 * If we have a pending SIGKILL, don't keep faulting pages and
+@@ -1346,6 +1361,10 @@ static int gup_pud_range(pgd_t pgd, unsi
+ /*
+  * Like get_user_pages_fast() except it's IRQ-safe in that it won't fall back to
+  * the regular GUP. It will only return non-negative values.
++ *
++ * Careful, careful! COW breaking can go either way, so a non-write
++ * access can get ambiguous page results. If you call this function without
++ * 'write' set, you'd better be sure that you're ok with that ambiguity.
+  */
+ int __get_user_pages_fast(unsigned long start, int nr_pages, int write,
+ 			  struct page **pages)
+@@ -1375,6 +1394,12 @@ int __get_user_pages_fast(unsigned long
+ 	 *
+ 	 * We do not adopt an rcu_read_lock(.) here as we also want to
+ 	 * block IPIs that come from THPs splitting.
++	 *
++	 * NOTE! We allow read-only gup_fast() here, but you'd better be
++	 * careful about possible COW pages. You'll get _a_ COW page, but
++	 * not necessarily the one you intended to get depending on what
++	 * COW event happens after this. COW may break the page copy in a
++	 * random direction.
+ 	 */
+ 
+ 	local_irq_save(flags);
+@@ -1385,15 +1410,22 @@ int __get_user_pages_fast(unsigned long
+ 		next = pgd_addr_end(addr, end);
+ 		if (pgd_none(pgd))
  			break;
-@@ -1133,8 +1157,10 @@ jmp_cmp:
- 			/* Load *dev pointer */
- 			emit_load_ptr(r_s0, r_skb, off, ctx);
- 			/* error (0) in the delay slot */
--			emit_bcond(MIPS_COND_EQ, r_s0, r_zero,
--				   b_imm(prog->len, ctx), ctx);
-+			b_off = b_imm(prog->len, ctx);
-+			if (is_bad_offset(b_off))
-+				return -E2BIG;
-+			emit_bcond(MIPS_COND_EQ, r_s0, r_zero, b_off, ctx);
- 			emit_reg_move(r_ret, r_zero, ctx);
- 			if (code == (BPF_ANC | SKF_AD_IFINDEX)) {
- 				BUILD_BUG_ON(FIELD_SIZEOF(struct net_device, ifindex) != 4);
-@@ -1244,7 +1270,10 @@ void bpf_jit_compile(struct bpf_prog *fp
++		/*
++		 * The FAST_GUP case requires FOLL_WRITE even for pure reads,
++		 * because get_user_pages() may need to cause an early COW in
++		 * order to avoid confusing the normal COW routines. So only
++		 * targets that are already writable are safe to do by just
++		 * looking at the page tables.
++		 */
+ 		if (unlikely(pgd_huge(pgd))) {
+-			if (!gup_huge_pgd(pgd, pgdp, addr, next, write,
++			if (!gup_huge_pgd(pgd, pgdp, addr, next, 1,
+ 					  pages, &nr))
+ 				break;
+ 		} else if (unlikely(is_hugepd(__hugepd(pgd_val(pgd))))) {
+ 			if (!gup_huge_pd(__hugepd(pgd_val(pgd)), addr,
+-					 PGDIR_SHIFT, next, write, pages, &nr))
++					 PGDIR_SHIFT, next, 1, pages, &nr))
+ 				break;
+-		} else if (!gup_pud_range(pgd, addr, next, write, pages, &nr))
++		} else if (!gup_pud_range(pgd, addr, next, 1, pages, &nr))
+ 			break;
+ 	} while (pgdp++, addr = next, addr != end);
+ 	local_irq_restore(flags);
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -1268,13 +1268,12 @@ out_unlock:
+ }
  
- 	/* Generate the actual JIT code */
- 	build_prologue(&ctx);
--	build_body(&ctx);
-+	if (build_body(&ctx)) {
-+		module_memfree(ctx.target);
-+		goto out;
-+	}
- 	build_epilogue(&ctx);
+ /*
+- * FOLL_FORCE can write to even unwritable pmd's, but only
+- * after we've gone through a COW cycle and they are dirty.
++ * FOLL_FORCE or a forced COW break can write even to unwritable pmd's,
++ * but only after we've gone through a COW cycle and they are dirty.
+  */
+ static inline bool can_follow_write_pmd(pmd_t pmd, unsigned int flags)
+ {
+-	return pmd_write(pmd) ||
+-	       ((flags & FOLL_FORCE) && (flags & FOLL_COW) && pmd_dirty(pmd));
++	return pmd_write(pmd) || ((flags & FOLL_COW) && pmd_dirty(pmd));
+ }
  
- 	/* Update the icache */
+ struct page *follow_trans_huge_pmd(struct vm_area_struct *vma,
 
 
