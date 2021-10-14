@@ -2,516 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EFC342E1FC
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 21:21:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D48AE42E1FE
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 21:23:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232809AbhJNTX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 15:23:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43444 "EHLO mail.kernel.org"
+        id S232870AbhJNTZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 15:25:56 -0400
+Received: from mga14.intel.com ([192.55.52.115]:21267 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229528AbhJNTX4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 15:23:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 799F5611ED;
-        Thu, 14 Oct 2021 19:21:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634239311;
-        bh=uE1IxhBHAWivyuatVdRSOmLf/84hO7wUUmmZzXZYNYc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PmuRUcdFrrD/QQ46fr5X60IuZODKndBkeD1QEHVHs+Bq7kNYMuEmy2DHhx0gmFFf9
-         F8XHhoHezBj29glpI6yKQdtoNoqeFdSr62kwNuhQmSndxVAbf8nosd4zqSn59nRrS3
-         wIjgi1zXXjnibAwT/BrVwqNrFykMH02xdZXAMltL+EzV+YE+OU2U70HglD3WQm2GH7
-         t6YdpASxFwqT65+kvOL6lMJD2kTEYJVe5s8SGBTHecnAWXzEorJJwfp7PGAklZsEBl
-         FnM5LSj/ifk10KR4iZXIqUSi7Vnu5S74w90j5Skn7hsnxTxCduHgg3dsj9hCGM5gIW
-         qi2DQl2FIjcaA==
-Date:   Thu, 14 Oct 2021 12:21:51 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
-Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        nvdimm@lists.linux.dev, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, dan.j.williams@intel.com,
-        david@fromorbit.com, hch@infradead.org, jane.chu@oracle.com
-Subject: Re: [PATCH v7 7/8] xfs: Implement ->notify_failure() for XFS
-Message-ID: <20211014192151.GI24307@magnolia>
-References: <20210924130959.2695749-1-ruansy.fnst@fujitsu.com>
- <20210924130959.2695749-8-ruansy.fnst@fujitsu.com>
+        id S229528AbhJNTZz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 15:25:55 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10137"; a="228057873"
+X-IronPort-AV: E=Sophos;i="5.85,373,1624345200"; 
+   d="scan'208";a="228057873"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2021 12:23:49 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,373,1624345200"; 
+   d="scan'208";a="461312106"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by orsmga002.jf.intel.com with ESMTP; 14 Oct 2021 12:23:49 -0700
+Received: from orsmsx609.amr.corp.intel.com (10.22.229.22) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Thu, 14 Oct 2021 12:23:49 -0700
+Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
+ ORSMSX609.amr.corp.intel.com (10.22.229.22) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Thu, 14 Oct 2021 12:23:48 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12 via Frontend Transport; Thu, 14 Oct 2021 12:23:48 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.168)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.12; Thu, 14 Oct 2021 12:23:47 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RoRZ5O3k1eve2TkkXhGzJSqXe9eeHqLjyNhw1NmfeW6fpXIs+s5m4dk7E8mrLyd1ItME0NYwJw2LGdpzLEFBPqIKNNQDSWE/PjurmTy7Gcf1vchnSUERZv974/rrvwrBeM17/HsXkbOEE6cdfBn9VFcDwlykHiskxQvyc8OI5FRos+poC8jt78LPolOWuPe58J1WCWlCRVVfUb/hOlOECcnaupaOAB0Mspl/XJZIfUbV1hYuMVh/42jw78YVkTxdGtam9Tbw5cNqPGL9ifI/8XrLPRKrqCHcxfKUoQPDhzzc8CEgZ1fqxEuPCXR3OXYq1C8I1+wke9pqkZBgkilQYQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=BL9TTkGWvbQw6eSgTE5aAx8xr4igtqMc/xNyhnDPZpE=;
+ b=ZaG2nJXV9p7m8OBhoR37pf7ZWAWjh6WpakbzCsqn3dsbq3wHH2QqKoPX4Yez/dn98NwZONgbvdaHa8a59c8nfSOyDxAK+DaqUfhz3CVMgdxj9idHidPh6BMAxSwYSl2/XY/BE6LTRLH45/OzAtdKTPU3B4zuf64+/zutsxagqmDTYtSTxeiQ8oJ5VxT4OBlqKLiU2tk1fUYAKoaBpwV9gvkBaAekkrWKi08rV0rV+gM0mcVMqNShB0JE3qgFeIO93Odr70s87LX4jrpss5rDT2OIrLeVKnHWzHevzllKovSorOyE+h4evCrscf/WyhZu2qWFz1T//u3FeNf5DiubWw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BL9TTkGWvbQw6eSgTE5aAx8xr4igtqMc/xNyhnDPZpE=;
+ b=mo++YHJR8g5D/uxS8WSp51jXg4yEwjbR9P05bkEevzMS5Y59QJLKBRpmLKkO7drShR2rqJBQz2Ech7qhGrnc5SGUwHNHICc+mLBkaCwjxwxaWp2b18unabiDV4fv1+UQfS6fIIHSObybR1fG23vS1+5C/hb4gFBf8w04MboQs80=
+Authentication-Results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=intel.com;
+Received: from DM4PR11MB5326.namprd11.prod.outlook.com (2603:10b6:5:391::8) by
+ DM5PR11MB1404.namprd11.prod.outlook.com (2603:10b6:3:c::18) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4608.16; Thu, 14 Oct 2021 19:23:43 +0000
+Received: from DM4PR11MB5326.namprd11.prod.outlook.com
+ ([fe80::c61:d5d8:c71e:66da]) by DM4PR11MB5326.namprd11.prod.outlook.com
+ ([fe80::c61:d5d8:c71e:66da%9]) with mapi id 15.20.4587.030; Thu, 14 Oct 2021
+ 19:23:43 +0000
+Subject: Re: [PM] bfcc1e67ff:
+ kernel-selftests.breakpoints.step_after_suspend_test.fail
+To:     Florian Fainelli <f.fainelli@gmail.com>
+CC:     LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        <lkp@lists.01.org>, <lkp@intel.com>,
+        kernel test robot <oliver.sang@intel.com>
+References: <20211014075731.GB18719@xsang-OptiPlex-9020>
+ <51c0a15f-1941-f161-dcec-a7a9acc726f2@gmail.com>
+From:   "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Organization: Intel Technology Poland Sp. z o. o., KRS 101882, ul. Slowackiego
+ 173, 80-298 Gdansk
+Message-ID: <e526de16-5efd-6474-20e1-3f96a2e3c524@intel.com>
+Date:   Thu, 14 Oct 2021 21:23:37 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.14.0
+In-Reply-To: <51c0a15f-1941-f161-dcec-a7a9acc726f2@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-ClientProxiedBy: FR0P281CA0050.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:48::13) To DM4PR11MB5326.namprd11.prod.outlook.com
+ (2603:10b6:5:391::8)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210924130959.2695749-8-ruansy.fnst@fujitsu.com>
+Received: from [192.168.100.217] (213.134.175.183) by FR0P281CA0050.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10:48::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.10 via Frontend Transport; Thu, 14 Oct 2021 19:23:42 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d9a169fe-7b7f-443b-ecee-08d98f4822d2
+X-MS-TrafficTypeDiagnostic: DM5PR11MB1404:
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM5PR11MB140493573A1FCD4FB158DFD1CBB89@DM5PR11MB1404.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: pVj4RCv57KnfItdEoStUF4+Ly4S4GBnkSPB9JYm2dpJFDFasr2nCbEUgfJnwGp9BwXcK49a66FbY4m1LTs8cI/u6QfZ5Sx8S+L0cdOPrfHgMy0VwQfE+jvNVoUur56OiG7fuGvIPjj5Y5pD+Kv+XYMIEnON+5zFm2q+jbnAqIj9WLELLxWiOCa1UI1jckmvF0iiCrvc760fxoppBJSMMZH5IvvLjWlOwiniLXCCcM+DD8nGfetRcsuqsXvX0tUfvW3qPnVRb+QwyH8BpoIV7wgy4Qnd0TmYvmcvNefSnrEQdiyHKLFUxDu2O0c8EY90r4gPNzcEPmRXVZIMoGKoTyjktAHOm89EE2bdxfCIgsiCPlmxULKe4OphIOMmP3ijNLALfuFFArW1RPhVVXvBq2/WQ7kwcrtCHzed+aBKRZXWlxgwOmlP1JXVRlS030NZyS4Qj8+ks69x75gHn4SRM8fqmjN+larlKUhLJXg/WwNWC0qBmnJvVmOFsiUqHoZSS0J/dE0hDWaxntnkTLgYwdU6VHyykUmVs4mBBX+ldl8WptzguW2YssDg6BeI5Oio4PS2nGnGSGx6vX0Se7phPQDke0lDtJdhHMEX2oh/PtBvK7e3tfvgiUVU5qYl1uKtWuzE9VOXS2YwnQ4w6KzLTZl24p2LMnZoP25k/vO/J2D2s3C8z1NZJCx6kH9WmOZL96EzPPLvTMVnneCDGsucizupP6k1wPCHIeHdjIvlXuXOs/g72I+bD0y+9XfXqndabLwxGxJEfgu33HEYaxffqc97xE07OWw0dBNjvjaOxxbvcpce/d2aQSxw8l6/1kBHrJleuZ1dquGjRggYFPNAEPo2Gx1wEsgVx+Z+oKSEbp48=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB5326.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(26005)(31696002)(5660300002)(186003)(966005)(107886003)(86362001)(83380400001)(82960400001)(8676002)(66476007)(508600001)(53546011)(66556008)(36756003)(4326008)(66946007)(8936002)(6916009)(316002)(2906002)(31686004)(54906003)(6666004)(38100700002)(2616005)(6486002)(16576012)(36916002)(956004)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?M1BVYlFYU2R5K3pROTMrUzcxTlBMUmNlam1IVjN1VDdWVlNXc3BjMVhjR0dL?=
+ =?utf-8?B?Ky9sRFVKemhlTXJERDU3K1NrUTU4Q1pnQUxac0lmaVB0TW9vNzhRUi8zZGVD?=
+ =?utf-8?B?Q0lOS2g1WS96R0xuc0FHZjcrNTdJVHdjWDN3bG5HY3BRTG5YcHBpM1huOFBU?=
+ =?utf-8?B?VjlNalRlcVdxYjl1Y0h3Y1VDWkN1dDEzSDFGSVJ5aXRYRkN0UEdzSEQ5bTdr?=
+ =?utf-8?B?NTVRYkwvdFc4NWZJZXAvYW8wNGxrVjlQWWwyWVNuVEhPSlo4THB1R2QzV1Q2?=
+ =?utf-8?B?cFJUc3orK2hMRkxpNjMvQzA3NHdmTXV5WWl4UitTaXppcmlNbkdsMCtrMmd1?=
+ =?utf-8?B?cGR0QzNXbEwyREU2VkN0UjY0NjduZCt6MHFzamdUUVlMNk5QWTVTRC9xZ1hO?=
+ =?utf-8?B?Z2tudE1KVHNRMVc2WUVmSEo3VDdKemc1eTlybWdkVkd6cjZFVnQrWllpNGVp?=
+ =?utf-8?B?VjVINmZFOGF2ZnpDZjdRQlNNblVrdUFsU1BadG56ZUNReG9NTzlFOEVHbzAz?=
+ =?utf-8?B?ZGpGOEpXT1JydVZMWUE2OU9WL2VUNzZEaFRFNDRTRzE0ZTA5WllYN3V3V2pS?=
+ =?utf-8?B?akxlaGV2ZDhNK0psaUhabVVVNXFxRGI1ZG9ET0c3SFVHZlFhYWxkcFJVdWxZ?=
+ =?utf-8?B?ckIzYnd3RjlqTkpSb1U2c0FTN3ovSlR1REZ2MXgzTThFdjU5VTNzR3ZYQitX?=
+ =?utf-8?B?NFg4WFRKdEtJcVl0MzFvQnhWZWN6ZDBiYU55RVZ5SWpwYVc3NTZqN3JjSDJ3?=
+ =?utf-8?B?UE54M3FKUStYa2NzbmZManJuRUVPRFBGajFmN2R2cjA5WmFXWE1vZS8veGw3?=
+ =?utf-8?B?Z0FlaU9KSkp0NWswaFFmMzRmcjhGbmFuQy91MHY4czh1WnVoUUtyckFybnR6?=
+ =?utf-8?B?c1pBYTJOSyt3cHBMMGxiOVo0NFFMdHorWkVxWUJhM2VWQ1p5d2oyVVVFSXUy?=
+ =?utf-8?B?MkczMHhVMTgzSDRLYzhXQ2MyT3N4TzdOSzZUWEFSRGJHK0JwL1dtM1lLcHhY?=
+ =?utf-8?B?a3ZxT2JHbWM0R1VYY0dhVTcrVnZockI3NVBTUW95a2l4K1dETE5YU2ZwYzFx?=
+ =?utf-8?B?clBaU2xLQURvcHBzY0VLZFUyNUlUWktLdkZIcHI5VWxJanFyaTMxL251bmd1?=
+ =?utf-8?B?MEJMb2ZBOUZ2Vi9qOFJsRWVyTUp6VWkvanR5VTVEZTREa2tCYjAvRzhJQjcz?=
+ =?utf-8?B?MVpNb3FTeitjR1d6RXV2Ny9qZkQvTDdZenFydDVGM2ZmZ2pTUWgyaVJMSFRE?=
+ =?utf-8?B?RXJOV2x4SUdrQkZrRG5HMDZKQ1hmQVZMaktRaW1KNFhoU3YxeFhwSzd3NS92?=
+ =?utf-8?B?MVRuOXlzTFdMa1RCbmZsWkRFM2REL2NLWjJQRFp6Z0JvRlJDYmJWTjJQQVZK?=
+ =?utf-8?B?NlR1cmdvR2hLeEgwcVYzTG1kbGRDVkRGOWkwMGxhbHBRY1M2RUJyV1ZhcGVz?=
+ =?utf-8?B?OFI2OXFqcDJqMXdXa1dUVnd6SXRjdFdybFB6R0FodENEQnFJMENFaGJkQjNn?=
+ =?utf-8?B?RXdBay85WlN3QnJ6d1NGMS9oOFVhMVdSdDkvSkpsUGRpTTVqTHM1eEE4Ujlu?=
+ =?utf-8?B?WGk2RWJ5NWxOSEJNL29qeCtucTVLeWNDREFZNUc3V055Q0NES1JtcXVyV1Ra?=
+ =?utf-8?B?VHJpdEI0eVE2NmQrVXd3am1mbm54dVFIcFAvaXlVaG1iQXliYlZuWnk3RUFL?=
+ =?utf-8?B?bWtVcDJZTVJXenBoVkRwODVxM0dBc0xzcGtWS1JueExiZllDalVBYWlzT1Vz?=
+ =?utf-8?Q?EaIGv4e2tP/MTjlJ8LljGhbAchr13OnO+O+7Z1q?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: d9a169fe-7b7f-443b-ecee-08d98f4822d2
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB5326.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Oct 2021 19:23:43.5386
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: w/EwRlDBhCTsg74eemTljcmf4vLZ5y0aphW5RCjD+sLs/qiCJQnMpNoWKEbTas+iouDzIjp5U5Gw2sQ9gyV6jXyMskQ2CNZvf3GGDb+07U4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR11MB1404
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 24, 2021 at 09:09:58PM +0800, Shiyang Ruan wrote:
-> This function is used to handle errors which may cause data lost in
-> filesystem.  Such as memory failure in fsdax mode.
-> 
-> If the rmap feature of XFS enabled, we can query it to find files and
-> metadata which are associated with the corrupt data.  For now all we do
-> is kill processes with that file mapped into their address spaces, but
-> future patches could actually do something about corrupt metadata.
-> 
-> After that, the memory failure needs to notify the processes who are
-> using those files.
-> 
-> Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
-> ---
->  drivers/dax/super.c |  19 +++++
->  fs/xfs/xfs_fsops.c  |   3 +
->  fs/xfs/xfs_mount.h  |   1 +
->  fs/xfs/xfs_super.c  | 188 ++++++++++++++++++++++++++++++++++++++++++++
->  include/linux/dax.h |  18 +++++
->  5 files changed, 229 insertions(+)
-> 
-> diff --git a/drivers/dax/super.c b/drivers/dax/super.c
-> index 7d4a11dcba90..22091e7fb0ef 100644
-> --- a/drivers/dax/super.c
-> +++ b/drivers/dax/super.c
-> @@ -135,6 +135,25 @@ struct dax_device *fs_dax_get_by_bdev(struct block_device *bdev)
->  }
->  EXPORT_SYMBOL_GPL(fs_dax_get_by_bdev);
->  
-> +void fs_dax_register_holder(struct dax_device *dax_dev, void *holder,
-> +		const struct dax_holder_operations *ops)
-> +{
-> +	dax_set_holder(dax_dev, holder, ops);
-> +}
-> +EXPORT_SYMBOL_GPL(fs_dax_register_holder);
-> +
-> +void fs_dax_unregister_holder(struct dax_device *dax_dev)
-> +{
-> +	dax_set_holder(dax_dev, NULL, NULL);
-> +}
-> +EXPORT_SYMBOL_GPL(fs_dax_unregister_holder);
-> +
-> +void *fs_dax_get_holder(struct dax_device *dax_dev)
-> +{
-> +	return dax_get_holder(dax_dev);
-> +}
-> +EXPORT_SYMBOL_GPL(fs_dax_get_holder);
-> +
->  bool generic_fsdax_supported(struct dax_device *dax_dev,
->  		struct block_device *bdev, int blocksize, sector_t start,
->  		sector_t sectors)
-> diff --git a/fs/xfs/xfs_fsops.c b/fs/xfs/xfs_fsops.c
-> index 33e26690a8c4..4c2d3d4ca5a5 100644
-> --- a/fs/xfs/xfs_fsops.c
-> +++ b/fs/xfs/xfs_fsops.c
-> @@ -542,6 +542,9 @@ xfs_do_force_shutdown(
->  	} else if (flags & SHUTDOWN_CORRUPT_INCORE) {
->  		tag = XFS_PTAG_SHUTDOWN_CORRUPT;
->  		why = "Corruption of in-memory data";
-> +	} else if (flags & SHUTDOWN_CORRUPT_META) {
-> +		tag = XFS_PTAG_SHUTDOWN_CORRUPT;
-> +		why = "Corruption of on-disk metadata";
->  	} else {
->  		tag = XFS_PTAG_SHUTDOWN_IOERROR;
->  		why = "Metadata I/O Error";
-> diff --git a/fs/xfs/xfs_mount.h b/fs/xfs/xfs_mount.h
-> index e091f3b3fa15..d0f6da23e3df 100644
-> --- a/fs/xfs/xfs_mount.h
-> +++ b/fs/xfs/xfs_mount.h
-> @@ -434,6 +434,7 @@ void xfs_do_force_shutdown(struct xfs_mount *mp, int lags, char *fname,
->  #define SHUTDOWN_LOG_IO_ERROR	0x0002	/* write attempt to the log failed */
->  #define SHUTDOWN_FORCE_UMOUNT	0x0004	/* shutdown from a forced unmount */
->  #define SHUTDOWN_CORRUPT_INCORE	0x0008	/* corrupt in-memory data structures */
-> +#define SHUTDOWN_CORRUPT_META	0x0010  /* corrupt metadata on device */
->  
->  #define XFS_SHUTDOWN_STRINGS \
->  	{ SHUTDOWN_META_IO_ERROR,	"metadata_io" }, \
-> diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
-> index c4e0cd1c1c8c..46fdf44b5ec2 100644
-> --- a/fs/xfs/xfs_super.c
-> +++ b/fs/xfs/xfs_super.c
-> @@ -37,11 +37,19 @@
->  #include "xfs_reflink.h"
->  #include "xfs_pwork.h"
->  #include "xfs_ag.h"
-> +#include "xfs_alloc.h"
-> +#include "xfs_rmap.h"
-> +#include "xfs_rmap_btree.h"
-> +#include "xfs_rtalloc.h"
-> +#include "xfs_bit.h"
->  
->  #include <linux/magic.h>
->  #include <linux/fs_context.h>
->  #include <linux/fs_parser.h>
-> +#include <linux/mm.h>
-> +#include <linux/dax.h>
->  
-> +static const struct dax_holder_operations xfs_dax_holder_operations;
->  static const struct super_operations xfs_super_operations;
->  
->  static struct kset *xfs_kset;		/* top-level xfs sysfs dir */
-> @@ -377,6 +385,8 @@ xfs_close_devices(
->  
->  		xfs_free_buftarg(mp->m_logdev_targp);
->  		xfs_blkdev_put(logdev);
-> +		if (dax_logdev)
-> +			fs_dax_unregister_holder(dax_logdev);
->  		fs_put_dax(dax_logdev);
->  	}
->  	if (mp->m_rtdev_targp) {
-> @@ -385,9 +395,13 @@ xfs_close_devices(
->  
->  		xfs_free_buftarg(mp->m_rtdev_targp);
->  		xfs_blkdev_put(rtdev);
-> +		if (dax_rtdev)
-> +			fs_dax_unregister_holder(dax_rtdev);
->  		fs_put_dax(dax_rtdev);
->  	}
->  	xfs_free_buftarg(mp->m_ddev_targp);
-> +	if (dax_ddev)
-> +		fs_dax_unregister_holder(dax_ddev);
->  	fs_put_dax(dax_ddev);
->  }
->  
-> @@ -411,6 +425,9 @@ xfs_open_devices(
->  	struct block_device	*logdev = NULL, *rtdev = NULL;
->  	int			error;
->  
-> +	if (dax_ddev)
-> +		fs_dax_register_holder(dax_ddev, mp,
-> +				&xfs_dax_holder_operations);
->  	/*
->  	 * Open real time and log devices - order is important.
->  	 */
-> @@ -419,6 +436,9 @@ xfs_open_devices(
->  		if (error)
->  			goto out;
->  		dax_logdev = fs_dax_get_by_bdev(logdev);
-> +		if (dax_logdev != dax_ddev && dax_logdev)
-> +			fs_dax_register_holder(dax_logdev, mp,
-> +					&xfs_dax_holder_operations);
->  	}
->  
->  	if (mp->m_rtname) {
-> @@ -433,6 +453,9 @@ xfs_open_devices(
->  			goto out_close_rtdev;
->  		}
->  		dax_rtdev = fs_dax_get_by_bdev(rtdev);
-> +		if (dax_rtdev)
-> +			fs_dax_register_holder(dax_rtdev, mp,
-> +					&xfs_dax_holder_operations);
->  	}
->  
->  	/*
-> @@ -1110,6 +1133,171 @@ xfs_fs_free_cached_objects(
->  	return xfs_reclaim_inodes_nr(XFS_M(sb), sc->nr_to_scan);
->  }
->  
-> +struct notify_failure_info {
-> +	xfs_agblock_t startblock;
+On 10/14/2021 6:26 PM, Florian Fainelli wrote:
+> On 10/14/21 12:57 AM, kernel test robot wrote:
+>>
+>> Greeting,
+>>
+>> FYI, we noticed the following commit (built with gcc-9):
+>>
+>> commit: bfcc1e67ff1e4aa8bfe2ca57f99390fc284c799d ("PM: sleep: Do not assume that "mem" is always present")
+>> https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git master
+>>
+>>
+>> in testcase: kernel-selftests
+>> version: kernel-selftests-x86_64-c8c9111a-1_20210929
+>> with following parameters:
+>>
+>> 	group: group-00
+>> 	ucode: 0x11
+>>
+>> test-description: The kernel contains a set of "self tests" under the tools/testing/selftests/ directory. These are intended to be small unit tests to exercise individual code paths in the kernel.
+>> test-url: https://www.kernel.org/doc/Documentation/kselftest.txt
+>>
+>>
+>> on test machine: 288 threads 2 sockets Intel(R) Xeon Phi(TM) CPU 7295 @ 1.50GHz with 80G memory
+>>
+>> caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
+>>
+>>
+>>
+>>
+>> If you fix the issue, kindly add following tag
+>> Reported-by: kernel test robot <oliver.sang@intel.com>
+> Thanks for your report. Assuming that the code responsible for
+> registering the suspend operations is drivers/acpi/sleep.c for your
+> platform, and that acpi_sleep_suspend_setup() iterated over all possible
+> sleep states, your platform must somehow be returning that ACPI_STATE_S3
+> is not a supported state somehow?
+>
+> Rafael have you ever encountered something like that?
 
-Style nit: tabs between type name and variable name.
+Yes, there are systems with ACPI that don't support S3.
 
-> +	xfs_filblks_t blockcount;
-> +	int flags;
 
-Are these MF_ flags to be passed from memory_failure to
-mf_dax_kill_procs?
+>>
+>> TAP version 13
+>> 1..2
+>> # selftests: breakpoints: step_after_suspend_test
+>> # TAP version 13
+>> # Bail out! Failed to enter Suspend state
+>> # # Totals: pass:0 fail:0 xfail:0 xpass:0 skip:0 error:0
+>> not ok 1 selftests: breakpoints: step_after_suspend_test # exit=1
+>>
+>>
+>>
+>> To reproduce:
+>>
+>>          git clone https://github.com/intel/lkp-tests.git
+>>          cd lkp-tests
+>>          sudo bin/lkp install job.yaml           # job file is attached in this email
+>>          bin/lkp split-job --compatible job.yaml # generate the yaml file for lkp run
+>>          sudo bin/lkp run generated-yaml-file
+>>
+>>          # if come across any failure that blocks the test,
+>>          # please remove ~/.lkp and /lkp dir to run from a clean state.
+>>
+>>
+>>
+>> ---
+>> 0DAY/LKP+ Test Infrastructure                   Open Source Technology Center
+>> https://lists.01.org/hyperkitty/list/lkp@lists.01.org       Intel Corporation
+>>
+>> Thanks,
+>> Oliver Sang
+>>
+>
 
-> +};
-> +
-> +static loff_t
-> +xfs_notify_failure_start(
-> +	struct xfs_mount			*mp,
-> +	const struct xfs_rmap_irec		*rec,
-> +	const struct notify_failure_info	*notify)
-> +{
-> +	loff_t start = rec->rm_offset;
-> +
-> +	if (notify->startblock > rec->rm_startblock)
-> +		start += XFS_FSB_TO_B(mp,
-> +				notify->startblock - rec->rm_startblock);
-
-I'm confused, is this supposed to return the file pos(ition) of the
-failed range in units of bytes or in fs blocks?
-
-If it's units of bytes (like the loff_t return value implies) then this
-should be called xfs_notify_failure_pos.
-
-> +	return start;
-> +}
-> +
-> +static size_t
-> +xfs_notify_failure_size(
-> +	struct xfs_mount			*mp,
-> +	const struct xfs_rmap_irec		*rec,
-> +	const struct notify_failure_info	*notify)
-> +{
-> +	xfs_agblock_t rec_start = rec->rm_startblock;
-> +	xfs_agblock_t rec_end = rec->rm_startblock + rec->rm_blockcount;
-
-These are "next" variables, not "end".  The end of the record is
-startblock + blockcount - 1.
-
-> +	xfs_agblock_t notify_start = notify->startblock;
-> +	xfs_agblock_t notify_end = notify->startblock + notify->blockcount;
-> +	xfs_agblock_t cross_start = max(rec_start, notify_start);
-> +	xfs_agblock_t cross_end = min(rec_end, notify_end);
-> +
-> +	return XFS_FSB_TO_B(mp, cross_end - cross_start);
-> +}
-> +
-> +static int
-> +xfs_dax_notify_failure_fn(
-> +	struct xfs_btree_cur		*cur,
-> +	const struct xfs_rmap_irec	*rec,
-> +	void				*data)
-> +{
-> +	struct xfs_mount		*mp = cur->bc_mp;
-> +	struct xfs_inode		*ip;
-> +	struct address_space		*mapping;
-> +	struct notify_failure_info	*notify = data;
-> +	int				error = 0;
-> +
-> +	if (XFS_RMAP_NON_INODE_OWNER(rec->rm_owner) ||
-> +	    (rec->rm_flags & (XFS_RMAP_ATTR_FORK | XFS_RMAP_BMBT_BLOCK))) {
-> +		// TODO check and try to fix metadata
-> +		xfs_force_shutdown(mp, SHUTDOWN_CORRUPT_META);
-> +		return -EFSCORRUPTED;
-> +	}
-> +
-> +	/* Get files that incore, filter out others that are not in use. */
-> +	error = xfs_iget(mp, cur->bc_tp, rec->rm_owner, XFS_IGET_INCORE,
-> +			 0, &ip);
-
-If you're going to use _INCORE then you probably want to filter out the
--ENODATA or whatever error code means "inode wasn't loaded", because
-returning any nonzero value to rmap_query_range causes it to stop
-iterating.
-
-> +	if (error)
-> +		return error;
-> +
-> +	mapping = VFS_I(ip)->i_mapping;
-> +	if (IS_ENABLED(CONFIG_MEMORY_FAILURE)) {
-> +		loff_t offset = xfs_notify_failure_start(mp, rec, notify);
-> +		size_t size = xfs_notify_failure_size(mp, rec, notify);
-> +
-> +		error = mf_dax_kill_procs(mapping, offset >> PAGE_SHIFT, size,
-> +					  notify->flags);
-> +	}
-> +	// TODO try to fix data
-> +	xfs_irele(ip);
-> +
-> +	return error;
-> +}
-> +
-> +static loff_t
-> +xfs_dax_bdev_offset(
-> +	struct xfs_mount *mp,
-> +	struct dax_device *dax_dev,
-> +	loff_t disk_offset)
-> +{
-> +	struct block_device *bdev;
-> +
-> +	if (mp->m_ddev_targp->bt_daxdev == dax_dev)
-> +		bdev = mp->m_ddev_targp->bt_bdev;
-> +	else if (mp->m_logdev_targp->bt_daxdev == dax_dev)
-> +		bdev = mp->m_logdev_targp->bt_bdev;
-> +	else
-> +		bdev = mp->m_rtdev_targp->bt_bdev;
-> +
-> +	return disk_offset - (get_start_sect(bdev) << SECTOR_SHIFT);
-> +}
-> +
-> +static int
-> +xfs_dax_notify_failure(
-> +	struct dax_device	*dax_dev,
-> +	loff_t			offset,
-> +	size_t			len,
-> +	int			flags)
-
-Are @flags supposed to contain the MF_ flags that were passed to
-memory_failure()?  The variable name should probably be @mf_flags
-throughout the patchset if that's the case.
-
-> +{
-> +	struct xfs_mount	*mp = fs_dax_get_holder(dax_dev);
-> +	struct xfs_trans	*tp = NULL;
-> +	struct xfs_btree_cur	*cur = NULL;
-> +	struct xfs_buf		*agf_bp = NULL;
-> +	struct xfs_rmap_irec	rmap_low, rmap_high;
-> +	loff_t			bdev_offset = xfs_dax_bdev_offset(mp, dax_dev,
-> +								  offset);
-
-I don't like using loff_t to represent byte offsets into the physical
-device.  loff_t should be used only for file byte offsets, and that's
-not what we're storing here.
-
-> +	xfs_fsblock_t		fsbno = XFS_B_TO_FSB(mp, bdev_offset);
-
-I think this is still wrong, since fsblocks are segmented (nonlinear)
-addresses.  Pass daddr into xfs_dax_notify_ddev_failure like I lay out
-below, and then you can do:
-
-	start_fsbno = XFS_DADDR_TO_FSB(mp, daddr);
-	agno = XFS_FSB_TO_AGNO(mp, fsbno);
-	notify.startblock = XFS_FSB_TO_AGBNO(mp, fsbno);
-	notify.blockcount = XFS_BB_TO_FSB(mp, bblen);
-
-(More on this below)
-
-> +	xfs_agnumber_t		agno = XFS_FSB_TO_AGNO(mp, fsbno);
-> +	int			error = 0;
-> +	struct notify_failure_info notify = {
-> +		.startblock	= XFS_FSB_TO_AGBNO(mp, fsbno),
-> +		.blockcount	= XFS_B_TO_FSB(mp, len),
-> +		.flags		= flags,
-> +	};
-> +
-> +	if (mp->m_rtdev_targp && mp->m_rtdev_targp->bt_daxdev == dax_dev) {
-> +		xfs_warn(mp,
-> +			 "notify_failure() not supported on realtime device!");
-> +		return -EOPNOTSUPP;
-> +	}
-> +
-> +	if (mp->m_logdev_targp && mp->m_logdev_targp->bt_daxdev == dax_dev &&
-> +	    mp->m_logdev_targp != mp->m_ddev_targp) {
-> +		xfs_err(mp, "ondisk log corrupt, shutting down fs!");
-> +		xfs_force_shutdown(mp, SHUTDOWN_CORRUPT_META);
-> +		return -EFSCORRUPTED;
-> +	}
-
-Urk.  xfs_dax_notify_failure should be a short function to dispatch the
-notification to the proper handler.  Everything from here down should be
-in a separate function xfs_dax_notify_ddev_failure, so that the next
-line of xfs_dax_notify_failure is just:
-
-	return xfs_dax_notify_ddev_failure(mp, BTOBB(offset),
-			BTOBB(len), flags);
-
-And then we have
-
-static int
-xfs_dax_notify_ddev_failure(
-	struct xfs_mount	*mp,
-	xfs_daddr_t		daddr,
-	xfs_daddr_t		bblen,
-	int			mf_flags)
-{
-	if (!xfs_has_rmapbt(mp)) {
-		xfs_warn(...);
-
-Because otherwise xfs_dax_notify_failure gets cluttered.
-
-> +
-> +	if (!xfs_has_rmapbt(mp)) {
-> +		xfs_warn(mp, "notify_failure() needs rmapbt enabled!");
-> +		return -EOPNOTSUPP;
-> +	}
-> +
-> +	error = xfs_trans_alloc_empty(mp, &tp);
-> +	if (error)
-> +		return error;
-> +
-> +	error = xfs_alloc_read_agf(mp, tp, agno, 0, &agf_bp);
-> +	if (error)
-> +		goto out_cancel_tp;
-> +
-> +	cur = xfs_rmapbt_init_cursor(mp, tp, agf_bp, agf_bp->b_pag);
-
-What happens if the failure range spans multiple AGs?  I suppose it's
-not technically possible today since we only report a single page at a
-time.  But for the general case, I think we actually want (building off
-the sample code above) this function to do something like this:
-
-	start_fsbno = XFS_DADDR_TO_FSB(mp, daddr);
-	agno = XFS_FSB_TO_AGNO(mp, fsbno);
-	end_fsbno = XFS_DADDR_TO_FSB(mp, daddr + bblen);
-	end_agno = XFS_FSB_TO_AGNO(mp, end_fsbno);
-
-	for (; agno <= end_agbno; agno++) {
-		struct xfs_rmap_irec	rmap_low = { };
-		struct xfs_rmap_irec	rmap_high;
-
-		notify.startblock = XFS_FSB_TO_AGBNO(mp, fsbno);
-		notify.blockcount = XFS_BB_TO_FSB(mp, bblen);
-
-		/*
-		 * init transaction, read agf, init cursor...
-		 */
-
-		memset(&rmap_high, 0xFF, sizeof(rmap_high));
-		rmap_low.rm_startblock = XFS_FSB_TO_AGBNO(mp, fsbno);
-		if (agno == end_agbno)
-			rmap_high.rm_startblock = XFS_FSB_TO_AGBNO(mp,
-							end_fsbno);
-
-		error = xfs_rmap_query_range(...);
-		if (error)
-			fail;
-
-		fsbno = XFS_AGB_TO_FSB(mp, agno + 1, 0);
-	}
-
---D
-
-> +
-> +	/* Construct a range for rmap query */
-> +	memset(&rmap_low, 0, sizeof(rmap_low));
-> +	memset(&rmap_high, 0xFF, sizeof(rmap_high));
-> +	rmap_low.rm_startblock = rmap_high.rm_startblock = notify.startblock;
-> +	rmap_low.rm_blockcount = rmap_high.rm_blockcount = notify.blockcount;
-> +
-> +	error = xfs_rmap_query_range(cur, &rmap_low, &rmap_high,
-> +				     xfs_dax_notify_failure_fn, &notify);
-> +
-> +	xfs_btree_del_cursor(cur, error);
-> +	xfs_trans_brelse(tp, agf_bp);
-> +
-> +out_cancel_tp:
-> +	xfs_trans_cancel(tp);
-> +	return error;
-> +}
-> +
-> +static const struct dax_holder_operations xfs_dax_holder_operations = {
-> +	.notify_failure		= xfs_dax_notify_failure,
-> +};
-> +
->  static const struct super_operations xfs_super_operations = {
->  	.alloc_inode		= xfs_fs_alloc_inode,
->  	.destroy_inode		= xfs_fs_destroy_inode,
-> diff --git a/include/linux/dax.h b/include/linux/dax.h
-> index 3d90becbd160..0f1fa7a4a616 100644
-> --- a/include/linux/dax.h
-> +++ b/include/linux/dax.h
-> @@ -149,6 +149,10 @@ static inline void fs_put_dax(struct dax_device *dax_dev)
->  }
->  
->  struct dax_device *fs_dax_get_by_bdev(struct block_device *bdev);
-> +void fs_dax_register_holder(struct dax_device *dax_dev, void *holder,
-> +		const struct dax_holder_operations *ops);
-> +void fs_dax_unregister_holder(struct dax_device *dax_dev);
-> +void *fs_dax_get_holder(struct dax_device *dax_dev);
->  int dax_writeback_mapping_range(struct address_space *mapping,
->  		struct dax_device *dax_dev, struct writeback_control *wbc);
->  
-> @@ -179,6 +183,20 @@ static inline struct dax_device *fs_dax_get_by_bdev(struct block_device *bdev)
->  	return NULL;
->  }
->  
-> +static inline void fs_dax_register_holder(struct dax_device *dax_dev,
-> +		void *holder, const struct dax_holder_operations *ops)
-> +{
-> +}
-> +
-> +static inline void fs_dax_unregister_holder(struct dax_device *dax_dev)
-> +{
-> +}
-> +
-> +static inline void *fs_dax_get_holder(struct dax_device *dax_dev)
-> +{
-> +	return NULL;
-> +}
-> +
->  static inline struct page *dax_layout_busy_page(struct address_space *mapping)
->  {
->  	return NULL;
-> -- 
-> 2.33.0
-> 
-> 
-> 
