@@ -2,151 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A929E42E1D2
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 21:07:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4810F42E1D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 21:07:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232721AbhJNTJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 15:09:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47424 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230177AbhJNTJB (ORCPT
+        id S232735AbhJNTJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 15:09:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58285 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232749AbhJNTJF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 15:09:01 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82648C061570
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 12:06:56 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id y26so31342006lfa.11
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 12:06:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HJLNe6p0kXll0p/zQ+ix9EnlRMcV8HyMx0Hiy0sszkU=;
-        b=QMp8GsscRFycNJArReWU8R4M0PoK8ClOHcQI4E03ubJTpHM9GdjtxAzFhJAPqdJWot
-         qwxm2+2u+tb33NJb+VTPaO2xsSLXb+8ZO98YdQkc3geIh8eoa8qOj8DnUTW2xXCo+pk9
-         l8IA5HXLxoLitt+gJWUtNv5Y4+4K5NXEr3MmGdLwbw3N05VonZE2Ozj/WhnyKw9vB4c+
-         lbhJhLTB1QmN/ac4Chm3TKkD3GgeKkWC2X4UUJ8Gb9GWMoNCipiS/CsfD8RXaKDyMtCG
-         lEyDydbQUJJ6Ey2CwqEneC7k4G41OGBHVmmPCRdGZUZ8GnELqXBqM6Y120/QaP8BzBZk
-         nn7w==
+        Thu, 14 Oct 2021 15:09:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634238419;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=bXPqLb26D1n+X254p2WStepO6UEQEU6i6Gw3sazT/Yk=;
+        b=cyX2Q8LRojC/+xSJT+Vqs+7Sqbc+9hzjXH64Cll6rGZHkZsnt3hqLP3R2rC/mnkKtlcVgr
+        cmpTo5JYKh3csrltaQpQiqCwdZDf5jG4tLSdjsyzBL3VmVHTRbXkU+BPUHTFIPFNOGI0wd
+        fWmJJBkOvT99xjOvQYz5+KJeP8hIS78=
+Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com
+ [209.85.210.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-84-mHNEwkLjMyqtuvGJauJpjQ-1; Thu, 14 Oct 2021 15:06:58 -0400
+X-MC-Unique: mHNEwkLjMyqtuvGJauJpjQ-1
+Received: by mail-ot1-f71.google.com with SMTP id 100-20020a9d02ed000000b0054e1a7095faso4253386otl.5
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 12:06:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HJLNe6p0kXll0p/zQ+ix9EnlRMcV8HyMx0Hiy0sszkU=;
-        b=EM1c8VOfPm7B7g61isrRBD1jjeHGeGEWaU3pOlkzYxk/Af/Fc/sZw38kiTkxRZJ6JM
-         qjL+s+7oGjoXg+mAwxUP8tHwzU0jWNpbTQCT2pgrdQ+9hYbCOjmJylBLmHcVnEZu51vz
-         qstamTwKPHgnxR1vFB0qvOIYJYy7Wezshe29bxno02KvmPkx0RbI6qDVFY9TbnyEFo6T
-         iL6vPxu+yEFvWQIjjoHaXh6ZMJv2wxiE2xWNeOmqd/B7ELZBxgjlpj2y0E6wbwkFXjSD
-         rVgMjGL111E74s3dl4/J5ffH+iCLwPiCf6UwJxoQh+c638PSfyryWFuCm48A2U5QESZV
-         Z47g==
-X-Gm-Message-State: AOAM533XprWboSVpK53DXiKlrtA+S8H3gw+4zsRI0Ibn4NhZgudv4CUh
-        tkKfqnq9K5ivVs3j2npFDFPjs2DVaSvi1Wchn8PbHw==
-X-Google-Smtp-Source: ABdhPJzma2nL08hEQqA7xBaoTHEUCJANq0HPVL1+yf1LQX/Gkcr4fIO77knmTqXenYjPbxKRQFDbkcuH5w7uEEXYhY4=
-X-Received: by 2002:a2e:461a:: with SMTP id t26mr7933890lja.198.1634238414589;
- Thu, 14 Oct 2021 12:06:54 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bXPqLb26D1n+X254p2WStepO6UEQEU6i6Gw3sazT/Yk=;
+        b=NbaDymMkhiwgDDuNoh3x5S5myJ2EjMXShhEzKqCavE01cPS+aaDxU9DxSgQFB5Glmg
+         IU1gpEDq1hBh89yQHV6culRH89gzeAOZMBGSGKBENbFJfUgyDraBGnkvalEwEhsb43Z7
+         sT0knv5EQhBbZnUXubnmpoZ9NLdcpNLUOjFg2QDuUEgRePgFWGqoc5l1EDXx0yqYPVf/
+         G0Gcc44C66xAVEYR783hFTMUF05fUcpMgd3tw6lHVdcRvpjup2DjLu+vDtxSCKbAv4EU
+         U1kJ6W/3LamKQcMrazrjoASQl2qqjlNGLfLStrCHFb6hTfc5raVUVMe+l18N5LP/oYMp
+         L7PQ==
+X-Gm-Message-State: AOAM532tcIdHWjPTGx1Ak0uXIF4X91z3hJQcATlBHODe8FAc6eOni9Kb
+        DLbaXzjkHV4t43RCcVLtkhTKo7E7I8uR2K52SbeePJ81vDb5oa/jX+QdfnyAKlXT43812oPbpCW
+        FlswDrmFDqtBQvAND19po3cow
+X-Received: by 2002:a05:6820:253:: with SMTP id b19mr5649112ooe.28.1634238417795;
+        Thu, 14 Oct 2021 12:06:57 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwgmz6lljfLOy6EZAroJmPTbavii7SUe9t45FCkVEtlRBE3RWcOGCsz7qZDG4VxilKyIlLG0w==
+X-Received: by 2002:a05:6820:253:: with SMTP id b19mr5649093ooe.28.1634238417583;
+        Thu, 14 Oct 2021 12:06:57 -0700 (PDT)
+Received: from treble ([2600:1700:6e32:6c00::15])
+        by smtp.gmail.com with ESMTPSA id l16sm593952oou.7.2021.10.14.12.06.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Oct 2021 12:06:57 -0700 (PDT)
+Date:   Thu, 14 Oct 2021 12:06:54 -0700
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Kees Cook <keescook@chromium.org>, Borislav Petkov <bp@alien8.de>,
+        Sami Tolvanen <samitolvanen@google.com>, x86@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev
+Subject: Re: [PATCH v5 09/15] x86: Use an opaque type for functions not
+ callable from C
+Message-ID: <20211014190654.gn2jd43vw35gzdvs@treble>
+References: <20211013181658.1020262-1-samitolvanen@google.com>
+ <20211013181658.1020262-10-samitolvanen@google.com>
+ <YWgSwmzPFrRbMC1P@zn.tnic>
+ <202110140904.41B5183E@keescook>
+ <YWhpbu/Y6V2p/zlY@zn.tnic>
+ <202110141141.870A67E@keescook>
+ <20211014145211.573579e6@gandalf.local.home>
 MIME-Version: 1.0
-References: <1446878298.170497.1633338512925@office.mailbox.org>
- <b6abc5a3-39ea-b463-9df5-f50bdcb16d08@redhat.com> <936688112.157288.1633339838738@office.mailbox.org>
- <c4773ecc-053f-9bc6-03af-5039397a4531@redhat.com> <CAKwvOd=rrM4fGdGMkD5+kdA49a6K+JcUiR4K2-go=MMt++ukPA@mail.gmail.com>
- <CALMp9eRzadC50n=d=NFm7osVgKr+=UG7r2cWV2nOCfoPN41vvQ@mail.gmail.com>
- <YWht7v/1RuAiHIvC@archlinux-ax161> <YWh3iBoitI9UNmqV@google.com>
-In-Reply-To: <YWh3iBoitI9UNmqV@google.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 14 Oct 2021 12:06:42 -0700
-Message-ID: <CAKwvOdkC7ydAWs+nB3cxEOrbb7uEjiyBWg1nOOBtKqaCh3zhBg@mail.gmail.com>
-Subject: Re: [BUG] [5.15] Compilation error in arch/x86/kvm/mmu/spte.h with clang-14
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Jim Mattson <jmattson@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, torvic9@mailbox.org,
-        "vkuznets@redhat.com" <vkuznets@redhat.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "bp@alien8.de" <bp@alien8.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211014145211.573579e6@gandalf.local.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 11:31 AM Sean Christopherson <seanjc@google.com> wrote:
->
-> On Thu, Oct 14, 2021, Nathan Chancellor wrote:
-> > On Mon, Oct 04, 2021 at 10:12:33AM -0700, Jim Mattson wrote:
-> > > On Mon, Oct 4, 2021 at 9:13 AM Nick Desaulniers <ndesaulniers@google.com> wrote:
-> > > >
-> > > > On Mon, Oct 4, 2021 at 2:49 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
-> > > > >
-> > > > > On 04/10/21 11:30, torvic9@mailbox.org wrote:
-> > > > > >
-> > > > > >> Paolo Bonzini <pbonzini@redhat.com> hat am 04.10.2021 11:26 geschrieben:
-> > > > > >>
-> > > > > >>
-> > > > > >> On 04/10/21 11:08, torvic9@mailbox.org wrote:
-> > > > > >>> I encounter the following issue when compiling 5.15-rc4 with clang-14:
-> > > > > >>>
-> > > > > >>> In file included from arch/x86/kvm/mmu/mmu.c:27:
-> > > > > >>> arch/x86/kvm/mmu/spte.h:318:9: error: use of bitwise '|' with boolean operands [-Werror,-Wbitwise-instead-of-logical]
-> > > > > >>>           return __is_bad_mt_xwr(rsvd_check, spte) |
-> > > > > >>>                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > > > > >>>                                                    ||
-> > > > > >>> arch/x86/kvm/mmu/spte.h:318:9: note: cast one or both operands to int to silence this warning
-> > > > > >>
-> > > > > >> The warning is wrong, as mentioned in the line right above:
-> > >
-> > > Casting the bool to an int doesn't seem that onerous.
-> >
-> > Alternatively, could we just change both of the functions to return u64?
-> > I understand that they are being used in boolean contexts only but it
-> > seems like this would make it clear that a boolean or bitwise operator
-> > on them is acceptable.
->
-> If we want to fix this, my vote is for casting to an int and updating the comment
+On Thu, Oct 14, 2021 at 02:52:11PM -0400, Steven Rostedt wrote:
+> On Thu, 14 Oct 2021 11:47:01 -0700
+> Kees Cook <keescook@chromium.org> wrote:
+> 
+> > On Thu, Oct 14, 2021 at 07:31:26PM +0200, Borislav Petkov wrote:
+> > > On Thu, Oct 14, 2021 at 09:07:57AM -0700, Kees Cook wrote:
+> > > Looking at the changelog, DECLARE_ASM_FUNC_SYMBOL, makes a lot more
+> > > sense to me even if it doesn't specify the aspect that it is not called
+> > > by C but who cares - it is generic enough.  
+> > 
+> > Around we go. :) Josh[1] and Steven[2] explicitly disagreed with
+> > that name, leading to the current name[3]. Do you want it to be
+> > DECLARE_ASM_FUNC_SYMBOL() over those objections?
+> 
+> Just note, that I was fine with the original name, but was against the
+> version Josh suggested ;-)
 
-At the least, I think bitwise operations should only be performed on
-unsigned types.
+Naming is important, especially for something as confusing as this.  We
+need to be able to read it in a few months and have some idea of what's
+going on.
 
-> in is_rsvd_spte().  I think I'd vote to fix this?  IIRC KVM has had bitwise goofs
-> in the past that manifested as real bugs, it would be nice to turn this on.
->
-> Or maybe add a macro to handle this?  E.g.
+"DECLARE_ASM_FUNC_SYMBOL" is nonsensical.  As a reader of the code I
+wonder why are some asm functions using it and not others?  And how do I
+know if I need it for my new function?
 
-I think Nathan's suggestion was much cleaner.  If explicit casts are
-enough to silence the warning, then I think Jim's suggestion is even
-better (though unsigned, not signed int).
-
->
-> diff --git a/arch/x86/kvm/mmu/spte.h b/arch/x86/kvm/mmu/spte.h
-> index 7c0b09461349..38aeb4b21925 100644
-> --- a/arch/x86/kvm/mmu/spte.h
-> +++ b/arch/x86/kvm/mmu/spte.h
-> @@ -307,6 +307,12 @@ static inline bool __is_bad_mt_xwr(struct rsvd_bits_validate *rsvd_check,
->         return rsvd_check->bad_mt_xwr & BIT_ULL(pte & 0x3f);
->  }
->
-> +/*
-> + * Macro for intentional bitwise-OR of two booleans, which requires casting at
-> + * least one of the results to an int to suppress -Wbitwise-instead-of-logical.
-> + */
-> +#define BITWISE_BOOLEAN_OR(a, b) (!!((int)(a) | (int)(b)))
-> +
->  static __always_inline bool is_rsvd_spte(struct rsvd_bits_validate *rsvd_check,
->                                          u64 spte, int level)
->  {
-> @@ -315,8 +321,8 @@ static __always_inline bool is_rsvd_spte(struct rsvd_bits_validate *rsvd_check,
->          * bits and EPT's invalid memtype/XWR checks to avoid an extra Jcc
->          * (this is extremely unlikely to be short-circuited as true).
->          */
-> -       return __is_bad_mt_xwr(rsvd_check, spte) |
-> -              __is_rsvd_bits_set(rsvd_check, spte, level);
-> +       return BITWISE_BOOLEAN_OR(__is_bad_mt_xwr(rsvd_check, spte),
-> +                                 __is_rsvd_bits_set(rsvd_check, spte, level));
->  }
->
->  static inline bool spte_can_locklessly_be_made_writable(u64 spte)
-
-
+"extern const u8 int3_magic[]" is even worse.  Why are some asm
+functions randomly declared as arrays, and others not?  Where can I go
+to find out more without digging through the commit log?
 
 -- 
-Thanks,
-~Nick Desaulniers
+Josh
+
