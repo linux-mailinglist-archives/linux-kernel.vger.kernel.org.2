@@ -2,75 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ACD842E487
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 01:02:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E464D42E490
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 01:06:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234284AbhJNXEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 19:04:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42690 "EHLO mail.kernel.org"
+        id S234301AbhJNXI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 19:08:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43168 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230503AbhJNXEt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 19:04:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 291E861053;
-        Thu, 14 Oct 2021 23:02:44 +0000 (UTC)
+        id S234051AbhJNXIY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 19:08:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D4A8061053;
+        Thu, 14 Oct 2021 23:06:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634252564;
-        bh=KQhnfft+SeT/c5QZdp7RT0ENepdXT9rmIDodbBGmQKk=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=V987DMuuAu143/QxCL25gnT67YWoLWnzDLrxGaQU2lZE4cKadqwaoj7ZSuvF1ueSH
-         4BFY2IndapYKmGjvJoV1jnI41eVkgUZ1JfE9Ll/CO9Xe52stcM286MeRcND9ugxvQr
-         wNQpjT1xp3meLcjMOcSsUTgg4eJb3JWl7Ve0aCJouIN4G1by8xMOuSZmWso+/FPv5Y
-         bmmxric7fYEBbPbnqdvLHWHbrlmIwZjFqVzdcfX/Vlp9vGJTJ9vy0uy6j4ov3XDBOZ
-         pMfGEADfc88zSMGY/IlJWghPrOzo+tiga7LzpmLXEaJUkGAqI23UrF4tZmmJ9Ez87H
-         5H/aqQSyW2ExA==
-Content-Type: text/plain; charset="utf-8"
+        s=k20201202; t=1634252778;
+        bh=pTt9hE/zP7h6eknt1Q7xk/zT7K9OERkXxzhqLIb9hoM=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=T8yj7cSo7Bzs2cc+LX7PbO1F+tngLHx8qp8iZaqsnsrgqfoKjb6EVhOSW80gk0fXO
+         EcLyKiZyuaN+jSf78pbQPWVjoTaIWpAqXsj1DTomrNFyUqWMEueli/uqp3+ODyAUjp
+         gvuZujWSrX68ztwqyn+r6esvl7eMrqGPyQ4g0hfM42OpPy32tlqDUdF+tRE66Dq2nL
+         AE7fl3x9uTZAHdLzX0Q/cSGgKngnrV/eWR4OVPjjvyE7w7GRvAG51PQdGiLIUrPK6/
+         5UXGDwz7qIQTKdb0Pqv2+3vC6iIN8PH/ph4f75y+azpnYrycSiVUkh4csi6zdkL4yj
+         WnSM3OsopHchw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id A33E25C0A06; Thu, 14 Oct 2021 16:06:18 -0700 (PDT)
+Date:   Thu, 14 Oct 2021 16:06:18 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Akira Yokosawa <akiyks@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>
+Subject: Re: data dependency naming inconsistency
+Message-ID: <20211014230618.GL880162@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20211011064233-mutt-send-email-mst@kernel.org>
+ <6c362de5-1d79-512c-37d0-81aaf5d335d1@qa2.so-net.ne.jp>
+ <20211014013156-mutt-send-email-mst@kernel.org>
+ <d253958f-b3d7-67c1-4cf6-38f184adabd6@gmail.com>
+ <8a9ea500-8f8c-129a-2974-4bdda65dbf64@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <CAL_Jsq+GHt+DqHa0GeLKWoni+Lghg5wg5ssREZBdSD-=K3XQ1A@mail.gmail.com>
-References: <20210923064137.60722-1-zhang.lyra@gmail.com> <20210923064137.60722-3-zhang.lyra@gmail.com> <YV1XpL7ibF1y4LbV@google.com> <CAL_Jsq+eqqv=qtKOiNdEpYGi2amek_m+Q-Z9A769pXXqJ4R88A@mail.gmail.com> <YWVD0RXHVLxuXEIN@google.com> <CAMuHMdWqYVp1JyzZoidAJhPy9ypRnSOWHJLz5knDUMcFHPOzAw@mail.gmail.com> <YWfSz00Rj5AVhkgT@google.com> <CAL_Jsq+GHt+DqHa0GeLKWoni+Lghg5wg5ssREZBdSD-=K3XQ1A@mail.gmail.com>
-Subject: Re: [PATCH v4 2/4] dt-bindings: mfd: sprd: Add bindings for ums512 global registers
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        linux-clk <linux-clk@vger.kernel.org>, open list:
-        OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS 
-        <devicetree@vger.kernel.org>, Baolin Wang <baolin.wang7@gmail.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>,
-        LKML <linux-kernel@vger.kernel.org>, ;
-Illegal-Object: Syntax error in Cc: address found on vger.kernel.org:
-        Cc:     ;
-                        ^-missing semicolon to end mail group, extraneous tokens in mailbox, missing end of mailbox
-To:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>
-Date:   Thu, 14 Oct 2021 16:02:42 -0700
-Message-ID: <163425256290.1688384.5646232860050218479@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8a9ea500-8f8c-129a-2974-4bdda65dbf64@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Rob Herring (2021-10-14 09:18:16)
-> On Thu, Oct 14, 2021 at 1:48 AM Lee Jones <lee.jones@linaro.org> wrote:
-> >
-> > I don't explicitly build DT documentation.
-> >
-> > Since I use the build bots to let me know if there are strange !(C,
-> > ASM, arm, aarch64, mips, ppc, x86) build issues or ones with odd
-> > configuration possibilities (randconfig) in the repos I maintain, you
-> > might have to convince them that this is important too.
->=20
-> It's really just a matter of turning on the build in
-> allyesconfig/allmodconfig builds. I've not done that primarily because
-> there's one person I don't want to yell at me, but I could probably
-> make it arm and/or arm64 only. It's really arch and config
-> independent, so doing it multiple times is kind of pointless.
->=20
-> I assume for bots you mean kernel-ci mainly? Do you run that before
-> stuff gets into linux-next? IMO, that's too late. But still a slight
-> improvement if things go in via one tree. Otherwise, I see the
-> breakage twice, 1st linux-next then the merge window.
->=20
+On Fri, Oct 15, 2021 at 07:48:09AM +0900, Akira Yokosawa wrote:
+> On Thu, 14 Oct 2021 23:29:43 +0900, Akira Yokosawa wrote:
+> > [-CC akys: my 2nd address]
+> > On Thu, 14 Oct 2021 01:37:17 -0400, Michael S. Tsirkin wrote:
+> >> On Thu, Oct 14, 2021 at 01:43:24PM +0900, Akira Yokosawa wrote:
+> >>> On Mon, 11 Oct 2021 07:07:08 -0400, Michael S. Tsirkin wrote:
+> >>>> Hello Paul, all!
+> >>>
+> >>> Hello Michael,
+> >>>
+> >>> I thought Paul would respond soon, but looks like he has not
+> >>> done so.
+> 
+> This is because Michael used Paul's old email address.
 
-I run `make dt_binding_check DT_SCHEMA_FILES=3D"<path to yaml file>"` but
-nowadays this seems to check all the bindings and not just the one
-binding I care to check. Did something break?
+Indeed, my ibm.com email addresses died about two years ago.
+
+> Forwarding to his current address.
+> 
+> Paul, you can see the thread at the lore archive:
+> https://lore.kernel.org/lkml/20211011064233-mutt-send-email-mst@kernel.org/T/
+
+And thank you for forwarding this.
+
+>         Thanks, Akira
+> 
+> >>> So, I'm trying to give some hint to your findings.
+> >>>
+> >>>> I've been reading with interest Paul's posts about Rust interactions with LKMM
+> >>>> https://paulmck.livejournal.com/63316.html
+> >>>> and in particular it states:
+> >>>> 		A data dependency involves a load whose return value directly or
+> >>>> 	indirectly determine the value stored by a later store, which results in
+> >>>> 	the load being ordered before the store.
+> >>>>
+> >>>> This matches the perf book:
+> >>>> 	A data dependency occurs when the value returned by
+> >>>> 	a load instruction is used to compute the data stored by
+> >>>> 	a later store instruction.
+> >>>
+> >>> You might likely be aware, but these concern "data dependency",
+> >>> not a _barrier_.
+> >>>
+> >>>>
+> >>>> however, memory-barriers.txt states:
+> >>>>
+> >>>>      A data dependency barrier is a partial ordering on interdependent loads
+> >>>>      only; it is not required to have any effect on stores, independent loads
+> >>>>      or overlapping loads.
+
+As noted by others, the difference is that the first two are about a
+data dependency, that is a prior load affecting the value stored by
+a later store.  In contrast, the last one is about a data-dependency
+barrier, which need only affect trailing loads.  Trailing stores are
+already covered by control dependencies.  But clearer wording might
+be good.  Suggestions?
+
+> >>>> It also says:
+> >>>> 	A data-dependency barrier is not required to order dependent writes
+> >>>> 	because the CPUs that the Linux kernel supports don't do writes
+> >>>> 	until they are certain (1) that the write will actually happen, (2)
+> >>>> 	of the location of the write, and (3) of the value to be written.
+> >>>
+> >>> These concern the historic "data-dependency barrier", or
+> >>> [smp_]read_barrier_depends(), which existed until Linux kernel v4.14.
+> > 
+> > Ah... I should have said ", which existed prior to Linux kernel v4.15".
+> > This invited off-by-one error below...
+> > 
+> >>>
+> >>>>
+> >>>> so the result it the same: writes are ordered without a barrier,
+> >>>> reads are ordered by a barrier.
+> >>>>
+> >>>> However, it would seem that a bit more consistency in naming won't
+> >>>> hurt.
+> >>>
+> >>> So, I don't think the historic term of "data-dependency barrier"
+> >>> can be changed.
+> >>>
+> >>> I guess the right approach would be to further de-emphasize
+> >>> "data-dependency barrier"/"data dependency barrier" in
+> >>> memory-barriers.txt.
+> >>>
+> >>> Rewrite by commit 8ca924aeb4f2 ("Documentation/barriers: Remove
+> >>> references to [smp_]read_barrier_depends()") did some of such
+> >>> changes, but it failed to update the introductory section of
+> >>> "VARIETIES OF MEMORY BARRIER".
+> >>> The part Michael quoted above belongs to it.
+> >>> I don't think it has any merit keeping it around.
+> >>>
+> >>> Also, there remain a couple of ascii-art diagrams concerning
+> >>> <data dependency barrier> in the first part of "EXAMPLES OF MEMORY
+> >>> BARRIER SEQUENCES" section, which, I think, can be removed as well.
+> >>>
+> >>> Hope this helps clarify the circumstances.
+> >>
+> >> It does, thanks! It might be worth adding a sentence along the lines of
+> >>
+> >> "NB: a data dependency barrier is distinct from a data dependency: it's
+> >> a barrier that used to be required in the presence of a data dependency.
+> >> Since v4.14 Linux no longer offers an API for a data dependency barrier.
+> > 
+> >   Since v4.15
+> > 
+> >> Instead, using READ_ONCE is sufficient for ordering in the presence of a
+> >> data dependency".
+> > 
+> > 
+> > Maybe.
+> > 
+> > But I'm more inclined to get rid of remaining contents related to the
+> > "data dependency barrier".
+
+Given that we don't seem to have any more data-dependency barriers,
+so getting rid of remaining mentions makes a lot of sense to me.
+
+							Thanx, Paul
+
+> >         Thanks, Akira
+> > 
+> >>
+> >>
+> >>> Paul, what is your take on the naming of "data dependency"/
+> >>> "data dependency barrier"?
+> >>>
+> >>>         Thanks, Akira
+> >>>
+> >>>>
+> >>>> Thanks,
+> >>>>
+> >>>> -- 
+> >>>> MST
+> >>
