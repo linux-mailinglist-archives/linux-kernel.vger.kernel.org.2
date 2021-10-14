@@ -2,146 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B7F642D516
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 10:33:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B13C42D528
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 10:35:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230260AbhJNIfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 04:35:34 -0400
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:26621 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230222AbhJNIf0 (ORCPT
+        id S230221AbhJNIhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 04:37:09 -0400
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:52104 "EHLO
+        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230051AbhJNIhG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 04:35:26 -0400
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20211014083320euoutp02522e606088e7c609383b993dbe3df66a~t2Jsuh_z61263312633euoutp02S
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 08:33:20 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20211014083320euoutp02522e606088e7c609383b993dbe3df66a~t2Jsuh_z61263312633euoutp02S
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1634200400;
-        bh=TiSj1o9zl4Q3JV99HgMOj8hOrXVab++M3/wqJ4giETs=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=hMdcUjyZezKaEu8Ffs4p+Uon3dB/v1d7A9g5/6nobi8N/Xu7PF6Di/zzVCzeMr3d+
-         rNXBnv016M/hB8LmkJaXZPY2S8oAKmX207soYv0m53bMElWaWTr9ZiT4VYcTMbX57D
-         YCq5VnNklNhSFZKJ5ilR60i5ugfu4bq7MXPfw59Y=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20211014083320eucas1p1bb242244d0b0bbcbece76218f2065024~t2JsSwuNS2169221692eucas1p1f;
-        Thu, 14 Oct 2021 08:33:20 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id 97.58.56448.05BE7616; Thu, 14
-        Oct 2021 09:33:20 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20211014083319eucas1p1c3e87b2cf393993fc24f5f4745847624~t2JriNsRT2169621696eucas1p1c;
-        Thu, 14 Oct 2021 08:33:19 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20211014083319eusmtrp1c7976934c7ec177a97c4215d7d19a339~t2JrhZ40b2286722867eusmtrp1d;
-        Thu, 14 Oct 2021 08:33:19 +0000 (GMT)
-X-AuditID: cbfec7f5-d3bff7000002dc80-d8-6167eb50431f
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 02.B1.20981.F4BE7616; Thu, 14
-        Oct 2021 09:33:19 +0100 (BST)
-Received: from [106.210.134.192] (unknown [106.210.134.192]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20211014083318eusmtip123602346d88436281ef75c110080a0d4~t2JqydgI-1903819038eusmtip1W;
-        Thu, 14 Oct 2021 08:33:18 +0000 (GMT)
-Subject: Re: [RFT PATCH v3 0/2] clk: samsung: add common support for CPU
- clocks
-To:     Will McVicker <willmcvicker@google.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     kernel-team@android.com, linux-samsung-soc@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-Message-ID: <b968773d-9ee4-4e7a-7e33-f3ded7362a9c@samsung.com>
-Date:   Thu, 14 Oct 2021 10:33:18 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
-        Gecko/20100101 Thunderbird/78.14.0
+        Thu, 14 Oct 2021 04:37:06 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=xianting.tian@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0Urmp0Ip_1634200499;
+Received: from B-LB6YLVDL-0141.local(mailfrom:xianting.tian@linux.alibaba.com fp:SMTPD_---0Urmp0Ip_1634200499)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 14 Oct 2021 16:35:00 +0800
+Subject: Re: [PATCH v10 2/3] tty: hvc: pass DMA capable memory to put_chars()
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     jirislaby@kernel.org, amit@kernel.org, arnd@arndb.de,
+        osandov@fb.com, shile.zhang@linux.alibaba.com,
+        linuxppc-dev@lists.ozlabs.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+References: <20211009114829.1071021-1-xianting.tian@linux.alibaba.com>
+ <20211009114829.1071021-3-xianting.tian@linux.alibaba.com>
+ <YWGD8y9VfBIQBu2h@kroah.com>
+ <3516c58c-e8e6-2e5a-2bc8-ad80e2124d37@linux.alibaba.com>
+ <YWJ7NuapWOZ4QirJ@kroah.com>
+From:   Xianting Tian <xianting.tian@linux.alibaba.com>
+Message-ID: <4dbeddb9-1068-d282-2758-55d0f788ea61@linux.alibaba.com>
+Date:   Thu, 14 Oct 2021 16:34:59 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <20211013221021.3433704-1-willmcvicker@google.com>
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrOKsWRmVeSWpSXmKPExsWy7djP87oBr9MTDVaf4LW4/uU5q8WO7SIW
-        G9/+YLLY9Pgaq8XHnnusFpd3zWGzmHF+H5PFxVOuFofftLNa/Lu2kcVi1a4/jBarPv1ndODx
-        2LZ7G6vH+xut7B6zGnrZPHbOusvusWBTqcemVZ1sHpuX1Hv0bVnF6PF5k1wAZxSXTUpqTmZZ
-        apG+XQJXxrf3J1gKrnFXNFy+ztLAeJyzi5GTQ0LAROLCtpPMXYxcHEICKxglfp5aCuV8YZRo
-        O/qaBcL5zCjR9GsvC0zLqnl/oBLLGSX+7rzICOF8ZJT4t+YgI0iVsECgROf03WwgCRGBTUwS
-        DXufsoI4zAILGSXebNzOBlLFJmAo0fW2C8zmFbCTWDzlCdBcDg4WAVWJd7PFQMKiAskS0/42
-        MUOUCEqcnAlRwilgL/HtqShImFlAXmL72znMELa4xK0n85lAVkkITOeUeHxmP1i9hICLxPyb
-        1RAfCEu8Or6FHcKWkTg9uYcFor6ZUeLhubXsEE4Po8TlphmMEFXWEnfO/WIDGcQsoCmxfpc+
-        RNhR4sil/UwQ8/kkbrwVhLiBT2LStunMEGFeiY42IYhqNYlZx9fBrT144RLzBEalWUgem4Xk
-        m1lIvpmFsHcBI8sqRvHU0uLc9NRi47zUcr3ixNzi0rx0veT83E2MwLR2+t/xrzsYV7z6qHeI
-        kYmD8RCjBAezkgjvuwPpiUK8KYmVValF+fFFpTmpxYcYpTlYlMR5d21dEy8kkJ5YkpqdmlqQ
-        WgSTZeLglGpgWn2y4dW2ObrqC6x7GL/ey7/Wymv3smnDjV0zLFy7JzwIy839Ebe3a3O33PVc
-        sdtnZ72Rt7khtKohQWv/qs6tfZZvLta8fn7dZWGH/hStGyGVb0yKumz3XDt73WFfuPfTUyYT
-        788J12bXDTwU75Gldug0p0+yDdc7ZQcp17MaRp8TNlj+kVW99ksw/2NYzO3kM5s67Gd07Lat
-        83x5L7Gu2TL0tcKJq7K7Nt0Tkd8275M646WG/t2cX58cz+Sb+PUiy94JRfyrGdWfqBXY8cf/
-        ULLrXlDo6WvfUFP+Y/HmIxuzDsXck5ip+TWwUEX4FuusC6//3f2x87B4e9zneftNcrWYLASY
-        XWeuvckjp8PAoMRSnJFoqMVcVJwIAMh+d1zaAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrJIsWRmVeSWpSXmKPExsVy+t/xu7r+r9MTDRbulbS4/uU5q8WO7SIW
-        G9/+YLLY9Pgaq8XHnnusFpd3zWGzmHF+H5PFxVOuFofftLNa/Lu2kcVi1a4/jBarPv1ndODx
-        2LZ7G6vH+xut7B6zGnrZPHbOusvusWBTqcemVZ1sHpuX1Hv0bVnF6PF5k1wAZ5SeTVF+aUmq
-        QkZ+cYmtUrShhZGeoaWFnpGJpZ6hsXmslZGpkr6dTUpqTmZZapG+XYJexrf3J1gKrnFXNFy+
-        ztLAeJyzi5GTQ0LARGLVvD8sILaQwFJGiQcfVCHiMhInpzWwQtjCEn+udbF1MXIB1bxnlHjz
-        9xkjSEJYIFCic/pusISIwCYmib7T28AcZoGFjBItm16yQLRMYpQ4c/sSG0gLm4ChRNfbLjCb
-        V8BOYvGUJ0BFHBwsAqoS72aLgYRFBZIl3r7+zgRRIihxciZECaeAvcS3p6IgYWYBM4l5mx8y
-        Q9jyEtvfzoGyxSVuPZnPNIFRaBaS7llIWmYhaZmFpGUBI8sqRpHU0uLc9NxiI73ixNzi0rx0
-        veT83E2MwDjeduznlh2MK1991DvEyMTBeIhRgoNZSYT33YH0RCHelMTKqtSi/Pii0pzU4kOM
-        pkDfTGSWEk3OByaSvJJ4QzMDU0MTM0sDU0szYyVxXpMja+KFBNITS1KzU1MLUotg+pg4OKUa
-        mKqemDh9PyT+gTGDdcZ+DjPt070znrcFl+SXmDSw1/et6c5kOLZKxkXTSryr83rW+51Jdb1m
-        yXNq+Fkex//pUp/oYsaTz3qW/2dwSNaigw/jNPLeda1wffPF46Ks5rr1r7JT48J26xWfnLHv
-        ywkjA+GtIX1HOq55uP+ffPnaSmPuPA+HnOfrm6+6ftz6fn4ba8flbXmPKuVcYjpPTlaZ6hB+
-        I1hHj3NywXSLuiftR042bDgwYYapcY/TcYWwNTYmU0Oe73Svm1qf5pk2O44nuSyMqeVeyYyk
-        Ayt9s+XLjKOdTnT8MKn93ZZ533qF35LPZswXGKonmnX76D6Okt41beHU5XkbVd4nOyx7nFeo
-        xFKckWioxVxUnAgA5ls0wWwDAAA=
-X-CMS-MailID: 20211014083319eucas1p1c3e87b2cf393993fc24f5f4745847624
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20211013221032eucas1p1d8e2fcc36d3f021aa86cb846df0ed6da
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20211013221032eucas1p1d8e2fcc36d3f021aa86cb846df0ed6da
-References: <CGME20211013221032eucas1p1d8e2fcc36d3f021aa86cb846df0ed6da@eucas1p1.samsung.com>
-        <20211013221021.3433704-1-willmcvicker@google.com>
+In-Reply-To: <YWJ7NuapWOZ4QirJ@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14.10.2021 00:10, Will McVicker wrote:
-> These two patches were originally a part of the series [1]. They add
-> support to the common samsung clock driver to parse and register the
-> CPU clocks when provided. This allows for the samsung clock drivers to
-> simply provide a `struct samsung_cpu_clock` to `struct samsung_cmu_info`
-> and then call samsung_cmu_register_one(). With this new support, we can
-> now get rid of the custom apollo and atlas CLK_OF_DECLARE init functions.
->
-> Since I don't have the hardware to test these, I'm including the RFT tag
-> to try and get help testing and verifying these.
->
-> [1] https://protect2.fireeye.com/v1/url?k=91329df7-cea9a478-913316b8-0cc47a31307c-8e0b8e6442100c5a&q=1&e=50af1e33-8bdf-429f-9e54-434d425998d6&u=https%3A%2F%2Flore.kernel.org%2Fall%2F20210928235635.1348330-4-willmcvicker%40google.com%2F
 
-Works fine on my Exynos5433 TM2e test board.
+在 2021/10/10 下午1:33, Greg KH 写道:
+> On Sat, Oct 09, 2021 at 11:45:23PM +0800, Xianting Tian wrote:
+>> 在 2021/10/9 下午7:58, Greg KH 写道:
+>>> Did you look at the placement using pahole as to how this structure now
+>>> looks?
+>> thanks for all your commnts. for this one, do you mean I need to remove the
+>> blank line?  thanks
+>>
+> No, I mean to use the tool 'pahole' to see the structure layout that you
+> just created and determine if it really is the best way to add these new
+> fields, especially as you are adding huge buffers with odd alignment.
 
-Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+thanks,
 
-> Will McVicker (2):
->    [RFT] clk: samsung: add support for CPU clocks
->    [RFT] clk: samsung: exynos5433: update apollo and atlas clock probing
+Based on your comments, I removed 'char outchar',  remian the position 
+of 'int outbuf_size' unchanged to keep outbuf_size and lock in the same 
+cache line.  Now hvc_struct change as below,
+
+  struct hvc_struct {
+         struct tty_port port;
+         spinlock_t lock;
+         int index;
+         int do_wakeup;
+-       char *outbuf;
+         int outbuf_size;
+         int n_outbuf;
+         uint32_t vtermno;
+@@ -48,6 +57,16 @@ struct hvc_struct {
+         struct work_struct tty_resize;
+         struct list_head next;
+         unsigned long flags;
++
++       /*
++        * the buf is used in hvc console api for putting chars,
++        * and also used in hvc_poll_put_char() for putting single char.
++        */
++       char cons_outbuf[N_OUTBUF] __ALIGNED__;
++       spinlock_t cons_outbuf_lock;
++
++       /* the buf is used for putting chars to tty */
++       char outbuf[] __ALIGNED__;
+  };
+
+pahole for above hvc_struct as below,  is it ok for you?  do we need to 
+pack the hole? thanks
+
+struct hvc_struct {
+     struct tty_port            port;                 /*     0 352 */
+     /* --- cacheline 5 boundary (320 bytes) was 32 bytes ago --- */
+     spinlock_t                 lock;                 /*   352 4 */
+     int                        index;                /*   356 4 */
+     int                        do_wakeup;            /*   360 4 */
+     int                        outbuf_size;          /*   364 4 */
+     int                        n_outbuf;             /*   368 4 */
+     uint32_t                   vtermno;              /*   372 4 */
+     const struct hv_ops  *     ops;                  /*   376 8 */
+     /* --- cacheline 6 boundary (384 bytes) --- */
+     int                        irq_requested;        /*   384 4 */
+     int                        data;                 /*   388 4 */
+     struct winsize             ws;                   /*   392 8 */
+     struct work_struct         tty_resize;           /*   400 32 */
+     struct list_head           next;                 /*   432 16 */
+     /* --- cacheline 7 boundary (448 bytes) --- */
+     long unsigned int          flags;                /*   448 8 */
+
+     /* XXX 56 bytes hole, try to pack */
+
+     /* --- cacheline 8 boundary (512 bytes) --- */
+     char                       cons_outbuf[16];      /*   512 16 */
+     spinlock_t                 cons_outbuf_lock;     /*   528 4 */
+
+     /* XXX 44 bytes hole, try to pack */
+
+     /* --- cacheline 9 boundary (576 bytes) --- */
+     char                       outbuf[0];            /*   576 0 */
+
+     /* size: 576, cachelines: 9, members: 17 */
+     /* sum members: 476, holes: 2, sum holes: 100 */
+};
+
+
 >
->   drivers/clk/samsung/clk-cpu.c        |  26 ++++++
->   drivers/clk/samsung/clk-exynos5433.c | 120 +++++++++++----------------
->   drivers/clk/samsung/clk.c            |   2 +
->   drivers/clk/samsung/clk.h            |  26 ++++++
->   4 files changed, 102 insertions(+), 72 deletions(-)
+> thanks,
 >
-Best regards
--- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
-
+> greg k-h
