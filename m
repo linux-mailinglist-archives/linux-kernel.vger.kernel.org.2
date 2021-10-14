@@ -2,139 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4466242D48E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 10:10:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8837842D494
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 10:12:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230161AbhJNIMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 04:12:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37670 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230117AbhJNIMp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 04:12:45 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8AF1C061570
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 01:10:40 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mavov-0004Tx-Nz; Thu, 14 Oct 2021 10:10:33 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mavou-000666-3g; Thu, 14 Oct 2021 10:10:32 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mavou-0002HU-2L; Thu, 14 Oct 2021 10:10:32 +0200
-Date:   Thu, 14 Oct 2021 10:10:28 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Francesco Dolcini <francesco.dolcini@toradex.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Stefan Agner <stefan@agner.ch>, linux-serial@vger.kernel.org,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        linux-kernel@vger.kernel.org, Shawn Guo <shawnguo@kernel.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 1/2] serial: imx: fix crash when un/re-binding console
-Message-ID: <20211014081028.xafpuzrxk3jvv5qn@pengutronix.de>
-References: <20211014071053.568598-1-francesco.dolcini@toradex.com>
- <20211014071053.568598-2-francesco.dolcini@toradex.com>
- <YWfdY/ws353nJEiE@kroah.com>
- <20211014080153.GA554920@francesco-nb.int.toradex.com>
+        id S230106AbhJNIOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 04:14:41 -0400
+Received: from foss.arm.com ([217.140.110.172]:50984 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229992AbhJNIOk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 04:14:40 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 145C61063;
+        Thu, 14 Oct 2021 01:12:35 -0700 (PDT)
+Received: from [192.168.1.131] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CD7A43F66F;
+        Thu, 14 Oct 2021 01:12:31 -0700 (PDT)
+Subject: Re: [PATCH 1/2] kasan: test: use underlying string helpers
+To:     Arnd Bergmann <arnd@kernel.org>, linux-hardening@vger.kernel.org,
+        Kees Cook <keescook@chomium.org>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Marco Elver <elver@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Patricia Alfonso <trishalfonso@google.com>,
+        linux-kernel@vger.kernel.org
+References: <20211013150025.2875883-1-arnd@kernel.org>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <b35768f5-8e06-ebe6-1cdd-65f7fe67ff7a@arm.com>
+Date:   Thu, 14 Oct 2021 10:12:54 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="7iz57hkn4h56mzq3"
-Content-Disposition: inline
-In-Reply-To: <20211014080153.GA554920@francesco-nb.int.toradex.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20211013150025.2875883-1-arnd@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---7iz57hkn4h56mzq3
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Oct 14, 2021 at 10:01:53AM +0200, Francesco Dolcini wrote:
-> Hello Greg,
->=20
-> On Thu, Oct 14, 2021 at 09:33:55AM +0200, Greg Kroah-Hartman wrote:
-> > On Thu, Oct 14, 2021 at 09:10:52AM +0200, Francesco Dolcini wrote:
-> > > From: Stefan Agner <stefan@agner.ch>
-> > >=20
-> > > If the device used as a serial console gets un/re-binded, then
-> > > register_console() will call imx_uart_setup_console() again.
-> > > Drop __init so that imx_uart_setup_console() can be safely called
-> > > at runtime.
-> > >=20
-> > > Signed-off-by: Stefan Agner <stefan@agner.ch>
-> > > Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
-> > > ---
-> > >  drivers/tty/serial/imx.c | 4 ++--
-> > >  1 file changed, 2 insertions(+), 2 deletions(-)
-> >=20
-> > What commit does this "fix"?
->=20
-> root@colibri-imx6ull-06746657:~# cat /sys/devices/virtual/tty/console/act=
-ive=20
-> tty1 ttymxc0
-> root@colibri-imx6ull-06746657:~# echo -n N > /sys/devices/virtual/tty/con=
-sole/subsystem/ttymxc0/console
-> root@colibri-imx6ull-06746657:~# echo -n Y > /sys/devices/virtual/tty/con=
-sole/subsystem/ttymxc0/console
->=20
-> struct console ->setup is called at that time, but imx_uart_console_setup=
-() is gone ...
->=20
-> According to the original report from Stefan the issue is the same with u=
-nbind/bind of the console,
-> see https://marc.info/?l=3Dlinux-serial&m=3D154221779312036&w=3D2.
->=20
->=20
-> > Should this go to stable kernels?  If so, how far back?
-> This is present also in 4.19 kernel, I feel like the issue is there since=
- it is possible to unbind
-> a console driver (since ever considering the current LTS releases?). I co=
-uld
-> investigate this a little bit more.
->=20
-> We have this patch in our kernel branch since 3 years but for some reason=
- we never managed to upstream it.
+On 10/13/21 5:00 PM, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> Calling memcmp() and memchr() with an intentional buffer overflow
+> is now caught at compile time:
+> 
+> In function 'memcmp',
+>     inlined from 'kasan_memcmp' at lib/test_kasan.c:897:2:
+> include/linux/fortify-string.h:263:25: error: call to '__read_overflow' declared with attribute error: detected read beyond size of object (1st parameter)
+>   263 |                         __read_overflow();
+>       |                         ^~~~~~~~~~~~~~~~~
+> In function 'memchr',
+>     inlined from 'kasan_memchr' at lib/test_kasan.c:872:2:
+> include/linux/fortify-string.h:277:17: error: call to '__read_overflow' declared with attribute error: detected read beyond size of object (1st parameter)
+>   277 |                 __read_overflow();
+>       |                 ^~~~~~~~~~~~~~~~~
+> 
+> Change the kasan tests to wrap those inside of a noinline function
+> to prevent the compiler from noticing the bug and let kasan find
+> it at runtime.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-I think this is a bigger problem not only affecting imx.c. Just look at
-the output of:
+Reviewed-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 
-	git grep -E '__init.*setup' drivers/tty/serial/
+> ---
+>  lib/test_kasan.c | 19 +++++++++++++++++--
+>  1 file changed, 17 insertions(+), 2 deletions(-)
+> 
+> diff --git a/lib/test_kasan.c b/lib/test_kasan.c
+> index 67ed689a0b1b..903215e944f1 100644
+> --- a/lib/test_kasan.c
+> +++ b/lib/test_kasan.c
+> @@ -852,6 +852,21 @@ static void kmem_cache_invalid_free(struct kunit *test)
+>  	kmem_cache_destroy(cache);
+>  }
+>  
+> +/*
+> + * noinline wrappers to prevent the compiler from noticing the overflow
+> + * at compile time rather than having kasan catch it.
+> + * */
+> +static noinline void *__kasan_memchr(const void *s, int c, size_t n)
+> +{
+> +	return memchr(s, c, n);
+> +}
+> +
+> +static noinline int __kasan_memcmp(const void *s1, const void *s2, size_t n)
+> +{
+> +	return memcmp(s1, s2, n);
+> +}
+> +
+> +
+>  static void kasan_memchr(struct kunit *test)
+>  {
+>  	char *ptr;
+> @@ -870,7 +885,7 @@ static void kasan_memchr(struct kunit *test)
+>  	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
+>  
+>  	KUNIT_EXPECT_KASAN_FAIL(test,
+> -		kasan_ptr_result = memchr(ptr, '1', size + 1));
+> +		kasan_ptr_result = __kasan_memchr(ptr, '1', size + 1));
+>  
+>  	kfree(ptr);
+>  }
+> @@ -895,7 +910,7 @@ static void kasan_memcmp(struct kunit *test)
+>  	memset(arr, 0, sizeof(arr));
+>  
+>  	KUNIT_EXPECT_KASAN_FAIL(test,
+> -		kasan_int_result = memcmp(ptr, arr, size+1));
+> +		kasan_int_result = __kasan_memcmp(ptr, arr, size+1));
+>  	kfree(ptr);
+>  }
+>  
+> 
 
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---7iz57hkn4h56mzq3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmFn5fIACgkQwfwUeK3K
-7AnK/gf+LS9s+Y0iy7CYtbYGTeIDtdh+c4q/+6bqNI5p/eGXkA3WVtLuaHZJpF3L
-R/NM0vLyHpXH9lM9W3MjMp78HSklH1fAw7/kWu166ilgEduvNMQCQ8U/rYX431Zm
-7MikNsPcBx9ogsiPTntleUI3MYj/wh1LqfY9HS1RNtUrGRnZsifeTa7ygdEGTAz4
-C+e0x9haYGePqv56Bxl4gM7xkV9LMKJLJn1/Yvlas0yTNGNWAmzJMPTZ7rijXoSx
-rcYUE8aP7NbtF+oIhjCoSkkf6/YxZwdE4Qg56Ynud4l/UH6keUCUGtnLUEvTUghO
-D+2mc6wKGqRD/jiJnuNYFkJlUmzwtg==
-=Jz2F
------END PGP SIGNATURE-----
-
---7iz57hkn4h56mzq3--
+-- 
+Regards,
+Vincenzo
