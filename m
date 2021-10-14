@@ -2,102 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7500F42E3B6
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 23:40:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25A6142E3C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 23:45:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234124AbhJNVmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 17:42:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53678 "EHLO
+        id S231256AbhJNVrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 17:47:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232658AbhJNVms (ORCPT
+        with ESMTP id S229707AbhJNVrW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 17:42:48 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DC16C061570
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 14:40:43 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id u21so29634203lff.8
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 14:40:43 -0700 (PDT)
+        Thu, 14 Oct 2021 17:47:22 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36C0FC061570;
+        Thu, 14 Oct 2021 14:45:10 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id g5so5083615plg.1;
+        Thu, 14 Oct 2021 14:45:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Bc/19Sw3gCuiuNL5yxr53ROwuXXqpzpfHWWhYwbvjUo=;
-        b=kJBigErm8oj6naJt86CzR6I4CvyMKAEXIVyQZPIrMf9IoLfG6qoK2Nq9bXwvpuHo2J
-         Lg08sgiU6TkZK1UvhW0mdBh5Q6WXOe6Sg2Kim3mdWddM4s0AeL5swVZ9//9wagHv1vru
-         dKFtjaT5p68KyiXkhio3E5UpjxsKFkLvwyorZ7jYbL0T4QtRHO+lqnrOGSBYfJQeEmAB
-         flP3P3UXqw3OSfk2f7NqFdB1B0cqZ2wiR4JUYJa76vUInbAI10oirsmSkwmdO0WMoSJX
-         BqqkLINBbUlLRUwRI8ft2z3Qk5rShAsQGnFJqE6kcQrS+pNAELb8WaTBBINwKDNZzja7
-         5aKw==
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=xdlCzRVGHNjMDjsq6GAUYJ13METgldQ7JXDaHJewMGo=;
+        b=W1GkHzUC7f5FNwZmpe1RoiAG0TYF+axhJKbNQrtjt5R2hhNf0sgg+Hrgd/CMjvd1zZ
+         Ca56mbCuXR2Pe7P2oiJOKzaG4OWIPAYP6bkMgp4YS5oeUyCWCdk514fG9bCJPaHSXe2v
+         70uO+ggY97OS4j7sWja6YnM7MS1+lB0sqosP5MCXPDszODjrDiG9VFXVguA1F/CdyQdK
+         AQAMMKhnqteCOzsmmdhAgw7OsaB8hpxRp8A3qpcDrSOZvM27cBTb8D1ehWVAtWDY3TO1
+         pqQeNqkCYscZ8Zvuo+F5WFcCWuXIfiujPT24oP6dXO8kWi8YPqKHK1FLamNR9APjxjzq
+         bJnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Bc/19Sw3gCuiuNL5yxr53ROwuXXqpzpfHWWhYwbvjUo=;
-        b=Da2IF14WL0UKjx3dPWYiA3jdRIbJgXlOHxI7v5lpDMRTnHyaXg+yACWVK8WT6zx9Mn
-         cXMXgb4IULN0X202BlS+UUFgLQJkwRQlA89XQMR0b7/U9w9vVKWV43iAbyNPD5ayD1fB
-         IMNeS35BtAs7iwjy++baLzBdlIIPamfhzLlSzjcC7h9a0PpGldY4+2G8FQuN17tr3bPm
-         Pwx1YhWS/XWh1kFW6TUrzF4no6etU0L/wEHDqEh5XsxZtkdyU/SGGAWL4xf+K5LLobUp
-         H7nMu0SYcbq9uoElRc0qXkFGx6YcQw09VaLSBZNFLNCADF0U/CCom8IiqtS1B1FPyuuS
-         rDBg==
-X-Gm-Message-State: AOAM533Iaos7CK4dRcOHTfZt1iHtYyk8x4F6SeBRRYI4mUCTU72uReK4
-        WNwDVEcTVo0BTNkfmkN/RFI41ezwdNI5zhYUSmGTsg==
-X-Google-Smtp-Source: ABdhPJxPLLk8qMtDlWK65ixYe3AxwSYOuLQWzgY8dPGbhyExlDVFcUshw6mboG8LnO3GIAmGuyVWP85em6Bc1cncdkE=
-X-Received: by 2002:a05:6512:13a5:: with SMTP id p37mr7406070lfa.403.1634247641451;
- Thu, 14 Oct 2021 14:40:41 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xdlCzRVGHNjMDjsq6GAUYJ13METgldQ7JXDaHJewMGo=;
+        b=rQ/zRNRCM8mikWEd6BWLv8fDI0SInp7hrT64wldUNy6DFIr+EeRaX8xLmQrccR9UVz
+         3jBWO8MGFbe6Ef4ycF5tGBES5x8rIQy5e8puov9Ea1x0t/kvtrHyONfY6BNU913cPopF
+         fot54HGj+uizf6BygBwZ8j74JeKwZbhlW83KxAuZjlf524smFYl80pNlgHpXbh0v0d6F
+         kP/suXJDJVRrDFzIu/EUXpio6p6WncTiK/3eIpS7fza2CKbfTMAnGhlKMLXhl/Rtss/D
+         uMwJY+n03kgy4szArwuN9L4vk5NWc8UCfNeaFqNuCReYpfTMSd3ZZAkei6sp+9Yu2rHn
+         mhdg==
+X-Gm-Message-State: AOAM530Qsk3NCnOsR4akSH3DgFtAvTyNv/0LKpHXVSD5nF+wRjvAPQcD
+        RV6N9iXW7HOZ2DgdwUbxN95rVbC1kwc=
+X-Google-Smtp-Source: ABdhPJyJq2qIrMVJjceK74DB9F/ZF78nxkEqqJMVcsTzKxJpvB5DMF/49My3CMrF7JQypQLx/tubVQ==
+X-Received: by 2002:a17:90b:4c86:: with SMTP id my6mr8988799pjb.203.1634247909275;
+        Thu, 14 Oct 2021 14:45:09 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id c15sm3340165pfo.178.2021.10.14.14.45.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Oct 2021 14:45:08 -0700 (PDT)
+Subject: Re: [PATCH 5.4 00/16] 5.4.154-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20211014145207.314256898@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <6ef0c35b-1dee-4bdc-db4b-c2375f1ea30d@gmail.com>
+Date:   Thu, 14 Oct 2021 14:45:06 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20211012165614.2873369-1-tkjos@google.com> <CAHC9VhQ6W=8rX6hryk_d+iTc90MAoZOw=KVDhjXsXE5Laccn_A@mail.gmail.com>
-In-Reply-To: <CAHC9VhQ6W=8rX6hryk_d+iTc90MAoZOw=KVDhjXsXE5Laccn_A@mail.gmail.com>
-From:   Todd Kjos <tkjos@google.com>
-Date:   Thu, 14 Oct 2021 14:40:27 -0700
-Message-ID: <CAHRSSEwjFicpr2=4S37KmVTav+aNQqFwy1eUo8r_z1OPSX1LFw@mail.gmail.com>
-Subject: Re: [PATCH v5 0/3] binder: use cred instead of task for security context
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     gregkh@linuxfoundation.org, arve@android.com, tkjos@android.com,
-        maco@android.com, christian@brauner.io,
-        James Morris <jmorris@namei.org>,
-        Serge Hallyn <serge@hallyn.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Paris <eparis@parisplace.org>, keescook@chromium.org,
-        jannh@google.com, Jeffrey Vander Stoep <jeffv@google.com>,
-        zohar@linux.ibm.com, linux-security-module@vger.kernel.org,
-        selinux@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org, joel@joelfernandes.org,
-        kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211014145207.314256898@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 2:34 PM Paul Moore <paul@paul-moore.com> wrote:
->
-> On Tue, Oct 12, 2021 at 12:56 PM Todd Kjos <tkjos@google.com> wrote:
-> >
-> > This series fixes the possible use of an incorrect security context
-> > when checking selinux permissions, getting a security ID, or lookup
-> > up the euid.
-> >
-> > The previous behavior was to save the group_leader 'struct task_struct'
-> > in binder_open() and using that to obtain security IDs or euids.
-> >
-> > This has been shown to be unreliable, so this series instead saves the
-> > 'struct cred' of the task that called binder_open(). This cred is used
-> > for these lookups instead of the task.
->
-> Hi Todd,
->
-> I just merged all three patches into selinux/next, thanks for your
-> help patience on this patchset.  Ultimately I merged these patches
-> into selinux/next as opposed to selinux/stable-5.15 because I felt
-> that a couple of weeks in -next before going to Linus would be a good
-> thing.  I'm also not certain how widespread binder is outside of
-> Android so I figured the practical difference between next and
-> stable-5.15 is likely very small.  Regardless, all of your Fixes and
-> stable tags remain in the patches so as soon as they go up to Linus
-> during the next merge window the stable folks will be notified.
+On 10/14/21 7:54 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.154 release.
+> There are 16 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sat, 16 Oct 2021 14:51:59 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.154-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-Thanks Paul. This all sounds fine.
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
 
->
-> --
-> paul moore
-> www.paul-moore.com
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
