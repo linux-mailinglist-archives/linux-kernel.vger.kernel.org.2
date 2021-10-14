@@ -2,109 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9838342D0C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 05:05:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDCA742D0C6
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 05:07:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229990AbhJNDHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 23:07:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53764 "EHLO
+        id S229927AbhJNDJG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 23:09:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229834AbhJNDHr (ORCPT
+        with ESMTP id S229834AbhJNDJD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 23:07:47 -0400
-Received: from mail-oo1-xc33.google.com (mail-oo1-xc33.google.com [IPv6:2607:f8b0:4864:20::c33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BCBAC061570;
-        Wed, 13 Oct 2021 20:05:43 -0700 (PDT)
-Received: by mail-oo1-xc33.google.com with SMTP id n15-20020a4ad12f000000b002b6e3e5fd5dso1446992oor.1;
-        Wed, 13 Oct 2021 20:05:43 -0700 (PDT)
+        Wed, 13 Oct 2021 23:09:03 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AE59C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 20:06:59 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id d13-20020a17090ad3cd00b0019e746f7bd4so5933090pjw.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 20:06:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=d1385PWcZJRF7AKd4UEG4AV7ybG/wi0GEJ0BosT22g8=;
-        b=pXKAMmR/xzMljbw/eNfBG8AuOseS2mPEMgiIEKceLbWLKcjP81ozhY9W5V5Cdy7Qgp
-         BGOIHvLPcVYP11vhOOAdhoytozAQ/hA627OtLzuPft++hivhcvdQ160zBPsZO8GkY5DE
-         vZ6xoA+6+Jg4ARXxjkmqlmxhFYxxncjLhMt0kx+KcgAB6NhJNH+4RU7Sbj2FqtyXtV+l
-         q4jh1/oAR5hhECoSlaOH90TABOVAEqeCfNwe1lAqaTsphXcdBmJ8hBRRfgA0jXuY+CQG
-         HrLokNTr5KOvnYDilgXI5mbBmgbzYVeZhIRGw7fW80dkCAm4G80c133AjrxCdNH7kamu
-         LnUw==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5+ykdt9ot6T7oBHTIi7wAsxJD1bUMNJgiKwFhmhCpNI=;
+        b=aEqSgQ8N635hp1T62kE0RW1EXD87DIU2jo9u7uhSKKX6tAPGXJtZcMmPieEQJMyROG
+         2r/wo2DUQn7GjYRVjG5i3YBVyT6BZWw2pho+f0bYVpNjXbj9W6s+VdjdEajMw9bo/pJL
+         1e3SZdfKzt3iZb+I19AtejOUoqbsSj4Xp+yk0HJbL+B5KAM2MMy96ha/dAJt2q6mw69/
+         noPfn/KbFt5RF1anh31AJhF9OYxier2ChhVCUgRbe7glWOlbQCigIRszVVyADhws/NBt
+         L9HZeOdeEn8S3VP3nvqsHnmdnr/hUef2kV4AkHm6FXc3+nQlxuiHysPHplZ+pK03SZRR
+         2pRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=d1385PWcZJRF7AKd4UEG4AV7ybG/wi0GEJ0BosT22g8=;
-        b=v2jezdAXhpwC/RYp4Cxa1d1wPzp63LjI1Hm4xriy0yAgSexQ4h7t1TigrHjB7qGBdw
-         +OJGuvuYCl9xHN0ndB2jZm2vTU0TfCw6WO4IJHUGscZ48o0enOPuJt/BTRi9dtpBCHCC
-         BGxWj+Qb5UKipttB3MoT7kxiFGq4LOYkXqo5aCAph5iUxZeaVW2Z4CP13eE1o7twVe4F
-         gyT8ZPQqpOW7bRN7gEuL3Xb9Eu/GSGhmcGWeX3cRzQWt5YIbpTfoEObMXEFhqCGbD+XL
-         s6thwpfE956SiXwCkYAh2YBozqXB/HX6AhfOezbmpRjk6/uyXVDbZajfFot9X5ZmkQWv
-         AMyQ==
-X-Gm-Message-State: AOAM530CIS7D8N3DoZWpfupTGGs+4CDnRtYt43iqi3+fAfxX55Al82Dj
-        F2RZCJXplgWlwcYY5iFzwul2LGsStAJrwg==
-X-Google-Smtp-Source: ABdhPJyMU3EjySfOQ6JyMsRrLZcxyafz4scF+7NQeAec7TbUuE5tLE7xrLtL0hD7XG2a2bu/LssKvA==
-X-Received: by 2002:a4a:d5c8:: with SMTP id a8mr1784724oot.18.1634180741652;
-        Wed, 13 Oct 2021 20:05:41 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local ([8.48.134.40])
-        by smtp.googlemail.com with ESMTPSA id c3sm314906otr.42.2021.10.13.20.05.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Oct 2021 20:05:40 -0700 (PDT)
-Subject: Re: [PATCH v2 1/4] tcp: md5: Fix overlap between vrf and non-vrf keys
-To:     Leonard Crestez <cdleonard@gmail.com>,
-        David Ahern <dsahern@kernel.org>,
-        Eric Dumazet <edumazet@google.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
-        Yonghong Song <yhs@fb.com>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        Florian Westphal <fw@strlen.de>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1634107317.git.cdleonard@gmail.com>
- <6d99312c4863c37ad394c815f8529ee635bdb0d0.1634107317.git.cdleonard@gmail.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <65cb2c9f-28f8-8570-3275-b1080232a7f8@gmail.com>
-Date:   Wed, 13 Oct 2021 21:05:39 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        bh=5+ykdt9ot6T7oBHTIi7wAsxJD1bUMNJgiKwFhmhCpNI=;
+        b=ma2H74C6h3OrfAScym8L/O9kSRMquyFt3oy6xAe2XWDDXwOTWv0hSR0GV/teDR34Ka
+         VwBxOKsy/ysgVRFYYbyXgeiypQEN4yROFXiA/h7QaSDq/eX2obLBrwJnDf/cUYEZGBkh
+         lBrl0g4ulDut1QmaTWPfLs4UzM9werYI7TuFa+YoCHeh5I0MWTzvJ6mEb4tiU1rtci3M
+         AmtflRecBBFnUMvlhLACSaxJGvixri718pDDEWUNpDMCCTYOjD+DSiSnXJIil/88phjh
+         EzfPtqMkJhP95b9TY4siSTfG/rjnSrJS2UM3CD762BZbSinIfnTUiQbYEW0w+l6qIGh+
+         KDjA==
+X-Gm-Message-State: AOAM533pMoEmU38Fw0Fqq+4XZacmQUW8TLQWEw7DVVSKZWSV/iQ191Sq
+        aj8yU8nSOBxKlFaO4t6XPpKpcYulI2uqxQ==
+X-Google-Smtp-Source: ABdhPJwmSx3dZTl9X0lpEsrsE+Lo228CwRZQofBQcOJSwKwqmT7Fn6wxcgjws9llpmUCE94nDaV0ng==
+X-Received: by 2002:a17:90a:414c:: with SMTP id m12mr17809974pjg.187.1634180819060;
+        Wed, 13 Oct 2021 20:06:59 -0700 (PDT)
+Received: from desktop.cluster.local ([162.14.19.95])
+        by smtp.gmail.com with ESMTPSA id p17sm7253652pju.34.2021.10.13.20.06.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Oct 2021 20:06:58 -0700 (PDT)
+From:   menglong8.dong@gmail.com
+X-Google-Original-From: mengensun@tencent.com
+To:     tj@kernel.org
+Cc:     jiangshanlai@gmail.com, linux-kernel@vger.kernel.org,
+        Mengen Sun <mengensun@tencent.com>
+Subject: [PATCH] hotfix: make sysfs of unbound kworker cpumask more clever
+Date:   Thu, 14 Oct 2021 11:06:41 +0800
+Message-Id: <20211014030641.2182803-1-mengensun@tencent.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <6d99312c4863c37ad394c815f8529ee635bdb0d0.1634107317.git.cdleonard@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/13/21 12:50 AM, Leonard Crestez wrote:
-> With net.ipv4.tcp_l3mdev_accept=1 it is possible for a listen socket to
-> accept connection from the same client address in different VRFs. It is
-> also possible to set different MD5 keys for these clients which differ
-> only in the tcpm_l3index field.
-> 
-> This appears to work when distinguishing between different VRFs but not
-> between non-VRF and VRF connections. In particular:
-> 
->  * tcp_md5_do_lookup_exact will match a non-vrf key against a vrf key.
-> This means that adding a key with l3index != 0 after a key with l3index
-> == 0 will cause the earlier key to be deleted. Both keys can be present
-> if the non-vrf key is added later.
->  * _tcp_md5_do_lookup can match a non-vrf key before a vrf key. This
-> casues failures if the passwords differ.
-> 
-> Fix this by making tcp_md5_do_lookup_exact perform an actual exact
-> comparison on l3index and by making  __tcp_md5_do_lookup perfer
-> vrf-bound keys above other considerations like prefixlen.
-> 
-> Fixes: dea53bb80e07 ("tcp: Add l3index to tcp_md5sig_key and md5 functions")
-> Signed-off-by: Leonard Crestez <cdleonard@gmail.com>
-> ---
->  net/ipv4/tcp_ipv4.c | 19 ++++++++++++++++---
->  1 file changed, 16 insertions(+), 3 deletions(-)
-> 
+From: Mengen Sun <mengensun@tencent.com>
 
-Reviewed-by: David Ahern <dsahern@kernel.org>
+some unfriendly component eg, dpdk, write the same mask to unbound
+kworker cpumask again and agin. every time it write to this interface
+some work is queue to cpu, by rr evenly the mask is same with the
+original mask.
 
+so, fix it, if the writing cpumask is equal with the old cpumask
+just return success and do nothing.
+
+Signed-off-by: Mengen Sun <mengensun@tencent.com>
+---
+ kernel/workqueue.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+index 1b3eb1e9531f..8216fc45c77b 100644
+--- a/kernel/workqueue.c
++++ b/kernel/workqueue.c
+@@ -5394,6 +5394,11 @@ int workqueue_set_unbound_cpumask(cpumask_var_t cpumask)
+ 	cpumask_and(cpumask, cpumask, cpu_possible_mask);
+ 	if (!cpumask_empty(cpumask)) {
+ 		apply_wqattrs_lock();
++		if (cpumask_equal(cpumask, wq_unbound_cpumask)) {
++			apply_wqattrs_unlock();
++			free_cpumask_var(saved_cpumask);
++			return 0;
++		}
+ 
+ 		/* save the old wq_unbound_cpumask. */
+ 		cpumask_copy(saved_cpumask, wq_unbound_cpumask);
+-- 
+2.27.0
 
