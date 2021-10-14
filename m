@@ -2,97 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 129FE42DD8A
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:07:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72F4142DC41
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:55:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234052AbhJNPIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 11:08:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50460 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233678AbhJNPGc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 11:06:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 866A161208;
-        Thu, 14 Oct 2021 15:01:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634223706;
-        bh=LjyaNBioHQI0wflgWcjTsgXGj6lchXDXS+9YPalogTM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oAQARofqbpJ1RAN0dTnOrUATsJBo12Uim1A+1qT6MNsXOnlSBZWFudFtLo+4KUGyX
-         JUGAGjrj+sXgKmlcgpLJu4qpUwvUrked0EWrIK1AQ/5utEiSBOBOUQtwAyRj3Cih4U
-         5EmJH/Vw3SpAvfCLgGvkt+/EJYCxl7MzZfjf/OXs=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Brandon Wyman <bjwyman@gmail.com>,
-        Eddie James <eajames@linux.ibm.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 30/30] hwmon: (pmbus/ibm-cffps) max_power_out swap changes
-Date:   Thu, 14 Oct 2021 16:54:35 +0200
-Message-Id: <20211014145210.508839849@linuxfoundation.org>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211014145209.520017940@linuxfoundation.org>
-References: <20211014145209.520017940@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S232227AbhJNO5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 10:57:40 -0400
+Received: from mail-wr1-f43.google.com ([209.85.221.43]:41778 "EHLO
+        mail-wr1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232079AbhJNO52 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 10:57:28 -0400
+Received: by mail-wr1-f43.google.com with SMTP id t2so20386430wrb.8;
+        Thu, 14 Oct 2021 07:55:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=HS23AmkrFlxiHPWR55rkvfjGcqFY+NS9STXeF9NmTXw=;
+        b=YzHaNbOQOpCdQIt+loIbcz/rWpG+2hoEUVZqQOoqlFhg9QQ4iuSdIJUTm03IQRhhRU
+         FMd0fPRvtxhmuYA/Xk3Aq4/690H1VL63S80RVzPveuUfWC31gWjpQqA+AUfeM77QFmbr
+         bGufeQch5vyxpA5m4k/vM4IctqH9NydnXebDSdlRpzqajsHIRxhGzPCPNKRHrEvQ6B+w
+         KkhFgP7uT2OWNRNjZyIDRGxBIfJIhmtgYMg0/AjdiuNRy1wI/kp6APqxLVn8UYfZBU5C
+         F2A88NSe7+r+UcOkcQVt1R8VIUmWwxZPIoq0taI/NAkSIBfxIP1/QzKPOzwbOxtu+c5P
+         3lEA==
+X-Gm-Message-State: AOAM531Sb1swFp1OgezvkbaBHpk2m9wMs4vHIrzj5S7RZC0ooIM98J7V
+        BlB+CVkYPeHctdrfD9TB+wDbscWjtLk=
+X-Google-Smtp-Source: ABdhPJxQnbdyF6TWa2FhdqQFUOfJZm5E5JuoGCCOc2vgEUcyXmzAwLdIuMN1U5PPn0QrZab1KEbUXg==
+X-Received: by 2002:a5d:598a:: with SMTP id n10mr7156093wri.93.1634223322097;
+        Thu, 14 Oct 2021 07:55:22 -0700 (PDT)
+Received: from ?IPV6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
+        by smtp.gmail.com with ESMTPSA id t18sm2664746wrm.81.2021.10.14.07.55.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Oct 2021 07:55:21 -0700 (PDT)
+Message-ID: <a2964246-f90f-f205-ce99-707cc1a114cc@kernel.org>
+Date:   Thu, 14 Oct 2021 16:55:20 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.2
+Subject: Re: [PATCH] input&tty: Fix the keyboard led light display problem
+Content-Language: en-US
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        lianzhi chang <changlianzhi@uniontech.com>
+Cc:     linux-kernel@vger.kernel.org, dmitry.torokhov@gmail.com,
+        gregkh@linuxfoundation.org, linux-input@vger.kernel.org,
+        282827961@qq.com
+References: <20211014071627.23256-1-changlianzhi@uniontech.com>
+ <YWhI/DzNjivU6jQ6@smile.fi.intel.com>
+From:   Jiri Slaby <jirislaby@kernel.org>
+In-Reply-To: <YWhI/DzNjivU6jQ6@smile.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Brandon Wyman <bjwyman@gmail.com>
+On 14. 10. 21, 17:13, Andy Shevchenko wrote:
+> On Thu, Oct 14, 2021 at 03:16:27PM +0800, lianzhi chang wrote:
+>> Switching from the desktop environment to the tty environment,
+>> the state of the keyboard led lights and the state of the keyboard
+>> lock are inconsistent. This is because the attribute kb->kbdmode
+>> of the tty bound in the desktop environment (xorg) is set to
+>> VC_OFF, which causes the ledstate and kb->ledflagstate
+>> values of the bound tty to always be 0, which causes the switch
+>> from the desktop When to the tty environment, the LED light
+>> status is inconsistent with the keyboard lock status.
+> 
+> ...
+> 
+>> +void update_value_ledstate(unsigned int flag, unsigned int value)
+>> +{
+>> +	unsigned int bit;
+> 
+> unsigned long bit;
+> 
+> (see below why)
 
-[ Upstream commit f067d5585cda2de1e47dde914a8a4f151659e0ad ]
+You'd need ledstate to be ulong, not bit. Or am I missing something?
 
-The bytes for max_power_out from the ibm-cffps devices differ in byte
-order for some power supplies.
-
-The Witherspoon power supply returns the bytes in MSB/LSB order.
-
-The Rainier power supply returns the bytes in LSB/MSB order.
-
-The Witherspoon power supply uses version cffps1. The Rainier power
-supply should use version cffps2. If version is cffps1, swap the bytes
-before output to max_power_out.
-
-Tested:
-    Witherspoon before: 3148. Witherspoon after: 3148.
-    Rainier before: 53255. Rainier after: 2000.
-
-Signed-off-by: Brandon Wyman <bjwyman@gmail.com>
-Reviewed-by: Eddie James <eajames@linux.ibm.com>
-Link: https://lore.kernel.org/r/20210928205051.1222815-1-bjwyman@gmail.com
-[groeck: Replaced yoda programming]
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/hwmon/pmbus/ibm-cffps.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/hwmon/pmbus/ibm-cffps.c b/drivers/hwmon/pmbus/ibm-cffps.c
-index df712ce4b164..53f7d1418bc9 100644
---- a/drivers/hwmon/pmbus/ibm-cffps.c
-+++ b/drivers/hwmon/pmbus/ibm-cffps.c
-@@ -171,8 +171,14 @@ static ssize_t ibm_cffps_debugfs_read(struct file *file, char __user *buf,
- 		cmd = CFFPS_SN_CMD;
- 		break;
- 	case CFFPS_DEBUGFS_MAX_POWER_OUT:
--		rc = i2c_smbus_read_word_swapped(psu->client,
--						 CFFPS_MAX_POWER_OUT_CMD);
-+		if (psu->version == cffps1) {
-+			rc = i2c_smbus_read_word_swapped(psu->client,
-+					CFFPS_MAX_POWER_OUT_CMD);
-+		} else {
-+			rc = i2c_smbus_read_word_data(psu->client,
-+					CFFPS_MAX_POWER_OUT_CMD);
-+		}
-+
- 		if (rc < 0)
- 			return rc;
- 
 -- 
-2.33.0
-
-
-
+js
