@@ -2,63 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05EED42D144
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 05:51:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B58242D145
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 05:51:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230109AbhJNDxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 23:53:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35790 "EHLO
+        id S230207AbhJNDxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 23:53:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229883AbhJNDw7 (ORCPT
+        with ESMTP id S230078AbhJNDxG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 23:52:59 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9207BC061570
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 20:50:55 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id g5so3242835plg.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 20:50:55 -0700 (PDT)
+        Wed, 13 Oct 2021 23:53:06 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41A48C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 20:51:02 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id np13so3762554pjb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 20:51:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=bSMOaLCNtk/o+WFzKTv0c1sQNsc4OBhAou3DAsLaqHI=;
-        b=BJvnJLlsqNVf4Vmd/4samWFpp+CC1m2x9FUsilnsidX1mYFELKJ1cVa0OU9CsZvlIg
-         Zsf5L62YXMQ1MZrol1EjHkz8/hGhWYRPL3az7P7HmPQ/L6bHz76cIu1DfKg29NwGeE4I
-         RCv2i5JJG4BrXoCoV9kxd5X1oeQiyMZoypJsegKQWKv+1KYAhea8UUxmjrmLDHBDX2DH
-         m776HJ2WsYWYHUbhr4wkECNmEi6WOvDTFZ5mUR8OqWU8X1YJl2FXFPLgBdchHHd95i7j
-         mbHBwc+ZRCIcSIBfBAVRh0kvHkK+KZqFmlnN2o4M2SBF55YzZl/fybmp8FxK67KIe/yA
-         Vv9A==
+        bh=SEODT4cHy8v1YRxwVEuwYrnWfee/2o+OJs75MXKU8sk=;
+        b=K5WZ4yvkHc6zr0iqAu5hEKrWzujEnn7i6Ek0NyE8EpXCOoUOflCC1n3ujFOD/F9MMk
+         Qpaa74Y0zSXr+qVXVJ2hWxwhc0wGt9+PFH/0YqFatTio0aVdJkPfieYXqe++6jGEsOqT
+         gnIECAbTO6Kg/G6HeNnU/d4sqvpC5iXeojNMHCth7U/JV2GGkJjO0zby+BYy91stIsVj
+         uv2sFbIFiQiZwoZqh1sBVOrJsP2D2iGvgUZpOMzUd/o0pJLCyFAy7vcWvrfwiPWxIxA2
+         UqGMFbga3u0DoHCmbSYps77xd8MiYkzusyWVTUPHVjyJzZ/+YiQaBCu3sPbmoqKVrsel
+         MYjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=bSMOaLCNtk/o+WFzKTv0c1sQNsc4OBhAou3DAsLaqHI=;
-        b=frMr3ttv0HvFSYNlLAsJmU5GtZwscw+/faTsWFyp7Ov34yAdJO+IKJpNYsrJRVBSGT
-         evw8pMkJk5SCvDlrUiuIl7v63Bf3bJsw/1rI6Z3sH2o+1c7R5IMT61OlqtEdRoAPjCrc
-         BNKgx0unljyTAiJ6HbLL5+RRzRzyldWQDFruBOKKJo7uCoIVpy0Ie1Rt13erDh57CVGq
-         6bfIlhFYitligYQvZUgBAsIcmdNTlCAJCym5cB/NkrV6YFN7MSaFhkrQrlabbxiiJG2Z
-         9qEBaMEVZYErWpz6kEusu6CSYcO83Z/HdMkPykSaPsqPesN1SqkUSSTw34olg1kaG3fX
-         3rKA==
-X-Gm-Message-State: AOAM5322EWHfCw+UWkH0pxPwuv35g/K1EIHbfPOnAomxebL7VgjMjL8Y
-        1B1L43om135ZDZ3/juAFv024E+Jc44A=
-X-Google-Smtp-Source: ABdhPJx/t45wtEzVqKzsO64gj3zrOpLDLnSMc26w/TfclBH4+xRSEuXYw8NGbEHHF0+0c2014UBopw==
-X-Received: by 2002:a17:90a:de16:: with SMTP id m22mr17931740pjv.38.1634183454988;
-        Wed, 13 Oct 2021 20:50:54 -0700 (PDT)
+        bh=SEODT4cHy8v1YRxwVEuwYrnWfee/2o+OJs75MXKU8sk=;
+        b=ePn4aeqoYi8IV9KONPNYg+xFXxHfrpNzDU6bOga1DrrocF5S/589nNAlMYaiBCObS/
+         o7DxlUv+W43jdmJ+6IBEECPbAKG8SkkSM4oOxwU1X8SsIzpiCU/Wnr9kPSJUbF89fWcD
+         AsnjnE+1+ZVpEc8F0rT/hh1zXf1b1iRh9EKOSmSqCzO1QF+r/m+sPt3LIPM+iCbXkxBD
+         /1dOw80oSyZb2mSIogHJX+MjmJg8Wiap7QNdptA3cIQDspTJYbTi2HMN6PNyM4JAeQhh
+         Zb8ouzQhh3NyOrk7j08iPL0A5vUH3/gKdavqfs9UnxiHUcmKnxDqYNSo91Rc+PyO3Tbe
+         SPag==
+X-Gm-Message-State: AOAM532dOt8DQCYAMHsDGOdyeJNg+IwrGsDydQRN49dzKDGI0ordtm1C
+        pUEk6d6YLVlBUBri3Kgax5QEJOLrgk0=
+X-Google-Smtp-Source: ABdhPJye7ax15pGoKGbfnjpbLOSj7L8nAZ8cN/rpIe829diuyZwFayMIZO3qWvu0gWDxJEc38C9y/w==
+X-Received: by 2002:a17:90a:ad46:: with SMTP id w6mr17747258pjv.68.1634183461688;
+        Wed, 13 Oct 2021 20:51:01 -0700 (PDT)
 Received: from localhost ([47.88.5.130])
-        by smtp.gmail.com with ESMTPSA id a27sm883983pfl.20.2021.10.13.20.50.54
+        by smtp.gmail.com with ESMTPSA id b10sm865496pfl.200.2021.10.13.20.51.00
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 13 Oct 2021 20:50:54 -0700 (PDT)
+        Wed, 13 Oct 2021 20:51:01 -0700 (PDT)
 From:   Lai Jiangshan <jiangshanlai@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     x86@kernel.org, Lai Jiangshan <laijs@linux.alibaba.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Juergen Gross <jgross@suse.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Joerg Roedel <jroedel@suse.de>
-Subject: [PATCH V3 39/49] x86/idtentry.h: Move the definitions *IDTENTRY_{MCE|DEBUG}* up
-Date:   Thu, 14 Oct 2021 11:50:16 +0800
-Message-Id: <20211014035027.17681-4-jiangshanlai@gmail.com>
+        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <jroedel@suse.de>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Brijesh Singh <brijesh.singh@amd.com>
+Subject: [PATCH V3 40/49] x86/nmi: Use DEFINE_IDTENTRY_NMI for nmi
+Date:   Thu, 14 Oct 2021 11:50:17 +0800
+Message-Id: <20211014035027.17681-5-jiangshanlai@gmail.com>
 X-Mailer: git-send-email 2.19.1.6.gb485710b
 In-Reply-To: <20211014031413.14471-1-jiangshanlai@gmail.com>
 References: <20211014031413.14471-1-jiangshanlai@gmail.com>
@@ -70,49 +70,29 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lai Jiangshan <laijs@linux.alibaba.com>
 
-Move them closer to the related definitions and reduce a #ifdef entry.
+DEFINE_IDTENTRY_NMI is defined, but not used.  It is better to use it.
+
+It is also prepared for later patch to define DEFINE_IDTENTRY_NMI
+differently in 32bit and 64bit.
 
 Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
 ---
- arch/x86/include/asm/idtentry.h | 18 ++++++++----------
- 1 file changed, 8 insertions(+), 10 deletions(-)
+ arch/x86/kernel/nmi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/include/asm/idtentry.h b/arch/x86/include/asm/idtentry.h
-index d0fd32288442..b9a6750dbba2 100644
---- a/arch/x86/include/asm/idtentry.h
-+++ b/arch/x86/include/asm/idtentry.h
-@@ -372,6 +372,14 @@ __visible __entry_text void ist_##func(struct pt_regs *regs)		\
- #define DEFINE_IDTENTRY_NOIST(func)					\
- 	DEFINE_IDTENTRY_RAW(noist_##func)
+diff --git a/arch/x86/kernel/nmi.c b/arch/x86/kernel/nmi.c
+index 4bce802d25fb..44c3adb68282 100644
+--- a/arch/x86/kernel/nmi.c
++++ b/arch/x86/kernel/nmi.c
+@@ -473,7 +473,7 @@ static DEFINE_PER_CPU(enum nmi_states, nmi_state);
+ static DEFINE_PER_CPU(unsigned long, nmi_cr2);
+ static DEFINE_PER_CPU(unsigned long, nmi_dr7);
  
-+#define DECLARE_IDTENTRY_MCE		DECLARE_IDTENTRY_IST
-+#define DEFINE_IDTENTRY_MCE		DEFINE_IDTENTRY_IST
-+#define DEFINE_IDTENTRY_MCE_USER	DEFINE_IDTENTRY_NOIST
-+
-+#define DECLARE_IDTENTRY_DEBUG		DECLARE_IDTENTRY_IST
-+#define DEFINE_IDTENTRY_DEBUG		DEFINE_IDTENTRY_IST
-+#define DEFINE_IDTENTRY_DEBUG_USER	DEFINE_IDTENTRY_NOIST
-+
- /**
-  * DECLARE_IDTENTRY_DF - Declare functions for double fault
-  * @vector:	Vector number (ignored for C)
-@@ -446,16 +454,6 @@ __visible noinstr void func(struct pt_regs *regs,			\
- #define DECLARE_IDTENTRY_NMI		DECLARE_IDTENTRY_RAW
- #define DEFINE_IDTENTRY_NMI		DEFINE_IDTENTRY_RAW
+-DEFINE_IDTENTRY_RAW(exc_nmi)
++DEFINE_IDTENTRY_NMI(exc_nmi)
+ {
+ 	irqentry_state_t irq_state;
  
--#ifdef CONFIG_X86_64
--#define DECLARE_IDTENTRY_MCE		DECLARE_IDTENTRY_IST
--#define DEFINE_IDTENTRY_MCE		DEFINE_IDTENTRY_IST
--#define DEFINE_IDTENTRY_MCE_USER	DEFINE_IDTENTRY_NOIST
--
--#define DECLARE_IDTENTRY_DEBUG		DECLARE_IDTENTRY_IST
--#define DEFINE_IDTENTRY_DEBUG		DEFINE_IDTENTRY_IST
--#define DEFINE_IDTENTRY_DEBUG_USER	DEFINE_IDTENTRY_NOIST
--#endif
--
- #else /* !__ASSEMBLY__ */
- 
- /*
 -- 
 2.19.1.6.gb485710b
 
