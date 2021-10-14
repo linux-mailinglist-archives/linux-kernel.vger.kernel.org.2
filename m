@@ -2,197 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5725942E08D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 19:53:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FED142E091
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 19:53:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233733AbhJNRzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 13:55:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35002 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232408AbhJNRzY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 13:55:24 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 35E5661130;
-        Thu, 14 Oct 2021 17:53:19 +0000 (UTC)
-Date:   Thu, 14 Oct 2021 13:53:17 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     kernel test robot <lkp@intel.com>
-Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        llvm@lists.linux.dev, kbuild-all@lists.01.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [gustavoars:for-next/cast-function 1/3]
- kernel/trace/ftrace.c:7029:6: error: no previous prototype for function
- 'arch_ftrace_ops_list_func'
-Message-ID: <20211014135317.0755987f@gandalf.local.home>
-In-Reply-To: <202110140709.ogqbzDcq-lkp@intel.com>
-References: <202110140709.ogqbzDcq-lkp@intel.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S233746AbhJNRz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 13:55:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58840 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232212AbhJNRz4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 13:55:56 -0400
+Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF8A3C061570
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 10:53:51 -0700 (PDT)
+Received: by mail-qv1-xf30.google.com with SMTP id z3so4198458qvl.9
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 10:53:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=zJB8zVukIQ+/02Rc0y98q23z81gJRt8QzQtT1HzSbCg=;
+        b=ELuQkXd9ubC+OOcBV7fXc70bOKtTagxKSxoApRUZ/4BsKndSk0l6tVMuHdx9fGF8zH
+         GORoT66pFq9wl8kI1VG/IbM0ZkQtbmbFy28q5ZyHmlwRLBj6NWqSXekY1Otqk933Qbv7
+         ZzzvXg8ECuwL+T68M4ziC52MUIzd1A/c3vjxaTKvNjOdZKbK5kJbRJOctsmBzxNUL/YD
+         1THlLPXxUs/+yF6XR1swIr/l3cprEL6aLrnPAQw8H4lRzMDB8F20ARkbeGD9svke4yjt
+         Whnosw86G4eJkcVRzBte5sAgcWStb1FwWIYYSpxBMgiIP2ZHEgXw9eYXD0AKGy59C/HR
+         pa9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zJB8zVukIQ+/02Rc0y98q23z81gJRt8QzQtT1HzSbCg=;
+        b=6CYXrOj4eMgKimDI9dESOjvrHZau0sOXlcfHWmhqa9vWVsTOjqL3Tl1H/0FeqSrIQf
+         qZnkOUcUNS4VJK+nauTAaZ8MXHIN4GMvpBnNcBbONVJ6VlEQgnsRZi9g8BgIJhzIWAqI
+         g0GzTeVLOytkbFxGuK3SuJNh7qy8kNzHZpymXG+z5kbB/NglaFEe2mbR3u62L7PunOlg
+         t6vdzAhW2TjU9YSUUCAXrSv8ZkZ9MVVnEFcbRinLVwVR5iORQpEue6bHoIy3H2h9PP3Q
+         7jN2dEEUM9geHZ2vreLXUXnSVJw3L1+dPp0DQxYNgHOia7i9/mQt1/byhWcvJA/UeAe6
+         Y+hA==
+X-Gm-Message-State: AOAM530k5up6bP1SzJHkPxlrky/bSjY1xWga05+8uaNVZs1AjvEvxg8f
+        zCAYZ3qQcYOjlR9/dinV/fmccHcZPo4=
+X-Google-Smtp-Source: ABdhPJxs6J1YFfPVOY54XBg+m6W3BkcHF+q5DixWAchSuTpZvRCuu3J2EDc22HFiu2RbpWn8URKa0w==
+X-Received: by 2002:a0c:e885:: with SMTP id b5mr6594010qvo.18.1634234031011;
+        Thu, 14 Oct 2021 10:53:51 -0700 (PDT)
+Received: from localhost (cpe-98-15-154-102.hvc.res.rr.com. [98.15.154.102])
+        by smtp.gmail.com with ESMTPSA id l3sm896707qkj.18.2021.10.14.10.53.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Oct 2021 10:53:50 -0700 (PDT)
+Date:   Thu, 14 Oct 2021 13:53:49 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Michal Hocko <mhocko@kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Vasily Averin <vvs@virtuozzo.com>,
+        Roman Gushchin <guro@fb.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] memcg: page_alloc: skip bulk allocator for
+ __GFP_ACCOUNT
+Message-ID: <YWhurV5tLsMZQaA9@cmpxchg.org>
+References: <20211014151607.2171970-1-shakeelb@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211014151607.2171970-1-shakeelb@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Oct 2021 07:33:21 +0800
-kernel test robot <lkp@intel.com> wrote:
+On Thu, Oct 14, 2021 at 08:16:07AM -0700, Shakeel Butt wrote:
+> The commit 5c1f4e690eec ("mm/vmalloc: switch to bulk allocator in
+> __vmalloc_area_node()") switched to bulk page allocator for order 0
+> allocation backing vmalloc. However bulk page allocator does not support
+> __GFP_ACCOUNT allocations and there are several users of
+> kvmalloc(__GFP_ACCOUNT).
+> 
+> For now make __GFP_ACCOUNT allocations bypass bulk page allocator. In
+> future if there is workload that can be significantly improved with the
+> bulk page allocator with __GFP_ACCCOUNT support, we can revisit the
+> decision.
+> 
+> Fixes: 5c1f4e690eec ("mm/vmalloc: switch to bulk allocator in __vmalloc_area_node()")
+> Signed-off-by: Shakeel Butt <shakeelb@google.com>
 
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git for-next/cast-function
-> head:   eed09ebd6f47aeb92b3fe3b8d338b2a55e534928
-> commit: f9d45e65ef7f67bdb39c15d09bc6021f197d893e [1/3] ftrace: Fix -Wcast-function-type warnings on powerpc64
-> config: i386-buildonly-randconfig-r002-20211013 (attached as .config)
-> compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project b6a8c695542b2987eb9a203d5663a0740cb4725f)
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git/commit/?id=f9d45e65ef7f67bdb39c15d09bc6021f197d893e
->         git remote add gustavoars https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git
->         git fetch --no-tags gustavoars for-next/cast-function
->         git checkout f9d45e65ef7f67bdb39c15d09bc6021f197d893e
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 ARCH=i386 
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All errors (new ones prefixed by >>):
-> 
->    kernel/trace/ftrace.c:297:5: error: no previous prototype for function '__register_ftrace_function' [-Werror,-Wmissing-prototypes]
->    int __register_ftrace_function(struct ftrace_ops *ops)
->        ^
->    kernel/trace/ftrace.c:297:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
->    int __register_ftrace_function(struct ftrace_ops *ops)
->    ^
->    static 
->    kernel/trace/ftrace.c:340:5: error: no previous prototype for function '__unregister_ftrace_function' [-Werror,-Wmissing-prototypes]
->    int __unregister_ftrace_function(struct ftrace_ops *ops)
->        ^
->    kernel/trace/ftrace.c:340:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
->    int __unregister_ftrace_function(struct ftrace_ops *ops)
->    ^
->    static 
->    kernel/trace/ftrace.c:579:5: error: no previous prototype for function 'ftrace_profile_pages_init' [-Werror,-Wmissing-prototypes]
->    int ftrace_profile_pages_init(struct ftrace_profile_stat *stat)
->        ^
->    kernel/trace/ftrace.c:579:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
->    int ftrace_profile_pages_init(struct ftrace_profile_stat *stat)
->    ^
->    static 
->    kernel/trace/ftrace.c:3871:15: error: no previous prototype for function 'arch_ftrace_match_adjust' [-Werror,-Wmissing-prototypes]
->    char * __weak arch_ftrace_match_adjust(char *str, const char *search)
->                  ^
->    kernel/trace/ftrace.c:3871:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
->    char * __weak arch_ftrace_match_adjust(char *str, const char *search)
->    ^
->    static 
-> >> kernel/trace/ftrace.c:7029:6: error: no previous prototype for function 'arch_ftrace_ops_list_func' [-Werror,-Wmissing-prototypes]  
->    void arch_ftrace_ops_list_func(unsigned long ip, unsigned long parent_ip,
->         ^
->    kernel/trace/ftrace.c:7029:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
->    void arch_ftrace_ops_list_func(unsigned long ip, unsigned long parent_ip,
->    ^
->    static 
->    5 errors generated.
-> 
-> 
-> vim +/arch_ftrace_ops_list_func +7029 kernel/trace/ftrace.c
-> 
->   7011	
->   7012	/*
->   7013	 * Some archs only support passing ip and parent_ip. Even though
->   7014	 * the list function ignores the op parameter, we do not want any
->   7015	 * C side effects, where a function is called without the caller
->   7016	 * sending a third parameter.
->   7017	 * Archs are to support both the regs and ftrace_ops at the same time.
->   7018	 * If they support ftrace_ops, it is assumed they support regs.
->   7019	 * If call backs want to use regs, they must either check for regs
->   7020	 * being NULL, or CONFIG_DYNAMIC_FTRACE_WITH_REGS.
->   7021	 * Note, CONFIG_DYNAMIC_FTRACE_WITH_REGS expects a full regs to be saved.
->   7022	 * An architecture can pass partial regs with ftrace_ops and still
->   7023	 * set the ARCH_SUPPORTS_FTRACE_OPS.
->   7024	 *
->   7025	 * In vmlinux.lds.h, ftrace_ops_list_func() is defined to be
->   7026	 * arch_ftrace_ops_list_func.
->   7027	 */
->   7028	#if ARCH_SUPPORTS_FTRACE_OPS
-> > 7029	void arch_ftrace_ops_list_func(unsigned long ip, unsigned long parent_ip,  
->   7030				       struct ftrace_ops *op, struct ftrace_regs *fregs)
->   7031	{
->   7032		__ftrace_ops_list_func(ip, parent_ip, NULL, fregs);
->   7033	}
->   7034	#else
->   7035	void arch_ftrace_ops_list_func(unsigned long ip, unsigned long parent_ip)
->   7036	{
->   7037		__ftrace_ops_list_func(ip, parent_ip, NULL, NULL);
->   7038	}
->   7039	#endif
->   7040	NOKPROBE_SYMBOL(arch_ftrace_ops_list_func);
->   7041	
-> 
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-
-This should fix this issue as well as some of the other ones reported on
-this commit.
-
-[ I'll be adding this update to my own version in my tree ]
-
--- Steve
-
-diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-index b86f52683b6f..8771c435f34b 100644
---- a/include/asm-generic/vmlinux.lds.h
-+++ b/include/asm-generic/vmlinux.lds.h
-@@ -178,7 +178,8 @@
- 			ftrace_ops_list_func = arch_ftrace_ops_list_func;
- #else
- # ifdef CONFIG_FUNCTION_TRACER
--#  define MCOUNT_REC()	ftrace_stub_graph = ftrace_stub;
-+#  define MCOUNT_REC()	ftrace_stub_graph = ftrace_stub;	\
-+			ftrace_ops_list_func = arch_ftrace_ops_list_func;
- # else
- #  define MCOUNT_REC()
- # endif
-diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
-index 832e65f06754..871b51bec170 100644
---- a/include/linux/ftrace.h
-+++ b/include/linux/ftrace.h
-@@ -30,16 +30,25 @@
- #define ARCH_SUPPORTS_FTRACE_OPS 0
- #endif
- 
-+#ifdef CONFIG_FUNCTION_TRACER
-+struct ftrace_ops;
- /*
-  * If the arch's mcount caller does not support all of ftrace's
-  * features, then it must call an indirect function that
-  * does. Or at least does enough to prevent any unwelcome side effects.
-+ *
-+ * Also define the function prototype that these architectures use
-+ * to call the ftrace_ops_list_func().
-  */
- #if !ARCH_SUPPORTS_FTRACE_OPS
- # define FTRACE_FORCE_LIST_FUNC 1
-+void arch_ftrace_ops_list_func(unsigned long ip, unsigned long parent_ip);
- #else
- # define FTRACE_FORCE_LIST_FUNC 0
-+void arch_ftrace_ops_list_func(unsigned long ip, unsigned long parent_ip,
-+			       struct ftrace_ops *op, struct ftrace_regs *fregs);
- #endif
-+#endif /* CONFIG_FUNCTION_TRACER */
- 
- /* Main tracing buffer and events set up */
- #ifdef CONFIG_TRACING
-@@ -88,8 +97,6 @@ extern int
- ftrace_enable_sysctl(struct ctl_table *table, int write,
- 		     void *buffer, size_t *lenp, loff_t *ppos);
- 
--struct ftrace_ops;
--
- #ifndef CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS
- 
- struct ftrace_regs {
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
