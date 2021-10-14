@@ -2,186 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A39742D3E0
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 09:38:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B389142D3EC
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 09:40:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230106AbhJNHkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 03:40:21 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:56040
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230082AbhJNHkT (ORCPT
+        id S230026AbhJNHmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 03:42:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58520 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229551AbhJNHmS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 03:40:19 -0400
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com [209.85.167.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 9B2973F338
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 07:38:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1634197094;
-        bh=B7HNXMgqTGY/qLh1YFQzQrY2kmlk2GDz9frXgPFGbwc=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=aZaaXCHdY0AktGt7qRLB8hGwXqXvdzUbBjrAIv+BkPNYxwkF5SJFXj2ObgRuwEHcc
-         l5cntvKOJRLUay42pT7d+PFbcs6uJXOAQhANrcCn/KPEBu0S3bdBm8qgl1/YAbe6x8
-         FnmBJy7DN39aThtBomjPiG5eV3+AKS7am59YL6bwFqYz0JG1geUEEPPhLZFIoA/aS4
-         /EtWhQI8yY1/gTv42DbsUXADp2c+Z1dcuUn8IarxfRu7a27DjvJFrlTOTzmMEszMRc
-         V+hKkLCEwOBwTWn5pkbmkR/DWH1RmRXT02YFCAG6dyP9NWEw4uE6FaLJIc9lTXjlb+
-         DXs43Nphj/KSw==
-Received: by mail-lf1-f70.google.com with SMTP id z29-20020a195e5d000000b003fd437f0e07so3698822lfi.20
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 00:38:14 -0700 (PDT)
+        Thu, 14 Oct 2021 03:42:18 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD009C06174E
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 00:40:13 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id l10-20020a056830154a00b00552b74d629aso2002295otp.5
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 00:40:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1E/kwe6KsaY7ajv8p7giaTw/a0T8vcfhIkutRN0RLxQ=;
+        b=TVbBZX+yY6sVd38Qak+8ox+GerwvgJpdv/kYT/Mg3X1a3+QL2ojam0QroD1PTLSFgs
+         gmWj8UfYcVkpZtHrJMV29kE3vaOczobGdtPWVcXHBoySlejzRkdJA2Fe+mIGJJ6PcKVB
+         O4V7bss42my+9YdzKLtiK9ysslfFJmA6M0Y38yWfwAeDyMFzMBhnQ3YEO6A2Ybeq0ZQe
+         RVP/ZqsEVgkDMHTW95hyp0URdfUYYfS5/TOq4XNx3NsCb2M2dbLT8gCcY5UTiCFWZ1+a
+         /05W4xqn5NDvpWYKUUficMtjGQ1TEAIDX7DkzitWggZdk+lX/Y5B/5XMagKcrgayOboq
+         MszA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=B7HNXMgqTGY/qLh1YFQzQrY2kmlk2GDz9frXgPFGbwc=;
-        b=YRL1THkGsFBNrbIfOIZp0Ge2DhDisTRSPu8emP0rIohu9lniooJ4LSeEOzbkCjZBmv
-         TpP2AueWj10CQE67qq09Eb4tbAWtMZXecdodFh2MJXKXiNCwouKfE7vGx8zzkkM1OCpl
-         hHh/WNGylJ2lBatEmFey0p/2kRN5mDG6huozWWRSfcRRCgPpXtk4f04Zu4Wg/jrop0Ky
-         1gO4wxj5lX0Q+eGYQhZnU0CW6mNyTBbxoKfPKXVBJqyE2qGd6labC3SYmOJtt+3PPscy
-         tpQxwIOPcuzL0IZB5BMGIIMtlAqtRanD1VJrOkrjrlAJ9+yYd3CtenwNDHNcu41jRi4G
-         UdzA==
-X-Gm-Message-State: AOAM532aC0e/AzZdAl2a/0EFKwVGOHickAvsT9HUnbObvd83uRRkhdEh
-        WHvoTwCt1odPdvWSMW6j8C3QmjsUgjJRscmLnFZ9OHAdhYBu5kjkEGTCUPqzegFaHe8tFjcSgzr
-        1qBBTA4DP53rNfx49RSeSkqSl17wg9l1yL15lRomv4w==
-X-Received: by 2002:a2e:a4a7:: with SMTP id g7mr4455570ljm.255.1634197094064;
-        Thu, 14 Oct 2021 00:38:14 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzamjLEoWko/AdJDqX4dJUQRdA84fri++rZ+xFbSz7SaNFK/a9LfHbAy0kj4bgJe2Y6Mn3Axg==
-X-Received: by 2002:a2e:a4a7:: with SMTP id g7mr4455553ljm.255.1634197093885;
-        Thu, 14 Oct 2021 00:38:13 -0700 (PDT)
-Received: from [192.168.3.161] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
-        by smtp.gmail.com with ESMTPSA id s11sm153945lfd.262.2021.10.14.00.38.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Oct 2021 00:38:13 -0700 (PDT)
-Subject: Re: [PATCH 5/8] dt-bindings: mfd: add Maxim MAX77714 PMIC
-To:     Luca Ceresoli <luca@lucaceresoli.net>, linux-kernel@vger.kernel.org
-Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
-        linux-rtc@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        Chiwoong Byun <woong.byun@samsung.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>
-References: <20211011155615.257529-1-luca@lucaceresoli.net>
- <20211011155615.257529-6-luca@lucaceresoli.net>
- <8ad40ebc-8430-9fa0-ae60-88e0d486e8cc@canonical.com>
- <4fc0fe37-1a25-4058-6326-a14e32ef18f5@lucaceresoli.net>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <88eeb15a-f5b5-0a6e-3d81-494a9c57c878@canonical.com>
-Date:   Thu, 14 Oct 2021 09:38:11 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1E/kwe6KsaY7ajv8p7giaTw/a0T8vcfhIkutRN0RLxQ=;
+        b=hj4pRlSYaevrsdU9rPKUw/zcxu9c5/DCYE0pPFks03HLQEbfIUmVNEf+96g5a/FHc7
+         sv5KbdUZt8gYnu3nZe+bCrLHACYyI1D5By/1t8iXmDSES4gNru+jfquGZzMQStw6kTcH
+         jvi7cv/SkvVP4EeJzzMde3ijEQJKL+v+gjTe5SLDqcJeRj6BlIt7weYL6QEFnsNwDoC3
+         KmoxhgLfrz36L/QZZoDSYPEOZxZhsDfav7T764RCVp60XSmzYULne7nBu3+Ldp2+oLEi
+         vkM2MiAhOnSydKATE57x/Hp3LlqZ7YdjqQ8BUK/eQKA4rKDmYASUrBMwoPf+Owc2MQ7+
+         1PTg==
+X-Gm-Message-State: AOAM530atnzYrE2uXdu0JPbv1zIQgKct0OohE4TDcfqLBiTCatovnFw/
+        SMCZJ1jGp+HJLaBk1KBFtxx415PiBnYyLA5UjbLZ/nvLA5+sjw==
+X-Google-Smtp-Source: ABdhPJyVDnvknF6a/VWGZGtlXr5TH0OEv7HC+oDDN7r7z8ESc7w03hJmQpfuzuchf4yNT2muAQ8IMmISvz6K6FKgTME=
+X-Received: by 2002:a05:6830:1c26:: with SMTP id f6mr1129554ote.28.1634197212897;
+ Thu, 14 Oct 2021 00:40:12 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <4fc0fe37-1a25-4058-6326-a14e32ef18f5@lucaceresoli.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20211013105541.68045-1-bhupesh.sharma@linaro.org>
+ <20211013105541.68045-19-bhupesh.sharma@linaro.org> <74893e20-3dd8-9b57-69bb-025264f51186@linaro.org>
+In-Reply-To: <74893e20-3dd8-9b57-69bb-025264f51186@linaro.org>
+From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
+Date:   Thu, 14 Oct 2021 13:10:01 +0530
+Message-ID: <CAH=2Ntw5_hycMqouneiU_Tb17OL0zxUpt8ecGZn+LxXEU_=ZQg@mail.gmail.com>
+Subject: Re: [PATCH v4 18/20] crypto: qce: Defer probing if BAM dma channel is
+ not yet initialized
+To:     Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
+Cc:     MSM <linux-arm-msm@vger.kernel.org>, linux-crypto@vger.kernel.org,
+        bhupesh.linux@gmail.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Thara Gopinath <thara.gopinath@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/10/2021 23:28, Luca Ceresoli wrote:
-> Hi Krzysztof,
-> 
-> thanks for reviewing.
-> 
-> On 12/10/21 10:02, Krzysztof Kozlowski wrote:
->> On 11/10/2021 17:56, Luca Ceresoli wrote:
->>> Add bindings for the MAX77714 PMIC with GPIO, RTC and watchdog.
->>>
->>> Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
->>> ---
->>>  .../bindings/mfd/maxim,max77714.yaml          | 58 +++++++++++++++++++
->>>  MAINTAINERS                                   |  5 ++
->>>  2 files changed, 63 insertions(+)
->>>  create mode 100644 Documentation/devicetree/bindings/mfd/maxim,max77714.yaml
->>>
->>> diff --git a/Documentation/devicetree/bindings/mfd/maxim,max77714.yaml b/Documentation/devicetree/bindings/mfd/maxim,max77714.yaml
->>> new file mode 100644
->>> index 000000000000..2b0ce3b9bc92
->>> --- /dev/null
->>> +++ b/Documentation/devicetree/bindings/mfd/maxim,max77714.yaml
->>> @@ -0,0 +1,58 @@
->>> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
->>> +%YAML 1.2
->>> +---
->>> +$id: http://devicetree.org/schemas/mfd/maxim,max77714.yaml#
->>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->>> +
->>> +title: MAX77714 PMIC with GPIO, RTC and watchdog from Maxim Integrated.
->>> +
->>> +maintainers:
->>> +  - Luca Ceresoli <luca@lucaceresoli.net>
->>> +
->>> +description: |
->>> +  MAX77714 is a Power Management IC with 4 buck regulators, 9
->>> +  low-dropout regulators, 8 GPIOs, RTC and watchdog.
->>> +
->>> +properties:
->>> +  compatible:
->>> +    const: maxim,max77714
->>> +
->>> +  reg:
->>> +    maxItems: 1
->>> +
->>> +  interrupts:
->>> +    maxItems: 1
->>> +
->>> +  interrupt-controller: true
->>> +
->>> +  "#interrupt-cells":
->>> +    const: 2
->>> +    description:
->>> +      The first cell is the IRQ number, the second cell is the trigger type.
->>> +
->>> +required:
->>> +  - compatible
->>> +  - reg
->>> +  - interrupts
->>> +  - interrupt-controller
->>> +  - "#interrupt-cells"
->>> +
->>> +additionalProperties: false
->>> +
->>> +examples:
->>> +  - |
->>> +    #include <dt-bindings/interrupt-controller/irq.h>
->>> +    i2c {
->>> +        #address-cells = <1>;
->>> +        #size-cells = <0>;
->>> +
->>> +        pmic@1c {
->>> +            compatible = "maxim,max77714";
->>> +            reg = <0x1c>;
->>> +            interrupt-parent = <&gpio2>;
->>> +            interrupts = <3 IRQ_TYPE_LEVEL_LOW>;
->>> +
->>> +            interrupt-controller;
->>> +            #interrupt-cells = <2>;
->>> +        };
->>> +    };
->>
->> Looks good to me, but what about regulators and other properties? Are
->> you planning to add them later?
-> 
-> No plan to add them, sorry.
-> 
-> I know, complete bindings are better than incomplete bindings. But in
-> the foreseeable future I don't need to do anything on the regulators
-> (even though it might happen at some point). And since their setting is
-> possibly non trivial, I'm not going to study them to write a complete
-> bindings document and then make no use of it.
-> 
-> Is it a problem for you?
+Hi Vladimir,
 
-It's OK.
+On Thu, 14 Oct 2021 at 02:19, Vladimir Zapolskiy
+<vladimir.zapolskiy@linaro.org> wrote:
+>
+> Hi Bhupesh,
+>
+> On 10/13/21 1:55 PM, Bhupesh Sharma wrote:
+> > Since the Qualcomm qce crypto driver needs the BAM dma driver to be
+> > setup first (to allow crypto operations), it makes sense to defer
+> > the qce crypto driver probing in case the BAM dma driver is not yet
+> > probed.
+> >
+> > Move the code leg requesting dma channels earlier in the
+> > probe() flow. This fixes the qce probe failure issues when both qce
+> > and BMA dma are compiled as static part of the kernel.
+> >
+> > Cc: Thara Gopinath <thara.gopinath@linaro.org>
+> > Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
+> > ---
+> >   drivers/crypto/qce/core.c | 20 ++++++++++++--------
+> >   1 file changed, 12 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/drivers/crypto/qce/core.c b/drivers/crypto/qce/core.c
+> > index cb8c77709e1e..c6f686126fc9 100644
+> > --- a/drivers/crypto/qce/core.c
+> > +++ b/drivers/crypto/qce/core.c
+> > @@ -209,9 +209,19 @@ static int qce_crypto_probe(struct platform_device *pdev)
+> >       if (ret < 0)
+> >               return ret;
+> >
+> > +     /* qce driver requires BAM dma driver to be setup first.
+>
+> I believe a multi-line block of comments should be started with '/*' line,
+> for reference please take a look at Documentation/process/coding-style.rst
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+There are exceptions to this rule as well. For e.g. see most of the
+networking drivers and the multi-line comment styles there :) .
 
-Best regards,
-Krzysztof
+There is a very interesting LWN article on the same :
+https://lwn.net/Articles/694755/
+Note that 'crypto/' and 'drivers/crypto' use these non-standard
+multi-line comments quite often as well.
+
+That said, I have no strong opinion on using either style. Although, I
+found one of the points raised by the networking maintainer during one
+of my patch reviews earlier quite useful - 'keeping the top line in a
+multi-line comment blank, wastes precious screen space while reading
+and reviewing the patch'.
+
+Regards,
+Bhupesh
+
+> > +      * In case the dma channel are not set yet, this check
+> > +      * helps use to return -EPROBE_DEFER earlier.
+> > +      */
+> > +     ret = qce_dma_request(qce->dev, &qce->dma);
+> > +     if (ret)
+> > +             return ret;
+> > +
+> >       qce->mem_path = of_icc_get(qce->dev, "memory");
+> > -     if (IS_ERR(qce->mem_path))
+> > +     if (IS_ERR(qce->mem_path)) {
+> > +             qce_dma_release(&qce->dma);
+> >               return PTR_ERR(qce->mem_path);
+> > +     }
+> >
+> >       qce->core = devm_clk_get_optional(qce->dev, "core");
+> >       if (IS_ERR(qce->core)) {
+> > @@ -247,10 +257,6 @@ static int qce_crypto_probe(struct platform_device *pdev)
+> >       if (ret)
+> >               goto err_clks_iface;
+> >
+> > -     ret = qce_dma_request(qce->dev, &qce->dma);
+> > -     if (ret)
+> > -             goto err_clks;
+> > -
+> >       ret = qce_check_version(qce);
+> >       if (ret)
+> >               goto err_clks;
+> > @@ -265,12 +271,10 @@ static int qce_crypto_probe(struct platform_device *pdev)
+> >
+> >       ret = qce_register_algs(qce);
+> >       if (ret)
+> > -             goto err_dma;
+> > +             goto err_clks;
+> >
+> >       return 0;
+> >
+> > -err_dma:
+> > -     qce_dma_release(&qce->dma);
+> >   err_clks:
+> >       clk_disable_unprepare(qce->bus);
+> >   err_clks_iface:
+> >
+>
+> --
+> Best wishes,
+> Vladimir
