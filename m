@@ -2,130 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24FF542D052
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 04:21:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C38B42D055
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 04:23:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229949AbhJNCXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 22:23:33 -0400
-Received: from mga02.intel.com ([134.134.136.20]:47432 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229837AbhJNCXc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 22:23:32 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10136"; a="214740311"
-X-IronPort-AV: E=Sophos;i="5.85,371,1624345200"; 
-   d="scan'208";a="214740311"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2021 19:21:27 -0700
-X-IronPort-AV: E=Sophos;i="5.85,371,1624345200"; 
-   d="scan'208";a="487166779"
-Received: from dravindr-mobl.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.254.11.40])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2021 19:21:26 -0700
-Subject: Re: [PATCH v7 6/6] x86/split_lock: Fix the split lock #AC handling
- when running as guest
-To:     Xiaoyao Li <xiaoyao.li@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        linux-kernel@vger.kernel.org
-References: <20211005230550.1819406-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211005230550.1819406-7-sathyanarayanan.kuppuswamy@linux.intel.com>
- <YWdB+rGPWDIVzuBY@google.com>
- <38a70cf2-1849-97fd-82a2-10ce64c6be8c@linux.intel.com>
- <71884ac9-6da3-e75d-af1e-f8f24a7562cb@intel.com>
-From:   Sathyanarayanan Kuppuswamy 
-        <sathyanarayanan.kuppuwamy@linux.intel.com>
-Message-ID: <c2f67bab-28a1-1340-3c15-919ec03375db@linux.intel.com>
-Date:   Wed, 13 Oct 2021 19:21:26 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
+        id S229918AbhJNCZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 22:25:08 -0400
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:39257 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229837AbhJNCZI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 22:25:08 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R681e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UrkNAwe_1634178180;
+Received: from 30.21.164.76(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0UrkNAwe_1634178180)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 14 Oct 2021 10:23:01 +0800
+Subject: Re: [PATCH] hugetlb: Support node specified when using cma for
+ gigantic hugepages
+To:     Mike Kravetz <mike.kravetz@oracle.com>, akpm@linux-foundation.org
+Cc:     mhocko@kernel.org, guro@fb.com, corbet@lwn.net,
+        yaozhenguo1@gmail.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+References: <1633843448-966-1-git-send-email-baolin.wang@linux.alibaba.com>
+ <6bd3789f-4dee-a184-d415-4ad77f0f98b7@oracle.com>
+From:   Baolin Wang <baolin.wang@linux.alibaba.com>
+Message-ID: <326ece39-a6f5-26ce-827b-68272525e947@linux.alibaba.com>
+Date:   Thu, 14 Oct 2021 10:23:42 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-In-Reply-To: <71884ac9-6da3-e75d-af1e-f8f24a7562cb@intel.com>
+In-Reply-To: <6bd3789f-4dee-a184-d415-4ad77f0f98b7@oracle.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 10/13/21 6:24 PM, Xiaoyao Li wrote:
-> On 10/14/2021 5:32 AM, Sathyanarayanan Kuppuswamy wrote:
->> + Xiaoyao
+
+On 2021/10/14 6:06, Mike Kravetz wrote:
+> On 10/9/21 10:24 PM, Baolin Wang wrote:
+>> Now the size of CMA area for gigantic hugepages runtime allocation is
+>> balanced for all online nodes, but we also want to specify the size of
+>> CMA per-node, or only one node in some cases, which are similar with
+>> commit 86acc55c3d32 ("hugetlbfs: extend the definition of hugepages
+>> parameter to support node allocation")[1].
 >>
->> On 10/13/21 1:30 PM, Sean Christopherson wrote:
->>> On Tue, Oct 05, 2021, Kuppuswamy Sathyanarayanan wrote:
->>>> From: Xiaoyao Li <xiaoyao.li@intel.com>
->>>>
->>>> If running as guest and hypervisor enables
->>>> MSR_TEST_CTRL.SPLIT_LOCK_DETECT during its running, it can get split
->>>> lock #AC even though sld_state is sld_off.
->>> That's a hypervisor bug, no?  The hypervisor should never inject a 
->>> fault that
->>> the guest cannot reasonably expect.
->
-> What if hypervisor doesn't intercept #AC and host enables 
-> SPLIT_LOCK_DETECT during guest running? That's exactly the case TDX is 
-> facing.
->
-> (BTW, this patch is not complete that no matter what state sld_state 
-> is, it should always treat it as fatal even sld_warn because sld_warn 
-> doesn't guarantee SPLIT_LOCK_DETECT is available)
->
-> Sathya, we need to drop this one. Andi has anther one to disable split 
-> lock detection for SPR. That's a better direction.
+>> Thus this patch adds node format for 'hugetlb_cma' parameter to support
+>> specifying the size of CMA per-node. An example is as follows:
+>>
+>> hugetlb_cma=0:5G,2:5G
+>>
+>> which means allocating 5G size of CMA area on node 0 and node 2
+>> respectively.
+>>
+>> [1]
+>> https://lkml.kernel.org/r/20211005054729.86457-1-yaozhenguo1@gmail.com
+>>
+>> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+>> ---
+>>   Documentation/admin-guide/kernel-parameters.txt |  6 +-
+>>   mm/hugetlb.c                                    | 79 +++++++++++++++++++++----
+>>   2 files changed, 73 insertions(+), 12 deletions(-)
+>>
+>> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+>> index 3ad8e9d0..a147faa5 100644
+>> --- a/Documentation/admin-guide/kernel-parameters.txt
+>> +++ b/Documentation/admin-guide/kernel-parameters.txt
+>> @@ -1587,8 +1587,10 @@
+>>   			registers.  Default set by CONFIG_HPET_MMAP_DEFAULT.
+>>   
+>>   	hugetlb_cma=	[HW,CMA] The size of a CMA area used for allocation
+>> -			of gigantic hugepages.
+>> -			Format: nn[KMGTPE]
+>> +			of gigantic hugepages. Or using node format, the size
+>> +			of a CMA area per node can be specified.
+>> +			Format: nn[KMGTPE] or (node format)
+>> +				<node>:nn[KMGTPE][,<node>:nn[KMGTPE]]
+>>   
+>>   			Reserve a CMA area of given size and allocate gigantic
+>>   			hugepages using the CMA allocator. If enabled, the
+>> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+>> index 6d2f4c2..8b4e409 100644
+>> --- a/mm/hugetlb.c
+>> +++ b/mm/hugetlb.c
+>> @@ -50,6 +50,7 @@
+>>   
+>>   #ifdef CONFIG_CMA
+>>   static struct cma *hugetlb_cma[MAX_NUMNODES];
+>> +static unsigned long hugetlb_cma_size_in_node[MAX_NUMNODES] __initdata;
+>>   static bool hugetlb_cma_page(struct page *page, unsigned int order)
+>>   {
+>>   	return cma_pages_valid(hugetlb_cma[page_to_nid(page)], page,
+>> @@ -62,6 +63,7 @@ static bool hugetlb_cma_page(struct page *page, unsigned int order)
+>>   }
+>>   #endif
+>>   static unsigned long hugetlb_cma_size __initdata;
+>> +static nodemask_t hugetlb_cma_nodes_allowed = NODE_MASK_NONE;
+>>   
+>>   /*
+>>    * Minimum page order among possible hugepage sizes, set to a proper value
+>> @@ -3497,9 +3499,15 @@ static ssize_t __nr_hugepages_store_common(bool obey_mempolicy,
+>>   
+>>   	if (nid == NUMA_NO_NODE) {
+>>   		/*
+>> +		 * If we've specified the size of CMA area per node,
+>> +		 * should use it firstly.
+>> +		 */
+>> +		if (hstate_is_gigantic(h) && !nodes_empty(hugetlb_cma_nodes_allowed))
+>> +			n_mask = &hugetlb_cma_nodes_allowed;
+>> +		/*
+> 
+> IIUC, this changes the behavior for 'balanced' gigantic huge page pool
+> allocations if per-node hugetlb_cma is specified.  It will now only
+> attempt to allocate gigantic pages on nodes where CMA was reserved.
+> Even if we run out of space on the node, it will not go to other nodes
+> as before.  Is that correct?
 
-Ok. I will fix this in next submission.
+Right.
 
->
->>>> For kernel mode #AC, it always dies("split lock"), no more action
->>>> needed.
->>>>
->>>> For user mode #AC, it should treat sld_off (default state when feature
->>>> is not available) as fatal as well.
->>>>
->>>> Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
->>>> Signed-off-by: Kuppuswamy Sathyanarayanan 
->>>> <sathyanarayanan.kuppuswamy@linux.intel.com>
->>>> ---
->>>>   arch/x86/kernel/cpu/intel.c | 7 ++++++-
->>>>   1 file changed, 6 insertions(+), 1 deletion(-)
->>>>
->>>> diff --git a/arch/x86/kernel/cpu/intel.c b/arch/x86/kernel/cpu/intel.c
->>>> index 01d7935feaed..47f0bc95ce2a 100644
->>>> --- a/arch/x86/kernel/cpu/intel.c
->>>> +++ b/arch/x86/kernel/cpu/intel.c
->>>> @@ -1190,7 +1190,12 @@ static void bus_lock_init(void)
->>>>   bool handle_user_split_lock(struct pt_regs *regs, long error_code)
->>>>   {
->>>> -    if ((regs->flags & X86_EFLAGS_AC) || sld_state == sld_fatal)
->>>> +    /*
->>>> +     * In virtualization environment, it can get split lock #AC 
->>>> even when
->>>> +     * sld_off but hypervisor enables it.
->>>> +     * Thus only handles when sld_warn explicitly.
->>>> +     */
->>>> +    if ((regs->flags & X86_EFLAGS_AC) || sld_state != sld_warn)
->>>>           return false;
->>>>       split_lock_warn(regs->ip);
->>>>       return true;
->>>> -- 
->>>> 2.25.1
->>>>
->
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+> 
+> I do not believe we want this change in behavior.  IMO, if the user is
+> doing node specific CMA reservations, then the user should use the node
+> specific sysfs file for pool allocations on that node.
 
+Sounds more reasonable, will move 'hugetlb_cma_nodes_allowed' to the 
+node specific allocation.
+
+>>   		 * global hstate attribute
+>>   		 */
+>> -		if (!(obey_mempolicy &&
+>> +		else if (!(obey_mempolicy &&
+>>   				init_nodemask_of_mempolicy(&nodes_allowed)))
+>>   			n_mask = &node_states[N_MEMORY];
+>>   		else
+>> @@ -6745,7 +6753,38 @@ void hugetlb_unshare_all_pmds(struct vm_area_struct *vma)
+>>   
+>>   static int __init cmdline_parse_hugetlb_cma(char *p)
+>>   {
+>> -	hugetlb_cma_size = memparse(p, &p);
+>> +	int nid, count = 0;
+>> +	unsigned long tmp;
+>> +	char *s = p;
+>> +
+>> +	while (*s) {
+>> +		if (sscanf(s, "%lu%n", &tmp, &count) != 1)
+>> +			break;
+>> +
+>> +		if (s[count] == ':') {
+>> +			nid = tmp;
+>> +			if (nid < 0 || nid >= MAX_NUMNODES)
+>> +				break;
+> 
+> nid can only be compared to MAX_NUMNODES because this an early param
+> before numa is setup and we do not know exactly how many nodes there
+> are.  Is this correct?
+
+Yes.
+
+> 
+> Suppose one specifies an invaid node.  For example, on my 2 node system
+> I use the option 'hugetlb_cma=2:2G'.  This is not flagged as an error
+> during processing and 1G CMA is reserved on node 0 and 1G is reserved
+> on node 1.  Is that by design, or just chance?
+
+Actually we won't allocate any CMA area in this case, since in 
+hugetlb_cma_reserve(), we will only iterate the online nodes to try to 
+allocate CMA area, and node 2 is not in the range of online nodes in 
+this case.
+
+> We should be able to catch this in hugetlb_cma_reserve.  For the example
+> above, I think we should flag this as an error and not reserve any CMA.
+
+Sure, as I said above, it will not allocate CMA for the non-online nodes 
+though these invalid nodes can be specified in the command line. But I 
+can add a warning to catch the invalid nodes setting in 
+hugetlb_cma_reserve().
+
+>> +
+>> +			s += count + 1;
+>> +			tmp = memparse(s, &s);
+>> +			hugetlb_cma_size_in_node[nid] = tmp;
+>> +			hugetlb_cma_size += tmp;
+>> +
+>> +			/*
+>> +			 * Skip the separator if have one, otherwise
+>> +			 * break the parsing.
+>> +			 */
+>> +			if (*s == ',')
+>> +				s++;
+>> +			else
+>> +				break;
+>> +		} else {
+>> +			hugetlb_cma_size = memparse(p, &p);
+>> +			break;
+>> +		}
+>> +	}
+>> +
+>>   	return 0;
+>>   }
+>>   
+>> @@ -6754,6 +6793,7 @@ static int __init cmdline_parse_hugetlb_cma(char *p)
+>>   void __init hugetlb_cma_reserve(int order)
+>>   {
+>>   	unsigned long size, reserved, per_node;
+>> +	bool node_specific_cma_alloc = false;
+>>   	int nid;
+>>   
+>>   	cma_reserve_called = true;
+>> @@ -6767,20 +6807,37 @@ void __init hugetlb_cma_reserve(int order)
+>>   		return;
+>>   	}
+> 
+> Earlier in hugetlb_cma_reserve (not in the context here), there is this
+> code:
+> 
+> 	if (hugetlb_cma_size < (PAGE_SIZE << order)) {
+> 		pr_warn("hugetlb_cma: cma area should be at least %lu MiB\n",
+> 			(PAGE_SIZE << order) / SZ_1M);
+> 		hugetlb_cma_size = 0;
+> 		return;
+> 	}
+> 
+> That causes an early exit if hugetlb_cma_size is too small for a
+> gigantic page.
+> 
+> On my 2 node x86 system with 1G gigantic pages, I can specify
+> 'hugetlb_cma=0:512M,1:512M'.  This does not trigger the above early exit
+> because total hugetlb_cma_size is 1G.  It does end up reserving 1G on
+> node 0 and nothing on node 1.  I do not believe this is by design.  We
+> should validate the specified per-node sizes as well.
+
+Sure. Will do in next version. Thanks for your comments.
