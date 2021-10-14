@@ -2,112 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABAF842D419
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 09:52:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8E4642D41B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 09:52:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230082AbhJNHyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 03:54:18 -0400
-Received: from marcansoft.com ([212.63.210.85]:57432 "EHLO mail.marcansoft.com"
+        id S230107AbhJNHyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 03:54:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47120 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230049AbhJNHyO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 03:54:14 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: marcan@marcan.st)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id B237741AC8;
-        Thu, 14 Oct 2021 07:52:03 +0000 (UTC)
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Sven Peter <sven@svenpeter.dev>, Marc Zyngier <maz@kernel.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20211011165707.138157-1-marcan@marcan.st>
- <20211011165707.138157-7-marcan@marcan.st>
- <a9f6898d-bd76-b94e-52fc-98e9da1a04bd@canonical.com>
- <2a6f14e5-fbc9-4b9a-9378-a4b5200bc3fb@marcan.st>
- <f81467d4-74b2-176d-06bf-f04e073efce4@canonical.com>
-From:   Hector Martin <marcan@marcan.st>
-Subject: Re: [RFC PATCH 6/9] memory: apple: Add apple-mcc driver to manage MCC
- perf in Apple SoCs
-Message-ID: <00925242-b837-d75b-3655-536d45dcd4d2@marcan.st>
-Date:   Thu, 14 Oct 2021 16:52:01 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S229967AbhJNHyt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 03:54:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6EB7061027;
+        Thu, 14 Oct 2021 07:52:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634197964;
+        bh=qD+0G++7GvIbBcp1KcC76JBeUGQ4HMtVySdt0dwDMXo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=QBtJkbALq4BE2jnsT6WHrt7SrIdrnv4OYnGoUrtD7tGgEsGCHPJsfMRVAwFvo0Mcb
+         kTT4sTkdcNQ3Y03OxP0yTkpM2eLMvVIqM+3vnph4MJH+J1WXvyC0OWVflOetmzw/AF
+         8WMdhTaIJiXAvfoy8qCwFKFtgQtvsxdp40NYYU8o/iCgqjV2rGyiAGaxhJ1jBPbqc7
+         mnkkjO9OuUCQMj0SSWMvfDWSb0pGvMQuR41VcmNsRt7sFigZR4gfnRbUHcAxT+cN41
+         DsE3sLY1f0v2mmpmeRWDFpbayWBZlXG8vDDMKurNvDhC6p1avBSmztOkeMTlRqpb+s
+         mXi3AOdKWJlsw==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shengjiu Wang <shengjiu.wang@nxp.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-remoteproc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] remoteproc: imx_dsp_rproc: mark PM functions as __maybe_unused
+Date:   Thu, 14 Oct 2021 09:52:24 +0200
+Message-Id: <20211014075239.3714694-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <f81467d4-74b2-176d-06bf-f04e073efce4@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: es-ES
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/10/2021 16.36, Krzysztof Kozlowski wrote:
-> On 14/10/2021 08:59, Hector Martin wrote:
->>> Don't you have a limit of supported channels? It cannot be any uint32...
->>
->> Today, it's max 8. But if come Monday we find out Apple's new chips have
->> 16 channels and otherwise the same register layout, I'd much rather not
->> have to change the driver...
-> 
-> OK, however if the driver ever receives different DT with a different
-> value, it will accept it unconditionally and go via address space. I am
-> just saying that being conservative on received values is safer, but I
-> am fine with skipping this problem. At the end we trust DT that it will
-> always match the kernel, don't we? Oh wait, someone can use DT from
-> other kernel in this one...
+From: Arnd Bergmann <arnd@arndb.de>
 
-DTs using these compatibles should have the same register layout, and 
-should work with this driver; if a new chip comes out that has a 
-different register layout we will change the compatibles (both) and 
-therefore older kernels won't bind at all. If it has the same layout 
-we'll keep the base compatible, `reg` will grow as needed to accomodate 
-the extra channels, and e.g. num-channels=16 will then just work on 
-older kernels with no changes.
+When CONFIG_PM_SLEEP is disabled, we get a harmless warning:
 
-Obviously a broken DT with an insane value here would crash the driver, 
-but so would any other number of crazy DT things; however, I don't 
-expect that to ever happen.
+drivers/remoteproc/imx_dsp_rproc.c:1145:12: error: 'imx_dsp_resume' defined but not used [-Werror=unused-function]
+ 1145 | static int imx_dsp_resume(struct device *dev)
+      |            ^~~~~~~~~~~~~~
+drivers/remoteproc/imx_dsp_rproc.c:1110:12: error: 'imx_dsp_suspend' defined but not used [-Werror=unused-function]
+ 1110 | static int imx_dsp_suspend(struct device *dev)
+      |            ^~~~~~~~~~~~~~~
 
-There's also the case where we end up with multiple memory controllers 
-at discrete offsets (e.g. rumored multi-die configurations); in that 
-case we'll end up with multiple genpd parents and have to add code to 
-support that, and in the meantime older kernels will just have broken 
-cpufreq on the p-cores. But I think that is ~acceptable as long as the 
-system boots; we don't expect to be able to *fully* support newer SoCs 
-on older kernels with no code changes. What I'm aiming for is just 
-making the system work, hopefully with NVMe and USB and a dumb 
-framebuffer, so that distro installers can run and then users can later 
-install a proper up to date kernel will full support for the new SoC.
+Mark these as __maybe_unused to get a clean build.
 
->> Ah, I didn't realize that was a valid option for MODULE_LICENSE. I guess
->> anything containing "GPL" works with EXPORT_SYMBOL_GPL?
-> 
-> I don't think exporting symbols is related to how you license your code.
+Fixes: ec0e5549f358 ("remoteproc: imx_dsp_rproc: Add remoteproc driver for DSP on i.MX")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/remoteproc/imx_dsp_rproc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-It is; only modules with a GPL-compatible MODULE_LICENSE get to use 
-symbols exported via EXPORT_SYMBOL_GPL.
-
-See kernel/module.c for the symbol lookup logic and 
-include/linux/license.h for the logic to check the string (seems like 
-"Dual MIT/GPL" is explicitly whitelisted there).
-
-Of course, this is a futile effort, as ~every time I see a proprietary 
-module in some embedded device, it either falsely declares itself to be 
-GPL, or they have a shim module that re-exports GPL symbols as non-GPL.
-
+diff --git a/drivers/remoteproc/imx_dsp_rproc.c b/drivers/remoteproc/imx_dsp_rproc.c
+index 63749cfcf22f..90fcb389e252 100644
+--- a/drivers/remoteproc/imx_dsp_rproc.c
++++ b/drivers/remoteproc/imx_dsp_rproc.c
+@@ -1107,7 +1107,7 @@ static void imx_dsp_load_firmware(const struct firmware *fw, void *context)
+ 	release_firmware(fw);
+ }
+ 
+-static int imx_dsp_suspend(struct device *dev)
++static __maybe_unused int imx_dsp_suspend(struct device *dev)
+ {
+ 	struct rproc *rproc = dev_get_drvdata(dev);
+ 	struct imx_dsp_rproc *priv = rproc->priv;
+@@ -1142,7 +1142,7 @@ static int imx_dsp_suspend(struct device *dev)
+ 	return pm_runtime_force_suspend(dev);
+ }
+ 
+-static int imx_dsp_resume(struct device *dev)
++static __maybe_unused int imx_dsp_resume(struct device *dev)
+ {
+ 	struct rproc *rproc = dev_get_drvdata(dev);
+ 	int ret = 0;
 -- 
-Hector Martin (marcan@marcan.st)
-Public Key: https://mrcn.st/pub
+2.29.2
+
