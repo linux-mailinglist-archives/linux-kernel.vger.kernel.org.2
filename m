@@ -2,98 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E88742DB68
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:23:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FC8C42DB6A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:23:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231523AbhJNOZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 10:25:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38576 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230241AbhJNOZJ (ORCPT
+        id S231849AbhJNOZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 10:25:42 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:42922 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230030AbhJNOZl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 10:25:09 -0400
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 804CFC061570;
-        Thu, 14 Oct 2021 07:23:04 -0700 (PDT)
-Received: by mail-io1-xd2c.google.com with SMTP id e144so3983387iof.3;
-        Thu, 14 Oct 2021 07:23:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=mt7eSnisz45ZsPSM8T/CyIaaGlSe2WoikJOLdy55U7A=;
-        b=b/+13GqizBkyQwbg9vChBahGTiqrD4hBhOC4AqJlCQ0yCGM9/RZb2zI5vXVccLAgSi
-         u/OHC19T0yYS2Z/kqDdI5afSR0k1SozamnPm8ASGNNUzpbDq+6MrFgRpB48SjZ4iZVXN
-         6XMBDcF3mBy87w7MqSCOZ/05LUjxcd9Gehduf5zFtovpg8NpId4uUVNNVy7vmhVYWzAm
-         kSGuOOLjnrppjsWzmhhoyALMADb/8e9+QufS1tCBzRhtgeDCLOs1v4UhWtVzO7FyYWO5
-         zXM6l6D62ZWCHtnTznW5U836wVxtDLu9FZr/gYb5jW5cd8UgrmdCnrxstI38zPpS2/yn
-         pxlA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=mt7eSnisz45ZsPSM8T/CyIaaGlSe2WoikJOLdy55U7A=;
-        b=5iwunmFgC/EOSG05PPc9BM3X+tmlmex82eFo2pSZVlOuE1IXEmSL56BkpzgCc+t30v
-         h4YsQjX0W5TGkGPjzmTuqxeaxNWPIkp40ZR3jkmLcvwnYGuz9Kk8Hzb56xxtKtit1QAa
-         84ZJCrdM9UGWlOyfYlSKckIwBC18ao1jodXRej0d5yK+rccRZuBYEwbtOHR5fdK4/9jt
-         rmgs8zq7m6B2Su9DTNiL2lmCVW1dlpQivn/PzXg6213VbgRpPETCC11IArAGZ4DSnexp
-         r/S+9AuojarOHfbdv+QuzA0ZHbssEJFjs63uL4lsmKh00ng4aAZ5kXuu7rGc1aX0BC2+
-         olzA==
-X-Gm-Message-State: AOAM533FSwZF3Q9OYIth4NZiPbBlPvNrFRkli3BJ2b/CzoBda5a0FxbO
-        PNJlyPINXxgyMMW8teP6kM2L2a9wSeVY4g==
-X-Google-Smtp-Source: ABdhPJwgZ60i/G0ismeNtF5i1XGADyqWtULwrLnxxDZzRAOWiL4vfwUyM2ofEsOxrK4Eu2r/fMDnpw==
-X-Received: by 2002:a6b:3e04:: with SMTP id l4mr2698067ioa.19.1634221383852;
-        Thu, 14 Oct 2021 07:23:03 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local ([8.48.134.34])
-        by smtp.googlemail.com with ESMTPSA id l10sm1265457ioq.8.2021.10.14.07.23.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Oct 2021 07:23:03 -0700 (PDT)
-Subject: Re: [PATCH v2 2/4] tcp: md5: Allow MD5SIG_FLAG_IFINDEX with ifindex=0
-To:     Leonard Crestez <cdleonard@gmail.com>,
-        David Ahern <dsahern@kernel.org>,
-        Eric Dumazet <edumazet@google.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
-        Yonghong Song <yhs@fb.com>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        Florian Westphal <fw@strlen.de>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1634107317.git.cdleonard@gmail.com>
- <9eb867a3751ee4213d8019139cf1af42570e9e91.1634107317.git.cdleonard@gmail.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <80d100c7-56d7-f523-f01e-67daaaa73e1c@gmail.com>
-Date:   Thu, 14 Oct 2021 08:23:01 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        Thu, 14 Oct 2021 10:25:41 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1634221415;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=J704+ZpmNiG6G+UV4gpbHRzSAjI0YA9l6NLka/xr/hM=;
+        b=4XDFt/meAmEBqm2bXsSOvDvyeCn7FSTkyTiJP66ZC7rw4BltuOrBvoYSkya9pThKCN7S0Q
+        wUTx/D3oknBz3lXPGIrx6EcIro1ftGRrLmXT8y0JOZ8VxNM/GBGr2JOybwG32kBoB8ejUK
+        brf2Dmzo+n5A9YZzYksICGsf4fScM5MU9z8rr8cZZP91SjbW8bWSPFdfiS/4IuQKLLs7oo
+        tEKtDgTwer/rEFF4WSkjwlHo04Uo32icxKy7gwVbnGElsmyyTFt6eHIcym81Xbi90Q8AF/
+        RuWtmtqkCkjRPClhuORlNsFvcGunfLB3OfVj9phCO56UgPkvbzYXUU3vyO6PWg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1634221415;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=J704+ZpmNiG6G+UV4gpbHRzSAjI0YA9l6NLka/xr/hM=;
+        b=1JT1nsyY6wMrFXLqEVVa6oy17JxPi1RepbaCts8WFUOt/rePuWTvfp7zPLQ+tw1YVmFEaK
+        1DSVP9v4mKpc7BCQ==
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        "Liu, Jing2" <jing2.liu@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     "x86@kernel.org" <x86@kernel.org>,
+        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "Nakajima, Jun" <jun.nakajima@intel.com>,
+        Jing Liu <jing2.liu@linux.intel.com>,
+        "seanjc@google.com" <seanjc@google.com>,
+        Andrew Cooper <andrew.cooper3@citrix.com>
+Subject: Re: [patch 13/31] x86/fpu: Move KVMs FPU swapping to FPU core
+In-Reply-To: <0a5aa9d3-e0d4-266e-5e25-021a5ea9c611@redhat.com>
+References: <871r4p9fyh.ffs@tglx>
+ <ec9c761d-4b5c-71e2-c1fc-d256b6b78c04@redhat.com> <875ytz7q2u.ffs@tglx>
+ <0a5aa9d3-e0d4-266e-5e25-021a5ea9c611@redhat.com>
+Date:   Thu, 14 Oct 2021 16:23:34 +0200
+Message-ID: <87tuhj65y1.ffs@tglx>
 MIME-Version: 1.0
-In-Reply-To: <9eb867a3751ee4213d8019139cf1af42570e9e91.1634107317.git.cdleonard@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/13/21 12:50 AM, Leonard Crestez wrote:
-> Multiple VRFs are generally meant to be "separate" but right now md5
-> keys for the default VRF also affect connections inside VRFs if the IP
-> addresses happen to overlap.
-> 
-> So far the combination of TCP_MD5SIG_IFINDEX with tcpm_ifindex == 0
-> was an error, accept this to mean "key only applies to default VRF".
-> This is what applications using VRFs for traffic separation want.
-> 
-> Signed-off-by: Leonard Crestez <cdleonard@gmail.com>
-> ---
->  include/net/tcp.h   |  5 +++--
->  net/ipv4/tcp_ipv4.c | 26 ++++++++++++++++----------
->  net/ipv6/tcp_ipv6.c | 15 +++++++++------
->  3 files changed, 28 insertions(+), 18 deletions(-)
-> 
+On Thu, Oct 14 2021 at 14:26, Paolo Bonzini wrote:
+> On 14/10/21 14:23, Thomas Gleixner wrote:
+>>> In principle I don't like it very much; it would be nicer to say "you
+>>> enable it for QEMU itself via arch_prctl(ARCH_SET_STATE_ENABLE), and for
+>>> the guests via ioctl(KVM_SET_CPUID2)".  But I can see why you want to
+>>> keep things simple, so it's not a strong objection at all.
+>> Errm.
+>> 
+>>     qemu()
+>>       read_config()
+>>       if (dynamic_features_passthrough())
+>> 	request_permission(feature)             <- prctl(ARCH_SET_STATE_ENABLE)
+>> 
+>>       create_vcpu_threads()
+>>         ....
+>> 
+>>         vcpu_thread()
+>> 	 kvm_ioctl(ENABLE_DYN_FEATURE, feature) <- KVM ioctl
+>> 
+>> That's what I lined out, right?
+>> 
+>
+> I meant prctl for QEMU-in-user-mode vs. ioctl QEMU-in-guest-mode (i.e. 
+> no prctl if only the guest uses it).  But anyway it's just abstract 
+> "beauty", let's stick to simple. :)
 
+It's not about simple. It's about correctness in the first place.
 
-Reviewed-by: David Ahern <dsahern@kernel.org>
+The prctl() is process wide and grants permission. If that permission is
+not granted, e.g. by a seccomp rule, then the vCPU threads cannot use it
+either. We are _not_ making exceptions for KVM just because it's KVM.
+
+Trying to pretend that the usermode thread does not need it is just
+illusion. The kernel representation of that very usermode vCPU thread must
+have a large fpstate. It still can have XFD set, but that's a detail.
+
+So what you are trying to sell me has nothing to do with beauty at all
+except when your definition of beauty originates from a tunnel of horrors.
+
+Thanks,
+
+        tglx
