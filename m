@@ -2,212 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED8DF42D6A9
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 12:01:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29F7242D6AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 12:02:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230030AbhJNKDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 06:03:45 -0400
-Received: from mga07.intel.com ([134.134.136.100]:48349 "EHLO mga07.intel.com"
+        id S230078AbhJNKEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 06:04:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44348 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229468AbhJNKDo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 06:03:44 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10136"; a="291134256"
-X-IronPort-AV: E=Sophos;i="5.85,372,1624345200"; 
-   d="scan'208";a="291134256"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2021 03:01:39 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,372,1624345200"; 
-   d="scan'208";a="571192569"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.76]) ([10.237.72.76])
-  by fmsmga002.fm.intel.com with ESMTP; 14 Oct 2021 03:01:37 -0700
-Subject: Re: [PATCH v2 4/6] mmc: sdhci-pci: Remove dead code (struct
- sdhci_pci_data et al)
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Eric Biggers <ebiggers@google.com>,
-        Raul E Rangel <rrangel@chromium.org>,
-        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org
-References: <20211013201723.52212-1-andriy.shevchenko@linux.intel.com>
- <20211013201723.52212-5-andriy.shevchenko@linux.intel.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <de61480c-0530-626b-fb4d-fc55a9c0501d@intel.com>
-Date:   Thu, 14 Oct 2021 13:01:36 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <20211013201723.52212-5-andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+        id S229468AbhJNKED (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 06:04:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 661C76101E;
+        Thu, 14 Oct 2021 10:01:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634205719;
+        bh=LQXws2m2KNS8oaYOQqJFpw4WI2EHw9lQOWuJTqzRGng=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Dhva+lcu+iWoZoHCwkWrlrYDu7Y9TiJQGtgip+8YkQhgdedHZLJRj8cp9TsdCt5LI
+         u8YOMwMLQO2Wm8AqytfUrPT+6Z5TOLeEfkxclXonNmsC29jG4IcqfNLSOipJePYT8P
+         xgEd/xPuBRiNeqWi6BpniWwfVoGK+AZW/SsxMeDRn/1g60vFkAW+jmwu9Wzouul/It
+         s8QzrruJyeWjXdHL3JxeVEB0uuTrs3vtGAhcigYPnSKWVh7u44y8qWb7Sq560sjniP
+         DPizE6uchDG0u5KeQ8X9EauoT4be8DuE6G1Typ1+Y6MtNtJlTgf0XYGZBCazvZ3K2E
+         uaymTzQJaMz3w==
+Date:   Thu, 14 Oct 2021 19:01:55 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Ananth N Mavinakayanahalli <ananth@linux.ibm.com>,
+        Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 3/8] arm64: kprobes: Record frame pointer with kretprobe
+ instance
+Message-Id: <20211014190155.3fdc7cf7c42e44ee75c43a9d@kernel.org>
+In-Reply-To: <20211014091332.GA13770@C02TD0UTHF1T.local>
+References: <163369609308.636038.15295764725220907794.stgit@devnote2>
+        <163369611948.636038.11552166777773804729.stgit@devnote2>
+        <20211013100126.GA3187@C02TD0UTHF1T.local>
+        <20211014170405.f59d287b30086efe7dd7f4d9@kernel.org>
+        <20211014091332.GA13770@C02TD0UTHF1T.local>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/10/2021 23:17, Andy Shevchenko wrote:
-> The last user of this struct gone couple of releases ago. Besides that
-> there were not so many users of this API for 10+ years: one is implied
-> above Intel Merrifield (added 20160831 by 3976b0380b31, removed 20210211
-> by 4590d98f5a4f), and another is Intel Sunrisepoint (added 20150206 by
-> e1bfad6d936d, removed 20170320 by 51ced59cc02e).
+On Thu, 14 Oct 2021 10:13:32 +0100
+Mark Rutland <mark.rutland@arm.com> wrote:
 
-Please use the standard way of showing commits
-i.e. commit xxxxxxxxxxxx ("blah blah")
+> On Thu, Oct 14, 2021 at 05:04:05PM +0900, Masami Hiramatsu wrote:
+> > On Wed, 13 Oct 2021 11:01:39 +0100
+> > Mark Rutland <mark.rutland@arm.com> wrote:
+> > 
+> > > On Fri, Oct 08, 2021 at 09:28:39PM +0900, Masami Hiramatsu wrote:
+> > > > Record the frame pointer instead of stack address with kretprobe
+> > > > instance as the identifier on the instance list.
+> > > > Since arm64 always enable CONFIG_FRAME_POINTER, we can use the
+> > > > actual frame pointer (x29).
+> > > 
+> > > Just to check, why do we need to use the FP rather than SP? It wasn't
+> > > clear to me if that's necessary later in the series, or if I'm missing
+> > > something here.
+> > 
+> > Actually, this is for finding correct return address from the per-task
+> > kretprobe instruction list (suppose it as a shadow stack) when it will
+> > be searched in stack-backtracing. At that point, the framepointer will
+> > be a reliable key.
+> 
+> Sure, my question was more "why isn't the SP a reliable key?", because both
+> the SP and FP should be balanced at function-entry and function-return
+> time. I'm asking because I think I'm missing a subtlety.
+
+Ah, because SP is not used while unwinding frame. For the kretprobe,
+either FP or SP is OK. But for the stacktrace.c, I can not use SP
+and is easy to change to use FP. :)
+
+So, when we introduce ORC unwinder on arm64, I think I have to reconsider
+using SP based on the configuration.
+
+Thank you,
 
 > 
-> Effectively this is a revert of the commit 52c506f0bc72 ("mmc: sdhci-pci:
-> add platform data").
+> I'm perfectly happy to use the FP even if they're equivalent; I just
+> want to make sure there's not some issue I'm unaware of that could
+> affect unwinding.
 > 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-
-With above change:
-
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-
-> ---
->  drivers/mmc/host/Makefile          |  1 -
->  drivers/mmc/host/sdhci-pci-core.c  | 31 ++++--------------------------
->  drivers/mmc/host/sdhci-pci-data.c  |  6 ------
->  drivers/mmc/host/sdhci-pci.h       |  1 -
->  include/linux/mmc/sdhci-pci-data.h | 18 -----------------
->  5 files changed, 4 insertions(+), 53 deletions(-)
->  delete mode 100644 drivers/mmc/host/sdhci-pci-data.c
->  delete mode 100644 include/linux/mmc/sdhci-pci-data.h
+> Thanks,
+> Mark.
 > 
-> diff --git a/drivers/mmc/host/Makefile b/drivers/mmc/host/Makefile
-> index 14004cc09aaa..ea36d379bd3c 100644
-> --- a/drivers/mmc/host/Makefile
-> +++ b/drivers/mmc/host/Makefile
-> @@ -14,7 +14,6 @@ obj-$(CONFIG_MMC_SDHCI)		+= sdhci.o
->  obj-$(CONFIG_MMC_SDHCI_PCI)	+= sdhci-pci.o
->  sdhci-pci-y			+= sdhci-pci-core.o sdhci-pci-o2micro.o sdhci-pci-arasan.o \
->  				   sdhci-pci-dwc-mshc.o sdhci-pci-gli.o
-> -obj-$(subst m,y,$(CONFIG_MMC_SDHCI_PCI))	+= sdhci-pci-data.o
->  obj-$(CONFIG_MMC_SDHCI_ACPI)	+= sdhci-acpi.o
->  obj-$(CONFIG_MMC_SDHCI_PXAV3)	+= sdhci-pxav3.o
->  obj-$(CONFIG_MMC_SDHCI_PXAV2)	+= sdhci-pxav2.o
-> diff --git a/drivers/mmc/host/sdhci-pci-core.c b/drivers/mmc/host/sdhci-pci-core.c
-> index 19e13dfae593..8938c63b1e77 100644
-> --- a/drivers/mmc/host/sdhci-pci-core.c
-> +++ b/drivers/mmc/host/sdhci-pci-core.c
-> @@ -17,8 +17,6 @@
->  #include <linux/dma-mapping.h>
->  #include <linux/slab.h>
->  #include <linux/device.h>
-> -#include <linux/mmc/host.h>
-> -#include <linux/mmc/mmc.h>
->  #include <linux/scatterlist.h>
->  #include <linux/io.h>
->  #include <linux/iopoll.h>
-> @@ -26,11 +24,13 @@
->  #include <linux/pm_runtime.h>
->  #include <linux/pm_qos.h>
->  #include <linux/debugfs.h>
-> -#include <linux/mmc/slot-gpio.h>
-> -#include <linux/mmc/sdhci-pci-data.h>
->  #include <linux/acpi.h>
->  #include <linux/dmi.h>
->  
-> +#include <linux/mmc/host.h>
-> +#include <linux/mmc/mmc.h>
-> +#include <linux/mmc/slot-gpio.h>
-> +
->  #ifdef CONFIG_X86
->  #include <asm/iosf_mbi.h>
->  #endif
-> @@ -2131,22 +2131,6 @@ static struct sdhci_pci_slot *sdhci_pci_probe_slot(
->  	slot->cd_gpio = -EINVAL;
->  	slot->cd_idx = -1;
->  
-> -	/* Retrieve platform data if there is any */
-> -	if (*sdhci_pci_get_data)
-> -		slot->data = sdhci_pci_get_data(pdev, slotno);
-> -
-> -	if (slot->data) {
-> -		if (slot->data->setup) {
-> -			ret = slot->data->setup(slot->data);
-> -			if (ret) {
-> -				dev_err(&pdev->dev, "platform setup failed\n");
-> -				goto free;
-> -			}
-> -		}
-> -		slot->rst_n_gpio = slot->data->rst_n_gpio;
-> -		slot->cd_gpio = slot->data->cd_gpio;
-> -	}
-> -
->  	host->hw_name = "PCI";
->  	host->ops = chip->fixes && chip->fixes->ops ?
->  		    chip->fixes->ops :
-> @@ -2233,10 +2217,6 @@ static struct sdhci_pci_slot *sdhci_pci_probe_slot(
->  		chip->fixes->remove_slot(slot, 0);
->  
->  cleanup:
-> -	if (slot->data && slot->data->cleanup)
-> -		slot->data->cleanup(slot->data);
-> -
-> -free:
->  	sdhci_free_host(host);
->  
->  	return ERR_PTR(ret);
-> @@ -2259,9 +2239,6 @@ static void sdhci_pci_remove_slot(struct sdhci_pci_slot *slot)
->  	if (slot->chip->fixes && slot->chip->fixes->remove_slot)
->  		slot->chip->fixes->remove_slot(slot, dead);
->  
-> -	if (slot->data && slot->data->cleanup)
-> -		slot->data->cleanup(slot->data);
-> -
->  	sdhci_free_host(slot->host);
->  }
->  
-> diff --git a/drivers/mmc/host/sdhci-pci-data.c b/drivers/mmc/host/sdhci-pci-data.c
-> deleted file mode 100644
-> index 18638fb363d8..000000000000
-> --- a/drivers/mmc/host/sdhci-pci-data.c
-> +++ /dev/null
-> @@ -1,6 +0,0 @@
-> -// SPDX-License-Identifier: GPL-2.0-only
-> -#include <linux/module.h>
-> -#include <linux/mmc/sdhci-pci-data.h>
-> -
-> -struct sdhci_pci_data *(*sdhci_pci_get_data)(struct pci_dev *pdev, int slotno);
-> -EXPORT_SYMBOL_GPL(sdhci_pci_get_data);
-> diff --git a/drivers/mmc/host/sdhci-pci.h b/drivers/mmc/host/sdhci-pci.h
-> index 8f90c4163bb5..15b36cd47860 100644
-> --- a/drivers/mmc/host/sdhci-pci.h
-> +++ b/drivers/mmc/host/sdhci-pci.h
-> @@ -156,7 +156,6 @@ struct sdhci_pci_fixes {
->  struct sdhci_pci_slot {
->  	struct sdhci_pci_chip	*chip;
->  	struct sdhci_host	*host;
-> -	struct sdhci_pci_data	*data;
->  
->  	int			rst_n_gpio;
->  	int			cd_gpio;
-> diff --git a/include/linux/mmc/sdhci-pci-data.h b/include/linux/mmc/sdhci-pci-data.h
-> deleted file mode 100644
-> index 1d42872d22f3..000000000000
-> --- a/include/linux/mmc/sdhci-pci-data.h
-> +++ /dev/null
-> @@ -1,18 +0,0 @@
-> -/* SPDX-License-Identifier: GPL-2.0 */
-> -#ifndef LINUX_MMC_SDHCI_PCI_DATA_H
-> -#define LINUX_MMC_SDHCI_PCI_DATA_H
-> -
-> -struct pci_dev;
-> -
-> -struct sdhci_pci_data {
-> -	struct pci_dev	*pdev;
-> -	int		slotno;
-> -	int		rst_n_gpio; /* Set to -EINVAL if unused */
-> -	int		cd_gpio;    /* Set to -EINVAL if unused */
-> -	int		(*setup)(struct sdhci_pci_data *data);
-> -	void		(*cleanup)(struct sdhci_pci_data *data);
-> -};
-> -
-> -extern struct sdhci_pci_data *(*sdhci_pci_get_data)(struct pci_dev *pdev,
-> -				int slotno);
-> -#endif
-> 
+> > > FWIW, I plan to rework arm64's ftrace bits to use FP for
+> > > HAVE_FUNCTION_GRAPH_RET_ADDR_PTR, so I'm happy to do likewise here.
+> > 
+> > Yes, I think you can use FP for that too.
+> > 
+> > > 
+> > > > Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+> > > 
+> > > Regardless of the above:
+> > > 
+> > > Acked-by: Mark Rutland <mark.rutland@arm.com>
+> > 
+> > Thank you!
+> > 
+> > > 
+> > > Mark.
+> > > 
+> > > > ---
+> > > >  arch/arm64/kernel/probes/kprobes.c |    4 ++--
+> > > >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > > > 
+> > > > diff --git a/arch/arm64/kernel/probes/kprobes.c b/arch/arm64/kernel/probes/kprobes.c
+> > > > index e7ad6da980e8..d9dfa82c1f18 100644
+> > > > --- a/arch/arm64/kernel/probes/kprobes.c
+> > > > +++ b/arch/arm64/kernel/probes/kprobes.c
+> > > > @@ -401,14 +401,14 @@ int __init arch_populate_kprobe_blacklist(void)
+> > > >  
+> > > >  void __kprobes __used *trampoline_probe_handler(struct pt_regs *regs)
+> > > >  {
+> > > > -	return (void *)kretprobe_trampoline_handler(regs, (void *)kernel_stack_pointer(regs));
+> > > > +	return (void *)kretprobe_trampoline_handler(regs, (void *)regs->regs[29]);
+> > > >  }
+> > > >  
+> > > >  void __kprobes arch_prepare_kretprobe(struct kretprobe_instance *ri,
+> > > >  				      struct pt_regs *regs)
+> > > >  {
+> > > >  	ri->ret_addr = (kprobe_opcode_t *)regs->regs[30];
+> > > > -	ri->fp = (void *)kernel_stack_pointer(regs);
+> > > > +	ri->fp = (void *)regs->regs[29];
+> > > >  
+> > > >  	/* replace return addr (x30) with trampoline */
+> > > >  	regs->regs[30] = (long)&__kretprobe_trampoline;
+> > > > 
+> > 
+> > 
+> > -- 
+> > Masami Hiramatsu <mhiramat@kernel.org>
 
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
