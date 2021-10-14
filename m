@@ -2,134 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 173B842E192
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 20:46:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3873C42E182
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 20:41:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232099AbhJNSsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 14:48:20 -0400
-Received: from h03mx16.reliablemail.org ([173.236.90.20]:28231 "EHLO
-        h03mx16.reliablemail.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229823AbhJNSsT (ORCPT
+        id S233988AbhJNSnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 14:43:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23298 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229610AbhJNSnT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 14:48:19 -0400
-X-Greylist: delayed 362 seconds by postgrey-1.27 at vger.kernel.org; Thu, 14 Oct 2021 14:48:19 EDT
-X-Halon-Out: 284e3bd3-2d1e-11ec-a67c-00163c72d6d3
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=grimler.se;
-        s=default; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=xWuSLLDQK3bmsp6fReNTqiPlde9m5Pr1/bVcaTiCQ1w=; b=dntantpBFDGpkCtyt32ftHFMWm
-        4pFENwu8mcYDalt7qYNa7eS3Rz8OTt0FBvEzvptMSAOP/LpjSYbIRuvsmjPraIG+RrSHSmQv7DvPI
-        4DJp/XHniUPdbVMOhY7I0Y3aKrIhAe2dzJRkzQuNNiPO4IuCbqc8+2n7/KAVBcx1rj7SZTuRzQowE
-        SIwL069qyZU9BJ++s1d24/MQxFt/YRxVOhtDjThlTIfc5T3ou1IT88lVam1LFNTWO+AEzD6kClw3C
-        gxouVPvDlUmKhGzDNFFOQ8rTgDjaRvQ+rD4Mua3n8pkNnb25P5/ILhT26/sQ9YUUEt5txxGVJz7i8
-        h5UZnNEA==;
-Date:   Thu, 14 Oct 2021 20:40:05 +0200
-From:   Henrik Grimler <henrik@grimler.se>
-To:     Sam Protsenko <semen.protsenko@linaro.org>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        linux-samsung-soc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/3] soc: samsung: exynos-chipid: Pass revision reg
- offsets
-Message-ID: <YWh5hSvUpdFA85Ct@grimlerstat.localdomain>
-References: <20211014133508.1210-1-semen.protsenko@linaro.org>
+        Thu, 14 Oct 2021 14:43:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634236874;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NkJXoOMIi8EjDQ9VULG+D+wAgGPEco7K9r5xEARHX3o=;
+        b=D2IlXZH/ZQ7G/dzprAAO4GP27lUPfwnKgf+Go7vNM3qFdEMm9yY56oCPF1FiF2vl741hk5
+        rkI9qi2tH10dvRR9M9Tg6urLXp+JmZMjMu3Ku/0oUHlpu7z3eRodgOBCBQy+RMuXPdqfIx
+        R+7lqdmBjor6Ce3XROEfXgBl28/LHEc=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-564-VL3RWl__Ou6AEI2YM9JMAg-1; Thu, 14 Oct 2021 14:41:13 -0400
+X-MC-Unique: VL3RWl__Ou6AEI2YM9JMAg-1
+Received: by mail-ed1-f71.google.com with SMTP id f4-20020a50e084000000b003db585bc274so5955107edl.17
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 11:41:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=NkJXoOMIi8EjDQ9VULG+D+wAgGPEco7K9r5xEARHX3o=;
+        b=Zz8g3PJ3DyS2ymhgxh3r9AZW8TdTTgb3NOwwsySgyXNDwpdOhz36XGl4pMayFbkkhe
+         k7S8iEHMVqMML1UMYsgCx3CdqtbA77rPrub+51u9gcz+mciYvu9HbTiNMsgxZTbtE8xn
+         Xtev0W1hTq3ocD69oYPj8bdCUnsblZQVoUtuA72E0eJSi6ArYyHi61BG7j9a0uflmJoS
+         Yx2x8VNACRofwFAZHYP5NJXCpOl5ovCG9vqeeL/lylcWSzpLHIRyId2z1Vj4KEwI1LTh
+         hdeUmEyFisDpeFIK64RhUJV59XaC/GXeHBnshBZhp82mWF1PAJrnnc4D0y8wK1kdYQTB
+         ipDw==
+X-Gm-Message-State: AOAM5306BBV2vE8A7vwKlcrfYTxg/4LSoNox9nVxwdMBeYuuHlAeoITL
+        mrbFORVUtdAm1tJs96JeMCNlo17rE3tw2SEOyclyKFIJ1sJToijDIYu4NDm/K0srDDlKZtKt1ls
+        6KsS1keWeCPo7SdBgLLH9yPaO
+X-Received: by 2002:a05:6402:848:: with SMTP id b8mr10924812edz.328.1634236871758;
+        Thu, 14 Oct 2021 11:41:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxiJ8B3k49LbOuRzfkEKGACr17b5r1Wg3RTgh4UETO5Oo+dvcHpHQDb72HyHT7ZNXQCEdjvZA==
+X-Received: by 2002:a05:6402:848:: with SMTP id b8mr10924795edz.328.1634236871583;
+        Thu, 14 Oct 2021 11:41:11 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id m6sm2761819ejl.42.2021.10.14.11.41.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Oct 2021 11:41:11 -0700 (PDT)
+Subject: Re: [PATCH] iio: accel: kxcjk-1013: Fix possible memory leak in probe
+ and remove
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Yang Yingliang <yangyingliang@huawei.com>,
+        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        lars@metafoo.de, andriy.shevchenko@linux.intel.com,
+        ddvlad@gmail.com
+References: <20211014035338.3750416-1-yangyingliang@huawei.com>
+ <1a3a5582-51b0-4c58-ad6a-a58025054128@redhat.com>
+ <20211014183833.70b49732@jic23-huawei>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <63921363-44af-1196-9d76-0978da230d67@redhat.com>
+Date:   Thu, 14 Oct 2021 20:41:10 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211014133508.1210-1-semen.protsenko@linaro.org>
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - cpsrv07.misshosting.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - grimler.se
-X-Get-Message-Sender-Via: cpsrv07.misshosting.com: authenticated_id: henrik@grimler.se
-X-Authenticated-Sender: cpsrv07.misshosting.com: henrik@grimler.se
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+In-Reply-To: <20211014183833.70b49732@jic23-huawei>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sam,
+Hi,
 
-On Thu, Oct 14, 2021 at 04:35:06PM +0300, Sam Protsenko wrote:
-> Old Exynos SoCs have both Product ID and Revision ID in one single
-> register, while new SoCs tend to have two separate registers for those
-> IDs. Implement handling of both cases by passing Revision ID register
-> offsets in driver data.
+On 10/14/21 7:38 PM, Jonathan Cameron wrote:
+> On Thu, 14 Oct 2021 10:20:34 +0200
+> Hans de Goede <hdegoede@redhat.com> wrote:
 > 
-> Previously existing macros for Exynos4210 (removed in this patch) were
-> incorrect:
+>> Hi,
+>>
+>> On 10/14/21 5:53 AM, Yang Yingliang wrote:
+>>> When ACPI type is ACPI_SMO8500, the data->dready_trig will not be set, the
+>>> memory allocated by iio_triggered_buffer_setup() will not be freed, and cause
+>>> memory leak as follows:
+>>>
+>>> unreferenced object 0xffff888009551400 (size 512):
+>>>   comm "i2c-SMO8500-125", pid 911, jiffies 4294911787 (age 83.852s)
+>>>   hex dump (first 32 bytes):
+>>>     02 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>>>     00 00 00 00 00 00 00 00 20 e2 e5 c0 ff ff ff ff  ........ .......
+>>>   backtrace:
+>>>     [<0000000041ce75ee>] kmem_cache_alloc_trace+0x16d/0x360
+>>>     [<000000000aeb17b0>] iio_kfifo_allocate+0x41/0x130 [kfifo_buf]
+>>>     [<000000004b40c1f5>] iio_triggered_buffer_setup_ext+0x2c/0x210 [industrialio_triggered_buffer]
+>>>     [<000000004375b15f>] kxcjk1013_probe+0x10c3/0x1d81 [kxcjk_1013]
+>>>     [<0000000020115b9a>] i2c_device_probe+0xa31/0xbe0
+>>>     [<00000000d9f581a6>] really_probe+0x299/0xc30
+>>>     [<00000000c6c16cde>] __driver_probe_device+0x357/0x500
+>>>     [<00000000909852a1>] driver_probe_device+0x4e/0x140
+>>>     [<000000008419ba53>] __device_attach_driver+0x257/0x340
+>>>     [<00000000533bb466>] bus_for_each_drv+0x166/0x1e0
+>>>     [<000000005bf45d75>] __device_attach+0x272/0x420
+>>>     [<0000000075220311>] bus_probe_device+0x1eb/0x2a0
+>>>     [<0000000015587e85>] device_add+0xbf0/0x1f90
+>>>     [<0000000086901b9e>] i2c_new_client_device+0x622/0xb20
+>>>     [<000000000865ca18>] new_device_store+0x1fa/0x420
+>>>     [<0000000059a3d183>] dev_attr_store+0x58/0x80
+>>>
+>>> Fix it by remove data->dready_trig condition in probe and remove.
+>>>
+>>> Reported-by: Hulk Robot <hulkci@huawei.com>
+>>> Fixes: a25691c1f967 ("iio: accel: kxcjk1013: allow using an external trigger")
+>>> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>  
+>>
+>> Hmm, wouldn't the right fix be to also move the
+>> iio_triggered_buffer_setup() call to inside the:
+>>
+>> 	if (client->irq > 0 && data->acpi_type != ACPI_SMO8500) {
+>> 	}
+>>
+>> block ?
+>>
+>> Jonathan (jic23) can you take a look at this, to me it seems that having
+>> a triggered buffer allocated without any triggers is not useful ?
 > 
->     #define EXYNOS_SUBREV_MASK         (0xf << 4)
->     #define EXYNOS_MAINREV_MASK        (0xf << 0)
+> It can use another trigger not supplied by this particular device.
+> e.g. sysfs or hrtimer trigger.  This is common for cases where
+> we may or may not have an irq wired and the validate_* callbacks are
+> not provided (which would indicate we had to use the device's own trigger).
+
+Ok, thank you for clarifying this.
+
+With that resolved, this patch looks good to me:
+
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+
+Regards,
+
+Hans
+
+
+>>> ---
+>>>  drivers/iio/accel/kxcjk-1013.c | 5 ++---
+>>>  1 file changed, 2 insertions(+), 3 deletions(-)
+>>>
+>>> diff --git a/drivers/iio/accel/kxcjk-1013.c b/drivers/iio/accel/kxcjk-1013.c
+>>> index a51fdd3c9b5b..24c9387c2968 100644
+>>> --- a/drivers/iio/accel/kxcjk-1013.c
+>>> +++ b/drivers/iio/accel/kxcjk-1013.c
+>>> @@ -1595,8 +1595,7 @@ static int kxcjk1013_probe(struct i2c_client *client,
+>>>  	return 0;
+>>>  
+>>>  err_buffer_cleanup:
+>>> -	if (data->dready_trig)
+>>> -		iio_triggered_buffer_cleanup(indio_dev);
+>>> +	iio_triggered_buffer_cleanup(indio_dev);
+>>>  err_trigger_unregister:
+>>>  	if (data->dready_trig)
+>>>  		iio_trigger_unregister(data->dready_trig);
+>>> @@ -1618,8 +1617,8 @@ static int kxcjk1013_remove(struct i2c_client *client)
+>>>  	pm_runtime_disable(&client->dev);
+>>>  	pm_runtime_set_suspended(&client->dev);
+>>>  
+>>> +	iio_triggered_buffer_cleanup(indio_dev);
+>>>  	if (data->dready_trig) {
+>>> -		iio_triggered_buffer_cleanup(indio_dev);
+>>>  		iio_trigger_unregister(data->dready_trig);
+>>>  		iio_trigger_unregister(data->motion_trig);
+>>>  	}
+>>>   
+>>
 > 
-> Actual format of PRO_ID register in Exynos4210 (offset 0x0):
-> 
->     [31:12] Product ID
->       [9:8] Package information
->       [7:4] Main Revision Number
->       [3:0] Sub Revision Number
-> 
-> This patch doesn't change the behavior on existing platforms, so
-> '/sys/devices/soc0/revision' will show the same string as before.
-> 
-> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
-> ---
-> Changes in v2:
->   - Renamed *_rev_bit fields in 'struct exynos_chipid_variant' to
->     *_rev_shift
->   - Renamed EXYNOS_REV_PART_LEN to EXYNOS_REV_PART_MASK
->   - Renamed EXYNOS_REV_PART_OFF to EXYNOS_REV_PART_SHIFT
-> 
-> Changes in v3:
->   - Rebased on top of krzk/for-next tree
->   - Fixed wrong *_rev_shift values in exynos4210_chipid_drv_data
->   - Implemented reading the register only once in case when both
->     Product ID and Revision ID are stored in the same register
->   - Tested all possible cases by emulating read register values
->   - Provided more detailed explanation in commit message
-> 
->  drivers/soc/samsung/exynos-chipid.c       | 69 +++++++++++++++++++----
->  include/linux/soc/samsung/exynos-chipid.h |  6 +-
->  2 files changed, 60 insertions(+), 15 deletions(-)
-> 
 
-I tested this on exynos4412-i9300 and an exynos5420 tablet that is not
-yet in mainline.  /sys/devices/soc0/* looks identical, I have:
-
-$ cat /sys/devices/soc0/{family,revision,soc_id}
-Samsung Exynos
-11
-EXYNOS4412
-
-and
-
-$ cat /sys/devices/soc0/{family,revision,soc_id}
-Samsung Exynos
-20
-EXYNOS5420
-
-before and after these patches.  The printed PRO_ID in dmesg changed
-though, before I had:
-
-[    0.894683] soc soc0: Exynos: CPU[EXYNOS4412] PRO_ID[0xe4412211] REV[0x11] Detected
-
-[    4.964215] soc soc0: Exynos: CPU[EXYNOS5420] PRO_ID[0xe5420020] REV[0x20] Detected
-
-But after it looks like package information and revision is missing
-from the reported PRO_ID:
-
-[    0.885515] soc soc0: Exynos: CPU[EXYNOS4412] PRO_ID[0xe4412000] REV[0x11] Detected
-
-[    4.965560] soc soc0: Exynos: CPU[EXYNOS5420] PRO_ID[0xe5420000] REV[0x20] Detected
-
-Best regards,
-Henrik Grimler
