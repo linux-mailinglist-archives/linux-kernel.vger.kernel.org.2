@@ -2,78 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C3B642D7B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 13:05:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3261D42D7BB
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 13:06:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230350AbhJNLH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 07:07:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49418 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230080AbhJNLHZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 07:07:25 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B597C061570;
-        Thu, 14 Oct 2021 04:05:20 -0700 (PDT)
-Received: from localhost.localdomain (unknown [IPv6:2401:4900:1c20:48dc:2024:938f:96e4:4a08])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: shreeya)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 4EF181F44A4A;
-        Thu, 14 Oct 2021 12:05:18 +0100 (BST)
-From:   Shreeya Patel <shreeya.patel@collabora.com>
-To:     linus.walleij@linaro.org, bgolaszewski@baylibre.com, wsa@kernel.org
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-i2c@vger.kernel.org,
-        Shreeya Patel <shreeya.patel@collabora.com>
-Subject: [PATCH] gpio: Return EPROBE_DEFER if gc->to_irq is NULL
-Date:   Thu, 14 Oct 2021 16:34:37 +0530
-Message-Id: <20211014110437.64764-1-shreeya.patel@collabora.com>
-X-Mailer: git-send-email 2.30.2
+        id S230338AbhJNLI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 07:08:29 -0400
+Received: from mx24.baidu.com ([111.206.215.185]:40316 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230080AbhJNLI2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 07:08:28 -0400
+Received: from BC-Mail-HQEX01.internal.baidu.com (unknown [172.31.51.57])
+        by Forcepoint Email with ESMTPS id 4D3DF440CDEFBF783E64;
+        Thu, 14 Oct 2021 19:06:21 +0800 (CST)
+Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
+ BC-Mail-HQEX01.internal.baidu.com (172.31.51.57) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2242.12; Thu, 14 Oct 2021 19:06:20 +0800
+Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.14; Thu, 14 Oct 2021 19:06:20 +0800
+From:   Cai Huoqing <caihuoqing@baidu.com>
+To:     <vigneshr@ti.com>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
+        <robh+dt@kernel.org>
+CC:     <linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Cai Huoqing <caihuoqing@baidu.com>
+Subject: [PATCH] MAINTAINERS: Update the devicetree documentation path of hyperbus
+Date:   Thu, 14 Oct 2021 19:06:14 +0800
+Message-ID: <20211014110614.3320-1-caihuoqing@baidu.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [172.31.63.8]
+X-ClientProxiedBy: BC-Mail-Ex16.internal.baidu.com (172.31.51.56) To
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We are racing the registering of .to_irq when probing the
-i2c driver. This results in random failure of touchscreen
-devices.
+Change the devicetree documentation path
+to "Documentation/devicetree/bindings/mtd/ti,am654-hbmc.yaml"
+since 'cypress,hyperflash.txt' and 'ti,am654-hbmc.txt' have
+been converted to 'ti,am654-hbmc.yaml'.
 
-Following errors could be seen in dmesg logs when gc->to_irq is NULL
-
-[2.101857] i2c_hid i2c-FTS3528:00: HID over i2c has not been provided an Int IRQ
-[2.101953] i2c_hid: probe of i2c-FTS3528:00 failed with error -22
-
-To avoid this situation, defer probing until to_irq is registered.
-
-This issue has been reported many times in past and people have been
-using workarounds like changing the pinctrl_amd to built-in instead
-of loading it as a module or by adding a softdep for pinctrl_amd into
-the config file.
-
-References :-
-https://bugzilla.kernel.org/show_bug.cgi?id=209413
-https://github.com/Syniurge/i2c-amd-mp2/issues/3
-
-Signed-off-by: Shreeya Patel <shreeya.patel@collabora.com>
+Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
 ---
- drivers/gpio/gpiolib.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+*resend +Cc others.
 
-diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-index 27c07108496d..fc0ba85f4c45 100644
---- a/drivers/gpio/gpiolib.c
-+++ b/drivers/gpio/gpiolib.c
-@@ -3084,7 +3084,7 @@ int gpiod_to_irq(const struct gpio_desc *desc)
- 
- 		return retirq;
- 	}
--	return -ENXIO;
-+	return -EPROBE_DEFER;
- }
- EXPORT_SYMBOL_GPL(gpiod_to_irq);
+ MAINTAINERS | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 9b255cf4fca8..48949cd7f898 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -8783,8 +8783,7 @@ S:	Supported
+ Q:	http://patchwork.ozlabs.org/project/linux-mtd/list/
+ C:	irc://irc.oftc.net/mtd
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git cfi/next
+-F:	Documentation/devicetree/bindings/mtd/cypress,hyperflash.txt
+-F:	Documentation/devicetree/bindings/mtd/ti,am654-hbmc.txt
++F:	Documentation/devicetree/bindings/mtd/ti,am654-hbmc.yaml
+ F:	drivers/mtd/hyperbus/
+ F:	include/linux/mtd/hyperbus.h
  
 -- 
-2.30.2
+2.25.1
 
