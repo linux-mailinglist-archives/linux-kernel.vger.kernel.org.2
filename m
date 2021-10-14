@@ -2,119 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 701B042D47B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 10:04:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F42742D47F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 10:04:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230177AbhJNIGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 04:06:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57436 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229683AbhJNIGO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 04:06:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8AED56109F;
-        Thu, 14 Oct 2021 08:04:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634198649;
-        bh=/2Ta/wDen03L0KkHA87O82IWwD4jAmU4tUZu8REqEvg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=oysSGWC4q9ryuxZG6VqTW4RRvQeDkRIjZYKM27W+uft2kfcRDrOlfya4/m66x1FKI
-         DdIuDcszdrIaUlfrrGwqxMjSDXpxJhkAGPKmfNqZq75tc989mHRqX0s5NZqfEMgxMG
-         2mLxgmmk7EqR1WA9S6KCW9VbfiHl75aN3vL/OeqdgPPpUJNZ1Oa6hQ+WTE/6O157x5
-         dhKPqEZ1cQcABwCLwfotjClnwclrXK5JFOpeWg94OHHvwRtepGOhjsaAyE2m/qcat/
-         SOruQbUyzCVtlRalX7V274mBz43OMQMAc3Vps9/lPUI2MhDVinVC+esFITUOEY+m5h
-         oa6G9pZSdShuA==
-Date:   Thu, 14 Oct 2021 17:04:05 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Ananth N Mavinakayanahalli <ananth@linux.ibm.com>,
-        Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
+        id S230172AbhJNIHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 04:07:00 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:57648
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230082AbhJNIG7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 04:06:59 -0400
+Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com [209.85.167.72])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 63F813FFE7
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 08:04:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1634198694;
+        bh=ojVn2ZVbkcgXLj7A1DRlVPqyw/Wvd+lGjqh+OPrsbYg=;
+        h=To:Cc:References:From:Subject:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=LM/6pF73JhqIwQSa7AcT6jtzjMmNOD5Mll19fFF+OhB8Qdkernr4Yq92BMmVUZ5n6
+         BSWAxFv2dbyfacaS4+Tm2mU1MpO2uQtGazMfIH72qQg1DY5gGU8B/k+cPiqnAevR6d
+         N2dYy8awEiU+RNrkvDWXW4c4wC1uVsmXet0F6UdZTEcJ5IYU51eGoI2deGaPS+2Wh2
+         CW8hGUeYqW2ulImFdZcBPs0NOA4hv4s6jrsEtwfjI6Ilr+6vvu89sJBt1Vr32uTlQX
+         S/9uo2vB1v26L2oKI2DliFzKWqiYkMYVYfVqrDFJu7s7Rk/W5De67SF0nsyUR0A/49
+         xl0tqk0RXA/EA==
+Received: by mail-lf1-f72.google.com with SMTP id x33-20020a0565123fa100b003fcfd99073dso3831409lfa.6
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 01:04:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ojVn2ZVbkcgXLj7A1DRlVPqyw/Wvd+lGjqh+OPrsbYg=;
+        b=OHq0oGQwr0IFI8ly0EJAssVtqXIHp+Gso/e13mCVH/wXSaI5PAWdzOUgnO9e+AdI6b
+         PbOKdcCfH11s5p0FUipzGzQo+gV+C+kbooXUUmMog/xTZ5oZPzWjKfS3/u3blNgmO3FO
+         MhgcwRGxdSMHFAbcLwzyRSrQ5nw65yERIBWZ7Hq5zk0gKkH28Iu4Yqn5rk/DPRgME4Bh
+         m1LuWQTtXS2Lxm0Q0kIa3QSkqjepmhbEDShU2wORfl1e9RsdwyusPddx2rqzzhpgdsXp
+         16ka4q8PWXxi10jzCdxk34Bi0vRd7D1RJUtI4CIIJ8IbpD87hlC6vqqQYQXLtMrDmo6k
+         qMrw==
+X-Gm-Message-State: AOAM531jw9fndRs466YvJzPa68BLYjXg6XUjz2nzzSrE9efBitT2+KtN
+        a4IGWiF7DRnbq8NBrbApgXmMZkn6L8M1amjAdRw9PxNjtndfUE0tHvrUq7e0St7cIfK/Uupf6Kg
+        mN0UKldJIKgCVnHLlg4Kldvx5Efawi0sGkUuaevKuCA==
+X-Received: by 2002:a05:651c:907:: with SMTP id e7mr4525989ljq.457.1634198693278;
+        Thu, 14 Oct 2021 01:04:53 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw+fscirp5GuIbG7uOPrahokzBv9+3ns/V49MlZBkkCWBoqQbGM80foMTQ19Sle1sD5Y+4ZXA==
+X-Received: by 2002:a05:651c:907:: with SMTP id e7mr4525955ljq.457.1634198692964;
+        Thu, 14 Oct 2021 01:04:52 -0700 (PDT)
+Received: from [192.168.3.161] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
+        by smtp.gmail.com with ESMTPSA id z12sm161733lfs.101.2021.10.14.01.04.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Oct 2021 01:04:52 -0700 (PDT)
+To:     Hector Martin <marcan@marcan.st>,
         linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 3/8] arm64: kprobes: Record frame pointer with kretprobe
- instance
-Message-Id: <20211014170405.f59d287b30086efe7dd7f4d9@kernel.org>
-In-Reply-To: <20211013100126.GA3187@C02TD0UTHF1T.local>
-References: <163369609308.636038.15295764725220907794.stgit@devnote2>
-        <163369611948.636038.11552166777773804729.stgit@devnote2>
-        <20211013100126.GA3187@C02TD0UTHF1T.local>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Cc:     Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Sven Peter <sven@svenpeter.dev>, Marc Zyngier <maz@kernel.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20211011165707.138157-1-marcan@marcan.st>
+ <20211011165707.138157-7-marcan@marcan.st>
+ <a9f6898d-bd76-b94e-52fc-98e9da1a04bd@canonical.com>
+ <2a6f14e5-fbc9-4b9a-9378-a4b5200bc3fb@marcan.st>
+ <f81467d4-74b2-176d-06bf-f04e073efce4@canonical.com>
+ <00925242-b837-d75b-3655-536d45dcd4d2@marcan.st>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Subject: Re: [RFC PATCH 6/9] memory: apple: Add apple-mcc driver to manage MCC
+ perf in Apple SoCs
+Message-ID: <410c0ccb-68d3-478b-2b5b-9165890e614a@canonical.com>
+Date:   Thu, 14 Oct 2021 10:04:51 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <00925242-b837-d75b-3655-536d45dcd4d2@marcan.st>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Oct 2021 11:01:39 +0100
-Mark Rutland <mark.rutland@arm.com> wrote:
+On 14/10/2021 09:52, Hector Martin wrote:
+> On 14/10/2021 16.36, Krzysztof Kozlowski wrote:
 
-> On Fri, Oct 08, 2021 at 09:28:39PM +0900, Masami Hiramatsu wrote:
-> > Record the frame pointer instead of stack address with kretprobe
-> > instance as the identifier on the instance list.
-> > Since arm64 always enable CONFIG_FRAME_POINTER, we can use the
-> > actual frame pointer (x29).
-> 
-> Just to check, why do we need to use the FP rather than SP? It wasn't
-> clear to me if that's necessary later in the series, or if I'm missing
-> something here.
-
-Actually, this is for finding correct return address from the per-task
-kretprobe instruction list (suppose it as a shadow stack) when it will
-be searched in stack-backtracing. At that point, the framepointer will
-be a reliable key.
+(...)
 
 > 
-> FWIW, I plan to rework arm64's ftrace bits to use FP for
-> HAVE_FUNCTION_GRAPH_RET_ADDR_PTR, so I'm happy to do likewise here.
+>>> Ah, I didn't realize that was a valid option for MODULE_LICENSE. I guess
+>>> anything containing "GPL" works with EXPORT_SYMBOL_GPL?
+>>
+>> I don't think exporting symbols is related to how you license your code.
+> 
+> It is; only modules with a GPL-compatible MODULE_LICENSE get to use 
+> symbols exported via EXPORT_SYMBOL_GPL.
 
-Yes, I think you can use FP for that too.
+Although there might be such correlation but it's not a rule. You can
+have a GPL module exporting symbols without GPL requirement
+(EXPORT_SYMBOLS). You can have a GPL+MIT module exporting symbols as
+GPL. Obviously you cannot have a non-GPL module, as we do not accept
+these and there is no such choice.
+
+So answering your question that "GPL" works with EXPORT_SYMBOL_GPL -
+everything is GPL but it works with both EXPORT_SYMBOL and
+EXPORT_SYMBOL_GPL.
 
 > 
-> > Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-> 
-> Regardless of the above:
-> 
-> Acked-by: Mark Rutland <mark.rutland@arm.com>
+> See kernel/module.c for the symbol lookup logic and 
+> include/linux/license.h for the logic to check the string (seems like 
+> "Dual MIT/GPL" is explicitly whitelisted there).
 
-Thank you!
+Not related to export symbol. It is used for determining the tainted
+kernel via other licenses.
 
 > 
-> Mark.
+> Of course, this is a futile effort, as ~every time I see a proprietary 
+> module in some embedded device, it either falsely declares itself to be 
+> GPL, or they have a shim module that re-exports GPL symbols as non-GPL.
 > 
-> > ---
-> >  arch/arm64/kernel/probes/kprobes.c |    4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/arch/arm64/kernel/probes/kprobes.c b/arch/arm64/kernel/probes/kprobes.c
-> > index e7ad6da980e8..d9dfa82c1f18 100644
-> > --- a/arch/arm64/kernel/probes/kprobes.c
-> > +++ b/arch/arm64/kernel/probes/kprobes.c
-> > @@ -401,14 +401,14 @@ int __init arch_populate_kprobe_blacklist(void)
-> >  
-> >  void __kprobes __used *trampoline_probe_handler(struct pt_regs *regs)
-> >  {
-> > -	return (void *)kretprobe_trampoline_handler(regs, (void *)kernel_stack_pointer(regs));
-> > +	return (void *)kretprobe_trampoline_handler(regs, (void *)regs->regs[29]);
-> >  }
-> >  
-> >  void __kprobes arch_prepare_kretprobe(struct kretprobe_instance *ri,
-> >  				      struct pt_regs *regs)
-> >  {
-> >  	ri->ret_addr = (kprobe_opcode_t *)regs->regs[30];
-> > -	ri->fp = (void *)kernel_stack_pointer(regs);
-> > +	ri->fp = (void *)regs->regs[29];
-> >  
-> >  	/* replace return addr (x30) with trampoline */
-> >  	regs->regs[30] = (long)&__kretprobe_trampoline;
-> > 
+
+This is being removed soon (or already).
 
 
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Best regards,
+Krzysztof
