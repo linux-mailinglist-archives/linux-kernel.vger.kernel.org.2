@@ -2,182 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D257142D6DB
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 12:17:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C3E842D6E1
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 12:21:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230094AbhJNKTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 06:19:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55234 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229468AbhJNKTF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 06:19:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F1CC1610E8;
-        Thu, 14 Oct 2021 10:16:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634206620;
-        bh=HkGc1jYcLiDfFRVHfe07q93sWwpARViWgqIARlFWxr8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NhOD9vih8DjT4o3RqENEgZa2uUhL7ycjVTHWY+vNF0zihZkE+PD5atC+DOswPfZ89
-         Ts4Gc0mIcD/LSi8HdCoGA0JGi3D4cmCkiEc8Vkx5pqw0ZKAIBPS6DwoZx0vsAFNlKO
-         FWMC6ZkWlLFNI6JyelKUkpfTBcxSuR07lAmNPwb8/FIbmHAz5D03opGf2sWkQGhxVo
-         mtOcbWoRS7txN6hG4FMaFyqao3cVoCIZFELjIX5jXHKfeSAcWXbijtKyau6IguEaWY
-         Li0tO/gnho+6vDTmYUbZCmEeqxbcONYEfqAiomU6pLYLpLxMED7ca6h0r1UsSL07so
-         BeaxbnasP4H2A==
-Date:   Thu, 14 Oct 2021 13:16:50 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     kernel test robot <oliver.sang@intel.com>,
-        0day robot <lkp@intel.com>, Dmitry Vyukov <dvyukov@google.com>,
-        Marco Elver <elver@google.com>,
-        Vijayanand Jitta <vjitta@codeaurora.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Oliver Glitta <glittao@gmail.com>,
-        Imran Khan <imran.f.khan@oracle.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        kasan-dev@googlegroups.com
-Subject: Re: [lib/stackdepot] 1cd8ce52c5:
- BUG:unable_to_handle_page_fault_for_address
-Message-ID: <YWgDkjqtJO4e3DM6@kernel.org>
-References: <20211014085450.GC18719@xsang-OptiPlex-9020>
- <4d99add1-5cf7-c608-a131-18959b85e5dc@suse.cz>
+        id S230018AbhJNKXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 06:23:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39264 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229912AbhJNKX3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 06:23:29 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABC24C061570
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 03:21:24 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1634206882;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1vPk+5UQWcz+Ur20Qebsfj4oslp4ZyN/IcZoWC4lt2Q=;
+        b=4xLreLgKs9v3TiKPLjl9x9Lj9wQEZ33BP+7J+BeGO1WjbwCY6FRnLNpaT+4sgq4nWkN+n3
+        vuPD66bu0sQrr7VMWgy3kRznbictPuR1TMKOd/mrVAm/tx1kFZYEB60JHeOeF616Ul9RTc
+        I877oROxa8yRGq8Dfejusi9WuQthX8IOO9YCxlOa+D/zzO4F7z3qxYLg4j8bcw8qLpnRCr
+        k2JGKZy+VmbFW7U658037+PJFYawtQaVKrrZjiefvmh0IbJ3HUMNqbKh6ljHYUOS1PYpxq
+        fT++mYDNc6wx4Fg4ogVUv82Sh78yEnwH+ZJwtDIcd69Hg9ffSQJBRjsO2Yvhyg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1634206882;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1vPk+5UQWcz+Ur20Qebsfj4oslp4ZyN/IcZoWC4lt2Q=;
+        b=UtZzHVaohfIVm/F7sal/oMI44AbGPgrVWb4hHFNdv6s6vRbUntedcL81fDTtolALvBpgSo
+        hyzbsX0yeH7Hl7DQ==
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
+        VMware Inc <pv-drivers@vmware.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v10 08/11] x86/tdx: Wire up KVM hypercalls
+In-Reply-To: <20211009053747.1694419-9-sathyanarayanan.kuppuswamy@linux.intel.com>
+References: <20211009053747.1694419-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20211009053747.1694419-9-sathyanarayanan.kuppuswamy@linux.intel.com>
+Date:   Thu, 14 Oct 2021 12:21:21 +0200
+Message-ID: <87ilxz7vq6.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4d99add1-5cf7-c608-a131-18959b85e5dc@suse.cz>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 11:33:03AM +0200, Vlastimil Babka wrote:
-> On 10/14/21 10:54, kernel test robot wrote:
-> > 
-> > 
-> > Greeting,
-> > 
-> > FYI, we noticed the following commit (built with gcc-9):
-> > 
-> > commit: 1cd8ce52c520c26c513899fb5aee42b8e5f60d0d ("[PATCH v2] lib/stackdepot: allow optional init and stack_table allocation by kvmalloc()")
-> > url: https://github.com/0day-ci/linux/commits/Vlastimil-Babka/lib-stackdepot-allow-optional-init-and-stack_table-allocation-by-kvmalloc/20211012-170816
-> > base: git://anongit.freedesktop.org/drm-intel for-linux-next
-> > 
-> > in testcase: rcutorture
-> > version: 
-> > with following parameters:
-> > 
-> > 	runtime: 300s
-> > 	test: cpuhotplug
-> > 	torture_type: srcud
-> > 
-> > test-description: rcutorture is rcutorture kernel module load/unload test.
-> > test-url: https://www.kernel.org/doc/Documentation/RCU/torture.txt
-> > 
-> > 
-> > on test machine: qemu-system-i386 -enable-kvm -cpu SandyBridge -smp 2 -m 4G
-> > 
-> > caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
-> > 
-> > 
-> > +---------------------------------------------+------------+------------+
-> > |                                             | a94a6d76c9 | 1cd8ce52c5 |
-> > +---------------------------------------------+------------+------------+
-> > | boot_successes                              | 30         | 0          |
-> > | boot_failures                               | 0          | 7          |
-> > | BUG:kernel_NULL_pointer_dereference,address | 0          | 2          |
-> > | Oops:#[##]                                  | 0          | 7          |
-> > | EIP:stack_depot_save                        | 0          | 7          |
-> > | Kernel_panic-not_syncing:Fatal_exception    | 0          | 7          |
-> > | BUG:unable_to_handle_page_fault_for_address | 0          | 5          |
-> > +---------------------------------------------+------------+------------+
-> > 
-> > 
-> > If you fix the issue, kindly add following tag
-> > Reported-by: kernel test robot <oliver.sang@intel.com>
-> > 
-> > 
-> > 
-> > [  319.147926][  T259] BUG: unable to handle page fault for address: 0ec74110
-> > [  319.149309][  T259] #PF: supervisor read access in kernel mode
-> > [  319.150362][  T259] #PF: error_code(0x0000) - not-present page
-> > [  319.151372][  T259] *pde = 00000000
-> > [  319.151964][  T259] Oops: 0000 [#1] SMP
-> > [  319.152617][  T259] CPU: 0 PID: 259 Comm: systemd-rc-loca Not tainted 5.15.0-rc1-00270-g1cd8ce52c520 #1
-> > [  319.154514][  T259] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
-> > [  319.156200][  T259] EIP: stack_depot_save+0x12a/0x4d0
-> 
-> 
-> Cc Mike Rapoport, looks like:
-> - memblock_alloc() should have failed (I think, because page allocator
->   already took over?), but didn't. So apparently we got some area that wasn't
->   fully mapped.
-> - using slab_is_available() is not accurate enough to detect when to use
-> memblock or page allocator (kvmalloc in case of my patch). I have used it
-> because memblock_alloc_internal() checks the same condition to issue a warning.
-> 
-> Relevant part of dmesg.xz that was attached:
-> [    1.589075][    T0] Dentry cache hash table entries: 524288 (order: 9, 2097152 bytes, linear)
-> [    1.592396][    T0] Inode-cache hash table entries: 262144 (order: 8, 1048576 bytes, linear)
-> [    2.916844][    T0] allocated 31496920 bytes of page_ext
-> 
-> - this means we were allocating from page allocator by alloc_pages_exact_nid() already
-> 
-> [    2.918197][    T0] mem auto-init: stack:off, heap alloc:off, heap free:on
-> [    2.919683][    T0] mem auto-init: clearing system memory may take some time...
-> [    2.921239][    T0] Initializing HighMem for node 0 (000b67fe:000bffe0)
-> [   23.023619][    T0] Initializing Movable for node 0 (00000000:00000000)
-> [  245.194520][    T0] Checking if this processor honours the WP bit even in supervisor mode...Ok.
-> [  245.196847][    T0] Memory: 2914460K/3145208K available (20645K kernel code, 5953K rwdata, 12624K rodata, 760K init, 8112K bss, 230748K reserved, 0K cma-reserved, 155528K highmem)
-> [  245.200521][    T0] Stack Depot allocating hash table with memblock_alloc
-> 
-> - initializing stack depot as part of initializing page_owner, uses memblock_alloc()
->   because slab_is_available() is still false
-> 
-> [  245.212005][    T0] Node 0, zone   Normal: page owner found early allocated 0 pages
-> [  245.213867][    T0] Node 0, zone  HighMem: page owner found early allocated 0 pages
-> [  245.216126][    T0] SLUB: HWalign=64, Order=0-3, MinObjects=0, CPUs=2, Nodes=1
-> 
-> - printed by slub's kmem_cache_init() after create_kmalloc_caches() setting slab_state
->   to UP, making slab_is_available() true, but too late
-> 
-> In my local testing of the patch, when stackdepot was initialized through
-> page owner init, it was using kvmalloc() so slab_is_available() was true.
-> Looks like the exact order of slab vs page_owner alloc is non-deterministic,
-> could be arch-dependent or just random ordering of init calls. A wrong order
-> will exploit the apparent fact that slab_is_available() is not a good
-> indicator of using memblock vs page allocator, and we would need a better one.
-> Thoughts?
+On Fri, Oct 08 2021 at 22:37, Kuppuswamy Sathyanarayanan wrote:
+> From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+>  
+>  #ifdef CONFIG_KVM_GUEST
+> @@ -32,6 +34,10 @@ static inline bool kvm_check_and_clear_guest_paused(void)
+>  static inline long kvm_hypercall0(unsigned int nr)
+>  {
+>  	long ret;
+> +
+> +	if (cc_platform_has(CC_ATTR_GUEST_TDX))
+> +		return tdx_kvm_hypercall(nr, 0, 0, 0, 0);
 
-The order of slab vs page_owner is deterministic, but it is different for
-FLATMEM and SPARSEMEM. And page_ext_init_flatmem_late() that initializes
-page_ext for FLATMEM is called exactly between buddy and slab setup:
+So if TDX is not enabled in Kconfig this cannot be optimized out unless
+CC_PLATFORM is disabled as well. But what's worse is that every
+hypercall needs to call into cc_platform_has().
 
-static void __init mm_init(void)
-{
-	...
+None of the hypercalls is used before the early TDX detection. So we can
+simply use
 
-	mem_init();
-	mem_init_print_info();
-	/* page_owner must be initialized after buddy is ready */
-	page_ext_init_flatmem_late();
-	kmem_cache_init();
+       if (cpu_feature_enabled(X86_FEATURE_TDX_GUEST))
 
-	...
-}
+here, right? Then you add X86_FEATURE_TDX_GUEST to the disabled feature
+bits correctly and all of the above is solved.
 
-I've stared for a while at page_ext init and it seems that the
-page_ext_init_flatmem_late() can be simply dropped because there is anyway
-a call to invoke_init_callbacks() in page_ext_init() that is called much
-later in the boot process.
+Hmm?
+ 
+> +#if defined(CONFIG_KVM_GUEST) && defined(CONFIG_INTEL_TDX_GUEST)
+> +static inline long tdx_kvm_hypercall(unsigned int nr, unsigned long p1,
+> +				     unsigned long p2, unsigned long p3,
+> +				     unsigned long p4)
+> +{
+> +	struct tdx_hypercall_output out;
+> +	u64 err;
+> +
+> +	err = __tdx_hypercall(TDX_HYPERCALL_VENDOR_KVM, nr, p1, p2,
+> +			      p3, p4, &out);
+> +
+> +	/*
+> +	 * Non zero return value means buggy TDX module (which is fatal).
+> +	 * So use BUG_ON() to panic.
+> +	 */
+> +	BUG_ON(err);
+> +
+> +	return out.r10;
+> +}
 
--- 
-Sincerely yours,
-Mike.
+Can we make that a proper exported function (instead of
+tdx_kvm_hypercall) so we don't end up with the very same code inlined
+all over the place?
+
+Thanks,
+
+        tglx
+
