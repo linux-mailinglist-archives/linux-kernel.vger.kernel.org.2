@@ -2,106 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CAD842D0E9
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 05:21:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A63F442D0F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 05:29:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229967AbhJNDXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 23:23:12 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:62230 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229496AbhJNDXG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 23:23:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1634181662; x=1665717662;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=e4FZcjE4Yy/CYv+QIs78RcM3+6mae1SVFCBpkrsfzQA=;
-  b=xm1UtwXXYfwJavgrTlN984rAdpuNx0e/VgGWLm87gTgIN+HjFRB1Xiaq
-   Fj8+Fhp434ti5OaVTa0/KuY2gnsIDFMHQcBp3zu0NAj7XA/jgjlcfIpPB
-   fDXg5mAOTNxWj7B+J/2dNXqUzvZrudf7p9lKd3KFb0Ndw37IME+MFeBsf
-   c=;
-Received: from ironmsg07-lv.qualcomm.com ([10.47.202.151])
-  by alexa-out.qualcomm.com with ESMTP; 13 Oct 2021 20:21:02 -0700
-X-QCInternal: smtphost
-Received: from nalasex01c.na.qualcomm.com ([10.47.97.35])
-  by ironmsg07-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2021 20:21:01 -0700
-Received: from [10.231.205.174] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7; Wed, 13 Oct 2021
- 20:20:59 -0700
-Subject: Re: [RESEND PATCH v1 8/9] spmi: pmic-arb: make interrupt support
- optional
-To:     Stephen Boyd <sboyd@kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <collinsd@codeaurora.org>, <subbaram@codeaurora.org>
-References: <1631860384-26608-1-git-send-email-quic_fenglinw@quicinc.com>
- <1631860384-26608-9-git-send-email-quic_fenglinw@quicinc.com>
- <163406051353.936959.12718174954614897750@swboyd.mtv.corp.google.com>
- <3bf1fbf3-e741-ef08-a4e4-b348b877d02a@quicinc.com>
- <163415390922.936959.12352892206436080955@swboyd.mtv.corp.google.com>
-From:   Fenglin Wu <quic_fenglinw@quicinc.com>
-Message-ID: <23918853-ed37-f11f-9e1e-5f302910e320@quicinc.com>
-Date:   Thu, 14 Oct 2021 11:20:57 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S229882AbhJNDbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 23:31:06 -0400
+Received: from foss.arm.com ([217.140.110.172]:48422 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229496AbhJNDbE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 23:31:04 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 359BCD6E;
+        Wed, 13 Oct 2021 20:29:00 -0700 (PDT)
+Received: from [10.163.75.105] (unknown [10.163.75.105])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5C8D63F70D;
+        Wed, 13 Oct 2021 20:28:57 -0700 (PDT)
+Subject: Re: [PATCH] coresight: trbe: Defer the probe on offline CPUs
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        mathieu.poirier@linaro.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        coresight@lists.linaro.org,
+        Bransilav Rankov <branislav.rankov@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>
+References: <20211013163323.2111579-1-suzuki.poulose@arm.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <0eda15f2-e879-a7f0-dac0-c4813682608e@arm.com>
+Date:   Thu, 14 Oct 2021 08:58:54 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <163415390922.936959.12352892206436080955@swboyd.mtv.corp.google.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20211013163323.2111579-1-suzuki.poulose@arm.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Suzuki,
 
-On 10/14/2021 3:38 AM, Stephen Boyd wrote:
-> Quoting Fenglin Wu (2021-10-13 01:36:54)
->> On 10/13/2021 1:41 AM, Stephen Boyd wrote:
->>> Quoting Fenglin Wu (2021-09-16 23:33:03)
->>>> From: David Collins <collinsd@codeaurora.org>
->>>>
->>>> Make the support of PMIC peripheral interrupts optional for
->>>> spmi-pmic-arb devices.  This is useful in situations where
->>>> SPMI address mapping is required without the need for IRQ
->>>> support.
->>>>
->>>> Signed-off-by: David Collins <collinsd@codeaurora.org>
->>>> Signed-off-by: Fenglin Wu <quic_fenglinw@quicinc.com>
->>>> ---
->>>>    drivers/spmi/spmi-pmic-arb.c | 45 +++++++++++++++++++++++++++-----------------
->>> Is there a binding update? Can the binding be converted to YAML as well?
->> This change doesn't add/update any dtsi properties but just checking if an
->> existing property is present to decide if IRQ support is required, so no
->> binding change is needed.
-> The property is now optional in the binding. Please update the binding.
-Right, thanks for pointing it out. I forgot that part.
-I will update the binding. How about only update the interrupt properties as
-optional in this series then I can come up with following patch to convert
-the binding to YAML format?
->
->>>>    1 file changed, 28 insertions(+), 17 deletions(-)
->>>>
->>>> diff --git a/drivers/spmi/spmi-pmic-arb.c b/drivers/spmi/spmi-pmic-arb.c
->>>> index 988204c..55fa981 100644
->>>> --- a/drivers/spmi/spmi-pmic-arb.c
->>>> +++ b/drivers/spmi/spmi-pmic-arb.c
->>>> @@ -1280,10 +1280,12 @@ static int spmi_pmic_arb_probe(struct platform_device *pdev)
->>>>                   goto err_put_ctrl;
->>>>           }
->>>>    
->>>> -       pmic_arb->irq = platform_get_irq_byname(pdev, "periph_irq");
->>>> -       if (pmic_arb->irq < 0) {
->>>> -               err = pmic_arb->irq;
->>>> -               goto err_put_ctrl;
->>>> +       if (of_find_property(pdev->dev.of_node, "interrupt-names", NULL)) {
->>> I don't think we should be keying off of interrupt-names. Instead we
->>> should be checking for something else. Maybe interrupt-controller
->>> property?
->> Sure, I can update it to check the presence of "interrupt-controller"
->> property.
-> Ok.
+On 10/13/21 10:03 PM, Suzuki K Poulose wrote:
+> If a CPU is offline during the driver init, we could end up causing
+> a kernel crash trying to register the coresight device for the TRBE
+> instance.
+
+Which pointer deference fails here exactly ?
+
+static void arm_trbe_register_coresight_cpu(struct trbe_drvdata *drvdata, int cpu)
+{
+        struct trbe_cpudata *cpudata = per_cpu_ptr(drvdata->cpudata, cpu);
+        struct coresight_device *trbe_csdev = coresight_get_percpu_sink(cpu);
+        struct coresight_desc desc = { 0 };
+        struct device *dev;
+
+        if (WARN_ON(trbe_csdev))
+                return;
+
+        dev = &cpudata->drvdata->pdev->dev;   <---- Fails here
+
+cpudata->drvdata link gets established in arm_trbe_probe_cpu() which
+would not have run on an offline cpu.
+
+> 
+> e.g:
+
+Should probably also mention the exact point of dereference failure
+before this error message here.
+
+> 
+> [    0.149999] coresight ete0: CPU0: ete v1.1 initialized
+> [    0.149999] coresight-etm4x ete_1: ETM arch init failed
+> [    0.149999] coresight-etm4x: probe of ete_1 failed with error -22
+> [    0.150085] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000050
+> [    0.150085] Mem abort info:
+> [    0.150085]   ESR = 0x96000005
+> [    0.150085]   EC = 0x25: DABT (current EL), IL = 32 bits
+> [    0.150085]   SET = 0, FnV = 0
+> [    0.150085]   EA = 0, S1PTW = 0
+> [    0.150085] Data abort info:
+> [    0.150085]   ISV = 0, ISS = 0x00000005
+> [    0.150085]   CM = 0, WnR = 0
+> [    0.150085] [0000000000000050] user address but active_mm is swapper
+> [    0.150085] Internal error: Oops: 96000005 [#1] PREEMPT SMP
+> [    0.150085] Modules linked in:
+> [    0.150085] Hardware name: FVP Base RevC (DT)
+> [    0.150085] pstate: 00800009 (nzcv daif -PAN +UAO -TCO BTYPE=--)
+> [    0.150155] pc : arm_trbe_register_coresight_cpu+0x74/0x144
+> [    0.150155] lr : arm_trbe_register_coresight_cpu+0x48/0x144
+>   ...
+> 
+> [    0.150237] Call trace:
+> [    0.150237]  arm_trbe_register_coresight_cpu+0x74/0x144
+> [    0.150237]  arm_trbe_device_probe+0x1c0/0x2d8
+> [    0.150259]  platform_drv_probe+0x94/0xbc
+> [    0.150259]  really_probe+0x1bc/0x4a8
+> [    0.150266]  driver_probe_device+0x7c/0xb8
+> [    0.150266]  device_driver_attach+0x6c/0xac
+> [    0.150266]  __driver_attach+0xc4/0x148
+> [    0.150266]  bus_for_each_dev+0x7c/0xc8
+> [    0.150266]  driver_attach+0x24/0x30
+> [    0.150266]  bus_add_driver+0x100/0x1e0
+> [    0.150266]  driver_register+0x78/0x110
+> [    0.150266]  __platform_driver_register+0x44/0x50
+> [    0.150266]  arm_trbe_init+0x28/0x84
+> [    0.150266]  do_one_initcall+0x94/0x2bc
+> [    0.150266]  do_initcall_level+0xa4/0x158
+> [    0.150266]  do_initcalls+0x54/0x94
+> [    0.150319]  do_basic_setup+0x24/0x30
+> [    0.150319]  kernel_init_freeable+0xe8/0x14c
+> [    0.150319]  kernel_init+0x14/0x18c
+> [    0.150319]  ret_from_fork+0x10/0x30
+> [    0.150319] Code: f94012c8 b0004ce2 9134a442 52819801 (f9402917)
+> [    0.150319] ---[ end trace d23e0cfe5098535e ]---
+> [    0.150346] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
+> 
+> Fix this by skipping the step, if we are unable to probe the CPU.
+> 
+> Fixes: 3fbf7f011f24 ("coresight: sink: Add TRBE driver")
+> Reported-by: Bransilav Rankov <branislav.rankov@arm.com>
+> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Cc: Mike Leach <mike.leach@linaro.org>
+> Cc: Leo Yan <leo.yan@linaro.org>
+> Tested-by: Branislav Rankov <branislav.rankov@arm.com>
+> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> ---
+>  drivers/hwtracing/coresight/coresight-trbe.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
+> index 5d350acef798..85ceda68af82 100644
+> --- a/drivers/hwtracing/coresight/coresight-trbe.c
+> +++ b/drivers/hwtracing/coresight/coresight-trbe.c
+> @@ -1286,7 +1286,9 @@ static int arm_trbe_probe_coresight(struct trbe_drvdata *drvdata)
+>  		return -ENOMEM;
+>  
+>  	for_each_cpu(cpu, &drvdata->supported_cpus) {
+> -		smp_call_function_single(cpu, arm_trbe_probe_cpu, drvdata, 1);
+> +		/* If we fail to probe the CPU, let us defer it to hotplug callbacks */
+> +		if (smp_call_function_single(cpu, arm_trbe_probe_cpu, drvdata, 1))
+> +			continue;
+>  		if (cpumask_test_cpu(cpu, &drvdata->supported_cpus))
+>  			arm_trbe_register_coresight_cpu(drvdata, cpu);
+>  		if (cpumask_test_cpu(cpu, &drvdata->supported_cpus))
+> 
+
+Right, LGTM. Although I guess the following addition might be worthwhile
+just to highlight the fact that cpudata->drvdata is not valid unless the
+cpu has gone through arm_trbe_probe_cpu() first.
+
+--- a/drivers/hwtracing/coresight/coresight-trbe.c
++++ b/drivers/hwtracing/coresight/coresight-trbe.c
+@@ -869,6 +869,7 @@ static void arm_trbe_register_coresight_cpu(struct trbe_drvdata *drvdata, int cp
+        if (WARN_ON(trbe_csdev))
+                return;
+ 
++       WARN_ON(!cpudata->drvdata);
+        dev = &cpudata->drvdata->pdev->dev;
+        desc.name = devm_kasprintf(dev, GFP_KERNEL, "trbe%d", cpu);
+        if (!desc.name)
