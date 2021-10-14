@@ -2,81 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DBD242E0C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 20:06:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5517942E0D6
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 20:08:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233854AbhJNSJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 14:09:02 -0400
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:48429 "EHLO
-        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233836AbhJNSJB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 14:09:01 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R381e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0Urv6T5V_1634234813;
-Received: from B-P7TQMD6M-0146.local(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0Urv6T5V_1634234813)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 15 Oct 2021 02:06:54 +0800
-Date:   Fri, 15 Oct 2021 02:06:52 +0800
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-To:     "Rantala, Tommi T. (Nokia - FI/Espoo)" <tommi.t.rantala@nokia.com>
-Cc:     "jefflexu@linux.alibaba.com" <jefflexu@linux.alibaba.com>,
-        "enwlinux@gmail.com" <enwlinux@gmail.com>,
-        "tytso@mit.edu" <tytso@mit.edu>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: Inode 2885482 (000000008e814f64): i_reserved_data_blocks (2) not
- cleared!
-Message-ID: <YWhxvOf5EoHMFxtl@B-P7TQMD6M-0146.local>
-References: <767ea5bb27e31cc58bea15cd2aec492946679bde.camel@nokia.com>
+        id S233856AbhJNSJw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 14:09:52 -0400
+Received: from foss.arm.com ([217.140.110.172]:58642 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233467AbhJNSJv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 14:09:51 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 73CED1515;
+        Thu, 14 Oct 2021 11:07:46 -0700 (PDT)
+Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 51FE13F66F;
+        Thu, 14 Oct 2021 11:07:40 -0700 (PDT)
+Date:   Thu, 14 Oct 2021 19:07:38 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>, keescook@chromium.org,
+        jannh@google.com, linux-kernel@vger.kernel.org,
+        vcaputo@pengaru.com, mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, akpm@linux-foundation.org,
+        christian.brauner@ubuntu.com, amistry@google.com,
+        Kenta.Tada@sony.com, legion@kernel.org,
+        michael.weiss@aisec.fraunhofer.de, mhocko@suse.com, deller@gmx.de,
+        zhengqi.arch@bytedance.com, me@tobin.cc, tycho@tycho.pizza,
+        tglx@linutronix.de, bp@alien8.de, hpa@zytor.com, axboe@kernel.dk,
+        metze@samba.org, laijs@linux.alibaba.com, luto@kernel.org,
+        dave.hansen@linux.intel.com, ebiederm@xmission.com,
+        ohoono.kwon@samsung.com, kaleshsingh@google.com,
+        yifeifz2@illinois.edu, linux-hardening@vger.kernel.org,
+        linux-arch@vger.kernel.org, vgupta@kernel.org,
+        linux@armlinux.org.uk, will@kernel.org, guoren@kernel.org,
+        bcain@codeaurora.org, monstr@monstr.eu, tsbogend@alpha.franken.de,
+        nickhu@andestech.com, jonas@southpole.se, mpe@ellerman.id.au,
+        paul.walmsley@sifive.com, hca@linux.ibm.com,
+        ysato@users.sourceforge.jp, davem@davemloft.net, chris@zankel.net
+Subject: Re: [PATCH 6/7] arch: __get_wchan || STACKTRACE_SUPPORT
+Message-ID: <20211014180738.GC39276@lakrids.cambridge.arm.com>
+References: <20211008111527.438276127@infradead.org>
+ <20211008111626.392918519@infradead.org>
+ <20211008124052.GA976@C02TD0UTHF1T.local>
+ <YWBLl0mMTGPE/7hM@hirez.programming.kicks-ass.net>
+ <20211008161707.i3cwz6qukgcf4frj@treble>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <767ea5bb27e31cc58bea15cd2aec492946679bde.camel@nokia.com>
+In-Reply-To: <20211008161707.i3cwz6qukgcf4frj@treble>
+User-Agent: Mutt/1.11.1+11 (2f07cb52) (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 12:54:14PM +0000, Rantala, Tommi T. (Nokia - FI/Espoo) wrote:
-> Hi,
-> 
-> I'm seeing these i_reserved_data_blocks not cleared! messages when using ext4
-> with nodelalloc, message added in:
-> 
->   commit 6fed83957f21eff11c8496e9f24253b03d2bc1dc
->   Author: Jeffle Xu <jefflexu@linux.alibaba.com>
->   Date:   Mon Aug 23 14:13:58 2021 +0800
-> 
->       ext4: fix reserved space counter leakage
-> 
-> I can quickly reproduce in 5.15.0-rc5-00041-g348949d9a444 by doing some
-> filesystem I/O while toggling delalloc:
-> 
-> 
-> while true; do mount -o remount,nodelalloc /; sleep 1; mount -o remount,delalloc /; sleep 1; done &
-> git clone linux xxx; rm -rf xxx
+On Fri, Oct 08, 2021 at 09:17:07AM -0700, Josh Poimboeuf wrote:
+> On Fri, Oct 08, 2021 at 03:45:59PM +0200, Peter Zijlstra wrote:
+> > > stack_trace_save_tsk() *shouldn't* skip anything unless we've explicitly
+> > > told it to via skipnr, because I'd expect that
+> > 
+> > It's what most archs happen to do today and is what
+> > stack_trace_save_tsk() as implemented using arch_stack_walk() does.
+> > Which is I think the closest to canonical we have.
 
-If I understand correctly, switching such option implies
-sync inodes to write back exist delayed allocation blocks.
+Ah; and arch_stack_walk() itself shouldn't skip anything, which gives
+the consistent low-level semantic I wanted.
 
-At a glance I don't find it. Yet no test actually.
+> It *is* confusing though.  Even if 'nosched' may be the normally
+> desired behavior, stack_trace_save_tsk() should probably be named
+> stack_trace_save_tsk_nosched().
+
+I agree that'd be less confusing!
+
+Josh, am I right in my understanding that the reliable stacktrace
+functions *shouldn't* skip sched functions, or should those similarly
+gain a _nosched suffix?
 
 Thanks,
-Gao Xiang
-
-> 
-> [  222.928341] EXT4-fs (vdb1): re-mounted. Opts: delalloc. Quota mode: disabled.
-> [  223.932516] EXT4-fs (vdb1): re-mounted. Opts: nodelalloc. Quota mode: disabled.
-> [  224.183741] EXT4-fs (vdb1): Inode 2885482 (000000008e814f64): i_reserved_data_blocks (2) not cleared!
-> [  224.185064] EXT4-fs (vdb1): Inode 2885478 (00000000862b48ad): i_reserved_data_blocks (2) not cleared!
-> [  224.186434] EXT4-fs (vdb1): Inode 2885474 (00000000a20bdd95): i_reserved_data_blocks (7) not cleared!
-> [  224.187649] EXT4-fs (vdb1): Inode 2885476 (00000000028005e1): i_reserved_data_blocks (2) not cleared!
-> [  224.189016] EXT4-fs (vdb1): Inode 2885475 (0000000025d9617d): i_reserved_data_blocks (2) not cleared!
-> [  224.190370] EXT4-fs (vdb1): Inode 2885480 (00000000d0722d90): i_reserved_data_blocks (7) not cleared!
-> [  224.191732] EXT4-fs (vdb1): Inode 2885481 (000000009b50d6cb): i_reserved_data_blocks (1) not cleared!
-> [  224.193093] EXT4-fs (vdb1): Inode 2885472 (00000000fe907f54): i_reserved_data_blocks (1) not cleared!
-> [  227.946984] EXT4-fs: 9213 callbacks suppressed
-> [  227.946989] EXT4-fs (vdb1): re-mounted. Opts: nodelalloc. Quota mode: disabled.
-> 
-> 
-> -Tommi
-> 
+Mark.
