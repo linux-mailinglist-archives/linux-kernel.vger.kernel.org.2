@@ -2,138 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FD4C42D584
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 10:57:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08C4042D583
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 10:57:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230106AbhJNI7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 04:59:48 -0400
-Received: from mail-eopbgr1320124.outbound.protection.outlook.com ([40.107.132.124]:6724
-        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229985AbhJNI7k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 04:59:40 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KS+UaAyoWFCEW4xvZ9I+cHlQ7dkngQe8FRMysH4KdNUTlskj7cqG0JZtB1NR+MiMAVPTd/CHUoWNuOKlfFTRYhdVtsuIWi40t3jWYQQn81Bs4XqM4s3tq8WYay/noVD+mGu0RUDADARUgIbSP7JhqNSIWhPuyAbVmaLdgA2WBK9zpIokHShYohc/xXDtzLe2bCDhA6eeFG9aSbHFssZ7Hz2Vbd8pebbMbEtaHAtUKQ3AqzZE8eAWsbpGzcQC7Yhv+pTeaKMPUJQWDJtvFi2eaCLdroSabIp5ufVj5QDW8QerT9dTptDeSUJmBKKh+gmW1L14T6rFhKlwrG6CaQ/7NQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=e3uWbzBrSVwTIIMUrUqqC/VZDyoL07a0JDe5fICurmw=;
- b=CNJpTk+ZzBvfEih2Hv0u/BXVZZhYHFH/Xk82wQnAMi4i0WwFRkmGYP/XMR1rTLe8etNhgo6JtOf/Iv8EApxCMwC9Gu+dH3iW8BjXpP7VuHyhtomyMmsrDOs/eP21ABHj1u5rdzT9LAGBeeFUV9/2qu3wOFh04Z7WznY5SSca9Y31+lrPF1+Oa58G+zB4mjk4ygFgtxYDzqUr49SWeAfQtq7aipxu0FTmbEL0EvYf/rq6sC/7fjnk39ezXqrAQ5DbksJ49zSLF7E2rifpOemvgezeIzug+vfwbTEO9y7+J6LPo6VwCOzQM3TnDOwzhcyfGSx50IKkjcOv4wPy6n3VZg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
- s=selector2-vivo0-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=e3uWbzBrSVwTIIMUrUqqC/VZDyoL07a0JDe5fICurmw=;
- b=n93oyTQx9rGyE3ySMd9izhHsaDORp7Iz58Q/URLOQtmSzOnUX77+uSvd0eDe7Yy+AU0FohyxNNpwkGyicfMz8+aLYzqczUEaQRRPZt5Ak+MpyZIniGfe09ukG6tnNmrqlq2Mh88kQ7pd4CeRdSThlJfFTG7wbZnS6wrLz8w+SzU=
-Authentication-Results: baylibre.com; dkim=none (message not signed)
- header.d=none;baylibre.com; dmarc=none action=none header.from=vivo.com;
-Received: from SG2PR06MB3367.apcprd06.prod.outlook.com (2603:1096:4:78::19) by
- SG2PR06MB3367.apcprd06.prod.outlook.com (2603:1096:4:78::19) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4608.15; Thu, 14 Oct 2021 08:57:33 +0000
-Received: from SG2PR06MB3367.apcprd06.prod.outlook.com
- ([fe80::fc12:4e1b:cc77:6c0]) by SG2PR06MB3367.apcprd06.prod.outlook.com
- ([fe80::fc12:4e1b:cc77:6c0%6]) with mapi id 15.20.4608.016; Thu, 14 Oct 2021
- 08:57:33 +0000
-From:   Wan Jiabing <wanjiabing@vivo.com>
-To:     =?UTF-8?q?Beno=C3=AEt=20Cousson?= <bcousson@baylibre.com>,
-        Paul Walmsley <paul@pwsan.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     kael_w@yeah.net, Wan Jiabing <wanjiabing@vivo.com>
-Subject: [PATCH] ARM: OMAP2+: hwmod: Add of_node_put() before break
-Date:   Thu, 14 Oct 2021 04:57:19 -0400
-Message-Id: <20211014085719.23739-1-wanjiabing@vivo.com>
-X-Mailer: git-send-email 2.20.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: HK2PR04CA0052.apcprd04.prod.outlook.com
- (2603:1096:202:14::20) To SG2PR06MB3367.apcprd06.prod.outlook.com
- (2603:1096:4:78::19)
+        id S230028AbhJNI7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 04:59:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48342 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229551AbhJNI7i (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 04:59:38 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA9DFC061570
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 01:57:33 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id g36so6966530lfv.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 01:57:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=cJkXtllod03ASJOjpCx5K+AcoQxgr0tE6UkPMxu5Eto=;
+        b=eueADRYoewoSYpVz8YvCdvPt7I/D1V1WPupQU1Q0pWkueR15ZggK44wUZUCER0czoP
+         pFz6nf61zrCCNBoJF39y/tNKVlHQEwE3kLio6beL8/kizOUfWmruII1ZC3ypxB5GzlNf
+         yPzyf8NkFOX1x5+idgWIjkDi4RnjMkW+FDMyk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=cJkXtllod03ASJOjpCx5K+AcoQxgr0tE6UkPMxu5Eto=;
+        b=pFXpVWXdzHvoY/bm6tRjVX7kjaeRVFYWvmv7NTiaTNTyepCX+XcZiopqlDPiBvITq7
+         A8aMGjDP/rXnmLW6wQpXvQiDhV0BxZZ+wE/5NNKOVFsq+jkeKK0Z6i9nRC018B9ZGhxk
+         hwYSvZ7R8lL+uCJ2ZNrBXVoVOGscLrpYk0LRM6P7o/V5kxQX/FxeqzZE0ENP97mbYINB
+         MmzUKINFeltp2zSxBtPkA0E5DDaAobgbl/cn1wZUp+7hVA3rxvkCzOeFHIoiA8hdL/gS
+         m6eY1lnmfSNsA5pvKc/jEdCzRHIg1NjfNoWrasjOEIeotHVHKi6J8xWrHyijYh0owRC9
+         hYmw==
+X-Gm-Message-State: AOAM532IEB1JVMvGAiw1M3GG78sczZ0Z08LIzhkfEs3eeak0ZU4WJjxG
+        bG9ZfdNM52XkGYaMb4yKbl3Ic8bI56wQqaM+NOahoA==
+X-Google-Smtp-Source: ABdhPJxFnqXoY5+ZoP8h/WSL8B0pcFOtWM1x/foifUtGjGhbuT/pwWs8Tlj7xNuioIoY240fAwHSYqpG+CLdiB6pvbc=
+X-Received: by 2002:a2e:b618:: with SMTP id r24mr4768727ljn.414.1634201852088;
+ Thu, 14 Oct 2021 01:57:32 -0700 (PDT)
 MIME-Version: 1.0
-Received: from localhost.localdomain (203.90.234.87) by HK2PR04CA0052.apcprd04.prod.outlook.com (2603:1096:202:14::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.15 via Frontend Transport; Thu, 14 Oct 2021 08:57:30 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d58b6d4e-dad4-41be-bd45-08d98ef0a88c
-X-MS-TrafficTypeDiagnostic: SG2PR06MB3367:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SG2PR06MB3367B8AA701ED6A63C0DBC1CABB89@SG2PR06MB3367.apcprd06.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3631;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: wO3LAnyIs8RBImZjQOFSIkqgO9DCZIguwhEdIwtPNgOUfOFPRsyPhBWs06WrRcgJlYxvSCP/wVUCUrMk4PYTzLFsoqrnmPt797QHFNPcovyhea35iXXmaQB3B+uPfbuOu18/xWmIRBykhHr3k3gBMnDajSJXbOS7Ox7rlm8SGGjGnI7hiqyUNZrujzDyVOKC4Dm7WEwXPffLhTJ+vh80cUJztIyJmRjAtzIfUGA5SFcQuVTHmgDBjvzttYdgOeClnbTGeHBzEjMsgrYHr4Y+UfZi7zjG2y+oDY+KYa79FKjkaICGfCRwmczZWHnm+CRNf9guaA0YKj//atyprwE849qSJqkWaFquA2/8BuWnCIc6H+L01PqkdNBtESv9EQYgR5Q1+BHj3LhC+/cBa3BhfUR7onQFZr/xe5AWc1kwpmkcftFdJOAi95/1rRTRp5WWmx/dtskSOi0Qin6OMM5zkBb5AQ174sH+XYtrVFbXKtz2A1niOaONHdKnmxSYSX/yMI8wXYsr6DfWzfioVuZavDE4rlxnsnmDUE1jjTK0KOg2oIFxl3KMsH73vCxjtNQKtHHbnu3I9IpTj77eeX5xjvfhjM1U1BXTK41dSfk0RLoYa7G9VNZH5mxAM4MfqS5k7TVKHhB2h8R+/qL7muZ1JY2NUk6NqHMlPXI7H2RRAdhxvq0sI0zNd7g8Ega8wdGa5pnTZRiXKyN5fIMM1GSutQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR06MB3367.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(26005)(36756003)(4326008)(2906002)(316002)(38100700002)(38350700002)(110136005)(1076003)(6506007)(107886003)(66556008)(52116002)(83380400001)(956004)(6486002)(66476007)(2616005)(8936002)(66946007)(86362001)(5660300002)(6666004)(186003)(4744005)(6512007)(508600001)(8676002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?IpYXyxPmI5TWEX7Uo5QlihOyDpJtIZ25dPuPb1FQ1k7/LrqSQcwGdFgBtD1B?=
- =?us-ascii?Q?PbQ3w3Y6jPZh38exE3ttw7VR7QJ/Yc5UFk7CQxMPUE69QFho9Jza08VRpnem?=
- =?us-ascii?Q?5OTskEuO6K5N7b2ZrBwLVx1nv//YpAyzqu2WVaV6U2m17CnGUza2x0ilmd6Q?=
- =?us-ascii?Q?kCYTMaBUm6tP8qAMJLKiKWP9v5b2+NwzSE/RDC4ykco5EeWJYDt2vqpsI6tm?=
- =?us-ascii?Q?O11btJWrD6GLU1d1edxGY5icMW/sGhGiohrfWA6rWKnhkM9z1jYJdyOApq95?=
- =?us-ascii?Q?Uhshc30Yv4jONbFsliq0WlkXh0PE120nLrhZAkhOxlSKMBDhtCOu0gqswDEX?=
- =?us-ascii?Q?AyPJ2xhshyeEo0wZor1WhnIxow5xpRwgz//2+OD164EafqJy9V23vnpWCcxD?=
- =?us-ascii?Q?zwCMv+oz06+bOFCchQcMljXtRo3xIN1bo+Sv9/0wg+yGG/xU7n1nt2MhS/Rb?=
- =?us-ascii?Q?QRm47bYK3SoOqXyu4jaSSNAjgPE8m5bepv0yissAUUFHgnpzu0QUkmzFcnwC?=
- =?us-ascii?Q?Ao1uR2ZyJHYEgrp+dlY1Xwi74apthXKtWdlmyapl5Vod+I1DIDFrEl6R4qcy?=
- =?us-ascii?Q?VBjpIaa7qe8kWV7OlIGDuGs6doUW46zzJRch5TJ5gnM16rMoILktPtf0iBOb?=
- =?us-ascii?Q?hRpH1ORLmn8arKNdbqX+7BaDPpbWUixeb2eOf/5a5fdaQPOGnq/1ecTgpn0n?=
- =?us-ascii?Q?3nKKrSN7J5bvbztoAq/MrBNatzdQmfeq2fUJkPRFJ78BahEWIoOIGQvN1nNo?=
- =?us-ascii?Q?9UyddHTDvo1j6DUL2uW1+Ag3sJPaAl7QXnrbiRGJX/Vi+2KIs6E7fKrOtswI?=
- =?us-ascii?Q?dR5fsCl0SlRKBuIjmG9yKOazDvrLy5+AwPArBHaRi1BAlWiMngwsri3fAhY2?=
- =?us-ascii?Q?WI/V914CDtPCT0r9xiq+YpFZv1QCuJkXkx1a8eEkA/qZgGxSPaJ7fF9cWrJE?=
- =?us-ascii?Q?AZr5ohPePVO7mIHnzDANYwfXI4U5SaVrltettb1kR677qtKVJoWzBA4hNTvl?=
- =?us-ascii?Q?UgfIFUGoYXI3i1tA+gBY0w/EC/kVpn5TzLhgRgWHHWgYjTtca6DxhSS0Pzfo?=
- =?us-ascii?Q?3zkbIXVXeMWa/3DNS+gqTM8fo3HK0saBsBdcll26tPGmF6acruR4R39OGNyt?=
- =?us-ascii?Q?z5ws8LusNFVl08dgYrEeYPvLNyypoU92aZ7MgADdJAOKb0fco/9irNyZwZOD?=
- =?us-ascii?Q?XIPxFKaVMS6RZHtIloWC31rs3gPQmYj7shcEkimK788m1xPA7OtvgqNd//rU?=
- =?us-ascii?Q?vGKUl/6689Yh7CnQAeHxgWSN87atuEMUOWjU4/2AAzotLJ9NHkeVWZcC2lYZ?=
- =?us-ascii?Q?OdBhVhlKtpvgev7UqRbEPAul?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d58b6d4e-dad4-41be-bd45-08d98ef0a88c
-X-MS-Exchange-CrossTenant-AuthSource: SG2PR06MB3367.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Oct 2021 08:57:32.4334
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ntVhXcLb9PotQEEZ4LIW/Rqdpy9DZX7GctfJjPAMqc0+MspCRct01wlNhOAEeTEggCFWbMcr/AoVpBAk8hmmew==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SG2PR06MB3367
+References: <20211008100423.739462-1-wenst@chromium.org> <f108f23dadc846222c63c88af826dae9c5082d83.camel@ndufresne.ca>
+ <CAGXv+5FnFq1mN79sqUp-o6pHirYvp55gurnsUCgqYvEAX2=4oQ@mail.gmail.com>
+ <ff0769efee51e15451d48e23860f8b1710593cd7.camel@ndufresne.ca>
+ <CAGXv+5GJCaxnPPkXRp5xrTBuq-5=ggfjPbRhyS4vdm3meM_4eg@mail.gmail.com> <CAAEAJfAratFPK0iU8QWMr36ZFCL5cgBneKkzymy+gCgJV=goOg@mail.gmail.com>
+In-Reply-To: <CAAEAJfAratFPK0iU8QWMr36ZFCL5cgBneKkzymy+gCgJV=goOg@mail.gmail.com>
+From:   Chen-Yu Tsai <wenst@chromium.org>
+Date:   Thu, 14 Oct 2021 16:57:20 +0800
+Message-ID: <CAGXv+5FsjNihOfvLib=MHf9Qq3X3t=fR2BY4myQ1tivkSJc6pw@mail.gmail.com>
+Subject: Re: [PATCH 0/2] media: rkvdec: Align decoder behavior with Hantro and Cedrus
+To:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Cc:     Nicolas Dufresne <nicolas@ndufresne.ca>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        "open list:STAGING SUBSYSTEM" <linux-staging@lists.linux.dev>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix following coccicheck warning:
-./arch/arm/mach-omap2/omap_hwmod.c:753:1-23: WARNING: Function
-for_each_matching_node should have of_node_put() before break
+On Thu, Oct 14, 2021 at 4:46 PM Ezequiel Garcia
+<ezequiel@vanguardiasur.com.ar> wrote:
+>
+> On Thu, 14 Oct 2021 at 04:31, Chen-Yu Tsai <wenst@chromium.org> wrote:
+> >
+> > On Wed, Oct 13, 2021 at 9:40 PM Nicolas Dufresne <nicolas@ndufresne.ca>=
+ wrote:
+> > >
+> > > Le mercredi 13 octobre 2021 =C3=A0 15:05 +0800, Chen-Yu Tsai a =C3=A9=
+crit :
+> > > > Hi,
+> > > >
+> > > > On Fri, Oct 8, 2021 at 11:42 PM Nicolas Dufresne <nicolas@ndufresne=
+.ca> wrote:
+> > > > >
+> > > > > Hi Chen-Yu,
+> > > > >
+> > > > > thanks for looking into this.
+> > > > >
+> > > > > Le vendredi 08 octobre 2021 =C3=A0 18:04 +0800, Chen-Yu Tsai a =
+=C3=A9crit :
+> > > > > > Hi everyone,
+> > > > > >
+> > > > > > While working on the rkvdec H.264 decoder for ChromeOS, I notic=
+ed some
+> > > > > > behavioral differences compared to Hantro and Cedrus:
+> > > > > >
+> > > > > > 1. The driver always overrides the sizeimage setting given by u=
+serspace
+> > > > > >    for the output format. This results in insufficient buffer s=
+pace when
+> > > > > >    running the ChromeOS video_decode_accelerator_tests test pro=
+gram,
+> > > > > >    likely due to a small initial resolution followed by dynamic
+> > > > > >    resolution change.
+> > > > > >
+> > > > > > 2. Doesn't support dynamic resolution change.
+> > > > > >
+> > > > > > This small series fixes both and aligns the behavior with the o=
+ther two
+> > > > > > stateless decoder drivers. This was tested on the downstream Ch=
+romeOS
+> > > > > > 5.10 kernel with ChromeOS. Also compiled tested on mainline but=
+ I don't
+> > > > > > have any other RK3399 devices set up to test video stuff, so te=
+sting
+> > > > > > would be very much appreciated.
+> > > > > >
+> > > > > > Also, I'm not sure if user applications are required to check t=
+he value
+> > > > > > of sizeimage upon S_FMT return. If the value is different or to=
+o small,
+> > > > > > what can the application do besides fail? AFAICT it can't split=
+ the
+> > > > > > data of one frame (or slice) between different buffers.
+> > > > >
+> > > > > While most software out there just assumes that driver will do it=
+ right and
+> > > > > crash when it's not the case, application that do map the buffer =
+to CPU must
+> > > > > read back the fmt structure as the drivers are all fail-safe and =
+will modify
+> > > > > that structure to a set of valid value s for the context.
+> > > >
+> > > > I believe what is happening in Chromium is that the decoder is open=
+ed with
+> > > > some default settings, including the smallest viable resolution for=
+ the
+> > > > output side, and the buffers allocated accordingly. When dynamic re=
+solution
+> > > > change happens, the decoder does not check if the current buffers a=
+re
+> > > > sufficiently sized; it just assumes that they are. And when it star=
+ts
+> > > > pushing data into the buffers, it realizes they are too small and f=
+ails.
+> > > >
+> > > > The spec also says:
+> > > >
+> > > >     Clients are allowed to set the sizeimage field for variable len=
+gth
+> > > >     compressed data flagged with V4L2_FMT_FLAG_COMPRESSED at ioctl
+> > > >     VIDIOC_ENUM_FMT, but the driver may ignore it and set the value=
+ itself,
+> > > >     or it may modify the provided value based on alignment requirem=
+ents or
+> > > >     minimum/maximum size requirements.
+> > > >
+> > > > The spec only guarantees that the buffers are of sufficient size fo=
+r the
+> > > > resolution configured at the time they were allocated/requested.
+> > > >
+> > > > So I think my first patch is a workaround for a somewhat broken use=
+rspace.
+> > > > But it seems the other stateless drivers are providing similar beha=
+vior,
+> > > > as I previously mentioned.
+> > >
+> > > That's what I mean, this is not a driver bug strictly speaking (assum=
+ing it does
+> > > guaranty the buffer size is sufficient) but it is without your change
+> > > inconvenient, as userspace may be aware of the largest resolution it =
+will
+> > > decode, and may want to allocate larger buffer upfront.
+> >
+> > Thinking about this more, I think a few follow up fixes for each driver
+> > are in order. The spec implies that the driver should override the valu=
+e
+> > should userspace give some unrealistic value, such as asking for a 256 =
+byte
+> > buffer for a 4K frame size.
+> >
+>
+> Where is the spec implying that?
 
-Early exits from for_each_matching_node should decrement the
-node reference counter.
+In Documentation/userspace-api/media/v4l/pixfmt-v4l2-mplane.rst:
 
-Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
----
- arch/arm/mach-omap2/omap_hwmod.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+    Clients are allowed to set the sizeimage field for variable length
+    compressed data flagged with ``V4L2_FMT_FLAG_COMPRESSED`` at
+    :ref:`VIDIOC_ENUM_FMT`, but the driver may ignore it and set the
+    value itself, or it may modify the provided value based on
+    alignment requirements or minimum/maximum size requirements.
 
-diff --git a/arch/arm/mach-omap2/omap_hwmod.c b/arch/arm/mach-omap2/omap_hwmod.c
-index ccb0e3732c0d..31d1a21f6041 100644
---- a/arch/arm/mach-omap2/omap_hwmod.c
-+++ b/arch/arm/mach-omap2/omap_hwmod.c
-@@ -752,8 +752,10 @@ static int __init _init_clkctrl_providers(void)
- 
- 	for_each_matching_node(np, ti_clkctrl_match_table) {
- 		ret = _setup_clkctrl_provider(np);
--		if (ret)
-+		if (ret) {
-+			of_node_put(np);
- 			break;
-+		}
- 	}
- 
- 	return ret;
--- 
-2.20.1
+I guess I read "minimum/maximum size requirements" a bit liberally.
+Maybe it refers to how much buffer space the hardware can address or
+program for each request?
 
+> This is encoded content, so I'm really inclined to avoid this path.
+> Having the driver decide what is "unrealistic" would mean some
+> heuristics in the drivers for something that should really come from user=
+space.
+
+And if the driver refuses to give adequate buffer space, then it's a bug?
+
+
+Regards
+ChenYu
+
+
+> Thanks,
+> Ezequiel
+>
+> > Cedrus (CCing Jernej) comes close, but a 1K buffer might not be enough =
+for
+> > really large frames, even though it's slice based?
+> >
+> > ChenYu
+> >
+> >
+> > > As per Chromium bug, this is being addressed already. Thanks for this=
+ driver
+> > > improvement.
+> > >
+> > > >
+> > > > > As for opposite direction (output vs capture) format being change=
+d, this should
+> > > > > be documented in the spec, if you find it too unclear or missing =
+for sateless
+> > > > > codec (I know it's there for stateful but can't remember, would h=
+ave to re-read,
+> > > > > for stateless) let us know.
+> > > >
+> > > > AFAICT the capture side is working OK and to spec.
+> > > >
+> > > >
+> > > > Regards
+> > > > ChenYu
+> > > >
+> > > > > regards,
+> > > > > Nicolas
+> > > > >
+> > > > > >
+> > > > > > Andrzej, I believe the second patch would conflict with your VP=
+9 series.
+> > > > > >
+> > > > > >
+> > > > > > Regards
+> > > > > > ChenYu
+> > > > > >
+> > > > > > Chen-Yu Tsai (2):
+> > > > > >   media: rkvdec: Do not override sizeimage for output format
+> > > > > >   media: rkvdec: Support dynamic resolution changes
+> > > > > >
+> > > > > >  drivers/staging/media/rkvdec/rkvdec-h264.c |  5 +--
+> > > > > >  drivers/staging/media/rkvdec/rkvdec.c      | 40 +++++++++++---=
+--------
+> > > > > >  2 files changed, 23 insertions(+), 22 deletions(-)
+> > > > > >
+> > > > >
+> > > > >
+> > >
+> > >
