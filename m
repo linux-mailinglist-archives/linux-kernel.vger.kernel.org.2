@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 175FA42DD60
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:05:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28EED42DD26
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:02:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231910AbhJNPGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 11:06:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50518 "EHLO mail.kernel.org"
+        id S233478AbhJNPEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 11:04:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45148 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233745AbhJNPFB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 11:05:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 21A5161222;
-        Thu, 14 Oct 2021 15:01:05 +0000 (UTC)
+        id S233422AbhJNPDP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 11:03:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 57F0C61211;
+        Thu, 14 Oct 2021 15:00:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634223666;
-        bh=fEl8BJgrezmtg7ruCQ4UqWxbxPp54n7YB32+vPu8PqU=;
+        s=korg; t=1634223600;
+        bh=iZ8eXtz7ZpiC8As78Kl4WydGQKxk+z9pgePxd7CFSX8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MbwFp3+uVn5I1QI4IHZgL6AoqADRGRuBQgRm+IvL7RfvDHJBlMPlxQSYJR9z4bJb7
-         QjnuAemccZZBGBmnPP5VUQwG55M2CgBMeqvW6s7IU0jEJyERTCVAXwA/eSis5EKyB0
-         EiUWWsRMTe4yI5+Hqr3HtoB5d82dkqq0cpgvq6bw=
+        b=2V95N0pAuOLcvsyUBd7YsZHgtmoy5BHLJ6bzsgDcOPuu+ixcyFDHvSpf2EnxZZCnv
+         RwYc0idwwhzyZhXgi3Zy8MBFSGrb17sIy1soK4GMM5kIpphHC5c4yxWaW9+sYfcjLT
+         s+yeUqRW2e/D79B/It/T7UuM5X3TrdldCtRD1Cns=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Matthew Hagan <mnhagan88@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 20/30] net: bgmac-platform: handle mac-address deferral
+Subject: [PATCH 5.10 19/22] scsi: virtio_scsi: Fix spelling mistake "Unsupport" -> "Unsupported"
 Date:   Thu, 14 Oct 2021 16:54:25 +0200
-Message-Id: <20211014145210.187922037@linuxfoundation.org>
+Message-Id: <20211014145208.598843858@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211014145209.520017940@linuxfoundation.org>
-References: <20211014145209.520017940@linuxfoundation.org>
+In-Reply-To: <20211014145207.979449962@linuxfoundation.org>
+References: <20211014145207.979449962@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,44 +40,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthew Hagan <mnhagan88@gmail.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit 763716a55cb1f480ffe1a9702e6b5d9ea1a80a24 ]
+[ Upstream commit cced4c0ec7c06f5230a2958907a409c849762293 ]
 
-This patch is a replication of Christian Lamparter's "net: bgmac-bcma:
-handle deferred probe error due to mac-address" patch for the
-bgmac-platform driver [1].
+There are a couple of spelling mistakes in pr_info and pr_err messages.
+Fix them.
 
-As is the case with the bgmac-bcma driver, this change is to cover the
-scenario where the MAC address cannot yet be discovered due to reliance
-on an nvmem provider which is yet to be instantiated, resulting in a
-random address being assigned that has to be manually overridden.
-
-[1] https://lore.kernel.org/netdev/20210919115725.29064-1-chunkeey@gmail.com
-
-Signed-off-by: Matthew Hagan <mnhagan88@gmail.com>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Link: https://lore.kernel.org/r/20210924230330.143785-1-colin.king@canonical.com
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/broadcom/bgmac-platform.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/scsi/virtio_scsi.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/broadcom/bgmac-platform.c b/drivers/net/ethernet/broadcom/bgmac-platform.c
-index 4ab5bf64d353..df8ff839cc62 100644
---- a/drivers/net/ethernet/broadcom/bgmac-platform.c
-+++ b/drivers/net/ethernet/broadcom/bgmac-platform.c
-@@ -192,6 +192,9 @@ static int bgmac_probe(struct platform_device *pdev)
- 	bgmac->dma_dev = &pdev->dev;
+diff --git a/drivers/scsi/virtio_scsi.c b/drivers/scsi/virtio_scsi.c
+index b9c86a7e3b97..6dac58ae6120 100644
+--- a/drivers/scsi/virtio_scsi.c
++++ b/drivers/scsi/virtio_scsi.c
+@@ -302,7 +302,7 @@ static void virtscsi_handle_transport_reset(struct virtio_scsi *vscsi,
+ 		}
+ 		break;
+ 	default:
+-		pr_info("Unsupport virtio scsi event reason %x\n", event->reason);
++		pr_info("Unsupported virtio scsi event reason %x\n", event->reason);
+ 	}
+ }
  
- 	ret = of_get_mac_address(np, bgmac->net_dev->dev_addr);
-+	if (ret == -EPROBE_DEFER)
-+		return ret;
-+
- 	if (ret)
- 		dev_warn(&pdev->dev,
- 			 "MAC address not present in device tree\n");
+@@ -394,7 +394,7 @@ static void virtscsi_handle_event(struct work_struct *work)
+ 		virtscsi_handle_param_change(vscsi, event);
+ 		break;
+ 	default:
+-		pr_err("Unsupport virtio scsi event %x\n", event->event);
++		pr_err("Unsupported virtio scsi event %x\n", event->event);
+ 	}
+ 	virtscsi_kick_event(vscsi, event_node);
+ }
 -- 
 2.33.0
 
