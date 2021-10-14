@@ -2,224 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4239F42D34E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 09:11:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92DF142D353
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 09:13:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230030AbhJNHN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 03:13:58 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:41486
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229985AbhJNHN4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 03:13:56 -0400
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com [209.85.167.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        id S230088AbhJNHPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 03:15:24 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:58750 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230082AbhJNHPW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 03:15:22 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1634195598; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=mRIWE8f6XRNaCkd6Yf1vosVkmzQcwujpWypJxd42mWM=; b=nFCAdMXauNmbah7ImdVIJ46wZslrprQI/YnejYjp9srfdQbxQ9fJ3r5wyAAa+5cZvTGjfHBS
+ p9apR6+frWBKoDGaIgdTJ5Lb4wJHDnGcOOZWIUPptvtwDBpLf5S+D2a+YdSf06XG/qscYL/U
+ LEJErOTh3egA8SlwlTyr3G5iZGM=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 6167d879f3e5b80f1f1b9d48 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 14 Oct 2021 07:12:57
+ GMT
+Sender: faiyazm=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A0663C4338F; Thu, 14 Oct 2021 07:12:57 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from faiyazm-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 1AD5E40021
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 07:11:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1634195511;
-        bh=FM8pSeToFOPUhDjYF23znrZE5dzxI9k0mVFzTSi5BcI=;
-        h=To:Cc:References:From:Subject:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=uN3loL0wxXImJV78Wx8oeqlYiPnAhACEXptB7gsNBCTlSLJavV6RG1eaVwnIAf3cu
-         tZicGVxpPibK8tyigG/zHro1RetDJWlG/t+J7UimtA15T6krcCkVveOJnD/Vre5XtR
-         SM3rNXdlufgGcggJCSebi9iE67r64Lg33vxtjE4aJpWH/Ui/jmv7YJCRLOwVRY91+P
-         uz66VwQQgkLH1nrjvZsQ3ouU4F5DC42p8NMQj3FAGIY4ibGMBWQJBW3g4xZ1v85/5J
-         b99rhIgZvD9ADJVFHLg9R6XLAnT/BHpmpGhM1lcnjgDZ+XeS4OeZ6xncxPG6lNI7Vt
-         s7Sg1NqUCXsRg==
-Received: by mail-lf1-f70.google.com with SMTP id m16-20020a056512115000b003fdb79f743fso1301509lfg.16
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 00:11:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=FM8pSeToFOPUhDjYF23znrZE5dzxI9k0mVFzTSi5BcI=;
-        b=hAbhevs4+y569G20vw0s9DoXk16+KBeAGc2frIdITlJdVUK2L3w80ZZlWMBEPjPm9q
-         htYPHeg6K1kdhFvmA1Fdd5/756uR74FdqaIDdsaJ8Hw+bdxETB1deOpgYcIkRgUESvAR
-         aEu2XYyi1ucXlFU4f2UyAg5nhrlTPj+GmTKozlMD27PQcosrlzIZm71ZN3XL+GvN0fqI
-         EsQyvdiPorE3MzOlqMxzwy8GHu47IMUC4UK8atslXJroLPxBEcKRCBg/+nPqiXZVr1tq
-         cdwlSEdPmkRV50hiHH4UwyG+uE0JNRZK6CZiMSOISh1IXjfvlufV0kjb+qCubEIo3XHZ
-         c3oA==
-X-Gm-Message-State: AOAM530nDQv/lOYsr8cMr+5W+SULMhmMIBwEiSLez1MNPDNNNB8LVZI6
-        OMy+QELyw5Wc3O9hO7JUlh1WRaUUpH42BZMYEl6e4qRE+JsvM2iqfr2jqVCEL3K+TQ224XZy4vG
-        GSLtUzjnANk+LLHCx8EInsH0OLGTRQUFS1GgYzgqjCw==
-X-Received: by 2002:a05:6512:2307:: with SMTP id o7mr3430115lfu.595.1634195509107;
-        Thu, 14 Oct 2021 00:11:49 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwgSsaV15NSk47z5aPcuHSvstgvfiWkc6BkOCzPyQ4J2LhnPiscCdV+nbNisZxYgXByuDZ7Eg==
-X-Received: by 2002:a05:6512:2307:: with SMTP id o7mr3430101lfu.595.1634195508926;
-        Thu, 14 Oct 2021 00:11:48 -0700 (PDT)
-Received: from [192.168.3.161] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
-        by smtp.gmail.com with ESMTPSA id 2sm150078lfz.145.2021.10.14.00.11.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Oct 2021 00:11:48 -0700 (PDT)
-To:     Sam Protsenko <semen.protsenko@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Sumit Semwal <sumit.semwal@linaro.org>,
-        linux-samsung-soc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211013202110.31701-1-semen.protsenko@linaro.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Subject: Re: [PATCH v2 1/3] soc: samsung: exynos-chipid: Pass revision reg
- offsets
-Message-ID: <1cd31098-ba9d-f2e3-e34c-5bada00a2696@canonical.com>
-Date:   Thu, 14 Oct 2021 09:11:47 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <20211013202110.31701-1-semen.protsenko@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        (Authenticated sender: faiyazm)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id DCBFAC4360C;
+        Thu, 14 Oct 2021 07:12:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org DCBFAC4360C
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Faiyaz Mohammed <faiyazm@codeaurora.org>
+To:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, david@redhat.com
+Cc:     guptap@codeaurora.org, Faiyaz Mohammed <faiyazm@codeaurora.org>
+Subject: [PATCH v3] mm: page_alloc: Add debug log in free_reserved_area for static memory
+Date:   Thu, 14 Oct 2021 12:42:44 +0530
+Message-Id: <1634195564-14048-1-git-send-email-faiyazm@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/10/2021 22:21, Sam Protsenko wrote:
-> Old Exynos SoCs have both Product ID and Revision ID in one single
-> register, while new SoCs tend to have two separate registers for those
-> IDs. Implement handling of both cases by passing Revision ID register
-> offsets in driver data.
-> 
-> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
-> ---
->  drivers/soc/samsung/exynos-chipid.c       | 67 +++++++++++++++++++----
->  include/linux/soc/samsung/exynos-chipid.h |  6 +-
->  2 files changed, 58 insertions(+), 15 deletions(-)
-> 
-> diff --git a/drivers/soc/samsung/exynos-chipid.c b/drivers/soc/samsung/exynos-chipid.c
-> index 5c1d0f97f766..7837331fb753 100644
-> --- a/drivers/soc/samsung/exynos-chipid.c
-> +++ b/drivers/soc/samsung/exynos-chipid.c
-> @@ -16,6 +16,7 @@
->  #include <linux/errno.h>
->  #include <linux/mfd/syscon.h>
->  #include <linux/of.h>
-> +#include <linux/of_device.h>
->  #include <linux/platform_device.h>
->  #include <linux/regmap.h>
->  #include <linux/slab.h>
-> @@ -24,6 +25,17 @@
->  
->  #include "exynos-asv.h"
->  
-> +struct exynos_chipid_variant {
-> +	unsigned int rev_reg;		/* revision register offset */
-> +	unsigned int main_rev_shift;	/* main revision offset in rev_reg */
-> +	unsigned int sub_rev_shift;	/* sub revision offset in rev_reg */
-> +};
-> +
-> +struct exynos_chipid_info {
-> +	u32 product_id;
-> +	u32 revision;
-> +};
-> +
->  static const struct exynos_soc_id {
->  	const char *name;
->  	unsigned int id;
-> @@ -49,31 +61,55 @@ static const char *product_id_to_soc_id(unsigned int product_id)
->  	int i;
->  
->  	for (i = 0; i < ARRAY_SIZE(soc_ids); i++)
-> -		if ((product_id & EXYNOS_MASK) == soc_ids[i].id)
-> +		if (product_id == soc_ids[i].id)
->  			return soc_ids[i].name;
->  	return NULL;
->  }
->  
-> +static int exynos_chipid_get_chipid_info(struct regmap *regmap,
-> +		const struct exynos_chipid_variant *data,
-> +		struct exynos_chipid_info *soc_info)
-> +{
-> +	int ret;
-> +	unsigned int val, main_rev, sub_rev;
-> +
-> +	ret = regmap_read(regmap, EXYNOS_CHIPID_REG_PRO_ID, &val);
-> +	if (ret < 0)
-> +		return ret;
-> +	soc_info->product_id = val & EXYNOS_MASK;
-> +
-> +	ret = regmap_read(regmap, data->rev_reg, &val);
+For INITRD and initmem memory is reserved through "memblock_reserve"
+during boot up but it is free via "free_reserved_area" instead
+of "memblock_free".
+For example:
+[    0.294848] Freeing initrd memory: 12K.
+[    0.696688] Freeing unused kernel memory: 4096K.
 
-Isn't this the same register as EXYNOS_CHIPID_REG_PRO_ID?
+To get the start and end address of the above freed memory and to account
+proper memblock added pr_debug log in "free_reserved_area".
+After adding log:
+[    0.294837] 0x00000083600000-0x00000083603000 free_initrd_mem+0x20/0x28
+[    0.294848] Freeing initrd memory: 12K.
+[    0.695246] 0x00000081600000-0x00000081a00000 free_initmem+0x70/0xc8
+[    0.696688] Freeing unused kernel memory: 4096K.
 
-> +	if (ret < 0)
-> +		return ret;
-> +	main_rev = (val >> data->main_rev_shift) & EXYNOS_REV_PART_MASK;
-> +	sub_rev = (val >> data->sub_rev_shift) & EXYNOS_REV_PART_MASK;
-> +	soc_info->revision = (main_rev << EXYNOS_REV_PART_SHIFT) | sub_rev;
-> +
-> +	return 0;
-> +}
-> +
->  static int exynos_chipid_probe(struct platform_device *pdev)
->  {
-> +	const struct exynos_chipid_variant *drv_data;
-> +	struct exynos_chipid_info soc_info;
->  	struct soc_device_attribute *soc_dev_attr;
->  	struct soc_device *soc_dev;
->  	struct device_node *root;
->  	struct regmap *regmap;
-> -	u32 product_id;
-> -	u32 revision;
->  	int ret;
->  
-> +	drv_data = of_device_get_match_data(&pdev->dev);
-> +	if (!drv_data)
-> +		return -EINVAL;
-> +
->  	regmap = device_node_to_regmap(pdev->dev.of_node);
->  	if (IS_ERR(regmap))
->  		return PTR_ERR(regmap);
->  
-> -	ret = regmap_read(regmap, EXYNOS_CHIPID_REG_PRO_ID, &product_id);
-> +	ret = exynos_chipid_get_chipid_info(regmap, drv_data, &soc_info);
->  	if (ret < 0)
->  		return ret;
->  
-> -	revision = product_id & EXYNOS_REV_MASK;
-> -
->  	soc_dev_attr = devm_kzalloc(&pdev->dev, sizeof(*soc_dev_attr),
->  				    GFP_KERNEL);
->  	if (!soc_dev_attr)
-> @@ -86,8 +122,8 @@ static int exynos_chipid_probe(struct platform_device *pdev)
->  	of_node_put(root);
->  
->  	soc_dev_attr->revision = devm_kasprintf(&pdev->dev, GFP_KERNEL,
-> -						"%x", revision);
-> -	soc_dev_attr->soc_id = product_id_to_soc_id(product_id);
-> +						"%x", soc_info.revision);
-> +	soc_dev_attr->soc_id = product_id_to_soc_id(soc_info.product_id);
->  	if (!soc_dev_attr->soc_id) {
->  		pr_err("Unknown SoC\n");
->  		return -ENODEV;
-> @@ -106,7 +142,7 @@ static int exynos_chipid_probe(struct platform_device *pdev)
->  
->  	dev_info(soc_device_to_device(soc_dev),
->  		 "Exynos: CPU[%s] PRO_ID[0x%x] REV[0x%x] Detected\n",
-> -		 soc_dev_attr->soc_id, product_id, revision);
-> +		 soc_dev_attr->soc_id, soc_info.product_id, soc_info.revision);
->  
->  	return 0;
->  
-> @@ -125,9 +161,18 @@ static int exynos_chipid_remove(struct platform_device *pdev)
->  	return 0;
->  }
->  
-> +static const struct exynos_chipid_variant exynos4210_chipid_drv_data = {
-> +	.rev_reg	= 0x0,
-> +	.main_rev_shift	= 0,
-> +	.sub_rev_shift	= 4,
+Signed-off-by: Faiyaz Mohammed <faiyazm@codeaurora.org>
+---
+changes in v3:
+	- Update the format specifier.
+changes in v2:
+	- To avoid confusion, remove the memblock_dbg print and drop the
+	memblock_free string, now using pr_debug to print the address ranges.
 
-The code does not look correct here. Subrev is at 0:3 bits, mainrev is
-at 4:7.
+ mm/page_alloc.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-Did you test it that it produces same result? Looks not - I gave it a
-try and got wrong revision.
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index b37435c..13adda5 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -8097,6 +8097,8 @@ EXPORT_SYMBOL(adjust_managed_page_count);
+ 
+ unsigned long free_reserved_area(void *start, void *end, int poison, const char *s)
+ {
++	const phys_addr_t pstart = __pa(start);
++	const phys_addr_t pend = __pa(end);
+ 	void *pos;
+ 	unsigned long pages = 0;
+ 
+@@ -8125,9 +8127,12 @@ unsigned long free_reserved_area(void *start, void *end, int poison, const char
+ 		free_reserved_page(page);
+ 	}
+ 
+-	if (pages && s)
++	if (pages && s) {
+ 		pr_info("Freeing %s memory: %ldK\n",
+ 			s, pages << (PAGE_SHIFT - 10));
++		pr_debug("[%pa-%pa] %pS\n", &pstart, &pend,
++			(void *)__RET_IP_);
++	}
+ 
+ 	return pages;
+ }
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
+member of the Code Aurora Forum, hosted by The Linux Foundation
 
-
-Best regards,
-Krzysztof
