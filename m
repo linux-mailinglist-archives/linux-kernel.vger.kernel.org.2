@@ -2,116 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE02E42E026
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 19:37:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D98342E028
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 19:38:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233539AbhJNRjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 13:39:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55062 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232389AbhJNRjK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 13:39:10 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC75CC061570
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 10:37:04 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id p16so30455470lfa.2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 10:37:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TG82cb8k19zHpAL9FdWnZQlAfRFvy8vXZs/tg7DrT90=;
-        b=PsYmOwIaA6SW28RHw4uShKZGnUBkMKs5xKslaJXBr801sbw6wiPu2+L2JyB6DSwZMn
-         jRE77P/1DkPtFqr5hKnI+RM5TVXsQmOElVICMdwkGCzCY4bKx9GSImX5JFo1w1L/QBOv
-         BIcViMM5K+csDr3heoSxISZSSMzT38x6HxyXs2xx26x/LgeTtqVwhc1PTrKMgQ9v0YrX
-         ifBytItD9R1TTuGkFi67XEWRwfZYEBwUfEyER6+lGiSqowv/t+cCtM09Z+X4y0YFL0I0
-         Bsq1kvylyj6Yspqkm1MT/vp3J+1ybR/3Df6nldo5NAHLVoVXtBBy41gOo6XQ+mdYVvUS
-         Yifg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TG82cb8k19zHpAL9FdWnZQlAfRFvy8vXZs/tg7DrT90=;
-        b=2miHR0IX1fF/+gASLPtVCn/NTlDYDdGLcCKLXNHc5D6HzEzdFT7B+HlbK1Icvv1fV4
-         2d2OtLIElycQ9PVNH3GWzLMEePwuXxO6K844yH1Um8MlTQbQff4v1ekJE1f0yVjA2KFi
-         EIOR+Fi5vHAZ4bvDAGfhlUdKPRuIqI/Q82hcFQgmcMLGABBy+FDTmKZBl50uL1Gy3AiS
-         njYeHaZmODPvcuacvLtim1dV/AuHoiPOgvVsxedjbxo0pVtEJ3x5+rEuP2RXkrmUaU99
-         fd24TI1rUpqV59bWnthheOMw8NnHksBuHTKycftDGAuRWI4ug/1MqVS4b6JuYX2KNcuz
-         mdyA==
-X-Gm-Message-State: AOAM530aRMPL6Q/03Mu8tGYxSrvv0Nf5YRPGqe73pDSbnjVj6HKV3U1a
-        I8wHjvxASOhqvHGxJrVG1kZWG7PwGLj5B+NwSm0njw==
-X-Google-Smtp-Source: ABdhPJwLuGDqGNdh9VmnJlwA9ickYFs0m0NfCTWjKYsobjDvnlHNs6x3zmHGmKGPD9Yqp98LaxnCTLwfD0UtGenptcg=
-X-Received: by 2002:a05:6512:1103:: with SMTP id l3mr6353419lfg.550.1634233022848;
- Thu, 14 Oct 2021 10:37:02 -0700 (PDT)
+        id S233555AbhJNRkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 13:40:39 -0400
+Received: from meesny.iki.fi ([195.140.195.201]:58788 "EHLO meesny.iki.fi"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233552AbhJNRki (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 13:40:38 -0400
+Received: from groot.intra.skream.org (mobile-user-2e84bd-76.dhcp.inet.fi [46.132.189.76])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: pekka.korpinen)
+        by meesny.iki.fi (Postfix) with ESMTPSA id 5DEF820054;
+        Thu, 14 Oct 2021 20:38:31 +0300 (EEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=meesny;
+        t=1634233111;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=q8+w7okSOx/BOQbKgOezP2IcqpFc5kkNNTtE4GU2tNM=;
+        b=PPpG0Im+ZeXouQ6uCp62sDUMtmwNlZ+ZXbZw1Xlw8nAQmcvaCAsIvyNHTNbyembmXe2iwj
+        NZH2B/XhELK2L5OzxKfI7zqJ5IJ+5KqDNvsLe4a9ZCDZOwjoQWDdrHBzccGKCIWdXmy3k/
+        z5CDdEQX0S3dXVcFt2Iywj5LkJOi5IA=
+From:   Pekka Korpinen <pekka.korpinen@iki.fi>
+Cc:     Pekka Korpinen <pekka.korpinen@iki.fi>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Jean-Francois Dagenais <jeff.dagenais@gmail.com>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 RESEND] iio: dac: ad5446: Fix ad5622_write() return value
+Date:   Thu, 14 Oct 2021 20:37:38 +0300
+Message-Id: <20211014173738.2446-1-pekka.korpinen@iki.fi>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-References: <20211014132331.GA4811@kernel.org>
-In-Reply-To: <20211014132331.GA4811@kernel.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 14 Oct 2021 10:36:51 -0700
-Message-ID: <CAKwvOdntTcMdXKCYLjPnNxgxMZTZWRFOsMEMp0MQSCoz30mOMg@mail.gmail.com>
-Subject: Re: [PATCH] compiler_types: mark __compiletime_assert failure as __noreturn
-To:     Miguel Ojeda <ojeda@kernel.org>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        Marc Zyngier <maz@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+ARC-Authentication-Results: i=1;
+        ORIGINATING;
+        auth=pass smtp.auth=pekka.korpinen smtp.mailfrom=pekka.korpinen@iki.fi
+ARC-Seal: i=1; s=meesny; d=iki.fi; t=1634233111; a=rsa-sha256; cv=none;
+        b=vKuDbYDbq8iU6jE2Hfw1xELLKCxsYVlJYaPz5XPfW5YKRuLURpkPnrbVMmzN7ipy+bW7pR
+        YaADd6xt9FWjyPAFlEDhMhI80nHegMRzlafI7rg2nXVmasTrAqN9rBK9Ci/vEZ77GjdU3E
+        o8srsSYmkykEfs0a0us7ArtwHClFU2I=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
+        s=meesny; t=1634233111;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=q8+w7okSOx/BOQbKgOezP2IcqpFc5kkNNTtE4GU2tNM=;
+        b=aPaJ7qRs6m73yrtx7gbPW96SK1nq+LpNXeoHhCAFgR3Pe0sLO51vJvXg2ZcBn2rRBUToDA
+        DmOv0v4GuCT3kDK3hyTl/jN+IB6SAC7thcsNMiB5VQH5OpakAR/t4Hyg7zPzRiB+iKN15Q
+        0CLHp7AU8vf8/90C0VCpgEatCjvO4Yo=
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 6:25 AM Miguel Ojeda <ojeda@kernel.org> wrote:
->
-> `__compiletime_assert` declares a fake `extern` function
-> which appears (to the compiler) to be called when the test fails.
->
-> Therefore, compilers may emit possibly-uninitialized warnings
-> in some cases, even if it will be an error anyway (for compilers
-> supporting the `error` attribute, e.g. GCC and Clang >= 14)
-> or a link failure (for those that do not, e.g. Clang < 14).
->
-> Annotating the fake function as `__noreturn` gives them
-> the information they need to avoid the warning,
-> e.g. see https://godbolt.org/z/x1v69jjYY.
+On success i2c_master_send() returns the number of bytes written. The
+call from iio_write_channel_info(), however, expects the return value to
+be zero on success.
 
-Thanks for the patch!
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+This bug causes incorrect consumption of the sysfs buffer in
+iio_write_channel_info(). When writing more than two characters to
+out_voltage0_raw, the ad5446 write handler is called multiple times
+causing unexpected behavior.
 
->
-> Link: https://lore.kernel.org/llvm/202110100514.3h9CI4s0-lkp@intel.com/
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
-> ---
->  include/linux/compiler_types.h | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
->
-> diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
-> index b6ff83a714ca..ca1a66b8cd2f 100644
-> --- a/include/linux/compiler_types.h
-> +++ b/include/linux/compiler_types.h
-> @@ -298,7 +298,13 @@ struct ftrace_likely_data {
->  #ifdef __OPTIMIZE__
->  # define __compiletime_assert(condition, msg, prefix, suffix)          \
->         do {                                                            \
-> -               extern void prefix ## suffix(void) __compiletime_error(msg); \
-> +               /*                                                      \
-> +                * __noreturn is needed to give the compiler enough     \
-> +                * information to avoid certain possibly-uninitialized  \
-> +                * warnings (regardless of the build failing).          \
-> +                */                                                     \
-> +               __noreturn extern void prefix ## suffix(void)           \
-> +                       __compiletime_error(msg);                       \
->                 if (!(condition))                                       \
->                         prefix ## suffix();                             \
->         } while (0)
-> --
-> 2.33.1
->
->
+Fixes: 3ec36a2cf0d5 ("iio:ad5446: Add support for I2C based DACs")
+Signed-off-by: Pekka Korpinen <pekka.korpinen@iki.fi>
+---
+v1->v2: Check against expected result, otherwise -EIO. Add Fixes tag.
 
+A similar bug was fixed for ad5064.c in 2015 - commit 03fe472ef33b
+("iio:ad5064: Make sure ad5064_i2c_write() returns 0 on success").
 
+ drivers/iio/dac/ad5446.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/iio/dac/ad5446.c b/drivers/iio/dac/ad5446.c
+index 488ec69967d6..e50718422411 100644
+--- a/drivers/iio/dac/ad5446.c
++++ b/drivers/iio/dac/ad5446.c
+@@ -531,8 +531,15 @@ static int ad5622_write(struct ad5446_state *st, unsigned val)
+ {
+ 	struct i2c_client *client = to_i2c_client(st->dev);
+ 	__be16 data = cpu_to_be16(val);
++	int ret;
++
++	ret = i2c_master_send(client, (char *)&data, sizeof(data));
++	if (ret < 0)
++		return ret;
++	if (ret != sizeof(data))
++		return -EIO;
+ 
+-	return i2c_master_send(client, (char *)&data, sizeof(data));
++	return 0;
+ }
+ 
+ /*
 -- 
-Thanks,
-~Nick Desaulniers
+2.33.0
+
