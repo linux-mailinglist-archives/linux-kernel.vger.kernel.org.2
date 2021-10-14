@@ -2,74 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C23642E3DC
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 23:52:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 822CE42E3DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 23:54:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233872AbhJNVyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 17:54:33 -0400
-Received: from mail-ot1-f49.google.com ([209.85.210.49]:46725 "EHLO
-        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232055AbhJNVyb (ORCPT
+        id S234162AbhJNV4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 17:56:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56854 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232055AbhJNV4v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 17:54:31 -0400
-Received: by mail-ot1-f49.google.com with SMTP id 62-20020a9d0a44000000b00552a6f8b804so9535457otg.13;
-        Thu, 14 Oct 2021 14:52:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0/BT3WQEIvQc0ky9Gu6Qly3eAQt86CTZ0AQ8niA71G8=;
-        b=VavJ0ccLOlOof7J0FKCG04WJFO8Q6UPHCkwoQrSo9Ey60na8YwA3WYQz0LCL9cPqj8
-         2hDX2sxHFHTuMNHwIlMROsRb1KrLOrd/RGTu60YMq9KWHvsq90L87YEEVVkfuP36CJcl
-         CaXUSumAGcdScjoMXfYQsmE7mAr73xg9tUcbTt3WSQuKiaSKfDYDbrwHTteiIztMonK3
-         gL+s0/7OFqDODhITySKkx88WFVmfb3fPlposMpbdV/k+a/+5CtpMy8ZokCAHCuPgIKuY
-         j/gaygcJ+hVjxaLD+Ga/E4Xw5qpWCqBs4ysCXwOgFkqtcm3yb1/CBRi2Ul20A8nxgYZu
-         /a2A==
-X-Gm-Message-State: AOAM530MS5aGot+rgojy0V+zW9rae7Gn8iIGwloE8I+0NYAgDAFUTHHb
-        DM2LmVY9y/sOZIheWrAwhw==
-X-Google-Smtp-Source: ABdhPJyYFYcLNH05w3U2mp4FRFrX8XJFWQjh+gp9HpDJ4jmhvvqez4YWqCoB/P4icG92eBZzupGd9Q==
-X-Received: by 2002:a05:6830:4027:: with SMTP id i7mr4792877ots.275.1634248345874;
-        Thu, 14 Oct 2021 14:52:25 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id q133sm813026oia.55.2021.10.14.14.52.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Oct 2021 14:52:25 -0700 (PDT)
-Received: (nullmailer pid 4012195 invoked by uid 1000);
-        Thu, 14 Oct 2021 21:52:24 -0000
-Date:   Thu, 14 Oct 2021 16:52:24 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v5 7/9] dt-bindings: memory: tegra20: emc: Document new
- LPDDR2 sub-node
-Message-ID: <YWimmE+DMtLpRmEU@robh.at.kernel.org>
-References: <20211006224659.21434-1-digetx@gmail.com>
- <20211006224659.21434-8-digetx@gmail.com>
+        Thu, 14 Oct 2021 17:56:51 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E82CC061570;
+        Thu, 14 Oct 2021 14:54:46 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2804:14c:124:8a08::1007])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: krisman)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 869B11F44F68;
+        Thu, 14 Oct 2021 22:54:44 +0100 (BST)
+From:   Gabriel Krisman Bertazi <krisman@collabora.com>
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     Shreeya Patel <shreeya.patel@collabora.com>,
+        viro@zeniv.linux.org.uk, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel@collabora.com
+Subject: Re: [PATCH 2/2] fs: ext4: Fix the inconsistent name exposed by
+ /proc/self/cwd
+Organization: Collabora
+References: <cover.1632909358.git.shreeya.patel@collabora.com>
+        <8402d1c99877a4fcb152de71005fa9cfb25d86a8.1632909358.git.shreeya.patel@collabora.com>
+        <YVdWW0uyRqYWSgVP@mit.edu> <8735pk5zml.fsf@collabora.com>
+        <YVe0HS8HM48LDUDS@mit.edu>
+Date:   Thu, 14 Oct 2021 18:54:31 -0300
+In-Reply-To: <YVe0HS8HM48LDUDS@mit.edu> (Theodore Ts'o's message of "Fri, 1
+        Oct 2021 21:21:33 -0400")
+Message-ID: <8735p3gtm0.fsf@collabora.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211006224659.21434-8-digetx@gmail.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 07 Oct 2021 01:46:57 +0300, Dmitry Osipenko wrote:
-> Some Tegra20 boards don't have RAM code stored in NVMEM, which is used for
-> the memory chip identification and the identity information should be read
-> out from LPDDR2 chip in this case. Document new sub-node containing generic
-> LPDDR2 properties that will be used for the memory chip identification if
-> RAM code isn't available. The identification is done by reading out memory
-> configuration values from generic LPDDR2 mode registers of SDRAM chip and
-> comparing them with the values of device-tree 'lpddr2' sub-node.
-> 
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  .../nvidia,tegra20-emc.yaml                   | 23 +++++++++++++++++--
->  1 file changed, 21 insertions(+), 2 deletions(-)
-> 
+"Theodore Ts'o" <tytso@mit.edu> writes:
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+> On Fri, Oct 01, 2021 at 03:11:30PM -0400, Gabriel Krisman Bertazi wrote:
+>> 
+>> The dcache name is exposed in more places, like /proc/mounts.  We have a
+>> bug reported against flatpak where its initialization code bind mounts a
+>> directory that was previously touched with a different case combination,
+>> and then checks /proc/mounts in a case-sensitive way to see if the mount
+>> succeeded.  This code now regresses on CI directories because the name
+>> it asked to bind mount is not found in /proc/mounts.
+>
+> Ah, thanks for the context.  That makes sense.
+>
+>> I think the more reasonable approach is to save the disk exact name on
+>> the dcache, because that is the only version that doesn't change based
+>> on who won the race for the first lookup.
+>
+> What about the alternative of storing the casefolded name?  The
+> advantage of using the casefolded name is that we can always casefold
+> the name, where as in the case of a negative dentry, there is no disk
+> exact name to use (since by definition there is no on-disk name).
+
+That would work.  The casefolded version is always predictable (since
+unicode is stable) and even though is not as easily available as the
+disk name function (getdents), it solves the issue.
+
+It would also allow us to use utf8_strncasecmp_folded in the d_compare
+hook, which is nice.
+
+Do you have an implementation suggestion to solve the dcache issue
+pointed by Viro?
+
+-- 
+Gabriel Krisman Bertazi
