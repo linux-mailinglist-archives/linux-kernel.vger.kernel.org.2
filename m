@@ -2,194 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA05F42DEF9
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 18:14:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00B3A42DEFC
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 18:14:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231867AbhJNQQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 12:16:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36322 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229823AbhJNQQ2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 12:16:28 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 736C7C061570
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 09:14:23 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id ls18-20020a17090b351200b001a00250584aso7299453pjb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 09:14:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=NyW7J3fGaetabJGlg55KQ2jz0KhoAMqc4PRWGXhXp9U=;
-        b=hmeN3UF0kXwn7N7/4WKvMyhvdrui1DF0GouB+UKzYWgSEYJ27YZhrK28k1lZkO+KVY
-         9xexWIbV5z4DLvwstb7yqCn/TDgNIBBMAaVqJYiEXjpMHG5YarZSaEnKNUhNpCQnXV3a
-         aVamiLvnUiwvYoX098saL5rXFP17t31180jk8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NyW7J3fGaetabJGlg55KQ2jz0KhoAMqc4PRWGXhXp9U=;
-        b=1ejjKPPDekZzYBpTFDq3WqbwvIlVFqXSMOeBn0bZyMZjl0yYFvCBhN0AdyXaBW0IN6
-         9F8BWeG+UfkDQbfayeDUWoWybDSPn8za1lQX5JezcmgCMduBxcjHqnQ9GPy+1uQHOAcc
-         qEo/vlJn62gzhdcI8cykENmG7T8UwP1ENeS03xAO/8xxwmNYay1mVFhgE+3hGriRkAmY
-         ajRqJs91DuW8k/v56mnYIvvwr03bR/c0p7Auh/67ipyemWg2vQpYaSE06AKLGe5lnNW2
-         yxNG/7zm6lFJCy8uMxjFIIPj/Vqgoj0oQLED+yOGwQM/eZg2ZpASIFsrGV2atpfcgxQa
-         2f6Q==
-X-Gm-Message-State: AOAM533U6W6a+J8czZN3Xa2hvfnzgdIyYKa8bMnvZmfw5q2/0OqkQQc8
-        YkaZyaQR0R390I236cBAn046eQ==
-X-Google-Smtp-Source: ABdhPJwEAm3/wxLMfpYc1ofSDs5cRduehiISnlbIyNaRJEThyJZu4wkWpPWLh5RgtuS+6mUERlN8kg==
-X-Received: by 2002:a17:90a:d58b:: with SMTP id v11mr7059544pju.207.1634228062854;
-        Thu, 14 Oct 2021 09:14:22 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id z4sm3040338pfz.99.2021.10.14.09.14.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Oct 2021 09:14:22 -0700 (PDT)
-Date:   Thu, 14 Oct 2021 09:14:21 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        acme <acme@kernel.org>, rostedt <rostedt@goodmis.org>,
-        kernel test robot <oliver.sang@intel.com>,
-        0day robot <lkp@intel.com>, Petr Mladek <pmladek@suse.com>,
+        id S232552AbhJNQQl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 12:16:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51952 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233058AbhJNQQf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 12:16:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 695F46101E;
+        Thu, 14 Oct 2021 16:14:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634228070;
+        bh=qo6tZ2DoMx9mlcGHtKEdoGaRYAsljJlY+m6yn8oabWw=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=umYUGmF0sP/nDt7cBsKHYXC8xWq3hFpctWQfZunc5Se9Axdiq5N4K4KBSyB4aPVqZ
+         2J5cypRkg4mGfTkWixJ4NaWbm8rywHuuQm+t7cgr0cQKh3aZUG6eGtHtsK+TAQTIbx
+         u2qOz5+jKwU2+puRmZRdUmTxR7CWY8iG3GBnf+iW1SntJ7ucldhffdfZwZRBWgA/X+
+         35aqMZPtqJTdLJ5C/lo1AhrzxiOl5DTSUYtlnU00pGCbNU1lfYdl/NFEjS/ER/26Z1
+         pcrTfYsZ5fjHJkz8bee/Vd5dWXY4lV4Uyx6uurTc7cqqvO1oCqxp82nY7KKBNbeX2D
+         L9OYZJpHUfyUA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 3013A5C04CF; Thu, 14 Oct 2021 09:14:30 -0700 (PDT)
+Date:   Thu, 14 Oct 2021 09:14:30 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     Florian Weimer <fw@deneb.enyo.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Segher Boessenkool <segher@kernel.crashing.org>,
+        Will Deacon <will@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
         linux-kernel <linux-kernel@vger.kernel.org>,
-        lkp <lkp@lists.01.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Qiang Zhang <qiang.zhang@windriver.com>,
-        robdclark <robdclark@chromium.org>,
-        christian <christian@brauner.io>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        bristot <bristot@redhat.com>,
-        aubrey li <aubrey.li@linux.intel.com>,
-        yu c chen <yu.c.chen@intel.com>
-Subject: Re: [sched.h] 317419b91e:
- perf-sanity-tests.Parse_sched_tracepoints_fields.fail
-Message-ID: <202110140910.295E856@keescook>
-References: <20211010102429.99577-4-laoar.shao@gmail.com>
- <20211014072707.GA18719@xsang-OptiPlex-9020>
- <CALOAHbD540exB5DDfB8DDh8WXvsag9JsdMmC0yxriWMaoAVfOg@mail.gmail.com>
- <1529739526.13983.1634215325995.JavaMail.zimbra@efficios.com>
- <CALOAHbDGH1vp7a9BYLDKCCrh-W2205O707LXNM+Yvt5tQ7Swag@mail.gmail.com>
- <173454728.14036.1634216949862.JavaMail.zimbra@efficios.com>
- <CALOAHbBTxLvuiuT4tT2_7C+jaXBoh0uTjzLRm+njO4tKxCtPwg@mail.gmail.com>
- <1171592945.14099.1634219447199.JavaMail.zimbra@efficios.com>
- <CALOAHbAhT1bTAThrmA1zYE5q8shR4dxZf5fqcq_9wVrV+XwVEQ@mail.gmail.com>
+        Andrea Parri <parri.andrea@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        j alglave <j.alglave@ucl.ac.uk>,
+        luc maranget <luc.maranget@inria.fr>,
+        akiyks <akiyks@gmail.com>,
+        linux-toolchains <linux-toolchains@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>
+Subject: Re: [RFC PATCH] LKMM: Add ctrl_dep() macro for control dependency
+Message-ID: <20211014161430.GC880162@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210928211507.20335-1-mathieu.desnoyers@efficios.com>
+ <87lf3f7eh6.fsf@oldenburg.str.redhat.com>
+ <20210929174146.GF22689@gate.crashing.org>
+ <2088260319.47978.1633104808220.JavaMail.zimbra@efficios.com>
+ <871r54ww2k.fsf@oldenburg.str.redhat.com>
+ <CAHk-=wgexLqNnngLPts=wXrRcoP_XHO03iPJbsAg8HYuJbbAvw@mail.gmail.com>
+ <87y271yo4l.fsf@mid.deneb.enyo.de>
+ <20211014000104.GX880162@paulmck-ThinkPad-P17-Gen-1>
+ <20211014021431.GA910341@rowland.harvard.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CALOAHbAhT1bTAThrmA1zYE5q8shR4dxZf5fqcq_9wVrV+XwVEQ@mail.gmail.com>
+In-Reply-To: <20211014021431.GA910341@rowland.harvard.edu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 10:40:04PM +0800, Yafang Shao wrote:
-> On Thu, Oct 14, 2021 at 9:50 PM Mathieu Desnoyers
-> <mathieu.desnoyers@efficios.com> wrote:
-> >
-> > ----- On Oct 14, 2021, at 9:11 AM, Yafang Shao laoar.shao@gmail.com wrote:
-> >
-> > > On Thu, Oct 14, 2021 at 9:09 PM Mathieu Desnoyers
-> > > <mathieu.desnoyers@efficios.com> wrote:
-> > >>
-> > >> ----- On Oct 14, 2021, at 9:05 AM, Yafang Shao laoar.shao@gmail.com wrote:
-> > >> [...]
-> > >> >> If it happens that this ABI break is noticed by more than an in-tree test
-> > >> >> program, then
-> > >> >> the kernel's ABI rules will require that this trace field size stays unchanged.
-> > >> >> This brings
-> > >> >> up once more the whole topic of "Tracepoints ABI" which has been discussed
-> > >> >> repeatedly in
-> > >> >> the past.
-> > >> >>
-> > >> >
-> > >> > I will check if any other in-tree tools depends on TASK_COMM_LEN.
-> > >>
-> > >> That's a start, but given this is a userspace ABI, out-of-tree userland
-> > >> tools which depend of this to be fixed-size are also relevant.
-> > >>
-> > >
-> > > TASK_COMM_LEN isn't defined in include/uapi/ directory, so it seems
-> > > that it isn't the uerspace ABI?
-> >
-> > One case where this 16 bytes size is expected by userspace is prctl(2) PR_GET_NAME
-> > and PR_SET_NAME.
-> >
+On Wed, Oct 13, 2021 at 10:14:31PM -0400, Alan Stern wrote:
+> On Wed, Oct 13, 2021 at 05:01:04PM -0700, Paul E. McKenney wrote:
+> > On Sun, Oct 10, 2021 at 04:02:02PM +0200, Florian Weimer wrote:
+> > > * Linus Torvalds:
+> > > 
+> > > > On Fri, Oct 1, 2021 at 9:26 AM Florian Weimer <fweimer@redhat.com> wrote:
+> > > >>
+> > > >> Will any conditional branch do, or is it necessary that it depends in
+> > > >> some way on the data read?
+> > > >
+> > > > The condition needs to be dependent on the read.
+> > > >
+> > > > (Easy way to see it: if the read isn't related to the conditional or
+> > > > write data/address, the read could just be delayed to after the
+> > > > condition and the store had been done).
+> > > 
+> > > That entirely depends on how the hardware is specified to work.  And
+> > > the hardware could recognize certain patterns as always producing the
+> > > same condition codes, e.g., AND with zero.  Do such tests still count?
+> > > It depends on what the specification says.
+> > > 
+> > > What I really dislike about this: Operators like & and < now have side
+> > > effects, and is no longer possible to reason about arithmetic
+> > > expressions in isolation.
+> > 
+> > Is there a reasonable syntax that might help with these issues?
+> > 
+> > Yes, I know, we for sure have conflicting constraints on "reasonable"
+> > on copy on this email.  What else is new?  ;-)
+> > 
+> > I could imagine a tag of some sort on the load and store, linking the
+> > operations that needed to be ordered.  You would also want that same
+> > tag on any conditional operators along the way?  Or would the presence
+> > of the tags on the load and store suffice?
 > 
-> the prctl(2) man page says that:
-> : PR_SET_NAME
-> :        If the length of the string, including the terminating
-> :        null byte, exceeds 16 bytes, the string is silently truncated.
-> : PR_GET_NAME
-> :         The buffer should allow space for up to 16 bytes
-> :          the returned string will be null-terminated.
+> Here's a easy cop-out.  Imagine a version of READ_ONCE that is 
+> equivalent to:
 > 
-> As the string returned to user space is null-terminated, extending
-> task comm won't break the prctl(2) user code.
-
-If userspace was:
-
-	char comm[16];
-	int important_values;
-
-	...
-
-	prctl(PR_GET_NAME, pid, comm);
-
-the kernel will clobber "important_values", so prctl() must enforce the
-old size (and terminate it correctly). It's not okay for us to expect
-that userspace get recompiled -- old binaries must continue to work
-correctly on kernel kernels.
-
-        case PR_GET_NAME:
-                get_task_comm(comm, me);
-                if (copy_to_user((char __user *)arg2, comm, sizeof(comm)))
-                        return -EFAULT;
-                break;
-
-This looks like it needs to be explicitly NUL terminated at 16 as well.
-
-I'd say we need a TASK_COMM_LEN_V1 to use in all the old hard-coded
-places.
-
--Kees
-
+> 	a normal READ_ONCE on TSO architectures,
 > 
-> > The other case I am referring to is with ftrace and perf:
-> >
-> > mount -t tracefs nodev /sys/kernel/tracing
-> > cat /sys/kernel/tracing/events/sched/sched_switch/format
-> >
-> > name: sched_switch
-> > ID: 314
-> > format:
-> > [...]
-> >         field:char prev_comm[16];       offset:8;       size:16;        signed:1;
-> > [...]
-> >         field:char next_comm[16];       offset:40;      size:16;        signed:1;
-> >
-> > Both of those fields expose a fixed-size of 16 bytes.
-> >
-> > AFAIK Steven's intent was that by parsing this file, trace viewers could adapt to
-> > changes in the event field layout. Unfortunately, there have been cases where
-> > trace viewers had a hard expectation on the field layout. Hopefully those have
-> > all been fixed a while ago.
-> >
+> 	a load-acquire on more weakly ordered architectures.
 > 
-> I don't have a clear idea what will happen to trace viewers if we
-> extend task comm.
+> Call it READ_ONCE_FOR_COND, for the sake of argument.  Then as long as 
+> people are careful to use READ_ONCE_FOR_COND when loading the values 
+> that a conditional expression depends on, and WRITE_ONCE for the 
+> important stores in the branches of the "if" statement, all 
+> architectures will have the desired ordering.  (In fact, if there are 
+> multiple loads involved in the condition then only the last one has to 
+> be READ_ONCE_FOR_COND; the others can just be READ_ONCE.)
 > 
-> Steven, do you have any suggestions ?
-> 
-> -- 
-> Thanks
-> Yafang
+> Of course, this is not optimal on non-TSO archictecture.  That's why I 
+> called it a cop-out.  But at least it is simple and easy.
 
--- 
-Kees Cook
+That is the ARMv8 approach in CONFIG_LTO=y kernels.  ;-)
+
+							Thanx, Paul
