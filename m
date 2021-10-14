@@ -2,120 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48F3642D938
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 14:23:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A693A42D93B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 14:24:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231558AbhJNMZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 08:25:29 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:42224 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229912AbhJNMZ2 (ORCPT
+        id S231580AbhJNM0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 08:26:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39390 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229912AbhJNM0R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 08:25:28 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1634214202;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YwI7m0J6NAsfOtaqDDCa38Lq/fRTd3LlM1uOlxJdIdo=;
-        b=rFtJCGEuXURyoUtpGRqElZVniK+OUx4a9u7Ua4mNRONx/gI5Qm4MPn3EqnrXo5cq4LREO9
-        dtvubUEW+/V3vKsDbRV/1Gor7sWNCIXuW3M6IyRojrdhNXOjScYYZBJ8BTXgQYPuhLEv7e
-        M8lKuAWbX615oCOrL+i305aOqHGxzHgjsC0acipXPhGfL3RHhGRweXoQJgA8+bbaONIntz
-        V6jpY2wB9uUK7xM21sVhwmHaYjjzRG59coHY13w8KV84xGRfV1KbAKpxpA3DzEp7DaaTZl
-        7TkNIYFjn6OPp4KYZyRUMuU7muvshIZndac4wv/1Qa8BAY1WpZDihgdco8KZDA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1634214202;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YwI7m0J6NAsfOtaqDDCa38Lq/fRTd3LlM1uOlxJdIdo=;
-        b=4a0WVEMEljUmVdIc4eDWM0WwVnoCOUgiooA5+kF2pPMnfp5NcKoan4/HQJF3eH8CoIQe+8
-        ND4uIokZ4idgXcBg==
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        "Liu, Jing2" <jing2.liu@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     "x86@kernel.org" <x86@kernel.org>,
-        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "Nakajima, Jun" <jun.nakajima@intel.com>,
-        Jing Liu <jing2.liu@linux.intel.com>,
-        "seanjc@google.com" <seanjc@google.com>,
-        Andrew Cooper <andrew.cooper3@citrix.com>
-Subject: Re: [patch 13/31] x86/fpu: Move KVMs FPU swapping to FPU core
-In-Reply-To: <ec9c761d-4b5c-71e2-c1fc-d256b6b78c04@redhat.com>
-References: <871r4p9fyh.ffs@tglx>
- <ec9c761d-4b5c-71e2-c1fc-d256b6b78c04@redhat.com>
-Date:   Thu, 14 Oct 2021 14:23:21 +0200
-Message-ID: <875ytz7q2u.ffs@tglx>
+        Thu, 14 Oct 2021 08:26:17 -0400
+Received: from phobos.denx.de (phobos.denx.de [IPv6:2a01:238:438b:c500:173d:9f52:ddab:ee01])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1E49C061570;
+        Thu, 14 Oct 2021 05:24:12 -0700 (PDT)
+Received: from crub (pd95f1d7c.dip0.t-ipconnect.de [217.95.29.124])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: agust@denx.de)
+        by phobos.denx.de (Postfix) with ESMTPSA id DD87A8362B;
+        Thu, 14 Oct 2021 14:24:09 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+        s=phobos-20191101; t=1634214250;
+        bh=QmU2rqEKQ3dXNDZ9x0ZGC5r318El4iF000T+HRihIwI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=lwXB7fCcUaPIpC2i0tAyoiToGS1EzjVqtf2ujo0P15lDRdJX8N1wWLvaMiQ4YnrPR
+         INGS33DU99OFU+t4h55LOstPHmIkyKQ4WHdTcWQVkYcvmPvjacuZIJ4oWoNcEmbQ1P
+         M21hO5M925xsZLiP/KJIndGs6F/doozWP0/x39INafJVxlz/o+GlXEgG8G5mlpzVYM
+         Fg5FBLRTrS3te/N/8r6vz27eDimbiKS9wMN5gPuDi3hCjp93pO2YJ9dg0VrGm5WDLg
+         nV4GUKw0WZ8HXPvTQdUNjTniP4GWx4X8cXR5/wihocG9fZlluI0xZBKGb5ItgWuuz+
+         AkDvumkP4JR2w==
+Date:   Thu, 14 Oct 2021 14:24:09 +0200
+From:   Anatolij Gustschin <agust@denx.de>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        PowerPC <linuxppc-dev@lists.ozlabs.org>
+Subject: Re: linux-next: build warnings in Linus' tree
+Message-ID: <20211014142409.2b329ff1@crub>
+In-Reply-To: <CAK8P3a0yKvZW2-XFJtPORpa=FhG+UJgk=m0O1GiC_yLw+1Pfvw@mail.gmail.com>
+References: <20211008164728.30e3d3a3@canb.auug.org.au>
+        <20211011082704.3cff4568@canb.auug.org.au>
+        <CAL_JsqJE_GHnehBz-71BOGXfjm6q2p0u6FQA5KwO8zK_i1LpMQ@mail.gmail.com>
+        <CAK8P3a1EcNuxT-w-8w-HDr2+idsP=vFZ3Cn27fX7o56GOuu_Cg@mail.gmail.com>
+        <20211014001232.3becbe99@crub>
+        <CAK8P3a0yKvZW2-XFJtPORpa=FhG+UJgk=m0O1GiC_yLw+1Pfvw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Virus-Scanned: clamav-milter 0.103.2 at phobos.denx.de
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Paolo,
+On Thu, 14 Oct 2021 10:44:46 +0200
+Arnd Bergmann arnd@arndb.de wrote:
 
-On Thu, Oct 14 2021 at 08:50, Paolo Bonzini wrote:
-> On 13/10/21 16:06, Thomas Gleixner wrote:
->>> - the guest value stored in vcpu->arch.
->>>
->>> - the "QEMU" value attached to host_fpu.  This one only becomes zero if
->>> QEMU requires AMX (which shouldn't happen).
->> 
->> I don't think that makes sense.
->> 
->> First of all, if QEMU wants to expose AMX to guests, then it has to ask
->> for permission to do so as any other user space process. We're not going
->> to make that special just because.
+>On Thu, Oct 14, 2021 at 12:12 AM Anatolij Gustschin <agust@denx.de> wrote:
+>> On Tue, 12 Oct 2021 16:39:56 +0200
+>> Arnd Bergmann arnd@arndb.de wrote:
+>> ...  
+>> >Grant Likely was the original maintainer for MPC52xx until 2011,
+>> >Anatolij Gustschin is still listed as maintainer since then but hasn't
+>> >been active in it for a while either. Anatolij can probably best judge
+>> >which of these boards are still in going to be used with future kernels,
+>> >but I suspect once you start removing bits from 52xx, the newer
+>> >but less common 512x platform can go away as well.  
+>>
+>> many of these boards are still used, i.e. o2d*, digsy_mtc, tqm5200.  
 >
-> Hmm, I would have preferred if there was no need to enable AMX for the 
-> QEMU FPU.  But you're saying that guest_fpu needs to swap out to 
-> current->thread.fpu if the guest is preempted, which would require 
-> XFD=0; and affect QEMU operation as well.
+>Just for clarification, I assume when you say "still used" that implies
+>getting updated to new kernels rather than just running the old BSPs,
+>right?
 
-Exactly. If we don't enable it for QEMY itself, then this is creating
-just a horrible inconsistency which requires nasty hacks. I'm not at
-all interested in those as I just got rid of quite some and made the
-code consistent.
+yes, at least some of them. I used v5.4 kernel on digsy_mtc and
+tqm5200 last year, and v5.10 kernel is also known to work.
 
-> In principle I don't like it very much; it would be nicer to say "you 
-> enable it for QEMU itself via arch_prctl(ARCH_SET_STATE_ENABLE), and for 
-> the guests via ioctl(KVM_SET_CPUID2)".  But I can see why you want to 
-> keep things simple, so it's not a strong objection at all.
+>What are the typical distro release cycles for those machines
+>you list: do you move from one LTS kernel to the next each year,
+>or are they getting more sporadic over time?
 
-Errm.
+these machines are in embedded systems and do not get regular
+distro updates, therefore more sporadic over time.
 
-   qemu()
-     read_config()
-     if (dynamic_features_passthrough())
-	request_permission(feature)             <- prctl(ARCH_SET_STATE_ENABLE)
+>Do you expect the machines with the lowest memory such as the
+>32MB digsy to stop getting kernel updates before the others?
 
-     create_vcpu_threads()
-       ....
-
-       vcpu_thread()
-	 kvm_ioctl(ENABLE_DYN_FEATURE, feature) <- KVM ioctl
-
-That's what I lined out, right?
-
->> Anything else will just create more problems than it solves. Especially
->> #NM handling (think nested guest) and the XFD_ERR additive behaviour
->> will be a nasty playground and easy to get wrong.
->> 
->> Not having that at all makes life way simpler, right?
->
-> It is simpler indeed, and it makes sense to start simple.  I am not sure 
-> if it will hold, but I agree it's better for the first implementation.
-
-KISS is a very reasonable engineering principle :)
-
-If there is a real world use case and a proper technical justification
-for doing the dynamic buffer allocation then I'm happy to discuss that.
+No. There are also digsy variants with 256MiB DRAM.
 
 Thanks,
 
-        tglx
-
+Anatolij
