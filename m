@@ -2,493 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF25242DBE3
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:40:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA7C642DBF3
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:42:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231393AbhJNOms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 10:42:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42824 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229743AbhJNOmr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 10:42:47 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86475C061570
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 07:40:42 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id j21so28445855lfe.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 07:40:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=9wbp9KOUy7rHKUYRK00W3K4pTYPodLpBmDmb0LNYv6w=;
-        b=f7MXAuTx9bn2gNLP/aO38Pd2bfkSysU7A7gKPmce4ppe1+/yiSwn2cDiPV0FZYQBFJ
-         Gn0FNgEvtPvflf7BheuFe6yFgNm47gHsT3vJJ8SpNBBwb86Mgr+HPki1/BT/fLTa3PEK
-         ItiB7ZtD9Y5BGWkGvcual3HFwqPkUbyhuB8wKnrifNlNKG1fNQXWJd78ZcBneBRghI8F
-         1OZrNP3PXMWEAS+hoFko7a0qeTuKxi0ecvdtRQkLBpoYajDTKUwxT74PviC8L9b9TaK3
-         42wR8+U3jfaB/lWloXk/XUKzH3H56kmTxOPgZm00RbqfTjxV2+UzlMA9a+UAso9PIbYs
-         7S/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=9wbp9KOUy7rHKUYRK00W3K4pTYPodLpBmDmb0LNYv6w=;
-        b=NCkmJ7n6I8gMJuAELHP6T7zBb1ufy5vhXaHNA8Odc/4M+2OeVp4QivW+52HX3DOScp
-         +7WserAKlVvJP7CF3/23daYDxMNFPnXLK54XMo9XppLA520X5EThuWMobDbSVIC5G2Wf
-         71o8DbAfJxk1/JOecKfFnJ3cUbgy8+x40Cf3BO00STlk5HTiuWeCIrGiDgGkZq0GdRTF
-         PkhJ5uwpsbjfx/Fd21epVGiFbhLQ8p09MF/ynkyHd/s1N2T+6hQcHuYjDupzECU1SrWP
-         L9dmXgz43MAF3ttQM8frIs7mDLQlbK8iEwmEK9zONu7Y5l1jllIYVmHNDEV4Wgyay3+w
-         GZsA==
-X-Gm-Message-State: AOAM532fqX7yeDCX10uqV7EvScGlzv41Ov2uSbbwUKj/m0r0xYznnIra
-        AerA7jEf8kK6o6eD+Sy8d2zcG8+24FEasA==
-X-Google-Smtp-Source: ABdhPJybcJWcnhARDvZgxRm2W6SWKxtKCG5q9v/za/z6bPhWE6ws2lTwIVMjjNO3OR/7lY/mXXdpeQ==
-X-Received: by 2002:a05:651c:249:: with SMTP id x9mr6495739ljn.257.1634222440832;
-        Thu, 14 Oct 2021 07:40:40 -0700 (PDT)
-Received: from [192.168.1.211] ([37.153.55.125])
-        by smtp.gmail.com with ESMTPSA id s4sm241673lfs.235.2021.10.14.07.40.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Oct 2021 07:40:40 -0700 (PDT)
-Subject: Re: [PATCH v2 02/11] drm/msm/disp/dpu1: Add support for DSC
-To:     Vinod Koul <vkoul@kernel.org>, Rob Clark <robdclark@gmail.com>
-Cc:     linux-arm-msm@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org
-References: <20211007070900.456044-1-vkoul@kernel.org>
- <20211007070900.456044-3-vkoul@kernel.org>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Message-ID: <c9c77691-f6e8-576c-7e2d-a87295b13ba7@linaro.org>
-Date:   Thu, 14 Oct 2021 17:40:39 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S231675AbhJNOoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 10:44:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35760 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231286AbhJNOog (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 10:44:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C31EB60E96;
+        Thu, 14 Oct 2021 14:42:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634222551;
+        bh=fdhTS66TOVDzx8KtquiTV6pJu0VSd2p4ZibtwFJ6e5Q=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=AvOkMWb9LYqhw0j4orEhtR1txAXUInuvW633fDb+TQVhvDHap03TwlMBh2qeczBmX
+         Ri+keFSGIkgXFSdIzu6bwT8ZDurmK6KCVzLEjuLcxdwApgHUZQviQ5UyEsWYYUuTvf
+         4/usieL7klqmsowMa325ng3gVEAMlO5pCe5Fs9goSAZznNIBp52U193iFhgmzdpTZJ
+         WyMhMx1XpcRsNzqv9nWptrCchbmNa/kDub7PYlE/CkawK2hc5GCBIhgEBUL0/yyVGS
+         cZhLEpbgKIo7SxLlq1/WdGAVn3kv3DQHLa/xXplOKagpwkIv5mD7iXmgujx2tbmIYS
+         YSLqxysJQf+ww==
+Received: by mail-ed1-f52.google.com with SMTP id y12so26134968eda.4;
+        Thu, 14 Oct 2021 07:42:31 -0700 (PDT)
+X-Gm-Message-State: AOAM533nsQioKLxtF0k8k2P44gskUAIlJVMaHiJMoh74/y9878eh1tSK
+        Ezt1KaUX3t3S92HBSb65Jg1N70AIRs3IdbzKOQ==
+X-Google-Smtp-Source: ABdhPJxM5Uhcff7BCaGJHmbmB9JXZvWTU1yQyXDETewwjg/h9UtviGQRmtNS9N8T6a/ID0xDkhc7i4+bv61tRY4XgNk=
+X-Received: by 2002:a17:906:9399:: with SMTP id l25mr4245067ejx.363.1634222517021;
+ Thu, 14 Oct 2021 07:41:57 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20211007070900.456044-3-vkoul@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <20211013232048.16559-1-kabel@kernel.org>
+In-Reply-To: <20211013232048.16559-1-kabel@kernel.org>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Thu, 14 Oct 2021 09:41:44 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqJZC0G_SGfuK0zg8n+uPm5b1L44fo8axUbpvAAZ2b8tAQ@mail.gmail.com>
+Message-ID: <CAL_JsqJZC0G_SGfuK0zg8n+uPm5b1L44fo8axUbpvAAZ2b8tAQ@mail.gmail.com>
+Subject: Re: [PATCH RFC linux] dt-bindings: nvmem: Add binding for U-Boot
+ environment NVMEM provider
+To:     =?UTF-8?B?TWFyZWsgQmVow7pu?= <kabel@kernel.org>
+Cc:     devicetree@vger.kernel.org,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        U-Boot Mailing List <u-boot@lists.denx.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Luka Kovacic <luka.kovacic@sartura.hr>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/10/2021 10:08, Vinod Koul wrote:
-> Display Stream Compression (DSC) is one of the hw blocks in dpu, so add
-> support by adding hw blocks for DSC
-> 
-> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+On Wed, Oct 13, 2021 at 6:20 PM Marek Beh=C3=BAn <kabel@kernel.org> wrote:
+>
+> Add device tree bindings for U-Boot environment NVMEM provider.
+>
+> U-Boot environment can be stored at a specific offset of a MTD device,
+> EEPROM, MMC, NAND or SATA device, on an UBI volume, or in a file on a
+> filesystem.
+>
+> The environment can contain information such as device's MAC address,
+> which should be used by the ethernet controller node.
+>
+> Signed-off-by: Marek Beh=C3=BAn <kabel@kernel.org>
 > ---
-> Changes since
-> v1:
->   - remove unused variable lp
->   - Update copyright year
-> RFC:
->   - Drop unused enums
-> 
->   drivers/gpu/drm/msm/Makefile                  |   1 +
->   .../gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h    |  13 ++
->   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_dsc.c    | 210 ++++++++++++++++++
->   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_dsc.h    |  77 +++++++
->   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h   |  13 ++
->   5 files changed, 314 insertions(+)
->   create mode 100644 drivers/gpu/drm/msm/disp/dpu1/dpu_hw_dsc.c
->   create mode 100644 drivers/gpu/drm/msm/disp/dpu1/dpu_hw_dsc.h
-> 
-> diff --git a/drivers/gpu/drm/msm/Makefile b/drivers/gpu/drm/msm/Makefile
-> index 904535eda0c4..46c05e401d04 100644
-> --- a/drivers/gpu/drm/msm/Makefile
-> +++ b/drivers/gpu/drm/msm/Makefile
-> @@ -60,6 +60,7 @@ msm-y := \
->   	disp/dpu1/dpu_formats.o \
->   	disp/dpu1/dpu_hw_catalog.o \
->   	disp/dpu1/dpu_hw_ctl.o \
-> +	disp/dpu1/dpu_hw_dsc.o \
->   	disp/dpu1/dpu_hw_interrupts.o \
->   	disp/dpu1/dpu_hw_intf.o \
->   	disp/dpu1/dpu_hw_lm.o \
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h
-> index d2a945a27cfa..699c378814b1 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h
-> @@ -553,6 +553,16 @@ struct dpu_merge_3d_cfg  {
->   	const struct dpu_merge_3d_sub_blks *sblk;
->   };
->   
-> +/**
-> + * struct dpu_dsc_cfg - information of DSC blocks
-> + * @id                 enum identifying this block
-> + * @base               register offset of this block
-> + * @features           bit mask identifying sub-blocks/features
-> + */
-> +struct dpu_dsc_cfg {
-> +	DPU_HW_BLK_INFO;
-> +};
-> +
->   /**
->    * struct dpu_intf_cfg - information of timing engine blocks
->    * @id                 enum identifying this block
-> @@ -757,6 +767,9 @@ struct dpu_mdss_cfg {
->   	u32 merge_3d_count;
->   	const struct dpu_merge_3d_cfg *merge_3d;
->   
-> +	u32 dsc_count;
-> +	struct dpu_dsc_cfg *dsc;
-> +
->   	u32 intf_count;
->   	const struct dpu_intf_cfg *intf;
->   
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_dsc.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_dsc.c
+>  .../bindings/nvmem/denx,u-boot-env.yaml       | 88 +++++++++++++++++++
+>  include/dt-bindings/nvmem/u-boot-env.h        | 18 ++++
+>  2 files changed, 106 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/nvmem/denx,u-boot-e=
+nv.yaml
+>  create mode 100644 include/dt-bindings/nvmem/u-boot-env.h
+>
+> diff --git a/Documentation/devicetree/bindings/nvmem/denx,u-boot-env.yaml=
+ b/Documentation/devicetree/bindings/nvmem/denx,u-boot-env.yaml
 > new file mode 100644
-> index 000000000000..09682c4832ba
+> index 000000000000..56505c08e622
 > --- /dev/null
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_dsc.c
-> @@ -0,0 +1,210 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Copyright (c) 2020-2021, Linaro Limited
-> + */
+> +++ b/Documentation/devicetree/bindings/nvmem/denx,u-boot-env.yaml
+> @@ -0,0 +1,88 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/nvmem/denx,u-boot-env.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
-> +#include "dpu_kms.h"
-> +#include "dpu_hw_catalog.h"
-> +#include "dpu_hwio.h"
-> +#include "dpu_hw_mdss.h"
-> +#include "dpu_hw_dsc.h"
+> +title: U-Boot environment NVMEM Device Tree Bindings
 > +
-> +#define DSC_COMMON_MODE	                0x000
-> +#define DSC_ENC                         0X004
-> +#define DSC_PICTURE                     0x008
-> +#define DSC_SLICE                       0x00C
-> +#define DSC_CHUNK_SIZE                  0x010
-> +#define DSC_DELAY                       0x014
-> +#define DSC_SCALE_INITIAL               0x018
-> +#define DSC_SCALE_DEC_INTERVAL          0x01C
-> +#define DSC_SCALE_INC_INTERVAL          0x020
-> +#define DSC_FIRST_LINE_BPG_OFFSET       0x024
-> +#define DSC_BPG_OFFSET                  0x028
-> +#define DSC_DSC_OFFSET                  0x02C
-> +#define DSC_FLATNESS                    0x030
-> +#define DSC_RC_MODEL_SIZE               0x034
-> +#define DSC_RC                          0x038
-> +#define DSC_RC_BUF_THRESH               0x03C
-> +#define DSC_RANGE_MIN_QP                0x074
-> +#define DSC_RANGE_MAX_QP                0x0B0
-> +#define DSC_RANGE_BPG_OFFSET            0x0EC
+> +maintainers:
+> +  - Marek Beh=C3=BAn <kabel@kernel.org>
 > +
-> +static void dpu_hw_dsc_disable(struct dpu_hw_dsc *dsc)
-> +{
-> +	struct dpu_hw_blk_reg_map *c = &dsc->hw;
+> +description:
+> +  This binding represents U-Boot's environment NVMEM settings which can =
+be
+> +  stored on a specific offset of an EEPROM, MMC, NAND or SATA device, or
+> +  an UBI volume, or in a file on a filesystem.
 > +
-> +	DPU_REG_WRITE(c, DSC_COMMON_MODE, 0);
-> +}
-> +
-> +static void dpu_hw_dsc_config(struct dpu_hw_dsc *hw_dsc,
-> +			      struct msm_display_dsc_config *dsc, u32 mode)
-> +{
-> +	struct dpu_hw_blk_reg_map *c = &hw_dsc->hw;
-> +	u32 data, lsb, bpp;
-> +	u32 initial_lines = dsc->initial_lines;
-> +	bool is_cmd_mode = !(mode & BIT(2));
+> +properties:
+> +  compatible:
+> +    const: denx,u-boot-env
 
-DSC_MODE_VIDEO
+'u-boot' is a vendor prefix. Unless you are saying Denx owns u-boot...
 
 > +
-> +	DPU_REG_WRITE(c, DSC_COMMON_MODE, mode);
+> +  path:
+> +    description:
+> +      The path to the file containing the environment if on a filesystem=
+.
+> +    $ref: /schemas/types.yaml#/definitions/string
 > +
-> +	if (is_cmd_mode)
-> +		initial_lines += 1;
+> +patternProperties:
+> +  "^[^=3D]+$":
+> +    type: object
 > +
-> +	data = (initial_lines << 20);
-> +	data |= ((dsc->slice_last_group_size - 1) << 18);
-> +	/* bpp is 6.4 format, 4 LSBs bits are for fractional part */
-> +	data |= dsc->drm->bits_per_pixel << 12;
-> +	lsb = dsc->drm->bits_per_pixel % 4;
-> +	bpp = dsc->drm->bits_per_pixel / 4;
-> +	bpp *= 4;
-> +	bpp <<= 4;
-> +	bpp |= lsb;
+> +    description:
+> +      This node represents one U-Boot environment variable, which is als=
+o one
+> +      NVMEM data cell.
 > +
-> +	data |= bpp << 8;
-> +	data |= (dsc->drm->block_pred_enable << 7);
-> +	data |= (dsc->drm->line_buf_depth << 3);
-> +	data |= (dsc->drm->simple_422 << 2);
-> +	data |= (dsc->drm->convert_rgb << 1);
-> +	data |= dsc->drm->bits_per_component;
-> +
-> +	DPU_REG_WRITE(c, DSC_ENC, data);
-> +
-> +	data = dsc->drm->pic_width << 16;
-> +	data |= dsc->drm->pic_height;
-> +	DPU_REG_WRITE(c, DSC_PICTURE, data);
-> +
-> +	data = dsc->drm->slice_width << 16;
-> +	data |= dsc->drm->slice_height;
-> +	DPU_REG_WRITE(c, DSC_SLICE, data);
-> +
-> +	data = dsc->drm->slice_chunk_size << 16;
-> +	DPU_REG_WRITE(c, DSC_CHUNK_SIZE, data);
-> +
-> +	data = dsc->drm->initial_dec_delay << 16;
-> +	data |= dsc->drm->initial_xmit_delay;
-> +	DPU_REG_WRITE(c, DSC_DELAY, data);
-> +
-> +	data = dsc->drm->initial_scale_value;
-> +	DPU_REG_WRITE(c, DSC_SCALE_INITIAL, data);
-> +
-> +	data = dsc->drm->scale_decrement_interval;
-> +	DPU_REG_WRITE(c, DSC_SCALE_DEC_INTERVAL, data);
-> +
-> +	data = dsc->drm->scale_increment_interval;
-> +	DPU_REG_WRITE(c, DSC_SCALE_INC_INTERVAL, data);
-> +
-> +	data = dsc->drm->first_line_bpg_offset;
-> +	DPU_REG_WRITE(c, DSC_FIRST_LINE_BPG_OFFSET, data);
-> +
-> +	data = dsc->drm->nfl_bpg_offset << 16;
-> +	data |= dsc->drm->slice_bpg_offset;
-> +	DPU_REG_WRITE(c, DSC_BPG_OFFSET, data);
-> +
-> +	data = dsc->drm->initial_offset << 16;
-> +	data |= dsc->drm->final_offset;
-> +	DPU_REG_WRITE(c, DSC_DSC_OFFSET, data);
-> +
-> +	data = dsc->det_thresh_flatness << 10;
-> +	data |= dsc->drm->flatness_max_qp << 5;
-> +	data |= dsc->drm->flatness_min_qp;
-> +	DPU_REG_WRITE(c, DSC_FLATNESS, data);
-> +
-> +	data = dsc->drm->rc_model_size;
-> +	DPU_REG_WRITE(c, DSC_RC_MODEL_SIZE, data);
-> +
-> +	data = dsc->drm->rc_tgt_offset_low << 18;
-> +	data |= dsc->drm->rc_tgt_offset_high << 14;
-> +	data |= dsc->drm->rc_quant_incr_limit1 << 9;
-> +	data |= dsc->drm->rc_quant_incr_limit0 << 4;
-> +	data |= dsc->drm->rc_edge_factor;
-> +	DPU_REG_WRITE(c, DSC_RC, data);
-> +}
-> +
-> +static void dpu_hw_dsc_config_thresh(struct dpu_hw_dsc *hw_dsc,
-> +				     struct msm_display_dsc_config *dsc)
+> +    properties:
+> +      name:
 
-I thought that it might make sense to pass just 
-drm_dsc_rc_range_parameters here, but it's a matter of personal 
-preference. I won't insist on doing that.
+'name' is already a property for every node, so this would collide. It
+used to be in the dtb itself, but current revisions generate it from
+the node name.
 
-> +{
-> +	struct drm_dsc_rc_range_parameters *rc = dsc->drm->rc_range_params;
-> +	struct dpu_hw_blk_reg_map *c = &hw_dsc->hw;
-> +	u32 off;
-> +	int i;
+> +        description:
+> +          If the variable name contains characters not allowed in device=
+ tree node
+> +          name, use this property to specify the name, otherwise the var=
+iable name
+> +          is equal to node name.
+> +        $ref: /schemas/types.yaml#/definitions/string
 > +
-> +	off = DSC_RC_BUF_THRESH;
-> +	for (i = 0; i < DSC_NUM_BUF_RANGES - 1 ; i++) {
-> +		DPU_REG_WRITE(c, off, dsc->drm->rc_buf_thresh[i]);
-> +		off += 4;
-> +	}
-> +
-> +	off = DSC_RANGE_MIN_QP;
-> +	for (i = 0; i < DSC_NUM_BUF_RANGES; i++) {
-> +		DPU_REG_WRITE(c, off, rc[i].range_min_qp);
-> +		off += 4;
-> +	}
-> +
-> +	off = DSC_RANGE_MAX_QP;
-> +	for (i = 0; i < 15; i++) {
-> +		DPU_REG_WRITE(c, off, rc[i].range_max_qp);
-> +		off += 4;
-> +	}
-> +
-> +	off = DSC_RANGE_BPG_OFFSET;
-> +	for (i = 0; i < 15; i++) {
-> +		DPU_REG_WRITE(c, off, rc[i].range_bpg_offset);
-> +		off += 4;
-> +	}
-> +}
-> +
-> +static struct dpu_dsc_cfg *_dsc_offset(enum dpu_dsc dsc,
-> +				       struct dpu_mdss_cfg *m,
-> +				       void __iomem *addr,
-> +				       struct dpu_hw_blk_reg_map *b)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < m->dsc_count; i++) {
-> +		if (dsc == m->dsc[i].id) {
-> +			b->base_off = addr;
-> +			b->blk_off = m->dsc[i].base;
-> +			b->length = m->dsc[i].len;
-> +			b->hwversion = m->hwversion;
-> +			b->log_mask = DPU_DBG_MASK_DSC;
-> +			return &m->dsc[i];
-> +		}
-> +	}
-> +
-> +	return NULL;
-> +}
-> +
-> +static void _setup_dsc_ops(struct dpu_hw_dsc_ops *ops,
-> +			   unsigned long cap)
-> +{
-> +	ops->dsc_disable = dpu_hw_dsc_disable;
-> +	ops->dsc_config = dpu_hw_dsc_config;
-> +	ops->dsc_config_thresh = dpu_hw_dsc_config_thresh;
-> +};
-> +
-> +struct dpu_hw_dsc *dpu_hw_dsc_init(enum dpu_dsc idx, void __iomem *addr,
-> +				   struct dpu_mdss_cfg *m)
-> +{
-> +	struct dpu_hw_dsc *c;
-> +	struct dpu_dsc_cfg *cfg;
-> +
-> +	c = kzalloc(sizeof(*c), GFP_KERNEL);
-> +	if (!c)
-> +		return ERR_PTR(-ENOMEM);
-> +
-> +	cfg = _dsc_offset(idx, m, addr, &c->hw);
-> +	if (IS_ERR_OR_NULL(cfg)) {
-> +		kfree(c);
-> +		return ERR_PTR(-EINVAL);
-> +	}
-> +
-> +	c->idx = idx;
-> +	c->caps = cfg;
-> +	_setup_dsc_ops(&c->ops, c->caps->features);
-> +
-> +	return c;
-> +}
-> +
-> +void dpu_hw_dsc_destroy(struct dpu_hw_dsc *dsc)
-> +{
-> +	kfree(dsc);
-> +}
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_dsc.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_dsc.h
-> new file mode 100644
-> index 000000000000..648c9e4d8749
-> --- /dev/null
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_dsc.h
-> @@ -0,0 +1,77 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/* Copyright (c) 2020-2021, Linaro Limited */
-> +
-> +#ifndef _DPU_HW_DSC_H
-> +#define _DPU_HW_DSC_H
-> +
-> +#include <drm/drm_dsc.h>
-> +
-> +#define DSC_MODE_SPLIT_PANEL            BIT(0)
-> +#define DSC_MODE_MULTIPLEX              BIT(1)
-> +#define DSC_MODE_VIDEO                  BIT(2)
-> +
-> +struct dpu_hw_dsc;
-> +
-> +/**
-> + * struct dpu_hw_dsc_ops - interface to the dsc hardware driver functions
-> + * Assumption is these functions will be called after clocks are enabled
-> + */
-> +struct dpu_hw_dsc_ops {
-> +	/**
-> +	 * dsc_disable - disable dsc
-> +	 * @hw_dsc: Pointer to dsc context
-> +	 */
-> +	void (*dsc_disable)(struct dpu_hw_dsc *hw_dsc);
-> +
-> +	/**
-> +	 * dsc_config - configures dsc encoder
-> +	 * @hw_dsc: Pointer to dsc context
-> +	 * @dsc: panel dsc parameters
-> +	 * @mode: dsc topology mode to be set
-> +	 */
-> +	void (*dsc_config)(struct dpu_hw_dsc *hw_dsc,
-> +			   struct msm_display_dsc_config *dsc, u32 mode);
-> +
-> +	/**
-> +	 * dsc_config_thresh - programs panel thresholds
-> +	 * @hw_dsc: Pointer to dsc context
-> +	 * @dsc: panel dsc parameters
-> +	 */
-> +	void (*dsc_config_thresh)(struct dpu_hw_dsc *hw_dsc,
-> +				  struct msm_display_dsc_config *dsc);
-> +};
-> +
-> +struct dpu_hw_dsc {
-> +	struct dpu_hw_blk base;
-> +	struct dpu_hw_blk_reg_map hw;
-> +
-> +	/* dsc */
-> +	enum dpu_dsc idx;
-> +	const struct dpu_dsc_cfg *caps;
-> +
-> +	/* ops */
-> +	struct dpu_hw_dsc_ops ops;
-> +};
-> +
-> +/**
-> + * dpu_hw_dsc_init - initializes the dsc block for the passed dsc idx.
-> + * @idx:  DSC index for which driver object is required
-> + * @addr: Mapped register io address of MDP
-> + * @m:    Pointer to mdss catalog data
-> + * Returns: Error code or allocated dpu_hw_dsc context
-> + */
-> +struct dpu_hw_dsc *dpu_hw_dsc_init(enum dpu_dsc idx, void __iomem *addr,
-> +				   struct dpu_mdss_cfg *m);
-> +
-> +/**
-> + * dpu_hw_dsc_destroy - destroys dsc driver context
-> + * @dsc:   Pointer to dsc driver context returned by dpu_hw_dsc_init
-> + */
-> +void dpu_hw_dsc_destroy(struct dpu_hw_dsc *dsc);
-> +
-> +static inline struct dpu_hw_dsc *to_dpu_hw_dsc(struct dpu_hw_blk *hw)
-> +{
-> +	return container_of(hw, struct dpu_hw_dsc, base);
-> +}
-> +
-> +#endif /* _DPU_HW_DSC_H */
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h
-> index bb9ceadeb0bb..b0ce8cb97d22 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h
-> @@ -97,6 +97,7 @@ enum dpu_hw_blk_type {
->   	DPU_HW_BLK_WB,
->   	DPU_HW_BLK_DSPP,
->   	DPU_HW_BLK_MERGE_3D,
-> +	DPU_HW_BLK_DSC,
->   	DPU_HW_BLK_MAX,
->   };
->   
-> @@ -176,6 +177,17 @@ enum dpu_ctl {
->   	CTL_MAX
->   };
->   
-> +enum dpu_dsc {
-> +	DSC_NONE = 0,
-> +	DSC_0,
-> +	DSC_1,
-> +	DSC_2,
-> +	DSC_3,
-> +	DSC_4,
-> +	DSC_5,
-> +	DSC_MAX
-> +};
-> +
->   enum dpu_pingpong {
->   	PINGPONG_0 = 1,
->   	PINGPONG_1,
-> @@ -437,5 +449,6 @@ struct dpu_mdss_color {
->   #define DPU_DBG_MASK_VBIF     (1 << 8)
->   #define DPU_DBG_MASK_ROT      (1 << 9)
->   #define DPU_DBG_MASK_DSPP     (1 << 10)
-> +#define DPU_DBG_MASK_DSC      (1 << 11)
->   
->   #endif  /* _DPU_HW_MDSS_H */
-> 
+> +      type:
 
+'type' is really too generic. Any given property name should have 1
+meaning and data type.
 
--- 
-With best wishes
-Dmitry
+But I expect based on other comments already, all this is going away anyway=
+s.
+
+> +        description:
+> +          Type of the variable. Since variables, even integers and MAC a=
+ddresses,
+> +          are stored as strings in U-Boot environment, for proper conver=
+sion the
+> +          type needs to be specified. Use one of the U_BOOT_ENV_TYPE_* p=
+refixed
+> +          definitions from include/dt-bindings/nvmem/u-boot-env.h.
+> +        $ref: /schemas/types.yaml#/definitions/uint32
+> +        minimum: 0
+> +        maximum: 5
