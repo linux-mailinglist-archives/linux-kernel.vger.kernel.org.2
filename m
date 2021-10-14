@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD45142DC99
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:59:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FBD342DC33
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:55:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232467AbhJNPAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 11:00:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43300 "EHLO mail.kernel.org"
+        id S232086AbhJNO5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 10:57:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42132 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232087AbhJNO7K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 10:59:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C0A9160E78;
-        Thu, 14 Oct 2021 14:57:04 +0000 (UTC)
+        id S232079AbhJNO5P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 10:57:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B67E660F36;
+        Thu, 14 Oct 2021 14:55:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634223425;
-        bh=vXR80b9yuG3zcf36H6kZIQ2rvdcXf+142s+CxVuWdP0=;
+        s=korg; t=1634223310;
+        bh=Op1xPynIXSawr1fpr2Qud0HdieV2FajoysJ26UESgsc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=znAeML+/3+ZKc4zioHECH4FZ9ufUxgTEs6p+LlmTt5QKVyAfB6npFOyvriIWe4x9u
-         O1Hb/xLdBk+be281vLztL4Ch8QnjugGEOrcdwTTkQZdziM/z6urRZeVbMM2aEGCkq5
-         4BUf2ekZ1CremdpJDjOGiGXU4tMfB9UdQMqXN85A=
+        b=XrbYnVhaEBjfZSg/Oz1+RQNVW3z/1SlwdcLYapzxheMeREqPDOcghjwThUJLiNCzZ
+         1gRXhikn1uLZoBSrGs7WA3gWA20Qc0mNlyyfnxhWGyJ2GTvOXPiHLe2a0+ngfazjDB
+         15BMmZeuch+2JQ4xgz62qadfRUiO+iXmoq2aUhgc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Oleksij Rempel <o.rempel@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 17/33] ARM: imx6: disable the GIC CPU interface before calling stby-poweroff sequence
+Subject: [PATCH 4.4 17/18] scsi: virtio_scsi: Fix spelling mistake "Unsupport" -> "Unsupported"
 Date:   Thu, 14 Oct 2021 16:53:49 +0200
-Message-Id: <20211014145209.362788928@linuxfoundation.org>
+Message-Id: <20211014145206.872554382@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211014145208.775270267@linuxfoundation.org>
-References: <20211014145208.775270267@linuxfoundation.org>
+In-Reply-To: <20211014145206.330102860@linuxfoundation.org>
+References: <20211014145206.330102860@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,41 +40,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oleksij Rempel <o.rempel@pengutronix.de>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit 783f3db030563f7bcdfe2d26428af98ea1699a8e ]
+[ Upstream commit cced4c0ec7c06f5230a2958907a409c849762293 ]
 
-Any pending interrupt can prevent entering standby based power off state.
-To avoid it, disable the GIC CPU interface.
+There are a couple of spelling mistakes in pr_info and pr_err messages.
+Fix them.
 
-Fixes: 8148d2136002 ("ARM: imx6: register pm_power_off handler if "fsl,pmic-stby-poweroff" is set")
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Signed-off-by: Shawn Guo <shawnguo@kernel.org>
+Link: https://lore.kernel.org/r/20210924230330.143785-1-colin.king@canonical.com
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/mach-imx/pm-imx6.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/scsi/virtio_scsi.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/mach-imx/pm-imx6.c b/arch/arm/mach-imx/pm-imx6.c
-index c7dcb0b20730..5182b04ac878 100644
---- a/arch/arm/mach-imx/pm-imx6.c
-+++ b/arch/arm/mach-imx/pm-imx6.c
-@@ -15,6 +15,7 @@
- #include <linux/io.h>
- #include <linux/irq.h>
- #include <linux/genalloc.h>
-+#include <linux/irqchip/arm-gic.h>
- #include <linux/mfd/syscon.h>
- #include <linux/mfd/syscon/imx6q-iomuxc-gpr.h>
- #include <linux/of.h>
-@@ -608,6 +609,7 @@ static void __init imx6_pm_common_init(const struct imx6_pm_socdata
+diff --git a/drivers/scsi/virtio_scsi.c b/drivers/scsi/virtio_scsi.c
+index 9237427728ce..58e3f6db9928 100644
+--- a/drivers/scsi/virtio_scsi.c
++++ b/drivers/scsi/virtio_scsi.c
+@@ -342,7 +342,7 @@ static void virtscsi_handle_transport_reset(struct virtio_scsi *vscsi,
+ 		}
+ 		break;
+ 	default:
+-		pr_info("Unsupport virtio scsi event reason %x\n", event->reason);
++		pr_info("Unsupported virtio scsi event reason %x\n", event->reason);
+ 	}
+ }
  
- static void imx6_pm_stby_poweroff(void)
- {
-+	gic_cpu_if_down(0);
- 	imx6_set_lpm(STOP_POWER_OFF);
- 	imx6q_suspend_finish(0);
- 
+@@ -395,7 +395,7 @@ static void virtscsi_handle_event(struct work_struct *work)
+ 		virtscsi_handle_param_change(vscsi, event);
+ 		break;
+ 	default:
+-		pr_err("Unsupport virtio scsi event %x\n", event->event);
++		pr_err("Unsupported virtio scsi event %x\n", event->event);
+ 	}
+ 	virtscsi_kick_event(vscsi, event_node);
+ }
 -- 
 2.33.0
 
