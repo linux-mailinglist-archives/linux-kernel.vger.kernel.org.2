@@ -2,227 +2,370 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D41BC42D293
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 08:26:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47EBF42D29B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 08:28:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229865AbhJNG22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 02:28:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36557 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229530AbhJNG21 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 02:28:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634192782;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=m3t/7R6S2CelPayMck1RShDg4UT2EYxbMkdKbDf9kTk=;
-        b=SrFBf1lEXN5UOdqQKpbPeGA0jXlCSFg7UK464HIDDJk1D1ZsgNBIMmji/FzElk6xKvSAxG
-        H9SC1YUZ71TGL78vAPUw9q/RMEBlbTKF+mjwgJKndgctiMZZNM3/xaWLEnUBNfmJbQsyri
-        jFWgod3XCBf4JBqv/txnICTmCNlzqlw=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-213-738Jev22PIOKKTtZFOks1g-1; Thu, 14 Oct 2021 02:26:21 -0400
-X-MC-Unique: 738Jev22PIOKKTtZFOks1g-1
-Received: by mail-wr1-f69.google.com with SMTP id d13-20020adf9b8d000000b00160a94c235aso3762467wrc.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 23:26:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=m3t/7R6S2CelPayMck1RShDg4UT2EYxbMkdKbDf9kTk=;
-        b=y2VLsOLAOQE72kCkQmqwLipiaL4tbLLt6rsvyANF/g7OKAJlixp8jtmhupeobzxVDA
-         R67ZiBy/m1FC7BdUQqo3UUspVGaGVtoN/UsP5+xMTqmLT8WwUtsO6Q+q5FHEaZObzDnZ
-         G3AiXJCO07WhSeuUKpAjphTfrRIkFCzJBR4GE3VVsFJLJw1O2E2IBLt4ATCWvrl1nEdU
-         LgdroKRAM2XT5Oa8wFTlvp20w7dLigcfqeR9D7SngTHu3BNnEbtRfmpia1eNOeAmGLw6
-         3yRl4WIPd3X+viPwDVl01ZOPNft0wL7/r64ybfBI1X+fBCftNAP7Ewm5yFXHs3KzpNT1
-         DAMg==
-X-Gm-Message-State: AOAM531r1KZuN6JpREFpvYwfPXZmBnN9GCFhLxs259+YcvxsaHaTuaD6
-        etO8Riejf2sEGOWuHhZWRMBg0+DAT3h6BkbOpuv3zDNk6h5TeL8BUgMNc6x3WTxOnZKlFSustj1
-        5VVSK5x66GLRJHGjIqNn5jdSL
-X-Received: by 2002:adf:bb52:: with SMTP id x18mr4466583wrg.169.1634192780432;
-        Wed, 13 Oct 2021 23:26:20 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwcQRcXMC+TNkHuH5Wvah6xBHmzWHV3BqXPD9HbXnBWYaJumLOJJxaOEL/b4XK83F5MoBufoA==
-X-Received: by 2002:adf:bb52:: with SMTP id x18mr4466559wrg.169.1634192780256;
-        Wed, 13 Oct 2021 23:26:20 -0700 (PDT)
-Received: from redhat.com ([2.55.16.227])
-        by smtp.gmail.com with ESMTPSA id v185sm7114302wme.35.2021.10.13.23.26.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Oct 2021 23:26:19 -0700 (PDT)
-Date:   Thu, 14 Oct 2021 02:26:15 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     virtualization <virtualization@lists.linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "Hetzelt, Felicitas" <f.hetzelt@tu-berlin.de>,
-        "kaplan, david" <david.kaplan@amd.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: Re: [PATCH V2 07/12] virtio-pci: harden INTX interrupts
-Message-ID: <20211014022438-mutt-send-email-mst@kernel.org>
-References: <20211012065227.9953-1-jasowang@redhat.com>
- <20211012065227.9953-8-jasowang@redhat.com>
- <20211013053627-mutt-send-email-mst@kernel.org>
- <CACGkMEuRHKJv73oKFNetcBkPSFj034te7N_AJZdRbHe0ObU4Gw@mail.gmail.com>
- <20211014014551-mutt-send-email-mst@kernel.org>
- <CACGkMEvB4sMPmMmPQmHFasGLwktyXuCenQKGuoajmoFQYJJeBQ@mail.gmail.com>
+        id S229713AbhJNGaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 02:30:30 -0400
+Received: from mx3.molgen.mpg.de ([141.14.17.11]:35031 "EHLO mx1.molgen.mpg.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229530AbhJNGa3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 02:30:29 -0400
+Received: from [192.168.0.2] (ip5f5ae921.dynamic.kabel-deutschland.de [95.90.233.33])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 7177361E64760;
+        Thu, 14 Oct 2021 08:28:21 +0200 (CEST)
+Subject: Re: [PATCH 2/6] media: aspeed: add dprintk for more detailed log
+ control
+To:     Jammy Huang <jammy_huang@aspeedtech.com>
+References: <20211014034819.2283-1-jammy_huang@aspeedtech.com>
+ <20211014034819.2283-3-jammy_huang@aspeedtech.com>
+Cc:     eajames@linux.ibm.com, mchehab@kernel.org, joel@jms.id.au,
+        andrew@aj.id.au, linux-media@vger.kernel.org,
+        openbmc@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+Message-ID: <5b8f81aa-9d08-dc42-8bd5-e9e7560f37f6@molgen.mpg.de>
+Date:   Thu, 14 Oct 2021 08:28:21 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACGkMEvB4sMPmMmPQmHFasGLwktyXuCenQKGuoajmoFQYJJeBQ@mail.gmail.com>
+In-Reply-To: <20211014034819.2283-3-jammy_huang@aspeedtech.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 02:20:17PM +0800, Jason Wang wrote:
-> On Thu, Oct 14, 2021 at 1:50 PM Michael S. Tsirkin <mst@redhat.com> wrote:
-> >
-> > On Thu, Oct 14, 2021 at 10:35:48AM +0800, Jason Wang wrote:
-> > > On Wed, Oct 13, 2021 at 5:42 PM Michael S. Tsirkin <mst@redhat.com> wrote:
-> > > >
-> > > > On Tue, Oct 12, 2021 at 02:52:22PM +0800, Jason Wang wrote:
-> > > > > This patch tries to make sure the virtio interrupt handler for INTX
-> > > > > won't be called after a reset and before virtio_device_ready(). We
-> > > > > can't use IRQF_NO_AUTOEN since we're using shared interrupt
-> > > > > (IRQF_SHARED). So this patch tracks the INTX enabling status in a new
-> > > > > intx_soft_enabled variable and toggle it during in
-> > > > > vp_disable/enable_vectors(). The INTX interrupt handler will check
-> > > > > intx_soft_enabled before processing the actual interrupt.
-> > > > >
-> > > > > Cc: Boqun Feng <boqun.feng@gmail.com>
-> > > > > Cc: Thomas Gleixner <tglx@linutronix.de>
-> > > > > Cc: Peter Zijlstra <peterz@infradead.org>
-> > > > > Cc: Paul E. McKenney <paulmck@kernel.org>
-> > > > > Signed-off-by: Jason Wang <jasowang@redhat.com>
-> > > > > ---
-> > > > >  drivers/virtio/virtio_pci_common.c | 24 ++++++++++++++++++++++--
-> > > > >  drivers/virtio/virtio_pci_common.h |  1 +
-> > > > >  2 files changed, 23 insertions(+), 2 deletions(-)
-> > > > >
-> > > > > diff --git a/drivers/virtio/virtio_pci_common.c b/drivers/virtio/virtio_pci_common.c
-> > > > > index 0b9523e6dd39..5ae6a2a4eb77 100644
-> > > > > --- a/drivers/virtio/virtio_pci_common.c
-> > > > > +++ b/drivers/virtio/virtio_pci_common.c
-> > > > > @@ -30,8 +30,16 @@ void vp_disable_vectors(struct virtio_device *vdev)
-> > > > >       struct virtio_pci_device *vp_dev = to_vp_device(vdev);
-> > > > >       int i;
-> > > > >
-> > > > > -     if (vp_dev->intx_enabled)
-> > > > > +     if (vp_dev->intx_enabled) {
-> > > > > +             /*
-> > > > > +              * The below synchronize() guarantees that any
-> > > > > +              * interrupt for this line arriving after
-> > > > > +              * synchronize_irq() has completed is guaranteed to see
-> > > > > +              * intx_soft_enabled == false.
-> > > > > +              */
-> > > > > +             WRITE_ONCE(vp_dev->intx_soft_enabled, false);
-> > > > >               synchronize_irq(vp_dev->pci_dev->irq);
-> > > > > +     }
-> > > > >
-> > > > >       for (i = 0; i < vp_dev->msix_vectors; ++i)
-> > > > >               disable_irq(pci_irq_vector(vp_dev->pci_dev, i));
-> > > > > @@ -43,8 +51,16 @@ void vp_enable_vectors(struct virtio_device *vdev)
-> > > > >       struct virtio_pci_device *vp_dev = to_vp_device(vdev);
-> > > > >       int i;
-> > > > >
-> > > > > -     if (vp_dev->intx_enabled)
-> > > > > +     if (vp_dev->intx_enabled) {
-> > > > > +             disable_irq(vp_dev->pci_dev->irq);
-> > > > > +             /*
-> > > > > +              * The above disable_irq() provides TSO ordering and
-> > > > > +              * as such promotes the below store to store-release.
-> > > > > +              */
-> > > > > +             WRITE_ONCE(vp_dev->intx_soft_enabled, true);
-> > > > > +             enable_irq(vp_dev->pci_dev->irq);
-> > > > >               return;
-> > > > > +     }
-> > > > >
-> > > > >       for (i = 0; i < vp_dev->msix_vectors; ++i)
-> > > > >               enable_irq(pci_irq_vector(vp_dev->pci_dev, i));
-> > > > > @@ -97,6 +113,10 @@ static irqreturn_t vp_interrupt(int irq, void *opaque)
-> > > > >       struct virtio_pci_device *vp_dev = opaque;
-> > > > >       u8 isr;
-> > > > >
-> > > > > +     /* read intx_soft_enabled before read others */
-> > > > > +     if (!smp_load_acquire(&vp_dev->intx_soft_enabled))
-> > > > > +             return IRQ_NONE;
-> > > > > +
-> > > > >       /* reading the ISR has the effect of also clearing it so it's very
-> > > > >        * important to save off the value. */
-> > > > >       isr = ioread8(vp_dev->isr);
-> > > >
-> > > > I don't see why we need this ordering guarantee here.
-> > > >
-> > > > synchronize_irq above makes sure no interrupt handler
-> > > > is in progress.
-> > >
-> > > Yes.
-> > >
-> > > > the handler itself thus does not need
-> > > > any specific order, it is ok if intx_soft_enabled is read
-> > > > after, not before the rest of it.
-> > >
-> > > But the interrupt could be raised after synchronize_irq() which may
-> > > see a false of the intx_soft_enabled.
-> >
-> > You mean a "true" value right? false is what we are writing there.
+[Cc: +Steven, +Ingo for tracing questions]
+
+Dear Jammy,
+
+
+Am 14.10.21 um 05:48 schrieb Jammy Huang:
+> Add dprintk to categorize the log into NOTICE/INFO/TRACE/IRQ/REG.
+> The on/off is controlled by module_param, debug.
+
+Currently dev_dbg is dynamic debug, which can be controlled using the 
+Linux kernel command line or debugfs already?
+
+ From your patch:
+
+> +MODULE_PARM_DESC(debug, "set debugging level (0=reg,2=irq,4=trace,8=info(|-able)).");
+
+What does (|-able) mean? Maybe give some examples in the commit message 
+as documentation?
+
+Lastly, instead of parameter name `debug`, I’d use `log_level`, which 
+would be more accurate.
+
+Why is more granularity needed/useful, and not just debug and non-debug, 
+where the existing Linux kernel levels `pr_info`, `pr_warn`, … are used? 
+Looking at the amount of log messages, the granularity does not look needed.
+
+> Signed-off-by: Jammy Huang <jammy_huang@aspeedtech.com>
+> ---
+>   drivers/media/platform/aspeed-video.c | 73 ++++++++++++++++++++++-----
+>   1 file changed, 60 insertions(+), 13 deletions(-)
 > 
-> I meant that we want to not go for stuff like vq->callback after the
-> synchronize_irq() after setting intx_soft_enabled to false. Otherwise
-> we may get unexpected results like use after free. Host can craft ISR
-> in this case.
-> >
-> > Are you sure it can happen? I think that synchronize_irq makes the value
-> > visible on all CPUs running the irq.
-> 
-> Yes, so the false is visible by vp_interrupt(), we can't do the other
-> task before we check intx_soft_enabled.
+> diff --git a/drivers/media/platform/aspeed-video.c b/drivers/media/platform/aspeed-video.c
+> index 6259cf17a7cc..7b8129b0ca5f 100644
+> --- a/drivers/media/platform/aspeed-video.c
+> +++ b/drivers/media/platform/aspeed-video.c
+> @@ -31,6 +31,19 @@
+>   #include <media/v4l2-ioctl.h>
+>   #include <media/videobuf2-dma-contig.h>
+>   
+> +
+> +#define LOG_REG		BIT(4)
+> +#define LOG_DEBUG	BIT(3)
+> +#define LOG_TRACE	BIT(2)
 
-But the order does not matter. synchronize_irq will make sure
-everything is visible.
+Could ftrace be used for this? It looks like there are static functions. 
+No idea, if there is already a “native” Linux kernel solution for this.
 
-> >
-> > > In this case we still need the
-> > > make sure intx_soft_enbled to be read first instead of allowing other
-> > > operations to be done first, otherwise the intx_soft_enabled is
-> > > meaningless.
-> > >
-> > > Thanks
-> >
-> > If intx_soft_enbled were not visible after synchronize_irq then
-> > it does not matter in which order we read it wrt other values,
-> > it still wouldn't work right.
-> 
-> Yes.
-> 
-> Thanks
+> +#define LOG_INFO	BIT(1)
+> +#define LOG_NOTICE	BIT(0)
+> +
+> +#define dprintk(level, fmt, arg...) do {					\
+> +	if (debug & level)							\
+> +		pr_debug(pr_fmt("[%s]: " fmt), DEVICE_NAME, ##arg);		\
+> +} while (0)
+> +
+> +
+>   #define DEVICE_NAME			"aspeed-video"
+>   
+>   #define ASPEED_VIDEO_JPEG_NUM_QUALITIES	12
+> @@ -390,6 +403,8 @@ static const struct v4l2_dv_timings_cap aspeed_video_timings_cap = {
+>   	},
+>   };
+>   
+> +static unsigned int debug;
+> +
+>   static void aspeed_video_init_jpeg_table(u32 *table, bool yuv420)
+>   {
+>   	int i;
+> @@ -437,7 +452,7 @@ static void aspeed_video_update(struct aspeed_video *video, u32 reg, u32 clear,
+>   	t &= ~clear;
+>   	t |= bits;
+>   	writel(t, video->base + reg);
+> -	dev_dbg(video->dev, "update %03x[%08x -> %08x]\n", reg, before,
+> +	dprintk(LOG_REG, "update %03x[%08x -> %08x]\n", reg, before,
+>   		readl(video->base + reg));
+>   }
+>   
+> @@ -445,14 +460,14 @@ static u32 aspeed_video_read(struct aspeed_video *video, u32 reg)
+>   {
+>   	u32 t = readl(video->base + reg);
+>   
+> -	dev_dbg(video->dev, "read %03x[%08x]\n", reg, t);
+> +	dprintk(LOG_REG, "read %03x[%08x]\n", reg, t);
+>   	return t;
+>   }
+>   
+>   static void aspeed_video_write(struct aspeed_video *video, u32 reg, u32 val)
+>   {
+>   	writel(val, video->base + reg);
+> -	dev_dbg(video->dev, "write %03x[%08x]\n", reg,
+> +	dprintk(LOG_REG, "write %03x[%08x]\n", reg,
+>   		readl(video->base + reg));
+>   }
+>   
+> @@ -474,13 +489,13 @@ static int aspeed_video_start_frame(struct aspeed_video *video)
+>   	u32 seq_ctrl = aspeed_video_read(video, VE_SEQ_CTRL);
+>   
+>   	if (video->v4l2_input_status) {
+> -		dev_dbg(video->dev, "No signal; don't start frame\n");
+> +		dprintk(LOG_NOTICE, "No signal; don't start frame\n");
+>   		return 0;
+>   	}
+>   
+>   	if (!(seq_ctrl & VE_SEQ_CTRL_COMP_BUSY) ||
+>   	    !(seq_ctrl & VE_SEQ_CTRL_CAP_BUSY)) {
+> -		dev_dbg(video->dev, "Engine busy; don't start frame\n");
+> +		dprintk(LOG_NOTICE, "Engine busy; don't start frame\n");
+>   		return -EBUSY;
+>   	}
+>   
+> @@ -489,7 +504,7 @@ static int aspeed_video_start_frame(struct aspeed_video *video)
+>   				       struct aspeed_video_buffer, link);
+>   	if (!buf) {
+>   		spin_unlock_irqrestore(&video->lock, flags);
+> -		dev_dbg(video->dev, "No buffers; don't start frame\n");
+> +		dprintk(LOG_NOTICE, "No buffers; don't start frame\n");
+>   		return -EPROTO;
+>   	}
+>   
+> @@ -565,7 +580,7 @@ static void aspeed_video_bufs_done(struct aspeed_video *video,
+>   
+>   static void aspeed_video_irq_res_change(struct aspeed_video *video, ulong delay)
+>   {
+> -	dev_dbg(video->dev, "Resolution changed; resetting\n");
+> +	dprintk(LOG_INFO, "Resolution changed; resetting\n");
+>   
+>   	set_bit(VIDEO_RES_CHANGE, &video->flags);
+>   	clear_bit(VIDEO_FRAME_INPRG, &video->flags);
+> @@ -590,6 +605,12 @@ static irqreturn_t aspeed_video_irq(int irq, void *arg)
+>   	struct aspeed_video *video = arg;
+>   	u32 sts = aspeed_video_read(video, VE_INTERRUPT_STATUS);
+>   
+> +	dprintk(LOG_DEBUG, "irq sts=%#x %s%s%s%s\n", sts,
+> +		sts & VE_INTERRUPT_MODE_DETECT_WD ? ", unlock" : "",
+> +		sts & VE_INTERRUPT_MODE_DETECT ? ", lock" : "",
+> +		sts & VE_INTERRUPT_CAPTURE_COMPLETE ? ", capture-done" : "",
+> +		sts & VE_INTERRUPT_COMP_COMPLETE ? ", comp-done" : "");
+> +
+
+Please split adding new log messages out into a separate commit.
+
+>   	/*
+>   	 * Resolution changed or signal was lost; reset the engine and
+>   	 * re-initialize
+> @@ -766,7 +787,7 @@ static void aspeed_video_calc_compressed_size(struct aspeed_video *video,
+>   	aspeed_video_write(video, VE_STREAM_BUF_SIZE,
+>   			   compression_buffer_size_reg);
+>   
+> -	dev_dbg(video->dev, "Max compressed size: %x\n",
+> +	dprintk(LOG_INFO, "Max compressed size: %#x\n",
+>   		video->max_compressed_size);
+>   }
+>   
+> @@ -804,7 +825,7 @@ static void aspeed_video_get_resolution(struct aspeed_video *video)
+>   						      res_check(video),
+>   						      MODE_DETECT_TIMEOUT);
+>   		if (!rc) {
+> -			dev_dbg(video->dev, "Timed out; first mode detect\n");
+> +			dprintk(LOG_INFO, "Timed out; first mode detect\n");
+>   			clear_bit(VIDEO_RES_DETECT, &video->flags);
+>   			return;
+>   		}
+> @@ -822,7 +843,7 @@ static void aspeed_video_get_resolution(struct aspeed_video *video)
+>   						      MODE_DETECT_TIMEOUT);
+>   		clear_bit(VIDEO_RES_DETECT, &video->flags);
+>   		if (!rc) {
+> -			dev_dbg(video->dev, "Timed out; second mode detect\n");
+> +			dprintk(LOG_INFO, "Timed out; second mode detect\n");
+>   			return;
+>   		}
+>   
+> @@ -856,7 +877,7 @@ static void aspeed_video_get_resolution(struct aspeed_video *video)
+>   	} while (invalid_resolution && (tries++ < INVALID_RESOLUTION_RETRIES));
+>   
+>   	if (invalid_resolution) {
+> -		dev_dbg(video->dev, "Invalid resolution detected\n");
+> +		dprintk(LOG_NOTICE, "Invalid resolution detected\n");
+>   		return;
+>   	}
+>   
+> @@ -873,7 +894,7 @@ static void aspeed_video_get_resolution(struct aspeed_video *video)
+>   	aspeed_video_update(video, VE_SEQ_CTRL, 0,
+>   			    VE_SEQ_CTRL_AUTO_COMP | VE_SEQ_CTRL_EN_WATCHDOG);
+>   
+> -	dev_dbg(video->dev, "Got resolution: %dx%d\n", det->width,
+> +	dprintk(LOG_INFO, "Got resolution: %dx%d\n", det->width,
+>   		det->height);
+>   }
+>   
+> @@ -907,6 +928,7 @@ static void aspeed_video_set_resolution(struct aspeed_video *video)
+>   
+>   	/* Don't use direct mode below 1024 x 768 (irqs don't fire) */
+>   	if (size < DIRECT_FETCH_THRESHOLD) {
+> +		dprintk(LOG_INFO, "Capture: Sync Mode\n");
+>   		aspeed_video_write(video, VE_TGS_0,
+>   				   FIELD_PREP(VE_TGS_FIRST,
+>   					      video->frame_left - 1) |
+> @@ -918,6 +940,7 @@ static void aspeed_video_set_resolution(struct aspeed_video *video)
+>   					      video->frame_bottom + 1));
+>   		aspeed_video_update(video, VE_CTRL, 0, VE_CTRL_INT_DE);
+>   	} else {
+> +		dprintk(LOG_INFO, "Capture: Direct Mode\n");
+>   		aspeed_video_update(video, VE_CTRL, 0, VE_CTRL_DIRECT_FETCH);
+>   	}
+>   
+> @@ -934,6 +957,10 @@ static void aspeed_video_set_resolution(struct aspeed_video *video)
+>   		if (!aspeed_video_alloc_buf(video, &video->srcs[1], size))
+>   			goto err_mem;
+>   
+> +		dprintk(LOG_INFO, "src buf0 addr(%#x) size(%d)\n",
+> +			video->srcs[0].dma, video->srcs[0].size);
+> +		dprintk(LOG_INFO, "src buf1 addr(%#x) size(%d)\n",
+> +			video->srcs[1].dma, video->srcs[1].size);
+>   		aspeed_video_write(video, VE_SRC0_ADDR, video->srcs[0].dma);
+>   		aspeed_video_write(video, VE_SRC1_ADDR, video->srcs[1].dma);
+>   	}
+> @@ -1010,6 +1037,8 @@ static void aspeed_video_start(struct aspeed_video *video)
+>   
+>   static void aspeed_video_stop(struct aspeed_video *video)
+>   {
+> +	dprintk(LOG_TRACE, "%s\n", __func__);
+> +
+>   	set_bit(VIDEO_STOPPED, &video->flags);
+>   	cancel_delayed_work_sync(&video->res_work);
+>   
+> @@ -1198,6 +1227,9 @@ static int aspeed_video_set_dv_timings(struct file *file, void *fh,
+>   
+>   	timings->type = V4L2_DV_BT_656_1120;
+>   
+> +	dprintk(LOG_INFO, "set new timings(%dx%d)\n", timings->bt.width,
+> +		timings->bt.height);
+> +
+>   	return 0;
+>   }
+>   
+> @@ -1362,6 +1394,8 @@ static void aspeed_video_resolution_work(struct work_struct *work)
+>   						  res_work);
+>   	u32 input_status = video->v4l2_input_status;
+>   
+> +	dprintk(LOG_TRACE, "%s+\n", __func__);
+> +
+>   	aspeed_video_on(video);
+>   
+>   	/* Exit early in case no clients remain */
+> @@ -1380,6 +1414,7 @@ static void aspeed_video_resolution_work(struct work_struct *work)
+>   			.u.src_change.changes = V4L2_EVENT_SRC_CH_RESOLUTION,
+>   		};
+>   
+> +		dprintk(LOG_INFO, "fire source change event\n");
+>   		v4l2_event_queue(&video->vdev, &ev);
+>   	} else if (test_bit(VIDEO_STREAMING, &video->flags)) {
+>   		/* No resolution change so just restart streaming */
+> @@ -1389,6 +1424,8 @@ static void aspeed_video_resolution_work(struct work_struct *work)
+>   done:
+>   	clear_bit(VIDEO_RES_CHANGE, &video->flags);
+>   	wake_up_interruptible_all(&video->wait);
+> +
+> +	dprintk(LOG_TRACE, "%s-\n", __func__);
+>   }
+>   
+>   static int aspeed_video_open(struct file *file)
+> @@ -1476,6 +1513,7 @@ static int aspeed_video_start_streaming(struct vb2_queue *q,
+>   	int rc;
+>   	struct aspeed_video *video = vb2_get_drv_priv(q);
+>   
+> +	dprintk(LOG_TRACE, "%s\n", __func__);
+>   	video->sequence = 0;
+>   	video->perf.duration_max = 0;
+>   	video->perf.duration_min = 0xffffffff;
+> @@ -1495,13 +1533,15 @@ static void aspeed_video_stop_streaming(struct vb2_queue *q)
+>   	int rc;
+>   	struct aspeed_video *video = vb2_get_drv_priv(q);
+>   
+> +	dprintk(LOG_TRACE, "%s+\n", __func__);
+> +
+>   	clear_bit(VIDEO_STREAMING, &video->flags);
+>   
+>   	rc = wait_event_timeout(video->wait,
+>   				!test_bit(VIDEO_FRAME_INPRG, &video->flags),
+>   				STOP_TIMEOUT);
+>   	if (!rc) {
+> -		dev_dbg(video->dev, "Timed out when stopping streaming\n");
+> +		dprintk(LOG_NOTICE, "Timed out when stopping streaming\n");
+>   
+>   		/*
+>   		 * Need to force stop any DMA and try and get HW into a good
+> @@ -1516,6 +1556,7 @@ static void aspeed_video_stop_streaming(struct vb2_queue *q)
+>   	}
+>   
+>   	aspeed_video_bufs_done(video, VB2_BUF_STATE_ERROR);
+> +	dprintk(LOG_TRACE, "%s-\n", __func__);
+>   }
+>   
+>   static void aspeed_video_buf_queue(struct vb2_buffer *vb)
+> @@ -1715,6 +1756,7 @@ static int aspeed_video_init(struct aspeed_video *video)
+>   		dev_err(dev, "Unable to request IRQ %d\n", irq);
+>   		return rc;
+>   	}
+> +	dev_info(video->dev, "irq %d\n", irq);
+>   
+>   	video->eclk = devm_clk_get(dev, "eclk");
+>   	if (IS_ERR(video->eclk)) {
+> @@ -1751,6 +1793,8 @@ static int aspeed_video_init(struct aspeed_video *video)
+>   		rc = -ENOMEM;
+>   		goto err_release_reserved_mem;
+>   	}
+> +	dev_info(video->dev, "alloc mem size(%d) at %#x for jpeg header\n",
+> +		 VE_JPEG_HEADER_SIZE, video->jpeg.dma);
+>   
+>   	aspeed_video_init_jpeg_table(video->jpeg.virt, video->yuv420);
+>   
+> @@ -1856,6 +1900,9 @@ static struct platform_driver aspeed_video_driver = {
+>   
+>   module_platform_driver(aspeed_video_driver);
+>   
+> +module_param(debug, int, 0644);
+> +MODULE_PARM_DESC(debug, "set debugging level (0=reg,2=irq,4=trace,8=info(|-able)).");
+> +
+>   MODULE_DESCRIPTION("ASPEED Video Engine Driver");
+>   MODULE_AUTHOR("Eddie James");
+>   MODULE_LICENSE("GPL v2");
 
 
-We are agreed then? No need for a barrier here, READ_ONCE is enough?
+Kind regards,
 
-> >
-> > > >
-> > > > Just READ_ONCE should be enough, and we can drop the comment.
-> > > >
-> > > >
-> > > > > diff --git a/drivers/virtio/virtio_pci_common.h b/drivers/virtio/virtio_pci_common.h
-> > > > > index a235ce9ff6a5..3c06e0f92ee4 100644
-> > > > > --- a/drivers/virtio/virtio_pci_common.h
-> > > > > +++ b/drivers/virtio/virtio_pci_common.h
-> > > > > @@ -64,6 +64,7 @@ struct virtio_pci_device {
-> > > > >       /* MSI-X support */
-> > > > >       int msix_enabled;
-> > > > >       int intx_enabled;
-> > > > > +     bool intx_soft_enabled;
-> > > > >       cpumask_var_t *msix_affinity_masks;
-> > > > >       /* Name strings for interrupts. This size should be enough,
-> > > > >        * and I'm too lazy to allocate each name separately. */
-> > > > > --
-> > > > > 2.25.1
-> > > >
-> >
-
+Paul
