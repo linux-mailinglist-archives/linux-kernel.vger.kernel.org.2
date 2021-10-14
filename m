@@ -2,35 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF7A442DD72
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:06:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30A8142DD40
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:03:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233113AbhJNPHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 11:07:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51564 "EHLO mail.kernel.org"
+        id S231966AbhJNPFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 11:05:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44622 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233102AbhJNPFu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 11:05:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B5C6E6124D;
-        Thu, 14 Oct 2021 15:01:24 +0000 (UTC)
+        id S233159AbhJNPDu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 11:03:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 02DD161248;
+        Thu, 14 Oct 2021 15:00:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634223685;
-        bh=YTbHAH8Ua0A1AFT7YLouuXcef6ol2k5GX5NuXWheHAA=;
+        s=korg; t=1634223624;
+        bh=PiVetzDaw7T8JIaJsLImaHBIhlQSbWsMHuvXTlQKHe8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TLe3+EpnQjLHZuheCnGOWa4mXSyJVAszl5NPrWTMct6fZL9Z0y1pkd0rMAEMK1CNI
-         CUd1wCXBR2nQ2HHpJLuBgYKSHkhKAaolGyZ2mNuaL6M7rrBAioQxhkvM0m9oZa/kbf
-         GA9YyM/H72nX5QF19c44mL5KJ+Ki77Pd6VAiKVDA=
+        b=kWDRKpPUK3c9fRyyzr+I1GIT2l1rx1l9bfr/WUIaJNiVIUQlUkoQoUOk09oyKCkxC
+         7CFRuMnuUHWtXmduiHHygZRA/5FYhOz1FXuvMrw8CXZeUk+owuxZ5ggPQ3TsjOBm53
+         U0VwMUYDcVbqIVfL25NCoX1dpR+l1cpf/vfOhPIQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mizuho Mori <morimolymoly@gmail.com>,
-        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 07/30] HID: apple: Fix logical maximum and usage maximum of Magic Keyboard JIS
-Date:   Thu, 14 Oct 2021 16:54:12 +0200
-Message-Id: <20211014145209.760921893@linuxfoundation.org>
+        stable@vger.kernel.org, Marc Herbert <marc.herbert@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 07/22] ASoC: SOF: loader: release_firmware() on load failure to avoid batching
+Date:   Thu, 14 Oct 2021 16:54:13 +0200
+Message-Id: <20211014145208.220739779@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211014145209.520017940@linuxfoundation.org>
-References: <20211014145209.520017940@linuxfoundation.org>
+In-Reply-To: <20211014145207.979449962@linuxfoundation.org>
+References: <20211014145207.979449962@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,100 +44,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mizuho Mori <morimolymoly@gmail.com>
+From: Marc Herbert <marc.herbert@intel.com>
 
-[ Upstream commit 67fd71ba16a37c663d139f5ba5296f344d80d072 ]
+[ Upstream commit 8a8e1813ffc35111fc0b6db49968ceb0e1615ced ]
 
-Apple Magic Keyboard(JIS)'s Logical Maximum and Usage Maximum are wrong.
+Invoke release_firmware() when the firmware fails to boot in
+sof_probe_continue().
 
-Below is a report descriptor.
+The request_firmware() framework must be informed of failures in
+sof_probe_continue() otherwise its internal "batching"
+feature (different from caching) cached the firmware image
+forever. Attempts to correct the file in /lib/firmware/ were then
+silently and confusingly ignored until the next reboot. Unloading the
+drivers did not help because from their disconnected perspective the
+firmware had failed so there was nothing to release.
 
-0x05, 0x01,         /*  Usage Page (Desktop),                           */
-0x09, 0x06,         /*  Usage (Keyboard),                               */
-0xA1, 0x01,         /*  Collection (Application),                       */
-0x85, 0x01,         /*      Report ID (1),                              */
-0x05, 0x07,         /*      Usage Page (Keyboard),                      */
-0x15, 0x00,         /*      Logical Minimum (0),                        */
-0x25, 0x01,         /*      Logical Maximum (1),                        */
-0x19, 0xE0,         /*      Usage Minimum (KB Leftcontrol),             */
-0x29, 0xE7,         /*      Usage Maximum (KB Right GUI),               */
-0x75, 0x01,         /*      Report Size (1),                            */
-0x95, 0x08,         /*      Report Count (8),                           */
-0x81, 0x02,         /*      Input (Variable),                           */
-0x95, 0x05,         /*      Report Count (5),                           */
-0x75, 0x01,         /*      Report Size (1),                            */
-0x05, 0x08,         /*      Usage Page (LED),                           */
-0x19, 0x01,         /*      Usage Minimum (01h),                        */
-0x29, 0x05,         /*      Usage Maximum (05h),                        */
-0x91, 0x02,         /*      Output (Variable),                          */
-0x95, 0x01,         /*      Report Count (1),                           */
-0x75, 0x03,         /*      Report Size (3),                            */
-0x91, 0x03,         /*      Output (Constant, Variable),                */
-0x95, 0x08,         /*      Report Count (8),                           */
-0x75, 0x01,         /*      Report Size (1),                            */
-0x15, 0x00,         /*      Logical Minimum (0),                        */
-0x25, 0x01,         /*      Logical Maximum (1),                        */
+Also leverage the new snd_sof_fw_unload() function to simplify the
+snd_sof_device_remove() function.
 
-here is a report descriptor which is parsed one in kernel.
-see sys/kernel/debug/hid/<dev>/rdesc
-
-05 01 09 06 a1 01 85 01 05 07
-15 00 25 01 19 e0 29 e7 75 01
-95 08 81 02 95 05 75 01 05 08
-19 01 29 05 91 02 95 01 75 03
-91 03 95 08 75 01 15 00 25 01
-06 00 ff 09 03 81 03 95 06 75
-08 15 00 25 [65] 05 07 19 00 29
-[65] 81 00 95 01 75 01 15 00 25
-01 05 0c 09 b8 81 02 95 01 75
-01 06 01 ff 09 03 81 02 95 01
-75 06 81 03 06 02 ff 09 55 85
-55 15 00 26 ff 00 75 08 95 40
-b1 a2 c0 06 00 ff 09 14 a1 01
-85 90 05 84 75 01 95 03 15 00
-25 01 09 61 05 85 09 44 09 46
-81 02 95 05 81 01 75 08 95 01
-15 00 26 ff 00 09 65 81 02 c0
-00
-
-Position 64(Logical Maximum) and 70(Usage Maximum) are 101.
-Both should be 0xE7 to support JIS specific keys(ろ, Eisu, Kana, |) support.
-position 117 is also 101 but not related(it is Usage 65h).
-
-There are no difference of product id between JIS and ANSI.
-They are same 0x0267.
-
-Signed-off-by: Mizuho Mori <morimolymoly@gmail.com>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Signed-off-by: Marc Herbert <marc.herbert@intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Link: https://lore.kernel.org/r/20210916085008.28929-1-peter.ujfalusi@linux.intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/hid-apple.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ sound/soc/sof/core.c   | 4 +---
+ sound/soc/sof/loader.c | 2 ++
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/hid/hid-apple.c b/drivers/hid/hid-apple.c
-index dc6bd4299c54..87edcd4ce07c 100644
---- a/drivers/hid/hid-apple.c
-+++ b/drivers/hid/hid-apple.c
-@@ -322,12 +322,19 @@ static int apple_event(struct hid_device *hdev, struct hid_field *field,
+diff --git a/sound/soc/sof/core.c b/sound/soc/sof/core.c
+index adc7c37145d6..feced9077dfe 100644
+--- a/sound/soc/sof/core.c
++++ b/sound/soc/sof/core.c
+@@ -354,7 +354,6 @@ int snd_sof_device_remove(struct device *dev)
+ 			dev_warn(dev, "error: %d failed to prepare DSP for device removal",
+ 				 ret);
  
- /*
-  * MacBook JIS keyboard has wrong logical maximum
-+ * Magic Keyboard JIS has wrong logical maximum
-  */
- static __u8 *apple_report_fixup(struct hid_device *hdev, __u8 *rdesc,
- 		unsigned int *rsize)
+-		snd_sof_fw_unload(sdev);
+ 		snd_sof_ipc_free(sdev);
+ 		snd_sof_free_debug(sdev);
+ 		snd_sof_free_trace(sdev);
+@@ -377,8 +376,7 @@ int snd_sof_device_remove(struct device *dev)
+ 		snd_sof_remove(sdev);
+ 
+ 	/* release firmware */
+-	release_firmware(pdata->fw);
+-	pdata->fw = NULL;
++	snd_sof_fw_unload(sdev);
+ 
+ 	return 0;
+ }
+diff --git a/sound/soc/sof/loader.c b/sound/soc/sof/loader.c
+index ba9ed66f98bc..2d5c3fc93bc5 100644
+--- a/sound/soc/sof/loader.c
++++ b/sound/soc/sof/loader.c
+@@ -830,5 +830,7 @@ EXPORT_SYMBOL(snd_sof_run_firmware);
+ void snd_sof_fw_unload(struct snd_sof_dev *sdev)
  {
- 	struct apple_sc *asc = hid_get_drvdata(hdev);
- 
-+	if(*rsize >=71 && rdesc[70] == 0x65 && rdesc[64] == 0x65) {
-+		hid_info(hdev,
-+			 "fixing up Magic Keyboard JIS report descriptor\n");
-+		rdesc[64] = rdesc[70] = 0xe7;
-+	}
-+
- 	if ((asc->quirks & APPLE_RDESC_JIS) && *rsize >= 60 &&
- 			rdesc[53] == 0x65 && rdesc[59] == 0x65) {
- 		hid_info(hdev,
+ 	/* TODO: support module unloading at runtime */
++	release_firmware(sdev->pdata->fw);
++	sdev->pdata->fw = NULL;
+ }
+ EXPORT_SYMBOL(snd_sof_fw_unload);
 -- 
 2.33.0
 
