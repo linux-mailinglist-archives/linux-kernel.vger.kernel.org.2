@@ -2,98 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A35F42D852
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 13:39:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86E4F42D85C
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 13:42:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230473AbhJNLlj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 07:41:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47247 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230454AbhJNLli (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 07:41:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634211573;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zUt09S4csvlYuawOC+3Rd0m1qDOaKGhw9lW/9LXEe7k=;
-        b=Dcigtc7iDHs0LTJbwI6ykop9wCyRSgRhmuvaCaacFji5MJcErtJX6prhZFskOJKDtRRTSb
-        a6MMnFCDvQJS6sOzLuzozTZ/BYZfsc0oxFwl89cHGOwDrlo++hCrlUjFZesBnspEvkLacR
-        XNY6/UzDgdqAekW2Fvu5ZLgDVWwKWS0=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-329-oE-pULkvPOKle6q30TJ79Q-1; Thu, 14 Oct 2021 07:39:32 -0400
-X-MC-Unique: oE-pULkvPOKle6q30TJ79Q-1
-Received: by mail-ed1-f69.google.com with SMTP id d11-20020a50cd4b000000b003da63711a8aso4859436edj.20
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 04:39:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=zUt09S4csvlYuawOC+3Rd0m1qDOaKGhw9lW/9LXEe7k=;
-        b=G1mqhOFsnNJF9GavM1QwLXu3SXzSju4KR5Fw+Msd1cYUQfEeJbgd7UvgD54v+lpNOd
-         G97VUUAXKEInAuGexpm0DiDo3WWa60/CwHSQD9AebEW7gYyXSLpWpb0BbaLa54As/w6s
-         dpckId5tCWqhAmxWEdqph5oTdc5zMmRdyBZqBF19HV1PtGpOnMX14HKlWxsP9mRFF9Lp
-         V7dCwDYn7ePFgSgB2w8Y9z5S6/ezGtZ6kFO6VjG2uqGUlJP3dgJhnpSLSK9gi5TLpUGF
-         VKvGWGy/Z2SewocDvK3o6m9K7AoMkwwclhCwNhjjaLsYqaXoiz2zuoKcRRWddx/amwvw
-         Dtzw==
-X-Gm-Message-State: AOAM5315zlfCjVYz7M46NFTGgPp8EGnY7PGrojSl2KxkTFT4O36i8yDv
-        0B/llVlorGgOTZ9XUNNNCvWeuJ0Q9G1bcI+N4B80G2P9OU+I7enJdA/oKO/NSuDN9TntdmP+Hxe
-        a5DcVqQ4I+iuCiNP2MT4MwJzN
-X-Received: by 2002:a17:906:5f8e:: with SMTP id a14mr3187483eju.155.1634211571567;
-        Thu, 14 Oct 2021 04:39:31 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyShlU79JrsHL4kA6p6xoWiNJO7pml0YFLFUDMjqsmGyUAf3uRy/R8wnMS4pDLr590B/MN1eg==
-X-Received: by 2002:a17:906:5f8e:: with SMTP id a14mr3187458eju.155.1634211571367;
-        Thu, 14 Oct 2021 04:39:31 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id o12sm1986907edw.84.2021.10.14.04.39.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Oct 2021 04:39:30 -0700 (PDT)
-Message-ID: <9c2e202b-4e15-2728-4c61-a2f74adac444@redhat.com>
-Date:   Thu, 14 Oct 2021 13:39:29 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [patch 13/31] x86/fpu: Move KVMs FPU swapping to FPU core
-Content-Language: en-US
-To:     "Liu, Jing2" <jing2.liu@intel.com>,
+        id S231177AbhJNLox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 07:44:53 -0400
+Received: from foss.arm.com ([217.140.110.172]:53700 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229984AbhJNLow (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 07:44:52 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 808412F;
+        Thu, 14 Oct 2021 04:42:47 -0700 (PDT)
+Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id ECFDD3F66F;
+        Thu, 14 Oct 2021 04:42:45 -0700 (PDT)
+From:   Valentin Schneider <Valentin.Schneider@arm.com>
+To:     Boqun Feng <boqun.feng@gmail.com>,
+        Frederic Weisbecker <frederic@kernel.org>
+Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     "x86@kernel.org" <x86@kernel.org>,
-        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "Nakajima, Jun" <jun.nakajima@intel.com>,
-        Jing Liu <jing2.liu@linux.intel.com>,
-        "seanjc@google.com" <seanjc@google.com>,
-        "Cooper, Andrew" <andrew.cooper3@citrix.com>
-References: <871r4p9fyh.ffs@tglx>
- <ec9c761d-4b5c-71e2-c1fc-d256b6b78c04@redhat.com>
- <BL0PR11MB3252511FC48E43484DE79A3CA9B89@BL0PR11MB3252.namprd11.prod.outlook.com>
- <6bbc5184-a675-1937-eb98-639906a9cf15@redhat.com>
- <BYAPR11MB32565A69998A2D3C26054D3EA9B89@BYAPR11MB3256.namprd11.prod.outlook.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <BYAPR11MB32565A69998A2D3C26054D3EA9B89@BYAPR11MB3256.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
+Subject: Re: [PATCH 03/11] rcu/nocb: Invoke rcu_core() at the start of deoffloading
+In-Reply-To: <YWcEXj2+nqO8kIFS@boqun-archlinux>
+References: <20211011145140.359412-1-frederic@kernel.org> <20211011145140.359412-4-frederic@kernel.org> <YWcEXj2+nqO8kIFS@boqun-archlinux>
+Date:   Thu, 14 Oct 2021 12:42:40 +0100
+Message-ID: <87o87rkf2n.mognet@arm.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/10/21 13:30, Liu, Jing2 wrote:
-> I guess we're worrying about is when KVM is sched_out, a nonzero XFD_ERR
-> can be lost by other host thread. We can save guest XFD_ERR in sched_out
-> and restore before next vmenter. Kernel is assumed not using AMX thus
-> softirq won't make it lost.
-> I think this solves the problem. So we can directly passthrough RW of it,
-> and no need to rdmsr(XFD_ERR) in vmexit.
+On 14/10/21 00:07, Boqun Feng wrote:
+>> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+>> index e38028d48648..b236271b9022 100644
+>> --- a/kernel/rcu/tree.c
+>> +++ b/kernel/rcu/tree.c
+>> @@ -2717,6 +2717,23 @@ static __latent_entropy void rcu_core(void)
+>>      unsigned long flags;
+>>      struct rcu_data *rdp = raw_cpu_ptr(&rcu_data);
+>>      struct rcu_node *rnp = rdp->mynode;
+>> +	/*
+>> +	 * On RT rcu_core() can be preempted when IRQs aren't disabled.
+>> +	 * Therefore this function can race with concurrent NOCB (de-)offloading
+>> +	 * on this CPU and the below condition must be considered volatile.
+>> +	 * However if we race with:
+>> +	 *
+>> +	 * _ Offloading:   In the worst case we accelerate or process callbacks
+>> +	 *                 concurrently with NOCB kthreads. We are guaranteed to
+>> +	 *                 call rcu_nocb_lock() if that happens.
+>
+> If offloading races with rcu_core(), can the following happen?
+>
+>       <offload work>
+>       rcu_nocb_rdp_offload():
+>                                               rcu_core():
+>                                                 ...
+>                                                 rcu_nocb_lock_irqsave(); // no a lock
+>         raw_spin_lock_irqsave(->nocb_lock);
+>           rdp_offload_toggle():
+>             <LOCKING | OFFLOADED set>
+>                                                 if (!rcu_segcblist_restempty(...))
+>                                                   rcu_accelerate_cbs_unlocked(...);
+>                                                 rcu_nocb_unlock_irqrestore();
+>                                                 // ^ a real unlock,
+>                                                 // and will preempt_enable()
+>           // offload continue with ->nocb_lock not held
+>
+> If this can happen, it means an unpaired preempt_enable() and an
+> incorrect unlock. Thoughts? Maybe I'm missing something here?
+>
 
-Correct; you can also use the "user-return MSRs" machinery (until Linux 
-starts using AMX in the kernel, but that shouldn't happen too soon).
+As Frederic pointed out in an earlier thread [1], this can't happen because
+we still have IRQs disabled, and the offloading process has to be processed
+on the CPU being offloaded. IOW, in the above scenario, rcu_core() can't be
+preempted by the rcu_nocb_rdp_offload() work until it re-enables IRQs at
+rcu_nocb_unlock_irqrestore().
 
-Paolo
+(hopefully Paul or Frederic will correct me if I've just spewed garbage)
 
+[1]: https://lore.kernel.org/lkml/20210930105340.GA232241@lothringen/
+
+> Regards,
+> Boqun
+>
