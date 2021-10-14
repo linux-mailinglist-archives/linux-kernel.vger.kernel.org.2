@@ -2,110 +2,278 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE66842DA2E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 15:21:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6D5D42DA34
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 15:21:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231171AbhJNNXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 09:23:36 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:24313 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229637AbhJNNXd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 09:23:33 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HVVL1052GzYjTy;
-        Thu, 14 Oct 2021 21:16:57 +0800 (CST)
-Received: from kwepemm600001.china.huawei.com (7.193.23.3) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Thu, 14 Oct 2021 21:21:26 +0800
-Received: from huawei.com (10.175.104.82) by kwepemm600001.china.huawei.com
- (7.193.23.3) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Thu, 14 Oct
- 2021 21:21:25 +0800
-From:   Wang Hai <wanghai38@huawei.com>
-To:     <johan@kernel.org>, <gregkh@linuxfoundation.org>
-CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] USB: serial: Fix possible memleak in keyspan_port_probe()
-Date:   Thu, 14 Oct 2021 21:20:33 +0800
-Message-ID: <20211014132033.554304-1-wanghai38@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        id S231286AbhJNNX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 09:23:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59936 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230054AbhJNNX6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 09:23:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 498AD60EE5;
+        Thu, 14 Oct 2021 13:21:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1634217713;
+        bh=t3FaZ8xgpf16PMd+JevIiZLcGO4h4XG3aZfR3cIB58g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FcvociMXe0RUCKnL7vxxtTEZIYs+upjQIsAMJd8V2JLLgSGwu6scjcJUj+wWtzKpg
+         MUjjpuopvhsDSZTfWijmTVcTnD0yGgLU6cSqnls1ynBLi6qnMFgBLZM8bah8DB26rS
+         EWKzv2mS+f9PS6wifx5uX19gQ5D6pPlZcnZ27TDU=
+Date:   Thu, 14 Oct 2021 15:21:51 +0200
+From:   gregkh <gregkh@linuxfoundation.org>
+To:     "changlianzhi@uniontech.com" <changlianzhi@uniontech.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        "dmitry.torokhov" <dmitry.torokhov@gmail.com>,
+        jirislaby <jirislaby@kernel.org>,
+        "andriy.shevchenko" <andriy.shevchenko@linux.intel.com>,
+        linux-input <linux-input@vger.kernel.org>,
+        282827961 <282827961@qq.com>
+Subject: Re: [PATCH] input&tty: Fix the keyboard led light display problem
+Message-ID: <YWgu71RP4ERZYjCy@kroah.com>
+References: <20211014085308.9803-1-changlianzhi@uniontech.com>
+ <616827d8.1c69fb81.75aa0.eea0SMTPIN_ADDED_BROKEN@mx.google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.82]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemm600001.china.huawei.com (7.193.23.3)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <616827d8.1c69fb81.75aa0.eea0SMTPIN_ADDED_BROKEN@mx.google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I got memory leak as follows when doing fault injection test:
+On Thu, Oct 14, 2021 at 12:50:31PM +0800, changlianzhi@uniontech.com wrote:
+> Subject: [PATCH] input&tty: Fix the keyboard led light display problem
+> 
+> 
+> Switching from the desktop environment to the tty environment,
+> 
+> 
+> 
+> the state of the keyboard led lights and the state of the keyboard
+> 
+> 
+> 
+> lock are inconsistent. This is because the attribute kb->kbdmode
+> 
+> 
+> 
+> of the tty bound in the desktop environment (xorg) is set to
+> 
+> 
+> 
+> VC_OFF, which causes the ledstate and kb->ledflagstate
+> 
+> 
+> 
+> values of the bound tty to always be 0, which causes the switch
+> 
+> 
+> 
+> from the desktop When to the tty environment, the LED light
+> 
+> 
+> 
+> status is inconsistent with the keyboard lock status.
+> 
+> 
+> 
+>  
+> 
+> 
+> 
+> Signed-off-by: lianzhi chang <changlianzhi@uniontech.com>
+> 
+> 
+> 
+> ---
+> 
+> 
+> 
+> drivers/input/input.c     |  7 ++++++-
+> 
+> 
+> 
+> drivers/tty/vt/keyboard.c | 30 +++++++++++++++++++++++++++++-
+> 
+> 
+> 
+> include/linux/kbd_kern.h  |  2 ++
+> 
+> 
+> 
+> 3 files changed, 37 insertions(+), 2 deletions(-)
+> 
+> 
+> 
+>  
+> 
+> 
+> 
+> diff --git a/drivers/input/input.c b/drivers/input/input.c
+> 
+> 
+> 
+> index ccaeb2426385..43c09700bf68 100644
+> 
+> 
+> 
+> --- a/drivers/input/input.c
+> 
+> 
+> 
+> +++ b/drivers/input/input.c
+> 
+> 
+> 
+> @@ -25,6 +25,7 @@
+> 
+> 
+> 
+> #include <linux/rcupdate.h>
+> 
+> 
+> 
+> #include "input-compat.h"
+> 
+> 
+> 
+> #include "input-poller.h"
+> 
+> 
+> 
+> +#include <linux/kbd_kern.h>
+> 
+> 
+> 
+> MODULE_AUTHOR("Vojtech Pavlik <vojtech@suse.cz>");
+> 
+> 
+> 
+> MODULE_DESCRIPTION("Input core");
+> 
+> 
+> 
+> @@ -472,8 +473,12 @@ void input_inject_event(struct input_handle *handle,
+> 
+> 
+> 
+> rcu_read_lock();
+> 
+> 
+> 
+> grab = rcu_dereference(dev->grab);
+> 
+> 
+> 
+> - if (!grab || grab == handle)
+> 
+> 
+> 
+> + if (!grab || grab == handle) {
+> 
+> 
+> 
+> input_handle_event(dev, type, code, value);
+> 
+> 
+> 
+> +
+> 
+> 
+> 
+> + if (type == EV_LED && code < LED_SCROLLL)
+> 
+> 
+> 
+> + update_value_ledstate(code, value);
+> 
+> 
+> 
+> + }
+> 
+> 
+> 
+> rcu_read_unlock();
+> 
+> 
+> 
+> spin_unlock_irqrestore(&dev->event_lock, flags);
+> 
+> 
+> 
+> diff --git a/drivers/tty/vt/keyboard.c b/drivers/tty/vt/keyboard.c
+> 
+> 
+> 
+> index c7fbbcdcc346..0240915cdfef 100644
+> 
+> 
+> 
+> --- a/drivers/tty/vt/keyboard.c
+> 
+> 
+> 
+> +++ b/drivers/tty/vt/keyboard.c
+> 
+> 
+> 
+> @@ -1140,6 +1140,31 @@ static unsigned char getledstate(void)
+> 
+> 
+> 
+> return ledstate & 0xff;
+> 
+> 
+> 
+> }
+> 
+> 
+> 
+> +void update_value_ledstate(unsigned int flag, unsigned int value)
+> 
+> 
+> 
+> +{
+> 
+> 
+> 
+> + unsigned int bit;
+> 
+> 
+> 
+> +
+> 
+> 
+> 
+> + switch (flag) {
+> 
+> 
+> 
+> + case LED_NUML:
+> 
+> 
+> 
+> + bit = VC_NUMLOCK;
+> 
+> 
+> 
+> + break;
+> 
+> 
+> 
+> + case LED_CAPSL:
+> 
+> 
+> 
 
-unreferenced object 0xffff888258228440 (size 64):
-  comm "kworker/7:2", pid 2005, jiffies 4294989509 (age 824.540s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff8167939c>] slab_post_alloc_hook+0x9c/0x490
-    [<ffffffff8167f627>] kmem_cache_alloc_trace+0x1f7/0x470
-    [<ffffffffa02ac0e4>] keyspan_port_probe+0xa4/0x5d0 [keyspan]
-    [<ffffffffa0294c07>] usb_serial_device_probe+0x97/0x1d0 [usbserial]
-    [<ffffffff82b50ca7>] really_probe+0x167/0x460
-    [<ffffffff82b51099>] __driver_probe_device+0xf9/0x180
-    [<ffffffff82b51173>] driver_probe_device+0x53/0x130
-    [<ffffffff82b516f5>] __device_attach_driver+0x105/0x130
-    [<ffffffff82b4cfe9>] bus_for_each_drv+0x129/0x190
-    [<ffffffff82b50a69>] __device_attach+0x1c9/0x270
-    [<ffffffff82b518d0>] device_initial_probe+0x20/0x30
-    [<ffffffff82b4f062>] bus_probe_device+0x142/0x160
-    [<ffffffff82b4a4e9>] device_add+0x829/0x1300
-    [<ffffffffa0295fda>] usb_serial_probe.cold+0xc9b/0x14ac [usbserial]
-    [<ffffffffa02266aa>] usb_probe_interface+0x1aa/0x3c0 [usbcore]
-    [<ffffffff82b50ca7>] really_probe+0x167/0x460
+<snip>
 
-If it fails to allocate memory for an out_buffer[i] or in_buffer[i],
-the previously allocated memory for out_buffer or in_buffer needs to
-be freed on the error handling path, otherwise a memory leak will result.
+Something went very wrong with this patch submission :(
 
-Fixes: bad41a5bf177 ("USB: keyspan: fix port DMA-buffer allocations")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
----
- drivers/usb/serial/keyspan.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+Please fix up your email client and try again, or just use 'git
+send-email' directly, as that should be all that you need here.
 
-diff --git a/drivers/usb/serial/keyspan.c b/drivers/usb/serial/keyspan.c
-index 87b89c99d517..ba27a9f0275b 100644
---- a/drivers/usb/serial/keyspan.c
-+++ b/drivers/usb/serial/keyspan.c
-@@ -2901,7 +2901,7 @@ static int keyspan_port_probe(struct usb_serial_port *port)
- 
- 	p_priv->inack_buffer = kzalloc(INACK_BUFLEN, GFP_KERNEL);
- 	if (!p_priv->inack_buffer)
--		goto err_inack_buffer;
-+		goto err_out_buffer;
- 
- 	p_priv->outcont_buffer = kzalloc(OUTCONT_BUFLEN, GFP_KERNEL);
- 	if (!p_priv->outcont_buffer)
-@@ -2953,13 +2953,12 @@ static int keyspan_port_probe(struct usb_serial_port *port)
- 
- err_outcont_buffer:
- 	kfree(p_priv->inack_buffer);
--err_inack_buffer:
-+err_out_buffer:
- 	for (i = 0; i < ARRAY_SIZE(p_priv->out_buffer); ++i)
- 		kfree(p_priv->out_buffer[i]);
--err_out_buffer:
-+err_in_buffer:
- 	for (i = 0; i < ARRAY_SIZE(p_priv->in_buffer); ++i)
- 		kfree(p_priv->in_buffer[i]);
--err_in_buffer:
- 	kfree(p_priv);
- 
- 	return -ENOMEM;
--- 
-2.25.1
+thanks,
 
+greg k-h
