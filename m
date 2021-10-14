@@ -2,130 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A91E742E3E0
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 23:56:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 981D542E3E1
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 23:57:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234157AbhJNV6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 17:58:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57104 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232055AbhJNV6C (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 17:58:02 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BD76C061570
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 14:55:53 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id d23so6740010pgh.8
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 14:55:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=8KCBa22fzebnliwJ53TUX2fQlBe4pRKtp4NpVWdwOr8=;
-        b=qUWezM8050J0V+GxuKsquuBbgOIDJEj7el0dJXeJoiutXaMGaRuOSzpGcdgBNrQHVf
-         Hk2+d3Et4utpx4syAAEgMErJrUkWVGjER3d9Hq4u9QqTS+Jfk83VJcq9PHZ/1a3sxvwV
-         QQEFip53cP0GFBRzGI5k82Cf7xmB2BUbpDD/BrxzLrL0/j/JauN4XI6kPKoU+jttAvUs
-         Hfr+S31m8dvMQbpf4RAbKyZATHNG5ad9Mq8L4FJnZma7yFY+/S6XDKIBFNe2jXtBUaxh
-         Wf2t9OAIwC4mJHCW26FUAUTpb0z+N7EoX+0WSzC5X5ATVbNnNQr0Q6AlsmaaJSA7lR/G
-         FcJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=8KCBa22fzebnliwJ53TUX2fQlBe4pRKtp4NpVWdwOr8=;
-        b=yholK5UN+ZVBEolNg4Qgkw/H3tJ5UqstL5N8lZgtPAECdzc/Zr7XiWTqucbgjKF/Rw
-         B7+iFQWyR/XiS6JfFbzgOhbQ5VxkcN1svcV2MlaptDykssfD8pyT7qTXJ+U/RMiOjWur
-         UDGdh3qUSNR/giFNDIjBG3QSglc22vmks745dkQjQv27PU+wdu+lxdD5zlQgWupttE/T
-         cVABBdTkbEjcrVCry6Bny0CTBQ/MTrABDhGFR/ChrckhRgXRVHeddokScAI9YwU+g4p7
-         Wo51+eHEAABLd6LscL5J0B3gOiLB0wYrk5ppUWqUh9kqaO0+dCx+LLSh18Zq9fOVON+8
-         axcQ==
-X-Gm-Message-State: AOAM531y9xKHi8SX6yG4Q/GbTT62PPn84r8bp4tF4N0lNrEaqf9cjufT
-        5LSfAxP2Xh/urcHlGF2Y32xjd6EhDEU=
-X-Google-Smtp-Source: ABdhPJxAw8w0toZYCzOK18nFgbk71QjmGJspCXMOt1ZD3VHqX62T/T7iJhAdlQgIb3G/xO/y/3S52w==
-X-Received: by 2002:a65:6854:: with SMTP id q20mr6239818pgt.228.1634248552634;
-        Thu, 14 Oct 2021 14:55:52 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id y22sm3288178pjj.5.2021.10.14.14.55.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Oct 2021 14:55:52 -0700 (PDT)
-Subject: Re: [PM] bfcc1e67ff:
- kernel-selftests.breakpoints.step_after_suspend_test.fail
-To:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        lkp@lists.01.org, lkp@intel.com,
-        kernel test robot <oliver.sang@intel.com>
-References: <20211014075731.GB18719@xsang-OptiPlex-9020>
- <51c0a15f-1941-f161-dcec-a7a9acc726f2@gmail.com>
- <e526de16-5efd-6474-20e1-3f96a2e3c524@intel.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <6755cf07-fa5a-cbb7-c076-57c162a08c99@gmail.com>
-Date:   Thu, 14 Oct 2021 14:55:42 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S232849AbhJNV7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 17:59:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45696 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229829AbhJNV7X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 17:59:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CE86E6108E;
+        Thu, 14 Oct 2021 21:57:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634248638;
+        bh=ZI0iCYs3qrRnNNXjtxaoxU0Yank7YLMxvVLB18/FXgs=;
+        h=From:To:Cc:Subject:Date:From;
+        b=X67dWTvzRThDcnjF+zIrfzM7Hs3C05/TUR/b9txQF6LQliBCun1mjS/aCTjjhwFR5
+         MuL1nNsdhNbM+ckVUwk6adiokWp06kVhoVn8KDAoWryQl8FGUjVNabJO/Q8jRVHEJD
+         ffMvzE3KEWlBeA+8NwKt8y6TzYbrfFCvwSfPQqDKuNCliWThXNveMfL8kT9OYHc3wr
+         p+WsjuG9rw73hFyDT8Z2b7zD/Nos0TOSdd526o2kQfWx0kbO8F/GC+luSJFXFCBWDM
+         4+QCHJjtt94NoGonEFpw0ChIUwrGiGNfjkg0it488medfjYV6Zw6QsUr0E3cU34owh
+         7Gn67OqqNEXlQ==
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, Nathan Chancellor <nathan@kernel.org>
+Subject: [PATCH] staging: wlan-ng: Avoid bitwise vs logical OR warning in hfa384x_usb_throttlefn()
+Date:   Thu, 14 Oct 2021 14:57:03 -0700
+Message-Id: <20211014215703.3705371-1-nathan@kernel.org>
+X-Mailer: git-send-email 2.33.1.637.gf443b226ca
 MIME-Version: 1.0
-In-Reply-To: <e526de16-5efd-6474-20e1-3f96a2e3c524@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+X-Patchwork-Bot: notify
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/14/21 12:23 PM, Rafael J. Wysocki wrote:
-> On 10/14/2021 6:26 PM, Florian Fainelli wrote:
->> On 10/14/21 12:57 AM, kernel test robot wrote:
->>>
->>> Greeting,
->>>
->>> FYI, we noticed the following commit (built with gcc-9):
->>>
->>> commit: bfcc1e67ff1e4aa8bfe2ca57f99390fc284c799d ("PM: sleep: Do not
->>> assume that "mem" is always present")
->>> https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git master
->>>
->>>
->>> in testcase: kernel-selftests
->>> version: kernel-selftests-x86_64-c8c9111a-1_20210929
->>> with following parameters:
->>>
->>>     group: group-00
->>>     ucode: 0x11
->>>
->>> test-description: The kernel contains a set of "self tests" under the
->>> tools/testing/selftests/ directory. These are intended to be small
->>> unit tests to exercise individual code paths in the kernel.
->>> test-url: https://www.kernel.org/doc/Documentation/kselftest.txt
->>>
->>>
->>> on test machine: 288 threads 2 sockets Intel(R) Xeon Phi(TM) CPU 7295
->>> @ 1.50GHz with 80G memory
->>>
->>> caused below changes (please refer to attached dmesg/kmsg for entire
->>> log/backtrace):
->>>
->>>
->>>
->>>
->>> If you fix the issue, kindly add following tag
->>> Reported-by: kernel test robot <oliver.sang@intel.com>
->> Thanks for your report. Assuming that the code responsible for
->> registering the suspend operations is drivers/acpi/sleep.c for your
->> platform, and that acpi_sleep_suspend_setup() iterated over all possible
->> sleep states, your platform must somehow be returning that ACPI_STATE_S3
->> is not a supported state somehow?
->>
->> Rafael have you ever encountered something like that?
-> 
-> Yes, there are systems with ACPI that don't support S3.
+A new warning in clang points out a place in this file where a bitwise
+OR is being used with boolean expressions:
 
-OK and do you know what happens when we enter suspend with "mem" in
-those cases? Do we immediately return because ultimately the firmware
-does not support ACPI S3?
+In file included from drivers/staging/wlan-ng/prism2usb.c:2:
+drivers/staging/wlan-ng/hfa384x_usb.c:3787:7: warning: use of bitwise '|' with boolean operands [-Wbitwise-instead-of-logical]
+            ((test_and_clear_bit(THROTTLE_RX, &hw->usb_flags) &&
+            ~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/staging/wlan-ng/hfa384x_usb.c:3787:7: note: cast one or both operands to int to silence this warning
+1 warning generated.
 
-I will rework
-tools/testing/selftests/breakpoints/step_after_suspend_test.c not to
-assume that "mem" is always available, since it may not be.
+The comment explains that short circuiting here is undesirable, as the
+calls to test_and_{clear,set}_bit() need to happen for both sides of the
+expression.
+
+Clang's suggestion would work to silence the warning but the readability
+of the expression would suffer even more. To clean up the warning and
+make the block more readable, use a variable for each side of the
+bitwise expression.
+
+Link: https://github.com/ClangBuiltLinux/linux/issues/1478
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+---
+ drivers/staging/wlan-ng/hfa384x_usb.c | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/staging/wlan-ng/hfa384x_usb.c b/drivers/staging/wlan-ng/hfa384x_usb.c
+index 59aa84d1837d..938e11a1a0b6 100644
+--- a/drivers/staging/wlan-ng/hfa384x_usb.c
++++ b/drivers/staging/wlan-ng/hfa384x_usb.c
+@@ -3778,18 +3778,18 @@ static void hfa384x_usb_throttlefn(struct timer_list *t)
+ 
+ 	spin_lock_irqsave(&hw->ctlxq.lock, flags);
+ 
+-	/*
+-	 * We need to check BOTH the RX and the TX throttle controls,
+-	 * so we use the bitwise OR instead of the logical OR.
+-	 */
+ 	pr_debug("flags=0x%lx\n", hw->usb_flags);
+-	if (!hw->wlandev->hwremoved &&
+-	    ((test_and_clear_bit(THROTTLE_RX, &hw->usb_flags) &&
+-	      !test_and_set_bit(WORK_RX_RESUME, &hw->usb_flags)) |
+-	     (test_and_clear_bit(THROTTLE_TX, &hw->usb_flags) &&
+-	      !test_and_set_bit(WORK_TX_RESUME, &hw->usb_flags))
+-	    )) {
+-		schedule_work(&hw->usb_work);
++	if (!hw->wlandev->hwremoved) {
++		bool rx_throttle = test_and_clear_bit(THROTTLE_RX, &hw->usb_flags) &&
++				   !test_and_set_bit(WORK_RX_RESUME, &hw->usb_flags);
++		bool tx_throttle = test_and_clear_bit(THROTTLE_TX, &hw->usb_flags) &&
++				   !test_and_set_bit(WORK_TX_RESUME, &hw->usb_flags);
++		/*
++		 * We need to check BOTH the RX and the TX throttle controls,
++		 * so we use the bitwise OR instead of the logical OR.
++		 */
++		if (rx_throttle | tx_throttle)
++			schedule_work(&hw->usb_work);
+ 	}
+ 
+ 	spin_unlock_irqrestore(&hw->ctlxq.lock, flags);
+
+base-commit: 6ac113f741a7674e4268eea3eb13972732d83571
 -- 
-Florian
+2.33.1.637.gf443b226ca
+
