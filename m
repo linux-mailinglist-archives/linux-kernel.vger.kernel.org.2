@@ -2,93 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E8EB42D0B4
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 04:52:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4107842D0B6
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 04:52:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229902AbhJNCyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 22:54:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50800 "EHLO
+        id S229931AbhJNCyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 22:54:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229496AbhJNCyG (ORCPT
+        with ESMTP id S229496AbhJNCyq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 22:54:06 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09FE2C061570;
-        Wed, 13 Oct 2021 19:52:02 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id h196so2073530iof.2;
-        Wed, 13 Oct 2021 19:52:02 -0700 (PDT)
+        Wed, 13 Oct 2021 22:54:46 -0400
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E734CC061570;
+        Wed, 13 Oct 2021 19:52:42 -0700 (PDT)
+Received: by mail-il1-x136.google.com with SMTP id s3so1969550ild.0;
+        Wed, 13 Oct 2021 19:52:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=78v6ehYr8lkWAmAtl+EulYj9+9VVNSSph/rczTFZO4k=;
-        b=Rqjvlj5lj2cg/ECXzgoojZoaDB7+XLotUnE9LIpf/a1lAX+cjfjAoFKlo2IMMeXWTK
-         1YjW7fp0qxXmWj6us5i13LNJgu1tUbFE5ZI4rBQ5WF3NPOc/A+5xiBgjB/F40+mqoUW4
-         wYeJBCoATKKhUkL0WnUNWsOChMBZWJGmsv7eSL7FV1W8W4fc9F6mcrSv8F5SYBnnnhXu
-         kQEXu9lAwqUoYwwKUJZ81LgvnS9yjFQuCmliFPW6RiyOxNmqikPfLoZFm6kA6Xq8FMZR
-         YbO8OtjHuNsFGAMrz01/Qa3d7NI4+WA/WFz/fv0DRwzCctiokL7JlBnjzap3IpwTD4Cv
-         r9yA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xmAdnBpF9m+zRKAxIasG4Lm9idjhAcnVvHr8JQ4A/rI=;
+        b=W9RifGoh604jNgThU8UuYdhIXvWcXdSX7bdFStEu6ZUjY6mM2DosiwPs/hPCY+lWHl
+         9IYHxOdfnWT7MxiP1qFRHiI0V1OMEiMQlnewB79LS6HYlfuOEmiDKbdjRXy+sDfL0E2w
+         bDlrF7hv11Pk4pzEMmQjOB81HZhYT5mkuBHnhsubgtUUZCcsD8c7zDuISc/Epz7VSXzh
+         6/2Ik7xfX7/BQrC0wZPYLkSqOG7vhPKZ8/oy14XpXZm15L3riRUS2X4jlKcBj2Cuk2i/
+         ywKPJ0wz3TrvZrNOc10+bAfcVeyLHKUqTjJeHJK4NpAmcIYEQFVRGSUoJjh9Srg76Cj6
+         Fdag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=78v6ehYr8lkWAmAtl+EulYj9+9VVNSSph/rczTFZO4k=;
-        b=Ci7QNwLKtFC0Y8I6Yut1jHgETgz8l7XZfvk7JSuCW5ThD+wWd7WilgruwizquPERs3
-         X8tNTJy6pdQL7c8CYhWTX9wp63C3QydeRoAdG/zZvorncLv3tS+tUzJcsPMWtnp/0ACY
-         dgFLwYM9vGrnXf0+LsWDRDOXYkNnMTefmHgLs6qF55jDpNApOKxUKT/1QwsqN8KiqHzn
-         f6xLU7pYg51YLNZ9SCAy6JG70Qp1vphoJ/l1rLsHtptBvwCsVsjbEw+jIylH5FDdWo9g
-         XHhb2DV0yUktlrRGiC/WduzK6mlFOq8LjF80vHDAcA8Hk9JtqWUvPe3Mzhy1nqPh4wJC
-         8+jQ==
-X-Gm-Message-State: AOAM530Lky4yIb13Dp7qIG40kzEd4eyXCpNtMAAHSgRCc4vKlhaG8aLJ
-        YhaGf/VbY8IScUTkSmZNFaKKcYuk6UT1eg==
-X-Google-Smtp-Source: ABdhPJwkQ+Y3YQ+mI7AchvouppRyy4ghOkghjn7WLZWrrWkwJytTdWvalXJUASmAexvU/B6fXVNNwQ==
-X-Received: by 2002:a05:6602:2b8f:: with SMTP id r15mr431475iov.93.1634179921459;
-        Wed, 13 Oct 2021 19:52:01 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local ([8.48.134.40])
-        by smtp.googlemail.com with ESMTPSA id b4sm630370iot.45.2021.10.13.19.52.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Oct 2021 19:52:00 -0700 (PDT)
-Subject: Re: [PATCH] ipv4: only allow increasing fib_info_hash_size
-To:     =?UTF-8?B?5byg5Yev?= <zhangkaiheb@126.com>
-Cc:     davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
-        kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211012110658.10166-1-zhangkaiheb@126.com>
- <23911752-3971-0230-cfd2-f8e30e8805db@gmail.com>
- <3bd88b51.6c7.17c77339c10.Coremail.zhangkaiheb@126.com>
- <9404e2d8-0976-1726-5f08-c277cdc14945@gmail.com>
- <5219d023.14d1.17c778a9a18.Coremail.zhangkaiheb@126.com>
- <1e3f52c3.350f.17c78afcc56.Coremail.zhangkaiheb@126.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <fc1bde05-8f7b-9d1f-a55f-8c77cfd55ee3@gmail.com>
-Date:   Wed, 13 Oct 2021 20:51:59 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        bh=xmAdnBpF9m+zRKAxIasG4Lm9idjhAcnVvHr8JQ4A/rI=;
+        b=Y3AIxiQSEENcQypXTabZXTO3n946DZafi3rVMWdiDEXWrDlcofvxEQ/09nnzD6w6hx
+         dbkBmbDWRqcNw/F1UCxWYA1Prbe6WGfWO4Up8H5UCWQZr+ExUHqGm3H47zieYVkhkqIz
+         ej7vywQxlYrf/gnbeHR62QQJcSp3KWiciWubEliBI0uB50dcVFFA8OtweNe7iJPATa77
+         cR/xDlXqII84MUTbQ4gfCswxr+W46rFygbbhbfcAmpDf0gc70g8M0713JpIdMHEXhStF
+         tRsghr8TMI4F7FU6pmoHujxtvqZvSwWLrnvAX80fK4+oQvzsGe9xjFHNI5RbQ4CTipB2
+         MHhQ==
+X-Gm-Message-State: AOAM531n+HwCMUeCzXfC6XSyX21SS77LhMjy3kEAaAOCVXMBjZMWmIs8
+        467vSS6PAZCM6ohjFQX7GEw=
+X-Google-Smtp-Source: ABdhPJzgfgcqBZfCrzhW/IwuzvVuyv88OevKEFNCNKbDJDN8QKgOPUlbZB7dBy9JnBOEUS8e/+Cntw==
+X-Received: by 2002:a05:6e02:1a43:: with SMTP id u3mr466283ilv.35.1634179962261;
+        Wed, 13 Oct 2021 19:52:42 -0700 (PDT)
+Received: from aford-IdeaCentre-A730.lan ([2601:448:8400:9e8:904d:9f1b:d148:a9a2])
+        by smtp.gmail.com with ESMTPSA id b7sm572093ilq.65.2021.10.13.19.52.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Oct 2021 19:52:41 -0700 (PDT)
+From:   Adam Ford <aford173@gmail.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     laurent.pinchart@ideasonboard.com, aford@beaconembedded.com,
+        Adam Ford <aford173@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: dts: imx8mm: Add CSI nodes
+Date:   Wed, 13 Oct 2021 21:52:34 -0500
+Message-Id: <20211014025234.145147-1-aford173@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <1e3f52c3.350f.17c78afcc56.Coremail.zhangkaiheb@126.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/13/21 2:05 AM, 张凯 wrote:
-> Should we let the function still work when the below check is true, not goto failure?
-> 
->        if (new_size < fib_info_hash_size)
->                goto failure;
-> 
-> 
+There is a csi bridge and csis interface that tie together
+to allow csi2 capture.
 
-no, it can not.
+Signed-off-by: Adam Ford <aford173@gmail.com>
 
-if (fib_info_cnt >= fib_info_hash_size) {
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm.dtsi b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
+index c2f3f118f82e..8a8a5d0a4a1e 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mm.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
+@@ -1068,6 +1068,22 @@ aips4: bus@32c00000 {
+ 			#size-cells = <1>;
+ 			ranges = <0x32c00000 0x32c00000 0x400000>;
+ 
++			csi: csi@32e20000 {
++				compatible = "fsl,imx7-csi";
++				reg = <0x32e20000 0x1000>;
++				interrupts = <GIC_SPI 16 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&clk IMX8MM_CLK_CSI1_ROOT>;
++				clock-names = "mclk";
++				power-domains = <&disp_blk_ctrl IMX8MM_DISPBLK_PD_CSI_BRIDGE>;
++				status = "disabled";
++
++				port {
++					csi_in: endpoint {
++						remote-endpoint = <&imx8mm_mipi_csi_out>;
++					};
++				};
++			};
++
+ 			disp_blk_ctrl: blk-ctrl@32e28000 {
+ 				compatible = "fsl,imx8mm-disp-blk-ctrl", "syscon";
+ 				reg = <0x32e28000 0x100>;
+@@ -1095,6 +1111,41 @@ disp_blk_ctrl: blk-ctrl@32e28000 {
+ 				#power-domain-cells = <1>;
+ 			};
+ 
++			mipi_csi2: mipi-csi@32e30000 {
++				compatible = "fsl,imx8mm-mipi-csi2";
++				reg = <0x32e30000 0x1000>;
++				interrupts = <GIC_SPI 17 IRQ_TYPE_LEVEL_HIGH>;
++				clock-frequency = <333000000>;
++				clocks = <&clk IMX8MM_CLK_DISP_APB_ROOT>,
++					 <&clk IMX8MM_CLK_CSI1_ROOT>,
++					 <&clk IMX8MM_CLK_CSI1_PHY_REF>,
++					 <&clk IMX8MM_CLK_DISP_AXI_ROOT>;
++				clock-names = "pclk", "wrap", "phy", "axi";
++				power-domains = <&disp_blk_ctrl IMX8MM_DISPBLK_PD_MIPI_CSI>;
++				status = "disabled";
++
++				ports {
++					#address-cells = <1>;
++					#size-cells = <0>;
++
++					port@0 {
++						reg = <0>;
++
++						imx8mm_mipi_csi_in: endpoint {
++						};
++					};
++
++					port@1 {
++						reg = <1>;
++
++						imx8mm_mipi_csi_out: endpoint {
++							remote-endpoint = <&csi_in>;
++						};
++					};
++				};
++			};
++
++
+ 			usbotg1: usb@32e40000 {
+ 				compatible = "fsl,imx8mm-usb", "fsl,imx7d-usb";
+ 				reg = <0x32e40000 0x200>;
+-- 
+2.25.1
 
-means the hash table is full. It is going down this path to expand. If
-expansion can not happen then you can not add more entries.
-
-This is all theory hence the request for a simpler change; in reality
-there should never be so many unique fib_info entries across namespaces
-to hit an overflow.
