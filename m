@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C543242DD4D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:04:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C347442DCF1
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:01:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233537AbhJNPGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 11:06:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51638 "EHLO mail.kernel.org"
+        id S233332AbhJNPDG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 11:03:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45066 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233126AbhJNPEW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 11:04:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B8507611CC;
-        Thu, 14 Oct 2021 15:00:39 +0000 (UTC)
+        id S231683AbhJNPBj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 11:01:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B2CB611C5;
+        Thu, 14 Oct 2021 14:58:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634223640;
-        bh=+Zz8nIxHkcfBTCM4F23ZXRh80YwkMvyTTEPJ/v4wdQg=;
+        s=korg; t=1634223539;
+        bh=5dmm1Ef3IOZdp+QCshrZDWnytx8HgMKMx14U0hnogMw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GP3QaLxmCMqjtcnLT6YTbMVz4bxZufUVvC0cdb1oDLRitjtPIHLh5lXLV9JrIeuzV
-         25o2gV/lTSZgDm96bFT5AdnUIsnyH4FOfYg+1YcfuLOGDK7DoRAu3MxCJtFYn1mPVd
-         UxYWU0ijLVuU3Kpi75y7BP7lvIjXShh65R7DF86o=
+        b=vMI5wt8JkHi2nRKTpjFU+f0tPO7GI3H9XIcbOKjzyEiQP7dVIzqF5n0fPHgbSS/qq
+         JiG7fHsDTlRhpj1bwR6ZciShr8fT3x2x/62uj7YBxwhYi3pyC1v/T0m8OB7paFfF2e
+         0ZjmU4KCelihjZF4GU2h8g3hE4Sksi7C+lnefN1s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Brazdil <dbrazdil@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Marc Zyngier <maz@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 11/30] KVM: arm64: nvhe: Fix missing FORCE for hyp-reloc.S build rule
+        stable@vger.kernel.org, Hawking Zhang <Hawking.Zhang@amd.com>,
+        Leslie Shi <Yuliang.Shi@amd.com>,
+        Guchun Chen <guchun.chen@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 13/16] drm/amdgpu: fix gart.bo pin_count leak
 Date:   Thu, 14 Oct 2021 16:54:16 +0200
-Message-Id: <20211014145209.891655707@linuxfoundation.org>
+Message-Id: <20211014145207.745121194@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211014145209.520017940@linuxfoundation.org>
-References: <20211014145209.520017940@linuxfoundation.org>
+In-Reply-To: <20211014145207.314256898@linuxfoundation.org>
+References: <20211014145207.314256898@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,41 +43,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zenghui Yu <yuzenghui@huawei.com>
+From: Leslie Shi <Yuliang.Shi@amd.com>
 
-[ Upstream commit a49b50a3c1c3226d26e1dd11e8b763f27e477623 ]
+[ Upstream commit 66805763a97f8f7bdf742fc0851d85c02ed9411f ]
 
-Add FORCE so that if_changed can detect the command line change.
+gmc_v{9,10}_0_gart_disable() isn't called matched with
+correspoding gart_enbale function in SRIOV case. This will
+lead to gart.bo pin_count leak on driver unload.
 
-We'll otherwise see a compilation warning since commit e1f86d7b4b2a
-("kbuild: warn if FORCE is missing for if_changed(_dep,_rule) and
-filechk").
-
-arch/arm64/kvm/hyp/nvhe/Makefile:58: FORCE prerequisite is missing
-
-Cc: David Brazdil <dbrazdil@google.com>
-Cc: Masahiro Yamada <masahiroy@kernel.org>
-Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/20210907052137.1059-1-yuzenghui@huawei.com
+Cc: Hawking Zhang <Hawking.Zhang@amd.com>
+Signed-off-by: Leslie Shi <Yuliang.Shi@amd.com>
+Signed-off-by: Guchun Chen <guchun.chen@amd.com>
+Reviewed-by: Christian König <christian.koenig@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/kvm/hyp/nvhe/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c | 3 ++-
+ drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c  | 3 ++-
+ 2 files changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/kvm/hyp/nvhe/Makefile b/arch/arm64/kvm/hyp/nvhe/Makefile
-index 5df6193fc430..8d741f71377f 100644
---- a/arch/arm64/kvm/hyp/nvhe/Makefile
-+++ b/arch/arm64/kvm/hyp/nvhe/Makefile
-@@ -54,7 +54,7 @@ $(obj)/kvm_nvhe.tmp.o: $(obj)/hyp.lds $(addprefix $(obj)/,$(hyp-obj)) FORCE
- #    runtime. Because the hypervisor is part of the kernel binary, relocations
- #    produce a kernel VA. We enumerate relocations targeting hyp at build time
- #    and convert the kernel VAs at those positions to hyp VAs.
--$(obj)/hyp-reloc.S: $(obj)/kvm_nvhe.tmp.o $(obj)/gen-hyprel
-+$(obj)/hyp-reloc.S: $(obj)/kvm_nvhe.tmp.o $(obj)/gen-hyprel FORCE
- 	$(call if_changed,hyprel)
+diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c b/drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c
+index f642e066e67a..85ee0e849647 100644
+--- a/drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c
+@@ -903,6 +903,8 @@ static int gmc_v10_0_hw_fini(void *handle)
+ {
+ 	struct amdgpu_device *adev = (struct amdgpu_device *)handle;
  
- # 5) Compile hyp-reloc.S and link it into the existing partially linked object.
++	gmc_v10_0_gart_disable(adev);
++
+ 	if (amdgpu_sriov_vf(adev)) {
+ 		/* full access mode, so don't touch any GMC register */
+ 		DRM_DEBUG("For SRIOV client, shouldn't do anything.\n");
+@@ -910,7 +912,6 @@ static int gmc_v10_0_hw_fini(void *handle)
+ 	}
+ 
+ 	amdgpu_irq_put(adev, &adev->gmc.vm_fault, 0);
+-	gmc_v10_0_gart_disable(adev);
+ 
+ 	return 0;
+ }
+diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c b/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c
+index 688111ef814d..63205de4a565 100644
+--- a/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c
+@@ -1526,6 +1526,8 @@ static int gmc_v9_0_hw_fini(void *handle)
+ {
+ 	struct amdgpu_device *adev = (struct amdgpu_device *)handle;
+ 
++	gmc_v9_0_gart_disable(adev);
++
+ 	if (amdgpu_sriov_vf(adev)) {
+ 		/* full access mode, so don't touch any GMC register */
+ 		DRM_DEBUG("For SRIOV client, shouldn't do anything.\n");
+@@ -1534,7 +1536,6 @@ static int gmc_v9_0_hw_fini(void *handle)
+ 
+ 	amdgpu_irq_put(adev, &adev->gmc.ecc_irq, 0);
+ 	amdgpu_irq_put(adev, &adev->gmc.vm_fault, 0);
+-	gmc_v9_0_gart_disable(adev);
+ 
+ 	return 0;
+ }
 -- 
 2.33.0
 
