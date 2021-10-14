@@ -2,89 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBE3342E0B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 20:03:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B64B742E0BB
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 20:04:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233815AbhJNSFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 14:05:24 -0400
-Received: from foss.arm.com ([217.140.110.172]:58496 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233786AbhJNSFW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 14:05:22 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BE4051480;
-        Thu, 14 Oct 2021 11:03:15 -0700 (PDT)
-Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9CFD13F66F;
-        Thu, 14 Oct 2021 11:03:09 -0700 (PDT)
-Date:   Thu, 14 Oct 2021 19:03:07 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     keescook@chromium.org, jannh@google.com,
-        linux-kernel@vger.kernel.org, vcaputo@pengaru.com,
-        mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, akpm@linux-foundation.org,
-        christian.brauner@ubuntu.com, amistry@google.com,
-        Kenta.Tada@sony.com, legion@kernel.org,
-        michael.weiss@aisec.fraunhofer.de, mhocko@suse.com, deller@gmx.de,
-        zhengqi.arch@bytedance.com, me@tobin.cc, tycho@tycho.pizza,
-        tglx@linutronix.de, bp@alien8.de, hpa@zytor.com, axboe@kernel.dk,
-        metze@samba.org, laijs@linux.alibaba.com, luto@kernel.org,
-        dave.hansen@linux.intel.com, ebiederm@xmission.com,
-        ohoono.kwon@samsung.com, kaleshsingh@google.com,
-        yifeifz2@illinois.edu, jpoimboe@redhat.com,
-        linux-hardening@vger.kernel.org, linux-arch@vger.kernel.org,
-        vgupta@kernel.org, linux@armlinux.org.uk, will@kernel.org,
-        guoren@kernel.org, bcain@codeaurora.org, monstr@monstr.eu,
-        tsbogend@alpha.franken.de, nickhu@andestech.com,
-        jonas@southpole.se, mpe@ellerman.id.au, paul.walmsley@sifive.com,
-        hca@linux.ibm.com, ysato@users.sourceforge.jp, davem@davemloft.net,
-        chris@zankel.net
-Subject: Re: [PATCH 6/7] arch: __get_wchan || STACKTRACE_SUPPORT
-Message-ID: <20211014180307.GB39276@lakrids.cambridge.arm.com>
-References: <20211008111527.438276127@infradead.org>
- <20211008111626.392918519@infradead.org>
- <20211008124052.GA976@C02TD0UTHF1T.local>
- <YWBLl0mMTGPE/7hM@hirez.programming.kicks-ass.net>
+        id S233790AbhJNSGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 14:06:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32990 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230386AbhJNSGg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 14:06:36 -0400
+Received: from out1.migadu.com (out1.migadu.com [IPv6:2001:41d0:2:863f::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1194C061570;
+        Thu, 14 Oct 2021 11:04:31 -0700 (PDT)
+Message-ID: <f3aca934-7dee-b294-ad3c-264e773eddda@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1634234667;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fMFrwBpcfsevaiNMFqiTtdegTwfr5orDNb22AMJucOs=;
+        b=n0gs8a/Zf9lENJoaoMmsmyrrYTaOSxPSqQ5/TvyXccikEz8hQ07tVKqSE2ljB5HJ/OxYXm
+        MdFHBGmIm0jvTnQgC74mrXXiASM6NIRGKalb5ZpVCpQV/WMDTs9TiEkbjForHivEHPMhkl
+        BsrAsbo5XhzMclQdsgFxaEEmeXRBqjM=
+Date:   Thu, 14 Oct 2021 12:04:23 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YWBLl0mMTGPE/7hM@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.11.1+11 (2f07cb52) (2018-12-01)
+Subject: Re: [PATCH 15/22] PCI: vmd: Use RESPONSE_IS_PCI_ERROR() to check read
+ from hardware
+Content-Language: en-US
+To:     Naveen Naidu <naveennaidu479@gmail.com>, bhelgaas@google.com
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Nirmal Patel <nirmal.patel@linux.intel.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>
+References: <cover.1633972263.git.naveennaidu479@gmail.com>
+ <84ab7a23647e0673d99a8cf59e9c89af9b862354.1633972263.git.naveennaidu479@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Jonathan Derrick <jonathan.derrick@linux.dev>
+In-Reply-To: <84ab7a23647e0673d99a8cf59e9c89af9b862354.1633972263.git.naveennaidu479@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: jonathan.derrick@linux.dev
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 08, 2021 at 03:45:59PM +0200, Peter Zijlstra wrote:
-> On Fri, Oct 08, 2021 at 01:40:52PM +0100, Mark Rutland wrote:
-> > [Adding Josh, since there might be a concern here from a livepatch pov]
-> > 
+
+
+On 10/11/2021 12:06 PM, Naveen Naidu wrote:
+> An MMIO read from a PCI device that doesn't exist or doesn't respond
+> causes a PCI error.  There's no real data to return to satisfy the
+> CPU read, so most hardware fabricates ~0 data.
 > 
-> > > +static unsigned long __get_wchan(struct task_struct *p)
-> > > +{
-> > > +	unsigned long entry = 0;
-> > > +
-> > > +	stack_trace_save_tsk(p, &entry, 1, 0);
-> > 
-> > This assumes stack_trace_save_tsk() will skip sched functions, but I
-> > don't think that's ever been a requirement? It's certinaly not
-> > documented anywhere that I could find, and arm64 doesn't do so today,
-> > and this patch causes wchan to just log `__switch_to` for everything.
+> Use RESPONSE_IS_PCI_ERROR() to check the response we get when we read
+> data from hardware.
 > 
-> Confused, arm64 has arch_stack_walk() and should thus use
-> kernel/stacktrace.c's stack_trace_consume_entry_nosched.
+> This helps unify PCI error response checking and make error checks
+> consistent and easier to find.
+> 
+> Signed-off-by: Naveen Naidu <naveennaidu479@gmail.com>
+> ---
+>  drivers/pci/controller/vmd.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/controller/vmd.c b/drivers/pci/controller/vmd.c
+> index a5987e52700e..db81bc4cfe8c 100644
+> --- a/drivers/pci/controller/vmd.c
+> +++ b/drivers/pci/controller/vmd.c
+> @@ -538,7 +538,7 @@ static int vmd_get_phys_offsets(struct vmd_dev *vmd, bool native_hint,
+>  		int ret;
+>  
+>  		ret = pci_read_config_dword(dev, PCI_REG_VMLOCK, &vmlock);
+> -		if (ret || vmlock == ~0)
+> +		if (ret || RESPONSE_IS_PCI_ERROR(&vmlock))
+>  			return -ENODEV;
+>  
+>  		if (MB2_SHADOW_EN(vmlock)) {
+> 
 
-Looking at this arm64's *current* get_wchan() unwinds once before
-checking in_sched_functions(), so it skips __switch_to(). As of this
-patch, we check in_sched_functions() first, which stops the unwind
-immediately as __switch_to() isn't marked as __sched.
-
-I think x86 gets away with this because switch_to() is asm, and that
-tail-calls __switch_to() when returning.
-
-Does switch_to() and below need to be marked __sched?
-
-Thanks,
-Mark.
+Reviewed-by: Jonathan Derrick <jonathan.derrick@linux.dev>
