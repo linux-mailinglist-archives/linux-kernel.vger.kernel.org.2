@@ -2,83 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E936942E429
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 00:29:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF54142E42C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 00:31:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234214AbhJNWbv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 18:31:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36350 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229995AbhJNWbu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 18:31:50 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCDDAC061570;
-        Thu, 14 Oct 2021 15:29:44 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HVkbj0MBNz4xbP;
-        Fri, 15 Oct 2021 09:29:36 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1634250578;
-        bh=7J+zMFVVCPk6f3qKqBKYj68sCRxcMV7azRCODVCP33Q=;
-        h=Date:From:To:Cc:Subject:From;
-        b=KX1JP2IaN3R+DtzxXSnn+arxXPtkXajtiKJA7H36EygEx+2whXtKwbBLjQSnva7qF
-         O3kZM/cA1shq0uc00NKuxuQkHYnNkbMnXK6DTRgUHshpkXsLdZ0h6vrtX+Y+w4Xzhk
-         gzem8KtmnQ6LViIF821GrzZtp5DQXL7x8vW7aqcjbGigVztYTPz6FnaNh8magxPru8
-         1chH7ZPsltQnd5Lj5Xkn2qrGlNxAZ1EjITgxx9Jsx80eWLrp8FtF+GXw0kMUD0LCsv
-         g1GLQR6g/B9E9UBHA2a+bdJ4Tfi+2uVJPxAiJr0DTZ8TP4K8iKU9eylTv6btoM9+it
-         eeNyeGT9TQ4IA==
-Date:   Fri, 15 Oct 2021 09:29:34 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
-        ARM <linux-arm-kernel@lists.infradead.org>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the arm-soc tree
-Message-ID: <20211015092934.726ed2d4@canb.auug.org.au>
+        id S234220AbhJNWdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 18:33:42 -0400
+Received: from foss.arm.com ([217.140.110.172]:60926 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229995AbhJNWdl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 18:33:41 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 038DCD6E;
+        Thu, 14 Oct 2021 15:31:36 -0700 (PDT)
+Received: from ewhatever.cambridge.arm.com (ewhatever.cambridge.arm.com [10.1.197.1])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 8CB723F694;
+        Thu, 14 Oct 2021 15:31:34 -0700 (PDT)
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+To:     will@kernel.org, mathieu.poirier@linaro.org
+Cc:     catalin.marinas@arm.com, anshuman.khandual@arm.com,
+        mike.leach@linaro.org, leo.yan@linaro.org, maz@kernel.org,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Suzuki K Poulose <suzuki.poulose@arm.com>
+Subject: [PATCH v5 00/15] arm64: Self-hosted trace related errata workarounds
+Date:   Thu, 14 Oct 2021 23:31:10 +0100
+Message-Id: <20211014223125.2605031-1-suzuki.poulose@arm.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/P_JF0YxXo2u.I8RG_E4cXs1";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/P_JF0YxXo2u.I8RG_E4cXs1
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+This series adds CPU erratum work arounds related to the self-hosted
+tracing. The list of affected errata handled in this series are :
 
-Commits
+ * TRBE may overwrite trace in FILL mode
+   - Arm Neoverse-N2	#2139208
+   - Cortex-A710	#211985
 
-  3f3247285461 ("ARM: dts: bcm2711-rpi-4-b: Fix usb's unit address")
-  13dbc954b3c9 ("ARM: dts: bcm2711-rpi-4-b: Fix pcie0's unit address format=
-ting")
+ * A TSB instruction may not flush the trace completely when executed
+   in trace prohibited region.
 
-are missing a Signed-off-by from their committer.
+   - Arm Neoverse-N2	#2067961
+   - Cortex-A710	#2054223
 
---=20
-Cheers,
-Stephen Rothwell
+ * TRBE may write to out-of-range address
+   - Arm Neoverse-N2	#2253138
+   - Cortex-A710	#2224489
 
---Sig_/P_JF0YxXo2u.I8RG_E4cXs1
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+The series applies on coresight/next. The series has been reordered
+to make it easier to merge the patches via arm64 tree and the coresight
+tree.
 
------BEGIN PGP SIGNATURE-----
+Patches 1-4 are could be picked up via arm64 tree. The rest can go via
+the coresight tree. The Kconfig items for the TRBE errata are initially
+dropped in with dependency on COMPILE_TEST. These are dropped only after
+the driver is equipped with the work around in later patches.
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFor04ACgkQAVBC80lX
-0GxdFQgAgryV5L20c3Mq6mOj9qLZhHhW7i+wDIFtiiWy7oPMvzWlT3oawP1gPw+c
-w4G7wOmXdw1aDEs+9su4oUka5SIwuApIBg4wrft0WfFZWUkwglXq6IpR9YdQPbUn
-/aGc60zsutiKVgbRI7lTvxQzthiVorI/bwrbpH43oW3ehRvtjV7PkCvo6ZU1c8XZ
-h8tLUkDAquG8fxg3ClhxjDLr5v7dYoRbJqZWzEsriV/tJRPLtHhU5wLBTUUz+juD
-qVdRC/M5+a08zt0IRTTaM+J+AIGA9euvg59SMHNlbC2EViQ3IS9kou8Z3DOkzQn1
-Hlm9QsPxCTI9A68C/W365oUnlnXS4g==
-=gelo
------END PGP SIGNATURE-----
 
---Sig_/P_JF0YxXo2u.I8RG_E4cXs1--
+A tree is available here :
+
+git@git.gitlab.arm.com:linux-arm/linux-skp.git  coresight/errata/trbe-tsb-n2-a710/v5
+
+Changes since v4:
+ - Fix WARN on trbe driver probe on a hotplugged CPU, by making
+   sure that the arm_trbe_probe_cpu() is called from non-premptible
+   context. this_cpu_has_cap() doesn't like to be called from a
+   preemptible() context.
+
+ - Fix Kconfig text issues pointed out by Randy
+
+Changes since v3:
+ 
+ - Fix missing Kconfig selection for TSB flush failure erratum (Will)
+   Merged the Kconfig changes to the core patch for TSB.
+ - Use COMPILE_TEST dependency for the TRBE work arounds instead of
+   delaying the Kconfig entries.
+
+Changes since v2:
+ * https://lkml.kernel.org/r/20210921134121.2423546-1-suzuki.poulose@arm.com 
+ - Dropped patch adding a helper to reach cpudata from perf handle
+ - Split the TSB erratum work around patch to split the Kconfig/erratum
+   list update changes(pushed to the end of the series).
+ - Added wrappers to check the erratum :
+    trbe_has_erratum(cpudata, TRBE_ERRATUM_<TITLE>) -> trbe_may_<title>
+ - More ASCII art explanation on workaround.
+
+Changes since v1:
+ * https://lkml.kernel.org/r/20210728135217.591173-1-suzuki.poulose@arm.com
+ - Added a fix to the TRBE driver handling of sink_specific data
+ - Added more description and ASCII art for overwrite in FILL mode
+   work around 
+ - Added another TRBE erratum to the list.
+  "TRBE may write to out-of-range address"
+  Patches from 12-17
+ - Added comment to list the expectations around TSB erratum workaround.
+
+
+Suzuki K Poulose (15):
+  arm64: Add Neoverse-N2, Cortex-A710 CPU part definition
+  arm64: errata: Add detection for TRBE overwrite in FILL mode
+  arm64: errata: Add workaround for TSB flush failures
+  arm64: errata: Add detection for TRBE write to out-of-range
+  coresight: trbe: Add a helper to calculate the trace generated
+  coresight: trbe: Add a helper to pad a given buffer area
+  coresight: trbe: Decouple buffer base from the hardware base
+  coresight: trbe: Allow driver to choose a different alignment
+  coresight: trbe: Add infrastructure for Errata handling
+  coresight: trbe: Workaround TRBE errata overwrite in FILL mode
+  coresight: trbe: Add a helper to determine the minimum buffer size
+  coresight: trbe: Make sure we have enough space
+  coresight: trbe: Work around write to out of range
+  arm64: errata: Enable workaround for TRBE overwrite in FILL mode
+  arm64: errata: Enable TRBE workaround for write to out-of-range
+    address
+
+ Documentation/arm64/silicon-errata.rst       |  12 +
+ arch/arm64/Kconfig                           | 111 ++++++
+ arch/arm64/include/asm/barrier.h             |  16 +-
+ arch/arm64/include/asm/cputype.h             |   4 +
+ arch/arm64/kernel/cpu_errata.c               |  64 +++
+ arch/arm64/tools/cpucaps                     |   3 +
+ drivers/hwtracing/coresight/coresight-trbe.c | 395 +++++++++++++++++--
+ 7 files changed, 567 insertions(+), 38 deletions(-)
+
+-- 
+2.25.4
+
