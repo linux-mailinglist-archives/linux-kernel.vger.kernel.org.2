@@ -2,177 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D4AC42E40A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 00:14:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A4B942E40C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 00:15:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234186AbhJNWQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 18:16:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32972 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229829AbhJNWQg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 18:16:36 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A19AC061570;
-        Thu, 14 Oct 2021 15:14:31 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id m26so6695308pff.3;
-        Thu, 14 Oct 2021 15:14:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=C5ZuKrGzyI6sXcttUGT8m4bIhAiihLIa6Po9/1DTork=;
-        b=AsE4PDAG7h8rwyf8bL0F9Io1UF0AoB2kT269QADqYzz+dKtUQx60eUE9HUAHP8Z2Bn
-         uC08a/3eAlVxbqwKa/qT8bLYMerUdPOKCGoFBWmLJcRh7g8cFRavDIDHuoNAXemunyc3
-         V6INJTbXAxAS9Jnbszimpa1g+68qh9s0SdjeSYXc0UhbjCvYuKjefabWJe4ojMhhZn+C
-         pbnXxRrC/Eylg/ZBrgx543czX/iLm3zfSmRuuHlLHU/tGce8ckWeiAQkhJHLxrec8wht
-         p4MFNx48pCbGHNwS5DPD82va6P50sWg/rE7o+au6qdSB8gB9Yg3jZXtRzNNJ+QnFrzM1
-         nWvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=C5ZuKrGzyI6sXcttUGT8m4bIhAiihLIa6Po9/1DTork=;
-        b=JCD+u6In0lVwFe/SsLynWOWjaLV+wY3UzALbCuqyPYVi1GQ9D5iHBy24uRCnaA98gC
-         +tyoX97lPaEEohnSdFQ4CJxzhFExsYIMI8Z63eFFsegwWKGhC7ZpJt9wgz0oNRZAHg4M
-         +/w32XX9p+pRiHCSlrp7IAjHq/qoijn8l6NTuhyzpdX4sZ1bsTbcNdRWyqOTCO7ZOYtY
-         to5knIMFdAKd3xxxFgkzi9Z11XVtogZl+tvjPEyY+VkFQYmqjgi4od2ahFqdAZodgfsn
-         Sc5A0TrNt/Cs624K9qh5eo/OCAgGYeklr4aHTIXb6H2yF9P1X5VCMjHCknOljZVC8LWE
-         BVpw==
-X-Gm-Message-State: AOAM532KaH0upLv9iw/+5vGOGW/Zl7aAYPBcCVti4b/QsWlhcHrMCX8T
-        ITiHJPNjY+qbI/vcjMz5Uw16y0jnKlL/7g==
-X-Google-Smtp-Source: ABdhPJwbfxlAoia3kcqBZJw5PExi3eKMTEzSvH3nooHbwUgFD0V2vSQCTqQuhbBWK7latyS5h4Xwzg==
-X-Received: by 2002:a63:2361:: with SMTP id u33mr6168320pgm.369.1634249670578;
-        Thu, 14 Oct 2021 15:14:30 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id l4sm3233910pga.71.2021.10.14.15.14.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Oct 2021 15:14:30 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Thu, 14 Oct 2021 12:14:28 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Pratik Sampat <psampat@linux.ibm.com>
-Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
-        bristot@redhat.com, christian@brauner.io, ebiederm@xmission.com,
-        lizefan.x@bytedance.com, hannes@cmpxchg.org, mingo@kernel.org,
-        juri.lelli@redhat.com, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org,
-        containers@lists.linux.dev, containers@lists.linux-foundation.org,
-        pratik.r.sampat@gmail.com
-Subject: Re: [RFC 0/5] kernel: Introduce CPU Namespace
-Message-ID: <YWirxCjschoRJQ14@slm.duckdns.org>
-References: <20211009151243.8825-1-psampat@linux.ibm.com>
- <20211011101124.d5mm7skqfhe5g35h@wittgenstein>
- <a0f9ed06-1e5d-d3d0-21a5-710c8e27749c@linux.ibm.com>
+        id S234196AbhJNWRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 18:17:05 -0400
+Received: from mga07.intel.com ([134.134.136.100]:44605 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229829AbhJNWRD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 18:17:03 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10137"; a="291285154"
+X-IronPort-AV: E=Sophos;i="5.85,374,1624345200"; 
+   d="scan'208";a="291285154"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2021 15:14:34 -0700
+X-IronPort-AV: E=Sophos;i="5.85,374,1624345200"; 
+   d="scan'208";a="571559835"
+Received: from chendan-mobl.amr.corp.intel.com (HELO [10.251.17.229]) ([10.251.17.229])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2021 15:14:33 -0700
+Subject: Re: [PATCH v2 2/2] x86: sgx_vepc: implement SGX_IOC_VEPC_REMOVE ioctl
+To:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     dave.hansen@linux.intel.com, seanjc@google.com, x86@kernel.org,
+        yang.zhong@intel.com, jarkko@kernel.org
+References: <20211012105708.2070480-1-pbonzini@redhat.com>
+ <20211012105708.2070480-3-pbonzini@redhat.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <a6f18a62-4e3e-b641-5ef9-4ada9eccd74d@intel.com>
+Date:   Thu, 14 Oct 2021 15:14:33 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a0f9ed06-1e5d-d3d0-21a5-710c8e27749c@linux.ibm.com>
+In-Reply-To: <20211012105708.2070480-3-pbonzini@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-On Tue, Oct 12, 2021 at 02:12:18PM +0530, Pratik Sampat wrote:
-> > > The control and the display interface is fairly disjoint with each
-> > > other. Restrictions can be set through control interfaces like cgroups,
-> > A task wouldn't really opt-in to cpu isolation with CLONE_NEWCPU it
-> > would only affect resource reporting. So it would be one half of the
-> > semantics of a namespace.
-> > 
-> I completely agree with you on this, fundamentally a namespace should
-> isolate both the resource as well as the reporting. As you mentioned
-> too, cgroups handles the resource isolation while this namespace
-> handles the reporting and this seems to break the semantics of what a
-> namespace should really be.
+On 10/12/21 3:57 AM, Paolo Bonzini wrote:
+> For bare-metal SGX on real hardware, the hardware provides guarantees
+> SGX state at reboot.  For instance, all pages start out uninitialized.
+> The vepc driver provides a similar guarantee today for freshly-opened
+> vepc instances, but guests such as Windows expect all pages to be in
+> uninitialized state on startup, including after every guest reboot.
 > 
-> The CPU resource is unique in that sense, at least in this context,
-> which makes it tricky to design a interface that presents coherent
-> information.
-
-It's only unique in the context that you're trying to place CPU distribution
-into the namespace framework when the resource in question isn't distributed
-that way. All of the three major local resources - CPU, memory and IO - are
-in the same boat. Computing resources, the physical ones, don't render
-themselves naturally to accounting and ditributing by segmenting _name_
-spaces which ultimately just shows and hides names. This direction is a
-dead-end.
-
-> I too think that having a brand new interface all together and teaching
-> userspace about it is much cleaner approach.
-> On the same lines, if were to do that, we could also add more useful
-> metrics in that interface like ballpark number of threads to saturate
-> usage as well as gather more such metrics as suggested by Tejun Heo.
+> Some userspace implementations of virtual SGX would rather avoid having
+> to close and reopen the /dev/sgx_vepc file descriptor and re-mmap the
+> virtual EPC.  For example, they could sandbox themselves after the guest
+> starts and forbid further calls to open(), in order to mitigate exploits
+> from untrusted guests.
 > 
-> My only concern for this would be that if today applications aren't
-> modifying their code to read the existing cgroup interface and would
-> rather resort to using userspace side-channel solutions like LXCFS or
-> wrapping them up in kata containers, would it now be compelling enough
-> to introduce yet another interface?
-
-While I'm sympathetic to compatibility argument, identifying available
-resources was never well-define with the existing interfaces. Most of the
-available information is what hardware is available but there's no
-consistent way of knowing what the software environment is like. Is the
-application the only one on the system? How much memory should be set aside
-for system management, monitoring and other administrative operations?
-
-In practice, the numbers that are available can serve as the starting points
-on top of which application and environment specific knoweldge has to be
-applied to actually determine deployable configurations, which in turn would
-go through iterative adjustments unless the workload is self-sizing.
-
-Given such variability in requirements, I'm not sure what numbers should be
-baked into the "namespaced" system metrics. Some numbers, e.g., number of
-CPUs can may be mapped from cpuset configuration but even that requires
-quite a bit of assumptions about how cpuset is configured and the
-expectations the applications would have while other numbers - e.g.
-available memory - is a total non-starter.
-
-If we try to fake these numbers for containers, what's likely to happen is
-that the service owners would end up tuning workload size against whatever
-number the kernel is showing factoring in all the environmental factors
-knowingly or just through iterations. And that's not *really* an interface
-which provides compatibility. We're just piping new numbers which don't
-really mean what they used to mean and whose meanings can change depending
-on configuration through existing interfaces and letting users figure out
-what to do with the new numbers.
-
-To achieve compatibility where applications don't need to be changed, I
-don't think there is a solution which doesn't involve going through
-userspace. For other cases and long term, the right direction is providing
-well-defined resource metrics that applications can make sense of and use to
-size themselves dynamically.
-
-> While I concur with Tejun Heo's comment the mail thread and overloading
-> existing interfaces of sys and proc which were originally designed for
-> system wide resources, may not be a great idea:
+> Therefore, add a ioctl that does this with EREMOVE.  Userspace can
+> invoke the ioctl to bring its vEPC pages back to uninitialized state.
+> There is a possibility that some pages fail to be removed if they are
+> SECS pages, and the child and SECS pages could be in separate vEPC
+> regions.  Therefore, the ioctl returns the number of EREMOVE failures,
+> telling userspace to try the ioctl again after it's done with all
+> vEPC regions.  A more verbose description of the correct usage and
+> the possible error conditions is documented in sgx.rst.
 > 
-> > There is a fundamental problem with trying to represent a resource shared
-> > environment controlled with cgroup using system-wide interfaces including
-> > procfs
-> 
-> A fundamental question we probably need to ascertain could be -
-> Today, is it incorrect for applications to look at the sys and procfs to
-> get resource information, regardless of their runtime environment?
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 
-Well, it's incomplete even without containerization. Containerization just
-amplifies the shortcomings. All of these problems existed well before
-cgroups / namespaces. How would you know how much resource you can consume
-on a system just looking at hardware resources without implicit knowledge of
-what else is on the system? It's just that we are now more likely to load
-systems dynamically with containerization.
+The new approach and revised changelogs look fine to me:
 
-> Also, if an application were to only be able to view the resources
-> based on the restrictions set regardless of the interface - would there
-> be a disadvantage for them if they could only see an overloaded context
-> sensitive view rather than the whole system view?
+Reviewed-by: Dave Hansen <dave.hansen@linux.intel.com>
 
-Can you elaborate further? I have a hard time understanding what's being
-asked.
-
-Thanks.
-
--- 
-tejun
+Like Jarkko mentioned, it would be _nice_ to have some self-contained
+selftests around this.  Would it be a pain to rig something up in
+selftests/kvm that at least trivially poked at /dev/sgx_vepc?
