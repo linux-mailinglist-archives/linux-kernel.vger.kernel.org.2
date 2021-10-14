@@ -2,112 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83DF042D7D0
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 13:09:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5DBD42D7D9
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 13:12:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230401AbhJNLLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 07:11:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53144 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229988AbhJNLK7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 07:10:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3385A60F23;
-        Thu, 14 Oct 2021 11:08:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634209735;
-        bh=HHKCYup8+gHVwWVOB+Bc7IT9RNl6ysJ2n6UcEXDuoY4=;
-        h=From:To:Cc:Subject:Date:From;
-        b=hyz8gG2uOFBcvyzceZp6eLX2XZd1QxKvaBMJyc6/73HkK5VnezFdl9r1knNnjAR3p
-         Y0vf2QFqesNtP4SLw20sCnrbTk/cbbpwt8Hnb08BZs0ebceYIGTjaCYhDQHb7aY0ga
-         NR/LsBZTL5NAjD2apKANMhFMZPhrn53H8uJdX7m83s43rWy+3z/ZiLzA6F3qtPKvzk
-         aKrogzWNcffeZGq0kBvkjRI7xIjKfNP94iNw2vCiCEnPRVk7/y362lP5sp0KvFJyXE
-         k8moUHzS3OvN8VJKdAVqINg56j5CkbwhHU1PrLe4FbwpduRT6sILNZ/piz21YzY8NT
-         ZFOSSupYLGk/A==
-From:   SeongJae Park <sj@kernel.org>
-To:     akpm@linux-foundation.org
-Cc:     rdunlap@infradead.org, broonie@kernel.org,
-        linux-next@vger.kernel.org, mhocko@suse.cz, sfr@canb.auug.org.au,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, SeongJae Park <sj@kernel.org>
-Subject: [PATCH] mm/damon/vaddr: Include 'highmem.h' to fix a build failure
-Date:   Thu, 14 Oct 2021 11:08:48 +0000
-Message-Id: <20211014110848.5204-1-sj@kernel.org>
-X-Mailer: git-send-email 2.17.1
+        id S230109AbhJNLOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 07:14:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50984 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229691AbhJNLOK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 07:14:10 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90861C061570;
+        Thu, 14 Oct 2021 04:12:05 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: kholk11)
+        with ESMTPSA id 66CBF1F44A52
+Subject: Re: [PATCH v7, 03/15] media: mtk-vcodec: Refactor vcodec pm interface
+To:     Yunfei Dong <yunfei.dong@mediatek.com>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Tzung-Bi Shih <tzungbi@chromium.org>,
+        Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Tomasz Figa <tfiga@google.com>
+Cc:     Hsin-Yi Wang <hsinyi@chromium.org>,
+        Fritz Koenig <frkoenig@chromium.org>,
+        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Irui Wang <irui.wang@mediatek.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        Tzung-Bi Shih <tzungbi@google.com>
+References: <20211011070247.792-1-yunfei.dong@mediatek.com>
+ <20211011070247.792-4-yunfei.dong@mediatek.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Message-ID: <4364a6b9-000b-a57b-afc3-38214605b7c4@collabora.com>
+Date:   Thu, 14 Oct 2021 13:12:00 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211011070247.792-4-yunfei.dong@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 0ff28922686c ("mm/damon/vaddr: separate commonly usable
-functions") in -mm tree[1] moves include of 'highmem.h' from 'vaddr.c'
-to 'prmtv-common.c', though the code for the header is still in
-'vaddr.c'.  As a result, build with 'CONFIG_HIGHPTE' fails as below:
+> Using the needed param for pm init/release function and remove unused
+> param mtkdev in 'struct mtk_vcodec_pm'.
+> 
+> Reviewed-by: Tzung-Bi Shih <tzungbi@google.com>
+> Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
+> ---
+>   .../platform/mtk-vcodec/mtk_vcodec_dec_drv.c  |  6 ++---
+>   .../platform/mtk-vcodec/mtk_vcodec_dec_pm.c   | 22 ++++++++-----------
+>   .../platform/mtk-vcodec/mtk_vcodec_dec_pm.h   |  5 +++--
+>   .../platform/mtk-vcodec/mtk_vcodec_drv.h      |  1 -
+>   .../platform/mtk-vcodec/mtk_vcodec_enc_pm.c   |  1 -
+>   5 files changed, 15 insertions(+), 20 deletions(-)
+> 
 
-    In file included from ../include/linux/mm.h:33:0,
-                      from ../include/linux/kallsyms.h:13,
-                      from ../include/linux/bpf.h:20,
-                      from ../include/linux/bpf-cgroup.h:5,
-                      from ../include/linux/cgroup-defs.h:22,
-                      from ../include/linux/cgroup.h:28,
-                      from ../include/linux/hugetlb.h:9,
-                      from ../mm/damon/vaddr.c:11:
-    ../mm/damon/vaddr.c: In function ‘damon_mkold_pmd_entry’:
-    ../include/linux/pgtable.h:97:12: error: implicit declaration of function ‘kmap_atomic’; did you mean ‘mcopy_atomic’? [-Werror=implicit-function-declaration]
-       ((pte_t *)kmap_atomic(pmd_page(*(dir))) +  \
-                 ^
-    ../include/linux/mm.h:2376:17: note: in expansion of macro ‘pte_offset_map’
-       pte_t *__pte = pte_offset_map(pmd, address); \
-                      ^~~~~~~~~~~~~~
-    ../mm/damon/vaddr.c:387:8: note: in expansion of macro ‘pte_offset_map_lock’
-       pte = pte_offset_map_lock(walk->mm, pmd, addr, &ptl);
-             ^~~~~~~~~~~~~~~~~~~
-    ../include/linux/pgtable.h:99:24: error: implicit declaration of function ‘kunmap_atomic’; did you mean ‘in_atomic’? [-Werror=implicit-function-declaration]
-      #define pte_unmap(pte) kunmap_atomic((pte))
-                             ^
-    ../include/linux/mm.h:2384:2: note: in expansion of macro ‘pte_unmap’
-       pte_unmap(pte);     \
-       ^~~~~~~~~
-    ../mm/damon/vaddr.c:392:2: note: in expansion of macro ‘pte_unmap_unlock’
-       pte_unmap_unlock(pte, ptl);
-       ^~~~~~~~~~~~~~~~
-
-This commit fixes the issue by moving the include back to 'vaddr.c'.
-
-[1] https://github.com/hnaz/linux-mm/commit/0ff28922686c
-
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: SeongJae Park <sj@kernel.org>
----
- mm/damon/prmtv-common.c | 1 -
- mm/damon/vaddr.c        | 1 +
- 2 files changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/mm/damon/prmtv-common.c b/mm/damon/prmtv-common.c
-index 1768cbe1b9ff..7e62ee54fb54 100644
---- a/mm/damon/prmtv-common.c
-+++ b/mm/damon/prmtv-common.c
-@@ -5,7 +5,6 @@
-  * Author: SeongJae Park <sj@kernel.org>
-  */
- 
--#include <linux/highmem.h>
- #include <linux/mmu_notifier.h>
- #include <linux/page_idle.h>
- #include <linux/pagemap.h>
-diff --git a/mm/damon/vaddr.c b/mm/damon/vaddr.c
-index ce7e36ca1bff..758501b8d97d 100644
---- a/mm/damon/vaddr.c
-+++ b/mm/damon/vaddr.c
-@@ -8,6 +8,7 @@
- #define pr_fmt(fmt) "damon-va: " fmt
- 
- #include <asm-generic/mman-common.h>
-+#include <linux/highmem.h>
- #include <linux/hugetlb.h>
- #include <linux/mmu_notifier.h>
- #include <linux/page_idle.h>
--- 
-2.17.1
-
+Acked-By: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
