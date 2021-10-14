@@ -2,611 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23AC042DEF5
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 18:12:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8287C42DEFA
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 18:14:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233026AbhJNQO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 12:14:58 -0400
-Received: from mail-dm6nam11on2087.outbound.protection.outlook.com ([40.107.223.87]:20609
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229823AbhJNQOw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 12:14:52 -0400
+        id S233153AbhJNQQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 12:16:38 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:42112 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230177AbhJNQQ3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 12:16:29 -0400
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19EG5lgQ028339;
+        Thu, 14 Oct 2021 09:13:51 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=+QxXeGrVygVIkPEaalUtqiu/MljAZOc12wdYnQ3/KUQ=;
+ b=q69oNqhOzwUsA0tUGN+3Ger85ZzdxgR2f+LjvQqXU02X8VMWXUClI8EMYdCHkaPJtCng
+ ApLN1f7blmLr9bLGdXeFCeol9EU2KvEnXP6AoO+rktBPEQJOFXYWVOD3NXdl8EL/WmAQ
+ wkM/akdhcHqMDaaXqYQfj3pxKz5VRrqceyU= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3bpqs102a8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 14 Oct 2021 09:13:51 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Thu, 14 Oct 2021 09:13:50 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HSVr8JxA/dGd1q00g+eGnM6oBT2inkfI7/wdIo/sLhCK7sj5PhmAISVoUWYVdrJEYby17W+tnm9uy3aOXqGBZOzDxJEBpl4WEEb+jQNV2J3NpzHxozLnh04+57ZQ1IL5SVwAMW6w9JZcm7rxkNXpqRguvjvjnNkXnoCvu/Ri/QrsCWUivhQUH2PnnWqIRah/gu4E4huXRxIssZlyhaoii3pos6814wn0Cc3VXXJu1q0zSyTHNu1wmUGkGefEYdgSr58XoAnES6INJlOhc69ztyR+St06MRaYlUIuBba83aH2DeiaYx/Lo5hEG3xjm7HK8a3zGejDeJYhN0nYTxetKA==
+ b=gipMNRewCzLTcpb7tzoTdV7P+56h4qZ+kCOa2oHLJVsjj8p+OoxPywFwv6ovdNDRwFYZ8R27xsB4G9vTL/vnuOmo5NZ6K/B8I2BfKn3vQuNhAe1cLOMlgA6X3+SUFcCQHt9daoaKEzKY25JE2Jm9JLQEJhhkm2WHApWUfgFuLYaW+stFykaV79YovtGRnddebg9vZ/PjMUaKJOKwHkDovWkmPqL8aUOORtPURRGzhB1KaA5ReJ7SUETQGsjzjwi+uZsgVLkpwK6GdIW0DydErNDPQ1DMeH5ipKfQnM1nFBf2WqkKnQCupoVJPpNycDzHziRYefvn2xqZFKWAzRLQUw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=tXOGBo6GCBkLN8K9HSEmM647C80t/v9F5zxiU4sGsqs=;
- b=PQDkbghVly0IJ7b0jqAy2XT+HbmxCGX07SnkVkf5ptyuUiB1kaR0DqbQp84b6argJaPRaNiBpqrrnCEA6sy7yjiCw7UYwT9cv7aeUgDNgN3mC/hZlB3VGxbkM7aTK8Fxk9b1fAARsgM/0F60QsP0GQFWKsM0mqiCzkXuI2kKXaKlUVOipDHHjuoHCyZU5Lo4r1JpGMUwKVWepQu44Cj5KSRCcxp+prvSJBjQyb6e2smntSYylp1rDXnIGzd+KRTkFJkD6EBGjea6tI6ZgykCrY9wkaWohtI6v6uuocnNpmcQJBHCfOwIEx6GT/cukY1WUDKAWp32QWHCACP+FwX+cQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.62.198) smtp.rcpttodomain=intel.com smtp.mailfrom=xilinx.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tXOGBo6GCBkLN8K9HSEmM647C80t/v9F5zxiU4sGsqs=;
- b=IIU5ZEqHuc9sK6NOydKTTmktGig0Mv2VAgA3jFm2MLpY7c6rhF2tT7qn8yy7PU0KrGFBAqTIvhO2LFF23i7hsTN3ZKltnr3PiXR67wpwhXBF72G0Kye2AecGScoDQBlNVYY+IYMBTzYMoOzrLrSKSTb3/lk0aEk1GyrZMZqUL3Q=
-Received: from DM5PR16CA0020.namprd16.prod.outlook.com (2603:10b6:3:c0::30) by
- BL3PR02MB8186.namprd02.prod.outlook.com (2603:10b6:208:339::6) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4587.25; Thu, 14 Oct 2021 16:12:44 +0000
-Received: from DM3NAM02FT052.eop-nam02.prod.protection.outlook.com
- (2603:10b6:3:c0:cafe::3f) by DM5PR16CA0020.outlook.office365.com
- (2603:10b6:3:c0::30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.15 via Frontend
- Transport; Thu, 14 Oct 2021 16:12:44 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
- smtp.mailfrom=xilinx.com; intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=pass action=none header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
-Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
- DM3NAM02FT052.mail.protection.outlook.com (10.13.5.134) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4608.15 via Frontend Transport; Thu, 14 Oct 2021 16:12:44 +0000
-Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
- xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Thu, 14 Oct 2021 09:12:42 -0700
-Received: from smtp.xilinx.com (172.19.127.96) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Thu, 14 Oct 2021 09:12:42 -0700
-Envelope-to: yilun.xu@intel.com,
- mdf@kernel.org,
- trix@redhat.com,
- devicetree@vger.kernel.org,
- linux-fpga@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- robh@kernel.org
-Received: from [10.17.2.60] (port=37448)
-        by smtp.xilinx.com with esmtp (Exim 4.90)
-        (envelope-from <lizhi.hou@xilinx.com>)
-        id 1mb3LW-000Ewz-E6; Thu, 14 Oct 2021 09:12:42 -0700
-Subject: Re: [PATCH V9 XRT Alveo 01/14] Documentation: fpga: Add a document
- describing XRT Alveo drivers
-To:     <robh@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <linux-fpga@vger.kernel.org>,
-        <maxz@xilinx.com>, <sonal.santan@xilinx.com>, <yliu@xilinx.com>,
-        <michal.simek@xilinx.com>, <stefanos@xilinx.com>,
-        <devicetree@vger.kernel.org>, <trix@redhat.com>, <mdf@kernel.org>,
-        Max Zhen <max.zhen@xilinx.com>,
-        Lizhi Hou <lizhi.hou@xilinx.com>, Xu Yilun <yilun.xu@intel.com>
-References: <20210802160521.331031-1-lizhi.hou@xilinx.com>
- <20210802160521.331031-2-lizhi.hou@xilinx.com>
- <20211012050931.GA95330@yilunxu-OptiPlex-7050>
- <8d8f6c08-6e68-a4b8-4cfd-1dd547f3fe28@xilinx.com>
- <20211014022122.GG95330@yilunxu-OptiPlex-7050>
-From:   Lizhi Hou <lizhi.hou@xilinx.com>
-Message-ID: <cc261622-5104-39ae-7221-b33dd70303e5@xilinx.com>
-Date:   Thu, 14 Oct 2021 09:12:42 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+ bh=+QxXeGrVygVIkPEaalUtqiu/MljAZOc12wdYnQ3/KUQ=;
+ b=MvuBhtFJi6rAcUwPSRJb3p3RxHsZHgE4Nye6kkXgZc+fsGclKPzWNAvqEFOwuC+wArpuCOKPkK3a06VQGnvjrH3QrRzfLhjdZfhKG9eLH3bq33ZHZh5zeE5+0XJDhOB4eMbbRM9hvYGv87lHTMgD52WknQtzY1uKqarRw06XV4tVsC1rBhtVmD5RmejtlyxYM6hjVfyKnFzwiKVe/Goy3Zxids/eNmfWDnw2X3nX56AMP1ziWDzu5WJGffXI6dqNbyqvlY4UVvXIq6FIdoiCIxVNqeqeYWe1PabP/4wgDz5VIiYja9SVM/Yren9lG4R0dyZoAMphIOIod9cC2ldg8Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
+ by BYAPR15MB2664.namprd15.prod.outlook.com (2603:10b6:a03:15a::26) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.22; Thu, 14 Oct
+ 2021 16:13:48 +0000
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::1052:c025:1e48:7f94]) by BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::1052:c025:1e48:7f94%5]) with mapi id 15.20.4608.016; Thu, 14 Oct 2021
+ 16:13:48 +0000
+Date:   Thu, 14 Oct 2021 09:13:43 -0700
+From:   Roman Gushchin <guro@fb.com>
+To:     Shakeel Butt <shakeelb@google.com>
+CC:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Vasily Averin <vvs@virtuozzo.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        <cgroups@vger.kernel.org>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] memcg: page_alloc: skip bulk allocator for
+ __GFP_ACCOUNT
+Message-ID: <YWhXN8PPVq0oy2u/@carbon.DHCP.thefacebook.com>
+References: <20211014151607.2171970-1-shakeelb@google.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20211014151607.2171970-1-shakeelb@google.com>
+X-ClientProxiedBy: MWHPR14CA0060.namprd14.prod.outlook.com
+ (2603:10b6:300:81::22) To BYAPR15MB4136.namprd15.prod.outlook.com
+ (2603:10b6:a03:96::24)
 MIME-Version: 1.0
-In-Reply-To: <20211014022122.GG95330@yilunxu-OptiPlex-7050>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-EOPAttributedMessage: 0
+Received: from carbon.DHCP.thefacebook.com (2620:10d:c090:400::5:1793) by MWHPR14CA0060.namprd14.prod.outlook.com (2603:10b6:300:81::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.14 via Frontend Transport; Thu, 14 Oct 2021 16:13:47 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 5a718bf6-04c2-4b71-3c9b-08d98f2d749a
-X-MS-TrafficTypeDiagnostic: BL3PR02MB8186:
-X-Microsoft-Antispam-PRVS: <BL3PR02MB8186578D2A22621EC6E778C9A1B89@BL3PR02MB8186.namprd02.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Office365-Filtering-Correlation-Id: e7ef036d-7814-43d6-dd13-08d98f2d9aeb
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2664:
+X-Microsoft-Antispam-PRVS: <BYAPR15MB2664D9C6B919C7EA5CD21F7BBEB89@BYAPR15MB2664.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:1107;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ERZH5WakSufjv0PAC/rQ/hHepgeYruONmu9vvAIXerf7i0F71KRtxU9iL9dqC3aBKxetRGE9J2aZjtwpX28faICrsJILRNlq1jzoHmQiltqtijFFRgmrbDKmBMVkrzOlOw6+0g2lsLk6dzDKj5Cr/TkbBCA3BJXEP+PY9xuIBkRKXYg2nrGeA2IS6m0ZcbXG7WWCa0mBCNT0Ej7dT1zqs3xkhTt4k1k+NXC2s7DD45wV2deAFStGa/nPb87oSE9YEWYwlSr3jYmczvFzghsADl5b5CWwZXTmmzL9iCZuL6QTxrLfWPzmg8QQ/IQHu5khsV+fqlm/v/s2tUkOxA+F/x+GYnt1U3L6KTPyhGkojzFp7HRvoS8/1e5B/9eH2cL/LmqNb16TTlGCltT1Xz3f2Hb0S9OUkns0wf5lZNMeBNvDrQncgjHRNtFpaTF742OXKCt68qOn8eRhARI7HRYqptUQAUDqYPzq3BzajKE5QeTMIe+u6jKBgaTeL2RNVwEPlCEIdCHkBl6RRwSj+QHbnj8ZF6DXHV6Wd3NbslQoqFgxcyuqtaSb3cxw1DjzKjcsg3Hg97CVJVKXBtpQHspIlOX4RRj7HOdXlIhRF73obcawVdy5J1I56/4N7S4PgGtH//saWfFo8pir+m0PWNi7D0B03ZxKZzhvpIBNJmRnUbK5o8zsidzRFLLpiogJ05EVsYE2nZ7Y36h3AVv1s/DbJmSE4Qo9Xapvc/Sz6UZ5tT4wenkDqtiz/eUH2tpJr4DjfGmwO/TeOTLvk+RHqMeIoATGcqbfxiZ74dj+7l33pTqn87ArGB2pOqiT+/y7hlVoWaxej9X7rz/+lNQn6uSPr9T3QD5cF26o+qrUsAknPKm6PBORHlDIPd5bUKRyBc7g
-X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(46966006)(36840700001)(356005)(508600001)(966005)(5660300002)(47076005)(8676002)(7636003)(31696002)(26005)(426003)(336012)(45080400002)(4326008)(70586007)(70206006)(53546011)(36756003)(6916009)(2616005)(9786002)(54906003)(82310400003)(31686004)(36906005)(2906002)(30864003)(83380400001)(186003)(36860700001)(44832011)(8936002)(316002)(50156003)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Oct 2021 16:12:44.1281
+X-Microsoft-Antispam-Message-Info: Xpy+TrtCU3QZO7qFoxx4TdQ7akc5WBnC/D2/j/67u1Y7K6PYzxXQCulooLMZJqiBuGKFZexYFtk0GwUDN+x7+tjAu1FrjZ9pBkqPezRgsEP0qDgIw8Bv4wbHeHB66/mwQ3YKSfoVrA1eUXSvB1OtN58JHwzqMcep81lpZgPnQUd+VQxSx3mwVI+WtXo3JtsZelsXheAeM4qCAR/G32uu+DYf22XH4/hLG0dJ1mooUAhiETN3ww5gpX7/UiClqIyxGsINcbeGdlah0izRJzSFT0D+SzIFKUshZOhbjfTPxzJsSFgnGR+uIsLHeDXSLSf9xg+/jkZe34kcFPkCkvC8j4eBjqXigslwC8T37vMTFsdZYOjvrlf3eYt+YCrMysSwUFNpgyJ0Zix1NS3VNAErRgT+BNfqwpH8BTba3fKssvXtM5EQTlFnab4ocnj1zZChx88dJsf4P/Q/IZK3Z7NBRSQPYp+yWbmW/CzQus9rHN9pfQIMYLtoE8m5lkyS0XrxE55K//EPB+Ln+/jM3cO8qWiTf4T3fUTXlaOvzrAYlqMU0lXhFqj4mcd1fKNcBw/CYnCyKvXiSgGKXndAdlNJIirQDrA/qn/i1t9/K1CfDg5LYgOGYnr/ept6q71vCSwnAqEqOvyAuq13/eJh3FrUsQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(83380400001)(8936002)(4326008)(316002)(54906003)(186003)(5660300002)(7696005)(6506007)(6916009)(6666004)(52116002)(38100700002)(508600001)(2906002)(7416002)(55016002)(9686003)(86362001)(66476007)(66556008)(66946007)(8676002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?zqvCuTaJ9uASyAC7m+TMb0zdqK+2EASs8fowL95lYtOiDUIjbPjBZz6A77v3?=
+ =?us-ascii?Q?H4XlI+WPHwgXY4hg+oeF+rdglHVU1bdIugSnjbAvTaOXuibqtKYnyNLzRm/o?=
+ =?us-ascii?Q?kwC5iVnImfdwuyFTrnv7NSANdmrsGu15P180AWiE+6UwmauxL36aBUUR3Fw7?=
+ =?us-ascii?Q?0TyH8wqUBVfko8Agw6I4VmYgd88LblxvOT8nWyr+a+gOz72NXBOoe6UeN2VO?=
+ =?us-ascii?Q?vLnsQOk9CHqUdTlrGqgd1tNkw75fwTg/pQssngvhIv3sKqFedJ9+AnRMwcND?=
+ =?us-ascii?Q?jDpK+HKoXlb9uUFtBembAmxptK05QrsBE2w7UD9uQr+9OxyiY/BrEosVGTrk?=
+ =?us-ascii?Q?3Y1aeRvd1N+YCv5MFzrT+BLOZ6k1N2z0V3wXNFFVtSfO1IMOKW2DIEoApHoa?=
+ =?us-ascii?Q?0Ce6gqiQh6B9tVEf/cHsoEl7guyOdZyOLZzXjBgvEOBzbfetYfai+fViUVFb?=
+ =?us-ascii?Q?h/xwfWT9uphodi7MVhOzvooAiesg0TutK7z8QaA8RxEjDrGueYsYYgoci5uy?=
+ =?us-ascii?Q?Ktv6CXxYW4P/Ej5YYII5WUpmDthO2K6lM8ocpCTQHZdNpC1qwSdWTxk6/UwQ?=
+ =?us-ascii?Q?QRHXp/qTG1UQhk7Ly2bj8J70KNRPxHio9xAk+ek3haGMWB2xRmVg3Xr955fy?=
+ =?us-ascii?Q?NAZy4NYBHdRLX1b2ZkRqM6zMe5fH+3g5sROUrFFFp1kUoug8iw1BPn9qUF4Y?=
+ =?us-ascii?Q?m8DkMZgttFHaZjwuKz8ZnNQaoYWeAFbr+uyYKSUiWvfa7ZGizLV1tJhTlqXp?=
+ =?us-ascii?Q?z6bkJPzMHXbn5k1lFQ1c6Ol6qy+pPL+CnwSGk9RKDxcJAJfeJxHGt3jlABZm?=
+ =?us-ascii?Q?GZ0smx3/3ezoc5r+3UGRHnjmp1LhqAfxznGZNHV+bOBis5bzc7qr270v4Efu?=
+ =?us-ascii?Q?byBVHU69acfaWNahNrBUnx5VGxdb8jxOmaIHrDlv6wD9J8qUNxl1WfF7qNKG?=
+ =?us-ascii?Q?GcQ7kkHzd5AHtaosAz+eW1pqsgBXJgR6ewYL5B0Z87hML8p/mPw2QmkgZG07?=
+ =?us-ascii?Q?imIipFLeJu2FaZYoZjAurhWRbDOvnaznrcdlEyX4rLAGwoM4/siOAgNuq6PE?=
+ =?us-ascii?Q?zFZGu4L6aDXr24IZujrVi3pvHhGyWb84/5MXQv3MZ7JC2RVIt2DAG46I/rpz?=
+ =?us-ascii?Q?gSDrXwKcQR4Mbapku3QLWo9EDTX04Jt0MlXeBn9/igXuKRuA8VasEfP5RIKX?=
+ =?us-ascii?Q?wXvRnkU0ScMABsvrI0uB8vQDnNnWUCaND5sfGmxeB2J/65XlNKxN5lfv/LMx?=
+ =?us-ascii?Q?S9V6V05jwqW5AZrNAR5p3V8Dx/gcbMfJNddmQqAwQm9WBXNAW1kga/64MG46?=
+ =?us-ascii?Q?XnXg8CezfocjZJK9A49lqyxdQ5vCWjK8BGpvbRq2MBMYKg=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: e7ef036d-7814-43d6-dd13-08d98f2d9aeb
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Oct 2021 16:13:48.7043
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5a718bf6-04c2-4b71-3c9b-08d98f2d749a
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM3NAM02FT052.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL3PR02MB8186
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 9aNMe/aob7Dg5tDc/Cc4tf7qJsUnbR2lXxfs2EBkqEEHqaTHdXxt0iHM1Bg5hx9a
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2664
+X-OriginatorOrg: fb.com
+X-Proofpoint-ORIG-GUID: ogMtYNTOgvU6saSulbxPyAwfgKIuUrD1
+X-Proofpoint-GUID: ogMtYNTOgvU6saSulbxPyAwfgKIuUrD1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-14_09,2021-10-14_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ spamscore=0 clxscore=1011 lowpriorityscore=0 phishscore=0 mlxlogscore=941
+ mlxscore=0 priorityscore=1501 adultscore=0 bulkscore=0 suspectscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110140095
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Rob,
+On Thu, Oct 14, 2021 at 08:16:07AM -0700, Shakeel Butt wrote:
+> The commit 5c1f4e690eec ("mm/vmalloc: switch to bulk allocator in
+> __vmalloc_area_node()") switched to bulk page allocator for order 0
+> allocation backing vmalloc. However bulk page allocator does not support
+> __GFP_ACCOUNT allocations and there are several users of
+> kvmalloc(__GFP_ACCOUNT).
+> 
+> For now make __GFP_ACCOUNT allocations bypass bulk page allocator. In
+> future if there is workload that can be significantly improved with the
+> bulk page allocator with __GFP_ACCCOUNT support, we can revisit the
+> decision.
+> 
+> Fixes: 5c1f4e690eec ("mm/vmalloc: switch to bulk allocator in __vmalloc_area_node()")
+> Signed-off-by: Shakeel Butt <shakeelb@google.com>
+> ---
+> Changes since v1:
+> - do fallback allocation instead of failure, suggested by Michal Hocko.
 
-Please help with the review of the proposed FDT usage by Alveo/XRT drivers.
+Acked-by: Roman Gushchin <guro@fb.com>
 
-Thanks,
-Lizhi
+This looks indeed better! Thanks!
 
-On 10/13/21 7:21 PM, Xu Yilun wrote:
-> CAUTION: This message has originated from an External Source. Please use proper judgment and caution when opening attachments, clicking links, or responding to this email.
->
->
->>>> +.. _device_tree_usage:
->>>> +
->>>> +Device Tree Usage
->>>> +-----------------
->>>> +
->>>> +The xsabin file stores metadata which advertise HW subsystems present in a
->>>> +partition. The metadata is stored in device tree format with a well defined
->>>> +schema. XRT management driver uses this information to bind *xrt_drivers* to
->>>> +the subsystem instantiations. The xrt_drivers are found in **xrt-lib.ko** kernel
->>>> +module.
->>> I'm still catching up the patchset from the very beginning, and just
->>> finished the Documentation part. So far, I see the DT usage concern
->>> which may impact the architecure a lot, so I should raise it ASAP.
->>>
->>> The concern raised by the DT maintainer:
->>> https://lore.kernel.org/linux-fpga/CAL_JsqLod6FBGFhu7WXtMrB_z7wj8-up0EetM1QS9M3gjm8d7Q@mail.gmail.com/
->>>
->>> First of all, directly parsing FDT in device drivers is not a normal usage of DT
->>> in linux. It is out of the current DT usage model. So it should be agreed by DT
->>> maintainers.
->> Thanks for reviewing XRT document and providing feedback.
->> Here is the reply from Sonal for Rob’s question:
->> https://lore.kernel.org/linux-fpga/BY5PR02MB62604B87C66A1AD139A6F153BBF40@BY5PR02MB6260.namprd02.prod.outlook.com/
->> Overall, libfdt is used by XRT driver to parse the metadata which comes with
->> an Alveo board.
->> When XRT driver discovers an Alveo board, it will read a fdt blob from board
->> firmware file resident on the host.
->> By parsing the fdt blob, XRT driver gets information about this Alveo board,
->> such as version, uuid, IPs exposed to PCI BAR, interrupt binding etc.
->> So libfdt is used simply as Alveo metadata parser here. XRT drivers do not
->> interact with system wide DT or present the Alveo device tree to host. For
->> many systems like x86_64, system wide DT is not present but libfdt parsing
->> services will still be needed.
-> Yes, I understand the use case.
->
-> My concern is, directly parsing an isolated FDT in device driver and
-> populate sub devices, skipping the unflattening, this is a new working
-> model of device tree usage, but for the same purpose as the existing
-> one.
->
-> So I really need the confirmation of DT maintainers.
->
->>> Current FPGA framework modifies kernel's live tree by DT overlay, when FPGA is
->>> dynamically reprogrammed and new HW devices appear. See
->>> Documentation/devicetree/bindings/fpga/fpga-region.txt.
->>>
->>> Then something less important:
->>>
->>>     1. The bindings should be documented in Documentation/devicetree/bindings/.
->>>     2. Are all the example DT usage conform to the exsiting bindings? I
->>>        didn't go through all device classes, but remember like the
->>>        interrupt-controller should have a "interrupt-controller" property, and
->>>        the PCI properties are also different from PCI bindings.
->> The fdt properties are defined for Alveo firmware files. XRT driver is the
->> only consumer of this data. I am wondering if
-> Personally I don't like the idea of a different binding definition set,
-> even if the new device tree usage is accepted. We all use device tree
-> for device enumeration, so why the different definitions.
->
-> Thanks,
-> Yilun
->
->> Documentation/devicetree/bindings is the right place for Alveo/XRT private
->> format or should it be documented as part of XRT driver documentation?
->> Looking for guidance here.
->>
->>
->> Thanks,
->>
->> Lizhi
->>
->>> Thanks,
->>> Yilun
->>>
->>>> +
->>>> +Logic UUID
->>>> +^^^^^^^^^^
->>>> +A partition is identified uniquely through ``logic_uuid`` property::
->>>> +
->>>> +  /dts-v1/;
->>>> +  / {
->>>> +      logic_uuid = "0123456789abcdef0123456789abcdef";
->>>> +      ...
->>>> +    }
->>>> +
->>>> +Schema Version
->>>> +^^^^^^^^^^^^^^
->>>> +Schema version is defined through the ``schema_version`` node. It contains
->>>> +``major`` and ``minor`` properties as below::
->>>> +
->>>> +  /dts-v1/;
->>>> +  / {
->>>> +       schema_version {
->>>> +           major = <0x01>;
->>>> +           minor = <0x00>;
->>>> +       };
->>>> +       ...
->>>> +    }
->>>> +
->>>> +.. _partition_uuids:
->>>> +
->>>> +Partition UUIDs
->>>> +^^^^^^^^^^^^^^^
->>>> +Each partition may have parent and child UUIDs. These UUIDs are
->>>> +defined by ``interfaces`` node and ``interface_uuid`` property::
->>>> +
->>>> +  /dts-v1/;
->>>> +  / {
->>>> +       interfaces {
->>>> +           @0 {
->>>> +                  interface_uuid = "0123456789abcdef0123456789abcdef";
->>>> +           };
->>>> +           @1 {
->>>> +                  interface_uuid = "fedcba9876543210fedcba9876543210";
->>>> +           };
->>>> +           ...
->>>> +        };
->>>> +       ...
->>>> +    }
->>>> +
->>>> +
->>>> +Subsystem Instantiations
->>>> +^^^^^^^^^^^^^^^^^^^^^^^^
->>>> +Subsystem instantiations are captured as children of ``addressable_endpoints``
->>>> +node::
->>>> +
->>>> +  /dts-v1/;
->>>> +  / {
->>>> +       addressable_endpoints {
->>>> +           abc {
->>>> +               ...
->>>> +           };
->>>> +           def {
->>>> +               ...
->>>> +           };
->>>> +           ...
->>>> +       }
->>>> +  }
->>>> +
->>>> +Subnode 'abc' and 'def' are the name of subsystem nodes
->>>> +
->>>> +Subsystem Node
->>>> +^^^^^^^^^^^^^^
->>>> +Each subsystem node and its properties define a hardware instance::
->>>> +
->>>> +
->>>> +  addressable_endpoints {
->>>> +      abc {
->>>> +          reg = <0x00 0x1f05000 0x00 0x1000>>
->>>> +          pcie_physical_function = <0x0>;
->>>> +          pcie_bar_mapping = <0x2>;
->>>> +          compatible = "abc def";
->>>> +          interrupts = <0x09 0x0c>;
->>>> +          firmware {
->>>> +              firmware_product_name = "abc"
->>>> +              firmware_branch_name = "def"
->>>> +              firmware_version_major = <1>
->>>> +              firmware_version_minor = <2>
->>>> +          };
->>>> +      }
->>>> +      ...
->>>> +  }
->>>> +
->>>> +:reg:
->>>> + Property defines an address range. `<0x00 0x1f05000 0x00 0x1000>` indicates
->>>> + *0x00 0x1f05000* as BAR offset and *0x00 0x1000* as address length.
->>>> +:pcie_physical_function:
->>>> + Property specifies which PCIe physical function the subsystem node resides.
->>>> + `<0x0>` implies physical function 0.
->>>> +:pcie_bar_mapping:
->>>> + Property specifies which PCIe BAR the subsystem node resides. `<0x2>` implies
->>>> + BAR 2. A value of 0 means the property is not defined.
->>>> +:compatible:
->>>> + Property is a list of strings. The first string in the list specifies the exact
->>>> + subsystem node. The following strings represent other devices that the device
->>>> + is compatible with.
->>>> +:interrupts:
->>>> + Property specifies start and end interrupts for this subsystem node.
->>>> + `<0x09 0x0c>` implies interrupts 9 to 13 are used by this subsystem.
->>>> +:firmware:
->>>> + Subnode defines the firmware required by this subsystem node.
->>>> +
->>>> +Alveo U50 Platform Example
->>>> +^^^^^^^^^^^^^^^^^^^^^^^^^^
->>>> +::
->>>> +
->>>> +  /dts-v1/;
->>>> +
->>>> +  /{
->>>> +        logic_uuid = "f465b0a3ae8c64f619bc150384ace69b";
->>>> +
->>>> +        schema_version {
->>>> +                major = <0x01>;
->>>> +                minor = <0x00>;
->>>> +        };
->>>> +
->>>> +        interfaces {
->>>> +
->>>> +                @0 {
->>>> +                        interface_uuid = "862c7020a250293e32036f19956669e5";
->>>> +                };
->>>> +        };
->>>> +
->>>> +        addressable_endpoints {
->>>> +
->>>> +                ep_blp_rom_00 {
->>>> +                        reg = <0x00 0x1f04000 0x00 0x1000>;
->>>> +                        pcie_physical_function = <0x00>;
->>>> +                        compatible = "xilinx.com,reg_abs-axi_bram_ctrl-1.0\0axi_bram_ctrl";
->>>> +                };
->>>> +
->>>> +                ep_card_flash_program_00 {
->>>> +                        reg = <0x00 0x1f06000 0x00 0x1000>;
->>>> +                        pcie_physical_function = <0x00>;
->>>> +                        compatible = "xilinx.com,reg_abs-axi_quad_spi-1.0\0axi_quad_spi";
->>>> +                        interrupts = <0x03 0x03>;
->>>> +                };
->>>> +
->>>> +                ep_cmc_firmware_mem_00 {
->>>> +                        reg = <0x00 0x1e20000 0x00 0x20000>;
->>>> +                        pcie_physical_function = <0x00>;
->>>> +                        compatible = "xilinx.com,reg_abs-axi_bram_ctrl-1.0\0axi_bram_ctrl";
->>>> +
->>>> +                        firmware {
->>>> +                                firmware_product_name = "cmc";
->>>> +                                firmware_branch_name = "u50";
->>>> +                                firmware_version_major = <0x01>;
->>>> +                                firmware_version_minor = <0x00>;
->>>> +                        };
->>>> +                };
->>>> +
->>>> +                ep_cmc_intc_00 {
->>>> +                        reg = <0x00 0x1e03000 0x00 0x1000>;
->>>> +                        pcie_physical_function = <0x00>;
->>>> +                        compatible = "xilinx.com,reg_abs-axi_intc-1.0\0axi_intc";
->>>> +                        interrupts = <0x04 0x04>;
->>>> +                };
->>>> +
->>>> +                ep_cmc_mutex_00 {
->>>> +                        reg = <0x00 0x1e02000 0x00 0x1000>;
->>>> +                        pcie_physical_function = <0x00>;
->>>> +                        compatible = "xilinx.com,reg_abs-axi_gpio-1.0\0axi_gpio";
->>>> +                };
->>>> +
->>>> +                ep_cmc_regmap_00 {
->>>> +                        reg = <0x00 0x1e08000 0x00 0x2000>;
->>>> +                        pcie_physical_function = <0x00>;
->>>> +                        compatible = "xilinx.com,reg_abs-axi_bram_ctrl-1.0\0axi_bram_ctrl";
->>>> +
->>>> +                        firmware {
->>>> +                                firmware_product_name = "sc-fw";
->>>> +                                firmware_branch_name = "u50";
->>>> +                                firmware_version_major = <0x05>;
->>>> +                        };
->>>> +                };
->>>> +
->>>> +                ep_cmc_reset_00 {
->>>> +                        reg = <0x00 0x1e01000 0x00 0x1000>;
->>>> +                        pcie_physical_function = <0x00>;
->>>> +                        compatible = "xilinx.com,reg_abs-axi_gpio-1.0\0axi_gpio";
->>>> +                };
->>>> +
->>>> +                ep_ddr_mem_calib_00 {
->>>> +                        reg = <0x00 0x63000 0x00 0x1000>;
->>>> +                        pcie_physical_function = <0x00>;
->>>> +                        compatible = "xilinx.com,reg_abs-axi_gpio-1.0\0axi_gpio";
->>>> +                };
->>>> +
->>>> +                ep_debug_bscan_mgmt_00 {
->>>> +                        reg = <0x00 0x1e90000 0x00 0x10000>;
->>>> +                        pcie_physical_function = <0x00>;
->>>> +                        compatible = "xilinx.com,reg_abs-debug_bridge-1.0\0debug_bridge";
->>>> +                };
->>>> +
->>>> +                ep_ert_base_address_00 {
->>>> +                        reg = <0x00 0x21000 0x00 0x1000>;
->>>> +                        pcie_physical_function = <0x00>;
->>>> +                        compatible = "xilinx.com,reg_abs-axi_gpio-1.0\0axi_gpio";
->>>> +                };
->>>> +
->>>> +                ep_ert_command_queue_mgmt_00 {
->>>> +                        reg = <0x00 0x40000 0x00 0x10000>;
->>>> +                        pcie_physical_function = <0x00>;
->>>> +                        compatible = "xilinx.com,reg_abs-ert_command_queue-1.0\0ert_command_queue";
->>>> +                };
->>>> +
->>>> +                ep_ert_command_queue_user_00 {
->>>> +                        reg = <0x00 0x40000 0x00 0x10000>;
->>>> +                        pcie_physical_function = <0x01>;
->>>> +                        compatible = "xilinx.com,reg_abs-ert_command_queue-1.0\0ert_command_queue";
->>>> +                };
->>>> +
->>>> +                ep_ert_firmware_mem_00 {
->>>> +                        reg = <0x00 0x30000 0x00 0x8000>;
->>>> +                        pcie_physical_function = <0x00>;
->>>> +                        compatible = "xilinx.com,reg_abs-axi_bram_ctrl-1.0\0axi_bram_ctrl";
->>>> +
->>>> +                        firmware {
->>>> +                                firmware_product_name = "ert";
->>>> +                                firmware_branch_name = "v20";
->>>> +                                firmware_version_major = <0x01>;
->>>> +                        };
->>>> +                };
->>>> +
->>>> +                ep_ert_intc_00 {
->>>> +                        reg = <0x00 0x23000 0x00 0x1000>;
->>>> +                        pcie_physical_function = <0x00>;
->>>> +                        compatible = "xilinx.com,reg_abs-axi_intc-1.0\0axi_intc";
->>>> +                        interrupts = <0x05 0x05>;
->>>> +                };
->>>> +
->>>> +                ep_ert_reset_00 {
->>>> +                        reg = <0x00 0x22000 0x00 0x1000>;
->>>> +                        pcie_physical_function = <0x00>;
->>>> +                        compatible = "xilinx.com,reg_abs-axi_gpio-1.0\0axi_gpio";
->>>> +                };
->>>> +
->>>> +                ep_ert_sched_00 {
->>>> +                        reg = <0x00 0x50000 0x00 0x1000>;
->>>> +                        pcie_physical_function = <0x01>;
->>>> +                        compatible = "xilinx.com,reg_abs-ert_sched-1.0\0ert_sched";
->>>> +                        interrupts = <0x09 0x0c>;
->>>> +                };
->>>> +
->>>> +                ep_fpga_configuration_00 {
->>>> +                        reg = <0x00 0x1e88000 0x00 0x8000>;
->>>> +                        pcie_physical_function = <0x00>;
->>>> +                        compatible = "xilinx.com,reg_abs-axi_hwicap-1.0\0axi_hwicap";
->>>> +                        interrupts = <0x02 0x02>;
->>>> +                };
->>>> +
->>>> +                ep_icap_reset_00 {
->>>> +                        reg = <0x00 0x1f07000 0x00 0x1000>;
->>>> +                        pcie_physical_function = <0x00>;
->>>> +                        compatible = "xilinx.com,reg_abs-axi_gpio-1.0\0axi_gpio";
->>>> +                };
->>>> +
->>>> +                ep_msix_00 {
->>>> +                        reg = <0x00 0x00 0x00 0x20000>;
->>>> +                        pcie_physical_function = <0x00>;
->>>> +                        compatible = "xilinx.com,reg_abs-msix-1.0\0msix";
->>>> +                        pcie_bar_mapping = <0x02>;
->>>> +                };
->>>> +
->>>> +                ep_pcie_link_mon_00 {
->>>> +                        reg = <0x00 0x1f05000 0x00 0x1000>;
->>>> +                        pcie_physical_function = <0x00>;
->>>> +                        compatible = "xilinx.com,reg_abs-axi_gpio-1.0\0axi_gpio";
->>>> +                };
->>>> +
->>>> +                ep_pr_isolate_plp_00 {
->>>> +                        reg = <0x00 0x1f01000 0x00 0x1000>;
->>>> +                        pcie_physical_function = <0x00>;
->>>> +                        compatible = "xilinx.com,reg_abs-axi_gpio-1.0\0axi_gpio";
->>>> +                };
->>>> +
->>>> +                ep_pr_isolate_ulp_00 {
->>>> +                        reg = <0x00 0x1000 0x00 0x1000>;
->>>> +                        pcie_physical_function = <0x00>;
->>>> +                        compatible = "xilinx.com,reg_abs-axi_gpio-1.0\0axi_gpio";
->>>> +                };
->>>> +
->>>> +                ep_uuid_rom_00 {
->>>> +                        reg = <0x00 0x64000 0x00 0x1000>;
->>>> +                        pcie_physical_function = <0x00>;
->>>> +                        compatible = "xilinx.com,reg_abs-axi_bram_ctrl-1.0\0axi_bram_ctrl";
->>>> +                };
->>>> +
->>>> +                ep_xdma_00 {
->>>> +                        reg = <0x00 0x00 0x00 0x10000>;
->>>> +                        pcie_physical_function = <0x01>;
->>>> +                        compatible = "xilinx.com,reg_abs-xdma-1.0\0xdma";
->>>> +                        pcie_bar_mapping = <0x02>;
->>>> +                };
->>>> +        };
->>>> +
->>>> +  }
->>>> +
->>>> +
->>>> +
->>>> +Deployment Models
->>>> +=================
->>>> +
->>>> +Baremetal
->>>> +---------
->>>> +
->>>> +In bare-metal deployments, both MPF and UPF are visible and accessible. The
->>>> +xrt-mgmt driver binds to MPF. The xrt-mgmt driver operations are privileged and
->>>> +available to system administrator. The full stack is illustrated below::
->>>> +
->>>> +                            HOST
->>>> +
->>>> +               [XRT-MGMT]         [XRT-USER]
->>>> +                    |                  |
->>>> +                    |                  |
->>>> +                 +-----+            +-----+
->>>> +                 | MPF |            | UPF |
->>>> +                 |     |            |     |
->>>> +                 | PF0 |            | PF1 |
->>>> +                 +--+--+            +--+--+
->>>> +          ......... ^................. ^..........
->>>> +                    |                  |
->>>> +                    |   PCIe DEVICE    |
->>>> +                    |                  |
->>>> +                 +--+------------------+--+
->>>> +                 |         SHELL          |
->>>> +                 |                        |
->>>> +                 +------------------------+
->>>> +                 |         USER           |
->>>> +                 |                        |
->>>> +                 |                        |
->>>> +                 |                        |
->>>> +                 |                        |
->>>> +                 +------------------------+
->>>> +
->>>> +
->>>> +
->>>> +Virtualized
->>>> +-----------
->>>> +
->>>> +In virtualized deployments, the privileged MPF is assigned to the host but the
->>>> +unprivileged UPF is assigned to a guest VM via PCIe pass-through. The xrt-mgmt
->>>> +driver in host binds to MPF. The xrt-mgmt driver operations are privileged and
->>>> +only accessible to the MPF. The full stack is illustrated below::
->>>> +
->>>> +
->>>> +                                 ..............
->>>> +                  HOST           .    VM      .
->>>> +                                 .            .
->>>> +               [XRT-MGMT]        . [XRT-USER] .
->>>> +                    |            .     |      .
->>>> +                    |            .     |      .
->>>> +                 +-----+         .  +-----+   .
->>>> +                 | MPF |         .  | UPF |   .
->>>> +                 |     |         .  |     |   .
->>>> +                 | PF0 |         .  | PF1 |   .
->>>> +                 +--+--+         .  +--+--+   .
->>>> +          ......... ^................. ^..........
->>>> +                    |                  |
->>>> +                    |   PCIe DEVICE    |
->>>> +                    |                  |
->>>> +                 +--+------------------+--+
->>>> +                 |         SHELL          |
->>>> +                 |                        |
->>>> +                 +------------------------+
->>>> +                 |         USER           |
->>>> +                 |                        |
->>>> +                 |                        |
->>>> +                 |                        |
->>>> +                 |                        |
->>>> +                 +------------------------+
->>>> +
->>>> +
->>>> +
->>>> +
->>>> +
->>>> +Platform Security Considerations
->>>> +================================
->>>> +
->>>> +`Security of Alveo Platform <https://xilinx.github.io/XRT/master/html/security.html>`_
->>>> +discusses the deployment options and security implications in great detail.
->>>> diff --git a/MAINTAINERS b/MAINTAINERS
->>>> index 056966c9aac9..beeaf0257364 100644
->>>> --- a/MAINTAINERS
->>>> +++ b/MAINTAINERS
->>>> @@ -7274,6 +7274,17 @@ F:     Documentation/fpga/
->>>>    F:   drivers/fpga/
->>>>    F:   include/linux/fpga/
->>>>
->>>> +FPGA XRT DRIVERS
->>>> +M:   Lizhi Hou <lizhi.hou@xilinx.com>
->>>> +R:   Max Zhen <max.zhen@xilinx.com>
->>>> +R:   Sonal Santan <sonal.santan@xilinx.com>
->>>> +L:   linux-fpga@vger.kernel.org
->>>> +S:   Supported
->>>> +W:   https://github.com/Xilinx/XRT
->>>> +F:   Documentation/fpga/xrt.rst
->>>> +F:   drivers/fpga/xrt/
->>>> +F:   include/uapi/linux/xrt/
->>>> +
->>>>    FPU EMULATOR
->>>>    M:   Bill Metzenthen <billm@melbpc.org.au>
->>>>    S:   Maintained
->>>> --
->>>> 2.27.0
+> 
+>  mm/page_alloc.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index 668edb16446a..9ca871dc8602 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -5230,6 +5230,10 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+>  	if (unlikely(page_array && nr_pages - nr_populated == 0))
+>  		goto out;
+>  
+> +	/* Bulk allocator does not support memcg accounting. */
+> +	if (memcg_kmem_enabled() && (gfp & __GFP_ACCOUNT))
+> +		goto failed;
+> +
+>  	/* Use the single page allocator for one page. */
+>  	if (nr_pages - nr_populated == 1)
+>  		goto failed;
+> -- 
+> 2.33.0.882.g93a45727a2-goog
+> 
