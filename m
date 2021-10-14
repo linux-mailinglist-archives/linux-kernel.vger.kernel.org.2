@@ -2,77 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 104A942DF79
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 18:47:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D9CF42DFAA
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 18:50:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232446AbhJNQtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 12:49:08 -0400
-Received: from mail-ot1-f45.google.com ([209.85.210.45]:36523 "EHLO
-        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232078AbhJNQsz (ORCPT
+        id S230244AbhJNQwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 12:52:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44444 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231654AbhJNQwL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 12:48:55 -0400
-Received: by mail-ot1-f45.google.com with SMTP id p6-20020a9d7446000000b0054e6bb223f3so9077970otk.3;
-        Thu, 14 Oct 2021 09:46:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=ujHcRvCirmqYyP/G9OIlII3v2dI92/qrzyNIDCv4hDA=;
-        b=lF4Inqduty5EzJ6FSMZRoXYLoJibs8KFb7emvgAIh2WdlEGUH9v0VwhkQ18AgMYP/D
-         1atEEZbsrNKlSTsEagy+hHwyS4E//xczcPYrw8MYDSHCbACJ3hlGGe3j+n8/77XCC7oA
-         3CKMNelDc1arTmisXhrzCXuRXIpaeunqNfrDQhlz2cYLe1XNz44Frj5bJ+bJHe1l9HZj
-         Z7I6jaqgIAkIUbQBwr4USHrZqlXnwK4uHjOn7uXd1imfWvubiaU6dI/len88hZFjXclH
-         l5C2DK8W/jGF2Az4GFy2gqCxHC/yl5rU4JF2s8qAaTqaW9WiaQezOcuEoxahdIC2zVYP
-         YdNg==
-X-Gm-Message-State: AOAM531XVlUum8ztEW0w5MLRqMhiT51kWbV0xjFk174t41SA8ew4jO9x
-        Rk8c03sWGGgTn3xvQiZEvg==
-X-Google-Smtp-Source: ABdhPJxVtfNRxyb4DCtNbXuq+R80ABq48UJGCYahUiRCZ8f5QF2NeHuamoz+are7uUC04PrCG01Myw==
-X-Received: by 2002:a9d:4616:: with SMTP id y22mr3493410ote.215.1634230010558;
-        Thu, 14 Oct 2021 09:46:50 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id j6sm532430oot.18.2021.10.14.09.46.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Oct 2021 09:46:50 -0700 (PDT)
-Received: (nullmailer pid 3518479 invoked by uid 1000);
-        Thu, 14 Oct 2021 16:46:48 -0000
-Date:   Thu, 14 Oct 2021 11:46:48 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     =?utf-8?B?UGF3ZcWC?= Anikiel <pan@semihalf.com>
-Cc:     jarkko.nikula@linux.intel.com, andriy.shevchenko@linux.intel.com,
-        mika.westerberg@linux.intel.com, p.zabel@pengutronix.de,
-        arnd@arndb.de, olof@lixom.net, soc@kernel.org, dinguyen@kernel.org,
-        p.yadav@ti.com, Tudor.Ambarus@microchip.com,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alexandre.belloni@bootlin.com, sre@kernel.org,
-        thunder.leizhen@huawei.com, Jonathan.Cameron@huawei.com,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        ka@semihalf.com, tn@semihalf.com, jam@semihalf.com,
-        amstan@google.com
-Subject: Re: [PATCH v2 2/4] dt-bindings: add bus number property
-Message-ID: <YWhe+NfiY0l0ILrA@robh.at.kernel.org>
-References: <20211005143748.2471647-1-pan@semihalf.com>
- <20211005143746.xE5rCkt-P_XlNkn9bJ8ZqYPY4nQQ7doqzSd4FrAlICY@z>
+        Thu, 14 Oct 2021 12:52:11 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14C05C061570;
+        Thu, 14 Oct 2021 09:50:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=L8vQVL4Z/wW90mg9Pxa0X4pdgoVeP92j548BY6X1HAY=; b=gylFeuihRA/+IUrKBHTMHEbVoh
+        shFKGqVcboUilOboIq8Vw9C8D944VUxvR1M79SaIepDSxHqfcu8DTW6bJDzRJqbRPgKFK4Qa/+O+9
+        n1EMNhu/GGnPJQJh3eAFMbTbS/+9SVdOnZQNa9zYG6ihyH7taU/hw2AkkALOwPKeJQhA7bey3oSjj
+        i1AQHQZiMMy44+grMrWtnzLFLTq/bKLQf9h78WtDRLRdJPpUTSzt6381YaU2sO03ZDKrVPS1BF4lh
+        TX0xHLNDASKeh0q2YQJv3F6AGEUSToeONi/JobCNDx+R2noxUQR8I7aoqb/xdflCpHtTTLogGey+k
+        ZrpHmKQg==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55114)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1mb3vY-0001Yl-Fo; Thu, 14 Oct 2021 17:49:56 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1mb3vW-0002JY-8o; Thu, 14 Oct 2021 17:49:54 +0100
+Date:   Thu, 14 Oct 2021 17:49:54 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Paul Menzel <pmenzel@molgen.mpg.de>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Taras Chornyi <taras.chornyi@plvision.eu>,
+        Vadym Kochan <vadym.kochan@plvision.eu>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: sfp: add quirk for Finisar FTLF8536P4BCL
+Message-ID: <YWhfsiA6Vngi/1l+@shell.armlinux.org.uk>
+References: <20211013104542.14146-1-pmenzel@molgen.mpg.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211005143746.xE5rCkt-P_XlNkn9bJ8ZqYPY4nQQ7doqzSd4FrAlICY@z>
+In-Reply-To: <20211013104542.14146-1-pmenzel@molgen.mpg.de>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 04:37:46PM +0200, Paweł Anikiel wrote:
-> On SoCFPGA systems, it's desireable to have fixed numbering for
-> i2c busses, while being able to enable/disable them (e.g. have i2c1
-> be mapped to /dev/i2c-1, even though i2c0 is disabled). This can also
-> be achieved using devicetree aliases (see i2c_add_adapter). However,
-> having the driver be self-contained without relying on aliases is more
-> robust.
+On Wed, Oct 13, 2021 at 12:45:42PM +0200, Paul Menzel wrote:
+> From: Taras Chornyi <taras.chornyi@plvision.eu>
+> 
+> Finisar FTLF8536P4BCL can operate at 1000base-X and 10000base-SR, but
+> reports 25G & 100GBd SR in it's EEPROM.
+> 
+> Signed-off-by: Vadym Kochan <vadym.kochan@plvision.eu>
+> Signed-off-by: Taras Chornyi <taras.chornyi@plvision.eu>
+> 
+> [Upstream from https://github.com/dentproject/dentOS/pull/133/commits/b87b10ef72ea4638e80588facf3c9c2c1be67b40]
+> 
+> Signed-off-by: Paul Menzel <pmenzel@molgen.mpg.de>
 
-Your header is a bit weird as you have 2 Message-IDs:
+Hi Paul,
 
-> Message-ID: <20211005143748.2471647-3-pan@semihalf.com>                                                                                                     
-> X-Mailer: git-send-email 2.25.1                                                                                                                             
-> Message-ID: <20211005143746.xE5rCkt-P_XlNkn9bJ8ZqYPY4nQQ7doqzSd4FrAlICY@z>                                                                                  
+Please can you send me the file resulting from:
+
+ethtool -m ethX raw on > file
+
+please - it will be binary data, and that is exactly what I'm after.
+I would like to see what the EEPROM contains before making a decision
+on this patch.
+
+Thanks.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
