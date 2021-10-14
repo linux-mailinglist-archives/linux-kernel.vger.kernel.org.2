@@ -2,79 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5288142DFA7
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 18:49:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AB7D42DFB5
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 18:53:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232611AbhJNQvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 12:51:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37450 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233497AbhJNQvB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 12:51:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B2BDD6109E;
-        Thu, 14 Oct 2021 16:48:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634230136;
-        bh=/Hf0VjXN6iyYy6YK32OUC6tMBg1hQi/SYJ14SKE5H/4=;
-        h=Date:From:To:Subject:From;
-        b=ooCImsbvs+VtpH8EU0ZNPxgl6dfPCRirRShNowMC4TH6HA74C7k0jmazO2lO0D4FB
-         riKUsg+P3Tw825Db06ypvOYMi00tW/xFnJFc1Obfqp53qI/qhjkBm0iH1StR785T00
-         oaQBtBpMgElQP7UP/dEG34IdcqgEH2An1K1HBjaKzzEHlSOldL0drDzqeQbGIb0JFT
-         C4AR2wXM5KPbcEDc2IIG89gllO6wPZ9p81Ij4MOL+dzXfL2IzEJSTZYkT2hj+5hiff
-         mNAy8+H+ftORN/K2uJcBivQsPuJWRzOK2Fe/JpABAoSmBWQP27zTM4XHmO6m5pK03I
-         G79ZH9vfz96dg==
-Date:   Thu, 14 Oct 2021 11:53:20 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Cc: linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org, ;
-Illegal-Object: Syntax error in To: address found on vger.kernel.org:
-        To:     ;
-                        ^-missing semicolon to end mail group, extraneous tokens in mailbox, missing end of mailbox
-Subject: [PATCH] video: omapfb: Fix fall-through warning for Clang
-Message-ID: <20211014165320.GA1145571@embeddedor>
+        id S232535AbhJNQzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 12:55:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45260 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230244AbhJNQzk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 12:55:40 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71DF3C061570
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 09:53:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=LBqLUSDBXcDspTIIT2BMYaWCoLdz1YbMecXG5wHoYbo=; b=PU7PLLUinoEGOQWjLys9r2UXH/
+        xre02cHUFAqXhVGMkSW4cZlCUE1ENmA03ESe+CY54sYt3JjO5Ji9rAQXbOab5KoOa6jOhKeVoB0dW
+        Iqev2k8HqWe6eF3GxrpcLVK86FE+lxOXLdHFU2HMho+50kicRF/J5A0yL3qKwEdtN5QPJQmr+bI5X
+        LJYu2CgJ5SUe35Hyv4nkHyaDvtsBYD5YXwxo8ofiDjeHm810oAnQGpcJUYfNpOP8KBTalSz9l+1Tm
+        Do0edtyanb4jW9i+ys7AcgnRVruz3OKeaUDUtKnHxHOnkxAgu/aL1Jd+KjH5sSSwWU5g2P5EwrJ2C
+        o0AfHXLw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55116)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1mb3yw-0001Yz-Qe; Thu, 14 Oct 2021 17:53:26 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1mb3yu-0002Jf-Gd; Thu, 14 Oct 2021 17:53:24 +0100
+Date:   Thu, 14 Oct 2021 17:53:24 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Ananth N Mavinakayanahalli <ananth@linux.ibm.com>,
+        Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 6/8] ARM: clang: Do not relay on lr register for
+ stacktrace
+Message-ID: <YWhghNxpJD51ZDgD@shell.armlinux.org.uk>
+References: <163369609308.636038.15295764725220907794.stgit@devnote2>
+ <163369614818.636038.5019945597127474028.stgit@devnote2>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <163369614818.636038.5019945597127474028.stgit@devnote2>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following fallthrough warnings:
+On Fri, Oct 08, 2021 at 09:29:08PM +0900, Masami Hiramatsu wrote:
+> Currently the stacktrace on clang compiled arm kernel uses the 'lr'
+> register to find the first frame address from pt_regs. However, that
+> is wrong after calling another function, because the 'lr' register
+> is used by 'bl' instruction and never be recovered.
+> 
+> As same as gcc arm kernel, directly use the frame pointer (x11) of
+> the pt_regs to find the first frame address.
 
-drivers/video/fbdev/omap/omapfb_main.c:1558:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
-           case 0:
-           ^
-   drivers/video/fbdev/omap/omapfb_main.c:1558:2: note: insert 'break;' to avoid fall-through
-           case 0:
-           ^
-           break;
-   1 warning generated.
+Can I ask that the subject line is corrected. It's "rely" not "relay".
 
-This helps with the ongoing efforts to globally enable
--Wimplicit-fallthrough for Clang.
+Also, the frame pointer is called "r11" not "x11" if you want to use
+the numerical register reference for 32-bit ARM registers.
 
-Link: https://github.com/KSPP/linux/issues/115
-Link: https://lore.kernel.org/lkml/202110141005.hUjaYMEi-lkp@intel.com/
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/video/fbdev/omap/omapfb_main.c | 1 +
- 1 file changed, 1 insertion(+)
+Thanks.
 
-diff --git a/drivers/video/fbdev/omap/omapfb_main.c b/drivers/video/fbdev/omap/omapfb_main.c
-index 3d090d2d9ed9..b495c09e6102 100644
---- a/drivers/video/fbdev/omap/omapfb_main.c
-+++ b/drivers/video/fbdev/omap/omapfb_main.c
-@@ -1555,6 +1555,7 @@ static void omapfb_free_resources(struct omapfb_device *fbdev, int state)
- 	case 1:
- 		dev_set_drvdata(fbdev->dev, NULL);
- 		kfree(fbdev);
-+		break;
- 	case 0:
- 		/* nothing to free */
- 		break;
 -- 
-2.27.0
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
