@@ -2,91 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6991242E108
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 20:20:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98E3542E10D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 20:20:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233875AbhJNSWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 14:22:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36498 "EHLO
+        id S233887AbhJNSWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 14:22:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231777AbhJNSWH (ORCPT
+        with ESMTP id S231276AbhJNSWh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 14:22:07 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6646C061570;
-        Thu, 14 Oct 2021 11:20:02 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id qe4-20020a17090b4f8400b0019f663cfcd1so7556208pjb.1;
-        Thu, 14 Oct 2021 11:20:02 -0700 (PDT)
+        Thu, 14 Oct 2021 14:22:37 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9585C061570;
+        Thu, 14 Oct 2021 11:20:32 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id nn3-20020a17090b38c300b001a03bb6c4ebso5406793pjb.1;
+        Thu, 14 Oct 2021 11:20:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=CSCiUxW8SmCR5wEDjrlsVc/mX29VHCSuZNIbm3dfXEs=;
-        b=laN+WsFVwlEgb0Q1HmoD6ArUisaCyomol03RbjTV293p+4U+cSPLSLnLOFsDfk3wqp
-         LKnAF0bRONjFNH06Xu2NtjZi3h4pTZoYr8HRs9M0Wq7GUv44OHWIcOThjVYJDc7luHb9
-         QUIP0mZ8cB548kJWfZBjZhyjrOImakdOnf0sX+V7+MYDz/IBJj7RzNo/I50iAzd3V8Pn
-         Tdp7sERg3LYG/c5ZKz4w2vjD6MiGaBJZgoSz6m007w34pDHgVzBmoUvjHNPh3X2tvy+B
-         wgkxhGUy0IUzoz6uilDkA8L7srq/nGnLCl+Kb9SZh2QEUKFpIy8fU7l8XeF4eFI/bfGQ
-         x17w==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=tVpl94ml/Bx/IZjIBe2wxz6kc0O9x/ko5fdf+Bkw9eY=;
+        b=NnJI9p9ZCFqWHT7WFXYfr0jSXJ7JsvsiXdgzUBsZ7Y1DXoPZl9C+UmnPMSNB7KIQ7o
+         E/DVr91QLth2rcqovMDf3BbyuFD+oF8ndmn1uk/W676ytkwcCFR29sdoGvY0E9ssrRFf
+         Hr6HEWGIurOOVhlva6Y0/5Y8ZWfRhSf9IqR4T6+sKgcE8Q7oolcEl+LTT8nx8DWJhSkz
+         FV6S/ajDi/BZds2eaqRJMbbzF/qYaedqLeq1QsAtU/j5jLJ0+DAgTRFqxxRp5hWIsEV+
+         Ynbp6WnZ9lLTifCzpr/2LToYNUdjHcrX2k3n8YVBt/xbcxsIWQ1T77DVv3FVWpwnBv4c
+         bvyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=CSCiUxW8SmCR5wEDjrlsVc/mX29VHCSuZNIbm3dfXEs=;
-        b=XRJ7W80srEjAm+rLrrL5z8poDR9E1MbxOQ5uHrhtDUeiO0QU85+/99aPRUsl5mF5oG
-         Q/rt3oXBllAAdLrZlhYheJAEkcg+qELtVs5bOuLvfNFnsvcmvydN6E1ek4zWjvZNYVKq
-         JjM0zXAX8BRDzs6DPncbzoB7v/zjneOg5DuFiGRS/dXUiZVasC/w9DnZQohjrC4moTtU
-         bFhcM+lldri/oR6kl18vln8+2o0kmv0kwozNHeZ2QWrTiBaDOveFnG4QevJEjVMoIkZu
-         ABtdUvTyggzHLEEEYB24vBxH8eYdARotgAq5JLsrXyfu4IwZTv//VmWErc7FN83fjxD8
-         22Rw==
-X-Gm-Message-State: AOAM533iyntZWv7aP5iy0h+LrAjDKc+wkI6vvWBvRcLnpxUquiVB6QJt
-        w7t+kyykCeQvcsb+f6P31ILXtGiNJRIfsoePvoY=
-X-Google-Smtp-Source: ABdhPJz223KP55wq6AH5vjfwFYeFyGGxqmVh8EctEfVjt7DgG5DSpxqTko6ONG8TfiWLZBWGTmOSJg==
-X-Received: by 2002:a17:90b:4ac1:: with SMTP id mh1mr7766925pjb.144.1634235601844;
-        Thu, 14 Oct 2021 11:20:01 -0700 (PDT)
-Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
-        by smtp.gmail.com with ESMTPSA id k17sm3132973pfk.16.2021.10.14.11.19.59
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=tVpl94ml/Bx/IZjIBe2wxz6kc0O9x/ko5fdf+Bkw9eY=;
+        b=eQm0t3yGarX4PEBrGaeUimkhwwmaqWma84mPtcKfeVRge3yO/zU+h7jL5+rO60zdMt
+         hZV6z0I7I5j1KWAWl8dAY+cWLeR9BAPs4/PCv8iBHHoDRMazNb9wmCL0nYqBCSTIY2lE
+         JNONr/fcqBsQ1VFoPOm/zKMe+37byKpgs1KeMnAVFt62IY2JuJpJ7xUwaX+lSCo1PjaD
+         XPXdu+QXTnc7edkdtDZ9eUbc9vRo0ucBjeuZs5AYZSNnxJH4O6SPDxko9LTK9uu+Yu3+
+         bw2LRdrJtBRBpBSy5hVRUTliPISPMmXKEi8+zwHqshqKA+D40xsxhwXLG5v5BcQrAhrH
+         qY4A==
+X-Gm-Message-State: AOAM533hu3HRL/4L2wgXqMGnOV9mS295lJLuxnOExVwF+W1Gfb5KAYm+
+        JoQKjX9HAeyuxp3VCMJATLo=
+X-Google-Smtp-Source: ABdhPJzZf3/GLs1psGjdo3mLRAfknuhmMmxbJeDF2+yDhN5G0rTKl5AS9cotNDMYlj2sOUaGxz+PXg==
+X-Received: by 2002:a17:902:a40c:b029:12c:17cf:ab6f with SMTP id p12-20020a170902a40cb029012c17cfab6fmr6603013plq.71.1634235631986;
+        Thu, 14 Oct 2021 11:20:31 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:9bf4:9cc1:5626:5bbc])
+        by smtp.gmail.com with ESMTPSA id y17sm3151383pfn.96.2021.10.14.11.20.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Oct 2021 11:20:01 -0700 (PDT)
-Message-ID: <616874d1.1c69fb81.4185a.9bca@mx.google.com>
-Date:   Thu, 14 Oct 2021 11:20:01 -0700 (PDT)
-X-Google-Original-Date: Thu, 14 Oct 2021 18:19:59 GMT
-From:   Fox Chen <foxhlchen@gmail.com>
-In-Reply-To: <20211014145207.979449962@linuxfoundation.org>
-Subject: RE: [PATCH 5.10 00/22] 5.10.74-rc1 review
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Fox Chen <foxhlchen@gmail.com>
-Content-Transfer-Encoding: 7bit
+        Thu, 14 Oct 2021 11:20:30 -0700 (PDT)
+Date:   Thu, 14 Oct 2021 11:20:28 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     lianzhi chang <changlianzhi@uniontech.com>
+Cc:     linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org, andriy.shevchenko@linux.intel.com,
+        linux-input@vger.kernel.org, 282827961@qq.com
+Subject: Re: [PATCH] input&tty: Fix the keyboard led light display problem
+Message-ID: <YWh07Lnr7WIGoLjh@google.com>
+References: <20211014071627.23256-1-changlianzhi@uniontech.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211014071627.23256-1-changlianzhi@uniontech.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Oct 2021 16:54:06 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> This is the start of the stable review cycle for the 5.10.74 release.
-> There are 22 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sat, 16 Oct 2021 14:51:59 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.74-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+Hi lianzhi,
 
-5.10.74-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
-                
-Tested-by: Fox Chen <foxhlchen@gmail.com>
+On Thu, Oct 14, 2021 at 03:16:27PM +0800, lianzhi chang wrote:
+> Switching from the desktop environment to the tty environment,
+> the state of the keyboard led lights and the state of the keyboard
+> lock are inconsistent. This is because the attribute kb->kbdmode
+> of the tty bound in the desktop environment (xorg) is set to
+> VC_OFF, which causes the ledstate and kb->ledflagstate
+> values of the bound tty to always be 0, which causes the switch
+> from the desktop When to the tty environment, the LED light
+> status is inconsistent with the keyboard lock status.
+> 
+> Signed-off-by: lianzhi chang <changlianzhi@uniontech.com>
+> ---
+>  drivers/input/input.c     |  7 ++++++-
+>  drivers/tty/vt/keyboard.c | 30 +++++++++++++++++++++++++++++-
+>  include/linux/kbd_kern.h  |  2 ++
+>  3 files changed, 37 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/input/input.c b/drivers/input/input.c
+> index ccaeb2426385..43c09700bf68 100644
+> --- a/drivers/input/input.c
+> +++ b/drivers/input/input.c
+> @@ -25,6 +25,7 @@
+>  #include <linux/rcupdate.h>
+>  #include "input-compat.h"
+>  #include "input-poller.h"
+> +#include <linux/kbd_kern.h>
+>  
+>  MODULE_AUTHOR("Vojtech Pavlik <vojtech@suse.cz>");
+>  MODULE_DESCRIPTION("Input core");
+> @@ -472,8 +473,12 @@ void input_inject_event(struct input_handle *handle,
+>  
+>  		rcu_read_lock();
+>  		grab = rcu_dereference(dev->grab);
+> -		if (!grab || grab == handle)
+> +		if (!grab || grab == handle) {
+>  			input_handle_event(dev, type, code, value);
+> +
+> +			if (type == EV_LED && code < LED_SCROLLL)
+> +				update_value_ledstate(code, value);
 
+No, we should not be putting hooks for tty/vt directly into input core.
+The code in drivers/tty/vt/keyboard.c is getting all relevant input
+events and should be able to keep the led state synchronized. Please
+keep all the changes localized there.
+
+Thanks.
+
+-- 
+Dmitry
