@@ -2,85 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AA0E42D976
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 14:46:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F53742D978
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 14:47:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231556AbhJNMsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 08:48:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53924 "EHLO mail.kernel.org"
+        id S231586AbhJNMtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 08:49:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54140 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229912AbhJNMsb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 08:48:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A6D260C49;
-        Thu, 14 Oct 2021 12:46:26 +0000 (UTC)
+        id S229912AbhJNMtJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 08:49:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3EBF660C49;
+        Thu, 14 Oct 2021 12:47:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634215586;
-        bh=XbSRCH8PSEwEGv16RGZ3qTyIO0oHwkvF7BoEkM58F4U=;
+        s=k20201202; t=1634215624;
+        bh=+d01KHTRSumOEZT8agvd8tWEcK3PRRbA5A7BnnIbdpQ=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=GdSq9XsvyTQmqXKd3Ssaim1lnll2uBFlNEqF1D3/OsbsYOojgFlx/TRfSfeUDepM3
-         4Myzw9aNL2srK2wBlQ/dRl15BeH8ehSmf64yBxWWgXFNtDl1yv+trAQHY3Tg1fRk8v
-         1CzqZs6IvzU/Sm8UQjGBw8SHHxfrNtyfr8lmx/QK/JXiXAZQq/BWuc9pUE3B8HF3Fa
-         xqXD1aiPn6MImF8P7tKmX4QP2P7xoLiAcviL5iAvXXPZ4qSsUnDIDJ/JrUB9vGXZHg
-         53j2xu98vlkoq8U9UrSVJN5JZOtv0eKUzHFI6BSuI98evflCPN3Q4wi/Q1oYyq3B2D
-         OO2jKt+9Hj8vg==
-Received: by mail-ed1-f46.google.com with SMTP id ec8so23805486edb.6;
-        Thu, 14 Oct 2021 05:46:26 -0700 (PDT)
-X-Gm-Message-State: AOAM530q2sYS3oTs8lY7t1Bg8aHc5yZwekYGmOHWwvbpXJKFV4DE306z
-        xP1chESRF8BoxEvBd/7feqZbXI9s+2BQtPYYVA==
-X-Google-Smtp-Source: ABdhPJxckYEhRUOh622IWcX2ltVSYroafWoIFCPByyFwbACExBb1A1o94FlwmqlA+hE13l9617JKTwNkRyh6l34NmWQ=
-X-Received: by 2002:a05:6402:27d3:: with SMTP id c19mr8295232ede.70.1634215584892;
- Thu, 14 Oct 2021 05:46:24 -0700 (PDT)
+        b=SXdxOowlZ7aya9QAoUheTtExbJZKUXxsrsgkhJtRxFO5U/6UOhjDEbbkgc/eAhvnl
+         8VDJy5Qls3NqYv00avhVHiihQyHEWNURxN94FMfMOwT4OzaE5ddz0lCArRUKuyjlu4
+         ypBeYZx/qfynSMviuCAUnjkQ/rvsK/ajrxAlSlJtz2MTz0o7EjUB1WE/8dDabWV5u0
+         JBfg7vG7ROz2sslGyTYewlVnw0Oj7ms/PXk1hu62BcTZutTXH5zudlJ7A1nHzWfUhz
+         xO2+keIbybqoaGgEUObO2GFdHsjYg8KhUNuD1XwsBveDBXYXZui4cqjlRssZQgwHYD
+         eE0sUkebLL2RQ==
+Received: by mail-ed1-f51.google.com with SMTP id y12so24328608eda.4;
+        Thu, 14 Oct 2021 05:47:04 -0700 (PDT)
+X-Gm-Message-State: AOAM532QYPNuP3XNDybx3FB43D/IsELlAn3zC8480mj8suDZ7Yk+kjs1
+        iNy2lbvyAB+KBoz7a+yKAGPHqCEdQsm63NTJqg==
+X-Google-Smtp-Source: ABdhPJwSm3HuhEJ063Rw9UsGLNFNs045f3GLTDsPTojmKwFpUBlKoUE++pS+H7a9JGog+S1ZtaakwJ8m1wxPCvagazI=
+X-Received: by 2002:a17:906:9399:: with SMTP id l25mr3551972ejx.363.1634215622699;
+ Thu, 14 Oct 2021 05:47:02 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211007144019.7461-1-jbx6244@gmail.com> <1633661172.660863.1409603.nullmailer@robh.at.kernel.org>
- <CACRpkdYArdPwEVf_5pwsROKPjbnVAtU3mf9v1z6WXGPoBb=SZg@mail.gmail.com>
-In-Reply-To: <CACRpkdYArdPwEVf_5pwsROKPjbnVAtU3mf9v1z6WXGPoBb=SZg@mail.gmail.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Thu, 14 Oct 2021 07:46:13 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqLKizR0tPrmxzM0cGFjj8dzARuU45gkvYn-giZ0SNXCaw@mail.gmail.com>
-Message-ID: <CAL_JsqLKizR0tPrmxzM0cGFjj8dzARuU45gkvYn-giZ0SNXCaw@mail.gmail.com>
-Subject: Re: [PATCH v3 1/3] dt-bindings: pinctrl: convert rockchip,pinctrl.txt
- to YAML
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Johan Jonker <jbx6244@gmail.com>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+References: <20211001000924.15421-1-leoyang.li@nxp.com> <20211001000924.15421-2-leoyang.li@nxp.com>
+ <db751cb1-9107-3857-7576-644bde4c28e5@canonical.com> <CADRPPNROVBp_QB=6XEgk8WF5fnEPFTSko4Nn+mm8oLM3iGTuuw@mail.gmail.com>
+ <e42fa620-810b-fdcc-c827-602a14d10d97@canonical.com>
+In-Reply-To: <e42fa620-810b-fdcc-c827-602a14d10d97@canonical.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Thu, 14 Oct 2021 07:46:50 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqLvdFgiPLZoUzXXPmoff2u1pz5pcSdaCh9p=bh1+3PMSg@mail.gmail.com>
+Message-ID: <CAL_JsqLvdFgiPLZoUzXXPmoff2u1pz5pcSdaCh9p=bh1+3PMSg@mail.gmail.com>
+Subject: Re: [PATCH 1/5] dt-bindings: memory: fsl: convert ifc binding to yaml schema
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Li Yang <leoyang.li@nxp.com>, Shawn Guo <shawnguo@kernel.org>,
         "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
         <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        lkml <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 5:32 PM Linus Walleij <linus.walleij@linaro.org> wrote:
+On Mon, Oct 4, 2021 at 4:31 AM Krzysztof Kozlowski
+<krzysztof.kozlowski@canonical.com> wrote:
 >
-> On Fri, Oct 8, 2021 at 4:46 AM Rob Herring <robh@kernel.org> wrote:
+> On 01/10/2021 18:17, Li Yang wrote:
+> > On Fri, Oct 1, 2021 at 5:01 AM Krzysztof Kozlowski
+> > <krzysztof.kozlowski@canonical.com> wrote:
+> >>
 >
-> > On Thu, 07 Oct 2021 16:40:17 +0200, Johan Jonker wrote:
-> > > Convert rockchip,pinctrl.txt to YAML
-> > >
-> > > Signed-off-by: Johan Jonker <jbx6244@gmail.com>
-> > > ---
-> > >
-> > > Changed V3:
 > (...)
-> > Running 'make dtbs_check' with the schema in this patch gives the
-> > following warnings. Consider if they are expected or the schema is
-> > incorrect. These may not be new warnings.
 >
-> Rob can you tell me how you like me to handle this?
-> Do we merge the nice new bindings and deal with the
-> aftermath or do we need to fix the DTS files in the same
-> patch series?
+> >>> +
+> >>> +  interrupts:
+> >>> +    minItems: 1
+> >>> +    maxItems: 2
+> >>> +    description: |
+> >>> +      IFC may have one or two interrupts.  If two interrupt specifiers are
+> >>> +      present, the first is the "common" interrupt (CM_EVTER_STAT), and the
+> >>> +      second is the NAND interrupt (NAND_EVTER_STAT).  If there is only one,
+> >>> +      that interrupt reports both types of event.
+> >>> +
+> >>> +  little-endian:
+> >>> +    $ref: '/schemas/types.yaml#/definitions/flag'
+> >>
+> >> type: boolean
+> >
+> > It will not have a true or false value, but only present or not.  Is
+> > the boolean type taking care of this too?
+>
+> boolean is for a property which does not accept values and true/false
+> depends on its presence.
+> See:
+> Documentation/devicetree/bindings/phy/lantiq,vrx200-pcie-phy.yaml
+> Documentation/devicetree/bindings/thermal/qoriq-thermal.yaml
 
-Did the next paragraph not answer that? Added back:
+They are equivalent, so either can be used.
 
-> > Note that it is not yet a requirement to have 0 warnings for dtbs_check.
-> > This will change in the future.
-
-So no requirement to fix the dtb warnings immediately nor create any
-merge dependency.
+Really what is needed here is a common schema for the endianness
+properties defining the type once. Then any binding using a property
+can just do 'little-endian: true'.
 
 Rob
