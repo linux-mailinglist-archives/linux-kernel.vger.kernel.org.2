@@ -2,80 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD70242D746
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 12:43:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1DE442D748
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 12:43:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230094AbhJNKpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 06:45:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42942 "EHLO mail.kernel.org"
+        id S229468AbhJNKph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 06:45:37 -0400
+Received: from ni.piap.pl ([195.187.100.5]:51270 "EHLO ni.piap.pl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229468AbhJNKpR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 06:45:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A50A561029;
-        Thu, 14 Oct 2021 10:43:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634208193;
-        bh=aWMglBh9pGCOmiZ88eOVpvJvmJl3/pOcN/7VDiuqDNU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=SgFxRO+6xvvs5vx4lximIeqbNre80UgWO61jBHG29uq9+hp3FdKUOtf3hnfj8t3vN
-         3fMS2d15RPSusAQrIolmMnc084ndG+ddTGle9/JPozqJkpZrBw34XcGzXuBPBsGd9N
-         yeKiij+uvhRAGUngk2tQYS9UHUOvQrnjvmd2jQmwH012Dy5u6mL0g/j0hzGPw4oQFO
-         uaecRUm+jRy5ZfklXzFJG//cU3xo1U8hbSnZbLIORBw3BMlqRiSgiJ1ngVcq012ahW
-         eCGa/teKbGSsAI40NV3AMCMB0Me/W9JN/znRwWNjv/HVAJ+248zKhJkkQSjddpy1ZS
-         kQCH9WBIoO9JA==
-Date:   Thu, 14 Oct 2021 12:43:09 +0200
-From:   Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     devicetree@vger.kernel.org, linux-leds@vger.kernel.org,
-        Andrew Lunn <andrew@lunn.ch>, robh+dt@kernel.org,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] dt-bindings: leds: Add `excludes` property
-Message-ID: <20211014124309.10b42043@dellmb>
-In-Reply-To: <20211014102918.GA21116@duo.ucw.cz>
-References: <20211013204424.10961-1-kabel@kernel.org>
-        <20211013204424.10961-2-kabel@kernel.org>
-        <20211014102918.GA21116@duo.ucw.cz>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S230168AbhJNKpb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 06:45:31 -0400
+Received: from t19.piap.pl (OSB1819.piap.pl [10.0.9.19])
+        by ni.piap.pl (Postfix) with ESMTPSA id E4F64C3F3EF6;
+        Thu, 14 Oct 2021 12:43:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ni.piap.pl E4F64C3F3EF6
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=piap.pl; s=mail;
+        t=1634208205; bh=wy76QmHD0Gdua8DnltaLzMFS+mHTmw/fUZaGxzMCgvg=;
+        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+        b=iGQFi0OHnl82CcXlETPZMtEB890a1wyFPdWyN1wR4aR8cNMP/ZcQENSMHYK/nRLrw
+         SgiK2UmGjS3J/zrkVNx08QfC4fbJhxDjLBG2UV2v9pXYekRmlebXQ4zy7zEX4fMuLS
+         Do/6gI7uAVDpoLWeoGC/KGW8Zdfw+R8EUQfzEqwI=
+From:   =?utf-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>
+To:     Jacopo Mondi <jacopo@jmondi.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Sakari Ailus <sakari.ailus@iki.fi>,
+        Matteo Lisi <matteo.lisi@engicam.com>
+Subject: Re: [PATCH v5] Driver for ON Semi AR0521 camera sensor
+References: <m3fstfoexa.fsf@t19.piap.pl>
+        <20211009102446.jrvrdr7whtd2rv4z@uno.localdomain>
+        <m3mtnflpna.fsf@t19.piap.pl>
+        <20211011143420.vm6ncl5gdv44nsn3@uno.localdomain>
+        <m3a6jel9ce.fsf@t19.piap.pl>
+        <20211013082634.53zh5j26gucddome@uno.localdomain>
+        <m3y26xjd7p.fsf@t19.piap.pl>
+        <20211013151400.i2s3gcshb3xvuy2e@uno.localdomain>
+        <m3tuhkjh5l.fsf@t19.piap.pl>
+        <20211014075955.xxbv2bzrx73v45bo@uno.localdomain>
+Sender: khalasa@piap.pl
+Date:   Thu, 14 Oct 2021 12:43:24 +0200
+In-Reply-To: <20211014075955.xxbv2bzrx73v45bo@uno.localdomain> (Jacopo Mondi's
+        message of "Thu, 14 Oct 2021 09:59:55 +0200")
+Message-ID: <m3lf2vkhtf.fsf@t19.piap.pl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-KLMS-Rule-ID: 3
+X-KLMS-Message-Action: skipped
+X-KLMS-AntiSpam-Status: not scanned, whitelist
+X-KLMS-AntiPhishing: not scanned, whitelist
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, not scanned, whitelist
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Oct 2021 12:29:18 +0200
-Pavel Machek <pavel@ucw.cz> wrote:
+Jacopo Mondi <jacopo@jmondi.org> writes:
 
-> Hi!
-> 
-> > Some RJ-45 connectors have LEDs wired in the following way:
-> > 
-> >          LED1
-> >       +--|>|--+
-> >       |       |
-> >   A---+--|<|--+---B
-> >          LED2
-> > 
-> > With + on A and - on B, LED1 is ON and LED2 is OFF. Inverting the
-> > polarity turns LED1 OFF and LED2 ON.
-> > 
-> > So these LEDs exclude each other.
-> > 
-> > Add new `excludes` property to the LED binding. The property is a
-> > phandle-array to all the other LEDs that are excluded by this LED.  
-> 
-> I don't think this belongs to the LED binding.
-> 
-> This is controller limitation, and the driver handling the controller
-> needs to know about it... so it does not need to learn that from the
-> LED binding.
+>> This is BTW completely orthogonal to the -EBUSY on set_fmt(). The
+>> effects will be exactly the same if the e.g. geometry changes come when
+>> the sensor is not streaming.
+>>
+>
+> No, this isn't true. Your s_fmt() implementation stops then restart the
+> stream. It has an undocumented side effect and will cause undefined
+> behaviour.
 
-It's not necessarily a controller limitation, rather a limitation of
-the board (or ethernet connector, in the case of LEDs on an ethernet
-connector).
+It will cause *at*most* a corrupted frame. On a MIPI link. That's right.
+Such a corrupted frame will *at*most* cause some transient IO error - it
+must not cause anything serious, because corrupted frames on MIPI can
+happen for multiple reasons, some of which simply cannot be avoided.
+BTW I will see if it's actually the case - chances are, there is no
+corruption, but I tested it years ago and haven't yet checked my notes.
 
-But I guess we could instead document this property in the ethernet PHY
-controller binding for a given PHY.
+In fact those set_fmt() in other drivers may - or may not - cause
+corrupted frames just the same.
 
-Marek
+> If your s_fmt() has to stop and restart streaming to take effect,
+> it means userspace should instead stop the stream, change
+> the format where opportune in the pipeline, and then restart the
+> stream.
+
+Maybe. This is a sensor driver - not userspace.
+If the userspace uses it as a part of "frame grabber", it will certainly
+do exactly that (nothing else would make sense in practice).
+
+Unfortunately this all will have to wait a bit, so thanks for your help,
+expect a new patch in few weeks.
+--=20
+Krzysztof "Chris" Ha=C5=82asa
+
+Sie=C4=87 Badawcza =C5=81ukasiewicz
+Przemys=C5=82owy Instytut Automatyki i Pomiar=C3=B3w PIAP
+Al. Jerozolimskie 202, 02-486 Warszawa
