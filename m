@@ -2,102 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 050B742E4B9
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 01:20:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 408D742E4BB
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 01:22:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233150AbhJNXWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 19:22:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47750 "EHLO
+        id S233935AbhJNXYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 19:24:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232645AbhJNXWa (ORCPT
+        with ESMTP id S231325AbhJNXYF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 19:22:30 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25A8DC061570;
-        Thu, 14 Oct 2021 16:20:25 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id na16-20020a17090b4c1000b0019f5bb661f9so5976006pjb.0;
-        Thu, 14 Oct 2021 16:20:25 -0700 (PDT)
+        Thu, 14 Oct 2021 19:24:05 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46CAFC061570;
+        Thu, 14 Oct 2021 16:22:00 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id y7so6779317pfg.8;
+        Thu, 14 Oct 2021 16:22:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=rLxq7jNq6GEmbWP2MEcN7fAu58gvlZAZinIDW778wxI=;
-        b=ZtYdm25YI/lmChgYUUTowIlOeRHYgEfG7IK9pZryTUCSZBs/5jRozeAymZmaIs3IkI
-         Ql0Y+1xUdn5CZjuMyEccOb7MQzyRzWd0pf+VuuvDuZmWoaSDKtlh+tDG9k88bWOWDeCI
-         DoKvqoZ8XbCgtVySGSGRkZV8cdYABN/WgNmM5FU1cKvZNz+WuKtNSZ/6Cp/Pr/TjuLMF
-         FLatbmPx1jedqni3wlshqJkApto7ZLWqjEZkcreG36QcKlhQhP1SweVfcknIxUL0Rg8u
-         OMoGff/8S6CA9N48Q+mXoS/P/MHGVJ1T8iznxFEkFU7Et/Jqur9x1hjs8LLaVbTXWNUd
-         zTng==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Pz7wpNudlFp0iJ4ceF8FtD9oN6fD0QtioM4sSlEJ8dg=;
+        b=CNtu3IVYffo8MHC2GdIeqq/qAPhnLr12J1ULaQFkkxbsxpFUvr7n2wLticHtu4c3Rq
+         JgbgyuIIDURlWv0uqkWXpTvRF5q+vyysJblTU1C5elNjtb/UUrEPcNH5c6V5iCrnOeYj
+         skTyNL5snAdkkYVA2mCrm6xFSiL4V6VAx9O+SBaIALPsY7JwBBQmZnCMjWoDTX3bYE4B
+         or5BdUdjMk0s/vfqaniduu4E48JVmh102ufKDGDiIhVFCwK5r9wmaNwFpTzJxJs6dQCP
+         sXFSm7mbuGGeqyDzmqLBH1rpn7PYSfBnvDifnX4WhTs4mKQg0qgcSi8WhYGbX6sF5I0W
+         mc/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :mime-version:content-disposition;
-        bh=rLxq7jNq6GEmbWP2MEcN7fAu58gvlZAZinIDW778wxI=;
-        b=5OonleYANLxehHXmC1SBc/n6xOG0r2ur1L0xf1JOHJP06B2EgMDcR64BPGnTzgITSS
-         9+veSIdB3oIxuA2uP1pwq86FboF+AFapY8XyP9/47l3MWyhHLSmFOtTr4vtikdDljcMQ
-         dyeY1D93n79+Pv5PlhVyp90px5CB0XhJtFjdvcZmW1P3yQMca8d6sSAuJLvqc1QpmOhw
-         4pJa5MSsWtZuYwgKMqgQ54ZxtZzle/poeKOuUyCQ1ORSfMWTCtBf9GcmjuBOr3VvOO8y
-         Jy28mzOQI9c3uBxUx5/89452DAo+EwmsJh6bBsPn/7MYjm52I2s4q53WRDVg653LJgjT
-         yKzw==
-X-Gm-Message-State: AOAM533KZy7/zYfd6RVrhrChHXuk1YtF/UQteO0ZedYm8uC8dS1Hjc4R
-        fHAi3w41rBWgsFi6976sqYE=
-X-Google-Smtp-Source: ABdhPJxGMCCg1bfY6qEIk+JpZV3SSJHJcV+AubAcALdX3tkgsAvYc7sO0xMW8P6yY1ddBArlVgmSTw==
-X-Received: by 2002:a17:902:9882:b0:13e:1749:daae with SMTP id s2-20020a170902988200b0013e1749daaemr7744265plp.60.1634253624504;
-        Thu, 14 Oct 2021 16:20:24 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id c11sm3465639pfm.55.2021.10.14.16.20.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Oct 2021 16:20:23 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Thu, 14 Oct 2021 13:20:22 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH block-5.15] blk-cgroup: blk_cgroup_bio_start() should use
- irq-safe operations on blkg->iostat_cpu
-Message-ID: <YWi7NrQdVlxD6J9W@slm.duckdns.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Pz7wpNudlFp0iJ4ceF8FtD9oN6fD0QtioM4sSlEJ8dg=;
+        b=bxVOkrWzxsaNE++rPxc4sAOSsvfwetg+UnfbpPm+cLXgueZ9hcsKrWfTWCvrRPAnxo
+         7BFW5gIzF/oMwuh6YgOboH4gP1HFClDEQM9+qcBWpZP29f6R540gAdoYq5r9vtOVTiRU
+         1oveQiVvYTV1kbx8Eesgjn0+czjzEFJcD3q7rifqie6Fnw5S35qJ13hzxha7WMTSnRqb
+         LVsQRJBMfeYy7sz7YpUQVeVWY+8ufYBqmyjeiF9xKbM47VXK6kFFYHtQcQjcv15yW/rO
+         +h65daF5dUdKV0XHDqnOcqzoVzbpywbwRDzslHZX8cqVBJJixh2SCGCz8PlquwRiLAp3
+         2hsg==
+X-Gm-Message-State: AOAM533Ohy9IALpTCMPeWdQJElw000MTjNXSqSYYZrbl72Gel6kDZBBu
+        D7P3aoyliw+jrxQ4aCZi4YI=
+X-Google-Smtp-Source: ABdhPJyKAMFpl1Lke85fC3bxHNLBHwylVYdYKLXUW2MD0IbzVSpt+eLUYVjJHqJo2Iy4PeEjzUdnQw==
+X-Received: by 2002:a05:6a00:1501:b0:44d:8dbe:ca59 with SMTP id q1-20020a056a00150100b0044d8dbeca59mr2833289pfu.75.1634253719468;
+        Thu, 14 Oct 2021 16:21:59 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id e15sm3256633pfc.134.2021.10.14.16.21.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Oct 2021 16:21:58 -0700 (PDT)
+Subject: Re: linux-next: Signed-off-by missing for commit in the arm-soc tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
+        ARM <linux-arm-kernel@lists.infradead.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>
+References: <20211015092934.726ed2d4@canb.auug.org.au>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <a1f2f236-73ea-2459-63bc-8f51ae0231b2@gmail.com>
+Date:   Thu, 14 Oct 2021 16:21:54 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <20211015092934.726ed2d4@canb.auug.org.au>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-c3df5fb57fe8 ("cgroup: rstat: fix A-A deadlock on 32bit around
-u64_stats_sync") made u64_stats updates irq-safe to avoid A-A deadlocks.
-Unfortunately, the conversion missed one in blk_cgroup_bio_start(). Fix it.
+On 10/14/21 3:29 PM, Stephen Rothwell wrote:
+> Hi all,
+> 
+> Commits
+> 
+>   3f3247285461 ("ARM: dts: bcm2711-rpi-4-b: Fix usb's unit address")
+>   13dbc954b3c9 ("ARM: dts: bcm2711-rpi-4-b: Fix pcie0's unit address formatting")
+> 
+> are missing a Signed-off-by from their committer.
 
-Fixes: 2d146aa3aa84 ("mm: memcontrol: switch to rstat")
-Cc: stable@vger.kernel.org # v5.13+
-Reported-by: syzbot+9738c8815b375ce482a1@syzkaller.appspotmail.com
-Signed-off-by: Tejun Heo <tj@kernel.org>
----
- block/blk-cgroup.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+Yes that is because I had to rewrite Nicolas' Author email to match his
+Signed-off-by and in the process I became the committer and did not add
+my Signed-off-by.
 
-diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
-index 31fe9be179d99..7d0509d9f4ea8 100644
---- a/block/blk-cgroup.c
-+++ b/block/blk-cgroup.c
-@@ -1906,10 +1906,11 @@ void blk_cgroup_bio_start(struct bio *bio)
- {
- 	int rwd = blk_cgroup_io_type(bio), cpu;
- 	struct blkg_iostat_set *bis;
-+	unsigned long flags;
- 
- 	cpu = get_cpu();
- 	bis = per_cpu_ptr(bio->bi_blkg->iostat_cpu, cpu);
--	u64_stats_update_begin(&bis->sync);
-+	flags = u64_stats_update_begin_irqsave(&bis->sync);
- 
- 	/*
- 	 * If the bio is flagged with BIO_CGROUP_ACCT it means this is a split
-@@ -1921,7 +1922,7 @@ void blk_cgroup_bio_start(struct bio *bio)
- 	}
- 	bis->cur.ios[rwd]++;
- 
--	u64_stats_update_end(&bis->sync);
-+	u64_stats_update_end_irqrestore(&bis->sync, flags);
- 	if (cgroup_subsys_on_dfl(io_cgrp_subsys))
- 		cgroup_rstat_updated(bio->bi_blkg->blkcg->css.cgroup, cpu);
- 	put_cpu();
+Nicolas, the commits you had submitted to me originally used your
+@redhat.com emails in the Author/From, whereas the Signed-off-by used
+your @kernel.org address. Can you have both match for next commits?
+
+Thanks!
+-- 
+Florian
