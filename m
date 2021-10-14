@@ -2,287 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F02E342E4B5
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 01:18:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8A3842E4B7
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 01:19:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232435AbhJNXUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 19:20:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47286 "EHLO
+        id S232484AbhJNXVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 19:21:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230032AbhJNXU3 (ORCPT
+        with ESMTP id S232645AbhJNXVM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 19:20:29 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FDE3C061570
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 16:18:24 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id z11so32391924lfj.4
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 16:18:23 -0700 (PDT)
+        Thu, 14 Oct 2021 19:21:12 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A195C061753
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 16:19:07 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id n65so18387326ybb.7
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 16:19:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=JGQkp4PxF/8vYlSAKh+ljJVsL2FCke1j6AQ9DfdlzkI=;
-        b=y145O79Y/PL+jw1VQVbJjjBO4EIdPLZCSnBp9uHGHS44Z3pUFNFhGRxDBvLM7brbnN
-         aCdBZWicEP2muwDWkLzTuEYcN3AKoGDhq8jICptb+tJVv4xwV2XPWuvQizOiYANNp1ae
-         fNUGQdGjwHJtDf+SF9JomTCoZ983ZtYlqg6BI/EGwEFRyucUQuPiwnoD1ATS2JoMlpqW
-         FEngsBZBTqowfW/fbTonQ7JpDF4YS5Y1TcQajOcelj1ekjRl4Ew/uwSiGO0mN8vFgs/M
-         CPigf8IQOOGAB/MJV4jy6EFwZegCBagTAOgBPo5YWIjlxrwCUZzExhubDhaPYcs3pcOW
-         nLGQ==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rIDsF8OdOSsSMq3TShOJfG1E7T7gfTYbjddGetKWzcQ=;
+        b=ZLhPQaoERE2TIqUe/eZDSGbpzchxYQfdrCizokkMYvieOR6+MNzui52vFKrylZDMbz
+         +JqGI+GYmUpV2nrZU61KU7te6RFwpHeBEXvfXy1LNDCGXISVzsUcJ+WFtQ7579WV7VQy
+         fp7ek6XVYWCXRgD5YPkGigY8spU6Pa/P/1r7UbME8MmbdzzWky3B/TVE1TQYSGJ2pJ7Q
+         kfcDNxt02czia6yRzcpF6MeJ3ZrHOt1w/+FHtqYHGFVk/ltN0EjdtIebwKb6ouDYadmR
+         lGkkrIw2KfVaDeu2UGGInkbLHLLfpse6Sro82y4+gOtnqurWL+ThNawUXfv/aqamdr4q
+         pGNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=JGQkp4PxF/8vYlSAKh+ljJVsL2FCke1j6AQ9DfdlzkI=;
-        b=MdeXI8sYGF16/NJEqVpcrt+RDP/gqUMG7vIZnv3dFUFbbcgM+9Iuc2jDiZJCikhtj3
-         r6mYcwh/JFJTf8heQiyT5r4mz3GOEwOtwmOUlQQ1t7RzT3xb8/c5jTWSLYaqvmrr/csX
-         sExzWc48D1NCMx+/u7r5QTum1CRXmgt6g9fwA8n8s76YwRvDB5TOPcWTSUl3HZR7w3dy
-         hm/Jr0vnd6XEfQ8E9Q1eB/mfFKeCTjGn1VJ9v8G+NplWSIYkh9aP5TVZNNJ1uTdhD88t
-         B6b7r/0I2y0xdki7XOjRABp19OlIee77Td8lgmyFVO1BHIf3Xv1nGFv8wvV7BPZnmZyN
-         au6A==
-X-Gm-Message-State: AOAM530G4EBJzyj0bKzy8RCEMrCEQr31C1C6BoztFUlZ5kT+afRymLt9
-        zG5TLE0GsnSCzhFzgRGO/i2Ntw==
-X-Google-Smtp-Source: ABdhPJzpWHPBnyxosuCdd6mNa3JHx28jASCaq7F65McnJ81q4IGvP70BNOyJaZBTSDCPvrLcALWGhw==
-X-Received: by 2002:a05:6512:3c88:: with SMTP id h8mr7629880lfv.128.1634253502397;
-        Thu, 14 Oct 2021 16:18:22 -0700 (PDT)
-Received: from [192.168.1.211] ([37.153.55.125])
-        by smtp.gmail.com with ESMTPSA id i12sm341638lfb.234.2021.10.14.16.18.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Oct 2021 16:18:22 -0700 (PDT)
-Subject: Re: [PATCH v2 10/11] drm/msm/dsi: Add support for DSC configuration
-To:     Vinod Koul <vkoul@kernel.org>, Rob Clark <robdclark@gmail.com>
-Cc:     linux-arm-msm@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org
-References: <20211007070900.456044-1-vkoul@kernel.org>
- <20211007070900.456044-11-vkoul@kernel.org>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Message-ID: <785fe3bf-71fa-aabd-dadf-828b91396fba@linaro.org>
-Date:   Fri, 15 Oct 2021 02:18:20 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rIDsF8OdOSsSMq3TShOJfG1E7T7gfTYbjddGetKWzcQ=;
+        b=DgUguodOP1dK+zLuXBllQ/EZFU47RBA4pt6RX2tb7G4wQQyH0C3UDOicc1ucX+rElj
+         GpTEmcDH07fbWa4Dcg1UwuqL/R46BxMew0L9fTbb0cy7Q6GsCY1Zxf6OnjLDdqcRY+0h
+         y65Qt1HaC8uZqIdg2H8D6EXUuZb25HZ1Af5KHGRHQ4ZCLUbkRPHBn1zhaHls/swhkWbd
+         zzUaVBDHqPmyP7ji+0JGlVXMgwEJMnhUNwQJfVJTcdEA72NKZePApvJkHR758IV729WV
+         +fuDrj8VGfFD4WlyckpbFxtOSGDCYpV6b6t+pfMwwtM28pFnvevzkURguL5gEub7FcKT
+         KQ8Q==
+X-Gm-Message-State: AOAM533baEaf/uU3uiYgWVyvmYFnIPwwi52rjv1cPnv/VnIo0/bsCLOs
+        vRQLdQ7SqiQkrLWCDEjexFoyS01IvrtNMaC74jtQxQ==
+X-Google-Smtp-Source: ABdhPJyd/HDe4po5I86KAwzy80KWXo69khqftfSO5aPDKlDEw7VJ6UATdrgTw2X499Cw8QUZwd6bsSO3HNC++HkLbM8=
+X-Received: by 2002:a25:a027:: with SMTP id x36mr9533901ybh.405.1634253545879;
+ Thu, 14 Oct 2021 16:19:05 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20211007070900.456044-11-vkoul@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <20211008000825.1364224-1-joshdon@google.com> <20211009155435.GW174703@worktop.programming.kicks-ass.net>
+ <CABk29Nu6F4__ryF5p0En--Ze6CCev1Jy81W=LkTYaacf-YLkFg@mail.gmail.com>
+ <YWV/HNDJaIAOLdrt@hirez.programming.kicks-ass.net> <CABk29NucE__6r3P64Ts3Nbf4sUy5Zkw1sbNNnab9KZ=68ydy=w@mail.gmail.com>
+ <YWg9je0wEJsNAd3M@hirez.programming.kicks-ass.net>
+In-Reply-To: <YWg9je0wEJsNAd3M@hirez.programming.kicks-ass.net>
+From:   Josh Don <joshdon@google.com>
+Date:   Thu, 14 Oct 2021 16:18:54 -0700
+Message-ID: <CABk29Nv-A3VAKTEzyAAcOjcjaBwjKr51UP72AMjxQYCEmrRd=A@mail.gmail.com>
+Subject: Re: [PATCH] sched/core: forced idle accounting
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Vineeth Pillai <vineethrp@gmail.com>,
+        Hao Luo <haoluo@google.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/10/2021 10:08, Vinod Koul wrote:
-> When DSC is enabled, we need to configure DSI registers accordingly and
-> configure the respective stream compression registers.
-> 
-> Add support to calculate the register setting based on DSC params and
-> timing information and configure these registers.
-> 
-> Signed-off-by: Vinod Koul <vkoul@kernel.org>
-> ---
->   drivers/gpu/drm/msm/dsi/dsi.xml.h  |  10 +++
->   drivers/gpu/drm/msm/dsi/dsi_host.c | 123 ++++++++++++++++++++++++++++-
->   2 files changed, 132 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/dsi/dsi.xml.h b/drivers/gpu/drm/msm/dsi/dsi.xml.h
-> index 49b551ad1bff..c1c85df58c4b 100644
-> --- a/drivers/gpu/drm/msm/dsi/dsi.xml.h
-> +++ b/drivers/gpu/drm/msm/dsi/dsi.xml.h
-> @@ -706,4 +706,14 @@ static inline uint32_t DSI_VERSION_MAJOR(uint32_t val)
->   #define REG_DSI_CPHY_MODE_CTRL					0x000002d4
->   
->   
-> +#define REG_DSI_VIDEO_COMPRESSION_MODE_CTRL			0x0000029c
-> +
-> +#define REG_DSI_VIDEO_COMPRESSION_MODE_CTRL2			0x000002a0
-> +
-> +#define REG_DSI_COMMAND_COMPRESSION_MODE_CTRL			0x000002a4
-> +
-> +#define REG_DSI_COMMAND_COMPRESSION_MODE_CTRL2			0x000002a8
-> +
-> +#define REG_DSI_COMMAND_COMPRESSION_MODE_CTRL3			0x000002ac
-> +
->   #endif /* DSI_XML */
-> diff --git a/drivers/gpu/drm/msm/dsi/dsi_host.c b/drivers/gpu/drm/msm/dsi/dsi_host.c
-> index ba24458c2e38..86e36a3e97b6 100644
-> --- a/drivers/gpu/drm/msm/dsi/dsi_host.c
-> +++ b/drivers/gpu/drm/msm/dsi/dsi_host.c
-> @@ -946,6 +946,26 @@ static void dsi_ctrl_config(struct msm_dsi_host *msm_host, bool enable,
->   		dsi_write(msm_host, REG_DSI_CPHY_MODE_CTRL, BIT(0));
->   }
->   
-> +static int dsi_dsc_update_pic_dim(struct msm_display_dsc_config *dsc,
-> +				  int pic_width, int pic_height)
-> +{
-> +	if (!dsc || !pic_width || !pic_height) {
-> +		pr_err("DSI: invalid input: pic_width: %d pic_height: %d\n", pic_width, pic_height);
-> +		return -EINVAL;
-> +	}
-> +
-> +	if ((pic_width % dsc->drm->slice_width) || (pic_height % dsc->drm->slice_height)) {
-> +		pr_err("DSI: pic_dim %dx%d has to be multiple of slice %dx%d\n",
-> +		       pic_width, pic_height, dsc->drm->slice_width, dsc->drm->slice_height);
-> +		return -EINVAL;
-> +	}
+On Thu, Oct 14, 2021 at 7:24 AM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Tue, Oct 12, 2021 at 12:45:28PM -0700, Josh Don wrote:
+> > On Tue, Oct 12, 2021 at 5:27 AM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> > > > We scale by the number of cpus actually forced idle, since we don't
+> > > > want to falsely over or under charge forced idle time (defined
+> > > > strictly as time where we have a runnable task but idle the cpu). The
+> > > > more important scaling here though is the division over the number of
+> > > > running entities. This is done so that the aggregate amount of forced
+> > > > idle over some group of threads makes sense. Ie if we have a cpu with
+> > > > SMT8, and a group of 7 threads sharing a cookie, we don't want to
+> > > > accrue 7 units of forced idle time per unit time while the 8th SMT is
+> > > > forced idle.
+> > >
+> > > So why not simply compute the strict per-cpu force-idle time and let
+> > > userspace sort out the rest?
+> >
+> > Do you mean to compute force idle solely as a per-cpu value? I think
+> > that would be fine in addition to the per-thread field, but a
+> > desirable property here is proper attribution to the cause of the
+> > force idle. That lets system management understand which jobs are the
+> > most antagonistic from a coresched perspective, and is a signal
+> > (albeit noisy, due to system state and load balancing decisions) for
+> > scaling their capacity requirements.
+>
+> Urgh, reading is hard. I hadn't noticed you did per-task accounting (and
+> the original changelog doesn't clarify this either).
 
-This should go to the mode_valid() callback for the dsi_bridge.
+Yea, I'll add that to the description, along with a few other
+implementation details.
 
-> +
-> +	dsc->drm->pic_width = pic_width;
-> +	dsc->drm->pic_height = pic_height;
-> +
-> +	return 0;
-> +}
-> +
->   static void dsi_timing_setup(struct msm_dsi_host *msm_host, bool is_bonded_dsi)
->   {
->   	struct drm_display_mode *mode = msm_host->mode;
-> @@ -978,7 +998,72 @@ static void dsi_timing_setup(struct msm_dsi_host *msm_host, bool is_bonded_dsi)
->   		hdisplay /= 2;
->   	}
->   
-> +	if (msm_host->dsc) {
-> +		struct msm_display_dsc_config *dsc = msm_host->dsc;
-> +
-> +		/* update dsc params with timing params */
-> +		dsi_dsc_update_pic_dim(dsc, mode->hdisplay, mode->vdisplay);
-> +		DBG("Mode Width- %d x Height %d\n", dsc->drm->pic_width, dsc->drm->pic_height);
-> +
-> +		/* we do the calculations for dsc parameters here so that
-> +		 * panel can use these parameters
-> +		 */
-> +		dsi_populate_dsc_params(dsc);
-> +
-> +		/* Divide the display by 3 but keep back/font porch and
-> +		 * pulse width same
-> +		 */
-> +		h_total -= hdisplay;
-> +		hdisplay /= 3;
-> +		h_total += hdisplay;
-> +		ha_end = ha_start + hdisplay;
-> +	}
-> +
->   	if (msm_host->mode_flags & MIPI_DSI_MODE_VIDEO) {
-> +		if (msm_host->dsc) {
-> +			struct msm_display_dsc_config *dsc = msm_host->dsc;
-> +			u32 reg, intf_width, slice_per_intf;
-> +			u32 total_bytes_per_intf;
-> +
-> +			/* first calculate dsc parameters and then program
-> +			 * compress mode registers
-> +			 */
-> +			intf_width = hdisplay;
-> +			slice_per_intf = DIV_ROUND_UP(intf_width, dsc->drm->slice_width);
-> +
-> +			/* If slice_count > slice_per_intf, then use 1
-> +			 * This can happen during partial update
-> +			 */
-> +				dsc->drm->slice_count = 1;
+> Also, should all this be undef SCHED_DEBUG ? Or be part of SCHEDSTATS ?
 
-Is the if() missing here? The indentpation and the comment seems unclear 
-about that.
-
-> +
-> +			dsc->bytes_in_slice = DIV_ROUND_UP(dsc->drm->slice_width * 8, 8);
-> +			total_bytes_per_intf = dsc->bytes_in_slice * slice_per_intf;
-> +
-> +			dsc->eol_byte_num = total_bytes_per_intf % 3;
-> +			dsc->pclk_per_line =  DIV_ROUND_UP(total_bytes_per_intf, 3);
-> +			dsc->bytes_per_pkt = dsc->bytes_in_slice * dsc->drm->slice_count;
-> +			dsc->pkt_per_line = slice_per_intf / dsc->drm->slice_count;
-> +
-> +			reg = dsc->bytes_per_pkt << 16;
-> +			reg |= (0x0b << 8);    /* dtype of compressed image */
-> +
-> +			/* pkt_per_line:
-> +			 * 0 == 1 pkt
-> +			 * 1 == 2 pkt
-> +			 * 2 == 4 pkt
-> +			 * 3 pkt is not supported
-> +			 * above translates to ffs() - 1
-> +			 */
-> +			reg |= (ffs(dsc->pkt_per_line) - 1) << 6;
-> +
-> +			dsc->eol_byte_num = total_bytes_per_intf % 3;
-> +			reg |= dsc->eol_byte_num << 4;
-> +			reg |= 1;
-> +
-> +			dsi_write(msm_host,
-> +				  REG_DSI_VIDEO_COMPRESSION_MODE_CTRL, reg);
-> +		}
-> +
->   		dsi_write(msm_host, REG_DSI_ACTIVE_H,
->   			DSI_ACTIVE_H_START(ha_start) |
->   			DSI_ACTIVE_H_END(ha_end));
-> @@ -997,8 +1082,40 @@ static void dsi_timing_setup(struct msm_dsi_host *msm_host, bool is_bonded_dsi)
->   			DSI_ACTIVE_VSYNC_VPOS_START(vs_start) |
->   			DSI_ACTIVE_VSYNC_VPOS_END(vs_end));
->   	} else {		/* command mode */
-> +		if (msm_host->dsc) {
-> +			struct msm_display_dsc_config *dsc = msm_host->dsc;
-> +			u32 reg, reg_ctrl, reg_ctrl2;
-> +			u32 slice_per_intf, bytes_in_slice, total_bytes_per_intf;
-> +
-> +			reg_ctrl = dsi_read(msm_host, REG_DSI_COMMAND_COMPRESSION_MODE_CTRL);
-> +			reg_ctrl2 = dsi_read(msm_host, REG_DSI_COMMAND_COMPRESSION_MODE_CTRL2);
-> +
-> +			slice_per_intf = DIV_ROUND_UP(hdisplay, dsc->drm->slice_width);
-> +			bytes_in_slice = DIV_ROUND_UP(dsc->drm->slice_width *
-> +						      dsc->drm->bits_per_pixel, 8);
-> +			dsc->drm->slice_chunk_size = bytes_in_slice;
-> +			total_bytes_per_intf = dsc->bytes_in_slice * slice_per_intf;
-> +			dsc->pkt_per_line = slice_per_intf / dsc->drm->slice_count;
-> +
-> +			reg = 0x39 << 8;
-> +			reg |= ffs(dsc->pkt_per_line) << 6;
-> +
-> +			dsc->eol_byte_num = total_bytes_per_intf % 3;
-> +			reg |= dsc->eol_byte_num << 4;
-> +			reg |= 1;
-> +
-> +			reg_ctrl |= reg;
-> +			reg_ctrl2 |= bytes_in_slice;
-> +
-> +			dsi_write(msm_host, REG_DSI_COMMAND_COMPRESSION_MODE_CTRL, reg);
-> +			dsi_write(msm_host, REG_DSI_COMMAND_COMPRESSION_MODE_CTRL2, reg_ctrl2);
-> +		}
-> +
->   		/* image data and 1 byte write_memory_start cmd */
-> -		wc = hdisplay * dsi_get_bpp(msm_host->format) / 8 + 1;
-> +		if (!msm_host->dsc)
-> +			wc = hdisplay * dsi_get_bpp(msm_host->format) / 8 + 1;
-> +		else
-> +			wc = mode->hdisplay / 2 + 1;
->   
->   		dsi_write(msm_host, REG_DSI_CMD_MDP_STREAM0_CTRL,
->   			DSI_CMD_MDP_STREAM0_CTRL_WORD_COUNT(wc) |
-> @@ -2074,6 +2191,7 @@ int msm_dsi_host_modeset_init(struct mipi_dsi_host *host,
->   	struct msm_dsi_host *msm_host = to_msm_dsi_host(host);
->   	const struct msm_dsi_cfg_handler *cfg_hnd = msm_host->cfg_hnd;
->   	struct platform_device *pdev = msm_host->pdev;
-> +	struct msm_drm_private *priv;
->   	int ret;
->   
->   	msm_host->irq = irq_of_parse_and_map(pdev->dev.of_node, 0);
-> @@ -2093,6 +2211,9 @@ int msm_dsi_host_modeset_init(struct mipi_dsi_host *host,
->   	}
->   
->   	msm_host->dev = dev;
-> +	priv = dev->dev_private;
-> +	priv->dsc = msm_host->dsc;
-> +
->   	ret = cfg_hnd->ops->tx_buf_alloc(msm_host, SZ_4K);
->   	if (ret) {
->   		pr_err("%s: alloc tx gem obj failed, %d\n", __func__, ret);
-> 
-
-
--- 
-With best wishes
-Dmitry
+schedstats seems like a good home, that way users can avoid most of
+the extra overhead if schedstats is disabled.
