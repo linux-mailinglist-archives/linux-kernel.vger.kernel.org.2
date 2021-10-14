@@ -2,69 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE0FF42D7A4
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 13:02:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B602B42D7AC
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 13:02:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230337AbhJNLEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 07:04:32 -0400
-Received: from mx24.baidu.com ([111.206.215.185]:34716 "EHLO baidu.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230080AbhJNLE3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 07:04:29 -0400
-Received: from BJHW-Mail-Ex06.internal.baidu.com (unknown [10.127.64.16])
-        by Forcepoint Email with ESMTPS id 087AB845C0EE394F5166;
-        Thu, 14 Oct 2021 19:02:22 +0800 (CST)
-Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- BJHW-Mail-Ex06.internal.baidu.com (10.127.64.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Thu, 14 Oct 2021 19:02:21 +0800
-Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Thu, 14 Oct 2021 19:02:21 +0800
-From:   Cai Huoqing <caihuoqing@baidu.com>
-To:     <qiangqing.zhang@nxp.com>, <davem@davemloft.net>,
-        <kuba@kernel.org>, <robh+dt@kernel.org>
-CC:     <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Cai Huoqing <caihuoqing@baidu.com>
-Subject: [PATCH] MAINTAINERS: Update the devicetree documentation path of imx fec driver
-Date:   Thu, 14 Oct 2021 19:02:14 +0800
-Message-ID: <20211014110214.3254-1-caihuoqing@baidu.com>
-X-Mailer: git-send-email 2.17.1
+        id S230347AbhJNLFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 07:05:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48862 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230119AbhJNLFB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 07:05:01 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A6DDC061570;
+        Thu, 14 Oct 2021 04:02:56 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: kholk11)
+        with ESMTPSA id 2A1B11F44A4A
+Subject: Re: [PATCH v7, 12/15] media: mtk-vcodec: Support 34bits dma address
+ for vdec
+To:     Yunfei Dong <yunfei.dong@mediatek.com>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Tzung-Bi Shih <tzungbi@chromium.org>,
+        Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Tomasz Figa <tfiga@google.com>
+Cc:     Hsin-Yi Wang <hsinyi@chromium.org>,
+        Fritz Koenig <frkoenig@chromium.org>,
+        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Irui Wang <irui.wang@mediatek.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com
+References: <20211011070247.792-1-yunfei.dong@mediatek.com>
+ <20211011070247.792-13-yunfei.dong@mediatek.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Message-ID: <5e1c165d-176c-0141-dc96-0fdbda367c03@collabora.com>
+Date:   Thu, 14 Oct 2021 13:02:51 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.31.63.8]
-X-ClientProxiedBy: BC-Mail-EX02.internal.baidu.com (172.31.51.42) To
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
-X-Baidu-BdMsfe-DateCheck: 1_BJHW-Mail-Ex06_2021-10-14 19:02:22:028
+In-Reply-To: <20211011070247.792-13-yunfei.dong@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change the devicetree documentation path
-to "Documentation/devicetree/bindings/net/fsl,fec.yaml"
-since 'fsl-fec.txt' has been converted to 'fsl,fec.yaml' already.
+> Use the dma_set_mask_and_coherent helper to set vdec
+> DMA bit mask to support 34bits iova space(16GB) that
+> the mt8192 iommu HW support.
+> 
+> Whole the iova range separate to 0~4G/4G~8G/8G~12G/12G~16G,
+> regarding which iova range VDEC actually locate, it
+> depends on the dma-ranges property of vdec dtsi node.
+> 
+> Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
+> ---
+>   drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c | 3 +++
+>   1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c
+> index de83e3b821b4..da963cdac96b 100644
+> --- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c
+> +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c
+> @@ -376,6 +376,9 @@ static int mtk_vcodec_probe(struct platform_device *pdev)
+>   		}
+>   	}
+>   
+> +	if (of_get_property(pdev->dev.of_node, "dma-ranges", NULL))
+> +		dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(34));
+> +
 
-Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
----
-*resend +Cc others.
+This function returns 0 for success, or negative number for failure: please check
+the return value, or this driver may not work correctly in some corner cases.
 
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Regards,
+- Angelo
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 7cfd63ce7122..9b255cf4fca8 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -7509,7 +7509,7 @@ FREESCALE IMX / MXC FEC DRIVER
- M:	Joakim Zhang <qiangqing.zhang@nxp.com>
- L:	netdev@vger.kernel.org
- S:	Maintained
--F:	Documentation/devicetree/bindings/net/fsl-fec.txt
-+F:	Documentation/devicetree/bindings/net/fsl,fec.yaml
- F:	drivers/net/ethernet/freescale/fec.h
- F:	drivers/net/ethernet/freescale/fec_main.c
- F:	drivers/net/ethernet/freescale/fec_ptp.c
--- 
-2.25.1
-
+>   	for (i = 0; i < MTK_VDEC_HW_MAX; i++)
+>   		mutex_init(&dev->dec_mutex[i]);
+>   	spin_lock_init(&dev->irqlock);
+> 
