@@ -2,100 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FC8C42DB6A
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:23:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0E9B42DB6D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:24:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231849AbhJNOZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 10:25:42 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:42922 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230030AbhJNOZl (ORCPT
+        id S231774AbhJNO0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 10:26:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38926 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230030AbhJNO0i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 10:25:41 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1634221415;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=J704+ZpmNiG6G+UV4gpbHRzSAjI0YA9l6NLka/xr/hM=;
-        b=4XDFt/meAmEBqm2bXsSOvDvyeCn7FSTkyTiJP66ZC7rw4BltuOrBvoYSkya9pThKCN7S0Q
-        wUTx/D3oknBz3lXPGIrx6EcIro1ftGRrLmXT8y0JOZ8VxNM/GBGr2JOybwG32kBoB8ejUK
-        brf2Dmzo+n5A9YZzYksICGsf4fScM5MU9z8rr8cZZP91SjbW8bWSPFdfiS/4IuQKLLs7oo
-        tEKtDgTwer/rEFF4WSkjwlHo04Uo32icxKy7gwVbnGElsmyyTFt6eHIcym81Xbi90Q8AF/
-        RuWtmtqkCkjRPClhuORlNsFvcGunfLB3OfVj9phCO56UgPkvbzYXUU3vyO6PWg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1634221415;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=J704+ZpmNiG6G+UV4gpbHRzSAjI0YA9l6NLka/xr/hM=;
-        b=1JT1nsyY6wMrFXLqEVVa6oy17JxPi1RepbaCts8WFUOt/rePuWTvfp7zPLQ+tw1YVmFEaK
-        1DSVP9v4mKpc7BCQ==
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        "Liu, Jing2" <jing2.liu@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     "x86@kernel.org" <x86@kernel.org>,
-        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "Nakajima, Jun" <jun.nakajima@intel.com>,
-        Jing Liu <jing2.liu@linux.intel.com>,
-        "seanjc@google.com" <seanjc@google.com>,
-        Andrew Cooper <andrew.cooper3@citrix.com>
-Subject: Re: [patch 13/31] x86/fpu: Move KVMs FPU swapping to FPU core
-In-Reply-To: <0a5aa9d3-e0d4-266e-5e25-021a5ea9c611@redhat.com>
-References: <871r4p9fyh.ffs@tglx>
- <ec9c761d-4b5c-71e2-c1fc-d256b6b78c04@redhat.com> <875ytz7q2u.ffs@tglx>
- <0a5aa9d3-e0d4-266e-5e25-021a5ea9c611@redhat.com>
-Date:   Thu, 14 Oct 2021 16:23:34 +0200
-Message-ID: <87tuhj65y1.ffs@tglx>
+        Thu, 14 Oct 2021 10:26:38 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44C91C061570
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 07:24:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=XeOyDQkq1uPXVeW24zX/26vNnS1ATHn1F0LAI5O9ioA=; b=kmBbNpOiO5do7yv3mmUvroGyby
+        IgF2SKwEPtcfhKy7XK74HN3tbEvzNvDvttdEDRqNiaDCUsu7rfIIa88KMkq2Oc/5cG5mRipJT+aBT
+        w2isuO2YltnZb3m6Fa4vkUFEbi3PUZ+7icaMa5t9t+CwrQnEmWhZGf/o5egMw72m5uVpamWIX6+wT
+        djrdrqimAHBB/5QECgOc2lbWHmaTZ419vINmcfaNEViN2fPG8BD0u5JWFNQjCBsfA+W8ndJi6Xu94
+        1cQnQwfjUs1+kJkDVlca6gqeIo65idlH6zC1Yf8ufjG1LzbcB7U1+tJOO9TG7/Vlq5SUZ2UaMVOV1
+        EKAs/xvA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mb1eZ-009qfL-65; Thu, 14 Oct 2021 14:24:15 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B48423001E1;
+        Thu, 14 Oct 2021 16:24:13 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 863602CE91EE8; Thu, 14 Oct 2021 16:24:13 +0200 (CEST)
+Date:   Thu, 14 Oct 2021 16:24:13 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Josh Don <joshdon@google.com>
+Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Vineeth Pillai <vineethrp@gmail.com>,
+        Hao Luo <haoluo@google.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] sched/core: forced idle accounting
+Message-ID: <YWg9je0wEJsNAd3M@hirez.programming.kicks-ass.net>
+References: <20211008000825.1364224-1-joshdon@google.com>
+ <20211009155435.GW174703@worktop.programming.kicks-ass.net>
+ <CABk29Nu6F4__ryF5p0En--Ze6CCev1Jy81W=LkTYaacf-YLkFg@mail.gmail.com>
+ <YWV/HNDJaIAOLdrt@hirez.programming.kicks-ass.net>
+ <CABk29NucE__6r3P64Ts3Nbf4sUy5Zkw1sbNNnab9KZ=68ydy=w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CABk29NucE__6r3P64Ts3Nbf4sUy5Zkw1sbNNnab9KZ=68ydy=w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14 2021 at 14:26, Paolo Bonzini wrote:
-> On 14/10/21 14:23, Thomas Gleixner wrote:
->>> In principle I don't like it very much; it would be nicer to say "you
->>> enable it for QEMU itself via arch_prctl(ARCH_SET_STATE_ENABLE), and for
->>> the guests via ioctl(KVM_SET_CPUID2)".  But I can see why you want to
->>> keep things simple, so it's not a strong objection at all.
->> Errm.
->> 
->>     qemu()
->>       read_config()
->>       if (dynamic_features_passthrough())
->> 	request_permission(feature)             <- prctl(ARCH_SET_STATE_ENABLE)
->> 
->>       create_vcpu_threads()
->>         ....
->> 
->>         vcpu_thread()
->> 	 kvm_ioctl(ENABLE_DYN_FEATURE, feature) <- KVM ioctl
->> 
->> That's what I lined out, right?
->> 
->
-> I meant prctl for QEMU-in-user-mode vs. ioctl QEMU-in-guest-mode (i.e. 
-> no prctl if only the guest uses it).  But anyway it's just abstract 
-> "beauty", let's stick to simple. :)
+On Tue, Oct 12, 2021 at 12:45:28PM -0700, Josh Don wrote:
+> On Tue, Oct 12, 2021 at 5:27 AM Peter Zijlstra <peterz@infradead.org> wrote:
 
-It's not about simple. It's about correctness in the first place.
+> > > We scale by the number of cpus actually forced idle, since we don't
+> > > want to falsely over or under charge forced idle time (defined
+> > > strictly as time where we have a runnable task but idle the cpu). The
+> > > more important scaling here though is the division over the number of
+> > > running entities. This is done so that the aggregate amount of forced
+> > > idle over some group of threads makes sense. Ie if we have a cpu with
+> > > SMT8, and a group of 7 threads sharing a cookie, we don't want to
+> > > accrue 7 units of forced idle time per unit time while the 8th SMT is
+> > > forced idle.
+> >
+> > So why not simply compute the strict per-cpu force-idle time and let
+> > userspace sort out the rest?
+> 
+> Do you mean to compute force idle solely as a per-cpu value? I think
+> that would be fine in addition to the per-thread field, but a
+> desirable property here is proper attribution to the cause of the
+> force idle. That lets system management understand which jobs are the
+> most antagonistic from a coresched perspective, and is a signal
+> (albeit noisy, due to system state and load balancing decisions) for
+> scaling their capacity requirements.
 
-The prctl() is process wide and grants permission. If that permission is
-not granted, e.g. by a seccomp rule, then the vCPU threads cannot use it
-either. We are _not_ making exceptions for KVM just because it's KVM.
+Urgh, reading is hard. I hadn't noticed you did per-task accounting (and
+the original changelog doesn't clarify this either).
 
-Trying to pretend that the usermode thread does not need it is just
-illusion. The kernel representation of that very usermode vCPU thread must
-have a large fpstate. It still can have XFD set, but that's a detail.
-
-So what you are trying to sell me has nothing to do with beauty at all
-except when your definition of beauty originates from a tunnel of horrors.
-
-Thanks,
-
-        tglx
+Also, should all this be undef SCHED_DEBUG ? Or be part of SCHEDSTATS ?
