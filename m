@@ -2,134 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DDD942DBB3
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:31:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DCE542DBB5
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:31:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230389AbhJNOda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 10:33:30 -0400
-Received: from mail-oi1-f174.google.com ([209.85.167.174]:46893 "EHLO
-        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231910AbhJNOdQ (ORCPT
+        id S232103AbhJNOde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 10:33:34 -0400
+Received: from mail-oo1-f46.google.com ([209.85.161.46]:36622 "EHLO
+        mail-oo1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230515AbhJNOdR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 10:33:16 -0400
-Received: by mail-oi1-f174.google.com with SMTP id o204so8658560oih.13;
-        Thu, 14 Oct 2021 07:31:11 -0700 (PDT)
+        Thu, 14 Oct 2021 10:33:17 -0400
+Received: by mail-oo1-f46.google.com with SMTP id r1-20020a4a9641000000b002b6b55007bfso1955021ooi.3;
+        Thu, 14 Oct 2021 07:31:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=LIGlTpgW1tWbiwTKp+gXJ96FX9IdJratUHQ3TqZY3b0=;
-        b=hxNTomxh9KLjQqCp7hx1ediqTfBIGVdG8ECwk++KSI3sxSNQgO7c3C4fRWDpxZ1iB4
-         GbhjAU38CzcuAQFBCdIjRm8rmDPNGfTqJEFtKqPLD9T4karGOe+O1zjVViMsFEAYefSR
-         pKqPin/Nku3wN4lilU7baI2/nfTqXspm6H3GGez+/cLDhCP+kk/f1+jseT0BvERLAxyE
-         UD+EYcfMI2gUKWQp0MCTxRep8Adzkc5axRhXNCcUIpETicoG7Ok6TqOmuKr6Odq8i+lq
-         UgpgOzs0PycNISP7Zc7/Ja9BzbMlj6jC6by5Gwy+O3Rbty5KYKdGzBhOToLK2SXLSPAK
-         VyOw==
-X-Gm-Message-State: AOAM533K7Ur5nkBdnw33Eb8K1wSfggMQ+n5mLEF0IL+cZK5Dc9xjc9ak
-        7mt0uQ67SaZ53y4s01UfsA==
-X-Google-Smtp-Source: ABdhPJw/trDzPyr4wm7mQqsmQls0HHi+6ZgTWKM/1st60QAbZ/vPRbSVcXQBdXrjDoyPcU+mZ85fXQ==
-X-Received: by 2002:a05:6808:1250:: with SMTP id o16mr4293459oiv.63.1634221871201;
-        Thu, 14 Oct 2021 07:31:11 -0700 (PDT)
+        bh=4NM7e3TNIm0ImMqlA2/I6RFGXdB2wzMfY7HbO921q28=;
+        b=cmMFTGX7FHoE9ItBLkt2zlmVpItbL1JbZtHgZ/ltScVFtuVoeP3JZcgLbtAiVKlU8h
+         gnjJxN39UWchKw+1k+nW5kHqmL6DX31U6hFn+qQhHbzxcI3c6GWeqNVzObzYM1A6+tMn
+         46Z6o90bcpCcmu9tDB5pwLO5qVTzc+ehY/vwNVJLw+KjfQnsC5fibVF09sMYTKfLh1xN
+         yaTqs/zFfhI+DRVUqF3S2myr3D8GRq9QGyul82TDAGGBzAb34EMOvzIMev0hccius3zY
+         Gjl4o8fFd64hcr6LYmcvYw+98y+K775w4osYbgggPKTzbnZ1wqr/trt8raXpzeZ5ZhRU
+         F7Og==
+X-Gm-Message-State: AOAM533NSUq/GmPn2KKZAEWXGOy0Q77Eb8qn3lqJfv8wGkEr521csxvb
+        yMAkPZdkMuWQdCJzUeUffDhvyts25A==
+X-Google-Smtp-Source: ABdhPJwULPJ9RTEyH25NOWSl1gVe9I2y5u8tjZLCfGXvVzoAE7VYeF1f4Ri8qhBP94+A+Bi1Ai5lFw==
+X-Received: by 2002:a4a:d54c:: with SMTP id q12mr4377667oos.25.1634221872584;
+        Thu, 14 Oct 2021 07:31:12 -0700 (PDT)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id x18sm472578oov.13.2021.10.14.07.31.09
+        by smtp.gmail.com with ESMTPSA id d18sm485688ook.14.2021.10.14.07.31.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Oct 2021 07:31:10 -0700 (PDT)
-Received: (nullmailer pid 3295883 invoked by uid 1000);
+        Thu, 14 Oct 2021 07:31:12 -0700 (PDT)
+Received: (nullmailer pid 3295875 invoked by uid 1000);
         Thu, 14 Oct 2021 14:31:04 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Yassine Oudjana <y.oudjana@protonmail.com>
-Cc:     Loic Poulain <loic.poulain@linaro.org>,
-        Ilia Lin <ilia.lin@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Andy Gross <agross@kernel.org>, phone-devel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
-        Viresh Kumar <vireshk@kernel.org>, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        linux-arm-msm@vger.kernel.org,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Nishanth Menon <nm@ti.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-In-Reply-To: <20211014083016.137441-3-y.oudjana@protonmail.com>
-References: <20211014083016.137441-1-y.oudjana@protonmail.com> <20211014083016.137441-3-y.oudjana@protonmail.com>
-Subject: Re: [PATCH 2/8] dt-bindings: clk: qcom: msm8996-apcc: Add MSM8996 Pro compatible
+To:     =?utf-8?q?Marek_Beh=C3=BAn?= <kabel@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Luka Kovacic <luka.kovacic@sartura.hr>, netdev@vger.kernel.org,
+        robh+dt@kernel.org, U-Boot Mailing List <u-boot@lists.denx.de>
+In-Reply-To: <20211013232048.16559-1-kabel@kernel.org>
+References: <20211013232048.16559-1-kabel@kernel.org>
+Subject: Re: [PATCH RFC linux] dt-bindings: nvmem: Add binding for U-Boot environment NVMEM provider
 Date:   Thu, 14 Oct 2021 09:31:04 -0500
-Message-Id: <1634221864.197594.3295882.nullmailer@robh.at.kernel.org>
+Message-Id: <1634221864.152281.3295874.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Oct 2021 08:32:04 +0000, Yassine Oudjana wrote:
-> Add a compatible string for msm8996pro-apcc.
+On Thu, 14 Oct 2021 01:20:48 +0200, Marek Behún wrote:
+> Add device tree bindings for U-Boot environment NVMEM provider.
 > 
-> Signed-off-by: Yassine Oudjana <y.oudjana@protonmail.com>
+> U-Boot environment can be stored at a specific offset of a MTD device,
+> EEPROM, MMC, NAND or SATA device, on an UBI volume, or in a file on a
+> filesystem.
+> 
+> The environment can contain information such as device's MAC address,
+> which should be used by the ethernet controller node.
+> 
+> Signed-off-by: Marek Behún <kabel@kernel.org>
 > ---
->  Documentation/devicetree/bindings/clock/qcom,msm8996-apcc.yaml | 1 +
->  1 file changed, 1 insertion(+)
+>  .../bindings/nvmem/denx,u-boot-env.yaml       | 88 +++++++++++++++++++
+>  include/dt-bindings/nvmem/u-boot-env.h        | 18 ++++
+>  2 files changed, 106 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/nvmem/denx,u-boot-env.yaml
+>  create mode 100644 include/dt-bindings/nvmem/u-boot-env.h
 > 
 
-Running 'make dtbs_check' with the schema in this patch gives the
-following warnings. Consider if they are expected or the schema is
-incorrect. These may not be new warnings.
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-Note that it is not yet a requirement to have 0 warnings for dtbs_check.
-This will change in the future.
+yamllint warnings/errors:
 
-Full log is available here: https://patchwork.ozlabs.org/patch/1540829
+dtschema/dtc warnings/errors:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/nvmem/denx,u-boot-env.example.dt.yaml: partition@180000: compatible: ['denx,u-boot-env'] is not of type 'object'
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/nvmem/denx,u-boot-env.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/nvmem/denx,u-boot-env.example.dt.yaml: partition@180000: label: ['u-boot-env'] is not of type 'object'
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/nvmem/denx,u-boot-env.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/nvmem/denx,u-boot-env.example.dt.yaml: partition@180000: reg: [[1572864, 65536]] is not of type 'object'
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/nvmem/denx,u-boot-env.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/nvmem/denx,u-boot-env.example.dt.yaml: partition@180000: $nodename: ['partition@180000'] is not of type 'object'
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/nvmem/denx,u-boot-env.yaml
 
+doc reference errors (make refcheckdocs):
 
-clock-controller@6400000: clock-names:0: 'pwrcl_pll' was expected
-	arch/arm64/boot/dts/qcom/apq8096-db820c.dt.yaml
-	arch/arm64/boot/dts/qcom/apq8096-ifc6640.dt.yaml
-	arch/arm64/boot/dts/qcom/msm8996-mtp.dt.yaml
-	arch/arm64/boot/dts/qcom/msm8996-pmi8996-sony-xperia-tone-dora.dt.yaml
-	arch/arm64/boot/dts/qcom/msm8996-pmi8996-sony-xperia-tone-kagura.dt.yaml
-	arch/arm64/boot/dts/qcom/msm8996-pmi8996-sony-xperia-tone-keyaki.dt.yaml
-	arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone-dora.dt.yaml
-	arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone-kagura.dt.yaml
-	arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone-keyaki.dt.yaml
+See https://patchwork.ozlabs.org/patch/1540721
 
-clock-controller@6400000: clock-names: ['xo'] is too short
-	arch/arm64/boot/dts/qcom/apq8096-db820c.dt.yaml
-	arch/arm64/boot/dts/qcom/apq8096-ifc6640.dt.yaml
-	arch/arm64/boot/dts/qcom/msm8996-mtp.dt.yaml
-	arch/arm64/boot/dts/qcom/msm8996-pmi8996-sony-xperia-tone-dora.dt.yaml
-	arch/arm64/boot/dts/qcom/msm8996-pmi8996-sony-xperia-tone-kagura.dt.yaml
-	arch/arm64/boot/dts/qcom/msm8996-pmi8996-sony-xperia-tone-keyaki.dt.yaml
-	arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone-dora.dt.yaml
-	arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone-kagura.dt.yaml
-	arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone-keyaki.dt.yaml
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
 
-clock-controller@6400000: clocks: [[29]] is too short
-	arch/arm64/boot/dts/qcom/msm8996-mtp.dt.yaml
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
 
-clock-controller@6400000: clocks: [[33]] is too short
-	arch/arm64/boot/dts/qcom/apq8096-ifc6640.dt.yaml
+pip3 install dtschema --upgrade
 
-clock-controller@6400000: clocks: [[36]] is too short
-	arch/arm64/boot/dts/qcom/msm8996-pmi8996-sony-xperia-tone-dora.dt.yaml
-	arch/arm64/boot/dts/qcom/msm8996-pmi8996-sony-xperia-tone-kagura.dt.yaml
-	arch/arm64/boot/dts/qcom/msm8996-pmi8996-sony-xperia-tone-keyaki.dt.yaml
-	arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone-dora.dt.yaml
-	arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone-kagura.dt.yaml
-	arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone-keyaki.dt.yaml
-
-clock-controller@6400000: clocks: [[41]] is too short
-	arch/arm64/boot/dts/qcom/apq8096-db820c.dt.yaml
-
-clock-controller@6400000: reg: [[104857600, 589824]] is too short
-	arch/arm64/boot/dts/qcom/apq8096-db820c.dt.yaml
-	arch/arm64/boot/dts/qcom/apq8096-ifc6640.dt.yaml
-	arch/arm64/boot/dts/qcom/msm8996-mtp.dt.yaml
-	arch/arm64/boot/dts/qcom/msm8996-pmi8996-sony-xperia-tone-dora.dt.yaml
-	arch/arm64/boot/dts/qcom/msm8996-pmi8996-sony-xperia-tone-kagura.dt.yaml
-	arch/arm64/boot/dts/qcom/msm8996-pmi8996-sony-xperia-tone-keyaki.dt.yaml
-	arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone-dora.dt.yaml
-	arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone-kagura.dt.yaml
-	arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone-keyaki.dt.yaml
+Please check and re-submit.
 
