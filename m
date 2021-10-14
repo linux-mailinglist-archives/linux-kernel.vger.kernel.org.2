@@ -2,145 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D84142D8B4
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 14:02:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE40742D8B7
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 14:02:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231361AbhJNMEL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 08:04:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34284 "EHLO
+        id S231370AbhJNMES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 08:04:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230090AbhJNMEK (ORCPT
+        with ESMTP id S231195AbhJNMEP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 08:04:10 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B076C061570;
-        Thu, 14 Oct 2021 05:02:05 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id n8so25757889lfk.6;
-        Thu, 14 Oct 2021 05:02:05 -0700 (PDT)
+        Thu, 14 Oct 2021 08:04:15 -0400
+Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1F5DC061570;
+        Thu, 14 Oct 2021 05:02:10 -0700 (PDT)
+Received: by mail-qv1-xf2e.google.com with SMTP id k29so3556101qve.6;
+        Thu, 14 Oct 2021 05:02:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8Z0I5fwLWQQixLqfMvt3p7vWiHJ7Yer9lKzGyPaCwCc=;
-        b=YwXq1cXVscJLweixps53yV0+9kCWbSdnW+ZKAbG0sZ5g2CXIuu0DIvTh1NIt72Cra+
-         oePml/4tl3+gVlA++XQYCwHdQnd7aP51x38x4e8oGpHVo7AuBULbRZROiuAGpzvodI9Z
-         NQRjlO1FijguoAa86wZI/9K79UFrMSCWqDzMKI59ECkO38IEEo/QIZwwOx61qmZPFqTI
-         9lnHE5sYyUYkaZNbO8QwBlXMdTkeFdIWxD5YLh3u0qbE94CRUgoiSdqFb2WblTbp6MTJ
-         205/UrwML1FeNha26SDeC2Ro5I5KsAy5KT2Vs5rkEDQ8+tNJ1UgcghYvquJBeDIW4UEO
-         Z13g==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LCGYTM8PrlK3nTDqb32h7V9GbZN6iE4UEGwF+ksTF7g=;
+        b=LHxfpUO5m1fZ68k4WTsL3KrR/mn3qL0AwvVMvG+QVzQt1YyGm+dA2VgCHpPiJy3JWB
+         OTGTrR8pegPXPLXT8M71FeDuvPUMnX/zhbJoztwC/akn4KGWzVyZC1gjM4yg5XbqHdkc
+         3aGT7wfBhacqBakv9JsOjVTpSQUzv4bkaQrojCaY+eHH8zKYB3EPtI+LMNxhPU8Cg1yM
+         Ua2SL+0hMsOF1ItVfZtoq+ZdNGJQgJAAborNSCO0zLGgpcPQDuWEDnoB6Jwpu2a3nK8B
+         3W6yxM++UPDX8rLA2qyVJvdDoFLPbqHh8GKM4bDAmW6RyiJ+3U2cr6z8rm4O6/qmjDig
+         /PlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8Z0I5fwLWQQixLqfMvt3p7vWiHJ7Yer9lKzGyPaCwCc=;
-        b=1CWUsA0i48xEf9zihkoH0C3agWmO6Xja1IqW4ANgU50oVycvDDcS0ynUyWkysHUWdD
-         Gcb1grHP81Ni905sjqfyYGkqUCUNpRtbPS86/NJjGSY6D+Yi+j68hlZcI0C+M9ru00N7
-         hLf/9ejpI6A/bJ1NbggTWVPJ8foryOydN6clFY7dBLBIPbiRSipJR8nfsoqrRo9/OmSj
-         DxYCgixaykP3kdyuZsGNx9dGgu4jnFkLyMPXoSs7FEDLSE4PoP1pbh3IKG/4rS12L4xW
-         h+EfoZdViD8XfQiv6y1a/aEmMCxtMcFQ6OgaLZEQnwVGqz7J/Agkhg0zuIQMsKFl5CA2
-         Fb+g==
-X-Gm-Message-State: AOAM533AOJr2VWgtY9h0xAnDMt6L5ceYthRR4QtiZqu6Bid5s7kcYIG/
-        zOTynheTZSyesJSFRiE+roQ=
-X-Google-Smtp-Source: ABdhPJy+WEVXmSbP7Gfnkp0MDtnWO9A5Y8119qsXGocDMQQUhicncmFDKAm//oxL+CoIPlLG9YDJ1g==
-X-Received: by 2002:a2e:81c6:: with SMTP id s6mr5551136ljg.469.1634212922801;
-        Thu, 14 Oct 2021 05:02:02 -0700 (PDT)
-Received: from fuzzer1.spectre.kz ([91.201.214.75])
-        by smtp.googlemail.com with ESMTPSA id o5sm209321lft.278.2021.10.14.05.02.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Oct 2021 05:02:02 -0700 (PDT)
-From:   Sabyrzhan Tasbolatov <snovitoll@gmail.com>
-To:     seanjc@google.com, vkuznets@redhat.com, wanpengli@tencent.com,
-        jmattson@google.com, joro@8bytes.org, hpa@zytor.com
-Cc:     pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sabyrzhan Tasbolatov <snovitoll@gmail.com>,
-        syzbot+e0de2333cbf95ea473e8@syzkaller.appspotmail.com
-Subject: [PATCH] x86/kvm: restrict kvm user region memory size
-Date:   Thu, 14 Oct 2021 12:01:51 +0000
-Message-Id: <20211014120151.1437018-1-snovitoll@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LCGYTM8PrlK3nTDqb32h7V9GbZN6iE4UEGwF+ksTF7g=;
+        b=EE2/QZEA3l/PQHvrruP5vkpCCgcWZNXbJshXO5eHy36R2lDnFPzBUg66y5GgXNPska
+         uQJrKnvShjLTvlHEdZ34PhAF7jpzRRHBKjdE9sdkb9KgZnGxZGDxWJiZqhQCEC+I/h8u
+         fpKPUsI5RJok3Lq0dXNArb9Ds0iO7FXPPjfNH0tQRbtYFR2bLv7M3fY1vOP5bMhDPMOK
+         Sz+WLbPBOhhcD/88sWm/OTMjpRLlM23FaXJwuGIFEKi8HH8ob/s/bfjsffVNpxAjf2wv
+         SpjCVUovZMTfJ2Px6kgPUxhR8VTMn0aEDcBlaxDv3Doz1ynAjYymSJIubPVNhUNFMDwW
+         2sYA==
+X-Gm-Message-State: AOAM5300jGE0NY8GBHva7qImozT6gyX3Pdd3SsPX+ayRpCMiI/5vhn7q
+        RlGjBbe/gCJelaO8ZpsS5zgPoofxw9RlA1fTj5Qxgdi3dJsr2g==
+X-Google-Smtp-Source: ABdhPJywqS5I4lc7tpAbXjXvHGk7VgfSjByPwdbpbD31qdl77TMxwCQTAXtbZL791keVv8Hu9089h+xd7nsTbThQtgU=
+X-Received: by 2002:a0c:c24c:: with SMTP id w12mr4849547qvh.48.1634212929738;
+ Thu, 14 Oct 2021 05:02:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211009221711.2315352-1-robimarko@gmail.com> <ba520cf0-480e-245b-395f-7d3a5f771521@gmail.com>
+In-Reply-To: <ba520cf0-480e-245b-395f-7d3a5f771521@gmail.com>
+From:   Robert Marko <robimarko@gmail.com>
+Date:   Thu, 14 Oct 2021 14:01:58 +0200
+Message-ID: <CAOX2RU7VaxdU3VykTZER-pdpu6pnk3tbVrBmkGU=jPQo6rL3Xg@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: support bus and device specific API 1 BDF selection
+To:     Christian Lamparter <chunkeey@gmail.com>
+Cc:     kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org,
+        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot found WARNING in memslot_rmap_alloc[1] when
-struct kvm_userspace_memory_region .memory_size is bigger than
-0x40000000000, which is 4GB, e.g. KMALLOC_MAX_SIZE * 100 * PAGE_SIZE.
+On Thu, 14 Oct 2021 at 13:54, Christian Lamparter <chunkeey@gmail.com> wrote:
+>
+> On 10/10/2021 00:17, Robert Marko wrote:
+> > Some ath10k IPQ40xx devices like the MikroTik hAP ac2 and ac3 require the
+> > BDF-s to be extracted from the device storage instead of shipping packaged
+> > API 2 BDF-s.
+> >
+> > This is required as MikroTik has started shipping boards that require BDF-s
+> > to be updated, as otherwise their WLAN performance really suffers.
+> > This is however impossible as the devices that require this are release
+> > under the same revision and its not possible to differentiate them from
+> > devices using the older BDF-s.
+> >
+> > In OpenWrt we are extracting the calibration data during runtime and we are
+> > able to extract the BDF-s in the same manner, however we cannot package the
+> > BDF-s to API 2 format on the fly and can only use API 1 to provide BDF-s on
+> > the fly.
+> > This is an issue as the ath10k driver explicitly looks only for the
+> > board.bin file and not for something like board-bus-device.bin like it does
+> > for pre-cal data.
+> > Due to this we have no way of providing correct BDF-s on the fly, so lets
+> > extend the ath10k driver to first look for BDF-s in the
+> > board-bus-device.bin format, for example: board-ahb-a800000.wifi.bin
+> > If that fails, look for the default board file name as defined previously.
+> >
+> > Signed-off-by: Robert Marko <robimarko@gmail.com>
+> > ---
+>
+> As mentioned in Robert's OpenWrt Pull request:
+> https://github.com/openwrt/openwrt/pull/4679
+>
+> It looks like the data comes from an mtd-partition parser.
+> So the board data takes an extra detour through userspace
+> for this.
+>
+> Maybe it would be great, if that BDF (and likewise pre-cal)
+> files could be fetched via an nvmem-consumer there?
+> (Kalle: like the ath9k-nvmem patches)
 
-Here is the PoC to trigger the warning:
+Christian, in this case, NVMEM wont work as this is not just read from
+an MTD device, it first needs to be parsed from the MikroTik TLV, and
+then decompressed as they use LZO with RLE to compress the caldata
+and BDF-s.
 
-    struct kvm_userspace_memory_region mem = {
-        .slot = 0,
-        .guest_phys_addr = 0,
-        /* + 0x100 extra to trigger kmalloc WARNING */
-        .memory_size = 0x40000000000 + 0x100,
-        .userspace_addr = 0,
-    };
+>
+> This would help with many other devices as well, since currently
+> in OpenWrt all pre-cal data has to be extracted by userspace
+> helpers, while it could be easily accessible through nvmem.
 
-    ioctl(kvm_fd, KVM_SET_USER_MEMORY_REGION, &mem);
+Yeah, for non-MikroTik stuff pre-cal data via NVMEM would be great.
 
-I couldn't find any relevant max constant to restrict unsigned long npages.
-There might be another solution with chunking big portions of pages, but
-there is already KVM_MAX_HUGEPAGE_LEVEL, though warning happens in
-memslot_rmap_alloc() when level = 1, base_gfn = 0, e.g.
-on the very first KVM_NR_PAGE_SIZES iteration.
-
-This is, seems, valid for early Linux versions as well. Can't tell which is
-exactly can be considered for git bisect.
-Here is Commit d89cc617b954af ("KVM: Push rmap into kvm_arch_memory_slot")
-for example, Linux 3.7.
-
-[1]
-Call Trace:
- kvmalloc include/linux/mm.h:806 [inline]
- kvmalloc_array include/linux/mm.h:824 [inline]
- kvcalloc include/linux/mm.h:829 [inline]
- memslot_rmap_alloc+0xf6/0x310 arch/x86/kvm/x86.c:11320
- kvm_alloc_memslot_metadata arch/x86/kvm/x86.c:11388 [inline]
- kvm_arch_prepare_memory_region+0x48d/0x610 arch/x86/kvm/x86.c:11462
- kvm_set_memslot+0xfe/0x1700 arch/x86/kvm/../../../virt/kvm/kvm_main.c:1505
- ...
- kvm_set_memory_region arch/x86/kvm/../../../virt/kvm/kvm_main.c:1689
- kvm_vm_ioctl_set_memory_region arch/x86/kvm/../../../virt/kvm/kvm_main.c
-
-Reported-by: syzbot+e0de2333cbf95ea473e8@syzkaller.appspotmail.com
-Signed-off-by: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
----
- arch/x86/kvm/mmu/page_track.c | 3 +++
- arch/x86/kvm/x86.c            | 3 +++
- 2 files changed, 6 insertions(+)
-
-diff --git a/arch/x86/kvm/mmu/page_track.c b/arch/x86/kvm/mmu/page_track.c
-index 21427e84a82e..e790bb341680 100644
---- a/arch/x86/kvm/mmu/page_track.c
-+++ b/arch/x86/kvm/mmu/page_track.c
-@@ -35,6 +35,9 @@ int kvm_page_track_create_memslot(struct kvm_memory_slot *slot,
- 	int  i;
- 
- 	for (i = 0; i < KVM_PAGE_TRACK_MAX; i++) {
-+		if (npages > KMALLOC_MAX_SIZE)
-+			return -ENOMEM;
-+
- 		slot->arch.gfn_track[i] =
- 			kvcalloc(npages, sizeof(*slot->arch.gfn_track[i]),
- 				 GFP_KERNEL_ACCOUNT);
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index aabd3a2ec1bc..2bad607976a9 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -11394,6 +11394,9 @@ static int memslot_rmap_alloc(struct kvm_memory_slot *slot,
- 
- 		WARN_ON(slot->arch.rmap[i]);
- 
-+		if (lpages > KMALLOC_MAX_SIZE)
-+			return -ENOMEM;
-+
- 		slot->arch.rmap[i] = kvcalloc(lpages, sz, GFP_KERNEL_ACCOUNT);
- 		if (!slot->arch.rmap[i]) {
- 			memslot_rmap_free(slot);
--- 
-2.25.1
-
+Regards,
+Robert
+>
+> What do you think?
+>
+> Cheers,
+> Christian
