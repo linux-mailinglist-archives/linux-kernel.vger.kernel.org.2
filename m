@@ -2,86 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DDEF42E0F8
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 20:16:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0322542E0FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 20:17:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233212AbhJNSSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 14:18:36 -0400
-Received: from mail-ot1-f43.google.com ([209.85.210.43]:41917 "EHLO
-        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230119AbhJNSSf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 14:18:35 -0400
-Received: by mail-ot1-f43.google.com with SMTP id v2-20020a05683018c200b0054e3acddd91so9387716ote.8;
-        Thu, 14 Oct 2021 11:16:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=q0HbPoa/SmLtlcbL4A98vA90nfo5N87+w7YnhWCZ1+o=;
-        b=3QiJET6KzZj7paiqiE+C4XnD9WMK6oTBydRV2xfsMuH19+zvTq7uSivFWqM/iCyht4
-         hm3vq8U8TjHrjBcmnyqVCltgZoVNnTDVDR9Ft1pY5Llj5i62WsizzD5CytiZcDmwVtAG
-         +yUqwVhAlW1a7j9X4hHHNrJ1JLyfY1QNgvcUhHUcumSz0H5y6fCOvKCw15NrhM5NWxOD
-         7QLdzfT6yS9/ZS880VGVK7WrW9QYcnDJD/xF0WvvFPTO2jcXDtRcoKU6tC0haAulRJ5u
-         0fB9z8nbBcrswNEMu0gc74jI1+GEz2w5SPuTUf1KIcsaBTRs3ESoNDfh1FApPfWeu35P
-         /oxg==
-X-Gm-Message-State: AOAM5305sIQ8K3S5BfZiHKXGtInePQyPE4hnBnoLy4Ee0sLbcTNmCflD
-        FbeZ3Zc5Al300Lj4pfT2x2Hsdf2EAw==
-X-Google-Smtp-Source: ABdhPJxKfM3iXQ0zI911tswBcyLS7YVr4ZTJq7hvniXYOhLyYuHoLue+Q56bsDP/2yc8QCkCgynuuA==
-X-Received: by 2002:a05:6830:4487:: with SMTP id r7mr657269otv.251.1634235389846;
-        Thu, 14 Oct 2021 11:16:29 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id f1sm553273oos.46.2021.10.14.11.16.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Oct 2021 11:16:29 -0700 (PDT)
-Received: (nullmailer pid 3663089 invoked by uid 1000);
-        Thu, 14 Oct 2021 18:16:28 -0000
-Date:   Thu, 14 Oct 2021 13:16:28 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Amelie DELAUNAY <amelie.delaunay@foss.st.com>
-Cc:     "moderated list:ARM/STM32 ARCHITECTURE" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-phy@lists.infradead.org,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] dt-bindings: phy: phy-stm32-usbphyc: add optional
- phy tuning properties
-Message-ID: <YWhz/AsfDX24iUR3@robh.at.kernel.org>
-References: <20211005152453.89330-1-amelie.delaunay@foss.st.com>
- <20211005152453.89330-3-amelie.delaunay@foss.st.com>
- <1633473959.465401.106809.nullmailer@robh.at.kernel.org>
- <491ab475-e7dc-eb71-85aa-6d82543b74db@foss.st.com>
- <CAL_JsqLEPd9_4SgmDh8GakyNxQeuMKhJeGzaLbZSdxDJ_-dZYg@mail.gmail.com>
- <2a07f03d-ffaa-77f6-c223-74bae60eb3f1@foss.st.com>
+        id S233878AbhJNSTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 14:19:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45546 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230119AbhJNSTL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 14:19:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D7E8760EBB;
+        Thu, 14 Oct 2021 18:17:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634235425;
+        bh=nk2O1INGQJeoYK2hz0/chQbDTBJGcPDWQbYrayE/aaM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=i+GrwntAyD87EpYdHQzMGU2dlEGyPdLmLrRmggCA7m4PKbBfzhbxM9H54jEdEt4kF
+         LwrGHNmrP8B77ITYnhupmqdyqnYbspZYu1KEpKMRBa2L3NZ5+efhGHMF9wTFm6sdPt
+         4SwK0t0pfsOslTSXJO76mpfsxC13CDfQs+C2TmrdyW3MpPwomgxD5iVmaVWzIsLGze
+         nANB+3Ao+C53dm0OvlLJGSPRppCYDIRaTQUxc4CewrH91C3m32y3RyHBX8l+VarIii
+         QivlIQhM6K0c/F1/qguP1EPvZPZjKp7CpcrxhwEBod+TS+9soi3Y6mOffwsz8gN6Nm
+         nOiIxQWIeqLVA==
+Date:   Thu, 14 Oct 2021 11:17:05 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
+Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        nvdimm@lists.linux.dev, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, dan.j.williams@intel.com,
+        david@fromorbit.com, hch@infradead.org, jane.chu@oracle.com
+Subject: Re: [PATCH v7 5/8] fsdax: Introduce dax_lock_mapping_entry()
+Message-ID: <20211014181705.GH24307@magnolia>
+References: <20210924130959.2695749-1-ruansy.fnst@fujitsu.com>
+ <20210924130959.2695749-6-ruansy.fnst@fujitsu.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2a07f03d-ffaa-77f6-c223-74bae60eb3f1@foss.st.com>
+In-Reply-To: <20210924130959.2695749-6-ruansy.fnst@fujitsu.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 06, 2021 at 02:58:21PM +0200, Amelie DELAUNAY wrote:
+On Fri, Sep 24, 2021 at 09:09:56PM +0800, Shiyang Ruan wrote:
+> The current dax_lock_page() locks dax entry by obtaining mapping and
+> index in page.  To support 1-to-N RMAP in NVDIMM, we need a new function
+> to lock a specific dax entry corresponding to this file's mapping,index.
+> And BTW, output the page corresponding to the specific dax entry for
+> caller use.
 > 
+> Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
+> ---
+>  fs/dax.c            | 65 ++++++++++++++++++++++++++++++++++++++++++++-
+>  include/linux/dax.h | 15 +++++++++++
+>  2 files changed, 79 insertions(+), 1 deletion(-)
 > 
-> On 10/6/21 2:38 PM, Rob Herring wrote:
-> > > Disable child nodes while parent node is already disabled fixes the
-> > > warning. But it means to add status = "okay"; in child nodes everywhere
-> > > usbphyc is enabled.
-> > Presumably, you already have to add phy-supply everywhere.
-> >  >> Is it normal dtbs_check checks in child nodes when parent node is
-> disabled?
-> > I'll look into doing that.
-> 
-> Should I wait for your potential dtbs_check update or should I disable child
-> nodes in .dtsi (and enable them along with parent node in .dts using
-> usbphyc) ?
+> diff --git a/fs/dax.c b/fs/dax.c
+> index 798c43f09eee..509b65e60478 100644
+> --- a/fs/dax.c
+> +++ b/fs/dax.c
+> @@ -390,7 +390,7 @@ static struct page *dax_busy_page(void *entry)
+>  }
+>  
+>  /*
+> - * dax_lock_mapping_entry - Lock the DAX entry corresponding to a page
+> + * dax_lock_page - Lock the DAX entry corresponding to a page
+>   * @page: The page whose entry we want to lock
+>   *
+>   * Context: Process context.
+> @@ -455,6 +455,69 @@ void dax_unlock_page(struct page *page, dax_entry_t cookie)
+>  	dax_unlock_entry(&xas, (void *)cookie);
+>  }
+>  
+> +/*
+> + * dax_lock_mapping_entry - Lock the DAX entry corresponding to a mapping
+> + * @mapping: the file's mapping whose entry we want to lock
+> + * @index: the offset within this file
+> + * @page: output the dax page corresponding to this dax entry
+> + *
+> + * Return: A cookie to pass to dax_unlock_mapping_entry() or 0 if the entry
+> + * could not be locked.
+> + */
+> +dax_entry_t dax_lock_mapping_entry(struct address_space *mapping, pgoff_t index,
+> +		struct page **page)
+> +{
+> +	XA_STATE(xas, NULL, 0);
+> +	void *entry;
+> +
+> +	rcu_read_lock();
+> +	for (;;) {
+> +		entry = NULL;
+> +		if (!dax_mapping(mapping))
+> +			break;
+> +
+> +		xas.xa = &mapping->i_pages;
+> +		xas_lock_irq(&xas);
+> +		xas_set(&xas, index);
+> +		entry = xas_load(&xas);
+> +		if (dax_is_locked(entry)) {
+> +			rcu_read_unlock();
+> +			wait_entry_unlocked(&xas, entry);
+> +			rcu_read_lock();
+> +			continue;
+> +		}
+> +		if (!entry ||
+> +		    dax_is_zero_entry(entry) || dax_is_empty_entry(entry)) {
+> +			/*
+> +			 * Because we are looking for entry from file's mapping
+> +			 * and index, so the entry may not be inserted for now,
+> +			 * or even a zero/empty entry.  We don't think this is
+> +			 * an error case.  So, return a special value and do
+> +			 * not output @page.
+> +			 */
+> +			entry = (void *)~0UL;
 
-I pushed a fix to dt-validate for this.
+I kinda wonder if these open-coded magic values ~0UL (no entry) and 0
+(cannot lock) should be #defines that force-cast the magic value to
+dax_entry_t...
 
-Rob
+...but then I'm not really an expert in the design behind fs/dax.c --
+this part looks reasonable enough to me, but I think Dan or Matthew
+ought to look this over.
+
+--D
+
+> +		} else {
+> +			*page = pfn_to_page(dax_to_pfn(entry));
+> +			dax_lock_entry(&xas, entry);
+> +		}
+> +		xas_unlock_irq(&xas);
+> +		break;
+> +	}
+> +	rcu_read_unlock();
+> +	return (dax_entry_t)entry;
+> +}
+> +
+> +void dax_unlock_mapping_entry(struct address_space *mapping, pgoff_t index,
+> +		dax_entry_t cookie)
+> +{
+> +	XA_STATE(xas, &mapping->i_pages, index);
+> +
+> +	if (cookie == ~0UL)
+> +		return;
+> +
+> +	dax_unlock_entry(&xas, (void *)cookie);
+> +}
+> +
+>  /*
+>   * Find page cache entry at given index. If it is a DAX entry, return it
+>   * with the entry locked. If the page cache doesn't contain an entry at
+> diff --git a/include/linux/dax.h b/include/linux/dax.h
+> index d273d59723cd..65411bee4312 100644
+> --- a/include/linux/dax.h
+> +++ b/include/linux/dax.h
+> @@ -156,6 +156,10 @@ struct page *dax_layout_busy_page(struct address_space *mapping);
+>  struct page *dax_layout_busy_page_range(struct address_space *mapping, loff_t start, loff_t end);
+>  dax_entry_t dax_lock_page(struct page *page);
+>  void dax_unlock_page(struct page *page, dax_entry_t cookie);
+> +dax_entry_t dax_lock_mapping_entry(struct address_space *mapping,
+> +		unsigned long index, struct page **page);
+> +void dax_unlock_mapping_entry(struct address_space *mapping,
+> +		unsigned long index, dax_entry_t cookie);
+>  #else
+>  #define generic_fsdax_supported		NULL
+>  
+> @@ -201,6 +205,17 @@ static inline dax_entry_t dax_lock_page(struct page *page)
+>  static inline void dax_unlock_page(struct page *page, dax_entry_t cookie)
+>  {
+>  }
+> +
+> +static inline dax_entry_t dax_lock_mapping_entry(struct address_space *mapping,
+> +		unsigned long index, struct page **page)
+> +{
+> +	return 0;
+> +}
+> +
+> +static inline void dax_unlock_mapping_entry(struct address_space *mapping,
+> +		unsigned long index, dax_entry_t cookie)
+> +{
+> +}
+>  #endif
+>  
+>  #if IS_ENABLED(CONFIG_DAX)
+> -- 
+> 2.33.0
+> 
+> 
+> 
