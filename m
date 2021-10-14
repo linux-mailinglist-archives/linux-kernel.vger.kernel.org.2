@@ -2,157 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A9D642D4B0
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 10:20:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57AD142D4B3
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 10:21:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230106AbhJNIWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 04:22:44 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42328 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230010AbhJNIWn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 04:22:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634199638;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3w7eqEeIgw3Ia32urFoj+WNGzCCaXj1QmEFIPhfgcAU=;
-        b=P36ojaVKwLkMg2Ha+paLOtpHWRw7/18Na8JDaeR0a1Nmjjd2FHfiTt8PFROq+5uvqaHd4U
-        CUgYREtSJq12mU/IyCXwqwyEpEbNUQrm0ZSJ2ihZFfMG8OLHX1pvk3osmnN8PGrfiQggZP
-        FI9GPZXnql1R/QSTWAXSTN7nN7mEM4k=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-319-ZWZWGOyvPvKOsMLIHZ0xow-1; Thu, 14 Oct 2021 04:20:36 -0400
-X-MC-Unique: ZWZWGOyvPvKOsMLIHZ0xow-1
-Received: by mail-ed1-f72.google.com with SMTP id f4-20020a50e084000000b003db585bc274so4485486edl.17
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 01:20:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=3w7eqEeIgw3Ia32urFoj+WNGzCCaXj1QmEFIPhfgcAU=;
-        b=VLsnPNs+5LH0nFUwWl6jZVv367Uyg669BwmIaXBMtxAeHkM0dzQnWwa2Ck2LigaQ+w
-         8Q3SVtX3JyEG/0dGJp3zSfI2PAPMeklMoBkexF8MJfYWNUmnz13Sh2H6Jw8ounO4xJMk
-         dcsV6dUIUEeKPQ3WsVCJKd8phV97PqTfo8Dd3QdaQ8jwKvx9RmISbEFMlEKmphwNPms7
-         SjT2WnEJF7731Ox2epXwEetgSz/FmUqnY+fbVTOCK0VOOt/vfp2r7JOfi2MsVYL1yFby
-         aDU8DPPxxzQ8Ht1cWTASmiwGDX7N04ufWrpC+Vhn0m2+VPIQ0yJ1t2KVZII7fS/pb8ef
-         +3+A==
-X-Gm-Message-State: AOAM533q8Gj873MHKhStARBZT6NQIiDz0K7grB/p66iLpLRD+Cy484NA
-        NZSjbw8onkAHl6BRTkE9jmSBsYFtuXOsO2Cxbc4+3mCaSf0BCiryBp/EuxkCdFBNFBwPipgrJ+N
-        bfAeZTJUxqLl1MSd/2nXKTjaW
-X-Received: by 2002:a17:906:7c4f:: with SMTP id g15mr1986716ejp.373.1634199635738;
-        Thu, 14 Oct 2021 01:20:35 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxJ/yUyAY5+oLZfeZT36vqeG4laaBllFBim5CmgaOeq8paHr5vHxI/UVJ6rhjgL1uBj4rghbA==
-X-Received: by 2002:a17:906:7c4f:: with SMTP id g15mr1986691ejp.373.1634199635532;
-        Thu, 14 Oct 2021 01:20:35 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id s3sm1355877ejm.49.2021.10.14.01.20.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Oct 2021 01:20:35 -0700 (PDT)
-Subject: Re: [PATCH] iio: accel: kxcjk-1013: Fix possible memory leak in probe
- and remove
-To:     Yang Yingliang <yangyingliang@huawei.com>,
-        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org
-Cc:     lars@metafoo.de, jic23@kernel.org,
-        andriy.shevchenko@linux.intel.com, ddvlad@gmail.com
-References: <20211014035338.3750416-1-yangyingliang@huawei.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <1a3a5582-51b0-4c58-ad6a-a58025054128@redhat.com>
-Date:   Thu, 14 Oct 2021 10:20:34 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <20211014035338.3750416-1-yangyingliang@huawei.com>
-Content-Type: text/plain; charset=utf-8
+        id S230168AbhJNIXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 04:23:11 -0400
+Received: from mga06.intel.com ([134.134.136.31]:65269 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230010AbhJNIXJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 04:23:09 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10136"; a="288498536"
+X-IronPort-AV: E=Sophos;i="5.85,372,1624345200"; 
+   d="scan'208";a="288498536"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2021 01:21:04 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,372,1624345200"; 
+   d="scan'208";a="524977105"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orsmga001.jf.intel.com with ESMTP; 14 Oct 2021 01:21:04 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Thu, 14 Oct 2021 01:21:04 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12 via Frontend Transport; Thu, 14 Oct 2021 01:21:04 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.100)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.12; Thu, 14 Oct 2021 01:21:03 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fOfu8Ihet+wqyJiQguSVKVVJGuP4kFOmkiydZl/L4M/+1cYpywnXD9BPp4BuZkwkhvElEsKICw92H+KHgZrnf+746ELqRLEvEhfdT5PAteRG0rn38sLqv963HEpjx9wsLN7Vu9yJaHS7X4KE5m1F4HFYjLn3BcJGD1BhjXFHOYFa7sf3dE9qej4J9nAb63RqUHlde+D/1WoizkKL5KAYNEBdTmY6v4MYqoNFAsvmmGhm++DbB+oaY5jjBF6yNDGSSgvQrisK/ysfuvKT7c/JkkqjCKXsg2ZF+pq/jo+si9j77t1/GIszEiK66zSjiZjI38iUXbf1A5QfPB0mci57sw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=9f5boawavqDFNXzVSkQz6Bs8/gpoSy+982cGwY8+qjk=;
+ b=afR59gq8IkU5uUv27jBFdmpnEI8zl1qMK7Zk+mra4IbmUDbSoyg6pwhppaAxPMQdM4LmlmTyK+VGUm7ZGYEI3Z8Qz+XIxrOMqDjAafClVypURAho2GOg1KrTkkaZkj/Cj2mzCSoPsNARSQcFTkCwX/ovISXOhsSI+GuD6GRdP5Wj5z5FjkDKpW6Rq6zTcTHExcxI6k1vLz4o+utDzmL/WhOxUPTsxGIjbDo+6c67lib3vOCvNE4p48JrMHm0C0Wvj+j0rdwzhMzgrTewNU0Mydp2QpIvVtjRuK+7XGyE12QP/WPJjD5NLCyVDywkzEh2PT6A6zRtnM0eVjiLqnG8yQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9f5boawavqDFNXzVSkQz6Bs8/gpoSy+982cGwY8+qjk=;
+ b=I9mbqccd7bE045XbIFI+niNJemNnnS9+ybsKu1G6hhO27GyVW+ny7adpYwbDBwFy7bDJFTNMSROHwpGeyohhdjVhumZ95xcPW5KOXX+2mXr/v/iOgi2IYp6XBDD/r2lRvBC0olxT566KBlPCDtYfbmb3xWO5WqI6vYcPLcslqic=
+Received: from BL0PR11MB3252.namprd11.prod.outlook.com (2603:10b6:208:6e::18)
+ by BL0PR11MB3379.namprd11.prod.outlook.com (2603:10b6:208:6c::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.25; Thu, 14 Oct
+ 2021 08:21:02 +0000
+Received: from BL0PR11MB3252.namprd11.prod.outlook.com
+ ([fe80::7d33:5c44:70ad:f165]) by BL0PR11MB3252.namprd11.prod.outlook.com
+ ([fe80::7d33:5c44:70ad:f165%7]) with mapi id 15.20.4608.016; Thu, 14 Oct 2021
+ 08:21:02 +0000
+From:   "Liu, Jing2" <jing2.liu@intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>
+CC:     "x86@kernel.org" <x86@kernel.org>,
+        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "Arjan van de Ven" <arjan@linux.intel.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "Nakajima, Jun" <jun.nakajima@intel.com>,
+        Jing Liu <jing2.liu@linux.intel.com>,
+        "seanjc@google.com" <seanjc@google.com>
+Subject: RE: [patch 13/31] x86/fpu: Move KVMs FPU swapping to FPU core
+Thread-Topic: [patch 13/31] x86/fpu: Move KVMs FPU swapping to FPU core
+Thread-Index: AQHXv42x8Iw8v1bdT0WqN+QXiZLaIqvQcYTggACYyYCAAR5hgA==
+Date:   Thu, 14 Oct 2021 08:21:02 +0000
+Message-ID: <BL0PR11MB3252466D4A10A141F025F425A9B89@BL0PR11MB3252.namprd11.prod.outlook.com>
+References: <BYAPR11MB3256B39E2A34A09FF64ECC5BA9B79@BYAPR11MB3256.namprd11.prod.outlook.com>
+ <87sfx57ycw.ffs@tglx>
+In-Reply-To: <87sfx57ycw.ffs@tglx>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-reaction: no-action
+dlp-version: 11.6.200.16
+dlp-product: dlpe-windows
+authentication-results: linutronix.de; dkim=none (message not signed)
+ header.d=none;linutronix.de; dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 0f1f11d2-cf69-4cae-2fca-08d98eeb8f6f
+x-ms-traffictypediagnostic: BL0PR11MB3379:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BL0PR11MB33793C2A9601DDA6CC1A41B2A9B89@BL0PR11MB3379.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 8SmhJGvGcLKR5grTv8kBTkZBaN4G/0D2MlAO28Jqt7L2O5L+u6fp0Xp+oqS2mEMxW5+XwzDF+he1aroU31MwkH3qbMPs3ipZvc62Rx7OhlRAruJosqTJiGiY9luYAwehSOlt4xYIoq0X7D01JGgs/Vsv3LHu9UeA0DqS2dd7u8I6Wcj7wfBdM/uJTx0ECcGEnSPvP5FDjftF3cZx5ZSvCPn73eBSFpjyVp17W9QZN+NVNIsohG6I1OevN8LPfKo7pdYYGDZXTuDH7lEs164wzS1QMjdKpiOyK5M1XyXuvHkV5tXLnqCeb8L7QCL4tqp1fFdi0m+i06O/ASVU/s7I10gk/ehtOV66W55pMtCfOETFORLp1V8FgxUMJqV57vlNC79dDiTeBS0EbJA74oMTZlFOzmhgTxF3LLnc16UIP25PZKSJUxKKgO/jUeKihh5wQQE3Nyuf28ZPIuE04FzizV86FJ8Hwcel7A7V515FL+TvZrKT3ESO/LZIEwEkyS0drqitT2uwt1PymkRfCoHM2pHs2vlaU1q1YM+6xoD1qqk0XHs9q2vFMlu3c9kMjWfQ9G1CQmp8xKUhtx8fws2INpt55MDYFnWzo6GVoLUrzAvrxr2vB5UVPGSSooSDLKDn9F9F2vdMCg0gPRAZ2H8Sk7Uhi+aIe74UPuZ3MPjIMlpEF7T+D64tbhvH/ZmczH5q69dIC12LtHojPOs5X1QjuA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR11MB3252.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(55016002)(83380400001)(76116006)(52536014)(66556008)(110136005)(316002)(38070700005)(33656002)(4326008)(5660300002)(8676002)(66946007)(2906002)(8936002)(7696005)(26005)(66476007)(64756008)(66446008)(86362001)(54906003)(71200400001)(122000001)(186003)(38100700002)(82960400001)(6506007)(4744005)(9686003)(508600001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?F6mYm5F4CHPSwG1GzK5X0MG66l7Z97ah5HhLrIypPsvEX21shMdZwkFl5oa2?=
+ =?us-ascii?Q?HZdT/w9PjG2BSJS9bGzTLPZmjfk9LH5g3a/nsHiCuAcnXYeTDWpvzZJcjvX9?=
+ =?us-ascii?Q?UFLNIfIXz5xiZfTUUw8O66K1XthZ5D7nLvprsVqS70wHEbRPspAYZEuafXYl?=
+ =?us-ascii?Q?mf2rrhGRNtbMa7LNFnKpCUXkKrsWbZP6NrnEEThNW/QIRU+FqqePhTzM8p9W?=
+ =?us-ascii?Q?c1qeyssRGjKMhq83ttjhuwrrPsawxtkHPfrBsSt/aqm5cT2NvAAgGOFZH/gS?=
+ =?us-ascii?Q?yWWZJLU7Ea9IGcIYT+NE/qz5sU9h3Z6lfRiymGWBEW9uVFPcHf6W/Lid15i8?=
+ =?us-ascii?Q?77kydteT3ZP8si/t8xkKzWaRvaDmTAq1/LZr+Ufu239/4+oniouaL7vty4Z3?=
+ =?us-ascii?Q?axm/dx1LvHcsQfupMP/IeAq0SImel4VkNEmMgOyfhlncSaqYmeHX+p1yeR0e?=
+ =?us-ascii?Q?nBjiI1PUfAxG20fH1UjTRHooC+wz3rLvfar7o3WW2wtXzkkiYKa5ejmRYli7?=
+ =?us-ascii?Q?6MBMpRYyl++Q3i3/EwpcnwL8gUQ8/G+ltOPXB0C5G4qs/ErY0HUPa5Q6t+uS?=
+ =?us-ascii?Q?DeLuE4G1jCkkeGCA2x/BjbEyOnggl+t5oLaBbEndYBtFx1tdNO5MXUXFyNJM?=
+ =?us-ascii?Q?jrvFkDgSerFrxD9Wt8JN25XZsvPoyJADWkmc+XawErCQ7Wh4fXiHz9J4st+P?=
+ =?us-ascii?Q?bQsCdxg72PazWwxlSUjzhhSQcDOMqzRbBdCOWRn6fPlASODNMYtFG0JgjNYE?=
+ =?us-ascii?Q?VJqB4SYaf8yMZTTLfT72/bpm/UNqEVVNGZ3X4di+drrdrBlxStwBOgG4HnpO?=
+ =?us-ascii?Q?IFbkwusX2evIjuZEQo5EFL1fzqQDAnwoqNOjO5EWVidbjDzXZZhFiMcaWBBG?=
+ =?us-ascii?Q?TsFA0nDJ5B3FNWHTjb+AVlCfxEd2nmh8NijCS2Fz4ZFfFLk6KB8IwH+viI/M?=
+ =?us-ascii?Q?QPKz7TfdGVoLd+pUtJPfNk5E1xerXcLT7ZPPSSli4hhtkiOnlsDUDvLQTRCF?=
+ =?us-ascii?Q?dM9A30JFZBpMUUi61/3WEMjYc95wS1y9A0oPYoMexOslvcWAeSVOPQBWQ3PI?=
+ =?us-ascii?Q?1AiyKbW70cSeueJRN4kD/x8b1idaODBIruPaDKzmNi2mE1LQg+Pzfwl46ibT?=
+ =?us-ascii?Q?dFTguRtoA4bZhz4uaNjevfAZUkLOd3mPN5ba+eAg6jfwvzMPU2oHDeE3G1OO?=
+ =?us-ascii?Q?Q56My7w7OgwVRXYpWTj3kUnQakLnu59MgIU78xuM3pH77fgd0F4KZZiYFknL?=
+ =?us-ascii?Q?0JB/+rDBZOetSwdXyhG6OgvzwlW+94yi+eCdHqrHwng9pZtxgxjz0wDwAuLx?=
+ =?us-ascii?Q?MqbsNpmBBnl3z9h2adYbL1u6?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR11MB3252.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0f1f11d2-cf69-4cae-2fca-08d98eeb8f6f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Oct 2021 08:21:02.3753
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Gyg7K5++uSo2Zuz19DapyVlyzK7welpSveRso81I5tedxXRYTwFrlQ8SBVQO4iTkgYaKj8uVSn9kjuI8zqKkmg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR11MB3379
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 10/14/21 5:53 AM, Yang Yingliang wrote:
-> When ACPI type is ACPI_SMO8500, the data->dready_trig will not be set, the
-> memory allocated by iio_triggered_buffer_setup() will not be freed, and cause
-> memory leak as follows:
-> 
-> unreferenced object 0xffff888009551400 (size 512):
->   comm "i2c-SMO8500-125", pid 911, jiffies 4294911787 (age 83.852s)
->   hex dump (first 32 bytes):
->     02 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->     00 00 00 00 00 00 00 00 20 e2 e5 c0 ff ff ff ff  ........ .......
->   backtrace:
->     [<0000000041ce75ee>] kmem_cache_alloc_trace+0x16d/0x360
->     [<000000000aeb17b0>] iio_kfifo_allocate+0x41/0x130 [kfifo_buf]
->     [<000000004b40c1f5>] iio_triggered_buffer_setup_ext+0x2c/0x210 [industrialio_triggered_buffer]
->     [<000000004375b15f>] kxcjk1013_probe+0x10c3/0x1d81 [kxcjk_1013]
->     [<0000000020115b9a>] i2c_device_probe+0xa31/0xbe0
->     [<00000000d9f581a6>] really_probe+0x299/0xc30
->     [<00000000c6c16cde>] __driver_probe_device+0x357/0x500
->     [<00000000909852a1>] driver_probe_device+0x4e/0x140
->     [<000000008419ba53>] __device_attach_driver+0x257/0x340
->     [<00000000533bb466>] bus_for_each_drv+0x166/0x1e0
->     [<000000005bf45d75>] __device_attach+0x272/0x420
->     [<0000000075220311>] bus_probe_device+0x1eb/0x2a0
->     [<0000000015587e85>] device_add+0xbf0/0x1f90
->     [<0000000086901b9e>] i2c_new_client_device+0x622/0xb20
->     [<000000000865ca18>] new_device_store+0x1fa/0x420
->     [<0000000059a3d183>] dev_attr_store+0x58/0x80
-> 
-> Fix it by remove data->dready_trig condition in probe and remove.
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Fixes: a25691c1f967 ("iio: accel: kxcjk1013: allow using an external trigger")
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-
-Hmm, wouldn't the right fix be to also move the
-iio_triggered_buffer_setup() call to inside the:
-
-	if (client->irq > 0 && data->acpi_type != ACPI_SMO8500) {
-	}
-
-block ?
-
-Jonathan (jic23) can you take a look at this, to me it seems that having
-a triggered buffer allocated without any triggers is not useful ?
-
-Regards,
-
-Hans
 
 
+> > 1. KVM dynamic allocation API:
+> > Since KVM also uses dynamic allocation, after KVM detects guest
+> > requesting AMX by #NM trap, KVM need alloc extra buffer for this
+> > vcpu's current->thread.fpu.fpstate and guest_fpu related.
+> > So far, the kernel itself has such API like fpstate_realloc(), but
+> > it's static. How about making a common function usable for KVM?
+>=20
+> Just making that function usable without a proper design how this should
+> work at all does not solve anything.
+>=20
+> We first need a conclusion vs. buffer reallocation.
+>=20
+> Once that is sorted then we can create proper infrastructure for that in =
+the
+> FPU core code and not just expose a random function to KVM and hack it in=
+to
+> submssion.
+Yes, we need a consensus on the way we choose and then to see if need a
+kernel function for KVM usage.
 
-> ---
->  drivers/iio/accel/kxcjk-1013.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/iio/accel/kxcjk-1013.c b/drivers/iio/accel/kxcjk-1013.c
-> index a51fdd3c9b5b..24c9387c2968 100644
-> --- a/drivers/iio/accel/kxcjk-1013.c
-> +++ b/drivers/iio/accel/kxcjk-1013.c
-> @@ -1595,8 +1595,7 @@ static int kxcjk1013_probe(struct i2c_client *client,
->  	return 0;
->  
->  err_buffer_cleanup:
-> -	if (data->dready_trig)
-> -		iio_triggered_buffer_cleanup(indio_dev);
-> +	iio_triggered_buffer_cleanup(indio_dev);
->  err_trigger_unregister:
->  	if (data->dready_trig)
->  		iio_trigger_unregister(data->dready_trig);
-> @@ -1618,8 +1617,8 @@ static int kxcjk1013_remove(struct i2c_client *client)
->  	pm_runtime_disable(&client->dev);
->  	pm_runtime_set_suspended(&client->dev);
->  
-> +	iio_triggered_buffer_cleanup(indio_dev);
->  	if (data->dready_trig) {
-> -		iio_triggered_buffer_cleanup(indio_dev);
->  		iio_trigger_unregister(data->dready_trig);
->  		iio_trigger_unregister(data->motion_trig);
->  	}
-> 
+Thanks,
+Jing
 
+>=20
+> Thanks,
+>=20
+>         tglx
