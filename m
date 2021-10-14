@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5739B42DD1E
+	by mail.lfdr.de (Postfix) with ESMTP id A05D442DD1F
 	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:02:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233530AbhJNPEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 11:04:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45066 "EHLO mail.kernel.org"
+        id S233335AbhJNPE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 11:04:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45090 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233133AbhJNPDE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 11:03:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C7479611CA;
-        Thu, 14 Oct 2021 14:59:51 +0000 (UTC)
+        id S233328AbhJNPDF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 11:03:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A74A4611CB;
+        Thu, 14 Oct 2021 14:59:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634223592;
-        bh=vg+ilq+FkshFxvO6+fl5t/WS0G+CDNmxrnjPYa4IC0c=;
+        s=korg; t=1634223595;
+        bh=TGpWMZp0i5deJQtrOA9LIminswDPhvJNDXCtDEVXMKU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=legOIdOkWC2bgmV+90FpNMLs+M6A80dab6cpv87gb1/P6rSG6sAkI5ARRxG20ZraY
-         7Vs01ern1VP5IzNo68htMEzbZc83EVeNmklOgTODg6k0DD/B2p1Gms4UVicaf5Kbs/
-         apztZAb7mBUQC+rGgxPc9BCESuMkm2KVWIYMhH/M=
+        b=L3j6v1i2IvwnZUQ+Udz1QXINdkxslXvzg+TZ5RbosyOaT08/YSpRdxzWJ8YYpcp+E
+         39w2VbfMj2hbofce1dE3NkMYIRNIxWu3Bkg26gwWqUcPy+PQaKE5yShQDddY2oo4P2
+         LfIXJKnC3LZi6xlrrgK+8RDYiw8TsABRfr1kkdw8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Aaron Young <aaron.young@oracle.com>,
-        Rashmi Narasimhan <rashmi.narasimhan@oracle.com>,
+        stable@vger.kernel.org, Hawking Zhang <Hawking.Zhang@amd.com>,
+        Leslie Shi <Yuliang.Shi@amd.com>,
+        Guchun Chen <guchun.chen@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 16/22] net: sun: SUNVNET_COMMON should depend on INET
-Date:   Thu, 14 Oct 2021 16:54:22 +0200
-Message-Id: <20211014145208.508807439@linuxfoundation.org>
+Subject: [PATCH 5.10 17/22] drm/amdgpu: fix gart.bo pin_count leak
+Date:   Thu, 14 Oct 2021 16:54:23 +0200
+Message-Id: <20211014145208.538719497@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211014145207.979449962@linuxfoundation.org>
 References: <20211014145207.979449962@linuxfoundation.org>
@@ -43,43 +43,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Leslie Shi <Yuliang.Shi@amd.com>
 
-[ Upstream commit 103bde372f084206c6972be543ecc247ebbff9f3 ]
+[ Upstream commit 66805763a97f8f7bdf742fc0851d85c02ed9411f ]
 
-When CONFIG_INET is not set, there are failing references to IPv4
-functions, so make this driver depend on INET.
+gmc_v{9,10}_0_gart_disable() isn't called matched with
+correspoding gart_enbale function in SRIOV case. This will
+lead to gart.bo pin_count leak on driver unload.
 
-Fixes these build errors:
-
-sparc64-linux-ld: drivers/net/ethernet/sun/sunvnet_common.o: in function `sunvnet_start_xmit_common':
-sunvnet_common.c:(.text+0x1a68): undefined reference to `__icmp_send'
-sparc64-linux-ld: drivers/net/ethernet/sun/sunvnet_common.o: in function `sunvnet_poll_common':
-sunvnet_common.c:(.text+0x358c): undefined reference to `ip_send_check'
-
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Aaron Young <aaron.young@oracle.com>
-Cc: Rashmi Narasimhan <rashmi.narasimhan@oracle.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Cc: Hawking Zhang <Hawking.Zhang@amd.com>
+Signed-off-by: Leslie Shi <Yuliang.Shi@amd.com>
+Signed-off-by: Guchun Chen <guchun.chen@amd.com>
+Reviewed-by: Christian König <christian.koenig@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/sun/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c | 3 ++-
+ drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c  | 3 ++-
+ 2 files changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/sun/Kconfig b/drivers/net/ethernet/sun/Kconfig
-index 309de38a7530..b0d3f9a2950c 100644
---- a/drivers/net/ethernet/sun/Kconfig
-+++ b/drivers/net/ethernet/sun/Kconfig
-@@ -73,6 +73,7 @@ config CASSINI
- config SUNVNET_COMMON
- 	tristate "Common routines to support Sun Virtual Networking"
- 	depends on SUN_LDOMS
-+	depends on INET
- 	default m
+diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c b/drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c
+index dbc8b76b9b78..150fa5258fb6 100644
+--- a/drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c
+@@ -1018,6 +1018,8 @@ static int gmc_v10_0_hw_fini(void *handle)
+ {
+ 	struct amdgpu_device *adev = (struct amdgpu_device *)handle;
  
- config SUNVNET
++	gmc_v10_0_gart_disable(adev);
++
+ 	if (amdgpu_sriov_vf(adev)) {
+ 		/* full access mode, so don't touch any GMC register */
+ 		DRM_DEBUG("For SRIOV client, shouldn't do anything.\n");
+@@ -1026,7 +1028,6 @@ static int gmc_v10_0_hw_fini(void *handle)
+ 
+ 	amdgpu_irq_put(adev, &adev->gmc.ecc_irq, 0);
+ 	amdgpu_irq_put(adev, &adev->gmc.vm_fault, 0);
+-	gmc_v10_0_gart_disable(adev);
+ 
+ 	return 0;
+ }
+diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c b/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c
+index 3ebbddb63705..3a864041968f 100644
+--- a/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c
+@@ -1677,6 +1677,8 @@ static int gmc_v9_0_hw_fini(void *handle)
+ {
+ 	struct amdgpu_device *adev = (struct amdgpu_device *)handle;
+ 
++	gmc_v9_0_gart_disable(adev);
++
+ 	if (amdgpu_sriov_vf(adev)) {
+ 		/* full access mode, so don't touch any GMC register */
+ 		DRM_DEBUG("For SRIOV client, shouldn't do anything.\n");
+@@ -1685,7 +1687,6 @@ static int gmc_v9_0_hw_fini(void *handle)
+ 
+ 	amdgpu_irq_put(adev, &adev->gmc.ecc_irq, 0);
+ 	amdgpu_irq_put(adev, &adev->gmc.vm_fault, 0);
+-	gmc_v9_0_gart_disable(adev);
+ 
+ 	return 0;
+ }
 -- 
 2.33.0
 
