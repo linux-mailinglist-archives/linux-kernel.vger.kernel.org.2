@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00CBB42DCB0
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:59:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B618342DC46
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:55:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232520AbhJNPA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 11:00:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43406 "EHLO mail.kernel.org"
+        id S232209AbhJNO5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 10:57:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42606 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232287AbhJNO7r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 10:59:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 66176611C7;
-        Thu, 14 Oct 2021 14:57:36 +0000 (UTC)
+        id S232193AbhJNO5e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 10:57:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 85B7360F4A;
+        Thu, 14 Oct 2021 14:55:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634223456;
-        bh=aKU+BkwunbYlLzIK2sY1+Y9UdmvTeIh94Oqc4XSaCIg=;
+        s=korg; t=1634223330;
+        bh=VF5lKsLQQsITUR//vef+l4lwrc7TTkYf8hXoH096Z8I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Oi+utLVMlKeSujgXUOvRwDXE4nzgAQVqwcD/ZFOSb/lVnbRgNUP+AiXdArJGZtTo/
-         r6MbDYWl1ZL1K31EF2tzPg5SIdSelp/n4BWTkeZJjDI1wxH2bz62Bnx9voFCe20uYL
-         bcnQX/34tj1rjhB56DoO9OB7WwuogOS/pPyl7ySQ=
+        b=rKZgZRsUJse8u1vMZrmuTRIUi3XIPdgUSao4mqqlSYUogkrBJT/BQVdmvUbsR6WfY
+         e4RRkzlpDeocy0iwhGDgTSW8DkZb9e6KyUj0Us4gSQQvu1rw2cGHd0iQZEA3cV7XkE
+         eZzNJo2oTCdacI81O2WAVMrqPCm8tsv55pO2fPuM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        Ovidiu Panait <ovidiu.panait@windriver.com>
-Subject: [PATCH 4.14 09/33] bpf: add also cbpf long jump test cases with heavy expansion
-Date:   Thu, 14 Oct 2021 16:53:41 +0200
-Message-Id: <20211014145209.087095680@linuxfoundation.org>
+        stable@vger.kernel.org, Stefan Assmann <sassmann@redhat.com>,
+        Jiri Benc <jbenc@redhat.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Dave Switzer <david.switzer@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 10/18] i40e: fix endless loop under rtnl
+Date:   Thu, 14 Oct 2021 16:53:42 +0200
+Message-Id: <20211014145206.653594767@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211014145208.775270267@linuxfoundation.org>
-References: <20211014145208.775270267@linuxfoundation.org>
+In-Reply-To: <20211014145206.330102860@linuxfoundation.org>
+References: <20211014145206.330102860@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,102 +43,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Borkmann <daniel@iogearbox.net>
+From: Jiri Benc <jbenc@redhat.com>
 
-commit be08815c5d3b25e53cd9b53a4d768d5f3d93ba25 upstream.
+[ Upstream commit 857b6c6f665cca9828396d9743faf37fd09e9ac3 ]
 
-We have one triggering on eBPF but lets also add a cBPF example to
-make sure we keep tracking them. Also add anther cBPF test running
-max number of MSH ops.
+The loop in i40e_get_capabilities can never end. The problem is that
+although i40e_aq_discover_capabilities returns with an error if there's
+a firmware problem, the returned error is not checked. There is a check for
+pf->hw.aq.asq_last_status but that value is set to I40E_AQ_RC_OK on most
+firmware problems.
 
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Acked-by: Alexei Starovoitov <ast@kernel.org>
-Acked-by: Song Liu <songliubraving@fb.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Signed-off-by: Ovidiu Panait <ovidiu.panait@windriver.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+When i40e_aq_discover_capabilities encounters a firmware problem, it will
+encounter the same problem on its next invocation. As the result, the loop
+becomes endless. We hit this with I40E_ERR_ADMIN_QUEUE_TIMEOUT but looking
+at the code, it can happen with a range of other firmware errors.
+
+I don't know what the correct behavior should be: whether the firmware
+should be retried a few times, or whether pf->hw.aq.asq_last_status should
+be always set to the encountered firmware error (but then it would be
+pointless and can be just replaced by the i40e_aq_discover_capabilities
+return value). However, the current behavior with an endless loop under the
+rtnl mutex(!) is unacceptable and Intel has not submitted a fix, although we
+explained the bug to them 7 months ago.
+
+This may not be the best possible fix but it's better than hanging the whole
+system on a firmware bug.
+
+Fixes: 56a62fc86895 ("i40e: init code and hardware support")
+Tested-by: Stefan Assmann <sassmann@redhat.com>
+Signed-off-by: Jiri Benc <jbenc@redhat.com>
+Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
+Tested-by: Dave Switzer <david.switzer@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- lib/test_bpf.c |   63 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 63 insertions(+)
+ drivers/net/ethernet/intel/i40e/i40e_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/lib/test_bpf.c
-+++ b/lib/test_bpf.c
-@@ -355,6 +355,52 @@ static int bpf_fill_maxinsns11(struct bp
- 	return __bpf_fill_ja(self, BPF_MAXINSNS, 68);
- }
- 
-+static int bpf_fill_maxinsns12(struct bpf_test *self)
-+{
-+	unsigned int len = BPF_MAXINSNS;
-+	struct sock_filter *insn;
-+	int i = 0;
-+
-+	insn = kmalloc_array(len, sizeof(*insn), GFP_KERNEL);
-+	if (!insn)
-+		return -ENOMEM;
-+
-+	insn[0] = __BPF_JUMP(BPF_JMP | BPF_JA, len - 2, 0, 0);
-+
-+	for (i = 1; i < len - 1; i++)
-+		insn[i] = __BPF_STMT(BPF_LDX | BPF_B | BPF_MSH, 0);
-+
-+	insn[len - 1] = __BPF_STMT(BPF_RET | BPF_K, 0xabababab);
-+
-+	self->u.ptr.insns = insn;
-+	self->u.ptr.len = len;
-+
-+	return 0;
-+}
-+
-+static int bpf_fill_maxinsns13(struct bpf_test *self)
-+{
-+	unsigned int len = BPF_MAXINSNS;
-+	struct sock_filter *insn;
-+	int i = 0;
-+
-+	insn = kmalloc_array(len, sizeof(*insn), GFP_KERNEL);
-+	if (!insn)
-+		return -ENOMEM;
-+
-+	for (i = 0; i < len - 3; i++)
-+		insn[i] = __BPF_STMT(BPF_LDX | BPF_B | BPF_MSH, 0);
-+
-+	insn[len - 3] = __BPF_STMT(BPF_LD | BPF_IMM, 0xabababab);
-+	insn[len - 2] = __BPF_STMT(BPF_ALU | BPF_XOR | BPF_X, 0);
-+	insn[len - 1] = __BPF_STMT(BPF_RET | BPF_A, 0);
-+
-+	self->u.ptr.insns = insn;
-+	self->u.ptr.len = len;
-+
-+	return 0;
-+}
-+
- static int bpf_fill_ja(struct bpf_test *self)
- {
- 	/* Hits exactly 11 passes on x86_64 JIT. */
-@@ -5438,6 +5484,23 @@ static struct bpf_test tests[] = {
- 		.expected_errcode = -ENOTSUPP,
- 	},
- 	{
-+		"BPF_MAXINSNS: jump over MSH",
-+		{ },
-+		CLASSIC | FLAG_EXPECTED_FAIL,
-+		{ 0xfa, 0xfb, 0xfc, 0xfd, },
-+		{ { 4, 0xabababab } },
-+		.fill_helper = bpf_fill_maxinsns12,
-+		.expected_errcode = -EINVAL,
-+	},
-+	{
-+		"BPF_MAXINSNS: exec all MSH",
-+		{ },
-+		CLASSIC,
-+		{ 0xfa, 0xfb, 0xfc, 0xfd, },
-+		{ { 4, 0xababab83 } },
-+		.fill_helper = bpf_fill_maxinsns13,
-+	},
-+	{
- 		"BPF_MAXINSNS: ld_abs+get_processor_id",
- 		{ },
- 		CLASSIC,
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
+index d6d4faa5c542..2137c4e7289e 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_main.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
+@@ -6574,7 +6574,7 @@ static int i40e_get_capabilities(struct i40e_pf *pf)
+ 		if (pf->hw.aq.asq_last_status == I40E_AQ_RC_ENOMEM) {
+ 			/* retry with a larger buffer */
+ 			buf_len = data_size;
+-		} else if (pf->hw.aq.asq_last_status != I40E_AQ_RC_OK) {
++		} else if (pf->hw.aq.asq_last_status != I40E_AQ_RC_OK || err) {
+ 			dev_info(&pf->pdev->dev,
+ 				 "capability discovery failed, err %s aq_err %s\n",
+ 				 i40e_stat_str(&pf->hw, err),
+-- 
+2.33.0
+
 
 
