@@ -2,96 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B94FB42E419
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 00:23:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2114D42E41C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 00:23:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234199AbhJNWZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 18:25:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34960 "EHLO
+        id S234208AbhJNWZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 18:25:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229632AbhJNWZh (ORCPT
+        with ESMTP id S234200AbhJNWZ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 18:25:37 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7C07C061570;
-        Thu, 14 Oct 2021 15:23:31 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id nn3-20020a17090b38c300b001a03bb6c4ebso5849510pjb.1;
-        Thu, 14 Oct 2021 15:23:31 -0700 (PDT)
+        Thu, 14 Oct 2021 18:25:56 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA624C061755
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 15:23:50 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id h20so2431787qko.13
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 15:23:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Ozlybi8tKRl5/83koIfReggNMgS2RHxJuuBc9FhVK2g=;
-        b=jFjVwOx+xwIvpmEgAC3pABr5u5XYMAptuR+pIYOxZNM0r+bfZI6ACcAcc3zqTC2IMv
-         DB+j+OTJFe9SbuSLtQHEgQ/ZMp9CPsoCd2rybFk5fjP+jxXPavzpC2h+Bw8P7fkazl8n
-         2zwQvkkQL1Ssz0giaYKKlY63ym1hVIrXSdKnC7QpEP8BKYlH+aKbDVvt9SFVynQ+QyZP
-         pyymFZM+4uO9WdnAt5GByGTtEuELyJ/ORjm46zGD6Gx6++SyiacC+4aE9P6LvglOaXUW
-         CLgFXmhK7YVMd5Ck81DW9OX15POqWgzL8WUZpjnp1kH/1Q1m94o7Ak+BIzblTlhxNNsR
-         7RcQ==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=L5FbFHDt82gq72AeamS55JhkriRGh9HPCqy/+ZBXeC8=;
+        b=Nv+II/I6Rxp+jIXHB/OwJsgKMS65qDgCi6gcPbaZXLs+93pYfEoJxF4vi3uWdDA4Fc
+         NGNxpfY41aiPX/grohsiy8KZKQrNUVyGLG41qrqVeolgEyBNtPhxlvpYagKYkXcuyykW
+         N/Dho6hlXzRiGjyXh43MpwD5ukSM3EUlXqrZ+CGdEdu9uHBNLqbS889kP5JzfDXIegAe
+         XGeCBWN3rl3qO/IW98eR+MYgWd6rSpaDwavWR+wmZuLFpe6qpQGhzi21SAv9kl8RtEZB
+         yh+Sok7hUSKGykFw5vEPjLuu0/+gAjomJXLlW/OVzO6HgI2BQtSM+8WAddAZcL/tFaP5
+         022Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Ozlybi8tKRl5/83koIfReggNMgS2RHxJuuBc9FhVK2g=;
-        b=PfShgXNbJ6J31PHBAM7416D9+amo/+fue7snl1voVGeJ5qwc4NCoGJP/QI3wp6LNT9
-         irbApERURT/euvUHFsXrsVBEnxtQehTezspF0c9gbaeFn+YUxhzKnTVjm4EZmTfi3mGL
-         tbNBDk5STuQIPCwXU4K6iKD9tvuhnQkvOoC77e06dwJwI5Vk6S1m7C+CA9+yu4QA9O11
-         y+5hFLDrQENP80/5l2YxqHzndM7pvtQNGah5wvdHv28OVo4uMdrPttUCHtLep/9FbRx2
-         2+Z14puqmJlNX6ZNHET2a0vDW5kdKcA60U/06N8s4AOijqQ56HyhtLzNzgkwpfBWuTDx
-         RTCA==
-X-Gm-Message-State: AOAM531jpG0RCO1Z1DOo9LAUJcBYPGqYbOX7TCqPltZJKfff+ZUEtd+L
-        gnlOzVP8RztrNEQyURkDNo+jcCBbleg=
-X-Google-Smtp-Source: ABdhPJzinrz07qabMNXLToWmBRsINcGUtKBY17De0p9RBPqKuEBrTYR0J2APc+v5Blgimt8aA5Yarw==
-X-Received: by 2002:a17:90a:3e0c:: with SMTP id j12mr23646564pjc.23.1634250210462;
-        Thu, 14 Oct 2021 15:23:30 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id o11sm8715285pjp.0.2021.10.14.15.23.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Oct 2021 15:23:29 -0700 (PDT)
-Subject: Re: [PATCH 5.14 00/30] 5.14.13-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20211014145209.520017940@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <158dc65b-5aa2-0cae-687a-1328cbf4b8de@gmail.com>
-Date:   Thu, 14 Oct 2021 15:23:27 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=L5FbFHDt82gq72AeamS55JhkriRGh9HPCqy/+ZBXeC8=;
+        b=Da6PneRwwKi+2PZytTTJdZwSAnK50eb2vJjsfFIiQ1t7fDepR3UUuS8QkXF6jVqYj4
+         W/ftfqPdfa+pZTDQm9uRjHaXQu+ItjIinZmwhwDA+U+W4Y1cRAcI4Lt7XYXpoN0M7Fe+
+         hXM1Qvj4qPLVxmI73F8Pre1iUsR4UuhugexaLbcEg1F0K7MtB53dl+nyqkCMK8/QwdGk
+         fT2g8rE6RxctsBtIYBrUyfqntudgmjX0YdxglSS9VFXqcf897zr0aeRiAVmWVsBsgxBz
+         W7UMsJXQ7bw+GVpDgj0YfVXOLi76gfK2zHlGPIaJYLF8uVH0ne6lZhT/qvLwx/Zeg9H5
+         r/VQ==
+X-Gm-Message-State: AOAM531ex9sEtt61sgTf1xYt9FyF/h3gURIKFx/gAXfKa22uyAkhZ1kJ
+        K/ys7gfD2TSRa2KmooZUfQAfaA==
+X-Google-Smtp-Source: ABdhPJywYNDaGn9W3ZA4/hE4KjmIX5JIQ4CpRpSHNeloBi0gr4d7dtWd/tNYpyw5lbaV4w5MTOOKHw==
+X-Received: by 2002:ae9:ebc2:: with SMTP id b185mr7028681qkg.491.1634250229560;
+        Thu, 14 Oct 2021 15:23:49 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
+        by smtp.gmail.com with ESMTPSA id i11sm1850010qki.28.2021.10.14.15.23.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Oct 2021 15:23:48 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1mb98e-00F4b3-4g; Thu, 14 Oct 2021 19:23:48 -0300
+Date:   Thu, 14 Oct 2021 19:23:48 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Si-Wei Liu <siwliu.kernel@gmail.com>
+Cc:     Haakon Bugge <haakon.bugge@oracle.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        OFED mailing list <linux-rdma@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: Enabling RO on a VF
+Message-ID: <20211014222348.GP2688930@ziepe.ca>
+References: <48FF6F8E-95E2-4A29-A059-12EF614B381C@oracle.com>
+ <20211001115455.GJ3544071@ziepe.ca>
+ <4EAE3BC9-26B6-41E3-B040-2ADAB77D96CE@oracle.com>
+ <20211001120153.GL3544071@ziepe.ca>
+ <CAPWQSg0wODmw7evfzdtP4gW-toVgoVfigP5t0CVosOAkarNTTg@mail.gmail.com>
+ <20211005232834.GB2688930@ziepe.ca>
+ <CAPWQSg0EYPcudN9Gc--ges68sLmW4mJ4eYHxmmRq8FAzq8C5WQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20211014145209.520017940@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPWQSg0EYPcudN9Gc--ges68sLmW4mJ4eYHxmmRq8FAzq8C5WQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/14/21 7:54 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.14.13 release.
-> There are 30 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Tue, Oct 12, 2021 at 10:57:16AM -0700, Si-Wei Liu wrote:
+> On Tue, Oct 5, 2021 at 4:28 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> >
+> > On Tue, Oct 05, 2021 at 04:09:54PM -0700, Si-Wei Liu wrote:
+> > > On Fri, Oct 1, 2021 at 6:02 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> > > >
+> > > > On Fri, Oct 01, 2021 at 11:59:15AM +0000, Haakon Bugge wrote:
+> > > > >
+> > > > >
+> > > > > > On 1 Oct 2021, at 13:54, Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> > > > > >
+> > > > > > On Fri, Oct 01, 2021 at 11:05:15AM +0000, Haakon Bugge wrote:
+> > > > > >> Hey,
+> > > > > >>
+> > > > > >>
+> > > > > >> Commit 1477d44ce47d ("RDMA/mlx5: Enable Relaxed Ordering by default
+> > > > > >> for kernel ULPs") uses pcie_relaxed_ordering_enabled() to check if
+> > > > > >> RO can be enabled. This function checks if the Enable Relaxed
+> > > > > >> Ordering bit in the Device Control register is set. However, on a
+> > > > > >> VF, this bit is RsvdP (Reserved for future RW
+> > > > > >> implementations. Register bits are read-only and must return zero
+> > > > > >> when read. Software must preserve the value read for writes to
+> > > > > >> bits.).
+> > > > > >>
+> > > > > >> Hence, AFAICT, RO will not be enabled when using a VF.
+> > > > > >>
+> > > > > >> How can that be fixed?
+> > > > > >
+> > > > > > When qemu takes a VF and turns it into a PF in a VM it must emulate
+> > > > > > the RO bit and return one
+> > > > >
+> > > > > I have a pass-through VF:
+> > > > >
+> > > > > # lspci -s ff:00.0 -vvv
+> > > > > ff:00.0 Ethernet controller: Mellanox Technologies MT28800 Family [ConnectX-5 Ex Virtual Function]
+> > > > > []
+> > > > >               DevCtl: Report errors: Correctable- Non-Fatal- Fatal- Unsupported-
+> > > > >                       RlxdOrd- ExtTag- PhantFunc- AuxPwr- NoSnoop- FLReset-
+> > > >
+> > > > Like I said, it is a problem in the qemu area..
+> > > >
+> > > > Jason
+> > > Can you clarify why this is a problem in the QEMU area?
+> > >
+> > > Even though Mellanox device might well support it (on VF), there's no
+> > > way for QEMU to really know if an arbitrary passthrough device may
+> > > support RO.
+> >
+> > That isn't what the cap bit means
+> >
+> > The cap bit on the PF completely disables generation of RO at the
+> > device at all.
+> >
+> > If the PF's cap bit is disabled then no VF can generate RO, and qemu
+> > should expose a wired to zero RO bit in the emulated PF.
+> >
+> > If the cap bit is enabled then the VFs could generate RO, depending on
+> > their drivers, and qemu should generate defaulted to 1 bit in the
+> > emulated PF.
 > 
-> Responses should be made by Sat, 16 Oct 2021 14:51:59 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.13-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+> Set the broken root port and the P2P DMA cases aside, let's say we
+> have a RO enabled PF where there's a working root port upstream that
+> well supports RO. As VF mostly inherits PF's state/config, no matter
+> what value the DevCtl RlxdOrd bit presents in the host it doesn't mean
+> anything,
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
+Not quite if the guest sees RlxdOrd enabled then it means the guest
+can expect that the device can send TLPs with relaxed ordering sent.
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+> although we know getting RO disabled on the PF implies
+> prohibiting RO TLP being sent by all its child VFs. There's no
+> question for this part. The real problem though, is if the RlxdOrd cap
+> bit for the VF can be controlled individually similar to the way the
+> toggling on PF is done?
+
+It cannot.
+
+Just like today where qemu wrongly reports disabled for a VF RlxdOrd
+it doesn't mean that the VF cannot or does not issue Relaxed Ordering
+TLPs.
+
+Since the HW cannot have this level of fine grained control a full
+emulation of the RlxdOrd bit is not possible for VFs.
+
+> For e.g, suppose the RO cap bit for the VF
+> emulated by QEMU defaults to enabled where the backing PF and all
+> child VFs have RO enabled. Will a PCI write of zero to the bit be able
+> to prevent RO ULP initiated by that specific VF from being sent out,
+> which is to resemble PF's behaviour? 
+
+Nope. HW can't do it.
+
+> This being the Mellanox VF's specifics? 
+
+It is not Mellanox specific, this is all PCI spec.
+
+> More broadly, should the VFs for arbitrary PCIe devices have that
+> kind of control on an individual VF's level? I don't find it
+> anywhere in the PCIe SR-IOV spec that this should be the case.
+
+They don't and for this discussion it doesn't matter.
+
+Your question was about how to enable relaxed ordering in guests, and
+the answer is for qemu to report enabled on rlxdord in the VF using
+PCI config space emulation and continue to not support changing the
+relaxed ordering mode of a VF (ie wired to enabled)
+
+Jason
