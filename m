@@ -2,277 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C61742D40C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 09:50:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2628342D3F8
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 09:44:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230119AbhJNHwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 03:52:50 -0400
-Received: from mailgw01.mediatek.com ([216.200.240.184]:45157 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229967AbhJNHwq (ORCPT
+        id S229994AbhJNHqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 03:46:45 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:43122
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229910AbhJNHqm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 03:52:46 -0400
-X-UUID: 102e58a1feb14e5c834202d45344057f-20211014
-X-UUID: 102e58a1feb14e5c834202d45344057f-20211014
-Received: from mtkcas66.mediatek.inc [(172.29.193.44)] by mailgw01.mediatek.com
-        (envelope-from <sam.shih@mediatek.com>)
-        (musrelay.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 154824824; Thu, 14 Oct 2021 00:46:32 -0700
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- MTKMBS62DR.mediatek.inc (172.29.94.18) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 14 Oct 2021 00:44:43 -0700
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 14 Oct 2021 15:44:43 +0800
-From:   Sam Shih <sam.shih@mediatek.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Fabien Parent <fparent@baylibre.com>,
-        Seiya Wang <seiya.wang@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>
-CC:     John Crispin <john@phrozen.org>,
-        Ryder Lee <Ryder.Lee@mediatek.com>,
-        Sam Shih <sam.shih@mediatek.com>
-Subject: [PATCH v6 3/3] arm64: dts: mediatek: add basic mt7986b support
-Date:   Thu, 14 Oct 2021 15:44:03 +0800
-Message-ID: <20211014074403.17346-4-sam.shih@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20211014074403.17346-1-sam.shih@mediatek.com>
-References: <20211014074403.17346-1-sam.shih@mediatek.com>
+        Thu, 14 Oct 2021 03:46:42 -0400
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com [209.85.167.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 4511140022
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 07:44:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1634197477;
+        bh=YxA6fGNZ6kpnunGSBFEKjT2GQx46vYtRacXwF3gTOcA=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=A+idmWhWVtWzMFmq50WNUGp8LnmiGfw3SWZzGoxtduoxR81gXoBK5IeHZRTDRALXg
+         6xXIC6wh1tqrbcRSHdtwERWknVUcgyyL5qVI9fNcHqNcbYe16wX1lclNYzdenv+2Ad
+         cVnd3lAQeVNY/+aRNdcdBH9GB/AP/9Z2ZLecMSTDD1Av26o/q+9pcV57HGRlFJN1nX
+         MBAnFq47/1n8E1kk2pQEm/BC2wZZFq9OsE4Z44+ln7gWS9BNdR2TzvEFcncbjzQ/cf
+         A8GEAY4lcxoHJlqmBFybqiMtOTldyxLHdnGWj3zj7RBQBRubzryZmbyEU6oOPbAuKp
+         vgkHiVeO9ZW/Q==
+Received: by mail-lf1-f69.google.com with SMTP id i6-20020a056512318600b003fd8c8c2677so3780651lfe.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 00:44:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=YxA6fGNZ6kpnunGSBFEKjT2GQx46vYtRacXwF3gTOcA=;
+        b=TsNFpaTeWVbImxR/jYWxevnElypmD1FzSNtXkMSrFGvio1Uqoi595qu4hTYmJlM+0Z
+         DvgNT0zA1t8rFSKdp6RgwzymBBcov6B3sLyEblDa6TipGXfZ9LQPzNqkA4s1fjywrHri
+         5oZsJx3T61tsM7VzdjsWuECsMah8qdiaQ6MbufX072HcmGqtbkTb2CPg3/NI5Kvckd3w
+         zoYeWEcqc5LNz/2Y9cRPvKB4ubJGCS0X/zU9T+bQqpK8bNfVduzGF0IRBtSaPn89EBNn
+         ndRFIGkVijYx8pyf5OoNKW0em5bPTgly6i+02i9Rgq+abj5hBF5WEBSyeghji2LRuShy
+         acSA==
+X-Gm-Message-State: AOAM532T6AkPQtMJCEr+cMnF1Yyhd0MR4PdAADUuSRTZQ9rT3kS4sdmO
+        KOCidTbQ4QJ4t7pbj+Wo1Uk296/lNcaDkcTusRWiGCqAmnndntgy6iK8oJku1l/b8IXnbqmiKJN
+        scNSz49AuliWr4w4Xt09sL+yaQxPaVLDNcG83pLfbCQ==
+X-Received: by 2002:a05:6512:c23:: with SMTP id z35mr3741958lfu.590.1634197473963;
+        Thu, 14 Oct 2021 00:44:33 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw9xB37hiRqL5qEQyETaPyULtK9+EdI9KDH1bHmVQfIHFvVJaWzHAXWeSE4urCbWqYM6PNDyQ==
+X-Received: by 2002:a05:6512:c23:: with SMTP id z35mr3741941lfu.590.1634197473783;
+        Thu, 14 Oct 2021 00:44:33 -0700 (PDT)
+Received: from [192.168.3.161] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
+        by smtp.gmail.com with ESMTPSA id r26sm156209lfm.226.2021.10.14.00.44.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Oct 2021 00:44:33 -0700 (PDT)
+Subject: Re: [PATCH 6/8] mfd: max77714: Add driver for Maxim MAX77714 PMIC
+To:     Luca Ceresoli <luca@lucaceresoli.net>, linux-kernel@vger.kernel.org
+Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
+        linux-rtc@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        Chiwoong Byun <woong.byun@samsung.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>
+References: <20211011155615.257529-1-luca@lucaceresoli.net>
+ <20211011155615.257529-7-luca@lucaceresoli.net>
+ <79a3c52b-ed4a-dadb-c7e2-2c96c9a58c49@canonical.com>
+ <21684e2a-e84c-05ed-e27c-e710c53e3a64@lucaceresoli.net>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <092e893a-757c-fd4d-08a1-0ae65219e770@canonical.com>
+Date:   Thu, 14 Oct 2021 09:44:32 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+In-Reply-To: <21684e2a-e84c-05ed-e27c-e710c53e3a64@lucaceresoli.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add basic chip support for Mediatek mt7986b, include
-basic uart nodes, rng node and watchdog node.
+On 13/10/2021 23:49, Luca Ceresoli wrote:
+> Hi,
+> 
+> On 12/10/21 10:09, Krzysztof Kozlowski wrote:
+>> On 11/10/2021 17:56, Luca Ceresoli wrote:
+>>> Add a simple driver for the Maxim MAX77714 PMIC, supporting RTC and
+>>> watchdog only.
+>>>
+>>> Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
+>>> ---
+>>>  MAINTAINERS                  |   2 +
+>>>  drivers/mfd/Kconfig          |  14 ++++
+>>>  drivers/mfd/Makefile         |   1 +
+>>>  drivers/mfd/max77714.c       | 151 +++++++++++++++++++++++++++++++++++
+>>>  include/linux/mfd/max77714.h |  68 ++++++++++++++++
+>>>  5 files changed, 236 insertions(+)
+>>>  create mode 100644 drivers/mfd/max77714.c
+>>>  create mode 100644 include/linux/mfd/max77714.h
+>>>
+>>> diff --git a/MAINTAINERS b/MAINTAINERS
+>>> index 4d0134752537..df394192f14e 100644
+>>> --- a/MAINTAINERS
+>>> +++ b/MAINTAINERS
+>>> @@ -11389,6 +11389,8 @@ MAXIM MAX77714 PMIC MFD DRIVER
+>>>  M:	Luca Ceresoli <luca@lucaceresoli.net>
+>>>  S:	Maintained
+>>>  F:	Documentation/devicetree/bindings/mfd/maxim,max77714.yaml
+>>> +F:	drivers/mfd/max77714.c
+>>> +F:	include/linux/mfd/max77714.h
+>>>  
+>>>  MAXIM MAX77802 PMIC REGULATOR DEVICE DRIVER
+>>>  M:	Javier Martinez Canillas <javier@dowhile0.org>
+>>> diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+>>> index ca0edab91aeb..b5f6e6174508 100644
+>>> --- a/drivers/mfd/Kconfig
+>>> +++ b/drivers/mfd/Kconfig
+>>> @@ -853,6 +853,20 @@ config MFD_MAX77693
+>>>  	  additional drivers must be enabled in order to use the functionality
+>>>  	  of the device.
+>>>  
+>>> +config MFD_MAX77714
+>>> +	bool "Maxim Semiconductor MAX77714 PMIC Support"
+>>
+>> Why it cannot be a tristate (module)?
+> 
+> Because it's not done in the driver I initially copied from, I guess. :)
+> 
+> And also because I thought it's appropriate for a PMIC driver since
+> regulators tend to be always instantiated. But I understand there are
+> valid use cases for that -- will do in v2 unless a good reason pops up
+> for not doing it.
 
-Add cpu node, timer node, gic node, psci and reserved-memory node
-for ARM Trusted Firmware.
+Main PMIC as a module sometimes requires additional effort (like initrd
+with the PMIC driver) to make system booting. Still for non-SoC
+components we choose to allow modules (e.g. max77686).
 
-Signed-off-by: Sam Shih <sam.shih@mediatek.com>
+It seems in your case it can be used as module easily because you did
+not implement regulators, which are needed early for storage devices.
 
----
-v6: separate basic part into a single patch series
-v5: follow reviewr's comment: removed clock freqency node in timer due to
-    we have set CNTFRQ_EL0 in ATF firmware, and also corrected GICD range
-v4: added missing gic register bases, and fixed range of GICR
-v3: used the stdout-path instead of console=ttyS0
-v2: modified clock and uart node due to clock driver updated
----
- arch/arm64/boot/dts/mediatek/Makefile        |   1 +
- arch/arm64/boot/dts/mediatek/mt7986b-rfb.dts |  26 ++++
- arch/arm64/boot/dts/mediatek/mt7986b.dtsi    | 149 +++++++++++++++++++
- 3 files changed, 176 insertions(+)
- create mode 100644 arch/arm64/boot/dts/mediatek/mt7986b-rfb.dts
- create mode 100644 arch/arm64/boot/dts/mediatek/mt7986b.dtsi
+> 
+>>> diff --git a/include/linux/mfd/max77714.h b/include/linux/mfd/max77714.h
+>>> new file mode 100644
+>>> index 000000000000..ca6b747b73c2
+>>> --- /dev/null
+>>> +++ b/include/linux/mfd/max77714.h
+>>> @@ -0,0 +1,68 @@
+>>> +/* SPDX-License-Identifier: GPL-2.0-only */
+>>> +/*
+>>> + * Maxim MAX77714 Register and data structures definition.
+>>> + *
+>>> + * Copyright (C) 2021 Luca Ceresoli
+>>> + * Author: Luca Ceresoli <luca@lucaceresoli.net>
+>>> + */
+>>> +
+>>> +#ifndef _MFD_MAX77714_H_
+>>> +#define _MFD_MAX77714_H_
+>>
+>> Header guard:
+>> __LINUX_MFD_MAX77714_H_
+> 
+> OK.
+> 
+>>> +
+>>> +struct max77714 {
+>>> +	struct device *dev;
+>>> +	struct regmap *regmap;
+>>> +	struct regmap_irq_chip_data *irq_data;
+>>> +
+>>> +	int irq;
+>>> +};
+>>
+>> Do you have to make it a public structure? If not, please put it in the
+>> max77714.c
+> 
+> Good point. Will fix.
+> 
 
-diff --git a/arch/arm64/boot/dts/mediatek/Makefile b/arch/arm64/boot/dts/mediatek/Makefile
-index e6c3a73b9e4a..d555e43d1ccc 100644
---- a/arch/arm64/boot/dts/mediatek/Makefile
-+++ b/arch/arm64/boot/dts/mediatek/Makefile
-@@ -8,6 +8,7 @@ dtb-$(CONFIG_ARCH_MEDIATEK) += mt6797-x20-dev.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt7622-rfb1.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt7622-bananapi-bpi-r64.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt7986a-rfb.dtb
-+dtb-$(CONFIG_ARCH_MEDIATEK) += mt7986b-rfb.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8167-pumpkin.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8173-elm.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8173-elm-hana.dtb
-diff --git a/arch/arm64/boot/dts/mediatek/mt7986b-rfb.dts b/arch/arm64/boot/dts/mediatek/mt7986b-rfb.dts
-new file mode 100644
-index 000000000000..95a202505bb2
---- /dev/null
-+++ b/arch/arm64/boot/dts/mediatek/mt7986b-rfb.dts
-@@ -0,0 +1,26 @@
-+// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-+/*
-+ * Copyright (C) 2021 MediaTek Inc.
-+ * Author: Sam.Shih <sam.shih@mediatek.com>
-+ */
-+
-+/dts-v1/;
-+#include "mt7986b.dtsi"
-+
-+/ {
-+	model = "MediaTek MT7986b RFB";
-+	compatible = "mediatek,mt7986b-rfb";
-+
-+	aliases {
-+		serial0 = &uart0;
-+	};
-+
-+	chosen {
-+		stdout-path = "serial0:115200n8";
-+		bootargs = "earlycon=uart8250,mmio32,0x11002000 swiotlb=512";
-+	};
-+};
-+
-+&uart0 {
-+	status = "okay";
-+};
-diff --git a/arch/arm64/boot/dts/mediatek/mt7986b.dtsi b/arch/arm64/boot/dts/mediatek/mt7986b.dtsi
-new file mode 100644
-index 000000000000..2b8e0a382398
---- /dev/null
-+++ b/arch/arm64/boot/dts/mediatek/mt7986b.dtsi
-@@ -0,0 +1,149 @@
-+// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-+/*
-+ * Copyright (C) 2021 MediaTek Inc.
-+ * Author: Sam.Shih <sam.shih@mediatek.com>
-+ */
-+
-+#include <dt-bindings/interrupt-controller/irq.h>
-+#include <dt-bindings/interrupt-controller/arm-gic.h>
-+
-+/ {
-+	compatible = "mediatek,mt7986b";
-+	interrupt-parent = <&gic>;
-+	#address-cells = <2>;
-+	#size-cells = <2>;
-+
-+	system_clk: dummy40m {
-+		compatible = "fixed-clock";
-+		clock-frequency = <40000000>;
-+		#clock-cells = <0>;
-+	};
-+
-+	cpus {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		cpu0: cpu@0 {
-+			device_type = "cpu";
-+			compatible = "arm,cortex-a53";
-+			enable-method = "psci";
-+			reg = <0x0>;
-+			#cooling-cells = <2>;
-+		};
-+
-+		cpu1: cpu@1 {
-+			device_type = "cpu";
-+			compatible = "arm,cortex-a53";
-+			enable-method = "psci";
-+			reg = <0x1>;
-+			#cooling-cells = <2>;
-+		};
-+
-+		cpu2: cpu@2 {
-+			device_type = "cpu";
-+			compatible = "arm,cortex-a53";
-+			enable-method = "psci";
-+			reg = <0x2>;
-+			#cooling-cells = <2>;
-+		};
-+
-+		cpu3: cpu@3 {
-+			device_type = "cpu";
-+			enable-method = "psci";
-+			compatible = "arm,cortex-a53";
-+			reg = <0x3>;
-+			#cooling-cells = <2>;
-+		};
-+	};
-+
-+	psci {
-+		compatible  = "arm,psci-0.2";
-+		method      = "smc";
-+	};
-+
-+	reserved-memory {
-+		#address-cells = <2>;
-+		#size-cells = <2>;
-+		ranges;
-+		/* 192 KiB reserved for ARM Trusted Firmware (BL31) */
-+		secmon_reserved: secmon@43000000 {
-+			reg = <0 0x43000000 0 0x30000>;
-+			no-map;
-+		};
-+	};
-+
-+	timer {
-+		compatible = "arm,armv8-timer";
-+		interrupt-parent = <&gic>;
-+		interrupts = <GIC_PPI 13 IRQ_TYPE_LEVEL_LOW>,
-+			     <GIC_PPI 14 IRQ_TYPE_LEVEL_LOW>,
-+			     <GIC_PPI 11 IRQ_TYPE_LEVEL_LOW>,
-+			     <GIC_PPI 10 IRQ_TYPE_LEVEL_LOW>;
-+	};
-+
-+	soc {
-+		#address-cells = <2>;
-+		#size-cells = <2>;
-+		compatible = "simple-bus";
-+		ranges;
-+
-+		gic: interrupt-controller@c000000 {
-+			compatible = "arm,gic-v3";
-+			#interrupt-cells = <3>;
-+			interrupt-parent = <&gic>;
-+			interrupt-controller;
-+			reg = <0 0x0c000000 0 0x10000>,  /* GICD */
-+			      <0 0x0c080000 0 0x80000>,  /* GICR */
-+			      <0 0x0c400000 0 0x2000>,   /* GICC */
-+			      <0 0x0c410000 0 0x1000>,   /* GICH */
-+			      <0 0x0c420000 0 0x2000>;   /* GICV */
-+			interrupts = <GIC_PPI 9 IRQ_TYPE_LEVEL_HIGH>;
-+		};
-+
-+		watchdog: watchdog@1001c000 {
-+			compatible = "mediatek,mt7986-wdt",
-+				     "mediatek,mt6589-wdt";
-+			reg = <0 0x1001c000 0 0x1000>;
-+			interrupts = <GIC_SPI 110 IRQ_TYPE_LEVEL_HIGH>;
-+			#reset-cells = <1>;
-+			status = "disabled";
-+		};
-+
-+		trng: trng@1020f000 {
-+			compatible = "mediatek,mt7986-rng",
-+				     "mediatek,mt7623-rng";
-+			reg = <0 0x1020f000 0 0x100>;
-+			clocks = <&system_clk>;
-+			clock-names = "rng";
-+			status = "disabled";
-+		};
-+
-+		uart0: serial@11002000 {
-+			compatible = "mediatek,mt7986-uart",
-+				     "mediatek,mt6577-uart";
-+			reg = <0 0x11002000 0 0x400>;
-+			interrupts = <GIC_SPI 123 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&system_clk>;
-+			status = "disabled";
-+		};
-+
-+		uart1: serial@11003000 {
-+			compatible = "mediatek,mt7986-uart",
-+				     "mediatek,mt6577-uart";
-+			reg = <0 0x11003000 0 0x400>;
-+			interrupts = <GIC_SPI 124 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&system_clk>;
-+			status = "disabled";
-+		};
-+
-+		uart2: serial@11004000 {
-+			compatible = "mediatek,mt7986-uart",
-+				     "mediatek,mt6577-uart";
-+			reg = <0 0x11004000 0 0x400>;
-+			interrupts = <GIC_SPI 125 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&system_clk>;
-+			status = "disabled";
-+		};
-+
-+	};
-+
-+};
--- 
-2.29.2
 
+Best regards,
+Krzysztof
