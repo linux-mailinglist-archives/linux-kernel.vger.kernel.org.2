@@ -2,133 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28B2D42D534
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 10:36:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 293E842D548
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 10:41:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230245AbhJNIil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 04:38:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43646 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230119AbhJNIij (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 04:38:39 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FF69C061753
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 01:36:34 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id e12so16937348wra.4
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 01:36:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=cfakvhen/wxw5fHdRu0DEuLT5DMfJlXe2a/johLjqxo=;
-        b=h40uJnzRy4bIKfqfvwm3i/kik60+Kgx2sfXbHxmv0MsZax7HkeDmryc9yctryM7xlU
-         37bg2VuoZWdH4kTXGosC95Fa3QYJayYirIbI/UeFVNH/Nzn2/7/VodB6g1hiMuG9zp+p
-         egl0Br7pM5vnKxSuUDa7BUq17cmPH9MsIYOosVtDeEDQMUaCZ6h+AWD2esXOH1LRk+zZ
-         X2uV1Nn3ulaudun/4f5AT6jS5oilV0myDq9ozSQAqUnytF1YgcEInQmj+cCLjl5OgT5o
-         004n5bwSXge4iP3a4skCS8avlQccw5QvPN8BVpAjam8zZmlkvShcDVpQvgmxjplGDMKz
-         pkRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=cfakvhen/wxw5fHdRu0DEuLT5DMfJlXe2a/johLjqxo=;
-        b=nxJuBi692ge3C9gkxe2ZiXZP25w3RR2QHeJdrl2R3XqowXuBQDy64vKrWR9GtQ0WIR
-         edU3CxLMGRiKUGA9X5OmcDtNiFRpyECRa5QzZK8F/c3S1HJyqt/CBBXc2fQ+mwiK5Pr1
-         g3NPaFjiW7aMe0psfQqq43iTXq8fowrRK12q4h0Un5tt0GpQId/zX/XMDgF3/8xImbwA
-         D0nym14RX05pW8QIMKA25zTC7xWQHWqRHp0a/vf2q+HJcVOoT6+uYipxhjriQWLE6WRR
-         /RcJeFpBFFlxyekqeY3cQ0JBs6zxilVx5mrlkD4zGPrw+hmF2kpRhv6g3AUyIFHIzdE2
-         ToQA==
-X-Gm-Message-State: AOAM530FXhp2xZpaQgYBCaGMX4LMDwy4pnooVa/L+MQACJQPjpoWtRCf
-        BG5Ko3g1AGftPQLLabgRERXOc8tyZQryxw==
-X-Google-Smtp-Source: ABdhPJzpVg8OIER+zTALG2ilasSHxD7bC/dTlVAeWBUDgRwrRvN9DCthCd2lRX0ZyZDpw2FTk6Hq6g==
-X-Received: by 2002:a5d:59a9:: with SMTP id p9mr5151873wrr.386.1634200593067;
-        Thu, 14 Oct 2021 01:36:33 -0700 (PDT)
-Received: from myrica (cpc92880-cmbg19-2-0-cust679.5-4.cable.virginm.net. [82.27.106.168])
-        by smtp.gmail.com with ESMTPSA id r4sm2299114wrz.58.2021.10.14.01.36.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Oct 2021 01:36:32 -0700 (PDT)
-Date:   Thu, 14 Oct 2021 09:36:09 +0100
-From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Matt Mackall <mpm@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Amit Shah <amit@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Gonglei <arei.gonglei@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        David Airlie <airlied@linux.ie>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Daniel Vetter <daniel@ffwll.ch>, Jie Deng <jie.deng@intel.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        David Hildenbrand <david@redhat.com>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Eric Van Hensbergen <ericvh@gmail.com>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Anton Yakovlev <anton.yakovlev@opensynergy.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, linux-um@lists.infradead.org,
+        id S230109AbhJNInV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 04:43:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41178 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230042AbhJNInU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 04:43:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1338D60F9E;
+        Thu, 14 Oct 2021 08:41:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1634200875;
+        bh=rY9vGtlLDIvkDgY0wX20Oxpih5WsKZMgiPYMwz/VsXE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TsvQCRJ72G2+iekhh/WK3vT5lHlv7ZD6YNQNgAj3L2thXFnBxsGvyUNRW7BamuMqV
+         1IPExSgJeQI9q0Wym4ATW8HhvO4Aw4CJX4+DsF+KHwMiO6IDjMMu0SjL/bAsfi1hLh
+         r4jkVd+UWyWv+rIV5buFUYY+dM3WYR0t5NCyZNCs=
+Date:   Thu, 14 Oct 2021 10:41:13 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Xianting Tian <xianting.tian@linux.alibaba.com>
+Cc:     jirislaby@kernel.org, amit@kernel.org, arnd@arndb.de,
+        osandov@fb.com, shile.zhang@linux.alibaba.com,
+        linuxppc-dev@lists.ozlabs.org,
         virtualization@lists.linux-foundation.org,
-        linux-block@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-gpio@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-i2c@vger.kernel.org, iommu@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
-        nvdimm@lists.linux.dev, linux-remoteproc@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        v9fs-developer@lists.sourceforge.net, kvm@vger.kernel.org,
-        alsa-devel@alsa-project.org
-Subject: Re: [PATCH RFC] virtio: wrap config->reset calls
-Message-ID: <YWfr+Z0wgpQ48yC5@myrica>
-References: <20211013105226.20225-1-mst@redhat.com>
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v10 2/3] tty: hvc: pass DMA capable memory to put_chars()
+Message-ID: <YWftKQ3fTb8QlM6/@kroah.com>
+References: <20211009114829.1071021-1-xianting.tian@linux.alibaba.com>
+ <20211009114829.1071021-3-xianting.tian@linux.alibaba.com>
+ <YWGD8y9VfBIQBu2h@kroah.com>
+ <3516c58c-e8e6-2e5a-2bc8-ad80e2124d37@linux.alibaba.com>
+ <YWJ7NuapWOZ4QirJ@kroah.com>
+ <4dbeddb9-1068-d282-2758-55d0f788ea61@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20211013105226.20225-1-mst@redhat.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4dbeddb9-1068-d282-2758-55d0f788ea61@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 06:55:31AM -0400, Michael S. Tsirkin wrote:
-> This will enable cleanups down the road.
-> The idea is to disable cbs, then add "flush_queued_cbs" callback
-> as a parameter, this way drivers can flush any work
-> queued after callbacks have been disabled.
+On Thu, Oct 14, 2021 at 04:34:59PM +0800, Xianting Tian wrote:
 > 
-> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-> ---
+> 在 2021/10/10 下午1:33, Greg KH 写道:
+> > On Sat, Oct 09, 2021 at 11:45:23PM +0800, Xianting Tian wrote:
+> > > 在 2021/10/9 下午7:58, Greg KH 写道:
+> > > > Did you look at the placement using pahole as to how this structure now
+> > > > looks?
+> > > thanks for all your commnts. for this one, do you mean I need to remove the
+> > > blank line?  thanks
+> > > 
+> > No, I mean to use the tool 'pahole' to see the structure layout that you
+> > just created and determine if it really is the best way to add these new
+> > fields, especially as you are adding huge buffers with odd alignment.
+> 
+> thanks,
+> 
+> Based on your comments, I removed 'char outchar',  remian the position of
+> 'int outbuf_size' unchanged to keep outbuf_size and lock in the same cache
+> line.  Now hvc_struct change as below,
+> 
+>  struct hvc_struct {
+>         struct tty_port port;
+>         spinlock_t lock;
+>         int index;
+>         int do_wakeup;
+> -       char *outbuf;
+>         int outbuf_size;
+>         int n_outbuf;
+>         uint32_t vtermno;
+> @@ -48,6 +57,16 @@ struct hvc_struct {
+>         struct work_struct tty_resize;
+>         struct list_head next;
+>         unsigned long flags;
+> +
+> +       /*
+> +        * the buf is used in hvc console api for putting chars,
+> +        * and also used in hvc_poll_put_char() for putting single char.
+> +        */
+> +       char cons_outbuf[N_OUTBUF] __ALIGNED__;
+> +       spinlock_t cons_outbuf_lock;
+> +
+> +       /* the buf is used for putting chars to tty */
+> +       char outbuf[] __ALIGNED__;
+>  };
+> 
+> pahole for above hvc_struct as below,  is it ok for you?  do we need to pack
+> the hole? thanks
+> 
+> struct hvc_struct {
+>     struct tty_port            port;                 /*     0 352 */
+>     /* --- cacheline 5 boundary (320 bytes) was 32 bytes ago --- */
+>     spinlock_t                 lock;                 /*   352 4 */
+>     int                        index;                /*   356 4 */
+>     int                        do_wakeup;            /*   360 4 */
+>     int                        outbuf_size;          /*   364 4 */
+>     int                        n_outbuf;             /*   368 4 */
+>     uint32_t                   vtermno;              /*   372 4 */
+>     const struct hv_ops  *     ops;                  /*   376 8 */
+>     /* --- cacheline 6 boundary (384 bytes) --- */
+>     int                        irq_requested;        /*   384 4 */
+>     int                        data;                 /*   388 4 */
+>     struct winsize             ws;                   /*   392 8 */
+>     struct work_struct         tty_resize;           /*   400 32 */
+>     struct list_head           next;                 /*   432 16 */
+>     /* --- cacheline 7 boundary (448 bytes) --- */
+>     long unsigned int          flags;                /*   448 8 */
+> 
+>     /* XXX 56 bytes hole, try to pack */
+> 
+>     /* --- cacheline 8 boundary (512 bytes) --- */
+>     char                       cons_outbuf[16];      /*   512 16 */
+>     spinlock_t                 cons_outbuf_lock;     /*   528 4 */
+> 
+>     /* XXX 44 bytes hole, try to pack */
 
->  drivers/iommu/virtio-iommu.c               | 2 +-
+Why not move the spinlock up above the cons_outbuf?  Will that not be a
+bit better?
 
-Reviewed-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+Anyway, this is all fine, and much better than before, thanks.
+
+greg k-h
