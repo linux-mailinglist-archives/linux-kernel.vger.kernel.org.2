@@ -2,163 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67AB442DB1E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:07:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AF6542DB23
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:08:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231708AbhJNOJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 10:09:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34946 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230177AbhJNOJG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 10:09:06 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07D62C061570
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 07:07:01 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id x27so27277533lfa.9
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 07:07:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=NmsJjrVQJSlytBdvRLJ3ylqzzRy6zWoqsrRac2baw+c=;
-        b=sb7T7XzNrVtwl4mRGWO4qD1nEdPKy7Kx1pkV2JH/REWHrjss75eGRBgsiRxcUq70Ao
-         puQfNnsGz8tgygFBblTZcnT/TfI3yPsuZQFtJDZGRVqsNtXpAOSuI+pJMbJPu7l5ilV7
-         A09cLsg/I4Q1NYjIqXx+ea4pyz9bWDfko1Pg04XELVMJ8rxjos5O97yIhYjaKfXB+xDL
-         YQtmmszU1/L43CHRHa98ZKfGkIKXxNbzFtlLhy7IRGdbfy5XZqd+MIMHsIQN1xutcjVY
-         Azh+cVR3qkIeHjmarxZ/RyeptC0WO27fpFKhsKCLHVyGFYXBSj0IcBgtoFWzF7OuFqxt
-         Y4tg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=NmsJjrVQJSlytBdvRLJ3ylqzzRy6zWoqsrRac2baw+c=;
-        b=6wYDL8DyuTcan5DTcCEw/PTv4pE8Woq5kOJCEttdyJnM62hT1uuQG6FpfzfXcRk8Wo
-         L9udL5J+RU2QKmNLvSOnMgcL3AhqaHjBzV+NJ7m84aQH2TI9DIS6Qw3V7FLKJSBnu7wc
-         kle8gTdnia4AoRma6jSAovVBqHFDBOzIqfWYy7q9/AUutVT5vDq6H87mWH0bEBJ7/f/P
-         5RZ7Y6Yvs6zBqSyNGwx/9JIVoOSH8o3kZ54qBBqCaHkb2Q+34gjdaAK0YwyKDNHqRrry
-         T91FxBq7jbbDmo5gOGCQygqTQx2Evs8ByKwtjyodmrnJmWQEGzvtLvsgeQYyAsyqpU85
-         vv6w==
-X-Gm-Message-State: AOAM531EvgETBVMgHI3VwO5+SfJfnVcvmCCPinDoBsGmS+5agE3qDFZp
-        Ji1kiqaQj09So8TqlqYsmVojmQ==
-X-Google-Smtp-Source: ABdhPJyxK3AwQzRzBtxFgS1FXOW7JElIYl5Bz3tyIwNYJjqtzC/ecfpq6sVRYwHf92Tb20np6K9jIQ==
-X-Received: by 2002:a2e:9e15:: with SMTP id e21mr6291412ljk.351.1634220415573;
-        Thu, 14 Oct 2021 07:06:55 -0700 (PDT)
-Received: from [192.168.1.211] ([37.153.55.125])
-        by smtp.gmail.com with ESMTPSA id d6sm234448lfi.137.2021.10.14.07.06.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Oct 2021 07:06:54 -0700 (PDT)
-Subject: Re: [PATCH v2 07/11] drm/msm/disp/dpu1: Add DSC support in hw_ctl
-To:     Vinod Koul <vkoul@kernel.org>, Rob Clark <robdclark@gmail.com>
-Cc:     linux-arm-msm@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org
-References: <20211007070900.456044-1-vkoul@kernel.org>
- <20211007070900.456044-8-vkoul@kernel.org>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Message-ID: <f5f6162c-7ed0-2964-7cf9-0bb894c8b4f5@linaro.org>
-Date:   Thu, 14 Oct 2021 17:06:53 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S231739AbhJNOKQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 10:10:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45204 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230177AbhJNOKP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 10:10:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 209BF610A0;
+        Thu, 14 Oct 2021 14:08:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634220490;
+        bh=D0kIMpPplXpp37Gh0tOmiNC+vZqJTD00gQ8fpi5NP1k=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=VxiRiJNs1di0hnfqTQfezhICJ6DFPuhn+4LCHaybprPQL1ccfr5k+pjOanaqq/Ro1
+         Z+L1SqtxyTSSSvgO1BShU959kscT0F9Dup5iJYHk6bNFakJdKxVLmX3RIxg8o0lGd7
+         xPJW4bv+PEpVutGchFm0DMOlBEIF4EzsCbQHl3MGtBHq3RITUHzlG6meTMIfqKq0PH
+         0xHCl/OUiCGA19/hda/V41fLe4ErDMmZwCWvUp0w9VVy7WJ9hvSaxu4unFFyOMfrB5
+         Fjq7pju3gK71nooJ1XF+kySjX9PoHdx43dclswMhBgupzmoWLqmKrJS2yszulsdINs
+         i3etWyYjqehPg==
+Date:   Thu, 14 Oct 2021 07:08:09 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Alvin =?UTF-8?B?xaBpcHJhZ2E=?= <ALSI@bang-olufsen.dk>
+Cc:     Alvin =?UTF-8?B?xaBpcHJhZ2E=?= <alvin@pqrs.dk>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Michael Rasmussen <MIR@bang-olufsen.dk>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next 5/6] net: dsa: realtek-smi: add rtl8365mb
+ subdriver for RTL8365MB-VC
+Message-ID: <20211014070809.6ca397ce@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <80c80992-85c2-d971-ce1c-a37f8199da7a@bang-olufsen.dk>
+References: <20211012123557.3547280-1-alvin@pqrs.dk>
+        <20211012123557.3547280-6-alvin@pqrs.dk>
+        <20211012082703.7b31e73b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <bde59012-8394-d31b-24c4-018cbfe0ed57@bang-olufsen.dk>
+        <20211013081340.0ca97db1@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <80c80992-85c2-d971-ce1c-a37f8199da7a@bang-olufsen.dk>
 MIME-Version: 1.0
-In-Reply-To: <20211007070900.456044-8-vkoul@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/10/2021 10:08, Vinod Koul wrote:
-> Later gens of hardware have DSC bits moved to hw_ctl, so configure these
-> bits so that DSC would work there as well
-> 
-> Signed-off-by: Vinod Koul <vkoul@kernel.org>
-> ---
-> Changes since
-> v1:
->   - Move this patch from 6 to 7 due to dependency on 6th one
->   - Use DSC indices for programming DSC registers and program only on non
->     null indices
-> 
->   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c | 12 ++++++++++--
->   1 file changed, 10 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
-> index 3c79bd9c2fe5..8ea9d8dce3f7 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
-> @@ -25,6 +25,8 @@
->   #define   CTL_MERGE_3D_ACTIVE           0x0E4
->   #define   CTL_INTF_ACTIVE               0x0F4
->   #define   CTL_MERGE_3D_FLUSH            0x100
-> +#define   CTL_DSC_ACTIVE                0x0E8
-> +#define   CTL_DSC_FLUSH                0x104
->   #define   CTL_INTF_FLUSH                0x110
->   #define   CTL_INTF_MASTER               0x134
->   #define   CTL_FETCH_PIPE_ACTIVE         0x0FC
-> @@ -34,6 +36,7 @@
->   
->   #define DPU_REG_RESET_TIMEOUT_US        2000
->   #define  MERGE_3D_IDX   23
-> +#define  DSC_IDX        22
->   #define  INTF_IDX       31
->   #define CTL_INVALID_BIT                 0xffff
->   
-> @@ -120,7 +123,6 @@ static u32 dpu_hw_ctl_get_pending_flush(struct dpu_hw_ctl *ctx)
->   
->   static void dpu_hw_ctl_trigger_flush_v1(struct dpu_hw_ctl *ctx)
->   {
-> -
->   	if (ctx->pending_flush_mask & BIT(MERGE_3D_IDX))
->   		DPU_REG_WRITE(&ctx->hw, CTL_MERGE_3D_FLUSH,
->   				ctx->pending_merge_3d_flush_mask);
-> @@ -128,7 +130,6 @@ static void dpu_hw_ctl_trigger_flush_v1(struct dpu_hw_ctl *ctx)
->   		DPU_REG_WRITE(&ctx->hw, CTL_INTF_FLUSH,
->   				ctx->pending_intf_flush_mask);
->   
-> -	DPU_REG_WRITE(&ctx->hw, CTL_FLUSH, ctx->pending_flush_mask);
+On Thu, 14 Oct 2021 12:44:37 +0000 Alvin =C5=A0ipraga wrote:
+> On 10/13/21 5:13 PM, Jakub Kicinski wrote:
+> > On Wed, 13 Oct 2021 08:33:36 +0000 Alvin =C5=A0ipraga wrote: =20
+> >> I implement the dsa_switch_ops callback .get_ethtool_stats, using an
+> >> existing function rtl8366_get_ethtool_stats in the switch helper libra=
+ry
+> >> rtl8366.c. It was my understanding that this is the correct way to
+> >> expose counters within the DSA framework - please correct me if that is
+> >> wrong. =20
+> >=20
+> > It's the legacy way, today we have a unified API for reporting those
+> > stats so user space SW doesn't have to maintain a myriad string matches
+> > to get to basic IEEE stats across vendors. Driver authors have a truly
+> > incredible ability to invent their own names for standard stats. It
+> > appears that your pick of names is also unique :)
+> >=20
+> > It should be trivial to plumb the relevant ethtool_ops thru to
+> > dsa_switch_ops if relevant dsa ops don't exist.
+> >=20
+> > You should also populate correct stats in dsa_switch_ops::get_stats64
+> > (see the large comment above the definition of struct
+> > rtnl_link_stats64 for mapping). A word of warning there, tho, that
+> > callback runs in an atomic context so if your driver needs to block it
+> > has to read the stats periodically from a async work. =20
+>=20
+> OK, so just to clarify:
+>=20
+> - get_ethtool_stats is deprecated - do not use
 
-This would break non-DSC case.
+It can still be used, but standardized interfaces should be preferred
+whenever possible, especially when appropriate uAPI already exists.
 
->   }
->   
->   static inline void dpu_hw_ctl_trigger_flush(struct dpu_hw_ctl *ctx)
-> @@ -498,6 +499,9 @@ static void dpu_hw_ctl_intf_cfg_v1(struct dpu_hw_ctl *ctx,
->   	u32 intf_active = 0;
->   	u32 mode_sel = 0;
->   
-> +	if (cfg->dsc)
-> +		DPU_REG_WRITE(&ctx->hw, CTL_DSC_FLUSH, cfg->dsc);
-> +
->   	if (cfg->intf_mode_sel == DPU_CTL_MODE_SEL_CMD)
->   		mode_sel |= BIT(17);
->   
-> @@ -509,6 +513,10 @@ static void dpu_hw_ctl_intf_cfg_v1(struct dpu_hw_ctl *ctx,
->   	if (cfg->merge_3d)
->   		DPU_REG_WRITE(c, CTL_MERGE_3D_ACTIVE,
->   			      BIT(cfg->merge_3d - MERGE_3D_0));
-> +	if (cfg->dsc) {
-> +		DPU_REG_WRITE(&ctx->hw, CTL_FLUSH, ctx->pending_flush_mask |  BIT(DSC_IDX));
+> - get_eth_{phy,mac,ctrl,rmon}_stats is the new API - add DSA plumbing=20
+> and use this
 
-Why?
+Yup.
 
-> +		DPU_REG_WRITE(c, CTL_DSC_ACTIVE, cfg->dsc);
-> +	}
->   }
->   
->   static void dpu_hw_ctl_intf_cfg(struct dpu_hw_ctl *ctx,
-> 
+> - get_stats64 orthogonal to ethtool stats but still important - use also=
+=20
+> this
 
+Yes, users should be able to depend on basic interface stats (packets,
+bytes, crc errors) to be correct.
 
--- 
-With best wishes
-Dmitry
+> For stats64 I will need to poll asynchronously - do you have any=20
+> suggestion for how frequently I should do that? I see one DSA driver=20
+> doing it every 3 seconds, for example.
+
+3 sec seems fine.
