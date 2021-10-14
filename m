@@ -2,538 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0026942D51A
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 10:33:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B7F642D516
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 10:33:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230370AbhJNIfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 04:35:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42786 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230201AbhJNIfe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S230260AbhJNIfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 14 Oct 2021 04:35:34 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F02BEC061760
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 01:33:27 -0700 (PDT)
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1mawAz-0007BO-7T; Thu, 14 Oct 2021 10:33:21 +0200
-Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1mawAy-0006xN-Pf; Thu, 14 Oct 2021 10:33:20 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        devicetree@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        David Jander <david@protonic.nl>
-Subject: [PATCH v1 3/3] ARM: dts: add JOZ Access Point
-Date:   Thu, 14 Oct 2021 10:33:13 +0200
-Message-Id: <20211014083313.26671-3-o.rempel@pengutronix.de>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211014083313.26671-1-o.rempel@pengutronix.de>
-References: <20211014083313.26671-1-o.rempel@pengutronix.de>
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:26621 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230222AbhJNIf0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 04:35:26 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20211014083320euoutp02522e606088e7c609383b993dbe3df66a~t2Jsuh_z61263312633euoutp02S
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 08:33:20 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20211014083320euoutp02522e606088e7c609383b993dbe3df66a~t2Jsuh_z61263312633euoutp02S
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1634200400;
+        bh=TiSj1o9zl4Q3JV99HgMOj8hOrXVab++M3/wqJ4giETs=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=hMdcUjyZezKaEu8Ffs4p+Uon3dB/v1d7A9g5/6nobi8N/Xu7PF6Di/zzVCzeMr3d+
+         rNXBnv016M/hB8LmkJaXZPY2S8oAKmX207soYv0m53bMElWaWTr9ZiT4VYcTMbX57D
+         YCq5VnNklNhSFZKJ5ilR60i5ugfu4bq7MXPfw59Y=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20211014083320eucas1p1bb242244d0b0bbcbece76218f2065024~t2JsSwuNS2169221692eucas1p1f;
+        Thu, 14 Oct 2021 08:33:20 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges3new.samsung.com (EUCPMTA) with SMTP id 97.58.56448.05BE7616; Thu, 14
+        Oct 2021 09:33:20 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20211014083319eucas1p1c3e87b2cf393993fc24f5f4745847624~t2JriNsRT2169621696eucas1p1c;
+        Thu, 14 Oct 2021 08:33:19 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20211014083319eusmtrp1c7976934c7ec177a97c4215d7d19a339~t2JrhZ40b2286722867eusmtrp1d;
+        Thu, 14 Oct 2021 08:33:19 +0000 (GMT)
+X-AuditID: cbfec7f5-d3bff7000002dc80-d8-6167eb50431f
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id 02.B1.20981.F4BE7616; Thu, 14
+        Oct 2021 09:33:19 +0100 (BST)
+Received: from [106.210.134.192] (unknown [106.210.134.192]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20211014083318eusmtip123602346d88436281ef75c110080a0d4~t2JqydgI-1903819038eusmtip1W;
+        Thu, 14 Oct 2021 08:33:18 +0000 (GMT)
+Subject: Re: [RFT PATCH v3 0/2] clk: samsung: add common support for CPU
+ clocks
+To:     Will McVicker <willmcvicker@google.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     kernel-team@android.com, linux-samsung-soc@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+Message-ID: <b968773d-9ee4-4e7a-7e33-f3ded7362a9c@samsung.com>
+Date:   Thu, 14 Oct 2021 10:33:18 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
+        Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20211013221021.3433704-1-willmcvicker@google.com>
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrOKsWRmVeSWpSXmKPExsWy7djP87oBr9MTDVaf4LW4/uU5q8WO7SIW
+        G9/+YLLY9Pgaq8XHnnusFpd3zWGzmHF+H5PFxVOuFofftLNa/Lu2kcVi1a4/jBarPv1ndODx
+        2LZ7G6vH+xut7B6zGnrZPHbOusvusWBTqcemVZ1sHpuX1Hv0bVnF6PF5k1wAZxSXTUpqTmZZ
+        apG+XQJXxrf3J1gKrnFXNFy+ztLAeJyzi5GTQ0LAROLCtpPMXYxcHEICKxglfp5aCuV8YZRo
+        O/qaBcL5zCjR9GsvC0zLqnl/oBLLGSX+7rzICOF8ZJT4t+YgI0iVsECgROf03WwgCRGBTUwS
+        DXufsoI4zAILGSXebNzOBlLFJmAo0fW2C8zmFbCTWDzlCdBcDg4WAVWJd7PFQMKiAskS0/42
+        MUOUCEqcnAlRwilgL/HtqShImFlAXmL72znMELa4xK0n85lAVkkITOeUeHxmP1i9hICLxPyb
+        1RAfCEu8Or6FHcKWkTg9uYcFor6ZUeLhubXsEE4Po8TlphmMEFXWEnfO/WIDGcQsoCmxfpc+
+        RNhR4sil/UwQ8/kkbrwVhLiBT2LStunMEGFeiY42IYhqNYlZx9fBrT144RLzBEalWUgem4Xk
+        m1lIvpmFsHcBI8sqRvHU0uLc9NRi47zUcr3ixNzi0rx0veT83E2MwLR2+t/xrzsYV7z6qHeI
+        kYmD8RCjBAezkgjvuwPpiUK8KYmVValF+fFFpTmpxYcYpTlYlMR5d21dEy8kkJ5YkpqdmlqQ
+        WgSTZeLglGpgWn2y4dW2ObrqC6x7GL/ey7/Wymv3smnDjV0zLFy7JzwIy839Ebe3a3O33PVc
+        sdtnZ72Rt7khtKohQWv/qs6tfZZvLta8fn7dZWGH/hStGyGVb0yKumz3XDt73WFfuPfTUyYT
+        788J12bXDTwU75Gldug0p0+yDdc7ZQcp17MaRp8TNlj+kVW99ksw/2NYzO3kM5s67Gd07Lat
+        83x5L7Gu2TL0tcKJq7K7Nt0Tkd8275M646WG/t2cX58cz+Sb+PUiy94JRfyrGdWfqBXY8cf/
+        ULLrXlDo6WvfUFP+Y/HmIxuzDsXck5ip+TWwUEX4FuusC6//3f2x87B4e9zneftNcrWYLASY
+        XWeuvckjp8PAoMRSnJFoqMVcVJwIAMh+d1zaAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrJIsWRmVeSWpSXmKPExsVy+t/xu7r+r9MTDRbulbS4/uU5q8WO7SIW
+        G9/+YLLY9Pgaq8XHnnusFpd3zWGzmHF+H5PFxVOuFofftLNa/Lu2kcVi1a4/jBarPv1ndODx
+        2LZ7G6vH+xut7B6zGnrZPHbOusvusWBTqcemVZ1sHpuX1Hv0bVnF6PF5k1wAZ5SeTVF+aUmq
+        QkZ+cYmtUrShhZGeoaWFnpGJpZ6hsXmslZGpkr6dTUpqTmZZapG+XYJexrf3J1gKrnFXNFy+
+        ztLAeJyzi5GTQ0LARGLVvD8sILaQwFJGiQcfVCHiMhInpzWwQtjCEn+udbF1MXIB1bxnlHjz
+        9xkjSEJYIFCic/pusISIwCYmib7T28AcZoGFjBItm16yQLRMYpQ4c/sSG0gLm4ChRNfbLjCb
+        V8BOYvGUJ0BFHBwsAqoS72aLgYRFBZIl3r7+zgRRIihxciZECaeAvcS3p6IgYWYBM4l5mx8y
+        Q9jyEtvfzoGyxSVuPZnPNIFRaBaS7llIWmYhaZmFpGUBI8sqRpHU0uLc9NxiI73ixNzi0rx0
+        veT83E2MwDjeduznlh2MK1991DvEyMTBeIhRgoNZSYT33YH0RCHelMTKqtSi/Pii0pzU4kOM
+        pkDfTGSWEk3OByaSvJJ4QzMDU0MTM0sDU0szYyVxXpMja+KFBNITS1KzU1MLUotg+pg4OKUa
+        mKqemDh9PyT+gTGDdcZ+DjPt070znrcFl+SXmDSw1/et6c5kOLZKxkXTSryr83rW+51Jdb1m
+        yXNq+Fkex//pUp/oYsaTz3qW/2dwSNaigw/jNPLeda1wffPF46Ks5rr1r7JT48J26xWfnLHv
+        ywkjA+GtIX1HOq55uP+ffPnaSmPuPA+HnOfrm6+6ftz6fn4ba8flbXmPKuVcYjpPTlaZ6hB+
+        I1hHj3NywXSLuiftR042bDgwYYapcY/TcYWwNTYmU0Oe73Svm1qf5pk2O44nuSyMqeVeyYyk
+        Ayt9s+XLjKOdTnT8MKn93ZZ533qF35LPZswXGKonmnX76D6Okt41beHU5XkbVd4nOyx7nFeo
+        xFKckWioxVxUnAgA5ls0wWwDAAA=
+X-CMS-MailID: 20211014083319eucas1p1c3e87b2cf393993fc24f5f4745847624
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20211013221032eucas1p1d8e2fcc36d3f021aa86cb846df0ed6da
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20211013221032eucas1p1d8e2fcc36d3f021aa86cb846df0ed6da
+References: <CGME20211013221032eucas1p1d8e2fcc36d3f021aa86cb846df0ed6da@eucas1p1.samsung.com>
+        <20211013221021.3433704-1-willmcvicker@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-JOZ Access Point is imx6ull based device designed for agricultural
-cleaning machines.
+On 14.10.2021 00:10, Will McVicker wrote:
+> These two patches were originally a part of the series [1]. They add
+> support to the common samsung clock driver to parse and register the
+> CPU clocks when provided. This allows for the samsung clock drivers to
+> simply provide a `struct samsung_cpu_clock` to `struct samsung_cmu_info`
+> and then call samsung_cmu_register_one(). With this new support, we can
+> now get rid of the custom apollo and atlas CLK_OF_DECLARE init functions.
+>
+> Since I don't have the hardware to test these, I'm including the RFT tag
+> to try and get help testing and verifying these.
+>
+> [1] https://protect2.fireeye.com/v1/url?k=91329df7-cea9a478-913316b8-0cc47a31307c-8e0b8e6442100c5a&q=1&e=50af1e33-8bdf-429f-9e54-434d425998d6&u=https%3A%2F%2Flore.kernel.org%2Fall%2F20210928235635.1348330-4-willmcvicker%40google.com%2F
 
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
----
- arch/arm/boot/dts/Makefile           |   1 +
- arch/arm/boot/dts/imx6ull-jozacp.dts | 457 +++++++++++++++++++++++++++
- 2 files changed, 458 insertions(+)
- create mode 100644 arch/arm/boot/dts/imx6ull-jozacp.dts
+Works fine on my Exynos5433 TM2e test board.
 
-diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-index 936aa3e65ce7..1f73806b99c2 100644
---- a/arch/arm/boot/dts/Makefile
-+++ b/arch/arm/boot/dts/Makefile
-@@ -676,6 +676,7 @@ dtb-$(CONFIG_SOC_IMX6UL) += \
- 	imx6ull-colibri-emmc-eval-v3.dtb \
- 	imx6ull-colibri-eval-v3.dtb \
- 	imx6ull-colibri-wifi-eval-v3.dtb \
-+	imx6ull-jozacp.dtb \
- 	imx6ull-myir-mys-6ulx-eval.dtb \
- 	imx6ull-opos6uldev.dtb \
- 	imx6ull-phytec-segin-ff-rdk-nand.dtb \
-diff --git a/arch/arm/boot/dts/imx6ull-jozacp.dts b/arch/arm/boot/dts/imx6ull-jozacp.dts
-new file mode 100644
-index 000000000000..1d779440b609
---- /dev/null
-+++ b/arch/arm/boot/dts/imx6ull-jozacp.dts
-@@ -0,0 +1,457 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
-+/*
-+ * Copyright (c) 2020 Protonic Holland
-+ * Copyright (c) 2020 Oleksij Rempel <kernel@pengutronix.de>, Pengutronix
-+ */
-+
-+/dts-v1/;
-+
-+#include <dt-bindings/gpio/gpio.h>
-+#include <dt-bindings/leds/common.h>
-+#include "imx6ull.dtsi"
-+
-+/ {
-+	model = "JOZ Access Point";
-+	compatible = "joz,jozacp", "fsl,imx6ull";
-+
-+	chosen {
-+		stdout-path = &uart1;
-+	};
-+
-+	/* On board name LED_RGB1 */
-+	led-controller-1 {
-+		compatible = "pwm-leds";
-+
-+		led-0 {
-+			color = <LED_COLOR_ID_RED>;
-+			function = LED_FUNCTION_INDICATOR;
-+			function-enumerator = <0>;
-+			pwms = <&pwm1 0 10000000 0>;
-+			max-brightness = <255>;
-+		};
-+
-+		led-1 {
-+			color = <LED_COLOR_ID_GREEN>;
-+			function = LED_FUNCTION_INDICATOR;
-+			function-enumerator = <1>;
-+			pwms = <&pwm3 0 10000000 0>;
-+			max-brightness = <255>;
-+		};
-+
-+		led-2 {
-+			color = <LED_COLOR_ID_BLUE>;
-+			function = LED_FUNCTION_INDICATOR;
-+			function-enumerator = <2>;
-+			pwms = <&pwm5 0 10000000 0>;
-+			max-brightness = <255>;
-+			linux,default-trigger = "heartbeat";
-+		};
-+	};
-+
-+	/* On board name LED_RGB2 */
-+	led-controller-2 {
-+		compatible = "pwm-leds";
-+
-+		led-3 {
-+			color = <LED_COLOR_ID_RED>;
-+			function = LED_FUNCTION_INDICATOR;
-+			function-enumerator = <3>;
-+			pwms = <&pwm2 0 10000000 0>;
-+			max-brightness = <255>;
-+		};
-+
-+		led-4 {
-+			color = <LED_COLOR_ID_GREEN>;
-+			function = LED_FUNCTION_INDICATOR;
-+			function-enumerator = <4>;
-+			pwms = <&pwm4 0 10000000 0>;
-+			max-brightness = <255>;
-+		};
-+
-+		led-5 {
-+			color = <LED_COLOR_ID_BLUE>;
-+			function = LED_FUNCTION_INDICATOR;
-+			function-enumerator = <5>;
-+			pwms = <&pwm6 0 10000000 0>;
-+			max-brightness = <255>;
-+		};
-+	};
-+
-+	reg_3v3: regulator-3v3 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "3v3";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		vin-supply = <&reg_5v0>;
-+	};
-+
-+	reg_5v0: regulator-5v0 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "5v0";
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+	};
-+
-+	reg_vbus: regulator-vbus {
-+		compatible = "regulator-fixed";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_vbus>;
-+		regulator-name = "vbus";
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+		vin-supply = <&reg_5v0>;
-+		gpio = <&gpio1 2 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+	};
-+
-+	usdhc2_wifi_pwrseq: usdhc2-wifi-pwrseq {
-+		compatible = "mmc-pwrseq-simple";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_wifi_npd>;
-+		reset-gpios = <&gpio4 25 GPIO_ACTIVE_LOW>;
-+	};
-+};
-+
-+&can1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_can1>;
-+	status = "okay";
-+};
-+
-+&cpu0 {
-+	clock-frequency = <792000000>;
-+};
-+
-+&fec1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_enet1>;
-+	phy-mode = "rmii";
-+	phy-handle = <&ethphy0>;
-+	status = "okay";
-+
-+	mdio {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		ethphy0: ethernet-phy@0 {
-+			reg = <0>;
-+			clocks = <&clks IMX6UL_CLK_ENET_REF>;
-+			clock-names = "rmii-ref";
-+			interrupts-extended = <&gpio1 29 IRQ_TYPE_LEVEL_LOW>;
-+			reset-gpios = <&gpio1 28 GPIO_ACTIVE_LOW>;
-+			reset-assert-us = <10000>;
-+			reset-deassert-us = <300>;
-+		};
-+	};
-+};
-+
-+&i2c1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_i2c1>;
-+	clock-frequency = <100000>;
-+	status = "okay";
-+};
-+
-+&i2c2 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_i2c2>;
-+	clock-frequency = <100000>;
-+	status = "okay";
-+
-+	rtc@51 {
-+		compatible = "nxp,pcf8563";
-+		reg = <0x51>;
-+	};
-+};
-+
-+&pwm1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_pwm1>;
-+	status = "okay";
-+};
-+
-+&pwm2 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_pwm2>;
-+	status = "okay";
-+};
-+
-+&pwm3 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_pwm3>;
-+	status = "okay";
-+};
-+
-+&pwm4 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_pwm4>;
-+	status = "okay";
-+};
-+
-+&pwm5 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_pwm5>;
-+	status = "okay";
-+};
-+
-+&pwm6 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_pwm6>;
-+	status = "okay";
-+};
-+
-+&snvs_rtc {
-+	status = "disabled";
-+};
-+
-+&uart1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_uart1>;
-+	status = "okay";
-+};
-+
-+&uart4 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_uart4>;
-+	dtr-gpios = <&gpio3 4 GPIO_ACTIVE_LOW>;
-+	uart-has-rtscts;
-+	status = "okay";
-+};
-+
-+&usbotg1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_usbotg1>;
-+	vbus-supply = <&reg_vbus>;
-+	dr_mode = "host";
-+	over-current-active-low;
-+	status = "okay";
-+};
-+
-+&usdhc1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_usdhc1>;
-+	vmmc-supply = <&reg_3v3>;
-+	bus-width = <8>;
-+	no-1-8-v;
-+	non-removable;
-+	cap-mmc-hw-reset;
-+	no-sd;
-+	no-sdio;
-+	status = "okay";
-+};
-+
-+&usdhc2 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_usdhc2>;
-+	mmc-pwrseq = <&usdhc2_wifi_pwrseq>;
-+	bus-width = <4>;
-+	no-1-8-v;
-+	no-mmc;
-+	no-sd;
-+	non-removable;
-+	pm-ignore-notify;
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+	status = "okay";
-+
-+	wifi@1 {
-+		compatible = "brcm,bcm4329-fmac";
-+		reg = <1>;
-+	};
-+};
-+
-+&iomuxc {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_hog>;
-+
-+	pinctrl_can1: can1grp {
-+		fsl,pins = <
-+			MX6UL_PAD_UART3_CTS_B__FLEXCAN1_TX	0x1b0b0
-+			MX6UL_PAD_UART3_RTS_B__FLEXCAN1_RX	0x1b0b0
-+		>;
-+	};
-+
-+	pinctrl_enet1: enet1grp {
-+		fsl,pins = <
-+			MX6UL_PAD_GPIO1_IO07__ENET1_MDC	 0x1b0b0
-+			MX6UL_PAD_GPIO1_IO06__ENET1_MDIO	0x1b0b0
-+			MX6UL_PAD_ENET1_RX_EN__ENET1_RX_EN	0x1b0b0
-+			MX6UL_PAD_ENET1_RX_ER__ENET1_RX_ER	0x1b0b0
-+			MX6UL_PAD_ENET1_RX_DATA0__ENET1_RDATA00	0x1b0b0
-+			MX6UL_PAD_ENET1_RX_DATA1__ENET1_RDATA01	0x1b0b0
-+			MX6UL_PAD_ENET1_TX_EN__ENET1_TX_EN	0x1b0b0
-+			MX6UL_PAD_ENET1_TX_DATA0__ENET1_TDATA00	0x1b0b0
-+			MX6UL_PAD_ENET1_TX_DATA1__ENET1_TDATA01	0x1b0b0
-+			MX6UL_PAD_ENET1_TX_CLK__ENET1_REF_CLK1	0x4001b031
-+
-+			MX6UL_PAD_UART4_TX_DATA__GPIO1_IO28	0x038b0
-+			MX6UL_PAD_UART4_RX_DATA__GPIO1_IO29	0x170b0
-+		>;
-+	};
-+
-+	pinctrl_hog: hoggrp {
-+		fsl,pins = <
-+			/* HW Revision */
-+			MX6UL_PAD_ENET2_RX_DATA0__GPIO2_IO08	0x1b0b0
-+			MX6UL_PAD_ENET2_RX_DATA1__GPIO2_IO09	0x1b0b0
-+			MX6UL_PAD_ENET2_RX_EN__GPIO2_IO10	0x1b0b0
-+
-+			/* HW ID */
-+			MX6UL_PAD_ENET2_TX_DATA0__GPIO2_IO11	0x1b0b0
-+			MX6UL_PAD_ENET2_TX_DATA1__GPIO2_IO12	0x1b0b0
-+			MX6UL_PAD_ENET2_TX_EN__GPIO2_IO13	0x1b0b0
-+			MX6UL_PAD_ENET2_TX_CLK__GPIO2_IO14	0x1b0b0
-+			MX6UL_PAD_ENET2_RX_ER__GPIO2_IO15	0x1b0b0
-+
-+			/* Digital inputs */
-+			MX6UL_PAD_GPIO1_IO03__GPIO1_IO03	0x11000
-+			MX6UL_PAD_GPIO1_IO04__GPIO1_IO04	0x11000
-+			MX6UL_PAD_GPIO1_IO05__GPIO1_IO05	0x11000
-+			MX6UL_PAD_GPIO1_IO08__GPIO1_IO08	0x11000
-+			MX6UL_PAD_GPIO1_IO09__GPIO1_IO09	0x11000
-+
-+			/* Isolated outputs */
-+			MX6UL_PAD_UART2_TX_DATA__GPIO1_IO20	0x01020
-+			MX6UL_PAD_UART2_RX_DATA__GPIO1_IO21	0x01020
-+			MX6UL_PAD_UART2_RTS_B__GPIO1_IO23	0x01020
-+			MX6UL_PAD_UART3_TX_DATA__GPIO1_IO24	0x01020
-+			MX6UL_PAD_UART3_RX_DATA__GPIO1_IO25	0x01020
-+		>;
-+	};
-+
-+	pinctrl_i2c1: i2c1grp {
-+		fsl,pins = <
-+			MX6UL_PAD_CSI_MCLK__I2C1_SDA		0x4001f8b1
-+			MX6UL_PAD_CSI_PIXCLK__I2C1_SCL		0x4001f8b1
-+		>;
-+	};
-+
-+	pinctrl_i2c2: i2c2grp {
-+		fsl,pins = <
-+			MX6UL_PAD_UART5_RX_DATA__I2C2_SDA	0x4001f8b1
-+			MX6UL_PAD_UART5_TX_DATA__I2C2_SCL	0x4001f8b1
-+		>;
-+	};
-+
-+	pinctrl_pwm1: pwm1grp {
-+		fsl,pins = <
-+			MX6UL_PAD_LCD_DATA00__PWM1_OUT		0x01010
-+		>;
-+	};
-+
-+	pinctrl_pwm2: pwm2grp {
-+		fsl,pins = <
-+			MX6UL_PAD_LCD_DATA01__PWM2_OUT		0x01010
-+		>;
-+	};
-+
-+	pinctrl_pwm3: pwm3grp {
-+		fsl,pins = <
-+			MX6UL_PAD_LCD_DATA02__PWM3_OUT		0x01010
-+		>;
-+	};
-+
-+	pinctrl_pwm4: pwm4grp {
-+		fsl,pins = <
-+			MX6UL_PAD_LCD_DATA03__PWM4_OUT		0x01010
-+		>;
-+	};
-+
-+	pinctrl_pwm5: pwm5grp {
-+		fsl,pins = <
-+			MX6UL_PAD_LCD_DATA18__PWM5_OUT		0x01010
-+		>;
-+	};
-+
-+	pinctrl_pwm6: pwm6grp {
-+		fsl,pins = <
-+			MX6UL_PAD_LCD_DATA19__PWM6_OUT		0x01010
-+		>;
-+	};
-+
-+	pinctrl_uart1: uart1grp {
-+		fsl,pins = <
-+			MX6UL_PAD_UART1_TX_DATA__UART1_DCE_TX	0x1b0b1
-+			MX6UL_PAD_UART1_RX_DATA__UART1_DCE_RX	0x1b0b1
-+		>;
-+	};
-+
-+	pinctrl_uart4: uart4grp {
-+		fsl,pins = <
-+			MX6UL_PAD_LCD_CLK__UART4_DCE_TX		0x1b0b0
-+			MX6UL_PAD_LCD_ENABLE__UART4_DCE_RX	0x1b0b0
-+			MX6UL_PAD_LCD_HSYNC__UART4_DCE_CTS	0x1b0b0
-+			MX6UL_PAD_LCD_VSYNC__UART4_DCE_RTS	0x1b0b0
-+			MX6UL_PAD_LCD_RESET__GPIO3_IO04		0x1b0b0
-+		>;
-+	};
-+
-+	pinctrl_usbotg1: usbotg1grp {
-+		fsl,pins = <
-+			MX6UL_PAD_GPIO1_IO01__USB_OTG1_OC	0x1b0b0
-+		>;
-+	};
-+
-+	pinctrl_usdhc1: usdhc1grp {
-+		fsl,pins = <
-+			MX6UL_PAD_NAND_WP_B__USDHC1_RESET_B	0x17099
-+			MX6UL_PAD_SD1_CMD__USDHC1_CMD		0x1f099
-+			MX6UL_PAD_SD1_CLK__USDHC1_CLK		0x10099
-+			MX6UL_PAD_SD1_DATA0__USDHC1_DATA0	0x17099
-+			MX6UL_PAD_SD1_DATA1__USDHC1_DATA1	0x17099
-+			MX6UL_PAD_SD1_DATA2__USDHC1_DATA2	0x17099
-+			MX6UL_PAD_SD1_DATA3__USDHC1_DATA3	0x17099
-+			MX6UL_PAD_NAND_READY_B__USDHC1_DATA4	0x17099
-+			MX6UL_PAD_NAND_CE0_B__USDHC1_DATA5	0x17099
-+			MX6UL_PAD_NAND_CE1_B__USDHC1_DATA6	0x17099
-+			MX6UL_PAD_NAND_CLE__USDHC1_DATA7	0x17099
-+		>;
-+	};
-+
-+	pinctrl_usdhc2: usdhc2grp {
-+		fsl,pins = <
-+			MX6UL_PAD_CSI_VSYNC__USDHC2_CLK		0x100b9
-+			MX6UL_PAD_CSI_HSYNC__USDHC2_CMD		0x170b9
-+			MX6UL_PAD_CSI_DATA00__USDHC2_DATA0	0x170b9
-+			MX6UL_PAD_CSI_DATA01__USDHC2_DATA1	0x170b9
-+			MX6UL_PAD_CSI_DATA02__USDHC2_DATA2	0x170b9
-+			MX6UL_PAD_CSI_DATA03__USDHC2_DATA3	0x170b9
-+		>;
-+	};
-+
-+	pinctrl_vbus: vbus0grp {
-+		fsl,pins = <
-+			MX6UL_PAD_GPIO1_IO02__GPIO1_IO02	0x030b0
-+		>;
-+	};
-+
-+	pinctrl_wifi_npd: wifigrp {
-+		fsl,pins = <
-+			/* WL_REG_ON */
-+			MX6UL_PAD_CSI_DATA04__GPIO4_IO25	0x03020
-+		>;
-+	};
-+};
-+
-+&iomuxc_snvs {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_snvs_hog>;
-+
-+	pinctrl_snvs_hog: snvs-hog-grp {
-+		fsl,pins = <
-+			/* Digital outputs */
-+			MX6ULL_PAD_SNVS_TAMPER2__GPIO5_IO02	0x00020
-+			MX6ULL_PAD_SNVS_TAMPER3__GPIO5_IO03	0x00020
-+			MX6ULL_PAD_SNVS_TAMPER4__GPIO5_IO04	0x00020
-+			MX6ULL_PAD_SNVS_TAMPER5__GPIO5_IO05	0x00020
-+			MX6ULL_PAD_SNVS_TAMPER6__GPIO5_IO06	0x00020
-+
-+			/* Digital outputs fault feedback */
-+			MX6ULL_PAD_SNVS_TAMPER0__GPIO5_IO00	0x17000
-+			MX6ULL_PAD_SNVS_TAMPER1__GPIO5_IO01	0x17000
-+			MX6ULL_PAD_SNVS_TAMPER7__GPIO5_IO07	0x17000
-+			MX6ULL_PAD_SNVS_TAMPER8__GPIO5_IO08	0x17000
-+			MX6ULL_PAD_SNVS_TAMPER9__GPIO5_IO09	0x17000
-+		>;
-+	};
-+};
+Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+
+> Will McVicker (2):
+>    [RFT] clk: samsung: add support for CPU clocks
+>    [RFT] clk: samsung: exynos5433: update apollo and atlas clock probing
+>
+>   drivers/clk/samsung/clk-cpu.c        |  26 ++++++
+>   drivers/clk/samsung/clk-exynos5433.c | 120 +++++++++++----------------
+>   drivers/clk/samsung/clk.c            |   2 +
+>   drivers/clk/samsung/clk.h            |  26 ++++++
+>   4 files changed, 102 insertions(+), 72 deletions(-)
+>
+Best regards
 -- 
-2.30.2
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
 
