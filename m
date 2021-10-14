@@ -2,233 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AADEF42CFFC
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 03:39:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B59A42CFFE
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 03:40:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229814AbhJNBl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 21:41:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34636 "EHLO
+        id S229846AbhJNBmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 21:42:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229496AbhJNBl6 (ORCPT
+        with ESMTP id S229496AbhJNBmu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 21:41:58 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FFE3C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 18:39:54 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id t11so3034520plq.11
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 18:39:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ygn1/So2L6NrJcd5boRzqswYyFbg2B+I40MS8TYVpNs=;
-        b=IIdRmLJFQRavjMw2MWCGuzvN3Cehb4IG454gJu1GIkzZvm4m0z4ZnV77W4Jx2fZa+K
-         u0w6H43zkHZeg7ZNaGgenLgMEtLP2B9wQNG1QCk2dLOurbCG090ncA5dJ1GlF/4AeXKJ
-         1rHBPDF38+xVZKXlx9VTdKDnedmdrg1QIyVu0xMX2TwRb7V4UpiohhbH2BxMUVg2dXd7
-         gasIxI1rOV6PPIe/BQJKzb6GaFi3HiozPliZP3gYFCCK4VXxJUrztaCxF4MCkU3IQ2t1
-         8Y6FyJOYqBQLZHMXMOggW7fRqvAb2z6l9nQbvJANvcDD06v1I9yrFoV3BYCvWn9FrUQQ
-         C/CQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ygn1/So2L6NrJcd5boRzqswYyFbg2B+I40MS8TYVpNs=;
-        b=jp32K5f+2gtBCE39Wk09lI+CqkmfRWwZEvwXZRaTTW947vaF8y41Kxoa2zZeZoq/Xk
-         6EdsjP5v58PRG1BTU1CGeCZ/H7jCGABfUQYue5J/GMaQuW2Q03McPHHSSr6MHth3vLfh
-         VUlQq9BZ9xcMTXzv9q0ExIbz6SaYFtYP7Bn0PC6bPYjW9rGfhfU/ZBFH5+kUAXbAp+h3
-         /2h8jotEEzOgaNFY1Yo/OlHzoqMnJDe7H+PpWKwaeKVcrrligA2tNWYn5NTHFl4yTqsQ
-         gFkHgpsKlPEni3Zo4/+HtnUw4YNWP/eItL9RGNcRH9yWZwrevDAO8DPvSkKj7sMwbf4o
-         tY2Q==
-X-Gm-Message-State: AOAM533EuWylmOoqyIl5fCpc9DIHR6iMxT0T/l5PvCIyXKoRY8dy/kRd
-        +NFdRctwR3z2fyVUmOO4Ezw5SIX4EdRzMwnWYJ+uPQ==
-X-Google-Smtp-Source: ABdhPJx0XyqHhqBedtXtJCc7cOWvTPEJY72lmuJ34Y4BZz3NHKVX9OvnOWrxG4rLhIOGtKD+Gn6ogONfGz9q8Cg7O58=
-X-Received: by 2002:a17:90b:4a81:: with SMTP id lp1mr3140101pjb.124.1634175593356;
- Wed, 13 Oct 2021 18:39:53 -0700 (PDT)
+        Wed, 13 Oct 2021 21:42:50 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A75E7C061570;
+        Wed, 13 Oct 2021 18:40:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=q+0dnEobalAAFZMHVHV+dBuOgl058N3oGikzx2RCv0c=; b=c95eMPYgrEVq6KLagJXXBAKg+J
+        fM9xtdx0+ISxPdKEuN5T5SKmXoULzm8ujKVE+3OAaNInFGlJKMnoT/qMPjdvsk8t6ckbDOo2Ppmqf
+        jiB8mDAC2rpagql68moyw6FBl+SFQbwFujTv2QArHjcfzULVkWx+yuJVPUbd+wdat58BcXLluG13i
+        E5KVbRFpxD9QmEDAijhd5LQrQo0EFqrZ9NgbSUevaJ1/L1P6tgNd/iJdNGIm3QkdbQJvjDU9Ov2mu
+        JMzKMzVJ3ABNplUUX9UkBLGeAatoGzx/3qHRo/VE4heuRKwcwZpMBNgUT+gwcdh71aL3VduMFmVbo
+        gEOBbcXw==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mapjf-001Cwc-If; Thu, 14 Oct 2021 01:40:43 +0000
+Subject: Re: [PATCH] iio: imx8qxp-adc: mark PM functions as __maybe_unused
+To:     Cai Huoqing <caihuoqing@baidu.com>, Arnd Bergmann <arnd@kernel.org>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-iio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20211013144338.2261316-1-arnd@kernel.org>
+ <20211014012936.GA2999@LAPTOP-UKSR4ENP.internal.baidu.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <50f71530-bab0-58f4-cf90-a7c1b60b9716@infradead.org>
+Date:   Wed, 13 Oct 2021 18:40:41 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20210923170908.2184404-1-kaleshsingh@google.com> <20211013180834.73e2653e@gandalf.local.home>
-In-Reply-To: <20211013180834.73e2653e@gandalf.local.home>
-From:   Kalesh Singh <kaleshsingh@google.com>
-Date:   Wed, 13 Oct 2021 18:39:42 -0700
-Message-ID: <CAC_TJverUnJVTGRw1pg1ughJ5YDA8Yo-fkpAm=_fWq9fdAgqTw@mail.gmail.com>
-Subject: Re: [PATCH] tracing/cfi: Fix cmp_entries_* functions signature mismatch
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Suren Baghdasaryan <surenb@google.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211014012936.GA2999@LAPTOP-UKSR4ENP.internal.baidu.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 3:08 PM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> On Thu, 23 Sep 2021 17:09:07 +0000
-> Kalesh Singh <kaleshsingh@google.com> wrote:
->
->
-> This finally popped up into my queue (from all my traveling and running of
-> conferences :-p )
->
->
-> > If CONFIG_CFI_CLANG=y, attempting to read an event histogram will cause
-> > the kernel to panic due to failed CFI check.
-> >
-> >     1. echo 'hist:keys=common_pid' >> events/sched/sched_switch/trigger
-> >     2. cat >> events/sched/sched_switch/hist
->
-> Do you mean:
->
->           2. cat events/sched/sched_switch/hist
->
-> ?
->
-> Small nits below.
+On 10/13/21 6:29 PM, Cai Huoqing wrote:
+> On 13 10月 21 16:43:26, Arnd Bergmann wrote:
+>> From: Arnd Bergmann <arnd@arndb.de>
+>>
+>> Without CONFIG_PM_SLEEP, the runtime suspend/resume functions
+>> are unused, producing a warning:
+>>
+>> drivers/iio/adc/imx8qxp-adc.c:433:12: error: 'imx8qxp_adc_runtime_resume' defined but not used [-Werror=unused-function]
+>>    433 | static int imx8qxp_adc_runtime_resume(struct device *dev)
+>>        |            ^~~~~~~~~~~~~~~~~~~~~~~~~~
+>> drivers/iio/adc/imx8qxp-adc.c:419:12: error: 'imx8qxp_adc_runtime_suspend' defined but not used [-Werror=unused-function]
+>>    419 | static int imx8qxp_adc_runtime_suspend(struct device *dev)
+>>        |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+>>
+>> Mark them as __maybe_unused to shut up the compiler.
+>>
+>> Fixes: 7bce634d02e6 ("iio: imx8qxp-adc: Add driver support for NXP IMX8QXP ADC")
+>> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> 
+> Reviewed-by: Cai Huoqing <caihuoqing@baidu.com>
 
-Thanks Steve, v2 posted at
-https://lore.kernel.org/r/20211014013704.2854890-1-kaleshsingh@google.com/
+Looks the same as
+https://lore.kernel.org/all/20211013014658.2798-1-caihuoqing@baidu.com/
 
-- Kalesh
->
-> >     3. kernel panices on attempting to read hist
-> >
-> > This happens because the sort() function expects a generic
-> > int (*)(const void *, const void *) pointer for the compare function.
-> > To prevent this CFI failure, change tracing map cmp_entries_* function
-> > signatures to match this.
-> >
-> > Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
-> > ---
-> >  kernel/trace/tracing_map.c | 40 ++++++++++++++++++++++----------------
-> >  1 file changed, 23 insertions(+), 17 deletions(-)
-> >
-> > diff --git a/kernel/trace/tracing_map.c b/kernel/trace/tracing_map.c
-> > index d6bddb157ef2..a8c80ebbf9da 100644
-> > --- a/kernel/trace/tracing_map.c
-> > +++ b/kernel/trace/tracing_map.c
-> > @@ -834,19 +834,21 @@ int tracing_map_init(struct tracing_map *map)
-> >       return err;
-> >  }
-> >
-> > -static int cmp_entries_dup(const struct tracing_map_sort_entry **a,
-> > -                        const struct tracing_map_sort_entry **b)
-> > +static int cmp_entries_dup(const void *__a, const void *__b)
->
-> Instead of __a and __b, have it as:
->
->         const void *A, const void *B
->
->
-> >  {
-> >       int ret = 0;
-> > +     const struct tracing_map_sort_entry *a
-> > +             = *(const struct tracing_map_sort_entry **)__a;
-> > +     const struct tracing_map_sort_entry *b
-> > +             = *(const struct tracing_map_sort_entry **)__b;
->
-> Please put these before the ret, we like to have a "upside down xmas tree"
-> type of declaration, where longer lines come before shorter ones. Also,
-> this can be "prettified" as:
->
->         const struct tracing_map_sort_entry **pa = A;
->         const struct tracing_map_sort_entry **pb = B;
->         const struct tracing_map_sort_entry *a = *pa;
->         const struct tracing_map_sort_entry *b = *pb;
->         int ret = 0;
->
-> >
-> > -     if (memcmp((*a)->key, (*b)->key, (*a)->elt->map->key_size))
-> > +     if (memcmp(a->key, b->key, a->elt->map->key_size))
-> >               ret = 1;
-> >
-> >       return ret;
-> >  }
-> >
-> > -static int cmp_entries_sum(const struct tracing_map_sort_entry **a,
-> > -                        const struct tracing_map_sort_entry **b)
-> > +static int cmp_entries_sum(const void *__a, const void *__b)
-> >  {
-> >       const struct tracing_map_elt *elt_a, *elt_b;
-> >       struct tracing_map_sort_key *sort_key;
-> > @@ -854,9 +856,13 @@ static int cmp_entries_sum(const struct tracing_map_sort_entry **a,
-> >       tracing_map_cmp_fn_t cmp_fn;
-> >       void *val_a, *val_b;
-> >       int ret = 0;
-> > +     const struct tracing_map_sort_entry *a
-> > +             = *(const struct tracing_map_sort_entry **)__a;
-> > +     const struct tracing_map_sort_entry *b
-> > +             = *(const struct tracing_map_sort_entry **)__b;
->
-> Same here.
->
-> >
-> > -     elt_a = (*a)->elt;
-> > -     elt_b = (*b)->elt;
-> > +     elt_a = a->elt;
-> > +     elt_b = b->elt;
-> >
-> >       sort_key = &elt_a->map->sort_key;
-> >
-> > @@ -873,8 +879,7 @@ static int cmp_entries_sum(const struct tracing_map_sort_entry **a,
-> >       return ret;
-> >  }
-> >
-> > -static int cmp_entries_key(const struct tracing_map_sort_entry **a,
-> > -                        const struct tracing_map_sort_entry **b)
-> > +static int cmp_entries_key(const void *__a, const void *__b)
-> >  {
-> >       const struct tracing_map_elt *elt_a, *elt_b;
-> >       struct tracing_map_sort_key *sort_key;
-> > @@ -882,9 +887,13 @@ static int cmp_entries_key(const struct tracing_map_sort_entry **a,
-> >       tracing_map_cmp_fn_t cmp_fn;
-> >       void *val_a, *val_b;
-> >       int ret = 0;
-> > +     const struct tracing_map_sort_entry *a
-> > +             = *(const struct tracing_map_sort_entry **)__a;
-> > +     const struct tracing_map_sort_entry *b
-> > +             = *(const struct tracing_map_sort_entry **)__b;
->
-> And here.
->
-> Thanks, and sorry for the long delay.
->
-> -- Steve
->
-> >
-> > -     elt_a = (*a)->elt;
-> > -     elt_b = (*b)->elt;
-> > +     elt_a = a->elt;
-> > +     elt_b = b->elt;
-> >
-> >       sort_key = &elt_a->map->sort_key;
-> >
-> > @@ -989,10 +998,8 @@ static void sort_secondary(struct tracing_map *map,
-> >                          struct tracing_map_sort_key *primary_key,
-> >                          struct tracing_map_sort_key *secondary_key)
-> >  {
-> > -     int (*primary_fn)(const struct tracing_map_sort_entry **,
-> > -                       const struct tracing_map_sort_entry **);
-> > -     int (*secondary_fn)(const struct tracing_map_sort_entry **,
-> > -                         const struct tracing_map_sort_entry **);
-> > +     int (*primary_fn)(const void *, const void *);
-> > +     int (*secondary_fn)(const void *, const void *);
-> >       unsigned i, start = 0, n_sub = 1;
-> >
-> >       if (is_key(map, primary_key->field_idx))
-> > @@ -1061,8 +1068,7 @@ int tracing_map_sort_entries(struct tracing_map *map,
-> >                            unsigned int n_sort_keys,
-> >                            struct tracing_map_sort_entry ***sort_entries)
-> >  {
-> > -     int (*cmp_entries_fn)(const struct tracing_map_sort_entry **,
-> > -                           const struct tracing_map_sort_entry **);
-> > +     int (*cmp_entries_fn)(const void *, const void *);
-> >       struct tracing_map_sort_entry *sort_entry, **entries;
-> >       int i, n_entries, ret;
-> >
-> >
-> > base-commit: 58e2cf5d794616b84f591d4d1276c8953278ce24
->
+but that one is mixing the Fixes: tag.
+
+>> ---
+>>   drivers/iio/adc/imx8qxp-adc.c | 4 ++--
+>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/iio/adc/imx8qxp-adc.c b/drivers/iio/adc/imx8qxp-adc.c
+>> index 5030e0d8318d..901dd8e1b32f 100644
+>> --- a/drivers/iio/adc/imx8qxp-adc.c
+>> +++ b/drivers/iio/adc/imx8qxp-adc.c
+>> @@ -416,7 +416,7 @@ static int imx8qxp_adc_remove(struct platform_device *pdev)
+>>   	return 0;
+>>   }
+>>   
+>> -static int imx8qxp_adc_runtime_suspend(struct device *dev)
+>> +static __maybe_unused int imx8qxp_adc_runtime_suspend(struct device *dev)
+>>   {
+>>   	struct iio_dev *indio_dev = dev_get_drvdata(dev);
+>>   	struct imx8qxp_adc *adc = iio_priv(indio_dev);
+>> @@ -430,7 +430,7 @@ static int imx8qxp_adc_runtime_suspend(struct device *dev)
+>>   	return 0;
+>>   }
+>>   
+>> -static int imx8qxp_adc_runtime_resume(struct device *dev)
+>> +static __maybe_unused int imx8qxp_adc_runtime_resume(struct device *dev)
+>>   {
+>>   	struct iio_dev *indio_dev = dev_get_drvdata(dev);
+>>   	struct imx8qxp_adc *adc = iio_priv(indio_dev);
+>> -- 
+
+
+
+
+-- 
+~Randy
