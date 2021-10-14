@@ -2,156 +2,493 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25A3642DBE5
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:40:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF25242DBE3
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:40:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231506AbhJNOmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 10:42:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42834 "EHLO
+        id S231393AbhJNOms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 10:42:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229743AbhJNOmt (ORCPT
+        with ESMTP id S229743AbhJNOmr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 10:42:49 -0400
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A89EEC061570
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 07:40:44 -0700 (PDT)
-Received: by mail-il1-x12c.google.com with SMTP id a8so3726164ilj.10
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 07:40:44 -0700 (PDT)
+        Thu, 14 Oct 2021 10:42:47 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86475C061570
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 07:40:42 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id j21so28445855lfe.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 07:40:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Vf6cE4PPa4v3+bsdQEEt1icoIwGyEK8nRcHaAS9IFTY=;
-        b=CRtMmdZawgppL6lggnYhzQaUipb+bwGxtjUkWRYJbuyR/oBrVTDFSYxXx2eG2U4Ep+
-         H4ZYNTBT9nv0xFG5ZmrescKfqzVN+eAxtzDpg4lVXJCOZpD5oZGBkpAX+5kbZbBdHN3A
-         D/EAWOJQYsLb9az5269xszw2vgkLyAR4Pny0Mqe/9Ocypm2ksvWkLCvFSuT4HNsS5Pvf
-         lERf7npRI/RvtGNMRhsepE3tEZqg0bG5fTd9ff8TM6NM5YW0zFooqtCenqCiPgJxMSkQ
-         kgvGvo0MTSYBYtGXMPlc8I/5YPdhHKdhdgHxRLXCZsvr1BgjfrUaNLXuYc8g1IInBHfr
-         CyuA==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=9wbp9KOUy7rHKUYRK00W3K4pTYPodLpBmDmb0LNYv6w=;
+        b=f7MXAuTx9bn2gNLP/aO38Pd2bfkSysU7A7gKPmce4ppe1+/yiSwn2cDiPV0FZYQBFJ
+         Gn0FNgEvtPvflf7BheuFe6yFgNm47gHsT3vJJ8SpNBBwb86Mgr+HPki1/BT/fLTa3PEK
+         ItiB7ZtD9Y5BGWkGvcual3HFwqPkUbyhuB8wKnrifNlNKG1fNQXWJd78ZcBneBRghI8F
+         1OZrNP3PXMWEAS+hoFko7a0qeTuKxi0ecvdtRQkLBpoYajDTKUwxT74PviC8L9b9TaK3
+         42wR8+U3jfaB/lWloXk/XUKzH3H56kmTxOPgZm00RbqfTjxV2+UzlMA9a+UAso9PIbYs
+         7S/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Vf6cE4PPa4v3+bsdQEEt1icoIwGyEK8nRcHaAS9IFTY=;
-        b=l2e34c2+Eiui1cDDuWdpJfJDKupyaiirZ8i/NhkNTYPXSaJ4i7GUFRhTV420s7y5Ys
-         YZosadHrFtQ4uFRl0eSqtEeWhyJCpDGWvrGiWKwSQMcJcalRdXefEFRGyRWxxrD+pqT0
-         we7W3Tew01SKaUIlJrr7B5d+Ei1mF/A5avM92vqN84Fvv/jtywmNieXL6ab1UCVOOpfh
-         Jqq+PDcIvAeJphhlIUIiQBwnMmmu3djosmgqBH9EssSRoJ4HYIgBaib6WG6QbncXxtXx
-         cyrg23hX9U0wf13KTb1EN8GCBEAd2blJ4NyYB/B/sKhNkjzmWV8sL76e3qd7M0Z1zWlQ
-         /Xww==
-X-Gm-Message-State: AOAM531OK7DlzqDHo10s6Qp+vplaqIUNsSr427K9NQp4ZjUmSiwPNTG9
-        QAUjoIXmHfNoAS/2Os+2pkCpEFRyPLa2sCRZxUo=
-X-Google-Smtp-Source: ABdhPJzoQpLaSPV5cA1GZcYyHxpnTo+5/Nqxmf8D9DEM2vqKciR094dbJ4faBfJgWc9RUqQxMMwBdW5GeiHC2GJsA+k=
-X-Received: by 2002:a05:6e02:c11:: with SMTP id d17mr2818280ile.25.1634222444101;
- Thu, 14 Oct 2021 07:40:44 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=9wbp9KOUy7rHKUYRK00W3K4pTYPodLpBmDmb0LNYv6w=;
+        b=NCkmJ7n6I8gMJuAELHP6T7zBb1ufy5vhXaHNA8Odc/4M+2OeVp4QivW+52HX3DOScp
+         +7WserAKlVvJP7CF3/23daYDxMNFPnXLK54XMo9XppLA520X5EThuWMobDbSVIC5G2Wf
+         71o8DbAfJxk1/JOecKfFnJ3cUbgy8+x40Cf3BO00STlk5HTiuWeCIrGiDgGkZq0GdRTF
+         PkhJ5uwpsbjfx/Fd21epVGiFbhLQ8p09MF/ynkyHd/s1N2T+6hQcHuYjDupzECU1SrWP
+         L9dmXgz43MAF3ttQM8frIs7mDLQlbK8iEwmEK9zONu7Y5l1jllIYVmHNDEV4Wgyay3+w
+         GZsA==
+X-Gm-Message-State: AOAM532fqX7yeDCX10uqV7EvScGlzv41Ov2uSbbwUKj/m0r0xYznnIra
+        AerA7jEf8kK6o6eD+Sy8d2zcG8+24FEasA==
+X-Google-Smtp-Source: ABdhPJybcJWcnhARDvZgxRm2W6SWKxtKCG5q9v/za/z6bPhWE6ws2lTwIVMjjNO3OR/7lY/mXXdpeQ==
+X-Received: by 2002:a05:651c:249:: with SMTP id x9mr6495739ljn.257.1634222440832;
+        Thu, 14 Oct 2021 07:40:40 -0700 (PDT)
+Received: from [192.168.1.211] ([37.153.55.125])
+        by smtp.gmail.com with ESMTPSA id s4sm241673lfs.235.2021.10.14.07.40.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Oct 2021 07:40:40 -0700 (PDT)
+Subject: Re: [PATCH v2 02/11] drm/msm/disp/dpu1: Add support for DSC
+To:     Vinod Koul <vkoul@kernel.org>, Rob Clark <robdclark@gmail.com>
+Cc:     linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org
+References: <20211007070900.456044-1-vkoul@kernel.org>
+ <20211007070900.456044-3-vkoul@kernel.org>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Message-ID: <c9c77691-f6e8-576c-7e2d-a87295b13ba7@linaro.org>
+Date:   Thu, 14 Oct 2021 17:40:39 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <20211010102429.99577-4-laoar.shao@gmail.com> <20211014072707.GA18719@xsang-OptiPlex-9020>
- <CALOAHbD540exB5DDfB8DDh8WXvsag9JsdMmC0yxriWMaoAVfOg@mail.gmail.com>
- <1529739526.13983.1634215325995.JavaMail.zimbra@efficios.com>
- <CALOAHbDGH1vp7a9BYLDKCCrh-W2205O707LXNM+Yvt5tQ7Swag@mail.gmail.com>
- <173454728.14036.1634216949862.JavaMail.zimbra@efficios.com>
- <CALOAHbBTxLvuiuT4tT2_7C+jaXBoh0uTjzLRm+njO4tKxCtPwg@mail.gmail.com> <1171592945.14099.1634219447199.JavaMail.zimbra@efficios.com>
-In-Reply-To: <1171592945.14099.1634219447199.JavaMail.zimbra@efficios.com>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Thu, 14 Oct 2021 22:40:04 +0800
-Message-ID: <CALOAHbAhT1bTAThrmA1zYE5q8shR4dxZf5fqcq_9wVrV+XwVEQ@mail.gmail.com>
-Subject: Re: [sched.h] 317419b91e: perf-sanity-tests.Parse_sched_tracepoints_fields.fail
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     acme <acme@kernel.org>, rostedt <rostedt@goodmis.org>,
-        kernel test robot <oliver.sang@intel.com>,
-        0day robot <lkp@intel.com>, Petr Mladek <pmladek@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        lkp <lkp@lists.01.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Qiang Zhang <qiang.zhang@windriver.com>,
-        robdclark <robdclark@chromium.org>,
-        christian <christian@brauner.io>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        bristot <bristot@redhat.com>,
-        aubrey li <aubrey.li@linux.intel.com>,
-        yu c chen <yu.c.chen@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211007070900.456044-3-vkoul@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 9:50 PM Mathieu Desnoyers
-<mathieu.desnoyers@efficios.com> wrote:
->
-> ----- On Oct 14, 2021, at 9:11 AM, Yafang Shao laoar.shao@gmail.com wrote:
->
-> > On Thu, Oct 14, 2021 at 9:09 PM Mathieu Desnoyers
-> > <mathieu.desnoyers@efficios.com> wrote:
-> >>
-> >> ----- On Oct 14, 2021, at 9:05 AM, Yafang Shao laoar.shao@gmail.com wrote:
-> >> [...]
-> >> >> If it happens that this ABI break is noticed by more than an in-tree test
-> >> >> program, then
-> >> >> the kernel's ABI rules will require that this trace field size stays unchanged.
-> >> >> This brings
-> >> >> up once more the whole topic of "Tracepoints ABI" which has been discussed
-> >> >> repeatedly in
-> >> >> the past.
-> >> >>
-> >> >
-> >> > I will check if any other in-tree tools depends on TASK_COMM_LEN.
-> >>
-> >> That's a start, but given this is a userspace ABI, out-of-tree userland
-> >> tools which depend of this to be fixed-size are also relevant.
-> >>
-> >
-> > TASK_COMM_LEN isn't defined in include/uapi/ directory, so it seems
-> > that it isn't the uerspace ABI?
->
-> One case where this 16 bytes size is expected by userspace is prctl(2) PR_GET_NAME
-> and PR_SET_NAME.
->
+On 07/10/2021 10:08, Vinod Koul wrote:
+> Display Stream Compression (DSC) is one of the hw blocks in dpu, so add
+> support by adding hw blocks for DSC
+> 
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> ---
+> Changes since
+> v1:
+>   - remove unused variable lp
+>   - Update copyright year
+> RFC:
+>   - Drop unused enums
+> 
+>   drivers/gpu/drm/msm/Makefile                  |   1 +
+>   .../gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h    |  13 ++
+>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_dsc.c    | 210 ++++++++++++++++++
+>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_dsc.h    |  77 +++++++
+>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h   |  13 ++
+>   5 files changed, 314 insertions(+)
+>   create mode 100644 drivers/gpu/drm/msm/disp/dpu1/dpu_hw_dsc.c
+>   create mode 100644 drivers/gpu/drm/msm/disp/dpu1/dpu_hw_dsc.h
+> 
+> diff --git a/drivers/gpu/drm/msm/Makefile b/drivers/gpu/drm/msm/Makefile
+> index 904535eda0c4..46c05e401d04 100644
+> --- a/drivers/gpu/drm/msm/Makefile
+> +++ b/drivers/gpu/drm/msm/Makefile
+> @@ -60,6 +60,7 @@ msm-y := \
+>   	disp/dpu1/dpu_formats.o \
+>   	disp/dpu1/dpu_hw_catalog.o \
+>   	disp/dpu1/dpu_hw_ctl.o \
+> +	disp/dpu1/dpu_hw_dsc.o \
+>   	disp/dpu1/dpu_hw_interrupts.o \
+>   	disp/dpu1/dpu_hw_intf.o \
+>   	disp/dpu1/dpu_hw_lm.o \
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h
+> index d2a945a27cfa..699c378814b1 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h
+> @@ -553,6 +553,16 @@ struct dpu_merge_3d_cfg  {
+>   	const struct dpu_merge_3d_sub_blks *sblk;
+>   };
+>   
+> +/**
+> + * struct dpu_dsc_cfg - information of DSC blocks
+> + * @id                 enum identifying this block
+> + * @base               register offset of this block
+> + * @features           bit mask identifying sub-blocks/features
+> + */
+> +struct dpu_dsc_cfg {
+> +	DPU_HW_BLK_INFO;
+> +};
+> +
+>   /**
+>    * struct dpu_intf_cfg - information of timing engine blocks
+>    * @id                 enum identifying this block
+> @@ -757,6 +767,9 @@ struct dpu_mdss_cfg {
+>   	u32 merge_3d_count;
+>   	const struct dpu_merge_3d_cfg *merge_3d;
+>   
+> +	u32 dsc_count;
+> +	struct dpu_dsc_cfg *dsc;
+> +
+>   	u32 intf_count;
+>   	const struct dpu_intf_cfg *intf;
+>   
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_dsc.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_dsc.c
+> new file mode 100644
+> index 000000000000..09682c4832ba
+> --- /dev/null
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_dsc.c
+> @@ -0,0 +1,210 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Copyright (c) 2020-2021, Linaro Limited
+> + */
+> +
+> +#include "dpu_kms.h"
+> +#include "dpu_hw_catalog.h"
+> +#include "dpu_hwio.h"
+> +#include "dpu_hw_mdss.h"
+> +#include "dpu_hw_dsc.h"
+> +
+> +#define DSC_COMMON_MODE	                0x000
+> +#define DSC_ENC                         0X004
+> +#define DSC_PICTURE                     0x008
+> +#define DSC_SLICE                       0x00C
+> +#define DSC_CHUNK_SIZE                  0x010
+> +#define DSC_DELAY                       0x014
+> +#define DSC_SCALE_INITIAL               0x018
+> +#define DSC_SCALE_DEC_INTERVAL          0x01C
+> +#define DSC_SCALE_INC_INTERVAL          0x020
+> +#define DSC_FIRST_LINE_BPG_OFFSET       0x024
+> +#define DSC_BPG_OFFSET                  0x028
+> +#define DSC_DSC_OFFSET                  0x02C
+> +#define DSC_FLATNESS                    0x030
+> +#define DSC_RC_MODEL_SIZE               0x034
+> +#define DSC_RC                          0x038
+> +#define DSC_RC_BUF_THRESH               0x03C
+> +#define DSC_RANGE_MIN_QP                0x074
+> +#define DSC_RANGE_MAX_QP                0x0B0
+> +#define DSC_RANGE_BPG_OFFSET            0x0EC
+> +
+> +static void dpu_hw_dsc_disable(struct dpu_hw_dsc *dsc)
+> +{
+> +	struct dpu_hw_blk_reg_map *c = &dsc->hw;
+> +
+> +	DPU_REG_WRITE(c, DSC_COMMON_MODE, 0);
+> +}
+> +
+> +static void dpu_hw_dsc_config(struct dpu_hw_dsc *hw_dsc,
+> +			      struct msm_display_dsc_config *dsc, u32 mode)
+> +{
+> +	struct dpu_hw_blk_reg_map *c = &hw_dsc->hw;
+> +	u32 data, lsb, bpp;
+> +	u32 initial_lines = dsc->initial_lines;
+> +	bool is_cmd_mode = !(mode & BIT(2));
 
-the prctl(2) man page says that:
-: PR_SET_NAME
-:        If the length of the string, including the terminating
-:        null byte, exceeds 16 bytes, the string is silently truncated.
-: PR_GET_NAME
-:         The buffer should allow space for up to 16 bytes
-:          the returned string will be null-terminated.
+DSC_MODE_VIDEO
 
-As the string returned to user space is null-terminated, extending
-task comm won't break the prctl(2) user code.
+> +
+> +	DPU_REG_WRITE(c, DSC_COMMON_MODE, mode);
+> +
+> +	if (is_cmd_mode)
+> +		initial_lines += 1;
+> +
+> +	data = (initial_lines << 20);
+> +	data |= ((dsc->slice_last_group_size - 1) << 18);
+> +	/* bpp is 6.4 format, 4 LSBs bits are for fractional part */
+> +	data |= dsc->drm->bits_per_pixel << 12;
+> +	lsb = dsc->drm->bits_per_pixel % 4;
+> +	bpp = dsc->drm->bits_per_pixel / 4;
+> +	bpp *= 4;
+> +	bpp <<= 4;
+> +	bpp |= lsb;
+> +
+> +	data |= bpp << 8;
+> +	data |= (dsc->drm->block_pred_enable << 7);
+> +	data |= (dsc->drm->line_buf_depth << 3);
+> +	data |= (dsc->drm->simple_422 << 2);
+> +	data |= (dsc->drm->convert_rgb << 1);
+> +	data |= dsc->drm->bits_per_component;
+> +
+> +	DPU_REG_WRITE(c, DSC_ENC, data);
+> +
+> +	data = dsc->drm->pic_width << 16;
+> +	data |= dsc->drm->pic_height;
+> +	DPU_REG_WRITE(c, DSC_PICTURE, data);
+> +
+> +	data = dsc->drm->slice_width << 16;
+> +	data |= dsc->drm->slice_height;
+> +	DPU_REG_WRITE(c, DSC_SLICE, data);
+> +
+> +	data = dsc->drm->slice_chunk_size << 16;
+> +	DPU_REG_WRITE(c, DSC_CHUNK_SIZE, data);
+> +
+> +	data = dsc->drm->initial_dec_delay << 16;
+> +	data |= dsc->drm->initial_xmit_delay;
+> +	DPU_REG_WRITE(c, DSC_DELAY, data);
+> +
+> +	data = dsc->drm->initial_scale_value;
+> +	DPU_REG_WRITE(c, DSC_SCALE_INITIAL, data);
+> +
+> +	data = dsc->drm->scale_decrement_interval;
+> +	DPU_REG_WRITE(c, DSC_SCALE_DEC_INTERVAL, data);
+> +
+> +	data = dsc->drm->scale_increment_interval;
+> +	DPU_REG_WRITE(c, DSC_SCALE_INC_INTERVAL, data);
+> +
+> +	data = dsc->drm->first_line_bpg_offset;
+> +	DPU_REG_WRITE(c, DSC_FIRST_LINE_BPG_OFFSET, data);
+> +
+> +	data = dsc->drm->nfl_bpg_offset << 16;
+> +	data |= dsc->drm->slice_bpg_offset;
+> +	DPU_REG_WRITE(c, DSC_BPG_OFFSET, data);
+> +
+> +	data = dsc->drm->initial_offset << 16;
+> +	data |= dsc->drm->final_offset;
+> +	DPU_REG_WRITE(c, DSC_DSC_OFFSET, data);
+> +
+> +	data = dsc->det_thresh_flatness << 10;
+> +	data |= dsc->drm->flatness_max_qp << 5;
+> +	data |= dsc->drm->flatness_min_qp;
+> +	DPU_REG_WRITE(c, DSC_FLATNESS, data);
+> +
+> +	data = dsc->drm->rc_model_size;
+> +	DPU_REG_WRITE(c, DSC_RC_MODEL_SIZE, data);
+> +
+> +	data = dsc->drm->rc_tgt_offset_low << 18;
+> +	data |= dsc->drm->rc_tgt_offset_high << 14;
+> +	data |= dsc->drm->rc_quant_incr_limit1 << 9;
+> +	data |= dsc->drm->rc_quant_incr_limit0 << 4;
+> +	data |= dsc->drm->rc_edge_factor;
+> +	DPU_REG_WRITE(c, DSC_RC, data);
+> +}
+> +
+> +static void dpu_hw_dsc_config_thresh(struct dpu_hw_dsc *hw_dsc,
+> +				     struct msm_display_dsc_config *dsc)
 
-> The other case I am referring to is with ftrace and perf:
->
-> mount -t tracefs nodev /sys/kernel/tracing
-> cat /sys/kernel/tracing/events/sched/sched_switch/format
->
-> name: sched_switch
-> ID: 314
-> format:
-> [...]
->         field:char prev_comm[16];       offset:8;       size:16;        signed:1;
-> [...]
->         field:char next_comm[16];       offset:40;      size:16;        signed:1;
->
-> Both of those fields expose a fixed-size of 16 bytes.
->
-> AFAIK Steven's intent was that by parsing this file, trace viewers could adapt to
-> changes in the event field layout. Unfortunately, there have been cases where
-> trace viewers had a hard expectation on the field layout. Hopefully those have
-> all been fixed a while ago.
->
+I thought that it might make sense to pass just 
+drm_dsc_rc_range_parameters here, but it's a matter of personal 
+preference. I won't insist on doing that.
 
-I don't have a clear idea what will happen to trace viewers if we
-extend task comm.
+> +{
+> +	struct drm_dsc_rc_range_parameters *rc = dsc->drm->rc_range_params;
+> +	struct dpu_hw_blk_reg_map *c = &hw_dsc->hw;
+> +	u32 off;
+> +	int i;
+> +
+> +	off = DSC_RC_BUF_THRESH;
+> +	for (i = 0; i < DSC_NUM_BUF_RANGES - 1 ; i++) {
+> +		DPU_REG_WRITE(c, off, dsc->drm->rc_buf_thresh[i]);
+> +		off += 4;
+> +	}
+> +
+> +	off = DSC_RANGE_MIN_QP;
+> +	for (i = 0; i < DSC_NUM_BUF_RANGES; i++) {
+> +		DPU_REG_WRITE(c, off, rc[i].range_min_qp);
+> +		off += 4;
+> +	}
+> +
+> +	off = DSC_RANGE_MAX_QP;
+> +	for (i = 0; i < 15; i++) {
+> +		DPU_REG_WRITE(c, off, rc[i].range_max_qp);
+> +		off += 4;
+> +	}
+> +
+> +	off = DSC_RANGE_BPG_OFFSET;
+> +	for (i = 0; i < 15; i++) {
+> +		DPU_REG_WRITE(c, off, rc[i].range_bpg_offset);
+> +		off += 4;
+> +	}
+> +}
+> +
+> +static struct dpu_dsc_cfg *_dsc_offset(enum dpu_dsc dsc,
+> +				       struct dpu_mdss_cfg *m,
+> +				       void __iomem *addr,
+> +				       struct dpu_hw_blk_reg_map *b)
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < m->dsc_count; i++) {
+> +		if (dsc == m->dsc[i].id) {
+> +			b->base_off = addr;
+> +			b->blk_off = m->dsc[i].base;
+> +			b->length = m->dsc[i].len;
+> +			b->hwversion = m->hwversion;
+> +			b->log_mask = DPU_DBG_MASK_DSC;
+> +			return &m->dsc[i];
+> +		}
+> +	}
+> +
+> +	return NULL;
+> +}
+> +
+> +static void _setup_dsc_ops(struct dpu_hw_dsc_ops *ops,
+> +			   unsigned long cap)
+> +{
+> +	ops->dsc_disable = dpu_hw_dsc_disable;
+> +	ops->dsc_config = dpu_hw_dsc_config;
+> +	ops->dsc_config_thresh = dpu_hw_dsc_config_thresh;
+> +};
+> +
+> +struct dpu_hw_dsc *dpu_hw_dsc_init(enum dpu_dsc idx, void __iomem *addr,
+> +				   struct dpu_mdss_cfg *m)
+> +{
+> +	struct dpu_hw_dsc *c;
+> +	struct dpu_dsc_cfg *cfg;
+> +
+> +	c = kzalloc(sizeof(*c), GFP_KERNEL);
+> +	if (!c)
+> +		return ERR_PTR(-ENOMEM);
+> +
+> +	cfg = _dsc_offset(idx, m, addr, &c->hw);
+> +	if (IS_ERR_OR_NULL(cfg)) {
+> +		kfree(c);
+> +		return ERR_PTR(-EINVAL);
+> +	}
+> +
+> +	c->idx = idx;
+> +	c->caps = cfg;
+> +	_setup_dsc_ops(&c->ops, c->caps->features);
+> +
+> +	return c;
+> +}
+> +
+> +void dpu_hw_dsc_destroy(struct dpu_hw_dsc *dsc)
+> +{
+> +	kfree(dsc);
+> +}
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_dsc.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_dsc.h
+> new file mode 100644
+> index 000000000000..648c9e4d8749
+> --- /dev/null
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_dsc.h
+> @@ -0,0 +1,77 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +/* Copyright (c) 2020-2021, Linaro Limited */
+> +
+> +#ifndef _DPU_HW_DSC_H
+> +#define _DPU_HW_DSC_H
+> +
+> +#include <drm/drm_dsc.h>
+> +
+> +#define DSC_MODE_SPLIT_PANEL            BIT(0)
+> +#define DSC_MODE_MULTIPLEX              BIT(1)
+> +#define DSC_MODE_VIDEO                  BIT(2)
+> +
+> +struct dpu_hw_dsc;
+> +
+> +/**
+> + * struct dpu_hw_dsc_ops - interface to the dsc hardware driver functions
+> + * Assumption is these functions will be called after clocks are enabled
+> + */
+> +struct dpu_hw_dsc_ops {
+> +	/**
+> +	 * dsc_disable - disable dsc
+> +	 * @hw_dsc: Pointer to dsc context
+> +	 */
+> +	void (*dsc_disable)(struct dpu_hw_dsc *hw_dsc);
+> +
+> +	/**
+> +	 * dsc_config - configures dsc encoder
+> +	 * @hw_dsc: Pointer to dsc context
+> +	 * @dsc: panel dsc parameters
+> +	 * @mode: dsc topology mode to be set
+> +	 */
+> +	void (*dsc_config)(struct dpu_hw_dsc *hw_dsc,
+> +			   struct msm_display_dsc_config *dsc, u32 mode);
+> +
+> +	/**
+> +	 * dsc_config_thresh - programs panel thresholds
+> +	 * @hw_dsc: Pointer to dsc context
+> +	 * @dsc: panel dsc parameters
+> +	 */
+> +	void (*dsc_config_thresh)(struct dpu_hw_dsc *hw_dsc,
+> +				  struct msm_display_dsc_config *dsc);
+> +};
+> +
+> +struct dpu_hw_dsc {
+> +	struct dpu_hw_blk base;
+> +	struct dpu_hw_blk_reg_map hw;
+> +
+> +	/* dsc */
+> +	enum dpu_dsc idx;
+> +	const struct dpu_dsc_cfg *caps;
+> +
+> +	/* ops */
+> +	struct dpu_hw_dsc_ops ops;
+> +};
+> +
+> +/**
+> + * dpu_hw_dsc_init - initializes the dsc block for the passed dsc idx.
+> + * @idx:  DSC index for which driver object is required
+> + * @addr: Mapped register io address of MDP
+> + * @m:    Pointer to mdss catalog data
+> + * Returns: Error code or allocated dpu_hw_dsc context
+> + */
+> +struct dpu_hw_dsc *dpu_hw_dsc_init(enum dpu_dsc idx, void __iomem *addr,
+> +				   struct dpu_mdss_cfg *m);
+> +
+> +/**
+> + * dpu_hw_dsc_destroy - destroys dsc driver context
+> + * @dsc:   Pointer to dsc driver context returned by dpu_hw_dsc_init
+> + */
+> +void dpu_hw_dsc_destroy(struct dpu_hw_dsc *dsc);
+> +
+> +static inline struct dpu_hw_dsc *to_dpu_hw_dsc(struct dpu_hw_blk *hw)
+> +{
+> +	return container_of(hw, struct dpu_hw_dsc, base);
+> +}
+> +
+> +#endif /* _DPU_HW_DSC_H */
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h
+> index bb9ceadeb0bb..b0ce8cb97d22 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h
+> @@ -97,6 +97,7 @@ enum dpu_hw_blk_type {
+>   	DPU_HW_BLK_WB,
+>   	DPU_HW_BLK_DSPP,
+>   	DPU_HW_BLK_MERGE_3D,
+> +	DPU_HW_BLK_DSC,
+>   	DPU_HW_BLK_MAX,
+>   };
+>   
+> @@ -176,6 +177,17 @@ enum dpu_ctl {
+>   	CTL_MAX
+>   };
+>   
+> +enum dpu_dsc {
+> +	DSC_NONE = 0,
+> +	DSC_0,
+> +	DSC_1,
+> +	DSC_2,
+> +	DSC_3,
+> +	DSC_4,
+> +	DSC_5,
+> +	DSC_MAX
+> +};
+> +
+>   enum dpu_pingpong {
+>   	PINGPONG_0 = 1,
+>   	PINGPONG_1,
+> @@ -437,5 +449,6 @@ struct dpu_mdss_color {
+>   #define DPU_DBG_MASK_VBIF     (1 << 8)
+>   #define DPU_DBG_MASK_ROT      (1 << 9)
+>   #define DPU_DBG_MASK_DSPP     (1 << 10)
+> +#define DPU_DBG_MASK_DSC      (1 << 11)
+>   
+>   #endif  /* _DPU_HW_MDSS_H */
+> 
 
-Steven, do you have any suggestions ?
 
 -- 
-Thanks
-Yafang
+With best wishes
+Dmitry
