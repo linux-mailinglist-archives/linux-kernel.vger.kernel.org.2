@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5424142DCFE
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:01:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51D7E42DD67
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:05:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231274AbhJNPDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 11:03:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45212 "EHLO mail.kernel.org"
+        id S233965AbhJNPHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 11:07:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50522 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233213AbhJNPCG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 11:02:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BE29761205;
-        Thu, 14 Oct 2021 14:59:09 +0000 (UTC)
+        id S233586AbhJNPFB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 11:05:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 69E6561246;
+        Thu, 14 Oct 2021 15:01:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634223550;
-        bh=I6jsj1r0YdkQo+96oGMMJg+j2UVxvW9Wkvbm3Tq8Cbg=;
+        s=korg; t=1634223663;
+        bh=HxtKu/UHhwpV93cAwoMNzzQFJo7p2jgC9ww9cEFc+bI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=K17rL/IER0cK5n7MLi2a/8IhLUgj+0SvVkVTJwO7tBdEpCAvcxcKcrim5Ei/POEEI
-         /hZ/0Zn8sdrH51jQs2c/8whn3tQNcF9KcfjIB8q6LNSVb2oQLFeKB41G5mZmtRIyYM
-         BbZKW/RLov5vhpv9rNlsLTOaxr7KySObOC8vV3Nw=
+        b=q6a6G0/6c+vh4S1dj4BPqrP9VhRc2ny/rvBzLEjLOLCAGX7mrIB9C08OJzXWce3j5
+         enwfNWuz4EPO1LaKozzlUHxmfO4F195uXyUYtCam+sycxQjxvrLnm9UJhkBN4z2JaB
+         ttDtwPVyVWdoBsY8rVxS6lfljJYFACAOuEw2EU6g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mizuho Mori <morimolymoly@gmail.com>,
-        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 03/16] HID: apple: Fix logical maximum and usage maximum of Magic Keyboard JIS
-Date:   Thu, 14 Oct 2021 16:54:06 +0200
-Message-Id: <20211014145207.421131864@linuxfoundation.org>
+        stable@vger.kernel.org, Zhang Yi <yi.zhang@huawei.com>,
+        Jan Kara <jack@suse.cz>, Theodore Tso <tytso@mit.edu>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 02/30] ext4: correct the error path of ext4_write_inline_data_end()
+Date:   Thu, 14 Oct 2021 16:54:07 +0200
+Message-Id: <20211014145209.605961255@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211014145207.314256898@linuxfoundation.org>
-References: <20211014145207.314256898@linuxfoundation.org>
+In-Reply-To: <20211014145209.520017940@linuxfoundation.org>
+References: <20211014145209.520017940@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,100 +40,127 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mizuho Mori <morimolymoly@gmail.com>
+From: Zhang Yi <yi.zhang@huawei.com>
 
-[ Upstream commit 67fd71ba16a37c663d139f5ba5296f344d80d072 ]
+[ Upstream commit 55ce2f649b9e88111270333a8127e23f4f8f42d7 ]
 
-Apple Magic Keyboard(JIS)'s Logical Maximum and Usage Maximum are wrong.
+Current error path of ext4_write_inline_data_end() is not correct.
 
-Below is a report descriptor.
+Firstly, it should pass out the error value if ext4_get_inode_loc()
+return fail, or else it could trigger infinite loop if we inject error
+here. And then it's better to add inode to orphan list if it return fail
+in ext4_journal_stop(), otherwise we could not restore inline xattr
+entry after power failure. Finally, we need to reset the 'ret' value if
+ext4_write_inline_data_end() return success in ext4_write_end() and
+ext4_journalled_write_end(), otherwise we could not get the error return
+value of ext4_journal_stop().
 
-0x05, 0x01,         /*  Usage Page (Desktop),                           */
-0x09, 0x06,         /*  Usage (Keyboard),                               */
-0xA1, 0x01,         /*  Collection (Application),                       */
-0x85, 0x01,         /*      Report ID (1),                              */
-0x05, 0x07,         /*      Usage Page (Keyboard),                      */
-0x15, 0x00,         /*      Logical Minimum (0),                        */
-0x25, 0x01,         /*      Logical Maximum (1),                        */
-0x19, 0xE0,         /*      Usage Minimum (KB Leftcontrol),             */
-0x29, 0xE7,         /*      Usage Maximum (KB Right GUI),               */
-0x75, 0x01,         /*      Report Size (1),                            */
-0x95, 0x08,         /*      Report Count (8),                           */
-0x81, 0x02,         /*      Input (Variable),                           */
-0x95, 0x05,         /*      Report Count (5),                           */
-0x75, 0x01,         /*      Report Size (1),                            */
-0x05, 0x08,         /*      Usage Page (LED),                           */
-0x19, 0x01,         /*      Usage Minimum (01h),                        */
-0x29, 0x05,         /*      Usage Maximum (05h),                        */
-0x91, 0x02,         /*      Output (Variable),                          */
-0x95, 0x01,         /*      Report Count (1),                           */
-0x75, 0x03,         /*      Report Size (3),                            */
-0x91, 0x03,         /*      Output (Constant, Variable),                */
-0x95, 0x08,         /*      Report Count (8),                           */
-0x75, 0x01,         /*      Report Size (1),                            */
-0x15, 0x00,         /*      Logical Minimum (0),                        */
-0x25, 0x01,         /*      Logical Maximum (1),                        */
-
-here is a report descriptor which is parsed one in kernel.
-see sys/kernel/debug/hid/<dev>/rdesc
-
-05 01 09 06 a1 01 85 01 05 07
-15 00 25 01 19 e0 29 e7 75 01
-95 08 81 02 95 05 75 01 05 08
-19 01 29 05 91 02 95 01 75 03
-91 03 95 08 75 01 15 00 25 01
-06 00 ff 09 03 81 03 95 06 75
-08 15 00 25 [65] 05 07 19 00 29
-[65] 81 00 95 01 75 01 15 00 25
-01 05 0c 09 b8 81 02 95 01 75
-01 06 01 ff 09 03 81 02 95 01
-75 06 81 03 06 02 ff 09 55 85
-55 15 00 26 ff 00 75 08 95 40
-b1 a2 c0 06 00 ff 09 14 a1 01
-85 90 05 84 75 01 95 03 15 00
-25 01 09 61 05 85 09 44 09 46
-81 02 95 05 81 01 75 08 95 01
-15 00 26 ff 00 09 65 81 02 c0
-00
-
-Position 64(Logical Maximum) and 70(Usage Maximum) are 101.
-Both should be 0xE7 to support JIS specific keys(ろ, Eisu, Kana, |) support.
-position 117 is also 101 but not related(it is Usage 65h).
-
-There are no difference of product id between JIS and ANSI.
-They are same 0x0267.
-
-Signed-off-by: Mizuho Mori <morimolymoly@gmail.com>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Link: https://lore.kernel.org/r/20210716122024.1105856-3-yi.zhang@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/hid-apple.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ fs/ext4/inline.c | 15 +++++----------
+ fs/ext4/inode.c  |  7 +++++--
+ 2 files changed, 10 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/hid/hid-apple.c b/drivers/hid/hid-apple.c
-index 6909c045fece..07df64daf7da 100644
---- a/drivers/hid/hid-apple.c
-+++ b/drivers/hid/hid-apple.c
-@@ -301,12 +301,19 @@ static int apple_event(struct hid_device *hdev, struct hid_field *field,
+diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
+index 24e994e75f5c..8049448476a6 100644
+--- a/fs/ext4/inline.c
++++ b/fs/ext4/inline.c
+@@ -733,18 +733,13 @@ int ext4_write_inline_data_end(struct inode *inode, loff_t pos, unsigned len,
+ 	void *kaddr;
+ 	struct ext4_iloc iloc;
  
- /*
-  * MacBook JIS keyboard has wrong logical maximum
-+ * Magic Keyboard JIS has wrong logical maximum
-  */
- static __u8 *apple_report_fixup(struct hid_device *hdev, __u8 *rdesc,
- 		unsigned int *rsize)
- {
- 	struct apple_sc *asc = hid_get_drvdata(hdev);
+-	if (unlikely(copied < len)) {
+-		if (!PageUptodate(page)) {
+-			copied = 0;
+-			goto out;
+-		}
+-	}
++	if (unlikely(copied < len) && !PageUptodate(page))
++		return 0;
  
-+	if(*rsize >=71 && rdesc[70] == 0x65 && rdesc[64] == 0x65) {
-+		hid_info(hdev,
-+			 "fixing up Magic Keyboard JIS report descriptor\n");
-+		rdesc[64] = rdesc[70] = 0xe7;
-+	}
+ 	ret = ext4_get_inode_loc(inode, &iloc);
+ 	if (ret) {
+ 		ext4_std_error(inode->i_sb, ret);
+-		copied = 0;
+-		goto out;
++		return ret;
+ 	}
+ 
+ 	ext4_write_lock_xattr(inode, &no_expand);
+@@ -757,7 +752,7 @@ int ext4_write_inline_data_end(struct inode *inode, loff_t pos, unsigned len,
+ 	(void) ext4_find_inline_data_nolock(inode);
+ 
+ 	kaddr = kmap_atomic(page);
+-	ext4_write_inline_data(inode, &iloc, kaddr, pos, len);
++	ext4_write_inline_data(inode, &iloc, kaddr, pos, copied);
+ 	kunmap_atomic(kaddr);
+ 	SetPageUptodate(page);
+ 	/* clear page dirty so that writepages wouldn't work for us. */
+@@ -766,7 +761,7 @@ int ext4_write_inline_data_end(struct inode *inode, loff_t pos, unsigned len,
+ 	ext4_write_unlock_xattr(inode, &no_expand);
+ 	brelse(iloc.bh);
+ 	mark_inode_dirty(inode);
+-out:
 +
- 	if ((asc->quirks & APPLE_RDESC_JIS) && *rsize >= 60 &&
- 			rdesc[53] == 0x65 && rdesc[59] == 0x65) {
- 		hid_info(hdev,
+ 	return copied;
+ }
+ 
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index a47ff8ce289b..fc6ea56de77c 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -1295,6 +1295,7 @@ static int ext4_write_end(struct file *file,
+ 			goto errout;
+ 		}
+ 		copied = ret;
++		ret = 0;
+ 	} else
+ 		copied = block_write_end(file, mapping, pos,
+ 					 len, copied, page, fsdata);
+@@ -1321,13 +1322,14 @@ static int ext4_write_end(struct file *file,
+ 	if (i_size_changed || inline_data)
+ 		ret = ext4_mark_inode_dirty(handle, inode);
+ 
++errout:
+ 	if (pos + len > inode->i_size && !verity && ext4_can_truncate(inode))
+ 		/* if we have allocated more blocks and copied
+ 		 * less. We will have blocks allocated outside
+ 		 * inode->i_size. So truncate them
+ 		 */
+ 		ext4_orphan_add(handle, inode);
+-errout:
++
+ 	ret2 = ext4_journal_stop(handle);
+ 	if (!ret)
+ 		ret = ret2;
+@@ -1410,6 +1412,7 @@ static int ext4_journalled_write_end(struct file *file,
+ 			goto errout;
+ 		}
+ 		copied = ret;
++		ret = 0;
+ 	} else if (unlikely(copied < len) && !PageUptodate(page)) {
+ 		copied = 0;
+ 		ext4_journalled_zero_new_buffers(handle, page, from, to);
+@@ -1439,6 +1442,7 @@ static int ext4_journalled_write_end(struct file *file,
+ 			ret = ret2;
+ 	}
+ 
++errout:
+ 	if (pos + len > inode->i_size && !verity && ext4_can_truncate(inode))
+ 		/* if we have allocated more blocks and copied
+ 		 * less. We will have blocks allocated outside
+@@ -1446,7 +1450,6 @@ static int ext4_journalled_write_end(struct file *file,
+ 		 */
+ 		ext4_orphan_add(handle, inode);
+ 
+-errout:
+ 	ret2 = ext4_journal_stop(handle);
+ 	if (!ret)
+ 		ret = ret2;
 -- 
 2.33.0
 
