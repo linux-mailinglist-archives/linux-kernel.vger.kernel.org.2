@@ -2,110 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78A2F42D4AE
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 10:18:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A9D642D4B0
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 10:20:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230155AbhJNIU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 04:20:27 -0400
-Received: from m1353.mail.163.com ([220.181.13.53]:50827 "EHLO
-        m1353.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230117AbhJNIU0 (ORCPT
+        id S230106AbhJNIWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 04:22:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42328 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230010AbhJNIWn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 04:20:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Date:From:Subject:MIME-Version:Message-ID; bh=75iND
-        4n1B3U84HQnfyj5d9AwCsFU8IKpJPJZo43r4u8=; b=dBnm6F3e6m6OmirDNnAaJ
-        m44nl7xA2L29NyEIpwyjGvjbV5HJEcI+yrKtm9hHW4x0P9R8cr9bIp2/q0OKMSAd
-        MbIJ/WXHDpnNzOKrBfY3tfAgQ85AWvygBmrUAkNqw53M0Yf2ZyURqH8NWKPvUEQl
-        2GwcQPcXDt49viiy3OZpJc=
-Received: from zhanglyra$163.com ( [120.244.194.245] ) by
- ajax-webmail-wmsvr53 (Coremail) ; Thu, 14 Oct 2021 16:18:15 +0800 (CST)
-X-Originating-IP: [120.244.194.245]
-Date:   Thu, 14 Oct 2021 16:18:15 +0800 (CST)
-From:   ChunyanZhang <zhanglyra@163.com>
-To:     "Stephen Boyd" <sboyd@kernel.org>
-Cc:     "Chunyan Zhang" <zhang.lyra@gmail.com>,
-        "Rob Herring" <robh+dt@kernel.org>, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, "Baolin Wang" <baolin.wang7@gmail.com>,
-        "Orson Zhai" <orsonzhai@gmail.com>,
-        "Chunyan Zhang" <chunyan.zhang@unisoc.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re:Re: [PATCH v4 2/4] dt-bindings: mfd: sprd: Add bindings for
- ums512 global registers
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20210622(1d4788a8)
- Copyright (c) 2002-2021 www.mailtech.cn 163com
-In-Reply-To: <163419352215.936110.17102590465311356046@swboyd.mtv.corp.google.com>
-References: <20210923064137.60722-1-zhang.lyra@gmail.com>
- <20210923064137.60722-3-zhang.lyra@gmail.com>
- <163416267274.936110.2784588823311275089@swboyd.mtv.corp.google.com>
- <5b8198f8.cc.17c7c0fc3e2.Coremail.zhanglyra@163.com>
- <163417628586.936110.17321921086246870791@swboyd.mtv.corp.google.com>
- <4e2e8b98.cc9.17c7c899967.Coremail.zhanglyra@163.com>
- <163419352215.936110.17102590465311356046@swboyd.mtv.corp.google.com>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=GBK
+        Thu, 14 Oct 2021 04:22:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634199638;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3w7eqEeIgw3Ia32urFoj+WNGzCCaXj1QmEFIPhfgcAU=;
+        b=P36ojaVKwLkMg2Ha+paLOtpHWRw7/18Na8JDaeR0a1Nmjjd2FHfiTt8PFROq+5uvqaHd4U
+        CUgYREtSJq12mU/IyCXwqwyEpEbNUQrm0ZSJ2ihZFfMG8OLHX1pvk3osmnN8PGrfiQggZP
+        FI9GPZXnql1R/QSTWAXSTN7nN7mEM4k=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-319-ZWZWGOyvPvKOsMLIHZ0xow-1; Thu, 14 Oct 2021 04:20:36 -0400
+X-MC-Unique: ZWZWGOyvPvKOsMLIHZ0xow-1
+Received: by mail-ed1-f72.google.com with SMTP id f4-20020a50e084000000b003db585bc274so4485486edl.17
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 01:20:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=3w7eqEeIgw3Ia32urFoj+WNGzCCaXj1QmEFIPhfgcAU=;
+        b=VLsnPNs+5LH0nFUwWl6jZVv367Uyg669BwmIaXBMtxAeHkM0dzQnWwa2Ck2LigaQ+w
+         8Q3SVtX3JyEG/0dGJp3zSfI2PAPMeklMoBkexF8MJfYWNUmnz13Sh2H6Jw8ounO4xJMk
+         dcsV6dUIUEeKPQ3WsVCJKd8phV97PqTfo8Dd3QdaQ8jwKvx9RmISbEFMlEKmphwNPms7
+         SjT2WnEJF7731Ox2epXwEetgSz/FmUqnY+fbVTOCK0VOOt/vfp2r7JOfi2MsVYL1yFby
+         aDU8DPPxxzQ8Ht1cWTASmiwGDX7N04ufWrpC+Vhn0m2+VPIQ0yJ1t2KVZII7fS/pb8ef
+         +3+A==
+X-Gm-Message-State: AOAM533q8Gj873MHKhStARBZT6NQIiDz0K7grB/p66iLpLRD+Cy484NA
+        NZSjbw8onkAHl6BRTkE9jmSBsYFtuXOsO2Cxbc4+3mCaSf0BCiryBp/EuxkCdFBNFBwPipgrJ+N
+        bfAeZTJUxqLl1MSd/2nXKTjaW
+X-Received: by 2002:a17:906:7c4f:: with SMTP id g15mr1986716ejp.373.1634199635738;
+        Thu, 14 Oct 2021 01:20:35 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxJ/yUyAY5+oLZfeZT36vqeG4laaBllFBim5CmgaOeq8paHr5vHxI/UVJ6rhjgL1uBj4rghbA==
+X-Received: by 2002:a17:906:7c4f:: with SMTP id g15mr1986691ejp.373.1634199635532;
+        Thu, 14 Oct 2021 01:20:35 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id s3sm1355877ejm.49.2021.10.14.01.20.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Oct 2021 01:20:35 -0700 (PDT)
+Subject: Re: [PATCH] iio: accel: kxcjk-1013: Fix possible memory leak in probe
+ and remove
+To:     Yang Yingliang <yangyingliang@huawei.com>,
+        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org
+Cc:     lars@metafoo.de, jic23@kernel.org,
+        andriy.shevchenko@linux.intel.com, ddvlad@gmail.com
+References: <20211014035338.3750416-1-yangyingliang@huawei.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <1a3a5582-51b0-4c58-ad6a-a58025054128@redhat.com>
+Date:   Thu, 14 Oct 2021 10:20:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Message-ID: <71369ca3.307a.17c7de16354.Coremail.zhanglyra@163.com>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: NcGowAB3g+XH52dh1F3TAA--.35569W
-X-CM-SenderInfo: x2kd0wpo1utqqrwthudrp/xtbBAxEs42B0HUadlAABsa
-X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
+In-Reply-To: <20211014035338.3750416-1-yangyingliang@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ClJlc2VuZCB0aGlzIHNpbmNlIEkgZm9yZ290IHRvIHN3aXRjaCB0byBwbGFpbiB0ZXh0IG1vZGUg
-OigKCkF0IDIwMjEtMTAtMTQgMTQ6Mzg6NDIsICJTdGVwaGVuIEJveWQiIDxzYm95ZEBrZXJuZWwu
-b3JnPiB3cm90ZToKPlF1b3RpbmcgQ2h1bnlhblpoYW5nICgyMDIxLTEwLTEzIDE5OjAyOjQ0KQo+
-PiBBdCAyMDIxLTEwLTE0IDA5OjUxOjI1LCAiU3RlcGhlbiBCb3lkIiA8c2JveWRAa2VybmVsLm9y
-Zz4gd3JvdGU6Cj4+ID5RdW90aW5nIENodW55YW5aaGFuZyAoMjAyMS0xMC0xMyAxNjo0OTo0MCkK
-Pj4gPj4gQXQgMjAyMS0xMC0xNCAwNjowNDozMiwgIlN0ZXBoZW4gQm95ZCIgPHNib3lkQGtlcm5l
-bC5vcmc+IHdyb3RlOgo+PiA+PiA+UXVvdGluZyBDaHVueWFuIFpoYW5nICgyMDIxLTA5LTIyIDIz
-OjQxOjM1KQo+PiA+PiA+PiBkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2Jp
-bmRpbmdzL21mZC9zcHJkLHVtczUxMi1nbGJyZWcueWFtbCBiL0RvY3VtZW50YXRpb24vZGV2aWNl
-dHJlZS9iaW5kaW5ncy9tZmQvc3ByZCx1bXM1MTItZ2xicmVnLnlhbWwKPj4gPj4gPj4gKwo+PiA+
-PiA+PiArZXhhbXBsZXM6Cj4+ID4+ID4+ICsgIC0gfAo+PiA+PiA+PiArICAgIGFwX2FwYl9yZWdz
-OiBzeXNjb25ANzEwMDAwMDAgewo+PiA+PiA+PiArICAgICAgY29tcGF0aWJsZSA9ICJzcHJkLHVt
-czUxMi1nbGJyZWdzIiwgInN5c2NvbiIsICJzaW1wbGUtbWZkIjsKPj4gPj4gPj4gKyAgICAgIHJl
-ZyA9IDwweDcxMDAwMDAwIDB4MzAwMD47Cj4+ID4+ID4+ICsgICAgICAjYWRkcmVzcy1jZWxscyA9
-IDwxPjsKPj4gPj4gPj4gKyAgICAgICNzaXplLWNlbGxzID0gPDE+Owo+PiA+PiA+PiArICAgICAg
-cmFuZ2VzID0gPDAgMHg3MTAwMDAwMCAweDMwMDA+Owo+PiA+PiA+PiArCj4+ID4+ID4+ICsgICAg
-ICBjbG9jay1jb250cm9sbGVyQDAgewo+PiA+PiA+PiArICAgICAgICBjb21wYXRpYmxlID0gInNw
-cmQsdW1zNTEyLWFwYWhiLWdhdGUiOwo+PiA+PiA+Cj4+ID4+ID5XaHkgaXMgdGhpcyBhIHN1Ym5v
-ZGUgb2YgYSBzeXNjb24gYW5kIHNpbXBsZS1tZmQ/IFdoeSBub3QgcHV0IHRoZT5jbG9jay1jb250
-cm9sbGVyQDcxMDAwMDAwIGRpcmVjdGx5IG9udG8gdGhlIGJ1cz8gRG9lcyBtYWtpbmcgaXQgYSBj
-aGlsZAo+PiA+PiA+bm9kZSBoZWxwIHNvbWVob3c/Cj4+ID4+IAo+PiA+PiBUaGVzZSBjbG9ja3Mg
-YXJlIGF0IHRoZSBzYW1lIHJlZ2lzdGVyIHJhbmdlIHdpdGggZ2xvYmFsIHJlZ2lzdGVycy4gSSBv
-cmlnaW5hbGx5IHB1dCB0aGVtIGRpcmVjdGx5IG9udG8gdGhlIGJ1cyBpbmRlZWQgd2hlbiBzdWJt
-aXR0aW5nIHRoZSBwYXRjaGVzIGZvciBTQzk4NjNBIGNsb2NrcyBsYXN0IHllYXIsIGFuZCBpdCBo
-YWQgYSBwcml2YXRlIHByb3BlcnR5IG5hbWVkICdzcHJkLHN5c2Nvbicgd2hpY2ggY291bGQgcHJv
-dmlkZSByZWdtYXAgZm9yIHRoZXNlIGNsb2Nrcy4KPj4gPj4gCj4+ID4+IFJvYiBzdWdnZXN0ZWQg
-WzFdIHVzIHRvIG1ha2UgdGhlbSBhIGNoaWxkIG9mIHRoZSBzeXNjb24sIGFuZCB3b3VsZCBub3Qg
-bmVlZCB0aGUgcHJpdmF0ZSBwcm9wZXJ0eSAnc3ByZCwgc3lzY29uJyB0aGVuLgo+PiA+Cj4+ID5X
-aHkgZG8geW91IG5lZWQgdG8gdXNlIGEgc3lzY29uPyBBcmUgdGhlIHJlZ2lzdGVycyBzaGFyZWQg
-d2l0aCBzb21lCj4+ID5vdGhlciBkcml2ZXI/Cj4+IAo+PiBZZXMsIHNoYXJlZCB3aXRoIG1vcmUg
-dGhhbiBvbmUgZGV2aWNlcyB3aGljaCBiYXNpY2FsbHkgYXJlIG11bHRpbWVkaWEgZGV2aWNlcy4g
-WW91IG1heSBub3RpY2VkIHRoYXQgdGhlc2UgYXJlIGFsbCBnYXRlIGNsb2NrcyB3aGljaCBhcmUg
-aW4gdGhlIGdsb2JhbCByZWdpc3RlcnMgcmFuZ2VzIGFuZCBhcmUgdXNlZCB0byBjb250cm9sbCB0
-aGUgZW5hYmxlIHN0YXR1cyBvZiBzb21lIGRldmljZXMgb3Igc29tZSBwYXJ0IG9mIGRldmljZXMu
-Cj4+IAo+Cgo+V2hlcmUgZG9lcyB0aGUgbXVsdGltZWRpYSBkZXZpY2UgYWRkcmVzcyBzcGFjZSBz
-dGFydD8gSSBzZWUgMHg3MTAwMDAwMAoKSXQgZG9lc24ndCBtZWFuIHRoYXQgbXVsdGltZWRpYSBk
-ZXZpY2UgYWRkcmVzcyBpcyBpbiB0aGlzIHNwYWNlLCBtdWx0aWRlZGlhIGRldmljZXMgaGF2ZSB0
-aGVpciBvd24gYWRkcmVzcyBzcGFjZSBhY3R1YWxseS4KQWxsIHRoZSByZWdpc3RlcnMgaW4gdGhp
-cyBzcGFjZSAoc3RhcnRlZCBmcm9tIDB4NzEwMDAwMDApIGFyZSBtb3JlIGxpa2UgY29udHJvbGwg
-cmVnaXN0ZXJzIGZvciBkZXZpY2UgcG93ZXIsIGFuZCB0aGV5IHdlcmUgZGVzaWduZWQgYXMgImds
-b2JhbCByZWdpc3RlcnMiLgpTb21lIGdhdGUgY2xvY2tzIGFyZSBhbHNvIGluIGdsb2JhbCByZWdp
-c3RlciBzcGFjZSwgc28gd2UgbWFrZSB0aGlzIGtpbmQgb2YgY2xvY2tzIGEgc3Vibm9kZSBvZiBz
-eXNjb24sIGFuZCBjbG9jayBkcml2ZXIgY2FuIHVzZSByZWdtYXAgd2hpY2ggbWFwcGVkIGJ5IHN5
-c2NvbiB0byBhdm9pZCByZW1hcHBpbmcgdGhlIHNhbWUgYWRkcmVzcyBzcGFjZSB0byBtb3JlIHRo
-YW4gb25lIHZpcnR1YWwgYWRkcmVzc2VzLgoKSG9wZSBJJ3ZlIG1hZGUgdGhhdCBjbGVhciwgSSdk
-IGxpa2UgdG8gZ2l2ZSB5b3UgYW4gZXhhbXBsZSwgYnV0IEknbSBvbiBhIGxvbmcgbGVhdmUgYW5k
-IGNhbm5vdCBsb29rIHVwIHRoZSBzcGVjaWZpY2F0aW9uIHJpZ2h0IG5vdyA6KApUaGlzIGlzIG5v
-dCBhIG5ldyBpc3N1ZSwgd2UgZGlzY3Vzc2VkIHRoaXMgd2hlbiB0aGUgZmlyc3QgdGltZSBJIHN1
-Ym1pdHRlZCB0aGUgcGF0Y2hlcyBmb3Igc3ByZCBjbG9ja3MgSUlSQy4KCj50byAweDcxMDAyMDAw
-IGlzIGZvciB0aGUgY2xvY2stY29udHJvbGxlci4gSXMgdGhlIG11bHRpbWVkaWEgZGV2aWNlIGF0
-Cj4weDcxMDAyMDAwIHRvIDB4NzEwMDMwMDA/IElmIHNvIHRoZXkncmUgbmV4dCB0byBlYWNoIG90
-aGVyIGJ1dCBub3QKPnNoYXJpbmcgdGhlIHNhbWUgcmVnaXN0ZXIgc3BhY2UuIElzIGFwX2FwYl9y
-ZWdzIG1vcmUgbGlrZSBhIHNvZnQgbWFjcm8KPnRoYXQgY29tYmluZXMgYSBmZXcgY2xrcyB3aXRo
-IHNvbWUgbXVsdGltZWRpYSBkZXZpY2U/Cg==
+Hi,
+
+On 10/14/21 5:53 AM, Yang Yingliang wrote:
+> When ACPI type is ACPI_SMO8500, the data->dready_trig will not be set, the
+> memory allocated by iio_triggered_buffer_setup() will not be freed, and cause
+> memory leak as follows:
+> 
+> unreferenced object 0xffff888009551400 (size 512):
+>   comm "i2c-SMO8500-125", pid 911, jiffies 4294911787 (age 83.852s)
+>   hex dump (first 32 bytes):
+>     02 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>     00 00 00 00 00 00 00 00 20 e2 e5 c0 ff ff ff ff  ........ .......
+>   backtrace:
+>     [<0000000041ce75ee>] kmem_cache_alloc_trace+0x16d/0x360
+>     [<000000000aeb17b0>] iio_kfifo_allocate+0x41/0x130 [kfifo_buf]
+>     [<000000004b40c1f5>] iio_triggered_buffer_setup_ext+0x2c/0x210 [industrialio_triggered_buffer]
+>     [<000000004375b15f>] kxcjk1013_probe+0x10c3/0x1d81 [kxcjk_1013]
+>     [<0000000020115b9a>] i2c_device_probe+0xa31/0xbe0
+>     [<00000000d9f581a6>] really_probe+0x299/0xc30
+>     [<00000000c6c16cde>] __driver_probe_device+0x357/0x500
+>     [<00000000909852a1>] driver_probe_device+0x4e/0x140
+>     [<000000008419ba53>] __device_attach_driver+0x257/0x340
+>     [<00000000533bb466>] bus_for_each_drv+0x166/0x1e0
+>     [<000000005bf45d75>] __device_attach+0x272/0x420
+>     [<0000000075220311>] bus_probe_device+0x1eb/0x2a0
+>     [<0000000015587e85>] device_add+0xbf0/0x1f90
+>     [<0000000086901b9e>] i2c_new_client_device+0x622/0xb20
+>     [<000000000865ca18>] new_device_store+0x1fa/0x420
+>     [<0000000059a3d183>] dev_attr_store+0x58/0x80
+> 
+> Fix it by remove data->dready_trig condition in probe and remove.
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Fixes: a25691c1f967 ("iio: accel: kxcjk1013: allow using an external trigger")
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+
+Hmm, wouldn't the right fix be to also move the
+iio_triggered_buffer_setup() call to inside the:
+
+	if (client->irq > 0 && data->acpi_type != ACPI_SMO8500) {
+	}
+
+block ?
+
+Jonathan (jic23) can you take a look at this, to me it seems that having
+a triggered buffer allocated without any triggers is not useful ?
+
+Regards,
+
+Hans
+
+
+
+> ---
+>  drivers/iio/accel/kxcjk-1013.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/iio/accel/kxcjk-1013.c b/drivers/iio/accel/kxcjk-1013.c
+> index a51fdd3c9b5b..24c9387c2968 100644
+> --- a/drivers/iio/accel/kxcjk-1013.c
+> +++ b/drivers/iio/accel/kxcjk-1013.c
+> @@ -1595,8 +1595,7 @@ static int kxcjk1013_probe(struct i2c_client *client,
+>  	return 0;
+>  
+>  err_buffer_cleanup:
+> -	if (data->dready_trig)
+> -		iio_triggered_buffer_cleanup(indio_dev);
+> +	iio_triggered_buffer_cleanup(indio_dev);
+>  err_trigger_unregister:
+>  	if (data->dready_trig)
+>  		iio_trigger_unregister(data->dready_trig);
+> @@ -1618,8 +1617,8 @@ static int kxcjk1013_remove(struct i2c_client *client)
+>  	pm_runtime_disable(&client->dev);
+>  	pm_runtime_set_suspended(&client->dev);
+>  
+> +	iio_triggered_buffer_cleanup(indio_dev);
+>  	if (data->dready_trig) {
+> -		iio_triggered_buffer_cleanup(indio_dev);
+>  		iio_trigger_unregister(data->dready_trig);
+>  		iio_trigger_unregister(data->motion_trig);
+>  	}
+> 
+
