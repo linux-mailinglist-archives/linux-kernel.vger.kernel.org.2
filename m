@@ -2,144 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4D8342E354
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 23:36:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22D0E42E360
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 23:37:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233212AbhJNViI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 17:38:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52590 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232331AbhJNViG (ORCPT
+        id S233254AbhJNVj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 17:39:29 -0400
+Received: from sender11-of-o51.zoho.eu ([31.186.226.237]:21177 "EHLO
+        sender11-of-o51.zoho.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232180AbhJNVj2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 17:38:06 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D45B9C061753
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 14:36:00 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id pf6-20020a17090b1d8600b0019fa884ab85so7885538pjb.5
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 14:36:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=axtens.net; s=google;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=ucthCVLQbHs9EV1Uw1Bv+F6lYLHxvFpuoWX8HwMgpt8=;
-        b=VQQ5XftKFdJxIqUHw8qRFJat71Dbqr2AD8qwnlFgMvFJilatzmha8I6vmL6yvrzpkP
-         hvXQ2mD6ttiO3AiCefR9vWjBp4Q7T/wGfxf4JQjnzp3eY+AnFAfleMbYmsvVYJNrXhMf
-         F+Jl/P5vsIdt4melRbvlQ+FV9+ngeKkjBbp7w=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=ucthCVLQbHs9EV1Uw1Bv+F6lYLHxvFpuoWX8HwMgpt8=;
-        b=qvDRNwA7gK+KNpNSxZIjEUDXks1Jh8oJ5QkQdGqFbF8VR/hExmrkvzPh+hjCxJpDdu
-         knMBgyvB0mrqfe+IBow8PMaAr4TR4SxLy8Gy6CQejf/Y33/qQSx8/gtX/k96JXeej4cC
-         0uUWDmJyJUm9FAgwSY3NmMm8/UZEe7EtilPtUUosyhjBLiyJhTx3Z0fxMQRKnq18aaU1
-         MlgW34nzmZS5tpUXi5UlKDK4KMEhLS2f2AMAa7FKKc6XvGdtx4c9m5M14aRozznvN/PO
-         F/1hIFpxisJONKhA77rXvuj7RgFzEK6z8/ValnVyb7vk2pieD1J7D336SuLskDxdjomg
-         c0dQ==
-X-Gm-Message-State: AOAM533OJM9/KNGnnQhJ0MfTWtcv5mJ1Lknd3hGH+fPe0eMJZQxKaWD0
-        pu+hwKSJ/SnrlvM+ip8L5JhXUg==
-X-Google-Smtp-Source: ABdhPJw1rTBhUzGBU+OCQNwxLaPgrU3yVEgNpct3REqnkn5dEyRgg6pBD5Hi+HUutoGMqi2zC8/tfg==
-X-Received: by 2002:a17:90b:4ac1:: with SMTP id mh1mr8767562pjb.144.1634247360274;
-        Thu, 14 Oct 2021 14:36:00 -0700 (PDT)
-Received: from localhost ([2001:4479:e300:600:4901:2fb9:ed97:3a3e])
-        by smtp.gmail.com with ESMTPSA id k7sm3292676pfk.59.2021.10.14.14.35.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Oct 2021 14:35:59 -0700 (PDT)
-From:   Daniel Axtens <dja@axtens.net>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>, Arnd Bergmann <arnd@arndb.de>,
-        Kees Cook <keescook@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-arch@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v2 00/13] Fix LKDTM for PPC64/IA64/PARISC
-In-Reply-To: <cover.1634190022.git.christophe.leroy@csgroup.eu>
-References: <cover.1634190022.git.christophe.leroy@csgroup.eu>
-Date:   Fri, 15 Oct 2021 08:35:56 +1100
-Message-ID: <87a6jb47cz.fsf@dja-thinkpad.axtens.net>
+        Thu, 14 Oct 2021 17:39:28 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1634247393; cv=none; 
+        d=zohomail.eu; s=zohoarc; 
+        b=OpfT8Z47DI7Pa6XeRFGh2mWwerxjsMQD7OftTGKSWMevCVFecNWepF8luLzPIY21wqY5Vfinbh8AJb5Co0Vi9EVlUTRDGJWGMeAvBrcxumNkurlf+xcR5qd7GaSYrU5hQW7TSkm7CBXrOaVXAA85VKtwEBIFUTN8wOH/xSByayk=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.eu; s=zohoarc; 
+        t=1634247393; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
+        bh=MVWveRL9WqrkRXVHeUh1K5zxIt2rK/cc84UTjS6Fyzk=; 
+        b=JlFBM/gRmt7yfQOdrCbAMx6sQ0mhAu7ipzYBBDhIdqg0x83fxa/OwwW0f41PwdgvUWB10cYLyVwJIoCxq6tVr5s00R9EXuBg/exY4KKER8TItAHoy1kZWIXH+Jvn6qolH/p+XvZ0O83wi25jMVfq0A9WaEGV11knrdkrHA/Nr7U=
+ARC-Authentication-Results: i=1; mx.zohomail.eu;
+        dkim=pass  header.i=shytyi.net;
+        spf=pass  smtp.mailfrom=dmytro@shytyi.net;
+        dmarc=pass header.from=<dmytro@shytyi.net>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1634247393;
+        s=hs; d=shytyi.net; i=dmytro@shytyi.net;
+        h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding;
+        bh=MVWveRL9WqrkRXVHeUh1K5zxIt2rK/cc84UTjS6Fyzk=;
+        b=VbHdh2oE3IeMt3ht5+tH+ws3NIKZT8uyfi7BU1e5HOmpKtA6eHzREtgISSd9gzLf
+        IcM6J5Eyze729MefpbhfWnJjfSB/u01B+ARbv8X7x6YcMvSVhadKGRYvoPL2xvSoBkO
+        iuJt9g00TgYrY8svVFnjuOIgP1zBSMCpZ0XOXpY8=
+Received: from mail.zoho.eu by mx.zoho.eu
+        with SMTP id 1634247387836973.0428578910663; Thu, 14 Oct 2021 23:36:27 +0200 (CEST)
+Date:   Thu, 14 Oct 2021 23:36:27 +0200
+From:   Dmytro Shytyi <dmytro@shytyi.net>
+To:     "Erik Kline" <ek@google.com>
+Cc:     "Jakub Kicinski" <kuba@kernel.org>,
+        "yoshfuji" <yoshfuji@linux-ipv6.org>,
+        "kuznet" <kuznet@ms2.inr.ac.ru>,
+        "liuhangbin" <liuhangbin@gmail.com>, "davem" <davem@davemloft.net>,
+        "netdev" <netdev@vger.kernel.org>,
+        "linux-kernel" <linux-kernel@vger.kernel.org>,
+        "Jscherpelz" <jscherpelz@google.com>
+Message-ID: <17c80bc2aba.fa4204331209995.6054034489659150411@shytyi.net>
+In-Reply-To: <CAAedzxrXyfi4L9pGVLJhQFeajOmjOUJz10s3ohMnApsTi3OjiA@mail.gmail.com>
+References: <175b3433a4c.aea7c06513321.4158329434310691736@shytyi.net>
+ <202011110944.7zNVZmvB-lkp@intel.com> <175bd218cf4.103c639bc117278.4209371191555514829@shytyi.net>
+ <175bf515624.c67e02e8130655.7824060160954233592@shytyi.net>
+ <175c31c6260.10eef97f6180313.755036504412557273@shytyi.net>
+ <20201117124348.132862b1@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+ <175e0b9826b.c3bb0aae425910.5834444036489233360@shytyi.net>
+ <20201119104413.75ca9888@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+ <175e1fdb250.1207dca53446410.2492811916841931466@shytyi.net>
+ <175e4f98e19.bcccf9b7450965.5991300381666674110@shytyi.net>
+ <176458a838e.100a4c464143350.2864106687411861504@shytyi.net>
+ <1766d928cc0.11201bffa212800.5586289102777886128@shytyi.net>
+ <17c7be50990.d8ff97ac1139678.6280958386678329804@shytyi.net> <17c7bf4fe17.10fe56af01139851.4883748910080031944@shytyi.net> <CAAedzxrXyfi4L9pGVLJhQFeajOmjOUJz10s3ohMnApsTi3OjiA@mail.gmail.com>
+Subject: Re: [PATCH net-next V10] net: Variable SLAAC: SLAAC with prefixes
+ of arbitrary length in PIO
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Importance: Medium
+User-Agent: Zoho Mail
+X-Mailer: Zoho Mail
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+ > > This patch solves "Race to the bottom"  problem  in  VSLAAC. 
+ >  
+ > How exactly does this "solve" the fundamental problem? 
+ > 
 
-> PPC64/IA64/PARISC have function descriptors. LKDTM doesn't work
-> on those three architectures because LKDTM messes up function
-> descriptors with functions.
+VSLAAC is replaced by the SLAAC starting from /64 
+ 
+if (pinfo->prefix_len == 64) {
+64_bit_addr_gen
+} else if (pinfo->prefix_len > 0 && pinfo->prefix_len < 64 &&
+              in6_dev->cnf.variable_slaac) {
+variable_bit_addr_gen
+ } else {
+             net_dbg_ratelimited("IPv6: Prefix with unexpected length %d\n",
+                                            pinfo->prefix_len);
+ }
 
-Just to nitpick, it's powerpc 64-bit using the ELFv1 ABI. [1]
+I meant to say that this is no longer an issue in VSLAAC particular context, considering /128 bits the "bottom".
+In this version of the patch, we are not reaching the /128 bit "bottom".
 
-The ELFv2 ABI [2] doesn't use function descriptors. (ELFv2 is used
-primarily for ppc64le, but some people like musl support it for BE as
-well.)
-
-This doesn't affect the correctness or desirability of your changes, it
-was just bugging me when I was reading the commit messages :-)
-
-Kind regards,
-Daniel
-
-[1] See e.g. https://refspecs.linuxfoundation.org/ELF/ppc64/PPC-elf64abi.html
-[2] https://openpowerfoundation.org/wp-content/uploads/2016/03/ABI64BitOpenPOWERv1.1_16July2015_pub4.pdf
-
-
-> This series does some cleanup in the three architectures and
-> refactors function descriptors so that it can then easily use it
-> in a generic way in LKDTM.
->
-> Patch 8 is not absolutely necessary but it is a good trivial cleanup.
->
-> Changes in v2:
-> - Addressed received comments
-> - Moved dereference_[kernel]_function_descriptor() out of line
-> - Added patches to remove func_descr_t and func_desc_t in powerpc
-> - Using func_desc_t instead of funct_descr_t
-> - Renamed HAVE_DEREFERENCE_FUNCTION_DESCRIPTOR to HAVE_FUNCTION_DESCRIPTORS
-> - Added a new lkdtm test to check protection of function descriptors
->
-> Christophe Leroy (13):
->   powerpc: Move 'struct ppc64_opd_entry' back into asm/elf.h
->   powerpc: Rename 'funcaddr' to 'addr' in 'struct ppc64_opd_entry'
->   powerpc: Remove func_descr_t
->   powerpc: Prepare func_desc_t for refactorisation
->   ia64: Rename 'ip' to 'addr' in 'struct fdesc'
->   asm-generic: Use HAVE_FUNCTION_DESCRIPTORS to define associated stubs
->   asm-generic: Define 'func_desc_t' to commonly describe function
->     descriptors
->   asm-generic: Refactor dereference_[kernel]_function_descriptor()
->   lkdtm: Force do_nothing() out of line
->   lkdtm: Really write into kernel text in WRITE_KERN
->   lkdtm: Fix lkdtm_EXEC_RODATA()
->   lkdtm: Fix execute_[user]_location()
->   lkdtm: Add a test for function descriptors protection
->
->  arch/ia64/include/asm/elf.h              |  2 +-
->  arch/ia64/include/asm/sections.h         | 25 ++-------
->  arch/ia64/kernel/module.c                |  6 +--
->  arch/parisc/include/asm/sections.h       | 17 +++---
->  arch/parisc/kernel/process.c             | 21 --------
->  arch/powerpc/include/asm/code-patching.h |  2 +-
->  arch/powerpc/include/asm/elf.h           |  6 +++
->  arch/powerpc/include/asm/sections.h      | 30 ++---------
->  arch/powerpc/include/asm/types.h         |  6 ---
->  arch/powerpc/include/uapi/asm/elf.h      |  8 ---
->  arch/powerpc/kernel/module_64.c          | 38 +++++--------
->  arch/powerpc/kernel/signal_64.c          |  8 +--
->  drivers/misc/lkdtm/core.c                |  1 +
->  drivers/misc/lkdtm/lkdtm.h               |  1 +
->  drivers/misc/lkdtm/perms.c               | 68 ++++++++++++++++++++----
->  include/asm-generic/sections.h           | 13 ++++-
->  include/linux/kallsyms.h                 |  2 +-
->  kernel/extable.c                         | 23 +++++++-
->  18 files changed, 138 insertions(+), 139 deletions(-)
->
-> -- 
-> 2.31.1
+Best regards,
+Dmytro SHYTYI.
