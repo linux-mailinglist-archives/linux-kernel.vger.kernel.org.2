@@ -2,108 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3721B42D009
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 03:48:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C916F42D00D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 03:49:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229834AbhJNBue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 21:50:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36534 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229496AbhJNBud (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 21:50:33 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46B87C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 18:48:29 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id x130so4086914pfd.6
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 18:48:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:subject:user-agent:in-reply-to:references:message-id
-         :mime-version:content-transfer-encoding;
-        bh=G1Xpwb6SXyk5zbi6Fvi2E0LkOB6JBHLvcrsIpB5EC3g=;
-        b=PcrvY23euf8D5/i4CMCOuiPO8FAKwfmfwcpHZS1+juqDxXXuqna4otkgpmHvXR8Y+2
-         R/KQ189IJNjEPWnDtRJ6vdS1hTwi5jzN8F4751Z5IyeJWMgInm4EHhoxDVSvZUKsV8hZ
-         46bitD+AWsF3WigZlnAX0S+95uogXU83gnSxk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:subject:user-agent:in-reply-to
-         :references:message-id:mime-version:content-transfer-encoding;
-        bh=G1Xpwb6SXyk5zbi6Fvi2E0LkOB6JBHLvcrsIpB5EC3g=;
-        b=yTixFvv/l97zPWwm2eSdcx9fe2RbqrTaG2zr3ORtttj1W0PTAPP754b2W641vZu+9h
-         V62kzu/qka3UmFuPcXCEmjUS4xjOK++8Z8X9G9SUMXdnZuWlwoxdMckJnLqISSg7Bqij
-         grRFeECjYs5EOetBH0aFuPZRrDeZsaV2nL6gM+PVjyZMTvFss6/smyWDFK7qlDAl5Yyf
-         5r6XpLd9lQ3+ajhWJa6lWpW8vIhPFvGHtStoNw7M7Ssni1VQ8r2qWXtSSwxYYueH+YAd
-         IPUbUevOK3PUuoAnCVHEByJ3vuyJK4/Be8Yf0qn3CFK/omIgweSl8yx5Tlnxx703HpPW
-         lB2w==
-X-Gm-Message-State: AOAM531FUZ/JaieeQJybM/6zimYBuDLTx/sCZQOd81VnV3W3HjFBg+Rf
-        nIKs+HhEhuXxe1LLmkN+gd1bE4Mdz3JRQg==
-X-Google-Smtp-Source: ABdhPJwMHQ3LniH7fm2Z/mg46eDU77wH2wgb9y+Wuze/dN/pJIVTQ8UH956qdAEsARS5UII7aAWIOw==
-X-Received: by 2002:a05:6a00:a0a:b0:44c:52c9:bf25 with SMTP id p10-20020a056a000a0a00b0044c52c9bf25mr2513803pfh.24.1634176108743;
-        Wed, 13 Oct 2021 18:48:28 -0700 (PDT)
-Received: from [127.0.0.1] (173-164-112-133-Oregon.hfc.comcastbusiness.net. [173.164.112.133])
-        by smtp.gmail.com with ESMTPSA id u24sm669808pfm.85.2021.10.13.18.48.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Oct 2021 18:48:28 -0700 (PDT)
-Date:   Wed, 13 Oct 2021 18:48:26 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Rob Landley <rob@landley.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>
-Subject: Re: The one and only "permission denied" in find /sys
-User-Agent: K-9 Mail for Android
-In-Reply-To: <cd81a57e-e2c1-03c5-d0da-f898babf92e7@landley.net>
-References: <cd81a57e-e2c1-03c5-d0da-f898babf92e7@landley.net>
-Message-ID: <7042EFC5-DA90-4B9A-951A-036889FD89CA@chromium.org>
+        id S229927AbhJNBvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 21:51:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50322 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229837AbhJNBvo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 21:51:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 44B6B611BD;
+        Thu, 14 Oct 2021 01:49:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634176180;
+        bh=Gpv3ryCbvh3SBhygjmVyThiZtHe6Jj3RrBddgBX5+w8=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=ube5ZXQRlLZCU1G2o/8xD26TuZq/h7IELUmS0lwNKzsppCf8K8WgB8DB8LQUN0ZMp
+         gkNNdW4I2vD1jv+GwHuLqON9nUoyhPHxxABaXYDcdIsOBqOtSFQeXDP7zCy6bhPlui
+         0cr9Ycm2/a/171HhUCC1n8P+LcAP+r831fvJ/fxusG4eb5RwU6yXyzKrXgywfHLdu1
+         wYgMoP4UcK4Yym/UspWyPJPqM50XAbHM+GDOOQ6n9Yzrqq1wpE1ZhODhrAzDXjDhgI
+         oCE0mrfv1xaHGSc/kW4fD2rbSPiB0Syb/R6m5/RxDcto44Zs2WQETLuCoDOIndhYgy
+         9AxNeagdY9/Zg==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
 Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20211013221021.3433704-2-willmcvicker@google.com>
+References: <20211013221021.3433704-1-willmcvicker@google.com> <20211013221021.3433704-2-willmcvicker@google.com>
+Subject: Re: [PATCH v3 1/2] [RFT] clk: samsung: add support for CPU clocks
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     kernel-team@android.com, Will McVicker <willmcvicker@google.com>,
+        linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+To:     Chanwoo Choi <cw00.choi@samsung.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Will McVicker <willmcvicker@google.com>
+Date:   Wed, 13 Oct 2021 18:49:38 -0700
+Message-ID: <163417617897.936110.4798836682696423903@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Quoting Will McVicker (2021-10-13 15:10:19)
+> diff --git a/drivers/clk/samsung/clk-cpu.c b/drivers/clk/samsung/clk-cpu.c
+> index 00ef4d1b0888..b5017934fc41 100644
+> --- a/drivers/clk/samsung/clk-cpu.c
+> +++ b/drivers/clk/samsung/clk-cpu.c
+> @@ -469,3 +469,29 @@ int __init exynos_register_cpu_clock(struct samsung_=
+clk_provider *ctx,
+>         kfree(cpuclk);
+>         return ret;
+>  }
+> +
+> +void samsung_clk_register_cpu(struct samsung_clk_provider *ctx,
+> +               const struct samsung_cpu_clock *list, unsigned int nr_clk)
+> +{
+> +       unsigned int idx;
+> +       unsigned int num_cfgs;
+> +       struct clk *parent_clk, *alt_parent_clk;
+> +       const struct clk_hw *parent_clk_hw =3D NULL;
+> +       const struct clk_hw *alt_parent_clk_hw =3D NULL;
+> +
+> +       for (idx =3D 0; idx < nr_clk; idx++, list++) {
+> +               /* find count of configuration rates in cfg */
+> +               for (num_cfgs =3D 0; list->cfg[num_cfgs].prate !=3D 0; )
+> +                       num_cfgs++;
+> +
+> +               parent_clk =3D __clk_lookup(list->parent_name);
 
+Please stop using __clk_lookup()
 
-On October 13, 2021 1:12:16 PM PDT, Rob Landley <rob@landley=2Enet> wrote:
->There is exactly one directory in the whole of sysfs that a normal user c=
-an't
->read (at least on my stock devuan laptop):
+> +               if (parent_clk)
+> +                       parent_clk_hw =3D __clk_get_hw(parent_clk);
+> +               alt_parent_clk =3D __clk_lookup(list->alt_parent_name);
+
+Can the DT binding be updated?
+
+> +               if (alt_parent_clk)
+> +                       alt_parent_clk_hw =3D __clk_get_hw(alt_parent_clk=
+);
+> +
+> +               exynos_register_cpu_clock(ctx, list->id, list->name, pare=
+nt_clk_hw,
+> +                               alt_parent_clk_hw, list->offset, list->cf=
+g, num_cfgs, list->flags);
+> +       }
+> +}
+> diff --git a/drivers/clk/samsung/clk.c b/drivers/clk/samsung/clk.c
+> index 1949ae7851b2..336243c6f120 100644
+> --- a/drivers/clk/samsung/clk.c
+> +++ b/drivers/clk/samsung/clk.c
+> @@ -378,6 +378,8 @@ struct samsung_clk_provider * __init samsung_cmu_regi=
+ster_one(
+>                 samsung_clk_extended_sleep_init(reg_base,
+>                         cmu->clk_regs, cmu->nr_clk_regs,
+>                         cmu->suspend_regs, cmu->nr_suspend_regs);
+> +       if (cmu->cpu_clks)
+> +               samsung_clk_register_cpu(ctx, cmu->cpu_clks, cmu->nr_cpu_=
+clks);
+> =20
+>         samsung_clk_of_add_provider(np, ctx);
+> =20
+> diff --git a/drivers/clk/samsung/clk.h b/drivers/clk/samsung/clk.h
+> index c1e1a6b2f499..a52a38cc1740 100644
+> --- a/drivers/clk/samsung/clk.h
+> +++ b/drivers/clk/samsung/clk.h
+> @@ -271,6 +271,27 @@ struct samsung_pll_clock {
+>         __PLL(_typ, _id, _name, _pname, CLK_GET_RATE_NOCACHE, _lock,    \
+>               _con, _rtable)
+> =20
+> +struct samsung_cpu_clock {
+> +       unsigned int            id;
+> +       const char              *name;
+> +       const char              *parent_name;
+> +       const char              *alt_parent_name;
+> +       unsigned long           flags;
+> +       int                     offset;
+> +       const struct exynos_cpuclk_cfg_data *cfg;
+> +};
+> +
+> +#define CPU_CLK(_id, _name, _pname, _apname, _flags, _offset, _cfg) \
+> +       {                                                           \
+> +               .id               =3D _id,                            \
+> +               .name             =3D _name,                          \
+> +               .parent_name      =3D _pname,                         \
+> +               .alt_parent_name  =3D _apname,                        \
+> +               .flags            =3D _flags,                         \
+> +               .offset           =3D _offset,                        \
+> +               .cfg              =3D _cfg,                           \
+> +       }
+> +
+>  struct samsung_clock_reg_cache {
+>         struct list_head node;
+>         void __iomem *reg_base;
+> @@ -301,6 +322,9 @@ struct samsung_cmu_info {
+>         unsigned int nr_fixed_factor_clks;
+>         /* total number of clocks with IDs assigned*/
+>         unsigned int nr_clk_ids;
+> +       /* list of cpu clocks and respective count */
+> +       const struct samsung_cpu_clock *cpu_clks;
+> +       unsigned int nr_cpu_clks;
+> =20
+>         /* list and number of clocks registers */
+>         const unsigned long *clk_regs;
+> @@ -350,6 +374,8 @@ extern void __init samsung_clk_register_gate(struct s=
+amsung_clk_provider *ctx,
+>  extern void __init samsung_clk_register_pll(struct samsung_clk_provider =
+*ctx,
+>                         const struct samsung_pll_clock *pll_list,
+>                         unsigned int nr_clk, void __iomem *base);
+> +extern void __init samsung_clk_register_cpu(struct samsung_clk_provider =
+*ctx,
+
+__init in header files is useless.
+
+> +               const struct samsung_cpu_clock *list, unsigned int nr_clk=
+);
 >
->  $ find /sys -name potato
->  find: =E2=80=98/sys/fs/pstore=E2=80=99: Permission denied
->
->It's the "pstore" filesystem, it was explicitly broken by commit d7caa336=
-87ce,
->and the commit seems to say this was to fix an issue that didn't exist ye=
-t but
->might someday=2E
-
-Right, so, the problem did certainly exist: there was a capability check f=
-or opening the files, which made it difficult for pstore collector tools to=
- run with sane least privileges=2E Adjusting the root directory was the sim=
-plest way to keep the files secure by default, and allow a system owner the=
- ability to delegate collector permissions to a user or group via just a ch=
-mod on the root directory=2E
-
->Did whatever issue it was concerned about ever actually start happening? =
-Why did
->you not change the permissions on the files _in_ the directory so they we=
-ren't
->world readable instead? Should /dev/shm stop being world ls-able as well?
-
-Making the per-file permissions configurable at runtime was more complex f=
-or little additional gain=2E
-
-/dev/shm has the benefit of having an existing permission model for each c=
-reated file=2E
-
-I wouldn't be opposed to a mount option to specify the default file owner/=
-group, but it makes user space plumbing more difficult (i=2Ee=2E last I che=
-cked, stuff like systemd tends to just mount kernel filesystems without opt=
-ions)=2E
-
--Kees
-
---=20
-Kees Cook
