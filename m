@@ -2,96 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C65642E1DF
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 21:13:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6F3742E1DD
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 21:13:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233253AbhJNTPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 15:15:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233223AbhJNTPL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 15:15:11 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D26F1C061570;
-        Thu, 14 Oct 2021 12:13:06 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id d23so6403808pgh.8;
-        Thu, 14 Oct 2021 12:13:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=XNnqsSoZve6k+LCoPoxyK46MaGi3htzBtJNjcufQmt0=;
-        b=OHWl8hbEkxFlYNHgVZ7xqsspAUPuoAakUzwknJlZIE0eji1t6olCV7CC2DPv8jVeWE
-         L0p3uZu893BF8xMQG0o5Lvdz0rHhV3tyuawVSOKwxVgl9JI2NztNvQxzLZxfdm+YyU9P
-         VhuSLE0JTfHhQXhWOnJj/qjJzFL53iSKg33ZUj5h2kHEhF8PiGUm4dovMGZg2r28GFUn
-         Xdh7TdOcgXBYCKxK0w/8g8YStsyp3rVvuHlEFx25lUARdJBQBY81aD5D9iw28VxV9pvH
-         A+dlw0/GPFIxROkPGiwpZfllKdrq6hDTWCdpgtoZkfoSPS7EKSXs+NDRrZ1BWoitymZL
-         H9Sw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=XNnqsSoZve6k+LCoPoxyK46MaGi3htzBtJNjcufQmt0=;
-        b=KCgwjr0ZjzGwi3yzEKvBWGUyMmU+sN8YXnE1JoB6dc7GPSNAL1yYwrHKspYqSsA5Ua
-         zq3tiEpM3JqVOij9+xpbupQQSR3RKK1TUrTkvGhlHPbXg0SMhMU40UauRkETrjIvoGcV
-         Jz4mPftappKuqTmhXrp7YaGLyKQi6uYyY+QosmnuT3Ip/ilujD3ueLpXQzzEi9PnaVLJ
-         mpX/z7Vl18p07LSg2q5X3shEndj+IO+qtgexN8qdf5LUnFebTLm04u93LxjrEzvPM4Ak
-         DcM+s7QJHLjKrvoz5kVpCauilxuECQEKgCzcAuVjQVoJSpZKZvRN62poxD0OCyt/WjP+
-         MRNw==
-X-Gm-Message-State: AOAM533YAeszvitrJvcKIiztowEPoBYIQZBb9S9ST/fK4bgLu1bMftZC
-        lNx4XDUD4PAF1f63G+svOTuXeA7hHZw=
-X-Google-Smtp-Source: ABdhPJzM6KwXriLDSLAQ7j1qNurYYy/CpzgVntk2BTlmw9Aydt3OnXrv8fsJdSGfrbjU3RpTDlt9Qw==
-X-Received: by 2002:a63:8542:: with SMTP id u63mr5665335pgd.402.1634238785623;
-        Thu, 14 Oct 2021 12:13:05 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id h12sm7266736pja.1.2021.10.14.12.12.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Oct 2021 12:13:04 -0700 (PDT)
-Subject: Re: [PATCH 4.9 00/25] 4.9.287-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20211014145207.575041491@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <02224646-aae6-d406-52a7-fa2d0feb4bac@gmail.com>
-Date:   Thu, 14 Oct 2021 12:12:58 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S233053AbhJNTPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 15:15:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38312 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232392AbhJNTPF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 15:15:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 26E1561108;
+        Thu, 14 Oct 2021 19:13:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634238780;
+        bh=5qD1P2LTtN0mwVjdHZNYQdfeTUsXyK//h1c7T1/LYX0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=DoRYWtotHTCQKy2AqZgpcfZ3n2/c/YN9edIYGdaPhfWzd3QkLc2BbLPfmU3UtyltD
+         Py+3O0Rk0JaL4bcwTIHPKZrnddQTA9JYHz0H6vcaRfBb45DvYMlPlyraXiBhaUROQr
+         Rd1Kf0PtFowVR9j2ixkPm/RDU9bfrUR3XQGHWWu3FIokVgqjLrFd4SBHbQXQyK+4fR
+         8243ZjRM4Sp3p29iLKImZSF2Vynhxekw5VoXOrjgsG1YJSXM8xEOLQsErJUsW5ZFsB
+         jFSPlDmJlf3UBBmglECjHILt0kgLaLwskJr8TGtMkyZ9/x6IOFpd9ozdF3fcgG93tO
+         phuHScJIGVzeg==
+From:   Stephen Boyd <sboyd@kernel.org>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        kernel test robot <lkp@intel.com>,
+        Taniya Das <tdas@codeaurora.org>
+Subject: [PATCH] clk: qcom: gcc-sc7280: Drop unused array
+Date:   Thu, 14 Oct 2021 12:12:59 -0700
+Message-Id: <20211014191259.1689641-1-sboyd@kernel.org>
+X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
 MIME-Version: 1.0
-In-Reply-To: <20211014145207.575041491@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/14/21 7:53 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.9.287 release.
-> There are 25 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sat, 16 Oct 2021 14:51:59 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.287-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+After commit 3165d1e3c737 ("clk: qcom: gcc: Remove CPUSS clocks control
+for SC7280") this array is unused. Remove it.
 
-On ARCH_BRCMSTB, using 32-bit ARM and 64-bit kernels:
+Reported-by: kernel test robot <lkp@intel.com>
+Cc: Taniya Das <tdas@codeaurora.org>
+Fixes: 3165d1e3c737 ("clk: qcom: gcc: Remove CPUSS clocks control for SC7280")
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+---
+ drivers/clk/qcom/gcc-sc7280.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+diff --git a/drivers/clk/qcom/gcc-sc7280.c b/drivers/clk/qcom/gcc-sc7280.c
+index 667f584bc2e1..8fb6bd69f240 100644
+--- a/drivers/clk/qcom/gcc-sc7280.c
++++ b/drivers/clk/qcom/gcc-sc7280.c
+@@ -197,12 +197,6 @@ static const struct clk_parent_data gcc_parent_data_0[] = {
+ 	{ .hw = &gcc_gpll0_out_even.clkr.hw },
+ };
+ 
+-static const struct clk_parent_data gcc_parent_data_0_ao[] = {
+-	{ .fw_name = "bi_tcxo_ao" },
+-	{ .hw = &gcc_gpll0.clkr.hw },
+-	{ .hw = &gcc_gpll0_out_even.clkr.hw },
+-};
+-
+ static const struct parent_map gcc_parent_map_1[] = {
+ 	{ P_BI_TCXO, 0 },
+ 	{ P_GCC_GPLL0_OUT_MAIN, 1 },
+
+base-commit: 1daec8cfebc28bbe596743c34bebd11b80fba990
 -- 
-Florian
+https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git/
+https://git.kernel.org/pub/scm/linux/kernel/git/sboyd/spmi.git
+
