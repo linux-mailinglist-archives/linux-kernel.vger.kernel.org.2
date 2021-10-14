@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5314E42DD53
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:04:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7984142DD56
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:04:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233555AbhJNPGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 11:06:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51894 "EHLO mail.kernel.org"
+        id S233853AbhJNPGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 11:06:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51950 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233396AbhJNPEf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 11:04:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 08E7761247;
-        Thu, 14 Oct 2021 15:00:47 +0000 (UTC)
+        id S233389AbhJNPEm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 11:04:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DDB916120D;
+        Thu, 14 Oct 2021 15:00:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634223648;
-        bh=l2PBwFcwTGHSNqGFtASWv7fKzwQj4tZRL3SFrv8yhiA=;
+        s=korg; t=1634223651;
+        bh=yKfOqpQHcvPaJG+VeITmGy48fGASOt6hWgsw3r8Umf8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ByvF3jIkjwbdSa+pOhwHe8H6zITCMNO3orm/jP1wVJgooBLf9RdfPA94Rhzr4GaSM
-         40aIJgzUw9jkKU1CW+PbsGJTvBUV2FTWubXtBpsxZemB8IeKtRRNLYjnN9AfQVdrs+
-         4hC9XVNnwuvI0TXbtk04AC4hoH5HMh3sxnty9xAY=
+        b=m95B5IptSuf5f7vWg/vBCfGW0fHyJVoqHpmqA2sjQko3ZEanQ9AclRPI5R6XXrDoS
+         VZEkcXWU72D8SQuryzdiTArm7wqcSa9wt6g60G7RWuX8aq//JdZdzN4kebWHP9vGJZ
+         mA8MX2/V4nBUOo+sffmPPE0+yP0GkiE9dw2uPtpo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>,
-        Johannes Berg <johannes.berg@intel.com>,
+        stable@vger.kernel.org, Rajendra Nayak <rnayak@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 14/30] mac80211: Drop frames from invalid MAC address in ad-hoc mode
-Date:   Thu, 14 Oct 2021 16:54:19 +0200
-Message-Id: <20211014145209.994928726@linuxfoundation.org>
+Subject: [PATCH 5.14 15/30] pinctrl: qcom: sc7280: Add PM suspend callbacks
+Date:   Thu, 14 Oct 2021 16:54:20 +0200
+Message-Id: <20211014145210.033153366@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211014145209.520017940@linuxfoundation.org>
 References: <20211014145209.520017940@linuxfoundation.org>
@@ -40,49 +41,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: YueHaibing <yuehaibing@huawei.com>
+From: Rajendra Nayak <rnayak@codeaurora.org>
 
-[ Upstream commit a6555f844549cd190eb060daef595f94d3de1582 ]
+[ Upstream commit 28406a21999152ff7faa30b194f734565bdd8e0d ]
 
-WARNING: CPU: 1 PID: 9 at net/mac80211/sta_info.c:554
-sta_info_insert_rcu+0x121/0x12a0
-Modules linked in:
-CPU: 1 PID: 9 Comm: kworker/u8:1 Not tainted 5.14.0-rc7+ #253
-Workqueue: phy3 ieee80211_iface_work
-RIP: 0010:sta_info_insert_rcu+0x121/0x12a0
-...
-Call Trace:
- ieee80211_ibss_finish_sta+0xbc/0x170
- ieee80211_ibss_work+0x13f/0x7d0
- ieee80211_iface_work+0x37a/0x500
- process_one_work+0x357/0x850
- worker_thread+0x41/0x4d0
+Use PM suspend callbacks from msm core, without this the hog_sleep
+pins don't change state in suspend.
 
-If an Ad-Hoc node receives packets with invalid source MAC address,
-it hits a WARN_ON in sta_info_insert_check(), this can spam the log.
-
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-Link: https://lore.kernel.org/r/20210827144230.39944-1-yuehaibing@huawei.com
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Link: https://lore.kernel.org/r/1632389487-11283-1-git-send-email-rnayak@codeaurora.org
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/mac80211/rx.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/pinctrl/qcom/pinctrl-sc7280.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/net/mac80211/rx.c b/net/mac80211/rx.c
-index 2563473b5cf1..e023e307c0c3 100644
---- a/net/mac80211/rx.c
-+++ b/net/mac80211/rx.c
-@@ -4053,7 +4053,8 @@ static bool ieee80211_accept_frame(struct ieee80211_rx_data *rx)
- 		if (!bssid)
- 			return false;
- 		if (ether_addr_equal(sdata->vif.addr, hdr->addr2) ||
--		    ether_addr_equal(sdata->u.ibss.bssid, hdr->addr2))
-+		    ether_addr_equal(sdata->u.ibss.bssid, hdr->addr2) ||
-+		    !is_valid_ether_addr(hdr->addr2))
- 			return false;
- 		if (ieee80211_is_beacon(hdr->frame_control))
- 			return true;
+diff --git a/drivers/pinctrl/qcom/pinctrl-sc7280.c b/drivers/pinctrl/qcom/pinctrl-sc7280.c
+index afddf6d60dbe..9017ede409c9 100644
+--- a/drivers/pinctrl/qcom/pinctrl-sc7280.c
++++ b/drivers/pinctrl/qcom/pinctrl-sc7280.c
+@@ -1496,6 +1496,7 @@ static const struct of_device_id sc7280_pinctrl_of_match[] = {
+ static struct platform_driver sc7280_pinctrl_driver = {
+ 	.driver = {
+ 		.name = "sc7280-pinctrl",
++		.pm = &msm_pinctrl_dev_pm_ops,
+ 		.of_match_table = sc7280_pinctrl_of_match,
+ 	},
+ 	.probe = sc7280_pinctrl_probe,
 -- 
 2.33.0
 
