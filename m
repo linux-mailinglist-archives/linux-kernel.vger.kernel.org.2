@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB50642D764
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 12:47:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20D7E42D76B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 12:47:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230161AbhJNKtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 06:49:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45236 "EHLO
+        id S230185AbhJNKti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 06:49:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbhJNKtR (ORCPT
+        with ESMTP id S230190AbhJNKtf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 06:49:17 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B578C061570
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 03:47:13 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id n11so3902318plf.4
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 03:47:13 -0700 (PDT)
+        Thu, 14 Oct 2021 06:49:35 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF78CC061753
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 03:47:30 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id v8so970696pfu.11
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 03:47:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=NDHFPubGokMv610+PS+/OMv3n5xorR0TmYr48ehh8fQ=;
-        b=bjDwtXzpCqnuSRQZD6MOVaavAzBjpwMAnFWtZemyDCR5/A9nCz9VyYcMaO+PuwyUB2
-         2tMBe1RcEWt5Q03VT9my7r6i2EBdY/5bAlqbKH7PY/2jLvuX2tFXomJGmStjyAq9i6bu
-         8JcfH5f5qePcEyBTZgoN65wnmQFirKACUFYTIGeTRf+XUSNoH4GTJ+qDf/As69ADE09P
-         Wi5DqwNT7QiiANRIgoWexPCgUXWG6FJUAkuqEKtPyl8aRkeJjfeRONBZvF/9H4egUOm4
-         HRpezQZy5paMRwQKhA2Zu/774G3QklrNqWJ9+OdMPfUhucGS9lhOeUdDoOtq5IeyJqIW
-         yuHw==
+        bh=Bo5VQ//3tqrnPktse6M9enS5exQT9a929Q+6pOvyezg=;
+        b=qckgPGDzOiDMdPYjj7VihdXg+SypVSMzKyRh0i8VyoYbdQK7zHYwg6WWpI1xbAbUym
+         CShHABDahGp5aiQ8u85i5AZTkOsGkF0uDlzmh8HdLrpJLC5C02YFQN2bJAGFnk+Zlxu9
+         2ACVTFFx+Bdk4OJFPoeW/qxMbq6y9E76qvS0avPgVpBsJvHQ/k2tmFw+unky1iyEYfYz
+         vUPV541kyFSu6oz5rM9WoXI6n3l5I1+STH7kWoP9ll/IJLCgpGx/qWRedvHpCLhhWbyF
+         /jORo46Bv0f6LEKgJx2BhgT7ql3arbNoVhhSQwaDFYuKjLnEjfjYWCMZyoTO48B4HUs2
+         zXVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=NDHFPubGokMv610+PS+/OMv3n5xorR0TmYr48ehh8fQ=;
-        b=v/JiJRzL1ajpDCGaxCcsI6jBwWhU1O9gJNnz7rjn6S1vsHbq7cC0Wk7hUBSA0MLLET
-         oMX0Z7Ay1IGcfkSyrevNlWf+OwLpYFY1+C32wV05T7AAXTEZla4oqtC1ZsPNp8Kc8daD
-         jmJVsTGjkyCUo+pMz1WFcKatsLlkL+SbErK0YVtH+Sd0JFEZoknmZ6iSPSNhV0Gjcv2h
-         ulj394mC8XArM8z5jQ1ErV5CjsNK22FSvSphHRwBZvgqoRSfkGBviWfgq5IU9DK/4gcB
-         xRKP3atA9WqluZi8ArnLPdswtlsVy3JlLrMTT+vnZoT/c0e7fKGmARga4VCziAGqn6A6
-         iy6A==
-X-Gm-Message-State: AOAM532gnSN+j4DDjs+U2GLsC9zlX2jkcOm9F5ueVUgSJwo3jEOvho0M
-        krpDEiVqEAv5GVCAwA9dAMZGjpawNEZqGU1L4KulOg==
-X-Google-Smtp-Source: ABdhPJxwuVgL0hLnQm/+FBBbUWdUYrXi04zMewbUDkI/oq8PjXnSCIfrj6K4/4AjuAL3jlBthIZKDoiJlwAu858FLkU=
-X-Received: by 2002:a17:902:6b01:b0:13e:50bb:790f with SMTP id
- o1-20020a1709026b0100b0013e50bb790fmr4251618plk.42.1634208432237; Thu, 14 Oct
- 2021 03:47:12 -0700 (PDT)
+        bh=Bo5VQ//3tqrnPktse6M9enS5exQT9a929Q+6pOvyezg=;
+        b=voPhFF/Y1hBr4pEXktgmR7ym1ytvPsIjiHWlNXx7fumjKPRJi4xE6Rb1Y39L4aMtw7
+         OHkJtNn6ptktBZN5Z/hUC1fCctQKjqRsJx/xen/U1oc+X0BtwE5At+LfQNDarXuQ4d1j
+         Guusw586FGJ5X/qbGlYtrcp10dXFmUBsB1wd/G5U8H0uJAfdN2+xd0k8C5gbanfoJGSm
+         tz95vXnm2XNKkg7kIClNTWJtS/V/qsO8RvzxY6O1CrK4QJ8Zzwnsz4+5PYmhEm8VZI2q
+         /J3YfvzLbPUIyoXnNgE5akd9ks7LWEq3j8sJCTcyiUbFaRp3HSx8dAa3NaBcoQvMdCi+
+         WE1g==
+X-Gm-Message-State: AOAM532apjWS9vcJArLNFFTEZHVE4eOHB8IyrLzeNsvOelo2uLpq+6J2
+        gJnEfvehZ+kAi7c2PSu1svK3NYlKXkuZ1ylxYV5nNA==
+X-Google-Smtp-Source: ABdhPJyn+5cDPpdGQJ4rBXK1JXXu+EDq8jOWBZVl0gH4sY1jyHea3nxm+bx6JXYsxcUpoVEOqgS4XdC+aw4OG+O7K+Q=
+X-Received: by 2002:a05:6a00:d63:b0:44d:186d:c4c0 with SMTP id
+ n35-20020a056a000d6300b0044d186dc4c0mr4622573pfv.47.1634208450140; Thu, 14
+ Oct 2021 03:47:30 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211014093112.3852491-1-fshao@chromium.org>
-In-Reply-To: <20211014093112.3852491-1-fshao@chromium.org>
+References: <20211014093112.3852491-1-fshao@chromium.org> <20211014093112.3852491-2-fshao@chromium.org>
+In-Reply-To: <20211014093112.3852491-2-fshao@chromium.org>
 From:   Tzung-Bi Shih <tzungbi@google.com>
-Date:   Thu, 14 Oct 2021 18:47:01 +0800
-Message-ID: <CA+Px+wXWS4hteE-o_uLi8DxgLK3TKkWzGmHGEE02ALzA1GRDoA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] mailbox: mtk-cmdq: Validate alias_id on probe
+Date:   Thu, 14 Oct 2021 18:47:19 +0800
+Message-ID: <CA+Px+wUKXJ7a9th1HyxvCgDTQXL9kHtZH+O9z9oRqCfcF8H-sg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mailbox: mtk-cmdq: Fix local clock ID usage
 To:     Fei Shao <fshao@chromium.org>
 Cc:     Jassi Brar <jaswinder.singh@linaro.org>,
         Chun-Kuang Hu <chunkuang.hu@kernel.org>,
@@ -65,12 +65,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 05:31:10PM +0800, Fei Shao wrote:
-> of_alias_get_id() may return -ENODEV which leads to illegal access to
-> the cmdq->clocks array.
-> Adding a check over alias_id to prevent the unexpected behavior.
->
-> Fixes: 85dfdbfc13ea ("mailbox: cmdq: add multi-gce clocks support for
-> mt8195")
-> Signed-off-by: Fei Shao <fshao@chromium.org>
-Reviewed-by: Tzung-Bi Shih <tzungbi@google.com>
+On Thu, Oct 14, 2021 at 05:31:11PM +0800, Fei Shao wrote:
+> +const char *clk_name = "gce";
+> +const char *clk_names[] = { "gce0", "gce1" };
+Does letting them static make more sense?
