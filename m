@@ -2,100 +2,385 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 346EA42CF66
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 02:05:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B09542CF60
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 02:02:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229931AbhJNAH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 20:07:29 -0400
-Received: from m1390.mail.163.com ([220.181.13.90]:1735 "EHLO
-        m1390.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229677AbhJNAH2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 20:07:28 -0400
-X-Greylist: delayed 935 seconds by postgrey-1.27 at vger.kernel.org; Wed, 13 Oct 2021 20:07:27 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Date:From:Subject:MIME-Version:Message-ID; bh=BbFum
-        IPt2O0/wUgVCjhIJEV8pEe1M2t/kA6VAymf0rc=; b=QKJpY1AJl9JFFnB2C6MOR
-        nmhxik7dojhyW1NsjHPKE61FFFIuaiYXB4AmPMyCOP5yC+5/TEhCcljXTMI8lkeV
-        msSJgrPdWTVc3T3BtweifjqVMcC4DmcCAm+a7QNh+v2D5iOQVOf98x2ORBGM33fJ
-        EfSXAQHZE+uI764HHy3fjk=
-Received: from zhanglyra$163.com ( [120.244.194.245] ) by
- ajax-webmail-wmsvr90 (Coremail) ; Thu, 14 Oct 2021 07:49:40 +0800 (CST)
-X-Originating-IP: [120.244.194.245]
-Date:   Thu, 14 Oct 2021 07:49:40 +0800 (CST)
-From:   ChunyanZhang <zhanglyra@163.com>
-To:     "Stephen Boyd" <sboyd@kernel.org>
-Cc:     "Chunyan Zhang" <zhang.lyra@gmail.com>,
-        "Rob Herring" <robh+dt@kernel.org>, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, "Baolin Wang" <baolin.wang7@gmail.com>,
-        "Orson Zhai" <orsonzhai@gmail.com>,
-        "Chunyan Zhang" <chunyan.zhang@unisoc.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re:Re: [PATCH v4 2/4] dt-bindings: mfd: sprd: Add bindings for
- ums512 global registers
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20210622(1d4788a8)
- Copyright (c) 2002-2021 www.mailtech.cn 163com
-In-Reply-To: <163416267274.936110.2784588823311275089@swboyd.mtv.corp.google.com>
-References: <20210923064137.60722-1-zhang.lyra@gmail.com>
- <20210923064137.60722-3-zhang.lyra@gmail.com>
- <163416267274.936110.2784588823311275089@swboyd.mtv.corp.google.com>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=GBK
+        id S229994AbhJNAEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 20:04:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34738 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229677AbhJNAEG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 20:04:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CBE256113B;
+        Thu, 14 Oct 2021 00:02:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634169722;
+        bh=UvX3x6hjiRsSQn6rwJ50mSs3/4dWDRRlhxETFUNEHL0=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=QVsDkjOzbVrYNz2HNqXY9aR4kShNlTu2b/7kIWGD2Dft5BNuZX+DMcfh6VlYzvTVk
+         BtdEH57x+DDG/HFZGrLTe/sphdd//C277WhJp8leDZRhlAUHwMPn0y6kW0TggUUnPW
+         OZ8dqYalJ2ncQeeyd1IeEQXsfTBxFtamTE3z8cRBpgVRV3AJcqh2zCwISgX2WbJ381
+         /GwE/RifFAfGPGOeWTEIyt6D/7d+iHzArnfCtqClfcMlcmSt58Zh0fQ5IXNgtMWpCv
+         ZmNVPfUHnByA78uQO7EOSwI9KKCiB68b9TjU8KrTdztpT7FDADaFptF/5M9eolE+2F
+         nKMxhiItkMFTg==
+Message-ID: <25c85925b3aa3b7457c9d079d1cb171f72e69eac.camel@kernel.org>
+Subject: Re: [PATCH] tpm/st33zp24: drop unneeded over-commenting
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Sohaib Mohamed <sohaib.amhmd@gmail.com>
+Cc:     Peter Huewe <peterhuewe@gmx.de>, Jason Gunthorpe <jgg@ziepe.ca>,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Thu, 14 Oct 2021 03:01:59 +0300
+In-Reply-To: <20211013092151.11835-1-sohaib.amhmd@gmail.com>
+References: <20211013092151.11835-1-sohaib.amhmd@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-Message-ID: <5b8198f8.cc.17c7c0fc3e2.Coremail.zhanglyra@163.com>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: WsGowAAXl8WUcGdhfWjTAA--.43112W
-X-CM-SenderInfo: x2kd0wpo1utqqrwthudrp/1tbivwYr41WBv-IejwABs4
-X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgU3RlcGhlbiwKClRoYW5rcyBmb3IgdGhlIHJldmlldy4KCkF0IDIwMjEtMTAtMTQgMDY6MDQ6
-MzIsICJTdGVwaGVuIEJveWQiIDxzYm95ZEBrZXJuZWwub3JnPiB3cm90ZToKPlF1b3RpbmcgQ2h1
-bnlhbiBaaGFuZyAoMjAyMS0wOS0yMiAyMzo0MTozNSkKPj4gZGlmZiAtLWdpdCBhL0RvY3VtZW50
-YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tZmQvc3ByZCx1bXM1MTItZ2xicmVnLnlhbWwgYi9E
-b2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbWZkL3NwcmQsdW1zNTEyLWdsYnJlZy55
-YW1sCj4+IG5ldyBmaWxlIG1vZGUgMTAwNjQ0Cj4+IGluZGV4IDAwMDAwMDAwMDAwMC4uMzUyMmYz
-ZDJkOGRlCj4+IC0tLSAvZGV2L251bGwKPj4gKysrIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVl
-L2JpbmRpbmdzL21mZC9zcHJkLHVtczUxMi1nbGJyZWcueWFtbAo+PiBAQCAtMCwwICsxLDY4IEBA
-Cj4+ICsjIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiAoR1BMLTIuMC1vbmx5IE9SIEJTRC0yLUNs
-YXVzZSkKPj4gKyVZQU1MIDEuMgo+PiArLS0tCj4+ICskaWQ6IGh0dHA6Ly9kZXZpY2V0cmVlLm9y
-Zy9zY2hlbWFzL21mZC9zcHJkLHVtczUxMi1nbGJyZWcueWFtbCMKPj4gKyRzY2hlbWE6IGh0dHA6
-Ly9kZXZpY2V0cmVlLm9yZy9tZXRhLXNjaGVtYXMvY29yZS55YW1sIwo+PiArCj4+ICt0aXRsZTog
-VW5pc29jIFN5c3RlbSBHbG9iYWwgUmVnaXN0ZXIgRGV2aWNlIFRyZWUgQmluZGluZ3MKPj4gKwo+
-PiArbWFpbnRhaW5lcnM6Cj4+ICsgIC0gT3Jzb24gWmhhaSA8b3Jzb256aGFpQGdtYWlsLmNvbT4K
-Pj4gKyAgLSBCYW9saW4gV2FuZyA8YmFvbGluLndhbmc3QGdtYWlsLmNvbT4KPj4gKyAgLSBDaHVu
-eWFuIFpoYW5nIDx6aGFuZy5seXJhQGdtYWlsLmNvbT4KPj4gKwo+PiArZGVzY3JpcHRpb246Cj4+
-ICsgIFVuaXNvYyBzeXN0ZW0gZ2xvYmFsIHJlZ2lzdGVycyBwcm92aWRlIHJlZ2lzdGVyIG1hcAo+
-PiArICBmb3IgY2xvY2tzIGFuZCBzb21lIG11bHRpbWVkaWEgbW9kdWxlcyBvZiB0aGUgU29DLgo+
-PiArCj4+ICtwcm9wZXJ0aWVzOgo+PiArICAiI2FkZHJlc3MtY2VsbHMiOiB0cnVlCj4+ICsgICIj
-c2l6ZS1jZWxscyI6IHRydWUKPj4gKwo+PiArICBjb21wYXRpYmxlOgo+PiArICAgIGl0ZW1zOgo+
-PiArICAgICAgLSBjb25zdDogc3ByZCx1bXM1MTItZ2xicmVncwo+PiArICAgICAgLSBjb25zdDog
-c3lzY29uCj4+ICsgICAgICAtIGNvbnN0OiBzaW1wbGUtbWZkCj4+ICsKPj4gKyAgcmFuZ2VzOgo+
-PiArICAgIG1heEl0ZW1zOiAxCj4+ICsKPj4gKyAgcmVnOgo+PiArICAgIG1heEl0ZW1zOiAxCj4+
-ICsKPj4gK3BhdHRlcm5Qcm9wZXJ0aWVzOgo+PiArICAiXi4qQFswLTlhLWZdKyQiOgo+PiArICAg
-ICMgQ2hpbGQgbm9kZQo+PiArICAgIHR5cGU6IG9iamVjdAo+PiArICAgICRyZWY6ICIuLi9jbG9j
-ay9zcHJkLHVtczUxMi1jbGsueWFtbCIKPj4gKyAgICBkZXNjcmlwdGlvbjoKPj4gKyAgICAgIENs
-b2NrIGNvbnRyb2xsZXIgZm9yIHRoZSBTb0MgY2xvY2tzLgo+PiArCj4+ICtyZXF1aXJlZDoKPj4g
-KyAgLSBjb21wYXRpYmxlCj4+ICsgIC0gcmVnCj4+ICsKPj4gK2FkZGl0aW9uYWxQcm9wZXJ0aWVz
-OiBmYWxzZQo+PiArCj4+ICtleGFtcGxlczoKPj4gKyAgLSB8Cj4+ICsgICAgYXBfYXBiX3JlZ3M6
-IHN5c2NvbkA3MTAwMDAwMCB7Cj4+ICsgICAgICBjb21wYXRpYmxlID0gInNwcmQsdW1zNTEyLWds
-YnJlZ3MiLCAic3lzY29uIiwgInNpbXBsZS1tZmQiOwo+PiArICAgICAgcmVnID0gPDB4NzEwMDAw
-MDAgMHgzMDAwPjsKPj4gKyAgICAgICNhZGRyZXNzLWNlbGxzID0gPDE+Owo+PiArICAgICAgI3Np
-emUtY2VsbHMgPSA8MT47Cj4+ICsgICAgICByYW5nZXMgPSA8MCAweDcxMDAwMDAwIDB4MzAwMD47
-Cj4+ICsKPj4gKyAgICAgIGNsb2NrLWNvbnRyb2xsZXJAMCB7Cj4+ICsgICAgICAgIGNvbXBhdGli
-bGUgPSAic3ByZCx1bXM1MTItYXBhaGItZ2F0ZSI7Cj4KPldoeSBpcyB0aGlzIGEgc3Vibm9kZSBv
-ZiBhIHN5c2NvbiBhbmQgc2ltcGxlLW1mZD8gV2h5IG5vdCBwdXQgdGhlPmNsb2NrLWNvbnRyb2xs
-ZXJANzEwMDAwMDAgZGlyZWN0bHkgb250byB0aGUgYnVzPyBEb2VzIG1ha2luZyBpdCBhIGNoaWxk
-Cj5ub2RlIGhlbHAgc29tZWhvdz8KClRoZXNlIGNsb2NrcyBhcmUgYXQgdGhlIHNhbWUgcmVnaXN0
-ZXIgcmFuZ2Ugd2l0aCBnbG9iYWwgcmVnaXN0ZXJzLiBJIG9yaWdpbmFsbHkgcHV0IHRoZW0gZGly
-ZWN0bHkgb250byB0aGUgYnVzIGluZGVlZCB3aGVuIHN1Ym1pdHRpbmcgdGhlIHBhdGNoZXMgZm9y
-IFNDOTg2M0EgY2xvY2tzIGxhc3QgeWVhciwgYW5kIGl0IGhhZCBhIHByaXZhdGUgcHJvcGVydHkg
-bmFtZWQgJ3NwcmQsc3lzY29uJyB3aGljaCBjb3VsZCBwcm92aWRlIHJlZ21hcCBmb3IgdGhlc2Ug
-Y2xvY2tzLgoKUm9iIHN1Z2dlc3RlZCBbMV0gdXMgdG8gbWFrZSB0aGVtIGEgY2hpbGQgb2YgdGhl
-IHN5c2NvbiwgYW5kIHdvdWxkIG5vdCBuZWVkIHRoZSBwcml2YXRlIHByb3BlcnR5ICdzcHJkLCBz
-eXNjb24nIHRoZW4uCgpUaGFua3MsCkNodW55YW4KClsxXSBodHRwczovL2xrbWwub3JnL2xrbWwv
-MjAxOS8xMi8yNi8yMTIKCj4KPj4gKyAgICAgICAgcmVnID0gPDB4MCAweDIwMDA+Owo+PiArICAg
-ICAgICAjY2xvY2stY2VsbHMgPSA8MT47Cj4+ICsgICAgICB9Owo+PiArICAgIH07Cg==
+On Wed, 2021-10-13 at 11:21 +0200, Sohaib Mohamed wrote:
+> Remove parameter descriptions from all static functions.
+> Remove the comment altogether that does not tell what the function does.
+>=20
+> Suggested-by: Jarkko Sakkinen <jarkko@kernel.org>
+> Signed-off-by: Sohaib Mohamed <sohaib.amhmd@gmail.com>
+> ---
+> =C2=A0drivers/char/tpm/st33zp24/st33zp24.c | 122 ++++--------------------=
+---
+> =C2=A01 file changed, 17 insertions(+), 105 deletions(-)
+>=20
+> diff --git a/drivers/char/tpm/st33zp24/st33zp24.c b/drivers/char/tpm/st33=
+zp24/st33zp24.c
+> index 4ec10ab5e576..ce9efb73c144 100644
+> --- a/drivers/char/tpm/st33zp24/st33zp24.c
+> +++ b/drivers/char/tpm/st33zp24/st33zp24.c
+> @@ -61,9 +61,7 @@ enum tis_defaults {
+> =C2=A0};
+> =C2=A0
+> =C2=A0/*
+> - * clear_interruption clear the pending interrupt.
+> - * @param: tpm_dev, the tpm device device.
+> - * @return: the interrupt status value.
+> + * clear the pending interrupt.
+> =C2=A0 */
+> =C2=A0static u8 clear_interruption(struct st33zp24_dev *tpm_dev)
+> =C2=A0{
+> @@ -72,12 +70,10 @@ static u8 clear_interruption(struct st33zp24_dev *tpm=
+_dev)
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0tpm_dev->ops->recv(tpm_de=
+v->phy_id, TPM_INT_STATUS, &interrupt, 1);
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0tpm_dev->ops->send(tpm_de=
+v->phy_id, TPM_INT_STATUS, &interrupt, 1);
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return interrupt;
+> -} /* clear_interruption() */
+> +}
+> =C2=A0
+> =C2=A0/*
+> - * st33zp24_cancel, cancel the current command execution or
+> - * set STS to COMMAND READY.
+> - * @param: chip, the tpm_chip description as specified in driver/char/tp=
+m/tpm.h
+> + * cancel the current command execution or set STS to COMMAND READY.
+> =C2=A0 */
+> =C2=A0static void st33zp24_cancel(struct tpm_chip *chip)
+> =C2=A0{
+> @@ -86,12 +82,10 @@ static void st33zp24_cancel(struct tpm_chip *chip)
+> =C2=A0
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0data =3D TPM_STS_COMMAND_=
+READY;
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0tpm_dev->ops->send(tpm_de=
+v->phy_id, TPM_STS, &data, 1);
+> -} /* st33zp24_cancel() */
+> +}
+> =C2=A0
+> =C2=A0/*
+> - * st33zp24_status return the TPM_STS register
+> - * @param: chip, the tpm chip description
+> - * @return: the TPM_STS register value.
+> + * return the TPM_STS register
+> =C2=A0 */
+> =C2=A0static u8 st33zp24_status(struct tpm_chip *chip)
+> =C2=A0{
+> @@ -100,12 +94,10 @@ static u8 st33zp24_status(struct tpm_chip *chip)
+> =C2=A0
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0tpm_dev->ops->recv(tpm_de=
+v->phy_id, TPM_STS, &data, 1);
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return data;
+> -} /* st33zp24_status() */
+> +}
+> =C2=A0
+> =C2=A0/*
+> - * check_locality if the locality is active
+> - * @param: chip, the tpm chip description
+> - * @return: true if LOCALITY0 is active, otherwise false
+> + * if the locality is active
+> =C2=A0 */
+> =C2=A0static bool check_locality(struct tpm_chip *chip)
+> =C2=A0{
+> @@ -120,13 +112,8 @@ static bool check_locality(struct tpm_chip *chip)
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0return true;
+> =C2=A0
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return false;
+> -} /* check_locality() */
+> +}
+> =C2=A0
+> -/*
+> - * request_locality request the TPM locality
+> - * @param: chip, the chip description
+> - * @return: the active locality or negative value.
+> - */
+> =C2=A0static int request_locality(struct tpm_chip *chip)
+> =C2=A0{
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct st33zp24_dev *tpm_=
+dev =3D dev_get_drvdata(&chip->dev);
+> @@ -153,12 +140,8 @@ static int request_locality(struct tpm_chip *chip)
+> =C2=A0
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/* could not get locality=
+ */
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return -EACCES;
+> -} /* request_locality() */
+> +}
+> =C2=A0
+> -/*
+> - * release_locality release the active locality
+> - * @param: chip, the tpm chip description.
+> - */
+> =C2=A0static void release_locality(struct tpm_chip *chip)
+> =C2=A0{
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct st33zp24_dev *tpm_=
+dev =3D dev_get_drvdata(&chip->dev);
+> @@ -171,8 +154,6 @@ static void release_locality(struct tpm_chip *chip)
+> =C2=A0
+> =C2=A0/*
+> =C2=A0 * get_burstcount return the burstcount value
+> - * @param: chip, the chip description
+> - * return: the burstcount or negative value.
+> =C2=A0 */
+> =C2=A0static int get_burstcount(struct tpm_chip *chip)
+> =C2=A0{
+> @@ -200,18 +181,8 @@ static int get_burstcount(struct tpm_chip *chip)
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0msleep(TPM_TIMEOUT);
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0} while (time_before(jiff=
+ies, stop));
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return -EBUSY;
+> -} /* get_burstcount() */
+> -
+> +}
+> =C2=A0
+> -/*
+> - * wait_for_tpm_stat_cond
+> - * @param: chip, chip description
+> - * @param: mask, expected mask value
+> - * @param: check_cancel, does the command expected to be canceled ?
+> - * @param: canceled, did we received a cancel request ?
+> - * @return: true if status =3D=3D mask or if the command is canceled.
+> - * false in other cases.
+> - */
+> =C2=A0static bool wait_for_tpm_stat_cond(struct tpm_chip *chip, u8 mask,
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0bool check_cancel, bool *cance=
+led)
+> =C2=A0{
+> @@ -228,13 +199,7 @@ static bool wait_for_tpm_stat_cond(struct tpm_chip *=
+chip, u8 mask,
+> =C2=A0}
+> =C2=A0
+> =C2=A0/*
+> - * wait_for_stat wait for a TPM_STS value
+> - * @param: chip, the tpm chip description
+> - * @param: mask, the value mask to wait
+> - * @param: timeout, the timeout
+> - * @param: queue, the wait queue.
+> - * @param: check_cancel, does the command can be cancelled ?
+> - * @return: the tpm status, 0 if success, -ETIME if timeout is reached.
+> + * wait for a TPM_STS value
+> =C2=A0 */
+> =C2=A0static int wait_for_stat(struct tpm_chip *chip, u8 mask, unsigned l=
+ong timeout,
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0wai=
+t_queue_head_t *queue, bool check_cancel)
+> @@ -292,15 +257,8 @@ static int wait_for_stat(struct tpm_chip *chip, u8 m=
+ask, unsigned long timeout,
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0}
+> =C2=A0
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return -ETIME;
+> -} /* wait_for_stat() */
+> +}
+> =C2=A0
+> -/*
+> - * recv_data receive data
+> - * @param: chip, the tpm chip description
+> - * @param: buf, the buffer where the data are received
+> - * @param: count, the number of data to receive
+> - * @return: the number of bytes read from TPM FIFO.
+> - */
+> =C2=A0static int recv_data(struct tpm_chip *chip, u8 *buf, size_t count)
+> =C2=A0{
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct st33zp24_dev *tpm_=
+dev =3D dev_get_drvdata(&chip->dev);
+> @@ -325,12 +283,6 @@ static int recv_data(struct tpm_chip *chip, u8 *buf,=
+ size_t count)
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return size;
+> =C2=A0}
+> =C2=A0
+> -/*
+> - * tpm_ioserirq_handler the serirq irq handler
+> - * @param: irq, the tpm chip description
+> - * @param: dev_id, the description of the chip
+> - * @return: the status of the handler.
+> - */
+> =C2=A0static irqreturn_t tpm_ioserirq_handler(int irq, void *dev_id)
+> =C2=A0{
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct tpm_chip *chip =3D=
+ dev_id;
+> @@ -341,16 +293,10 @@ static irqreturn_t tpm_ioserirq_handler(int irq, vo=
+id *dev_id)
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0disable_irq_nosync(tpm_de=
+v->irq);
+> =C2=A0
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return IRQ_HANDLED;
+> -} /* tpm_ioserirq_handler() */
+> +}
+> =C2=A0
+> =C2=A0/*
+> - * st33zp24_send send TPM commands through the I2C bus.
+> - *
+> - * @param: chip, the tpm_chip description as specified in driver/char/tp=
+m/tpm.h
+> - * @param: buf,=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0the buffe=
+r to send.
+> - * @param: count, the number of bytes to send.
+> - * @return: In case of success the number of bytes sent.
+> - *=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0In other case, a <=
+ 0 value describing the issue.
+> + * send TPM commands through the I2C bus.
+> =C2=A0 */
+> =C2=A0static int st33zp24_send(struct tpm_chip *chip, unsigned char *buf,
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 si=
+ze_t len)
+> @@ -431,14 +377,6 @@ static int st33zp24_send(struct tpm_chip *chip, unsi=
+gned char *buf,
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return ret;
+> =C2=A0}
+> =C2=A0
+> -/*
+> - * st33zp24_recv received TPM response through TPM phy.
+> - * @param: chip, the tpm_chip description as specified in driver/char/tp=
+m/tpm.h.
+> - * @param: buf,=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0the buffe=
+r to store datas.
+> - * @param: count, the number of bytes to send.
+> - * @return: In case of success the number of bytes received.
+> - *=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 In other case, a < 0 =
+value describing the issue.
+> - */
+> =C2=A0static int st33zp24_recv(struct tpm_chip *chip, unsigned char *buf,
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 size_t count)
+> =C2=A0{
+> @@ -478,12 +416,6 @@ static int st33zp24_recv(struct tpm_chip *chip, unsi=
+gned char *buf,
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return size;
+> =C2=A0}
+> =C2=A0
+> -/*
+> - * st33zp24_req_canceled
+> - * @param: chip, the tpm_chip description as specified in driver/char/tp=
+m/tpm.h.
+> - * @param: status, the TPM status.
+> - * @return: Does TPM ready to compute a new command ? true.
+> - */
+> =C2=A0static bool st33zp24_req_canceled(struct tpm_chip *chip, u8 status)
+> =C2=A0{
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return (status =3D=3D TPM=
+_STS_COMMAND_READY);
+> @@ -501,11 +433,7 @@ static const struct tpm_class_ops st33zp24_tpm =3D {
+> =C2=A0};
+> =C2=A0
+> =C2=A0/*
+> - * st33zp24_probe initialize the TPM device
+> - * @param: client, the i2c_client description (TPM I2C description).
+> - * @param: id, the i2c_device_id struct.
+> - * @return: 0 in case of success.
+> - *=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 -1 in other case.
+> + * initialize the TPM device
+> =C2=A0 */
+> =C2=A0int st33zp24_probe(void *phy_id, const struct st33zp24_phy_ops *ops=
+,
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct device *dev, int irq, int io_lp=
+cpd)
+> @@ -583,11 +511,6 @@ int st33zp24_probe(void *phy_id, const struct st33zp=
+24_phy_ops *ops,
+> =C2=A0}
+> =C2=A0EXPORT_SYMBOL(st33zp24_probe);
+> =C2=A0
+> -/*
+> - * st33zp24_remove remove the TPM device
+> - * @param: tpm_data, the tpm phy.
+> - * @return: 0 in case of success.
+> - */
+> =C2=A0int st33zp24_remove(struct tpm_chip *chip)
+> =C2=A0{
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0tpm_chip_unregister(chip)=
+;
+> @@ -596,12 +519,6 @@ int st33zp24_remove(struct tpm_chip *chip)
+> =C2=A0EXPORT_SYMBOL(st33zp24_remove);
+> =C2=A0
+> =C2=A0#ifdef CONFIG_PM_SLEEP
+> -/*
+> - * st33zp24_pm_suspend suspend the TPM device
+> - * @param: tpm_data, the tpm phy.
+> - * @param: mesg, the power management message.
+> - * @return: 0 in case of success.
+> - */
+> =C2=A0int st33zp24_pm_suspend(struct device *dev)
+> =C2=A0{
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct tpm_chip *chip =3D=
+ dev_get_drvdata(dev);
+> @@ -615,14 +532,9 @@ int st33zp24_pm_suspend(struct device *dev)
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0ret =3D tpm_pm_suspend(dev);
+> =C2=A0
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return ret;
+> -} /* st33zp24_pm_suspend() */
+> +}
+> =C2=A0EXPORT_SYMBOL(st33zp24_pm_suspend);
+> =C2=A0
+> -/*
+> - * st33zp24_pm_resume resume the TPM device
+> - * @param: tpm_data, the tpm phy.
+> - * @return: 0 in case of success.
+> - */
+> =C2=A0int st33zp24_pm_resume(struct device *dev)
+> =C2=A0{
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct tpm_chip *chip =3D=
+ dev_get_drvdata(dev);
+> @@ -640,7 +552,7 @@ int st33zp24_pm_resume(struct device *dev)
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0tpm=
+1_do_selftest(chip);
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0}
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return ret;
+> -} /* st33zp24_pm_resume() */
+> +}
+> =C2=A0EXPORT_SYMBOL(st33zp24_pm_resume);
+> =C2=A0#endif
+> =C2=A0
+
+Thank you.
+
+Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+
+/Jarkko
+
+
