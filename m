@@ -2,201 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01DCA42D8A1
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 13:56:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B64B742D8A6
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 13:58:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231195AbhJNL6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 07:58:43 -0400
-Received: from outbound-smtp10.blacknight.com ([46.22.139.15]:46459 "EHLO
-        outbound-smtp10.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230337AbhJNL6k (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 07:58:40 -0400
-Received: from mail.blacknight.com (pemlinmail04.blacknight.ie [81.17.254.17])
-        by outbound-smtp10.blacknight.com (Postfix) with ESMTPS id 292811C39DE
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 12:56:35 +0100 (IST)
-Received: (qmail 5409 invoked from network); 14 Oct 2021 11:56:34 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.29])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 14 Oct 2021 11:56:34 -0000
-Date:   Thu, 14 Oct 2021 12:56:32 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Linux-MM <linux-mm@kvack.org>, NeilBrown <neilb@suse.de>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Rik van Riel <riel@surriel.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/8] mm/vmscan: Throttle reclaim and compaction when too
- may pages are isolated
-Message-ID: <20211014115632.GZ3959@techsingularity.net>
-References: <20211008135332.19567-1-mgorman@techsingularity.net>
- <20211008135332.19567-3-mgorman@techsingularity.net>
- <5e2c8c39-29d9-61be-049f-a408f62f5acf@suse.cz>
+        id S231307AbhJNMA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 08:00:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57188 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230080AbhJNMAy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 08:00:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 326E960BD3;
+        Thu, 14 Oct 2021 11:58:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634212730;
+        bh=Oui10MkUZm/crpdoOrZ3ozxUHKzPdQEL7AlhQ8R675Y=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Q49C3RwqQC7F6HavHPN+uRkVi/fsecm3XXv8aXcaQZxrBVOMDR6uCdii+9bV1mEKN
+         +YW4suBNflX4qGV44IqjW3FZx6O3zvmfhaV0acFTlnuTPzwf3gvXOc5w/cA4jHi+M1
+         jogi6naNWIJ9Z/TQS0pBlUtwmrUH2sMNwOJb8ju7X4Z4tRefXNxA6bWO6R1TbA/GTy
+         2lhyBIBfrFVKyCEEBS3NmYh1bDe3i7qBEIN4fA5UcI/eGTS3iNONGJR4QUDASH7k1a
+         kJva1EYTeFratntuqWqsjs2lc6zUL1wn2azovXIEBfaY5X+B5gyX+SYUnLlgriINr0
+         H1+Pxgc1EIVRA==
+Date:   Thu, 14 Oct 2021 13:58:44 +0200
+From:   Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
+To:     Alexander Dahl <ada@thorsis.com>
+Cc:     Pavel Machek <pavel@ucw.cz>, devicetree@vger.kernel.org,
+        linux-leds@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
+        robh+dt@kernel.org, Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH 2/3] dt-bindings: leds: Add `excludes` property
+Message-ID: <20211014135844.440e4e19@dellmb>
+In-Reply-To: <YWgU37NQfnIOtlsn@ada.ifak-system.com>
+References: <20211013204424.10961-1-kabel@kernel.org>
+        <20211013204424.10961-2-kabel@kernel.org>
+        <20211014102918.GA21116@duo.ucw.cz>
+        <20211014124309.10b42043@dellmb>
+        <YWgU37NQfnIOtlsn@ada.ifak-system.com>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <5e2c8c39-29d9-61be-049f-a408f62f5acf@suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 10:06:25AM +0200, Vlastimil Babka wrote:
-> On 10/8/21 15:53, Mel Gorman wrote:
-> > Page reclaim throttles on congestion if too many parallel reclaim instances
-> > have isolated too many pages. This makes no sense, excessive parallelisation
-> > has nothing to do with writeback or congestion.
-> > 
-> > This patch creates an additional workqueue to sleep on when too many
-> > pages are isolated. The throttled tasks are woken when the number
-> > of isolated pages is reduced or a timeout occurs. There may be
-> > some false positive wakeups for GFP_NOIO/GFP_NOFS callers but
-> > the tasks will throttle again if necessary.
-> > 
-> > [shy828301@gmail.com: Wake up from compaction context]
-> > Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
-> 
-> ...
-> 
-> > diff --git a/mm/internal.h b/mm/internal.h
-> > index 90764d646e02..06d0c376efcd 100644
-> > --- a/mm/internal.h
-> > +++ b/mm/internal.h
-> > @@ -45,6 +45,15 @@ static inline void acct_reclaim_writeback(struct page *page)
-> >  		__acct_reclaim_writeback(pgdat, page, nr_throttled);
-> >  }
-> >  
-> > +static inline void wake_throttle_isolated(pg_data_t *pgdat)
-> > +{
-> > +	wait_queue_head_t *wqh;
-> > +
-> > +	wqh = &pgdat->reclaim_wait[VMSCAN_THROTTLE_ISOLATED];
-> > +	if (waitqueue_active(wqh))
-> > +		wake_up_all(wqh);
-> 
-> Again, would it be better to wake up just one task to prevent possible
-> thundering herd? We can assume that that task will call too_many_isolated()
-> eventually to wake up the next one?
+On Thu, 14 Oct 2021 13:30:39 +0200
+Alexander Dahl <ada@thorsis.com> wrote:
 
-Same problem as the writeback throttling, there is no prioritsation of
-light vs heavy allocators.
+> Hei hei,
+>=20
+> Am Thu, Oct 14, 2021 at 12:43:09PM +0200 schrieb Marek Beh=C3=BAn:
+> > On Thu, 14 Oct 2021 12:29:18 +0200
+> > Pavel Machek <pavel@ucw.cz> wrote:
+> >  =20
+> > > Hi!
+> > >  =20
+> > > > Some RJ-45 connectors have LEDs wired in the following way:
+> > > >=20
+> > > >          LED1
+> > > >       +--|>|--+
+> > > >       |       |
+> > > >   A---+--|<|--+---B
+> > > >          LED2
+> > > >=20
+> > > > With + on A and - on B, LED1 is ON and LED2 is OFF. Inverting
+> > > > the polarity turns LED1 OFF and LED2 ON.
+> > > >=20
+> > > > So these LEDs exclude each other.
+> > > >=20
+> > > > Add new `excludes` property to the LED binding. The property is
+> > > > a phandle-array to all the other LEDs that are excluded by this
+> > > > LED.   =20
+> > >=20
+> > > I don't think this belongs to the LED binding.
+> > >=20
+> > > This is controller limitation, and the driver handling the
+> > > controller needs to know about it... so it does not need to learn
+> > > that from the LED binding. =20
+> >=20
+> > It's not necessarily a controller limitation, rather a limitation of
+> > the board (or ethernet connector, in the case of LEDs on an ethernet
+> > connector). =20
+>=20
+> Such LEDs are not limited to PHYs or ethernet connectors.  There is
+> hardware with such dual color LEDs connected to GPIO pins (either
+> directly to the SoC or through some GPIO expander like an 74hc595
+> shift register).  That mail points to such hardware:
+>=20
+> https://www.spinics.net/lists/linux-leds/msg11847.html
+>=20
+> I asked about how this can be modelled back in 2019 and it was also
+> discussed last year:
+>=20
+> https://www.spinics.net/lists/linux-leds/msg11665.html
+> https://lore.kernel.org/linux-leds/2315048.uTtSMl1LR1@ada/
+>=20
+> The "solution" back when I first asked was treating them as ordinary
+> GPIO-LEDs and ignore the "exclusion topic" which means in practice the
+> LED goes OFF if both pins are ON (high) at the same time, which works
+> well enough in practice.
+>=20
+> > But I guess we could instead document this property in the ethernet
+> > PHY controller binding for a given PHY. =20
+>=20
+> Because such LEDs are not restricted to ethernet PHYs, but can also be
+> used with GPIOs from the hardware point of view, I would not put it
+> there.
+>=20
+> Furthermore I would not view this as a restriction of the gpio-leds
+> controller, but it's a property of the LEDs itself or the way they are
+> wired to the board.
+>=20
+> This could (or should as Pavel suggested back in 2019) be put to a new
+> driver, at least for the GPIO case, but it would need some kind of new
+> binding anyways.  With that in mind I consider the proposed binding to
+> be well comprehensible for a human reader/writer.
+>=20
+> I'm sorry, I did not have leisure time to implement such a driver yet.
+> Breadboard hardware for that still waiting in the drawer. :-/
 
-> Although it seems strange that
-> too_many_isolated() is the place where we detect the situation for wake up.
-> Simpler than to hook into NR_ISOLATED decrementing I guess.
-> 
+That's why I think we need the `excludes` property.
 
-Simplier but more costly. Every decrement would have to check
-too_many_isolated(). I think the cost of that is too high given that the
-VMSCAN_THROTTLE_ISOLATED is relatively hard to trigger and the minority
-of throttling events.
+On the sw side, it should work like this:
+$ cd /sys/class/leds
+$ echo 1 >LED1/brightness
+$ cat LED1/brightness LED2/brightness
+1
+0
+$ echo 1 >LED2/brightness
+$ cat LED1/brightness LED2/brightness
+0
+1
 
-> > +}
-> > +
-> >  vm_fault_t do_swap_page(struct vm_fault *vmf);
-> >  
-> >  void free_pgtables(struct mmu_gather *tlb, struct vm_area_struct *start_vma,
-> ...
-> > --- a/mm/vmscan.c
-> > +++ b/mm/vmscan.c
-> > @@ -1006,11 +1006,10 @@ static void handle_write_error(struct address_space *mapping,
-> >  	unlock_page(page);
-> >  }
-> >  
-> > -static void
-> > -reclaim_throttle(pg_data_t *pgdat, enum vmscan_throttle_state reason,
-> > +void reclaim_throttle(pg_data_t *pgdat, enum vmscan_throttle_state reason,
-> >  							long timeout)
-> >  {
-> > -	wait_queue_head_t *wqh = &pgdat->reclaim_wait;
-> > +	wait_queue_head_t *wqh = &pgdat->reclaim_wait[reason];
-> 
-> It seems weird that later in this function we increase nr_reclaim_throttled
-> without distinguishing the reason, so effectively throttling for isolated
-> pages will trigger acct_reclaim_writeback() doing the NR_THROTTLED_WRITTEN
-> counting, although it's not related at all? Maybe either have separate
-> nr_reclaim_throttled counters per vmscan_throttle_state (if counter of
-> isolated is useful, I haven't seen the rest of series yet), or count only
-> VMSCAN_THROTTLE_WRITEBACK tasks?
-> 
+The drivers could also implement brightness_hw_changed for these LEDs.
 
-Very good point, it would be more appropriate to only count the
-writeback reason.
-
-Diff on top is below. It'll cause minor conflicts later in the series.
-
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index ca65d6a64bdd..58a25d42c31c 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -849,7 +849,7 @@ typedef struct pglist_data {
- 	wait_queue_head_t kswapd_wait;
- 	wait_queue_head_t pfmemalloc_wait;
- 	wait_queue_head_t reclaim_wait[NR_VMSCAN_THROTTLE];
--	atomic_t nr_reclaim_throttled;	/* nr of throtted tasks */
-+	atomic_t nr_writeback_throttled;/* nr of writeback-throttled tasks */
- 	unsigned long nr_reclaim_start;	/* nr pages written while throttled
- 					 * when throttling started. */
- 	struct task_struct *kswapd;	/* Protected by
-diff --git a/mm/internal.h b/mm/internal.h
-index 06d0c376efcd..3461a1055975 100644
---- a/mm/internal.h
-+++ b/mm/internal.h
-@@ -39,7 +39,7 @@ void __acct_reclaim_writeback(pg_data_t *pgdat, struct page *page,
- static inline void acct_reclaim_writeback(struct page *page)
- {
- 	pg_data_t *pgdat = page_pgdat(page);
--	int nr_throttled = atomic_read(&pgdat->nr_reclaim_throttled);
-+	int nr_throttled = atomic_read(&pgdat->nr_writeback_throttled);
- 
- 	if (nr_throttled)
- 		__acct_reclaim_writeback(pgdat, page, nr_throttled);
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 6e198bbbd86a..29434d4fc1c7 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -1011,6 +1011,7 @@ void reclaim_throttle(pg_data_t *pgdat, enum vmscan_throttle_state reason,
- {
- 	wait_queue_head_t *wqh = &pgdat->reclaim_wait[reason];
- 	long ret;
-+	bool acct_writeback = (reason == VMSCAN_THROTTLE_WRITEBACK);
- 	DEFINE_WAIT(wait);
- 
- 	/*
-@@ -1022,7 +1023,8 @@ void reclaim_throttle(pg_data_t *pgdat, enum vmscan_throttle_state reason,
- 	    current->flags & (PF_IO_WORKER|PF_KTHREAD))
- 		return;
- 
--	if (atomic_inc_return(&pgdat->nr_reclaim_throttled) == 1) {
-+	if (acct_writeback &&
-+	    atomic_inc_return(&pgdat->nr_writeback_throttled) == 1) {
- 		WRITE_ONCE(pgdat->nr_reclaim_start,
- 			node_page_state(pgdat, NR_THROTTLED_WRITTEN));
- 	}
-@@ -1030,7 +1032,9 @@ void reclaim_throttle(pg_data_t *pgdat, enum vmscan_throttle_state reason,
- 	prepare_to_wait(wqh, &wait, TASK_UNINTERRUPTIBLE);
- 	ret = schedule_timeout(timeout);
- 	finish_wait(wqh, &wait);
--	atomic_dec(&pgdat->nr_reclaim_throttled);
-+
-+	if (acct_writeback)
-+		atomic_dec(&pgdat->nr_writeback_throttled);
- 
- 	trace_mm_vmscan_throttled(pgdat->node_id, jiffies_to_usecs(timeout),
- 				jiffies_to_usecs(timeout - ret),
-@@ -4349,7 +4353,7 @@ static int kswapd(void *p)
- 
- 	WRITE_ONCE(pgdat->kswapd_order, 0);
- 	WRITE_ONCE(pgdat->kswapd_highest_zoneidx, MAX_NR_ZONES);
--	atomic_set(&pgdat->nr_reclaim_throttled, 0);
-+	atomic_set(&pgdat->nr_writeback_throttled, 0);
- 	for ( ; ; ) {
- 		bool ret;
- 
+Marek
