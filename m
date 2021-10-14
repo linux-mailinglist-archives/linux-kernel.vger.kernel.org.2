@@ -2,100 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E08442E275
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 22:10:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53E6742E277
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 22:10:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234105AbhJNUMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 16:12:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33494 "EHLO
+        id S232537AbhJNUND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 16:13:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234087AbhJNUMW (ORCPT
+        with ESMTP id S231955AbhJNUM5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 16:12:22 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB9E4C061765
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 13:10:16 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id k26so6428960pfi.5
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 13:10:16 -0700 (PDT)
+        Thu, 14 Oct 2021 16:12:57 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8FA0C061753
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 13:10:51 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id g8so29047597edt.7
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 13:10:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=hcDyU+zIY4Ss8fjL+Pic9FdthqpnWN+VG42syy+/mwc=;
-        b=appy5bCOum3d8Tda8BTLGF3sKcXVtg/qY9l7fHvstYswnsAxrB39SLkFihIOJDzEVN
-         Qj0CMf4V9WQE477RZnBHhHQWMbYqVPOa2amkulcZxRbpouJciwKoDW7HF5z35BDE7A1j
-         ZjF9ZFw4Wp87+V7zB01CnVTsvjFA1cvX+5FGlEh4oQlVIJBLrf7TSbKutquBcVeguaT/
-         QHG+BPOB2M6vOIyXupX98BgdWtyduPZJD+970VfSJhrraInIuABONNe4a1L9ZKfPGxGk
-         t+XPl8kwZ958L4lFG9bSLepA+vwKRf+CDhJHLuYGnL9Tmd5V/vd8iMnwVAsfXdHKPtbz
-         JRdA==
+        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tnnTzxnLXt4VhkUHGABCkclql/5mQjOOyO0ZD6llwjE=;
+        b=YVgy1WUwNLioe4mblTZvY/cP233J0tPnkTam5Is7eNATlCxUx/WtIh74YFVOuvYTU5
+         Lwx0jsTh4o/tx/iZNazYJxYNXBn9MJZfCqTP/A1iaXy61G5eKZhYYwscjpOY8Y/2fbby
+         1D0AwGVXRXyE+iibw+nRzZwHWm9UEAbAGD8UErd8BMBkx6HkWCJ8PZS4IH6MsaPbxpY5
+         X09gArNgj6GVMAUzxOb01c/0+Hpr64QKswGHB8uIdVN50VfAXnQKJOXot6SF1T4PuAwW
+         TSOc92YjljESMytDSDpmyNoI2Z37QJ0KTiZucBmEFTvENyEqIVjAiwk/HnEcpiJ0yVjA
+         wwzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=hcDyU+zIY4Ss8fjL+Pic9FdthqpnWN+VG42syy+/mwc=;
-        b=S0McxYHU/019KOHXAZpAIJXOgHTDH0cbHTONv0rZRrXXts+pWhVqAsnbhGN0fvVDK4
-         jPgET+rRoVyoRsZ5jCD84Bx5yWJacHEdymII/u4G6Xz454kgBtZF2lKZ69m0s4rPh9l9
-         F5spP5hiajNidfhHUWv8T1wv9RfUPAwGUC2oKnzDG/Ztv4LJTmP6fdcuE6hF9tkjOyav
-         CA/iwtJ1ipRrRfTamGGPrnNOmbhI12WzRwr63w74VkE1L3XPbdCFp944aOQfp/DGnYik
-         ufBoFqciFBQCTX2E9uNvzy/dVckIqe50O2wvx6WFg6jwNY+QJHzTKxkl9A7X3TFaag70
-         rZCA==
-X-Gm-Message-State: AOAM5338gXRQHHctxktnydMWj5/a5BmOK4WdNRfFui5T+Lq7aqzjKKuW
-        IERolQxJMy3q6g9T8lvkvNh7QL5SRI1wqAKXdek=
-X-Google-Smtp-Source: ABdhPJz+q13zpzBeeAjLUv93jk50TSJ0o0r7nLDaTKEtPPl3iu8gjtpr1VZJln6YzYghtm858+E+qxIEcOox+2jAnIU=
-X-Received: by 2002:a63:7b18:: with SMTP id w24mr4919862pgc.234.1634242215900;
- Thu, 14 Oct 2021 13:10:15 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tnnTzxnLXt4VhkUHGABCkclql/5mQjOOyO0ZD6llwjE=;
+        b=HzOan7NcZQ0IiUwrEZTF0BP9eHIdXAPpef0oDPgr5SVk/zBjWlFAXw9Kk2JPEOuadl
+         qg5NW9o7n+YD/ZmtNGBeBnms5fmoRM+aq3CjCDMo4oOXS2rsAka6tEsSuLYfcPBGhDJY
+         Z68zFSryWCq5wRzBcfPDsqKZ3+nlMwwAATR/MX3STUfhXPFbWpMZt8RMBcXR9h9KXBx1
+         zhwyxobqRxxNtgouVHzyh7WgqgNfNFnxp5BDhaMYiZQSfrWTp8ea5dMUNqWBIVxocsRG
+         jWkafzmTtiqJEhaoVCYxkukaie7GMhsNpQj+y28oVyhzlmbSyybKjgfUnFZmo4GeW4/z
+         JA/g==
+X-Gm-Message-State: AOAM531zd29hmLGXB92SW2nFsIc6O/Boiq6OUIEkeRekc+0gTSWYHDUq
+        s1UejOYv9fHXFIgfCbIVenSX6W8AZq+OsWBmo+Ar
+X-Google-Smtp-Source: ABdhPJwWzJGR2cUTRpXT12uyqjsVzaNPhaCMo8lo50fa/jfWtK5qqfDyeGaFwjWlT2u8poeE65KLID+G4JukGveV9Sg=
+X-Received: by 2002:a17:907:7601:: with SMTP id jx1mr1370420ejc.69.1634242250176;
+ Thu, 14 Oct 2021 13:10:50 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a17:90b:3e84:0:0:0:0 with HTTP; Thu, 14 Oct 2021 13:10:15
- -0700 (PDT)
-Reply-To: compaorekone34@gmail.com
-From:   kone compaore <abbttnb20@gmail.com>
-Date:   Thu, 14 Oct 2021 13:10:15 -0700
-Message-ID: <CAL4=2zk9MVCuXSKgZK4WxA-7Xy7uFNkc0wwWMEGk_RMaZDXB-g@mail.gmail.com>
-Subject: Greetings from kone
-To:     undisclosed-recipients:;
+References: <20211013172847.1196305-1-keescook@chromium.org>
+ <CAHC9VhT0+omwDjqrJ2BtnRfa8SSGAkyUvB6WX95E=ntf9gUbmQ@mail.gmail.com> <f1a143f5-7972-413d-497c-617b915c4b30@namei.org>
+In-Reply-To: <f1a143f5-7972-413d-497c-617b915c4b30@namei.org>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Thu, 14 Oct 2021 16:10:39 -0400
+Message-ID: <CAHC9VhSA+B5-C5+3kR-zM+O-k3+=A31Hd=3YoZ7Q+3zkAB8=fg@mail.gmail.com>
+Subject: Re: [PATCH] LSM: Avoid warnings about potentially unused hook variables
+To:     James Morris <jmorris@namei.org>
+Cc:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        KP Singh <kpsingh@chromium.org>,
+        linux-security-module@vger.kernel.org,
+        kernel test robot <lkp@intel.com>,
+        linux-hardening@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greetings,
+On Wed, Oct 13, 2021 at 6:01 PM James Morris <jmorris@namei.org> wrote:
+> On Wed, 13 Oct 2021, Paul Moore wrote:
+>
+> > Looks reasonable to me, thanks Kees.  Unless James wants to pick this
+> > up for the security tree, I can pull this into the SElinux tree with
+> > the io_uring change which is causing the testing robot to complain.
+> >
+> > Acked-by: Paul Moore <paul@paul-moore.com>
+>
+> Sounds good.
+>
+> Acked-by: James Morris <jamorris@linux.microsoft.com>
 
-Greetings to you and your family.
+I just merged this into selinux/next, thanks everyone!
 
-My name is Mr. Kone Compaore, the auditing general with the bank,
-Africa Develop bank (ADB) Ouagadougou, Burkina
-
-Faso, in West Africa. I am contacting you to seek your honesty and
-sincere cooperation in confidential manner to
-
-transfer the sum of 10.5 (Ten million five hundred thousand Dollars)
-to your existing or new bank account.
-
-This money belongs to one of our bank client, a Libyan oil exporter
-who was working with the former Libyan
-
-government; I learn t that he was killed by the revolutionary forces
-since October 2011. Our bank is planning to
-
-transfer this entire fund into the government public treasury as
-unclaimed fund if nobody comes to claim the money
-
-from our bank after four years without account activities .
-
-What the bank need is proof and information about the late customer
-which I will assist you on. This is a genuine,
-
-risk free and legal business transaction, All details shall be sent to
-you once I hear from you.
-
-The information as contained herein be accorded the necessary
-attention, urgency as well as the secrecy it
-
-deserves.
-
-If you are really sure of your integrity, trustworthy and
-confidentiality reply back to me urgently for more
-
-details
-
-Best regards,
-Kone Compaore
+-- 
+paul moore
+www.paul-moore.com
