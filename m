@@ -2,96 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92DFA42DE4A
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:38:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D83A42DE5B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:39:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231566AbhJNPkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 11:40:24 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:50958 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230389AbhJNPkV (ORCPT
+        id S231966AbhJNPlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 11:41:32 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21558 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231873AbhJNPla (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 11:40:21 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        Thu, 14 Oct 2021 11:41:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634225965;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=HmEMMzM2iFuhalw9nXhuj98UjN3y0/BsxBxx9whXOng=;
+        b=eXeC5S8zayitXtBOrsp3UIsI/oLatBcMg5oBHiMseiVh6v2UqFGfVHB8GryD/DOZpvHZhv
+        bSOBeObfSBaAJGIsi0Ce5o2LYKGh1opzPUKCpycKNrBFtb9Np+yo2zgDqVcSAvpIO5HiMZ
+        61uWqWJFJ1STeyZiuiCvYA0jPinXbjw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-34-rj_mUbJ0N7-GjIgFh2RrrQ-1; Thu, 14 Oct 2021 11:39:19 -0400
+X-MC-Unique: rj_mUbJ0N7-GjIgFh2RrrQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 57BA02197C;
-        Thu, 14 Oct 2021 15:38:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1634225895; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GxLH0z7C+H9xHqrBRI+kBoQatoT6Befch1xXUBOMRvk=;
-        b=wbuuGwLQVKd5RGDVEuiKlyGa4uSDIPQIj3iTwLLGyLMsj1FIXqLCyC4SWZfKz9Y52rxVWX
-        jXSR6UdtN2SQhnvuIhAzM/7S110oBFVEVXWBPV3vnUO19qOAd4fui4K9xCBADnjX1NIDKO
-        kouz2fDzruRykAWYJYRg1X9KxXcNFmY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1634225895;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GxLH0z7C+H9xHqrBRI+kBoQatoT6Befch1xXUBOMRvk=;
-        b=HWNic10Z5eyZjDRof2nMzOceoNhhVXTEui8u/gJbvPKg83g3XcTyKgV28mYXRyPhO4MWOj
-        nV62pu27waEV4ABA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2A73E13D9F;
-        Thu, 14 Oct 2021 15:38:15 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id BIG+CedOaGEwHwAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Thu, 14 Oct 2021 15:38:15 +0000
-Message-ID: <76454f39-8e41-e757-3a71-c85303c6257e@suse.cz>
-Date:   Thu, 14 Oct 2021 17:38:14 +0200
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0B69A1018720;
+        Thu, 14 Oct 2021 15:39:18 +0000 (UTC)
+Received: from x1.localdomain (unknown [10.39.192.164])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7F71419D9D;
+        Thu, 14 Oct 2021 15:39:09 +0000 (UTC)
+From:   Hans de Goede <hdegoede@redhat.com>
+To:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Myron Stowe <myron.stowe@redhat.com>,
+        Juha-Pekka Heikkila <juhapekka.heikkila@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>, linux-acpi@vger.kernel.org,
+        linux-pci@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v4 0/1] x86/PCI: Ignore E820 reservations for bridge windows on newer systems
+Date:   Thu, 14 Oct 2021 17:39:07 +0200
+Message-Id: <20211014153908.4812-1-hdegoede@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH 6/8] mm/vmscan: Centralise timeout values for
- reclaim_throttle
-Content-Language: en-US
-To:     Mel Gorman <mgorman@techsingularity.net>,
-        Linux-MM <linux-mm@kvack.org>
-Cc:     NeilBrown <neilb@suse.de>, Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Rik van Riel <riel@surriel.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20211008135332.19567-1-mgorman@techsingularity.net>
- <20211008135332.19567-7-mgorman@techsingularity.net>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20211008135332.19567-7-mgorman@techsingularity.net>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/8/21 15:53, Mel Gorman wrote:
-> Neil Brown raised concerns about callers of reclaim_throttle specifying
-> a timeout value. The original timeout values to congestion_wait() were
-> probably pulled out of thin air or copy&pasted from somewhere else.
-> This patch centralises the timeout values and selects a timeout based
-> on the reason for reclaim throttling. These figures are also pulled
-> out of the same thin air but better values may be derived
-> 
-> Running a workload that is throttling for inappropriate periods
-> and tracing mm_vmscan_throttled can be used to pick a more appropriate
-> value. Excessive throttling would pick a lower timeout where as
-> excessive CPU usage in reclaim context would select a larger timeout.
-> Ideally a large value would always be used and the wakeups would
-> occur before a timeout but that requires careful testing.
-> 
-> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+Hi All,
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Here is v4 of my patch to address the E820 reservations vs PCI host bridge
+ranges issue which are causing touchpad and/or thunderbolt issues on many
+different laptop models.
+
+I believe that this is ready for merging now.
+
+Bjorn, can you review/ack this please ?
+
+x86/tip folks it would be ideal if you can pick this up and send it out
+as a fix to Linus for 5.15. This fixes a bug which has been plaguing a
+lot of users (see all the bug links in the commit msg).
+
+Regards,
+
+Hans
+
+
+Hans de Goede (1):
+  x86/PCI: Ignore E820 reservations for bridge windows on newer systems
+
+ .../admin-guide/kernel-parameters.txt         |  6 ++++
+ arch/x86/include/asm/pci_x86.h                | 10 ++++++
+ arch/x86/kernel/resource.c                    |  4 +++
+ arch/x86/pci/acpi.c                           | 31 +++++++++++++++++++
+ arch/x86/pci/common.c                         |  6 ++++
+ 5 files changed, 57 insertions(+)
+
+-- 
+2.31.1
+
