@@ -2,97 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C3A642D4CD
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 10:25:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 465E942D4D1
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 10:26:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230081AbhJNI1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 04:27:55 -0400
-Received: from hostingweb31-40.netsons.net ([89.40.174.40]:34941 "EHLO
-        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229970AbhJNI1x (ORCPT
+        id S230141AbhJNI2h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 04:28:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41238 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230035AbhJNI2g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 04:27:53 -0400
-Received: from [77.244.183.192] (port=62068 helo=[192.168.178.41])
-        by hostingweb31.netsons.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <luca@lucaceresoli.net>)
-        id 1maw3e-006xC5-IW; Thu, 14 Oct 2021 10:25:46 +0200
-Subject: Re: [PATCH 6/8] mfd: max77714: Add driver for Maxim MAX77714 PMIC
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
-        linux-rtc@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        Chiwoong Byun <woong.byun@samsung.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>
-References: <20211011155615.257529-1-luca@lucaceresoli.net>
- <20211011155615.257529-7-luca@lucaceresoli.net>
- <b2355acf-94a5-1acf-122b-d661c6d9bb1b@canonical.com>
- <5236720c-96b0-3e18-e08f-a5dde982eab5@lucaceresoli.net>
- <b4ee3175-5bd7-cf75-2d2b-2cc9368842e7@canonical.com>
-From:   Luca Ceresoli <luca@lucaceresoli.net>
-Message-ID: <e1e41178-b4b6-4f3e-b88b-e35090262da9@lucaceresoli.net>
-Date:   Thu, 14 Oct 2021 10:25:44 +0200
+        Thu, 14 Oct 2021 04:28:36 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D852C06174E
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 01:26:30 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id r10so16738572wra.12
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 01:26:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=gnT7ITUDew6zP4Lg5jF9hadktZV+ii+Iy6W/r1hLHv0=;
+        b=ch547gAZR+Q3c3Y327p3FYyn/arYGkYkc8PECoQM73tPd7llbZqpZ9kvJ7xF/juuU3
+         fk4AzzHKo5JYR3JKmSx1FB/kq/Zq2hoQMwvG+b7MdXQap36mMbu3DBq8IApbuZDBXTGZ
+         D0IVrEFt1HC9S/0NuF1mFN+KLgXevLgODHWfV7omjKTUpGr2+A7WGRHyUpYSPgF4RMId
+         zmf7LbwtLBKkeWyUH1OoDPG/s3oqpFjGauXbC2p9WZGHHA8o/Un/vXt6NY93Y+8HKG92
+         ArjVUr/hXPp3vZleNy2IVa5mPocPo5silIz9Bzc3rLl+0CxMQVL0tVu3rckQJ8n0S9lm
+         uZLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=gnT7ITUDew6zP4Lg5jF9hadktZV+ii+Iy6W/r1hLHv0=;
+        b=O7rs210BKVU1e1zum17MXKaErN4jTRgvuX9qopyRwH8gXPl+kkCELBdYJN9G5TUBHk
+         AD0QUD1xFBOqX8foDl7QdP7fBv97uYAC8GfB+zWD0kYqjWSYaEaW1BrYP5+9hLYW0xCY
+         bCGeuukT8DxJCTzOPXzeAgAhNQ+BZN+taxxhtSo5SJZkxddfrU9V6c2X+iqdARbeec2H
+         D3PYN1RkbbXuRyVwqvyQuOsBjZyW9exYrKg199XCzXqD/RCu0cPPreITpKxQ3yXsmhBq
+         MeG//aAWkVyKyTcTI7JGU5f5EKUmFoiCVNtfq28fk3/fsoRlX83pmxxZxqkkSpLTQx6M
+         nHUA==
+X-Gm-Message-State: AOAM533dpan2m3DJajOO5QLMcDxQ/O+zMuHVBs876PA6Lbm2HLzbUSaR
+        TYPzxYRLJwl2WyuwF5KGuyhfWXTToX07Ww==
+X-Google-Smtp-Source: ABdhPJx3kb0RKjngL3Zm08lJEMCq0GSiOHIniaxNRNHy0v50tjwHheOj+D0AvP9+hzPqKQ9CgMOa2g==
+X-Received: by 2002:a5d:47ac:: with SMTP id 12mr4811542wrb.352.1634199988926;
+        Thu, 14 Oct 2021 01:26:28 -0700 (PDT)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id l20sm10597428wmq.42.2021.10.14.01.26.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Oct 2021 01:26:28 -0700 (PDT)
+Subject: Re: [PATCH RFC linux] dt-bindings: nvmem: Add binding for U-Boot
+ environment NVMEM provider
+To:     =?UTF-8?Q?Marek_Beh=c3=ban?= <kabel@kernel.org>,
+        robh+dt@kernel.org, devicetree@vger.kernel.org,
+        U-Boot Mailing List <u-boot@lists.denx.de>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Luka Kovacic <luka.kovacic@sartura.hr>
+References: <20211013232048.16559-1-kabel@kernel.org>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <629c8ba1-c924-565f-0b3c-8b625f4e5fb0@linaro.org>
+Date:   Thu, 14 Oct 2021 09:26:27 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <b4ee3175-5bd7-cf75-2d2b-2cc9368842e7@canonical.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20211013232048.16559-1-kabel@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lucaceresoli.net
-X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca@lucaceresoli.net
-X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On 14/10/21 09:40, Krzysztof Kozlowski wrote:
-[...]
->>>> +
->>>> +static const struct of_device_id max77714_dt_match[] = {
->>>> +	{ .compatible = "maxim,max77714" },
->>>> +	{},
->>>> +};
->>>
->>> When converting to module - don't forget the MODULE_DEVICE_TABLE
->>>
->>>> +
->>>> +static struct i2c_driver max77714_driver = {
->>>> +	.driver = {
->>>> +		.name = "max77714",
->>>> +		.of_match_table = of_match_ptr(max77714_dt_match),
->>>
->>> Kbuild robot pointed it out - of_matc_ptr should not be needed, even for
->>> compile testing without OF.
->>
->> I wonder whether it's better to add '#ifdef CONFIG_OF / #endif' around
->> the struct of_device_id declaration. I think it's what most drivers do,
->> even though I tend to prefer not adding #ifdefs making code less clean
->> only for COMPILE_TESTING.
+
+On 14/10/2021 00:20, Marek Behún wrote:
+> Add device tree bindings for U-Boot environment NVMEM provider.
 > 
-> No, most drivers added it long time ago before we switched it to a new
-> way - either __maybe_unused or without anything even. The point is that
-> OF driver can be reused for ACPI platforms. If you limit it with ifdef
-> or of_match_ptr, the ACPI platform won't have any table to use for binding.
+> U-Boot environment can be stored at a specific offset of a MTD device,
+> EEPROM, MMC, NAND or SATA device, on an UBI volume, or in a file on a
+> filesystem.
+> 
+> The environment can contain information such as device's MAC address,
+> which should be used by the ethernet controller node.
+> 
 
-Oh, I see, thanks for the clarification.
+Have you looked at 
+./Documentation/devicetree/bindings/mtd/partitions/nvmem-cells.yaml ?
 
-I wonder if it makes sense to mass-remove all of them and remove the macro.
 
--- 
-Luca
+--srini
+
+> Signed-off-by: Marek Behún <kabel@kernel.org>
+> ---
+>   .../bindings/nvmem/denx,u-boot-env.yaml       | 88 +++++++++++++++++++
+>   include/dt-bindings/nvmem/u-boot-env.h        | 18 ++++
+>   2 files changed, 106 insertions(+)
+>   create mode 100644 Documentation/devicetree/bindings/nvmem/denx,u-boot-env.yaml
+>   create mode 100644 include/dt-bindings/nvmem/u-boot-env.h
+> 
+> diff --git a/Documentation/devicetree/bindings/nvmem/denx,u-boot-env.yaml b/Documentation/devicetree/bindings/nvmem/denx,u-boot-env.yaml
+> new file mode 100644
+> index 000000000000..56505c08e622
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/nvmem/denx,u-boot-env.yaml
+> @@ -0,0 +1,88 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/nvmem/denx,u-boot-env.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: U-Boot environment NVMEM Device Tree Bindings
+> +
+> +maintainers:
+> +  - Marek Behún <kabel@kernel.org>
+> +
+> +description:
+> +  This binding represents U-Boot's environment NVMEM settings which can be
+> +  stored on a specific offset of an EEPROM, MMC, NAND or SATA device, or
+> +  an UBI volume, or in a file on a filesystem.
+> +
+> +properties:
+> +  compatible:
+> +    const: denx,u-boot-env
+> +
+> +  path:
+> +    description:
+> +      The path to the file containing the environment if on a filesystem.
+> +    $ref: /schemas/types.yaml#/definitions/string
+> +
+> +patternProperties:
+> +  "^[^=]+$":
+> +    type: object
+> +
+> +    description:
+> +      This node represents one U-Boot environment variable, which is also one
+> +      NVMEM data cell.
+> +
+> +    properties:
+> +      name:
+> +        description:
+> +          If the variable name contains characters not allowed in device tree node
+> +          name, use this property to specify the name, otherwise the variable name
+> +          is equal to node name.
+> +        $ref: /schemas/types.yaml#/definitions/string
+> +
+> +      type:
+> +        description:
+> +          Type of the variable. Since variables, even integers and MAC addresses,
+> +          are stored as strings in U-Boot environment, for proper conversion the
+> +          type needs to be specified. Use one of the U_BOOT_ENV_TYPE_* prefixed
+> +          definitions from include/dt-bindings/nvmem/u-boot-env.h.
+> +        $ref: /schemas/types.yaml#/definitions/uint32
+> +        minimum: 0
+> +        maximum: 5
+> +
+> +    required:
+> +      - type
+> +
+> +required:
+> +  - compatible
+> +
+> +additionalProperties: true
+> +
+> +examples:
+> +  - |
+> +
+> +    #include <dt-bindings/nvmem/u-boot-env.h>
+> +
+> +    spi-flash {
+> +        partitions {
+> +            compatible = "fixed-partitions";
+> +            #address-cells = <1>;
+> +            #size-cells = <1>;
+> +
+> +            partition@180000 {
+> +                compatible = "denx,u-boot-env";
+> +                label = "u-boot-env";
+> +                reg = <0x180000 0x10000>;
+> +
+> +                eth0_addr: ethaddr {
+> +                    type = <U_BOOT_ENV_TYPE_MAC_ADDRESS>;
+> +                };
+> +            };
+> +        };
+> +    };
+> +
+> +    ethernet-controller {
+> +        nvmem-cells = <&eth0_addr>;
+> +        nvmem-cell-names = "mac-address";
+> +    };
+> +
+> +...
+> diff --git a/include/dt-bindings/nvmem/u-boot-env.h b/include/dt-bindings/nvmem/u-boot-env.h
+> new file mode 100644
+> index 000000000000..760e5b240619
+> --- /dev/null
+> +++ b/include/dt-bindings/nvmem/u-boot-env.h
+> @@ -0,0 +1,18 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Macros for U-Boot environment NVMEM device tree bindings.
+> + *
+> + * Copyright (C) 2021 Marek Behún <kabel@kernel.org>
+> + */
+> +
+> +#ifndef __DT_BINDINGS_NVMEM_U_BOOT_ENV_H
+> +#define __DT_BINDINGS_NVMEM_U_BOOT_ENV_H
+> +
+> +#define U_BOOT_ENV_TYPE_STRING		0
+> +#define U_BOOT_ENV_TYPE_ULONG		1
+> +#define U_BOOT_ENV_TYPE_BOOL		2
+> +#define U_BOOT_ENV_TYPE_MAC_ADDRESS	3
+> +#define U_BOOT_ENV_TYPE_ULONG_HEX	4
+> +#define U_BOOT_ENV_TYPE_ULONG_DEC	5
+> +
+> +#endif /* __DT_BINDINGS_NVMEM_U_BOOT_ENV_H */
+> 
