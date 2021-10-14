@@ -2,470 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB2CA42D083
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 04:35:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E68C842D084
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 04:36:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229984AbhJNChx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 22:37:53 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:46846 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229927AbhJNChw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 22:37:52 -0400
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxT2tzl2dh354ZAA--.38552S2;
-        Thu, 14 Oct 2021 10:35:31 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
-        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>
-Subject: [PATCH bpf-next v5] test_bpf: Add module parameter test_suite
-Date:   Thu, 14 Oct 2021 10:35:30 +0800
-Message-Id: <1634178930-4067-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9DxT2tzl2dh354ZAA--.38552S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3Cr4rWw1fGFyDXw1fWr1Dtrb_yoWkCF1rpF
-        Wjqrn0yF18JFn7XF18XF17Aa4FyF4vy3yrKrWfJryqyrs5AryUtF4xK34IqFn3Jr40vw15
-        Z3W0vF45G3W2yaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvE14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
-        Y2ka0xkIwI1lc2xSY4AK67AK6r4UMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r
-        1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CE
-        b7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0x
-        vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI
-        42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWI
-        evJa73UjIFyTuYvjfUO_MaUUUUU
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S229872AbhJNCiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 22:38:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23441 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229927AbhJNCiJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 22:38:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634178964;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fRcbe8WIYnw7cXDZRZpjRzCl36aRJMr9VWR6QW5LLsg=;
+        b=YxP5P4t1FXacmS73RzOGPWlNdXCfDZdKUbp6kgHS0TG5f2qWVMz0987vQ4PPFieHtm0oJB
+        KDKn39W0l0EuDYTY/g4Apve+OBTkJM/h0fCf/dOa5cslk0GOTuyjxDn0NVyo5m2PSKWfGP
+        kvxz5gEXDddRp2ryUgxyl9hP4Yogs5w=
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
+ [209.85.167.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-393-csFY5av-OS6ta1nJ481nIw-1; Wed, 13 Oct 2021 22:36:03 -0400
+X-MC-Unique: csFY5av-OS6ta1nJ481nIw-1
+Received: by mail-lf1-f71.google.com with SMTP id k8-20020a0565123d8800b003fd6e160c77so3316574lfv.17
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 19:36:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fRcbe8WIYnw7cXDZRZpjRzCl36aRJMr9VWR6QW5LLsg=;
+        b=tr3ns4e94Um3nUMX7PA9hdr8p51q0tT8tCsde94OK8NFCYZRbCyA05ftnzIXJ+hXz4
+         MB4PWkbqn8gN+rR0gdyH17io+lX8ckK+QagpGmgkRTlG0ETLQUqzhODu9rCDEDdTfcAT
+         kWzS+ddO9oy6zSo3I1Tn1mHJBCmDXb9QU1d0NeSzVjRAN/YlpZNOCmVlT4Wv1IO+OBhx
+         VSgagBO/X41Auk+mbTwKiFxLS2VFDoPc+0dVJQ86ruNC0QPsKprZXUYcmU96WQHVOqu3
+         YTvQGvi0xxELcEAiM3NlcYTy3FTgP67d3XokKU/DsOPrS2dcw4vH24s+QtqJLx+YlTIx
+         GyZA==
+X-Gm-Message-State: AOAM531nUOVOYFlTkhGmPzDQva/0dNZaEAxUuiHI2FDGSjaU8p/ugRJM
+        xDP+EMbfBc9YuVFMcWaq5waVglTa6Iux86vuF7TdT9SaJH6dLCXF1/A+RWH3NFtAeFtIz5YjBHI
+        qySFUT4GES9d1ouwNcZcrj9aL29T/H2P0iTp9gUpT
+X-Received: by 2002:a2e:8099:: with SMTP id i25mr3221899ljg.277.1634178961844;
+        Wed, 13 Oct 2021 19:36:01 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzBvr7aDWM7r6lk+wF33bxkLrS0BzM/vTPjwLcQmBvul9e4TVUkv+qhhNr0wI3WHaDebhczdB2HdDfeLmL4/FQ=
+X-Received: by 2002:a2e:8099:: with SMTP id i25mr3221883ljg.277.1634178961702;
+ Wed, 13 Oct 2021 19:36:01 -0700 (PDT)
+MIME-Version: 1.0
+References: <20211012065227.9953-1-jasowang@redhat.com> <20211012065227.9953-8-jasowang@redhat.com>
+ <20211013053627-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20211013053627-mutt-send-email-mst@kernel.org>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Thu, 14 Oct 2021 10:35:48 +0800
+Message-ID: <CACGkMEuRHKJv73oKFNetcBkPSFj034te7N_AJZdRbHe0ObU4Gw@mail.gmail.com>
+Subject: Re: [PATCH V2 07/12] virtio-pci: harden INTX interrupts
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     virtualization <virtualization@lists.linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "Hetzelt, Felicitas" <f.hetzelt@tu-berlin.de>,
+        "kaplan, david" <david.kaplan@amd.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After commit 9298e63eafea ("bpf/tests: Add exhaustive tests of ALU
-operand magnitudes"), when modprobe test_bpf.ko with jit on mips64,
-there exists segment fault due to the following reason:
+On Wed, Oct 13, 2021 at 5:42 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+>
+> On Tue, Oct 12, 2021 at 02:52:22PM +0800, Jason Wang wrote:
+> > This patch tries to make sure the virtio interrupt handler for INTX
+> > won't be called after a reset and before virtio_device_ready(). We
+> > can't use IRQF_NO_AUTOEN since we're using shared interrupt
+> > (IRQF_SHARED). So this patch tracks the INTX enabling status in a new
+> > intx_soft_enabled variable and toggle it during in
+> > vp_disable/enable_vectors(). The INTX interrupt handler will check
+> > intx_soft_enabled before processing the actual interrupt.
+> >
+> > Cc: Boqun Feng <boqun.feng@gmail.com>
+> > Cc: Thomas Gleixner <tglx@linutronix.de>
+> > Cc: Peter Zijlstra <peterz@infradead.org>
+> > Cc: Paul E. McKenney <paulmck@kernel.org>
+> > Signed-off-by: Jason Wang <jasowang@redhat.com>
+> > ---
+> >  drivers/virtio/virtio_pci_common.c | 24 ++++++++++++++++++++++--
+> >  drivers/virtio/virtio_pci_common.h |  1 +
+> >  2 files changed, 23 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/virtio/virtio_pci_common.c b/drivers/virtio/virtio_pci_common.c
+> > index 0b9523e6dd39..5ae6a2a4eb77 100644
+> > --- a/drivers/virtio/virtio_pci_common.c
+> > +++ b/drivers/virtio/virtio_pci_common.c
+> > @@ -30,8 +30,16 @@ void vp_disable_vectors(struct virtio_device *vdev)
+> >       struct virtio_pci_device *vp_dev = to_vp_device(vdev);
+> >       int i;
+> >
+> > -     if (vp_dev->intx_enabled)
+> > +     if (vp_dev->intx_enabled) {
+> > +             /*
+> > +              * The below synchronize() guarantees that any
+> > +              * interrupt for this line arriving after
+> > +              * synchronize_irq() has completed is guaranteed to see
+> > +              * intx_soft_enabled == false.
+> > +              */
+> > +             WRITE_ONCE(vp_dev->intx_soft_enabled, false);
+> >               synchronize_irq(vp_dev->pci_dev->irq);
+> > +     }
+> >
+> >       for (i = 0; i < vp_dev->msix_vectors; ++i)
+> >               disable_irq(pci_irq_vector(vp_dev->pci_dev, i));
+> > @@ -43,8 +51,16 @@ void vp_enable_vectors(struct virtio_device *vdev)
+> >       struct virtio_pci_device *vp_dev = to_vp_device(vdev);
+> >       int i;
+> >
+> > -     if (vp_dev->intx_enabled)
+> > +     if (vp_dev->intx_enabled) {
+> > +             disable_irq(vp_dev->pci_dev->irq);
+> > +             /*
+> > +              * The above disable_irq() provides TSO ordering and
+> > +              * as such promotes the below store to store-release.
+> > +              */
+> > +             WRITE_ONCE(vp_dev->intx_soft_enabled, true);
+> > +             enable_irq(vp_dev->pci_dev->irq);
+> >               return;
+> > +     }
+> >
+> >       for (i = 0; i < vp_dev->msix_vectors; ++i)
+> >               enable_irq(pci_irq_vector(vp_dev->pci_dev, i));
+> > @@ -97,6 +113,10 @@ static irqreturn_t vp_interrupt(int irq, void *opaque)
+> >       struct virtio_pci_device *vp_dev = opaque;
+> >       u8 isr;
+> >
+> > +     /* read intx_soft_enabled before read others */
+> > +     if (!smp_load_acquire(&vp_dev->intx_soft_enabled))
+> > +             return IRQ_NONE;
+> > +
+> >       /* reading the ISR has the effect of also clearing it so it's very
+> >        * important to save off the value. */
+> >       isr = ioread8(vp_dev->isr);
+>
+> I don't see why we need this ordering guarantee here.
+>
+> synchronize_irq above makes sure no interrupt handler
+> is in progress.
 
-ALU64_MOV_X: all register value magnitudes jited:1
-Break instruction in kernel code[#1]
+Yes.
 
-It seems that the related jit implementations of some test cases
-in test_bpf() have problems. At this moment, I do not care about
-the segment fault while I just want to verify the test cases of
-tail calls.
+> the handler itself thus does not need
+> any specific order, it is ok if intx_soft_enabled is read
+> after, not before the rest of it.
 
-Based on the above background and motivation, add the following
-module parameter test_suite to the test_bpf.ko:
-test_suite=<string>: only the specified test suite will be run, the
-string can be "test_bpf", "test_tail_calls" or "test_skb_segment".
+But the interrupt could be raised after synchronize_irq() which may
+see a false of the intx_soft_enabled. In this case we still need the
+make sure intx_soft_enbled to be read first instead of allowing other
+operations to be done first, otherwise the intx_soft_enabled is
+meaningless.
 
-If test_suite is not specified, but test_id, test_name or test_range
-is specified, set 'test_bpf' as the default test suite.
+Thanks
 
-This is useful to only test the corresponding test suite when specify
-the valid test_suite string.
-
-Any invalid test suite will result in -EINVAL being returned and no
-tests being run. If the test_suite is not specified or specified as
-empty string, it does not change the current logic, all of the test
-cases will be run.
-
-Here are some test results:
- # dmesg -c
- # modprobe test_bpf
- # dmesg | grep Summary
- test_bpf: Summary: 1009 PASSED, 0 FAILED, [0/997 JIT'ed]
- test_bpf: test_tail_calls: Summary: 8 PASSED, 0 FAILED, [0/8 JIT'ed]
- test_bpf: test_skb_segment: Summary: 2 PASSED, 0 FAILED
-
- # rmmod test_bpf
- # dmesg -c
- # modprobe test_bpf test_suite=test_bpf
- # dmesg | tail -1
- test_bpf: Summary: 1009 PASSED, 0 FAILED, [0/997 JIT'ed]
-
- # rmmod test_bpf
- # dmesg -c
- # modprobe test_bpf test_suite=test_tail_calls
- # dmesg
- test_bpf: #0 Tail call leaf jited:0 21 PASS
- [...]
- test_bpf: #7 Tail call error path, index out of range jited:0 32 PASS
- test_bpf: test_tail_calls: Summary: 8 PASSED, 0 FAILED, [0/8 JIT'ed]
-
- # rmmod test_bpf
- # dmesg -c
- # modprobe test_bpf test_suite=test_skb_segment
- # dmesg
- test_bpf: #0 gso_with_rx_frags PASS
- test_bpf: #1 gso_linear_no_head_frag PASS
- test_bpf: test_skb_segment: Summary: 2 PASSED, 0 FAILED
-
- # rmmod test_bpf
- # dmesg -c
- # modprobe test_bpf test_id=1
- # dmesg
- test_bpf: test_bpf: set 'test_bpf' as the default test_suite.
- test_bpf: #1 TXA jited:0 54 51 50 PASS
- test_bpf: Summary: 1 PASSED, 0 FAILED, [0/1 JIT'ed]
-
- # rmmod test_bpf
- # dmesg -c
- # modprobe test_bpf test_suite=test_bpf test_name=TXA
- # dmesg
- test_bpf: #1 TXA jited:0 54 50 51 PASS
- test_bpf: Summary: 1 PASSED, 0 FAILED, [0/1 JIT'ed]
-
- # rmmod test_bpf
- # dmesg -c
- # modprobe test_bpf test_suite=test_tail_calls test_range=6,7
- # dmesg
- test_bpf: #6 Tail call error path, NULL target jited:0 41 PASS
- test_bpf: #7 Tail call error path, index out of range jited:0 32 PASS
- test_bpf: test_tail_calls: Summary: 2 PASSED, 0 FAILED, [0/2 JIT'ed]
-
- # rmmod test_bpf
- # dmesg -c
- # modprobe test_bpf test_suite=test_skb_segment test_id=1
- # dmesg
- test_bpf: #1 gso_linear_no_head_frag PASS
- test_bpf: test_skb_segment: Summary: 1 PASSED, 0 FAILED
-
-By the way, the above segment fault has been fixed in the latest bpf-next
-tree.
-
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
-
-v5:
-  -- Remove some duplicated code, suggested by Johan Almbladh,
-     thank you.
-  -- Initialize test_range[2] to {0, INT_MAX}.
-  -- If test_suite is specified, but test_range is not specified,
-     set the upper limit of each test_suite to overwrite INT_MAX.
-
-v4:
-  -- Fix the following checkpatch issues:
-     CHECK: Alignment should match open parenthesis
-     CHECK: Please don't use multiple blank lines
-
-     ./scripts/checkpatch.pl --strict *.patch
-     total: 0 errors, 0 warnings, 0 checks, 299 lines checked
-
-     the default max-line-length is 100 in ./scripts/checkpatch.pl,
-     but it seems that the netdev/checkpatch is 80:
-     https://patchwork.hopto.org/static/nipa/559961/12545157/checkpatch/stdout
-
-v3:
-  -- Use test_suite instead of test_type as module parameter
-  -- Make test_id, test_name and test_range selection applied to each test suite
-
-v2:
-  -- Fix typo in the commit message
-  -- Use my private email to send
-
- lib/test_bpf.c | 245 +++++++++++++++++++++++++++++++++++++++------------------
- 1 file changed, 169 insertions(+), 76 deletions(-)
-
-diff --git a/lib/test_bpf.c b/lib/test_bpf.c
-index e5b10fd..64fb358 100644
---- a/lib/test_bpf.c
-+++ b/lib/test_bpf.c
-@@ -14316,72 +14316,9 @@ module_param_string(test_name, test_name, sizeof(test_name), 0);
- static int test_id = -1;
- module_param(test_id, int, 0);
- 
--static int test_range[2] = { 0, ARRAY_SIZE(tests) - 1 };
-+static int test_range[2] = { 0, INT_MAX };
- module_param_array(test_range, int, NULL, 0);
- 
--static __init int find_test_index(const char *test_name)
--{
--	int i;
--
--	for (i = 0; i < ARRAY_SIZE(tests); i++) {
--		if (!strcmp(tests[i].descr, test_name))
--			return i;
--	}
--	return -1;
--}
--
--static __init int prepare_bpf_tests(void)
--{
--	if (test_id >= 0) {
--		/*
--		 * if a test_id was specified, use test_range to
--		 * cover only that test.
--		 */
--		if (test_id >= ARRAY_SIZE(tests)) {
--			pr_err("test_bpf: invalid test_id specified.\n");
--			return -EINVAL;
--		}
--
--		test_range[0] = test_id;
--		test_range[1] = test_id;
--	} else if (*test_name) {
--		/*
--		 * if a test_name was specified, find it and setup
--		 * test_range to cover only that test.
--		 */
--		int idx = find_test_index(test_name);
--
--		if (idx < 0) {
--			pr_err("test_bpf: no test named '%s' found.\n",
--			       test_name);
--			return -EINVAL;
--		}
--		test_range[0] = idx;
--		test_range[1] = idx;
--	} else {
--		/*
--		 * check that the supplied test_range is valid.
--		 */
--		if (test_range[0] >= ARRAY_SIZE(tests) ||
--		    test_range[1] >= ARRAY_SIZE(tests) ||
--		    test_range[0] < 0 || test_range[1] < 0) {
--			pr_err("test_bpf: test_range is out of bound.\n");
--			return -EINVAL;
--		}
--
--		if (test_range[1] < test_range[0]) {
--			pr_err("test_bpf: test_range is ending before it starts.\n");
--			return -EINVAL;
--		}
--	}
--
--	return 0;
--}
--
--static __init void destroy_bpf_tests(void)
--{
--}
--
- static bool exclude_test(int test_id)
- {
- 	return test_id < test_range[0] || test_id > test_range[1];
-@@ -14553,6 +14490,10 @@ static __init int test_skb_segment(void)
- 	for (i = 0; i < ARRAY_SIZE(skb_segment_tests); i++) {
- 		const struct skb_segment_test *test = &skb_segment_tests[i];
- 
-+		cond_resched();
-+		if (exclude_test(i))
-+			continue;
-+
- 		pr_info("#%d %s ", i, test->descr);
- 
- 		if (test_skb_segment_single(test)) {
-@@ -14934,6 +14875,8 @@ static __init int test_tail_calls(struct bpf_array *progs)
- 		int ret;
- 
- 		cond_resched();
-+		if (exclude_test(i))
-+			continue;
- 
- 		pr_info("#%d %s ", i, test->descr);
- 		if (!fp) {
-@@ -14966,29 +14909,179 @@ static __init int test_tail_calls(struct bpf_array *progs)
- 	return err_cnt ? -EINVAL : 0;
- }
- 
-+static char test_suite[32];
-+module_param_string(test_suite, test_suite, sizeof(test_suite), 0);
-+
-+static __init int find_test_index(const char *test_name)
-+{
-+	int i;
-+
-+	if (!strcmp(test_suite, "test_bpf")) {
-+		for (i = 0; i < ARRAY_SIZE(tests); i++) {
-+			if (!strcmp(tests[i].descr, test_name))
-+				return i;
-+		}
-+	}
-+
-+	if (!strcmp(test_suite, "test_tail_calls")) {
-+		for (i = 0; i < ARRAY_SIZE(tail_call_tests); i++) {
-+			if (!strcmp(tail_call_tests[i].descr, test_name))
-+				return i;
-+		}
-+	}
-+
-+	if (!strcmp(test_suite, "test_skb_segment")) {
-+		for (i = 0; i < ARRAY_SIZE(skb_segment_tests); i++) {
-+			if (!strcmp(skb_segment_tests[i].descr, test_name))
-+				return i;
-+		}
-+	}
-+
-+	return -1;
-+}
-+
-+static __init int prepare_bpf_tests(void)
-+{
-+	if (test_id >= 0) {
-+		/*
-+		 * if a test_id was specified, use test_range to
-+		 * cover only that test.
-+		 */
-+		if (!strcmp(test_suite, "test_bpf") &&
-+		    test_id >= ARRAY_SIZE(tests)) {
-+			pr_err("test_bpf: invalid test_id specified for '%s' suite.\n",
-+			       test_suite);
-+			return -EINVAL;
-+		}
-+
-+		if (!strcmp(test_suite, "test_tail_calls") &&
-+		    test_id >= ARRAY_SIZE(tail_call_tests)) {
-+			pr_err("test_bpf: invalid test_id specified for '%s' suite.\n",
-+			       test_suite);
-+			return -EINVAL;
-+		}
-+
-+		if (!strcmp(test_suite, "test_skb_segment") &&
-+		    test_id >= ARRAY_SIZE(skb_segment_tests)) {
-+			pr_err("test_bpf: invalid test_id specified for '%s' suite.\n",
-+			       test_suite);
-+			return -EINVAL;
-+		}
-+
-+		test_range[0] = test_id;
-+		test_range[1] = test_id;
-+	} else if (*test_name) {
-+		/*
-+		 * if a test_name was specified, find it and setup
-+		 * test_range to cover only that test.
-+		 */
-+		int idx = find_test_index(test_name);
-+
-+		if (idx < 0) {
-+			pr_err("test_bpf: no test named '%s' found for '%s' suite.\n",
-+			       test_name, test_suite);
-+			return -EINVAL;
-+		}
-+		test_range[0] = idx;
-+		test_range[1] = idx;
-+	} else {
-+		int valid_range;
-+
-+		if (!strcmp(test_suite, "test_bpf"))
-+			valid_range = ARRAY_SIZE(tests);
-+		else if (!strcmp(test_suite, "test_tail_calls"))
-+			valid_range = ARRAY_SIZE(tail_call_tests);
-+		else if (!strcmp(test_suite, "test_skb_segment"))
-+			valid_range = ARRAY_SIZE(skb_segment_tests);
-+
-+		/*
-+		 * check that the supplied test_range is valid.
-+		 */
-+		if (strlen(test_suite)) {
-+			if (test_range[0] >= valid_range ||
-+			    test_range[1] >= valid_range ||
-+			    test_range[0] < 0 || test_range[1] < 0) {
-+				pr_err("test_bpf: test_range is out of bound for '%s' suite.\n",
-+				       test_suite);
-+				return -EINVAL;
-+			}
-+		}
-+
-+		if (test_range[1] < test_range[0]) {
-+			pr_err("test_bpf: test_range is ending before it starts.\n");
-+			return -EINVAL;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static __init void destroy_bpf_tests(void)
-+{
-+}
-+
- static int __init test_bpf_init(void)
- {
- 	struct bpf_array *progs = NULL;
- 	int ret;
- 
-+	if (strlen(test_suite) &&
-+	    strcmp(test_suite, "test_bpf") &&
-+	    strcmp(test_suite, "test_tail_calls") &&
-+	    strcmp(test_suite, "test_skb_segment")) {
-+		pr_err("test_bpf: invalid test_suite '%s' specified.\n", test_suite);
-+		return -EINVAL;
-+	}
-+
-+	/*
-+	 * if test_suite is not specified, but test_id, test_name or test_range
-+	 * is specified, set 'test_bpf' as the default test suite.
-+	 */
-+	if (!strlen(test_suite) &&
-+	    (test_id != -1 || strlen(test_name) ||
-+	    (test_range[0] != 0 || test_range[1] != INT_MAX))) {
-+		pr_info("test_bpf: set 'test_bpf' as the default test_suite.\n");
-+		strcpy(test_suite, "test_bpf");
-+	}
-+
-+	/*
-+	 * if test_suite is specified, but test_range is not specified,
-+	 * set the upper limit of each test_suite to overwrite INT_MAX.
-+	 */
-+	if (strlen(test_suite) && test_range[0] == 0 && test_range[1] == INT_MAX) {
-+		if (!strcmp(test_suite, "test_bpf"))
-+			test_range[1] = ARRAY_SIZE(tests) - 1;
-+		else if (!strcmp(test_suite, "test_tail_calls"))
-+			test_range[1] = ARRAY_SIZE(tail_call_tests) - 1;
-+		else if (!strcmp(test_suite, "test_skb_segment"))
-+			test_range[1] = ARRAY_SIZE(skb_segment_tests) - 1;
-+	}
-+
- 	ret = prepare_bpf_tests();
- 	if (ret < 0)
- 		return ret;
- 
--	ret = test_bpf();
--	destroy_bpf_tests();
--	if (ret)
--		return ret;
-+	if (!strlen(test_suite) || !strcmp(test_suite, "test_bpf")) {
-+		ret = test_bpf();
-+		destroy_bpf_tests();
-+		if (ret)
-+			return ret;
-+	}
- 
--	ret = prepare_tail_call_tests(&progs);
--	if (ret)
--		return ret;
--	ret = test_tail_calls(progs);
--	destroy_tail_call_tests(progs);
--	if (ret)
--		return ret;
-+	if (!strlen(test_suite) || !strcmp(test_suite, "test_tail_calls")) {
-+		ret = prepare_tail_call_tests(&progs);
-+		if (ret)
-+			return ret;
-+		ret = test_tail_calls(progs);
-+		destroy_tail_call_tests(progs);
-+		if (ret)
-+			return ret;
-+	}
- 
--	return test_skb_segment();
-+	if (!strlen(test_suite) || !strcmp(test_suite, "test_skb_segment"))
-+		return test_skb_segment();
-+
-+	return 0;
- }
- 
- static void __exit test_bpf_exit(void)
--- 
-2.1.0
+>
+> Just READ_ONCE should be enough, and we can drop the comment.
+>
+>
+> > diff --git a/drivers/virtio/virtio_pci_common.h b/drivers/virtio/virtio_pci_common.h
+> > index a235ce9ff6a5..3c06e0f92ee4 100644
+> > --- a/drivers/virtio/virtio_pci_common.h
+> > +++ b/drivers/virtio/virtio_pci_common.h
+> > @@ -64,6 +64,7 @@ struct virtio_pci_device {
+> >       /* MSI-X support */
+> >       int msix_enabled;
+> >       int intx_enabled;
+> > +     bool intx_soft_enabled;
+> >       cpumask_var_t *msix_affinity_masks;
+> >       /* Name strings for interrupts. This size should be enough,
+> >        * and I'm too lazy to allocate each name separately. */
+> > --
+> > 2.25.1
+>
 
