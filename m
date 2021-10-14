@@ -2,116 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CDE042E1BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 20:55:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 607D842E1C2
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 20:56:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232370AbhJNS5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 14:57:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44942 "EHLO
+        id S232563AbhJNS6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 14:58:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230244AbhJNS5t (ORCPT
+        with ESMTP id S230244AbhJNS6p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 14:57:49 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2955CC061570
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 11:55:44 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id x27so30783907lfa.9
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 11:55:44 -0700 (PDT)
+        Thu, 14 Oct 2021 14:58:45 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5199C061570
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 11:56:40 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id g5so4810923plg.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 11:56:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=l5M5m8DjfK5hJyEYeMm28Sfb9jW0/rdhueUlUtHmJrg=;
-        b=j+1VXgCvhgorpI6KygCPuVxYKzSXv8uLSMAiTmzTd9JTv8TLlQ7tWo7pErnwDldF8t
-         e+js0mIOfOg4XAgnH66/KORf31cTSmPVyMXuXbuylMCgxVzTqtmUOeY0J3Foyt5x1xey
-         VnaSgCTUJiQMpWDYaRmvwqVQmnHjCmXa2K7AMhTZHQSHdPF/GFwf+cKyS2usHvOu1a5W
-         fwAX1HeqRUuMKMqHmnSV16ExQXUJC0Yuan9UuMbmgx5TvlMrHpCkar86vw9WIQM4IvmS
-         bUQLafkGZ5gkKZjMEtoh8bKm9VXFW/fvET21/49RgkbxuxQ/QpI347Rb86oX1ykvPFPv
-         t6lg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=3LreHgy6pHRdcseTPTu+FzR1hmJaWzkUvsg5FgfF3CA=;
+        b=GFz74yUstAHcFh6DyYBis3Z+O3ExBYfbqiA8cVzf4trKTw/XAD6WldBEmIQtcXgJ8q
+         JWbd/8AaVIeRFfX0xTH5WdB2TRI4Fg29XVuHnCDvS7Nut+QJftZFi5x/o2/+S6iBGz7m
+         TyDNJ1vtFqhVeXjeOBCLtKI4NTzA+XyraoFVDxELUvFV9BHgawN6vrj7y5aa4oSwBsq7
+         BO5OaE2H2LtCbupNdTa7HNpF5N8PjvzJQtSF7V+MThKXCpzDEve66bvs/Lt0FwLAUQLw
+         6WHUEx7fHCC1rD/QVVdqffAJ+aOhtWF5IsNkZYmLgZiAlsh44KQgW+8nt12huSOGzqHd
+         kWEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=l5M5m8DjfK5hJyEYeMm28Sfb9jW0/rdhueUlUtHmJrg=;
-        b=wewiqb7GfFoC7dNVVY4eiGVJGujJRLuzYisYaZopNnKLaD8E+zd+UNEqMoCd2Bws8t
-         AtYzzArJfaRtRA/qDt+RQTuBoFOeSryNsepHnw2Zr8wjRZ0VMfP2nyrxUWSatAPAHkOB
-         rSSgNICC4utwtYSyAEfgho+fYgNrHiNiy7vlkRM53K7bKBiVvgw+EbEm29X495eQrKnQ
-         xVFLApGa/lsNdl7EJLtttCST2DPA0Wi7qexUXsSD5Z/UA0ogOJZBLVqislnp7/Pdtr99
-         4sRG1FUrtIqX+W9HMws9oQPe178s3fOicZm1ILr65A+LAsbqF3aYbrJMBl9exWfOMTQV
-         DcpQ==
-X-Gm-Message-State: AOAM530hfH2GeyZBs8/UXCqPn5CPlben+pvMe51l4mctCXtHqgr8EXpe
-        GBQzzTvBUCWrLeUmJOpivsZkdtYgVKDRZ68PSjFmBg==
-X-Google-Smtp-Source: ABdhPJx/0eqf52atHFL/Lb8UyrmBf6cXySUxK9azDJC9DfECKlRql3JvqMF31A3Iw1p6MltvD/smqGa2T4oiFaTdgq8=
-X-Received: by 2002:a05:6512:4c7:: with SMTP id w7mr6926764lfq.444.1634237742018;
- Thu, 14 Oct 2021 11:55:42 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3LreHgy6pHRdcseTPTu+FzR1hmJaWzkUvsg5FgfF3CA=;
+        b=A//WD6UqWSSPYE5CdjFP8w+3IHuhoD1l4Ys9T4wHrUBAAV3g+x3/1wuiHBG7EpuyTG
+         IwLH0zTGfVJFZbZXAL0JTM/fC33betT1/AwrTwUzhAlE5NjjPr5gGVjNaKUVAkdsB7xH
+         W5wSNcX22bZcHsjY0wRPmljp+eLuHcMjskRNwRvKM03QEISWRugmL+TlK/jNKE8X40Oi
+         4DUCwgTcEDVW48NeYx7jUAldZb462MMLvyrd/u+M2cXV5HqIsp4pvWmfzFyzqP2jdyC2
+         I997qvln7WkwzCqOQaZ+X0YwXqoC3YzINkBDcPcQbSIEbNOVf9RnKD5A8r8ly58XlWQ2
+         ERhg==
+X-Gm-Message-State: AOAM532t20iWBoFX1K1pCLNzfV4PhbGru8PM4eJJRhdo2VemzZiHIxT4
+        nqoADp/ExkZlUtTzFJ7Si5NCmw==
+X-Google-Smtp-Source: ABdhPJzeAQ/2Mrw2TGDuVSQmY9NJA0/3+eQo4AiWUEZC8v/D+wo6TAzYPNfP4E50NiwEXknO48MFNg==
+X-Received: by 2002:a17:90a:a581:: with SMTP id b1mr21972732pjq.21.1634237799882;
+        Thu, 14 Oct 2021 11:56:39 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id u1sm2938419pje.47.2021.10.14.11.56.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Oct 2021 11:56:39 -0700 (PDT)
+Date:   Thu, 14 Oct 2021 18:56:35 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Zeng Guang <guang.zeng@intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Jethro Beekman <jethro@fortanix.com>,
+        "Huang, Kai" <kai.huang@intel.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Hu, Robert" <robert.hu@intel.com>,
+        "Gao, Chao" <chao.gao@intel.com>
+Subject: Re: [PATCH v4 6/6] KVM: VMX: enable IPI virtualization
+Message-ID: <YWh9YyulGLBHBvEt@google.com>
+References: <20210809032925.3548-1-guang.zeng@intel.com>
+ <20210809032925.3548-7-guang.zeng@intel.com>
+ <YTvttCcfqF7D/CXt@google.com>
+ <YTvwbUhofR3Fv7bV@google.com>
+ <c13b1ad7-f250-1f7f-4f6c-886b81b06517@intel.com>
 MIME-Version: 1.0
-References: <20211014132331.GA4811@kernel.org> <YWhGQLHnA9BIVBpr@hirez.programming.kicks-ass.net>
- <CAKwvOdnkDUfRKzmLThQGW02Ew6x=KM0MQyHge7=kc673NYxo2g@mail.gmail.com>
- <CANiq72nt+8bCGAm8yhvTZfS64ovOi9_U=Gym7biUhdEsc3Neaw@mail.gmail.com> <CANiq72=UVCmjr1tpSwcoOkid5tWZirKCnV17_Peqy-LBmEQHEg@mail.gmail.com>
-In-Reply-To: <CANiq72=UVCmjr1tpSwcoOkid5tWZirKCnV17_Peqy-LBmEQHEg@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 14 Oct 2021 11:55:30 -0700
-Message-ID: <CAKwvOdkSFhzSwo2hfFjXXHypC8eU+VBCnRVjvNima7qx85z65Q@mail.gmail.com>
-Subject: Re: [PATCH] compiler_types: mark __compiletime_assert failure as __noreturn
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        llvm@lists.linux.dev, Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Joe Perches <joe@perches.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c13b1ad7-f250-1f7f-4f6c-886b81b06517@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 11:41 AM Miguel Ojeda
-<miguel.ojeda.sandonis@gmail.com> wrote:
->
-> On Thu, Oct 14, 2021 at 8:33 PM Miguel Ojeda
-> <miguel.ojeda.sandonis@gmail.com> wrote:
-> >
-> > That would be a nice to do, but I am not sure about introducing one
-> > more macro about this... I think it would be simpler to submit patches
-> > for moves into `static_assert` even if we have to "flip" the meaning.
+On Sat, Sep 18, 2021, Zeng Guang wrote:
+> On 9/11/2021 7:55 AM, Sean Christopherson wrote:
+> > On Fri, Sep 10, 2021, Sean Christopherson wrote:
+> > > On Mon, Aug 09, 2021, Zeng Guang wrote:
+> > > > +		if (!pages)
+> > > > +			return -ENOMEM;
+> > > > +
+> > > > +		to_kvm_vmx(kvm)->pid_table = (void *)page_address(pages);
+> > > > +		to_kvm_vmx(kvm)->pid_last_index = KVM_MAX_VCPU_ID;
+> > > I don't see the point of pid_last_index if we're hardcoding it to KVM_MAX_VCPU_ID.
+> > > If I understand the ucode pseudocode, there's no performance hit in the happy
+> > > case, i.e. it only guards against out-of-bounds accesses.
+> > > 
+> > > And I wonder if we want to fail the build if this grows beyond an order-1
+> > > allocation, e.g.
+> > > 
+> > > 		BUILD_BUG_ON(PID_TABLE_ORDER > 1);
+> > > 
+> > > Allocating two pages per VM isn't terrible, but 4+ starts to get painful when
+> > > considering the fact that most VMs aren't going to need more than one page.  For
+> > > now I agree the simplicity of not dynamically growing the table is worth burning
+> > > a page.
+> > Ugh, Paolo has queued a series which bumps KVM_MAX_VCPU_ID to 4096[*].  That makes
+> > this an order-3 allocation, which is quite painful.  One thought would be to let
+> > userspace declare the max vCPU it wants to create, not sure if that would work for
+> > xAPIC though.
+> > 
+> > [*] https://lkml.kernel.org/r/1111efc8-b32f-bd50-2c0f-4c6f506b544b@redhat.com
+> Thus we keep current design as no change.
 
-$ grep -r BUILD_BUG_ON | wc -l
-3405
-
-> Actually, what would be ideal is a compiler-backed lint that checks
-> whether it could be an `static_assert`, perhaps in clang-tidy?
-
-Oh, that is a good idea.  There is one already for recommending the
-use of static_assert instead of assert.  That's actually very nice.
-
-I was playing with trying to adapt clang-tidy's C++11 `auto` fixit to
-work on GNU C code to automate the replacement of:
-
-__typeof(x) y = (x);
-
-with:
-
-__auto_type y = (x);
-
-in macros.  That's perhaps interesting, too.  Given the volume of code
-in the kernel, I wouldn't waste time with one off patches; rather I'd
-work on automation (since clang-tidy can be taught "fixits" to fix the
-code in place, not just warn) so that we can better enable treewide
-changes AND keep new instances from sneaking back in easier.
-
-Let's see if I get an intern in 2022, maybe I can have them focus on
-clang-tidy+kernel.
-
->
-> It would also ensure things are kept clean.
->
-> Cheers,
-> Miguel
-
-
-
--- 
-Thanks,
-~Nick Desaulniers
+Not necessarily.  I was pointing out that the current design is already problematic
+from a memory allocation perspective.  Burning a few pages per vCPU isn't the end
+of the world, but 32kb of _contiguous_ memory is rough, especially when 28kb is
+unlikely to be used in many cases.
