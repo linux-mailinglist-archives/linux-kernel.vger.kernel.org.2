@@ -2,164 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B443A42DA5B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 15:27:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AB7742DA5F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 15:28:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230495AbhJNN3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 09:29:43 -0400
-Received: from mail-eopbgr80050.outbound.protection.outlook.com ([40.107.8.50]:25109
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230205AbhJNN3l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 09:29:41 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dHfTuewaX7RuzSWZVSwx9PxZO+L6UjbzTPXzMzM4sQ7/9HFKpwcy6BGOW6A6JiaJg2O9egenZGlgHmYAvNt+MZ48NRDfqyR19TNRCWEzSvBTcLzwC3FDS52sEh09fu4g6SObydbdc2IUIwI5YBVJoyf6dU8KKiAMYvak5Sq7G4OxU/aHQEbi7NokKBcUtUkrqZSJ2PGHvQncX/7Oe41P/1vB7tYHqh7A0EfQtSGIF20vW+BcTEs0ILNy/sYbKZ75Gk50zdorMwzaIK9g3ZPyvCHIVHOcH1/O2/ThWutfvIqp1buN8Gl3pANnyTQRQ9IBGrDC0Onw6j4l6WcB2S8wVQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=SxX3/8Szm+/595jehOyQqDg/FCB0DErjPqqwijcQsXI=;
- b=ecHTJm4hxkkjRDGa+bTPI/ei5DDHaIYoyXqYGZEJlEWbmM25BMb4Vmij7ipvcdgnX2zedmhWtRdXrdiaqDnEmybikJ55XjchmtpxWjRGn/bbfTTztfnwO2dcOm4sTxCGvlu7TqLHGgP7rM0y8KIaN5xdnWx0bPAm2OVM0pzah/Bj2RJnqx43tF97rQuHEFeE5abT20GeeFpvsxMUWRtAzsqBcVxjy5SRy4CWwe2zlX1m1bLDIUaE6WtTYqNR/57Pe0htjlDF6JR9/3Kvpg6jjGmQQdtEGdGf6t4IvkvchiiBJNUMTeoXnIm498WhwJyLrdoh/eoj3TyvPHOGUYucDQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SxX3/8Szm+/595jehOyQqDg/FCB0DErjPqqwijcQsXI=;
- b=XfOfAAsZPZn7aK/M2SET3lDW0Oa7/icfweNoD3g6VswzRCIs8q0qOsg+a9fsksVkVmiH+GbZxrLMi3JypXz4ywq+V+KNLxcwTtG8z3rHwc6u+OGcLIsEXiynXh7eDsabgcrufnmqkdh+J1PzYYaVdeT/fPLqp0/x9ghGzavPhUo=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=oss.nxp.com;
-Received: from AM0PR04MB6018.eurprd04.prod.outlook.com (2603:10a6:208:138::18)
- by AM0PR04MB6020.eurprd04.prod.outlook.com (2603:10a6:208:13d::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.22; Thu, 14 Oct
- 2021 13:27:34 +0000
-Received: from AM0PR04MB6018.eurprd04.prod.outlook.com
- ([fe80::9556:9329:ce6f:7e3e]) by AM0PR04MB6018.eurprd04.prod.outlook.com
- ([fe80::9556:9329:ce6f:7e3e%6]) with mapi id 15.20.4587.030; Thu, 14 Oct 2021
- 13:27:34 +0000
-Message-ID: <c361070cc08063f19bbc5756714d677d5c649ed2.camel@oss.nxp.com>
-Subject: Re: [PATCH net-next] ptp: add vclock timestamp conversion IOCTL
-From:   Sebastien Laveze <sebastien.laveze@oss.nxp.com>
-To:     Richard Cochran <richardcochran@gmail.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yangbo.lu@nxp.com, yannick.vignon@oss.nxp.com,
-        rui.sousa@oss.nxp.com
-Date:   Thu, 14 Oct 2021 15:27:29 +0200
-In-Reply-To: <20211013175405.GB24542@hoboy.vegasvil.org>
-References: <20210928133100.GB28632@hoboy.vegasvil.org>
-         <0941a4ea73c496ab68b24df929dcdef07637c2cd.camel@oss.nxp.com>
-         <20210930143527.GA14158@hoboy.vegasvil.org>
-         <fea51ae9423c07e674402047851dd712ff1733bb.camel@oss.nxp.com>
-         <20211007201927.GA9326@hoboy.vegasvil.org>
-         <768227b1f347cb1573efb1b5f6c642e2654666ba.camel@oss.nxp.com>
-         <20211011125815.GC14317@hoboy.vegasvil.org>
-         <ca7dd5d4143537cfb2028d96d1c266f326e43b08.camel@oss.nxp.com>
-         <20211013131017.GA20400@hoboy.vegasvil.org>
-         <646d27a57e72c88bcba7f4f1362d998bbb742315.camel@oss.nxp.com>
-         <20211013175405.GB24542@hoboy.vegasvil.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5-0ubuntu1 
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: AM8P191CA0018.EURP191.PROD.OUTLOOK.COM
- (2603:10a6:20b:21a::23) To AM0PR04MB6018.eurprd04.prod.outlook.com
- (2603:10a6:208:138::18)
+        id S231220AbhJNNaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 09:30:07 -0400
+Received: from pv50p00im-ztdg10012101.me.com ([17.58.6.49]:55678 "EHLO
+        pv50p00im-ztdg10012101.me.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230205AbhJNNaE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 09:30:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
+        t=1634218079; bh=ioeyMh1fVUj2FYx8w3KntYnoV4hKPLsAV3hhLziJXG4=;
+        h=From:To:Subject:Date:Message-Id:MIME-Version;
+        b=TzWa8C4cJrwugglBVAX7RyCCL8yWcXxekkOrouDoYVd/EdLZLuLrtzkIhFfXdMby3
+         5PY85vEY8f9UavsWEFuPm4w2lXcy9VFgtyVgLRcjsRKXKkLEgCfSG8rw2axmtt9MWO
+         HjatUEuTHrWTSvoXFIeIvhvN6p7lfSIDUzD8zxyayNoTZod3SzxJFtScaY3O7j5zcW
+         NLDlJCd1SHYIuMzm/gd/8cvpcXr46CxV3k8cvKUUHsX4dsEMeNjPUFbf89+EwN4kyz
+         9ToCqaENvsq0CxWADJQrmaQ8Z68xfVghYKbjs4FzAI3onFzFJV8kPtF3fdGE7lDYMk
+         KF3bK9LK0rIAw==
+Received: from xiongwei.. (unknown [120.245.2.212])
+        by pv50p00im-ztdg10012101.me.com (Postfix) with ESMTPSA id 20707840794;
+        Thu, 14 Oct 2021 13:27:54 +0000 (UTC)
+From:   sxwjean@me.com
+To:     x86@kernel.org
+Cc:     Xiongwei Song <sxwjean@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Al Viro <viro@zeniv.linux.org.uk>, linux-kernel@vger.kernel.org
+Subject: [PATCH RFC] x86/elf: Fix incorrect STACK_RND_MASK for x86_64
+Date:   Thu, 14 Oct 2021 21:27:36 +0800
+Message-Id: <20211014132736.266553-1-sxwjean@me.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from soplpuats06.ea.freescale.net (81.1.10.98) by AM8P191CA0018.EURP191.PROD.OUTLOOK.COM (2603:10a6:20b:21a::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.16 via Frontend Transport; Thu, 14 Oct 2021 13:27:33 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 5f0803b9-9fec-42ec-0fb1-08d98f166180
-X-MS-TrafficTypeDiagnostic: AM0PR04MB6020:
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM0PR04MB6020FECDC121065C9982AA2BCDB89@AM0PR04MB6020.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: /ILddaltp2Z7wX5aaai4sbE9y3tin4zyZzAtZucXBsDKd49vHXQbTxN4z25xmAKWloMzSaHD1I4DZPkdFnjZr8mIg3/sde/HWprhJo8sLXXPJtJFtwoKfuFWEjp/DszUvEiGs2jDkgYqnZgtwAQnov8LsS1CISSJqCXJ1L+oo+6VXNGXvKAKFge7g/zui23T9JQiflFYk7iQzDkQ5xgCIDn35+XjnWtU99RrhUooeV24EdTLF1jI7MB2C25aNIxjVGLEKEcUxlrBqCVHGsqmfqisqF1NHsReN04321FWERUWAZGYS0C8w+JTM2mDAIPR0xr0tkmwX83wLJOeP5dY9oJWhKRFFt7JyRqXI77MlDkXqjwhl8eaLac3skNbtfT6N1BUjRKr9pUmp9BexP4XydPrXjqIiaf/MBuGGMemC0QuoGeomLBVnlEh0uz5k+FFEg1THLxsveIOwTChXh5tA7Snjge4FHqFAv6PPq4soAC6mrT0Bv7fLiDp/pSWYjMbkKNjFph1dHSS+d6QVR6RFtkQuxO8YCsOxun3OZc2lQi8pvZSVvMlbV5M3iOU7/n1xiAE2QEYtXJtgvSQpB3nWbQKFG+xZYT3m3T7eKYQ31jixVINVQG64XzQzM/3oaErpYA6NjjGZn3MIy4fwBYRw4UcEe3JO1snBNz1/blPdun5sZ3rN/DY23DtAk/Erpa8
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB6018.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(8936002)(26005)(6506007)(38100700002)(38350700002)(6486002)(6666004)(2906002)(44832011)(2616005)(956004)(6512007)(4001150100001)(8676002)(4326008)(66556008)(316002)(66946007)(52116002)(186003)(508600001)(86362001)(83380400001)(5660300002)(66476007)(6916009);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?d283cGtmTWtRdWZuVkZ0ejh2TFVXL2xZZVdvcEJMTE94ekRlY05qQnVTS2tq?=
- =?utf-8?B?VXJBZlFOeUEvaHBES3NDQURtQWFQc1pNVkZoN05XdnhzZHRkYXFmTUtseXRh?=
- =?utf-8?B?N1JGVjhySXVmcTJQejFRdW9KQ3lyRTdEeUtWZCtBdUQ4ZU1TN2sxdmpzcURK?=
- =?utf-8?B?dHUrVkhiekFqR2I3WnNqZGl2NXJlKzBSUlpMZnZwN20rOGFwbGhtZGJMZ3pu?=
- =?utf-8?B?U0d0bTdvVkdUQ0RpM0FCVHhVUkdNRFNPeTlaZ0U3MTkvSm11ZVpQODlYNHFr?=
- =?utf-8?B?cnphT1BEZGN0NG5yZDArNXlLM05JYWhkd25oOUVQc1pEQUcvS1V2MXhRdEpt?=
- =?utf-8?B?SnZvZ0ZGV25qb2llSjh6UUJJQmg0cTBmdmtqd3ZJd3dwNlE1YjJaajlTWC9T?=
- =?utf-8?B?QXZPTE10NkhPVmJjdWVWZGpEakF4NWlMKzZuT005ank4UUhoUmZXOWpRTnZI?=
- =?utf-8?B?WGV6VTBPZElpTTFScFUybTQ1TSt2bVkrM09Mc1R2UU9OSDFkNnlSWnRBQldK?=
- =?utf-8?B?OGZOTzZrUHk0UC9ENGNMSkwwNVZiSWttajhQQko4bHFFVmdOVkRZTHRXekMy?=
- =?utf-8?B?VEVqUkhVMHJlekJGanlTT3AwTjFRbjRWNVp4akZoVGlodG5JTitOZlNPMURj?=
- =?utf-8?B?amZYMnNXckNFT29ZVmtOVTdZc2pwNGNWbWtCQk00WW56QWhXK1dhUzltSXA3?=
- =?utf-8?B?U1M4OWQ5ajQyNCtDSGF3ZHBmNlVIL213dnYwZTBYSkFteFR1cmFabFFjdDUz?=
- =?utf-8?B?bktXcjVGS09BMWVhOW1mZHJTUlBWVFZDbXBwSFovbmRBeTJ4d01TWlA0MkhL?=
- =?utf-8?B?VzJCbmZuSWw3RnRkbjUvUm1qTUxIMGhnalY2VGJZM2VMbC8yNThVVFhYVFlG?=
- =?utf-8?B?R3JKcUV2TVB1SWp5WU9aYXI2bjMvTmVydGNFL0hzejFyd0Ewa0NzV2xMR0JD?=
- =?utf-8?B?c3pjNFd0Ny9iNDl2SnlHb3ZMQ1UrL0FrdlIweG5ZcjJkQmxMbEtIQzdsOUhR?=
- =?utf-8?B?REphOHR3TnZzUXBYT2s3c2hwY3lxMUo1bnRHYk5pRkx6Nk1OZnRFN3JLNVBO?=
- =?utf-8?B?SmJ5NHE3dnlkSXF3VnpvRVQ4ZFY1T2VOMTAxS3R2ekJUa0xZWUZqTTlucEt0?=
- =?utf-8?B?MWxBSS9PYlM5cWVVK3MrUWNKL1dVU2RYRFBmSHRUdm9udGhYdWhTZEZ2ZnhF?=
- =?utf-8?B?WHdhVzRqUjgrMURzS1lRTUtJbDJ1SDlyVnE1VzhiOC9SbTk1a1BFYmhPK1BS?=
- =?utf-8?B?Yi8wSGVjZ3kwc3NwL0IwbVZVb3M3N2Jsam1Vd1JiRDFXTGVXdjZWZi94TFo2?=
- =?utf-8?B?M01RZ3J2dVhqSFdsKzB6dFhGNC8zazRKNGF3N3lZNXBxaHVMMlR4Mmg0cjRx?=
- =?utf-8?B?d0cwNjdPYW56Uk4wdkhJbUREbTBZY0V3RGxiK0taS2hvbDVNcWN4RklrWGxy?=
- =?utf-8?B?NlZ3UmVpdGVHNUFHbzN4RGxHbk9uY1dHcFhaaGlPcUUyZWppUm8xdjZoc1VB?=
- =?utf-8?B?ZllZWGp6L3RCcG1LNVJiaVlDZkJJVThrUWFKeWNQZUs2b09HUTVnQXZ4djJC?=
- =?utf-8?B?bU5kQUZaTUZjYUhHbTl4WXFMU0lCVHVxdnJ3SnJqcWNNVmR2enVhQm9uZmtn?=
- =?utf-8?B?Q1dSTjdER0E2RmlrSytsWmFuRkhzMm96VHlxdWNkcDhpajArUzV4NWdNVHBw?=
- =?utf-8?B?Ym92cElSbkIrWCttU1E4RTA0N2p6QnU3OTBJcURXa0dHK2dETzV4c0dTUkpK?=
- =?utf-8?Q?MeqKM2ckYbMSkwd0CBjR9rolCNeD+lEng8QCpKJ?=
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5f0803b9-9fec-42ec-0fb1-08d98f166180
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB6018.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Oct 2021 13:27:33.9559
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: nrXrgPM43crXe1M6yJPo9G5I759gOk8WMw0u2Z9EEGlEw5weHeyNASTQoSH7ihI8Do447ZTwJUxk8c4asYwRZXKx2Og1abwEs55CU+/BVLc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB6020
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.425,18.0.790
+ definitions=2021-10-14_05:2021-10-14,2021-10-14 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 clxscore=1015 mlxscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-2009150000 definitions=main-2110140086
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-10-13 at 10:54 -0700, Richard Cochran wrote:
-> On Wed, Oct 13, 2021 at 03:28:12PM +0200, Sebastien Laveze wrote:
-> > On Wed, 2021-10-13 at 06:10 -0700, Richard Cochran wrote:
-> > > That means no control over the phase of the output signals.  Super.
-> > 
-> > You have. There's just a small conversion to go from and to the low-
-> > level hardware counter. (Which also needs to be done for rx/tx
-> > timestamps btw) 
-> > When programming an output signal you use this offset to have the right
-> > phase.
-> 
-> I have an i210 with 2 periodic output channels.  How am I supposed to
-> generate signals from two different virtual PTP clocks?
+From: Xiongwei Song <sxwjean@gmail.com>
 
-Is it something currently supported to generate output signals from
-virtual clocks ? (I would say no)
+According to the comment for stack randomization of x86, the range of
+randomization is 1GB, which occupies 30 valid bits in binary. And in
+x86_64, PAGE_SHIFT occupies 12 bits, then the STACK_RND_MASK should
+occupy 18 bits for 1GB.
 
-It seems to me that any periodic signal handled in hardware (scheduled
-traffic for instance or periodic PPS) the hardware PHC frequency needs
-to be adjusted.
+The current range of randomization is :
+	0x3fffff << PAGE_SHIFT
+, which occupies 34 bits.
 
-For the offset, adjusting the PHC counter is not mandatory but requires
-to re-configure any active hardware periodic logic. And here I'm not
-saying it comes free. (especially if it would have to be supported by
-all devices with PHC)
+This patch changed 0x3fffff to 0x3ffff, which makes the range of stack
+randomization is real 1GB.
 
-In this regard, we think that the capability to allow PHC adjustements
-with virtual clocks may be on a per driver basis:
--driver exposes if it can make atomic offset adjustment or not
--if yes, allow PHC freq adjustments with a limited range. This range
-can be known by userspace using PTP_CLOCK_GETCAPS. This limitation
-doesn't have to be drastic but just here to prevent 10^6 ppm.
+Before this patch(bit0 ~ bit33 randomized):
+	root@qemux86-64:~# for i in {1..20};do cat /proc/self/maps | grep stack;done
+	7ffddf971000-7ffddf992000 rw-p 00000000 00:00 0                          [stack]
+	7ffc4e0d4000-7ffc4e0f5000 rw-p 00000000 00:00 0                          [stack]
+	7fff5898e000-7fff589af000 rw-p 00000000 00:00 0                          [stack]
+	7ffcf910b000-7ffcf912c000 rw-p 00000000 00:00 0                          [stack]
+	7ffce829d000-7ffce82be000 rw-p 00000000 00:00 0                          [stack]
+	7ffec72d9000-7ffec72fa000 rw-p 00000000 00:00 0                          [stack]
+	7ffd6e256000-7ffd6e277000 rw-p 00000000 00:00 0                          [stack]
+	7ffe14120000-7ffe14141000 rw-p 00000000 00:00 0                          [stack]
+	7ffe21549000-7ffe2156a000 rw-p 00000000 00:00 0                          [stack]
+	7ffdc9d33000-7ffdc9d54000 rw-p 00000000 00:00 0                          [stack]
+	7ffe1ced4000-7ffe1cef5000 rw-p 00000000 00:00 0                          [stack]
+	7ffcb0440000-7ffcb0461000 rw-p 00000000 00:00 0                          [stack]
+	7ffc84515000-7ffc84536000 rw-p 00000000 00:00 0                          [stack]
+	7ffe557dd000-7ffe557fe000 rw-p 00000000 00:00 0                          [stack]
+	7ffdcb7e4000-7ffdcb805000 rw-p 00000000 00:00 0                          [stack]
+	7ffc6f989000-7ffc6f9aa000 rw-p 00000000 00:00 0                          [stack]
+	7ffd9322a000-7ffd9324b000 rw-p 00000000 00:00 0                          [stack]
+	7ffea8e34000-7ffea8e55000 rw-p 00000000 00:00 0                          [stack]
+	7ffc594ff000-7ffc59520000 rw-p 00000000 00:00 0                          [stack]
+	7ffe8db65000-7ffe8db86000 rw-p 00000000 00:00 0                          [stack]
 
-A limited adjustment remains an improvement vs no adjustment at all.
+After this patch(bit0 ~ bit29 randomized):
+	root@qemux86-64:~# for i in {1..20};do cat /proc/self/maps | grep stack;done
+	7fffd0ed2000-7fffd0ef3000 rw-p 00000000 00:00 0                          [stack]
+	7fffdf555000-7fffdf576000 rw-p 00000000 00:00 0                          [stack]
+	7ffffec0e000-7ffffec2f000 rw-p 00000000 00:00 0                          [stack]
+	7fffcfa0f000-7fffcfa30000 rw-p 00000000 00:00 0                          [stack]
+	7fffff75d000-7fffff77e000 rw-p 00000000 00:00 0                          [stack]
+	7fffd1d11000-7fffd1d32000 rw-p 00000000 00:00 0                          [stack]
+	7fffc7850000-7fffc7871000 rw-p 00000000 00:00 0                          [stack]
+	7fffc956e000-7fffc958f000 rw-p 00000000 00:00 0                          [stack]
+	7fffdf7be000-7fffdf7df000 rw-p 00000000 00:00 0                          [stack]
+	7fffeffdf000-7ffff0000000 rw-p 00000000 00:00 0                          [stack]
+	7fffd7d7f000-7fffd7da0000 rw-p 00000000 00:00 0                          [stack]
+	7fffe3d23000-7fffe3d44000 rw-p 00000000 00:00 0                          [stack]
+	7fffde4b7000-7fffde4d8000 rw-p 00000000 00:00 0                          [stack]
+	7fffd477a000-7fffd479b000 rw-p 00000000 00:00 0                          [stack]
+	7fffc0e95000-7fffc0eb6000 rw-p 00000000 00:00 0                          [stack]
+	7fffdbdda000-7fffdbdfb000 rw-p 00000000 00:00 0                          [stack]
+	7fffec737000-7fffec758000 rw-p 00000000 00:00 0                          [stack]
+	7fffed163000-7fffed184000 rw-p 00000000 00:00 0                          [stack]
+	7ffff9a9c000-7ffff9abd000 rw-p 00000000 00:00 0                          [stack]
+	7fffff945000-7fffff966000 rw-p 00000000 00:00 0                          [stack]
 
-Thanks,
-Sebastien
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Gabriel Krisman Bertazi <krisman@collabora.com>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: "Chang S. Bae" <chang.seok.bae@intel.com>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Xiongwei Song <sxwjean@gmail.com>
+---
+ arch/x86/include/asm/elf.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/x86/include/asm/elf.h b/arch/x86/include/asm/elf.h
+index 29fea180a665..0b7a5510ebd5 100644
+--- a/arch/x86/include/asm/elf.h
++++ b/arch/x86/include/asm/elf.h
+@@ -343,7 +343,7 @@ extern unsigned long get_sigframe_size(void);
+ #else /* CONFIG_X86_32 */
+ 
+ /* 1GB for 64bit, 8MB for 32bit */
+-#define __STACK_RND_MASK(is32bit) ((is32bit) ? 0x7ff : 0x3fffff)
++#define __STACK_RND_MASK(is32bit) ((is32bit) ? 0x7ff : 0x3ffff)
+ #define STACK_RND_MASK __STACK_RND_MASK(mmap_is_ia32())
+ 
+ #define ARCH_DLINFO							\
+-- 
+2.30.2
 
