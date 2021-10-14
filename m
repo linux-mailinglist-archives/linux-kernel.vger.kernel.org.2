@@ -2,97 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5DEB42D03C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 04:15:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F23942D03F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 04:16:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229948AbhJNCRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 22:17:21 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:21341 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229839AbhJNCRQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 22:17:16 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1634177712; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: To:
- Subject: Sender; bh=XSbXa21D/SkXtwXPfvMkrPRiyfn9xefybQEGW6SCGhw=; b=qCviduSE5rFqATlqn7CX7XcSNrWsxXeM1ds0ibe8Qjxx79hVk4Ib3xlRmt9G3LEet9vDd3Do
- 8UtBrwJmu2I4wUA+5Va7pzogzAFSOYPsSGKyzUC1+Fr8bXZj/jJgMmmtTLSjFwycUvVeyixk
- SUsNlZuIoSyDvlXo3biLvKd1tbQ=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 6167929830ce13d2b4b6ce44 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 14 Oct 2021 02:14:48
- GMT
-Sender: hemantk=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 71FA2C43616; Thu, 14 Oct 2021 02:14:48 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [10.110.17.128] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: hemantk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9F549C4338F;
-        Thu, 14 Oct 2021 02:14:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 9F549C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Subject: Re: [PATCH] bus: mhi: replace snprintf in show functions with
- sysfs_emit
-To:     Qing Wang <wangqing@vivo.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1634095550-3978-1-git-send-email-wangqing@vivo.com>
-From:   Hemant Kumar <hemantk@codeaurora.org>
-Message-ID: <28c9d7d7-ab45-cf7a-18c7-2940952d3e10@codeaurora.org>
-Date:   Wed, 13 Oct 2021 19:14:46 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S229878AbhJNCSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 22:18:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42804 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229496AbhJNCSw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 22:18:52 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61AB8C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 19:16:48 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id o20so14584545wro.3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 19:16:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XzIMZBii1B9/Pl5CKvtqcbQpf1sbazCTszvhVplMfsk=;
+        b=eR5WWivXxsYD4AvfSq8h0MPr3xrg/pIxz6EkLM9R3ZlaygXidTDYqvFMGEKDXcVHdn
+         Xd4u82ntGVpsMCHLydhmvxj+AHFjzhujBSICixBy+hrmf/H788RRwQ2bg8eBUsKq1EIg
+         7pRJ43TwBQXHWVQRY2vHEOI3RVyEnJ5RBdUbN/Sjn2gi1aANV4hMe/OhbF1w3qyfnENt
+         d2g9F+MlQQ9ly1vgYuzgaIq5ch2o8pnvpDWyPIhMHDSrYTJnJjCoV1g6xozasWAhIme6
+         wBGaEvjg//bSjh6fBa40dUGytOP9mKpQq7Fe/toPWd27TUJFr6eSGyZe0bhfaCYWMccO
+         Na5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XzIMZBii1B9/Pl5CKvtqcbQpf1sbazCTszvhVplMfsk=;
+        b=L+m4GkTHEm9kUTgEsGd+JReZuEtlAj2JYpj9YnzbBomgMEwHlcQ/GyjMTKEAOD0rhP
+         CaveRT644nux8VCtLqLrvPOkzuORQx3vGMoaWMdexAht0CE5iA46mALWQhnnOQUCPAaW
+         l2QNkfG18QFfeX4uE4pYoP9hZTEQ5mTWvUkkIDZAuBhPFn+nyCiiTNkGRuoR0QJz6r3W
+         ynYKw4JUSO3lGHZAayhQYMxyxm4XcIatEDcfYOM30DGv1M64CSwpz2y7Yc+P0tShpOY7
+         tIIKNB1rKco7YUlGa1VDCz9ZZySgdYfzeduV/pucb/hCfxtDe9PywhRCvfFDrTTNj+Ar
+         z+rA==
+X-Gm-Message-State: AOAM531Oe4tiYquRd0ZcZWzLZYWxd2XThDaGI3hPSNUVxzXZwjLct9eb
+        lqeWWp7hQZsXDOO5MmD1CdYAxDCMAusHtJfDiugJJA==
+X-Google-Smtp-Source: ABdhPJwkDoLgr5JDDTGybmZEvz3HGXt7aTI7Q0/tPY8g6vAgduFUCsO1I3YM77lKDTcvHoI0BmFNC+NOYRP0ncy4GZI=
+X-Received: by 2002:adf:9c11:: with SMTP id f17mr3434551wrc.147.1634177806847;
+ Wed, 13 Oct 2021 19:16:46 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1634095550-3978-1-git-send-email-wangqing@vivo.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20211013191320.2490913-1-dlatypov@google.com>
+In-Reply-To: <20211013191320.2490913-1-dlatypov@google.com>
+From:   David Gow <davidgow@google.com>
+Date:   Thu, 14 Oct 2021 10:16:35 +0800
+Message-ID: <CABVgOS=bOLt_cRSQBejtKqBnc+aBOYYDv4Df9h-RtXTiHL-Sow@mail.gmail.com>
+Subject: Re: [RFC PATCH] kunit: flatten kunit_suite*** to kunit_suite** in executor
+To:     Daniel Latypov <dlatypov@google.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Jeremy Kerr <jk@codeconstruct.com.au>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 10/12/2021 8:25 PM, Qing Wang wrote:
-> coccicheck complains about the use of snprintf() in sysfs show functions.
-> 
-> Fix the following coccicheck warning:
-> drivers/bus/mhi/core/init.c:97:8-16: WARNING: use scnprintf or sprintf.
-> 
-> Use sysfs_emit instead of scnprintf or sprintf makes more sense.
-> 
-> Signed-off-by: Qing Wang <wangqing@vivo.com>
+On Thu, Oct 14, 2021 at 3:13 AM Daniel Latypov <dlatypov@google.com> wrote:
+>
+> Per [1], we might not need the array-of-array of kunit_suite's.
+>
+> This RFC patch previews the changes we'd make to the executor to
+> accommodate that by making the executor automatically flatten the
+> kunit_suite*** into a kunit_suite**.
+>
+> The test filtering support [2] added the largest dependency on the
+> current kunit_suite*** layout, so this patch is based on that.
+>
+> It actually drastically simplifies the code, so it might be useful to
+> keep the auto-flattening step until we actually make the change.
+>
+> [1] https://lore.kernel.org/linux-kselftest/101d12fc9250b7a445ff50a9e7a25cd74d0e16eb.camel@codeconstruct.com.au/
+> [2] https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git/commit/?h=kunit&id=3b29021ddd10cfb6b2565c623595bd3b02036f33
+>
+> Cc: Jeremy Kerr <jk@codeconstruct.com.au>
+> Signed-off-by: Daniel Latypov <dlatypov@google.com>
 > ---
->   drivers/bus/mhi/core/init.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
-> index c81b377..f3ddefe 100644
-> --- a/drivers/bus/mhi/core/init.c
-> +++ b/drivers/bus/mhi/core/init.c
-> @@ -94,7 +94,7 @@ static ssize_t serial_number_show(struct device *dev,
->   	struct mhi_device *mhi_dev = to_mhi_device(dev);
->   	struct mhi_controller *mhi_cntrl = mhi_dev->mhi_cntrl;
->   
-> -	return snprintf(buf, PAGE_SIZE, "Serial Number: %u\n",
-> +	return sysfs_emit(buf, "Serial Number: %u\n",
->   			mhi_cntrl->serial_number);
->   }
->   static DEVICE_ATTR_RO(serial_number);
-> 
-Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
-Forum, a Linux Foundation Collaborative Project
+
+I really like this. My only real concern is that it's a little unclear
+exactly what the resulting layout is, particularly as to what the
+"make_suite_set" function does. It'd be nice to have some more
+documentation, either as a comment on the function or a more detailed
+commit message, which explicitly describes the old format (an array
+(with start and end pointers) of NULL-terminated arrays of suites),
+and the new format (a single, NULL-terminated array with both start
+and end pointers).
+
+Re: NULL termination. If we're already using both start and end
+pointers, the NULL terminator seems useless. (And if we've got a NULL
+terminator, why are we passing the end pointer around.) It's not
+super-clear why we'd want both, though the comments in this reply do
+clarify things a bit:
+https://lore.kernel.org/linux-kselftest/CAGS_qxoziNGNVpsUfvUfOReADY0PdriV2gJJ7+LUzzd+7BU-Ow@mail.gmail.com/
+
+Finally, if we do want a runtime way of adding suites to the
+executor's list at runtime (which was suggested as a way of working
+around some suites which might need extra, global, initialisation),
+this might change how that'd have to be implemented a bit. I'm not too
+worried about that, though: it's something that's probably better
+served with something like a linked list of suite_sets or the like,
+anyway.
+
+In any case, I've tested this in the non-module case, and it seems to work fine.
+Tested-by: David Gow <davidgow@google.com>
+
+Cheers,
+-- David
