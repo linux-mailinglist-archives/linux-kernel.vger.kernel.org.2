@@ -2,108 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F018942D8BD
+	by mail.lfdr.de (Postfix) with ESMTP id A65A542D8BC
 	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 14:03:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231375AbhJNMFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 08:05:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34516 "EHLO
+        id S231391AbhJNMFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 08:05:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230172AbhJNMFH (ORCPT
+        with ESMTP id S231378AbhJNMF3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 08:05:07 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06FD4C061570;
-        Thu, 14 Oct 2021 05:03:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=LQbu81zuvorNbNl7md+JgKHR7v/3E2/nFaDHpBUMKHE=; b=K+VqEeAQrYdM6TmqnvgqR8nQZ2
-        NUVGVVdJOKwbDDGJLr2XaNah8D3QzuwIEiRxNHZTCkRVBNPcsYGoyUwvsSFUkI26FQ57xybfxRkBr
-        xIKCPhafKP5jWU8T3MrrEwNDfJlZ9qcmPxjI6L5P1Fyyd6l7J+c0+vDz8E4JQB8gBWwekKorq1TPB
-        mTkG7hJstKx4fg034oRxe7rWHPayvwIpCm8kaC3EoNrDKi410bqJjM+2qNJuGSsLX8FJgTReiQ0Ke
-        nvz5uY+7YlYlxuOcmgx+88lfZbqgtns6SWmoBoNUKgfH5gijloXLdNXfI3Cl4FyDKOoCE2NzAHUpf
-        +RdYfERQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55094)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1mazRg-0001Ib-Rt; Thu, 14 Oct 2021 13:02:48 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1mazRS-00028C-K9; Thu, 14 Oct 2021 13:02:34 +0100
-Date:   Thu, 14 Oct 2021 13:02:34 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     keescook@chromium.org, jannh@google.com,
-        linux-kernel@vger.kernel.org, vcaputo@pengaru.com,
-        mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, akpm@linux-foundation.org,
-        christian.brauner@ubuntu.com, amistry@google.com,
-        Kenta.Tada@sony.com, legion@kernel.org,
-        michael.weiss@aisec.fraunhofer.de, mhocko@suse.com, deller@gmx.de,
-        zhengqi.arch@bytedance.com, me@tobin.cc, tycho@tycho.pizza,
-        tglx@linutronix.de, bp@alien8.de, hpa@zytor.com,
-        mark.rutland@arm.com, axboe@kernel.dk, metze@samba.org,
-        laijs@linux.alibaba.com, luto@kernel.org,
-        dave.hansen@linux.intel.com, ebiederm@xmission.com,
-        ohoono.kwon@samsung.com, kaleshsingh@google.com,
-        yifeifz2@illinois.edu, jpoimboe@redhat.com,
-        linux-hardening@vger.kernel.org, linux-arch@vger.kernel.org,
-        vgupta@kernel.org, will@kernel.org, guoren@kernel.org,
-        bcain@codeaurora.org, monstr@monstr.eu, tsbogend@alpha.franken.de,
-        nickhu@andestech.com, jonas@southpole.se, mpe@ellerman.id.au,
-        paul.walmsley@sifive.com, hca@linux.ibm.com,
-        ysato@users.sourceforge.jp, davem@davemloft.net, chris@zankel.net
-Subject: Re: [PATCH 0/7] wchan: Fix wchan support
-Message-ID: <YWgcWnbsvI1rbvEj@shell.armlinux.org.uk>
-References: <20211008111527.438276127@infradead.org>
+        Thu, 14 Oct 2021 08:05:29 -0400
+Received: from mail-ua1-x932.google.com (mail-ua1-x932.google.com [IPv6:2607:f8b0:4864:20::932])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACF2BC061760
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 05:03:24 -0700 (PDT)
+Received: by mail-ua1-x932.google.com with SMTP id e2so10718425uax.7
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 05:03:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Xj8F02qjcFD/OxSetCAdaTkDEAtmLez+FikCwyhAwDU=;
+        b=wDuxotBJb/+zjFdczEvupCmne7rv44CGr+5h2R+lYo61eRnWC1EAFn4i83sh7rX3yZ
+         V7movBmXIEybpOfvKxfcSoZM8s14aImiaK7T3CM4LFAYoTOvpo9Fq+Dbxg0LaVidfIEc
+         syPvFsSscgM8cio8XTjfXekbVyjDl48TLNGTfIjxsAz31lohV6wmra9eHwb2EWPXW6Od
+         Geemk7JVSfF/jcS/y1qenTMLStW4vUfQieVQRye+fj955TP8JnxYCYaWTWyRe0IKqKao
+         L/1z7qJIutgRw049kdC3st4vuqfMF6eKVR8K7iQHy+xIu1rW5Nn/ulpWSThbRjyd8s5+
+         21yg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Xj8F02qjcFD/OxSetCAdaTkDEAtmLez+FikCwyhAwDU=;
+        b=JVKzFG7RCQ7w2JSjIvrTO5nUd3eRyar6Wwb6sqakRJepZSiciG+Ltc36QtqcYVuStk
+         WnxtOvebttkFVYAP6E+SVQrsFt81Et7cOdP19U0mK6UWZvrTyssjVZjxOwdblu16QpIh
+         A9y7ne7tRz5flsep1pBAjBkmPeznDpHWTYpQrcovdA5sjJx6by7xbJi608dLoJj9fqJQ
+         +LHrspW9qlYxiu97DBSkIzHZs6AXcKPr7DMy9+BXgEs5eIWQUQtzGO0APMaxnNv6tagh
+         WPl4ADxi0OWfI5vZu9x4vL7QsBW8W4RoRDz6shWS2RMvNz+4SUBhlgou0Ca/wesDf928
+         +zIA==
+X-Gm-Message-State: AOAM530CCBpzu7rZBVWBHJlp2cw/8RnMFqJn6dcwRLGFRv9ehLd7QLxg
+        JJ2UiZwN15NcuPG0SXUMMAOlqMtQRYNb/7OcBeP68w==
+X-Google-Smtp-Source: ABdhPJzHijD+itIOq2W8t2VGEzSHHYo+kmu+BRme0KVWMgeqDnez3zG+NfeqpChgpcbIfgjaiTFhUF0zLPjzU25556s=
+X-Received: by 2002:a67:ab48:: with SMTP id k8mr6179623vsh.30.1634213003678;
+ Thu, 14 Oct 2021 05:03:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211008111527.438276127@infradead.org>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+References: <20211013202110.31701-1-semen.protsenko@linaro.org>
+ <1cd31098-ba9d-f2e3-e34c-5bada00a2696@canonical.com> <CAPLW+4mtSnt8dCCtSeu-yNTR0F5ZO-hdjFjyGChi=tTWQQt85Q@mail.gmail.com>
+ <dd61666c-fd1a-c152-9423-9dc6718b1626@canonical.com>
+In-Reply-To: <dd61666c-fd1a-c152-9423-9dc6718b1626@canonical.com>
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+Date:   Thu, 14 Oct 2021 15:03:12 +0300
+Message-ID: <CAPLW+4mA64Q8t07tJ_Yi9=AHmGe2NixEmCaMP-Lj65D2TNBt+w@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] soc: samsung: exynos-chipid: Pass revision reg offsets
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 08, 2021 at 01:15:27PM +0200, Peter Zijlstra wrote:
-> Hi,
-> 
-> This fixes up wchan which is various degrees of broken across the
-> architectures.
-> 
-> Patch 4 fixes wchan for x86, which has been returning 0 for the past many
-> releases.
-> 
-> Patch 5 fixes the fundamental race against scheduling.
-> 
-> Patch 6 deletes a lot and makes STACKTRACE unconditional
-> 
-> patch 7 fixes up a few STACKTRACE arch oddities
-> 
-> 0day says all builds are good, so it must be perfect :-) I'm planning on
-> queueing up at least the first 5 patches, but I'm hoping the last two patches
-> can be too.
-> 
-> Also available here:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git sched/wchan
+On Thu, 14 Oct 2021 at 14:48, Krzysztof Kozlowski
+<krzysztof.kozlowski@canonical.com> wrote:
+>
+> On 14/10/2021 13:34, Sam Protsenko wrote:
+> > On Thu, 14 Oct 2021 at 10:11, Krzysztof Kozlowski
+> > <krzysztof.kozlowski@canonical.com> wrote:
+> >>
+> >> On 13/10/2021 22:21, Sam Protsenko wrote:
+> >>> Old Exynos SoCs have both Product ID and Revision ID in one single
+> >>> register, while new SoCs tend to have two separate registers for those
+> >>> IDs. Implement handling of both cases by passing Revision ID register
+> >>> offsets in driver data.
+> >>>
+> >>> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> >>> ---
+> >>>  drivers/soc/samsung/exynos-chipid.c       | 67 +++++++++++++++++++----
+> >>>  include/linux/soc/samsung/exynos-chipid.h |  6 +-
+> >>>  2 files changed, 58 insertions(+), 15 deletions(-)
+> >>>
+> >>> diff --git a/drivers/soc/samsung/exynos-chipid.c b/drivers/soc/samsung/exynos-chipid.c
+> >>> index 5c1d0f97f766..7837331fb753 100644
+> >>> --- a/drivers/soc/samsung/exynos-chipid.c
+> >>> +++ b/drivers/soc/samsung/exynos-chipid.c
+> >>> @@ -16,6 +16,7 @@
+> >>>  #include <linux/errno.h>
+> >>>  #include <linux/mfd/syscon.h>
+> >>>  #include <linux/of.h>
+> >>> +#include <linux/of_device.h>
+> >>>  #include <linux/platform_device.h>
+> >>>  #include <linux/regmap.h>
+> >>>  #include <linux/slab.h>
+> >>> @@ -24,6 +25,17 @@
+> >>>
+> >>>  #include "exynos-asv.h"
+> >>>
+> >>> +struct exynos_chipid_variant {
+> >>> +     unsigned int rev_reg;           /* revision register offset */
+> >>> +     unsigned int main_rev_shift;    /* main revision offset in rev_reg */
+> >>> +     unsigned int sub_rev_shift;     /* sub revision offset in rev_reg */
+> >>> +};
+> >>> +
+> >>> +struct exynos_chipid_info {
+> >>> +     u32 product_id;
+> >>> +     u32 revision;
+> >>> +};
+> >>> +
+> >>>  static const struct exynos_soc_id {
+> >>>       const char *name;
+> >>>       unsigned int id;
+> >>> @@ -49,31 +61,55 @@ static const char *product_id_to_soc_id(unsigned int product_id)
+> >>>       int i;
+> >>>
+> >>>       for (i = 0; i < ARRAY_SIZE(soc_ids); i++)
+> >>> -             if ((product_id & EXYNOS_MASK) == soc_ids[i].id)
+> >>> +             if (product_id == soc_ids[i].id)
+> >>>                       return soc_ids[i].name;
+> >>>       return NULL;
+> >>>  }
+> >>>
+> >>> +static int exynos_chipid_get_chipid_info(struct regmap *regmap,
+> >>> +             const struct exynos_chipid_variant *data,
+> >>> +             struct exynos_chipid_info *soc_info)
+> >>> +{
+> >>> +     int ret;
+> >>> +     unsigned int val, main_rev, sub_rev;
+> >>> +
+> >>> +     ret = regmap_read(regmap, EXYNOS_CHIPID_REG_PRO_ID, &val);
+> >>> +     if (ret < 0)
+> >>> +             return ret;
+> >>> +     soc_info->product_id = val & EXYNOS_MASK;
+> >>> +
+> >>> +     ret = regmap_read(regmap, data->rev_reg, &val);
+> >>
+> >> Isn't this the same register as EXYNOS_CHIPID_REG_PRO_ID?
+> >>
+> >
+> > It is for Exynos4210, but it's not for Exynos850 (see PATCH 3/3), as
+> > it's described in the commit message. I tried to keep this code
+> > unified for all SoCs.
+>
+> Yeah, but for Exynos4210 you read the same register twice. It's
+> confusing. Read only once. You could compare the offsets and skip second
+> read.
+>
 
-These patches introduce a regression on ARM. Whereas before, I have
-/proc/*/wchan populated with non-zero values, with these patches they
-_all_ contain "0":
+Thanks, will do in v3.
 
-root@clearfog21:~# cat /proc/*/wchan
-0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000root@clearfog21:~#
+> >
+> >>> +     if (ret < 0)
+> >>> +             return ret;
+> >>> +     main_rev = (val >> data->main_rev_shift) & EXYNOS_REV_PART_MASK;
+> >>> +     sub_rev = (val >> data->sub_rev_shift) & EXYNOS_REV_PART_MASK;
+> >>> +     soc_info->revision = (main_rev << EXYNOS_REV_PART_SHIFT) | sub_rev;
+> >>> +
+> >>> +     return 0;
+> >>> +}
+> >>> +
+> >>>  static int exynos_chipid_probe(struct platform_device *pdev)
+> >>>  {
+> >>> +     const struct exynos_chipid_variant *drv_data;
+> >>> +     struct exynos_chipid_info soc_info;
+> >>>       struct soc_device_attribute *soc_dev_attr;
+> >>>       struct soc_device *soc_dev;
+> >>>       struct device_node *root;
+> >>>       struct regmap *regmap;
+> >>> -     u32 product_id;
+> >>> -     u32 revision;
+> >>>       int ret;
+> >>>
+> >>> +     drv_data = of_device_get_match_data(&pdev->dev);
+> >>> +     if (!drv_data)
+> >>> +             return -EINVAL;
+> >>> +
+> >>>       regmap = device_node_to_regmap(pdev->dev.of_node);
+> >>>       if (IS_ERR(regmap))
+> >>>               return PTR_ERR(regmap);
+> >>>
+> >>> -     ret = regmap_read(regmap, EXYNOS_CHIPID_REG_PRO_ID, &product_id);
+> >>> +     ret = exynos_chipid_get_chipid_info(regmap, drv_data, &soc_info);
+> >>>       if (ret < 0)
+> >>>               return ret;
+> >>>
+> >>> -     revision = product_id & EXYNOS_REV_MASK;
+> >>> -
+> >>>       soc_dev_attr = devm_kzalloc(&pdev->dev, sizeof(*soc_dev_attr),
+> >>>                                   GFP_KERNEL);
+> >>>       if (!soc_dev_attr)
+> >>> @@ -86,8 +122,8 @@ static int exynos_chipid_probe(struct platform_device *pdev)
+> >>>       of_node_put(root);
+> >>>
+> >>>       soc_dev_attr->revision = devm_kasprintf(&pdev->dev, GFP_KERNEL,
+> >>> -                                             "%x", revision);
+> >>> -     soc_dev_attr->soc_id = product_id_to_soc_id(product_id);
+> >>> +                                             "%x", soc_info.revision);
+> >>> +     soc_dev_attr->soc_id = product_id_to_soc_id(soc_info.product_id);
+> >>>       if (!soc_dev_attr->soc_id) {
+> >>>               pr_err("Unknown SoC\n");
+> >>>               return -ENODEV;
+> >>> @@ -106,7 +142,7 @@ static int exynos_chipid_probe(struct platform_device *pdev)
+> >>>
+> >>>       dev_info(soc_device_to_device(soc_dev),
+> >>>                "Exynos: CPU[%s] PRO_ID[0x%x] REV[0x%x] Detected\n",
+> >>> -              soc_dev_attr->soc_id, product_id, revision);
+> >>> +              soc_dev_attr->soc_id, soc_info.product_id, soc_info.revision);
+> >>>
+> >>>       return 0;
+> >>>
+> >>> @@ -125,9 +161,18 @@ static int exynos_chipid_remove(struct platform_device *pdev)
+> >>>       return 0;
+> >>>  }
+> >>>
+> >>> +static const struct exynos_chipid_variant exynos4210_chipid_drv_data = {
+> >>> +     .rev_reg        = 0x0,
+> >>> +     .main_rev_shift = 0,
+> >>> +     .sub_rev_shift  = 4,
+> >>
+> >> The code does not look correct here. Subrev is at 0:3 bits, mainrev is
+> >> at 4:7.
+> >>
+> >
+> > Right. I was confused by those existing macros:
+> >
+> >     #define EXYNOS_SUBREV_MASK        (0xf << 4)
+> >     #define EXYNOS_MAINREV_MASK        (0xf << 0)
+> >
+> > Those were probably wrong the whole time? Anyway, now I've found
+> > Exynos4412 User Manual and checked it there -- you are right about
+> > offsets. Will fix in v3.
+>
+> They were not used, I think.
+>
+> >
+> >> Did you test it that it produces same result? Looks not - I gave it a
+> >> try and got wrong revision.
+> >>
+> >
+> > I only have Exynos850 based board, and that has 0x0 in Revision ID
+> > register. But for v3 I'll try to emulate register value in the code
+> > and make sure that the read value does not change with patch applied.
+>
+> You should get one of Odroid boards to test it. The MC1 is fairly cheap.
+>
 
-I'll try to investigate what is going on later today.
+Will do, I see how it can be useful for further work. For this series,
+I'm pretty sure I can test all cases by emulating the read register
+values. Would it be enough? Also, if you have some time, I'd ask you
+to check v3 on your board.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+> Best regards,
+> Krzysztof
