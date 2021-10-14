@@ -2,232 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E74542E0B5
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 20:02:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBE3342E0B9
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 20:03:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233795AbhJNSEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 14:04:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38896 "EHLO mail.kernel.org"
+        id S233815AbhJNSFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 14:05:24 -0400
+Received: from foss.arm.com ([217.140.110.172]:58496 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229983AbhJNSEi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 14:04:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 55C5260174;
-        Thu, 14 Oct 2021 18:02:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634234553;
-        bh=XREgYAXJhCji8H7zRG00lEAFIOm24wQYsyx1jQyoJJQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RB5ufLHC6EEk6Ds+OrQfJKO49SiE0s8j7VKjeAKvLsFbq3ZfAMG+VSk4D3XxxTyIB
-         3dkbWZ5fxwcn8hNVbp9CgG41yJ6krSa8V4Pc3Aya1C6t0rljybkLyV95GAbEOYY92k
-         ZUqE9yBOJNsLJqwojKjiQiWriXngN5Hy+hFRVtgr0je87NX6NCHcMY44dakh/hu8E2
-         1puKeYFCso/JIU2oxdMZLSlJmV83hYFOg0XqHnH8G6pOn/vXxjC+V3qb0j2PXBeMWW
-         icOdYfbY3k1qWjZgq6Jt/Ms81CfLwKuPU/PE19xXK4wP2g67CsqCbyDk9CgQIARnAc
-         S0hhMfIiwMeUA==
-Date:   Thu, 14 Oct 2021 11:02:33 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
-Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        nvdimm@lists.linux.dev, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, dan.j.williams@intel.com,
-        david@fromorbit.com, hch@infradead.org, jane.chu@oracle.com
-Subject: Re: [PATCH v7 3/8] mm: factor helpers for memory_failure_dev_pagemap
-Message-ID: <20211014180233.GF24307@magnolia>
-References: <20210924130959.2695749-1-ruansy.fnst@fujitsu.com>
- <20210924130959.2695749-4-ruansy.fnst@fujitsu.com>
+        id S233786AbhJNSFW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 14:05:22 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BE4051480;
+        Thu, 14 Oct 2021 11:03:15 -0700 (PDT)
+Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9CFD13F66F;
+        Thu, 14 Oct 2021 11:03:09 -0700 (PDT)
+Date:   Thu, 14 Oct 2021 19:03:07 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     keescook@chromium.org, jannh@google.com,
+        linux-kernel@vger.kernel.org, vcaputo@pengaru.com,
+        mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, akpm@linux-foundation.org,
+        christian.brauner@ubuntu.com, amistry@google.com,
+        Kenta.Tada@sony.com, legion@kernel.org,
+        michael.weiss@aisec.fraunhofer.de, mhocko@suse.com, deller@gmx.de,
+        zhengqi.arch@bytedance.com, me@tobin.cc, tycho@tycho.pizza,
+        tglx@linutronix.de, bp@alien8.de, hpa@zytor.com, axboe@kernel.dk,
+        metze@samba.org, laijs@linux.alibaba.com, luto@kernel.org,
+        dave.hansen@linux.intel.com, ebiederm@xmission.com,
+        ohoono.kwon@samsung.com, kaleshsingh@google.com,
+        yifeifz2@illinois.edu, jpoimboe@redhat.com,
+        linux-hardening@vger.kernel.org, linux-arch@vger.kernel.org,
+        vgupta@kernel.org, linux@armlinux.org.uk, will@kernel.org,
+        guoren@kernel.org, bcain@codeaurora.org, monstr@monstr.eu,
+        tsbogend@alpha.franken.de, nickhu@andestech.com,
+        jonas@southpole.se, mpe@ellerman.id.au, paul.walmsley@sifive.com,
+        hca@linux.ibm.com, ysato@users.sourceforge.jp, davem@davemloft.net,
+        chris@zankel.net
+Subject: Re: [PATCH 6/7] arch: __get_wchan || STACKTRACE_SUPPORT
+Message-ID: <20211014180307.GB39276@lakrids.cambridge.arm.com>
+References: <20211008111527.438276127@infradead.org>
+ <20211008111626.392918519@infradead.org>
+ <20211008124052.GA976@C02TD0UTHF1T.local>
+ <YWBLl0mMTGPE/7hM@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210924130959.2695749-4-ruansy.fnst@fujitsu.com>
+In-Reply-To: <YWBLl0mMTGPE/7hM@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.11.1+11 (2f07cb52) (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 24, 2021 at 09:09:54PM +0800, Shiyang Ruan wrote:
-> memory_failure_dev_pagemap code is a bit complex before introduce RMAP
-> feature for fsdax.  So it is needed to factor some helper functions to
-> simplify these code.
+On Fri, Oct 08, 2021 at 03:45:59PM +0200, Peter Zijlstra wrote:
+> On Fri, Oct 08, 2021 at 01:40:52PM +0100, Mark Rutland wrote:
+> > [Adding Josh, since there might be a concern here from a livepatch pov]
+> > 
 > 
-> Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
+> > > +static unsigned long __get_wchan(struct task_struct *p)
+> > > +{
+> > > +	unsigned long entry = 0;
+> > > +
+> > > +	stack_trace_save_tsk(p, &entry, 1, 0);
+> > 
+> > This assumes stack_trace_save_tsk() will skip sched functions, but I
+> > don't think that's ever been a requirement? It's certinaly not
+> > documented anywhere that I could find, and arm64 doesn't do so today,
+> > and this patch causes wchan to just log `__switch_to` for everything.
+> 
+> Confused, arm64 has arch_stack_walk() and should thus use
+> kernel/stacktrace.c's stack_trace_consume_entry_nosched.
 
-This looks like a reasonable hoist...
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+Looking at this arm64's *current* get_wchan() unwinds once before
+checking in_sched_functions(), so it skips __switch_to(). As of this
+patch, we check in_sched_functions() first, which stops the unwind
+immediately as __switch_to() isn't marked as __sched.
 
---D
+I think x86 gets away with this because switch_to() is asm, and that
+tail-calls __switch_to() when returning.
 
-> ---
->  mm/memory-failure.c | 140 ++++++++++++++++++++++++--------------------
->  1 file changed, 76 insertions(+), 64 deletions(-)
-> 
-> diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-> index 54879c339024..8ff9b52823c0 100644
-> --- a/mm/memory-failure.c
-> +++ b/mm/memory-failure.c
-> @@ -1430,6 +1430,79 @@ static int try_to_split_thp_page(struct page *page, const char *msg)
->  	return 0;
->  }
->  
-> +static void unmap_and_kill(struct list_head *to_kill, unsigned long pfn,
-> +		struct address_space *mapping, pgoff_t index, int flags)
-> +{
-> +	struct to_kill *tk;
-> +	unsigned long size = 0;
-> +
-> +	list_for_each_entry(tk, to_kill, nd)
-> +		if (tk->size_shift)
-> +			size = max(size, 1UL << tk->size_shift);
-> +	if (size) {
-> +		/*
-> +		 * Unmap the largest mapping to avoid breaking up device-dax
-> +		 * mappings which are constant size. The actual size of the
-> +		 * mapping being torn down is communicated in siginfo, see
-> +		 * kill_proc()
-> +		 */
-> +		loff_t start = (index << PAGE_SHIFT) & ~(size - 1);
-> +
-> +		unmap_mapping_range(mapping, start, size, 0);
-> +	}
-> +
-> +	kill_procs(to_kill, flags & MF_MUST_KILL, false, pfn, flags);
-> +}
-> +
-> +static int mf_generic_kill_procs(unsigned long long pfn, int flags,
-> +		struct dev_pagemap *pgmap)
-> +{
-> +	struct page *page = pfn_to_page(pfn);
-> +	LIST_HEAD(to_kill);
-> +	dax_entry_t cookie;
-> +
-> +	/*
-> +	 * Prevent the inode from being freed while we are interrogating
-> +	 * the address_space, typically this would be handled by
-> +	 * lock_page(), but dax pages do not use the page lock. This
-> +	 * also prevents changes to the mapping of this pfn until
-> +	 * poison signaling is complete.
-> +	 */
-> +	cookie = dax_lock_page(page);
-> +	if (!cookie)
-> +		return -EBUSY;
-> +
-> +	if (hwpoison_filter(page))
-> +		return 0;
-> +
-> +	if (pgmap->type == MEMORY_DEVICE_PRIVATE) {
-> +		/*
-> +		 * TODO: Handle HMM pages which may need coordination
-> +		 * with device-side memory.
-> +		 */
-> +		return -EBUSY;
-> +	}
-> +
-> +	/*
-> +	 * Use this flag as an indication that the dax page has been
-> +	 * remapped UC to prevent speculative consumption of poison.
-> +	 */
-> +	SetPageHWPoison(page);
-> +
-> +	/*
-> +	 * Unlike System-RAM there is no possibility to swap in a
-> +	 * different physical page at a given virtual address, so all
-> +	 * userspace consumption of ZONE_DEVICE memory necessitates
-> +	 * SIGBUS (i.e. MF_MUST_KILL)
-> +	 */
-> +	flags |= MF_ACTION_REQUIRED | MF_MUST_KILL;
-> +	collect_procs(page, &to_kill, true);
-> +
-> +	unmap_and_kill(&to_kill, pfn, page->mapping, page->index, flags);
-> +	dax_unlock_page(page, cookie);
-> +	return 0;
-> +}
-> +
->  static int memory_failure_hugetlb(unsigned long pfn, int flags)
->  {
->  	struct page *p = pfn_to_page(pfn);
-> @@ -1519,12 +1592,8 @@ static int memory_failure_dev_pagemap(unsigned long pfn, int flags,
->  		struct dev_pagemap *pgmap)
->  {
->  	struct page *page = pfn_to_page(pfn);
-> -	unsigned long size = 0;
-> -	struct to_kill *tk;
->  	LIST_HEAD(tokill);
-> -	int rc = -EBUSY;
-> -	loff_t start;
-> -	dax_entry_t cookie;
-> +	int rc = -ENXIO;
->  
->  	if (flags & MF_COUNT_INCREASED)
->  		/*
-> @@ -1533,67 +1602,10 @@ static int memory_failure_dev_pagemap(unsigned long pfn, int flags,
->  		put_page(page);
->  
->  	/* device metadata space is not recoverable */
-> -	if (!pgmap_pfn_valid(pgmap, pfn)) {
-> -		rc = -ENXIO;
-> -		goto out;
-> -	}
-> -
-> -	/*
-> -	 * Prevent the inode from being freed while we are interrogating
-> -	 * the address_space, typically this would be handled by
-> -	 * lock_page(), but dax pages do not use the page lock. This
-> -	 * also prevents changes to the mapping of this pfn until
-> -	 * poison signaling is complete.
-> -	 */
-> -	cookie = dax_lock_page(page);
-> -	if (!cookie)
-> +	if (!pgmap_pfn_valid(pgmap, pfn))
->  		goto out;
->  
-> -	if (hwpoison_filter(page)) {
-> -		rc = 0;
-> -		goto unlock;
-> -	}
-> -
-> -	if (pgmap->type == MEMORY_DEVICE_PRIVATE) {
-> -		/*
-> -		 * TODO: Handle HMM pages which may need coordination
-> -		 * with device-side memory.
-> -		 */
-> -		goto unlock;
-> -	}
-> -
-> -	/*
-> -	 * Use this flag as an indication that the dax page has been
-> -	 * remapped UC to prevent speculative consumption of poison.
-> -	 */
-> -	SetPageHWPoison(page);
-> -
-> -	/*
-> -	 * Unlike System-RAM there is no possibility to swap in a
-> -	 * different physical page at a given virtual address, so all
-> -	 * userspace consumption of ZONE_DEVICE memory necessitates
-> -	 * SIGBUS (i.e. MF_MUST_KILL)
-> -	 */
-> -	flags |= MF_ACTION_REQUIRED | MF_MUST_KILL;
-> -	collect_procs(page, &tokill, flags & MF_ACTION_REQUIRED);
-> -
-> -	list_for_each_entry(tk, &tokill, nd)
-> -		if (tk->size_shift)
-> -			size = max(size, 1UL << tk->size_shift);
-> -	if (size) {
-> -		/*
-> -		 * Unmap the largest mapping to avoid breaking up
-> -		 * device-dax mappings which are constant size. The
-> -		 * actual size of the mapping being torn down is
-> -		 * communicated in siginfo, see kill_proc()
-> -		 */
-> -		start = (page->index << PAGE_SHIFT) & ~(size - 1);
-> -		unmap_mapping_range(page->mapping, start, size, 0);
-> -	}
-> -	kill_procs(&tokill, flags & MF_MUST_KILL, false, pfn, flags);
-> -	rc = 0;
-> -unlock:
-> -	dax_unlock_page(page, cookie);
-> +	rc = mf_generic_kill_procs(pfn, flags, pgmap);
->  out:
->  	/* drop pgmap ref acquired in caller */
->  	put_dev_pagemap(pgmap);
-> -- 
-> 2.33.0
-> 
-> 
-> 
+Does switch_to() and below need to be marked __sched?
+
+Thanks,
+Mark.
