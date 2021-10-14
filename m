@@ -2,96 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E194342E084
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 19:50:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C18E42E089
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 19:50:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233665AbhJNRwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 13:52:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57996 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231434AbhJNRwQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 13:52:16 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04490C061570
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 10:50:11 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id k23so5355951pji.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 10:50:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nxMwCOQC0YdnJMfBTtrw73j7Po2etBW+G2sHBxcCjWs=;
-        b=QH7GRT/SpH58c1RQtll53kBjddBVU5mBBMjaxMqXnQinf9VD8Ze+ZD8FeNmWLnaMT0
-         fv3H2osimP7Qx0VswZonCrDR/2P8RrcydFhjeLKXIYdy3p1wEcucuPhWqaxP+9UeIeox
-         Gtj8T1YHBs3opq6wwUf6rGPirXifVhSb7LlUrqbJMWL/KKHC8Thxf+Wx85GeGSXQvJEf
-         3HZwoHL1ukOewHHxeOBK4vHLq9Fa/zUKhcYzWcXvI0OBFWuTH9ziJotoxd4c0UXKRgID
-         K85bacTjtWuW7q6fYQq1UidUyEzUkgLv3Pzvn89ptmogeucqI5Bqxh+hVO4iX8vgV2F8
-         SK7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nxMwCOQC0YdnJMfBTtrw73j7Po2etBW+G2sHBxcCjWs=;
-        b=zr/nNLvEfp8M10TPWMQ9RL94I8RD4bZSCVxB2PT6IjJomS+RapRiQDK8frjFd3Y33s
-         wTOqJQXGSsqLrySta5IB5RI7dca0msV/DZ3BTb+z0TmhqCAkqhxhFdJPfpPvzK2URV3x
-         ppcGJFFhaDX1uu8O7KZNR5MN2Ce78y+I3dvsKri/oJPjZpYEfOf/AK18RxCl8SKxMDMX
-         5ar9vSdthrZPFpNGdz3yOWywvdEmuEJ3w04lDEfgzpohWqb9Ymz7XUSJiyYkS4U1snqa
-         cU14cfqg2jzPIrKVDz6Q9iMy7CnzSzTkoEQZs+pNgACyuGLsE/VH641YqO/q7uSpFHdZ
-         wRDQ==
-X-Gm-Message-State: AOAM532b9wRa1ZHKmUbbQgvmSTTF2VpW1GqfMgU41qtIVf4T4cTv8JUH
-        ZXe6v4PI5cFT7I7qBHV3l9Kjz6kW+qGu8XwDusnLOA==
-X-Google-Smtp-Source: ABdhPJxR85BHTUgh2B9uDC+TU+JJ1acvNOU62PyXU7qBjG5Frdg+JsyNyE07dZVp+4pMhLw33L5iuz3apaa8nesG34E=
-X-Received: by 2002:a17:902:8a97:b0:13e:6e77:af59 with SMTP id
- p23-20020a1709028a9700b0013e6e77af59mr6249033plo.4.1634233810499; Thu, 14 Oct
- 2021 10:50:10 -0700 (PDT)
+        id S233699AbhJNRwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 13:52:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33664 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231434AbhJNRws (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 13:52:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 499F4610D2;
+        Thu, 14 Oct 2021 17:50:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634233843;
+        bh=PpVTtERMzg3uEkiu6bflhUrV/MBFiW06oSNoFah347E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OFgOPTRBVPbnQ7y26Qb9+4d33mPIgg41Y6lvkK7UM+5Z0+tqOWNzfa5RuvghEEHyO
+         oi+6CUXOlo/6kYlCRRwr23j1fjFIKBTWV3vhtrdE82F4kFoNhAlDf4Apo1maBCGbjB
+         MOiOnu0KWvSYbyNn+VjaRJxtwQu7VakaDUtsIVSlUFODiwBvG2Y4W1ofre8stqp/cI
+         DbV4uQz4gCipOsnDWSBFI+9J1FnNghLy+3OGyXq65g8E1rE9GGw8rbtiDLc0wFEvbR
+         uniXSq0rXWFUnM8ofWGsAaaoRoqQferSKWE5xbs0PUacrgH90xQHhQLzIbNZqQvukU
+         GOLtPxoupwcpQ==
+Date:   Thu, 14 Oct 2021 10:50:38 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Jim Mattson <jmattson@google.com>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, torvic9@mailbox.org,
+        "seanjc@google.com" <seanjc@google.com>,
+        "vkuznets@redhat.com" <vkuznets@redhat.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "bp@alien8.de" <bp@alien8.de>
+Subject: Re: [BUG] [5.15] Compilation error in arch/x86/kvm/mmu/spte.h with
+ clang-14
+Message-ID: <YWht7v/1RuAiHIvC@archlinux-ax161>
+References: <1446878298.170497.1633338512925@office.mailbox.org>
+ <b6abc5a3-39ea-b463-9df5-f50bdcb16d08@redhat.com>
+ <936688112.157288.1633339838738@office.mailbox.org>
+ <c4773ecc-053f-9bc6-03af-5039397a4531@redhat.com>
+ <CAKwvOd=rrM4fGdGMkD5+kdA49a6K+JcUiR4K2-go=MMt++ukPA@mail.gmail.com>
+ <CALMp9eRzadC50n=d=NFm7osVgKr+=UG7r2cWV2nOCfoPN41vvQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210928062311.4012070-1-ruansy.fnst@fujitsu.com>
- <20210928062311.4012070-8-ruansy.fnst@fujitsu.com> <20211014170622.GB24333@magnolia>
-In-Reply-To: <20211014170622.GB24333@magnolia>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Thu, 14 Oct 2021 10:50:00 -0700
-Message-ID: <CAPcyv4gGxpHBBjB8e23WEQyVfo4R=vT=1syrJXx1tWymCDV51w@mail.gmail.com>
-Subject: Re: [PATCH v10 7/8] xfs: support CoW in fsdax mode
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     Shiyang Ruan <ruansy.fnst@fujitsu.com>,
-        Christoph Hellwig <hch@lst.de>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        david <david@fromorbit.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux NVDIMM <nvdimm@lists.linux.dev>,
-        Goldwyn Rodrigues <rgoldwyn@suse.de>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Matthew Wilcox <willy@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALMp9eRzadC50n=d=NFm7osVgKr+=UG7r2cWV2nOCfoPN41vvQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 10:38 AM Darrick J. Wong <djwong@kernel.org> wrote:
->
-> On Tue, Sep 28, 2021 at 02:23:10PM +0800, Shiyang Ruan wrote:
-> > In fsdax mode, WRITE and ZERO on a shared extent need CoW performed.
-> > After that, new allocated extents needs to be remapped to the file.
-> > So, add a CoW identification in ->iomap_begin(), and implement
-> > ->iomap_end() to do the remapping work.
+On Mon, Oct 04, 2021 at 10:12:33AM -0700, Jim Mattson wrote:
+> On Mon, Oct 4, 2021 at 9:13 AM Nick Desaulniers <ndesaulniers@google.com> wrote:
 > >
-> > Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
->
-> I think this patch looks good, so:
-> Reviewed-by: Darrick J. Wong <djwong@kernel.org>
->
-> A big thank you to Shiyang for persisting in getting this series
-> finished! :)
->
-> Judging from the conversation Christoph and I had the last time this
-> patchset was submitted, I gather the last big remaining issue is the use
-> of page->mapping for hw poison.  So I'll go take a look at "fsdax:
-> introduce FS query interface to support reflink" now.
+> > On Mon, Oct 4, 2021 at 2:49 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
+> > >
+> > > On 04/10/21 11:30, torvic9@mailbox.org wrote:
+> > > >
+> > > >> Paolo Bonzini <pbonzini@redhat.com> hat am 04.10.2021 11:26 geschrieben:
+> > > >>
+> > > >>
+> > > >> On 04/10/21 11:08, torvic9@mailbox.org wrote:
+> > > >>> I encounter the following issue when compiling 5.15-rc4 with clang-14:
+> > > >>>
+> > > >>> In file included from arch/x86/kvm/mmu/mmu.c:27:
+> > > >>> arch/x86/kvm/mmu/spte.h:318:9: error: use of bitwise '|' with boolean operands [-Werror,-Wbitwise-instead-of-logical]
+> > > >>>           return __is_bad_mt_xwr(rsvd_check, spte) |
+> > > >>>                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > > >>>                                                    ||
+> > > >>> arch/x86/kvm/mmu/spte.h:318:9: note: cast one or both operands to int to silence this warning
+> > > >>
+> > > >> The warning is wrong, as mentioned in the line right above:
+> 
+> Casting the bool to an int doesn't seem that onerous.
 
-The other blocker was enabling mounting dax filesystems on a
-dax-device rather than a block device. I'm actively refactoring the
-nvdimm subsystem side of that equation, but could use help with the
-conversion of the xfs mount path. Christoph, might you have that in
-your queue?
+Alternatively, could we just change both of the functions to return u64?
+I understand that they are being used in boolean contexts only but it
+seems like this would make it clear that a boolean or bitwise operator
+on them is acceptable.
+
+diff --git a/arch/x86/kvm/mmu/spte.h b/arch/x86/kvm/mmu/spte.h
+index eb7b227fc6cf..0ca215bfe3a3 100644
+--- a/arch/x86/kvm/mmu/spte.h
++++ b/arch/x86/kvm/mmu/spte.h
+@@ -295,14 +295,14 @@ static inline u64 get_rsvd_bits(struct rsvd_bits_validate *rsvd_check, u64 pte,
+ 	return rsvd_check->rsvd_bits_mask[bit7][level-1];
+ }
+ 
+-static inline bool __is_rsvd_bits_set(struct rsvd_bits_validate *rsvd_check,
+-				      u64 pte, int level)
++static inline u64 __is_rsvd_bits_set(struct rsvd_bits_validate *rsvd_check,
++				     u64 pte, int level)
+ {
+ 	return pte & get_rsvd_bits(rsvd_check, pte, level);
+ }
+ 
+-static inline bool __is_bad_mt_xwr(struct rsvd_bits_validate *rsvd_check,
+-				   u64 pte)
++static inline u64 __is_bad_mt_xwr(struct rsvd_bits_validate *rsvd_check,
++				  u64 pte)
+ {
+ 	return rsvd_check->bad_mt_xwr & BIT_ULL(pte & 0x3f);
+ }
+
+> > > > So it's an issue with clang-14 then?
+> > > > (I add Nick and Nathan)
+> > >
+> > > My clang here doesn't have the option, so I'm going to ask---are you
+> > > using W=1?  I can see why clang is warning for KVM's code, but in my
+> > > opinion such a check should only be in -Wextra.
+> >
+> > This is a newly added warning in top of tree clang.
+> >
+> > >
+> > > Paolo
+> > >
+> > > >>
+> > > >>           /*
+> > > >>            * Use a bitwise-OR instead of a logical-OR to aggregate the reserved
+> > > >>            * bits and EPT's invalid memtype/XWR checks to avoid an extra Jcc
+> > > >>            * (this is extremely unlikely to be short-circuited as true).
+> > > >>            */
+> > > >>
+> > > >> Paolo
+> > > >
+> > >
+> >
+> >
+> > --
+> > Thanks,
+> > ~Nick Desaulniers
+> 
