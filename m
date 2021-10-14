@@ -2,90 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0FD542D597
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 11:00:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32F0742D59C
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 11:01:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229997AbhJNJCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 05:02:49 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:47480 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229984AbhJNJCr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 05:02:47 -0400
-Received: from zn.tnic (p200300ec2f0c72004cd8e1678c0b16c3.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:7200:4cd8:e167:8c0b:16c3])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8BFA11EC051F;
-        Thu, 14 Oct 2021 11:00:40 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1634202040;
+        id S230106AbhJNJDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 05:03:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53970 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230007AbhJNJDk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 05:03:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634202095;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=uSz2rZqEKZN/XdUySfMH+peSlaVrF7M5smPXGUk4r04=;
-        b=py0fiiXqmN4jbKVkmkgXgCjskD/5/p9CDRsJlpMaz9oqtYXNXNUsNehQrYc48UOPDwzUEz
-        jBdJHy8+T7bSJqN9Rab31QNGnNChHOiW2EPvJ11ToTdZxLRfc2eVRje4E/vjnc9FxuGyqs
-        43/6QqBPR8VM/LPLAs3OrDmgrv6u+5Q=
-Date:   Thu, 14 Oct 2021 11:00:37 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Quan, Evan" <Evan.Quan@amd.com>
-Cc:     Alex Deucher <alexdeucher@gmail.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        "Chen, Guchun" <Guchun.Chen@amd.com>
-Subject: Re: bf756fb833cb ("drm/amdgpu: add missing cleanups for Polaris12
- UVD/VCE on suspend")
-Message-ID: <YWfxtUusQ5w/1agx@zn.tnic>
-References: <YWBlVzZK35ecQHNZ@zn.tnic>
- <DM6PR12MB2619FD47CD826ADC91F87AFBE4B39@DM6PR12MB2619.namprd12.prod.outlook.com>
- <YWFaUjKEp+5819O/@zn.tnic>
- <DM6PR12MB26195857D2FA0946C9833F19E4B39@DM6PR12MB2619.namprd12.prod.outlook.com>
- <YWFp2qHwbWHEqxWh@zn.tnic>
- <DM6PR12MB26193B59E0C5971F458E17C9E4B59@DM6PR12MB2619.namprd12.prod.outlook.com>
- <YWRvl6ymevr7+kiB@zn.tnic>
- <BYAPR12MB26152EF8CD43290EBE40C165E4B79@BYAPR12MB2615.namprd12.prod.outlook.com>
- <YWamNaMAxaw+/9Az@zn.tnic>
- <DM6PR12MB26199D9E4AD854A4DCF562B4E4B89@DM6PR12MB2619.namprd12.prod.outlook.com>
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=CodgdchH6jCzV7Xh4eUIWCnAZ5H+/ONb08evZGYFxDo=;
+        b=fyt1acTHIjEAIN+/StRW8sOCuyKPlUgPJl26NaZWCIrbmKmorue37QmToOcrcVptJn+0DR
+        MT5z65GTpLx1pYrR5cvMvg0Kr9Fn/qWV6uaWkCvmqeKWnsKf79gBq75UeNQVgAb+UMRSwm
+        QECG0m3i9Y/d2BrO26tbJHLKWU9TlXI=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-545-O0dvfSpQOPqcqk29qZpX9w-1; Thu, 14 Oct 2021 05:01:33 -0400
+X-MC-Unique: O0dvfSpQOPqcqk29qZpX9w-1
+Received: by mail-wr1-f70.google.com with SMTP id r21-20020adfa155000000b001608162e16dso3999007wrr.15
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 02:01:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=CodgdchH6jCzV7Xh4eUIWCnAZ5H+/ONb08evZGYFxDo=;
+        b=1B7JRPvt5LT/axM2JfAjRC9QunriNSTrrzEb0vmW7RQTmOkbTTKewELcL3EYXSWV3F
+         BYi6KFXZvJ8X1MAo8vBQaEMidsC7O/1NTNOrFDTAoZqhSRMszGkMtgqu9TSrdereN8gm
+         NWeX3FobZzhbxGi7Ajg+o3AtepL6VYp5btfqB2+mluWDtqMkH7tIiGxXuprfCThTFmfD
+         UFIokj1KVftr7ggQkMcTm4X5bHVX54JQdJtnx0OYC2C7Yzi19iQNvCshc6tXLuQyHvW3
+         TUAnR/N9sLvqg2OHbV798nzSVeFcGSPwpGMW0zQ2PbfmxlSIONYKXaPmJaL5SskYM8C3
+         9YEg==
+X-Gm-Message-State: AOAM531qk7GVXxIq7i02/ZQARbMZRpiquA+u4m1l8vhFcHAsGvd3ZSo4
+        3d6Tp4nQuHWRzuoGo3/BAJfxlE9XWgyCrHu7ej/y/evO4mRtfl89vtWYil+pWEHkGHIN/KO69vP
+        cTlejx6a3WpQ6FLcokN12zrbu
+X-Received: by 2002:a5d:6d81:: with SMTP id l1mr5186132wrs.110.1634202092571;
+        Thu, 14 Oct 2021 02:01:32 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwm4mnKXmfpkUwNgvbwdjAarrLFRYIjyZcB0VxUDAECzZ5uqGAQuUi40Tao/ndBhbR3+6SAcw==
+X-Received: by 2002:a5d:6d81:: with SMTP id l1mr5186104wrs.110.1634202092288;
+        Thu, 14 Oct 2021 02:01:32 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
+        by smtp.gmail.com with ESMTPSA id f3sm7325221wmb.12.2021.10.14.02.01.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Oct 2021 02:01:31 -0700 (PDT)
+Message-ID: <6bbc5184-a675-1937-eb98-639906a9cf15@redhat.com>
+Date:   Thu, 14 Oct 2021 11:01:11 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <DM6PR12MB26199D9E4AD854A4DCF562B4E4B89@DM6PR12MB2619.namprd12.prod.outlook.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [patch 13/31] x86/fpu: Move KVMs FPU swapping to FPU core
+Content-Language: en-US
+To:     "Liu, Jing2" <jing2.liu@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     "x86@kernel.org" <x86@kernel.org>,
+        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "Nakajima, Jun" <jun.nakajima@intel.com>,
+        Jing Liu <jing2.liu@linux.intel.com>,
+        "seanjc@google.com" <seanjc@google.com>,
+        "Cooper, Andrew" <andrew.cooper3@citrix.com>
+References: <871r4p9fyh.ffs@tglx>
+ <ec9c761d-4b5c-71e2-c1fc-d256b6b78c04@redhat.com>
+ <BL0PR11MB3252511FC48E43484DE79A3CA9B89@BL0PR11MB3252.namprd11.prod.outlook.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <BL0PR11MB3252511FC48E43484DE79A3CA9B89@BL0PR11MB3252.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 02:02:48AM +0000, Quan, Evan wrote:
-> [Quan, Evan] Yes, but not(apply them) at the same time. One by one as you did before.
-> - try the patch1 first
+On 14/10/21 10:02, Liu, Jing2 wrote:
+>> In principle I don't like it very much; it would be nicer to say "you
+>> enable it for QEMU itself via arch_prctl(ARCH_SET_STATE_ENABLE), and for
+>> the guests via ioctl(KVM_SET_CPUID2)".  But I can see why you want to
+>> keep things simple, so it's not a strong objection at all.
+> 
+> Does this mean that KVM allocate 3 buffers via
+> 1) Qemu's request, instead of via 2) guest XCR0 trap?
 
-Ok, first patch worked fine.
+Based on the input from Andy and Thomas, the new way would be like this:
 
-> - undo the changes of patch1 and try patch2
+1) host_fpu must always be checked for reallocation in 
+kvm_load_guest_fpu (or in the FPU functions that it calls, that depends 
+on the rest of Thomas's patches).  That's because arch_prctl can enable 
+AMX for QEMU at any point after KVM_CREATE_VCPU.
 
-Did that, worked fine too except after the first resume cycle, the video
-didn't continue playing.
+2) every use of vcpu->arch.guest_supported_xcr0 is changed to only 
+include those dynamic-feature bits that were enabled via arch_prctl.
+That is, something like:
 
-Then I restarted the video and did a couple more suspend cycles to see
-if it would not continue again. In the subsequent tries it would resume
-fine and the video would continue playing too.
+static u64 kvm_guest_supported_cr0(struct kvm_vcpu *vcpu)
+{
+	return vcpu->arch.guest_supported_xcr0 &
+		(~xfeatures_mask_user_dynamic | \
+		 current->thread.fpu.dynamic_state_perm);
+}
 
-So I'm going to chalk that single case of halted video with the second
-patch to a resume glitch or so.
+3) Even with passthrough disabled, the guest can run with XFD set to 
+vcpu->arch.guest_xfd (and likewise for XFD_ERR) which is much simpler 
+than trapping #NM.  The traps for writing XCR0 and XFD are used to 
+allocate dynamic state for guest_fpu, and start the passthrough of XFD 
+and XFD_ERR.  What we need is:
 
-Btw, I don't have pm-suspend on that box but I did suspend to RAM
-assuming this is what you wanted, which is done as root with two
-commands:
+- if a dynamic state has XCR0[n]=0, bit n will never be set in XFD_ERR 
+and the state will never be dirtied by the guest.
 
-# echo "suspend" > /sys/power/disk
-# echo "mem" > /sys/power/state
+- if a dynamic state has XCR0[n]=1, but all enabled dynamic states have 
+XFD[n]=1, the guest is not able to dirty any dynamic XSAVE state, 
+because they all have either XCR0[n]=0 or XFD[n]=1.  An attempt to do so 
+will cause an #NM trap and set the bit in XFD_ERR.
 
-If you want me to do more extensive testing, just shoot.
+- if a dynamic state has XCR0[n]=1 and XFD[n]=0, the state for bit n is 
+allocated in guest_fpu, and it can also disable the vmexits for XFD and 
+XFD_ERR.
 
-HTH.
+Therefore:
 
--- 
-Regards/Gruss,
-    Boris.
+- if passthrough is disabled, the XCR0 and XFD write traps can check 
+guest_xcr0 & ~guest_xfd.  If it includes a dynamic state bit, dynamic 
+state is allocated for all bits enabled in guest_xcr0 and passthrough is 
+started; this should happen shortly after the guest gets its first #NM 
+trap for AMX.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+- if passthrough is enabled, the XCR0 write trap must still ensure that 
+dynamic state is allocated for all bits enabled in guest_xcr0.
+
+So something like this pseudocode is called by both XCR0 and XFD writes:
+
+int kvm_alloc_fpu_dynamic_features(struct kvm_vcpu *vcpu)
+{
+	u64 allowed_dynamic = current->thread.fpu.dynamic_state_perm;
+	u64 enabled_dynamic =
+		vcpu->arch.xcr0 & xfeatures_mask_user_dynamic;
+
+	/* All dynamic features have to be arch_prctl'd first.  */
+	WARN_ON_ONCE(enabled_dynamic & ~allowed_dynamic);
+
+	if (!vcpu->arch.xfd_passthrough) {
+		/* All dynamic states will #NM?  Wait and see.  */
+		if ((enabled_dynamic & ~vcpu->arch.xfd) == 0)
+			return 0;
+
+		kvm_x86_ops.enable_xfd_passthrough(vcpu);
+	}
+
+	/* current->thread.fpu was already handled by arch_prctl.  */
+	return fpu_alloc_features(vcpu->guest_fpu,
+		vcpu->guest_fpu.dynamic_state_perm | enabled_dynamic);
+}
+
+Paolo
+
