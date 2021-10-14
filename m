@@ -2,171 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C683F42E412
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 00:17:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B94FB42E419
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 00:23:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234191AbhJNWTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 18:19:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33670 "EHLO
+        id S234199AbhJNWZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 18:25:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232841AbhJNWTm (ORCPT
+        with ESMTP id S229632AbhJNWZh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 18:19:42 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CBB4C061760
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 15:17:37 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id f21so5129188plb.3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 15:17:37 -0700 (PDT)
+        Thu, 14 Oct 2021 18:25:37 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7C07C061570;
+        Thu, 14 Oct 2021 15:23:31 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id nn3-20020a17090b38c300b001a03bb6c4ebso5849510pjb.1;
+        Thu, 14 Oct 2021 15:23:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=axtens.net; s=google;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=/gn1naYin2rxewmNR+UQ+4Ua2Az6pxvVd0XA2L6nJ+U=;
-        b=ONfSismG4d04naWppWaw5fFBIKSKKMAy0gVJiXZrFConvnU5E8d2Ayd3VDh0kKxPlM
-         KfYheVy3VZqFxW7C3SyDj3kHRI0/KpnkFFKB2eHymwNvTlk77B8NEvbREKsCxf/hUfZR
-         66TL6htytJE5V6/HVu+C2OZbv0Cu9cqLYCK78=
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Ozlybi8tKRl5/83koIfReggNMgS2RHxJuuBc9FhVK2g=;
+        b=jFjVwOx+xwIvpmEgAC3pABr5u5XYMAptuR+pIYOxZNM0r+bfZI6ACcAcc3zqTC2IMv
+         DB+j+OTJFe9SbuSLtQHEgQ/ZMp9CPsoCd2rybFk5fjP+jxXPavzpC2h+Bw8P7fkazl8n
+         2zwQvkkQL1Ssz0giaYKKlY63ym1hVIrXSdKnC7QpEP8BKYlH+aKbDVvt9SFVynQ+QyZP
+         pyymFZM+4uO9WdnAt5GByGTtEuELyJ/ORjm46zGD6Gx6++SyiacC+4aE9P6LvglOaXUW
+         CLgFXmhK7YVMd5Ck81DW9OX15POqWgzL8WUZpjnp1kH/1Q1m94o7Ak+BIzblTlhxNNsR
+         7RcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=/gn1naYin2rxewmNR+UQ+4Ua2Az6pxvVd0XA2L6nJ+U=;
-        b=4EnZ6zA49dY702ah1Fiqwmrc//E5a3thCX0FBZOErxeX8Lu9zA3KB+xanRoY8Qx6Ws
-         HKvlJz/mJNF5KrJfkVJ89ypIGgmUq7FHHMSVdJb+EztTX+syZ3EomCuUgud/2ZYxco0v
-         GyQmCxSXPBVUvOrHKY4/3xxPS3CczWMeZ0QaLT+KqWiphPlfVGzl4p3Ek8GsfhzT2wFB
-         krX4g2MTEl7fazE0wrAQdauMrwIhyx7V1ZtXudbBT4/0XoQuJ+JpTjMz/Bj/+sSKlUwu
-         zk7LSRi/2PQenJczyFhA2toG3la4cgpskS1W75ZkuH7MNy1CPdmmPV0sW2ABFVPZAf9/
-         lxLA==
-X-Gm-Message-State: AOAM530ksNvn5c6RsIlhegXp2gkgURS1TiRlU8c1yYwXNUByqpHG5p19
-        o4eByt2lwN7pPBxBwlUlvUZBlQ==
-X-Google-Smtp-Source: ABdhPJzab2EpHK7Q/T8QXwpqraVUPmAWt0eL0woPg5T6pMmI9UAwBAQkaSq8CsyFo20UObxGkQ6Z9w==
-X-Received: by 2002:a17:90b:224e:: with SMTP id hk14mr9005831pjb.224.1634249856727;
-        Thu, 14 Oct 2021 15:17:36 -0700 (PDT)
-Received: from localhost ([2001:4479:e300:600:4901:2fb9:ed97:3a3e])
-        by smtp.gmail.com with ESMTPSA id x27sm3586622pfo.90.2021.10.14.15.17.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Oct 2021 15:17:36 -0700 (PDT)
-From:   Daniel Axtens <dja@axtens.net>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>, Arnd Bergmann <arnd@arndb.de>,
-        Kees Cook <keescook@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-arch@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v2 03/13] powerpc: Remove func_descr_t
-In-Reply-To: <16eef6afbf7322d0c07760ebf827b8f9f50f7c6e.1634190022.git.christophe.leroy@csgroup.eu>
-References: <cover.1634190022.git.christophe.leroy@csgroup.eu>
- <16eef6afbf7322d0c07760ebf827b8f9f50f7c6e.1634190022.git.christophe.leroy@csgroup.eu>
-Date:   Fri, 15 Oct 2021 09:17:33 +1100
-Message-ID: <874k9j45fm.fsf@dja-thinkpad.axtens.net>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Ozlybi8tKRl5/83koIfReggNMgS2RHxJuuBc9FhVK2g=;
+        b=PfShgXNbJ6J31PHBAM7416D9+amo/+fue7snl1voVGeJ5qwc4NCoGJP/QI3wp6LNT9
+         irbApERURT/euvUHFsXrsVBEnxtQehTezspF0c9gbaeFn+YUxhzKnTVjm4EZmTfi3mGL
+         tbNBDk5STuQIPCwXU4K6iKD9tvuhnQkvOoC77e06dwJwI5Vk6S1m7C+CA9+yu4QA9O11
+         y+5hFLDrQENP80/5l2YxqHzndM7pvtQNGah5wvdHv28OVo4uMdrPttUCHtLep/9FbRx2
+         2+Z14puqmJlNX6ZNHET2a0vDW5kdKcA60U/06N8s4AOijqQ56HyhtLzNzgkwpfBWuTDx
+         RTCA==
+X-Gm-Message-State: AOAM531jpG0RCO1Z1DOo9LAUJcBYPGqYbOX7TCqPltZJKfff+ZUEtd+L
+        gnlOzVP8RztrNEQyURkDNo+jcCBbleg=
+X-Google-Smtp-Source: ABdhPJzinrz07qabMNXLToWmBRsINcGUtKBY17De0p9RBPqKuEBrTYR0J2APc+v5Blgimt8aA5Yarw==
+X-Received: by 2002:a17:90a:3e0c:: with SMTP id j12mr23646564pjc.23.1634250210462;
+        Thu, 14 Oct 2021 15:23:30 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id o11sm8715285pjp.0.2021.10.14.15.23.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Oct 2021 15:23:29 -0700 (PDT)
+Subject: Re: [PATCH 5.14 00/30] 5.14.13-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20211014145209.520017940@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <158dc65b-5aa2-0cae-687a-1328cbf4b8de@gmail.com>
+Date:   Thu, 14 Oct 2021 15:23:27 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20211014145209.520017940@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+On 10/14/21 7:54 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.14.13 release.
+> There are 30 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sat, 16 Oct 2021 14:51:59 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.13-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-> 'func_descr_t' is redundant with 'struct ppc64_opd_entry'
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
 
-So, if I understand the overall direction of the series, you're
-consolidating powerpc around one single type for function descriptors,
-and then you're creating a generic typedef so that generic code can
-always do ((func_desc_t)x)->addr to get the address of a function out of
-a function descriptor regardless of arch. (And regardless of whether the
-arch uses function descriptors or not.)
-
-So:
-
- - why pick ppc64_opd_entry over func_descr_t?
-
- - Why not make our struct just called func_desc_t - why have a
-   ppc64_opd_entry type or a func_descr_t typedef?
-
- - Should this patch wait until after you've made the generic
-   func_desc_t change and move directly to that new interface? (rather
-   than move from func_descr_t -> ppc64_opd_entry -> ...) Or is there a
-   particular reason arch specific code should use an arch-specific
-   struct or named type?
-
-> Remove it.
->
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> ---
->  arch/powerpc/include/asm/code-patching.h | 2 +-
->  arch/powerpc/include/asm/types.h         | 6 ------
->  arch/powerpc/kernel/signal_64.c          | 8 ++++----
->  3 files changed, 5 insertions(+), 11 deletions(-)
->
-> diff --git a/arch/powerpc/include/asm/code-patching.h b/arch/powerpc/include/asm/code-patching.h
-> index 4ba834599c4d..f3445188d319 100644
-> --- a/arch/powerpc/include/asm/code-patching.h
-> +++ b/arch/powerpc/include/asm/code-patching.h
-> @@ -110,7 +110,7 @@ static inline unsigned long ppc_function_entry(void *func)
->  	 * function's descriptor. The first entry in the descriptor is the
->  	 * address of the function text.
->  	 */
-> -	return ((func_descr_t *)func)->entry;
-> +	return ((struct ppc64_opd_entry *)func)->addr;
->  #else
->  	return (unsigned long)func;
->  #endif
-> diff --git a/arch/powerpc/include/asm/types.h b/arch/powerpc/include/asm/types.h
-> index f1630c553efe..97da77bc48c9 100644
-> --- a/arch/powerpc/include/asm/types.h
-> +++ b/arch/powerpc/include/asm/types.h
-> @@ -23,12 +23,6 @@
->  
->  typedef __vector128 vector128;
->  
-> -typedef struct {
-> -	unsigned long entry;
-> -	unsigned long toc;
-> -	unsigned long env;
-> -} func_descr_t;
-
-I was a little concerned about going from a 3-element struct to a
-2-element struct (as ppc64_opd_entry doesn't have an element for env) -
-but we don't seem to take the sizeof this anywhere, nor do we use env
-anywhere, nor do we do funky macro stuff with it in the signal handling
-code that might implictly use the 3rd element, so I guess this will
-work. Still, func_descr_t seems to describe the underlying ABI better
-than ppc64_opd_entry...
-
->  #endif /* __ASSEMBLY__ */
->  
->  #endif /* _ASM_POWERPC_TYPES_H */
-> diff --git a/arch/powerpc/kernel/signal_64.c b/arch/powerpc/kernel/signal_64.c
-> index 1831bba0582e..63ddbe7b108c 100644
-> --- a/arch/powerpc/kernel/signal_64.c
-> +++ b/arch/powerpc/kernel/signal_64.c
-> @@ -933,11 +933,11 @@ int handle_rt_signal64(struct ksignal *ksig, sigset_t *set,
->  		 * descriptor is the entry address of signal and the second
->  		 * entry is the TOC value we need to use.
->  		 */
-> -		func_descr_t __user *funct_desc_ptr =
-> -			(func_descr_t __user *) ksig->ka.sa.sa_handler;
-> +		struct ppc64_opd_entry __user *funct_desc_ptr =
-> +			(struct ppc64_opd_entry __user *)ksig->ka.sa.sa_handler;
->  
-> -		err |= get_user(regs->ctr, &funct_desc_ptr->entry);
-> -		err |= get_user(regs->gpr[2], &funct_desc_ptr->toc);
-> +		err |= get_user(regs->ctr, &funct_desc_ptr->addr);
-> +		err |= get_user(regs->gpr[2], &funct_desc_ptr->r2);
-
-Likewise, r2 seems like a worse name than toc. I guess we could clean
-that up another time though.
-
-Kind regards,
-Daniel
-
->  	}
->  
->  	/* enter the signal handler in native-endian mode */
-> -- 
-> 2.31.1
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
