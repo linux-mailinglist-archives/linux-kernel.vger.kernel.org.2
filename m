@@ -2,385 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B09542CF60
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 02:02:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4214842CF6B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 02:07:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229994AbhJNAEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 20:04:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34738 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229677AbhJNAEG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 20:04:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CBE256113B;
-        Thu, 14 Oct 2021 00:02:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634169722;
-        bh=UvX3x6hjiRsSQn6rwJ50mSs3/4dWDRRlhxETFUNEHL0=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=QVsDkjOzbVrYNz2HNqXY9aR4kShNlTu2b/7kIWGD2Dft5BNuZX+DMcfh6VlYzvTVk
-         BtdEH57x+DDG/HFZGrLTe/sphdd//C277WhJp8leDZRhlAUHwMPn0y6kW0TggUUnPW
-         OZ8dqYalJ2ncQeeyd1IeEQXsfTBxFtamTE3z8cRBpgVRV3AJcqh2zCwISgX2WbJ381
-         /GwE/RifFAfGPGOeWTEIyt6D/7d+iHzArnfCtqClfcMlcmSt58Zh0fQ5IXNgtMWpCv
-         ZmNVPfUHnByA78uQO7EOSwI9KKCiB68b9TjU8KrTdztpT7FDADaFptF/5M9eolE+2F
-         nKMxhiItkMFTg==
-Message-ID: <25c85925b3aa3b7457c9d079d1cb171f72e69eac.camel@kernel.org>
-Subject: Re: [PATCH] tpm/st33zp24: drop unneeded over-commenting
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Sohaib Mohamed <sohaib.amhmd@gmail.com>
-Cc:     Peter Huewe <peterhuewe@gmx.de>, Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Thu, 14 Oct 2021 03:01:59 +0300
-In-Reply-To: <20211013092151.11835-1-sohaib.amhmd@gmail.com>
-References: <20211013092151.11835-1-sohaib.amhmd@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.40.0-1 
+        id S230177AbhJNAJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 20:09:35 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:5148 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230331AbhJNAJX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 20:09:23 -0400
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.1.2/8.16.1.2) with SMTP id 19E03Hgi009174;
+        Wed, 13 Oct 2021 17:07:06 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=kOIvmYwfcct8O15b9j4U2rcCPpmYFpboayjhaKQdueo=;
+ b=qKjrE6h7jRZpk3aFdsB0+/v/ZFLx/RBM2MqCm8pe+2muU4pIfQtlDT1vccAC1kQSvo0R
+ CdDZBnAi5zGf5qZ/CGCtTcpbbSgG0PyHbQVbXshJ4cMyZTsZdqwZSzTWasxcZUQFDdYu
+ 09v6linhDg6nXEAoI072QSw7wtRtF/dJ32Y= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0089730.ppops.net with ESMTP id 3bp8vqg914-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 13 Oct 2021 17:07:06 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Wed, 13 Oct 2021 17:07:04 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ndvT1Abo7MkK3mzHSsZYLoM00mXWwffJwcjdikPjHFSweI5vNPwryIxMYSHkzIMx6ZG02jonjBOOuLmOKgg5bc1dDYpb9cG1RUplhcgv9GXwA7sw+NZwLeoV6C20TpWei7bUQxuLCVUB+E7sug7m8EnfAXJasQLg0F+D1HiBTOq4zfoCH7V8qQiED4gSjP0YM2qHPeYdBJ24K/VrpJloMWKJ8Vt/grf2XyjGQcOeHIQXpZqzJ4PTzBlfwbS/yRj1HJUIcfG4kRI69xfojlV4uQv2eKKUhFM8wsTrbfUjpOxx6/HRUOMFHw86kmGWGr0xQVak6hlGdiKJZjKur8XNGg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=kOIvmYwfcct8O15b9j4U2rcCPpmYFpboayjhaKQdueo=;
+ b=aSAbbVzTCVKire4UPmKTYj+aci1lVI2K9wPb2w7aWrMhM2F2itCpDY89DvasX65XdadXPZhQxgDeaaFkL1KfZ6gamEMFAAgi1m0CkCU7prLC3+NG2AGE2tOrnFTBHrqyp8ZK9Qxq7cYbqsKDQxlq45TYdLVyGpU8MdE5UkcTfxkd6m9VY6tZuvhPT1hge4F7UROISpz9fZuRbvmSY309EGsEqmRasAwhtMRAxZCDrXoXCUS9MB1VietAAdF2W4vA1p6W82Nx2dgZRZjefrn6Y4hJrkcSYF37JwjvwyjgGNAFLlajBRvQ7WXmL9/9E2PWZIgE3fA0oajwKR/739Dljg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
+ by BYAPR15MB2519.namprd15.prod.outlook.com (2603:10b6:a03:14f::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.25; Thu, 14 Oct
+ 2021 00:07:03 +0000
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::1052:c025:1e48:7f94]) by BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::1052:c025:1e48:7f94%5]) with mapi id 15.20.4587.026; Thu, 14 Oct 2021
+ 00:07:03 +0000
+Date:   Wed, 13 Oct 2021 17:06:58 -0700
+From:   Roman Gushchin <guro@fb.com>
+To:     Shakeel Butt <shakeelb@google.com>
+CC:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Vasily Averin <vvs@virtuozzo.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] memcg: page_alloc: skip bulk allocator for __GFP_ACCOUNT
+Message-ID: <YWd0ohzK7RScx9TO@carbon.DHCP.thefacebook.com>
+References: <20211013194338.1804247-1-shakeelb@google.com>
+ <YWdXv+RBjXvdmsK+@carbon.DHCP.thefacebook.com>
+ <CALvZod6ZppPNk2XfvKFfdPhrsSF6NbSBKrOOOc6UyJMfDEfKoQ@mail.gmail.com>
+ <YWdoj9FZy2B4oLj8@carbon.DHCP.thefacebook.com>
+ <CALvZod7oYyGvHAQVO5fg5eCJefeU1J70iUS6-9k0gQ2S8-y7NQ@mail.gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <CALvZod7oYyGvHAQVO5fg5eCJefeU1J70iUS6-9k0gQ2S8-y7NQ@mail.gmail.com>
+X-ClientProxiedBy: MWHPR17CA0077.namprd17.prod.outlook.com
+ (2603:10b6:300:c2::15) To BYAPR15MB4136.namprd15.prod.outlook.com
+ (2603:10b6:a03:96::24)
 MIME-Version: 1.0
+Received: from carbon.DHCP.thefacebook.com (2620:10d:c090:400::5:284f) by MWHPR17CA0077.namprd17.prod.outlook.com (2603:10b6:300:c2::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.14 via Frontend Transport; Thu, 14 Oct 2021 00:07:02 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 2456f236-6802-4ce5-0dc3-08d98ea68cce
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2519:
+X-Microsoft-Antispam-PRVS: <BYAPR15MB25196E735A8DDE806E8FBC04BEB89@BYAPR15MB2519.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: D2829Wd7KM7Kj4y9s06VbwwW7w148ZuIfSu/aRNlYfuvQ1hffFGHi9IHxvknU7YVzYInsN+maj7Jc0jkrYLC/xbArllxdY+iIipqXARtSp7rCQQa9R965H082jzxd2x/lJysGKuncRlg0/9o4KtRQoiUj+yDBDvdrDG0Drldk3ACwq+Y5CwKhJgu3iqzZz5b1dFmaoxwGNWMS6OU3U/sYMsH1R6IPfhfJYhUR2yektflDjA7jF+FtNKMPBIckS0620Xn82QArxPmUEo6+4cZMD5cwiADDcbXqzcgVrZDYCAGJsw5GtXnbAHKE220brdk0aqld7rV83yiqHsN6Agb3eTYnOnm8Avh3RZXtgyBtNmmx1N7R4ccJc4oSeAznG1R9e1eAEx3EpW2GHHcY74IPibDBpGM1HYMS3Ot+B9Y/NYuH29CzXkWV42tBHV8kXXIGZ+naMjW+vON/KpEtBRHngmKWM6K1hk9m4IWRunzupDBf3SoyWa5Xh7Drgjt1lOPD3BpDVAGsVPz3F8Kl+FRuT009UdWIpGy2QRa54kcvdyFhtF+1UHbsrrvfbWu37nlyjnklqEv8hk8DL2HJml+0Eueg0nhHaz4ZxSZZf2+N+y5d54qX1ABuPETgj4b8yK5ErOhOhF0O+PwTgDv2Z23Ow==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(5660300002)(7416002)(9686003)(4326008)(53546011)(508600001)(6666004)(86362001)(38100700002)(186003)(54906003)(66556008)(6916009)(8676002)(316002)(55016002)(2906002)(66946007)(83380400001)(66476007)(52116002)(8936002)(7696005)(6506007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?k3uVahuG8Ql9Yqbh66iCi0uKEFrnR3FCjv2f8+bIWqdBcPGbzYm/HhBg1gXw?=
+ =?us-ascii?Q?tOgyoJ3tc9gdMtd52sqNYVdqFs8jgbttKclSRq34j1oK9v/4z0yMd2eX3GeQ?=
+ =?us-ascii?Q?ArmlqPfKaX6GBS8xAc1NfCbtxhdoKscsXy4Oa3t+qEIonKHgOgBKrbwrwTwO?=
+ =?us-ascii?Q?dJM2VJ1Mu2m00BsMj66XodsOhV1ELnu4kGkxfqUfxR2MFNyEcMzV2FSQOsuC?=
+ =?us-ascii?Q?WkQfzRRt9y02mwCyari6XsbaT6WYWEIU0ZGvF1hZqkrTiyaUXh5CuXilVZ3h?=
+ =?us-ascii?Q?tKIcD7LHe1nh/4foFkrvhEBRx9qmvpFH25VzIYrj5rXcthTJWrZWud+VXjic?=
+ =?us-ascii?Q?aS4W1phN9k/6hUoE0VYGl2QNKu3nyofEp5z9mWYKNRuITImO1a20m6FPJsj+?=
+ =?us-ascii?Q?Go68YUtPcOt/wrgmerrW62sds9MIa0BOgqML+T//vM37lBwExlY51xTqHn6c?=
+ =?us-ascii?Q?1wCA2naaMcGA370beMmsxZdGtcaaCSwGZjsjzyebR4DTBhBek2t7W1zbCCY7?=
+ =?us-ascii?Q?1JYs85cV42yoRreYuz1JuNcHDm+mdeZLMn2Ct5dtcuzYKeINDglUZuuTkOhj?=
+ =?us-ascii?Q?4msJ1Wh+RcWpA347GbDo1FcWQmMnloAdvvmdwmzyU1pwXHaCz2FbZ2IA4krp?=
+ =?us-ascii?Q?GHDAHvegmESxNICsBacltV3LWXXz8udFsN6GLFtWYQ5xSzsx69whHz1WRnLC?=
+ =?us-ascii?Q?azyDeuFxhqdJRxkVmNEY3eQ//scyFV0/UvfWVMeUyjmVrc4FEr38dbIJUEbw?=
+ =?us-ascii?Q?vwgMWgKl87jtdzi6QLNx3VlloU1UOftv+UtLIsBS1x4loH5OiMMlTxpcpp24?=
+ =?us-ascii?Q?WG8M52tTHCALpzk/Sd9UHBjBbczgxbG0cmMY5kaEC3yTGU30psTKQ8n1k0RS?=
+ =?us-ascii?Q?3gJd90z+Xo0IASjfYmfppivKzdoH/4sKyRZ7pQbgi4cOmBfevcu3ohTRbox8?=
+ =?us-ascii?Q?bDbbUdEQskTfkXpjivZ9gtRrvbyQqduZd6TIrazWRUi2c1MndZMh0fT7U8mJ?=
+ =?us-ascii?Q?DeOtejIa0xEP/O+idGIEjqFHSi9hDh5ItkZbqShLadqb/zQRcZjmnoHO5QUK?=
+ =?us-ascii?Q?/dGEH3oGfA3RyKtwoK6rTGJ1rf2STuWn5pfgriktwu4NY5hNgWkqrQOHBDq0?=
+ =?us-ascii?Q?dwah0zIzZnSveLHAYt0QJZV3y2rFZI95kHru9RcRJyfpUifgeJQzB3GaPcoo?=
+ =?us-ascii?Q?EkhEPeBoxmCQ5bgIDbZ1Yjt2ciuMZK18QGTri80ygeS0GoIPOcAO5K20Udgw?=
+ =?us-ascii?Q?Sj8pS1Al8YIUHuwlSASYaRpylYp8Mes7nW+LdOJloU+3SCATmrK7njS7sNzv?=
+ =?us-ascii?Q?W5t4GICCnta0x7S1GrEsVa/7qFA1hWjDfZEZK/luEKwIFeg3ccx29l1Z5nwF?=
+ =?us-ascii?Q?UfTaMSA=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2456f236-6802-4ce5-0dc3-08d98ea68cce
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Oct 2021 00:07:02.8794
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: tQcWawxBkFqExkJA90DJPRWzNoZmbdtYPFEpr2QN09SRtI7V5Br9aG0TWlHTZDvQ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2519
+X-OriginatorOrg: fb.com
+X-Proofpoint-GUID: lmM-v9Uro8Dq40K-DSuZQYso06W0QR6l
+X-Proofpoint-ORIG-GUID: lmM-v9Uro8Dq40K-DSuZQYso06W0QR6l
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-13_09,2021-10-13_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
+ lowpriorityscore=0 spamscore=0 malwarescore=0 adultscore=0 clxscore=1015
+ suspectscore=0 bulkscore=0 mlxlogscore=732 priorityscore=1501
+ impostorscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110130146
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-10-13 at 11:21 +0200, Sohaib Mohamed wrote:
-> Remove parameter descriptions from all static functions.
-> Remove the comment altogether that does not tell what the function does.
->=20
-> Suggested-by: Jarkko Sakkinen <jarkko@kernel.org>
-> Signed-off-by: Sohaib Mohamed <sohaib.amhmd@gmail.com>
-> ---
-> =C2=A0drivers/char/tpm/st33zp24/st33zp24.c | 122 ++++--------------------=
----
-> =C2=A01 file changed, 17 insertions(+), 105 deletions(-)
->=20
-> diff --git a/drivers/char/tpm/st33zp24/st33zp24.c b/drivers/char/tpm/st33=
-zp24/st33zp24.c
-> index 4ec10ab5e576..ce9efb73c144 100644
-> --- a/drivers/char/tpm/st33zp24/st33zp24.c
-> +++ b/drivers/char/tpm/st33zp24/st33zp24.c
-> @@ -61,9 +61,7 @@ enum tis_defaults {
-> =C2=A0};
-> =C2=A0
-> =C2=A0/*
-> - * clear_interruption clear the pending interrupt.
-> - * @param: tpm_dev, the tpm device device.
-> - * @return: the interrupt status value.
-> + * clear the pending interrupt.
-> =C2=A0 */
-> =C2=A0static u8 clear_interruption(struct st33zp24_dev *tpm_dev)
-> =C2=A0{
-> @@ -72,12 +70,10 @@ static u8 clear_interruption(struct st33zp24_dev *tpm=
-_dev)
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0tpm_dev->ops->recv(tpm_de=
-v->phy_id, TPM_INT_STATUS, &interrupt, 1);
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0tpm_dev->ops->send(tpm_de=
-v->phy_id, TPM_INT_STATUS, &interrupt, 1);
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return interrupt;
-> -} /* clear_interruption() */
-> +}
-> =C2=A0
-> =C2=A0/*
-> - * st33zp24_cancel, cancel the current command execution or
-> - * set STS to COMMAND READY.
-> - * @param: chip, the tpm_chip description as specified in driver/char/tp=
-m/tpm.h
-> + * cancel the current command execution or set STS to COMMAND READY.
-> =C2=A0 */
-> =C2=A0static void st33zp24_cancel(struct tpm_chip *chip)
-> =C2=A0{
-> @@ -86,12 +82,10 @@ static void st33zp24_cancel(struct tpm_chip *chip)
-> =C2=A0
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0data =3D TPM_STS_COMMAND_=
-READY;
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0tpm_dev->ops->send(tpm_de=
-v->phy_id, TPM_STS, &data, 1);
-> -} /* st33zp24_cancel() */
-> +}
-> =C2=A0
-> =C2=A0/*
-> - * st33zp24_status return the TPM_STS register
-> - * @param: chip, the tpm chip description
-> - * @return: the TPM_STS register value.
-> + * return the TPM_STS register
-> =C2=A0 */
-> =C2=A0static u8 st33zp24_status(struct tpm_chip *chip)
-> =C2=A0{
-> @@ -100,12 +94,10 @@ static u8 st33zp24_status(struct tpm_chip *chip)
-> =C2=A0
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0tpm_dev->ops->recv(tpm_de=
-v->phy_id, TPM_STS, &data, 1);
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return data;
-> -} /* st33zp24_status() */
-> +}
-> =C2=A0
-> =C2=A0/*
-> - * check_locality if the locality is active
-> - * @param: chip, the tpm chip description
-> - * @return: true if LOCALITY0 is active, otherwise false
-> + * if the locality is active
-> =C2=A0 */
-> =C2=A0static bool check_locality(struct tpm_chip *chip)
-> =C2=A0{
-> @@ -120,13 +112,8 @@ static bool check_locality(struct tpm_chip *chip)
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0return true;
-> =C2=A0
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return false;
-> -} /* check_locality() */
-> +}
-> =C2=A0
-> -/*
-> - * request_locality request the TPM locality
-> - * @param: chip, the chip description
-> - * @return: the active locality or negative value.
-> - */
-> =C2=A0static int request_locality(struct tpm_chip *chip)
-> =C2=A0{
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct st33zp24_dev *tpm_=
-dev =3D dev_get_drvdata(&chip->dev);
-> @@ -153,12 +140,8 @@ static int request_locality(struct tpm_chip *chip)
-> =C2=A0
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/* could not get locality=
- */
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return -EACCES;
-> -} /* request_locality() */
-> +}
-> =C2=A0
-> -/*
-> - * release_locality release the active locality
-> - * @param: chip, the tpm chip description.
-> - */
-> =C2=A0static void release_locality(struct tpm_chip *chip)
-> =C2=A0{
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct st33zp24_dev *tpm_=
-dev =3D dev_get_drvdata(&chip->dev);
-> @@ -171,8 +154,6 @@ static void release_locality(struct tpm_chip *chip)
-> =C2=A0
-> =C2=A0/*
-> =C2=A0 * get_burstcount return the burstcount value
-> - * @param: chip, the chip description
-> - * return: the burstcount or negative value.
-> =C2=A0 */
-> =C2=A0static int get_burstcount(struct tpm_chip *chip)
-> =C2=A0{
-> @@ -200,18 +181,8 @@ static int get_burstcount(struct tpm_chip *chip)
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0msleep(TPM_TIMEOUT);
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0} while (time_before(jiff=
-ies, stop));
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return -EBUSY;
-> -} /* get_burstcount() */
-> -
-> +}
-> =C2=A0
-> -/*
-> - * wait_for_tpm_stat_cond
-> - * @param: chip, chip description
-> - * @param: mask, expected mask value
-> - * @param: check_cancel, does the command expected to be canceled ?
-> - * @param: canceled, did we received a cancel request ?
-> - * @return: true if status =3D=3D mask or if the command is canceled.
-> - * false in other cases.
-> - */
-> =C2=A0static bool wait_for_tpm_stat_cond(struct tpm_chip *chip, u8 mask,
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0bool check_cancel, bool *cance=
-led)
-> =C2=A0{
-> @@ -228,13 +199,7 @@ static bool wait_for_tpm_stat_cond(struct tpm_chip *=
-chip, u8 mask,
-> =C2=A0}
-> =C2=A0
-> =C2=A0/*
-> - * wait_for_stat wait for a TPM_STS value
-> - * @param: chip, the tpm chip description
-> - * @param: mask, the value mask to wait
-> - * @param: timeout, the timeout
-> - * @param: queue, the wait queue.
-> - * @param: check_cancel, does the command can be cancelled ?
-> - * @return: the tpm status, 0 if success, -ETIME if timeout is reached.
-> + * wait for a TPM_STS value
-> =C2=A0 */
-> =C2=A0static int wait_for_stat(struct tpm_chip *chip, u8 mask, unsigned l=
-ong timeout,
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0wai=
-t_queue_head_t *queue, bool check_cancel)
-> @@ -292,15 +257,8 @@ static int wait_for_stat(struct tpm_chip *chip, u8 m=
-ask, unsigned long timeout,
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0}
-> =C2=A0
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return -ETIME;
-> -} /* wait_for_stat() */
-> +}
-> =C2=A0
-> -/*
-> - * recv_data receive data
-> - * @param: chip, the tpm chip description
-> - * @param: buf, the buffer where the data are received
-> - * @param: count, the number of data to receive
-> - * @return: the number of bytes read from TPM FIFO.
-> - */
-> =C2=A0static int recv_data(struct tpm_chip *chip, u8 *buf, size_t count)
-> =C2=A0{
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct st33zp24_dev *tpm_=
-dev =3D dev_get_drvdata(&chip->dev);
-> @@ -325,12 +283,6 @@ static int recv_data(struct tpm_chip *chip, u8 *buf,=
- size_t count)
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return size;
-> =C2=A0}
-> =C2=A0
-> -/*
-> - * tpm_ioserirq_handler the serirq irq handler
-> - * @param: irq, the tpm chip description
-> - * @param: dev_id, the description of the chip
-> - * @return: the status of the handler.
-> - */
-> =C2=A0static irqreturn_t tpm_ioserirq_handler(int irq, void *dev_id)
-> =C2=A0{
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct tpm_chip *chip =3D=
- dev_id;
-> @@ -341,16 +293,10 @@ static irqreturn_t tpm_ioserirq_handler(int irq, vo=
-id *dev_id)
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0disable_irq_nosync(tpm_de=
-v->irq);
-> =C2=A0
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return IRQ_HANDLED;
-> -} /* tpm_ioserirq_handler() */
-> +}
-> =C2=A0
-> =C2=A0/*
-> - * st33zp24_send send TPM commands through the I2C bus.
-> - *
-> - * @param: chip, the tpm_chip description as specified in driver/char/tp=
-m/tpm.h
-> - * @param: buf,=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0the buffe=
-r to send.
-> - * @param: count, the number of bytes to send.
-> - * @return: In case of success the number of bytes sent.
-> - *=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0In other case, a <=
- 0 value describing the issue.
-> + * send TPM commands through the I2C bus.
-> =C2=A0 */
-> =C2=A0static int st33zp24_send(struct tpm_chip *chip, unsigned char *buf,
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 si=
-ze_t len)
-> @@ -431,14 +377,6 @@ static int st33zp24_send(struct tpm_chip *chip, unsi=
-gned char *buf,
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return ret;
-> =C2=A0}
-> =C2=A0
-> -/*
-> - * st33zp24_recv received TPM response through TPM phy.
-> - * @param: chip, the tpm_chip description as specified in driver/char/tp=
-m/tpm.h.
-> - * @param: buf,=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0the buffe=
-r to store datas.
-> - * @param: count, the number of bytes to send.
-> - * @return: In case of success the number of bytes received.
-> - *=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 In other case, a < 0 =
-value describing the issue.
-> - */
-> =C2=A0static int st33zp24_recv(struct tpm_chip *chip, unsigned char *buf,
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 size_t count)
-> =C2=A0{
-> @@ -478,12 +416,6 @@ static int st33zp24_recv(struct tpm_chip *chip, unsi=
-gned char *buf,
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return size;
-> =C2=A0}
-> =C2=A0
-> -/*
-> - * st33zp24_req_canceled
-> - * @param: chip, the tpm_chip description as specified in driver/char/tp=
-m/tpm.h.
-> - * @param: status, the TPM status.
-> - * @return: Does TPM ready to compute a new command ? true.
-> - */
-> =C2=A0static bool st33zp24_req_canceled(struct tpm_chip *chip, u8 status)
-> =C2=A0{
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return (status =3D=3D TPM=
-_STS_COMMAND_READY);
-> @@ -501,11 +433,7 @@ static const struct tpm_class_ops st33zp24_tpm =3D {
-> =C2=A0};
-> =C2=A0
-> =C2=A0/*
-> - * st33zp24_probe initialize the TPM device
-> - * @param: client, the i2c_client description (TPM I2C description).
-> - * @param: id, the i2c_device_id struct.
-> - * @return: 0 in case of success.
-> - *=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 -1 in other case.
-> + * initialize the TPM device
-> =C2=A0 */
-> =C2=A0int st33zp24_probe(void *phy_id, const struct st33zp24_phy_ops *ops=
-,
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct device *dev, int irq, int io_lp=
-cpd)
-> @@ -583,11 +511,6 @@ int st33zp24_probe(void *phy_id, const struct st33zp=
-24_phy_ops *ops,
-> =C2=A0}
-> =C2=A0EXPORT_SYMBOL(st33zp24_probe);
-> =C2=A0
-> -/*
-> - * st33zp24_remove remove the TPM device
-> - * @param: tpm_data, the tpm phy.
-> - * @return: 0 in case of success.
-> - */
-> =C2=A0int st33zp24_remove(struct tpm_chip *chip)
-> =C2=A0{
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0tpm_chip_unregister(chip)=
-;
-> @@ -596,12 +519,6 @@ int st33zp24_remove(struct tpm_chip *chip)
-> =C2=A0EXPORT_SYMBOL(st33zp24_remove);
-> =C2=A0
-> =C2=A0#ifdef CONFIG_PM_SLEEP
-> -/*
-> - * st33zp24_pm_suspend suspend the TPM device
-> - * @param: tpm_data, the tpm phy.
-> - * @param: mesg, the power management message.
-> - * @return: 0 in case of success.
-> - */
-> =C2=A0int st33zp24_pm_suspend(struct device *dev)
-> =C2=A0{
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct tpm_chip *chip =3D=
- dev_get_drvdata(dev);
-> @@ -615,14 +532,9 @@ int st33zp24_pm_suspend(struct device *dev)
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0ret =3D tpm_pm_suspend(dev);
-> =C2=A0
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return ret;
-> -} /* st33zp24_pm_suspend() */
-> +}
-> =C2=A0EXPORT_SYMBOL(st33zp24_pm_suspend);
-> =C2=A0
-> -/*
-> - * st33zp24_pm_resume resume the TPM device
-> - * @param: tpm_data, the tpm phy.
-> - * @return: 0 in case of success.
-> - */
-> =C2=A0int st33zp24_pm_resume(struct device *dev)
-> =C2=A0{
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct tpm_chip *chip =3D=
- dev_get_drvdata(dev);
-> @@ -640,7 +552,7 @@ int st33zp24_pm_resume(struct device *dev)
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0tpm=
-1_do_selftest(chip);
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0}
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return ret;
-> -} /* st33zp24_pm_resume() */
-> +}
-> =C2=A0EXPORT_SYMBOL(st33zp24_pm_resume);
-> =C2=A0#endif
-> =C2=A0
+On Wed, Oct 13, 2021 at 04:45:35PM -0700, Shakeel Butt wrote:
+> On Wed, Oct 13, 2021 at 4:15 PM Roman Gushchin <guro@fb.com> wrote:
+> >
+> [...]
+> > > >
+> > > > Isn't it a bit too aggressive?
+> > > >
+> > > > How about
+> > > >     if (WARN_ON_ONCE(gfp & __GFP_ACCOUNT))
+> > >
+> > > We actually know that kvmalloc(__GFP_ACCOUNT) users exist and can
+> > > trigger bulk page allocator through vmalloc, so I don't think the
+> > > warning would be any helpful.
+> > >
+> > > >        gfp &= ~__GFP_ACCOUNT;
+> > >
+> > > Bulk allocator is best effort, so callers have adequate fallbacks.
+> > > Transparently disabling accounting would be unexpected.
+> >
+> > I see...
+> >
+> > Shouldn't we then move this check to an upper level?
+> >
+> > E.g.:
+> >
+> > if (!(gfp & __GFP_ACCOUNT))
+> >    call_into_bulk_allocator();
+> > else
+> >    call_into_per_page_allocator();
+> >
+> 
+> If we add this check in the upper level (e.g. in vm_area_alloc_pages()
+> ) then I think we would need WARN_ON_ONCE(gfp & __GFP_ACCOUNT) in the
+> bulk allocator to detect future users.
+> 
+> At the moment I am more inclined towards this patch's approach. Let's
+> say in future we find there is a __GFP_ACCOUNT allocation which can
+> benefit from bulk allocator and we decide to add such support in bulk
+> allocator then we would not need to change the bulk allocator callers
+> at that time just the bulk allocator.
 
-Thank you.
+Ok, no objections from me.
 
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
-
-/Jarkko
-
-
+Thanks!
