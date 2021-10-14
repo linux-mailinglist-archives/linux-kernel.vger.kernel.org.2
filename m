@@ -2,76 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B706E42E0AE
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 20:01:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E74542E0B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 20:02:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233790AbhJNSD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 14:03:28 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:44200 "EHLO mail.skyhub.de"
+        id S233795AbhJNSEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 14:04:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38896 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230209AbhJNSD1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 14:03:27 -0400
-Received: from zn.tnic (p200300ec2f0c720076278dcac58b4415.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:7200:7627:8dca:c58b:4415])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id CC4C21EC01A8;
-        Thu, 14 Oct 2021 20:01:20 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1634234480;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tRcndT5Kinp3hQ5DZnAb/X5FayKpaOwfofj3HhPRJTE=;
-        b=JcUofPEF88i3FgmADKN7Zs9sAPIS/PgPq4jduE6jL1GuL0CKG9VHKq47qBkvOE+MUwU586
-        rIQxTt4yigpQeuqmVVakkZ3MdbxGdrvD0z+Q0AAf/qb3vp9VzvoxpHNSEqpjeuobBPACVp
-        /dftlzu1gjgo1/1Lmwajz63oPEcdMn0=
-Date:   Thu, 14 Oct 2021 20:01:24 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Ville =?utf-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
-Cc:     Ser Olmy <ser.olmy@protonmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [regression] commit d298b03506d3 ("x86/fpu: Restore the masking
- out of reserved MXCSR bits")
-Message-ID: <YWhwdDI5ECoMZQzU@zn.tnic>
-References: <YWgYIYXLriayyezv@intel.com>
- <YWg+O1AXrWLO3Sf9@zn.tnic>
- <YWg/5h3OcQKE94Nz@intel.com>
- <YWhCAqDxAuTh1YwE@intel.com>
- <YWhFOJCF1pxIBANv@zn.tnic>
- <YWhG0kv/d/hddf+t@intel.com>
- <YWhsvSM5tAvwqprN@intel.com>
+        id S229983AbhJNSEi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 14:04:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 55C5260174;
+        Thu, 14 Oct 2021 18:02:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634234553;
+        bh=XREgYAXJhCji8H7zRG00lEAFIOm24wQYsyx1jQyoJJQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RB5ufLHC6EEk6Ds+OrQfJKO49SiE0s8j7VKjeAKvLsFbq3ZfAMG+VSk4D3XxxTyIB
+         3dkbWZ5fxwcn8hNVbp9CgG41yJ6krSa8V4Pc3Aya1C6t0rljybkLyV95GAbEOYY92k
+         ZUqE9yBOJNsLJqwojKjiQiWriXngN5Hy+hFRVtgr0je87NX6NCHcMY44dakh/hu8E2
+         1puKeYFCso/JIU2oxdMZLSlJmV83hYFOg0XqHnH8G6pOn/vXxjC+V3qb0j2PXBeMWW
+         icOdYfbY3k1qWjZgq6Jt/Ms81CfLwKuPU/PE19xXK4wP2g67CsqCbyDk9CgQIARnAc
+         S0hhMfIiwMeUA==
+Date:   Thu, 14 Oct 2021 11:02:33 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
+Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        nvdimm@lists.linux.dev, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, dan.j.williams@intel.com,
+        david@fromorbit.com, hch@infradead.org, jane.chu@oracle.com
+Subject: Re: [PATCH v7 3/8] mm: factor helpers for memory_failure_dev_pagemap
+Message-ID: <20211014180233.GF24307@magnolia>
+References: <20210924130959.2695749-1-ruansy.fnst@fujitsu.com>
+ <20210924130959.2695749-4-ruansy.fnst@fujitsu.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YWhsvSM5tAvwqprN@intel.com>
+In-Reply-To: <20210924130959.2695749-4-ruansy.fnst@fujitsu.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 08:45:33PM +0300, Ville Syrjälä wrote:
-> That ~ was indeed the problem. With it gone the machine is happy again.
+On Fri, Sep 24, 2021 at 09:09:54PM +0800, Shiyang Ruan wrote:
+> memory_failure_dev_pagemap code is a bit complex before introduce RMAP
+> feature for fsdax.  So it is needed to factor some helper functions to
+> simplify these code.
 > 
-> I presume you'll turn this into a real patch?
+> Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
 
-Actually, you found it and you should be the one to write it and do the
-honors. Unless you don't want to - then I can do it.
+This looks like a reasonable hoist...
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
 
-If you do, pls add 
+--D
 
-Ser Olmy <ser.olmy@protonmail.com>
-
-to Cc so that he can test your patch. I *think* it should work for him
-too but I don't know anything anymore. :-)
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+> ---
+>  mm/memory-failure.c | 140 ++++++++++++++++++++++++--------------------
+>  1 file changed, 76 insertions(+), 64 deletions(-)
+> 
+> diff --git a/mm/memory-failure.c b/mm/memory-failure.c
+> index 54879c339024..8ff9b52823c0 100644
+> --- a/mm/memory-failure.c
+> +++ b/mm/memory-failure.c
+> @@ -1430,6 +1430,79 @@ static int try_to_split_thp_page(struct page *page, const char *msg)
+>  	return 0;
+>  }
+>  
+> +static void unmap_and_kill(struct list_head *to_kill, unsigned long pfn,
+> +		struct address_space *mapping, pgoff_t index, int flags)
+> +{
+> +	struct to_kill *tk;
+> +	unsigned long size = 0;
+> +
+> +	list_for_each_entry(tk, to_kill, nd)
+> +		if (tk->size_shift)
+> +			size = max(size, 1UL << tk->size_shift);
+> +	if (size) {
+> +		/*
+> +		 * Unmap the largest mapping to avoid breaking up device-dax
+> +		 * mappings which are constant size. The actual size of the
+> +		 * mapping being torn down is communicated in siginfo, see
+> +		 * kill_proc()
+> +		 */
+> +		loff_t start = (index << PAGE_SHIFT) & ~(size - 1);
+> +
+> +		unmap_mapping_range(mapping, start, size, 0);
+> +	}
+> +
+> +	kill_procs(to_kill, flags & MF_MUST_KILL, false, pfn, flags);
+> +}
+> +
+> +static int mf_generic_kill_procs(unsigned long long pfn, int flags,
+> +		struct dev_pagemap *pgmap)
+> +{
+> +	struct page *page = pfn_to_page(pfn);
+> +	LIST_HEAD(to_kill);
+> +	dax_entry_t cookie;
+> +
+> +	/*
+> +	 * Prevent the inode from being freed while we are interrogating
+> +	 * the address_space, typically this would be handled by
+> +	 * lock_page(), but dax pages do not use the page lock. This
+> +	 * also prevents changes to the mapping of this pfn until
+> +	 * poison signaling is complete.
+> +	 */
+> +	cookie = dax_lock_page(page);
+> +	if (!cookie)
+> +		return -EBUSY;
+> +
+> +	if (hwpoison_filter(page))
+> +		return 0;
+> +
+> +	if (pgmap->type == MEMORY_DEVICE_PRIVATE) {
+> +		/*
+> +		 * TODO: Handle HMM pages which may need coordination
+> +		 * with device-side memory.
+> +		 */
+> +		return -EBUSY;
+> +	}
+> +
+> +	/*
+> +	 * Use this flag as an indication that the dax page has been
+> +	 * remapped UC to prevent speculative consumption of poison.
+> +	 */
+> +	SetPageHWPoison(page);
+> +
+> +	/*
+> +	 * Unlike System-RAM there is no possibility to swap in a
+> +	 * different physical page at a given virtual address, so all
+> +	 * userspace consumption of ZONE_DEVICE memory necessitates
+> +	 * SIGBUS (i.e. MF_MUST_KILL)
+> +	 */
+> +	flags |= MF_ACTION_REQUIRED | MF_MUST_KILL;
+> +	collect_procs(page, &to_kill, true);
+> +
+> +	unmap_and_kill(&to_kill, pfn, page->mapping, page->index, flags);
+> +	dax_unlock_page(page, cookie);
+> +	return 0;
+> +}
+> +
+>  static int memory_failure_hugetlb(unsigned long pfn, int flags)
+>  {
+>  	struct page *p = pfn_to_page(pfn);
+> @@ -1519,12 +1592,8 @@ static int memory_failure_dev_pagemap(unsigned long pfn, int flags,
+>  		struct dev_pagemap *pgmap)
+>  {
+>  	struct page *page = pfn_to_page(pfn);
+> -	unsigned long size = 0;
+> -	struct to_kill *tk;
+>  	LIST_HEAD(tokill);
+> -	int rc = -EBUSY;
+> -	loff_t start;
+> -	dax_entry_t cookie;
+> +	int rc = -ENXIO;
+>  
+>  	if (flags & MF_COUNT_INCREASED)
+>  		/*
+> @@ -1533,67 +1602,10 @@ static int memory_failure_dev_pagemap(unsigned long pfn, int flags,
+>  		put_page(page);
+>  
+>  	/* device metadata space is not recoverable */
+> -	if (!pgmap_pfn_valid(pgmap, pfn)) {
+> -		rc = -ENXIO;
+> -		goto out;
+> -	}
+> -
+> -	/*
+> -	 * Prevent the inode from being freed while we are interrogating
+> -	 * the address_space, typically this would be handled by
+> -	 * lock_page(), but dax pages do not use the page lock. This
+> -	 * also prevents changes to the mapping of this pfn until
+> -	 * poison signaling is complete.
+> -	 */
+> -	cookie = dax_lock_page(page);
+> -	if (!cookie)
+> +	if (!pgmap_pfn_valid(pgmap, pfn))
+>  		goto out;
+>  
+> -	if (hwpoison_filter(page)) {
+> -		rc = 0;
+> -		goto unlock;
+> -	}
+> -
+> -	if (pgmap->type == MEMORY_DEVICE_PRIVATE) {
+> -		/*
+> -		 * TODO: Handle HMM pages which may need coordination
+> -		 * with device-side memory.
+> -		 */
+> -		goto unlock;
+> -	}
+> -
+> -	/*
+> -	 * Use this flag as an indication that the dax page has been
+> -	 * remapped UC to prevent speculative consumption of poison.
+> -	 */
+> -	SetPageHWPoison(page);
+> -
+> -	/*
+> -	 * Unlike System-RAM there is no possibility to swap in a
+> -	 * different physical page at a given virtual address, so all
+> -	 * userspace consumption of ZONE_DEVICE memory necessitates
+> -	 * SIGBUS (i.e. MF_MUST_KILL)
+> -	 */
+> -	flags |= MF_ACTION_REQUIRED | MF_MUST_KILL;
+> -	collect_procs(page, &tokill, flags & MF_ACTION_REQUIRED);
+> -
+> -	list_for_each_entry(tk, &tokill, nd)
+> -		if (tk->size_shift)
+> -			size = max(size, 1UL << tk->size_shift);
+> -	if (size) {
+> -		/*
+> -		 * Unmap the largest mapping to avoid breaking up
+> -		 * device-dax mappings which are constant size. The
+> -		 * actual size of the mapping being torn down is
+> -		 * communicated in siginfo, see kill_proc()
+> -		 */
+> -		start = (page->index << PAGE_SHIFT) & ~(size - 1);
+> -		unmap_mapping_range(page->mapping, start, size, 0);
+> -	}
+> -	kill_procs(&tokill, flags & MF_MUST_KILL, false, pfn, flags);
+> -	rc = 0;
+> -unlock:
+> -	dax_unlock_page(page, cookie);
+> +	rc = mf_generic_kill_procs(pfn, flags, pgmap);
+>  out:
+>  	/* drop pgmap ref acquired in caller */
+>  	put_dev_pagemap(pgmap);
+> -- 
+> 2.33.0
+> 
+> 
+> 
