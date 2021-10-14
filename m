@@ -2,273 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B33E042DAFD
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:00:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9070F42DB02
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:01:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231680AbhJNOCV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 10:02:21 -0400
-Received: from mga17.intel.com ([192.55.52.151]:45307 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230177AbhJNOCT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 10:02:19 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10136"; a="208483525"
-X-IronPort-AV: E=Sophos;i="5.85,372,1624345200"; 
-   d="scan'208";a="208483525"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2021 07:00:14 -0700
-X-IronPort-AV: E=Sophos;i="5.85,372,1624345200"; 
-   d="scan'208";a="461197202"
-Received: from ktrimble-mobl.amr.corp.intel.com (HELO [10.209.188.150]) ([10.209.188.150])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2021 07:00:12 -0700
-Subject: Re: [PATCH 2/2] ASoC: max98520: Add max98520 audio amplifier driver
-To:     George Song <george.song@maximintegrated.com>, lgirdwood@gmail.com,
-        broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
-        srinivas.kandagatla@linaro.org, arnd@arndb.de,
-        alexandre.belloni@bootlin.com, jack.yu@realtek.com,
-        jiri.prchal@aksignal.cz, shumingf@realtek.com,
-        pbrobinson@gmail.com, lars@metafoo.de, geert@linux-m68k.org,
-        hdegoede@redhat.com, paul@crapouillou.net,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-Cc:     George Song <george.song@analog.com>
-References: <20211013075223.19299-1-george.song@maximintegrated.com>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <a30d8839-0684-cbf8-8ece-639b69550959@linux.intel.com>
-Date:   Thu, 14 Oct 2021 09:00:09 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
+        id S231709AbhJNOD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 10:03:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33592 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230177AbhJNODW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 10:03:22 -0400
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68B0DC061570;
+        Thu, 14 Oct 2021 07:01:17 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id p68so3873116iof.6;
+        Thu, 14 Oct 2021 07:01:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gMW7UXdmvsJT5m+Unn8LuzhWNMWKfB1LZgpARZu3h64=;
+        b=SMa678vtRRct+9n4DfGBLqZbAGScVM2pO7kFcUbYoWYWLOdtHvFOApF+QasmcIS2Tv
+         CnI5eTtKuh/YitnWZuy2znpW3L0iEW4gMf6tZSprPWTp89c+yVavbOy5Jflg9r/QIryH
+         n7MUf89CrFHtn6vAn3k8vUMP9ai+o4KiK3jbhVL1OOuETLycRiN+FzYDN0MQyiF4Q7Mj
+         SYupSuR5H7jBsKb2grUm7L3tt6VXVSiiBCqAdDVyzj+cCya9uTVJG3rSVOAdp/Ye8WE0
+         USkqWmuvqTT+4W6t4bEukf2Yi7MySr0G5i53x1vrtVSCFhBfFo/aMdNN1ZGEPg5LSG7s
+         Tclw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gMW7UXdmvsJT5m+Unn8LuzhWNMWKfB1LZgpARZu3h64=;
+        b=Xa3u8kUpI+MPNMuzBqa6HyP7PUK0HWscRwSXz45rDyPhKzgX0x9MEZgEqyKxh1XX4O
+         xrULuN3RvlqNHEKLQEdIQ2ajhyQJzY4aNBakUXHrNjd/E3Af+LQLvITqZvZj2OxfGxuX
+         407W96kTQbXDWr/+gU+/nB8qT2ls8qKRJI7zc2g1/AZEenU7wlPLT6fkYOgo+kG0ei19
+         IL5mB7Q6bUnb97ekITx4Ov/K7Jk3pAENUnVSkbMe/B7QFQ1vMaw67AdduIya+hAp1UD0
+         aR9UOlHz81+B2y0TUnIQCox3qwa91mRsAZ1KsA1EfKGxUMjzB5jx0+jGCevoLCccyv55
+         2mJg==
+X-Gm-Message-State: AOAM533tscGqeXiG9lesS1ILwzpayOzW1yjELsDdlp47YM+CxqsjL8Fa
+        j4sZghoo1iTbjUK2A5Uflf0VBu8+M4f9mY1SCUqYgaYfrkIfoA==
+X-Google-Smtp-Source: ABdhPJxjnX9wflAJg2fDLZI9CUfRZD8jZ7JeIn2UpSBHSxq/DFwxGjB0oXM6rkNnZq+ZpvHc5d0hy1AMI3cbbD99wRg=
+X-Received: by 2002:a05:6602:3cb:: with SMTP id g11mr2525849iov.204.1634220076780;
+ Thu, 14 Oct 2021 07:01:16 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20211013075223.19299-1-george.song@maximintegrated.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <1634207106-7632-1-git-send-email-dillon.minfei@gmail.com>
+ <1634207106-7632-7-git-send-email-dillon.minfei@gmail.com>
+ <2b0739f1-85e4-6b19-ff30-2587f0c622c2@xs4all.nl> <CAL9mu0LqkCpjYft4z6V4T97Mq46dCTXZ=BvfQa+DijjRd4pDkA@mail.gmail.com>
+ <1d0e5b17-dd2c-d3d3-c514-775806ae99c9@xs4all.nl>
+In-Reply-To: <1d0e5b17-dd2c-d3d3-c514-775806ae99c9@xs4all.nl>
+From:   Dillon Min <dillon.minfei@gmail.com>
+Date:   Thu, 14 Oct 2021 22:00:54 +0800
+Message-ID: <CAL9mu0KLckxypYMc=mWRrXYOiwLeo98rNBWLwzA2gK9JJEHf1Q@mail.gmail.com>
+Subject: Re: [PATCH v4 6/8] media: v4l2-ctrls: Add RGB color effects control
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        mchehab+huawei@kernel.org, ezequiel@collabora.com,
+        gnurou@gmail.com, Pi-Hsun Shih <pihsun@chromium.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre TORGUE <alexandre.torgue@foss.st.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, gabriel.fernandez@st.com,
+        gabriel.fernandez@foss.st.com,
+        Patrice CHOTARD <patrice.chotard@foss.st.com>,
+        hugues.fruchet@foss.st.com,
+        linux-media <linux-media@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-quite a few alignment/style issues and more importantly your
-Signed-off-by: tag mixes your two emails addresses.
+On Thu, 14 Oct 2021 at 19:22, Hans Verkuil <hverkuil-cisco@xs4all.nl> wrote:
+>
+> On 14/10/2021 12:53, Dillon Min wrote:
+> > Hi Hans
+> >
+> > Thanks for quick reply
+> >
+> > On Thu, 14 Oct 2021 at 18:44, Hans Verkuil <hverkuil-cisco@xs4all.nl> wrote:
+> >>
+> >> On 14/10/2021 12:25, dillon.minfei@gmail.com wrote:
+> >>> From: Dillon Min <dillon.minfei@gmail.com>
+> >>>
+> >>> Add V4L2_COLORFX_SET_RGB color effects control, V4L2_CID_COLORFX_RGB
+> >>> for RGB color setting.
+> >>>
+> >>> Signed-off-by: Dillon Min <dillon.minfei@gmail.com>
+> >>> ---
+> >>> v4:
+> >>> - replace V4L2_COLORFX_SET_ARGB, V4L2_CID_COLORFX_ARGB to
+> >>>   V4L2_COLORFX_SET_RGB, V4L2_CID_COLORFX_RGB since Alpha paramter not used
+> >>>   in current. thanks Hans.
+> >>>
+> >>>  Documentation/userspace-api/media/v4l/control.rst | 9 +++++++++
+> >>>  drivers/media/v4l2-core/v4l2-ctrls-defs.c         | 2 ++
+> >>>  include/uapi/linux/v4l2-controls.h                | 4 +++-
+> >>>  3 files changed, 14 insertions(+), 1 deletion(-)
+> >>>
+> >>> diff --git a/Documentation/userspace-api/media/v4l/control.rst b/Documentation/userspace-api/media/v4l/control.rst
+> >>> index f8d0b923da20..3eec65174260 100644
+> >>> --- a/Documentation/userspace-api/media/v4l/control.rst
+> >>> +++ b/Documentation/userspace-api/media/v4l/control.rst
+> >>> @@ -242,8 +242,17 @@ Control IDs
+> >>>      * - ``V4L2_COLORFX_SET_CBCR``
+> >>>        - The Cb and Cr chroma components are replaced by fixed coefficients
+> >>>       determined by ``V4L2_CID_COLORFX_CBCR`` control.
+> >>> +    * - ``V4L2_COLORFX_SET_RGB``
+> >>> +      - The RGB components are replaced by the fixed RGB components determined
+> >>> +        by ``V4L2_CID_COLORFX_RGB`` control.
+> >>>
+> >>>
+> >>> +``V4L2_CID_COLORFX_RGB`` ``(integer)``
+> >>> +    Determines the Red, Green, and Blue coefficients for
+> >>> +    ``V4L2_COLORFX_SET_RGB`` color effect.
+> >>> +    Bits [7:0] of the supplied 32 bit value are interpreted as Blue component,
+> >>> +    bits [15:8] as Green component, bits [23:16] as Red component, and
+> >>> +    bits [31:24] must be zero.
+> >>>
+> >>>  ``V4L2_CID_COLORFX_CBCR`` ``(integer)``
+> >>>      Determines the Cb and Cr coefficients for ``V4L2_COLORFX_SET_CBCR``
+> >>> diff --git a/drivers/media/v4l2-core/v4l2-ctrls-defs.c b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+> >>> index 421300e13a41..f4bd90170105 100644
+> >>> --- a/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+> >>> +++ b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+> >>> @@ -785,6 +785,7 @@ const char *v4l2_ctrl_get_name(u32 id)
+> >>>       case V4L2_CID_MIN_BUFFERS_FOR_OUTPUT:   return "Min Number of Output Buffers";
+> >>>       case V4L2_CID_ALPHA_COMPONENT:          return "Alpha Component";
+> >>>       case V4L2_CID_COLORFX_CBCR:             return "Color Effects, CbCr";
+> >>> +     case V4L2_CID_COLORFX_RGB:              return "Color Effects, RGB";
+> >>>
+> >>>       /*
+> >>>        * Codec controls
+> >>> @@ -1392,6 +1393,7 @@ void v4l2_ctrl_fill(u32 id, const char **name, enum v4l2_ctrl_type *type,
+> >>>               *min = *max = *step = *def = 0;
+> >>>               break;
+> >>>       case V4L2_CID_BG_COLOR:
+> >>> +     case V4L2_CID_COLORFX_RGB:
+> >>>               *type = V4L2_CTRL_TYPE_INTEGER;
+> >>>               *step = 1;
+> >>>               *min = 0;
+> >>
+> >> Can you make another small change here? Please change:
+> >>
+> >>         *max = 0xFFFFFF;
+> >>
+> >> to:
+> >>
+> >>         *max = 0xffffff;
+> >>
+> >> to keep in line with the coding standard for hex values.
+> >
+> > Sure, do it right now.
+> >
+> >>
+> >> Also, can you add a separate patch that adds an entry here for V4L2_CID_COLORFX_CBCR
+> >> that sets *max to 0xffff? I noticed that that was missing. While adding V4L2_CID_COLORFX_RGB
+> >> it's good to fix V4L2_CID_COLORFX_CBCR as well.
+> >
+> > Sure, you mean the final code like this? first patch to fix cbcr 0xFFFFFF,
+>
+> For cbcr max should be 0xffff.
 
-scripts/checkpatch.pl --strict --codespell
-0001-ASoC-max98520-Add-max98520-audio-amplifier-driver.patch
-WARNING: Missing commit description - Add an appropriate one
+Sure.
 
-WARNING: please write a paragraph that describes the config symbol fully
-#32: FILE: sound/soc/codecs/Kconfig:941:
-+config SND_SOC_MAX98520
+>
+> > another one to add V4L2_CID_COLORFX_RGB entry.
+> >
+> > 1395         case V4L2_CID_BG_COLOR:
+> > 1396         case V4L2_CID_COLORFX_RGB:
+> > 1397                 *type = V4L2_CTRL_TYPE_INTEGER;
+> > 1398                 *step = 1;
+> > 1399                 *min = 0;
+> > 1400                 /* Max is calculated as RGB888 that is 2^24 */
+>
+> Actually, the comment is wrong: it should be 2^24-1. Let's fix that too.
 
-WARNING: added, moved or deleted file(s), does MAINTAINERS need updating?
-#60:
-new file mode 100644
+Okay.
 
-CHECK: Alignment should match open parenthesis
-#157: FILE: sound/soc/codecs/max98520.c:93:
-+	regmap_update_bits(max98520->regmap,
-+						MAX98520_R2041_PCM_CLK_SETUP,
+>
+> > 1401                 *max = 0xffffff;
+>
+> Yes, that's what I am looking for.
+>
+> Regards,
+>
+>         Hans
+>
+> > 1402                 break;
+> >
+> > Best Regards
+> > Dillon
+> >
+> >>
+> >> Regards,
+> >>
+> >>         Hans
+> >>
+> >>> diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
+> >>> index 5532b5f68493..9aa3fd368383 100644
+> >>> --- a/include/uapi/linux/v4l2-controls.h
+> >>> +++ b/include/uapi/linux/v4l2-controls.h
+> >>> @@ -128,6 +128,7 @@ enum v4l2_colorfx {
+> >>>       V4L2_COLORFX_SOLARIZATION               = 13,
+> >>>       V4L2_COLORFX_ANTIQUE                    = 14,
+> >>>       V4L2_COLORFX_SET_CBCR                   = 15,
+> >>> +     V4L2_COLORFX_SET_RGB                    = 16,
+> >>>  };
+> >>>  #define V4L2_CID_AUTOBRIGHTNESS                      (V4L2_CID_BASE+32)
+> >>>  #define V4L2_CID_BAND_STOP_FILTER            (V4L2_CID_BASE+33)
+> >>> @@ -145,9 +146,10 @@ enum v4l2_colorfx {
+> >>>
+> >>>  #define V4L2_CID_ALPHA_COMPONENT             (V4L2_CID_BASE+41)
+> >>>  #define V4L2_CID_COLORFX_CBCR                        (V4L2_CID_BASE+42)
+> >>> +#define V4L2_CID_COLORFX_RGB                 (V4L2_CID_BASE+43)
+> >>>
+> >>>  /* last CID + 1 */
+> >>> -#define V4L2_CID_LASTP1                         (V4L2_CID_BASE+43)
+> >>> +#define V4L2_CID_LASTP1                         (V4L2_CID_BASE+44)
+> >>>
+> >>>  /* USER-class private control IDs */
+> >>>
+> >>>
+> >>
+>
 
-CHECK: Alignment should match open parenthesis
-#180: FILE: sound/soc/codecs/max98520.c:116:
-+	regmap_update_bits(max98520->regmap,
-+						MAX98520_R2040_PCM_MODE_CFG,
-
-CHECK: Alignment should match open parenthesis
-#204: FILE: sound/soc/codecs/max98520.c:140:
-+static int max98520_set_clock(struct snd_soc_component *component,
-+	struct snd_pcm_hw_params *params)
-
-CHECK: Alignment should match open parenthesis
-#222: FILE: sound/soc/codecs/max98520.c:158:
-+		regmap_update_bits(max98520->regmap,
-+							MAX98520_R2041_PCM_CLK_SETUP,
-
-CHECK: Alignment should match open parenthesis
-#231: FILE: sound/soc/codecs/max98520.c:167:
-+static int max98520_dai_hw_params(struct snd_pcm_substream *substream,
-+	struct snd_pcm_hw_params *params,
-
-CHECK: Alignment should match open parenthesis
-#260: FILE: sound/soc/codecs/max98520.c:196:
-+	regmap_update_bits(max98520->regmap,
-+						MAX98520_R2040_PCM_MODE_CFG,
-
-CHECK: Alignment should match open parenthesis
-#317: FILE: sound/soc/codecs/max98520.c:253:
-+	regmap_update_bits(max98520->regmap,
-+						MAX98520_R2042_PCM_SR_SETUP,
-
-CHECK: Alignment should match open parenthesis
-#328: FILE: sound/soc/codecs/max98520.c:264:
-+static int max98520_dai_tdm_slot(struct snd_soc_dai *dai,
-+	unsigned int tx_mask, unsigned int rx_mask,
-
-CHECK: Alignment should match open parenthesis
-#351: FILE: sound/soc/codecs/max98520.c:287:
-+	regmap_update_bits(max98520->regmap,
-+						MAX98520_R2041_PCM_CLK_SETUP,
-
-CHECK: Alignment should match open parenthesis
-#373: FILE: sound/soc/codecs/max98520.c:309:
-+	regmap_update_bits(max98520->regmap,
-+						MAX98520_R2040_PCM_MODE_CFG,
-
-CHECK: Alignment should match open parenthesis
-#378: FILE: sound/soc/codecs/max98520.c:314:
-+	regmap_update_bits(max98520->regmap,
-+						MAX98520_R2044_PCM_RX_SRC2,
-
-CHECK: Alignment should match open parenthesis
-#382: FILE: sound/soc/codecs/max98520.c:318:
-+	regmap_update_bits(max98520->regmap,
-+						MAX98520_R2044_PCM_RX_SRC2,
-
-CHECK: Alignment should match open parenthesis
-#401: FILE: sound/soc/codecs/max98520.c:337:
-+static int max98520_dac_event(struct snd_soc_dapm_widget *w,
-+	struct snd_kcontrol *kcontrol, int event)
-
-CHECK: Please don't use multiple blank lines
-#408: FILE: sound/soc/codecs/max98520.c:344:
-+
-+
-
-CHECK: Alignment should match open parenthesis
-#434: FILE: sound/soc/codecs/max98520.c:370:
-+	SOC_ENUM_SINGLE(MAX98520_R2043_PCM_RX_SRC1,
-+		0, 3, max98520_switch_text);
-
-CHECK: Alignment should match open parenthesis
-#441: FILE: sound/soc/codecs/max98520.c:377:
-+	SND_SOC_DAPM_DAC_E("Amp Enable", "HiFi Playback",
-+	MAX98520_R209F_AMP_EN, 0, 0, max98520_dac_event,
-
-CHECK: Alignment should match open parenthesis
-#539: FILE: sound/soc/codecs/max98520.c:475:
-+SOC_SINGLE_TLV("Digital Volume", MAX98520_R2090_AMP_VOL_CTRL,
-+	0, 0x7F, 1, max98520_digital_tlv),
-
-CHECK: Alignment should match open parenthesis
-#541: FILE: sound/soc/codecs/max98520.c:477:
-+SOC_SINGLE_TLV("Speaker Volume", MAX98520_R2091_AMP_PATH_GAIN,
-+	0, 0x5, 0, max98520_spk_tlv),
-
-CHECK: Alignment should match open parenthesis
-#544: FILE: sound/soc/codecs/max98520.c:480:
-+SOC_SINGLE("Ramp Up Switch", MAX98520_R2092_AMP_DSP_CFG,
-+	MAX98520_DSP_SPK_VOL_RMPUP_SHIFT, 1, 0),
-
-CHECK: Alignment should match open parenthesis
-#546: FILE: sound/soc/codecs/max98520.c:482:
-+SOC_SINGLE("Ramp Down Switch", MAX98520_R2092_AMP_DSP_CFG,
-+	MAX98520_DSP_SPK_VOL_RMPDN_SHIFT, 1, 0),
-
-CHECK: Alignment should match open parenthesis
-#574: FILE: sound/soc/codecs/max98520.c:510:
-+SOC_SINGLE("DHT Limiter Mode", MAX98520_R20D2_LIMITER_CFG2,
-+	MAX98520_DHT_LIMITER_MODE_SHIFT, 1, 0),
-
-CHECK: Alignment should match open parenthesis
-#576: FILE: sound/soc/codecs/max98520.c:512:
-+SOC_SINGLE("DHT Hysteresis Switch", MAX98520_R20D6_DHT_HYSTERESIS_CFG,
-+	MAX98520_DHT_HYSTERESIS_SWITCH_SHIFT, 1, 0),
-
-CHECK: Alignment should match open parenthesis
-#578: FILE: sound/soc/codecs/max98520.c:514:
-+SOC_SINGLE_TLV("DHT Rot Pnt", MAX98520_R20D0_DHT_CFG1,
-+	MAX98520_DHT_VROT_PNT_SHIFT, 10, 1, max98520_dht_rotation_point_tlv),
-
-CHECK: Alignment should match open parenthesis
-#580: FILE: sound/soc/codecs/max98520.c:516:
-+SOC_SINGLE_TLV("DHT Supply Headroom", MAX98520_R20D1_LIMITER_CFG1,
-+	MAX98520_DHT_SUPPLY_HR_SHIFT, 16, 0, max98520_dht_supply_hr_tlv),
-
-CHECK: Alignment should match open parenthesis
-#582: FILE: sound/soc/codecs/max98520.c:518:
-+SOC_SINGLE_TLV("DHT Limiter Threshold", MAX98520_R20D2_LIMITER_CFG2,
-+	MAX98520_DHT_LIMITER_THRESHOLD_SHIFT, 0xF, 1,
-max98520_dht_lim_thresh_tlv),
-
-CHECK: Alignment should match open parenthesis
-#584: FILE: sound/soc/codecs/max98520.c:520:
-+SOC_SINGLE_TLV("DHT Max Attenuation", MAX98520_R20D3_DHT_CFG2,
-+	MAX98520_DHT_MAX_ATTEN_SHIFT, 20, 1, max98520_dht_max_atten_tlv),
-
-CHECK: Alignment should match open parenthesis
-#586: FILE: sound/soc/codecs/max98520.c:522:
-+SOC_SINGLE_TLV("DHT Hysteresis", MAX98520_R20D6_DHT_HYSTERESIS_CFG,
-+	MAX98520_DHT_HYSTERESIS_SHIFT, 0x7, 0, max98520_dht_hysteresis_tlv),
-
-CHECK: Alignment should match open parenthesis
-#592: FILE: sound/soc/codecs/max98520.c:528:
-+SOC_SINGLE("ADC PVDD FLT Switch", MAX98520_R20B2_ADC_PVDD0_CFG,
-+	MAX98520_FLT_EN_SHIFT, 1, 0),
-
-CHECK: Alignment should match open parenthesis
-#594: FILE: sound/soc/codecs/max98520.c:530:
-+SOC_SINGLE("ADC TEMP FLT Switch", MAX98520_R20B3_ADC_THERMAL_CFG,
-+	MAX98520_FLT_EN_SHIFT, 1, 0),
-
-WARNING: line length of 106 exceeds 100 columns
-#664: FILE: sound/soc/codecs/max98520.c:600:
-+						MAX98520_R2092_AMP_DSP_CFG, MAX98520_SPK_SAFE_EN_MASK, 0);
-
-CHECK: Alignment should match open parenthesis
-#664: FILE: sound/soc/codecs/max98520.c:600:
-+	regmap_update_bits(max98520->regmap,
-+						MAX98520_R2092_AMP_DSP_CFG, MAX98520_SPK_SAFE_EN_MASK, 0);
-
-CHECK: Alignment should match open parenthesis
-#676: FILE: sound/soc/codecs/max98520.c:612:
-+	regmap_update_bits(max98520->regmap,
-+						MAX98520_R204F_PCM_RX_EN,
-
-CHECK: Please use a blank line after function/struct/union/enum declarations
-#691: FILE: sound/soc/codecs/max98520.c:627:
-+}
-+static int max98520_resume(struct device *dev)
-
-CHECK: Alignment should match open parenthesis
-#732: FILE: sound/soc/codecs/max98520.c:668:
-+static int max98520_i2c_probe(struct i2c_client *i2c,
-+	const struct i2c_device_id *id)
-
-CHECK: Blank lines aren't necessary after an open brace '{'
-#734: FILE: sound/soc/codecs/max98520.c:670:
-+{
-+
-
-CHECK: Alignment should match open parenthesis
-#741: FILE: sound/soc/codecs/max98520.c:677:
-+	ret = i2c_check_functionality(adapter,
-+		I2C_FUNC_SMBUS_BYTE
-
-CHECK: Assignment operator '=' should be on the previous line
-#758: FILE: sound/soc/codecs/max98520.c:694:
-+	max98520->regmap
-+		= devm_regmap_init_i2c(i2c, &max98520_regmap);
-
-CHECK: Alignment should match open parenthesis
-#783: FILE: sound/soc/codecs/max98520.c:719:
-+	ret = regmap_read(max98520->regmap,
-+		MAX98520_R21FF_REVISION_ID, &reg);
-
-WARNING: DT compatible string "maxim,max98520" appears un-documented --
-check ./Documentation/devicetree/bindings/
-#810: FILE: sound/soc/codecs/max98520.c:746:
-+	{ .compatible = "maxim,max98520", },
-
-WARNING: From:/Signed-off-by: email address mismatch: 'From: George Song
-<george.song@maximintegrated.com>' != 'Signed-off-by: George Song
-<george.song@analog.com>'
-
-total: 0 errors, 6 warnings, 37 checks, 967 lines checked
-
-NOTE: For some of the reported defects, checkpatch may be able to
-      mechanically convert to the typical style using --fix or
---fix-inplace.
-
-0001-ASoC-max98520-Add-max98520-audio-amplifier-driver.patch has style
-problems, please review.
-
-NOTE: If any of the errors are false positives, please report
-      them to the maintainer, see CHECKPATCH in MAINTAINERS.
-
-On 10/13/21 2:52 AM, George Song wrote:
+Best Regards.
+Dillon
