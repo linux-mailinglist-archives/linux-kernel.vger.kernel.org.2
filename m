@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8620142DC93
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:58:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE78742DC5D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:56:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232829AbhJNPAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 11:00:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44722 "EHLO mail.kernel.org"
+        id S232156AbhJNO62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 10:58:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43208 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232630AbhJNO7E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 10:59:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8CBAC61183;
-        Thu, 14 Oct 2021 14:56:59 +0000 (UTC)
+        id S232360AbhJNO6A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 10:58:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 70B2461184;
+        Thu, 14 Oct 2021 14:55:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634223420;
-        bh=Hf2n9xfbqFkxvyar5vNGFeR2VXs0Bc4gXJF2VAyjc10=;
+        s=korg; t=1634223355;
+        bh=9Vk0X+yUL+aK9QVw5KlUwPT/RmgHuFKbQVaVrV58Jho=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YviLJ3bhMVD+x1uh0U3QV1mjvcLDRfqkQZslIq0z7FmcKwXR4uMac0A1GR8nb8AbH
-         pXLSQVZ7cv3TBX6EW/y+jnm7UrJ5mTK0XNO8CsnYUVxW38kHx8m+2qZ1i87UvGntwH
-         2dhoTkP+3wPOyJDz52pYyBhbo+LOZ5O/mFdbPfXE=
+        b=g5EEOiX5ziPYM3cHqqqMyzBPBKJ61xgW6rQU7qS8D85Z7dMTdEKNI+S2ceyF9CArN
+         SKzDDwdpMDaktX1kOy83eQYROjPNC0TQCiZPhrn0690XxEZ9ZywaeUgvK+N4zgpKM0
+         3gq7RrRJAzroTIVL3fh3i5iSHpEa5Spyjmpc1oAU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        Scott Wood <oss@buserror.net>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Karol Herbst <kherbst@redhat.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 15/33] powerpc/fsl/dts: Fix phy-connection-type for fm1mac3
+Subject: [PATCH 4.9 16/25] drm/nouveau/debugfs: fix file release memory leak
 Date:   Thu, 14 Oct 2021 16:53:47 +0200
-Message-Id: <20211014145209.284583433@linuxfoundation.org>
+Message-Id: <20211014145208.086701895@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211014145208.775270267@linuxfoundation.org>
-References: <20211014145208.775270267@linuxfoundation.org>
+In-Reply-To: <20211014145207.575041491@linuxfoundation.org>
+References: <20211014145207.575041491@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,37 +42,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pali Rohár <pali@kernel.org>
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-[ Upstream commit eed183abc0d3b8adb64fd1363b7cea7986cd58d6 ]
+[ Upstream commit f5a8703a9c418c6fc54eb772712dfe7641e3991c ]
 
-Property phy-connection-type contains invalid value "sgmii-2500" per scheme
-defined in file ethernet-controller.yaml.
+When using single_open() for opening, single_release() should be
+called, otherwise the 'op' allocated in single_open() will be leaked.
 
-Correct phy-connection-type value should be "2500base-x".
-
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Fixes: 84e0f1c13806 ("powerpc/mpc85xx: Add MDIO bus muxing support to the board device tree(s)")
-Acked-by: Scott Wood <oss@buserror.net>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 6e9fc177399f ("drm/nouveau/debugfs: add copy of sysfs pstate interface ported to debugfs")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Reviewed-by: Karol Herbst <kherbst@redhat.com>
+Signed-off-by: Karol Herbst <kherbst@redhat.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210911075023.3969054-2-yangyingliang@huawei.com
+Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/boot/dts/fsl/t1023rdb.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/nouveau/nouveau_debugfs.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/powerpc/boot/dts/fsl/t1023rdb.dts b/arch/powerpc/boot/dts/fsl/t1023rdb.dts
-index 5ba6fbfca274..f82f85c65964 100644
---- a/arch/powerpc/boot/dts/fsl/t1023rdb.dts
-+++ b/arch/powerpc/boot/dts/fsl/t1023rdb.dts
-@@ -154,7 +154,7 @@
+diff --git a/drivers/gpu/drm/nouveau/nouveau_debugfs.c b/drivers/gpu/drm/nouveau/nouveau_debugfs.c
+index 411c12cdb249..bb516eb12421 100644
+--- a/drivers/gpu/drm/nouveau/nouveau_debugfs.c
++++ b/drivers/gpu/drm/nouveau/nouveau_debugfs.c
+@@ -178,6 +178,7 @@ static const struct file_operations nouveau_pstate_fops = {
+ 	.open = nouveau_debugfs_pstate_open,
+ 	.read = seq_read,
+ 	.write = nouveau_debugfs_pstate_set,
++	.release = single_release,
+ };
  
- 			fm1mac3: ethernet@e4000 {
- 				phy-handle = <&sgmii_aqr_phy3>;
--				phy-connection-type = "sgmii-2500";
-+				phy-connection-type = "2500base-x";
- 				sleep = <&rcpm 0x20000000>;
- 			};
- 
+ static struct drm_info_list nouveau_debugfs_list[] = {
 -- 
 2.33.0
 
