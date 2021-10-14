@@ -2,114 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9863142DDFA
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:21:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37DF542DE04
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:23:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232199AbhJNPXC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 11:23:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51695 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229994AbhJNPW7 (ORCPT
+        id S233055AbhJNPZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 11:25:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231867AbhJNPZo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 11:22:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634224854;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=tOTKFFGtjip5ZWj15JuU+YQ9cEjBP5TceDwsinyFy6Q=;
-        b=PwmewbDiHzGGVVi/DZAcD4xox/FypmyWHPLOVV77hRD5E27kR4Vbmr2MXOgG1NxKGS4HsV
-        96qcSjvCFs7PALMSvl7Dka++CtzeCX+jRHCj4Z34ooG4W1kri7PsUfVIcADzJX9z8NwM9F
-        9yJpRLfK5a3tbDDGaUlbRXm4dxFpmuc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-561-uVLmyzpnMvOJJ5Lw9uSMMA-1; Thu, 14 Oct 2021 11:20:53 -0400
-X-MC-Unique: uVLmyzpnMvOJJ5Lw9uSMMA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 101AA1922961;
-        Thu, 14 Oct 2021 15:20:52 +0000 (UTC)
-Received: from steredhat.redhat.com (unknown [10.39.194.226])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DF7945D6B1;
-        Thu, 14 Oct 2021 15:20:46 +0000 (UTC)
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     netdev@vger.kernel.org
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        "David S. Miller" <davem@davemloft.net>,
-        =?UTF-8?q?Marc-Andr=C3=A9=20Lureau?= <marcandre.lureau@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH net] vsock_diag_test: remove free_sock_stat() call in test_no_sockets
-Date:   Thu, 14 Oct 2021 17:20:45 +0200
-Message-Id: <20211014152045.173872-1-sgarzare@redhat.com>
+        Thu, 14 Oct 2021 11:25:44 -0400
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38D63C061753
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 08:23:39 -0700 (PDT)
+Received: by mail-qt1-x82a.google.com with SMTP id b12so6096254qtq.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 08:23:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=By52BGa835IE4lyaZQwwtW5rAiE3tQH6DwCoYXbpm9E=;
+        b=acZGhTzeICP5dR16o7d44zA806wjXfAFaH1u+XIyklzn3XApXetVdZA3xTVlo6FV5W
+         7mhpqHdrKn7qQG7YCGWrsqMSJ/LTR/sUkidAix1OyA/T5a0UqzOy5hF3mNNla4ltmNFv
+         Oay9ZIvxwsHCCOhe7oxdDn96wZcPm2/8GRVyNXK3Tsya2KnW4E7zPJ8qnAmCU+MNu/ve
+         HLuf6dKzLLJhCV4MCVolKpTi/TjWPmfzTh0oahUwDKa7TbJkhez4zxc3/dtIjbEd9/lt
+         Hx+Gx9w2Nxx8DFDInfXyLREY1KDQ3Irf/QLYT1oM84jVfQXe/4exZYV8UPDJWWWD9OtT
+         spzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=By52BGa835IE4lyaZQwwtW5rAiE3tQH6DwCoYXbpm9E=;
+        b=b/MS5hNTsTRzTGzcrH7MjfWKUHh7Tgtxnqpx81GK8U5O3UEAyVMt/CR359xgc7p/aU
+         84JoX+eyKKZWYt5NrD7vtmdcjiNsQSvnWRIRlpIhe0V4kSwWQ1X6X587TivMPtenuRh3
+         PyMxWFzfjLGhCSCqIZXCUnq9YROOdRDQnomAYrmqoOyeb7jrQlrhB/hn0IcTjKscxI5E
+         QarU1agSkf7EPf/fVd/Sd46dntYV3TRqqsc7hbXOXZu1y3sG30cVhlQ5eQEWvsOXY4De
+         D1/b9Rzbb28MFGU8i2FP6202wKVabrwIix8c5V3umg9qiJoXpfhpe+gGE8ZTNTBwMkHA
+         /1ug==
+X-Gm-Message-State: AOAM533wmESrV5fMXt8X6+yFXDcPMX+GsvOM/SG5nMVPu/EewkZ9qK7q
+        iiZFSPPT5EI9fpSNKX+adSuVGg==
+X-Google-Smtp-Source: ABdhPJzE7r2rfWUK2qYhXEwBeOTjEW/L3joNadlJWl12vUxkrAc2juqTsYkH1xjBMZA0vKgRe74Atw==
+X-Received: by 2002:a05:622a:88:: with SMTP id o8mr7363114qtw.244.1634225018371;
+        Thu, 14 Oct 2021 08:23:38 -0700 (PDT)
+Received: from localhost (cpe-98-15-154-102.hvc.res.rr.com. [98.15.154.102])
+        by smtp.gmail.com with ESMTPSA id 201sm1430966qkm.34.2021.10.14.08.23.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Oct 2021 08:23:37 -0700 (PDT)
+Date:   Thu, 14 Oct 2021 11:23:36 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Vasily Averin <vvs@virtuozzo.com>,
+        Roman Gushchin <guro@fb.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] memcg: page_alloc: skip bulk allocator for __GFP_ACCOUNT
+Message-ID: <YWhLeAL5RPfLjrlO@cmpxchg.org>
+References: <20211013194338.1804247-1-shakeelb@google.com>
+ <YWfZNF7T7Fm69sik@dhcp22.suse.cz>
+ <CALvZod4Br9iwq-qfdwj6dzgW2g1vEr2YL4=w_mQjOeWWDQzFjw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALvZod4Br9iwq-qfdwj6dzgW2g1vEr2YL4=w_mQjOeWWDQzFjw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In `test_no_sockets` we don't expect any sockets, indeed
-check_no_sockets() prints an error and exits if `sockets` list is
-not empty, so free_sock_stat() call is unnecessary since it would
-only be called when the `sockets` list is empty.
+On Thu, Oct 14, 2021 at 08:01:16AM -0700, Shakeel Butt wrote:
+> Regarding xfs_buf_alloc_pages(), it is not using __GFP_ACCOUNT
 
-This was discovered by a strange warning printed by gcc v11.2.1:
-  In file included from ../../include/linux/list.h:7,
-                   from vsock_diag_test.c:18:
-  vsock_diag_test.c: In function ‘test_no_sockets’:
-  ../../include/linux/kernel.h:35:45: error: array subscript ‘struct vsock_stat[0]’ is partly outside array bound
-  s of ‘struct list_head[1]’ [-Werror=array-bounds]
-     35 |         const typeof(((type *)0)->member) * __mptr = (ptr);     \
-        |                                             ^~~~~~
-  ../../include/linux/list.h:352:9: note: in expansion of macro ‘container_of’
-    352 |         container_of(ptr, type, member)
-        |         ^~~~~~~~~~~~
-  ../../include/linux/list.h:393:9: note: in expansion of macro ‘list_entry’
-    393 |         list_entry((pos)->member.next, typeof(*(pos)), member)
-        |         ^~~~~~~~~~
-  ../../include/linux/list.h:522:21: note: in expansion of macro ‘list_next_entry’
-    522 |                 n = list_next_entry(pos, member);                       \
-        |                     ^~~~~~~~~~~~~~~
-  vsock_diag_test.c:325:9: note: in expansion of macro ‘list_for_each_entry_safe’
-    325 |         list_for_each_entry_safe(st, next, sockets, list) {
-        |         ^~~~~~~~~~~~~~~~~~~~~~~~
-  In file included from vsock_diag_test.c:18:
-  vsock_diag_test.c:333:19: note: while referencing ‘sockets’
-    333 |         LIST_HEAD(sockets);
-        |                   ^~~~~~~
-  ../../include/linux/list.h:23:26: note: in definition of macro ‘LIST_HEAD’
-     23 |         struct list_head name = LIST_HEAD_INIT(name)
-
-It seems related to some compiler optimization and assumption
-about the empty `sockets` list, since this warning is printed
-only with -02 or -O3. Also removing `exit(1)` from
-check_no_sockets() makes the warning disappear since in that
-case free_sock_stat() can be reached also when the list is
-not empty.
-
-Reported-by: Marc-André Lureau <marcandre.lureau@redhat.com>
-Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
----
- tools/testing/vsock/vsock_diag_test.c | 2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/tools/testing/vsock/vsock_diag_test.c b/tools/testing/vsock/vsock_diag_test.c
-index cec6f5a738e1..fa927ad16f8a 100644
---- a/tools/testing/vsock/vsock_diag_test.c
-+++ b/tools/testing/vsock/vsock_diag_test.c
-@@ -332,8 +332,6 @@ static void test_no_sockets(const struct test_opts *opts)
- 	read_vsock_stat(&sockets);
- 
- 	check_no_sockets(&sockets);
--
--	free_sock_stat(&sockets);
- }
- 
- static void test_listen_socket_server(const struct test_opts *opts)
--- 
-2.31.1
-
+It probably should, actually. Sorry, somewhat off-topic, but we've
+seen this consume quite large amounts of memory. __GFP_ACCOUNT and
+vmstat tracking seems overdue for this one.
