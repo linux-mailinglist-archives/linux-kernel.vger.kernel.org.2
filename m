@@ -2,105 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D74342D828
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 13:25:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A7F442D82B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 13:26:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230449AbhJNL1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 07:27:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54202 "EHLO
+        id S230473AbhJNL2q convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 14 Oct 2021 07:28:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230338AbhJNL1x (ORCPT
+        with ESMTP id S230132AbhJNL2p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 07:27:53 -0400
-Received: from mail-ua1-x932.google.com (mail-ua1-x932.google.com [IPv6:2607:f8b0:4864:20::932])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF135C061570
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 04:25:48 -0700 (PDT)
-Received: by mail-ua1-x932.google.com with SMTP id a17so1514339uax.12
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 04:25:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0kSckpstnup2DmrGx5/lGiQeAbXcf7pXBoI+smXRBHM=;
-        b=zQCyOXiH6/zHZe0gpe+oikxi2opvKMhIvaoF8PKvbU8RZzA5iuQU1+t+POg7tOqT+x
-         7VtjwHdWHxH4EujiGXf3a+uH+KjftQTyeLsb6IFjwGJD5ZP+gVKa9S6HwQ9CjfB24ZJz
-         IyKG88gn8ylL9Ie0hmSQ7jfxPA+9QZT3HIfiEicX+iaP6ZvlmWWq9BUJJWGDpFk7PNnI
-         8ohuyFlLmEop2upSAltY6YIlWrCUg4qihDjfOMA3K8yuRJ2r17kbVanxS5nWkNVAQkEK
-         ZApuQUBCrkoJ/xwxFiwO+q39FfCoICL4BjNlgh6MMoEMIGqkdqELKFtAOYlh8CDqf5v/
-         rAyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0kSckpstnup2DmrGx5/lGiQeAbXcf7pXBoI+smXRBHM=;
-        b=GGBoJwAakb/9VcNRuvNZGsPOrS7+Ag2agbAym+ts5RUdcYkYnLzif2G6lFmIAlO4fG
-         D6Kqme+s7t+wVlYIBWlqRZw4kYYfEp2PcUpD+nzLvlN2Jo/3GgMM0PZBY0YOPn1M+58h
-         Krh8+WmMvO5fRGGtbVRR1p6ZrdpKCOAZxsQViqG44sl4W6GnyAFOSYRaktg816/jGOiA
-         kc4jB+Zd1LluUea/qnjQIYLHLN+vRo5moD63MPIZlFpx+GE7cGS9O8aY+XK5DXeRZPTc
-         vIWprUw3Fyxzsdom5KPVYsKvZWob7ZZFRQ8EAoZx3IJ5RZ4YaZEs9N+Pf38K4mSfsg6r
-         IQpQ==
-X-Gm-Message-State: AOAM530EjgCEi6JfI+qIzJAipf7hymnpyRrzJp66lhyRs3ieCGTsOSTm
-        Zm6Qf9L8j1aaGNHQbwRnbAts0YQwKPIoyQIrbFQPNA==
-X-Google-Smtp-Source: ABdhPJw7tA5Itylbliuf7uRWxKCnJodfXYqfOPUb1k3YcjKxi04jWBTcookWXl0DvsdLYHC8ihFrLDT3VdUPs07klso=
-X-Received: by 2002:a67:1781:: with SMTP id 123mr5847970vsx.1.1634210747944;
- Thu, 14 Oct 2021 04:25:47 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211013202110.31701-1-semen.protsenko@linaro.org> <3460c787-0a72-3c37-1075-dfee9cc2c0b3@canonical.com>
-In-Reply-To: <3460c787-0a72-3c37-1075-dfee9cc2c0b3@canonical.com>
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-Date:   Thu, 14 Oct 2021 14:25:36 +0300
-Message-ID: <CAPLW+4mw8e+r=Jf8unQtLGXHpxvioQinOjrDChdvs8S+hddotw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] soc: samsung: exynos-chipid: Pass revision reg offsets
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        Thu, 14 Oct 2021 07:28:45 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E56E9C061570
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 04:26:40 -0700 (PDT)
+Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1maysW-0004lM-9W; Thu, 14 Oct 2021 13:26:28 +0200
+Received: from pza by lupine with local (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1maysU-0003kx-LL; Thu, 14 Oct 2021 13:26:26 +0200
+Message-ID: <1d8878e86b862ae8d551b6796e86c4fb1eb5d671.camel@pengutronix.de>
+Subject: Re: [PATCH] media: imx: Round line size to 4 bytes
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     Dorota Czaplejewicz <dorota.czaplejewicz@puri.sm>
+Cc:     Steve Longerbeam <slongerbeam@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel@puri.sm, phone-devel@vger.kernel.org
+Date:   Thu, 14 Oct 2021 13:26:26 +0200
+In-Reply-To: <20211013112636.6963344d.dorota.czaplejewicz@puri.sm>
+References: <20211006110207.256325-1-dorota.czaplejewicz@puri.sm>
+         <7d61fdbd161fce40874766bde5f95c3b73f1a96d.camel@pengutronix.de>
+         <20211013112636.6963344d.dorota.czaplejewicz@puri.sm>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.30.5-1.1 
+MIME-Version: 1.0
+X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Oct 2021 at 09:41, Krzysztof Kozlowski
-<krzysztof.kozlowski@canonical.com> wrote:
->
-> On 13/10/2021 22:21, Sam Protsenko wrote:
-> > Old Exynos SoCs have both Product ID and Revision ID in one single
-> > register, while new SoCs tend to have two separate registers for those
-> > IDs. Implement handling of both cases by passing Revision ID register
-> > offsets in driver data.
-> >
-> > Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
-> > ---
-> >  drivers/soc/samsung/exynos-chipid.c       | 67 +++++++++++++++++++----
-> >  include/linux/soc/samsung/exynos-chipid.h |  6 +-
-> >  2 files changed, 58 insertions(+), 15 deletions(-)
-> >
-> > diff --git a/drivers/soc/samsung/exynos-chipid.c b/drivers/soc/samsung/exynos-chipid.c
-> > index 5c1d0f97f766..7837331fb753 100644
-> > --- a/drivers/soc/samsung/exynos-chipid.c
-> > +++ b/drivers/soc/samsung/exynos-chipid.c
-> > @@ -16,6 +16,7 @@
-> >  #include <linux/errno.h>
-> >  #include <linux/mfd/syscon.h>
-> >  #include <linux/of.h>
-> > +#include <linux/of_device.h>
-> >  #include <linux/platform_device.h>
-> >  #include <linux/regmap.h>
-> >  #include <linux/slab.h>
-> > @@ -24,6 +25,17 @@
->
-> Include a changelog please. Your patch does not apply and there is no
-> information on tree which it was based on.
->
+Hi Dorota,
 
-Sorry, my bad. Will do in v3. As for the tree: it's based on the
-latest mainline/master. I'll double check if patches apply correctly
-to that before sending v3. Please let me know if you want me to rebase
-this series on top of some other tree.
+On Wed, 2021-10-13 at 11:26 +0200, Dorota Czaplejewicz wrote:
+> On Fri, 08 Oct 2021 14:19:41 +0200 Philipp Zabel <p.zabel@pengutronix.de> wrote:
+[...]
+> > I wonder: if you use 4-byte aligned width and odd height, does the CSI
+> > write over the end of the buffer?
+> 
+> I tested this case, and found a glitch which suggests the last 4 bytes are ignored:
+> 
+> https://source.puri.sm/Librem5/linux-next/uploads/cfb59e3832431aaa3a69549455502568/image.png
 
->
-> Best regards,
-> Krzysztof
+Thank you for testing, so it appears that at least without FBUF_STRIDE
+the only requirement is that the whole image size must be a multiple of
+8 bytes.
+
+> That would be taken care of rounding up towards a number decided at runtime, like:
+> 
+> divisor = 8 >> (mbus->height % 2);
+
+Which would then cause the CSI to write past the end of the buffer?
+
+I'd rather make sure that either the number of lines is even or the
+width is a multiple of 8 bytes.
+
+> > > Signed-off-by: Dorota Czaplejewicz <dorota.czaplejewicz@puri.sm>
+> > > ---
+> > > 
+> > > Hello,
+> > > 
+> > > my previous patch identified something that was not a problem,
+> > > so I'm sending a different one.
+> > > 
+> > > This has been tested on the Librem 5.
+> > > 
+> > > Cheers,
+> > > Dorota
+> > > 
+> > >  drivers/staging/media/imx/imx-media-utils.c | 4 ++--
+> > >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > > 
+> > > diff --git a/drivers/staging/media/imx/imx-media-utils.c b/drivers/staging/media/imx/imx-media-utils.c
+> > > index 5128915a5d6f..a303003929e3 100644
+> > > --- a/drivers/staging/media/imx/imx-media-utils.c
+> > > +++ b/drivers/staging/media/imx/imx-media-utils.c
+> > > @@ -545,13 +545,13 @@ int imx_media_mbus_fmt_to_pix_fmt(struct v4l2_pix_format *pix,
+> > >  	}
+> > >  
+> > >  	/* Round up width for minimum burst size */
+> > > -	width = round_up(mbus->width, 8);
+> > > +	width = round_up(mbus->width, 4);
+> > >  
+> > >  	/* Round up stride for IDMAC line start address alignment */
+> > >  	if (cc->planar)
+> > >  		stride = round_up(width, 16);
+> > >  	else
+> > > -		stride = round_up((width * cc->bpp) >> 3, 8);
+> > > +		stride = round_up((width * cc->bpp) >> 3, 4);  
+> > 
+> > Second, even if this works fine on the i.MX7/8M CSI, the alignment is
+> > still required for the i.MX5/6 IPU, for which this code and the comments
+> > were written. So we need a way to differentiate the two cases here.
+> > 
+> > regards
+> > Philipp
+> 
+> How best to go about this? I can see in the file imx-media-capture.c
+> that there the video device lives in struct capture_priv.vdev.vfd.
+> Would that be the right place to query about the underlying hardware?
+> 
+> Then the following functions would gain a new "small_divisor" parameter:
+> - imx_media_mbus_fmt_to_pix_fmt (a GPL symbol)
+> - imx_media_mbus_fmt_to_ipu_image (a GPL symbol)
+> - __capture_try_fmt
+
+That sounds like it would work around the current code when it (at least
+part of imx_media_mbus_fmt_to_pix_fmt()) should be split between i.MX5/6
+and i.MX7/8 implementations. For example rounding up the stride is not
+useful on i.MX7/8, it just doesn't currently hurt because imx7-media-csi 
+is not using bytesperline to set up FBUF_STRIDE. And certainly the
+comments don't apply.
+
+imx_media_mbus_fmt_to_ipu_image() is unused and should probably be
+dropped, same as imx_media_ipu_image_to_mbus_fmt().
+
+> Those would have to extract the device type from struct capture_priv:
+> - __capture_legacy_try_fmt
+> - capture_try_fmt_vid_cap
+> - capture_s_fmt_vid_cap
+> - capture_init_format
+
+Maybe imx_media_mbus_fmt_to_pix_fmt should be moved into imx-media-
+capture.c be passed struct capture_priv to avoid duplicating the device
+type check?
+
+imx_media_capture_device_init() could gain a new parameter (or maybe
+replace legacy_api) to set the device type.
+
+regards
+Philipp
