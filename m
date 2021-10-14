@@ -2,109 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1304F42D9E0
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 15:12:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FD8D42D9F5
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 15:13:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230257AbhJNNOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 09:14:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50374 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230010AbhJNNOP (ORCPT
+        id S230010AbhJNNPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 09:15:54 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:40524 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231205AbhJNNPr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 09:14:15 -0400
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8237C061570
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 06:12:10 -0700 (PDT)
-Received: by mail-io1-xd34.google.com with SMTP id 188so3637070iou.12
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 06:12:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vm0uG47kjXZQUoBadNTCMv0FLQo5FyMI1RDxQQYcLzg=;
-        b=icRf3w96WiNwX53QPS0x3z7UAj95POnNN9od9Zl8Ha6tpqr7KA5eHVUdoPT83RZbfA
-         aDMF5AMGm6H695DWF7Lk20+tOtxSiq2cgEnpF04vFHsWJ95rNjxcRJgkloowOilnInqE
-         2n4Ww9XD621f5cOYV/hrLSeTShdFub9KAMKcGnAYyAJQB0SZzWXjeSLpB/MYe3/wVeqr
-         +FSeebhaZ2cbcPz4oiHCPZxVuk1mGvAJ5/1LCSUGIUsd3175HCx5/yTmlKf2EB3fswFc
-         lJsB/cvn6N9vAYvZ6vaG3XXKjQaS2atUDRr5s0ZgObeSrQcNJLcdj8H9bJGzxsa8as6I
-         p41Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vm0uG47kjXZQUoBadNTCMv0FLQo5FyMI1RDxQQYcLzg=;
-        b=cCJj9KYXGkvMU7KUXrPKw3Tcu6ifLtZ8uHpjNxV+/YbaLVjc6CIOZpi3wEsxwYApnd
-         y8vmYKshss6BM0KPnLHstokZ/XGRwmmU0qR7fB7e74M6Derg+9+VMQwuLGrArc/x3dHz
-         vFX1jlt7tOQyf5PikpjPPG1DUGCQPsd5dCQ2G6Dkbzi3kjwD2wERDQ95NFAZ61GmrJD0
-         76mWnQPvlhBC2m/086UKQWK/78gknc01WrB6Z88MK3lDjyuCCAXBtDynm2UH3dPgJYTC
-         N9EaOyWNtURLZCvu4Z6b49TOToCxzhdGw0+NUpnXXx09IAgkrVvzfElCPL4tmXQmmh0v
-         fskQ==
-X-Gm-Message-State: AOAM530mo0preHHIcvtTsl8q8lp8WrL5hQV6pFWBQrcnM3cfzANagLCh
-        luga9yQLkQ5uymLZKUM1gYelU4/KQtD4lmHDC0k=
-X-Google-Smtp-Source: ABdhPJw6Txd+UgF2zIWte9JLHc+cWuMJL5UBr7n88d6KgytvanShOCEdKLE/x/O/z0UgLXMvSGssSl/KhXmI5TK2yBg=
-X-Received: by 2002:a02:2a48:: with SMTP id w69mr3998395jaw.23.1634217130388;
- Thu, 14 Oct 2021 06:12:10 -0700 (PDT)
+        Thu, 14 Oct 2021 09:15:47 -0400
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19EBk9nv020035;
+        Thu, 14 Oct 2021 15:13:16 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=YjQ3urDAJXHR/F3Axv6sVr5AjLaz89bV+mq261IIQQY=;
+ b=cXLM99+NE6XvfugKPfl3nOtV9X2sQ/UGiGn/Bvwn3yIg8Gn0qOfhVlkLqQfWVcKxOZeK
+ G0cwYu83kyoIwGUQqSd0yq8PnIRe26WIYHH5JhXbNnCcHEAHGktFfERka4p3W7lxTJIt
+ OdVjWUec3Dgp8ZwhccwWGS62tJ14ZBJV6jcgsm3VtLQyZgx7+oa7jRTp7JNtunbMgNVc
+ MgRwNE3WKuNKA4YqaGdFqFX1CK23b677pH1LJa+FxRclmCe/1Rm5AXM2Z2+Zgt7Pt9w0
+ 6d+wxfql0WvJ3soU5kWG1F55dP1GqduQzrXXod0gQ1+/9rku79lOOSTwguCxbLPxpPJa YQ== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3bpkye8fy7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Oct 2021 15:13:16 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 87DB410002A;
+        Thu, 14 Oct 2021 15:13:14 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 7FA5622179A;
+        Thu, 14 Oct 2021 15:13:14 +0200 (CEST)
+Received: from localhost (10.75.127.49) by SFHDAG2NODE2.st.com (10.75.127.5)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.18; Thu, 14 Oct 2021 15:13:14
+ +0200
+From:   Olivier Moysan <olivier.moysan@foss.st.com>
+To:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Olivier Moysan <olivier.moysan@foss.st.com>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>
+Subject: [PATCH v5 0/7] iio: adc: stm32-adc: add internal channels support
+Date:   Thu, 14 Oct 2021 15:12:21 +0200
+Message-ID: <20211014131228.4692-1-olivier.moysan@foss.st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20211010102429.99577-4-laoar.shao@gmail.com> <20211014072707.GA18719@xsang-OptiPlex-9020>
- <CALOAHbD540exB5DDfB8DDh8WXvsag9JsdMmC0yxriWMaoAVfOg@mail.gmail.com>
- <1529739526.13983.1634215325995.JavaMail.zimbra@efficios.com>
- <CALOAHbDGH1vp7a9BYLDKCCrh-W2205O707LXNM+Yvt5tQ7Swag@mail.gmail.com> <173454728.14036.1634216949862.JavaMail.zimbra@efficios.com>
-In-Reply-To: <173454728.14036.1634216949862.JavaMail.zimbra@efficios.com>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Thu, 14 Oct 2021 21:11:34 +0800
-Message-ID: <CALOAHbBTxLvuiuT4tT2_7C+jaXBoh0uTjzLRm+njO4tKxCtPwg@mail.gmail.com>
-Subject: Re: [sched.h] 317419b91e: perf-sanity-tests.Parse_sched_tracepoints_fields.fail
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     acme <acme@kernel.org>, rostedt <rostedt@goodmis.org>,
-        kernel test robot <oliver.sang@intel.com>,
-        0day robot <lkp@intel.com>, Petr Mladek <pmladek@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        lkp <lkp@lists.01.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Qiang Zhang <qiang.zhang@windriver.com>,
-        robdclark <robdclark@chromium.org>,
-        christian <christian@brauner.io>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        bristot <bristot@redhat.com>,
-        aubrey li <aubrey.li@linux.intel.com>,
-        yu c chen <yu.c.chen@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.49]
+X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG2NODE2.st.com
+ (10.75.127.5)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-14_08,2021-10-14_02,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 9:09 PM Mathieu Desnoyers
-<mathieu.desnoyers@efficios.com> wrote:
->
-> ----- On Oct 14, 2021, at 9:05 AM, Yafang Shao laoar.shao@gmail.com wrote:
-> [...]
-> >> If it happens that this ABI break is noticed by more than an in-tree test
-> >> program, then
-> >> the kernel's ABI rules will require that this trace field size stays unchanged.
-> >> This brings
-> >> up once more the whole topic of "Tracepoints ABI" which has been discussed
-> >> repeatedly in
-> >> the past.
-> >>
-> >
-> > I will check if any other in-tree tools depends on TASK_COMM_LEN.
->
-> That's a start, but given this is a userspace ABI, out-of-tree userland
-> tools which depend of this to be fixed-size are also relevant.
->
+This patchset adds support of ADC2 internal channels VDDCORE, VREFINT and VBAT
+on STM32MP15x SoCs. The generic IIO channel bindings is also introduced here
+to provide this feature. The legacy channel binding is kept for backward compatibility.
 
-TASK_COMM_LEN isn't defined in include/uapi/ directory, so it seems
-that it isn't the uerspace ABI?
+Changes in v2:
+- Add 'deprecated' to channels legacy properties in ADC bindings
+- Add set/clr service for common registers, to make code more generic in
+  internal channels enable/disable services.
+- Expose vrefint channel as a processed channel to return
+  the actual value of vrefp.
+- Minor code improvements
 
+Changes in v3:
+- fix vrefint sampling time check.
+
+Changes in v4:
+- fix binding
+- add dedicated spin lock for common register
+- manage probe_defer on nvmem read
+
+Changes in v5:
+- fix binding example
+
+v5 resent as serie index was wrong on previous post. sorry !
+
+Olivier Moysan (7):
+  dt-bindings: iio: stm32-adc: add generic channel binding
+  dt-bindings: iio: stm32-adc: add nvmem support for vrefint internal
+    channel
+  iio: adc: stm32-adc: split channel init into several routines
+  iio: adc: stm32-adc: add support of generic channels binding
+  iio: adc: stm32-adc: add support of internal channels
+  iio: adc: stm32-adc: add vrefint calibration support
+  iio: adc: stm32-adc: use generic binding for sample-time
+
+ .../bindings/iio/adc/st,stm32-adc.yaml        | 108 ++++-
+ drivers/iio/adc/stm32-adc-core.c              |   1 +
+ drivers/iio/adc/stm32-adc-core.h              |  10 +
+ drivers/iio/adc/stm32-adc.c                   | 422 ++++++++++++++++--
+ 4 files changed, 486 insertions(+), 55 deletions(-)
 
 -- 
-Thanks
-Yafang
+2.17.1
+
