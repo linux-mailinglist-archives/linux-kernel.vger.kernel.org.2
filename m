@@ -2,132 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC9DF42D996
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 14:56:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A225D42D9A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 15:01:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231281AbhJNM6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 08:58:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46646 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231300AbhJNM6O (ORCPT
+        id S231350AbhJNNDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 09:03:47 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:43138 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231300AbhJNNDq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 08:58:14 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B99DC061753
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 05:56:09 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id p16so26706784lfa.2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 05:56:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WVQGMuJie8wi8y+oVjessFiNPe/rcZJlGZsyVSDq4UQ=;
-        b=vNV/ttPZQd7Ca+jEUsPVwGgpoatLmRlLf25FSIL8q7z7GeqRVrsehFTMPPoVWDwATo
-         LpKNFNqfEeE9Stjvg0DIPfhwvYILpOaZo2xJgRpC8SXHdTTo703QkEm88pAyxatsgJlt
-         whqFJmXA1ByTmyLYeBgX0x3KstrthnmAh5sfMJZGb1Y955dRf18fWj2gBKvufwieYVnL
-         smnVFyoVgxrJe/JAJ8GWc2HlvTj9FoDHzA7+wdWYkMmZmH63cNAYPdX6p6ARFOA8iEEv
-         p03D/Do0UywxLeVC4cZPreGrPbIKPYUAdpEDa0IvmUzQcH2q9CnodC81pYoA7cx5uHf4
-         mneg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WVQGMuJie8wi8y+oVjessFiNPe/rcZJlGZsyVSDq4UQ=;
-        b=nqeqD3H/oZ2FGD66q+haiNuVKEp9EW0GRB1jdhD/wzzmTF6dsR8fSZZ3Pbo+IsQ2+q
-         hv3K3ivpD1ckH9T2mGgygzlUOX7yQKEUOdGvHKSHZjXWX+XfJ7zNbHi7nPVxAszh7zBc
-         PrdySfsZf2AF3qr0PekHrE/jZErYKrWEZ9aovr8PxkC7dRPa3mKNMg26eLQdsPKY1zJx
-         rruyInyptwMCCufzzekGfquem/1j5BTGJu0RFVuBdGFc5PL3d2yKod9qxYq4az1YDacO
-         j6uIzRGz1flTBD1rB9BhIShACOiBRZsTMpIx1IO7w9ZyG1lJA4zP2JcG8A9Mz0pQHYW5
-         kTQw==
-X-Gm-Message-State: AOAM530yKPSoDYC1mSNAj3+vzODVYtnaVTbHyVTFFTVCLGSJZ3jTQg1l
-        cptorZP7wItU+FysSg+QEJ1msA9030eJIQ/YwhCndg==
-X-Google-Smtp-Source: ABdhPJyEuN+huAz26SvUY6gTTHR9/L0Tk9vQSW4HRn7odA+ArCIS0xsfBqQedQy+Qm+fBMn9f8XBh/2lvLlmlsisDd0=
-X-Received: by 2002:ac2:4157:: with SMTP id c23mr4820927lfi.184.1634216167416;
- Thu, 14 Oct 2021 05:56:07 -0700 (PDT)
+        Thu, 14 Oct 2021 09:03:46 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19EBDFLH008993;
+        Thu, 14 Oct 2021 09:01:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=teLW8J+lrbmfY0wiZKBnolVNto5Rpg+cKO9JZOfoh5c=;
+ b=jbLzsaepeykRAliWbtMRJDJUrLT80VfOHZrPMSebSAsSbwB8r13lnBCp0hmCm8tBqhAh
+ afTlSd+E6grypLxkPSrNWtC+UL/8D/JMAqwzQB1p9HmCkr3lsvLEr+LijB6iqi2jt6MC
+ Y0ltjfR/YT5+x699K26t5XG5yl2EaetvWSNyO2Xbyp5NdLkmBt66/SgzZG4346ZwbgYD
+ WS9u3M8HtRVT50EfEwTgzTbuWTQ4c6PrsEwnLZnV7s7kMdRVawEYwOuAA7n42WAbEQQH
+ q1EyzbfMr3bhTqbCDTB3vnCONmH0jm7NCkDl5xfoA6ASOaejSbycwLxrJxH4HOp8ikPU Yg== 
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bnpf49fkg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Oct 2021 09:01:35 -0400
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19ECpn4j002932;
+        Thu, 14 Oct 2021 13:01:33 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma03fra.de.ibm.com with ESMTP id 3bk2qajf7x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Oct 2021 13:01:33 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19ECtsrn57278968
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 14 Oct 2021 12:55:54 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 59F4DA404D;
+        Thu, 14 Oct 2021 13:01:31 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2A615A4051;
+        Thu, 14 Oct 2021 13:01:30 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com.com (unknown [9.160.55.249])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 14 Oct 2021 13:01:30 +0000 (GMT)
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
+Cc:     Mimi Zohar <zohar@linux.ibm.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Casey Schaufler <casey@schaufler-ca.com>
+Subject: [PATCH v1 1/3] ima: define ima_trusted_for hook
+Date:   Thu, 14 Oct 2021 09:01:23 -0400
+Message-Id: <20211014130125.6991-1-zohar@linux.ibm.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20211011165707.138157-1-marcan@marcan.st> <20211011165707.138157-5-marcan@marcan.st>
- <20211012032144.2ltlpat7orrsyr6k@vireshk-i7> <b7cd51ec-38e5-11d8-5193-1170c9d60ac9@marcan.st>
- <20211012055143.xmkbvhbnolspgjin@vireshk-i7> <caf16a6c-f127-7f27-ed17-0522d9f1fb9e@marcan.st>
- <CAPDyKFoVjVYkc4+v-=eD+JbC10GazGt8A1LtD1so3PKMmVcyMg@mail.gmail.com> <bd07f4b3-6ebf-e074-c1cd-0ef501e8324f@marcan.st>
-In-Reply-To: <bd07f4b3-6ebf-e074-c1cd-0ef501e8324f@marcan.st>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 14 Oct 2021 14:55:30 +0200
-Message-ID: <CAPDyKFrFX93XV8a7e7oo1N5weWp2auq=_94fTnzr2EkO3c37Ug@mail.gmail.com>
-Subject: Re: [RFC PATCH 4/9] opp: core: Don't warn if required OPP device does
- not exist
-To:     Hector Martin <marcan@marcan.st>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        Saravana Kannan <saravanak@google.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Sven Peter <sven@svenpeter.dev>, Marc Zyngier <maz@kernel.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: rysSjnn3QQwge_o2i28xQFuLM5pm0zh6
+X-Proofpoint-ORIG-GUID: rysSjnn3QQwge_o2i28xQFuLM5pm0zh6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-14_07,2021-10-14_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ priorityscore=1501 clxscore=1015 lowpriorityscore=0 mlxscore=0
+ phishscore=0 adultscore=0 bulkscore=0 suspectscore=0 malwarescore=0
+ spamscore=0 mlxlogscore=921 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2109230001 definitions=main-2110140084
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Oct 2021 at 13:43, Hector Martin <marcan@marcan.st> wrote:
->
-> On 14/10/2021 18.55, Ulf Hansson wrote:
-> > Yes, this sounds like you should move away from modeling the memory
-> > part as a parent genpd for the CPUs' genpd.
-> >
-> > As Viresh pointed out, a devfreq driver seems like a better way to do
-> > this. As a matter of fact, there are already devfreq drivers that do
-> > this, unless I am mistaken.
-> >
-> > It looks like devfreq providers are listening to opp/cpufreq
-> > notifiers, as to get an indication of when it could make sense to
-> > change a performance state.
-> >
-> > In some cases the devfreq provider is also modeled as an interconnect
-> > provider, allowing consumers to specify memory bandwidth constraints,
-> > which may trigger a new performance state to be set for the memory
-> > controller.
-> >
-> > In the tegra case, the memory controller is modelled as an
-> > interconnect provider and the devfreq node is modelled as an
-> > interconnect-consumer of the memory controller. Perhaps this can work
-> > for apple SoCs too?
->
-> I was poking around and noticed the OPP core can already integrate with
-> interconnect requirements, so perhaps the memory controller can be an
-> interconnect provider, and the CPU nodes can directly reference it as a
-> consumer? This seems like a more accurate model of what the hardware
-> does, and I think I saw some devices doing this already.
+A major interpreter integrity gap exists which allows files read by
+the interpreter to be executed without measuring the file or verifying
+the file's signature.
 
-Yeah, that could work too. And, yes, I agree, it may be a better
-description of the HW.
+The kernel has no knowledge about the file being read by the interpreter.
+Only the interpreter knows the context(eg. data, execute) and must be
+trusted to provide that information accurately.
 
->
-> (only problem is I have no idea of the actual bandwidth numbers involved
-> here... I'll have to run some benchmarks to make sure this isn't just
-> completely dummy data)
->
-> >
-> > That said, perhaps as an option to move forward, we can try to get the
-> > cpufreq pieces solved first. Then as a step on top, add the
-> > performance scaling for the memory controller?
->
-> Sure; that's a pretty much independent part of this patchset, though I'm
-> thinking I might as well try some things out for v2 anyway; if it looks
-> like it'll take longer we can split it out and do just the cpufreq side.
+To close this integrity gap, define an ima_trusted_for hook to allow
+IMA to measure the file and verify the file's signature based on policy.
 
-In any case, I do my best to help with review.
+Sample policy rules:
+	measure func=TRUSTED_FOR_CHECK
+	appraise func=TRUSTED_FOR_CHECK appraise_type=imasig
 
-Kind regards
-Uffe
+Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
+---
+ Documentation/ABI/testing/ima_policy |  2 +-
+ security/integrity/ima/ima.h         |  1 +
+ security/integrity/ima/ima_main.c    | 23 +++++++++++++++++++++++
+ security/integrity/ima/ima_policy.c  |  3 +++
+ 4 files changed, 28 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/ABI/testing/ima_policy b/Documentation/ABI/testing/ima_policy
+index e1a04bd3b9e5..85618e726801 100644
+--- a/Documentation/ABI/testing/ima_policy
++++ b/Documentation/ABI/testing/ima_policy
+@@ -34,7 +34,7 @@ Description:
+ 				[FIRMWARE_CHECK]
+ 				[KEXEC_KERNEL_CHECK] [KEXEC_INITRAMFS_CHECK]
+ 				[KEXEC_CMDLINE] [KEY_CHECK] [CRITICAL_DATA]
+-				[SETXATTR_CHECK]
++				[SETXATTR_CHECK] [TRUSTED_FOR_CHECK]
+ 			mask:= [[^]MAY_READ] [[^]MAY_WRITE] [[^]MAY_APPEND]
+ 			       [[^]MAY_EXEC]
+ 			fsmagic:= hex value
+diff --git a/security/integrity/ima/ima.h b/security/integrity/ima/ima.h
+index be965a8715e4..827236dbbefb 100644
+--- a/security/integrity/ima/ima.h
++++ b/security/integrity/ima/ima.h
+@@ -202,6 +202,7 @@ static inline unsigned int ima_hash_key(u8 *digest)
+ 	hook(KEY_CHECK, key)				\
+ 	hook(CRITICAL_DATA, critical_data)		\
+ 	hook(SETXATTR_CHECK, setxattr_check)		\
++	hook(TRUSTED_FOR_CHECK, trusted_for_check)	\
+ 	hook(MAX_CHECK, none)
+ 
+ #define __ima_hook_enumify(ENUM, str)	ENUM,
+diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
+index 465865412100..e09054ac3352 100644
+--- a/security/integrity/ima/ima_main.c
++++ b/security/integrity/ima/ima_main.c
+@@ -26,6 +26,7 @@
+ #include <linux/ima.h>
+ #include <linux/iversion.h>
+ #include <linux/fs.h>
++#include <uapi/linux/trusted-for.h>
+ 
+ #include "ima.h"
+ 
+@@ -519,6 +520,28 @@ int ima_file_check(struct file *file, int mask)
+ }
+ EXPORT_SYMBOL_GPL(ima_file_check);
+ 
++/**
++ * ima_trusted_for - based on policy, measure/appraise/audit measurement
++ * @file: pointer to the file to be measured/appraised/audit
++ * @usage: limit enumeration to TRUSTED_FOR_EXECUTION
++ *
++ * Measure/appraise/audit files being executed by an interpreter.
++ *
++ * On success return 0.  On integrity appraisal error, assuming the file
++ * is in policy and IMA-appraisal is in enforcing mode, return -EACCES.
++ */
++int ima_trusted_for(struct file *file, const enum trusted_for_usage usage)
++{
++	u32 secid;
++
++	if (usage != TRUSTED_FOR_EXECUTION)
++		return 0;
++
++	security_task_getsecid_subj(current, &secid);
++	return process_measurement(file, current_cred(), secid, NULL,
++				   0, MAY_EXEC, TRUSTED_FOR_CHECK);
++}
++
+ static int __ima_inode_hash(struct inode *inode, char *buf, size_t buf_size)
+ {
+ 	struct integrity_iint_cache *iint;
+diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
+index 320ca80aacab..847803a24201 100644
+--- a/security/integrity/ima/ima_policy.c
++++ b/security/integrity/ima/ima_policy.c
+@@ -1210,6 +1210,7 @@ static bool ima_validate_rule(struct ima_rule_entry *entry)
+ 	case POST_SETATTR:
+ 	case FIRMWARE_CHECK:
+ 	case POLICY_CHECK:
++	case TRUSTED_FOR_CHECK:
+ 		if (entry->flags & ~(IMA_FUNC | IMA_MASK | IMA_FSMAGIC |
+ 				     IMA_UID | IMA_FOWNER | IMA_FSUUID |
+ 				     IMA_INMASK | IMA_EUID | IMA_PCR |
+@@ -1423,6 +1424,8 @@ static int ima_parse_rule(char *rule, struct ima_rule_entry *entry)
+ 			/* PATH_CHECK is for backwards compat */
+ 			else if (strcmp(args[0].from, "PATH_CHECK") == 0)
+ 				entry->func = FILE_CHECK;
++			else if (strcmp(args[0].from, "TRUSTED_FOR_CHECK") == 0)
++				entry->func = TRUSTED_FOR_CHECK;
+ 			else if (strcmp(args[0].from, "MODULE_CHECK") == 0)
+ 				entry->func = MODULE_CHECK;
+ 			else if (strcmp(args[0].from, "FIRMWARE_CHECK") == 0)
+-- 
+2.27.0
+
