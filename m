@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2D1342DC8D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:57:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77E1F42DC2C
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:55:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231149AbhJNO76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 10:59:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42680 "EHLO mail.kernel.org"
+        id S232046AbhJNO5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 10:57:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41892 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232562AbhJNO67 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 10:58:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 15B9660F4A;
-        Thu, 14 Oct 2021 14:56:53 +0000 (UTC)
+        id S231982AbhJNO5F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 10:57:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3211C60F36;
+        Thu, 14 Oct 2021 14:55:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634223414;
-        bh=SFHbF9fMm8RbgxadZvNqvrApORzyb/26Zm5ZEtBiPe8=;
+        s=korg; t=1634223300;
+        bh=+ickOl/0o/hrJ/30y7b+QvRz2Lu6cSfP+WICbEp/GIw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A82AsXqzqFhQ7NzVkN3TSh39gv/qFA8r9WMQ6UBvOMJtY4i1hMhEft/dppp99e8Mn
-         kLfStZW0WbfP6DanWSL5Ks1uzXJcCxT+dYVu6fHswvzY48LMEfCsz1VtKTvN2ip0HR
-         n3Vfh0QkuTnXaP3R1ugbHjx7Tk64LbcpSlHqfvd8=
+        b=GrPW7kBMbeaSXsZv5cMXFXFjg+pStn7nPtyg9Q5YmJblcSXa+B9TXhQb837wRMWDN
+         DgZLgIA2gExmif6a190kfIaEF5bXGIU0KWI8Xdz0excc/uqVuCyfU6iJi1wawvP/pv
+         OaXBUIz0I8F6y7bYe9Gq5sE0sUYVExWGA2rwmVhI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>,
-        syzbot+398e7dc692ddbbb4cfec@syzkaller.appspotmail.com
-Subject: [PATCH 4.14 13/33] phy: mdio: fix memory leak
+        stable@vger.kernel.org, Mizuho Mori <morimolymoly@gmail.com>,
+        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 13/18] HID: apple: Fix logical maximum and usage maximum of Magic Keyboard JIS
 Date:   Thu, 14 Oct 2021 16:53:45 +0200
-Message-Id: <20211014145209.222914468@linuxfoundation.org>
+Message-Id: <20211014145206.751625859@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211014145208.775270267@linuxfoundation.org>
-References: <20211014145208.775270267@linuxfoundation.org>
+In-Reply-To: <20211014145206.330102860@linuxfoundation.org>
+References: <20211014145206.330102860@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,56 +39,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Mizuho Mori <morimolymoly@gmail.com>
 
-[ Upstream commit ca6e11c337daf7925ff8a2aac8e84490a8691905 ]
+[ Upstream commit 67fd71ba16a37c663d139f5ba5296f344d80d072 ]
 
-Syzbot reported memory leak in MDIO bus interface, the problem was in
-wrong state logic.
+Apple Magic Keyboard(JIS)'s Logical Maximum and Usage Maximum are wrong.
 
-MDIOBUS_ALLOCATED indicates 2 states:
-	1. Bus is only allocated
-	2. Bus allocated and __mdiobus_register() fails, but
-	   device_register() was called
+Below is a report descriptor.
 
-In case of device_register() has been called we should call put_device()
-to correctly free the memory allocated for this device, but mdiobus_free()
-calls just kfree(dev) in case of MDIOBUS_ALLOCATED state
+0x05, 0x01,         /*  Usage Page (Desktop),                           */
+0x09, 0x06,         /*  Usage (Keyboard),                               */
+0xA1, 0x01,         /*  Collection (Application),                       */
+0x85, 0x01,         /*      Report ID (1),                              */
+0x05, 0x07,         /*      Usage Page (Keyboard),                      */
+0x15, 0x00,         /*      Logical Minimum (0),                        */
+0x25, 0x01,         /*      Logical Maximum (1),                        */
+0x19, 0xE0,         /*      Usage Minimum (KB Leftcontrol),             */
+0x29, 0xE7,         /*      Usage Maximum (KB Right GUI),               */
+0x75, 0x01,         /*      Report Size (1),                            */
+0x95, 0x08,         /*      Report Count (8),                           */
+0x81, 0x02,         /*      Input (Variable),                           */
+0x95, 0x05,         /*      Report Count (5),                           */
+0x75, 0x01,         /*      Report Size (1),                            */
+0x05, 0x08,         /*      Usage Page (LED),                           */
+0x19, 0x01,         /*      Usage Minimum (01h),                        */
+0x29, 0x05,         /*      Usage Maximum (05h),                        */
+0x91, 0x02,         /*      Output (Variable),                          */
+0x95, 0x01,         /*      Report Count (1),                           */
+0x75, 0x03,         /*      Report Size (3),                            */
+0x91, 0x03,         /*      Output (Constant, Variable),                */
+0x95, 0x08,         /*      Report Count (8),                           */
+0x75, 0x01,         /*      Report Size (1),                            */
+0x15, 0x00,         /*      Logical Minimum (0),                        */
+0x25, 0x01,         /*      Logical Maximum (1),                        */
 
-To avoid this behaviour we need to set bus->state to MDIOBUS_UNREGISTERED
-_before_ calling device_register(), because put_device() should be
-called even in case of device_register() failure.
+here is a report descriptor which is parsed one in kernel.
+see sys/kernel/debug/hid/<dev>/rdesc
 
-Link: https://lore.kernel.org/netdev/YVMRWNDZDUOvQjHL@shell.armlinux.org.uk/
-Fixes: 46abc02175b3 ("phylib: give mdio buses a device tree presence")
-Reported-and-tested-by: syzbot+398e7dc692ddbbb4cfec@syzkaller.appspotmail.com
-Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Link: https://lore.kernel.org/r/eceae1429fbf8fa5c73dd2a0d39d525aa905074d.1633024062.git.paskripkin@gmail.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+05 01 09 06 a1 01 85 01 05 07
+15 00 25 01 19 e0 29 e7 75 01
+95 08 81 02 95 05 75 01 05 08
+19 01 29 05 91 02 95 01 75 03
+91 03 95 08 75 01 15 00 25 01
+06 00 ff 09 03 81 03 95 06 75
+08 15 00 25 [65] 05 07 19 00 29
+[65] 81 00 95 01 75 01 15 00 25
+01 05 0c 09 b8 81 02 95 01 75
+01 06 01 ff 09 03 81 02 95 01
+75 06 81 03 06 02 ff 09 55 85
+55 15 00 26 ff 00 75 08 95 40
+b1 a2 c0 06 00 ff 09 14 a1 01
+85 90 05 84 75 01 95 03 15 00
+25 01 09 61 05 85 09 44 09 46
+81 02 95 05 81 01 75 08 95 01
+15 00 26 ff 00 09 65 81 02 c0
+00
+
+Position 64(Logical Maximum) and 70(Usage Maximum) are 101.
+Both should be 0xE7 to support JIS specific keys(ろ, Eisu, Kana, |) support.
+position 117 is also 101 but not related(it is Usage 65h).
+
+There are no difference of product id between JIS and ANSI.
+They are same 0x0267.
+
+Signed-off-by: Mizuho Mori <morimolymoly@gmail.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/phy/mdio_bus.c | 7 +++++++
+ drivers/hid/hid-apple.c | 7 +++++++
  1 file changed, 7 insertions(+)
 
-diff --git a/drivers/net/phy/mdio_bus.c b/drivers/net/phy/mdio_bus.c
-index 5fc7b6c1a442..5ef9bbbab3db 100644
---- a/drivers/net/phy/mdio_bus.c
-+++ b/drivers/net/phy/mdio_bus.c
-@@ -344,6 +344,13 @@ int __mdiobus_register(struct mii_bus *bus, struct module *owner)
- 	bus->dev.groups = NULL;
- 	dev_set_name(&bus->dev, "%s", bus->id);
+diff --git a/drivers/hid/hid-apple.c b/drivers/hid/hid-apple.c
+index 8af87dc05f2a..73289b013dee 100644
+--- a/drivers/hid/hid-apple.c
++++ b/drivers/hid/hid-apple.c
+@@ -301,12 +301,19 @@ static int apple_event(struct hid_device *hdev, struct hid_field *field,
  
-+	/* We need to set state to MDIOBUS_UNREGISTERED to correctly release
-+	 * the device in mdiobus_free()
-+	 *
-+	 * State will be updated later in this function in case of success
-+	 */
-+	bus->state = MDIOBUS_UNREGISTERED;
+ /*
+  * MacBook JIS keyboard has wrong logical maximum
++ * Magic Keyboard JIS has wrong logical maximum
+  */
+ static __u8 *apple_report_fixup(struct hid_device *hdev, __u8 *rdesc,
+ 		unsigned int *rsize)
+ {
+ 	struct apple_sc *asc = hid_get_drvdata(hdev);
+ 
++	if(*rsize >=71 && rdesc[70] == 0x65 && rdesc[64] == 0x65) {
++		hid_info(hdev,
++			 "fixing up Magic Keyboard JIS report descriptor\n");
++		rdesc[64] = rdesc[70] = 0xe7;
++	}
 +
- 	err = device_register(&bus->dev);
- 	if (err) {
- 		pr_err("mii_bus %s failed to register\n", bus->id);
+ 	if ((asc->quirks & APPLE_RDESC_JIS) && *rsize >= 60 &&
+ 			rdesc[53] == 0x65 && rdesc[59] == 0x65) {
+ 		hid_info(hdev,
 -- 
 2.33.0
 
