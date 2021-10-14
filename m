@@ -2,69 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14DDA42DF48
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 18:39:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E10042DF5C
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 18:43:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233202AbhJNQlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 12:41:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41966 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232090AbhJNQlm (ORCPT
+        id S233309AbhJNQpd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 12:45:33 -0400
+Received: from mail-oi1-f175.google.com ([209.85.167.175]:46629 "EHLO
+        mail-oi1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233276AbhJNQpZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 12:41:42 -0400
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB35CC061570
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 09:39:36 -0700 (PDT)
-Received: by mail-ot1-x330.google.com with SMTP id v2-20020a05683018c200b0054e3acddd91so9009587ote.8
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 09:39:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
-        bh=puJCV4/zaOeFS7jEQ6zpUCZDZ0zz14RXWLBkE2FzrWY=;
-        b=JVBQnSOPrJfJjUanl3IdRnW2ngiIxsUbxQoy4G8cKWMpsr4s4GXI1m05NtOtecr06b
-         LyJjrXDV4nS6uPWZwgqrC0EBFREWN3rMMcS0MMh/TigFJfpcn8UMq5NQTK3l4gv2ocA3
-         B7Hy8kYr2uwOg9wJ1Lm+57EAV/Xxo+L/H7HdogLOaJK7u5qGrTPquZYOb6FLdgmzmH8o
-         d/Xa2ByD4g/kT2IOqdIbRpMsfUCDGSASLyHa7OkM+KB5+WVmz5KsikFwojZn3L8qE9Hd
-         MfPbE1PC/nInd7j9X4WC5tvmtN+Y85MUe9GvA8rpmVdB/1LwcZw1tln4iwovY7nlSS9P
-         nnuA==
+        Thu, 14 Oct 2021 12:45:25 -0400
+Received: by mail-oi1-f175.google.com with SMTP id o204so9192164oih.13;
+        Thu, 14 Oct 2021 09:43:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to;
-        bh=puJCV4/zaOeFS7jEQ6zpUCZDZ0zz14RXWLBkE2FzrWY=;
-        b=Ad51IaKdpIPYC6uBJD4toGwfQZI4q2BX1G6OFV1+HFyFeNdeHPkhwSO3TUsZ0eiHrG
-         c6w25a3gK+V3KzlLWAW46aOwkDdWtx4QOoD1qXoP0K69QpvaqTxcdozpOkBkG4n96Kxo
-         Yb7FBi203pe0WXdoBEleUSU2q/6TQIlVXEnT5WGhw26hEmxbwMWONXzgXXdNSSN6Jegw
-         0/UVDvoG+248lhql44g85iWsWsPlm8bgTGDzCXAGosrZejOKfIdmESbJbdWWobLEh7az
-         HC/9S9Rv3B3jxba23jwl4iVvyri4xUVunVQmfsx22+ztlUzI/xkPO8OWT/1KFcMnDL8e
-         elIQ==
-X-Gm-Message-State: AOAM5301vzHyMNeA9f+CGPN3knvI3X+ImjizJehZg4m0jF28c6RCcYgj
-        0sF8/q36pXeSgP3oMPhGZkBPxXBMir/Ypw9BZQg=
-X-Google-Smtp-Source: ABdhPJy0AFNx3exR/SmSzZioChRf5/ZyvZhnhHa0/FAANERzZ/tamf/1eMnn4+587cUSO9zchuM2mPcBIiqutMmzMs0=
-X-Received: by 2002:a9d:728d:: with SMTP id t13mr3455404otj.66.1634229576386;
- Thu, 14 Oct 2021 09:39:36 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=UvxD5+Hw4iJY2Dq6klGID8YYhsUJD7AT0hAWa74FOHY=;
+        b=stY8HeW03IClsqWjvk4FuJgH1TQ2Ctb3mW19PrC+6oGJo6T/cTfUUeu2ulW1OdFGO+
+         rr6ETkjjQSBbtUgjNK5EOJUGnHkqXZ9STO+/xEoovDab+vqUhcWCdQUuHEf+ozUOuj5s
+         BZxNsJbO4fPuWd6z8N+mlSXj1OJRV3brUsZMNnjCj/AiCIJ8Y0xpBSWP+SReQc38GJyf
+         CSQf9mikAP4EFb4LLXf6hMrEXbIPS2hDvESYSf0xc+rDJGFJjsEZUxm3EvS7fis83AV3
+         cBDbK9X39YI2CMS1I4vQf2F1nqlhZby/RgyPd9yg6cXBqOWBvORwrnP0XX1GYmPHAnmf
+         lPcA==
+X-Gm-Message-State: AOAM530Fi+jtWfpFqHn7fAuBY1gUVyl85ZvSZqsZCQUlTLNTpnWPhd+S
+        qT4zk7yp0VolEpnLt+F6x0hEQry7Rg==
+X-Google-Smtp-Source: ABdhPJzooLE6gkdXu6oeNDsVz/pCE/pJZ4gfx0kflWxC617I3qMJfI5QKh7bxzgLx5LaQDGjmC20qQ==
+X-Received: by 2002:aca:c1c3:: with SMTP id r186mr13834864oif.79.1634229800106;
+        Thu, 14 Oct 2021 09:43:20 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id z8sm514622oof.47.2021.10.14.09.43.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Oct 2021 09:43:19 -0700 (PDT)
+Received: (nullmailer pid 3512729 invoked by uid 1000);
+        Thu, 14 Oct 2021 16:43:18 -0000
+Date:   Thu, 14 Oct 2021 11:43:18 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        linux-arm-msm@vger.kernel.org,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Thara Gopinath <thara.gopinath@linaro.org>
+Subject: Re: [PATCH v3 1/4] dt-bindings: thermal: qcom: add HC variant of
+ adc-thermal monitor bindings
+Message-ID: <YWheJr1BfpeJpTUc@robh.at.kernel.org>
+References: <20211005032531.2251928-1-bjorn.andersson@linaro.org>
+ <20211005032531.2251928-2-bjorn.andersson@linaro.org>
 MIME-Version: 1.0
-Reply-To: dr.tracymedicinemed1@gmail.com
-Sender: ra00028671@gmail.com
-Received: by 2002:ac9:1550:0:0:0:0:0 with HTTP; Thu, 14 Oct 2021 09:39:36
- -0700 (PDT)
-From:   Dr Tracy William <ra6277708@gmail.com>
-Date:   Fri, 15 Oct 2021 00:39:36 +0800
-X-Google-Sender-Auth: Jn9VQwYKg6V-QMWmzzRLUkGWGEA
-Message-ID: <CAEWKTYfq52g36bOegEB2+hSqEdYuJgoO8ivf_fx9s=yKX=tucQ@mail.gmail.com>
-Subject: From Dr Tracy from United States
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211005032531.2251928-2-bjorn.andersson@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Dear,
-My name is Tracy William from United States.I am a French and American national
-(dual)living in the U.S and sometimes in the U.K for the Purpose of Work.
-I hope you consider my friend request and consider me worthy to be your friend.
-I will share some of my pics and more details about my self when i get
-your response
-Thanks
-With love
-Tracy
+On Mon, 04 Oct 2021 20:25:28 -0700, Bjorn Andersson wrote:
+> The HC generation of the ADC Thermal Monitor is quite similar to the 5th
+> generation, but differs in valid values for a few properties. Create a
+> new binding for the HC version of the hardware, rather than sprinkle
+> conditionals throughout the existing binding.
+> 
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> ---
+> 
+> Changes since v2:
+> - None
+> 
+>  .../bindings/thermal/qcom-spmi-adc-tm-hc.yaml | 149 ++++++++++++++++++
+>  1 file changed, 149 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/thermal/qcom-spmi-adc-tm-hc.yaml
+> 
+
+Reviewed-by: Rob Herring <robh@kernel.org>
