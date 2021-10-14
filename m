@@ -2,102 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 341A242CFEF
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 03:29:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8539C42CFF9
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 03:36:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229877AbhJNBby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 21:31:54 -0400
-Received: from mx22.baidu.com ([220.181.50.185]:44984 "EHLO baidu.com"
+        id S229846AbhJNBic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 21:38:32 -0400
+Received: from smtp23.cstnet.cn ([159.226.251.23]:52224 "EHLO cstnet.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229496AbhJNBbx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 21:31:53 -0400
-Received: from BC-Mail-EX08.internal.baidu.com (unknown [172.31.51.48])
-        by Forcepoint Email with ESMTPS id 39C2A29B1AAFB2FFB82D;
-        Thu, 14 Oct 2021 09:29:36 +0800 (CST)
-Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- BC-Mail-EX08.internal.baidu.com (172.31.51.48) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2242.12; Thu, 14 Oct 2021 09:29:35 +0800
-Received: from localhost (172.31.63.8) by BJHW-MAIL-EX27.internal.baidu.com
- (10.127.64.42) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Thu, 14
- Oct 2021 09:29:35 +0800
-Date:   Thu, 14 Oct 2021 09:29:36 +0800
-From:   Cai Huoqing <caihuoqing@baidu.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-CC:     Jonathan Cameron <jic23@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        <linux-iio@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] iio: imx8qxp-adc: mark PM functions as __maybe_unused
-Message-ID: <20211014012936.GA2999@LAPTOP-UKSR4ENP.internal.baidu.com>
-References: <20211013144338.2261316-1-arnd@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211013144338.2261316-1-arnd@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [172.31.63.8]
-X-ClientProxiedBy: BJHW-Mail-Ex11.internal.baidu.com (10.127.64.34) To
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
+        id S229496AbhJNBic (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 21:38:32 -0400
+Received: from localhost.localdomain (unknown [124.16.138.128])
+        by APP-03 (Coremail) with SMTP id rQCowAAnLqqBiWdhYA+BAw--.50977S2;
+        Thu, 14 Oct 2021 09:36:01 +0800 (CST)
+From:   Jiasheng Jiang <jiasheng@iscas.ac.cn>
+To:     dhowells@redhat.com, marc.dionne@auristor.com, davem@davemloft.net,
+        kuba@kernel.org
+Cc:     linux-afs@lists.infradead.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jiasheng Jiang <jiasheng@iscas.ac.cn>
+Subject: [PATCH RESEND] rxrpc: Fix _usecs_to_jiffies() by using usecs_to_jiffies()
+Date:   Thu, 14 Oct 2021 01:35:59 +0000
+Message-Id: <1634175359-1810410-1-git-send-email-jiasheng@iscas.ac.cn>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: rQCowAAnLqqBiWdhYA+BAw--.50977S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrtr1xtr43Gr4xWr4DZFyrZwb_yoWfZFg_ZF
+        WkJ3W7WayayFZ3uF42yr4Fyr98Cry5uryFvr1SkFZrK3yY9rySy39FgFn5Gr1YgrW7WFnx
+        ua1jva4xKr1fujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbcxFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
+        Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
+        0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
+        jxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr
+        1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVWkMxAI
+        w28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr
+        4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxG
+        rwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJw
+        CI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAI
+        cVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VU1ItC7UUUUU==
+X-Originating-IP: [124.16.138.128]
+X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13 10月 21 16:43:26, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> Without CONFIG_PM_SLEEP, the runtime suspend/resume functions
-> are unused, producing a warning:
-> 
-> drivers/iio/adc/imx8qxp-adc.c:433:12: error: 'imx8qxp_adc_runtime_resume' defined but not used [-Werror=unused-function]
->   433 | static int imx8qxp_adc_runtime_resume(struct device *dev)
->       |            ^~~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/iio/adc/imx8qxp-adc.c:419:12: error: 'imx8qxp_adc_runtime_suspend' defined but not used [-Werror=unused-function]
->   419 | static int imx8qxp_adc_runtime_suspend(struct device *dev)
->       |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-> 
-> Mark them as __maybe_unused to shut up the compiler.
-> 
-> Fixes: 7bce634d02e6 ("iio: imx8qxp-adc: Add driver support for NXP IMX8QXP ADC")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Directly using _usecs_to_jiffies() might be unsafe, so it's
+better to use usecs_to_jiffies() instead.
+Because we can see that the result of _usecs_to_jiffies()
+could be larger than MAX_JIFFY_OFFSET values without the
+check of the input.
 
-Reviewed-by: Cai Huoqing <caihuoqing@baidu.com>
+Fixes: c410bf01 ("rxrpc: Fix the excessive initial retransmission timeout")
+Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
+---
+ net/rxrpc/rtt.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> ---
->  drivers/iio/adc/imx8qxp-adc.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/iio/adc/imx8qxp-adc.c b/drivers/iio/adc/imx8qxp-adc.c
-> index 5030e0d8318d..901dd8e1b32f 100644
-> --- a/drivers/iio/adc/imx8qxp-adc.c
-> +++ b/drivers/iio/adc/imx8qxp-adc.c
-> @@ -416,7 +416,7 @@ static int imx8qxp_adc_remove(struct platform_device *pdev)
->  	return 0;
->  }
->  
-> -static int imx8qxp_adc_runtime_suspend(struct device *dev)
-> +static __maybe_unused int imx8qxp_adc_runtime_suspend(struct device *dev)
->  {
->  	struct iio_dev *indio_dev = dev_get_drvdata(dev);
->  	struct imx8qxp_adc *adc = iio_priv(indio_dev);
-> @@ -430,7 +430,7 @@ static int imx8qxp_adc_runtime_suspend(struct device *dev)
->  	return 0;
->  }
->  
-> -static int imx8qxp_adc_runtime_resume(struct device *dev)
-> +static __maybe_unused int imx8qxp_adc_runtime_resume(struct device *dev)
->  {
->  	struct iio_dev *indio_dev = dev_get_drvdata(dev);
->  	struct imx8qxp_adc *adc = iio_priv(indio_dev);
-> -- 
-> 2.29.2
-> 
+diff --git a/net/rxrpc/rtt.c b/net/rxrpc/rtt.c
+index 4e565ee..be61d6f 100644
+--- a/net/rxrpc/rtt.c
++++ b/net/rxrpc/rtt.c
+@@ -22,7 +22,7 @@ static u32 rxrpc_rto_min_us(struct rxrpc_peer *peer)
+ 
+ static u32 __rxrpc_set_rto(const struct rxrpc_peer *peer)
+ {
+-	return _usecs_to_jiffies((peer->srtt_us >> 3) + peer->rttvar_us);
++	return usecs_to_jiffies((peer->srtt_us >> 3) + peer->rttvar_us);
+ }
+ 
+ static u32 rxrpc_bound_rto(u32 rto)
+-- 
+2.7.4
+
