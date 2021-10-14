@@ -2,133 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82F7742D6D8
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 12:16:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D257142D6DB
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 12:17:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230010AbhJNKSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 06:18:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55058 "EHLO mail.kernel.org"
+        id S230094AbhJNKTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 06:19:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55234 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229468AbhJNKSw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 06:18:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E358B60EBB;
-        Thu, 14 Oct 2021 10:16:44 +0000 (UTC)
+        id S229468AbhJNKTF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 06:19:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F1CC1610E8;
+        Thu, 14 Oct 2021 10:16:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634206607;
-        bh=3XsDHD/eBSYmde+bZHZT79zui6v3kV5ZUbATOpXk5nc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Ca50zmQcZF6benVZW7U0Xq7fM5jl9D342FFc0SlGtkV3OPo07L9taV2OH3FIgImFt
-         xk2qqfVfJ4mIoMoBJXjBJN+zCSpALYyOFynQfUiP26r5btucp/5PNOspCELUJXN9k3
-         /nqIDU9ztvGU7r1XKj9I76MX/IbSx/isG9AeUo1q4mwokhMIIdXpYWld5Z8sUmHVeZ
-         K/kiQch3GPJKvuruCvmg0mFYsPSRZq+okvLP3nwy4NlGOhCRVpK/P6j4q1sF/pjLIa
-         Yg1pBwRNzzMAoh9dOOlezm8h1T54nQoHPZvvCB1K2zHgJIMwbMZrwAxMwuym7qefub
-         cJfSbtIwp17KA==
-Date:   Thu, 14 Oct 2021 19:16:43 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Marios Pomonis <pomonis@google.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Kristen C Accardi <kristen.c.accardi@intel.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ivan Babrou <ivan@cloudflare.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Julien Thierry <jthierry@redhat.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        linux-hardening@vger.kernel.org,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH] x86/unwind/orc: Handle kretprobes_trampoline
-Message-Id: <20211014191643.6c7ca819a732dd6479329a6b@kernel.org>
-In-Reply-To: <202110132151.F78F49AD8@keescook>
-References: <20210903021326.206548-1-keescook@chromium.org>
-        <202110111403.3C59BF77@keescook>
-        <20211014014101.6du6jj2o7g4ficu5@treble>
-        <202110132151.F78F49AD8@keescook>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        s=k20201202; t=1634206620;
+        bh=HkGc1jYcLiDfFRVHfe07q93sWwpARViWgqIARlFWxr8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NhOD9vih8DjT4o3RqENEgZa2uUhL7ycjVTHWY+vNF0zihZkE+PD5atC+DOswPfZ89
+         Ts4Gc0mIcD/LSi8HdCoGA0JGi3D4cmCkiEc8Vkx5pqw0ZKAIBPS6DwoZx0vsAFNlKO
+         FWMC6ZkWlLFNI6JyelKUkpfTBcxSuR07lAmNPwb8/FIbmHAz5D03opGf2sWkQGhxVo
+         mtOcbWoRS7txN6hG4FMaFyqao3cVoCIZFELjIX5jXHKfeSAcWXbijtKyau6IguEaWY
+         Li0tO/gnho+6vDTmYUbZCmEeqxbcONYEfqAiomU6pLYLpLxMED7ca6h0r1UsSL07so
+         BeaxbnasP4H2A==
+Date:   Thu, 14 Oct 2021 13:16:50 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     kernel test robot <oliver.sang@intel.com>,
+        0day robot <lkp@intel.com>, Dmitry Vyukov <dvyukov@google.com>,
+        Marco Elver <elver@google.com>,
+        Vijayanand Jitta <vjitta@codeaurora.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Oliver Glitta <glittao@gmail.com>,
+        Imran Khan <imran.f.khan@oracle.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        kasan-dev@googlegroups.com
+Subject: Re: [lib/stackdepot] 1cd8ce52c5:
+ BUG:unable_to_handle_page_fault_for_address
+Message-ID: <YWgDkjqtJO4e3DM6@kernel.org>
+References: <20211014085450.GC18719@xsang-OptiPlex-9020>
+ <4d99add1-5cf7-c608-a131-18959b85e5dc@suse.cz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4d99add1-5cf7-c608-a131-18959b85e5dc@suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Oct 2021 21:52:36 -0700
-Kees Cook <keescook@chromium.org> wrote:
-
-> On Wed, Oct 13, 2021 at 06:41:01PM -0700, Josh Poimboeuf wrote:
-> > On Mon, Oct 11, 2021 at 02:03:26PM -0700, Kees Cook wrote:
-> > > On Thu, Sep 02, 2021 at 07:13:26PM -0700, Kees Cook wrote:
-> > > > From: Marios Pomonis <pomonis@google.com>
-> > > > 
-> > > > Fix a bug in the ORC unwinder when kretprobes has replaced a return
-> > > > address with the address of `kretprobes_trampoline'. ORC mistakenly
-> > > > assumes that the address in the stack is a return address and decrements
-> > > > it by 1 in order to find the proper depth of the next frame.
-
-Hmm, with my fixes[1], the kretprobe_trampoline address in the stack will be
-replaced with the correct return address. In that case, that behavior
-sounds correct.
-
-[1] https://lore.kernel.org/all/163163030719.489837.2236069935502195491.stgit@devnote2/
-
-> > > > 
-> > > > This issue was discovered while testing the FG-KASLR series[0][1] and
-> > > > running the live patching test[2] that was originally failing[3].
-> > > > 
-> > > > [0] https://lore.kernel.org/kernel-hardening/20200923173905.11219-1-kristen@linux.intel.com/
-> > > > [1] https://github.com/KSPP/linux/issues/132
-> > > > [2] https://github.com/lpechacek/qa_test_klp
-> > > > [3] https://lore.kernel.org/lkml/alpine.LSU.2.21.2009251450260.13615@pobox.suse.cz/
-> > > > 
-> > > > Fixes: ee9f8fce9964 ("x86/unwind: Add the ORC unwinder")
-> > > > Signed-off-by: Marios Pomonis <pomonis@google.com>
-> > > > Cc: Josh Poimboeuf <jpoimboe@redhat.com>
-> > > > Cc: Alexander Lobakin <alexandr.lobakin@intel.com>
-> > > > Cc: Kristen C Accardi <kristen.c.accardi@intel.com>
-> > > > Cc: Sami Tolvanen <samitolvanen@google.com>
-> > > > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > > 
-> > > Ping again; Josh can you take this please?
+On Thu, Oct 14, 2021 at 11:33:03AM +0200, Vlastimil Babka wrote:
+> On 10/14/21 10:54, kernel test robot wrote:
 > > 
-> > I'm confused how this still fixes anything after Masami's patch set,
-> > which is now in linux-next.
 > > 
-> > After those patches, for a CALL-type ORC entry, the unwinder sets
-> > state->ip to the address returned by unwind_recover_ret_addr().  In the
-> > case of a kretprobe, that means that state->ip will no longer point to
-> > kretprobes_trampoline() -- making the above patch description incorrect.
+> > Greeting,
 > > 
-> > Instead, state->ip will then contain the original call return address
-> > which was replaced by kretpobes.  So it looks to the unwinder like a
-> > normal call return address, and 'state->signal' should remain false.
+> > FYI, we noticed the following commit (built with gcc-9):
 > > 
-> > Am I missing something?
+> > commit: 1cd8ce52c520c26c513899fb5aee42b8e5f60d0d ("[PATCH v2] lib/stackdepot: allow optional init and stack_table allocation by kvmalloc()")
+> > url: https://github.com/0day-ci/linux/commits/Vlastimil-Babka/lib-stackdepot-allow-optional-init-and-stack_table-allocation-by-kvmalloc/20211012-170816
+> > base: git://anongit.freedesktop.org/drm-intel for-linux-next
+> > 
+> > in testcase: rcutorture
+> > version: 
+> > with following parameters:
+> > 
+> > 	runtime: 300s
+> > 	test: cpuhotplug
+> > 	torture_type: srcud
+> > 
+> > test-description: rcutorture is rcutorture kernel module load/unload test.
+> > test-url: https://www.kernel.org/doc/Documentation/RCU/torture.txt
+> > 
+> > 
+> > on test machine: qemu-system-i386 -enable-kvm -cpu SandyBridge -smp 2 -m 4G
+> > 
+> > caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
+> > 
+> > 
+> > +---------------------------------------------+------------+------------+
+> > |                                             | a94a6d76c9 | 1cd8ce52c5 |
+> > +---------------------------------------------+------------+------------+
+> > | boot_successes                              | 30         | 0          |
+> > | boot_failures                               | 0          | 7          |
+> > | BUG:kernel_NULL_pointer_dereference,address | 0          | 2          |
+> > | Oops:#[##]                                  | 0          | 7          |
+> > | EIP:stack_depot_save                        | 0          | 7          |
+> > | Kernel_panic-not_syncing:Fatal_exception    | 0          | 7          |
+> > | BUG:unable_to_handle_page_fault_for_address | 0          | 5          |
+> > +---------------------------------------------+------------+------------+
+> > 
+> > 
+> > If you fix the issue, kindly add following tag
+> > Reported-by: kernel test robot <oliver.sang@intel.com>
+> > 
+> > 
+> > 
+> > [  319.147926][  T259] BUG: unable to handle page fault for address: 0ec74110
+> > [  319.149309][  T259] #PF: supervisor read access in kernel mode
+> > [  319.150362][  T259] #PF: error_code(0x0000) - not-present page
+> > [  319.151372][  T259] *pde = 00000000
+> > [  319.151964][  T259] Oops: 0000 [#1] SMP
+> > [  319.152617][  T259] CPU: 0 PID: 259 Comm: systemd-rc-loca Not tainted 5.15.0-rc1-00270-g1cd8ce52c520 #1
+> > [  319.154514][  T259] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
+> > [  319.156200][  T259] EIP: stack_depot_save+0x12a/0x4d0
 > 
-> I'll let Marios answer in more detail, but my understanding is that
-> Masami's patch set didn't solve the FGKASLR-vs-kretprobes issue[1].
-> I don't understand _why_ yet, though.
-
-My another question is that this fix still works correctly on my series,
-because it's already merged via Steve's tree. Isn't this break anything?
-
-I also need to know how (from where) the failed test uses stacktrace.
-Does it call stacktrace from outside of kretprobe?
-
-Thank you,
-
 > 
-> -Kees
+> Cc Mike Rapoport, looks like:
+> - memblock_alloc() should have failed (I think, because page allocator
+>   already took over?), but didn't. So apparently we got some area that wasn't
+>   fully mapped.
+> - using slab_is_available() is not accurate enough to detect when to use
+> memblock or page allocator (kvmalloc in case of my patch). I have used it
+> because memblock_alloc_internal() checks the same condition to issue a warning.
 > 
-> [1] https://lore.kernel.org/all/CAKXAmdgS3SL_qyjzjY32_DXe3WVTN+O=wYwJ9vkUXKhjmt87fA@mail.gmail.com/
+> Relevant part of dmesg.xz that was attached:
+> [    1.589075][    T0] Dentry cache hash table entries: 524288 (order: 9, 2097152 bytes, linear)
+> [    1.592396][    T0] Inode-cache hash table entries: 262144 (order: 8, 1048576 bytes, linear)
+> [    2.916844][    T0] allocated 31496920 bytes of page_ext
 > 
-> -- 
-> Kees Cook
+> - this means we were allocating from page allocator by alloc_pages_exact_nid() already
+> 
+> [    2.918197][    T0] mem auto-init: stack:off, heap alloc:off, heap free:on
+> [    2.919683][    T0] mem auto-init: clearing system memory may take some time...
+> [    2.921239][    T0] Initializing HighMem for node 0 (000b67fe:000bffe0)
+> [   23.023619][    T0] Initializing Movable for node 0 (00000000:00000000)
+> [  245.194520][    T0] Checking if this processor honours the WP bit even in supervisor mode...Ok.
+> [  245.196847][    T0] Memory: 2914460K/3145208K available (20645K kernel code, 5953K rwdata, 12624K rodata, 760K init, 8112K bss, 230748K reserved, 0K cma-reserved, 155528K highmem)
+> [  245.200521][    T0] Stack Depot allocating hash table with memblock_alloc
+> 
+> - initializing stack depot as part of initializing page_owner, uses memblock_alloc()
+>   because slab_is_available() is still false
+> 
+> [  245.212005][    T0] Node 0, zone   Normal: page owner found early allocated 0 pages
+> [  245.213867][    T0] Node 0, zone  HighMem: page owner found early allocated 0 pages
+> [  245.216126][    T0] SLUB: HWalign=64, Order=0-3, MinObjects=0, CPUs=2, Nodes=1
+> 
+> - printed by slub's kmem_cache_init() after create_kmalloc_caches() setting slab_state
+>   to UP, making slab_is_available() true, but too late
+> 
+> In my local testing of the patch, when stackdepot was initialized through
+> page owner init, it was using kvmalloc() so slab_is_available() was true.
+> Looks like the exact order of slab vs page_owner alloc is non-deterministic,
+> could be arch-dependent or just random ordering of init calls. A wrong order
+> will exploit the apparent fact that slab_is_available() is not a good
+> indicator of using memblock vs page allocator, and we would need a better one.
+> Thoughts?
 
+The order of slab vs page_owner is deterministic, but it is different for
+FLATMEM and SPARSEMEM. And page_ext_init_flatmem_late() that initializes
+page_ext for FLATMEM is called exactly between buddy and slab setup:
+
+static void __init mm_init(void)
+{
+	...
+
+	mem_init();
+	mem_init_print_info();
+	/* page_owner must be initialized after buddy is ready */
+	page_ext_init_flatmem_late();
+	kmem_cache_init();
+
+	...
+}
+
+I've stared for a while at page_ext init and it seems that the
+page_ext_init_flatmem_late() can be simply dropped because there is anyway
+a call to invoke_init_callbacks() in page_ext_init() that is called much
+later in the boot process.
 
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Sincerely yours,
+Mike.
