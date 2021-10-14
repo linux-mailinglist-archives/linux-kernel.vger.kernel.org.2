@@ -2,76 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C00B342DB7F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:27:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D87842DB89
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:28:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231493AbhJNO3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 10:29:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39586 "EHLO
+        id S231475AbhJNOac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 10:30:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229953AbhJNO3P (ORCPT
+        with ESMTP id S231206AbhJNOab (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 10:29:15 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1690BC061570
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 07:27:11 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0c72008718c38cc37e4684.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:7200:8718:c38c:c37e:4684])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 4931E1EC04B9;
-        Thu, 14 Oct 2021 16:27:09 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1634221629;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4UDSRZNLbujPIMgHpMxdcCEUXw1BBdhLqNoRmR+wHFg=;
-        b=iLtR1bF1mRNcV6+xUyanug+PaG/VCmB6cg7pXYslKB4NcVnLGe8/5pdmacz63+hrZcc3vc
-        iD6dldpHkzBhetlsMYE169aKDJciVwbTtlSzpljTpfq3tmQMAurJ+aiwisyvcu1fbKz6Ol
-        mG6/SX2zFHDllWBhsIENM0DIypeNHYQ=
-Date:   Thu, 14 Oct 2021 16:27:07 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Ville =?utf-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
-Cc:     Ser Olmy <ser.olmy@protonmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [regression] commit d298b03506d3 ("x86/fpu: Restore the masking
- out of reserved MXCSR bits")
-Message-ID: <YWg+O1AXrWLO3Sf9@zn.tnic>
-References: <YWgYIYXLriayyezv@intel.com>
+        Thu, 14 Oct 2021 10:30:31 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FC38C061570;
+        Thu, 14 Oct 2021 07:28:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=saaEW/JUFx/dk1YX0uUtbSq9f1ztgQrV+3IzEx5+zBk=; b=YjxHhm2CUacKiivFVXlfDu1ixl
+        dVuuZ5o97RrcceD7vr5kSFWTJue0bY6DNifIMDJ8HPvkjG1F7FekDTEEwRnbdrd3/j1rIqOsAj2IW
+        yu/x2PBKn9vMSbiDp/hvq4aDonwpnflmCSJ6oAE0AZQQIiuE1ZcFJlrxYmKlpoYxS3ALLGIfhoCnj
+        bbJiJJjX5xfg6R+f3F3tI9NUuXNP3zH5jmWfnfw0q627gjrVeYYkiGfyNwzyegVdJS1Lqtc0z5jja
+        QXaSG0E0rwB2tIKBBcsOs9M1T85StaLkJfUySiXZ/mZvs+N1KHXGsyd6HeBnJt32xY2IyCvtYu4Tl
+        RDOaEIBA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mb1hl-008OOe-41; Thu, 14 Oct 2021 14:27:48 +0000
+Date:   Thu, 14 Oct 2021 15:27:33 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Kent Overstreet <kent.overstreet@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        akpm@linux-foundation.org, linux-raid@vger.kernel.org,
+        linux-block@vger.kernel.org, axboe@kernel.dk,
+        alexander.h.duyck@linux.intel.com
+Subject: Re: [PATCH 5/5] brd: Kill usage of page->index
+Message-ID: <YWg+VUxXiJJTxXA3@casper.infradead.org>
+References: <20211013160034.3472923-1-kent.overstreet@gmail.com>
+ <20211013160034.3472923-6-kent.overstreet@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YWgYIYXLriayyezv@intel.com>
+In-Reply-To: <20211013160034.3472923-6-kent.overstreet@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 02:44:33PM +0300, Ville Syrjälä wrote:
-> I have a 32bit installation here that stopped working. Bisected it
-> to commit d298b03506d3 ("x86/fpu: Restore the masking out of reserved
-> MXCSR bits").
+On Wed, Oct 13, 2021 at 12:00:34PM -0400, Kent Overstreet wrote:
+> As part of the struct page cleanups underway, we want to remove as much
+> usage of page->mapping and page->index as possible, as frequently they
+> are known from context.
+> 
+> In the brd code, we're never actually reading from page->index except in
+> assertions, so references to it can be safely deleted.
+> 
+> Signed-off-by: Kent Overstreet <kent.overstreet@gmail.com>
 
-Lemme make sure I understand this correctly: this patch is bad and with
-it reverted it works?
+More than that ... this is essentially asserting that the radix tree
+code works, and we have a test suite to ensure that.
 
-Because before this patch, the restoring would be a more restrictive
-than before and this patch reverts the code to the old behavior for
-invalid MXCSR bits.
-
-> Tested the same disk on on both a 64bit capable Pentium D
-> and a 32bit only Pentium 4 just to rule out the specific CPU.
-> Busted on both.
-
-So that's a purely 32-bit installation and a 32-bit kernel and you've
-booted it on two different machines?
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
