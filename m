@@ -2,129 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1C2F42E235
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 21:52:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 383E342E233
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 21:51:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233773AbhJNTxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 15:53:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56620 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233713AbhJNTxb (ORCPT
+        id S233733AbhJNTxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 15:53:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57324 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233675AbhJNTxa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 15:53:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634241086;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ogcFj+sByVK4/R93V4MHhdhBzoSVkZq8qT5UCE78dsc=;
-        b=Vl3d0LZseJwGHtry9Mjip6lgmyejPC9VMJToJ2vteJk0E1YXOTxWqAJkC+N5eGK0doEs1X
-        /kv2iZo+9feoRvOBmUdjAVw/5afzbr5tNEBJJl7AdhWL1uEKi8KjsiaoHtswE4VW37yIDW
-        b6ylcZ1Ve0Oa6kPXB7UcrLi0go62qIM=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-155-76CQ1FSUPAq-eeHLwEi9cQ-1; Thu, 14 Oct 2021 15:51:25 -0400
-X-MC-Unique: 76CQ1FSUPAq-eeHLwEi9cQ-1
-Received: by mail-qt1-f197.google.com with SMTP id c19-20020ac81e93000000b002a71180fd3dso5297658qtm.1
+        Thu, 14 Oct 2021 15:53:30 -0400
+Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 568D7C061570
         for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 12:51:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ogcFj+sByVK4/R93V4MHhdhBzoSVkZq8qT5UCE78dsc=;
-        b=JxCQUgdS/TZpVisTGk3++q2+57RmSuwesd5ZtRFaZz113CZ5mrJMKyPUO/DsqD1uJP
-         VkLCqgYXXd0DIBZgaJ+iyp2Ga9g4OJoFLOo08qPm6BzxJYRTnuvO8hsgtk2xeWXSjwYc
-         zto7TYj5ornh3t7SBSSMvRH4Eh3dwg0PzKh80Xm/lT7xIJ300bicQuu4gVTpuG+l6mgd
-         QbkvEUOlL34n+lmY8P//Rc4n7yE/vTO9NYBkhPVYOuAW2XGpG7BEhnKj01f4cc4scLf1
-         XWmI6uu/3AohTyF6hL57Mi3gJWDd5gWCPtcF9Bz1Ax9+KAfVbEAoL1Y7iHgTruF53v9U
-         117A==
-X-Gm-Message-State: AOAM5327XDhZvGad9Nlima3t8LyOLBd4ok7dE0BU5BSRNJp5i/rKoF+1
-        GZk1/iTOOaTp/RJNqonM8A1N7KTx4JO8NZ3bsyiC2jBjVQHCDxnNds6bYTCCTshoy3y/ymnN9Ja
-        NMHlmZr7NWYgURboM4+sZyCbL
-X-Received: by 2002:ac8:5fc5:: with SMTP id k5mr8754674qta.273.1634241084552;
-        Thu, 14 Oct 2021 12:51:24 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxEP6AM1EqcbwuULvFfiw8xfRaY0OsFKLxKOB3CaLItmwqnQm/m2rUl5ZM9/0F9nY5C1hze8w==
-X-Received: by 2002:ac8:5fc5:: with SMTP id k5mr8754620qta.273.1634241084286;
-        Thu, 14 Oct 2021 12:51:24 -0700 (PDT)
-Received: from treble ([2600:1700:6e32:6c00::15])
-        by smtp.gmail.com with ESMTPSA id i11sm1697564qki.28.2021.10.14.12.51.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Oct 2021 12:51:23 -0700 (PDT)
-Date:   Thu, 14 Oct 2021 12:51:18 -0700
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc:     Peter Zijlstra <peterz@infradead.org>, keescook@chromium.org,
-        jannh@google.com, linux-kernel@vger.kernel.org,
-        vcaputo@pengaru.com, mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, akpm@linux-foundation.org,
-        christian.brauner@ubuntu.com, amistry@google.com,
-        Kenta.Tada@sony.com, legion@kernel.org,
-        michael.weiss@aisec.fraunhofer.de, mhocko@suse.com, deller@gmx.de,
-        zhengqi.arch@bytedance.com, me@tobin.cc, tycho@tycho.pizza,
-        tglx@linutronix.de, bp@alien8.de, hpa@zytor.com,
-        mark.rutland@arm.com, axboe@kernel.dk, metze@samba.org,
-        laijs@linux.alibaba.com, luto@kernel.org,
-        dave.hansen@linux.intel.com, ebiederm@xmission.com,
-        ohoono.kwon@samsung.com, kaleshsingh@google.com,
-        yifeifz2@illinois.edu, linux-hardening@vger.kernel.org,
-        linux-arch@vger.kernel.org, vgupta@kernel.org, will@kernel.org,
-        guoren@kernel.org, bcain@codeaurora.org, monstr@monstr.eu,
-        tsbogend@alpha.franken.de, nickhu@andestech.com,
-        jonas@southpole.se, mpe@ellerman.id.au, paul.walmsley@sifive.com,
-        hca@linux.ibm.com, ysato@users.sourceforge.jp, davem@davemloft.net,
-        chris@zankel.net
-Subject: Re: [PATCH 0/7] wchan: Fix wchan support
-Message-ID: <20211014195118.lcuik3jb6zcbm6vu@treble>
-References: <20211008111527.438276127@infradead.org>
- <YWgcWnbsvI1rbvEj@shell.armlinux.org.uk>
- <YWgyy+KvNLQ7eMIV@shell.armlinux.org.uk>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=SgZrd2Dl7DkxDw3kJKusXJ/WFzczBgnPXkjSStE9MhA=; b=sl7UHSNrpFSAto/vMuhknybO1j
+        wkhvRJGC4kRVz0riuSsTMMzfFg/IdyacPfo0mz2NinA1lQFKyCwzaPFJq/iv+jdBtOWp0tv8Mm+Sr
+        U3NCMuIjAkCTytNQVGOlilCDm/JjHDWCFqUEJ2tCX9NX/bNrgJz7RgMuHEUCUK1yw+l89OEXjJJuJ
+        8iofNT01z+mK+i39CmrJUOSslQ3hMzRgaRm5EYzg83VwTFL8dkJUl7Ew9zGDllcERg+O1ZDtvYMKM
+        xz+msUELgesyk4a/HrKrCf7DDaphRYygw22AyVDtAL2LfGqZx3nNTcIgKhPhnZLBm7p9byWBniLUE
+        VzNZFUmw==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mb6lA-004GWE-8S; Thu, 14 Oct 2021 19:51:24 +0000
+Date:   Thu, 14 Oct 2021 12:51:24 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     jeyu@kernel.org, linux-kernel@vger.kernel.org,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH] module: fix elf_validity_check() warns seen on 32-bit
+ platforms
+Message-ID: <YWiKPMKh6025c6dW@bombadil.infradead.org>
+References: <20211014181044.24365-1-skhan@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YWgyy+KvNLQ7eMIV@shell.armlinux.org.uk>
+In-Reply-To: <20211014181044.24365-1-skhan@linuxfoundation.org>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 02:38:19PM +0100, Russell King (Oracle) wrote:
-> What is going on here is that the ARM stacktrace code refuses to trace
-> non-current tasks in a SMP environment due to the racy nature of doing
-> so if the non-current tasks are running.
+On Thu, Oct 14, 2021 at 12:10:44PM -0600, Shuah Khan wrote:
+> Fix the following warnings introduced by
 > 
-> When walking the stack with frame pointers, we:
+> commit: 8b1185a4427b ("module: change to print useful messages from elf_validity_check()")
 > 
-> - validate that the frame pointer is between the stack pointer and the
->   top of stack defined by that stack pointer.
-> - we then load the next stack pointer and next frame pointer from the
->   stack.
+> warning: format '%llu' expects argument of type 'long long unsigned int',
+> but argument 3 has type 'Elf32_Off' {aka 'unsigned int'}
 > 
-> The reason this is unsafe when the task is not blocked is the stack can
-> change at any moment, which can cause the value read as a stack pointer
-> to be wildly different. If the read frame pointer value is roughly in
-> agreement, we can end up reading any part of memory, which would be an
-> information leak.
+> Fix it by tweaking messages to not print ELF64* fields.
+> 
+> Fixes: 8b1185a4427b ("module: change to print useful messages from elf_validity_check()")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
 
-It would be a good idea to add some guardrails to prevent that
-regardless.  If there's stack corruption for any reason, the unwinder
-shouldn't make things worse.
+Actually can I trouble you just fold this in with your older patch, I can just
+drop your old patch and merge this one. No point in merging two patches
+if we can just have one.
 
-On x86 the unwinder relies on the caller to ensure the task is blocked
-(or current).  If the caller doesn't do that, they might get garbage,
-and they get to keep the pieces.
-
-But an important part of that is that the unwinder has guardrails to
-ensure it handles stack corruption gracefully by never accessing out of
-bounds of the stack.
-
-When multiple stacks are involved in a kernel execution path (task, irq,
-exception, etc), the stacks link to each other (e.g., last word on the
-irq stack might point to the task stack).  Also the irq/exception stack
-addresses are stored in percpu variables, and the task stack is in the
-task struct.  So the unwinder can easily make sure it's in-bounds.  See
-get_stack_info() in arch/x86/kernel/dumpstack_64.c.
-
--- 
-Josh
-
+  Luis
