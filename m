@@ -2,109 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1196C42D943
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 14:26:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B7A842D946
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 14:26:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231477AbhJNM2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 08:28:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25379 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230339AbhJNM2k (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 08:28:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634214395;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Nw9W7HyIzCeo5RrN6lM9UA8wdwwigGUEHJS6J9krvP0=;
-        b=HvnSl+15guxjH+8liuUDVkR6kl6RAcxGlUHj+iiHvlUJrcT9WxrViZcWU3cmqSckEN+zPi
-        WU2r8WHdUFvSprk5UCcUewH7K8/lW7QZV8z/geV5NundF9BxPb3BJBVqnIkTdIFMpQabVw
-        RQaIY3LrN/EdN9oRQh43byz+bSrMIfA=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-238-xLjMFVVyOCOOmHn-UiICOQ-1; Thu, 14 Oct 2021 08:26:34 -0400
-X-MC-Unique: xLjMFVVyOCOOmHn-UiICOQ-1
-Received: by mail-ed1-f69.google.com with SMTP id l10-20020a056402230a00b003db6977b694so4961873eda.23
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 05:26:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=Nw9W7HyIzCeo5RrN6lM9UA8wdwwigGUEHJS6J9krvP0=;
-        b=hNZHJS+aTi/TuvCvz1WQrvJo/esB12inChdFbtgHyw/DQkmoKH39OrNq6YxpJ792kI
-         w8dGO4wnvklUy0fJnw3MTO1GUEF4KWTq1y7UT184qLVNP8sfaAO1fKcUeftEWlCVNtj8
-         aAVyu9c3udF6PVzYJ2CEotjqdbb6kTOBIwBOAdIxWIZRn4a3rRFX6pnP+M8KBUrSOrno
-         Wtd5FIIP/ot5Xr5JKutqlas8+kIu/tkgVi7TsJlGGKH8P28J7/8OH+Oq8Fd71t+uTgqB
-         +S6XEYPe5o17yHv18PCoq+V8G9r370+VDBBw/01QBgwa31IK6jSS2L8cdUY+M6T46YZj
-         ckVw==
-X-Gm-Message-State: AOAM5327TM8XJabjVGeNiK1i/r7DNEB6BGgb++dQqKRYJ80SS50s+PIV
-        zrYE7xva6T6h+5g8B6faC+y9EbCqyJ2xnzEPrgWtRHGJzsUtvW+jZQ1b5SSCF+Zs6Mu2fJgNF3n
-        /+Ltx0723fxzsvE6yh8tInzlf
-X-Received: by 2002:a17:906:c041:: with SMTP id bm1mr3477320ejb.280.1634214393532;
-        Thu, 14 Oct 2021 05:26:33 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzTB0hQgUCoVigLcm7gDa+Nn2NZNaSf2eIC82HTFKDicUQIlwso41JQ/erZLteLVzwc2ywzrg==
-X-Received: by 2002:a17:906:c041:: with SMTP id bm1mr3477290ejb.280.1634214393348;
-        Thu, 14 Oct 2021 05:26:33 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id o12sm2087672edw.84.2021.10.14.05.26.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Oct 2021 05:26:32 -0700 (PDT)
-Message-ID: <0a5aa9d3-e0d4-266e-5e25-021a5ea9c611@redhat.com>
-Date:   Thu, 14 Oct 2021 14:26:31 +0200
+        id S231623AbhJNM2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 08:28:46 -0400
+Received: from phobos.denx.de ([85.214.62.61]:35870 "EHLO phobos.denx.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231558AbhJNM2o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 08:28:44 -0400
+Received: from crub (pd95f1d7c.dip0.t-ipconnect.de [217.95.29.124])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: agust@denx.de)
+        by phobos.denx.de (Postfix) with ESMTPSA id 486F283572;
+        Thu, 14 Oct 2021 14:26:38 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+        s=phobos-20191101; t=1634214398;
+        bh=h3d+7/o10dgcD7pQSvUh5MYsQC2GB4YO4Pb5D5tQVj4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=QJ3AvB+swCyUTTe+4Apkhltx3Vjvpwrg7wbW1tD+npZGf2SJNzHhS+UURxct9CVdi
+         0HbSnlqIyuZe9aY1/Qa1X0PVNCJMwLAAZxbunFas5i7jjNvXdyM5Ed9lg6oLw+I3MR
+         UU+4AUlaDZSf1UIW+BUdGhOI0tcwahiBEQ9EkMY3Ta7IiZS+aEdz3I2up5TFULRPEZ
+         z7WwT7pPwV7ZtotWSHLrctaQqiznVRcSHqXTClaJNNAnjNA3ZaWDWOgZCHjvWRvvCd
+         H0eyP5k641kEpNp/ig2v7agHaSwR4rKktl4K5bglZIBCFF80Wssi6/QDllKhXeSpcC
+         0VdsamN+lQzcw==
+Date:   Thu, 14 Oct 2021 14:26:37 +0200
+From:   Anatolij Gustschin <agust@denx.de>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Rob Herring <robh@kernel.org>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [RFC PATCH] powerpc: dts: Remove MPC5xxx platforms
+Message-ID: <20211014142637.3fda421b@crub>
+In-Reply-To: <20211013173808.7ab92035@canb.auug.org.au>
+References: <20211012153456.2844193-1-robh@kernel.org>
+        <20211013173808.7ab92035@canb.auug.org.au>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [patch 13/31] x86/fpu: Move KVMs FPU swapping to FPU core
-Content-Language: en-US
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        "Liu, Jing2" <jing2.liu@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     "x86@kernel.org" <x86@kernel.org>,
-        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "Nakajima, Jun" <jun.nakajima@intel.com>,
-        Jing Liu <jing2.liu@linux.intel.com>,
-        "seanjc@google.com" <seanjc@google.com>,
-        Andrew Cooper <andrew.cooper3@citrix.com>
-References: <871r4p9fyh.ffs@tglx>
- <ec9c761d-4b5c-71e2-c1fc-d256b6b78c04@redhat.com> <875ytz7q2u.ffs@tglx>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <875ytz7q2u.ffs@tglx>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-Virus-Scanned: clamav-milter 0.103.2 at phobos.denx.de
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/10/21 14:23, Thomas Gleixner wrote:
->> In principle I don't like it very much; it would be nicer to say "you
->> enable it for QEMU itself via arch_prctl(ARCH_SET_STATE_ENABLE), and for
->> the guests via ioctl(KVM_SET_CPUID2)".  But I can see why you want to
->> keep things simple, so it's not a strong objection at all.
-> Errm.
-> 
->     qemu()
->       read_config()
->       if (dynamic_features_passthrough())
-> 	request_permission(feature)             <- prctl(ARCH_SET_STATE_ENABLE)
-> 
->       create_vcpu_threads()
->         ....
-> 
->         vcpu_thread()
-> 	 kvm_ioctl(ENABLE_DYN_FEATURE, feature) <- KVM ioctl
-> 
-> That's what I lined out, right?
-> 
+On Wed, 13 Oct 2021 17:38:08 +1100
+Stephen Rothwell sfr@canb.auug.org.au wrote:
 
-I meant prctl for QEMU-in-user-mode vs. ioctl QEMU-in-guest-mode (i.e. 
-no prctl if only the guest uses it).  But anyway it's just abstract 
-"beauty", let's stick to simple. :)
+>Hi Rob,
+>
+>On Tue, 12 Oct 2021 10:34:56 -0500 Rob Herring <robh@kernel.org> wrote:
+>>
+>> The mpc5xxx platforms have had dts warnings for some time which no one
+>> seems to care to fix, so let's just remove the dts files.
+>> 
+>> According to Arnd:
+>> "Specifically, MPC5200B has a 15 year lifetime, which ends in
+>> 11 months from now. The original bplan/Genesi Efika 5K2 was
+>> quite popular at the time it came out, and there are probably
+>> still some of those hanging around, but they came with Open
+>> Firmware rather than relying on the dts files that ship with the
+>> kernel.
+>> 
+>> Grant Likely was the original maintainer for MPC52xx until 2011,
+>> Anatolij Gustschin is still listed as maintainer since then but hasn't
+>> been active in it for a while either. Anatolij can probably best judge
+>> which of these boards are still in going to be used with future kernels,
+>> but I suspect once you start removing bits from 52xx, the newer
+>> but less common 512x platform can go away as well."
+>> 
+>> Cc: Anatolij Gustschin <agust@denx.de>
+>> Cc: Arnd Bergmann <arnd@arndb.de>
+>> Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+>> Cc: Michael Ellerman <mpe@ellerman.id.au>
+>> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+>> Cc: Paul Mackerras <paulus@samba.org>
+>> Cc: linuxppc-dev@lists.ozlabs.org
+>> Signed-off-by: Rob Herring <robh@kernel.org>
+>> ---
+>> Sending this out as a feeler to see if anyone cares. If anyone does, 
+>> please fix the warnings.
 
-Paolo
+I've sent patches to fix the warnings.
+  
+Thanks,
 
+Anatolij
