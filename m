@@ -2,95 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3A9E42F396
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 15:34:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA4F842F397
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 15:35:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236600AbhJONg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 09:36:26 -0400
-Received: from mga09.intel.com ([134.134.136.24]:19798 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234697AbhJONgY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 09:36:24 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10137"; a="227805464"
-X-IronPort-AV: E=Sophos;i="5.85,375,1624345200"; 
-   d="scan'208";a="227805464"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2021 06:34:18 -0700
-X-IronPort-AV: E=Sophos;i="5.85,375,1624345200"; 
-   d="scan'208";a="461566038"
-Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.212.163.167]) ([10.212.163.167])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2021 06:34:17 -0700
-Message-ID: <d5e755fd-41a7-7c3f-f540-094c1c583365@linux.intel.com>
-Date:   Fri, 15 Oct 2021 06:34:17 -0700
+        id S236799AbhJONhe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 09:37:34 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:39504
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234697AbhJONhb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 09:37:31 -0400
+Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com [209.85.216.72])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 838E240062
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 13:35:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1634304924;
+        bh=Y4U/fJqXuLgg52bUOfbV+iRZ91dG+diGxyV+QIZgnxY=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=kUfr5mjMpWFC5fPiFxCb6T4BMnjK/15PB3L6/VqLFx4Jcsw8pzdkje5TEy9oCjoSY
+         ik63wXBH1BOXootrUfRGy7XVQfF7qgUMxZc6EqozPrKCj82Q8bXmxylmkEWUMp2KaZ
+         X9SAUI69iSEbyLPBD87pa2s97+Kl/TgjdbSGyGujbD/mlkS0ld45Yfw7RK4ZA791xy
+         j6TE4JljXWNsToaiE2m5udve/Vwh0EZcFEIB1K/d8n+efMcm2TsPdGqy2tit5XpheK
+         MUyBWJ6SNSoZ//QEoa1qu+vZQdFesyMMei3BslhKXnsFXBHN++akZaJHhbTcnUZY4K
+         GFZYNokAGAGJA==
+Received: by mail-pj1-f72.google.com with SMTP id l10-20020a17090ac58a00b001a04b92a5d4so4953912pjt.8
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 06:35:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Y4U/fJqXuLgg52bUOfbV+iRZ91dG+diGxyV+QIZgnxY=;
+        b=lQ9gTIJoBbufKlIJKEa0n8YB9rUXfnm8up/GARL+u31s2JjHTdlLz6qXC7aNXg6qxP
+         Wwlt2p0bk8ELOk0pqYqBVeyUQxZp04a/gGkZNlxmuRAxY/efsbDt3WASQYxTRdVeTvVF
+         HheFgcaHYOOCpRGau2Io+QhFrNJUBTBkjJWagomxPzA0+yChuyr9tWinJfWcxHQR3MDF
+         d+FJWcLJYJLu8MxFafNiuu1kOpFLGCGcEN6OfsOnDa6OXUDHixTO4Ah+w7Ia+m6fncfp
+         yPlinkrCZ7v/imv1hO+IQVwrjW53B7VXQBFLFeuv8NPV/QCY8oM/9k6Ie4f1MbGRpHNY
+         qYwg==
+X-Gm-Message-State: AOAM533P6nDwGJEl7fKjJp2TixhNFxUv02cVuprrmgLyUMuTRAHZMDlW
+        pGrFxTDz25SsqliFWHoM+RaUHueOoDlZ4n5KVjy/7od+89pG1hzy3ZOnwq44R2MgaopqBOTCwh/
+        aK6aStcp+e01tpmH5/d+/sbkSSL/YJfzODM8M9QWGjg==
+X-Received: by 2002:a62:e90d:0:b0:44d:35a1:e5a0 with SMTP id j13-20020a62e90d000000b0044d35a1e5a0mr11806362pfh.54.1634304922960;
+        Fri, 15 Oct 2021 06:35:22 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz07OGlC4jPnkxjhJx1/FXGc+HkyjOrYc/PtEHciW7RhWaLFxsvrbGwzHFbiuv9FCIULMRE8Q==
+X-Received: by 2002:a62:e90d:0:b0:44d:35a1:e5a0 with SMTP id j13-20020a62e90d000000b0044d35a1e5a0mr11806331pfh.54.1634304922600;
+        Fri, 15 Oct 2021 06:35:22 -0700 (PDT)
+Received: from localhost.localdomain (2001-b011-3814-7c46-b875-7e50-69b7-4e53.dynamic-ip6.hinet.net. [2001:b011:3814:7c46:b875:7e50:69b7:4e53])
+        by smtp.gmail.com with ESMTPSA id y8sm5143327pfe.217.2021.10.15.06.35.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Oct 2021 06:35:22 -0700 (PDT)
+From:   Chris Chiu <chris.chiu@canonical.com>
+To:     cezary.rojewski@intel.com, pierre-louis.bossart@linux.intel.com,
+        liam.r.girdwood@linux.intel.com, yang.jie@linux.intel.com,
+        broonie@kernel.org, tiwai@suse.com
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Chris Chiu <chris.chiu@canonical.com>
+Subject: [PATCH] ASoC: Intel: sof_sdw: Initialize the sof_sdw_quirk with RT711_JD_NULL
+Date:   Fri, 15 Oct 2021 21:34:24 +0800
+Message-Id: <20211015133424.494463-1-chris.chiu@canonical.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v5 16/16] x86/tdx: Add cmdline option to force use of
- ioremap_host_shared
-Content-Language: en-US
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-References: <20211009070132-mutt-send-email-mst@kernel.org>
- <8c906de6-5efa-b87a-c800-6f07b98339d0@linux.intel.com>
- <20211011075945-mutt-send-email-mst@kernel.org>
- <9d0ac556-6a06-0f2e-c4ff-0c3ce742a382@linux.intel.com>
- <20211011142330-mutt-send-email-mst@kernel.org>
- <4fe8d60a-2522-f111-995c-dcbefd0d5e31@linux.intel.com>
- <20211012165705-mutt-send-email-mst@kernel.org>
- <c09c961d-f433-4a68-0b38-208ffe8b36c7@linux.intel.com>
- <20211012171846-mutt-send-email-mst@kernel.org>
- <c2ce5ad8-4df7-3a37-b235-8762a76b1fd3@linux.intel.com>
- <20211015024923-mutt-send-email-mst@kernel.org>
-From:   Andi Kleen <ak@linux.intel.com>
-In-Reply-To: <20211015024923-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-cutting down the insane cc list.
+The jd_src of RT711 which is initialized in rt711/rt711_sdca_init
+will be overridden by rt711/rt711_sdca_add_codec_device_props when
+the sof_sdw_quirk is not RT711_JD_NULL. It will force the JD mode
+to RT711_JD1 and cause confusion while debugging the JD mode of
+the boards without quirk. Initialize sof_sdw_quirk with RT711_JD_NULL
+to honor the jd_src value in rt711/rt711_sdca init.
 
-On 10/14/2021 11:57 PM, Michael S. Tsirkin wrote:
-> On Thu, Oct 14, 2021 at 10:50:59PM -0700, Andi Kleen wrote:
->>> I thought you basically create an OperationRegion of SystemMemory type,
->>> and off you go. Maybe the OSPM in Linux is clever and protects
->>> some memory, I wouldn't know.
->>
->> I investigated this now, and it looks like acpi is using ioremap_cache(). We
->> can hook into that and force non sharing. It's probably safe to assume that
->> this is not used on real IO devices.
->>
->> I think there are still some other BIOS mappings that use just plain
->> ioremap() though.
->>
->>
->> -Andi
-> Hmm don't you mean the reverse? If you make ioremap shared then OS is
-> protected from malicious ACPI?
+Signed-off-by: Chris Chiu <chris.chiu@canonical.com>
+---
+ sound/soc/intel/boards/sof_sdw.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
-Nope
-
->   If you don't make it shared then
-> malicious ACPI can poke at arbitrary OS memory.
-
-
-When it's private it's protected and when it's shared it can be attacked
-
-
->
-> For BIOS I suspect there's no way around it, it needs to be
-> audited since it's executable.
-
-
-The guest BIOS is attested and trusted. The original ACPI tables by the 
-BIOS are attested and trusted too.
-
-Just if we map the ACPI tables temporarily shared then an evil 
-hypervisor could modify them during that time window.
-
--Andi
+diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
+index 6b06248a9327..d05c0565e09c 100644
+--- a/sound/soc/intel/boards/sof_sdw.c
++++ b/sound/soc/intel/boards/sof_sdw.c
+@@ -15,7 +15,7 @@
+ #include "sof_sdw_common.h"
+ #include "../../codecs/rt711.h"
+ 
+-unsigned long sof_sdw_quirk = RT711_JD1;
++unsigned long sof_sdw_quirk = RT711_JD_NULL;
+ static int quirk_override = -1;
+ module_param_named(quirk, quirk_override, int, 0444);
+ MODULE_PARM_DESC(quirk, "Board-specific quirk override");
+-- 
+2.20.1
 
