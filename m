@@ -2,121 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E905E42FE75
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 00:58:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04CFE42FE79
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 01:01:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243426AbhJOXAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 19:00:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59826 "EHLO
+        id S243441AbhJOXDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 19:03:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243393AbhJOXAE (ORCPT
+        with ESMTP id S243422AbhJOXDT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 19:00:04 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96FE3C061570;
-        Fri, 15 Oct 2021 15:57:57 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id y4so7312402plb.0;
-        Fri, 15 Oct 2021 15:57:57 -0700 (PDT)
+        Fri, 15 Oct 2021 19:03:19 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93B4DC061570;
+        Fri, 15 Oct 2021 16:01:12 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id y12so45374615eda.4;
+        Fri, 15 Oct 2021 16:01:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=hgvK29WL+pvpN0yEVZsVdwSfijkxOwSkGHIbnUFY7u4=;
-        b=Z/vykFjzOvSxapnRki6GjQS7FXkLOPk/rFsHc2GD+RQ8a2S9IAMVTBmxxlKmYDSEKB
-         5ZR3mfVdDW5TCdYetmdl0EKV7wuE0GwEmvypNqZZ5yqzaOfrPlbs1q04cgiLXWSAChAW
-         UjtGfjgV9Zr6dAVCld0NHjXzMpo5ifavD2D585itudCGjLCdeix4lIJVLb74bEAgxrrt
-         2WHbOold7CCvjdsE9dENYm8jcJasHc6wNqPOVq1KdA1z7c0sUcN1VVT7YRkzTcN1Vl0j
-         JC+SYwKt3ZJNX1EgiNdFSk5C6AHz8AH3dn5teUw6lqGSj/1FckD2V3Q9QacH39HwGjgr
-         sJPQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=T4LRxAmbFnflH89t7OJtpK+BQEdtR46vgXDNxjLPMWU=;
+        b=Y9WTtoiXiSsSWyIAWeO3FssHPSkqyF3GnQexcuagjyW84NFoky0YLr09dK3/Fw3x1b
+         //DBLwyGlrOA1Fcg2o/mNhQ1hKE5LLSyjzhlRCEqwK0SDX5ISLbvsv0OdQR8ni0Eb0Ro
+         TXa2DjrRnf+XNmpshxJO4cti3KEudQSLfK79bjw9jzf4qyIv5OaBGWUikk3Oz457nKSC
+         rXRIZZSzkeWfpin9xA0cbCy3Jz5jfonO7nM5DaNAhV5ygodXKHdFjTH1Kz9E4/Xw1oJI
+         Xwg7xeRHib9WmItnidrP1dG3px5biJTEZD4W/YwfiN6ge4GIFTdHysaBtRxg8otI5SYk
+         ndyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=hgvK29WL+pvpN0yEVZsVdwSfijkxOwSkGHIbnUFY7u4=;
-        b=5eJLK9ADgswzyxTE4kXkUdrHKS6BNSaKJmDsI9NMvQ3x7IYPMhev4xmBQLvYsgKVVo
-         q0n8YgrclPVKG+OdiEWkj94tmanvob1GyHfVdiS/RZnI2moHpo4nLEaHAxwBvoex/Bpu
-         aG+c6OrtYeL2YD/1lyym2SS2fDovec4JDt70t2mpmd2Y6RhoR2Gt8FlCbrcho0b3pQ2Y
-         88KUBC0q/Ulu5+YoTJ+hakG9COMBYSbGwD28Z3E3KcMnWB9dGkVCAfjZNv2ny2w8xOOZ
-         7hS3ELJApl6XTS+EvTQCLL9IXUgFZcnW8AGw+9HezwJ7Y2j0I8+aCVroDgEqGP/W6pew
-         kR0A==
-X-Gm-Message-State: AOAM532IoHDd5R612Hxf2EhPlNMys4nGbtSUNdBoC4Cd7Ki4WrScu54E
-        PcLcPoS4BP2n5CZEqRSFN7A=
-X-Google-Smtp-Source: ABdhPJw3WDw5x15bLS8EH+FhmVq1yo3I4NQCS3AOiT09IG7bA6PSaGqwYiaC0H5TS5QzPP5NQi8iNg==
-X-Received: by 2002:a17:90a:d801:: with SMTP id a1mr30605776pjv.109.1634338677088;
-        Fri, 15 Oct 2021 15:57:57 -0700 (PDT)
-Received: from [10.69.44.239] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id w125sm5806038pfc.66.2021.10.15.15.57.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Oct 2021 15:57:56 -0700 (PDT)
-Message-ID: <7a721ee3-2a71-ffda-a818-796ebc81d288@gmail.com>
-Date:   Fri, 15 Oct 2021 15:57:55 -0700
+        bh=T4LRxAmbFnflH89t7OJtpK+BQEdtR46vgXDNxjLPMWU=;
+        b=sExcf8lAFHTNG/TsI9CpGozoOU5BOahxQszU/jy0LpMtwN3xRbIm4PQMpDsFCyYmzM
+         QcuzSbsvYr+fnxdVfAVFzJ7j9+V8lFn7PIyZVfS/yik5gwj8aqXlA89VrYjB0ZouNg+M
+         fT1s2SxLUPAQRuRS+8WZnyHuDuHC9JR3JJvKycUXWG3M87sJKWzYrN5C5Dwy4IFqML9a
+         IyXa6mO0GfX0dKf74sv08Uo4LRFdUIBt8d0k90DUUL4YDKGrxEqRHi6TssznVKMj1Qvg
+         d83wuSslDKlfDxcxi3MxHAhtA1uWqbFLX/x7Ge3kkYWXg9dbSQ2MkJXzJgJwUqHjYq1q
+         jzFQ==
+X-Gm-Message-State: AOAM533pnWt9AMs32nnFP2rUg2Bpfmu54hoA67T+6BDSZGuw3fYG+oG3
+        +ZEZLMegf7xuJT5wbuy4kHFV52/filo=
+X-Google-Smtp-Source: ABdhPJzIrWLtY+giAi17VaQkRdkdMHiZXWZ5wjZE86tw8qEYUHkxsAqqCsgGSZ6Cmty1XEYoHKlTFw==
+X-Received: by 2002:a17:906:9554:: with SMTP id g20mr9846761ejy.173.1634338870403;
+        Fri, 15 Oct 2021 16:01:10 -0700 (PDT)
+Received: from Ansuel-xps.localdomain (93-42-71-246.ip85.fastwebnet.it. [93.42.71.246])
+        by smtp.googlemail.com with ESMTPSA id oz11sm4836496ejc.72.2021.10.15.16.01.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Oct 2021 16:01:09 -0700 (PDT)
+From:   Ansuel Smith <ansuelsmth@gmail.com>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Ansuel Smith <ansuelsmth@gmail.com>
+Subject: [PATCH] net: dsa: qca8k: tidy for loop in setup and add cpu port check
+Date:   Sat, 16 Oct 2021 00:58:32 +0200
+Message-Id: <20211015225832.14824-1-ansuelsmth@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH] scsi: lpfc: Fix the misuse of the logging function
-Content-Language: en-US
-To:     Zheyu Ma <zheyuma97@gmail.com>, james.smart@broadcom.com,
-        dick.kennedy@broadcom.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1634279621-27115-1-git-send-email-zheyuma97@gmail.com>
-From:   James Smart <jsmart2021@gmail.com>
-In-Reply-To: <1634279621-27115-1-git-send-email-zheyuma97@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/14/2021 11:33 PM, Zheyu Ma wrote:
-> When the driver fails in lpfc_enable_pci_dev(), it will call
-> lpfc_printf_log(), and in a certain case the lpfc_dmp_dbg() is
-> eventually called, this function uses 'phba->port_list_lock', and at
-> this time this lock is not been initialized, which may cause a bug.
-> 
-> Fix this by using 'dev_printk' to replace the previous function.
-> 
-> The following log reveals it:
-> 
-> [   32.955597  ] INFO: trying to register non-static key.
-> [   32.956002  ] The code is fine but needs lockdep annotation, or maybe
-> [   32.956491  ] you didn't initialize this object before use?
-> [   32.956916  ] turning off the locking correctness validator.
-> [   32.958801  ] Call Trace:
-> [   32.958994  ]  dump_stack_lvl+0xa8/0xd1
-> [   32.959286  ]  dump_stack+0x15/0x17
-> [   32.959547  ]  assign_lock_key+0x212/0x220
-> [   32.959853  ]  ? SOFTIRQ_verbose+0x10/0x10
-> [   32.960158  ]  ? lock_is_held_type+0xd6/0x130
-> [   32.960483  ]  register_lock_class+0x126/0x790
-> [   32.960815  ]  ? rcu_read_lock_sched_held+0x33/0x70
-> [   32.961233  ]  __lock_acquire+0xe9/0x1e20
-> [   32.961565  ]  ? delete_node+0x71e/0x790
-> [   32.961859  ]  ? __this_cpu_preempt_check+0x13/0x20
-> [   32.962220  ]  ? lock_is_held_type+0xd6/0x130
-> [   32.962545  ]  lock_acquire+0x244/0x490
-> [   32.962831  ]  ? lpfc_dmp_dbg+0x65/0x600 [lpfc]
-> [   32.963241  ]  ? __kasan_check_write+0x14/0x20
-> [   32.963572  ]  ? read_lock_is_recursive+0x20/0x20
-> [   32.963921  ]  ? __this_cpu_preempt_check+0x13/0x20
-> [   32.964284  ]  ? lpfc_dmp_dbg+0x65/0x600 [lpfc]
-> [   32.964685  ]  ? _raw_spin_lock_irqsave+0x29/0x70
-> [   32.965086  ]  ? __kasan_check_read+0x11/0x20
-> [   32.965410  ]  ? trace_irq_disable_rcuidle+0x85/0x170
-> [   32.965787  ]  _raw_spin_lock_irqsave+0x4e/0x70
-> [   32.966124  ]  ? lpfc_dmp_dbg+0x65/0x600 [lpfc]
-> [   32.966526  ]  lpfc_dmp_dbg+0x65/0x600 [lpfc]
-> [   32.966913  ]  ? lockdep_init_map_type+0x162/0x710
-> [   32.967269  ]  ? error_prone+0x25/0x30 [lpfc]
-> [   32.967657  ]  lpfc_enable_pci_dev+0x157/0x250 [lpfc]
-> 
-> Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
+Tidy and organize qca8k setup function from multiple for loop.
+Change for loop in bridge leave/join to scan all port and skip cpu port.
+No functional change intended.
 
-Zheyu,
+Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+---
+ drivers/net/dsa/qca8k.c | 74 ++++++++++++++++++++++++-----------------
+ 1 file changed, 44 insertions(+), 30 deletions(-)
 
-Thank you for the time and effort on this. Your points are all valid. 
-However, we'd like to correct this using a slightly different method. 
-We will post a different patch shortly for the issue.
+diff --git a/drivers/net/dsa/qca8k.c b/drivers/net/dsa/qca8k.c
+index 2b0aadb0114c..ba0411d4c5ae 100644
+--- a/drivers/net/dsa/qca8k.c
++++ b/drivers/net/dsa/qca8k.c
+@@ -1122,28 +1122,34 @@ qca8k_setup(struct dsa_switch *ds)
+ 	if (ret)
+ 		dev_warn(priv->dev, "mib init failed");
+ 
+-	/* Enable QCA header mode on the cpu port */
+-	ret = qca8k_write(priv, QCA8K_REG_PORT_HDR_CTRL(cpu_port),
+-			  QCA8K_PORT_HDR_CTRL_ALL << QCA8K_PORT_HDR_CTRL_TX_S |
+-			  QCA8K_PORT_HDR_CTRL_ALL << QCA8K_PORT_HDR_CTRL_RX_S);
+-	if (ret) {
+-		dev_err(priv->dev, "failed enabling QCA header mode");
+-		return ret;
+-	}
+-
+-	/* Disable forwarding by default on all ports */
++	/* Initial setup of all ports */
+ 	for (i = 0; i < QCA8K_NUM_PORTS; i++) {
++		/* Disable forwarding by default on all ports */
+ 		ret = qca8k_rmw(priv, QCA8K_PORT_LOOKUP_CTRL(i),
+ 				QCA8K_PORT_LOOKUP_MEMBER, 0);
+ 		if (ret)
+ 			return ret;
+-	}
+ 
+-	/* Disable MAC by default on all ports */
+-	for (i = 1; i < QCA8K_NUM_PORTS; i++)
+-		qca8k_port_set_status(priv, i, 0);
++		/* Enable QCA header mode on all cpu ports */
++		if (dsa_is_cpu_port(ds, i)) {
++			ret = qca8k_write(priv, QCA8K_REG_PORT_HDR_CTRL(i),
++					  QCA8K_PORT_HDR_CTRL_ALL << QCA8K_PORT_HDR_CTRL_TX_S |
++					  QCA8K_PORT_HDR_CTRL_ALL << QCA8K_PORT_HDR_CTRL_RX_S);
++			if (ret) {
++				dev_err(priv->dev, "failed enabling QCA header mode");
++				return ret;
++			}
++		}
+ 
+-	/* Forward all unknown frames to CPU port for Linux processing */
++		/* Disable MAC by default on all user ports */
++		if (dsa_is_user_port(ds, i))
++			qca8k_port_set_status(priv, i, 0);
++	}
++
++	/* Forward all unknown frames to CPU port for Linux processing
++	 * Notice that in multi-cpu config only one port should be set
++	 * for igmp, unknown, multicast and broadcast packet
++	 */
+ 	ret = qca8k_write(priv, QCA8K_REG_GLOBAL_FW_CTRL1,
+ 			  BIT(cpu_port) << QCA8K_GLOBAL_FW_CTRL1_IGMP_DP_S |
+ 			  BIT(cpu_port) << QCA8K_GLOBAL_FW_CTRL1_BC_DP_S |
+@@ -1152,11 +1158,13 @@ qca8k_setup(struct dsa_switch *ds)
+ 	if (ret)
+ 		return ret;
+ 
+-	/* Setup connection between CPU port & user ports */
++	/* Setup connection between CPU port & user ports
++	 * Configure specific switch configuration for ports
++	 */
+ 	for (i = 0; i < QCA8K_NUM_PORTS; i++) {
+ 		/* CPU port gets connected to all user ports of the switch */
+ 		if (dsa_is_cpu_port(ds, i)) {
+-			ret = qca8k_rmw(priv, QCA8K_PORT_LOOKUP_CTRL(cpu_port),
++			ret = qca8k_rmw(priv, QCA8K_PORT_LOOKUP_CTRL(i),
+ 					QCA8K_PORT_LOOKUP_MEMBER, dsa_user_ports(ds));
+ 			if (ret)
+ 				return ret;
+@@ -1193,16 +1201,14 @@ qca8k_setup(struct dsa_switch *ds)
+ 			if (ret)
+ 				return ret;
+ 		}
+-	}
+ 
+-	/* The port 5 of the qca8337 have some problem in flood condition. The
+-	 * original legacy driver had some specific buffer and priority settings
+-	 * for the different port suggested by the QCA switch team. Add this
+-	 * missing settings to improve switch stability under load condition.
+-	 * This problem is limited to qca8337 and other qca8k switch are not affected.
+-	 */
+-	if (priv->switch_id == QCA8K_ID_QCA8337) {
+-		for (i = 0; i < QCA8K_NUM_PORTS; i++) {
++		/* The port 5 of the qca8337 have some problem in flood condition. The
++		 * original legacy driver had some specific buffer and priority settings
++		 * for the different port suggested by the QCA switch team. Add this
++		 * missing settings to improve switch stability under load condition.
++		 * This problem is limited to qca8337 and other qca8k switch are not affected.
++		 */
++		if (priv->switch_id == QCA8K_ID_QCA8337) {
+ 			switch (i) {
+ 			/* The 2 CPU port and port 5 requires some different
+ 			 * priority than any other ports.
+@@ -1238,6 +1244,12 @@ qca8k_setup(struct dsa_switch *ds)
+ 				  QCA8K_PORT_HOL_CTRL1_WRED_EN,
+ 				  mask);
+ 		}
++
++		/* Set initial MTU for every port.
++		 * We have only have a general MTU setting. So track
++		 * every port and set the max across all port.
++		 */
++		priv->port_mtu[i] = ETH_FRAME_LEN + ETH_FCS_LEN;
+ 	}
+ 
+ 	/* Special GLOBAL_FC_THRESH value are needed for ar8327 switch */
+@@ -1251,8 +1263,6 @@ qca8k_setup(struct dsa_switch *ds)
+ 	}
+ 
+ 	/* Setup our port MTUs to match power on defaults */
+-	for (i = 0; i < QCA8K_NUM_PORTS; i++)
+-		priv->port_mtu[i] = ETH_FRAME_LEN + ETH_FCS_LEN;
+ 	ret = qca8k_write(priv, QCA8K_MAX_FRAME_SIZE, ETH_FRAME_LEN + ETH_FCS_LEN);
+ 	if (ret)
+ 		dev_warn(priv->dev, "failed setting MTU settings");
+@@ -1728,7 +1738,9 @@ qca8k_port_bridge_join(struct dsa_switch *ds, int port, struct net_device *br)
+ 	cpu_port = dsa_to_port(ds, port)->cpu_dp->index;
+ 	port_mask = BIT(cpu_port);
+ 
+-	for (i = 1; i < QCA8K_NUM_PORTS; i++) {
++	for (i = 0; i < QCA8K_NUM_PORTS; i++) {
++		if (dsa_is_cpu_port(ds, i))
++			continue;
+ 		if (dsa_to_port(ds, i)->bridge_dev != br)
+ 			continue;
+ 		/* Add this port to the portvlan mask of the other ports
+@@ -1758,7 +1770,9 @@ qca8k_port_bridge_leave(struct dsa_switch *ds, int port, struct net_device *br)
+ 
+ 	cpu_port = dsa_to_port(ds, port)->cpu_dp->index;
+ 
+-	for (i = 1; i < QCA8K_NUM_PORTS; i++) {
++	for (i = 0; i < QCA8K_NUM_PORTS; i++) {
++		if (dsa_is_cpu_port(ds, i))
++			continue;
+ 		if (dsa_to_port(ds, i)->bridge_dev != br)
+ 			continue;
+ 		/* Remove this port to the portvlan mask of the other ports
+-- 
+2.32.0
 
--- james
