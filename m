@@ -2,115 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE86E42E795
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 06:14:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CED9942E804
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 06:45:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234215AbhJOEQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 00:16:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56308 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233083AbhJOEQl (ORCPT
+        id S235231AbhJOErl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 00:47:41 -0400
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:59924 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230186AbhJOErk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 00:16:41 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC512C061570
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 21:14:35 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id v8so3163161pfu.11
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 21:14:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Si9ouXlXyI21h1ATzxm32s1noPryMBQu12dZAHuCiSI=;
-        b=Hp4v4euUd7ul9q1hL3fqCIwqMgN+jbR32+hImETHLGmz35MNo0PZEW8gz7WPwtSENW
-         YBe6eYE0aljM2NycLTLkbrTXiMd7/EHQNuUDjkwMgNpqv87V+9xfYreyaxWDGgLx0czH
-         q49zMs+M7DEpBv++56JbBsAtvwPfYXzM2Wm9Xb1nvqNk2AnaonB1qgD8sEglx7grid/D
-         v4Iq/q3ooiacnhL3dxC7guq/i1SyHwZjGqBzfEhKhmdq5mPjLzWtbShr68gwV1OGS2CG
-         LVQHj+B7Gqwm2uERTyXrpE9wSK5YC7EDhQyJY0JSKZbsHp5mGTtKBd6Ghd92BPyAh+Xz
-         8wzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Si9ouXlXyI21h1ATzxm32s1noPryMBQu12dZAHuCiSI=;
-        b=GTbXF+VWkWOrVVfg4DfVIXBkchc6FfjRp7KQMcTjbs0O/Lu5OftoAWCCf8s/DqeuZA
-         JRoLKVnfdYS2Nbn7AiEKUrE2u/dYPf+maJTRX59FsgxEPqpw7QKa34QHnttxiQlGR6Hb
-         jW5LuyWNVRq1H8Tm3ytOdpzxcjACr0xqizgkxIyXO5hz5uv1ABlj3JH2V7Wd3lT2fchT
-         OLvn8bNJetmkh2WNYSTcwFMbIupYpOiBEby7EnZCsSqezEpnxab25JP51A8M/G0ID9oe
-         T+keNYinQWXTLr7T1CxZb24tkQHLsjdutT5CW83Rq0di/GcYM32ynqUmZqnlyxYKhJLZ
-         OoXw==
-X-Gm-Message-State: AOAM530KyDG8Amfmf7LF2LzNVzo1kmFFpciv3HELo/cfu1IBj3pRTfa3
-        HuekgxayPyFLrPDM7pcwFDQ=
-X-Google-Smtp-Source: ABdhPJz9cdiz3oIXM1tM3X2Gi6jljFff4Y9w090ty6ICAhh7xl2QHCnRKoVPkbRjQ8TgcGGnZW0FEA==
-X-Received: by 2002:a05:6a00:1488:b0:44d:25b2:f80b with SMTP id v8-20020a056a00148800b0044d25b2f80bmr9410866pfu.20.1634271275000;
-        Thu, 14 Oct 2021 21:14:35 -0700 (PDT)
-Received: from baohua-VirtualBox.localdomain (203-173-222-16.dialup.ihug.co.nz. [203.173.222.16])
-        by smtp.gmail.com with ESMTPSA id 3sm10801746pjk.18.2021.10.14.21.14.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Oct 2021 21:14:34 -0700 (PDT)
-From:   Barry Song <21cnbao@gmail.com>
-To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com
-Cc:     linux-kernel@vger.kernel.org, linuxarm@huawei.com,
-        yangyicong@hisilicon.com, Barry Song <song.bao.hua@hisilicon.com>
-Subject: [PATCH] sched/fair: document the slow path and fast path in select_task_rq_fair
-Date:   Fri, 15 Oct 2021 12:14:12 +0800
-Message-Id: <20211015041412.5569-1-21cnbao@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 15 Oct 2021 00:47:40 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=31;SR=0;TI=SMTPD_---0Us3oYXy_1634273127;
+Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0Us3oYXy_1634273127)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 15 Oct 2021 12:45:29 +0800
+Subject: Re: [PATCH v3 1/2] ftrace: disable preemption between
+ ftrace_test_recursion_trylock/unlock()
+From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Guo Ren <guoren@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Jisheng Zhang <jszhang@kernel.org>, linux-csky@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        live-patching@vger.kernel.org
+References: <609b565a-ed6e-a1da-f025-166691b5d994@linux.alibaba.com>
+ <7e4738b5-21d4-c4d0-3136-a096bbb5cd2c@linux.alibaba.com>
+ <YWhJP41cNwDphYsv@alley>
+ <5e907ed3-806b-b0e5-518d-d2f3b265377f@linux.alibaba.com>
+Message-ID: <a5bae9a5-9ab7-2660-caa6-facecb1dba32@linux.alibaba.com>
+Date:   Fri, 15 Oct 2021 12:45:27 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
+In-Reply-To: <5e907ed3-806b-b0e5-518d-d2f3b265377f@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Barry Song <song.bao.hua@hisilicon.com>
 
-All people I know including myself took a long time to understand typical
-wake_up will always go to fast path and never go to slow path except
-FORK and EXEC.
-Vincent reminded me once in a linaro meeting and it made me understand
-slow path won't happen for WF_TTWU. But my other friends repeatedly
-wasted a lot of time on testing this path like me before I reminded
-them.
-So obviously the code needs some document.
 
-Cc: Vincent Guittot <vincent.guittot@linaro.org>
-Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
----
- kernel/sched/fair.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+On 2021/10/15 上午11:13, 王贇 wrote:
+[snip]
+>>  # define do_ftrace_record_recursion(ip, pip)	do { } while (0)
+>>  #endif
+>>  
+>> +/*
+>> + * trace_test_and_set_recursion() is called on several layers
+>> + * of the ftrace code when handling the same ftrace entry.
+>> + * These calls might be nested/recursive.
+>> + *
+>> + * It uses TRACE_LIST_*BITs to distinguish between this
+>> + * internal recursion and recursion caused by calling
+>> + * the traced function by the ftrace code.
+>> + *
+>> + * Returns: > 0 when no recursion
+>> + *          0 when called recursively internally (safe)
+> 
+> The 0 can also happened when ftrace handler recursively called trylock()
+> under the same context, or not?
+> 
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index f6a05d9b5443..ccf8f73dd4d1 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -6951,6 +6951,11 @@ select_task_rq_fair(struct task_struct *p, int prev_cpu, int wake_flags)
- 			break;
- 		}
- 
-+		/*
-+		 * This is usually true only for WF_EXEC and WF_FORK, for WF_TTWU
-+		 * it is almost always false as sched_domain hasn't SD_BALANCE_WAKE
-+		 * in default
-+		 */
- 		if (tmp->flags & sd_flag)
- 			sd = tmp;
- 		else if (!want_affine)
-@@ -6958,7 +6963,11 @@ select_task_rq_fair(struct task_struct *p, int prev_cpu, int wake_flags)
- 	}
- 
- 	if (unlikely(sd)) {
--		/* Slow path */
-+		/*
-+		 * Slow path, usually only for WF_EXEC and WF_FORK; WF_TTWU almost
-+		 * always goes to fast path as sched_domain hasn't SD_BALANCE_WAKE
-+		 * in default
-+		 */
- 		new_cpu = find_idlest_cpu(sd, p, cpu, prev_cpu, sd_flag);
- 	} else if (wake_flags & WF_TTWU) { /* XXX always ? */
- 		/* Fast path */
--- 
-2.25.1
+Never mind... you're right about this.
 
+Regards,
+Michael Wang
+
+> Regards,
+> Michael Wang
+> 
+>> + *	    -1 when the traced function was called recursively from
+>> + *             the ftrace handler (unsafe)
+>> + */
+>>  static __always_inline int trace_test_and_set_recursion(unsigned long ip, unsigned long pip,
+>>  							int start, int max)
+>>  {
+>>  	unsigned int val = READ_ONCE(current->trace_recursion);
+>>  	int bit;
+>>  
+>> -	/* A previous recursion check was made */
+>> +	/* Called recursively internally by different ftrace code layers? */
+>>  	if ((val & TRACE_CONTEXT_MASK) > max)
+>>  		return 0;
+> 
+>>  
+>>
