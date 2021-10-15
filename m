@@ -2,204 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE0AC42F4F7
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 16:14:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3028D42F4F2
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 16:13:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236911AbhJOOQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 10:16:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51564 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234883AbhJOOQY (ORCPT
+        id S240269AbhJOOO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 10:14:58 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:45209 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240242AbhJOOOn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 10:16:24 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F698C061764
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 07:14:17 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id d3so38580347edp.3
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 07:14:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2rJxeYYnbN1BqAbq3eridm9U4CkbE9dBcGehVd60yHQ=;
-        b=xZnTHuAuPumh9gY513gOjcoEIBojcfbXPYblG9DBqCyu9w+7SrCdmuB7gEnT7Z2/d4
-         Dy00cnuQiOFiDnHDjDNkT/GAIVeUpSmQD0m54oMGRqXy5Jctgg5GVA7aiBkmWAhHZ5ao
-         mmZrlilcGq1V7vWDmvcuWZXD6Ud1+TP3WpVrdLJKXkT05p/WFnz3NJfjVcBUXZmmfIHV
-         S146osdHREWEWMw2xDl536hot0PN53Dd8+d0PBSnDAS5MyG9RN0uxY7RO/KqnNg/izm0
-         acovJz6ifR5SZBbU/WTJp1Q6ImMhYcwnQOgD5111c1pZp426p6Ms8IJutNaYI18Tpa8Z
-         SdFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2rJxeYYnbN1BqAbq3eridm9U4CkbE9dBcGehVd60yHQ=;
-        b=ZuV1DJMqjOwpfwx+mhT9kbg14cVdn4RdLlca+i1elpSdRPT4j9gzm89K8BC69fKwYK
-         9WgHZLvhK2UOe6Wo3L380cLR6Zs+7WREZY5qCTsUe9omFNBK5LBqNfxpZ6mER3NJl+B0
-         cR5Hg6/YKWAFBw1UNamqtyM3a0h9+sWJqWAeU/3UeVBxngr7zDifGrfFv8Dc4iUOOZVg
-         YZKdoLpwjxKCBu+B0xaNA8rRy5y6uIprv9xlS9jg+ysn+2LXZHkMaEaCxmlQJBM1yVPD
-         9nF+ZPorKMg6tMPo/YBssGHAhyYyLtf+oPC5RATMLzV56f/0q7W+TcotP0TABXDdw1Lu
-         Q/4A==
-X-Gm-Message-State: AOAM532DYDxNZh8x4dQnbaEN+SCZeHMzRMBSecz0e2qAsekfPgMK+AgI
-        DISqlhUJSbjpNbsPqz4mzXBIeAhJ15VkYUGaQl/Z3w==
-X-Google-Smtp-Source: ABdhPJwyWhnDU7znLM6TsqQtys/OEF0zuKOS5DiBTSLCAfhLJHeCMdHnVxEZpmIrWGNBSmwyG8eCzKwO2UyHGqwnW8k=
-X-Received: by 2002:a50:d50c:: with SMTP id u12mr18241839edi.118.1634307227070;
- Fri, 15 Oct 2021 07:13:47 -0700 (PDT)
+        Fri, 15 Oct 2021 10:14:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1634307157; x=1665843157;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=vhKqUtsyI8eiBctTx58Hoeyu/C3PecsWgYb6HWtRnkE=;
+  b=Ks103VOGh3RXLAYqln16j8X9uU5Q03jbAA6sEpM/ugvr/JIMh9kwLsEF
+   YF+osDDTbV0x4UYHGqjLd+rJPZlU2JFiYTurXGiX2QZbuOSh0/tRxrdNa
+   rIb3gx3u26wxIvBodk6JyyS+NwHOatmO1ao0FyHYra6mYY8tiVs2/v8tO
+   5dubiDyH7Sq4FboxTkVpCw391ySep0yg8l/n3B/x3XdVtxw1+QBQDySk+
+   K2BXkM57WbszVgJDZTKcsL/TB6mUrc/jvGT40lrSoRgLz4+cLAVOnGc6P
+   rna6RM/pf2QiSibV1/Vro7jxdyayJ3iaMhOJtYZ5Co69tTY8LNLs7T/Rs
+   g==;
+IronPort-SDR: 1LqGw4wudZsJmutI5/fs2v8NG8v+7mJiYQYRu4y36zP4wmYF4uCNxGspx0UXhdrElT1MHs7lEP
+ Ef7vJ4FfgE9+LIWpZZxm9MhPU4VudvkJNPqBY5yguc910c2iZcwVZbUKCOGn0aCITjHBzGB3nf
+ H1YAuQjfwQLSd3rejtOjlMwl/9Ckznm65ZpCEFQdCeyXGIsbQwFtPWm06RnrS6+G9bmCKx6C+I
+ UH8UFtyi6w0St1Ki06pxTuNT23hQK66htkw8kK83WfFbTrAH2Da+V924BLXv63IxLDk04wufU1
+ 21LHPbbFBS6+qgfToYCxW3KP
+X-IronPort-AV: E=Sophos;i="5.85,375,1624345200"; 
+   d="scan'208";a="148241186"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 15 Oct 2021 07:12:36 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Fri, 15 Oct 2021 07:12:36 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex03.mchp-main.com
+ (10.10.85.151) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
+ Transport; Fri, 15 Oct 2021 07:12:36 -0700
+Date:   Fri, 15 Oct 2021 16:14:04 +0200
+From:   Horatiu Vultur <horatiu.vultur@microchip.com>
+To:     Philipp Zabel <p.zabel@pengutronix.de>
+CC:     <robh+dt@kernel.org>, <andrew@lunn.ch>,
+        <lars.povlsen@microchip.com>, <Steen.Hegelund@microchip.com>,
+        <UNGLinuxDriver@microchip.com>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v3 1/2] dt-bindings: reset: Add lan966x support
+Message-ID: <20211015141404.5eiylskcfy2fxi42@soft-dev3-1.localhost>
+References: <20211013073807.2282230-1-horatiu.vultur@microchip.com>
+ <20211013073807.2282230-2-horatiu.vultur@microchip.com>
+ <838af7b574968fc55d517a3becede5fa106ed896.camel@pengutronix.de>
+ <20211014152016.wuwaesswc5iiil42@soft-dev3-1.localhost>
 MIME-Version: 1.0
-References: <20211008081739.26807-1-brgl@bgdev.pl>
-In-Reply-To: <20211008081739.26807-1-brgl@bgdev.pl>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Fri, 15 Oct 2021 16:13:36 +0200
-Message-ID: <CAMRc=McpCw2TgLFCzvwOupd+RW2BoQRJKVTdbR6s2z+O2pJuUQ@mail.gmail.com>
-Subject: Re: [PATCH v7 0/8] gpio: implement the configfs testing module
-To:     Joel Becker <jlbec@evilplan.org>, Christoph Hellwig <hch@lst.de>,
-        Shuah Khan <shuah@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Kent Gibson <warthog618@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Jack Winch <sunt.un.morcov@gmail.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-doc <linux-doc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <20211014152016.wuwaesswc5iiil42@soft-dev3-1.localhost>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 8, 2021 at 10:17 AM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
->
-> I'm respinning this series now because I noticed that I need to start writing
-> tests for my work on the new libgpiod v2 code to make sense (it's just becoming
-> too complicated to make even remotely functional without test coverage). At the
-> same time I don't want to rewrite the tests using gpio-mockup if the goal is to
-> replace it with gpio-sim anyway.
->
-> I fixed issues pointed out by Al Viro and made sure that references are
-> correctly counted (including error paths) and that memory allocated for the
-> pending and live groups gets freed.
->
-> ===
->
-> Cc'ing Viresh too.
->
-> Viresh: while there's still a long way to go before the libgpio v2.0 release,
-> in order to merge the Rust bindings, we'll need a test-suite similar to what
-> we have now for C++ and Python bindings, except that it will have to be based
-> on the gpio-sim module when it makes its way into mainline.
->
-> ===
->
-> This series adds a new GPIO testing module based on configfs committable items
-> and sysfs. The goal is to provide a testing driver that will be configurable
-> at runtime (won't need module reload) and easily extensible. The control over
-> the attributes is also much more fine-grained than in gpio-mockup.
->
-> This series also contains a respin of the patches I sent separately to the
-> configfs maintainers - these patches implement the concept of committable
-> items that was well defined for a long time but never actually completed.
->
-> Apart from the new driver itself, its selftests and the configfs patches, this
-> series contains some changes to the bitmap API - most importantly: it adds
-> devres managed variants of bitmap_alloc() and bitmap_zalloc().
->
-> v1 -> v2:
-> - add selftests for gpio-sim
-> - add helper programs for selftests
-> - update the configfs rename callback to work with the new API introduced in
->   v5.11
-> - fix a missing quote in the documentation
-> - use !! whenever using bits operation that are required to return 0 or 1
-> - use provided bitmap API instead of reimplementing copy or fill operations
-> - fix a deadlock in gpio_sim_direction_output()
-> - add new read-only configfs attributes for mapping of configfs items to GPIO
->   device names
-> - and address other minor issues pointed out in reviews of v1
->
-> v2 -> v3:
-> - use devm_bitmap_alloc() instead of the zalloc variant if we're initializing
->   the bitmap with 1s
-> - drop the patch exporting device_is_bound()
-> - don't return -ENODEV from dev_nam and chip_name configfs attributes, return
->   a string indicating that the device is not available yet ('n/a')
-> - fix indentation where it makes sense
-> - don't protect IDA functions which use their own locking and where it's not
->   needed
-> - use kmemdup() instead of kzalloc() + memcpy()
-> - collected review tags
-> - minor coding style fixes
->
-> v3 -> v4:
-> - return 'none' instead of 'n/a' from dev_name and chip_name before the device
->   is registered
-> - use sysfs_emit() instead of s*printf()
-> - drop GPIO_SIM_MAX_PROP as it's only used in an array's definition where it's
->   fine to hardcode the value
->
-> v4 -> v5:
-> - drop lib patches that are already upstream
-> - use BIT() instead of (1UL << bit) for flags
-> - fix refcounting for the configfs_dirent in rename()
-> - drop d_move() from the rename() callback
-> - free memory allocated for the live and pending groups in configfs_d_iput()
->   and not in detach_groups()
-> - make sure that if a group of some name is in the live directory, a new group
->   with the same name cannot be created in the pending directory
->
-> v5 -> v6:
-> - go back to using (1UL << bit) instead of BIT()
-> - if the live group dentry doesn't exist for whatever reason at the time when
->   mkdir() in the pending group is called (would be a BUG()), return -ENOENT
->   instead of -EEXIST which should only be returned if given subsystem already
->   exists in either live or pending group
->
-> v6 -> v7:
-> - as detailed by Andy in commit 6fda593f3082 ("gpio: mockup: Convert to use
->   software nodes") removing device properties after the platform device is
->   removed but before the GPIO device gets dropped can lead to a use-after-free
->   bug - use software nodes to manually control the freeing of the properties
->
-> Bartosz Golaszewski (8):
->   configfs: increase the item name length
->   configfs: use (1UL << bit) for internal flags
->   configfs: implement committable items
->   samples: configfs: add a committable group
->   gpio: sim: new testing module
->   selftests: gpio: provide a helper for reading chip info
->   selftests: gpio: add a helper for reading GPIO line names
->   selftests: gpio: add test cases for gpio-sim
->
->  Documentation/admin-guide/gpio/gpio-sim.rst   |  72 ++
->  Documentation/filesystems/configfs.rst        |   6 +-
->  drivers/gpio/Kconfig                          |   8 +
->  drivers/gpio/Makefile                         |   1 +
->  drivers/gpio/gpio-sim.c                       | 886 ++++++++++++++++++
->  fs/configfs/configfs_internal.h               |  22 +-
->  fs/configfs/dir.c                             | 276 +++++-
->  include/linux/configfs.h                      |   3 +-
->  samples/configfs/configfs_sample.c            | 153 +++
->  tools/testing/selftests/gpio/.gitignore       |   2 +
->  tools/testing/selftests/gpio/Makefile         |   4 +-
->  tools/testing/selftests/gpio/config           |   1 +
->  tools/testing/selftests/gpio/gpio-chip-info.c |  57 ++
->  tools/testing/selftests/gpio/gpio-line-name.c |  55 ++
->  tools/testing/selftests/gpio/gpio-sim.sh      | 229 +++++
->  15 files changed, 1752 insertions(+), 23 deletions(-)
->  create mode 100644 Documentation/admin-guide/gpio/gpio-sim.rst
->  create mode 100644 drivers/gpio/gpio-sim.c
->  create mode 100644 tools/testing/selftests/gpio/gpio-chip-info.c
->  create mode 100644 tools/testing/selftests/gpio/gpio-line-name.c
->  create mode 100755 tools/testing/selftests/gpio/gpio-sim.sh
->
-> --
-> 2.30.1
->
+The 10/14/2021 17:20, Horatiu Vultur wrote:
+> Hi Philipp,
+> 
+> The 10/14/2021 13:55, Philipp Zabel wrote:
+> > 
+> > On Wed, 2021-10-13 at 09:38 +0200, Horatiu Vultur wrote:
+> > > This adds support for lan966x.
+> > >
+> > > Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+> > > ---
+> > >  .../devicetree/bindings/reset/microchip,rst.yaml   | 14 +++++++++++++-
+> > >  1 file changed, 13 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/reset/microchip,rst.yaml b/Documentation/devicetree/bindings/reset/microchip,rst.yaml
+> > > index 370579aeeca1..fb170ed2c57a 100644
+> > > --- a/Documentation/devicetree/bindings/reset/microchip,rst.yaml
+> > > +++ b/Documentation/devicetree/bindings/reset/microchip,rst.yaml
+> > > @@ -20,7 +20,11 @@ properties:
+> > >      pattern: "^reset-controller@[0-9a-f]+$"
+> > >
+> > >    compatible:
+> > > -    const: microchip,sparx5-switch-reset
+> > > +    oneOf:
+> > > +      - items:
+> > > +          - const: microchip,sparx5-switch-reset
+> > > +      - items:
+> > > +          - const: microchip,lan966x-switch-reset
+> > >
+> > >    reg:
+> > >      items:
+> > > @@ -37,6 +41,14 @@ properties:
+> > >      $ref: "/schemas/types.yaml#/definitions/phandle"
+> > >      description: syscon used to access CPU reset
+> > >
+> > > +  cuphy-syscon:
+> > > +    $ref: "/schemas/types.yaml#/definitions/phandle"
+> > > +    description: syscon used to access CuPHY
+> > 
+> > Can this be used on sparx5?
+> 
+> No, because the sparx5 doesn't have any internal PHYs that need to
+> be released of the reset.
+> 
+> > Is it optional on lan966x?
+> 
+> No, it is required on lan966x. I will update the binding to show this.
+> 
+> > 
+> > > +  phy-reset-gpios:
+> > > +    description: used for release of reset of the external PHY
+> > > +    maxItems: 1
+> > > +
+> > >  required:
+> > >    - compatible
+> > >    - reg
+> > 
+> > I'd like somebody to reassure me that putting the CuPHY reset and
+> > external PHY GPIO reset in the reset controller is the right thing to
+> > do.
+> > 
+> > It looks fine to me, but I'm not sure if these should rather be in
+> > separate phy nodes that are referenced from the switch.
 
-Another ping...
+Were you thinking to have just another reset driver('phy-reset') and then
+the switch to refer to both of them?
+I like this idea because then is more clear what is doing each driver.
 
-Bart
+> > 
+> > regards
+> > Philipp
+> 
+> -- 
+> /Horatiu
+
+-- 
+/Horatiu
