@@ -2,155 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AAC342EDEC
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 11:44:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD34542EDF1
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 11:44:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237614AbhJOJqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 05:46:42 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:25976 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237622AbhJOJqh (ORCPT
+        id S237584AbhJOJq6 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 15 Oct 2021 05:46:58 -0400
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:41717 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230013AbhJOJq4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 05:46:37 -0400
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19F86EjR001724;
-        Fri, 15 Oct 2021 09:44:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2021-07-09;
- bh=DzTqS9vZ6SnImbZYd3I7Di5MNOzfJygXgusXLoDOcwE=;
- b=BQtAatkJVdBYMOdWiiXWRrDh3c0iAv+EJ+qUMe1kgSaib4BPJ6CY9Imbk1Jbx0trEBjz
- o8RtY2LX468cCvdLZJ/ai9xOOO1uP9V3RQLIIQzLyBgIuEK8u4gORnf1A90I99oYIZnK
- NM+IkuOJPUTe0jwkjdIKXEh9k+ER9OQLqydRyZBGfOZ7p3eW+l7pmIXLSb9An8z15bz/
- AK/2zj0h7jVGM+krJsmvv7aa2tDl5Tq/T/ZgLABeHn/llRteb1oqM+xgJ/AhdiYsRfYz
- hUPGth3fPr1nLAw+wErz/AkBDsNtxkbM1CydF5i+0qh1UxlT9Y9PPJE2Xcyi7EqixyqW TA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3bpfy67sfk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 15 Oct 2021 09:44:15 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 19F9FFo2037290;
-        Fri, 15 Oct 2021 09:44:03 GMT
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2101.outbound.protection.outlook.com [104.47.58.101])
-        by userp3030.oracle.com with ESMTP id 3bkyve6s2u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 15 Oct 2021 09:44:03 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eVDSU+gjOGL/wpm9zuyQkQ+XN1GHgvcUIKOA/I6TyWIyDSQo5cO4sWGOII4pyqPy/hi3Q/219g2lVaodDiuqPDWnvq0Di9cTh1FvOuPmoVpPIiw/BVxfrP8CQCcNkt9BXnoU5Rwh7xHdnSO2iF9yT5QYm1JlP9Yp+4z2nt37aUy2CXILBCQfQmtRRQTkrMq7rnj9IH/NQABmfyRitUg37N+qZUJMb4rT09JnG1OMDPAitegTCwaH9lGt2YQWefvza8odm2lHchII9nlaEoHm4DDadSPva/Co59JBVeqUckxpMIMTAXuFdWLfFFH8MhV5xmepV/ZCGHNXRh6Gcvy0eQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=DzTqS9vZ6SnImbZYd3I7Di5MNOzfJygXgusXLoDOcwE=;
- b=PURFgBXzFR0GWVUwwm8yS5vSJ6jMDINZYJuej9mz2NbNuy42Bdbl9d5D6wAKKxUbRf1OW7r4C92O+XToZNVXSzPiPIBanl6r5iKPKFfif9mW7hQ1a7iLPYA8tisVPPkUZg09sASiS05uwuWwY1DZoV7U6mmd9iqVMB/esHkxdosxKTqiS9h2q79Pji2MXu7odweqWedfnrVqbsIuRipPUXjkxvejnmIf/+76jtSXVxHNJcqjVmfIH9IZdSAuLfsdQMKum7SRqU2HBm7q7JYO8P/Iyfa+5UFKj6Jj5TVmnntffyg+4E5ajg0C8P4Q5ah2OYZmgtRFVYGbzs6fPfPWLw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DzTqS9vZ6SnImbZYd3I7Di5MNOzfJygXgusXLoDOcwE=;
- b=CjOi8DnTZ1gSIJun817yKDY0Wyn4B+pPIBdUWqV65Am18u/kSdgGRTTJS8yAgc2Tz/6w4rrxSI3CFcyvHKpbuxExzMxVm+nPL1Mtw6AkvU9u4STSwUlIFbzdaVcmWYfpAfPgqTiqbec42wualZlBzenD42MFTp8Vm88YiaYLFmk=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=oracle.com;
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- (2603:10b6:301:2d::28) by MWHPR10MB1888.namprd10.prod.outlook.com
- (2603:10b6:300:113::12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.22; Fri, 15 Oct
- 2021 09:44:01 +0000
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::d409:11b5:5eb2:6be9]) by MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::d409:11b5:5eb2:6be9%5]) with mapi id 15.20.4608.016; Fri, 15 Oct 2021
- 09:44:00 +0000
-Date:   Fri, 15 Oct 2021 12:43:44 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev
-Subject: Re: [PATCH] staging: wlan-ng: Avoid bitwise vs logical OR warning in
- hfa384x_usb_throttlefn()
-Message-ID: <20211015094344.GQ8429@kadam>
-References: <20211014215703.3705371-1-nathan@kernel.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211014215703.3705371-1-nathan@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: JNAP275CA0044.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4e::21)
- To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
+        Fri, 15 Oct 2021 05:46:56 -0400
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 73C691BF206;
+        Fri, 15 Oct 2021 09:44:47 +0000 (UTC)
+Date:   Fri, 15 Oct 2021 11:44:46 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Harvey Hunt <harveyhuntnexus@gmail.com>, list@opendingux.net,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH 2/3] mtd: rawnand: Export
+ nand_read_page_hwecc_oob_first()
+Message-ID: <20211015114446.6a939367@xps13>
+In-Reply-To: <CRI01R.KF0NPTKK5WYV1@crapouillou.net>
+References: <20211009184952.24591-1-paul@crapouillou.net>
+        <20211009184952.24591-3-paul@crapouillou.net>
+        <20211015081313.60018976@xps13>
+        <70G01R.2VROMW06O3O83@crapouillou.net>
+        <20211015105146.3d2fbd08@xps13>
+        <89I01R.QTBARVYLTBT02@crapouillou.net>
+        <20211015113515.7b10a2d5@xps13>
+        <CRI01R.KF0NPTKK5WYV1@crapouillou.net>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Received: from kadam (62.8.83.22) by JNAP275CA0044.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4e::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.14 via Frontend Transport; Fri, 15 Oct 2021 09:43:56 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ef027e86-d7bd-4df4-80d9-08d98fc050ec
-X-MS-TrafficTypeDiagnostic: MWHPR10MB1888:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MWHPR10MB18889D71453485A54B4B02268EB99@MWHPR10MB1888.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: mFRctfjPQbflyazBL0IyJC5q64OPi6OWtQ0fOCchYdJ27gs8laZgsDDMbDKaKeODQbQPd4QzmepNawS+crwuo9x0xwzCOKeoX7QRLztQYydmLp9PqopOYEqh2Gk6FipQztsAAR6mPv/DoQ+KkujLHa4BKpdWJTJYw3LXfUesoL8I2rC2B4Pk0DdDXElzFVybF2dzFsR+2dLhWMcg1RXhd4P+L+Aqd1XhnCiqvLUaYBMRvdmoSoz7U++r7u7VqlCupoFGSw/f0W2ZgTu/Tv23D7T3fRw9IpZYHh99EJAB4KXPymYcw4BTj6GseAPxiXGNBMRGw2F+duY+6PGP+I8Wjdb78RmB9n0HeSWwjnjQXdG3PE3AwQQ1Qeaz8+q53uPv7aqT4waBlXGdRaQbJNM2B9N3aIki0MPlYdfgedindBEhdidEwq8Jvgb+ufSnomMjaHUQIjrwFZADxXLcE64b9xFHcXqkHs0hvqrHd0fag49jFqtLOWLBzTqlw2b2chOVjHv91jMVN9N+wPnEocrzHW9+J5ax8k+GtYKzVoKq6Zle7Fmcokx4A+tbd0AoBrjCUzQto+BfiOaacJOkwm0FvTw+XRz9bVKGbbl2OW4qm+XvSm0v5kYabfozeV/7ELkYtaHT+bg/pEec6dD3bW1BCYOZtul+V3+Y+7q67oFSZ8mSO8/PnMmOJhQwuURfwGmRHxt0SXc7Ddv/zBHMBdicXQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(9686003)(86362001)(55016002)(316002)(54906003)(83380400001)(33656002)(33716001)(66946007)(9576002)(1076003)(8676002)(4326008)(6916009)(186003)(6666004)(508600001)(26005)(66476007)(8936002)(2906002)(66556008)(5660300002)(4744005)(38350700002)(44832011)(52116002)(38100700002)(956004)(6496006);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?SvkZMQ/BUkPxIyLIgkElO6odrk6HxR4VKrs5wAGq6loiCf5JRb4wHHA2UXal?=
- =?us-ascii?Q?/SxectQzvm8oT4JcHdpQqHYd/5oEge9iXKW4kKl4C3a3L3dUJkB/WvOz4BRl?=
- =?us-ascii?Q?3j05oqnEKLY2V0J0laaiWc5O4Yn16MVnhBydnJVsqTTrmTt47+zuAMJ4mr5e?=
- =?us-ascii?Q?/+DVptoU6Xto9upCtyHGwTBQG25Jocz7G15sGLfvdsIP04cMdWU/8CG8lRKx?=
- =?us-ascii?Q?PIKrYPVnr7+klkDkL0M34RBg3KaED8VVZGPTLazeSym24A1vj1O6dz5UoLSL?=
- =?us-ascii?Q?K3Mu9cL8oLaltcpmH2YzCuQXuR/z2iNde+DeEronN4TMH5pR5dfr0iEC1hen?=
- =?us-ascii?Q?mTpLQww4estfJqfwcD4OEXXrnFSggvFuHEEvZ4I5Zi3ueVwa1dEBU6BsP6UF?=
- =?us-ascii?Q?sF8qAkKTPGrmlEn/ZazyPbOyAi2by4p6oy8eQUuwvcW9pfNSKr9DPbTkIW8c?=
- =?us-ascii?Q?LoA6/g00zSb0Nc/iyYoceGqQoU5aPV4Pap4n2bC4K2svSk+JobLQRLBNERb+?=
- =?us-ascii?Q?n+EEE+eC0tw9KR8Z2RYAGT+9LiR8V2X2tPtgFrY/o0VWFg3AIyAJ5g5sLKVR?=
- =?us-ascii?Q?EAEmWzA09s7p9kjkMhOAl0q7r+YXDwPPafrYN/y7XsyqfM+a6q6Ecz1OmRMv?=
- =?us-ascii?Q?nnboJOf8QqzvUC01h5bXqG8U2wE5TLi/ztkwAxuNFgJVVfoZ7JbJL2nVpmzT?=
- =?us-ascii?Q?N8E3bpP7pNr2Mp/xJmjINb9rCKrF6iBLWGmmvpxtw5phIqdsSi1iGcrsZ84O?=
- =?us-ascii?Q?+mSjE5v2rsc8WBgSJ8RTH2xQUEtl4GXeMDdu5Ta0ac11EAGu7hX7cLxFoXf/?=
- =?us-ascii?Q?oQTppJg8EtDYvtMygiVs7MJDivLJbd6HAqzyS4Y7bGrMRuJtTMZIfB8DH/Kd?=
- =?us-ascii?Q?lY9Re09raIGXb+SkZCYOx0fnUkI0my+bcCSR8ItoOTB0fJ9yeVhY3h55GEU6?=
- =?us-ascii?Q?ojBXv0Vo0NFgKTNFs6E9UUpoAn1kggQ1xJHMeq0NW2U+OsWBbHXHVrqmiuq1?=
- =?us-ascii?Q?IVNNrpA3V3p2+ELybQs94R3Ox/+NrnyNwISqHhhZr6JoXd+/A9zM8o5wnNTA?=
- =?us-ascii?Q?rvJX7mbweWSM3x2Z1Zun+EVLdeoJYtrb5kFcQYmCTos21h9StGrU+Xk1idOr?=
- =?us-ascii?Q?3Scs38BZO1C4Jj+lkk04Vwj79ulVCsJ5MmV9enDHsFAP3pBRNkyjKh2C/lmo?=
- =?us-ascii?Q?KjFIfMXKmjDIj9Vf0ddAR9TdAwOdrS3qOdUmNHk8GfEyg2TIueO90HKVW9op?=
- =?us-ascii?Q?r2QLEN3sEbQeAkegmLbEujO/T7oa59ZjoWkgSa+pRR0h+wQDNEoGUvhsiLDV?=
- =?us-ascii?Q?RnarGRPQerkVGhiQvj1RTpOs?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ef027e86-d7bd-4df4-80d9-08d98fc050ec
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Oct 2021 09:44:00.7573
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 5eWyFC3Tc422fWlwoHMuYEdlH+onBBG9LRf7cYC1zXXg72/y6FPohTC5HWf2+qaUsXCpKIECAvJofQF4u7Lv7T2WXw825eJjtsA+/yxdDDE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR10MB1888
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10137 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 phishscore=0 bulkscore=0
- malwarescore=0 adultscore=0 mlxscore=0 spamscore=0 mlxlogscore=974
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109230001
- definitions=main-2110150058
-X-Proofpoint-GUID: 1nSXDdkPCQZ4VNIgrqps8rfaWTksFGsZ
-X-Proofpoint-ORIG-GUID: 1nSXDdkPCQZ4VNIgrqps8rfaWTksFGsZ
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 02:57:03PM -0700, Nathan Chancellor wrote:
-> A new warning in clang points out a place in this file where a bitwise
-> OR is being used with boolean expressions:
+Hi Paul,
+
+paul@crapouillou.net wrote on Fri, 15 Oct 2021 10:38:00 +0100:
+
+> Hi,
 > 
-> In file included from drivers/staging/wlan-ng/prism2usb.c:2:
-> drivers/staging/wlan-ng/hfa384x_usb.c:3787:7: warning: use of bitwise '|' with boolean operands [-Wbitwise-instead-of-logical]
->             ((test_and_clear_bit(THROTTLE_RX, &hw->usb_flags) &&
->             ~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/staging/wlan-ng/hfa384x_usb.c:3787:7: note: cast one or both operands to int to silence this warning
-> 1 warning generated.
+> Le ven., oct. 15 2021 at 11:35:15 +0200, Miquel Raynal <miquel.raynal@bootlin.com> a écrit :
+> > Hi Paul,
+> >   
+> >>  >>  */  
+> >>  >>  >> >>   /* An ECC layout for using 4-bit ECC with small-page >> flash, >> storing  
+> >>  >>  >>  @@ -648,7 +580,7 @@ static int >> davinci_nand_attach_chip(struct >> >> nand_chip *chip)
+> >>  >>  >>   			} else if (chunks == 4 || chunks == 8) {
+> >>  >>  >>   				mtd_set_ooblayout(mtd,
+> >>  >>  >>   						  nand_get_large_page_ooblayout());
+> >>  >>  >>  -				chip->ecc.read_page = >> >> nand_davinci_read_page_hwecc_oob_first;
+> >>  >>  >>  +				chip->ecc.read_page = nand_read_page_hwecc_oob_first;
+> >>  >>  >>   			} else {
+> >>  >>  >>   				return -EIO;
+> >>  >>  >>   			}
+> >>  >>  >>  diff --git a/drivers/mtd/nand/raw/nand_base.c >> >> >> b/drivers/mtd/nand/raw/nand_base.c
+> >>  >>  >>  index 3d6c6e880520..cb5f343b9fa2 100644
+> >>  >>  >>  --- a/drivers/mtd/nand/raw/nand_base.c
+> >>  >>  >>  +++ b/drivers/mtd/nand/raw/nand_base.c
+> >>  >>  >>  @@ -3160,6 +3160,75 @@ static int >> nand_read_page_hwecc(struct >> >> nand_chip *chip, uint8_t *buf,
+> >>  >>  >>   	return max_bitflips;
+> >>  >>  >>   }  
+> >>  >>  >> >>  +/**  
+> >>  >>  >>  + * nand_read_page_hwecc_oob_first - Hardware ECC page read >> >> with ECC
+> >>  >>  >>  + *                                  data read from OOB area
+> >>  >>  >>  + * @chip: nand chip info structure
+> >>  >>  >>  + * @buf: buffer to store read data
+> >>  >>  >>  + * @oob_required: caller requires OOB data read to >> >> chip->oob_poi
+> >>  >>  >>  + * @page: page number to read
+> >>  >>  >>  + *
+> >>  >>  >>  + * Hardware ECC for large page chips, require OOB to be >> read >> >> first. For this  
+> >>  >>  >
+> >>  >>  > requires
+> >>  >>  >
+> >>  >>  > With this ECC configuration?
+> >>  >>  >  
+> >>  >>  >>  + * ECC mode, the write_page method is re-used from ECC_HW. >> >> These >> methods  
+> >>  >>  >
+> >>  >>  > I do not understand this sentence nor the next one about >> >> syndrome. I
+> >>  >>  > believe it is related to your engine and should not leak into >> the >> > core.
+> >>  >>  >  
+> >>  >>  >>  + * read/write ECC from the OOB area, unlike the >> >> ECC_HW_SYNDROME >> support with
+> >>  >>  >>  + * multiple ECC steps, follows the "infix ECC" scheme and >> >> >> reads/writes ECC from
+> >>  >>  >>  + * the data area, by overwriting the NAND manufacturer bad >> >> block >> markings.  
+> >>  >>  >
+> >>  >>  > That's a sentence I don't like. What do you mean exactly?
+> >>  >>  >
+> >>  >>  > What "Infix ECC" scheme is?
+> >>  >>  >
+> >>  >>  > Do you mean that unlike the syndrome  mode it *does not* >> >> overwrite the
+> >>  >>  > BBM ?  
+> >>  >> >>  I don't mean anything. I did not write that comment. I just >> moved >> the function verbatim with no changes. If something needs >> to be >> fixed, then it needs to be fixed before/after this patch.  
+> >>  >
+> >>  > Well, this comment should be adapted because as-is I don't think >> it's
+> >>  > wise to move it around.  
+> >> >>  OK.
+> >> >>  I think it says that BBM can be overwritten with this >> configuration, but that would be if the OOB layout covers the BBM >> area.  
+> > 
+> > If the ooblayout prevents the BBM to be smatched I'm fine and this
+> > sentence should disappear because it's misleading.
+> >   
+> >>  >> >>  >>  + */  
+> >>  >>  >>  +int nand_read_page_hwecc_oob_first(struct nand_chip *chip, >> >> uint8_t >> *buf,
+> >>  >>  >>  +				   int oob_required, int page)
+> >>  >>  >>  +{
+> >>  >>  >>  +	struct mtd_info *mtd = nand_to_mtd(chip);
+> >>  >>  >>  +	int i, eccsize = chip->ecc.size, ret;
+> >>  >>  >>  +	int eccbytes = chip->ecc.bytes;
+> >>  >>  >>  +	int eccsteps = chip->ecc.steps;
+> >>  >>  >>  +	uint8_t *p = buf;
+> >>  >>  >>  +	uint8_t *ecc_code = chip->ecc.code_buf;
+> >>  >>  >>  +	unsigned int max_bitflips = 0;
+> >>  >>  >>  +
+> >>  >>  >>  +	/* Read the OOB area first */
+> >>  >>  >>  +	ret = nand_read_oob_op(chip, page, 0, chip->oob_poi, >> >> >> mtd->oobsize);
+> >>  >>  >>  +	if (ret)
+> >>  >>  >>  +		return ret;
+> >>  >>  >>  +
+> >>  >>  >>  +	ret = nand_read_page_op(chip, page, 0, NULL, 0);  
+> >>  >>  >
+> >>  >>  > Definitely not, your are requesting the chip to do the >> read_page
+> >>  >>  > operation twice. You only need a nand_change_read_column I >> >> believe.  
+> >>  >> >>  Again, this code is just being moved around - don't shoot >> the >> messenger :)  
+> >>  >
+> >>  > haha
+> >>  >
+> >>  > Well, now you touch the core, so I need to be more careful, and >> the
+> >>  > code is definitely wrong, so even if we don't move that code off, >> you
+> >>  > definitely want to fix it in order to improve your performances.  
+> >> >>  I don't see the read_page being done twice?
+> >> >>  There's one read_oob, one read_page, then read_data in the loop.  
+> > 
+> > read_oob and read_page both end up sending READ0 and READSTART so
+> > they do request the chip to perform an internal read twice. You
+> > need this only once. The call to nand_read_page_op() should be a
+> > nand_change_read_column() with no data requested.  
+> 
+> OK.
+> 
+> >   
+> >>  >>  >>   /**
+> >>  >>  >>    * nand_read_page_syndrome - [REPLACEABLE] hardware ECC >> >> syndrome >> based page read
+> >>  >>  >>    * @chip: nand chip info structure
+> >>  >>  >>  diff --git a/include/linux/mtd/rawnand.h >> >> >> b/include/linux/mtd/rawnand.h
+> >>  >>  >>  index b2f9dd3cbd69..5b88cd51fadb 100644
+> >>  >>  >>  --- a/include/linux/mtd/rawnand.h
+> >>  >>  >>  +++ b/include/linux/mtd/rawnand.h
+> >>  >>  >>  @@ -1539,6 +1539,8 @@ int nand_read_data_op(struct >> nand_chip >> *chip, >> void *buf, unsigned int len,
+> >>  >>  >>   		      bool force_8bit, bool check_only);
+> >>  >>  >>   int nand_write_data_op(struct nand_chip *chip, const void >> *buf,
+> >>  >>  >>   		       unsigned int len, bool force_8bit);
+> >>  >>  >>  +int nand_read_page_hwecc_oob_first(struct nand_chip *chip, >> >> uint8_t >> *buf,
+> >>  >>  >>  +				   int oob_required, int page);  
+> >>  >>  >
+> >>  >>  > You certainly want to add this symbol closer to the other >> >> read/write
+> >>  >>  > page helpers?  
+> >>  >> >>  Where would that be? The other read/write page helpers are >> all >> "static" so they don't appear in any header.  
+> >>  >
+> >>  > I believe we should keep this header local as long as there are no
+> >>  > other users.  
+> >> >>  I'll move it to internal.h then.  
+> > 
+> > Why do you want to put it there is there is only one user?  
+> 
+> But there are two users: davinci_nand.c and (with patch [3/3]) ingenic/ingenic_nand_drv.c.
 
-Both sides of this bitwise OR are bool, so | and || are equivalent
-logically.  Clang should not warn about it.
+Oh right I missed that :)
 
-regards,
-dan carpenter
+Then please add two preparation patches which:
+- fixes the comment (please reword it completely)
+- avoid the double reading
 
+And keep the location where you moved it (including the header) as-is.
+
+Thanks,
+Miquèl
