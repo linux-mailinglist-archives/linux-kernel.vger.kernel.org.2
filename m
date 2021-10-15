@@ -2,66 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83AF342F69A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 17:07:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDECC42F6A0
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 17:08:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240367AbhJOPJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 11:09:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57282 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233121AbhJOPJm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 11:09:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9AEF161056;
-        Fri, 15 Oct 2021 15:07:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634310454;
-        bh=VqVN67UtuHpTrgFPMCOrupVQ95C6IzxTdbZV92zwU7s=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=lMLfXe+pqpWUumfOHLTB6cnWR+wC+Yu0aDd8RD11AzyPN1Z8oSA4bZg33zYvBqE/9
-         Kl3VsZHTO/cPRSsYfBeAhrM6fCENx/CAzzg2vA7omGCorZEuIPhJl8PQyudSB+dXPb
-         76ubY18qNUC1NCEs+vd1Hmf2EPh89g9EVObAPzpncBf4Fb5tbopdQb8inWwoKJ2KZC
-         27cF3zU0HO0QBe3n51JGtC5CAOzPYNDUfcbCjA+EKHosyD2NwZGMd1B8904N/RRop9
-         OAXzDuMR4qFmBZymzrPmExyrHWBd1gXPGjsxhWXIShE+fQxPJKr4yIvx73JZgTotSU
-         0Qz7eWRy848Pw==
-Subject: Re: [PATCH v4 1/2] [RFT] clk: samsung: add support for CPU clocks
-To:     Will McVicker <willmcvicker@google.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     kernel-team@android.com,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20211014195347.3635601-1-willmcvicker@google.com>
- <20211014195347.3635601-2-willmcvicker@google.com>
-From:   Sylwester Nawrocki <snawrocki@kernel.org>
-Message-ID: <7204d800-17f8-1903-a76b-eea6cccba718@kernel.org>
-Date:   Fri, 15 Oct 2021 17:07:30 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S240764AbhJOPK1 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 15 Oct 2021 11:10:27 -0400
+Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:23477 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240676AbhJOPKS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 11:10:18 -0400
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-399-71Xn5vDvOb-d7BmYsdFUgA-1; Fri, 15 Oct 2021 11:08:04 -0400
+X-MC-Unique: 71Xn5vDvOb-d7BmYsdFUgA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 00CCE80365C;
+        Fri, 15 Oct 2021 15:08:03 +0000 (UTC)
+Received: from x1.com (unknown [10.22.9.103])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 18CCE5D740;
+        Fri, 15 Oct 2021 15:07:57 +0000 (UTC)
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        x86@kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/4] trace: osnoise and timerlat fixes
+Date:   Fri, 15 Oct 2021 17:07:47 +0200
+Message-Id: <cover.1634308385.git.bristot@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20211014195347.3635601-2-willmcvicker@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=bristot@kernel.org
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=WINDOWS-1252
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14.10.2021 21:53, Will McVicker wrote:
-> Adds 'struct samsung_cpu_clock' and corresponding CPU clock registration
-> function to the samsung common clk driver. This allows samsung clock
-> drivers to register their CPU clocks with the samsung_cmu_register_one()
-> API.
-> 
-> Currently the exynos5433 apollo and atlas clks have their own custom
-> init functions to handle registering their CPU clocks. With this patch
-> we can drop their custom CLK_OF_DECLARE functions and directly call
-> samsung_cmu_register_one().
-> 
-> Signed-off-by: Will McVicker <willmcvicker@google.com>
+Hi Steven,
 
-Patch applied, thank you.
+This is a series of minor fixes to the timerlat and osnoise tracers.
+
+It includes a review of the timerlat tracer documentation, the addition of
+the migrate disabled field to the timerlat and osnoise headers, and a
+fix of a typo in the ifdef config comment in arch/x86/kernel/trace.c.
+
+No functional changes.
+
+Daniel Bristot de Oliveira (4):
+  trace/osnoise: Fix an ifdef comment
+  tracing/doc: Fix typos on the timerlat tracer documentation
+  trace/osnoise: Add migrate-disabled field to the osnoise header
+  trace/timerlat: Add migrate-disabled field to the timerlat header
+
+ Documentation/trace/timerlat-tracer.rst | 24 ++++++++++++------------
+ arch/x86/kernel/trace.c                 |  2 +-
+ kernel/trace/trace_osnoise.c            | 25 +++++++++++++------------
+ 3 files changed, 26 insertions(+), 25 deletions(-)
+
+-- 
+2.31.1
+
