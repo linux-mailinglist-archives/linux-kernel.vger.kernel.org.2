@@ -2,99 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9533942F546
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 16:30:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7ED142F571
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 16:31:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240300AbhJOOcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 10:32:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55272 "EHLO
+        id S240314AbhJOOdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 10:33:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234908AbhJOOcu (ORCPT
+        with ESMTP id S240258AbhJOOds (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 10:32:50 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78B11C061570;
-        Fri, 15 Oct 2021 07:30:43 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id r18so26910784wrg.6;
-        Fri, 15 Oct 2021 07:30:43 -0700 (PDT)
+        Fri, 15 Oct 2021 10:33:48 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE9BFC061570;
+        Fri, 15 Oct 2021 07:31:41 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id x192so7586641lff.12;
+        Fri, 15 Oct 2021 07:31:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7fVT7stQhu0R8qSUSTnVnpkVgBpLQLK/TJbcFLc3ifQ=;
-        b=JGZA+0FKchyq2x32m7mZOe4wbqIBXqozJaGK2NkbwOXyHpcwdC6Tm/idafoO11cf/9
-         NfjBIvY1NJhRNJ2zv9WvJx0tVN4b7baj4lLuRz8GbhqPKHKfqJ5ox4bYAENnLMY/0HBL
-         a2LpgPs+5ZmpgNhpM9S5vrxOENUKIIXs4hluLp0sR9BdsM9tANHYSD+XP0htvEjNlZ1m
-         f7KF+ozRTAI8GjaNJ6btEknU+A+oH19s02Uq0UNwIxp0H/jFLGy0i+xhhQiz4tlZvLVy
-         4ENhBVV95gNxMTiGtit5yDBVNDH0/+YNnHWKwBQHU+CwIl/JJcli+TvA4edAHcMsFpW7
-         tn5g==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BOWkhXmRLradAC/GQ4VVcC6Y/gPQpSI6S5P1Mpfnvk8=;
+        b=pmwrGi0629rfj6pWJFXZmdRQx60ZnAi+RezuMqoV9xHr0Moh8bpARW9ZsUFfEyEAy+
+         xJCN1guTGVbG4ldgdiJKnYfCOJtkEw/BcPhS02+uRpuAkG8+ALUSU0EgLfApGqvjoIC7
+         RFOcJMVZtsvKkdmsFFW8zJiKahdSun5IF2BDzPrV7W3uvcdH+2/Cy9o99gjZ/blLOpMh
+         D+XqGp/jW6uiSobidR9H2P3P7xK8yiS7MOtgDCvbDe9mQfmozxiq3CLLQle5G9e1BNQf
+         jb6/qumiVxrHnvaqVm0fN9p0sLgZbT8Tecsmv4p9WcbWUuQvSMs1atN0bApMvJWpPgr/
+         tVLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7fVT7stQhu0R8qSUSTnVnpkVgBpLQLK/TJbcFLc3ifQ=;
-        b=2QwT6SUDdab3sRsBk9ky8989+tRnjGwgiBGJw+oUqMDVTyuel+MLgN9kV4be2K/Bj1
-         uEIexWc/X7uLTTPn7zs/VLN6lTOPUQU1Kx81uhs32vvORdJj1pY4mvcoLiPy/FiTnF7l
-         9BB49ewL3wgBI7Ftqu9wAqRA9jkv+cwRV3pjOhncPW2ecme02mnpNkDyIUrqd6vjqP0+
-         5JPnoZyQYLD4RXShFtA2YTbCQdxg5r4xtyVz1AZJxUicBiZ8nSwKx3MN6v31BwXHUBLC
-         KZyqBDd+tem8Fyg4zsIIpNr8tRLbW6XkjJXhlOX5BCbZ763+/lSzhSxga70dWkidl47c
-         cuww==
-X-Gm-Message-State: AOAM531ZzoGF5kQunGbE1Ps2hrcmXr6pFx+0zkOI+JSMDAa9YJd4bRDD
-        DEc19xR8xcUU+jWc3xpzEvY=
-X-Google-Smtp-Source: ABdhPJwRZyxFqQeOEblm8UleIe4+gVt51nAH63aF5YpfAvzPeenGQ0qWffqP5em13d/K97yyKcjnLw==
-X-Received: by 2002:adf:f309:: with SMTP id i9mr15045556wro.256.1634308241858;
-        Fri, 15 Oct 2021 07:30:41 -0700 (PDT)
-Received: from debian (host-2-99-153-109.as13285.net. [2.99.153.109])
-        by smtp.gmail.com with ESMTPSA id l17sm5018319wrx.24.2021.10.15.07.30.40
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BOWkhXmRLradAC/GQ4VVcC6Y/gPQpSI6S5P1Mpfnvk8=;
+        b=hXYP4HehtTFc3vDEuTAG+wnYCeSnFApfBrbB80eRJWKr1YD39qD9la3w9L5f4ID73o
+         M85FhCWxLKFE/Z8lNo323gVMe41eO+EaJ5Rr9ehMEYgXW2vKwf/ZgL3hx05KBtnMNHUi
+         xXPi8SVdpyjdpbPmVnqS09QIlDcwXq3XN1ie+8gyUAskcGNCqJZJYNf0dZvASwNyFBSe
+         PdEIQqOL2aKU+WkYQqHtGPfszlu1J0BvBXfA33Cc3JjEZ2tGMZvSieG+RyqlxRdQdv8S
+         CiRb7vWUdjyAm5sVbTnM31+6/1FkvTUQYrp8kW6WFD0JZt4x+f8/ezF2Cnm0GRCAEMte
+         M7vQ==
+X-Gm-Message-State: AOAM533wZGv6MucObWuapbE8C36hJm9Lp+YGEU9S6Ftxc/VZkIuz8J/h
+        6g6MA9UFhYh2hJ+2YXoRtSOKHxr2xos=
+X-Google-Smtp-Source: ABdhPJyb7Io5HBfOR1Od1nJE8cceEaoAYKaT4OvEzqEQBBRoD5cqfwoaAwdgJNzZqfJWySJA7xQiIg==
+X-Received: by 2002:a2e:7605:: with SMTP id r5mr1552093ljc.301.1634308300111;
+        Fri, 15 Oct 2021 07:31:40 -0700 (PDT)
+Received: from localhost.localdomain (84-72-105-84.dclient.hispeed.ch. [84.72.105.84])
+        by smtp.gmail.com with ESMTPSA id b18sm616475lji.99.2021.10.15.07.31.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Oct 2021 07:30:41 -0700 (PDT)
-Date:   Fri, 15 Oct 2021 15:30:39 +0100
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.10 00/22] 5.10.74-rc1 review
-Message-ID: <YWmQj2NE6o/TVNfl@debian>
-References: <20211014145207.979449962@linuxfoundation.org>
+        Fri, 15 Oct 2021 07:31:39 -0700 (PDT)
+From:   Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
+To:     Nicolas Frattaroli <frattaroli.nicolas@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>
+Cc:     Rob Herring <robh@kernel.org>, linux-rockchip@lists.infradead.org,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: dt-bindings: rockchip: i2s-tdm: fix rockchip,cru requirement
+Date:   Fri, 15 Oct 2021 16:31:14 +0200
+Message-Id: <20211015143115.1445707-1-frattaroli.nicolas@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211014145207.979449962@linuxfoundation.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+The behaviour described in the bindings is exactly the opposite
+of what it should be, so this patch fixes the description and
+adjusts the if conditions for adding rockchip,cru to required.
 
-On Thu, Oct 14, 2021 at 04:54:06PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.74 release.
-> There are 22 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sat, 16 Oct 2021 14:51:59 +0000.
-> Anything received after that time might be too late.
+Fixes: 510f1c133aed ("ASoC: dt-bindings: rockchip: add i2s-tdm bindings")
+Signed-off-by: Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
+---
+ .../devicetree/bindings/sound/rockchip,i2s-tdm.yaml   | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-Build test:
-mips (gcc version 11.2.1 20211012): 63 configs -> no new failure
-arm (gcc version 11.2.1 20211012): 105 configs -> no new failure
-arm64 (gcc version 11.2.1 20211012): 3 configs -> no failure
-x86_64 (gcc version 10.2.1 20210110): 4 configs -> no failure
-
-Boot test:
-x86_64: Booted on my test laptop. No regression.
-x86_64: Booted on qemu. No regression. [1]
-arm64: Booted on rpi4b (4GB model). No regression. [2]
-
-[1]. https://openqa.qa.codethink.co.uk/tests/268
-[2]. https://openqa.qa.codethink.co.uk/tests/269
-
-
-Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
-
---
-Regards
-Sudip
+diff --git a/Documentation/devicetree/bindings/sound/rockchip,i2s-tdm.yaml b/Documentation/devicetree/bindings/sound/rockchip,i2s-tdm.yaml
+index ce3e18b50230..93f5221e9381 100644
+--- a/Documentation/devicetree/bindings/sound/rockchip,i2s-tdm.yaml
++++ b/Documentation/devicetree/bindings/sound/rockchip,i2s-tdm.yaml
+@@ -86,7 +86,7 @@ properties:
+     $ref: /schemas/types.yaml#/definitions/phandle
+     description:
+       The phandle of the cru.
+-      Required if neither trcm-sync-tx-only nor trcm-sync-rx-only are specified.
++      Required if either trcm-sync-tx-only or trcm-sync-rx-only are specified.
+ 
+   rockchip,grf:
+     $ref: /schemas/types.yaml#/definitions/phandle
+@@ -147,8 +147,13 @@ required:
+ allOf:
+   - if:
+       properties:
+-        rockchip,trcm-sync-tx-only: false
+-        rockchip,trcm-sync-rx-only: false
++        rockchip,trcm-sync-tx-only: true
++    then:
++      required:
++        - rockchip,cru
++  - if:
++      properties:
++        rockchip,trcm-sync-rx-only: true
+     then:
+       required:
+         - rockchip,cru
+-- 
+2.33.0
 
