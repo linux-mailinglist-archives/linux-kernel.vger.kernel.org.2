@@ -2,85 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18F9042EF8B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 13:20:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 680BF42EF8C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 13:22:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238439AbhJOLWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 07:22:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41416 "EHLO mail.kernel.org"
+        id S238446AbhJOLZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 07:25:02 -0400
+Received: from mga01.intel.com ([192.55.52.88]:36651 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230386AbhJOLWd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 07:22:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E13360EFF;
-        Fri, 15 Oct 2021 11:20:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634296827;
-        bh=2W8IGoWcN4dnWhDN155etd5POsGBKisgo5d/iujmmAY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qcLpHUygt2XOZZ6T820MfK+BnyZQsLnaJMeo65TId0P320j7bFtOVFA/lPiRwN//k
-         vCZwCC48swOSmKkYldE+uOv2I3Tnwh8ZHTXutRs8STV1TSxMD6SEl9AKLZlWv7eagq
-         Nl6JNzF1nrdXys3bLEw4Vk4HI1iKSC1Ne4zThSps=
-Date:   Fri, 15 Oct 2021 13:20:23 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Karolina Drobnik <karolinadrobnik@gmail.com>
-Cc:     outreachy-kernel@googlegroups.com, forest@alittletooquiet.net,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] staging: vt6655: Rename byPreambleType field
-Message-ID: <YWlj9x6kwYUT1jlQ@kroah.com>
-References: <20211015102444.90753-1-karolinadrobnik@gmail.com>
+        id S229632AbhJOLZB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 07:25:01 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10137"; a="251342299"
+X-IronPort-AV: E=Sophos;i="5.85,375,1624345200"; 
+   d="scan'208";a="251342299"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2021 04:22:54 -0700
+X-IronPort-AV: E=Sophos;i="5.85,375,1624345200"; 
+   d="scan'208";a="492467004"
+Received: from liminghu-mobl.ccr.corp.intel.com (HELO [10.212.23.213]) ([10.212.23.213])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2021 04:22:53 -0700
+Subject: Re: [RFC PATCH v3 05/13] ASoC: soc-pcm: align BE 'atomicity' with
+ that of the FE
+To:     Takashi Iwai <tiwai@suse.de>, Sameer Pujar <spujar@nvidia.com>
+Cc:     alsa-devel@alsa-project.org,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>, vkoul@kernel.org,
+        broonie@kernel.org, Gyeongtaek Lee <gt82.lee@samsung.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+References: <20211013143050.244444-1-pierre-louis.bossart@linux.intel.com>
+ <20211013143050.244444-6-pierre-louis.bossart@linux.intel.com>
+ <2847a6d1-d97f-4161-c8b6-03672cf6645c@nvidia.com>
+ <s5hmtnavisi.wl-tiwai@suse.de>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <e2a79095-b8ce-9dd4-3e6d-00f8dda99f30@linux.intel.com>
+Date:   Fri, 15 Oct 2021 06:22:50 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211015102444.90753-1-karolinadrobnik@gmail.com>
+In-Reply-To: <s5hmtnavisi.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 15, 2021 at 11:24:44AM +0100, Karolina Drobnik wrote:
-> Drop Hungarian notation prefix in `byPreambleType` member of
-> struct vnt_private. Change it to use snake case. Update
-> comment for `bb_get_frame_time` to reflect that change.
+
+
+
+>> In normal PCM, atomicity seems to apply only for trigger(). Other
+>> callbacks like prepare, hw_params are executed in non-atomic
+>> context. So when 'nonatomic' flag is false, still it is possible to
+>> sleep in a prepare or hw_param callback and this is true for FE as
+>> well. So I am not sure if atomicity is applicable as a whole even for
+>> FE.
+
+The typical path is snd_pcm_elapsed() on the FE, which will trigger the
+BE. When we add the BE lock in patch7, things break: what matters is the
+FE context, the locks used for the BE have to be aligned with the FE
+atomicity.
+
+My test results show the problem:
+https://github.com/thesofproject/linux/pull/3209#issuecomment-941229502
+and this patch fixes the issue.
+
+I am all ears if someone has a better solution, but the problem is real.
+
+I chose to add this patch first, before the BE lock is added in
+dpcm_be_dai_trigger(), and if this causes problems already there are
+even more issues in DPCM :-(
+
+If this patch causes issues outside of the trigger phase, then maybe we
+could just change the BE nonatomic flag temporarily and restore it after
+taking the lock, but IMHO something else is broken in other drivers.
+
+>> At this point it does not cause serious problems, but with subsequent
+>> patches (especially when patch 7/13 is picked) I see failures. Please
+>> refer to patch 7/13 thread for more details.
+>>
+>>
+>> I am wondering if it is possible to only use locks internally for DPCM
+>> state management and decouple BE callbacks from this, like normal PCMs
+>> do?
 > 
-> Fix issue detected by checkpatch.pl:
->   CHECK: Avoid CamelCase: <byPreambleType>
+> Actually the patch looks like an overkill by adding the FE stream lock
+> at every loop, and this caused the problem, AFAIU.
 > 
-> Signed-off-by: Karolina Drobnik <karolinadrobnik@gmail.com>
-> ---
->  drivers/staging/vt6655/baseband.c    |  8 ++---
->  drivers/staging/vt6655/baseband.h    |  2 +-
->  drivers/staging/vt6655/device.h      |  2 +-
->  drivers/staging/vt6655/device_main.c |  8 ++---
->  drivers/staging/vt6655/rxtx.c        | 50 ++++++++++++++--------------
->  5 files changed, 35 insertions(+), 35 deletions(-)
+> Basically we need to protect the link addition / deletion while the
+> list traversal (there is a need for protection of BE vs BE access
+> race, but that's a different code path).  For the normal cases, it
+> seems already protected by card->pcm_mutex, but the problem is the FE
+> trigger case.  It was attempted by dpcm_lock, but that failed because
+> it couldn't be applied properly there.
 > 
-> diff --git a/drivers/staging/vt6655/baseband.c b/drivers/staging/vt6655/baseband.c
-> index 0bae35af6e0f..7a5f186f2598 100644
-> --- a/drivers/staging/vt6655/baseband.c
-> +++ b/drivers/staging/vt6655/baseband.c
-> @@ -1691,7 +1691,7 @@ static const unsigned short awc_frame_time[MAX_RATE] = {
->   *
->   * Parameters:
->   *  In:
-> - *      by_preamble_type  - Preamble Type
-> + *      preamble_type     - Preamble Type
+> That said, what we'd need is only:
+> - Drop dpcm_lock codes once
 
-This is not part of a structure.
+I am not able to follow this sentence, what did you mean here?
 
->   *      by_pkt_type        - PK_TYPE_11A, PK_TYPE_11B, PK_TYPE_11GB, PK_TYPE_11GA
->   *      cb_frame_length   - Baseband Type
->   *      tx_rate           - Tx Rate
-> @@ -1700,7 +1700,7 @@ static const unsigned short awc_frame_time[MAX_RATE] = {
->   * Return Value: FrameTime
->   *
->   */
-> -unsigned int bb_get_frame_time(unsigned char by_preamble_type,
-> +unsigned int bb_get_frame_time(unsigned char preamble_type,
+> - Put FE stream lock around dpcm_be_connect() and dpcm_be_disconnect()
+> 
+> That should suffice for the race at trigger.  The FE stream lock is
+> already taken at trigger callback, and the rest list addition /
+> deletion are called from different code paths without stream locks, so
+> the explicit FE stream lock is needed there.
 
-Neither is this :(
+I am not able to follow what you meant after "the rest". This sentence
+mentions the FE stream lock in two places, but the second is not clear
+to me.
 
-Do not do multiple different things in the same commit and especially
-when you do not describe them in the changelog text.
+> In addition, a lock around dpcm_show_state() might be needed to be
+> replaced with card->pcm_mutex, and we may need to revisit whether all
+> other paths take card->pcm_mutex.
 
-thanks,
+What happens if we show the state while a trigger happens? That's my
+main concern with using two separate locks (pcm_mutex and FE stream
+lock) to protect the same list, there are still windows of time where
+the list is not protected.
 
-greg k-h
+same with the use of for_each_dpcm_be() in soc-compress, SH and FSL
+drivers, there's no other mutex there.
+
+My approach might have been overkill in some places, but it's comprehensive.
+
+
+> Also, BE-vs-BE race can be protected by taking a BE lock inside
+> dpcm_be_dai_trigger().
+
+that's what I did, no?
