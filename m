@@ -2,148 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE51C42F91C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 18:55:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8E8342F92A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 18:56:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237773AbhJOQ5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 12:57:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49285 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237697AbhJOQ5d (ORCPT
+        id S241802AbhJOQ6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 12:58:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33828 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241827AbhJOQ6N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 12:57:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634316926;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=Hc2aYnwlYlq/me8gyUtv3dxMsXiZ853XX+/fDSvon+k=;
-        b=gLyMzNT9kqMXyhU64O7GuTdSSV2fL/WNVEXOJ85mJ5f5CNua78VaC4y7rmmQigvoY9pm5q
-        hDTea4Nz4QozJWGRlVTVtEqWhaqLOTF7HlCfPYW7AcUXPJ7bVexRRE98/ytDxQjQBaDp1E
-        JKeZlC/q07bnBkZ8CVzUcNr0iTHzG4U=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-467-OCsP1-ydOCa-dESX-B3wig-1; Fri, 15 Oct 2021 12:55:21 -0400
-X-MC-Unique: OCsP1-ydOCa-dESX-B3wig-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 61CD4100D680;
-        Fri, 15 Oct 2021 16:55:20 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id F0A86B8540;
-        Fri, 15 Oct 2021 16:55:19 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     seanjc@google.com,
-        syzbot+e0de2333cbf95ea473e8@syzkaller.appspotmail.com
-Subject: [PATCH] KVM: replace large kvmalloc allocation with vmalloc
-Date:   Fri, 15 Oct 2021 12:55:19 -0400
-Message-Id: <20211015165519.135670-1-pbonzini@redhat.com>
+        Fri, 15 Oct 2021 12:58:13 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78293C061762
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 09:56:06 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id pi19-20020a17090b1e5300b0019fdd3557d3so7687872pjb.5
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 09:56:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AaNCt4OmVhLvoFGzEVj4sViAisbx0ICeCpQAIecvxqI=;
+        b=hPtUn5xDRLIFQwIqC+vCxBy4ne14xnuKSSFL/3XuvrTqwY+L33IRim9F2QSX1FS3GD
+         eClTIOjeUdFZVfeE+zB1ywC5h1IGnSmSp2ez0scC7FNzaRz4FeN0jr63F3Zj/8YTtXCi
+         nSxnRATEQS8yMwDArMMsqHk2WXiSvivnMRsv8kE0IcV3BRU07VcwAWWY3cqDGTIvNBfF
+         Saxncu/BJD3qtFZs2xGayUjxYicDKj2djElyb2NEL4WpJYZsI/lB9X0RYGWfBeGRplzJ
+         cbowtfklm7xgb2l08imWEz0EaRUVsPxHl2s2rxsglcMGRcaCV6XZ1QDNL6R4A397ZYWQ
+         f0Aw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AaNCt4OmVhLvoFGzEVj4sViAisbx0ICeCpQAIecvxqI=;
+        b=RaEL2Ec5NAxJLvz2eaoX6OEyoh7slHvJwhDGlXALk3NdDhYeRve+Cwwm/kB9UVlqRm
+         cdRL8OuAJ0Go7YKaA3BMyV5Cu3Q16RSGtqMsw5Q14w7vQ1xZtZSt7mThYP/SaHZg7A8A
+         LMXloapM6MCSrgrPXVRpAxHFkKPKA7Ie5ILcI04lRLh6y6KGM0xVXU59MxUOW5YpdcDA
+         7JEZdilmPcaackWCYHM84wgRcL47AqWIFORTDuRbh+FiBEisIW9/134nw7ad1EWZuNVI
+         BQUMpz1FDH8vuenkKWsErYCsQtxaS/UzLAyCdgDiOj7DP6cRaE7byrY27+C8k+ag1eSg
+         OZlg==
+X-Gm-Message-State: AOAM531rpFChsP2p7X3Us2dcaQVybsqvp6hnIEsB03JL6+HAvO0OwB+9
+        PnFGOftJS/ALkS1HaedSfWJVZI4/czN5Mb05yG/e3w==
+X-Google-Smtp-Source: ABdhPJyOtIyBzAL4O7WPCBfNYHHReQtLzXKDwE0ySONpN92H2FI0Q4u1sLjT3ZL/ZjCgpIvxqAwijeO87SXsPlIQUqc=
+X-Received: by 2002:a17:902:ab50:b0:13f:4c70:9322 with SMTP id
+ ij16-20020a170902ab5000b0013f4c709322mr11958655plb.89.1634316966039; Fri, 15
+ Oct 2021 09:56:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+References: <163379783658.692348.16064992154261275220.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <163379786922.692348.2318044990911111834.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <20211015172732.000012fc@Huawei.com>
+In-Reply-To: <20211015172732.000012fc@Huawei.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Fri, 15 Oct 2021 09:55:57 -0700
+Message-ID: <CAPcyv4j9W4NJFTPk8c5_nG_fAUpecnY886jKmhYzZONW4RCf5Q@mail.gmail.com>
+Subject: Re: [PATCH v3 06/10] cxl/pci: Add @base to cxl_register_map
+To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc:     linux-cxl@vger.kernel.org, Linux PCI <linux-pci@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-KVM's paging data structures (especially the rmaps) can be made as
-large as possible by userspace simply by creating large-enough memslots.
-Since commit 7661809d493b ("mm: don't allow oversized kvmalloc() calls")
-these huge allocations cause a warning, assuming that they could be the
-result of an integer overflow or underflow.
+On Fri, Oct 15, 2021 at 9:27 AM Jonathan Cameron
+<Jonathan.Cameron@huawei.com> wrote:
+>
+> On Sat, 9 Oct 2021 09:44:29 -0700
+> Dan Williams <dan.j.williams@intel.com> wrote:
+>
+> > In addition to carrying @barno, @block_offset, and @reg_type, add @base
+> > to keep all map/unmap parameters in one object. The helpers
+> > cxl_{map,unmap}_regblock() handle adjusting @base to the @block_offset
+> > at map and unmap time.
+> >
+> > Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+>
+> I don't really mind them, but why the renames
+> from cxl_pci_* to cxl_* ?
 
-Since there are configurations in the wild creating a multi-TiB memslot,
-and in fact it is more likely than not that these allocations end up not
-using kmalloc-ed memory.  For example, the dirty bitmap for a 64 GiB
-memslot would cause a 4 MiB allocation, since each 32 KiB of guest
-address space corresponds to 2 bytes in the dirty bitmap.  Therefore,
-just use vmalloc directly.  Introduce a new helper vcalloc to check for
-overflow for extra paranoia, even though it should not be a problem here
-even on 32-bit systems.
+Primarily because we had a mix of some functions including the _pci
+and some not, and I steered towards just dropping it. I think the
+"PCI" aspect of the function is clear by its function signature, and
+that was being muddied by passing @cxlm unnecessarily. So instead of:
 
-Reported-by: syzbot+e0de2333cbf95ea473e8@syzkaller.appspotmail.com
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- arch/x86/kvm/mmu/page_track.c |  3 +--
- arch/x86/kvm/x86.c            |  4 ++--
- include/linux/vmalloc.h       | 10 ++++++++++
- virt/kvm/kvm_main.c           |  4 ++--
- 4 files changed, 15 insertions(+), 6 deletions(-)
+cxl_pci_$foo(struct cxl_mem *cxlm...)
 
-diff --git a/arch/x86/kvm/mmu/page_track.c b/arch/x86/kvm/mmu/page_track.c
-index 21427e84a82e..0d9842472288 100644
---- a/arch/x86/kvm/mmu/page_track.c
-+++ b/arch/x86/kvm/mmu/page_track.c
-@@ -36,8 +36,7 @@ int kvm_page_track_create_memslot(struct kvm_memory_slot *slot,
- 
- 	for (i = 0; i < KVM_PAGE_TRACK_MAX; i++) {
- 		slot->arch.gfn_track[i] =
--			kvcalloc(npages, sizeof(*slot->arch.gfn_track[i]),
--				 GFP_KERNEL_ACCOUNT);
-+			vcalloc(npages, sizeof(*slot->arch.gfn_track[i]));
- 		if (!slot->arch.gfn_track[i])
- 			goto track_free;
- 	}
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index aabd3a2ec1bc..07f5760ea30c 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -11394,7 +11394,7 @@ static int memslot_rmap_alloc(struct kvm_memory_slot *slot,
- 
- 		WARN_ON(slot->arch.rmap[i]);
- 
--		slot->arch.rmap[i] = kvcalloc(lpages, sz, GFP_KERNEL_ACCOUNT);
-+		slot->arch.rmap[i] = vcalloc(lpages, sz);
- 		if (!slot->arch.rmap[i]) {
- 			memslot_rmap_free(slot);
- 			return -ENOMEM;
-@@ -11475,7 +11475,7 @@ static int kvm_alloc_memslot_metadata(struct kvm *kvm,
- 
- 		lpages = __kvm_mmu_slot_lpages(slot, npages, level);
- 
--		linfo = kvcalloc(lpages, sizeof(*linfo), GFP_KERNEL_ACCOUNT);
-+		linfo = vcalloc(lpages, sizeof(*linfo));
- 		if (!linfo)
- 			goto out_free;
- 
-diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
-index 671d402c3778..6d51c83c2b0e 100644
---- a/include/linux/vmalloc.h
-+++ b/include/linux/vmalloc.h
-@@ -167,6 +167,16 @@ extern int remap_vmalloc_range_partial(struct vm_area_struct *vma,
- extern int remap_vmalloc_range(struct vm_area_struct *vma, void *addr,
- 							unsigned long pgoff);
- 
-+static inline void *vcalloc(size_t n, size_t size)
-+{
-+	size_t bytes;
-+
-+	if (unlikely(check_mul_overflow(n, size, &bytes)))
-+		return NULL;
-+
-+	return vzalloc(bytes);
-+}
-+
- /*
-  * Architectures can set this mask to a combination of PGTBL_P?D_MODIFIED values
-  * and let generic vmalloc and ioremap code know when arch_sync_kernel_mappings()
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 7851f3a1b5f7..0295d89f5445 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -1242,9 +1242,9 @@ static int kvm_vm_release(struct inode *inode, struct file *filp)
-  */
- static int kvm_alloc_dirty_bitmap(struct kvm_memory_slot *memslot)
- {
--	unsigned long dirty_bytes = 2 * kvm_dirty_bitmap_bytes(memslot);
-+	unsigned long dirty_bytes = kvm_dirty_bitmap_bytes(memslot);
- 
--	memslot->dirty_bitmap = kvzalloc(dirty_bytes, GFP_KERNEL_ACCOUNT);
-+	memslot->dirty_bitmap = vcalloc(2, dirty_bytes);
- 	if (!memslot->dirty_bitmap)
- 		return -ENOMEM;
- 
--- 
-2.27.0
+...I went with:
 
+cxl_$foo(struct pci_dev *pdev...)
+
+...concerns?
