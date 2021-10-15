@@ -2,133 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 095DF42EE0D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 11:45:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4940842EE1B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 11:47:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237936AbhJOJrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 05:47:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46220 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237664AbhJOJrS (ORCPT
+        id S234815AbhJOJty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 05:49:54 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:58736 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232071AbhJOJto (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 05:47:18 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EA69C06176E;
-        Fri, 15 Oct 2021 02:45:07 -0700 (PDT)
-Date:   Fri, 15 Oct 2021 09:45:05 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1634291106;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xg9+mT6WC+xN1RVcGak4Ru+QyUzYE1yD7h9mjQ/cuPY=;
-        b=1OWC3i2DI7VBOY5dyRrnOOTyIWPD9kLWWJ8XBTJSh0471i/0qu/J0f2vwMEtOhLinvNdOm
-        4CtMtVSqNQKPF72nsiOo8ImFoWzo7iAEYMOmFDfaClHSy+oxoUS2tkmr8hWDLPZMbhG8WG
-        //tMB+F6rjqojwylQ/yzSXyoRWarxQ50bG9/tqZeAyoKPpkvfV9wm2yUgHmyLspa25zRI+
-        Jby2tzFLu2UKnh3Udk/aCRFfLRLOdq6P0mIG94qlMHcwaGunUdKWCrtXv9oO7wtgwXd0Cx
-        5GsEYwPKHYjCi3u7ednq75QLmbndpDvclWu3RR2xVOoPKSqGVn8mejyLUMmUNg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1634291106;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xg9+mT6WC+xN1RVcGak4Ru+QyUzYE1yD7h9mjQ/cuPY=;
-        b=jJH4xr6BVDWYUMiKP9mIRqydvVh//Rks2JqpX0PNBgACUm5M4xglFx/o2IsclJn955xyxi
-        5IefegpClJ+2IXDg==
-From:   "tip-bot2 for Kees Cook" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] Revert "proc/wchan: use printk format instead of
- lookup_symbol_name()"
-Cc:     kernel test robot <oliver.sang@intel.com>,
-        Vito Caputo <vcaputo@pengaru.com>,
-        Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        stable@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20211008111626.090829198@infradead.org>
-References: <20211008111626.090829198@infradead.org>
+        Fri, 15 Oct 2021 05:49:44 -0400
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19F8WEgK020108;
+        Fri, 15 Oct 2021 11:47:28 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=QMJybJFM+KLDBRVWUQYg6J/4AWICb2XMbuf/J8bxJWk=;
+ b=JgVrE461VqFuUQLgFZd7ds6PbsNEobjn2bJ5UWYI6sVgyuSZXY70pXvY+uJcaFkNbqU6
+ JkiZOGxDRwLqHUi1dnKV/4iNfBSY5WvP9qTEMotuIZZ299Mpo3zoMQZCVOldZCD3vL4G
+ udNjxyzJjjVU+OJI93H6jQDuaDOuwUH04oewFbmFj/2PuoOtXdv+0/uqvRq+lZFJUN6z
+ F2CIG712YpLZ+6a1jL1sSkqcjcHnk/Y0rKL0Fzrvy6bLiFbjaTIhC9Lt3yBXEYptTbOZ
+ 1pJEIoxzAViUuLoAL9KMtQIvgCbW+YI8uoyJ/SxeICWWyqCnZcdDjsRPcF0Ti+9R5LLM fg== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3bpydfb096-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 15 Oct 2021 11:47:28 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 0635310002A;
+        Fri, 15 Oct 2021 11:47:26 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id EFBDD21ED3B;
+        Fri, 15 Oct 2021 11:47:25 +0200 (CEST)
+Received: from localhost (10.75.127.45) by SFHDAG2NODE2.st.com (10.75.127.5)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.18; Fri, 15 Oct 2021 11:47:25
+ +0200
+From:   Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+To:     Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        <arnaud.pouliquen@foss.st.com>, Suman Anna <s-anna@ti.com>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-remoteproc@vger.kernel.org>
+Subject: [PATCH v10 0/2] Add rpmsg tty driver
+Date:   Fri, 15 Oct 2021 11:46:59 +0200
+Message-ID: <20211015094701.5732-1-arnaud.pouliquen@foss.st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Message-ID: <163429110533.25758.7536227184582380260.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.45]
+X-ClientProxiedBy: SFHDAG1NODE3.st.com (10.75.127.3) To SFHDAG2NODE2.st.com
+ (10.75.127.5)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-15_03,2021-10-14_02,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the sched/core branch of tip:
+Update previous revision [1] based on Mathieu Poirier's review.
 
-Commit-ID:     54354c6a9f7fd5572d2b9ec108117c4f376d4d23
-Gitweb:        https://git.kernel.org/tip/54354c6a9f7fd5572d2b9ec108117c4f376d4d23
-Author:        Kees Cook <keescook@chromium.org>
-AuthorDate:    Wed, 29 Sep 2021 15:02:13 -07:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Fri, 15 Oct 2021 11:25:13 +02:00
+This patchset introduces a TTY console on top of the RPMsg framework which
+enables the following use cases:
+- Provide a console to communicate easily with the remote processor application.
+- Provide an interface to get the remote processor log traces without ring
+  buffer limitation.
+- Ease the migration from MPU + MCU processors to multi core processors
+  (MPU and MCU integrated in one processor) by offering a virtual serial link.
 
-Revert "proc/wchan: use printk format instead of lookup_symbol_name()"
+An alternative of this proposed solution would consist in using the virtio
+console:
+The drawback with that solution is that it requires a specific virtio buffer
+(in addition to the one already used for RPMsg) which does not fit with remote
+processors with little memory. The proposed solution allows to multiplex the
+console with the other rpmsg services, optimizing the memory.
 
-This reverts commit 152c432b128cb043fc107e8f211195fe94b2159c.
+The first patch adds an API to the rpmsg framework ('get max transmission unit')
+and the second one is the rpmsg tty driver itself.
 
-When a kernel address couldn't be symbolized for /proc/$pid/wchan, it
-would leak the raw value, a potential information exposure. This is a
-regression compared to the safer pre-v5.12 behavior.
+Applied and tested on kernel V5.15-rc1
 
-Reported-by: kernel test robot <oliver.sang@intel.com>
-Reported-by: Vito Caputo <vcaputo@pengaru.com>
-Reported-by: Jann Horn <jannh@google.com>
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Cc: stable@vger.kernel.org
-Link: https://lkml.kernel.org/r/20211008111626.090829198@infradead.org
----
- fs/proc/base.c | 19 +++++++++++--------
- 1 file changed, 11 insertions(+), 8 deletions(-)
+[1] https://lkml.org/lkml/2021/10/8/726 
 
-diff --git a/fs/proc/base.c b/fs/proc/base.c
-index 533d583..1f39409 100644
---- a/fs/proc/base.c
-+++ b/fs/proc/base.c
-@@ -67,6 +67,7 @@
- #include <linux/mm.h>
- #include <linux/swap.h>
- #include <linux/rcupdate.h>
-+#include <linux/kallsyms.h>
- #include <linux/stacktrace.h>
- #include <linux/resource.h>
- #include <linux/module.h>
-@@ -386,17 +387,19 @@ static int proc_pid_wchan(struct seq_file *m, struct pid_namespace *ns,
- 			  struct pid *pid, struct task_struct *task)
- {
- 	unsigned long wchan;
-+	char symname[KSYM_NAME_LEN];
- 
--	if (ptrace_may_access(task, PTRACE_MODE_READ_FSCREDS))
--		wchan = get_wchan(task);
--	else
--		wchan = 0;
-+	if (!ptrace_may_access(task, PTRACE_MODE_READ_FSCREDS))
-+		goto print0;
- 
--	if (wchan)
--		seq_printf(m, "%ps", (void *) wchan);
--	else
--		seq_putc(m, '0');
-+	wchan = get_wchan(task);
-+	if (wchan && !lookup_symbol_name(wchan, symname)) {
-+		seq_puts(m, symname);
-+		return 0;
-+	}
- 
-+print0:
-+	seq_putc(m, '0');
- 	return 0;
- }
- #endif /* CONFIG_KALLSYMS */
+Arnaud Pouliquen (2):
+  rpmsg: core: add API to get MTU
+  tty: add rpmsg driver
+
+ drivers/rpmsg/rpmsg_core.c       |  21 +++
+ drivers/rpmsg/rpmsg_internal.h   |   2 +
+ drivers/rpmsg/virtio_rpmsg_bus.c |  10 ++
+ drivers/tty/Kconfig              |  12 ++
+ drivers/tty/Makefile             |   1 +
+ drivers/tty/rpmsg_tty.c          | 274 +++++++++++++++++++++++++++++++
+ include/linux/rpmsg.h            |  10 ++
+ 7 files changed, 330 insertions(+)
+ create mode 100644 drivers/tty/rpmsg_tty.c
+
+-- 
+2.17.1
+
