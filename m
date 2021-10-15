@@ -2,157 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4CCD42F420
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 15:46:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71A6942F423
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 15:46:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236310AbhJONsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 09:48:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45082 "EHLO
+        id S240014AbhJONs5 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 15 Oct 2021 09:48:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240061AbhJONsS (ORCPT
+        with ESMTP id S240005AbhJONsm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 09:48:18 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73C54C061570;
-        Fri, 15 Oct 2021 06:46:12 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id d131so22962428ybd.5;
-        Fri, 15 Oct 2021 06:46:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=UMmMwoh0d9xOMBuf6Cb27qJgX9NIbwQbOxUehDVoXW4=;
-        b=mSDy6QRxK1GWCZFRze2z/WPjTfj8t295fUbQbf1kfgfC1DUUqn1r6OUB82lPqEziqO
-         aPvbyCh7Fdmn7+U2T9aXBbvBtchCJWUvjWlTV+h4GFPiyaj9eOjPDeaevyfDx+XswY9O
-         qlsP/N0k3ISA1BsIf11JnASBHQ+NVZOu6UIordsImPMmoVJ2eY/Mu64O44OsXQNgP3Uu
-         GAwVOrPFCVDcaz9D9GLZ36hsUqoxlc4cNtH0hVd6r/OJGWnboEInE6zKcQGGMklOLgBs
-         5qXHsjF3iMMJ/cwwo/tgbfTSCYNdGAYh4RpqZn+X97Ho5avE4EmgJ0pgCpZvhtcZcV2d
-         nePg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=UMmMwoh0d9xOMBuf6Cb27qJgX9NIbwQbOxUehDVoXW4=;
-        b=eBJPyCGVWkZGfifc5wHHIToj7DoSL/rL9ioa3cQhaMR4BAfgcwI7gdgDGjV/HIE3Av
-         Q54F18oddvVi0Hvf7e4tyIx17cv8u6gzFwD8ZRqp9+jLTmN3s4/46omDGXDnpTuy3+8g
-         SWi+5LKHRNoA/yvoBl8YWGlNpVRC5WBKsnsn3oJvVO72nEQ/DApqCgQD1SXonkeFWeVI
-         uXx91/fdpdREhgnpxzhUCQc3qCTSSdfYrPIm5109N+0J1xXCKIRTyznb4D5wP1Q+3PBo
-         DwGHF59woVZHfajBEX9TElJJpVrnArE6ay1B0qMJttJfMtAhvTiwGCtO2YE3rxNY1WBs
-         8Y2w==
-X-Gm-Message-State: AOAM531WF2WNJwUV0gNIu+66EiA8ZcRNamvLAyjyp/12nZZf+N00BZf/
-        HJaOyN+nG91e50RCFBeHGzYN8viPIlPjISxkE7o=
-X-Google-Smtp-Source: ABdhPJwfK40oo9nWMVG1fm09vk4sNWiVNDk0gjrfy78SzbWYqPeXgWz5q5WvAASkenwS0WeJTbIxH9crZgrqZMEVb7k=
-X-Received: by 2002:a25:3843:: with SMTP id f64mr12590756yba.313.1634305571737;
- Fri, 15 Oct 2021 06:46:11 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211015100941.17621-1-heinrich.schuchardt@canonical.com>
- <CAEUhbmUSmi9mbiHpatBjGgRjrtyJPms9BRmyBPs5BWeVb7n1Nw@mail.gmail.com>
- <49af3dc8-0d1e-e82f-6df2-2bf8338acd3a@canonical.com> <D976B0F9-6AE4-4C04-8D52-75B24D6E4359@jrtc27.com>
-In-Reply-To: <D976B0F9-6AE4-4C04-8D52-75B24D6E4359@jrtc27.com>
-From:   Bin Meng <bmeng.cn@gmail.com>
-Date:   Fri, 15 Oct 2021 21:46:01 +0800
-Message-ID: <CAEUhbmWFAJpVxproxX-iH3Tj7jHGqu_SwN6-tGuxqi7NXVhOhA@mail.gmail.com>
-Subject: Re: [PATCH 1/1] dt-bindings: reg-io-width for SiFive CLINT
-To:     Jessica Clarke <jrtc27@jrtc27.com>
-Cc:     Heinrich Schuchardt <heinrich.schuchardt@canonical.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Guo Ren <guoren@linux.alibaba.com>, Xiang W <wxjstz@126.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Atish Patra <atish.patra@wdc.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Anup Patel <anup.patel@wdc.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        OpenSBI <opensbi@lists.infradead.org>
+        Fri, 15 Oct 2021 09:48:42 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 550DDC061570
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 06:46:36 -0700 (PDT)
+Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1mbNXU-0001eJ-Na; Fri, 15 Oct 2021 15:46:24 +0200
+Received: from pza by lupine with local (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1mbNXT-0003MH-Pj; Fri, 15 Oct 2021 15:46:23 +0200
+Message-ID: <045af226c30bde06bff318e9c0673afd86540661.camel@pengutronix.de>
+Subject: Re: [PATCH v3 2/2] pinctrl: microchip sgpio: use reset driver
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     Horatiu Vultur <horatiu.vultur@microchip.com>
+Cc:     linus.walleij@linaro.org, robh+dt@kernel.org,
+        lars.povlsen@microchip.com, Steen.Hegelund@microchip.com,
+        UNGLinuxDriver@microchip.com, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Date:   Fri, 15 Oct 2021 15:46:23 +0200
+In-Reply-To: <20211014143733.t2dov6ajjebxlht6@soft-dev3-1.localhost>
+References: <20211014085929.2579695-1-horatiu.vultur@microchip.com>
+         <20211014085929.2579695-3-horatiu.vultur@microchip.com>
+         <2874212d2f9462880d1b0aae35296162e1277e62.camel@pengutronix.de>
+         <20211014143733.t2dov6ajjebxlht6@soft-dev3-1.localhost>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.30.5-1.1 
+MIME-Version: 1.0
+X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 15, 2021 at 8:15 PM Jessica Clarke <jrtc27@jrtc27.com> wrote:
->
-> On 15 Oct 2021, at 12:54, Heinrich Schuchardt <heinrich.schuchardt@canoni=
-cal.com> wrote:
-> >
-> > On 10/15/21 12:14, Bin Meng wrote:
-> >> On Fri, Oct 15, 2021 at 6:09 PM Heinrich Schuchardt
-> >> <heinrich.schuchardt@canonical.com> wrote:
-> >>>
-> >>> The CLINT in the T-HEAD 9xx processors do not support 64bit mmio acce=
-ss to
-> >>> the MTIMER device. The current schema does not allow to specify this.
-> >>>
-> >>> OpenSBI currently uses a property 'clint,has-no-64bit-mmio' to indica=
-te the
-> >>> restriction. Samuael Holland suggested in
-> >>> lib: utils/timer: Use standard property to specify 32-bit I/O
-> >>> https://github.com/smaeul/opensbi/commit/b95e9cf7cf93b0af16fc89204378=
-bc59ff30008e
-> >>> to use "reg-io-width =3D <4>;" as the reg-io-width property is genera=
-lly used
-> >>> in the devicetree schema for such a condition.
-> >>>
-> >>> A release candidate of the ACLINT specification is available at
-> >>> https://github.com/riscv/riscv-aclint/releases
-> >>>
-> >>> Add reg-io-width as optional property to the SiFive Core Local Interr=
-uptor.
-> >>>
-> >>> Signed-off-by: Heinrich Schuchardt <heinrich.schuchardt@canonical.com=
->
-> >>> ---
-> >>>  Documentation/devicetree/bindings/timer/sifive,clint.yaml | 7 ++++++=
-+
-> >>>  1 file changed, 7 insertions(+)
-> >>>
-> >>> diff --git a/Documentation/devicetree/bindings/timer/sifive,clint.yam=
-l b/Documentation/devicetree/bindings/timer/sifive,clint.yaml
-> >>> index a35952f48742..266012d887b5 100644
-> >>> --- a/Documentation/devicetree/bindings/timer/sifive,clint.yaml
-> >>> +++ b/Documentation/devicetree/bindings/timer/sifive,clint.yaml
-> >>> @@ -41,6 +41,13 @@ properties:
-> >>>    reg:
-> >>>      maxItems: 1
-> >>>
-> >>> +  reg-io-width:
-> >>> +    description: |
-> >>> +      Some CLINT implementations, e.g. on the T-HEAD 9xx, only suppo=
-rt
-> >>> +      32bit access for MTIMER.
-> >>> +    $ref: /schemas/types.yaml#/definitions/uint32
-> >>> +    const: 4
-> >> But this is not a "sifive,clint" anyway. Should there be a new
-> >> dt-bindings for T-Head clint variant?
-> >
-> > I assume by new dt-bindings variant you mean: Add a new compatible stri=
-ng in Documentation/devicetree/bindings/timer/sifive,clint.yaml.
-> >
-> > The vendor Debian image uses:
-> > compatible =3D "{allwinner,sun20i-d1-clint", "sifive,clint0=E2=80=9D};
->
-> I assume Bin means to stop calling it a sifive,clint0 and instead have
-> something like
->
->     "allwinner,sun20i-d1-clint", "thead,clint0"
+On Thu, 2021-10-14 at 16:37 +0200, Horatiu Vultur wrote:
+> The 10/14/2021 13:47, Philipp Zabel wrote:
+> > Hi Horatiu,
+> 
+> Hi Philipp
+> > > +     reset = devm_reset_control_get_shared(&pdev->dev, "switch");
+> > 
+> > Please use devm_reset_control_get_optional_shared() for optional resets
+> > and handle errors. That will return NULL in case the optional reset is
+> > not specified in the device tree.
+> 
+> I will do that.
+> 
+> > It seems weird to me that the reset input to the GPIO controller is
+> > called "switch" reset. You can request a single unnamed reset with
+> > 
+> >         reset = devm_reset_control_get_shared(&pdev->dev, NULL);
+> > 
+> > although that would limit future extendability in case this driver will
+> > ever require to handle multiple separate resets. If you decide to
+> > request the reset control by name, the yaml binding should specify the
+> > same name.
+> 
+> I think this requires a little bit more explanation from my side. On
+> lan966x we are facing the following issue. When we try to reset just the
+> switch core then also the sgpio device was reset and there was no way
+> from HW perspective to prevent this.
+> 
+> So our solutions was to create a reset driver[1] that will be triggered
+> only one time, by the sgpio driver or by the switch driver. That is the
+> reason why it was called "switch" reset. And that is the purpose of this
+> patch to allow the sgpio driver to reset the switch in case is probed
+> before the switch driver so it would not get reset after that.
 
-Yep, that's what I wanted to see. Sorry for not being clear. The
-T-Head CLINT is definitely not compatible with "sifive,clint0".
+Thank you for the explanation, it is perfectly fine to request the
+shared reset line with another name, or use no name at all if it is the
+only reset input to the sgpio controller.
 
-> as is being done for their non-conforming PLIC. It=E2=80=99s worth pointi=
-ng out
-> that the same is true here; the SiFive CLINT supports 64-bit accesses
-> on RV64, so this is not compatible with a SiFive CLINT. Moreover, the
-> RISC-V spec was clearly written in a way that intended 64-bit accesses
-> to be supported for RV64, though was not completely explicit about
-> that, which has now been resolved (see
-> https://github.com/riscv/riscv-isa-manual/issues/639), so this CLINT
-> violates the obvious intent of the pre-1.12 privileged specs (see
-> Andrew=E2=80=99s message in the issue, which agrees with my reading).
-
-Regards,
-Bin
+regards
+Philipp
