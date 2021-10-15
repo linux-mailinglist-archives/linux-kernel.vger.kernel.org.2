@@ -2,162 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03B6A42FEA9
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 01:26:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 274EF42FEAA
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 01:26:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243487AbhJOX2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 19:28:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37764 "EHLO
+        id S243473AbhJOX2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 19:28:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229741AbhJOX2M (ORCPT
+        with ESMTP id S243493AbhJOX2b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 19:28:12 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB2F0C061570;
-        Fri, 15 Oct 2021 16:26:05 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id q5so9897047pgr.7;
-        Fri, 15 Oct 2021 16:26:05 -0700 (PDT)
+        Fri, 15 Oct 2021 19:28:31 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 094EBC061570
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 16:26:25 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id g184so9899845pgc.6
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 16:26:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=LhiUyxq7A+H9kVxdYV5M+qIQok3lfGaHZbNaXD+PJkg=;
-        b=lSzU3zOUOuXMuAbaxU34Y27sQSnuIZ0/GwLcDhNpcvjsQ1aPbvG89C1lRpFQadwibH
-         SCBDQ5efi1TxqUm5Qk4yzaAPle6jLspS8t9qXrA0UjDGeG3MK1Lvj6/HS42nfSYM2k0m
-         zYlgz6GYcEq+BuRnpCae93DoCpGFzxN6xOJ60KVENQzlEYe4QCoElMiXnIHskG5lAuS5
-         Q1HAQ3uJrrajrvmAU6l6Tb53EghU9FIB0A4owEQQpxXvM8nexNO4C6PNTA0TFyzT+Eqx
-         frj7GzSPXx5bf/ZvPBRIGa9MNSpTa9uCHNLl34qIHQSrHZ1XOPTD2usCpSGE6wkRRFsO
-         oJIA==
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=uJ2YVnKXuCapD+GC+e6jPtJ+8reV521rhOMXMMjLFFQ=;
+        b=FEKBFlN5wG9yAV2kBppjcw/xoIl103tlpwWPoOYcaTivN6B+Q7J4gJ4HIwRveDvqZj
+         cUUk4ke64+QNWZUYnzC1ERhlCUwZcaO3PnfOHgNqTTK8e2tOii+RRN/zfPoIQAxUNf4m
+         QMGuUSKp7X8D7JzkiI3kyqTDZvpJvQla44ATmJzLuhPjQgasY9W3ALSdSO6UeUmDX6lo
+         VwZEln3HpV2MoWwzKX+7oQh5b9aFgDJrJMnFW63YVxVomjzmf2ZYcxayTLyhK/wVzTYJ
+         slyL+KWyioSrGuspuUxNMjjqCnUC7+D+4N6d43OEm61HhmOxmHyL79eSEYIo5IZpFxAw
+         2hEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=LhiUyxq7A+H9kVxdYV5M+qIQok3lfGaHZbNaXD+PJkg=;
-        b=zkLHyG5sDsagnyNgskSVWxB7Bv8JA+r71yhk1xXvr12y+Dx/srqKFd3vZ1avv0MGPZ
-         di91LxN1XeHmmUF4zD1n3nzJrOMIuGNuSK+1Xtlf3UExO9MW1kMUjEz10AB+wzuV3ELi
-         iNsTLQ47faxLwR3e1OiDQlkyEbovOXQA1Tpv+nFnMAFyuRAPO4npVE7R4WkCCh69QGnf
-         bDSZ2VS+gt7/KLXpVjz7JZwQ6DnQqvOzXI0HWh1oIN3f1RFmuOolvUnTMtVjZ6c6TSyQ
-         VXKLI1XjKdeNfog5L9gfrRslR9EBId5kZl++Mka98ineHSI8vv20hDNluFKe282/gcxR
-         o8UQ==
-X-Gm-Message-State: AOAM5306JxRSgqyNej3rHy9EWjW7nFitFgg+IiRYMI8PocRQ2UtwULVZ
-        Fl2WnLc5pXbfTnkPxkolHPqm2fsI6Jw=
-X-Google-Smtp-Source: ABdhPJxT9mLb53v7VQivWg83VXDOMUfcFkYhbL4ij/F0LK0j34YerMpZ3wdVkvqmPj+oj0j1MwmFQQ==
-X-Received: by 2002:a05:6a00:2294:b0:44d:92e:1d4d with SMTP id f20-20020a056a00229400b0044d092e1d4dmr14347403pfe.26.1634340364782;
-        Fri, 15 Oct 2021 16:26:04 -0700 (PDT)
-Received: from [172.30.1.32] ([14.32.163.5])
-        by smtp.gmail.com with ESMTPSA id g14sm5417765pgo.88.2021.10.15.16.26.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Oct 2021 16:26:04 -0700 (PDT)
-Subject: Re: [PATCH] clk: samsung: describe drivers in KConfig
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org
-References: <20210924133624.112593-1-krzysztof.kozlowski@canonical.com>
-From:   Chanwoo Choi <cwchoi00@gmail.com>
-Message-ID: <2b7d43f0-02b9-1ed4-fea1-f2c360dedc45@gmail.com>
-Date:   Sat, 16 Oct 2021 08:26:00 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uJ2YVnKXuCapD+GC+e6jPtJ+8reV521rhOMXMMjLFFQ=;
+        b=daYTRO8YI+3IaC5ACYNY3Fs1rmQzlWHb5+anobh8tBqObozUbSDgpNEToayWYvgNZx
+         x5ProYy8PIXf++CmfYTZ0Tn5XVbG017rCxJa4NK84o0HJxWVudUtnuVO5SX7VnOp4COZ
+         919+eRZ60ho5lWuzHRHmQ79/V6yoqAlfb5TeltyK0TQMn5H8zrFHmv1cKk0Hr8SUFcue
+         sT34tFHmXpXFBjrMP1JK4OJcuehlUbRYWpOkP9AKOqiaLWAohz1QNrJ/E9Fo0GnCNAZN
+         ZaYcW2tAkbIYkpzB6PdhPMLvuGYTb4Whky1eKo98jpF87utSdMeLvhujfGrBMKhVaeCY
+         Ycsg==
+X-Gm-Message-State: AOAM530/6mWAvFVx0r68XXGoun6pt+1INsKTR3QFnjB4QpDI824VZ4PK
+        RuWlQCVubdFslqXSYIn9WSP3DA==
+X-Google-Smtp-Source: ABdhPJz3dM1jOK77yQ3YA/EhyHfHvYvgcPqzyaQNIMfPWv2Mc+oTlnhWR75YPgic17CIAtdS9N5TEQ==
+X-Received: by 2002:aa7:949c:0:b0:44c:a0df:2c7f with SMTP id z28-20020aa7949c000000b0044ca0df2c7fmr14727451pfk.34.1634340384249;
+        Fri, 15 Oct 2021 16:26:24 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id t22sm1451643pfg.148.2021.10.15.16.26.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Oct 2021 16:26:23 -0700 (PDT)
+Date:   Fri, 15 Oct 2021 23:26:19 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Wanpeng Li <kernellwp@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Subject: Re: [PATCH v2 3/3] KVM: vCPU kick tax cut for running vCPU
+Message-ID: <YWoOG40Ap0Islpu2@google.com>
+References: <1633770532-23664-1-git-send-email-wanpengli@tencent.com>
+ <1633770532-23664-3-git-send-email-wanpengli@tencent.com>
 MIME-Version: 1.0
-In-Reply-To: <20210924133624.112593-1-krzysztof.kozlowski@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1633770532-23664-3-git-send-email-wanpengli@tencent.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21. 9. 24. 오후 10:36, Krzysztof Kozlowski wrote:
-> Describe better which driver applies to which SoC, to make configuring
-> kernel for Samsung SoC easier.
+On Sat, Oct 09, 2021, Wanpeng Li wrote:
+> From: Wanpeng Li <wanpengli@tencent.com>
 > 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> Sometimes a vCPU kick is following a pending request, even if @vcpu is 
+> the running vCPU. It suffers from both rcuwait_wake_up() which has 
+> rcu/memory barrier operations and cmpxchg(). Let's check vcpu->wait 
+> before rcu_wait_wake_up() and whether @vcpu is the running vCPU before 
+> cmpxchg() to tax cut this overhead.
+> 
+> We evaluate the kvm-unit-test/vmexit.flat on an Intel ICX box, most of the 
+> scores can improve ~600 cpu cycles especially when APICv is disabled.
+> 
+> tscdeadline_immed
+> tscdeadline
+> self_ipi_sti_nop
+> ..............
+> x2apic_self_ipi_tpr_sti_hlt
+> 
+> Suggested-by: Sean Christopherson <seanjc@google.com>
+> Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
 > ---
->   drivers/clk/samsung/Kconfig | 30 ++++++++++++++++++++----------
->   1 file changed, 20 insertions(+), 10 deletions(-)
+> v1 -> v2:
+>  * move checking running vCPU logic to kvm_vcpu_kick
+>  * check rcuwait_active(&vcpu->wait) etc
 > 
-> diff --git a/drivers/clk/samsung/Kconfig b/drivers/clk/samsung/Kconfig
-> index 0441c4f73ac9..0e18d6ff2916 100644
-> --- a/drivers/clk/samsung/Kconfig
-> +++ b/drivers/clk/samsung/Kconfig
-> @@ -67,7 +67,8 @@ config EXYNOS_5420_COMMON_CLK
->   	depends on COMMON_CLK_SAMSUNG
->   	help
->   	  Support for the clock controller present on the Samsung
-> -	  Exynos5420 SoCs. Choose Y here only if you build for this SoC.
-> +	  Exynos5420/Exynos5422/Exynos5800 SoCs. Choose Y here only if you
-> +	  build for this SoC.
->   
->   config EXYNOS_ARM64_COMMON_CLK
->   	bool "Samsung Exynos ARMv8-family clock controller support" if COMPILE_TEST
-> @@ -79,38 +80,47 @@ config EXYNOS_AUDSS_CLK_CON
->   	default y if ARCH_EXYNOS
->   	help
->   	  Support for the Audio Subsystem CLKCON clock controller present
-> -	  on some Exynos SoC variants. Choose M or Y here if you want to
-> -	  use audio devices such as I2S, PCM, etc.
-> +	  on some Samsung Exynos SoC variants. Choose M or Y here if you want
-> +	  to use audio devices such as I2S, PCM, etc.
->   
->   config EXYNOS_CLKOUT
->   	tristate "Samsung Exynos clock output driver"
->   	depends on COMMON_CLK_SAMSUNG
->   	default y if ARCH_EXYNOS
->   	help
-> -	  Support for the clock output (XCLKOUT) present on some of Exynos SoC
-> -	  variants. Usually the XCLKOUT is used to monitor the status of the
-> -	  certains clocks from SoC, but it could also be tied to other devices
-> -	  as an input clock.
-> +	  Support for the clock output (XCLKOUT) present on some of Samsung
-> +	  Exynos SoC variants. Usually the XCLKOUT is used to monitor the
-> +	  status of the certains clocks from SoC, but it could also be tied to
-> +	  other devices as an input clock.
->   
->   # For S3C24XX platforms, select following symbols:
->   config S3C2410_COMMON_CLK
->   	bool "Samsung S3C2410 clock controller support" if COMPILE_TEST
->   	select COMMON_CLK_SAMSUNG
->   	help
-> -	  Build the s3c2410 clock driver based on the common clock framework.
-> +	  Support for the clock controller present on the Samsung
-> +	  S3C2410/S3C2440/S3C2442 SoCs. Choose Y here only if you build for
-> +	  this SoC.
->   
->   config S3C2410_COMMON_DCLK
->   	bool
->   	select COMMON_CLK_SAMSUNG
->   	select REGMAP_MMIO
->   	help
-> -	  Temporary symbol to build the dclk driver based on the common clock
-> -	  framework.
-> +	  Support for the dclk clock controller present on the Samsung
-> +	  S3C2410/S3C2412/S3C2440/S3C2443 SoCs. Choose Y here only if you build
-> +	  for this SoC.
->   
->   config S3C2412_COMMON_CLK
->   	bool "Samsung S3C2412 clock controller support" if COMPILE_TEST
->   	select COMMON_CLK_SAMSUNG
-> +	help
-> +	  Support for the clock controller present on the Samsung S3C2412 SoCs.
-> +	  Choose Y here only if you build for this SoC.
->   
->   config S3C2443_COMMON_CLK
->   	bool "Samsung S3C2443 clock controller support" if COMPILE_TEST
->   	select COMMON_CLK_SAMSUNG
-> +	help
-> +	  Support for the clock controller present on the Samsung
-> +	  S3C2416/S3C2443 SoCs. Choose Y here only if you build for this SoC.
+>  virt/kvm/kvm_main.c | 13 ++++++++++---
+>  1 file changed, 10 insertions(+), 3 deletions(-)
 > 
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index 7851f3a1b5f7..18209d7b3711 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -3314,8 +3314,15 @@ void kvm_vcpu_kick(struct kvm_vcpu *vcpu)
+>  {
+>  	int me, cpu;
+>  
+> -	if (kvm_vcpu_wake_up(vcpu))
+> -		return;
+> +	me = get_cpu();
+> +
+> +	if (rcuwait_active(&vcpu->wait) && kvm_vcpu_wake_up(vcpu))
 
-Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
+This needs to use kvm_arch_vcpu_get_wait(), not vcpu->wait, because PPC has some
+funky wait stuff.
 
--- 
-Best Regards,
-Samsung Electronics
-Chanwoo Choi
+One potential issue I didn't think of before.  rcuwait_active() comes with the
+below warning, which means we might be at risk of a false negative that could
+result in a missed wakeup.  I'm not postive on that though.
+
+/*
+ * Note: this provides no serialization and, just as with waitqueues,
+ * requires care to estimate as to whether or not the wait is active.
+ */
+
+> +		goto out;
+> +
+> +	if (vcpu == __this_cpu_read(kvm_running_vcpu)) {
+> +		WARN_ON_ONCE(vcpu->mode == IN_GUEST_MODE);
+> +		goto out;
+> +	}
+>  
+>  	/*
+>  	 * Note, the vCPU could get migrated to a different pCPU at any point
+> @@ -3324,12 +3331,12 @@ void kvm_vcpu_kick(struct kvm_vcpu *vcpu)
+>  	 * IPI is to force the vCPU to leave IN_GUEST_MODE, and migrating the
+>  	 * vCPU also requires it to leave IN_GUEST_MODE.
+>  	 */
+> -	me = get_cpu();
+>  	if (kvm_arch_vcpu_should_kick(vcpu)) {
+>  		cpu = READ_ONCE(vcpu->cpu);
+>  		if (cpu != me && (unsigned)cpu < nr_cpu_ids && cpu_online(cpu))
+>  			smp_send_reschedule(cpu);
+>  	}
+> +out:
+>  	put_cpu();
+>  }
+>  EXPORT_SYMBOL_GPL(kvm_vcpu_kick);
+> -- 
+> 2.25.1
+> 
