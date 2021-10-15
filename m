@@ -2,78 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 636CA42F70B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 17:37:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30D5D42F711
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 17:38:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240982AbhJOPjQ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 15 Oct 2021 11:39:16 -0400
-Received: from mga09.intel.com ([134.134.136.24]:29674 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230146AbhJOPjO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 11:39:14 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10138"; a="227825204"
-X-IronPort-AV: E=Sophos;i="5.85,376,1624345200"; 
-   d="scan'208";a="227825204"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2021 08:37:08 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,376,1624345200"; 
-   d="scan'208";a="443226376"
-Received: from fmsmsx604.amr.corp.intel.com ([10.18.126.84])
-  by orsmga003.jf.intel.com with ESMTP; 15 Oct 2021 08:37:07 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx604.amr.corp.intel.com (10.18.126.84) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Fri, 15 Oct 2021 08:37:07 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Fri, 15 Oct 2021 08:37:06 -0700
-Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
- fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2242.012;
- Fri, 15 Oct 2021 08:37:06 -0700
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Shuai Xue <xueshuai@linux.alibaba.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "james.morse@arm.com" <james.morse@arm.com>,
-        "lenb@kernel.org" <lenb@kernel.org>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>
-CC:     "zhangliguang@linux.alibaba.com" <zhangliguang@linux.alibaba.com>,
-        "zhuo.song@linux.alibaba.com" <zhuo.song@linux.alibaba.com>
-Subject: RE: [PATCH] ACPI, APEI, EINJ: Relax platform response timeout to 1
- second.
-Thread-Topic: [PATCH] ACPI, APEI, EINJ: Relax platform response timeout to 1
- second.
-Thread-Index: AQHXwXYcnnvz2STlF0WUG4W2+USWZ6vUMWeA
-Date:   Fri, 15 Oct 2021 15:37:06 +0000
-Message-ID: <4d492cef3640414d85ecfdb602ad6fa0@intel.com>
-References: <20211015033817.16719-1-xueshuai@linux.alibaba.com>
-In-Reply-To: <20211015033817.16719-1-xueshuai@linux.alibaba.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.6.200.16
-x-originating-ip: [10.1.200.100]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S240866AbhJOPke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 11:40:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43570 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232848AbhJOPkd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 11:40:33 -0400
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4822C061762
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 08:38:26 -0700 (PDT)
+Received: by mail-io1-xd35.google.com with SMTP id m20so8175813iol.4
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 08:38:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=K3e3fPc7t2heMZulUyPXuSYTrB88WAMaLXw51fmC8FI=;
+        b=GwmgesfT4HkmXK0wRnLzI8Byt0N60D5PL8+cgcMIf+AHXxyISkp0pPGNX4KIRpncv1
+         WrMtVkt4aLnr1E1A5J9vBXSiF4VcdBOBbwBzFeewoOtuRgaI0v3TC4t7yDhrajLM3DeO
+         p//CWbSkmbzfyDg3MghT0eKiTPkk9FdrqvEqU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=K3e3fPc7t2heMZulUyPXuSYTrB88WAMaLXw51fmC8FI=;
+        b=Ng34XFfSeDOc4hcmp7Y10gh1D2LarBLTuPlol/wPpfX7X56CchidM0c4Vu96aDkCsP
+         VKGWSrA6UagwBr/JC7tKVONSRHuqnu82b8x1yJlH7YBb0CuFpZmntKvMYgX/aSYHfhok
+         YfO3FsTr2oTGV5Ug9it1HrLfA8YsKRusKFxTZ/Pky5LPwhLS39mnSPFrFQ3RHDilfBkP
+         qnqYIf8lJ2TjLQ6pCWvBtel2PhKWvvn/NOTs0gbkLisOet0hlgaRlwXqUssRUiz83/l+
+         nVxfuZKD06KT1WKf8O9wR1R4crrJVd94byTWqyBrnxEUszBfn88PdQr47k22nLpDOx13
+         H3QQ==
+X-Gm-Message-State: AOAM531WDOYq1X4/n7+OLzwGiXN0MbiX6Uf2GUr6lFjSN7gbvrjnGpqT
+        1kQsc7jrEUpDGXEyobKa/CvUgw==
+X-Google-Smtp-Source: ABdhPJxJL8c5vZdOxZB4JmZkMR0dRtCWu8QDLxF3hfT5HnDc8N/180h61DAt/qfE86UGaWjPelwE6Q==
+X-Received: by 2002:a5e:c018:: with SMTP id u24mr4159426iol.197.1634312306057;
+        Fri, 15 Oct 2021 08:38:26 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id v26sm1980979iox.35.2021.10.15.08.38.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Oct 2021 08:38:25 -0700 (PDT)
+Subject: Re: [RFC][PATCH] selftests/vm/transhuge-stress: fix ram size thinko
+To:     "George G. Davis" <george_davis@mentor.com>,
+        Shuah Khan <shuah@kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Eugeniu Rosca <erosca@de.adit-jv.com>,
+        "George G. Davis" <davis.george@siemens.com>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210825135843.29052-1-george_davis@mentor.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <41be8425-761b-fa55-40c5-687b397e8ad2@linuxfoundation.org>
+Date:   Fri, 15 Oct 2021 09:38:24 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <20210825135843.29052-1-george_davis@mentor.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> We observe that the waiting time for DDR error injection is about 10 ms
-> and that for PCIe error injection is about 500 ms in Arm platfrom.
->
-> In this patch, we relax the response timeout to 1 second and allow user to
-> pass the time out value as a argument.
+On 8/25/21 7:58 AM, George G. Davis wrote:
+> From: "George G. Davis" <davis.george@siemens.com>
+> 
+> When executing transhuge-stress with an argument to specify the virtual
+> memory size for testing, the ram size is reported as 0, e.g.
+> 
+> transhuge-stress 384
+> thp-mmap: allocate 192 transhuge pages, using 384 MiB virtual memory and 0 MiB of ram
+> thp-mmap: 0.184 s/loop, 0.957 ms/page,   2090.265 MiB/s  192 succeed,    0 failed
+> 
+> This appears to be due to a thinko in commit 0085d61fe05e
+> ("selftests/vm/transhuge-stress: stress test for memory compaction"),
+> where, at a guess, the intent was to base "xyz MiB of ram" on `ram`
+> size. Here are results after using `ram` size:
+> 
+> thp-mmap: allocate 192 transhuge pages, using 384 MiB virtual memory and 14 MiB of ram
+> 
+> Fixes: 0085d61fe05e ("selftests/vm/transhuge-stress: stress test for memory compaction")
+> Signed-off-by: George G. Davis <davis.george@siemens.com>
+> ---
+>   tools/testing/selftests/vm/transhuge-stress.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/testing/selftests/vm/transhuge-stress.c b/tools/testing/selftests/vm/transhuge-stress.c
+> index fd7f1b4a96f9..5e4c036f6ad3 100644
+> --- a/tools/testing/selftests/vm/transhuge-stress.c
+> +++ b/tools/testing/selftests/vm/transhuge-stress.c
+> @@ -79,7 +79,7 @@ int main(int argc, char **argv)
+>   
+>   	warnx("allocate %zd transhuge pages, using %zd MiB virtual memory"
+>   	      " and %zd MiB of ram", len >> HPAGE_SHIFT, len >> 20,
+> -	      len >> (20 + HPAGE_SHIFT - PAGE_SHIFT - 1));
+> +	      ram >> (20 + HPAGE_SHIFT - PAGE_SHIFT - 1));
+>   
+>   	pagemap_fd = open("/proc/self/pagemap", O_RDONLY);
+>   	if (pagemap_fd < 0)
+> 
 
-Spinning for 1ms was maybe ok. Spinning for up to 1s seems like a bad idea.
+Sorry for the delay on this. The change looks good to me.
 
-This code is executed inside a mutex ... so maybe it is safe to sleep instead of spin?
+Andrew! Would you like me to take this through kselftest tree?
 
--Tony
+thanks,
+-- Shuah
