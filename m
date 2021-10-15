@@ -2,126 +2,299 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF9D042FEFE
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 01:45:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9243042FF05
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 01:49:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236260AbhJOXrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 19:47:04 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:20806 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235740AbhJOXq7 (ORCPT
+        id S236577AbhJOXvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 19:51:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42906 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235740AbhJOXvP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 19:46:59 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1634341492; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=jJ/9pFPB6gmJ0baQgefAhJuGAxI+QH/7x+kb0x64v+I=;
- b=sv7gbHnudXLenbum8sCE5G/qT/2uHh5ejVF6tpvI2JMxXZ7FJSQ3OTXqzqEXVAt66HtOduYQ
- qQ3Phds3jmAdBsZpF11/tWkN1Ehje7zuEmla5LBDXc4u958119+hCithQ6WQNGcPJ9EJmGRz
- lPVnoVqzFIfCx/e7JkFFZwrLA0M=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 616a1265835b7947c15badcc (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 15 Oct 2021 23:44:37
- GMT
-Sender: abhinavk=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 9E6D8C4361A; Fri, 15 Oct 2021 23:44:36 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: abhinavk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 909C7C4338F;
-        Fri, 15 Oct 2021 23:44:35 +0000 (UTC)
+        Fri, 15 Oct 2021 19:51:15 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0118C061570;
+        Fri, 15 Oct 2021 16:49:07 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id d9so43809242edh.5;
+        Fri, 15 Oct 2021 16:49:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1pKbGjs7CBCXLgZTuvLMl0AmP25+iExjkWyU/adw8cM=;
+        b=j4i2u0BwCyoVV+NVKnlayxMpCQuy9/MnVu6DsuHUW3G4VA7OYCOQFabmmnpn6dUE4K
+         SHllwPu5TijG5X7Q2d6Zjd7sfs9TaraCPniAYYm1XIoyK4EZL6kI2tVgZsu+o9qciNrE
+         EBt8QGVy/HCbQyiWmYqXl7pazt2weqGjNVTBYwNnQH8wLWwk8UlnjmuOIw6WrTKJbaa/
+         Lq0KlT2u/ixB1zuIgsPH2D0OsvXRVxT6Bac1SXok37+GGDQ7cnbzWrEWx4+cm+JJSJU/
+         gOu57EEFJdf5L1FvyGuhDXBuZeotdf77rFqEV109dL49WUCo4+sryyDSTQprmkVCe7zM
+         0ziQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1pKbGjs7CBCXLgZTuvLMl0AmP25+iExjkWyU/adw8cM=;
+        b=w3Bhf6mH4T2z4hht+0scW+UaeJwr0MUZKuTuior6a2UpNby6FUIu9+PUWkcFRX5ZIS
+         kPVMexcUOK7nWXcUWqJiMDd/Y3+NyiHyYFkpPvj3/o4BEU7DTtV2hDpai2L9XGLzRc5l
+         uPphwXR+iHy1XhW/h3INeDJ1Y9AqaUuuqRAJL23fs2uzNzJs7uLn5T8omht8cY9Al6bV
+         LNHcuj05uLSvpoLBdbcUNOqk96D7hzOTswbs4gfttwKA2tsIzWn0UBS357/pWiWtM4Qn
+         lRNK8bjLo+CVGVPdZoCgL1TkeNO87FPcn9eIFSEgsW/XogZ5rDYbDIAGlH347uJO9hAl
+         2+3w==
+X-Gm-Message-State: AOAM532GREKuas2CArrNHpRKizJPrCfSVl/Z6zU9RCmFY8enNEv4RMwa
+        k23lLtfz6fJXoe1hlApLnLtKcWhx/hVZf/ae7/w=
+X-Google-Smtp-Source: ABdhPJyDdysLMpZg3jW1DPRdQWIHQGSrjxMInu0NyRoGL/9GopD0hX4XRf8j6w7QDLOaHqXpAYmyyDyKv/i6uiwqaQU=
+X-Received: by 2002:a17:907:785a:: with SMTP id lb26mr10783983ejc.77.1634341746256;
+ Fri, 15 Oct 2021 16:49:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 15 Oct 2021 16:44:35 -0700
-From:   abhinavk@codeaurora.org
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Kuogee Hsieh <khsieh@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [Freedreno] [PATCH] drm/msm/dp: Only create debugfs for PRIMARY
- minor
-In-Reply-To: <20211015231307.1784165-1-bjorn.andersson@linaro.org>
-References: <20211015231307.1784165-1-bjorn.andersson@linaro.org>
-Message-ID: <48f35ef1f90bc7c23599e98a5c1e2c09@codeaurora.org>
-X-Sender: abhinavk@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <20211014025234.145147-1-aford173@gmail.com> <CAHCN7xL8FOZcRkqsxGo5k88_3P7HW67tWdwcbQdeBWx4KY4ihg@mail.gmail.com>
+ <YWieETWqUZt6yYln@pendragon.ideasonboard.com> <CAHCN7xLpFcXzP40KiciQ+m=kA5U3A_VVEboHAsKRnaLgVBL91w@mail.gmail.com>
+ <YWoDLp+gYxn7IkU5@pendragon.ideasonboard.com> <CAHCN7xLe_Li7JVD+HR25RuXFgjDqbF9VRko+x5e1jmLMCPdUww@mail.gmail.com>
+In-Reply-To: <CAHCN7xLe_Li7JVD+HR25RuXFgjDqbF9VRko+x5e1jmLMCPdUww@mail.gmail.com>
+From:   Adam Ford <aford173@gmail.com>
+Date:   Fri, 15 Oct 2021 18:48:54 -0500
+Message-ID: <CAHCN7xLX5h1-tJUvvpt44Nkjo1Rz3rWaGTEL8SDnkmK1PnCg-g@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: imx8mm: Add CSI nodes
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     arm-soc <linux-arm-kernel@lists.infradead.org>,
+        Adam Ford-BE <aford@beaconembedded.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-10-15 16:13, Bjorn Andersson wrote:
-> dpu_kms_debugfs_init() and hence dp_debug_get() gets invoked for each
-> minor being registered. But dp_debug_get() will allocate a new struct
-> dp_debug for each call and this will be associated as dp->debug.
-> 
-> As such dp_debug will create debugfs files in both the PRIMARY and the
-> RENDER minor's debugfs directory, but only the last reference will be
-> remembered.
-> 
-> The only use of this reference today is in the cleanup path in
-> dp_display_deinit_sub_modules() and the dp_debug_private object does
-> outlive the debugfs entries in either case, so there doesn't seem to be
-> any adverse effects of this, but per the code the current behavior is
-> unexpected, so change it to only create dp_debug for the PRIMARY minor.
-> 
+On Fri, Oct 15, 2021 at 6:05 PM Adam Ford <aford173@gmail.com> wrote:
+>
+> On Fri, Oct 15, 2021 at 5:39 PM Laurent Pinchart
+> <laurent.pinchart@ideasonboard.com> wrote:
+> >
+> > Hi Adam,
+> >
+> > On Fri, Oct 15, 2021 at 05:26:03PM -0500, Adam Ford wrote:
+> > > On Thu, Oct 14, 2021 at 4:16 PM Laurent Pinchart wrote:
+> > > > On Thu, Oct 14, 2021 at 03:32:33PM -0500, Adam Ford wrote:
+> > > > > On Wed, Oct 13, 2021 at 9:52 PM Adam Ford wrote:
+> > > > > >
+> > > > > > There is a csi bridge and csis interface that tie together
+> > > > > > to allow csi2 capture.
+> > > > > >
+> > > > > > Signed-off-by: Adam Ford <aford173@gmail.com>
+> > > > >
+> > > > > Laurent,
+> > > > >
+> > > > > Since you did some work to make the csis functional on the imx8mm, I
+> > > > > was hoping you might have some insights.  Please see below:
+> > > > >
+> > > > > > diff --git a/arch/arm64/boot/dts/freescale/imx8mm.dtsi b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
+> > > > > > index c2f3f118f82e..8a8a5d0a4a1e 100644
+> > > > > > --- a/arch/arm64/boot/dts/freescale/imx8mm.dtsi
+> > > > > > +++ b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
+> > > > > > @@ -1068,6 +1068,22 @@ aips4: bus@32c00000 {
+> > > > > >                         #size-cells = <1>;
+> > > > > >                         ranges = <0x32c00000 0x32c00000 0x400000>;
+> > > > > >
+> > > > > > +                       csi: csi@32e20000 {
+> > > > > > +                               compatible = "fsl,imx7-csi";
+> > > >
+> > > > This should be
+> > > >
+> > > >         compatible = "fsl,imx8mm-csi", "fsl,imx7-csi";;
+> > > >
+> > > > > > +                               reg = <0x32e20000 0x1000>;
+> > > > > > +                               interrupts = <GIC_SPI 16 IRQ_TYPE_LEVEL_HIGH>;
+> > > > > > +                               clocks = <&clk IMX8MM_CLK_CSI1_ROOT>;
+> > > > > > +                               clock-names = "mclk";
+> > > > > > +                               power-domains = <&disp_blk_ctrl IMX8MM_DISPBLK_PD_CSI_BRIDGE>;
+> > > > > > +                               status = "disabled";
+> > > > > > +
+> > > > > > +                               port {
+> > > > > > +                                       csi_in: endpoint {
+> > > > > > +                                               remote-endpoint = <&imx8mm_mipi_csi_out>;
+> > > > > > +                                       };
+> > > > > > +                               };
+> > > > > > +                       };
+> > > > > > +
+> > > > > >                         disp_blk_ctrl: blk-ctrl@32e28000 {
+> > > > > >                                 compatible = "fsl,imx8mm-disp-blk-ctrl", "syscon";
+> > > > > >                                 reg = <0x32e28000 0x100>;
+> > > > > > @@ -1095,6 +1111,41 @@ disp_blk_ctrl: blk-ctrl@32e28000 {
+> > > > > >                                 #power-domain-cells = <1>;
+> > > > > >                         };
+> > > > > >
+> > > > > > +                       mipi_csi2: mipi-csi@32e30000 {
+> > > > > > +                               compatible = "fsl,imx8mm-mipi-csi2";
+> > > > > > +                               reg = <0x32e30000 0x1000>;
+> > > > > > +                               interrupts = <GIC_SPI 17 IRQ_TYPE_LEVEL_HIGH>;
+> > > > > > +                               clock-frequency = <333000000>;
+> > > > > > +                               clocks = <&clk IMX8MM_CLK_DISP_APB_ROOT>,
+> > > > > > +                                        <&clk IMX8MM_CLK_CSI1_ROOT>,
+> > > > > > +                                        <&clk IMX8MM_CLK_CSI1_PHY_REF>,
+> > > > > > +                                        <&clk IMX8MM_CLK_DISP_AXI_ROOT>;
+> > > > >
+> > > > > When comparing clock parents and the clock rates to one of NXP's
+> > > > > kernels, it appears we need assigned-clocks and assigned-clock-parents
+> > > > > to allow the CSI1 clocks to run fast enough.
+> > > > >
+> > > > > assigned-clocks = <&clk IMX8MM_CLK_CSI1_PHY_REF>,
+> > > > >   <&clk IMX8MM_CLK_CSI1_CORE>,
+> > > > >   <&clk IMX8MM_CLK_CSI1_ROOT>,
+> > > > >   <&clk IMX8MM_CLK_CSI1_ESC>;
+> > > > > assigned-clock-parents = <&clk IMX8MM_SYS_PLL2_1000M>,
+> > > > >   <&clk IMX8MM_SYS_PLL2_1000M>,
+> > > > >   <&clk IMX8MM_CLK_CSI1_CORE>,
+> > > > >   <&clk IMX8MM_SYS_PLL1_800M>;
+> > > > >
+> > > > > However, even with this, I am attempting to capture.  While I can get
+> > > > > the pipeline enabled, when I try to capture a file, I get no data.  i
+> > > > > can use control-c to exit gstreamer, so I know the kernel didn't hang.
+> > > > > I don't get errors, but I don't get data either.
+> > > > >
+> > > > > Any ideas if what/if any other clock entries might be missing?
+> > > >
+> > > > Have you tried looking at the error interrupt counters to see if the
+> > > > CSI-2 bus side operates as expected ? I'd start there before blaming the
+> > > > clocks. Note that the issue could also be in the CSI bridge.
+> > >
+> > > I am not seeing interrupts on either the CSI, mipi-csi, or err:
+> > >
+> > >  54:          0          0          0          0     GICv3  48 Level     csi
+> > >  55:          0          0          0          0     GICv3  49 Level
+> > >   32e30000.mipi-csi
+> > > Err:          0
+> > >
+> > > > I've had issues capturing from one particular sensor on an i.MX8MM
+> > > > board, where I would get images, but with heavy corruption. The problem
+> > > > was solved by chance when trying a different SPL binary. I need to
+> > >
+> > > I wonder if the issue was related to different versions of ATF, and
+> > > depending on the power domain controls used, it could have been using
+> > > ATF to set the power domains.
+> > > I've had issues in the past too, but I have tried a couple different
+> > > binaries, and I am not seeing a change in behavior.
+> >
+> > We've just finished the investigation, and it turned out to be related
+> > to the clock frequencies. Here's the DT changes we had to make to get it
+> > working:
+> >
+> >         assigned-clocks = <&clk IMX8MM_CLK_DISP_AXI>,
+> >                 <&clk IMX8MM_CLK_DISP_AXI_ROOT>,
+> >                 <&clk IMX8MM_CLK_DISP_APB>,
+> >                 <&clk IMX8MM_CLK_DISP_APB_ROOT>;
+> >         assigned-clock-parents = <&clk IMX8MM_SYS_PLL2_1000M>,
+> >                 <&clk IMX8MM_CLK_DISP_AXI>,
+> >                 <&clk IMX8MM_SYS_PLL1_800M>,
+> >                 <&clk IMX8MM_CLK_DISP_APB>;
+> >         assigned-clock-rates = <500000000>, <500000000>, <200000000>, <200000000>;
+> >
+> > This results in the following clock configuration:
+> >
+> > sys_pll2_1000m 1000000000
+> >  disp_axi 500000000
+> >   disp_axi_root_clk 500000000
+> >
+> > sys_pll1_800m 800000000
+> >  disp_apb 200000000
+> >   disp_apb_root_clk 200000000
+> >
+> > I'll check which clock is the culprit, and see if we could program the
+> > clocks in the driver directly.
+>
+> I am using Shawn Guo's "for-next" branch, and by default the disp_axi
+> and disp_apb clocks appear to already have these parents and clock
+> rates.  They appear to be defined in the pgc_dispmix node.
+>
+>           disp_axi                    1        1        0   500000000
+>         0     0  50000         Y
+>              disp_axi_root_clk        2        2        0   500000000
+>         0     0  50000         Y
+>           disp_apb                    1        1        0   200000000
+>         0     0  50000         Y
+>              disp_apb_root_clk        2        2        0   200000000
+>         0     0  50000         Y
+>
+> Can you tell me which branch you're using?  I wonder if I should
+> switch branches.
+>
 
-If i understand correctly, today because of this, we get redundant 
-debugfs nodes right?
+I started investigating the power domain, and I did a dump of the
+disp-blk-ctl dump, and it appears the csi power domain is remaining
+off:
 
-/sys/kernel/debug/dri/<minor_x>/dp_debug
-/sys/kernel/debug/dri/<minor_y>/dp_debug
+cat /sys/kernel/debug/regmap/32e28000.blk-ctrl/registers
+00: 00000047
+04: 0000103f
 
-Both of these will hold the same information as they are for the same DP 
-controller right?
-In that case, this is true even for the other DPU kms information too.
+I compared it with pm_genpd_summary, and found the dispblk-mipi-csi
+appears to be off:
 
-Why not move this check one level up to dpu_kms_debugfs_init?
+   dispblk-csi-bridge              on
+       /devices/platform/soc@0/32c00000.bus/32e20000.csi
+   dispblk-mipi-csi                off-0
+               0
+        /devices/platform/soc@0/32c00000.bus/32e30000.mipi-csi
+suspended                  0
 
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
->  drivers/gpu/drm/msm/dp/dp_display.c | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c
-> b/drivers/gpu/drm/msm/dp/dp_display.c
-> index 3aa67c53dbc0..06773b58bb60 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_display.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
-> @@ -10,6 +10,7 @@
->  #include <linux/component.h>
->  #include <linux/of_irq.h>
->  #include <linux/delay.h>
-> +#include <drm/drm_file.h>
->  #include <drm/drm_panel.h>
-> 
->  #include "msm_drv.h"
-> @@ -1463,6 +1464,10 @@ void msm_dp_debugfs_init(struct msm_dp
-> *dp_display, struct drm_minor *minor)
->  	dp = container_of(dp_display, struct dp_display_private, dp_display);
->  	dev = &dp->pdev->dev;
-> 
-> +	/* Only create one set of debugfs per DP instance */
-> +	if (minor->type != DRM_MINOR_PRIMARY)
-> +		return;
-> +
->  	dp->debug = dp_debug_get(dev, dp->panel, dp->usbpd,
->  					dp->link, dp->dp_display.connector,
->  					minor);
+Do you have any idea why the dispblk-mipi-csi power domain might turn
+off while the dispblk-csi-bridge is on?
+
+I added some debug code, and it looks like we're intentionally turning
+it off, but it's not clear as to why.
+
+> adam
+> >
+> > > > investigate the differences there, and possibly update the driver
+> > > > accordingly. It may or may not be related to your issue.
+> > > >
+> > > > Apart from the compatible string issue mentioned above, the bindings
+> > > > match what I am using, so, with the compatible string fixed,
+> > >
+> > > Out of curiosity, I noticed the default csi clock parents point to a
+> > > 24MHz clock, but the csi-2 interface wants to set the clock to 333MHz.
+> > > Any chance you could share your clk_summary?
+> >
+> > Is the above information what you need ?
+> >
+> > > > Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> > >
+> > > Thanks for the review
+> > >
+> > > > > > +                               clock-names = "pclk", "wrap", "phy", "axi";
+> > > > > > +                               power-domains = <&disp_blk_ctrl IMX8MM_DISPBLK_PD_MIPI_CSI>;
+> > > > > > +                               status = "disabled";
+> > > > > > +
+> > > > > > +                               ports {
+> > > > > > +                                       #address-cells = <1>;
+> > > > > > +                                       #size-cells = <0>;
+> > > > > > +
+> > > > > > +                                       port@0 {
+> > > > > > +                                               reg = <0>;
+> > > > > > +
+> > > > > > +                                               imx8mm_mipi_csi_in: endpoint {
+> > > > > > +                                               };
+> > > > > > +                                       };
+> > > > > > +
+> > > > > > +                                       port@1 {
+> > > > > > +                                               reg = <1>;
+> > > > > > +
+> > > > > > +                                               imx8mm_mipi_csi_out: endpoint {
+> > > > > > +                                                       remote-endpoint = <&csi_in>;
+> > > > > > +                                               };
+> > > > > > +                                       };
+> > > > > > +                               };
+> > > > > > +                       };
+> > > > > > +
+> > > > > > +
+> > > > > >                         usbotg1: usb@32e40000 {
+> > > > > >                                 compatible = "fsl,imx8mm-usb", "fsl,imx7d-usb";
+> > > > > >                                 reg = <0x32e40000 0x200>;
+> >
+> > --
+> > Regards,
+> >
+> > Laurent Pinchart
