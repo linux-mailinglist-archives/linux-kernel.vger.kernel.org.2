@@ -2,93 +2,329 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D373F42FEA6
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 01:20:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B48642FEA4
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 01:20:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243497AbhJOXWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 19:22:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36604 "EHLO
+        id S243486AbhJOXWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 19:22:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229741AbhJOXWv (ORCPT
+        with ESMTP id S229741AbhJOXWb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 19:22:51 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B123C061762
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 16:20:44 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id n11so7310429plf.4
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 16:20:44 -0700 (PDT)
+        Fri, 15 Oct 2021 19:22:31 -0400
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB6E9C061570
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 16:20:24 -0700 (PDT)
+Received: by mail-oi1-x22a.google.com with SMTP id o83so15239572oif.4
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 16:20:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=IyogxXBF4ERdneEthK8iHsAabPbMvHTlpS6uXjP1tKo=;
-        b=M9X/jbpBJ7W5abTM2rdyEIjbkTODCwbYUwLCpyBGMWEBWu7PfNk58AjevCJ+mz8by1
-         RqZDCGgRZsOMqVF7n+mbu94I3V/1cSKExXkGD3OsaXQMzDSa1O9eM4hm66T7kYL3sInC
-         DxDeE4C9fh0Wg5/GQjoEiMy9A4ajmvOcbifJEBSXsVqT7Fnx1t9cbrx1+Vt5As3hgRNg
-         iwnypgSU3KVeqPblim3ASS/BpsbyK0Wxa1Wg+46AYDsylTjUyKAsqFLENkItvfrZzY8T
-         HcDL6vqx0y8ACtTJWEYYAkaHFFFCBe8vERuCThRMk732CTdccdrovnZ1fldibr+FWePT
-         JnPw==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DD82WbwLimEkgGB+aqUxdRRvDUvC5eko9EPcFoU6FmI=;
+        b=AhJ3Do4G3wf9WT1ezdE5nzrmWxhISeH0AOiqeZyU4KSH/W7Bjk28ABCdvJfF1hfnU4
+         fIkxC1K0Xvf8BWqtvZIAE0DLEGHqdrieVTBtQ7um3kKRaQKYpewbhiqzZKqejxVHJJk9
+         hb3CBDYze1eqI425iw2jJ18TzM4y4lCGN347X+HF7ELktKgrfTvPookXs/roaNp/jnSA
+         vhRWBWd3ZkTuEfKIL3hGeknD/CaWnoVVL/BrJnMaINHr0OdKLQpQV0ZPyr6CWP6U6h7m
+         jCNwEmWYURz3l9mel7VAz7NeEty3YOxAAqv82kmSH9PAWuCABkBHqS6HFTOEg01s43Ap
+         L0yg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=IyogxXBF4ERdneEthK8iHsAabPbMvHTlpS6uXjP1tKo=;
-        b=NMBaa9lFUno6/Ij6xpdo7X6D5DsrQD2oxiFJQphP9eRNTD6rASslKTn136/os3TAlD
-         dFa6rAHua1KLwLgWFQapS1NmxoTaXjiEmSeBWEtDg99PU2KjRduOqKjx9AmtWazPjmlq
-         wAjlFGAExTDMFmtVYMb8gVHVn7qiKxiLHkxk7NTnIYKKmCocb7VfqYpBdj5wdHkUuEMa
-         PR2ALNJ8EcP2FyBZpFzONv4HvqAv5IG8iVxlAUjmNWLx6syVNvsBv/TQgojjtg0oESHi
-         s9hnVIoM9QHfY5iGbfOcDdDNEkOyGku2wkuFDznF8lmc5b2YF9BQwqzYL+wVSxqezsyf
-         6o8Q==
-X-Gm-Message-State: AOAM531ueI2DeZgGNAVdw9Bt5iPYU4EtOQwXRKXxhuI8XuCEjb4xGoBp
-        CBgL6QTxUgcvq3T8VPZ6lNsf7g==
-X-Google-Smtp-Source: ABdhPJwsYRicSOTmaFk3aW5O/z1rlArO6jBn2VN/Uts1f+Dv24k6w2WOk6nA/e8g/oNHJwVwSrBBbg==
-X-Received: by 2002:a17:902:dacf:b0:13e:ab53:87dc with SMTP id q15-20020a170902dacf00b0013eab5387dcmr13518687plx.78.1634340043340;
-        Fri, 15 Oct 2021 16:20:43 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id z8sm5466931pgc.53.2021.10.15.16.20.42
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DD82WbwLimEkgGB+aqUxdRRvDUvC5eko9EPcFoU6FmI=;
+        b=6cBCLNOooaGif1s/RENXjOtKTVviaTRG5lhj0uIx09HOYfZrqGNWebLPd4+bWY9EQd
+         k3K/5+MsR8EzYsMFVg9JQVpY6JT13s7L07sTZjiSePt6bNtqaoR3+95i6HUxxhXtVa0f
+         0vJlqzadNleSEQlglPHaTwlxkUiI1ECO7O872qkGGG/V6NhCM88+Axm6ZJrrrdFN/N6t
+         MVC2H9gDul01YPSX68Jm3LdnXKWbdGuiL68l4jpAYpNirSVgxhVxjr7mC9Ig8W4kFYVa
+         mBqfUttM8S8A1FY3QSuxqDTNiulhNmZIFrehLciBVH3UCVjsTdNqv2z9+0R9XR4PP02D
+         V4gw==
+X-Gm-Message-State: AOAM532615VahQSq2dq6AiGEXE4HHI2NeLytUXXeTotpLgCsSR36+n94
+        2ShRJ84EfVGXxaSlSfgRy6LNtg==
+X-Google-Smtp-Source: ABdhPJy2SDO5EKvHjmmHCwx9iQyT6dYLKNJH3Ys4wn7X1Fw2Sx+xc7KKz8CLc26+UkzTOhfTUnWC+w==
+X-Received: by 2002:a05:6808:21a1:: with SMTP id be33mr10295809oib.161.1634340024131;
+        Fri, 15 Oct 2021 16:20:24 -0700 (PDT)
+Received: from localhost.localdomain ([2600:1700:a0:3dc8:205:1bff:fec0:b9b3])
+        by smtp.gmail.com with ESMTPSA id a6sm1233150ooi.3.2021.10.15.16.20.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Oct 2021 16:20:42 -0700 (PDT)
-Date:   Fri, 15 Oct 2021 23:20:38 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Wanpeng Li <kernellwp@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Subject: Re: [PATCH v2 1/3] KVM: emulate: Don't inject #GP when emulating
- RDMPC if CR0.PE=0
-Message-ID: <YWoMxmq+RZ5je9Sy@google.com>
-References: <1633770532-23664-1-git-send-email-wanpengli@tencent.com>
+        Fri, 15 Oct 2021 16:20:23 -0700 (PDT)
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Rob Clark <robdclark@gmail.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Kuogee Hsieh <khsieh@codeaurora.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] drm/msm/dp: Use the connector passed to dp_debug_get()
+Date:   Fri, 15 Oct 2021 16:22:13 -0700
+Message-Id: <20211015232213.1839472-1-bjorn.andersson@linaro.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1633770532-23664-1-git-send-email-wanpengli@tencent.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 09, 2021, Wanpeng Li wrote:
-> From: Wanpeng Li <wanpengli@tencent.com>
-> 
-> DM mentioned that, RDPMC: 
+The debugfs code is provided an array of a single drm_connector. Then to
+access the connector, the list of all connectors of the DRM device is
+traversed and all non-DisplayPort connectors are skipped, to find the
+one and only DisplayPort connector.
 
-Heh, missing 'S' in "SDM".
+But as we move to support multiple DisplayPort controllers this will now
+find multiple connectors and has no way to distinguish them.
 
-> 
->   IF (((CR4.PCE = 1) or (CPL = 0) or (CR0.PE = 0)) and (ECX indicates a supported counter)) 
->       THEN
->           EAX := counter[31:0];
->           EDX := ZeroExtend(counter[MSCB:32]);
->       ELSE (* ECX is not valid or CR4.PCE is 0 and CPL is 1, 2, or 3 and CR0.PE is 1 *)
->           #GP(0); 
->   FI;
-> 
-> Let's add the CR0.PE is 1 checking to rdpmc emulate, though this isn't
-> strictly necessary since it's impossible for CPL to be >0 if CR0.PE=0.
-> 
-> Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
-> ---
+Pass the single connector to dp_debug_get() and use this in the debugfs
+functions instead, both to simplify the code and the support the
+multiple instances.
 
-Reviewed-by: Sean Christopherson <seanjc@google.com>
+Reviewed-by: Abhinav Kumar <abhinavk@codeaurora.org>
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+---
+
+Changes since v1:
+- Reduce the indirection in the !DEBUG_FS stub function in dp_debug.h as well
+
+ drivers/gpu/drm/msm/dp/dp_debug.c   | 131 ++++++++++------------------
+ drivers/gpu/drm/msm/dp/dp_debug.h   |   4 +-
+ drivers/gpu/drm/msm/dp/dp_display.c |   2 +-
+ 3 files changed, 47 insertions(+), 90 deletions(-)
+
+diff --git a/drivers/gpu/drm/msm/dp/dp_debug.c b/drivers/gpu/drm/msm/dp/dp_debug.c
+index af709d93bb9f..da4323556ef3 100644
+--- a/drivers/gpu/drm/msm/dp/dp_debug.c
++++ b/drivers/gpu/drm/msm/dp/dp_debug.c
+@@ -24,7 +24,7 @@ struct dp_debug_private {
+ 	struct dp_usbpd *usbpd;
+ 	struct dp_link *link;
+ 	struct dp_panel *panel;
+-	struct drm_connector **connector;
++	struct drm_connector *connector;
+ 	struct device *dev;
+ 	struct drm_device *drm_dev;
+ 
+@@ -97,59 +97,35 @@ DEFINE_SHOW_ATTRIBUTE(dp_debug);
+ 
+ static int dp_test_data_show(struct seq_file *m, void *data)
+ {
+-	struct drm_device *dev;
+-	struct dp_debug_private *debug;
+-	struct drm_connector *connector;
+-	struct drm_connector_list_iter conn_iter;
++	const struct dp_debug_private *debug = m->private;
++	const struct drm_connector *connector = debug->connector;
+ 	u32 bpc;
+ 
+-	debug = m->private;
+-	dev = debug->drm_dev;
+-	drm_connector_list_iter_begin(dev, &conn_iter);
+-	drm_for_each_connector_iter(connector, &conn_iter) {
+-
+-		if (connector->connector_type !=
+-			DRM_MODE_CONNECTOR_DisplayPort)
+-			continue;
+-
+-		if (connector->status == connector_status_connected) {
+-			bpc = debug->link->test_video.test_bit_depth;
+-			seq_printf(m, "hdisplay: %d\n",
+-					debug->link->test_video.test_h_width);
+-			seq_printf(m, "vdisplay: %d\n",
+-					debug->link->test_video.test_v_height);
+-			seq_printf(m, "bpc: %u\n",
+-					dp_link_bit_depth_to_bpc(bpc));
+-		} else
+-			seq_puts(m, "0");
++	if (connector->status == connector_status_connected) {
++		bpc = debug->link->test_video.test_bit_depth;
++		seq_printf(m, "hdisplay: %d\n",
++				debug->link->test_video.test_h_width);
++		seq_printf(m, "vdisplay: %d\n",
++				debug->link->test_video.test_v_height);
++		seq_printf(m, "bpc: %u\n",
++				dp_link_bit_depth_to_bpc(bpc));
++	} else {
++		seq_puts(m, "0");
+ 	}
+ 
+-	drm_connector_list_iter_end(&conn_iter);
+-
+ 	return 0;
+ }
+ DEFINE_SHOW_ATTRIBUTE(dp_test_data);
+ 
+ static int dp_test_type_show(struct seq_file *m, void *data)
+ {
+-	struct dp_debug_private *debug = m->private;
+-	struct drm_device *dev = debug->drm_dev;
+-	struct drm_connector *connector;
+-	struct drm_connector_list_iter conn_iter;
+-
+-	drm_connector_list_iter_begin(dev, &conn_iter);
+-	drm_for_each_connector_iter(connector, &conn_iter) {
+-
+-		if (connector->connector_type !=
+-			DRM_MODE_CONNECTOR_DisplayPort)
+-			continue;
++	const struct dp_debug_private *debug = m->private;
++	const struct drm_connector *connector = debug->connector;
+ 
+-		if (connector->status == connector_status_connected)
+-			seq_printf(m, "%02x", DP_TEST_LINK_VIDEO_PATTERN);
+-		else
+-			seq_puts(m, "0");
+-	}
+-	drm_connector_list_iter_end(&conn_iter);
++	if (connector->status == connector_status_connected)
++		seq_printf(m, "%02x", DP_TEST_LINK_VIDEO_PATTERN);
++	else
++		seq_puts(m, "0");
+ 
+ 	return 0;
+ }
+@@ -161,14 +137,12 @@ static ssize_t dp_test_active_write(struct file *file,
+ {
+ 	char *input_buffer;
+ 	int status = 0;
+-	struct dp_debug_private *debug;
+-	struct drm_device *dev;
+-	struct drm_connector *connector;
+-	struct drm_connector_list_iter conn_iter;
++	const struct dp_debug_private *debug;
++	const struct drm_connector *connector;
+ 	int val = 0;
+ 
+ 	debug = ((struct seq_file *)file->private_data)->private;
+-	dev = debug->drm_dev;
++	connector = debug->connector;
+ 
+ 	if (len == 0)
+ 		return 0;
+@@ -179,30 +153,22 @@ static ssize_t dp_test_active_write(struct file *file,
+ 
+ 	DRM_DEBUG_DRIVER("Copied %d bytes from user\n", (unsigned int)len);
+ 
+-	drm_connector_list_iter_begin(dev, &conn_iter);
+-	drm_for_each_connector_iter(connector, &conn_iter) {
+-		if (connector->connector_type !=
+-			DRM_MODE_CONNECTOR_DisplayPort)
+-			continue;
+-
+-		if (connector->status == connector_status_connected) {
+-			status = kstrtoint(input_buffer, 10, &val);
+-			if (status < 0)
+-				break;
+-			DRM_DEBUG_DRIVER("Got %d for test active\n", val);
+-			/* To prevent erroneous activation of the compliance
+-			 * testing code, only accept an actual value of 1 here
+-			 */
+-			if (val == 1)
+-				debug->panel->video_test = true;
+-			else
+-				debug->panel->video_test = false;
++	if (connector->status == connector_status_connected) {
++		status = kstrtoint(input_buffer, 10, &val);
++		if (status < 0) {
++			kfree(input_buffer);
++			return status;
+ 		}
++		DRM_DEBUG_DRIVER("Got %d for test active\n", val);
++		/* To prevent erroneous activation of the compliance
++		 * testing code, only accept an actual value of 1 here
++		 */
++		if (val == 1)
++			debug->panel->video_test = true;
++		else
++			debug->panel->video_test = false;
+ 	}
+-	drm_connector_list_iter_end(&conn_iter);
+ 	kfree(input_buffer);
+-	if (status < 0)
+-		return status;
+ 
+ 	*offp += len;
+ 	return len;
+@@ -211,25 +177,16 @@ static ssize_t dp_test_active_write(struct file *file,
+ static int dp_test_active_show(struct seq_file *m, void *data)
+ {
+ 	struct dp_debug_private *debug = m->private;
+-	struct drm_device *dev = debug->drm_dev;
+-	struct drm_connector *connector;
+-	struct drm_connector_list_iter conn_iter;
+-
+-	drm_connector_list_iter_begin(dev, &conn_iter);
+-	drm_for_each_connector_iter(connector, &conn_iter) {
+-		if (connector->connector_type !=
+-			DRM_MODE_CONNECTOR_DisplayPort)
+-			continue;
+-
+-		if (connector->status == connector_status_connected) {
+-			if (debug->panel->video_test)
+-				seq_puts(m, "1");
+-			else
+-				seq_puts(m, "0");
+-		} else
++	struct drm_connector *connector = debug->connector;
++
++	if (connector->status == connector_status_connected) {
++		if (debug->panel->video_test)
++			seq_puts(m, "1");
++		else
+ 			seq_puts(m, "0");
++	} else {
++		seq_puts(m, "0");
+ 	}
+-	drm_connector_list_iter_end(&conn_iter);
+ 
+ 	return 0;
+ }
+@@ -278,7 +235,7 @@ static int dp_debug_init(struct dp_debug *dp_debug, struct drm_minor *minor)
+ 
+ struct dp_debug *dp_debug_get(struct device *dev, struct dp_panel *panel,
+ 		struct dp_usbpd *usbpd, struct dp_link *link,
+-		struct drm_connector **connector, struct drm_minor *minor)
++		struct drm_connector *connector, struct drm_minor *minor)
+ {
+ 	int rc = 0;
+ 	struct dp_debug_private *debug;
+diff --git a/drivers/gpu/drm/msm/dp/dp_debug.h b/drivers/gpu/drm/msm/dp/dp_debug.h
+index 7eaedfbb149c..8c0d0b5178fd 100644
+--- a/drivers/gpu/drm/msm/dp/dp_debug.h
++++ b/drivers/gpu/drm/msm/dp/dp_debug.h
+@@ -43,7 +43,7 @@ struct dp_debug {
+  */
+ struct dp_debug *dp_debug_get(struct device *dev, struct dp_panel *panel,
+ 		struct dp_usbpd *usbpd, struct dp_link *link,
+-		struct drm_connector **connector,
++		struct drm_connector *connector,
+ 		struct drm_minor *minor);
+ 
+ /**
+@@ -60,7 +60,7 @@ void dp_debug_put(struct dp_debug *dp_debug);
+ static inline
+ struct dp_debug *dp_debug_get(struct device *dev, struct dp_panel *panel,
+ 		struct dp_usbpd *usbpd, struct dp_link *link,
+-		struct drm_connector **connector, struct drm_minor *minor)
++		struct drm_connector *connector, struct drm_minor *minor)
+ {
+ 	return ERR_PTR(-EINVAL);
+ }
+diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+index 2a7239ef94d1..3aa67c53dbc0 100644
+--- a/drivers/gpu/drm/msm/dp/dp_display.c
++++ b/drivers/gpu/drm/msm/dp/dp_display.c
+@@ -1464,7 +1464,7 @@ void msm_dp_debugfs_init(struct msm_dp *dp_display, struct drm_minor *minor)
+ 	dev = &dp->pdev->dev;
+ 
+ 	dp->debug = dp_debug_get(dev, dp->panel, dp->usbpd,
+-					dp->link, &dp->dp_display.connector,
++					dp->link, dp->dp_display.connector,
+ 					minor);
+ 	if (IS_ERR(dp->debug)) {
+ 		rc = PTR_ERR(dp->debug);
+-- 
+2.29.2
+
