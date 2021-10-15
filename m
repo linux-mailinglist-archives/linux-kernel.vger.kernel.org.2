@@ -2,124 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 682A942E777
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 06:04:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10A4542E77D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 06:05:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231674AbhJOEGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 00:06:32 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:41323 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbhJOEGb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 00:06:31 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HVt1x6W2Sz4xb9;
-        Fri, 15 Oct 2021 15:04:21 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1634270664;
-        bh=6W/RtSzqq2Z+GDw9T/evgV+tYlkOT8lgdq6qjYT3tuc=;
-        h=Date:From:To:Cc:Subject:From;
-        b=l6XbLYdoQ+2qELYE2joTH9eer/PGXmzi9Eh3cgZ8wpZGMJRY2WyBNWA1kjZlTTPdE
-         59CJ7J1xel4MG129OmErpz8tJTSZiBjxXN0/FKJEuxQ+O9WMSTNOgpWgrDRgJioqQ/
-         FZIoLQQY6e+Bk3PsNYUm8zlcv78SxnQTWjws/btENB9l8D2tOTNpTuBi2rl7ufOA17
-         iWVeopZTo3ZjTQnWWJH/Slclzr9LLnzG574NIqr4Q5raWkRARIi0U94yqwZreHy+KE
-         Iw/f5JRNAXbLn71ofEaQOsYowLTiiSMX258wqLTCzcKmLnazhwJXaV+ZwML3n9/84Q
-         RWkdbbZn6o9VQ==
-Date:   Fri, 15 Oct 2021 15:04:20 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Whitehouse <swhiteho@redhat.com>,
-        Bob Peterson <rpeterso@redhat.com>
-Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
-        Borislav Petkov <bp@suse.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the tip tree with the gfs2 tree
-Message-ID: <20211015150420.617125bd@canb.auug.org.au>
+        id S233273AbhJOEHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 00:07:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59752 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229445AbhJOEHD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 00:07:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EA2C610D2;
+        Fri, 15 Oct 2021 04:04:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634270697;
+        bh=T1Z9HbQrrY18qJUzBqQ0IoiV6ybSBk9q37LkdOEVAus=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MXzvhER6Kr2mM3DpPB54nBFaCzil9UDbBHRkB2kejrtxoDqfZxIbk+i0+Vjzc4h8e
+         D5k6bztnfatkzJj9nV1DM/47/upMR8iTcsQz6lPYsCk7lB0U0eN6KBi663xVlvHjq+
+         bhWeF08FTuLMA2efmaW7VYW5Pc+WR/BQePS8wdheBukiF7c9upNQFRioRAyxTAOBFO
+         RDuGG0e6EDLZKCgZivKh2F9Ac8Cs2unKc9laSl0TQskNbnTvCd4MAqaBEi2Rdb7ZC+
+         pHui5UaBDwGJ1jBcscWKXpHuDMZwcR9kX8sX8SBN5V9KzDbtPclkJFEoM2FdN2IUvS
+         ++29VBV8lDI0g==
+Date:   Fri, 15 Oct 2021 12:04:51 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Frieder Schrempf <frieder.schrempf@kontron.de>
+Cc:     Frieder Schrempf <frieder@fris.de>, devicetree@vger.kernel.org,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>, stable@vger.kernel.org,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>
+Subject: Re: [PATCH 3/8] arm64: dts: imx8mm-kontron: Set VDD_SNVS to 800 mV
+Message-ID: <20211015040450.GF22881@dragon>
+References: <20210930155633.2745201-1-frieder@fris.de>
+ <20210930155633.2745201-4-frieder@fris.de>
+ <20211005065641.GA20743@dragon>
+ <df454b06-3069-d369-e3c7-f2434d94f4af@kontron.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/6VzSXwJ4MgIsxHU73BoUJNE";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <df454b06-3069-d369-e3c7-f2434d94f4af@kontron.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/6VzSXwJ4MgIsxHU73BoUJNE
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, Oct 05, 2021 at 03:14:40PM +0200, Frieder Schrempf wrote:
+> On 05.10.21 08:56, Shawn Guo wrote:
+> > On Thu, Sep 30, 2021 at 05:56:26PM +0200, Frieder Schrempf wrote:
+> >> From: Frieder Schrempf <frieder.schrempf@kontron.de>
+> >>
+> >> According to the datasheet VDD_SNVS should be 800 mV, so let's
+> >> make sure that the voltage won't be different.
+> > 
+> > Could you share the datasheet?
+> 
+> Sure, it's here: https://www.nxp.com/docs/en/data-sheet/IMX8MMIEC.pdf.
+> See table 10 for the operating voltages.
 
-Hi all,
+Thanks for the link!
 
-Today's linux-next merge of the tip tree got a conflict in:
+But datasheet specifies a voltage range. 800 mV is just the typical one.
+The only problem I see is that regulator-min-microvolt should be lowered
+to 800 mV.  regulator-max-microvolt looks correct to me.
 
-  arch/x86/kernel/fpu/signal.c
+Shawn
 
-between commit:
-
-  4303543bac16 ("gup: Turn fault_in_pages_{readable,writeable} into fault_i=
-n_{readable,writeable}")
-
-from the gfs2 tree and commits:
-
-  fcfb7163329c ("x86/fpu/signal: Move xstate clearing out of copy_fpregs_to=
-_sigframe()")
-  a2a8fd9a3efd ("x86/fpu/signal: Change return code of restore_fpregs_from_=
-user() to boolean")
-
-from the tip tree.
-
-I fixed it up (I used the latter version - see below) and can carry the
-fix as necessary. This is now fixed as far as linux-next is concerned,
-but any non trivial conflicts should be mentioned to your upstream
-maintainer when your tree is submitted for merging.  You may also want
-to consider cooperating with the maintainer of the conflicting tree to
-minimise any particularly complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc arch/x86/kernel/fpu/signal.c
-index 164c96434704,37dbfed29d75..000000000000
---- a/arch/x86/kernel/fpu/signal.c
-+++ b/arch/x86/kernel/fpu/signal.c
-@@@ -275,12 -283,12 +283,12 @@@ retry
-  		fpregs_unlock();
- =20
-  		/* Try to handle #PF, but anything else is fatal. */
-- 		if (ret !=3D -EFAULT)
-- 			return -EINVAL;
-+ 		if (ret !=3D X86_TRAP_PF)
-+ 			return false;
- =20
- -		if (!fault_in_pages_readable(buf, size))
- +		if (!fault_in_readable(buf, size))
-  			goto retry;
-- 		return -EFAULT;
-+ 		return false;
-  	}
- =20
-  	/*
-
---Sig_/6VzSXwJ4MgIsxHU73BoUJNE
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFo/cQACgkQAVBC80lX
-0GxKqgf9HND1fghKE1tpdk2nsgs7GFXvPMnNEgawrqJ5LstlgB421T8/lv5oxogT
-tVFzKvB6c3Hvr7xKcdIrecFmo8szqoFIE/Kpvj8CX2IEZ/gWt8FXjru52suCaU7R
-7ISEA/9bCb8FE1a+VqjAQcZ1CuWJhZqa59skk8gdfG2ilgtHAMIIE/lD/0g5Ntsy
-OGHBoSeMYUo3qwRbQKIRObHLdQy4vMv66IfBSg2QGt0WFXAnjKKHcMvflyLra6Ia
-KZf9MvPczb2GUElobMYo16gcgIuhDs7qs5WRrwmIzRXKij/b/xYUGQF0ST2Yl7M8
-Hed5PbqgD9NVjXIqzyxwA5VEO05DdQ==
-=KRbd
------END PGP SIGNATURE-----
-
---Sig_/6VzSXwJ4MgIsxHU73BoUJNE--
+> 
+> >>
+> >> Fixes: 21c4f45b335f ("arm64: dts: Add the Kontron i.MX8M Mini SoMs and baseboards")
+> >> Cc: stable@vger.kernel.org
+> >> Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
+> >> ---
+> >>  arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-som.dtsi | 4 ++--
+> >>  1 file changed, 2 insertions(+), 2 deletions(-)
+> >>
+> >> diff --git a/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-som.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-som.dtsi
+> >> index b12fb7ce6686..213014f59b46 100644
+> >> --- a/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-som.dtsi
+> >> +++ b/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-som.dtsi
+> >> @@ -152,8 +152,8 @@ reg_nvcc_snvs: LDO1 {
+> >>  
+> >>  			reg_vdd_snvs: LDO2 {
+> >>  				regulator-name = "ldo2";
+> >> -				regulator-min-microvolt = <850000>;
+> >> -				regulator-max-microvolt = <900000>;
+> >> +				regulator-min-microvolt = <800000>;
+> >> +				regulator-max-microvolt = <800000>;
+> >>  				regulator-boot-on;
+> >>  				regulator-always-on;
+> >>  			};
+> >> -- 
+> >> 2.33.0
+> >>
