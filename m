@@ -2,257 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83F5342F194
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 14:59:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58CE042F199
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 14:59:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239117AbhJONBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 09:01:18 -0400
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:39760 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236536AbhJONBR (ORCPT
+        id S238894AbhJONBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 09:01:41 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:35828 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S235718AbhJONBk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 09:01:17 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=xianting.tian@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UsAq25q_1634302746;
-Received: from B-LB6YLVDL-0141.local(mailfrom:xianting.tian@linux.alibaba.com fp:SMTPD_---0UsAq25q_1634302746)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 15 Oct 2021 20:59:06 +0800
-Subject: Re: [PATCH v11 2/3] tty: hvc: pass DMA capable memory to put_chars()
-To:     gregkh@linuxfoundation.org, jirislaby@kernel.org, amit@kernel.org,
-        arnd@arndb.de, osandov@fb.com
-Cc:     shile.zhang@linux.alibaba.com, linuxppc-dev@lists.ozlabs.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-References: <20211015024658.1353987-1-xianting.tian@linux.alibaba.com>
- <20211015024658.1353987-3-xianting.tian@linux.alibaba.com>
-From:   Xianting Tian <xianting.tian@linux.alibaba.com>
-Message-ID: <b09fbe3f-2b2c-202e-31f4-51b9e527e2f7@linux.alibaba.com>
-Date:   Fri, 15 Oct 2021 20:59:06 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.1
+        Fri, 15 Oct 2021 09:01:40 -0400
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19FAMd6X022836;
+        Fri, 15 Oct 2021 14:59:21 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=+ib+q3m8dnN8ADucrFEFL5QS/hW2B3DXFypb6Jmo450=;
+ b=NQzEo0Y9sJVGo3dihWmSLaekgcpSy4KjRdZh6CSxKc/VIBT4txXZ77RV+gba0f5EKRO2
+ PSi6RWbbGK2RVrOeQwipc5oRwsbMuiqPXlff7yz1x4DiAOmwfSyge/WpdEubdSmcEPQS
+ skEXnH4b23D3FFuy95uQHRrl14VW6QyekvX71iwADuk0t1Oz+3jLMtmt1JNw+dQrhABQ
+ 9F3e0SC9nvMzrQKWr0kJVXd4FK2ApoDGcWJSwhxEzUo7YWoTUlBdSdmDhVjVo+KEU6Ga
+ h3/MXMR25TqBbBL6vPGCLaysigCnbL7AVM3AXdclrvFWpQIwN75kE09DmAuz0OX7xAvN pQ== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3bq270k9wp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 15 Oct 2021 14:59:21 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 302FA10002A;
+        Fri, 15 Oct 2021 14:59:21 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 2543522FA3F;
+        Fri, 15 Oct 2021 14:59:21 +0200 (CEST)
+Received: from lmecxl0912.lme.st.com (10.75.127.51) by SFHDAG2NODE2.st.com
+ (10.75.127.5) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Fri, 15 Oct
+ 2021 14:59:20 +0200
+Subject: Re: [PATCH] ARM: dts: stm32: fix STUSB1600 Type-C irq level on
+ stm32mp15xx-dkx
+To:     Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+CC:     <robh+dt@kernel.org>, <amelie.delaunay@foss.st.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>
+References: <1632231289-18881-1-git-send-email-fabrice.gasnier@foss.st.com>
+From:   Alexandre TORGUE <alexandre.torgue@foss.st.com>
+Message-ID: <25ca69bf-1a39-cbc7-5743-e282121a7bf5@foss.st.com>
+Date:   Fri, 15 Oct 2021 14:59:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20211015024658.1353987-3-xianting.tian@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1632231289-18881-1-git-send-email-fabrice.gasnier@foss.st.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.51]
+X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE2.st.com
+ (10.75.127.5)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-15_04,2021-10-14_02,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg and experts
-
-Is this version ok for you?  thanks
-
-在 2021/10/15 上午10:46, Xianting Tian 写道:
-> As well known, hvc backend can register its opertions to hvc backend.
-> the operations contain put_chars(), get_chars() and so on.
->
-> Some hvc backend may do dma in its operations. eg, put_chars() of
-> virtio-console. But in the code of hvc framework, it may pass DMA
-> incapable memory to put_chars() under a specific configuration, which
-> is explained in commit c4baad5029(virtio-console: avoid DMA from stack):
-> 1, c[] is on stack,
->     hvc_console_print():
->          char c[N_OUTBUF] __ALIGNED__;
->          cons_ops[index]->put_chars(vtermnos[index], c, i);
-> 2, ch is on stack,
->     static void hvc_poll_put_char(,,char ch)
->     {
->          struct tty_struct *tty = driver->ttys[0];
->          struct hvc_struct *hp = tty->driver_data;
->          int n;
->
->          do {
->                  n = hp->ops->put_chars(hp->vtermno, &ch, 1);
->          } while (n <= 0);
->     }
->
-> Commit c4baad5029 is just the fix to avoid DMA from stack memory, which
-> is passed to virtio-console by hvc framework in above code. But I think
-> the fix is aggressive, it directly uses kmemdup() to alloc new buffer
-> from kmalloc area and do memcpy no matter the memory is in kmalloc area
-> or not. But most importantly, it should better be fixed in the hvc
-> framework, by changing it to never pass stack memory to the put_chars()
-> function in the first place. Otherwise, we still face the same issue if
-> a new hvc backend using dma added in the furture.
->
-> In this patch, add 'char cons_outbuf[]' as part of 'struct hvc_struct',
-> so hp->cons_outbuf is no longer the stack memory, we can use it in above
-> cases safely. We also add lock to protect cons_outbuf instead of using
-> the global lock of hvc.
->
-> Introduce another array(cons_hvcs[]) for hvc pointers next to the
-> cons_ops[] and vtermnos[] arrays. With the array, we can easily find
-> hvc's cons_outbuf and its lock.
->
-> With the patch, we can revert the fix c4baad5029.
->
-> Signed-off-by: Xianting Tian <xianting.tian@linux.alibaba.com>
-> Signed-off-by: Shile Zhang <shile.zhang@linux.alibaba.com>
+On 9/21/21 3:34 PM, Fabrice Gasnier wrote:
+> STUSB1600 IRQ (Alert pin) is active low (open drain). Interrupts may get
+> lost currently, so fix the IRQ type.
+> 
+> Fixes: 83686162c0eb ("ARM: dts: stm32: add STUSB1600 Type-C using I2C4 on stm32mp15xx-dkx")
+> 
+> Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
 > ---
->   drivers/tty/hvc/hvc_console.c | 36 ++++++++++++++++++++---------------
->   drivers/tty/hvc/hvc_console.h | 21 +++++++++++++++++++-
->   2 files changed, 41 insertions(+), 16 deletions(-)
->
-> diff --git a/drivers/tty/hvc/hvc_console.c b/drivers/tty/hvc/hvc_console.c
-> index 5957ab728..11f2463a1 100644
-> --- a/drivers/tty/hvc/hvc_console.c
-> +++ b/drivers/tty/hvc/hvc_console.c
-> @@ -41,16 +41,6 @@
->    */
->   #define HVC_CLOSE_WAIT (HZ/100) /* 1/10 of a second */
->   
-> -/*
-> - * These sizes are most efficient for vio, because they are the
-> - * native transfer size. We could make them selectable in the
-> - * future to better deal with backends that want other buffer sizes.
-> - */
-> -#define N_OUTBUF	16
-> -#define N_INBUF		16
-> -
-> -#define __ALIGNED__ __attribute__((__aligned__(L1_CACHE_BYTES)))
-> -
->   static struct tty_driver *hvc_driver;
->   static struct task_struct *hvc_task;
->   
-> @@ -142,6 +132,7 @@ static int hvc_flush(struct hvc_struct *hp)
->   static const struct hv_ops *cons_ops[MAX_NR_HVC_CONSOLES];
->   static uint32_t vtermnos[MAX_NR_HVC_CONSOLES] =
->   	{[0 ... MAX_NR_HVC_CONSOLES - 1] = -1};
-> +static struct hvc_struct *cons_hvcs[MAX_NR_HVC_CONSOLES];
->   
->   /*
->    * Console APIs, NOT TTY.  These APIs are available immediately when
-> @@ -151,9 +142,11 @@ static uint32_t vtermnos[MAX_NR_HVC_CONSOLES] =
->   static void hvc_console_print(struct console *co, const char *b,
->   			      unsigned count)
->   {
-> -	char c[N_OUTBUF] __ALIGNED__;
-> +	char *c;
->   	unsigned i = 0, n = 0;
->   	int r, donecr = 0, index = co->index;
-> +	unsigned long flags;
-> +	struct hvc_struct *hp;
->   
->   	/* Console access attempt outside of acceptable console range. */
->   	if (index >= MAX_NR_HVC_CONSOLES)
-> @@ -163,6 +156,13 @@ static void hvc_console_print(struct console *co, const char *b,
->   	if (vtermnos[index] == -1)
->   		return;
->   
-> +	hp = cons_hvcs[index];
-> +	if (!hp)
-> +		return;
-> +
-> +	c = hp->cons_outbuf;
-> +
-> +	spin_lock_irqsave(&hp->cons_outbuf_lock, flags);
->   	while (count > 0 || i > 0) {
->   		if (count > 0 && i < sizeof(c)) {
->   			if (b[n] == '\n' && !donecr) {
-> @@ -191,6 +191,7 @@ static void hvc_console_print(struct console *co, const char *b,
->   			}
->   		}
->   	}
-> +	spin_unlock_irqrestore(&hp->cons_outbuf_lock, flags);
->   	hvc_console_flush(cons_ops[index], vtermnos[index]);
->   }
->   
-> @@ -878,9 +879,13 @@ static void hvc_poll_put_char(struct tty_driver *driver, int line, char ch)
->   	struct tty_struct *tty = driver->ttys[0];
->   	struct hvc_struct *hp = tty->driver_data;
->   	int n;
-> +	unsigned long flags;
->   
->   	do {
-> -		n = hp->ops->put_chars(hp->vtermno, &ch, 1);
-> +		spin_lock_irqsave(&hp->cons_outbuf_lock, flags);
-> +		hp->cons_outbuf[0] = ch;
-> +		n = hp->ops->put_chars(hp->vtermno, &hp->cons_outbuf[0], 1);
-> +		spin_unlock_irqrestore(&hp->cons_outbuf_lock, flags);
->   	} while (n <= 0);
->   }
->   #endif
-> @@ -922,8 +927,7 @@ struct hvc_struct *hvc_alloc(uint32_t vtermno, int data,
->   			return ERR_PTR(err);
->   	}
->   
-> -	hp = kzalloc(ALIGN(sizeof(*hp), sizeof(long)) + outbuf_size,
-> -			GFP_KERNEL);
-> +	hp = kzalloc(struct_size(hp, outbuf, outbuf_size), GFP_KERNEL);
->   	if (!hp)
->   		return ERR_PTR(-ENOMEM);
->   
-> @@ -931,13 +935,13 @@ struct hvc_struct *hvc_alloc(uint32_t vtermno, int data,
->   	hp->data = data;
->   	hp->ops = ops;
->   	hp->outbuf_size = outbuf_size;
-> -	hp->outbuf = &((char *)hp)[ALIGN(sizeof(*hp), sizeof(long))];
->   
->   	tty_port_init(&hp->port);
->   	hp->port.ops = &hvc_port_ops;
->   
->   	INIT_WORK(&hp->tty_resize, hvc_set_winsz);
->   	spin_lock_init(&hp->lock);
-> +	spin_lock_init(&hp->cons_outbuf_lock);
->   	mutex_lock(&hvc_structs_mutex);
->   
->   	/*
-> @@ -964,6 +968,7 @@ struct hvc_struct *hvc_alloc(uint32_t vtermno, int data,
->   	if (i < MAX_NR_HVC_CONSOLES) {
->   		cons_ops[i] = ops;
->   		vtermnos[i] = vtermno;
-> +		cons_hvcs[i] = hp;
->   	}
->   
->   	list_add_tail(&(hp->next), &hvc_structs);
-> @@ -988,6 +993,7 @@ int hvc_remove(struct hvc_struct *hp)
->   	if (hp->index < MAX_NR_HVC_CONSOLES) {
->   		vtermnos[hp->index] = -1;
->   		cons_ops[hp->index] = NULL;
-> +		cons_hvcs[hp->index] = NULL;
->   	}
->   
->   	/* Don't whack hp->irq because tty_hangup() will need to free the irq. */
-> diff --git a/drivers/tty/hvc/hvc_console.h b/drivers/tty/hvc/hvc_console.h
-> index 18d005814..2c32ab67b 100644
-> --- a/drivers/tty/hvc/hvc_console.h
-> +++ b/drivers/tty/hvc/hvc_console.h
-> @@ -32,12 +32,21 @@
->    */
->   #define HVC_ALLOC_TTY_ADAPTERS	8
->   
-> +/*
-> + * These sizes are most efficient for vio, because they are the
-> + * native transfer size. We could make them selectable in the
-> + * future to better deal with backends that want other buffer sizes.
-> + */
-> +#define N_OUTBUF	16
-> +#define N_INBUF		16
-> +
-> +#define __ALIGNED__ __attribute__((__aligned__(L1_CACHE_BYTES)))
-> +
->   struct hvc_struct {
->   	struct tty_port port;
->   	spinlock_t lock;
->   	int index;
->   	int do_wakeup;
-> -	char *outbuf;
->   	int outbuf_size;
->   	int n_outbuf;
->   	uint32_t vtermno;
-> @@ -48,6 +57,16 @@ struct hvc_struct {
->   	struct work_struct tty_resize;
->   	struct list_head next;
->   	unsigned long flags;
-> +
-> +	/*
-> +	 * the buf and its lock are used in hvc console api for putting chars,
-> +	 * and also used in hvc_poll_put_char() for putting single char.
-> +	 */
-> +	spinlock_t cons_outbuf_lock;
-> +	char cons_outbuf[N_OUTBUF] __ALIGNED__;
-> +
-> +	/* the buf is used for putting chars to tty */
-> +	char outbuf[] __ALIGNED__;
->   };
->   
->   /* implemented by a low level driver */
+>   arch/arm/boot/dts/stm32mp15xx-dkx.dtsi | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi b/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi
+> index 9a95489..878ea36 100644
+> --- a/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi
+> +++ b/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi
+> @@ -260,7 +260,7 @@
+>   	stusb1600@28 {
+>   		compatible = "st,stusb1600";
+>   		reg = <0x28>;
+> -		interrupts = <11 IRQ_TYPE_EDGE_FALLING>;
+> +		interrupts = <11 IRQ_TYPE_LEVEL_LOW>;
+>   		interrupt-parent = <&gpioi>;
+>   		pinctrl-names = "default";
+>   		pinctrl-0 = <&stusb1600_pins_a>;
+> 
+
+Applied on stm32-next.
+
+Thanks
+Alex
