@@ -2,163 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF6FA42F6FE
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 17:24:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAE1942F700
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 17:25:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240962AbhJOP0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 11:26:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40512 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232267AbhJOP0j (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 11:26:39 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6728BC061570
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 08:24:33 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id e5-20020a17090a804500b001a116ad95caso1967942pjw.2
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 08:24:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=2el1wBIdx4TGzNhRzDaHytILcWWNyw9UG65A/X8JUoo=;
-        b=LQOmtUysXNdUFpPqglFGKKKwQob2Rat45tHAcSJKy0TLMsP9H8XRmO6T21biFNGGqM
-         a5BFGyuHTLifN8s0J4bSUK4avhEzf6rhR80ETykDpNi33QwXENV3lV2l60FvoflpDLj8
-         vHu36ZXSH+tU+G+ecbghNbeaCKd+dKNLpbdZ+qKtOTe0qHRHHWSIwmuKw8vQCJLFxTL9
-         9exyCrGWss+LKmVNWf6KV91JZIi8MQXdIzwsWwc9EAf18jvtRs2K5fs1Dt+3rj6JQ1vB
-         31jOeUdbkMlThbKRXipy4RJ3RFLWwITGDXo9h52JLZXJpzo/jg4Ry82ouEHQ4tDVFA9c
-         2D3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2el1wBIdx4TGzNhRzDaHytILcWWNyw9UG65A/X8JUoo=;
-        b=AM617UUwfQUH93bT9AXXR/5WGkf3r3FnxESiersuE5mqHr0SXBwRQgHjfZXd22K0lT
-         Fehbg8NN+vd4pkjq+xEBFQQfbM2zkMlicgemXwUYfVuVtZNGCVWw5JJgcH2XDZdo0nGg
-         ZcvQkmiiczQRD2lnGyb/VGdJN8Sd/oZpSZniqIiS1aLhSJZZS2Lj7U94P3/2+WBKx8sE
-         7iN+7eXlB5uCWvgCODmbfMOX0ZHI+0pNJUl0PMyePZyA1GDMxovw9onEpR+EF6hSVTNX
-         sc2/5wOg3dz85w5J/xcoQ86ZRv9vNpBEqtcxuuOR3Mt3IC1I0ZgF1dxNOFOH4gzdi32y
-         9hyA==
-X-Gm-Message-State: AOAM5334sMSgKFBjfF5ojRh56JGctCeFCju+XFK8ng+pOB/Za1S8z9t5
-        rn7w5V9DVuPE0aFW4nRR8h2bMA==
-X-Google-Smtp-Source: ABdhPJwDCyeHqh5AWou0vyYclGHKCsH03HM8KWthWDRZEkbLQMPNiHKRLeJR+JBGwagC3Z5W3mszlQ==
-X-Received: by 2002:a17:90a:b706:: with SMTP id l6mr28465203pjr.200.1634311472685;
-        Fri, 15 Oct 2021 08:24:32 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id x7sm5292267pfj.28.2021.10.15.08.24.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Oct 2021 08:24:32 -0700 (PDT)
-Date:   Fri, 15 Oct 2021 15:24:28 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        David Matlack <dmatlack@google.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC] KVM: SVM: reduce guest MAXPHYADDR by one in case
- C-bit is a physical bit
-Message-ID: <YWmdLPsa6qccxtEa@google.com>
-References: <20211015150524.2030966-1-vkuznets@redhat.com>
+        id S240973AbhJOP1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 11:27:16 -0400
+Received: from mga06.intel.com ([134.134.136.31]:23112 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232267AbhJOP1L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 11:27:11 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10138"; a="288795650"
+X-IronPort-AV: E=Sophos;i="5.85,376,1624345200"; 
+   d="scan'208";a="288795650"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2021 08:25:05 -0700
+X-IronPort-AV: E=Sophos;i="5.85,376,1624345200"; 
+   d="scan'208";a="718137364"
+Received: from fongchan-mobl.amr.corp.intel.com (HELO [10.252.130.142]) ([10.252.130.142])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2021 08:25:04 -0700
+Subject: Re: [PATCH v1] x86/fpu: Remove opmask state from avx512_timestamp
+ check
+To:     Noah Goldstein <goldstein.w.n@gmail.com>,
+        Borislav Petkov <bp@alien8.de>
+Cc:     tglx@linutronix.de, mingo@redhat.com, X86 ML <x86@kernel.org>,
+        hpa@zytor.com, Andy Lutomirski <luto@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        aubrey <aubrey.li@intel.com>,
+        "Chen, Tim C" <tim.c.chen@intel.com>,
+        "Van De Ven, Arjan" <arjan.van.de.ven@intel.com>
+References: <20210920053951.4093668-1-goldstein.w.n@gmail.com>
+ <CAFUsyfJWXJEc1879uX_YOJg7cvie0gitv+bu83DiUXiE74uQww@mail.gmail.com>
+ <CAFUsyfJQ8_=QnZjZ2zS45wwB6AaRgL4JO8_sT1a_rXUsfh_1WQ@mail.gmail.com>
+ <YWfqEIaCKOwSWGHF@zn.tnic>
+ <CAFUsyfLf5a6-L7f2AjLx3j8+qbG7EU9iLPJCTA0+UoOUg3C61A@mail.gmail.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <53c43d2d-0e2e-654b-417d-d3dcbca42fc5@intel.com>
+Date:   Fri, 15 Oct 2021 08:25:01 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211015150524.2030966-1-vkuznets@redhat.com>
+In-Reply-To: <CAFUsyfLf5a6-L7f2AjLx3j8+qbG7EU9iLPJCTA0+UoOUg3C61A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 15, 2021, Vitaly Kuznetsov wrote:
-> Several selftests (memslot_modification_stress_test, kvm_page_table_test,
-> dirty_log_perf_test,.. ) which rely on vm_get_max_gfn() started to fail
-> since commit ef4c9f4f65462 ("KVM: selftests: Fix 32-bit truncation of
-> vm_get_max_gfn()") on AMD EPYC 7401P:
+On 10/14/21 8:49 AM, Noah Goldstein wrote:
+> Irrelevant of the still existing flaws, it makes the output more accurate.
 > 
->  ./tools/testing/selftests/kvm/demand_paging_test
->  Testing guest mode: PA-bits:ANY, VA-bits:48,  4K pages
->  guest physical test memory offset: 0xffffbffff000
+> Is there a cost to the change I am not seeing?
 
-This look a lot like the signature I remember from the original bug[1].  I assume
-you're hitting the magic HyperTransport region[2].  I thought that was fixed, but
-the hack-a-fix for selftests never got applied[3].
+We'd want to make sure that this doesn't break anything.  It probably
+won't, but it theoretically could.
 
-[1] https://lore.kernel.org/lkml/20210623230552.4027702-4-seanjc@google.com/
-[2] https://lkml.kernel.org/r/7e3a90c0-75a1-b8fe-dbcf-bda16502ace9@amd.com
-[3] https://lkml.kernel.org/r/20210805105423.412878-1-pbonzini@redhat.com
+For instance, if someone was doing:
 
->  Finished creating vCPUs and starting uffd threads
->  Started all vCPUs
->  ==== Test Assertion Failure ====
->    demand_paging_test.c:63: false
->    pid=47131 tid=47134 errno=0 - Success
->       1	0x000000000040281b: vcpu_worker at demand_paging_test.c:63
->       2	0x00007fb36716e431: ?? ??:0
->       3	0x00007fb36709c912: ?? ??:0
->    Invalid guest sync status: exit_reason=SHUTDOWN
-> 
-> The commit, however, seems to be correct, it just revealed an already
-> present issue. AMD CPUs which support SEV may have a reduced physical
-> address space, e.g. on AMD EPYC 7401P I see:
-> 
->  Address sizes:  43 bits physical, 48 bits virtual
-> 
-> The guest physical address space, however, is not reduced as stated in
-> commit e39f00f60ebd ("KVM: x86: Use kernel's x86_phys_bits to handle
-> reduced MAXPHYADDR"). This seems to be almost correct, however, APM has one
-> more clause (15.34.6):
-> 
->   Note that because guest physical addresses are always translated through
->   the nested page tables, the size of the guest physical address space is
->   not impacted by any physical address space reduction indicated in CPUID
->   8000_001F[EBX]. If the C-bit is a physical address bit however, the guest
->   physical address space is effectively reduced by 1 bit.
-> 
-> Implement the reduction.
-> 
-> Fixes: e39f00f60ebd (KVM: x86: Use kernel's x86_phys_bits to handle reduced MAXPHYADDR)
-> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-> ---
-> - RFC: I may have misdiagnosed the problem as I didn't dig to where exactly
->  the guest crashes.
-> ---
->  arch/x86/kvm/cpuid.c | 13 ++++++++++---
->  1 file changed, 10 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-> index 751aa85a3001..04ae280a0b66 100644
-> --- a/arch/x86/kvm/cpuid.c
-> +++ b/arch/x86/kvm/cpuid.c
-> @@ -923,13 +923,20 @@ static inline int __do_cpuid_func(struct kvm_cpuid_array *array, u32 function)
->  		 *
->  		 * If TDP is enabled but an explicit guest MAXPHYADDR is not
->  		 * provided, use the raw bare metal MAXPHYADDR as reductions to
-> -		 * the HPAs do not affect GPAs.
-> +		 * the HPAs do not affect GPAs. The value, however, has to be
-> +		 * reduced by 1 in case C-bit is a physical bit (APM section
-> +		 * 15.34.6).
->  		 */
-> -		if (!tdp_enabled)
-> +		if (!tdp_enabled) {
->  			g_phys_as = boot_cpu_data.x86_phys_bits;
-> -		else if (!g_phys_as)
-> +		} else if (!g_phys_as) {
->  			g_phys_as = phys_as;
->  
-> +			if (kvm_cpu_cap_has(X86_FEATURE_SEV) &&
-> +			    (cpuid_ebx(0x8000001f) & 0x3f) < g_phys_as)
-> +				g_phys_as -= 1;
+	avx512_foo();
+	xsave->xstate_bv &= ~XFEATURE_MASK_ZMMS;
+	XRSTOR(xsave, -1);
 
-This is incorrect, non-SEV guests do not see a reduced address space.  See Tom's
-explanation[*]
+That would leave the opmask in place, but would lead to the ZMM
+registers tracked as being in their init state.
 
-[*] https://lkml.kernel.org/r/324a95ee-b962-acdf-9bd7-b8b23b9fb991@amd.com
+This would be *very* unlikely, but it would be great if Aubrey (the
+original avx512_timestamp patch author) could make sure that it doesn't
+break anything.
 
-> +		}
-> +
->  		entry->eax = g_phys_as | (virt_as << 8);
->  		entry->edx = 0;
->  		cpuid_entry_override(entry, CPUID_8000_0008_EBX);
-> -- 
-> 2.31.1
-> 
+Also, there's the side issue of AVX-256 use.  AVX-256 uses the ZMM
+registers which are a part of XFEATURE_MASK_AVX512, but does not incur
+the same frequency penalties of the full 512-bit-wide instructions.
+Since ZMM_Hi256 is the *only* ZMM state which is truly 512-bit-only, we
+could argue that it's the only one we should consider.
+
+Noah, thanks for bringing this up.  I'm not opposed to your patch, but
+let's just make sure that it doesn't break anything and also that we
+shouldn't do a bit more at the same time (ignore Hi16_ZMM for
+avx512_timestamp).
