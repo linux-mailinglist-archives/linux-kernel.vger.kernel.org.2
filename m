@@ -2,87 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EAF242E652
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 03:55:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6C8942E656
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 04:00:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234828AbhJOB5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 21:57:41 -0400
-Received: from mail-lf1-f50.google.com ([209.85.167.50]:41535 "EHLO
-        mail-lf1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232271AbhJOB5k (ORCPT
+        id S234846AbhJOCCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 22:02:33 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:56105 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232271AbhJOCCc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 21:57:40 -0400
-Received: by mail-lf1-f50.google.com with SMTP id u21so31836479lff.8;
-        Thu, 14 Oct 2021 18:55:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=IpSaQEoG/BUW0J8Sx8FaAR1StsiXGFl1oWEx3RqNFrc=;
-        b=CisFiM0kfzqffgg5YJnU8l8n389+vzp9DJ6fCyGsTBRqDJ1RZ8Okfjg6xk6OuBFsUE
-         8hSnWHpmltiIk8DqZGiprplOLMIb9kbbeuzVVOC01Xta7kfj6CDmu+v7l3x0v+jexOde
-         9/I7wx7D23+wgesocSGYIII4zanjYrJoc+Rlug/BIEUMko1fZtWtk8xOYyOw5PM+siwh
-         TmvzCWo+iSFq8LwCIwcRH+szd8uvpFfTveyWO/p6hACN9q03y8XhZ9BrhV4dPMgWffSO
-         cGb+PklTCHlybdyMBH6BSUUGWeA206WhhSDjLQ/ciIkFVPogTeTXMahQgFJ9Ygfnhhg/
-         6qKA==
-X-Gm-Message-State: AOAM531L/fAlgIkhtk0HdPlUj0yeWCzH/WlaKWDld8mFkF2TJNmkba0v
-        LW9XU232BZq7AytXc6x6o3GSx0Mln8I=
-X-Google-Smtp-Source: ABdhPJyaBhouAikuEyMYudVHw193Qnh6ZgUDl/KwhvAfT3qWqayax6iAPfl3SztPNQipmBrDj7gTbg==
-X-Received: by 2002:a19:441a:: with SMTP id r26mr8202587lfa.365.1634262934027;
-        Thu, 14 Oct 2021 18:55:34 -0700 (PDT)
-Received: from rocinante ([95.155.85.46])
-        by smtp.gmail.com with ESMTPSA id w13sm370241lft.94.2021.10.14.18.55.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Oct 2021 18:55:33 -0700 (PDT)
-Date:   Fri, 15 Oct 2021 03:55:32 +0200
-From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To:     kelvin.cao@microchip.com
-Cc:     kurt.schwemmer@microsemi.com, logang@deltatee.com,
-        bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kelvincao@outlook.com,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [PATCH v2 4/5] PCI/switchtec: Replace ENOTSUPP with EOPNOTSUPP
-Message-ID: <YWjflHn2pVW4IRyM@rocinante>
-References: <20211014141859.11444-1-kelvin.cao@microchip.com>
- <20211014141859.11444-5-kelvin.cao@microchip.com>
+        Thu, 14 Oct 2021 22:02:32 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HVqGv3YY5z4xbG;
+        Fri, 15 Oct 2021 13:00:23 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1634263224;
+        bh=VSoqlCX0nQzSZmUT56l1XRpOc8YsMVqw5ljMHwwDSOk=;
+        h=Date:From:To:Cc:Subject:From;
+        b=NpxhYkSxxpG0mZw576IzAMNes4tI5CEeB+bh8bArsG0cw+Iiv3dkJ8toe0TsKd3oi
+         lqYJWoCBFeYTrjbiLtpTmmYNGEAYI9mYRw8VTuhKZ4tyzdx5olOf+IpsUcUppVnHj1
+         /VdxpTyhsmonnb2q7b6snHj44uWEGFrHFgRc7PClQCvWDN98YQtC05Gf+rKoO00vsK
+         EVO0HteLEmsKKtsb2GxlIgNCxIxPifLXn3K6p1s3i6Y/k0RC5P59ARbGY29sQygG1G
+         NDKf/qMeXkZTtXXRqr5BYsw9MeYETEG/RIeGlI+J4378Gfz10lyOuFKIE3F8rzq/tB
+         DO7qPu3fOomzw==
+Date:   Fri, 15 Oct 2021 13:00:22 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        NetFilter <netfilter-devel@vger.kernel.org>
+Cc:     Antoine Tenart <atenart@kernel.org>,
+        Dust Li <dust.li@linux.alibaba.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the netfilter-next tree with the
+ netfilter tree
+Message-ID: <20211015130022.51468c6d@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211014141859.11444-5-kelvin.cao@microchip.com>
+Content-Type: multipart/signed; boundary="Sig_/fLJIbhJf0t_u9d4k7m4vggE";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+cc Jakub for visibility]
+--Sig_/fLJIbhJf0t_u9d4k7m4vggE
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
+Hi all,
 
-> ENOTSUPP is not a SUSV4 error code, and the following checkpatch.pl
-> warning will be given for new patches which still use ENOTSUPP.
-> 
->     WARNING: ENOTSUPP is not a SUSV4 error code, prefer EOPNOTSUPP
-> 
-> See the link below for the discussion.
-> 
->   https://lore.kernel.org/netdev/20200511165319.2251678-1-kuba@kernel.org/
+Today's linux-next merge of the netfilter-next tree got a conflict in:
 
-This makes me wonder whether we should fix other occurrences of ENOTSUPP we
-have in the PCI tree, as per:
+  net/netfilter/ipvs/ip_vs_ctl.c
 
-  Index File                                       Line Content
-      0 drivers/pci/msi.c                          1304 *  -ENOTSUPP otherwise
-      1 drivers/pci/msi.c                          1316 return -ENOTSUPP;
-      2 drivers/pci/pcie/dpc.c                      355 return -ENOTSUPP;
-      3 drivers/pci/setup-res.c                     421 return -ENOTSUPP;
-      4 drivers/pci/setup-res.c                     433 return -ENOTSUPP;
-      5 drivers/pci/pci.c                          3600 * Returns -ENOTSUPP if resizable BARs are not supported at all.
-      6 drivers/pci/pci.c                          3610 return -ENOTSUPP;
-      7 drivers/pci/switch/switchtec.c              330 return -ENOTSUPP; \
-      8 drivers/pci/switch/switchtec.c              616 return -ENOTSUPP;
-      9 drivers/pci/switch/switchtec.c              824 return -ENOTSUPP;
-     10 drivers/pci/switch/switchtec.c             1559 return -ENOTSUPP;
-     11 drivers/pci/controller/dwc/pcie-tegra194.c 2244 return -ENOTSUPP;
+between commit:
 
-What do you think Bjorn? Jakub?
+  174c37627894 ("netfilter: ipvs: make global sysctl readonly in non-init n=
+etns")
 
-	Krzysztof
+from the netfilter tree and commit:
+
+  2232642ec3fb ("ipvs: add sysctl_run_estimation to support disable estimat=
+ion")
+
+from the netfilter-next tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc net/netfilter/ipvs/ip_vs_ctl.c
+index 29ec3ef63edc,cbea5a68afb5..000000000000
+--- a/net/netfilter/ipvs/ip_vs_ctl.c
++++ b/net/netfilter/ipvs/ip_vs_ctl.c
+@@@ -4090,11 -4096,8 +4096,13 @@@ static int __net_init ip_vs_control_net
+  	tbl[idx++].data =3D &ipvs->sysctl_conn_reuse_mode;
+  	tbl[idx++].data =3D &ipvs->sysctl_schedule_icmp;
+  	tbl[idx++].data =3D &ipvs->sysctl_ignore_tunneled;
++ 	ipvs->sysctl_run_estimation =3D 1;
++ 	tbl[idx++].data =3D &ipvs->sysctl_run_estimation;
+ +#ifdef CONFIG_IP_VS_DEBUG
+ +	/* Global sysctls must be ro in non-init netns */
+ +	if (!net_eq(net, &init_net))
+ +		tbl[idx++].mode =3D 0444;
+ +#endif
+ =20
+  	ipvs->sysctl_hdr =3D register_net_sysctl(net, "net/ipv4/vs", tbl);
+  	if (ipvs->sysctl_hdr =3D=3D NULL) {
+
+--Sig_/fLJIbhJf0t_u9d4k7m4vggE
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFo4LYACgkQAVBC80lX
+0GzeFwf9Gjs3lvcAEhdy3xb9bwv/bGgOT4Zg3gXCovwpigymKXXNGfK1b489cIl9
+1YK1X/bFSRphJdEzdD9w1nqsqqgedxs3RtP4yL/QcRA4+APC1KO8QbHSkvQO51DX
+K9vCqtn1RTBuyU9VzbuHQJ0Lm56k7ob+7iV5nGYTFUqEOFy93AINvwsBKhdzBUwc
+C8cSDyrpNdDwi4Rs85MjR3Ut2rI34v7uGImBHCQQsUvUK9lRXoBfiRbJ7r06Q9Fh
+NCP15am4liiVIiiVXhX0Zg1PFk/rIcBFVQCmytklc9QJNHx+IbMpeO4TEeqY6e4r
+rMSFR/4niZT6ckJLMoQxtGuk8UWw5g==
+=0Q3x
+-----END PGP SIGNATURE-----
+
+--Sig_/fLJIbhJf0t_u9d4k7m4vggE--
