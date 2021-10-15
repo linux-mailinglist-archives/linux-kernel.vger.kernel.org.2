@@ -2,327 +2,455 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52AB942E6E7
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 04:58:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B36BC42E6E3
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 04:53:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233868AbhJODAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 23:00:18 -0400
-Received: from mga14.intel.com ([192.55.52.115]:51980 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232233AbhJODAP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 23:00:15 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10137"; a="228120361"
-X-IronPort-AV: E=Sophos;i="5.85,374,1624345200"; 
-   d="scan'208";a="228120361"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2021 19:58:09 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,374,1624345200"; 
-   d="scan'208";a="492292183"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.162])
-  by orsmga008.jf.intel.com with ESMTP; 14 Oct 2021 19:58:07 -0700
-Date:   Fri, 15 Oct 2021 10:51:40 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     Russ Weight <russell.h.weight@intel.com>
-Cc:     Tom Rix <trix@redhat.com>, mdf@kernel.org,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lgoncalv@redhat.com, hao.wu@intel.com, matthew.gerlach@intel.com
-Subject: Re: [PATCH v17 0/5] FPGA Image Load (previously Security Manager)
-Message-ID: <20211015025140.GH95330@yilunxu-OptiPlex-7050>
-References: <450ed897-f726-9671-26b7-2a24bb046e89@redhat.com>
- <20211011014154.GA82360@yilunxu-OptiPlex-7050>
- <79350773-3629-2734-21c0-0314a762e722@redhat.com>
- <336e4827-b09a-e1ab-b67d-d8755012d71c@intel.com>
- <20211012074752.GB95330@yilunxu-OptiPlex-7050>
- <e629eca0-a86c-4028-7bbf-65185699137b@intel.com>
- <20211013010617.GE95330@yilunxu-OptiPlex-7050>
- <58036b2d-ca8f-2deb-f1b4-0301d633714b@intel.com>
- <20211014014947.GF95330@yilunxu-OptiPlex-7050>
- <7d1971d0-b50b-077f-2a82-83d822cd2ad7@intel.com>
+        id S233631AbhJOCzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 22:55:43 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:57546 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232233AbhJOCzm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 22:55:42 -0400
+Received: from [192.168.254.32] (unknown [47.187.212.181])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 4694820B9D1C;
+        Thu, 14 Oct 2021 19:53:36 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 4694820B9D1C
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1634266417;
+        bh=reCWsG+8xJilvrJz+WoV/MqKaWNhqFOL0FqgTlAI2sg=;
+        h=Subject:To:References:From:Date:In-Reply-To:From;
+        b=EanEkOCQy5YG4eDEX4v7Ne85rMLxanRPUkRO553AHaC85BMgw9XPvv54pr0INixiS
+         g7TbE1VvrKLG5+GL6pAGx+Svaw5MOivvg2YXSf0TtpntbidFnhb/q8BTHZ1ki5Zs1B
+         OwadxgDFVyjo/NVZVlLazzYHrYhh8Vgwk7H6qtok=
+Subject: Re: [PATCH v9 00/11] arm64: Reorganize the unwinder and implement
+ stack trace reliability checks
+To:     mark.rutland@arm.com, broonie@kernel.org, jpoimboe@redhat.com,
+        ardb@kernel.org, nobuta.keiya@fujitsu.com,
+        sjitindarsingh@gmail.com, catalin.marinas@arm.com, will@kernel.org,
+        jmorris@namei.org, linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <c05ce30dcc9be1bd6b5e24a2ca8fe1d66246980b>
+ <20211015023413.16614-1-madvenka@linux.microsoft.com>
+From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Message-ID: <4b3d5552-590c-e6a0-866b-9bc51da7bebf@linux.microsoft.com>
+Date:   Thu, 14 Oct 2021 21:53:35 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <7d1971d0-b50b-077f-2a82-83d822cd2ad7@intel.com>
+In-Reply-To: <20211015023413.16614-1-madvenka@linux.microsoft.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 09:32:53AM -0700, Russ Weight wrote:
+My mailer screwed up the threading again. I am having Thunderbird woes.
+
+I will correct and resend as version 10. Please delete version 9 of this
+patch series.
+
+I profusely apologize for this annoyance.
+
+Madhavan
+
+On 10/14/21 9:34 PM, madvenka@linux.microsoft.com wrote:
+> From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+> 
+> Make all stack walking functions use arch_stack_walk()
+> ======================================================
+> 
+> Currently, there are multiple functions in ARM64 code that walk the
+> stack using start_backtrace() and unwind_frame() or start_backtrace()
+> and walk_stackframe(). Convert all of them to use arch_stack_walk().
+> This makes maintenance easier.
+> 
+> This means that arch_stack_walk() needs to be always defined. So,
+> select CONFIG_STACKTRACE in the ARM64 Kconfig file.
+> 
+> Consolidate the unwinder
+> ========================
+> 
+> Currently, start_backtrace() and walk_stackframe() are called separately.
+> There is no need to do that. Move the call to start_backtrace() into
+> walk_stackframe() so that walk_stackframe() is the only unwinder function
+> a consumer needs to call.
+> 
+> The consumers of walk_stackframe() are arch_stack_walk() and
+> arch_stack_walk_reliable().
+> 
+> Rename unwinder functions
+> =========================
+> 
+> Rename unwinder functions to unwind*() similar to other architectures
+> for naming consistency.
+> 
+> 	start_backtrace() ==> unwind_start()
+> 	unwind_frame()    ==> unwind_next()
+> 	walk_stackframe() ==> unwind()
+> 
+> Annotate unwinder functions
+> ===========================
+> 
+> Annotate all of the unwind_*() functions with notrace so they cannot be
+> ftraced and NOKPROBE_SYMBOL() so they cannot be kprobed. Ftrace and Kprobe
+> code can call the unwinder.
+> 
+> Redefine the unwinder loop
+> ==========================
+> 
+> Redefine the unwinder loop and make it similar to other architectures.
+> Define the following:
+> 
+> 	unwind_start(&frame, fp, pc);
+> 	while (unwind_continue(task, &frame, consume_entry, cookie))
+> 		unwind_next(task, &frame);
+> 
+> unwind_continue()
+> 	This new function implements checks to determine whether the
+> 	unwind should continue or terminate.
+> 
+> unwind_next()
+> 	Same as the original unwind_frame() except:
+> 
+> 	- the stack trace termination check has been moved from here to
+> 	  unwind_continue(). So, unwind_next() assumes that the fp is valid.
+> 
+> 	- unwind_frame() used to return an error value. unwind_next() only
+> 	  sets an internal flag "failed" to indicate that an error was
+> 	  encountered. This flag is checked by unwind_continue().
+> 
+> Reliability checks
+> ==================
+> 
+> There are some kernel features and conditions that make a stack trace
+> unreliable. Callers may require the unwinder to detect these cases.
+> E.g., livepatch.
+> 
+> Introduce a new function called unwind_check_reliability() that will detect
+> these cases and set a boolean "reliable" in the stackframe.
+> 
+> unwind_check_reliability() will be called for every frame. That is, in
+> unwind_start() as well as unwind_next().
+> 
+> Introduce the first reliability check in unwind_check_reliability() - If
+> a return PC is not a valid kernel text address, consider the stack
+> trace unreliable. It could be some generated code.
+> 
+> Other reliability checks will be added in the future.
+> 
+> arch_stack_walk_reliable()
+> ==========================
+> 
+> Introduce arch_stack_walk_reliable() for ARM64. This works like
+> arch_stack_walk() except that it returns an error if the stack trace is
+> found to be unreliable.
+> 
+> Until all of the reliability checks are in place in
+> unwind_check_reliability(), arch_stack_walk_reliable() may not be used by
+> livepatch. But it may be used by debug and test code.
+> 
+> SYM_CODE check
+> ==============
+> 
+> This is the second reliability check implemented.
+> 
+> SYM_CODE functions do not follow normal calling conventions. They cannot
+> be unwound reliably using the frame pointer. Collect the address ranges
+> of these functions in a special section called "sym_code_functions".
+> 
+> In unwind_check_reliability(), check the return PC against these ranges. If
+> a match is found, then mark the stack trace unreliable.
+> 
+> Last stack frame
+> ----------------
+> 
+> If a SYM_CODE function occurs in the very last frame in the stack trace,
+> then the stack trace is not considered unreliable. This is because there
+> is no more unwinding to do. Examples:
+> 
+> 	- EL0 exception stack traces end in the top level EL0 exception
+> 	  handlers.
+> 
+> 	- All kernel thread stack traces end in ret_from_fork().
+> ---
+> Changelog:
+> 
+> v9:
+> 	From me:
+> 
+> 	- Removed the word "RFC" from the subject line as I believe this
+> 	  is mature enough to be a regular patch.
+> 
+> 	From Mark Brown, Mark Rutland:
+> 
+> 	- Split the patches into smaller, self-contained ones.
+> 
+> 	- Always enable STACKTRACE so that arch_stack_walk() is always
+> 	  defined.
+> 
+> 	From Mark Rutland:
+> 
+> 	- Update callchain_trace() take the return value of
+> 	  perf_callchain_store() into acount.
+> 
+> 	- Restore get_wchan() behavior to the original code.
+> 
+> 	- Simplify an if statement in dump_backtrace().
+> 
+> 	From Mark Brown:
+> 
+> 	- Do not abort the stack trace on the first unreliable frame.
+> 
+> 	
+> v8:
+> 	- Synced to v5.14-rc5.
+> 
+> 	From Mark Rutland:
+> 
+> 	- Make the unwinder loop similar to other architectures.
+> 
+> 	- Keep details to within the unwinder functions and return a simple
+> 	  boolean to the caller.
+> 
+> 	- Convert some of the current code that contains unwinder logic to
+> 	  simply use arch_stack_walk(). I have converted all of them.
+> 
+> 	- Do not copy sym_code_functions[]. Just place it in rodata for now.
+> 
+> 	- Have the main loop check for termination conditions rather than
+> 	  having unwind_frame() check for them. In other words, let
+> 	  unwind_frame() assume that the fp is valid.
+> 
+> 	- Replace the big comment for SYM_CODE functions with a shorter
+> 	  comment.
+> 
+> 		/*
+> 		 * As SYM_CODE functions don't follow the usual calling
+> 		 * conventions, we assume by default that any SYM_CODE function
+> 		 * cannot be unwound reliably.
+> 		 *
+> 		 * Note that this includes:
+> 		 *
+> 		 * - Exception handlers and entry assembly
+> 		 * - Trampoline assembly (e.g., ftrace, kprobes)
+> 		 * - Hypervisor-related assembly
+> 		 * - Hibernation-related assembly
+> 		 * - CPU start-stop, suspend-resume assembly
+> 		 * - Kernel relocation assembly
+> 		 */
+> 
+> v7:
+> 	The Mailer screwed up the threading on this. So, I have resent this
+> 	same series as version 8 with proper threading to avoid confusion.
+> v6:
+> 	From Mark Rutland:
+> 
+> 	- The per-frame reliability concept and flag are acceptable. But more
+> 	  work is needed to make the per-frame checks more accurate and more
+> 	  complete. E.g., some code reorg is being worked on that will help.
+> 
+> 	  I have now removed the frame->reliable flag and deleted the whole
+> 	  concept of per-frame status. This is orthogonal to this patch series.
+> 	  Instead, I have improved the unwinder to return proper return codes
+> 	  so a caller can take appropriate action without needing per-frame
+> 	  status.
+> 
+> 	- Remove the mention of PLTs and update the comment.
+> 
+> 	  I have replaced the comment above the call to __kernel_text_address()
+> 	  with the comment suggested by Mark Rutland.
+> 
+> 	Other comments:
+> 
+> 	- Other comments on the per-frame stuff are not relevant because
+> 	  that approach is not there anymore.
+> 
+> v5:
+> 	From Keiya Nobuta:
+> 	
+> 	- The term blacklist(ed) is not to be used anymore. I have changed it
+> 	  to unreliable. So, the function unwinder_blacklisted() has been
+> 	  changed to unwinder_is_unreliable().
+> 
+> 	From Mark Brown:
+> 
+> 	- Add a comment for the "reliable" flag in struct stackframe. The
+> 	  reliability attribute is not complete until all the checks are
+> 	  in place. Added a comment above struct stackframe.
+> 
+> 	- Include some of the comments in the cover letter in the actual
+> 	  code so that we can compare it with the reliable stack trace
+> 	  requirements document for completeness. I have added a comment:
+> 
+> 	  	- above unwinder_is_unreliable() that lists the requirements
+> 		  that are addressed by the function.
+> 
+> 		- above the __kernel_text_address() call about all the cases
+> 		  the call covers.
+> 
+> v4:
+> 	From Mark Brown:
+> 
+> 	- I was checking the return PC with __kernel_text_address() before
+> 	  the Function Graph trace handling. Mark Brown felt that all the
+> 	  reliability checks should be performed on the original return PC
+> 	  once that is obtained. So, I have moved all the reliability checks
+> 	  to after the Function Graph Trace handling code in the unwinder.
+> 	  Basically, the unwinder should perform PC translations first (for
+> 	  rhe return trampoline for Function Graph Tracing, Kretprobes, etc).
+> 	  Then, the reliability checks should be applied to the resulting
+> 	  PC.
+> 
+> 	- Mark said to improve the naming of the new functions so they don't
+> 	  collide with existing ones. I have used a prefix "unwinder_" for
+> 	  all the new functions.
+> 
+> 	From Josh Poimboeuf:
+> 
+> 	- In the error scenarios in the unwinder, the reliable flag in the
+> 	  stack frame should be set. Implemented this.
+> 
+> 	- Some of the other comments are not relevant to the new code as
+> 	  I have taken a different approach in the new code. That is why
+> 	  I have not made those changes. E.g., Ard wanted me to add the
+> 	  "const" keyword to the global section array. That array does not
+> 	  exist in v4. Similarly, Mark Brown said to use ARRAY_SIZE() for
+> 	  the same array in a for loop.
+> 
+> 	Other changes:
+> 
+> 	- Add a new definition for SYM_CODE_END() that adds the address
+> 	  range of the function to a special section called
+> 	  "sym_code_functions".
+> 
+> 	- Include the new section under initdata in vmlinux.lds.S.
+> 
+> 	- Define an early_initcall() to copy the contents of the
+> 	  "sym_code_functions" section to an array by the same name.
+> 
+> 	- Define a function unwinder_blacklisted() that compares a return
+> 	  PC against sym_code_sections[]. If there is a match, mark the
+> 	  stack trace unreliable. Call this from unwind_frame().
+> 
+> v3:
+> 	- Implemented a sym_code_ranges[] array to contains sections bounds
+> 	  for text sections that contain SYM_CODE_*() functions. The unwinder
+> 	  checks each return PC against the sections. If it falls in any of
+> 	  the sections, the stack trace is marked unreliable.
+> 
+> 	- Moved SYM_CODE functions from .text and .init.text into a new
+> 	  text section called ".code.text". Added this section to
+> 	  vmlinux.lds.S and sym_code_ranges[].
+> 
+> 	- Fixed the logic in the unwinder that handles Function Graph
+> 	  Tracer return trampoline.
+> 
+> 	- Removed all the previous code that handles:
+> 		- ftrace entry code for traced function
+> 		- special_functions[] array that lists individual functions
+> 		- kretprobe_trampoline() special case
+> 
+> v2
+> 	- Removed the terminating entry { 0, 0 } in special_functions[]
+> 	  and replaced it with the idiom { /* sentinel */ }.
+> 
+> 	- Change the ftrace trampoline entry ftrace_graph_call in
+> 	  special_functions[] to ftrace_call + 4 and added explanatory
+> 	  comments.
+> 
+> 	- Unnested #ifdefs in special_functions[] for FTRACE.
+> 
+> v1
+> 	- Define a bool field in struct stackframe. This will indicate if
+> 	  a stack trace is reliable.
+> 
+> 	- Implement a special_functions[] array that will be populated
+> 	  with special functions in which the stack trace is considered
+> 	  unreliable.
+> 	
+> 	- Using kallsyms_lookup(), get the address ranges for the special
+> 	  functions and record them.
+> 
+> 	- Implement an is_reliable_function(pc). This function will check
+> 	  if a given return PC falls in any of the special functions. If
+> 	  it does, the stack trace is unreliable.
+> 
+> 	- Implement check_reliability() function that will check if a
+> 	  stack frame is reliable. Call is_reliable_function() from
+> 	  check_reliability().
+> 
+> 	- Before a return PC is checked against special_funtions[], it
+> 	  must be validates as a proper kernel text address. Call
+> 	  __kernel_text_address() from check_reliability().
+> 
+> 	- Finally, call check_reliability() from unwind_frame() for
+> 	  each stack frame.
+> 
+> 	- Add EL1 exception handlers to special_functions[].
+> 
+> 		el1_sync();
+> 		el1_irq();
+> 		el1_error();
+> 		el1_sync_invalid();
+> 		el1_irq_invalid();
+> 		el1_fiq_invalid();
+> 		el1_error_invalid();
+> 
+> 	- The above functions are currently defined as LOCAL symbols.
+> 	  Make them global so that they can be referenced from the
+> 	  unwinder code.
+> 
+> 	- Add FTRACE trampolines to special_functions[]:
+> 
+> 		ftrace_graph_call()
+> 		ftrace_graph_caller()
+> 		return_to_handler()
+> 
+> 	- Add the kretprobe trampoline to special functions[]:
+> 
+> 		kretprobe_trampoline()
+> 
+> Previous versions and discussion
+> ================================
+> 
+> v8: https://lore.kernel.org/linux-arm-kernel/20210812190603.25326-1-madvenka@linux.microsoft.com/
+> v7: Mailer screwed up the threading. Sent the same as v8 with proper threading.
+> v6: https://lore.kernel.org/linux-arm-kernel/20210630223356.58714-1-madvenka@linux.microsoft.com/
+> v5: https://lore.kernel.org/linux-arm-kernel/20210526214917.20099-1-madvenka@linux.microsoft.com/
+> v4: https://lore.kernel.org/linux-arm-kernel/20210516040018.128105-1-madvenka@linux.microsoft.com/
+> v3: https://lore.kernel.org/linux-arm-kernel/20210503173615.21576-1-madvenka@linux.microsoft.com/
+> v2: https://lore.kernel.org/linux-arm-kernel/20210405204313.21346-1-madvenka@linux.microsoft.com/
+> v1: https://lore.kernel.org/linux-arm-kernel/20210330190955.13707-1-madvenka@linux.microsoft.com/
+> 
+> Madhavan T. Venkataraman (11):
+>   arm64: Select STACKTRACE in arch/arm64/Kconfig
+>   arm64: Make perf_callchain_kernel() use arch_stack_walk()
+>   arm64: Make get_wchan() use arch_stack_walk()
+>   arm64: Make return_address() use arch_stack_walk()
+>   arm64: Make dump_stacktrace() use arch_stack_walk()
+>   arm64: Make profile_pc() use arch_stack_walk()
+>   arm64: Call stack_backtrace() only from within walk_stackframe()
+>   arm64: Rename unwinder functions, prevent them from being traced and
+>     kprobed
+>   arm64: Make the unwind loop in unwind() similar to other architectures
+>   arm64: Introduce stack trace reliability checks in the unwinder
+>   arm64: Create a list of SYM_CODE functions, check return PC against
+>     list
+> 
+>  arch/arm64/Kconfig                  |   1 +
+>  arch/arm64/include/asm/linkage.h    |  12 ++
+>  arch/arm64/include/asm/sections.h   |   1 +
+>  arch/arm64/include/asm/stacktrace.h |  12 +-
+>  arch/arm64/kernel/perf_callchain.c  |   8 +-
+>  arch/arm64/kernel/process.c         |  38 ++--
+>  arch/arm64/kernel/return_address.c  |   6 +-
+>  arch/arm64/kernel/stacktrace.c      | 274 +++++++++++++++++++---------
+>  arch/arm64/kernel/time.c            |  22 ++-
+>  arch/arm64/kernel/vmlinux.lds.S     |  10 +
+>  10 files changed, 257 insertions(+), 127 deletions(-)
 > 
 > 
-> On 10/13/21 6:49 PM, Xu Yilun wrote:
-> > On Wed, Oct 13, 2021 at 11:09:08AM -0700, Russ Weight wrote:
-> >>
-> >> On 10/12/21 6:06 PM, Xu Yilun wrote:
-> >>> On Tue, Oct 12, 2021 at 10:20:15AM -0700, Russ Weight wrote:
-> >>>> On 10/12/21 12:47 AM, Xu Yilun wrote:
-> >>>>> On Mon, Oct 11, 2021 at 06:00:16PM -0700, Russ Weight wrote:
-> >>>>>> On 10/11/21 5:35 AM, Tom Rix wrote:
-> >>>>>>> On 10/10/21 6:41 PM, Xu Yilun wrote:
-> >>>>>>>> On Sat, Oct 09, 2021 at 05:11:20AM -0700, Tom Rix wrote:
-> >>>>>>>>> On 10/9/21 1:08 AM, Xu Yilun wrote:
-> >>>>>>>>>> On Wed, Sep 29, 2021 at 04:00:20PM -0700, Russ Weight wrote:
-> >>>>>>>>>>> The FPGA Image Load framework provides an API to upload image
-> >>>>>>>>>>> files to an FPGA device. Image files are self-describing. They could
-> >>>>>>>>>>> contain FPGA images, BMC images, Root Entry Hashes, or other device
-> >>>>>>>>>>> specific files. It is up to the lower-level device driver and the
-> >>>>>>>>>>> target device to authenticate and disposition the file data.
-> >>>>>>>>>> I've reconsider the FPGA persistent image update again, and think we
-> >>>>>>>>>> may include it in FPGA manager framework.
-> >>>>>>>>>>
-> >>>>>>>>>> Sorry I raised this topic again when it is already at patch v17, but now
-> >>>>>>>>>> I need to consider more seriously than before.
-> >>>>>>>>>>
-> >>>>>>>>>> We have consensus the FPGA persistent image update is just like a normal
-> >>>>>>>>>> firmware update which finally writes the nvmem like flash or eeprom,
-> >>>>>>>>>> while the current FPGA manager deals with the active FPGA region update
-> >>>>>>>>>> and re-activation. Could we just expand the FPGA manager and let it handle
-> >>>>>>>>>> the nvmem update as well? Many FPGA cards have nvmem and downloaders
-> >>>>>>>>>> supports updating both FPGA region and nvmem.
-> >>>>>> The fpga-image-load driver is actually just a data transfer. The class
-> >>>>> IMHO, The fpga-mgr dev is also a data transfer. The fpga-region dev is
-> >>>>> acting as the FPGA region admin responsible for gating, transfering and
-> >>>>> re-enumerating.
-> >>>>>
-> >>>>> So my opinion is to add a new data transfer type and keep a unified process.
-> >>>>>
-> >>>>>> driver has no knowledge about what the data is or where/if the data will
-> >>>>>> be stored.
-> >>>>> The fpga-image-load driver knows the data will be stored in nvmem,
-> >>>> FYI: This is not strictly correct. In a coming product there is a
-> >>>> case where the data will be stored in RAM. Richard Gong was also
-> >>>> looking to use this driver to validate an image without programming
-> >>>> or storing it. The fpga-image-load driver has no expectation that
-> >>>> the data will be stored in nvmem, or even that it will be stored
-> >>>> at all.
-> >>> OK, we can discuss that use case then. But fundamentally a driver should
-> >>> be clear what it is doing.
-> >> The lower-level driver is, of course, clear what it is doing. And the
-> >> FPGA Image Load Framework simply provides a consistent API and manages
-> >> a potentially long-running data transfer in the context of a kernel
-> >> worker thread.
-> >>
-> >> It sounds like you are saying that that is not "clear enough" in the
-> >> context of the FPGA Manager?
-> >>
-> >> The files that are used with Intel PAC devices are self-describing. The
-> >> user-space tools, the class driver and the lower-level driver just pass
-> >> the data through to the card BMC without any knowledge of the content,
-> >> purpose or final destination of the data.
-> >>
-> >> The card BMC will receive signed data, validate it, and process it as a
-> >> BMC image, an FPGA image, a Root Entry Hash, or a key cancellation. In
-> > I category all these actions as firmware update fully or partially on
-> > persistent storage. The FPGA Manager don't have to know the meaning of
-> > every byte on flash, but it should be aware the firmware is updated and
-> > the card may acts differently with a new firmware. This is the common
-> > working model for most of the FPGA cards so that we implement it in FPGA
-> > manager class. 
-> >
-> >> the n6000, it could also be part of a multi-step process for programming
-> >> SDM keys and the data may not be stored permanently.
-> > This is new to me, but seems to be different from firmware update, so lets
-> > think about it again.
-> >
-> >>> You may try to extend the FPGA framework to
-> >>> support nvmem storage, or image validation, but cannot say we feed the
-> >>> data to any engine undefined by the framework.
-> >> I'm not sure what you mean by "feed the data to any engine undefined by the
-> >> framework". I think the "engine" is the lower level driver/device that invokes
-> >> the fpga_mgr. The lower level driver, of course, is clear what it is doing.
-> >> The fpga_mgr cannot control what driver invokes it.
-> >>
-> >> Are saying that when invoking the fpga-mgr, that it _must_ also pass descriptive
-> >> data. Meaning that a self-describing file alone is not acceptable?
-> > The class driver should define a reasonable working model and APIs.
-> > Updating the FPGA backup storage is good to me. But receiving a mystery
-> > box and do whatever it requires is not.
-> >
-> > Self-describing file is OK, encryption is OK, but either the class
-> > driver itself, or with the help of the low level driver, should make
-> > sure it works within its scope.
-> In our secure update process, the card BMC firmware authenticates
-> the data using the root entry hashes and will either reject the
-> data or perform some function based on the contents. Neither the
-> user-space, the class driver, nor the lower level driver know
-> what the contents are. It _is_ a "mystery box" to them. How do we
-> verify scope in this model?
-
-I think we need to find out how. One case is, the HW is designed to have
-one single function, such as firmware update, then any image input
-through firmware update API is within expectation, and the driver
-should only serve the firmware update API. I think this is how the
-N3000 is working now. If the HW is for another function, register itself
-to serve another API, or another class driver.
-
-Another case is, the HW could do multiple types of tasks depending on
-the content of the image, such as firmware update, image verification,
-or assumably power off the card ... There should be some mechanism for
-the driver to only accept the right image according to what API is called.
-Or the user may input an image named update_the_card.img through
-firmware update API and finally get the card off. Having some headers
-readable by host for the operation type? Or, some HW interface for host
-to apply the operation type as well as the image, let the HW verify?
-Let's think about it.
-
+> base-commit: 36a21d51725af2ce0700c6ebcb6b9594aac658a6
 > 
-> As you have noted, most current cases result in a change to the
-> card, and I suspect that it will remain that way. But that can't be
-> guaranteed, and I'm not convinced that a host driver needs to be
-> concerned about it.
-
-A host driver should know what is done, in some abstraction level.
-I think updating the persistent storage is an acceptable abstraction
-in FPGA domain, so I'd like to extend it in FPGA manager. But doing
-anything according to the image is not.
-
-Thanks,
-Yilun
-
-> 
-> - Russ
-> 
-> >
-> > Thanks,
-> > Yilun
-> >
-> >> Thanks,
-> >> - Russ
-> >>
-> >>> Thanks,
-> >>> Yilun
-> >>>
-> >>>>> while
-> >>>>> the fpga-mgr knows the data will be stored in FPGA cells. They may need
-> >>>>> to know the exact physical position to store, may not, depends on what the
-> >>>>> HW engines are.
-> >>>>>
-> >>>>>> This functionality could, of course, be merged into the fpga-mgr. I did
-> >>>>>> a proof of concept of this a while back and we discussed the pros and cons.
-> >>>>>> See this email for a recap:
-> >>>>>>
-> >>>>>> https://marc.info/?l=linux-fpga&m=161998085507374&w=2
-> >>>>>>
-> >>>>>> Things have changed some with the evolution of the driver. The IOCTL
-> >>>>>> approach probably fits better than the sysfs implementation. At the time
-> >>>>>> it seemed that a merge would add unnecessary complexity without adding value.
-> >>>>> I think at least developers don't have to go through 2 sets of software
-> >>>>> stacks which are of the same concept. And adding some new features like
-> >>>>> optionally threading or canceling data transfer are also good to FPGA
-> >>>>> region update. And the nvmem update could also be benifit from exsiting
-> >>>>> implementations like scatter-gather buffers, in-kernel firmware loading.
-> >>>>>
-> >>>>> I try to explain myself according to each of your concern from that mail
-> >>>>> thread:
-> >>>>>
-> >>>>> Purpose of the 2 updates
-> >>>>> ========================
-> >>>>>
-> >>>>>   As I said before, I think they are both data transfer devices. FPGA
-> >>>>> region update gets extra support from fpga-region & fpga-bridge, and
-> >>>>> FPGA nvmem update could be a standalone fpga-mgr.
-> >>>>>
-> >>>>> Extra APIs that are unique to nvmem update
-> >>>>> ==========================================
-> >>>>>
-> >>>>>   cdev APIs for nvmem update:
-> >>>>>     Yes we need to expand the functionality so we need them.
-> >>>>>
-> >>>>>   available_images, image_load APIs for loading nvmem content to FPGA
-> >>>>>   region:
-> >>>>>     These are features in later patchsets which are not submitted, but we
-> >>>>>     could talk about it in advance. I think this is actually a FPGA region
-> >>>>>     update from nvmem, it also requires gating, data loading (no SW transfer)
-> >>>>>     and re-enumeration, or a single command to image_load HW may result system
-> >>>>>     disordered. The FPGA framework now only supports update from in-kernel
-> >>>>>     user data, maybe we add support for update from nvmem later.
-> >>>>>
-> >>>>>   fpga-mgr state extend:
-> >>>>>     I think it could be extended, The current states are not perfect,
-> >>>>>     adding something like IDLE or READY is just fine.
-> >>>>>
-> >>>>>   fpga-mgr status extend:
-> >>>>>     Add general error definitions as needed. If there is some status
-> >>>>>     that is quite vendor specific, expose it in low-level driver.
-> >>>>>
-> >>>>>   remaining-size:
-> >>>>>     Nice to have for all.
-> >>>>>
-> >>>>> Threading the update
-> >>>>> ====================
-> >>>>>
-> >>>>>   Also a good option for FPGA region update, maybe we also have a slow FPGA
-> >>>>>   reprogrammer?
-> >>>>>
-> >>>>> Cancelling the update
-> >>>>> ====================
-> >>>>>
-> >>>>>   Also a good option for FPGA region update if HW engine supports.
-> >>>> These are all good points.
-> >>>>
-> >>>> Thanks,
-> >>>> - Russ
-> >>>>> Thanks,
-> >>>>> Yilun
-> >>>>>
-> >>>>>>>>>> According to the patchset, the basic workflow of the 2 update types are
-> >>>>>>>>>> quite similar, get the data, prepare for the HW, write and complete.
-> >>>>>>>>>> They are already implemented in FPGA manager. We've discussed some
-> >>>>>>>>>> differences like threading or canceling the update, which are
-> >>>>>>>>>> not provided by FPGA manager but they may also nice to have for FPGA
-> >>>>>>>>>> region update. An FPGA region update may also last for a long time??
-> >>>>>>>>>> So I think having 2 sets of similar frameworks in FPGA is unnecessary.
-> >>>>>>>>>>
-> >>>>>>>>>> My quick mind is that we add some flags in struct fpga_mgr & struct
-> >>>>>>>>>> fpga_image_info to indicate the HW capability (support FPGA region
-> >>>>>>>>>> update or nvmem update or both) of the download engine and the provided
-> >>>>>>>>>> image type. Then the low-level driver knows how to download if it
-> >>>>>>>>>> supports both image types.An char device could be added for each fpga manager dev, providing the
-> >>>>>>>>>> user APIs for nvmem update. We may not use the char dev for FPGA region
-> >>>>>>>>>> update cause it changes the system HW devices and needs device hotplug
-> >>>>>>>>>> in FPGA region. We'd better leave it to FPGA region class, this is
-> >>>>>>>>>> another topic.
-> >>>>>> I'll give this some more thought and see if I can come up with some RFC
-> >>>>>> patches.
-> >>>>>>
-> >>>>>> - Russ
-> >>>>>>>>>> More discussion is appreciated.
-> >>>>>>>>> I also think fpga_mgr could be extended.
-> >>>>>>>>>
-> >>>>>>>>> In this patchset,
-> >>>>>>>>>
-> >>>>>>>>> https://lore.kernel.org/linux-fpga/20210625195849.837976-1-trix@redhat.com/
-> >>>>>>>>>
-> >>>>>>>>> A second, similar set of write ops was added to fpga_manger_ops,
-> >>>>>>>>>
-> >>>>>>>>> new bit/flag was added to fpga_image_info
-> >>>>>>>>>
-> >>>>>>>>> The intent was for dfl to add their specific ops to cover what is done in
-> >>>>>>>>> this patchset.
-> >>>>>>>> I think we don't have to add 2 ops for reconfig & reimage in framework,
-> >>>>>>>> the 2 processes are almost the same.
-> >>>>>>>>
-> >>>>>>>> Just add the _REIMAGE (or something else, NVMEM?) flag for
-> >>>>>>>> fpga_image_info, and low level drivers handle it as they do for other
-> >>>>>>>> flags.
-> >>>>>>>>
-> >>>>>>>> How do you think?
-> >>>>>>> A single set is fine.
-> >>>>>>>
-> >>>>>>> A difficult part of is the length of  time to do the write. The existing write should be improved to use a worker thread.
-> >>>>>>>
-> >>>>>>> Tom
-> >>>>>>>
-> >>>>>>>> Thanks,
-> >>>>>>>> Yilun
-> >>>>>>>>
-> >>>>>>>>> Any other driver would do similar.
-> >>>>>>>>>
-> >>>>>>>>> Is this close to what you are thinking ?
-> >>>>>>>>>
-> >>>>>>>>> Tom
-> >>>>>>>>>
-> >>>>>>>>>> Thanks,
-> >>>>>>>>>> Yilun
-> >>>>>>>>>>
