@@ -2,78 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 379D742FB74
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 20:51:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2016E42FB79
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 20:54:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241552AbhJOSxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 14:53:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55882 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241681AbhJOSxt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 14:53:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 857D160F56;
-        Fri, 15 Oct 2021 18:51:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634323902;
-        bh=TQmj55y7eunqvNATXkqXYrIJmoAAD05XhzrJljA7J5g=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=We7LgKd2Hk9dPOpOXVmJG9arRaMlkYVsvIYXVH0l1WFgiwlNXweMoN2eK3GL+LkpU
-         YnVHEjZLHZaIyxxI/ApMDJVs/i4AwGX/WSeQXy2wLkmcBODqMV4lPDV4RMpWabfX69
-         dQeHEONicd3cvjFExiccCMnGDZOB2TebHHJ3uWrq0hjuHs8EpuTNOoAQps6IeGnkgz
-         44aCKt4Sa/9i+TmyB7eKeCrrxLJZcK76+zk64Vmm4ziJIE+Pcvo6dqeIc4hD2cYrQC
-         on1YYbIpYynQihZLb2YnnFYIcNvRbNOcgEknDI2Y5ayYX7Ji73Dq5rv7OYXlHPDEaV
-         V+xWrAK0nTDmQ==
-Date:   Fri, 15 Oct 2021 13:51:41 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Richard Zhu <hongxing.zhu@nxp.com>
-Cc:     l.stach@pengutronix.de, bhelgaas@google.com,
-        lorenzo.pieralisi@arm.com, linux-pci@vger.kernel.org,
-        linux-imx@nxp.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kernel@pengutronix.de
-Subject: Re: [RESEND v2 4/5] PCI: imx6: Fix the clock reference handling
- unbalance when link never came up
-Message-ID: <20211015185141.GA2139462@bhelgaas>
+        id S241834AbhJOS4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 14:56:46 -0400
+Received: from relay02.th.seeweb.it ([5.144.164.163]:54141 "EHLO
+        relay02.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233058AbhJOS4p (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 14:56:45 -0400
+Received: from [192.168.1.101] (83.6.166.47.neoplus.adsl.tpnet.pl [83.6.166.47])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id C912C1F8D5;
+        Fri, 15 Oct 2021 20:54:34 +0200 (CEST)
+Message-ID: <fbeb87dc-cf50-1ca8-1299-9dec9432c905@somainline.org>
+Date:   Fri, 15 Oct 2021 20:54:33 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211015184943.GA2139079@bhelgaas>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+Subject: Re: [PATCH 3/8] clk: qcom: msm8996-cpu: Add MSM8996 Pro CBF support
+Content-Language: en-US
+To:     Yassine Oudjana <y.oudjana@protonmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Ilia Lin <ilia.lin@kernel.org>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Loic Poulain <loic.poulain@linaro.org>
+Cc:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
+        phone-devel@vger.kernel.org
+References: <20211014083016.137441-1-y.oudjana@protonmail.com>
+ <20211014083016.137441-4-y.oudjana@protonmail.com>
+From:   Konrad Dybcio <konrad.dybcio@somainline.org>
+In-Reply-To: <20211014083016.137441-4-y.oudjana@protonmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 15, 2021 at 01:49:45PM -0500, Bjorn Helgaas wrote:
-> On Fri, Oct 15, 2021 at 02:05:40PM +0800, Richard Zhu wrote:
-> > When link never came up, driver probe would be failed with error -110.
-> > To keep usage counter balance of the clocks, disable the previous
-> > enabled clocks when link is down.
-> > Move definitions of the imx6_pcie_clk_disable() function to the proper
-> > place. Because it wouldn't be used in imx6_pcie_suspend_noirq() only.
 
-> > -static void imx6_pcie_clk_disable(struct imx6_pcie *imx6_pcie)
-> > -{
-> > -	clk_disable_unprepare(imx6_pcie->pcie);
-> > -	clk_disable_unprepare(imx6_pcie->pcie_phy);
-> > -	clk_disable_unprepare(imx6_pcie->pcie_bus);
-> > -
-> > -	switch (imx6_pcie->drvdata->variant) {
-> > -	case IMX6SX:
-> > -		clk_disable_unprepare(imx6_pcie->pcie_inbound_axi);
-> > -		break;
-> > -	case IMX7D:
-> > -		regmap_update_bits(imx6_pcie->iomuxc_gpr, IOMUXC_GPR12,
-> > -				   IMX7D_GPR12_PCIE_PHY_REFCLK_SEL,
-> > -				   IMX7D_GPR12_PCIE_PHY_REFCLK_SEL);
-> > -		break;
-> > -	case IMX8MQ:
-> > -		clk_disable_unprepare(imx6_pcie->pcie_aux);
-> > -		break;
-> > -	default:
-> > -		break;
+On 14.10.2021 10:32, Yassine Oudjana wrote:
+> MSM8996 Pro (MSM8996SG) has a few differences in the CBF clock.
+>
+> Signed-off-by: Yassine Oudjana <y.oudjana@protonmail.com>
+> ---
 
-While you're at it, this "default: break;" thing is pointless.
-Normally it's better to just *move* something without changing it at
-all, but this is such a simple thing I think you could drop this at
-the same time as the move.
 
-> > -	}
-> > -}
+Reviewed-by: Konrad Dybcio <konrad.dybcio@somainline.org>
