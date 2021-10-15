@@ -2,59 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F1EF42FBBB
+	by mail.lfdr.de (Postfix) with ESMTP id 0464642FBBA
 	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 21:10:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242525AbhJOTMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 15:12:16 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:36902 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232055AbhJOTMO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 15:12:14 -0400
-Date:   Fri, 15 Oct 2021 22:10:00 +0300
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.baikalelectronics.ru 055608030802
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Johan Hovold <johan@kernel.org>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        <linux-serial@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 0/3] serial: 8250: fix racy uartclk update
-Message-ID: <20211015191000.hspyxgkwwd47w4nl@mobilestation>
-References: <20211015111422.1027-1-johan@kernel.org>
+        id S242390AbhJOTMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 15:12:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33858 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229632AbhJOTMN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 15:12:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 361B56108B;
+        Fri, 15 Oct 2021 19:10:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634325006;
+        bh=vuv4ThUrmJnicKqrCER7VCEEShBnDhSJeqRegsHiVbo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rmFRNxZRaTKcfqlW3ItWPQyjkGDb+Na1j8MR3W0Hjgl8Ez7T7YZzFQBS0Iir0P7Oh
+         V3Xh2lN9y1e/OZUeUIFnAy1+2B5g01lihs2A/taFkfoi+xsIRPOj754gHLj1Y5OoRz
+         K8ZF+E/+ygtsk4ZM290UczzytSO9zDnDCt9gtnlb2isS32jhJGKgE/WBnYJQL/JH3e
+         MHuyJsFgkzTRPppOnbhjT6BCBZ6C5+CpkOFj7TUl4nVthIh+ZWdh7W5noZorDDIt2a
+         AkoRL82U0XbG4Csaf3h5kcF749FJilHEwk+uYRasXSc2Pu2qac5bc/FoMn3WwMKVh0
+         i3GNgkcnG6qNQ==
+Date:   Fri, 15 Oct 2021 12:10:04 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Vegard Nossum <vegard.nossum@oracle.com>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [PATCH] efi: select CRYPTO for EFI_EMBEDDED_FIRMWARE
+Message-ID: <YWnSDFPOx0U6iziT@gmail.com>
+References: <20211015131946.13374-1-vegard.nossum@oracle.com>
+ <CAMj1kXH5U7Ztv_vn=ej8GJh9hWoVetQz3RxihoYL8WxdLJZMQQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211015111422.1027-1-johan@kernel.org>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+In-Reply-To: <CAMj1kXH5U7Ztv_vn=ej8GJh9hWoVetQz3RxihoYL8WxdLJZMQQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 15, 2021 at 01:14:19PM +0200, Johan Hovold wrote:
-> Here's a fix for the asynchronous uartclk-update hack which was added
-> last year and a couple of related clean ups.
+On Fri, Oct 15, 2021 at 03:55:01PM +0200, Ard Biesheuvel wrote:
+> (+ crypto folks)
+> 
+> On Fri, 15 Oct 2021 at 15:24, Vegard Nossum <vegard.nossum@oracle.com> wrote:
+> >
+> > Fix the following build warning:
+> >
+> >   WARNING: unmet direct dependencies detected for CRYPTO_LIB_SHA256
+> >     Depends on [n]: CRYPTO [=n]
+> >     Selected by [y]:
+> >     - EFI_EMBEDDED_FIRMWARE [=y] && EFI [=y]
+> >
+> > Fixes: f0df68d5bae88 ("efi: Add embedded peripheral firmware support")
+> > Cc: Hans de Goede <hdegoede@redhat.com>
+> > Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
+> 
+> Hello Vegard,
+> 
+> I don't think this is the right fix, to be honest. The crypto library
+> functions have no dependencies at all on the crypto API, so I think it
+> would be better to do something like the below:
 
-Yeah, that was very unfortunate patchset. Thank you very much for the fix.
-I'll test it out tomorrow.
+Actually some of the crypto library functions need __crypto_xor() and
+__crypto_memneq() which are only compiled when CRYPTO.  So that will need to be
+fixed by moving those functions to an appropriate place first.
 
--Sergey
-
-> 
-> Johan
-> 
-> 
-> Johan Hovold (3):
->   serial: 8250: fix racy uartclk update
->   serial: 8250: rename unlock labels
->   serial: 8250_dw: drop bogus uartclk optimisation
-> 
->  drivers/tty/serial/8250/8250_dw.c   | 11 ++++------
->  drivers/tty/serial/8250/8250_port.c | 31 ++++++++++++++++++++---------
->  2 files changed, 26 insertions(+), 16 deletions(-)
-> 
-> -- 
-> 2.32.0
-> 
+- Eric
