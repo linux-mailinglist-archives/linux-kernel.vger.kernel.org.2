@@ -2,212 +2,299 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03DDA42F86D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 18:40:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D68A42F874
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 18:40:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241491AbhJOQmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 12:42:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29791 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237414AbhJOQmB (ORCPT
+        id S241500AbhJOQm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 12:42:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58256 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237414AbhJOQm4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 12:42:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634315994;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=E4LKFDRNGrYewkIQEu16Zm63HJjl+j0dZzAICvUOLVM=;
-        b=CBjO6tr8fYwuZhZFO0HMUscuN+Os6YFooRl+XbVGo1YwhMnqK4qyd/tBdoBeT5Vz/liFGw
-        3UCz8CnXIKKK4000l1v0BtZkJ47ClqUk8RHlRFpMXGbIjH+C/BuEsFhHKSDRGiCfZxv5P4
-        D9sQ6E8QbDiU1PvFVi2gFIrsJL7wl7U=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-395--waiP4VYOwOS_mUfnNNLKA-1; Fri, 15 Oct 2021 12:39:53 -0400
-X-MC-Unique: -waiP4VYOwOS_mUfnNNLKA-1
-Received: by mail-wr1-f69.google.com with SMTP id r16-20020adfbb10000000b00160958ed8acso6120036wrg.16
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 09:39:53 -0700 (PDT)
+        Fri, 15 Oct 2021 12:42:56 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28836C061570
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 09:40:50 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id p68so8426395iof.6
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 09:40:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=cFEKbkBBlIdUSgVG3FwLcDv8PzuIGABWNDauFv2pvdg=;
+        b=gC43o2HrD3XrGmKErNwpeqF8FYGF/UIjAVzLj3D/nIZtui8HRTA3+o1ZVdp0Dxn2ow
+         4zKIFHFoYnmoXbyWkhlQSE06AS9dAT5kmx8VAt3fBqyZ1/oIGiz8lEeXTQL1NKFFwnTj
+         RhLUPEGyDOC3LOnHXzkzZVcEk7nED0dzfIGEk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:organization:in-reply-to
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=E4LKFDRNGrYewkIQEu16Zm63HJjl+j0dZzAICvUOLVM=;
-        b=AnBk/vnTMoTCZrZKv1CtiwsfUKKkM3FxMPvXBA62/tKD6FMFcYUlbhPu2glGBA8N0X
-         uF2ZCt0G2cB1iNXt9IpdN6vnenunznoWiXwmhNEvwrPld574J5m3fPbRyEZrlb/wIuyW
-         azi1tlapZrPQYSvcmr4IcPKj+L51TFQPg14Y8mChNV8Fp91ASx60H8gI0YSw5faPg2lY
-         +6bhMkBoDLEtxw6jR9sZjfgnwvmpdhZbAX4J1Ae/xoAvPCUouVGOdOnMabaK1MR0UFC4
-         +4gehBb4Zo3N10rAjehCrnxDmOiIXo2vvcSL09SqutdB7Qu7sdQwhq5RvmA5CNJYHUng
-         f+QA==
-X-Gm-Message-State: AOAM533V4+3+MU2vZZg6ByZ1CVlHnoa69c1tzHE3iHxtZ4XDKY6bCuqi
-        4apNDBJA1ZhNf34o/W8+3Aw5/MSvMon6RwIibxjUaMD79sNZlFRKh2XBg2P7/aVE8iKzEwrnTrd
-        4LzZexgdv/WUC6NVSz3lXbrj9
-X-Received: by 2002:a1c:2b85:: with SMTP id r127mr27224256wmr.134.1634315992102;
-        Fri, 15 Oct 2021 09:39:52 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyu+oFauM+GGmdwcOZ7EltiO+NPKXOxlX3q1W1CdIvB6o2LNj90pM8GL+iApDfNPPofqFTTsA==
-X-Received: by 2002:a1c:2b85:: with SMTP id r127mr27224197wmr.134.1634315991799;
-        Fri, 15 Oct 2021 09:39:51 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c6a01.dip0.t-ipconnect.de. [91.12.106.1])
-        by smtp.gmail.com with ESMTPSA id y8sm4956776wmi.43.2021.10.15.09.39.49
+        bh=cFEKbkBBlIdUSgVG3FwLcDv8PzuIGABWNDauFv2pvdg=;
+        b=CSkV5V6BM/shrrKXKBI2TGM3yAxHTjJHtJvmZHOFf0UIK/loPkumdnUFqJeSESdJkw
+         3GV4S2SZ+hAtlPFE54vPXo6VsA4JntJTVUQDxL71VIfEww7H2U0dz0S64OcleG7zKOdT
+         yOopD6C1oKiaF5UGa7s2pDKj1tFR5dHK26Gk3AwXBeIIcpLH346FI50cEJkaEaKIQ0ki
+         DEAggjwuc9AlZHVIvusR4SZW2hJpUKeld7zs3nZuW/zYdp0NUfjIWPR0G88BKlbyoQWR
+         Nxc37n5B/sFVl8K3lRA1whqn+ANteC0Q+yxcFjc6Rd33n2JhgFrDsMTsXMzgetdJEOEm
+         oDHg==
+X-Gm-Message-State: AOAM530mtLBM2Y/j9YsdQThkn+K0EoTf5lqWwqYRolmCfB7+JixtgbEO
+        y/cga/ixXgrwA5BpuhNCinbkug==
+X-Google-Smtp-Source: ABdhPJxne7L25Mp3x6JTXRZTZKakJy/4NqCH4XO/jExNuoi1l++DGLhaG9fE67PS+8pNb2qxJIAepA==
+X-Received: by 2002:a02:a996:: with SMTP id q22mr9124800jam.88.1634316049315;
+        Fri, 15 Oct 2021 09:40:49 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id 188sm2840185ioa.22.2021.10.15.09.40.48
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Oct 2021 09:39:51 -0700 (PDT)
-Message-ID: <3563a3e8-b971-b604-7388-766ecfce4634@redhat.com>
-Date:   Fri, 15 Oct 2021 18:39:49 +0200
+        Fri, 15 Oct 2021 09:40:48 -0700 (PDT)
+Subject: Re: selftests/vm madv_populate.c test
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <b703a326-66f7-bf35-58ee-f60e504ea5ef@linuxfoundation.org>
+ <0a20f6b6-5985-8b3e-a577-7495dcf7d2b8@redhat.com>
+ <3a06d58e-7301-6fbc-a305-d9f7c7220843@linuxfoundation.org>
+ <b99b5960-b1ec-b968-1d9c-d125a23c59fe@redhat.com>
+ <77f4c6a9-141d-e103-7339-0055cc00f752@redhat.com>
+ <ccd3b3e4-6441-34f3-a099-392cda82cb8e@redhat.com>
+ <78de0991-8e9a-693c-c020-472daa9ce916@redhat.com>
+ <dd300ce7-f336-5815-ae0d-6064eea438b6@linuxfoundation.org>
+ <54baa765-9ad6-233a-dc60-25073c1625f4@redhat.com>
+ <7ac3c6da-a781-91d5-7ee2-ec05ac167611@redhat.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <4341bedc-81b9-b8ed-fcaa-b282c976d203@linuxfoundation.org>
+Date:   Fri, 15 Oct 2021 10:40:48 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH v10 3/3] mm: add anonymous vma name refcounting
+In-Reply-To: <7ac3c6da-a781-91d5-7ee2-ec05ac167611@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     Michal Hocko <mhocko@suse.com>, Kees Cook <keescook@chromium.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Colin Cross <ccross@google.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        vincenzo.frascino@arm.com,
-        =?UTF-8?B?Q2hpbndlbiBDaGFuZyAo5by16Yym5paHKQ==?= 
-        <chinwen.chang@mediatek.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Jann Horn <jannh@google.com>, apopple@nvidia.com,
-        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
-        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
-        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
-        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
-        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
-        Chris Hyser <chris.hyser@oracle.com>,
-        Peter Collingbourne <pcc@google.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
-        Rolf Eike Beer <eb@emlix.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
-        cxfcosmos@gmail.com, LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-mm <linux-mm@kvack.org>,
-        kernel-team <kernel-team@android.com>
-References: <92cbfe3b-f3d1-a8e1-7eb9-bab735e782f6@rasmusvillemoes.dk>
- <20211007101527.GA26288@duo.ucw.cz>
- <CAJuCfpGp0D9p3KhOWhcxMO1wEbo-J_b2Anc-oNwdycx4NTRqoA@mail.gmail.com>
- <YV8jB+kwU95hLqTq@dhcp22.suse.cz>
- <CAJuCfpG-Nza3YnpzvHaS_i1mHds3nJ+PV22xTAfgwvj+42WQNA@mail.gmail.com>
- <YV8u4B8Y9AP9xZIJ@dhcp22.suse.cz>
- <CAJuCfpHAG_C5vE-Xkkrm2kynTFF-Jd06tQoCWehHATL0W2mY_g@mail.gmail.com>
- <202110071111.DF87B4EE3@keescook> <YV/mhyWH1ZwWazdE@dhcp22.suse.cz>
- <202110081344.FE6A7A82@keescook> <YWP3c/bozz5npQ8O@dhcp22.suse.cz>
- <CAJuCfpHQVMM4+6Lm_EnFk06+KrOjSjGA19K2cv9GmP3k9LW5vg@mail.gmail.com>
- <26f9db1e-69e9-1a54-6d49-45c0c180067c@redhat.com>
- <CAJuCfpGTCM_Rf3GEyzpR5UOTfgGKTY0_rvAbGdtjbyabFhrRAw@mail.gmail.com>
- <CAJuCfpE2j91_AOwwRs_pYBs50wfLTwassRqgtqhXsh6fT+4MCg@mail.gmail.com>
- <b46d9bfe-17a9-0de9-271d-a3e6429e3f5f@redhat.com>
- <CAJuCfpG=fNMDuYUo8UwjB-kDzR2gxmRmTJCqgojfPe6RULwc4A@mail.gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <CAJuCfpG=fNMDuYUo8UwjB-kDzR2gxmRmTJCqgojfPe6RULwc4A@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
+On 10/15/21 10:34 AM, David Hildenbrand wrote:
+> On 15.10.21 18:28, David Hildenbrand wrote:
+>> On 15.10.21 18:25, Shuah Khan wrote:
+>>> On 10/15/21 10:19 AM, David Hildenbrand wrote:
+>>>> On 15.10.21 18:15, David Hildenbrand wrote:
+>>>>> On 15.10.21 18:06, David Hildenbrand wrote:
+>>>>>> On 15.10.21 17:47, David Hildenbrand wrote:
+>>>>>>> On 15.10.21 17:45, Shuah Khan wrote:
+>>>>>>>> On 9/18/21 1:41 AM, David Hildenbrand wrote:
+>>>>>>>>> On 18.09.21 00:45, Shuah Khan wrote:
+>>>>>>>>>> Hi David,
+>>>>>>>>>>
+>>>>>>>>>> I am running into the following warning when try to build this test:
+>>>>>>>>>>
+>>>>>>>>>> madv_populate.c:334:2: warning: #warning "missing MADV_POPULATE_READ or MADV_POPULATE_WRITE definition" [-Wcpp]
+>>>>>>>>>>       334 | #warning "missing MADV_POPULATE_READ or MADV_POPULATE_WRITE definition"
+>>>>>>>>>>           |  ^~~~~~~
+>>>>>>>>>>
+>>>>>>>>>>
+>>>>>>>>>> I see that the following handling is in place. However there is no
+>>>>>>>>>> other information to explain why the check is necessary.
+>>>>>>>>>>
+>>>>>>>>>> #if defined(MADV_POPULATE_READ) && defined(MADV_POPULATE_WRITE)
+>>>>>>>>>>
+>>>>>>>>>> #else /* defined(MADV_POPULATE_READ) && defined(MADV_POPULATE_WRITE) */
+>>>>>>>>>>
+>>>>>>>>>> #warning "missing MADV_POPULATE_READ or MADV_POPULATE_WRITE definition"
+>>>>>>>>>>
+>>>>>>>>>> I do see these defined in:
+>>>>>>>>>>
+>>>>>>>>>> include/uapi/asm-generic/mman-common.h:#define MADV_POPULATE_READ       22
+>>>>>>>>>> include/uapi/asm-generic/mman-common.h:#define MADV_POPULATE_WRITE      23
+>>>>>>>>>>
+>>>>>>>>>> Is this the case of missing include from madv_populate.c?
+>>>>>>>>>
+>>>>>>>>> Hi Shuan,
+>>>>>>>>>
+>>>>>>>>> note that we're including "#include <sys/mman.h>", which in my
+>>>>>>>>> understanding maps to the version installed on your system instead
+>>>>>>>>> of the one in our build environment.ing.
+>>>>>>>>>
+>>>>>>>>> So as soon as you have a proper kernel + the proper headers installed
+>>>>>>>>> and try to build, it would pick up MADV_POPULATE_READ and
+>>>>>>>>> MADV_POPULATE_WRITE from the updated headers. That makes sense: you
+>>>>>>>>> annot run any MADV_POPULATE_READ/MADV_POPULATE_WRITE tests on a kernel
+>>>>>>>>> that doesn't support it.
+>>>>>>>>>
+>>>>>>>>> See vm/userfaultfd.c where we do something similar.
+>>>>>>>>>
+>>>>>>>>
+>>>>>>>> Kselftest is for testing the kernel with kernel headers. That is the
+>>>>>>>> reason why there is the dependency on header install.
+>>>>>>>>
+>>>>>>>>>
+>>>>>>>>> As soon as we have a proper environment, it seems to work just fine:
+>>>>>>>>>
+>>>>>>>>> Linux vm-0 5.15.0-0.rc1.20210915git3ca706c189db.13.fc36.x86_64 #1 SMP Thu Sep 16 11:32:54 UTC 2021 x86_64 x86_64 x86_64 GNU/Linux
+>>>>>>>>> [root@vm-0 linux]# cat /etc/redhat-release
+>>>>>>>>> Fedora release 36 (Rawhide)
+>>>>>>>>
+>>>>>>>> This is a distro release. We don't want to have dependency on headers
+>>>>>>>> from the distro to run selftests. Hope this makes sense.
+>>>>>>>>
+>>>>>>>> I still see this on my test system running Linux 5.15-rc5.
+>>>>>>>
+>>>>>>> Did you also install Linux headers? I assume no, correct?
+>>>>>>>
+>>>>>>
+>>>>>> What happens in your environment when compiling and running the
+>>>>>> memfd_secret test?
+>>>>>>
+>>>>>> If assume you'll see a "skip" when executing, because it might also
+>>>>>> refer to the local version of linux headers and although it builds, it
+>>>>>> really cannot build something "functional". It just doesn't add a
+>>>>>> "#warning" to make that obvious.
+>>>>>>
+>>>>>
+>>>>> The following works but looks extremely hackish.
+>>>>>
+>>>>> diff --git a/tools/testing/selftests/vm/madv_populate.c
+>>>>> b/tools/testing/selftests/vm/madv_populate.c
+>>>>> index b959e4ebdad4..ab26163db540 100644
+>>>>> --- a/tools/testing/selftests/vm/madv_populate.c
+>>>>> +++ b/tools/testing/selftests/vm/madv_populate.c
+>>>>> @@ -14,12 +14,11 @@
+>>>>>    #include <unistd.h>
+>>>>>    #include <errno.h>
+>>>>>    #include <fcntl.h>
+>>>>> +#include "../../../../usr/include/linux/mman.h"
+>>>>>    #include <sys/mman.h>
+>>>>>
+>>>>>    #include "../kselftest.h"
+>>>>>
+>>>>> -#if defined(MADV_POPULATE_READ) && defined(MADV_POPULATE_WRITE)
+>>>>> -
+>>>>>    /*
+>>>>>     * For now, we're using 2 MiB of private anonymous memory for all tests.
+>>>>>     */
+>>>>> @@ -328,15 +327,3 @@ int main(int argc, char **argv)
+>>>>>                                      err, ksft_test_num());
+>>>>>           return ksft_exit_pass();
+>>>>>    }
+>>>>> -
+>>>>> -#else /* defined(MADV_POPULATE_READ) && defined(MADV_POPULATE_WRITE) */
+>>>>> -
+>>>>> -#warning "missing MADV_POPULATE_READ or MADV_POPULATE_WRITE definition"
+>>>>> -
+>>>>> -int main(int argc, char **argv)
+>>>>> -{
+>>>>> -       ksft_print_header();
+>>>>> -       ksft_exit_skip("MADV_POPULATE_READ or MADV_POPULATE_WRITE not
+>>>>> defined\n");
+>>>>> -}
+>>>>> -
+>>>>> -#endif /* defined(MADV_POPULATE_READ) && defined(MADV_POPULATE_WRITE) */
+>>>>>
+>>>>>
+>>>>> There has to be some clean way to achieve the same.
+>>>>>
+>>>>
+>>>> Sorry for the spam,
+>>>>
+>>>> diff --git a/tools/testing/selftests/vm/Makefile
+>>>> b/tools/testing/selftests/vm/Makefile
+>>>> index d9605bd10f2d..ce198b329ff5 100644
+>>>> --- a/tools/testing/selftests/vm/Makefile
+>>>> +++ b/tools/testing/selftests/vm/Makefile
+>>>> @@ -23,7 +23,7 @@ MACHINE ?= $(shell echo $(uname_M) | sed -e
+>>>> 's/aarch64.*/arm64/' -e 's/ppc64.*/p
+>>>>    # LDLIBS.
+>>>>    MAKEFLAGS += --no-builtin-rules
+>>>>
+>>>> -CFLAGS = -Wall -I ../../../../usr/include $(EXTRA_CFLAGS)
+>>>> +CFLAGS = -Wall -idirafter ../../../../usr/include $(EXTRA_CFLAGS)
+>>>>    LDLIBS = -lrt -lpthread
+>>>>    TEST_GEN_FILES = compaction_test
+>>>>    TEST_GEN_FILES += gup_test
+>>>>
+>>>>
+>>>> Seems to set the right include path priority.
+>>>>
+>>>>
 >>>
->>> 1. Forking a process with anonymous vmas named using memfd is 5-15%
->>> slower than with prctl (depends on the number of VMAs in the process
->>> being forked). Profiling shows that i_mmap_lock_write() dominates
->>> dup_mmap(). Exit path is also slower by roughly 9% with
->>> free_pgtables() and fput() dominating exit_mmap(). Fork performance is
->>> important for Android because almost all processes are forked from
->>> zygote, therefore this limitation already makes this approach
->>> prohibitive.
->>
->> Interesting, naturally I wonder if that can be optimized.
-> 
-> Maybe but it looks like we simply do additional things for file-backed
-> memory, which seems natural. The call to i_mmap_lock_write() is from
-> here: https://elixir.bootlin.com/linux/latest/source/kernel/fork.c#L565
-> 
->>
+>>> Yes. It works on linux-next-20211012
 >>>
->>> 2. mremap() usage to grow the mapping has an issue when used with memfds:
->>>
->>> fd = memfd_create(name, MFD_ALLOW_SEALING);
->>> ftruncate(fd, size_bytes);
->>> ptr = mmap(NULL, size_bytes, prot, MAP_PRIVATE, fd, 0);
->>> close(fd);
->>> ptr = mremap(ptr, size_bytes, size_bytes * 2, MREMAP_MAYMOVE);
->>> touch_mem(ptr, size_bytes * 2);
->>>
->>> This would generate a SIGBUS in touch_mem(). I believe it's because
->>> ftruncate() specified the size to be size_bytes and we are accessing
->>> more than that after remapping. prctl() does not have this limitation
->>> and we do have a usecase for growing a named VMA.
+>>> Do you mind sending a me patch for this?
 >>
->> Can't you simply size the memfd much larger? I mean, it doesn't really
->> cost much, does it?
-> 
-> If we know beforehand what the max size it can reach then that would
-> be possible. I would really hate to miscalculate here and cause a
-> simple memory access to generate signals. Tracking such corner cases
-> in the field is not an easy task and I would rather avoid the
-> possibility of it.
-
-The question would be if you cannot simply add some extremely large
-number, because the file size itself doesn't really matter for memfd IIRC.
-
-Having that said, without trying it out, I wouldn't know from the top of
-my head if memremap would work that way on an already closed fd that ahs
-a sufficient size :/ If you have the example still somewhere, I would be
-interested if that would work in general.
-
-[...]
-
+>> I just double-checked (after make clean) and there is still something
+>> wrong :( the only think that seems to work is the
 >>
->>>
->>> 4. There is a usecase in the Android userspace where vma naming
->>> happens after memory was allocated. Bionic linker does in-memory
->>> relocations and then names some relocated sections.
+>> +#include "../../../../usr/include/linux/mman.h"
+>>   #include <sys/mman.h>
 >>
->> Would renaming a memfd be an option or is that "too late" ?
+>> hack.
+>>
+>> Using "-nostdinc" won't work because we need other headers :(
+>>
 > 
-> My understanding is that linker allocates space to load and relocate
-> the code, performs the relocations in that space and then names some
-> of the regions after that. Whether it can be redesigned to allocate
-> multiple named regions and perform the relocation between them I did
-> not really try since it would be a project by itself.
+> And ... I think I know the problem.
 > 
-> TBH, at some point I just look at the amount of required changes (both
-> kernel and userspace) and new limitations that userspace has to adhere
-> to for fitting memfds to my usecase, and I feel that it's just not
-> worth it. In the end we end up using the same refcounted strings with
-> vma->vm_file->f_count as the refcount and name stored in
-> vma->vm_file->f_path->dentry but with more overhead.
+> In ../../../../usr/include, there is no "sys" directory. It's called
+> "linux".
+> 
+> But including <linux/mman.h> instead of <sys/mman.h> doesn't work
+> either. The only thing that seems to work is
+> 
+> 
+> diff --git a/tools/testing/selftests/vm/madv_populate.c
+> b/tools/testing/selftests/vm/madv_populate.c
+> index b959e4ebdad4..3ee0e8275600 100644
+> --- a/tools/testing/selftests/vm/madv_populate.c
+> +++ b/tools/testing/selftests/vm/madv_populate.c
+> @@ -14,12 +14,11 @@
+>   #include <unistd.h>
+>   #include <errno.h>
+>   #include <fcntl.h>
+> +#include <linux/mman.h>
+>   #include <sys/mman.h>
+> 
+>   #include "../kselftest.h"
+> 
+> -#if defined(MADV_POPULATE_READ) && defined(MADV_POPULATE_WRITE)
+> -
+>   /*
+>    * For now, we're using 2 MiB of private anonymous memory for all tests.
+>    */
+> @@ -328,15 +327,3 @@ int main(int argc, char **argv)
+>                                     err, ksft_test_num());
+>          return ksft_exit_pass();
+>   }
+> -
+> -#else /* defined(MADV_POPULATE_READ) && defined(MADV_POPULATE_WRITE) */
+> -
+> -#warning "missing MADV_POPULATE_READ or MADV_POPULATE_WRITE definition"
+> -
+> -int main(int argc, char **argv)
+> -{
+> -       ksft_print_header();
+> -       ksft_exit_skip("MADV_POPULATE_READ or MADV_POPULATE_WRITE not
+> defined\n");
+> -}
+> -
+> -#endif /* defined(MADV_POPULATE_READ) && defined(MADV_POPULATE_WRITE) */
+> 
+> 
 
-Yes, but it's glued to files which naturally have names :)
+I tried with just the following and it worked after kselftest-clean
+as well.
 
-Again, I appreciate that you looked into alternatives! I can see the
-late renaming could be the biggest blocker if user space cannot be
-adjusted easily to be compatible with that using memfds.
+diff --git a/tools/testing/selftests/vm/madv_populate.c b/tools/testing/selftests/vm/madv_populate.c
+index b959e4ebdad4..f9e4b8e1b28c 100644
+--- a/tools/testing/selftests/vm/madv_populate.c
++++ b/tools/testing/selftests/vm/madv_populate.c
+@@ -14,6 +14,7 @@
+  #include <unistd.h>
+  #include <errno.h>
+  #include <fcntl.h>
++#include <linux/mman.h>
+  #include <sys/mman.h>
+  
+  #include "../kselftest.h"
 
--- 
-Thanks,
-
-David / dhildenb
-
+thanks,
+-- Shuah
