@@ -2,146 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9394542F803
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 18:21:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E8CF42F808
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 18:22:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241249AbhJOQXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 12:23:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53500 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241243AbhJOQXX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 12:23:23 -0400
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A643C061570
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 09:21:16 -0700 (PDT)
-Received: by mail-il1-x132.google.com with SMTP id f15so7732327ilu.7
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 09:21:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=JD9eIQfx7k1D8AJiGxSA/qZszLEf/lWq41JF0CGsHnc=;
-        b=XBh1AYl6Z1r4p3gWQhOZBe5NmXRrZGPEePuvl1tkLItP8ogdeT1JIHMv6J4ypbgcB5
-         SpKBPFTbKmlpu8KZRAJXN0/eBAdrR92Q14CbuM9gYgnsPa701hcPCUilhIh6AmhDrMdf
-         m7aJrxLjtnmsm7JDM1+ZMXRnWdKcQPHkEn+OE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=JD9eIQfx7k1D8AJiGxSA/qZszLEf/lWq41JF0CGsHnc=;
-        b=z1jw0Nc86S+ORdmW9E4NgpK6JPiwga72iT+4KzELNybTzCx1OKk4KI2knr3trh9F5i
-         BiSeQfKj0UlDfgPfDVq7K2REAwwbIHoAK4pjiZrfB0Es5Du/Q/J1dWUWZMF7z+uaKKEy
-         MLicvW5ZmHvAkqF6TRPnLbIjFORgxmnoOg+XeDP9PHEQrISIba4O++ZPA19G0XNj0uMn
-         wSmcN5CgBu1sXE+w9SO3/QVwIsP391ZIOPHnNwpYeFtKvxkYRmhf/Ri6KUgH2kY9LQ36
-         Z45WYKJG5L0oB5dTtXR/Jqf2tDt7Rzouj7tPeQWf4iTom0KmTg5ybIsQgjCx0Mow6s3N
-         3rfQ==
-X-Gm-Message-State: AOAM531V/BNICqGY23sBKGUBvJ2lJ9amoj7LPyDxWpKGbtkmbknHVMjz
-        2+utWQhoPRik6facYTa6jkvlhrGjJO/Sxw==
-X-Google-Smtp-Source: ABdhPJwX1ojNcYex5/wXmXGz7SNMba+HK97Dowg2RYga2Ky0fGP18JVri/P5mvjGcE+ZRSkjBJGZig==
-X-Received: by 2002:a92:c262:: with SMTP id h2mr4633246ild.204.1634314876039;
-        Fri, 15 Oct 2021 09:21:16 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id v17sm2968857ilh.67.2021.10.15.09.21.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Oct 2021 09:21:15 -0700 (PDT)
-Subject: Re: selftests/vm madv_populate.c test
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <b703a326-66f7-bf35-58ee-f60e504ea5ef@linuxfoundation.org>
- <0a20f6b6-5985-8b3e-a577-7495dcf7d2b8@redhat.com>
- <3a06d58e-7301-6fbc-a305-d9f7c7220843@linuxfoundation.org>
- <b99b5960-b1ec-b968-1d9c-d125a23c59fe@redhat.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <1be8c9d5-da76-9c92-01a4-b11a08edd88e@linuxfoundation.org>
-Date:   Fri, 15 Oct 2021 10:21:14 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <b99b5960-b1ec-b968-1d9c-d125a23c59fe@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S241200AbhJOQY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 12:24:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51316 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236598AbhJOQY5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 12:24:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A510604DB;
+        Fri, 15 Oct 2021 16:22:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634314970;
+        bh=yThbssGrc0NqhJCJciVSOLwdJ3xsnZpy7ynah9IDzjc=;
+        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
+        b=lYOu8edKHuQbRSL/wGuTXlaXasBfYAfN7FTaCQyYMjjyuBs2Va3CZWVJEcI/y2Yzl
+         6vxWj0N4i2Q7IvTvUn39GNE7p287Kp1LOL4bhevh9Y1ydrOgKuDSd21LMq+m3V83ZT
+         NYhzYaaJ7jbM97TL3d/6BmnKebyhcL4B30RbcMo7GKr7rXM5KwqPToeNiX6+XWzqAT
+         WQP3bd24A2ZudEhkQaClfRXg0g1sQ5h0Tm6+Hi5gQfHAOjUCbM7JymxAIEDThXKeGR
+         kXNmc5WsIjApnLywAYuTjOKNGunpJelflf32K51VcP3Mljcd/T6T9iJyowum4877yS
+         THelCJ7YMklMg==
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailauth.nyi.internal (Postfix) with ESMTP id A482727C005A;
+        Fri, 15 Oct 2021 12:22:48 -0400 (EDT)
+Received: from imap48 ([10.202.2.98])
+  by compute6.internal (MEProxy); Fri, 15 Oct 2021 12:22:48 -0400
+X-ME-Sender: <xms:2KppYYHZXc5F5814GuviBQt3dBPMqTAe0JUJV4z8kZGLCGlUelmp5w>
+    <xme:2KppYRWeQdgPQcdge5LwC622kGmkflWN2ZlcdAfq06vaJt7APC76YjSoYOCwbCU_t
+    iAo4ibBexziw9S66ts>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvddugedgleekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgfgsehtqhertderreejnecuhfhrohhmpedftehn
+    ugihucfnuhhtohhmihhrshhkihdfuceolhhuthhosehkvghrnhgvlhdrohhrgheqnecugg
+    ftrfgrthhtvghrnhepvdelheejjeevhfdutdeggefftdejtdffgeevteehvdfgjeeiveei
+    ueefveeuvdetnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
+    homheprghnugihodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdduudeiudek
+    heeifedvqddvieefudeiiedtkedqlhhuthhopeepkhgvrhhnvghlrdhorhhgsehlihhnuh
+    igrdhluhhtohdruhhs
+X-ME-Proxy: <xmx:2KppYSKFs_BxNt8MPsCSd3Yt4phhexq-QIIRpk_0ACGioKc0CA6-RA>
+    <xmx:2KppYaGnR0Lq_Oe8tejDTU163rQhIuANvunN6fnlNIhEyYkNK_b2yg>
+    <xmx:2KppYeXJzPshJpwXSicxkvhdEfrw-LVlndq2de9HLrL8vhhp2CkL4Q>
+    <xmx:2KppYXOfvXRd_SOq3yEJrwB-Cn41d9yFKsL5J-a37dW2qLNHqe_J-uHxowg>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 50FAA21E0063; Fri, 15 Oct 2021 12:22:48 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-1345-g8441cd7852-fm-20211006.001-g8441cd78
+Mime-Version: 1.0
+Message-Id: <eda70a35-33a8-43b4-a839-65f2a1f91bb5@www.fastmail.com>
+In-Reply-To: <8735p25llh.ffs@tglx>
+References: <20211013181658.1020262-1-samitolvanen@google.com>
+ <20211013181658.1020262-4-samitolvanen@google.com>
+ <7377e6b9-7130-4c20-a0c8-16de4620c995@www.fastmail.com> <8735p25llh.ffs@tglx>
+Date:   Fri, 15 Oct 2021 09:22:27 -0700
+From:   "Andy Lutomirski" <luto@kernel.org>
+To:     "Thomas Gleixner" <tglx@linutronix.de>,
+        "Sami Tolvanen" <samitolvanen@google.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>
+Cc:     "Kees Cook" <keescook@chromium.org>,
+        "Josh Poimboeuf" <jpoimboe@redhat.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        "Nathan Chancellor" <nathan@kernel.org>,
+        "Nick Desaulniers" <ndesaulniers@google.com>,
+        "Sedat Dilek" <sedat.dilek@gmail.com>,
+        "Steven Rostedt" <rostedt@goodmis.org>,
+        linux-hardening@vger.kernel.org,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        llvm@lists.linux.dev
+Subject: Re: [PATCH v5 03/15] linkage: Add DECLARE_NOT_CALLED_FROM_C
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/15/21 9:47 AM, David Hildenbrand wrote:
-> On 15.10.21 17:45, Shuah Khan wrote:
->> On 9/18/21 1:41 AM, David Hildenbrand wrote:
->>> On 18.09.21 00:45, Shuah Khan wrote:
->>>> Hi David,
->>>>
->>>> I am running into the following warning when try to build this test:
->>>>
->>>> madv_populate.c:334:2: warning: #warning "missing MADV_POPULATE_READ or MADV_POPULATE_WRITE definition" [-Wcpp]
->>>>      334 | #warning "missing MADV_POPULATE_READ or MADV_POPULATE_WRITE definition"
->>>>          |  ^~~~~~~
->>>>
->>>>
->>>> I see that the following handling is in place. However there is no
->>>> other information to explain why the check is necessary.
->>>>
->>>> #if defined(MADV_POPULATE_READ) && defined(MADV_POPULATE_WRITE)
->>>>
->>>> #else /* defined(MADV_POPULATE_READ) && defined(MADV_POPULATE_WRITE) */
->>>>
->>>> #warning "missing MADV_POPULATE_READ or MADV_POPULATE_WRITE definition"
->>>>
->>>> I do see these defined in:
->>>>
->>>> include/uapi/asm-generic/mman-common.h:#define MADV_POPULATE_READ       22
->>>> include/uapi/asm-generic/mman-common.h:#define MADV_POPULATE_WRITE      23
->>>>
->>>> Is this the case of missing include from madv_populate.c?
->>>
->>> Hi Shuan,
->>>
->>> note that we're including "#include <sys/mman.h>", which in my
->>> understanding maps to the version installed on your system instead
->>> of the one in our build environment.ing.
->>>
->>> So as soon as you have a proper kernel + the proper headers installed
->>> and try to build, it would pick up MADV_POPULATE_READ and
->>> MADV_POPULATE_WRITE from the updated headers. That makes sense: you
->>> annot run any MADV_POPULATE_READ/MADV_POPULATE_WRITE tests on a kernel
->>> that doesn't support it.
->>>
->>> See vm/userfaultfd.c where we do something similar.
->>>
->>
->> Kselftest is for testing the kernel with kernel headers. That is the
->> reason why there is the dependency on header install.
->>
->>>
->>> As soon as we have a proper environment, it seems to work just fine:
->>>
->>> Linux vm-0 5.15.0-0.rc1.20210915git3ca706c189db.13.fc36.x86_64 #1 SMP Thu Sep 16 11:32:54 UTC 2021 x86_64 x86_64 x86_64 GNU/Linux
->>> [root@vm-0 linux]# cat /etc/redhat-release
->>> Fedora release 36 (Rawhide)
->>
->> This is a distro release. We don't want to have dependency on headers
->> from the distro to run selftests. Hope this makes sense.
->>
->> I still see this on my test system running Linux 5.15-rc5.
-> 
-> Did you also install Linux headers? I assume no, correct?
-> 
 
-I don't install it on my test system. Kselftest build does header install
-in the source tree to compile tests with the headers so that the changes
-to tests and new tests can be compiled with the kernel changes that might
-include kernel header changes.
 
-when I run "make kselftest-all TARGETS=vm", I see the following: (this
-is on linux-next-20211012,
+On Fri, Oct 15, 2021, at 8:55 AM, Thomas Gleixner wrote:
+> On Thu, Oct 14 2021 at 19:51, Andy Lutomirski wrote:
+>> On Wed, Oct 13, 2021, at 11:16 AM, Sami Tolvanen wrote:
+>>>=20
+>>> +/*
+>>> + * Declares a function not callable from C using an opaque type. De=
+fined as
+>>> + * an array to allow the address of the symbol to be taken without =
+'&'.
+>>> + */
+>> I=E2=80=99m not convinced that taking the address without using & is a
+>> laudable goal.  The magical arrays-are-pointers-too behavior of C is a
+>> mistake, not a delightful simplification.
+>
+>>> +#ifndef DECLARE_NOT_CALLED_FROM_C
+>>> +#define DECLARE_NOT_CALLED_FROM_C(sym) \
+>>> +	extern const u8 sym[]
+>>> +#endif
+>>
+>
+>> The relevant property of these symbols isn=E2=80=99t that they=E2=80=99=
+re not called
+>> from C.  The relevant thing is that they are just and not objects of a
+>> type that the programmer cares to tell the compiler about. (Or that
+>> the compiler understands, for that matter. On a system with XO memory
+>> or if they=E2=80=99re in a funny section, dereferencing them may fail=
+.)
+>
+> I agree.
+>
+>> So I think we should use incomplete structs, which can=E2=80=99t be
+>> dereferenced and will therefore be less error prone.
+>
+> While being late to that bike shed painting party, I really have to ask
+> the question _why_ can't the compiler provide an annotation for these
+> kind of things which:
+>
+>     1) Make the build fail when invoked directly
+>
+>     2) Tell CFI that this is _NOT_ something it can understand
+>
+> -void clear_page_erms(void *page);
+> +void __bikeshedme clear_page_erms(void *page);
+>
+> That still tells me:
+>
+>     1) This is a function
+>   =20
+>     2) It has a regular argument which is expected to be in RDI
+>
+> which even allows to do analyis of e.g. the alternative call which
+> invokes that function.
+>
+> DECLARE_NOT_CALLED_FROM_C(clear_page_erms);
+>
+> loses these properties and IMO it's a tasteless hack.
+>
 
-tools/testing/selftests/vm/madv_populate
-madv_populate.c:334:2: warning: #warning "missing MADV_POPULATE_READ or MADV_POPULATE_WRITE definition" [-Wcpp]
-   334 | #warning "missing MADV_POPULATE_READ or MADV_POPULATE_WRITE definition"
-       |  ^~~~~~~
 
-thanks,
--- Shuah
+Ah, but clear_page_erms is a different beast entirely as compared to, sa=
+y, the syscall entry. It *is* a C function.  So I see two ways to handle=
+ it:
+
+1. Make it completely opaque.  Tglx doesn=E2=80=99t like it, and I agree=
+, but it would *work*.
+
+2. Make it a correctly typed function. In clang CFI land, this may or ma=
+y not be =E2=80=9Ccanonical=E2=80=9D (or non canonical?).
+
+I think #2 is far better. I complained about this quite a few versions a=
+go, and, sorry, the word =E2=80=9Ccanonical=E2=80=9D is pretty much a no=
+n-starter. There needs to be a way to annotate a function pointer type a=
+nd an extern function declaration that says =E2=80=9Cthe callee follows =
+the ABI *without CFI*=E2=80=9D and the compiler needs to do the right th=
+ing. And whatever attribute or keyword gets used needs to give the reade=
+r at least some chance of understanding.
+
+(If there is a technical reason why function *pointers* of this type can=
+=E2=80=99t be called, perhaps involving IBT, so be it.  But the type sys=
+tem should really be aware of C-ABI functions that come from outside the=
+ CFI world.)
+
+It looks like clear_page might be improved by using static_call some day=
+, and then proper typing will be a requirement.
+
+Would it help if I file a clang bug about this?
