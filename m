@@ -2,88 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9A7742FA4D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 19:31:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61EC842FA53
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 19:33:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237841AbhJORdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 13:33:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42424 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235261AbhJORds (ORCPT
+        id S237901AbhJORfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 13:35:22 -0400
+Received: from relay1-d.mail.gandi.net ([217.70.183.193]:35925 "EHLO
+        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232596AbhJORfU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 13:33:48 -0400
-Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26BA6C061570;
-        Fri, 15 Oct 2021 10:31:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=uUlcTDK4XPU+iizrpIkJOrRHPABQ0RGWVp54/0NzJKk=; b=NgbjHiyaDO4zvgJzUVTEBWtoLd
-        MxI2VAOvKixcFxmUR9Q78HrsKsnDB2feafuRocMJlVJca+AtlN2zmCFgfeF73UGfFhvY36HHdpv+c
-        p1/8xX3sPuI7ChCJO1bKSWXZ0nrU7NiH+lVFMaTQ4HoVgLCIiqAeSMRNDIBy98+Bb908T9VbJT4zJ
-        VTKMweCE7STFbx6SekAkMWFyslODFau0/CJz9pXg1M5OcXwK3M7uRgMch3FDaVwHYbHdPwaAjj2ZP
-        IHpqOF83NJkwFyvrlkb19rWiAs7nWP3NODSCnSsYVSn/uKy59n0CpkMd0lNUHlfse0jti5fbGEnEE
-        EJKPi/Fg==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mbR3L-008L4Y-Lv; Fri, 15 Oct 2021 17:31:31 +0000
-Date:   Fri, 15 Oct 2021 10:31:31 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Ming Lei <ming.lei@redhat.com>
-Cc:     tj@kernel.org, gregkh@linuxfoundation.org,
-        akpm@linux-foundation.org, minchan@kernel.org, jeyu@kernel.org,
-        shuah@kernel.org, bvanassche@acm.org, dan.j.williams@intel.com,
-        joe@perches.com, tglx@linutronix.de, keescook@chromium.org,
-        rostedt@goodmis.org, linux-spdx@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 11/12] zram: fix crashes with cpu hotplug multistate
-Message-ID: <YWm68xUnAofop3PZ@bombadil.infradead.org>
-References: <20210927163805.808907-1-mcgrof@kernel.org>
- <20210927163805.808907-12-mcgrof@kernel.org>
- <YWeOJP2UJWYF94fu@T590>
- <YWeR4moCRh+ZHOmH@T590>
- <YWiSAN6xfYcUDJCb@bombadil.infradead.org>
- <YWjCpLUNPF3s4P2U@T590>
- <YWjJ0O7K+31Iz3ox@bombadil.infradead.org>
- <YWk9e957Hb+I7HvR@T590>
+        Fri, 15 Oct 2021 13:35:20 -0400
+Received: (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id A7080240008;
+        Fri, 15 Oct 2021 17:33:10 +0000 (UTC)
+Date:   Fri, 15 Oct 2021 19:33:10 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Luca Ceresoli <luca@lucaceresoli.net>
+Cc:     linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
+        linux-rtc@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        Chiwoong Byun <woong.byun@samsung.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>
+Subject: Re: [PATCH 4/8] rtc: max77686: remove useless variable
+Message-ID: <YWm7VpFY3LABdKmn@piout.net>
+References: <20211011155615.257529-1-luca@lucaceresoli.net>
+ <20211011155615.257529-5-luca@lucaceresoli.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YWk9e957Hb+I7HvR@T590>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+In-Reply-To: <20211011155615.257529-5-luca@lucaceresoli.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 15, 2021 at 04:36:11PM +0800, Ming Lei wrote:
-> On Thu, Oct 14, 2021 at 05:22:40PM -0700, Luis Chamberlain wrote:
-> > On Fri, Oct 15, 2021 at 07:52:04AM +0800, Ming Lei wrote:
-> ...
-> > > 
-> > > We need to understand the exact reason why there is still cpuhp node
-> > > left, can you share us the exact steps for reproducing the issue?
-> > > Otherwise we may have to trace and narrow down the reason.
-> > 
-> > See my commit log for my own fix for this issue.
+On 11/10/2021 17:56:11+0200, Luca Ceresoli wrote:
+>> rtc_24hr_mode is set to 1 in max77686_rtc_probe()->max77686_rtc_init_reg()
+> before being read and is never set back to 0 again. As such, it is de facto
+> a constant.
 > 
-> OK, thanks!
+> Remove the variable and the unreachable code.
 > 
-> I can reproduce the issue, and the reason is that reset_store fails
-> zram_remove() when unloading module, then the warning is caused.
+> Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
+> ---
+>  drivers/rtc/rtc-max77686.c | 11 +----------
+>  1 file changed, 1 insertion(+), 10 deletions(-)
 > 
-> The top 3 patches in the following tree can fix the issue:
+> diff --git a/drivers/rtc/rtc-max77686.c b/drivers/rtc/rtc-max77686.c
+> index 7e765207f28e..9901c596998a 100644
+> --- a/drivers/rtc/rtc-max77686.c
+> +++ b/drivers/rtc/rtc-max77686.c
+> @@ -99,7 +99,6 @@ struct max77686_rtc_info {
+>  
+>  	int rtc_irq;
+>  	int virq;
+> -	int rtc_24hr_mode;
+>  };
+>  
+>  enum MAX77686_RTC_OP {
+> @@ -278,13 +277,7 @@ static void max77686_rtc_data_to_tm(u8 *data, struct rtc_time *tm,
+>  
+>  	tm->tm_sec = data[RTC_SEC] & mask;
+>  	tm->tm_min = data[RTC_MIN] & mask;
+> -	if (info->rtc_24hr_mode) {
+> -		tm->tm_hour = data[RTC_HOUR] & 0x1f;
+> -	} else {
+> -		tm->tm_hour = data[RTC_HOUR] & 0x0f;
+> -		if (data[RTC_HOUR] & HOUR_PM_MASK)
+
+So I guess HOUR_PM_SHIFT and HOUR_PM_MASK can also be removed
+
+> -			tm->tm_hour += 12;
+> -	}
+> +	tm->tm_hour = data[RTC_HOUR] & 0x1f;
+>  
+>  	/* Only a single bit is set in data[], so fls() would be equivalent */
+>  	tm->tm_wday = ffs(data[RTC_WEEKDAY] & mask) - 1;
+> @@ -662,8 +655,6 @@ static int max77686_rtc_init_reg(struct max77686_rtc_info *info)
+>  	data[0] = (1 << BCD_EN_SHIFT) | (1 << MODEL24_SHIFT);
+>  	data[1] = (0 << BCD_EN_SHIFT) | (1 << MODEL24_SHIFT);
+>  
+> -	info->rtc_24hr_mode = 1;
+> -
+>  	ret = regmap_bulk_write(info->rtc_regmap,
+>  				info->drv_data->map[REG_RTC_CONTROLM],
+>  				data, ARRAY_SIZE(data));
+> -- 
+> 2.25.1
 > 
-> https://github.com/ming1/linux/commits/my_v5.15-blk-dev
 
-Thanks for trying an alternative fix! A crash stops yes, however this
-also ends up leaving the driver in an unrecoverable state after a few
-tries. Ie, you CTRL-C the scripts and try again over and over again and
-the driver ends up in a situation where it just says:
-
-zram: Can't change algorithm for initialized device
-
-And the zram module can't be removed at that point.
-
-  Luis
+-- 
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
