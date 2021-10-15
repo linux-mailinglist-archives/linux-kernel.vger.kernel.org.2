@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39CB642F166
+	by mail.lfdr.de (Postfix) with ESMTP id 8247442F167
 	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 14:51:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239162AbhJOMwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 08:52:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60434 "EHLO
+        id S239156AbhJOMww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 08:52:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239115AbhJOMwn (ORCPT
+        with ESMTP id S239113AbhJOMwo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 08:52:43 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFAADC061570
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 05:50:36 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id o20so26396286wro.3
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 05:50:36 -0700 (PDT)
+        Fri, 15 Oct 2021 08:52:44 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E2F6C061570
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 05:50:38 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id n40-20020a05600c3ba800b0030da2439b21so2883506wms.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 05:50:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=UPOdXwC1kuNdyAL0bf/AY2eNEz9jvw3Kld7w4EKJpxM=;
-        b=CVS0a1oceUmEd+Kx09zCyhBzMhQzLhie+p8zNt/jDyo/wVLe/igIW4TfWAw7629FDf
-         +MFPKKfOR0HKyh9QsJ+TmRCnTbGPEipU7oh+ZdfybdDXTnPP7iJhxaaiYQBbMpDbgiNC
-         XkJMZps0dWQapa0Q5TtEhttPRnPP4PmItqVP090GPE5QZKEQ7B5TGa5mcs2dYpc+HY7U
-         wZiuFx5ugcRASNmE5FZ5aveTj76PjSwPIUe5ErzXCZKx7Pe/hQaNknXsRtfQP+cZuGjI
-         ZmsggSbWPP0T+C4sWoSAWkrAPr/96yiOujJ3s4mx/P/le8y5Zw+mchZayp1EdAsgtXY3
-         yPig==
+        bh=4e98HL8b8j9zl+V8KV5tJU/uoSgZF9BT6s1NMo16bIE=;
+        b=l4Uk/ZaTDP4+GsawSFt1DqXa3NbjCi6poOfKF/ZUVmk8g4mlRw1GTkXnJCdAttrAps
+         yQcrqiySYWB9hG0a0uAs6iFzj+zDO9orvM4D3gYDUwwIq7dt0h713TCGOttVd2JW4+q5
+         a+sj+/nl9eTwwQM7kiU/vjjkDiiYYpKEDSLrKrpDHuQkZRJEK7ZbWMtiVp/MBu3bR7HT
+         sLxsU5xGR25XYQeBkoU0D/Z7+eEW5qEKnJqjteuAMZY31aOBY+lyJFlAte077Ss+GLIq
+         z6w8e2KSd8gCLSjGUXEl6T/kW9YNOhwPawmtlWlxSciQ8+5dibjTjLk+yQNemmQ/hZMG
+         pyrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=UPOdXwC1kuNdyAL0bf/AY2eNEz9jvw3Kld7w4EKJpxM=;
-        b=stqLB3I+zJ1vS+lJWzlTz7cHoVGotEwfyQGNX1pvKV6UzE4BlIie9lT/LKnYcHefGv
-         /q6GTLtF/bmP3ByKbbM2LyucTyLfOkPoGgE4DF3qp9V1GNV3yzto3a4yNYZnVLq+lI97
-         7iXxSL0kJYzOHYo7eW6bM0Db9x0S7EIrTG/C33YRQPWvapZyJYiFSFW9QxylPELyzZUj
-         pGYTD5Cwr0h+NcpEpx4YMUCot/AvDd4usOgfR58rA99OmJ7mE1uEZRwV2YVk8athwhLg
-         NzDAkxGLoFmSzr2ucjBnY3O4LdnKq480U9cfdz6VZlihVY2IPPRsz34Er0eB9Vaw5nW2
-         5vlA==
-X-Gm-Message-State: AOAM53132KG2V+4Yd9BFsxwDrj4gJnYcPfEmtl04qLABD5/SRuyuiYjB
-        ZyzNEYjFAkJN9eSjJJ8b2i9uVg==
-X-Google-Smtp-Source: ABdhPJyIj3fDaYmUIQX/uw8tcvHB9NzVYpyZzpFcI/AI2ErDnN54sQMR/ofEq2b8Q3Wv/FT5h9L0AA==
-X-Received: by 2002:adf:e60a:: with SMTP id p10mr13905554wrm.306.1634302235499;
-        Fri, 15 Oct 2021 05:50:35 -0700 (PDT)
+        bh=4e98HL8b8j9zl+V8KV5tJU/uoSgZF9BT6s1NMo16bIE=;
+        b=hLq8k0bzt7EOL9IuzQYFdhZlKL2vERIj6pa1iVGdleqjIT0vdSOQiWChIP5OEW4fCO
+         nvtvaWEQWf3heFbnxx8b7uskQik0nUvo2Q8w3WSOP27G7JF7/mtGag3QeVIFOx8qLBuG
+         31ZpNSUAtKc8OUEnA25sie9Q0B8Q/MVmt35f/qE6+nvrrXGsh8oE4q2cSV3UdxLlq6Mj
+         PXn4F3NVYFfUHkKovFXfisdqcTluPBBq8y9qli4kHGqHlcSxGU829zvhfP4MbvM2IutT
+         FEWvUUny+PvycTByKqj4VkaiXxYwQzhibRS/dOTlPcHZVlDmTVos8PpZdadEOtcdOzud
+         nqFg==
+X-Gm-Message-State: AOAM533xygPe/SXOEjdPl5iPGXpugSuJtrTQu8vraKk3yVKd2ZZSBeuu
+        VTOfgGi4h+yyG+145G+1ZMZlVA==
+X-Google-Smtp-Source: ABdhPJxMIiXpJGhYQSZMzqRdFVlX4BFs9q3qa9FV6POAzRWXHP5cqCZ2pLko+AvlUh9qDQDcFA6Xbg==
+X-Received: by 2002:a1c:9ac4:: with SMTP id c187mr26221406wme.18.1634302237068;
+        Fri, 15 Oct 2021 05:50:37 -0700 (PDT)
 Received: from localhost.localdomain ([2a01:e0a:f:6020:7ce7:a27f:aba7:bb9d])
-        by smtp.gmail.com with ESMTPSA id a2sm5468403wrq.9.2021.10.15.05.50.33
+        by smtp.gmail.com with ESMTPSA id a2sm5468403wrq.9.2021.10.15.05.50.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Oct 2021 05:50:34 -0700 (PDT)
+        Fri, 15 Oct 2021 05:50:36 -0700 (PDT)
 From:   Vincent Guittot <vincent.guittot@linaro.org>
 To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
         dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
         mgorman@suse.de, bristot@redhat.com, linux-kernel@vger.kernel.org,
         tim.c.chen@linux.intel.com
 Cc:     Vincent Guittot <vincent.guittot@linaro.org>
-Subject: [PATCH v2 3/4] sched/fair: Wait before decaying max_newidle_lb_cost
-Date:   Fri, 15 Oct 2021 14:46:53 +0200
-Message-Id: <20211015124654.18093-4-vincent.guittot@linaro.org>
+Subject: [PATCH v2 4/4] sched/fair: Remove sysctl_sched_migration_cost condition
+Date:   Fri, 15 Oct 2021 14:46:54 +0200
+Message-Id: <20211015124654.18093-5-vincent.guittot@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20211015124654.18093-1-vincent.guittot@linaro.org>
 References: <20211015124654.18093-1-vincent.guittot@linaro.org>
@@ -63,71 +63,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Decay max_newidle_lb_cost only when it has not been updated for a while
-and ensure to not decay a recently changed value.
+With a default value of 500us, sysctl_sched_migration_cost is
+significanlty higher than the cost of load_balance. Remove the
+condition and rely on the sd->max_newidle_lb_cost to abort
+newidle_balance.
 
+Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
 ---
- include/linux/sched/topology.h | 2 +-
- kernel/sched/fair.c            | 8 +++++---
- kernel/sched/topology.c        | 2 +-
- 3 files changed, 7 insertions(+), 5 deletions(-)
+ kernel/sched/fair.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
-index 8f0f778b7c91..9c8878f201ab 100644
---- a/include/linux/sched/topology.h
-+++ b/include/linux/sched/topology.h
-@@ -98,7 +98,7 @@ struct sched_domain {
- 
- 	/* idle_balance() stats */
- 	u64 max_newidle_lb_cost;
--	unsigned long next_decay_max_lb_cost;
-+	unsigned long last_decay_max_lb_cost;
- 
- 	u64 avg_scan_cost;		/* select_idle_sibling */
- 
 diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 6b8065b72847..2967d13737b7 100644
+index 2967d13737b7..924a5f0a8145 100644
 --- a/kernel/sched/fair.c
 +++ b/kernel/sched/fair.c
-@@ -10265,10 +10265,10 @@ static void rebalance_domains(struct rq *rq, enum cpu_idle_type idle)
- 		 * Decay the newidle max times here because this is a regular
- 		 * visit to all the domains. Decay ~1% per second.
- 		 */
--		if (time_after(jiffies, sd->next_decay_max_lb_cost)) {
-+		if (time_after(jiffies, sd->last_decay_max_lb_cost + HZ)) {
- 			sd->max_newidle_lb_cost =
- 				(sd->max_newidle_lb_cost * 253) / 256;
--			sd->next_decay_max_lb_cost = jiffies + HZ;
-+			sd->last_decay_max_lb_cost = jiffies;
- 			need_decay = 1;
- 		}
- 		max_cost += sd->max_newidle_lb_cost;
-@@ -10912,8 +10912,10 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
+@@ -10877,8 +10877,7 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
+ 	rcu_read_lock();
+ 	sd = rcu_dereference_check_sched_domain(this_rq->sd);
  
- 			t1 = sched_clock_cpu(this_cpu);
- 			domain_cost = t1 - t0;
--			if (domain_cost > sd->max_newidle_lb_cost)
-+			if (domain_cost > sd->max_newidle_lb_cost) {
- 				sd->max_newidle_lb_cost = domain_cost;
-+				sd->last_decay_max_lb_cost = jiffies;
-+			}
+-	if (this_rq->avg_idle < sysctl_sched_migration_cost ||
+-	    !READ_ONCE(this_rq->rd->overload) ||
++	if (!READ_ONCE(this_rq->rd->overload) ||
+ 	    (sd && this_rq->avg_idle < sd->max_newidle_lb_cost)) {
  
- 			curr_cost += domain_cost;
- 			t0 = t1;
-diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-index c56faae461d9..edd71649d579 100644
---- a/kernel/sched/topology.c
-+++ b/kernel/sched/topology.c
-@@ -1572,7 +1572,7 @@ sd_init(struct sched_domain_topology_level *tl,
- 		.last_balance		= jiffies,
- 		.balance_interval	= sd_weight,
- 		.max_newidle_lb_cost	= 0,
--		.next_decay_max_lb_cost	= jiffies,
-+		.last_decay_max_lb_cost	= jiffies,
- 		.child			= child,
- #ifdef CONFIG_SCHED_DEBUG
- 		.name			= tl->name,
+ 		if (sd)
 -- 
 2.17.1
 
