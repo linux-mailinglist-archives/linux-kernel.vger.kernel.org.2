@@ -2,122 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0997F42F42C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 15:47:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E78942F432
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 15:48:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240055AbhJONtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 09:49:43 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:34886 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239990AbhJONth (ORCPT
+        id S240059AbhJONu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 09:50:28 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3980 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239718AbhJONu0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 09:49:37 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: kholk11)
-        with ESMTPSA id 869101F4536F
-Subject: Re: [PATCH v4 03/13] memory: mtk-smi: Use clk_bulk clock ops
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Yong Wu <yong.wu@mediatek.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org, youlin.pei@mediatek.com,
-        anan.sun@mediatek.com, ming-fan.chen@mediatek.com,
-        yi.kuo@mediatek.com, anthony.huang@mediatek.com,
-        Ikjoon Jang <ikjn@chromium.org>
-References: <20210914113703.31466-1-yong.wu@mediatek.com>
- <20210914113703.31466-4-yong.wu@mediatek.com>
- <e466b3fb-d9fe-bb20-23c2-f9766a35f120@collabora.com>
- <ab5c6dd1-7eed-4515-8781-c79e5317d038@canonical.com>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Message-ID: <e433d19a-8bb8-8ef5-fce8-4b3535f5bc3e@collabora.com>
-Date:   Fri, 15 Oct 2021 15:47:24 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Fri, 15 Oct 2021 09:50:26 -0400
+Received: from fraeml742-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HW6wJ4zr0z67QNS;
+        Fri, 15 Oct 2021 21:45:20 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml742-chm.china.huawei.com (10.206.15.223) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Fri, 15 Oct 2021 15:48:18 +0200
+Received: from localhost (10.202.226.41) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Fri, 15 Oct
+ 2021 14:48:17 +0100
+Date:   Fri, 15 Oct 2021 14:48:16 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Qing Wang <wangqing@vivo.com>
+CC:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Bruno =?ISO-8859-1?Q?Pr=E9mont?= <bonbons@linux-vserver.org>,
+        Stefan Achatz <erazor_de@users.sourceforge.net>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        <linux-input@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-iio@vger.kernel.org>
+Subject: Re: [PATCH V2 4/5] hid-sensor: replace snprintf in show functions
+ with sysfs_emit
+Message-ID: <20211015144816.0000520f@Huawei.com>
+In-Reply-To: <1634296054-6971-5-git-send-email-wangqing@vivo.com>
+References: <1634296054-6971-1-git-send-email-wangqing@vivo.com>
+        <1634296054-6971-5-git-send-email-wangqing@vivo.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
 MIME-Version: 1.0
-In-Reply-To: <ab5c6dd1-7eed-4515-8781-c79e5317d038@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.226.41]
+X-ClientProxiedBy: lhreml727-chm.china.huawei.com (10.201.108.78) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 15/10/21 15:43, Krzysztof Kozlowski ha scritto:
-> On 15/10/2021 15:38, AngeloGioacchino Del Regno wrote:
->>> Use clk_bulk interface instead of the orginal one to simplify the code.
->>>
->>> For SMI larbs: Require apb/smi clocks while gals is optional.
->>> For SMI common: Require apb/smi/gals0/gal1 in has_gals case. Otherwise,
->>>                   also only require apb/smi, No optional clk here.
->>>
->>> About the "has_gals" flag, for smi larbs, the gals clock also may be
->>> optional even this platform support it. thus it always use
->>> *_bulk_get_optional, then the flag has_gals is unnecessary. Remove it.
->>> The smi_common's has_gals still keep it.
->>>
->>> Also remove clk fail logs since bulk interface already output fail log.
->>>
->>> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
->>
->> Hello Yong,
->> thanks for the patch! However, I have an improvement to point out:
->>
->>> ---
->>>    drivers/memory/mtk-smi.c | 143 +++++++++++++++------------------------
->>>    1 file changed, 55 insertions(+), 88 deletions(-)
->>>
->>> diff --git a/drivers/memory/mtk-smi.c b/drivers/memory/mtk-smi.c
->>> index c5fb51f73b34..f91eaf5c3ab0 100644
->>> --- a/drivers/memory/mtk-smi.c
->>> +++ b/drivers/memory/mtk-smi.c
->>> @@ -60,6 +60,20 @@ enum mtk_smi_gen {
->>>    	MTK_SMI_GEN2
->>>    };
->>>    
->>> +#define MTK_SMI_CLK_NR_MAX			4
->>
->> This refers to mtk_smi_common_clks[] and should be probably moved after that.
->> In any case, I don't think that there's any need to manually define this as 4,
->> as you can simply use the macro ARRAY_SIZE(mtk_smi_common_clks).
->> Using that will make you able to not update this definition everytime an update
->> occurs to the mtk_smi_common_clks array.
->>
->>> +
->>> +/* larbs: Require apb/smi clocks while gals is optional. */
->>> +static const char * const mtk_smi_larb_clks[] = {"apb", "smi", "gals"};
->>> +#define MTK_SMI_LARB_REQ_CLK_NR		2
->>> +#define MTK_SMI_LARB_OPT_CLK_NR		1
->>> +
->>> +/*
->>> + * common: Require these four clocks in has_gals case. Otherwise, only apb/smi are required.
->>> + */
->>> +static const char * const mtk_smi_common_clks[] = {"apb", "smi", "gals0", "gals1"};
->>> +#define MTK_SMI_COM_REQ_CLK_NR		2
->>> +#define MTK_SMI_COM_GALS_REQ_CLK_NR	MTK_SMI_CLK_NR_MAX
->>> +
->>
->> Apart from that,
->> Acked-By: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-> 
-> The patchset was merged around a month ago:
-> https://lore.kernel.org/lkml/163229303729.7874.4095337797772755570.b4-ty@canonical.com/
-> 
-> 
-> Best regards,
-> Krzysztof
-> 
+On Fri, 15 Oct 2021 04:07:31 -0700
+Qing Wang <wangqing@vivo.com> wrote:
 
-Whoops. Sorry for that.
-I'll send a patch to address what I pointed out, unless the original author of
-this series wants to.
+> show() should not use snprintf() when formatting the value to be returned 
+> to user space, snprintf() returns the length the resulting string and 
+> scnprintf() returns the number of bytes printed into the buffer.
+> 
+> Fix the coccicheck warnings:
+> WARNING: use scnprintf or sprintf.
+> 
+> Use sysfs_emit() instead of scnprintf() makes more sense.
+> 
+> Signed-off-by: Qing Wang <wangqing@vivo.com>
+> ---
+>  drivers/hid/hid-sensor-custom.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/hid/hid-sensor-custom.c b/drivers/hid/hid-sensor-custom.c
+> index 32c2306..a46481d6 100644
+> --- a/drivers/hid/hid-sensor-custom.c
+> +++ b/drivers/hid/hid-sensor-custom.c
+> @@ -371,7 +371,7 @@ static ssize_t show_value(struct device *dev, struct device_attribute *attr,
+>  				     sizeof(struct hid_custom_usage_desc),
+>  				     usage_id_cmp);
+>  		if (usage_desc)
+> -			return snprintf(buf, PAGE_SIZE, "%s\n",
+> +			return sysfs_emit(buf, "%s\n",
+>  					usage_desc->desc);
 
-Thanks,
-- Angelo
+Now easily short enough that this can go on one line.
+
+>  		else
+>  			return sprintf(buf, "not-specified\n");
+Whilst of course not necessary, it might be nicer to use sysfs_emit here as well for
+consistency.
+
+Otherwise looks good to me.
+
+Jonathan
+
