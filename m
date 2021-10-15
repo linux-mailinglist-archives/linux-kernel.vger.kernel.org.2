@@ -2,92 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 318C542EDB8
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 11:32:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0326A42EDBF
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 11:33:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237428AbhJOJeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 05:34:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43138 "EHLO
+        id S237460AbhJOJfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 05:35:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237405AbhJOJeI (ORCPT
+        with ESMTP id S236690AbhJOJfb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 05:34:08 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B17D2C061570;
-        Fri, 15 Oct 2021 02:32:02 -0700 (PDT)
-Date:   Fri, 15 Oct 2021 09:32:00 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1634290321;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8yNzDI54fl6ud2EMFiDssRzgtgjvP+mS8/MeeBUvYlc=;
-        b=g1VzRJ6fIwcyUcQCgrl2Htp5T5/cDWG8EcWiSgOdQZQirC0Re6twSe1BaQPwuXN4WOat4k
-        InicP00aCXnK1v+fOkhNBWIpajcyOR9uVjG8NNG/o8dj7kWz93dN4EEsRfgNncSbguDC4L
-        GDh3NuKPEMKXIIcbNh/ql/UtnBswIYxFOZc4KY8GXHwjckFFWPrsCTytxVo1WPQfm8/C+D
-        Y2n14TajJ6kUBODnnWJRBe3yevjqLslUXI6XulTBVZToycmRoHzq1SvxLBwW0kXZhtFhGG
-        gy30WwE7z3RO48qA8m1aUGKj9qowadIQDxV7B5KZRiMi4gFAuZrI4nYsZt/Fiw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1634290321;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8yNzDI54fl6ud2EMFiDssRzgtgjvP+mS8/MeeBUvYlc=;
-        b=pWlv4nT4omscYM/wmwv3DdkkKRSpudOZwgsYe2I6ihuU9VaRMS9IB98HuSt3728N9cs9mY
-        f0IsLzvKCW+B3DCg==
-From:   "tip-bot2 for Kan Liang" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/urgent] perf/x86/msr: Add Sapphire Rapids CPU support
-Cc:     Kan Liang <kan.liang@linux.intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <1633551137-192083-1-git-send-email-kan.liang@linux.intel.com>
-References: <1633551137-192083-1-git-send-email-kan.liang@linux.intel.com>
-MIME-Version: 1.0
-Message-ID: <163429032051.25758.2605197618414983019.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        Fri, 15 Oct 2021 05:35:31 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73021C061570
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 02:33:24 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id h185-20020a256cc2000000b005bdce4db0easo10511921ybc.12
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 02:33:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=6myK6WnI6dJ3vgs3FhgJcImZgK4luWhZru749g0AYEM=;
+        b=rGL6DqoXuJLBeaNawkHojQD7EDvEZGyvkXsfO18Q3++92kGCrOllm0bBEpvg4I7nsI
+         YfWbkz8lI7OSGeVEmpvHkw6wIVklrXxOU/4OuAVlmW33XU+M4LgiZ0mm4wYGUuOIH9KH
+         qp0maWA7PJjgTfWstyEo7TUSAVMoJ9b+5NGpQxcYHhm08BTcMvJyb0gTp3FqVAVE/A7j
+         gHIGhu94L5UWaE83SXmtLCjUBVQzKXjgwkRSSrVE+xxXLgt9kIvtGL4HHJUDUGcydMXo
+         ufaHlAtFmsl2tjdoOhNwV/SDkjr/Iw8dRVZZnoN2FYEk2QnYKZp3i27apZ0QncWWTJPo
+         Yp4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=6myK6WnI6dJ3vgs3FhgJcImZgK4luWhZru749g0AYEM=;
+        b=EtxpYdZuKYZaX5BCnBpjTKKw3DoczRJkm5kk/j4EKJwPUktpFdTIs0np7oMFkI7Sx5
+         ZiDq5GrIAAQqI3+f7yTEmFf0s/zW16irmk0Kt54yS1Sx3iN0eLjAHTgR9zBfqPJEXkSe
+         CHh+L2ygzuyK/1JocMXqpPI0G/y/5Ig6oveCiZJJlopVspjxE0rkqvpiHufifoZh4pSL
+         XdzfUeFoTfoFK8sz4Q+txX3+TkLRZ1jkWlMJvoMGWF63+70j4qiVu83tX8m8i5m3L57d
+         wWxkqDgxPrljRlZ5fN1gm/c8eRJ1liDLyD4Av1T5X21Px80qoHvmKDVsbSOfS3SVuVgh
+         UH7g==
+X-Gm-Message-State: AOAM530wq1wl654BxhLadqS6DoxlHvkdhn9NJ0Qm3P/w8Q9V5Y4GOJIp
+        tyHi/qbMHvROVx/hAps1QGkHW7lX61qmxA==
+X-Google-Smtp-Source: ABdhPJw0cWvVwG/eQ+2pTAA9FuOD8iTsTNLXdLHhlfF3wP4k06jKbAivbM/OuxLD1XL/kblT/6f2qQ2WYcnAhQ==
+X-Received: from beeg.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:11db])
+ (user=jackmanb job=sendgmr) by 2002:a05:6902:707:: with SMTP id
+ k7mr13103612ybt.545.1634290403688; Fri, 15 Oct 2021 02:33:23 -0700 (PDT)
+Date:   Fri, 15 Oct 2021 09:33:18 +0000
+Message-Id: <20211015093318.1273686-1-jackmanb@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
+Subject: [[PATCH bpf-next]] selftests/bpf: Some more atomic tests
+From:   Brendan Jackman <jackmanb@google.com>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        linux-kernel@vger.kernel.org, Brendan Jackman <jackmanb@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the perf/urgent branch of tip:
+Some new verifier tests that hit some important gaps in the parameter
+space for atomic ops.
 
-Commit-ID:     71920ea97d6d1d800ee8b51951dc3fda3f5dc698
-Gitweb:        https://git.kernel.org/tip/71920ea97d6d1d800ee8b51951dc3fda3f5dc698
-Author:        Kan Liang <kan.liang@linux.intel.com>
-AuthorDate:    Wed, 06 Oct 2021 13:12:17 -07:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Fri, 15 Oct 2021 11:25:26 +02:00
+There are already exhaustive tests for the JIT part in
+lib/test_bpf.c, but these exercise the verifier too.
 
-perf/x86/msr: Add Sapphire Rapids CPU support
-
-SMI_COUNT MSR is supported on Sapphire Rapids CPU.
-
-Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/1633551137-192083-1-git-send-email-kan.liang@linux.intel.com
+Signed-off-by: Brendan Jackman <jackmanb@google.com>
 ---
- arch/x86/events/msr.c | 1 +
- 1 file changed, 1 insertion(+)
+ .../selftests/bpf/verifier/atomic_cmpxchg.c   | 38 +++++++++++++
+ .../selftests/bpf/verifier/atomic_fetch.c     | 57 +++++++++++++++++++
+ .../selftests/bpf/verifier/atomic_invalid.c   | 25 ++++++++
+ 3 files changed, 120 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/verifier/atomic_fetch.c
+ create mode 100644 tools/testing/selftests/bpf/verifier/atomic_invalid.c
 
-diff --git a/arch/x86/events/msr.c b/arch/x86/events/msr.c
-index c853b28..96c775a 100644
---- a/arch/x86/events/msr.c
-+++ b/arch/x86/events/msr.c
-@@ -68,6 +68,7 @@ static bool test_intel(int idx, void *data)
- 	case INTEL_FAM6_BROADWELL_D:
- 	case INTEL_FAM6_BROADWELL_G:
- 	case INTEL_FAM6_BROADWELL_X:
-+	case INTEL_FAM6_SAPPHIRERAPIDS_X:
- 
- 	case INTEL_FAM6_ATOM_SILVERMONT:
- 	case INTEL_FAM6_ATOM_SILVERMONT_D:
+diff --git a/tools/testing/selftests/bpf/verifier/atomic_cmpxchg.c b/tools/testing/selftests/bpf/verifier/atomic_cmpxchg.c
+index 6e52dfc64415..c22dc83a41fd 100644
+--- a/tools/testing/selftests/bpf/verifier/atomic_cmpxchg.c
++++ b/tools/testing/selftests/bpf/verifier/atomic_cmpxchg.c
+@@ -119,3 +119,41 @@
+ 	},
+ 	.result = ACCEPT,
+ },
++{
++	"Dest pointer in r0 - fail",
++	.insns = {
++		/* val = 0; */
++		BPF_ST_MEM(BPF_DW, BPF_REG_10, -8, 0),
++		/* r0 = &val */
++		BPF_MOV64_REG(BPF_REG_0, BPF_REG_10),
++		/* r0 = atomic_cmpxchg(&val, r0, 1); */
++		BPF_MOV64_IMM(BPF_REG_1, 1),
++		BPF_ATOMIC_OP(BPF_DW, BPF_CMPXCHG, BPF_REG_10, BPF_REG_1, -8),
++		/* if (r0 != 0) exit(1); */
++		BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 0, 2),
++		BPF_MOV64_IMM(BPF_REG_0, 1),
++		BPF_EXIT_INSN(),
++		/* exit(0); */
++		BPF_MOV64_IMM(BPF_REG_0, 0),
++		BPF_EXIT_INSN(),
++	},
++	.result = ACCEPT,
++},
++{
++	"Dest pointer in r0 - succeed",
++	.insns = {
++		/* r0 = &val */
++		BPF_MOV64_REG(BPF_REG_0, BPF_REG_10),
++		/* val = r0; */
++		BPF_STX_MEM(BPF_DW, BPF_REG_10, BPF_REG_0, -8),
++		/* r0 = atomic_cmpxchg(&val, r0, 0); */
++		BPF_MOV64_IMM(BPF_REG_1, 0),
++		BPF_ATOMIC_OP(BPF_DW, BPF_CMPXCHG, BPF_REG_10, BPF_REG_1, -8),
++		/* r1 = *r0 */
++		BPF_LDX_MEM(BPF_DW, BPF_REG_1, BPF_REG_0, -8),
++		/* exit(0); */
++		BPF_MOV64_IMM(BPF_REG_0, 0),
++		BPF_EXIT_INSN(),
++	},
++	.result = ACCEPT,
++},
+diff --git a/tools/testing/selftests/bpf/verifier/atomic_fetch.c b/tools/testing/selftests/bpf/verifier/atomic_fetch.c
+new file mode 100644
+index 000000000000..3bc9ff7a860b
+--- /dev/null
++++ b/tools/testing/selftests/bpf/verifier/atomic_fetch.c
+@@ -0,0 +1,57 @@
++#define __ATOMIC_FETCH_OP_TEST(src_reg, dst_reg, operand1, op, operand2, expect) \
++	{								\
++		"atomic fetch " #op ", src=" #dst_reg " dst=" #dst_reg,	\
++		.insns = {						\
++			/* u64 val = operan1; */			\
++			BPF_ST_MEM(BPF_DW, BPF_REG_10, -8, operand1),	\
++			/* u64 old = atomic_fetch_add(&val, operand2); */ \
++			BPF_MOV64_REG(dst_reg, BPF_REG_10),		\
++			BPF_MOV64_IMM(src_reg, operand2),		\
++			BPF_ATOMIC_OP(BPF_DW, op,			\
++				      dst_reg, src_reg, -8),		\
++			/* if (old != operand1) exit(1); */		\
++			BPF_JMP_IMM(BPF_JEQ, src_reg, operand1, 2),	\
++			BPF_MOV64_IMM(BPF_REG_0, 1),			\
++			BPF_EXIT_INSN(),				\
++			/* if (val != result) exit (2); */		\
++			BPF_LDX_MEM(BPF_DW, BPF_REG_1, BPF_REG_10, -8),	\
++			BPF_JMP_IMM(BPF_JEQ, BPF_REG_1, expect, 2),	\
++			BPF_MOV64_IMM(BPF_REG_0, 2),			\
++			BPF_EXIT_INSN(),				\
++			/* exit(0); */					\
++			BPF_MOV64_IMM(BPF_REG_0, 0),			\
++			BPF_EXIT_INSN(),				\
++		},							\
++		.result = ACCEPT,					\
++	}
++__ATOMIC_FETCH_OP_TEST(BPF_REG_1, BPF_REG_2, 1, BPF_ADD | BPF_FETCH, 2, 3),
++__ATOMIC_FETCH_OP_TEST(BPF_REG_0, BPF_REG_1, 1, BPF_ADD | BPF_FETCH, 2, 3),
++__ATOMIC_FETCH_OP_TEST(BPF_REG_1, BPF_REG_0, 1, BPF_ADD | BPF_FETCH, 2, 3),
++__ATOMIC_FETCH_OP_TEST(BPF_REG_2, BPF_REG_3, 1, BPF_ADD | BPF_FETCH, 2, 3),
++__ATOMIC_FETCH_OP_TEST(BPF_REG_4, BPF_REG_5, 1, BPF_ADD | BPF_FETCH, 2, 3),
++__ATOMIC_FETCH_OP_TEST(BPF_REG_9, BPF_REG_8, 1, BPF_ADD | BPF_FETCH, 2, 3),
++__ATOMIC_FETCH_OP_TEST(BPF_REG_1, BPF_REG_2, 0x010, BPF_AND | BPF_FETCH, 0x011, 0x010),
++__ATOMIC_FETCH_OP_TEST(BPF_REG_0, BPF_REG_1, 0x010, BPF_AND | BPF_FETCH, 0x011, 0x010),
++__ATOMIC_FETCH_OP_TEST(BPF_REG_1, BPF_REG_0, 0x010, BPF_AND | BPF_FETCH, 0x011, 0x010),
++__ATOMIC_FETCH_OP_TEST(BPF_REG_2, BPF_REG_3, 0x010, BPF_AND | BPF_FETCH, 0x011, 0x010),
++__ATOMIC_FETCH_OP_TEST(BPF_REG_4, BPF_REG_5, 0x010, BPF_AND | BPF_FETCH, 0x011, 0x010),
++__ATOMIC_FETCH_OP_TEST(BPF_REG_9, BPF_REG_8, 0x010, BPF_AND | BPF_FETCH, 0x011, 0x010),
++__ATOMIC_FETCH_OP_TEST(BPF_REG_1, BPF_REG_2, 0x010, BPF_OR | BPF_FETCH, 0x011, 0x011),
++__ATOMIC_FETCH_OP_TEST(BPF_REG_0, BPF_REG_1, 0x010, BPF_OR | BPF_FETCH, 0x011, 0x011),
++__ATOMIC_FETCH_OP_TEST(BPF_REG_1, BPF_REG_0, 0x010, BPF_OR | BPF_FETCH, 0x011, 0x011),
++__ATOMIC_FETCH_OP_TEST(BPF_REG_2, BPF_REG_3, 0x010, BPF_OR | BPF_FETCH, 0x011, 0x011),
++__ATOMIC_FETCH_OP_TEST(BPF_REG_4, BPF_REG_5, 0x010, BPF_OR | BPF_FETCH, 0x011, 0x011),
++__ATOMIC_FETCH_OP_TEST(BPF_REG_9, BPF_REG_8, 0x010, BPF_OR | BPF_FETCH, 0x011, 0x011),
++__ATOMIC_FETCH_OP_TEST(BPF_REG_1, BPF_REG_2, 0x010, BPF_XOR | BPF_FETCH, 0x011, 0x001),
++__ATOMIC_FETCH_OP_TEST(BPF_REG_0, BPF_REG_1, 0x010, BPF_XOR | BPF_FETCH, 0x011, 0x001),
++__ATOMIC_FETCH_OP_TEST(BPF_REG_1, BPF_REG_0, 0x010, BPF_XOR | BPF_FETCH, 0x011, 0x001),
++__ATOMIC_FETCH_OP_TEST(BPF_REG_2, BPF_REG_3, 0x010, BPF_XOR | BPF_FETCH, 0x011, 0x001),
++__ATOMIC_FETCH_OP_TEST(BPF_REG_4, BPF_REG_5, 0x010, BPF_XOR | BPF_FETCH, 0x011, 0x001),
++__ATOMIC_FETCH_OP_TEST(BPF_REG_9, BPF_REG_8, 0x010, BPF_XOR | BPF_FETCH, 0x011, 0x001),
++__ATOMIC_FETCH_OP_TEST(BPF_REG_1, BPF_REG_2, 0x010, BPF_XCHG, 0x011, 0x011),
++__ATOMIC_FETCH_OP_TEST(BPF_REG_0, BPF_REG_1, 0x010, BPF_XCHG, 0x011, 0x011),
++__ATOMIC_FETCH_OP_TEST(BPF_REG_1, BPF_REG_0, 0x010, BPF_XCHG, 0x011, 0x011),
++__ATOMIC_FETCH_OP_TEST(BPF_REG_2, BPF_REG_3, 0x010, BPF_XCHG, 0x011, 0x011),
++__ATOMIC_FETCH_OP_TEST(BPF_REG_4, BPF_REG_5, 0x010, BPF_XCHG, 0x011, 0x011),
++__ATOMIC_FETCH_OP_TEST(BPF_REG_9, BPF_REG_8, 0x010, BPF_XCHG, 0x011, 0x011),
++#undef __ATOMIC_FETCH_OP_TEST
+diff --git a/tools/testing/selftests/bpf/verifier/atomic_invalid.c b/tools/testing/selftests/bpf/verifier/atomic_invalid.c
+new file mode 100644
+index 000000000000..39272720b2f6
+--- /dev/null
++++ b/tools/testing/selftests/bpf/verifier/atomic_invalid.c
+@@ -0,0 +1,25 @@
++#define __INVALID_ATOMIC_ACCESS_TEST(op)					\
++	{								\
++		"atomic " #op " access through non-pointer ",			\
++		.insns = {						\
++			BPF_MOV64_IMM(BPF_REG_0, 1),			\
++			BPF_MOV64_IMM(BPF_REG_1, 0),			\
++			BPF_ATOMIC_OP(BPF_DW, op, BPF_REG_1, BPF_REG_0, -8), \
++			BPF_MOV64_IMM(BPF_REG_0, 0),			\
++			BPF_EXIT_INSN(),				\
++		},							\
++		.result = REJECT,					\
++		.errstr = "R1 invalid mem access 'inv'"			\
++	}
++__INVALID_ATOMIC_ACCESS_TEST(BPF_ADD),
++__INVALID_ATOMIC_ACCESS_TEST(BPF_ADD | BPF_FETCH),
++__INVALID_ATOMIC_ACCESS_TEST(BPF_ADD),
++__INVALID_ATOMIC_ACCESS_TEST(BPF_ADD | BPF_FETCH),
++__INVALID_ATOMIC_ACCESS_TEST(BPF_AND),
++__INVALID_ATOMIC_ACCESS_TEST(BPF_AND | BPF_FETCH),
++__INVALID_ATOMIC_ACCESS_TEST(BPF_OR),
++__INVALID_ATOMIC_ACCESS_TEST(BPF_OR | BPF_FETCH),
++__INVALID_ATOMIC_ACCESS_TEST(BPF_XOR),
++__INVALID_ATOMIC_ACCESS_TEST(BPF_XOR | BPF_FETCH),
++__INVALID_ATOMIC_ACCESS_TEST(BPF_XCHG),
++__INVALID_ATOMIC_ACCESS_TEST(BPF_CMPXCHG),
+-- 
+2.33.0.1079.g6e70778dc9-goog
+
