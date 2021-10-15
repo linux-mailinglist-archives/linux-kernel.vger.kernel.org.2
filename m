@@ -2,146 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B348242FAC4
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 20:05:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECA5A42FAC5
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 20:07:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242536AbhJOSIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 14:08:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50350 "EHLO
+        id S242541AbhJOSJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 14:09:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242501AbhJOSH7 (ORCPT
+        with ESMTP id S242377AbhJOSJ3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 14:07:59 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E2B4C061764
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 11:05:53 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id 66so9255216pgc.9
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 11:05:53 -0700 (PDT)
+        Fri, 15 Oct 2021 14:09:29 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73163C061570
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 11:07:22 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id i12so27826398wrb.7
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 11:07:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=philpotter-co-uk.20210112.gappssmtp.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=6aKaUBfmZ/RDXszMaOimAv4KMW/OyS3sPGtjs8O2E34=;
-        b=GVmzuU15JAJiFkhxCvlybvv8JQ/weN1u6H5X2ykdGO0SbPC2oh+6v6cVgvlO570SQt
-         3GkvfNVzAqWl8zPNWSHbY7njqG6CewmKP4h1XOj6yKnHOyQYUzyjQPvU2OuC15dfq4Hi
-         VN3x/O+P0ilrNaIVGJ68Ygk351wgrsLm7ndELutEZZrw8z+cY1yzXMgBMy/pBci3EOyl
-         ulcHWdF/9vBkEsUgkf7h44ja1u6SEY2tkk+eSi5LWgBg9XB/icMRuY+GRaP+xW3MrzGB
-         XuNyraHQEXo08aqdnameuEFfd5qdBGYdt1wmlmW6lyc7tCbSiQ7jQ3umV9arDxtAw+lt
-         E+OQ==
+        bh=nxtq8epWJL/jhmwohXGzfNuEJ0aADKyx5lNAaZVeTp0=;
+        b=yWeEwuasIkiPhkjbn81eCjsbVr2dUyMx0cw0/wClB0RJZWbVFaoJCqOVezrI+EEN57
+         jhu8bq2tYBQmyCZzX6qAXJzgR9b23fwmRd8316N0aSjduPo2isBHBKL24NIGqMP5OB3h
+         YjjgJuQiNRln696MnY/HGV0T4MCAB0d+VLhMkEDUgAWu90N4cBoWYPI9jJvr+gGdtZCx
+         YPgUvo19Xu9dc2nFKfd6ZGfq0Hdy4OKhSWkOtga/hHnkMIodF6CD5KkP6YIDS7JzWeRN
+         +R/eCiui1zoFF8hRwPt4bJ+qSyy+9jLabNiFp+7tm2cA5m8PMGA+zInmWnX0GAc/Y4qh
+         Ikyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=6aKaUBfmZ/RDXszMaOimAv4KMW/OyS3sPGtjs8O2E34=;
-        b=NFgoTpMNxOzqUe/NH7nb78J0XvSY0YlIOQ2tAs51rwzFUOTcCCgPezXPBcWKA3BI4W
-         y/EQgmUDNahsnt68MEhzbZA/SGoEdFEkBOdyJS5YbipZ3QYNtGO+m8omoKgzarQH14Ns
-         +OKZKcYahN0T7V0C7JuDmITvQB/SPjB+Q/30SpqwA9vz3hgRgwCi2N4RNThm2Hk9/Sw0
-         ykMXXMUJbWfpnAhLhN0TJNQsiLYK0Rzxw0RuZPdlrx75eUt+Hg2f3l0h7EL5YExf5JT4
-         6bRdKxLi7eiCGkNhUMfnA8FgsH/CM67SBEtYUbI3pIaUiiZwqYc+CqALMcIpBlSV7fD4
-         tE5w==
-X-Gm-Message-State: AOAM533tir696fFkhSKY8+FVDNvHgDn1tEXAlZCwmmIObpScnjxuuIvB
-        mtW/U241+J//Zj7W5bXYyi+Fsg==
-X-Google-Smtp-Source: ABdhPJzz3Nh77XlAC6fmajJ34SeI4VWlWS8ZkGOVsmolRrMLTNk0lzHHckKjtlG+93CIt4Ywfy5cfA==
-X-Received: by 2002:a63:6a49:: with SMTP id f70mr7399062pgc.199.1634321152413;
-        Fri, 15 Oct 2021 11:05:52 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id w15sm5543737pfc.220.2021.10.15.11.05.51
+        bh=nxtq8epWJL/jhmwohXGzfNuEJ0aADKyx5lNAaZVeTp0=;
+        b=inqEcTaShY8S37LLNNWDR+4ICVrd07JrsrHAsogzOE4HmgcRjv1uAlNNxQgzVVhNcX
+         6QXQneUIv4IxbaEAGJusRUFmqL83Ay71PyUo9yo5pxWxvDs3m4jA/hqVTe6mJXFm4Xm7
+         mxg9i1+eRYtflkEJi564AWclRjPJZMSq1UFseTR1fd24YU5D2y20yXVF446xWCAaejQJ
+         ldSaqnzbfdMoYxTH3n+Le86LaZtlRP73rI8nwfHhvRGmvyXGbiwnOc6dncUKpb4hElEh
+         t+vsncfV+X7iODySUeBA3STGj/qHH85FBybnAPM6OgC2ShZgJpazp7XvDpWpjxFINQ7X
+         LIoA==
+X-Gm-Message-State: AOAM531dDJLDVeWsb0oS+OTjTJVNE0dGG1QiGGEoj7qQc09v2CLc6Ju/
+        iPzhMzxCCsU34iGx8+UJj48hMg==
+X-Google-Smtp-Source: ABdhPJzHBqFfgVKb3EVdigfjWR1r041E4GoKwVYBmqQkOwKwzI8aovWBo+6Z7TSYzTDTWw6gC/6pLw==
+X-Received: by 2002:a05:6000:18a3:: with SMTP id b3mr16312728wri.178.1634321241050;
+        Fri, 15 Oct 2021 11:07:21 -0700 (PDT)
+Received: from equinox (2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.a.1.e.e.d.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:dfde:e1a0::2])
+        by smtp.gmail.com with ESMTPSA id j1sm6536340wrb.56.2021.10.15.11.07.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Oct 2021 11:05:51 -0700 (PDT)
-Date:   Fri, 15 Oct 2021 18:05:47 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
-        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
-Subject: Re: [PATCH Part2 v5 05/45] x86/sev: Add helper functions for
- RMPUPDATE and PSMASH instruction
-Message-ID: <YWnC++azH3xXrMm6@google.com>
-References: <20210820155918.7518-1-brijesh.singh@amd.com>
- <20210820155918.7518-6-brijesh.singh@amd.com>
+        Fri, 15 Oct 2021 11:07:20 -0700 (PDT)
+Date:   Fri, 15 Oct 2021 19:07:18 +0100
+From:   Phillip Potter <phil@philpotter.co.uk>
+To:     Michael Straube <straube.linux@gmail.com>
+Cc:     Larry.Finger@lwfinger.net, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org
+Subject: Re: [PATCH 0/7] staging: r8188eu: odm cleanups
+Message-ID: <YWnDVkwcnVEEoxm4@equinox>
+References: <20211015163507.9091-1-straube.linux@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210820155918.7518-6-brijesh.singh@amd.com>
+In-Reply-To: <20211015163507.9091-1-straube.linux@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021, Brijesh Singh wrote:
-> diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
-> index f383d2a89263..8627c49666c9 100644
-> --- a/arch/x86/kernel/sev.c
-> +++ b/arch/x86/kernel/sev.c
-> @@ -2419,3 +2419,75 @@ int snp_lookup_rmpentry(u64 pfn, int *level)
->  	return !!rmpentry_assigned(e);
->  }
->  EXPORT_SYMBOL_GPL(snp_lookup_rmpentry);
-> +
-> +int psmash(u64 pfn)
-> +{
-> +	unsigned long paddr = pfn << PAGE_SHIFT;
+On Fri, Oct 15, 2021 at 06:35:00PM +0200, Michael Straube wrote:
+> This series removes:
+> - empty / unused functions from odm.c
+> - two never set / unused fields from odm_dm_struct
+> - the function ODM_CmnInfoPtrArrayHook()
+> 
+> Tested on x86_64 with Inter-Tech DMG-02.
+> 
+> Michael Straube (7):
+>   staging: r8188eu: remove empty functions from odm.c
+>   staging: r8188eu: remove ODM_SingleDualAntennaDefaultSetting()
+>   staging: r8188eu: remove GetPSDData()
+>   staging: r8188eu: remove ODM_AntselStatistics_88C()
+>   staging: r8188eu: pBandType is never set
+>   staging: r8188eu: pMacPhyMode is not used
+>   staging: r8188eu: remove ODM_CmnInfoPtrArrayHook()
+> 
+>  drivers/staging/r8188eu/hal/HalPhyRf_8188e.c  |   2 +-
+>  drivers/staging/r8188eu/hal/odm.c             | 144 ------------------
+>  drivers/staging/r8188eu/hal/odm_HWConfig.c    |   7 +-
+>  drivers/staging/r8188eu/hal/odm_interface.c   |   5 -
+>  drivers/staging/r8188eu/hal/rtl8188e_dm.c     |   2 +-
+>  .../staging/r8188eu/hal/rtl8188e_hal_init.c   |   5 +-
+>  drivers/staging/r8188eu/include/odm.h         |  38 -----
+>  .../staging/r8188eu/include/odm_interface.h   |   2 -
+>  drivers/staging/r8188eu/include/odm_precomp.h |   2 -
+>  9 files changed, 6 insertions(+), 201 deletions(-)
+> 
+> -- 
+> 2.33.0
+> 
 
-Probably better to use __pfn_to_phys()?
+Dear Michael,
 
-> +	int ret;
-> +
-> +	if (!pfn_valid(pfn))
-> +		return -EINVAL;
-> +
-> +	if (!cpu_feature_enabled(X86_FEATURE_SEV_SNP))
+Looks good to me. Built and tested on my USB-N10 Nano, works well. Many
+thanks.
 
-Shouldn't this be a WARN_ON_ONCE()?
+For whole series:
+Acked-by: Phillip Potter <phil@philpotter.co.uk>
 
-> +		return -ENXIO;
-> +
-> +	/* Binutils version 2.36 supports the PSMASH mnemonic. */
-> +	asm volatile(".byte 0xF3, 0x0F, 0x01, 0xFF"
-> +		      : "=a"(ret)
-> +		      : "a"(paddr)
-> +		      : "memory", "cc");
-> +
-> +	return ret;
-
-I don't like returning the raw result from hardware; it's mostly works because
-hardware also uses '0' for success, but it will cause confusion should hardware
-ever set bit 31.  There are also failures that likely should never happen unless
-there's a kernel bug, e.g. I suspect we can do:
-
-	if (WARN_ON_ONCE(ret == FAIL_INPUT))
-		return -EINVAL;
-	if (WARN_ON_ONCE(ret == FAIL_PERMISSION))
-		return -EPERM;
-	
-	....
-
-or if all errors are "impossible"
-
-	if (WARN_ON_ONCE(ret))
-		return snp_error_code_to_errno(ret);
-
-FAIL_INUSE and FAIL_OVERLAP also need further discussion.  It's not clear to me
-that two well-behaved callers can't encounter collisions due to the 2mb <=> 4kb
-interactions.  If collisions between well-behaved callers are possible, then this
-helper likely needs some form of serialization.  Either, the concurrency rules
-for RMP access need explicit and lengthy documentation.
+Regards,
+Phil
