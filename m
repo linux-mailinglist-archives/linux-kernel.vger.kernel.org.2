@@ -2,98 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0F1D42F639
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 16:49:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E203F42F642
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 16:52:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236385AbhJOOwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 10:52:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60490 "EHLO
+        id S236909AbhJOOyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 10:54:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230471AbhJOOwB (ORCPT
+        with ESMTP id S230471AbhJOOya (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 10:52:01 -0400
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04B12C061570;
-        Fri, 15 Oct 2021 07:49:55 -0700 (PDT)
-Received: by mail-io1-xd30.google.com with SMTP id h196so8052968iof.2;
-        Fri, 15 Oct 2021 07:49:54 -0700 (PDT)
+        Fri, 15 Oct 2021 10:54:30 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ED12C061570;
+        Fri, 15 Oct 2021 07:52:24 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id na16-20020a17090b4c1000b0019f5bb661f9so7491313pjb.0;
+        Fri, 15 Oct 2021 07:52:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fL8+mgMcadnALrTayBWbaujkXyGx/ICo6dyKKnlu570=;
-        b=Vl8/fHUgsoGAEvaEAPPyassn27Us3O1tIYbImm/prxO5yCZC7Icl8aG7VOwmxcDXxk
-         pIiXPKAb6VdRPBu8ICOZ054AbNpP8vQVyYWkiWS63mnQ+1zTSFx65j92wBC7EusXKHQR
-         KzXMoLIEbh2r7s/5g2MIC4CxPF6/FtVDYu+QvKKTj/jesPsphm7VHalstx/JA18qp97B
-         YfLi5P9z5u6+9o++qcj+a3dkZlFeHOmfDimSz01cmn/OzMbdCKaiq/lyj/rZMX9XTgAz
-         IOg7hzJzbdCseQ71hCYXn0yZFmzeA9A535kXisUy9WjgMNPHf+7Z9BcQ3b9YU1ORrhol
-         6wIg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=wSBkt9zYHPwlUZ1/2+m7OdxEgpbgJqT9W9WPrNpsTT4=;
+        b=cd4+4EBvunAe+muc+Kj5ssmqyR/v1gZu4XoQ6Sfq9tyPLjTs++rfTRLjSaELmun2aG
+         i2b1vNDWdhdMIe4twlANpIfG+N1djG5XczwFb7zy0SDUYl8BnoY9yAZR6aXN45UOSihz
+         kNmgqw+6cBc3qqIwrJQXbvYq65haGMFePkaDWouycHNRp5eIlji1MDo/FPnc7ltQduvY
+         ++o8BVa/VsU+VHZ+rkavg0FfKNu8KjxmzutwKyau3N/OvKJeAUMCarzPZndNMDlDPk7c
+         TsCqLExSFpMLC+DW9Njm5d9Y6JG5J9BNO43qFpFeox48Vu3QKziSLticwSfTr2rzRBBd
+         TpoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fL8+mgMcadnALrTayBWbaujkXyGx/ICo6dyKKnlu570=;
-        b=dR+psE8Rcihya6tAU6X+CZHPLoLvUDzF4iO6sejSmPm258yUWKStcKE1f3PgwrFsyw
-         APIZFog8YXG/HlvoZEgb2l/VSXWoCx5M+c1AXEHFO/3gBX+EbByEbr7Y1A8cygZqL2+E
-         +mLloNsEX/MB6mhNOz81JTZA42ySJccWbJMlD1WDdsSFgyDUfjrEcUwy/qpM+IXVrBqJ
-         VA8MIEZhrsFqDInOGVdBBkf8nYSg7tQ+Ktwf8H2xJT8JajpEQNq3kkXllbx0kWWoc/oI
-         o3CLbc5HJq1oILk+vq41uWd7upWTA5KkiE4ZFy/GoEw3ypQ8Kr9S1WwTXkAAq1XGiOFh
-         24Eg==
-X-Gm-Message-State: AOAM532FyuFmjkNEinZlIJbpmQn2TtmqoXUBUa7aAAosA6oNgRj4DZIl
-        ePSGsSeQiKFzKdArVg5ZPIUAp6pgOeZtMgctNLs=
-X-Google-Smtp-Source: ABdhPJzzB8N6SPYWHddFZ13/1bfKjIU1iQmR5XsMBgpen4Gi9hWheknEqQ3rEy04MABdE0cHk/A9MCQIbva0TNP2/ho=
-X-Received: by 2002:a05:6602:1504:: with SMTP id g4mr4004341iow.133.1634309394425;
- Fri, 15 Oct 2021 07:49:54 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wSBkt9zYHPwlUZ1/2+m7OdxEgpbgJqT9W9WPrNpsTT4=;
+        b=CDFU6/Sv0P3WwcKuwuc43irz1Hn1ZpEjhI2krW0mIh65PqwKRKUloS+nHrbC3ENXil
+         rg+mxQ+ojAOSjNPllgnHQOJ5veorXo75tb1LAwcIocBEs0Dbgl8qh/01NHmC/7YhgZH1
+         j8mGM5EhX7vWV00mRSTU7SwDtFPZ7MU4LQXBK42m5EzdHSuYl3Hhj5ZT/EKpPYb6eoOP
+         Zt3EQJRWQ78A8yKev2Zy9cmLJOE6pfbWntGIZGtw7OXvTyzIJd2ww8/otrsn3I1/7K9d
+         5acFRqCGI71gOl5IQuHbMAlDz+mgtaLuZEyB2fyvuzBuvbmxj9ieZ80Yn8dwQ8I69W0b
+         J4uQ==
+X-Gm-Message-State: AOAM5313f0Hn5yWBJbID2w5pUNpq5CLs+8G/I12Erna4+0WjnacllRvj
+        KlYApGhq7WkUSj/krAV+SDg=
+X-Google-Smtp-Source: ABdhPJz9ueCV0j30JfV2DfEN7UWTuCXSeIzgd/QlYR21lkRRHqOiR7AruNUAHVn9UN8FS8XeNsb0wA==
+X-Received: by 2002:a17:90a:5d89:: with SMTP id t9mr5655713pji.21.1634309543625;
+        Fri, 15 Oct 2021 07:52:23 -0700 (PDT)
+Received: from theprophet ([2406:7400:63:4806:9a51:7f4b:9b5c:337a])
+        by smtp.gmail.com with ESMTPSA id b8sm5548190pfm.65.2021.10.15.07.52.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Oct 2021 07:52:23 -0700 (PDT)
+Date:   Fri, 15 Oct 2021 20:22:10 +0530
+From:   Naveen Naidu <naveennaidu479@gmail.com>
+To:     bhelgaas@google.com
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jonathan Derrick <jonathan.derrick@linux.dev>,
+        Nirmal Patel <nirmal.patel@linux.intel.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+Subject: Re: [PATCH v2 17/24] PCI: vmd: Use RESPONSE_IS_PCI_ERROR() to check
+ read from hardware
+Message-ID: <20211015145210.opb72brioa5tcbtw@theprophet>
+References: <cover.1634306198.git.naveennaidu479@gmail.com>
+ <0da4dfe7642bf89d954c7062a40566bf28d94da1.1634306198.git.naveennaidu479@gmail.com>
 MIME-Version: 1.0
-References: <20211015055808.327453-1-pauk.denis@gmail.com> <20211015055808.327453-2-pauk.denis@gmail.com>
- <CAHp75VfUYgYT_RSNXCc+_3rkBbywL8ZDcAFPwr=WbPzcD8MF0w@mail.gmail.com>
- <CAB95QAQMP58-H427+nASKBvHOHZtLQqgRBSPa+MqGU7_D42M2Q@mail.gmail.com> <CAHp75VfJzaSKzw4E3P=GdtMU1vpi3DvW-VLGNbuaGaykEydhFQ@mail.gmail.com>
-In-Reply-To: <CAHp75VfJzaSKzw4E3P=GdtMU1vpi3DvW-VLGNbuaGaykEydhFQ@mail.gmail.com>
-From:   Eugene Shalygin <eugene.shalygin@gmail.com>
-Date:   Fri, 15 Oct 2021 16:49:43 +0200
-Message-ID: <CAB95QATQNaPiqJf7DuhWcJiU1Yq3_RXX7r+f3FAdw9aO0hvr0g@mail.gmail.com>
-Subject: Re: [PATCH v7 1/2] hwmon: (asus_wmi_ec_sensors) Support B550 Asus WMI.
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Denis Pauk <pauk.denis@gmail.com>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        thomas@weissschuh.net, Tor Vic <torvic9@mailbox.org>,
-        Oleksandr Natalenko <oleksandr@natalenko.name>,
-        kernel test robot <lkp@intel.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
-        Linux Documentation List <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0da4dfe7642bf89d954c7062a40566bf28d94da1.1634306198.git.naveennaidu479@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Andy,
+On 15/10, Naveen Naidu wrote:
+> An MMIO read from a PCI device that doesn't exist or doesn't respond
+> causes a PCI error.  There's no real data to return to satisfy the
+> CPU read, so most hardware fabricates ~0 data.
+> 
+> Use RESPONSE_IS_PCI_ERROR() to check the response we get when we read
+> data from hardware.
+> 
+> This helps unify PCI error response checking and make error checks
+> consistent and easier to find.
+> 
+> Reviewed-by: Jonathan Derrick <jonathan.derrick@linux.dev>
+> Signed-off-by: Naveen Naidu <naveennaidu479@gmail.com>
+> ---
+>  drivers/pci/controller/vmd.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/controller/vmd.c b/drivers/pci/controller/vmd.c
+> index a5987e52700e..db81bc4cfe8c 100644
+> --- a/drivers/pci/controller/vmd.c
+> +++ b/drivers/pci/controller/vmd.c
+> @@ -538,7 +538,7 @@ static int vmd_get_phys_offsets(struct vmd_dev *vmd, bool native_hint,
+>  		int ret;
+>  
+>  		ret = pci_read_config_dword(dev, PCI_REG_VMLOCK, &vmlock);
+> -		if (ret || vmlock == ~0)
+> +		if (ret || RESPONSE_IS_PCI_ERROR(&vmlock))
+>  			return -ENODEV;
+>  
+>  		if (MB2_SHADOW_EN(vmlock)) {
+> -- 
+> 2.25.1
+> 
 
-On Fri, 15 Oct 2021 at 16:37, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
-> I didn't get it. If there is a strong endianess expected the parameter
-> should be __le16 or __be16, moreover it seems it missed the const
-> qualifier. Any preparatory stuff should be done in the
-> asus_wmi_ec_make_block_read_query() which prepares the input buffer,
-> doesn't it?
+Jonathan, I have added your Reviewed-by tag from the first version [1] of
+the patch series, since this patch did not change in the version 2. I
+hope that's okay. If not, I really apologize for that and can you 
+please let me know how to rectify that mistake.
 
-We need to produce and parse a, roughly speaking, hex-BSTR to pass it
-to the WMI function (save for its size parameter of 16 bits instead of
-32 for the BSTR). bin/hex conversion functions accept/output UTF-8
-strings and thus require an intermediate buffer and additional utf-8
-<-> utf-16 conversion. Do you insist that a loop with a stride of 4 is
-a homegrown library already?
+[1]:
+https://lore.kernel.org/linux-pci/f3aca934-7dee-b294-ad3c-264e773eddda@linux.dev/T/#u
 
-> > > What's the point of calling acpi_os_free(obj) when you already know it's NULL?
-> >
-> > The case when obj->type != ACPI_TYPE_BUFFER
->
-> Read my comment again, please.
+Thanks,
+Naveen
 
-I did it twice already and still can't understand. The WMI method can
-return a string, for example, which is an error for our code, but the
-buffer needs to be freed.
-
-Regards,
-Eugene
