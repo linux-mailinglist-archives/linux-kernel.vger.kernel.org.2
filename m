@@ -2,113 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33AF942ECE8
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 10:56:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F1EA42ECF2
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 10:57:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236097AbhJOI6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 04:58:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49938 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233419AbhJOI6Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 04:58:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BAD2E61053;
-        Fri, 15 Oct 2021 08:56:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634288170;
-        bh=Q7ariDqv81ESrlC2dW0PuAyGJAandYcqDaiSNHfbxQQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uHWFxjgN0j6uy54kk+PuKWsQXZAravsfZY8pZKixqTo8/t9859egP1Fzz/r/UFP3j
-         pKRuamEiuY/Dwc/+QpnfWTf/sWNNfhMwZbVWxVfub1kH4CRYdWRn5CQYjdbgLCac9o
-         sh7ORqtEfm9q5AKGtzFZlP/kLNO/R2oFHLN3PRlxsXtO7/HYTzofgjq4C072XXT9lh
-         KbGmTC7vqWacVxEn3eNhUgZ/EA7McQ1YvxSRGhlsTVouHPeADKh3UBp0IaceH36bIf
-         Y9c+6PGwmjdmSCJ0ZadDxaYmKgTuJ65zPH3wNm8vQE6+zKn5B8ls+d97XXK85PZn9u
-         zx39wdy59p99g==
-Date:   Fri, 15 Oct 2021 11:55:58 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     kernel test robot <oliver.sang@intel.com>,
-        0day robot <lkp@intel.com>, Dmitry Vyukov <dvyukov@google.com>,
-        Marco Elver <elver@google.com>,
-        Vijayanand Jitta <vjitta@codeaurora.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Oliver Glitta <glittao@gmail.com>,
-        Imran Khan <imran.f.khan@oracle.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        kasan-dev@googlegroups.com
-Subject: Re: [lib/stackdepot] 1cd8ce52c5:
- BUG:unable_to_handle_page_fault_for_address
-Message-ID: <YWlCHtDOLAzDTU67@kernel.org>
-References: <20211014085450.GC18719@xsang-OptiPlex-9020>
- <4d99add1-5cf7-c608-a131-18959b85e5dc@suse.cz>
- <YWgDkjqtJO4e3DM6@kernel.org>
- <137e4211-266f-bdb3-6830-e101c27c3be4@suse.cz>
+        id S235948AbhJOI7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 04:59:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35042 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229656AbhJOI7h (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 04:59:37 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26D49C061570
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 01:57:31 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id k26so7825885pfi.5
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 01:57:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amikom.ac.id; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=7osiKSw9Rr9FSpWxBZjoEXBfkVKC4DnAUrGcrAk7w20=;
+        b=LFXHVrWswQfBeugPoUybvSdx6WFF/HZAsAMab+/Asi+P9JXdbefyDBPBxxUUNM0ldO
+         +EJqp1EpOK7o8x4bGhN5iZ+9aNN4nX0tvaBR+ipa7U0FPG9LG9yPyIOvTzjFNS8wr+Ny
+         9Y4dnaTY93ZB9wMHP4k4TJQX23j0hJqSo9Rgglbac2/1HUwPDohwjtrYLkkE/azlpDH2
+         0nppxYb/hT+ptygeBeFshKeIOUzRFyTcov0NY92hsRmdCiilsO0S6LSmmHh7Zo8EKwKo
+         S3LkzOsGg9TTe1wt00ifxi7mGGH4GLLNbrP+UP7adVi1J3fBBqB+5LDQN1dNKjcpp82R
+         5sVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=7osiKSw9Rr9FSpWxBZjoEXBfkVKC4DnAUrGcrAk7w20=;
+        b=CXEPVNlGh0+VqOSsiox84ROF6eZ58iTopkySB1HnggwmUH26PBgfGm/HU7m07Y75wn
+         NLoEqr4YEU6GaD8mfHg0comPHCuIoFVzHWUG91RDzn+Y39RabCOOxJLWv+0z9KyKKxm/
+         jc/copuZChk4L96cxN87eSVOVIDxUXYxfGZNzjFmqpE5NlligAR0fdRuQ+1xUGBcSUPH
+         iMJ19lU97X10eb4V9Xz8KVKzYRv8PLCFznOQl6pY7fdF/C3zuOKIsPfraTOw7BMA4FjD
+         MbgB7l8idYhZXYrGVNanuiCxNCmNfrss1qdRpOFQVP8pe603/iOsmZof7xpcMwN7QE21
+         kkkg==
+X-Gm-Message-State: AOAM533Uuvk8Sgk2vrpxqb57YMDMXRdPGeTkNQk4sGVZd4lCMWIOdDKy
+        v0D7SyfDqMbA9w4S4AcQ4HJQfg==
+X-Google-Smtp-Source: ABdhPJwcixoOuO8EYgFO01NJC4B568QDFc0NYxsv6+HfWecRkNtmWlPqJgezeSL+etUPt1zqIV9cGA==
+X-Received: by 2002:a05:6a00:a96:b0:44d:a0d5:411f with SMTP id b22-20020a056a000a9600b0044da0d5411fmr26678pfl.65.1634288250665;
+        Fri, 15 Oct 2021 01:57:30 -0700 (PDT)
+Received: from integral.. ([182.2.71.75])
+        by smtp.gmail.com with ESMTPSA id 23sm11081495pjc.37.2021.10.15.01.57.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Oct 2021 01:57:30 -0700 (PDT)
+From:   Ammar Faizi <ammar.faizi@students.amikom.ac.id>
+To:     Willy Tarreau <w@1wt.eu>
+Cc:     Ammar Faizi <ammar.faizi@students.amikom.ac.id>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        David Laight <David.Laight@ACULAB.COM>,
+        Peter Cordes <peter@cordes.ca>,
+        Bedirhan KURT <windowz414@gnuweeb.org>,
+        Louvian Lyndal <louvianlyndal@gmail.com>
+Subject: Re: [PATCH 2/2] tools/nolibc: x86-64: Fix startup code bug
+Date:   Fri, 15 Oct 2021 15:57:01 +0700
+Message-Id: <6sZ9qpcJvtqCksJQVaiZyA-ammarfaizi2@gnuweeb.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <CtypPaXXhVINRV0090UVzA-ammarfaizi2@gnuweeb.org>
+References: <CtypPaXXhVINRV0090UVzA-ammarfaizi2@gnuweeb.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <137e4211-266f-bdb3-6830-e101c27c3be4@suse.cz>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 15, 2021 at 10:27:17AM +0200, Vlastimil Babka wrote:
-> On 10/14/21 12:16, Mike Rapoport wrote:
-> > On Thu, Oct 14, 2021 at 11:33:03AM +0200, Vlastimil Babka wrote:
-> >> On 10/14/21 10:54, kernel test robot wrote:
-> >> 
-> >> In my local testing of the patch, when stackdepot was initialized through
-> >> page owner init, it was using kvmalloc() so slab_is_available() was true.
-> >> Looks like the exact order of slab vs page_owner alloc is non-deterministic,
-> >> could be arch-dependent or just random ordering of init calls. A wrong order
-> >> will exploit the apparent fact that slab_is_available() is not a good
-> >> indicator of using memblock vs page allocator, and we would need a better one.
-> >> Thoughts?
-> > 
-> > The order of slab vs page_owner is deterministic, but it is different for
-> > FLATMEM and SPARSEMEM. And page_ext_init_flatmem_late() that initializes
-> > page_ext for FLATMEM is called exactly between buddy and slab setup:
-> 
-> Oh, so it was due to FLATMEM, thanks for figuring that out!
-> 
-> > static void __init mm_init(void)
-> > {
-> > 	...
-> > 
-> > 	mem_init();
-> > 	mem_init_print_info();
-> > 	/* page_owner must be initialized after buddy is ready */
-> > 	page_ext_init_flatmem_late();
-> > 	kmem_cache_init();
-> > 
-> > 	...
-> > }
-> > 
-> > I've stared for a while at page_ext init and it seems that the
-> > page_ext_init_flatmem_late() can be simply dropped because there is anyway
-> > a call to invoke_init_callbacks() in page_ext_init() that is called much
-> > later in the boot process.
-> 
-> Yeah, but page_ext_init() only does something for SPARSEMEM, and is empty on
-> FLATMEM. Otherwise it would be duplicating all the work. So I'll just move
-> page_ext_init_flatmem_late() below kmem_cache_init() in mm_init().
+Hi,
 
-I hope at some point we'll have cleaner mm_init(), but for now simply
-moving page_ext_init_flatmem_late() should work.
+This is a code to test.
 
-> Thanks again!
+Compile with:
+  gcc -O3 -ggdb3 -nostdlib -o test test.c
 
-Welcome :)
- 
+Technical explanation:
+The System V ABI mandates the %rsp must be 16-byte aligned before
+performing a function call, but the current nolibc.h violates it.
+
+This %rsp alignment violation makes the callee can't align its stack
+properly. Note that the callee may have a situation where it requires
+vector aligned move. For example, `movaps` with memory operand w.r.t.
+xmm registers, it requires the src/dst address be 16-byte aligned.
+
+Since the callee can't align its stack properly, it will segfault when
+executing `movaps`. The following C code is the reproducer and test
+to ensure the bug really exists and this patch fixes it.
+
+```
+/* SPDX-License-Identifier: LGPL-2.1 OR MIT */
+
+/*
+ * Bug reproducer and test for Willy's nolibc (x86-64) by Ammar.
+ *
+ * Compile with:
+ *  gcc -O3 -ggdb3 -nostdlib -o test test.c
+ */
+
+#include "tools/include/nolibc/nolibc.h"
+
+static void dump_argv(int argc, char *argv[])
+{
+	int i;
+	const char str[] = "\nDumping argv...\n";
+
+	write(1, str, strlen(str));
+	for (i = 0; i < argc; i++) {
+		write(1, argv[i], strlen(argv[i]));
+		write(1, "\n", 1);
+	}
+}
+
+static void dump_envp(char *envp[])
+{
+	int i = 0;
+	const char str[] = "\nDumping envp...\n";
+
+	write(1, str, strlen(str));
+	while (envp[i] != NULL) {
+		write(1, envp[i], strlen(envp[i]));
+		write(1, "\n", 1);
+		i++;
+	}
+}
+
+#define read_barrier(PTR) __asm__ volatile(""::"r"(PTR):"memory")
+
+__attribute__((__target__("sse2")))
+static void test_sse_move_aligned(void)
+{
+	int i;
+	int arr[32] __attribute__((__aligned__(16)));
+
+	/*
+	 * The assignment inside this loop is very likely
+	 * performed with aligned move, thus if we don't
+	 * align the %rsp properly, it will fault!
+	 *
+	 * If we fault due to misaligned here, then there
+	 * must be a caller below us that violates SysV
+	 * ABI w.r.t. to %rsp alignment before func call.
+	 */
+	for (i = 0; i < 32; i++)
+		arr[i] = 1;
+
+	read_barrier(arr);
+}
+
+int main(int argc, char *argv[], char *envp[])
+{
+	dump_argv(argc, argv);
+	dump_envp(envp);
+	test_sse_move_aligned();
+	return 0;
+}
+```
 
 -- 
-Sincerely yours,
-Mike.
+Ammar Faizi
