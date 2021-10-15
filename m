@@ -2,99 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75BC942EA00
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 09:25:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EF1B42EA0D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 09:26:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235950AbhJOH1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 03:27:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41924 "EHLO
+        id S236025AbhJOH27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 03:28:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234392AbhJOH1p (ORCPT
+        with ESMTP id S233389AbhJOH26 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 03:27:45 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ED5CC061570;
-        Fri, 15 Oct 2021 00:25:39 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id r2so7801611pgl.10;
-        Fri, 15 Oct 2021 00:25:39 -0700 (PDT)
+        Fri, 15 Oct 2021 03:28:58 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9BACC061570;
+        Fri, 15 Oct 2021 00:26:51 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id i20so33559120edj.10;
+        Fri, 15 Oct 2021 00:26:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=QkztVd7RJfuqxUOBKk+YDRUaI0H2x7WbBGD/f7b+t1w=;
-        b=Z9cR3eVlFmeG4xxsSQyvxeCSBmGkP/+c9AW3bTIFUjh+PDzXyfxC8vQF06xQk+7TT/
-         7H6GL2GDZxVQLvrf8i+hUA3m/Y1aUo1wRl43sJEoghojBGOq2XYJjmjPVRr4xodYpTA7
-         dN2PBHkMtUJbQc2F1YA5BWfb3oZpL39IkyNYauqW50sPAVEYN1IDrCu5cVfrEJbnMbMt
-         nzhCjigqVtFZ3NjoMq6ouhnVGKMp/V2eIXDiG4uQUend+1RZMRyxnOhxocc8lplB7V9U
-         hCdpD6Qa44g35mn+l/p8/v+pHAnMaWE088y1UbhzXgWtlhPapUE/OGmqdpAPT3CjJ57i
-         RJ6g==
+        bh=99NyzCMkjnvlYZIABFIbk6tOxw0lawvBeezR5Wj/vBw=;
+        b=akaBBnw5J8T562lM7re75ZbDFuBMNVQF8fGI5qB0ldQsbcJw3Fw0vy8g5Gv8Rvtj1R
+         8DNzOX4ib2UqBX2rFxI9raT93cOXqdVjOkt+Fko0D8OQ7e/Xvvg+oqeDbXaWe0frtS6b
+         lTqq9jhtOfa0UIwwxnw8+n+IFliHuLzW2gts6hN8jnBXERaNh/OpgE77clpMmN4/z+q0
+         ROnigcV5/4CRoU6GzbsIz+6kmwBDj6qDqXpZsHaij7LAIFPZS9S14+AjOIHaKgHUrkMq
+         YMGslIZ2RlcJH5uFXtD7ITDyG0mgRYp+hV3R608JbYu+IZkls4K2EUPDRDpyFxhE5719
+         8rOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=QkztVd7RJfuqxUOBKk+YDRUaI0H2x7WbBGD/f7b+t1w=;
-        b=r3WxbFu2qGNTEudxcjzGu94QWEkCo36nRIcx8Rcti4erd6MfwAvYa3dvMk48nIBV/q
-         gg9FerjzGwsg09syt9gHGCT8ONPOzy9+SYGy1ZgOR1qHjPLrgi+n/6+nYnkNler5TXzb
-         NNojirGl5KvpOVbDaLOkic4TDrnI2aXwTv2DWBoHjMSWcW5pqh7iADRCrqRukN5OFIpL
-         +O79eG4C0awvWvsiq9O4Ml9lTm1SHq6TfptEvBJEDKhm+qNVFY3Uf2RfA4vHbN/GdrUM
-         W9kO08sPhYHf4V8uXJu72htiRjczJYW6Ty4nyPJsLH/+1IM/hUTleTj6JmZKTMwsiTbO
-         VJSw==
-X-Gm-Message-State: AOAM531PQFpFeep2Z3m/uErZEM8j33+ZtRUvM4eMjVBZ22eXRu53Gk61
-        eKrM4T87wTtnr0I6GK04tZg=
-X-Google-Smtp-Source: ABdhPJwziKbw9/4jfsU9dHOu2/83LgZYuNj2I+PuWLIEaggouAFkjP2Fygjt7bVm7p3sRcXMS773ag==
-X-Received: by 2002:aa7:9523:0:b0:44c:c171:9ae with SMTP id c3-20020aa79523000000b0044cc17109aemr10250669pfp.75.1634282738721;
-        Fri, 15 Oct 2021 00:25:38 -0700 (PDT)
-Received: from localhost.localdomain ([124.126.19.250])
-        by smtp.gmail.com with ESMTPSA id a12sm10547856pjq.16.2021.10.15.00.25.35
+        bh=99NyzCMkjnvlYZIABFIbk6tOxw0lawvBeezR5Wj/vBw=;
+        b=WZsmXamET7aFQOUZmwyfAB5RWLAD8Q2fy6B2TdTkUI8KUJX0um9msCpylHBkHb8oeg
+         C5hZvbZwjMJyeRVjGG4WKGZolr4GR7pqXVWjYtBa7zexlwR7zrdp5frv68pNIdehweCb
+         GJmjNXkPcj5gGFs+WBf85t3PVVBdHUvfql/KRJW0ztOVFwFpi9qJtoJyCYG/7KY1vzqB
+         4NgVJebbqmZrTfZ1hnXUFCDPEjX3FENGHM9d53ahoYdttT6qk991LaraXBVPr0ecWQf1
+         ks64dHTHvv2YOzJQz+75NuZrur8DJP/IBRXQEJHPIv1qamXMMbTSccV8vJYzqzmZ6PM/
+         IPeA==
+X-Gm-Message-State: AOAM530d9myt0uD9aFsZiMVGoSYF4MgxrxBmfmc3Lrh5Mgj3wVKpRnm4
+        1VkpfoXth4NqKD3A33G6PnI=
+X-Google-Smtp-Source: ABdhPJxlENUNa1yGJ2pgtxz4sJjmuY+IahmFVtJQDoLdVxYnJQDIOyCCfW74g3Qd00rj3IFbgNVvZQ==
+X-Received: by 2002:a05:6402:3588:: with SMTP id y8mr15117328edc.285.1634282810511;
+        Fri, 15 Oct 2021 00:26:50 -0700 (PDT)
+Received: from ponky.lan ([2a04:241e:501:3870:bac1:743:3859:80df])
+        by smtp.gmail.com with ESMTPSA id l25sm3873107edc.31.2021.10.15.00.26.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Oct 2021 00:25:38 -0700 (PDT)
-From:   zhaoxiao <long870912@gmail.com>
-To:     chenhuacai@kernel.org, jiaxun.yang@flygoat.com, tglx@linutronix.de,
-        maz@kernel.org
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zhaoxiao <zhaoxiao@uniontech.com>
-Subject: [PATCH] irqchip/loongson-htvec:- Handle return value of ioremap.
-Date:   Fri, 15 Oct 2021 15:25:23 +0800
-Message-Id: <20211015072523.30615-1-long870912@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        Fri, 15 Oct 2021 00:26:49 -0700 (PDT)
+From:   Leonard Crestez <cdleonard@gmail.com>
+To:     David Ahern <dsahern@kernel.org>,
+        Eric Dumazet <edumazet@google.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
+        Yonghong Song <yhs@fb.com>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        Florian Westphal <fw@strlen.de>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/4] tcp: md5: Fix overlap between vrf and non-vrf keys
+Date:   Fri, 15 Oct 2021 10:26:03 +0300
+Message-Id: <cover.1634282515.git.cdleonard@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zhaoxiao <zhaoxiao@uniontech.com>
+With net.ipv4.tcp_l3mdev_accept=1 it is possible for a listen socket to
+accept connection from the same client address in different VRFs. It is
+also possible to set different MD5 keys for these clients which differ only
+in the tcpm_l3index field.
 
-Here, If ioremap will fail. It will return NULL.Kernel can run into
-a NULL-pointer dereference. This error check will avoid NULL pointer
-dereference.
+This appears to work when distinguishing between different VRFs but not
+between non-VRF and VRF connections. In particular:
 
-Signed-off-by: zhaoxiao <zhaoxiao@uniontech.com>
----
- drivers/irqchip/irq-loongson-htvec.c | 3 +++
- 1 file changed, 3 insertions(+)
+* tcp_md5_do_lookup_exact will match a non-vrf key against a vrf key. This
+means that adding a key with l3index != 0 after a key with l3index == 0
+will cause the earlier key to be deleted. Both keys can be present if the
+non-vrf key is added later.
+* _tcp_md5_do_lookup can match a non-vrf key before a vrf key. This casues
+failures if the passwords differ.
 
-diff --git a/drivers/irqchip/irq-loongson-htvec.c b/drivers/irqchip/irq-loongson-htvec.c
-index 1cc0bceb4472..a36c20f44ec4 100644
---- a/drivers/irqchip/irq-loongson-htvec.c
-+++ b/drivers/irqchip/irq-loongson-htvec.c
-@@ -267,6 +267,8 @@ struct fwnode_handle *htvec_acpi_init(struct fwnode_handle *parent,
- 
- 	priv->num_parents = HTVEC_MAX_PARENT_IRQ;
- 	priv->base = ioremap(acpi_htvec->address, acpi_htvec->size);
-+	if (!priv->base)
-+		goto free_priv;
- 
- 	/* Interrupt may come from any of the 8 interrupt lines */
- 	for (i = 0; i < priv->num_parents; i++)
-@@ -307,6 +309,7 @@ struct fwnode_handle *htvec_acpi_init(struct fwnode_handle *parent,
- iounmap_base:
- 	iounmap(priv->base);
- 	priv->domain_handle = NULL;
-+free_priv:
- 	kfree(priv);
- 
- 	return NULL;
+This can be fixed by making tcp_md5_do_lookup_exact perform an actual exact
+comparison on l3index and by making  __tcp_md5_do_lookup perfer vrf-bound
+keys above other considerations like prefixlen.
+
+The fact that keys with l3index==0 affect VRF connections is usually not
+desirable, VRFs are meant to be completely independent. This behavior needs
+to preserved for backwards compatibility. Also, applications can just bind
+listen sockets to VRF and never specify TCP_MD5SIG_FLAG_IFINDEX at all.
+
+So far the combination of TCP_MD5SIG_FLAG_IFINDEX with tcpm_ifindex == 0
+was an error, accept this to mean "key only applies to default VRF". This
+is what applications using VRFs for traffic separation want.
+
+This also contains tests for the second part. It does not contain tests for
+overlapping keys, that would require more changes in nettest to add
+multiple keys. These scenarios are also covered by my tests for TCP-AO,
+especially around this area:
+https://github.com/cdleonard/tcp-authopt-test/blob/main/tcp_authopt_test/test_vrf_bind.py
+
+Changes since V2:
+* Rename --do-bind-key-ifindex to --force-bind-key-ifindex
+* Fix referencing TCP_MD5SIG_FLAG_IFINDEX as TCP_MD5SIG_IFINDEX
+Link to v2: https://lore.kernel.org/netdev/cover.1634107317.git.cdleonard@gmail.com/
+
+Changes since V1:
+* Accept (TCP_MD5SIG_IFINDEX with tcpm_ifindex == 0)
+* Add flags for explicitly including or excluding TCP_MD5SIG_FLAG_IFINDEX
+to nettest
+* Add few more tests in fcnal-test.sh.
+Link to v1: https://lore.kernel.org/netdev/3d8387d499f053dba5cd9184c0f7b8445c4470c6.1633542093.git.cdleonard@gmail.com/
+
+Leonard Crestez (4):
+  tcp: md5: Fix overlap between vrf and non-vrf keys
+  tcp: md5: Allow MD5SIG_FLAG_IFINDEX with ifindex=0
+  selftests: nettest: Add --{force,no}-bind-key-ifindex
+  selftests: net/fcnal: Test --{force,no}-bind-key-ifindex
+
+ include/net/tcp.h                         |  5 +-
+ net/ipv4/tcp_ipv4.c                       | 45 ++++++++++++-----
+ net/ipv6/tcp_ipv6.c                       | 15 +++---
+ tools/testing/selftests/net/fcnal-test.sh | 60 +++++++++++++++++++++++
+ tools/testing/selftests/net/nettest.c     | 28 ++++++++++-
+ 5 files changed, 130 insertions(+), 23 deletions(-)
+
+
+base-commit: 40088915f547b52635f022c1e1e18df65ae3153a
 -- 
-2.20.1
+2.25.1
 
