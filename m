@@ -2,151 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4561542E582
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 02:55:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B337A42E586
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 02:56:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233271AbhJOA5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 20:57:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40364 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231284AbhJOA5Q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 20:57:16 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9AC0C061570
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 17:55:10 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id e5-20020a17090a804500b001a116ad95caso510653pjw.2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 17:55:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=3+5b06haTPMyGtomaiqAwErioMcClLD7g8Ln+zY+qQ4=;
-        b=Q750YQILdfzpohGDrnI1r7WzNcoHQNL4HeozRXQA6yPy3mwf0PDnZT6veY4owUzd4U
-         y1taUbA9pO1kERe8PW6zQu9JCU4dkVZfVF3AGA8EjxhjDlxv7H6g1TH2zYU8U+uO3Rnr
-         vF6pFmk4Y43+7ZVnZMb/lK9spxzfm9oR4Hp0s+WFrexJ2++SH1GDZ22TSThftAkegRh2
-         FtVl+2lqIps0+agfw1L9B+IWKerrKNQLJnCT8oeH8/qImGXAW4dY2yjoDRxEumyv9wgE
-         TminGtVI3vlo9zX7cW+T3zY7PMUaMd51Kd2LwJUxr98LFuF/V/9QGvFmmzPYe10pgn74
-         673w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=3+5b06haTPMyGtomaiqAwErioMcClLD7g8Ln+zY+qQ4=;
-        b=LaM8bC7h5mP/NVnGyGj5N4qB+kPIWy+4LfHXF0Idmotd9jk0VxIEHUG80PfzQILr1K
-         bIY6ZH3HsGsIlSjSHfv5hhM63Gwq72FtXvZu+YuXLH7Qdkg+1CYBOG4fOCzEX8osrTN7
-         B14axhUgE6BfZjydCmh7tTjdtWURUFNIRTuJiAeyJCqIGWoG/vkebhv1hMyOFwd6FI52
-         fAomkflJBbDPiukgcUaDIjAfvVEk3GtOMdXCbeEwYVuRcxtmFsflKUxZ2xd7MP1tyGXr
-         vJG+IiqV9ypGszX+grIfxDJ8EVp5RHRvPzYHwnKAuVZSTFjrSxumTy60mKGxGnrTK0mm
-         AaKg==
-X-Gm-Message-State: AOAM532EENFtevKUfKSMSanhbi0w41niHlUFP/5/gpjchAywlyfmFqIg
-        yuPNUVtVWSZ9kSZ7Ph07i6pr53s1W8IinuekC9w=
-X-Google-Smtp-Source: ABdhPJyrD5spv8jJGt19Jk773G8ziuWAxUbYKTnwqJTDPSRF079szbF8wTmnLFZZOVJS8qDF6aR6/2NJyrSKhqXBkpQ=
-X-Received: by 2002:a17:90a:7345:: with SMTP id j5mr24394426pjs.48.1634259310278;
- Thu, 14 Oct 2021 17:55:10 -0700 (PDT)
+        id S233422AbhJOA6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 20:58:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36120 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231284AbhJOA6B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 20:58:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3CEC661040;
+        Fri, 15 Oct 2021 00:55:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634259356;
+        bh=wMlahXiUDNQBtJmbNpzwQYFwpHz7Az3V0eEF8vMs6fE=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=Zn7oxEObqZGIPfBTJKRkav9MnaUyd8mckhNxbO+gbO89kd43qT2BquaUdC86MC1Xh
+         T9KF9iDdGX8LSIau36EKuxKx/cM+9VnAQqHC5clEEzSQ0/g620fmxiDYpQ0t4fh1fE
+         BbLerXavjnIsGAmamPUpFGfO0QOeE5LJ9HVDuEuJrFJrA7Ojc9dqXeZ76jirgCye+B
+         Eb5qnw3qLIMpNXX9fXlSJq537yaQId35H4e94Bm5UTeoefxJlAKVdATBcSElkeBDMn
+         8A4ULJ9uu/aBfFb2hl6qKE7YMPNU+tRgOwWXumRWMuDobF9tjXE44yCtreF9XCN3/N
+         dddsbvZgjruGA==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20211014143507.4ad2c0f7@gandalf.local.home>
-In-Reply-To: <20211014143507.4ad2c0f7@gandalf.local.home>
-From:   Greentime Hu <green.hu@gmail.com>
-Date:   Fri, 15 Oct 2021 08:54:35 +0800
-Message-ID: <CAEbi=3d=yO+D_SjQavqizc2tHyWda3t9zXbN84cbvYYNP=epKA@mail.gmail.com>
-Subject: Re: [PATCH] nds32/ftrace: Fix Error: invalid operands (*UND* and
- *UND* sections) for `^'
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Nick Hu <nickhu@andestech.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, Zong Li <zong@andestech.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        kernel test robot <lkp@intel.com>,
-        Alan Kao <alankao@andestech.com>, kclin@andestech.com
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210829154757.784699-2-dmitry.baryshkov@linaro.org>
+References: <20210829154757.784699-1-dmitry.baryshkov@linaro.org> <20210829154757.784699-2-dmitry.baryshkov@linaro.org>
+Subject: Re: [PATCH v7 1/8] dt-bindings: clock: qcom,dispcc-sm8x50: add mmcx power domain
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh@kernel.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Taniya Das <tdas@codeaurora.org>
+Date:   Thu, 14 Oct 2021 17:55:54 -0700
+Message-ID: <163425935491.1688384.8282610839807892378@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Steven Rostedt <rostedt@goodmis.org> =E6=96=BC 2021=E5=B9=B410=E6=9C=8815=
-=E6=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8A=E5=8D=882:35=E5=AF=AB=E9=81=93=EF=BC=
-=9A
->
-> [ Resending with "PATCH" in subject ]
->
-> I received a build failure for a new patch I'm working on the nds32
-> architecture, and when I went to test it, I couldn't get to my build erro=
-r,
-> because it failed to build with a bunch of:
->
->   Error: invalid operands (*UND* and *UND* sections) for `^'
->
-> issues with various files. Those files were temporary asm files that look=
-ed
-> like:  kernel/.tmp_mc_fork.s
->
-> I decided to look deeper, and found that the "mc" portion of that name
-> stood for "mcount", and was created by the recordmcount.pl script. One th=
-at
-> I wrote over a decade ago. Once I knew the source of the problem, I was
-> able to investigate it further.
->
-> The way the recordmcount.pl script works (BTW, there's a C version that
-> simply modifies the ELF object) is by doing an "objdump" on the object
-> file. Looks for all the calls to "mcount", and creates an offset of those
-> locations from some global variable it can use (usually a global function
-> name, found with <.*>:). Creates a asm file that is a table of references
-> to these locations, using the found variable/function. Compiles it and
-> links it back into the original object file. This asm file is called
-> ".tmp_mc_<object_base_name>.s".
->
-> The problem here is that the objdump produced by the nds32 object file,
-> contains things that look like:
->
->  0000159a <.L3^B1>:
->     159a:       c6 00           beqz38 $r6, 159a <.L3^B1>
->                         159a: R_NDS32_9_PCREL_RELA      .text+0x159e
->     159c:       84 d2           movi55 $r6, #-14
->     159e:       80 06           mov55 $r0, $r6
->     15a0:       ec 3c           addi10.sp #0x3c
->
->
-> Where ".L3^B1 is somehow selected as the "global" variable to index off o=
-f.
->
-> Then the assembly file that holds the mcount locations looks like this:
->
->         .section __mcount_loc,"a",@progbits
->         .align 2
->         .long .L3^B1 + -5522
->         .long .L3^B1 + -5384
->         .long .L3^B1 + -5270
->         .long .L3^B1 + -5098
->         .long .L3^B1 + -4970
->         .long .L3^B1 + -4758
->         .long .L3^B1 + -4122
->         [...]
->
-> And when it is compiled back to an object to link to the original object,
-> the compile fails on the "^" symbol.
->
-> Simple solution for now, is to have the perl script ignore using function
-> symbols that have an "^" in the name.
->
-> Fixes: fbf58a52ac088 ("nds32/ftrace: Add RECORD_MCOUNT support")
-> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Quoting Dmitry Baryshkov (2021-08-29 08:47:50)
+> On sm8250 dispcc requires MMCX power domain to be powered up before
+> clock controller's registers become available. For now sm8250 was using
+> external regulator driven by the power domain to describe this
+> relationship. Switch into specifying power-domain and required opp-state
+> directly.
+>=20
+> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Reviewed-by: Rob Herring <robh@kernel.org>
 > ---
-> diff --git a/scripts/recordmcount.pl b/scripts/recordmcount.pl
-> index 8f6b13ae46bf..7d631aaa0ae1 100755
-> --- a/scripts/recordmcount.pl
-> +++ b/scripts/recordmcount.pl
-> @@ -189,7 +189,7 @@ if ($arch =3D~ /(x86(_64)?)|(i386)/) {
->  $local_regex =3D "^[0-9a-fA-F]+\\s+t\\s+(\\S+)";
->  $weak_regex =3D "^[0-9a-fA-F]+\\s+([wW])\\s+(\\S+)";
->  $section_regex =3D "Disassembly of section\\s+(\\S+):";
-> -$function_regex =3D "^([0-9a-fA-F]+)\\s+<(.*?)>:";
-> +$function_regex =3D "^([0-9a-fA-F]+)\\s+<([^^]*?)>:";
->  $mcount_regex =3D "^\\s*([0-9a-fA-F]+):.*\\s(mcount|__fentry__)\$";
->  $section_type =3D '@progbits';
->  $mcount_adjust =3D 0;
-loop in Alan and KC
+
+Applied to clk-next
