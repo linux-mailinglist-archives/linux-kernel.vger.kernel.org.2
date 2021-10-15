@@ -2,118 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CCBA42EE9C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 12:15:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 403D842EE98
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 12:15:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237943AbhJOKRK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 06:17:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53106 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237885AbhJOKRE (ORCPT
+        id S237878AbhJOKRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 06:17:03 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:46298
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237918AbhJOKQ5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 06:17:04 -0400
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74092C061753;
-        Fri, 15 Oct 2021 03:14:58 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id s64so21439515yba.11;
-        Fri, 15 Oct 2021 03:14:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZTDCpxGbeuWo2eDKtm3bA2A8qW6ZaIJb8O6pyREdQeA=;
-        b=Oo9miBv8zvbpx9UbpKzN5puJZy7wQq6nWt4BuBIXYZZsDZdwKmPGjKeWxVig0J0J9U
-         YxS1NeNWePdLu5ro2hpjheWwl8/9D3MzSDN7kgjxKsWmqACP+Xn4VjDjo7ORtN6k6dPW
-         Xxo0nmVPM2kgaurX2RqeHG5G6g8GieY2Os26DwcIzmUS6hZUibUnDR17MY2zow2pjE8Z
-         FBWyGIbVergDurjvgN353Lkvqd8vrFGmSlMY0NdnyvIZRYh5syMm/4uyfwpnFgklCMjy
-         8MwzKjWKuVJ3qeCThCp0GayV9E4ktFP/WuzdV/OsZ3FtuqZttx1oVitCV4+G4vf5BDDf
-         IaSw==
+        Fri, 15 Oct 2021 06:16:57 -0400
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com [209.85.167.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 24EAE40000
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 10:14:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1634292891;
+        bh=mNH6ovSrsZzXaFK7GnPEbneieuXh4e/GszJJRRWO4tU=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=RKx0pNqPnX+U61iYiDssXqvNqqKe3xVnp+krm5OWh5RGmzDBy7Trk7aLUAd8UrTqD
+         7AYYGtVJn8wydS0b3+Mf6TxvbzmUI6XappBatS+q9SaalmxRW+sL24SHsGP/mBXndZ
+         9qNA+Jh7SnPVTNk5wvAhtA44aPsqOqH5d+N/Cc6K2ohPDL8ve1+F7r8qgrybBqH/oq
+         vZ0ygwV0tZjVc51FWh8u18PHILE7VxrTCZDXawktv4TyFU2qKjBu4/OdpR4AavKORG
+         JluuBBGEfjesxx2iRxNWHu4vRieyjPhe+o9ADQB9fldqZkKFCvmYlYqkJucYtJ/nAX
+         mtNlZI+BoyJkQ==
+Received: by mail-lf1-f70.google.com with SMTP id m16-20020a056512115000b003fdb79f743fso3950257lfg.16
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 03:14:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZTDCpxGbeuWo2eDKtm3bA2A8qW6ZaIJb8O6pyREdQeA=;
-        b=iFI631cLog/RT9XsKBKekdb4ptbdBTTyqrLAziawH253DZ5HJ/P8JqilZiFfiODBTB
-         MEjBesJiiZMe246zsVIdae7sjrDluoaQBdxwJJBwWlZ1IiJw4VUbcRXM/KMMqU8d4HYZ
-         LsXMmjb18O6AP10wJ9WLSFg5Bm6nm1Xx7Rp4aAr6GNOWaj2ZHJsHXCrzrSxcFUE3opx8
-         iI9H0dw5iQQoMtFPHple2oOsd9vc0GMgrqflrAhEuOLtFlzQvqtjUeuctU6svc95ONYe
-         u+DwmcSJ9iiGHqVBT1TSaD3jqQZHHsOevRH8Ux6LTLTZ/p68eCsc6+G2uGkksw2cQS0l
-         lzlQ==
-X-Gm-Message-State: AOAM5316XOkuJLm6mmJFZFsME7SDEws3k6SUeDrmASH0vQnuu7h7ayjC
-        Zv7OVuGHo/BEgXN62eeHWVCVso+LlMPPqPA/sqg=
-X-Google-Smtp-Source: ABdhPJxZCLP+mddS3lhVDgJN0jp2gMO9M1+8VzhY+veemJYIZYG/1ydxrTn3ALlotQ5/YbUymtiyTdwL1VhxymGR2FE=
-X-Received: by 2002:a25:346:: with SMTP id 67mr11229803ybd.345.1634292897782;
- Fri, 15 Oct 2021 03:14:57 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=mNH6ovSrsZzXaFK7GnPEbneieuXh4e/GszJJRRWO4tU=;
+        b=DWH8coNLkGX8ysDkm13o4Z/V94oVtue5a4mrQfVa3Kiuc9jOkwQEd+1vtDSHM38gf0
+         qImtU8zOkDSiWknp3kbA/hLvqBnGQJcB8nAokzusqhxlwdvmy7d3ZslmwLTV3IlsG1TU
+         FGrafJ7S/Ukf5wk/LKXCKWDd0YCV9SKjOYsJp2bonu9HZS3QxebJj6gUwVFSRHMqOFcG
+         Z1lu3et8eeTKDSOF0L7cuNJGVj+nkHiGWA1n20rSnxBtF1PLlDgMQdIoFT1OSIGLhh9n
+         1qgI/ViasFaETVGv9D7P43mtx29ERxMlTjHlpETVhVrzgdORyFBpCCjrvZwSiSq/OAD9
+         6fJQ==
+X-Gm-Message-State: AOAM5319dsE7/jY9qjztCmGrj3xU2hGl03zXgstCe1md7jYbscUkXkxX
+        +iwFd3HLOUfhiJtbjJAtf2Gt71Xo3Jgd2qbe7vfGFgfEOPnjarPbEbP3F+2rvqgPqRY0GgqUaSw
+        AhNJ0aG2S2v3r0v7lPM5I1nMFiE91GE7a4QpRopQ4xg==
+X-Received: by 2002:a2e:b054:: with SMTP id d20mr11430714ljl.507.1634292889125;
+        Fri, 15 Oct 2021 03:14:49 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzj8pWt+ZNhjXMi79/AJl3fIpOyA6FNnV6Krm2En23aHOzWTdTC/H+JaioClNMPNag6ble8/A==
+X-Received: by 2002:a2e:b054:: with SMTP id d20mr11430687ljl.507.1634292888834;
+        Fri, 15 Oct 2021 03:14:48 -0700 (PDT)
+Received: from [192.168.3.161] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
+        by smtp.gmail.com with ESMTPSA id 15sm465081lfy.86.2021.10.15.03.14.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Oct 2021 03:14:48 -0700 (PDT)
+Subject: Re: [PATCH v4 2/2] [RFT] clk: samsung: exynos5433: update apollo and
+ atlas clock probing
+To:     Will McVicker <willmcvicker@google.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     kernel-team@android.com,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20211014195347.3635601-1-willmcvicker@google.com>
+ <20211014195347.3635601-3-willmcvicker@google.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <7cd65a6c-4d6b-a287-9a12-c81eec87e9df@canonical.com>
+Date:   Fri, 15 Oct 2021 12:14:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20211015100941.17621-1-heinrich.schuchardt@canonical.com>
-In-Reply-To: <20211015100941.17621-1-heinrich.schuchardt@canonical.com>
-From:   Bin Meng <bmeng.cn@gmail.com>
-Date:   Fri, 15 Oct 2021 18:14:46 +0800
-Message-ID: <CAEUhbmUSmi9mbiHpatBjGgRjrtyJPms9BRmyBPs5BWeVb7n1Nw@mail.gmail.com>
-Subject: Re: [PATCH 1/1] dt-bindings: reg-io-width for SiFive CLINT
-To:     Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
-Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Guo Ren <guoren@linux.alibaba.com>, Xiang W <wxjstz@126.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Atish Patra <atish.patra@wdc.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Anup Patel <anup.patel@wdc.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        OpenSBI <opensbi@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211014195347.3635601-3-willmcvicker@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 15, 2021 at 6:09 PM Heinrich Schuchardt
-<heinrich.schuchardt@canonical.com> wrote:
->
-> The CLINT in the T-HEAD 9xx processors do not support 64bit mmio access to
-> the MTIMER device. The current schema does not allow to specify this.
->
-> OpenSBI currently uses a property 'clint,has-no-64bit-mmio' to indicate the
-> restriction. Samuael Holland suggested in
-> lib: utils/timer: Use standard property to specify 32-bit I/O
-> https://github.com/smaeul/opensbi/commit/b95e9cf7cf93b0af16fc89204378bc59ff30008e
-> to use "reg-io-width = <4>;" as the reg-io-width property is generally used
-> in the devicetree schema for such a condition.
->
-> A release candidate of the ACLINT specification is available at
-> https://github.com/riscv/riscv-aclint/releases
->
-> Add reg-io-width as optional property to the SiFive Core Local Interruptor.
->
-> Signed-off-by: Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
+On 14/10/2021 21:53, Will McVicker wrote:
+> Use the samsung common clk driver to initialize the apollo and atlas
+> clocks. This removes their custom init functions and uses the
+> samsung_cmu_register_one() instead.
+> 
+> Signed-off-by: Will McVicker <willmcvicker@google.com>
 > ---
->  Documentation/devicetree/bindings/timer/sifive,clint.yaml | 7 +++++++
->  1 file changed, 7 insertions(+)
->
-> diff --git a/Documentation/devicetree/bindings/timer/sifive,clint.yaml b/Documentation/devicetree/bindings/timer/sifive,clint.yaml
-> index a35952f48742..266012d887b5 100644
-> --- a/Documentation/devicetree/bindings/timer/sifive,clint.yaml
-> +++ b/Documentation/devicetree/bindings/timer/sifive,clint.yaml
-> @@ -41,6 +41,13 @@ properties:
->    reg:
->      maxItems: 1
->
-> +  reg-io-width:
-> +    description: |
-> +      Some CLINT implementations, e.g. on the T-HEAD 9xx, only support
-> +      32bit access for MTIMER.
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    const: 4
+>  drivers/clk/samsung/clk-exynos5433.c | 120 +++++++++++----------------
+>  1 file changed, 48 insertions(+), 72 deletions(-)
+> 
+> diff --git a/drivers/clk/samsung/clk-exynos5433.c b/drivers/clk/samsung/clk-exynos5433.c
+> index f203074d858b..cec66d2a4ee2 100644
+> --- a/drivers/clk/samsung/clk-exynos5433.c
+> +++ b/drivers/clk/samsung/clk-exynos5433.c
+> @@ -3675,44 +3675,32 @@ static const struct exynos_cpuclk_cfg_data exynos5433_apolloclk_d[] __initconst
+>  	{  0 },
+>  };
 
-But this is not a "sifive,clint" anyway. Should there be a new
-dt-bindings for T-Head clint variant?
 
-> +
->    interrupts-extended:
->      minItems: 1
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-Regards,
-Bin
+
+Best regards,
+Krzysztof
