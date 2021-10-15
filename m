@@ -2,83 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFF7542FC54
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 21:42:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C356642FC5B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 21:43:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242769AbhJOToY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 15:44:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46182 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238197AbhJOToX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 15:44:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DB25461181;
-        Fri, 15 Oct 2021 19:42:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634326936;
-        bh=F/qhtQq884fDhoH6bClRl635RI5UPxO4klw1oW2Avd4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Z1fGPf/iD9Yt34acPBNN0wz3lnqB1pa1NyvXU39zOD4BWEEhxYB1F/omV0s+hiEf0
-         V8M+DMJU+I/ysApG1kqHzOS7nT6eWdTUksVKtWkwkorXcTDkUlfAOlh12gLbjG/R7V
-         TsTnDIiHV5FgLjfhQOrNY3tPGNaEoaRFNtjoZm/+b5wuHK+y63udXCe7J+tto97JQf
-         sfNNDatk5pjQ1oAE/GqJI8x2N4TflWpH8Fz+nnpxikY46ELTjICjEj14e6XgY3XPNC
-         +P0CaNaRroce6aa5k2nkAY27d1yqEc9BCg3MTsbjzFUgiImakoFAa2GYCgthNTtu6e
-         989nFUZWMY7mw==
-From:   Mark Brown <broonie@kernel.org>
-To:     alsa-devel@alsa-project.org,
-        Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>, wtli@nuvoton.com,
-        open list <linux-kernel@vger.kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, Alexander.Deucher@amd.com,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Sunil-kumar.Dommati@amd.com
-Subject: Re: [PATCH V2 1/3] ASoc: amd: create platform device for VG machine driver
-Date:   Fri, 15 Oct 2021 20:42:02 +0100
-Message-Id: <163432688461.1314975.2857186739241189327.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211014071714.836410-1-Vijendar.Mukunda@amd.com>
-References: <20211014071714.836410-1-Vijendar.Mukunda@amd.com>
+        id S242785AbhJOTpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 15:45:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44114 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242779AbhJOTp3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 15:45:29 -0400
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D582C061762
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 12:43:22 -0700 (PDT)
+Received: by mail-oi1-x22d.google.com with SMTP id o83so14572176oif.4
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 12:43:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=l0+h2/ZRa+qjLW8dxix8MACMEy37KEPKQH8VyQ2MSVw=;
+        b=BFOiMCYGbYe6Lz8Dmjn78QbsW3EnVgyQwxdhrh9g06c8Fm/3Uzdq10bJB/vGqLKGSw
+         2Y8LCxnh/xTkroly7cz9pd0Z7iu+QjKCEbBCybRRyq/TPnPgZ9Z6iX0Ek//rNDgN9m4p
+         dVEPXp+WGgn2BicFuy26ULhGsRF0wpHquSO8w=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=l0+h2/ZRa+qjLW8dxix8MACMEy37KEPKQH8VyQ2MSVw=;
+        b=fkD+BXZogqQUpnM2zJOFi+R/j+U16GpgmfE4jQS6hq0eNjMmiPmBHzYCrSSN8hrz+g
+         e638rVXKYsSzSIHulBziHi+xagv+uHN7EF3CvrzW0F8pMzeoSx2SEoq5KFPjdQPWMzAA
+         XfKNATvnwoCcPGZyWYzE3DN0cG17IsGQYuUWllVOPJAkOYP4jyLv+Z6ql6XEvMCv2473
+         q/9bj0XbSCpPtU3JsMznHdckc5SVHyLmBtAFLdZVILzWu03vg1kgqF8kPVWfEFCyEegn
+         fSUV0JKVQKzE7/SVO+qkD3CzBlFg3o0d32Rdlx1Ooc7DEkpMXO3vAbeV9JPUzwzzLHpx
+         zjDA==
+X-Gm-Message-State: AOAM533vB+A2yx+/V0IgGdIn9JTN5i1JRi89nmbaBFQT/z7I9TRVZEId
+        I4yUEj7TD3oo8AduHbS9zeexS2KjdVE06WZCnuURBg==
+X-Google-Smtp-Source: ABdhPJyVIq562JmyFECfhrNyOu7gwPgWE/JD6BOexAsIMAqD22SVUUOfEtvXgMTFtpWJlfzpaXksP++FfDyV5v8Fu/U=
+X-Received: by 2002:a05:6808:23c2:: with SMTP id bq2mr3750281oib.32.1634327000551;
+ Fri, 15 Oct 2021 12:43:20 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Fri, 15 Oct 2021 14:43:20 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211013100005.GB9901@lpieralisi>
+References: <1633628923-25047-1-git-send-email-pmaliset@codeaurora.org> <20211013100005.GB9901@lpieralisi>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Fri, 15 Oct 2021 14:43:20 -0500
+Message-ID: <CAE-0n52fZZkWt5KxF8gq0D55f_joq0v2sBBp81Gts8cBt6fJgg@mail.gmail.com>
+Subject: Re: [PATCH v12 0/5] Add DT bindings and DT nodes for PCIe and PHY in SC7280
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Prasad Malisetty <pmaliset@codeaurora.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, bhelgaas@google.com,
+        robh+dt@kernel.org, svarbanov@mm-sol.com,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dianders@chromium.org, mka@chromium.org, vbadigan@codeaurora.org,
+        sallenki@codeaurora.org, manivannan.sadhasivam@linaro.org,
+        linux-pci@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Oct 2021 12:47:08 +0530, Vijendar Mukunda wrote:
-> Create platform device for Vangogh machine driver.
-> 
-> 
+Quoting Lorenzo Pieralisi (2021-10-13 03:00:05)
+> On Thu, Oct 07, 2021 at 11:18:38PM +0530, Prasad Malisetty wrote:
+> > Prasad Malisetty (5):
+> >   dt-bindings: pci: qcom: Document PCIe bindings for SC7280
+> >   arm64: dts: qcom: sc7280: Add PCIe and PHY related nodes
+> >   arm64: dts: qcom: sc7280: Add PCIe nodes for IDP board
+> >   PCI: qcom: Add a flag in match data along with ops
+> >   PCI: qcom: Switch pcie_1_pipe_clk_src after PHY init in SC7280
+> >
+> >  .../devicetree/bindings/pci/qcom,pcie.txt          |  17 +++
+> >  arch/arm64/boot/dts/qcom/sc7280-idp.dts            |   8 ++
+> >  arch/arm64/boot/dts/qcom/sc7280-idp.dtsi           |  50 +++++++++
+> >  arch/arm64/boot/dts/qcom/sc7280-idp2.dts           |   8 ++
+> >  arch/arm64/boot/dts/qcom/sc7280.dtsi               | 118 +++++++++++++++++++++
+> >  drivers/pci/controller/dwc/pcie-qcom.c             |  95 +++++++++++++++--
+> >  6 files changed, 285 insertions(+), 11 deletions(-)
+>
+> I applied patches [4-5] to pci/qcom for v5.16, thanks I expect other
+> patches to go via the relevant trees.
+>
 
-Applied to
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/3] ASoc: amd: create platform device for VG machine driver
-      commit: 832a5cd2d3d9e195af2fe272999af8948383ce9b
-[2/3] ASoC: amd: add vangogh machine driver
-      commit: 34a0094b9ff7b7544591a6841f9b61747033f292
-[3/3] ASoC: amd: enable vangogh platform machine driver build
-      commit: 96792fdd77cd19fcf2368e7c19bb8b78557ae425
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+Lorenzo, can you pick up patch 1 too? It's the binding update for the
+compatible string used in patch 4-5.
