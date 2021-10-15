@@ -2,99 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5591F42EB44
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 10:14:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A4D242EB42
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 10:14:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236682AbhJOIQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 04:16:33 -0400
-Received: from smtp21.cstnet.cn ([159.226.251.21]:60226 "EHLO cstnet.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236151AbhJOIQc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 04:16:32 -0400
-Received: from localhost.localdomain (unknown [124.16.138.128])
-        by APP-01 (Coremail) with SMTP id qwCowAAXHAhCOGlhinkUBA--.25093S2;
-        Fri, 15 Oct 2021 16:13:54 +0800 (CST)
-From:   Jiasheng Jiang <jiasheng@iscas.ac.cn>
-To:     vkoul@kernel.org, lgirdwood@gmail.com, broonie@kernel.org,
-        perex@perex.cz, tiwai@suse.com
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        Jiasheng Jiang <jiasheng@iscas.ac.cn>
-Subject: [PATCH v2] ASoC: soc-compress: prevent the potentially use of null pointer
-Date:   Fri, 15 Oct 2021 08:13:53 +0000
-Message-Id: <1634285633-529368-1-git-send-email-jiasheng@iscas.ac.cn>
-X-Mailer: git-send-email 2.7.4
-X-CM-TRANSID: qwCowAAXHAhCOGlhinkUBA--.25093S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Ww4kKFW8Kr4xAFy3Jr1kZrb_yoW8KF1Upr
-        s7WrZ7tFyfJr4Ivw1rA3yF9F1fGryxuF409w1aq34xAr43XFsxWr1UtrWvyFy7ArZ8t34D
-        X3sFv3y7X3Z8AFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkS14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
-        6F4UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
-        0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
-        jxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr
-        1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8ZwCF
-        04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r
-        18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vI
-        r41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr
-        1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAI
-        cVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjfUeHUDDUUUU
-X-Originating-IP: [124.16.138.128]
-X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
+        id S236640AbhJOIQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 04:16:21 -0400
+Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:35243 "EHLO
+        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236164AbhJOIQU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 04:16:20 -0400
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailnew.west.internal (Postfix) with ESMTP id 85FF52B01252;
+        Fri, 15 Oct 2021 04:14:10 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Fri, 15 Oct 2021 04:14:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=A0sZcq8K/bMEVM6Z/GmabDSwCYf
+        1knmEGs8b2zvlHhQ=; b=ZzfVVTn6dbh38/j3OKZRepxl9kEa3guxDRvTHgZd9UZ
+        5v475Ji0wfwDq8R0BC5n6i6uI1xKhG5QXS0vU3PQrvzwCJVxNVwe4Q3512+yPov1
+        FYna5xLUZmgHh55dF+5IblbiJhBiLy5Lk/tOfcYAdbifrOTRSWP62RBtkhSZfW3i
+        noblBfXvaOS8rffbJ0VqHO6LzAmEdQpjLKXszHkSSGlYTUuL5UKzyeB7liYAZYFA
+        2Ac2+WCIL4kXLzCZd/+moJDiL7W5ZhzTRIdM+zB9s7rqraSsP/ZvtbWGUbH3+yfT
+        +XyOdsbt1tSkpZPPAY/l1GmDYFRVKSc1QEpg8utzK4A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=A0sZcq
+        8K/bMEVM6Z/GmabDSwCYf1knmEGs8b2zvlHhQ=; b=ktnorKikd3Z9v0GZ3qijQN
+        mrCxmSbMkQNrE3w3/8mM0hlt+mshhb7YU59TimV2tezcpmFUJPCdswYfjfG7ro47
+        PDHegrv1krJQQgFNCwLew5Rpfifynr/p6Dzwe29TSHr18aMmrAwv9eoZhGwTenAs
+        /eaS/6rtthi1IAm/k3FWU9/PaxqnQaAnv2pk1NlhQvD4jCGfJSEowNmD9yyxhv36
+        R0s/LDMbPXQ7a6tHTzn2lo0nIaLXbG4hI1shprTDIcCKT+wMmhVgqee0b8k0sghz
+        +6pzsualiK/tq28vlmbADF/pwGmUP95FCFO/dEHC1SUgpoaYi8h9io+lPLZcDmNw
+        ==
+X-ME-Sender: <xms:UjhpYRPTiuE9SZFAtEfWxUkUSryt8k573jnHMcFlMSCE7rEiGbJZIQ>
+    <xme:UjhpYT8NORnxJzMdUwfTNbaLl-iZE-PH8Vsalz4pXJhFAHbXW010MTQsTbryIUES1
+    B8r9WcroCVgRg>
+X-ME-Received: <xmr:UjhpYQSWpc5je8X1tcnumCxR0zoEDhW2JunBMtH2lfDL3xU-QQQoq9RWQbEQfk5wAgAOt1NkTHu_7vMzGhe8Ety9oTb2A68l>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvddugedgtdduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
+    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
+    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucevlhhushht
+    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhh
+    drtghomh
+X-ME-Proxy: <xmx:UjhpYdvj28l7TDdqA2-jLKTA9OEvEj_vWHcs9zbvFXVtgalUSfFNwQ>
+    <xmx:UjhpYZeKfrVBkpFmWCOcb47rgpnfb4Vfl2NuJXkDQc5pbTelAOf4Ug>
+    <xmx:UjhpYZ1Ify1N6dGT5gBMC7Is-KSKADbopgPoGoIPmpwcQbyPWvxJlA>
+    <xmx:UjhpYaXwCA88UchI6-C-P-N4WqV4iFPayIOkbPqljl8sh1hLc2T5STfKXGE>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 15 Oct 2021 04:14:09 -0400 (EDT)
+Date:   Fri, 15 Oct 2021 10:14:07 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Juergen Gross <jgross@suse.com>
+Cc:     linux-usb@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-kernel@vger.kernel.org,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>
+Subject: Re: [PATCH v6 1/3] usb: Add Xen pvUSB protocol description
+Message-ID: <YWk4T2HTAD3VJMYR@kroah.com>
+References: <20211013075207.13910-1-jgross@suse.com>
+ <20211013075207.13910-2-jgross@suse.com>
+ <YWbKnEMvHGU/rv96@kroah.com>
+ <54da6414-4183-2d0c-cc24-a9471ed8332b@suse.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <54da6414-4183-2d0c-cc24-a9471ed8332b@suse.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is one call trace that snd_soc_register_card()
-->snd_soc_bind_card()->soc_init_pcm_runtime()
-->snd_soc_dai_compress_new()->snd_soc_new_compress().
-In the trace the 'codec_dai' transfers from card->dai_link,
-and we can see from the snd_soc_add_pcm_runtime() in
-snd_soc_bind_card() that, if value of card->dai_link->num_codecs
-is 0, then 'codec_dai' could be null pointer caused
-by index out of bound in 'asoc_rtd_to_codec(rtd, 0)'.
-And snd_soc_register_card() is called by various platforms.
-Therefore, it is better to add the check in the case of misusing.
-And because 'cpu_dai' has already checked in soc_init_pcm_runtime(),
-there is no need to check again.
-Adding the check as follow, then if 'codec_dai' is null,
-snd_soc_new_compress() will not pass through the check 
-'if (playback + capture != 1)', avoiding the leftover use of
-'codec_dai'.
+On Fri, Oct 15, 2021 at 10:07:35AM +0200, Juergen Gross wrote:
+> On 13.10.21 14:01, Greg KH wrote:
+> > On Wed, Oct 13, 2021 at 09:52:05AM +0200, Juergen Gross wrote:
+> > > Add the definition of pvUSB protocol used between the pvUSB frontend in
+> > > a Xen domU and the pvUSB backend in a Xen driver domain (usually Dom0).
+> > > 
+> > > This header was originally provided by Fujitsu for Xen based on Linux
+> > > 2.6.18.
+> > > 
+> > > Changes are:
+> > > - adapt to Linux kernel style guide
+> > > - use Xen namespace
+> > > - add lots of comments
+> > > - don't use kernel internal defines
+> > > 
+> > > Signed-off-by: Juergen Gross <jgross@suse.com>
+> > > Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+> > > ---
+> > >   include/xen/interface/io/usbif.h | 421 +++++++++++++++++++++++++++++++
+> > >   1 file changed, 421 insertions(+)
+> > >   create mode 100644 include/xen/interface/io/usbif.h
+> > > 
+> > > diff --git a/include/xen/interface/io/usbif.h b/include/xen/interface/io/usbif.h
+> > > new file mode 100644
+> > > index 000000000000..9494b1c9be99
+> > > --- /dev/null
+> > > +++ b/include/xen/interface/io/usbif.h
+> > > @@ -0,0 +1,421 @@
+> > > +/*
+> > > + * usbif.h
+> > > + *
+> > > + * USB I/O interface for Xen guest OSes.
+> > > + *
+> > > + * Copyright (C) 2009, FUJITSU LABORATORIES LTD.
+> > > + * Author: Noboru Iwamatsu <n_iwamatsu@jp.fujitsu.com>
+> > > + *
+> > > + * Permission is hereby granted, free of charge, to any person obtaining a copy
+> > > + * of this software and associated documentation files (the "Software"), to
+> > > + * deal in the Software without restriction, including without limitation the
+> > > + * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+> > > + * sell copies of the Software, and to permit persons to whom the Software is
+> > > + * furnished to do so, subject to the following conditions:
+> > > + *
+> > > + * The above copyright notice and this permission notice shall be included in
+> > > + * all copies or substantial portions of the Software.
+> > > + *
+> > > + * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+> > > + * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+> > > + * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+> > > + * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+> > > + * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+> > > + * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+> > > + * DEALINGS IN THE SOFTWARE.
+> > > + */
+> > 
+> > Please use a SPDX line and not license "boilerplate" text like this :(
+> 
+> Okay. Is this your only concern for this series? Or is it a blocking
+> point for you before looking into it in more detail?
 
-Fixes: 467fece ("ASoC: soc-dai: move snd_soc_dai_stream_valid() to soc-dai.c")
-Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
----
- sound/soc/soc-compress.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+It was an easy thing to see at first glance that you hadn't taken my
+previous comment about this seriously :(
 
-diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
-index b4f5935..67c3df1 100644
---- a/sound/soc/soc-compress.c
-+++ b/sound/soc/soc-compress.c
-@@ -535,12 +535,14 @@ int snd_soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num)
- 	}
- 
- 	/* check client and interface hw capabilities */
--	if (snd_soc_dai_stream_valid(codec_dai, SNDRV_PCM_STREAM_PLAYBACK) &&
--	    snd_soc_dai_stream_valid(cpu_dai,   SNDRV_PCM_STREAM_PLAYBACK))
--		playback = 1;
--	if (snd_soc_dai_stream_valid(codec_dai, SNDRV_PCM_STREAM_CAPTURE) &&
--	    snd_soc_dai_stream_valid(cpu_dai,   SNDRV_PCM_STREAM_CAPTURE))
--		capture = 1;
-+	if (codec_dai) {
-+		if (snd_soc_dai_stream_valid(codec_dai, SNDRV_PCM_STREAM_PLAYBACK) &&
-+		    snd_soc_dai_stream_valid(cpu_dai,   SNDRV_PCM_STREAM_PLAYBACK))
-+			playback = 1;
-+		if (snd_soc_dai_stream_valid(codec_dai, SNDRV_PCM_STREAM_CAPTURE) &&
-+		    snd_soc_dai_stream_valid(cpu_dai,   SNDRV_PCM_STREAM_CAPTURE))
-+			capture = 1;
-+	}
- 
- 	/*
- 	 * Compress devices are unidirectional so only one of the directions
--- 
-2.7.4
+> IOW: does it make sense for me to wait for further comments before
+> sending a new version of the series?
 
+Sure, you can fix this up and resend, it will take a while to review the
+host controller code...
+
+thanks,
+
+greg k-h
