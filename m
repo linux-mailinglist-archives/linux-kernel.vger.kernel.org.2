@@ -2,101 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4904242E957
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 08:50:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E668742E95B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 08:50:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235717AbhJOGwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 02:52:30 -0400
-Received: from mail-eopbgr1300119.outbound.protection.outlook.com ([40.107.130.119]:23712
-        "EHLO APC01-HK2-obe.outbound.protection.outlook.com"
+        id S235743AbhJOGwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 02:52:46 -0400
+Received: from mail-eopbgr1310105.outbound.protection.outlook.com ([40.107.131.105]:45670
+        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230512AbhJOGw0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 02:52:26 -0400
+        id S235736AbhJOGwo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 02:52:44 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=f8Sthsww8ZwFhxFv8yW9olNA1QY/IDRnJkU6itIIA6/Hh5bNYdKTlAwFZO8UFj5ZWguuEYwxqe+3raNowSm+/P9+lyBfvg2Jwa27ISvOO3G1kiH4ICaI/AY9Zzi8iAZSJNBSv2oPBehhMhXwlRinxZYj7r9Zj5JaMUJOhJtoZ5dldhDWfnQPzutBBX/o1iqw9+Qy/RWenBtHwGnR0CVfLy4hgcUkjrditxmZrvqSoK/eBGQLWFVFqFzdkexw369Can79Eaa1qTbR79taKI7oUyxUJDLzjGMV6P8fW0P4mM/xqcE5CwfefmlGnoFK7m+xjH7x3L2iRqM8unUhaDNBow==
+ b=dYaxlDKBq8r+6b3CIVqfuiWfUTs0R6j4t+raLXtBKQHSBHIRW1dcWznt+SciL66N+ARaISBbjD8zkQMc8B4E/+b0C507rzt4PgrfOoBzo73M5OppNpXEYOSdaNCG80eBW1VanVEQRkNW/XaJsgJOf+LKP7fSlOMM1YxORs8LDA8564HrfsnlGYC9BzFkLpR1lMflDCuFeeBdhKzUzOnXs+JBKJolJcFzgGngPgs18Y36qyM5jAJtU0taHJB26QkjJRL47kZqBSKC5XR2k9EN6AWGypbOtRlqeXfMfSCf6XW3E0yBGanQgLJqsRoeNuGZJ2I79ZWJaTheUjj2FnUaOA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=qjU/Brlt4y/6SU8qHU7CarNqesDzUx1yHS5X+zbUYiE=;
- b=fc/7R6UVZDE3UJ488Kvmaa5Za8NvxFTNRqiTj6ycmSE7RVlR304cwWVeIFqcsSxu3EJLWMdMFE4AwkC+rakW7ds+LlpQdkmryS5QXuyXvxF3HuNW/m8/Dl1AOpRJ3Ho5Np/sM29/vS5aLjlrkHRPrZ/kbQ2YLDJNopNW2rSrbXOTngaxTus0i3+PHKJE18m7E5eVopHpv2K+b+K9gaeGKO74jxkv6mYM/tdxvWak4/ZrS3arql/DQ7b3zxCabhlFr1iMzH9mx6ryE1ptoWyYHISyM2zosDWQXGRH3wID0A34PkQht9IX5mqy47fy/QKIEDMy8m8kwPJ1eSSaR8+89A==
+ bh=fuQA6UBBiB7mS9UHJ1UsRYDRHO0MuFRyDgvVKjl36fc=;
+ b=UdWEivGT0FxsWEMSOBxn7vmkpYpdd6uLzivKCLBaE3+VJ+AwetR2GOZohYJ6r3QihoRIsho7h3RzZLEiCWFsO3kyEBQ1XCslsxorXx97PW3cT6KwZaIaMXrF/T9c5d++0AkG6G+oxWD12e40vV9k1gGDWEa9skcKZcIX/wW7oYPtqbTz7mZjDLSdlhCt0EhKwVzGSKMpqZSnm5mzxxyPY+WrgsyuDckkZRWZNmfkSc9zUSNJ85say0p8OTthUH5X4NfYYhPzm1JsScIKj95OFsQIF9Gjnn91dWpS9qBdnWA+WvqJOZKj9pmAyBYcK34Ub69+jiwPUrVoKADO+CTqFQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
  dkim=pass header.d=vivo.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
  s=selector2-vivo0-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qjU/Brlt4y/6SU8qHU7CarNqesDzUx1yHS5X+zbUYiE=;
- b=hAoBS6vtLmJfRvnZZOCiSU7o8fP95XQrsoggZhX/E94e4nI/29Azsv7u0a7Lg4kA3Qf224BlaP1TfwZ/WAhBrc2HW19pW/4BktiA8drfr/NI9h6JU36BQKwpeEiWQc7KhM1FklG+1xVbjTZprrrQw98FQbZnfgu+zU+O0de09Kc=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=vivo.com;
+ bh=fuQA6UBBiB7mS9UHJ1UsRYDRHO0MuFRyDgvVKjl36fc=;
+ b=GYW35ROdfTRbib5gk9DM7Zlp4GCStC/Az0HXzKe6b3kWID0eSajA0bwBZhEbumwvBLpjqk2WbsW7t5+2O/LYJ8NZF5DzN8cRM4UNvEUhpge9ivVgQgf9Uh0J7X+vg/WAxtfIO6xl7dihr721oUinBKjq2V1um3mmMcEI8qJzSbE=
+Authentication-Results: grandegger.com; dkim=none (message not signed)
+ header.d=none;grandegger.com; dmarc=none action=none header.from=vivo.com;
 Received: from SL2PR06MB3082.apcprd06.prod.outlook.com (2603:1096:100:37::17)
- by SL2PR06MB3388.apcprd06.prod.outlook.com (2603:1096:100:3c::18) with
+ by SL2PR06MB3003.apcprd06.prod.outlook.com (2603:1096:100:33::12) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.16; Fri, 15 Oct
- 2021 06:50:18 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.18; Fri, 15 Oct
+ 2021 06:50:35 +0000
 Received: from SL2PR06MB3082.apcprd06.prod.outlook.com
  ([fe80::4c9b:b71f:fb67:6414]) by SL2PR06MB3082.apcprd06.prod.outlook.com
  ([fe80::4c9b:b71f:fb67:6414%6]) with mapi id 15.20.4608.017; Fri, 15 Oct 2021
- 06:50:18 +0000
+ 06:50:34 +0000
 From:   Qing Wang <wangqing@vivo.com>
-To:     linux-kernel@vger.kernel.org
+To:     Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc:     Qing Wang <wangqing@vivo.com>
-Subject: [PATCH] most: replace snprintf in show functions with sysfs_emit
-Date:   Thu, 14 Oct 2021 23:50:10 -0700
-Message-Id: <1634280610-4768-1-git-send-email-wangqing@vivo.com>
+Subject: [PATCH] net: can: replace snprintf in show functions with sysfs_emit
+Date:   Thu, 14 Oct 2021 23:50:24 -0700
+Message-Id: <1634280624-4816-1-git-send-email-wangqing@vivo.com>
 X-Mailer: git-send-email 2.7.4
 Content-Type: text/plain
-X-ClientProxiedBy: HK2PR06CA0018.apcprd06.prod.outlook.com
- (2603:1096:202:2e::30) To SL2PR06MB3082.apcprd06.prod.outlook.com
+X-ClientProxiedBy: HKAPR04CA0001.apcprd04.prod.outlook.com
+ (2603:1096:203:d0::11) To SL2PR06MB3082.apcprd06.prod.outlook.com
  (2603:1096:100:37::17)
 MIME-Version: 1.0
-Received: from ubuntu.localdomain (218.213.202.189) by HK2PR06CA0018.apcprd06.prod.outlook.com (2603:1096:202:2e::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.4608.16 via Frontend Transport; Fri, 15 Oct 2021 06:50:17 +0000
+Received: from ubuntu.localdomain (218.213.202.189) by HKAPR04CA0001.apcprd04.prod.outlook.com (2603:1096:203:d0::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.4587.25 via Frontend Transport; Fri, 15 Oct 2021 06:50:33 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0443427f-a91d-468e-905d-08d98fa80c93
-X-MS-TrafficTypeDiagnostic: SL2PR06MB3388:
+X-MS-Office365-Filtering-Correlation-Id: 999f1236-87fe-4ead-527a-08d98fa816ae
+X-MS-TrafficTypeDiagnostic: SL2PR06MB3003:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SL2PR06MB338846FC334168A952C13254BDB99@SL2PR06MB3388.apcprd06.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:187;
+X-Microsoft-Antispam-PRVS: <SL2PR06MB30032A2B37D7DF4F723F9316BDB99@SL2PR06MB3003.apcprd06.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1388;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: c7u7xQhRQ0gJvVmr9yJpIc8Pk7aEzw196tlwPf1hHWlF2VwifoDf2HbcUeT6HnhM6wDohTroDnPO89ioz1lxXjvk7MdWBisyWIF0UgeLWdxBp3lXyPOsx056zTi5QIfmOKBj35/xjhHxwTlnuMGUCnPuFFwoSAVVjVOMmlmsvTEK5Z0zw+oq5iroP/VKERq0z86aiEKz01e2LVcw1399A8hyam5Tmabn8vAQFfyGUvhNXL+bKUXwmVZ0XXyOiHpureIA3opHreq6hfwXTT+Up4ItoM8anGt3QKD3jBoPc06ZSekyMgLLxx03DQS9qLDKvWp9rVaVOpdn39zaMobF9R6IP56rV/D83kgc83H54opg5kX0Wv1hnYMX/PB6cyNu/ZbMy/EwrRtFTiVO0j4S56HDvCKZMLLxPHG+rdVIJfYx60XCxbJv+LAevaKcIFZmrjmbyUmlpcsmv86PMP0WoTMxGv9T3AGYlbrI4TE38fn/4I1ysJe8MP0F8QnckS9s3RJj9ft7mIuCsO9Vu+7Yz3cogl1sq4s0jhHVMdni8jVRFXuXYghP95+MQryRsopiNM/OCgWHyK3sn/z91i/P7hr7dXwxP9cCYDaNll06GrQT3SWKFQtLolLgl5j5c1TgkijZJIxOyJtM9eXJho2LOeIzRpLg7vRZtmVTYerqTcdVfox5K9rxAtp9o4wqv4PnsI19zZ7dq99wJknN5y0kwg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SL2PR06MB3082.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(38350700002)(38100700002)(2616005)(316002)(2906002)(26005)(107886003)(8676002)(6916009)(66556008)(83380400001)(186003)(66946007)(6486002)(956004)(508600001)(36756003)(4326008)(66476007)(6666004)(6506007)(8936002)(5660300002)(86362001)(6512007)(52116002);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: lcLLHTJwVe3K6yaP36toMRx/HA09OmUh1Xg0S+9U0DgAwShkO/Pp+CbQOgj9F+FP4bVrv4q5MBLzMygMk/xE/XWh7VjrrVUix9ptDROBJKDSugqvHTwBQXgi19apMM5NbVer8sKotgqZ2wKex69WyfLNZG0NV3v5x5WGQ/wCy8TT6AyvD/2s7GEGveIUucah0Sni8rX9X/2Hn2i5td0u2B1rB8QE1xfwV6pFimSmJlyFYz9xc0roy3GptQlRcKGCPB1bpQKKyaPQWlodIB0BkeJT7iuopHuCal9mc8n2GvDyAiQuLTtvFKgOYYdVw4v0l0O5VeJxbO+pHgF0zX6B8f/kVKpE3PWD8ldKVz64T4XWIs/YsrOtntX/hKpXt6sqCVIvrYfuHWrRTCgrkaFBoenIuSfbRAwJdnAMQLuhrd6S1kUgaD6dSC0Hw8E7aNdHYUSEULkLq6i0FRjQ/VJFcZGqmt/4xnRKAkyjWosybnLbjMiFakiOYxPU6o2lpyMHtacaH7mRp7dvcR/yRMIRS6H8goT4TODrERncOu7FXh8K99u6/SEdt2DyiUK6K9GPuR5MRTTX/RyuP/DFLyHHsLtyydvHiU2w3YJrdXD44hPh1pr9QEwqtR+tqdWGbCVlalyN8aE2DLDmUUP9iLeqsqEpY6N+P84wcqYvBtxBqUn08ASSKQfE6jX3xt22wpgwIL2t7hWEZybyu5XUJZcSV1w2hzSbyFOzDmYH5dyqhLQ=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SL2PR06MB3082.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66556008)(5660300002)(8936002)(66476007)(83380400001)(316002)(2906002)(4326008)(36756003)(110136005)(7416002)(6666004)(66946007)(86362001)(186003)(956004)(2616005)(107886003)(26005)(6512007)(8676002)(508600001)(52116002)(38350700002)(6506007)(6486002)(921005)(38100700002);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?UxEY6ho/jG7uhDuWKSfUSfKfiAegLXo2R+ZfS2J7TKKalBQYbxIRstO+3DS3?=
- =?us-ascii?Q?9Ul+gQ4MSQju5/Gvqyqtqt3q4Q+59tyewJfR6dEL5DHO7DZjs3qUTRmlfP9l?=
- =?us-ascii?Q?nAFNGpfFtuAzMSttwfn6rPlXEt1ZMCV9CUjhMyzaM1Wkf3KyTywBwQhISFn3?=
- =?us-ascii?Q?buYbEyOOGUxQtq2sFPOZ1KrQxqDUatPVT0VyL4SoCjoPsIXh1KvbJWAMDC1w?=
- =?us-ascii?Q?9RivuzldY7YqQUG11HlX4knwtgiPiBvxmAeyiePLL11cqI6UiI7pXgUI+kEc?=
- =?us-ascii?Q?e2dS2boWKJrmdarX0isGStSfZ2zqLPq/HcaNGSuIuvmlN6DCIPjbgde7efgj?=
- =?us-ascii?Q?04K0i86SdVhdRgXiDRe4JM7gnW1FD8dfcCp0H4ms0+N/nfmqrWrRY8aazDQt?=
- =?us-ascii?Q?4At6SxJC5v/J8YSX1uGPSrxivyfUFm0xQXROjSyCrxaIZhZtXCAL9Tfukdmn?=
- =?us-ascii?Q?9RmhRehtS1UhlMc6gy8QgcTblkrXvpyBF9iXXrGKs1NeR5ymUCCc9WD2SK9s?=
- =?us-ascii?Q?ba/6JVoyQqcPGB7UgqisSgOTrRe4MjB22qfPoOaINOLbopIbPxS7SC90H+ZE?=
- =?us-ascii?Q?LJKeCY4W6aFdK2h/iwkSnuB6NftuKxCtUSE5sHcwWcYzGrdrqdrLG7huY+bq?=
- =?us-ascii?Q?Cb3+HdlMMrd6jQSDmTaec1EsXBmc2aAPbrfFxYjThsdOlqE++SRd16+tuKeE?=
- =?us-ascii?Q?vMh1jvzLwL3aXisA6fxm+Vc5nKOIg67NEhqGC0OVV74YQkhipQFv5igUWjjW?=
- =?us-ascii?Q?byBnyt74j2wLInZV7EC/lLPrNo+5MJXVMtRCQ9hkyN2pogVhTZZ68g4XJpfg?=
- =?us-ascii?Q?98LUI3Bjdkxd/9J9hN56/+9cKaeE16M/CGHciIKS5tnViI7+ZEqTe405xZ2d?=
- =?us-ascii?Q?Pdg2gdX0nitmv+1iwgrSY7RcH046w6UJPM6GtbUyZHn6aHdCirNqH52YhnbB?=
- =?us-ascii?Q?sEoeua6pUYzkUiOLgPtO9xCHeQFNjsatqTCq97l9fqv/ALIzp3/k92calE1r?=
- =?us-ascii?Q?jX3hwSBIGpCwMiMqCgjxKtT2n4oYDyfj5f/DvI5+aYMMSDTHbIBjy8GtF9iX?=
- =?us-ascii?Q?EhdM9Hw8FlT5jV1OMm47E1QX+z7HjUwIa1lRDKVHJuprteAp9RcpR6BzIot8?=
- =?us-ascii?Q?3eFzhOeV9J7ZpCH4lkBJGgtkSr9b2Ie9vTxTSz+FGQAF5CXxqAEln56ZPigN?=
- =?us-ascii?Q?/fnYUztY8gl7t0GgafpYJ1sfPb143+IxCbMY1JaJe081fDS7/PuLjVEX18vD?=
- =?us-ascii?Q?8Fg2wD/0jqCfc8SL1kjAjfkgxLSih7eLqPCK83frZuRTuCVZAZqjhdQc9JnJ?=
- =?us-ascii?Q?Gg8y2Ho72pc96ONtkzobKWkX?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?csRka1JEPUY5+SFZgl1V+48CMeMvbuLZILHPbcuutvxb+ux/f06A10VwkZuY?=
+ =?us-ascii?Q?0xm7gSNxt1q3m0tUsVAUqlc5U8mJrdbia03ctVLi+N8QOFqNF6DkSAY1Q/gk?=
+ =?us-ascii?Q?snW9K7M9ohV3+2gCHP+jw9KiBzaKSVBalplY1anW0XN8Gx1XmHDpQcXc3buB?=
+ =?us-ascii?Q?cDsODWiP9JO105r1KguonNZ6S3Mqs9tHWuS/S1dBTq/TpjhzyfTCleEhJl2Z?=
+ =?us-ascii?Q?p3yFrDeTC7+0ohHp4Duk+UOO26VazBHwcaC3V+1vbBMmnu4mtmRtoK+OAJQP?=
+ =?us-ascii?Q?GlwemfUTSUg0EKHgOSM1qIR3tBW81U2rydZfgQbbcS1AjzFKCIA6rQa1CQ/1?=
+ =?us-ascii?Q?U+u+QsWAw8/a++pLGFp2ugPlqr8BgocLCehkZ+z28uB72FIeJVPgCM6HnJv0?=
+ =?us-ascii?Q?vIKK+U1fOB2WezEaUKD/gxdCLTMIC/nStf6DgV5HZq9w6Utr/kc9J+/Ob1Jr?=
+ =?us-ascii?Q?qVy0UlFw8yhpBMOsaaWvdfVaVhd0Wexgi8vYarEe6AziUEbQ0/ZH0PM0t8xk?=
+ =?us-ascii?Q?03dT087mnkylHN83iwKE4ng2wMt2zaDKXqnRXbkoO1/EghlaKMJdUamsyRAO?=
+ =?us-ascii?Q?Qr7uQfx3OKAdF6nZK4pohhXI1cc7vH7cqG/Og9manCaF7FdDHkZa/ele+wlH?=
+ =?us-ascii?Q?Gi1swJz+I1i68aX9UlKpCk3/ACByh18IQcwCdyLNK882MRSPYJ+Mp7SZ96n1?=
+ =?us-ascii?Q?hAtgTf/EsXtG0iv6dmXF7bobXfhJNDuoPcpi+K07hwfHXYvKsrJBkoHrJkhQ?=
+ =?us-ascii?Q?TTEwIMIrFxrWiolmX5WdqOXL8Pi1NFuSPlcN8s/fNez4UgnAAzhbVgQNMOw8?=
+ =?us-ascii?Q?8JBT7q9R80H+gtqnYCmUSrAfDqFZ/6uljrgIEADJ88W78LDYICrQjt9iFCSx?=
+ =?us-ascii?Q?ZDpBI08Egw9sB4w/I3YUSpEQb0TEiN0GFImSyTHr2YLfZFkr66TBHcnzFQ70?=
+ =?us-ascii?Q?kEIZZmuGoB2TxkoAzcSF6aRsWs8v44VOR05RZwcZwLotVi325OX8bKA/Tq8R?=
+ =?us-ascii?Q?ip55dpYxKmaorRGx6otluYEk9qcJH2+rkgA+dOcj2hz6rrCiozoEerKm0vU8?=
+ =?us-ascii?Q?DYoFuvCFnA8mMJx5Tkqd5eiZSg4w4IMFVdwaeh+WT1CQTu9ugkBg/QsKgiIR?=
+ =?us-ascii?Q?nT/fSm/nYtUZYPYVwOo2L5OmFq59mJn4ZUdcznT7v3uV09DPqFboD+6KwQ8r?=
+ =?us-ascii?Q?aqWxRvwP0pukwxDRjHYS3nlnwxv4foVWGXDodY7nt3LOI2px/aPbnQRRHgw2?=
+ =?us-ascii?Q?u4sCFrFb4dgBVi+854Nze3kaJ/bb6WOYDrlJftAA/Oi3C9IoLmc0K0GiD57M?=
+ =?us-ascii?Q?AI0D0xpuUHq+PoylO078yYec?=
 X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0443427f-a91d-468e-905d-08d98fa80c93
+X-MS-Exchange-CrossTenant-Network-Message-Id: 999f1236-87fe-4ead-527a-08d98fa816ae
 X-MS-Exchange-CrossTenant-AuthSource: SL2PR06MB3082.apcprd06.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Oct 2021 06:50:17.9509
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Oct 2021 06:50:34.8606
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: hALHOoZheHyeDl/YfSakEDZnfPQ3tT9DKznJHvqpKh+V9twOUxiqpJlMn+mNdc7zBlq95tf9l69tJ1Q/QHuJ7A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SL2PR06MB3388
+X-MS-Exchange-CrossTenant-UserPrincipalName: OfBC8oAywR+zMv28E5Q/dK/PnkuFWOIDDScIIxHuMfb+jukLB55h9Fiw/orISS2hGgC7+kNOOB4gACl12ct3pA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SL2PR06MB3003
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -104,205 +112,47 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 show() must not use snprintf() when formatting the value to be
 returned to user space.
 
-Fix the coccicheck warnings:
-WARNING: use scnprintf or sprintf.
+Fix the following coccicheck warning:
+drivers/net/can/at91_can.c:1185: WARNING: use scnprintf or sprintf.
+drivers/net/can/janz-ican3.c:1834: WARNING: use scnprintf or sprintf.
 
 Use sysfs_emit instead of scnprintf or sprintf makes more sense.
 
 Signed-off-by: Qing Wang <wangqing@vivo.com>
 ---
- drivers/most/core.c     | 52 ++++++++++++++++++++++++-------------------------
- drivers/most/most_usb.c |  4 ++--
- 2 files changed, 28 insertions(+), 28 deletions(-)
+ drivers/net/can/at91_can.c   | 4 ++--
+ drivers/net/can/janz-ican3.c | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/most/core.c b/drivers/most/core.c
-index e4412c7..ba12154 100644
---- a/drivers/most/core.c
-+++ b/drivers/most/core.c
-@@ -208,7 +208,7 @@ static ssize_t number_of_packet_buffers_show(struct device *dev,
- 	struct most_channel *c = to_channel(dev);
- 	unsigned int i = c->channel_id;
+diff --git a/drivers/net/can/at91_can.c b/drivers/net/can/at91_can.c
+index 04d0bb3..e4e754e 100644
+--- a/drivers/net/can/at91_can.c
++++ b/drivers/net/can/at91_can.c
+@@ -1182,9 +1182,9 @@ static ssize_t at91_sysfs_show_mb0_id(struct device *dev,
+ 	struct at91_priv *priv = netdev_priv(to_net_dev(dev));
  
--	return snprintf(buf, PAGE_SIZE, "%d\n",
-+	return sysfs_emit(buf, "%d\n",
- 			c->iface->channel_vector[i].num_buffers_packet);
+ 	if (priv->mb0_id & CAN_EFF_FLAG)
+-		return snprintf(buf, PAGE_SIZE, "0x%08x\n", priv->mb0_id);
++		return sysfs_emit(buf, "0x%08x\n", priv->mb0_id);
+ 	else
+-		return snprintf(buf, PAGE_SIZE, "0x%03x\n", priv->mb0_id);
++		return sysfs_emit(buf, "0x%03x\n", priv->mb0_id);
  }
  
-@@ -219,7 +219,7 @@ static ssize_t number_of_stream_buffers_show(struct device *dev,
- 	struct most_channel *c = to_channel(dev);
- 	unsigned int i = c->channel_id;
- 
--	return snprintf(buf, PAGE_SIZE, "%d\n",
-+	return sysfs_emit(buf, "%d\n",
- 			c->iface->channel_vector[i].num_buffers_streaming);
- }
- 
-@@ -230,7 +230,7 @@ static ssize_t size_of_packet_buffer_show(struct device *dev,
- 	struct most_channel *c = to_channel(dev);
- 	unsigned int i = c->channel_id;
- 
--	return snprintf(buf, PAGE_SIZE, "%d\n",
-+	return sysfs_emit(buf, "%d\n",
- 			c->iface->channel_vector[i].buffer_size_packet);
- }
- 
-@@ -241,7 +241,7 @@ static ssize_t size_of_stream_buffer_show(struct device *dev,
- 	struct most_channel *c = to_channel(dev);
- 	unsigned int i = c->channel_id;
- 
--	return snprintf(buf, PAGE_SIZE, "%d\n",
-+	return sysfs_emit(buf, "%d\n",
- 			c->iface->channel_vector[i].buffer_size_streaming);
- }
- 
-@@ -251,7 +251,7 @@ static ssize_t channel_starving_show(struct device *dev,
- {
- 	struct most_channel *c = to_channel(dev);
- 
--	return snprintf(buf, PAGE_SIZE, "%d\n", c->is_starving);
-+	return sysfs_emit(buf, "%d\n", c->is_starving);
- }
- 
- static ssize_t set_number_of_buffers_show(struct device *dev,
-@@ -260,7 +260,7 @@ static ssize_t set_number_of_buffers_show(struct device *dev,
- {
- 	struct most_channel *c = to_channel(dev);
- 
--	return snprintf(buf, PAGE_SIZE, "%d\n", c->cfg.num_buffers);
-+	return sysfs_emit(buf, "%d\n", c->cfg.num_buffers);
- }
- 
- static ssize_t set_buffer_size_show(struct device *dev,
-@@ -269,7 +269,7 @@ static ssize_t set_buffer_size_show(struct device *dev,
- {
- 	struct most_channel *c = to_channel(dev);
- 
--	return snprintf(buf, PAGE_SIZE, "%d\n", c->cfg.buffer_size);
-+	return sysfs_emit(buf, "%d\n", c->cfg.buffer_size);
- }
- 
- static ssize_t set_direction_show(struct device *dev,
-@@ -279,10 +279,10 @@ static ssize_t set_direction_show(struct device *dev,
- 	struct most_channel *c = to_channel(dev);
- 
- 	if (c->cfg.direction & MOST_CH_TX)
--		return snprintf(buf, PAGE_SIZE, "tx\n");
-+		return sysfs_emit(buf, "tx\n");
- 	else if (c->cfg.direction & MOST_CH_RX)
--		return snprintf(buf, PAGE_SIZE, "rx\n");
--	return snprintf(buf, PAGE_SIZE, "unconfigured\n");
-+		return sysfs_emit(buf, "rx\n");
-+	return sysfs_emit(buf, "unconfigured\n");
- }
- 
- static ssize_t set_datatype_show(struct device *dev,
-@@ -294,10 +294,10 @@ static ssize_t set_datatype_show(struct device *dev,
- 
- 	for (i = 0; i < ARRAY_SIZE(ch_data_type); i++) {
- 		if (c->cfg.data_type & ch_data_type[i].most_ch_data_type)
--			return snprintf(buf, PAGE_SIZE, "%s",
-+			return sysfs_emit(buf, "%s",
- 					ch_data_type[i].name);
+ static ssize_t at91_sysfs_set_mb0_id(struct device *dev,
+diff --git a/drivers/net/can/janz-ican3.c b/drivers/net/can/janz-ican3.c
+index 2a6c918..feedc13 100644
+--- a/drivers/net/can/janz-ican3.c
++++ b/drivers/net/can/janz-ican3.c
+@@ -1831,7 +1831,7 @@ static ssize_t ican3_sysfs_show_term(struct device *dev,
+ 		return -ETIMEDOUT;
  	}
--	return snprintf(buf, PAGE_SIZE, "unconfigured\n");
-+	return sysfs_emit(buf, "unconfigured\n");
+ 
+-	return snprintf(buf, PAGE_SIZE, "%u\n", mod->termination_enabled);
++	return sysfs_emit(buf, "%u\n", mod->termination_enabled);
  }
  
- static ssize_t set_subbuffer_size_show(struct device *dev,
-@@ -306,7 +306,7 @@ static ssize_t set_subbuffer_size_show(struct device *dev,
- {
- 	struct most_channel *c = to_channel(dev);
- 
--	return snprintf(buf, PAGE_SIZE, "%d\n", c->cfg.subbuffer_size);
-+	return sysfs_emit(buf, "%d\n", c->cfg.subbuffer_size);
- }
- 
- static ssize_t set_packets_per_xact_show(struct device *dev,
-@@ -315,7 +315,7 @@ static ssize_t set_packets_per_xact_show(struct device *dev,
- {
- 	struct most_channel *c = to_channel(dev);
- 
--	return snprintf(buf, PAGE_SIZE, "%d\n", c->cfg.packets_per_xact);
-+	return sysfs_emit(buf, "%d\n", c->cfg.packets_per_xact);
- }
- 
- static ssize_t set_dbr_size_show(struct device *dev,
-@@ -323,7 +323,7 @@ static ssize_t set_dbr_size_show(struct device *dev,
- {
- 	struct most_channel *c = to_channel(dev);
- 
--	return snprintf(buf, PAGE_SIZE, "%d\n", c->cfg.dbr_size);
-+	return sysfs_emit(buf, "%d\n", c->cfg.dbr_size);
- }
- 
- #define to_dev_attr(a) container_of(a, struct device_attribute, attr)
-@@ -395,7 +395,7 @@ static ssize_t description_show(struct device *dev,
- {
- 	struct most_interface *iface = dev_get_drvdata(dev);
- 
--	return snprintf(buf, PAGE_SIZE, "%s\n", iface->description);
-+	return sysfs_emit(buf, "%s\n", iface->description);
- }
- 
- static ssize_t interface_show(struct device *dev,
-@@ -406,25 +406,25 @@ static ssize_t interface_show(struct device *dev,
- 
- 	switch (iface->interface) {
- 	case ITYPE_LOOPBACK:
--		return snprintf(buf, PAGE_SIZE, "loopback\n");
-+		return sysfs_emit(buf, "loopback\n");
- 	case ITYPE_I2C:
--		return snprintf(buf, PAGE_SIZE, "i2c\n");
-+		return sysfs_emit(buf, "i2c\n");
- 	case ITYPE_I2S:
--		return snprintf(buf, PAGE_SIZE, "i2s\n");
-+		return sysfs_emit(buf, "i2s\n");
- 	case ITYPE_TSI:
--		return snprintf(buf, PAGE_SIZE, "tsi\n");
-+		return sysfs_emit(buf, "tsi\n");
- 	case ITYPE_HBI:
--		return snprintf(buf, PAGE_SIZE, "hbi\n");
-+		return sysfs_emit(buf, "hbi\n");
- 	case ITYPE_MEDIALB_DIM:
--		return snprintf(buf, PAGE_SIZE, "mlb_dim\n");
-+		return sysfs_emit(buf, "mlb_dim\n");
- 	case ITYPE_MEDIALB_DIM2:
--		return snprintf(buf, PAGE_SIZE, "mlb_dim2\n");
-+		return sysfs_emit(buf, "mlb_dim2\n");
- 	case ITYPE_USB:
--		return snprintf(buf, PAGE_SIZE, "usb\n");
-+		return sysfs_emit(buf, "usb\n");
- 	case ITYPE_PCIE:
--		return snprintf(buf, PAGE_SIZE, "pcie\n");
-+		return sysfs_emit(buf, "pcie\n");
- 	}
--	return snprintf(buf, PAGE_SIZE, "unknown\n");
-+	return sysfs_emit(buf, "unknown\n");
- }
- 
- static DEVICE_ATTR_RO(description);
-diff --git a/drivers/most/most_usb.c b/drivers/most/most_usb.c
-index 2640c5b..d3790bd9f 100644
---- a/drivers/most/most_usb.c
-+++ b/drivers/most/most_usb.c
-@@ -830,7 +830,7 @@ static ssize_t value_show(struct device *dev, struct device_attribute *attr,
- 	int err;
- 
- 	if (sysfs_streq(name, "arb_address"))
--		return snprintf(buf, PAGE_SIZE, "%04x\n", dci_obj->reg_addr);
-+		return sysfs_emit(buf, "%04x\n", dci_obj->reg_addr);
- 
- 	if (sysfs_streq(name, "arb_value"))
- 		reg_addr = dci_obj->reg_addr;
-@@ -842,7 +842,7 @@ static ssize_t value_show(struct device *dev, struct device_attribute *attr,
- 	if (err < 0)
- 		return err;
- 
--	return snprintf(buf, PAGE_SIZE, "%04x\n", val);
-+	return sysfs_emit(buf, "%04x\n", val);
- }
- 
- static ssize_t value_store(struct device *dev, struct device_attribute *attr,
+ static ssize_t ican3_sysfs_set_term(struct device *dev,
 -- 
 2.7.4
 
