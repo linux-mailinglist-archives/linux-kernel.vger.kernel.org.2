@@ -2,83 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE51342FAF8
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 20:28:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A35EB42FAFE
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 20:29:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242616AbhJOSaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 14:30:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46692 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237667AbhJOSaX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 14:30:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4412360F36;
-        Fri, 15 Oct 2021 18:28:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634322496;
-        bh=vlXFCcBoyVQ7iQiLse67gO6LLe1CSZH6R8FPMdiU0yE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CGfJXlXTJ9OVFEU2EBteumRtqnc1EoMesBUzy2+do6QV6OkaO1pps3fDuSc7hdN61
-         xICU37Xoju6jvaikQsuleeh/oRFuRjToYPg7ThZQC+IimT3QB6Mm16CXP1FASJ1/ar
-         yGCzkf3f+x9BgVBcp5Fnx66pbze/Lfu+2bNGQ1K4gEAMUyHYtvMWLGzz9itXFynscc
-         hz+RpWX5KvMQhTHvcgLh3Uub2QMEY7yVcqKi8Ie+fiQXgKS5LmrSnJvcPAc+6SeCkD
-         m9JAYZtzLKN7EHbIXdZiRs5TS/pciCRWzE+6udTEk/kQWrnhaHa5SukBM3v6Xwt/iR
-         dMKe6wyAaMpaA==
-Date:   Fri, 15 Oct 2021 19:28:13 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     madvenka@linux.microsoft.com
-Cc:     mark.rutland@arm.com, jpoimboe@redhat.com, ardb@kernel.org,
-        nobuta.keiya@fujitsu.com, sjitindarsingh@gmail.com,
-        catalin.marinas@arm.com, will@kernel.org, jmorris@namei.org,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v10 01/11] arm64: Select STACKTRACE in arch/arm64/Kconfig
-Message-ID: <YWnIPU4dRmJHTkXZ@sirena.org.uk>
-References: <c05ce30dcc9be1bd6b5e24a2ca8fe1d66246980b>
- <20211015025847.17694-1-madvenka@linux.microsoft.com>
- <20211015025847.17694-2-madvenka@linux.microsoft.com>
+        id S242619AbhJOSbP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 14:31:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55466 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237667AbhJOSa7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 14:30:59 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B173CC061570
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 11:28:52 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <l.stach@pengutronix.de>)
+        id 1mbRwk-0001z6-T2; Fri, 15 Oct 2021 20:28:46 +0200
+Message-ID: <52a13aa3b7798d0cb77d45b20993f5494c91f014.camel@pengutronix.de>
+Subject: Re: [RESEND v2 5/5] PCI: imx6: Add the compliance tests mode support
+From:   Lucas Stach <l.stach@pengutronix.de>
+To:     Richard Zhu <hongxing.zhu@nxp.com>, bhelgaas@google.com,
+        lorenzo.pieralisi@arm.com
+Cc:     linux-pci@vger.kernel.org, linux-imx@nxp.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de
+Date:   Fri, 15 Oct 2021 20:28:45 +0200
+In-Reply-To: <1634277941-6672-6-git-send-email-hongxing.zhu@nxp.com>
+References: <1634277941-6672-1-git-send-email-hongxing.zhu@nxp.com>
+         <1634277941-6672-6-git-send-email-hongxing.zhu@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.4 (3.40.4-1.fc34) 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="zvxU7vCc3P+aDYhz"
-Content-Disposition: inline
-In-Reply-To: <20211015025847.17694-2-madvenka@linux.microsoft.com>
-X-Cookie: 1: No code table for op: ++post
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: l.stach@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Am Freitag, dem 15.10.2021 um 14:05 +0800 schrieb Richard Zhu:
+> Refer to the system board signal Quality of PCIe archiecture PHY test
+> specification. Signal quality tests(for example: jitters,  differential
+> eye opening and so on ) can be executed with devices in the
+> polling.compliance state.
+> 
+> To let the device support polling.compliance stat, the clocks and powers
+> shouldn't be turned off when the probe of device driver is failed.
+> 
+> Based on CLB(Compliance Load Board) Test Fixture and so on test
+> equipments, the PHY link would be down during the compliance tests.
+> Refer to this scenario, add the i.MX PCIe compliance tests mode enable
+> support, and keep the clocks and powers on, and finish the driver probe
+> without error return.
+> 
+> Use the "pci_imx6.compliance=1" in kernel command line to enable the
+> compliance tests mode.
+> 
+> Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
+> ---
+>  drivers/pci/controller/dwc/pci-imx6.c | 32 ++++++++++++++++++++-------
+>  1 file changed, 24 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
+> index d6a5d99ffa52..e861a516d517 100644
+> --- a/drivers/pci/controller/dwc/pci-imx6.c
+> +++ b/drivers/pci/controller/dwc/pci-imx6.c
+> @@ -143,6 +143,10 @@ struct imx6_pcie {
+>  #define PHY_RX_OVRD_IN_LO_RX_DATA_EN		BIT(5)
+>  #define PHY_RX_OVRD_IN_LO_RX_PLL_EN		BIT(3)
+>  
+> +static bool imx6_pcie_cmp_mode;
+> +module_param_named(compliance, imx6_pcie_cmp_mode, bool, 0644);
+> +MODULE_PARM_DESC(compliance, "i.MX PCIe compliance test mode (1=compliance test mode enabled)");
+> +
+>  static int pcie_phy_poll_ack(struct imx6_pcie *imx6_pcie, bool exp_val)
+>  {
+>  	struct dw_pcie *pci = imx6_pcie->pci;
+> @@ -812,10 +816,12 @@ static int imx6_pcie_start_link(struct dw_pcie *pci)
+>  	 * started in Gen2 mode, there is a possibility the devices on the
+>  	 * bus will not be detected at all.  This happens with PCIe switches.
+>  	 */
+> -	tmp = dw_pcie_readl_dbi(pci, offset + PCI_EXP_LNKCAP);
+> -	tmp &= ~PCI_EXP_LNKCAP_SLS;
+> -	tmp |= PCI_EXP_LNKCAP_SLS_2_5GB;
+> -	dw_pcie_writel_dbi(pci, offset + PCI_EXP_LNKCAP, tmp);
+> +	if (!imx6_pcie_cmp_mode) {
+> +		tmp = dw_pcie_readl_dbi(pci, offset + PCI_EXP_LNKCAP);
+> +		tmp &= ~PCI_EXP_LNKCAP_SLS;
+> +		tmp |= PCI_EXP_LNKCAP_SLS_2_5GB;
+> +		dw_pcie_writel_dbi(pci, offset + PCI_EXP_LNKCAP, tmp);
+> +	}
+>  
+>  	/* Start LTSSM. */
+>  	imx6_pcie_ltssm_enable(dev);
+> @@ -876,9 +882,12 @@ static int imx6_pcie_start_link(struct dw_pcie *pci)
+>  		dw_pcie_readl_dbi(pci, PCIE_PORT_DEBUG0),
+>  		dw_pcie_readl_dbi(pci, PCIE_PORT_DEBUG1));
+>  	imx6_pcie_reset_phy(imx6_pcie);
 
---zvxU7vCc3P+aDYhz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Is it correct to reset the PHY here when in compliance test mode?
 
-On Thu, Oct 14, 2021 at 09:58:37PM -0500, madvenka@linux.microsoft.com wrot=
-e:
-> From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
->=20
-> Currently, there are multiple functions in ARM64 code that walk the
-> stack using start_backtrace() and unwind_frame() or start_backtrace()
-> and walk_stackframe(). They should all be converted to use
-> arch_stack_walk(). This makes maintenance easier.
+> -	imx6_pcie_clk_disable(imx6_pcie);
+> -	if (imx6_pcie->vpcie && regulator_is_enabled(imx6_pcie->vpcie) > 0)
+> -		regulator_disable(imx6_pcie->vpcie);
+> +	if (!imx6_pcie_cmp_mode) {
+> +		imx6_pcie_clk_disable(imx6_pcie);
+> +		if (imx6_pcie->vpcie
+> +		    && regulator_is_enabled(imx6_pcie->vpcie) > 0)
+> +			regulator_disable(imx6_pcie->vpcie);
+> +	}
+>  	return ret;
+>  }
+>  
+> @@ -1183,8 +1192,15 @@ static int imx6_pcie_probe(struct platform_device *pdev)
+>  		return ret;
+>  
+>  	ret = dw_pcie_host_init(&pci->pp);
+> -	if (ret < 0)
+> +	if (ret < 0) {
+> +		if (imx6_pcie_cmp_mode) {
+> +			dev_info(dev, "Driver loaded with compliance test mode enabled.\n");
+> +			ret = 0;
+> +		} else {
+> +			dev_err(dev, "Unable to add pcie port.\n");
+> +		}
+>  		return ret; 
+> +	}
+>  
+>  	if (pci_msi_enabled()) {
+>  		u8 offset = dw_pcie_find_capability(pci, PCI_CAP_ID_MSI);
 
-Reviwed-by: Mark Brown <broonie@kernel.org>
 
-Arguably this should be squashed in with the first user but that's
-getting bikesheddy and could make hassle merging things in so meh.
-
---zvxU7vCc3P+aDYhz
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFpyD0ACgkQJNaLcl1U
-h9AaDQgAgGtwF4e6Cy8OuH+Y3EjvGOYWHK1l4qaJrL3MSElhZEt9xRNmyG5Kyx8f
-tM7BVjn3M1CCnxh4hsjQDvIIbtYhDioRhFpGZaSvXkfblLLVtlUC93+gGl00jVAF
-Uylnps1nQh2z9rMyBt1kiM1vnOJTLfz6SstxE7RDeZfJlXovAJJT4tXHG3Bsq6uB
-iXn6Ejp+eegbzOGYLMPcvHvFIMz/MIGfnkZPjwcGEgRhYomG1MKdczAJnCAdMAwx
-3o6iLc3g/Gqd4b9J4BNfj1OWaehyEC9+Q7fwtfZEiEo7LSEiUDT+Pl/p4wy9nZsJ
-3vS1Uij/5VZvA2dlbqwogAarLoBk/w==
-=FSRi
------END PGP SIGNATURE-----
-
---zvxU7vCc3P+aDYhz--
