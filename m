@@ -2,221 +2,3226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E520942EFC8
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 13:34:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1062342EFCB
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 13:37:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234219AbhJOLgk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 07:36:40 -0400
-Received: from mga09.intel.com ([134.134.136.24]:12609 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230030AbhJOLgk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 07:36:40 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10137"; a="227790826"
-X-IronPort-AV: E=Sophos;i="5.85,375,1624345200"; 
-   d="gz'50?scan'50,208,50";a="227790826"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2021 04:34:33 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,375,1624345200"; 
-   d="gz'50?scan'50,208,50";a="660488636"
-Received: from lkp-server02.sh.intel.com (HELO 08b2c502c3de) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 15 Oct 2021 04:34:31 -0700
-Received: from kbuild by 08b2c502c3de with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mbLTr-0007ox-5Q; Fri, 15 Oct 2021 11:34:31 +0000
-Date:   Fri, 15 Oct 2021 19:33:50 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Chang S. Bae" <chang.seok.bae@intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: [tglx-devel:x86/fpu 81/82] core.c:undefined reference to
- `__fpu_state_size_dynamic'
-Message-ID: <202110151943.TO9fT9O1-lkp@intel.com>
+        id S233201AbhJOLjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 07:39:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43580 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233155AbhJOLjI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 07:39:08 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97859C061762
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 04:37:01 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id u21so37203493lff.8
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 04:37:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=8AqFR7naBZmUQN+i1GOKK6YX2WavPjE8B3KntnyxXLU=;
+        b=KfkUM2HP59gBEYaE+d2LjnwZF4fSSZS9KRFHM1MCO8dbBZPSIOL3uLiPZqK6GQ6uUW
+         gXfHU1ZFec4zDknkfSMCWGlfm1cblpSDnzpMGAmMySr6rs7pD91ViTjTlY4e4jD+5mmG
+         M7TY5R39B1NBsynk5FXcLd+Tc2Lrv7Sepkbb2AGxqU2QvgF66x65Axnp4qR2RhXDRuDP
+         HyfCDd5Wtou5elTGlLsY2xeo/muG/xbIeUG9yo00GTJajhdu3uZv73tD+AkBk0Ubusl0
+         peD5Qb5EjnM9afvPcie+2CPekW4uOCS07wnMi+w3exhKZjasHMSCIzEFwV8AaN1Eebf4
+         eGug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=8AqFR7naBZmUQN+i1GOKK6YX2WavPjE8B3KntnyxXLU=;
+        b=SBkUrlrTJR0EVENnejAkpwuoyACvF1l+nGrHvWEt7PJyt46qOnmX7J3v7kFtG6HOIU
+         tVL+Xb7tGESzyi2kRT1R7C3J5/6hp38QMh2fd/de3MNMRW7hsowCPVKoWUj92S2oZZ01
+         lG3WJdwTfGTo/xy4Xl++yArhPc4s9Riq+EdDAJIeQ0IR9gG+IZ7LyWeHOa35DTldLL/8
+         YJE4iqYybyS90jF8t3FaFxCJ+euNpdwKtLaPUmxlRlvsml5Ny2pjEOO/lxCMpYFfnfys
+         42qpNeoQ+5MOQkWaEiUQ2cfd8hMr9XVnQ5LGL+gcHdhMNsP2+krHwNeVzACs/Mmgd5nN
+         3VjQ==
+X-Gm-Message-State: AOAM532/WcqUv+hsO+17keAti5t8nQb2XKDSBZzWfvuaWyEYCCzoQe6M
+        N47IMkZagEiy/5t8rGRjvxeZsA==
+X-Google-Smtp-Source: ABdhPJxVgkT0mKZ7RhsGEBaD3fQR6U6xQMDHgBzz9hAowvbj2sfcP0mS3xVLgy3pbKR0UkkHPHDFlg==
+X-Received: by 2002:a05:6512:22d2:: with SMTP id g18mr10819667lfu.290.1634297818845;
+        Fri, 15 Oct 2021 04:36:58 -0700 (PDT)
+Received: from [192.168.1.102] (62-248-207-242.elisa-laajakaista.fi. [62.248.207.242])
+        by smtp.gmail.com with ESMTPSA id b22sm482528lfi.67.2021.10.15.04.36.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Oct 2021 04:36:58 -0700 (PDT)
+Subject: Re: [PATCH v7 4/6] soc: qcom: Add support for Core Power Reduction
+ v3, v4 and Hardened
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        bjorn.andersson@linaro.org
+Cc:     agross@kernel.org, robh+dt@kernel.org, lgirdwood@gmail.com,
+        broonie@kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        phone-devel@vger.kernel.org, konrad.dybcio@somainline.org,
+        marijn.suijten@somainline.org, jami.kettunen@somainline.org,
+        paul.bouchara@somainline.org, martin.botka@somainline.org,
+        ~postmarketos/upstreaming@lists.sr.ht, jeffrey.l.hugo@gmail.com,
+        robh@kernel.org
+References: <20210901155735.629282-1-angelogioacchino.delregno@somainline.org>
+ <20210901155735.629282-5-angelogioacchino.delregno@somainline.org>
+From:   Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
+Message-ID: <e1bff4e2-ada5-baac-d858-d89cf07fc5a0@linaro.org>
+Date:   Fri, 15 Oct 2021 14:36:57 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="RnlQjJ0d97Da+TV1"
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210901155735.629282-5-angelogioacchino.delregno@somainline.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi AngeloGioacchino,
 
---RnlQjJ0d97Da+TV1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On 9/1/21 6:57 PM, AngeloGioacchino Del Regno wrote:
+> This commit introduces a new driver, based on the one for cpr v1,
+> to enable support for the newer Qualcomm Core Power Reduction
+> hardware, known downstream as CPR3, CPR4 and CPRh, and support
+> for MSM8998 and SDM630 CPU power reduction.
+> 
+> In these new versions of the hardware, support for various new
+> features was introduced, including voltage reduction for the GPU,
+> security hardening and a new way of controlling CPU DVFS,
+> consisting in internal communication between microcontrollers,
+> specifically the CPR-Hardened and the Operating State Manager.
+> 
+> The CPR v3, v4 and CPRh are present in a broad range of SoCs,
+> from the mid-range to the high end ones including, but not limited
+> to, MSM8953/8996/8998, SDM630/636/660/845.
+> 
+> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+> ---
+>   drivers/soc/qcom/Kconfig      |   17 +
+>   drivers/soc/qcom/Makefile     |    1 +
+>   drivers/soc/qcom/cpr-common.c |   35 +-
+>   drivers/soc/qcom/cpr-common.h |    4 +
+>   drivers/soc/qcom/cpr3.c       | 2901 +++++++++++++++++++++++++++++++++
+>   include/soc/qcom/cpr.h        |   17 +
+>   6 files changed, 2969 insertions(+), 6 deletions(-)
+>   create mode 100644 drivers/soc/qcom/cpr3.c
+>   create mode 100644 include/soc/qcom/cpr.h
+> 
+> diff --git a/drivers/soc/qcom/Kconfig b/drivers/soc/qcom/Kconfig
+> index 79b568f82a1c..ac520e5eeefa 100644
+> --- a/drivers/soc/qcom/Kconfig
+> +++ b/drivers/soc/qcom/Kconfig
+> @@ -42,6 +42,23 @@ config QCOM_CPR
+>   	  To compile this driver as a module, choose M here: the module will
+>   	  be called qcom-cpr
+>   
+> +config QCOM_CPR3
+> +	tristate "QCOM Core Power Reduction (CPR v3/v4/Hardened) support"
+> +	depends on ARCH_QCOM && HAS_IOMEM
+> +	select PM_OPP
+> +	select REGMAP
+> +	help
+> +	  Say Y here to enable support for the CPR hardware found on a broad
+> +	  variety of Qualcomm SoCs like MSM8996, MSM8998, SDM630, SDM660,
+> +	  SDM845 and others.
+> +
+> +	  This driver populates OPP tables and makes adjustments to them
+> +	  based on feedback from the CPR hardware. If you want to do CPU
+> +	  and/or GPU frequency scaling say Y here.
+> +
+> +	  To compile this driver as a module, choose M here: the module will
+> +	  be called qcom-cpr3
+> +
+>   config QCOM_GENI_SE
+>   	tristate "QCOM GENI Serial Engine Driver"
+>   	depends on ARCH_QCOM || COMPILE_TEST
+> diff --git a/drivers/soc/qcom/Makefile b/drivers/soc/qcom/Makefile
+> index 8d1262a2e23c..87a165c0ea10 100644
+> --- a/drivers/soc/qcom/Makefile
+> +++ b/drivers/soc/qcom/Makefile
+> @@ -4,6 +4,7 @@ obj-$(CONFIG_QCOM_AOSS_QMP) +=	qcom_aoss.o
+>   obj-$(CONFIG_QCOM_GENI_SE) +=	qcom-geni-se.o
+>   obj-$(CONFIG_QCOM_COMMAND_DB) += cmd-db.o
+>   obj-$(CONFIG_QCOM_CPR)		+= cpr-common.o cpr.o
+> +obj-$(CONFIG_QCOM_CPR3)		+= cpr-common.o cpr3.o
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git x86/fpu
-head:   fbeb78415a1b32f890fa49e4355faa02bb0c0602
-commit: 57e37526099d33c397f7a6bb1a0198ba1e148478 [81/82] x86/fpu: Add XFD handling for dynamic states
-config: i386-tinyconfig (attached as .config)
-compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-reproduce (this is a W=1 build):
-        # https://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git/commit/?id=57e37526099d33c397f7a6bb1a0198ba1e148478
-        git remote add tglx-devel https://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git
-        git fetch --no-tags tglx-devel x86/fpu
-        git checkout 57e37526099d33c397f7a6bb1a0198ba1e148478
-        # save the attached .config to linux build tree
-        mkdir build_dir
-        make W=1 O=build_dir ARCH=i386 SHELL=/bin/bash
+The same object file could be added twice. Have to check, if it causes any
+issues under uncommon build configurations, especially due to the fact that
+the object contains a few exported symbols...
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+>   obj-$(CONFIG_QCOM_GSBI)	+=	qcom_gsbi.o
+>   obj-$(CONFIG_QCOM_MDT_LOADER)	+= mdt_loader.o
+>   obj-$(CONFIG_QCOM_OCMEM)	+= ocmem.o
+> diff --git a/drivers/soc/qcom/cpr-common.c b/drivers/soc/qcom/cpr-common.c
+> index 41fcc5863e72..1390b5e1c6af 100644
+> --- a/drivers/soc/qcom/cpr-common.c
+> +++ b/drivers/soc/qcom/cpr-common.c
+> @@ -227,6 +227,29 @@ u32 cpr_get_fuse_corner(struct dev_pm_opp *opp, u32 tid)
+>   }
+>   EXPORT_SYMBOL_GPL(cpr_get_fuse_corner);
+>   
+> +void cpr_get_corner_post_vadj(struct dev_pm_opp *opp, u32 tid,
+> +			      s32 *open_loop, s32 *closed_loop)
+> +{
+> +	struct device_node *np;
+> +
+> +	/*
+> +	 * There is no of_property_read_s32_index, so we just store the
+> +	 * result into a s32 variable. After all, the OF API is doing
+> +	 * the exact same for of_property_read_s32...
+> +	 */
+> +	np = dev_pm_opp_get_of_node(opp);
+> +	if (of_property_read_u32_index(np, "qcom,opp-oloop-vadj", tid,
 
-All errors (new ones prefixed by >>):
+The property is not described under Documentation/devicetree.
 
-   ld: arch/x86/kernel/fpu/core.o: in function `fpu_clone':
->> core.c:(.text+0x3ed): undefined reference to `__fpu_state_size_dynamic'
-   ld: arch/x86/kernel/fpu/xstate.o: in function `fpu__resume_cpu':
->> xstate.c:(.text+0x4af): undefined reference to `__fpu_state_size_dynamic'
+> +				       open_loop))
+> +		*open_loop = 0;
+> +
+> +	if (of_property_read_u32_index(np, "qcom,opp-cloop-vadj", tid,
+> +				       closed_loop))
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+The property is not described under Documentation/devicetree.
 
---RnlQjJ0d97Da+TV1
-Content-Type: application/gzip
-Content-Disposition: attachment; filename=".config.gz"
-Content-Transfer-Encoding: base64
+> +		*closed_loop = 0;
+> +
+> +	of_node_put(np);
+> +}
+> +EXPORT_SYMBOL_GPL(cpr_get_corner_post_vadj);
 
-H4sICGpiaWEAAy5jb25maWcAnFxbc9u2s3/vp+C0M2fah6S+xP47c8YPEAhKqHgLQeriF44i
-04mmtuQjyW3y7c8uQIoguVByTmfa2tgFiMtefrtY+LdffvPY23H3sjpu1qvn5+/el2pb7VfH
-6tF72jxX/+35iRcnuSd8mb8H5nCzffv25+b67ta7eX958/7i3X597U2r/bZ69vhu+7T58gbd
-N7vtL7/9wpM4kOOS83ImMiWTuMzFIr//9ct6/e6j97tffd6stt7H99cwzNXVH+anX61uUpVj
-zu+/N03jdqj7jxfXFxcn3pDF4xPp1MyUHiIu2iGgqWG7ur65uGraQx9ZR4HfskITzWoRLqzZ
-chaXoYyn7QhWY6lylkveoU1gMkxF5TjJE5IgY+gqBqQ4KdMsCWQoyiAuWZ5nLYvMPpXzJLMm
-MSpk6OcyEmXORtBFJVneUvNJJhisPQ4S+A+wKOwKh/ebN9ai8OwdquPba3ucoyyZiriE01RR
-an04lnkp4lnJMtgiGcn8/voKRmmmnkQpTjgXKvc2B2+7O+LALcNcZFmS2aRmuxPOwma/f/21
-7WETSlbkCdFZL75ULMyxa904YTNRTkUWi7AcP0hrETZlBJQrmhQ+RIymLB5cPRIX4QNNeFA5
-yuJptdZ8yf2zZ32OAedObJQ9/2GX5PyIH86RcSHEB30RsCLMtdxYZ9M0TxKVxywS97/+vt1t
-qz+sc1dLNZMpp6WI5XxSfipEIUg6zxKlykhESbZEzWF8QvIVSoRyRExbHxHL4COsAJsIcwEh
-DBuVAe3zDm+fD98Px+qlVZmxiEUmuVZO0NyRpdI2SU2SuS0MmQ+tqlTzMhNKxD7dC2nZDIwL
-aEGU+KJrC4Ik48Kv1VzG45aqUpYpgUz6yKvto7d76q2gta8Jn6qkgLHMFvuJNZLeDptFn+l3
-qvOMhdJnuShDpvKSL3lI7IU2VrN2a3tkPZ6YiThXZ4llBAaN+X8VKif4okSVRYpz6elfmii5
-KHla6HlkStvExqbqU843L9X+QB305KFMYfjE15b+JE1gsIEi/ZAWSk0mKRM5nuAB11Pp8tQn
-NphNZzVilAblX/o49Nzh187ET59CvnrLyc90OzbfSDMhojSHJWg/dRqtaZ8lYRHnLFuSy6u5
-bJqZUlr8ma8Of3tHWJu3ggkcjqvjwVut17u37XGz/dJuOTjVqT4txnkC3zIyfvoE6oCWp5ZM
-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
+This function is called only from cpr3.c at the moment, please consider
+to unexport it and move to that file directly.
 
---RnlQjJ0d97Da+TV1--
+>   unsigned long cpr_get_opp_hz_for_req(struct dev_pm_opp *ref,
+>   				     struct device *cpu_dev)
+>   {
+> @@ -268,11 +291,10 @@ int cpr_calculate_scaling(const char *quot_offset,
+>   			  const struct fuse_corner_data *fdata,
+>   			  const struct corner *corner)
+>   {
+> -	u32 quot_diff = 0;
+> -	unsigned long freq_diff;
+> -	int scaling;
+> +	u64 freq_diff;
+>   	const struct fuse_corner *fuse, *prev_fuse;
+> -	int ret;
+> +	u32 quot_diff;
+> +	int scaling, ret;
+>   
+>   	fuse = corner->fuse_corner;
+>   	prev_fuse = fuse - 1;
+> @@ -289,8 +311,9 @@ int cpr_calculate_scaling(const char *quot_offset,
+>   	}
+>   
+>   	freq_diff = fuse->max_freq - prev_fuse->max_freq;
+> -	freq_diff /= 1000000; /* Convert to MHz */
+> -	scaling = 1000 * quot_diff / freq_diff;
+> +	freq_diff = div_u64(freq_diff, 1000000); /* Convert to MHz */
+> +	scaling = 1000 * quot_diff;
+> +	do_div(scaling, freq_diff);
+>   	return min(scaling, fdata->max_quot_scale);
+>   }
+>   EXPORT_SYMBOL_GPL(cpr_calculate_scaling);
+> diff --git a/drivers/soc/qcom/cpr-common.h b/drivers/soc/qcom/cpr-common.h
+> index 54013b8a8e87..4eea8f7e0547 100644
+> --- a/drivers/soc/qcom/cpr-common.h
+> +++ b/drivers/soc/qcom/cpr-common.h
+> @@ -65,6 +65,8 @@ struct corner {
+>   struct corner_data {
+>   	unsigned int fuse_corner;
+>   	unsigned long freq;
+> +	int oloop_vadj;
+> +	int cloop_vadj;
+>   };
+>   
+>   struct acc_desc {
+> @@ -99,6 +101,8 @@ int cpr_populate_fuse_common(struct device *dev,
+>   int cpr_find_initial_corner(struct device *dev, struct clk *cpu_clk,
+>   			    struct corner *corners, int num_corners);
+>   u32 cpr_get_fuse_corner(struct dev_pm_opp *opp, u32 tid);
+> +void cpr_get_corner_post_vadj(struct dev_pm_opp *opp, u32 tid,
+> +			      s32 *open_loop, s32 *closed_loop);
+>   unsigned long cpr_get_opp_hz_for_req(struct dev_pm_opp *ref,
+>   				     struct device *cpu_dev);
+>   int cpr_calculate_scaling(const char *quot_offset,
+> diff --git a/drivers/soc/qcom/cpr3.c b/drivers/soc/qcom/cpr3.c
+> new file mode 100644
+> index 000000000000..e22b3d9d86e8
+> --- /dev/null
+> +++ b/drivers/soc/qcom/cpr3.c
+> @@ -0,0 +1,2901 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (c) 2013-2020, The Linux Foundation. All rights reserved.
+> + * Copyright (c) 2019 Linaro Limited
+> + * Copyright (c) 2021, AngeloGioacchino Del Regno
+> + *                     <angelogioacchino.delregno@somainline.org>
+> + */
+> +
+> +#include <linux/module.h>
+> +#include <linux/err.h>
+> +#include <linux/debugfs.h>
+> +#include <linux/string.h>
+> +#include <linux/kernel.h>
+> +#include <linux/init.h>
+> +#include <linux/io.h>
+> +#include <linux/bitops.h>
+> +#include <linux/slab.h>
+> +#include <linux/of.h>
+> +#include <linux/of_device.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/pm_domain.h>
+> +#include <linux/pm_opp.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/regmap.h>
+> +#include <linux/mfd/syscon.h>
+> +#include <linux/regulator/consumer.h>
+> +#include <linux/workqueue.h>
+> +#include <linux/clk.h>
+> +#include <linux/nvmem-consumer.h>
+> +#include <soc/qcom/cpr.h>
+
+Please sort the list of included header files alphabetically.
+
+> +#include "cpr-common.h"
+> +
+> +#define CPR3_RO_COUNT				16
+> +#define CPR3_RO_MASK				GENMASK(CPR3_RO_COUNT - 1, 0)
+> +
+> +/* CPR3 registers */
+> +#define CPR3_REG_CPR_VERSION			0x0
+> +#define CPRH_CPR_VERSION_4P5			0x40050000
+> +
+> +#define CPR3_REG_CPR_CTL			0x4
+> +#define CPR3_CPR_CTL_LOOP_EN_MASK		BIT(0)
+> +#define CPR3_CPR_CTL_IDLE_CLOCKS_MASK		GENMASK(5, 1)
+> +#define CPR3_CPR_CTL_IDLE_CLOCKS_SHIFT		1
+> +#define CPR3_CPR_CTL_COUNT_MODE_MASK		GENMASK(7, 6)
+> +#define CPR3_CPR_CTL_COUNT_MODE_SHIFT		6
+> +#define CPR3_CPR_CTL_COUNT_MODE_ALL_AT_ONCE_MIN	0
+> +#define CPR3_CPR_CTL_COUNT_MODE_ALL_AT_ONCE_MAX	1
+> +#define CPR3_CPR_CTL_COUNT_MODE_STAGGERED	2
+> +#define CPR3_CPR_CTL_COUNT_MODE_ALL_AT_ONCE_AGE	3
+> +#define CPR3_CPR_CTL_COUNT_REPEAT_MASK		GENMASK(31, 9)
+> +#define CPR3_CPR_CTL_COUNT_REPEAT_SHIFT		9
+> +
+> +#define CPR3_REG_CPR_STATUS			0x8
+> +#define CPR3_CPR_STATUS_BUSY_MASK		BIT(0)
+> +
+> +/*
+> + * This register is not present on controllers that support HW closed-loop
+> + * except CPR4 APSS controller.
+> + */
+> +#define CPR3_REG_CPR_TIMER_AUTO_CONT		0xC
+> +
+> +#define CPR3_REG_CPR_STEP_QUOT			0x14
+> +#define CPR3_CPR_STEP_QUOT_MIN_MASK		GENMASK(5, 0)
+> +#define CPR3_CPR_STEP_QUOT_MIN_SHIFT		0
+> +#define CPR3_CPR_STEP_QUOT_MAX_MASK		GENMASK(11, 6)
+> +#define CPR3_CPR_STEP_QUOT_MAX_SHIFT		6
+> +#define CPRH_DELTA_QUOT_STEP_FACTOR		4
+> +
+> +#define CPR3_REG_GCNT(ro)			(0xA0 + 0x4 * (ro))
+> +#define CPR3_REG_SENSOR_OWNER(sensor)		(0x200 + 0x4 * (sensor))
+> +
+> +#define CPR3_REG_CONT_CMD			0x800
+> +#define CPR3_CONT_CMD_ACK			0x1
+> +#define CPR3_CONT_CMD_NACK			0x0
+> +
+> +#define CPR3_REG_THRESH(thread)			(0x808 + 0x440 * (thread))
+> +#define CPR3_THRESH_CONS_DOWN_MASK		GENMASK(3, 0)
+> +#define CPR3_THRESH_CONS_DOWN_SHIFT		0
+> +#define CPR3_THRESH_CONS_UP_MASK		GENMASK(7, 4)
+> +#define CPR3_THRESH_CONS_UP_SHIFT		4
+> +#define CPR3_THRESH_DOWN_THRESH_MASK		GENMASK(12, 8)
+> +#define CPR3_THRESH_DOWN_THRESH_SHIFT		8
+> +#define CPR3_THRESH_UP_THRESH_MASK		GENMASK(17, 13)
+> +#define CPR3_THRESH_UP_THRESH_SHIFT		13
+> +
+> +#define CPR3_REG_RO_MASK(thread)		(0x80C + 0x440 * (thread))
+> +
+> +#define CPR3_REG_RESULT0(thread)		(0x810 + 0x440 * (thread))
+> +#define CPR3_RESULT0_BUSY_MASK			BIT(0)
+> +#define CPR3_RESULT0_STEP_DN_MASK		BIT(1)
+> +#define CPR3_RESULT0_STEP_UP_MASK		BIT(2)
+> +#define CPR3_RESULT0_ERROR_STEPS_MASK		GENMASK(7, 3)
+> +#define CPR3_RESULT0_ERROR_STEPS_SHIFT		3
+> +#define CPR3_RESULT0_ERROR_MASK			GENMASK(19, 8)
+> +#define CPR3_RESULT0_ERROR_SHIFT		8
+> +
+> +#define CPR3_REG_RESULT1(thread)		(0x814 + 0x440 * (thread))
+> +#define CPR3_RESULT1_QUOT_MIN_MASK		GENMASK(11, 0)
+> +#define CPR3_RESULT1_QUOT_MIN_SHIFT		0
+> +#define CPR3_RESULT1_QUOT_MAX_MASK		GENMASK(23, 12)
+> +#define CPR3_RESULT1_QUOT_MAX_SHIFT		12
+> +#define CPR3_RESULT1_RO_MIN_MASK		GENMASK(27, 24)
+> +#define CPR3_RESULT1_RO_MIN_SHIFT		24
+> +#define CPR3_RESULT1_RO_MAX_MASK		GENMASK(31, 28)
+> +#define CPR3_RESULT1_RO_MAX_SHIFT		28
+> +
+> +#define CPR3_REG_RESULT2(thread)		(0x818 + 0x440 * (thread))
+> +#define CPR3_RESULT2_STEP_QUOT_MIN_MASK		GENMASK(5, 0)
+> +#define CPR3_RESULT2_STEP_QUOT_MIN_SHIFT	0
+> +#define CPR3_RESULT2_STEP_QUOT_MAX_MASK		GENMASK(11, 6)
+> +#define CPR3_RESULT2_STEP_QUOT_MAX_SHIFT	6
+> +#define CPR3_RESULT2_SENSOR_MIN_MASK		GENMASK(23, 16)
+> +#define CPR3_RESULT2_SENSOR_MIN_SHIFT		16
+> +#define CPR3_RESULT2_SENSOR_MAX_MASK		GENMASK(31, 24)
+> +#define CPR3_RESULT2_SENSOR_MAX_SHIFT		24
+> +
+> +#define CPR3_REG_IRQ_EN				0x81C
+> +#define CPR3_REG_IRQ_CLEAR			0x820
+> +#define CPR3_REG_IRQ_STATUS			0x824
+> +#define CPR3_IRQ_UP				BIT(3)
+> +#define CPR3_IRQ_MID				BIT(2)
+> +#define CPR3_IRQ_DOWN				BIT(1)
+> +#define CPR3_IRQ_ALL				(CPR3_IRQ_UP | CPR3_IRQ_MID | CPR3_IRQ_DOWN)
+> +
+> +#define CPR3_REG_TARGET_QUOT(thread, ro)	(0x840 + 0x440 * (thread) + 0x4 * (ro))
+> +
+> +/* Registers found only on controllers that support HW closed-loop. */
+> +#define CPR3_REG_PD_THROTTLE			0xE8
+> +
+> +#define CPR3_REG_HW_CLOSED_LOOP_DISABLED	0x3000
+> +#define CPR3_REG_CPR_TIMER_MID_CONT		0x3004
+> +#define CPR3_REG_CPR_TIMER_UP_DN_CONT		0x3008
+> +
+> +/* CPR4 controller specific registers and bit definitions */
+> +#define CPR4_REG_CPR_TIMER_CLAMP			0x10
+> +#define CPR4_CPR_TIMER_CLAMP_THREAD_AGGREGATION_EN	BIT(27)
+> +
+> +#define CPR4_REG_MISC				0x700
+> +#define CPR4_MISC_RESET_STEP_QUOT_LOOP_EN	BIT(2)
+> +#define CPR4_MISC_THREAD_HAS_ALWAYS_VOTE_EN	BIT(3)
+> +
+> +#define CPR4_REG_SAW_ERROR_STEP_LIMIT		0x7A4
+> +#define CPR4_SAW_ERROR_STEP_LIMIT_UP_MASK	GENMASK(4, 0)
+> +#define CPR4_SAW_ERROR_STEP_LIMIT_UP_SHIFT	0
+> +#define CPR4_SAW_ERROR_STEP_LIMIT_DN_MASK	GENMASK(9, 5)
+> +#define CPR4_SAW_ERROR_STEP_LIMIT_DN_SHIFT	5
+> +
+> +#define CPR4_REG_MARGIN_TEMP_CORE_TIMERS			0x7A8
+> +#define CPR4_MARGIN_TEMP_CORE_TIMERS_SETTLE_VOLTAGE_COUNT_MASK	GENMASK(28, 18)
+> +#define CPR4_MARGIN_TEMP_CORE_TIMERS_SETTLE_VOLTAGE_COUNT_SHFT	18
+> +
+> +#define CPR4_REG_MARGIN_ADJ_CTL				0x7F8
+> +#define CPR4_MARGIN_ADJ_HW_CLOSED_LOOP_EN		BIT(4)
+> +#define CPR4_MARGIN_ADJ_PER_RO_KV_MARGIN_EN		BIT(7)
+> +#define CPR4_MARGIN_ADJ_PMIC_STEP_SIZE_MASK		GENMASK(16, 12)
+> +#define CPR4_MARGIN_ADJ_PMIC_STEP_SIZE_SHIFT		12
+> +#define CPR4_MARGIN_ADJ_KV_MARGIN_ADJ_STEP_QUOT_MASK	GENMASK(31, 26)
+> +#define CPR4_MARGIN_ADJ_KV_MARGIN_ADJ_STEP_QUOT_SHIFT	26
+> +
+> +#define CPR4_REG_CPR_MASK_THREAD(thread)		(0x80C + 0x440 * (thread))
+> +#define CPR4_CPR_MASK_THREAD_DISABLE_THREAD		BIT(31)
+> +#define CPR4_CPR_MASK_THREAD_RO_MASK4THREAD_MASK	GENMASK(15, 0)
+> +
+> +/* CPRh controller specific registers and bit definitions */
+> +#define __CPRH_REG_CORNER(rbase, tbase, tid, cnum) (rbase + (tbase * tid) + (0x4 * cnum))
+> +#define CPRH_REG_CORNER(d, t, c) __CPRH_REG_CORNER(d->reg_corner, d->reg_corner_tid, t, c)
+> +
+> +#define CPRH_CTL_OSM_ENABLED			BIT(0)
+> +#define CPRH_CTL_BASE_VOLTAGE_MASK		GENMASK(10, 1)
+> +#define CPRH_CTL_BASE_VOLTAGE_SHIFT		1
+> +#define CPRH_CTL_MODE_SWITCH_DELAY_MASK		GENMASK(24, 17)
+> +#define CPRH_CTL_MODE_SWITCH_DELAY_SHIFT	17
+> +#define CPRH_CTL_VOLTAGE_MULTIPLIER_MASK	GENMASK(28, 25)
+> +#define CPRH_CTL_VOLTAGE_MULTIPLIER_SHIFT	25
+> +
+> +#define CPRH_CORNER_INIT_VOLTAGE_MASK		GENMASK(7, 0)
+> +#define CPRH_CORNER_INIT_VOLTAGE_SHIFT		0
+> +#define CPRH_CORNER_FLOOR_VOLTAGE_MASK		GENMASK(15, 8)
+> +#define CPRH_CORNER_FLOOR_VOLTAGE_SHIFT		8
+> +#define CPRH_CORNER_QUOT_DELTA_MASK		GENMASK(24, 16)
+> +#define CPRH_CORNER_QUOT_DELTA_SHIFT		16
+> +#define CPRH_CORNER_RO_SEL_MASK			GENMASK(28, 25)
+> +#define CPRH_CORNER_RO_SEL_SHIFT		25
+> +#define CPRH_CORNER_CPR_CL_DISABLE		BIT(29)
+> +
+> +#define CPRH_CORNER_INIT_VOLTAGE_MAX_VALUE	255
+> +#define CPRH_CORNER_FLOOR_VOLTAGE_MAX_VALUE	255
+> +#define CPRH_CORNER_QUOT_DELTA_MAX_VALUE	511
+> +
+> +enum cpr_type {
+> +	CTRL_TYPE_CPR3,
+> +	CTRL_TYPE_CPR4,
+> +	CTRL_TYPE_CPRH,
+> +	CTRL_TYPE_MAX,
+> +};
+> +
+> +/*
+> + * struct cpr_thread_desc - CPR Thread-specific parameters
+> + *
+> + * @controller_id:      Identifier of the CPR controller expected by the HW
+> + * @ro_scaling_factor:  Scaling factor for each ring oscillator entry
+> + * @hw_tid:             Identifier of the CPR thread expected by the HW
+> + * @init_voltage_step:  Voltage in uV for number of steps read from fuse array
+> + * @init_voltage_width: Bit-width of the voltage read from the fuse array
+> + * @sensor_range_start: First sensor ID used by a thread
+> + * @sensor_range_end:   Last sensor ID used by a thread
+> + * @num_fuse_corners:   Number of valid entries in fuse_corner_data
+> + * @step_quot_init_min: Minimum achievable step quotient for this corner
+> + * @step_quot_init_max: Maximum achievable step quotient for this corner
+> + * @fuse_corner_data:   Parameters for calculation of each fuse corner
+> + */
+> +struct cpr_thread_desc {
+> +	u8		controller_id;
+> +	u8		hw_tid;
+> +	const int	(*ro_scaling_factor)[CPR3_RO_COUNT];
+> +	int		ro_avail_corners;
+> +	int		init_voltage_step;
+> +	int		init_voltage_width;
+> +	u8		sensor_range_start;
+> +	u8		sensor_range_end;
+> +	u8		step_quot_init_min;
+> +	u8		step_quot_init_max;
+> +	unsigned int	num_fuse_corners;
+> +	struct fuse_corner_data *fuse_corner_data;
+> +};
+> +
+> +/*
+> + * struct cpr_desc - Driver instance-wide CPR parameters
+> + *
+> + * @cpr_type:              Type (base version) of the CPR controller
+> + * @num_threads:           Max. number of threads supported by this controller
+> + * @timer_delay_us:        Loop delay time in uS
+> + * @timer_updn_delay_us:   Voltage after-up/before-down delay time in uS
+> + * @timer_cons_up:         Wait between consecutive up requests in uS
+> + * @timer_cons_down:       Wait between consecutive down requests in uS
+> + * @up_threshold:          Generic corner up threshold
+> + * @down_threshold:        Generic corner down threshold
+> + * @idle_clocks:           CPR Sensor: idle timer in cpr clocks unit
+> + * @count_mode:            CPR Sensor: counting mode
+> + * @count_repeat:          CPR Sensor: number of times to repeat reading
+> + * @gcnt_us:               CPR measurement interval in uS
+> + * @vreg_step_fixed:       Regulator voltage per step (if vreg unusable)
+> + * @vreg_step_up_limit:    Num. of steps up at once before re-measuring sensors
+> + * @vreg_step_down_limit:  Num. of steps dn at once before re-measuring sensors
+> + * @vdd_settle_time_us:    Settling timer to account for one VDD supply step
+> + * @corner_settle_time_us: Settle time for corner switch request
+> + * @mem_acc_threshold:     Memory Accelerator (MEM-ACC) voltage threshold
+> + * @apm_threshold:         Array Power Mux (APM) voltage threshold
+> + * @apm_crossover:         Array Power Mux (APM) corner crossover voltage
+> + * @apm_hysteresis:        Hysteresis for APM V-threshold related calculations
+> + * @cpr_base_voltage:      Safety: Absolute minimum voltage (uV) on this CPR
+> + * @cpr_max_voltage:       Safety: Absolute maximum voltage (uV) on this CPR
+> + * @pd_throttle_val:       CPR Power Domain throttle during voltage switch
+> + * @threads:               Array containing "CPR Thread" specific parameters
+> + * @reduce_to_fuse_uV:     Reduce corner max volts (if higher) to fuse ceiling
+> + * @reduce_to_corner_uV:   Reduce corner max volts (if higher) to corner ceil.
+> + * @hw_closed_loop_en:     Enable CPR HW Closed-Loop voltage auto-adjustment
+> + */
+> +struct cpr_desc {
+> +	enum cpr_type		cpr_type;
+> +	unsigned int		num_threads;
+> +	unsigned int		timer_delay_us;
+> +	u8			timer_updn_delay_us;
+> +	u8			timer_cons_up;
+> +	u8			timer_cons_down;
+> +	u8			up_threshold;
+> +	u8			down_threshold;
+> +	u8			idle_clocks;
+> +	u8			count_mode;
+> +	u8			count_repeat;
+> +	u8			gcnt_us;
+> +	u16			vreg_step_fixed;
+> +	u8			vreg_step_up_limit;
+> +	u8			vreg_step_down_limit;
+> +	u8			vdd_settle_time_us;
+> +	u8			corner_settle_time_us;
+> +	int			mem_acc_threshold;
+> +	int			apm_threshold;
+> +	int			apm_crossover;
+> +	int			apm_hysteresis;
+> +	u32			cpr_base_voltage;
+> +	u32			cpr_max_voltage;
+> +	u32			pd_throttle_val;
+> +
+> +	const struct cpr_thread_desc **threads;
+> +	bool reduce_to_fuse_uV;
+> +	bool reduce_to_corner_uV;
+> +	bool hw_closed_loop_en;
+> +};
+> +
+> +struct cpr_drv;
+> +struct cpr_thread {
+> +	int			num_corners;
+> +	int			id;
+> +	bool			enabled;
+> +	void __iomem		*base;
+> +	struct clk		*cpu_clk;
+> +	struct corner		*corner;
+> +	struct corner		*corners;
+> +	struct fuse_corner	*fuse_corners;
+> +	struct cpr_drv		*drv;
+> +	struct cpr_ext_data	ext_data;
+> +	struct generic_pm_domain pd;
+> +	struct device		*attached_cpu_dev;
+> +	struct work_struct	restart_work;
+> +	bool			restarting;
+> +
+> +	const struct cpr_fuse	*cpr_fuses;
+> +	const struct cpr_thread_desc *desc;
+> +};
+> +
+> +struct cpr_drv {
+> +	int			irq;
+> +	unsigned int		ref_clk_khz;
+> +	struct device		*dev;
+> +	struct mutex		lock;
+> +	struct regulator	*vreg;
+> +	struct regmap		*tcsr;
+> +	u32			gcnt;
+> +	u32			speed_bin;
+> +	u32			fusing_rev;
+> +	u32			last_uV;
+> +	u32			cpr_hw_rev;
+> +	u32			reg_corner;
+> +	u32			reg_corner_tid;
+> +	u32			reg_ctl;
+> +	u32			reg_status;
+> +	int			fuse_level_set;
+> +	int			extra_corners;
+> +	unsigned int		vreg_step;
+> +	bool			enabled;
+> +
+> +	struct cpr_thread	*threads;
+> +	struct genpd_onecell_data cell_data;
+> +
+> +	const struct cpr_desc	*desc;
+> +	const struct acc_desc	*acc_desc;
+> +	struct dentry		*debugfs;
+> +};
+> +
+> +/**
+> + * cpr_get_ro_factor() - Get fuse corner ring oscillator factor
+> + * @tdesc:  CPR Thread-specific parameters
+> + * @fnum:   Fuse corner
+> + * @ro_idx: Ring Oscillator fuse number
+> + *
+> + * Not all threads have different scaling factors for each
+> + * Fuse Corner: if the RO factors are the same for all corners,
+> + * then only one is specified, instead of uselessly repeating
+> + * the same array for FC-times.
+> + * This function checks for the same and gives back the right
+> + * factor for the requested ring oscillator.
+> + *
+> + * Return: Ring oscillator factor
+> + */
+> +static int cpr_get_ro_factor(const struct cpr_thread_desc *tdesc,
+> +			     int fnum, int ro_idx)
+> +{
+> +	int ro_fnum;
+> +
+> +	if (tdesc->ro_avail_corners == tdesc->num_fuse_corners)
+> +		ro_fnum = fnum;
+> +	else
+> +		ro_fnum = 0;
+> +
+> +	return tdesc->ro_scaling_factor[ro_fnum][ro_idx];
+> +}
+> +
+> +static void cpr_write(struct cpr_thread *thread, u32 offset, u32 value)
+> +{
+> +	writel(value, thread->base + offset);
+> +}
+> +
+> +static u32 cpr_read(struct cpr_thread *thread, u32 offset)
+> +{
+> +	return readl(thread->base + offset);
+> +}
+> +
+> +static void
+> +cpr_masked_write(struct cpr_thread *thread, u32 offset, u32 mask, u32 value)
+> +{
+> +	u32 val;
+> +
+> +	val = readl(thread->base + offset);
+> +	val &= ~mask;
+> +	val |= value & mask;
+> +	writel(val, thread->base + offset);
+> +}
+> +
+> +static void cpr_irq_clr(struct cpr_thread *thread)
+> +{
+> +	cpr_write(thread, CPR3_REG_IRQ_CLEAR, CPR3_IRQ_ALL);
+> +}
+> +
+> +static void cpr_irq_clr_nack(struct cpr_thread *thread)
+> +{
+> +	cpr_irq_clr(thread);
+> +	cpr_write(thread, CPR3_REG_CONT_CMD, CPR3_CONT_CMD_NACK);
+> +}
+> +
+> +static void cpr_irq_clr_ack(struct cpr_thread *thread)
+> +{
+> +	cpr_irq_clr(thread);
+> +	cpr_write(thread, CPR3_REG_CONT_CMD, CPR3_CONT_CMD_ACK);
+> +}
+> +
+> +static void cpr_irq_set(struct cpr_thread *thread, u32 int_bits)
+> +{
+> +	/* On CPR-hardened, interrupts are managed by and on firmware */
+> +	if (thread->drv->desc->cpr_type == CTRL_TYPE_CPRH)
+> +		return;
+> +
+> +	cpr_write(thread, CPR3_REG_IRQ_EN, int_bits);
+> +}
+> +
+> +/**
+> + * cpr_ctl_enable() - Enable CPR thread
+> + * @thread:     Structure holding CPR thread-specific parameters
+> + */
+> +static void cpr_ctl_enable(struct cpr_thread *thread)
+> +{
+> +	if (thread->drv->enabled && !thread->restarting) {
+> +		cpr_masked_write(thread, CPR3_REG_CPR_CTL,
+> +				 CPR3_CPR_CTL_LOOP_EN_MASK,
+> +				 CPR3_CPR_CTL_LOOP_EN_MASK);
+> +	}
+> +}
+> +
+> +/**
+> + * cpr_ctl_disable() - Disable CPR thread
+> + * @thread:     Structure holding CPR thread-specific parameters
+> + */
+> +static void cpr_ctl_disable(struct cpr_thread *thread)
+> +{
+> +	const struct cpr_desc *desc = thread->drv->desc;
+> +
+> +	if (desc->cpr_type != CTRL_TYPE_CPRH) {
+> +		cpr_irq_set(thread, 0);
+> +		cpr_irq_clr(thread);
+> +	}
+> +
+> +	cpr_masked_write(thread, CPR3_REG_CPR_CTL,
+> +			 CPR3_CPR_CTL_LOOP_EN_MASK, 0);
+> +}
+> +
+> +/**
+> + * cpr_ctl_is_enabled() - Check if thread is enabled
+> + * @thread:     Structure holding CPR thread-specific parameters
+> + *
+> + * Return: true if the CPR is enabled, false if it is disabled.
+> + */
+> +static bool cpr_ctl_is_enabled(struct cpr_thread *thread)
+> +{
+> +	u32 reg_val;
+> +
+> +	reg_val = cpr_read(thread, CPR3_REG_CPR_CTL);
+> +	return reg_val & CPR3_CPR_CTL_LOOP_EN_MASK;
+> +}
+> +
+> +/**
+> + * cpr_check_any_thread_busy() - Check if HW is done processing
+> + * @thread:     Structure holding CPR thread-specific parameters
+> + *
+> + * Return: true if the CPR is busy, false if it is ready.
+> + */
+> +static bool cpr_check_any_thread_busy(struct cpr_thread *thread)
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < thread->drv->desc->num_threads; i++)
+> +		if (cpr_read(thread, CPR3_REG_RESULT0(i)) &
+> +		    CPR3_RESULT0_BUSY_MASK)
+> +			return true;
+> +
+> +	return false;
+> +}
+> +
+> +static void cpr_restart_worker(struct work_struct *work)
+> +{
+> +	struct cpr_thread *thread = container_of(work, struct cpr_thread,
+> +						 restart_work);
+> +	struct cpr_drv *drv = thread->drv;
+> +	int i;
+> +
+> +	mutex_lock(&drv->lock);
+> +
+> +	thread->restarting = true;
+> +	cpr_ctl_disable(thread);
+> +	disable_irq(drv->irq);
+> +
+> +	mutex_unlock(&drv->lock);
+> +
+> +	for (i = 0; i < 20; i++) {
+> +		u32 cpr_status = cpr_read(thread, CPR3_REG_CPR_STATUS);
+> +		u32 ctl = cpr_read(thread, CPR3_REG_CPR_CTL);
+> +
+> +		if ((cpr_status & CPR3_CPR_STATUS_BUSY_MASK) &&
+> +		   !(ctl & CPR3_CPR_CTL_LOOP_EN_MASK))
+> +			break;
+> +
+> +		udelay(10);
+> +	}
+> +
+> +	cpr_irq_clr(thread);
+> +
+> +	for (i = 0; i < 20; i++) {
+> +		u32 status = cpr_read(thread, CPR3_REG_IRQ_STATUS);
+> +
+> +		if (!(status & CPR3_IRQ_ALL))
+> +			break;
+> +		udelay(10);
+> +	}
+> +
+> +	mutex_lock(&drv->lock);
+> +
+> +	thread->restarting = false;
+> +	enable_irq(drv->irq);
+> +	cpr_ctl_enable(thread);
+> +
+> +	mutex_unlock(&drv->lock);
+> +}
+> +
+> +/**
+> + * cpr_corner_restore() - Restore saved corner level
+> + * @thread: Structure holding CPR thread-specific parameters
+> + * @corner: Structure holding the saved corner level
+> + */
+> +static void cpr_corner_restore(struct cpr_thread *thread,
+> +			       struct corner *corner)
+> +{
+> +	struct cpr_drv *drv = thread->drv;
+> +	struct fuse_corner *fuse = corner->fuse_corner;
+> +	const struct cpr_thread_desc *tdesc = thread->desc;
+> +	u32 ro_sel = fuse->ring_osc_idx;
+> +
+> +	cpr_write(thread, CPR3_REG_GCNT(ro_sel), drv->gcnt);
+> +
+> +	cpr_write(thread, CPR3_REG_RO_MASK(tdesc->hw_tid),
+> +		  CPR3_RO_MASK & ~BIT(ro_sel));
+> +
+> +	cpr_write(thread, CPR3_REG_TARGET_QUOT(tdesc->hw_tid, ro_sel),
+> +		  fuse->quot - corner->quot_adjust);
+> +
+> +	if (drv->desc->cpr_type == CTRL_TYPE_CPR4) {
+> +		cpr_masked_write(thread,
+> +				 CPR4_REG_CPR_MASK_THREAD(tdesc->hw_tid),
+> +				 CPR4_CPR_MASK_THREAD_DISABLE_THREAD |
+> +				 CPR4_CPR_MASK_THREAD_RO_MASK4THREAD_MASK, 0);
+> +	}
+
+Curly brackets above can be removed.
+
+> +	thread->corner = corner;
+> +	corner->last_uV = corner->uV;
+> +}
+> +
+> +/**
+> + * cpr_set_acc() - Set fuse level to the mem-acc
+> + * @drv: Main driver structure
+> + * @f:   Fuse level
+> + */
+> +static void cpr_set_acc(struct cpr_drv *drv, int f)
+> +{
+> +	const struct acc_desc *desc = drv->acc_desc;
+> +	struct reg_sequence *s = desc->settings;
+> +	int n = desc->num_regs_per_fuse;
+> +
+> +	if (!s || f == drv->fuse_level_set)
+> +		return;
+> +
+> +	regmap_multi_reg_write(drv->tcsr, s + (n * f), n);
+> +	drv->fuse_level_set = f;
+> +}
+> +
+> +/**
+> + * cpr_pre_voltage() - Actions to execute before setting voltage
+> + * @thread:     Structure holding CPR thread-specific parameters
+> + * @dir:        Enumeration for voltage change direction
+> + * @fuse_level: Fuse corner for mem-acc, if supported.
+> + *
+> + * Return: Zero for success or negative number on errors.
+> + */
+> +static int cpr_pre_voltage(struct cpr_thread *thread,
+> +			   enum voltage_change_dir dir,
+> +			   int fuse_level)
+> +{
+> +	struct cpr_drv *drv = thread->drv;
+> +
+> +	if (drv->desc->cpr_type == CTRL_TYPE_CPR3 &&
+> +	    drv->desc->pd_throttle_val)
+> +		cpr_write(thread, CPR3_REG_PD_THROTTLE,
+> +			  drv->desc->pd_throttle_val);
+> +
+> +	if (drv->tcsr && dir == DOWN)
+> +		cpr_set_acc(drv, fuse_level);
+> +
+> +	return 0;
+> +}
+> +
+> +/**
+> + * cpr_post_voltage() - Actions to execute after setting voltage
+> + * @thread:     Structure holding CPR thread-specific parameters
+> + * @dir:        Enumeration for voltage change direction
+> + * @fuse_level: Fuse corner for mem-acc, if supported.
+> + *
+> + * Return: Zero for success or negative number on errors.
+> + */
+> +static int cpr_post_voltage(struct cpr_thread *thread,
+> +			    enum voltage_change_dir dir,
+> +			    int fuse_level)
+> +{
+> +	struct cpr_drv *drv = thread->drv;
+> +
+> +	if (drv->tcsr && dir == UP)
+> +		cpr_set_acc(drv, fuse_level);
+> +
+> +	if (drv->desc->cpr_type == CTRL_TYPE_CPR3)
+> +		cpr_write(thread, CPR3_REG_PD_THROTTLE, 0);
+> +
+> +	return 0;
+> +}
+> +
+> +/**
+> + * cpr_commit_state() - Set the newly requested voltage
+> + * @thread:     Structure holding CPR thread-specific parameters
+> + *
+> + * Return: IRQ_SUCCESS for success, IRQ_NONE if the CPR is disabled.
+> + */
+> +static int cpr_commit_state(struct cpr_thread *thread)
+> +{
+> +	struct cpr_drv *drv = thread->drv;
+> +	int min_uV = 0, max_uV = 0, new_uV = 0, fuse_level = 0;
+> +	enum voltage_change_dir dir;
+> +	u32 next_irqmask = 0;
+> +	int ret, i;
+> +
+> +	/* On CPRhardened, control states are managed in firmware */
+> +	if (drv->desc->cpr_type == CTRL_TYPE_CPRH)
+> +		return 0;
+> +
+> +	for (i = 0; i < drv->desc->num_threads; i++) {
+> +		struct cpr_thread *thread = &drv->threads[i];
+> +
+> +		if (!thread->corner)
+> +			continue;
+> +
+> +		fuse_level = max(fuse_level,
+> +				 (int) (thread->corner->fuse_corner -
+> +				 &thread->fuse_corners[0]));
+> +
+> +		max_uV = max(max_uV, thread->corner->max_uV);
+> +		min_uV = max(min_uV, thread->corner->min_uV);
+> +		new_uV = max(new_uV, thread->corner->last_uV);
+> +	}
+> +	dev_vdbg(drv->dev, "%s: new uV: %d, last uV: %d\n",
+> +		 __func__, new_uV, drv->last_uV);
+> +
+> +	/*
+> +	 * Safety measure: if the voltage is out of the globally allowed
+> +	 * range, then go out and warn the user.
+> +	 * This should *never* happen.
+> +	 */
+> +	if (new_uV > drv->desc->cpr_max_voltage ||
+> +	    new_uV < drv->desc->cpr_base_voltage) {
+> +		dev_warn(drv->dev, "Voltage (%u uV) out of range.", new_uV);
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (new_uV == drv->last_uV || fuse_level == drv->fuse_level_set)
+> +		goto out;
+> +
+> +	if (fuse_level > drv->fuse_level_set)
+> +		dir = UP;
+> +	else
+> +		dir = DOWN;
+> +
+> +	ret = cpr_pre_voltage(thread, fuse_level, dir);
+> +	if (ret)
+> +		return ret;
+> +
+> +	dev_vdbg(drv->dev, "setting voltage: %d\n", new_uV);
+> +
+> +	ret = regulator_set_voltage(drv->vreg, new_uV, new_uV);
+> +	if (ret) {
+> +		dev_err_ratelimited(drv->dev, "failed to set voltage %d: %d\n", new_uV, ret);
+> +		return ret;
+> +	}
+> +
+> +	ret = cpr_post_voltage(thread, fuse_level, dir);
+> +	if (ret)
+> +		return ret;
+> +
+> +	drv->last_uV = new_uV;
+> +out:
+> +	if (new_uV > min_uV)
+> +		next_irqmask |= CPR3_IRQ_DOWN;
+> +	if (new_uV < max_uV)
+> +		next_irqmask |= CPR3_IRQ_UP;
+> +
+> +	cpr_irq_set(thread, next_irqmask);
+> +
+> +	return 0;
+> +}
+> +
+> +static unsigned int cpr_get_cur_perf_state(struct cpr_thread *thread)
+> +{
+> +	return thread->corner ? thread->corner - thread->corners + 1 : 0;
+> +}
+> +
+> +/**
+> + * cpr_scale() - Calculate new voltage for the received direction
+> + * @thread: Structure holding CPR thread-specific parameters
+> + * @dir:    Enumeration for voltage change direction
+> + *
+> + * The CPR scales one by one: this function calculates the new
+> + * voltage to set when a voltage-UP or voltage-DOWN request comes
+> + * and stores it into the per-thread structure that gets passed.
+> + */
+> +static void cpr_scale(struct cpr_thread *thread, enum voltage_change_dir dir)
+> +{
+> +	struct cpr_drv *drv = thread->drv;
+> +	const struct cpr_thread_desc *tdesc = thread->desc;
+> +	u32 val, error_steps;
+> +	int last_uV, new_uV;
+> +	struct corner *corner;
+> +
+> +	if (dir != UP && dir != DOWN)
+> +		return;
+> +
+> +	corner = thread->corner;
+> +	val = cpr_read(thread, CPR3_REG_RESULT0(tdesc->hw_tid));
+> +	error_steps = val >> CPR3_RESULT0_ERROR_STEPS_SHIFT;
+> +	error_steps &= CPR3_RESULT0_ERROR_STEPS_MASK;
+> +
+> +	last_uV = corner->last_uV;
+> +
+> +	if (dir == UP) {
+> +		if (!(val & CPR3_RESULT0_STEP_UP_MASK))
+> +			return;
+> +
+> +		/* Calculate new voltage */
+> +		new_uV = last_uV + drv->vreg_step;
+> +		new_uV = min(new_uV, corner->max_uV);
+> +
+> +		dev_vdbg(drv->dev, "[T%u] UP - new_uV=%d last_uV=%d p-state=%u st=%u\n",
+> +			thread->id, new_uV, last_uV,
+> +			cpr_get_cur_perf_state(thread), error_steps);
+
+Alignment does not match the open parenthesis.
+
+> +	} else {
+> +		if (!(val & CPR3_RESULT0_STEP_DN_MASK))
+> +			return;
+> +
+> +		/* Calculate new voltage */
+> +		new_uV = last_uV - drv->vreg_step;
+> +		new_uV = max(new_uV, corner->min_uV);
+> +		dev_vdbg(drv->dev, "[T%u] DOWN - new_uV=%d last_uV=%d p-state=%u st=%u\n",
+> +			thread->id, new_uV, last_uV,
+> +			cpr_get_cur_perf_state(thread), error_steps);
+
+Alignment does not match the open parenthesis.
+
+> +	}
+> +	corner->last_uV = new_uV;
+> +}
+> +
+> +/**
+> + * cpr_irq_handler() - Handle CPR3/CPR4 status interrupts
+> + * @irq: Number of the interrupt
+> + * @dev: Pointer to the cpr_thread structure
+> + *
+> + * Handle the interrupts coming from non-hardened CPR HW as to get
+> + * an ok to scale voltages immediately, or to pass error status to
+> + * the hardware (either success/ACK or failure/NACK).
+> + *
+> + * Return: IRQ_SUCCESS for success, IRQ_NONE if the CPR is disabled.
+> + */
+> +static irqreturn_t cpr_irq_handler(int irq, void *dev)
+> +{
+> +	struct cpr_thread *thread = dev;
+> +	struct cpr_drv *drv = thread->drv;
+> +	irqreturn_t ret = IRQ_HANDLED;
+> +	int i, rc;
+> +	enum voltage_change_dir dir = NO_CHANGE;
+> +	u32 val;
+> +
+> +	mutex_lock(&drv->lock);
+> +
+> +	val = cpr_read(thread, CPR3_REG_IRQ_STATUS);
+> +
+> +	dev_vdbg(drv->dev, "IRQ_STATUS = %#02x\n", val);
+> +
+> +	if (!cpr_ctl_is_enabled(thread)) {
+> +		dev_vdbg(drv->dev, "CPR is disabled\n");
+> +		ret = IRQ_NONE;
+> +	} else if (cpr_check_any_thread_busy(thread)) {
+> +		cpr_irq_clr_nack(thread);
+> +		dev_dbg(drv->dev, "CPR measurement is not ready\n");
+> +	} else {
+> +		/*
+> +		 * Following sequence of handling is as per each IRQ's
+> +		 * priority
+> +		 */
+> +		if (val & CPR3_IRQ_UP)
+> +			dir = UP;
+> +		else if (val & CPR3_IRQ_DOWN)
+> +			dir = DOWN;
+> +
+> +		if (dir != NO_CHANGE) {
+> +			for (i = 0; i < drv->desc->num_threads; i++) {
+> +				thread = &drv->threads[i];
+> +				cpr_scale(thread, dir);
+> +			}
+> +
+> +			rc = cpr_commit_state(thread);
+> +			if (rc)
+> +				cpr_irq_clr_nack(thread);
+> +			else
+> +				cpr_irq_clr_ack(thread);
+> +		} else if (val & CPR3_IRQ_MID) {
+> +			dev_dbg(drv->dev, "IRQ occurred for Mid Flag\n");
+> +		} else {
+> +			dev_warn(drv->dev, "IRQ occurred for unknown flag (%#08x)\n", val);
+> +			schedule_work(&thread->restart_work);
+> +		}
+> +	}
+> +
+> +	mutex_unlock(&drv->lock);
+> +
+> +	return ret;
+> +}
+> +
+> +static int cpr_switch(struct cpr_drv *drv)
+> +{
+> +	int i, ret;
+> +	bool enabled = false;
+> +
+> +	if (drv->desc->cpr_type == CTRL_TYPE_CPRH)
+> +		return 0;
+> +
+> +	for (i = 0; i < drv->desc->num_threads && !enabled; i++)
+> +		enabled = drv->threads[i].enabled;
+> +
+> +	dev_vdbg(drv->dev, "%s: enabled = %d\n", __func__, enabled);
+> +
+> +	if (enabled == drv->enabled)
+> +		return 0;
+> +
+> +	if (enabled) {
+> +		ret = regulator_enable(drv->vreg);
+> +		if (ret)
+> +			return ret;
+> +
+> +		drv->enabled = enabled;
+> +
+> +		for (i = 0; i < drv->desc->num_threads; i++)
+> +			if (drv->threads[i].corner)
+> +				break;
+> +
+> +		if (i < drv->desc->num_threads) {
+> +			cpr_irq_clr(&drv->threads[i]);
+> +
+> +			cpr_commit_state(&drv->threads[i]);
+> +			cpr_ctl_enable(&drv->threads[i]);
+> +		}
+> +	} else {
+> +		for (i = 0; i < drv->desc->num_threads && !enabled; i++)
+> +			cpr_ctl_disable(&drv->threads[i]);
+> +
+> +		drv->enabled = enabled;
+> +
+> +		ret = regulator_disable(drv->vreg);
+> +		if (ret < 0)
+> +			return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +/**
+> + * cpr_enable() - Enables a CPR thread
+> + * @thread: Structure holding CPR thread-specific parameters
+> + *
+> + * Return: Zero for success or negative number on errors.
+> + */
+> +static int cpr_enable(struct cpr_thread *thread)
+> +{
+> +	struct cpr_drv *drv = thread->drv;
+> +	int ret;
+> +
+> +	dev_dbg(drv->dev, "Enabling thread %d\n", thread->id);
+> +
+> +	mutex_lock(&drv->lock);
+> +
+> +	thread->enabled = true;
+> +	ret = cpr_switch(thread->drv);
+> +
+> +	mutex_unlock(&drv->lock);
+> +
+> +	return ret;
+> +}
+> +
+> +/**
+> + * cpr_disable() - Disables a CPR thread
+> + * @thread: Structure holding CPR thread-specific parameters
+> + *
+> + * Return: Zero for success or negative number on errors.
+> + */
+> +static int cpr_disable(struct cpr_thread *thread)
+> +{
+> +	struct cpr_drv *drv = thread->drv;
+> +	int ret;
+> +
+> +	dev_dbg(drv->dev, "Disabling thread %d\n", thread->id);
+> +
+> +	mutex_lock(&drv->lock);
+> +
+> +	thread->enabled = false;
+> +	ret = cpr_switch(thread->drv);
+> +
+> +	mutex_unlock(&drv->lock);
+> +
+> +	return ret;
+> +}
+> +
+> +/**
+> + * cpr_configure() - Configure main HW parameters
+> + * @thread: Structure holding CPR thread-specific parameters
+> + *
+> + * This function configures the main CPR hardware parameters, such as
+> + * internal timers (and delays), sensor ownerships, activates and/or
+> + * deactivates cpr-threads and others, as one sequence for all of the
+> + * versions supported in this driver. By design, the function may
+> + * return a success earlier if the sequence for "a previous version"
+> + * has ended.
+> + *
+> + * Context: The CPR must be clocked before calling this function!
+> + *
+> + * Return: Zero for success or negative number on errors.
+> + */
+> +static int cpr_configure(struct cpr_thread *thread)
+> +{
+> +	struct cpr_drv *drv = thread->drv;
+> +	const struct cpr_desc *desc = drv->desc;
+> +	const struct cpr_thread_desc *tdesc = thread->desc;
+> +	u32 val;
+> +	int i;
+> +
+> +	/* Disable interrupt and CPR */
+> +	cpr_irq_set(thread, 0);
+> +	cpr_write(thread, CPR3_REG_CPR_CTL, 0);
+> +
+> +	/* Init and save gcnt */
+> +	drv->gcnt = drv->ref_clk_khz * desc->gcnt_us;
+> +	do_div(drv->gcnt, 1000);
+> +
+> +	/* Program the delay count for the timer */
+> +	val = drv->ref_clk_khz * desc->timer_delay_us;
+> +	do_div(val, 1000);
+> +	if (desc->cpr_type == CTRL_TYPE_CPR3) {
+> +		cpr_write(thread, CPR3_REG_CPR_TIMER_MID_CONT, val);
+> +
+> +		val = drv->ref_clk_khz * desc->timer_updn_delay_us;
+> +		do_div(val, 1000);
+> +		cpr_write(thread, CPR3_REG_CPR_TIMER_UP_DN_CONT, val);
+> +	} else {
+> +		cpr_write(thread, CPR3_REG_CPR_TIMER_AUTO_CONT, val);
+> +	}
+> +	dev_dbg(drv->dev, "Timer count: %#0x (for %d us)\n", val,
+> +		desc->timer_delay_us);
+> +
+> +	/* Program the control register */
+> +	val = desc->idle_clocks << CPR3_CPR_CTL_IDLE_CLOCKS_SHIFT;
+> +	val |= desc->count_mode << CPR3_CPR_CTL_COUNT_MODE_SHIFT;
+> +	val |= desc->count_repeat << CPR3_CPR_CTL_COUNT_REPEAT_SHIFT;
+> +	cpr_write(thread, CPR3_REG_CPR_CTL, val);
+> +
+> +	/* Configure CPR default step quotients */
+> +	val = tdesc->step_quot_init_min << CPR3_CPR_STEP_QUOT_MIN_SHIFT;
+> +	val |= tdesc->step_quot_init_max << CPR3_CPR_STEP_QUOT_MAX_SHIFT;
+> +
+> +	cpr_write(thread, CPR3_REG_CPR_STEP_QUOT, val);
+> +
+> +	/*
+> +	 * Configure the CPR sensor ownership always on thread 0
+> +	 * TODO: SDM845 has different ownership for sensors!!
+> +	 */
+> +	for (i = tdesc->sensor_range_start; i < tdesc->sensor_range_end; i++)
+> +		cpr_write(thread, CPR3_REG_SENSOR_OWNER(i), 0);
+> +
+> +	/* Program Consecutive Up & Down */
+> +	val = desc->timer_cons_up << CPR3_THRESH_CONS_UP_SHIFT;
+> +	val |= desc->timer_cons_down << CPR3_THRESH_CONS_DOWN_SHIFT;
+> +	val |= desc->up_threshold << CPR3_THRESH_UP_THRESH_SHIFT;
+> +	val |= desc->down_threshold << CPR3_THRESH_DOWN_THRESH_SHIFT;
+> +	cpr_write(thread, CPR3_REG_THRESH(tdesc->hw_tid), val);
+> +
+> +	/* Mask all ring oscillators for all threads initially */
+> +	cpr_write(thread, CPR3_REG_RO_MASK(tdesc->hw_tid), CPR3_RO_MASK);
+> +
+> +	/* HW Closed-loop control */
+> +	if (desc->cpr_type == CTRL_TYPE_CPR3) {
+> +		cpr_write(thread, CPR3_REG_HW_CLOSED_LOOP_DISABLED,
+> +			  !desc->hw_closed_loop_en);
+> +	} else {
+> +		cpr_masked_write(thread, CPR4_REG_MARGIN_ADJ_CTL,
+> +				CPR4_MARGIN_ADJ_HW_CLOSED_LOOP_EN,
+> +				desc->hw_closed_loop_en ?
+> +				CPR4_MARGIN_ADJ_HW_CLOSED_LOOP_EN : 0);
+
+Alignment does not match the open parenthesis.
+
+Also there is no need to set curly brackets.
+
+> +	}
+> +
+> +	/* Additional configuration for CPR4 and beyond */
+> +	if (desc->cpr_type < CTRL_TYPE_CPR4)
+> +		return 0;
+> +
+> +	/* Disable threads initially only on non-hardened CPR4 */
+> +	if (desc->cpr_type == CTRL_TYPE_CPR4) {
+> +		cpr_masked_write(thread, CPR4_REG_CPR_MASK_THREAD(1),
+> +				CPR4_CPR_MASK_THREAD_DISABLE_THREAD |
+> +				CPR4_CPR_MASK_THREAD_RO_MASK4THREAD_MASK,
+> +				CPR4_CPR_MASK_THREAD_DISABLE_THREAD |
+> +				CPR4_CPR_MASK_THREAD_RO_MASK4THREAD_MASK);
+
+Alignment does not match the open parenthesis, curly brackets
+are not needed also.
+
+> +	}
+> +
+> +	if (tdesc->hw_tid > 0) {
+> +		cpr_masked_write(thread, CPR4_REG_MISC,
+> +				 CPR4_MISC_RESET_STEP_QUOT_LOOP_EN |
+> +				 CPR4_MISC_THREAD_HAS_ALWAYS_VOTE_EN,
+> +				 CPR4_MISC_RESET_STEP_QUOT_LOOP_EN |
+> +				 CPR4_MISC_THREAD_HAS_ALWAYS_VOTE_EN);
+
+Alignment does not match the open parenthesis, curly brackets
+are not needed also.
+
+> +	}
+> +
+> +	val = drv->vreg_step;
+> +	do_div(val, 1000);
+> +	cpr_masked_write(thread, CPR4_REG_MARGIN_ADJ_CTL,
+> +			 CPR4_MARGIN_ADJ_PMIC_STEP_SIZE_MASK,
+> +			 val << CPR4_MARGIN_ADJ_PMIC_STEP_SIZE_SHIFT);
+> +
+> +	cpr_masked_write(thread, CPR4_REG_SAW_ERROR_STEP_LIMIT,
+> +			 CPR4_SAW_ERROR_STEP_LIMIT_DN_MASK,
+> +			 desc->vreg_step_down_limit <<
+> +			 CPR4_SAW_ERROR_STEP_LIMIT_DN_SHIFT);
+> +
+> +	cpr_masked_write(thread, CPR4_REG_SAW_ERROR_STEP_LIMIT,
+> +			 CPR4_SAW_ERROR_STEP_LIMIT_UP_MASK,
+> +			 desc->vreg_step_up_limit <<
+> +			 CPR4_SAW_ERROR_STEP_LIMIT_UP_SHIFT);
+> +
+> +	cpr_masked_write(thread, CPR4_REG_MARGIN_ADJ_CTL,
+> +			 CPR4_MARGIN_ADJ_PER_RO_KV_MARGIN_EN,
+> +			 CPR4_MARGIN_ADJ_PER_RO_KV_MARGIN_EN);
+> +
+> +	if (tdesc->hw_tid > 0) {
+> +		cpr_masked_write(thread, CPR4_REG_CPR_TIMER_CLAMP,
+> +				 CPR4_CPR_TIMER_CLAMP_THREAD_AGGREGATION_EN,
+> +				 CPR4_CPR_TIMER_CLAMP_THREAD_AGGREGATION_EN);
+> +	}
+> +
+> +	/* Settling timer to account for one VDD supply step */
+> +	if (desc->vdd_settle_time_us > 0) {
+> +		u32 m = CPR4_MARGIN_TEMP_CORE_TIMERS_SETTLE_VOLTAGE_COUNT_MASK;
+> +		u32 s = CPR4_MARGIN_TEMP_CORE_TIMERS_SETTLE_VOLTAGE_COUNT_SHFT;
+> +
+> +		cpr_masked_write(thread, CPR4_REG_MARGIN_TEMP_CORE_TIMERS,
+> +				 m, desc->vdd_settle_time_us << s);
+> +	}
+> +
+> +	/* Additional configuration for CPR-hardened */
+> +	if (desc->cpr_type < CTRL_TYPE_CPRH)
+> +		return 0;
+> +
+> +	/* Settling timer to account for one corner-switch request */
+> +	if (desc->corner_settle_time_us > 0) {
+> +		cpr_masked_write(thread, drv->reg_ctl,
+> +				 CPRH_CTL_MODE_SWITCH_DELAY_MASK,
+> +				 desc->corner_settle_time_us <<
+> +				 CPRH_CTL_MODE_SWITCH_DELAY_SHIFT);
+> +	}
+> +
+> +	/* Base voltage and multiplier values for CPRh internal calculations */
+> +	cpr_masked_write(thread, drv->reg_ctl,
+> +			 CPRH_CTL_BASE_VOLTAGE_MASK,
+> +			 (DIV_ROUND_UP(desc->cpr_base_voltage,
+> +				       drv->vreg_step) <<
+> +			  CPRH_CTL_BASE_VOLTAGE_SHIFT));
+> +
+> +	cpr_masked_write(thread, drv->reg_ctl,
+> +			 CPRH_CTL_VOLTAGE_MULTIPLIER_MASK,
+> +			 DIV_ROUND_UP(drv->vreg_step, 1000) <<
+> +			 CPRH_CTL_VOLTAGE_MULTIPLIER_SHIFT);
+> +
+> +	return 0;
+> +}
+> +
+> +
+
+Please remove the second unwanted empty line above.
+
+> +static int cprh_dummy_set_performance_state(struct generic_pm_domain *domain,
+> +					    unsigned int state)
+> +{
+> +	return 0;
+> +}
+> +
+> +static int cpr_set_performance_state(struct generic_pm_domain *domain,
+> +				     unsigned int state)
+> +{
+> +	struct cpr_thread *thread = container_of(domain, struct cpr_thread, pd);
+> +	struct cpr_drv *drv = thread->drv;
+> +	struct corner *corner, *end;
+> +	int ret = 0;
+> +
+> +	mutex_lock(&drv->lock);
+> +
+> +	dev_dbg(drv->dev, "setting perf state: %u (prev state: %u thread: %u)\n",
+> +		state, cpr_get_cur_perf_state(thread), thread->id);
+> +
+> +	/*
+> +	 * Determine new corner we're going to.
+> +	 * Remove one since lowest performance state is 1.
+> +	 */
+> +	corner = thread->corners + state - 1;
+> +	end = &thread->corners[thread->num_corners - 1];
+> +	if (corner > end || corner < thread->corners) {
+> +		ret = -EINVAL;
+> +		goto unlock;
+> +	}
+> +
+> +	cpr_ctl_disable(thread);
+> +
+> +	cpr_irq_clr(thread);
+> +	if (thread->corner != corner)
+> +		cpr_corner_restore(thread, corner);
+> +
+> +	ret = cpr_commit_state(thread);
+> +	if (ret)
+> +		goto unlock;
+> +
+> +	cpr_ctl_enable(thread);
+> +unlock:
+> +	mutex_unlock(&drv->lock);
+> +
+> +	dev_dbg(drv->dev, "set perf state %u on thread %u\n", state, thread->id);
+> +
+> +	return ret;
+> +}
+> +
+> +/**
+> + * cpr3_adjust_quot - Adjust the closed-loop quotients
+> + * @ring_osc_factor:  Ring oscillator adjustment factor
+> + * @volt_closed_loop: Closed-loop voltage adjustment factor
+> + *
+> + * Calculates the quotient adjustment factor based on closed-loop
+> + * quotients and ring oscillator factor.
+> + *
+> + * Return: Adjusted quotient
+> + */
+> +static int cpr3_adjust_quot(int ring_osc_factor, int volt_closed_loop)
+> +{
+> +	s64 temp;
+> +
+> +	if (ring_osc_factor == 0 || volt_closed_loop == 0)
+> +		return 0;
+> +
+> +	temp = (s64)(ring_osc_factor * volt_closed_loop);
+> +	return (int)div_s64(temp, 1000000);
+> +}
+> +
+> +/**
+> + * cpr_fuse_corner_init() - Calculate fuse corner table
+> + * @thread: Structure holding CPR thread-specific parameters
+> + *
+> + * This function populates the fuse corners table by reading the
+> + * values from the fuses, eventually adjusting them with a fixed
+> + * per-corner offset and doing basic checks about them being
+> + * supported by the regulator that is assigned to this CPR - if
+> + * it is available (on CPR-Hardened, there is no usable vreg, as
+> + * that is protected by the hypervisor).
+> + *
+> + * Return: Zero for success, negative number on error
+> + */
+> +static int cpr_fuse_corner_init(struct cpr_thread *thread)
+> +{
+> +	struct cpr_drv *drv = thread->drv;
+> +	const struct cpr_thread_desc *desc = thread->desc;
+> +	const struct cpr_fuse *cpr_fuse = thread->cpr_fuses;
+> +	struct fuse_corner_data *fdata;
+> +	struct fuse_corner *fuse, *prev_fuse, *end;
+> +	int i, ret;
+> +
+> +	/* Populate fuse_corner members */
+> +	fuse = thread->fuse_corners;
+> +	prev_fuse = &fuse[0];
+> +	end = &fuse[desc->num_fuse_corners - 1];
+> +	fdata = desc->fuse_corner_data;
+> +
+> +	for (i = 0; fuse <= end; fuse++, cpr_fuse++, i++, fdata++) {
+> +		int factor = cpr_get_ro_factor(desc, i, fuse->ring_osc_idx);
+> +
+> +		ret = cpr_populate_fuse_common(drv->dev, fdata, cpr_fuse,
+> +					       fuse, drv->vreg_step,
+> +					       desc->init_voltage_width,
+> +					       desc->init_voltage_step);
+> +		if (ret)
+> +			return ret;
+> +
+> +		/*
+> +		 * Adjust the fuse quot with per-fuse-corner closed-loop
+> +		 * voltage adjustment parameters.
+> +		 */
+> +		fuse->quot += cpr3_adjust_quot(factor, fdata->volt_cloop_adjust);
+> +
+> +		/* CPRh: no regulator access... */
+> +		if (drv->desc->cpr_type == CTRL_TYPE_CPRH)
+> +			goto skip_pvs_restrict;
+> +
+> +		/* Re-check if corner voltage range is supported by regulator */
+> +		ret = cpr_check_vreg_constraints(drv->dev, drv->vreg, fuse);
+> +		if (ret)
+> +			return ret;
+> +
+> +skip_pvs_restrict:
+> +		if (fuse->uV < prev_fuse->uV)
+> +			fuse->uV = prev_fuse->uV;
+> +		prev_fuse = fuse;
+> +		dev_dbg(drv->dev, "fuse corner %d: [%d %d %d] RO%hhu quot %d\n",
+> +			i, fuse->min_uV, fuse->uV, fuse->max_uV,
+> +			fuse->ring_osc_idx, fuse->quot);
+> +
+> +		/* Check if constraints are valid */
+> +		if (fuse->uV < fuse->min_uV || fuse->uV > fuse->max_uV) {
+> +			dev_err(drv->dev, "fuse corner %d: Bad voltage range.\n", i);
+> +			return -EINVAL;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static void cpr3_restrict_corner(struct corner *corner, int threshold,
+> +				 int hysteresis, int step)
+> +{
+> +	if (threshold > corner->min_uV && threshold <= corner->max_uV) {
+> +		if (corner->uV >= threshold) {
+> +			corner->min_uV = max(corner->min_uV,
+> +					     threshold - hysteresis);
+> +			if (corner->min_uV > corner->uV)
+> +				corner->uV = corner->min_uV;
+> +		} else {
+> +			corner->max_uV = threshold;
+> +			corner->max_uV -= step;
+> +		}
+> +	}
+> +}
+> +
+> +/*
+> + * cprh_corner_adjust_opps() - Set voltage on each CPU OPP table entry
+> + *
+> + * On CPR-Hardened, the voltage level is controlled internally through
+> + * the OSM hardware: in order to initialize the latter, we have to
+> + * communicate the voltage to its driver, so that it will be able to
+> + * write the right parameters (as they have to be set both on the CPRh
+> + * and on the OSM) on it.
+> + * This function is called only for CPRh.
+> + *
+> + * Return: Zero for success, negative number for error.
+> + */
+> +static int cprh_corner_adjust_opps(struct cpr_thread *thread)
+> +{
+> +	struct corner *corner = thread->corners;
+> +	struct cpr_drv *drv = thread->drv;
+> +	int i, ret;
+> +
+> +	for (i = 0; i < thread->num_corners; i++) {
+> +		ret = dev_pm_opp_adjust_voltage(thread->attached_cpu_dev,
+> +						corner[i].freq,
+> +						corner[i].uV,
+> +						corner[i].min_uV,
+> +						corner[i].max_uV);
+> +		if (ret)
+> +			break;
+> +
+> +		dev_dbg(drv->dev, "OPP voltage adjusted for %lu kHz, %d uV\n",
+> +			corner[i].freq, corner[i].uV);
+> +	}
+> +
+> +	/* If we couldn't adjust voltage for all corners, something went wrong */
+> +	if (i < thread->num_corners)
+> +		return -EINVAL;
+> +
+> +	return ret;
+> +}
+> +
+> +/**
+> + * cpr3_corner_init() - Calculate and set-up corners for the CPR HW
+> + * @thread: Structure holding CPR thread-specific parameters
+> + *
+> + * This function calculates all the corner parameters by comparing
+> + * and interpolating the values read from the various set-points
+> + * read from the fuses (also called "fuse corners") to generate and
+> + * program to the CPR a lookup table that describes each voltage
+> + * step, mapped to a performance level (or corner number).
+> + *
+> + * It also programs other essential parameters on the CPR and - if
+> + * we are dealing with CPR-Hardened, it will also enable the internal
+> + * interface between the Operating State Manager (OSM) and the CPRh
+> + * in order to achieve CPU DVFS.
+> + *
+> + * Return: Zero for success, negative number on error
+> + */
+> +static int cpr3_corner_init(struct cpr_thread *thread)
+> +{
+> +	struct cpr_drv *drv = thread->drv;
+> +	const struct cpr_desc *desc = drv->desc;
+> +	const struct cpr_thread_desc *tdesc = thread->desc;
+> +	const struct cpr_fuse *fuses = thread->cpr_fuses;
+> +	int i, ret, total_corners, extra_corners, level, scaling = 0;
+> +	unsigned int fnum, fc;
+> +	const char *quot_offset;
+> +	const struct fuse_corner_data *fdata;
+> +	struct fuse_corner *fuse, *prev_fuse;
+> +	struct corner *corner, *prev_corner, *end;
+> +	struct corner_data *cdata;
+> +	struct dev_pm_opp *opp;
+> +	unsigned long freq;
+> +	u32 ring_osc_mask = CPR3_RO_MASK, min_quotient = U32_MAX;
+> +
+> +	corner = thread->corners;
+> +	prev_corner = &thread->corners[0];
+> +	end = &corner[thread->num_corners - 1];
+> +
+> +	cdata = devm_kcalloc(drv->dev, thread->num_corners + drv->extra_corners,
+> +			     sizeof(struct corner_data), GFP_KERNEL);
+> +	if (!cdata)
+> +		return -ENOMEM;
+> +
+> +	for (level = 1; level <= thread->num_corners; level++) {
+> +		opp = dev_pm_opp_find_level_exact(&thread->pd.dev, level);
+> +		if (IS_ERR(opp))
+> +			return -EINVAL;
+> +
+> +		/*
+> +		 * If there is only one specified qcom,opp-fuse-level, then
+> +		 * it is assumed that this only one is global and valid for
+> +		 * all IDs, so try to get the specific one but, on failure,
+> +		 * go for the global one.
+> +		 */
+> +		fc = cpr_get_fuse_corner(opp, thread->id);
+> +		if (fc == 0) {
+> +			fc = cpr_get_fuse_corner(opp, 0);
+> +			if (fc == 0) {
+> +				dev_err(drv->dev, "qcom,opp-fuse-level is missing!\n");
+> +				dev_pm_opp_put(opp);
+> +				return -EINVAL;
+> +			}
+> +		}
+> +		fnum = fc - 1;
+> +
+> +		freq = cpr_get_opp_hz_for_req(opp, thread->attached_cpu_dev);
+> +		if (!freq) {
+> +			thread->num_corners = max(level - 1, 0);
+> +			end = &thread->corners[thread->num_corners - 1];
+> +			break;
+> +		}
+> +
+> +		/*
+> +		 * If any post-vadj (open/closed loop) is not specified, then
+> +		 * it's zero, meaning that it is not required for this corner.
+> +		 */
+> +		cpr_get_corner_post_vadj(opp, thread->id,
+> +					 &cdata[level - 1].oloop_vadj,
+> +					 &cdata[level - 1].cloop_vadj);
+> +		cdata[level - 1].fuse_corner = fnum;
+> +		cdata[level - 1].freq = freq;
+> +
+> +		fuse = &thread->fuse_corners[fnum];
+> +		dev_dbg(drv->dev, "freq: %lu level: %u fuse level: %u\n",
+> +			freq, dev_pm_opp_get_level(opp) - 1, fnum);
+> +		if (freq > fuse->max_freq)
+> +			fuse->max_freq = freq;
+> +		dev_pm_opp_put(opp);
+> +
+> +		/*
+> +		 * Make sure that the frequencies in the table are in ascending
+> +		 * order, as this is critical for the algorithm to work.
+> +		 */
+> +		if (cdata[level - 2].freq > freq) {
+> +			dev_err(drv->dev, "Frequency table not in ascending order.\n");
+> +			return -EINVAL;
+> +		}
+> +	}
+> +
+> +	if (thread->num_corners < 2) {
+> +		dev_err(drv->dev, "need at least 2 OPPs to use CPR\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	/*
+> +	 * Get the quotient adjustment scaling factor, according to:
+> +	 *
+> +	 * scaling = min(1000 * (QUOT(corner_N) - QUOT(corner_N-1))
+> +	 *		/ (freq(corner_N) - freq(corner_N-1)), max_factor)
+> +	 *
+> +	 * QUOT(corner_N):	quotient read from fuse for fuse corner N
+> +	 * QUOT(corner_N-1):	quotient read from fuse for fuse corner (N - 1)
+> +	 * freq(corner_N):	max frequency in MHz supported by fuse corner N
+> +	 * freq(corner_N-1):	max frequency in MHz supported by fuse corner
+> +	 *			 (N - 1)
+> +	 *
+> +	 * Then walk through the corners mapped to each fuse corner
+> +	 * and calculate the quotient adjustment for each one using the
+> +	 * following formula:
+> +	 *
+> +	 * quot_adjust = (freq_max - freq_corner) * scaling / 1000
+> +	 *
+> +	 * freq_max: max frequency in MHz supported by the fuse corner
+> +	 * freq_corner: frequency in MHz corresponding to the corner
+> +	 * scaling: calculated from above equation
+> +	 *
+> +	 *
+> +	 *     +                           +
+> +	 *     |                         v |
+> +	 *   q |           f c           o |           f c
+> +	 *   u |         c               l |         c
+> +	 *   o |       f                 t |       f
+> +	 *   t |     c                   a |     c
+> +	 *     | c f                     g | c f
+> +	 *     |                         e |
+> +	 *     +---------------            +----------------
+> +	 *       0 1 2 3 4 5 6               0 1 2 3 4 5 6
+> +	 *          corner                      corner
+> +	 *
+> +	 *    c = corner
+> +	 *    f = fuse corner
+> +	 *
+> +	 */
+> +	for (i = 0; corner <= end; corner++, i++) {
+> +		unsigned long freq_diff_mhz;
+> +		int ro_fac, vadj, prev_quot;
+> +
+> +		fnum = cdata[i].fuse_corner;
+> +		fdata = &tdesc->fuse_corner_data[fnum];
+> +		quot_offset = fuses[fnum].quotient_offset;
+> +		fuse = &thread->fuse_corners[fnum];
+> +		ring_osc_mask &= (u16)(~BIT(fuse->ring_osc_idx));
+> +		if (fnum)
+> +			prev_fuse = &thread->fuse_corners[fnum - 1];
+> +		else
+> +			prev_fuse = NULL;
+> +
+> +		corner->fuse_corner = fuse;
+> +		corner->freq = cdata[i].freq;
+> +		corner->uV = fuse->uV;
+> +
+> +		if (prev_fuse) {
+> +			if (prev_fuse->ring_osc_idx == fuse->ring_osc_idx)
+> +				quot_offset = NULL;
+> +
+> +			scaling = cpr_calculate_scaling(quot_offset, drv->dev,
+> +							fdata, corner);
+> +			if (scaling < 0)
+> +				return scaling;
+> +
+> +			freq_diff_mhz = fuse->max_freq - corner->freq;
+> +			do_div(freq_diff_mhz, 1000000); /* now in MHz */
+> +
+> +			corner->quot_adjust = scaling * freq_diff_mhz;
+> +			do_div(corner->quot_adjust, 1000);
+> +
+> +			/* Fine-tune QUOT (closed-loop) based on fixed values */
+> +			ro_fac = cpr_get_ro_factor(tdesc, fnum, fuse->ring_osc_idx);
+> +			vadj = cdata[i].cloop_vadj;
+> +			corner->quot_adjust -= cpr3_adjust_quot(ro_fac, vadj);
+> +			dev_vdbg(drv->dev, "Quot fine-tuning to %d for post-vadj=%d\n",
+> +				 corner->quot_adjust, vadj);
+> +
+> +			/*
+> +			 * Make sure that we scale (up) monotonically.
+> +			 * P.S.: Fuse quots can never be descending.
+> +			 */
+> +			prev_quot = prev_corner->fuse_corner->quot;
+> +			prev_quot -= prev_corner->quot_adjust;
+> +			if (fuse->quot - corner->quot_adjust < prev_quot) {
+> +				int new_adj = prev_corner->fuse_corner->quot;
+
+Please add an empty line after the declaration.
+
+> +				new_adj -= fuse->quot;
+> +				dev_vdbg(drv->dev, "Monotonic increase forced: %d->%d\n",
+> +					 corner->quot_adjust, new_adj);
+> +				corner->quot_adjust = new_adj;
+> +			}
+> +
+> +			corner->uV = cpr_interpolate(corner,
+> +						     drv->vreg_step, fdata);
+> +		}
+> +		/* Negative fuse quotients are nonsense. */
+> +		if (fuse->quot < corner->quot_adjust)
+> +			return -EINVAL;
+> +
+> +		min_quotient = min(min_quotient,
+> +				   (u32)(fuse->quot - corner->quot_adjust));
+> +
+> +		/* Fine-tune voltages (open-loop) based on fixed values */
+> +		corner->uV += cdata[i].oloop_vadj;
+> +		dev_dbg(drv->dev, "Voltage fine-tuning to %d for post-vadj=%d\n",
+> +			 corner->uV, cdata[i].oloop_vadj);
+
+Please fix an alignment of the wrapped line above.
+
+> +
+> +		corner->max_uV = fuse->max_uV;
+> +		corner->min_uV = fuse->min_uV;
+> +		corner->uV = clamp(corner->uV, corner->min_uV, corner->max_uV);
+> +		dev_vdbg(drv->dev, "Clamped after interpolation: [%d %d %d]\n",
+> +			corner->min_uV, corner->uV, corner->max_uV);
+
+Please fix an alignment of the wrapped line above.
+
+> +
+> +		/* Make sure that we scale monotonically here, too. */
+> +		if (corner->uV < prev_corner->uV)
+> +			corner->uV = prev_corner->uV;
+> +
+> +		corner->last_uV = corner->uV;
+> +
+> +		/* Reduce the ceiling voltage if needed */
+> +		if (desc->reduce_to_corner_uV && corner->uV < corner->max_uV)
+> +			corner->max_uV = corner->uV;
+> +		else if (desc->reduce_to_fuse_uV && fuse->uV < corner->max_uV)
+> +			corner->max_uV = max(corner->min_uV, fuse->uV);
+> +
+> +		corner->min_uV = max(corner->max_uV - fdata->range_uV,
+> +				     corner->min_uV);
+> +
+> +		/*
+> +		 * Adjust per-corner floor and ceiling voltages so that
+> +		 * they do not overlap the memory Array Power Mux (APM)
+> +		 * nor the Memory Accelerator (MEM-ACC) threshold voltages.
+> +		 */
+> +		if (desc->apm_threshold)
+> +			cpr3_restrict_corner(corner, desc->apm_threshold,
+> +					     desc->apm_hysteresis,
+> +					     drv->vreg_step);
+> +		if (desc->mem_acc_threshold)
+> +			cpr3_restrict_corner(corner, desc->mem_acc_threshold,
+> +					     0, drv->vreg_step);
+> +
+> +		prev_corner = corner;
+> +		dev_dbg(drv->dev, "corner %d: [%d %d %d] scaling %d quot %d\n", i,
+> +			corner->min_uV, corner->uV, corner->max_uV, scaling,
+> +			fuse->quot - corner->quot_adjust);
+> +	}
+> +
+> +	/* Additional setup for CPRh only */
+> +	if (desc->cpr_type < CTRL_TYPE_CPRH)
+> +		return 0;
+> +
+> +	/* If the OPPs can't be adjusted, programming the CPRh is useless */
+> +	ret = cprh_corner_adjust_opps(thread);
+> +	if (ret) {
+> +		dev_err(drv->dev, "Cannot adjust CPU OPP voltages: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	total_corners = thread->num_corners;
+> +	extra_corners = drv->extra_corners;
+> +
+> +	/* If the APM extra corner exists, add it now. */
+> +	if (desc->apm_crossover && desc->apm_threshold && extra_corners) {
+> +		/* Program the APM crossover corner on the CPR-Hardened */
+> +		thread->corners[total_corners].uV = desc->apm_crossover;
+> +		thread->corners[total_corners].min_uV = desc->apm_crossover;
+> +		thread->corners[total_corners].max_uV = desc->apm_crossover;
+> +		thread->corners[total_corners].is_open_loop = true;
+> +
+> +		/*
+> +		 * We have calculated the APM parameters for this clock plan:
+> +		 * make the APM *threshold* available to external callers.
+> +		 * The crossover is used only internally in the CPR.
+> +		 */
+> +		thread->ext_data.apm_threshold_uV = desc->apm_threshold;
+> +
+> +		dev_dbg(drv->dev, "corner %d (APM): [%d %d %d] Open-Loop\n",
+> +			total_corners, desc->apm_crossover,
+> +			desc->apm_crossover, desc->apm_crossover);
+> +
+> +		total_corners++;
+> +		extra_corners--;
+> +	}
+> +
+> +	if (desc->mem_acc_threshold && extra_corners) {
+> +		/* Program the Memory Accelerator threshold corner to CPRh */
+> +		thread->corners[total_corners].uV = desc->mem_acc_threshold;
+> +		thread->corners[total_corners].min_uV = desc->mem_acc_threshold;
+> +		thread->corners[total_corners].max_uV = desc->mem_acc_threshold;
+> +		thread->corners[total_corners].is_open_loop = true;
+> +
+> +		/*
+> +		 * We have calculated a mem-acc threshold for this clock plan:
+> +		 * make it available to external callers.
+> +		 */
+> +		thread->ext_data.mem_acc_threshold_uV = desc->mem_acc_threshold;
+> +
+> +		dev_dbg(drv->dev, "corner %d (MEMACC): [%d %d %d] Open-Loop\n",
+> +			total_corners, desc->mem_acc_threshold,
+> +			desc->mem_acc_threshold, desc->mem_acc_threshold);
+> +
+> +		total_corners++;
+> +		extra_corners--;
+> +	}
+> +
+> +	/*
+> +	 * If there are any extra corners left, it means that even though we
+> +	 * expect to fill in both APM and MEM-ACC crossovers, one couldn't
+> +	 * satisfy requirements, which means that the specified parameters
+> +	 * are wrong: in this case, inform the user and bail out, otherwise
+> +	 * if we go on writing the (invalid) table to the CPR-Hardened, the
+> +	 * hardware (in this case, the CPU) will surely freeze and crash.
+> +	 */
+> +	if (unlikely(extra_corners)) {
+> +		dev_err(drv->dev, "APM/MEM-ACC corners: bad parameters.\n");
+> +		return -EINVAL;
+> +	}
+> +	/* Reassign extra_corners, as we have to exclude delta_quot for them */
+> +	extra_corners = drv->extra_corners;
+> +
+> +	/* Disable the interface between OSM and CPRh */
+> +	cpr_masked_write(thread, drv->reg_ctl,
+> +			 CPRH_CTL_OSM_ENABLED, 0);
+> +
+> +	/* Program the GCNT before unmasking ring oscillator(s) */
+> +	for (i = 0; i < CPR3_RO_COUNT; i++) {
+> +		if (!(ring_osc_mask & BIT(i))) {
+> +			cpr_write(thread, CPR3_REG_GCNT(i), drv->gcnt);
+> +			dev_vdbg(drv->dev, "RO%d gcnt=%d\n", i, drv->gcnt);
+> +		}
+> +	}
+> +
+> +	/*
+> +	 * Unmask the ring oscillator(s) that we're going to use: it seems
+> +	 * to be mandatory to do this *before* sending the rest of the
+> +	 * CPRhardened specific configuration.
+> +	 */
+> +	dev_dbg(drv->dev, "Unmasking ring oscillators with mask 0x%x\n", ring_osc_mask);
+> +	cpr_write(thread, CPR3_REG_RO_MASK(tdesc->hw_tid), ring_osc_mask);
+> +
+> +	/* Setup minimum quotients for ring oscillators */
+> +	for (i = 0; i < CPR3_RO_COUNT; i++) {
+> +		u32 tgt_quot_reg = CPR3_REG_TARGET_QUOT(tdesc->hw_tid, i);
+> +		u32 tgt_quot_val = 0;
+> +
+> +		if (!(ring_osc_mask & BIT(i)))
+> +			tgt_quot_val = min_quotient;
+> +
+> +		cpr_write(thread, tgt_quot_reg, tgt_quot_val);
+> +		dev_vdbg(drv->dev, "Programmed min quotient %u for Ring Oscillator %d\n",
+> +			 tgt_quot_val, tgt_quot_reg);
+> +	}
+> +
+> +	for (i = 0; i < total_corners; i++) {
+> +		int volt_oloop_steps, volt_floor_steps, delta_quot_steps;
+> +		int ring_osc;
+> +		u32 val;
+> +
+> +		fnum = cdata[i].fuse_corner;
+> +		fuse = &thread->fuse_corners[fnum];
+> +
+> +		val = thread->corners[i].uV - desc->cpr_base_voltage;
+> +		volt_oloop_steps = DIV_ROUND_UP(val, drv->vreg_step);
+> +
+> +		val = thread->corners[i].min_uV - desc->cpr_base_voltage;
+> +		volt_floor_steps = DIV_ROUND_UP(val, drv->vreg_step);
+> +
+> +		/*
+> +		 * If we are accessing corners that are not used as
+> +		 * an active DCVS set-point, then always select RO 0
+> +		 * and zero out the delta quotient.
+> +		 */
+> +		if (i >= thread->num_corners) {
+> +			ring_osc = 0;
+> +			delta_quot_steps = 0;
+> +		} else {
+> +			ring_osc = fuse->ring_osc_idx;
+> +			val = fuse->quot - thread->corners[i].quot_adjust;
+> +			val -= min_quotient;
+> +			delta_quot_steps = DIV_ROUND_UP(val,
+> +						CPRH_DELTA_QUOT_STEP_FACTOR);
+> +		}
+> +
+> +		if (volt_oloop_steps > CPRH_CORNER_INIT_VOLTAGE_MAX_VALUE  ||
+> +		    volt_floor_steps > CPRH_CORNER_FLOOR_VOLTAGE_MAX_VALUE ||
+> +		    delta_quot_steps > CPRH_CORNER_QUOT_DELTA_MAX_VALUE) {
+> +			dev_err(drv->dev, "Invalid cfg: oloop=%d, floor=%d, delta=%d\n",
+> +				volt_oloop_steps, volt_floor_steps,
+> +				delta_quot_steps);
+> +			return -EINVAL;
+> +		}
+> +		/* Green light: Go, Go, Go! */
+> +
+> +		/* Set number of open-loop steps */
+> +		val = volt_oloop_steps << CPRH_CORNER_INIT_VOLTAGE_SHIFT;
+> +		val &= CPRH_CORNER_INIT_VOLTAGE_MASK;
+> +
+> +		/* Set number of floor voltage steps */
+> +		val |= (volt_floor_steps << CPRH_CORNER_FLOOR_VOLTAGE_SHIFT) &
+> +		       CPRH_CORNER_FLOOR_VOLTAGE_MASK;
+> +
+> +		/* Set number of target quotient delta steps */
+> +		val |= (delta_quot_steps << CPRH_CORNER_QUOT_DELTA_SHIFT) &
+> +		       CPRH_CORNER_QUOT_DELTA_MASK;
+> +
+> +		/* Select ring oscillator for this corner */
+> +		val |= (ring_osc << CPRH_CORNER_RO_SEL_SHIFT) &
+> +		       CPRH_CORNER_RO_SEL_MASK;
+> +
+> +		/* Open loop corner is usually APM/ACC crossover */
+> +		if (thread->corners[i].is_open_loop) {
+> +			dev_dbg(drv->dev, "Disabling Closed-Loop on corner %d\n", i);
+> +			val |= CPRH_CORNER_CPR_CL_DISABLE;
+> +		}
+> +		cpr_write(thread, CPRH_REG_CORNER(drv, tdesc->hw_tid, i), val);
+> +
+> +		dev_dbg(drv->dev, "steps [%d]: open-loop %d, floor %d, delta_quot %d\n",
+> +			i, volt_oloop_steps, volt_floor_steps,
+> +			delta_quot_steps);
+> +	}
+> +
+> +	/* YAY! Setup is done! Enable the internal loop to start CPR. */
+> +	cpr_masked_write(thread, CPR3_REG_CPR_CTL,
+> +			CPR3_CPR_CTL_LOOP_EN_MASK,
+> +			CPR3_CPR_CTL_LOOP_EN_MASK);
+> +
+> +	/*
+> +	 * All the writes are going through before enabling internal
+> +	 * communication between the OSM and the CPRh controllers
+> +	 * because we are never using relaxed accessors, but should
+> +	 * we use them, it would be critical to issue a barrier here,
+> +	 * otherwise there is a high risk of hardware lockups due to
+> +	 * under-voltage for the selected CPU clock.
+> +	 *
+> +	 * Please note that the CPR-hardened gets set-up in Linux but
+> +	 * then gets actually used in firmware (and only by the OSM);
+> +	 * after handing it off we will have no more control on it.
+> +	 */
+> +
+> +	/* Enable the interface between OSM and CPRh */
+> +	cpr_masked_write(thread, drv->reg_ctl,
+> +			 CPRH_CTL_OSM_ENABLED,
+> +			 CPRH_CTL_OSM_ENABLED);
+> +
+> +	/* On success, free cdata manually */
+> +	devm_kfree(drv->dev, cdata);
+> +	return 0;
+> +}
+> +
+> +/**
+> + * cpr3_init_parameters() - Initialize CPR global parameters
+> + * @drv: Main driver structure
+> + *
+> + * Initial "integrity" checks and setup for the thread-independent parameters.
+> + *
+> + * Return: Zero for success, negative number on error
+> + */
+> +static int cpr3_init_parameters(struct cpr_drv *drv)
+> +{
+> +	const struct cpr_desc *desc = drv->desc;
+> +	struct clk *clk;
+> +
+> +	clk = devm_clk_get(drv->dev, "ref");
+> +	if (IS_ERR(clk))
+> +		return PTR_ERR(clk);
+> +
+> +	drv->ref_clk_khz = clk_get_rate(clk);
+> +	do_div(drv->ref_clk_khz, 1000);
+> +
+> +	/* On CPRh this clock is not always-on... */
+> +	if (desc->cpr_type == CTRL_TYPE_CPRH)
+> +		clk_prepare_enable(clk);
+> +	else
+> +		devm_clk_put(drv->dev, clk);
+> +
+> +	if (desc->timer_cons_up > CPR3_THRESH_CONS_UP_MASK ||
+> +	    desc->timer_cons_down > CPR3_THRESH_CONS_DOWN_MASK ||
+> +	    desc->up_threshold > CPR3_THRESH_UP_THRESH_MASK ||
+> +	    desc->down_threshold > CPR3_THRESH_DOWN_THRESH_MASK ||
+> +	    desc->idle_clocks > CPR3_CPR_CTL_IDLE_CLOCKS_MASK ||
+> +	    desc->count_mode > CPR3_CPR_CTL_COUNT_MODE_MASK ||
+> +	    desc->count_repeat > CPR3_CPR_CTL_COUNT_REPEAT_MASK)
+> +		return -EINVAL;
+> +
+> +	/*
+> +	 * Read the CPR version register only from CPR3 onwards:
+> +	 * this is needed to get the additional register offsets.
+> +	 *
+> +	 * Note: When threaded, even if multi-controller, there
+> +	 *       is no chance to have different versions at the
+> +	 *       same time in the same domain, so it is safe to
+> +	 *       check this only on the first controller/thread.
+> +	 */
+> +	drv->cpr_hw_rev = cpr_read(&drv->threads[0],
+> +				   CPR3_REG_CPR_VERSION);
+> +	dev_dbg(drv->dev, "CPR hardware revision: 0x%x\n", drv->cpr_hw_rev);
+> +
+> +	if (drv->cpr_hw_rev >= CPRH_CPR_VERSION_4P5) {
+> +		drv->reg_corner = 0x3500;
+> +		drv->reg_corner_tid = 0xa0;
+> +		drv->reg_ctl = 0x3a80;
+> +		drv->reg_status = 0x3a84;
+> +	} else {
+> +		drv->reg_corner = 0x3a00;
+> +		drv->reg_corner_tid = 0;
+> +		drv->reg_ctl = 0x3aa0;
+> +		drv->reg_status = 0x3aa4;
+> +	}
+> +
+> +	dev_dbg(drv->dev, "up threshold = %u, down threshold = %u\n",
+> +		desc->up_threshold, desc->down_threshold);
+> +
+> +	return 0;
+> +}
+> +
+> +/**
+> + * cpr3_find_initial_corner() - Finds boot-up p-state and enables CPR
+> + * @thread: Structure holding CPR thread-specific parameters
+> + *
+> + * Differently from CPRv1, from CPRv3 onwards when we successfully find
+> + * the target boot-up performance state, we must refresh the HW
+> + * immediately to guarantee system stability and to avoid overheating
+> + * during the boot process, thing that would more likely happen without
+> + * this driver doing its job.
+> + *
+> + * Return: Zero for success, negative number on error
+> + */
+> +static int cpr3_find_initial_corner(struct cpr_thread *thread)
+> +{
+> +	struct cpr_drv *drv = thread->drv;
+> +	struct corner *corner;
+> +	int uV, idx;
+> +
+> +	idx = cpr_find_initial_corner(drv->dev, thread->cpu_clk,
+> +				      thread->corners,
+> +				      thread->num_corners);
+> +	if (idx < 0)
+> +		return idx;
+> +
+> +	cpr_ctl_disable(thread);
+> +
+> +	corner = &thread->corners[idx];
+> +	cpr_corner_restore(thread, corner);
+> +
+> +	uV = regulator_get_voltage(drv->vreg);
+> +	uV = clamp(uV, corner->min_uV, corner->max_uV);
+> +
+> +	corner->last_uV = uV;
+> +	if (!drv->last_uV)
+> +		drv->last_uV = uV;
+> +
+> +	cpr_commit_state(thread);
+> +	thread->enabled = true;
+> +	cpr_switch(drv);
+> +
+> +	return 0;
+> +}
+> +
+> +static const int msm8998_gold_scaling_factor[][CPR3_RO_COUNT] = {
+> +	/* Fuse Corner 0 */
+> +	{
+> +		2857, 3057, 2828, 2952, 2699, 2798, 2446, 2631,
+> +		2629, 2578, 2244, 3344, 3289, 3137, 3164, 2655
+> +	},
+> +	/* Fuse Corner 1 */
+> +	{
+> +		2857, 3057, 2828, 2952, 2699, 2798, 2446, 2631,
+> +		2629, 2578, 2244, 3344, 3289, 3137, 3164, 2655
+> +	},
+> +	/* Fuse Corner 2 */
+> +	{
+> +		2603, 2755, 2676, 2777, 2573, 2685, 2465, 2610,
+> +		2312, 2423, 2243, 3104, 3022, 3036, 2740, 2303
+> +	},
+> +	/* Fuse Corner 3 */
+> +	{
+> +		1901, 2016, 2096, 2228, 2034, 2161, 2077, 2188,
+> +		1565, 1870, 1925, 2235, 2205, 2413, 1762, 1478
+> +	}
+> +};
+> +
+> +static const int msm8998_silver_scaling_factor[][CPR3_RO_COUNT] = {
+> +	/* Fuse Corner 0 */
+> +	{
+> +		2595, 2794, 2577, 2762, 2471, 2674, 2199, 2553,
+> +		3189, 3255, 3192, 2962, 3054, 2982, 2042, 2945
+> +	},
+> +	/* Fuse Corner 1 */
+> +	{
+> +		2595, 2794, 2577, 2762, 2471, 2674, 2199, 2553,
+> +		3189, 3255, 3192, 2962, 3054, 2982, 2042, 2945
+> +	},
+> +	/* Fuse Corner 2 */
+> +	{
+> +		2391, 2550, 2483, 2638, 2382, 2564, 2259, 2555,
+> +		2766, 3041, 2988, 2935, 2873, 2688, 2013, 2784
+> +	},
+> +	/* Fuse Corner 3 */
+> +	{
+> +		2066, 2153, 2300, 2434, 2220, 2386, 2288, 2465,
+> +		2028, 2511, 2487, 2734, 2554, 2117, 1892, 2377
+> +	}
+> +};
+> +
+> +static const struct cpr_thread_desc msm8998_thread_gold = {
+> +	.controller_id = 1,
+> +	.hw_tid = 0,
+> +	.ro_scaling_factor = msm8998_gold_scaling_factor,
+> +	.ro_avail_corners = ARRAY_SIZE(msm8998_gold_scaling_factor),
+> +	.sensor_range_start = 0,
+> +	.sensor_range_end = 9,
+> +	.init_voltage_step = 10000,
+> +	.init_voltage_width = 6,
+> +	.step_quot_init_min = 9,
+> +	.step_quot_init_max = 14,
+> +	.num_fuse_corners = 4,
+> +	.fuse_corner_data = (struct fuse_corner_data[]){
+> +		/* fuse corner 0 */
+> +		{
+> +			.ref_uV = 756000,
+> +			.max_uV = 828000,
+> +			.min_uV = 568000,
+> +			.range_uV = 32000,
+> +			.volt_cloop_adjust = 0,
+> +			.volt_oloop_adjust = 8000,
+> +			.max_volt_scale = 4,
+> +			.max_quot_scale = 10,
+> +			.quot_offset = 0,
+> +			.quot_scale = 1,
+> +			.quot_adjust = 0,
+> +			.quot_offset_scale = 5,
+> +			.quot_offset_adjust = 0,
+> +		},
+> +		/* fuse corner 1 */
+> +		{
+> +			.ref_uV = 756000,
+> +			.max_uV = 900000,
+> +			.min_uV = 624000,
+> +			.range_uV = 32000,
+> +			.volt_cloop_adjust = 0,
+> +			.volt_oloop_adjust = 0,
+> +			.max_volt_scale = 320,
+> +			.max_quot_scale = 350,
+> +			.quot_offset = 0,
+> +			.quot_scale = 1,
+> +			.quot_adjust = 0,
+> +			.quot_offset_scale = 5,
+> +			.quot_offset_adjust = 0,
+> +		},
+> +		/* fuse corner 2 */
+> +		{
+> +			.ref_uV = 828000,
+> +			.max_uV = 952000,
+> +			.min_uV = 632000,
+> +			.range_uV = 32000,
+> +			.volt_cloop_adjust = 12000,
+> +			.volt_oloop_adjust = 12000,
+> +			.max_volt_scale = 620,
+> +			.max_quot_scale = 750,
+> +			.quot_offset = 0,
+> +			.quot_scale = 1,
+> +			.quot_adjust = 0,
+> +			.quot_offset_scale = 5,
+> +			.quot_offset_adjust = 0,
+> +		},
+> +		/* fuse corner 3 */
+> +		{
+> +			.ref_uV = 1056000,
+> +			.max_uV = 1136000,
+> +			.min_uV = 772000,
+> +			.range_uV = 40000,
+> +			.volt_cloop_adjust = 50000,
+> +			.volt_oloop_adjust = 52000,
+> +			.max_volt_scale = 580,
+> +			.max_quot_scale = 1040,
+> +			.quot_offset = 0,
+> +			.quot_scale = 1,
+> +			.quot_adjust = 0,
+> +			.quot_offset_scale = 5,
+> +			.quot_offset_adjust = 0,
+> +		},
+> +	},
+> +};
+> +
+> +static const struct cpr_thread_desc msm8998_thread_silver = {
+> +	.controller_id = 0,
+> +	.hw_tid = 0,
+> +	.ro_scaling_factor = msm8998_silver_scaling_factor,
+> +	.ro_avail_corners = ARRAY_SIZE(msm8998_silver_scaling_factor),
+> +	.sensor_range_start = 0,
+> +	.sensor_range_end = 6,
+> +	.init_voltage_step = 10000,
+> +	.init_voltage_width = 6,
+> +	.step_quot_init_min = 11,
+> +	.step_quot_init_max = 12,
+> +	.num_fuse_corners = 4,
+> +	.fuse_corner_data = (struct fuse_corner_data[]){
+> +		/* fuse corner 0 */
+> +		{
+> +			.ref_uV = 688000,
+> +			.max_uV = 828000,
+> +			.min_uV = 568000,
+> +			.range_uV = 32000,
+> +			.volt_cloop_adjust = 20000,
+> +			.volt_oloop_adjust = 40000,
+> +			.max_volt_scale = 4,
+> +			.max_quot_scale = 10,
+> +			.quot_offset = 0,
+> +			.quot_scale = 1,
+> +			.quot_adjust = 0,
+> +			.quot_offset_scale = 5,
+> +			.quot_offset_adjust = 0,
+> +		},
+> +		/* fuse corner 1 */
+> +		{
+> +			.ref_uV = 756000,
+> +			.max_uV = 900000,
+> +			.min_uV = 632000,
+> +			.range_uV = 32000,
+> +			.volt_cloop_adjust = 26000,
+> +			.volt_oloop_adjust = 24000,
+> +			.max_volt_scale = 500,
+> +			.max_quot_scale = 800,
+> +			.quot_offset = 0,
+> +			.quot_scale = 1,
+> +			.quot_adjust = 0,
+> +			.quot_offset_scale = 5,
+> +			.quot_offset_adjust = 0,
+> +		},
+> +		/* fuse corner 2 */
+> +		{
+> +			.ref_uV = 828000,
+> +			.max_uV = 952000,
+> +			.min_uV = 664000,
+> +			.range_uV = 32000,
+> +			.volt_cloop_adjust = 12000,
+> +			.volt_oloop_adjust = 12000,
+> +			.max_volt_scale = 280,
+> +			.max_quot_scale = 650,
+> +			.quot_offset = 0,
+> +			.quot_scale = 1,
+> +			.quot_adjust = 0,
+> +			.quot_offset_scale = 5,
+> +			.quot_offset_adjust = 0,
+> +
+> +		},
+> +		/* fuse corner 3 */
+> +		{
+> +			.ref_uV = 1056000,
+> +			.max_uV = 1056000,
+> +			.min_uV = 772000,
+> +			.range_uV = 40000,
+> +			.volt_cloop_adjust = 30000,
+> +			.volt_oloop_adjust = 30000,
+> +			.max_volt_scale = 430,
+> +			.max_quot_scale = 800,
+> +			.quot_offset = 0,
+> +			.quot_scale = 1,
+> +			.quot_adjust = 0,
+> +			.quot_offset_scale = 5,
+> +			.quot_offset_adjust = 0,
+> +		},
+> +	},
+> +};
+> +
+> +static const struct cpr_desc msm8998_cpr_desc = {
+> +	.cpr_type = CTRL_TYPE_CPRH,
+> +	.num_threads = 2,
+> +	.mem_acc_threshold = 852000,
+> +	.apm_threshold = 800000,
+> +	.apm_crossover = 880000,
+> +	.apm_hysteresis = 0,
+> +	.cpr_base_voltage = 352000,
+> +	.cpr_max_voltage = 1200000,
+> +	.timer_delay_us = 5000,
+> +	.timer_cons_up = 0,
+> +	.timer_cons_down = 2,
+> +	.up_threshold = 2,
+> +	.down_threshold = 2,
+> +	.idle_clocks = 15,
+> +	.count_mode = CPR3_CPR_CTL_COUNT_MODE_ALL_AT_ONCE_MIN,
+> +	.count_repeat = 14,
+> +	.gcnt_us = 1,
+> +	.vreg_step_fixed = 4000,
+> +	.vreg_step_up_limit = 1,
+> +	.vreg_step_down_limit = 1,
+> +	.vdd_settle_time_us = 34,
+> +	.corner_settle_time_us = 6,
+> +	.reduce_to_corner_uV = true,
+> +	.hw_closed_loop_en = true,
+> +	.threads = (const struct cpr_thread_desc *[]) {
+> +		&msm8998_thread_silver,
+> +		&msm8998_thread_gold,
+> +	},
+> +};
+> +
+> +static const struct cpr_acc_desc msm8998_cpr_acc_desc = {
+> +	.cpr_desc = &msm8998_cpr_desc,
+> +};
+> +
+> +static const int sdm630_gold_scaling_factor[][CPR3_RO_COUNT] = {
+> +	/* Same RO factors for all fuse corners */
+> +	{
+> +		4040, 3230,    0, 2210, 2560, 2450, 2230, 2220,
+> +		2410, 2300, 2560, 2470, 1600, 3120, 2620, 2280
+> +	}
+> +};
+> +
+> +static const int sdm630_silver_scaling_factor[][CPR3_RO_COUNT] = {
+> +	/* Same RO factors for all fuse corners */
+> +	{
+> +		3600, 3600, 3830, 2430, 2520, 2700, 1790, 1760,
+> +		1970, 1880, 2110, 2010, 2510, 4900, 4370, 4780,
+> +	}
+> +};
+> +
+> +static const struct cpr_thread_desc sdm630_thread_gold = {
+> +	.controller_id = 0,
+> +	.hw_tid = 0,
+> +	.ro_scaling_factor = sdm630_gold_scaling_factor,
+> +	.ro_avail_corners = ARRAY_SIZE(sdm630_gold_scaling_factor),
+> +	.sensor_range_start = 0,
+> +	.sensor_range_end = 6,
+> +	.init_voltage_step = 10000,
+> +	.init_voltage_width = 6,
+> +	.step_quot_init_min = 12,
+> +	.step_quot_init_max = 14,
+> +	.num_fuse_corners = 5,
+> +	.fuse_corner_data = (struct fuse_corner_data[]){
+> +		/* fuse corner 0 */
+> +		{
+> +			.ref_uV = 644000,
+> +			.max_uV = 724000,
+> +			.min_uV = 588000,
+> +			.range_uV = 40000,
+> +			.volt_cloop_adjust = -30000,
+> +			.volt_oloop_adjust = 15000,
+> +			.max_volt_scale = 10,
+> +			.max_quot_scale = 300,
+> +			.quot_offset = 0,
+> +			.quot_scale = 1,
+> +			.quot_adjust = 0,
+> +			.quot_offset_scale = 5,
+> +			.quot_offset_adjust = 0,
+> +		},
+> +		/* fuse corner 1 */
+> +		{
+> +			.ref_uV = 788000,
+> +			.max_uV = 788000,
+> +			.min_uV = 652000,
+> +			.range_uV = 40000,
+> +			.volt_cloop_adjust = -30000,
+> +			.volt_oloop_adjust = 5000,
+> +			.max_volt_scale = 320,
+> +			.max_quot_scale = 275,
+> +			.quot_offset = 0,
+> +			.quot_scale = 1,
+> +			.quot_adjust = 0,
+> +			.quot_offset_scale = 5,
+> +			.quot_offset_adjust = 0,
+> +		},
+> +		/* fuse corner 2 */
+> +		{
+> +			.ref_uV = 868000,
+> +			.max_uV = 868000,
+> +			.min_uV = 712000,
+> +			.range_uV = 40000,
+> +			.volt_cloop_adjust = -30000,
+> +			.volt_oloop_adjust = 5000,
+> +			.max_volt_scale = 350,
+> +			.max_quot_scale = 800,
+> +			.quot_offset = 0,
+> +			.quot_scale = 1,
+> +			.quot_adjust = 0,
+> +			.quot_offset_scale = 5,
+> +			.quot_offset_adjust = 0,
+> +		},
+> +		/* fuse corner 3 */
+> +		{
+> +			.ref_uV = 988000,
+> +			.max_uV = 988000,
+> +			.min_uV = 784000,
+> +			.range_uV = 66000,
+> +			.volt_cloop_adjust = -30000,
+> +			.volt_oloop_adjust = 0,
+> +			.max_volt_scale = 868,
+> +			.max_quot_scale = 980,
+> +			.quot_offset = 0,
+> +			.quot_scale = 1,
+> +			.quot_adjust = 0,
+> +			.quot_offset_scale = 5,
+> +			.quot_offset_adjust = 0,
+> +		},
+> +		/* fuse corner 4 */
+> +		{
+> +			.ref_uV = 1068000,
+> +			.max_uV = 1068000,
+> +			.min_uV = 844000,
+> +			.range_uV = 40000,
+> +			.volt_cloop_adjust = -30000,
+> +			.volt_oloop_adjust = 0,
+> +			.max_volt_scale = 868,
+> +			.max_quot_scale = 980,
+> +			.quot_offset = 0,
+> +			.quot_scale = 1,
+> +			.quot_adjust = 0,
+> +			.quot_offset_scale = 5,
+> +			.quot_offset_adjust = 0,
+> +		},
+> +	},
+> +};
+> +
+> +static const struct cpr_thread_desc sdm630_thread_silver = {
+> +	.controller_id = 1,
+> +	.hw_tid = 0,
+> +	.ro_scaling_factor = sdm630_silver_scaling_factor,
+> +	.ro_avail_corners = ARRAY_SIZE(sdm630_silver_scaling_factor),
+> +	.sensor_range_start = 0,
+> +	.sensor_range_end = 6,
+> +	.init_voltage_step = 10000,
+> +	.init_voltage_width = 6,
+> +	.step_quot_init_min = 12,
+> +	.step_quot_init_max = 14,
+> +	.num_fuse_corners = 3,
+> +	.fuse_corner_data = (struct fuse_corner_data[]){
+> +		/* fuse corner 0 */
+> +		{
+> +			.ref_uV = 644000,
+> +			.max_uV = 724000,
+> +			.min_uV = 588000,
+> +			.range_uV = 32000,
+> +			.volt_cloop_adjust = -30000,
+> +			.volt_oloop_adjust = 0,
+> +			.max_volt_scale = 10,
+> +			.max_quot_scale = 360,
+> +			.quot_offset = 0,
+> +			.quot_scale = 1,
+> +			.quot_adjust = 0,
+> +			.quot_offset_scale = 5,
+> +			.quot_offset_adjust = 0,
+> +		},
+> +		/* fuse corner 1 */
+> +		{
+> +			.ref_uV = 788000,
+> +			.max_uV = 788000,
+> +			.min_uV = 652000,
+> +			.range_uV = 40000,
+> +			.volt_cloop_adjust = -30000,
+> +			.volt_oloop_adjust = 0,
+> +			.max_volt_scale = 500,
+> +			.max_quot_scale = 550,
+> +			.quot_offset = 0,
+> +			.quot_scale = 1,
+> +			.quot_adjust = 0,
+> +			.quot_offset_scale = 5,
+> +			.quot_offset_adjust = 0,
+> +		},
+> +		/* fuse corner 2 */
+> +		{
+> +			.ref_uV = 1068000,
+> +			.max_uV = 1068000,
+> +			.min_uV = 800000,
+> +			.range_uV = 40000,
+> +			.volt_cloop_adjust = -30000,
+> +			.volt_oloop_adjust = 0,
+> +			.max_volt_scale = 2370,
+> +			.max_quot_scale = 550,
+> +			.quot_offset = 0,
+> +			.quot_scale = 1,
+> +			.quot_adjust = 0,
+> +			.quot_offset_scale = 5,
+> +			.quot_offset_adjust = 0,
+> +		},
+> +	},
+> +};
+> +
+> +static const struct cpr_desc sdm630_cpr_desc = {
+> +	.cpr_type = CTRL_TYPE_CPRH,
+> +	.num_threads = 2,
+> +	.apm_threshold = 872000,
+> +	.apm_crossover = 872000,
+> +	.apm_hysteresis = 20000,
+> +	.cpr_base_voltage = 400000,
+> +	.cpr_max_voltage = 1300000,
+> +	.timer_delay_us = 5000,
+> +	.timer_cons_up = 0,
+> +	.timer_cons_down = 2,
+> +	.up_threshold = 2,
+> +	.down_threshold = 2,
+> +	.idle_clocks = 15,
+> +	.count_mode = CPR3_CPR_CTL_COUNT_MODE_ALL_AT_ONCE_MIN,
+> +	.count_repeat = 14,
+> +	.gcnt_us = 1,
+> +	.vreg_step_fixed = 4000,
+> +	.vreg_step_up_limit = 1,
+> +	.vreg_step_down_limit = 1,
+> +	.vdd_settle_time_us = 34,
+> +	.corner_settle_time_us = 5,
+> +	.reduce_to_corner_uV = true,
+> +	.hw_closed_loop_en = true,
+> +	.threads = (const struct cpr_thread_desc *[]) {
+> +		&sdm630_thread_gold,
+> +		&sdm630_thread_silver,
+> +	},
+> +};
+> +
+> +static const struct cpr_acc_desc sdm630_cpr_acc_desc = {
+> +	.cpr_desc = &sdm630_cpr_desc,
+> +};
+> +
+> +static unsigned int cpr_get_performance_state(struct generic_pm_domain *genpd,
+> +					      struct dev_pm_opp *opp)
+> +{
+> +	return dev_pm_opp_get_level(opp);
+> +}
+> +
+> +static int cpr_power_off(struct generic_pm_domain *domain)
+> +{
+> +	struct cpr_thread *thread = container_of(domain, struct cpr_thread, pd);
+> +
+> +	return cpr_disable(thread);
+> +}
+> +
+> +static int cpr_power_on(struct generic_pm_domain *domain)
+> +{
+> +	struct cpr_thread *thread = container_of(domain, struct cpr_thread, pd);
+> +
+> +	return cpr_enable(thread);
+> +}
+> +
+> +static void cpr_pd_detach_dev(struct generic_pm_domain *domain,
+> +			      struct device *dev)
+> +{
+> +	struct cpr_thread *thread = container_of(domain, struct cpr_thread, pd);
+> +	struct cpr_drv *drv = thread->drv;
+> +
+> +	mutex_lock(&drv->lock);
+> +
+> +	dev_dbg(drv->dev, "detach callback for: %s\n", dev_name(dev));
+> +	thread->attached_cpu_dev = NULL;
+> +
+> +	mutex_unlock(&drv->lock);
+> +}
+> +
+> +static int cpr_pd_attach_dev(struct generic_pm_domain *domain,
+> +			     struct device *dev)
+> +{
+> +	struct cpr_thread *thread = container_of(domain, struct cpr_thread, pd);
+> +	struct cpr_drv *drv = thread->drv;
+> +	const struct acc_desc *acc_desc = drv->acc_desc;
+> +	bool cprh_opp_remove_table = false;
+> +	int ret = 0;
+> +
+> +	mutex_lock(&drv->lock);
+> +
+> +	dev_dbg(drv->dev, "attach callback for: %s\n", dev_name(dev));
+> +
+> +	/*
+> +	 * This driver only supports scaling voltage for a CPU cluster
+> +	 * where all CPUs in the cluster share a single regulator.
+> +	 * Therefore, save the struct device pointer only for the first
+> +	 * CPU device that gets attached. There is no need to do any
+> +	 * additional initialization when further CPUs get attached.
+> +	 * This is not an error condition.
+> +	 */
+> +	if (thread->attached_cpu_dev)
+> +		goto unlock;
+> +
+> +	/*
+> +	 * cpr_scale_voltage() requires the direction (if we are changing
+> +	 * to a higher or lower OPP). The first time
+> +	 * cpr_set_performance_state() is called, there is no previous
+> +	 * performance state defined. Therefore, we call
+> +	 * cpr_find_initial_corner() that gets the CPU clock frequency
+> +	 * set by the bootloader, so that we can determine the direction
+> +	 * the first time cpr_set_performance_state() is called.
+> +	 */
+> +	thread->cpu_clk = devm_clk_get(dev, NULL);
+> +	if (drv->desc->cpr_type < CTRL_TYPE_CPRH && IS_ERR(thread->cpu_clk)) {
+> +		ret = PTR_ERR(thread->cpu_clk);
+> +		if (ret != -EPROBE_DEFER)
+> +			dev_err(drv->dev, "could not get cpu clk: %d\n", ret);
+> +		goto unlock;
+> +	}
+> +	thread->attached_cpu_dev = dev;
+> +
+> +	/*
+> +	 * We are exporting the APM and MEM-ACC thresholds to the caller;
+> +	 * while APM is necessary in the CPU CPR case, MEM-ACC may not be,
+> +	 * depending on the SoC and on fuses.
+> +	 * Initialize both to an invalid value, so that the caller can check
+> +	 * if they got calculated or read from fuses in this driver.
+> +	 */
+> +	thread->ext_data.apm_threshold_uV = -1;
+> +	thread->ext_data.mem_acc_threshold_uV = -1;
+> +	dev_set_drvdata(thread->attached_cpu_dev, &thread->ext_data);
+> +
+> +	dev_dbg(drv->dev, "using cpu clk from: %s\n",
+> +		dev_name(thread->attached_cpu_dev));
+> +
+> +	/*
+> +	 * Everything related to (virtual) corners has to be initialized
+> +	 * here, when attaching to the power domain, since we need to know
+> +	 * the maximum frequency for each fuse corner, and this is only
+> +	 * available after the cpufreq driver has attached to us.
+> +	 * The reason for this is that we need to know the highest
+> +	 * frequency associated with each fuse corner.
+> +	 */
+> +	ret = dev_pm_opp_get_opp_count(&thread->pd.dev);
+> +	if (ret < 0) {
+> +		dev_err(drv->dev, "could not get OPP count\n");
+> +		thread->attached_cpu_dev = NULL;
+> +		goto unlock;
+> +	}
+> +	thread->num_corners = ret;
+> +
+> +	thread->corners = devm_kcalloc(drv->dev,
+> +				       thread->num_corners +
+> +				       drv->extra_corners,
+> +				       sizeof(*thread->corners),
+> +				       GFP_KERNEL);
+> +	if (!thread->corners) {
+> +		ret = -ENOMEM;
+> +		goto unlock;
+> +	}
+> +
+> +	/*
+> +	 * If we are on CPR-Hardened we have to make sure that the attached
+> +	 * device has a OPP table installed, as we're going to modify it here
+> +	 * with our calculations based on qfprom values.
+> +	 */
+> +	if (drv->desc->cpr_type == CTRL_TYPE_CPRH) {
+> +		ret = dev_pm_opp_of_add_table(dev);
+> +		if (ret && ret != -EEXIST) {
+> +			dev_err(drv->dev, "Cannot add table: %d\n", ret);
+> +			goto unlock;
+> +		}
+> +		cprh_opp_remove_table = true;
+> +	}
+> +
+> +	ret = cpr3_corner_init(thread);
+> +	if (ret)
+> +		goto exit;
+> +
+> +	if (drv->desc->cpr_type < CTRL_TYPE_CPRH) {
+> +		ret = cpr3_find_initial_corner(thread);
+> +		if (ret)
+> +			goto exit;
+> +
+> +		if (acc_desc->config)
+> +			regmap_multi_reg_write(drv->tcsr, acc_desc->config,
+> +					       acc_desc->num_regs_per_fuse);
+> +
+> +		/* Enable ACC if required */
+> +		if (acc_desc->enable_mask)
+> +			regmap_update_bits(drv->tcsr, acc_desc->enable_reg,
+> +					   acc_desc->enable_mask,
+> +					   acc_desc->enable_mask);
+> +	}
+> +	dev_info(drv->dev, "thread %d initialized with %u OPPs\n",
+> +		 thread->id, thread->num_corners);
+> +exit:
+> +	/*
+> +	 * If we are on CPRh and we reached an error condition, we installed
+> +	 * the OPP table but we haven't done any setup on it, nor we ever will.
+> +	 * In order to leave a clean state, remove the table.
+> +	 */
+> +	if (ret && cprh_opp_remove_table)
+> +		dev_pm_opp_of_remove_table(thread->attached_cpu_dev);
+> +unlock:
+> +	mutex_unlock(&drv->lock);
+> +
+> +	return ret;
+> +}
+> +
+> +static int cpr3_debug_info_show(struct seq_file *s, void *unused)
+> +{
+> +	u32 ro_sel, ctl, irq_status, reg, quot;
+> +	struct cpr_thread *thread = s->private;
+> +	struct corner *corner = thread->corners;
+> +	struct fuse_corner *fuse = thread->fuse_corners;
+> +	unsigned int i;
+> +
+> +	const struct {
+> +		const char *name;
+> +		uint32_t mask;
+> +		uint8_t shift;
+> +	} result0_fields[] = {
+> +		{ "busy", 1, 0 },
+> +		{ "step_dn", 1, 1 },
+> +		{ "step_up", 1, 2 },
+> +		{ "error_steps", CPR3_RESULT0_ERROR_STEPS_MASK,
+> +				 CPR3_RESULT0_ERROR_STEPS_SHIFT },
+> +		{ "error", CPR3_RESULT0_ERROR_MASK, CPR3_RESULT0_ERROR_SHIFT },
+> +		{ "negative", 1, 20 },
+> +	}, result1_fields[] = {
+> +		{ "quot_min", CPR3_RESULT1_QUOT_MIN_MASK,
+> +			      CPR3_RESULT1_QUOT_MIN_SHIFT },
+> +		{ "quot_max", CPR3_RESULT1_QUOT_MAX_MASK,
+> +			      CPR3_RESULT1_QUOT_MAX_SHIFT },
+> +		{ "ro_min", CPR3_RESULT1_RO_MIN_MASK,
+> +			    CPR3_RESULT1_RO_MIN_SHIFT },
+> +		{ "ro_max", CPR3_RESULT1_RO_MAX_MASK,
+> +			    CPR3_RESULT1_RO_MAX_SHIFT },
+> +	}, result2_fields[] = {
+> +		{ "qout_step_min", CPR3_RESULT2_STEP_QUOT_MIN_MASK,
+> +				   CPR3_RESULT2_STEP_QUOT_MIN_SHIFT },
+> +		{ "qout_step_max", CPR3_RESULT2_STEP_QUOT_MAX_MASK,
+> +				   CPR3_RESULT2_STEP_QUOT_MAX_SHIFT },
+> +		{ "sensor_min", CPR3_RESULT2_SENSOR_MIN_MASK,
+> +				CPR3_RESULT2_SENSOR_MIN_SHIFT },
+> +		{ "sensor_max", CPR3_RESULT2_SENSOR_MAX_MASK,
+> +				CPR3_RESULT2_SENSOR_MAX_SHIFT },
+> +	};
+> +
+> +	if (thread->drv->desc->cpr_type < CTRL_TYPE_CPRH)
+> +		seq_printf(s, "current_volt = %d uV\n", thread->drv->last_uV);
+> +
+> +	irq_status = cpr_read(thread, CPR3_REG_IRQ_STATUS);
+> +	seq_printf(s, "irq_status = %#02X\n", irq_status);
+> +
+> +	ctl = cpr_read(thread, CPR3_REG_CPR_CTL);
+> +	seq_printf(s, "cpr_ctl = %#02X\n", ctl);
+> +
+> +	seq_printf(s, "thread %d - hw tid: %u - enabled: %d:\n",
+> +		   thread->id, thread->desc->hw_tid, thread->enabled);
+> +	seq_printf(s, "%d corners, derived from %d fuse corners\n",
+> +		   thread->num_corners, thread->desc->num_fuse_corners);
+> +
+> +	for (i = 0; i < thread->num_corners; i++, corner++)
+> +		seq_printf(s, "corner %d - uV=[%d %d %d] quot=%d freq=%lu\n",
+> +			   i, corner->min_uV, corner->uV, corner->max_uV,
+> +			   corner->quot_adjust, corner->freq);
+> +
+> +	for (i = 0; i < thread->desc->num_fuse_corners; i++, fuse++)
+> +		seq_printf(s, "fuse %d - uV=[%d %d %d] quot=%d freq=%lu\n",
+> +			   i, fuse->min_uV, fuse->uV, fuse->max_uV,
+> +			   fuse->quot, corner->freq);
+> +
+> +	seq_printf(s, "requested voltage: %d uV\n", thread->corner->last_uV);
+> +
+> +	ro_sel = corner->fuse_corner->ring_osc_idx;
+> +	quot = cpr_read(thread, CPR3_REG_TARGET_QUOT(i, ro_sel));
+> +	seq_printf(s, "quot_target (%u) = %#02X\n", ro_sel, quot);
+> +
+> +	reg = cpr_read(thread, CPR3_REG_RESULT0(i));
+> +	seq_printf(s, "cpr_result_0 = %#02X\n  [", reg);
+> +	for (i = 0; i < ARRAY_SIZE(result0_fields); i++)
+> +		seq_printf(s, "%s%s = %u",
+> +			   i ? ", " : "",
+> +			   result0_fields[i].name,
+> +			   (reg >> result0_fields[i].shift) &
+> +				result0_fields[i].mask);
+> +	seq_puts(s, "]\n");
+> +	reg = cpr_read(thread, CPR3_REG_RESULT1(i));
+> +	seq_printf(s, "cpr_result_1 = %#02X\n  [", reg);
+> +	for (i = 0; i < ARRAY_SIZE(result1_fields); i++)
+> +		seq_printf(s, "%s%s = %u",
+> +			   i ? ", " : "",
+> +			   result1_fields[i].name,
+> +			   (reg >> result1_fields[i].shift) &
+> +				result1_fields[i].mask);
+> +	seq_puts(s, "]\n");
+> +	reg = cpr_read(thread, CPR3_REG_RESULT2(i));
+> +	seq_printf(s, "cpr_result_2 = %#02X\n  [", reg);
+> +	for (i = 0; i < ARRAY_SIZE(result2_fields); i++)
+> +		seq_printf(s, "%s%s = %u",
+> +			   i ? ", " : "",
+> +			   result2_fields[i].name,
+> +			   (reg >> result2_fields[i].shift) &
+> +				result2_fields[i].mask);
+> +	seq_puts(s, "]\n");
+> +
+> +	return 0;
+> +}
+> +DEFINE_SHOW_ATTRIBUTE(cpr3_debug_info);
+> +
+> +static void cpr3_debugfs_init(struct cpr_drv *drv)
+> +{
+> +	int i;
+> +
+> +	drv->debugfs = debugfs_create_dir("qcom_cpr3", NULL);
+> +
+> +	for (i = 0; i < drv->desc->num_threads; i++) {
+> +		char buf[50];
+> +
+> +		snprintf(buf, sizeof(buf), "thread%d", i);
+> +
+> +		debugfs_create_file(buf, 0444, drv->debugfs, &drv->threads[i],
+> +				    &cpr3_debug_info_fops);
+> +	}
+> +}
+> +
+> +/**
+> + * cpr_thread_init() - Initialize CPR thread related parameters
+> + * @drv: Main driver structure
+> + * @tid: Thread ID
+> + *
+> + * Return: Zero for success, negative number on error
+> + */
+> +static int cpr_thread_init(struct cpr_drv *drv, int tid)
+> +{
+> +	const struct cpr_desc *desc = drv->desc;
+> +	const struct cpr_thread_desc *tdesc = desc->threads[tid];
+> +	struct cpr_thread *thread = &drv->threads[tid];
+> +	int ret;
+> +
+> +	if (tdesc->step_quot_init_min > CPR3_CPR_STEP_QUOT_MIN_MASK ||
+> +	    tdesc->step_quot_init_max > CPR3_CPR_STEP_QUOT_MAX_MASK)
+> +		return -EINVAL;
+> +
+> +	thread->id = tid;
+> +	thread->drv = drv;
+> +	thread->desc = tdesc;
+> +	thread->fuse_corners = devm_kcalloc(drv->dev,
+> +					    tdesc->num_fuse_corners +
+> +					    drv->extra_corners,
+> +					    sizeof(*thread->fuse_corners),
+> +					    GFP_KERNEL);
+> +	if (!thread->fuse_corners)
+> +		return -ENOMEM;
+> +
+> +	thread->cpr_fuses = cpr_get_fuses(drv->dev, tid,
+> +					  tdesc->num_fuse_corners);
+> +	if (IS_ERR(thread->cpr_fuses))
+> +		return PTR_ERR(thread->cpr_fuses);
+> +
+> +	ret = cpr_populate_ring_osc_idx(thread->drv->dev, thread->fuse_corners,
+> +					thread->cpr_fuses,
+> +					tdesc->num_fuse_corners);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = cpr_fuse_corner_init(thread);
+> +	if (ret)
+> +		return ret;
+> +
+> +	thread->pd.name = devm_kasprintf(drv->dev, GFP_KERNEL,
+> +					 "%s_thread%d",
+> +					 drv->dev->of_node->full_name,
+> +					 thread->id);
+> +	if (!thread->pd.name)
+> +		return -EINVAL;
+> +
+> +	thread->pd.power_off = cpr_power_off;
+> +	thread->pd.power_on = cpr_power_on;
+> +	thread->pd.opp_to_performance_state = cpr_get_performance_state;
+> +	thread->pd.attach_dev = cpr_pd_attach_dev;
+> +	thread->pd.detach_dev = cpr_pd_detach_dev;
+> +
+> +	/* CPR-Hardened performance states are managed in firmware */
+> +	if (desc->cpr_type == CTRL_TYPE_CPRH) {
+> +		thread->pd.set_performance_state = cprh_dummy_set_performance_state;
+> +	} else {
+> +		thread->pd.set_performance_state = cpr_set_performance_state;
+> +	}
+
+Please remove the curly brackets above.
+
+> +	/* Anything later than CPR1 must be always-on for now */
+> +	thread->pd.flags = GENPD_FLAG_ALWAYS_ON;
+> +
+> +	drv->cell_data.domains[tid] = &thread->pd;
+> +
+> +	ret = pm_genpd_init(&thread->pd, NULL, false);
+> +	if (ret)
+> +		return ret;
+> +
+> +	/* On CPRhardened, the interrupts are managed in firmware */
+> +	if (desc->cpr_type < CTRL_TYPE_CPRH) {
+> +		INIT_WORK(&thread->restart_work, cpr_restart_worker);
+> +
+> +		ret = devm_request_threaded_irq(drv->dev, drv->irq,
+> +						NULL, cpr_irq_handler,
+> +						IRQF_ONESHOT |
+> +						IRQF_TRIGGER_RISING,
+> +						"cpr", drv);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +/**
+> + * cpr3_resources_init() - Initialize resources used by this driver
+> + * @pdev: Platform device
+> + * @drv:  Main driver structure
+> + *
+> + * Return: Zero for success, negative number on error
+> + */
+> +static int cpr3_resources_init(struct platform_device *pdev,
+> +			       struct cpr_drv *drv)
+> +{
+> +	const struct cpr_desc *desc = drv->desc;
+> +	struct cpr_thread *threads = drv->threads;
+> +	unsigned int i;
+> +	u8 cid_mask = 0;
+> +
+> +	/*
+> +	 * Here, we are accounting for the following usecases:
+> +	 * - One controller
+> +	 *   - One or multiple threads on the same iospace
+> +	 *
+> +	 * - Multiple controllers
+> +	 *   - Each controller has its own iospace and each
+> +	 *     may have one or multiple threads in their
+> +	 *     parent controller's iospace
+> +	 *
+> +	 * Then, to avoid complicating the code for no reason,
+> +	 * this also needs a mandatory order in the list of
+> +	 * threads which implies that all of them from the same
+> +	 * controllers are specified sequentially. As an example:
+> +	 *
+> +	 *      C0-T0, C0-T1...C0-Tn, C1-T0, C1-T1...C1-Tn
+> +	 */
+> +	for (i = 0; i < desc->num_threads; i++) {
+> +		u8 cid = desc->threads[i]->controller_id;
+> +
+> +		if (cid_mask & BIT(cid)) {
+> +			if (desc->threads[i - 1]->controller_id != cid) {
+> +				dev_err(drv->dev, "Bad threads order. Please fix!\n");
+> +				return -EINVAL;
+> +			}
+> +			threads[i].base = threads[i - 1].base;
+> +			continue;
+> +		}
+> +		threads[i].base = devm_platform_ioremap_resource(pdev, cid);
+> +		if (IS_ERR(threads[i].base))
+> +			return PTR_ERR(threads[i].base);
+> +		cid_mask |= BIT(cid);
+> +	}
+> +	return 0;
+> +}
+> +
+> +static int cpr_probe(struct platform_device *pdev)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	struct cpr_drv *drv;
+> +	const struct cpr_desc *desc;
+> +	const struct cpr_acc_desc *data;
+> +	struct device_node *np;
+> +	unsigned int i;
+> +	int ret;
+> +
+> +	data = of_device_get_match_data(dev);
+> +	if (!data || !data->cpr_desc)
+> +		return -EINVAL;
+> +
+> +	desc = data->cpr_desc;
+> +
+> +	/* CPRh disallows MEM-ACC access from the HLOS */
+> +	if (!data->acc_desc && desc->cpr_type < CTRL_TYPE_CPRH)
+> +		return -EINVAL;
+> +
+> +	drv = devm_kzalloc(dev, sizeof(*drv), GFP_KERNEL);
+> +	if (!drv)
+> +		return -ENOMEM;
+> +
+> +	drv->dev = dev;
+> +	drv->desc = desc;
+> +	drv->threads = devm_kcalloc(dev, desc->num_threads,
+> +				    sizeof(*drv->threads), GFP_KERNEL);
+> +	if (!drv->threads)
+> +		return -ENOMEM;
+> +
+> +	drv->cell_data.num_domains = desc->num_threads;
+> +	drv->cell_data.domains = devm_kcalloc(drv->dev,
+> +					      drv->cell_data.num_domains,
+> +					      sizeof(*drv->cell_data.domains),
+> +					      GFP_KERNEL);
+> +	if (!drv->cell_data.domains)
+> +		return -ENOMEM;
+> +
+> +	if (data->acc_desc)
+> +		drv->acc_desc = data->acc_desc;
+> +
+> +	mutex_init(&drv->lock);
+> +
+> +	if (desc->cpr_type < CTRL_TYPE_CPRH) {
+> +		np = of_parse_phandle(dev->of_node, "acc-syscon", 0);
+> +		if (!np)
+> +			return -ENODEV;
+> +
+> +		drv->tcsr = syscon_node_to_regmap(np);
+> +		of_node_put(np);
+> +		if (IS_ERR(drv->tcsr))
+> +			return PTR_ERR(drv->tcsr);
+> +	}
+> +
+> +	ret = cpr3_resources_init(pdev, drv);
+> +	if (ret)
+> +		return ret;
+> +
+> +	drv->irq = platform_get_irq_optional(pdev, 0);
+> +	if ((desc->cpr_type != CTRL_TYPE_CPRH) && (drv->irq < 0))
+
+Please remove two pairs of excessive round braces.
+
+> +		return -EINVAL;
+> +
+> +	/* On CPRhardened, vreg access it not allowed */
+> +	drv->vreg = devm_regulator_get_optional(dev, "vdd");
+> +	if (desc->cpr_type != CTRL_TYPE_CPRH && IS_ERR(drv->vreg))
+> +		return PTR_ERR(drv->vreg);
+> +
+> +	/*
+> +	 * On at least CPRhardened, vreg is unaccessible and there is no
+> +	 * way to read linear step from that regulator, hence it is hardcoded
+> +	 * in the driver;
+> +	 * When the vreg_step is not declared in the cpr data (or is zero),
+> +	 * then having access to the vreg regulator is mandatory, as this
+> +	 * will be retrieved through the regulator API.
+> +	 */
+> +	if (desc->vreg_step_fixed)
+> +		drv->vreg_step = desc->vreg_step_fixed;
+> +	else
+> +		drv->vreg_step = regulator_get_linear_step(drv->vreg);
+> +
+> +	if (!drv->vreg_step)
+> +		return -EINVAL;
+> +
+> +	/*
+> +	 * Initialize fuse corners, since it simply depends
+> +	 * on data in efuses.
+> +	 * Everything related to (virtual) corners has to be
+> +	 * initialized after attaching to the power domain,
+> +	 * since it depends on the CPU's OPP table.
+> +	 */
+> +	ret = nvmem_cell_read_variable_le_u32(dev, "cpr_fuse_revision", &drv->fusing_rev);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = nvmem_cell_read_variable_le_u32(dev, "cpr_speed_bin", &drv->speed_bin);
+> +	if (ret)
+> +		return ret;
+> +
+> +	/*
+> +	 * Some SoCs require extra corners for MEM-ACC or APM: if
+> +	 * the related parameters have been specified, then reserve
+> +	 * a corner for the APM and/or MEM-ACC crossover, used by
+> +	 * OSM and CPRh HW to set the supply voltage during the APM
+> +	 * and/or MEM-ACC switch routine.
+> +	 */
+> +	if (desc->cpr_type == CTRL_TYPE_CPRH) {
+> +		if (desc->apm_crossover && desc->apm_hysteresis >= 0)
+> +			drv->extra_corners++;
+> +
+> +		if (desc->mem_acc_threshold)
+> +			drv->extra_corners++;
+> +	}
+> +
+> +	/* Initialize all threads */
+> +	for (i = 0; i < desc->num_threads; i++) {
+> +		ret = cpr_thread_init(drv, i);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+> +	/* Initialize global parameters */
+> +	ret = cpr3_init_parameters(drv);
+> +	if (ret)
+> +		return ret;
+> +
+> +	/* Write initial configuration on all threads */
+> +	for (i = 0; i < desc->num_threads; i++) {
+> +		ret = cpr_configure(&drv->threads[i]);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+> +	ret = of_genpd_add_provider_onecell(dev->of_node, &drv->cell_data);
+> +	if (ret)
+> +		return ret;
+> +
+> +	platform_set_drvdata(pdev, drv);
+> +	cpr3_debugfs_init(drv);
+> +
+> +	return 0;
+> +}
+> +
+> +static int cpr_remove(struct platform_device *pdev)
+> +{
+> +	struct cpr_drv *drv = platform_get_drvdata(pdev);
+> +	int i;
+> +
+> +	of_genpd_del_provider(pdev->dev.of_node);
+> +
+> +	for (i = 0; i < drv->desc->num_threads; i++) {
+> +		cpr_ctl_disable(&drv->threads[i]);
+> +		cpr_irq_set(&drv->threads[i], 0);
+> +		pm_genpd_remove(&drv->threads[i].pd);
+> +	}
+> +
+> +	debugfs_remove_recursive(drv->debugfs);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct of_device_id cpr3_match_table[] = {
+> +	{ .compatible = "qcom,msm8998-cprh", .data = &msm8998_cpr_acc_desc },
+> +	{ .compatible = "qcom,sdm630-cprh", .data = &sdm630_cpr_acc_desc },
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(of, cpr3_match_table);
+> +
+> +static struct platform_driver cpr3_driver = {
+> +	.probe		= cpr_probe,
+> +	.remove		= cpr_remove,
+> +	.driver		= {
+> +		.name	= "qcom-cpr3",
+> +		.of_match_table = cpr3_match_table,
+> +	},
+> +};
+> +module_platform_driver(cpr3_driver)
+> +
+> +MODULE_DESCRIPTION("Core Power Reduction (CPR) v3/v4 driver");
+> +MODULE_LICENSE("GPL v2");
+> diff --git a/include/soc/qcom/cpr.h b/include/soc/qcom/cpr.h
+> new file mode 100644
+> index 000000000000..2ba4324d18f6
+> --- /dev/null
+> +++ b/include/soc/qcom/cpr.h
+> @@ -0,0 +1,17 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +/*
+> + * Copyright (c) 2013-2020, The Linux Foundation. All rights reserved.
+> + * Copyright (c) 2019 Linaro Limited
+> + * Copyright (c) 2021, AngeloGioacchino Del Regno
+> + *                     <angelogioacchino.delregno@somainline.org>
+> + */
+> +
+> +#ifndef __CPR_H__
+> +#define __CPR_H__
+> +
+> +struct cpr_ext_data {
+> +	int mem_acc_threshold_uV;
+> +	int apm_threshold_uV;
+> +};
+> +
+> +#endif /* __CPR_H__ */
+> 
+
+The 'struct cpr_ext_data' is used only in cpr3.c, there is not need
+to put its definition under global include/ foulder. Please remove
+the added header file.
+
+--
+Best wishes,
+Vladimir
