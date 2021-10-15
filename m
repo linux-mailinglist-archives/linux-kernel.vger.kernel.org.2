@@ -2,75 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1F8542EFEB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 13:46:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65BEA42EFF5
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 13:51:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238550AbhJOLsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 07:48:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45704 "EHLO
+        id S238545AbhJOLxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 07:53:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235360AbhJOLsU (ORCPT
+        with ESMTP id S235134AbhJOLxx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 07:48:20 -0400
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4872C061570
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 04:46:13 -0700 (PDT)
-Received: by mail-il1-x12b.google.com with SMTP id d11so6776130ilc.8
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 04:46:13 -0700 (PDT)
+        Fri, 15 Oct 2021 07:53:53 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B6FEC061570
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 04:51:47 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id d131so22115144ybd.5
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 04:51:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ihfz0jXlZwuHL87l5wK9+AFSx48nUR+ukAj9B84W2nc=;
-        b=qKte9AhEalyQcx/QqP8xB9EOeoqrRNJsInfq+8x9T/9gWvJT8spvXicxCHAfIzmgtx
-         hCMrg62Z3KcGSVHA5xAW3SWOim7rGsDhdya/C359OEwtNEuF1eFQWDYPRBZiY26sI3p0
-         jOr6hAOixjOYoLd8Xars3R+bxTA+Rfzm3X5etdOhifXfGrtTS37S0caKpqz81ipoqRFK
-         tIpw5b0q7/IxKMGRaTpB+JZmCUadzKs84l4/nDSeOOcv0KKTT6bYhVIU41yKdFaM43Zu
-         6ZYwka3HVOW7VSECmqZ4QZQtlfDRfISN2upoCKdly9fAUmkLvAsdwNflNKwjGlGNFfgW
-         kVBg==
+        bh=ISTv0g6D9fhNjnXuPb8elc1/Pv66oLGmzG/MkG3iCpw=;
+        b=W6BsCALVsxLKKqkF0hEWmcJazhFtnvXIErEpzuHukxRn9a/x80Qugunr7IYg3nWjTJ
+         0UL+qrvcpRYtbKjm+QKrbgoPJ9ua6RSgUYGB/m7T5cI4R8dzydh3UO14NjIQeOuRXsuy
+         eQ5zkK9nEYO0b/zPzW2RskDg6EytKHuyC7/B59xzCkb97bmVv5JlTJnCLXUUnDmPStsj
+         xGOTbhVPg6GGFZRo7pl1UvfD4zg/SaHIEx6ZLY7EEyQYvK/W5z9pjIfPWii7PX4RUzqS
+         UjiVTprd42y+8xDvY/ZdCIKNCGBN2qqkFdcx/lqXEhj4nt6b8IfLdmRrLZLF1QczmlkA
+         yKVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ihfz0jXlZwuHL87l5wK9+AFSx48nUR+ukAj9B84W2nc=;
-        b=yQ0qrrIPiqg7YxS3Ak30bYWCNIsW93sAnbwmtZjSqPmNNuhWbMWCx3fMwwUv09Qapn
-         CbcKJQIKmPNawJCG2GLuHtVYdQYFuIdh6oJtB5Hy1pVV+Ntm/8p16zWTyCqCExujWg/s
-         fkUEpy3hXGdsLhUiq4xj6BfgNhFRcDHzySWd/pW7MemdvDC7pIpAqoiYJ1Ooy+719Zbr
-         nhwNqKZiPHQJmeKFvNmCJv5xrvpn1k0eosftPFcwbIAtJaKp0i6I52anpVM0L1hIyB48
-         WrxuKMxy8VTdZn501bi7eqWoXU3zkCHpyMC6UIYJ7vAb5BDSnKPjkuj421XdX/9S4a4G
-         v0rg==
-X-Gm-Message-State: AOAM533Rgc4+hqwycRosHgx7aE+OTMg1AlVpMHWwFJJCsUxzMjxk6Fh5
-        v8nzoWNXTCfmxwQMCdFojI6d7hIFDcdknmUlSPU=
-X-Google-Smtp-Source: ABdhPJxw9M8P2YG3RHxR176KGoEBQFdYF3ZoFZuof+CboFCHd/YKS31/5PT1576OGsMu/sRy+Wyrb0aGq7t2YPOVx50=
-X-Received: by 2002:a05:6e02:2141:: with SMTP id d1mr3508167ilv.5.1634298373292;
- Fri, 15 Oct 2021 04:46:13 -0700 (PDT)
+        bh=ISTv0g6D9fhNjnXuPb8elc1/Pv66oLGmzG/MkG3iCpw=;
+        b=gFUGAB4C4t7C/eQtV4hcDVCpd0TwhfbXvJ0mqXFQs9mjiAb3VaUPWLiLJDWT84khGQ
+         gArZR1EWP+zIeTf7bdESKGO+heinzJsvj37H7iMIbWO6WgY1RcdpMX/PmvK/rN1zqNIn
+         YCdJpjhNc1I3aWRubn0MD0amzKsWtG5tmsxZxH+5bJ1jOC0Mt5c/p4y5dOV8C0vW/k9r
+         CYgvZZH+nsgUFv8npSLD2Sq4GDifMQVJ0lJhlgeYfmmEsK+a9niyfR8UEuEQUV7Euk4I
+         CtY90sJKudLQi6EyDfutS1GZIKiiTgJEdTsVCPShaF96NMkaYXim8GRIZowoxU1QKL4v
+         xa1A==
+X-Gm-Message-State: AOAM533ZJjzlEODAGokmv18jXlOqrxtu4hNf0JKGoOrSFCqYWSAYlflD
+        1U/h4OASxC7NgCgo1d4h2U+hxVxF9pi3QUBfYBR4fw==
+X-Google-Smtp-Source: ABdhPJzyeCnTWEstgInEzx52Q3iEp69ITrU/C0pMmlxFQhZIbVVhr1wNECUo9H6zY1J/9gAZ1fzNzRKb2Ow8FodpsYE=
+X-Received: by 2002:a25:7415:: with SMTP id p21mr12550537ybc.78.1634298706161;
+ Fri, 15 Oct 2021 04:51:46 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211015083144.2767725-1-linux@rasmusvillemoes.dk>
-In-Reply-To: <20211015083144.2767725-1-linux@rasmusvillemoes.dk>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Fri, 15 Oct 2021 13:46:02 +0200
-Message-ID: <CANiq72nJSUMA=97ioFO_4WV9xPMpFjYrGSHZDM1gW_6mo+YkOw@mail.gmail.com>
-Subject: Re: [PATCH] tools: compiler.h: remove duplicate #ifndef noinline block
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>
+References: <20210928121040.2547407-1-chenwandun@huawei.com>
+ <CALvZod4G3SzP3kWxQYn0fj+VgG-G3yWXz=gz17+3N57ru1iajw@mail.gmail.com>
+ <8fc5e1ae-a356-6225-2e50-cf0e5ee26208@huawei.com> <1634261360.fed2opbgxw.astroid@bobo.none>
+ <d1f7249d-ffc2-7038-ed4c-f7fbb3e68eda@huawei.com> <1634281763.ecsq6l88ia.astroid@bobo.none>
+In-Reply-To: <1634281763.ecsq6l88ia.astroid@bobo.none>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Fri, 15 Oct 2021 04:51:34 -0700
+Message-ID: <CANn89i+RoCSBB=st4yDoWCHDkPCw2OTgbKUeXKRC8ixFLjx4TQ@mail.gmail.com>
+Subject: Re: [PATCH] mm/vmalloc: fix numa spreading for large hash tables
+To:     Nicholas Piggin <npiggin@gmail.com>
+Cc:     Chen Wandun <chenwandun@huawei.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        guohanjun@huawei.com, LKML <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 15, 2021 at 10:31 AM Rasmus Villemoes
-<linux@rasmusvillemoes.dk> wrote:
+On Fri, Oct 15, 2021 at 12:11 AM Nicholas Piggin <npiggin@gmail.com> wrote:
+
+> Okay. It would be better to do it as two patches. First the minimal fix
+> so it can be backported easily and have the Fixes: tag pointed at my
+> commit. Then the performance optimization.
 >
-> The same three lines also appear a bit earlier in the same file.
->
-> Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
 
-Looks good to me -- they also appear to be at the same level.
++2, we need a small fix for stable branches.
 
-Reviewed-by: Miguel Ojeda <ojeda@kernel.org>
+Thanks
 
-Cheers,
-Miguel
+> Thanks,
+> Nick
