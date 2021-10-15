@@ -2,143 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B7B742E50C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 02:10:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3BF842E518
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 02:13:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234576AbhJOAMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 20:12:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58728 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233322AbhJOAMc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 20:12:32 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE2AEC061570
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 17:10:26 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id ls18so5971772pjb.3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 17:10:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=KKAviLRUKqVjp43nqMLg6bveGxLDROIz4blReEr8Bmo=;
-        b=ZBD68KtEuRuJ2LXGX2e4Bq5AGfrbJB7Ct4q5cPqaOIdkz8JGahpzAsLGlpbmGa0qj2
-         HgTKgCzwXvVzOP6SUz7KzzNlWNh+tnwRWS20rjnszlEGubea5dq2zvlTU/CQg4R9ZITI
-         vTcpu8c93VKGxm1TuBo1hNUo+LC6eRQtOQjqY691/6F3GL1EYIyoux9G8Bq37r68yUiq
-         1ZSH61AKIqVtSF6z4dNYil5nXb3BlP+PgpmV3xO0JqjLA7b/44qUnrZ2OQbfX+CaMyoL
-         4iGPd7aT4gg3DBpMvmh7xmVj5NW7ai9ibGHXGw1bGDe29In+oJwcG/GHgWpgXr73ZraR
-         hP+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KKAviLRUKqVjp43nqMLg6bveGxLDROIz4blReEr8Bmo=;
-        b=ArDO9r+S4xXkCxTm4hryJzmnBel9XRvp4NrRPmCzqG4wPc8zyowzYRV3/f4sh8RlCZ
-         W7Jv876EGs7BFdxmQgW6h93WwYcV/DarlLhoMSBpbsDI5Ia8PiYbYkWVhGKcElHyD8L7
-         lKYhep3Aix6NiJNqcP8O3iLB6Hc4+93YkbysFiBvHIfajtbM58Qh8JqysgJF9Zyfb0UV
-         s2gUgGwfWpVpLl0jRRv1cTZf9MCQ97R8Q6CMX0YYHdttHyYQw9ll0c7nN3L2QR6IJe23
-         pXTf4BYuR0eVxLNSQZKMw7vwacWjwce9V2xeltm0nucfqjzlnGwV0dAG7vPtszJzzzez
-         GR7g==
-X-Gm-Message-State: AOAM530t45/ezqxGfYBOJU8z6olfoUvKCnyJlS8+Fwex0UtRCuxXt2z1
-        8+5mT5vom6hSajF3XD6oRCmOhw==
-X-Google-Smtp-Source: ABdhPJwTVpqE5aEbYXFT63sU9y1zGxi+9b4o6MVy6i9quejmJK/oyroXtRQRCRyj99is3chHPVoCTQ==
-X-Received: by 2002:a17:902:d2c6:b0:13f:1ecb:aefd with SMTP id n6-20020a170902d2c600b0013f1ecbaefdmr7991685plc.50.1634256626178;
-        Thu, 14 Oct 2021 17:10:26 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id x13sm3197813pge.37.2021.10.14.17.10.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Oct 2021 17:10:25 -0700 (PDT)
-Date:   Fri, 15 Oct 2021 00:10:21 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     David Stevens <stevensd@chromium.org>
-Cc:     Marc Zyngier <maz@kernel.org>, Paolo Bonzini <pbonzini@redhat.com>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        open list <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org
-Subject: Re: [PATCH v4 4/4] KVM: mmu: remove over-aggressive warnings
-Message-ID: <YWjG7XJ9rx5qLzm7@google.com>
-References: <20210929042908.1313874-1-stevensd@google.com>
- <20210929042908.1313874-5-stevensd@google.com>
- <YWYiJy1Z7VZ0SxAd@google.com>
- <CAD=HUj5HCdBBU2z=yJCCiAhTj0ARj-8XpLqdVbam7Kt9af+SSA@mail.gmail.com>
+        id S234578AbhJOAPM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 20:15:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38040 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229718AbhJOAPK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 20:15:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D117460FDC;
+        Fri, 15 Oct 2021 00:13:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634256784;
+        bh=GXQ6Dh4zhTUPR+A2V7JaDgrHk+2tJmJdA1ZsI5rpSH4=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=EEY5oL1O5M1SLzo2ikY6/dNHRHMQsbn/G2GNKe3rG2gCNG9ropEjn56EM4H/iStEu
+         lYr9xSibCNZHXxen0f6bOPPernLsrg0wy6Oxhdp9PxB/5dcv0JbPTkyqGfEggbBxPT
+         Wz3d9wwoYi/8iVENfi+jfk9aSrFniUM1vJOWt07s1tnJD8R4vpdRfAgyrVny/AeY7B
+         u0Bje2o3RRdjEzzVfsP9oam8mZ8uHpUCN2goeZpn2y85H5Ufr+fs62kDP3vCVrsdwH
+         3+Lb0fDrSu4vNng427LfDuJ3sKSgOfA8qhrMy4OGhn6JtpSbqdnpC72qfHNw4xdOxu
+         0Wy50rjcNXuIQ==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAD=HUj5HCdBBU2z=yJCCiAhTj0ARj-8XpLqdVbam7Kt9af+SSA@mail.gmail.com>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210930095838.28145-4-pali@kernel.org>
+References: <20210930095838.28145-1-pali@kernel.org> <20210930095838.28145-4-pali@kernel.org>
+Subject: Re: [PATCH v7 3/6] dt-bindings: mvebu-uart: document DT bindings for marvell,armada-3700-uart-clock
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Vladimir Vid <vladimir.vid@sartura.hr>,
+        Marek =?utf-8?q?Beh=C3=BAn?= <kabel@kernel.org>,
+        linux-clk@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Pali =?utf-8?q?Roh=C3=A1r?= <pali@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Date:   Thu, 14 Oct 2021 17:13:03 -0700
+Message-ID: <163425678347.1688384.10695189000353676651@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021, David Stevens wrote:
-> On Wed, Oct 13, 2021 at 9:02 AM Sean Christopherson <seanjc@google.com> wrote:
-> >
-> > On Wed, Sep 29, 2021, David Stevens wrote:
-> > > From: David Stevens <stevensd@chromium.org>
-> > >
-> > > Remove two warnings that require ref counts for pages to be non-zero, as
-> > > mapped pfns from follow_pfn may not have an initialized ref count.
-> > >
-> > > Signed-off-by: David Stevens <stevensd@chromium.org>
-> > > ---
-> > >  arch/x86/kvm/mmu/mmu.c | 7 -------
-> > >  virt/kvm/kvm_main.c    | 2 +-
-> > >  2 files changed, 1 insertion(+), 8 deletions(-)
-> > >
-> > > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> > > index 5a1adcc9cfbc..3b469df63bcf 100644
-> > > --- a/arch/x86/kvm/mmu/mmu.c
-> > > +++ b/arch/x86/kvm/mmu/mmu.c
-> > > @@ -617,13 +617,6 @@ static int mmu_spte_clear_track_bits(struct kvm *kvm, u64 *sptep)
-> > >
-> > >       pfn = spte_to_pfn(old_spte);
-> > >
-> > > -     /*
-> > > -      * KVM does not hold the refcount of the page used by
-> > > -      * kvm mmu, before reclaiming the page, we should
-> > > -      * unmap it from mmu first.
-> > > -      */
-> > > -     WARN_ON(!kvm_is_reserved_pfn(pfn) && !page_count(pfn_to_page(pfn)));
-> >
-> > Have you actually observed false positives with this WARN?  I would expect anything
-> > without a struct page to get filtered out by !kvm_is_reserved_pfn(pfn).
-> 
-> Those are the type of pfns that were responsible for CVE-2021-22543
-> [1]. One specific example is that amdgpu uses ttm_pool, which makes
-> higher order, non-compound allocation. Without the head/tail metadata,
-> only the first base page in such an allocation has non-zero
-> page_count.
+Quoting Pali Roh=C3=A1r (2021-09-30 02:58:35)
+> diff --git a/Documentation/devicetree/bindings/clock/marvell,armada-3700-=
+uart-clock.yaml b/Documentation/devicetree/bindings/clock/marvell,armada-37=
+00-uart-clock.yaml
+> new file mode 100644
+> index 000000000000..175f5c8f2bc5
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/clock/marvell,armada-3700-uart-cl=
+ock.yaml
+> @@ -0,0 +1,59 @@
+[..]
+> +  '#clock-cells':
+> +    const: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - clock-names
+> +  - '#clock-cells'
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    uartclk: clock-controller@12010 {
 
-Huh.  I hadn't actually read the CVE, or obviously thought critically about the
-problem. :-)
+The uart device is at 0x12000 and the clock-controller is at 0x12010?
+This looks like a node is being put into DT to represent a clk driver.
+Why can't we register a clk from the uart device driver itself? I think
+we talked about this a month or two ago but it still isn't clear to me.
 
-> [1] https://github.com/google/security-research/security/advisories/GHSA-7wq5-phmq-m584
-> 
-> > If you have observed false positives, I would strongly prefer we find a way to
-> > keep the page_count() sanity check, it has proven very helpful in the past in
-> > finding/debugging bugs during MMU development.
-> 
-> When we see a refcount of zero, I think we can look up spte->(gfn,
-> slot)->hva->vma and determine whether or not the zero refcount is
-> okay, based on vm_flags. That's kind of heavy for a debug check,
-> although at least we'd only pay the cost for unusual mappings. But it
-> still might make sense to switch to a MMU_WARN_ON, in that case. Or we
-> could just ignore the cost, since at least from a superficial reading
-> and some basic tests, tdp_mmu doesn't seem to execute this code path.
-> 
-> Thoughts? I'd lean towards MMU_WARN_ON, but I'd like to know what the
-> maintainers' preferences are before sending an updated patch series.
-
-MMU_WARN_ON is a poor choice, but only because no one turns it on.  I think we've
-discussed turning it into a proper Kconfig (and killing off mmu_audit.c) multiple
-times, but no one has actually followed through.
-
-The TDP MMU indeed doesn't hit this path.  So I'd say just keep this patch as is
-and punt the whole MMU_WARN_ON / audit cleanup to the future.  I bet if we spend
-any time at all, we can think of a big pile of MMU sanity checks we could add to
-KVM, i.e. this can be but one of many checks that applies to all flavors of MMUs.
+> +      compatible =3D "marvell,armada-3700-uart-clock";
+> +      reg =3D <0x12010 0x4>, <0x12210 0x4>;
+> +      clocks =3D <&tbg 0>, <&tbg 1>, <&tbg 2>, <&tbg 3>, <&xtalclk>;
+> +      clock-names =3D "TBG-A-P", "TBG-B-P", "TBG-A-S", "TBG-B-S", "xtal";
+> +      #clock-cells =3D <1>;
+> +    };
+> --=20
+> 2.20.1
+>
