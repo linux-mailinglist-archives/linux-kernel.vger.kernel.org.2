@@ -2,162 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23DF142E545
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 02:26:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4957042E54B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 02:41:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234620AbhJOA2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 20:28:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33988 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234593AbhJOA2J (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 20:28:09 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7850C061753
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 17:26:03 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id t9so33523694lfd.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 17:26:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=gAakFVCdlu4BwUnr1HsiBStLYgFMjKgM2HCJV6khvVI=;
-        b=KqrFJqTAAd10gLKTVHbzWujEhl0n1HYn0E+xVy66B9zm1FNUxx8QtX5yZVfLeeODxs
-         TYuPsYapJNCClxzEXoVd2HvUwe/BQa07J/w+ePK17SSbJQXNzoX4Zri8wYr9KTf82caF
-         iH7sJpZRdliFvfgO2ualjYGlVrWZTKdGa09dTq3gOozlXNwDalk6SknK8K0j0TE78GRD
-         hoFF/VtosBG2t8NSZhhlDJ12ZDgS2Rmh2cb00OIpkxvm7hXT3y9qfQUhiIcdrj0W8K2X
-         F9oFDrm2aJQBk3gTmmc5a3T7XgWTZYV4zw14o4TXGuBhh3oGIPpOAvTOlyjwaB8dhoje
-         6QhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=gAakFVCdlu4BwUnr1HsiBStLYgFMjKgM2HCJV6khvVI=;
-        b=ZuUe838kkTLmw0LQ3F8IeolqYIn8CWXliU4uYTakikJuqMeMV3WdKpoxBSoEz4CT6w
-         UPEolF4sYUob/Kp6OoiXwenE3EPL11VcTeYhJ1Ebe7a++ltx4BY5BgR4NIZi2KO1nxTl
-         QB6sOYma9TDPLIfoEjvhB7rObH+jOC8bUYN1oUFZ6sWtRm46RXjlsrWI8lIDrcSlMCUs
-         Bmh1KJdiPk7yi/Vo81iI5DI66BeF3oeckVvaFRKWpNXPuoHPL+Wnhd3QPEtvS1W1NAqe
-         bx9By0HfFF5ANkn0K86Vyj499E/hnlVQl0fEyeLN4viCAWXA/tP8ZpL113qoDT4mzfGF
-         XSwg==
-X-Gm-Message-State: AOAM533FYaT47vd/M2uBTD59b3q97nRX9KJrmPJDKk66wNqiiAiyyKcL
-        6mvHLlClVED/r0ybKnva/Wql+UhzpWNkAg==
-X-Google-Smtp-Source: ABdhPJw9BcxSBn4If2tX2xf6UOr7GhCJzVW2y/ue10VwQ8YI92czy1tR/ihi61fsOSqbJQZNBCi/ng==
-X-Received: by 2002:ac2:4ecd:: with SMTP id p13mr7883899lfr.237.1634257561771;
-        Thu, 14 Oct 2021 17:26:01 -0700 (PDT)
-Received: from [192.168.1.211] ([37.153.55.125])
-        by smtp.gmail.com with ESMTPSA id e12sm396760ljp.30.2021.10.14.17.26.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Oct 2021 17:26:01 -0700 (PDT)
-Subject: Re: [PATCH] drm: msm: fix building without CONFIG_COMMON_CLK
-To:     Arnd Bergmann <arnd@kernel.org>, Rob Clark <robdclark@gmail.com>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Alex Elder <elder@linaro.org>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        Rajeev Nandan <rajeevny@codeaurora.org>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20211013144308.2248978-1-arnd@kernel.org>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Message-ID: <e88d5a3f-2c46-f891-c505-87e20bf714e9@linaro.org>
-Date:   Fri, 15 Oct 2021 03:26:00 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S233491AbhJOAnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 20:43:06 -0400
+Received: from mga04.intel.com ([192.55.52.120]:44456 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229656AbhJOAnE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 20:43:04 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10137"; a="226593930"
+X-IronPort-AV: E=Sophos;i="5.85,374,1624345200"; 
+   d="scan'208";a="226593930"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2021 17:40:56 -0700
+X-IronPort-AV: E=Sophos;i="5.85,374,1624345200"; 
+   d="scan'208";a="442330839"
+Received: from rongch2-mobl.ccr.corp.intel.com (HELO [10.249.173.238]) ([10.249.173.238])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2021 17:40:54 -0700
+Subject: Re: [kbuild-all] Re: [PATCH v2 2/3] block: don't hide inode from
+ block_device users
+To:     Pavel Begunkov <asml.silence@gmail.com>,
+        kernel test robot <lkp@intel.com>,
+        Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
+        Christoph Hellwig <hch@infradead.org>
+References: <2b8c84834a304871d78f91d4ebe153fac2192fd5.1634115360.git.asml.silence@gmail.com>
+ <202110132327.Ohu5ObDj-lkp@intel.com>
+ <ebe92ed4-6847-0ec0-d5e7-e3485ba7e049@gmail.com>
+From:   "Chen, Rong A" <rong.a.chen@intel.com>
+Message-ID: <46559402-1d69-455d-ad09-27f43f6c0a3a@intel.com>
+Date:   Fri, 15 Oct 2021 08:40:51 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <20211013144308.2248978-1-arnd@kernel.org>
+In-Reply-To: <ebe92ed4-6847-0ec0-d5e7-e3485ba7e049@gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/10/2021 17:42, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> When CONFIG_COMMON_CLOCK is disabled, the 8996 specific
-> phy code is left out, which results in a link failure:
-> 
-> ld: drivers/gpu/drm/msm/hdmi/hdmi_phy.o:(.rodata+0x3f0): undefined reference to `msm_hdmi_phy_8996_cfg'
-> 
-> This was only exposed after it became possible to build
-> test the driver without the clock interfaces.
-> 
-> Make COMMON_CLK a hard dependency for compile testing,
-> and simplify it a little based on that.
-> 
-> Fixes: b3ed524f84f5 ("drm/msm: allow compile_test on !ARM")
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-
-This drops dependency on CONFIG_OF. While ARM64 selects OF, pure ARM 
-does not.
-
-With that fixed:
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-
-> ---
->   drivers/gpu/drm/msm/Kconfig  | 2 +-
->   drivers/gpu/drm/msm/Makefile | 6 +++---
->   2 files changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/Kconfig b/drivers/gpu/drm/msm/Kconfig
-> index f5107b6ded7b..cb204912e0f4 100644
-> --- a/drivers/gpu/drm/msm/Kconfig
-> +++ b/drivers/gpu/drm/msm/Kconfig
-> @@ -4,8 +4,8 @@ config DRM_MSM
->   	tristate "MSM DRM"
->   	depends on DRM
->   	depends on ARCH_QCOM || SOC_IMX5 || COMPILE_TEST
-> +	depends on COMMON_CLK
->   	depends on IOMMU_SUPPORT
-> -	depends on (OF && COMMON_CLK) || COMPILE_TEST
->   	depends on QCOM_OCMEM || QCOM_OCMEM=n
->   	depends on QCOM_LLCC || QCOM_LLCC=n
->   	depends on QCOM_COMMAND_DB || QCOM_COMMAND_DB=n
-> diff --git a/drivers/gpu/drm/msm/Makefile b/drivers/gpu/drm/msm/Makefile
-> index 904535eda0c4..bbee22b54b0c 100644
-> --- a/drivers/gpu/drm/msm/Makefile
-> +++ b/drivers/gpu/drm/msm/Makefile
-> @@ -23,8 +23,10 @@ msm-y := \
->   	hdmi/hdmi_i2c.o \
->   	hdmi/hdmi_phy.o \
->   	hdmi/hdmi_phy_8960.o \
-> +	hdmi/hdmi_phy_8996.o \
->   	hdmi/hdmi_phy_8x60.o \
->   	hdmi/hdmi_phy_8x74.o \
-> +	hdmi/hdmi_pll_8960.o \
->   	edp/edp.o \
->   	edp/edp_aux.o \
->   	edp/edp_bridge.o \
-> @@ -37,6 +39,7 @@ msm-y := \
->   	disp/mdp4/mdp4_dtv_encoder.o \
->   	disp/mdp4/mdp4_lcdc_encoder.o \
->   	disp/mdp4/mdp4_lvds_connector.o \
-> +	disp/mdp4/mdp4_lvds_pll.o \
->   	disp/mdp4/mdp4_irq.o \
->   	disp/mdp4/mdp4_kms.o \
->   	disp/mdp4/mdp4_plane.o \
-> @@ -117,9 +120,6 @@ msm-$(CONFIG_DRM_MSM_DP)+= dp/dp_aux.o \
->   	dp/dp_audio.o
->   
->   msm-$(CONFIG_DRM_FBDEV_EMULATION) += msm_fbdev.o
-> -msm-$(CONFIG_COMMON_CLK) += disp/mdp4/mdp4_lvds_pll.o
-> -msm-$(CONFIG_COMMON_CLK) += hdmi/hdmi_pll_8960.o
-> -msm-$(CONFIG_COMMON_CLK) += hdmi/hdmi_phy_8996.o
->   
->   msm-$(CONFIG_DRM_MSM_HDMI_HDCP) += hdmi/hdmi_hdcp.o
->   
-> 
 
 
--- 
-With best wishes
-Dmitry
+On 10/13/2021 11:12 PM, Pavel Begunkov wrote:
+> On 10/13/21 16:03, kernel test robot wrote:
+>> Hi Pavel,
+>>
+>> I love your patch! Yet something to improve:
+>>
+>> [auto build test ERROR on v5.15-rc5]
+> 
+> It's against for-5.16/block and there is no more block_ioctl() in
+> fops.c, should be fine
+
+Hi Pavel,
+
+Thanks for the feedback, we'll take a look.
+
+Best Regards,
+Rong Chen
+
+> 
+> 
+>> [cannot apply to axboe-block/for-next next-20211013]
+>> [If your patch is applied to the wrong git tree, kindly drop us a note.
+>> And when submitting patch, we suggest to use '--base' as documented in
+>> https://git-scm.com/docs/git-format-patch]
+>>
+>> url:    
+>> https://github.com/0day-ci/linux/commits/Pavel-Begunkov/on-top-of-for-5-16-block/20211013-165953 
+>>
+>> base:    64570fbc14f8d7cb3fe3995f20e26bc25ce4b2cc
+>> config: hexagon-randconfig-r045-20211013 (attached as .config)
+>> compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 
+>> b6a8c695542b2987eb9a203d5663a0740cb4725f)
+>> reproduce (this is a W=1 build):
+>>          wget 
+>> https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross 
+>> -O ~/bin/make.cross
+>>          chmod +x ~/bin/make.cross
+>>          # 
+>> https://github.com/0day-ci/linux/commit/9e538de87cc869bd26a3ca78da49d1437ec8688c 
+>>
+>>          git remote add linux-review https://github.com/0day-ci/linux
+>>          git fetch --no-tags linux-review 
+>> Pavel-Begunkov/on-top-of-for-5-16-block/20211013-165953
+>>          git checkout 9e538de87cc869bd26a3ca78da49d1437ec8688c
+>>          # save the attached .config to linux build tree
+>>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross 
+>> W=1 ARCH=hexagon
+>>
+>> If you fix the issue, kindly add following tag as appropriate
+>> Reported-by: kernel test robot <lkp@intel.com>
+>>
+>> All error/warnings (new ones prefixed by >>):
+>>
+>>>> block/fops.c:460:37: error: implicit declaration of function 
+>>>> 'bdev_file_inode' [-Werror,-Wimplicit-function-declaration]
+>>             struct block_device *bdev = I_BDEV(bdev_file_inode(file));
+>>                                                ^
+>>     block/fops.c:460:37: note: did you mean 'file_inode'?
+>>     include/linux/fs.h:1348:29: note: 'file_inode' declared here
+>>     static inline struct inode *file_inode(const struct file *f)
+>>                                 ^
+>>>> block/fops.c:460:37: warning: incompatible integer to pointer 
+>>>> conversion passing 'int' to parameter of type 'struct inode *' 
+>>>> [-Wint-conversion]
+>>             struct block_device *bdev = I_BDEV(bdev_file_inode(file));
+>>                                                ^~~~~~~~~~~~~~~~~~~~~
+>>     include/linux/blkdev.h:1990:57: note: passing argument to 
+>> parameter 'inode' here
+>>     static inline struct block_device *I_BDEV(struct inode *inode)
+>>                                                             ^
+>>     1 warning and 1 error generated.
+>>
+>>
+>> vim +/bdev_file_inode +460 block/fops.c
+>>
+>> cd82cca7ebfe9c Christoph Hellwig 2021-09-07  457
+>> cd82cca7ebfe9c Christoph Hellwig 2021-09-07  458  static long 
+>> block_ioctl(struct file *file, unsigned cmd, unsigned long arg)
+>> cd82cca7ebfe9c Christoph Hellwig 2021-09-07  459  {
+>> cd82cca7ebfe9c Christoph Hellwig 2021-09-07 @460      struct 
+>> block_device *bdev = I_BDEV(bdev_file_inode(file));
+>> cd82cca7ebfe9c Christoph Hellwig 2021-09-07  461      fmode_t mode = 
+>> file->f_mode;
+>> cd82cca7ebfe9c Christoph Hellwig 2021-09-07  462
+>> cd82cca7ebfe9c Christoph Hellwig 2021-09-07  463      /*
+>> cd82cca7ebfe9c Christoph Hellwig 2021-09-07  464       * O_NDELAY can 
+>> be altered using fcntl(.., F_SETFL, ..), so we have
+>> cd82cca7ebfe9c Christoph Hellwig 2021-09-07  465       * to updated it 
+>> before every ioctl.
+>> cd82cca7ebfe9c Christoph Hellwig 2021-09-07  466       */
+>> cd82cca7ebfe9c Christoph Hellwig 2021-09-07  467      if 
+>> (file->f_flags & O_NDELAY)
+>> cd82cca7ebfe9c Christoph Hellwig 2021-09-07  468          mode |= 
+>> FMODE_NDELAY;
+>> cd82cca7ebfe9c Christoph Hellwig 2021-09-07  469      else
+>> cd82cca7ebfe9c Christoph Hellwig 2021-09-07  470          mode &= 
+>> ~FMODE_NDELAY;
+>> cd82cca7ebfe9c Christoph Hellwig 2021-09-07  471
+>> cd82cca7ebfe9c Christoph Hellwig 2021-09-07  472      return 
+>> blkdev_ioctl(bdev, mode, cmd, arg);
+>> cd82cca7ebfe9c Christoph Hellwig 2021-09-07  473  }
+>> cd82cca7ebfe9c Christoph Hellwig 2021-09-07  474
+>>
+>> ---
+>> 0-DAY CI Kernel Test Service, Intel Corporation
+>> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+>>
+> 
