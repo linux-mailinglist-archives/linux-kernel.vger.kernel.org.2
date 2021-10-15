@@ -2,144 +2,284 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A17F42E844
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 07:09:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF2F442E854
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 07:16:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235365AbhJOFLG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 01:11:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39744 "EHLO
+        id S235370AbhJOFRv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 01:17:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235357AbhJOFLF (ORCPT
+        with ESMTP id S233394AbhJOFRu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 01:11:05 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5B5BC061570
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 22:08:59 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id z40so7568675qko.7
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 22:08:59 -0700 (PDT)
+        Fri, 15 Oct 2021 01:17:50 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFD57C061570
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 22:15:43 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id z20so33443165edc.13
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 22:15:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=a8L8tI7fdWPVyLQWYDtFqLlsNHHScmHBHQCVqZSRnUA=;
-        b=eFZkvPChLYCKGXv27qtba5UyFdqjjqownlsjEdy+4EKngt/MVChZWaXXsNpPRqtNdZ
-         Uzpw6KMUk5imyPD/9a0ErDBs/mUyNpju3rXqNtXZRRYZunGxPC8MaPaIdzfix/J//PYy
-         ug/ORwkTSl/NfS/h6FrpYcrn9TBQUZvtNC9lQ=
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=p2BDP5EoAmuQzctAhGTaKUc9zIlvqisFpRaNoJ9ywf0=;
+        b=MGdLfrJNgdsNLKrNO7g6iW8fMBfD/d7DCFStvIDpQl7oDMXjMr7vn0TYh+YTcTFXij
+         i1OeOVvTjL5dvlb/iy5iZW/mUhKSTr6uvoyYWiufl4FmjVPb2Jf+Pd0doN0WT4tqYWO/
+         r5nPnKzvrOVRsXKT5hUVX+utUbPgMOKTVsEHljo0QGVRppvdeqKJtM14U3S0+Y5tIk9R
+         zAtE8lMkdWdQDsbDy1bgx6uTeiSw8pFF3P4Rh32qKgSbIpt3U0HucD+eW71UtByv5qyH
+         QEMM7jT2w5reDPduGWcd0sqAgOOEbgnxb0E9UYZOWDTtIodBpLZ4EjMWkzQqvei872Nv
+         PzBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=a8L8tI7fdWPVyLQWYDtFqLlsNHHScmHBHQCVqZSRnUA=;
-        b=BpKoAFucRAG6nRy/f/eWhLdEFnMcNMMqrs2mLpG+ZHvb9KjzJ54Z3pOBHX54MJzBZ/
-         25GBDQ1WT1HTJ2OF8OFVAU+dwok8EpKrLVsMZqfJE/8gFDSd45Pwb+EzP4/2ycJqE+nB
-         SGvYdf9DIPQtAXh75uEOG/N75T3KnXD4FIH8CNlmOYq13TCDswV+oVWq7PgEuVJHABO8
-         YBh19tKP0TFEIS9Dd2+HJ043q8Zy3zmNgEYeQnmDSx28vSFxsLV7F50Q3CWl7R16XqtL
-         mUqemZvhQ0o4Xe36e7H3UoixEogfC3Aesrtr78uCfCGlEU54wxnrfuXUzuuMfMIiBhpP
-         tPXQ==
-X-Gm-Message-State: AOAM530cgShzPYe5SqbM1YS8pQ7iU9qZhoRwlsmAkWsXJLZDohzHwXYr
-        TNV5PToAfL/oHBtg0/IcNwBPdWDNHMqGSznXNCepdZBo
-X-Google-Smtp-Source: ABdhPJzuAMBgm8X5B5WDZpgXeLp9fa14Q/T2EoOBrzxlSLdt7SSEQHnrVDk/B8pW7JurHxpiT6HH0sn98mY2EuNrha4=
-X-Received: by 2002:a05:620a:4247:: with SMTP id w7mr8273900qko.381.1634274538886;
- Thu, 14 Oct 2021 22:08:58 -0700 (PDT)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=p2BDP5EoAmuQzctAhGTaKUc9zIlvqisFpRaNoJ9ywf0=;
+        b=zbaLS8IMK8BYozhnCmIAMLCsAKB+lM1h/B8Gu/Mxk+fGdCKd3d0Ha5YHJnmBdDONpd
+         +981mRnLuJzTmvCkAbsqhRfK03FmaBzxGGp2j4K71m1poQpGV1q6kBlAxMN1m+Z/+uj8
+         89JzOYry/N6m0WdVorNIe2JOVnP0SwlTqS3LzwYxgij6NO2oBvRqqVUPcqJ87+ZqrowZ
+         ZDjWlBBTw55GWqRhf3w5CPOCcI8CEcxx0HLdlRMS24+NTOrrt5LNaPyE07OzD8wUcJLf
+         /u56P7Fj8ufxLE44OjBeQwDHPc2HcBbh9GmSjudZ/pQu9jS9Y4S5e7+/aEJBuvhKDjxN
+         L64Q==
+X-Gm-Message-State: AOAM532p9hFJZiIPLzwVdPUZPQvqpa/z0+0/wUmPc4J0CSklWSOR7GMw
+        ZVPtv0H2JX5it0NRCvyOlnNx9/veaz4PY+eKC19nW//vRsiSfg==
+X-Google-Smtp-Source: ABdhPJyVM1EVAV1MMS/NRrg/CaPrle5vxa3N9Y8XRJnW2EBsCUHyyDjPE1S9LfIrdDHL9qM2DDQArGYKgYM8Tp7WUcY=
+X-Received: by 2002:a17:906:f24c:: with SMTP id gy12mr4180065ejb.478.1634274942294;
+ Thu, 14 Oct 2021 22:15:42 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210920190031.22168-1-eajames@linux.ibm.com>
-In-Reply-To: <20210920190031.22168-1-eajames@linux.ibm.com>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Fri, 15 Oct 2021 05:08:47 +0000
-Message-ID: <CACPK8XczD=4PXxRQrZ=aGCYtZk47i4-XoFVwep04qszf3Ls6jg@mail.gmail.com>
-Subject: Re: [PATCH] fsi: sbefifo: Add sysfs file indicating a timeout error
-To:     Eddie James <eajames@linux.ibm.com>,
-        Amitay Isaacs <amitay@ozlabs.org>
-Cc:     linux-fsi@lists.ozlabs.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jeremy Kerr <jk@ozlabs.org>,
-        Alistair Popple <alistair@popple.id.au>,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>
+From:   Dave Airlie <airlied@gmail.com>
+Date:   Fri, 15 Oct 2021 15:15:31 +1000
+Message-ID: <CAPM=9tyo_PDz3NuSp4N-qidJ55FybBYs6do-f_5gb4iXvct5Zg@mail.gmail.com>
+Subject: [git pull] drm fixes for 5.15-rc6
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 20 Sept 2021 at 19:00, Eddie James <eajames@linux.ibm.com> wrote:
->
-> The SBEFIFO timeout error requires special handling in userspace
-> to do recovery operations. Add a sysfs file to indicate a timeout
-> error, and notify pollers when a timeout occurs.
+Hi Linus,
 
-Should this have some documentation too?
+This is the fixes pull for 5.15-rc6.
 
-What userspace uses this?
+It has a few scattered msm and i915 fixes, a few core fixes and a
+mediatek feature revert.
 
-Looks good to me otherwise.
+I've had to pick a bunch of patches into this, as the drm-misc-fixes
+tree had a bunch of vc4 patches I wasn't comfortable with sending to
+you at least as part of this, they were delayed due to your reverts.
+If it's really useful as fixes I'll do a separate pull.
 
-Reviewed-by: Joel Stanley <joel@jms.id.au>
+Dave.
 
->
-> Signed-off-by: Eddie James <eajames@linux.ibm.com>
-> ---
->  drivers/fsi/fsi-sbefifo.c | 16 ++++++++++++++++
->  1 file changed, 16 insertions(+)
->
-> diff --git a/drivers/fsi/fsi-sbefifo.c b/drivers/fsi/fsi-sbefifo.c
-> index 84cb965bfed5..b414ab4431ef 100644
-> --- a/drivers/fsi/fsi-sbefifo.c
-> +++ b/drivers/fsi/fsi-sbefifo.c
-> @@ -124,6 +124,7 @@ struct sbefifo {
->         bool                    broken;
->         bool                    dead;
->         bool                    async_ffdc;
-> +       bool                    timed_out;
->  };
->
->  struct sbefifo_user {
-> @@ -136,6 +137,14 @@ struct sbefifo_user {
->
->  static DEFINE_MUTEX(sbefifo_ffdc_mutex);
->
-> +static ssize_t timeout_show(struct device *dev, struct device_attribute *attr,
-> +                           char *buf)
-> +{
-> +       struct sbefifo *sbefifo = container_of(dev, struct sbefifo, dev);
-> +
-> +       return sysfs_emit(buf, "%d\n", sbefifo->timed_out ? 1 : 0);
-> +}
-> +static DEVICE_ATTR_RO(timeout);
->
->  static void __sbefifo_dump_ffdc(struct device *dev, const __be32 *ffdc,
->                                 size_t ffdc_sz, bool internal)
-> @@ -462,11 +471,14 @@ static int sbefifo_wait(struct sbefifo *sbefifo, bool up,
->                         break;
->         }
->         if (!ready) {
-> +               sysfs_notify(&sbefifo->dev.kobj, NULL, dev_attr_timeout.attr.name);
-> +               sbefifo->timed_out = true;
->                 dev_err(dev, "%s FIFO Timeout ! status=%08x\n", up ? "UP" : "DOWN", sts);
->                 return -ETIMEDOUT;
->         }
->         dev_vdbg(dev, "End of wait status: %08x\n", sts);
->
-> +       sbefifo->timed_out = false;
->         *status = sts;
->
->         return 0;
-> @@ -993,6 +1005,8 @@ static int sbefifo_probe(struct device *dev)
->                                  child_name);
->         }
->
-> +       device_create_file(&sbefifo->dev, &dev_attr_timeout);
-> +
->         return 0;
->   err_free_minor:
->         fsi_free_minor(sbefifo->dev.devt);
-> @@ -1018,6 +1032,8 @@ static int sbefifo_remove(struct device *dev)
->
->         dev_dbg(dev, "Removing sbefifo device...\n");
->
-> +       device_remove_file(&sbefifo->dev, &dev_attr_timeout);
-> +
->         mutex_lock(&sbefifo->lock);
->         sbefifo->dead = true;
->         mutex_unlock(&sbefifo->lock);
-> --
-> 2.27.0
->
+drm-fixes-2021-10-15-1:
+drm fixes for 5.15-rc6
+
+core:
+- clamp fbdev size
+- edid cap blocks read to avoid out of bounds
+
+panel:
+- fix missing crc32 dependency
+
+msm:
+- Fix a new crash on dev file close if the dev file was opened when
+  GPU is not loaded (such as missing fw in initrd)
+- Switch to single drm_sched_entity per priority level per drm_file
+  to unbreak multi-context userspace
+- Serialize GMU access to fix GMU OOB errors
+- Various error path fixes
+- A couple integer overflow fixes
+- Fix mdp5 cursor plane WARNs
+
+i915:
+- Fix ACPI object leak
+- Fix context leak in user proto-context creation
+- Fix missing i915_sw_fence_fini call
+
+hyperv:
+- hide hw pointer
+
+nouveau:
+- fix engine selection bit
+
+r128:
+- fix UML build
+
+rcar-du:
+- unconncted LVDS regression fix
+
+mediatek:
+- revert CMDQ refinement patches
+The following changes since commit 64570fbc14f8d7cb3fe3995f20e26bc25ce4b2cc:
+
+  Linux 5.15-rc5 (2021-10-10 17:01:59 -0700)
+
+are available in the Git repository at:
+
+  git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2021-10-15-1
+
+for you to fetch changes up to a14bc107edd0c108bda2245e50daa22f91c95d20:
+
+  drm/panel: olimex-lcd-olinuxino: select CRC32 (2021-10-15 15:05:13 +1000)
+
+----------------------------------------------------------------
+drm fixes for 5.15-rc6
+
+core:
+- clamp fbdev size
+- edid cap blocks read to avoid out of bounds
+
+panel:
+- fix missing crc32 dependency
+
+msm:
+- Fix a new crash on dev file close if the dev file was opened when
+  GPU is not loaded (such as missing fw in initrd)
+- Switch to single drm_sched_entity per priority level per drm_file
+  to unbreak multi-context userspace
+- Serialize GMU access to fix GMU OOB errors
+- Various error path fixes
+- A couple integer overflow fixes
+- Fix mdp5 cursor plane WARNs
+
+i915:
+- Fix ACPI object leak
+- Fix context leak in user proto-context creation
+- Fix missing i915_sw_fence_fini call
+
+hyperv:
+- hide hw pointer
+
+nouveau:
+- fix engine selection bit
+
+r128:
+- fix UML build
+
+rcar-du:
+- unconncted LVDS regression fix
+
+mediatek:
+- revert CMDQ refinement patches
+
+----------------------------------------------------------------
+Arnd Bergmann (1):
+      drm/msm/submit: fix overflow check on 64-bit architectures
+
+Chun-Kuang Hu (5):
+      Revert "drm/mediatek: Clear pending flag when cmdq packet is done"
+      Revert "drm/mediatek: Add cmdq_handle in mtk_crtc"
+      Revert "drm/mediatek: Detect CMDQ execution timeout"
+      Revert "drm/mediatek: Remove struct cmdq_client"
+      Revert "drm/mediatek: Use mailbox rx_callback instead of cmdq_task_cb"
+
+Colin Ian King (1):
+      drm/msm: Fix null pointer dereference on pointer edp
+
+Dan Carpenter (4):
+      drm/msm/a4xx: fix error handling in a4xx_gpu_init()
+      drm/msm/a3xx: fix error handling in a3xx_gpu_init()
+      drm/msm/dsi: Fix an error code in msm_dsi_modeset_init()
+      drm/msm/dsi: fix off by one in dsi_bus_clk_enable error handling
+
+Dave Airlie (3):
+      Merge tag 'drm-msm-fixes-2021-10-11' of
+https://gitlab.freedesktop.org/drm/msm into drm-fixes
+      Merge tag 'drm-intel-fixes-2021-10-14' of
+git://anongit.freedesktop.org/drm/drm-intel into drm-fixes
+      Merge tag 'mediatek-drm-fixes-5.15' of
+https://git.kernel.org/pub/scm/linux/kernel/git/chunkuang.hu/linux
+into drm-fixes
+
+Dexuan Cui (1):
+      drm/hyperv: Fix double mouse pointers
+
+Dmitry Baryshkov (2):
+      drm/msm/mdp5: fix cursor-related warnings
+      drm/msm/dsi/phy: fix clock names in 28nm_8960 phy
+
+Douglas Anderson (1):
+      drm/edid: In connector_bad_edid() cap num_of_ext by num_blocks read
+
+Fabio Estevam (1):
+      drm/msm: Do not run snapshot on non-DPU devices
+
+Kuogee Hsieh (1):
+      drm/msm/dp: only signal audio when disconnected detected at dp_pm_resume
+
+Laurent Pinchart (1):
+      drm: rcar-du: Don't create encoder for unconnected LVDS outputs
+
+Marek Vasut (2):
+      drm/msm: Avoid potential overflow in timeout_to_jiffies()
+      drm/nouveau/fifo: Reinstate the correct engine bit programming
+
+Marijn Suijten (1):
+      drm/msm/dsi: dsi_phy_14nm: Take ready-bit into account in poll_for_ready
+
+Matthew Auld (1):
+      drm/i915: remember to call i915_sw_fence_fini
+
+Matthew Brost (1):
+      drm/i915: Fix bug in user proto-context creation that leaked contexts
+
+Randy Dunlap (1):
+      drm/r128: fix build for UML
+
+Rob Clark (5):
+      drm/msm: Fix crash on dev file close
+      drm/msm/a6xx: Serialize GMU communication
+      drm/msm/a6xx: Track current ctx by seqno
+      drm/msm: A bit more docs + cleanup
+      drm/msm: One sched entity per process per priority
+
+Robert Foss (1):
+      drm/msm/dpu: Fix address of SM8150 PINGPONG5 IRQ register
+
+Stephan Gerhold (1):
+      drm/msm: Fix devfreq NULL pointer dereference on a3xx
+
+Thomas Zimmermann (1):
+      drm/fbdev: Clamp fbdev surface size if too large
+
+Vegard Nossum (1):
+      drm/panel: olimex-lcd-olinuxino: select CRC32
+
+Zenghui Yu (1):
+      drm/i915: Free the returned object of acpi_evaluate_dsm()
+
+ drivers/gpu/drm/drm_edid.c                         |  15 +-
+ drivers/gpu/drm/drm_fb_helper.c                    |   6 +
+ drivers/gpu/drm/hyperv/hyperv_drm.h                |   1 +
+ drivers/gpu/drm/hyperv/hyperv_drm_modeset.c        |   1 +
+ drivers/gpu/drm/hyperv/hyperv_drm_proto.c          |  54 ++++++-
+ drivers/gpu/drm/i915/display/intel_acpi.c          |   7 +-
+ drivers/gpu/drm/i915/gem/i915_gem_context.c        |   5 +-
+ drivers/gpu/drm/i915/gt/intel_context.c            |   1 +
+ drivers/gpu/drm/mediatek/mtk_drm_crtc.c            | 157 ++++-----------------
+ drivers/gpu/drm/msm/adreno/a3xx_gpu.c              |   9 +-
+ drivers/gpu/drm/msm/adreno/a4xx_gpu.c              |   9 +-
+ drivers/gpu/drm/msm/adreno/a6xx_gmu.c              |   6 +
+ drivers/gpu/drm/msm/adreno/a6xx_gmu.h              |   3 +
+ drivers/gpu/drm/msm/adreno/a6xx_gpu.c              |  46 ++++--
+ drivers/gpu/drm/msm/adreno/a6xx_gpu.h              |  11 +-
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c     |   2 +-
+ drivers/gpu/drm/msm/disp/mdp5/mdp5_crtc.c          |  16 +++
+ drivers/gpu/drm/msm/dp/dp_display.c                |  10 +-
+ drivers/gpu/drm/msm/dsi/dsi.c                      |   4 +-
+ drivers/gpu/drm/msm/dsi/dsi_host.c                 |   2 +-
+ drivers/gpu/drm/msm/dsi/phy/dsi_phy_14nm.c         |  30 ++--
+ drivers/gpu/drm/msm/dsi/phy/dsi_phy_28nm_8960.c    |   4 +-
+ drivers/gpu/drm/msm/edp/edp_ctrl.c                 |   3 +-
+ drivers/gpu/drm/msm/msm_drv.c                      |  15 +-
+ drivers/gpu/drm/msm/msm_drv.h                      |  47 +-----
+ drivers/gpu/drm/msm/msm_gem_submit.c               |   7 +-
+ drivers/gpu/drm/msm/msm_gpu.h                      |  66 ++++++++-
+ drivers/gpu/drm/msm/msm_gpu_devfreq.c              |   6 +
+ drivers/gpu/drm/msm/msm_submitqueue.c              |  72 ++++++++--
+ drivers/gpu/drm/nouveau/nvkm/engine/fifo/chang84.c |   2 +-
+ drivers/gpu/drm/panel/Kconfig                      |   1 +
+ drivers/gpu/drm/r128/ati_pcigart.c                 |   2 +-
+ drivers/gpu/drm/rcar-du/rcar_du_encoder.c          |  16 ++-
+ drivers/gpu/drm/rcar-du/rcar_lvds.c                |  11 ++
+ drivers/gpu/drm/rcar-du/rcar_lvds.h                |   5 +
+ 35 files changed, 394 insertions(+), 258 deletions(-)
