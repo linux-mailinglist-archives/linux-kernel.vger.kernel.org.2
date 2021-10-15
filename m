@@ -2,104 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC53342F76A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 17:53:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5DAC42F76E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 17:53:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241059AbhJOPzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 11:55:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40974 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241057AbhJOPzh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 11:55:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 84B47611C3;
-        Fri, 15 Oct 2021 15:53:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634313210;
-        bh=tS7FNEBnAqgSHdk65hsLK29FdzL2hDC78AqH8UwzefQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=OHrT4b+SXSuzTq0H9xDZZZmLV0zTtfVyFhvo0WO+8kDr+LNwOlJwZyu236ozwh1P1
-         z1vxqAjo/G2GZMv/36ip5n1rnG/PrlIJ2DRS4cce8m/X2T+ppbftBvWLTmL+IcoJfO
-         DdhmyBKbUoL/+En8EUTqYo8qKEY6rNc28nYOtMAxpXcI0/ELQaDQ18lojFFS+LggTO
-         ja94yuGAkrgzF81MNoaBGitniK3CZr5Cy0ggPOKEaHXn78wEf+HmmtkLeKOCvIizyi
-         sAQfqUyjIS50kyOm0VLdHCBQm/RE0zUDOfuU+/nPYxu4loQGJ/jebSivyV4SMfCO9w
-         5fLI0WllxY6dg==
-Received: by mail-ed1-f44.google.com with SMTP id 5so9652748edw.7;
-        Fri, 15 Oct 2021 08:53:30 -0700 (PDT)
-X-Gm-Message-State: AOAM531EvUv+o6Gx+uQAr0vaYzUTEIBEjqhszrOd09gfTQ9ACytKwQCy
-        1cIAgsWkZC6Z1VwrQFGIE4CGNv2ZJ2kb9tnbSw==
-X-Google-Smtp-Source: ABdhPJyunKq1cAJC1qKjKHXJiMRTFQMjgAl20IaC76YoHiF4Qkdg9DiyQSuuX7aMF23U9kNTRN7zoPQXaEPnO3vi8No=
-X-Received: by 2002:a17:906:71d4:: with SMTP id i20mr7804418ejk.390.1634313206877;
- Fri, 15 Oct 2021 08:53:26 -0700 (PDT)
+        id S241070AbhJOP4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 11:56:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42462 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241057AbhJOPz7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 11:55:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634313232;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=L1ebZTRDtvYaS1oh3yKgiezKno+o3JSTu41X1RB0t/A=;
+        b=cu7BI9A5vWyZRjdJASq863DU8d79ttspJP1n36PLI/QQ3jI0vyN4NBPMyDp17yDN1x7y1h
+        fr3+eAjbLBzk9x998o9yguUYV1tcD6WpLiKpnGfEO4dOS3SlJXal0pNg5VoiG/Ed3h/7tM
+        7nLDWOkpNkPmn0+olgo+lQijBMVgpm8=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-503-0PjyNcz8MJqkCPJx_B9fhA-1; Fri, 15 Oct 2021 11:53:51 -0400
+X-MC-Unique: 0PjyNcz8MJqkCPJx_B9fhA-1
+Received: by mail-ed1-f70.google.com with SMTP id l22-20020aa7c316000000b003dbbced0731so8643103edq.6
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 08:53:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=L1ebZTRDtvYaS1oh3yKgiezKno+o3JSTu41X1RB0t/A=;
+        b=wlqpeXywjOXToDrJTrwihWjha82CLWIivzdgZoWWqQTvJaYQzY21bIOFIjW98IqOat
+         PjR9Awe4vnIAl+BsivLJPHwUtHXHxPz+5IHsNYzodbN9qV3DcWmCxRif/h4UdGSGv4Vr
+         QeX2MjtYpdKaoO+56WrkH119NcADdEl9UXIDw3j6Dry9k/z3lWVRrm8PsY+sGVAv5472
+         Dfe2t+frGfny4YuWLBj5U146jMZELGJgjBlsUOVyOXRfl1/qBSTowx+ecBpU6HB6U7Ye
+         6IWhfMMVJiUJ2OGn1nq3IsXojCIXUucQpFJXldCuMT2YwOFaJ5AB1sx/5nsmmRPLpRsZ
+         l5PQ==
+X-Gm-Message-State: AOAM530f8+X3/mfEUx/pRmKqE6dOxHwpBVw6Xhyu0m4aZ1wmFKfqvlou
+        +sz8ofP3wsiC+d1at1xfVqm+KXPQgUh57XYM1iSs+qsg8xxB+NUqk2rhD29ypAToN9Ye5Yd/RXi
+        Ygs3qD5ATbc/ufr5YQs35ZRIG
+X-Received: by 2002:a17:906:b782:: with SMTP id dt2mr8125135ejb.310.1634313229572;
+        Fri, 15 Oct 2021 08:53:49 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy62GL1pasUanwiI/flEzTGOV8RVWPvZh1VUyETyszJmioLKXqT8Zc+p5y0zX8PPTgQkB7DfQ==
+X-Received: by 2002:a17:906:b782:: with SMTP id dt2mr8125105ejb.310.1634313229351;
+        Fri, 15 Oct 2021 08:53:49 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id b2sm4510545ejj.124.2021.10.15.08.53.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Oct 2021 08:53:48 -0700 (PDT)
+Message-ID: <689cf4f5-6004-de51-f5ca-9a7acee37499@redhat.com>
+Date:   Fri, 15 Oct 2021 17:53:47 +0200
 MIME-Version: 1.0
-References: <20210914204800.3945732-1-robh@kernel.org> <20210914204800.3945732-5-robh@kernel.org>
- <20211014165810.GA39276@lakrids.cambridge.arm.com>
-In-Reply-To: <20211014165810.GA39276@lakrids.cambridge.arm.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Fri, 15 Oct 2021 10:53:15 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqJHfpcvKekEFm-d7rMJ=UNc7dXwfaMMkUWZYsnPg=QNPQ@mail.gmail.com>
-Message-ID: <CAL_JsqJHfpcvKekEFm-d7rMJ=UNc7dXwfaMMkUWZYsnPg=QNPQ@mail.gmail.com>
-Subject: Re: [PATCH v10 4/5] arm64: perf: Enable PMU counter userspace access
- for perf event
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Honnappa Nagarahalli <honnappa.nagarahalli@arm.com>,
-        Zachary.Leaf@arm.com, Raphael Gault <raphael.gault@arm.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        Vince Weaver <vincent.weaver@maine.edu>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [patch 13/31] x86/fpu: Move KVMs FPU swapping to FPU core
+Content-Language: en-US
+To:     "Liu, Jing2" <jing2.liu@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     "x86@kernel.org" <x86@kernel.org>,
+        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "Nakajima, Jun" <jun.nakajima@intel.com>,
+        Jing Liu <jing2.liu@linux.intel.com>,
+        "seanjc@google.com" <seanjc@google.com>,
+        "Cooper, Andrew" <andrew.cooper3@citrix.com>
+References: <871r4p9fyh.ffs@tglx>
+ <ec9c761d-4b5c-71e2-c1fc-d256b6b78c04@redhat.com>
+ <BL0PR11MB3252511FC48E43484DE79A3CA9B89@BL0PR11MB3252.namprd11.prod.outlook.com>
+ <6bbc5184-a675-1937-eb98-639906a9cf15@redhat.com> <87wnmf66m5.ffs@tglx>
+ <3997787e-402d-4b2b-0f90-4a672c77703f@redhat.com> <87lf2v5shb.ffs@tglx>
+ <87a6ja6352.ffs@tglx>
+ <BYAPR11MB3256B3120DEB5FE0DD53B5B9A9B99@BYAPR11MB3256.namprd11.prod.outlook.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <BYAPR11MB3256B3120DEB5FE0DD53B5B9A9B99@BYAPR11MB3256.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 11:58 AM Mark Rutland <mark.rutland@arm.com> wrote:
->
-> Hi Rob,
->
-> This looks pretty good!
->
-> I have one largish query below, and otherwise only trivialities that I'm
-> happy to fix up.
->
-> On Tue, Sep 14, 2021 at 03:47:59PM -0500, Rob Herring wrote:
+On 15/10/21 16:24, Liu, Jing2 wrote:
+>> fpu_swap_kvm_fpu(bool enter_guest, u64 guest_needs_features) {
+>>          possibly_reallocate(enter_guest, guest_needs_features);
+> When KVM traps guest wrmsr XFD in #NM, I think KVM need allocate
+> fpstate buffer for full features.
 
-[...]
+You mean XCR0 and XFD (not XFD in #NM), but yeah at the point of 
+fpu_swap_kvm_fpu we are in atomic context.
 
-> >  static inline bool armv8pmu_event_is_chained(struct perf_event *event)
-> >  {
-> >       int idx = event->hw.idx;
-> >       struct arm_pmu *cpu_pmu = to_arm_pmu(event->pmu);
-> >
-> > -     return !WARN_ON(idx < 0) &&
-> > +     return !(event->hw.flags & PERF_EVENT_FLAG_USER_READ_CNT) &&
-> >              armv8pmu_event_is_64bit(event) &&
-> >              !armv8pmu_has_long_event(cpu_pmu) &&
-> >              (idx != ARMV8_IDX_CYCLE_COUNTER);
-> > @@ -720,6 +726,27 @@ static inline u32 armv8pmu_getreset_flags(void)
-> >       return value;
->
-> Above this, could we please add:
->
-> | static inline bool armv8pmu_event_has_user_read(struct perf_event *event)
-> | {
-> |       return event->hw.flags & PERF_EVENT_FLAG_USER_READ_CNT;
-> | }
->
-> ... and use that where we look at PERF_EVENT_FLAG_USER_READ_CNT?
+Still, for now the first pass of AMX implementation doesn't need to do 
+anything but swap the pointers, and it can simply allocate the full 
+buffer at vCPU creation.
 
-Sure, but as this is a common flag now, I should probably make that a
-common function in linux/perf_event.h and have x86 code use it too.
+Paolo
 
-Rob
+> Because in next vmexit, guest might have dynamic state and KVM
+> can be preempted before running fpu_swap_kvm_fpu().
+> Thus, here the current->thread.fpu.fpstate already has enough space
+> for saving guest.
+
