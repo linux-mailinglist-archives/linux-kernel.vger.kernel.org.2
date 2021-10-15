@@ -2,153 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F11942E539
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 02:23:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23DF142E545
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 02:26:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234588AbhJOAZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 20:25:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33296 "EHLO
+        id S234620AbhJOA2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 20:28:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232796AbhJOAY5 (ORCPT
+        with ESMTP id S234593AbhJOA2J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 20:24:57 -0400
-Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F35BC061570;
-        Thu, 14 Oct 2021 17:22:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=OUxfpVYwd1GISRQGHaPwsHIXWhsw5Vl+rVIwmaXqPus=; b=BWCEZGQgSTnq6IcezkJ/FcXHOX
-        lTsyP6U1zNSYHW6xi0f7JJ/gCPvqj5otkDqItzlhW1Jh55zXpKcM3fMrJeRhMIuPL6+RhQ3Nqn/Kl
-        uBbNmBHqO3JiXHgvV1GcTEQJZ6EY4wjDP+fTc7q6pbqMPMMfdsgp56QzmIINFg0L6V85vp8atq7fk
-        8pnKiGXMngNHmU0ez9ghshWUrWlNzzWI0Q65GDzrsUu3rwz/nuVYxt0YupIpziAiygEuBaViYVohr
-        w+7OjuR2T6zzzMpZXZUhn/BgTJgcOXEfmECx6G/qkn6GymAjKvvxvxVOwKeHMzxvQHh1x4Iw/9oJb
-        wqMk+ESA==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mbAzg-004lOG-7L; Fri, 15 Oct 2021 00:22:40 +0000
-Date:   Thu, 14 Oct 2021 17:22:40 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Ming Lei <ming.lei@redhat.com>
-Cc:     tj@kernel.org, gregkh@linuxfoundation.org,
-        akpm@linux-foundation.org, minchan@kernel.org, jeyu@kernel.org,
-        shuah@kernel.org, bvanassche@acm.org, dan.j.williams@intel.com,
-        joe@perches.com, tglx@linutronix.de, keescook@chromium.org,
-        rostedt@goodmis.org, linux-spdx@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 11/12] zram: fix crashes with cpu hotplug multistate
-Message-ID: <YWjJ0O7K+31Iz3ox@bombadil.infradead.org>
-References: <20210927163805.808907-1-mcgrof@kernel.org>
- <20210927163805.808907-12-mcgrof@kernel.org>
- <YWeOJP2UJWYF94fu@T590>
- <YWeR4moCRh+ZHOmH@T590>
- <YWiSAN6xfYcUDJCb@bombadil.infradead.org>
- <YWjCpLUNPF3s4P2U@T590>
+        Thu, 14 Oct 2021 20:28:09 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7850C061753
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 17:26:03 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id t9so33523694lfd.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 17:26:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=gAakFVCdlu4BwUnr1HsiBStLYgFMjKgM2HCJV6khvVI=;
+        b=KqrFJqTAAd10gLKTVHbzWujEhl0n1HYn0E+xVy66B9zm1FNUxx8QtX5yZVfLeeODxs
+         TYuPsYapJNCClxzEXoVd2HvUwe/BQa07J/w+ePK17SSbJQXNzoX4Zri8wYr9KTf82caF
+         iH7sJpZRdliFvfgO2ualjYGlVrWZTKdGa09dTq3gOozlXNwDalk6SknK8K0j0TE78GRD
+         hoFF/VtosBG2t8NSZhhlDJ12ZDgS2Rmh2cb00OIpkxvm7hXT3y9qfQUhiIcdrj0W8K2X
+         F9oFDrm2aJQBk3gTmmc5a3T7XgWTZYV4zw14o4TXGuBhh3oGIPpOAvTOlyjwaB8dhoje
+         6QhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=gAakFVCdlu4BwUnr1HsiBStLYgFMjKgM2HCJV6khvVI=;
+        b=ZuUe838kkTLmw0LQ3F8IeolqYIn8CWXliU4uYTakikJuqMeMV3WdKpoxBSoEz4CT6w
+         UPEolF4sYUob/Kp6OoiXwenE3EPL11VcTeYhJ1Ebe7a++ltx4BY5BgR4NIZi2KO1nxTl
+         QB6sOYma9TDPLIfoEjvhB7rObH+jOC8bUYN1oUFZ6sWtRm46RXjlsrWI8lIDrcSlMCUs
+         Bmh1KJdiPk7yi/Vo81iI5DI66BeF3oeckVvaFRKWpNXPuoHPL+Wnhd3QPEtvS1W1NAqe
+         bx9By0HfFF5ANkn0K86Vyj499E/hnlVQl0fEyeLN4viCAWXA/tP8ZpL113qoDT4mzfGF
+         XSwg==
+X-Gm-Message-State: AOAM533FYaT47vd/M2uBTD59b3q97nRX9KJrmPJDKk66wNqiiAiyyKcL
+        6mvHLlClVED/r0ybKnva/Wql+UhzpWNkAg==
+X-Google-Smtp-Source: ABdhPJw9BcxSBn4If2tX2xf6UOr7GhCJzVW2y/ue10VwQ8YI92czy1tR/ihi61fsOSqbJQZNBCi/ng==
+X-Received: by 2002:ac2:4ecd:: with SMTP id p13mr7883899lfr.237.1634257561771;
+        Thu, 14 Oct 2021 17:26:01 -0700 (PDT)
+Received: from [192.168.1.211] ([37.153.55.125])
+        by smtp.gmail.com with ESMTPSA id e12sm396760ljp.30.2021.10.14.17.26.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Oct 2021 17:26:01 -0700 (PDT)
+Subject: Re: [PATCH] drm: msm: fix building without CONFIG_COMMON_CLK
+To:     Arnd Bergmann <arnd@kernel.org>, Rob Clark <robdclark@gmail.com>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Alex Elder <elder@linaro.org>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        Rajeev Nandan <rajeevny@codeaurora.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20211013144308.2248978-1-arnd@kernel.org>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Message-ID: <e88d5a3f-2c46-f891-c505-87e20bf714e9@linaro.org>
+Date:   Fri, 15 Oct 2021 03:26:00 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YWjCpLUNPF3s4P2U@T590>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+In-Reply-To: <20211013144308.2248978-1-arnd@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 15, 2021 at 07:52:04AM +0800, Ming Lei wrote:
-> On Thu, Oct 14, 2021 at 01:24:32PM -0700, Luis Chamberlain wrote:
-> > On Thu, Oct 14, 2021 at 10:11:46AM +0800, Ming Lei wrote:
-> > > On Thu, Oct 14, 2021 at 09:55:48AM +0800, Ming Lei wrote:
-> > > > On Mon, Sep 27, 2021 at 09:38:04AM -0700, Luis Chamberlain wrote:
-> > > 
-> > > ...
-> > > 
-> > > > 
-> > > > Hello Luis,
-> > > > 
-> > > > Can you test the following patch and see if the issue can be addressed?
-> > > > 
-> > > > Please see the idea from the inline comment.
-> > > > 
-> > > > Also zram_index_mutex isn't needed in zram disk's store() compared with
-> > > > your patch, then the deadlock issue you are addressing in this series can
-> > > > be avoided.
-> > > > 
-> > > > 
-> > > > diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
-> > > > index fcaf2750f68f..3c17927d23a7 100644
-> > > > --- a/drivers/block/zram/zram_drv.c
-> > > > +++ b/drivers/block/zram/zram_drv.c
-> > > > @@ -1985,11 +1985,17 @@ static int zram_remove(struct zram *zram)
-> > > >  
-> > > >  	/* Make sure all the pending I/O are finished */
-> > > >  	fsync_bdev(bdev);
-> > > > -	zram_reset_device(zram);
-> > > >  
-> > > >  	pr_info("Removed device: %s\n", zram->disk->disk_name);
-> > > >  
-> > > >  	del_gendisk(zram->disk);
-> > > > +
-> > > > +	/*
-> > > > +	 * reset device after gendisk is removed, so any change from sysfs
-> > > > +	 * store won't come in, then we can really reset device here
-> > > > +	 */
-> > > > +	zram_reset_device(zram);
-> > > > +
-> > > >  	blk_cleanup_disk(zram->disk);
-> > > >  	kfree(zram);
-> > > >  	return 0;
-> > > > @@ -2073,7 +2079,12 @@ static int zram_remove_cb(int id, void *ptr, void *data)
-> > > >  static void destroy_devices(void)
-> > > >  {
-> > > >  	class_unregister(&zram_control_class);
-> > > > +
-> > > > +	/* hold the global lock so new device can't be added */
-> > > > +	mutex_lock(&zram_index_mutex);
-> > > >  	idr_for_each(&zram_index_idr, &zram_remove_cb, NULL);
-> > > > +	mutex_unlock(&zram_index_mutex);
-> > > > +
-> > > 
-> > > Actually zram_index_mutex isn't needed when calling zram_remove_cb()
-> > > since the zram-control sysfs interface has been removed, so userspace
-> > > can't add new device any more, then the issue is supposed to be fixed
-> > > by the following one line change, please test it:
-> > > 
-> > > diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
-> > > index fcaf2750f68f..96dd641de233 100644
-> > > --- a/drivers/block/zram/zram_drv.c
-> > > +++ b/drivers/block/zram/zram_drv.c
-> > > @@ -1985,11 +1985,17 @@ static int zram_remove(struct zram *zram)
-> > >  
-> > >  	/* Make sure all the pending I/O are finished */
-> > >  	fsync_bdev(bdev);
-> > > -	zram_reset_device(zram);
-> > >  
-> > >  	pr_info("Removed device: %s\n", zram->disk->disk_name);
-> > >  
-> > >  	del_gendisk(zram->disk);
-> > > +
-> > > +	/*
-> > > +	 * reset device after gendisk is removed, so any change from sysfs
-> > > +	 * store won't come in, then we can really reset device here
-> > > +	 */
-> > > +	zram_reset_device(zram);
-> > > +
-> > >  	blk_cleanup_disk(zram->disk);
-> > >  	kfree(zram);
-> > >  	return 0;
-> > 
-> > Sorry but nope, the cpu multistate issue is still present and we end up
-> > eventually with page faults. I tried with both patches.
+On 13/10/2021 17:42, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> In theory disksize_store() can't come in after del_gendisk() returns,
-> then zram_reset_device() should cleanup everything, that is the issue
-> you described in commit log.
+> When CONFIG_COMMON_CLOCK is disabled, the 8996 specific
+> phy code is left out, which results in a link failure:
 > 
-> We need to understand the exact reason why there is still cpuhp node
-> left, can you share us the exact steps for reproducing the issue?
-> Otherwise we may have to trace and narrow down the reason.
+> ld: drivers/gpu/drm/msm/hdmi/hdmi_phy.o:(.rodata+0x3f0): undefined reference to `msm_hdmi_phy_8996_cfg'
+> 
+> This was only exposed after it became possible to build
+> test the driver without the clock interfaces.
+> 
+> Make COMMON_CLK a hard dependency for compile testing,
+> and simplify it a little based on that.
+> 
+> Fixes: b3ed524f84f5 ("drm/msm: allow compile_test on !ARM")
+> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-See my commit log for my own fix for this issue.
+This drops dependency on CONFIG_OF. While ARM64 selects OF, pure ARM 
+does not.
 
-  Luis
+With that fixed:
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+
+> ---
+>   drivers/gpu/drm/msm/Kconfig  | 2 +-
+>   drivers/gpu/drm/msm/Makefile | 6 +++---
+>   2 files changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/Kconfig b/drivers/gpu/drm/msm/Kconfig
+> index f5107b6ded7b..cb204912e0f4 100644
+> --- a/drivers/gpu/drm/msm/Kconfig
+> +++ b/drivers/gpu/drm/msm/Kconfig
+> @@ -4,8 +4,8 @@ config DRM_MSM
+>   	tristate "MSM DRM"
+>   	depends on DRM
+>   	depends on ARCH_QCOM || SOC_IMX5 || COMPILE_TEST
+> +	depends on COMMON_CLK
+>   	depends on IOMMU_SUPPORT
+> -	depends on (OF && COMMON_CLK) || COMPILE_TEST
+>   	depends on QCOM_OCMEM || QCOM_OCMEM=n
+>   	depends on QCOM_LLCC || QCOM_LLCC=n
+>   	depends on QCOM_COMMAND_DB || QCOM_COMMAND_DB=n
+> diff --git a/drivers/gpu/drm/msm/Makefile b/drivers/gpu/drm/msm/Makefile
+> index 904535eda0c4..bbee22b54b0c 100644
+> --- a/drivers/gpu/drm/msm/Makefile
+> +++ b/drivers/gpu/drm/msm/Makefile
+> @@ -23,8 +23,10 @@ msm-y := \
+>   	hdmi/hdmi_i2c.o \
+>   	hdmi/hdmi_phy.o \
+>   	hdmi/hdmi_phy_8960.o \
+> +	hdmi/hdmi_phy_8996.o \
+>   	hdmi/hdmi_phy_8x60.o \
+>   	hdmi/hdmi_phy_8x74.o \
+> +	hdmi/hdmi_pll_8960.o \
+>   	edp/edp.o \
+>   	edp/edp_aux.o \
+>   	edp/edp_bridge.o \
+> @@ -37,6 +39,7 @@ msm-y := \
+>   	disp/mdp4/mdp4_dtv_encoder.o \
+>   	disp/mdp4/mdp4_lcdc_encoder.o \
+>   	disp/mdp4/mdp4_lvds_connector.o \
+> +	disp/mdp4/mdp4_lvds_pll.o \
+>   	disp/mdp4/mdp4_irq.o \
+>   	disp/mdp4/mdp4_kms.o \
+>   	disp/mdp4/mdp4_plane.o \
+> @@ -117,9 +120,6 @@ msm-$(CONFIG_DRM_MSM_DP)+= dp/dp_aux.o \
+>   	dp/dp_audio.o
+>   
+>   msm-$(CONFIG_DRM_FBDEV_EMULATION) += msm_fbdev.o
+> -msm-$(CONFIG_COMMON_CLK) += disp/mdp4/mdp4_lvds_pll.o
+> -msm-$(CONFIG_COMMON_CLK) += hdmi/hdmi_pll_8960.o
+> -msm-$(CONFIG_COMMON_CLK) += hdmi/hdmi_phy_8996.o
+>   
+>   msm-$(CONFIG_DRM_MSM_HDMI_HDCP) += hdmi/hdmi_hdcp.o
+>   
+> 
+
+
+-- 
+With best wishes
+Dmitry
