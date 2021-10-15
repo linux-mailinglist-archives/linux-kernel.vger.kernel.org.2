@@ -2,134 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EFB642E756
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 05:39:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFDDC42E757
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 05:40:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235240AbhJODlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 23:41:45 -0400
-Received: from mail-eopbgr1320101.outbound.protection.outlook.com ([40.107.132.101]:18659
-        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234139AbhJODlo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 23:41:44 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Qc/+dwqbIIvYnmecwLTSHLgEfgMJjd2MUG/nTw0e+tmGpppn4BYz+BjqIjymw3oVJibedtOI5SlTXYiN7DD510r6rvV8lo1mR9Of9ihhecRnZG9EtP4t2x3y+3CvSbf0k02ngb1xLF+UAEA9E9Rm74TC8r1Gly0jvjDl2+eovA7C9+KytUBHbXl5bDbE8i4Tx9OXgc/0xnRxBJ5KWcbWdTHrIkLF+4K5T8h5zPiTGJNYLkth8Y6h6JJFY1dOnGQZ7ODurucJwxepVyw9LQVnBJIoMB4DB2OjxeovTn79F4uAERZonAmToz6LAJs4lEEP7pULbAzBxh+7GW5VsBU5hw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=qq2i4F+kTVCGMMTwBF189DUElHIsv/SIXzXUaRl5vIM=;
- b=aw8Zt0nrSUX2TBIiensWWITbYgIRh6kmZZOY0RQPupfIecrAinhL0kjtIuDTU4qL0RGF2IVJnWo3DdqkR5qn+UQonqVhSyBPoWRcm2nDnOOtzazBfRJJ8B4kxm8PX/mmj0tORKgrrnL9cHJ7yCjZt6i0snW3cAAqCGC8JbHtUWHhuX6qZ5czKmN1gP1SgFje9P3KOspZfQGIr6Ymm2mAwT3V8HVNTRht9sJxQ8OrSjhPmagoLJag2X1z8ok51eYNLkB3DyOSYBPe0j4K9JwfWtP3ShifAp6D3N6k8iBpQxhzXl6pbMKw009AKsIZZVngmj+sGghlxTwg90wOmfxqag==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
- s=selector2-vivo0-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qq2i4F+kTVCGMMTwBF189DUElHIsv/SIXzXUaRl5vIM=;
- b=dFNFI7ZGhYtAu2cS8OmGvElq8xSX5wvUE89yDxzD7RplhIHuqek0NZVfl4tYJCy764NR5CW7DkfS/yMBCd3usLTbYM8UD9giyFd/tUGgUifVq9+hRaYwxsILBg6M7fc1yiNCPyGuQf0Bg50NJUzhZ4ukq1AMPHwcCSJyXxOf+jA=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=vivo.com;
-Received: from SG2PR06MB3367.apcprd06.prod.outlook.com (2603:1096:4:78::19) by
- SG2PR06MB3449.apcprd06.prod.outlook.com (2603:1096:4:9c::21) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4587.20; Fri, 15 Oct 2021 03:39:35 +0000
-Received: from SG2PR06MB3367.apcprd06.prod.outlook.com
- ([fe80::fc12:4e1b:cc77:6c0]) by SG2PR06MB3367.apcprd06.prod.outlook.com
- ([fe80::fc12:4e1b:cc77:6c0%6]) with mapi id 15.20.4608.017; Fri, 15 Oct 2021
- 03:39:35 +0000
-From:   Wan Jiabing <wanjiabing@vivo.com>
-To:     Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     kael_w@yeah.net, Wan Jiabing <wanjiabing@vivo.com>
-Subject: [PATCH] spi: cadence: Add of_node_put() before return
-Date:   Thu, 14 Oct 2021 23:39:17 -0400
-Message-Id: <20211015033919.5915-1-wanjiabing@vivo.com>
-X-Mailer: git-send-email 2.20.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: HK2PR06CA0016.apcprd06.prod.outlook.com
- (2603:1096:202:2e::28) To SG2PR06MB3367.apcprd06.prod.outlook.com
- (2603:1096:4:78::19)
+        id S235255AbhJODmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 23:42:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48692 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235251AbhJODmB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 23:42:01 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8421EC061753
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 20:39:44 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id o133so7238359pfg.7
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 20:39:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=qcraft-ai.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=8tJVhTiQMmvCknI0GqVyNSnP+8+m2C9KfZp82f5A95w=;
+        b=OgPHax59p7dxOq1UneLj2e24WVL+J8TRz9e5yW7DQz3JIOUVWWi2uUX013KkbDxBgt
+         jE9CFu6TM/B3csSS7vLYRSzn/HObUJq82Rq5RJw1nQcc/mZQeQSyv2KoTFJpBelI3Qmo
+         M3QwP7qpXdpsrLogBW3MQekgDEn+2YV5JJuDvDG2E/wVe8bUH11QERDFn9kiitfyi+2h
+         jIbzaXChRWrqQEyZsN3HKFSPdx5ik8RpMvFyUPysoLHFoPCaO+RqZ046pNV0O55vKhOe
+         5zFo2QAd1fstBRKoUJ9e/mno6f3oPTtChI5VIc8RW0DmV7joHl1JvdTD9fsNAx71Awxa
+         SQvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=8tJVhTiQMmvCknI0GqVyNSnP+8+m2C9KfZp82f5A95w=;
+        b=rU9k5oeEelQyTB9kEhD5sYqSupk0XIhhvvBFibnHS+qhK4LMv/24YD9kM91hkNAy2M
+         9uHu+OtTA3tLhpdf+pGrBrbAQH92a4uP8NWBAKBNwzzGIipUc2KrE1AwSFiPmO8EpQJE
+         JLL8gdefzH2WIp0111+dpvXjrLjva7/UxM68dqPUmV8Fw2xcz8dKguQIuKQ3NGcvg8J3
+         A1offMBg1xL4O0HsBRCSEe5SzTLdSFErJaSAKZyFAkfpuY7F72hz4qyTdox9Wv8VjZmX
+         HCf1fqrVkEAalRkNxUtl2rB844KPDCahQYd3xFDPLasuPRS7clbb5rTSb+4s0YuKXPtL
+         Oz6g==
+X-Gm-Message-State: AOAM531pBjNYFem+jqaPZrWPOvpbgs6XhBUev0Evu1zWHww0yEjpHBGO
+        QIu7hjMul+lCHsNSC5r/YWBrcw==
+X-Google-Smtp-Source: ABdhPJwS4CJKkN0q/MXyh0mORBFW5eWSnNoCUxu/gCWLts25/W4/CT6tTymJiYq0q1ruu0FBhsxYZg==
+X-Received: by 2002:a63:cf44:: with SMTP id b4mr7363255pgj.215.1634269184039;
+        Thu, 14 Oct 2021 20:39:44 -0700 (PDT)
+Received: from [172.18.2.138] ([137.59.101.13])
+        by smtp.gmail.com with ESMTPSA id v12sm3726240pjd.9.2021.10.14.20.39.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Oct 2021 20:39:43 -0700 (PDT)
+Subject: Re: [PATCH] mm: backing-dev: use kfree_rcu() instead of
+ synchronize_rcu_expedited()
+To:     Matthew Wilcox <willy@infradead.org>,
+        Zqiang <qiang.zhang1211@gmail.com>, hch@infradead.org
+Cc:     akpm@linux-foundation.org, sunhao.th@gmail.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <20211014082433.30733-1-qiang.zhang1211@gmail.com>
+ <YWgTZjDtZik/9l4J@casper.infradead.org>
+From:   zhangqiang <zhangqiang@qcraft.ai>
+Message-ID: <0c31aa44-62fb-58a7-abaf-aec580e561bd@qcraft.ai>
+Date:   Fri, 15 Oct 2021 11:39:40 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Received: from localhost.localdomain (218.213.202.190) by HK2PR06CA0016.apcprd06.prod.outlook.com (2603:1096:202:2e::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.17 via Frontend Transport; Fri, 15 Oct 2021 03:39:34 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e7fa419b-67e7-4dec-d2cf-08d98f8d6855
-X-MS-TrafficTypeDiagnostic: SG2PR06MB3449:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SG2PR06MB3449630AB62349277492B92EABB99@SG2PR06MB3449.apcprd06.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1227;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: h+qbEDCUh4wK5qNW0UBtPY0JI8Y/KgX9IE2qU5E7U56ERf7Ee2IG+bvVeC98+6dxE9cadrGzTLyxnzPTHFCKYziFGgmW5fpZpftN3rb7IHKHMYS19+k5M/0O/1oJVE1t3pYHT/O3/xztBl+NdEpuxD6uXxrnEEGmYt7VT32PLF7OxVPO/T2yMXAxq/M7Mkz21MwahZGqSkBRxc7xLgmT3NcjAefqfk1o/Rt/lw1kGiV5jLZuyr23hs7HYjPMHMGisPU8uPQJgGWeb6Dah1EGZd+A2asNRh3BHJXS5ocu8Ttn0ROGXDqLoiA58TEwtUssoRWwbRfxN+h6K3+xB8NKac/6oTmqPl+wnOJfyb1VcThUQ8EbozeSo8teiyGahrSiH/PddgeDDqxwLjmuQgzed9lIwZOV4gaGFgl+HraJKQfxqlDjGlhVNrhhQiemrUNlz5tCIuHPe/CoKxJvqa3JsIPi9fdIw7HkTe04p9g/61DTeKIudmznjPrmTA5rRFsGRIuzu+Q2F331dOt6JfHxTgiICJV/N5y6pRb7Kbf4ic0eYMijQmpVROURoVjLP8b+pkKzxzX7plzeO2D49J8tjbBI8LEfggb32ZWjI2RijNA/MRI6CEJbG+OIHJ+L1+P+TXUiPFwfit9syxBtwSSh5BAUo58Lq5WdEsjBwtzX53cBfdA2xV+Ex4XLr3M3Nb8mChFVXp3VoMLy0OLBpuGvNQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR06MB3367.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(1076003)(186003)(36756003)(86362001)(83380400001)(52116002)(26005)(956004)(316002)(6506007)(6666004)(107886003)(5660300002)(6512007)(38350700002)(66476007)(66946007)(8676002)(508600001)(66556008)(6486002)(4326008)(4744005)(38100700002)(8936002)(2616005)(2906002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?iPRV38Gvbg1YCsWNJw0LWdwPbQyg1hwCPyadycFFC4b8VuC42pFNiPT1vEu7?=
- =?us-ascii?Q?UPsHHePvZm4Qx/D88bqIrRMGI79LQHqtr8iguxfwveX8lpeqFt2HR/QFXdWG?=
- =?us-ascii?Q?N8T3jm7svX0f0A2okJUPjdhA+PMaqfK3kc3YByx9byIh1OCYOg81nEOF03U6?=
- =?us-ascii?Q?A4D7ZpRJDxYT76Rzb5icvHMdlOTvOlPesFUShiDxvLjorjeLsAamZYNB05FP?=
- =?us-ascii?Q?Eb7KAVjpIH1qUxcVNvrHWO76QYxv7hgkq4Lpwg8yXHedvw3yhKNA40oK+qgQ?=
- =?us-ascii?Q?/QNYvkMSJlGwg4FEisv1hReWl98OaEoHgnI9n25y1IlCoH8a5LsanAa3rAQP?=
- =?us-ascii?Q?l0cVAR+ffigdWuXzpdjB5gFl8y7YC926So8igbweLAL37PmgUEOirHZh9Tgn?=
- =?us-ascii?Q?OkXcTJN32I6HqFbo4/Tr23EsHeAgr1TOmG2ACZTS2OxUpuLei1+V2JBWQdHC?=
- =?us-ascii?Q?Zc0PIUAvBX5kZzPbv9rM9E7ggPivHD/MJ+8RL4z8Qg4wUv3FBzHhOKmEtfeU?=
- =?us-ascii?Q?hXpTFPvzVAU9K8yck1lFi+hbHTLsJ1HL2WsHP84rkMtWXad63uz4URjWgGbi?=
- =?us-ascii?Q?OuQD+B8StbwPG+VYC4SxBWFULWD+3fWEXYXwQK/ekxMypSEgjpWW8jGFpOBN?=
- =?us-ascii?Q?q8HL2qhslanzOYoIoUnSLVGcM766YTCtJ8rkntOcNaYXmkj8GI9vO+q+2LC6?=
- =?us-ascii?Q?ErgxD0iaeYicpiCQvnePYyfcdMexnv4fqyfSCcX9m/biTieKCkq8JN8w6MGO?=
- =?us-ascii?Q?gHPvUqTbJ1f9hBNKphZ4V2cvO5dsr/OeiaGt+inBhpupPG8isowfZXtvGI3C?=
- =?us-ascii?Q?MRDq11wV2CCbI44esqMibYKzZCd9YnKT1SEDMT0lLetA52f3Y2VQPOcAPhfy?=
- =?us-ascii?Q?j7CBU1pVKFLWX9/pHUNvuNpRpzmounKmcHrjAy+KI0uay+yQCcXpT/6yWo+v?=
- =?us-ascii?Q?IF1GCIjDmwJSlT6l20AfqcLDBQenui/AQyjAZUnQudpcgOnhYEfwcxwi25JJ?=
- =?us-ascii?Q?TcB6i8BwRLXn9viMC9/6O4DM4wpAuKFUneBDwfBrW7a1htZXvPj1ePXUgAWa?=
- =?us-ascii?Q?RENkQO18sO74c3Y2tEr3e6GZ6ps2fNsc/2cG+jXEphdRPSuqTkCLOG45TmFu?=
- =?us-ascii?Q?ky7zSWRG19D2Q3NDldxmIoYMs6AXwTss4RbD6Ds7Tfi719/TzryjgeRN0O8R?=
- =?us-ascii?Q?RmajInU/LSlH/bZRrtleUFkpTjSJFc7wJJ+5keSNnj9AQgM8y/teSxsxyeKv?=
- =?us-ascii?Q?f+OScCkynWMb0L3H89NO3azpKJNNfKXKSst2Kp2CMquYiJW3cC9gK8gIgPYS?=
- =?us-ascii?Q?vVuyp+xK++fqG0i3VI4M+X8w?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e7fa419b-67e7-4dec-d2cf-08d98f8d6855
-X-MS-Exchange-CrossTenant-AuthSource: SG2PR06MB3367.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Oct 2021 03:39:35.5730
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: KbG0NX2GfB5J+koK/82m5X7Y5WDQ0opV9pR5Wr1yYT/9ec0Z2/W6Gg+ckCPsMrov9MJ5Hfa/LZCByjdOdPaPzA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SG2PR06MB3449
+In-Reply-To: <YWgTZjDtZik/9l4J@casper.infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix following coccicheck warning:
-./drivers/spi/spi-cadence-xspi.c:490:1-23: WARNING: Function
-for_each_child_of_node should have of_node_put() before return
 
-Early exits from for_each_child_of_node should decrement the
-node reference counter.
+On 2021/10/14 下午7:24, Matthew Wilcox wrote:
+> On Thu, Oct 14, 2021 at 04:24:33PM +0800, Zqiang wrote:
+>> The bdi_remove_from_list() is called in RCU softirq, however the
+>> synchronize_rcu_expedited() will produce sleep action, use kfree_rcu()
+>> instead of it.
+>>
+>> Reported-by: Hao Sun <sunhao.th@gmail.com>
+>> Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+>> ---
+>>   include/linux/backing-dev-defs.h | 1 +
+>>   mm/backing-dev.c                 | 4 +---
+>>   2 files changed, 2 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/include/linux/backing-dev-defs.h b/include/linux/backing-dev-defs.h
+>> index 33207004cfde..35a093384518 100644
+>> --- a/include/linux/backing-dev-defs.h
+>> +++ b/include/linux/backing-dev-defs.h
+>> @@ -202,6 +202,7 @@ struct backing_dev_info {
+>>   #ifdef CONFIG_DEBUG_FS
+>>   	struct dentry *debug_dir;
+>>   #endif
+>> +	struct rcu_head rcu;
+>>   };
+> Instead of growing struct backing_dev_info, it seems to me this rcu_head
+> could be placed in a union with rb_node, since it will have been removed
+> from the bdi_tree by this point and the tree is never walked under
+> RCU protection?
+>
+Thanks for your advice, I find this bdi_tree is traversed under the 
+protection of a spin lock, not under the protection of RCU.
+I find this modification does not avoid the problem described in patch, 
+the flush_delayed_work() may be called in release_bdi()
+The same will cause problems.
 
-Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
----
- drivers/spi/spi-cadence-xspi.c | 2 ++
- 1 file changed, 2 insertions(+)
+may be  we can replace queue_rcu_work() of call_rcu(&inode->i_rcu, 
+i_callback) or do you have any better suggestions?
 
-diff --git a/drivers/spi/spi-cadence-xspi.c b/drivers/spi/spi-cadence-xspi.c
-index 6bd0e67fedf4..4bc1b93fc276 100644
---- a/drivers/spi/spi-cadence-xspi.c
-+++ b/drivers/spi/spi-cadence-xspi.c
-@@ -493,9 +493,11 @@ static int cdns_xspi_of_get_plat_data(struct platform_device *pdev)
- 
- 		if (of_property_read_u32(node_child, "reg", &cs)) {
- 			dev_err(&pdev->dev, "Couldn't get memory chip select\n");
-+			of_node_put(node_child);
- 			return -ENXIO;
- 		} else if (cs >= CDNS_XSPI_MAX_BANKS) {
- 			dev_err(&pdev->dev, "reg (cs) parameter value too large\n");
-+			of_node_put(node_child);
- 			return -ENXIO;
- 		}
- 	}
--- 
-2.20.1
+Thanks
+Zqiang
+
 
