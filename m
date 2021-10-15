@@ -2,104 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C62442F4EB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 16:12:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6762B42F4F0
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 16:12:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240172AbhJOOO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 10:14:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50832 "EHLO
+        id S236991AbhJOOOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 10:14:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240077AbhJOON2 (ORCPT
+        with ESMTP id S240196AbhJOOO1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 10:13:28 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74C57C061570
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 07:11:16 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id 67-20020a1c1946000000b0030d4c90fa87so2508598wmz.2
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 07:11:16 -0700 (PDT)
+        Fri, 15 Oct 2021 10:14:27 -0400
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43263C06176F;
+        Fri, 15 Oct 2021 07:12:14 -0700 (PDT)
+Received: by mail-oi1-x22d.google.com with SMTP id n63so13269075oif.7;
+        Fri, 15 Oct 2021 07:12:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Er3WiMyf17c0WY4AO4vNjbmHxPQdkdtX2SYw/tzJ4Tw=;
-        b=nR5HWzmAsjCJD9ODhBtDt3y6oqRpgGprk/5xLr2UPVtU2heGvxseRGBWlJk/v5Bt0f
-         ZhqEWvPvmUiZymr5y9D/M7N3bEBSogIfgHmDgxSJwgRYaSGonLb/40K/Ff93lgi8qcby
-         4gSs1oHYhcKY1PVZUtymSvAsw/XWnZWZ1rnJzMuhO92R3SibtyxtejFd96HekOzR8jCn
-         8PRcyVgOEOMRK4l/DxIYmoBk+4JnilAEM9Av3yIjVsBmtWTrW2+0vhrrWgARoZ5eomSs
-         93PHWKI5mcBFp6ImL/EdqwQesDT7jImC0bKvwsjlV0VndfYHfuTLW4ZAZJI8CNwDL5w4
-         RZnQ==
+        d=gmail.com; s=20210112;
+        h=sender:to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=E1fykEaEp8TohMY+IiHVmw9TscjKXemOxBpXDundzLQ=;
+        b=SL/ewftzAqVc7u48caQAwLWiVkleZ07bgL1jRQwWvyyyVlL6ZCJ6BKAaA+GClbCJmd
+         Fsj6oABT/OSjZRmsQyfrqh1pMCCugBrGzRjfHGxqJGWZVe55UAstK7y6M0hic4cGCg6j
+         ofbj79o957HGo/TyoEPwUElYIhdmC3hdJBLA9A1LZqf1KvT0GnHY93cABCRpCQl/LJj1
+         9Bbc729m2QrmKUbRUNLhFHjndQf1Jcvsl4PQS3ZSXOAXDgoz9ZHM0sELL62dF4wc0ugo
+         CBOWl3SMygdoF6DhGljeTd3Yd/gIzrFNefPw84wqtBag9CPUOOvMZm0y1Mhv9C6SsGsd
+         ijzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=Er3WiMyf17c0WY4AO4vNjbmHxPQdkdtX2SYw/tzJ4Tw=;
-        b=vUD9bP/yQ79+aVTbb96cb6Wk7HHnoxmHHwGirgf9h/yZQz/OAJY+4IcVYJs+taBTxj
-         G+idPMXBgictwGC4gBlOVehjMXkRzONZOfIDJe2l65tQs2JfA+5IQYDFA9Tm5KSDsDNJ
-         xJZiCfANd86M6b2AjySAmtBizXOF51q9YLp1DRk799HhVPn9oEtL1gTIjqw7blalsU0P
-         /PtOdR0xnL4EyU0RTPZcp19/8klMiVRs2pK5a4bhuWlgoKzjdYGGqiecrDed7q05U29o
-         oG1Su1OULPWehKjD/8o3gPiA97xIWu7dRVr0U+DKUs4HZLOZWEG6MimfLRyksLG7/R2d
-         /+xA==
-X-Gm-Message-State: AOAM532+9Bq8Zk5zwhSIaAaKoAG2UJCCU81OQjjZ7j2dG/LYgP+0av0M
-        QmwM3CDLT/lOAxyekqBqELahXj5NhLlxDw==
-X-Google-Smtp-Source: ABdhPJwyIbVf187jUvsiTcIXNn0XqSnzRXM1CqrDJkl8XcjfP478xbdHT9w+WChIiBS3Ervp3IbA3Q==
-X-Received: by 2002:a05:600c:a43:: with SMTP id c3mr25776973wmq.193.1634307074986;
-        Fri, 15 Oct 2021 07:11:14 -0700 (PDT)
-Received: from debian-brgl.home ([2a01:cb1d:334:ac00:7d50:ff5:f5c1:e225])
-        by smtp.gmail.com with ESMTPSA id o12sm4975125wrv.78.2021.10.15.07.11.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Oct 2021 07:11:14 -0700 (PDT)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <brgl@bgdev.pl>
-Subject: [GIT PULL] gpio: fixes for v5.15-rc6
-Date:   Fri, 15 Oct 2021 16:11:12 +0200
-Message-Id: <20211015141112.23965-1-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.30.1
+        bh=E1fykEaEp8TohMY+IiHVmw9TscjKXemOxBpXDundzLQ=;
+        b=KdE6p2LveCUKOuDYUsGKVvLsWPYl83etSRYz7o5MC33nRnbQD7BA7LQA6lF13iZWbt
+         hWbmwyR1qfjGM5VG2tnMuN9pUfXs0XjyOhg3//nX6o0aeKcrNevHsw03YCojaO+29Hnd
+         zz+xhO0tPaH0s69aZCi/pOvwAWA10d8xqrsTHjkEpJ6nFO5PW55Rpozday3nX4j3wQSG
+         PrYbH/XtVOaSsXVd4VZE7kPbsMAWg2zBW4NARcG5CkvjGhqYYYduuHEZsM2JwtrD01eG
+         cq67nVfYAvnOIDvjVUs3WBfUYmaHygtTgWuSPnkauCBWnO3VFOzmlQz64IJ7OSnE0qhI
+         os/A==
+X-Gm-Message-State: AOAM530wzdFV/83Yqq2b8GNkHFbCgcRohEs5nS5tI4Qk02W89CQukrJx
+        1k5q/H+4jQBKOch7m6Y6JKS8n+8AfyU=
+X-Google-Smtp-Source: ABdhPJzJCmCho+YkOarrtHmJ2r8dMQMrpGl7fFTl/9bdF/txv43Gz0mliDwMq+3b/jQgNXijMFgQGQ==
+X-Received: by 2002:aca:eb82:: with SMTP id j124mr17608877oih.46.1634307133220;
+        Fri, 15 Oct 2021 07:12:13 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id u2sm1261042otg.51.2021.10.15.07.12.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Oct 2021 07:12:12 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+To:     Alistair Francis <alistair@alistair23.me>, lee.jones@linaro.org,
+        robh+dt@kernel.org, lgirdwood@gmail.com, broonie@kernel.org,
+        kernel@pengutronix.de
+Cc:     shawnguo@kernel.org, s.hauer@pengutronix.de, linux-imx@nxp.com,
+        amitk@kernel.org, rui.zhang@intel.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, alistair23@gmail.com,
+        linux-hwmon@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pm@vger.kernel.org
+References: <20211015122551.38951-1-alistair@alistair23.me>
+ <20211015122551.38951-7-alistair@alistair23.me>
+From:   Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH v13 6/9] hwmon: sy7636a: Add temperature driver for
+ sy7636a
+Message-ID: <45191f55-e7a8-7d12-2f27-a03ab50626b1@roeck-us.net>
+Date:   Fri, 15 Oct 2021 07:12:09 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
+In-Reply-To: <20211015122551.38951-7-alistair@alistair23.me>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+On 10/15/21 5:25 AM, Alistair Francis wrote:
+> This is a multi-function device to interface with the sy7636a
+> EPD PMIC chip from Silergy.
+> 
+> Signed-off-by: Alistair Francis <alistair@alistair23.me>
+> ---
+>   Documentation/hwmon/sy7636a-hwmon.rst | 24 +++++++++
+>   drivers/hwmon/Kconfig                 |  9 ++++
+>   drivers/hwmon/Makefile                |  1 +
+>   drivers/hwmon/sy7636a-hwmon.c         | 75 +++++++++++++++++++++++++++
+>   4 files changed, 109 insertions(+)
+>   create mode 100644 Documentation/hwmon/sy7636a-hwmon.rst
+>   create mode 100644 drivers/hwmon/sy7636a-hwmon.c
+> 
+> diff --git a/Documentation/hwmon/sy7636a-hwmon.rst b/Documentation/hwmon/sy7636a-hwmon.rst
+> new file mode 100644
+> index 000000000000..6b3e36d028dd
+> --- /dev/null
+> +++ b/Documentation/hwmon/sy7636a-hwmon.rst
+> @@ -0,0 +1,24 @@
+> +Kernel driver sy7636a-hwmon
+> +=========================
+> +
+> +Supported chips:
+> +
+> + * Silergy SY7636A PMIC
+> +
+> +
+> +Description
+> +-----------
+> +
+> +This driver adds hardware temperature reading support for
+> +the Silergy SY7636A PMIC.
+> +
+> +The following sensors are supported
+> +
+> +  * Temperature
+> +      - SoC on-die temperature in milli-degree C
+> +
+> +sysfs-Interface
+> +---------------
+> +
+> +temp0_input
+> +	- SoC on-die temperature (milli-degree C)
+> diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
+> index c4578e8f34bb..d768b833b721 100644
+> --- a/drivers/hwmon/Kconfig
+> +++ b/drivers/hwmon/Kconfig
+> @@ -1651,6 +1651,15 @@ config SENSORS_SIS5595
+>   	  This driver can also be built as a module. If so, the module
+>   	  will be called sis5595.
+>   
+> +config SENSORS_SY7636A
+> +	tristate "Silergy SY7636A"
+> +	help
+> +	  If you say yes here you get support for the thermistor readout of
+> +	  the Silergy SY7636A PMIC.
+> +
+> +	  This driver can also be built as a module.  If so, the module
+> +	  will be called sy7636a-hwmon.
+> +
+>   config SENSORS_DME1737
+>   	tristate "SMSC DME1737, SCH311x and compatibles"
+>   	depends on I2C && !PPC
+> diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
+> index 162940270661..1355ffdb1481 100644
+> --- a/drivers/hwmon/Makefile
+> +++ b/drivers/hwmon/Makefile
+> @@ -181,6 +181,7 @@ obj-$(CONFIG_SENSORS_SMSC47M1)	+= smsc47m1.o
+>   obj-$(CONFIG_SENSORS_SMSC47M192)+= smsc47m192.o
+>   obj-$(CONFIG_SENSORS_SPARX5)	+= sparx5-temp.o
+>   obj-$(CONFIG_SENSORS_STTS751)	+= stts751.o
+> +obj-$(CONFIG_SENSORS_SY7636A)	+= sy7636a-hwmon.o
+>   obj-$(CONFIG_SENSORS_AMC6821)	+= amc6821.o
+>   obj-$(CONFIG_SENSORS_TC74)	+= tc74.o
+>   obj-$(CONFIG_SENSORS_THMC50)	+= thmc50.o
+> diff --git a/drivers/hwmon/sy7636a-hwmon.c b/drivers/hwmon/sy7636a-hwmon.c
+> new file mode 100644
+> index 000000000000..a59628f87ff3
+> --- /dev/null
+> +++ b/drivers/hwmon/sy7636a-hwmon.c
+> @@ -0,0 +1,75 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +/*
+> + * Functions to access SY3686A power management chip temperature
+> + *
+> + * Copyright (C) 2019 reMarkable AS - http://www.remarkable.com/
+> + *
+> + * Authors: Lars Ivar Miljeteig <lars.ivar.miljeteig@remarkable.com>
+> + *          Alistair Francis <alistair@alistair23.me>
+> + */
+> +
+> +#include <linux/err.h>
+> +#include <linux/hwmon.h>
+> +#include <linux/hwmon-sysfs.h>
+> +#include <linux/init.h>
+> +#include <linux/module.h>
+> +#include <linux/regmap.h>
+> +#include <linux/sysfs.h>
+> +#include <linux/platform_device.h>
+> +
+> +#include <linux/mfd/sy7636a.h>
+> +
+> +static ssize_t show_temp(struct device *dev,
+> +			 struct device_attribute *attr, char *buf)
+> +{
+> +	unsigned int reg_val;
+> +	struct regmap *regmap = dev_get_drvdata(dev);
+> +	int ret;
+> +
+> +	ret = regmap_read(regmap, SY7636A_REG_TERMISTOR_READOUT, &reg_val);
+> +	if (ret)
+> +		return ret;
+> +
+> +	return snprintf(buf, PAGE_SIZE, "%d\n", reg_val);
+> +}
+> +
+> +static SENSOR_DEVICE_ATTR(temp0, 0444, show_temp, NULL, 0);
+> +
 
-Please pull the following set of fixes for the GPIO subsystem. Details are in
-the signed tag as usual.
+This must be temp1_input. "temp0" is not a standard attribute,
+and without standard attributes the driver is pointless.
 
-Best Regards,
-Bartosz
+> +static struct attribute *sy7636a_attrs[] = {
+> +	&sensor_dev_attr_temp0.dev_attr.attr,
+> +	NULL
+> +};
+> +
+> +ATTRIBUTE_GROUPS(sy7636a);
+> +
+> +static int sy7636a_sensor_probe(struct platform_device *pdev)
+> +{
+> +	struct regmap *regmap = dev_get_regmap(pdev->dev.parent, NULL);
+> +	struct device *hwmon_dev;
+> +	int err;
+> +
+> +	if (!regmap)
+> +		return -EPROBE_DEFER;
+> +
+> +	hwmon_dev = devm_hwmon_device_register_with_info(&pdev->dev,
+> +			"sy7636a_temperature", regmap, NULL, sy7636a_groups);
 
-The following changes since commit 9e1ff307c779ce1f0f810c7ecce3d95bbae40896:
 
-  Linux 5.15-rc4 (2021-10-03 14:08:47 -0700)
+I am not going to accept this. The groups pointer is only supposed
+to be used for non-standard attributes.
 
-are available in the Git repository at:
+Anyway, it is pointless to have both a thermal driver and a hwmon
+driver. The hwmon driver can register the thermal node if the _info
+interface is used properly, and the thermal driver can register
+a hwmon interface using [devm_]thermal_add_hwmon_sysfs(). If you don't
+want to use the _info API in the hwmon driver, please drop this
+driver and register the hwmon interface from the thermal driver.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git tags/gpio-fixes-for-v5.15-rc6
+Thanks,
+Guenter
 
-for you to fetch changes up to 6fda593f3082ef1aa783ac13e89f673fd69a2cb6:
+> +
+> +	if (IS_ERR(hwmon_dev)) {
+> +		err = PTR_ERR(hwmon_dev);
+> +		dev_err(&pdev->dev, "Unable to register hwmon device, returned %d\n", err);
+> +		return err;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static struct platform_driver sy7636a_sensor_driver = {
+> +	.probe = sy7636a_sensor_probe,
+> +	.driver = {
+> +		.name = "sy7636a-temperature",
+> +	},
+> +};
+> +module_platform_driver(sy7636a_sensor_driver);
+> +
+> +MODULE_DESCRIPTION("SY7636A sensor driver");
+> +MODULE_LICENSE("GPL");
+> 
 
-  gpio: mockup: Convert to use software nodes (2021-10-06 13:04:04 +0200)
-
-----------------------------------------------------------------
-gpio fixes for v5.15-rc6
-
-- fix module autoloading on gpio-74x164 after a revert of OF modaliases
-- fix problems with the bias setting in gpio-pca953x
-- fix a use-after-free bug in gpio-mockup by using software nodes
-
-----------------------------------------------------------------
-Andy Shevchenko (2):
-      gpio: pca953x: Improve bias setting
-      gpio: mockup: Convert to use software nodes
-
-Mark Brown (1):
-      gpio: 74x164: Add SPI device ID table
-
- drivers/gpio/gpio-74x164.c  |  8 ++++++++
- drivers/gpio/gpio-mockup.c  | 21 ++++++++++++++++++---
- drivers/gpio/gpio-pca953x.c | 16 +++++++++-------
- 3 files changed, 35 insertions(+), 10 deletions(-)
