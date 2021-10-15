@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9913E42FA1C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 19:23:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7458042FA24
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 19:23:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242395AbhJORZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 13:25:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40226 "EHLO
+        id S242375AbhJORZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 13:25:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242350AbhJORZC (ORCPT
+        with ESMTP id S242360AbhJORZF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 13:25:02 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73792C061783
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 10:22:24 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id i83-20020a256d56000000b005b706d1417bso11970063ybc.6
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 10:22:24 -0700 (PDT)
+        Fri, 15 Oct 2021 13:25:05 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBFF2C061798
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 10:22:26 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id x16-20020a25b910000000b005b6b7f2f91cso12112978ybj.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 10:22:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=3qZZL4q7gSQLhx5UGqjT9ebzZrdH8WkBdFrjH947yQo=;
-        b=StaSBoZiHR3EyDcQiaC3wo96F5TxLygYhJeEXjuSQKdGg/uFybL9coAqda6skNKa1/
-         H8fDo4iMUdT1JQVheG1jNqSvOEnWloBo82r40zlKrFZYf/LVrQKJAEjiYmZYMt8qfGav
-         Fmmw8VzQW/ArC8hnNcgfatbXub3CkaQJDW8rTvnczzJ9Jiaf2F+0yDsxQYlVflc01SHc
-         L9VT5r4G9XqXnW9SmoAyluPVGe1EOtyIs2d0UAlsCOcpcodboa7ECIlhzSGn92vfOrda
-         qIVKgFUoEqffuKDLl7PV4I+DO7juTtTbzh6Td73U7U7AB/wNlCuIhpTAD5pZEc2EqhSU
-         oCPQ==
+        bh=/ICUTnn0+DHTkHe1Sa2FAQhyptinzYEiREIP815vWD4=;
+        b=ox/64JkrW3jXnk0RlnPstVbJFZZOWV3tK2cfmCw971N9LjBbHfNBWvjw3tzgdVpa87
+         woqDGI40TwCac71jo1uzm/id843f45ebpMXnd3/XpRMtF4gCA2dSze7kvzugn620pELl
+         eInwgQH9RWGQ3Qk6FsLczjzFBLZ3JH85Wnf81HfUq6i3PVWekKD8fOUdrN0qWx/85Vse
+         TkvMEdvS+UeDOlsJc5ik0CqWM3mUZ21qFjrxGZSVpWoNVPlUJjOx1lkyZZqF12fd1THy
+         3rIuIKhBBSicB7eBx15dqNtdtmf/xrGJWdWv98mdBWhV+qa2c/ztylfokA4JmXnGLjOi
+         mqLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=3qZZL4q7gSQLhx5UGqjT9ebzZrdH8WkBdFrjH947yQo=;
-        b=YzmaYTs7wBKzczBLPuqzT8ZoOtL/EDI5+Z+XJiA9NellzfAbU5e4NvMu0rpY3fJnoe
-         OoOfMKqJ9TzwyUxjm+0MUlO13bWg+INEYkGGh8QPnSABYTZp23HHvlTJ8ROGwnxPxt/U
-         SNRoT0mmnWdef6Ph1ZpVSsOcgplC79bNKqIBdxYrrM1ErGqKdipdkpc3J1ES1Ik2hwjY
-         mE/TLERwk6EBYqKjjJDpuC3r4WzgKciuu7Xdsvjnhx/jgzUDjxitU6AyRUfw4F8saFaD
-         2F0gFEBPlm3UtsJETxRXSwCMED4VVYvMOxQhGoo12+bbPg5ulbCKKSoKhb6RzVf8I4qr
-         9i/Q==
-X-Gm-Message-State: AOAM5334C7TtmVubQjp3z2CuWRI89VfDRSO0/eq+fmjqETjLscg2bY9I
-        fqqMlOi6nuOp9QT3M8j4DuIZnA3Ljabx
-X-Google-Smtp-Source: ABdhPJyeqqip7OkTfcwULOAWPWB82HEh7RrGKGHXSPL6EryOsOno6pftEz+UnRvUr5qVyLdElW9ZzrXvitXl
+        bh=/ICUTnn0+DHTkHe1Sa2FAQhyptinzYEiREIP815vWD4=;
+        b=VwQv2495IKf2KkNHAgW+hdLQEQUzcUtaCYhJgd0bRiP4nRg8bHV9JNZEQKQ1YPK0WZ
+         nq4XXAa0AsIoGOSKnAUldZvNiSrZIXDSZEJDwmmqZeMJppw4FORppNKqUxYe5AJHgGgF
+         hkuwUv/JN9AOhChw1MP4sZ3unJsLVAbAti6kfWNk+UZN2KhISwcJSW/EQfkJu9xcbMID
+         QtgxJWqTsbbjv2Uh3q7n1KdGnbd0TGkAylHevmkBrAdw6YhrdXmEyN0HK7nrB9JU7XI8
+         WuxG+6rMKTlldxbe15mhrse71KDX9uLjKUCfg18Op0rXYkMJX8A9Y1eCOnboNmwwI7jF
+         Wr9A==
+X-Gm-Message-State: AOAM531UD5SRq2KGY4JGvsO/DBcwgOCgXImI0xQO3ylFbe79Jyn/gX4J
+        q+K4twTu6XidMpvQ472TXfFOinDSs0+A
+X-Google-Smtp-Source: ABdhPJyRvhfP6Pti3om40J5PlAGhQdTzAtJhyOQrTQmoqLGVrVv0UmBqe6DMFNqwyDbIQvwRrVluyeeeD8HY
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:69bc:7451:58ad:6585])
- (user=irogers job=sendgmr) by 2002:a25:6884:: with SMTP id
- d126mr13929568ybc.533.1634318543629; Fri, 15 Oct 2021 10:22:23 -0700 (PDT)
-Date:   Fri, 15 Oct 2021 10:21:30 -0700
+ (user=irogers job=sendgmr) by 2002:a25:5b8b:: with SMTP id
+ p133mr14099440ybb.273.1634318545867; Fri, 15 Oct 2021 10:22:25 -0700 (PDT)
+Date:   Fri, 15 Oct 2021 10:21:31 -0700
 In-Reply-To: <20211015172132.1162559-1-irogers@google.com>
-Message-Id: <20211015172132.1162559-20-irogers@google.com>
+Message-Id: <20211015172132.1162559-21-irogers@google.com>
 Mime-Version: 1.0
 References: <20211015172132.1162559-1-irogers@google.com>
 X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
-Subject: [PATCH v2 19/21] perf metric: Switch fprintf to pr_err.
+Subject: [PATCH v2 20/21] perf parse-events: Identify broken modifiers.
 From:   Ian Rogers <irogers@google.com>
 To:     Andi Kleen <ak@linux.intel.com>, Jiri Olsa <jolsa@redhat.com>,
         Jin Yao <yao.jin@linux.intel.com>,
@@ -95,28 +95,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There's no clear reason for the inconsistency that stems from the
-initial commit.
+Previously the broken modifier causes a usage message to printed but
+nothing else. After:
+
+$ perf stat -e 'cycles:kk' -a sleep 2
+event syntax error: 'cycles:kk'
+                            \___ Bad modifier
+Run 'perf list' for a list of valid events
+
+ Usage: perf stat [<options>] [<command>]
+
+    -e, --event <event>   event selector. use 'perf list' to list available events
+
+$ perf stat -e '{instructions,cycles}:kk' -a sleep 2
+event syntax error: '..ns,cycles}:kk'
+                                  \___ Bad modifier
+Run 'perf list' for a list of valid events
+
+ Usage: perf stat [<options>] [<command>]
+
+    -e, --event <event>   event selector. use 'perf list' to list available events
 
 Acked-by: Andi Kleen <ak@linux.intel.com>
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/metricgroup.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/perf/util/parse-events.y | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
-index 988f9e95dded..b6ba1317973e 100644
---- a/tools/perf/util/metricgroup.c
-+++ b/tools/perf/util/metricgroup.c
-@@ -1172,7 +1172,7 @@ static int metricgroup__add_metric_list(const char *list, bool metric_no_group,
- 		ret = metricgroup__add_metric(p, metric_no_group, metric_list,
- 					      map);
- 		if (ret == -EINVAL)
--			fprintf(stderr, "Cannot find metric or group `%s'\n", p);
-+			pr_err("Cannot find metric or group `%s'\n", p);
- 
- 		if (ret)
- 			break;
+diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-events.y
+index 17c8c66f3f51..2d60f3cbe42b 100644
+--- a/tools/perf/util/parse-events.y
++++ b/tools/perf/util/parse-events.y
+@@ -183,6 +183,11 @@ group_def ':' PE_MODIFIER_EVENT
+ 	err = parse_events__modifier_group(list, $3);
+ 	free($3);
+ 	if (err) {
++		struct parse_events_state *parse_state = _parse_state;
++		struct parse_events_error *error = parse_state->error;
++
++		parse_events__handle_error(error, @3.first_column,
++					   strdup("Bad modifier"), NULL);
+ 		free_list_evsel(list);
+ 		YYABORT;
+ 	}
+@@ -240,6 +245,11 @@ event_name PE_MODIFIER_EVENT
+ 	err = parse_events__modifier_event(list, $2, false);
+ 	free($2);
+ 	if (err) {
++		struct parse_events_state *parse_state = _parse_state;
++		struct parse_events_error *error = parse_state->error;
++
++		parse_events__handle_error(error, @2.first_column,
++					   strdup("Bad modifier"), NULL);
+ 		free_list_evsel(list);
+ 		YYABORT;
+ 	}
 -- 
 2.33.0.1079.g6e70778dc9-goog
 
