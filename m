@@ -2,58 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECB7442F98F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 19:03:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 955A642F999
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 19:04:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241905AbhJORFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 13:05:36 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:51446 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237591AbhJORFe (ORCPT
+        id S241957AbhJORG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 13:06:56 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:47804 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237791AbhJORGy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 13:05:34 -0400
-Date:   Fri, 15 Oct 2021 19:03:25 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1634317407;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KOyUI0ODUwcB/DpCaZncwjS5P6oVgAM8u+fmdmPd+Fk=;
-        b=wjNvJJ3hyPp12T0AiywUMmJPt0ILxqPF0IB35M24zW3pATFmuSLNc/r27dkBM4b2JMUKYs
-        U3xl+seWFBD24uBKDU8vCYSp39IKJ3PR1F+QTKp5GGj0lf+C2auGePXccyBpcIn5jRZqXT
-        07DSWAzKYO9Ik+bUmhXadWkjseVsByha7xSYRHLllk2Pc/zqXW9eQ0onEiaxmtb0FwvwKC
-        c/2Y2PpHmG8zaBZmLkAJPeMz5WKHIWUDWVzApsbINeqUW4vlnYltsvvRN7718uXMXFNjQm
-        kcofalzMHppaZhyLUUCRrNAJ+aimERXtuYlvrLEzMmyoc2YcXUV6jFZ9uOA0dw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1634317407;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KOyUI0ODUwcB/DpCaZncwjS5P6oVgAM8u+fmdmPd+Fk=;
-        b=K+GqVMI9fY1fegKjJGNJpmfBezDn7/SJk5Nf6AtxFwuFU2XwugmgUJBU105w5xlL7xcgjP
-        TnvFhzxQPAztFvAQ==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     He Zhe <zhe.he@windriver.com>
-Cc:     catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        tglx@linutronix.de, rostedt@goodmis.org,
-        linux-rt-users@vger.kernel.org
-Subject: Re: [PATCH] arm64: signal: Delay calling signals in atomic
-Message-ID: <20211015170325.li5rugf6u4rghkrd@linutronix.de>
-References: <20211012084421.35136-1-zhe.he@windriver.com>
+        Fri, 15 Oct 2021 13:06:54 -0400
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 3.0.0)
+ id 6e753915d7a8dc33; Fri, 15 Oct 2021 19:04:46 +0200
+Received: from kreacher.localnet (unknown [213.134.175.255])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id 5A26C66A8C0;
+        Fri, 15 Oct 2021 19:04:45 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linux PCI <linux-pci@vger.kernel.org>
+Subject: [PATCH v1 3/3] ACPI: PM: Turn off wakeup power resources on _DSW/_PSW errors
+Date:   Fri, 15 Oct 2021 19:04:26 +0200
+Message-ID: <2795050.e9J7NaK4W3@kreacher>
+In-Reply-To: <4347933.LvFx2qVVIh@kreacher>
+References: <4347933.LvFx2qVVIh@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211012084421.35136-1-zhe.he@windriver.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 213.134.175.255
+X-CLIENT-HOSTNAME: 213.134.175.255
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddrvddugedguddtjecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdejlefghfeiudektdelkeekvddugfeghffggeejgfeukeejleevgffgvdeluddtnecukfhppedvudefrddufeegrddujeehrddvheehnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepvddufedrudefgedrudejhedrvdehhedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehmihhkrgdrfigvshhtvghrsggvrhhgsehlihhnuhigrdhinhhtvghlrdgtohhmpdhrtghpthht
+ oheplhhinhhugidqphgtihesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=5 Fuz1=5 Fuz2=5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-10-12 16:44:21 [+0800], He Zhe wrote:
-> Debugging with breakpoints on arm64 and RT would trigger the following
-> call trace. When CONFIG_PREEMPT_RT is enabled, spin_locks become mutexes,
-> and one of these is the spin lock used in signal handling.
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Applied.
+If acpi_device_sleep_wake() called by acpi_enable_wakeup_device_power()
+returns an error which means that the evaluation of either _DWS or
+_PSW has failed, turn off all of the device's wakeup power resources
+to be consistent with the clearing of dev->wakeup.prepare_count.
 
-Sebastian
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/acpi/power.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+Index: linux-pm/drivers/acpi/power.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/power.c
++++ linux-pm/drivers/acpi/power.c
+@@ -731,8 +731,10 @@ int acpi_enable_wakeup_device_power(stru
+ 	 * put into arbitrary power state afterward.
+ 	 */
+ 	err = acpi_device_sleep_wake(dev, 1, sleep_state, 3);
+-	if (err)
++	if (err) {
++		acpi_power_off_list(&dev->wakeup.resources);
+ 		dev->wakeup.prepare_count = 0;
++	}
+ 
+  out:
+ 	mutex_unlock(&acpi_device_lock);
+
+
+
