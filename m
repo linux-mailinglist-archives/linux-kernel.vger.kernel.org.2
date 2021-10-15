@@ -2,68 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E3D142EEB1
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 12:20:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CFC042EEB3
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 12:20:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234103AbhJOKWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 06:22:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47124 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230061AbhJOKWN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 06:22:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 48E3260FDA;
-        Fri, 15 Oct 2021 10:20:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634293207;
-        bh=layviOlym3XQHi5ErpUCAn17rbJSMBf73Ptgsdy19oU=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=NEvYmhT+rUicoBCRGAZ+QBCms6p/Q8jvX8cjzX13nBoCvXfmzJkb+hAaWZE0/pRVu
-         ZbNsgFkM8bH172JjhTvngrG+zA4Rxw3LDqU3I2s6Iqm22X87qCEpZPvgLsA2ONhtHJ
-         xUlgJ1kldicTn59rqGF/UHD3uncbLfoMP+qwf0/TxGQNQIoLNzwKyZlFAYBSYzD8j9
-         tNlAfOPqkk2exBbJTkDLLg57LpZp9aAnuh/lpm2d4CjIedT9vz6VBMBBIiTaH/exl8
-         BOR6Jf9XzH82zJ/iCbTA2B7KzDAkuDxKsoliqCfA+jS9uUlOgnBG1ZjxiTAMjlYrOg
-         I/l8s3lVrvDMg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 3757660A47;
-        Fri, 15 Oct 2021 10:20:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S237973AbhJOKWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 06:22:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54418 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230061AbhJOKWn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 06:22:43 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F761C061570
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 03:20:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=vslPbRrk4h1A3X/DwAfvRfy4Qab+SeGx3d56Sg8BvDE=; b=GXVadxGcEZ2KlI9U/DOWnxXKsn
+        SWKgLvNGqHWoDz6Q+0ka9MqKyP0AnEAd2/cDEG18YfBC8YqQMAnQpeAybXhuUAwQelMWOAZ9er9IA
+        1xpFh165GBy0osLDo8tDtDfAqGGLlSE6NIEAOC55D7Jpbn1cBL9+NArj2C9pvVO/sxjLW9517MDR7
+        UkgYBhVAKBwxyAjzBnt2toP1j+yx2/bckWTiF3ga6hdFHwRINLWCzFcBpLsCWaauThpG7DReTlD0X
+        2alRAoludIyYF0jofxP/erTe+ey8fPvty4oCwiCw6EaNdSruMf0dRWkj8tK95/D2yTC78GO2ildse
+        y6uZmZKA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mbKKF-009z7h-4P; Fri, 15 Oct 2021 10:20:31 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 94021300288;
+        Fri, 15 Oct 2021 12:20:30 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 7608720AC5B6B; Fri, 15 Oct 2021 12:20:30 +0200 (CEST)
+Date:   Fri, 15 Oct 2021 12:20:30 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Yanfei Xu <yanfei.xu@windriver.com>
+Cc:     mingo@redhat.com, will@kernel.org, longman@redhat.com,
+        boqun.feng@gmail.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/3] locking/rwsem: disable preemption for spinning
+ region
+Message-ID: <YWlV7gVnPColm61C@hirez.programming.kicks-ass.net>
+References: <20211013134154.1085649-1-yanfei.xu@windriver.com>
+ <20211013134154.1085649-3-yanfei.xu@windriver.com>
+ <YWlUZ5BlUZRA7LGR@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] ptp: fix error print of ptp_kvm on X86_64 platform
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163429320722.30649.15225917576713116209.git-patchwork-notify@kernel.org>
-Date:   Fri, 15 Oct 2021 10:20:07 +0000
-References: <20211014031952.1573640-1-huangkele@bytedance.com>
-In-Reply-To: <20211014031952.1573640-1-huangkele@bytedance.com>
-To:     Kele Huang <huangkele@bytedance.com>
-Cc:     richardcochran@gmail.com, xieyongji@bytedance.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YWlUZ5BlUZRA7LGR@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This patch was applied to netdev/net.git (master)
-by David S. Miller <davem@davemloft.net>:
-
-On Thu, 14 Oct 2021 11:19:52 +0800 you wrote:
-> Commit a86ed2cfa13c5 ("ptp: Don't print an error if ptp_kvm is not supported")
-> fixes the error message print on ARM platform by only concerning about
-> the case that the error returned from kvm_arch_ptp_init() is not -EOPNOTSUPP.
-> Although the ARM platform returns -EOPNOTSUPP if ptp_kvm is not supported
-> while X86_64 platform returns -KVM_EOPNOTSUPP, both error codes share the
-> same value 95.
+On Fri, Oct 15, 2021 at 12:13:59PM +0200, Peter Zijlstra wrote:
+> On Wed, Oct 13, 2021 at 09:41:53PM +0800, Yanfei Xu wrote:
+> > The spinning region rwsem_spin_on_owner() should not be preempted,
+> > however the rwsem_down_write_slowpath() invokes it and don't disable
+> > preemption. Fix it by adding a pair of preempt_disable/enable().
 > 
-> [...]
+> I'm thinking we should do this patch before #1, otherwise we have a
+> single patch window where we'll trigger the assertion, no?
 
-Here is the summary with links:
-  - ptp: fix error print of ptp_kvm on X86_64 platform
-    https://git.kernel.org/netdev/net/c/c2402d43d183
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Anyway, I've stuck the lot (reordered) into my locking/core branch, lets
+see what the robots make of it ;-)
