@@ -2,128 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13A9142E8B0
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 08:11:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF78442E8B8
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 08:13:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231959AbhJOGNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 02:13:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53332 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231445AbhJOGNo (ORCPT
+        id S232127AbhJOGPZ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 15 Oct 2021 02:15:25 -0400
+Received: from relay1-d.mail.gandi.net ([217.70.183.193]:58987 "EHLO
+        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231445AbhJOGPX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 02:13:44 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ABABC061570;
-        Thu, 14 Oct 2021 23:11:38 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id pi19-20020a17090b1e5300b0019fdd3557d3so6526595pjb.5;
-        Thu, 14 Oct 2021 23:11:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=plfcm4CfcUE1WiY9y7riQIhpNSbgCl5IoHQbTDcGsFg=;
-        b=gieWljbKJwM9dQX6FOXQV2SpCe//Ev5ww9pOhDg5EdDrNtR5Lx0ZAL812Gu332zPKR
-         UI7yMIUPu2HyloFVswy9HgPPvtbyrdczGYvnoHYakywHAaViHzL5uqFUKrFbnusGE78p
-         FR7XkKvoEOhCvlYUoeVZCxWBtLpfk7zmIJS58MkCHqCV+yC9MSjQFbhk5uVvUNGtWoP6
-         NrG607qHVb55hKbFALyOZNpJTTziAS3sgyN27QNIhMeIclv5SsR4MDwB3hEMWWp7mZzz
-         voySiAUFzvMaQB1oVslqz1NbLZ/onJvkQWpytWvGSHGyROoBeqZyXvFF/H15Cw767WGu
-         2/dg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=plfcm4CfcUE1WiY9y7riQIhpNSbgCl5IoHQbTDcGsFg=;
-        b=lqugmgCjPHrwsJ3ptFr8Ujez7DlNezSvuLjq31CnBklTuPIXbqpeHIl5JHxXInslPY
-         QskJTDo67gfkItu98HiJ70EQiylPsAavn7QJcHgvos2snFn1+9rWUN62hePCqVfS9FMa
-         LeD7PNZj+T+7nStF2+dKAfvWCVcxQwNO7difvCI/akCoouTigUwS9IZ3rHX9KVSFTSD7
-         FzTEd3Ouhg/pXge7/alSrz6224MvaDfRhE0eY+OX3HHxzsXL12Vnelgn2+cAWGzRIQg2
-         +Q+cNUdet7LtDP09G6zCam2KGJe4mBMG8bdgQEdkxwwVpzZ0Vjb/4YGv4sdccWt6Iqc0
-         ttqw==
-X-Gm-Message-State: AOAM531w2I3JnznH5w0eU052r0s1LT92FO9zMRpEPY8y5R34ua9NozFv
-        R4p0OvfB8nIinJ6hds7oOyA=
-X-Google-Smtp-Source: ABdhPJw1NnFiRHA+uTmys9crR/a3G0Uc+wC/8h4OyGNNK2GxtvT1XWJX/yFt1VyNaMubShrCkR00uw==
-X-Received: by 2002:a17:902:6f01:b0:138:9aca:efda with SMTP id w1-20020a1709026f0100b001389acaefdamr9600787plk.19.1634278297562;
-        Thu, 14 Oct 2021 23:11:37 -0700 (PDT)
-Received: from localhost (14-203-144-177.static.tpgi.com.au. [14.203.144.177])
-        by smtp.gmail.com with ESMTPSA id s22sm4032847pfe.76.2021.10.14.23.11.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Oct 2021 23:11:37 -0700 (PDT)
-Date:   Fri, 15 Oct 2021 16:11:32 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH v2 03/13] powerpc: Remove func_descr_t
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Helge Deller <deller@gmx.de>, Daniel Axtens <dja@axtens.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Kees Cook <keescook@chromium.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Mackerras <paulus@samba.org>
-Cc:     linux-arch@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-References: <cover.1634190022.git.christophe.leroy@csgroup.eu>
-        <16eef6afbf7322d0c07760ebf827b8f9f50f7c6e.1634190022.git.christophe.leroy@csgroup.eu>
-        <874k9j45fm.fsf@dja-thinkpad.axtens.net>
-        <b02d5211-2f00-b303-766b-d612c1bd4402@csgroup.eu>
-In-Reply-To: <b02d5211-2f00-b303-766b-d612c1bd4402@csgroup.eu>
+        Fri, 15 Oct 2021 02:15:23 -0400
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 550D224000A;
+        Fri, 15 Oct 2021 06:13:15 +0000 (UTC)
+Date:   Fri, 15 Oct 2021 08:13:13 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Harvey Hunt <harveyhuntnexus@gmail.com>, list@opendingux.net,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH 2/3] mtd: rawnand: Export
+ nand_read_page_hwecc_oob_first()
+Message-ID: <20211015081313.60018976@xps13>
+In-Reply-To: <20211009184952.24591-3-paul@crapouillou.net>
+References: <20211009184952.24591-1-paul@crapouillou.net>
+        <20211009184952.24591-3-paul@crapouillou.net>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Message-Id: <1634277766.29y8aqzatr.astroid@bobo.none>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Christophe Leroy's message of October 15, 2021 3:19 pm:
->=20
->=20
-> Le 15/10/2021 =C3=A0 00:17, Daniel Axtens a =C3=A9crit=C2=A0:
->> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
->>=20
->>> 'func_descr_t' is redundant with 'struct ppc64_opd_entry'
->>=20
->> So, if I understand the overall direction of the series, you're
->> consolidating powerpc around one single type for function descriptors,
->> and then you're creating a generic typedef so that generic code can
->> always do ((func_desc_t)x)->addr to get the address of a function out of
->> a function descriptor regardless of arch. (And regardless of whether the
->> arch uses function descriptors or not.)
->=20
-> An architecture not using function descriptors won't do much with=20
-> ((func_desc_t *)x)->addr. This is just done to allow building stuff=20
-> regardless.
->=20
-> I prefer something like
->=20
-> 	if (have_function_descriptors())
-> 		addr =3D (func_desc_t *)ptr)->addr;
-> 	else
-> 		addr =3D ptr;
+Hi Paul,
 
-If you make a generic data type for architectures without function=20
-descriptors as such
+paul@crapouillou.net wrote on Sat,  9 Oct 2021 20:49:51 +0200:
 
-typedef struct func_desc {
-    char addr[0];
-} func_desc_t;
+> Move the function nand_read_page_hwecc_oob_first() (previously
+> nand_davinci_read_page_hwecc_oob_first()) to nand_base.c, and export it
+> as a GPL symbol, so that it can be used by more modules.
+> 
+> Cc: <stable@vger.kernel.org> # v5.2
+> Fixes: a0ac778eb82c ("mtd: rawnand: ingenic: Add support for the JZ4740")
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> ---
+>  drivers/mtd/nand/raw/davinci_nand.c | 70 +----------------------------
+>  drivers/mtd/nand/raw/nand_base.c    | 69 ++++++++++++++++++++++++++++
+>  include/linux/mtd/rawnand.h         |  2 +
+>  3 files changed, 72 insertions(+), 69 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/raw/davinci_nand.c b/drivers/mtd/nand/raw/davinci_nand.c
+> index 89de24d3bb7a..45fec8c192ab 100644
+> --- a/drivers/mtd/nand/raw/davinci_nand.c
+> +++ b/drivers/mtd/nand/raw/davinci_nand.c
+> @@ -371,74 +371,6 @@ static int nand_davinci_correct_4bit(struct nand_chip *chip, u_char *data,
+>  	return corrected;
+>  }
+>  
+> -/**
+> - * nand_read_page_hwecc_oob_first - hw ecc, read oob first
+> - * @chip: nand chip info structure
+> - * @buf: buffer to store read data
+> - * @oob_required: caller requires OOB data read to chip->oob_poi
+> - * @page: page number to read
+> - *
+> - * Hardware ECC for large page chips, require OOB to be read first. For this
+> - * ECC mode, the write_page method is re-used from ECC_HW. These methods
+> - * read/write ECC from the OOB area, unlike the ECC_HW_SYNDROME support with
+> - * multiple ECC steps, follows the "infix ECC" scheme and reads/writes ECC from
+> - * the data area, by overwriting the NAND manufacturer bad block markings.
+> - */
+> -static int nand_davinci_read_page_hwecc_oob_first(struct nand_chip *chip,
+> -						  uint8_t *buf,
+> -						  int oob_required, int page)
+> -{
+> -	struct mtd_info *mtd = nand_to_mtd(chip);
+> -	int i, eccsize = chip->ecc.size, ret;
+> -	int eccbytes = chip->ecc.bytes;
+> -	int eccsteps = chip->ecc.steps;
+> -	uint8_t *p = buf;
+> -	uint8_t *ecc_code = chip->ecc.code_buf;
+> -	unsigned int max_bitflips = 0;
+> -
+> -	/* Read the OOB area first */
+> -	ret = nand_read_oob_op(chip, page, 0, chip->oob_poi, mtd->oobsize);
+> -	if (ret)
+> -		return ret;
+> -
+> -	ret = nand_read_page_op(chip, page, 0, NULL, 0);
+> -	if (ret)
+> -		return ret;
+> -
+> -	ret = mtd_ooblayout_get_eccbytes(mtd, ecc_code, chip->oob_poi, 0,
+> -					 chip->ecc.total);
+> -	if (ret)
+> -		return ret;
+> -
+> -	for (i = 0; eccsteps; eccsteps--, i += eccbytes, p += eccsize) {
+> -		int stat;
+> -
+> -		chip->ecc.hwctl(chip, NAND_ECC_READ);
+> -
+> -		ret = nand_read_data_op(chip, p, eccsize, false, false);
+> -		if (ret)
+> -			return ret;
+> -
+> -		stat = chip->ecc.correct(chip, p, &ecc_code[i], NULL);
+> -		if (stat == -EBADMSG &&
+> -		    (chip->ecc.options & NAND_ECC_GENERIC_ERASED_CHECK)) {
+> -			/* check for empty pages with bitflips */
+> -			stat = nand_check_erased_ecc_chunk(p, eccsize,
+> -							   &ecc_code[i],
+> -							   eccbytes, NULL, 0,
+> -							   chip->ecc.strength);
+> -		}
+> -
+> -		if (stat < 0) {
+> -			mtd->ecc_stats.failed++;
+> -		} else {
+> -			mtd->ecc_stats.corrected += stat;
+> -			max_bitflips = max_t(unsigned int, max_bitflips, stat);
+> -		}
+> -	}
+> -	return max_bitflips;
+> -}
+> -
+>  /*----------------------------------------------------------------------*/
+>  
+>  /* An ECC layout for using 4-bit ECC with small-page flash, storing
+> @@ -648,7 +580,7 @@ static int davinci_nand_attach_chip(struct nand_chip *chip)
+>  			} else if (chunks == 4 || chunks == 8) {
+>  				mtd_set_ooblayout(mtd,
+>  						  nand_get_large_page_ooblayout());
+> -				chip->ecc.read_page = nand_davinci_read_page_hwecc_oob_first;
+> +				chip->ecc.read_page = nand_read_page_hwecc_oob_first;
+>  			} else {
+>  				return -EIO;
+>  			}
+> diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+> index 3d6c6e880520..cb5f343b9fa2 100644
+> --- a/drivers/mtd/nand/raw/nand_base.c
+> +++ b/drivers/mtd/nand/raw/nand_base.c
+> @@ -3160,6 +3160,75 @@ static int nand_read_page_hwecc(struct nand_chip *chip, uint8_t *buf,
+>  	return max_bitflips;
+>  }
+>  
+> +/**
+> + * nand_read_page_hwecc_oob_first - Hardware ECC page read with ECC
+> + *                                  data read from OOB area
+> + * @chip: nand chip info structure
+> + * @buf: buffer to store read data
+> + * @oob_required: caller requires OOB data read to chip->oob_poi
+> + * @page: page number to read
+> + *
+> + * Hardware ECC for large page chips, require OOB to be read first. For this
 
-Then you can do that with no if. The downside is your addr has to be=20
-char * and it's maybe not helpful to be so "clever".
+requires
 
->>   - why pick ppc64_opd_entry over func_descr_t?
->=20
-> Good question. At the begining it was because it was in UAPI headers,=20
-> and also because it was the one used in our=20
-> dereference_function_descriptor().
->=20
-> But at the end maybe that's not the more logical choice. I need to look=20
-> a bit more.
+With this ECC configuration?
 
-I would prefer the func_descr_t (with 'toc' and 'env') if you're going=20
-to change it.
+> + * ECC mode, the write_page method is re-used from ECC_HW. These methods
+
+I do not understand this sentence nor the next one about syndrome. I
+believe it is related to your engine and should not leak into the core.
+
+> + * read/write ECC from the OOB area, unlike the ECC_HW_SYNDROME support with
+> + * multiple ECC steps, follows the "infix ECC" scheme and reads/writes ECC from
+> + * the data area, by overwriting the NAND manufacturer bad block markings.
+
+That's a sentence I don't like. What do you mean exactly?
+
+What "Infix ECC" scheme is?
+
+Do you mean that unlike the syndrome  mode it *does not* overwrite the
+BBM ?
+
+> + */
+> +int nand_read_page_hwecc_oob_first(struct nand_chip *chip, uint8_t *buf,
+> +				   int oob_required, int page)
+> +{
+> +	struct mtd_info *mtd = nand_to_mtd(chip);
+> +	int i, eccsize = chip->ecc.size, ret;
+> +	int eccbytes = chip->ecc.bytes;
+> +	int eccsteps = chip->ecc.steps;
+> +	uint8_t *p = buf;
+> +	uint8_t *ecc_code = chip->ecc.code_buf;
+> +	unsigned int max_bitflips = 0;
+> +
+> +	/* Read the OOB area first */
+> +	ret = nand_read_oob_op(chip, page, 0, chip->oob_poi, mtd->oobsize);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = nand_read_page_op(chip, page, 0, NULL, 0);
+
+Definitely not, your are requesting the chip to do the read_page
+operation twice. You only need a nand_change_read_column I believe.
+
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = mtd_ooblayout_get_eccbytes(mtd, ecc_code, chip->oob_poi, 0,
+> +					 chip->ecc.total);
+> +	if (ret)
+> +		return ret;
+> +
+> +	for (i = 0; eccsteps; eccsteps--, i += eccbytes, p += eccsize) {
+> +		int stat;
+> +
+> +		chip->ecc.hwctl(chip, NAND_ECC_READ);
+> +
+> +		ret = nand_read_data_op(chip, p, eccsize, false, false);
+> +		if (ret)
+> +			return ret;
+> +
+> +		stat = chip->ecc.correct(chip, p, &ecc_code[i], NULL);
+> +		if (stat == -EBADMSG &&
+> +		    (chip->ecc.options & NAND_ECC_GENERIC_ERASED_CHECK)) {
+> +			/* check for empty pages with bitflips */
+> +			stat = nand_check_erased_ecc_chunk(p, eccsize,
+> +							   &ecc_code[i],
+> +							   eccbytes, NULL, 0,
+> +							   chip->ecc.strength);
+> +		}
+> +
+> +		if (stat < 0) {
+> +			mtd->ecc_stats.failed++;
+> +		} else {
+> +			mtd->ecc_stats.corrected += stat;
+> +			max_bitflips = max_t(unsigned int, max_bitflips, stat);
+> +		}
+> +	}
+> +	return max_bitflips;
+> +}
+> +EXPORT_SYMBOL_GPL(nand_read_page_hwecc_oob_first);
+> +
+>  /**
+>   * nand_read_page_syndrome - [REPLACEABLE] hardware ECC syndrome based page read
+>   * @chip: nand chip info structure
+> diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+> index b2f9dd3cbd69..5b88cd51fadb 100644
+> --- a/include/linux/mtd/rawnand.h
+> +++ b/include/linux/mtd/rawnand.h
+> @@ -1539,6 +1539,8 @@ int nand_read_data_op(struct nand_chip *chip, void *buf, unsigned int len,
+>  		      bool force_8bit, bool check_only);
+>  int nand_write_data_op(struct nand_chip *chip, const void *buf,
+>  		       unsigned int len, bool force_8bit);
+> +int nand_read_page_hwecc_oob_first(struct nand_chip *chip, uint8_t *buf,
+> +				   int oob_required, int page);
+
+You certainly want to add this symbol closer to the other read/write
+page helpers?
+
+>  
+>  /* Scan and identify a NAND device */
+>  int nand_scan_with_ids(struct nand_chip *chip, unsigned int max_chips,
+
 
 Thanks,
-Nick
+Miquèl
