@@ -2,90 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E6F442EAFF
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 10:05:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 828CB42EAFE
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 10:05:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236657AbhJOIHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 04:07:24 -0400
-Received: from mout.kundenserver.de ([212.227.126.135]:46279 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236629AbhJOIHJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S236591AbhJOIHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 04:07:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32984 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236665AbhJOIHJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 15 Oct 2021 04:07:09 -0400
-Received: from mail-wr1-f41.google.com ([209.85.221.41]) by
- mrelayeu.kundenserver.de (mreue012 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1MS1G7-1m90m913tL-00TUQ2; Fri, 15 Oct 2021 10:04:58 +0200
-Received: by mail-wr1-f41.google.com with SMTP id t2so25008771wrb.8;
-        Fri, 15 Oct 2021 01:04:57 -0700 (PDT)
-X-Gm-Message-State: AOAM530FHdl4QLXhJTqD7jHFvLYo8WwDJ8c22vApkju4E6AB45xJwbpY
-        EaJbNWP0GXaTz3rVG/EXJJL8no6bZYgWMliTaH0=
-X-Google-Smtp-Source: ABdhPJyMHuHnDGl2si8ITF+4TGXXgV0nuTwHzfeF7WqCGbb9eY4i99zzKLMdO9DWc/nq3na7Ws9y9ewKPsg0Jk/Kqqs=
-X-Received: by 2002:adf:f481:: with SMTP id l1mr12016275wro.411.1634285097750;
- Fri, 15 Oct 2021 01:04:57 -0700 (PDT)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 583BE610D2;
+        Fri, 15 Oct 2021 08:05:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1634285100;
+        bh=u5fuOrCinZRN4ATl5DIzbkv1xnAp5VPMYx2WeVQ6J88=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=St1fZJfR3DWNpvjfYIJm57w+gErtzT9iFnqDvb0tLbodrivkqv5dDpfF0+N7fu0mB
+         86VZOyOUlwoj704K1El+rtvw795t/bVxua0lJ0qsMIVzAX15qj4BFywq8j6/JEyb2J
+         6U3BuLkkIay3LVUc2XTY0sVOx6K4mXMaLrVwRvcE=
+Date:   Fri, 15 Oct 2021 10:04:58 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     changlianzhi <changlianzhi@uniontech.com>
+Cc:     linux-kernel@vger.kernel.org, dmitry.torokhov@gmail.com,
+        jirislaby@kernel.org, andriy.shevchenko@linux.intel.com,
+        linux-input@vger.kernel.org, 282827961@qq.com
+Subject: Re: [PATCH] input&tty: Fix the keyboard led light display problem
+Message-ID: <YWk2Ksxw3yWxWHDp@kroah.com>
+References: <20211015064534.26260-1-changlianzhi@uniontech.com>
+ <YWklQYRE87UJ6HRz@kroah.com>
+ <616934f3.1c69fb81.59ff6.49d9SMTPIN_ADDED_BROKEN@mx.google.com>
 MIME-Version: 1.0
-References: <20211015005634.2658470-1-alistair.francis@opensource.wdc.com>
-In-Reply-To: <20211015005634.2658470-1-alistair.francis@opensource.wdc.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Fri, 15 Oct 2021 10:04:41 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a28zpO5Sy78CHts=p4G5v0bhxeCJhUK41bMQ8nqYV8z_A@mail.gmail.com>
-Message-ID: <CAK8P3a28zpO5Sy78CHts=p4G5v0bhxeCJhUK41bMQ8nqYV8z_A@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] perf bench futex: Use a 64-bit time_t
-To:     Alistair Francis <alistair.francis@opensource.wdc.com>
-Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
-        linux-perf-users@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alistair Francis <alistair23@gmail.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Darren Hart <dvhart@infradead.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Atish Patra <atish.patra@wdc.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Alistair Francis <alistair.francis@wdc.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:svj4o8UDMApwuFcuNXj7pxpjFVchrJM1P6yD6ye98s3GpluP7I1
- i5j3G+TKfv7DebTKtAn1BWAQhkjw8hWe7ePMxxNniwZPIUqFc/gAwyo6tOd8Bo+LY7QpONE
- vYa/o/fEhPSzTEVeOJUfdNIhxAPtSFe+IwvJ0bPy3b5YZKA2uFIYUpfVO+HQwM1SuJBDXhO
- u1RtYw8ejJI1ts2C8hJqw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:UtxibgzrXDc=:kaJU0WtF7yMJGGqC4gavvP
- kFbd6TFVczCNzYvaKSXy2ul4uUDDT987wwM1JL2sjTCNdHGQzmOOI9YB/pMxtkxxSQ0nUs+6P
- TwaNJd4u4HV+YJ2qM7ho6RYI+Dn+0u1fqPzxR4Xa/blTDbKRqxd3Bx4tWTi+X2h48xrUaDHNz
- GIfYg+uevWUujvou3+zB3pTIGs5eVKVjWdspq2KkVHhvsPuLQXXQIPH9o7h11mPHhcWzHtRa3
- 1VYwUUO3MEIxkU0BX8uLaU/MJf+EHcdpGJs4+zZN/lwQ5XFN9X6h6ra0+8FjqnD+W7XGAdpi9
- y1ais6Jxz2+95Vsz8O/ai1ZQHJN+TpRIJArK8kRJ0StUFGc60znYu8rjuNDzojjPKWVyRR3sw
- 7MEP+cxgZRF9ctL5c6klSkYkY8ZM1gHN1NgZ24fj+Z61iRKEVygJiQ5FE6/R5SWBUsDhVFaW8
- HS8fxhmFPkxWSY+cd0k29k3pUgshOiH6gTSfrfSlFd5tdsuky2wq9JohkTewQDpFFKFSTRYm9
- gaNym5Nf7U/nReJbYmQ46dFn2MdcZ6/lI/RZZqvwQ0QxYDHqUUPPK6GJNqyxCZ3vBZHMxZAZ3
- EeMOOY5M/lkLFbJOkfrdj9whtCwkrpJpeWJ3c1HuWGlGHvMhQrdzqvHVyjnVsLVoLkU5SNAeK
- NegUgBurcBvBRdxXYdG3JaCSEarYlX/J8tDm07NVBxHqHuc/GLgNNX3hVKqin4YqUmAVpptk1
- l9ivL4luwONEc2j2Y4hIr+XHdCBPZWaZb4pBxg==
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <616934f3.1c69fb81.59ff6.49d9SMTPIN_ADDED_BROKEN@mx.google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 15, 2021 at 2:56 AM Alistair Francis
-<alistair.francis@opensource.wdc.com> wrote:
->
-> From: Alistair Francis <alistair.francis@wdc.com>
->
-> Convert tools/perf to only use a 64-bit time_t. On 64-bit architectures
-> this isn't a functional change. On 32-bit architectures we now only
-> perform 64-bit time_t syscalls (__NR_futex_time64) and use a struct
-> timespec64.
->
-> This won't work on kernels before 5.1, but as perf is tied to the kernel
-> that's ok.
->
-> This allows us to build perf for 32-bit architectures with 64-bit time_t
-> like RISC-V 32-bit.
->
-> Signed-off-by: Alistair Francis <alistair.francis@wdc.com>
+On Fri, Oct 15, 2021 at 03:59:38PM +0800, changlianzhi wrote:
+> 
+> On 2021/10/15 下午2:52, Greg KH wrote:
+> > On Fri, Oct 15, 2021 at 02:45:34PM +0800, lianzhi chang wrote:
+> > > Switching from the desktop environment to the tty environment,
+> > > the state of the keyboard led lights and the state of the keyboard
+> > > lock are inconsistent. This is because the attribute kb->kbdmode
+> > > of the tty bound in the desktop environment (xorg) is set to
+> > > VC_OFF, which causes the ledstate and kb->ledflagstate
+> > > values of the bound tty to always be 0, which causes the switch
+> > > from the desktop When to the tty environment, the LED light
+> > > status is inconsistent with the keyboard lock status.
+> > > 
+> > > Signed-off-by: lianzhi chang <changlianzhi@uniontech.com>
+> > > ---
+> > >   drivers/input/input.c     | 46 ++++++++++++++++++++++++++++++++++++++-
+> > >   drivers/tty/vt/keyboard.c | 19 ++++++++++++++--
+> > >   include/linux/input.h     |  3 +++
+> > >   3 files changed, 65 insertions(+), 3 deletions(-)
+> > Hi,
+> > 
+> > This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+> > a patch that has triggered this response.  He used to manually respond
+> > to these common problems, but in order to save his sanity (he kept
+> > writing the same thing over and over, yet to different people), I was
+> > created.  Hopefully you will not take offence and will fix the problem
+> > in your patch and resubmit it so that it can be accepted into the Linux
+> > kernel tree.
+> > 
+> > You are receiving this message because of the following common error(s)
+> > as indicated below:
+> > 
+> > - This looks like a new version of a previously submitted patch, but you
+> >    did not list below the --- line any changes from the previous version.
+> >    Please read the section entitled "The canonical patch format" in the
+> >    kernel file, Documentation/SubmittingPatches for what needs to be done
+> >    here to properly describe this.
+> > 
+> > If you wish to discuss this problem further, or you have questions about
+> > how to resolve this issue, please feel free to respond to this email and
+> > Greg will reply once he has dug out from the pending patches received
+> > from other developers.
+> > 
+> > thanks,
+> > 
+> > greg k-h's patch email bot
+> > 
+> 
+> >>The latest changes:
+> >>(1) Move the definition of ledstate to the input module
+> (/drivers/input/input.c), and set or get its value through the
+> input_update_ledstate and input_get_ledstate functions.
+> >>(2) To update the ledstate reference in keyboard.c, you must first get the
+> value through input_get_ledstate.
+> >>(3) Other necessary changes
 
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+I do not want to see this here, it needs to go into the patch you submit
+as the documentation says to.  Read the link that the bot pointed you at
+above please...
