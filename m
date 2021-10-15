@@ -2,113 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1092642F0FD
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 14:33:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E226642F103
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 14:35:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235658AbhJOMfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 08:35:55 -0400
-Received: from foss.arm.com ([217.140.110.172]:41970 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234372AbhJOMfv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 08:35:51 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4D9E1147A;
-        Fri, 15 Oct 2021 05:33:44 -0700 (PDT)
-Received: from [10.57.73.178] (unknown [10.57.73.178])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A18913F70D;
-        Fri, 15 Oct 2021 05:33:41 -0700 (PDT)
-Subject: Re: [PATCH 4/5] perf arm-spe: Implement find_snapshot callback
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org,
-        John Garry <john.garry@huawei.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
-        James Clark <James.Clark@arm.com>
-References: <20210916154635.1525-1-german.gomez@arm.com>
- <20210916154635.1525-4-german.gomez@arm.com>
- <20210923135016.GG400258@leoy-ThinkPad-X240s>
- <20210923144048.GB603008@leoy-ThinkPad-X240s>
- <1c6a3a73-27dc-6673-7fe7-34bc7fcb0a68@arm.com>
- <20211004122724.GC174271@leoy-ThinkPad-X240s>
- <6b092f13-832f-5d1d-a504-aea96c81bf17@arm.com>
- <20211006095124.GC14400@leoy-ThinkPad-X240s>
- <377b54ef-b9c0-9cfc-ef0c-0187d7c493cc@arm.com>
- <20211013003916.GA130842@leoy-ThinkPad-X240s>
- <20211013075125.GA6701@willie-the-truck>
-From:   German Gomez <german.gomez@arm.com>
-Message-ID: <35209d5c-6387-5248-ab61-a1e1cb0553de@arm.com>
-Date:   Fri, 15 Oct 2021 13:33:39 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S233954AbhJOMhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 08:37:04 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:50054
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235596AbhJOMg6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 08:36:58 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 5AC5A3F10B;
+        Fri, 15 Oct 2021 12:34:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1634301287;
+        bh=O2/ljvaTb7ZvVN6KnRS0V+ry4x/Qg3DOm1K7QLfboYs=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=m2DmQgB4NcEWjr0VFVA8fv8gUbv27DIkCES0pbDdCs6L1tu2xRwasURsWVF2zAIYQ
+         m5oLzc8GeOFjwaAC8ivnox0x2gGcYs7Mqqc09qfFDieux4PVCHPVCWaunCuQDrr1eI
+         oaB3J+M5FKkj1Y6An9wIxk1L7Y8oJBVm0Hdc0XP0k3Ddgz1tZsFrxL34JtfvHUyqWM
+         RNuJg/WlhzqIIxYmPq1m6WkPO32zrVhh25NJgYX8mZeaACO8RlNFPYn6PQCyd9T5DP
+         otHTyqgvvOOjy4+bsIRHWkFoxFAL3rCfVxD0Y1dH/P5PfroVrEeH9aIQ6QZ1otpRpn
+         ieFDgPNg62g/g==
+From:   Colin King <colin.king@canonical.com>
+To:     Vinod Koul <vkoul@kernel.org>, dmaengine@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] dmaengine: Remove redundant initialization of variable err
+Date:   Fri, 15 Oct 2021 13:34:47 +0100
+Message-Id: <20211015123447.27560-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <20211013075125.GA6701@willie-the-truck>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Leo,
+From: Colin Ian King <colin.king@canonical.com>
 
-Would you be ok with the current patch the way it is? In case it's of
-any help, I'm sharing the testing steps that James and I went through
-when testing this internally, if you want to add to it
+The variable err is being initialized with a value that is never read, it
+is being updated later on. The assignment is redundant and can be removed
+and move the declaration into the local scope.
 
-- Test that only a portion of the buffer is saved until there is a wraparound
+Addresses-Coverity: ("Unused value")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/dma/dmaengine.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-$ ./perf record -vvv -e arm_spe/period=148576/u -S -- taskset --cpu-list 0 stress --cpu 1 & while true; do sleep 0.2; killall -s USR2 perf; done
+diff --git a/drivers/dma/dmaengine.c b/drivers/dma/dmaengine.c
+index af3ee288bc11..d9f7c097cfd6 100644
+--- a/drivers/dma/dmaengine.c
++++ b/drivers/dma/dmaengine.c
+@@ -695,13 +695,12 @@ static struct dma_chan *find_candidate(struct dma_device *device,
+  */
+ struct dma_chan *dma_get_slave_channel(struct dma_chan *chan)
+ {
+-	int err = -EBUSY;
+-
+ 	/* lock against __dma_request_channel */
+ 	mutex_lock(&dma_list_mutex);
+ 
+ 	if (chan->client_count == 0) {
+ 		struct dma_device *device = chan->device;
++		int err;
+ 
+ 		dma_cap_set(DMA_PRIVATE, device->cap_mask);
+ 		device->privatecnt++;
+-- 
+2.32.0
 
-- Test snapshot mode in CPU mode
-
-$ sudo ./perf record -vvv -C 0 -e arm_spe/period=148576/u -S -- taskset --cpu-list 0 stress --cpu 1 &
-
-- Test that auxtrace buffers correspond to an aux record
-- Test snapshot default sizes in sudo and user modes
-- Test small snapshot size
-
-$ ./perf record -vvv -e arm_spe/period=148576/u -S1000 -m16,16 -- taskset --cpu-list 0 stress --cpu 1 &
-
-If there are any concerns with the patches, please let me know and I
-will try to address them.
-
-Thanks,
-German
-
-On 13/10/2021 08:51, Will Deacon wrote:
-> On Wed, Oct 13, 2021 at 08:39:16AM +0800, Leo Yan wrote:
->> On Mon, Oct 11, 2021 at 04:55:37PM +0100, German Gomez wrote:
->>> On 06/10/2021 10:51, Leo Yan wrote:
->>>> On Wed, Oct 06, 2021 at 10:35:20AM +0100, German Gomez wrote:
->>>>
->>>> [...]
->>>>
->>>>>> So simply say, I think the head pointer monotonically increasing is
->>>>>> the right thing to do in Arm SPE driver.
->>>>> I will talk to James about how we can proceed on this.
->>>> Thanks!
->>> I took this offline with James and, though it looks possible to patch
->>> the SPE driver to have a monotonically increasing head pointer in order
->>> to simplify the handling in the perf tool, it could be a breaking change
->>> for users of the perf_event_open syscall that currently rely on the way
->>> it works now.
->> Here I cannot create the connection between AUX head pointer and the
->> breakage of calling perf_event_open().
->>
->> Could you elaborate what's the reason the monotonical increasing head
->> pointer will lead to the breakage for perf_event_open()?
-> It's a user-visible change in behaviour, isn't it? Therefore we risk
-> breaking applications that rely on the current behaviour if we change it
-> unconditionally.
->
-> Given that the driver has always worked like this and it doesn't sound like
-> it's the end of the world to deal with it in userspace (after all, it's
-> aligned with intel-pt), then I don't think we should change it.
->
-> Will
