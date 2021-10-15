@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6CAC42F175
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 14:52:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E29342F176
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 14:52:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239232AbhJOMyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 08:54:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53988 "EHLO mail.kernel.org"
+        id S239228AbhJOMyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 08:54:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54116 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235793AbhJOMyP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 08:54:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D0BE360230;
-        Fri, 15 Oct 2021 12:52:06 +0000 (UTC)
+        id S239201AbhJOMyY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 08:54:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 50A1160ED4;
+        Fri, 15 Oct 2021 12:52:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634302329;
-        bh=6eQhPcwTPWL7PeCf0bKVrZpLNkk5pcOdMHPKs5Ym+g0=;
+        s=k20201202; t=1634302337;
+        bh=EyoCpAJO1kfofsL3gEQly+uRiLZYa9weOYK4M4P9yI0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=h0HJxPsoPmofnkEevWSCquKWYTveY+4/knPL9GnpoTUYrLgtm9PCbQV3VLBihKAXU
-         90V8KNHFcWpAQHxPhFNz7FZsPGl9utoCpIIaXmLxz5PTFdc9ddu0BJT4vP4O/2f3xc
-         nSnu1hJbSJSwkHoSfm5UVIN3GiXeNTKY3eXyDSOYeZVGM6Ov3PC3q7FJ8glFFq+OHF
-         V8w+jqXnJ8HMw1d4Pqw191j7fHJSX9O7irtYBNvqAJ0WD7gpugeViu8dP1Thj+wVNy
-         IbMwZtb1Aozkf9idA8lW0Wo6r0AddCvzNo1lLhRgcIAQ2i/Q8vWuSsJkCsp5Cbnx1U
-         AujxEWst0a/aw==
+        b=eAwTenk213ykTtTC152Z1rE9becZKfqIURox5GSsXUTQhD8h83iNO+T5nThet9reh
+         QRLUogxGqTC9Dr3s0HsmsidnW9eAQkF4PP6iFymRVXDNj6vreQ87Y5UFuRE5Dbwr47
+         yP7HJbxtwDjv/Nvxsz05dDwUP+iBHKdbxyfYpcwkO7vgqYI+iLWYPm9umo8u/jSv9t
+         zytO/2EcwDoKtZLtBiSuP4B03ByfGsoOrpWH0vlm9rwKr6jU4oppKH8Hwkm1EmaWYm
+         uGpWLDTyK3sotdAP9mQ2HyunkIeKdOZ/Am6238FRT7OmRS4O/9Xo49TRmCAXAiDoCC
+         ZCxjqLHWdxd+Q==
 From:   Masami Hiramatsu <mhiramat@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>,
@@ -35,9 +35,9 @@ Cc:     "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>,
         Nathan Chancellor <nathan@kernel.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
         linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 09/10] ARM: Recover kretprobe modified return address in stacktrace
-Date:   Fri, 15 Oct 2021 21:52:04 +0900
-Message-Id: <163430232448.459050.59665093997557853.stgit@devnote2>
+Subject: [PATCH 10/10] [RFC] arm64: kprobes: Detect error of kretprobe return address fixup
+Date:   Fri, 15 Oct 2021 21:52:14 +0900
+Message-Id: <163430233451.459050.14342207133770952671.stgit@devnote2>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <163430224341.459050.2369208860773018092.stgit@devnote2>
 References: <163430224341.459050.2369208860773018092.stgit@devnote2>
@@ -49,133 +49,122 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since the kretprobe replaces the function return address with
-the kretprobe_trampoline on the stack, arm unwinder shows it
-instead of the correct return address.
+Add kretprobe_next_ret_addr() which can detect errors in
+the given parameter or the kretprobe_instance list, and call
+it from arm64 stacktrace.
 
-This finds the correct return address from the per-task
-kretprobe_instances list and verify it is in between the
-caller fp and callee fp.
+This kretprobe_next_ret_addr() will return following errors
+when it detects;
 
-Note that this supports both GCC and clang if CONFIG_FRAME_POINTER=y
-and CONFIG_ARM_UNWIND=n. For the ARM unwinder, this is still
-not working correctly.
+ - -EINVAL if @cur is NULL (caller issue)
+ - -ENOENT if there is no next correct return address
+   (either kprobes or caller issue)
+ - -EILSEQ if the next currect return address is there
+   but doesn't match the framepointer (maybe caller issue)
 
+Thus the caller must check the error and handle it. On arm64,
+this tries to handle the errors and show it on the log.
+
+Suggested-by: Mark Rutland <mark.rutland@arm.com>
 Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 ---
- Changes in v2:
-  - Compile this code only when CONFIG_KRETPROBES=y
----
- arch/arm/Kconfig                  |    1 +
- arch/arm/include/asm/stacktrace.h |    9 +++++++++
- arch/arm/kernel/return_address.c  |    4 ++++
- arch/arm/kernel/stacktrace.c      |   14 ++++++++++++++
- 4 files changed, 28 insertions(+)
+ arch/arm64/kernel/stacktrace.c |   10 +++++++-
+ include/linux/kprobes.h        |    2 ++
+ kernel/kprobes.c               |   49 ++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 59 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index fc196421b2ce..bb4f1872967c 100644
---- a/arch/arm/Kconfig
-+++ b/arch/arm/Kconfig
-@@ -3,6 +3,7 @@ config ARM
- 	bool
- 	default y
- 	select ARCH_32BIT_OFF_T
-+	select ARCH_CORRECT_STACKTRACE_ON_KRETPROBE if HAVE_KRETPROBES && FRAME_POINTER && !ARM_UNWIND
- 	select ARCH_HAS_BINFMT_FLAT
- 	select ARCH_HAS_DEBUG_VIRTUAL if MMU
- 	select ARCH_HAS_DMA_WRITE_COMBINE if !ARM_DMA_MEM_BUFFERABLE
-diff --git a/arch/arm/include/asm/stacktrace.h b/arch/arm/include/asm/stacktrace.h
-index 2d76a2e29f05..8f54f9ad8a9b 100644
---- a/arch/arm/include/asm/stacktrace.h
-+++ b/arch/arm/include/asm/stacktrace.h
-@@ -3,6 +3,7 @@
- #define __ASM_STACKTRACE_H
- 
- #include <asm/ptrace.h>
-+#include <linux/llist.h>
- 
- struct stackframe {
- 	/*
-@@ -13,6 +14,10 @@ struct stackframe {
- 	unsigned long sp;
- 	unsigned long lr;
- 	unsigned long pc;
-+#ifdef CONFIG_KRETPROBES
-+	struct llist_node *kr_cur;
-+	struct task_struct *tsk;
-+#endif
- };
- 
- static __always_inline
-@@ -22,6 +27,10 @@ void arm_get_current_stackframe(struct pt_regs *regs, struct stackframe *frame)
- 		frame->sp = regs->ARM_sp;
- 		frame->lr = regs->ARM_lr;
- 		frame->pc = regs->ARM_pc;
-+#ifdef CONFIG_KRETPROBES
-+		frame->kr_cur = NULL;
-+		frame->tsk = current;
-+#endif
- }
- 
- extern int unwind_frame(struct stackframe *frame);
-diff --git a/arch/arm/kernel/return_address.c b/arch/arm/kernel/return_address.c
-index 7b42ac010fdf..00c11579406c 100644
---- a/arch/arm/kernel/return_address.c
-+++ b/arch/arm/kernel/return_address.c
-@@ -42,6 +42,10 @@ void *return_address(unsigned int level)
- 	frame.sp = current_stack_pointer;
- 	frame.lr = (unsigned long)__builtin_return_address(0);
- 	frame.pc = (unsigned long)return_address;
-+#ifdef CONFIG_KRETPROBES
-+	frame.kr_cur = NULL;
-+	frame.tsk = current;
-+#endif
- 
- 	walk_stackframe(&frame, save_return_addr, &data);
- 
-diff --git a/arch/arm/kernel/stacktrace.c b/arch/arm/kernel/stacktrace.c
-index db798eac7431..75e905508f27 100644
---- a/arch/arm/kernel/stacktrace.c
-+++ b/arch/arm/kernel/stacktrace.c
-@@ -1,5 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0-only
- #include <linux/export.h>
-+#include <linux/kprobes.h>
- #include <linux/sched.h>
- #include <linux/sched/debug.h>
- #include <linux/stacktrace.h>
-@@ -65,6 +66,11 @@ int notrace unwind_frame(struct stackframe *frame)
- 	frame->sp = *(unsigned long *)(fp - 8);
- 	frame->pc = *(unsigned long *)(fp - 4);
- #endif
-+#ifdef CONFIG_KRETPROBES
-+	if (is_kretprobe_trampoline(frame->pc))
-+		frame->pc = kretprobe_find_ret_addr(frame->tsk,
-+					(void *)frame->fp, &frame->kr_cur);
-+#endif
- 
- 	return 0;
- }
-@@ -156,6 +162,10 @@ static noinline void __save_stack_trace(struct task_struct *tsk,
- 		frame.lr = (unsigned long)__builtin_return_address(0);
- 		frame.pc = (unsigned long)__save_stack_trace;
+diff --git a/arch/arm64/kernel/stacktrace.c b/arch/arm64/kernel/stacktrace.c
+index c30624fff6ac..e2f9f479da99 100644
+--- a/arch/arm64/kernel/stacktrace.c
++++ b/arch/arm64/kernel/stacktrace.c
+@@ -133,8 +133,14 @@ int notrace unwind_frame(struct task_struct *tsk, struct stackframe *frame)
  	}
-+#ifdef CONFIG_KRETPROBES
-+	frame.kr_cur = NULL;
-+	frame.tsk = tsk;
-+#endif
+ #endif /* CONFIG_FUNCTION_GRAPH_TRACER */
+ #ifdef CONFIG_KRETPROBES
+-	if (is_kretprobe_trampoline(frame->pc))
+-		frame->pc = kretprobe_find_ret_addr(tsk, (void *)frame->fp, &frame->kr_cur);
++	if (is_kretprobe_trampoline(frame->pc)) {
++		void *ret = kretprobe_next_ret_addr(tsk, (void *)frame->fp, &frame->kr_cur);
++		/* There must be a bug in this unwinder or kretprobe. */
++		if (WARN_ON_ONCE(IS_ERR(ret)))
++			pr_err("Kretprobe_trampoline recovery failed (%d)\n", PTR_ERR(ret));
++		else
++			frame->pc = (unsigned long)ret;
++	}
+ #endif
  
- 	walk_stackframe(&frame, save_trace, &data);
- }
-@@ -173,6 +183,10 @@ void save_stack_trace_regs(struct pt_regs *regs, struct stack_trace *trace)
- 	frame.sp = regs->ARM_sp;
- 	frame.lr = regs->ARM_lr;
- 	frame.pc = regs->ARM_pc;
-+#ifdef CONFIG_KRETPROBES
-+	frame.kr_cur = NULL;
-+	frame.tsk = current;
-+#endif
+ 	frame->pc = ptrauth_strip_insn_pac(frame->pc);
+diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
+index e974caf39d3e..8133455c3522 100644
+--- a/include/linux/kprobes.h
++++ b/include/linux/kprobes.h
+@@ -516,6 +516,8 @@ static nokprobe_inline bool is_kretprobe_trampoline(unsigned long addr)
  
- 	walk_stackframe(&frame, save_trace, &data);
+ unsigned long kretprobe_find_ret_addr(struct task_struct *tsk, void *fp,
+ 				      struct llist_node **cur);
++kprobe_opcode_t *kretprobe_next_ret_addr(struct task_struct *tsk, void *fp,
++					 struct llist_node **cur);
+ #else
+ static nokprobe_inline bool is_kretprobe_trampoline(unsigned long addr)
+ {
+diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+index 4676627cb066..c57168753467 100644
+--- a/kernel/kprobes.c
++++ b/kernel/kprobes.c
+@@ -1922,6 +1922,55 @@ unsigned long kretprobe_find_ret_addr(struct task_struct *tsk, void *fp,
  }
+ NOKPROBE_SYMBOL(kretprobe_find_ret_addr);
+ 
++/**
++ * kretprobe_next_ret_addr -- Find next correct return address from @cur
++ * @tsk: Target task
++ * @fp: A framepointer to verify
++ * @cur: a storage and the base point of the loop cursor.
++ *
++ * Find the next correct return address modified by a kretprobe on @tsk from
++ * the entry which points *@cur. If it finds the next currect return address
++ * whose framepointer matches @fp, returns the return address.
++ * If the next current return address's framepointer doesn't match @fp, this
++ * returns ERR_PTR(-EILSEQ). If the *@cur is the end of the kretprobe_instance
++ * list, returns ERR_PTR(-ENOENT). If the @cur is NULL, returns ERR_PTR(-EINVAL).
++ * The @tsk must be 'current' or a task which is not running. @fp is used for
++ * verifying the framepointer which recorded with the correct return address
++ * (kretprobe_instance::fp field.)
++ * The @cur is a loop cursor for searching the kretprobe return addresses on
++ * the @tsk. If *@cur is NULL, this returns the top entry of the correct return
++ * address.
++ */
++kprobe_opcode_t *kretprobe_next_ret_addr(struct task_struct *tsk, void *fp,
++					 struct llist_node **cur)
++{
++	struct kretprobe_instance *ri = NULL;
++	kprobe_opcode_t *ret;
++
++	if (WARN_ON_ONCE(!cur))
++		return ERR_PTR(-EINVAL);
++
++	if (*cur) {
++		/* This returns the next correct return address */
++		ret = __kretprobe_find_ret_addr(tsk, cur);
++		if (!ret)
++			return ERR_PTR(-ENOENT);
++		ri = container_of(*cur, struct kretprobe_instance, llist);
++		return ri->fp == fp ? ret : ERR_PTR(-EILSEQ);
++	}
++
++	/* If this is the first try, find the FP-matched entry */
++	do {
++		ret = __kretprobe_find_ret_addr(tsk, cur);
++		if (!ret)
++			return ERR_PTR(-ENOENT);
++		ri = container_of(*cur, struct kretprobe_instance, llist);
++	} while (ri->fp != fp);
++
++	return ret;
++}
++NOKPROBE_SYMBOL(kretprobe_next_ret_addr);
++
+ void __weak arch_kretprobe_fixup_return(struct pt_regs *regs,
+ 					kprobe_opcode_t *correct_ret_addr)
+ {
 
