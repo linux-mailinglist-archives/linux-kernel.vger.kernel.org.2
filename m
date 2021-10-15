@@ -2,125 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39A2642EDE4
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 11:41:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A1FA42EDEE
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 11:44:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237524AbhJOJnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 05:43:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45324 "EHLO
+        id S237638AbhJOJqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 05:46:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237422AbhJOJnl (ORCPT
+        with ESMTP id S237656AbhJOJqi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 05:43:41 -0400
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 625B6C061570
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 02:41:35 -0700 (PDT)
-Received: by mail-io1-xd34.google.com with SMTP id s17so6953059ioa.13
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 02:41:35 -0700 (PDT)
+        Fri, 15 Oct 2021 05:46:38 -0400
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABD19C0617B1;
+        Fri, 15 Oct 2021 02:44:18 -0700 (PDT)
+Received: by mail-io1-xd2d.google.com with SMTP id m20so6985478iol.4;
+        Fri, 15 Oct 2021 02:44:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=N/9Cjwbow4gQwX9XQhOljIzy+rv03aN7aFZ2XRfJ3dw=;
-        b=SQmyqjdhNlZzfunv4WhO/v7IvIaQOSz5mrD0KgdA4IyH7HaS1yQ6UK+RvonPj6gNV6
-         fnxihMFImVsytVdsP8DxqM36FoB05+m9tlpdO2OMRTgjghO0Zh6gb78TUa9SoBvGe9bD
-         PtFkq8V+CDd2p9iwN6/VaRJkFuTiYo06nRU+WGChVZv6EYdhRfDseVK8BO9xuvXubbhM
-         pNFNOWGR4akZ+vgcDgcNHr1aZJsBp7Bjww96Yv/biCQit/u90yWaeSYsc+h2HeZenBNK
-         ktu6XOFzHC7LjvkBC80A1pDznz7FcoHxvyHRpiqihJoocSf8aGkrRU0nJN9oEhZTWQl1
-         ik0g==
+        bh=9NXi+dJimxQdgEFQS5128X7IR1wpG54I2lntzTVysHg=;
+        b=XOU78TQ4+Dq1jYhGaUo17LPV9+id1mBjGTAFHnpkW7G8ivA0zmAwctLEhBZsWiyv1y
+         gFba9Xj3V9oguFFp/2fprxXx86pYb8q++GyDHADK1o3igKaBBQ/S1Akhxpm7Tk17RdEO
+         WaJKviSWgBnoh+KhmgkEz+rx2pB6hT41L/ajzavZx274UgSYmaPN08c+egCeC6WDgyZ/
+         4RsnR5vgkA6lIg4EUhuhm6JxvIDhaS8cAIIdyDS+/auUcvyaKE9hMszVJFqrsdVbi+b3
+         9kC2Kz7VzULxHSzmlT30SAaZAlQ1lBrx327AUVixaFfdw1xj6BJ9m4yhd8fke+laPaUw
+         grDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=N/9Cjwbow4gQwX9XQhOljIzy+rv03aN7aFZ2XRfJ3dw=;
-        b=EKF0TLlVCXar45lYxMqr0lkwrGwHiiEyMhZ4dilTxzK4gsq/Np+Q3yV59QjPk74OIz
-         XxOrVYpIlyckoqz3+3PcxN/agKCl0Kv80pWoqka+LKK+TmV1FotSpdzluLR/q6xpeMrQ
-         Dedb4r+RqaCSKh6Eutd0m5IhpuY8sseiyrjKxjtbsRgwaXS2bPFjLmBwZiSARaC9D6Tu
-         q+OM44EBHoUQqpTzCGBJuDpwVmZp7E+JBKpskOHp7Yvx8oQhBbUZqv4dyJwiPAablRBM
-         iOZViFGvxESDQBQeQbkoXVsafDJBVyfeHMesJqVU6RF+RzrcdJdT06oqSmZcdVLxEDsA
-         8H0w==
-X-Gm-Message-State: AOAM533zAnuh8y9VlpdP4ahLFhxI1vizgIE/PmlRf6Ckrw279piaBNSa
-        IVk43fMP9ZBE/XaceolxKYtP65wTWp1LMI330Vc=
-X-Google-Smtp-Source: ABdhPJxu5BMdOXsp7NDP24Ux0EvjITerC6WK7GEyqP9R2UlWAg0bSfZABhzh9s81GieX0Fdak7DLoQl0vE0+5HKYcAM=
-X-Received: by 2002:a05:6602:148b:: with SMTP id a11mr3078869iow.85.1634290894846;
- Fri, 15 Oct 2021 02:41:34 -0700 (PDT)
+        bh=9NXi+dJimxQdgEFQS5128X7IR1wpG54I2lntzTVysHg=;
+        b=H7jUyjpxmMrUea977aFy3EzkU5D6Qhsas6JyoB8wPGTy/3HT7scpg/ipTZIeIMo6NZ
+         1KsnPsfGaZ8bKP8Rq4++CEezhCMkSTYjHTHySa+aiOHZVtlhdKnMusW2+LXRVcOlnnf+
+         e4W/awFrd2DR8nzQS77kKrIDMB1OsfdI4KOU/J2OYRwK705unUNA/Wd+cWZTMLhJZHGP
+         WQVZCx65fEx6t39l+5jwqn6xP70u25Smy33moixCy1opw+rnPC/GFDdfCpBCwn0K6Abu
+         N73vV/XD/Wmx7vb+5TiovPYWRvYMuNTyEmhGlFx2ihGd7zcSr3CIAhap6D4/YKebJk5o
+         gPOA==
+X-Gm-Message-State: AOAM530jx2U97o3PhmJVlQxqvY92zTFozbyXISIRVR2ylfc8Vb5V2VXh
+        Io3VLzvhfd7AjX+/t7tk03qclSqZBYZd4Jl61mQ=
+X-Google-Smtp-Source: ABdhPJzToyLsRp585Vw5bHBRFxQRavTC63/y0ndrD1zpvgnLBZyiU7PVPzBIK7eFo9EbjMpYJ7xD6FI5uGXlwhsP5m0=
+X-Received: by 2002:a5e:9612:: with SMTP id a18mr2929547ioq.57.1634291058137;
+ Fri, 15 Oct 2021 02:44:18 -0700 (PDT)
 MIME-Version: 1.0
-References: <CtypPaXXhVINRV0090UVzA-ammarfaizi2@gnuweeb.org> <6sZ9qpcJvtqCksJQVaiZyA-ammarfaizi2@gnuweeb.org>
-In-Reply-To: <6sZ9qpcJvtqCksJQVaiZyA-ammarfaizi2@gnuweeb.org>
-From:   Louvian Lyndal <louvianlyndal@gmail.com>
-Date:   Fri, 15 Oct 2021 16:41:20 +0700
-Message-ID: <CAP2ubg+p9sxJRKVhRAqYE0RKVU0Xz81YYy+=fysRiScMtAV2LQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] tools/nolibc: x86-64: Fix startup code bug
-To:     Ammar Faizi <ammar.faizi@students.amikom.ac.id>
-Cc:     Willy Tarreau <w@1wt.eu>, Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
+References: <20211009115732.19102-1-alistair@alistair23.me> <20211015025923.GA22881@dragon>
+In-Reply-To: <20211015025923.GA22881@dragon>
+From:   Alistair Francis <alistair23@gmail.com>
+Date:   Fri, 15 Oct 2021 19:43:00 +1000
+Message-ID: <CAKmqyKOjSCGNfyQj+eegixURM+NqTYWsa0QGLN+sV7he-RVCHg@mail.gmail.com>
+Subject: Re: [PATCH v12 10/10] ARM: dts: imx7d: remarkable2: Enable lcdif
+To:     Shawn Guo <shawnguo@kernel.org>
+Cc:     Alistair Francis <alistair@alistair23.me>,
+        Lee Jones <lee.jones@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, lgirdwood@gmail.com,
+        Mark Brown <broonie@kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        dl-linux-imx <linux-imx@nxp.com>, amitk@kernel.org,
+        rui.zhang@intel.com, devicetree <devicetree@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        David Laight <David.Laight@aculab.com>,
-        Peter Cordes <peter@cordes.ca>,
-        Bedirhan KURT <windowz414@gnuweeb.org>
+        linux-hwmon@vger.kernel.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-pm@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 15, 2021 at 3:57 PM Ammar Faizi wrote:
+On Fri, Oct 15, 2021 at 12:59 PM Shawn Guo <shawnguo@kernel.org> wrote:
 >
-> Hi,
+> On Sat, Oct 09, 2021 at 09:57:32PM +1000, Alistair Francis wrote:
+> > Connect the dispaly on the reMarkable2.
+> >
+> > Signed-off-by: Alistair Francis <alistair@alistair23.me>
 >
-> This is a code to test.
->
-> Compile with:
->   gcc -O3 -ggdb3 -nostdlib -o test test.c
->
-> Technical explanation:
-> The System V ABI mandates the %rsp must be 16-byte aligned before
-> performing a function call, but the current nolibc.h violates it.
->
-> This %rsp alignment violation makes the callee can't align its stack
-> properly. Note that the callee may have a situation where it requires
-> vector aligned move. For example, `movaps` with memory operand w.r.t.
-> xmm registers, it requires the src/dst address be 16-byte aligned.
->
-> Since the callee can't align its stack properly, it will segfault when
-> executing `movaps`. The following C code is the reproducer and test
-> to ensure the bug really exists and this patch fixes it.
+> Maybe there are some patches missing.  It doesn't apply to my branch.
 
-Hello,
-With the current nolibc.h, the program segfault on movaps:
-Program received signal SIGSEGV, Segmentation fault.
-0x0000555555555032 in dump_argv (argv=0x7fffffffe288, argc=1) at test.c:15
-15        const char str[] = "\nDumping argv...\n";
-(gdb) x/20i main
-   0x555555555000 <main>:    endbr64
-   0x555555555004 <main+4>:    push   %r14
-   0x555555555006 <main+6>:    push   %r13
-   0x555555555008 <main+8>:    mov    %edi,%r13d
-   0x55555555500b <main+11>:    push   %r12
-   0x55555555500d <main+13>:    push   %rbp
-   0x55555555500e <main+14>:    mov    %rdx,%rbp
-   0x555555555011 <main+17>:    mov    $0xa,%edx
-   0x555555555016 <main+22>:    push   %rbx
-   0x555555555017 <main+23>:    mov    %rsi,%rbx
-   0x55555555501a <main+26>:    sub    $0x8,%rsp
-   0x55555555501e <main+30>:    movdqa 0xffa(%rip),%xmm0        # 0x555555556020
-   0x555555555026 <main+38>:    mov    %dx,-0x68(%rsp)
-   0x55555555502b <main+43>:    lea    -0x78(%rsp),%r12
-   0x555555555030 <main+48>:    xor    %edx,%edx
-=> 0x555555555032 <main+50>:    movaps %xmm0,-0x78(%rsp)
-   0x555555555037 <main+55>:    nopw   0x0(%rax,%rax,1)
-   0x555555555040 <main+64>:    add    $0x1,%rdx
-   0x555555555044 <main+68>:    cmpb   $0x0,(%r12,%rdx,1)
-   0x555555555049 <main+73>:    jne    0x555555555040 <main+64>
-(gdb) p $rsp-0x78
-$1 = (void *) 0x7fffffffe1c8
-(gdb)
+Sorry about that. This series applies on top of the "ARM: dts: imx7d:
+remarkable2: add wacom digitizer device" patch. The patch is on the
+list but not yet applied.
 
-Apparently it's because $rsp-0x78 is not multiple of 16. After this
-patchset, it works fine. gcc version 11.1.0
+I'll send a rebased version.
 
-Tested-by: Louvian Lyndal <louvianlyndal@gmail.com>
+Alistair
+
+>
+> Shawn
+>
+> > ---
+> >  arch/arm/boot/dts/imx7d-remarkable2.dts | 74 +++++++++++++++++++++++++
+> >  1 file changed, 74 insertions(+)
+> >
+> > diff --git a/arch/arm/boot/dts/imx7d-remarkable2.dts b/arch/arm/boot/dts/imx7d-remarkable2.dts
+> > index 1b49c26816cd..5f32c216c3fd 100644
+> > --- a/arch/arm/boot/dts/imx7d-remarkable2.dts
+> > +++ b/arch/arm/boot/dts/imx7d-remarkable2.dts
+> > @@ -47,6 +47,16 @@ reg_digitizer: regulator-digitizer {
+> >               startup-delay-us = <100000>; /* 100 ms */
+> >       };
+> >
+> > +     reg_sdoe: regulator-sdoe {
+> > +             compatible = "regulator-fixed";
+> > +             regulator-name = "SDOE";
+> > +             pinctrl-names = "default", "sleep";
+> > +             pinctrl-0 = <&pinctrl_sdoe_reg>;
+> > +             pinctrl-1 = <&pinctrl_sdoe_reg>;
+> > +             gpio = <&gpio3 27 GPIO_ACTIVE_HIGH>;
+> > +             enable-active-high;
+> > +     };
+> > +
+> >       wifi_pwrseq: wifi_pwrseq {
+> >               compatible = "mmc-pwrseq-simple";
+> >               pinctrl-names = "default";
+> > @@ -55,6 +65,16 @@ wifi_pwrseq: wifi_pwrseq {
+> >               clocks = <&clks IMX7D_CLKO2_ROOT_DIV>;
+> >               clock-names = "ext_clock";
+> >       };
+> > +
+> > +     panel {
+> > +             compatible = "eink,vb3300-kca";
+> > +
+> > +             port {
+> > +                     panel_in: endpoint {
+> > +                             remote-endpoint = <&display_out>;
+> > +                     };
+> > +             };
+> > +     };
+> >  };
+> >
+> >  &clks {
+> > @@ -114,6 +134,20 @@ reg_epdpmic: vcom {
+> >       };
+> >  };
+> >
+> > +&lcdif {
+> > +     pinctrl-names = "default";
+> > +     pinctrl-0 = <&pinctrl_lcdif>;
+> > +     lcd-supply = <&reg_epdpmic>;
+> > +     lcd2-supply = <&reg_sdoe>;
+> > +     status = "okay";
+> > +
+> > +     port {
+> > +             display_out: endpoint {
+> > +                     remote-endpoint = <&panel_in>;
+> > +             };
+> > +     };
+> > +};
+> > +
+> >  &snvs_pwrkey {
+> >       status = "okay";
+> >  };
+> > @@ -228,6 +262,46 @@ MX7D_PAD_I2C4_SCL__I2C4_SCL              0x4000007f
+> >               >;
+> >       };
+> >
+> > +     pinctrl_lcdif: lcdifgrp {
+> > +             fsl,pins = <
+> > +                     MX7D_PAD_LCD_DATA00__LCD_DATA0          0x79
+> > +                     MX7D_PAD_LCD_DATA01__LCD_DATA1          0x79
+> > +                     MX7D_PAD_LCD_DATA02__LCD_DATA2          0x79
+> > +                     MX7D_PAD_LCD_DATA03__LCD_DATA3          0x79
+> > +                     MX7D_PAD_LCD_DATA04__LCD_DATA4          0x79
+> > +                     MX7D_PAD_LCD_DATA05__LCD_DATA5          0x79
+> > +                     MX7D_PAD_LCD_DATA06__LCD_DATA6          0x79
+> > +                     MX7D_PAD_LCD_DATA07__LCD_DATA7          0x79
+> > +                     MX7D_PAD_LCD_DATA08__LCD_DATA8          0x79
+> > +                     MX7D_PAD_LCD_DATA09__LCD_DATA9          0x79
+> > +                     MX7D_PAD_LCD_DATA10__LCD_DATA10         0x79
+> > +                     MX7D_PAD_LCD_DATA11__LCD_DATA11         0x79
+> > +                     MX7D_PAD_LCD_DATA12__LCD_DATA12         0x79
+> > +                     MX7D_PAD_LCD_DATA13__LCD_DATA13         0x79
+> > +                     MX7D_PAD_LCD_DATA14__LCD_DATA14         0x79
+> > +                     MX7D_PAD_LCD_DATA15__LCD_DATA15         0x79
+> > +
+> > +                     MX7D_PAD_LCD_DATA17__LCD_DATA17         0x79
+> > +                     MX7D_PAD_LCD_DATA18__LCD_DATA18         0x79
+> > +                     MX7D_PAD_LCD_DATA19__LCD_DATA19         0x79
+> > +                     MX7D_PAD_LCD_DATA20__LCD_DATA20         0x79
+> > +                     MX7D_PAD_LCD_DATA21__LCD_DATA21         0x79
+> > +
+> > +                     MX7D_PAD_LCD_DATA23__LCD_DATA23         0x79
+> > +                     MX7D_PAD_LCD_CLK__LCD_CLK               0x79
+> > +                     MX7D_PAD_LCD_ENABLE__LCD_ENABLE         0x79
+> > +                     MX7D_PAD_LCD_VSYNC__LCD_VSYNC           0x79
+> > +                     MX7D_PAD_LCD_HSYNC__LCD_HSYNC           0x79
+> > +                     MX7D_PAD_LCD_RESET__LCD_RESET           0x79
+> > +             >;
+> > +     };
+> > +
+> > +     pinctrl_sdoe_reg: sdoereggrp {
+> > +             fsl,pins = <
+> > +                     MX7D_PAD_LCD_DATA22__GPIO3_IO27         0x74
+> > +             >;
+> > +     };
+> > +
+> >       pinctrl_uart1: uart1grp {
+> >               fsl,pins = <
+> >                       MX7D_PAD_UART1_TX_DATA__UART1_DCE_TX    0x79
+> > --
+> > 2.31.1
+> >
