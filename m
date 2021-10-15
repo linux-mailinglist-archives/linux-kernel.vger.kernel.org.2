@@ -2,60 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93C5842F878
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 18:41:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B16442F87C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 18:42:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241505AbhJOQnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 12:43:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58436 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232499AbhJOQnm (ORCPT
+        id S241512AbhJOQoS convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 15 Oct 2021 12:44:18 -0400
+Received: from hostingweb31-40.netsons.net ([89.40.174.40]:50139 "EHLO
+        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232499AbhJOQoR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 12:43:42 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD412C061570
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 09:41:35 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id z11so42817697lfj.4
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 09:41:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=yssoiv2eaRCJkjBecpi/apKs28zaLnx29ngWyMoxLfk=;
-        b=djLRfVN1uG4vsB9t2QUGHyR6EDZFXOseZ4S+5/CZpZWJWM2vs/kqbk7/X6Fbiq+NWm
-         ruhcNHhvvxQp3iK5yyF75NdUIuVeSF6LfhRotrZyrLTQpIIyfvWte+mv+2ek/nlugl1j
-         82a+9sAM1shW3jwfKCzMYsFDHHYJJss4v+v4mPTaIiagv6EaD/0d3PbIhUMIyJzwipUx
-         1ghUV6b5NwZ1FknncHv6zkWXikU0tbi8iK0Mvdp19ZTaoXrN/tSWGQZycTMDH2ZOjCbY
-         66jlXvn/ioM11sSYHQfHC1xgKjKEKr+Xt/QqLkKOWjNUXWMv1rS6kUcM2+ydl07FjW3W
-         XUeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=yssoiv2eaRCJkjBecpi/apKs28zaLnx29ngWyMoxLfk=;
-        b=rxm0Ktcby7WNSMukSPCzokLkR7u9jW7szM6WsfsqA0Z9RFg3YqsIVXw7U/AcBnJogJ
-         ORuuJyk5Wv9eQ5Wl3AQ8H0GApbUWKEgIUlXYLA1QhUfr5BgwP8x0M9h96pnFZOK6xiUe
-         n45TbywpFOrjtL79Y143l4WSQjw147f3zZbwB74R74EBX1jLYNzVksWBlPFGNdaSXinQ
-         Yo2CoFJ3kIPwEibEVMORQwQVIc4yBYrx3LXBQCjQhNOGWL4wNdc6ck11VGQ/zqMH7353
-         XoL1xhxFh6qkd6WfVHyzmbSH10WCH7wXVSKRP+7RAZ+W16ntm0+K62vanb/IvyCHunm1
-         niHw==
-X-Gm-Message-State: AOAM5303PntU1z9z7z//taCjhPzh/Q7ePKkvcumCxSwZSa/3tuSEXJAw
-        mB3ByIRSiqs/3xkF+/QW3b5JGTnDLNW0chggbVg=
-X-Google-Smtp-Source: ABdhPJxTvkrnA0V97knhJ/NuQbTpppl8PdUUjcgH5uM75a++zQ2ZMcdGJzYqGJApHliPiwv3QIQ6J7/D9ZEWi6ETRcM=
-X-Received: by 2002:a05:651c:17a5:: with SMTP id bn37mr13755001ljb.514.1634316094314;
- Fri, 15 Oct 2021 09:41:34 -0700 (PDT)
+        Fri, 15 Oct 2021 12:44:17 -0400
+Received: from [77.244.183.192] (port=62378 helo=[192.168.178.41])
+        by hostingweb31.netsons.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <luca@lucaceresoli.net>)
+        id 1mbQHY-0057QX-Fl; Fri, 15 Oct 2021 18:42:08 +0200
+Subject: Re: [PATCH 7/8] watchdog: max77714: add driver for the watchdog in
+ the MAX77714 PMIC
+To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
+        linux-rtc@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        Chiwoong Byun <woong.byun@samsung.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>
+References: <20211011155615.257529-1-luca@lucaceresoli.net>
+ <20211011155615.257529-8-luca@lucaceresoli.net>
+ <319589ca-0dfb-008f-052a-01f0f25d86fa@infradead.org>
+From:   Luca Ceresoli <luca@lucaceresoli.net>
+Message-ID: <a78a3f69-d84d-727f-4173-2f0498a4c6f7@lucaceresoli.net>
+Date:   Fri, 15 Oct 2021 18:42:05 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Received: by 2002:ab3:1c03:0:0:0:0:0 with HTTP; Fri, 15 Oct 2021 09:41:33
- -0700 (PDT)
-Reply-To: fionahill.usa@hotmail.com
-From:   Fiona Hill <rogerpakayi@gmail.com>
-Date:   Fri, 15 Oct 2021 09:41:33 -0700
-Message-ID: <CAL0uRZAF_Enmvzt48U4FYQVnhoASwQ9mwDoCnBrR5Dz4F8gn2w@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <319589ca-0dfb-008f-052a-01f0f25d86fa@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8BIT
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lucaceresoli.net
+X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca@lucaceresoli.net
+X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
+
+On 12/10/21 03:18, Randy Dunlap wrote:
+> Hi,
+> 
+> On 10/11/21 8:56 AM, Luca Ceresoli wrote:
+>> diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
+>> index bf59faeb3de1..00bc3f932a6c 100644
+>> --- a/drivers/watchdog/Kconfig
+>> +++ b/drivers/watchdog/Kconfig
+>> @@ -699,6 +699,15 @@ config MAX77620_WATCHDOG
+>>        MAX77620 chips. To compile this driver as a module,
+>>        choose M here: the module will be called max77620_wdt.
+>>   +config MAX77714_WATCHDOG
+>> +    tristate "Maxim MAX77714 Watchdog Timer"
+>> +    depends on MFD_MAX77714 || COMPILE_TEST
+>> +    help
+>> +     This is the driver for watchdog timer in the MAX77714 PMIC.
+>> +     Say 'Y' here to enable the watchdog timer support for
+>> +     MAX77714 chips. To compile this driver as a module,
+>> +     choose M here: the module will be called max77714_wdt.
+> 
+> Please follow coding-style for Kconfig files:
+> 
+> (from Documentation/process/coding-style.rst, section 10):
+> 
+> For all of the Kconfig* configuration files throughout the source tree,
+> the indentation is somewhat different.  Lines under a ``config`` definition
+> are indented with one tab, while help text is indented an additional two
+> spaces.
+
+Oh dear, I usually don't make such silly mistakes, apologies.
+
+[...some fast typing later...]
+
+Uhm, now I noticed many entries in that file have that same mistake.
+Perhaps I copy-pasted and didn't check. I'll send a patch to fix them too.
+
 -- 
-Hi how are you doing today ? You receive my message i send to you?
+Luca
+
