@@ -2,77 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E226642F103
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 14:35:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 125A542F104
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 14:35:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233954AbhJOMhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 08:37:04 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:50054
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235596AbhJOMg6 (ORCPT
+        id S235917AbhJOMh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 08:37:59 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:13743 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234422AbhJOMh0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 08:36:58 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 5AC5A3F10B;
-        Fri, 15 Oct 2021 12:34:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1634301287;
-        bh=O2/ljvaTb7ZvVN6KnRS0V+ry4x/Qg3DOm1K7QLfboYs=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=m2DmQgB4NcEWjr0VFVA8fv8gUbv27DIkCES0pbDdCs6L1tu2xRwasURsWVF2zAIYQ
-         m5oLzc8GeOFjwaAC8ivnox0x2gGcYs7Mqqc09qfFDieux4PVCHPVCWaunCuQDrr1eI
-         oaB3J+M5FKkj1Y6An9wIxk1L7Y8oJBVm0Hdc0XP0k3Ddgz1tZsFrxL34JtfvHUyqWM
-         RNuJg/WlhzqIIxYmPq1m6WkPO32zrVhh25NJgYX8mZeaACO8RlNFPYn6PQCyd9T5DP
-         otHTyqgvvOOjy4+bsIRHWkFoxFAL3rCfVxD0Y1dH/P5PfroVrEeH9aIQ6QZ1otpRpn
-         ieFDgPNg62g/g==
-From:   Colin King <colin.king@canonical.com>
-To:     Vinod Koul <vkoul@kernel.org>, dmaengine@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] dmaengine: Remove redundant initialization of variable err
-Date:   Fri, 15 Oct 2021 13:34:47 +0100
-Message-Id: <20211015123447.27560-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.32.0
+        Fri, 15 Oct 2021 08:37:26 -0400
+Received: from dggeml751-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HW5KT2YJSzW9wV;
+        Fri, 15 Oct 2021 20:33:33 +0800 (CST)
+Received: from huawei.com (10.67.189.167) by dggeml751-chm.china.huawei.com
+ (10.1.199.150) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.8; Fri, 15
+ Oct 2021 20:35:13 +0800
+From:   Jiangfeng Xiao <xiaojiangfeng@huawei.com>
+To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
+        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
+        <jolsa@redhat.com>, <rickyman7@gmail.com>, <namhyung@kernel.org>,
+        <kan.liang@linux.intel.com>, <yao.jin@linux.intel.com>,
+        <song@kernel.org>, <amurray@thegoodpenguin.co.uk>,
+        <xiaojiangfeng@huawei.com>
+CC:     <andrew.murray@arm.com>, <linux-perf-users@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <shaolexi@huawei.com>,
+        <nixiaoming@huawei.com>, <qiuxi1@huawei.com>
+Subject: [PATCH] perf evsel: fix armv7_a9 failed to resolve symbols with JIT
+Date:   Fri, 15 Oct 2021 20:34:57 +0800
+Message-ID: <1634301297-125143-1-git-send-email-xiaojiangfeng@huawei.com>
+X-Mailer: git-send-email 1.8.5.6
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.67.189.167]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggeml751-chm.china.huawei.com (10.1.199.150)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+The PMU of armv7_a9 machine does not have the capability to exclude
+counting events that occur in specific contexts such as guest, so
+sys_perf_event_open() syscall returned with -EINVAL.
 
-The variable err is being initialized with a value that is never read, it
-is being updated later on. The assignment is redundant and can be removed
-and move the declaration into the local scope.
+See following code:
 
-Addresses-Coverity: ("Unused value")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+static int perf_try_init_event(struct pmu *pmu, struct perf_event *event)
+{
+	...
+	if (pmu->capabilities & PERF_PMU_CAP_NO_EXCLUDE &&
+	    event_has_any_exclude_flag(event))
+		ret = -EINVAL;
+	...
+}
+
+Then evsel__open_cpu will use perf_missing_features.mmap2 to fallback to
+not using .mmap2 and fail to re-execute sys_perf_event_open. Next,
+evsel__open_cpu use perf_missing_features.exclude_guest to fallback to
+not using .exclude_guest and finally success to re-execute
+sys_perf_event_open.
+
+When .mmap2 is not used, the input parameter flag of map__new is 0,
+perf will not find the perf-%d.map to resolve.
+
+Therefore, in this submission, the disabling order of .mmap2 and
+exclude_guest is reversed to fix the failure to resolve symbols with JIT.
+
+Fixes: cc6795aeffe ("perf/core: Add PERF_PMU_CAP_NO_EXCLUDE for exclusion incapable PMUs")
+
+Signed-off-by: Jiangfeng Xiao <xiaojiangfeng@huawei.com>
 ---
- drivers/dma/dmaengine.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ tools/perf/util/evsel.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/dma/dmaengine.c b/drivers/dma/dmaengine.c
-index af3ee288bc11..d9f7c097cfd6 100644
---- a/drivers/dma/dmaengine.c
-+++ b/drivers/dma/dmaengine.c
-@@ -695,13 +695,12 @@ static struct dma_chan *find_candidate(struct dma_device *device,
-  */
- struct dma_chan *dma_get_slave_channel(struct dma_chan *chan)
- {
--	int err = -EBUSY;
--
- 	/* lock against __dma_request_channel */
- 	mutex_lock(&dma_list_mutex);
- 
- 	if (chan->client_count == 0) {
- 		struct dma_device *device = chan->device;
-+		int err;
- 
- 		dma_cap_set(DMA_PRIVATE, device->cap_mask);
- 		device->privatecnt++;
+diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+index dbfeceb..d6bf15b 100644
+--- a/tools/perf/util/evsel.c
++++ b/tools/perf/util/evsel.c
+@@ -1896,15 +1896,15 @@ bool evsel__detect_missing_features(struct evsel *evsel)
+ 		perf_missing_features.cloexec = true;
+ 		pr_debug2_peo("switching off cloexec flag\n");
+ 		return true;
+-	} else if (!perf_missing_features.mmap2 && evsel->core.attr.mmap2) {
+-		perf_missing_features.mmap2 = true;
+-		pr_debug2_peo("switching off mmap2\n");
+-		return true;
+ 	} else if (!perf_missing_features.exclude_guest &&
+ 		   (evsel->core.attr.exclude_guest || evsel->core.attr.exclude_host)) {
+ 		perf_missing_features.exclude_guest = true;
+ 		pr_debug2_peo("switching off exclude_guest, exclude_host\n");
+ 		return true;
++	} else if (!perf_missing_features.mmap2 && evsel->core.attr.mmap2) {
++		perf_missing_features.mmap2 = true;
++		pr_debug2_peo("switching off mmap2\n");
++		return true;
+ 	} else if (!perf_missing_features.sample_id_all) {
+ 		perf_missing_features.sample_id_all = true;
+ 		pr_debug2_peo("switching off sample_id_all\n");
 -- 
-2.32.0
+1.8.5.6
 
