@@ -2,645 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94F7D42E9DB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 09:16:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C044B42E9CF
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 09:15:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236028AbhJOHSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 03:18:24 -0400
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:49663 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236010AbhJOHSX (ORCPT
+        id S235949AbhJOHRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 03:17:18 -0400
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:36958 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235941AbhJOHRQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 03:18:23 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=wuzongyong@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0Us6A078_1634282107;
-Received: from localhost.localdomain(mailfrom:wuzongyong@linux.alibaba.com fp:SMTPD_---0Us6A078_1634282107)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 15 Oct 2021 15:15:18 +0800
-From:   Wu Zongyong <wuzongyong@linux.alibaba.com>
-To:     wuzongyong@linux.alibaba.com, jasowang@redhat.com,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, mst@redhat.com
-Cc:     wei.yang1@linux.alibaba.com
-Subject: [PATCH v5 8/8] eni_vdpa: add vDPA driver for Alibaba ENI
-Date:   Fri, 15 Oct 2021 15:15:01 +0800
-Message-Id: <57a04a9e516ec4055cb887e9c7b24658ca5b0228.1634281805.git.wuzongyong@linux.alibaba.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1634281805.git.wuzongyong@linux.alibaba.com>
-References: <cover.1632882380.git.wuzongyong@linux.alibaba.com> <cover.1634281805.git.wuzongyong@linux.alibaba.com>
+        Fri, 15 Oct 2021 03:17:16 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20211015071509euoutp02737f1f02f1f70d400b546f5639e470d9~uIuty8H3k1851518515euoutp02x
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 07:15:09 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20211015071509euoutp02737f1f02f1f70d400b546f5639e470d9~uIuty8H3k1851518515euoutp02x
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1634282109;
+        bh=olx3adYSe+y9HVK287/r5de4lld3M09z6O3SmXtaPr0=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=lCkXKjRmlGRWxO5DXOI8a0rzGyQFiAPVTs4Gz1G0kKvqfKVmVxzXJqxvF3Wqta76n
+         BdYl5LyBqYHfqw34RtsatzQd7YHYwHz5fbDy2Q+Z0ehTAD/FiQnCNHH+H1Dt3IXI9L
+         quNYOfnicN8MaUkS+UNqkbF9IM9h0g9T3YEO84vk=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20211015071509eucas1p2e28a5fa95ab394e3345d256308a1c59f~uIutdVxdk0465504655eucas1p2t;
+        Fri, 15 Oct 2021 07:15:09 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges1new.samsung.com (EUCPMTA) with SMTP id CC.DA.45756.C7A29616; Fri, 15
+        Oct 2021 08:15:08 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20211015071508eucas1p296492b41e85eb1fb495c6b51b1cb6a31~uIus65T8f0463604636eucas1p2v;
+        Fri, 15 Oct 2021 07:15:08 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20211015071508eusmtrp17011cc227a1dc9aed56b2d0c9e6c1a77~uIus6FlIc0509605096eusmtrp10;
+        Fri, 15 Oct 2021 07:15:08 +0000 (GMT)
+X-AuditID: cbfec7f2-7bdff7000002b2bc-2f-61692a7c13e4
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id 3F.F6.31287.C7A29616; Fri, 15
+        Oct 2021 08:15:08 +0100 (BST)
+Received: from [106.210.134.192] (unknown [106.210.134.192]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20211015071507eusmtip13b9c7af17b96d789037213cac8e02e5b~uIusOixKe2548325483eusmtip17;
+        Fri, 15 Oct 2021 07:15:07 +0000 (GMT)
+Subject: Re: [PATCH v4 1/2] [RFT] clk: samsung: add support for CPU clocks
+To:     Will McVicker <willmcvicker@google.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     kernel-team@android.com, linux-samsung-soc@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+Message-ID: <ac82af87-5dcd-07c9-9b09-3a7c33503f8d@samsung.com>
+Date:   Fri, 15 Oct 2021 09:15:07 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
+        Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211014195347.3635601-2-willmcvicker@google.com>
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Se1BMYRjGfXsue3ZZTlvaL8JYMS4jtow5VK4ZhzSaYZQMWZzZot2y29rc
+        V25bSpRJHUwhanbcdpktNaSYFtGNkhAJjYhqMyiVdo9L//2e733eed/nnY9AxPexEUSEKoZR
+        q+SRUlyIWkp/VkzdNTlCPr3skw/1rLMZo/LzXChT6w8eZW6qxaj2xAaMelJwGqfSK27zqKqH
+        i6i7nw9jVG+tCaWMBb8AZezoA/OG0JZCC0Z/rTvIp1l9Ek7fZF/x6SyzljYb43H6evZe+ugN
+        I6Bt5tFBglCh7yYmMmIbo542Z70wnH3TzI9OlsY+tWYhepA/MgEQBCRnwPc13glASIjJXAAL
+        u17wONEJYO+dCzgnbAA+MRj6KwJHR25yKp8r5ADI7juCcqIdwJ7sXGB3OZNLYWPRMUe7C2nm
+        Qf2t95hdIORZAD+b8nC7CydlMKE1wcEicg7sK2cRO6PkeFhdV4nZeTi5Eab1xCGcxwk+yHiH
+        2llAzoXGR70OD0KOgXmtpxGOJbD+XeafXU8J4IFXFMf+MLWvE3DsDFusN/gcu8Oy1ERHBEju
+        B7Cx/DKfE4n9qePS/3T4wJflXbj9Zgg5CV4tmMY9z4c/bKkod8qhsK7VidthKEyxnES4ZxE0
+        HBJz7gmQtV75N7a4sho5BqTsgGTsgDTsgDTs/7lZADUCCaPVKBWMRqZidJ4auVKjVSk8N0Yp
+        zaD/s5X1WjvywZmWds8SwCNACYAEInURfbmjkItFm+TbdzDqqDC1NpLRlICRBCqViIynLoWJ
+        SYU8htnCMNGM+m+VRwhG6HkpIa4eLU1tW03uK1dnf2wkTEXq12Yv9GK8qcb3WsrJUQ3+9bN+
+        eSu3t61ezt7SDc5xL5RoZu1RNqUpB8dd+Khbr6p+gOgzdj0e9jh3qS1J271g7aBPWLVTo3Pg
+        Ymmnvzh+WVSm7NtC1ifokLdeGFh/ZmxwrELdVLonyG1899zvmzu8Q0uv5pTd7a4y8EJsMwPe
+        9nhUrPIqsBkCL5+/Zy061xVe4/8ouK34zbPnEt3UBreQE0B3fPfuysRBgeOKi0fvrPWbOLsl
+        70OAh1ua3xpXWWlolNc8y4roIF+RFxp9va8naZnfwg7Xe9/XxZ6LCZ6OZDZXzcS/8JMFszeE
+        LZnim96NSFFNuFw2GVFr5L8B3BrNo9sDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrDIsWRmVeSWpSXmKPExsVy+t/xu7o1WpmJBp/mi1tc//Kc1WLHdhGL
+        jW9/MFlsenyN1eJjzz1Wi8u75rBZzDi/j8ni4ilXi8Nv2lkt/l3byGKxatcfRotVn/4zOvB4
+        bNu9jdXj/Y1Wdo9ZDb1sHjtn3WX3WLCp1GPTqk42j81L6j36tqxi9Pi8SS6AM0rPpii/tCRV
+        ISO/uMRWKdrQwkjP0NJCz8jEUs/Q2DzWyshUSd/OJiU1J7MstUjfLkEvY9aD5+wF/UoVV44v
+        YG5g3CHdxcjJISFgIrGifzJ7FyMXh5DAUkaJDzu2M0IkZCROTmtghbCFJf5c62KDKHrPKDFl
+        5jwWkISwgJfEw/0TwBIiApuYJPpObwNzmAUWMkq0bHrJAtFynFHi28ZfYC1sAoYSXW9BZnFy
+        8ArYSfw/N4sZxGYRUJW4dOMC2D5RgWSJt6+/M0HUCEqcnPkErJdTwF5i1Zl/YDXMAmYS8zY/
+        ZIaw5SW2v50DZYtL3Hoyn2kCo9AsJO2zkLTMQtIyC0nLAkaWVYwiqaXFuem5xYZ6xYm5xaV5
+        6XrJ+bmbGIHRvO3Yz807GOe9+qh3iJGJg/EQowQHs5II77sD6YlCvCmJlVWpRfnxRaU5qcWH
+        GE2B/pnILCWanA9MJ3kl8YZmBqaGJmaWBqaWZsZK4rxb566JFxJITyxJzU5NLUgtgulj4uCU
+        amBKqeZnmW42aWly16Ijh2u/Jz9yqIzNvB85rXI/99oXfPKeiVdOHOZ8p+Kz4UToLONj/lu9
+        FYQZF55eXHQstvKK0Gq+/5PLJqx2OfBl2bz0QylTDj8T2v7CtGrXE+6nK+ZN2bnS29Razmbz
+        fvWix5H157hCjqQteLHlDPNRpUOOEyJe2Ht4yt4tzjxVtTb1T6mcrdLaDzlyEy/5Wog27i8v
+        vbE+R+dnzqvVUZkWbGe8f+d3h02trqt33bL+JefW+3rWz8XPfDn06193zJU9Ooe55v2S2aL9
+        7NGLhoM1P3OcnuQxMPz5ZxzOr7xJlEE9QePACgfHmjOHimS6O8vKZku/OJlwR1A6bdcVkZaq
+        rCnzlViKMxINtZiLihMBffqhQ28DAAA=
+X-CMS-MailID: 20211015071508eucas1p296492b41e85eb1fb495c6b51b1cb6a31
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20211014195358eucas1p28a79dc8ac217ee813be2a028c29191ea
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20211014195358eucas1p28a79dc8ac217ee813be2a028c29191ea
+References: <20211014195347.3635601-1-willmcvicker@google.com>
+        <CGME20211014195358eucas1p28a79dc8ac217ee813be2a028c29191ea@eucas1p2.samsung.com>
+        <20211014195347.3635601-2-willmcvicker@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds a new vDPA driver for Alibaba ENI(Elastic Network
-Interface) which is build upon virtio 0.9.5 specification.
-And this driver doesn't support to run on BE host.
+On 14.10.2021 21:53, Will McVicker wrote:
+> Adds 'struct samsung_cpu_clock' and corresponding CPU clock registration
+> function to the samsung common clk driver. This allows samsung clock
+> drivers to register their CPU clocks with the samsung_cmu_register_one()
+> API.
+>
+> Currently the exynos5433 apollo and atlas clks have their own custom
+> init functions to handle registering their CPU clocks. With this patch
+> we can drop their custom CLK_OF_DECLARE functions and directly call
+> samsung_cmu_register_one().
+>
+> Signed-off-by: Will McVicker <willmcvicker@google.com>
+Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> ---
+>   drivers/clk/samsung/clk-cpu.c | 18 ++++++++++++++++++
+>   drivers/clk/samsung/clk.c     |  2 ++
+>   drivers/clk/samsung/clk.h     | 26 ++++++++++++++++++++++++++
+>   3 files changed, 46 insertions(+)
+>
+> diff --git a/drivers/clk/samsung/clk-cpu.c b/drivers/clk/samsung/clk-cpu.c
+> index 00ef4d1b0888..7f20d9aedaa9 100644
+> --- a/drivers/clk/samsung/clk-cpu.c
+> +++ b/drivers/clk/samsung/clk-cpu.c
+> @@ -469,3 +469,21 @@ int __init exynos_register_cpu_clock(struct samsung_clk_provider *ctx,
+>   	kfree(cpuclk);
+>   	return ret;
+>   }
+> +
+> +void __init samsung_clk_register_cpu(struct samsung_clk_provider *ctx,
+> +		const struct samsung_cpu_clock *list, unsigned int nr_clk)
+> +{
+> +	unsigned int idx;
+> +	unsigned int num_cfgs;
+> +	struct clk_hw **hws = ctx->clk_data.hws;
+> +
+> +	for (idx = 0; idx < nr_clk; idx++, list++) {
+> +		/* find count of configuration rates in cfg */
+> +		for (num_cfgs = 0; list->cfg[num_cfgs].prate != 0; )
+> +			num_cfgs++;
+> +
+> +		exynos_register_cpu_clock(ctx, list->id, list->name, hws[list->parent_id],
+> +				hws[list->alt_parent_id], list->offset, list->cfg, num_cfgs,
+> +				list->flags);
+> +	}
+> +}
+> diff --git a/drivers/clk/samsung/clk.c b/drivers/clk/samsung/clk.c
+> index 1949ae7851b2..336243c6f120 100644
+> --- a/drivers/clk/samsung/clk.c
+> +++ b/drivers/clk/samsung/clk.c
+> @@ -378,6 +378,8 @@ struct samsung_clk_provider * __init samsung_cmu_register_one(
+>   		samsung_clk_extended_sleep_init(reg_base,
+>   			cmu->clk_regs, cmu->nr_clk_regs,
+>   			cmu->suspend_regs, cmu->nr_suspend_regs);
+> +	if (cmu->cpu_clks)
+> +		samsung_clk_register_cpu(ctx, cmu->cpu_clks, cmu->nr_cpu_clks);
+>   
+>   	samsung_clk_of_add_provider(np, ctx);
+>   
+> diff --git a/drivers/clk/samsung/clk.h b/drivers/clk/samsung/clk.h
+> index c1e1a6b2f499..26499e97275b 100644
+> --- a/drivers/clk/samsung/clk.h
+> +++ b/drivers/clk/samsung/clk.h
+> @@ -271,6 +271,27 @@ struct samsung_pll_clock {
+>   	__PLL(_typ, _id, _name, _pname, CLK_GET_RATE_NOCACHE, _lock,	\
+>   	      _con, _rtable)
+>   
+> +struct samsung_cpu_clock {
+> +	unsigned int	id;
+> +	const char	*name;
+> +	unsigned int	parent_id;
+> +	unsigned int	alt_parent_id;
+> +	unsigned long	flags;
+> +	int		offset;
+> +	const struct exynos_cpuclk_cfg_data *cfg;
+> +};
+> +
+> +#define CPU_CLK(_id, _name, _pid, _apid, _flags, _offset, _cfg) \
+> +	{							\
+> +		.id		  = _id,			\
+> +		.name		  = _name,			\
+> +		.parent_id	  = _pid,			\
+> +		.alt_parent_id	  = _apid,			\
+> +		.flags		  = _flags,			\
+> +		.offset		  = _offset,			\
+> +		.cfg		  = _cfg,			\
+> +	}
+> +
+>   struct samsung_clock_reg_cache {
+>   	struct list_head node;
+>   	void __iomem *reg_base;
+> @@ -301,6 +322,9 @@ struct samsung_cmu_info {
+>   	unsigned int nr_fixed_factor_clks;
+>   	/* total number of clocks with IDs assigned*/
+>   	unsigned int nr_clk_ids;
+> +	/* list of cpu clocks and respective count */
+> +	const struct samsung_cpu_clock *cpu_clks;
+> +	unsigned int nr_cpu_clks;
+>   
+>   	/* list and number of clocks registers */
+>   	const unsigned long *clk_regs;
+> @@ -350,6 +374,8 @@ extern void __init samsung_clk_register_gate(struct samsung_clk_provider *ctx,
+>   extern void __init samsung_clk_register_pll(struct samsung_clk_provider *ctx,
+>   			const struct samsung_pll_clock *pll_list,
+>   			unsigned int nr_clk, void __iomem *base);
+> +extern void samsung_clk_register_cpu(struct samsung_clk_provider *ctx,
+> +		const struct samsung_cpu_clock *list, unsigned int nr_clk);
+>   
+>   extern struct samsung_clk_provider __init *samsung_cmu_register_one(
+>   			struct device_node *,
 
-Signed-off-by: Wu Zongyong <wuzongyong@linux.alibaba.com>
----
- drivers/vdpa/Kconfig            |   8 +
- drivers/vdpa/Makefile           |   1 +
- drivers/vdpa/alibaba/Makefile   |   3 +
- drivers/vdpa/alibaba/eni_vdpa.c | 553 ++++++++++++++++++++++++++++++++
- 4 files changed, 565 insertions(+)
- create mode 100644 drivers/vdpa/alibaba/Makefile
- create mode 100644 drivers/vdpa/alibaba/eni_vdpa.c
-
-diff --git a/drivers/vdpa/Kconfig b/drivers/vdpa/Kconfig
-index 3d91982d8371..c0232a2148a7 100644
---- a/drivers/vdpa/Kconfig
-+++ b/drivers/vdpa/Kconfig
-@@ -78,4 +78,12 @@ config VP_VDPA
- 	help
- 	  This kernel module bridges virtio PCI device to vDPA bus.
- 
-+config ALIBABA_ENI_VDPA
-+	tristate "vDPA driver for Alibaba ENI"
-+	select VIRTIO_PCI_LEGACY_LIB
-+	depends on PCI_MSI && !CPU_BIG_ENDIAN
-+	help
-+	  VDPA driver for Alibaba ENI(Elastic Network Interface) which is build upon
-+	  virtio 0.9.5 specification.
-+
- endif # VDPA
-diff --git a/drivers/vdpa/Makefile b/drivers/vdpa/Makefile
-index f02ebed33f19..15665563a7f4 100644
---- a/drivers/vdpa/Makefile
-+++ b/drivers/vdpa/Makefile
-@@ -5,3 +5,4 @@ obj-$(CONFIG_VDPA_USER) += vdpa_user/
- obj-$(CONFIG_IFCVF)    += ifcvf/
- obj-$(CONFIG_MLX5_VDPA) += mlx5/
- obj-$(CONFIG_VP_VDPA)    += virtio_pci/
-+obj-$(CONFIG_ALIBABA_ENI_VDPA) += alibaba/
-diff --git a/drivers/vdpa/alibaba/Makefile b/drivers/vdpa/alibaba/Makefile
-new file mode 100644
-index 000000000000..ef4aae69f87a
---- /dev/null
-+++ b/drivers/vdpa/alibaba/Makefile
-@@ -0,0 +1,3 @@
-+# SPDX-License-Identifier: GPL-2.0
-+obj-$(CONFIG_ALIBABA_ENI_VDPA) += eni_vdpa.o
-+
-diff --git a/drivers/vdpa/alibaba/eni_vdpa.c b/drivers/vdpa/alibaba/eni_vdpa.c
-new file mode 100644
-index 000000000000..6a09f157d810
---- /dev/null
-+++ b/drivers/vdpa/alibaba/eni_vdpa.c
-@@ -0,0 +1,553 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * vDPA bridge driver for Alibaba ENI(Elastic Network Interface)
-+ *
-+ * Copyright (c) 2021, Alibaba Inc. All rights reserved.
-+ * Author: Wu Zongyong <wuzongyong@linux.alibaba.com>
-+ *
-+ */
-+
-+#include "linux/bits.h"
-+#include <linux/interrupt.h>
-+#include <linux/module.h>
-+#include <linux/pci.h>
-+#include <linux/vdpa.h>
-+#include <linux/virtio.h>
-+#include <linux/virtio_config.h>
-+#include <linux/virtio_ring.h>
-+#include <linux/virtio_pci.h>
-+#include <linux/virtio_pci_legacy.h>
-+#include <uapi/linux/virtio_net.h>
-+
-+#define ENI_MSIX_NAME_SIZE 256
-+
-+#define ENI_ERR(pdev, fmt, ...)	\
-+	dev_err(&pdev->dev, "%s"fmt, "eni_vdpa: ", ##__VA_ARGS__)
-+#define ENI_DBG(pdev, fmt, ...)	\
-+	dev_dbg(&pdev->dev, "%s"fmt, "eni_vdpa: ", ##__VA_ARGS__)
-+#define ENI_INFO(pdev, fmt, ...) \
-+	dev_info(&pdev->dev, "%s"fmt, "eni_vdpa: ", ##__VA_ARGS__)
-+
-+struct eni_vring {
-+	void __iomem *notify;
-+	char msix_name[ENI_MSIX_NAME_SIZE];
-+	struct vdpa_callback cb;
-+	int irq;
-+};
-+
-+struct eni_vdpa {
-+	struct vdpa_device vdpa;
-+	struct virtio_pci_legacy_device ldev;
-+	struct eni_vring *vring;
-+	struct vdpa_callback config_cb;
-+	char msix_name[ENI_MSIX_NAME_SIZE];
-+	int config_irq;
-+	int queues;
-+	int vectors;
-+};
-+
-+static struct eni_vdpa *vdpa_to_eni(struct vdpa_device *vdpa)
-+{
-+	return container_of(vdpa, struct eni_vdpa, vdpa);
-+}
-+
-+static struct virtio_pci_legacy_device *vdpa_to_ldev(struct vdpa_device *vdpa)
-+{
-+	struct eni_vdpa *eni_vdpa = vdpa_to_eni(vdpa);
-+
-+	return &eni_vdpa->ldev;
-+}
-+
-+static u64 eni_vdpa_get_features(struct vdpa_device *vdpa)
-+{
-+	struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
-+	u64 features = vp_legacy_get_features(ldev);
-+
-+	features |= BIT_ULL(VIRTIO_F_ACCESS_PLATFORM);
-+	features |= BIT_ULL(VIRTIO_F_ORDER_PLATFORM);
-+
-+	return features;
-+}
-+
-+static int eni_vdpa_set_features(struct vdpa_device *vdpa, u64 features)
-+{
-+	struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
-+
-+	if (!(features & BIT_ULL(VIRTIO_NET_F_MRG_RXBUF)) && features) {
-+		ENI_ERR(ldev->pci_dev,
-+			"VIRTIO_NET_F_MRG_RXBUF is not negotiated\n");
-+		return -EINVAL;
-+	}
-+
-+	vp_legacy_set_features(ldev, (u32)features);
-+
-+	return 0;
-+}
-+
-+static u8 eni_vdpa_get_status(struct vdpa_device *vdpa)
-+{
-+	struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
-+
-+	return vp_legacy_get_status(ldev);
-+}
-+
-+static int eni_vdpa_get_vq_irq(struct vdpa_device *vdpa, u16 idx)
-+{
-+	struct eni_vdpa *eni_vdpa = vdpa_to_eni(vdpa);
-+	int irq = eni_vdpa->vring[idx].irq;
-+
-+	if (irq == VIRTIO_MSI_NO_VECTOR)
-+		return -EINVAL;
-+
-+	return irq;
-+}
-+
-+static void eni_vdpa_free_irq(struct eni_vdpa *eni_vdpa)
-+{
-+	struct virtio_pci_legacy_device *ldev = &eni_vdpa->ldev;
-+	struct pci_dev *pdev = ldev->pci_dev;
-+	int i;
-+
-+	for (i = 0; i < eni_vdpa->queues; i++) {
-+		if (eni_vdpa->vring[i].irq != VIRTIO_MSI_NO_VECTOR) {
-+			vp_legacy_queue_vector(ldev, i, VIRTIO_MSI_NO_VECTOR);
-+			devm_free_irq(&pdev->dev, eni_vdpa->vring[i].irq,
-+				      &eni_vdpa->vring[i]);
-+			eni_vdpa->vring[i].irq = VIRTIO_MSI_NO_VECTOR;
-+		}
-+	}
-+
-+	if (eni_vdpa->config_irq != VIRTIO_MSI_NO_VECTOR) {
-+		vp_legacy_config_vector(ldev, VIRTIO_MSI_NO_VECTOR);
-+		devm_free_irq(&pdev->dev, eni_vdpa->config_irq, eni_vdpa);
-+		eni_vdpa->config_irq = VIRTIO_MSI_NO_VECTOR;
-+	}
-+
-+	if (eni_vdpa->vectors) {
-+		pci_free_irq_vectors(pdev);
-+		eni_vdpa->vectors = 0;
-+	}
-+}
-+
-+static irqreturn_t eni_vdpa_vq_handler(int irq, void *arg)
-+{
-+	struct eni_vring *vring = arg;
-+
-+	if (vring->cb.callback)
-+		return vring->cb.callback(vring->cb.private);
-+
-+	return IRQ_HANDLED;
-+}
-+
-+static irqreturn_t eni_vdpa_config_handler(int irq, void *arg)
-+{
-+	struct eni_vdpa *eni_vdpa = arg;
-+
-+	if (eni_vdpa->config_cb.callback)
-+		return eni_vdpa->config_cb.callback(eni_vdpa->config_cb.private);
-+
-+	return IRQ_HANDLED;
-+}
-+
-+static int eni_vdpa_request_irq(struct eni_vdpa *eni_vdpa)
-+{
-+	struct virtio_pci_legacy_device *ldev = &eni_vdpa->ldev;
-+	struct pci_dev *pdev = ldev->pci_dev;
-+	int i, ret, irq;
-+	int queues = eni_vdpa->queues;
-+	int vectors = queues + 1;
-+
-+	ret = pci_alloc_irq_vectors(pdev, vectors, vectors, PCI_IRQ_MSIX);
-+	if (ret != vectors) {
-+		ENI_ERR(pdev,
-+			"failed to allocate irq vectors want %d but %d\n",
-+			vectors, ret);
-+		return ret;
-+	}
-+
-+	eni_vdpa->vectors = vectors;
-+
-+	for (i = 0; i < queues; i++) {
-+		snprintf(eni_vdpa->vring[i].msix_name, ENI_MSIX_NAME_SIZE,
-+			 "eni-vdpa[%s]-%d\n", pci_name(pdev), i);
-+		irq = pci_irq_vector(pdev, i);
-+		ret = devm_request_irq(&pdev->dev, irq,
-+				       eni_vdpa_vq_handler,
-+				       0, eni_vdpa->vring[i].msix_name,
-+				       &eni_vdpa->vring[i]);
-+		if (ret) {
-+			ENI_ERR(pdev, "failed to request irq for vq %d\n", i);
-+			goto err;
-+		}
-+		vp_legacy_queue_vector(ldev, i, i);
-+		eni_vdpa->vring[i].irq = irq;
-+	}
-+
-+	snprintf(eni_vdpa->msix_name, ENI_MSIX_NAME_SIZE, "eni-vdpa[%s]-config\n",
-+		 pci_name(pdev));
-+	irq = pci_irq_vector(pdev, queues);
-+	ret = devm_request_irq(&pdev->dev, irq, eni_vdpa_config_handler, 0,
-+			       eni_vdpa->msix_name, eni_vdpa);
-+	if (ret) {
-+		ENI_ERR(pdev, "failed to request irq for config vq %d\n", i);
-+		goto err;
-+	}
-+	vp_legacy_config_vector(ldev, queues);
-+	eni_vdpa->config_irq = irq;
-+
-+	return 0;
-+err:
-+	eni_vdpa_free_irq(eni_vdpa);
-+	return ret;
-+}
-+
-+static void eni_vdpa_set_status(struct vdpa_device *vdpa, u8 status)
-+{
-+	struct eni_vdpa *eni_vdpa = vdpa_to_eni(vdpa);
-+	struct virtio_pci_legacy_device *ldev = &eni_vdpa->ldev;
-+	u8 s = eni_vdpa_get_status(vdpa);
-+
-+	if (status & VIRTIO_CONFIG_S_DRIVER_OK &&
-+	    !(s & VIRTIO_CONFIG_S_DRIVER_OK)) {
-+		eni_vdpa_request_irq(eni_vdpa);
-+	}
-+
-+	vp_legacy_set_status(ldev, status);
-+
-+	if (!(status & VIRTIO_CONFIG_S_DRIVER_OK) &&
-+	    (s & VIRTIO_CONFIG_S_DRIVER_OK))
-+		eni_vdpa_free_irq(eni_vdpa);
-+}
-+
-+static int eni_vdpa_reset(struct vdpa_device *vdpa)
-+{
-+	struct eni_vdpa *eni_vdpa = vdpa_to_eni(vdpa);
-+	struct virtio_pci_legacy_device *ldev = &eni_vdpa->ldev;
-+	u8 s = eni_vdpa_get_status(vdpa);
-+
-+	vp_legacy_set_status(ldev, 0);
-+
-+	if (s & VIRTIO_CONFIG_S_DRIVER_OK)
-+		eni_vdpa_free_irq(eni_vdpa);
-+
-+	return 0;
-+}
-+
-+static u16 eni_vdpa_get_vq_num_max(struct vdpa_device *vdpa)
-+{
-+	struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
-+
-+	return vp_legacy_get_queue_size(ldev, 0);
-+}
-+
-+static u16 eni_vdpa_get_vq_num_min(struct vdpa_device *vdpa)
-+{
-+	struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
-+
-+	return vp_legacy_get_queue_size(ldev, 0);
-+}
-+
-+static int eni_vdpa_get_vq_state(struct vdpa_device *vdpa, u16 qid,
-+				struct vdpa_vq_state *state)
-+{
-+	return -EOPNOTSUPP;
-+}
-+
-+static int eni_vdpa_set_vq_state(struct vdpa_device *vdpa, u16 qid,
-+				 const struct vdpa_vq_state *state)
-+{
-+	struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
-+	const struct vdpa_vq_state_split *split = &state->split;
-+
-+	/* ENI is build upon virtio-pci specfication which not support
-+	 * to set state of virtqueue. But if the state is equal to the
-+	 * device initial state by chance, we can let it go.
-+	 */
-+	if (!vp_legacy_get_queue_enable(ldev, qid)
-+	    && split->avail_index == 0)
-+		return 0;
-+
-+	return -EOPNOTSUPP;
-+}
-+
-+
-+static void eni_vdpa_set_vq_cb(struct vdpa_device *vdpa, u16 qid,
-+			       struct vdpa_callback *cb)
-+{
-+	struct eni_vdpa *eni_vdpa = vdpa_to_eni(vdpa);
-+
-+	eni_vdpa->vring[qid].cb = *cb;
-+}
-+
-+static void eni_vdpa_set_vq_ready(struct vdpa_device *vdpa, u16 qid,
-+				  bool ready)
-+{
-+	struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
-+
-+	/* ENI is a legacy virtio-pci device. This is not supported
-+	 * by specification. But we can disable virtqueue by setting
-+	 * address to 0.
-+	 */
-+	if (!ready)
-+		vp_legacy_set_queue_address(ldev, qid, 0);
-+}
-+
-+static bool eni_vdpa_get_vq_ready(struct vdpa_device *vdpa, u16 qid)
-+{
-+	struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
-+
-+	return vp_legacy_get_queue_enable(ldev, qid);
-+}
-+
-+static void eni_vdpa_set_vq_num(struct vdpa_device *vdpa, u16 qid,
-+			       u32 num)
-+{
-+	struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
-+	struct pci_dev *pdev = ldev->pci_dev;
-+	u16 n = vp_legacy_get_queue_size(ldev, qid);
-+
-+	/* ENI is a legacy virtio-pci device which not allow to change
-+	 * virtqueue size. Just report a error if someone tries to
-+	 * change it.
-+	 */
-+	if (num != n)
-+		ENI_ERR(pdev,
-+			"not support to set vq %u fixed num %u to %u\n",
-+			qid, n, num);
-+}
-+
-+static int eni_vdpa_set_vq_address(struct vdpa_device *vdpa, u16 qid,
-+				   u64 desc_area, u64 driver_area,
-+				   u64 device_area)
-+{
-+	struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
-+	u32 pfn = desc_area >> VIRTIO_PCI_QUEUE_ADDR_SHIFT;
-+
-+	vp_legacy_set_queue_address(ldev, qid, pfn);
-+
-+	return 0;
-+}
-+
-+static void eni_vdpa_kick_vq(struct vdpa_device *vdpa, u16 qid)
-+{
-+	struct eni_vdpa *eni_vdpa = vdpa_to_eni(vdpa);
-+
-+	iowrite16(qid, eni_vdpa->vring[qid].notify);
-+}
-+
-+static u32 eni_vdpa_get_device_id(struct vdpa_device *vdpa)
-+{
-+	struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
-+
-+	return ldev->id.device;
-+}
-+
-+static u32 eni_vdpa_get_vendor_id(struct vdpa_device *vdpa)
-+{
-+	struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
-+
-+	return ldev->id.vendor;
-+}
-+
-+static u32 eni_vdpa_get_vq_align(struct vdpa_device *vdpa)
-+{
-+	return PAGE_SIZE;
-+}
-+
-+static size_t eni_vdpa_get_config_size(struct vdpa_device *vdpa)
-+{
-+	return sizeof(struct virtio_net_config);
-+}
-+
-+
-+static void eni_vdpa_get_config(struct vdpa_device *vdpa,
-+				unsigned int offset,
-+				void *buf, unsigned int len)
-+{
-+	struct eni_vdpa *eni_vdpa = vdpa_to_eni(vdpa);
-+	struct virtio_pci_legacy_device *ldev = &eni_vdpa->ldev;
-+	void __iomem *ioaddr = ldev->ioaddr +
-+		VIRTIO_PCI_CONFIG_OFF(eni_vdpa->vectors) +
-+		offset;
-+	u8 *p = buf;
-+	int i;
-+
-+	for (i = 0; i < len; i++)
-+		*p++ = ioread8(ioaddr + i);
-+}
-+
-+static void eni_vdpa_set_config(struct vdpa_device *vdpa,
-+				unsigned int offset, const void *buf,
-+				unsigned int len)
-+{
-+	struct eni_vdpa *eni_vdpa = vdpa_to_eni(vdpa);
-+	struct virtio_pci_legacy_device *ldev = &eni_vdpa->ldev;
-+	void __iomem *ioaddr = ldev->ioaddr +
-+		VIRTIO_PCI_CONFIG_OFF(eni_vdpa->vectors) +
-+		offset;
-+	const u8 *p = buf;
-+	int i;
-+
-+	for (i = 0; i < len; i++)
-+		iowrite8(*p++, ioaddr + i);
-+}
-+
-+static void eni_vdpa_set_config_cb(struct vdpa_device *vdpa,
-+				   struct vdpa_callback *cb)
-+{
-+	struct eni_vdpa *eni_vdpa = vdpa_to_eni(vdpa);
-+
-+	eni_vdpa->config_cb = *cb;
-+}
-+
-+static const struct vdpa_config_ops eni_vdpa_ops = {
-+	.get_features	= eni_vdpa_get_features,
-+	.set_features	= eni_vdpa_set_features,
-+	.get_status	= eni_vdpa_get_status,
-+	.set_status	= eni_vdpa_set_status,
-+	.reset		= eni_vdpa_reset,
-+	.get_vq_num_max	= eni_vdpa_get_vq_num_max,
-+	.get_vq_num_min	= eni_vdpa_get_vq_num_min,
-+	.get_vq_state	= eni_vdpa_get_vq_state,
-+	.set_vq_state	= eni_vdpa_set_vq_state,
-+	.set_vq_cb	= eni_vdpa_set_vq_cb,
-+	.set_vq_ready	= eni_vdpa_set_vq_ready,
-+	.get_vq_ready	= eni_vdpa_get_vq_ready,
-+	.set_vq_num	= eni_vdpa_set_vq_num,
-+	.set_vq_address	= eni_vdpa_set_vq_address,
-+	.kick_vq	= eni_vdpa_kick_vq,
-+	.get_device_id	= eni_vdpa_get_device_id,
-+	.get_vendor_id	= eni_vdpa_get_vendor_id,
-+	.get_vq_align	= eni_vdpa_get_vq_align,
-+	.get_config_size = eni_vdpa_get_config_size,
-+	.get_config	= eni_vdpa_get_config,
-+	.set_config	= eni_vdpa_set_config,
-+	.set_config_cb  = eni_vdpa_set_config_cb,
-+	.get_vq_irq	= eni_vdpa_get_vq_irq,
-+};
-+
-+
-+static u16 eni_vdpa_get_num_queues(struct eni_vdpa *eni_vdpa)
-+{
-+	struct virtio_pci_legacy_device *ldev = &eni_vdpa->ldev;
-+	u32 features = vp_legacy_get_features(ldev);
-+	u16 num = 2;
-+
-+	if (features & BIT_ULL(VIRTIO_NET_F_MQ)) {
-+		__virtio16 max_virtqueue_pairs;
-+
-+		eni_vdpa_get_config(&eni_vdpa->vdpa,
-+			offsetof(struct virtio_net_config, max_virtqueue_pairs),
-+			&max_virtqueue_pairs,
-+			sizeof(max_virtqueue_pairs));
-+		num = 2 * __virtio16_to_cpu(virtio_legacy_is_little_endian(),
-+				max_virtqueue_pairs);
-+	}
-+
-+	if (features & BIT_ULL(VIRTIO_NET_F_CTRL_VQ))
-+		num += 1;
-+
-+	return num;
-+}
-+
-+static void eni_vdpa_free_irq_vectors(void *data)
-+{
-+	pci_free_irq_vectors(data);
-+}
-+
-+static int eni_vdpa_probe(struct pci_dev *pdev, const struct pci_device_id *id)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct eni_vdpa *eni_vdpa;
-+	struct virtio_pci_legacy_device *ldev;
-+	int ret, i;
-+
-+	ret = pcim_enable_device(pdev);
-+	if (ret)
-+		return ret;
-+
-+	eni_vdpa = vdpa_alloc_device(struct eni_vdpa, vdpa,
-+				     dev, &eni_vdpa_ops, NULL, false);
-+	if (IS_ERR(eni_vdpa)) {
-+		ENI_ERR(pdev, "failed to allocate vDPA structure\n");
-+		return PTR_ERR(eni_vdpa);
-+	}
-+
-+	ldev = &eni_vdpa->ldev;
-+	ldev->pci_dev = pdev;
-+
-+	ret = vp_legacy_probe(ldev);
-+	if (ret) {
-+		ENI_ERR(pdev, "failed to probe legacy PCI device\n");
-+		goto err;
-+	}
-+
-+	pci_set_master(pdev);
-+	pci_set_drvdata(pdev, eni_vdpa);
-+
-+	eni_vdpa->vdpa.dma_dev = &pdev->dev;
-+	eni_vdpa->queues = eni_vdpa_get_num_queues(eni_vdpa);
-+
-+	ret = devm_add_action_or_reset(dev, eni_vdpa_free_irq_vectors, pdev);
-+	if (ret) {
-+		ENI_ERR(pdev,
-+			"failed for adding devres for freeing irq vectors\n");
-+		goto err;
-+	}
-+
-+	eni_vdpa->vring = devm_kcalloc(&pdev->dev, eni_vdpa->queues,
-+				      sizeof(*eni_vdpa->vring),
-+				      GFP_KERNEL);
-+	if (!eni_vdpa->vring) {
-+		ret = -ENOMEM;
-+		ENI_ERR(pdev, "failed to allocate virtqueues\n");
-+		goto err;
-+	}
-+
-+	for (i = 0; i < eni_vdpa->queues; i++) {
-+		eni_vdpa->vring[i].irq = VIRTIO_MSI_NO_VECTOR;
-+		eni_vdpa->vring[i].notify = ldev->ioaddr + VIRTIO_PCI_QUEUE_NOTIFY;
-+	}
-+	eni_vdpa->config_irq = VIRTIO_MSI_NO_VECTOR;
-+
-+	ret = vdpa_register_device(&eni_vdpa->vdpa, eni_vdpa->queues);
-+	if (ret) {
-+		ENI_ERR(pdev, "failed to register to vdpa bus\n");
-+		goto err;
-+	}
-+
-+	return 0;
-+
-+err:
-+	put_device(&eni_vdpa->vdpa.dev);
-+	return ret;
-+}
-+
-+static void eni_vdpa_remove(struct pci_dev *pdev)
-+{
-+	struct eni_vdpa *eni_vdpa = pci_get_drvdata(pdev);
-+
-+	vdpa_unregister_device(&eni_vdpa->vdpa);
-+	vp_legacy_remove(&eni_vdpa->ldev);
-+}
-+
-+static struct pci_device_id eni_pci_ids[] = {
-+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_REDHAT_QUMRANET,
-+			 VIRTIO_TRANS_ID_NET,
-+			 PCI_SUBVENDOR_ID_REDHAT_QUMRANET,
-+			 VIRTIO_ID_NET) },
-+	{ 0 },
-+};
-+
-+static struct pci_driver eni_vdpa_driver = {
-+	.name		= "alibaba-eni-vdpa",
-+	.id_table	= eni_pci_ids,
-+	.probe		= eni_vdpa_probe,
-+	.remove		= eni_vdpa_remove,
-+};
-+
-+module_pci_driver(eni_vdpa_driver);
-+
-+MODULE_AUTHOR("Wu Zongyong <wuzongyong@linux.alibaba.com>");
-+MODULE_DESCRIPTION("Alibaba ENI vDPA driver");
-+MODULE_LICENSE("GPL v2");
+Best regards
 -- 
-2.31.1
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
 
