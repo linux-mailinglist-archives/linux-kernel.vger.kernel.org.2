@@ -2,77 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84B2F42EC69
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 10:32:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 319D642EBE5
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 10:19:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236998AbhJOIe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 04:34:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57472 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232214AbhJOIeZ (ORCPT
+        id S236485AbhJOIVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 04:21:40 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:14356 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237412AbhJOIT7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 04:34:25 -0400
-Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8637FC061570
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 01:32:19 -0700 (PDT)
-Received: from martin by viti.kaiser.cx with local (Exim 4.89)
-        (envelope-from <martin@viti.kaiser.cx>)
-        id 1mbIdP-0001aj-JY; Fri, 15 Oct 2021 10:32:11 +0200
-Date:   Fri, 15 Oct 2021 10:32:11 +0200
-From:   Martin Kaiser <lists@kaiser.cx>
-To:     Phillip Potter <phil@philpotter.co.uk>
-Cc:     gregkh@linuxfoundation.org, Larry.Finger@lwfinger.net,
-        straube.linux@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: r8188eu: remove MSG_88E calls from
- hal/usb_halinit.c
-Message-ID: <20211015083211.ngbgtmhkh3lh5kzj@viti.kaiser.cx>
-References: <20211015000233.842-1-phil@philpotter.co.uk>
+        Fri, 15 Oct 2021 04:19:59 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HVzXq6026z8yrq;
+        Fri, 15 Oct 2021 16:12:59 +0800 (CST)
+Received: from dggpeml500026.china.huawei.com (7.185.36.106) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Fri, 15 Oct 2021 16:17:51 +0800
+Received: from localhost.localdomain (10.175.112.125) by
+ dggpeml500026.china.huawei.com (7.185.36.106) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Fri, 15 Oct 2021 16:17:51 +0800
+From:   Yuanzheng Song <songyuanzheng@huawei.com>
+To:     <rafael@kernel.org>, <daniel.lezcano@linaro.org>,
+        <amitk@kernel.org>, <rui.zhang@intel.com>,
+        <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH -next] Fix null pointer dereference in thermal_release()
+Date:   Fri, 15 Oct 2021 08:32:30 +0000
+Message-ID: <20211015083230.67658-1-songyuanzheng@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211015000233.842-1-phil@philpotter.co.uk>
-User-Agent: NeoMutt/20170113 (1.7.2)
-Sender: Martin Kaiser <martin@viti.kaiser.cx>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.112.125]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpeml500026.china.huawei.com (7.185.36.106)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thus wrote Phillip Potter (phil@philpotter.co.uk):
+If both dev_set_name() and device_register() failed, then
+null pointer dereference occurs in thermal_release() which
+will use strncmp() to compare the name.
 
-> Remove both MSG_88E calls from hal/usb_halinit.c, as these calls serve
-> no purpose other than to print the name of the function they are in
-> (_ReadAdapterInfo8188EU) on entry and on exit, with a timing of the
-> function, which is better accomplished by other means. Also remove
-> the jiffies assignment at the start of the function, as it is no
-> longer used.
+So fix it by adding dev_set_name() return value check.
 
-> Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
-> ---
->  drivers/staging/r8188eu/hal/usb_halinit.c | 6 ------
->  1 file changed, 6 deletions(-)
+Signed-off-by: Yuanzheng Song <songyuanzheng@huawei.com>
+---
+ drivers/thermal/thermal_core.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-> diff --git a/drivers/staging/r8188eu/hal/usb_halinit.c b/drivers/staging/r8188eu/hal/usb_halinit.c
-> index f6db5b05e6e7..abbd107ad3c1 100644
-> --- a/drivers/staging/r8188eu/hal/usb_halinit.c
-> +++ b/drivers/staging/r8188eu/hal/usb_halinit.c
-> @@ -1073,15 +1073,9 @@ static void _ReadRFType(struct adapter *Adapter)
+diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
+index 9e243d9f929e..6904b97fd6ea 100644
+--- a/drivers/thermal/thermal_core.c
++++ b/drivers/thermal/thermal_core.c
+@@ -904,6 +904,10 @@ __thermal_cooling_device_register(struct device_node *np,
+ 		goto out_kfree_cdev;
+ 	cdev->id = ret;
+ 
++	ret = dev_set_name(&cdev->device, "cooling_device%d", cdev->id);
++	if (ret)
++		goto out_ida_remove;
++
+ 	cdev->type = kstrdup(type ? type : "", GFP_KERNEL);
+ 	if (!cdev->type) {
+ 		ret = -ENOMEM;
+@@ -918,7 +922,6 @@ __thermal_cooling_device_register(struct device_node *np,
+ 	cdev->device.class = &thermal_class;
+ 	cdev->devdata = devdata;
+ 	thermal_cooling_device_setup_sysfs(cdev);
+-	dev_set_name(&cdev->device, "cooling_device%d", cdev->id);
+ 	ret = device_register(&cdev->device);
+ 	if (ret)
+ 		goto out_kfree_type;
+@@ -1229,6 +1232,10 @@ thermal_zone_device_register(const char *type, int trips, int mask,
+ 	tz->id = id;
+ 	strlcpy(tz->type, type, sizeof(tz->type));
+ 
++	result = dev_set_name(&tz->device, "thermal_zone%d", tz->id);
++	if (result)
++		goto remove_id;
++
+ 	if (!ops->critical)
+ 		ops->critical = thermal_zone_device_critical;
+ 
+@@ -1250,7 +1257,6 @@ thermal_zone_device_register(const char *type, int trips, int mask,
+ 	/* A new thermal zone needs to be updated anyway. */
+ 	atomic_set(&tz->need_update, 1);
+ 
+-	dev_set_name(&tz->device, "thermal_zone%d", tz->id);
+ 	result = device_register(&tz->device);
+ 	if (result)
+ 		goto release_device;
+-- 
+2.25.1
 
->  static int _ReadAdapterInfo8188EU(struct adapter *Adapter)
->  {
-> -	u32 start = jiffies;
-> -
-> -	MSG_88E("====> %s\n", __func__);
-> -
->  	_ReadRFType(Adapter);/* rf_chip -> _InitRFType() */
->  	_ReadPROMContent(Adapter);
-
-> -	MSG_88E("<==== %s in %d ms\n", __func__, rtw_get_passing_time_ms(start));
-> -
->  	return _SUCCESS;
->  }
-
-Makes sense to me. We should get rid of the prints that show only the
-function name.
-
-Acked-by: Martin Kaiser <martin@kaiser.cx>
