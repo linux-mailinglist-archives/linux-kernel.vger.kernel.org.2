@@ -2,83 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D39D42EFEA
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 13:46:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1F8542EFEB
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 13:46:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238545AbhJOLsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 07:48:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45672 "EHLO
+        id S238550AbhJOLsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 07:48:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235360AbhJOLsM (ORCPT
+        with ESMTP id S235360AbhJOLsU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 07:48:12 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A967C061570
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 04:46:05 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id y15so40560350lfk.7
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 04:46:05 -0700 (PDT)
+        Fri, 15 Oct 2021 07:48:20 -0400
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4872C061570
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 04:46:13 -0700 (PDT)
+Received: by mail-il1-x12b.google.com with SMTP id d11so6776130ilc.8
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 04:46:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=kb1x9tsGXaYeNovFWGdEXry3yHSkE+lL9wmnxYr/M0g=;
-        b=Bq4tlA+uaiVDOAMaQlhWb6N1uJGXs0377YAXJi+mSLJBdZP7u2gejSataJoCZ8f4pc
-         MnZSVOVGrtxx0rudmcxPom5LsH6e49Ev6XAs2VB50w1QVnr9gmraFdv3o5d7k39Qw08K
-         6htYVsZR65vgZJtlMn2TwQ9VpI2v2zKOxmL8I=
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ihfz0jXlZwuHL87l5wK9+AFSx48nUR+ukAj9B84W2nc=;
+        b=qKte9AhEalyQcx/QqP8xB9EOeoqrRNJsInfq+8x9T/9gWvJT8spvXicxCHAfIzmgtx
+         hCMrg62Z3KcGSVHA5xAW3SWOim7rGsDhdya/C359OEwtNEuF1eFQWDYPRBZiY26sI3p0
+         jOr6hAOixjOYoLd8Xars3R+bxTA+Rfzm3X5etdOhifXfGrtTS37S0caKpqz81ipoqRFK
+         tIpw5b0q7/IxKMGRaTpB+JZmCUadzKs84l4/nDSeOOcv0KKTT6bYhVIU41yKdFaM43Zu
+         6ZYwka3HVOW7VSECmqZ4QZQtlfDRfISN2upoCKdly9fAUmkLvAsdwNflNKwjGlGNFfgW
+         kVBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=kb1x9tsGXaYeNovFWGdEXry3yHSkE+lL9wmnxYr/M0g=;
-        b=Vk7G3p8pee3o6QEx0PgaPImgT+X4wXtzSbwvdpgarOsbBuoQks+0kUlb0ZG5IfwWIm
-         maPeVVq8parf1Pw8nr6p6KbN+iG5iLn0hm7lGS8FDBkdZXyxuJOLO4vNP8WQVwL/4QMN
-         URuPY1qbeREC+25vaQbAXyl4nEKlxH5YMh/nwtRr7CB0DPsaYJ93nSIXzEDPsW1+g/87
-         epLzQfyDIakIuqHengNkyayvfZoxW9TdHN2qAzaCpX/kmTydL9Ize4qa4mIvowQPjhKK
-         HrQfLQG50jbJdaJEQvhTAUaKnIniA5F82MWrhbFDf9GdVENSFuOyzveJfwQU4TEcaJMP
-         Nz+w==
-X-Gm-Message-State: AOAM532S0jsxAPklktGPZk9ksp3kxeTmEQDijP4s75moGrqHCrUyZjAZ
-        nagkblqq0n8xXVhtEbn3p4NHR8mUmbhJ88+F
-X-Google-Smtp-Source: ABdhPJwpADafh9MgvOGIeqy5I8FHUrijOCDNksaupBgbhvEfjlLDsHXebD1WiTooMAfl+zWM9xhMaQ==
-X-Received: by 2002:a05:6512:118a:: with SMTP id g10mr11924978lfr.662.1634298363790;
-        Fri, 15 Oct 2021 04:46:03 -0700 (PDT)
-Received: from [172.16.11.1] ([81.216.59.226])
-        by smtp.gmail.com with ESMTPSA id s17sm526594lfe.10.2021.10.15.04.46.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Oct 2021 04:46:03 -0700 (PDT)
-Subject: Re: [PATCH] linux/container_of.h: switch to static_assert
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     akpm@linux-foundation.org,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org
-References: <20211015090530.2774079-1-linux@rasmusvillemoes.dk>
- <YWl95fZ69qpECxqi@smile.fi.intel.com> <YWl+hQTa4Pd1A7zg@smile.fi.intel.com>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <63cb6259-ea8e-46a8-63fc-d942c2225fcc@rasmusvillemoes.dk>
-Date:   Fri, 15 Oct 2021 13:46:01 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ihfz0jXlZwuHL87l5wK9+AFSx48nUR+ukAj9B84W2nc=;
+        b=yQ0qrrIPiqg7YxS3Ak30bYWCNIsW93sAnbwmtZjSqPmNNuhWbMWCx3fMwwUv09Qapn
+         CbcKJQIKmPNawJCG2GLuHtVYdQYFuIdh6oJtB5Hy1pVV+Ntm/8p16zWTyCqCExujWg/s
+         fkUEpy3hXGdsLhUiq4xj6BfgNhFRcDHzySWd/pW7MemdvDC7pIpAqoiYJ1Ooy+719Zbr
+         nhwNqKZiPHQJmeKFvNmCJv5xrvpn1k0eosftPFcwbIAtJaKp0i6I52anpVM0L1hIyB48
+         WrxuKMxy8VTdZn501bi7eqWoXU3zkCHpyMC6UIYJ7vAb5BDSnKPjkuj421XdX/9S4a4G
+         v0rg==
+X-Gm-Message-State: AOAM533Rgc4+hqwycRosHgx7aE+OTMg1AlVpMHWwFJJCsUxzMjxk6Fh5
+        v8nzoWNXTCfmxwQMCdFojI6d7hIFDcdknmUlSPU=
+X-Google-Smtp-Source: ABdhPJxw9M8P2YG3RHxR176KGoEBQFdYF3ZoFZuof+CboFCHd/YKS31/5PT1576OGsMu/sRy+Wyrb0aGq7t2YPOVx50=
+X-Received: by 2002:a05:6e02:2141:: with SMTP id d1mr3508167ilv.5.1634298373292;
+ Fri, 15 Oct 2021 04:46:13 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YWl+hQTa4Pd1A7zg@smile.fi.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20211015083144.2767725-1-linux@rasmusvillemoes.dk>
+In-Reply-To: <20211015083144.2767725-1-linux@rasmusvillemoes.dk>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Fri, 15 Oct 2021 13:46:02 +0200
+Message-ID: <CANiq72nJSUMA=97ioFO_4WV9xPMpFjYrGSHZDM1gW_6mo+YkOw@mail.gmail.com>
+Subject: Re: [PATCH] tools: compiler.h: remove duplicate #ifndef noinline block
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/10/2021 15.13, Andy Shevchenko wrote:
+On Fri, Oct 15, 2021 at 10:31 AM Rasmus Villemoes
+<linux@rasmusvillemoes.dk> wrote:
+>
+> The same three lines also appear a bit earlier in the same file.
+>
+> Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
 
-> Btw, shouldn't we also remove build_bug.h in the container_of.h with this?
-> (Or if this goes first, do we still need bug.h?)
-> 
+Looks good to me -- they also appear to be at the same level.
 
-We absolutely need build_bug.h, as that is where static_assert is defined.
+Reviewed-by: Miguel Ojeda <ojeda@kernel.org>
 
-container_of.h doesn't include bug.h AFAICT, nor should it need to.
-
-(We should still find a quiet place for __same_type and have
-container_of include that header, but that's unrelated to this patch.)
-
-Rasmus
+Cheers,
+Miguel
