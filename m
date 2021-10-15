@@ -2,87 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B55D42F9EA
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 19:16:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3188542F9DC
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 19:13:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242135AbhJORSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 13:18:24 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:53284 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242204AbhJORSW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 13:18:22 -0400
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 3.0.0)
- id 2299f938f24327a6; Fri, 15 Oct 2021 19:16:14 +0200
-Received: from kreacher.localnet (unknown [213.134.175.255])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id 4C3A866A8C0;
-        Fri, 15 Oct 2021 19:16:13 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux ACPI <linux-acpi@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        "Andreas K. Huettel" <andreas.huettel@ur.de>
-Subject: [PATCH v1 1/2] ACPI: PM: Do not turn off power resources in unknown state
-Date:   Fri, 15 Oct 2021 19:12:21 +0200
-Message-ID: <3625109.kQq0lBPeGt@kreacher>
-In-Reply-To: <21226252.EfDdHjke4D@kreacher>
-References: <21226252.EfDdHjke4D@kreacher>
+        id S242090AbhJORPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 13:15:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42952 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242068AbhJORPQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 13:15:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 188F4610E8;
+        Fri, 15 Oct 2021 17:13:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634317990;
+        bh=VRvCgVl+c//XzNBQ2V8OIkV7ggBQcxC5gMCr8ztLdFg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BD8Jd/d9u6v7/jMJ5e5lFdrL4ElC2BTL/Uwx3emFlTdYpFT6ufTCCcmSiNBkg+iuL
+         uk4bFKHBY+DufTQ7kh5RgPEhLAbzn+jl3TnLFtIHkAu938jjvVXstGbuE0vp4djR/b
+         Ce6l7O0B3bcpHD3hle1Q/ZKd6mhYnHkl1A1JwBcZiLFKhuLzF8FSAJyovS3gzi2Smp
+         VoeqrbHXVq+L7uW5lWIyyzJuo/LIPPgX2ID700bqeOgoS5fq1cb4hIsKlYo1m2v3Fn
+         t5TscUJ1KLnlv7CssbVOZ3QDRzLqVskQ/3DMBWvfpL1yxjvjVKgQ8TpI+t/p5o5lbZ
+         P22JEfqV6kWjg==
+Date:   Fri, 15 Oct 2021 10:13:05 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev
+Subject: Re: [PATCH] staging: wlan-ng: Avoid bitwise vs logical OR warning in
+ hfa384x_usb_throttlefn()
+Message-ID: <YWm2oVk9YKzjhYYi@archlinux-ax161>
+References: <20211014215703.3705371-1-nathan@kernel.org>
+ <20211015094344.GQ8429@kadam>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 213.134.175.255
-X-CLIENT-HOSTNAME: 213.134.175.255
-X-VADE-SPAMSTATE: spam:medium
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddrudeljedgleelucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecuufhprghmkfhppghrthculdeftddtmdenucfjughrpefhvffufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpeetgefgleetgeduheeugeeikeevudelueelvdeufeejfeffgeefjedugfetfeehhfenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecukfhppedvudefrddufeegrddujeehrddvheehnecuvehluhhsthgvrhfuihiivgepudenucfrrghrrghmpehinhgvthepvddufedrudefgedrudejhedrvdehhedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhptghisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdho
- rhhgpdhrtghpthhtohepmhhikhgrrdifvghsthgvrhgsvghrgheslhhinhhugidrihhnthgvlhdrtghomhdprhgtphhtthhopegrnhgurhgvrghsrdhhuhgvthhtvghlsehurhdruggv
-X-DCC--Metrics: v370.home.net.pl 1024; Body=24 Fuz1=24 Fuz2=24
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211015094344.GQ8429@kadam>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Fri, Oct 15, 2021 at 12:43:44PM +0300, Dan Carpenter wrote:
+> On Thu, Oct 14, 2021 at 02:57:03PM -0700, Nathan Chancellor wrote:
+> > A new warning in clang points out a place in this file where a bitwise
+> > OR is being used with boolean expressions:
+> > 
+> > In file included from drivers/staging/wlan-ng/prism2usb.c:2:
+> > drivers/staging/wlan-ng/hfa384x_usb.c:3787:7: warning: use of bitwise '|' with boolean operands [-Wbitwise-instead-of-logical]
+> >             ((test_and_clear_bit(THROTTLE_RX, &hw->usb_flags) &&
+> >             ~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > drivers/staging/wlan-ng/hfa384x_usb.c:3787:7: note: cast one or both operands to int to silence this warning
+> > 1 warning generated.
+> 
+> Both sides of this bitwise OR are bool, so | and || are equivalent
+> logically.  Clang should not warn about it.
 
-Commit 6381195ad7d0 ("ACPI: power: Rework turning off unused power
-resources") caused power resources in unknown state with reference
-counters equal to zero to be turned off too, but that caused issues
-to appear in the field, so modify the code to only turn off power
-resources that are known to be "on".
+I do not disagree. The original motivation for the warning was code like
 
-Link: https://lore.kernel.org/linux-acpi/6faf4b92-78d5-47a4-63df-cc2bab7769d0@molgen.mpg.de/
-Fixes: 6381195ad7d0 ("ACPI: power: Rework turning off unused power resources")
-Reported-by: Andreas K. Huettel <andreas.huettel@ur.de>
-Tested-by: Andreas K. Huettel <andreas.huettel@ur.de>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Cc: 5.14+ <stable@vger.kernel.org> # 5.14+
----
- drivers/acpi/power.c |    7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+if (a() & b())
 
-Index: linux-pm/drivers/acpi/power.c
-===================================================================
---- linux-pm.orig/drivers/acpi/power.c
-+++ linux-pm/drivers/acpi/power.c
-@@ -1015,13 +1015,8 @@ void acpi_turn_off_unused_power_resource
- 	list_for_each_entry_reverse(resource, &acpi_power_resource_list, list_node) {
- 		mutex_lock(&resource->resource_lock);
- 
--		/*
--		 * Turn off power resources in an unknown state too, because the
--		 * platform firmware on some system expects the OS to turn off
--		 * power resources without any users unconditionally.
--		 */
- 		if (!resource->ref_count &&
--		    resource->state != ACPI_POWER_RESOURCE_STATE_OFF) {
-+		    resource->state == ACPI_POWER_RESOURCE_STATE_ON) {
- 			acpi_handle_debug(resource->device.handle, "Turning OFF\n");
- 			__acpi_power_off(resource);
- 		}
+where a '&&' was intended to short circuit the call to b() if a() was
+false but then it expanded to encompass bitwise OR as well. The clang
+developers felt that warning on bitwise OR was worthwhile because most
+of the time, '||' was intended. Feel free to comment on the Phabricator
+thread if you feel strongly, there are not too many instances of this
+warning and I think the '&' vs '&&' aspect of the warning is useful.
 
+https://reviews.llvm.org/D108003
 
-
+Cheers,
+Nathan
