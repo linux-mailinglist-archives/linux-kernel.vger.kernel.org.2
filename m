@@ -2,93 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9494D42F842
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 18:32:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1933B42F84D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 18:34:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241353AbhJOQfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 12:35:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56220 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235807AbhJOQei (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 12:34:38 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0EACC061768;
-        Fri, 15 Oct 2021 09:32:31 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id f11so4918639pfc.12;
-        Fri, 15 Oct 2021 09:32:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZwuGqL3+ELdyo3s+0IX7nYDyy8R+3UhnzhnMIc+LF1s=;
-        b=QP3pvvCLobAXk04nn3CngQjQxqSziImBzJlivyb4zOimnog3M+t5RtaIZ01eeaNldz
-         BqwtPvoq3tmB3Geoew/+SWVUlj4VgkxNW6Ru5mVruEl/vr4TQs6GQNb4kOVqovNUbAIS
-         Av1ynEbJp6WXzumm2UH88GsDNCTPJ/S3SbrGhN2NTla1/ZdkZKHRuGx3XyTVfK+jXW+2
-         46sspANUx7Bzlif9XVAzDAgbUuSKxfFW+nioP75dEBZ75xtcd0yBntimkZLjXh/a7NWJ
-         AFxrbSoetbONBKgsHumyd3v7Sheho2HAKjVfnOpkuXDlry6zKWyn9zb01aNjJ1uGcoDY
-         HL9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZwuGqL3+ELdyo3s+0IX7nYDyy8R+3UhnzhnMIc+LF1s=;
-        b=5lkHppt+nEsyAlKYFPBGtqccKg9h5LZzXyMEDqKrpLx70+JLZF7GPgR4lUhgTQIqBE
-         rGowstiwfFw1hnkL4QYMXOCrwK+ZEwv3z9Banabb7J17cAnZ1a0dwm8TBDh4pLkYZI8y
-         nG8an7FDiafgi1jKAR6DmLygZO+xW4StjPxw2nJS+BogStMD9fkfSgUVSj2LaTdQjrKu
-         tnFtOug+xuETox1g8JLDyYw9qXCUY+TOFv9KdWi9x6NJzMGiAE6uypeG9bp2joghI9p0
-         Tm3DpBKWDk4NQ99cXlVXHwDA4l++upBEc0Z5MqQQ4RGNNDSG8f7/agJBMCGXN6628Es9
-         0wqQ==
-X-Gm-Message-State: AOAM530cfAw8N24I8HbFJ2DMFJXD8o87lFrMwVQ+0CrGRB7myuZ8uplu
-        yNGgX+edkBIvh5JxYb/+o4D2+FrWZqd72g==
-X-Google-Smtp-Source: ABdhPJzBDOFDLTJVfpSYt84djhXPr0PLOBTMkk8smstBEMcue+uONrG7Y0MDCQoJmhREQtEHP4stng==
-X-Received: by 2002:a63:8f5c:: with SMTP id r28mr9742417pgn.70.1634315550931;
-        Fri, 15 Oct 2021 09:32:30 -0700 (PDT)
-Received: from laptop.hsd1.wa.comcast.net ([2601:600:8500:5f14:d627:c51e:516e:a105])
-        by smtp.gmail.com with ESMTPSA id p16sm5818137pfh.97.2021.10.15.09.32.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Oct 2021 09:32:30 -0700 (PDT)
-From:   Andrei Vagin <avagin@gmail.com>
-To:     linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>, kvm@vger.kernel.org
-Cc:     Andrei Vagin <avagin@gmail.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Subject: [PATCH] KVM: x86/mmu: kvm_faultin_pfn has to return false if pfh is returned
-Date:   Fri, 15 Oct 2021 09:32:21 -0700
-Message-Id: <20211015163221.472508-1-avagin@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        id S241386AbhJOQgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 12:36:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54816 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235078AbhJOQgb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 12:36:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 07F2F60E0C;
+        Fri, 15 Oct 2021 16:34:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634315665;
+        bh=CeRkCWgGmv/lIzYdYu8TkmPyC9GDgaOguZhhWXNJNFY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=OAneOMA7XZSFOfZz+nHz+4YXLFXmDwnHzcWC4zY6bn20z/F83fiY2OWgIcZ4C3Ijp
+         U/kfatfek+/t6NhOK9eYmxHYG/EWHm+UGxGtwMZiPqlbDC8nUHYskjewvHnxJnQ1od
+         jA4aZ/pUQ2VK0jZkcrAjqLPnR+P+mKmFb1OTDJ2JYzsLnW1BjWHI8cYHoZGdbVcsHn
+         qexoVBqm6mUGlFC/34RkVMaWg5Ej7m+/T2iNVvPWNbjDuBE+0z/8aN8KhHv+vCOjKY
+         U9fnn7e0HePffvnKv9p9aBvuPub8zLiMZlR1uhMzw0kndBseFhetz8LUVr2/0Lgubh
+         dygurnBytBxfQ==
+Received: by mail-ed1-f51.google.com with SMTP id g10so40482556edj.1;
+        Fri, 15 Oct 2021 09:34:24 -0700 (PDT)
+X-Gm-Message-State: AOAM530uhwk4D1cAmCUX0fNE4uG675D7uo29UikXIMsRLfflY31BbpVa
+        ljrrGOdTxBWlknfe04GSQqvUvJPc1KGkrxI1dg==
+X-Google-Smtp-Source: ABdhPJyib4rggH0EElJoYb3M6MGXjTs3c3OVEluVFhpPqQmG+CA7o8G7W5ifQ9eqdM31IDo3cVTH/0BnZYFo2iafnjg=
+X-Received: by 2002:a17:906:6a1d:: with SMTP id qw29mr7817053ejc.147.1634315663388;
+ Fri, 15 Oct 2021 09:34:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211013220532.24759-1-agust@denx.de>
+In-Reply-To: <20211013220532.24759-1-agust@denx.de>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Fri, 15 Oct 2021 11:34:12 -0500
+X-Gmail-Original-Message-ID: <CAL_Jsq+ThrytPNx06bD4EOBGMQ8NHqJFUX8JuR-4q5KrzJbO_g@mail.gmail.com>
+Message-ID: <CAL_Jsq+ThrytPNx06bD4EOBGMQ8NHqJFUX8JuR-4q5KrzJbO_g@mail.gmail.com>
+Subject: Re: [PATCH 0/4] Update mpc5200 dts files to fix warnings
+To:     Anatolij Gustschin <agust@denx.de>
+Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This looks like a typo in 8f32d5e563cb. This change didn't intend to do
-any functional changes.
+On Wed, Oct 13, 2021 at 5:05 PM Anatolij Gustschin <agust@denx.de> wrote:
+>
+> This series fixes localbus, memory and pci node build warnings.
+> It was tested with current linux-next on digsy_mtc and tqm5200
+> boards.
+>
+> Anatolij Gustschin (4):
+>   powerpc/5200: dts: add missing pci ranges
+>   powerpc/5200: dts: fix pci ranges warnings
+>   powerpc/5200: dts: fix memory node unit name
+>   powerpc/5200: dts: fix localbus node warnings
 
-The problem was caught by gVisor tests.
+For patches 1-3:
 
-Fixes: 8f32d5e563cb ("KVM: x86/mmu: allow kvm_faultin_pfn to return page fault handling code")
-Cc: Maxim Levitsky <mlevitsk@redhat.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Andrei Vagin <avagin@gmail.com>
----
- arch/x86/kvm/mmu/mmu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 1a64ba5b9437..5dce77b45476 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -3956,7 +3956,7 @@ static bool kvm_faultin_pfn(struct kvm_vcpu *vcpu, bool prefault, gfn_t gfn,
- 
- 	*pfn = __gfn_to_pfn_memslot(slot, gfn, false, NULL,
- 				    write, writable, hva);
--
-+	return false;
- out_retry:
- 	*r = RET_PF_RETRY;
- 	return true;
--- 
-2.31.1
-
+Reviewed-by: Rob Herring <robh@kernel.org>
