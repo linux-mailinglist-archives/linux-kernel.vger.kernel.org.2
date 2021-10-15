@@ -2,253 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BE1642EBE1
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 10:18:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F15D442EC8B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 10:37:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234238AbhJOIU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 04:20:27 -0400
-Received: from mailout4.samsung.com ([203.254.224.34]:19327 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235042AbhJOISW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 04:18:22 -0400
-Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20211015081615epoutp04c7e9d3d03ef2e417b8cc2bcb96829372~uJkDqA6_E1608216082epoutp04c
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 08:16:15 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20211015081615epoutp04c7e9d3d03ef2e417b8cc2bcb96829372~uJkDqA6_E1608216082epoutp04c
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1634285775;
-        bh=ksfbDzPLdwuIgXQ/oxv9LAcZypxcKcSyhTadBSQH2Lw=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=Tb+iTdGnDgxvmsFktb1LYrR0R1vDe6DbJMh+P6NphP4OAfuyy6Mv8fOMxGCbUPzNs
-         096vcBP0Cz0qfsdPHcwGHhw1V6Xeyv8UFGywfT6lyUKQCjA5fkoRysoSB/H87dqPn0
-         niAh/r5FBjM8qzIy6fd7pOSt8Xt47Ccx3J0bc/K4=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
-        20211015081614epcas1p4f11bdd416e008654fd01fe3145d47bb9~uJkDCe-Ph0474404744epcas1p4s;
-        Fri, 15 Oct 2021 08:16:14 +0000 (GMT)
-Received: from epsmges1p3.samsung.com (unknown [182.195.38.233]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4HVzcK3LSFz4x9QK; Fri, 15 Oct
-        2021 08:16:01 +0000 (GMT)
-Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
-        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        47.8D.13696.1C839616; Fri, 15 Oct 2021 17:16:01 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20211015081600epcas1p12a699ae83ca5ad97db3504a6fa7b9ead~uJj2X3m8R2933829338epcas1p1D;
-        Fri, 15 Oct 2021 08:16:00 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20211015081600epsmtrp1ff07c2c0bcf0a4c0a1f9c65b5f45c1cd~uJj2W2y1o1911119111epsmtrp1D;
-        Fri, 15 Oct 2021 08:16:00 +0000 (GMT)
-X-AuditID: b6c32a37-297ff70000023580-3e-616938c14e3b
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        18.33.08750.0C839616; Fri, 15 Oct 2021 17:16:00 +0900 (KST)
-Received: from [10.113.221.102] (unknown [10.113.221.102]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20211015081600epsmtip22e71595ab53ee9317e8500839d1698d1~uJj2CuJV21962819628epsmtip2D;
-        Fri, 15 Oct 2021 08:16:00 +0000 (GMT)
-Subject: Re: [PATCH v2 2/6] dt-bindings: arm: sunxi: Expand MBUS binding
-To:     Samuel Holland <samuel@sholland.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
-From:   Chanwoo Choi <cw00.choi@samsung.com>
-Organization: Samsung Electronics
-Message-ID: <07410362-a37b-b6e4-5b6e-a39daa6c22e7@samsung.com>
-Date:   Fri, 15 Oct 2021 17:37:29 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
-        Thunderbird/59.0
+        id S235730AbhJOIjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 04:39:51 -0400
+Received: from smtpbg506.qq.com ([203.205.250.33]:52526 "EHLO smtpbg506.qq.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231825AbhJOIju (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 04:39:50 -0400
+X-Greylist: delayed 2009 seconds by postgrey-1.27 at vger.kernel.org; Fri, 15 Oct 2021 04:39:49 EDT
+X-QQ-mid: bizesmtp40t1634287059t21lhum5
+Received: from localhost.localdomain (unknown [113.57.152.160])
+        by esmtp6.qq.com (ESMTP) with 
+        id ; Fri, 15 Oct 2021 16:37:34 +0800 (CST)
+X-QQ-SSF: 01400000002000B0D000B00B0000000
+X-QQ-FEAT: Nl5n8N+tNRHNcBZCplKORxUHxUqP9LhxmCOG246XWsRT5s/HGA8FiNUuCP6OS
+        MnUt42H7QNlIUSHqG5Oz9B9UlIBe74tnmQs/n9e3L/6pHB2rQ7Gna0cLEfwZ32XHl5Og2mp
+        hIuvDyxYKhyyesBu5ul0gaCoL8z7FCupk+9+jydzIZc7og8u8n28/zM0hGRdrs5KIX6lWnI
+        yzW55zLqX+79Iv2WEmZ60M9AgHMzONRzfa4m9mRD5vokOkAX4Fz4cl5FmM01aW94LYUmaRU
+        FWVLb1yiIKB9zesTyuwnUFtJMyiirxJhiV9aXo16HhQ5pfpJ1o4m1B8ilwjH4ZcEjyp/KyS
+        2IA+TilpVYcr41zPMx7bvf2A/F94VTiEgFdI0VcuIkxhM66RSA=
+X-QQ-GoodBg: 2
+From:   lianzhi chang <changlianzhi@uniontech.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-input@vger.kernel.org,
+        lianzhi chang <changlianzhi@uniontech.com>
+Subject: [PATCH] input&tty: Fix the keyboard led light display problem
+Date:   Fri, 15 Oct 2021 16:37:31 +0800
+Message-Id: <20211015083731.7643-1-changlianzhi@uniontech.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20211004012739.39053-3-samuel@sholland.org>
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrLJsWRmVeSWpSXmKPExsWy7bCmge5Bi8xEg/55whbzj5xjtXg+fx2j
-        xdmmN+wWmx5fY7W4vGsOm8Xn3iOMFlP27WKzaOtcxmpx8ZSrxe3GFWwWrXuPsFs8f9TJZvHv
-        2kYWi5+HzjM58Hm8v9HK7rHh0WpWj52z7rJ7bFrVyeaxeUm9x4vNMxk9+rasYvR49XUuo8fn
-        TXIBnFHZNhmpiSmpRQqpecn5KZl56bZK3sHxzvGmZgaGuoaWFuZKCnmJuam2Si4+AbpumTlA
-        tysplCXmlAKFAhKLi5X07WyK8ktLUhUy8otLbJVSC1JyCkwL9IoTc4tL89L18lJLrAwNDIxM
-        gQoTsjM2tm5iLzgkV9ExeRJbA2OfWBcjJ4eEgInEh0cr2LsYuTiEBHYwSlz4tZ8dJCEk8IlR
-        YtstHwj7M6PE2efxMA1PTrYwQjTsYpSYNfMoM0TRe0aJhefSQGxhAQ+J4/0vWEGKRAQmMknM
-        vn+ABcRhFngLVLRrB1gHm4CWxP4XN9hAbH4BRYmrPx4zgti8AnYSby5MAouzCKhKbHuxjgXE
-        FhUIkzi5rQWqRlDi5MwnYHFOAUuJe3vXgtUzC4hL3HoynwnClpfY/nYOM8hiCYEXHBItLf1s
-        ED+4SGx98Y0dwhaWeHV8C5QtJfGyvw3KrpZYefIIG0RzB6PElv0XWCESxhL7l04G2sABtEFT
-        Yv0ufYiwosTO33MZIRbzSbz72sMKUiIhwCvR0SYEUaIscfnBXSYIW1JicXsn2wRGpVlI3pmF
-        5IVZSF6YhbBsASPLKkax1ILi3PTUYsMCY3hsJ+fnbmIEp2st8x2M095+0DvEyMTBeIhRgoNZ
-        SYT33YH0RCHelMTKqtSi/Pii0pzU4kOMpsAAnsgsJZqcD8wYeSXxhiaWBiZmRsYmFoZmhkri
-        vMdeWyYKCaQnlqRmp6YWpBbB9DFxcEo1MOmu9FrsPWnz/VPznxhc259+3a/Nv/vufgfZOjuf
-        otM9L4JuBN5VNhJ+/uH2M3ZprrkXu00aBBc4MEx5eqzn4rqC5FzJk4HTEm50S++/rp2032L6
-        gnnZ8q3RWs2x8yVMTe8e8P6/4sDbYzslYtiKjLlP/n3LlRwVvVzraBj7w3PdbxJWP1RawWFu
-        aFHmcFv2TLXPmvm9S7dtbg3RYYy7UPXKWD/9r8UHLxXzWSpXEldM71ku+NyVZ4Pr7yk2Ydx9
-        0c5sr8InxC9kCxE8wahsefDgabHgt0/P/vSLe8XB+7Kv662PaUmtydGraYtufvj+JYt/Q5TP
-        E0XF7tgmx8dFjIkFG3iWuOptsN6+/9eHM0osxRmJhlrMRcWJAGgY1l5gBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrJIsWRmVeSWpSXmKPExsWy7bCSvO4Bi8xEgx07VS3mHznHavF8/jpG
-        i7NNb9gtNj2+xmpxedccNovPvUcYLabs28Vm0da5jNXi4ilXi9uNK9gsWvceYbd4/qiTzeLf
-        tY0sFj8PnWdy4PN4f6OV3WPDo9WsHjtn3WX32LSqk81j85J6jxebZzJ69G1Zxejx6utcRo/P
-        m+QCOKO4bFJSczLLUov07RK4Mja2bmIvOCRX0TF5ElsDY59YFyMnh4SAicSTky2MILaQwA5G
-        if3bLSHikhLTLh5l7mLkALKFJQ4fLu5i5AIqecso0Xj0AxNIjbCAh8Tx/hesIAkRgclMEie3
-        HmcCcZhBql5duM4I0bKbUeLaxXnMIC1sAloS+1/cYAOx+QUUJa7+eAy2mlfATuLNhUlgcRYB
-        VYltL9axgNiiAmESO5c8ZoKoEZQ4OfMJWJxTwFLi3t61YPXMAuoSf+ZdYoawxSVuPZnPBGHL
-        S2x/O4d5AqPwLCTts5C0zELSMgtJywJGllWMkqkFxbnpucWGBUZ5qeV6xYm5xaV56XrJ+bmb
-        GMGxq6W1g3HPqg96hxiZOBgPMUpwMCuJ8L47kJ4oxJuSWFmVWpQfX1Sak1p8iFGag0VJnPdC
-        18l4IYH0xJLU7NTUgtQimCwTB6dUA9MmA6bgC9tmXTc9L5WhYVgTF6719bdfdXBT8IlHX0sk
-        s1dEb9m7q2q9b2+jfgT/gcMv7rZ25BpV5JWmfb8yR6aGy1jO9/9G6yzdfTrlW/IbZdtPZPFW
-        F/Ol35XhmP3217LUvMvvzMyaFSKeClwMOtvvwyf0yT3+wNoncRphjBtfHQ/JtfAXrzN1s5/L
-        7mQyZ5WFDE/AzJv7dY7Js4dJxyS8VNZ+9PHJkWlHTSy0/MOO3HhR0FKqG+tblmK/rj/vnNTt
-        eYXlpt2OXdM/2Oy8YN/OIz5pAnf+y+rUIP235xetOffjicHExS8c9rNXchTs96jV/WCoyxs3
-        N+xfmYFyje2CknD2Asa+xwuylxUosRRnJBpqMRcVJwIA5rvmckwDAAA=
-X-CMS-MailID: 20211015081600epcas1p12a699ae83ca5ad97db3504a6fa7b9ead
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20211004012752epcas1p4f21bb9f5ff9c2bfc7adf9d2ae4b451f3
-References: <20211004012739.39053-1-samuel@sholland.org>
-        <CGME20211004012752epcas1p4f21bb9f5ff9c2bfc7adf9d2ae4b451f3@epcas1p4.samsung.com>
-        <20211004012739.39053-3-samuel@sholland.org>
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign1
+X-QQ-Bgrelay: 1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/4/21 10:27 AM, Samuel Holland wrote:
-> The MBUS provides more than address translation and bandwidth control.
-> It also provides a PMU to measure bandwidth usage by certain masters,
-> and it provides notification via IRQ when they are active or idle.
-> 
-> The MBUS is also tightly integrated with the DRAM controller to provide
-> a Memory Dynamic Frequency Scaling (MDFS) feature. In view of this, the
-> MBUS binding needs to represent the hardware resources needed for MDFS,
-> which include the clocks and MMIO range of the adjacent DRAM controller.
-> 
-> Add the additional resources for the H3 and A64 compatibles, and a new
-> example showing how they are used.
-> 
-> Signed-off-by: Samuel Holland <samuel@sholland.org>
-> ---
->  .../arm/sunxi/allwinner,sun4i-a10-mbus.yaml   | 75 ++++++++++++++++++-
->  1 file changed, 72 insertions(+), 3 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/arm/sunxi/allwinner,sun4i-a10-mbus.yaml b/Documentation/devicetree/bindings/arm/sunxi/allwinner,sun4i-a10-mbus.yaml
-> index e713a6fe4cf7..c1fb404d2fb3 100644
-> --- a/Documentation/devicetree/bindings/arm/sunxi/allwinner,sun4i-a10-mbus.yaml
-> +++ b/Documentation/devicetree/bindings/arm/sunxi/allwinner,sun4i-a10-mbus.yaml
-> @@ -33,10 +33,33 @@ properties:
->        - allwinner,sun50i-a64-mbus
->  
->    reg:
-> -    maxItems: 1
-> +    minItems: 1
-> +    items:
-> +      - description: MBUS interconnect/bandwidth/PMU registers
-> +      - description: DRAM controller/PHY registers
-> +
-> +  reg-names:
-> +    items:
-> +      - const: "mbus"
-> +      - const: "dram"
->  
->    clocks:
-> +    minItems: 1
-> +    items:
-> +      - description: MBUS interconnect module clock
-> +      - description: DRAM controller/PHY module clock
-> +      - description: Register bus clock, shared by MBUS and DRAM
-> +
-> +  clock-names:
-> +    items:
-> +      - const: "mbus"
-> +      - const: "dram"
-> +      - const: "bus"
-> +
-> +  interrupts:
->      maxItems: 1
-> +    description:
-> +      MBUS PMU activity interrupt.
->  
->    dma-ranges:
->      description:
-> @@ -53,13 +76,42 @@ required:
->    - clocks
->    - dma-ranges
->  
-> +if:
-> +  properties:
-> +    compatible:
-> +      contains:
-> +        enum:
-> +          - allwinner,sun8i-h3-mbus
-> +          - allwinner,sun50i-a64-mbus
-> +
-> +then:
-> +  properties:
-> +    reg:
-> +      minItems: 2
-> +
-> +    clocks:
-> +      minItems: 3
-> +
-> +  required:
-> +    - reg-names
-> +    - clock-names
-> +
-> +else:
-> +  properties:
-> +    reg:
-> +      maxItems: 1
-> +
-> +    clocks:
-> +      maxItems: 1
-> +
->  additionalProperties: false
->  
->  examples:
->    - |
-> -    #include <dt-bindings/clock/sun5i-ccu.h>
-> +    #include <dt-bindings/clock/sun50i-a64-ccu.h>
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
->  
-> -    mbus: dram-controller@1c01000 {
-> +    dram-controller@1c01000 {
->          compatible = "allwinner,sun5i-a13-mbus";
->          reg = <0x01c01000 0x1000>;
->          clocks = <&ccu CLK_MBUS>;
-> @@ -69,4 +121,21 @@ examples:
->          #interconnect-cells = <1>;
->      };
->  
-> +  - |
-> +    dram-controller@1c62000 {
-> +        compatible = "allwinner,sun50i-a64-mbus";
-> +        reg = <0x01c62000 0x1000>,
-> +              <0x01c63000 0x1000>;
-> +        reg-names = "mbus", "dram";
-> +        clocks = <&ccu CLK_MBUS>,
-> +                 <&ccu CLK_DRAM>,
-> +                 <&ccu CLK_BUS_DRAM>;
-> +        clock-names = "mbus", "dram", "bus";
-> +        interrupts = <GIC_SPI 69 IRQ_TYPE_LEVEL_HIGH>;
-> +        #address-cells = <1>;
-> +        #size-cells = <1>;
-> +        dma-ranges = <0x00000000 0x40000000 0xc0000000>;
-> +        #interconnect-cells = <1>;
-> +    };
-> +
->  ...
-> 
+Switching from the desktop environment to the tty environment,
+the state of the keyboard led lights and the state of the keyboard
+lock are inconsistent. This is because the attribute kb->kbdmode
+of the tty bound in the desktop environment (xorg) is set to
+VC_OFF, which causes the ledstate and kb->ledflagstate
+values of the bound tty to always be 0, which causes the switch
+from the desktop When to the tty environment, the LED light
+status is inconsistent with the keyboard lock status.
 
-Reviewed-by: Chanwoo Choi <cw00.choi@samsung.com>
+Signed-off-by: lianzhi chang <changlianzhi@uniontech.com>
+---
+The latest changes:
+(1) Move the definition of ledstate to the input module (/drivers/input/input.c), 
+and set or get its value through the input_update_ledstate and input_get_ledstate 
+functions.
+(2) To update the ledstate reference in keyboard.c, you must first get the value 
+through input_get_ledstate.
+(3) Other necessary changes
 
+ drivers/input/input.c     | 46 ++++++++++++++++++++++++++++++++++++++-
+ drivers/tty/vt/keyboard.c | 19 ++++++++++++++--
+ include/linux/input.h     |  3 +++
+ 3 files changed, 65 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/input/input.c b/drivers/input/input.c
+index ccaeb2426385..8c0ef947ac34 100644
+--- a/drivers/input/input.c
++++ b/drivers/input/input.c
+@@ -37,6 +37,11 @@ static DEFINE_IDA(input_ida);
+ static LIST_HEAD(input_dev_list);
+ static LIST_HEAD(input_handler_list);
+ 
++#define VC_SCROLLOCK	0	/* scroll-lock mode */
++#define VC_NUMLOCK	1	/* numeric lock mode */
++#define VC_CAPSLOCK	2	/* capslock mode */
++static unsigned int ledstate = -1U;			/* undefined */
++
+ /*
+  * input_mutex protects access to both input_dev_list and input_handler_list.
+  * This also causes input_[un]register_device and input_[un]register_handler
+@@ -472,8 +477,12 @@ void input_inject_event(struct input_handle *handle,
+ 
+ 		rcu_read_lock();
+ 		grab = rcu_dereference(dev->grab);
+-		if (!grab || grab == handle)
++		if (!grab || grab == handle) {
+ 			input_handle_event(dev, type, code, value);
++
++			if (type == EV_LED && code <= LED_SCROLLL)
++				input_update_ledstate(code, value);
++		}
+ 		rcu_read_unlock();
+ 
+ 		spin_unlock_irqrestore(&dev->event_lock, flags);
+@@ -481,6 +490,41 @@ void input_inject_event(struct input_handle *handle,
+ }
+ EXPORT_SYMBOL(input_inject_event);
+ 
++void input_update_ledstate(unsigned int flag, unsigned int value)
++{
++	unsigned int bit;
++
++	switch (flag) {
++	case LED_NUML:
++		bit = VC_NUMLOCK;
++		break;
++	case LED_CAPSL:
++		bit = VC_CAPSLOCK;
++		break;
++	case LED_SCROLLL:
++		bit = VC_SCROLLOCK;
++		break;
++	default:
++		WARN_ON_ONCE(1);
++		return;
++	}
++
++	if (ledstate == -1U)
++		ledstate = 0;
++
++	if (value)
++		ledstate |= BIT(bit);
++	else
++		ledstate &= ~BIT(bit);
++}
++EXPORT_SYMBOL(input_update_ledstate);
++
++unsigned int input_get_ledstate(void)
++{
++	return ledstate;
++}
++EXPORT_SYMBOL(input_get_ledstate);
++
+ /**
+  * input_alloc_absinfo - allocates array of input_absinfo structs
+  * @dev: the input device emitting absolute events
+diff --git a/drivers/tty/vt/keyboard.c b/drivers/tty/vt/keyboard.c
+index c7fbbcdcc346..0cfccb1d7992 100644
+--- a/drivers/tty/vt/keyboard.c
++++ b/drivers/tty/vt/keyboard.c
+@@ -151,7 +151,6 @@ static bool rep;			/* flag telling character repeat */
+ 
+ static int shift_state = 0;
+ 
+-static unsigned int ledstate = -1U;			/* undefined */
+ static unsigned char ledioctl;
+ 
+ /*
+@@ -1021,10 +1020,14 @@ struct kbd_led_trigger {
+ 
+ static int kbd_led_trigger_activate(struct led_classdev *cdev)
+ {
++	unsigned int ledstate;
++
+ 	struct kbd_led_trigger *trigger =
+ 		container_of(cdev->trigger, struct kbd_led_trigger, trigger);
+ 
+ 	tasklet_disable(&keyboard_tasklet);
++
++	ledstate = input_get_ledstate();
+ 	if (ledstate != -1U)
+ 		led_trigger_event(&trigger->trigger,
+ 				  ledstate & trigger->mask ?
+@@ -1137,6 +1140,10 @@ static void kbd_init_leds(void)
+  */
+ static unsigned char getledstate(void)
+ {
++	unsigned int ledstate;
++
++	ledstate = input_get_ledstate();
++
+ 	return ledstate & 0xff;
+ }
+ 
+@@ -1248,16 +1255,21 @@ void vt_kbd_con_stop(unsigned int console)
+ static void kbd_bh(struct tasklet_struct *unused)
+ {
+ 	unsigned int leds;
++	unsigned int ledstate;
+ 	unsigned long flags;
++	struct kbd_struct *kb = kbd_table + fg_console;
++
++	if (kb->kbdmode == VC_OFF)
++		return;
+ 
+ 	spin_lock_irqsave(&led_lock, flags);
+ 	leds = getleds();
++	ledstate = input_get_ledstate();
+ 	leds |= (unsigned int)kbd->lockstate << 8;
+ 	spin_unlock_irqrestore(&led_lock, flags);
+ 
+ 	if (leds != ledstate) {
+ 		kbd_propagate_led_state(ledstate, leds);
+-		ledstate = leds;
+ 	}
+ }
+ 
+@@ -1604,8 +1616,11 @@ static void kbd_disconnect(struct input_handle *handle)
+  */
+ static void kbd_start(struct input_handle *handle)
+ {
++	unsigned int ledstate;
++
+ 	tasklet_disable(&keyboard_tasklet);
+ 
++	ledstate = input_get_ledstate();
+ 	if (ledstate != -1U)
+ 		kbd_update_leds_helper(handle, &ledstate);
+ 
+diff --git a/include/linux/input.h b/include/linux/input.h
+index 0354b298d874..0e0ba53a9cc7 100644
+--- a/include/linux/input.h
++++ b/include/linux/input.h
+@@ -420,6 +420,9 @@ ktime_t *input_get_timestamp(struct input_dev *dev);
+ void input_event(struct input_dev *dev, unsigned int type, unsigned int code, int value);
+ void input_inject_event(struct input_handle *handle, unsigned int type, unsigned int code, int value);
+ 
++void input_update_ledstate(unsigned int flag, unsigned int value);
++unsigned int input_get_ledstate(void);
++
+ static inline void input_report_key(struct input_dev *dev, unsigned int code, int value)
+ {
+ 	input_event(dev, EV_KEY, code, !!value);
 -- 
-Best Regards,
-Chanwoo Choi
-Samsung Electronics
+2.20.1
+
+
+
