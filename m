@@ -2,119 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D557542FAD5
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 20:19:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 590A442FAD9
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 20:20:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242567AbhJOSV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 14:21:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53418 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237700AbhJOSVz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 14:21:55 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FB12C061570
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 11:19:48 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id v127so3192868wme.5
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 11:19:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=R/dz9+WiCzlF7Mip7NpDVh0nc3yRnz/ch3JiE8P+Gec=;
-        b=n9ZhygoEwy6GIbJWEKJbPGMoh4j1vFIJRpHwMe+FzMGv7A3ZowubZZxgNQCjo/BN8k
-         poFov7qVco1ERmPYhEkEcLKwIapVzTPC/2L7ED4zGJfv/0JtEVj6+7xUheXnSKS3hsxA
-         0QLfKpCJHrTQ6i8B9SlktCeWLw4s+BE3OXKodW0Hg3yTZhjWXY4FdRvLCCwos49oe6An
-         ZMhVXfs5YKUfzUhc9oLFcFk/eEuSEpHiVKJiA1/bxopPAyquB/1wTb/oQdbvTfEFEyPo
-         umwnVIsUW5vD5D66JmV+fQKB4jPRMd+8T88tK8hp7DbXiZx8Og/7HtbXj+9eMnu706hU
-         ij4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=R/dz9+WiCzlF7Mip7NpDVh0nc3yRnz/ch3JiE8P+Gec=;
-        b=EHOmXo0GOTgefZ5DPbI/rlqcr2sK7XZyvz8CtTe0OMc9W72sx+97x2Lnvt60GLurOx
-         Ytag51TWHKUumYxMvDY5AhdfaDx/psuwuVZtGBmHEjknONniKKT0tcEwNfe+DmwkY3sW
-         AsQgy2vjx02LzuLujUE+SvN8wVGOGxShvAKMaqx7SmTjMZ8ZnrmkebS7vRKPxumsVHKP
-         8LdJTz6mY6a5wxHiagIytG3RYSnMpgFk0T/30bjE7n8gDXMagyNv2GlF0LLWazfRmSAc
-         WXhrkPaJRUYBYFxatMU7bkeJlSpppaB7ZGArAGR+ad09iOY1TFhmL+TAQ/IDWFI0HgOp
-         gcvA==
-X-Gm-Message-State: AOAM530Ua35mJtATec7sF6KhHLiNSXXdlgWT7xhrO+8/Q6dilNDTySkW
-        ciKjLSqFjJNyYfzobwirIFU=
-X-Google-Smtp-Source: ABdhPJxOLZD9ADgpllTByySgB7oz5wprdBfEFUcsccB1dnwRDJNjkkkVhPn9CUt1zJxj0VvvhW1eXg==
-X-Received: by 2002:a1c:e915:: with SMTP id q21mr27810416wmc.180.1634321986864;
-        Fri, 15 Oct 2021 11:19:46 -0700 (PDT)
-Received: from ?IPV6:2a02:8108:96c0:3b88::ad78? ([2a02:8108:96c0:3b88::ad78])
-        by smtp.gmail.com with ESMTPSA id s13sm11448168wmc.47.2021.10.15.11.19.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Oct 2021 11:19:46 -0700 (PDT)
-Message-ID: <2c826db6-dab1-2135-14b1-d9fda25951d9@gmail.com>
-Date:   Fri, 15 Oct 2021 20:19:45 +0200
+        id S242577AbhJOSWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 14:22:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42904 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237700AbhJOSWp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 14:22:45 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E5A1960FF2;
+        Fri, 15 Oct 2021 18:20:35 +0000 (UTC)
+Date:   Fri, 15 Oct 2021 14:20:33 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Petr Mladek <pmladek@suse.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Jisheng Zhang <jszhang@kernel.org>, linux-csky@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, live-patching@vger.kernel.org,
+        =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>,
+        Guo Ren <guoren@kernel.org>
+Subject: Re: [PATCH] tracing: Have all levels of checks prevent recursion
+Message-ID: <20211015142033.72605b47@gandalf.local.home>
+In-Reply-To: <20211015180429.GK174703@worktop.programming.kicks-ass.net>
+References: <20211015110035.14813389@gandalf.local.home>
+        <20211015161702.GF174703@worktop.programming.kicks-ass.net>
+        <20211015133504.6c0a9fcc@gandalf.local.home>
+        <20211015135806.72d1af23@gandalf.local.home>
+        <20211015180429.GK174703@worktop.programming.kicks-ass.net>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.2
-Subject: Re: [PATCH 0/7] staging: r8188eu: odm cleanups
-Content-Language: en-US
-To:     Phillip Potter <phil@philpotter.co.uk>
-Cc:     Larry.Finger@lwfinger.net, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org
-References: <20211015163507.9091-1-straube.linux@gmail.com>
- <YWnDVkwcnVEEoxm4@equinox>
-From:   Michael Straube <straube.linux@gmail.com>
-In-Reply-To: <YWnDVkwcnVEEoxm4@equinox>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/15/21 20:07, Phillip Potter wrote:
-> On Fri, Oct 15, 2021 at 06:35:00PM +0200, Michael Straube wrote:
->> This series removes:
->> - empty / unused functions from odm.c
->> - two never set / unused fields from odm_dm_struct
->> - the function ODM_CmnInfoPtrArrayHook()
->>
->> Tested on x86_64 with Inter-Tech DMG-02.
->>
->> Michael Straube (7):
->>    staging: r8188eu: remove empty functions from odm.c
->>    staging: r8188eu: remove ODM_SingleDualAntennaDefaultSetting()
->>    staging: r8188eu: remove GetPSDData()
->>    staging: r8188eu: remove ODM_AntselStatistics_88C()
->>    staging: r8188eu: pBandType is never set
->>    staging: r8188eu: pMacPhyMode is not used
->>    staging: r8188eu: remove ODM_CmnInfoPtrArrayHook()
->>
->>   drivers/staging/r8188eu/hal/HalPhyRf_8188e.c  |   2 +-
->>   drivers/staging/r8188eu/hal/odm.c             | 144 ------------------
->>   drivers/staging/r8188eu/hal/odm_HWConfig.c    |   7 +-
->>   drivers/staging/r8188eu/hal/odm_interface.c   |   5 -
->>   drivers/staging/r8188eu/hal/rtl8188e_dm.c     |   2 +-
->>   .../staging/r8188eu/hal/rtl8188e_hal_init.c   |   5 +-
->>   drivers/staging/r8188eu/include/odm.h         |  38 -----
->>   .../staging/r8188eu/include/odm_interface.h   |   2 -
->>   drivers/staging/r8188eu/include/odm_precomp.h |   2 -
->>   9 files changed, 6 insertions(+), 201 deletions(-)
->>
->> -- 
->> 2.33.0
->>
-> 
-> Dear Michael,
-> 
-> Looks good to me. Built and tested on my USB-N10 Nano, works well. Many
-> thanks.
-> 
-> For whole series:
-> Acked-by: Phillip Potter <phil@philpotter.co.uk>
-> 
-> Regards,
-> Phil
-> 
+On Fri, 15 Oct 2021 20:04:29 +0200
+Peter Zijlstra <peterz@infradead.org> wrote:
 
-Thank you for testing and your ack Phillip.
+> On Fri, Oct 15, 2021 at 01:58:06PM -0400, Steven Rostedt wrote:
+> > Something like this:  
+> 
+> I think having one copy of that in a header is better than having 3
+> copies. But yes, something along them lines.
 
-Regards,
-Michael
+I was just about to ask you about this patch ;-)
+
+diff --git a/include/linux/preempt.h b/include/linux/preempt.h
+index 4d244e295e85..a6ae329aa654 100644
+--- a/include/linux/preempt.h
++++ b/include/linux/preempt.h
+@@ -74,6 +74,27 @@
+  */
+ #define FORK_PREEMPT_COUNT	(2*PREEMPT_DISABLE_OFFSET + PREEMPT_ENABLED)
+ 
++/**
++ * interrupt_context_level - return interrupt context level
++ *
++ * Returns the current interrupt context level.
++ *  0 - normal context
++ *  1 - softirq context
++ *  2 - hardirq context
++ *  3 - NMI context
++ */
++static __always_inline unsigned char interrupt_context_level(void)
++{
++	unsigned long pc = preempt_count();
++	unsigned char level = 0;
++
++	level += !!(pc & (NMI_MASK));
++	level += !!(pc & (NMI_MASK | HARDIRQ_MASK));
++	level += !!(pc & (NMI_MASK | HARDIRQ_MASK | SOFTIRQ_OFFSET));
++
++	return level;
++}
++
+ /* preempt_count() and related functions, depends on PREEMPT_NEED_RESCHED */
+ #include <asm/preempt.h>
+ 
+diff --git a/include/linux/trace_recursion.h b/include/linux/trace_recursion.h
+index 41f5bfd9e93f..018a04381556 100644
+--- a/include/linux/trace_recursion.h
++++ b/include/linux/trace_recursion.h
+@@ -118,12 +118,7 @@ enum {
+ 
+ static __always_inline int trace_get_context_bit(void)
+ {
+-	unsigned long pc = preempt_count();
+-	unsigned char bit = 0;
+-
+-	bit += !!(pc & (NMI_MASK));
+-	bit += !!(pc & (NMI_MASK | HARDIRQ_MASK));
+-	bit += !!(pc & (NMI_MASK | HARDIRQ_MASK | SOFTIRQ_OFFSET));
++	unsigned char bit = interrupt_context_level();
+ 
+ 	return TRACE_CTX_NORMAL - bit;
+ }
+diff --git a/kernel/events/internal.h b/kernel/events/internal.h
+index 228801e20788..c91711f20cf8 100644
+--- a/kernel/events/internal.h
++++ b/kernel/events/internal.h
+@@ -206,11 +206,7 @@ DEFINE_OUTPUT_COPY(__output_copy_user, arch_perf_out_copy_user)
+ static inline int get_recursion_context(int *recursion)
+ {
+ 	unsigned int pc = preempt_count();
+-	unsigned char rctx = 0;
+-
+-	rctx += !!(pc & (NMI_MASK));
+-	rctx += !!(pc & (NMI_MASK | HARDIRQ_MASK));
+-	rctx += !!(pc & (NMI_MASK | HARDIRQ_MASK | SOFTIRQ_OFFSET));
++	unsigned char rctx = interrupt_context_level();
+ 
+ 	if (recursion[rctx])
+ 		return -1;
+diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
+index 15d4380006e3..f6520d0a4c8c 100644
+--- a/kernel/trace/ring_buffer.c
++++ b/kernel/trace/ring_buffer.c
+@@ -3167,12 +3167,7 @@ static __always_inline int
+ trace_recursive_lock(struct ring_buffer_per_cpu *cpu_buffer)
+ {
+ 	unsigned int val = cpu_buffer->current_context;
+-	unsigned long pc = preempt_count();
+-	int bit = 0;
+-
+-	bit += !!(pc & (NMI_MASK));
+-	bit += !!(pc & (NMI_MASK | HARDIRQ_MASK));
+-	bit += !!(pc & (NMI_MASK | HARDIRQ_MASK | SOFTIRQ_OFFSET));
++	int bit = interrupt_context_level();
+ 
+ 	bit = RB_CTX_NORMAL - bit;
+ 
