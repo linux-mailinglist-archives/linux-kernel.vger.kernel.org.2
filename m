@@ -2,112 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0100C42F85A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 18:36:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E6D642F85C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 18:36:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241365AbhJOQip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 12:38:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57162 "EHLO
+        id S241442AbhJOQir (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 12:38:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236948AbhJOQic (ORCPT
+        with ESMTP id S241451AbhJOQin (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 12:38:32 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A53DC061768
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 09:36:21 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id c4so6726950pls.6
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 09:36:21 -0700 (PDT)
+        Fri, 15 Oct 2021 12:38:43 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71411C06176D
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 09:36:30 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id x33-20020a9d37a4000000b0054733a85462so13557820otb.10
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 09:36:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=bNuTjMh21ZDjBhYohz0NUqfViUN9CkYGywP8rKjYXXQ=;
-        b=srByqXdaiZB1vx5JOLc2pqo7KYtDXrCyqsP9LUwM20nGG0hXX+GFBs3ibK3fZ2+6P6
-         qkv3rQS+7lMejdN0xsWovm8h2tnF/wQVk60r80WOndc1nvVXg/cq4T07kzO7WKFO/nyq
-         E+FOY4FM0BCjaO4JJFS1JH6Cxkeo88jB5KiZ9YRzmPkoSMC6dHtC6Qifd6gVxOg907B8
-         y5Sirgcz+UMrlKro0+KDG6EnNIKzRUr51p9o7mAC4bR1oVMgr9kxYiFcGg97gdZ+NJu0
-         bpeZB7b1gMSFDXypYVAjTMprbxvmAw8h9M2ECooguHaKT6gEfWBpnrKZNjT7XfGzpyKd
-         ZeXQ==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=rN8llZ5WJsYO2019WyuA6HRNlSUQPgaJNDFjSLEw9J4=;
+        b=llqAsjEFJ+jP4evkylW7AzIh8lJ0uo8z4rUd+5hENrlzKCIOAv4MMyFCD88gt9+lJt
+         8Cg1zMUj9WgkBsAdgL8LSPRxDEI9q7G/mHbPUn+G1YwScLYvZjQAG5WAC64+TEku37Jv
+         rhQVVBxm2R7kBjIcK+Fv7hZOm+ui5W5GmUfyzIv2Ki2lQP/NYiv+cC2KP2IyfJQyX2oi
+         /JT2JBTKxiHcPhKMoESHBm8hZa3Fl54TcQf5LGyi0/LUiR4kAAu+PSi77HsoXvJmNb1L
+         9JUO2MA7hM4hQbJ6zmXFELkqOwY+/py+SE02qnpYxGJu5VO0pmVa9H8tjBdsbtZ0oRoG
+         M55g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bNuTjMh21ZDjBhYohz0NUqfViUN9CkYGywP8rKjYXXQ=;
-        b=VUTTk0j7biji5NQafpn7u8iabfStXeTWZrkvHz2uEQZEZR9yZeW3C2CeH9RaGIPR+Q
-         qxeNcSbd/5YfSzWw+awLQyPPWB1jv3XjErV5fucXdMwTM0HAdX1c1X2IaCL7DU3DJyFB
-         e6TdsFEyBdspmBCTnQ1TvoBTkUl16ag6XgzKJkuWVXKdCgrK6JBoTrSz+I53XsQilg6c
-         dnMFeHJc94TM1F9JNZJA1JMDOTYMsTLURnDRbkqOuk/RaIfWN0XafDRtAa+BPRxfk+sK
-         lynv9V25CiGpJPSWrd3mZgbYk6GtyZyzmcZe8wi7JW9xrhyZiqn+L4KxxP7VPyjgVPcr
-         khBg==
-X-Gm-Message-State: AOAM5312Be0zpf5S7Gvv+ps0BvicKD+jSxqq1vIyuRzZ8YkIlcjehuPA
-        zjrzC8G/3yO564WnwVQKV6NYwQ==
-X-Google-Smtp-Source: ABdhPJzHa77Mqwcb/UXTiiWN+F7q/weAnzXN+ZDwNq5zIfaSRjShl+af95vFZNzbpUq3Twu/Aujk5g==
-X-Received: by 2002:a17:90a:191a:: with SMTP id 26mr15092301pjg.79.1634315780283;
-        Fri, 15 Oct 2021 09:36:20 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id a3sm6094427pfv.174.2021.10.15.09.36.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Oct 2021 09:36:18 -0700 (PDT)
-Date:   Fri, 15 Oct 2021 16:36:12 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Maxim Levitsky <mlevitsk@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=rN8llZ5WJsYO2019WyuA6HRNlSUQPgaJNDFjSLEw9J4=;
+        b=JXDWpO78DvVm8YfzlnQqYi9lDPzihiJLbuPkbfizgTVTpOJ8OTfpmE1MrQjT/ArIzY
+         by/+BTTTT7Z/I/4DZyGegs1465P6zT4Ni2gpxuxEaHwZeuyyHwRz5o1XWR7ZC/O/N1xM
+         SPcpTkv6YpblQh//lW8obcja0MgLL+Q9beGZy2wsi2v4/koxs7ApeCtKwOAX6E4Png6f
+         GyafadKnwJCNG7Em+qRXx4FTcWMX297Ux5/qMeeBwkd4VrKvhnZwVu3Al/I2WfQ2zVy+
+         I4rPUbwjstrs9cqQEkG6L9bO5kH4NjxuydAuG0vsolZzcLMrcjlLGowN6TCba3kfp/Xs
+         wW/g==
+X-Gm-Message-State: AOAM532N9QQT6sa/vX/AFhZnzXy1rmq0mDg7T/N21zrMVz4I+WE76jGT
+        WSALc2pL0MIYFaKRFGbjqCtO7w==
+X-Google-Smtp-Source: ABdhPJz7vAuVfsercWId82GgMZYEsYH+ID/Smum3i7guwBbgbiJMTputWI1cudk1BGklwImCNmYdHw==
+X-Received: by 2002:a9d:37e2:: with SMTP id x89mr9123892otb.300.1634315789775;
+        Fri, 15 Oct 2021 09:36:29 -0700 (PDT)
+Received: from [192.168.17.16] ([189.219.72.19])
+        by smtp.gmail.com with ESMTPSA id j65sm1289992oif.5.2021.10.15.09.36.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Oct 2021 09:36:29 -0700 (PDT)
+Subject: Re: [PATCH 5.4 00/16] 5.4.154-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] KVM: x86: Fix and cleanup for recent AVIC changes
-Message-ID: <YWmt/A4pemf2050j@google.com>
-References: <20211009010135.4031460-1-seanjc@google.com>
- <9e9e91149ab4fa114543b69eaf493f84d2f33ce2.camel@redhat.com>
- <YWRJwZF1toUuyBdC@google.com>
- <YWRtHmAUaKcbWEzH@google.com>
- <ebf038b7b242dd19aba1e4adb6f4ef2701c53748.camel@redhat.com>
- <YWmpKTk/7MOCzm15@google.com>
- <5faa7e49-9eb6-a075-982a-aa7947a5a3d6@redhat.com>
+Cc:     shuah@kernel.org, f.fainelli@gmail.com, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
+        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, linux@roeck-us.net
+References: <20211014145207.314256898@linuxfoundation.org>
+From:   =?UTF-8?Q?Daniel_D=c3=adaz?= <daniel.diaz@linaro.org>
+Message-ID: <8fb90d55-3108-e013-5025-8ca29a7b8376@linaro.org>
+Date:   Fri, 15 Oct 2021 11:36:28 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5faa7e49-9eb6-a075-982a-aa7947a5a3d6@redhat.com>
+In-Reply-To: <20211014145207.314256898@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 15, 2021, Paolo Bonzini wrote:
-> On 15/10/21 18:15, Sean Christopherson wrote:
-> > > 
-> > >                                          - now vCPU1 finally starts running the page fault code.
-> > > 
-> > >                                          - vCPU1 AVIC is still enabled
-> > >                                            (because vCPU1 never handled KVM_REQ_APICV_UPDATE),
-> > >                                            so the page fault code will populate the SPTE.
-> > But vCPU1 won't install the SPTE if it loses the race to acquire mmu_lock, because
-> > kvm_zap_gfn_range() bumps the notifier sequence and so vCPU1 will retry the fault.
-> > If vCPU1 wins the race, i.e. sees the same sequence number, then the zap is
-> > guaranteed to find the newly-installed SPTE.
-> > 
-> > And IMO, retrying is the desired behavior.  Installing a SPTE based on the global
-> > state works, but it's all kinds of weird to knowingly take an action the directly
-> > contradicts the current vCPU state.
+Hello!
+
+On 10/14/21 9:54 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.154 release.
+> There are 16 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> I think both of you are correct. :)
+> Responses should be made by Sat, 16 Oct 2021 14:51:59 +0000.
+> Anything received after that time might be too late.
 > 
-> Installing a SPTE based on global state is weird because this is a vCPU
-> action; installing it based on vCPU state is weird because it is knowingly
-> out of date.
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.154-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-If that's the argument, then kvm_faultin_page() should explicitly check for a
-pending KVM_REQ_APICV_UPDATE, because I would then argue that contuining on when
-KVM _knows_ its new SPTE will either get zapped (page fault wins the race) or
-will get rejected (kvm_zap_gfn_range() wins the race) is just as wrong.  The SPTE
-_cannot_ be used even if the page fault wins the race, becuase all vCPUs need to
-process KVM_REQ_APICV_UPDATE and thus will be blocked until the initiating vCPU
-zaps the range and drops the APICv lock.
+Results from Linaro's test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-And I personally do _not_ want to add a check for the request because it implies
-the check is sufficient, which it is not, because the page fault doesn't yet hold
-mmu_lock.
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Since all answers are some form of wrong, IMO we should at least be coherent with
-respect to the original page fault.
+## Build
+* kernel: 5.4.154-rc1
+* git: ['https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git', 'https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc']
+* git branch: linux-5.4.y
+* git commit: 8f48de738cda248d961f0fc9967316716498b80f
+* git describe: v5.4.153-17-g8f48de738cda
+* test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.y/build/v5.4.153-17-g8f48de738cda
+
+## No regressions (compared to v5.4.153)
+
+## No fixes (compared to v5.4.153)
+
+## Test result summary
+total: 88494, pass: 72937, fail: 793, skip: 13563, xfail: 1201
+
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 288 total, 288 passed, 0 failed
+* arm64: 38 total, 38 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 19 total, 19 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 39 total, 39 passed, 0 failed
+* parisc: 12 total, 12 passed, 0 failed
+* powerpc: 36 total, 36 passed, 0 failed
+* riscv: 30 total, 30 passed, 0 failed
+* s390: 12 total, 12 passed, 0 failed
+* sh: 24 total, 24 passed, 0 failed
+* sparc: 12 total, 12 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 38 total, 38 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* kselftest-android
+* kselftest-arm64
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+
+Greetings!
+
+Daniel Díaz
+daniel.diaz@linaro.org
+
+-- 
+Linaro LKFT
+https://lkft.linaro.org
