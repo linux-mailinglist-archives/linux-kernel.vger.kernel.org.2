@@ -2,111 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4497D42FA98
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 19:55:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD2AF42FA9A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 19:56:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242387AbhJOR5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 13:57:44 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:48750 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242303AbhJOR5l (ORCPT
+        id S242303AbhJOR6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 13:58:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48074 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242436AbhJOR6O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 13:57:41 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 17DF21FD4F;
-        Fri, 15 Oct 2021 17:55:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1634320533; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4jBn2VNfaCZDHefss5Z1r9mqIdP3xRVwotwlK+Rm7xY=;
-        b=n1K8M3Dt3d5TeTHwFKotWO6NgpCUxVj9yloDRCzY2ACk+N04k0IsJk9kqYAIr5CkXCtahO
-        nlU9a0EBiwuhBPySCxctmkoH2iaJWzcfoYspQAfFg6jbjBTLBTW345dDdKwJR+lFFJ2ZBN
-        k3qq64TE8yeQUYARubZvGlGdIcnGP1c=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F13F413C6F;
-        Fri, 15 Oct 2021 17:55:32 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id d+pMOpTAaWHgJQAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Fri, 15 Oct 2021 17:55:32 +0000
-Date:   Fri, 15 Oct 2021 19:55:31 +0200
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     akpm@linux-foundation.org, cgroups@vger.kernel.org,
-        hannes@cmpxchg.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, mhocko@kernel.org
-Subject: Re: [PATCH v2 1/2] memcg: flush stats only if updated
-Message-ID: <20211015175531.GB46263@blackbody.suse.cz>
-References: <20211013180130.GB22036@blackbody.suse.cz>
- <20211014163146.2177266-1-shakeelb@google.com>
+        Fri, 15 Oct 2021 13:58:14 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D55A8C061570
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 10:56:07 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id 34-20020a9d0325000000b00552cae0decbso3643739otv.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 10:56:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=xALEbjNVXyv3PrPndrIJeGhX8nsK5QlmxYjBbwJFbTE=;
+        b=sneUXGAeZFYws5sYhJ932bTtUrYUrKtO+wLy4ZJKTe8GzKluV2cecpJu1HOX6ZRlwb
+         snvrIXcEqi3pfR30GB0PjQve2MEd2Yb1CHhk+jLT8naIT7bUxdDfT2d+5RDWZhVNVOeL
+         FT9JcqvDbhMgCDaE2FfgyX9KTwJhqJMIjxGGivmlyo9dkEtaOR1xLPzlD9aARC+6WsSb
+         /9VNLInhKzg2yEDIPgarnSVzOaIKn9RdjhevVy2nifWHhodNhzYruzmEEVofVQ+UQqV0
+         qDX+8IMCMbxXs+mu8+ykWN18XinqgSRtP2tUpAjNcKrflfe0zCQwyGxiOoQeEtDQZDLv
+         N/AQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xALEbjNVXyv3PrPndrIJeGhX8nsK5QlmxYjBbwJFbTE=;
+        b=WU82Ifc2AyeHoH8ZYw6IOcQ9UF1r6JHhQu49ujXClWl2r4E3Iau6aCx36TcvG/ibPo
+         iI3Png+nzTtEtVTETpElxq/F3Z/Ua7i10o5WoQcrLWeo126lckg6e8iMRbPEca6hgHMs
+         PgxA7usIIXYesVESyaiEGh6WHcpm3YR3chs4G/6feElxLmS5XJBJZXbxe777s7BFrSly
+         wNWgq0ha+R3ofoNiTh0FGXNQXBp/IV2GlvF6mn/w3q1C8RZAdgaHauw2gUje0Or+CH0d
+         Pg9zHermH1iQoRPPSgr1u40VMqA9J6LY8yrA3OBHZdmnCdNohGKnwh1EZ2C01B+7Z/DS
+         arsg==
+X-Gm-Message-State: AOAM531ba7viVVYzQ1MxF6wmfvOGhSpqDsUzcfWyRh+c56Bl02fpseBT
+        RZ1PnVwlYJ3fov4jRh2GzihAfw==
+X-Google-Smtp-Source: ABdhPJxXvZcykfP6oL8sBqYYtIO4H9J3W8ukxsyqaKh70P4i4PTtn5pA9V/Q1UUlkbeZ65ieGvfOSA==
+X-Received: by 2002:a9d:842:: with SMTP id 60mr9207702oty.302.1634320567190;
+        Fri, 15 Oct 2021 10:56:07 -0700 (PDT)
+Received: from [192.168.17.16] ([189.219.72.19])
+        by smtp.gmail.com with ESMTPSA id bj14sm175653oib.3.2021.10.15.10.56.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Oct 2021 10:56:06 -0700 (PDT)
+Subject: Re: [PATCH 4.9 00/25] 4.9.287-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     shuah@kernel.org, f.fainelli@gmail.com, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
+        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, linux@roeck-us.net
+References: <20211014145207.575041491@linuxfoundation.org>
+From:   =?UTF-8?Q?Daniel_D=c3=adaz?= <daniel.diaz@linaro.org>
+Message-ID: <1481e7b9-77c7-93ca-5ac6-76851e89779f@linaro.org>
+Date:   Fri, 15 Oct 2021 12:56:05 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211014163146.2177266-1-shakeelb@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20211014145207.575041491@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 09:31:46AM -0700, Shakeel Butt <shakeelb@google.com> wrote:
-> Thanks for your review. This forces me to think more on this because each
-> update does not necessarily be a single page sized update e.g. adding a hugepage
-> to an LRU.
+Hello!
 
-Aha, hugepages... (I also noticed that on the opposite size scale are
-NR_SLAB_{UN,}RECLAIMABLE_B, the complementary problem to too big error
-would be too frequent flushes.)
+On 10/14/21 9:53 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.9.287 release.
+> There are 25 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sat, 16 Oct 2021 14:51:59 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.287-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-> Though I think the error is time bounded by 2 seconds but in those 2 seconds
-> mathematically the error can be large.
+Results from Linaro's test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Honestly, I can't tell how much the (transient) errors in various
-node_stat_item entries will or won't affect MM behavior. But having some
-guards on it sounds practical when some problems to troubleshoot arise.
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-> What do you think of the following change? It will bound the error
-> better within the 2 seconds window.
-> [...]
-> -static inline void memcg_rstat_updated(struct mem_cgroup *memcg)
-> +static inline void memcg_rstat_updated(struct mem_cgroup *memcg, int val)
->  {
-> +	unsigned int x;
-> +
->  	cgroup_rstat_updated(memcg->css.cgroup, smp_processor_id());
-> -	if (!(__this_cpu_inc_return(stats_updates) % MEMCG_CHARGE_BATCH))
-> -		atomic_inc(&stats_flush_threshold);
-> +
-> +	x = abs(__this_cpu_add_return(stats_diff, val));
-> +	if (x > MEMCG_CHARGE_BATCH) {
-> +		atomic_add(x / MEMCG_CHARGE_BATCH, &stats_flush_threshold);
-> +		__this_cpu_write(stats_diff, 0);
-> +	}
->  }
+## Build
+* kernel: 4.9.287-rc1
+* git: ['https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git', 'https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc']
+* git branch: linux-4.9.y
+* git commit: 2660ee946a0246c54d930bc9fa6d2239ce8014b8
+* git describe: v4.9.286-26-g2660ee946a02
+* test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.9.y/build/v4.9.286-26-g2660ee946a02
 
-Looks better wrt meaningful error calculation (and hopefully still
-doesn't add too much to the hot path).
+## No regressions (compared to v4.9.286)
 
-> @@ -807,7 +813,7 @@ void __count_memcg_events(struct mem_cgroup *memcg, enum vm_event_item idx,
->  		return;
->  
->  	__this_cpu_add(memcg->vmstats_percpu->events[idx], count);
-> -	memcg_rstat_updated(memcg);
-> +	memcg_rstat_updated(memcg, val);
+## No fixes (compared to v4.9.286)
 
-s/val/count/
+## Test result summary
+total: 76652, pass: 60442, fail: 639, skip: 13314, xfail: 2257
 
-(Just thinking loudly.) At one moment I thought, it could
-effectively be even s/val/0/ since events aren't(?) inputs for reclaim
-calculations. But with the introduced stats_diff it may happen
-stats_diff flickers (its abs value) within the MEMCG_CHARGE_BATCH and
-stats_flush_threshold would never be incremented. Basically disabling
-the periodic flush. Therefore the events must also increment the
-stats_diff.
+## Build Summary
+* arm: 129 total, 129 passed, 0 failed
+* arm64: 34 total, 34 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 18 total, 18 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 24 total, 24 passed, 0 failed
+* sparc: 12 total, 12 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 18 total, 18 passed, 0 failed
 
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* kselftest-android
+* kselftest-arm64
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-membarrier
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* ssuite
+* v4l2-compliance
+
+
+Greetings!
+
+Daniel Díaz
+daniel.diaz@linaro.org
+
+-- 
+Linaro LKFT
+https://lkft.linaro.org
