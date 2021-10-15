@@ -2,89 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A4B542FE43
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 00:34:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22A3642FE47
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 00:36:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243383AbhJOWgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 18:36:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54612 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238903AbhJOWgY (ORCPT
+        id S243387AbhJOWip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 18:38:45 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:34194 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238862AbhJOWio (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 18:36:24 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E0E0C061570
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 15:34:17 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id y30so25882140edi.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 15:34:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IPP9H53mtCsbQNk9doEzzimC+EjafFfLHkPsfpk1gug=;
-        b=Wrmsv1r6CTDbsg6ohN8jcWCEqyPhEjWAqgDfsYvSTD6Z0wUTDq+sgfP0+HD652SaPn
-         cBaOtOtCzGLQgEoeMxHfnHkrGiH+JocjZBkkCI1PEGlxKtOY3SQNH5tsK/SrVSkPJsKE
-         qSDEP3gCzAKhu4nBYxhktV0Nga3FDmNdmAnd5h5Oa1/eOfPcbveQe63JZpQeth53nKJp
-         tGOMwAnFv6lkSLgRyRz7bkGPG3oKDA1PSIU5Ok/Ys+0Wme+189tyJDzt1uPZvfn/pG5B
-         +hIQZkuG2b1XNg1U9aImPBbo+CbVio/NzAH3MGaMZZsT0jgTREkOfUBsHBGVozTgM7Tn
-         d+6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IPP9H53mtCsbQNk9doEzzimC+EjafFfLHkPsfpk1gug=;
-        b=qbyY2NfUDiZRrqzJbR2X0wp6CiuuSY3gBllVXB/w9RNsEtJBvBAz7oDsbKIx31QhNm
-         IkMknNS3TTlJ/VTUDD773RUTaMbPwCcC+CaDjpMfL1C4UNOoZL22jGz4oFSP2zeV1pEI
-         owGb37W3UXOWQLCoNt5LHWg/zWsRsxH6V1/9IRCiTHImXbXn8ejMJmCMK+0nz5bpWrQ7
-         ogahFOntkg2PuX/HToXY8pSNHYl+VIcODgVh+c7Q7R4+FubUpMuxxR0UhDxCQE6Z08hV
-         A8N9KeDE+/05vAcAIBRhzZzE+SW9DxbtWrFMV8r2GF1RSB4plszKaLY9d9jnMfKo3jiT
-         KAGQ==
-X-Gm-Message-State: AOAM531Pwia7QQ78JY9ILKiQpaT017R0ojwBy70urhHE0gRXJcrGYhcs
-        Fr0jotEYFES7yHU+Yz/Usu5yONTBJH62on+Bu6Q=
-X-Google-Smtp-Source: ABdhPJyLJjJm67G6BpfJ0eTf82WNnFvO//ihG40tAdRB1n2RDizdnyDHqAIAfAPSbXh3mmlgYBj8ihlZGtJNQkmzTZQ=
-X-Received: by 2002:a17:906:fc0a:: with SMTP id ov10mr5837689ejb.536.1634337255917;
- Fri, 15 Oct 2021 15:34:15 -0700 (PDT)
+        Fri, 15 Oct 2021 18:38:44 -0400
+Received: from pendragon.ideasonboard.com (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 27C8029B;
+        Sat, 16 Oct 2021 00:36:36 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1634337396;
+        bh=YpIjKWhPxlJyMotrj5Fz/0HcYL2+g6oIM0JniTO7h/w=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=Kq9KImXlIzpLQTqx8ZwP0zlaNIvrLXhnN0OWhPHp+JUKuaFNmsHWwziSCMdf4EmaE
+         hoDogb7/lH0i6iN5mkRRZkwkZQ7jecCSwCvGgABfJXG0KHMwpPXG/7/oiopcXEqxDO
+         eiJpxo63jXUy+e4wuxUPpkUs2kGiE0xUH0WQePs8=
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20211015141107.2430800-1-narmstrong@baylibre.com> <20211015141107.2430800-7-narmstrong@baylibre.com>
-In-Reply-To: <20211015141107.2430800-7-narmstrong@baylibre.com>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Sat, 16 Oct 2021 00:34:05 +0200
-Message-ID: <CAFBinCBwO0CJMPA3K6e8OxXcinzrA5LrSqaKu1XtZPWLXT8Krw@mail.gmail.com>
-Subject: Re: [PATCH v2 6/6] drm/meson: encoder_cvbs: switch to bridge with ATTACH_NO_CONNECTOR
-To:     Neil Armstrong <narmstrong@baylibre.com>, sam@ravnborg.org
-Cc:     daniel@ffwll.ch, Laurent.pinchart@ideasonboard.com,
-        dri-devel@lists.freedesktop.org, linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1634280562-4629-1-git-send-email-wangqing@vivo.com>
+References: <1634280562-4629-1-git-send-email-wangqing@vivo.com>
+Subject: Re: [PATCH] media: ccs: replace snprintf in show functions with sysfs_emit
+From:   Kieran Bingham <kieran.bingham@ideasonboard.com>
+Cc:     Qing Wang <wangqing@vivo.com>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Qing Wang <wangqing@vivo.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Date:   Fri, 15 Oct 2021 23:36:33 +0100
+Message-ID: <163433739388.456562.9392744334237641054@Monstersaurus>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Neil, Hi Sam,
+Hello,
 
-On Fri, Oct 15, 2021 at 4:11 PM Neil Armstrong <narmstrong@baylibre.com> wrote:
-[...]
-> +static const struct drm_bridge_funcs meson_encoder_cvbs_bridge_funcs = {
-> +       .attach = meson_encoder_cvbs_attach,
-> +       .enable = meson_encoder_cvbs_enable,
-> +       .disable = meson_encoder_cvbs_disable,
-> +       .mode_valid = meson_encoder_cvbs_mode_valid,
-> +       .get_modes = meson_encoder_cvbs_get_modes,
-> +       .atomic_enable = meson_encoder_cvbs_atomic_enable,
-I did some testing on boards where u-boot doesn't initialize the video outputs.
-It seems that meson_encoder_cvbs_enable() is never called with this patch.
-meson_encoder_cvbs_atomic_enable() is called though.
+Quoting Qing Wang (2021-10-15 07:49:22)
+> show() must not use snprintf() when formatting the value to be
+> returned to user space.
+>=20
+> Fix the following coccicheck warning:
+> drivers/media/i2c/ccs/ccs-core.c:2717: WARNING: use scnprintf or sprintf.
+>=20
+> Use sysfs_emit instead of scnprintf or sprintf makes more sense.
+>=20
+> Signed-off-by: Qing Wang <wangqing@vivo.com>
+> ---
+>  drivers/media/i2c/ccs/ccs-core.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/media/i2c/ccs/ccs-core.c b/drivers/media/i2c/ccs/ccs=
+-core.c
+> index a9403a2..21a156d 100644
+> --- a/drivers/media/i2c/ccs/ccs-core.c
+> +++ b/drivers/media/i2c/ccs/ccs-core.c
+> @@ -2715,11 +2715,11 @@ ccs_sysfs_ident_read(struct device *dev, struct d=
+evice_attribute *attr,
 
-From what I can see in drm_bridge.c [0] this is even expected.
-Does this mean that we need to move all logic from .enable to
-.atomic_enable (and same with .disable -> moving that logic to
-.atomic_disable)?
+What version of the kernel is this patch against?
 
-The same comment applies to the HDMI patch.
+I can't find the direct line mapping for this in either the linux-media
+tree or torvalds master branch (closest match at
+https://git.linuxtv.org/media_tree.git/tree/drivers/media/i2c/ccs/ccs-core.=
+c#n2754)
+
+Ah: https://lore.kernel.org/all/20210603071750.11594-1-thunder.leizhen@huaw=
+ei.com/
+updated this, so I suspect this patch has been submitted against perhaps
+a v5.14 kernel? It would be best to rebase and repost against the latest
+branch of https://git.linuxtv.org/media_tree.git
 
 
-Best regards,
-Martin
+>         struct ccs_module_info *minfo =3D &sensor->minfo;
+> =20
+>         if (minfo->mipi_manufacturer_id)
+> -               return snprintf(buf, PAGE_SIZE, "%4.4x%4.4x%2.2x\n",
+> +               return sysfs_emit(buf, "%4.4x%4.4x%2.2x\n",
+>                                 minfo->mipi_manufacturer_id, minfo->model=
+_id,
+>                                 minfo->revision_number) + 1;
+
+This change looks good, but I think it might be better to re-indent the
+minfo lines to match as well...
+
+>         else
+> -               return snprintf(buf, PAGE_SIZE, "%2.2x%4.4x%2.2x\n",
+> +               return sysfs_emit(buf, "%2.2x%4.4x%2.2x\n",
+>                                 minfo->smia_manufacturer_id, minfo->model=
+_id,
+>                                 minfo->revision_number) + 1;
+
+here as well of course.
+
+--
+Kieran
 
 
-[0] https://elixir.bootlin.com/linux/v5.15-rc5/source/drivers/gpu/drm/drm_bridge.c#L717
+>  }
+> --=20
+> 2.7.4
+>
