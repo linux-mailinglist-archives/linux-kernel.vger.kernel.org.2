@@ -2,155 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 889E742E9FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 09:24:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75BC942EA00
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 09:25:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235761AbhJOH0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 03:26:22 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:50513 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231143AbhJOH0Q (ORCPT
+        id S235950AbhJOH1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 03:27:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41924 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234392AbhJOH1p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 03:26:16 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HVySQ2qdkz4xbQ;
-        Fri, 15 Oct 2021 18:24:06 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1634282649;
-        bh=KKD9ANFW/s8xZ3yMEIw+8GQ1uwACWZHgojK20y1bTew=;
-        h=Date:From:To:Cc:Subject:From;
-        b=lll2IH1XJeIyLUHgMP+DrJM1IS1rdv5ibzR36BdQxOYUyvUawbcCoFaOLeyCPPY3g
-         xBlN+DLrcEZG7VsBvrm2CYmjxNEhNL+vaWNArKTL/ZQr2q4+Ecm0NdMsin1iVh39SE
-         Ds756higf3VhRPMBkzPeVcLJpMRP84hEJBfywrl9iTEb3EYjwuDR7+TuOCLkAOItnC
-         zps4ehOrAmYtOUYWZFyYhL44niHjUo+7Pat6xjYPFRIZSqm4KWek5l1kh7et831fzc
-         HCJgYCieHzGKLNbV5NdLLceJRdIxQV+Qvi0Sd2Tqr4MwuAdTS1aEk1BCBc8scWcICb
-         oEXUCQiQP+o3Q==
-Date:   Fri, 15 Oct 2021 18:24:04 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Adam Bratschi-Kaye <ark.email@gmail.com>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Ayaan Zaidi <zaidi.ayaan@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Boris-Chengbiao Zhou <bobo1239@web.de>,
-        Douglas Su <d0u9.su@outlook.com>, Finn Behrens <me@kloenk.de>,
-        Fox Chen <foxhlchen@gmail.com>, Gary Guo <gary@garyguo.net>,
-        Geoffrey Thomas <geofft@ldpreload.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Sumera Priyadarsini <sylphrenadin@gmail.com>,
-        Sven Van Asbroeck <thesven73@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@google.com>,
-        Yuki Okushi <jtitor@2k36.org>
-Subject: linux-next: manual merge of the rust tree with the kbuild tree
-Message-ID: <20211015182404.0355bef6@canb.auug.org.au>
+        Fri, 15 Oct 2021 03:27:45 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ED5CC061570;
+        Fri, 15 Oct 2021 00:25:39 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id r2so7801611pgl.10;
+        Fri, 15 Oct 2021 00:25:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QkztVd7RJfuqxUOBKk+YDRUaI0H2x7WbBGD/f7b+t1w=;
+        b=Z9cR3eVlFmeG4xxsSQyvxeCSBmGkP/+c9AW3bTIFUjh+PDzXyfxC8vQF06xQk+7TT/
+         7H6GL2GDZxVQLvrf8i+hUA3m/Y1aUo1wRl43sJEoghojBGOq2XYJjmjPVRr4xodYpTA7
+         dN2PBHkMtUJbQc2F1YA5BWfb3oZpL39IkyNYauqW50sPAVEYN1IDrCu5cVfrEJbnMbMt
+         nzhCjigqVtFZ3NjoMq6ouhnVGKMp/V2eIXDiG4uQUend+1RZMRyxnOhxocc8lplB7V9U
+         hCdpD6Qa44g35mn+l/p8/v+pHAnMaWE088y1UbhzXgWtlhPapUE/OGmqdpAPT3CjJ57i
+         RJ6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QkztVd7RJfuqxUOBKk+YDRUaI0H2x7WbBGD/f7b+t1w=;
+        b=r3WxbFu2qGNTEudxcjzGu94QWEkCo36nRIcx8Rcti4erd6MfwAvYa3dvMk48nIBV/q
+         gg9FerjzGwsg09syt9gHGCT8ONPOzy9+SYGy1ZgOR1qHjPLrgi+n/6+nYnkNler5TXzb
+         NNojirGl5KvpOVbDaLOkic4TDrnI2aXwTv2DWBoHjMSWcW5pqh7iADRCrqRukN5OFIpL
+         +O79eG4C0awvWvsiq9O4Ml9lTm1SHq6TfptEvBJEDKhm+qNVFY3Uf2RfA4vHbN/GdrUM
+         W9kO08sPhYHf4V8uXJu72htiRjczJYW6Ty4nyPJsLH/+1IM/hUTleTj6JmZKTMwsiTbO
+         VJSw==
+X-Gm-Message-State: AOAM531PQFpFeep2Z3m/uErZEM8j33+ZtRUvM4eMjVBZ22eXRu53Gk61
+        eKrM4T87wTtnr0I6GK04tZg=
+X-Google-Smtp-Source: ABdhPJwziKbw9/4jfsU9dHOu2/83LgZYuNj2I+PuWLIEaggouAFkjP2Fygjt7bVm7p3sRcXMS773ag==
+X-Received: by 2002:aa7:9523:0:b0:44c:c171:9ae with SMTP id c3-20020aa79523000000b0044cc17109aemr10250669pfp.75.1634282738721;
+        Fri, 15 Oct 2021 00:25:38 -0700 (PDT)
+Received: from localhost.localdomain ([124.126.19.250])
+        by smtp.gmail.com with ESMTPSA id a12sm10547856pjq.16.2021.10.15.00.25.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Oct 2021 00:25:38 -0700 (PDT)
+From:   zhaoxiao <long870912@gmail.com>
+To:     chenhuacai@kernel.org, jiaxun.yang@flygoat.com, tglx@linutronix.de,
+        maz@kernel.org
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zhaoxiao <zhaoxiao@uniontech.com>
+Subject: [PATCH] irqchip/loongson-htvec:- Handle return value of ioremap.
+Date:   Fri, 15 Oct 2021 15:25:23 +0800
+Message-Id: <20211015072523.30615-1-long870912@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/dNn3I8xom7PU2ucg8PI6ffw";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/dNn3I8xom7PU2ucg8PI6ffw
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+From: zhaoxiao <zhaoxiao@uniontech.com>
 
-Hi all,
+Here, If ioremap will fail. It will return NULL.Kernel can run into
+a NULL-pointer dereference. This error check will avoid NULL pointer
+dereference.
 
-Today's linux-next merge of the rust tree got a conflict in:
-
-  Makefile
-
-between commit:
-
-  09708df61f2b ("kbuild: split DEBUG_CFLAGS out to scripts/Makefile.debug")
-
-from the kbuild tree and commit:
-
-  dc08d49444e9 ("Kbuild: add Rust support")
-
-from the rust tree.
-
-I fixed it up (I used the Makefile conflicting part from the former and
-applied the patch below) and can carry the fix as necessary. This is
-now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your
-tree is submitted for merging.  You may also want to consider
-cooperating with the maintainer of the conflicting tree to minimise any
-particularly complex conflicts.
-
-Miguel,  it might be worth do a back merge of v5.14 (or maybe even
-v5.15-rc1) to fix up the old conflicts ... If you do that, though,
-please don't use github's GUI to do it, do it in your own git tree,
-include a good commit message in the merge commit (saying why you did
-the merge), and push it up to git hub.
-
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Fri, 15 Oct 2021 18:16:09 +1100
-Subject: [PATCH] Kbuild: fix for "kbuild: split DEBUG_CFLAGS out to scripts=
-/Makefile.debug"
-
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: zhaoxiao <zhaoxiao@uniontech.com>
 ---
- scripts/Makefile.debug | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/irqchip/irq-loongson-htvec.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/scripts/Makefile.debug b/scripts/Makefile.debug
-index 9f39b0130551..ad9308a08240 100644
---- a/scripts/Makefile.debug
-+++ b/scripts/Makefile.debug
-@@ -1,4 +1,5 @@
- DEBUG_CFLAGS	:=3D
-+DEBUG_RUSTFLAGS :=3D
-=20
- ifdef CONFIG_DEBUG_INFO_SPLIT
- DEBUG_CFLAGS	+=3D -gsplit-dwarf
-@@ -8,6 +9,11 @@ endif
-=20
- ifndef CONFIG_AS_IS_LLVM
- KBUILD_AFLAGS	+=3D -Wa,-gdwarf-2
-+ifdef CONFIG_DEBUG_INFO_REDUCED
-+DEBUG_RUSTFLAGS +=3D -Cdebuginfo=3D1
-+else
-+DEBUG_RUSTFLAGS +=3D -Cdebuginfo=3D2
-+endif
- endif
-=20
- ifndef CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT
-@@ -31,3 +37,6 @@ endif
-=20
- KBUILD_CFLAGS +=3D $(DEBUG_CFLAGS)
- export DEBUG_CFLAGS
-+
-+KBUILD_RUSTFLAGS +=3D $(DEBUG_RUSTFLAGS)
-+export DEBUG_RUSTFLAGS
---=20
-2.33.0
+diff --git a/drivers/irqchip/irq-loongson-htvec.c b/drivers/irqchip/irq-loongson-htvec.c
+index 1cc0bceb4472..a36c20f44ec4 100644
+--- a/drivers/irqchip/irq-loongson-htvec.c
++++ b/drivers/irqchip/irq-loongson-htvec.c
+@@ -267,6 +267,8 @@ struct fwnode_handle *htvec_acpi_init(struct fwnode_handle *parent,
+ 
+ 	priv->num_parents = HTVEC_MAX_PARENT_IRQ;
+ 	priv->base = ioremap(acpi_htvec->address, acpi_htvec->size);
++	if (!priv->base)
++		goto free_priv;
+ 
+ 	/* Interrupt may come from any of the 8 interrupt lines */
+ 	for (i = 0; i < priv->num_parents; i++)
+@@ -307,6 +309,7 @@ struct fwnode_handle *htvec_acpi_init(struct fwnode_handle *parent,
+ iounmap_base:
+ 	iounmap(priv->base);
+ 	priv->domain_handle = NULL;
++free_priv:
+ 	kfree(priv);
+ 
+ 	return NULL;
+-- 
+2.20.1
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/dNn3I8xom7PU2ucg8PI6ffw
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFpLJUACgkQAVBC80lX
-0GwxCQf+MBSaQK+nRcoey+cbsescHyWqk66ldD6O1BBgoxRoD3lj/xfSRcY7OrQE
-wa6ymvjHMff7uYExyLy1RGPPqcVj8lkqua8IsVpQgENpDj0wDzuqAPHuCEeaNS8i
-kpshKBtD3CpsBiZCUCILoSAdZyILVZ128SSVRwyJhfYI48slFUeeZx5DsBR9EnQH
-RV8aaHQ9HBDc5usm6b7cqgyWv5QUcHVTn4luu7Rccco4UoBjheUq5nyuphu1UeMo
-+sCxWCH8DcY+biwiCRu13KPyubjuizlFhtib/Hkv6dW0mJi08EQsxo0ozIoYe95O
-FxGQHMbqWpUw2SZETVapAREQ2UyAUA==
-=VGsj
------END PGP SIGNATURE-----
-
---Sig_/dNn3I8xom7PU2ucg8PI6ffw--
