@@ -2,207 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 165BA42FD47
+	by mail.lfdr.de (Postfix) with ESMTP id 5F00842FD48
 	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 23:14:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243075AbhJOVPU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 17:15:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35918 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238548AbhJOVPT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 17:15:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9DF8C61151;
-        Fri, 15 Oct 2021 21:13:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1634332392;
-        bh=sBthmh0Ow6dHCAklrKdpkJ5pe7lwapwvnI3whKX5G38=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=dqD3fJsMDbXeWDkCEAycK1ev1cVrym+ayoatD3KKaj7F0v4EgfQKNUL9lb6MeGeKE
-         jQiyCo2ygdaQGrhCMzxe+DmJ5hamOskOmjYFX0QhWRKrHZfc50M2qk642o7fOtgerf
-         uMYhD2Sz8DpjjoJUvYFlizP3eIQ2HrjWtv70ZAvc=
-Date:   Fri, 15 Oct 2021 14:13:10 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Chen Wandun <chenwandun@huawei.com>
-Cc:     <shakeelb@google.com>, <npiggin@gmail.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>, <edumazet@google.com>,
-        <wangkefeng.wang@huawei.com>, <guohanjun@huawei.com>
-Subject: Re: [PATCH] mm/vmalloc: introduce alloc_pages_bulk_array_mempolicy
- to accelerate memory allocation
-Message-Id: <20211015141310.f69c5fbf0eb910ad0a43ebd5@linux-foundation.org>
-In-Reply-To: <20211014092952.1500982-1-chenwandun@huawei.com>
-References: <20210928121040.2547407-1-chenwandun@huawei.com>
-        <20211014092952.1500982-1-chenwandun@huawei.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S243078AbhJOVQc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 17:16:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36188 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235372AbhJOVQU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 17:16:20 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45EA1C061570
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 14:14:13 -0700 (PDT)
+Date:   Fri, 15 Oct 2021 23:14:09 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1634332451;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=ss/7C0IRTtI0ncyR2UwV+ykEZrfv7NqhHiYm6VTvJB4=;
+        b=wUMJ2ZLI63iiSFmNFRTy5EjwAECuE0vYtSpAX1ZUjKqbTr20Rl38IRE86bRfz9Kv/z/fM+
+        IXcWxJLD00wE2zl12IJ9F+//e/w62JzQvNu7iSRpTHAXCQKc+wt2eyiuFaEshR6ATPp45g
+        qZEE0ca5JnUaVxolAHz9auUxrA2QrveSHiwLdqSLphDMqbbyUIaleh7orbGDQbQpkRQdwu
+        +1NLa/8PZT0UmDooT+Jjf7hZd3XDhJmmR1/ym/VYJ1CL3XtMCW5QeYbbAqx2YK+6KNS7EL
+        ulGIJPQ2iJ14ilTtsXy3wxnbIFCTLGGJC3+OoQzclXUqQcvOqfPG8Kwd3t5XsA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1634332451;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=ss/7C0IRTtI0ncyR2UwV+ykEZrfv7NqhHiYm6VTvJB4=;
+        b=C2wGNv2K/QEfwKRmnh4iArsktyCzJ+5v2rVPyYNIJjv9VRaRKMPCN0J1r05mUtgd8kTF38
+        0RtZ/mhC7cFbYNAQ==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     linux-kernel@vger.kernel.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: [PATCH] mm/scatterlist: Replace the !preemptible warning in
+ sg_miter_stop()
+Message-ID: <20211015211409.cqopacv3pxdwn2ty@linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Oct 2021 17:29:52 +0800 Chen Wandun <chenwandun@huawei.com> wrote:
+From: Thomas Gleixner <tglx@linutronix.de>
 
-> It will cause significant performance regressions in some situations
-> as Andrew mentioned in [1]. The main situation is vmalloc, vmalloc
-> will allocate pages with NUMA_NO_NODE by default, that will result
-> in alloc page one by one;
-> 
-> In order to solve this, __alloc_pages_bulk and mempolicy should be
-> considered at the same time.
-> 
-> 1) If node is specified in memory allocation request, it will alloc
-> all pages by __alloc_pages_bulk.
-> 
-> 2) If interleaving allocate memory, it will cauculate how many pages
-> should be allocated in each node, and use __alloc_pages_bulk to alloc
-> pages in each node.
-> 
-> [1]: https://lore.kernel.org/lkml/CALvZod4G3SzP3kWxQYn0fj+VgG-G3yWXz=gz17+3N57ru1iajw@mail.gmail.com/t/#m750c8e3231206134293b089feaa090590afa0f60
-> 
-> ...
->
-> --- a/include/linux/gfp.h
-> +++ b/include/linux/gfp.h
-> @@ -531,6 +531,10 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
->  				struct list_head *page_list,
->  				struct page **page_array);
->  
-> +unsigned long alloc_pages_bulk_array_mempolicy(gfp_t gfp,
-> +				unsigned long nr_pages,
-> +				struct page **page_array);
-> +
->  /* Bulk allocate order-0 pages */
->  static inline unsigned long
->  alloc_pages_bulk_list(gfp_t gfp, unsigned long nr_pages, struct list_head *list)
-> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-> index 9f8cd1457829..f456c5eb8d10 100644
-> --- a/mm/mempolicy.c
-> +++ b/mm/mempolicy.c
-> @@ -2196,6 +2196,82 @@ struct page *alloc_pages(gfp_t gfp, unsigned order)
->  }
->  EXPORT_SYMBOL(alloc_pages);
->  
-> +unsigned long alloc_pages_bulk_array_interleave(gfp_t gfp,
-> +		struct mempolicy *pol, unsigned long nr_pages,
-> +		struct page **page_array)
+sg_miter_stop() checks for disabled preemption before unmapping a page
+via kunmap_atomic(). The kernel doc mentions under context that
+preemption must be disabled if SG_MITER_ATOMIC is set.
 
-I'll make this static.
+There is no active requirement for the caller to have preemption
+disabled before invoking sg_mitter_stop(). The sg_mitter_*()
+implementation itself has no such requirement.
+In fact, preemption is disabled by kmap_atomic() as part of
+sg_miter_next() and remains disabled as long as there is an active
+SG_MITER_ATOMIC mapping. This is a consequence of kmap_atomic() and not
+a requirement for sg_mitter_*() itself.
+The user chooses SG_MITER_ATOMIC because it uses the API in a context
+where blocking is not possible or blocking is possible but he chooses a
+lower weight mapping which is not available on all CPUs and so it might
+need less overhead to setup at a price that now preemption will be
+disabled.
 
-> +{
-> +	int nodes;
-> +	unsigned long nr_pages_per_node;
-> +	int delta;
-> +	int i;
-> +	unsigned long nr_allocated;
-> +	unsigned long total_allocated = 0;
-> +
-> +	nodes = nodes_weight(pol->nodes);
-> +	nr_pages_per_node = nr_pages / nodes;
-> +	delta = nr_pages - nodes * nr_pages_per_node;
-> +
-> +	for (i = 0; i < nodes; i++) {
-> +		if (delta) {
-> +			nr_allocated = __alloc_pages_bulk(gfp,
-> +					interleave_nodes(pol), NULL,
-> +					nr_pages_per_node + 1, NULL,
-> +					page_array);
-> +			delta--;
-> +		} else {
-> +			nr_allocated = __alloc_pages_bulk(gfp,
-> +					interleave_nodes(pol), NULL,
-> +					nr_pages_per_node, NULL, page_array);
-> +		}
-> +
-> +		page_array += nr_allocated;
-> +		total_allocated += nr_allocated;
-> +	}
-> +
-> +	return total_allocated;
-> +}
-> +
-> +unsigned long alloc_pages_bulk_array_preferred_many(gfp_t gfp, int nid,
-> +		struct mempolicy *pol, unsigned long nr_pages,
-> +		struct page **page_array)
+The kmap_atomic() implementation on PREEMPT_RT does not disable
+preemption. It simply disables CPU migration to ensure that the task
+remains on the same CPU while the caller remains preemptible. This in
+turn triggers the warning in sg_miter_stop() because preemption is
+allowed.
 
-And this.
+The PREEMPT_RT and !PREEMPT_RT implementation of kmap_atomic() disable
+pagefaults as a requirement. It is sufficient to check for this instead
+of disabled preemption.
 
-> +{
-> +	gfp_t preferred_gfp;
-> +	unsigned long nr_allocated = 0;
-> +
-> +	preferred_gfp = gfp | __GFP_NOWARN;
-> +	preferred_gfp &= ~(__GFP_DIRECT_RECLAIM | __GFP_NOFAIL);
-> +
-> +	nr_allocated  = __alloc_pages_bulk(preferred_gfp, nid, &pol->nodes,
-> +					   nr_pages, NULL, page_array);
-> +
-> +	if (nr_allocated < nr_pages)
-> +		nr_allocated += __alloc_pages_bulk(gfp, numa_node_id(), NULL,
-> +				nr_pages - nr_allocated, NULL,
-> +				page_array + nr_allocated);
-> +	return nr_allocated;
-> +}
-> +
-> +unsigned long alloc_pages_bulk_array_mempolicy(gfp_t gfp,
-> +		unsigned long nr_pages, struct page **page_array)
-> +{
-> +	struct mempolicy *pol = &default_policy;
-> +
-> +	if (!in_interrupt() && !(gfp & __GFP_THISNODE))
-> +		pol = get_task_policy(current);
-> +
-> +	if (pol->mode == MPOL_INTERLEAVE)
-> +		return alloc_pages_bulk_array_interleave(gfp, pol,
-> +							 nr_pages, page_array);
-> +
-> +	if (pol->mode == MPOL_PREFERRED_MANY)
-> +		return alloc_pages_bulk_array_preferred_many(gfp,
-> +				numa_node_id(), pol, nr_pages, page_array);
-> +
-> +	return __alloc_pages_bulk(gfp, policy_node(gfp, pol, numa_node_id()),
-> +				  policy_nodemask(gfp, pol), nr_pages, NULL,
-> +				  page_array);
-> +}
+Check for disabled pagefault handler in the SG_MITER_ATOMIC case. Remove
+the "preemption disabled" part from the kernel doc as the sg_milter*()
+implementation does not care.
 
-Some documentation via code comments would be nice.  If only for
-alloc_pages_bulk_array_mempolicy().  Mainly to explain why it exists. 
-I suppose the internal functions can be left uncommented if they're
-sufficiently obvious?
+[bigeasy: commit description. ]
 
->  struct folio *folio_alloc(gfp_t gfp, unsigned order)
->  {
->  	struct page *page = alloc_pages(gfp | __GFP_COMP, order);
-> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> index b7ac4a8fe2b3..49adba793f3c 100644
-> --- a/mm/vmalloc.c
-> +++ b/mm/vmalloc.c
-> @@ -2856,23 +2856,14 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
->  			 */
->  			nr_pages_request = min(100U, nr_pages - nr_allocated);
->  
-> -			if (nid == NUMA_NO_NODE) {
-> -				for (i = 0; i < nr_pages_request; i++) {
-> -					page = alloc_page(gfp);
-> -					if (page)
-> -						pages[nr_allocated + i] = page;
-> -					else {
-> -						nr = i;
-> -						break;
-> -					}
-> -				}
-> -				if (i >= nr_pages_request)
-> -					nr = nr_pages_request;
-> -			} else {
-> +			if (nid == NUMA_NO_NODE)
-> +				nr = alloc_pages_bulk_array_mempolicy(gfp,
-> +							nr_pages_request,
-> +							pages + nr_allocated);
-> +			else
->  				nr = alloc_pages_bulk_array_node(gfp, nid,
->  							nr_pages_request,
->  							pages + nr_allocated);
-> -			}
->  			nr_allocated += nr;
->  			cond_resched();
->  
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+---
+ lib/scatterlist.c |   11 ++++-------
+ 1 file changed, 4 insertions(+), 7 deletions(-)
 
+--- a/lib/scatterlist.c
++++ b/lib/scatterlist.c
+@@ -828,8 +828,7 @@ static bool sg_miter_get_next_page(struc
+  *   stops @miter.
+  *
+  * Context:
+- *   Don't care if @miter is stopped, or not proceeded yet.
+- *   Otherwise, preemption disabled if the SG_MITER_ATOMIC is set.
++ *   Don't care.
+  *
+  * Returns:
+  *   true if @miter contains the valid mapping.  false if end of sg
+@@ -865,8 +864,7 @@ EXPORT_SYMBOL(sg_miter_skip);
+  *   @miter->addr and @miter->length point to the current mapping.
+  *
+  * Context:
+- *   Preemption disabled if SG_MITER_ATOMIC.  Preemption must stay disabled
+- *   till @miter is stopped.  May sleep if !SG_MITER_ATOMIC.
++ *   May sleep if !SG_MITER_ATOMIC.
+  *
+  * Returns:
+  *   true if @miter contains the next mapping.  false if end of sg
+@@ -906,8 +904,7 @@ EXPORT_SYMBOL(sg_miter_next);
+  *   need to be released during iteration.
+  *
+  * Context:
+- *   Preemption disabled if the SG_MITER_ATOMIC is set.  Don't care
+- *   otherwise.
++ *   Don't care otherwise.
+  */
+ void sg_miter_stop(struct sg_mapping_iter *miter)
+ {
+@@ -922,7 +919,7 @@ void sg_miter_stop(struct sg_mapping_ite
+ 			flush_dcache_page(miter->page);
+ 
+ 		if (miter->__flags & SG_MITER_ATOMIC) {
+-			WARN_ON_ONCE(preemptible());
++			WARN_ON_ONCE(!pagefault_disabled());
+ 			kunmap_atomic(miter->addr);
+ 		} else
+ 			kunmap(miter->page);
