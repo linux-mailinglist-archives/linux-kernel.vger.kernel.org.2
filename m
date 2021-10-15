@@ -2,92 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92AF642F494
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 15:59:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A540142F4A3
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 16:00:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240208AbhJOOBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 10:01:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55172 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239577AbhJOOBh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 10:01:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4CA1161090;
-        Fri, 15 Oct 2021 13:59:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634306371;
-        bh=tHCAgydHYCdUAD+HzPMssFmmvgjn4jyjNVTgtu+4eEw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=k42TqYhkmGmaE+EtfizqtlY/kh6oTSZCb5+sO8CXY8k/W0acjH9ZmUU7LnG2vj0hV
-         2RCoYDTUjzKMoP5b9rq9bsVAaJuswXgYZnm7V+xnWuGgYYb5hHg8VaQnN5ILzp2peG
-         ZEIkd7+AvL881MhjotOmjJfyspnDBx64fMJcfjTBByJmktQoPaqjhzOyt4mBM8RyFb
-         UMHMNexoPIOuP64CqEb6HwV/yOuzRVoN0bJ8h1yO/PHAGcgx1CVXOH/TC/vbQkyqCQ
-         cse0xOpVS5ZYtS4xq4/aizSC1QWr1HkrF8Chz34DZ7KEcqqee/7f4LPxggRxRaJzLg
-         XFjbAQBw3sznA==
-Received: by mail-ed1-f43.google.com with SMTP id w19so38393075edd.2;
-        Fri, 15 Oct 2021 06:59:31 -0700 (PDT)
-X-Gm-Message-State: AOAM532dExKFDVwsp/3cjfxyaayrioyPJpsNotz/ybO2um61epO+X8ld
-        SRfNA/QOprvvsaFsrKZzvIrYVnPnhwbTsltUbQ==
-X-Google-Smtp-Source: ABdhPJz5gjHqCTPm3hhHQQda5+tmnHnI+OJ0yzrp124Rt8HUd7Oj79eh0WY1zgZ3TL2WJ+4/wDNCJHf38OPe5F3Fc2M=
-X-Received: by 2002:a05:6402:1778:: with SMTP id da24mr17737518edb.318.1634306350756;
- Fri, 15 Oct 2021 06:59:10 -0700 (PDT)
+        id S240225AbhJOODB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 10:03:01 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3982 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239577AbhJOODA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 10:03:00 -0400
+Received: from fraeml745-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HW79d3SY5z67blg;
+        Fri, 15 Oct 2021 21:56:53 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml745-chm.china.huawei.com (10.206.15.226) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Fri, 15 Oct 2021 16:00:51 +0200
+Received: from localhost (10.202.226.41) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Fri, 15 Oct
+ 2021 15:00:50 +0100
+Date:   Fri, 15 Oct 2021 15:00:49 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+CC:     Jonathan Cameron <jic23@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>, <linux-iio@vger.kernel.org>,
+        <linux-omap@vger.kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Ryan Barnett <ryan.barnett@collins.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v6 26/48] mfd: ti_am335x_tscadc: Drop unused definitions
+ from the header
+Message-ID: <20211015150049.0000673b@Huawei.com>
+In-Reply-To: <20211015081506.933180-27-miquel.raynal@bootlin.com>
+References: <20211015081506.933180-1-miquel.raynal@bootlin.com>
+        <20211015081506.933180-27-miquel.raynal@bootlin.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
 MIME-Version: 1.0
-References: <20210923064137.60722-1-zhang.lyra@gmail.com> <20210923064137.60722-3-zhang.lyra@gmail.com>
- <YV1XpL7ibF1y4LbV@google.com> <CAL_Jsq+eqqv=qtKOiNdEpYGi2amek_m+Q-Z9A769pXXqJ4R88A@mail.gmail.com>
- <YWVD0RXHVLxuXEIN@google.com> <CAMuHMdWqYVp1JyzZoidAJhPy9ypRnSOWHJLz5knDUMcFHPOzAw@mail.gmail.com>
- <YWfSz00Rj5AVhkgT@google.com> <CAL_Jsq+GHt+DqHa0GeLKWoni+Lghg5wg5ssREZBdSD-=K3XQ1A@mail.gmail.com>
- <163425256290.1688384.5646232860050218479@swboyd.mtv.corp.google.com>
-In-Reply-To: <163425256290.1688384.5646232860050218479@swboyd.mtv.corp.google.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Fri, 15 Oct 2021 08:58:57 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqJV_CoPH7VrX-D5=u2WsoUpp-pTKbcR2y+gWxhv+WKcEg@mail.gmail.com>
-Message-ID: <CAL_JsqJV_CoPH7VrX-D5=u2WsoUpp-pTKbcR2y+gWxhv+WKcEg@mail.gmail.com>
-Subject: Re: [PATCH v4 2/4] dt-bindings: mfd: sprd: Add bindings for ums512
- global registers
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS 
-        <devicetree@vger.kernel.org>, Baolin Wang <baolin.wang7@gmail.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.226.41]
+X-ClientProxiedBy: lhreml727-chm.china.huawei.com (10.201.108.78) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 6:02 PM Stephen Boyd <sboyd@kernel.org> wrote:
->
-> Quoting Rob Herring (2021-10-14 09:18:16)
-> > On Thu, Oct 14, 2021 at 1:48 AM Lee Jones <lee.jones@linaro.org> wrote:
-> > >
-> > > I don't explicitly build DT documentation.
-> > >
-> > > Since I use the build bots to let me know if there are strange !(C,
-> > > ASM, arm, aarch64, mips, ppc, x86) build issues or ones with odd
-> > > configuration possibilities (randconfig) in the repos I maintain, you
-> > > might have to convince them that this is important too.
-> >
-> > It's really just a matter of turning on the build in
-> > allyesconfig/allmodconfig builds. I've not done that primarily because
-> > there's one person I don't want to yell at me, but I could probably
-> > make it arm and/or arm64 only. It's really arch and config
-> > independent, so doing it multiple times is kind of pointless.
-> >
-> > I assume for bots you mean kernel-ci mainly? Do you run that before
-> > stuff gets into linux-next? IMO, that's too late. But still a slight
-> > improvement if things go in via one tree. Otherwise, I see the
-> > breakage twice, 1st linux-next then the merge window.
-> >
->
-> I run `make dt_binding_check DT_SCHEMA_FILES="<path to yaml file>"` but
-> nowadays this seems to check all the bindings and not just the one
-> binding I care to check. Did something break?
+On Fri, 15 Oct 2021 10:14:44 +0200
+Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 
-It should apply all the schemas to the example in DT_SCHEMA_FILES.
-Originally, it only applied DT_SCHEMA_FILES schema to the example in
-DT_SCHEMA_FILES.
+> The STEP ENABLE definitions are highly unclear and not used so drop them.
+> 
+> Suggested-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-Rob
+Thanks for tidying that up.
+
+> ---
+>  include/linux/mfd/ti_am335x_tscadc.h | 7 -------
+>  1 file changed, 7 deletions(-)
+> 
+> diff --git a/include/linux/mfd/ti_am335x_tscadc.h b/include/linux/mfd/ti_am335x_tscadc.h
+> index a85643677bef..1cd8cd34f2b7 100644
+> --- a/include/linux/mfd/ti_am335x_tscadc.h
+> +++ b/include/linux/mfd/ti_am335x_tscadc.h
+> @@ -39,13 +39,6 @@
+>  /* IRQ wakeup enable */
+>  #define IRQWKUP_ENB		BIT(0)
+>  
+> -/* Step Enable */
+> -#define STEPENB_MASK		(0x1FFFF << 0)
+> -#define STEPENB(val)		((val) << 0)
+> -#define ENB(val)		(1 << (val))
+> -#define STPENB_STEPENB		STEPENB(0x1FFFF)
+> -#define STPENB_STEPENB_TC	STEPENB(0x1FFF)
+> -
+>  /* IRQ enable */
+>  #define IRQENB_HW_PEN		BIT(0)
+>  #define IRQENB_EOS		BIT(1)
+
