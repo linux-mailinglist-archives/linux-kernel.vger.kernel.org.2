@@ -2,166 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB43642EC34
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 10:25:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C7D642EC29
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 10:25:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237026AbhJOI1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 04:27:45 -0400
-Received: from mout.kundenserver.de ([212.227.17.24]:50913 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236806AbhJOI0X (ORCPT
+        id S234235AbhJOI1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 04:27:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30608 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232842AbhJOI0R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 04:26:23 -0400
-Received: from mail-wm1-f45.google.com ([209.85.128.45]) by
- mrelayeu.kundenserver.de (mreue107 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1MwgOK-1mvpAb2fog-00yCVf for <linux-kernel@vger.kernel.org>; Fri, 15 Oct
- 2021 10:24:15 +0200
-Received: by mail-wm1-f45.google.com with SMTP id 63-20020a1c0042000000b0030d60716239so2181662wma.4
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 01:24:15 -0700 (PDT)
-X-Gm-Message-State: AOAM530ntYPj/RCDAPfwfRLINe+2aEfOyyIJWZdTr5m9MeLOsdaHzPDV
-        jxJvC7sT1Xa4na9PaWyi8+89ks1CGy+Vw5uuJeY=
-X-Google-Smtp-Source: ABdhPJw+iae7sMAEvm//VXy8JWsBbDtRt1xIuMEhy0ueNQukNYue+1ZSxfxd4B6QZbKoUCvnbO2ftNX7hM2i80N9ulA=
-X-Received: by 2002:a05:600c:208:: with SMTP id 8mr23986013wmi.173.1634286255249;
- Fri, 15 Oct 2021 01:24:15 -0700 (PDT)
+        Fri, 15 Oct 2021 04:26:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634286251;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=E6oRndYVyUJ0nIQPFPw3PV1+lgajKjDZ9UQHCW0KsQA=;
+        b=OReA2bgi/8OjyMmb9LI9KoeFJlV0+RsdpJ3B4oYJEwQpOYOSzQhgvbaHVJOdQ1lHXwrT6s
+        frZ5n8TscB8qvqxz9COIIuDYMF/+Dw59n0ifvFTjaD9evxIwwVLHx2Jw3rTgJNnhy+db5s
+        +fwtQbHeVVtGOnc+cYCGqgFWpIHbbWQ=
+Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com
+ [209.85.215.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-407-lA0yK2MIPNmqZj4x-n3mGw-1; Fri, 15 Oct 2021 04:24:09 -0400
+X-MC-Unique: lA0yK2MIPNmqZj4x-n3mGw-1
+Received: by mail-pg1-f198.google.com with SMTP id m14-20020a63fd4e000000b00287791fb324so4684982pgj.7
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 01:24:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=E6oRndYVyUJ0nIQPFPw3PV1+lgajKjDZ9UQHCW0KsQA=;
+        b=zmztQQayqgKOaiw0P2JDVyfjMvmwyz+KoWhPVAwnHfwRqdAALLpVZf6SBcN4xufobz
+         qPgX9GtD7vB9YLv8BBfTiszITYyDHZMbf3kLPVuIQMMyPPN47z0iTirfyG5rL09Nj5jX
+         jVLNPsv4VQXxfsdUH0ze9U3S1vX5e1xM4uw8SgqvZry4L+MjGjBm2yS2ZBXwWND0ccZ/
+         nEg540Pq7SNmyZDcazB5hC651xsKZSDhqC8C43Ex2Iba5+TCDXe6jlBjPP/vSqwlsQ2c
+         HPVymYOKpH9mBlrDDDKoRxcnEDtSIlu+67sxkF2vAoCvLP/vODUq/GsEB/NiJnocDcn5
+         Z10A==
+X-Gm-Message-State: AOAM53085lt3EPE07UefX0zQ5thvahxJbY/9NeT4Mn7fDikI3h9tF5W4
+        PEnn8oOAKNKgmTd2CrZuiRL73Dln/Jr072IEghjWouiBCgKQvFDyhH79+tlj8MieOVXdKkw8wOl
+        mDJFnFglrdDymdcK4vBxPzOzf
+X-Received: by 2002:a05:6a00:a1e:b0:44c:7602:e1ee with SMTP id p30-20020a056a000a1e00b0044c7602e1eemr10474794pfh.80.1634286248402;
+        Fri, 15 Oct 2021 01:24:08 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw/nA+3l2rR57+xSkS94d2Z5z+fm5u6cjavYeX5oNBR8m5wROIDtX5M3W5LEKVAenv0EB+yhg==
+X-Received: by 2002:a05:6a00:a1e:b0:44c:7602:e1ee with SMTP id p30-20020a056a000a1e00b0044c7602e1eemr10474774pfh.80.1634286248166;
+        Fri, 15 Oct 2021 01:24:08 -0700 (PDT)
+Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id w18sm4536129pfj.170.2021.10.15.01.24.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Oct 2021 01:24:07 -0700 (PDT)
+Subject: Re: [PATCH v5 5/8] vdpa: min vq num of vdpa device cannot be greater
+ than max vq num
+To:     Wu Zongyong <wuzongyong@linux.alibaba.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, mst@redhat.com
+Cc:     wei.yang1@linux.alibaba.com
+References: <cover.1632882380.git.wuzongyong@linux.alibaba.com>
+ <cover.1634281805.git.wuzongyong@linux.alibaba.com>
+ <5b75093fc4a866a4502485ec208ca0e55440bdf7.1634281805.git.wuzongyong@linux.alibaba.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <2b3566d6-0c03-7861-ff89-e7a10c689833@redhat.com>
+Date:   Fri, 15 Oct 2021 16:24:04 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <20211015005923.2659140-1-alistair.francis@opensource.wdc.com>
-In-Reply-To: <20211015005923.2659140-1-alistair.francis@opensource.wdc.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Fri, 15 Oct 2021 10:23:59 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3GVcjPp+ANKQvgMaDLqN4xAhNv+3jSO5gUMRszsARtFA@mail.gmail.com>
-Message-ID: <CAK8P3a3GVcjPp+ANKQvgMaDLqN4xAhNv+3jSO5gUMRszsARtFA@mail.gmail.com>
-Subject: Re: [PATCH] uapi: futex: Add a futex syscall
-To:     Alistair Francis <alistair.francis@opensource.wdc.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alistair Francis <alistair23@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Alistair Francis <alistair.francis@wdc.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:C2NN3JTjUizKfUA95+g9Yy7QRfgmqIh52QQ8/DXlwAqTsIqLzL7
- llw/K+HoJOkuarltAA6VCLWEenPrHRUQbMahvT9HyIdCqs/JWByGbcm2JFsuY6cMn6PqC1+
- 4rvpdmEv7jLImY2V2ZZ2qmwoW0i0BS7IpLVVZ9mHfKTCFYW7PzReMrP/SWB35nZXS2EkFP2
- zQLejL+aXSwMux8Sw9NYw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:4iKev+7VRjM=:V74JSf/lqpLBKXC9f0SHD1
- EWc7chNK0vXCpb4g+C+K8ytLCpNgXO5UbhTjmT08P77M3yGwFDimAywMvGTP2NXzsdReQaUmS
- aC6JtYFGMzABvyFOHUxdZQxXXYDZ2RdQ934VnGvlwtLsyfEcHD7hkKJ1WTFcGR6Vl/JOHMgQx
- C7DhCG2DY38zA8+MMZJvOQjfAQY5AN1l03XPGvmKaNpjl7BOa1aCv0nxAd5X0HyNi+xvpJKgR
- Ag9DfzMscyD5zXeFsLdrxSqdsjZ8iHkzrYLf4myFAYEQo/SMX9IvSq2VgHCAE3Ixk/pzclrIb
- Ac4i8OtvAlPhEsaE9Z8FP6PYSkn3AHYcOnaZ7MJeDANZc83ggpv/RNEFVsTi81vPwr0zoZc4u
- MWghU0U9NG6coFas5yqDHWi4dNyM+Ksvdmh5UV1q04elozswC4F6dy/+gWIoJXTdGJHndWe21
- mA86ohZh+mgp/mbY9CrQ6oAHuJx7/9IZ1/dalIIzJFPJ5kFtySj+O5/5z+wBQmPE6GkhByO4k
- 1ONlPrM3uVWbeMwwPe7Pgbux7gGWlxYYqga8n0kS1bU+UFEDeS9WictHX0+DbtGLLwtS1Pq21
- NYVBeUuEQogL9R4OmQAcBGplkt4M63I3l/4bQPB4NtHqFbClp6La96rfJWhV9PmI/rKpd4sn6
- KEvV4fr2EKmo5XdofmqO0uiuta/d0kXWJRq9N+jy9P3HF8NQU6lkVaNNP3rRCfc9VLm5TlsaM
- 7kxKWIoEs0Zju3I5/0yJ71xN47QLehGO6lunK2gwSlRHAGCznXDbLaoQj281LNWeHEEn1iGX5
- Jg1agv2/TnAY5Y5zYJQmzgXE0v9Sg7GGyL5LiC+RZNKemH8pBoxGy2aOBiyZRD9DICQTUxcig
- tQIM9RdBNYw5kw5upXEA==
+In-Reply-To: <5b75093fc4a866a4502485ec208ca0e55440bdf7.1634281805.git.wuzongyong@linux.alibaba.com>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 15, 2021 at 2:59 AM Alistair Francis
-<alistair.francis@opensource.wdc.com> wrote:
+
+ÔÚ 2021/10/15 ÏÂÎç3:14, Wu Zongyong Ð´µÀ:
+> Just failed to probe the vdpa device if the min virtqueue num returned
+> by get_vq_num_min is greater than the max virtqueue num returned by
+> get_vq_num_max.
 >
-> From: Alistair Francis <alistair.francis@wdc.com>
+> Signed-off-by: Wu Zongyong <wuzongyong@linux.alibaba.com>
+> ---
+>   drivers/vdpa/vdpa.c | 8 ++++++++
+>   1 file changed, 8 insertions(+)
 >
-> This commit adds two futex syscall wrappers that are exposed to
-> userspace.
->
-> Neither the kernel or glibc currently expose a futex wrapper, so
-> userspace is left performing raw syscalls. This has mostly been becuase
-> the overloading of one of the arguments makes it impossible to provide a
-> single type safe function.
->
-> Until recently the single syscall has worked fine. With the introduction
-> of a 64-bit time_t futex call on 32-bit architectures, this has become
-> more complex. The logic of handling the two possible futex syscalls is
-> complex and often implemented incorrectly.
->
-> This patch adds two futux syscall functions that correctly handle the
-> time_t complexity for userspace.
->
-> This idea is based on previous discussions: https://lkml.org/lkml/2021/9/21/143
->
-> Signed-off-by: Alistair Francis <alistair.francis@wdc.com>
+> diff --git a/drivers/vdpa/vdpa.c b/drivers/vdpa/vdpa.c
+> index 1dc121a07a93..fd014ecec711 100644
+> --- a/drivers/vdpa/vdpa.c
+> +++ b/drivers/vdpa/vdpa.c
+> @@ -26,8 +26,16 @@ static int vdpa_dev_probe(struct device *d)
+>   {
+>   	struct vdpa_device *vdev = dev_to_vdpa(d);
+>   	struct vdpa_driver *drv = drv_to_vdpa(vdev->dev.driver);
+> +	const struct vdpa_config_ops *ops = vdev->config;
+> +	u32 max_num, min_num = 0;
 
-Thanks a lot for taking this on!
 
-The implementation looks good to me, I've just noted some details below.
+As discussed in previous version, 1 seems better?
 
-The big question here is the exact one that has kept the wrappers out of
-glibc and musl for now: What should the function prototype(s) be?
+Thanks
 
-I see you went with having two distinct function names for the two
-sets of argument types, which I think was what the glibc developers
-were leaning towards.
 
-I think it would be nicer to use a transparent union like
-
-typedef union __attribute__((__transparent_inion__)) {
-        struct timespec *timeout;
-        u_int32_t nr_requeue;
-} __futex_arg4;
-
-which would let us provide a single function for both variants.
-The main downside is that this relies on a GCC extension, but I
-don't expect that to be a problem since any code using this is
-already nonportable.
-
-The other question here is what namespace to use. You went for the
-non-prefixed futex_syscall, which is clearly nicer to use in an application,
-but it might clash with libc providing the same function name in the
-future. We could consider using __kernel_futex() as the function name,
-putting it into a private namespace for the kernel headers that could
-then get wrapped again by an application or libc using it.
-
-> +#include <errno.h>
-> +#include <linux/types.h>
-> +#include <linux/time_types.h>
-
-I wonder if this should also #include <asm/unistd.h> and
-<sys/syscall.h>, or if you
-can leave that to the caller to include either <asm/unistd.h.> or <unistd.h>.
-
-> +/**
-> + * futex_syscall_timeout() - __NR_futex/__NR_futex_time64 syscall wrapper
-> + * @uaddr:  address of first futex
-> + * @op:   futex op code
-> + * @val:  typically expected value of uaddr, but varies by op
-> + * @timeout:  an absolute struct timespec
-> + * @uaddr2: address of second futex for some ops
-> + * @val3: varies by op
-> + */
-> +static inline int
-> +futex_syscall_timeout(volatile u_int32_t *uaddr, int op, u_int32_t val,
-> +                     struct timespec *timeout, volatile u_int32_t *uaddr2, int val3)
-> +{
-> +#if defined(__NR_futex_time64)
-> +       if (sizeof(*timeout) != sizeof(struct __kernel_old_timespec)) {
-> +               int ret =  syscall(__NR_futex_time64, uaddr, op, val, timeout, uaddr2, val3);
+>   	int ret = 0;
+>   
+> +	max_num = ops->get_vq_num_max(vdev);
+> +	if (ops->get_vq_num_min)
+> +		min_num = ops->get_vq_num_min(vdev);
+> +	if (max_num < min_num)
+> +		return -EINVAL;
 > +
-> +               if (ret == 0 || errno != ENOSYS)
-> +                       return ret;
-> +       }
-> +#endif
-> +
-> +#if defined(__NR_futex)
-> +       if (sizeof(*timeout) == sizeof(struct __kernel_old_timespec))
-> +               return syscall(__NR_futex, uaddr, op, val, timeout, uaddr2, val3);
-> +
-> +       if (timeout && timeout->tv_sec == (long)timeout->tv_sec) {
+>   	if (drv && drv->probe)
+>   		ret = drv->probe(vdev);
+>   
 
-Not sure if we actually need to reject timeouts that overflow, should probably
-check what glibc does for this case. Intuitively, I'd go with setting
-tv_sec=LONG_MAX.
-
-> +               struct __kernel_old_timespec ts32;
-> +
-> +               ts32.tv_sec = (__kernel_long_t) timeout->tv_sec;
-> +               ts32.tv_nsec = (__kernel_long_t) timeout->tv_nsec;
-> +
-> +               return syscall(__NR_futex, uaddr, op, val, ts32, uaddr2, val3);
-
-You need to pass 'ts32' by reference here.
-
-          Arnd
