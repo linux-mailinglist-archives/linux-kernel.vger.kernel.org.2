@@ -2,561 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50FBB42FA2D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 19:23:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B610142FA14
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 19:23:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234881AbhJORZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 13:25:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40222 "EHLO
+        id S242382AbhJORZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 13:25:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242329AbhJORZX (ORCPT
+        with ESMTP id S242279AbhJORYl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 13:25:23 -0400
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 314DDC0617AA
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 10:22:29 -0700 (PDT)
-Received: by mail-qt1-x84a.google.com with SMTP id k1-20020ac80c01000000b002a79e319399so5927356qti.8
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 10:22:29 -0700 (PDT)
+        Fri, 15 Oct 2021 13:24:41 -0400
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B3C0C0613E9
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 10:22:22 -0700 (PDT)
+Received: by mail-oi1-x236.google.com with SMTP id z126so13995930oiz.12
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 10:22:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=wuqGrldK91WOCnegxYq/D90BETcDaZhwA9MII/BuKKo=;
-        b=BMmFyANlwPwsURwrqONUjYGYfCaQfghrXKVKVjnE9FwPptmSCajaWD2VJCQMbQ6wQ/
-         7dvw+Kwsx29uVG5IN7HyIj5O+UbEkgFaGt0XMPASdksmZWpzLz4lRW4lFDHZTmm1Dahq
-         J7auWrkytbfSkVE+NcHaomd6JBkCH+dY47p5ZgB/XC4hN5sJxM3fcJgX84AXrlNm4fTL
-         EmxLietoXUOYgL10MvGPKlEbwkNMiqTnzvSTNoAgWaIZdZ27H4wAbSZHerYVLE6UXU41
-         CFIHPD4yKITddPbOVjw1hUCStPC4BgzfpEWsiEAaSmqqFs6JDTq7SM3WYoqaxbQvwMTX
-         XbBw==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=kn035h2h7OainpjhIOJkuHEQG/3BQcpVjhttGSsQ5lY=;
+        b=cNbPYnwaihUZcstNAa3Q8Z9qG63pLORlJ4IIJ4NrZFslU0URaOqJzC68x0oXxa6M8G
+         S7RqmU165kKJCKLivy/f7zaMNePPn9CF4dBHIS6UoeWDvbKjWOPaEOWOKrussZd3kcTn
+         9qxRbR8eMtjKWwHBIK5lydn474w4XfYdO4Xbmnn9Jj4Th06Skx7fqn0o1yS9BdD7FGOr
+         OZCKKKnzGvvc/iBSk8+YtjpbwR3OKXCOAfGQ3LpmME13NJ6HpFSpeRHsdJVUVNdomhqr
+         RTWZxdMrt31LGTSi0gGaNVMDgAOPchq7ItXhHqrZ5urplXUq+mmC2RvOSoO0oS92EB00
+         q0Ng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=wuqGrldK91WOCnegxYq/D90BETcDaZhwA9MII/BuKKo=;
-        b=dHOgmC/0fQUa9ap7LiEfNaCFVtWeMz3k3P+QEEq9EJ+jKh73cc6aAEKxm/UURicyWK
-         p9UlHIK1Kg773mrZjkCgiD1P8yMUzcTSd4C8g6G4UPNI4h6s57YNK1HlP2E7N59Jdzjm
-         7lyVmXPiYpFLI1giEZOAhi5ItMClz0ciSmsEylcHWVXty2lnF2LrDa5XG1anICWevTZB
-         LW5fvJsK4HoNHL3+O5kL75nARq4H4P2yQ/YlaUdQj6A/yx/K/ufHnnfoQM8fNvysChpO
-         Vq4aBI5YQ39uayqqNrZjMWRhJfQI7xBKLz8LZO6YoW/n87Ez7aJSVcY6mpBiE8UeWqKN
-         PhHQ==
-X-Gm-Message-State: AOAM532+DKANzb0ZmDKJA2az4tWGuM/ZI7qze/wqAYpbm4x7fRTsfbKn
-        qCZE09rQAtAeQRPc6Qzm7acBL1vxJYOm
-X-Google-Smtp-Source: ABdhPJyeHq0f7I1PGTuUgNy2tt60MuWRTpm9SySr8Qb39GnjGeZM4U0zXP3ny84t0OqlmQXbQfr2/tgfwxHQ
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:69bc:7451:58ad:6585])
- (user=irogers job=sendgmr) by 2002:ac8:5c16:: with SMTP id
- i22mr15136696qti.26.1634318548204; Fri, 15 Oct 2021 10:22:28 -0700 (PDT)
-Date:   Fri, 15 Oct 2021 10:21:32 -0700
-In-Reply-To: <20211015172132.1162559-1-irogers@google.com>
-Message-Id: <20211015172132.1162559-22-irogers@google.com>
-Mime-Version: 1.0
-References: <20211015172132.1162559-1-irogers@google.com>
-X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
-Subject: [PATCH v2 21/21] perf metric: Allow modifiers on metrics.
-From:   Ian Rogers <irogers@google.com>
-To:     Andi Kleen <ak@linux.intel.com>, Jiri Olsa <jolsa@redhat.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        "Paul A . Clarke" <pc@us.ibm.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Riccardo Mancini <rickyman7@gmail.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        ToastC <mrtoastcheng@gmail.com>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Felix Fietkau <nbd@nbd.name>,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        Song Liu <songliubraving@fb.com>, Fabian Hemmer <copy@copy.sh>,
-        Alexander Antonov <alexander.antonov@linux.intel.com>,
-        Nicholas Fraser <nfraser@codeweavers.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Denys Zagorui <dzagorui@cisco.com>,
-        Wan Jiabing <wanjiabing@vivo.com>,
-        Thomas Richter <tmricht@linux.ibm.com>,
-        Sumanth Korikkar <sumanthk@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Changbin Du <changbin.du@intel.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Andrew Kilroy <andrew.kilroy@arm.com>
-Cc:     Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=kn035h2h7OainpjhIOJkuHEQG/3BQcpVjhttGSsQ5lY=;
+        b=PvFEND5E8np45snuKmSrv/UghBJeVUgDrqElBKdgw18sEEICkIWQj+HBvK+CAUodAX
+         +K0LfGMFXGQRW3UE4nIXOMAJ8LhzlXs2bVX0OHmbTu7gmJ0dPu5C2KvD3Yn2i0qnZ8V5
+         UA+pZU1p94rC7T8WYpw+Bz/IJZjDmhfBZIEiNJ6xjG+o7uSUoa37Z/5h2SvnkUBVrj+Z
+         FLDA50vRLoPOptNmjyrxA/5EOheDUoi+YAzLSecwVTJXsmLbW5Py97z3RbIef+zr85ZU
+         CUXbo21tqFmW8rahL45evW0ELiCJn3peogJfwIUDsfzwWymsC3XQVTMqeTkUZCqs8mno
+         sX2Q==
+X-Gm-Message-State: AOAM531k1f6k50uKeoaNvwwEWgep5Pp9U0LItupWb9DilJ9V7Pf7/sUV
+        Ub3rfk5elj89s9xLmmnd3KqcCw==
+X-Google-Smtp-Source: ABdhPJzwWhzy6WbJsYDhzxEfmDkh5AS02JM1swhhP7BQQ6Yy40mssZMRIGxNWjpw+edJAuUba+Qq0Q==
+X-Received: by 2002:aca:31cb:: with SMTP id x194mr9065981oix.62.1634318541580;
+        Fri, 15 Oct 2021 10:22:21 -0700 (PDT)
+Received: from builder.lan ([2600:1700:a0:3dc8:3697:f6ff:fe85:aac9])
+        by smtp.gmail.com with ESMTPSA id s206sm1289635oia.33.2021.10.15.10.22.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Oct 2021 10:22:21 -0700 (PDT)
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     linux-remoteproc@vger.kernel.org,
+        Alexandru Ardelean <ardeleanalex@gmail.com>,
+        linux-kernel@vger.kernel.org
+Cc:     mathieu.poirier@linaro.org, ohad@wizery.com
+Subject: Re: (subset) [PATCH] rpmsg: virtio_rpmsg_bus: use dev_warn_ratelimited for msg with no recipient
+Date:   Fri, 15 Oct 2021 12:22:11 -0500
+Message-Id: <163431847249.251657.14318070170009909364.b4-ty@linaro.org>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20210928132902.1594277-1-aardelean@deviqon.com>
+References: <20210928132902.1594277-1-aardelean@deviqon.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-By allowing modifiers on metrics we can, for example, gather the
-same metric for kernel and user mode. On a SkylakeX with
-TopDownL1 this gives:
+On Tue, 28 Sep 2021 16:29:02 +0300, Alexandru Ardelean wrote:
+> From: Alexandru Ardelean <ardeleanalex@gmail.com>
+> 
+> Even though it may be user-space's fault for this error (some application
+> terminated or crashed without cleaning up it's endpoint), the rpmsg
+> communication should not overflow the syslog with too many messages.
+> 
+> A dev_warn_ratelimited() seems like a good alternative in case this can
+> occur.
+> 
+> [...]
 
-$ perf stat -M TopDownL1:u,TopDownL1:k -a sleep 2
+Applied, thanks!
 
- Performance counter stats for 'system wide':
+[1/1] rpmsg: virtio_rpmsg_bus: use dev_warn_ratelimited for msg with no recipient
+      commit: 63b8d79916672d35069962d87d1540c534cb2438
 
-       849,855,577      uops_issued.any:k         #     0.06 Bad_Speculation:k
-                                                  #     0.51 Backend_Bound:k          (16.71%)
-     1,995,257,996      cycles:k
-                                                  # 7981031984.00 SLOTS:k
-                                                  #     0.35 Frontend_Bound:k
-                                                  #     0.08 Retiring:k               (16.71%)
-     2,791,940,753      idq_uops_not_delivered.core:k                                     (16.71%)
-       641,961,928      uops_retired.retire_slots:k                                     (16.71%)
-        72,239,337      int_misc.recovery_cycles:k                                     (16.71%)
-     2,294,413,647      uops_issued.any:u         #     0.04 Bad_Speculation:u
-                                                  #     0.39 Backend_Bound:u          (16.78%)
-     1,333,248,940      cycles:u
-                                                  # 5332995760.00 SLOTS:u
-                                                  #     0.16 Frontend_Bound:u
-                                                  #     0.40 Retiring:u               (16.78%)
-       858,517,081      idq_uops_not_delivered.core:u                                     (16.78%)
-     2,153,789,582      uops_retired.retire_slots:u                                     (16.78%)
-        19,373,627      int_misc.recovery_cycles:u                                     (16.78%)
-        31,503,661      cpu_clk_unhalted.one_thread_active:k #     0.18 CoreIPC_SMT:k            (16.73%)
-       315,454,104      inst_retired.any:k        # 315454104.00 Instructions:k       (16.73%)
-        42,533,729      cpu_clk_unhalted.ref_xclk:k                                     (16.73%)
-     2,043,119,037      cpu_clk_unhalted.thread:k                                     (16.73%)
-        28,843,803      cpu_clk_unhalted.one_thread_active:u #     1.55 CoreIPC_SMT:u            (16.60%)
-     2,153,353,869      inst_retired.any:u        # 2153353869.00 Instructions:u      (16.60%)
-        28,844,743      cpu_clk_unhalted.ref_xclk:u                                     (16.60%)
-     1,387,544,378      cpu_clk_unhalted.thread:u                                     (16.60%)
-       308,031,603      inst_retired.any:k        #     0.15 CoreIPC:k                (33.19%)
-     2,036,774,753      cycles:k                                                      (33.19%)
-     1,994,344,281      inst_retired.any:u        #     1.59 CoreIPC:u                (33.18%)
-     1,251,538,227      cycles:u                                                      (33.18%)
-
-       2.000342948 seconds time elapsed
-
-Modifiers are naively copy and pasted on to events, this can yield errors like:
-
-$ perf stat -M Kernel_Utilization:k -a sleep 2
-event syntax error: '..d.thread:k/kk,cpu_clk_unhalted.thread/metric-id=cpu_clk_unhalted.thread/k..'
-                                  \___ Bad modifier
-
- Usage: perf stat [<options>] [<command>]
-
-    -M, --metrics <metric/metric group list>
-                          monitor specified metrics or metric groups (separated by ,)
-
-When modifiers are present with constraints, from
---metric-no-group or the NMI watchdog, they are no longer placed
-in the same set - which may miss deduplicating events.
-
-Acked-by: Andi Kleen <ak@linux.intel.com>
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/util/metricgroup.c | 125 ++++++++++++++++++++++++++--------
- 1 file changed, 98 insertions(+), 27 deletions(-)
-
-diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
-index b6ba1317973e..c34a3683e719 100644
---- a/tools/perf/util/metricgroup.c
-+++ b/tools/perf/util/metricgroup.c
-@@ -85,6 +85,7 @@ static void metric_event_delete(struct rblist *rblist __maybe_unused,
- 	struct metric_expr *expr, *tmp;
- 
- 	list_for_each_entry_safe(expr, tmp, &me->head, nd) {
-+		free((char *)expr->metric_name);
- 		free(expr->metric_refs);
- 		free(expr->metric_events);
- 		free(expr);
-@@ -130,6 +131,8 @@ struct metric {
- 	struct expr_parse_ctx *pctx;
- 	/** The name of the metric such as "IPC". */
- 	const char *metric_name;
-+	/** Modifier on the metric such as "u" or NULL for none. */
-+	const char *modifier;
- 	/** The expression to parse, for example, "instructions/cycles". */
- 	const char *metric_expr;
- 	/**
-@@ -186,6 +189,7 @@ static bool metricgroup__has_constraint(const struct pmu_event *pe)
- }
- 
- static struct metric *metric__new(const struct pmu_event *pe,
-+				  const char *modifier,
- 				  bool metric_no_group,
- 				  int runtime)
- {
-@@ -202,6 +206,12 @@ static struct metric *metric__new(const struct pmu_event *pe,
- 	}
- 
- 	m->metric_name = pe->metric_name;
-+	m->modifier = modifier ? strdup(modifier) : NULL;
-+	if (modifier && !m->modifier) {
-+		free(m);
-+		expr__ctx_free(m->pctx);
-+		return NULL;
-+	}
- 	m->metric_expr = pe->metric_expr;
- 	m->metric_unit = pe->unit;
- 	m->pctx->runtime = runtime;
-@@ -216,6 +226,7 @@ static void metric__free(struct metric *m)
- {
- 	free(m->metric_refs);
- 	expr__ctx_free(m->pctx);
-+	free((char *)m->modifier);
- 	free(m);
- }
- 
-@@ -645,7 +656,7 @@ static int decode_metric_id(struct strbuf *sb, const char *x)
- 	return 0;
- }
- 
--static int decode_all_metric_ids(struct evlist *perf_evlist)
-+static int decode_all_metric_ids(struct evlist *perf_evlist, const char *modifier)
- {
- 	struct evsel *ev;
- 	struct strbuf sb = STRBUF_INIT;
-@@ -675,10 +686,24 @@ static int decode_all_metric_ids(struct evlist *perf_evlist)
- 		 * give a more friendly display version.
- 		 */
- 		if (strstr(ev->name, "metric-id=")) {
-+			bool has_slash = false;
-+
- 			free(ev->name);
--			for (cur = strchr(sb.buf, '@') ; cur; cur = strchr(++cur, '@'))
-+			for (cur = strchr(sb.buf, '@') ; cur; cur = strchr(++cur, '@')) {
- 				*cur = '/';
-+				has_slash = true;
-+			}
- 
-+			if (modifier) {
-+				if (!has_slash && !strchr(sb.buf, ':')) {
-+					ret = strbuf_addch(&sb, ':');
-+					if (ret)
-+						break;
-+				}
-+				ret = strbuf_addstr(&sb, modifier);
-+				if (ret)
-+					break;
-+			}
- 			ev->name = strdup(sb.buf);
- 			if (!ev->name) {
- 				ret = -ENOMEM;
-@@ -692,6 +717,7 @@ static int decode_all_metric_ids(struct evlist *perf_evlist)
- 
- static int metricgroup__build_event_string(struct strbuf *events,
- 					   const struct expr_parse_ctx *ctx,
-+					   const char *modifier,
- 					   bool has_constraint)
- {
- 	struct hashmap_entry *cur;
-@@ -765,6 +791,10 @@ static int metricgroup__build_event_string(struct strbuf *events,
- 			ret = strbuf_addstr(events, sep + 1);
- 			RETURN_IF_NON_ZERO(ret);
- 		}
-+		if (modifier) {
-+			ret = strbuf_addstr(events, modifier);
-+			RETURN_IF_NON_ZERO(ret);
-+		}
- 	}
- 	if (has_duration) {
- 		if (no_group) {
-@@ -798,6 +828,7 @@ struct visited_metric {
- struct metricgroup_add_iter_data {
- 	struct list_head *metric_list;
- 	const char *metric_name;
-+	const char *modifier;
- 	int *ret;
- 	bool *has_match;
- 	bool metric_no_group;
-@@ -808,6 +839,7 @@ struct metricgroup_add_iter_data {
- 
- static int add_metric(struct list_head *metric_list,
- 		      const struct pmu_event *pe,
-+		      const char *modifier,
- 		      bool metric_no_group,
- 		      struct metric *root_metric,
- 		      const struct visited_metric *visited,
-@@ -817,6 +849,7 @@ static int add_metric(struct list_head *metric_list,
-  * resolve_metric - Locate metrics within the root metric and recursively add
-  *                    references to them.
-  * @metric_list: The list the metric is added to.
-+ * @modifier: if non-null event modifiers like "u".
-  * @metric_no_group: Should events written to events be grouped "{}" or
-  *                   global. Grouping is the default but due to multiplexing the
-  *                   user may override.
-@@ -829,6 +862,7 @@ static int add_metric(struct list_head *metric_list,
-  *       architecture perf is running upon.
-  */
- static int resolve_metric(struct list_head *metric_list,
-+			  const char *modifier,
- 			  bool metric_no_group,
- 			  struct metric *root_metric,
- 			  const struct visited_metric *visited,
-@@ -876,7 +910,7 @@ static int resolve_metric(struct list_head *metric_list,
- 	 * context.
- 	 */
- 	for (i = 0; i < pending_cnt; i++) {
--		ret = add_metric(metric_list, pending[i].pe, metric_no_group,
-+		ret = add_metric(metric_list, pending[i].pe, modifier, metric_no_group,
- 				root_metric, visited, map);
- 		if (ret)
- 			break;
-@@ -890,6 +924,7 @@ static int resolve_metric(struct list_head *metric_list,
-  * __add_metric - Add a metric to metric_list.
-  * @metric_list: The list the metric is added to.
-  * @pe: The pmu_event containing the metric to be added.
-+ * @modifier: if non-null event modifiers like "u".
-  * @metric_no_group: Should events written to events be grouped "{}" or
-  *                   global. Grouping is the default but due to multiplexing the
-  *                   user may override.
-@@ -904,6 +939,7 @@ static int resolve_metric(struct list_head *metric_list,
-  */
- static int __add_metric(struct list_head *metric_list,
- 			const struct pmu_event *pe,
-+			const char *modifier,
- 			bool metric_no_group,
- 			int runtime,
- 			struct metric *root_metric,
-@@ -930,7 +966,7 @@ static int __add_metric(struct list_head *metric_list,
- 		 * This metric is the root of a tree and may reference other
- 		 * metrics that are added recursively.
- 		 */
--		root_metric = metric__new(pe, metric_no_group, runtime);
-+		root_metric = metric__new(pe, modifier, metric_no_group, runtime);
- 		if (!root_metric)
- 			return -ENOMEM;
- 
-@@ -979,7 +1015,7 @@ static int __add_metric(struct list_head *metric_list,
- 		ret = -EINVAL;
- 	} else {
- 		/* Resolve referenced metrics. */
--		ret = resolve_metric(metric_list, metric_no_group, root_metric,
-+		ret = resolve_metric(metric_list, modifier, metric_no_group, root_metric,
- 				     &visited_node, map);
- 	}
- 
-@@ -1021,6 +1057,7 @@ const struct pmu_event *metricgroup__find_metric(const char *metric,
- 
- static int add_metric(struct list_head *metric_list,
- 		      const struct pmu_event *pe,
-+		      const char *modifier,
- 		      bool metric_no_group,
- 		      struct metric *root_metric,
- 		      const struct visited_metric *visited,
-@@ -1031,7 +1068,7 @@ static int add_metric(struct list_head *metric_list,
- 	pr_debug("metric expr %s for %s\n", pe->metric_expr, pe->metric_name);
- 
- 	if (!strstr(pe->metric_expr, "?")) {
--		ret = __add_metric(metric_list, pe, metric_no_group, 0,
-+		ret = __add_metric(metric_list, pe, modifier, metric_no_group, 0,
- 				   root_metric, visited, map);
- 	} else {
- 		int j, count;
-@@ -1044,7 +1081,7 @@ static int add_metric(struct list_head *metric_list,
- 		 */
- 
- 		for (j = 0; j < count && !ret; j++)
--			ret = __add_metric(metric_list, pe, metric_no_group, j,
-+			ret = __add_metric(metric_list, pe, modifier, metric_no_group, j,
- 					root_metric, visited, map);
- 	}
- 
-@@ -1060,7 +1097,7 @@ static int metricgroup__add_metric_sys_event_iter(const struct pmu_event *pe,
- 	if (!match_pe_metric(pe, d->metric_name))
- 		return 0;
- 
--	ret = add_metric(d->metric_list, pe, d->metric_no_group,
-+	ret = add_metric(d->metric_list, pe, d->modifier, d->metric_no_group,
- 			 d->root_metric, d->visited, d->map);
- 	if (ret)
- 		goto out;
-@@ -1086,6 +1123,7 @@ static int metric_list_cmp(void *priv __maybe_unused, const struct list_head *l,
-  * @metric_name: The name of the metric or metric group. For example, "IPC"
-  *               could be the name of a metric and "TopDownL1" the name of a
-  *               metric group.
-+ * @modifier: if non-null event modifiers like "u".
-  * @metric_no_group: Should events written to events be grouped "{}" or
-  *                   global. Grouping is the default but due to multiplexing the
-  *                   user may override.
-@@ -1093,7 +1131,8 @@ static int metric_list_cmp(void *priv __maybe_unused, const struct list_head *l,
-  * @map: The map that is searched for metrics, most commonly the table for the
-  *       architecture perf is running upon.
-  */
--static int metricgroup__add_metric(const char *metric_name, bool metric_no_group,
-+static int metricgroup__add_metric(const char *metric_name, const char *modifier,
-+				   bool metric_no_group,
- 				   struct list_head *metric_list,
- 				   const struct pmu_events_map *map)
- {
-@@ -1108,7 +1147,7 @@ static int metricgroup__add_metric(const char *metric_name, bool metric_no_group
- 	 */
- 	map_for_each_metric(pe, i, map, metric_name) {
- 		has_match = true;
--		ret = add_metric(&list, pe, metric_no_group,
-+		ret = add_metric(&list, pe, modifier, metric_no_group,
- 				 /*root_metric=*/NULL,
- 				 /*visited_metrics=*/NULL, map);
- 		if (ret)
-@@ -1121,6 +1160,7 @@ static int metricgroup__add_metric(const char *metric_name, bool metric_no_group
- 			.data = (void *) &(struct metricgroup_add_iter_data) {
- 				.metric_list = &list,
- 				.metric_name = metric_name,
-+				.modifier = modifier,
- 				.metric_no_group = metric_no_group,
- 				.has_match = &has_match,
- 				.ret = &ret,
-@@ -1160,26 +1200,31 @@ static int metricgroup__add_metric_list(const char *list, bool metric_no_group,
- 					struct list_head *metric_list,
- 					const struct pmu_events_map *map)
- {
--	char *llist, *nlist, *p;
-+	char *list_itr, *list_copy, *metric_name, *modifier;
- 	int ret, count = 0;
- 
--	nlist = strdup(list);
--	if (!nlist)
-+	list_copy = strdup(list);
-+	if (!list_copy)
- 		return -ENOMEM;
--	llist = nlist;
-+	list_itr = list_copy;
- 
--	while ((p = strsep(&llist, ",")) != NULL) {
--		ret = metricgroup__add_metric(p, metric_no_group, metric_list,
-+	while ((metric_name = strsep(&list_itr, ",")) != NULL) {
-+		modifier = strchr(metric_name, ':');
-+		if (modifier)
-+			*modifier++ = '\0';
-+
-+		ret = metricgroup__add_metric(metric_name, modifier,
-+					      metric_no_group, metric_list,
- 					      map);
- 		if (ret == -EINVAL)
--			pr_err("Cannot find metric or group `%s'\n", p);
-+			pr_err("Cannot find metric or group `%s'\n", metric_name);
- 
- 		if (ret)
- 			break;
- 
- 		count++;
- 	}
--	free(nlist);
-+	free(list_copy);
- 
- 	if (!ret) {
- 		/*
-@@ -1225,7 +1270,7 @@ static int build_combined_expr_ctx(const struct list_head *metric_list,
- 		return -ENOMEM;
- 
- 	list_for_each_entry(m, metric_list, nd) {
--		if (m->has_constraint) {
-+		if (m->has_constraint && !m->modifier) {
- 			hashmap__for_each_entry(m->pctx->ids, cur, bkt) {
- 				dup = strdup(cur->key);
- 				if (!dup) {
-@@ -1250,11 +1295,12 @@ static int build_combined_expr_ctx(const struct list_head *metric_list,
-  *             evlist. The encoded metric_ids are decoded.
-  * @fake_pmu: used when testing metrics not supported by the current CPU.
-  * @ids: the event identifiers parsed from a metric.
-+ * @modifier: any modifiers added to the events.
-  * @has_constraint: false if events should be placed in a weak group.
-  * @out_evlist: the created list of events.
-  */
- static int parse_ids(struct perf_pmu *fake_pmu, struct expr_parse_ctx *ids,
--		     bool has_constraint, struct evlist **out_evlist)
-+		     const char *modifier, bool has_constraint, struct evlist **out_evlist)
- {
- 	struct parse_events_error parse_error;
- 	struct evlist *parsed_evlist;
-@@ -1277,7 +1323,8 @@ static int parse_ids(struct perf_pmu *fake_pmu, struct expr_parse_ctx *ids,
- 
- 		ids__insert(ids->ids, tmp);
- 	}
--	ret = metricgroup__build_event_string(&events, ids, has_constraint);
-+	ret = metricgroup__build_event_string(&events, ids, modifier,
-+					      has_constraint);
- 	if (ret)
- 		return ret;
- 
-@@ -1293,7 +1340,7 @@ static int parse_ids(struct perf_pmu *fake_pmu, struct expr_parse_ctx *ids,
- 		parse_events_print_error(&parse_error, events.buf);
- 		goto err_out;
- 	}
--	ret = decode_all_metric_ids(parsed_evlist);
-+	ret = decode_all_metric_ids(parsed_evlist, modifier);
- 	if (ret)
- 		goto err_out;
- 
-@@ -1333,7 +1380,8 @@ static int parse_groups(struct evlist *perf_evlist, const char *str,
- 		ret = build_combined_expr_ctx(&metric_list, &combined);
- 
- 		if (!ret && combined && hashmap__size(combined->ids)) {
--			ret = parse_ids(fake_pmu, combined, /*has_constraint=*/true,
-+			ret = parse_ids(fake_pmu, combined, /*modifier=*/NULL,
-+					/*has_constraint=*/true,
- 					&combined_evlist);
- 		}
- 		if (combined)
-@@ -1364,6 +1412,12 @@ static int parse_groups(struct evlist *perf_evlist, const char *str,
- 				if (n->evlist == NULL)
- 					continue;
- 
-+				if ((!m->modifier && n->modifier) ||
-+				    (m->modifier && !n->modifier) ||
-+				    (m->modifier && n->modifier &&
-+					    strcmp(m->modifier, n->modifier)))
-+					continue;
-+
- 				if (expr__subset_of_ids(n->pctx, m->pctx)) {
- 					pr_debug("Events in '%s' fully contained within '%s'\n",
- 						 m->metric_name, n->metric_name);
-@@ -1374,8 +1428,8 @@ static int parse_groups(struct evlist *perf_evlist, const char *str,
- 			}
- 		}
- 		if (!metric_evlist) {
--			ret = parse_ids(fake_pmu, m->pctx, m->has_constraint,
--					&m->evlist);
-+			ret = parse_ids(fake_pmu, m->pctx, m->modifier,
-+					m->has_constraint, &m->evlist);
- 			if (ret)
- 				goto out;
- 
-@@ -1400,7 +1454,21 @@ static int parse_groups(struct evlist *perf_evlist, const char *str,
- 		expr->metric_refs = m->metric_refs;
- 		m->metric_refs = NULL;
- 		expr->metric_expr = m->metric_expr;
--		expr->metric_name = m->metric_name;
-+		if (m->modifier) {
-+			char *tmp;
-+
-+			if (asprintf(&tmp, "%s:%s", m->metric_name, m->modifier) < 0)
-+				expr->metric_name = NULL;
-+			else
-+				expr->metric_name = tmp;
-+		} else
-+			expr->metric_name = strdup(m->metric_name);
-+
-+		if (!expr->metric_name) {
-+			ret = -ENOMEM;
-+			free(metric_events);
-+			goto out;
-+		}
- 		expr->metric_unit = m->metric_unit;
- 		expr->metric_events = metric_events;
- 		expr->runtime = m->pctx->runtime;
-@@ -1500,7 +1568,10 @@ int metricgroup__copy_metric_events(struct evlist *evlist, struct cgroup *cgrp,
- 				return -ENOMEM;
- 
- 			new_expr->metric_expr = old_expr->metric_expr;
--			new_expr->metric_name = old_expr->metric_name;
-+			new_expr->metric_name = strdup(old_expr->metric_name);
-+			if (!new_expr->metric_name)
-+				return -ENOMEM;
-+
- 			new_expr->metric_unit = old_expr->metric_unit;
- 			new_expr->runtime = old_expr->runtime;
- 
+Best regards,
 -- 
-2.33.0.1079.g6e70778dc9-goog
-
+Bjorn Andersson <bjorn.andersson@linaro.org>
