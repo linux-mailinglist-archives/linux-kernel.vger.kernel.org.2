@@ -2,75 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEE3F42E5A3
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 02:57:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1EB042E5A5
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 02:57:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234734AbhJOA7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 20:59:34 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:60568 "EHLO inva020.nxp.com"
+        id S234714AbhJOA7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 20:59:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37198 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234618AbhJOA71 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 20:59:27 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id B72181A0979;
-        Fri, 15 Oct 2021 02:57:20 +0200 (CEST)
-Received: from smtp.na-rdc02.nxp.com (usphx01srsp001v.us-phx01.nxp.com [134.27.49.11])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 8072D1A095D;
-        Fri, 15 Oct 2021 02:57:20 +0200 (CEST)
-Received: from right.am.freescale.net (right.am.freescale.net [10.81.116.142])
-        by usphx01srsp001v.us-phx01.nxp.com (Postfix) with ESMTP id B90AC40BD3;
-        Thu, 14 Oct 2021 17:57:19 -0700 (MST)
-From:   Li Yang <leoyang.li@nxp.com>
-To:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Li Yang <leoyang.li@nxp.com>
-Subject: [PATCH v2 2/2] memory: fsl_ifc: populate child devices without relying on simple-bus
-Date:   Thu, 14 Oct 2021 19:57:07 -0500
-Message-Id: <20211015005707.1996-3-leoyang.li@nxp.com>
-X-Mailer: git-send-email 2.25.1.377.g2d2118b
-In-Reply-To: <20211015005707.1996-1-leoyang.li@nxp.com>
-References: <20211015005707.1996-1-leoyang.li@nxp.com>
+        id S234745AbhJOA7f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 20:59:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C6E8461040;
+        Fri, 15 Oct 2021 00:57:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634259449;
+        bh=WFqaaGetsrU0F1LXNipYaIrryMD5ZYTRfecIsz8rLq8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=snUtZ9excOZNnlFFMRUeJVIxjWJFru1Xvrjr8xypife31DULY3UMsHv/mzQYLm0MG
+         c9DxNx3iz2b741uRBsnAMYRZ+n1uDj8mCPhiw5S4bGh+diRuhvtguhDaKgMyzVNPZJ
+         JMqzlqoOm0y4OKUSb6bYHxmoZL/bAftajHT41L60WYI5G2r0aIP/0RT10ferHe+p3u
+         fFaj0Te7y9rhfifV+KsydswLpAWBKsvPSTk4yFR929qVA6SrgPJ06LFpK9R2i6QtXE
+         39BAhklqvLUNInES41D5KZmnAg0pRVkCWRpIrusVtvG31ZOFmiyzB57FODAtapjC4w
+         k1qCMqgGYq9Tg==
+Date:   Thu, 14 Oct 2021 17:57:29 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Rustam Kovhaev <rkovhaev@gmail.com>
+Cc:     Vlastimil Babka <vbabka@suse.cz>,
+        David Rientjes <rientjes@google.com>,
+        Dave Chinner <david@fromorbit.com>, linux-xfs@vger.kernel.org,
+        cl@linux.com, penberg@kernel.org, iamjoonsoo.kim@lge.com,
+        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, gregkh@linuxfoundation.org,
+        Al Viro <viro@zeniv.linux.org.uk>, dvyukov@google.com
+Subject: Re: [PATCH] xfs: use kmem_cache_free() for kmem_cache objects
+Message-ID: <20211015005729.GD24333@magnolia>
+References: <YVYGcLbu/aDKXkag@nuc10>
+ <a9b3cd91-8ee6-a654-b2a8-00c3efb69559@suse.cz>
+ <YVZXF3mbaW+Pe+Ji@nuc10>
+ <1e0df91-556e-cee5-76f7-285d28fe31@google.com>
+ <20211012204320.GP24307@magnolia>
+ <20211012204345.GQ24307@magnolia>
+ <9db5d16a-2999-07a4-c49d-7417601f834f@suse.cz>
+ <20211012232255.GS24307@magnolia>
+ <3928ef69-eaac-241c-eb32-d2dd2eab9384@suse.cz>
+ <YWcPyYk0Rlyvl9a9@nuc10>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: ClamAV using ClamSMTP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YWcPyYk0Rlyvl9a9@nuc10>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After we update the binding to not use simple-bus compatible for the
-controller, we need the driver to populate the child devices explicitly.
+On Wed, Oct 13, 2021 at 09:56:41AM -0700, Rustam Kovhaev wrote:
+> On Wed, Oct 13, 2021 at 09:38:31AM +0200, Vlastimil Babka wrote:
+> > On 10/13/21 01:22, Darrick J. Wong wrote:
+> > > On Tue, Oct 12, 2021 at 11:32:25PM +0200, Vlastimil Babka wrote:
+> > >> On 10/12/2021 10:43 PM, Darrick J. Wong wrote:
+> > >> > On Tue, Oct 12, 2021 at 01:43:20PM -0700, Darrick J. Wong wrote:
+> > >> >> On Sun, Oct 03, 2021 at 06:07:20PM -0700, David Rientjes wrote:
+> > >> >>
+> > >> >> I audited the entire xfs (kernel) codebase and didn't find any other
+> > >> >> usage errors.  Thanks for the patch; I'll apply it to for-next.
+> > >> 
+> > >> Which patch, the one that started this thread and uses kmem_cache_free() instead
+> > >> of kfree()? I thought we said it's not the best way?
+> > > 
+> > > It's probably better to fix slob to be able to tell that a kmem_free'd
+> > > object actually belongs to a cache and should get freed that way, just
+> > > like its larger sl[ua]b cousins.
+> > 
+> > Agreed. Rustam, do you still plan to do that?
+> 
+> Yes, I do, thank you.
 
-Signed-off-by: Li Yang <leoyang.li@nxp.com>
----
- drivers/memory/fsl_ifc.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+Note that I left out the parts of the patch that changed mm/slob.c
+because I didn't think that was appropriate for a patch titled 'xfs:'.
 
-diff --git a/drivers/memory/fsl_ifc.c b/drivers/memory/fsl_ifc.c
-index d062c2f8250f..ef2092fa90d9 100644
---- a/drivers/memory/fsl_ifc.c
-+++ b/drivers/memory/fsl_ifc.c
-@@ -88,6 +88,7 @@ static int fsl_ifc_ctrl_remove(struct platform_device *dev)
- {
- 	struct fsl_ifc_ctrl *ctrl = dev_get_drvdata(&dev->dev);
- 
-+	of_platform_depopulate(&dev->dev);
- 	free_irq(ctrl->nand_irq, ctrl);
- 	free_irq(ctrl->irq, ctrl);
- 
-@@ -285,6 +286,12 @@ static int fsl_ifc_ctrl_probe(struct platform_device *dev)
- 		}
- 	}
- 
-+	/* legacy dts may still use "simple-bus" compatible */
-+	ret = of_platform_populate(dev->dev.of_node, NULL, NULL,
-+					&dev->dev);
-+	if (ret)
-+		goto err_nandirq;
-+
- 	return 0;
- 
- err_nandirq:
--- 
-2.25.1
+> 
+> > 
+> > > However, even if that does come to pass, anybody /else/ who wants to
+> > > start(?) using XFS on a SLOB system will need this patch to fix the
+> > > minor papercut.  Now that I've checked the rest of the codebase, I don't
+> > > find it reasonable to make XFS mutually exclusive with SLOB over two
+> > > instances of slab cache misuse.  Hence the RVB. :)
+> > 
+> > Ok. I was just wondering because Dave's first reply was that actually you'll
+> > need to expand the use of kfree() instead of kmem_cache_free().
 
+I look forward to doing this, but since XFS is a downstream consumer of
+the kmem apis, we'll have to wait until the slob changes land to do
+that.
+
+--D
