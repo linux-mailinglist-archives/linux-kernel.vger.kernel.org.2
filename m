@@ -2,137 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DC1F42F1B5
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 15:07:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 729F142F1AE
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 15:05:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239224AbhJONJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 09:09:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35924 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235689AbhJONJB (ORCPT
+        id S239210AbhJONHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 09:07:06 -0400
+Received: from relay5-d.mail.gandi.net ([217.70.183.197]:56513 "EHLO
+        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239201AbhJONHF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 09:09:01 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E09EC061570;
-        Fri, 15 Oct 2021 06:06:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=GcG/LD4wXLRkh+mkTSYxktAgp6NtEFjg5wt7NUrIBQ8=; b=uayJR1a282ytfFfr7pGkZzKhEI
-        IluB/YpfG7Onwx7r1QjKfC1tsftLKfxav3VC38k67GpIyk/1ybeAGQUxvDR+zHqr8EKJVPlRZBA9/
-        /wpTA2a/mIgs+KwDypwHUlt5exYlO5YauSTxiForL6Zk2ddG+l9BfoSzKxtnDQxKPvn5PwybVyKMr
-        2sXVB6PGJ0CaomGm5OmpmwcYJjrxCbBh03Lz6TD+0UpZALAbk0Ks+Tm2EO0gwNMexvTrd+iVHfAOl
-        L1EzBGZvN5/X+htNwR68fjDLwpfpBBFno+c1d7bIoN6mV3eoharT65WSKmRRs2o1NAkDG7hXrV1hK
-        6PnwqnJg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mbMtI-0091pf-5y; Fri, 15 Oct 2021 13:05:05 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1918F300577;
-        Fri, 15 Oct 2021 15:04:50 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id C9DB5212B43C0; Fri, 15 Oct 2021 15:04:50 +0200 (CEST)
-Date:   Fri, 15 Oct 2021 15:04:50 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     Barry Song <21cnbao@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        LAK <linux-arm-kernel@lists.infradead.org>,
-        linux-ia64@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org, Aubrey Li <aubrey.li@linux.intel.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86 <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Sergei Trofimovich <slyfox@gentoo.org>,
-        David Hildenbrand <david@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Chris Down <chris@chrisdown.name>,
-        Vipin Sharma <vipinsh@google.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Hugh Dickins <hughd@google.com>,
-        Michal Hocko <mhocko@kernel.org>
-Subject: Re: [PATCH 2/2] sched: Centralize SCHED_{SMT, MC, CLUSTER}
- definitions
-Message-ID: <YWl8cogsS2Lah1mk@hirez.programming.kicks-ass.net>
-References: <20211008115347.425234-1-valentin.schneider@arm.com>
- <20211008115347.425234-3-valentin.schneider@arm.com>
- <CAGsJ_4wqtcOdsFDzR98PFbjxRyTqzf7P3p3erup84SXESYonYw@mail.gmail.com>
- <87bl3zlex8.mognet@arm.com>
+        Fri, 15 Oct 2021 09:07:05 -0400
+Received: (Authenticated sender: alex@ghiti.fr)
+        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 401031C0007;
+        Fri, 15 Oct 2021 13:04:51 +0000 (UTC)
+Subject: Re: [PATCH] kasan: Always respect CONFIG_KASAN_STACK
+From:   Alexandre ghiti <alex@ghiti.fr>
+To:     Nathan Chancellor <nathan@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     elver@google.com, akpm@linux-foundation.org,
+        ryabinin.a.a@gmail.com, glider@google.com, andreyknvl@gmail.com,
+        dvyukov@google.com, ndesaulniers@google.com,
+        Arnd Bergmann <arnd@arndb.de>, kasan-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        linux-riscv@lists.infradead.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, linux-mm@kvack.org
+References: <YUyWYpDl2Dmegz0a@archlinux-ax161>
+ <mhng-b5f8a6a0-c3e8-4d25-9daa-346fdc8a2e5e@palmerdabbelt-glaptop>
+ <YWhg8/UzjJsB51Gd@archlinux-ax161>
+ <afeaea5f-70f2-330f-f032-fb0c8b5d0aa5@ghiti.fr>
+Message-ID: <990a894c-1806-5ab2-775e-a6f2355c2299@ghiti.fr>
+Date:   Fri, 15 Oct 2021 15:04:51 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87bl3zlex8.mognet@arm.com>
+In-Reply-To: <afeaea5f-70f2-330f-f032-fb0c8b5d0aa5@ghiti.fr>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 08, 2021 at 04:22:27PM +0100, Valentin Schneider wrote:
+On 10/14/21 8:31 PM, Alex Ghiti wrote:
+> Hi Nathan,
+>
+> Le 14/10/2021 à 18:55, Nathan Chancellor a écrit :
+>> On Fri, Oct 08, 2021 at 11:46:55AM -0700, Palmer Dabbelt wrote:
+>>> On Thu, 23 Sep 2021 07:59:46 PDT (-0700), nathan@kernel.org wrote:
+>>>> On Thu, Sep 23, 2021 at 12:07:17PM +0200, Marco Elver wrote:
+>>>>> On Wed, 22 Sept 2021 at 22:55, Nathan Chancellor
+>>>>> <nathan@kernel.org> wrote:
+>>>>>> Currently, the asan-stack parameter is only passed along if
+>>>>>> CFLAGS_KASAN_SHADOW is not empty, which requires
+>>>>>> KASAN_SHADOW_OFFSET to
+>>>>>> be defined in Kconfig so that the value can be checked. In RISC-V's
+>>>>>> case, KASAN_SHADOW_OFFSET is not defined in Kconfig, which means
+>>>>>> that
+>>>>>> asan-stack does not get disabled with clang even when
+>>>>>> CONFIG_KASAN_STACK
+>>>>>> is disabled, resulting in large stack warnings with allmodconfig:
+>>>>>>
+>>>>>> drivers/video/fbdev/omap2/omapfb/displays/panel-lgphilips-lb035q02.c:117:12:
+>>>>>>
+>>>>>> error: stack frame size (14400) exceeds limit (2048) in function
+>>>>>> 'lb035q02_connect' [-Werror,-Wframe-larger-than]
+>>>>>> static int lb035q02_connect(struct omap_dss_device *dssdev)
+>>>>>>             ^
+>>>>>> 1 error generated.
+>>>>>>
+>>>>>> Ensure that the value of CONFIG_KASAN_STACK is always passed
+>>>>>> along to
+>>>>>> the compiler so that these warnings do not happen when
+>>>>>> CONFIG_KASAN_STACK is disabled.
+>>>>>>
+>>>>>> Link: https://github.com/ClangBuiltLinux/linux/issues/1453
+>>>>>> References: 6baec880d7a5 ("kasan: turn off asan-stack for clang-8
+>>>>>> and earlier")
+>>>>>> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+>>>>>
+>>>>> Reviewed-by: Marco Elver <elver@google.com>
+>>>>
+>>>> Thanks!
+>>>>
+>>>>> [ Which tree are you planning to take it through? ]
+>>>>
+>>>> Gah, I was intending for it to go through -mm, then I cc'd neither
+>>>> Andrew nor linux-mm... :/ Andrew, do you want me to resend or can you
+>>>> grab it from LKML?
+>>>
+>>> Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
+>>>
+>>> (assuming you still want it through somewhere else)
+>>
+>> Thanks, it is now in mainline as commit 19532869feb9 ("kasan: always
+>> respect CONFIG_KASAN_STACK").
+>>
+>>>>> Note, arch/riscv/include/asm/kasan.h mentions KASAN_SHADOW_OFFSET in
+>>>>> comment (copied from arm64). Did RISC-V just forget to copy over the
+>>>>> Kconfig option?
+>>>>
+>>>> I do see it defined in that file as well but you are right that
+>>>> they did
+>>>> not copy the Kconfig logic, even though it was present in the tree
+>>>> when
+>>>> RISC-V KASAN was implemented. Perhaps they should so that they get
+>>>> access to the other flags in the "else" branch?
+>>>
+>>> Ya, looks like we just screwed this up.  I'm seeing some warnings like
+>>>
+>>>     cc1: warning: ‘-fsanitize=kernel-address’ with stack protection
+>>> is not supported without ‘-fasan-shadow-offset=’ for this target
+>>
+>> Hmmm, I thought I did a GCC build with this change but I must not have
+>> :/
+>>
+>>> which is how I ended up here, I'm assuming that's what you're
+>>> talking about
+>>> here?  LMK if you were planning on sending along a fix or if you
+>>> want me to
+>>> go figure it out.
+>>
+>> I took a look at moving the logic into Kconfig like arm64 before sending
+>> this change and I did not really understand it well enough to do so. I
+>> think it would be best if you were able to do that so that nothing gets
+>> messed up.
+>>
+>
+> I'll do it tomorrow, I'm the last one who touched kasan on riscv :)
+>
 
-> So x86 has it default yes, and a lot of others (e.g. arm64) have it default
-> no.
-> 
-> IMO you don't gain much by disabling them. SCHED_MC and SCHED_CLUSTER only
-> control the presence of a sched_domain_topology_level - if it's useless it
-> gets degenerated at domain build time. Some valid reasons for not using
-> them is if the architecture defines its own topology table (e.g. powerpc
-> has CACHE and MC levels which are not gated behind any CONFIG).
-> 
-> SCHED_SMT has an impact on code generated in sched/core.c, but that is also
-> gated by a static key.
-> 
-> So I'd say having them default yes is sensible. I'd even say we should
-> change the "If unsure say N here." to "Y".
+Adding KASAN_SHADOW_OFFSET config makes kasan kernel fails to boot.
+It receives a *write* fault at the beginning of a memblock_alloc
+function while populating the kernel shadow memory: the trap address is
+in the kasan shadow virtual address range and this corresponds to a
+kernel address in init_stack. The question is: how do I populate the
+stack shadow mapping without using memblock API? It's weird, I don't
+find anything on other architectures.
 
-Right, so I tend to agree (and also that we should fix that Kconfig help
-text). But it would be very nice to have feedback from the affected arch
-maintainers.
+And just a short note: I have realized this will break with the sv48
+patchset as we decide at runtime the address space width and the kasan
+shadow start address is different between sv39 and sv48. I will have to
+do like x86 and move the kasan shadow start at the end of the address
+space so that it is the same for both sv39 and sv48.
 
+Thanks,
+
+Alex
+
+
+> Thanks,
+>
+> Alex
+>
+>> Cheers,
+>> Nathan
+>>
+>> _______________________________________________
+>> linux-riscv mailing list
+>> linux-riscv@lists.infradead.org
+>> http://lists.infradead.org/mailman/listinfo/linux-riscv
+>>
+>
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
