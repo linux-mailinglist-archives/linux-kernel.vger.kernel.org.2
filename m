@@ -2,142 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1A6742FAEC
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 20:25:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87F4142FB06
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 20:29:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242588AbhJOS1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 14:27:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54596 "EHLO
+        id S242631AbhJOSb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 14:31:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230286AbhJOS1M (ORCPT
+        with ESMTP id S237667AbhJOSb4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 14:27:12 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31B3FC061570
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 11:25:05 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <l.stach@pengutronix.de>)
-        id 1mbRt5-0001TP-0o; Fri, 15 Oct 2021 20:24:59 +0200
-Message-ID: <39cae5a1e33d489bd390be9e7e4df67d788eb7be.camel@pengutronix.de>
-Subject: Re: [RESEND v2 4/5] PCI: imx6: Fix the clock reference handling
- unbalance when link never came up
-From:   Lucas Stach <l.stach@pengutronix.de>
-To:     Richard Zhu <hongxing.zhu@nxp.com>, bhelgaas@google.com,
-        lorenzo.pieralisi@arm.com
-Cc:     linux-pci@vger.kernel.org, linux-imx@nxp.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de
-Date:   Fri, 15 Oct 2021 20:24:58 +0200
-In-Reply-To: <1634277941-6672-5-git-send-email-hongxing.zhu@nxp.com>
-References: <1634277941-6672-1-git-send-email-hongxing.zhu@nxp.com>
-         <1634277941-6672-5-git-send-email-hongxing.zhu@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.4 (3.40.4-1.fc34) 
+        Fri, 15 Oct 2021 14:31:56 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C6ADC061570;
+        Fri, 15 Oct 2021 11:29:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=us4YosfodZgYMwFe8rJkfXK5dBQB718M3Lke3zJ1ToY=; b=cY0CRJ4SyOUVhj9UQyVxaRjiQw
+        /1wr6TKwpWSzfpNTEbXEKVniDAC2ka6eybM+zn4dvXDqwYkZkvTR7v491RJDKTw//hD58xTRj4oSR
+        0QlPPMnjn7Kj5Q69itBEQRhxFEDeXwGDeihgs8rBliRLbgQ1rALI78w76v8T7IV7afCS0Fz+4Wm/4
+        JqW5/oOc7BvO/34prpputAko6YLKktrYcXK5QZw27hBqOhlswQg+31OoFJIp0mMSv5a8AOMHrtuWW
+        Noym6xZO/FLCs8cS2lPtQPTbXYrAqWX9Q1Zx+cYlupXrs+iYell2Jzqq1JcZWRqrfVcDkMJ/NiCjB
+        zMNudW1A==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mbRt6-009CM0-0J; Fri, 15 Oct 2021 18:25:17 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 90BD19857C7; Fri, 15 Oct 2021 20:24:59 +0200 (CEST)
+Date:   Fri, 15 Oct 2021 20:24:59 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Petr Mladek <pmladek@suse.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Jisheng Zhang <jszhang@kernel.org>, linux-csky@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, live-patching@vger.kernel.org,
+        =?utf-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>,
+        Guo Ren <guoren@kernel.org>
+Subject: Re: [PATCH] tracing: Have all levels of checks prevent recursion
+Message-ID: <20211015182459.GL174703@worktop.programming.kicks-ass.net>
+References: <20211015110035.14813389@gandalf.local.home>
+ <20211015161702.GF174703@worktop.programming.kicks-ass.net>
+ <20211015133504.6c0a9fcc@gandalf.local.home>
+ <20211015135806.72d1af23@gandalf.local.home>
+ <20211015180429.GK174703@worktop.programming.kicks-ass.net>
+ <20211015142033.72605b47@gandalf.local.home>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: l.stach@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211015142033.72605b47@gandalf.local.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Freitag, dem 15.10.2021 um 14:05 +0800 schrieb Richard Zhu:
-> When link never came up, driver probe would be failed with error -110.
-> To keep usage counter balance of the clocks, disable the previous
-> enabled clocks when link is down.
-> Move definitions of the imx6_pcie_clk_disable() function to the proper
-> place. Because it wouldn't be used in imx6_pcie_suspend_noirq() only.
+On Fri, Oct 15, 2021 at 02:20:33PM -0400, Steven Rostedt wrote:
+> On Fri, 15 Oct 2021 20:04:29 +0200
+> Peter Zijlstra <peterz@infradead.org> wrote:
 > 
-> Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
-> ---
->  drivers/pci/controller/dwc/pci-imx6.c | 47 ++++++++++++++-------------
->  1 file changed, 24 insertions(+), 23 deletions(-)
+> > On Fri, Oct 15, 2021 at 01:58:06PM -0400, Steven Rostedt wrote:
+> > > Something like this:  
+> > 
+> > I think having one copy of that in a header is better than having 3
+> > copies. But yes, something along them lines.
 > 
-> diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
-> index cc837f8bf6d4..d6a5d99ffa52 100644
-> --- a/drivers/pci/controller/dwc/pci-imx6.c
-> +++ b/drivers/pci/controller/dwc/pci-imx6.c
-> @@ -514,6 +514,29 @@ static int imx6_pcie_clk_enable(struct imx6_pcie *imx6_pcie)
->  	return ret;
->  }
->  
-> +static void imx6_pcie_clk_disable(struct imx6_pcie *imx6_pcie)
-> +{
-> +	clk_disable_unprepare(imx6_pcie->pcie);
-> +	clk_disable_unprepare(imx6_pcie->pcie_phy);
-> +	clk_disable_unprepare(imx6_pcie->pcie_bus);
-> +
-> +	switch (imx6_pcie->drvdata->variant) {
-> +	case IMX6SX:
-> +		clk_disable_unprepare(imx6_pcie->pcie_inbound_axi);
-> +		break;
-> +	case IMX7D:
-> +		regmap_update_bits(imx6_pcie->iomuxc_gpr, IOMUXC_GPR12,
-> +				   IMX7D_GPR12_PCIE_PHY_REFCLK_SEL,
-> +				   IMX7D_GPR12_PCIE_PHY_REFCLK_SEL);
-> +		break;
-> +	case IMX8MQ:
-> +		clk_disable_unprepare(imx6_pcie->pcie_aux);
-> +		break;
-> +	default:
-> +		break;
-> +	}
-> +}
-> +
->  static void imx7d_pcie_wait_for_phy_pll_lock(struct imx6_pcie *imx6_pcie)
+> I was just about to ask you about this patch ;-)
+
+Much better :-)
+
+> diff --git a/kernel/events/internal.h b/kernel/events/internal.h
+> index 228801e20788..c91711f20cf8 100644
+> --- a/kernel/events/internal.h
+> +++ b/kernel/events/internal.h
+> @@ -206,11 +206,7 @@ DEFINE_OUTPUT_COPY(__output_copy_user, arch_perf_out_copy_user)
+>  static inline int get_recursion_context(int *recursion)
 >  {
->  	u32 val;
-> @@ -853,6 +876,7 @@ static int imx6_pcie_start_link(struct dw_pcie *pci)
->  		dw_pcie_readl_dbi(pci, PCIE_PORT_DEBUG0),
->  		dw_pcie_readl_dbi(pci, PCIE_PORT_DEBUG1));
->  	imx6_pcie_reset_phy(imx6_pcie);
-> +	imx6_pcie_clk_disable(imx6_pcie);
+>  	unsigned int pc = preempt_count();
 
-Same comment as with the previous patch. We should not cram in more
-error handling in the imx6_pcie_start_link function, but rather move
-out all the error handling to be after dw_pcie_host_init. Even the
-already existing phy reset here seems misplaced and should be moved
-out.
+Although I think we can do without that ^ line as well :-)
 
-Regards,
-Lucas
-
->  	if (imx6_pcie->vpcie && regulator_is_enabled(imx6_pcie->vpcie) > 0)
->  		regulator_disable(imx6_pcie->vpcie);
->  	return ret;
-> @@ -941,29 +965,6 @@ static void imx6_pcie_pm_turnoff(struct imx6_pcie *imx6_pcie)
->  	usleep_range(1000, 10000);
->  }
+> -	unsigned char rctx = 0;
+> -
+> -	rctx += !!(pc & (NMI_MASK));
+> -	rctx += !!(pc & (NMI_MASK | HARDIRQ_MASK));
+> -	rctx += !!(pc & (NMI_MASK | HARDIRQ_MASK | SOFTIRQ_OFFSET));
+> +	unsigned char rctx = interrupt_context_level();
 >  
-> -static void imx6_pcie_clk_disable(struct imx6_pcie *imx6_pcie)
-> -{
-> -	clk_disable_unprepare(imx6_pcie->pcie);
-> -	clk_disable_unprepare(imx6_pcie->pcie_phy);
-> -	clk_disable_unprepare(imx6_pcie->pcie_bus);
-> -
-> -	switch (imx6_pcie->drvdata->variant) {
-> -	case IMX6SX:
-> -		clk_disable_unprepare(imx6_pcie->pcie_inbound_axi);
-> -		break;
-> -	case IMX7D:
-> -		regmap_update_bits(imx6_pcie->iomuxc_gpr, IOMUXC_GPR12,
-> -				   IMX7D_GPR12_PCIE_PHY_REFCLK_SEL,
-> -				   IMX7D_GPR12_PCIE_PHY_REFCLK_SEL);
-> -		break;
-> -	case IMX8MQ:
-> -		clk_disable_unprepare(imx6_pcie->pcie_aux);
-> -		break;
-> -	default:
-> -		break;
-> -	}
-> -}
-> -
->  static int imx6_pcie_suspend_noirq(struct device *dev)
->  {
->  	struct imx6_pcie *imx6_pcie = dev_get_drvdata(dev);
-
-
+>  	if (recursion[rctx])
+>  		return -1;
