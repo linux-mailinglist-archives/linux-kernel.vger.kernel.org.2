@@ -2,83 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4593842EEA4
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 12:16:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B386642EEA7
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 12:16:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237953AbhJOKSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 06:18:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45506 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237936AbhJOKSN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 06:18:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CA6466101E;
-        Fri, 15 Oct 2021 10:16:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634292967;
-        bh=ENS+gbfMkK4bdqfhnKDhAV6PyJn5YD2/qxDu/E5iwkA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZXZGmFMwyPNcdI8NrGBvjMZMXwgo3W2xmRf/ZqXUfWmSuQJzfwasE3nTs2I67xmWc
-         zu84MhNlu6yvWgMLJ0kZ5H4QQ8L2Nul7KnRJ0q5Ml+8fCf3nx+NwQjuO7PeQvOSkZs
-         iHdL/KtceqAdmP04Vy3XxoHw3vLgDYrSYJWAbEKQ=
-Date:   Fri, 15 Oct 2021 12:16:04 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     changlianzhi <changlianzhi@uniontech.com>
-Cc:     linux-kernel@vger.kernel.org, dmitry.torokhov@gmail.com,
-        jirislaby@kernel.org, andriy.shevchenko@linux.intel.com,
-        linux-input@vger.kernel.org, 282827961@qq.com
-Subject: Re: [PATCH] input&tty: Fix the keyboard led light display problem
-Message-ID: <YWlU5AJ4MzNv2qw6@kroah.com>
-References: <20211015083613.7429-1-changlianzhi@uniontech.com>
- <YWk+qaUnN+M/dX9o@kroah.com>
- <616942b2.1c69fb81.dfbff.25afSMTPIN_ADDED_BROKEN@mx.google.com>
+        id S237954AbhJOKSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 06:18:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53480 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237838AbhJOKSe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 06:18:34 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 469B1C061570;
+        Fri, 15 Oct 2021 03:16:27 -0700 (PDT)
+Date:   Fri, 15 Oct 2021 10:16:24 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1634292985;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=WCSTvxdrXbhAIHCaAWoTOpxHvcWPVmoArS0PESVVgDk=;
+        b=ocgh6cBBdTSOEuUdccFrUnRgG/jcAxH8aB05+/nfEJCKFjMGpe28AVAq5Q9pQeBZpnAf0C
+        xzvP0tz1bpfOYMkFyy3LHr/qNtD2CNVp3SvluB63wppU0A6A24x9bZFh2zC0wv6V335SPe
+        1GONh0qOYEFcXn+xZxp+8YaOlTXYY27fDCM8+cMctLa0UZBpPgieW9eFyENjTosi5XHIRl
+        Upt0CtUwI4ASXhb8HHeszUWMRZ4aPWkVfRekxN6Uwt0fh14ndkOxd4mCRNyx6nrLmqVzPC
+        wofGCnOpO1jluO2X0kWWlT6b34Bc6xkSYW5i8kc/zpSJinGpXdJLlwtSsjm6NQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1634292985;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=WCSTvxdrXbhAIHCaAWoTOpxHvcWPVmoArS0PESVVgDk=;
+        b=I2og/HW/AelwSJo8H99VwO4aImOs3c5AGvGvbvwPhqFwxVD0+YmWnQPlfJNCLgUouHfOBk
+        dPAcCTt94jH4U4Bg==
+From:   "tip-bot2 for Sebastian Andrzej Siewior" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: efi/core] efi: Allow efi=runtime
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Ard Biesheuvel <ardb@kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <616942b2.1c69fb81.dfbff.25afSMTPIN_ADDED_BROKEN@mx.google.com>
+Message-ID: <163429298458.25758.4664663159209860167.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 15, 2021 at 04:57:17PM +0800, changlianzhi wrote:
-> 
-> On 2021/10/15 下午4:41, Greg KH wrote:
-> > On Fri, Oct 15, 2021 at 04:36:13PM +0800, lianzhi chang wrote:
-> > > Switching from the desktop environment to the tty environment,
-> > > the state of the keyboard led lights and the state of the keyboard
-> > > lock are inconsistent. This is because the attribute kb->kbdmode
-> > > of the tty bound in the desktop environment (xorg) is set to
-> > > VC_OFF, which causes the ledstate and kb->ledflagstate
-> > > values of the bound tty to always be 0, which causes the switch
-> > > from the desktop When to the tty environment, the LED light
-> > > status is inconsistent with the keyboard lock status.
-> > > 
-> > > Signed-off-by: lianzhi chang <changlianzhi@uniontech.com>
-> > > ---
-> > > The latest changes:
-> > > (1) Move the definition of ledstate to the input module (/drivers/input/input.c),
-> > > and set or get its value through the input_update_ledstate and input_get_ledstate
-> > > functions.
-> > > (2) To update the ledstate reference in keyboard.c, you must first get the value
-> > > through input_get_ledstate.
-> > > (3) Other necessary changes
-> > You have not changed the subject line at all.
-> > 
-> > Look at how others submit patches that are new versions on the mailing
-> > list, and most importantly, read the documentation we have about this.
-> > 
-> > thanks,
-> > 
-> > greg k-h
-> 
-> 
-> Sorry, because the emails I send using the mail client are always bounced
-> back, I can only use git send-email to send emails. Haven't found a way to
-> modify the theme. very sorry.
+The following commit has been merged into the efi/core branch of tip:
 
-git send-email works just for for v2 and so on, it will send whatever
-you make the patch text file to look like.
+Commit-ID:     720dff78de360ad9742d5f438101cedcdb5dad84
+Gitweb:        https://git.kernel.org/tip/720dff78de360ad9742d5f438101cedcdb5dad84
+Author:        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+AuthorDate:    Fri, 24 Sep 2021 15:49:19 +02:00
+Committer:     Ard Biesheuvel <ardb@kernel.org>
+CommitterDate: Tue, 28 Sep 2021 22:44:15 +02:00
 
-thanks,
+efi: Allow efi=runtime
 
-greg k-h
+In case the command line option "efi=noruntime" is default at built-time, the user
+could overwrite its state by `efi=runtime' and allow it again.
+
+This is useful on PREEMPT_RT where "efi=noruntime" is default and the
+user might need to alter the boot order for instance.
+
+Acked-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+---
+ drivers/firmware/efi/efi.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/firmware/efi/efi.c b/drivers/firmware/efi/efi.c
+index 39031cf..ae79c33 100644
+--- a/drivers/firmware/efi/efi.c
++++ b/drivers/firmware/efi/efi.c
+@@ -97,6 +97,9 @@ static int __init parse_efi_cmdline(char *str)
+ 	if (parse_option_str(str, "noruntime"))
+ 		disable_runtime = true;
+ 
++	if (parse_option_str(str, "runtime"))
++		disable_runtime = false;
++
+ 	if (parse_option_str(str, "nosoftreserve"))
+ 		set_bit(EFI_MEM_NO_SOFT_RESERVE, &efi.flags);
+ 
