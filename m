@@ -2,103 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35D7842EEA0
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 12:15:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12FA242EF8F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 13:23:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237927AbhJOKRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 06:17:49 -0400
-Received: from mga05.intel.com ([192.55.52.43]:22698 "EHLO mga05.intel.com"
+        id S238456AbhJOLZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 07:25:48 -0400
+Received: from mga02.intel.com ([134.134.136.20]:9586 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237905AbhJOKR0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 06:17:26 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10137"; a="314085993"
+        id S230169AbhJOLZq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 07:25:46 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10137"; a="215060069"
 X-IronPort-AV: E=Sophos;i="5.85,375,1624345200"; 
-   d="scan'208";a="314085993"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2021 03:15:13 -0700
+   d="scan'208";a="215060069"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2021 04:23:39 -0700
 X-IronPort-AV: E=Sophos;i="5.85,375,1624345200"; 
-   d="scan'208";a="492402292"
+   d="scan'208";a="481663753"
 Received: from smile.fi.intel.com (HELO smile) ([10.237.72.159])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2021 03:15:11 -0700
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2021 04:23:37 -0700
 Received: from andy by smile with local (Exim 4.95)
         (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mbN32-000Oz6-PT;
-        Fri, 15 Oct 2021 16:14:56 +0300
-Date:   Fri, 15 Oct 2021 16:14:56 +0300
+        id 1mbO7H-000Pr5-23;
+        Fri, 15 Oct 2021 17:23:23 +0300
+Date:   Fri, 15 Oct 2021 17:23:23 +0300
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the akpm-current tree
-Message-ID: <YWl+0PFixaNqgIxb@smile.fi.intel.com>
-References: <20211015202908.1c417ae2@canb.auug.org.au>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 1/3] serial: 8250: fix racy uartclk update
+Message-ID: <YWmO2+FNShY03fzo@smile.fi.intel.com>
+References: <20211015111422.1027-1-johan@kernel.org>
+ <20211015111422.1027-2-johan@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211015202908.1c417ae2@canb.auug.org.au>
+In-Reply-To: <20211015111422.1027-2-johan@kernel.org>
 Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Cc: Rasmus
+On Fri, Oct 15, 2021 at 01:14:20PM +0200, Johan Hovold wrote:
+> Commit 868f3ee6e452 ("serial: 8250: Add 8250 port clock update method")
+> added a hack to support SoCs where the UART reference clock can
+> change behind the back of the driver but failed to add the proper
+> locking.
+> 
+> First, make sure to take a reference to the tty struct to avoid
+> dereferencing a NULL pointer if the clock change races with a hangup.
+> 
+> Second, the termios semaphore must be held during the update to prevent
+> a racing termios change.
 
-On Fri, Oct 15, 2021 at 08:29:08PM +1100, Stephen Rothwell wrote:
-> Hi all,
-> 
-> After merging the akpm-current tree, today's linux-next build (arm
-> multi_v7_defconfig) failed like this:
-> 
-> In file included from include/linux/rcupdate.h:28,
->                  from include/linux/rculist.h:11,
->                  from include/linux/pid.h:5,
->                  from include/linux/sched.h:14,
->                  from arch/arm/kernel/asm-offsets.c:11:
-> include/linux/bottom_half.h: In function 'local_bh_disable':
-> include/linux/bottom_half.h:19:24: error: '_THIS_IP_' undeclared (first use in this function)
->    19 |  __local_bh_disable_ip(_THIS_IP_, SOFTIRQ_DISABLE_OFFSET);
->       |                        ^~~~~~~~~
-> include/linux/bottom_half.h:19:24: note: each undeclared identifier is reported only once for each function it appears in
-> include/linux/bottom_half.h: In function 'local_bh_enable':
-> include/linux/bottom_half.h:32:23: error: '_THIS_IP_' undeclared (first use in this function)
->    32 |  __local_bh_enable_ip(_THIS_IP_, SOFTIRQ_DISABLE_OFFSET);
->       |                       ^~~~~~~~~
-> 
-> Presumably caused by a commit in the series that starts with
-> 
->   dcaf7a5f413b ("kernel.h: drop unneeded <linux/kernel.h> inclusion from other headers")
-> 
-> I have applied the following patch for today (though there may be a
-> better solution).
+Nice catch!
+Thanks, Johan, for fixing this!
+Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Thanks! As a quick fix looks good, but I think we need a separate header for
-those _*_IP_ macros.
-
-> From: Stephen Rothwell <sfr@canb.auug.org.au>
-> Date: Fri, 15 Oct 2021 19:58:46 +1100
-> Subject: [PATCH] bottom_half.h needs kernel.h
-> 
-> for _THIS_IP_ on arm at least
-> 
-> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> Fixes: 868f3ee6e452 ("serial: 8250: Add 8250 port clock update method")
+> Fixes: c8dff3aa8241 ("serial: 8250: Skip uninitialized TTY port baud rate update")
+> Cc: stable@vger.kernel.org      # 5.9
+> Cc: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> Signed-off-by: Johan Hovold <johan@kernel.org>
 > ---
->  include/linux/bottom_half.h | 1 +
->  1 file changed, 1 insertion(+)
+>  drivers/tty/serial/8250/8250_port.c | 21 +++++++++++++++++----
+>  1 file changed, 17 insertions(+), 4 deletions(-)
 > 
-> diff --git a/include/linux/bottom_half.h b/include/linux/bottom_half.h
-> index eed86eb0a1de..11d107d88d03 100644
-> --- a/include/linux/bottom_half.h
-> +++ b/include/linux/bottom_half.h
-> @@ -2,6 +2,7 @@
->  #ifndef _LINUX_BH_H
->  #define _LINUX_BH_H
+> diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8250/8250_port.c
+> index 66374704747e..e4dd82fd7c2a 100644
+> --- a/drivers/tty/serial/8250/8250_port.c
+> +++ b/drivers/tty/serial/8250/8250_port.c
+> @@ -2696,21 +2696,32 @@ static unsigned int serial8250_get_baud_rate(struct uart_port *port,
+>  void serial8250_update_uartclk(struct uart_port *port, unsigned int uartclk)
+>  {
+>  	struct uart_8250_port *up = up_to_u8250p(port);
+> +	struct tty_port *tport = &port->state->port;
+>  	unsigned int baud, quot, frac = 0;
+>  	struct ktermios *termios;
+> +	struct tty_struct *tty;
+>  	unsigned long flags;
 >  
-> +#include <linux/kernel.h>
->  #include <linux/preempt.h>
+> -	mutex_lock(&port->state->port.mutex);
+> +	tty = tty_port_tty_get(tport);
+> +	if (!tty) {
+> +		mutex_lock(&tport->mutex);
+> +		port->uartclk = uartclk;
+> +		mutex_unlock(&tport->mutex);
+> +		return;
+> +	}
+> +
+> +	down_write(&tty->termios_rwsem);
+> +	mutex_lock(&tport->mutex);
 >  
->  #if defined(CONFIG_PREEMPT_RT) || defined(CONFIG_TRACE_IRQFLAGS)
+>  	if (port->uartclk == uartclk)
+>  		goto out_lock;
+>  
+>  	port->uartclk = uartclk;
+>  
+> -	if (!tty_port_initialized(&port->state->port))
+> +	if (!tty_port_initialized(tport))
+>  		goto out_lock;
+>  
+> -	termios = &port->state->port.tty->termios;
+> +	termios = &tty->termios;
+>  
+>  	baud = serial8250_get_baud_rate(port, termios, NULL);
+>  	quot = serial8250_get_divisor(port, baud, &frac);
+> @@ -2727,7 +2738,9 @@ void serial8250_update_uartclk(struct uart_port *port, unsigned int uartclk)
+>  	serial8250_rpm_put(up);
+>  
+>  out_lock:
+> -	mutex_unlock(&port->state->port.mutex);
+> +	mutex_unlock(&tport->mutex);
+> +	up_write(&tty->termios_rwsem);
+> +	tty_kref_put(tty);
+>  }
+>  EXPORT_SYMBOL_GPL(serial8250_update_uartclk);
+>  
+> -- 
+> 2.32.0
+> 
 
 -- 
 With Best Regards,
