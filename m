@@ -2,112 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8C0042E765
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 05:47:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03F2A42E76A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 05:51:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235284AbhJODtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 23:49:46 -0400
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:41164 "EHLO
-        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229907AbhJODtn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 23:49:43 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0Us1MPhB_1634269654;
-Received: from localhost(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0Us1MPhB_1634269654)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 15 Oct 2021 11:47:35 +0800
-From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Abaci Robot <abaci@linux.alibaba.com>,
-        Heyuan Shi <heyuan@linux.alibaba.com>, x86@kernel.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Subject: [PATCH] crypto: x86/sm4 - Fix invalid section entry size
-Date:   Fri, 15 Oct 2021 11:47:33 +0800
-Message-Id: <20211015034733.51205-1-tianjia.zhang@linux.alibaba.com>
-X-Mailer: git-send-email 2.24.3 (Apple Git-128)
+        id S235287AbhJODxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 23:53:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55204 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235225AbhJODxk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 23:53:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D71D1611C3;
+        Fri, 15 Oct 2021 03:51:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634269894;
+        bh=HRiWV+8zHe2qqxJgo56IMSWbI8+MHo9yh+QgaaZsvtU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tDLwis3n2ThfcX1Fy8D9CxQP864NyJ4aDZk4T4GB5OCKNutkll8StU7Jzt/pwzlqT
+         NGwEW/sjcxyqYXIUveg8eVYPh1QJ4ZKjt1tRR+0G9yZiG6uY08n+irsmU4mEmQ4JrQ
+         mzyqiIg1aJCPfTMs9cWloY0ZuxsbC5lW/8GmlYyNX4MjEQBsypdLqbieDmwFoJSiJB
+         UyMfAg5/8NuAVz21mewx7V9Wi00aGVdvkHRQ+s++S+38zVNWUby2Zsz9t1WajvOw5L
+         bFKsBlV06WZm850pNoceMCnHFold8eri4UEfo7Pj1qmk60a69TOLdzU8XpJApRWGFU
+         U4C1HjyoiTuxg==
+Date:   Fri, 15 Oct 2021 11:51:27 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Frieder Schrempf <frieder.schrempf@kontron.de>
+Cc:     Frieder Schrempf <frieder@fris.de>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>
+Subject: Re: [PATCH 2/8] arm64: dts: imx8mm-kontron: Make sure SOC and DRAM
+ supply voltages are correct
+Message-ID: <20211015035122.GE22881@dragon>
+References: <20210930155633.2745201-1-frieder@fris.de>
+ <20210930155633.2745201-3-frieder@fris.de>
+ <20211005065358.GZ20743@dragon>
+ <cefc9a67-120e-fda6-cb69-af4cabc58a15@kontron.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cefc9a67-120e-fda6-cb69-af4cabc58a15@kontron.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This fixes the following warning:
+On Tue, Oct 05, 2021 at 03:10:14PM +0200, Frieder Schrempf wrote:
+> On 05.10.21 08:53, Shawn Guo wrote:
+> > On Thu, Sep 30, 2021 at 05:56:25PM +0200, Frieder Schrempf wrote:
+> >> From: Frieder Schrempf <frieder.schrempf@kontron.de>
+> >>
+> >> VDD_SOC should be 800 mV in suspend and 850 mV in run mode. VDD_DRAM
+> >> should be 950 mV for DDR clock frequencies of 1.5 GHz.
+> >>
+> >> This information is taken from the datasheet and the uboot-imx code.
+> > 
+> > I'm wondering where the existing settings were coming from?
+> 
+> Good question, but I can't really retrace now how I actually determined
+> the values back then. Seems like I had failed to validate them properly.
 
-  vmlinux.o: warning: objtool: elf_update: invalid section entry size
+Please update commit log with these background info.
 
-The size of the rodata section is 164 bytes, directly using the
-entry_size of 164 bytes will cause errors in some versions of the
-gcc compiler, while using 16 bytes directly will cause errors in
-the clang compiler. This patch correct it by filling the size of
-rodata to a 16-byte boundary.
+Shawn
 
-Fixes: a7ee22ee1445 ("crypto: x86/sm4 - add AES-NI/AVX/x86_64 implementation")
-Fixes: 5b2efa2bb865 ("crypto: x86/sm4 - add AES-NI/AVX2/x86_64 implementation")
-Reported-by: Peter Zijlstra <peterz@infradead.org>
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Tested-by: Heyuan Shi <heyuan@linux.alibaba.com>
----
- arch/x86/crypto/sm4-aesni-avx-asm_64.S  | 6 +++++-
- arch/x86/crypto/sm4-aesni-avx2-asm_64.S | 6 +++++-
- 2 files changed, 10 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/crypto/sm4-aesni-avx-asm_64.S b/arch/x86/crypto/sm4-aesni-avx-asm_64.S
-index 18d2f5199194..1cc72b4804fa 100644
---- a/arch/x86/crypto/sm4-aesni-avx-asm_64.S
-+++ b/arch/x86/crypto/sm4-aesni-avx-asm_64.S
-@@ -78,7 +78,7 @@
- 	vpxor tmp0, x, x;
- 
- 
--.section	.rodata.cst164, "aM", @progbits, 164
-+.section	.rodata.cst16, "aM", @progbits, 16
- .align 16
- 
- /*
-@@ -133,6 +133,10 @@
- .L0f0f0f0f:
- 	.long 0x0f0f0f0f
- 
-+/* 12 bytes, only for padding */
-+.Lpadding_deadbeef:
-+	.long 0xdeadbeef, 0xdeadbeef, 0xdeadbeef
-+
- 
- .text
- .align 16
-diff --git a/arch/x86/crypto/sm4-aesni-avx2-asm_64.S b/arch/x86/crypto/sm4-aesni-avx2-asm_64.S
-index d2ffd7f76ee2..9c5d3f3ad45a 100644
---- a/arch/x86/crypto/sm4-aesni-avx2-asm_64.S
-+++ b/arch/x86/crypto/sm4-aesni-avx2-asm_64.S
-@@ -93,7 +93,7 @@
- 	vpxor tmp0, x, x;
- 
- 
--.section	.rodata.cst164, "aM", @progbits, 164
-+.section	.rodata.cst16, "aM", @progbits, 16
- .align 16
- 
- /*
-@@ -148,6 +148,10 @@
- .L0f0f0f0f:
- 	.long 0x0f0f0f0f
- 
-+/* 12 bytes, only for padding */
-+.Lpadding_deadbeef:
-+	.long 0xdeadbeef, 0xdeadbeef, 0xdeadbeef
-+
- .text
- .align 16
- 
--- 
-2.24.3 (Apple Git-128)
-
+> 
+> > 
+> >>
+> >> Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
+> >> ---
+> >>  arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-som.dtsi | 6 ++++--
+> >>  1 file changed, 4 insertions(+), 2 deletions(-)
+> >>
+> >> diff --git a/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-som.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-som.dtsi
+> >> index 03b3516abd64..b12fb7ce6686 100644
+> >> --- a/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-som.dtsi
+> >> +++ b/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-som.dtsi
+> >> @@ -92,10 +92,12 @@ regulators {
+> >>  			reg_vdd_soc: BUCK1 {
+> >>  				regulator-name = "buck1";
+> >>  				regulator-min-microvolt = <800000>;
+> >> -				regulator-max-microvolt = <900000>;
+> >> +				regulator-max-microvolt = <850000>;
+> >>  				regulator-boot-on;
+> >>  				regulator-always-on;
+> >>  				regulator-ramp-delay = <3125>;
+> >> +				nxp,dvs-run-voltage = <850000>;
+> >> +				nxp,dvs-standby-voltage = <800000>;
+> >>  			};
+> >>  
+> >>  			reg_vdd_arm: BUCK2 {
+> >> @@ -111,7 +113,7 @@ reg_vdd_arm: BUCK2 {
+> >>  			reg_vdd_dram: BUCK3 {
+> >>  				regulator-name = "buck3";
+> >>  				regulator-min-microvolt = <850000>;
+> >> -				regulator-max-microvolt = <900000>;
+> >> +				regulator-max-microvolt = <950000>;
+> >>  				regulator-boot-on;
+> >>  				regulator-always-on;
+> >>  			};
+> >> -- 
+> >> 2.33.0
+> >>
