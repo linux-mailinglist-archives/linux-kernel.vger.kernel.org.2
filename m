@@ -2,239 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12FBA42F820
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 18:30:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 547EF42F83C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 18:32:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241331AbhJOQcd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 12:32:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55716 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241276AbhJOQc3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 12:32:29 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 976BDC061570
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 09:30:21 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id s4so24074859ybs.8
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 09:30:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kz5lMVwvOCVrmogtVEWpwErQFfGGKuUYVGz/2nToq3M=;
-        b=j2u09yM5l/323Ka448VaPv1LG7LqAaEYz0PZdr1r/KNJ1g2xJcBMLqZlsDpDMzRb5h
-         9Vy7xuf0SdACs1IMILrxi2L2UVJpAsywRRr1wlr5kvTFterFPXO+6ywJpiSQ4e/m+cM8
-         HkgnzQJrFHocBgUiBBO64Kr/Y8YCS+F/TYQTUnYmIgNybQ/pb8n1BVRhTgQnTVh8uh7A
-         84xYZ7CxxEBn2+EMqvpOKBHpTNCtrX+jqsTafZriRQS7NIZ/Z7URojLuuB00AHf2noJ2
-         v7mme9NkiL8tUyYNnljRWXFEhhl2qhFvqKMCOwGjGThZIS6buys8ohJ7+5kkZuBoV1dT
-         7fPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kz5lMVwvOCVrmogtVEWpwErQFfGGKuUYVGz/2nToq3M=;
-        b=mzY1qP6G79QWtGFlityH+5IfmrRqBJswT5rM2BkK2jYv79G7z7YA9Fu1i0jDmF3ltp
-         GdxWyOdUkv7EcAbnMBfNqXkc4SRDFOf55RPTtuz/4ed8cvTQbf23o+AihBhqNIP8WhR8
-         8AHaV0yW/ycfE7fEqv5EcGy9WUaayBFfT3cKG3kbA5MNTtEw75UAvJrdrSZWH8PHwuMn
-         G2i4egGkSho93u/bLlENlD57nJ5BJnl3yUZ8+/G6p9DrZQMqVB3XY2qi6lKhd1rIULIa
-         yCYSfQfXTNo9oxvAvWKfBYvJT4lnvQtyMusSwRnJAvaayFMhZ6TxRs8Qtq/9xPWRJ+4O
-         kpZw==
-X-Gm-Message-State: AOAM532AOUi/RnAcbQe3q1H0pV6WkXph2BJKsRiVHYGzcndzvL3r3Oo/
-        i4KNMzpnaFjsG2M5EhAaY86IDN+SfUmYpj1AU8GF1g==
-X-Google-Smtp-Source: ABdhPJyQziOQe5F3EOcgL5uw4MWVkI519Ki6NKatykqIbO5nuXsaj+RptOUZLkH+K74gIqKrcOujKI9DJiSsZkQ5uC0=
-X-Received: by 2002:a25:bd03:: with SMTP id f3mr13232331ybk.412.1634315420493;
- Fri, 15 Oct 2021 09:30:20 -0700 (PDT)
+        id S241408AbhJOQeM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 12:34:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53912 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241386AbhJOQeF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 12:34:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 36B6361245;
+        Fri, 15 Oct 2021 16:31:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634315519;
+        bh=Jmc4W5XlxGxY2LFigXZkPqtUcluVcFYpogIjPlqF/7g=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=tANHC8vauO8UwCq3eZBHC+1Bbvrev4NAiS01KKx+AW2nudMo2euJL9qDrqDsjAWm7
+         8wcg8iweg4D35CFyWr3VpSsxbwjQFIXK2aUm6ACt0v+iLMcT9lcvllBFpJOiVN9cAm
+         9YWwZwM9/xztrTRuIMnjtIwq4ZKJgu0yzl/IJGSKw1i5ucu8SOKTS1EznMA7mZ/aMK
+         7tkv3Mf+uWTCDcZZSPVfyNu/Qr1D+5APizTnQ1Wok7CXzZ6OsNFXY1iUY+XmIxwGvK
+         omJMC1wv0BB84hzQHmZW68BwTdfLsadjXwEsWkh4FHl91KtKhmAV5CVlEXCfp4tQwG
+         t6lgeBvthT/eQ==
+Received: by mail-ed1-f46.google.com with SMTP id r18so40415174edv.12;
+        Fri, 15 Oct 2021 09:31:59 -0700 (PDT)
+X-Gm-Message-State: AOAM531UX/XmFTI+u+q4skAOKotTysaOQzhO3ErxMoF6n3UgSDU+mghB
+        NoDoP73dyAwhdjwhW5vsq7UmGXPR1Lv02ZENqw==
+X-Google-Smtp-Source: ABdhPJzgJwR5w3qmrgz+cqGYeLEFxDU1gqO3ezp6X+Y2gF0uOKhbfhUzbqdZyXGHy+MrtBfx0kbUvOR1l0y4TTHvScU=
+X-Received: by 2002:a05:6402:84d:: with SMTP id b13mr19440726edz.6.1634315517635;
+ Fri, 15 Oct 2021 09:31:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <92cbfe3b-f3d1-a8e1-7eb9-bab735e782f6@rasmusvillemoes.dk>
- <20211007101527.GA26288@duo.ucw.cz> <CAJuCfpGp0D9p3KhOWhcxMO1wEbo-J_b2Anc-oNwdycx4NTRqoA@mail.gmail.com>
- <YV8jB+kwU95hLqTq@dhcp22.suse.cz> <CAJuCfpG-Nza3YnpzvHaS_i1mHds3nJ+PV22xTAfgwvj+42WQNA@mail.gmail.com>
- <YV8u4B8Y9AP9xZIJ@dhcp22.suse.cz> <CAJuCfpHAG_C5vE-Xkkrm2kynTFF-Jd06tQoCWehHATL0W2mY_g@mail.gmail.com>
- <202110071111.DF87B4EE3@keescook> <YV/mhyWH1ZwWazdE@dhcp22.suse.cz>
- <202110081344.FE6A7A82@keescook> <YWP3c/bozz5npQ8O@dhcp22.suse.cz>
- <CAJuCfpHQVMM4+6Lm_EnFk06+KrOjSjGA19K2cv9GmP3k9LW5vg@mail.gmail.com>
- <26f9db1e-69e9-1a54-6d49-45c0c180067c@redhat.com> <CAJuCfpGTCM_Rf3GEyzpR5UOTfgGKTY0_rvAbGdtjbyabFhrRAw@mail.gmail.com>
- <CAJuCfpE2j91_AOwwRs_pYBs50wfLTwassRqgtqhXsh6fT+4MCg@mail.gmail.com> <b46d9bfe-17a9-0de9-271d-a3e6429e3f5f@redhat.com>
-In-Reply-To: <b46d9bfe-17a9-0de9-271d-a3e6429e3f5f@redhat.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Fri, 15 Oct 2021 09:30:09 -0700
-Message-ID: <CAJuCfpG=fNMDuYUo8UwjB-kDzR2gxmRmTJCqgojfPe6RULwc4A@mail.gmail.com>
-Subject: Re: [PATCH v10 3/3] mm: add anonymous vma name refcounting
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Michal Hocko <mhocko@suse.com>, Kees Cook <keescook@chromium.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Colin Cross <ccross@google.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        vincenzo.frascino@arm.com,
-        =?UTF-8?B?Q2hpbndlbiBDaGFuZyAo5by16Yym5paHKQ==?= 
-        <chinwen.chang@mediatek.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Jann Horn <jannh@google.com>, apopple@nvidia.com,
-        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
-        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
-        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
-        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
-        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
-        Chris Hyser <chris.hyser@oracle.com>,
-        Peter Collingbourne <pcc@google.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
-        Rolf Eike Beer <eb@emlix.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
-        cxfcosmos@gmail.com, LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-mm <linux-mm@kvack.org>,
-        kernel-team <kernel-team@android.com>
+References: <20211013220532.24759-1-agust@denx.de> <20211013220532.24759-5-agust@denx.de>
+In-Reply-To: <20211013220532.24759-5-agust@denx.de>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Fri, 15 Oct 2021 11:31:46 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqLW=6AuKKT5cA0RYhgg268O9yiZRLuKh7HK3i_N24wWGA@mail.gmail.com>
+Message-ID: <CAL_JsqLW=6AuKKT5cA0RYhgg268O9yiZRLuKh7HK3i_N24wWGA@mail.gmail.com>
+Subject: Re: [PATCH 4/4] powerpc/5200: dts: fix localbus node warnings
+To:     Anatolij Gustschin <agust@denx.de>
+Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 15, 2021 at 1:04 AM David Hildenbrand <david@redhat.com> wrote:
+On Wed, Oct 13, 2021 at 5:05 PM Anatolij Gustschin <agust@denx.de> wrote:
 >
-> On 14.10.21 22:16, Suren Baghdasaryan wrote:
-> > On Tue, Oct 12, 2021 at 10:01 AM Suren Baghdasaryan <surenb@google.com> wrote:
-> >>
-> >> On Tue, Oct 12, 2021 at 12:44 AM David Hildenbrand <david@redhat.com> wrote:
-> >>>
-> >>>> I'm still evaluating the proposal to use memfds but I'm not sure if
-> >>>> the issue that David Hildenbrand mentioned about additional memory
-> >>>> consumed in pagecache (which has to be addressed) is the only one we
-> >>>> will encounter with this approach. If anyone knows of any potential
-> >>>> issues with using memfds as named anonymous memory, I would really
-> >>>> appreciate your feedback before I go too far in that direction.
-> >>>
-> >>> [MAP_PRIVATE memfd only behave that way with 4k, not with huge pages, so
-> >>> I think it just has to be fixed. It doesn't make any sense to allocate a
-> >>> page for the pagecache ("populate the file") when accessing via a
-> >>> private mapping that's supposed to leave the file untouched]
-> >>>
-> >>> My gut feeling is if you really need a string as identifier, then try
-> >>> going with memfds. Yes, we might hit some road blocks to be sorted out,
-> >>> but it just logically makes sense to me: Files have names. These names
-> >>> exist before mapping and after mapping. They "name" the content.
-> >>
-> >> I'm investigating this direction. I don't have much background with
-> >> memfds, so I'll need to digest the code first.
-> >
-> > I've done some investigation into the possibility of using memfds to
-> > name anonymous VMAs. Here are my findings:
+> Fix build warnings like:
+> localbus:ranges: 'oneOf' conditional failed, one must be fixed
+> ...
+> Warning (unit_address_vs_reg): /localbus: node has a reg or ranges property, but no unit name
+> Warning (simple_bus_reg): /localbus/flash@0,0: simple-bus unit address format error, expected "0"
 >
-> Thanks for exploring the alternatives!
+> Signed-off-by: Anatolij Gustschin <agust@denx.de>
+> ---
+>  arch/powerpc/boot/dts/a3m071.dts    | 12 +++++-----
+>  arch/powerpc/boot/dts/a4m072.dts    | 20 ++++++++---------
+>  arch/powerpc/boot/dts/charon.dts    | 14 ++++++------
+>  arch/powerpc/boot/dts/cm5200.dts    |  7 ++++--
+>  arch/powerpc/boot/dts/digsy_mtc.dts | 16 ++++++++------
+>  arch/powerpc/boot/dts/lite5200.dts  |  4 ++--
+>  arch/powerpc/boot/dts/lite5200b.dts |  6 +++--
+>  arch/powerpc/boot/dts/media5200.dts | 20 +++++++++--------
+>  arch/powerpc/boot/dts/motionpro.dts | 32 +++++++++++++++------------
+>  arch/powerpc/boot/dts/mpc5200b.dtsi |  2 +-
+>  arch/powerpc/boot/dts/mucmc52.dts   | 34 +++++++++++++++--------------
+>  arch/powerpc/boot/dts/o2d.dts       | 10 +++++----
+>  arch/powerpc/boot/dts/o2d.dtsi      | 12 +++++-----
+>  arch/powerpc/boot/dts/o2d300.dts    | 10 +++++----
+>  arch/powerpc/boot/dts/o2dnt2.dts    | 10 +++++----
+>  arch/powerpc/boot/dts/o2i.dts       |  4 ++--
+>  arch/powerpc/boot/dts/o2mnt.dts     |  4 ++--
+>  arch/powerpc/boot/dts/o3dnt.dts     | 10 +++++----
+>  arch/powerpc/boot/dts/pcm030.dts    |  2 +-
+>  arch/powerpc/boot/dts/pcm032.dts    | 26 ++++++++++++----------
+>  arch/powerpc/boot/dts/tqm5200.dts   |  4 ++--
+>  arch/powerpc/boot/dts/uc101.dts     | 14 +++++++-----
+>  22 files changed, 151 insertions(+), 122 deletions(-)
+>
+> diff --git a/arch/powerpc/boot/dts/a3m071.dts b/arch/powerpc/boot/dts/a3m071.dts
+> index 034cfd8aa95b..14e59aaa0ba7 100644
+> --- a/arch/powerpc/boot/dts/a3m071.dts
+> +++ b/arch/powerpc/boot/dts/a3m071.dts
+> @@ -87,15 +87,15 @@
+>                 };
+>         };
+>
+> -       localbus {
+> +       localbus@80000000 {
 
-Thanks for pointing to them!
+That's not right, as 0x80000000 doesn't exist in 'reg' or 'ranges'.
+Without 'reg', the correct unit-address is 'fc000000'.  Perhaps there
+should be a 'reg' entry though.
 
+>                 compatible = "fsl,mpc5200b-lpb","simple-bus";
+>                 #address-cells = <2>;
+>                 #size-cells = <1>;
+> -               ranges = <0 0 0xfc000000 0x02000000
+> -                         3 0 0xe9000000 0x00080000
+> -                         5 0 0xe8000000 0x00010000>;
+> +               ranges = <0 0 0xfc000000 0x02000000>,
+> +                        <3 0 0xe9000000 0x00080000>,
+> +                        <5 0 0xe8000000 0x00010000>;
 >
-> >
-> > 1. Forking a process with anonymous vmas named using memfd is 5-15%
-> > slower than with prctl (depends on the number of VMAs in the process
-> > being forked). Profiling shows that i_mmap_lock_write() dominates
-> > dup_mmap(). Exit path is also slower by roughly 9% with
-> > free_pgtables() and fput() dominating exit_mmap(). Fork performance is
-> > important for Android because almost all processes are forked from
-> > zygote, therefore this limitation already makes this approach
-> > prohibitive.
->
-> Interesting, naturally I wonder if that can be optimized.
+> -               flash@0,0 {
+> +               flash@0 {
 
-Maybe but it looks like we simply do additional things for file-backed
-memory, which seems natural. The call to i_mmap_lock_write() is from
-here: https://elixir.bootlin.com/linux/latest/source/kernel/fork.c#L565
+This change is debatable. Normally, if we have chipselects, then
+that's a separate field and a comma is appropriate. However, h/w with
+chip selects require setup and aren't a simple-bus. I guess the
+bootloader does the setup, so kind of a gray area.
 
->
-> >
-> > 2. mremap() usage to grow the mapping has an issue when used with memfds:
-> >
-> > fd = memfd_create(name, MFD_ALLOW_SEALING);
-> > ftruncate(fd, size_bytes);
-> > ptr = mmap(NULL, size_bytes, prot, MAP_PRIVATE, fd, 0);
-> > close(fd);
-> > ptr = mremap(ptr, size_bytes, size_bytes * 2, MREMAP_MAYMOVE);
-> > touch_mem(ptr, size_bytes * 2);
-> >
-> > This would generate a SIGBUS in touch_mem(). I believe it's because
-> > ftruncate() specified the size to be size_bytes and we are accessing
-> > more than that after remapping. prctl() does not have this limitation
-> > and we do have a usecase for growing a named VMA.
->
-> Can't you simply size the memfd much larger? I mean, it doesn't really
-> cost much, does it?
+The warning for this is off by default, so I'd leave it alone.
 
-If we know beforehand what the max size it can reach then that would
-be possible. I would really hate to miscalculate here and cause a
-simple memory access to generate signals. Tracking such corner cases
-in the field is not an easy task and I would rather avoid the
-possibility of it.
-
->
-> >
-> > 3. Leaves an fd exposed, even briefly, which may lead to unexpected
-> > flaws (e.g. anything using mmap MAP_SHARED could allow exposures or
-> > overwrites). Even MAP_PRIVATE, if an attacker writes into the file
-> > after ftruncate() and before mmap(), can cause private memory to be
-> > initialized with unexpected data.
->
-> I don't quite follow. Can you elaborate what exactly the issue here is?
-> We use a temporary fd, yes, but how is that a problem?
->
-> Any attacker can just write any random memory memory in the address
-> space, so I don't see the issue.
-
-It feels to me that introducing another handle to the memory region is
-a potential attack vector but I'm not a security expert. Maybe Kees
-can assess this better?
-
->
-> >
-> > 4. There is a usecase in the Android userspace where vma naming
-> > happens after memory was allocated. Bionic linker does in-memory
-> > relocations and then names some relocated sections.
->
-> Would renaming a memfd be an option or is that "too late" ?
-
-My understanding is that linker allocates space to load and relocate
-the code, performs the relocations in that space and then names some
-of the regions after that. Whether it can be redesigned to allocate
-multiple named regions and perform the relocation between them I did
-not really try since it would be a project by itself.
-
-TBH, at some point I just look at the amount of required changes (both
-kernel and userspace) and new limitations that userspace has to adhere
-to for fitting memfds to my usecase, and I feel that it's just not
-worth it. In the end we end up using the same refcounted strings with
-vma->vm_file->f_count as the refcount and name stored in
-vma->vm_file->f_path->dentry but with more overhead.
-Thanks,
-Suren.
-
->
-> >
-> > In the light of these findings, could the current patchset be reconsidered?
-> > Thanks,
-> > Suren.
-> >
->
->
-> --
-> Thanks,
->
-> David / dhildenb
->
+Rob
