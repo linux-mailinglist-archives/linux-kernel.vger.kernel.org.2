@@ -2,77 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 955A642F999
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 19:04:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0CB442F9A6
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 19:05:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241957AbhJORG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 13:06:56 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:47804 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237791AbhJORGy (ORCPT
+        id S241955AbhJORHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 13:07:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41703 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241981AbhJORHR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 13:06:54 -0400
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 3.0.0)
- id 6e753915d7a8dc33; Fri, 15 Oct 2021 19:04:46 +0200
-Received: from kreacher.localnet (unknown [213.134.175.255])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        Fri, 15 Oct 2021 13:07:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634317510;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=/ylNS4/x2ePFO7q1tP1Dy6i8S8Qh2yZkvFSuzVQxuoQ=;
+        b=asjPv6oDVa/F0MxYKEU8+MV4UpFZZuSp+97xo6dPQxzEvF5fr6XXIJ+XvMQbZcce6qrz/k
+        lg1piSCyrLeyR4GsTQCkRjKIej8WommculkQMovn1E/if6eqnehyHVlkgEccaQWo93NX8c
+        VJwUnUlW6wpjijISNXUNIUGrVq+fRBc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-58-GS9HGaIJPiG3dlVAgS_miQ-1; Fri, 15 Oct 2021 13:05:09 -0400
+X-MC-Unique: GS9HGaIJPiG3dlVAgS_miQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id 5A26C66A8C0;
-        Fri, 15 Oct 2021 19:04:45 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux ACPI <linux-acpi@vger.kernel.org>
-Cc:     Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Linux PCI <linux-pci@vger.kernel.org>
-Subject: [PATCH v1 3/3] ACPI: PM: Turn off wakeup power resources on _DSW/_PSW errors
-Date:   Fri, 15 Oct 2021 19:04:26 +0200
-Message-ID: <2795050.e9J7NaK4W3@kreacher>
-In-Reply-To: <4347933.LvFx2qVVIh@kreacher>
-References: <4347933.LvFx2qVVIh@kreacher>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 306791923763;
+        Fri, 15 Oct 2021 17:05:08 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E45F95BAFB;
+        Fri, 15 Oct 2021 17:05:07 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: [PATCH] KVM: X86: fix lazy allocation of rmaps
+Date:   Fri, 15 Oct 2021 13:05:07 -0400
+Message-Id: <20211015170507.136732-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 213.134.175.255
-X-CLIENT-HOSTNAME: 213.134.175.255
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddrvddugedguddtjecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdejlefghfeiudektdelkeekvddugfeghffggeejgfeukeejleevgffgvdeluddtnecukfhppedvudefrddufeegrddujeehrddvheehnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepvddufedrudefgedrudejhedrvdehhedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehmihhkrgdrfigvshhtvghrsggvrhhgsehlihhnuhigrdhinhhtvghlrdgtohhmpdhrtghpthht
- oheplhhinhhugidqphgtihesvhhgvghrrdhkvghrnhgvlhdrohhrgh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=5 Fuz1=5 Fuz2=5
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+If allocation of rmaps fails, but some of the pointers have already been written,
+those pointers can be cleaned up when the memslot is freed, or even reused later
+for another attempt at allocating the rmaps.  Therefore there is no need to
+WARN, as done for example in memslot_rmap_alloc, but the allocation *must* be
+skipped lest KVM will overwrite the previous pointer and will indeed leak memory.
 
-If acpi_device_sleep_wake() called by acpi_enable_wakeup_device_power()
-returns an error which means that the evaluation of either _DWS or
-_PSW has failed, turn off all of the device's wakeup power resources
-to be consistent with the clearing of dev->wakeup.prepare_count.
-
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 ---
- drivers/acpi/power.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ arch/x86/kvm/x86.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Index: linux-pm/drivers/acpi/power.c
-===================================================================
---- linux-pm.orig/drivers/acpi/power.c
-+++ linux-pm/drivers/acpi/power.c
-@@ -731,8 +731,10 @@ int acpi_enable_wakeup_device_power(stru
- 	 * put into arbitrary power state afterward.
- 	 */
- 	err = acpi_device_sleep_wake(dev, 1, sleep_state, 3);
--	if (err)
-+	if (err) {
-+		acpi_power_off_list(&dev->wakeup.resources);
- 		dev->wakeup.prepare_count = 0;
-+	}
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 07f5760ea30c..cba7a99374bc 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -11392,7 +11392,8 @@ static int memslot_rmap_alloc(struct kvm_memory_slot *slot,
+ 		int level = i + 1;
+ 		int lpages = __kvm_mmu_slot_lpages(slot, npages, level);
  
-  out:
- 	mutex_unlock(&acpi_device_lock);
-
-
+-		WARN_ON(slot->arch.rmap[i]);
++		if (slot->arch.rmap[i])
++			continue;
+ 
+ 		slot->arch.rmap[i] = vcalloc(lpages, sz);
+ 		if (!slot->arch.rmap[i]) {
+-- 
+2.27.0
 
