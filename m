@@ -2,114 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1D5C42E74E
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 05:38:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B16DB42E752
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 05:39:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235175AbhJODkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 23:40:35 -0400
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:44311 "EHLO
-        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234139AbhJODk1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 23:40:27 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R421e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0Us2dp9w_1634269099;
-Received: from localhost.localdomain(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0Us2dp9w_1634269099)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 15 Oct 2021 11:38:19 +0800
-From:   Shuai Xue <xueshuai@linux.alibaba.com>
-To:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        bp@alien8.de, tony.luck@intel.com, james.morse@arm.com,
-        lenb@kernel.org, rjw@rjwysocki.net
-Cc:     xueshuai@linux.alibaba.com, zhangliguang@linux.alibaba.com,
-        zhuo.song@linux.alibaba.com
-Subject: [PATCH] ACPI, APEI, EINJ: Relax platform response timeout to 1 second.
-Date:   Fri, 15 Oct 2021 11:38:17 +0800
-Message-Id: <20211015033817.16719-1-xueshuai@linux.alibaba.com>
-X-Mailer: git-send-email 2.24.3 (Apple Git-128)
+        id S235223AbhJODlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 23:41:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52390 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234139AbhJODlT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 23:41:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 038EC610D2;
+        Fri, 15 Oct 2021 03:39:09 +0000 (UTC)
+Date:   Thu, 14 Oct 2021 23:39:07 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>,
+        Guo Ren <guoren@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Jisheng Zhang <jszhang@kernel.org>, linux-csky@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        live-patching@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] ftrace: disable preemption between
+ ftrace_test_recursion_trylock/unlock()
+Message-ID: <20211014233907.15f13f62@oasis.local.home>
+In-Reply-To: <YWhJP41cNwDphYsv@alley>
+References: <609b565a-ed6e-a1da-f025-166691b5d994@linux.alibaba.com>
+        <7e4738b5-21d4-c4d0-3136-a096bbb5cd2c@linux.alibaba.com>
+        <YWhJP41cNwDphYsv@alley>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When injecting an error into the platform, the OSPM executes an
-EXECUTE_OPERATION action to instruct the platform to begin the injection
-operation. And then, the OSPM busy waits for a while by continually
-executing CHECK_BUSY_STATUS action until the platform indicates that the
-operation is complete. More specifically, the platform is limited to
-respond within 1 millisecond right now. This is too strict for some
-platforms.
+On Thu, 14 Oct 2021 17:14:07 +0200
+Petr Mladek <pmladek@suse.com> wrote:
 
-For example, in Arm platfrom, when injecting a Processor Correctable error,
-the OSPM will warn:
-    Firmware does not respond in time.
+>   /**
+>    * ftrace_test_recursion_trylock - tests for recursion in same context
+>    *
+>    * Use this for ftrace callbacks. This will detect if the function
+>    * tracing recursed in the same context (normal vs interrupt),
+>    *
+>    * Returns: -1 if a recursion happened.
+> -  *           >= 0 if no recursion
+> +  *           >= 0 if no recursion (success)
+> +  *
+> +  * Disables the preemption on success. It is just for a convenience.
+> +  * Current users needed to disable the preemtion for some reasons.
+>    */
 
-And a message is printed on the console:
-    echo: write error: Input/output error
+I started replying to this explaining the difference between bit not
+zero and a bit zero, and I think I found a design flaw that can allow
+unwanted recursion.
 
-We observe that the waiting time for DDR error injection is about 10 ms
-and that for PCIe error injection is about 500 ms in Arm platfrom.
+It's late and I'm about to go to bed, but I may have a new patch to fix
+this before this gets added, as the fix will conflict with this patch,
+and the fix will likely need to go to stable.
 
-In this patch, we relax the response timeout to 1 second and allow user to
-pass the time out value as a argument.
+Stay tuned.
 
-Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
----
- drivers/acpi/apei/einj.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/acpi/apei/einj.c b/drivers/acpi/apei/einj.c
-index 133156759551..fa2386ee37db 100644
---- a/drivers/acpi/apei/einj.c
-+++ b/drivers/acpi/apei/einj.c
-@@ -14,6 +14,7 @@
- 
- #include <linux/kernel.h>
- #include <linux/module.h>
-+#include <linux/moduleparam.h>
- #include <linux/init.h>
- #include <linux/io.h>
- #include <linux/debugfs.h>
-@@ -28,9 +29,9 @@
- #undef pr_fmt
- #define pr_fmt(fmt) "EINJ: " fmt
- 
--#define SPIN_UNIT		100			/* 100ns */
--/* Firmware should respond within 1 milliseconds */
--#define FIRMWARE_TIMEOUT	(1 * NSEC_PER_MSEC)
-+#define SPIN_UNIT		100			/* 100us */
-+/* Firmware should respond within 1 seconds */
-+#define FIRMWARE_TIMEOUT	(1 * USEC_PER_SEC)
- #define ACPI5_VENDOR_BIT	BIT(31)
- #define MEM_ERROR_MASK		(ACPI_EINJ_MEMORY_CORRECTABLE | \
- 				ACPI_EINJ_MEMORY_UNCORRECTABLE | \
-@@ -40,6 +41,8 @@
-  * ACPI version 5 provides a SET_ERROR_TYPE_WITH_ADDRESS action.
-  */
- static int acpi5;
-+static int timeout_default = FIRMWARE_TIMEOUT;
-+module_param(timeout_default, int, 0644);
- 
- struct set_error_type_with_address {
- 	u32	type;
-@@ -176,7 +179,7 @@ static int einj_timedout(u64 *t)
- 		return 1;
- 	}
- 	*t -= SPIN_UNIT;
--	ndelay(SPIN_UNIT);
-+	udelay(SPIN_UNIT);
- 	touch_nmi_watchdog();
- 	return 0;
- }
-@@ -403,7 +406,7 @@ static int __einj_error_inject(u32 type, u32 flags, u64 param1, u64 param2,
- 			       u64 param3, u64 param4)
- {
- 	struct apei_exec_context ctx;
--	u64 val, trigger_paddr, timeout = FIRMWARE_TIMEOUT;
-+	u64 val, trigger_paddr, timeout = timeout_default;
- 	int rc;
- 
- 	einj_exec_ctx_init(&ctx);
--- 
-2.20.1.12.g72788fdb
-
+-- Steve
