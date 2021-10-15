@@ -2,141 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28AB142E612
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 03:18:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5721F42E602
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 03:18:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234931AbhJOBUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 21:20:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45194 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233864AbhJOBUC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 21:20:02 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12AA8C061798;
-        Thu, 14 Oct 2021 18:16:43 -0700 (PDT)
-Message-ID: <20211015011540.053515012@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1634260601;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=TMwU8z8/LQBoAYmC9g7bu6xynGD7UrpwsBXR7iUeNYg=;
-        b=IZRHjyDDLGucPzxkcSjlaLcrM0hXSfsMMZH6nGNrBoLiUO38oO4YxFVd7FgvZUWCUkSTkj
-        H0sgl2wXuE5QcwyrGX6UKbKaZbH+25G9E3ixXHtlHR2DqWqT5/ZaPmNUPCw8FK6eWbZk3Z
-        Cwkyoa7ZE7jpQH+bf8+JNsfZLAjluiSqHCc3p+p6rAyrdSNe4cnJsMgA4206EKw0syogoi
-        TInB8C9b54x4BV86Bs82yKoJzkh5VxVjPJlTSSHci96ai9v76nZJBeeJIVTN23Xz55uuxY
-        AFWvFA5fGEQXxj01CoQHZ7RzknjWsEW8MIhdkGyj4qw4i5lJyZOCDnW11725AA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1634260601;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=TMwU8z8/LQBoAYmC9g7bu6xynGD7UrpwsBXR7iUeNYg=;
-        b=l6rmTHz2EtlpCgyHhW5lMfDtFMBVI3KWBzlOBYX/EaQBbN/edXu4el9+hJ5DaVq8jLuk+z
-        +At4PAhbsNd8ANDA==
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     x86@kernel.org, "Chang S. Bae" <chang.seok.bae@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        "Liu, Jing2" <jing2.liu@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Xiaoyao Li <xiaoyao.li@intel.com>
-Subject: [patch V2 30/30] x86/fpu: Provide a proper function for
- ex_handler_fprestore()
-References: <20211015011411.304289784@linutronix.de>
+        id S234075AbhJOBUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 21:20:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50342 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232333AbhJOBTN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 21:19:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E6A161139;
+        Fri, 15 Oct 2021 01:17:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634260627;
+        bh=bAWHi6JZRMIq6ROtBTobOiX1JOs6XZZyOTQ1hGwZsI4=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=rMHf5+AmOcx89LPhXhJz3DYawKjebLQ+Co/j9AfJWfZb3ZgGebCo5cV0d1z6fh4YT
+         9EK3R0MhZX8w1TablFvPoAQBjC5JojJQY/P+4vw4w+MGohgx8O8ZlaX+3nquMnq/VC
+         f1wcI5A+ZKpvJoHTzWHe5phc9fdqQ6HxqxjHTbDq5zb06w3Eu+0SIrkvrdUKi4xbiM
+         +chXEHc6MOwnz+r9tPbGcJ9HHZX+TNqQkmQBU06NHwYhQAgpEmdP+06ohau1na7cUJ
+         4nIDuFWjh0SdvFy6cA6oDqHP8OhedanPb2U2KpdDnab+d/q8nAkr3y3ensQxr/GlEw
+         zKyeMVwFBIZyw==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Date:   Fri, 15 Oct 2021 03:16:41 +0200 (CEST)
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <23918853-ed37-f11f-9e1e-5f302910e320@quicinc.com>
+References: <1631860384-26608-1-git-send-email-quic_fenglinw@quicinc.com> <1631860384-26608-9-git-send-email-quic_fenglinw@quicinc.com> <163406051353.936959.12718174954614897750@swboyd.mtv.corp.google.com> <3bf1fbf3-e741-ef08-a4e4-b348b877d02a@quicinc.com> <163415390922.936959.12352892206436080955@swboyd.mtv.corp.google.com> <23918853-ed37-f11f-9e1e-5f302910e320@quicinc.com>
+Subject: Re: [RESEND PATCH v1 8/9] spmi: pmic-arb: make interrupt support optional
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     collinsd@codeaurora.org, subbaram@codeaurora.org
+To:     Fenglin Wu <quic_fenglinw@quicinc.com>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Thu, 14 Oct 2021 18:17:05 -0700
+Message-ID: <163426062521.936959.3490351816619205076@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To make upcoming changes for support of dynamically enabled features
-simpler, provide a proper function for the exception handler which removes
-exposure of FPU internals.
+Quoting Fenglin Wu (2021-10-13 20:20:57)
+>=20
+> On 10/14/2021 3:38 AM, Stephen Boyd wrote:
+> > Quoting Fenglin Wu (2021-10-13 01:36:54)
+> >> On 10/13/2021 1:41 AM, Stephen Boyd wrote:
+> >>> Quoting Fenglin Wu (2021-09-16 23:33:03)
+> >>>> From: David Collins <collinsd@codeaurora.org>
+> >>>>
+> >>>> Make the support of PMIC peripheral interrupts optional for
+> >>>> spmi-pmic-arb devices.  This is useful in situations where
+> >>>> SPMI address mapping is required without the need for IRQ
+> >>>> support.
+> >>>>
+> >>>> Signed-off-by: David Collins <collinsd@codeaurora.org>
+> >>>> Signed-off-by: Fenglin Wu <quic_fenglinw@quicinc.com>
+> >>>> ---
+> >>>>    drivers/spmi/spmi-pmic-arb.c | 45 +++++++++++++++++++++++++++----=
+-------------
+> >>> Is there a binding update? Can the binding be converted to YAML as we=
+ll?
+> >> This change doesn't add/update any dtsi properties but just checking i=
+f an
+> >> existing property is present to decide if IRQ support is required, so =
+no
+> >> binding change is needed.
+> > The property is now optional in the binding. Please update the binding.
+> Right, thanks for pointing it out. I forgot that part.
+> I will update the binding. How about only update the interrupt properties=
+ as
+> optional in this series then I can come up with following patch to convert
+> the binding to YAML format?
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-
----
- arch/x86/include/asm/fpu/api.h | 4 +---
- arch/x86/kernel/fpu/core.c     | 5 +++++
- arch/x86/kernel/fpu/internal.h | 2 ++
- arch/x86/mm/extable.c          | 5 ++---
- 4 files changed, 10 insertions(+), 6 deletions(-)
----
-diff --git a/arch/x86/include/asm/fpu/api.h b/arch/x86/include/asm/fpu/api.h
-index b68d8ce599e4..5ac5e4596b53 100644
---- a/arch/x86/include/asm/fpu/api.h
-+++ b/arch/x86/include/asm/fpu/api.h
-@@ -113,6 +113,7 @@ static inline void update_pasid(void) { }
- /* Trap handling */
- extern int  fpu__exception_code(struct fpu *fpu, int trap_nr);
- extern void fpu_sync_fpstate(struct fpu *fpu);
-+extern void fpu_reset_from_exception_fixup(void);
- 
- /* Boot, hotplug and resume */
- extern void fpu__init_cpu(void);
-@@ -129,9 +130,6 @@ static inline void fpstate_init_soft(struct swregs_state *soft) {}
- /* State tracking */
- DECLARE_PER_CPU(struct fpu *, fpu_fpregs_owner_ctx);
- 
--/* fpstate */
--extern union fpregs_state init_fpstate;
--
- /* fpstate-related functions which are exported to KVM */
- extern void fpu_init_fpstate_user(struct fpu *fpu);
- 
-diff --git a/arch/x86/kernel/fpu/core.c b/arch/x86/kernel/fpu/core.c
-index c6d7a47b1b26..ac540a7d410e 100644
---- a/arch/x86/kernel/fpu/core.c
-+++ b/arch/x86/kernel/fpu/core.c
-@@ -155,6 +155,11 @@ void restore_fpregs_from_fpstate(union fpregs_state *fpstate, u64 mask)
- 	}
- }
- 
-+void fpu_reset_from_exception_fixup(void)
-+{
-+	restore_fpregs_from_fpstate(&init_fpstate, xfeatures_mask_fpstate());
-+}
-+
- #if IS_ENABLED(CONFIG_KVM)
- void fpu_swap_kvm_fpu(struct fpu *save, struct fpu *rstor, u64 restore_mask)
- {
-diff --git a/arch/x86/kernel/fpu/internal.h b/arch/x86/kernel/fpu/internal.h
-index bd7f813242dd..479f2db6e160 100644
---- a/arch/x86/kernel/fpu/internal.h
-+++ b/arch/x86/kernel/fpu/internal.h
-@@ -2,6 +2,8 @@
- #ifndef __X86_KERNEL_FPU_INTERNAL_H
- #define __X86_KERNEL_FPU_INTERNAL_H
- 
-+extern union fpregs_state init_fpstate;
-+
- /* CPU feature check wrappers */
- static __always_inline __pure bool use_xsave(void)
- {
-diff --git a/arch/x86/mm/extable.c b/arch/x86/mm/extable.c
-index 79c2e30d93ae..5cd2a88930a9 100644
---- a/arch/x86/mm/extable.c
-+++ b/arch/x86/mm/extable.c
-@@ -4,8 +4,7 @@
- #include <linux/sched/debug.h>
- #include <xen/xen.h>
- 
--#include <asm/fpu/signal.h>
--#include <asm/fpu/xstate.h>
-+#include <asm/fpu/api.h>
- #include <asm/sev.h>
- #include <asm/traps.h>
- #include <asm/kdebug.h>
-@@ -48,7 +47,7 @@ static bool ex_handler_fprestore(const struct exception_table_entry *fixup,
- 	WARN_ONCE(1, "Bad FPU state detected at %pB, reinitializing FPU registers.",
- 		  (void *)instruction_pointer(regs));
- 
--	restore_fpregs_from_fpstate(&init_fpstate, xfeatures_mask_fpstate());
-+	fpu_reset_from_exception_fixup();
- 	return true;
- }
- 
-
+Sure. The benefit of converting it to YAML is that we can use the
+checker to quickly validate the binding vs. having to read the whole
+thing to understand that it's correct. Converting an existing binding to
+YAML shouldn't be that hard.
