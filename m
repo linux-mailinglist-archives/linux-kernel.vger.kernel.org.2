@@ -2,104 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AFD742FEF9
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 01:42:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF9D042FEFE
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 01:45:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236194AbhJOXoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 19:44:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44184 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235944AbhJOXoM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 19:44:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CA12960F39;
-        Fri, 15 Oct 2021 23:42:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634341324;
-        bh=s/EKmy4kdrec5wksozYJUijeVa7Z4VkDJ4Jz3S63i6g=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=HWOTazNEmWXmflTU4ywm4CJw1r7kVV8XwRuOJUSLHV3/5S7I8jMMvszvF2fC5WQXP
-         z/YkyJWuLWvOsTubnysoIbdN57ujTVO1zHTqsZk8VdtA8X1kdyCiJI3gGc5JW6VXvt
-         6f0OBhDeghrUvlIfp+UEJcBOwa77RtvmwNO6HHiyYOYAUrowh9OP54zS7yZRxULQDl
-         OELv3W3zuIiXeWLUGJrl1UktkFRlQZLTkO+v0ouffDDX/X7X8CSnENIYaq0h/c64Yb
-         ckT6TWzW3OOvL83u6wVvrX6CKWbKx7ncUbWsa3EoX0XriCow02rV4zqV/s8JtWicJT
-         nuYFlVOyGJwCg==
-Received: by mail-ed1-f43.google.com with SMTP id ec8so44131423edb.6;
-        Fri, 15 Oct 2021 16:42:04 -0700 (PDT)
-X-Gm-Message-State: AOAM531WiunNnIiPrDhCZQAc6zPOUgoYTBpMpFsxEzChUcW5fAiFwxhJ
-        x9K5e3zt10Ehiq+aFOlM36sh1F4Ui6cmYeC/dQ==
-X-Google-Smtp-Source: ABdhPJyifvWmqLk+jf2zlKQO8auioR0IRMCDcZBa/PLm7kRW/yXYG9c21iyijoGl/XAXZ85nuyr2xQmP2KuizDr574k=
-X-Received: by 2002:a50:9993:: with SMTP id m19mr21431023edb.357.1634341323225;
- Fri, 15 Oct 2021 16:42:03 -0700 (PDT)
+        id S236260AbhJOXrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 19:47:04 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:20806 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235740AbhJOXq7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 19:46:59 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1634341492; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=jJ/9pFPB6gmJ0baQgefAhJuGAxI+QH/7x+kb0x64v+I=;
+ b=sv7gbHnudXLenbum8sCE5G/qT/2uHh5ejVF6tpvI2JMxXZ7FJSQ3OTXqzqEXVAt66HtOduYQ
+ qQ3Phds3jmAdBsZpF11/tWkN1Ehje7zuEmla5LBDXc4u958119+hCithQ6WQNGcPJ9EJmGRz
+ lPVnoVqzFIfCx/e7JkFFZwrLA0M=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 616a1265835b7947c15badcc (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 15 Oct 2021 23:44:37
+ GMT
+Sender: abhinavk=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 9E6D8C4361A; Fri, 15 Oct 2021 23:44:36 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: abhinavk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 909C7C4338F;
+        Fri, 15 Oct 2021 23:44:35 +0000 (UTC)
 MIME-Version: 1.0
-References: <20211004062140.29803-1-nancy.lin@mediatek.com> <20211004062140.29803-5-nancy.lin@mediatek.com>
-In-Reply-To: <20211004062140.29803-5-nancy.lin@mediatek.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Sat, 16 Oct 2021 07:41:52 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_-9JdZfzF49E81Z046w=t0wDW7DScsVQQ2-L72mLXbjdg@mail.gmail.com>
-Message-ID: <CAAOTY_-9JdZfzF49E81Z046w=t0wDW7DScsVQQ2-L72mLXbjdg@mail.gmail.com>
-Subject: Re: [PATCH v6 04/16] dt-bindings: reset: mt8195: add vdosys1 reset
- control bit
-To:     "Nancy.Lin" <nancy.lin@mediatek.com>
-Cc:     CK Hu <ck.hu@mediatek.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 15 Oct 2021 16:44:35 -0700
+From:   abhinavk@codeaurora.org
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "jason-jh . lin" <jason-jh.lin@mediatek.com>,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        singo.chang@mediatek.com,
-        srv_heupstream <srv_heupstream@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Kuogee Hsieh <khsieh@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [Freedreno] [PATCH] drm/msm/dp: Only create debugfs for PRIMARY
+ minor
+In-Reply-To: <20211015231307.1784165-1-bjorn.andersson@linaro.org>
+References: <20211015231307.1784165-1-bjorn.andersson@linaro.org>
+Message-ID: <48f35ef1f90bc7c23599e98a5c1e2c09@codeaurora.org>
+X-Sender: abhinavk@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Nancy:
+On 2021-10-15 16:13, Bjorn Andersson wrote:
+> dpu_kms_debugfs_init() and hence dp_debug_get() gets invoked for each
+> minor being registered. But dp_debug_get() will allocate a new struct
+> dp_debug for each call and this will be associated as dp->debug.
+> 
+> As such dp_debug will create debugfs files in both the PRIMARY and the
+> RENDER minor's debugfs directory, but only the last reference will be
+> remembered.
+> 
+> The only use of this reference today is in the cleanup path in
+> dp_display_deinit_sub_modules() and the dp_debug_private object does
+> outlive the debugfs entries in either case, so there doesn't seem to be
+> any adverse effects of this, but per the code the current behavior is
+> unexpected, so change it to only create dp_debug for the PRIMARY minor.
+> 
 
-Nancy.Lin <nancy.lin@mediatek.com> =E6=96=BC 2021=E5=B9=B410=E6=9C=884=E6=
-=97=A5 =E9=80=B1=E4=B8=80 =E4=B8=8B=E5=8D=882:21=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> Add vdosys1 reset control bit for MT8195 platform.
+If i understand correctly, today because of this, we get redundant 
+debugfs nodes right?
 
-Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+/sys/kernel/debug/dri/<minor_x>/dp_debug
+/sys/kernel/debug/dri/<minor_y>/dp_debug
 
->
-> Signed-off-by: Nancy.Lin <nancy.lin@mediatek.com>
+Both of these will hold the same information as they are for the same DP 
+controller right?
+In that case, this is true even for the other DPU kms information too.
+
+Why not move this check one level up to dpu_kms_debugfs_init?
+
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 > ---
->  include/dt-bindings/reset/mt8195-resets.h | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
->
-> diff --git a/include/dt-bindings/reset/mt8195-resets.h b/include/dt-bindi=
-ngs/reset/mt8195-resets.h
-> index a26bccc8b957..aab8d74496a6 100644
-> --- a/include/dt-bindings/reset/mt8195-resets.h
-> +++ b/include/dt-bindings/reset/mt8195-resets.h
-> @@ -26,4 +26,16 @@
->
->  #define MT8195_TOPRGU_SW_RST_NUM               16
->
-> +/* VDOSYS1 */
-> +#define MT8195_VDOSYS1_SW0_RST_B_MERGE0_DL_ASYNC          25
-> +#define MT8195_VDOSYS1_SW0_RST_B_MERGE1_DL_ASYNC          26
-> +#define MT8195_VDOSYS1_SW0_RST_B_MERGE2_DL_ASYNC          27
-> +#define MT8195_VDOSYS1_SW0_RST_B_MERGE3_DL_ASYNC          28
-> +#define MT8195_VDOSYS1_SW0_RST_B_MERGE4_DL_ASYNC          29
-> +#define MT8195_VDOSYS1_SW1_RST_B_HDR_VDO_FE0_DL_ASYNC     51
-> +#define MT8195_VDOSYS1_SW1_RST_B_HDR_VDO_FE1_DL_ASYNC     52
-> +#define MT8195_VDOSYS1_SW1_RST_B_HDR_GFX_FE0_DL_ASYNC     53
-> +#define MT8195_VDOSYS1_SW1_RST_B_HDR_GFX_FE1_DL_ASYNC     54
-> +#define MT8195_VDOSYS1_SW1_RST_B_HDR_VDO_BE_DL_ASYNC      55
+>  drivers/gpu/drm/msm/dp/dp_display.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c
+> b/drivers/gpu/drm/msm/dp/dp_display.c
+> index 3aa67c53dbc0..06773b58bb60 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_display.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
+> @@ -10,6 +10,7 @@
+>  #include <linux/component.h>
+>  #include <linux/of_irq.h>
+>  #include <linux/delay.h>
+> +#include <drm/drm_file.h>
+>  #include <drm/drm_panel.h>
+> 
+>  #include "msm_drv.h"
+> @@ -1463,6 +1464,10 @@ void msm_dp_debugfs_init(struct msm_dp
+> *dp_display, struct drm_minor *minor)
+>  	dp = container_of(dp_display, struct dp_display_private, dp_display);
+>  	dev = &dp->pdev->dev;
+> 
+> +	/* Only create one set of debugfs per DP instance */
+> +	if (minor->type != DRM_MINOR_PRIMARY)
+> +		return;
 > +
->  #endif  /* _DT_BINDINGS_RESET_CONTROLLER_MT8195 */
-> --
-> 2.18.0
->
+>  	dp->debug = dp_debug_get(dev, dp->panel, dp->usbpd,
+>  					dp->link, dp->dp_display.connector,
+>  					minor);
