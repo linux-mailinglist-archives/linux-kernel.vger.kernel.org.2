@@ -2,184 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7576C42F89D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 18:47:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF00042F89F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 18:47:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241591AbhJOQtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 12:49:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60482 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241554AbhJOQtC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 12:49:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 34DF061164;
-        Fri, 15 Oct 2021 16:46:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634316415;
-        bh=UazkFhnF58o243B84E27T2Q0kziPCzNQlAM0EXnPs+0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=uJA4ra39P0Gv6naQSVcILGvPjCJywIq0xOMKparacmz05rvVX6Np5K3P9TBtMV+Q6
-         0fZMoqlsDqrvmOr81us08+gZah/AgsMkvZGLUZdvStWvkLQD9P6+IT1gNPD5kGzCTz
-         OqQa78pHkuTPX/IwPxuJYSyFJgvQojor9CCfmM0cFvkyP8yz7FerO3C6Xj6Ja6G65F
-         0JNWOrnI2B9XClHx9c5DgYXjOqp4IU9Zrxk/YET9tVYaYS+dnGehAv9e/YWKzwcbHz
-         D1LRfA0mXkjJ2/mnwlueLADrqQ5YuEa5UTY+rPKkoEu2iEn918jjZk3T8fIflFmK8o
-         yGBq7Ksq4IKXA==
-Date:   Fri, 15 Oct 2021 11:46:53 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Andrew Donnellan <ajd@linux.ibm.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Fiona Trahe <fiona.trahe@intel.com>,
-        Frederic Barrat <fbarrat@linux.ibm.com>,
-        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ido Schimmel <idosch@nvidia.com>,
-        Ingo Molnar <mingo@redhat.com>, Jack Xu <jack.xu@intel.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Jiri Olsa <jolsa@redhat.com>, Jiri Pirko <jiri@nvidia.com>,
-        Juergen Gross <jgross@suse.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Marco Chiappero <marco.chiappero@intel.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Michael Buesch <m@bues.ch>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Oliver O'Halloran <oohall@gmail.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        Russell Currey <ruscur@russell.cc>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Sathya Prakash <sathya.prakash@broadcom.com>,
-        Simon Horman <simon.horman@corigine.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tomaszx Kowalik <tomaszx.kowalik@intel.com>,
-        Vadym Kochan <vkochan@marvell.com>,
-        Wojciech Ziemba <wojciech.ziemba@intel.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Zhou Wang <wangzhou1@hisilicon.com>,
-        linux-crypto <linux-crypto@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org,
-        "open list:LINUX FOR POWERPC PA SEMI PWRFICIENT" 
-        <linuxppc-dev@lists.ozlabs.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        USB <linux-usb@vger.kernel.org>,
-        "open list:TI WILINK WIRELES..." <linux-wireless@vger.kernel.org>,
-        MPT-FusionLinux.pdl@broadcom.com, netdev <netdev@vger.kernel.org>,
-        oss-drivers@corigine.com, qat-linux@intel.com,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        xen-devel@lists.xenproject.org
-Subject: Re: [PATCH v6 00/11] PCI: Drop duplicated tracking of a pci_dev's
- bound driver
-Message-ID: <20211015164653.GA2108651@bhelgaas>
+        id S241602AbhJOQtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 12:49:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59804 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241609AbhJOQt2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 12:49:28 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DDC3C061570
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 09:47:21 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id s64so24129374yba.11
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 09:47:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=uHSnz8D1DIWQcjU5/N5hH4GTJpS+yuQBb1AWvYk624w=;
+        b=a7O6f8UVoWX1Jh4/B8imWuGC/qXP5rujqE2kd9JOc3F0/CS0vBBNXumKcCh8QMSonM
+         UdiXmmvRljhji/HhIfUWed2GsvE8VLaSl7VhM/6NlyGtqalnTikHvOcRc968gKOlJ5MR
+         NbXvdoNjQgMiQaTg+bJ8kmvQa5S6vyTa6o5e1GQNd3WiG2SHGwVQoVb4Anj8hXIip+/T
+         lEfnDnu85sr7dSfBu7dqu5943MpPHWTiUdczrTTkqmxTWZhk+UDHuO6mLulD1Q9yQS++
+         qTKU/kY9oq+lwsoIFNq5+QJJGjEzE6IGCBSqv7z37KBfOBs3oMu93sBC6GRpioUW3CTd
+         jJ8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=uHSnz8D1DIWQcjU5/N5hH4GTJpS+yuQBb1AWvYk624w=;
+        b=6H4J70YhzVPX16GSNCNIfXqA0qHLi0x7JLe16mh88aFMooQliByPo0zEOu87iDcgre
+         5gVXy/sm/cK1NxnGtXash9lxv3q7x4s+WzM0dMVgNQ43VAHHYkf3y2MgmzOMWBw8uqKP
+         /6B+KE3fNrFTOIL/5DL3dSTjZfWtOhuwzNrMzZ+Zavil6EI/FR3b34qSec3Tq8NxmOiM
+         49B6Msjsziy0bg5I+rjYYJioEUU95RWWmcrpOtOrgXnN/Mz00o2HNSSU57PmkSAbhdkY
+         g4ChO76UCmB1LwpQCaG1jG27D8EjFzqVPlkUQKPKnLyhfnv3pqNZF7fcCTEUUVNUNKxy
+         IZwA==
+X-Gm-Message-State: AOAM530gdGbzvmdwjWtCS0K1HJH3a9JUQVR8aF3n6ZglWL78TyPhkPXC
+        FQFK9NkGTTNk84Y0ey1OWcqq2dXv1TnNtHdBiZIa3w==
+X-Google-Smtp-Source: ABdhPJwwmioX7wCg8t/xa5JPWcEB/oetYkdp2SF7YZ4CuHuSUiCY9JO3eVJBxkwFi7dOljmz3v9ATSNHQcYhsnloJeE=
+X-Received: by 2002:a25:8b8b:: with SMTP id j11mr15023659ybl.160.1634316437824;
+ Fri, 15 Oct 2021 09:47:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YWbdvc7EWEZLVTHM@smile.fi.intel.com>
+References: <20211013181658.1020262-1-samitolvanen@google.com>
+ <20211013181658.1020262-4-samitolvanen@google.com> <7377e6b9-7130-4c20-a0c8-16de4620c995@www.fastmail.com>
+ <8735p25llh.ffs@tglx> <eda70a35-33a8-43b4-a839-65f2a1f91bb5@www.fastmail.com>
+In-Reply-To: <eda70a35-33a8-43b4-a839-65f2a1f91bb5@www.fastmail.com>
+From:   Sami Tolvanen <samitolvanen@google.com>
+Date:   Fri, 15 Oct 2021 09:47:06 -0700
+Message-ID: <CABCJKufhd3=6PR=WmteJBQ5xBnmvzQb7h3cJxDSJZjLHSSH22g@mail.gmail.com>
+Subject: Re: [PATCH v5 03/15] linkage: Add DECLARE_NOT_CALLED_FROM_C
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-hardening@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 04:23:09PM +0300, Andy Shevchenko wrote:
-> On Wed, Oct 13, 2021 at 06:33:56AM -0500, Bjorn Helgaas wrote:
-> > On Wed, Oct 13, 2021 at 12:26:42PM +0300, Andy Shevchenko wrote:
-> > > On Wed, Oct 13, 2021 at 2:33 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > > > On Mon, Oct 04, 2021 at 02:59:24PM +0200, Uwe Kleine-König wrote:
+On Fri, Oct 15, 2021 at 9:22 AM Andy Lutomirski <luto@kernel.org> wrote:
+>
+>
+>
+> On Fri, Oct 15, 2021, at 8:55 AM, Thomas Gleixner wrote:
+> > On Thu, Oct 14 2021 at 19:51, Andy Lutomirski wrote:
+> >> On Wed, Oct 13, 2021, at 11:16 AM, Sami Tolvanen wrote:
+> >>>
+> >>> +/*
+> >>> + * Declares a function not callable from C using an opaque type. Def=
+ined as
+> >>> + * an array to allow the address of the symbol to be taken without '=
+&'.
+> >>> + */
+> >> I=E2=80=99m not convinced that taking the address without using & is a
+> >> laudable goal.  The magical arrays-are-pointers-too behavior of C is a
+> >> mistake, not a delightful simplification.
+> >
+> >>> +#ifndef DECLARE_NOT_CALLED_FROM_C
+> >>> +#define DECLARE_NOT_CALLED_FROM_C(sym) \
+> >>> +   extern const u8 sym[]
+> >>> +#endif
+> >>
+> >
+> >> The relevant property of these symbols isn=E2=80=99t that they=E2=80=
+=99re not called
+> >> from C.  The relevant thing is that they are just and not objects of a
+> >> type that the programmer cares to tell the compiler about. (Or that
+> >> the compiler understands, for that matter. On a system with XO memory
+> >> or if they=E2=80=99re in a funny section, dereferencing them may fail.=
+)
+> >
+> > I agree.
+> >
+> >> So I think we should use incomplete structs, which can=E2=80=99t be
+> >> dereferenced and will therefore be less error prone.
+> >
+> > While being late to that bike shed painting party, I really have to ask
+> > the question _why_ can't the compiler provide an annotation for these
+> > kind of things which:
+> >
+> >     1) Make the build fail when invoked directly
+> >
+> >     2) Tell CFI that this is _NOT_ something it can understand
+> >
+> > -void clear_page_erms(void *page);
+> > +void __bikeshedme clear_page_erms(void *page);
+> >
+> > That still tells me:
+> >
+> >     1) This is a function
+> >
+> >     2) It has a regular argument which is expected to be in RDI
+> >
+> > which even allows to do analyis of e.g. the alternative call which
+> > invokes that function.
+> >
+> > DECLARE_NOT_CALLED_FROM_C(clear_page_erms);
+> >
+> > loses these properties and IMO it's a tasteless hack.
+> >
+>
+>
+> Ah, but clear_page_erms is a different beast entirely as compared to, say=
+, the syscall entry. It *is* a C function.  So I see two ways to handle it:
+>
+> 1. Make it completely opaque.  Tglx doesn=E2=80=99t like it, and I agree,=
+ but it would *work*.
+>
+> 2. Make it a correctly typed function. In clang CFI land, this may or may=
+ not be =E2=80=9Ccanonical=E2=80=9D (or non canonical?).
 
-> > > > +       return drv && drv->resume ?
-> > > > +                       drv->resume(pci_dev) : pci_pm_reenable_device(pci_dev);
-> > > 
-> > > One line?
-> > 
-> > I don't think I touched that line.
-> 
-> Then why they are both in + section?
+Technically speaking the clear_page_* declarations don't need to be
+changed for CFI, they do work fine as is, but I included them in the
+patch as they're not actually called from C code right now. But you're
+right, we should use a proper function declarations for these. I'll
+drop the changes to this file in the next version.
 
-They're both in the + section of the interdiff because Uwe's v6 patch
-looks like this:
+I wouldn't mind having a consensus on how to deal with exception
+handlers etc. though. Should I still use opaque types for those?
 
-  static int pci_legacy_resume(struct device *dev)
-  {
-          struct pci_dev *pci_dev = to_pci_dev(dev);
-  -       return drv && drv->resume ?
-  -                       drv->resume(pci_dev) : pci_pm_reenable_device(pci_dev);
-  +       if (pci_dev->dev.driver) {
-  +               struct pci_driver *drv = to_pci_driver(pci_dev->dev.driver);
-  +
-  +               if (drv->resume)
-  +                       return drv->resume(pci_dev);
-  +       }
-  +
-  +       return pci_pm_reenable_device(pci_dev);
-
-and my revision looks like this:
-
-   static int pci_legacy_resume(struct device *dev)
-   {
-	  struct pci_dev *pci_dev = to_pci_dev(dev);
-  -       struct pci_driver *drv = pci_dev->driver;
-  +       struct pci_driver *drv = to_pci_driver(dev->driver);
-
-so compared to Uwe's v6, I restored that section to the original code.
-My goal here was to make the patch as simple and easy to review as
-possible.
-
-> > > > +       struct pci_driver *drv = to_pci_driver(dev->dev.driver);
-> > > >         const struct pci_error_handlers *err_handler =
-> > > > -                       dev->dev.driver ? to_pci_driver(dev->dev.driver)->err_handler : NULL;
-> > > > +                       drv ? drv->err_handler : NULL;
-> > > 
-> > > Isn't dev->driver == to_pci_driver(dev->dev.driver)?
-> > 
-> > Yes, I think so, but not sure what you're getting at here, can you
-> > elaborate?
-> 
-> Getting pointer from another pointer seems waste of resources, why we
-> can't simply
-> 
-> 	struct pci_driver *drv = dev->driver;
-
-I think this is in pci_dev_save_and_disable(), and "dev" here is a
-struct pci_dev *.  We're removing the dev->driver member.  Let me know
-if I'm still missing something.
-
-> > > > -                               "bad request in aer recovery "
-> > > > -                               "operation!\n");
-> > > > +                               "bad request in AER recovery operation!\n");
-
-> > > Stray change? Or is it in a separate patch in your tree?
-> > 
-> > Could be skipped.  The string now fits on one line so I combined it to
-> > make it more greppable.
-> 
-> This is inconsistency in your changes, in one case you are objecting of
-> doing something close to the changed lines, in the other you are doing
-> unrelated change.
-
-You're right, this didn't make much sense in that patch.  I moved the
-line join to the previous patch, which unindented this section and
-made space for this to fit on one line.  Here's the revised commit:
-
-  https://git.kernel.org/cgit/linux/kernel/git/helgaas/pci.git/commit/?id=34ab316d7287
-
+Sami
