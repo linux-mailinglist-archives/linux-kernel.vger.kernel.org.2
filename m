@@ -2,60 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D593D42E9E8
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 09:18:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B994942E9ED
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 09:20:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233874AbhJOHUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 03:20:40 -0400
-Received: from comms.puri.sm ([159.203.221.185]:41482 "EHLO comms.puri.sm"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230371AbhJOHUi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 03:20:38 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by comms.puri.sm (Postfix) with ESMTP id 8A7C4DFDE2;
-        Fri, 15 Oct 2021 00:18:32 -0700 (PDT)
-Received: from comms.puri.sm ([127.0.0.1])
-        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id pN6AueyW3-k3; Fri, 15 Oct 2021 00:18:31 -0700 (PDT)
-Message-ID: <f5884e3a4db47f9cdaa64857718b57804da5ef4c.camel@puri.sm>
-Subject: Re: [PATCH v2 7/7] arm64: dts: imx8mq-librem5: set debounce
- interval of volume buttons to 50ms
-From:   Martin Kepplinger <martin.kepplinger@puri.sm>
-To:     Shawn Guo <shawnguo@kernel.org>
-Cc:     devicetree@vger.kernel.org, festevam@gmail.com,
-        kernel@pengutronix.de, kernel@puri.sm,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        phone-devel@vger.kernel.org, robh@kernel.org,
-        Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>
-Date:   Fri, 15 Oct 2021 09:18:23 +0200
-In-Reply-To: <20211015014632.GC10197@dragon>
-References: <20211005134902.2138731-1-martin.kepplinger@puri.sm>
-         <20211005134902.2138731-8-martin.kepplinger@puri.sm>
-         <20211015014632.GC10197@dragon>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.3-1 
+        id S234423AbhJOHWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 03:22:22 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:25189 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230371AbhJOHWV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 03:22:21 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4HVyLd1SgMz8tXM;
+        Fri, 15 Oct 2021 15:19:05 +0800 (CST)
+Received: from kwepemm600013.china.huawei.com (7.193.23.68) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Fri, 15 Oct 2021 15:20:14 +0800
+Received: from [10.174.178.208] (10.174.178.208) by
+ kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Fri, 15 Oct 2021 15:20:12 +0800
+Subject: Re: [PATCH 4.19 00/12] 4.19.212-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
+        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
+        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
+        <stable@vger.kernel.org>
+References: <20211014145206.566123760@linuxfoundation.org>
+From:   Samuel Zou <zou_wei@huawei.com>
+Message-ID: <9a9a7a67-d0da-bbe6-d054-60afd1784fec@huawei.com>
+Date:   Fri, 15 Oct 2021 15:20:11 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211014145206.566123760@linuxfoundation.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.208]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Freitag, dem 15.10.2021 um 09:46 +0800 schrieb Shawn Guo:
-> On Tue, Oct 05, 2021 at 03:49:02PM +0200, Martin Kepplinger wrote:
-> > From: Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>
-> > 
-> > The default of 5ms is too low.
-> > 
-> > Signed-off-by: Sebastian Krzyszkowiak
-> > <sebastian.krzyszkowiak@puri.sm>
+
+
+On 2021/10/14 22:54, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.19.212 release.
+> There are 12 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Your SoB is missing here.  I fixed it up and applied the series,
-> thanks!
+> Responses should be made by Sat, 16 Oct 2021 14:51:59 +0000.
+> Anything received after that time might be too late.
 > 
-> Shawn
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.212-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-thank you very much, of course I sign-off on this.
+Tested on arm64 and x86 for 4.19.212-rc1,
 
-                      martin
+Kernel repo:
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+Branch: linux-4.19.y
+Version: 4.19.212-rc1
+Commit: 2be6a8418bd1568db7e752ea68f73e6f24fca984
+Compiler: gcc version 7.3.0 (GCC)
 
+arm64:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 8859
+passed: 8859
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
 
+x86:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 8859
+passed: 8859
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
+
+Tested-by: Hulk Robot <hulkrobot@huawei.com>
