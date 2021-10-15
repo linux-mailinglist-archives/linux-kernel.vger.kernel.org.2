@@ -2,187 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D674042E72C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 05:21:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D72242E733
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 05:24:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233886AbhJODXn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 23:23:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44734 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232976AbhJODXj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 23:23:39 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E87AEC061753
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 20:21:33 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id e10so647395plh.8
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 20:21:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20210112.gappssmtp.com; s=20210112;
-        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
-         :references;
-        bh=60or3vuEPmsqaq7yH1XXXm8E4q5ZjYdlhij5/gIRdBc=;
-        b=bNK/7mnrIYTOQ3yJucIq9GtM9mKVBviai3UA+DyiJVhHKC8v+gKKXtkp9kdEfQ5HdF
-         q6RQmzWUP/2R4aJ4HTvCTdPsZWVYD7CaYc3F3DJDdUGL7i4UgifaTXD2eP/fs0Nh7CGV
-         PkeJWLHTXhHMJBt8MvGhZhWm2zOSaIL4saqRaNRDQTMYTwj2+Ehg00voOfExcbAMA1oP
-         3F4YlJNHJCTTDZdVarSnxWm0w9EdYVmrTl6wU8oOMHZP+1+60sGp+Q+Ae6xgXc+drfcZ
-         cYFcX684UKimuBwzMYclC6A3CxFOlEgETEiNPVjn7aaOYppMyitCvufoPnDcUrmKqhnJ
-         08Pw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:message-id:mime-version:subject:date
-         :in-reply-to:cc:to:references;
-        bh=60or3vuEPmsqaq7yH1XXXm8E4q5ZjYdlhij5/gIRdBc=;
-        b=6q4yTtR0WIzKYQSItp8jl3Qx7/l/WDOgrqs6p/LyOe6KXP4slcfD27xHBPnxocSnO/
-         N+O2Wh1geNWLnmIdg0NN3nyozePg9u0lG83O1/sZFONBAxWWBvV4zIP2aoFrw7FjUjGr
-         Sejn1BM1ZKaye6WzbM5rxjWsA8qQbsT/Dxb25qbdkw3JIEfZt6xOdDHAQTVDT615dfIr
-         OASXrlHM2rVBZnK3RFxhaG722xF6IPIVQlpH8czFgIdwcQsV+SdvJajagPO2TeoXMh5v
-         G/WPua0J+G5e11+OYDhQtI7ZcqRH+I2V9u9Yg74+xCI00WQchHDY+WWxcpQFwG5bw5z8
-         LZew==
-X-Gm-Message-State: AOAM532IFT02X+elioAYtQ18RsYak8K/cM3L+woAcexnXpfAZVSAGMSG
-        O8XvO9HpGMvEMa9wefgtOhaW8Q==
-X-Google-Smtp-Source: ABdhPJxg4Q1I3EI/hvlHb/qsjjKlQgxZk/gCDit++JvTilIAd//QQf6lBOye0sgFhXe7gEVUeTtNGQ==
-X-Received: by 2002:a17:90b:782:: with SMTP id l2mr10675893pjz.190.1634268093213;
-        Thu, 14 Oct 2021 20:21:33 -0700 (PDT)
-Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
-        by smtp.gmail.com with ESMTPSA id x7sm9999637pjl.55.2021.10.14.20.21.31
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 14 Oct 2021 20:21:32 -0700 (PDT)
-From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <59CB01CB-8D4F-4712-9A6F-F4EBA6BB0102@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_C7104A77-2EBD-4C39-AC6F-84548DE62189";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH -next v2 2/6] ext4: introduce last_check_time record
- previous check time
-Date:   Thu, 14 Oct 2021 21:21:29 -0600
-In-Reply-To: <YWdSeMuosYio7TFv@mit.edu>
-Cc:     Jan Kara <jack@suse.cz>, yebin <yebin10@huawei.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-To:     Theodore Ts'o <tytso@mit.edu>
-References: <20210911090059.1876456-1-yebin10@huawei.com>
- <20210911090059.1876456-3-yebin10@huawei.com>
- <20211007123100.GG12712@quack2.suse.cz> <615FA55B.5070404@huawei.com>
- <615FAF27.8070000@huawei.com> <20211012084727.GF9697@quack2.suse.cz>
- <61657590.2050407@huawei.com> <20211013093847.GB19200@quack2.suse.cz>
- <YWdSeMuosYio7TFv@mit.edu>
-X-Mailer: Apple Mail (2.3273)
+        id S234152AbhJOD0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 23:26:03 -0400
+Received: from mail-eopbgr1300119.outbound.protection.outlook.com ([40.107.130.119]:42976
+        "EHLO APC01-HK2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233893AbhJOD0C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 23:26:02 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GQVjG54TqkIl+nPelgGPaRmup2RGWY6fvE3ZSDWcwUzgV0jwzuBCbQtBaA3B8qe6K5IVv/ZEwEesQibV4HC2sq2CH1GPAL/PrHqww2+6y1tvjVLoECYC0rbQSMZfn2F0a1uPTTz5MDLMWLX515Orq6VA9wwSNea1d7esfJZDzE1wZGB5obm3LGkZ2DHEC9rCkY1J9dbNa+5TwsQORBcSy6twwlq6poO08BYRMvWIPAgwofNBJWJLW5COxeKSu9UT8eD5uSmD0HvdqS0aeKyISx+24Jz5JS+5cW1Xx3axUZklZ81HGXpaKdMiWXp1OUYUI5UY427jZl0nH4PXz05eEA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=cW6ax0p1G1cwJsRZpqcEyPuJQ/7WSFdyM0bT0RIOwQc=;
+ b=m+N8O51/5T2LnY0X464LHPomGGdzZ+fRRTK97Zc7DhJv18VLn7P5XUWG/7uz5RVFKPReqmFyHmViJsWulHFjgfyjcOueB87+xUndOVFmxf3zSJ72OrYiJoIMXXyWb9ONZ6I5d26RM6Nx/1no9BJga2POwiv9cU2GLLv4JVtHrTiZ2Ji4EqzCE/PGZlB31W3/Wdy/jWCLi7wFTyTmMgvA3RqP+Y43R6S8oNfPOtW6NPz+HZWjLvRIFU7QQxf+1f44sJzQxHz0PbMuJZSGwwtNQR4JXKlGD9sMxKgKC0fN3krGp1TUs2njvFbachkMjYi8wjUsvGCcac6zEV+ZVIZSbA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
+ s=selector2-vivo0-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cW6ax0p1G1cwJsRZpqcEyPuJQ/7WSFdyM0bT0RIOwQc=;
+ b=PZ2KfZOGwiUCFwYjQtc4DsmaOt4yEVlF7eGZ+KuIYS8PjXffsUZcA3gqs5NiBFDbE2POg0oS7DWOMdUpFiu5ilf1IVKaT8gjugcexppZLTqD8/hwwmx3/O4broEJR1kxuh330VVT2R6CUM2EN8oBefHUQZ2si3hGPb8Sj6Pmj8U=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=vivo.com;
+Received: from SG2PR06MB3367.apcprd06.prod.outlook.com (2603:1096:4:78::19) by
+ SG2PR06MB2859.apcprd06.prod.outlook.com (2603:1096:4:18::17) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4587.20; Fri, 15 Oct 2021 03:23:51 +0000
+Received: from SG2PR06MB3367.apcprd06.prod.outlook.com
+ ([fe80::fc12:4e1b:cc77:6c0]) by SG2PR06MB3367.apcprd06.prod.outlook.com
+ ([fe80::fc12:4e1b:cc77:6c0%6]) with mapi id 15.20.4608.017; Fri, 15 Oct 2021
+ 03:23:51 +0000
+From:   Wan Jiabing <wanjiabing@vivo.com>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Mikhail Durnev <mikhail_durnev@mentor.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Wan Jiabing <wanjiabing@vivo.com>,
+        Joe Perches <joe@perches.com>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Cc:     kael_w@yeah.net
+Subject: [PATCH] ASoC: rsnd: Add of_node_put() before return
+Date:   Thu, 14 Oct 2021 23:22:10 -0400
+Message-Id: <20211015032305.3771-1-wanjiabing@vivo.com>
+X-Mailer: git-send-email 2.20.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: HKAPR03CA0028.apcprd03.prod.outlook.com
+ (2603:1096:203:c9::15) To SG2PR06MB3367.apcprd06.prod.outlook.com
+ (2603:1096:4:78::19)
+MIME-Version: 1.0
+Received: from localhost.localdomain (203.90.234.87) by HKAPR03CA0028.apcprd03.prod.outlook.com (2603:1096:203:c9::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.10 via Frontend Transport; Fri, 15 Oct 2021 03:23:49 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 861b0a24-afb3-46ed-5d2d-08d98f8b351c
+X-MS-TrafficTypeDiagnostic: SG2PR06MB2859:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SG2PR06MB2859677D496D90F9E6BD6DE5ABB99@SG2PR06MB2859.apcprd06.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:935;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: OUmeqCilvSvIjnAsk6ysjkH6+G8CO+7CDmDOnUceJPUAkbQp8TkediXOaBGzlRX3aAexGcb7qT4G1ODr3zSkOGejgL00FlDs6Q479CkuXXSS2SAQLd7Op/uSNM4gUniW7B+4xafQmTCHRd45Y8tFNbJJVNGPVac5vZwt8t5C5q+T4m1fKPD/Xzr0pgVTTKt/AmkcLBbsn+rgXoayVwvqA4u0bWBcunIfOBRfToHtxWKXVCDsXx37sRu3zZm5ocnLJcBzsNesviXeCxXKhzSRUoPQZNLbkSOSroe/NoA2b46pF5LXQIFikglfOpl8Pop64KV4X7wPpp+aP7/ci/6+jjCLSiLqL8GDTAsXXqnl6h7QFHJcVcoJ6VO9o4KWvN7whFLualtGoK+Fzthn3AWEQHEdyCnRsKv3xR1eC748QXL4hcbyAAxvSiZw9dXZuhS1+aGvkt3djWp6yBzDztSJftb+nlqlUL/RFVxSRvi/3ix8JpHR8C16cFUuBLeE/93LITczrKCCKiR1kRJb4Yw2jitc1zfEE+HQwCuSrznlF8A/PN3kPUgaBJPact7I7b7E4MjR4ovW/AjmUXdnQqZBKbh+vH6rj9Ejw7sFT3uRRH1YFQW9t8gwvqrtDUyWlHjbUE9sfvb3HRtD6SizSZ2mLbhVxRAMtlMiB1DttqV4cAlxHHbRD8mwOFMA9oWY3isO17yBfbDlvrVwdrNbjxZMUA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR06MB3367.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(6486002)(83380400001)(4326008)(956004)(66476007)(38100700002)(38350700002)(2906002)(6666004)(921005)(5660300002)(316002)(6512007)(52116002)(1076003)(66556008)(2616005)(4744005)(36756003)(6506007)(110136005)(8676002)(86362001)(508600001)(8936002)(26005)(66946007)(186003)(7416002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?OIjxUlV4xYD7xPuwWPpM+EQCt8H8I5M36BDoOPM9QsGe/LP1fCeIxflLoM1H?=
+ =?us-ascii?Q?T+NUJvOFdg8Mubds4Uu3JLG870QGp2wxQOtcnxJhnjbodKD+qkP0lD1LrUHC?=
+ =?us-ascii?Q?BHv99cwBtLZQ/dVqPT2hDGS7LJzAB2nlUQeEYuz/fM4O5aQvAMO+IyK6kAjF?=
+ =?us-ascii?Q?PagRwoNLetnA3DSHiXsTNGTn2T9s/RdR7RkfR5FVSv1VUxcD2qA4kI9xHezK?=
+ =?us-ascii?Q?SL3N1q/IOK+sV1YqZ6dS0NtmhFhHuBga6wFYRZUYSOoXWwWxQM2+6VSKkQnf?=
+ =?us-ascii?Q?qcLqKI8cN553HYaIlfoO7Le2cLfgfrBBBZPm3AbRoUjOJDdQuq1yOhie7JrL?=
+ =?us-ascii?Q?TA0jdPlK1qPqYzu1NO0+XRPo01oSebHyIRytAugicu6XqplVhePYUybCSePD?=
+ =?us-ascii?Q?5+kFPkHAoHUFZOqWbBmuNbLJifo/7eRdWtJPLQoCY/elkOf/j5u6y+jJ9nXN?=
+ =?us-ascii?Q?PK1ha69KJB5ZOwJcIJtk/qBHSl9/ojlZopnXs49wKldS0a/ccBwxV1ZPEgzw?=
+ =?us-ascii?Q?HDN2aCeqMZTyf7l4rxiHnF+x3UkuctSexjC1zebuJRt0Bu97WUQYeshnkzKz?=
+ =?us-ascii?Q?Tf8sjZW8wS/36/fOs/BuOC8IJF9LSp4pZl2B761Yn5qBdvLlTvtjvX0pqalJ?=
+ =?us-ascii?Q?5woqTvjfAP3jZWRbr5l41r7pnPCnE8Ai3M91p+K2K9BrVniIOdBofo4xHSLr?=
+ =?us-ascii?Q?sIri6p1hrgW35axmueDrJAthfSk59nMlorxQDNguTeJRl7WHxU+jY2IT4OtI?=
+ =?us-ascii?Q?M/MUUfcG1KZkniCmgQyVcOB1Egiv4qLx/1zszlx6ET815bX2EzdcvLYRJqxg?=
+ =?us-ascii?Q?cn0bN+5pkiL8ZHj1L43d2DsLLAftomAg09ZQx5ey21h9EpNtO86bMgiHT3i5?=
+ =?us-ascii?Q?Kc9Rn1+SgHH0dSWy16xt6gst7IMiQX/T7PU7Sg5lMSo+pQXmgyX3lZoksP1x?=
+ =?us-ascii?Q?3uOoBDyejLl7vcwWy4zFIVFhwD95G9bbqxQHp8D8BC6mE7S8dyNpZ24thzj8?=
+ =?us-ascii?Q?F9jbDKBxbXh0FdYMQJcM2v+AzO86aUcTgsQ+rw3gMnK0DzBuGSuYkycFVMsf?=
+ =?us-ascii?Q?MXnB9fNMvBQHmrUPVJZwKo7J/qh4ERjcUqtJut/42lGaB8vtzrRzspDvnfCh?=
+ =?us-ascii?Q?rlotaQK8IzYpIEm+CLxhE0IhZwl41QVXzAjFIEWqVSL2IkECjcamXAGwgfaU?=
+ =?us-ascii?Q?W2Jd6ku0DSqlUOcU0SgiYe7yj/dd5p6i/Tf1zW/EoahKLUrte6TmJD84P5NX?=
+ =?us-ascii?Q?wPAfjkkpwzmp9llN0Lu1PsH/IgncMgb0pxJCydGiHGvhyDKd+kh4cRl4IW8J?=
+ =?us-ascii?Q?SsZ5uVxHW61/gWVqBzLoxwGa?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 861b0a24-afb3-46ed-5d2d-08d98f8b351c
+X-MS-Exchange-CrossTenant-AuthSource: SG2PR06MB3367.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Oct 2021 03:23:50.8200
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: jnGtCienE34ObXwy7jBDq0pK5DtWWiAmI5gz7NOVp0L7NgFH+p2q2+gC0aSkYjb0E0QabtKTohtF+hCYvzXuOQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SG2PR06MB2859
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Fix following coccicheck warning:
+./sound/soc/sh/rcar/core.c:1223:1-23: WARNING: Function
+for_each_child_of_node should have of_node_put() before return
 
---Apple-Mail=_C7104A77-2EBD-4C39-AC6F-84548DE62189
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain;
-	charset=us-ascii
+Early exits from for_each_child_of_node should decrement the
+node reference counter.
 
-On Oct 13, 2021, at 3:41 PM, Theodore Ts'o <tytso@mit.edu> wrote:
-> 
-> On Wed, Oct 13, 2021 at 11:38:47AM +0200, Jan Kara wrote:
->> 
->> OK, I see. So the race in ext4_multi_mount_protect() goes like:
->> 
->> hostA				hostB
->> 
->> read_mmp_block()		read_mmp_block()
->> - sees EXT4_MMP_SEQ_CLEAN	- sees EXT4_MMP_SEQ_CLEAN
->> write_mmp_block()
->> wait_time == 0 -> no wait
->> read_mmp_block()
->>  - all OK, mount
->> 				write_mmp_block()
->> 				wait_time == 0 -> no wait
->> 				read_mmp_block()
->> 				  - all OK, mount
->> 
->> Do I get it right? Actually, if we passed seq we wrote in
->> ext4_multi_mount_protect() to kmmpd (probably in sb), then kmmpd would
->> notice the conflict on its first invocation but still that would be a bit
->> late because there would be a time window where hostA and hostB would be
->> both using the fs.
+Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+---
+ sound/soc/sh/rcar/core.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-It would be enough to have even a short delay between write and read to
-detect this case.  I _thought_ there should be a delay in this case,
-but maybe it was removed after the patch was originally submitted?
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index 978bd0406729..6a8fe0da7670 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -1225,6 +1225,7 @@ int rsnd_node_count(struct rsnd_priv *priv, struct device_node *node, char *name
+ 		if (i < 0) {
+ 			dev_err(dev, "strange node numbering (%s)",
+ 				of_node_full_name(node));
++			of_node_put(np);
+ 			return 0;
+ 		}
+ 		i++;
+-- 
+2.20.1
 
->> We could reduce the likelyhood of this race by always waiting in
->> ext4_multi_mount_protect() between write & read but I guess that is
->> undesirable as it would slow down all clean mounts. Ted?
-> 
-> I'd like Andreas to comment here.  My understanding is that MMP
-> originally intended as a safety mechanism which would be used as part
-> of a primary/backup high availability system, but not as the *primary*
-> system where you might try to have two servers simultaneously try to
-> mount the file system and use MMP as the "election" mechanism to
-> decide which server is going to be the primary system, and which would
-> be the backup system.
-> 
-> The cost of being able to handle this particular race is it would slow
-> down the mounts of cleanly unmounted systems.
-
-Ted's understanding is correct - MMP is intended to be a backup mechanism
-to prevent filesystem corruption in the case where external HA methods
-do the wrong thing.  This has avoided problems countless times on systems
-with multi-port access to the same storage, and can also be useful in the
-case of shared VM images accessed over the network, and similar.
-
-When MMP was implemented for ZFS, a slightly different mechanism was used.
-Rather than having the delay to detect concurrent mounts, it instead writes
-to multiple different blocks in a random order, and then reads them all.
-If two nodes try to mount the filesystem concurrently, they would pick
-different block orders, and the chance of them having the same order (and
-one clobbering all of the blocks of the other) would be 1/2^num_blocks.
-The drawback is that this would consume more space in the filesystem, but
-it wouldn't be a huge deal these days.
-
-> There *are* better systems to implement leader elections[1] than using
-> MMP.  Most of these more efficient leader elections assume that you
-> have a working IP network, and so if you have a separate storage
-> network (including a shared SCSI bus) from your standard IP network,
-> then MMP is a useful failsafe in the face of a network partition of
-> your IP network.  The question is whether MMP should be useful for
-> more than that.  And if it isn't, then we should probably document
-> what MMP is and isn't good for, and give advice in the form of an
-> application note for how MMP should be used in the context of a larger
-> system.
-
-One of the existing failure cases with HA that MMP detects is loss of
-network connection, so I wouldn't want to depend on that.
-
-Cheers, Andreas
-
-
-
-
-
-
---Apple-Mail=_C7104A77-2EBD-4C39-AC6F-84548DE62189
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmFo87kACgkQcqXauRfM
-H+AxqA/+PwbiFucay3xCCPsEWzuRMa3mTU+OiXR2qpUH6euh3C4XwvDwMUOtVD/b
-jUPG8K23TETVG4s5tywqlrjdQP04SnnC2yz5zCxkYxI/bSeAFK/ffEIVTvU0S+Qo
-L0cGD5k8aY/TFQrnVHzhtHban8fBFKDfeLl/UsjofjILV84ZCdkZSAYmAB39tPlC
-gK0iPbWuSEUpEbIUlKzTjKj6qIAuozivSerPhLNEjBnVTcz33L4PZNGujGddug8S
-yVLAf+UAhv4wfHP957q0557u/SB//wDFa8/tdjNgrEJe+z4eDUTZrKyIw2XOpZrw
-6R9BmMyA4xs+OXsoMA1YWIqnR3W26z0DEVCDfX19VoXqgg9GS3tlDTODG5+z92aG
-EW9g7MA9xy9XeoLzKcyqysKaYpZRJXnYKynISbKijZKgDG8XPjosZzX67KGjABzk
-uKRrKEmSkANU8+KM28ODVBxAXUpy2DWZ+Ld9Tkh6OC9kryCUWjSa/iD5ow6sIHt3
-xOZ57k/Yt4DxWxM3dJPYfd9if9meTqgcjpM4N7CPQGOeQQseI9eJGbiIUZqF7sDU
-2Uj5wb7e8vwPH0V4cq+mTfBCNBXxHTKpt7PEi4oYtxmqVH0CxMwKgQreVaYyMesc
-yHGFxi07Gb2NXWxnspENhahq+ncTGYIpTglQ3VTDifJGma/Vl40=
-=YwMU
------END PGP SIGNATURE-----
-
---Apple-Mail=_C7104A77-2EBD-4C39-AC6F-84548DE62189--
