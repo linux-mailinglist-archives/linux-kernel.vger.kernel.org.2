@@ -2,255 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6762B42F4F0
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 16:12:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE0AC42F4F7
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 16:14:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236991AbhJOOOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 10:14:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51100 "EHLO
+        id S236911AbhJOOQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 10:16:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240196AbhJOOO1 (ORCPT
+        with ESMTP id S234883AbhJOOQY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 10:14:27 -0400
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43263C06176F;
-        Fri, 15 Oct 2021 07:12:14 -0700 (PDT)
-Received: by mail-oi1-x22d.google.com with SMTP id n63so13269075oif.7;
-        Fri, 15 Oct 2021 07:12:14 -0700 (PDT)
+        Fri, 15 Oct 2021 10:16:24 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F698C061764
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 07:14:17 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id d3so38580347edp.3
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 07:14:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=E1fykEaEp8TohMY+IiHVmw9TscjKXemOxBpXDundzLQ=;
-        b=SL/ewftzAqVc7u48caQAwLWiVkleZ07bgL1jRQwWvyyyVlL6ZCJ6BKAaA+GClbCJmd
-         Fsj6oABT/OSjZRmsQyfrqh1pMCCugBrGzRjfHGxqJGWZVe55UAstK7y6M0hic4cGCg6j
-         ofbj79o957HGo/TyoEPwUElYIhdmC3hdJBLA9A1LZqf1KvT0GnHY93cABCRpCQl/LJj1
-         9Bbc729m2QrmKUbRUNLhFHjndQf1Jcvsl4PQS3ZSXOAXDgoz9ZHM0sELL62dF4wc0ugo
-         CBOWl3SMygdoF6DhGljeTd3Yd/gIzrFNefPw84wqtBag9CPUOOvMZm0y1Mhv9C6SsGsd
-         ijzA==
+        d=bgdev-pl.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2rJxeYYnbN1BqAbq3eridm9U4CkbE9dBcGehVd60yHQ=;
+        b=xZnTHuAuPumh9gY513gOjcoEIBojcfbXPYblG9DBqCyu9w+7SrCdmuB7gEnT7Z2/d4
+         Dy00cnuQiOFiDnHDjDNkT/GAIVeUpSmQD0m54oMGRqXy5Jctgg5GVA7aiBkmWAhHZ5ao
+         mmZrlilcGq1V7vWDmvcuWZXD6Ud1+TP3WpVrdLJKXkT05p/WFnz3NJfjVcBUXZmmfIHV
+         S146osdHREWEWMw2xDl536hot0PN53Dd8+d0PBSnDAS5MyG9RN0uxY7RO/KqnNg/izm0
+         acovJz6ifR5SZBbU/WTJp1Q6ImMhYcwnQOgD5111c1pZp426p6Ms8IJutNaYI18Tpa8Z
+         SdFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=E1fykEaEp8TohMY+IiHVmw9TscjKXemOxBpXDundzLQ=;
-        b=KdE6p2LveCUKOuDYUsGKVvLsWPYl83etSRYz7o5MC33nRnbQD7BA7LQA6lF13iZWbt
-         hWbmwyR1qfjGM5VG2tnMuN9pUfXs0XjyOhg3//nX6o0aeKcrNevHsw03YCojaO+29Hnd
-         zz+xhO0tPaH0s69aZCi/pOvwAWA10d8xqrsTHjkEpJ6nFO5PW55Rpozday3nX4j3wQSG
-         PrYbH/XtVOaSsXVd4VZE7kPbsMAWg2zBW4NARcG5CkvjGhqYYYduuHEZsM2JwtrD01eG
-         cq67nVfYAvnOIDvjVUs3WBfUYmaHygtTgWuSPnkauCBWnO3VFOzmlQz64IJ7OSnE0qhI
-         os/A==
-X-Gm-Message-State: AOAM530wzdFV/83Yqq2b8GNkHFbCgcRohEs5nS5tI4Qk02W89CQukrJx
-        1k5q/H+4jQBKOch7m6Y6JKS8n+8AfyU=
-X-Google-Smtp-Source: ABdhPJzJCmCho+YkOarrtHmJ2r8dMQMrpGl7fFTl/9bdF/txv43Gz0mliDwMq+3b/jQgNXijMFgQGQ==
-X-Received: by 2002:aca:eb82:: with SMTP id j124mr17608877oih.46.1634307133220;
-        Fri, 15 Oct 2021 07:12:13 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id u2sm1261042otg.51.2021.10.15.07.12.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Oct 2021 07:12:12 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-To:     Alistair Francis <alistair@alistair23.me>, lee.jones@linaro.org,
-        robh+dt@kernel.org, lgirdwood@gmail.com, broonie@kernel.org,
-        kernel@pengutronix.de
-Cc:     shawnguo@kernel.org, s.hauer@pengutronix.de, linux-imx@nxp.com,
-        amitk@kernel.org, rui.zhang@intel.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, alistair23@gmail.com,
-        linux-hwmon@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pm@vger.kernel.org
-References: <20211015122551.38951-1-alistair@alistair23.me>
- <20211015122551.38951-7-alistair@alistair23.me>
-From:   Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH v13 6/9] hwmon: sy7636a: Add temperature driver for
- sy7636a
-Message-ID: <45191f55-e7a8-7d12-2f27-a03ab50626b1@roeck-us.net>
-Date:   Fri, 15 Oct 2021 07:12:09 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2rJxeYYnbN1BqAbq3eridm9U4CkbE9dBcGehVd60yHQ=;
+        b=ZuV1DJMqjOwpfwx+mhT9kbg14cVdn4RdLlca+i1elpSdRPT4j9gzm89K8BC69fKwYK
+         9WgHZLvhK2UOe6Wo3L380cLR6Zs+7WREZY5qCTsUe9omFNBK5LBqNfxpZ6mER3NJl+B0
+         cR5Hg6/YKWAFBw1UNamqtyM3a0h9+sWJqWAeU/3UeVBxngr7zDifGrfFv8Dc4iUOOZVg
+         YZKdoLpwjxKCBu+B0xaNA8rRy5y6uIprv9xlS9jg+ysn+2LXZHkMaEaCxmlQJBM1yVPD
+         9nF+ZPorKMg6tMPo/YBssGHAhyYyLtf+oPC5RATMLzV56f/0q7W+TcotP0TABXDdw1Lu
+         Q/4A==
+X-Gm-Message-State: AOAM532DYDxNZh8x4dQnbaEN+SCZeHMzRMBSecz0e2qAsekfPgMK+AgI
+        DISqlhUJSbjpNbsPqz4mzXBIeAhJ15VkYUGaQl/Z3w==
+X-Google-Smtp-Source: ABdhPJwyWhnDU7znLM6TsqQtys/OEF0zuKOS5DiBTSLCAfhLJHeCMdHnVxEZpmIrWGNBSmwyG8eCzKwO2UyHGqwnW8k=
+X-Received: by 2002:a50:d50c:: with SMTP id u12mr18241839edi.118.1634307227070;
+ Fri, 15 Oct 2021 07:13:47 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20211015122551.38951-7-alistair@alistair23.me>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20211008081739.26807-1-brgl@bgdev.pl>
+In-Reply-To: <20211008081739.26807-1-brgl@bgdev.pl>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Fri, 15 Oct 2021 16:13:36 +0200
+Message-ID: <CAMRc=McpCw2TgLFCzvwOupd+RW2BoQRJKVTdbR6s2z+O2pJuUQ@mail.gmail.com>
+Subject: Re: [PATCH v7 0/8] gpio: implement the configfs testing module
+To:     Joel Becker <jlbec@evilplan.org>, Christoph Hellwig <hch@lst.de>,
+        Shuah Khan <shuah@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Kent Gibson <warthog618@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Jack Winch <sunt.un.morcov@gmail.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-doc <linux-doc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/15/21 5:25 AM, Alistair Francis wrote:
-> This is a multi-function device to interface with the sy7636a
-> EPD PMIC chip from Silergy.
-> 
-> Signed-off-by: Alistair Francis <alistair@alistair23.me>
-> ---
->   Documentation/hwmon/sy7636a-hwmon.rst | 24 +++++++++
->   drivers/hwmon/Kconfig                 |  9 ++++
->   drivers/hwmon/Makefile                |  1 +
->   drivers/hwmon/sy7636a-hwmon.c         | 75 +++++++++++++++++++++++++++
->   4 files changed, 109 insertions(+)
->   create mode 100644 Documentation/hwmon/sy7636a-hwmon.rst
->   create mode 100644 drivers/hwmon/sy7636a-hwmon.c
-> 
-> diff --git a/Documentation/hwmon/sy7636a-hwmon.rst b/Documentation/hwmon/sy7636a-hwmon.rst
-> new file mode 100644
-> index 000000000000..6b3e36d028dd
-> --- /dev/null
-> +++ b/Documentation/hwmon/sy7636a-hwmon.rst
-> @@ -0,0 +1,24 @@
-> +Kernel driver sy7636a-hwmon
-> +=========================
-> +
-> +Supported chips:
-> +
-> + * Silergy SY7636A PMIC
-> +
-> +
-> +Description
-> +-----------
-> +
-> +This driver adds hardware temperature reading support for
-> +the Silergy SY7636A PMIC.
-> +
-> +The following sensors are supported
-> +
-> +  * Temperature
-> +      - SoC on-die temperature in milli-degree C
-> +
-> +sysfs-Interface
-> +---------------
-> +
-> +temp0_input
-> +	- SoC on-die temperature (milli-degree C)
-> diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
-> index c4578e8f34bb..d768b833b721 100644
-> --- a/drivers/hwmon/Kconfig
-> +++ b/drivers/hwmon/Kconfig
-> @@ -1651,6 +1651,15 @@ config SENSORS_SIS5595
->   	  This driver can also be built as a module. If so, the module
->   	  will be called sis5595.
->   
-> +config SENSORS_SY7636A
-> +	tristate "Silergy SY7636A"
-> +	help
-> +	  If you say yes here you get support for the thermistor readout of
-> +	  the Silergy SY7636A PMIC.
-> +
-> +	  This driver can also be built as a module.  If so, the module
-> +	  will be called sy7636a-hwmon.
-> +
->   config SENSORS_DME1737
->   	tristate "SMSC DME1737, SCH311x and compatibles"
->   	depends on I2C && !PPC
-> diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
-> index 162940270661..1355ffdb1481 100644
-> --- a/drivers/hwmon/Makefile
-> +++ b/drivers/hwmon/Makefile
-> @@ -181,6 +181,7 @@ obj-$(CONFIG_SENSORS_SMSC47M1)	+= smsc47m1.o
->   obj-$(CONFIG_SENSORS_SMSC47M192)+= smsc47m192.o
->   obj-$(CONFIG_SENSORS_SPARX5)	+= sparx5-temp.o
->   obj-$(CONFIG_SENSORS_STTS751)	+= stts751.o
-> +obj-$(CONFIG_SENSORS_SY7636A)	+= sy7636a-hwmon.o
->   obj-$(CONFIG_SENSORS_AMC6821)	+= amc6821.o
->   obj-$(CONFIG_SENSORS_TC74)	+= tc74.o
->   obj-$(CONFIG_SENSORS_THMC50)	+= thmc50.o
-> diff --git a/drivers/hwmon/sy7636a-hwmon.c b/drivers/hwmon/sy7636a-hwmon.c
-> new file mode 100644
-> index 000000000000..a59628f87ff3
-> --- /dev/null
-> +++ b/drivers/hwmon/sy7636a-hwmon.c
-> @@ -0,0 +1,75 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +/*
-> + * Functions to access SY3686A power management chip temperature
-> + *
-> + * Copyright (C) 2019 reMarkable AS - http://www.remarkable.com/
-> + *
-> + * Authors: Lars Ivar Miljeteig <lars.ivar.miljeteig@remarkable.com>
-> + *          Alistair Francis <alistair@alistair23.me>
-> + */
-> +
-> +#include <linux/err.h>
-> +#include <linux/hwmon.h>
-> +#include <linux/hwmon-sysfs.h>
-> +#include <linux/init.h>
-> +#include <linux/module.h>
-> +#include <linux/regmap.h>
-> +#include <linux/sysfs.h>
-> +#include <linux/platform_device.h>
-> +
-> +#include <linux/mfd/sy7636a.h>
-> +
-> +static ssize_t show_temp(struct device *dev,
-> +			 struct device_attribute *attr, char *buf)
-> +{
-> +	unsigned int reg_val;
-> +	struct regmap *regmap = dev_get_drvdata(dev);
-> +	int ret;
-> +
-> +	ret = regmap_read(regmap, SY7636A_REG_TERMISTOR_READOUT, &reg_val);
-> +	if (ret)
-> +		return ret;
-> +
-> +	return snprintf(buf, PAGE_SIZE, "%d\n", reg_val);
-> +}
-> +
-> +static SENSOR_DEVICE_ATTR(temp0, 0444, show_temp, NULL, 0);
-> +
+On Fri, Oct 8, 2021 at 10:17 AM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+>
+> I'm respinning this series now because I noticed that I need to start writing
+> tests for my work on the new libgpiod v2 code to make sense (it's just becoming
+> too complicated to make even remotely functional without test coverage). At the
+> same time I don't want to rewrite the tests using gpio-mockup if the goal is to
+> replace it with gpio-sim anyway.
+>
+> I fixed issues pointed out by Al Viro and made sure that references are
+> correctly counted (including error paths) and that memory allocated for the
+> pending and live groups gets freed.
+>
+> ===
+>
+> Cc'ing Viresh too.
+>
+> Viresh: while there's still a long way to go before the libgpio v2.0 release,
+> in order to merge the Rust bindings, we'll need a test-suite similar to what
+> we have now for C++ and Python bindings, except that it will have to be based
+> on the gpio-sim module when it makes its way into mainline.
+>
+> ===
+>
+> This series adds a new GPIO testing module based on configfs committable items
+> and sysfs. The goal is to provide a testing driver that will be configurable
+> at runtime (won't need module reload) and easily extensible. The control over
+> the attributes is also much more fine-grained than in gpio-mockup.
+>
+> This series also contains a respin of the patches I sent separately to the
+> configfs maintainers - these patches implement the concept of committable
+> items that was well defined for a long time but never actually completed.
+>
+> Apart from the new driver itself, its selftests and the configfs patches, this
+> series contains some changes to the bitmap API - most importantly: it adds
+> devres managed variants of bitmap_alloc() and bitmap_zalloc().
+>
+> v1 -> v2:
+> - add selftests for gpio-sim
+> - add helper programs for selftests
+> - update the configfs rename callback to work with the new API introduced in
+>   v5.11
+> - fix a missing quote in the documentation
+> - use !! whenever using bits operation that are required to return 0 or 1
+> - use provided bitmap API instead of reimplementing copy or fill operations
+> - fix a deadlock in gpio_sim_direction_output()
+> - add new read-only configfs attributes for mapping of configfs items to GPIO
+>   device names
+> - and address other minor issues pointed out in reviews of v1
+>
+> v2 -> v3:
+> - use devm_bitmap_alloc() instead of the zalloc variant if we're initializing
+>   the bitmap with 1s
+> - drop the patch exporting device_is_bound()
+> - don't return -ENODEV from dev_nam and chip_name configfs attributes, return
+>   a string indicating that the device is not available yet ('n/a')
+> - fix indentation where it makes sense
+> - don't protect IDA functions which use their own locking and where it's not
+>   needed
+> - use kmemdup() instead of kzalloc() + memcpy()
+> - collected review tags
+> - minor coding style fixes
+>
+> v3 -> v4:
+> - return 'none' instead of 'n/a' from dev_name and chip_name before the device
+>   is registered
+> - use sysfs_emit() instead of s*printf()
+> - drop GPIO_SIM_MAX_PROP as it's only used in an array's definition where it's
+>   fine to hardcode the value
+>
+> v4 -> v5:
+> - drop lib patches that are already upstream
+> - use BIT() instead of (1UL << bit) for flags
+> - fix refcounting for the configfs_dirent in rename()
+> - drop d_move() from the rename() callback
+> - free memory allocated for the live and pending groups in configfs_d_iput()
+>   and not in detach_groups()
+> - make sure that if a group of some name is in the live directory, a new group
+>   with the same name cannot be created in the pending directory
+>
+> v5 -> v6:
+> - go back to using (1UL << bit) instead of BIT()
+> - if the live group dentry doesn't exist for whatever reason at the time when
+>   mkdir() in the pending group is called (would be a BUG()), return -ENOENT
+>   instead of -EEXIST which should only be returned if given subsystem already
+>   exists in either live or pending group
+>
+> v6 -> v7:
+> - as detailed by Andy in commit 6fda593f3082 ("gpio: mockup: Convert to use
+>   software nodes") removing device properties after the platform device is
+>   removed but before the GPIO device gets dropped can lead to a use-after-free
+>   bug - use software nodes to manually control the freeing of the properties
+>
+> Bartosz Golaszewski (8):
+>   configfs: increase the item name length
+>   configfs: use (1UL << bit) for internal flags
+>   configfs: implement committable items
+>   samples: configfs: add a committable group
+>   gpio: sim: new testing module
+>   selftests: gpio: provide a helper for reading chip info
+>   selftests: gpio: add a helper for reading GPIO line names
+>   selftests: gpio: add test cases for gpio-sim
+>
+>  Documentation/admin-guide/gpio/gpio-sim.rst   |  72 ++
+>  Documentation/filesystems/configfs.rst        |   6 +-
+>  drivers/gpio/Kconfig                          |   8 +
+>  drivers/gpio/Makefile                         |   1 +
+>  drivers/gpio/gpio-sim.c                       | 886 ++++++++++++++++++
+>  fs/configfs/configfs_internal.h               |  22 +-
+>  fs/configfs/dir.c                             | 276 +++++-
+>  include/linux/configfs.h                      |   3 +-
+>  samples/configfs/configfs_sample.c            | 153 +++
+>  tools/testing/selftests/gpio/.gitignore       |   2 +
+>  tools/testing/selftests/gpio/Makefile         |   4 +-
+>  tools/testing/selftests/gpio/config           |   1 +
+>  tools/testing/selftests/gpio/gpio-chip-info.c |  57 ++
+>  tools/testing/selftests/gpio/gpio-line-name.c |  55 ++
+>  tools/testing/selftests/gpio/gpio-sim.sh      | 229 +++++
+>  15 files changed, 1752 insertions(+), 23 deletions(-)
+>  create mode 100644 Documentation/admin-guide/gpio/gpio-sim.rst
+>  create mode 100644 drivers/gpio/gpio-sim.c
+>  create mode 100644 tools/testing/selftests/gpio/gpio-chip-info.c
+>  create mode 100644 tools/testing/selftests/gpio/gpio-line-name.c
+>  create mode 100755 tools/testing/selftests/gpio/gpio-sim.sh
+>
+> --
+> 2.30.1
+>
 
-This must be temp1_input. "temp0" is not a standard attribute,
-and without standard attributes the driver is pointless.
+Another ping...
 
-> +static struct attribute *sy7636a_attrs[] = {
-> +	&sensor_dev_attr_temp0.dev_attr.attr,
-> +	NULL
-> +};
-> +
-> +ATTRIBUTE_GROUPS(sy7636a);
-> +
-> +static int sy7636a_sensor_probe(struct platform_device *pdev)
-> +{
-> +	struct regmap *regmap = dev_get_regmap(pdev->dev.parent, NULL);
-> +	struct device *hwmon_dev;
-> +	int err;
-> +
-> +	if (!regmap)
-> +		return -EPROBE_DEFER;
-> +
-> +	hwmon_dev = devm_hwmon_device_register_with_info(&pdev->dev,
-> +			"sy7636a_temperature", regmap, NULL, sy7636a_groups);
-
-
-I am not going to accept this. The groups pointer is only supposed
-to be used for non-standard attributes.
-
-Anyway, it is pointless to have both a thermal driver and a hwmon
-driver. The hwmon driver can register the thermal node if the _info
-interface is used properly, and the thermal driver can register
-a hwmon interface using [devm_]thermal_add_hwmon_sysfs(). If you don't
-want to use the _info API in the hwmon driver, please drop this
-driver and register the hwmon interface from the thermal driver.
-
-Thanks,
-Guenter
-
-> +
-> +	if (IS_ERR(hwmon_dev)) {
-> +		err = PTR_ERR(hwmon_dev);
-> +		dev_err(&pdev->dev, "Unable to register hwmon device, returned %d\n", err);
-> +		return err;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static struct platform_driver sy7636a_sensor_driver = {
-> +	.probe = sy7636a_sensor_probe,
-> +	.driver = {
-> +		.name = "sy7636a-temperature",
-> +	},
-> +};
-> +module_platform_driver(sy7636a_sensor_driver);
-> +
-> +MODULE_DESCRIPTION("SY7636A sensor driver");
-> +MODULE_LICENSE("GPL");
-> 
-
+Bart
