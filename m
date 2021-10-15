@@ -2,106 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95DFD42EDD4
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 11:37:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA87242EDD8
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 11:37:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237517AbhJOJjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 05:39:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55488 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237498AbhJOJjK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 05:39:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C0D9861151;
-        Fri, 15 Oct 2021 09:37:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634290623;
-        bh=TzGufAwH2X3L5zaryILAQnVqBzQmD3/o9nz9xeCqBkU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GsWMApXXQLrHwLrvYv0g68Bfy9/jgQrp7Ebbamfpu9C4ERu+l/AHEPAzEeIamPPZW
-         tMKcka14I2NWo+GASsOg/PbqyxjS1TntSBtw6+cBOCb4pIt40SxPqfNqqMq2OEqGRR
-         JF8lRcjoCz8RI/muUc+fcTCwc7uncVe9YVCzrVYJpasxzZ39ozrslCrDVHUMG8g17t
-         uaqZ/tQitbJOuzfSupuCZZCp6+0mGp5X6eRUH2s3SmLmpjWAQEMktACYTVEoNky6UK
-         TDAYbgutjMMFpGdQmDrxRj5vIgrvYQXgYIu8xy70rRnztWr9ErCE/BxVbWeH1xd46H
-         efBFHvQsuekiQ==
-Received: by pali.im (Postfix)
-        id 4788A80A; Fri, 15 Oct 2021 11:37:01 +0200 (CEST)
-Date:   Fri, 15 Oct 2021 11:37:01 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Vladimir Vid <vladimir.vid@sartura.hr>,
-        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
-        linux-clk@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v7 3/6] dt-bindings: mvebu-uart: document DT bindings for
- marvell,armada-3700-uart-clock
-Message-ID: <20211015093701.pfvkighxsndj4ujg@pali>
-References: <20210930095838.28145-1-pali@kernel.org>
- <20210930095838.28145-4-pali@kernel.org>
- <163425678347.1688384.10695189000353676651@swboyd.mtv.corp.google.com>
- <20211015090937.gnt66hgugrhwnkei@pali>
+        id S237524AbhJOJjz convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 15 Oct 2021 05:39:55 -0400
+Received: from relay7-d.mail.gandi.net ([217.70.183.200]:47639 "EHLO
+        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237467AbhJOJjy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 05:39:54 -0400
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 01C5D20007;
+        Fri, 15 Oct 2021 09:37:42 +0000 (UTC)
+Date:   Fri, 15 Oct 2021 11:37:41 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     "xiangsheng.hou" <xiangsheng.hou@mediatek.com>
+Cc:     Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+        <linux-mtd@lists.infradead.org>, Rob Herring <robh+dt@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        "Boris Brezillon" <bbrezillon@kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-spi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <jaimeliao@mxic.com.tw>,
+        <juliensu@mxic.com.tw>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [RFC PATCH 06/10] mtd: nand: mxic-ecc: Add Macronix external
+ ECC engine support
+Message-ID: <20211015113741.30712544@xps13>
+In-Reply-To: <872348abea7317c6b3d2ed53c8139e0927bb991f.camel@mediatek.com>
+References: <20211008162228.1753083-1-miquel.raynal@bootlin.com>
+        <20211008162228.1753083-7-miquel.raynal@bootlin.com>
+        <872348abea7317c6b3d2ed53c8139e0927bb991f.camel@mediatek.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211015090937.gnt66hgugrhwnkei@pali>
-User-Agent: NeoMutt/20180716
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday 15 October 2021 11:09:37 Pali Rohár wrote:
-> On Thursday 14 October 2021 17:13:03 Stephen Boyd wrote:
-> > Quoting Pali Rohár (2021-09-30 02:58:35)
-> > > diff --git a/Documentation/devicetree/bindings/clock/marvell,armada-3700-uart-clock.yaml b/Documentation/devicetree/bindings/clock/marvell,armada-3700-uart-clock.yaml
-> > > new file mode 100644
-> > > index 000000000000..175f5c8f2bc5
-> > > --- /dev/null
-> > > +++ b/Documentation/devicetree/bindings/clock/marvell,armada-3700-uart-clock.yaml
-> > > @@ -0,0 +1,59 @@
-> > [..]
-> > > +  '#clock-cells':
-> > > +    const: 1
-> > > +
-> > > +required:
-> > > +  - compatible
-> > > +  - reg
-> > > +  - clocks
-> > > +  - clock-names
-> > > +  - '#clock-cells'
-> > > +
-> > > +additionalProperties: false
-> > > +
-> > > +examples:
-> > > +  - |
-> > > +    uartclk: clock-controller@12010 {
-> > 
-> > The uart device is at 0x12000 and the clock-controller is at 0x12010?
-> > This looks like a node is being put into DT to represent a clk driver.
-> > Why can't we register a clk from the uart device driver itself? I think
-> > we talked about this a month or two ago but it still isn't clear to me.
+Hi xiangsheng.hou,
+
+xiangsheng.hou@mediatek.com wrote on Wed, 13 Oct 2021 17:15:49 +0800:
+
+> Hi,
 > 
-> We have already talked about it and I have already wrote reasons. UART
-> clk is shared for both UART1 and UART2. And UART clk regs are in both
-> address spaces of UART1 and UART2. UART1 or UART2 can be independently
-> disabled on particular board (as pins are MPP which may be configured to
-> different function). So you have a board only with UART2, you have to
-> disable UART1 node, but at the same time you have to access UART clk to
-> drive UART2. And UART clk bits are in UART1 address space.
+> On Fri, 2021-10-08 at 18:22 +0200, Miquel Raynal wrote:
+> > 
+> > +static int mxic_ecc_count_biterrs(struct mxic_ecc_engine *eng,
+> > struct mtd_info *mtd)
+> > +{
+> > +	struct device *dev = eng->dev;
+> > +	unsigned int max_bf = 0;
+> > +	int step;
+> > +
+> > +	for (step = 0; step < eng->steps; step++) {
+> > +		u8 stat = eng->status[step];
+> > +
+> > +		if (stat == NO_ERR) {
+> > +			dev_dbg(dev, "ECC step %d: no error\n", step);
+> > +		} else if (stat == ERASED_CHUNK) {
+> > +			dev_dbg(dev, "ECC step %d: erased\n", step);
+> > +		} else if (stat == UNCORR_ERR || stat > MAX_CORR_ERR) {
+> > +			dev_dbg(dev, "ECC step %d: uncorrectable\n",
+> > step);
+> > +			mtd->ecc_stats.failed++;
+> > +		} else {
+> > +			dev_dbg(dev, "ECC step %d: %d bits
+> > corrected\n",
+> > +				step, stat);
+> > +			max_bf = max_t(unsigned int, max_bf, stat);
+> > +			mtd->ecc_stats.corrected += stat;
+> > +		}
+> > +	}
+> > +
+> > +	return max_bf;
+> > +}  
+> 
+> In spinand_mtd_read() function, rely on the return value -EBADMSG to
+> check whether ecc failed. Therefore, maybe there also need return this
+> value in mxic_ecc_count_biterrs() function when uncorrectable ecc
+> error?
 
-It is explained also in commit message of patch 2/6.
+True, I'll fix this.
 
-> > > +      compatible = "marvell,armada-3700-uart-clock";
-> > > +      reg = <0x12010 0x4>, <0x12210 0x4>;
-> > > +      clocks = <&tbg 0>, <&tbg 1>, <&tbg 2>, <&tbg 3>, <&xtalclk>;
-> > > +      clock-names = "TBG-A-P", "TBG-B-P", "TBG-A-S", "TBG-B-S", "xtal";
-> > > +      #clock-cells = <1>;
-> > > +    };
-> > > -- 
-> > > 2.20.1
-> > >
+Thanks,
+Miquèl
