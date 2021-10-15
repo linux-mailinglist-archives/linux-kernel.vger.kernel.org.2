@@ -2,94 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66C9D42F680
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 17:03:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3462E42F682
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 17:03:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240726AbhJOPFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 11:05:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55074 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230116AbhJOPFG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 11:05:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3AA1D600D4;
-        Fri, 15 Oct 2021 15:02:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634310179;
-        bh=HUZyhXVFtyd+kL3lwYCZY+Spl4v5On1I0ObzJOAiC4Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=q/wSIGWGEl2/OWZr20i72XN6klWiorQtf9EIvLFZweKKKNbFSFXn5nRWkvKnX+UMZ
-         ltA+W5RJeRiqqhqwdjf9cLswODKBvnnWJQ/TIB46snpzjKbwMmpf3WjPGualypOyU3
-         k6CNNCI2Ts822EChd9rTV81avQxcmcE828glTZhIwv2yAbPTyfRn0rpACfMYF8RD0D
-         v1uALX3gbGqsMcSHeHCXGLE1k9zZdfUGJLEpKxXPP7fsVlp8u/lTObGlrPO6m8+N3c
-         tne9Kh4vZVcluhZ+s5R79D2sMEOZdfHZrj8XGbCQcqCYnKd6pPCTdvi3icoiEoOqcO
-         NrlrTFQbz42Hw==
-Date:   Fri, 15 Oct 2021 16:02:57 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        patches@opensource.cirrus.com
-Subject: Re: [PATCH 07/16] ASoC: cs42l42: Correct power-up sequence to match
- datasheet
-Message-ID: <YWmYIQGgxFStAA1x@sirena.org.uk>
-References: <20211015133619.4698-1-rf@opensource.cirrus.com>
- <20211015133619.4698-8-rf@opensource.cirrus.com>
+        id S240750AbhJOPFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 11:05:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35754 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234241AbhJOPFs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 11:05:48 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03CFFC061570
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 08:03:42 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id om14so7367047pjb.5
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 08:03:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=KXPIz1+6ivp923MPkATJlji46zFojrernQw1lNXrX3U=;
+        b=oVQAmkOyAuaFZLQbHGtUmPkWE1hRqZp5CCcQR/+oJORPH6OdQhIWDaYpRCiRTrkDbt
+         w07Dd5lFJ0S7P0NM2SK+wbDRNuXampA+CasNYaPsZnCIQmBO6ehCIGmstAqITwbnHNPg
+         zpW6Ykt9Hp8yYFYzXfSRla1lcSRp5uGqZ0N53JaUFWyTvjVJOsFqe6KgjwsVDQOLDzSy
+         +8TSpc7kWRRLPB3K6k4X1eJIWVD57Tz1PZGM+OZy9syXfsLJBj4j3xc6W5QT/+30VY09
+         DLoNzHHfB0v1QqxQcSR3dVOY+sbYT1IQ4v5yeU5GHZQ431PI2bRDnrGiDEZXr2z8kpQg
+         eeeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KXPIz1+6ivp923MPkATJlji46zFojrernQw1lNXrX3U=;
+        b=VFECt0K75EWenC5dM8FSvH8POhJC75Ovg2VJxZE4ip3lf0W0UwS/LKpgBwuBRcyFOJ
+         Mg2B/Wzorm/ADEWeh0EK7WCbOKGv6HqBzs6ZJrLoyDHbsldULkZg7DVcZ718XvcQN5XL
+         yKFqttMMFGDfjLb3+sACxiDZG79bktBXv5wRdbTOp/uVby5WkRcDbZcGOaSQoMIDaTl2
+         2THPklDv3MD5MfFgKUxoU0MKReXuRVtWEQSQEiOvENq0J0jdwVmf3yYnFyGiOjPlSw1t
+         eL1Bb+iz4tG4KmfM/tbyQsi1X+nkuWXfpdQV4w3pCN/hAIC5tekljVY4k+44meFBkgcz
+         MXbg==
+X-Gm-Message-State: AOAM533mbuHOOsRhjvDL4KcCZG2Atz2J98g8BZPcuXCkLYA3EAsN9POR
+        wfo2Z7phuhzWDPAjjKMR8Ntk7Q==
+X-Google-Smtp-Source: ABdhPJxoQTeBvFoMAx+1gdIIMmnqvQFTf0ckns/jyp1Q2FtIWvxj067w1lS1TGALXruBnkuHbqTOHA==
+X-Received: by 2002:a17:90b:4b10:: with SMTP id lx16mr14088375pjb.217.1634310221283;
+        Fri, 15 Oct 2021 08:03:41 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id h1sm5519785pfh.183.2021.10.15.08.03.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Oct 2021 08:03:40 -0700 (PDT)
+Date:   Fri, 15 Oct 2021 15:03:37 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Sathyanarayanan Kuppuswamy 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
+        VMware Inc <pv-drivers@vmware.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v10 07/11] x86/tdx: Add HLT support for TDX guest
+Message-ID: <YWmYSSi6H/G+vXDd@google.com>
+References: <20211009053747.1694419-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20211009053747.1694419-8-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <87lf2w6ji2.ffs@tglx>
+ <43de3c58-5a55-7dcf-48d4-1474bb1c61e5@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="RZ6HkpV1NsoM41ux"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211015133619.4698-8-rf@opensource.cirrus.com>
-X-Cookie: I'm having an emotional outburst!!
+In-Reply-To: <43de3c58-5a55-7dcf-48d4-1474bb1c61e5@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Oct 14, 2021, Sathyanarayanan Kuppuswamy wrote:
+> 
+> On 10/14/21 2:30 AM, Thomas Gleixner wrote:
+> > On Fri, Oct 08 2021 at 22:37, Kuppuswamy Sathyanarayanan wrote:
+> > > +/* HLT TDVMCALL sub-function ID */
+> > > +#define EXIT_REASON_HLT			12
+> > arch/x86/include/uapi/asm/vmx.h:#define EXIT_REASON_HLT                 12
+> > 
+> > Is there a _good_ reason why this can't be reused?
 
---RZ6HkpV1NsoM41ux
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+So, no.  :-D
 
-On Fri, Oct 15, 2021 at 02:36:10PM +0100, Richard Fitzgerald wrote:
-> The power-up sequence mandated in the datasheet is:
+> As per current use case we can re-use it. Out of all TDX hypercall sub
+> function IDs, only Instruction.PCONFIG (65) exit reason id is missing in
+> vmx.h. But currently we are not handling it. So we can ignore it for now.
 
-> - VP must turn on first
-> - VA, VCP, VL, in any order
-> - VD_FILT after VL
-
->  static const char *const cs42l42_supply_names[CS42L42_NUM_SUPPLIES] = {
-> -	"VA",
->  	"VP",
-> +	"VA",
->  	"VCP",
-> -	"VD_FILT",
->  	"VL",
-> +	"VD_FILT",
->  };
-
-If you need the regulators to be turned on in sequence you shouldn't
-rely on bulk enable doing it for you - the existing regulator code will
-initiate all the enables in parallel and then wait for them all to
-complete ramping up so if for example VD_FILT were to ramp more quickly
-than the earlier regulators the hardware might notice it getting to
-whatever voltage the hardware cares about before them.  The only
-sequencing you're getting at the minute is when the enables for the
-regulators are toggled and you shouldn't even rely on that.
-
-To get the sequencing guaranteed you should pull VP and VD_FILT out of
-the bulk enable and do individual enables for them.
-
---RZ6HkpV1NsoM41ux
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFpmCAACgkQJNaLcl1U
-h9CEHAf+KR9IRwQTLAgF/4BGe7x+ICDnwwxyPG6OAI0gYOK3VLGyJdTrAl6pyCmC
-d9/V8fKK5GbXumortiyIEqsnUOkFFyjHpFwyoXDUSA8GR0En5BYLcEAf3jo/WZcx
-fIcm5LDQkB2ahkWs2p45x0D77i24pzABdYQXp9HjEqH3Rhkmeh5Uu93hkKn6MPQN
-X5Y8aXsHrMdnz6dEAlGtd+0+jmHAu5PYPNalRB6gM0XXCoc+2SEpE1sSanCFlbH3
-0LnX2g4iT2yp3r+ABpzWseK5GV4Xvg3C+e3REgOD29pwsoPCzinwhLU/xptbeqeI
-Mf8m8gP0yqixU1d5+uz0w4VdcnDZSw==
-=Z1lk
------END PGP SIGNATURE-----
-
---RZ6HkpV1NsoM41ux--
+If the kernel proper needs EXIT_REASON_PCONFIG before KVM, just send a patch...
