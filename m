@@ -2,122 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B9B342E6C6
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 04:46:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 507D542E6C7
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 04:47:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232810AbhJOCsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 22:48:09 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:13741 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229819AbhJOCsH (ORCPT
+        id S232960AbhJOCtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 22:49:09 -0400
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:54335 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229704AbhJOCtI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 22:48:07 -0400
-Received: from dggeml757-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HVrFc49GLzWrHF;
-        Fri, 15 Oct 2021 10:44:20 +0800 (CST)
-Received: from localhost.localdomain (10.175.104.82) by
- dggeml757-chm.china.huawei.com (10.1.199.137) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Fri, 15 Oct 2021 10:45:59 +0800
-From:   Ziyang Xuan <william.xuanziyang@huawei.com>
-To:     <rafael@kernel.org>, <daniel.lezcano@linaro.org>
-CC:     <amitk@kernel.org>, <rui.zhang@intel.com>,
-        <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2] thermal/core: fix a UAF bug in __thermal_cooling_device_register()
-Date:   Fri, 15 Oct 2021 10:45:04 +0800
-Message-ID: <20211015024504.947520-1-william.xuanziyang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 14 Oct 2021 22:49:08 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R641e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=xianting.tian@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0Us1cFSh_1634266020;
+Received: from localhost(mailfrom:xianting.tian@linux.alibaba.com fp:SMTPD_---0Us1cFSh_1634266020)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 15 Oct 2021 10:47:01 +0800
+From:   Xianting Tian <xianting.tian@linux.alibaba.com>
+To:     gregkh@linuxfoundation.org, jirislaby@kernel.org, amit@kernel.org,
+        arnd@arndb.de, osandov@fb.com
+Cc:     shile.zhang@linux.alibaba.com, linuxppc-dev@lists.ozlabs.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org,
+        Xianting Tian <xianting.tian@linux.alibaba.com>
+Subject: [PATCH v11 0/3] make hvc pass dma capable memory to its backend
+Date:   Fri, 15 Oct 2021 10:46:55 +0800
+Message-Id: <20211015024658.1353987-1-xianting.tian@linux.alibaba.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.82]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggeml757-chm.china.huawei.com (10.1.199.137)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When device_register() return failed, program will goto out_kfree_type
-to release 'cdev->device' by put_device(). That will call thermal_release()
-to free 'cdev'. But the follow-up processes access 'cdev' continually.
-That trggers the UAF bug.
+Dear all,
 
-====================================================================
-BUG: KASAN: use-after-free in __thermal_cooling_device_register+0x75b/0xa90
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1.1 04/01/2014
-Call Trace:
- dump_stack_lvl+0xe2/0x152
- print_address_description.constprop.0+0x21/0x140
- ? __thermal_cooling_device_register+0x75b/0xa90
- kasan_report.cold+0x7f/0x11b
- ? __thermal_cooling_device_register+0x75b/0xa90
- __thermal_cooling_device_register+0x75b/0xa90
- ? memset+0x20/0x40
- ? __sanitizer_cov_trace_pc+0x1d/0x50
- ? __devres_alloc_node+0x130/0x180
- devm_thermal_of_cooling_device_register+0x67/0xf0
- max6650_probe.cold+0x557/0x6aa
-......
+This patch series make hvc framework pass DMA capable memory to
+put_chars() of hvc backend(eg, virtio-console), and revert commit
+c4baad5029 ("virtio-console: avoid DMA from stack”)
 
-Freed by task 258:
- kasan_save_stack+0x1b/0x40
- kasan_set_track+0x1c/0x30
- kasan_set_free_info+0x20/0x30
- __kasan_slab_free+0x109/0x140
- kfree+0x117/0x4c0
- thermal_release+0xa0/0x110
- device_release+0xa7/0x240
- kobject_put+0x1ce/0x540
- put_device+0x20/0x30
- __thermal_cooling_device_register+0x731/0xa90
- devm_thermal_of_cooling_device_register+0x67/0xf0
- max6650_probe.cold+0x557/0x6aa [max6650]
+V1
+virtio-console: avoid DMA from vmalloc area
+https://lkml.org/lkml/2021/7/27/494
 
-Do not use 'cdev' again after put_device() to fix the problem like doing
-in thermal_zone_device_register().
+For v1 patch, Arnd Bergmann suggests to fix the issue in the first
+place:
+Make hvc pass DMA capable memory to put_chars()
+The fix suggestion is included in v2.
 
-Fixes: 584837618100 ("thermal/drivers/core: Use a char pointer for the cooling device name")
-Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: kernel test robot <lkp@intel.com>
----
- drivers/thermal/thermal_core.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+V2
+[PATCH 1/2] tty: hvc: pass DMA capable memory to put_chars()
+https://lkml.org/lkml/2021/8/1/8
+[PATCH 2/2] virtio-console: remove unnecessary kmemdup()
+https://lkml.org/lkml/2021/8/1/9
 
-diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
-index 97ef9b040b84..d2c196b298c1 100644
---- a/drivers/thermal/thermal_core.c
-+++ b/drivers/thermal/thermal_core.c
-@@ -888,7 +888,7 @@ __thermal_cooling_device_register(struct device_node *np,
- {
- 	struct thermal_cooling_device *cdev;
- 	struct thermal_zone_device *pos = NULL;
--	int ret;
-+	int id, ret;
- 
- 	if (!ops || !ops->get_max_state || !ops->get_cur_state ||
- 	    !ops->set_cur_state)
-@@ -901,7 +901,7 @@ __thermal_cooling_device_register(struct device_node *np,
- 	ret = ida_simple_get(&thermal_cdev_ida, 0, 0, GFP_KERNEL);
- 	if (ret < 0)
- 		goto out_kfree_cdev;
--	cdev->id = ret;
-+	cdev->id = id = ret;
- 
- 	cdev->type = kstrdup(type ? type : "", GFP_KERNEL);
- 	if (!cdev->type) {
-@@ -942,8 +942,9 @@ __thermal_cooling_device_register(struct device_node *np,
- out_kfree_type:
- 	kfree(cdev->type);
- 	put_device(&cdev->device);
-+	cdev = NULL;
- out_ida_remove:
--	ida_simple_remove(&thermal_cdev_ida, cdev->id);
-+	ida_simple_remove(&thermal_cdev_ida, id);
- out_kfree_cdev:
- 	kfree(cdev);
- 	return ERR_PTR(ret);
--- 
-2.25.1
+For v2 patch, Arnd Bergmann suggests to make new buf part of the
+hvc_struct structure, and fix the compile issue.
+The fix suggestion is included in v3.
 
+V3
+[PATCH v3 1/2] tty: hvc: pass DMA capable memory to put_chars()
+https://lkml.org/lkml/2021/8/3/1347
+[PATCH v3 2/2] virtio-console: remove unnecessary kmemdup()
+https://lkml.org/lkml/2021/8/3/1348
+
+For v3 patch, Jiri Slaby suggests to make 'char c[N_OUTBUF]' part of
+hvc_struct, and make 'hp->outbuf' aligned and use struct_size() to
+calculate the size of hvc_struct. The fix suggestion is included in
+v4.
+
+V4
+[PATCH v4 0/2] make hvc pass dma capable memory to its backend
+https://lkml.org/lkml/2021/8/5/1350
+[PATCH v4 1/2] tty: hvc: pass DMA capable memory to put_chars()
+https://lkml.org/lkml/2021/8/5/1351
+[PATCH v4 2/2] virtio-console: remove unnecessary kmemdup()
+https://lkml.org/lkml/2021/8/5/1352
+
+For v4 patch, Arnd Bergmann suggests to introduce another
+array(cons_outbuf[]) for the buffer pointers next to the cons_ops[]
+and vtermnos[] arrays. This fix included in this v5 patch.
+
+V5
+Arnd Bergmann suggests to use "L1_CACHE_BYTES" as dma alignment,
+use 'sizeof(long)' as dma alignment is wrong. fix it in v6.
+
+V6
+It contains coding error, fix it in v7 and it worked normally
+according to test result.
+
+V7
+Greg KH suggests to add test and code review developer,
+Jiri Slaby suggests to use lockless buffer and fix dma alignment
+in separate patch.
+fix above things in v8. 
+
+V8
+This contains coding error when switch to use new buffer. fix it in v9.
+
+V9
+It didn't make things much clearer, it needs add more comments for new added buf.
+Add use lock to protect new added buffer. fix in v10.
+
+V10
+Remove 'char outchar' and its lock from hvc_struct, adjust hvc_struct and use
+pahole to display the struct layout.
+fix it in v11.
+
+********TEST STEPS*********
+1, config guest console=hvc0
+2, start guest
+3, login guest
+    Welcome to Buildroot
+    buildroot login: root
+    # 
+    # cat /proc/cmdline 
+    console=hvc0 root=/dev/vda rw init=/sbin/init
+    #
+
+drivers/tty/hvc/hvc_console.c | 36 ++++++++++++++++++++---------------
+drivers/tty/hvc/hvc_console.h | 21 +++++++++++++++++++-
+drivers/char/virtio_console.c | 12 ++----------
+3 file changed
