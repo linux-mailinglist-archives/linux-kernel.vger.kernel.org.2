@@ -2,115 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E56942E737
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 05:29:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89AE742E739
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 05:30:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234139AbhJODbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 23:31:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46424 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233865AbhJODbb (ORCPT
+        id S234183AbhJODcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 23:32:03 -0400
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:8193 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234153AbhJODcC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 23:31:31 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA517C061570;
-        Thu, 14 Oct 2021 20:29:16 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HVsFN3llHz4xbG;
-        Fri, 15 Oct 2021 14:29:12 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1634268555;
-        bh=ijeEztnemmifUPa/zn4Fpl8tfExKGh4N3DEZiLWjcD4=;
-        h=Date:From:To:Cc:Subject:From;
-        b=KqDju7o3OjX7g9tu34elJAdt+HNHm6efFfotBPeVqQAIWcLCaUMIfg7Dc/7amzFoZ
-         6OZ7Iyldr+JxaW7p15wgjWNn9mzuwZhMezEIe+JqqHTds2PuE84mPpRuUM2GJgHToE
-         +sEpM/8PZhirPE/kH4GOSK4Ioy+tyZXdJPwx0BkkdwHoQyGyNqAD4Lw9Tay7SYRNPJ
-         HcRT3uXwiYa7P/3VgsnZ3KMqfWqYAGCDkRCb/U+eO8fZoMgVxXTrLoH+VHRwGmmj6b
-         drSO0FB9C9XPcA6msCrIEz+eLTrtx/79GSrx0bDE4tdaemp23RWkImSw9jhZne8rLh
-         1To0OuExjK2AQ==
-Date:   Fri, 15 Oct 2021 14:29:10 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Paul Moore <paul@paul-moore.com>,
-        Alasdair G Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Michael =?UTF-8?B?V2Vpw58=?= <michael.weiss@aisec.fraunhofer.de>
-Subject: linux-next: manual merge of the selinux tree with the device-mapper
- tree
-Message-ID: <20211015142910.0f78c326@canb.auug.org.au>
+        Thu, 14 Oct 2021 23:32:02 -0400
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 19F38CnT038176;
+        Fri, 15 Oct 2021 11:08:12 +0800 (GMT-8)
+        (envelope-from jammy_huang@aspeedtech.com)
+Received: from [192.168.2.115] (192.168.2.115) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 15 Oct
+ 2021 11:29:54 +0800
+Message-ID: <e94e8b49-e7cc-c358-3b6b-1af82c70982c@aspeedtech.com>
+Date:   Fri, 15 Oct 2021 11:29:55 +0800
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/MdivLPCUJl6zV_BkBSOsqXD";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH 6/6] media: aspeed: richer debugfs
+Content-Language: en-US
+To:     Paul Menzel <pmenzel@molgen.mpg.de>
+CC:     "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "andrew@aj.id.au" <andrew@aj.id.au>,
+        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
+        "eajames@linux.ibm.com" <eajames@linux.ibm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "mchehab@kernel.org" <mchehab@kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>
+References: <20211014034819.2283-1-jammy_huang@aspeedtech.com>
+ <20211014034819.2283-7-jammy_huang@aspeedtech.com>
+ <f7d3900f-9e1c-1c2b-f14a-a3828852eadc@molgen.mpg.de>
+ <53fa3d1a-d75b-2fb1-a315-c6406f33289c@molgen.mpg.de>
+From:   Jammy Huang <jammy_huang@aspeedtech.com>
+In-Reply-To: <53fa3d1a-d75b-2fb1-a315-c6406f33289c@molgen.mpg.de>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [192.168.2.115]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 19F38CnT038176
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/MdivLPCUJl6zV_BkBSOsqXD
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Dear Paul,
 
-Hi all,
+Thanks for you help. I will have an updated patch later accordingly.
 
-Today's linux-next merge of the selinux tree got a conflict in:
-
-  include/uapi/linux/audit.h
-
-between commit:
-
-  c1d7fa96e74b ("dm: introduce audit event module for device mapper")
-
-from the device-mapper tree and commit:
-
-  5bd2182d58e9 ("audit,io_uring,io-wq: add some basic audit support to io_u=
-ring")
-
-from the selinux tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc include/uapi/linux/audit.h
-index 6650ab6def2a,ecf1edd2affa..000000000000
---- a/include/uapi/linux/audit.h
-+++ b/include/uapi/linux/audit.h
-@@@ -118,8 -118,7 +118,9 @@@
-  #define AUDIT_TIME_ADJNTPVAL	1333	/* NTP value adjustment */
-  #define AUDIT_BPF		1334	/* BPF subsystem */
-  #define AUDIT_EVENT_LISTENER	1335	/* Task joined multicast read socket */
- -#define AUDIT_URINGOP		1336	/* io_uring operation */
- +#define AUDIT_DM_CTRL		1336	/* Device Mapper target control */
- +#define AUDIT_DM_EVENT		1337	/* Device Mapper events */
-++#define AUDIT_URINGOP		1338	/* io_uring operation */
- =20
-  #define AUDIT_AVC		1400	/* SE Linux avc denial or grant */
-  #define AUDIT_SELINUX_ERR	1401	/* Internal SE Linux Errors */
-
---Sig_/MdivLPCUJl6zV_BkBSOsqXD
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFo9YYACgkQAVBC80lX
-0GwbDgf/SmU119soESbHZepHF5fqqeVEtr5d20hlOSIXOKd4cQWUiizRe3TEAete
-AWkqZqiZYdEMfS/mtjxJ5laZUVUdoPsmbEyKK3hE6UIuP/K1Kf3fcImyyQQXmVgW
-Ks2OUhgejyZJ9AhPVqZouFUpU5w/iLz8+JZq7uP2BOJb/zEWPhpJnihExTXGLkOs
-mBnJO8imnk7YfHplb8LFeIBkDv4cmEG/qxYAxpCjfiG/Qax1K0FodsfR9WZQY8lg
-5k4TjCEiTneHgDKJGO2M6DJHvrS4A6uBP8EzJR1BRCCjrjx/zq8xeQtru5laEQSp
-WHZRIzsvqOrLScUipA89U4wOyMF6UQ==
-=mZvz
------END PGP SIGNATURE-----
-
---Sig_/MdivLPCUJl6zV_BkBSOsqXD--
+On 2021/10/14 下午 02:57, Paul Menzel wrote:
+> Dear Jammy,
+>
+>
+> Am 14.10.21 um 08:54 schrieb Paul Menzel:
+>
+>> Am 14.10.21 um 05:48 schrieb Jammy Huang:
+>> media: aspeed: richer debugfs
+> It’d be great if you used a statement by adding a verb in imperative
+> mood [1]. Maybe:
+>
+>> Extend debug message
+> or
+>
+>> Add more debug log messages
+>>> updated as below:
+>>>
+>>> Caputre:
+>> Capture
+>>
+>>>     Mode                : Direct fetch
+>>>     VGA bpp mode        : 32
+>>>     Signal              : Unlock
+>>>     Width               : 1920
+>>>     Height              : 1080
+>>>     FRC                 : 30
+>>>
+>>> Compression:
+>>>     Format              : JPEG
+>>>     Subsampling         : 444
+>>>     Quality             : 0
+>>>     HQ Mode             : N/A
+>>>     HQ Quality          : 0
+>>>     Mode                : N/A
+>>>
+>>> Performance:
+>>>     Frame#              : 0
+>>>     Frame Duration(ms)  :
+>>>       Now               : 0
+>>>       Min               : 0
+>>>       Max               : 0
+>>>     FPS                 : 0
+>> Do you have output with non-zero values? ;-)
+>>
+>> On what device did you test this?
+>>
+>>> Signed-off-by: Jammy Huang <jammy_huang@aspeedtech.com>
+>>> ---
+>>>    drivers/media/platform/aspeed-video.c | 41 +++++++++++++++++++++++++--
+>>>    1 file changed, 38 insertions(+), 3 deletions(-)
+>>>
+>>> diff --git a/drivers/media/platform/aspeed-video.c
+>>> b/drivers/media/platform/aspeed-video.c
+>>> index e1031fd09ac6..f2e5c49ee906 100644
+>>> --- a/drivers/media/platform/aspeed-video.c
+>>> +++ b/drivers/media/platform/aspeed-video.c
+>>> @@ -464,6 +464,9 @@ static const struct v4l2_dv_timings_cap
+>>> aspeed_video_timings_cap = {
+>>>        },
+>>>    };
+>>> +static const char * const compress_mode_str[] = {"DCT Only",
+>>> +    "DCT VQ mix 2-color", "DCT VQ mix 4-color"};
+>>> +
+>>>    static unsigned int debug;
+>>>    static void aspeed_video_init_jpeg_table(u32 *table, bool yuv420)
+>>> @@ -1077,8 +1080,6 @@ static void aspeed_video_set_resolution(struct
+>>> aspeed_video *video)
+>>>    static void aspeed_video_update_regs(struct aspeed_video *video)
+>>>    {
+>>> -    static const char * const compress_mode_str[] = {"DCT Only",
+>>> -        "DCT VQ mix 2-color", "DCT VQ mix 4-color"};
+>>>        u32 comp_ctrl =    FIELD_PREP(VE_COMP_CTRL_DCT_LUM,
+>>> video->jpeg_quality) |
+>>>            FIELD_PREP(VE_COMP_CTRL_DCT_CHR, video->jpeg_quality | 0x10) |
+>>>            FIELD_PREP(VE_COMP_CTRL_EN_HQ, video->hq_mode) |
+>>> @@ -1795,9 +1796,29 @@ static const struct vb2_ops
+>>> aspeed_video_vb2_ops = {
+>>>    static int aspeed_video_debugfs_show(struct seq_file *s, void *data)
+>>>    {
+>>>        struct aspeed_video *v = s->private;
+>>> +    u32 val08;
+>> Why does `08` refer to?
+>>
+>>>        seq_puts(s, "\n");
+>>> +    val08 = aspeed_video_read(v, VE_CTRL);
+>>> +    seq_puts(s, "Caputre:\n");
+>>> +    if (FIELD_GET(VE_CTRL_DIRECT_FETCH, val08)) {
+>>> +        seq_printf(s, "  %-20s:\tDirect fetch\n", "Mode");
+>>> +        seq_printf(s, "  %-20s:\t%s\n", "VGA bpp mode",
+>>> +               FIELD_GET(VE_CTRL_INT_DE, val08) ? "16" : "32");
+>>> +    } else {
+>>> +        seq_printf(s, "  %-20s:\tSync\n", "Mode");
+>>> +        seq_printf(s, "  %-20s:\t%s\n", "Video source",
+>>> +               FIELD_GET(VE_CTRL_SOURCE, val08) ?
+>>> +               "external" : "internal");
+>>> +        seq_printf(s, "  %-20s:\t%s\n", "DE source",
+>>> +               FIELD_GET(VE_CTRL_INT_DE, val08) ?
+>>> +               "internal" : "external");
+>>> +        seq_printf(s, "  %-20s:\t%s\n", "Cursor overlay",
+>>> +               FIELD_GET(VE_CTRL_AUTO_OR_CURSOR, val08) ?
+>>> +               "Without" : "With");
+>>> +    }
+>>> +
+>>>        seq_printf(s, "  %-20s:\t%s\n", "Signal",
+>>>               v->v4l2_input_status ? "Unlock" : "Lock");
+>>>        seq_printf(s, "  %-20s:\t%d\n", "Width", v->pix_fmt.width);
+>>> @@ -1806,6 +1827,21 @@ static int aspeed_video_debugfs_show(struct
+>>> seq_file *s, void *data)
+>>>        seq_puts(s, "\n");
+>>> +    seq_puts(s, "Compression:\n");
+>>> +    seq_printf(s, "  %-20s:\t%s\n", "Format",
+>>> +           v->partial_jpeg ? "Aspeed" : "JPEG");
+>>> +    seq_printf(s, "  %-20s:\t%s\n", "Subsampling",
+>>> +           v->yuv420 ? "420" : "444");
+>>> +    seq_printf(s, "  %-20s:\t%d\n", "Quality", v->jpeg_quality);
+>>> +    seq_printf(s, "  %-20s:\t%s\n", "HQ Mode",
+>>> +           v->partial_jpeg ? (v->hq_mode ? "on" : "off") : "N/A");
+>>> +    seq_printf(s, "  %-20s:\t%d\n", "HQ Quality", v->jpeg_hq_quality);
+>>> +    seq_printf(s, "  %-20s:\t%s\n", "Mode",
+>>> +           v->partial_jpeg ? compress_mode_str[v->compression_mode]
+>>> +                   : "N/A");
+>>> +
+>>> +    seq_puts(s, "\n");
+>>> +
+>>>        seq_puts(s, "Performance:\n");
+>>>        seq_printf(s, "  %-20s:\t%d\n", "Frame#", v->sequence);
+>>>        seq_printf(s, "  %-20s:\n", "Frame Duration(ms)");
+>> Remove the colon, and add a space before (?
+>>
+>>> @@ -1814,7 +1850,6 @@ static int aspeed_video_debugfs_show(struct
+>>> seq_file *s, void *data)
+>>>        seq_printf(s, "    %-18s:\t%d\n", "Max", v->perf.duration_max);
+>>>        seq_printf(s, "  %-20s:\t%d\n", "FPS",
+>>> 1000/(v->perf.totaltime/v->sequence));
+>>> -
+>>>        return 0;
+>>>    }
+>
+> Kind regards,
+>
+> Paul
+>
+>
+> [1]: https://chris.beams.io/posts/git-commit/
