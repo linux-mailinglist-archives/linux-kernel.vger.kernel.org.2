@@ -2,141 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6BDC42E5B9
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 03:02:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A363C42E5BA
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 03:05:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230121AbhJOBE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 21:04:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42064 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229912AbhJOBEV (ORCPT
+        id S231214AbhJOBHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 21:07:50 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:28944 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229959AbhJOBHt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 21:04:21 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87BCDC061753;
-        Thu, 14 Oct 2021 18:02:14 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id x27so34830638lfu.5;
-        Thu, 14 Oct 2021 18:02:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=mv5Z6Sdks/z0PRafNWu7V1r7LCkQQrDbmE+ZfMmHLqw=;
-        b=H60RnvlX2azwNGf02ab1Oyj8wVvv7xw4MWUErTGrxY7uhb1rctVozCIO8sCS81VzVS
-         hOZVQcmidgo6srorYYEKXtrCX+uka5RufIHO9FB8YjYtosAd1tV7yduYszwn7XqHY8T3
-         P2XSvit2SOy5d04RRrtHtjjy0pTszcQ+avWKslDagv90QnM8kxz9GqKKNEWsuZkwk0oG
-         RI0hyWIS7l6XKbWqVyVn0ypJq/EzThrBHBqQNDqP1p+HoYYDahsR4SOJzmb7tEtGttAs
-         Wv2t95lbRv4BVqh+KbIj7b+IMF63pQ6o3e7MjI+Qa1vL14XEfbtvpEfBnM3DX3ZKeOzd
-         j7Xw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=mv5Z6Sdks/z0PRafNWu7V1r7LCkQQrDbmE+ZfMmHLqw=;
-        b=KG9b7jUsnSLEQL22bKZ75gAPD8cDejEMNuEyAj+5pM1X85J0/dAuhtagheoTmF3li4
-         /nqMAJFDIDb09ZYin+8GOyNmo98+SHn7ITC39b82zi8i7rxEnLXS2MkR7rANv9F+vyjA
-         YPtU0W82GXXmxOrIUjh14mSmY3zyQFBQmo3hsjy9BsQSnfsvLmYcYEcMpPSjZEccL61A
-         wbfqAmXwxYggSHZb8YjTp2YymxiOjqlul6E0OLVKa+gapsy4U3jowm5YejWagVnsSRbB
-         pxGOlelSX6r9W3dU+i3ySFZy8eGPi8zik0viaVgDKvxSyQ3g0RxGDeVcRWBqGRL3WIzK
-         sNBQ==
-X-Gm-Message-State: AOAM532+eBifjjMJKcvqhvgI4IzR6gzKfHGVJUWgHyiwCEl4I0X34QWu
-        feIGuA5b07Vpy4Uc0k8cuUfh3pomKo0=
-X-Google-Smtp-Source: ABdhPJwI0m+5o/4/ErJJ6urO1/gJpgb5iHK/zkQpI7uZEJJsVGNazonwuMOVf2cdk0laSZAgpG/4Tw==
-X-Received: by 2002:ac2:443b:: with SMTP id w27mr8198374lfl.63.1634259732934;
-        Thu, 14 Oct 2021 18:02:12 -0700 (PDT)
-Received: from [192.168.2.145] (79-139-176-16.dynamic.spd-mgts.ru. [79.139.176.16])
-        by smtp.googlemail.com with ESMTPSA id x145sm357902lff.155.2021.10.14.18.02.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Oct 2021 18:02:12 -0700 (PDT)
-Subject: Re: [PATCH v12 05/35] dt-bindings: clock: tegra-car: Document new
- clock sub-nodes
-To:     Stephen Boyd <sboyd@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Nishanth Menon <nm@ti.com>, Peter Chen <peter.chen@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Viresh Kumar <vireshk@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-pwm@vger.kernel.org,
-        linux-mmc@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Richard Weinberger <richard@nod.at>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        David Heidelberg <david@ixit.cz>
-References: <20210920181145.19543-1-digetx@gmail.com>
- <20210920181145.19543-6-digetx@gmail.com>
- <163425700766.1688384.4481739110941660602@swboyd.mtv.corp.google.com>
- <4090acf8-c8af-d98c-2121-9fd105365e55@gmail.com>
- <163425874534.1688384.5636050222516713710@swboyd.mtv.corp.google.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <97b2e36d-b380-8565-8409-3884ab4ca11e@gmail.com>
-Date:   Fri, 15 Oct 2021 04:02:11 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Thu, 14 Oct 2021 21:07:49 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HVnyd18C6zbn8n;
+        Fri, 15 Oct 2021 09:01:13 +0800 (CST)
+Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Fri, 15 Oct 2021 09:05:42 +0800
+Received: from [10.174.177.243] (10.174.177.243) by
+ dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2308.8; Fri, 15 Oct 2021 09:05:41 +0800
+Message-ID: <62435ab2-fa0d-0bd7-6cd0-829fc30e4d0b@huawei.com>
+Date:   Fri, 15 Oct 2021 09:05:41 +0800
 MIME-Version: 1.0
-In-Reply-To: <163425874534.1688384.5636050222516713710@swboyd.mtv.corp.google.com>
-Content-Type: text/plain; charset=utf-8
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v3 0/6] ARM: mm: cleanup page fault and fix pxn process
+ issue
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jungseung Lee <js07.lee@gmail.com>,
+        Will Deacon <will@kernel.org>
+References: <20210610123556.171328-1-wangkefeng.wang@huawei.com>
+ <22320379-1905-d678-bfd7-2e5e118fa578@huawei.com>
+ <YWhapJ4oiD2dJADk@shell.armlinux.org.uk>
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+In-Reply-To: <YWhapJ4oiD2dJADk@shell.armlinux.org.uk>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.243]
+X-ClientProxiedBy: dggeme708-chm.china.huawei.com (10.1.199.104) To
+ dggpemm500001.china.huawei.com (7.185.36.107)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-15.10.2021 03:45, Stephen Boyd пишет:
-> Quoting Dmitry Osipenko (2021-10-14 17:43:49)
->> 15.10.2021 03:16, Stephen Boyd пишет:
->>> Quoting Dmitry Osipenko (2021-09-20 11:11:15)
->>>> diff --git a/Documentation/devicetree/bindings/clock/nvidia,tegra20-car.yaml b/Documentation/devicetree/bindings/clock/nvidia,tegra20-car.yaml
->>>> index 459d2a525393..f832abb7f11a 100644
->>>> --- a/Documentation/devicetree/bindings/clock/nvidia,tegra20-car.yaml
->>>> +++ b/Documentation/devicetree/bindings/clock/nvidia,tegra20-car.yaml
->>>> @@ -42,6 +42,36 @@ properties:
->>>>    "#reset-cells":
->>>>      const: 1
->>>>  
->>>> +patternProperties:
->>>> +  "^(sclk)|(pll-[cem])$":
->>>> +    type: object
->>>> +    properties:
->>>> +      compatible:
->>>> +        enum:
->>>> +          - nvidia,tegra20-sclk
->>>> +          - nvidia,tegra30-sclk
->>>> +          - nvidia,tegra30-pllc
->>>> +          - nvidia,tegra30-plle
->>>> +          - nvidia,tegra30-pllm
->>>> +
->>>> +      operating-points-v2: true
->>>> +
->>>> +      clocks:
->>>> +        items:
->>>> +          - description: node's clock
->>>> +
->>>> +      power-domains:
->>>> +        maxItems: 1
->>>> +        description: phandle to the core SoC power domain
->>>
->>> Is this done to associate the power domain with a particular clk? And an
->>> OPP table with a particular clk?
+
+
+On 2021/10/15 0:28, Russell King (Oracle) wrote:
+> On Tue, Oct 12, 2021 at 09:41:23AM +0800, Kefeng Wang wrote:
 >>
->> Yes
 >>
+>> On 2021/6/10 20:35, Kefeng Wang wrote:
+>>> The patchset cleanup ARM page fault handle to improve readability,
+>>> fix the page table entries printing and fix infinite loop in the
+>>> page fault handler when user code execution with privilege mode if
+>>> ARM_LPAE enabled.
+>>
+>> Hi Russell, I send the v3(most patches were reviewed by you in v2[1]) to
+>> ARM patch system due to no more comments, and this patchset is suspended
+>> too long without any changes, looking forward to your reply and hope it
+>> could be merged, many thanks.
 > 
-> Ok. Can Ulf/Viresh review this patch series?
+> I did explicitly ask for the first two patches to be sent to the patch
+> system during the v2 review as a way to cut down on the amount of work
+> to review the entire patch set each time a new version is posted. Sadly
+> that didn't happen, which is demotivating for a reviewer.
 
-They already did, please see v13 [1].
+Oh, I should send the patch(already asked) to patch system ASAP,
+sorry for not delay.
 
-[1] https://lore.kernel.org/lkml/20210926224058.1252-1-digetx@gmail.com/
+> 
+> Having looked through the v3 patch set, I think I'm happy with it.
+> 
+
+It's greet to see that v3 is accepted, many thanks!
+
+> Thanks.
+> 
