@@ -2,86 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C52B42F019
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 13:59:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F11EE42EE6E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 12:07:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238633AbhJOMBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 08:01:38 -0400
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:34907 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238623AbhJOMBh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 08:01:37 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=hao.xiang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UsAlkTn_1634299169;
-Received: from localhost(mailfrom:hao.xiang@linux.alibaba.com fp:SMTPD_---0UsAlkTn_1634299169)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 15 Oct 2021 19:59:29 +0800
-From:   Hao Xiang <hao.xiang@linux.alibaba.com>
-To:     kvm@vger.kernel.org
-Cc:     shannon.zhao@linux.alibaba.com, pbonzini@redhat.com,
-        seanjc@google.com, xiaoyao.li@intel.com,
-        linux-kernel@vger.kernel.org,
-        Hao Xiang <hao.xiang@linux.alibaba.com>
-Subject: [PATCH v3] KVM: VMX: Remove redundant handling of bus lock vmexit
-Date:   Fri, 15 Oct 2021 19:59:21 +0800
-Message-Id: <1634299161-30101-1-git-send-email-hao.xiang@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S237764AbhJOKJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 06:09:43 -0400
+Received: from mga04.intel.com ([192.55.52.120]:29528 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237638AbhJOKJN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 06:09:13 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10137"; a="226661320"
+X-IronPort-AV: E=Sophos;i="5.85,375,1624345200"; 
+   d="scan'208";a="226661320"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2021 03:07:04 -0700
+X-IronPort-AV: E=Sophos;i="5.85,375,1624345200"; 
+   d="scan'208";a="442474635"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.72.159])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2021 03:07:02 -0700
+Received: from andy by smile with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mbMvA-000OuS-Cu;
+        Fri, 15 Oct 2021 16:06:48 +0300
+Date:   Fri, 15 Oct 2021 16:06:48 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     changlianzhi <changlianzhi@uniontech.com>
+Cc:     linux-kernel@vger.kernel.org, dmitry.torokhov@gmail.com,
+        gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        linux-input@vger.kernel.org, 282827961@qq.com
+Subject: Re: [PATCH] input&tty: Fix the keyboard led light display problem
+Message-ID: <YWl86Jlv8Qs5PzXW@smile.fi.intel.com>
+References: <35696980-2a55-c5c1-3fa9-eadf251dcdde@uniontech.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <35696980-2a55-c5c1-3fa9-eadf251dcdde@uniontech.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hardware may or may not set exit_reason.bus_lock_detected on BUS_LOCK
-VM-Exits. Dealing with KVM_RUN_X86_BUS_LOCK in handle_bus_lock_vmexit
-could be redundant when exit_reason.basic is EXIT_REASON_BUS_LOCK.
+On Fri, Oct 15, 2021 at 04:16:35PM +0800, changlianzhi wrote:
+> Switching from the desktop environment to the tty environment,
+> the state of the keyboard led lights and the state of the keyboard
+> lock are inconsistent. This is because the attribute kb->kbdmode
+> of the tty bound in the desktop environment (xorg) is set to
+> VC_OFF, which causes the ledstate and kb->ledflagstate
+> values of the bound tty to always be 0, which causes the switch
+> from the desktop When to the tty environment, the LED light
+> status is inconsistent with the keyboard lock status.
 
-We can remove redundant handling of bus lock vmexit. Unconditionally Set
-exit_reason.bus_lock_detected in handle_bus_lock_vmexit(), and deal with
-KVM_RUN_X86_BUS_LOCK only in vmx_handle_exit().
+Have you even read what others tell you?!
 
-Suggested-by: Xiaoyao Li <xiaoyao.li@intel.com>
-Co-developed-by: Sean Christopherson <seanjc@google.com>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
-Signed-off-by: Hao Xiang <hao.xiang@linux.alibaba.com>
----
-v1 -> v2: a little modifications of comments
-v2 -> v3: addressed the review comments
+If you continue this way, I think it will be guaranteed that your email
+ends up in a ban list.
 
- arch/x86/kvm/vmx/vmx.c | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
-
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 116b089..7fb2a3a 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -5562,9 +5562,13 @@ static int handle_encls(struct kvm_vcpu *vcpu)
- 
- static int handle_bus_lock_vmexit(struct kvm_vcpu *vcpu)
- {
--	vcpu->run->exit_reason = KVM_EXIT_X86_BUS_LOCK;
--	vcpu->run->flags |= KVM_RUN_X86_BUS_LOCK;
--	return 0;
-+	/*
-+	 * Hardware may or may not set the BUS_LOCK_DETECTED flag on BUS_LOCK
-+	 * VM-Exits. Unconditionally set the flag here and leave the handling to
-+	 * vmx_handle_exit().
-+	 */
-+	to_vmx(vcpu)->exit_reason.bus_lock_detected = true;
-+	return 1;
- }
- 
- /*
-@@ -6051,9 +6055,8 @@ static int vmx_handle_exit(struct kvm_vcpu *vcpu, fastpath_t exit_fastpath)
- 	int ret = __vmx_handle_exit(vcpu, exit_fastpath);
- 
- 	/*
--	 * Even when current exit reason is handled by KVM internally, we
--	 * still need to exit to user space when bus lock detected to inform
--	 * that there is a bus lock in guest.
-+	 * Exit to user space when bus lock detected to inform that there is
-+	 * a bus lock in guest.
- 	 */
- 	if (to_vmx(vcpu)->exit_reason.bus_lock_detected) {
- 		if (ret > 0)
 -- 
-1.8.3.1
+With Best Regards,
+Andy Shevchenko
+
 
