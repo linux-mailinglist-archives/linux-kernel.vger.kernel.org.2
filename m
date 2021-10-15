@@ -2,162 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F42C42E938
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 08:45:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF67342E939
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 08:46:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235612AbhJOGsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 02:48:02 -0400
-Received: from mail-eopbgr1300122.outbound.protection.outlook.com ([40.107.130.122]:13727
-        "EHLO APC01-HK2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229716AbhJOGsB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S235624AbhJOGsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 02:48:03 -0400
+Received: from smtpbgjp3.qq.com ([54.92.39.34]:52171 "EHLO smtpbgjp3.qq.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234662AbhJOGsB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 15 Oct 2021 02:48:01 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=C4FKr1TMXs0p85dwTORXck/PaI/lKhTUz34K4hWRYPKnQHoUg7KAU1oe4AG4ZI5v+l6Y8byZ+m438DAz3DkEQSXEkbRRrEusxD+oyfMg8eBLnir1h4Tybwe72ljn657h24orVG/DHXYf+WZMhUrRpgehasCi9WObUsOGN8YRhdpeRLhEvKlGaegu1yRc4XX+1n7NBXfXmO+6b8b03AjLYHW4Cv7IhUveZBeB2UwEk/kmf8EAphu5fVUGl9BaK2A3S9x9GOChfRiUyzJk0LKjAkG5LK/rURjJjkNo8TFZPkyLeekSy7rUeDttwHWTJoLawcrYScLQ9pcFmESqG8BgGg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=i8tUOf7PMAM47UFFx8D+aNuLAVPp3Hz9l+g+D//dFgU=;
- b=lzQOImPP2PWg0CMRVs6pTUlH2/Yw5X5Z4xKx7iTIc8hQHwG9lPwjoiissMU5m5gPBQAUaFcGv61xAiFdVJpQ56/89/Noj9eivhlH0DfTK0XszUAhkWdLcPOi+jlpiAE5j5ckYMgqZQPwNQmFbfUa+QmvzR48q5/fdkhVKUWp+tsb40S+Y3r4vnmN2jWT807dE/1xUW3SRyIOLsvF4i5sPH3WKHf2m/OQA7yS6d8lJCiIi53Z26pGku5FR3DSTYUWeD1MtJjoXHF48bZDvApjigz+f3dCmsGMZlX3jeoP0yguUCH8Kkehl3TDNyvpxErnWCt+0T44leDjjfvXpVCgRQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
- s=selector2-vivo0-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=i8tUOf7PMAM47UFFx8D+aNuLAVPp3Hz9l+g+D//dFgU=;
- b=qFzboV/ciCChndDkE8tz5Anx/FRbNE3Yt9rR2pCeCli+aL/NmIjcyy0QOeAGLOZ3DEeMYdfkuZ3BTaJbbbQtxHwz8Tmkpf2PIoA7A6WNZRIFgBJ2DtOOmnDeNbKVeXyNdIdbfX0jbXDrWCnQGhFy+1793bv2AJMtetM/wZ0mUZE=
-Authentication-Results: baylibre.com; dkim=none (message not signed)
- header.d=none;baylibre.com; dmarc=none action=none header.from=vivo.com;
-Received: from SL2PR06MB3082.apcprd06.prod.outlook.com (2603:1096:100:37::17)
- by SL2PR06MB3147.apcprd06.prod.outlook.com (2603:1096:100:33::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.16; Fri, 15 Oct
- 2021 06:45:51 +0000
-Received: from SL2PR06MB3082.apcprd06.prod.outlook.com
- ([fe80::4c9b:b71f:fb67:6414]) by SL2PR06MB3082.apcprd06.prod.outlook.com
- ([fe80::4c9b:b71f:fb67:6414%6]) with mapi id 15.20.4608.017; Fri, 15 Oct 2021
- 06:45:51 +0000
-From:   Qing Wang <wangqing@vivo.com>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     mike.looijmans@topic.nl, Qing Wang <wangqing@vivo.com>
-Subject: [PATCH RESEND] clk-si5341: replace snprintf in show functions with sysfs_emit
-Date:   Thu, 14 Oct 2021 23:45:28 -0700
-Message-Id: <1634280331-4150-1-git-send-email-wangqing@vivo.com>
-X-Mailer: git-send-email 2.7.4
-Content-Type: text/plain
-X-ClientProxiedBy: HK2PR06CA0007.apcprd06.prod.outlook.com
- (2603:1096:202:2e::19) To SL2PR06MB3082.apcprd06.prod.outlook.com
- (2603:1096:100:37::17)
+X-QQ-mid: bizesmtp47t1634280347twvqe95z
+Received: from localhost.localdomain (unknown [113.57.152.160])
+        by esmtp6.qq.com (ESMTP) with 
+        id ; Fri, 15 Oct 2021 14:45:40 +0800 (CST)
+X-QQ-SSF: B1400000002000B0D000000B0000000
+X-QQ-FEAT: vsfsx1ezZ8QUhBPnLmbYfusF+NWsNPdBnJK3FS7ph9LrqwdBiVti3RIiVna8X
+        TIJwUq9W3K8Usw6fvV87MCjkAHGhbdXIo/Cm8Ctd246jv5Z47IEXDzbnKse0WLV0XoZK97R
+        kmG25RyWERSPq9cBSycB/YkugV3WddxKN0e/p38xc/tk4OsmKbXDH/80A25HBcT3d60DvAh
+        0ATkhxWfUoMGyCtvkATlyegc0Y2ixCvmmDAsUsYnA5pXMy/tVheeBVKT97dw79HY04nxTyY
+        KiCw559JZVrTOC74JesxPZg+1hvWZuu9y9g2C34B+kHae5uUJCNMH5hQXVzJlngb0S3rBrH
+        VZKH5XMRuqXZb1bJoRiBXVJgpruGe+CeGivyYkp0pT7LNY+zgs=
+X-QQ-GoodBg: 1
+From:   lianzhi chang <changlianzhi@uniontech.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     dmitry.torokhov@gmail.com, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org, andriy.shevchenko@linux.intel.com,
+        linux-input@vger.kernel.org, 282827961@qq.com,
+        lianzhi chang <changlianzhi@uniontech.com>
+Subject: [PATCH] input&tty: Fix the keyboard led light display problem
+Date:   Fri, 15 Oct 2021 14:45:34 +0800
+Message-Id: <20211015064534.26260-1-changlianzhi@uniontech.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Received: from ubuntu.localdomain (218.213.202.189) by HK2PR06CA0007.apcprd06.prod.outlook.com (2603:1096:202:2e::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.4608.17 via Frontend Transport; Fri, 15 Oct 2021 06:45:50 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 117eae58-8dbe-4783-21c7-08d98fa76dad
-X-MS-TrafficTypeDiagnostic: SL2PR06MB3147:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SL2PR06MB3147BF7749B4A82309E71A5EBDB99@SL2PR06MB3147.apcprd06.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3968;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: UOsh3OI+w/3fCSQB5pGcnimo95aWcDBn8PvI6DotXRXNV4AL8qzj8vQUlSOK9hKSi3ocxV+zeiz9KxJBmWLyKjK/eZFozjl5eDyZOGqB7qK1CUFh3mY6tbvsGAnzYqgeX+UFDbhnyUeFpQBVR5+TBZUGYn2aiDq6v+WVwK9PrfOF9gszFuSbepSMqi2CuyY5OKcyQHr01lZQNf3Ub4yT2n4jNWy+6ajCwV/8tn/38lhFh0OOh/lwPvPRhqCLtjrmi0xKeMAX+20rM5hkGyKxfNHVm+Eh/j5BmwZZtRgAQV5n+pAnxb1m72qXQdcgAI3p9LDEf+CA99nuGqg0GP0r4oiYUjuGeYsJZhAAxCk/8RfFidg+sMkc0pTLhmyaDXJpYabqWt1xiAYd/58tqz1HM98Ds+64fbu1AvDnfsUtLeqWW7li1/Z80K9HxCOtJDWg/Er09m/3tCHIsHwZmDb66J89u76kiZ4uwDpaWkZfDTDgHilSnJl45pBj4daJhrp6zrSQlrg9au1kEs2bzKqBFyPwSVK82fXBdCZsZ8HH0tb3zT2ykQi1gDOqZJpQax078/LiykktL5TezvDr9qBvhOx+yd2Ry2RR796IAGR1cULlhRZPUAiOUCpoUhEDd8l8r5DdteMQEFoyOM4QnzywEkYmyhUjaercRYFv+WZYBdzvJVOiUS8DnJaXW7LOK8MzgrPInuknrwuaGRkYiBjzzg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SL2PR06MB3082.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(6512007)(83380400001)(186003)(107886003)(6666004)(4326008)(508600001)(52116002)(8676002)(26005)(36756003)(6506007)(2906002)(316002)(86362001)(66556008)(8936002)(5660300002)(110136005)(956004)(2616005)(38350700002)(66946007)(6486002)(38100700002)(66476007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?BEoCswIkWowP1ERSrIjtVH1tKu4+4KWTH3MlUuOnSeFSEocVodmmV5Gm3m9z?=
- =?us-ascii?Q?BZ0vkhmmdZ1yVaHLYtRuLFUme4ohT/6kki7kESGBZgbTNkwEOEHZ5TTNCzpd?=
- =?us-ascii?Q?GCPZamUig15SHJStYcAxiOfdpcF+2SN8nJUMsa92U5QKzdnghduPZvvUPqjg?=
- =?us-ascii?Q?5Ap+vZOfF3N+8BbLC23l0KzMJyMOZAafQ/T0adEeEFE3MTOUrtUuLsKib3pk?=
- =?us-ascii?Q?X1AriKgfiVcuFzFfyzkrzP7C2CPvQQt5UE9ubbfmYiWn4/qugGZCRHwMg+gV?=
- =?us-ascii?Q?pdZm/6uV61ePeGAW3eE9Jz4lZD4QCeQt39FBEP2r2LT+NEViwNpgee2m+3yD?=
- =?us-ascii?Q?rDTq7ZBCpadWYHyu/ZCBQejta3h6oCz2fUO/jMYeu//ZJpYUfBdEGCcTdDiz?=
- =?us-ascii?Q?qeG87d/+a0OlVqBfjrax/7uS54wOx5GX4OAlZd1oEMNzyfDWshZ3pU0HcTrj?=
- =?us-ascii?Q?I2Jutwv8uMwujqD57ElfLqZEepNLmvuom8hpDNkH60d1XDUibx6wUDXCszjw?=
- =?us-ascii?Q?g0oGhdSqT78PXItU61cqWN6Tqn6zb+jentDfB72faFvptD2zIhxJlagAsydi?=
- =?us-ascii?Q?VFT0LCN6gfuAc/JhDWu58dSM0QUG+D9x6g7KPCk9+qI8YxtPZiaT6mf4Ucje?=
- =?us-ascii?Q?GJnWToikh1MooI513TMpuNkAZao9wxPzEfnTzrH3G44lfQlkIDZ+T0nvEKXE?=
- =?us-ascii?Q?nOowayZN2GYHR5NdRmMoJosh2jXrMVGcBS9JyklpDInNizor2aSC3+d8ejEn?=
- =?us-ascii?Q?P+XwgOQhSG3GepE2x02jreH5umCZjH8reehcP07bcf3RNq7ykCPfZPmLQsZb?=
- =?us-ascii?Q?dnMJ8KSXh7DLyfX88066dBgXQU40EYxnqT6Mnv6LA7eXsOigoDmQAxm20Z1v?=
- =?us-ascii?Q?qDOv8tOEpjk1VlKMpjDcGNARsbSLEQn9NpJ1ygINlOg6VCLbvuMilR0mlJdF?=
- =?us-ascii?Q?wuTLPlO/7uBvwFIrmDCkVfqhRw8yALTqmQ8iO9PS5mf28tLOolnQmNzoQUfn?=
- =?us-ascii?Q?PZr+nPZJYeUJ2cJwdvplFc5F9Jy0jnhn2uIbvg0mWwnjKrpEDbok9wOe+xqF?=
- =?us-ascii?Q?uCowKXuJ6oIsh/MG3lg6XdOOEnB1I8tUDkQacwnqFCBGybyqPl/RqhWneAWx?=
- =?us-ascii?Q?PKYYt0HeI4zgpHK7i7fFwsxoWF+/NTX329nzHRve/JvUcg57txeIPd+IBbpF?=
- =?us-ascii?Q?VZTNDBbU4PoDj3Qno8P4EhayRz8AIGDFFY+Lgot79U//GDVWDEPOQTxWtEef?=
- =?us-ascii?Q?8WPIjgslo9RxyPclPjg1eC69B1Nkp/3dxrFzoR2H6sP9IBOSC+vP7o7UIxvk?=
- =?us-ascii?Q?H9CbZC4GJO8kOQH2rwi7SQKl?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 117eae58-8dbe-4783-21c7-08d98fa76dad
-X-MS-Exchange-CrossTenant-AuthSource: SL2PR06MB3082.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Oct 2021 06:45:51.4207
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: f15roTlWwAx/ZS1oEKJi88eaSYXjJfvvKxaoe+9p7dLxOI6heCCA9A3mhjkCmbA5fF7Vicb+r6EXm6LHZ321iQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SL2PR06MB3147
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign2
+X-QQ-Bgrelay: 1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-coccicheck complains about the use of snprintf() in sysfs show functions.
+Switching from the desktop environment to the tty environment,
+the state of the keyboard led lights and the state of the keyboard
+lock are inconsistent. This is because the attribute kb->kbdmode
+of the tty bound in the desktop environment (xorg) is set to
+VC_OFF, which causes the ledstate and kb->ledflagstate
+values of the bound tty to always be 0, which causes the switch
+from the desktop When to the tty environment, the LED light
+status is inconsistent with the keyboard lock status.
 
-Fix the following coccicheck warning:
-drivers/clk/clk-si5341.c:1471: WARNING: use scnprintf or sprintf.
-drivers/clk/clk-si5341.c:1486: WARNING: use scnprintf or sprintf.
-drivers/clk/clk-si5341.c:1501: WARNING: use scnprintf or sprintf.
-drivers/clk/clk-si5341.c:1516: WARNING: use scnprintf or sprintf.
-
-Use sysfs_emit instead of scnprintf or sprintf makes more sense.
-
-Signed-off-by: Qing Wang <wangqing@vivo.com>
+Signed-off-by: lianzhi chang <changlianzhi@uniontech.com>
 ---
- drivers/clk/clk-si5341.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/input/input.c     | 46 ++++++++++++++++++++++++++++++++++++++-
+ drivers/tty/vt/keyboard.c | 19 ++++++++++++++--
+ include/linux/input.h     |  3 +++
+ 3 files changed, 65 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/clk/clk-si5341.c b/drivers/clk/clk-si5341.c
-index 57ae183..5d62ddb 100644
---- a/drivers/clk/clk-si5341.c
-+++ b/drivers/clk/clk-si5341.c
-@@ -1468,7 +1468,7 @@ static ssize_t input_present_show(struct device *dev,
- 	if (res < 0)
- 		return res;
- 	res = !(status & SI5341_STATUS_LOSREF);
--	return snprintf(buf, PAGE_SIZE, "%d\n", res);
-+	return sysfs_emit(buf, "%d\n", res);
- }
- static DEVICE_ATTR_RO(input_present);
+diff --git a/drivers/input/input.c b/drivers/input/input.c
+index ccaeb2426385..8c0ef947ac34 100644
+--- a/drivers/input/input.c
++++ b/drivers/input/input.c
+@@ -37,6 +37,11 @@ static DEFINE_IDA(input_ida);
+ static LIST_HEAD(input_dev_list);
+ static LIST_HEAD(input_handler_list);
  
-@@ -1483,7 +1483,7 @@ static ssize_t input_present_sticky_show(struct device *dev,
- 	if (res < 0)
- 		return res;
- 	res = !(status & SI5341_STATUS_LOSREF);
--	return snprintf(buf, PAGE_SIZE, "%d\n", res);
-+	return sysfs_emit(buf, "%d\n", res);
- }
- static DEVICE_ATTR_RO(input_present_sticky);
++#define VC_SCROLLOCK	0	/* scroll-lock mode */
++#define VC_NUMLOCK	1	/* numeric lock mode */
++#define VC_CAPSLOCK	2	/* capslock mode */
++static unsigned int ledstate = -1U;			/* undefined */
++
+ /*
+  * input_mutex protects access to both input_dev_list and input_handler_list.
+  * This also causes input_[un]register_device and input_[un]register_handler
+@@ -472,8 +477,12 @@ void input_inject_event(struct input_handle *handle,
  
-@@ -1498,7 +1498,7 @@ static ssize_t pll_locked_show(struct device *dev,
- 	if (res < 0)
- 		return res;
- 	res = !(status & SI5341_STATUS_LOL);
--	return snprintf(buf, PAGE_SIZE, "%d\n", res);
-+	return sysfs_emit(buf, "%d\n", res);
- }
- static DEVICE_ATTR_RO(pll_locked);
+ 		rcu_read_lock();
+ 		grab = rcu_dereference(dev->grab);
+-		if (!grab || grab == handle)
++		if (!grab || grab == handle) {
+ 			input_handle_event(dev, type, code, value);
++
++			if (type == EV_LED && code <= LED_SCROLLL)
++				input_update_ledstate(code, value);
++		}
+ 		rcu_read_unlock();
  
-@@ -1513,7 +1513,7 @@ static ssize_t pll_locked_sticky_show(struct device *dev,
- 	if (res < 0)
- 		return res;
- 	res = !(status & SI5341_STATUS_LOL);
--	return snprintf(buf, PAGE_SIZE, "%d\n", res);
-+	return sysfs_emit(buf, "%d\n", res);
+ 		spin_unlock_irqrestore(&dev->event_lock, flags);
+@@ -481,6 +490,41 @@ void input_inject_event(struct input_handle *handle,
  }
- static DEVICE_ATTR_RO(pll_locked_sticky);
+ EXPORT_SYMBOL(input_inject_event);
  
++void input_update_ledstate(unsigned int flag, unsigned int value)
++{
++	unsigned int bit;
++
++	switch (flag) {
++	case LED_NUML:
++		bit = VC_NUMLOCK;
++		break;
++	case LED_CAPSL:
++		bit = VC_CAPSLOCK;
++		break;
++	case LED_SCROLLL:
++		bit = VC_SCROLLOCK;
++		break;
++	default:
++		WARN_ON_ONCE(1);
++		return;
++	}
++
++	if (ledstate == -1U)
++		ledstate = 0;
++
++	if (value)
++		ledstate |= BIT(bit);
++	else
++		ledstate &= ~BIT(bit);
++}
++EXPORT_SYMBOL(input_update_ledstate);
++
++unsigned int input_get_ledstate(void)
++{
++	return ledstate;
++}
++EXPORT_SYMBOL(input_get_ledstate);
++
+ /**
+  * input_alloc_absinfo - allocates array of input_absinfo structs
+  * @dev: the input device emitting absolute events
+diff --git a/drivers/tty/vt/keyboard.c b/drivers/tty/vt/keyboard.c
+index c7fbbcdcc346..0cfccb1d7992 100644
+--- a/drivers/tty/vt/keyboard.c
++++ b/drivers/tty/vt/keyboard.c
+@@ -151,7 +151,6 @@ static bool rep;			/* flag telling character repeat */
+ 
+ static int shift_state = 0;
+ 
+-static unsigned int ledstate = -1U;			/* undefined */
+ static unsigned char ledioctl;
+ 
+ /*
+@@ -1021,10 +1020,14 @@ struct kbd_led_trigger {
+ 
+ static int kbd_led_trigger_activate(struct led_classdev *cdev)
+ {
++	unsigned int ledstate;
++
+ 	struct kbd_led_trigger *trigger =
+ 		container_of(cdev->trigger, struct kbd_led_trigger, trigger);
+ 
+ 	tasklet_disable(&keyboard_tasklet);
++
++	ledstate = input_get_ledstate();
+ 	if (ledstate != -1U)
+ 		led_trigger_event(&trigger->trigger,
+ 				  ledstate & trigger->mask ?
+@@ -1137,6 +1140,10 @@ static void kbd_init_leds(void)
+  */
+ static unsigned char getledstate(void)
+ {
++	unsigned int ledstate;
++
++	ledstate = input_get_ledstate();
++
+ 	return ledstate & 0xff;
+ }
+ 
+@@ -1248,16 +1255,21 @@ void vt_kbd_con_stop(unsigned int console)
+ static void kbd_bh(struct tasklet_struct *unused)
+ {
+ 	unsigned int leds;
++	unsigned int ledstate;
+ 	unsigned long flags;
++	struct kbd_struct *kb = kbd_table + fg_console;
++
++	if (kb->kbdmode == VC_OFF)
++		return;
+ 
+ 	spin_lock_irqsave(&led_lock, flags);
+ 	leds = getleds();
++	ledstate = input_get_ledstate();
+ 	leds |= (unsigned int)kbd->lockstate << 8;
+ 	spin_unlock_irqrestore(&led_lock, flags);
+ 
+ 	if (leds != ledstate) {
+ 		kbd_propagate_led_state(ledstate, leds);
+-		ledstate = leds;
+ 	}
+ }
+ 
+@@ -1604,8 +1616,11 @@ static void kbd_disconnect(struct input_handle *handle)
+  */
+ static void kbd_start(struct input_handle *handle)
+ {
++	unsigned int ledstate;
++
+ 	tasklet_disable(&keyboard_tasklet);
+ 
++	ledstate = input_get_ledstate();
+ 	if (ledstate != -1U)
+ 		kbd_update_leds_helper(handle, &ledstate);
+ 
+diff --git a/include/linux/input.h b/include/linux/input.h
+index 0354b298d874..0e0ba53a9cc7 100644
+--- a/include/linux/input.h
++++ b/include/linux/input.h
+@@ -420,6 +420,9 @@ ktime_t *input_get_timestamp(struct input_dev *dev);
+ void input_event(struct input_dev *dev, unsigned int type, unsigned int code, int value);
+ void input_inject_event(struct input_handle *handle, unsigned int type, unsigned int code, int value);
+ 
++void input_update_ledstate(unsigned int flag, unsigned int value);
++unsigned int input_get_ledstate(void);
++
+ static inline void input_report_key(struct input_dev *dev, unsigned int code, int value)
+ {
+ 	input_event(dev, EV_KEY, code, !!value);
 -- 
-2.7.4
+2.20.1
+
+
 
