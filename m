@@ -2,266 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BAC242F9FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 19:19:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3532742F9FC
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 19:21:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242081AbhJORWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 13:22:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39674 "EHLO
+        id S242147AbhJORXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 13:23:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237969AbhJORV7 (ORCPT
+        with ESMTP id S237969AbhJORXo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 13:21:59 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D30CC061570;
-        Fri, 15 Oct 2021 10:19:52 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: andrzej.p)
-        with ESMTPSA id 74A091F4502D
-Subject: Re: [PATCH v7 11/11] media: hantro: Support NV12 on the G2 core
-To:     =?UTF-8?Q?Jernej_=c5=a0krabec?= <jernej.skrabec@gmail.com>,
-        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-staging@lists.linux.dev
-Cc:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        Fabio Estevam <festevam@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>, kernel@collabora.com,
-        Ezequiel Garcia <ezequiel@collabora.com>
-References: <20210929160439.6601-1-andrzej.p@collabora.com>
- <20210929160439.6601-12-andrzej.p@collabora.com> <3448839.R56niFO833@kista>
-From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-Message-ID: <84fd4395-5cac-c933-7639-dd3cd844a9cf@collabora.com>
-Date:   Fri, 15 Oct 2021 19:19:47 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <3448839.R56niFO833@kista>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        Fri, 15 Oct 2021 13:23:44 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D506C061762
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 10:21:38 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id f8-20020a2585480000b02905937897e3daso11985665ybn.2
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 10:21:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=/nDYakaYxbaZyFecc8yKJArWXyue+4iCPN+vHLxVtm8=;
+        b=XmoWQqvtNFAnC5n3qHx2qxnIzT/lAJ3vqMh2+Y5AFYiZuFEXjIUIYEonLUunixL318
+         H0ee/WTxT/JZghvOXvp4P8ievcQt7y+xZhIpgseQrLnNpRwzwGKCM6eOETch3oNK1YMn
+         qPZnax1FHsNdoSx2irt8F79E0yUWGTyz4CuQHMk+f5vRc3N2Rv10sk0EjRvsyreUr0TR
+         ugItKRl9iCkmtx8ipyHS+YCt38w6cin9bnFTLvzlrzVTTLmdqfhsBOOuADQUrkR/851e
+         sWhNZFvjyhglxz7DZ+dPBaSilVsOAKALFDmVUokE2bbcxmvLqN8rWPMuwQavZ6oUOIt2
+         hZHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=/nDYakaYxbaZyFecc8yKJArWXyue+4iCPN+vHLxVtm8=;
+        b=msTjngrORuT5pvVWmzHFzoC2W3+G21FeiahNi82+a2ImFeyXVnZyhe7x46eTEHrMKU
+         KE60QSKJEXVSn/Oz5uZURsIzB6CxtDzy5hpPpoU8rJfH7EfNobzDHA4Ai390rRgqmI5u
+         1wDMKmJ8ZeXMwIJT9RjYD1ntFDQCcg+CL0AFxCxwGJrYfZrg1X2gTVrefD7lrh6Fhlra
+         kI7WYshfWhk4ZhmoHisE4i9R1wFN/xIE3AZ7t+y6FQDySdkxRu0Qelp05ReJIJoecAgE
+         Z/PMsjkDxktFCqJPaNVvQi0IPJk0tLL0xO5JgQuUO32bYWtnHNIy8owFnoYm6vnHeRVZ
+         DGQg==
+X-Gm-Message-State: AOAM531SgpFd5Ugi6uNroKN+AkZS8XnOO+oHEoVv6furidQqFH/xRyFf
+        7AcxLrkhWcF4fVFUfN9VsBGqkEr7Ei7F
+X-Google-Smtp-Source: ABdhPJxWkEEYlmaq0lw+6VBwNltVyHcRE1ud7zxTCiWiOQbO8QnBrhf6vxsDI5Q29gM5R6kaQp8KAFegi3m+
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:69bc:7451:58ad:6585])
+ (user=irogers job=sendgmr) by 2002:a25:6e06:: with SMTP id
+ j6mr14669326ybc.311.1634318497453; Fri, 15 Oct 2021 10:21:37 -0700 (PDT)
+Date:   Fri, 15 Oct 2021 10:21:11 -0700
+Message-Id: <20211015172132.1162559-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
+Subject: [PATCH v2 00/21] perf metric: Fixes and allow modifiers
+From:   Ian Rogers <irogers@google.com>
+To:     Andi Kleen <ak@linux.intel.com>, Jiri Olsa <jolsa@redhat.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        "Paul A . Clarke" <pc@us.ibm.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Riccardo Mancini <rickyman7@gmail.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        ToastC <mrtoastcheng@gmail.com>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>,
+        Felix Fietkau <nbd@nbd.name>,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        Song Liu <songliubraving@fb.com>, Fabian Hemmer <copy@copy.sh>,
+        Alexander Antonov <alexander.antonov@linux.intel.com>,
+        Nicholas Fraser <nfraser@codeweavers.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Denys Zagorui <dzagorui@cisco.com>,
+        Wan Jiabing <wanjiabing@vivo.com>,
+        Thomas Richter <tmricht@linux.ibm.com>,
+        Sumanth Korikkar <sumanthk@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Changbin Du <changbin.du@intel.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Andrew Kilroy <andrew.kilroy@arm.com>
+Cc:     Stephane Eranian <eranian@google.com>,
+        Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jernej,
+There are 4 main changes in this patch set:
+ - perf metric: Modify resolution and recursion check.
+ - perf parse-events: Add new "metric-id" term.
+ - perf metrics: Modify setup and deduplication
+ - perf metric: Allow modifiers on metrics.
 
-W dniu 14.10.2021 o 19:42, Jernej Škrabec pisze:
-> Hi Andrzej!
-> 
-> Dne sreda, 29. september 2021 ob 18:04:39 CEST je Andrzej Pietrasiewicz
-> napisal(a):
->> The G2 decoder block produces NV12 4x4 tiled format (NV12_4L4).
->> Enable the G2 post-processor block, in order to produce regular NV12.
->>
->> The logic in hantro_postproc.c is leveraged to take care of allocating
->> the extra buffers and configure the post-processor, which is
->> significantly simpler than the one on the G1.
-> 
-> Quick summary of discussion on LibreELEC Slack:
-> When using NV12 format on Allwinner H6 variant of G2 (needs some driver
-> changes), I get frames out of order. If I use native NV12 tiled format, frames
-> are ordered correctly.
-> 
-> Currently I'm not sure if this is issue with my changes or is this general
-> issue.
-> 
-> I would be grateful if anyone can test frame order with and without
-> postprocessing enabled on imx8. Take some dynamic video with a lot of short
-> scenes. It's pretty obvious when frames are out of order.
-> 
+In overview the changes start by trying to simplify the metric code,
+then it fixes various bugs and finally it builds a new feature of
+allowing metrics like:
 
-I checked on imx8 and cannot observe any such artifacts.
+$ perf stat -M IPC:u,IPC:k -a sleep 1
 
-Andrzej
+ Performance counter stats for 'system wide':
 
-> However, given that frames themself are correctly decoded and without
-> postprocessing in right order, that shouldn't block merging previous patches.
-> I tried few different videos and frames were all decoded correctly.
-> 
-> Best regards,
-> Jernej
-> 
->>
->> Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
->> Signed-off-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
->> ---
->>   .../staging/media/hantro/hantro_g2_vp9_dec.c  |  6 ++--
->>   drivers/staging/media/hantro/hantro_hw.h      |  1 +
->>   .../staging/media/hantro/hantro_postproc.c    | 31 +++++++++++++++++++
->>   drivers/staging/media/hantro/imx8m_vpu_hw.c   | 11 +++++++
->>   4 files changed, 46 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/staging/media/hantro/hantro_g2_vp9_dec.c b/drivers/
-> staging/media/hantro/hantro_g2_vp9_dec.c
->> index 7f827b9f0133..1a26be72c878 100644
->> --- a/drivers/staging/media/hantro/hantro_g2_vp9_dec.c
->> +++ b/drivers/staging/media/hantro/hantro_g2_vp9_dec.c
->> @@ -152,7 +152,7 @@ static void config_output(struct hantro_ctx *ctx,
->>   	hantro_reg_write(ctx->dev, &g2_out_dis, 0);
->>   	hantro_reg_write(ctx->dev, &g2_output_format, 0);
->>   
->> -	luma_addr = vb2_dma_contig_plane_dma_addr(&dst->base.vb.vb2_buf,
-> 0);
->> +	luma_addr = hantro_get_dec_buf_addr(ctx, &dst->base.vb.vb2_buf);
->>   	hantro_write_addr(ctx->dev, G2_OUT_LUMA_ADDR, luma_addr);
->>   
->>   	chroma_addr = luma_addr + chroma_offset(ctx, dec_params);
->> @@ -191,7 +191,7 @@ static void config_ref(struct hantro_ctx *ctx,
->>   	hantro_reg_write(ctx->dev, &ref_reg->hor_scale, (refw << 14) /
-> dst->vp9.width);
->>   	hantro_reg_write(ctx->dev, &ref_reg->ver_scale, (refh << 14) /
-> dst->vp9.height);
->>   
->> -	luma_addr = vb2_dma_contig_plane_dma_addr(&buf->base.vb.vb2_buf,
-> 0);
->> +	luma_addr = hantro_get_dec_buf_addr(ctx, &buf->base.vb.vb2_buf);
->>   	hantro_write_addr(ctx->dev, ref_reg->y_base, luma_addr);
->>   
->>   	chroma_addr = luma_addr + chroma_offset(ctx, dec_params);
->> @@ -236,7 +236,7 @@ static void config_ref_registers(struct hantro_ctx *ctx,
->>   	config_ref(ctx, dst, &ref_regs[1], dec_params, dec_params-
->> golden_frame_ts);
->>   	config_ref(ctx, dst, &ref_regs[2], dec_params, dec_params-
->> alt_frame_ts);
->>   
->> -	mv_addr = vb2_dma_contig_plane_dma_addr(&mv_ref->base.vb.vb2_buf,
-> 0) +
->> +	mv_addr = hantro_get_dec_buf_addr(ctx, &mv_ref->base.vb.vb2_buf) +
->>   		  mv_offset(ctx, dec_params);
->>   	hantro_write_addr(ctx->dev, G2_REF_MV_ADDR(0), mv_addr);
->>   
->> diff --git a/drivers/staging/media/hantro/hantro_hw.h b/drivers/staging/
-> media/hantro/hantro_hw.h
->> index 2961d399fd60..3d4a5dc1e6d5 100644
->> --- a/drivers/staging/media/hantro/hantro_hw.h
->> +++ b/drivers/staging/media/hantro/hantro_hw.h
->> @@ -274,6 +274,7 @@ extern const struct hantro_variant rk3399_vpu_variant;
->>   extern const struct hantro_variant sama5d4_vdec_variant;
->>   
->>   extern const struct hantro_postproc_ops hantro_g1_postproc_ops;
->> +extern const struct hantro_postproc_ops hantro_g2_postproc_ops;
->>   
->>   extern const u32 hantro_vp8_dec_mc_filter[8][6];
->>   
->> diff --git a/drivers/staging/media/hantro/hantro_postproc.c b/drivers/
-> staging/media/hantro/hantro_postproc.c
->> index 4549aec08feb..79a66d001738 100644
->> --- a/drivers/staging/media/hantro/hantro_postproc.c
->> +++ b/drivers/staging/media/hantro/hantro_postproc.c
->> @@ -11,6 +11,7 @@
->>   #include "hantro.h"
->>   #include "hantro_hw.h"
->>   #include "hantro_g1_regs.h"
->> +#include "hantro_g2_regs.h"
->>   
->>   #define HANTRO_PP_REG_WRITE(vpu, reg_name, val) \
->>   { \
->> @@ -99,6 +100,21 @@ static void hantro_postproc_g1_enable(struct hantro_ctx
-> *ctx)
->>   	HANTRO_PP_REG_WRITE(vpu, display_width, ctx->dst_fmt.width);
->>   }
->>   
->> +static void hantro_postproc_g2_enable(struct hantro_ctx *ctx)
->> +{
->> +	struct hantro_dev *vpu = ctx->dev;
->> +	struct vb2_v4l2_buffer *dst_buf;
->> +	size_t chroma_offset = ctx->dst_fmt.width * ctx->dst_fmt.height;
->> +	dma_addr_t dst_dma;
->> +
->> +	dst_buf = hantro_get_dst_buf(ctx);
->> +	dst_dma = vb2_dma_contig_plane_dma_addr(&dst_buf->vb2_buf, 0);
->> +
->> +	hantro_write_addr(vpu, G2_RS_OUT_LUMA_ADDR, dst_dma);
->> +	hantro_write_addr(vpu, G2_RS_OUT_CHROMA_ADDR, dst_dma +
-> chroma_offset);
->> +	hantro_reg_write(vpu, &g2_out_rs_e, 1);
->> +}
->> +
->>   void hantro_postproc_free(struct hantro_ctx *ctx)
->>   {
->>   	struct hantro_dev *vpu = ctx->dev;
->> @@ -127,6 +143,9 @@ int hantro_postproc_alloc(struct hantro_ctx *ctx)
->>   	if (ctx->vpu_src_fmt->fourcc == V4L2_PIX_FMT_H264_SLICE)
->>   		buf_size += hantro_h264_mv_size(ctx->dst_fmt.width,
->>   						ctx-
->> dst_fmt.height);
->> +	else if (ctx->vpu_src_fmt->fourcc == V4L2_PIX_FMT_VP9_FRAME)
->> +		buf_size += hantro_vp9_mv_size(ctx->dst_fmt.width,
->> +					       ctx-
->> dst_fmt.height);
->>   
->>   	for (i = 0; i < num_buffers; ++i) {
->>   		struct hantro_aux_buf *priv = &ctx->postproc.dec_q[i];
->> @@ -152,6 +171,13 @@ static void hantro_postproc_g1_disable(struct
-> hantro_ctx *ctx)
->>   	HANTRO_PP_REG_WRITE_S(vpu, pipeline_en, 0x0);
->>   }
->>   
->> +static void hantro_postproc_g2_disable(struct hantro_ctx *ctx)
->> +{
->> +	struct hantro_dev *vpu = ctx->dev;
->> +
->> +	hantro_reg_write(vpu, &g2_out_rs_e, 0);
->> +}
->> +
->>   void hantro_postproc_disable(struct hantro_ctx *ctx)
->>   {
->>   	struct hantro_dev *vpu = ctx->dev;
->> @@ -172,3 +198,8 @@ const struct hantro_postproc_ops hantro_g1_postproc_ops
-> = {
->>   	.enable = hantro_postproc_g1_enable,
->>   	.disable = hantro_postproc_g1_disable,
->>   };
->> +
->> +const struct hantro_postproc_ops hantro_g2_postproc_ops = {
->> +	.enable = hantro_postproc_g2_enable,
->> +	.disable = hantro_postproc_g2_disable,
->> +};
->> diff --git a/drivers/staging/media/hantro/imx8m_vpu_hw.c b/drivers/staging/
-> media/hantro/imx8m_vpu_hw.c
->> index 455a107ffb02..1a43f6fceef9 100644
->> --- a/drivers/staging/media/hantro/imx8m_vpu_hw.c
->> +++ b/drivers/staging/media/hantro/imx8m_vpu_hw.c
->> @@ -132,6 +132,14 @@ static const struct hantro_fmt imx8m_vpu_dec_fmts[] = {
->>   	},
->>   };
->>   
->> +static const struct hantro_fmt imx8m_vpu_g2_postproc_fmts[] = {
->> +	{
->> +		.fourcc = V4L2_PIX_FMT_NV12,
->> +		.codec_mode = HANTRO_MODE_NONE,
->> +		.postprocessed = true,
->> +	},
->> +};
->> +
->>   static const struct hantro_fmt imx8m_vpu_g2_dec_fmts[] = {
->>   	{
->>   		.fourcc = V4L2_PIX_FMT_NV12_4L4,
->> @@ -301,6 +309,9 @@ const struct hantro_variant imx8mq_vpu_g2_variant = {
->>   	.dec_offset = 0x0,
->>   	.dec_fmts = imx8m_vpu_g2_dec_fmts,
->>   	.num_dec_fmts = ARRAY_SIZE(imx8m_vpu_g2_dec_fmts),
->> +	.postproc_fmts = imx8m_vpu_g2_postproc_fmts,
->> +	.num_postproc_fmts = ARRAY_SIZE(imx8m_vpu_g2_postproc_fmts),
->> +	.postproc_ops = &hantro_g2_postproc_ops,
->>   	.codec = HANTRO_HEVC_DECODER | HANTRO_VP9_DECODER,
->>   	.codec_ops = imx8mq_vpu_g2_codec_ops,
->>   	.init = imx8mq_vpu_hw_init,
->> -- 
->> 2.17.1
->>
->>
-> 
-> 
+        93,269,988      inst_retired.any:k        #     0.26 IPC:k                  
+       352,037,460      cpu_clk_unhalted.thread:k                                   
+        70,317,865      inst_retired.any:u        #     0.76 IPC:u                  
+        92,762,220      cpu_clk_unhalted.thread:u                                   
+
+       1.003754577 seconds time elapsed
+
+Previous complexity came from using the evsel->name as the identifier
+for events in metrics, however, this name isn't stable and has issues
+around wildcard expansion. These changes fix this by adding a
+dedicated metric_id to evsels, performing deduplication on IDs before
+event parsing and not handling all evsels on a single evlist.
+
+The recursion and metric_ref logic is simplified, the first by moving
+data from the heap to the stack, the latter by building in an array
+rather than a linked list. This logic is integral to metric set up and
+simplification makes the effects of the changes easier to follow, in
+particular as there are fewer structs being maintained.
+
+Event parsing is modified to allow qualifiers on kernel PMU events,
+this is necessary to allow the metric-id to be added, but allows
+qualifiers in other cases like specifying callgraph or a name.
+
+There is a certain amount of comment adding and const-ification, this
+is with a view to making the code more intention revealing and to aid
+following its logic. For example, the pmu event tables should never
+change and it'd be a bug if they ever did, it's therefore strange to
+access it using non-const pointers.
+
+The kernel list_sort.c/h are added for use sorting metrics in order to
+deduplicate/reuse events from a larger group in a smaller one. This
+was previously done by inserting in size order, but that only worked
+within a metric group.
+
+Some of the commit messages show the TopDownL1 metrics being used on a
+SkylakeX machine. These metrics were removed by
+c4ad8fabd03f76ed3a2a4c8aef6baf6cd4f24542 ("perf vendor events: Update
+metrics for SkyLake Server") and the data was gathered with this patch
+reverted.
+
+v2. Add METADATA fixes to 'Add list_sort' suggested by
+    Arnaldo Carvalho de Melo <acme@kernel.org>.
+    Fix arm64 function declaration in 'Add const to pmu_events_map' found by
+    Andrew Kilroy <andrew.kilroy@arm.com>.
+    Add a static in 'Make pmu_event tables const' suggested by
+    John Garry <john.garry@huawei.com>.
+    Add acked-by: Andi Kleen <ak@linux.intel.com>.
+    Fix/handle 0 events case in 'Modify setup and deduplication'.
+    Fix a missed strdup that resulted in a double free in 'Allow modifiers on
+    metrics.'
+
+Ian Rogers (21):
+  tools lib: Add list_sort.
+  perf pmu: Add const to pmu_events_map.
+  perf pmu: Make pmu_sys_event_tables const.
+  perf pmu: Make pmu_event tables const.
+  perf metric: Move runtime value to the expr context
+  perf metric: Add documentation and rename a variable.
+  perf metric: Add metric new and free
+  perf metric: Only add a referenced metric once
+  perf metric: Modify resolution and recursion check.
+  perf metric: Comment data structures.
+  perf metric: Document the internal 'struct metric'
+  perf metric: Simplify metric_refs calculation.
+  perf parse-events: Add const to evsel name
+  perf parse-events: Add new "metric-id" term.
+  perf parse-events: Allow config on kernel PMU events
+  perf metric: Encode and use metric-id as qualifier
+  perf expr: Add subset utility.
+  perf metrics: Modify setup and deduplication
+  perf metric: Switch fprintf to pr_err.
+  perf parse-events: Identify broken modifiers.
+  perf metric: Allow modifiers on metrics.
+
+ tools/include/linux/list_sort.h       |   14 +
+ tools/lib/list_sort.c                 |  252 +++++
+ tools/perf/MANIFEST                   |    1 +
+ tools/perf/arch/arm64/util/pmu.c      |    2 +-
+ tools/perf/arch/powerpc/util/header.c |    2 +-
+ tools/perf/check-headers.sh           |    2 +
+ tools/perf/pmu-events/jevents.c       |    6 +-
+ tools/perf/pmu-events/pmu-events.h    |    8 +-
+ tools/perf/tests/expand-cgroup.c      |    2 +-
+ tools/perf/tests/expr.c               |   29 +-
+ tools/perf/tests/parse-metric.c       |    2 +-
+ tools/perf/tests/pmu-events.c         |   59 +-
+ tools/perf/util/Build                 |    5 +
+ tools/perf/util/evsel.c               |   17 +
+ tools/perf/util/evsel.h               |    2 +
+ tools/perf/util/expr.c                |   56 +-
+ tools/perf/util/expr.h                |   16 +-
+ tools/perf/util/expr.l                |    6 +-
+ tools/perf/util/expr.y                |    2 +-
+ tools/perf/util/metricgroup.c         | 1461 ++++++++++++++-----------
+ tools/perf/util/metricgroup.h         |   35 +-
+ tools/perf/util/parse-events-hybrid.c |   34 +-
+ tools/perf/util/parse-events-hybrid.h |    6 +-
+ tools/perf/util/parse-events.c        |  166 +--
+ tools/perf/util/parse-events.h        |   11 +-
+ tools/perf/util/parse-events.l        |   18 +-
+ tools/perf/util/parse-events.y        |   27 +-
+ tools/perf/util/pfm.c                 |    3 +-
+ tools/perf/util/pmu.c                 |   22 +-
+ tools/perf/util/pmu.h                 |   10 +-
+ tools/perf/util/python-ext-sources    |    1 +
+ tools/perf/util/s390-sample-raw.c     |    6 +-
+ tools/perf/util/stat-shadow.c         |   27 +-
+ 33 files changed, 1470 insertions(+), 840 deletions(-)
+ create mode 100644 tools/include/linux/list_sort.h
+ create mode 100644 tools/lib/list_sort.c
+
+-- 
+2.33.0.1079.g6e70778dc9-goog
 
