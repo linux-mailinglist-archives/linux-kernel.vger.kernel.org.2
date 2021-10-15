@@ -2,55 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FA7242E83E
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 07:05:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43E7E42E840
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 07:05:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233252AbhJOFHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 01:07:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39010 "EHLO
+        id S234413AbhJOFHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 01:07:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229661AbhJOFHq (ORCPT
+        with ESMTP id S229661AbhJOFHu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 01:07:46 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36312C061570;
-        Thu, 14 Oct 2021 22:05:40 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id j12so1409121qkk.5;
-        Thu, 14 Oct 2021 22:05:40 -0700 (PDT)
+        Fri, 15 Oct 2021 01:07:50 -0400
+Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD866C061570;
+        Thu, 14 Oct 2021 22:05:44 -0700 (PDT)
+Received: by mail-qv1-xf35.google.com with SMTP id d20so5056889qvm.8;
+        Thu, 14 Oct 2021 22:05:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=jms.id.au; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=J7E+ySUt0IP6s5yPl9p5TK7CMGdGMSyK+lCNwRqZdwc=;
-        b=KQRULNlCzYx2te2lSPOF3+nT+fpoJb0xK9Cy469Fjixte15tNXDlmYjq26SxOB206Q
-         SIa6RvHHm8D2RgIwHd0Yrzjx8zwoqmYaK4BlLpk3cRPJz31RDzHRspGWWwQEohzy4Cma
-         bMREGnxppMeIiS+ht+uVd6FLicOzW5qf5vMJI=
+        bh=SVSDlRtUbO26Znlz3FX13ju5T/3DmVvaUnOyfVchjzs=;
+        b=elrdX1cpB1nDA+5QZPRa5ZtlWXqUfKwBaWxMYWW+zgG8VTp1BvP92U1fYhQ5z17QvJ
+         i0hxnMiX38QA96+3vQNnd0C8bEczfn5F9ufPSdnZ+hNLbytj3/FUFqvGIW037XgR8ZVk
+         YeN13QrAqC2Iuxqx3PvhtkKOD5M2YZ/bLy5Ro=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=J7E+ySUt0IP6s5yPl9p5TK7CMGdGMSyK+lCNwRqZdwc=;
-        b=cUvbxP2jhCNngz+gK381XWGdB4wZ2b9QPwFJiygzaUoHp+118TISuVUrC5x+Py2Gld
-         p1ZEWM9XL+XtYl1xPWLvW0LHUEK7dXLIg4pp8aIEH/LBCxEb1UtcgF24yxE1XtDf3d5g
-         h1OeKU3RrABEDKcFvbEk5Dx7F7nEI6FGK/C240g4XQgg1NHJl71JBO+hPF1jVjSX2Q6a
-         Tv/oHF43HfnsIH2NLgAR4JgOtb5PWozcrVP+d1ahM6c9wJJwEAIsFkNnuHFbfTo+j3op
-         L2oEvN7nisrwqCNODooldv3lYXG2PKQ6tS+a3SuKfsbliC5xXzwNbogVygkgy9h8XRbS
-         o1og==
-X-Gm-Message-State: AOAM5324LuKD54+ScbkiSTo4ey2/CoTN4Ilk9ltu8Pas7LlkKpb3BLeE
-        BoBYvLy/khkm4JxQqS7ZI/VVQuzMu5ILoiJ04sMXo6G2
-X-Google-Smtp-Source: ABdhPJxl3h5W7e9msCVOntLw1RCNlx52YalpfzWdwLbr4MApfik9EfRJP64+UoBIRyvR26RlSWUGKPHN0J4lyi7obB8=
-X-Received: by 2002:a05:620a:5e4:: with SMTP id z4mr7190031qkg.395.1634274339215;
- Thu, 14 Oct 2021 22:05:39 -0700 (PDT)
+        bh=SVSDlRtUbO26Znlz3FX13ju5T/3DmVvaUnOyfVchjzs=;
+        b=egcqxJpiro2rvMlAhe/MwDKNnKeHAhCRAg/RW1N0Mf3o7IXmK4wcZMpkRR3YClBX6U
+         2BObeRYeZvmu5bJQwZ1i1ERX4WCvDCBW6uJU1p3lu6GQAqOaLVxNa8f2lkRamJ543y8t
+         fQGP9Ewr/ggl/SENiOsNxI5xdYZviMurbRAw/rEdMTzu27llmxRaEiYHdnzGPLC+9jei
+         HaJk1rCEYWlUMuJrwjNel8QFF0MHjWRtCtMo9TkimukDb8wPTFFni16O99L5nTUedrGs
+         fNnPa1oq5/hTElg/JF+V6cYXAqNw1vyIkIYqRGpOvSvlykpbok8lnXd25Qo8t9WAARRC
+         M3Pw==
+X-Gm-Message-State: AOAM5314KeJKeaDR+RzY472sG60WENBf1PgnBs9z2scfIGMCD8vqP77/
+        u3zcYCyXiDfBAGljkM4IVj1cinu2gEHw+O0bzEw=
+X-Google-Smtp-Source: ABdhPJwyxNh3quQmc4LjNuE3K+5AnLtlDoZrZxFupHfdR3nYhF4Eyc1zvKRvGLLuJ41tOk3Se5lfgtNgs8C45ogCHrc=
+X-Received: by 2002:a05:6214:98d:: with SMTP id dt13mr9316954qvb.13.1634274343844;
+ Thu, 14 Oct 2021 22:05:43 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210927155925.15485-1-eajames@linux.ibm.com> <20210927155925.15485-3-eajames@linux.ibm.com>
-In-Reply-To: <20210927155925.15485-3-eajames@linux.ibm.com>
+References: <20210927155925.15485-1-eajames@linux.ibm.com> <20210927155925.15485-2-eajames@linux.ibm.com>
+In-Reply-To: <20210927155925.15485-2-eajames@linux.ibm.com>
 From:   Joel Stanley <joel@jms.id.au>
-Date:   Fri, 15 Oct 2021 05:05:27 +0000
-Message-ID: <CACPK8XfAL2-07M+ZWZ74X42Mvo8UvAdKPJ-51YWgKb_nzS-ffQ@mail.gmail.com>
-Subject: Re: [PATCH v3 2/4] fsi: occ: Store the SBEFIFO FFDC in the user
- response buffer
-To:     Eddie James <eajames@linux.ibm.com>,
-        Amitay Isaacs <amitay@ozlabs.org>
+Date:   Fri, 15 Oct 2021 05:05:32 +0000
+Message-ID: <CACPK8XdQ9wdg=VxRb0atd8P7PpFZTsWZwsYEkWsbmbR20DKKBQ@mail.gmail.com>
+Subject: Re: [PATCH v3 1/4] fsi: occ: Use a large buffer for responses
+To:     Eddie James <eajames@linux.ibm.com>
 Cc:     linux-fsi@lists.ozlabs.org,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         linux-hwmon@vger.kernel.org, Jeremy Kerr <jk@ozlabs.org>,
@@ -64,58 +62,93 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Mon, 27 Sept 2021 at 15:59, Eddie James <eajames@linux.ibm.com> wrote:
 >
-> If the SBEFIFO response indicates an error, store the response in the
-> user buffer and return an error. Previously, the user had no way of
-> obtaining the SBEFIFO FFDC.
+> Allocate a large buffer for each OCC to handle response data. This
+> removes memory allocation during an operation, and also allows for
+> the maximum amount of SBE FFDC.
 
-How does this look for userspace?
-
-Will existing userspace handle this?
+Why do we need this change? (is it fixing a bug, did the host change,
+is it an unimplemented feature, etc)
 
 >
 > Signed-off-by: Eddie James <eajames@linux.ibm.com>
 > ---
-> Changes since v1:
->  - Don't store any magic value; only return non-zero resp_len in the error
->    case if there is FFDC
->
->  drivers/fsi/fsi-occ.c | 66 ++++++++++++++++++++++++++++++-------------
->  1 file changed, 47 insertions(+), 19 deletions(-)
+>  drivers/fsi/fsi-occ.c   | 109 ++++++++++++++++------------------------
+>  include/linux/fsi-occ.h |   2 +
+>  2 files changed, 45 insertions(+), 66 deletions(-)
 >
 > diff --git a/drivers/fsi/fsi-occ.c b/drivers/fsi/fsi-occ.c
-> index ace3ec7767e5..1d5f6fdc2a34 100644
+> index b0c9322078a1..ace3ec7767e5 100644
 > --- a/drivers/fsi/fsi-occ.c
 > +++ b/drivers/fsi/fsi-occ.c
-> @@ -55,6 +55,9 @@ struct occ {
+> @@ -10,6 +10,7 @@
+>  #include <linux/kernel.h>
+>  #include <linux/list.h>
+>  #include <linux/miscdevice.h>
+> +#include <linux/mm.h>
+>  #include <linux/module.h>
+>  #include <linux/mutex.h>
+>  #include <linux/fsi-occ.h>
+> @@ -42,13 +43,6 @@
+>
+>  #define OCC_P10_SRAM_MODE      0x58    /* Normal mode, OCB channel 2 */
+>
+> -/*
+> - * Assume we don't have much FFDC, if we do we'll overflow and
+> - * fail the command. This needs to be big enough for simple
+> - * commands as well.
+> - */
+> -#define OCC_SBE_STATUS_WORDS   32
+> -
+>  #define OCC_TIMEOUT_MS         1000
+>  #define OCC_CMD_IN_PRG_WAIT_MS 50
+>
+> @@ -60,6 +54,7 @@ struct occ {
+>         char name[32];
 >         int idx;
 >         u8 sequence_number;
->         void *buffer;
-> +       void *client_buffer;
-> +       size_t client_buffer_size;
-> +       size_t client_response_size;
+> +       void *buffer;
 >         enum versions version;
 >         struct miscdevice mdev;
 >         struct mutex occ_lock;
-> @@ -217,6 +220,20 @@ static const struct file_operations occ_fops = {
->         .release = occ_release,
->  };
+> @@ -250,8 +245,10 @@ static int occ_verify_checksum(struct occ *occ, struct occ_response *resp,
+>  static int occ_getsram(struct occ *occ, u32 offset, void *data, ssize_t len)
+>  {
+>         u32 data_len = ((len + 7) / 8) * 8;     /* must be multiples of 8 B */
+> -       size_t cmd_len, resp_len, resp_data_len;
+> -       __be32 *resp, cmd[6];
+> +       size_t cmd_len, resp_data_len;
+> +       size_t resp_len = OCC_MAX_RESP_WORDS;
+> +       __be32 *resp = occ->buffer;
+> +       __be32 cmd[6];
+>         int idx = 0, rc;
 >
-> +static void occ_save_ffdc(struct occ *occ, __be32 *resp, size_t parsed_len,
-> +                         size_t resp_len)
-> +{
-> +       size_t dh = resp_len - parsed_len;
+>         /*
+> @@ -278,19 +275,19 @@ static int occ_getsram(struct occ *occ, u32 offset, void *data, ssize_t len)
+>         cmd[1] = cpu_to_be32(SBEFIFO_CMD_GET_OCC_SRAM);
+>         cmd[4 + idx] = cpu_to_be32(data_len);
+>
+> -       resp_len = (data_len >> 2) + OCC_SBE_STATUS_WORDS;
+> -       resp = kzalloc(resp_len << 2, GFP_KERNEL);
 
-Is there any chance that parsed_len is larger than resp_len?
+Previously the driver would zero the buffer before using it. Should
+you add a memset here?
 
-> +       size_t ffdc_len = (dh - 1) * 4;
-> +       __be32 *ffdc = &resp[resp_len - dh];
+> @@ -635,6 +605,10 @@ static int occ_probe(struct platform_device *pdev)
+>         if (!occ)
+>                 return -ENOMEM;
+>
+> +       occ->buffer = kvmalloc(OCC_MAX_RESP_WORDS * 4, GFP_KERNEL);
 
-Should you be checking that this number is sensible?
+Why do you allocate WORDS * 4?
 
-> +
-> +       if (ffdc_len > occ->client_buffer_size)
-> +               ffdc_len = occ->client_buffer_size;
-> +
-> +       memcpy(occ->client_buffer, ffdc, ffdc_len);
-> +       occ->client_response_size = ffdc_len;
-> +}
+> diff --git a/include/linux/fsi-occ.h b/include/linux/fsi-occ.h
+> index d4cdc2aa6e33..7ee3dbd7f4b3 100644
+> --- a/include/linux/fsi-occ.h
+> +++ b/include/linux/fsi-occ.h
+> @@ -19,6 +19,8 @@ struct device;
+>  #define OCC_RESP_CRIT_OCB              0xE3
+>  #define OCC_RESP_CRIT_HW               0xE4
+>
+> +#define OCC_MAX_RESP_WORDS             2048
+
+Does this need to go in the header?
