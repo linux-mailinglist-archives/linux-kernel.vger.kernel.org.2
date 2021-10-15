@@ -2,135 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A0C842F480
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 15:57:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74BE142F486
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 15:58:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240085AbhJON7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 09:59:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54044 "EHLO mail.kernel.org"
+        id S240187AbhJOOAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 10:00:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54372 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236490AbhJON7T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 09:59:19 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 090C56115C;
-        Fri, 15 Oct 2021 13:57:09 +0000 (UTC)
-Date:   Fri, 15 Oct 2021 09:57:04 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: [PATCH] tracing: use %ps format string to print symbols
-Message-ID: <20211015095704.49a99859@gandalf.local.home>
-In-Reply-To: <20211015083447.760448-1-arnd@kernel.org>
-References: <20211015083447.760448-1-arnd@kernel.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S236490AbhJOOAE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 10:00:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 65CC661181;
+        Fri, 15 Oct 2021 13:57:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634306277;
+        bh=XZBGWtk/gDQlBRTl34x7ls7aM2LqB8QK8leU5F5ALhk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=VJ52AT4q+8IF1vnQ9Q7/uHqgqeSz/JiCP0egUgOPIueoJY51SW51wg0LZU2mTMJZd
+         XA/D0M/ejjyXHfAP6y0rIfEZ1OF8mRgoIni35YWJeGWMYtLVh5TEDEJYsamcRw5kGF
+         JBxO6BhQZZOcqZLWAliVjorDdYvDdy6lqQL+xHiwXGNks3tVNbyhJopj7mxFrlr0qM
+         2dQmINMDjWhicgPOmmZxnh8h7t/5YfKXj27W6HAiVP73M19d6vF3JFmLlLJ1y2i97H
+         5XzRt5N2dJF6Af79rsFSqDsbRrXWaD8k4fePAvux66F/J3gcppNl9fxfFn1XPq9s2Y
+         yp5ZQds8QZzcw==
+Date:   Fri, 15 Oct 2021 08:57:55 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Prasad Malisetty <pmaliset@codeaurora.org>
+Cc:     svarbanov@mm-sol.com, agross@kernel.org,
+        bjorn.andersson@linaro.org, lorenzo.pieralisi@arm.com,
+        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, vbadigan@codeaurora.org,
+        kw@linux.com, bhelgaas@google.com, manivannan.sadhasivam@linaro.org
+Subject: Re: [PATCH v1] PCI: qcom: Fix incorrect register offset in pcie init
+Message-ID: <20211015135755.GA2098274@bhelgaas>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1634237929-25459-1-git-send-email-pmaliset@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 15 Oct 2021 10:34:31 +0200
-Arnd Bergmann <arnd@kernel.org> wrote:
+This looks specific to SDM845, so the subject line should mention
+SDM845, e.g.,
 
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> clang started warning about excessive stack usage in
-> hist_trigger_print_key()
-> 
-> kernel/trace/trace_events_hist.c:4723:13: error: stack frame size (1336) exceeds limit (1024) in function 'hist_trigger_print_key' [-Werror,-Wframe-larger-than]
-> 
-> The problem is that there are two 512-byte arrays on the stack if
-> hist_trigger_stacktrace_print() gets inlined. I don't think this has
-> changed in the past five years, but something probably changed the
-> inlining decisions made by the compiler, so the problem is now made
-> more obvious.
+  PCI: qcom: Fix SDM845 incorrect register offset
 
-Could we just add "noinline" attribute to that function?
+On Fri, Oct 15, 2021 at 12:28:49AM +0530, Prasad Malisetty wrote:
+> In pcie_init_2_7_0 one of the register writes using incorrect offset
+> as per the platform register definitions (PCIE_PARF_AXI_MSTR_WR_ADDR_HALT
+> offset value should be 0x1A8 instead 0x178).
+> Update the correct offset value for SDM845 platform.
+
+Add "()" after function name.  Add blank line between paragraphs.
+
+It'd be nice to have a clue about what fails because of the incorrect
+register offset.  ed8cc3b1fc84 is almost two years old, so I guess
+it's not an obvious issue.
+
+> fixes: ed8cc3b1 ("PCI: qcom: Add support for SDM845 PCIe controller")
+
+Capitalize "Fixes:", use 12-char SHA1, remove blank line after.  Look
+at previous git history and copy the style there.
 
 > 
-> Rather than printing the symbol names into separate buffers, it
-> seems we can simply use the special %ps format string modifier
-> to print the pointers symbolically and get rid of both buffers.
-> 
-> Fixes: 69a0200c2e25 ("tracing: Add hist trigger support for stacktraces as keys")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
-> I'm not sure if the %ps format string actually works as intended
-> with the explicit length modifier, it would be good if someone
-> could try this out before applying. Would it be ok to remove the
-> length modifier otherwise?
+> Signed-off-by: Prasad Malisetty <pmaliset@codeaurora.org>
 
-I believe that shows a "table" format. So the length modifier is required.
+It looks like ed8cc3b1fc84 appeared in v5.6, so this should probably
+have a "Cc: stable@vger.kernel.org" tag as well.
 
 > ---
->  kernel/trace/trace_events_hist.c | 15 +++++----------
->  1 file changed, 5 insertions(+), 10 deletions(-)
+>  drivers/pci/controller/dwc/pcie-qcom.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
-> index a6061a69aa84..640c79898b51 100644
-> --- a/kernel/trace/trace_events_hist.c
-> +++ b/kernel/trace/trace_events_hist.c
-> @@ -4706,7 +4706,6 @@ static void hist_trigger_stacktrace_print(struct seq_file *m,
->  					  unsigned long *stacktrace_entries,
->  					  unsigned int max_entries)
->  {
-> -	char str[KSYM_SYMBOL_LEN];
->  	unsigned int spaces = 8;
->  	unsigned int i;
+> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
+> index 8a7a300..5bce152 100644
+> --- a/drivers/pci/controller/dwc/pcie-qcom.c
+> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
+> @@ -1230,9 +1230,9 @@ static int qcom_pcie_init_2_7_0(struct qcom_pcie *pcie)
+>  	writel(val, pcie->parf + PCIE20_PARF_MHI_CLOCK_RESET_CTRL);
 >  
-> @@ -4715,8 +4714,7 @@ static void hist_trigger_stacktrace_print(struct seq_file *m,
->  			return;
->  
->  		seq_printf(m, "%*c", 1 + spaces, ' ');
-> -		sprint_symbol(str, stacktrace_entries[i]);
-> -		seq_printf(m, "%s\n", str);
-> +		seq_printf(m, "%pS\n", stacktrace_entries[i]);
+>  	if (IS_ENABLED(CONFIG_PCI_MSI)) {
+> -		val = readl(pcie->parf + PCIE20_PARF_AXI_MSTR_WR_ADDR_HALT);
+> +		val = readl(pcie->parf + PCIE20_PARF_AXI_MSTR_WR_ADDR_HALT_V2);
+>  		val |= BIT(31);
+> -		writel(val, pcie->parf + PCIE20_PARF_AXI_MSTR_WR_ADDR_HALT);
+> +		writel(val, pcie->parf + PCIE20_PARF_AXI_MSTR_WR_ADDR_HALT_V2);
 >  	}
->  }
 >  
-> @@ -4726,7 +4724,6 @@ static void hist_trigger_print_key(struct seq_file *m,
->  				   struct tracing_map_elt *elt)
->  {
->  	struct hist_field *key_field;
-> -	char str[KSYM_SYMBOL_LEN];
->  	bool multiline = false;
->  	const char *field_name;
->  	unsigned int i;
-> @@ -4747,14 +4744,12 @@ static void hist_trigger_print_key(struct seq_file *m,
->  			seq_printf(m, "%s: %llx", field_name, uval);
->  		} else if (key_field->flags & HIST_FIELD_FL_SYM) {
->  			uval = *(u64 *)(key + key_field->offset);
-> -			sprint_symbol_no_offset(str, uval);
-> -			seq_printf(m, "%s: [%llx] %-45s", field_name,
-> -				   uval, str);
-> +			seq_printf(m, "%s: [%llx] %-45ps", field_name,
-> +				   uval, (void *)uval);
->  		} else if (key_field->flags & HIST_FIELD_FL_SYM_OFFSET) {
->  			uval = *(u64 *)(key + key_field->offset);
-> -			sprint_symbol(str, uval);
-> -			seq_printf(m, "%s: [%llx] %-55s", field_name,
-> -				   uval, str);
-> +			seq_printf(m, "%s: [%llx] %-55ps", field_name,
-> +				   uval, (void *)uval);
-
-The above requires "Ps" not "ps".
-
-But other than that, I could test if this doesn't change the formatting and
-functionality at all.
-
--- Steve
-
-
->  		} else if (key_field->flags & HIST_FIELD_FL_EXECNAME) {
->  			struct hist_elt_data *elt_data = elt->private_data;
->  			char *comm;
-
+>  	return 0;
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+> 
