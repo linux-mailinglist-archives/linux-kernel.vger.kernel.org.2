@@ -2,80 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4E1642FF3D
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 01:54:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D376242FF4A
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 01:58:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239194AbhJOX4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 19:56:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44068 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239379AbhJOX4L (ORCPT
+        id S239058AbhJPAAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 20:00:49 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:35300 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235896AbhJPAAs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 19:56:11 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0F9BC061776;
-        Fri, 15 Oct 2021 16:54:00 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id y12so45725407eda.4;
-        Fri, 15 Oct 2021 16:54:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6VJ+9sIi1sqUsRf5nSziAM0Dhgkx6JgfPmLuGEZTces=;
-        b=H63SeNNPhxbZ4wC7PPU0lHqQx61e8P4OAK+AAPDv5gblrGbDXBYKjhgWO57hTx1kVS
-         orr3t90pArPAQI1W78i0x9ahucKgECq1IoC1shjPc9u0cAxrgMlfatpXX32sAJi21VUZ
-         09I5AKOaQT8di2kM3eN107rMkUQfw9zZ8zqB9wPSQprZke5QM/YJBUTRC+T3vT+kXq/w
-         xNU4sjsufpWnOzcGzIeKt1pZFGapPj+NiL+qy7EifGrYqRAQ1KNsmv2Ewfd4sAgQ1ZzU
-         vFoQuDByjS4Evg0/htdw6+fcFclHTt3b0/b8T4hwrAwfl4cZ/SR8mIrMVEuER/Q98LEY
-         6N/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6VJ+9sIi1sqUsRf5nSziAM0Dhgkx6JgfPmLuGEZTces=;
-        b=BB4r7rhPTi5k9NQLq8be2uqeOUczItpgPWBfRgeKSNcs4w1qwqwcUrNwHyR2lfqQsd
-         fHMDlfHLu0XGnm2VXwuA8VGal6jDZFwLaF0kjq8DzGMBma3SbgGFudDGWEkq8pJV3sTI
-         NnckBmBZf0uHNTe5YJFVU019lSEDGex+o9GgRM7JfqfAoUVPDtbPNC/UdBAQELZ3UWIE
-         iy0AF7shYQ5LA932Zy3wdbBktcGw7+F9wU/XKTiT8tvPfwVdqKfPE9Mv+JTJ/+3RKUwB
-         yyP+CYJ2yBvmslHor1NH6PFTPGlJp4c3Xf8VM20qsH3+Xf/zfi0DMR164LhT1cO3WXbl
-         83MA==
-X-Gm-Message-State: AOAM532oRF301u9D73+KcItFOIWWO7vH7RqsoZTPCUcF9U1hFsacX6TG
-        elitzVbeZdPPsqqH2u1Qnwo=
-X-Google-Smtp-Source: ABdhPJyTrSsc6NLGRHfgdV896wTJdHWXVRCYx5XN2+d4sdnnapwSJ9/SuKFBv81HwNIKcajw1OYtVQ==
-X-Received: by 2002:a17:906:f8d0:: with SMTP id lh16mr10030127ejb.367.1634342039511;
-        Fri, 15 Oct 2021 16:53:59 -0700 (PDT)
-Received: from p14s ([140.238.219.56])
-        by smtp.gmail.com with ESMTPSA id nb29sm6357942ejc.54.2021.10.15.16.53.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Oct 2021 16:53:59 -0700 (PDT)
-Date:   Sat, 16 Oct 2021 01:53:56 +0200
-From:   Joerie de Gram <j.de.gram@gmail.com>
-To:     Mario Limonciello <mario.limonciello@amd.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Basavaraj Natikar <Basavaraj.Natikar@amd.com>,
-        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
-        "open list:PIN CONTROL SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Nehal Shah <Nehal-bakulchandra.Shah@amd.com>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>
-Subject: Re: [PATCH] pinctrl: amd: Fix wakeups when IRQ is shared with SCI
-Message-ID: <YWoUlGFMWAXTvMuR@p14s>
-References: <20211015144332.700-1-mario.limonciello@amd.com>
+        Fri, 15 Oct 2021 20:00:48 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 1EA3429B;
+        Sat, 16 Oct 2021 01:58:40 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1634342320;
+        bh=BzLBS8UmTthXP7ryl5Pf+TC1GM1HHtLkkNry3SWtiRc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tx/sg4ojtcVwZsE4E2BGiXdx/R84Cuf67XmYSqpXxutIQRYS3I5/N4baO6PGJ1ySL
+         vbuEFXgiYhPxHk58Urd/v0jxLh1+MeZI+i+3Jw3hK+TbpmUmWsi7oak5cnu/R+iTaK
+         3MS5rfcAy/7Ld0O08Ei+kVBr7R923v1gW3bcfeMs=
+Date:   Sat, 16 Oct 2021 02:58:24 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Arnd Bergmann <arnd@arndb.de>,
+        dri-devel@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] [RESEND] drm/rcar: stop using 'imply' for dependencies
+Message-ID: <YWoVoPxq5Hd1S0ph@pendragon.ideasonboard.com>
+References: <20210927142629.2016647-1-arnd@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20211015144332.700-1-mario.limonciello@amd.com>
+In-Reply-To: <20210927142629.2016647-1-arnd@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 15, 2021 at 09:43:32AM -0500, Mario Limonciello wrote:
-> +			if (irq < 0 && !(regval & BIT(WAKE_STS_OFF)))
-> +				return true;
+Hi Arnd,
 
-Shouldn't be negated. WAKE_STS_OFF is set on wakeup.
+Thank you for the patch.
 
-With that change:
+On Mon, Sep 27, 2021 at 04:26:23PM +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> The meaning of the 'imply' keyword has changed recently, and neither the
+> old meaning (select the symbol if its dependencies are met) nor the new
+> meaning (enable it by default, but let the user set any other setting)
+> is what we want here.
+> 
+> Work around this by adding two more Kconfig options that lead to
+> the correct behavior: if DRM_RCAR_USE_CMM and DRM_RCAR_USE_LVDS
+> are enabled, that portion of the driver becomes usable, and no
+> configuration results in a link error.
+> 
+> This avoids a link failure:
+> 
+> arm-linux-gnueabi-ld: drivers/gpu/drm/rcar-du/rcar_du_crtc.o: in function `rcar_du_crtc_atomic_begin':
+> rcar_du_crtc.c:(.text+0x1444): undefined reference to `rcar_cmm_setup'
+> arm-linux-gnueabi-ld: drivers/gpu/drm/rcar-du/rcar_du_crtc.o: in function `rcar_du_crtc_atomic_enable':
+> rcar_du_crtc.c:(.text+0x14d4): undefined reference to `rcar_cmm_enable'
+> arm-linux-gnueabi-ld: rcar_du_crtc.c:(.text+0x1548): undefined reference to `rcar_cmm_setup'
+> arm-linux-gnueabi-ld: drivers/gpu/drm/rcar-du/rcar_du_crtc.o: in function `rcar_du_crtc_atomic_disable':
+> rcar_du_crtc.c:(.text+0x18b8): undefined reference to `rcar_cmm_disable'
+> arm-linux-gnueabi-ld: drivers/gpu/drm/rcar-du/rcar_du_kms.o: in function `rcar_du_modeset_init':
+> 
+> Link: https://lore.kernel.org/all/20200417155553.675905-5-arnd@arndb.de/
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+> This was last posted as part of a longer series to rework the
+> DRM dependencies in a more logical way. The rest of the series
+> is still open, but this one is needed as a bug fix regardless of
+> the rest.
 
-Reported-by: Joerie de Gram <j.de.gram@gmail.com>
-Tested-by: Joerie de Gram <j.de.gram@gmail.com>
+This looks a bit complicated, but at the same time probably as clean as
+it can get with the existing Kconfig grammar. I don't believe the needs
+of the rcar-du driver are really exotic, so better support for this in
+Kconfig would be nice. Until that happens,
+
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+Dave or Daniel, I don't have other pending patches for v5.16, could you
+pick this one up ? It fixes a build failure in -next.
+
+> ---
+>  drivers/gpu/drm/rcar-du/Kconfig | 25 ++++++++++++++++---------
+>  1 file changed, 16 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/rcar-du/Kconfig b/drivers/gpu/drm/rcar-du/Kconfig
+> index b47e74421e34..3e588ddba245 100644
+> --- a/drivers/gpu/drm/rcar-du/Kconfig
+> +++ b/drivers/gpu/drm/rcar-du/Kconfig
+> @@ -4,8 +4,6 @@ config DRM_RCAR_DU
+>  	depends on DRM && OF
+>  	depends on ARM || ARM64
+>  	depends on ARCH_RENESAS || COMPILE_TEST
+> -	imply DRM_RCAR_CMM
+> -	imply DRM_RCAR_LVDS
+>  	select DRM_KMS_HELPER
+>  	select DRM_KMS_CMA_HELPER
+>  	select DRM_GEM_CMA_HELPER
+> @@ -14,13 +12,17 @@ config DRM_RCAR_DU
+>  	  Choose this option if you have an R-Car chipset.
+>  	  If M is selected the module will be called rcar-du-drm.
+>  
+> -config DRM_RCAR_CMM
+> -	tristate "R-Car DU Color Management Module (CMM) Support"
+> -	depends on DRM && OF
+> +config DRM_RCAR_USE_CMM
+> +	bool "R-Car DU Color Management Module (CMM) Support"
+>  	depends on DRM_RCAR_DU
+> +	default DRM_RCAR_DU
+>  	help
+>  	  Enable support for R-Car Color Management Module (CMM).
+>  
+> +config DRM_RCAR_CMM
+> +	def_tristate DRM_RCAR_DU
+> +	depends on DRM_RCAR_USE_CMM
+> +
+>  config DRM_RCAR_DW_HDMI
+>  	tristate "R-Car Gen3 and RZ/G2 DU HDMI Encoder Support"
+>  	depends on DRM && OF
+> @@ -28,15 +30,20 @@ config DRM_RCAR_DW_HDMI
+>  	help
+>  	  Enable support for R-Car Gen3 or RZ/G2 internal HDMI encoder.
+>  
+> +config DRM_RCAR_USE_LVDS
+> +	bool "R-Car DU LVDS Encoder Support"
+> +	depends on DRM_BRIDGE && OF
+> +	default DRM_RCAR_DU
+> +	help
+> +	  Enable support for the R-Car Display Unit embedded LVDS encoders.
+> +
+>  config DRM_RCAR_LVDS
+> -	tristate "R-Car DU LVDS Encoder Support"
+> -	depends on DRM && DRM_BRIDGE && OF
+> +	def_tristate DRM_RCAR_DU
+> +	depends on DRM_RCAR_USE_LVDS
+>  	select DRM_KMS_HELPER
+>  	select DRM_PANEL
+>  	select OF_FLATTREE
+>  	select OF_OVERLAY
+> -	help
+> -	  Enable support for the R-Car Display Unit embedded LVDS encoders.
+>  
+>  config DRM_RCAR_VSP
+>  	bool "R-Car DU VSP Compositor Support" if ARM
+
+-- 
+Regards,
+
+Laurent Pinchart
