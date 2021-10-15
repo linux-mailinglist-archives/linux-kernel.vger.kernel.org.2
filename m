@@ -2,77 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2741142F544
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 16:30:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9533942F546
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 16:30:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240293AbhJOOcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 10:32:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36688 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236879AbhJOOcR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 10:32:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 70DF8610E5;
-        Fri, 15 Oct 2021 14:30:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634308211;
-        bh=AEtWb/xpPvXYdf5GA4X8ida+83gqErYx/NpU8kM27To=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ueP0q1Ga0z7mOhcyKp/GuEGLiCZThinNlPsNosw9QnHZaOMvYTqeJ4lwBMzuP68vV
-         GgEVup4n4FW2P7NGUwUyiygSyPT4lg5tl9tM4cljUmC9AYEyKRQhE2VIYqCM8315pB
-         DzyyXz9yelcP9M5njE+39pYX7w8RSLgwalaSJbCqN29U54OJStSQU10lNR7Af/ERZQ
-         W7sbJRdE1FRiULJJrxhDKIE50jsaR1IJbx533jER8wUbGTteia+vy8x1KmhZ5B1KPE
-         y3UMpKckf4vipJ68+B/aAdlmt5Ht6NSJPuiFcvc7NNkLwVE8q9NQGKamq1RQQI2dTB
-         fZYFB28Gf93aw==
-Date:   Fri, 15 Oct 2021 15:30:07 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        patches@opensource.cirrus.com
-Subject: Re: [PATCH 06/16] ASoC: cs42l42: Reset GPIO is mandatory
-Message-ID: <YWmQb8oudyZr8tsz@sirena.org.uk>
-References: <20211015133619.4698-1-rf@opensource.cirrus.com>
- <20211015133619.4698-7-rf@opensource.cirrus.com>
+        id S240300AbhJOOcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 10:32:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55272 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234908AbhJOOcu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 10:32:50 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78B11C061570;
+        Fri, 15 Oct 2021 07:30:43 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id r18so26910784wrg.6;
+        Fri, 15 Oct 2021 07:30:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7fVT7stQhu0R8qSUSTnVnpkVgBpLQLK/TJbcFLc3ifQ=;
+        b=JGZA+0FKchyq2x32m7mZOe4wbqIBXqozJaGK2NkbwOXyHpcwdC6Tm/idafoO11cf/9
+         NfjBIvY1NJhRNJ2zv9WvJx0tVN4b7baj4lLuRz8GbhqPKHKfqJ5ox4bYAENnLMY/0HBL
+         a2LpgPs+5ZmpgNhpM9S5vrxOENUKIIXs4hluLp0sR9BdsM9tANHYSD+XP0htvEjNlZ1m
+         f7KF+ozRTAI8GjaNJ6btEknU+A+oH19s02Uq0UNwIxp0H/jFLGy0i+xhhQiz4tlZvLVy
+         4ENhBVV95gNxMTiGtit5yDBVNDH0/+YNnHWKwBQHU+CwIl/JJcli+TvA4edAHcMsFpW7
+         tn5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7fVT7stQhu0R8qSUSTnVnpkVgBpLQLK/TJbcFLc3ifQ=;
+        b=2QwT6SUDdab3sRsBk9ky8989+tRnjGwgiBGJw+oUqMDVTyuel+MLgN9kV4be2K/Bj1
+         uEIexWc/X7uLTTPn7zs/VLN6lTOPUQU1Kx81uhs32vvORdJj1pY4mvcoLiPy/FiTnF7l
+         9BB49ewL3wgBI7Ftqu9wAqRA9jkv+cwRV3pjOhncPW2ecme02mnpNkDyIUrqd6vjqP0+
+         5JPnoZyQYLD4RXShFtA2YTbCQdxg5r4xtyVz1AZJxUicBiZ8nSwKx3MN6v31BwXHUBLC
+         KZyqBDd+tem8Fyg4zsIIpNr8tRLbW6XkjJXhlOX5BCbZ763+/lSzhSxga70dWkidl47c
+         cuww==
+X-Gm-Message-State: AOAM531ZzoGF5kQunGbE1Ps2hrcmXr6pFx+0zkOI+JSMDAa9YJd4bRDD
+        DEc19xR8xcUU+jWc3xpzEvY=
+X-Google-Smtp-Source: ABdhPJwRZyxFqQeOEblm8UleIe4+gVt51nAH63aF5YpfAvzPeenGQ0qWffqP5em13d/K97yyKcjnLw==
+X-Received: by 2002:adf:f309:: with SMTP id i9mr15045556wro.256.1634308241858;
+        Fri, 15 Oct 2021 07:30:41 -0700 (PDT)
+Received: from debian (host-2-99-153-109.as13285.net. [2.99.153.109])
+        by smtp.gmail.com with ESMTPSA id l17sm5018319wrx.24.2021.10.15.07.30.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Oct 2021 07:30:41 -0700 (PDT)
+Date:   Fri, 15 Oct 2021 15:30:39 +0100
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.10 00/22] 5.10.74-rc1 review
+Message-ID: <YWmQj2NE6o/TVNfl@debian>
+References: <20211014145207.979449962@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="jSS0e2uIyUoUwoHo"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211015133619.4698-7-rf@opensource.cirrus.com>
-X-Cookie: I'm having an emotional outburst!!
+In-Reply-To: <20211014145207.979449962@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Greg,
 
---jSS0e2uIyUoUwoHo
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Thu, Oct 14, 2021 at 04:54:06PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.74 release.
+> There are 22 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sat, 16 Oct 2021 14:51:59 +0000.
+> Anything received after that time might be too late.
 
-On Fri, Oct 15, 2021 at 02:36:09PM +0100, Richard Fitzgerald wrote:
+Build test:
+mips (gcc version 11.2.1 20211012): 63 configs -> no new failure
+arm (gcc version 11.2.1 20211012): 105 configs -> no new failure
+arm64 (gcc version 11.2.1 20211012): 3 configs -> no failure
+x86_64 (gcc version 10.2.1 20210110): 4 configs -> no failure
 
-> The hard RESET must be used to correctly power-up the cs42l42, as
-> described in the datasheet.
+Boot test:
+x86_64: Booted on my test laptop. No regression.
+x86_64: Booted on qemu. No regression. [1]
+arm64: Booted on rpi4b (4GB model). No regression. [2]
 
-> The code was getting the GPIO with devm_gpiod_get_optional(). Change
-> this to devm_gpiod_get().
+[1]. https://openqa.qa.codethink.co.uk/tests/268
+[2]. https://openqa.qa.codethink.co.uk/tests/269
 
-Does that power sequencing have to be done by the CPU though?  Usually
-if a GPIO is not supplied it's because the sequencing is done during the
-general power up sequence (PMICs can be programmed to assert GPIOs as
-part of the their sequencing for example).
 
---jSS0e2uIyUoUwoHo
-Content-Type: application/pgp-signature; name="signature.asc"
+Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
 
------BEGIN PGP SIGNATURE-----
+--
+Regards
+Sudip
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFpkG8ACgkQJNaLcl1U
-h9Dyqgf+LJrZXj+uSKJIZ0JT5Qh4ifQCqaIfbbYyPJ4Bdnq2KyOv9i8KNczYj8sS
-yfb2lRfd0I5iFDg9gKshaeER4HsgD/AetI9Ndz+AI4pYQHtyj7GEU0jj2rw4jQbO
-EgjqNobNWM8BkIbwZf4de/e7oL44wlgq4REspzgFUDO7nfbsfc8y5F40VOSeLbat
-B+tv99B7EKofPRlx6gFVdXdWn5LW//8SMyDcFpRqLWX/iKeYBcPGc/P9Q2NCIi1Z
-+Xz9J4XOZ3VH5n2nXrA7E9GYYM7G0s1er2tJs7pXFW8k5RPAD+ONMJ/bPz9flX/f
-7eKJLWkhyRLt5F8ekZmY7nNPNJBERQ==
-=cfD/
------END PGP SIGNATURE-----
-
---jSS0e2uIyUoUwoHo--
