@@ -2,108 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E32942ED5B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 11:15:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE32342ED6A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 11:18:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237060AbhJOJR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 05:17:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39230 "EHLO
+        id S236767AbhJOJUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 05:20:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231273AbhJOJR1 (ORCPT
+        with ESMTP id S237192AbhJOJUD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 05:17:27 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FF2EC061570
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 02:15:21 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id 5so5544091edw.7
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 02:15:21 -0700 (PDT)
+        Fri, 15 Oct 2021 05:20:03 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50118C061753
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 02:17:57 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id n8so38789970lfk.6
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 02:17:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=MijKcoywXZiJ/TAfeUQvoBq2vYQe9FT8lGZbL7eVuLY=;
-        b=jvtwlXyyqaCw9x0aEvTBt7y6s84PRxF46I0emgA39mxfA7bFuDxXxAopNRUhpfbxLl
-         EKopmJ6o07eI0CrDG+EKGfo2J7bW4/gfgRccfn6y8UVzgDvBXEJWP8t1ULDwvWWOiWPn
-         JjQVEqXi8WNFBvFz8KPKogxnrYl2gpdrcb9BqUc1eUJSvXQzM0FmqYB4oUWTP4UYClec
-         2hgwlFvSb6JB0F8o1djx1ixYKVVi7DJENMbE0/4zxtL1X0I8bO5S6aJPE5DPuSuPzKfs
-         +aTzTos5uoct8EDjsqmXihpSpvK9OYhxTRCS+irHfdzXBkM2E9WzcyksHm0a6bVdatUU
-         sXcQ==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RLC+HjhvviOBGNXg1rQh6EfG6uU7vueygwlcPXecPI8=;
+        b=kQvb5ugQhUs4M3Tj42jrgEz3ieKCsMl6oQ9IJA5CodKTcxAckHP38oFW8Qe2n/VVXa
+         bxu/qCFEiOiENW5kyEpjn6MTg7Bu8KbQaHTHQnqLvQ24ZJGGUVtb/xi1lFGM50/xTfaB
+         9rkXZY1/vBrrxb8rE1GZ58kaFqZdkb+EbqScLG7jgj0EPwxzJlxI/sIqTAKsFupIAMeI
+         b6DyNKJuLQRo51CpRuVxeaGQ2eT8MNV/MESVA9FOBWnVKCZiW+uuhikUD7f+YqxbG3oO
+         lqgKYtlaQL+DBeGUUaRZDydlzL4Mv0XfNTsBQkBKZ+PlBvJTaNEvHWjHK0uLyS/9ksQk
+         sIvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=MijKcoywXZiJ/TAfeUQvoBq2vYQe9FT8lGZbL7eVuLY=;
-        b=nMqHoY9Y0Gyw8bABslSOEvBRdLEP0cXznMdiVahWfbM+xfXZfqrloz5sBVD70gXh3Y
-         sDx9KRyu10N7CQQiPTx/mt46QTV6PVAc2EyhJAtcb8V7Kkx5kwO1F+bdXD16F7w85DSt
-         D4fsC/+giMcJ2eCX+cpSh7p6URtVt9b9K9eW3672pTnx5ciytCkoL++kdRq4/VZx7A16
-         pOk4T/guubfXJPUiH+rP8F2k4dUjiuxU8zaoPv7M3Gq1DPAEiYWP76YzbPjVDkCOL172
-         PHhQzQRVK75vnnqvfLSfoi1jaw55c5DP9UqLXgI8kzF2q5tqAlAyZMuCTm/xDHjPhKTj
-         TmkQ==
-X-Gm-Message-State: AOAM5326uQ7DMNMzYUHrRMY9Ebfnt0TU4zM9wMWk/XIVraPD43pknvAV
-        GwOg6RX6J/8yK7iA344gyR9Kr9lFdXw=
-X-Google-Smtp-Source: ABdhPJxsgjWRkOd/eO86fZAyEQf5utZhJf1Qc0pJgU4Nnm6X+m9zGccqf2t6wooVtvvk4+YQPvUq1A==
-X-Received: by 2002:a17:907:6e2a:: with SMTP id sd42mr2770842ejc.333.1634289317029;
-        Fri, 15 Oct 2021 02:15:17 -0700 (PDT)
-Received: from localhost.localdomain (host-79-47-104-180.retail.telecomitalia.it. [79.47.104.180])
-        by smtp.gmail.com with ESMTPSA id i19sm1205273ejo.101.2021.10.15.02.15.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Oct 2021 02:15:16 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     gregkh@linuxfoundation.org, fabioaiuto83@gmail.com,
-        ross.schm.dev@gmail.com, marcocesati@gmail.com,
-        saurav.girepunje@gmail.com, insafonov@gmail.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Saurav Girepunje <saurav.girepunje@gmail.com>
-Cc:     saurav.girepunje@hotmail.com
-Subject: Re: [PATCH v3] staging: rtl8723bs: os_dep: simplify the return statement
-Date:   Fri, 15 Oct 2021 11:15:14 +0200
-Message-ID: <13289545.LovHZTAFgE@localhost.localdomain>
-In-Reply-To: <YWhBQF4yUH0/r53A@Sauravs-MacBook-Air.local>
-References: <YWhBQF4yUH0/r53A@Sauravs-MacBook-Air.local>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RLC+HjhvviOBGNXg1rQh6EfG6uU7vueygwlcPXecPI8=;
+        b=KgAcKffspWdneAKKRbygfXp2gMEpcFgbkyIwytHi2DICkLe4SvrN7Gnahb3VjCK/5e
+         sMR4NyJ7T9xdX1oZOSj22ywAWvX8Y2536KQck1OGG8YKpaMfUOGDlvLxwAXr7pgQh1g1
+         Vd9QgemvKvsnNBXUBgMJA3FyWZhdpwVZ2wf2DdTDbfOn9NWpY6F7Dj3BqoxZoLVYKgAv
+         UqGMvdIHaEJ/+O4yvN6UZyotozWIKDUDEze22/PPCNPPaoCV58pOe5H2gCye1MgIvr8/
+         7iTbgzf5e8Jjmikcl3pecV+rL6LH8/0rNx9hpxBx5o3fpU/zYAld8sEKJDp/1tbNsIan
+         OsPA==
+X-Gm-Message-State: AOAM531Kj4f48LnD4vasA3XSc4Cak/4TRx14xQssF8Bb7Tdcl7ohn5SN
+        hbknI4E9oMJaWfCRSixxDYKL5hoJd8fcIjkrV9zgNA==
+X-Google-Smtp-Source: ABdhPJx+08Y1ljiMYn2qfkB9WndJlxkIzmmTo1z25sleCJELjtbRI9uqR33M/umWp8WjlfrAaIt5UdvDvARgk3oQ++U=
+X-Received: by 2002:a05:651c:4c9:: with SMTP id e9mr11602393lji.229.1634289475532;
+ Fri, 15 Oct 2021 02:17:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+References: <20210517155458.1016707-1-sudeep.holla@arm.com>
+ <CAPDyKFr=pf-0JbkiD6rkzeWwPZmDxEE_R=ovhzRUHfVjO9S0tw@mail.gmail.com> <20211014145555.uoi2hyoonrptrd5m@bogus>
+In-Reply-To: <20211014145555.uoi2hyoonrptrd5m@bogus>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Fri, 15 Oct 2021 11:17:18 +0200
+Message-ID: <CAPDyKFppiogQ5GLQJCqvYGfDQ80HrLLiv43o4H4WBW0PqyONNg@mail.gmail.com>
+Subject: Re: [PATCH v4] dt-bindings: dvfs: Add support for generic performance domains
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     Rob Herring <robh@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Hector Yuan <hector.yuan@mediatek.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday, October 14, 2021 4:40:00 PM CEST Saurav Girepunje wrote:
-> Remove goto statement where function simply return value without doing
-> any cleanup action.
-> 
-> Simplify the return using goto label to avoid unneeded 'if' condition
-> check.
-> 
-> Remove the unneeded and redundant check of variable on goto.
-> 
-> Remove the assignment of NULL on local variable.
-> 
-> Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
-> ---
-> 
-> ChangeLog V3:
-> 
-> 	-Remove goto statement where function simply return value
-> 	 without doing any cleanup action.
-> 	-Remove the assignment of NULL on local variable.
-> 	-Replace the goto statement added after the memcpy on V2.
-> 	 with return 0 statement.
-> 
-> ChangeLog V2:
-> 
-> 	-Add goto out after the memcpy for no error case return with
-> 	 ret only. On V1 doing free, which was not required for no error
-> 	 case.
+On Thu, 14 Oct 2021 at 16:56, Sudeep Holla <sudeep.holla@arm.com> wrote:
+>
+> On Thu, Oct 14, 2021 at 12:56:46PM +0200, Ulf Hansson wrote:
+> > On Mon, 17 May 2021 at 18:14, Sudeep Holla <sudeep.holla@arm.com> wrote:
+> > >
+> > > The CLKSCREW attack [0] exposed security vulnerabilities in energy management
+> > > implementations where untrusted software had direct access to clock and
+> > > voltage hardware controls. In this attack, the malicious software was able to
+> > > place the platform into unsafe overclocked or undervolted configurations. Such
+> > > configurations then enabled the injection of predictable faults to reveal
+> > > secrets.
+> > >
+> > > Many Arm-based systems used to or still use voltage regulator and clock
+> > > frameworks in the kernel. These frameworks allow callers to independently
+> > > manipulate frequency and voltage settings. Such implementations can render
+> > > systems susceptible to this form of attack.
+> > >
+> > > Attacks such as CLKSCREW are now being mitigated by not having direct and
+> > > independent control of clock and voltage in the kernel and moving that
+> > > control to a trusted entity, such as the SCP firmware or secure world
+> > > firmware/software which are to perform sanity checking on the requested
+> > > performance levels, thereby preventing any attempted malicious programming.
+> > >
+> > > With the advent of such an abstraction, there is a need to replace the
+> > > generic clock and regulator bindings used by such devices with a generic
+> > > performance domains bindings.
+> > >
+> > > [0] https://www.usenix.org/conference/usenixsecurity17/technical-sessions/presentation/tang
+> > >
+> > > Link: https://lore.kernel.org/r/20201116181356.804590-1-sudeep.holla@arm.com
+> > > Cc: Rob Herring <robh+dt@kernel.org>
+> > > Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+> > > Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+> >
+> > Hi Sudeep/Viresh/Rob,
+> >
+> > I noticed this binding recently got accepted, so I guess I have missed
+> > the opportunity to provide you with a few comments.
+> >
+>
+> Sorry for not cc-ing you, wasn't aware of the below mentioned intersection,
+> so assumed you are not one of the interested parties.
+>
+> > In any case, I would like to ask a few questions. In particular, am I
+> > trying to understand why the power-domains bindings [1] can't be used
+> > for this?
+> >
+>
+> One reason I can think of is on some platforms, the power domains are
+> completely controlled by the firmware and not exposed to the OSPM.
+> This is mostly applicable for CPU devices(Platform co-ordinated PSCI)
 
-You still don't explain why you changed v1. You had freed resources on 
-success path. That was not allowed because you introduced a change in the 
-logic and a huge bug. Therefore, in v2, you are not merely changing something 
-that "was not required". Instead you are changing something that is not 
-permitted.
+See below.
 
-Thanks,
+>
+> > The power-domains are capable of dealing with "performance" through
+> > the "operating-points-v2" DT property, which maps to the generic OPP
+> > bindings [2]. I wonder why that isn't sufficient here? Can you please
+> > elaborate?
+> >
+>
+> Even if the power domains are exposed to the OSPM, the OPPs can be
+> firmware enumerated rather than DT. Not sure if it is possible to
+> represent such systems in the above mentioned bindings. IIUC, the genpd
+> uses clock and regulator apis to drive the performance, but these
+> platforms have f/w interface to drive the OPPs(abstracted).
 
-Fabio
+Genpd doesn't operate on clock rates or voltage levels. Instead
+"performance" is just an integer value for genpd. What a performance
+index means, is genpd provider specific.
 
+In other words, it becomes the responsibility for the genpd provider
+to map a performance state index to an OPP, for example. So far,
+providers have used the generic OPP DT bindings to do this, but for
+sure, we don't have to limit ourselves to this. So, if OPP tables can
+be enumerated by FW, rather than specified in DT, that should
+certainly be possible to support.
 
+BTW, these are genpd provider callbacks, that needs to be implemented
+to let it control performance. Perhaps that helps to understand
+things.
 
+int (*set_performance_state)(struct generic_pm_domain *genpd, unsigned
+int state);
+unsigned int (*opp_to_performance_state)(struct generic_pm_domain
+*genpd, struct dev_pm_opp *opp);
+
+>
+> I am happy to know if there are ways to support such systems with the
+> options you have mentioned above.
+
+As far as I understand, the "performance domains" DT bindings that
+$subject patch introduces, allows us to group devices into domains, to
+let them be "performance controlled" together. Right?
+
+Unless I am missing something, it looks like power domains DT bindings
+already offer this for us. Yes, certainly, the DT doc [1] needs an
+updated description to better explain this, but other than that we
+should be fine, don't you think?
+
+[1]
+Documentation/devicetree/bindings/power/power-domain.yaml
+
+>
+> --
+> Regards,
+> Sudeep
+
+Kind regards
+Uffe
