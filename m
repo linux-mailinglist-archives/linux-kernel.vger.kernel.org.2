@@ -2,70 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E04E42F3F9
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 15:40:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B17442F403
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 15:40:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239869AbhJONmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 09:42:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47896 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239841AbhJONmO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 09:42:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id D92916115C;
-        Fri, 15 Oct 2021 13:40:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634305207;
-        bh=++VYZxb1k0MdY+p0VarcfX/XIUGntHcujXiOuY3ZaQY=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=ZZsG9m8Ty033EA9CYG+OKHGBR3ICygvaFP1DpiOMLkIYaPJG0eVqMmXJmSZrvz71f
-         sEdyEoqttdyjDCB6bcPBo/lHTEM43igWTqq9TISMNvW4+R3GkQ1+w4od3lgaGMacIe
-         qHtKoB5YHjQrrYVZiwyIPTw/AC1BNCmbGykbluywcAW31qxQC4VETbLufjfKJyp1Es
-         QcKu94sHMfeUIPMVHkWMensJmMtUkQ/PkEN0zD9E9moyP4oqyKMFCfDu1moiEAOOR4
-         cpsXDg8Y8BiYWvZHJpdZs34SKIpPGybHqnZGZLlHiU9Lp4tBx/3UQrCNFU2BBgsXUW
-         Z+nEhDNYsfI/A==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id C87E8609ED;
-        Fri, 15 Oct 2021 13:40:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S237133AbhJONnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 09:43:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236592AbhJONm7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 09:42:59 -0400
+Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26C0DC061570
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 06:40:53 -0700 (PDT)
+Received: by mail-ua1-x944.google.com with SMTP id q13so18087489uaq.2
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 06:40:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=E+U/IowwoZe3AMFCmYvB8eH8+CVRwwWABPbOdlsT6MY=;
+        b=fTwP4PuDVu0jeoP2YNb0aQL76az9ehPfb+GC4rKrfmKPRtpgr3aXT8n9zjCCRSvVY+
+         YYjBzp+ll4pbKgpackZ0GFcleBWIxKsfpJS7Wi01rPOThvfGk2TVjZ+jUt2PSptKqadC
+         La/t0XB6MKmO8Fq7/ngPGon5+bJj5JLpSMxjnt0Ee5R+f6S/diH9Gc/bR8J+grzSdSKn
+         +lNtmKFVYVivpkJkRZrGLkuMiku6GMFE4O1xiCc5iV1aPZvV+GcZLr585r/hxUq32Y5p
+         h0Azk16jGVJAPbCWwu5rwIv1/Rxi1R4/dwQSSRqZ30ico7agiyVp890vp4XWMQgX4yLG
+         EQwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=E+U/IowwoZe3AMFCmYvB8eH8+CVRwwWABPbOdlsT6MY=;
+        b=xMilZdKZY4DJ5gxeabiYlQEJ/J46nTx8vMoVUP5ezQYCsFHW/z9DfG75LpzF+btBLZ
+         LMA5WZKXxi5gL37JrAjnWOHfM+UpcUm+IehyxFusBC51qdzO265dkey8GZDyoIwMT01m
+         4XhSBhM2e4GcY2U1xhzx9W6ylgAvqpzKxzUC/Y9MVDW83mslduV/Br1ZPYhBd2wiskci
+         7PAjh2CpTv8dRUy3YuClNhIWCHB16rWdpLtbEUSnGsfEPj9AL/4dkgID+6S5uq7urK50
+         MIolaqDx9gW/wev5nN1h2z69oulzhRQHDTPxMVNLIf59SB+uunIJaZycgXVhTsLyKmK6
+         x+5g==
+X-Gm-Message-State: AOAM533XEEeq9Vh/JW6xTMNeDrgdrdyWoGzRjyeaz5VqlYv+Dc+Mvs+a
+        hoQVBdrl9qG4dZ9IOHml7HvQgWHTMC5B24rV2rQ=
+X-Google-Smtp-Source: ABdhPJwla01RM9AAyxEZaVdT4o+lvT7aHJCNKGIxT7KPscU8h7HsgKzFg+3sAG4AorwYN6w/2ThLMUy0s+flBK2/AIg=
+X-Received: by 2002:a67:d81a:: with SMTP id e26mr13873997vsj.8.1634305252230;
+ Fri, 15 Oct 2021 06:40:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] lan78xx: select CRC32
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163430520781.23472.11375176494240682949.git-patchwork-notify@kernel.org>
-Date:   Fri, 15 Oct 2021 13:40:07 +0000
-References: <20211015130754.12283-1-vegard.nossum@oracle.com>
-In-Reply-To: <20211015130754.12283-1-vegard.nossum@oracle.com>
-To:     Vegard Nossum <vegard.nossum@oracle.com>
-Cc:     woojung.huh@microchip.com, UNGLinuxDriver@microchip.com,
-        kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Received: by 2002:a67:e0d4:0:0:0:0:0 with HTTP; Fri, 15 Oct 2021 06:40:51
+ -0700 (PDT)
+Reply-To: barrmarkbarret@gmail.com
+From:   Mark Barret <ledy19709@gmail.com>
+Date:   Fri, 15 Oct 2021 06:40:51 -0700
+Message-ID: <CAAW7AC9j_JDJWD_yHTdhyso2D+TFOKb-Ve6UbWei1XjHAmMtKA@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Lieber Freund,
 
-This patch was applied to netdev/net.git (master)
-by David S. Miller <davem@davemloft.net>:
+Mein Name ist Mr. Mark Barret, ein Rechtsanwalt in unserer
+Niederlassung hier in der Republik Togo in Westafrika. Ein
+verstorbener Kunde von mir, Gesch=C3=A4ftsmann und Inhaber einer
+Goldbergbaugesellschaft, aus Ihrem Land ist vor vielen Jahren mit
+seiner Familie ohne Testament oder Hinterbliebene gestorben.
 
-On Fri, 15 Oct 2021 15:07:54 +0200 you wrote:
-> Fix the following build/link error by adding a dependency on the CRC32
-> routines:
-> 
->   ld: drivers/net/usb/lan78xx.o: in function `lan78xx_set_multicast':
->   lan78xx.c:(.text+0x48cf): undefined reference to `crc32_le'
-> 
-> The actual use of crc32_le() comes indirectly through ether_crc().
-> 
-> [...]
+Er hatte ein Festgeld im Wert der Geldsumme, die ihm =C3=BCbrig geblieben
+war, bevor er sein Ende fand. Ich habe Sie kontaktiert, damit ich Sie
+als meinen verstorbenen Kunden als n=C3=A4chsten Verwandten vorstellen
+kann, damit das Geld auf Ihr Konto =C3=BCberwiesen werden kann und wir das
+Geld zu gleichen Teilen zu 50/50% auf beide Parteien aufteilen.
 
-Here is the summary with links:
-  - lan78xx: select CRC32
-    https://git.kernel.org/netdev/net/c/46393d61a328
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Gr=C3=BC=C3=9Fe,
+Mark Barret
