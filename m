@@ -2,212 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F8C842F4D4
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 16:07:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C05A342F4DF
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 16:11:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240057AbhJOOJG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 10:09:06 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:35052 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240022AbhJOOJF (ORCPT
+        id S240136AbhJOONa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 10:13:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236697AbhJOONT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 10:09:05 -0400
-Received: from [IPv6:2a01:e0a:4cb:a870:6fac:80cf:59ad:86b] (unknown [IPv6:2a01:e0a:4cb:a870:6fac:80cf:59ad:86b])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: benjamin.gaignard)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 141ED1F45370;
-        Fri, 15 Oct 2021 15:06:57 +0100 (BST)
-Subject: Re: [PATCH v2 0/4] media: HEVC: RPS clean up
-To:     Alex Bee <knaerzche@gmail.com>,
-        =?UTF-8?Q?Jernej_=c5=a0krabec?= <jernej.skrabec@gmail.com>,
-        mchehab@kernel.org, p.zabel@pengutronix.de,
-        gregkh@linuxfoundation.org, mripard@kernel.org,
-        paul.kocialkowski@bootlin.com, wens@csie.org,
-        hverkuil-cisco@xs4all.nl, jc@kynesim.co.uk,
-        ezequiel@vanguardiasur.com.ar
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev
-References: <20211012143552.661751-1-benjamin.gaignard@collabora.com>
- <21222555.EfDdHjke4D@kista>
- <3c5851ac-3b8a-decc-93c1-01a65b1f8611@collabora.com>
- <1705005.VLH7GnMWUR@kista> <4f8f6da3-70b1-5dd8-27b7-c9f9fd37920b@gmail.com>
-From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Message-ID: <9d9645a1-9d44-4fec-55e7-5b0a1c69e7ab@collabora.com>
-Date:   Fri, 15 Oct 2021 16:06:54 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Fri, 15 Oct 2021 10:13:19 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39D7CC061570
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 07:11:12 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id y3so26893776wrl.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 07:11:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SK5WSwXHZWoI/1ZBUvfDbCPhpcOUhghwxwipgWWDC98=;
+        b=8B6JOltmwuzEfGkzrOKCjgmb6sk8JOnMULoXp871nvfb8vFUJ2EdlOZtTK7G4JrJcw
+         eyBOHEMW5X/iGMIw6FR33U2jt+wak87HGpcNSIYzSFI3tRZUJ1lk2RvMtcy74/87tNFR
+         ePFhvcDSKBfjBjTlE+CjEzSFbIP2aXyZslhj+ysU4Ie/YamccgSLDOeQ3d7dsvpsGWGO
+         HoGNxI3wMYWQCUm2UjCG7kjyojNGGylze+ZNWWdhMzR10cLd6MocYdXwBnP8cqRDGz6B
+         4rVVW77uPZ5I2YVVjmu2W3UanuyGTAkeUKVAXrlAcuNpTtNcBzlKmKZ/K85fT5YWNmY6
+         VySQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SK5WSwXHZWoI/1ZBUvfDbCPhpcOUhghwxwipgWWDC98=;
+        b=W4ZYLRaiYQaIuWQWlZTFfjzd8yOxcP+WRIya+NScja+fwoiD2ISkH18dtJ7S7JC/jt
+         RDC6h+SSinY/+iSSVmogM+PstluxEpxvgPUnLTDTHkjpUKstXTyus8LVaX4i3OyaY3RP
+         xVrnZAZoaw9s7WhjFGEQ99oDQ+IAOKpZYa4+dd5UhjAkTJKJ1yqBc7vIdqQAohzzAJDE
+         yF122wxVvN6udydkLIjTUQGu/add/UccIudsSitAsbcoRsep4M804lEtkIBqKrGdwJXS
+         1JdpyfpAZv1ewhPY8Iyx99+zcU42Y0HJa9AQYYoDysdfEF34C391UZRLuIJbBM7nZtM3
+         bz6Q==
+X-Gm-Message-State: AOAM531KvZyG8+Ixw/w8vI+EwMvF7kbk1xgrR+yIOfeLGrhrzSQxHQzx
+        Zc9NrIuYEnpyluuQDZPgk8jF3Q==
+X-Google-Smtp-Source: ABdhPJw/1LkkObJ3ghkbZlL8mXeEQ65q7HmlYnmT+4W1ZJ1xvKR2Kc179nzGYBN3EYBY+dBTEAhtGA==
+X-Received: by 2002:a5d:6d8c:: with SMTP id l12mr14612259wrs.80.1634307070511;
+        Fri, 15 Oct 2021 07:11:10 -0700 (PDT)
+Received: from localhost.localdomain ([2001:861:44c0:66c0:f6e3:13bd:45ae:5eeb])
+        by smtp.gmail.com with ESMTPSA id f15sm4971434wrt.38.2021.10.15.07.11.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Oct 2021 07:11:10 -0700 (PDT)
+From:   Neil Armstrong <narmstrong@baylibre.com>
+To:     daniel@ffwll.ch, Laurent.pinchart@ideasonboard.com,
+        sam@ravnborg.org
+Cc:     martin.blumenstingl@googlemail.com,
+        dri-devel@lists.freedesktop.org, linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Neil Armstrong <narmstrong@baylibre.com>
+Subject: [PATCH v2 0/6] drm/meson: rework encoders to pass ATTACH_NO_CONNECTOR
+Date:   Fri, 15 Oct 2021 16:11:01 +0200
+Message-Id: <20211015141107.2430800-1-narmstrong@baylibre.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <4f8f6da3-70b1-5dd8-27b7-c9f9fd37920b@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2607; h=from:subject; bh=fTkgFMlSB5Ej7MF+TequNqhZSjRHV4SIxj9PjVk81iE=; b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBhaYoipSArcNV7nFCbup2fdmzNK3qHxA1qegi12EUX 2eGrp7SJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCYWmKIgAKCRB33NvayMhJ0dkcD/ 9qlX4Gb1Is7ynKt7PiVlO7GkGeshsI29vfmJIFP6+ArJtfQIqxGFcFobg23cGo8fvZ4wX8UoXB+8C9 8MsuVXqNOoZnAmr2igGcYO2TvbazqG74mqzkStuvbmGEDLepBT315heMyfyDlyT0K/2pRu2MmNjINM mnT1zHtaNmS6gBH0zp+vGzojAIrhJMg7BzCEqDZ/3enp3saAazHP7+3fVcKf0KLOaXpzeZeRSfWlnp y11/5Gfx1PPbqLsQdb/pRHQrZGsvOxzgASt6l8A8UiGek3YD6CJqjmiejllwolyrkWl69zbpDqqbZC Y7RgjOhMcEMMls1oeLdikoSBtLAkasX+qzjlmjQzGbjVITun55XaFcRkqnnH9Xskkm85UF1PJk+WzT IpLxhMsvnrlGQw9JqHOdTYdzNLnZCeaRRpKq8sSwUAWmwEbRMkehxmMIhm87dG2mYDIWt8sh4hKSzj ks0VptYcTWLlMQlDxZRd7mgd3O/fxnP3nBGgHEbg9PdItyacSU5/FeMx5lwnvAnW2nK9kIESAduVFy cGK0TXiMG7qOpLzvLt/h8rCCPwxcmENXjHM6J8oKH5Wq+0vx948FXlmY5+afSZ9Ws+nOQkjAWHuBPh EVbGkLFvuTvjD59SJmDvli1PlO858luVua+adFk2PE3FKK6nMpD3N3p2tfFA==
+X-Developer-Key: i=narmstrong@baylibre.com; a=openpgp; fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This serie finnally reworks the drm/meson driver by extracting the encoders
+in their own file and moves to bridge-only callbacks.
 
-Le 15/10/2021 à 12:33, Alex Bee a écrit :
-> Hi Benjamin, Jernej
-> Am 12.10.21 um 18:08 schrieb Jernej Škrabec:
->> CC: Alex Bee
->>
->> Alex, please take a look to these patches too.
-> These patches don't remove anything that would be need for rkvdec hevc 
-> - but indeed - we need some more:
-> https://github.com/LibreELEC/LibreELEC.tv/blob/master/projects/Rockchip/patches/linux/default/linux-2001-v4l-wip-rkvdec-hevc.patch#L242-L305 
->
->
-> v4l2_ctrl_hevc_sps:
-> __u8    video_parameter_set_id
-> __u8    seq_parameter_set_id
->
-> v4l2_ctrl_hevc_pps:
-> __u8    pic_parameter_set_id
-> __u16    short_term_ref_pic_set_size
-> __u16    long_term_ref_pic_set_size
->
-> As far as I can see, they are all part of the spec and should be 
-> therefore good to go in the uapi.
+This permits passing the ATTACH_NO_CONNECTOR bridge attach flag and finally
+use the CVBS & HDMI display-connector driver.
 
-Do you have any plan to upstream these fields in HEVC uAPI ?
+This will ease Martin Blumenstingl writing the HDMI transceiver driver for
+the older Meson8/8b SoCs, and sets the proper architecture for the work in
+progress MIPI-DSI support.
 
-Regards,
-Benjamin
+Finally, this serie will path the way to a removal of the device component
+and use the drmm memory management.
 
->
-> As you might now, even rkvdec is a frame-based decoder, it doesn't 
-> fully parse slice headers in HW for HEVC and we need to set references 
-> in SW which requires looping over the slices. Downstream we have a 
-> hack to give num_slices in v4l2_ctrl_hevc_sps for doing that.
-> That could fully go away, if V4L2_CID_MPEG_VIDEO_HEVC_SLICE_PARAMS 
-> could get dynamic array control support and would make upstreaming 
-> this a lot easier - as far as I'm concered this would be required for 
-> RPi HEVC decoder as well.
-> As a last resort we could also implement a HW specifc control à la
-> V4L2_CID_HANTRO_HEVC_SLICE_HEADER_SKIP - but I'd like to avoid that, 
-> knowing it would certainly be better from performance pov.
->
-> Alex.
->>
->> Dne torek, 12. oktober 2021 ob 17:57:50 CEST je Benjamin Gaignard 
->> napisal(a):
->>>
->>> Le 12/10/2021 à 17:34, Jernej Škrabec a écrit :
->>>> Hi Benjamin!
->>>>
->>>> Dne torek, 12. oktober 2021 ob 16:35:48 CEST je Benjamin Gaignard
->> napisal(a):
->>>>> This series aims to clean up Reference Picture Set usage and flags.
->>>>>
->>>>> Long term flag was named with RPS prefix while it is not used for RPS
->>>>> but for mark long term references in DBP. Remane it and remove the 
->>>>> two
->>>>> other useless RPS flags.
->>>>>
->>>>> Clarify documentation about RPS lists content and make sure that 
->>>>> Hantro
->>>>> driver use them correctly (i.e without look up in DBP).
->>>>>
->>>>> These patches are the last in my backlog impacting HEVC uAPI.
->>>>>   From my point of view, once they get merged, you could start 
->>>>> talking
->>>>> about how move HEVC uAPI to stable.
->>>> With your changes, HEVC uAPI controls still won't be complete. Cedrus
->> needs
->>>> entry point control, which in turn needs dynamic array support. I'm 
->>>> a bit
->> lazy
->>>> implementing that control, but I guess I can take a look in a month 
->>>> or so.
->>>> rkvdec also needs more fields for HEVC. With patches collected here:
->>>> https://github.com/LibreELEC/LibreELEC.tv/blob/master/projects/Rockchip/ 
->>>>
->>>> patches/linux/default/linux-2001-v4l-wip-rkvdec-hevc.patch
->>>> fluster HEVC test score is reportedly 121/135 (8-bit tests only).
->>>
->>> Hi Jernej,
->>>
->>> Thanks for your feedback, getting a list of missing items in HEVC uAPI
->>> will definitively help to fill the hope.
->>> The patch you mention for rkvdec are already merged in mainline 
->>> kernel (at
->>> least for uAPI part).
->>
->> Are they? What about:
->> video_parameter_set_id
->> seq_parameter_set_id
->> pic_parameter_set_id
->> short_term_ref_pic_set_size
->> long_term_ref_pic_set_size
->>
->> At least I don't see them in linux-next. Maybe that information can be
->> obtained in some other way?
->>
->>> Cedrus needs are about num_entry_point_offsets, offset_len_minus1 and
->> entry_point_offset_minus1[ i ]
->>> in HEVC specifications ?
->>
->> Yes, Cedrus needs to know whole list of entry points. I don't think 
->> we need to
->> worry about offset_len_minus1, list could be pre-processed - just 
->> number of
->> entry points and their values.
->>
->> Best regards,
->> Jernej
->>
->>>
->>> Regards,
->>> Benjamin
->>>
->>>>
->>>> I would certainly wait with moving HEVC uAPI to stable.
->>>>
->>>> Best regards,
->>>> Jernej
->>>>
->>>>> version 2:
->>>>> - change DPB field name from rps to flags
->>>>>
->>>>> Please note that the only purpose of commits 3 and 4 is to allow 
->>>>> to test
->>>>> G2 hardware block for IMX8MQ until a proper solution isuing power 
->>>>> domain
->>>>> can be found. Do not merge them.
->>>>>
->>>>> GStreamer HEVC plugin merge request can be found here:
->>>>> https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/1079 
->>>>>
->>>>>
->>>>> With those piece of code fluster score is 77/147.
->>>>>
->>>>> Benjamin
->>>>>
->>>>> Benjamin Gaignard (4):
->>>>>     media: hevc: Remove RPS named flags
->>>>>     media: hevc: Embedded indexes in RPS
->>>>>     media: hantro: Use syscon instead of 'ctrl' register
->>>>>     arm64: dts: imx8mq: Add node to G2 hardware
->>>>>
->>>>>    .../media/v4l/ext-ctrls-codec.rst             | 14 +++---
->>>>>    arch/arm64/boot/dts/freescale/imx8mq.dtsi     | 43 
->>>>> +++++++++++++----
->>>>>    drivers/staging/media/hantro/hantro.h         |  5 +-
->>>>>    .../staging/media/hantro/hantro_g2_hevc_dec.c | 27 +++--------
->>>>>    drivers/staging/media/hantro/imx8m_vpu_hw.c   | 48 
->>>>> ++++++++++++-------
->>>>>    .../staging/media/sunxi/cedrus/cedrus_h265.c  |  2 +-
->>>>>    include/media/hevc-ctrls.h                    |  6 +--
->>>>>    7 files changed, 84 insertions(+), 61 deletions(-)
->>>>>
->>>>> -- 
->>>>> 2.30.2
->>>>>
->>>>>
->>>>
->>>
->>
->>
->
+Changes since v1 at [1];
+ - patch 1: added sam's review tag, fixed include order, fixed doc wording
+ - patch 2: added sam's ack tag, switched to dev_dbg()
+ - patch 3: moved mode_set to atomic_enable, removed DRM_DEBUG, fixed include order
+ - patch 4: added sam's ack tag & applied to drm-misc-next
+ - patch 5 & 6: added sam's ack tag
+ - patch 7: added sam's review tag, stopped saving connector, moved mode_set to atomic_enable,
+ 	added missing atomic state callbacks, fixed include order, switched to dev_dbg/dev_err
+
+[1] https://lore.kernel.org/r/20211014152606.2289528-1-narmstrong@baylibre.com
+
+Neil Armstrong (6):
+  drm/bridge: display-connector: implement bus fmts callbacks
+  drm/meson: remove useless recursive components matching
+  drm/meson: split out encoder from meson_dw_hdmi
+  drm/meson: encoder_hdmi: switch to bridge
+    DRM_BRIDGE_ATTACH_NO_CONNECTOR
+  drm/meson: rename venc_cvbs to encoder_cvbs
+  drm/meson: encoder_cvbs: switch to bridge with ATTACH_NO_CONNECTOR
+
+ drivers/gpu/drm/bridge/display-connector.c    |  86 ++++
+ drivers/gpu/drm/meson/Kconfig                 |   2 +
+ drivers/gpu/drm/meson/Makefile                |   3 +-
+ drivers/gpu/drm/meson/meson_drv.c             |  71 ++-
+ drivers/gpu/drm/meson/meson_dw_hdmi.c         | 342 +------------
+ drivers/gpu/drm/meson/meson_encoder_cvbs.c    | 291 +++++++++++
+ ...meson_venc_cvbs.h => meson_encoder_cvbs.h} |   2 +-
+ drivers/gpu/drm/meson/meson_encoder_hdmi.c    | 452 ++++++++++++++++++
+ drivers/gpu/drm/meson/meson_encoder_hdmi.h    |  12 +
+ drivers/gpu/drm/meson/meson_venc_cvbs.c       | 293 ------------
+ 10 files changed, 894 insertions(+), 660 deletions(-)
+ create mode 100644 drivers/gpu/drm/meson/meson_encoder_cvbs.c
+ rename drivers/gpu/drm/meson/{meson_venc_cvbs.h => meson_encoder_cvbs.h} (92%)
+ create mode 100644 drivers/gpu/drm/meson/meson_encoder_hdmi.c
+ create mode 100644 drivers/gpu/drm/meson/meson_encoder_hdmi.h
+ delete mode 100644 drivers/gpu/drm/meson/meson_venc_cvbs.c
+
+
+base-commit: f6632721cd6231e1bf28b5317dcc7543e43359f7
+-- 
+2.25.1
+
