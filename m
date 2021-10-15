@@ -2,221 +2,342 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2E3A42FCEC
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 22:18:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8B2F42FCF3
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 22:22:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242982AbhJOUUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 16:20:35 -0400
-Received: from mail-dm6nam12on2051.outbound.protection.outlook.com ([40.107.243.51]:23649
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        id S238562AbhJOUYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 16:24:48 -0400
+Received: from mail-dm6nam11on2083.outbound.protection.outlook.com ([40.107.223.83]:15521
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234408AbhJOUUd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 16:20:33 -0400
+        id S235134AbhJOUYq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 16:24:46 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PMugwG4TE7aNk2NlT5tyxWFSnNj45m5a+VqdYbD1rPXjGGg6DbG+TWl4oOigpX6hy8IoIy/+G7HXRNDZWt9xqa/+cqGtsZqJJq1zyhiddu9d/cdvX95go+fhTwJYrBP/7eDysbtZJiVX68j0r5ejhAXqRdgEfdj0QFKUpOm5Zyl5m80B/QpZDEHBIYqcfZ1UsonJBqKK/DDD5n52ySgpoVRre1Nzx/XS9ZczjK5zg/bXPQmIk8BcFeITFhQ+q/xkSrhrqt64NPYXez86xAh/++zo5geGEiDL79GiUWWP6bD9K0aHzb50SJP9yCFUGhAYrCyWO8bthyoVMAaN68DvTw==
+ b=UU+DIzCYjyI+BsWogtwouCjSexLuUp703XoBlo53S5rsNCP+F0NaySwT2V3CLPYRl2FQ3qOgQ2gVbTi0Umx7bnTuDtQZMcUkFocvMfClzY/zBymyKy3H8VlT1m671DznKwiQ0zKcnzlA3Rp6QebFJxi82oOIcX/se+/vArqHKZ9KjeDAmp1QjCWcIfhvorBUylPKeQ6bjHbiedvwZ3UBWxB9lal8ogMIVFl9sLutuHv1HOtuXrjTGYOpnCh0lw6WwRyur6ZHpnIWbmk6QkZ6nyPNAGYOLQU9AdM2R+7q8iSI47jaap/nzn+vr1B6MxCMxRnqgS8mUDuWQXj49FeUjw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=lgaUzbm5yjU/YABuMFY3LciYctTg7ZStrCZVNelewE0=;
- b=Fc8g/nUa9e4GCdmKCqpFmBrelED67bQZ4xO25uiqBtfKlJauAMTqbrkF/sowm8UnWiXcJ73vtdxy5PiiPwY9Sk5WF2zOSo7xHy4Ni5eC5x1amX2LPDa7uWvbgjM94ry0ELleMCUEp/byLMVmbs9VI53jEe+I4B1ovyxiVSIeaMVqR9U0kk/dMpq3kjTMUXkVOgqR2q/ml7bfNhKrH94UMweUE9DRp7e3eL+R6D+kRQwy7ChlBQqBEPyxBl09xfpqSoVlQM66lJcZDTfCvfS4gBImwc01e5SaAJg+fWuPF9yxuzjDsBkwibX2eGPZbCV8vomn1CFVPwXfxJNBgi0vMA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ bh=V2p4dUsftkXphD6GzMn7jAWbVN3NkAgMA7lFe8cn0JQ=;
+ b=Oqxa6o5yIsX7TE5bcdT1/HTGNsaYvkeJUhb/nmAblT+FHyX0xQ7y6/ek1sCWLbS3PnCeYPCTyZk2zMOOBDdXGHXCvLhulcPv4PcImvk1/RoNVOTCnPtxbHgSiCGIJfc8NX4lfkXDUF2eDWrOI1zsS4fqAVhwS9eEPjBWQDBXzxJjw8w8XGZ61zHM51L9agznfvtsKdyDe0GCaB5aBlC174O4nNMPI5R+fsjQ/GBKEQmfoEr2eyO1BUeWSlA68LupwrH0DYkBD4SyChcJIU/q3ETj/vrl+0AjOIOf2yGeiWTMretFfM0NsRQQZzaO6c2bPAuChMbSQMey8v4h05g5JA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=intel.com smtp.mailfrom=xilinx.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lgaUzbm5yjU/YABuMFY3LciYctTg7ZStrCZVNelewE0=;
- b=P/KjNCBjMGgIHFDPnP4yKUfsDGuOqrkwf/PFW4jueNhR2LhtHo2l4PhoNqojrgsJSQccwEaFJSTNJPam1f6ZlORBAuDspgwqlpwWrYX1AUT6CnHbbE1X366S5YX5//Y4MJ7Inb5pd49/EwvMTEiOb2DVOdV1ZuuqhRoShCdpui0=
-Authentication-Results: google.com; dkim=none (message not signed)
- header.d=none;google.com; dmarc=none action=none header.from=amd.com;
-Received: from SN6PR12MB2718.namprd12.prod.outlook.com (2603:10b6:805:6f::22)
- by SN6PR12MB2718.namprd12.prod.outlook.com (2603:10b6:805:6f::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.22; Fri, 15 Oct
- 2021 20:18:22 +0000
-Received: from SN6PR12MB2718.namprd12.prod.outlook.com
- ([fe80::78b7:7336:d363:9be3]) by SN6PR12MB2718.namprd12.prod.outlook.com
- ([fe80::78b7:7336:d363:9be3%6]) with mapi id 15.20.4587.032; Fri, 15 Oct 2021
- 20:18:22 +0000
-Message-ID: <3fc1b403-73a1-cf2e-2990-66d2c1ecdfa3@amd.com>
-Date:   Fri, 15 Oct 2021 15:18:19 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.2.0
-Cc:     brijesh.singh@amd.com, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
-        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
-Subject: Re: [PATCH Part2 v5 05/45] x86/sev: Add helper functions for
- RMPUPDATE and PSMASH instruction
-Content-Language: en-US
-To:     Sean Christopherson <seanjc@google.com>
-References: <20210820155918.7518-1-brijesh.singh@amd.com>
- <20210820155918.7518-6-brijesh.singh@amd.com> <YWnC++azH3xXrMm6@google.com>
-From:   Brijesh Singh <brijesh.singh@amd.com>
-In-Reply-To: <YWnC++azH3xXrMm6@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SN4PR0501CA0140.namprd05.prod.outlook.com
- (2603:10b6:803:2c::18) To SN6PR12MB2718.namprd12.prod.outlook.com
- (2603:10b6:805:6f::22)
+ bh=V2p4dUsftkXphD6GzMn7jAWbVN3NkAgMA7lFe8cn0JQ=;
+ b=akqkX5dcfhnRiGQk+CcqjPYRp0b82OYI2qpm1pj8HhLSNkawIOJpGJcuMmMwinIJ1gZi60DISySU8DXXUQ4tnS4GZCdO5YC9Y/Pio8HKANy1Ytib8cjZHPPOTyHvSpH2XM0K+1VjyaGnYEgEXvdYYJqp9AIG5I8+jAgLoLAkxbk=
+Received: from SN4PR0701CA0032.namprd07.prod.outlook.com
+ (2603:10b6:803:2d::12) by BL3PR02MB8281.namprd02.prod.outlook.com
+ (2603:10b6:208:344::18) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.15; Fri, 15 Oct
+ 2021 20:22:37 +0000
+Received: from SN1NAM02FT0011.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:803:2d:cafe::a7) by SN4PR0701CA0032.outlook.office365.com
+ (2603:10b6:803:2d::12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.14 via Frontend
+ Transport; Fri, 15 Oct 2021 20:22:37 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=pass action=none header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
+Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
+ SN1NAM02FT0011.mail.protection.outlook.com (10.97.5.171) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4608.15 via Frontend Transport; Fri, 15 Oct 2021 20:22:37 +0000
+Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
+ xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Fri, 15 Oct 2021 13:22:37 -0700
+Received: from smtp.xilinx.com (172.19.127.95) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
+ 15.1.2176.14 via Frontend Transport; Fri, 15 Oct 2021 13:22:37 -0700
+Envelope-to: matthew.gerlach@intel.com,
+ hao.wu@intel.com,
+ yilun.xu@intel.com,
+ lgoncalv@redhat.com,
+ trix@redhat.com,
+ linux-kernel@vger.kernel.org,
+ linux-fpga@vger.kernel.org,
+ mdf@kernel.org,
+ russell.h.weight@intel.com
+Received: from [10.17.2.60] (port=39118)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <lizhi.hou@xilinx.com>)
+        id 1mbTiv-000Gok-0L; Fri, 15 Oct 2021 13:22:37 -0700
+Subject: Re: [PATCH v17 4/5] fpga: image-load: add status ioctl
+To:     Russ Weight <russell.h.weight@intel.com>, <mdf@kernel.org>,
+        <linux-fpga@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <trix@redhat.com>, <lgoncalv@redhat.com>, <yilun.xu@intel.com>,
+        <hao.wu@intel.com>, <matthew.gerlach@intel.com>
+References: <20210929230025.68961-1-russell.h.weight@intel.com>
+ <20210929230025.68961-5-russell.h.weight@intel.com>
+From:   Lizhi Hou <lizhi.hou@xilinx.com>
+Message-ID: <97bb3fb5-3807-386d-d2c8-fec9c077a255@xilinx.com>
+Date:   Fri, 15 Oct 2021 13:22:36 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-Received: from [10.0.0.5] (70.112.153.56) by SN4PR0501CA0140.namprd05.prod.outlook.com (2603:10b6:803:2c::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.8 via Frontend Transport; Fri, 15 Oct 2021 20:18:20 +0000
+In-Reply-To: <20210929230025.68961-5-russell.h.weight@intel.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1c4fc950-7fa6-4082-5637-08d99018efa9
-X-MS-TrafficTypeDiagnostic: SN6PR12MB2718:
-X-Microsoft-Antispam-PRVS: <SN6PR12MB2718A13DB2DAD2C839C96951E5B99@SN6PR12MB2718.namprd12.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: f771efce-f305-42af-4791-08d9901987be
+X-MS-TrafficTypeDiagnostic: BL3PR02MB8281:
+X-Microsoft-Antispam-PRVS: <BL3PR02MB8281D27DD2C97E5D8258B7ECA1B99@BL3PR02MB8281.namprd02.prod.outlook.com>
 X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: lGxuF9ReK275sH946uvMYwfEnZG34io/LMHq2aDiTFIvY1hhTzYl7xkJkdXkm9OtXDxLkjzDt8ksJkKD9PiCRxKeAuODY2MHJaRLL0YK5ugqAburRm6jcj1bL5ig8bEwLux5vBzUAjlvlRbJOGomyMXUPlCCf1/TQWizcKZWIjreT2RyBdC7U31odeL2+wH57u8YCi5wm/vtaPf08DawX2olz66pakwvzKmdmKvRxYuhyQB+2pYA+MHlEvl+eam2dM5EyFNyNnngm5aYBYj4/fF93/AeEvmfG5jwYdDBOYYosap4TZuHgtAR5OSKqojoISk+OOgCt2G3AJ443alW4PlqAPoyGFJmIMweI+fQCYnceYBA8LK13inJcp/pPIrg8KLi5DGlDnSBXAQ/0frnyTVaOQZyJ+csxukBOo8YzkHKbEno6JIWpL1/FRPxgPf4cIMH1p81VIZk40oFIJir+KjqwQabafLWUq/gKm2mYgDlL2EsGcy75QZ9EOGDwQz+p/TTnfAelF7nJjMeHLtzXOs38a8nt6OQ93f0Z1yId9cd8eC4yVsmDii5NMRFwtTEyLHwgvSiQoK8IutsXZh7xkobLZ/yJRFDdtOwYKqy6WvM4tcill+dC/SCmKQ/wS77ptVBbpeErCiKBYqBNF5yB6H7X5PIBo01S1to5qQYeLghnAPfOlWTR6TRr4sMUOsK6HO9XmPj8cGV8go/JxRsbiZ3mG1evcIjpE23FzSSJ6zX4RlS+gHBMdSJtVD4lumGwZmS96zK2UHse3erg7vO4Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2718.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(44832011)(83380400001)(86362001)(54906003)(8936002)(31696002)(38100700002)(508600001)(36756003)(31686004)(66946007)(53546011)(66556008)(66476007)(4326008)(6916009)(956004)(186003)(26005)(8676002)(5660300002)(7406005)(7416002)(2616005)(6486002)(316002)(2906002)(16576012)(43740500002)(45980500001)(309714004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?V0ZHeDRNQ01SMTRYckVEaUM2SEpwbXUya3VyYklFMkRBUkswSVFWSlFYMXcr?=
- =?utf-8?B?bFBzTDZOMFFBdmpDeEFTWC9UYjU0RHRUMmFVYzdERytGSlpPSnRhajRxN2NN?=
- =?utf-8?B?R1lKZTllYlY4NXI1bWNKNjNjNnFFWUpVdW5yV1pwcTdhbUN1OWRFV2lyNXY0?=
- =?utf-8?B?akdEZjRzZ1pTTjd3a2xFdDBqQVIvejNHeXZ4dnZ3SDhqZFl6QmZVZ25YRlNa?=
- =?utf-8?B?Uml4NjJkcUpZN0lqeFdlWjRLWXZ6SzJwSGVqSzdpbUdrL2hQNUx4bnBNSDg5?=
- =?utf-8?B?ZFdZL0p1S04zQ3NDVkhrR2F6cVEwMVVKM3lJK0tkQlZ6Qld2WGl3SFJXV2RN?=
- =?utf-8?B?aDYxVWFJcWhzbDJ0RG9QR3UvRDR5NUQ1V2NFK2ErTlBreUlKMlF2cmhoRjlF?=
- =?utf-8?B?bDY0a0s1b3Z0a1Nld2ZBUDhVN0RXRC9tcHF4akZUeWUwV1g5bEpCRE0wSVhY?=
- =?utf-8?B?MXcyT05rSU54T2wzaXZvYkxTSUJDWlVCRUUwdTdRRy9YZFdadVFtL2xuTzh6?=
- =?utf-8?B?d3c2dnNWMXU3a3BaWmtQa3Y4QTRsT0xpNG94T3FibGtQYVI5czIyS1ptczVi?=
- =?utf-8?B?V3NlaDJpcmlqS0orK2IvR0d1b1pVVElYcXV6ajd6YVF6SjE4RXNKUVJUMCty?=
- =?utf-8?B?WXRXbnBjQnlIRzUvOTU1YnZ2V253RjE2UE9rRnlYUE9qMkFyQ0dEeGxxdm5p?=
- =?utf-8?B?VFNJaTNTUnp0amkzVmhPTlZ2RzhwNXNORlFtV2VZWGFMa2VhNlVTYW5oemhv?=
- =?utf-8?B?UjZZT2w4WmF3amJGSkxZemZYUFJmTjY0Ykt3aExmNnZNL21oRjJpVmpaQW9V?=
- =?utf-8?B?UERmVjUwdXBHcnAyMHlhRzUyRWdkcXJ6QlJjS1FTVmw1WDVCb0NRZWg4MUlu?=
- =?utf-8?B?dnUyTVE0ak9seVhIQnhOV1pFYkdsVzNTTUFhVERxSGdrMFlQRXBZa3VnNE5o?=
- =?utf-8?B?SktkM21aRE5FY0x6YnBtRUd5WWVuTS9vazBJU3RBVWRPTUVvbEUyV1VYdnAr?=
- =?utf-8?B?S0JiZkFVaFd3WGM5YStoS01UeGNOTUtsbFN4S2tLUk9zSDZ2SmZsUHViVG9z?=
- =?utf-8?B?NVU0OXNIak9KMUZiSHIwcG9KSHZpNVgxaDZ1bktPSnp1cXYvTVBsQmFDUW1i?=
- =?utf-8?B?cG96K0ppSWtOZ1R3bXJoUGhiOEw0Z0JKNVZZeXFuKzZsYVEvdEwxRkFRekdX?=
- =?utf-8?B?eHpvMUpmamc3dW5vcXU4Q0UwOHRPejBwWXNNdUtqd3BYWEU4ZTJaQThabmZG?=
- =?utf-8?B?bXIwQ1FuU0VEVlJNOC9JRkpnWXZaL3NtbStMZStyOFk5ZkVMWGdEWERTVkp4?=
- =?utf-8?B?MlNqUklYaXY5b3Z1aXZlaUNZTXduSGg2dGhkMmhzUmY2MENoK2RFSUxxZUZx?=
- =?utf-8?B?VmRoTUx6OG5VNVB5citBMWFUdGN1UW9YK2FhNjl4aldscXRrbUw2czdGZUdp?=
- =?utf-8?B?OXV3UEd6MGswbGNYV2JLMStralhuNnBCMXU0R2xaeTQzR0x6T0crTmJhWEJv?=
- =?utf-8?B?Zkx5eVM1ZUovMnNwdmZFeXlSWXVNcFZSWXlOdHhoYjIvZ1NoUkFYRVBWb1ZZ?=
- =?utf-8?B?RkRIYnp3UGU2UTJmYjZWbWZOQWpHaWxPcFBTYkZPZVIzTi90NS84M0NHcXdE?=
- =?utf-8?B?dVBQQWpYRGlWVmw3Nlo5SXZ2T0lvYnNHOG95RVRaS3J3c3N6blBLZks2cUVm?=
- =?utf-8?B?cWRJZGRSdFNOQjZYbytSUDY5NE16MTM0ZFFnS2RpbWVGWkNQbXQ1Y3gzMmNK?=
- =?utf-8?Q?G0JQjBRGR05t6IC9umip5nDeMSp0pBj2eBHLZBt?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1c4fc950-7fa6-4082-5637-08d99018efa9
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2718.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Oct 2021 20:18:22.6781
+X-Microsoft-Antispam-Message-Info: u8tnJ5FVCMDSqdxmHP6SlANmi0qjk0YhILMHxiIEcrH4l4vstwM32vs4bImITdMbjCU2dGfTm/S6gCLHSnoZUcSTanennWZ0Jf94l6zgthXVkYpDwvShtKGfQmCJzSujR+sFmmEHXyiYsDXnnPlzWch1SVmKcO/dx2KlF8QpFoRa/dMiOtoLcEPanGQYpFtTs6tBhWhPDX+9m5IZQe0ctZv5jY6Pq8P4ukV2oRJDvPKNjxuQaYtAIwZRJJgY5Jx3At1GixIyGDp1Px4auBJn3Vgre5WpkbII7yW9YsTdtnH64XrNlFu1h/n4yWtZQPpai88SgRJya18kzYC/6v5UACkl3yfg3ziLdkWkjLsmURstrAfw9gEVcTlLHpM6cxQJHVOqTiszM3PrfUErdpGsDsqBHqlR5XR/WmdHQoubT3d2e1+JG7IcDvg99NsFpLuEdlKOsNzaeACFiSLoN9aVeaekf/MY3dUN4+E7PJfXlim8gJgh0Y6Qz5L1ZFPctUoLj6Uh4grJBJxdkinxdW/gFbnAYc5A4l38lYnvxbAeIumyilTyT8nn57LAxU02YWY+CbW9Fmqm1iTFAA4uhGOzob8lhyeSO6W6T7XY6IFNuwNo9YCwIq8uIlnaFPNh/LiZWPZr4pwJSFbgOJApEzSIUx/i356Y2eUCab1B0i9rOzNDbfJNeid6DxE5b7TMyS/XqGLUQNtNCRgZEqbVGn4VCZS7RazDHrqWP/qgKiTu8q7i6KlUpcQjD7XrufqhLAddJ3vmO+O3vLw9ijDOYKccIw==
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(46966006)(36840700001)(44832011)(26005)(47076005)(36860700001)(31686004)(7636003)(82310400003)(4326008)(70586007)(2906002)(336012)(8936002)(8676002)(53546011)(508600001)(5660300002)(316002)(36906005)(426003)(54906003)(110136005)(83380400001)(36756003)(2616005)(70206006)(9786002)(356005)(31696002)(186003)(50156003)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Oct 2021 20:22:37.4802
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: q7TKxFlk6AbzFsRG56Pd0o7MfYgcA5wMsaOBBzxa91afOmbvKwFty0NAWtMUQRhjoPxyNArS53dYfy8USZvw+A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR12MB2718
+X-MS-Exchange-CrossTenant-Network-Message-Id: f771efce-f305-42af-4791-08d9901987be
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: SN1NAM02FT0011.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL3PR02MB8281
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 10/15/21 1:05 PM, Sean Christopherson wrote:
-> On Fri, Aug 20, 2021, Brijesh Singh wrote:
->> diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
->> index f383d2a89263..8627c49666c9 100644
->> --- a/arch/x86/kernel/sev.c
->> +++ b/arch/x86/kernel/sev.c
->> @@ -2419,3 +2419,75 @@ int snp_lookup_rmpentry(u64 pfn, int *level)
->>  	return !!rmpentry_assigned(e);
->>  }
->>  EXPORT_SYMBOL_GPL(snp_lookup_rmpentry);
->> +
->> +int psmash(u64 pfn)
->> +{
->> +	unsigned long paddr = pfn << PAGE_SHIFT;
-> Probably better to use __pfn_to_phys()?
-
-Sure, I can use that instead of direct shift.
-
-
+On 9/29/21 4:00 PM, Russ Weight wrote:
+> Extend the FPGA Image Load framework to include an FPGA_IMAGE_LOAD_STATUS
+> IOCTL that can be used to monitor the progress of an ongoing image upload.
+> The status returned includes how much data remains to be transferred, the
+> progress of the image upload, and error information in the case of a
+> failure.
 >
->> +	int ret;
->> +
->> +	if (!pfn_valid(pfn))
->> +		return -EINVAL;
->> +
->> +	if (!cpu_feature_enabled(X86_FEATURE_SEV_SNP))
-> Shouldn't this be a WARN_ON_ONCE()?
-
-Since some of these function are called while handling the PSC so I
-tried to avoid using the WARN -- mainly because if the warn_on_panic=1
-is set on the host then it will result in the kernel panic.
-
+> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+> ---
+> v17:
+>   - Rebased for changes to earlier patches.
+> v16:
+>   - Minor changes to adapt in changes in prevoius patches.
+> v15:
+>   - This patch is new to the patchset and provides an FPGA_IMAGE_LOAD_STATUS
+>     IOCTL to return the current values for: remaining_size, progress,
+>     err_progress, and err_code.
+>   - This patch has elements of the following three patches from the previous
+>     patch-set:
+>       [PATCH v14 3/6] fpga: sec-mgr: expose sec-mgr update status
+>       [PATCH v14 4/6] fpga: sec-mgr: expose sec-mgr update errors
+>       [PATCH v14 5/6] fpga: sec-mgr: expose sec-mgr update size
+>   - Changed file, symbol, and config names to reflect the new driver name
+>   - There are some minor changes to locking to enable this ioctl to return
+>     coherent data.
+> ---
+>   Documentation/fpga/fpga-image-load.rst |  6 +++
+>   drivers/fpga/fpga-image-load.c         | 58 +++++++++++++++++++++-----
+>   include/linux/fpga/fpga-image-load.h   |  1 +
+>   include/uapi/linux/fpga-image-load.h   | 18 ++++++++
+>   4 files changed, 73 insertions(+), 10 deletions(-)
 >
->> +		return -ENXIO;
->> +
->> +	/* Binutils version 2.36 supports the PSMASH mnemonic. */
->> +	asm volatile(".byte 0xF3, 0x0F, 0x01, 0xFF"
->> +		      : "=a"(ret)
->> +		      : "a"(paddr)
->> +		      : "memory", "cc");
->> +
->> +	return ret;
-> I don't like returning the raw result from hardware; it's mostly works because
-> hardware also uses '0' for success, but it will cause confusion should hardware
-> ever set bit 31.  There are also failures that likely should never happen unless
-> there's a kernel bug, e.g. I suspect we can do:
+> diff --git a/Documentation/fpga/fpga-image-load.rst b/Documentation/fpga/fpga-image-load.rst
+> index 487b5466f67c..f64f5ee473b8 100644
+> --- a/Documentation/fpga/fpga-image-load.rst
+> +++ b/Documentation/fpga/fpga-image-load.rst
+> @@ -33,3 +33,9 @@ being updated. This is an exclusive operation; an attempt to start
+>   concurrent image uploads for the same device will fail with EBUSY. An
+>   eventfd file descriptor parameter is provided to this IOCTL. It will be
+>   signalled at the completion of the image upload.
+> +
+> +FPGA_IMAGE_LOAD_STATUS:
+> +
+> +Collect status for an on-going image upload. The status returned includes
+> +how much data remains to be transferred, the progress of the image upload,
+> +and error information in the case of a failure.
+> diff --git a/drivers/fpga/fpga-image-load.c b/drivers/fpga/fpga-image-load.c
+> index f04dfc71c190..58373b9e8c02 100644
+> --- a/drivers/fpga/fpga-image-load.c
+> +++ b/drivers/fpga/fpga-image-load.c
+> @@ -22,6 +22,22 @@ static dev_t fpga_image_devt;
 >
-> 	if (WARN_ON_ONCE(ret == FAIL_INPUT))
-> 		return -EINVAL;
-> 	if (WARN_ON_ONCE(ret == FAIL_PERMISSION))
-> 		return -EPERM;
-> 	
-> 	....
+>   #define to_image_load(d) container_of(d, struct fpga_image_load, dev)
 >
-> or if all errors are "impossible"
+> +static void fpga_image_update_progress(struct fpga_image_load *imgld,
+> +                                      u32 new_progress)
+> +{
+> +       mutex_lock(&imgld->lock);
+> +       imgld->progress = new_progress;
+> +       mutex_unlock(&imgld->lock);
+> +}
+> +
+> +static void fpga_image_set_error(struct fpga_image_load *imgld, u32 err_code)
+> +{
+> +       mutex_lock(&imgld->lock);
+> +       imgld->err_progress = imgld->progress;
+> +       imgld->err_code = err_code;
+> +       mutex_unlock(&imgld->lock);
+> +}
+> +
+>   static void fpga_image_prog_complete(struct fpga_image_load *imgld)
+>   {
+>          mutex_lock(&imgld->lock);
+> @@ -38,24 +54,24 @@ static void fpga_image_do_load(struct work_struct *work)
+>          imgld = container_of(work, struct fpga_image_load, work);
 >
-> 	if (WARN_ON_ONCE(ret))
-> 		return snp_error_code_to_errno(ret);
+>          if (imgld->driver_unload) {
+> -               imgld->err_code = FPGA_IMAGE_ERR_CANCELED;
+> +               fpga_image_set_error(imgld, FPGA_IMAGE_ERR_CANCELED);
+>                  goto idle_exit;
+>          }
 >
-> FAIL_INUSE and FAIL_OVERLAP also need further discussion.  It's not clear to me
-> that two well-behaved callers can't encounter collisions due to the 2mb <=> 4kb
-> interactions.  If collisions between well-behaved callers are possible, then this
-> helper likely needs some form of serialization.  Either, the concurrency rules
-> for RMP access need explicit and lengthy documentation.
+>          get_device(&imgld->dev);
+>          if (!try_module_get(imgld->dev.parent->driver->owner)) {
+> -               imgld->err_code = FPGA_IMAGE_ERR_BUSY;
+> +               fpga_image_set_error(imgld, FPGA_IMAGE_ERR_BUSY);
+>                  goto putdev_exit;
+>          }
+>
+> -       imgld->progress = FPGA_IMAGE_PROG_PREPARING;
+> +       fpga_image_update_progress(imgld, FPGA_IMAGE_PROG_PREPARING);
+>          ret = imgld->ops->prepare(imgld, imgld->data, imgld->remaining_size);
+>          if (ret) {
+> -               imgld->err_code = ret;
+> +               fpga_image_set_error(imgld, ret);
+>                  goto modput_exit;
+>          }
+>
+> -       imgld->progress = FPGA_IMAGE_PROG_WRITING;
+> +       fpga_image_update_progress(imgld, FPGA_IMAGE_PROG_WRITING);
+>          while (imgld->remaining_size) {
+>                  ret = imgld->ops->write(imgld, imgld->data, offset,
+>                                          imgld->remaining_size);
+> @@ -65,7 +81,7 @@ static void fpga_image_do_load(struct work_struct *work)
+>                                           "write-op wrote zero data\n");
+>                                  ret = -FPGA_IMAGE_ERR_RW_ERROR;
+>                          }
+> -                       imgld->err_code = -ret;
+> +                       fpga_image_set_error(imgld, -ret);
+>                          goto done;
+>                  }
+>
+> @@ -73,10 +89,10 @@ static void fpga_image_do_load(struct work_struct *work)
+>                  offset += ret;
+>          }
+>
+> -       imgld->progress = FPGA_IMAGE_PROG_PROGRAMMING;
+> +       fpga_image_update_progress(imgld, FPGA_IMAGE_PROG_PROGRAMMING);
+>          ret = imgld->ops->poll_complete(imgld);
+>          if (ret)
+> -               imgld->err_code = ret;
+> +               fpga_image_set_error(imgld, ret);
+>
+>   done:
+>          if (imgld->ops->cleanup)
+> @@ -151,20 +167,42 @@ static int fpga_image_load_ioctl_write(struct fpga_image_load *imgld,
+>          return ret;
+>   }
+>
+> +static int fpga_image_load_ioctl_status(struct fpga_image_load *imgld,
+> +                                       unsigned long arg)
+> +{
+> +       struct fpga_image_status status;
+> +
+> +       memset(&status, 0, sizeof(status));
+> +       status.progress = imgld->progress;
+> +       status.remaining_size = imgld->remaining_size;
+> +       status.err_progress = imgld->err_progress;
+> +       status.err_code = imgld->err_code;
+> +
+> +       if (copy_to_user((void __user *)arg, &status, sizeof(status)))
+> +               return -EFAULT;
+> +
+> +       return 0;
+> +}
+> +
+>   static long fpga_image_load_ioctl(struct file *filp, unsigned int cmd,
+>                                    unsigned long arg)
+>   {
+>          struct fpga_image_load *imgld = filp->private_data;
+>          int ret = -ENOTTY;
+>
+> +       mutex_lock(&imgld->lock);
+> +
+>          switch (cmd) {
+>          case FPGA_IMAGE_LOAD_WRITE:
+> -               mutex_lock(&imgld->lock);
+>                  ret = fpga_image_load_ioctl_write(imgld, arg);
+> -               mutex_unlock(&imgld->lock);
+> +               break;
+> +       case FPGA_IMAGE_LOAD_STATUS:
+> +               ret = fpga_image_load_ioctl_status(imgld, arg);
+>                  break;
+>          }
+>
+> +       mutex_unlock(&imgld->lock);
+> +
+>          return ret;
+>   }
+>
+> diff --git a/include/linux/fpga/fpga-image-load.h b/include/linux/fpga/fpga-image-load.h
+> index 77b3c91ce073..366111d090fb 100644
+> --- a/include/linux/fpga/fpga-image-load.h
+> +++ b/include/linux/fpga/fpga-image-load.h
+> @@ -49,6 +49,7 @@ struct fpga_image_load {
+>          const u8 *data;                 /* pointer to update data */
+>          u32 remaining_size;             /* size remaining to transfer */
+>          u32 progress;
+> +       u32 err_progress;               /* progress at time of error */
+>          u32 err_code;                   /* image load error code */
+>          bool driver_unload;
+>          struct eventfd_ctx *finished;
+> diff --git a/include/uapi/linux/fpga-image-load.h b/include/uapi/linux/fpga-image-load.h
+> index 8d2d3db92e87..1b91343961df 100644
+> --- a/include/uapi/linux/fpga-image-load.h
+> +++ b/include/uapi/linux/fpga-image-load.h
+> @@ -51,4 +51,22 @@ struct fpga_image_write {
+>
+>   #define FPGA_IMAGE_LOAD_WRITE  _IOW(FPGA_IMAGE_LOAD_MAGIC, 0, struct fpga_image_write)
+>
+> +/**
+> + * FPGA_IMAGE_LOAD_STATUS - _IOR(FPGA_IMAGE_LOAD_MAGIC, 1,
+> + *                              struct fpga_image_status)
+> + *
+> + * Request status information for an ongoing update.
+> + *
+> + * Return: 0 on success, -errno on failure.
+> + */
+> +struct fpga_image_status {
+> +       /* Output */
+> +       __u32 remaining_size;   /* size remaining to transfer */
+> +       __u32 progress;         /* current progress of image load */
+> +       __u32 err_progress;     /* progress at time of error */
+> +       __u32 err_code;         /* error code */
+> +};
 
-I don't think we need to serialize the calls. The hardware acquires the
-lock before changing the RMP table, and if another processor tries to
-access the same RMP table entry, the hardware will return FAIL_INUSE or
-#NPF. The FAIL_INUSE will happen on the RMPUPDATE, whereas the #NPF will
-occur if the guest attempts to modify the RMP entry (such as using the
-RMPADJUST).
+Could this be extended to also collect the image detail?
 
-As per the FAIL_OVERLAP is concerns, it's the case where the guest is
-asking to create an invalid situation and hardware detects it.  In other
-words, it is a guest bug. e.g., the guest issued a PSC to add a page as
-2MB and then asked to add the same page (or one of subpage) as a 4K.
-Hardware sees the overlap condition and fails to change the state on the
-second request.
+         Image version, name, etc been successfully written to device 
+(flash).
+
+         Image version, name, etc is currently running on the device.
+
+Or maybe add another query command to do these?
+
+So the userland utility will be able to show what image is running and 
+what image is going to run with next cold reboot.
 
 
-thanks
+Thanks,
 
+Lizhi
+
+> +
+> +#define FPGA_IMAGE_LOAD_STATUS _IOR(FPGA_IMAGE_LOAD_MAGIC, 1, struct fpga_image_status)
+> +
+>   #endif /* _UAPI_LINUX_FPGA_IMAGE_LOAD_H */
+> --
+> 2.25.1
+>
