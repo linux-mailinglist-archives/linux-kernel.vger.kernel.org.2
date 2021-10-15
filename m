@@ -2,63 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B610142FA14
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 19:23:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A61E42FA15
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 19:23:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242382AbhJORZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 13:25:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40148 "EHLO
+        id S242431AbhJORZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 13:25:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242279AbhJORYl (ORCPT
+        with ESMTP id S237519AbhJORYm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 13:24:41 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B3C0C0613E9
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 10:22:22 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id z126so13995930oiz.12
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 10:22:22 -0700 (PDT)
+        Fri, 15 Oct 2021 13:24:42 -0400
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46B6BC0613EC
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 10:22:23 -0700 (PDT)
+Received: by mail-oi1-x22d.google.com with SMTP id e63so14000152oif.8
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 10:22:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=kn035h2h7OainpjhIOJkuHEQG/3BQcpVjhttGSsQ5lY=;
-        b=cNbPYnwaihUZcstNAa3Q8Z9qG63pLORlJ4IIJ4NrZFslU0URaOqJzC68x0oXxa6M8G
-         S7RqmU165kKJCKLivy/f7zaMNePPn9CF4dBHIS6UoeWDvbKjWOPaEOWOKrussZd3kcTn
-         9qxRbR8eMtjKWwHBIK5lydn474w4XfYdO4Xbmnn9Jj4Th06Skx7fqn0o1yS9BdD7FGOr
-         OZCKKKnzGvvc/iBSk8+YtjpbwR3OKXCOAfGQ3LpmME13NJ6HpFSpeRHsdJVUVNdomhqr
-         RTWZxdMrt31LGTSi0gGaNVMDgAOPchq7ItXhHqrZ5urplXUq+mmC2RvOSoO0oS92EB00
-         q0Ng==
+        bh=UQGBuMylvu9UpPG16xaz7lVAENRpwI6V6j3bp4rN4V8=;
+        b=Z32jp32n95zqUqhWkMrX4wuXD7gqEWBUoQ3lI3z+JPu9Fqs8D/TCdHv+/oKcxvuVsG
+         5MY5DZtqjnWF45OCt8tP248VQrelq4DcFwkxYxGoVTrSToE2pBu0O0A0l0XVWNAN3fUG
+         efgStWf1jtSTQp/PZpdavWMCawX29qpoDDGIaIRW+/soU9tgtY1BRlAkbEL0t6dhAk+t
+         tWgdSnaMz4d9TWk166bIDJh2rApyQi8cTisbI8ueK6nyA3KDTjHFCzw/kI+XWq6torNd
+         dg4vCsPgcBUuRrHxqxYrOPAMIheidts6ccxkhsuxY4Hl0wrvmGuY6We0/7bjZ2B5hzDW
+         aRlg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=kn035h2h7OainpjhIOJkuHEQG/3BQcpVjhttGSsQ5lY=;
-        b=PvFEND5E8np45snuKmSrv/UghBJeVUgDrqElBKdgw18sEEICkIWQj+HBvK+CAUodAX
-         +K0LfGMFXGQRW3UE4nIXOMAJ8LhzlXs2bVX0OHmbTu7gmJ0dPu5C2KvD3Yn2i0qnZ8V5
-         UA+pZU1p94rC7T8WYpw+Bz/IJZjDmhfBZIEiNJ6xjG+o7uSUoa37Z/5h2SvnkUBVrj+Z
-         FLDA50vRLoPOptNmjyrxA/5EOheDUoi+YAzLSecwVTJXsmLbW5Py97z3RbIef+zr85ZU
-         CUXbo21tqFmW8rahL45evW0ELiCJn3peogJfwIUDsfzwWymsC3XQVTMqeTkUZCqs8mno
-         sX2Q==
-X-Gm-Message-State: AOAM531k1f6k50uKeoaNvwwEWgep5Pp9U0LItupWb9DilJ9V7Pf7/sUV
-        Ub3rfk5elj89s9xLmmnd3KqcCw==
-X-Google-Smtp-Source: ABdhPJzwWhzy6WbJsYDhzxEfmDkh5AS02JM1swhhP7BQQ6Yy40mssZMRIGxNWjpw+edJAuUba+Qq0Q==
-X-Received: by 2002:aca:31cb:: with SMTP id x194mr9065981oix.62.1634318541580;
-        Fri, 15 Oct 2021 10:22:21 -0700 (PDT)
+        bh=UQGBuMylvu9UpPG16xaz7lVAENRpwI6V6j3bp4rN4V8=;
+        b=aJr6c1z1MLjcvx9Hl82+VWK6erSuK1f/XU2yfzHlULfnua4jF6QEuXeE55cBR920xI
+         vQjiIQnukmR8mcMBld5lU8u426PPHdzDawBl+5UHuZ0JPB2KyWukLXLejVchpLSI/TnV
+         lNPnwZoVBx3dUG3Kw/dVbDxEcp7ZZa9DmcxJu37frK1hSbhWI+HZUTnlg3vL9LIHlkra
+         hFJOUEioMqBQd7O+SadZicThUfsovj1ffWqD72s9RXkPADSlMwQ7uuOI87IX8a8WgYHR
+         8lLHW8FxAc+XeU1H8IDpjircE/EXlMjdBwVWAja/tnFU//6wQFNEqUWzQpG9+PcxmFpk
+         L3UQ==
+X-Gm-Message-State: AOAM533rvcU1ehPByqaAR7XB0bzkcb6JLJNrbgsn1+rTHHsFneoXCFgN
+        kIsfVYLu+JcibV1E3c4CzOqILg==
+X-Google-Smtp-Source: ABdhPJwa8s1a0Vpv49BVQ3zzH13cErd4RoRJClmYGmIqUl6vc5OL2TMuNEsVurpHsk1CKWr2KKNkXw==
+X-Received: by 2002:a05:6808:1802:: with SMTP id bh2mr8031298oib.142.1634318542710;
+        Fri, 15 Oct 2021 10:22:22 -0700 (PDT)
 Received: from builder.lan ([2600:1700:a0:3dc8:3697:f6ff:fe85:aac9])
-        by smtp.gmail.com with ESMTPSA id s206sm1289635oia.33.2021.10.15.10.22.20
+        by smtp.gmail.com with ESMTPSA id s206sm1289635oia.33.2021.10.15.10.22.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Oct 2021 10:22:21 -0700 (PDT)
+        Fri, 15 Oct 2021 10:22:22 -0700 (PDT)
 From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     linux-remoteproc@vger.kernel.org,
-        Alexandru Ardelean <ardeleanalex@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     mathieu.poirier@linaro.org, ohad@wizery.com
-Subject: Re: (subset) [PATCH] rpmsg: virtio_rpmsg_bus: use dev_warn_ratelimited for msg with no recipient
-Date:   Fri, 15 Oct 2021 12:22:11 -0500
-Message-Id: <163431847249.251657.14318070170009909364.b4-ty@linaro.org>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Cc:     linux-stm32@st-md-mailman.stormreply.com,
+        Rob Herring <robh@kernel.org>,
+        linux-remoteproc@vger.kernel.org,
+        Stefano Stabellini <stefanos@xilinx.com>,
+        linux-kernel@vger.kernel.org,
+        Bruce Ashfield <bruce.ashfield@xilinx.com>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: (subset) [RFC PATCH 3/7] remoteproc: Remove vdev_to_rvdev and vdev_to_rproc from remoteproc API
+Date:   Fri, 15 Oct 2021 12:22:12 -0500
+Message-Id: <163431847249.251657.1509146684272045901.b4-ty@linaro.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210928132902.1594277-1-aardelean@deviqon.com>
-References: <20210928132902.1594277-1-aardelean@deviqon.com>
+In-Reply-To: <20211001101234.4247-4-arnaud.pouliquen@foss.st.com>
+References: <20211001101234.4247-1-arnaud.pouliquen@foss.st.com> <20211001101234.4247-4-arnaud.pouliquen@foss.st.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -66,22 +72,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 28 Sep 2021 16:29:02 +0300, Alexandru Ardelean wrote:
-> From: Alexandru Ardelean <ardeleanalex@gmail.com>
+On Fri, 1 Oct 2021 12:12:30 +0200, Arnaud Pouliquen wrote:
+> These both functions are only used by the remoteproc_virtio.
+> There is no reason to expose them in the API.
+> Move the functions in remoteproc_virtio.c
 > 
-> Even though it may be user-space's fault for this error (some application
-> terminated or crashed without cleaning up it's endpoint), the rpmsg
-> communication should not overflow the syslog with too many messages.
 > 
-> A dev_warn_ratelimited() seems like a good alternative in case this can
-> occur.
-> 
-> [...]
 
 Applied, thanks!
 
-[1/1] rpmsg: virtio_rpmsg_bus: use dev_warn_ratelimited for msg with no recipient
-      commit: 63b8d79916672d35069962d87d1540c534cb2438
+[3/7] remoteproc: Remove vdev_to_rvdev and vdev_to_rproc from remoteproc API
+      commit: 9955548919c47a6987b40d90a30fd56bbc043e7b
 
 Best regards,
 -- 
