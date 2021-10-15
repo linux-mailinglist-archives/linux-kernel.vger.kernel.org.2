@@ -2,160 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20AC342F143
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 14:45:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ED9942F163
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 14:50:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238799AbhJOMra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 08:47:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59180 "EHLO
+        id S239112AbhJOMwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 08:52:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235563AbhJOMr3 (ORCPT
+        with ESMTP id S234541AbhJOMwi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 08:47:29 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDC3DC061764
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 05:45:22 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id y3so26428326wrl.1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 05:45:22 -0700 (PDT)
+        Fri, 15 Oct 2021 08:52:38 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5857AC061570
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 05:50:32 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id g198-20020a1c20cf000000b0030d60cd7fd6so2307474wmg.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 05:50:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=H1fRj8KbyTC18M2qqUxC+yLQuVMOY9QK2Vkvq7KCP/Q=;
-        b=wQTgGjUNl5ZNWtCzfZgsJW5kL1LNboDm3JtJ9cH2cUjIi28Fz39i3VbuoVmmS+etat
-         3FWlClGElz2S5Yej3Pj6kzY0FXEMGGxRnCwmC93vCGkH8oVY5GTBVSuPpfj78ouJY2CN
-         hv1y4GWUyVPr76Vmv2ptef3zAL/aemZ5keucGkNa5AUyyLSpvhe/aoXaIZMJTX/0+oxW
-         vjkONNr2GE7TFjsuw1k2zzB2RaSyu+gNkHEmNK6UPEfhXvygEXsO3LUKgFBYiO1VApxV
-         eTpHM/blKl9Up381tU5yctffNmpFwekdfTtypoEzkQ9WsE5KA/EwXwfVRZ0vkLSB/82S
-         GVUw==
+        h=from:to:cc:subject:date:message-id;
+        bh=sJ9kRmn9CGYL+5N8FlFThe9vRb2XXlEgDB+zrOX5bP4=;
+        b=ckdyIQqfZy9y/WFG7SWDYc3bLfqv7WD0S53uXi8Ohr8T03a/bDpZBIpDGkITMxvlpO
+         5O1IUgio24zV+dgX3IyEtYGRxfj6ykfjRNBtesnuwivJK6147/ttZ5bycXxRSPKEI8TG
+         JxFAgBDOJ5Y3WZKi7SDP6v0WebOWGz53uTl4GvQYclabJIUgmGWINOpHRXVp/XuG+sSA
+         DB+zU/GvMmilDJ0jsl+RzGXkIRCq58vSswO7FUoFh5jJgwEYMRhMBNNCAVP2qi1JV8z7
+         CctzE9GRkNXKR0XZmSwZIRr4Rynzb1dVqF5MPs6nveuWo8KXE5A4k4POA73Q7mPycob+
+         Ssbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=H1fRj8KbyTC18M2qqUxC+yLQuVMOY9QK2Vkvq7KCP/Q=;
-        b=OxqQGcKE/XnxAX8wDqjxRkGvkBJhR1uBWJyHweAzD9y1d4boJUUNU8XJAXqtoHXpJl
-         3xRcZq+BoVP85ZKA2MOK201Stu8YNo6RDTik8dGidSHi6hlwwh6NtNhkjCfyNpLAg1uI
-         BNrSU3zycTyEmO9uQg3ed6K4h9tYakuUrOCdklcVYo4Fj5mw/1qH+P55RZNDuU/Y8QZP
-         jyPyblOecfs6XBeeWTOAUc4+P39Fj+FlUGrk5F5E0a5CrC7fen1QFFKNPytx726JF9sP
-         6KPDi74Sxc/DvJElitAn4tuXEEeoqPg6ZL2bCcm7dwQdlTW+klMkk8fwmxAS6NcY6g0r
-         Ipig==
-X-Gm-Message-State: AOAM530wutBF1K/lD5M1TqQxw+RirugloVka6z05hWiig9+5qtlfkvpi
-        /Mg8zE/D2DgQ/1gqlFrez5a0aQ==
-X-Google-Smtp-Source: ABdhPJxR+e4FClxsODFkAteKxROdwFc61kceh1QDU+2OORGy1s3RMcwDGYLNlbGhFmjyYlcrJpfBCA==
-X-Received: by 2002:adf:cd12:: with SMTP id w18mr4152785wrm.401.1634301921366;
-        Fri, 15 Oct 2021 05:45:21 -0700 (PDT)
-Received: from google.com ([95.148.6.175])
-        by smtp.gmail.com with ESMTPSA id e9sm4672725wme.37.2021.10.15.05.45.20
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=sJ9kRmn9CGYL+5N8FlFThe9vRb2XXlEgDB+zrOX5bP4=;
+        b=GHIPA6ELx56nQcFMgDlegQ3NvQBOdx+QA9gR7mrj6j3WGgMVZAjU6LiEJMXXf7ft4g
+         3GE+lmGzuXWlLBpjOqOHBVnsYLf6hoqXjlY0iHbweCVeRGnNH8aIV931Rylkd4bPMgE+
+         kSEfUxOhr0zHjypS7C6I/u9qbvcwXBnwbQJ2pwq2WVlrZRvfCEuKgshBDh3bryUbTzCj
+         RrN54PeYIToeYjHIB4OUCb+EhrDjpgQoHfoFzSejBkX0ORIuv5tHPra5lzyb29O0ifQn
+         e2YXKBoaKr1aghIAgSBRCN9785TRu5Sg6lHwwGJckc6wab0E85ux+1LHEZ0QAZh2G/zu
+         3z2A==
+X-Gm-Message-State: AOAM530HrqnTRshypqi3FliH8RGdrY3Ol6TJ+8YXv/6T51FwP59cCcZA
+        QjV/q5pZIp7fIElHf1/bEDk1Dw==
+X-Google-Smtp-Source: ABdhPJxGhFMx7IVzEPy3vqLsaQAnk4Op7zj0caWCCtkxyl1J69EhU6w9H6jlDBOAiRGSBvhrm6Y2iA==
+X-Received: by 2002:a7b:c76d:: with SMTP id x13mr11883106wmk.149.1634302230837;
+        Fri, 15 Oct 2021 05:50:30 -0700 (PDT)
+Received: from localhost.localdomain ([2a01:e0a:f:6020:7ce7:a27f:aba7:bb9d])
+        by smtp.gmail.com with ESMTPSA id a2sm5468403wrq.9.2021.10.15.05.50.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Oct 2021 05:45:20 -0700 (PDT)
-Date:   Fri, 15 Oct 2021 13:45:18 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Baolin Wang <baolin.wang7@gmail.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 2/4] dt-bindings: mfd: sprd: Add bindings for ums512
- global registers
-Message-ID: <YWl33gCy1ac29WSs@google.com>
-References: <20210923064137.60722-1-zhang.lyra@gmail.com>
- <20210923064137.60722-3-zhang.lyra@gmail.com>
- <YV1XpL7ibF1y4LbV@google.com>
- <CAL_Jsq+eqqv=qtKOiNdEpYGi2amek_m+Q-Z9A769pXXqJ4R88A@mail.gmail.com>
- <YWVD0RXHVLxuXEIN@google.com>
- <CAMuHMdWqYVp1JyzZoidAJhPy9ypRnSOWHJLz5knDUMcFHPOzAw@mail.gmail.com>
- <YWfSz00Rj5AVhkgT@google.com>
- <CAL_Jsq+GHt+DqHa0GeLKWoni+Lghg5wg5ssREZBdSD-=K3XQ1A@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAL_Jsq+GHt+DqHa0GeLKWoni+Lghg5wg5ssREZBdSD-=K3XQ1A@mail.gmail.com>
+        Fri, 15 Oct 2021 05:50:29 -0700 (PDT)
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, linux-kernel@vger.kernel.org,
+        tim.c.chen@linux.intel.com
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>
+Subject: [PATCH v2 0/4] Improve newidle lb cost tracking and early abort
+Date:   Fri, 15 Oct 2021 14:46:50 +0200
+Message-Id: <20211015124654.18093-1-vincent.guittot@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Oct 2021, Rob Herring wrote:
+This patchset updates newidle lb cost tracking and early abort:
 
-> On Thu, Oct 14, 2021 at 1:48 AM Lee Jones <lee.jones@linaro.org> wrote:
-> >
-> > On Wed, 13 Oct 2021, Geert Uytterhoeven wrote:
-> >
-> > > Hi Lee,
-> > >
-> > > On Tue, Oct 12, 2021 at 10:15 AM Lee Jones <lee.jones@linaro.org> wrote:
-> > > > On Mon, 11 Oct 2021, Rob Herring wrote:
-> > > > > On Wed, Oct 6, 2021 at 3:00 AM Lee Jones <lee.jones@linaro.org> wrote:
-> > > > > > On Thu, 23 Sep 2021, Chunyan Zhang wrote:
-> > > > > >
-> > > > > > > From: Chunyan Zhang <chunyan.zhang@unisoc.com>
-> > > > > > >
-> > > > > > > Add bindings for Unisoc system global register which provide register map
-> > > > > > > for clocks.
-> > > > > > >
-> > > > > > > Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
-> > > > > > > Reviewed-by: Rob Herring <robh@kernel.org>
-> > > > > > > ---
-> > > > > > >  .../bindings/mfd/sprd,ums512-glbreg.yaml      | 68 +++++++++++++++++++
-> > > > > > >  1 file changed, 68 insertions(+)
-> > > > > > >  create mode 100644 Documentation/devicetree/bindings/mfd/sprd,ums512-glbreg.yaml
-> > > > > >
-> > > > > > Unapplied v3 and applied this (v4) instead, thanks.
-> > > > >
-> > > > > What about the clock binding this depends on:
-> > > > >
-> > > > > Unknown file referenced: [Errno 2] No such file or directory:
-> > > > > '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/clock/sprd,ums512-clk.yaml'
-> > > > > xargs: dt-doc-validate: exited with status 255; aborting
-> > > > > make[1]: *** Deleting file
-> > > > > 'Documentation/devicetree/bindings/mfd/sprd,ums512-glbreg.example.dt.yaml'
-> > > > > Unknown file referenced: [Errno 2] No such file or directory:
-> > > > > '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/clock/sprd,ums512-clk.yaml'
-> > > > > make[1]: *** [scripts/Makefile.lib:385:
-> > > > > Documentation/devicetree/bindings/mfd/sprd,ums512-glbreg.example.dt.yaml]
-> > > > > Error 255
-> > > > >
-> > > > >
-> > > > > Once again, all the components of MFD bindings need to be applied together.
-> > >
-> > > Just ran into this, too...
-> > >
-> > > > I can't apply what is not sent to me.
-> > > >
-> > > > This patch came in on its own.
-> > >
-> > > Then please reject/postpone patches that don't build (yet) ;-)
-> >
-> > I don't explicitly build DT documentation.
-> >
-> > Since I use the build bots to let me know if there are strange !(C,
-> > ASM, arm, aarch64, mips, ppc, x86) build issues or ones with odd
-> > configuration possibilities (randconfig) in the repos I maintain, you
-> > might have to convince them that this is important too.
-> 
-> It's really just a matter of turning on the build in
-> allyesconfig/allmodconfig builds. I've not done that primarily because
-> there's one person I don't want to yell at me, but I could probably
-> make it arm and/or arm64 only. It's really arch and config
-> independent, so doing it multiple times is kind of pointless.
-> 
-> I assume for bots you mean kernel-ci mainly? Do you run that before
-> stuff gets into linux-next? IMO, that's too late. But still a slight
-> improvement if things go in via one tree. Otherwise, I see the
-> breakage twice, 1st linux-next then the merge window.
+The time spent running update_blocked_averages is now accounted in the 1st
+sched_domain level. This time can be significant and move the cost of
+newidle lb above the avg_idle time.
 
-Kernel test robot <lkp@intel.com> is the one that springs to mind.
+The decay of max_newidle_lb_cost is modified to start only when the field
+has not been updated for a while. Recent update will not be decayed
+immediatlybut only after a while.
 
-Although, I'm sure there are other, less prolific implementations.
+The condition of an avg_idle lower than sysctl_sched_migration_cost has
+been removed as the 500us value is quite large and prevent opportunity to
+pull task on the newly idle CPU for at least 1st domain levels.
+
+Monitoring sd->max_newidle_lb_cost on cpu0 of a Arm64 system
+THX2 (2 nodes * 28 cores * 4 cpus) during the benchmarks gives the
+following results:
+       min    avg   max
+SMT:   1us   33us  273us - this one includes the update of blocked load
+MC:    7us   49us  398us
+NUMA: 10us   45us  158us
+
+
+Some results for hackbench -l $LOOPS -g $group :
+group      tip/sched/core     + this patchset
+1           15.189(+/- 2%)       14.987(+/- 2%)  +1%
+4            4.336(+/- 3%)        4.322(+/- 5%)  +0%
+16           3.654(+/- 1%)        2.922(+/- 3%) +20%
+32           3.209(+/- 1%)        2.919(+/- 3%)  +9%
+64           2.965(+/- 1%)        2.826(+/- 1%)  +4%
+128          2.954(+/- 1%)        2.993(+/- 8%)  -1%
+256          2.951(+/- 1%)        2.894(+/- 1%)  +2%
+
+tbench and reaim have not shown any difference
+
+Change since v1:
+- account the time spent in update_blocked_averages() in the 1st domain
+
+- reduce number of call of sched_clock_cpu() 
+
+- change the way max_newidle_lb_cost is decayed. Peter suggested to use a
+  IIR but keeping a track of the current max value gave the best result
+
+- removed the condition (this_rq->avg_idle < sysctl_sched_migration_cost)
+  as suggested by Peter
+
+Vincent Guittot (4):
+  sched/fair: Account update_blocked_averages in newidle_balance cost
+  sched/fair: Skip update_blocked_averages if we are defering load
+    balance
+  sched/fair: Wait before decaying max_newidle_lb_cost
+  sched/fair: Remove sysctl_sched_migration_cost condition
+
+ include/linux/sched/topology.h |  2 +-
+ kernel/sched/fair.c            | 29 ++++++++++++++++++-----------
+ kernel/sched/topology.c        |  2 +-
+ 3 files changed, 20 insertions(+), 13 deletions(-)
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.17.1
+
