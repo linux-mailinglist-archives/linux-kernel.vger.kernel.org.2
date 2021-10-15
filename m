@@ -2,71 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82F3442EC85
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 10:36:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB29D42EC7F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 10:36:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237225AbhJOIjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 04:39:00 -0400
-Received: from comms.puri.sm ([159.203.221.185]:44830 "EHLO comms.puri.sm"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236754AbhJOIix (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 04:38:53 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by comms.puri.sm (Postfix) with ESMTP id B9C49DFE13;
-        Fri, 15 Oct 2021 01:36:17 -0700 (PDT)
-Received: from comms.puri.sm ([127.0.0.1])
-        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Xqt9ArVCZVAv; Fri, 15 Oct 2021 01:36:17 -0700 (PDT)
-From:   Martin Kepplinger <martin.kepplinger@puri.sm>
-To:     robh@kernel.org, shawnguo@kernel.org, festevam@gmail.com,
-        krzk@kernel.org
-Cc:     kernel@pengutronix.de, linux-imx@nxp.com, kernel@puri.sm,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
-        Martin Kepplinger <martin.kepplinger@puri.sm>
-Subject: [RFC PATCH v1 4/4] arm64: dts: imx8mq-librem5-r3.dtsi: describe selfie cam XSHUTDOWN pin
-Date:   Fri, 15 Oct 2021 10:35:06 +0200
-Message-Id: <20211015083506.4182875-5-martin.kepplinger@puri.sm>
-In-Reply-To: <20211015083506.4182875-1-martin.kepplinger@puri.sm>
-References: <20211015083506.4182875-1-martin.kepplinger@puri.sm>
+        id S237140AbhJOIip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 04:38:45 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45239 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237090AbhJOIin (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 04:38:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634286997;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jln/0dXddJnV8Enx7M67nr+qrzZMhGUG5wRmnfwIXgc=;
+        b=EHLzL2y9YsDFQnnFvhcIB9OE2QKu50RaBWzsTJhwIR+fzkpgaoYUw532OeXO4aoVSsXKzt
+        hn2f7JLIhORUdas+qEd2J5f64/dk3Q/HpN3imWbI/pyYUGxZhj1gWbuKf91iJx8PBYX3gS
+        jp4QDWsQ7UjwtAF+fZuG42fCJAUxyQE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-301-_IJ435cvMBOZ6mAirGtW1g-1; Fri, 15 Oct 2021 04:36:31 -0400
+X-MC-Unique: _IJ435cvMBOZ6mAirGtW1g-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0B31010B3940;
+        Fri, 15 Oct 2021 08:36:29 +0000 (UTC)
+Received: from T590 (ovpn-8-22.pek2.redhat.com [10.72.8.22])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5326B5BAF8;
+        Fri, 15 Oct 2021 08:36:15 +0000 (UTC)
+Date:   Fri, 15 Oct 2021 16:36:11 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     tj@kernel.org, gregkh@linuxfoundation.org,
+        akpm@linux-foundation.org, minchan@kernel.org, jeyu@kernel.org,
+        shuah@kernel.org, bvanassche@acm.org, dan.j.williams@intel.com,
+        joe@perches.com, tglx@linutronix.de, keescook@chromium.org,
+        rostedt@goodmis.org, linux-spdx@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 11/12] zram: fix crashes with cpu hotplug multistate
+Message-ID: <YWk9e957Hb+I7HvR@T590>
+References: <20210927163805.808907-1-mcgrof@kernel.org>
+ <20210927163805.808907-12-mcgrof@kernel.org>
+ <YWeOJP2UJWYF94fu@T590>
+ <YWeR4moCRh+ZHOmH@T590>
+ <YWiSAN6xfYcUDJCb@bombadil.infradead.org>
+ <YWjCpLUNPF3s4P2U@T590>
+ <YWjJ0O7K+31Iz3ox@bombadil.infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YWjJ0O7K+31Iz3ox@bombadil.infradead.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The r3 and later revisions of the Librem 5 phone include an additional switch
-to control the hi846 XSHUTDOWN pin. Describe it.
+On Thu, Oct 14, 2021 at 05:22:40PM -0700, Luis Chamberlain wrote:
+> On Fri, Oct 15, 2021 at 07:52:04AM +0800, Ming Lei wrote:
+...
+> > 
+> > We need to understand the exact reason why there is still cpuhp node
+> > left, can you share us the exact steps for reproducing the issue?
+> > Otherwise we may have to trace and narrow down the reason.
+> 
+> See my commit log for my own fix for this issue.
 
-Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
----
- .../arm64/boot/dts/freescale/imx8mq-librem5-r3.dtsi | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+OK, thanks!
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mq-librem5-r3.dtsi b/arch/arm64/boot/dts/freescale/imx8mq-librem5-r3.dtsi
-index e872eb4b1cf9..e4f8b47cce4f 100644
---- a/arch/arm64/boot/dts/freescale/imx8mq-librem5-r3.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mq-librem5-r3.dtsi
-@@ -27,6 +27,19 @@ &bq25895 {
- 	ti,termination-current = <144000>;  /* uA */
- };
- 
-+&camera_front {
-+	pinctrl-0 = <&pinctrl_csi1>, <&pinctrl_r3_camera_pwr>;
-+	shutdown-gpios = <&gpio5 4 GPIO_ACTIVE_LOW>;
-+};
-+
-+&iomuxc {
-+	pinctrl_r3_camera_pwr: r3camerapwrgrp {
-+		fsl,pins = <
-+			MX8MQ_IOMUXC_SPDIF_RX_GPIO5_IO4		0x83
-+		>;
-+	};
-+};
-+
- &proximity {
- 	proximity-near-level = <25>;
- };
--- 
-2.30.2
+I can reproduce the issue, and the reason is that reset_store fails
+zram_remove() when unloading module, then the warning is caused.
+
+The top 3 patches in the following tree can fix the issue:
+
+https://github.com/ming1/linux/commits/my_v5.15-blk-dev
+
+
+Thanks,
+Ming
 
