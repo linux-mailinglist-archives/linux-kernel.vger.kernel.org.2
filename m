@@ -2,192 +2,309 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8456B42F444
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 15:52:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 246C342F44B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 15:53:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240098AbhJONyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 09:54:47 -0400
-Received: from relay10.mail.gandi.net ([217.70.178.230]:48653 "EHLO
-        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236395AbhJONyg (ORCPT
+        id S240130AbhJONzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 09:55:11 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:47984 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240124AbhJONzI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 09:54:36 -0400
-Received: (Authenticated sender: i.maximets@ovn.org)
-        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 16F3D240007;
-        Fri, 15 Oct 2021 13:52:24 +0000 (UTC)
-Message-ID: <8c4ee3e8-0400-ee6e-b12c-327806f26dae@ovn.org>
-Date:   Fri, 15 Oct 2021 15:52:23 +0200
+        Fri, 15 Oct 2021 09:55:08 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id D907521A63;
+        Fri, 15 Oct 2021 13:53:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1634305980; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MTnvML1CY6imkev/A3yjj65hPiCOGfVEOIU/jM/L83c=;
+        b=NhmJOw2RGs2qVpE2uRnNp5ZGEsBMtsQY2+t6DqbaqYhI9/psncg3s66AnrV6xT88/Z7RCm
+        2fwjza2INHdG1uVx9KDA0SxQNR4tBz+nLydM9ScDvbyvQW5ZEmMN09oBTJvacsYvTtHof8
+        EtiMoPZJjgiUc0fWQ9M5Fi+4a83pc9g=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AB930133A7;
+        Fri, 15 Oct 2021 13:53:00 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id /oJ7KLyHaWFOPAAAMHmgww
+        (envelope-from <jgross@suse.com>); Fri, 15 Oct 2021 13:53:00 +0000
+Subject: Re: [PATCH v6 1/3] usb: Add Xen pvUSB protocol description
+From:   Juergen Gross <jgross@suse.com>
+To:     Greg KH <greg@kroah.com>
+Cc:     linux-usb@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-kernel@vger.kernel.org,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>
+References: <20211013075207.13910-1-jgross@suse.com>
+ <20211013075207.13910-2-jgross@suse.com> <YWbKnEMvHGU/rv96@kroah.com>
+ <54da6414-4183-2d0c-cc24-a9471ed8332b@suse.com> <YWk4T2HTAD3VJMYR@kroah.com>
+ <e2245716-ea36-aa21-f0a0-aad9c3e37136@suse.com>
+Message-ID: <f3b4afb6-c033-34eb-2ec1-c878648740a5@suse.com>
+Date:   Fri, 15 Oct 2021 15:53:00 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Cc:     ovs dev <dev@openvswitch.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>, i.maximets@ovn.org
-Content-Language: en-US
-To:     Cpp Code <cpp.code.lv@gmail.com>,
-        Nicolas Dichtel <nicolas.dichtel@6wind.com>
-References: <20210928194727.1635106-1-cpp.code.lv@gmail.com>
- <20210928174853.06fe8e66@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <d1e5b178-47f5-9791-73e9-0c1f805b0fca@6wind.com>
- <20210929061909.59c94eff@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAASuNyVe8z1R6xyCfSAxZbcrL3dej1n8TXXkqS-e8QvA6eWd+w@mail.gmail.com>
- <b091ef39-dc29-8362-4d31-0a9cc498e8ea@6wind.com>
- <CAASuNyW81zpSu+FGSDuUrOsyqJj7SokZtvX081BbeXi0ARBaYg@mail.gmail.com>
- <a4894aef-b82a-8224-611d-07be229f5ebe@6wind.com>
- <CAASuNyUWP2HQLhGf29is3fG2+uG8SqOFoXHeHf-vC6HYJ1Wb7g@mail.gmail.com>
-From:   Ilya Maximets <i.maximets@ovn.org>
-Subject: Re: [ovs-dev] [PATCH net-next v6] net: openvswitch: IPv6: Add IPv6
- extension header support
-In-Reply-To: <CAASuNyUWP2HQLhGf29is3fG2+uG8SqOFoXHeHf-vC6HYJ1Wb7g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <e2245716-ea36-aa21-f0a0-aad9c3e37136@suse.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="SG0JvX653DgGrJNZbC6HlMFT64oAzTtBp"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/14/21 23:12, Cpp Code wrote:
-> On Mon, Oct 4, 2021 at 11:41 PM Nicolas Dichtel
-> <nicolas.dichtel@6wind.com> wrote:
->>
->> Le 01/10/2021 à 22:42, Cpp Code a écrit :
->>> On Fri, Oct 1, 2021 at 12:21 AM Nicolas Dichtel
->>> <nicolas.dichtel@6wind.com> wrote:
->>>>
->>>> Le 30/09/2021 à 18:11, Cpp Code a écrit :
->>>>> On Wed, Sep 29, 2021 at 6:19 AM Jakub Kicinski <kuba@kernel.org> wrote:
->>>>>>
->>>>>> On Wed, 29 Sep 2021 08:19:05 +0200 Nicolas Dichtel wrote:
->>>>>>>> /* Insert a kernel only KEY_ATTR */
->>>>>>>> #define OVS_KEY_ATTR_TUNNEL_INFO    __OVS_KEY_ATTR_MAX
->>>>>>>> #undef OVS_KEY_ATTR_MAX
->>>>>>>> #define OVS_KEY_ATTR_MAX            __OVS_KEY_ATTR_MAX
->>>>>>> Following the other thread [1], this will break if a new app runs over an old
->>>>>>> kernel.
->>>>>>
->>>>>> Good point.
->>>>>>
->>>>>>> Why not simply expose this attribute to userspace and throw an error if a
->>>>>>> userspace app uses it?
->>>>>>
->>>>>> Does it matter if it's exposed or not? Either way the parsing policy
->>>>>> for attrs coming from user space should have a reject for the value.
->>>>>> (I say that not having looked at the code, so maybe I shouldn't...)
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--SG0JvX653DgGrJNZbC6HlMFT64oAzTtBp
+Content-Type: multipart/mixed; boundary="jq8jfbjGI4uzKAedXYv7Mz4Q0zWRWi8Mo";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: Greg KH <greg@kroah.com>
+Cc: linux-usb@vger.kernel.org, xen-devel@lists.xenproject.org,
+ linux-kernel@vger.kernel.org, Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+ Stefano Stabellini <sstabellini@kernel.org>
+Message-ID: <f3b4afb6-c033-34eb-2ec1-c878648740a5@suse.com>
+Subject: Re: [PATCH v6 1/3] usb: Add Xen pvUSB protocol description
+References: <20211013075207.13910-1-jgross@suse.com>
+ <20211013075207.13910-2-jgross@suse.com> <YWbKnEMvHGU/rv96@kroah.com>
+ <54da6414-4183-2d0c-cc24-a9471ed8332b@suse.com> <YWk4T2HTAD3VJMYR@kroah.com>
+ <e2245716-ea36-aa21-f0a0-aad9c3e37136@suse.com>
+In-Reply-To: <e2245716-ea36-aa21-f0a0-aad9c3e37136@suse.com>
+
+--jq8jfbjGI4uzKAedXYv7Mz4Q0zWRWi8Mo
+Content-Type: multipart/mixed;
+ boundary="------------95C6EFF82384FBC6EC00FB65"
+Content-Language: en-US
+
+This is a multi-part message in MIME format.
+--------------95C6EFF82384FBC6EC00FB65
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+
+On 15.10.21 10:52, Juergen Gross wrote:
+> On 15.10.21 10:14, Greg KH wrote:
+>> On Fri, Oct 15, 2021 at 10:07:35AM +0200, Juergen Gross wrote:
+>>> On 13.10.21 14:01, Greg KH wrote:
+>>>> On Wed, Oct 13, 2021 at 09:52:05AM +0200, Juergen Gross wrote:
+>>>>> Add the definition of pvUSB protocol used between the pvUSB=20
+>>>>> frontend in
+>>>>> a Xen domU and the pvUSB backend in a Xen driver domain (usually=20
+>>>>> Dom0).
 >>>>>
->>>>> To remove some confusion, there are some architectural nuances if we
->>>>> want to extend code without large refactor.
->>>>> The ovs_key_attr is defined only in kernel side. Userspace side is
->>>>> generated from this file. As well the code can be built without kernel
->>>>> modules.
->>>>> The code inside OVS repository and net-next is not identical, but I
->>>>> try to keep some consistency.
->>>> I didn't get why OVS_KEY_ATTR_TUNNEL_INFO cannot be exposed to userspace.
->>>
->>> OVS_KEY_ATTR_TUNNEL_INFO is compressed version of OVS_KEY_ATTR_TUNNEL
->>> and for clarity purposes its not exposed to userspace as it will never
->>> use it.
->>> I would say it's a coding style as it would not brake anything if exposed.
->> In fact, it's the best way to keep the compatibility in the long term.
->> You can define it like this:
->> OVS_KEY_ATTR_TUNNEL_INFO,  /* struct ip_tunnel_info, reserved for kernel use */
->>
->>>
->>>>
+>>>>> This header was originally provided by Fujitsu for Xen based on Lin=
+ux
+>>>>> 2.6.18.
 >>>>>
->>>>> JFYI This is the file responsible for generating userspace part:
->>>>> https://github.com/openvswitch/ovs/blob/master/build-aux/extract-odp-netlink-h
->>>>> This is the how corresponding file for ovs_key_attr looks inside OVS:
->>>>> https://github.com/openvswitch/ovs/blob/master/datapath/linux/compat/include/linux/openvswitch.h
->>>>> one can see there are more values than in net-next version.
->>>> There are still some '#ifdef __KERNEL__'. The standard 'make headers_install'
->>>> filters them. Why not using this standard mechanism?
->>>
->>> Could you elaborate on this, I don't quite understand the idea!? Which
->>> ifdef you are referring, the one along OVS_KEY_ATTR_TUNNEL_INFO or
->>> some other?
->> My understanding is that this file is used for the userland third party, thus,
->> theoretically, there should be no '#ifdef __KERNEL__'. uapi headers generated
->> with 'make headers_install' are filtered to remove them.
-> 
-> From https://lwn.net/Articles/507794/ I understand that is the goal,
-> but this part of the code is still used in the kernel part.
-> 
->>
->>>
+>>>>> Changes are:
+>>>>> - adapt to Linux kernel style guide
+>>>>> - use Xen namespace
+>>>>> - add lots of comments
+>>>>> - don't use kernel internal defines
+>>>>>
+>>>>> Signed-off-by: Juergen Gross <jgross@suse.com>
+>>>>> Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+>>>>> ---
+>>>>> =C2=A0=C2=A0 include/xen/interface/io/usbif.h | 421=20
+>>>>> +++++++++++++++++++++++++++++++
+>>>>> =C2=A0=C2=A0 1 file changed, 421 insertions(+)
+>>>>> =C2=A0=C2=A0 create mode 100644 include/xen/interface/io/usbif.h
+>>>>>
+>>>>> diff --git a/include/xen/interface/io/usbif.h=20
+>>>>> b/include/xen/interface/io/usbif.h
+>>>>> new file mode 100644
+>>>>> index 000000000000..9494b1c9be99
+>>>>> --- /dev/null
+>>>>> +++ b/include/xen/interface/io/usbif.h
+>>>>> @@ -0,0 +1,421 @@
+>>>>> +/*
+>>>>> + * usbif.h
+>>>>> + *
+>>>>> + * USB I/O interface for Xen guest OSes.
+>>>>> + *
+>>>>> + * Copyright (C) 2009, FUJITSU LABORATORIES LTD.
+>>>>> + * Author: Noboru Iwamatsu <n_iwamatsu@jp.fujitsu.com>
+>>>>> + *
+>>>>> + * Permission is hereby granted, free of charge, to any person=20
+>>>>> obtaining a copy
+>>>>> + * of this software and associated documentation files (the=20
+>>>>> "Software"), to
+>>>>> + * deal in the Software without restriction, including without=20
+>>>>> limitation the
+>>>>> + * rights to use, copy, modify, merge, publish, distribute,=20
+>>>>> sublicense, and/or
+>>>>> + * sell copies of the Software, and to permit persons to whom the =
+
+>>>>> Software is
+>>>>> + * furnished to do so, subject to the following conditions:
+>>>>> + *
+>>>>> + * The above copyright notice and this permission notice shall be =
+
+>>>>> included in
+>>>>> + * all copies or substantial portions of the Software.
+>>>>> + *
+>>>>> + * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,=
+=20
+>>>>> EXPRESS OR
+>>>>> + * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF=20
+>>>>> MERCHANTABILITY,
+>>>>> + * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO=20
+>>>>> EVENT SHALL THE
+>>>>> + * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES=20
+>>>>> OR OTHER
+>>>>> + * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,=
+=20
+>>>>> ARISING
+>>>>> + * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR=20
+>>>>> OTHER
+>>>>> + * DEALINGS IN THE SOFTWARE.
+>>>>> + */
 >>>>
->>>> In this file, there are two attributes (OVS_KEY_ATTR_PACKET_TYPE and
->>>> OVS_KEY_ATTR_ND_EXTENSIONS) that doesn't exist in the kernel.
->>>> This will also breaks if an old app runs over a new kernel. I don't see how it
->>>> is possible to keep the compat between {old|new} {kernel|app}.
-
-I don't know why the initial design looked like this, but here some
-thoughts on why it works without noticeable issues:
-
-OVS_KEY_ATTR_TUNNEL_INFO is defined only for kernel and not used by
-userspace application.  If we have newer app and older kernel, new
-app can send a different attribute, kernel than will interpret it
-as OVS_KEY_ATTR_TUNNEL_INFO.  This will pass the
-'type > OVS_KEY_ATTR_MAX' check.  However, this will always fail the
-check_attr_len() check, because the length for OVS_KEY_ATTR_TUNNEL_INFO
-is not defined in 'ovs_key_lens' and will be treated as zero, while
-correct attributes always has non-zero length (at least current ones
-has).  Kind of ugly, but should work.  And yes, more explicit
-rejection should be implemented, I think.
-
-OVS_KEY_ATTR_PACKET_TYPE and OVS_KEY_ATTR_ND_EXTENSIONS doesn't
-exist in kernel and moreover not even used by the application for
-kernel datapath, so it's fine.  And it's application's responsibility
-to never send them to kernel as they are not intended to be sent.
-So, this is in realm of the app, kernel should not care about these
-two attributes.
-If newer kernel will send some different attributes to the old app,
-app will drop them as these are not expected to be ever received from
-a kernel (similar attribute length check as in above case with
-OVS_KEY_ATTR_TUNNEL_INFO).  Another point is that kernel should not
-normally return attributes not previously set by userspace application,
-so this should only happen in a runtime application downgrade scenario.
-
-All-in-all it should be safe to add new attributes before the
-OVS_KEY_ATTR_TUNNEL_INFO inside the kernel without introducing
-any new paddings.  At least, as long as there are no common (valid
-for both kernel AND the app) attributes defined after the
-OVS_KEY_ATTR_TUNNEL_INFO.
-
-But, well, I agree that current design doesn't look great.  OTOH,
-paddings makes it even worse.
-
+>>>> Please use a SPDX line and not license "boilerplate" text like this =
+:(
 >>>
->>> Looks like this most likely is a bug while working on multiple
->>> versions of code.  Need to do add more padding.
->> As said above, just define the same uapi for everybody and the problem is gone
->> forever.
-
-That should be a right change to do.  We can start with exposing the
-OVS_KEY_ATTR_TUNNEL_INFO.  At the same time userspace-only attributes
-in the OVS codebase should, likely, be moved to a separate enum/structure
-to avoid confusion and keep kernel uapi clean.  Though this will require
-some code changes on the OVS side.
-
+>>> Okay. Is this your only concern for this series? Or is it a blocking
+>>> point for you before looking into it in more detail?
 >>
-> 
-> As this part of the code was already there, I think the correct way
-> would be to refactor that in a separate commit if necessary.
+>> It was an easy thing to see at first glance that you hadn't taken my
+>> previous comment about this seriously :(
+>=20
+> I'm sorry for that. This was clearly an oversight from me.
+>=20
+> BTW, when checking which SPDX tag to use I discovered that most of the
+> Xen header files under include/xen/interface have been tagged as GPL-2.=
+0
+> by a patch from you.
+>=20
+> Said patch (commit b24413180f5600) stated that there was no license
+> information found in those files, but they all clearly had a verbatim
+> copy of the MIT license in them.
 
-It's OK to make this a separate change, but, please, don't add
-paddings in a current one.  Add the new attribute before the
-OVS_KEY_ATTR_TUNNEL_INFO instead.
+They didn't. No idea where I was seeing that, sorry for that wrong
+statement. Nevertheless the GPL-2.0 tag is wrong for those files.
 
-Best regards, Ilya Maximets.
+Clearly need more coffee. :-(
 
-> 
->>
->> Regards,
->> Nicolas
-> 
-> Best,
-> Tom
-> _______________________________________________
-> dev mailing list
-> dev@openvswitch.org
-> https://mail.openvswitch.org/mailman/listinfo/ovs-dev
-> 
+> I'll send another patch fixing those SPDX tags.
 
+
+Juergen
+
+--------------95C6EFF82384FBC6EC00FB65
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Description: OpenPGP public key
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------95C6EFF82384FBC6EC00FB65--
+
+--jq8jfbjGI4uzKAedXYv7Mz4Q0zWRWi8Mo--
+
+--SG0JvX653DgGrJNZbC6HlMFT64oAzTtBp
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmFph7wFAwAAAAAACgkQsN6d1ii/Ey/8
+CQf/Sy5estBGDIzqKLtJAXx/wKIzGKCtx35oEAo6E1wS/P64qMsqJ7TzvFlR0s8IF0m7sRDPD/Qw
+Qy3B6ik/7sgTkEUa0I4fGmYO2i3b9nMEIp9K0R+qFWrmLQivCkOTrLjk9wz/xdNgXm52rqbYsj1D
+qWsHos6hTbNUiazASb1ZhVvMuFCqsDz1C4QdEFz9Q91FH+ZOyBAzoycpNcV/ETPDRJS026AhuBKm
+NZ73y5t24mfHWg12BqNDOP3WJqNFl3QE0mKW9BT0+BKr2cpe7WrI+RzIwAoQtaTIW1cbgcvdnsIO
+HLqUNI3C3vsb8WA34ZNgbhc0RECqDRtO6/0El9692A==
+=Srkb
+-----END PGP SIGNATURE-----
+
+--SG0JvX653DgGrJNZbC6HlMFT64oAzTtBp--
