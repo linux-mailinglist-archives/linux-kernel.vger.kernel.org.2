@@ -2,75 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21AD942FE8E
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 01:10:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D177342FE96
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 01:11:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243466AbhJOXMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 19:12:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34348 "EHLO
+        id S243485AbhJOXNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 19:13:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239063AbhJOXMg (ORCPT
+        with ESMTP id S238995AbhJOXNu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 19:12:36 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B525EC061570;
-        Fri, 15 Oct 2021 16:10:29 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id j190so3137883pgd.0;
-        Fri, 15 Oct 2021 16:10:29 -0700 (PDT)
+        Fri, 15 Oct 2021 19:13:50 -0400
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85E8EC061570
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 16:11:43 -0700 (PDT)
+Received: by mail-oi1-x232.google.com with SMTP id m67so15230233oif.6
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 16:11:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=linaro.org; s=google;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=U0Vy6bVXybkv53dFNF38s80qQNlt4Z5kP9WaLGyZk/E=;
-        b=O9Pb1VFAloLs1rCfcnuN/ac4CVSbFCF6MoWhzc0t6NNvReQP3lWfjGMeZlGnzLzrHS
-         l4i0Y6LwhUloqmH82MQOE24or+ERzsAUtq/I4FBm/OgF9ni66crpT42+HBwsnRn30pXS
-         QqqUL9DG6ghP+so0/CZwxE2oUbMfB/bL7DAD4PJFhJrg+l5AKsjpyH1RZWtKwwjXnqA6
-         F/gRS0dTUSgsW2sMhK0iMFnNFjLdKJRKpAQTUX1tx0rFjWjiPh3fWBymysH8pPvDVx3a
-         20+Tt+yUHjPRMLH8w+A3r3iie8NbWXH2QV0VJ5YVHr7EogSX2N6NJjcKYWuJI+TOcsOu
-         4XsQ==
+        bh=EC0kJnu6bT1KCV0QTTsc1q9gjgvVry2x+/hU79zV+y8=;
+        b=ZH6PT1ICNF4TTkAQzEBIlRgueYlRGldJGhK5KII5/zTOk8X2Uyp1zpilDOUx3t+28o
+         EZnKcxJz3cW4HpQEFWAdcy5GPhMdW15tUi9M4uPKuDjr2zTRw00xuxOAVPSV2NTO4bim
+         YZgSLWgDs8zS+p5J1y6O2OYfJGOzoqUsr0NT1rdPNwWcFXNWWawyzhRxp5ui5P1quur7
+         gGFs2mRcGxo95UihU/nZsLjNSpLIEEE3UyY3pTDYui7SWmfZM0sCrK0rXVxGtqZ0irKt
+         ENoxTZPniQm5pxm3Sf+MQQCIKp/sgQq9m2CktTtOBtFNfhnPUjrxvzUiRbFSkkTdRU8R
+         41RQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=U0Vy6bVXybkv53dFNF38s80qQNlt4Z5kP9WaLGyZk/E=;
-        b=2WE5lL6w0TAV5X8aeasilwwz3nf80OATf5fOL6fa/wFZ+hP5IYNOcv2t0rjBH5rAb9
-         4Ttvlki3eX1L4XBvXBFgGFlDSnRKFwzJbCHJLZa+Yek9W3YSBXKo1N2uZQ/6EYEtZR3B
-         a9P1SRdWcqaPSOxMs7B7L/+HTKPlwrFfCAGpv/IiAWtsT8HAYB6GzDdb3zXsWGGvubJ7
-         kPsxV1eZg9BkamFotIXxbisCnKxvvideNiUD20iQla2S3Z0Cd8FKqw2x7+8mMI55vl2i
-         jKMZM/2edL7NOprsHxgwyrLijdoDIIYKg0ERfFS74XmQLg5zF1p4YNyEuEzhX8n/BemO
-         r/Ng==
-X-Gm-Message-State: AOAM5317DEU2Egr3okQJjPVI4oY30xM/zaV3Q4Rp9vR5W/OLzhTvC3oE
-        uT/PWINkK8CGeozmIowNXnk=
-X-Google-Smtp-Source: ABdhPJxrvR29INUiL1phb2tUnsp09WITr2GSA5PvcDicS0wdhOdoyLEVHfAJAI51ZTor6YvZuytmYg==
-X-Received: by 2002:a63:1444:: with SMTP id 4mr11054827pgu.251.1634339429240;
-        Fri, 15 Oct 2021 16:10:29 -0700 (PDT)
-Received: from [172.30.1.32] ([14.32.163.5])
-        by smtp.gmail.com with ESMTPSA id rj6sm2336137pjb.30.2021.10.15.16.10.25
+        bh=EC0kJnu6bT1KCV0QTTsc1q9gjgvVry2x+/hU79zV+y8=;
+        b=oQ2aYDizOQXKuAFWk0fiqayOQlp3zx9wz8/LHbUCcdEQLxaeR+OObjOfVeTsj+lViZ
+         mGX9GbeCZRkz0ypNdwvzNFszZ0KmtG1JSdtNJFkSsrLjAFrl4i5LyF/gxAaZ8Ay4ZM/0
+         GvydIm+1y5kZVE5V2aaOr0lUxVaP1IJOCp1NgPS0xY0BdqBiYnsbcBrCi8Zs3ZtQSNdv
+         D4AW0qQou1DQswKh7JyU0q9PJTataQjmN5o76XHhpJWgt5qhW3cmFIRhm1VFZT2xihq9
+         mnxULyn+1m4R7WBCT+JWjO9TvFfSnTaI8He1mCFz9Eqzkx5a/uT2Y6uEupyqTvAQSRpx
+         xnpw==
+X-Gm-Message-State: AOAM531MGkUEuCre8HKDR+CS6v/k9wudMDOY8OMTQXZEgJ4AigWzkdHF
+        Dy0OvRkH5/HJrCpubjkjocGeWdaiuA02uQWn
+X-Google-Smtp-Source: ABdhPJwdl4PYi6aqkad4kJV0X4BJyQf3As8t/5DTM41Z3RJ5ruHOJTmIXaVn6PXiM+8IasLbQRRQGg==
+X-Received: by 2002:a05:6808:1805:: with SMTP id bh5mr4099182oib.47.1634339502907;
+        Fri, 15 Oct 2021 16:11:42 -0700 (PDT)
+Received: from [192.168.17.16] ([189.219.72.19])
+        by smtp.gmail.com with ESMTPSA id i13sm1556994oig.35.2021.10.15.16.11.42
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Oct 2021 16:10:28 -0700 (PDT)
-Subject: Re: [PATCH v4 2/2] [RFT] clk: samsung: exynos5433: update apollo and
- atlas clock probing
-To:     Will McVicker <willmcvicker@google.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     kernel-team@android.com,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20211014195347.3635601-1-willmcvicker@google.com>
- <20211014195347.3635601-3-willmcvicker@google.com>
-From:   Chanwoo Choi <cwchoi00@gmail.com>
-Message-ID: <d36e8ab1-ad0b-835d-e4a3-7f0cbb3f27ff@gmail.com>
-Date:   Sat, 16 Oct 2021 08:10:24 +0900
+        Fri, 15 Oct 2021 16:11:42 -0700 (PDT)
+Subject: Re: [PATCH 4.4 00/18] 4.4.289-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+References: <20211014145206.330102860@linuxfoundation.org>
+From:   =?UTF-8?Q?Daniel_D=c3=adaz?= <daniel.diaz@linaro.org>
+Message-ID: <0dbedba1-a6b7-89b3-2ba9-23f0c0afa60f@linaro.org>
+Date:   Fri, 15 Oct 2021 18:11:41 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20211014195347.3635601-3-willmcvicker@google.com>
+In-Reply-To: <20211014145206.330102860@linuxfoundation.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -78,165 +71,142 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21. 10. 15. 오전 4:53, Will McVicker wrote:
-> Use the samsung common clk driver to initialize the apollo and atlas
-> clocks. This removes their custom init functions and uses the
-> samsung_cmu_register_one() instead.
-> 
-> Signed-off-by: Will McVicker <willmcvicker@google.com>
-> ---
->   drivers/clk/samsung/clk-exynos5433.c | 120 +++++++++++----------------
->   1 file changed, 48 insertions(+), 72 deletions(-)
-> 
-> diff --git a/drivers/clk/samsung/clk-exynos5433.c b/drivers/clk/samsung/clk-exynos5433.c
-> index f203074d858b..cec66d2a4ee2 100644
-> --- a/drivers/clk/samsung/clk-exynos5433.c
-> +++ b/drivers/clk/samsung/clk-exynos5433.c
-> @@ -3675,44 +3675,32 @@ static const struct exynos_cpuclk_cfg_data exynos5433_apolloclk_d[] __initconst
->   	{  0 },
->   };
->   
-> +static const struct samsung_cpu_clock apollo_cpu_clks[] __initconst = {
-> +	CPU_CLK(CLK_SCLK_APOLLO, "apolloclk", CLK_MOUT_APOLLO_PLL,
-> +			CLK_MOUT_BUS_PLL_APOLLO_USER,
-> +			CLK_CPU_HAS_E5433_REGS_LAYOUT, 0x200,
-> +			exynos5433_apolloclk_d),
-> +};
-> +
-> +static const struct samsung_cmu_info apollo_cmu_info __initconst = {
-> +	.pll_clks	= apollo_pll_clks,
-> +	.nr_pll_clks	= ARRAY_SIZE(apollo_pll_clks),
-> +	.mux_clks	= apollo_mux_clks,
-> +	.nr_mux_clks	= ARRAY_SIZE(apollo_mux_clks),
-> +	.div_clks	= apollo_div_clks,
-> +	.nr_div_clks	= ARRAY_SIZE(apollo_div_clks),
-> +	.gate_clks	= apollo_gate_clks,
-> +	.nr_gate_clks	= ARRAY_SIZE(apollo_gate_clks),
-> +	.cpu_clks	= apollo_cpu_clks,
-> +	.nr_cpu_clks	= ARRAY_SIZE(apollo_cpu_clks),
-> +	.nr_clk_ids	= APOLLO_NR_CLK,
-> +	.clk_regs	= apollo_clk_regs,
-> +	.nr_clk_regs	= ARRAY_SIZE(apollo_clk_regs),
-> +};
-> +
->   static void __init exynos5433_cmu_apollo_init(struct device_node *np)
->   {
-> -	void __iomem *reg_base;
-> -	struct samsung_clk_provider *ctx;
-> -	struct clk_hw **hws;
-> -
-> -	reg_base = of_iomap(np, 0);
-> -	if (!reg_base) {
-> -		panic("%s: failed to map registers\n", __func__);
-> -		return;
-> -	}
-> -
-> -	ctx = samsung_clk_init(np, reg_base, APOLLO_NR_CLK);
-> -	if (!ctx) {
-> -		panic("%s: unable to allocate ctx\n", __func__);
-> -		return;
-> -	}
-> -
-> -	samsung_clk_register_pll(ctx, apollo_pll_clks,
-> -				 ARRAY_SIZE(apollo_pll_clks), reg_base);
-> -	samsung_clk_register_mux(ctx, apollo_mux_clks,
-> -				 ARRAY_SIZE(apollo_mux_clks));
-> -	samsung_clk_register_div(ctx, apollo_div_clks,
-> -				 ARRAY_SIZE(apollo_div_clks));
-> -	samsung_clk_register_gate(ctx, apollo_gate_clks,
-> -				  ARRAY_SIZE(apollo_gate_clks));
-> -
-> -	hws = ctx->clk_data.hws;
-> -
-> -	exynos_register_cpu_clock(ctx, CLK_SCLK_APOLLO, "apolloclk",
-> -		hws[CLK_MOUT_APOLLO_PLL], hws[CLK_MOUT_BUS_PLL_APOLLO_USER], 0x200,
-> -		exynos5433_apolloclk_d, ARRAY_SIZE(exynos5433_apolloclk_d),
-> -		CLK_CPU_HAS_E5433_REGS_LAYOUT);
-> -
-> -	samsung_clk_sleep_init(reg_base, apollo_clk_regs,
-> -			       ARRAY_SIZE(apollo_clk_regs));
-> -
-> -	samsung_clk_of_add_provider(np, ctx);
-> +	samsung_cmu_register_one(np, &apollo_cmu_info);
->   }
->   CLK_OF_DECLARE(exynos5433_cmu_apollo, "samsung,exynos5433-cmu-apollo",
->   		exynos5433_cmu_apollo_init);
-> @@ -3932,44 +3920,32 @@ static const struct exynos_cpuclk_cfg_data exynos5433_atlasclk_d[] __initconst =
->   	{  0 },
->   };
->   
-> -static void __init exynos5433_cmu_atlas_init(struct device_node *np)
-> -{
-> -	void __iomem *reg_base;
-> -	struct samsung_clk_provider *ctx;
-> -	struct clk_hw **hws;
-> -
-> -	reg_base = of_iomap(np, 0);
-> -	if (!reg_base) {
-> -		panic("%s: failed to map registers\n", __func__);
-> -		return;
-> -	}
-> -
-> -	ctx = samsung_clk_init(np, reg_base, ATLAS_NR_CLK);
-> -	if (!ctx) {
-> -		panic("%s: unable to allocate ctx\n", __func__);
-> -		return;
-> -	}
-> -
-> -	samsung_clk_register_pll(ctx, atlas_pll_clks,
-> -				 ARRAY_SIZE(atlas_pll_clks), reg_base);
-> -	samsung_clk_register_mux(ctx, atlas_mux_clks,
-> -				 ARRAY_SIZE(atlas_mux_clks));
-> -	samsung_clk_register_div(ctx, atlas_div_clks,
-> -				 ARRAY_SIZE(atlas_div_clks));
-> -	samsung_clk_register_gate(ctx, atlas_gate_clks,
-> -				  ARRAY_SIZE(atlas_gate_clks));
-> -
-> -	hws = ctx->clk_data.hws;
-> -
-> -	exynos_register_cpu_clock(ctx, CLK_SCLK_ATLAS, "atlasclk",
-> -		hws[CLK_MOUT_ATLAS_PLL], hws[CLK_MOUT_BUS_PLL_ATLAS_USER], 0x200,
-> -		exynos5433_atlasclk_d, ARRAY_SIZE(exynos5433_atlasclk_d),
-> -		CLK_CPU_HAS_E5433_REGS_LAYOUT);
-> +static const struct samsung_cpu_clock atlas_cpu_clks[] __initconst = {
-> +	CPU_CLK(CLK_SCLK_ATLAS, "atlasclk", CLK_MOUT_ATLAS_PLL,
-> +			CLK_MOUT_BUS_PLL_ATLAS_USER,
-> +			CLK_CPU_HAS_E5433_REGS_LAYOUT, 0x200,
-> +			exynos5433_atlasclk_d),
-> +};
->   
-> -	samsung_clk_sleep_init(reg_base, atlas_clk_regs,
-> -			       ARRAY_SIZE(atlas_clk_regs));
-> +static const struct samsung_cmu_info atlas_cmu_info __initconst = {
-> +	.pll_clks	= atlas_pll_clks,
-> +	.nr_pll_clks	= ARRAY_SIZE(atlas_pll_clks),
-> +	.mux_clks	= atlas_mux_clks,
-> +	.nr_mux_clks	= ARRAY_SIZE(atlas_mux_clks),
-> +	.div_clks	= atlas_div_clks,
-> +	.nr_div_clks	= ARRAY_SIZE(atlas_div_clks),
-> +	.gate_clks	= atlas_gate_clks,
-> +	.nr_gate_clks	= ARRAY_SIZE(atlas_gate_clks),
-> +	.cpu_clks	= atlas_cpu_clks,
-> +	.nr_cpu_clks	= ARRAY_SIZE(atlas_cpu_clks),
-> +	.nr_clk_ids	= ATLAS_NR_CLK,
-> +	.clk_regs	= atlas_clk_regs,
-> +	.nr_clk_regs	= ARRAY_SIZE(atlas_clk_regs),
-> +};
->   
-> -	samsung_clk_of_add_provider(np, ctx);
-> +static void __init exynos5433_cmu_atlas_init(struct device_node *np)
-> +{
-> +	samsung_cmu_register_one(np, &atlas_cmu_info);
->   }
->   CLK_OF_DECLARE(exynos5433_cmu_atlas, "samsung,exynos5433-cmu-atlas",
->   		exynos5433_cmu_atlas_init);
-> 
+Hello!
 
-Looks good to me. Thanks for your work.
+On 10/14/21 9:53 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.4.289 release.
+> There are 18 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sat, 16 Oct 2021 14:51:59 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.289-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.4.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
+Results from Linaro's test farm.
+No regressions on arm64, arm, x86_64, and i386.
+
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+## Build
+* kernel: 4.4.289-rc1
+* git: ['https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git', 'https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc']
+* git branch: linux-4.4.y
+* git commit: f9c6c370e0b0668289ebd46e9b1311e1a8b6e7a1
+* git describe: v4.4.288-19-gf9c6c370e0b0
+* test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.4.y/build/v4.4.288-19-gf9c6c370e0b0
+
+## No regressions (compared to v4.4.288)
+
+## No fixes (compared to v4.4.288)
+
+## Test result summary
+total: 53612, pass: 42920, fail: 246, skip: 9117, xfail: 1329
+
+## Build Summary
+* arm: 128 total, 128 passed, 0 failed
+* arm64: 33 total, 33 passed, 0 failed
+* i386: 17 total, 17 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 24 total, 24 passed, 0 failed
+* sparc: 12 total, 12 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 17 total, 17 passed, 0 failed
+
+## Test suites summary
+* fwts
+* kselftest-android
+* kselftest-bpf
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-membarrier
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* ssuite
+* v4l2-compliance
+
+
+Greetings!
+
+Daniel Díaz
+daniel.diaz@linaro.org
 
 -- 
-Best Regards,
-Samsung Electronics
-Chanwoo Choi
+Linaro LKFT
+https://lkft.linaro.org
