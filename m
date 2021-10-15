@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBAE542EC81
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 10:36:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B941A42EC83
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 10:36:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237150AbhJOIiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 04:38:51 -0400
-Received: from comms.puri.sm ([159.203.221.185]:44794 "EHLO comms.puri.sm"
+        id S237220AbhJOIiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 04:38:52 -0400
+Received: from comms.puri.sm ([159.203.221.185]:44812 "EHLO comms.puri.sm"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237146AbhJOIir (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 04:38:47 -0400
+        id S235703AbhJOIiu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 04:38:50 -0400
 Received: from localhost (localhost [127.0.0.1])
-        by comms.puri.sm (Postfix) with ESMTP id 8698EDFE40;
-        Fri, 15 Oct 2021 01:36:11 -0700 (PDT)
+        by comms.puri.sm (Postfix) with ESMTP id 8F59FDFE31;
+        Fri, 15 Oct 2021 01:36:14 -0700 (PDT)
 Received: from comms.puri.sm ([127.0.0.1])
         by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id KTQfCWuuvvJJ; Fri, 15 Oct 2021 01:36:10 -0700 (PDT)
+        with ESMTP id 1S6c8dt2jUyY; Fri, 15 Oct 2021 01:36:13 -0700 (PDT)
 From:   Martin Kepplinger <martin.kepplinger@puri.sm>
 To:     robh@kernel.org, shawnguo@kernel.org, festevam@gmail.com,
         krzk@kernel.org
@@ -24,9 +24,9 @@ Cc:     kernel@pengutronix.de, linux-imx@nxp.com, kernel@puri.sm,
         devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
         Martin Kepplinger <martin.kepplinger@puri.sm>
-Subject: [RFC PATCH v1 2/4] arm64: dts: imx8mq-librem5: describe power supply for cameras
-Date:   Fri, 15 Oct 2021 10:35:04 +0200
-Message-Id: <20211015083506.4182875-3-martin.kepplinger@puri.sm>
+Subject: [RFC PATCH v1 3/4] arm64: dts: imx8mq-librem5: describe the selfie cam
+Date:   Fri, 15 Oct 2021 10:35:05 +0200
+Message-Id: <20211015083506.4182875-4-martin.kepplinger@puri.sm>
 In-Reply-To: <20211015083506.4182875-1-martin.kepplinger@puri.sm>
 References: <20211015083506.4182875-1-martin.kepplinger@puri.sm>
 MIME-Version: 1.0
@@ -35,126 +35,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CAMERA_PWR_EN controls two different power supplies that cameras will use.
-The hardware killswitch controls a third one. Describe that appropriately.
+Enable the CSI1 MIPI RX controller and CSI1 bridge on the SoC. Describe
+the Librem 5 front-facing camera, connected to the CSI1 MIPI.
 
-The pinctrl that describes the gpio that is used in 2 places here is added
-to the pmic. The pmic is powered early enough to make sure this will work.
+the following sets formats, streams 10 frames and saves one:
 
-this patch is not ideal and hence an RFC I'm not yet signing-off on: When
-putting the same pinctrl property into the 2 regulator nodes (instead of the
-pmic), we get:
+	#!/bin/bash
+	WIDTH=1632
+	HEIGHT=1224
+	SKIP=10
 
-imx8mq-pinctrl 30330000.pinctrl: pin MX8MQ_IOMUXC_GPIO1_IO00 already requested by regulator-csi-1v8; cannot claim for regulator-vcam-2v8
-imx8mq-pinctrl 30330000.pinctrl: pin-10 (regulator-vcam-2v8) status -22
-imx8mq-pinctrl 30330000.pinctrl: could not request pin 10 (MX8MQ_IOMUXC_GPIO1_IO00) from group camerapwrgrp  on device 30330000.pinctrl
+	media-ctl -d "platform:30a90000.csi" --set-v4l2 "'csi':0 [fmt:SGBRG10/${WIDTH}x${HEIGHT} colorspace:raw]"
+	media-ctl -d "platform:30a90000.csi" --set-v4l2 "'imx8mq-mipi-csi2 30a70000.csi':0 [fmt:SGBRG10/${WIDTH}x${HEIGHT} colorspace:raw]"
+	media-ctl -d "platform:30a90000.csi" --set-v4l2 "'hi846 2-0020':0 [fmt:SGBRG10/${WIDTH}x${HEIGHT} colorspace:raw]"
+	media-ctl -d "platform:30a90000.csi" -l "'hi846 2-0020':0 -> 'imx8mq-mipi-csi2 30a70000.csi':0 [1]"
+	v4l2-ctl -d "/dev/v4l/by-path/platform-30a90000.csi-video-index0" --set-fmt-video=width=${WIDTH},height=${HEIGHT},pixelformat=GB16 --stream-mmap --stream-to=$WIDTH.raw --stream-skip=$SKIP --stream-count=1
 
-so that's a limitation to use the pinctrl only in one place. Is that
-intended or am I missing something?
-
-The one other possibility I see is to add *another* regulator that looks
-something like so - that would be the only one controlling the gpio and having
-the pinctrl property:
-
-	reg_camera_pwr_en: regulator-camera-pwr-en {
-		compatible = "regulator-fixed";
-		regulator-name = "CAMERA_PWR_EN";
-		pinctrl-names = "default";
-		pinctrl-0 = <&pinctrl_camera_pwr>;
-		gpio = <&gpio1 0 GPIO_ACTIVE_HIGH>;
-		enable-active-high;
-	};
-
-and the regulators I actually *want* to describe would all include
-
-		vin-supply = <&reg_camera_pwr_en>;
-
-My problem with that alternative is that I basically describe a regulator that
-doesn't really exist in hardware. Do you know what's the prefererred way to
-describe our hardware here?
-
-thank you very much!
-
-                                martin
+Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
 ---
- .../boot/dts/freescale/imx8mq-librem5.dtsi    | 50 ++++++++++++++++++-
- 1 file changed, 49 insertions(+), 1 deletion(-)
+ .../boot/dts/freescale/imx8mq-librem5.dtsi    | 46 +++++++++++++++++++
+ 1 file changed, 46 insertions(+)
 
 diff --git a/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi b/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi
-index 3f7524400a63..c385f9e0d5f7 100644
+index c385f9e0d5f7..42e318d663e5 100644
 --- a/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi
 +++ b/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi
-@@ -60,6 +60,40 @@ reg_aud_1v8: regulator-audio-1v8 {
- 		enable-active-high;
- 	};
+@@ -256,6 +256,10 @@ &A53_3 {
+ 	cpu-supply = <&buck2_reg>;
+ };
  
-+	/*
-+	 * the pinctrl for reg_csi_1v8 and reg_vcam_1v8 is added to the PMIC
-+	 * since we can't have it twice in the 2 different regulator nodes.
-+	 */
-+	reg_csi_1v8: regulator-csi-1v8 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "CAMERA_VDDIO_1V8";
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <1800000>;
-+		vin-supply = <&reg_vdd_3v3>;
-+		gpio = <&gpio1 0 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+	};
++&csi1 {
++	status = "okay";
++};
 +
-+	/* controlled by the CAMERA_POWER_KEY HKS */
-+	reg_vcam_1v2: regulator-vcam-1v2 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "CAMERA_VDDD_1V2";
-+		regulator-min-microvolt = <1200000>;
-+		regulator-max-microvolt = <1200000>;
-+		vin-supply = <&reg_vdd_1v8>;
-+		enable-active-high;
-+	};
-+
-+	reg_vcam_2v8: regulator-vcam-2v8 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "CAMERA_VDDA_2V8";
-+		regulator-min-microvolt = <2800000>;
-+		regulator-max-microvolt = <2800000>;
-+		vin-supply = <&reg_vdd_3v3>;
-+		gpio = <&gpio1 0 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+	};
-+
- 	reg_gnss: regulator-gnss {
- 		compatible = "regulator-fixed";
- 		pinctrl-names = "default";
-@@ -307,6 +341,20 @@ MX8MQ_IOMUXC_NAND_DQS_GPIO3_IO14	0x83
+ &ddrc {
+ 	operating-points-v2 = <&ddrc_opp_table>;
+ 
+@@ -970,6 +974,31 @@ codec: audio-codec@1a {
  		>;
  	};
  
-+	pinctrl_camera_pwr: camerapwrgrp {
-+		fsl,pins = <
-+			/* CAMERA_PWR_EN_3V3 */
-+			MX8MQ_IOMUXC_GPIO1_IO00_GPIO1_IO0	0x83
-+		>;
++	camera_front: camera@20 {
++		compatible = "hynix,hi846";
++		reg = <0x20>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&pinctrl_csi1>;
++		clocks = <&clk IMX8MQ_CLK_CLKO2>;
++		assigned-clocks = <&clk IMX8MQ_CLK_CLKO2>;
++		assigned-clock-rates = <25000000>;
++		reset-gpios = <&gpio1 25 GPIO_ACTIVE_LOW>;
++		vdda-supply = <&reg_vcam_2v8>;
++		vddd-supply = <&reg_vcam_1v2>;
++		vddio-supply = <&reg_csi_1v8>;
++		rotation = <90>;
++		orientation = <0>;
++
++		port {
++			camera1_ep: endpoint {
++				data-lanes = <1 2>;
++				link-frequencies = /bits/ 64
++					<80000000 200000000 300000000>;
++				remote-endpoint = <&mipi1_sensor_ep>;
++			};
++		};
 +	};
 +
-+	pinctrl_csi1: csi1grp {
-+		fsl,pins = <
-+			/* CSI1_NRST */
-+			MX8MQ_IOMUXC_ENET_RXC_GPIO1_IO25	0x83
-+		>;
-+	};
+ 	backlight@36 {
+ 		compatible = "ti,lm36922";
+ 		reg = <0x36>;
+@@ -1043,6 +1072,23 @@ &lcdif {
+ 	status = "okay";
+ };
+ 
++&mipi_csi1 {
++	#address-cells = <1>;
++	#size-cells = <0>;
++	status = "okay";
 +
- 	pinctrl_charger_in: chargeringrp {
- 		fsl,pins = <
- 			/* CHRG_INT */
-@@ -689,7 +737,7 @@ pmic: pmic@4b {
- 		compatible = "rohm,bd71837";
- 		reg = <0x4b>;
- 		pinctrl-names = "default";
--		pinctrl-0 = <&pinctrl_pmic>;
-+		pinctrl-0 = <&pinctrl_pmic>, <&pinctrl_camera_pwr>;
- 		clocks = <&pmic_osc>;
- 		clock-names = "osc";
- 		clock-output-names = "pmic_clk";
++	ports {
++		port@1 {
++			reg = <1>;
++
++			mipi1_sensor_ep: endpoint {
++				remote-endpoint = <&camera1_ep>;
++				data-lanes = <1 2>;
++			};
++		};
++	};
++};
++
+ &mipi_dsi {
+ 	#address-cells = <1>;
+ 	#size-cells = <0>;
 -- 
 2.30.2
 
