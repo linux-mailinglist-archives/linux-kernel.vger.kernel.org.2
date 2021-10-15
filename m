@@ -2,161 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B55BB42ECDB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 10:52:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD94142ECDF
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 10:53:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235771AbhJOIyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 04:54:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47444 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234459AbhJOIyu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 04:54:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5FA0A61053;
-        Fri, 15 Oct 2021 08:52:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634287964;
-        bh=WmLhFzVqAqmD2RimdfqsPkp2Nun4vez4+tb7P7hMIFU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:From;
-        b=GF3D8JU24hp5t79Ik+GzZGC6/vNO4EXuqAmiFXcf7I3m7qGUbnFW5O2xjMJnpzjMW
-         ktHtU7sMNIfJs8c3rA0sYOqkITjn31DdeBTja/FA+rGoq+DscCBSoflavJYD5RHhFv
-         XerWeIl5MCSt7POEg1ZYc5JmU8DN/RzVCQPKLRLYj49p8an3WCwAUk5y3LCh7aX6ik
-         jn8SwDeFZVND897gUkPbyJKlE1ew1kHreq5Zndadt07eAY2j0R2wBOZjKoNwEEQ/sD
-         fPYvv/CiMLWiqZWUYGgmgCMTYwSS/RV13qviOZQG+pVhl7Nq9xsyx/bn+1sRfWX5/X
-         CmfnjqMceavFg==
-From:   SeongJae Park <sj@kernel.org>
-To:     SeongJae Park <sj@kernel.org>
-Cc:     SeongJae Park <sj38.park@gmail.com>, shuah@kernel.org,
-        gregkh@linuxfoundation.org, akpm@linux-foundation.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        SeongJae Park <sjpark@amazon.de>
-Subject: Re: [PATCH v2] selftests/kselftest/runner/run_one(): Allow running non-executable files
-Date:   Fri, 15 Oct 2021 08:52:41 +0000
-Message-Id: <20211015085241.16262-1-sj@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211008095828.1796-1-sj@kernel.org>
+        id S234985AbhJOI4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 04:56:02 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:25192 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232271AbhJOI4B (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 04:56:01 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4HW0Qh4lQ2z8tgb;
+        Fri, 15 Oct 2021 16:52:44 +0800 (CST)
+Received: from dggpemm500002.china.huawei.com (7.185.36.229) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Fri, 15 Oct 2021 16:53:53 +0800
+Received: from [10.174.178.247] (10.174.178.247) by
+ dggpemm500002.china.huawei.com (7.185.36.229) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Fri, 15 Oct 2021 16:53:52 +0800
+Subject: Re: [PATCH] acpi: arm64: fix section mismatch warning
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+CC:     Arnd Bergmann <arnd@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>, "Arnd Bergmann" <arnd@arndb.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Marc Zyngier" <maz@kernel.org>, <linux-acpi@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20210927141921.1760209-1-arnd@kernel.org>
+ <988fa24c-76d2-1c9d-9761-b356efb0576c@huawei.com>
+ <20211013090254.GA9901@lpieralisi>
+From:   Hanjun Guo <guohanjun@huawei.com>
+Message-ID: <220f6cfb-80b1-44db-ce1d-462af5dbf74e@huawei.com>
+Date:   Fri, 15 Oct 2021 16:53:52 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
+MIME-Version: 1.0
+In-Reply-To: <20211013090254.GA9901@lpieralisi>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.247]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemm500002.china.huawei.com (7.185.36.229)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Gentle ping.
+On 2021/10/13 17:02, Lorenzo Pieralisi wrote:
+> On Tue, Oct 12, 2021 at 03:03:29PM +0800, Hanjun Guo wrote:
+>> Hi Arnd,
+>>
+>> On 2021/9/27 22:19, Arnd Bergmann wrote:
+>>> From: Arnd Bergmann <arnd@arndb.de>
+>>>
+>>> In a gcc-11 randconfig build I came across this warning:
+>>>
+>>> WARNING: modpost: vmlinux.o(.text.unlikely+0x2c084): Section mismatch in reference from the function next_platform_timer() to the variable .init.data:acpi_gtdt_desc
+>>> The function next_platform_timer() references
+>>> the variable __initdata acpi_gtdt_desc.
+>>> This is often because next_platform_timer lacks a __initdata
+>>> annotation or the annotation of acpi_gtdt_desc is wrong.
+>>>
+>>> This happens when next_platform_timer() fails to get inlined
+>>> despite the inline annotation. Adding '__init' solves the issue,
+>>> and it seems best to remove the 'inline' in the process seems
+>>> better anyway.
+>>
+>> There was a patch to fix this issue as well [1],
+>> but not merged yet.
+>>
+>> [1]: https://lore.kernel.org/linux-acpi/7f29a149-e005-f13f-2cc4-a9eb737107e1@huawei.com/T/
+> 
+> My bad, we did not coordinate well - I noticed your Acked-by but as a
+> rule we should also CC LAKML and Catalin/Will (if they aren't CCed) on
+> the reply to make sure they can actually see it.
 
-On Fri, 8 Oct 2021 09:58:28 +0000 SeongJae Park <sj@kernel.org> wrote:
+It's my bad. I will make sure LAKML and Catalin/Will are CCed next time
+when I reply the email.
 
-> Hello Shuah,
-> 
-> 
-> I was wondering if you had a chance to read this patch.
-> 
-> Without this patch, DAMON selftest fails as below:
-> 
->     $ make -C tools/testing/selftests/damon/ run_tests
->     make: Entering directory '/home/sjpark/linux/tools/testing/selftests/damon'
->     TAP version 13
->     1..1
->     # selftests: damon: debugfs_attrs.sh
->     # Warning: file debugfs_attrs.sh is not executable, correct this.
->     not ok 1 selftests: damon: debugfs_attrs.sh
->     make: Leaving directory '/home/sjpark/linux/tools/testing/selftests/damon'
-> 
-> If you disagree in the approach, please also take a look in this one:
-> https://lore.kernel.org/linux-kselftest/20210810112050.22225-1-sj38.park@gmail.com/
-> 
-> 
-> Thanks,
-> SJ
-> 
-> 
-> On Mon, 13 Sep 2021 11:24:42 +0000 SeongJae Park <sj38.park@gmail.com> wrote:
-> 
-> > From: SeongJae Park <sjpark@amazon.de>
-> > 
-> > Hello Shuah,
-> > 
-> > 
-> > Could you I ask your comment for this patch?
-> > 
-> > 
-> > Thanks,
-> > SJ
-> > 
-> > On Tue, 10 Aug 2021 16:45:34 +0000 SeongJae Park <sj38.park@gmail.com> wrote:
-> > 
-> > > From: SeongJae Park <sjpark@amazon.de>
-> > > 
-> > > When running a test program, 'run_one()' checks if the program has the
-> > > execution permission and fails if it doesn't.  However, it's easy to
-> > > mistakenly missing the permission, as some common tools like 'diff'
-> > > don't support the permission change well[1].  Compared to that, making
-> > > mistakes in the test program's path would only rare, as those are
-> > > explicitly listed in 'TEST_PROGS'.  Therefore, it might make more sense
-> > > to resolve the situation on our own and run the program.
-> > > 
-> > > For the reason, this commit makes the test program runner function to
-> > > still print the warning message but try parsing the interpreter of the
-> > > program and explicitly run it with the interpreter, in the case.
-> > > 
-> > > [1] https://lore.kernel.org/mm-commits/YRJisBs9AunccCD4@kroah.com/
-> > > 
-> > > Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > Signed-off-by: SeongJae Park <sjpark@amazon.de>
-> > > ---
-> > > Changes from v1
-> > > (https://lore.kernel.org/linux-kselftest/20210810140459.23990-1-sj38.park@gmail.com/)
-> > > - Parse and use the interpreter instead of changing the file
-> > > 
-> > >  tools/testing/selftests/kselftest/runner.sh | 28 +++++++++++++--------
-> > >  1 file changed, 18 insertions(+), 10 deletions(-)
-> > > 
-> > > diff --git a/tools/testing/selftests/kselftest/runner.sh b/tools/testing/selftests/kselftest/runner.sh
-> > > index cc9c846585f0..a9ba782d8ca0 100644
-> > > --- a/tools/testing/selftests/kselftest/runner.sh
-> > > +++ b/tools/testing/selftests/kselftest/runner.sh
-> > > @@ -33,9 +33,9 @@ tap_timeout()
-> > >  {
-> > >  	# Make sure tests will time out if utility is available.
-> > >  	if [ -x /usr/bin/timeout ] ; then
-> > > -		/usr/bin/timeout --foreground "$kselftest_timeout" "$1"
-> > > +		/usr/bin/timeout --foreground "$kselftest_timeout" $1
-> > >  	else
-> > > -		"$1"
-> > > +		$1
-> > >  	fi
-> > >  }
-> > >  
-> > > @@ -65,17 +65,25 @@ run_one()
-> > >  
-> > >  	TEST_HDR_MSG="selftests: $DIR: $BASENAME_TEST"
-> > >  	echo "# $TEST_HDR_MSG"
-> > > -	if [ ! -x "$TEST" ]; then
-> > > -		echo -n "# Warning: file $TEST is "
-> > > -		if [ ! -e "$TEST" ]; then
-> > > -			echo "missing!"
-> > > -		else
-> > > -			echo "not executable, correct this."
-> > > -		fi
-> > > +	if [ ! -e "$TEST" ]; then
-> > > +		echo "# Warning: file $TEST is missing!"
-> > >  		echo "not ok $test_num $TEST_HDR_MSG"
-> > >  	else
-> > > +		cmd="./$BASENAME_TEST"
-> > > +		if [ ! -x "$TEST" ]; then
-> > > +			echo "# Warning: file $TEST is not executable"
-> > > +
-> > > +			if [ $(head -n 1 "$TEST" | cut -c -2) = "#!" ]
-> > > +			then
-> > > +				interpreter=$(head -n 1 "$TEST" | cut -c 3-)
-> > > +				cmd="$interpreter ./$BASENAME_TEST"
-> > > +			else
-> > > +				echo "not ok $test_num $TEST_HDR_MSG"
-> > > +				return
-> > > +			fi
-> > > +		fi
-> > >  		cd `dirname $TEST` > /dev/null
-> > > -		((((( tap_timeout ./$BASENAME_TEST 2>&1; echo $? >&3) |
-> > > +		((((( tap_timeout "$cmd" 2>&1; echo $? >&3) |
-> > >  			tap_prefix >&4) 3>&1) |
-> > >  			(read xs; exit $xs)) 4>>"$logfile" &&
-> > >  		echo "ok $test_num $TEST_HDR_MSG") ||
-> > > -- 
-> > > 2.17.1
-> > > 
+Thanks
+Hanjun
