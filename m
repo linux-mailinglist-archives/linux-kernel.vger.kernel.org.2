@@ -2,67 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4618242EF31
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 12:56:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE5FA42EF3E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 13:01:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238215AbhJOK61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 06:58:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34182 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238173AbhJOK60 (ORCPT
+        id S238226AbhJOLDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 07:03:40 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:52106 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238196AbhJOLDh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 06:58:26 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F08B8C061570
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 03:56:19 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id y15so40038206lfk.7
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 03:56:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=7+SfLV/gGuCk+NKYPgbulTG/eW9OW7URIc6MmhKWJDE=;
-        b=Z20Ybvpa72eX8BAMBDhZWdAfkMk+ZNx6Fz9HK1qkls7f0CGNbza2ClY6i1xj24grD3
-         XQ+doi7DVPfXWDicpy/K6ldrgOz9C14pTF01Wtr7fw2L1ChAKw4i/Lj/MDhNaiMcKPtv
-         z3Vdxbi+p53ssiht0O8ELoEsAyJwqOMoXV/ojn+Wicsq0PUpf0qz90OBuqx+NmNsdboP
-         sg2qvYKwLlqVolTYOAZJBFcKEIVB+UC/Onyzm+jhjgsQMqhSfQL5Gtx/UxntKIWlPIIC
-         nFHMuO4M/0xPKVqaZV+ZHxNmlt9deBuF0etHvSsZregzdxg6aNhE7W2YizE10b0IDw9y
-         DPJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to:content-transfer-encoding;
-        bh=7+SfLV/gGuCk+NKYPgbulTG/eW9OW7URIc6MmhKWJDE=;
-        b=X/FSAVoU3gvs2NJDQoSdJqy3OfoiCMXj8wn+Ii3Sb15CojGsZkwvEj+xv1Jmq9r4xG
-         lxouCouM38wf/RRO4vcTV1+VJSm5BuObCNxTgM708xgDq4I9JjSnzDp8kAB7OUnEAIPs
-         Qq8WSXVmwvIxVxL6PAqhUlgZkc+oSIFo2cPnbkArLcriNZAuAfGKwzRBe46nt08iyexD
-         SJkYwzMG6V3Oqfd58dSZ45gc5OCYF48eJ4Blpa/FibN2OufG1ZzGJs7POQAdpYMAPq0E
-         aBSjrDHxupKfHwkyZV5C+jZtosW0wEB+dSAqd0fVpUMMWzY8rabTsnwrXXdoml7xhJVc
-         o59Q==
-X-Gm-Message-State: AOAM5310dC5GqWcIPNAKZP3pOLRRuLD6ixlXH1XZ4BYJw+rYw6vLOx4O
-        K4JlvULFftA4QqBT8yTNHqTdhlDpFrQvLG4Bv1E=
-X-Google-Smtp-Source: ABdhPJysKb4fgYKrxFT7Q4blcpn+X/lQKoHHzgdPpY9et2D9enhrq4f/Ui4UI5CfrhsJvQTZdfOSOtg61VOUf4Dp+Vc=
-X-Received: by 2002:ac2:54a4:: with SMTP id w4mr10779909lfk.534.1634295378420;
- Fri, 15 Oct 2021 03:56:18 -0700 (PDT)
+        Fri, 15 Oct 2021 07:03:37 -0400
+Received: from pendragon.ideasonboard.com (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 4514B2E3;
+        Fri, 15 Oct 2021 13:01:29 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1634295689;
+        bh=6i9L33rCLOxyXyIbswmYDzQNFJaXeBH+sGFsWnXWrsw=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=iXD2cF3ZyPjZWtHIIE3zGAmXDl/byb/tUdR8rOhDu0NE6Mx4B1h6A41TXrwzCO+jN
+         Li/h+asHS5Nr1rhi2AONzPbjna+CMRkrWmCTTHnzg9JO+akdd0NoefktNTBEPGdEDr
+         s2ervREjzHLxk36fzFxxr616eUa5TTpiSN/aoYJw=
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Sender: amuvalentin@gmail.com
-Received: by 2002:a05:6504:3c4:0:0:0:0 with HTTP; Fri, 15 Oct 2021 03:56:18
- -0700 (PDT)
-From:   David <Nguyenrose247@gmail.com>
-Date:   Fri, 15 Oct 2021 11:56:18 +0100
-X-Google-Sender-Auth: _ndOXB3x4IiXegM3nGryiJWqyA4
-Message-ID: <CALoTmgeA3k4dZGZujs=VvZ0Su-KOnumSqCx+ZsrfRvVYyZ2X0g@mail.gmail.com>
-Subject: hi
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20211014151235.62671-1-colin.king@canonical.com>
+References: <20211014151235.62671-1-colin.king@canonical.com>
+Subject: Re: [PATCH] media: drivers: cx24113: remove redundant variable r
+From:   Kieran Bingham <kieran.bingham@ideasonboard.com>
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+To:     Colin King <colin.king@canonical.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org
+Date:   Fri, 15 Oct 2021 12:01:26 +0100
+Message-ID: <163429568660.4164224.1248800864545725818@Monstersaurus>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SEksDQpHb29kIGRheS4NCktpbmRseSBjb25maXJtIHRvIG1lIGlmIHRoaXMgaXMgeW91ciBjb3Jy
-ZWN0IGVtYWlsIEFkZHJlc3MgYW5kIGdldA0KYmFjayB0byBtZSBmb3Igb3VyIGludGVyZXN0Lg0K
-U2luY2VyZWx5LA0KRGF2aWRzDQoNCg0K7JWI64WV7ZWY7IS47JqULA0K7JWI64WV7ZWY7IS47JqU
-Lg0K7J206rKD7J20IOq3gO2VmOydmCDsnbTrqZTsnbwg7KO87IaM6rCAIOygle2Zle2VnOyngCDt
-mZXsnbjtlZjqs6Ag7Jqw66as7J2YIOq0gOyLrOydhCDsnITtlbQg7KCA7JeQ6rKMIO2ajOyLoO2V
-tCDso7zsi63si5zsmKQuDQrqsJDsgqztlanri4jri6QsDQrrjbDsnbTruZcNCg==
+Quoting Colin King (2021-10-14 16:12:35)
+> From: Colin Ian King <colin.king@canonical.com>
+>=20
+> Variable r is being assigned values but it is never being
+> used. The variable is redundant and can be removed.
+>=20
+
+Indeed, it gets re-assigned at line 385 as the first cx24113_readreg.
+
+
+Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+
+> Addresses-Coverity: ("Unused value")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  drivers/media/dvb-frontends/cx24113.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/media/dvb-frontends/cx24113.c b/drivers/media/dvb-fr=
+ontends/cx24113.c
+> index 60a9f70275f7..dd55d314bf9a 100644
+> --- a/drivers/media/dvb-frontends/cx24113.c
+> +++ b/drivers/media/dvb-frontends/cx24113.c
+> @@ -378,7 +378,7 @@ static void cx24113_set_nfr(struct cx24113_state *sta=
+te, u16 n, s32 f, u8 r)
+> =20
+>  static int cx24113_set_frequency(struct cx24113_state *state, u32 freque=
+ncy)
+>  {
+> -       u8 r =3D 1; /* or 2 */
+> +       u8 r;
+>         u16 n =3D 6;
+>         s32 f =3D 0;
+> =20
+> --=20
+> 2.32.0
+>
