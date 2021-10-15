@@ -2,123 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA31642F772
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 17:55:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A19EB42F775
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 17:57:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241045AbhJOP5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 11:57:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47394 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233273AbhJOP5b (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 11:57:31 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7698AC061570;
-        Fri, 15 Oct 2021 08:55:24 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1634313323;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sFrKPQRzDTKs0QNA4mzAX7Wpe5TO8YTE5o8WYqOKeDs=;
-        b=gijAJFHIcbUh9LlKhz+b8pZZHFCP4uYbKvBkMt2yaZSzUj9mnNfFbgXutfB5sgZvwlpbFK
-        brLdXbTaboyu9xuuT6rXSOowyLUBdH3/JOq/EP8OQMri9RQyaG6hHAytKesFsrF6P8XKrM
-        OG5Q5C5nI7NcuN3IwRGPlgfpk7CY4KNYieXHj8bRZzJV6gsZjNZDV3289/Jo6WXveOxU99
-        H5XU9Y/3D2x5+e1o6ByUKtt4azsRaIxCFeEUK44x/F7jfwBL9A/NuR9dEH3ZnK5aWzPzIB
-        BJnbXbme5143vkUD5DNTB8qCnS7xgrc31C5Mc59/40UvA+yLqy0VPpI5SXCfqg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1634313323;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sFrKPQRzDTKs0QNA4mzAX7Wpe5TO8YTE5o8WYqOKeDs=;
-        b=pSsHnrcLqmy+2ohuajOXale7osrdx/UQbalyx0Q6La/AG+Xq5YkKptrunxW9PcgrVUhBVG
-        1GZj3RWM2dyqjpCQ==
-To:     Andy Lutomirski <luto@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        the arch/x86 maintainers <x86@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
+        id S241067AbhJOP7M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 11:59:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42476 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233273AbhJOP7L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 11:59:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 90E0060E54;
+        Fri, 15 Oct 2021 15:57:04 +0000 (UTC)
+From:   Clark Williams <williams@redhat.com>
+Subject: [ANNOUNCE] 4.19.211-rt91
+Date:   Fri, 15 Oct 2021 15:55:57 -0000
+Message-ID: <163431335714.225589.2579717971596146895@puck.lan>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
         Steven Rostedt <rostedt@goodmis.org>,
-        linux-hardening@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        llvm@lists.linux.dev
-Subject: Re: [PATCH v5 03/15] linkage: Add DECLARE_NOT_CALLED_FROM_C
-In-Reply-To: <7377e6b9-7130-4c20-a0c8-16de4620c995@www.fastmail.com>
-References: <20211013181658.1020262-1-samitolvanen@google.com>
- <20211013181658.1020262-4-samitolvanen@google.com>
- <7377e6b9-7130-4c20-a0c8-16de4620c995@www.fastmail.com>
-Date:   Fri, 15 Oct 2021 17:55:22 +0200
-Message-ID: <8735p25llh.ffs@tglx>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        Thomas Gleixner <tglx@linutronix.de>,
+        Carsten Emde <C.Emde@osadl.org>,
+        John Kacur <jkacur@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Daniel Wagner <daniel.wagner@suse.com>,
+        Tom Zanussi <tom.zanussi@linux.intel.com>,
+        Clark Williams <williams@redhat.com>,
+        Pavel Machek <pavel@denx.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14 2021 at 19:51, Andy Lutomirski wrote:
-> On Wed, Oct 13, 2021, at 11:16 AM, Sami Tolvanen wrote:
->>=20
->> +/*
->> + * Declares a function not callable from C using an opaque type. Define=
-d as
->> + * an array to allow the address of the symbol to be taken without '&'.
->> + */
-> I=E2=80=99m not convinced that taking the address without using & is a
-> laudable goal.  The magical arrays-are-pointers-too behavior of C is a
-> mistake, not a delightful simplification.
+Hello RT-list!
 
->> +#ifndef DECLARE_NOT_CALLED_FROM_C
->> +#define DECLARE_NOT_CALLED_FROM_C(sym) \
->> +	extern const u8 sym[]
->> +#endif
->
+I'm pleased to announce the 4.19.211-rt91 stable release.
 
-> The relevant property of these symbols isn=E2=80=99t that they=E2=80=99re=
- not called
-> from C.  The relevant thing is that they are just and not objects of a
-> type that the programmer cares to tell the compiler about. (Or that
-> the compiler understands, for that matter. On a system with XO memory
-> or if they=E2=80=99re in a funny section, dereferencing them may fail.)
+You can get this release via the git tree at:
 
-I agree.
+  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
 
-> So I think we should use incomplete structs, which can=E2=80=99t be
-> dereferenced and will therefore be less error prone.
+  branch: v4.19-rt
+  Head SHA1: 3fe7f64cc252c2f300cd599554f909deb00e854a
 
-While being late to that bike shed painting party, I really have to ask
-the question _why_ can't the compiler provide an annotation for these
-kind of things which:
+Or to build 4.19.211-rt91 directly, the following patches should be applied:
 
-    1) Make the build fail when invoked directly
+  https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.19.tar.xz
 
-    2) Tell CFI that this is _NOT_ something it can understand
+  https://www.kernel.org/pub/linux/kernel/v4.x/patch-4.19.211.xz
 
--void clear_page_erms(void *page);
-+void __bikeshedme clear_page_erms(void *page);
+  https://www.kernel.org/pub/linux/kernel/projects/rt/4.19/patch-4.19.211-rt91.patch.xz
 
-That still tells me:
 
-    1) This is a function
-=20=20=20=20
-    2) It has a regular argument which is expected to be in RDI
+You can also build from 4.19.210-rt90 by applying the incremental patch:
 
-which even allows to do analyis of e.g. the alternative call which
-invokes that function.
+  https://www.kernel.org/pub/linux/kernel/projects/rt/4.19/incr/patch-4.19.210-rt90-rt91.patch.xz
 
-DECLARE_NOT_CALLED_FROM_C(clear_page_erms);
+Enjoy!
+Clark
 
-loses these properties and IMO it's a tasteless hack.
+Changes from v4.19.210-rt90:
+---
 
-Thanks,
+Andy Shevchenko (1):
+      ptp_pch: Load module automatically if ID matches
 
-        tglx
+Ben Hutchings (1):
+      Partially revert "usb: Kconfig: using select for USB_COMMON dependency"
 
+Clark Williams (2):
+      Merge tag 'v4.19.211' into v4.19-rt
+      Linux 4.19.211-rt91
+
+David Heidelberg (1):
+      ARM: dts: qcom: apq8064: use compatible which contains chipid
+
+Eric Dumazet (4):
+      net_sched: fix NULL deref in fifo_set_limit()
+      net: bridge: use nla_total_size_64bit() in br_get_linkxstats_size()
+      netlink: annotate data races around nlk->bound
+      rtnetlink: fix if_nlmsg_stats_size() under estimation
+
+Greg Kroah-Hartman (1):
+      Linux 4.19.211
+
+Jamie Iles (1):
+      i2c: acpi: fix resource leak in reconfiguration device addition
+
+Jan Beulich (1):
+      xen/privcmd: fix error handling in mmap-resource processing
+
+Jiri Benc (1):
+      i40e: fix endless loop under rtnl
+
+Johan Almbladh (1):
+      bpf, arm: Fix register clobbering in div/mod implementation
+
+Johan Hovold (2):
+      USB: cdc-acm: fix racy tty buffer accesses
+      USB: cdc-acm: fix break reporting
+
+Juergen Gross (1):
+      xen/balloon: fix cancelled balloon action
+
+Lukas Bulwahn (1):
+      x86/Kconfig: Correct reference to MWINCHIP3D
+
+Max Filippov (1):
+      xtensa: call irqchip_init only when CONFIG_USE_OF is selected
+
+Oleksij Rempel (1):
+      ARM: imx6: disable the GIC CPU interface before calling stby-poweroff sequence
+
+Pali Rohár (1):
+      powerpc/fsl/dts: Fix phy-connection-type for fm1mac3
+
+Pavel Skripkin (1):
+      phy: mdio: fix memory leak
+
+Piotr Krysiuk (1):
+      bpf, mips: Validate conditional branch offsets
+
+Roger Quadros (1):
+      ARM: dts: omap3430-sdp: Fix NAND device node
+
+Sean Anderson (1):
+      net: sfp: Fix typo in state machine debug string
+
+Sylwester Dziedziuch (1):
+      i40e: Fix freeing of uninitialized misc IRQ vector
+
+Tatsuhiko Yasumatsu (1):
+      bpf: Fix integer overflow in prealloc_elems_and_freelist()
+
+Trond Myklebust (1):
+      nfsd4: Handle the NFSv4 READDIR 'dircount' hint being zero
+
+Yang Yingliang (1):
+      drm/nouveau/debugfs: fix file release memory leak
+
+Zheng Liang (1):
+      ovl: fix missing negative dentry check in ovl_rename()
+---
+Makefile                                    |  2 +-
+ arch/arm/boot/dts/omap3430-sdp.dts          |  2 +-
+ arch/arm/boot/dts/qcom-apq8064.dtsi         |  3 +-
+ arch/arm/mach-imx/pm-imx6.c                 |  2 +
+ arch/arm/net/bpf_jit_32.c                   | 19 ++++++++++
+ arch/mips/net/bpf_jit.c                     | 57 ++++++++++++++++++++++-------
+ arch/powerpc/boot/dts/fsl/t1023rdb.dts      |  2 +-
+ arch/x86/Kconfig                            |  2 +-
+ arch/xtensa/kernel/irq.c                    |  2 +-
+ drivers/gpu/drm/nouveau/nouveau_debugfs.c   |  1 +
+ drivers/i2c/i2c-core-acpi.c                 |  1 +
+ drivers/net/ethernet/intel/i40e/i40e_main.c |  5 ++-
+ drivers/net/phy/mdio_bus.c                  |  7 ++++
+ drivers/net/phy/sfp.c                       |  2 +-
+ drivers/ptp/ptp_pch.c                       |  1 +
+ drivers/usb/Kconfig                         |  3 +-
+ drivers/usb/class/cdc-acm.c                 |  8 ++++
+ drivers/xen/balloon.c                       | 21 ++++++++---
+ drivers/xen/privcmd.c                       |  7 ++--
+ fs/nfsd/nfs4xdr.c                           | 19 ++++++----
+ fs/overlayfs/dir.c                          | 10 +++--
+ kernel/bpf/stackmap.c                       |  3 +-
+ localversion-rt                             |  2 +-
+ net/bridge/br_netlink.c                     |  2 +-
+ net/core/rtnetlink.c                        |  2 +-
+ net/netlink/af_netlink.c                    | 14 +++++--
+ net/sched/sch_fifo.c                        |  3 ++
+ 27 files changed, 148 insertions(+), 54 deletions(-)
+---
