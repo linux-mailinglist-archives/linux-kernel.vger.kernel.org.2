@@ -2,81 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C48242F4A0
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 16:00:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A0C842F480
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 15:57:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240216AbhJOOCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 10:02:39 -0400
-Received: from mslow1.mail.gandi.net ([217.70.178.240]:35095 "EHLO
-        mslow1.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239577AbhJOOCh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 10:02:37 -0400
-Received: from relay6-d.mail.gandi.net (unknown [217.70.183.198])
-        by mslow1.mail.gandi.net (Postfix) with ESMTP id A905CC2B9A;
-        Fri, 15 Oct 2021 13:57:00 +0000 (UTC)
-Received: (Authenticated sender: i.maximets@ovn.org)
-        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 57A8AC0007;
-        Fri, 15 Oct 2021 13:56:37 +0000 (UTC)
-Message-ID: <1d0a5e90-b878-61a1-99af-35702b72f2d9@ovn.org>
-Date:   Fri, 15 Oct 2021 15:56:36 +0200
+        id S240085AbhJON7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 09:59:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54044 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236490AbhJON7T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 09:59:19 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 090C56115C;
+        Fri, 15 Oct 2021 13:57:09 +0000 (UTC)
+Date:   Fri, 15 Oct 2021 09:57:04 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Ingo Molnar <mingo@redhat.com>, Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+Subject: Re: [PATCH] tracing: use %ps format string to print symbols
+Message-ID: <20211015095704.49a99859@gandalf.local.home>
+In-Reply-To: <20211015083447.760448-1-arnd@kernel.org>
+References: <20211015083447.760448-1-arnd@kernel.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Cc:     i.maximets@ovn.org, Nicolas Dichtel <nicolas.dichtel@6wind.com>
-Subject: Re: [ovs-dev] [PATCH net-next v7] net: openvswitch: IPv6: Add IPv6
- extension header support
-Content-Language: en-US
-To:     Toms Atteka <cpp.code.lv@gmail.com>, netdev@vger.kernel.org,
-        pshelar@ovn.org, davem@davemloft.net, kuba@kernel.org,
-        dev@openvswitch.org, linux-kernel@vger.kernel.org
-References: <20211014211828.291213-1-cpp.code.lv@gmail.com>
-From:   Ilya Maximets <i.maximets@ovn.org>
-In-Reply-To: <20211014211828.291213-1-cpp.code.lv@gmail.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/14/21 23:18, Toms Atteka wrote:
-> This change adds a new OpenFlow field OFPXMT_OFB_IPV6_EXTHDR and
-> packets can be filtered using ipv6_ext flag.
+On Fri, 15 Oct 2021 10:34:31 +0200
+Arnd Bergmann <arnd@kernel.org> wrote:
+
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> Signed-off-by: Toms Atteka <cpp.code.lv@gmail.com>
+> clang started warning about excessive stack usage in
+> hist_trigger_print_key()
+> 
+> kernel/trace/trace_events_hist.c:4723:13: error: stack frame size (1336) exceeds limit (1024) in function 'hist_trigger_print_key' [-Werror,-Wframe-larger-than]
+> 
+> The problem is that there are two 512-byte arrays on the stack if
+> hist_trigger_stacktrace_print() gets inlined. I don't think this has
+> changed in the past five years, but something probably changed the
+> inlining decisions made by the compiler, so the problem is now made
+> more obvious.
+
+Could we just add "noinline" attribute to that function?
+
+> 
+> Rather than printing the symbol names into separate buffers, it
+> seems we can simply use the special %ps format string modifier
+> to print the pointers symbolically and get rid of both buffers.
+> 
+> Fixes: 69a0200c2e25 ("tracing: Add hist trigger support for stacktraces as keys")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 > ---
->  include/uapi/linux/openvswitch.h |  16 +++-
->  net/openvswitch/flow.c           | 140 +++++++++++++++++++++++++++++++
->  net/openvswitch/flow.h           |  14 ++++
->  net/openvswitch/flow_netlink.c   |  24 +++++-
->  4 files changed, 192 insertions(+), 2 deletions(-)
+> I'm not sure if the %ps format string actually works as intended
+> with the explicit length modifier, it would be good if someone
+> could try this out before applying. Would it be ok to remove the
+> length modifier otherwise?
+
+I believe that shows a "table" format. So the length modifier is required.
+
+> ---
+>  kernel/trace/trace_events_hist.c | 15 +++++----------
+>  1 file changed, 5 insertions(+), 10 deletions(-)
 > 
-> diff --git a/include/uapi/linux/openvswitch.h b/include/uapi/linux/openvswitch.h
-> index a87b44cd5590..763adf3dce23 100644
-> --- a/include/uapi/linux/openvswitch.h
-> +++ b/include/uapi/linux/openvswitch.h
-> @@ -344,8 +344,17 @@ enum ovs_key_attr {
->  	OVS_KEY_ATTR_NSH,       /* Nested set of ovs_nsh_key_* */
+> diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
+> index a6061a69aa84..640c79898b51 100644
+> --- a/kernel/trace/trace_events_hist.c
+> +++ b/kernel/trace/trace_events_hist.c
+> @@ -4706,7 +4706,6 @@ static void hist_trigger_stacktrace_print(struct seq_file *m,
+>  					  unsigned long *stacktrace_entries,
+>  					  unsigned int max_entries)
+>  {
+> -	char str[KSYM_SYMBOL_LEN];
+>  	unsigned int spaces = 8;
+>  	unsigned int i;
 >  
->  #ifdef __KERNEL__
-> -	OVS_KEY_ATTR_TUNNEL_INFO,  /* struct ip_tunnel_info */
-> +	OVS_KEY_ATTR_TUNNEL_INFO,/* struct ip_tunnel_info */
-> +	__OVS_KEY_ATTR_PADDING_1,/* Padding to match field count with ovs */
->  #endif
-> +
-> +#ifndef __KERNEL__
-> +	__OVS_KEY_ATTR_PADDING_2,/* Padding to match field count with ovs */
-> +	__OVS_KEY_ATTR_PADDING_3,/* Padding to match field count with ovs */
-> +#endif
-> +
-> +	OVS_KEY_ATTR_IPV6_EXTHDRS,  /* struct ovs_key_ipv6_exthdr */
-> +
->  	__OVS_KEY_ATTR_MAX
->  };
+> @@ -4715,8 +4714,7 @@ static void hist_trigger_stacktrace_print(struct seq_file *m,
+>  			return;
+>  
+>  		seq_printf(m, "%*c", 1 + spaces, ' ');
+> -		sprint_symbol(str, stacktrace_entries[i]);
+> -		seq_printf(m, "%s\n", str);
+> +		seq_printf(m, "%pS\n", stacktrace_entries[i]);
+>  	}
+>  }
+>  
+> @@ -4726,7 +4724,6 @@ static void hist_trigger_print_key(struct seq_file *m,
+>  				   struct tracing_map_elt *elt)
+>  {
+>  	struct hist_field *key_field;
+> -	char str[KSYM_SYMBOL_LEN];
+>  	bool multiline = false;
+>  	const char *field_name;
+>  	unsigned int i;
+> @@ -4747,14 +4744,12 @@ static void hist_trigger_print_key(struct seq_file *m,
+>  			seq_printf(m, "%s: %llx", field_name, uval);
+>  		} else if (key_field->flags & HIST_FIELD_FL_SYM) {
+>  			uval = *(u64 *)(key + key_field->offset);
+> -			sprint_symbol_no_offset(str, uval);
+> -			seq_printf(m, "%s: [%llx] %-45s", field_name,
+> -				   uval, str);
+> +			seq_printf(m, "%s: [%llx] %-45ps", field_name,
+> +				   uval, (void *)uval);
+>  		} else if (key_field->flags & HIST_FIELD_FL_SYM_OFFSET) {
+>  			uval = *(u64 *)(key + key_field->offset);
+> -			sprint_symbol(str, uval);
+> -			seq_printf(m, "%s: [%llx] %-55s", field_name,
+> -				   uval, str);
+> +			seq_printf(m, "%s: [%llx] %-55ps", field_name,
+> +				   uval, (void *)uval);
 
-Not a full review, but, I think, that we should not add paddings, and
-define OVS_KEY_ATTR_IPV6_EXTHDRS before the OVS_KEY_ATTR_TUNNEL_INFO
-instead.  See my comments for v6:
-  https://lore.kernel.org/netdev/8c4ee3e8-0400-ee6e-b12c-327806f26dae@ovn.org/T/#u
+The above requires "Ps" not "ps".
 
-Best regards, Ilya Maximets.
+But other than that, I could test if this doesn't change the formatting and
+functionality at all.
+
+-- Steve
+
+
+>  		} else if (key_field->flags & HIST_FIELD_FL_EXECNAME) {
+>  			struct hist_elt_data *elt_data = elt->private_data;
+>  			char *comm;
+
