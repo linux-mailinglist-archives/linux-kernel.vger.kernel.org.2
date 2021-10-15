@@ -2,101 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61EC842FA53
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 19:33:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DC0142FA54
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 19:34:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237901AbhJORfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 13:35:22 -0400
-Received: from relay1-d.mail.gandi.net ([217.70.183.193]:35925 "EHLO
-        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232596AbhJORfU (ORCPT
+        id S234881AbhJORgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 13:36:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43012 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232596AbhJORgL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 13:35:20 -0400
-Received: (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id A7080240008;
-        Fri, 15 Oct 2021 17:33:10 +0000 (UTC)
-Date:   Fri, 15 Oct 2021 19:33:10 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Luca Ceresoli <luca@lucaceresoli.net>
-Cc:     linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
-        linux-rtc@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        Chiwoong Byun <woong.byun@samsung.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>
-Subject: Re: [PATCH 4/8] rtc: max77686: remove useless variable
-Message-ID: <YWm7VpFY3LABdKmn@piout.net>
-References: <20211011155615.257529-1-luca@lucaceresoli.net>
- <20211011155615.257529-5-luca@lucaceresoli.net>
+        Fri, 15 Oct 2021 13:36:11 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D42F0C061570
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 10:34:04 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id g36so28005014lfv.3
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 10:34:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=2hjBOvKy6xDlDiNJhW19TOyI4tkya8JrKkq1DPtskBE=;
+        b=PPJ8oC+NOgUO7AJaZAU9oaPGEWQNCKG3btar0K7YPO0GLkb4Y/SjZRsJ7zDMW2BWGU
+         B87xeGg/6pJ6rrBZ9M75M8g+pwchnTq/6F4kYdyFUUtuWucmxUcZ9AGfx/6CESgxxR6Y
+         5x8Js7R7ncgxcI+p7vpRgAf6kvR9uaqsZuandFHA5hbgRjK7L1+Pck5W+DmsrbeApVV5
+         mV38sv8gUESwYZLvIF96VLlUFTna8AhqHN14pHatVsYLgZGe7L4RXIfoQCpJuCI8pwSz
+         YJE+rFYCx41SXhGCNu9DL8yI5BIO/mIw9bKeQ2noejlY9AKeoJzFPJ9xM0Z8JJu/krFv
+         OdjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=2hjBOvKy6xDlDiNJhW19TOyI4tkya8JrKkq1DPtskBE=;
+        b=XhnmEOw2eH1cUlyW7irHbQr3/32aPwdnI+ck6K8b400HA7PXwGvUt6HzR1x4iMK6/f
+         6/uDb9BWA8YTia3+dw8mBowbWqpb1rGib1s08NJZiZe3b6OmavN3s4Ih12pulvKcR5KJ
+         7zkRmgoyBvdinjkWLb7XMWsTBEJUxba39SAVVdeb9clxbxswYI8bE2nJoPoll+sxrwP1
+         nhO5jzrxxagmnB9HJdFotGGLqKBGCxP/Tx/o4FnuGQTbkcum+OLjHMMPf7c51cL6LwcZ
+         1SQ4Wk3QeYkRqmuchOAh62yo22S+BCFZR5VGDTz/gmDUWOaC8SSPyz35zut8HwBtedVX
+         pcEA==
+X-Gm-Message-State: AOAM531VWuFbmLn4KRvD9iMOwY77zm6fyZzSPTNLwLsmTkv8HFeTZosL
+        g5YIrNjo6E+G1HO6NM89YB2PlTHCUtXhSU1J39Pvuw==
+X-Google-Smtp-Source: ABdhPJz48bR/OErLjmNqJCUhE0bJJVmOXek8a9WZdzJ4XHEU0r3HXuJx7PPoFlRocyJR9vCWVmRHh8+4ebz4+oiFL6I=
+X-Received: by 2002:a05:6512:b0a:: with SMTP id w10mr4483529lfu.240.1634319242989;
+ Fri, 15 Oct 2021 10:34:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211011155615.257529-5-luca@lucaceresoli.net>
+References: <20211015090530.2774079-1-linux@rasmusvillemoes.dk>
+In-Reply-To: <20211015090530.2774079-1-linux@rasmusvillemoes.dk>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Fri, 15 Oct 2021 10:33:50 -0700
+Message-ID: <CAKwvOdm6LUFBC=as-9fTxYM=H2U=JuzquanFYwasn2Vu3TgsxA@mail.gmail.com>
+Subject: Re: [PATCH] linux/container_of.h: switch to static_assert
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     akpm@linux-foundation.org,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/10/2021 17:56:11+0200, Luca Ceresoli wrote:
->> rtc_24hr_mode is set to 1 in max77686_rtc_probe()->max77686_rtc_init_reg()
-> before being read and is never set back to 0 again. As such, it is de facto
-> a constant.
-> 
-> Remove the variable and the unreachable code.
-> 
-> Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
+On Fri, Oct 15, 2021 at 2:05 AM Rasmus Villemoes
+<linux@rasmusvillemoes.dk> wrote:
+>
+> _Static_assert() is evaluated already in the compiler's frontend, and
+> gives a somehat more to-the-point error, compared to the BUILD_BUG_ON
+> macro, which only fires after the optimizer has had a chance to
+> eliminate calls to functions marked with
+> __attribute__((error)). In theory, this might make builds a tiny bit
+> faster.
+>
+> There's also a little less gunk in the error message emitted:
+>
+> lib/sort.c: In function =E2=80=98foo=E2=80=99:
+> ./include/linux/build_bug.h:78:41: error: static assertion failed: "point=
+er type mismatch in container_of()"
+>    78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
+>
+> compared to
+>
+> lib/sort.c: In function =E2=80=98foo=E2=80=99:
+> ././include/linux/compiler_types.h:322:38: error: call to =E2=80=98__comp=
+iletime_assert_2=E2=80=99 declared with attribute error: pointer type misma=
+tch in container_of()
+>   322 |  _compiletime_assert(condition, msg, __compiletime_assert_, __COU=
+NTER__)
+>
+> While at it, fix the copy-pasto in container_of_safe().
+>
+> Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+
+Thanks for the patch!
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+
 > ---
->  drivers/rtc/rtc-max77686.c | 11 +----------
->  1 file changed, 1 insertion(+), 10 deletions(-)
-> 
-> diff --git a/drivers/rtc/rtc-max77686.c b/drivers/rtc/rtc-max77686.c
-> index 7e765207f28e..9901c596998a 100644
-> --- a/drivers/rtc/rtc-max77686.c
-> +++ b/drivers/rtc/rtc-max77686.c
-> @@ -99,7 +99,6 @@ struct max77686_rtc_info {
->  
->  	int rtc_irq;
->  	int virq;
-> -	int rtc_24hr_mode;
->  };
->  
->  enum MAX77686_RTC_OP {
-> @@ -278,13 +277,7 @@ static void max77686_rtc_data_to_tm(u8 *data, struct rtc_time *tm,
->  
->  	tm->tm_sec = data[RTC_SEC] & mask;
->  	tm->tm_min = data[RTC_MIN] & mask;
-> -	if (info->rtc_24hr_mode) {
-> -		tm->tm_hour = data[RTC_HOUR] & 0x1f;
-> -	} else {
-> -		tm->tm_hour = data[RTC_HOUR] & 0x0f;
-> -		if (data[RTC_HOUR] & HOUR_PM_MASK)
+> akpm: This is obviously on top of Andy's kernel.h splitup series, so
+> should go along with those if acked.
+>
+>  include/linux/container_of.h | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+>
+> diff --git a/include/linux/container_of.h b/include/linux/container_of.h
+> index dd56019838c6..2f4944b791b8 100644
+> --- a/include/linux/container_of.h
+> +++ b/include/linux/container_of.h
+> @@ -16,9 +16,9 @@
+>   */
+>  #define container_of(ptr, type, member) ({                             \
+>         void *__mptr =3D (void *)(ptr);                                  =
+ \
+> -       BUILD_BUG_ON_MSG(!__same_type(*(ptr), ((type *)0)->member) &&   \
+> -                        !__same_type(*(ptr), void),                    \
+> -                        "pointer type mismatch in container_of()");    \
+> +       static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
+> +                     __same_type(*(ptr), void),                        \
+> +                     "pointer type mismatch in container_of()");       \
+>         ((type *)(__mptr - offsetof(type, member))); })
+>
+>  /**
+> @@ -31,9 +31,9 @@
+>   */
+>  #define container_of_safe(ptr, type, member) ({                         =
+       \
+>         void *__mptr =3D (void *)(ptr);                                  =
+ \
+> -       BUILD_BUG_ON_MSG(!__same_type(*(ptr), ((type *)0)->member) &&   \
+> -                        !__same_type(*(ptr), void),                    \
+> -                        "pointer type mismatch in container_of()");    \
+> +       static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
+> +                     __same_type(*(ptr), void),                        \
+> +                     "pointer type mismatch in container_of_safe()");  \
+>         IS_ERR_OR_NULL(__mptr) ? ERR_CAST(__mptr) :                     \
+>                 ((type *)(__mptr - offsetof(type, member))); })
+>
+> --
+> 2.31.1
+>
 
-So I guess HOUR_PM_SHIFT and HOUR_PM_MASK can also be removed
 
-> -			tm->tm_hour += 12;
-> -	}
-> +	tm->tm_hour = data[RTC_HOUR] & 0x1f;
->  
->  	/* Only a single bit is set in data[], so fls() would be equivalent */
->  	tm->tm_wday = ffs(data[RTC_WEEKDAY] & mask) - 1;
-> @@ -662,8 +655,6 @@ static int max77686_rtc_init_reg(struct max77686_rtc_info *info)
->  	data[0] = (1 << BCD_EN_SHIFT) | (1 << MODEL24_SHIFT);
->  	data[1] = (0 << BCD_EN_SHIFT) | (1 << MODEL24_SHIFT);
->  
-> -	info->rtc_24hr_mode = 1;
-> -
->  	ret = regmap_bulk_write(info->rtc_regmap,
->  				info->drv_data->map[REG_RTC_CONTROLM],
->  				data, ARRAY_SIZE(data));
-> -- 
-> 2.25.1
-> 
-
--- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+--=20
+Thanks,
+~Nick Desaulniers
