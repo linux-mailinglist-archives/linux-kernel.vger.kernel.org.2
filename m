@@ -2,110 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35EAC42FA3E
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 19:28:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B01F42FA42
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 19:29:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234875AbhJORa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 13:30:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41592 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234715AbhJORaW (ORCPT
+        id S237323AbhJORbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 13:31:39 -0400
+Received: from relay11.mail.gandi.net ([217.70.178.231]:33099 "EHLO
+        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234715AbhJORbi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 13:30:22 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FD62C061762
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 10:28:14 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id d13-20020a17090ad3cd00b0019e746f7bd4so9842646pjw.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 10:28:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DP6t/NXe90slXcP72oHx/RcWeNEoJHh1SU/+94tdSzU=;
-        b=Rsq3M9IMqXWvFbQX4QPOwwS2GyHkNiaDKcXMCoIIDcUpfFRjPkpPagnj8H7RM71dvS
-         B/WyJMpAXqYJH0QspZ4spN/eMlP660dhZXJZ82wIznR4E3UHwWn3BGv8zj2ShH9v+Jvx
-         nA4HntP1f2Q6X4bvioWI/O++E9+cdXbpdf17ocQHFXttf0HMB7mB71nWHMuCnjZj/snR
-         ObWYV+kfnUlM9Pja8m3xvmkxYfK0Agb+IHxkN8iU/4aHnZWYTP1DiN6Cx7R6cmtMIior
-         2rv8DMeqhKfApBP2mzIqzyj/7m9yPudqNWIsRQ5wSm5w3a7oss+jdvkN4sSzn/++bMmq
-         EwgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DP6t/NXe90slXcP72oHx/RcWeNEoJHh1SU/+94tdSzU=;
-        b=AD/Qea8hjyd5sDXpt4VnKb0MPEkcgntbeeJokPDQ5M8P0XndLxTfQ4sfCUEAtMz1M/
-         IAXKZjTh/GVwHc7pfYXBLNGo5GJhgm78JrSlsYxWFzE8Qd0xu6pJRZiT5UVVKwQon08s
-         VJioa0B3wPQzjy0eJ37Zd7ETHgCaMY5wmn2JY/wE+sBcr+Sq/+kVxMDZuBOUH7ObqMLn
-         FIShVjSwD2LbkmMm/hdMHcOpgJzSoJazH5JZdLx2RYvi1f0+1qzsJ1DWNZXpDRFeKPPP
-         vJNgbO16eCdEa0mKUB0+M/SOp3xTyrHjRV+6COO7sRGia41QtG/lUpHTumvsy64V4WDH
-         iM9w==
-X-Gm-Message-State: AOAM531FeXhKq0R4BhQiFvsaL/HI2hvSvetGNyw09GtQhKnvhkE/n4ST
-        zYEViEH+SPWjBabJ5Xph/2PmJw==
-X-Google-Smtp-Source: ABdhPJzzdKd8TVQsTd0uv0BYhv6ultDEDftxJbAg01g5dSdgsQ5uIIUiG18b1X8cn3FJ4SWeSN+roA==
-X-Received: by 2002:a17:902:9a83:b0:13e:5b1e:aa40 with SMTP id w3-20020a1709029a8300b0013e5b1eaa40mr12278810plp.41.1634318893792;
-        Fri, 15 Oct 2021 10:28:13 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id p18sm5107067pgk.28.2021.10.15.10.28.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Oct 2021 10:28:13 -0700 (PDT)
-Date:   Fri, 15 Oct 2021 17:28:09 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        syzbot+e0de2333cbf95ea473e8@syzkaller.appspotmail.com
-Subject: Re: [PATCH] KVM: replace large kvmalloc allocation with vmalloc
-Message-ID: <YWm6KcNvaHDMhfsG@google.com>
-References: <20211015165519.135670-1-pbonzini@redhat.com>
+        Fri, 15 Oct 2021 13:31:38 -0400
+Received: (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay11.mail.gandi.net (Postfix) with ESMTPSA id BE204100009;
+        Fri, 15 Oct 2021 17:29:28 +0000 (UTC)
+Date:   Fri, 15 Oct 2021 19:29:28 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Luca Ceresoli <luca@lucaceresoli.net>
+Cc:     linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
+        linux-rtc@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        Chiwoong Byun <woong.byun@samsung.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>
+Subject: Re: [PATCH 2/8] rtc: max77686: convert comments to kernel-doc format
+Message-ID: <YWm6eHTmG63smTZz@piout.net>
+References: <20211011155615.257529-1-luca@lucaceresoli.net>
+ <20211011155615.257529-3-luca@lucaceresoli.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211015165519.135670-1-pbonzini@redhat.com>
+In-Reply-To: <20211011155615.257529-3-luca@lucaceresoli.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 15, 2021, Paolo Bonzini wrote:
-> diff --git a/arch/x86/kvm/mmu/page_track.c b/arch/x86/kvm/mmu/page_track.c
-> index 21427e84a82e..0d9842472288 100644
-> --- a/arch/x86/kvm/mmu/page_track.c
-> +++ b/arch/x86/kvm/mmu/page_track.c
-> @@ -36,8 +36,7 @@ int kvm_page_track_create_memslot(struct kvm_memory_slot *slot,
->  
->  	for (i = 0; i < KVM_PAGE_TRACK_MAX; i++) {
->  		slot->arch.gfn_track[i] =
-> -			kvcalloc(npages, sizeof(*slot->arch.gfn_track[i]),
-> -				 GFP_KERNEL_ACCOUNT);
-> +			vcalloc(npages, sizeof(*slot->arch.gfn_track[i]));
+On 11/10/2021 17:56:09+0200, Luca Ceresoli wrote:
+> Convert the comments documenting this struct to kernel-doc format for
+> standardization and readability.
+> 
+> Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
+Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
 
-This loses the memcg accounting, which is somewhat important for the theoretical
-4MiB allocations :-)
+> ---
+>  drivers/rtc/rtc-max77686.c | 21 ++++++++++++---------
+>  1 file changed, 12 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/rtc/rtc-max77686.c b/drivers/rtc/rtc-max77686.c
+> index eae7cb9faf1e..bac52cdea97d 100644
+> --- a/drivers/rtc/rtc-max77686.c
+> +++ b/drivers/rtc/rtc-max77686.c
+> @@ -61,24 +61,27 @@ enum {
+>  	RTC_NR_TIME
+>  };
+>  
+> +/**
+> + * struct max77686_rtc_driver_data - model-specific configuration
+> + * @delay: Minimum usecs needed for a RTC update
+> + * @mask: Mask used to read RTC registers value
+> + * @map: Registers offset to I2C addresses map
+> + * @alarm_enable_reg: Has a separate alarm enable register?
+> + * @rtc_i2c_addr: I2C address for RTC block
+> + * @rtc_irq_from_platform: RTC interrupt via platform resource
+> + * @alarm_pending_status_reg: Pending alarm status register
+> + * @rtc_irq_chip: RTC IRQ CHIP for regmap
+> + * @regmap_config: regmap configuration for the chip
+> + */
+>  struct max77686_rtc_driver_data {
+> -	/* Minimum usecs needed for a RTC update */
+>  	unsigned long		delay;
+> -	/* Mask used to read RTC registers value */
+>  	u8			mask;
+> -	/* Registers offset to I2C addresses map */
+>  	const unsigned int	*map;
+> -	/* Has a separate alarm enable register? */
+>  	bool			alarm_enable_reg;
+> -	/* I2C address for RTC block */
+>  	int			rtc_i2c_addr;
+> -	/* RTC interrupt via platform resource */
+>  	bool			rtc_irq_from_platform;
+> -	/* Pending alarm status register */
+>  	int			alarm_pending_status_reg;
+> -	/* RTC IRQ CHIP for regmap */
+>  	const struct regmap_irq_chip *rtc_irq_chip;
+> -	/* regmap configuration for the chip */
+>  	const struct regmap_config *regmap_config;
+>  };
+>  
+> -- 
+> 2.25.1
+> 
 
-Maybe split out the introduction of vcalloc() to a separate patch (or two) and
-introduce additional helpers to allow passing in gfp_t to e.g. __vzalloc()?
-
->  		if (!slot->arch.gfn_track[i])
->  			goto track_free;
->  	}
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index aabd3a2ec1bc..07f5760ea30c 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -11394,7 +11394,7 @@ static int memslot_rmap_alloc(struct kvm_memory_slot *slot,
->  
->  		WARN_ON(slot->arch.rmap[i]);
->  
-> -		slot->arch.rmap[i] = kvcalloc(lpages, sz, GFP_KERNEL_ACCOUNT);
-> +		slot->arch.rmap[i] = vcalloc(lpages, sz);
->  		if (!slot->arch.rmap[i]) {
->  			memslot_rmap_free(slot);
->  			return -ENOMEM;
-> @@ -11475,7 +11475,7 @@ static int kvm_alloc_memslot_metadata(struct kvm *kvm,
->  
->  		lpages = __kvm_mmu_slot_lpages(slot, npages, level);
->  
-> -		linfo = kvcalloc(lpages, sizeof(*linfo), GFP_KERNEL_ACCOUNT);
-> +		linfo = vcalloc(lpages, sizeof(*linfo));
->  		if (!linfo)
->  			goto out_free;
-
-All of the associated free paths should be converted to vfree().
+-- 
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
