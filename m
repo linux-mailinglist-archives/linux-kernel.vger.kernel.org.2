@@ -2,88 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE14042F1BD
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 15:08:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1ACC42F1BA
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 15:08:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239261AbhJONKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 09:10:32 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:44558 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239256AbhJONK3 (ORCPT
+        id S239251AbhJONKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 09:10:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36258 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236523AbhJONKX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 09:10:29 -0400
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19FCx1Tm007385;
-        Fri, 15 Oct 2021 13:08:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=corp-2021-07-09; bh=5HiMwcak6Fmpj6WRmUR1Pdxweyd3dBzOlejvpHt0vww=;
- b=aPt0R47T/QHcDyY/4nPD4RXQJkWP8+nnnw+YDjgjWjMxFkM2s9unYkPxJRRku38gB/pM
- 9tVkcSoh9yoBAZHIccuUMrbIr1JzkrWPgKnzxHl92bIR3t47XHjec+Fo+J9IivKmJ+8E
- msjVuqFHVP+fxMV4VAFUeKSaRzWYKqgKIFYYuRuW1+V4HzzTERaegEj87BFyI1teflHQ
- nD63S5hBIgOXTeuO5KqimlLDDoyV4ZMXueqJYSB3zFBAY1mFYlcVyi6FE9G7tpCDgJ1a
- B4ohnTPt4by4urYbzJrq/oCYjS4aoXkHB878KJccqMD532CwJ1fW44w0zMq8Z0fDFFY1 5A== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3bpfsyrtg9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 15 Oct 2021 13:08:18 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 19FD4sWa005247;
-        Fri, 15 Oct 2021 13:08:17 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3020.oracle.com with ESMTP id 3bmae46k0y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 15 Oct 2021 13:08:17 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 19FD8G58020291;
-        Fri, 15 Oct 2021 13:08:16 GMT
-Received: from t460.home (dhcp-10-175-9-30.vpn.oracle.com [10.175.9.30])
-        by aserp3020.oracle.com with ESMTP id 3bmae46jxq-1;
-        Fri, 15 Oct 2021 13:08:16 +0000
-From:   Vegard Nossum <vegard.nossum@oracle.com>
-To:     Woojung Huh <woojung.huh@microchip.com>,
-        UNGLinuxDriver@microchip.com, Jakub Kicinski <kuba@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vegard Nossum <vegard.nossum@oracle.com>
-Subject: [PATCH] lan78xx: select CRC32
-Date:   Fri, 15 Oct 2021 15:07:54 +0200
-Message-Id: <20211015130754.12283-1-vegard.nossum@oracle.com>
-X-Mailer: git-send-email 2.23.0.718.g5ad94255a8
+        Fri, 15 Oct 2021 09:10:23 -0400
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64313C061570
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 06:08:17 -0700 (PDT)
+Received: by mail-io1-xd2d.google.com with SMTP id x1so7614386iof.7
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 06:08:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BKgbBbllKYLOnYYBWfUPT+0UJFGXr6hxe1bIf87m+Wo=;
+        b=SoNpANbU5l3QtOW/vGGOLfrraUHtPPFJHwbst3D088WlVHAwDQjXeAQOCBNympFuKB
+         9gBQ8xWQQrbimJRhzJUQ3Ch0P7Om/vBIS/Pu+CCde7f2dawgpCWb4VH1c8gvnbW7TUz1
+         uB5XbS1uNj5KY4pLVxEdSiqywlTSNwgUv4GVJTVE2/4tzVbks8fw/bUPspU4fPRs64zA
+         FejgjqEYfiTblKpKTRDNuStXNG1FMjHGo7bIIPIM5CQ0Jl9NCqmihcjL/taeZnl8Ls+9
+         XohSn/zfQK1/REUxttESjLCYspoGymF3dxq00NZ0w53mj28RB8opkG+Ct3TVrR71ffei
+         vE4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BKgbBbllKYLOnYYBWfUPT+0UJFGXr6hxe1bIf87m+Wo=;
+        b=YgJaijUKjfxmcEaSu0GmK7X2Xgh58L3QNo52zDbLEZvmlY9Ct69ITNKRbjZEclELTM
+         mu0x145ezwpHNHwoqxNSggGlx3IzBuZinOwUFzrT3kBiE4noFFSwzqSXFLu9aHnQc7tE
+         IUhjVpY4175ejEtvlR1ZyhMsP1gdjFtXkKOzx2Uv6e4adPweoD25IXC2sfQNgcHLyA4k
+         FjdPww5QIS7I380vKdMqsd75Cvfw2hnoepoQJ3NI1ThJPu1xCASsYnOfSjzZIfrFGDD+
+         0FIH9FkClC636Z+mniKJWGuex+BfHHHOC2Ag26+bX5x+0M7sRP6F7FXbk1rHzJh+h1s5
+         g/9A==
+X-Gm-Message-State: AOAM531SqDwmlhJcdN5VC3frLvma2rOG/Bna7ODaB4A9lqUH7oG2H60L
+        8IDwk0xXuUNR5WVRuS+gDROC1lTF82CITPsKAWg=
+X-Google-Smtp-Source: ABdhPJwEmywvJIgAYSX/r8WesMxLQwdryjCg5hg6VeZMshC9h06xocgocnLZSxPO3Zi3lh4y5mOek8ju9Tia6SX7A7Y=
+X-Received: by 2002:a5d:9d56:: with SMTP id k22mr3555793iok.177.1634303296843;
+ Fri, 15 Oct 2021 06:08:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-ORIG-GUID: oft2zsSFztGteDHkGwKZWiravcqIXUYm
-X-Proofpoint-GUID: oft2zsSFztGteDHkGwKZWiravcqIXUYm
+References: <20211015090530.2774079-1-linux@rasmusvillemoes.dk>
+In-Reply-To: <20211015090530.2774079-1-linux@rasmusvillemoes.dk>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Fri, 15 Oct 2021 15:08:05 +0200
+Message-ID: <CANiq72mG2dX++A9S9+ycS-67rbkhFgF7B9wgEEpOoBKYpgPAkg@mail.gmail.com>
+Subject: Re: [PATCH] linux/container_of.h: switch to static_assert
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following build/link error by adding a dependency on the CRC32
-routines:
+On Fri, Oct 15, 2021 at 11:05 AM Rasmus Villemoes
+<linux@rasmusvillemoes.dk> wrote:
+>
+> _Static_assert() is evaluated already in the compiler's frontend, and
+> gives a somehat more to-the-point error, compared to the BUILD_BUG_ON
+> macro, which only fires after the optimizer has had a chance to
+> eliminate calls to functions marked with
+> __attribute__((error)). In theory, this might make builds a tiny bit
+> faster.
 
-  ld: drivers/net/usb/lan78xx.o: in function `lan78xx_set_multicast':
-  lan78xx.c:(.text+0x48cf): undefined reference to `crc32_le'
+Thanks for this! Very much in favor!
 
-The actual use of crc32_le() comes indirectly through ether_crc().
+Reviewed-by: Miguel Ojeda <ojeda@kernel.org>
 
-Fixes: 55d7de9de6c30 ("Microchip's LAN7800 family USB 2/3 to 10/100/1000 Ethernet device driver")
-Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
----
- drivers/net/usb/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+Perhaps Andrew may want to add a link to the related discussion
+thread: https://lore.kernel.org/lkml/20211014132331.GA4811@kernel.org/T/
 
-diff --git a/drivers/net/usb/Kconfig b/drivers/net/usb/Kconfig
-index f87f175033731..b554054a7560a 100644
---- a/drivers/net/usb/Kconfig
-+++ b/drivers/net/usb/Kconfig
-@@ -117,6 +117,7 @@ config USB_LAN78XX
- 	select PHYLIB
- 	select MICROCHIP_PHY
- 	select FIXED_PHY
-+	select CRC32
- 	help
- 	  This option adds support for Microchip LAN78XX based USB 2
- 	  & USB 3 10/100/1000 Ethernet adapters.
--- 
-2.23.0.718.g5ad94255a8
-
+Cheers,
+Miguel
