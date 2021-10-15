@@ -2,116 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3174642EABF
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 09:56:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5983F42EAC9
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 09:57:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236428AbhJOH6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 03:58:52 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:48651 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236397AbhJOH6v (ORCPT
+        id S236362AbhJOH7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 03:59:40 -0400
+Received: from mail-ua1-f44.google.com ([209.85.222.44]:35547 "EHLO
+        mail-ua1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234653AbhJOH7j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 03:58:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1634284605; x=1665820605;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=BGy4nKkFSUYhNDse2rH6kKGMeEkum5mhKIYnkWkpkE8=;
-  b=waztTigSx7/gmIrbuachBcpRhn3P2/mpGtk1ec10SwZiyMCOoJMKuBHE
-   zqgXhawW4cpbXF5ni0NGa2GnvKGdhqC2k5NDlSD6DMxzXf+4VN55/CC17
-   kVI6FYWPYjtQLo30+Mh2z4AbRVDYkZHzzdNRfeW4izOLX22U3R6aH3tU6
-   DLvSFqSAHyzwPmnu8Q/TDp8mvQmnmc8z0iSe0aVHxWzLLRtYGBDQhtvAs
-   MmMxWFN1HCqwzWeypYnbbNEFCqZG3pabmz2Ril7U8g14og65Yxyz/dcNS
-   iADKkvX7Z9NA97tq5MIKNIQKp9ATmGe4v3COpeOsAg2R/CiVXR/M7C07F
-   Q==;
-IronPort-SDR: wbQTdL9+1lsQc4C8EYa3Qtfm+H2Ex4UJVsau1O2LN5QhbzRynAliwGZw3GLSTvTm3MPFOr4+xs
- aqvcUdWRYdZEkz3WS873x1ORSXuDFK4GNRdlR66dPoZTRxQ4+KFP212xtK0R7FW6tLnuR1AGYW
- ph7LMqeR6tEk0CbSqN/LqKiozI4s3yXQ+xBfYNMbiwdqdNNTBXblf3zNq5BfVjHliIPFlWusyW
- ksSxSPGMsGTODZuwpKTClU/G1t+1vyZ/2Gf2Yg7T6IY5Ww5HxZBXT9P94k+1/MQRiaIeSyWgjn
- YZQv2bqre/RoQIHMrzT9HFJc
-X-IronPort-AV: E=Sophos;i="5.85,375,1624345200"; 
-   d="scan'208";a="140403841"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 15 Oct 2021 00:56:44 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Fri, 15 Oct 2021 00:56:44 -0700
-Received: from [10.12.67.94] (10.10.115.15) by chn-vm-ex02.mchp-main.com
- (10.10.85.144) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
- Transport; Fri, 15 Oct 2021 00:56:43 -0700
-Subject: Re: [PATCH v5 09/15] clk: at91: clk-master: mask mckr against
- layout->mask
-To:     Claudiu Beznea <claudiu.beznea@microchip.com>,
-        <mturquette@baylibre.com>, <sboyd@kernel.org>,
-        <alexandre.belloni@bootlin.com>, <ludovic.desroches@microchip.com>
-CC:     <linux-clk@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20211011112719.3951784-1-claudiu.beznea@microchip.com>
- <20211011112719.3951784-10-claudiu.beznea@microchip.com>
-From:   Nicolas Ferre <nicolas.ferre@microchip.com>
-Organization: microchip
-Message-ID: <579573e1-ab48-75b2-b185-5885ac5a15c5@microchip.com>
-Date:   Fri, 15 Oct 2021 09:56:42 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Fri, 15 Oct 2021 03:59:39 -0400
+Received: by mail-ua1-f44.google.com with SMTP id q13so16358299uaq.2;
+        Fri, 15 Oct 2021 00:57:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=i5vb3wGtSZYL9XNwuV89eijT6RI8LwaEwuKKZHudGy8=;
+        b=rUEYa3kAInm5Fe/ugCAUHVDL4OkWnyzcTSVcLAJwCP/Kr0eNIf/OwItx4Qf6w9hhrF
+         8+e70Sf2ssioQQBkEvAIbwgRdqzcT/qcV7BH07pQ4M4xJ497fwv8pkpMRn7Ir9hd62tI
+         jcNwQA4nSih4Oa9aioKF8V8Re52FVDvETq0JzyGp3NP8H2lK0BTrOg/TqeK7fbBwcP6/
+         IdPHZvTZSiYYoX1aZpH6CYh0km/A1gGo7WKVCuC6adOa/nFW4Nx8Mis4LQQ4lYa8fGO3
+         LR22mxnylHonSKmAvxzV4XOehutiiaDtZBH/BBFkV+zrCvfTkUmk/vDumL+qYuOLGiMA
+         bhug==
+X-Gm-Message-State: AOAM53056IX4Q8D0fjim8DQN1ParTv1f1coUnpFi9xhxCbMg+tZpaQRG
+        ub+ZQtHiSXJD5BCgnNX6M/TAz6k2BUIyhQ==
+X-Google-Smtp-Source: ABdhPJwObPnMXTrqwUd4xyP7nMBPhZ7iLEzWjT2LCX0iV6nfw73cEAeDZr+bAOpgim3AQ8qRPVF26Q==
+X-Received: by 2002:ab0:6c4b:: with SMTP id q11mr12340433uas.128.1634284652573;
+        Fri, 15 Oct 2021 00:57:32 -0700 (PDT)
+Received: from mail-ua1-f54.google.com (mail-ua1-f54.google.com. [209.85.222.54])
+        by smtp.gmail.com with ESMTPSA id w20sm3226543vkw.28.2021.10.15.00.57.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Oct 2021 00:57:32 -0700 (PDT)
+Received: by mail-ua1-f54.google.com with SMTP id q13so16358198uaq.2;
+        Fri, 15 Oct 2021 00:57:31 -0700 (PDT)
+X-Received: by 2002:ab0:58c1:: with SMTP id r1mr11403589uac.89.1634284651673;
+ Fri, 15 Oct 2021 00:57:31 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20211011112719.3951784-10-claudiu.beznea@microchip.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CAMuHMdUvNM8Tu-+Ed0vjB2-_JUQe7ojUPbzJM=Vy1m_j31sNSg@mail.gmail.com>
+ <20211007200250.20661-1-nikita.yoush@cogentembedded.com> <CAMuHMdU2Nr1V035Ntz-XNrc10t7femUFt_WV+Q3EHiWZD5HmkQ@mail.gmail.com>
+ <c8234074-a22e-72f9-fbe7-e65d6af74eec@cogentembedded.com> <CAMuHMdU1OhyqnREnwpEUubUsR1DUF_3a1z2MpWxe5U6rWCLUUA@mail.gmail.com>
+In-Reply-To: <CAMuHMdU1OhyqnREnwpEUubUsR1DUF_3a1z2MpWxe5U6rWCLUUA@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 15 Oct 2021 09:57:20 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdWbQPN+TsE0LZm-sp46cOoiwjCQw0wS5e2Z1ua66qdntQ@mail.gmail.com>
+Message-ID: <CAMuHMdWbQPN+TsE0LZm-sp46cOoiwjCQw0wS5e2Z1ua66qdntQ@mail.gmail.com>
+Subject: Re: [PATCH v2] pinctrl: renesas: r8a779[56]x: add MediaLB pins
+To:     Nikita Yushchenko <nikita.yoush@cogentembedded.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrey Gusakov <andrey.gusakov@cogentembedded.com>,
+        Vladimir Barinov <vladimir.barinov@cogentembedded.com>,
+        LUU HOAI <hoai.luu.ub@renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/10/2021 at 13:27, Claudiu Beznea wrote:
-> Mask values read/written from/to MCKR against layout->mask as this
-> mask may be different b/w PMC versions.
-> 
-> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+Hi Nikita,
 
-Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+On Thu, Oct 14, 2021 at 9:39 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> On Thu, Oct 14, 2021 at 9:27 PM Nikita Yushchenko
+> <nikita.yoush@cogentembedded.com> wrote:
+> > > Obviously not only the mlb_3pin groups, but also the functions have to
+> > > be moved to the automotive[] arrays ;-)
+> > >
+> > > I'll fix these up while applying, so no need to resend.
+> >
+> > Looking at error mail from build robot (cited below).
+> >
+> > Looks like also must put definitions of mlb_3pin_groups[] / mlb_3pin_mux[] / mlb_3pin_pins[] under GEN3
+> > ifdefs.
+> >
+> > What are the proper steps now - send a v3 of the original patch, or send a fix to what is in linux-next ?
+>
+> No worries, I'll fix it up tomorrow myself (unless you beat me to it,
+> then I'll fold
+> your fix into the original commit ;-)
 
-> ---
->   drivers/clk/at91/clk-master.c | 7 +++++--
->   1 file changed, 5 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/clk/at91/clk-master.c b/drivers/clk/at91/clk-master.c
-> index 2093e13b5068..6da9ae34313a 100644
-> --- a/drivers/clk/at91/clk-master.c
-> +++ b/drivers/clk/at91/clk-master.c
-> @@ -186,8 +186,8 @@ static int clk_master_div_set_rate(struct clk_hw *hw, unsigned long rate,
->   	if (ret)
->   		goto unlock;
->   
-> -	tmp = mckr & master->layout->mask;
-> -	tmp = (tmp >> MASTER_DIV_SHIFT) & MASTER_DIV_MASK;
-> +	mckr &= master->layout->mask;
-> +	tmp = (mckr >> MASTER_DIV_SHIFT) & MASTER_DIV_MASK;
->   	if (tmp == div)
->   		goto unlock;
->   
-> @@ -384,6 +384,7 @@ static unsigned long clk_master_pres_recalc_rate(struct clk_hw *hw,
->   	regmap_read(master->regmap, master->layout->offset, &val);
->   	spin_unlock_irqrestore(master->lock, flags);
->   
-> +	val &= master->layout->mask;
->   	pres = (val >> master->layout->pres_shift) & MASTER_PRES_MASK;
->   	if (pres == 3 && characteristics->have_div3_pres)
->   		pres = 3;
-> @@ -403,6 +404,8 @@ static u8 clk_master_pres_get_parent(struct clk_hw *hw)
->   	regmap_read(master->regmap, master->layout->offset, &mckr);
->   	spin_unlock_irqrestore(master->lock, flags);
->   
-> +	mckr &= master->layout->mask;
-> +
->   	return mckr & AT91_PMC_CSS;
->   }
->   
-> 
+Fixed in
+https://git.kernel.org/pub/scm/linux/kernel/git/geert/renesas-drivers.git/commit/?h=renesas-pinctrl-for-v5.16&id=ce34fb3cb4a8165a51a90d0ea437d75f34a6d031
 
+Gr{oetje,eeting}s,
 
--- 
-Nicolas Ferre
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
