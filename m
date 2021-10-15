@@ -2,58 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E969042F581
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 16:35:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D442B42F585
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 16:35:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240362AbhJOOhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 10:37:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38118 "EHLO mail.kernel.org"
+        id S240386AbhJOOhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 10:37:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38170 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240339AbhJOOhQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 10:37:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 315816120F;
+        id S240344AbhJOOhR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 10:37:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id A2B3F61215;
         Fri, 15 Oct 2021 14:35:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1634308510;
-        bh=IQUxSiX8Rsf0c9tV9pXRUONxsUa+V5F9haD0LweM9dE=;
+        bh=TdYUEWZVacFgWbrahliRzX8KiRZOXH6wLqFgnK7ZssY=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=GFoZUWCQoClo1urhPN/Z1VT6MwzKybteYWsvlRntxgDfN7LP+pa2MrZ216yYXl4mL
-         E2gKwlCMjuaDUPCvN/el6Lx6rI9O/8jm2z7fb9ygn5b9AAIDq9X42pC1q4BagSDxQa
-         sjY/Shrr7dsenO8w/LJXtRsoRBcaPeYj3h2QaZODxE5DpphRYzaC6rPkDMI9UQGZwk
-         TVxiK4pgxCY6/Gz8aknl1v/TjOsW8Nm0mmw8uXW+jtVFWHEZrJDPC0/UuV3qDSW4Ph
-         NUCLZiPuWsZbdvHlxmVHC4Yy7Rpe8QXkPeh0VVxZVLw6M4rmDm9RK9i/MSFlBQ69Kq
-         lYg7k6M58a7Sg==
+        b=GXDotZmf/UHrrbmfr8LIgZp2GwE601URgw47TDJcXLF8xgOMjY1GCEPV+TY53tsme
+         6FAewisHYBqgPJOBVSIt1QQCqOQNRUhLzevH+KuucEMWC9awVv5CLem+L56rxwpZ9V
+         6vMcgaXAYPXhEyyCR9q75HZQCRXJaAYXv5OSAobbDvR3XhaWP1yz7ttQ1w6l4k6qKK
+         4HtAYDCamAIb82nacSe9RYudI3yMh65PbIgs2Bcf/YMZQBnIgZ+eNPKHue3akCk96S
+         Az9TH5xsyEw0mjem1Zu/v0JN7xBZVgJDmGPTDIxyvqZOXo7bacSJfhRcKO74vVSYMK
+         SyjRWpkobr6ag==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 2676060A4D;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 9B9E460A4D;
         Fri, 15 Oct 2021 14:35:10 +0000 (UTC)
-Subject: Re: [git pull] drm fixes for 5.15-rc6
+Subject: Re: [GIT PULL] SPI fixes for v5.15-rc5
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAPM=9tyo_PDz3NuSp4N-qidJ55FybBYs6do-f_5gb4iXvct5Zg@mail.gmail.com>
-References: <CAPM=9tyo_PDz3NuSp4N-qidJ55FybBYs6do-f_5gb4iXvct5Zg@mail.gmail.com>
+In-Reply-To: <20211015115800.E18A660524@mail.kernel.org>
+References: <20211015115800.E18A660524@mail.kernel.org>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CAPM=9tyo_PDz3NuSp4N-qidJ55FybBYs6do-f_5gb4iXvct5Zg@mail.gmail.com>
-X-PR-Tracked-Remote: git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2021-10-15-1
-X-PR-Tracked-Commit-Id: a14bc107edd0c108bda2245e50daa22f91c95d20
+X-PR-Tracked-Message-Id: <20211015115800.E18A660524@mail.kernel.org>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git tags/spi-fix-v5.15-rc5
+X-PR-Tracked-Commit-Id: 16a8e2fbb2d49111004efc1c7342e083eafabeb0
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 591a495d440ff8dd2b51a47eb6053c83f68a7f6b
-Message-Id: <163430851015.21069.5237391876475990136.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 985f6ab93fc986f339654b5cb2e6825839bf3bc5
+Message-Id: <163430851063.21069.4915656461278226454.pr-tracker-bot@kernel.org>
 Date:   Fri, 15 Oct 2021 14:35:10 +0000
-To:     Dave Airlie <airlied@gmail.com>
+To:     Mark Brown <broonie@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 15 Oct 2021 15:15:31 +1000:
+The pull request you sent on Fri, 15 Oct 2021 12:57:45 +0100:
 
-> git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2021-10-15-1
+> https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git tags/spi-fix-v5.15-rc5
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/591a495d440ff8dd2b51a47eb6053c83f68a7f6b
+https://git.kernel.org/torvalds/c/985f6ab93fc986f339654b5cb2e6825839bf3bc5
 
 Thank you!
 
