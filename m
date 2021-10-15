@@ -2,342 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 385C142ED9D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 11:27:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54EC042EDA1
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 11:27:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237329AbhJOJ31 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 15 Oct 2021 05:29:27 -0400
-Received: from aposti.net ([89.234.176.197]:50856 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237265AbhJOJ30 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 05:29:26 -0400
-Date:   Fri, 15 Oct 2021 10:27:08 +0100
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH 2/3] mtd: rawnand: Export nand_read_page_hwecc_oob_first()
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Harvey Hunt <harveyhuntnexus@gmail.com>, list@opendingux.net,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, stable@vger.kernel.org
-Message-Id: <89I01R.QTBARVYLTBT02@crapouillou.net>
-In-Reply-To: <20211015105146.3d2fbd08@xps13>
-References: <20211009184952.24591-1-paul@crapouillou.net>
-        <20211009184952.24591-3-paul@crapouillou.net>
-        <20211015081313.60018976@xps13> <70G01R.2VROMW06O3O83@crapouillou.net>
-        <20211015105146.3d2fbd08@xps13>
+        id S237356AbhJOJ3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 05:29:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42050 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237338AbhJOJ3c (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 05:29:32 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BF12C061753
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 02:27:26 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id g10so35648178edj.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 02:27:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=monstr-eu.20210112.gappssmtp.com; s=20210112;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jqcUpdGkPlLCSTn8tOP34V+Kz/Zhk4bMhTOT82uEivE=;
+        b=godJCkEv5ZKTN1Jch1qRe/oy1BiwOSYOzQHeO11hViPuOEngpPKz1doHT3Y04ZB5HL
+         su0SiD83VAUMOpPDr77PzRMYXGMiybbUPkKtKIFTAM00PjKXkJ7Ch16xLqO6XOqO57BN
+         d8N1Ys7uBHVwu5LEOLM4jh8BPCxmf0vKGK/CaDjNUiGO2XsOil4AVBjWjuy070SVfKkC
+         +c2wK7TkwUEAQNAlIodpU+sKtXT0i84L4u80gxN75JPRbWYArVIGY2DL5/M2iO4ukqhs
+         Z0G63GMMYebE+ALYDapILXxXZ5tWDgc+QIQZDc2nbBaPZ/4eonoIJyVzWsgnyQgr4RZT
+         mIwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=jqcUpdGkPlLCSTn8tOP34V+Kz/Zhk4bMhTOT82uEivE=;
+        b=iqN1uVf/tmSVhlCjFbxXWvzeJdNY3TNhLi8IE59cVU15xbZESFD5nkO80rgmDxLx13
+         C92KropqSC508ewndqI2Xm4aVHfv+TgnwuqRVKeZvLjdkAvEuXRlN+qV9a0R0gsWH2u2
+         pVflzJkGvazbh6Qi921qbMdG51Dv0Y2XznLpeQ+nxIX3wPUoqfUdp/gUbmCt4W266U5U
+         R+s8q1Z8EixKrlPPNQekRRuYdiucdJLSUvrT5veQlA0/mbiLVTJMEPirvW569CdTz9z9
+         8/+zzLL6ngO6zCs21NUyVfZ/nFt5Jsi9SPg+I8fjdO1vPE5DwqKYQm5nohw8JVnNY+S5
+         OAPw==
+X-Gm-Message-State: AOAM530kUInCbQzFl7htaZpp4ZxAvjnBy0oOjLWeay+5eLyIeOosoAoE
+        yJRrO/i/7y5ZVTm1xbo2u3igMsccKvc7iQ==
+X-Google-Smtp-Source: ABdhPJwdmDklhD3pxxbqu9f2G/CNKriBF1c71usHNKjHgYAwNh5+pG2jeLZotWlI7WoAnEtp8a6PCg==
+X-Received: by 2002:a05:6402:268f:: with SMTP id w15mr16920947edd.13.1634290044445;
+        Fri, 15 Oct 2021 02:27:24 -0700 (PDT)
+Received: from localhost ([2a02:768:2307:40d6:f666:9af6:3fed:e53b])
+        by smtp.gmail.com with ESMTPSA id a1sm4195840edu.43.2021.10.15.02.27.24
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 15 Oct 2021 02:27:24 -0700 (PDT)
+Sender: Michal Simek <monstr@monstr.eu>
+From:   Michal Simek <michal.simek@xilinx.com>
+To:     linux-kernel@vger.kernel.org, monstr@monstr.eu,
+        michal.simek@xilinx.com, git@xilinx.com
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>,
+        Srinivas Neeli <srinivas.neeli@xilinx.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-gpio@vger.kernel.org
+Subject: [PATCH] dt-bindings: gpio: zynq: Describe gpio-line-names
+Date:   Fri, 15 Oct 2021 11:27:23 +0200
+Message-Id: <4b9db94cdd8ca106feee53f76fab2a23721f7d2a.1634290039.git.michal.simek@xilinx.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Number of lines depends on compatible string from 58 to 174.
+That's why it is checked based on it.
 
+Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+---
 
-Le ven., oct. 15 2021 at 10:51:46 +0200, Miquel Raynal 
-<miquel.raynal@bootlin.com> a écrit :
-> Hi Paul,
-> 
-> paul@crapouillou.net wrote on Fri, 15 Oct 2021 09:38:31 +0100:
-> 
->>  Hi Miquel,
->> 
->>  Le ven., oct. 15 2021 at 08:13:13 +0200, Miquel Raynal 
->> <miquel.raynal@bootlin.com> a écrit :
->>  > Hi Paul,
->>  >
->>  > paul@crapouillou.net wrote on Sat,  9 Oct 2021 20:49:51 +0200:
->>  >
->>  >>  Move the function nand_read_page_hwecc_oob_first() (previously
->>  >>  nand_davinci_read_page_hwecc_oob_first()) to nand_base.c, and 
->> >> export it
->>  >>  as a GPL symbol, so that it can be used by more modules.
->>  >> >>  Cc: <stable@vger.kernel.org> # v5.2
->>  >>  Fixes: a0ac778eb82c ("mtd: rawnand: ingenic: Add support for 
->> the >> JZ4740")
->>  >>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
->>  >>  ---
->>  >>   drivers/mtd/nand/raw/davinci_nand.c | 70 >> 
->> +----------------------------
->>  >>   drivers/mtd/nand/raw/nand_base.c    | 69 >> 
->> ++++++++++++++++++++++++++++
->>  >>   include/linux/mtd/rawnand.h         |  2 +
->>  >>   3 files changed, 72 insertions(+), 69 deletions(-)
->>  >> >>  diff --git a/drivers/mtd/nand/raw/davinci_nand.c >> 
->> b/drivers/mtd/nand/raw/davinci_nand.c
->>  >>  index 89de24d3bb7a..45fec8c192ab 100644
->>  >>  --- a/drivers/mtd/nand/raw/davinci_nand.c
->>  >>  +++ b/drivers/mtd/nand/raw/davinci_nand.c
->>  >>  @@ -371,74 +371,6 @@ static int 
->> nand_davinci_correct_4bit(struct >> nand_chip *chip, u_char *data,
->>  >>   	return corrected;
->>  >>   }
->>  >> >>  -/**
->>  >>  - * nand_read_page_hwecc_oob_first - hw ecc, read oob first
->>  >>  - * @chip: nand chip info structure
->>  >>  - * @buf: buffer to store read data
->>  >>  - * @oob_required: caller requires OOB data read to 
->> chip->oob_poi
->>  >>  - * @page: page number to read
->>  >>  - *
->>  >>  - * Hardware ECC for large page chips, require OOB to be read 
->> >> first. For this
->>  >>  - * ECC mode, the write_page method is re-used from ECC_HW. 
->> These >> methods
->>  >>  - * read/write ECC from the OOB area, unlike the 
->> ECC_HW_SYNDROME >> support with
->>  >>  - * multiple ECC steps, follows the "infix ECC" scheme and >> 
->> reads/writes ECC from
->>  >>  - * the data area, by overwriting the NAND manufacturer bad 
->> block >> markings.
->>  >>  - */
->>  >>  -static int nand_davinci_read_page_hwecc_oob_first(struct 
->> nand_chip >> *chip,
->>  >>  -						  uint8_t *buf,
->>  >>  -						  int oob_required, int page)
->>  >>  -{
->>  >>  -	struct mtd_info *mtd = nand_to_mtd(chip);
->>  >>  -	int i, eccsize = chip->ecc.size, ret;
->>  >>  -	int eccbytes = chip->ecc.bytes;
->>  >>  -	int eccsteps = chip->ecc.steps;
->>  >>  -	uint8_t *p = buf;
->>  >>  -	uint8_t *ecc_code = chip->ecc.code_buf;
->>  >>  -	unsigned int max_bitflips = 0;
->>  >>  -
->>  >>  -	/* Read the OOB area first */
->>  >>  -	ret = nand_read_oob_op(chip, page, 0, chip->oob_poi, >> 
->> mtd->oobsize);
->>  >>  -	if (ret)
->>  >>  -		return ret;
->>  >>  -
->>  >>  -	ret = nand_read_page_op(chip, page, 0, NULL, 0);
->>  >>  -	if (ret)
->>  >>  -		return ret;
->>  >>  -
->>  >>  -	ret = mtd_ooblayout_get_eccbytes(mtd, ecc_code, 
->> chip->oob_poi, 0,
->>  >>  -					 chip->ecc.total);
->>  >>  -	if (ret)
->>  >>  -		return ret;
->>  >>  -
->>  >>  -	for (i = 0; eccsteps; eccsteps--, i += eccbytes, p += 
->> eccsize) {
->>  >>  -		int stat;
->>  >>  -
->>  >>  -		chip->ecc.hwctl(chip, NAND_ECC_READ);
->>  >>  -
->>  >>  -		ret = nand_read_data_op(chip, p, eccsize, false, false);
->>  >>  -		if (ret)
->>  >>  -			return ret;
->>  >>  -
->>  >>  -		stat = chip->ecc.correct(chip, p, &ecc_code[i], NULL);
->>  >>  -		if (stat == -EBADMSG &&
->>  >>  -		    (chip->ecc.options & NAND_ECC_GENERIC_ERASED_CHECK)) {
->>  >>  -			/* check for empty pages with bitflips */
->>  >>  -			stat = nand_check_erased_ecc_chunk(p, eccsize,
->>  >>  -							   &ecc_code[i],
->>  >>  -							   eccbytes, NULL, 0,
->>  >>  -							   chip->ecc.strength);
->>  >>  -		}
->>  >>  -
->>  >>  -		if (stat < 0) {
->>  >>  -			mtd->ecc_stats.failed++;
->>  >>  -		} else {
->>  >>  -			mtd->ecc_stats.corrected += stat;
->>  >>  -			max_bitflips = max_t(unsigned int, max_bitflips, stat);
->>  >>  -		}
->>  >>  -	}
->>  >>  -	return max_bitflips;
->>  >>  -}
->>  >>  -
->>  >>   >> 
->> /*----------------------------------------------------------------------
->>  */
->>  >> >>   /* An ECC layout for using 4-bit ECC with small-page flash, 
->> storing
->>  >>  @@ -648,7 +580,7 @@ static int davinci_nand_attach_chip(struct 
->> >> nand_chip *chip)
->>  >>   			} else if (chunks == 4 || chunks == 8) {
->>  >>   				mtd_set_ooblayout(mtd,
->>  >>   						  nand_get_large_page_ooblayout());
->>  >>  -				chip->ecc.read_page = 
->> nand_davinci_read_page_hwecc_oob_first;
->>  >>  +				chip->ecc.read_page = nand_read_page_hwecc_oob_first;
->>  >>   			} else {
->>  >>   				return -EIO;
->>  >>   			}
->>  >>  diff --git a/drivers/mtd/nand/raw/nand_base.c >> 
->> b/drivers/mtd/nand/raw/nand_base.c
->>  >>  index 3d6c6e880520..cb5f343b9fa2 100644
->>  >>  --- a/drivers/mtd/nand/raw/nand_base.c
->>  >>  +++ b/drivers/mtd/nand/raw/nand_base.c
->>  >>  @@ -3160,6 +3160,75 @@ static int nand_read_page_hwecc(struct 
->> >> nand_chip *chip, uint8_t *buf,
->>  >>   	return max_bitflips;
->>  >>   }
->>  >> >>  +/**
->>  >>  + * nand_read_page_hwecc_oob_first - Hardware ECC page read 
->> with ECC
->>  >>  + *                                  data read from OOB area
->>  >>  + * @chip: nand chip info structure
->>  >>  + * @buf: buffer to store read data
->>  >>  + * @oob_required: caller requires OOB data read to 
->> chip->oob_poi
->>  >>  + * @page: page number to read
->>  >>  + *
->>  >>  + * Hardware ECC for large page chips, require OOB to be read 
->> >> first. For this
->>  >
->>  > requires
->>  >
->>  > With this ECC configuration?
->>  >
->>  >>  + * ECC mode, the write_page method is re-used from ECC_HW. 
->> These >> methods
->>  >
->>  > I do not understand this sentence nor the next one about 
->> syndrome. I
->>  > believe it is related to your engine and should not leak into the 
->> > core.
->>  >
->>  >>  + * read/write ECC from the OOB area, unlike the 
->> ECC_HW_SYNDROME >> support with
->>  >>  + * multiple ECC steps, follows the "infix ECC" scheme and >> 
->> reads/writes ECC from
->>  >>  + * the data area, by overwriting the NAND manufacturer bad 
->> block >> markings.
->>  >
->>  > That's a sentence I don't like. What do you mean exactly?
->>  >
->>  > What "Infix ECC" scheme is?
->>  >
->>  > Do you mean that unlike the syndrome  mode it *does not* 
->> overwrite the
->>  > BBM ?
->> 
->>  I don't mean anything. I did not write that comment. I just moved 
->> the function verbatim with no changes. If something needs to be 
->> fixed, then it needs to be fixed before/after this patch.
-> 
-> Well, this comment should be adapted because as-is I don't think it's
-> wise to move it around.
+ .../devicetree/bindings/gpio/gpio-zynq.yaml   | 50 +++++++++++++++++++
+ 1 file changed, 50 insertions(+)
 
-OK.
-
-I think it says that BBM can be overwritten with this configuration, 
-but that would be if the OOB layout covers the BBM area.
-
->> 
->>  >>  + */
->>  >>  +int nand_read_page_hwecc_oob_first(struct nand_chip *chip, 
->> uint8_t >> *buf,
->>  >>  +				   int oob_required, int page)
->>  >>  +{
->>  >>  +	struct mtd_info *mtd = nand_to_mtd(chip);
->>  >>  +	int i, eccsize = chip->ecc.size, ret;
->>  >>  +	int eccbytes = chip->ecc.bytes;
->>  >>  +	int eccsteps = chip->ecc.steps;
->>  >>  +	uint8_t *p = buf;
->>  >>  +	uint8_t *ecc_code = chip->ecc.code_buf;
->>  >>  +	unsigned int max_bitflips = 0;
->>  >>  +
->>  >>  +	/* Read the OOB area first */
->>  >>  +	ret = nand_read_oob_op(chip, page, 0, chip->oob_poi, >> 
->> mtd->oobsize);
->>  >>  +	if (ret)
->>  >>  +		return ret;
->>  >>  +
->>  >>  +	ret = nand_read_page_op(chip, page, 0, NULL, 0);
->>  >
->>  > Definitely not, your are requesting the chip to do the read_page
->>  > operation twice. You only need a nand_change_read_column I 
->> believe.
->> 
->>  Again, this code is just being moved around - don't shoot the 
->> messenger :)
-> 
-> haha
-> 
-> Well, now you touch the core, so I need to be more careful, and the
-> code is definitely wrong, so even if we don't move that code off, you
-> definitely want to fix it in order to improve your performances.
-
-I don't see the read_page being done twice?
-
-There's one read_oob, one read_page, then read_data in the loop.
-
->>  >>  +	if (ret)
->>  >>  +		return ret;
->>  >>  +
->>  >>  +	ret = mtd_ooblayout_get_eccbytes(mtd, ecc_code, 
->> chip->oob_poi, 0,
->>  >>  +					 chip->ecc.total);
->>  >>  +	if (ret)
->>  >>  +		return ret;
->>  >>  +
->>  >>  +	for (i = 0; eccsteps; eccsteps--, i += eccbytes, p += 
->> eccsize) {
->>  >>  +		int stat;
->>  >>  +
->>  >>  +		chip->ecc.hwctl(chip, NAND_ECC_READ);
->>  >>  +
->>  >>  +		ret = nand_read_data_op(chip, p, eccsize, false, false);
->>  >>  +		if (ret)
->>  >>  +			return ret;
->>  >>  +
->>  >>  +		stat = chip->ecc.correct(chip, p, &ecc_code[i], NULL);
->>  >>  +		if (stat == -EBADMSG &&
->>  >>  +		    (chip->ecc.options & NAND_ECC_GENERIC_ERASED_CHECK)) {
->>  >>  +			/* check for empty pages with bitflips */
->>  >>  +			stat = nand_check_erased_ecc_chunk(p, eccsize,
->>  >>  +							   &ecc_code[i],
->>  >>  +							   eccbytes, NULL, 0,
->>  >>  +							   chip->ecc.strength);
->>  >>  +		}
->>  >>  +
->>  >>  +		if (stat < 0) {
->>  >>  +			mtd->ecc_stats.failed++;
->>  >>  +		} else {
->>  >>  +			mtd->ecc_stats.corrected += stat;
->>  >>  +			max_bitflips = max_t(unsigned int, max_bitflips, stat);
->>  >>  +		}
->>  >>  +	}
->>  >>  +	return max_bitflips;
->>  >>  +}
->>  >>  +EXPORT_SYMBOL_GPL(nand_read_page_hwecc_oob_first);
->>  >>  +
->>  >>   /**
->>  >>    * nand_read_page_syndrome - [REPLACEABLE] hardware ECC 
->> syndrome >> based page read
->>  >>    * @chip: nand chip info structure
->>  >>  diff --git a/include/linux/mtd/rawnand.h >> 
->> b/include/linux/mtd/rawnand.h
->>  >>  index b2f9dd3cbd69..5b88cd51fadb 100644
->>  >>  --- a/include/linux/mtd/rawnand.h
->>  >>  +++ b/include/linux/mtd/rawnand.h
->>  >>  @@ -1539,6 +1539,8 @@ int nand_read_data_op(struct nand_chip 
->> *chip, >> void *buf, unsigned int len,
->>  >>   		      bool force_8bit, bool check_only);
->>  >>   int nand_write_data_op(struct nand_chip *chip, const void *buf,
->>  >>   		       unsigned int len, bool force_8bit);
->>  >>  +int nand_read_page_hwecc_oob_first(struct nand_chip *chip, 
->> uint8_t >> *buf,
->>  >>  +				   int oob_required, int page);
->>  >
->>  > You certainly want to add this symbol closer to the other 
->> read/write
->>  > page helpers?
->> 
->>  Where would that be? The other read/write page helpers are all 
->> "static" so they don't appear in any header.
-> 
-> I believe we should keep this header local as long as there are no
-> other users.
-
-I'll move it to internal.h then.
-
-Cheers,
--Paul
-
+diff --git a/Documentation/devicetree/bindings/gpio/gpio-zynq.yaml b/Documentation/devicetree/bindings/gpio/gpio-zynq.yaml
+index da95b951c23e..29c27eadbac8 100644
+--- a/Documentation/devicetree/bindings/gpio/gpio-zynq.yaml
++++ b/Documentation/devicetree/bindings/gpio/gpio-zynq.yaml
+@@ -28,6 +28,11 @@ properties:
+ 
+   gpio-controller: true
+ 
++  gpio-line-names:
++    description: strings describing the names of each gpio line
++    minItems: 58
++    maxItems: 174
++
+   interrupt-controller: true
+ 
+   "#interrupt-cells":
+@@ -39,6 +44,51 @@ properties:
+   power-domains:
+     maxItems: 1
+ 
++allOf:
++  - if:
++      properties:
++        compatible:
++          enum:
++            - xlnx,zynqmp-gpio-1.0
++    then:
++      properties:
++        gpio-line-names:
++          minItems: 174
++          maxItems: 174
++
++  - if:
++      properties:
++        compatible:
++          enum:
++            - xlnx,zynq-gpio-1.0
++    then:
++      properties:
++        gpio-line-names:
++          minItems: 118
++          maxItems: 118
++
++  - if:
++      properties:
++        compatible:
++          enum:
++            - xlnx,versal-gpio-1.0
++    then:
++      properties:
++        gpio-line-names:
++          minItems: 58
++          maxItems: 58
++
++  - if:
++      properties:
++        compatible:
++          enum:
++            - xlnx,pmc-gpio-1.0
++    then:
++      properties:
++        gpio-line-names:
++          minItems: 116
++          maxItems: 116
++
+ required:
+   - compatible
+   - reg
+-- 
+2.33.1
 
