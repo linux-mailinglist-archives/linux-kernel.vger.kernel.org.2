@@ -2,97 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7632442F0B0
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 14:24:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A959042F0B2
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 14:25:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235574AbhJOM0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 08:26:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54246 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231612AbhJOM0W (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 08:26:22 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74EE8C061570;
-        Fri, 15 Oct 2021 05:24:16 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id z69so4323761iof.9;
-        Fri, 15 Oct 2021 05:24:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zAyjugmg5Mv75JBFPEqwszkslYTtQxxb0IvNxSWP6po=;
-        b=f/+IYWil+zNWZGd0wMWT4p8jE4Gz0FIqvt/i4VGlropBXrS5fExNb63zjgLP8Sg61O
-         Siaga79iLCLjPAAVfs9vbCiuRi/Pyda/pDf3VuvaYzgLmXmcny1AxBSUATunv3AOxSTo
-         dWcfPJyrM+Bdtc4WA0mvxP5lpXgVA9s8VtaqbaesmGq50jYNdo+uuv1OL+Zy1XXbKa+Y
-         +D6c/virXU1My47Mh5XUeFEtJqgPV2Eg0UFCvza6jF9p6a9Xi8k47XfBUufw1o9oRkm5
-         1aM6TBmXbzRpJZuDqb3E4cNX10c5UZX/SMfnHNcbu3vjPqkjHlOCt16pjcLjhIQXG79F
-         ZIQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zAyjugmg5Mv75JBFPEqwszkslYTtQxxb0IvNxSWP6po=;
-        b=sYNsQTm9F7dS55noRH9eAoUbV5+odWGRzJk852Bub1tQxzmi6Wxd7Qb+mMDMTZTsSx
-         vS67C1+ofgCmgoTSOIofnif+F4f/pft8cm3UGU46Bp5y8yBKux2yBLeWnoNbOsMZpCtV
-         Ly2/G87SajA0JElpKYWTVHltjv2SuCt0yNziS1COOi8952grM8IwMprG9/h11WkC8isY
-         ycqM48EArRBv6Uj/vWoiETrdR3KI6As9tpKBuuBnaL3tI1aFkPTIBeSP4ny7Es/ai8ni
-         /6mBCLOyeZ11qeogaGSBUzw9wpNuNs+mfLt+IbEG5JsJeMfouTQR5eeEtkC8GmYBQWSu
-         CQFw==
-X-Gm-Message-State: AOAM5329xMcorfscfqOGVJh377cnpzsZOoxYxE0eXqphI6OpM4zxWhl3
-        mp8au1IuTPV/Q59RHuAzSE31YXGsGqO0eVOQT0dyPUoVjh5vFSj1
-X-Google-Smtp-Source: ABdhPJzVLkZ6wdtrB3q4T3yAE7OnjNxLzHnQvoX6qU1VhzniVbLb5RoQ1n8mr3PverhOkt7mp6pINw2lh4pCeNYU/HE=
-X-Received: by 2002:a05:6602:2d4e:: with SMTP id d14mr3621368iow.172.1634300655868;
- Fri, 15 Oct 2021 05:24:15 -0700 (PDT)
+        id S238782AbhJOM1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 08:27:04 -0400
+Received: from mga14.intel.com ([192.55.52.115]:28965 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231612AbhJOM1D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 08:27:03 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10137"; a="228185588"
+X-IronPort-AV: E=Sophos;i="5.85,375,1624345200"; 
+   d="scan'208";a="228185588"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2021 05:24:56 -0700
+X-IronPort-AV: E=Sophos;i="5.85,375,1624345200"; 
+   d="scan'208";a="492523934"
+Received: from liminghu-mobl.ccr.corp.intel.com (HELO [10.212.23.213]) ([10.212.23.213])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2021 05:24:55 -0700
+Subject: Re: [RFC PATCH v3 04/13] ASoC: soc-pcm: introduce
+ snd_soc_dpcm_fe_lock_irq/unlock_irq()
+To:     Sameer Pujar <spujar@nvidia.com>, alsa-devel@alsa-project.org
+Cc:     tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org,
+        Gyeongtaek Lee <gt82.lee@samsung.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20211013143050.244444-1-pierre-louis.bossart@linux.intel.com>
+ <20211013143050.244444-5-pierre-louis.bossart@linux.intel.com>
+ <a98ea2c6-e617-0fb7-8b24-99b8edc8868a@nvidia.com>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <6d7c8d71-d131-fd92-c1c6-e4f4380a4f77@linux.intel.com>
+Date:   Fri, 15 Oct 2021 07:24:52 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20211015182404.0355bef6@canb.auug.org.au>
-In-Reply-To: <20211015182404.0355bef6@canb.auug.org.au>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Fri, 15 Oct 2021 14:24:04 +0200
-Message-ID: <CANiq72mpkr9SvLytg9CY4dufJFtggbr-k64=2sJaRrAqJ3cS=g@mail.gmail.com>
-Subject: Re: linux-next: manual merge of the rust tree with the kbuild tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Adam Bratschi-Kaye <ark.email@gmail.com>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Ayaan Zaidi <zaidi.ayaan@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Boris-Chengbiao Zhou <bobo1239@web.de>,
-        Douglas Su <d0u9.su@outlook.com>, Finn Behrens <me@kloenk.de>,
-        Fox Chen <foxhlchen@gmail.com>, Gary Guo <gary@garyguo.net>,
-        Geoffrey Thomas <geofft@ldpreload.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Sumera Priyadarsini <sylphrenadin@gmail.com>,
-        Sven Van Asbroeck <thesven73@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@google.com>,
-        Yuki Okushi <jtitor@2k36.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <a98ea2c6-e617-0fb7-8b24-99b8edc8868a@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
 
-On Fri, Oct 15, 2021 at 9:24 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->
-> Miguel,  it might be worth do a back merge of v5.14 (or maybe even
-> v5.15-rc1) to fix up the old conflicts ... If you do that, though,
-> please don't use github's GUI to do it, do it in your own git tree,
-> include a good commit message in the merge commit (saying why you did
-> the merge), and push it up to git hub.
 
-Yeah, the last release has been rough on conflicts. I will move the
-new code to rust-next for your Monday run (based onto -rc5) -- there
-has been some changes since last time and I already have it in sync in
-our internal branch. Thanks for keeping up with all the conflicts!
+On 10/15/21 1:24 AM, Sameer Pujar wrote:
+> 
+> 
+> On 10/13/2021 8:00 PM, Pierre-Louis Bossart wrote:
+>> In preparation for more changes, add two new helpers to gradually
+>> modify the DPCM locks.
+>>
+>> Since DPCM functions are not used from interrupt handlers, we can only
+>> use the lock_irq case.
+>>
+>> While most of the uses of DPCM are internal to soc-pcm.c, some drivers
+>> in soc/fsl and soc/sh do make use of DPCM-related loops that will
+>> require protection, adding EXPORT_SYMBOL_GPL() is needed for those
+>> drivers.
+>>
+>> The stream argument is unused in this patch but will be enabled in
+>> follow-up patches.
+>>
+>> Signed-off-by: Pierre-Louis Bossart
+>> <pierre-louis.bossart@linux.intel.com>
+>> ---
+>>   include/sound/soc-dpcm.h |  3 +++
+>>   sound/soc/soc-pcm.c      | 42 +++++++++++++++++++++++-----------------
+>>   2 files changed, 27 insertions(+), 18 deletions(-)
+> 
+> 1. Till this patch and with DEBUG_LOCKDEP config enabled, I see
 
-As for GitHub, thanks for the warning! We only use the GUI for
-internal development only; for the -next branch I prepare it manually.
-I will also rearrange things to follow a normal kernel process when we
-hit mainline.
+Did you mean "with this patch included", yes?
 
-Cheers,
-Miguel
+> following warning:
+>    "WARNING: CPU: 0 PID: 0 at kernel/locking/irqflag-debug.c:10
+> warn_bogus_irq_restore+0x30/0x40"
+> 
+>    However test passed though. Interestingly it was seen only for the
+> first time I ran a 2x1 mixer test.
+> 
+> 2. Also after I load sound modules and card gets registered, I see some
+> hw_param() calls for FE and BE. This seems harmless at this point, but
+> is getting problematic with subsequent patches. This was not happening
+> earier.
+
+This patch doesn't change any of the flow, it just adds a wrapper in
+preparation for the transition to the FE pcm lock.
+
+The only change is that we use spin_lock_irq instead of the
+irqsave/restore version, but that was also Takashi's recommendation.
+
+the test results would suggest that on Tegra DPCM functions are used
+from an interrupt context?
