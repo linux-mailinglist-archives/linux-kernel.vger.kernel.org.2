@@ -2,175 +2,443 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BF0042E695
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 04:31:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DDA942E69C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 04:34:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235076AbhJOCd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 22:33:27 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:24318 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231730AbhJOCd0 (ORCPT
+        id S235070AbhJOCg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 22:36:58 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:55348 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235004AbhJOCg5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 22:33:26 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HVqsP2BGZzRfBJ;
-        Fri, 15 Oct 2021 10:26:49 +0800 (CST)
-Received: from dggpemm500002.china.huawei.com (7.185.36.229) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Fri, 15 Oct 2021 10:31:18 +0800
-Received: from [10.174.178.178] (10.174.178.178) by
- dggpemm500002.china.huawei.com (7.185.36.229) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Fri, 15 Oct 2021 10:31:18 +0800
-Message-ID: <d1f7249d-ffc2-7038-ed4c-f7fbb3e68eda@huawei.com>
-Date:   Fri, 15 Oct 2021 10:31:17 +0800
+        Thu, 14 Oct 2021 22:36:57 -0400
+Received: from x64host.home (unknown [47.187.212.181])
+        by linux.microsoft.com (Postfix) with ESMTPSA id F0F2420B9D19;
+        Thu, 14 Oct 2021 19:34:50 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com F0F2420B9D19
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1634265291;
+        bh=N7nK4ApwCAxL+LoeHMH1ERNU9S4GTDIVgvRe+2BXSwE=;
+        h=From:To:Subject:Date:In-Reply-To:References:From;
+        b=K5yOBx2NUwgyM5CjRwwWgmQyR8V3URANiOci4+WtdwaEPZZCyfABd6VsQCVr6JfhP
+         bFBdafabJmJ7wSaBzmU4F+MmuY3s8MXLSVg2866fs8dJ32bW8Sbm/d8poWn/tsdjVC
+         Mql6nhS3IZNohxhGju36UR/efN6p3/FzZNeJAn5w=
+From:   madvenka@linux.microsoft.com
+To:     mark.rutland@arm.com, broonie@kernel.org, jpoimboe@redhat.com,
+        ardb@kernel.org, nobuta.keiya@fujitsu.com,
+        sjitindarsingh@gmail.com, catalin.marinas@arm.com, will@kernel.org,
+        jmorris@namei.org, linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
+        madvenka@linux.microsoft.com
+Subject: [PATCH v9 00/11] arm64: Reorganize the unwinder and implement stack trace reliability checks
+Date:   Thu, 14 Oct 2021 21:34:02 -0500
+Message-Id: <20211015023413.16614-1-madvenka@linux.microsoft.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <c05ce30dcc9be1bd6b5e24a2ca8fe1d66246980b>
+References: <c05ce30dcc9be1bd6b5e24a2ca8fe1d66246980b>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.0.3
-Subject: Re: [PATCH] mm/vmalloc: fix numa spreading for large hash tables
-To:     Nicholas Piggin <npiggin@gmail.com>,
-        Shakeel Butt <shakeelb@google.com>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Eric Dumazet <edumazet@google.com>, <guohanjun@huawei.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>
-References: <20210928121040.2547407-1-chenwandun@huawei.com>
- <CALvZod4G3SzP3kWxQYn0fj+VgG-G3yWXz=gz17+3N57ru1iajw@mail.gmail.com>
- <8fc5e1ae-a356-6225-2e50-cf0e5ee26208@huawei.com>
- <1634261360.fed2opbgxw.astroid@bobo.none>
-From:   Chen Wandun <chenwandun@huawei.com>
-In-Reply-To: <1634261360.fed2opbgxw.astroid@bobo.none>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.178.178]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm500002.china.huawei.com (7.185.36.229)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+
+Make all stack walking functions use arch_stack_walk()
+======================================================
+
+Currently, there are multiple functions in ARM64 code that walk the
+stack using start_backtrace() and unwind_frame() or start_backtrace()
+and walk_stackframe(). Convert all of them to use arch_stack_walk().
+This makes maintenance easier.
+
+This means that arch_stack_walk() needs to be always defined. So,
+select CONFIG_STACKTRACE in the ARM64 Kconfig file.
+
+Consolidate the unwinder
+========================
+
+Currently, start_backtrace() and walk_stackframe() are called separately.
+There is no need to do that. Move the call to start_backtrace() into
+walk_stackframe() so that walk_stackframe() is the only unwinder function
+a consumer needs to call.
+
+The consumers of walk_stackframe() are arch_stack_walk() and
+arch_stack_walk_reliable().
+
+Rename unwinder functions
+=========================
+
+Rename unwinder functions to unwind*() similar to other architectures
+for naming consistency.
+
+	start_backtrace() ==> unwind_start()
+	unwind_frame()    ==> unwind_next()
+	walk_stackframe() ==> unwind()
+
+Annotate unwinder functions
+===========================
+
+Annotate all of the unwind_*() functions with notrace so they cannot be
+ftraced and NOKPROBE_SYMBOL() so they cannot be kprobed. Ftrace and Kprobe
+code can call the unwinder.
+
+Redefine the unwinder loop
+==========================
+
+Redefine the unwinder loop and make it similar to other architectures.
+Define the following:
+
+	unwind_start(&frame, fp, pc);
+	while (unwind_continue(task, &frame, consume_entry, cookie))
+		unwind_next(task, &frame);
+
+unwind_continue()
+	This new function implements checks to determine whether the
+	unwind should continue or terminate.
+
+unwind_next()
+	Same as the original unwind_frame() except:
+
+	- the stack trace termination check has been moved from here to
+	  unwind_continue(). So, unwind_next() assumes that the fp is valid.
+
+	- unwind_frame() used to return an error value. unwind_next() only
+	  sets an internal flag "failed" to indicate that an error was
+	  encountered. This flag is checked by unwind_continue().
+
+Reliability checks
+==================
+
+There are some kernel features and conditions that make a stack trace
+unreliable. Callers may require the unwinder to detect these cases.
+E.g., livepatch.
+
+Introduce a new function called unwind_check_reliability() that will detect
+these cases and set a boolean "reliable" in the stackframe.
+
+unwind_check_reliability() will be called for every frame. That is, in
+unwind_start() as well as unwind_next().
+
+Introduce the first reliability check in unwind_check_reliability() - If
+a return PC is not a valid kernel text address, consider the stack
+trace unreliable. It could be some generated code.
+
+Other reliability checks will be added in the future.
+
+arch_stack_walk_reliable()
+==========================
+
+Introduce arch_stack_walk_reliable() for ARM64. This works like
+arch_stack_walk() except that it returns an error if the stack trace is
+found to be unreliable.
+
+Until all of the reliability checks are in place in
+unwind_check_reliability(), arch_stack_walk_reliable() may not be used by
+livepatch. But it may be used by debug and test code.
+
+SYM_CODE check
+==============
+
+This is the second reliability check implemented.
+
+SYM_CODE functions do not follow normal calling conventions. They cannot
+be unwound reliably using the frame pointer. Collect the address ranges
+of these functions in a special section called "sym_code_functions".
+
+In unwind_check_reliability(), check the return PC against these ranges. If
+a match is found, then mark the stack trace unreliable.
+
+Last stack frame
+----------------
+
+If a SYM_CODE function occurs in the very last frame in the stack trace,
+then the stack trace is not considered unreliable. This is because there
+is no more unwinding to do. Examples:
+
+	- EL0 exception stack traces end in the top level EL0 exception
+	  handlers.
+
+	- All kernel thread stack traces end in ret_from_fork().
+---
+Changelog:
+
+v9:
+	From me:
+
+	- Removed the word "RFC" from the subject line as I believe this
+	  is mature enough to be a regular patch.
+
+	From Mark Brown, Mark Rutland:
+
+	- Split the patches into smaller, self-contained ones.
+
+	- Always enable STACKTRACE so that arch_stack_walk() is always
+	  defined.
+
+	From Mark Rutland:
+
+	- Update callchain_trace() take the return value of
+	  perf_callchain_store() into acount.
+
+	- Restore get_wchan() behavior to the original code.
+
+	- Simplify an if statement in dump_backtrace().
+
+	From Mark Brown:
+
+	- Do not abort the stack trace on the first unreliable frame.
+
+	
+v8:
+	- Synced to v5.14-rc5.
+
+	From Mark Rutland:
+
+	- Make the unwinder loop similar to other architectures.
+
+	- Keep details to within the unwinder functions and return a simple
+	  boolean to the caller.
+
+	- Convert some of the current code that contains unwinder logic to
+	  simply use arch_stack_walk(). I have converted all of them.
+
+	- Do not copy sym_code_functions[]. Just place it in rodata for now.
+
+	- Have the main loop check for termination conditions rather than
+	  having unwind_frame() check for them. In other words, let
+	  unwind_frame() assume that the fp is valid.
+
+	- Replace the big comment for SYM_CODE functions with a shorter
+	  comment.
+
+		/*
+		 * As SYM_CODE functions don't follow the usual calling
+		 * conventions, we assume by default that any SYM_CODE function
+		 * cannot be unwound reliably.
+		 *
+		 * Note that this includes:
+		 *
+		 * - Exception handlers and entry assembly
+		 * - Trampoline assembly (e.g., ftrace, kprobes)
+		 * - Hypervisor-related assembly
+		 * - Hibernation-related assembly
+		 * - CPU start-stop, suspend-resume assembly
+		 * - Kernel relocation assembly
+		 */
+
+v7:
+	The Mailer screwed up the threading on this. So, I have resent this
+	same series as version 8 with proper threading to avoid confusion.
+v6:
+	From Mark Rutland:
+
+	- The per-frame reliability concept and flag are acceptable. But more
+	  work is needed to make the per-frame checks more accurate and more
+	  complete. E.g., some code reorg is being worked on that will help.
+
+	  I have now removed the frame->reliable flag and deleted the whole
+	  concept of per-frame status. This is orthogonal to this patch series.
+	  Instead, I have improved the unwinder to return proper return codes
+	  so a caller can take appropriate action without needing per-frame
+	  status.
+
+	- Remove the mention of PLTs and update the comment.
+
+	  I have replaced the comment above the call to __kernel_text_address()
+	  with the comment suggested by Mark Rutland.
+
+	Other comments:
+
+	- Other comments on the per-frame stuff are not relevant because
+	  that approach is not there anymore.
+
+v5:
+	From Keiya Nobuta:
+	
+	- The term blacklist(ed) is not to be used anymore. I have changed it
+	  to unreliable. So, the function unwinder_blacklisted() has been
+	  changed to unwinder_is_unreliable().
+
+	From Mark Brown:
+
+	- Add a comment for the "reliable" flag in struct stackframe. The
+	  reliability attribute is not complete until all the checks are
+	  in place. Added a comment above struct stackframe.
+
+	- Include some of the comments in the cover letter in the actual
+	  code so that we can compare it with the reliable stack trace
+	  requirements document for completeness. I have added a comment:
+
+	  	- above unwinder_is_unreliable() that lists the requirements
+		  that are addressed by the function.
+
+		- above the __kernel_text_address() call about all the cases
+		  the call covers.
+
+v4:
+	From Mark Brown:
+
+	- I was checking the return PC with __kernel_text_address() before
+	  the Function Graph trace handling. Mark Brown felt that all the
+	  reliability checks should be performed on the original return PC
+	  once that is obtained. So, I have moved all the reliability checks
+	  to after the Function Graph Trace handling code in the unwinder.
+	  Basically, the unwinder should perform PC translations first (for
+	  rhe return trampoline for Function Graph Tracing, Kretprobes, etc).
+	  Then, the reliability checks should be applied to the resulting
+	  PC.
+
+	- Mark said to improve the naming of the new functions so they don't
+	  collide with existing ones. I have used a prefix "unwinder_" for
+	  all the new functions.
+
+	From Josh Poimboeuf:
+
+	- In the error scenarios in the unwinder, the reliable flag in the
+	  stack frame should be set. Implemented this.
+
+	- Some of the other comments are not relevant to the new code as
+	  I have taken a different approach in the new code. That is why
+	  I have not made those changes. E.g., Ard wanted me to add the
+	  "const" keyword to the global section array. That array does not
+	  exist in v4. Similarly, Mark Brown said to use ARRAY_SIZE() for
+	  the same array in a for loop.
+
+	Other changes:
+
+	- Add a new definition for SYM_CODE_END() that adds the address
+	  range of the function to a special section called
+	  "sym_code_functions".
+
+	- Include the new section under initdata in vmlinux.lds.S.
+
+	- Define an early_initcall() to copy the contents of the
+	  "sym_code_functions" section to an array by the same name.
+
+	- Define a function unwinder_blacklisted() that compares a return
+	  PC against sym_code_sections[]. If there is a match, mark the
+	  stack trace unreliable. Call this from unwind_frame().
+
+v3:
+	- Implemented a sym_code_ranges[] array to contains sections bounds
+	  for text sections that contain SYM_CODE_*() functions. The unwinder
+	  checks each return PC against the sections. If it falls in any of
+	  the sections, the stack trace is marked unreliable.
+
+	- Moved SYM_CODE functions from .text and .init.text into a new
+	  text section called ".code.text". Added this section to
+	  vmlinux.lds.S and sym_code_ranges[].
+
+	- Fixed the logic in the unwinder that handles Function Graph
+	  Tracer return trampoline.
+
+	- Removed all the previous code that handles:
+		- ftrace entry code for traced function
+		- special_functions[] array that lists individual functions
+		- kretprobe_trampoline() special case
+
+v2
+	- Removed the terminating entry { 0, 0 } in special_functions[]
+	  and replaced it with the idiom { /* sentinel */ }.
+
+	- Change the ftrace trampoline entry ftrace_graph_call in
+	  special_functions[] to ftrace_call + 4 and added explanatory
+	  comments.
+
+	- Unnested #ifdefs in special_functions[] for FTRACE.
+
+v1
+	- Define a bool field in struct stackframe. This will indicate if
+	  a stack trace is reliable.
+
+	- Implement a special_functions[] array that will be populated
+	  with special functions in which the stack trace is considered
+	  unreliable.
+	
+	- Using kallsyms_lookup(), get the address ranges for the special
+	  functions and record them.
+
+	- Implement an is_reliable_function(pc). This function will check
+	  if a given return PC falls in any of the special functions. If
+	  it does, the stack trace is unreliable.
+
+	- Implement check_reliability() function that will check if a
+	  stack frame is reliable. Call is_reliable_function() from
+	  check_reliability().
+
+	- Before a return PC is checked against special_funtions[], it
+	  must be validates as a proper kernel text address. Call
+	  __kernel_text_address() from check_reliability().
+
+	- Finally, call check_reliability() from unwind_frame() for
+	  each stack frame.
+
+	- Add EL1 exception handlers to special_functions[].
+
+		el1_sync();
+		el1_irq();
+		el1_error();
+		el1_sync_invalid();
+		el1_irq_invalid();
+		el1_fiq_invalid();
+		el1_error_invalid();
+
+	- The above functions are currently defined as LOCAL symbols.
+	  Make them global so that they can be referenced from the
+	  unwinder code.
+
+	- Add FTRACE trampolines to special_functions[]:
+
+		ftrace_graph_call()
+		ftrace_graph_caller()
+		return_to_handler()
+
+	- Add the kretprobe trampoline to special functions[]:
+
+		kretprobe_trampoline()
+
+Previous versions and discussion
+================================
+
+v8: https://lore.kernel.org/linux-arm-kernel/20210812190603.25326-1-madvenka@linux.microsoft.com/
+v7: Mailer screwed up the threading. Sent the same as v8 with proper threading.
+v6: https://lore.kernel.org/linux-arm-kernel/20210630223356.58714-1-madvenka@linux.microsoft.com/
+v5: https://lore.kernel.org/linux-arm-kernel/20210526214917.20099-1-madvenka@linux.microsoft.com/
+v4: https://lore.kernel.org/linux-arm-kernel/20210516040018.128105-1-madvenka@linux.microsoft.com/
+v3: https://lore.kernel.org/linux-arm-kernel/20210503173615.21576-1-madvenka@linux.microsoft.com/
+v2: https://lore.kernel.org/linux-arm-kernel/20210405204313.21346-1-madvenka@linux.microsoft.com/
+v1: https://lore.kernel.org/linux-arm-kernel/20210330190955.13707-1-madvenka@linux.microsoft.com/
+
+Madhavan T. Venkataraman (11):
+  arm64: Select STACKTRACE in arch/arm64/Kconfig
+  arm64: Make perf_callchain_kernel() use arch_stack_walk()
+  arm64: Make get_wchan() use arch_stack_walk()
+  arm64: Make return_address() use arch_stack_walk()
+  arm64: Make dump_stacktrace() use arch_stack_walk()
+  arm64: Make profile_pc() use arch_stack_walk()
+  arm64: Call stack_backtrace() only from within walk_stackframe()
+  arm64: Rename unwinder functions, prevent them from being traced and
+    kprobed
+  arm64: Make the unwind loop in unwind() similar to other architectures
+  arm64: Introduce stack trace reliability checks in the unwinder
+  arm64: Create a list of SYM_CODE functions, check return PC against
+    list
+
+ arch/arm64/Kconfig                  |   1 +
+ arch/arm64/include/asm/linkage.h    |  12 ++
+ arch/arm64/include/asm/sections.h   |   1 +
+ arch/arm64/include/asm/stacktrace.h |  12 +-
+ arch/arm64/kernel/perf_callchain.c  |   8 +-
+ arch/arm64/kernel/process.c         |  38 ++--
+ arch/arm64/kernel/return_address.c  |   6 +-
+ arch/arm64/kernel/stacktrace.c      | 274 +++++++++++++++++++---------
+ arch/arm64/kernel/time.c            |  22 ++-
+ arch/arm64/kernel/vmlinux.lds.S     |  10 +
+ 10 files changed, 257 insertions(+), 127 deletions(-)
 
 
-在 2021/10/15 9:34, Nicholas Piggin 写道:
-> Excerpts from Chen Wandun's message of October 14, 2021 6:59 pm:
->>
->>
->> 在 2021/10/14 5:46, Shakeel Butt 写道:
->>> On Tue, Sep 28, 2021 at 5:03 AM Chen Wandun <chenwandun@huawei.com> wrote:
->>>>
->>>> Eric Dumazet reported a strange numa spreading info in [1], and found
->>>> commit 121e6f3258fe ("mm/vmalloc: hugepage vmalloc mappings") introduced
->>>> this issue [2].
->>>>
->>>> Dig into the difference before and after this patch, page allocation has
->>>> some difference:
->>>>
->>>> before:
->>>> alloc_large_system_hash
->>>>       __vmalloc
->>>>           __vmalloc_node(..., NUMA_NO_NODE, ...)
->>>>               __vmalloc_node_range
->>>>                   __vmalloc_area_node
->>>>                       alloc_page /* because NUMA_NO_NODE, so choose alloc_page branch */
->>>>                           alloc_pages_current
->>>>                               alloc_page_interleave /* can be proved by print policy mode */
->>>>
->>>> after:
->>>> alloc_large_system_hash
->>>>       __vmalloc
->>>>           __vmalloc_node(..., NUMA_NO_NODE, ...)
->>>>               __vmalloc_node_range
->>>>                   __vmalloc_area_node
->>>>                       alloc_pages_node /* choose nid by nuam_mem_id() */
->>>>                           __alloc_pages_node(nid, ....)
->>>>
->>>> So after commit 121e6f3258fe ("mm/vmalloc: hugepage vmalloc mappings"),
->>>> it will allocate memory in current node instead of interleaving allocate
->>>> memory.
->>>>
->>>> [1]
->>>> https://lore.kernel.org/linux-mm/CANn89iL6AAyWhfxdHO+jaT075iOa3XcYn9k6JJc7JR2XYn6k_Q@mail.gmail.com/
->>>>
->>>> [2]
->>>> https://lore.kernel.org/linux-mm/CANn89iLofTR=AK-QOZY87RdUZENCZUT4O6a0hvhu3_EwRMerOg@mail.gmail.com/
->>>>
->>>> Fixes: 121e6f3258fe ("mm/vmalloc: hugepage vmalloc mappings")
->>>> Reported-by: Eric Dumazet <edumazet@google.com>
->>>> Signed-off-by: Chen Wandun <chenwandun@huawei.com>
->>>> ---
->>>>    mm/vmalloc.c | 33 ++++++++++++++++++++++++++-------
->>>>    1 file changed, 26 insertions(+), 7 deletions(-)
->>>>
->>>> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
->>>> index f884706c5280..48e717626e94 100644
->>>> --- a/mm/vmalloc.c
->>>> +++ b/mm/vmalloc.c
->>>> @@ -2823,6 +2823,8 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
->>>>                   unsigned int order, unsigned int nr_pages, struct page **pages)
->>>>    {
->>>>           unsigned int nr_allocated = 0;
->>>> +       struct page *page;
->>>> +       int i;
->>>>
->>>>           /*
->>>>            * For order-0 pages we make use of bulk allocator, if
->>>> @@ -2833,6 +2835,7 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
->>>>           if (!order) {
->>>
->>> Can you please replace the above with if (!order && nid != NUMA_NO_NODE)?
->>>
->>>>                   while (nr_allocated < nr_pages) {
->>>>                           unsigned int nr, nr_pages_request;
->>>> +                       page = NULL;
->>>>
->>>>                           /*
->>>>                            * A maximum allowed request is hard-coded and is 100
->>>> @@ -2842,9 +2845,23 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
->>>>                            */
->>>>                           nr_pages_request = min(100U, nr_pages - nr_allocated);
->>>>
->>>
->>> Undo the following change in this if block.
->>
->> Yes, It seem like more simpler as you suggested, But it still have
->> performance regression, I plan to change the following to consider
->> both mempolcy and alloc_pages_bulk.
-> 
-> Thanks for finding and debugging this. These APIs are a maze of twisty
-> little passages, all alike so I could be as confused as I was when I
-> wrote that patch, but doesn't a minimal fix look something like this?
+base-commit: 36a21d51725af2ce0700c6ebcb6b9594aac658a6
+-- 
+2.25.1
 
-Yes, I sent a patch，it looks like as you show, besides it also
-contains some performance optimization.
-
-[PATCH] mm/vmalloc: introduce alloc_pages_bulk_array_mempolicy to 
-accelerate memory allocation
-
-Thanks,
-Wandun
-
-> 
-> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> index d77830ff604c..75ee9679f521 100644
-> --- a/mm/vmalloc.c
-> +++ b/mm/vmalloc.c
-> @@ -2860,7 +2860,10 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
->                  struct page *page;
->                  int i;
->   
-> -               page = alloc_pages_node(nid, gfp, order);
-> +               if (nid == NUMA_NO_NODE)
-> +                       page = alloc_pages(gfp, order);
-> +               else
-> +                       page = alloc_pages_node(nid, gfp, order);
->                  if (unlikely(!page))
->                          break;
->   
-> 
-> Thanks,
-> Nick
-> .
-> 
