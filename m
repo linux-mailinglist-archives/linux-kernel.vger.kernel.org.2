@@ -2,272 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA43242FB8D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 21:00:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EC5D42FB90
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 21:00:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238248AbhJOTCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 15:02:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34406 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238178AbhJOTCm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 15:02:42 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61700C061570
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 12:00:35 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <l.stach@pengutronix.de>)
-        id 1mbSRM-0005Tk-5y; Fri, 15 Oct 2021 21:00:24 +0200
-Message-ID: <57282e6ea0c01dc403c02e245e048d41ec696808.camel@pengutronix.de>
-Subject: Re: [PATCH v3 9/9] PCI: imx: add the imx8mm pcie support
-From:   Lucas Stach <l.stach@pengutronix.de>
-To:     Richard Zhu <hongxing.zhu@nxp.com>, tharvey@gateworks.com,
-        kishon@ti.com, vkoul@kernel.org, robh@kernel.org,
-        galak@kernel.crashing.org, shawnguo@kernel.org
-Cc:     linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de, linux-imx@nxp.com
-Date:   Fri, 15 Oct 2021 21:00:22 +0200
-In-Reply-To: <1634028078-2387-10-git-send-email-hongxing.zhu@nxp.com>
-References: <1634028078-2387-1-git-send-email-hongxing.zhu@nxp.com>
-         <1634028078-2387-10-git-send-email-hongxing.zhu@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.4 (3.40.4-1.fc34) 
+        id S242008AbhJOTC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 15:02:59 -0400
+Received: from mail-eopbgr80075.outbound.protection.outlook.com ([40.107.8.75]:43077
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S238178AbhJOTC5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 15:02:57 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZXwZbIo/7oNSHvh8fEI3bxwzF0YV3LmfyIHtUIhlXI0CMUqyTxHolClEKei8ZVZ3ikA32ta+E0dEARcOqscaO3hyrtveJteAf4QKMQycsqMi7pFSShdbGk4w6t1frWKuh9YRpzl/0HIzhjru/c3h9jioU6otHOA4yK2284ARwxtwzLd+km32/YrIEa72/82RrYildrONNKxAbvaLWtbVnMlxw8dXZe4SlxrnTdU7kb5LmlopfURTVDLwnJ3r1iIplLRvkJ6mjj/00pahO0K2x9U4SSk3esmd1VHQem4Vm55F4ztDbkhy5EGjpNV3V+gIU8UtNj4MGZNlbJ9wT+BxeQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=NRtfFM0mmHjLk5L4BXywSmi2PecSyjTFE6SREgSvDyQ=;
+ b=UuT6qLgqBMtg175nbfdSPFhdAzz3MuvwCaCXEvGu9ZKR8NPntKAlswREsoALRxVU0s7xl9MNQ9xCCIYGT5co3n0LHmAPVhiE7CR5fQmGHlswXVmf94J8WYN/MXhFL+hUJsXo5RafoqWTWNlqPzzn3fX0Ljb0/WNHT5uNuAvAXFpIgZmkZmAAoevMiirtPwUhR3qgi/tcRy7cSMCmoCXHjTBjr+PttghmVEGRY1ASZcRG6ahsX8eLsKv32R+TzHW1ilxv0RQvBYVw92ecZ7Ie6aZfMg3pjJs2gz52L8O/wpcY9lgc6xLK7YskaMK53HPbtJmHOH9ceXnmjL2jLWiv1w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=seco.com; dmarc=pass action=none header.from=seco.com;
+ dkim=pass header.d=seco.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=secospa.onmicrosoft.com; s=selector2-secospa-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NRtfFM0mmHjLk5L4BXywSmi2PecSyjTFE6SREgSvDyQ=;
+ b=OFypcXVUcs8iC7pmztpipg8F5vzQIgKAsCwjL2Cf9u/h9/67ViTAFTC231WYBjSpKBQ5lf/DLclaUyU5f3nUTEd6qA51uaVPyYwAF0SV4ecE6UNFtfRyut4ReaWEGttx16WBLS0/rZkrrg+O3iwTLuhk3OXFE0KEmZn/5kMI2/k=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=seco.com;
+Received: from DB7PR03MB4523.eurprd03.prod.outlook.com (2603:10a6:10:19::27)
+ by DBBPR03MB6905.eurprd03.prod.outlook.com (2603:10a6:10:205::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.16; Fri, 15 Oct
+ 2021 19:00:48 +0000
+Received: from DB7PR03MB4523.eurprd03.prod.outlook.com
+ ([fe80::a9aa:f363:66e:fadf]) by DB7PR03MB4523.eurprd03.prod.outlook.com
+ ([fe80::a9aa:f363:66e:fadf%6]) with mapi id 15.20.4608.017; Fri, 15 Oct 2021
+ 19:00:48 +0000
+From:   Sean Anderson <sean.anderson@seco.com>
+To:     linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, michal.simek@xilinx.com,
+        linux-arm-kernel@lists.infradead.org,
+        Alvaro Gamez <alvaro.gamez@hazent.com>,
+        linux-kernel@vger.kernel.org,
+        Sean Anderson <sean.anderson@seco.com>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH v8 1/3] microblaze: timer: Remove unused properties
+Date:   Fri, 15 Oct 2021 15:00:23 -0400
+Message-Id: <20211015190025.409426-1-sean.anderson@seco.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: BL1PR13CA0096.namprd13.prod.outlook.com
+ (2603:10b6:208:2b9::11) To DB7PR03MB4523.eurprd03.prod.outlook.com
+ (2603:10a6:10:19::27)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: l.stach@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Received: from plantagenet.inhand.com (50.195.82.171) by BL1PR13CA0096.namprd13.prod.outlook.com (2603:10b6:208:2b9::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.8 via Frontend Transport; Fri, 15 Oct 2021 19:00:47 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 3b9b4b02-9b81-44de-90cb-08d9900e199f
+X-MS-TrafficTypeDiagnostic: DBBPR03MB6905:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DBBPR03MB690565F0AEECE670466B306A96B99@DBBPR03MB6905.eurprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3173;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: LoOW42uv2UEdiir6vsuuo/t/bC895Cc0A6nDSI4/JQHBS+dN+IwpNr7aUTOrVn3mMQbkzbnX/VvAHAhNjckCbSXgZciTxGRClj87xmYmf2bDWQ68VbzqWLsOT/Txd1+5qRDtSXLx5hEncy/aHDim+RdKqkpsdMGm0iGd0ZxjagLFLVpAKLcEZPr/5y2Pnoq6KIeGwpH3OhYQSQxKZr7SGBmRGbgRYSRV+4Zjsk1NvQh6QcAa1WcChprz766m8ZH2DYQCZp30vNhubGfh4CQic0x8rQTmKPGMgFs5VOP7l10WeNjpA8JW3Rbn5QIyCgJ6pfEfUO04SRxfDaCYFcQBGJxLoWGYSe5AWcj891m5ZsI8MGjagXLKFsRxoVTdKDjLrUbF+njv7qabPDt3+c2uDPj+nIYu8SsMLJYUUcTGqVuz/MW2oEmFEAU9CRRv3D4zcFeZyUHPueOSHJNazMIG85tgrTnJJiq0/P17924sHaaZrcbZE68fbdnl3G0A8ipW2aknl1OSNbsYK1F3qdHG2sEAv4uj69Hfs+3A2qLdKTNhLzDlU5d4HfFtxndAgnNpUQhdyDub+LN7pfBUtZaVy3iX72IufxDmL+1oR1Y1p3Jhek9/TlFJDvURtVwCpuK9KCrr/WUoZuXiNPGXPjvNiaCDOOnSaN7ZdtDFa1uaEwsocHFRiOoxx4xqmNV1N2h44JfixvWWHrn3N25UcNP6yQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB7PR03MB4523.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(956004)(6916009)(6506007)(54906003)(508600001)(1076003)(6666004)(316002)(26005)(44832011)(4326008)(2616005)(66946007)(83380400001)(7416002)(86362001)(8936002)(52116002)(6512007)(186003)(8676002)(66476007)(66556008)(2906002)(38100700002)(38350700002)(6486002)(5660300002)(4744005)(36756003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?cvE3VEBNvB6PfcF9L3RMRKJK48px3RmQaR4C9D2p/b8MHiu2IQoEjcvGgv1K?=
+ =?us-ascii?Q?Vr8FAigxdydNw++0qD2TbIbKYVcCWnnI3tf1/rCirFqswgKo8NRVHBGVKHLx?=
+ =?us-ascii?Q?WhYl3LBSknonTe74xLmrFXmfV4MT5BHGyZ9OnEUjroycURqDrmQjaL6PYrBm?=
+ =?us-ascii?Q?3Va9TK1fFm/0oQdJwbjn9eiYkMVXVNqp4X9ercLWtgDequBYpRhsS8zEOTci?=
+ =?us-ascii?Q?tPDubVvMQ7BQepD8MIw66Bxc+OJ5mp7QdYM4gY+jG571mm5Kvzb0rYZ2pkhH?=
+ =?us-ascii?Q?CtgumctLmLI+g6NX/JnPsHkkbcqX8c6qxAOsc6QVuXSit6Sy3tyZpWi8buDl?=
+ =?us-ascii?Q?Mvzi3MkleYPsmfYufUNEDjvUXBruQtKBBezKNup85PqDfFIz58qPAUiemu2o?=
+ =?us-ascii?Q?R0YZPr4Iw5sd3bt14KJ6m+yiVObeFCnNfJi++Aqk7ipZqbK+eA+ynskyMlQu?=
+ =?us-ascii?Q?IV2BiW+oLWMoZs5fn79EA38GAkJd5mNlKjgsrnpYcV5L1wRcVxeWSJ5P7Jvv?=
+ =?us-ascii?Q?YhevWpaSlYzk665gDQkEydI5ilmZ/Q5i50I/qzRi7B2f/zRftO3u76feieaV?=
+ =?us-ascii?Q?FPo9fa4wSfHvKeIAtRkNsGtDNHh+WBxeOl8M0iGqraIrLGKCvvgEqlLBL+pe?=
+ =?us-ascii?Q?khXfpqKorOakJATXjxp4l/znsnLWi1K+zEjTRBjc2OGZsDRRz/qOgwjui/eO?=
+ =?us-ascii?Q?JHBRyu0EhUsCDr68Aqppw6pd/xS0JglJ/RbSTTcMMGMDXhPvgpZuTYaYLQBW?=
+ =?us-ascii?Q?7ukl8cjiOx8YUKy/AjA7t9h2nUkEIhlCIZObS2IJ5sShAg5QlRst7cPjCCbq?=
+ =?us-ascii?Q?XdohIbggHnnLQsDkj1wq1NgcW6L/bYyq1xtQZFc2tyW1+saMDq34ZqdWGb4E?=
+ =?us-ascii?Q?4kyFcZebyvRuyAXmeUHZ1c1TeN8kwYKP6Uf9lCmx3XzlcyZW5UjPzruJEEZz?=
+ =?us-ascii?Q?iIjmWOXXuSCtOkup6Sn1qBNLJoQJkvXReUKsv8tYkZcwwIj8PAmceM6Ivzk1?=
+ =?us-ascii?Q?Jr/R/VDrCQa72/xY5J7WbI+NZU4rFrwGbTeR7QJEnSpWmcv4aN2uDTGvoD/0?=
+ =?us-ascii?Q?PkVeeiavCrHYTsjiBsWxj/Bpnd7UXZFTL3N0xLBn9emUCi8ZH6gYE/LaNKQl?=
+ =?us-ascii?Q?zlKxZJoedYm7yu9pgyh/wiMHMqX9LOVsk58yK/mccg5LdfRNhYXA/hQniIQU?=
+ =?us-ascii?Q?VeDsrTzavt+7y6UAIht1H6mQy/TjyePvvG43l0/ddR/ZfiwH6l6TYSnK9JIa?=
+ =?us-ascii?Q?NgfJRyYi3OjSPV6ze4LBwjtthRJyMB9p8Lm7c/AlNS9yAZt75oQuNAjMCCo9?=
+ =?us-ascii?Q?tyrXnLAX1zlzCJ5y8iX2Nk1u?=
+X-OriginatorOrg: seco.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3b9b4b02-9b81-44de-90cb-08d9900e199f
+X-MS-Exchange-CrossTenant-AuthSource: DB7PR03MB4523.eurprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Oct 2021 19:00:48.5934
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: bebe97c3-6438-442e-ade3-ff17aa50e733
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: WBpjJRHn+lfH1CZpsy0m6zl0cgPqJUXrqex5MkUASqtdjlZjdI+HycDQ2ZfWD2FSPZjr1Z+QqU+QH7N7ctTL4A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR03MB6905
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Dienstag, dem 12.10.2021 um 16:41 +0800 schrieb Richard Zhu:
-> i.MX8MM PCIe works mostly like the i.MX8MQ one, but has a different PHY
-> and allows to output the internal PHY reference clock via the refclk pad.
-> Add the i.MX8MM PCIe support based on the standalone PHY driver.
-> 
-> Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
-> ---
->  drivers/pci/controller/dwc/pci-imx6.c | 63 ++++++++++++++++++++++++++-
->  1 file changed, 61 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
-> index 26f49f797b0f..73022e37b1c5 100644
-> --- a/drivers/pci/controller/dwc/pci-imx6.c
-> +++ b/drivers/pci/controller/dwc/pci-imx6.c
-> @@ -29,6 +29,7 @@
->  #include <linux/types.h>
->  #include <linux/interrupt.h>
->  #include <linux/reset.h>
-> +#include <linux/phy/phy.h>
->  #include <linux/pm_domain.h>
->  #include <linux/pm_runtime.h>
->  
-> @@ -49,6 +50,7 @@ enum imx6_pcie_variants {
->  	IMX6QP,
->  	IMX7D,
->  	IMX8MQ,
-> +	IMX8MM,
->  };
->  
->  #define IMX6_PCIE_FLAG_IMX6_PHY			BIT(0)
-> @@ -80,6 +82,7 @@ struct imx6_pcie {
->  	u32			tx_deemph_gen2_6db;
->  	u32			tx_swing_full;
->  	u32			tx_swing_low;
-> +	u32			refclk_pad_mode;
+This removes properties not used by either the PWM or timer drivers.
+This lets us set additionalProperties: false.
 
-As Matthias already noticed: drop this.
+Signed-off-by: Sean Anderson <sean.anderson@seco.com>
+---
 
->  	struct regulator	*vpcie;
->  	struct regulator	*vph;
->  	void __iomem		*phy_base;
-> @@ -88,6 +91,7 @@ struct imx6_pcie {
->  	struct device		*pd_pcie;
->  	/* power domain for pcie phy */
->  	struct device		*pd_pcie_phy;
-> +	struct phy		*phy;
->  	const struct imx6_pcie_drvdata *drvdata;
->  };
->  
-> @@ -372,6 +376,8 @@ static void imx6_pcie_assert_core_reset(struct imx6_pcie *imx6_pcie)
->  	case IMX7D:
->  	case IMX8MQ:
->  		reset_control_assert(imx6_pcie->pciephy_reset);
-> +		fallthrough;
-> +	case IMX8MM:
->  		reset_control_assert(imx6_pcie->apps_reset);
->  		break;
->  	case IMX6SX:
-> @@ -407,7 +413,8 @@ static void imx6_pcie_assert_core_reset(struct imx6_pcie *imx6_pcie)
->  
->  static unsigned int imx6_pcie_grp_offset(const struct imx6_pcie *imx6_pcie)
->  {
-> -	WARN_ON(imx6_pcie->drvdata->variant != IMX8MQ);
-> +	WARN_ON(imx6_pcie->drvdata->variant != IMX8MQ &&
-> +		imx6_pcie->drvdata->variant != IMX8MM);
->  	return imx6_pcie->controller_id == 1 ? IOMUXC_GPR16 : IOMUXC_GPR14;
->  }
->  
-> @@ -447,6 +454,7 @@ static int imx6_pcie_enable_ref_clk(struct imx6_pcie *imx6_pcie)
->  	case IMX7D:
->  		break;
->  	case IMX8MQ:
-> +	case IMX8MM:
->  		ret = clk_prepare_enable(imx6_pcie->pcie_aux);
->  		if (ret) {
->  			dev_err(dev, "unable to enable pcie_aux clock\n");
-> @@ -522,6 +530,14 @@ static void imx6_pcie_deassert_core_reset(struct imx6_pcie *imx6_pcie)
->  		goto err_ref_clk;
->  	}
->  
-> +	switch (imx6_pcie->drvdata->variant) {
-> +	case IMX8MM:
-> +		if (phy_power_on(imx6_pcie->phy))
-> +			pr_info("unable to enable pcie phy clock\n");
+Changes in v8:
+- Remove additional properties from microblaze device tree
 
-It a implementation detail of the PHY driver that this just turns on
-the clock. dev_err("unable to power on PHY\n") or something like that.
+ arch/microblaze/boot/dts/system.dts | 5 -----
+ 1 file changed, 5 deletions(-)
 
-> +		break;
-> +	default:
-> +		break;
-> +	}
->  	/* allow the clocks to stabilize */
->  	usleep_range(200, 500);
->  
-> @@ -538,6 +554,10 @@ static void imx6_pcie_deassert_core_reset(struct imx6_pcie *imx6_pcie)
->  	case IMX8MQ:
->  		reset_control_deassert(imx6_pcie->pciephy_reset);
->  		break;
-> +	case IMX8MM:
-> +		if (phy_init(imx6_pcie->phy) != 0)
-> +			dev_err(dev, "Waiting for PHY ready timeout!\n");
-> +		break;
->  	case IMX7D:
->  		reset_control_deassert(imx6_pcie->pciephy_reset);
->  
-> @@ -614,6 +634,8 @@ static void imx6_pcie_configure_type(struct imx6_pcie *imx6_pcie)
->  static void imx6_pcie_init_phy(struct imx6_pcie *imx6_pcie)
->  {
->  	switch (imx6_pcie->drvdata->variant) {
-> +	case IMX8MM:
-> +		break;
->  	case IMX8MQ:
->  		/*
->  		 * TODO: Currently this code assumes external
-> @@ -753,6 +775,7 @@ static void imx6_pcie_ltssm_enable(struct device *dev)
->  		break;
->  	case IMX7D:
->  	case IMX8MQ:
-> +	case IMX8MM:
->  		reset_control_deassert(imx6_pcie->apps_reset);
->  		break;
->  	}
-> @@ -871,6 +894,7 @@ static void imx6_pcie_ltssm_disable(struct device *dev)
->  				   IMX6Q_GPR12_PCIE_CTL_2, 0);
->  		break;
->  	case IMX7D:
-> +	case IMX8MM:
->  		reset_control_assert(imx6_pcie->apps_reset);
->  		break;
->  	default:
-> @@ -930,6 +954,7 @@ static void imx6_pcie_clk_disable(struct imx6_pcie *imx6_pcie)
->  				   IMX7D_GPR12_PCIE_PHY_REFCLK_SEL);
->  		break;
->  	case IMX8MQ:
-> +	case IMX8MM:
->  		clk_disable_unprepare(imx6_pcie->pcie_aux);
->  		break;
->  	default:
-> @@ -985,6 +1010,7 @@ static int imx6_pcie_probe(struct platform_device *pdev)
->  	struct imx6_pcie *imx6_pcie;
->  	struct device_node *np;
->  	struct resource *dbi_base;
-> +	struct device_node *phy_node;
->  	struct device_node *node = dev->of_node;
->  	int ret;
->  	u16 val;
-> @@ -1019,6 +1045,14 @@ static int imx6_pcie_probe(struct platform_device *pdev)
->  			return PTR_ERR(imx6_pcie->phy_base);
->  	}
->  
-> +	imx6_pcie->phy = devm_phy_get(dev, "pcie-phy");
-> +	if (IS_ERR(imx6_pcie->phy)) {
-> +		if (PTR_ERR(imx6_pcie->phy) == -EPROBE_DEFER)
-> +			return -EPROBE_DEFER;
-> +		/* Set NULL if there is no pcie-phy */
-> +		imx6_pcie->phy = NULL;
-> +	}
-
-Move this into the i.MX8MM specific section below. The PHY is required
-on the 8MM and we should not ignore any errors.
-
-Regards,
-Lucas
-
-> +
->  	dbi_base = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->  	pci->dbi_base = devm_ioremap_resource(dev, dbi_base);
->  	if (IS_ERR(pci->dbi_base))
-> @@ -1090,6 +1124,18 @@ static int imx6_pcie_probe(struct platform_device *pdev)
->  			return PTR_ERR(imx6_pcie->apps_reset);
->  		}
->  		break;
-> +	case IMX8MM:
-> +		imx6_pcie->pcie_aux = devm_clk_get(dev, "pcie_aux");
-> +		if (IS_ERR(imx6_pcie->pcie_aux))
-> +			return dev_err_probe(dev, PTR_ERR(imx6_pcie->pcie_aux),
-> +					     "pcie_aux clock source missing or invalid\n");
-> +		imx6_pcie->apps_reset = devm_reset_control_get_exclusive(dev,
-> +									 "apps");
-> +		if (IS_ERR(imx6_pcie->apps_reset)) {
-> +			dev_err(dev, "Failed to get PCIE APPS reset control\n");
-> +			return PTR_ERR(imx6_pcie->apps_reset);
-> +		}
-> +		break;
->  	default:
->  		break;
->  	}
-> @@ -1130,6 +1176,14 @@ static int imx6_pcie_probe(struct platform_device *pdev)
->  				 &imx6_pcie->tx_swing_low))
->  		imx6_pcie->tx_swing_low = 127;
->  
-> +	/* get PHY refclk pad mode if there is PHY node */
-> +	phy_node = of_parse_phandle(node, "phys", 0);
-> +	if (phy_node) {
-> +		of_property_read_u32(phy_node, "fsl,refclk-pad-mode",
-> +				     &imx6_pcie->refclk_pad_mode);
-> +		of_node_put(phy_node);
-> +	}
-> +
->  	/* Limit link speed */
->  	pci->link_gen = 1;
->  	of_property_read_u32(node, "fsl,max-link-speed", &pci->link_gen);
-> @@ -1202,6 +1256,10 @@ static const struct imx6_pcie_drvdata drvdata[] = {
->  	[IMX8MQ] = {
->  		.variant = IMX8MQ,
->  	},
-> +	[IMX8MM] = {
-> +		.variant = IMX8MM,
-> +		.flags = IMX6_PCIE_FLAG_SUPPORTS_SUSPEND,
-> +	},
->  };
->  
->  static const struct of_device_id imx6_pcie_of_match[] = {
-> @@ -1209,7 +1267,8 @@ static const struct of_device_id imx6_pcie_of_match[] = {
->  	{ .compatible = "fsl,imx6sx-pcie", .data = &drvdata[IMX6SX], },
->  	{ .compatible = "fsl,imx6qp-pcie", .data = &drvdata[IMX6QP], },
->  	{ .compatible = "fsl,imx7d-pcie",  .data = &drvdata[IMX7D],  },
-> -	{ .compatible = "fsl,imx8mq-pcie", .data = &drvdata[IMX8MQ], } ,
-> +	{ .compatible = "fsl,imx8mq-pcie", .data = &drvdata[IMX8MQ], },
-> +	{ .compatible = "fsl,imx8mm-pcie", .data = &drvdata[IMX8MM], },
->  	{},
->  };
->  
-
+diff --git a/arch/microblaze/boot/dts/system.dts b/arch/microblaze/boot/dts/system.dts
+index b7ee1056779e..22252451ec09 100644
+--- a/arch/microblaze/boot/dts/system.dts
++++ b/arch/microblaze/boot/dts/system.dts
+@@ -347,12 +347,7 @@ xps_timer_1: timer@83c00000 {
+ 			interrupts = < 3 2 >;
+ 			reg = < 0x83c00000 0x10000 >;
+ 			xlnx,count-width = <0x20>;
+-			xlnx,family = "virtex5";
+-			xlnx,gen0-assert = <0x1>;
+-			xlnx,gen1-assert = <0x1>;
+ 			xlnx,one-timer-only = <0x0>;
+-			xlnx,trig0-assert = <0x1>;
+-			xlnx,trig1-assert = <0x1>;
+ 		} ;
+ 	} ;
+ }  ;
+-- 
+2.25.1
 
