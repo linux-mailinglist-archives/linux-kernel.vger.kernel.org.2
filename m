@@ -2,150 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 274EF42FEAA
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 01:26:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45EDA42FEBA
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 01:31:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243473AbhJOX2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 19:28:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37838 "EHLO
+        id S243564AbhJOXdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 19:33:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243493AbhJOX2b (ORCPT
+        with ESMTP id S243501AbhJOXdC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 19:28:31 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 094EBC061570
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 16:26:25 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id g184so9899845pgc.6
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 16:26:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=uJ2YVnKXuCapD+GC+e6jPtJ+8reV521rhOMXMMjLFFQ=;
-        b=FEKBFlN5wG9yAV2kBppjcw/xoIl103tlpwWPoOYcaTivN6B+Q7J4gJ4HIwRveDvqZj
-         cUUk4ke64+QNWZUYnzC1ERhlCUwZcaO3PnfOHgNqTTK8e2tOii+RRN/zfPoIQAxUNf4m
-         QMGuUSKp7X8D7JzkiI3kyqTDZvpJvQla44ATmJzLuhPjQgasY9W3ALSdSO6UeUmDX6lo
-         VwZEln3HpV2MoWwzKX+7oQh5b9aFgDJrJMnFW63YVxVomjzmf2ZYcxayTLyhK/wVzTYJ
-         slyL+KWyioSrGuspuUxNMjjqCnUC7+D+4N6d43OEm61HhmOxmHyL79eSEYIo5IZpFxAw
-         2hEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=uJ2YVnKXuCapD+GC+e6jPtJ+8reV521rhOMXMMjLFFQ=;
-        b=daYTRO8YI+3IaC5ACYNY3Fs1rmQzlWHb5+anobh8tBqObozUbSDgpNEToayWYvgNZx
-         x5ProYy8PIXf++CmfYTZ0Tn5XVbG017rCxJa4NK84o0HJxWVudUtnuVO5SX7VnOp4COZ
-         919+eRZ60ho5lWuzHRHmQ79/V6yoqAlfb5TeltyK0TQMn5H8zrFHmv1cKk0Hr8SUFcue
-         sT34tFHmXpXFBjrMP1JK4OJcuehlUbRYWpOkP9AKOqiaLWAohz1QNrJ/E9Fo0GnCNAZN
-         ZaYcW2tAkbIYkpzB6PdhPMLvuGYTb4Whky1eKo98jpF87utSdMeLvhujfGrBMKhVaeCY
-         Ycsg==
-X-Gm-Message-State: AOAM530/6mWAvFVx0r68XXGoun6pt+1INsKTR3QFnjB4QpDI824VZ4PK
-        RuWlQCVubdFslqXSYIn9WSP3DA==
-X-Google-Smtp-Source: ABdhPJz3dM1jOK77yQ3YA/EhyHfHvYvgcPqzyaQNIMfPWv2Mc+oTlnhWR75YPgic17CIAtdS9N5TEQ==
-X-Received: by 2002:aa7:949c:0:b0:44c:a0df:2c7f with SMTP id z28-20020aa7949c000000b0044ca0df2c7fmr14727451pfk.34.1634340384249;
-        Fri, 15 Oct 2021 16:26:24 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id t22sm1451643pfg.148.2021.10.15.16.26.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Oct 2021 16:26:23 -0700 (PDT)
-Date:   Fri, 15 Oct 2021 23:26:19 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Wanpeng Li <kernellwp@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Subject: Re: [PATCH v2 3/3] KVM: vCPU kick tax cut for running vCPU
-Message-ID: <YWoOG40Ap0Islpu2@google.com>
-References: <1633770532-23664-1-git-send-email-wanpengli@tencent.com>
- <1633770532-23664-3-git-send-email-wanpengli@tencent.com>
+        Fri, 15 Oct 2021 19:33:02 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51855C061762;
+        Fri, 15 Oct 2021 16:30:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=0/vUy76aoPqtosIeLCeI7X3UUbEJbC7MDQlzKX9/imU=; b=Qu5GFvduvjpL/149x5vJFhyA9d
+        OHeXqOlyZYRjWN9OS2cCc07oQgdMYKnZtAKIhxuxO+HOF4yeuDfBrl9hts78YInLDdv4S1rButLnj
+        ZW99/qMPGJ5nMZJ9n3SQjUlAws+mYXHbdvkvNeipgadm4ZCSQRzlOb/WRTd+64VXK3M5e5LsEEnb2
+        H5xrHiyIX3qjAzKgsMAOhSEUf9hGBzS4i09QsHZ8LWqrneE0BVQm8yNdYbNWIfbGaMgIn4ks0Mer/
+        aFrzChQyVK9ZQPEijiEBdBivuALzv2afyXywT/Z3bOHrCprGl8US5syTuD2h/pFd2RAHvysZ7I7mJ
+        OJ+4BK4Q==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mbWej-0095ur-55; Fri, 15 Oct 2021 23:30:29 +0000
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     axboe@kernel.dk, jejb@linux.ibm.com, martin.petersen@oracle.com,
+        agk@redhat.com, snitzer@redhat.com, colyli@suse.de,
+        kent.overstreet@gmail.com, boris.ostrovsky@oracle.com,
+        jgross@suse.com, sstabellini@kernel.org, roger.pau@citrix.com,
+        geert@linux-m68k.org, ulf.hansson@linaro.org, tj@kernel.org,
+        hare@suse.de, jdike@addtoit.com, richard@nod.at,
+        anton.ivanov@cambridgegreys.com, johannes.berg@intel.com,
+        krisman@collabora.com, chris.obbard@collabora.com,
+        thehajime@gmail.com, zhuyifei1999@gmail.com, haris.iqbal@ionos.com,
+        jinpu.wang@ionos.com, miquel.raynal@bootlin.com, vigneshr@ti.com,
+        linux-mtd@lists.infradead.org
+Cc:     linux-scsi@vger.kernel.org, dm-devel@redhat.com,
+        linux-bcache@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-m68k@lists.linux-m68k.org, linux-um@lists.infradead.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Luis Chamberlain <mcgrof@kernel.org>
+Subject: [PATCH 0/9] block: reviewed add_disk() error handling set
+Date:   Fri, 15 Oct 2021 16:30:19 -0700
+Message-Id: <20211015233028.2167651-1-mcgrof@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1633770532-23664-3-git-send-email-wanpengli@tencent.com>
+Content-Transfer-Encoding: 8bit
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 09, 2021, Wanpeng Li wrote:
-> From: Wanpeng Li <wanpengli@tencent.com>
-> 
-> Sometimes a vCPU kick is following a pending request, even if @vcpu is 
-> the running vCPU. It suffers from both rcuwait_wake_up() which has 
-> rcu/memory barrier operations and cmpxchg(). Let's check vcpu->wait 
-> before rcu_wait_wake_up() and whether @vcpu is the running vCPU before 
-> cmpxchg() to tax cut this overhead.
-> 
-> We evaluate the kvm-unit-test/vmexit.flat on an Intel ICX box, most of the 
-> scores can improve ~600 cpu cycles especially when APICv is disabled.
-> 
-> tscdeadline_immed
-> tscdeadline
-> self_ipi_sti_nop
-> ..............
-> x2apic_self_ipi_tpr_sti_hlt
-> 
-> Suggested-by: Sean Christopherson <seanjc@google.com>
-> Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
-> ---
-> v1 -> v2:
->  * move checking running vCPU logic to kvm_vcpu_kick
->  * check rcuwait_active(&vcpu->wait) etc
-> 
->  virt/kvm/kvm_main.c | 13 ++++++++++---
->  1 file changed, 10 insertions(+), 3 deletions(-)
-> 
-> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> index 7851f3a1b5f7..18209d7b3711 100644
-> --- a/virt/kvm/kvm_main.c
-> +++ b/virt/kvm/kvm_main.c
-> @@ -3314,8 +3314,15 @@ void kvm_vcpu_kick(struct kvm_vcpu *vcpu)
->  {
->  	int me, cpu;
->  
-> -	if (kvm_vcpu_wake_up(vcpu))
-> -		return;
-> +	me = get_cpu();
-> +
-> +	if (rcuwait_active(&vcpu->wait) && kvm_vcpu_wake_up(vcpu))
+Jens,
 
-This needs to use kvm_arch_vcpu_get_wait(), not vcpu->wait, because PPC has some
-funky wait stuff.
+I had last split up patches into 7 groups, but at this point now
+most changes are merged except a few more drivers. Instead of creating
+a new patch set for each of the 7 groups I'm creating 3 new groups of
+patches now:
 
-One potential issue I didn't think of before.  rcuwait_active() comes with the
-below warning, which means we might be at risk of a false negative that could
-result in a missed wakeup.  I'm not postive on that though.
+  * This set, for which we already have an Acked-by or Reviewed-by tag,
+    it would be nice to get clarification of driver maintainers want
+    these to go through you or if a the maintainers want to pick these
+    changes up themselves.
 
-/*
- * Note: this provides no serialization and, just as with waitqueues,
- * requires care to estimate as to whether or not the wait is active.
- */
+  * A second set will deal with patches which have no reviews done for
+    them yet 
 
-> +		goto out;
-> +
-> +	if (vcpu == __this_cpu_read(kvm_running_vcpu)) {
-> +		WARN_ON_ONCE(vcpu->mode == IN_GUEST_MODE);
-> +		goto out;
-> +	}
->  
->  	/*
->  	 * Note, the vCPU could get migrated to a different pCPU at any point
-> @@ -3324,12 +3331,12 @@ void kvm_vcpu_kick(struct kvm_vcpu *vcpu)
->  	 * IPI is to force the vCPU to leave IN_GUEST_MODE, and migrating the
->  	 * vCPU also requires it to leave IN_GUEST_MODE.
->  	 */
-> -	me = get_cpu();
->  	if (kvm_arch_vcpu_should_kick(vcpu)) {
->  		cpu = READ_ONCE(vcpu->cpu);
->  		if (cpu != me && (unsigned)cpu < nr_cpu_ids && cpu_online(cpu))
->  			smp_send_reschedule(cpu);
->  	}
-> +out:
->  	put_cpu();
->  }
->  EXPORT_SYMBOL_GPL(kvm_vcpu_kick);
-> -- 
-> 2.25.1
-> 
+  * The last set deals with the __register_blkdev() change and the
+    __must_check change which ensures we don't let in new drivers
+    which don't deal with error handling.
+
+If you're a maintainer of any of the below patches and wish for them to
+go through Jens' tree directly now would be a good time to say so or
+you can just pick the patch up yourself.
+
+Luis Chamberlain (9):
+  scsi/sd: add error handling support for add_disk()
+  scsi/sr: add error handling support for add_disk()
+  dm: add add_disk() error handling
+  bcache: add error handling support for add_disk()
+  xen-blkfront: add error handling support for add_disk()
+  m68k/emu/nfblock: add error handling support for add_disk()
+  um/drivers/ubd_kern: add error handling support for add_disk()
+  rnbd: add error handling support for add_disk()
+  mtd: add add_disk() error handling
+
+ arch/m68k/emu/nfblock.c       |  9 +++++++--
+ arch/um/drivers/ubd_kern.c    | 13 +++++++++----
+ drivers/block/rnbd/rnbd-clt.c | 13 +++++++++----
+ drivers/block/xen-blkfront.c  |  8 +++++++-
+ drivers/md/bcache/super.c     | 17 ++++++++++++-----
+ drivers/md/dm.c               |  4 +++-
+ drivers/mtd/mtd_blkdevs.c     |  6 +++++-
+ drivers/scsi/sd.c             |  8 +++++++-
+ drivers/scsi/sr.c             |  7 ++++++-
+ 9 files changed, 65 insertions(+), 20 deletions(-)
+
+-- 
+2.30.2
+
