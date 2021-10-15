@@ -2,220 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1F0142FE88
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 01:09:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21AD942FE8E
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 01:10:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243447AbhJOXLf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 19:11:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58972 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235755AbhJOXLd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 19:11:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D99DA6023D;
-        Fri, 15 Oct 2021 23:09:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634339366;
-        bh=ovHjeXArni+e/8sBgT90JbZw6qCc/HGFvHPvAnnbBTg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RzDyi0ZMBJb11CVJtYqNyt/Y8Dox7F7bk8TknKTgD347hA4Jaztzzr7DsVQWjAwg5
-         ln39eHgOZjhzL5xNtRhXY6XwbzQH/cRKHcQyYZ8Ea864wCD/kLs3IgjPHn9PQEnmY/
-         hWAXj9VEEucoHc4FjyYV4aaPAHrB7pUZMI6sN8v5jeTtXN5CC+7GUHw/iFcbfW/xxE
-         mPPc098tt5j9zWX3KHal6++1L8rQe+2f+n9jQwDKneBJ2RFJKRr8iiI7XLjq6zVIBM
-         hobsBcPdaX71qEVGcKjCHgyCvLPTsovsGw9IqMVJEnI3r+K1fIP4a2UwN/etMxdLtI
-         U0w6LQ7ig6+kg==
-Date:   Sat, 16 Oct 2021 01:09:22 +0200
-From:   Alexey Gladkov <legion@kernel.org>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Rune Kleveland <rune.kleveland@infomedia.dk>,
-        Yu Zhao <yuzhao@google.com>,
-        Jordan Glover <Golden_Miller83@protonmail.ch>,
-        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
-        containers@lists.linux-foundation.org
-Subject: Re: [CFT][PATCH] ucounts: Fix signal ucount refcounting
-Message-ID: <20211015230922.7s7ab37k2sioa5vg@example.org>
-References: <878rzw77i3.fsf@disp2133>
- <o3tuBB58KUQjyQsALqWi0s1tSPlgVPST4PNNjHewIgRB7CUOOVyFSFxSBLCOJdUH3ly21cIjBthNyqQGnDgJD7fjU8NiVHq7i0JcMvYuzUA=@protonmail.ch>
- <20210929173611.fo5traia77o63gpw@example.org>
- <hPgvCJ2KbKeauk78uWJEsuKJ5VfMqknPJ_oyOZe6M78-6eG7qnj0t0UKC-joPVowo_nOikIsEWP-ZDioARfI-Cl6zrHjCHPJST3drpi5ALE=@protonmail.ch>
- <20210930130640.wudkpmn3cmah2cjz@example.org>
- <CAOUHufZmAjuKyRcmq6GH8dfdZxchykS=BTZDsk-gDAh3LJTe1Q@mail.gmail.com>
- <878rz8wwb6.fsf@disp2133>
- <87v92cvhbf.fsf@disp2133>
- <ccbccf82-dc50-00b2-1cfd-3da5e2c81dbf@infomedia.dk>
- <87mtnavszx.fsf_-_@disp2133>
+        id S243466AbhJOXMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 19:12:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34348 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239063AbhJOXMg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 19:12:36 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B525EC061570;
+        Fri, 15 Oct 2021 16:10:29 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id j190so3137883pgd.0;
+        Fri, 15 Oct 2021 16:10:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=U0Vy6bVXybkv53dFNF38s80qQNlt4Z5kP9WaLGyZk/E=;
+        b=O9Pb1VFAloLs1rCfcnuN/ac4CVSbFCF6MoWhzc0t6NNvReQP3lWfjGMeZlGnzLzrHS
+         l4i0Y6LwhUloqmH82MQOE24or+ERzsAUtq/I4FBm/OgF9ni66crpT42+HBwsnRn30pXS
+         QqqUL9DG6ghP+so0/CZwxE2oUbMfB/bL7DAD4PJFhJrg+l5AKsjpyH1RZWtKwwjXnqA6
+         F/gRS0dTUSgsW2sMhK0iMFnNFjLdKJRKpAQTUX1tx0rFjWjiPh3fWBymysH8pPvDVx3a
+         20+Tt+yUHjPRMLH8w+A3r3iie8NbWXH2QV0VJ5YVHr7EogSX2N6NJjcKYWuJI+TOcsOu
+         4XsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=U0Vy6bVXybkv53dFNF38s80qQNlt4Z5kP9WaLGyZk/E=;
+        b=2WE5lL6w0TAV5X8aeasilwwz3nf80OATf5fOL6fa/wFZ+hP5IYNOcv2t0rjBH5rAb9
+         4Ttvlki3eX1L4XBvXBFgGFlDSnRKFwzJbCHJLZa+Yek9W3YSBXKo1N2uZQ/6EYEtZR3B
+         a9P1SRdWcqaPSOxMs7B7L/+HTKPlwrFfCAGpv/IiAWtsT8HAYB6GzDdb3zXsWGGvubJ7
+         kPsxV1eZg9BkamFotIXxbisCnKxvvideNiUD20iQla2S3Z0Cd8FKqw2x7+8mMI55vl2i
+         jKMZM/2edL7NOprsHxgwyrLijdoDIIYKg0ERfFS74XmQLg5zF1p4YNyEuEzhX8n/BemO
+         r/Ng==
+X-Gm-Message-State: AOAM5317DEU2Egr3okQJjPVI4oY30xM/zaV3Q4Rp9vR5W/OLzhTvC3oE
+        uT/PWINkK8CGeozmIowNXnk=
+X-Google-Smtp-Source: ABdhPJxrvR29INUiL1phb2tUnsp09WITr2GSA5PvcDicS0wdhOdoyLEVHfAJAI51ZTor6YvZuytmYg==
+X-Received: by 2002:a63:1444:: with SMTP id 4mr11054827pgu.251.1634339429240;
+        Fri, 15 Oct 2021 16:10:29 -0700 (PDT)
+Received: from [172.30.1.32] ([14.32.163.5])
+        by smtp.gmail.com with ESMTPSA id rj6sm2336137pjb.30.2021.10.15.16.10.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Oct 2021 16:10:28 -0700 (PDT)
+Subject: Re: [PATCH v4 2/2] [RFT] clk: samsung: exynos5433: update apollo and
+ atlas clock probing
+To:     Will McVicker <willmcvicker@google.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     kernel-team@android.com,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20211014195347.3635601-1-willmcvicker@google.com>
+ <20211014195347.3635601-3-willmcvicker@google.com>
+From:   Chanwoo Choi <cwchoi00@gmail.com>
+Message-ID: <d36e8ab1-ad0b-835d-e4a3-7f0cbb3f27ff@gmail.com>
+Date:   Sat, 16 Oct 2021 08:10:24 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87mtnavszx.fsf_-_@disp2133>
+In-Reply-To: <20211014195347.3635601-3-willmcvicker@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 15, 2021 at 05:10:58PM -0500, Eric W. Biederman wrote:
+On 21. 10. 15. 오전 4:53, Will McVicker wrote:
+> Use the samsung common clk driver to initialize the apollo and atlas
+> clocks. This removes their custom init functions and uses the
+> samsung_cmu_register_one() instead.
 > 
-> In commit fda31c50292a ("signal: avoid double atomic counter
-> increments for user accounting") Linus made a clever optimization to
-> how rlimits and the struct user_struct.  Unfortunately that
-> optimization does not work in the obvious way when moved to nested
-> rlimits.  The problem is that the last decrement of the per user
-> namespace per user sigpending counter might also be the last decrement
-> of the sigpending counter in the parent user namespace as well.  Which
-> means that simply freeing the leaf ucount in __free_sigqueue is not
-> enough.
-> 
-> Maintain the optimization and handle the tricky cases by introducing
-> inc_rlimit_get_ucounts and dec_rlimit_put_ucounts.
-> 
-> By moving the entire optimization into functions that perform all of
-> the work it becomes possible to ensure that every level is handled
-> properly.
-> 
-> I wish we had a single user across all of the threads whose rlimit
-> could be charged so we did not need this complexity.
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: d64696905554 ("Reimplement RLIMIT_SIGPENDING on top of ucounts")
-> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+> Signed-off-by: Will McVicker <willmcvicker@google.com>
 > ---
+>   drivers/clk/samsung/clk-exynos5433.c | 120 +++++++++++----------------
+>   1 file changed, 48 insertions(+), 72 deletions(-)
 > 
-> With a lot of help from Alex who found a way I could reproduce this
-> I believe I have found the issue.
-> 
-> Could people who are seeing this issue test and verify this solves the
-> problem for them?
-> 
->  include/linux/user_namespace.h |  2 ++
->  kernel/signal.c                | 25 +++++----------------
->  kernel/ucount.c                | 41 ++++++++++++++++++++++++++++++++++
->  3 files changed, 49 insertions(+), 19 deletions(-)
-> 
-> diff --git a/include/linux/user_namespace.h b/include/linux/user_namespace.h
-> index eb70cabe6e7f..33a4240e6a6f 100644
-> --- a/include/linux/user_namespace.h
-> +++ b/include/linux/user_namespace.h
-> @@ -127,6 +127,8 @@ static inline long get_ucounts_value(struct ucounts *ucounts, enum ucount_type t
->  
->  long inc_rlimit_ucounts(struct ucounts *ucounts, enum ucount_type type, long v);
->  bool dec_rlimit_ucounts(struct ucounts *ucounts, enum ucount_type type, long v);
-> +long inc_rlimit_get_ucounts(struct ucounts *ucounts, enum ucount_type type);
-> +void dec_rlimit_put_ucounts(struct ucounts *ucounts, enum ucount_type type);
->  bool is_ucounts_overlimit(struct ucounts *ucounts, enum ucount_type type, unsigned long max);
->  
->  static inline void set_rlimit_ucount_max(struct user_namespace *ns,
-> diff --git a/kernel/signal.c b/kernel/signal.c
-> index a3229add4455..762de58c6e76 100644
-> --- a/kernel/signal.c
-> +++ b/kernel/signal.c
-> @@ -425,22 +425,10 @@ __sigqueue_alloc(int sig, struct task_struct *t, gfp_t gfp_flags,
->  	 */
->  	rcu_read_lock();
->  	ucounts = task_ucounts(t);
-> -	sigpending = inc_rlimit_ucounts(ucounts, UCOUNT_RLIMIT_SIGPENDING, 1);
-> -	switch (sigpending) {
-> -	case 1:
-> -		if (likely(get_ucounts(ucounts)))
-> -			break;
-> -		fallthrough;
-> -	case LONG_MAX:
-> -		/*
-> -		 * we need to decrease the ucount in the userns tree on any
-> -		 * failure to avoid counts leaking.
-> -		 */
-> -		dec_rlimit_ucounts(ucounts, UCOUNT_RLIMIT_SIGPENDING, 1);
-> -		rcu_read_unlock();
-> -		return NULL;
+> diff --git a/drivers/clk/samsung/clk-exynos5433.c b/drivers/clk/samsung/clk-exynos5433.c
+> index f203074d858b..cec66d2a4ee2 100644
+> --- a/drivers/clk/samsung/clk-exynos5433.c
+> +++ b/drivers/clk/samsung/clk-exynos5433.c
+> @@ -3675,44 +3675,32 @@ static const struct exynos_cpuclk_cfg_data exynos5433_apolloclk_d[] __initconst
+>   	{  0 },
+>   };
+>   
+> +static const struct samsung_cpu_clock apollo_cpu_clks[] __initconst = {
+> +	CPU_CLK(CLK_SCLK_APOLLO, "apolloclk", CLK_MOUT_APOLLO_PLL,
+> +			CLK_MOUT_BUS_PLL_APOLLO_USER,
+> +			CLK_CPU_HAS_E5433_REGS_LAYOUT, 0x200,
+> +			exynos5433_apolloclk_d),
+> +};
+> +
+> +static const struct samsung_cmu_info apollo_cmu_info __initconst = {
+> +	.pll_clks	= apollo_pll_clks,
+> +	.nr_pll_clks	= ARRAY_SIZE(apollo_pll_clks),
+> +	.mux_clks	= apollo_mux_clks,
+> +	.nr_mux_clks	= ARRAY_SIZE(apollo_mux_clks),
+> +	.div_clks	= apollo_div_clks,
+> +	.nr_div_clks	= ARRAY_SIZE(apollo_div_clks),
+> +	.gate_clks	= apollo_gate_clks,
+> +	.nr_gate_clks	= ARRAY_SIZE(apollo_gate_clks),
+> +	.cpu_clks	= apollo_cpu_clks,
+> +	.nr_cpu_clks	= ARRAY_SIZE(apollo_cpu_clks),
+> +	.nr_clk_ids	= APOLLO_NR_CLK,
+> +	.clk_regs	= apollo_clk_regs,
+> +	.nr_clk_regs	= ARRAY_SIZE(apollo_clk_regs),
+> +};
+> +
+>   static void __init exynos5433_cmu_apollo_init(struct device_node *np)
+>   {
+> -	void __iomem *reg_base;
+> -	struct samsung_clk_provider *ctx;
+> -	struct clk_hw **hws;
+> -
+> -	reg_base = of_iomap(np, 0);
+> -	if (!reg_base) {
+> -		panic("%s: failed to map registers\n", __func__);
+> -		return;
 > -	}
-> +	sigpending = inc_rlimit_get_ucounts(ucounts, UCOUNT_RLIMIT_SIGPENDING);
->  	rcu_read_unlock();
-> +	if (sigpending == LONG_MAX)
-> +		return NULL;
->  
->  	if (override_rlimit || likely(sigpending <= task_rlimit(t, RLIMIT_SIGPENDING))) {
->  		q = kmem_cache_alloc(sigqueue_cachep, gfp_flags);
-> @@ -449,8 +437,7 @@ __sigqueue_alloc(int sig, struct task_struct *t, gfp_t gfp_flags,
->  	}
->  
->  	if (unlikely(q == NULL)) {
-> -		if (dec_rlimit_ucounts(ucounts, UCOUNT_RLIMIT_SIGPENDING, 1))
-> -			put_ucounts(ucounts);
-> +		dec_rlimit_put_ucounts(ucounts, UCOUNT_RLIMIT_SIGPENDING);
->  	} else {
->  		INIT_LIST_HEAD(&q->list);
->  		q->flags = sigqueue_flags;
-> @@ -463,8 +450,8 @@ static void __sigqueue_free(struct sigqueue *q)
->  {
->  	if (q->flags & SIGQUEUE_PREALLOC)
->  		return;
-> -	if (q->ucounts && dec_rlimit_ucounts(q->ucounts, UCOUNT_RLIMIT_SIGPENDING, 1)) {
-> -		put_ucounts(q->ucounts);
-> +	if (q->ucounts) {
-> +		dec_rlimit_put_ucounts(q->ucounts, UCOUNT_RLIMIT_SIGPENDING);
->  		q->ucounts = NULL;
->  	}
->  	kmem_cache_free(sigqueue_cachep, q);
-> diff --git a/kernel/ucount.c b/kernel/ucount.c
-> index 3b7e176cf7a2..687d77aa66bb 100644
-> --- a/kernel/ucount.c
-> +++ b/kernel/ucount.c
-> @@ -285,6 +285,47 @@ bool dec_rlimit_ucounts(struct ucounts *ucounts, enum ucount_type type, long v)
->  	return (new == 0);
->  }
->  
-> +static void do_dec_rlimit_put_ucounts(struct ucounts *ucounts,
-> +				struct ucounts *last, enum ucount_type type)
+> -
+> -	ctx = samsung_clk_init(np, reg_base, APOLLO_NR_CLK);
+> -	if (!ctx) {
+> -		panic("%s: unable to allocate ctx\n", __func__);
+> -		return;
+> -	}
+> -
+> -	samsung_clk_register_pll(ctx, apollo_pll_clks,
+> -				 ARRAY_SIZE(apollo_pll_clks), reg_base);
+> -	samsung_clk_register_mux(ctx, apollo_mux_clks,
+> -				 ARRAY_SIZE(apollo_mux_clks));
+> -	samsung_clk_register_div(ctx, apollo_div_clks,
+> -				 ARRAY_SIZE(apollo_div_clks));
+> -	samsung_clk_register_gate(ctx, apollo_gate_clks,
+> -				  ARRAY_SIZE(apollo_gate_clks));
+> -
+> -	hws = ctx->clk_data.hws;
+> -
+> -	exynos_register_cpu_clock(ctx, CLK_SCLK_APOLLO, "apolloclk",
+> -		hws[CLK_MOUT_APOLLO_PLL], hws[CLK_MOUT_BUS_PLL_APOLLO_USER], 0x200,
+> -		exynos5433_apolloclk_d, ARRAY_SIZE(exynos5433_apolloclk_d),
+> -		CLK_CPU_HAS_E5433_REGS_LAYOUT);
+> -
+> -	samsung_clk_sleep_init(reg_base, apollo_clk_regs,
+> -			       ARRAY_SIZE(apollo_clk_regs));
+> -
+> -	samsung_clk_of_add_provider(np, ctx);
+> +	samsung_cmu_register_one(np, &apollo_cmu_info);
+>   }
+>   CLK_OF_DECLARE(exynos5433_cmu_apollo, "samsung,exynos5433-cmu-apollo",
+>   		exynos5433_cmu_apollo_init);
+> @@ -3932,44 +3920,32 @@ static const struct exynos_cpuclk_cfg_data exynos5433_atlasclk_d[] __initconst =
+>   	{  0 },
+>   };
+>   
+> -static void __init exynos5433_cmu_atlas_init(struct device_node *np)
+> -{
+> -	void __iomem *reg_base;
+> -	struct samsung_clk_provider *ctx;
+> -	struct clk_hw **hws;
+> -
+> -	reg_base = of_iomap(np, 0);
+> -	if (!reg_base) {
+> -		panic("%s: failed to map registers\n", __func__);
+> -		return;
+> -	}
+> -
+> -	ctx = samsung_clk_init(np, reg_base, ATLAS_NR_CLK);
+> -	if (!ctx) {
+> -		panic("%s: unable to allocate ctx\n", __func__);
+> -		return;
+> -	}
+> -
+> -	samsung_clk_register_pll(ctx, atlas_pll_clks,
+> -				 ARRAY_SIZE(atlas_pll_clks), reg_base);
+> -	samsung_clk_register_mux(ctx, atlas_mux_clks,
+> -				 ARRAY_SIZE(atlas_mux_clks));
+> -	samsung_clk_register_div(ctx, atlas_div_clks,
+> -				 ARRAY_SIZE(atlas_div_clks));
+> -	samsung_clk_register_gate(ctx, atlas_gate_clks,
+> -				  ARRAY_SIZE(atlas_gate_clks));
+> -
+> -	hws = ctx->clk_data.hws;
+> -
+> -	exynos_register_cpu_clock(ctx, CLK_SCLK_ATLAS, "atlasclk",
+> -		hws[CLK_MOUT_ATLAS_PLL], hws[CLK_MOUT_BUS_PLL_ATLAS_USER], 0x200,
+> -		exynos5433_atlasclk_d, ARRAY_SIZE(exynos5433_atlasclk_d),
+> -		CLK_CPU_HAS_E5433_REGS_LAYOUT);
+> +static const struct samsung_cpu_clock atlas_cpu_clks[] __initconst = {
+> +	CPU_CLK(CLK_SCLK_ATLAS, "atlasclk", CLK_MOUT_ATLAS_PLL,
+> +			CLK_MOUT_BUS_PLL_ATLAS_USER,
+> +			CLK_CPU_HAS_E5433_REGS_LAYOUT, 0x200,
+> +			exynos5433_atlasclk_d),
+> +};
+>   
+> -	samsung_clk_sleep_init(reg_base, atlas_clk_regs,
+> -			       ARRAY_SIZE(atlas_clk_regs));
+> +static const struct samsung_cmu_info atlas_cmu_info __initconst = {
+> +	.pll_clks	= atlas_pll_clks,
+> +	.nr_pll_clks	= ARRAY_SIZE(atlas_pll_clks),
+> +	.mux_clks	= atlas_mux_clks,
+> +	.nr_mux_clks	= ARRAY_SIZE(atlas_mux_clks),
+> +	.div_clks	= atlas_div_clks,
+> +	.nr_div_clks	= ARRAY_SIZE(atlas_div_clks),
+> +	.gate_clks	= atlas_gate_clks,
+> +	.nr_gate_clks	= ARRAY_SIZE(atlas_gate_clks),
+> +	.cpu_clks	= atlas_cpu_clks,
+> +	.nr_cpu_clks	= ARRAY_SIZE(atlas_cpu_clks),
+> +	.nr_clk_ids	= ATLAS_NR_CLK,
+> +	.clk_regs	= atlas_clk_regs,
+> +	.nr_clk_regs	= ARRAY_SIZE(atlas_clk_regs),
+> +};
+>   
+> -	samsung_clk_of_add_provider(np, ctx);
+> +static void __init exynos5433_cmu_atlas_init(struct device_node *np)
 > +{
-> +	struct ucounts *iter;
-> +	for (iter = ucounts; iter != last; iter = iter->ns->ucounts) {
-> +		long dec = atomic_long_add_return(-1, &iter->ucount[type]);
-> +		WARN_ON_ONCE(dec < 0);
-> +		if (dec == 0)
-> +			put_ucounts(iter);
-> +	}
-> +}
-> +
-> +void dec_rlimit_put_ucounts(struct ucounts *ucounts, enum ucount_type type)
-> +{
-> +	do_dec_rlimit_put_ucounts(ucounts, NULL, type);
-> +}
-> +
-> +long inc_rlimit_get_ucounts(struct ucounts *ucounts, enum ucount_type type)
-> +{
-> +	struct ucounts *iter;
-> +	long dec, ret = 0;
-> +
-> +	for (iter = ucounts; iter; iter = iter->ns->ucounts) {
-> +		long max = READ_ONCE(iter->ns->ucount_max[type]);
-> +		long new = atomic_long_add_return(1, &iter->ucount[type]);
-> +		if (new < 0 || new > max)
-> +			goto unwind;
-> +		else if (iter == ucounts)
-> +			ret = new;
-> +		if ((new == 1) && (get_ucounts(iter) != iter))
-
-get_ucounts can do put_ucounts. Are you sure it's correct to use
-get_ucounts here?
-
-> +			goto dec_unwind;
-> +	}
-> +	return ret;
-> +dec_unwind:
-> +	dec = atomic_long_add_return(1, &iter->ucount[type]);
-
-Should be -1 ?
-
-> +	WARN_ON_ONCE(dec < 0);
-> +unwind:
-> +	do_dec_rlimit_put_ucounts(ucounts, iter, type);
-> +	return LONG_MAX;
-> +}
-> +
->  bool is_ucounts_overlimit(struct ucounts *ucounts, enum ucount_type type, unsigned long max)
->  {
->  	struct ucounts *iter;
-> -- 
-> 2.20.1
+> +	samsung_cmu_register_one(np, &atlas_cmu_info);
+>   }
+>   CLK_OF_DECLARE(exynos5433_cmu_atlas, "samsung,exynos5433-cmu-atlas",
+>   		exynos5433_cmu_atlas_init);
 > 
+
+Looks good to me. Thanks for your work.
+
+Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
 
 -- 
-Rgrds, legion
-
+Best Regards,
+Samsung Electronics
+Chanwoo Choi
