@@ -2,863 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A82542FDEC
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 00:12:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E76F042FDF1
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 00:13:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243310AbhJOWNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 18:13:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49258 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243293AbhJOWNc (ORCPT
+        id S238748AbhJOWPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 18:15:51 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:33033 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234582AbhJOWPu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 18:13:32 -0400
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13BC6C061767
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 15:11:25 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id 62-20020a9d0a44000000b00552a6f8b804so14118868otg.13
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 15:11:25 -0700 (PDT)
+        Fri, 15 Oct 2021 18:15:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1634336023; x=1665872023;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=8+OQPIBnkjSH6zdtm/MjoRlVOu74jdexu0yxkS9leFA=;
+  b=kzuREYMcSWNC+HbEjlFGFjwro+aS0SaJ/2V/e85Ou0hU81Id3hbcwMQ4
+   pQP2letFx/l3jQ5+ULgFfzG7hfUsWi2jN4h5PPu2oRfaOu62l9uL59oAA
+   68SRZLPg8XtAReb/mYCSON24zq3vDW3Z275IjlMr2UxSNtS2q2dMvOKz6
+   m2Ndyqv8LQUVJhMMIm9RuFrAwGid+ZfKkd1ALd2MJtTWYnOhnxTk8Rxvl
+   4y9+zLX70N8mStgKgfnTPGgqXpCNgIKlngKeZRp7hXtBHrXRnIgtNsyea
+   UwrvxlV1+oyyAONyeIYV08i7nGB+Xn28h1dGDpkxAOykOmvZ9LXbVxwdu
+   w==;
+IronPort-SDR: MdTdej7fmeMAwpA7odJ5xfYpa3mXcVzWwy2Pu17YTajv+sAJAO/IBoJJhYYirPYN1tVRUQcofB
+ 6UKeQiHhWPWW8CM4f89igvOxIrcxPMsht/gtLfwYqvt1gKN7MzbuzaHxLvbTbwWOffrV8vM6rS
+ rNOe4LlxAgXobH0qZHx8uxUrPjSIHtB8Rg4Nq8YaObvQ3E9kgqWrRUekntv28RSiMXGiRzrc4l
+ qnboAHfayZuOTxb6AkHH4VUIyoq0cB+otyPiCJUM496C60meuE8IjlbCxwFYNnEi7JBBdi6Np8
+ DzX8ggj9K28PlNbN9C8GhjF5
+X-IronPort-AV: E=Sophos;i="5.85,376,1624345200"; 
+   d="scan'208";a="73139820"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 15 Oct 2021 15:13:43 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Fri, 15 Oct 2021 15:13:43 -0700
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.72) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.14 via Frontend
+ Transport; Fri, 15 Oct 2021 15:13:42 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SDqk3QIKpnOnzaqz5k1sK7d+qPiMXQq7Gpf6ZH8i4d/caTOqdJZmDHEeEuD6jMCYQa0Imb1UHazAa076K6cDKK4KFsvlItd9wEoxhDorLveJLn6GbfO1vA610b/JFVaJyJ2lifJTNQDaXmNECkhPdeWKXo/eGyx7N2l4Dz4TWdEeRZiLr6SHFt8SydmFwv9INOvNQOEKH+2/AMK/073LcA6bdJtG0X+vFSoZEJVt6/LnvdqHvgCxV5xT3fJdBhHIhxd8bl+6tiiy7qvcmgVFJ1aaxx00eckLlU46hGPO7WzQwARHrZ806IIbRCI8cPN4Eqgm4avkucfgxr1tusYylA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=8+OQPIBnkjSH6zdtm/MjoRlVOu74jdexu0yxkS9leFA=;
+ b=HFaf9AHZ1P8vRcmtk4yxW1ePjLpfWCVpieDCtn2SH0Dl67J+DbP+hKtWA1X2UCS4qZhd/ycWC76CORWh8zhytOF5JolASQAUzIUZenZPeG1JAcfo6ujTXvnKEE3ToyysihAFq6NYzcVCNkh1CR/GDgGX/aC2wa7HPcoh69CxMIiL/LKrHpnbwYDQp3kplduFnN/3jKU7KXuYPCxu5NVxHwZxDO5Kqz2Jl19+LfoKZNM0UIsYae2KdTT6vwPp5TktxXKkEFcdhCeZYfPVAVon72gSoQnheWPdIQQ015vDbF8exgatEO3jhxQa96Z2bwxan6KaAAvmu3FgwZdVOK4CgA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=IT+Bu/adKNk3uwpfD7iRYJ/ht+pfiYS+sUWi31iUDwA=;
-        b=HyOsn534A2BQGwCJceYiv5iQSgFiqTxHwtIvtD51+FyGQtVRYzDjaQLBEdpUREktCv
-         t4jrFta/DoTl7hDijIAKCduVUXZT8eI6HChwl4q0Nu3tRHyVGEg4DCeFqjGEguSCxXXx
-         +2+OjYPaJr/7gN0l3kZz9jqGkDMgidFJc4gHVxaKrEgxLvm363zDoFH8nWH5EHLxTBtx
-         A8dkx3iKjt0m+FkwLv2cqcMlFRJmSpe6DzwC6occr318s6E6N1uKybx8IwQM+RZuO3gK
-         eURMlkA9ZRnpUxw28977ZVNPE4mY5ttES/zRgqOZtrh/PmX3qtjIR/3642w44m49TeVM
-         3iwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=IT+Bu/adKNk3uwpfD7iRYJ/ht+pfiYS+sUWi31iUDwA=;
-        b=qlXHMWEALd/0/F+Xlkow1XO4Hg/E670Y+3ilm6hElpv03hLD3YOtpM5Lp1A7rqUMjD
-         RT5MYY5NA+yYAaDk1maaExZsDojSeeqM8TrLn5Bfze2uRnilTwuvQtd1QYr+UENCkZQF
-         WC/zRN6KHHU8BaKdl/+ywJEU5t9sjgxM+FiZoI5OIhx4qX5D75FlHaycA+RQt4qtxlCT
-         ScIwQv4JN0kx+ytpZ5LR2/SN60oDEq0RFAQGWBdV4oD6soVDeKLs6TkqlejtNMnmBCTf
-         gWR5gxLbAm2duJToeJlnZi/46A91k/2m3RwLFD6HIGM4EynCggs7/pgmIM5U2ZFUxSWd
-         D53w==
-X-Gm-Message-State: AOAM5323r3HbOfwScy1uSIUzsqcr6NBWjZCLCZJpF8fB1YLrmTVgGQbd
-        31yn9SjEkp20wibX2xhqIYMfaw==
-X-Google-Smtp-Source: ABdhPJxe+AasSYHvTkAZkdAtdR8qs8xoGJ1d1xZp037oW9ZQqDHwExVgkghGXIMk19G0bY4uIL9MoA==
-X-Received: by 2002:a05:6830:19f9:: with SMTP id t25mr9592596ott.332.1634335884169;
-        Fri, 15 Oct 2021 15:11:24 -0700 (PDT)
-Received: from localhost.localdomain ([2600:1700:a0:3dc8:205:1bff:fec0:b9b3])
-        by smtp.gmail.com with ESMTPSA id f10sm1599635otc.26.2021.10.15.15.11.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Oct 2021 15:11:23 -0700 (PDT)
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        abhinavk@codeaurora.org, Stephen Boyd <sboyd@kernel.org>
-Subject: [PATCH v2 2/2] phy: qcom: Introduce new eDP PHY driver
-Date:   Fri, 15 Oct 2021 15:13:12 -0700
-Message-Id: <20211015221312.1699043-2-bjorn.andersson@linaro.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20211015221312.1699043-1-bjorn.andersson@linaro.org>
-References: <20211015221312.1699043-1-bjorn.andersson@linaro.org>
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8+OQPIBnkjSH6zdtm/MjoRlVOu74jdexu0yxkS9leFA=;
+ b=ZcvhbnS0AVtqUvSuBLF5H413xUnBXsvNtQe1NwEOBTb/AOfcKqxiTFPmICSUi3uQ2FhOXx3/wiPTTX16555QFdiPjO8vQQEey2+mI8ZIu9KO6uYxKjRe7nR5nSO4aYP1fMEEByz80gB+oAvkG8pvYgqnC/57h4P6k0cisJo3HU0=
+Received: from CO6PR11MB5618.namprd11.prod.outlook.com (2603:10b6:303:13f::24)
+ by CO6PR11MB5666.namprd11.prod.outlook.com (2603:10b6:303:13a::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.16; Fri, 15 Oct
+ 2021 22:13:37 +0000
+Received: from CO6PR11MB5618.namprd11.prod.outlook.com
+ ([fe80::9166:4e26:f15:6d14]) by CO6PR11MB5618.namprd11.prod.outlook.com
+ ([fe80::9166:4e26:f15:6d14%4]) with mapi id 15.20.4608.016; Fri, 15 Oct 2021
+ 22:13:36 +0000
+From:   <Kelvin.Cao@microchip.com>
+To:     <kw@linux.com>
+CC:     <kurt.schwemmer@microsemi.com>, <bhelgaas@google.com>,
+        <kelvincao@outlook.com>, <logang@deltatee.com>,
+        <linux-kernel@vger.kernel.org>, <linux-pci@vger.kernel.org>
+Subject: Re: [PATCH v2 1/5] PCI/switchtec: Error out MRPC execution when MMIO
+ reads fail
+Thread-Topic: [PATCH v2 1/5] PCI/switchtec: Error out MRPC execution when MMIO
+ reads fail
+Thread-Index: AQHXwMzJuJig5BOPXUmFlBcz6/0STavTRHGAgAFddwA=
+Date:   Fri, 15 Oct 2021 22:13:36 +0000
+Message-ID: <5b554388b1e46a0d2f3f7082a4d4defe55707712.camel@microchip.com>
+References: <20211014141859.11444-1-kelvin.cao@microchip.com>
+         <20211014141859.11444-2-kelvin.cao@microchip.com>
+         <YWjXq/NL6zex4oeR@rocinante>
+In-Reply-To: <YWjXq/NL6zex4oeR@rocinante>
+Accept-Language: en-US, zh-CN
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.36.5-0ubuntu1 
+authentication-results: linux.com; dkim=none (message not signed)
+ header.d=none;linux.com; dmarc=none action=none header.from=microchip.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 736ebb84-c99d-4f44-dac5-08d990290904
+x-ms-traffictypediagnostic: CO6PR11MB5666:
+x-microsoft-antispam-prvs: <CO6PR11MB5666DD33CF52E9CEC895F2F98DB99@CO6PR11MB5666.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 3Lx0RA/dGAc9QSxvgBDDtC2pYEGMla+xRleuA4HFLoNqb/CnF4hBTcbjEutPCfPJMoLosk0LpDTOWQI80AGH2JcuUUrW5F4y9mztOVZE4oThVe7sXbYgRESZh5edVxSrJkVFlC+OoN3klVb7lZ3jD9SdbcwlVgqQIfwPsIySuctgAcE7oYZsBA4pQ5GKgGYRDYt8nDmrqKN4FXCqLarZltt4kxV2hpKvcZUFfBdzHRO9SaLTa71W1Q+xEmjTqYk3XmlVDvTYqqaY1K5locPZwxWCvQ7xQD5gXslkXHHKbrYnKW+ou24hiKDRg5JxrMZUremcLNuyiibrSNC0ezH9AfWQOjTomAWR8vXCxm1fRGxhngwytW+xln68s32sTEkXwgPfEgkc/J8+lyLsFdQDK4uDjjAAzwq+Cdc7DyLpR2vmjKT7HkPBDqKz9OJQNNjPNJRlxd6UqfW4o9Jk2cKLGBWkcWgOL1P8o62nuoS4OoGr+zaGvMjLwb4JWGCpFRQgnlj0FKF4Gza+YfFfKq6C7F2tww/d2WN2an3W4T3WT5uMjuIQZyEdWGrblY+qIak0GFedm+KCffgC0KV/lUPJScAQCKT5cCWZeYi8ji3J5+ZXyIBd/w4I5Pn2/NVJEkCmulIchC0mgXT2XSoyE169ZR8O+p3IksPRZDq7WmqOUkczhSSSlGVgGX4QVqHYjM27z6ijKTAMLZf7nljyTJk/rg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR11MB5618.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(2616005)(6506007)(122000001)(6486002)(38100700002)(316002)(508600001)(38070700005)(66556008)(86362001)(186003)(4001150100001)(64756008)(66446008)(66476007)(5660300002)(36756003)(83380400001)(26005)(76116006)(54906003)(2906002)(8936002)(8676002)(4326008)(6512007)(71200400001)(6916009)(66946007);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?di9TN1NKekVhYjNYbmhoNmxXd2hIemVOM1NBT1I2SThScTUrSHVxZW4rNnFT?=
+ =?utf-8?B?dmh0NWVsRXFtc2h5eEg5b3RlRVoxRk9ZeEVXY0tZUkNQelJhV3ZBWlIvK1g3?=
+ =?utf-8?B?WE1LSmlpUjRvSHZoalk1NzVYRmM4WEJlV3YrMTRySDNXUXdyZlJqQkw2T2pT?=
+ =?utf-8?B?TFlqT1FSZWNXckVkUGR6SHFoSzdVeDNRQzcrY0EyanFEd2xFejlvbk05cStN?=
+ =?utf-8?B?eVBpVm03cG1oU3NWWTcvbXRDOTkwSkphT0dzaURzaiswWDE3L1MxTjZ2d1JG?=
+ =?utf-8?B?b2gyWmplUVhvajIzQklPL0w4NEFuT1pRMHFFL2VGcHpndFMwY01sNldOOHQ1?=
+ =?utf-8?B?dVRTS2ZSUENEeExoYkdJcXlDQlFTTExDMlNWajZ1T24va1dVQ1hBbnJweklO?=
+ =?utf-8?B?RzNHRkJGQmJOT2VKTzN6TXdMVjVmL1Z1SVgyS3ptclM0MTdSVXM1bHBNN004?=
+ =?utf-8?B?b2UyUkhycWw3U092aXF2dENJTm9XU1pvOUtCWTJrVzRPTlk2K2diV3NKeHUx?=
+ =?utf-8?B?ZHpKOHpCdEdma2xuc2dBamFDd0ZXWjF4TGxjSEFUekVLdjNLMjUyUWU0WGR0?=
+ =?utf-8?B?VU5oN3Jtdy9VZHNFeW0vYXZmbktGcnUvNTdCbmdMQTZkU2NnUkxhUnMxekJV?=
+ =?utf-8?B?ZDZTUjh4dXpEd3dzdklvZjlqSDN6S1ZFeHJLdVNId25pcHYvdTUvNFl3cFlE?=
+ =?utf-8?B?UjIrM0x1UzVYU2xYc1lJVnBoNzRmSzgza1UwaGZtbnRBWGI1ZVd6dkFuVm1k?=
+ =?utf-8?B?bFQ3UXEwQUUwZjAzQmlQZGJWQVhpR1BQVnlWTmR4bElheHZNcTcxUjRYQlJF?=
+ =?utf-8?B?Qmg5cmRYVHRRaC81ZGVmdmlBeXhlSUJCbUdHWHN6NDk3Vzl0anR5SWE1Slpl?=
+ =?utf-8?B?cGhqVEJFTFpUeG9NZUxSdG85djdlNW95Mk9IT2ZxT1ZMajg1UXlueTJPeU04?=
+ =?utf-8?B?OEZYMmlYZ1R6NXBRbXVLRXA3cmtYam9TT3A0ek5WeFlhZTY1Qk9NWlg1cmFR?=
+ =?utf-8?B?dk56cDhGUWE0NTh2dFBOVW9OLyt5MkRJQ3owL3p4djNCeWVRVlNzbkExTUN0?=
+ =?utf-8?B?Vldvbmg1RmdWWjlwZVRkQy9wdHE3Z2VjQnY1cmNPRllrNENYbDFRM2FxalpT?=
+ =?utf-8?B?NzQyTC8vTFpIUUVYOGVkbXJiNkJMb3FCUnl6TTlaUmRidDVDazROOGpFS3d4?=
+ =?utf-8?B?WndXcFlGT1RDN2dEaTl3MUt3VEFqRm1aWG5SOWFFckJpMXM0RWc3eTcwVWxR?=
+ =?utf-8?B?ZmFsNXg0Y1lBc0d4Yzg5UVRoaFZIbTRXZFIweEV4SEhicExUNmNBa1lxd2RD?=
+ =?utf-8?B?b3VYSG9yVFJOOVdiWjNTOTlnQ2hxVGNrUVNzRjdJTGRQRlNRTDlaMWIwQWZl?=
+ =?utf-8?B?TDFaZGNDNFBWcnBXZFNlMGYxOFZtV0EvMFVzZkQ5SFk3Uk9nRzJRWDlScVVT?=
+ =?utf-8?B?dTNoNElXQU4reGxKMTFrSmNsRkhuaTE4RUZHMERhZ21jZklicHcyUFJVUnA3?=
+ =?utf-8?B?WDdzZkdOMlM5UGZEQmxVOFJvRnpaa2p6TDg3V1B0cjUvYkVNd3pQZXdVSlE0?=
+ =?utf-8?B?Q0pZVnV1eitlTElnZDVVcy9oQzc4QUQ0bGpuelZzTm92SGdiZWJScFVocW5l?=
+ =?utf-8?B?TjcwMGFLRksyZDdJUHZnUi9XNDZ0ZUFHaDhOeGZVUGQ1TlhvOGFxam44Wjh3?=
+ =?utf-8?B?ckFHYkk3NGJ3MmVOcW5DOHhXc2FLMHJXcHVRL05CcEZJN0IrWms3U3pIekx3?=
+ =?utf-8?Q?c0R6w5jNgttQM6zizjfSojjYTAKDaJlc036xPeU?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <74413693FCE5F34C93140E3F99F27091@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CO6PR11MB5618.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 736ebb84-c99d-4f44-dac5-08d990290904
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Oct 2021 22:13:36.7285
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: bFWA30AwEvg/xxoz8P4jdxZbdIAtZ9fIm4wN+gLpwq1k40fayKHVxCOXeLyRHlH/SYyczaeqaNIxmoZvq6gn0Yv5zIxLiEakwGqeUF3WkMU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR11MB5666
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Many recent Qualcomm platforms comes with native DP and eDP support.
-This consists of a controller in the MDSS and a QMP-like PHY.
-
-While similar to the well known QMP block, the eDP PHY only has TX lanes
-and the programming sequences are slightly different. Rather than
-continuing the trend of parameterize the QMP driver to pieces, this
-introduces the support as a new driver.
-
-The registration of link and pixel clocks are borrowed from the QMP
-driver. The non-DP link frequencies are omitted for now.
-
-The eDP PHY is very similar to the dedicated (non-USB) DP PHY, but only
-the prior is supported for now.
-
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
----
-
-Changes since v1:
-- Fixed copy paste issue in register defines, causing a off-by-4 on the AUX
-  registers
-- Cleaned out unused registers
-- Sorted Kconfig and Makefile
-- Using devm_of_clk_add_hw_provider()
-
-We discussed about moving the DP pieces to some common helper, to be shared
-with the main QMP driver, but I haven't yet figured out a good structure for
-this.
-
-Given that such refactoring would be a really good idea in itself, perhaps as
-we make the DP driver orientation and mux aware, I was hoping we could take the
-duplication in this driver for now and then circle back and clean the two
-drivers up together.
-
- drivers/phy/qualcomm/Kconfig        |  10 +
- drivers/phy/qualcomm/Makefile       |   1 +
- drivers/phy/qualcomm/phy-qcom-edp.c | 715 ++++++++++++++++++++++++++++
- 3 files changed, 726 insertions(+)
- create mode 100644 drivers/phy/qualcomm/phy-qcom-edp.c
-
-diff --git a/drivers/phy/qualcomm/Kconfig b/drivers/phy/qualcomm/Kconfig
-index 7f6fcb8ec5ba..5c98850f5a36 100644
---- a/drivers/phy/qualcomm/Kconfig
-+++ b/drivers/phy/qualcomm/Kconfig
-@@ -18,6 +18,16 @@ config PHY_QCOM_APQ8064_SATA
- 	depends on OF
- 	select GENERIC_PHY
- 
-+config PHY_QCOM_EDP
-+	tristate "Qualcomm eDP PHY driver"
-+	depends on ARCH_QCOM || COMPILE_TEST
-+	depends on OF
-+	depends on COMMON_CLK
-+	select GENERIC_PHY
-+	help
-+	  Enable this driver to support the Qualcomm eDP PHY found in various
-+	  Qualcomm chipsets.
-+
- config PHY_QCOM_IPQ4019_USB
- 	tristate "Qualcomm IPQ4019 USB PHY driver"
- 	depends on OF && (ARCH_QCOM || COMPILE_TEST)
-diff --git a/drivers/phy/qualcomm/Makefile b/drivers/phy/qualcomm/Makefile
-index 47acbd7daa3a..e9e3b1a4dbb0 100644
---- a/drivers/phy/qualcomm/Makefile
-+++ b/drivers/phy/qualcomm/Makefile
-@@ -1,6 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0
- obj-$(CONFIG_PHY_ATH79_USB)		+= phy-ath79-usb.o
- obj-$(CONFIG_PHY_QCOM_APQ8064_SATA)	+= phy-qcom-apq8064-sata.o
-+obj-$(CONFIG_PHY_QCOM_EDP)		+= phy-qcom-edp.o
- obj-$(CONFIG_PHY_QCOM_IPQ4019_USB)	+= phy-qcom-ipq4019-usb.o
- obj-$(CONFIG_PHY_QCOM_IPQ806X_SATA)	+= phy-qcom-ipq806x-sata.o
- obj-$(CONFIG_PHY_QCOM_PCIE2)		+= phy-qcom-pcie2.o
-diff --git a/drivers/phy/qualcomm/phy-qcom-edp.c b/drivers/phy/qualcomm/phy-qcom-edp.c
-new file mode 100644
-index 000000000000..8ce9509fd989
---- /dev/null
-+++ b/drivers/phy/qualcomm/phy-qcom-edp.c
-@@ -0,0 +1,715 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) 2017, 2020, The Linux Foundation. All rights reserved.
-+ * Copyright (c) 2021, Linaro Ltd.
-+ */
-+
-+#include <linux/clk.h>
-+#include <linux/clk-provider.h>
-+#include <linux/delay.h>
-+#include <linux/err.h>
-+#include <linux/io.h>
-+#include <linux/iopoll.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/of_device.h>
-+#include <linux/of_address.h>
-+#include <linux/phy/phy.h>
-+#include <linux/platform_device.h>
-+#include <linux/regulator/consumer.h>
-+#include <linux/reset.h>
-+#include <linux/slab.h>
-+
-+#include <dt-bindings/phy/phy.h>
-+
-+#define DP_PHY_PD_CTL_PWRDN			0x001
-+#define DP_PHY_PD_CTL_PSR_PWRDN			0x002
-+#define DP_PHY_PD_CTL_AUX_PWRDN			0x004
-+#define DP_PHY_PD_CTL_LANE_0_1_PWRDN		0x008
-+#define DP_PHY_PD_CTL_LANE_2_3_PWRDN		0x010
-+#define DP_PHY_PD_CTL_PLL_PWRDN			0x020
-+#define DP_PHY_PD_CTL_DP_CLAMP_EN		0x040
-+
-+#define DP_PHY_CFG                              0x0010
-+#define DP_PHY_CFG_1                            0x0014
-+#define DP_PHY_PD_CTL                           0x001c
-+#define DP_PHY_MODE                             0x0020
-+
-+#define DP_PHY_AUX_CFG0				0x0024
-+#define DP_PHY_AUX_CFG1				0x0028
-+#define DP_PHY_AUX_CFG2				0x002C
-+#define DP_PHY_AUX_CFG3				0x0030
-+#define DP_PHY_AUX_CFG4				0x0034
-+#define DP_PHY_AUX_CFG5				0x0038
-+#define DP_PHY_AUX_CFG6				0x003C
-+#define DP_PHY_AUX_CFG7				0x0040
-+#define DP_PHY_AUX_CFG8				0x0044
-+#define DP_PHY_AUX_CFG9				0x0048
-+
-+#define DP_PHY_VCO_DIV                          0x0074
-+#define DP_PHY_TX0_TX1_LANE_CTL                 0x007c
-+#define DP_PHY_TX2_TX3_LANE_CTL                 0x00a0
-+
-+#define DP_PHY_STATUS                           0x00e0
-+
-+/* Tx registers */
-+#define TXn_CLKBUF_ENABLE                       0x0000
-+#define TXn_TX_EMP_POST1_LVL                    0x0004
-+
-+#define TXn_TX_DRV_LVL                          0x0014
-+#define TXn_TX_DRV_LVL_OFFSET                   0x0018
-+#define TXn_RESET_TSYNC_EN                      0x001c
-+#define TXn_LDO_CONFIG                          0x0084
-+#define TXn_TX_BAND                             0x0028
-+
-+#define TXn_RES_CODE_LANE_OFFSET_TX0            0x0044
-+#define TXn_RES_CODE_LANE_OFFSET_TX1            0x0048
-+
-+#define TXn_TRANSCEIVER_BIAS_EN                 0x0054
-+#define TXn_HIGHZ_DRVR_EN                       0x0058
-+#define TXn_TX_POL_INV                          0x005c
-+#define TXn_LANE_MODE_1                         0x0064
-+
-+#define TXn_TRAN_DRVR_EMP_EN                    0x0078
-+
-+/* PLL register offset */
-+#define QSERDES_COM_BG_TIMER                    0x000c
-+#define QSERDES_COM_BIAS_EN_CLKBUFLR_EN         0x0044
-+#define QSERDES_COM_CLK_ENABLE1                 0x0048
-+#define QSERDES_COM_SYS_CLK_CTRL                0x004c
-+#define QSERDES_COM_SYSCLK_BUF_ENABLE           0x0050
-+#define QSERDES_COM_PLL_IVCO                    0x0058
-+
-+#define QSERDES_COM_CP_CTRL_MODE0               0x0074
-+#define QSERDES_COM_PLL_RCTRL_MODE0             0x007c
-+#define QSERDES_COM_PLL_CCTRL_MODE0             0x0084
-+#define QSERDES_COM_SYSCLK_EN_SEL               0x0094
-+#define QSERDES_COM_RESETSM_CNTRL               0x009c
-+#define QSERDES_COM_LOCK_CMP_EN                 0x00a4
-+#define QSERDES_COM_LOCK_CMP1_MODE0             0x00ac
-+#define QSERDES_COM_LOCK_CMP2_MODE0             0x00b0
-+
-+#define QSERDES_COM_DEC_START_MODE0             0x00bc
-+#define QSERDES_COM_DIV_FRAC_START1_MODE0       0x00cc
-+#define QSERDES_COM_DIV_FRAC_START2_MODE0       0x00d0
-+#define QSERDES_COM_DIV_FRAC_START3_MODE0       0x00d4
-+#define QSERDES_COM_INTEGLOOP_GAIN0_MODE0       0x00ec
-+#define QSERDES_COM_INTEGLOOP_GAIN1_MODE0       0x00f0
-+#define QSERDES_COM_VCO_TUNE_CTRL               0x0108
-+#define QSERDES_COM_VCO_TUNE_MAP                0x010c
-+#define QSERDES_COM_VCO_TUNE1_MODE0             0x0110
-+#define QSERDES_COM_VCO_TUNE2_MODE0             0x0114
-+#define QSERDES_COM_CMN_STATUS                  0x0140
-+
-+#define QSERDES_COM_CLK_SEL                     0x0154
-+#define QSERDES_COM_HSCLK_SEL                   0x0158
-+
-+#define QSERDES_COM_CORECLK_DIV_MODE0           0x0168
-+
-+#define QSERDES_COM_CORE_CLK_EN                 0x0174
-+#define QSERDES_COM_C_READY_STATUS              0x0178
-+#define QSERDES_COM_CMN_CONFIG                  0x017c
-+
-+#define QSERDES_COM_SVS_MODE_CLK_SEL            0x0184
-+
-+#define QSERDES_COM_SSC_EN_CENTER               0x0010
-+#define QSERDES_COM_SSC_ADJ_PER1                0x0014
-+#define QSERDES_COM_SSC_PER1                    0x001c
-+#define QSERDES_COM_SSC_PER2                    0x0020
-+#define QSERDES_COM_SSC_STEP_SIZE1_MODE0        0x0024
-+#define QSERDES_COM_SSC_STEP_SIZE2_MODE0        0x0028
-+
-+struct qcom_edp {
-+	struct device *dev;
-+
-+	struct phy *phy;
-+
-+	void __iomem *edp;
-+	void __iomem *tx0;
-+	void __iomem *tx1;
-+	void __iomem *pll;
-+
-+	struct clk_hw dp_link_hw;
-+	struct clk_hw dp_pixel_hw;
-+
-+	struct phy_configure_opts_dp dp_opts;
-+
-+	struct clk_bulk_data clks[2];
-+	struct regulator_bulk_data supplies[2];
-+};
-+
-+static int qcom_edp_phy_init(struct phy *phy)
-+{
-+	struct qcom_edp *edp = phy_get_drvdata(phy);
-+	int ret;
-+
-+	ret = regulator_bulk_enable(ARRAY_SIZE(edp->supplies), edp->supplies);
-+	if (ret)
-+		return ret;
-+
-+	ret = clk_bulk_prepare_enable(ARRAY_SIZE(edp->clks), edp->clks);
-+	if (ret)
-+		goto out_disable_supplies;
-+
-+	writel(DP_PHY_PD_CTL_PWRDN | DP_PHY_PD_CTL_AUX_PWRDN |
-+	       DP_PHY_PD_CTL_PLL_PWRDN | DP_PHY_PD_CTL_DP_CLAMP_EN,
-+	       edp->edp + DP_PHY_PD_CTL);
-+
-+	writel(0x17, edp->pll + QSERDES_COM_BIAS_EN_CLKBUFLR_EN);
-+
-+	writel(DP_PHY_PD_CTL_PSR_PWRDN, edp->edp + DP_PHY_PD_CTL);
-+	msleep(20);
-+
-+	writel(DP_PHY_PD_CTL_PWRDN | DP_PHY_PD_CTL_AUX_PWRDN |
-+	       DP_PHY_PD_CTL_LANE_0_1_PWRDN | DP_PHY_PD_CTL_LANE_2_3_PWRDN |
-+	       DP_PHY_PD_CTL_PLL_PWRDN | DP_PHY_PD_CTL_DP_CLAMP_EN,
-+	       edp->edp + DP_PHY_PD_CTL);
-+
-+	writel(0x00, edp->edp + DP_PHY_AUX_CFG0);
-+	writel(0x13, edp->edp + DP_PHY_AUX_CFG1);
-+	writel(0x24, edp->edp + DP_PHY_AUX_CFG2);
-+	writel(0x00, edp->edp + DP_PHY_AUX_CFG3);
-+	writel(0x0a, edp->edp + DP_PHY_AUX_CFG4);
-+	writel(0x26, edp->edp + DP_PHY_AUX_CFG5);
-+	writel(0x0a, edp->edp + DP_PHY_AUX_CFG6);
-+	writel(0x03, edp->edp + DP_PHY_AUX_CFG7);
-+	writel(0x37, edp->edp + DP_PHY_AUX_CFG8);
-+	writel(0x03, edp->edp + DP_PHY_AUX_CFG9);
-+
-+	writel(0x1f, edp->edp + 0x58);
-+
-+	msleep(20);
-+
-+	return 0;
-+
-+out_disable_supplies:
-+	regulator_bulk_disable(ARRAY_SIZE(edp->supplies), edp->supplies);
-+
-+	return ret;
-+}
-+
-+static int qcom_edp_phy_configure(struct phy *phy, union phy_configure_opts *opts)
-+{
-+	const struct phy_configure_opts_dp *dp_opts = &opts->dp;
-+	struct qcom_edp *edp = phy_get_drvdata(phy);
-+
-+	memcpy(&edp->dp_opts, dp_opts, sizeof(*dp_opts));
-+
-+	return 0;
-+}
-+
-+static int qcom_edp_configure_ssc(struct qcom_edp *edp)
-+{
-+	const struct phy_configure_opts_dp *dp_opts = &edp->dp_opts;
-+	u32 step1;
-+	u32 step2;
-+
-+	switch (dp_opts->link_rate) {
-+	case 1620:
-+	case 2700:
-+	case 8100:
-+		step1 = 0x45;
-+		step2 = 0x06;
-+		break;
-+	case 5400:
-+		step1 = 0x5c;
-+		step2 = 0x08;
-+		break;
-+	default:
-+		/* Other link rates aren't supported */
-+		return -EINVAL;
-+	}
-+
-+	writel(0x01, edp->pll + QSERDES_COM_SSC_EN_CENTER);
-+	writel(0x00, edp->pll + QSERDES_COM_SSC_ADJ_PER1);
-+	writel(0x36, edp->pll + QSERDES_COM_SSC_PER1);
-+	writel(0x01, edp->pll + QSERDES_COM_SSC_PER2);
-+	writel(step1, edp->pll + QSERDES_COM_SSC_STEP_SIZE1_MODE0);
-+	writel(step2, edp->pll + QSERDES_COM_SSC_STEP_SIZE2_MODE0);
-+
-+	return 0;
-+}
-+
-+static int qcom_edp_configure_pll(struct qcom_edp *edp)
-+{
-+	const struct phy_configure_opts_dp *dp_opts = &edp->dp_opts;
-+	u32 div_frac_start2_mode0;
-+	u32 div_frac_start3_mode0;
-+	u32 dec_start_mode0;
-+	u32 lock_cmp1_mode0;
-+	u32 lock_cmp2_mode0;
-+	u32 hsclk_sel;
-+
-+	switch (dp_opts->link_rate) {
-+	case 1620:
-+		hsclk_sel = 0x5;
-+		dec_start_mode0 = 0x69;
-+		div_frac_start2_mode0 = 0x80;
-+		div_frac_start3_mode0 = 0x07;
-+		lock_cmp1_mode0 = 0x6f;
-+		lock_cmp2_mode0 = 0x08;
-+		break;
-+	case 2700:
-+		hsclk_sel = 0x3;
-+		dec_start_mode0 = 0x69;
-+		div_frac_start2_mode0 = 0x80;
-+		div_frac_start3_mode0 = 0x07;
-+		lock_cmp1_mode0 = 0x0f;
-+		lock_cmp2_mode0 = 0x0e;
-+		break;
-+	case 5400:
-+		hsclk_sel = 0x1;
-+		dec_start_mode0 = 0x8c;
-+		div_frac_start2_mode0 = 0x00;
-+		div_frac_start3_mode0 = 0x0a;
-+		lock_cmp1_mode0 = 0x1f;
-+		lock_cmp2_mode0 = 0x1c;
-+		break;
-+	case 8100:
-+		hsclk_sel = 0x0;
-+		dec_start_mode0 = 0x69;
-+		div_frac_start2_mode0 = 0x80;
-+		div_frac_start3_mode0 = 0x07;
-+		lock_cmp1_mode0 = 0x2f;
-+		lock_cmp2_mode0 = 0x2a;
-+		break;
-+	default:
-+		/* Other link rates aren't supported */
-+		return -EINVAL;
-+	}
-+
-+	writel(0x01, edp->pll + QSERDES_COM_SVS_MODE_CLK_SEL);
-+	writel(0x0b, edp->pll + QSERDES_COM_SYSCLK_EN_SEL);
-+	writel(0x02, edp->pll + QSERDES_COM_SYS_CLK_CTRL);
-+	writel(0x0c, edp->pll + QSERDES_COM_CLK_ENABLE1);
-+	writel(0x06, edp->pll + QSERDES_COM_SYSCLK_BUF_ENABLE);
-+	writel(0x30, edp->pll + QSERDES_COM_CLK_SEL);
-+	writel(hsclk_sel, edp->pll + QSERDES_COM_HSCLK_SEL);
-+	writel(0x0f, edp->pll + QSERDES_COM_PLL_IVCO);
-+	writel(0x08, edp->pll + QSERDES_COM_LOCK_CMP_EN);
-+	writel(0x36, edp->pll + QSERDES_COM_PLL_CCTRL_MODE0);
-+	writel(0x16, edp->pll + QSERDES_COM_PLL_RCTRL_MODE0);
-+	writel(0x06, edp->pll + QSERDES_COM_CP_CTRL_MODE0);
-+	writel(dec_start_mode0, edp->pll + QSERDES_COM_DEC_START_MODE0);
-+	writel(0x00, edp->pll + QSERDES_COM_DIV_FRAC_START1_MODE0);
-+	writel(div_frac_start2_mode0, edp->pll + QSERDES_COM_DIV_FRAC_START2_MODE0);
-+	writel(div_frac_start3_mode0, edp->pll + QSERDES_COM_DIV_FRAC_START3_MODE0);
-+	writel(0x02, edp->pll + QSERDES_COM_CMN_CONFIG);
-+	writel(0x3f, edp->pll + QSERDES_COM_INTEGLOOP_GAIN0_MODE0);
-+	writel(0x00, edp->pll + QSERDES_COM_INTEGLOOP_GAIN1_MODE0);
-+	writel(0x00, edp->pll + QSERDES_COM_VCO_TUNE_MAP);
-+	writel(lock_cmp1_mode0, edp->pll + QSERDES_COM_LOCK_CMP1_MODE0);
-+	writel(lock_cmp2_mode0, edp->pll + QSERDES_COM_LOCK_CMP2_MODE0);
-+
-+	writel(0x0a, edp->pll + QSERDES_COM_BG_TIMER);
-+	writel(0x14, edp->pll + QSERDES_COM_CORECLK_DIV_MODE0);
-+	writel(0x00, edp->pll + QSERDES_COM_VCO_TUNE_CTRL);
-+	writel(0x17, edp->pll + QSERDES_COM_BIAS_EN_CLKBUFLR_EN);
-+	writel(0x0f, edp->pll + QSERDES_COM_CORE_CLK_EN);
-+	writel(0xa0, edp->pll + QSERDES_COM_VCO_TUNE1_MODE0);
-+	writel(0x03, edp->pll + QSERDES_COM_VCO_TUNE2_MODE0);
-+
-+	return 0;
-+}
-+
-+static int qcom_edp_set_vco_div(struct qcom_edp *edp)
-+{
-+	const struct phy_configure_opts_dp *dp_opts = &edp->dp_opts;
-+	unsigned long pixel_freq;
-+	u32 vco_div;
-+
-+	switch (dp_opts->link_rate) {
-+	case 1620:
-+		vco_div = 0x1;
-+		pixel_freq = 1620000000UL / 2;
-+		break;
-+	case 2700:
-+		vco_div = 0x1;
-+		pixel_freq = 2700000000UL / 2;
-+		break;
-+	case 5400:
-+		vco_div = 0x2;
-+		pixel_freq = 5400000000UL / 4;
-+		break;
-+	case 8100:
-+		vco_div = 0x0;
-+		pixel_freq = 8100000000UL / 6;
-+		break;
-+	default:
-+		/* Other link rates aren't supported */
-+		return -EINVAL;
-+	}
-+
-+	writel(vco_div, edp->edp + DP_PHY_VCO_DIV);
-+
-+	clk_set_rate(edp->dp_link_hw.clk, dp_opts->link_rate * 100000);
-+	clk_set_rate(edp->dp_pixel_hw.clk, pixel_freq);
-+
-+	return 0;
-+}
-+
-+static int qcom_edp_phy_power_on(struct phy *phy)
-+{
-+	struct qcom_edp *edp = phy_get_drvdata(phy);
-+	int timeout;
-+	int ret;
-+	u32 val;
-+
-+	writel(DP_PHY_PD_CTL_PWRDN | DP_PHY_PD_CTL_AUX_PWRDN |
-+	       DP_PHY_PD_CTL_LANE_0_1_PWRDN | DP_PHY_PD_CTL_LANE_2_3_PWRDN |
-+	       DP_PHY_PD_CTL_PLL_PWRDN | DP_PHY_PD_CTL_DP_CLAMP_EN,
-+	       edp->edp + DP_PHY_PD_CTL);
-+	writel(0xfc, edp->edp + DP_PHY_MODE);
-+
-+	timeout = readl_poll_timeout(edp->pll + QSERDES_COM_CMN_STATUS,
-+				     val, val & BIT(7), 5, 200);
-+	if (timeout)
-+		return timeout;
-+
-+	writel(0x01, edp->tx0 + TXn_LDO_CONFIG);
-+	writel(0x01, edp->tx1 + TXn_LDO_CONFIG);
-+	writel(0x00, edp->tx0 + TXn_LANE_MODE_1);
-+	writel(0x00, edp->tx1 + TXn_LANE_MODE_1);
-+
-+	ret = qcom_edp_configure_ssc(edp);
-+	if (ret)
-+		return ret;
-+
-+	ret = qcom_edp_configure_pll(edp);
-+	if (ret)
-+		return ret;
-+
-+	/* TX Lane configuration */
-+	writel(0x05, edp->edp + DP_PHY_TX0_TX1_LANE_CTL);
-+	writel(0x05, edp->edp + DP_PHY_TX2_TX3_LANE_CTL);
-+
-+	/* TX-0 register configuration */
-+	writel(0x03, edp->tx0 + TXn_TRANSCEIVER_BIAS_EN);
-+	writel(0x0f, edp->tx0 + TXn_CLKBUF_ENABLE);
-+	writel(0x03, edp->tx0 + TXn_RESET_TSYNC_EN);
-+	writel(0x01, edp->tx0 + TXn_TRAN_DRVR_EMP_EN);
-+	writel(0x04, edp->tx0 + TXn_TX_BAND);
-+
-+	/* TX-1 register configuration */
-+	writel(0x03, edp->tx1 + TXn_TRANSCEIVER_BIAS_EN);
-+	writel(0x0f, edp->tx1 + TXn_CLKBUF_ENABLE);
-+	writel(0x03, edp->tx1 + TXn_RESET_TSYNC_EN);
-+	writel(0x01, edp->tx1 + TXn_TRAN_DRVR_EMP_EN);
-+	writel(0x04, edp->tx1 + TXn_TX_BAND);
-+
-+	ret = qcom_edp_set_vco_div(edp);
-+	if (ret)
-+		return ret;
-+
-+	writel(0x01, edp->edp + DP_PHY_CFG);
-+	writel(0x05, edp->edp + DP_PHY_CFG);
-+	writel(0x01, edp->edp + DP_PHY_CFG);
-+	writel(0x09, edp->edp + DP_PHY_CFG);
-+
-+	writel(0x20, edp->pll + QSERDES_COM_RESETSM_CNTRL);
-+
-+	timeout = readl_poll_timeout(edp->pll + QSERDES_COM_C_READY_STATUS,
-+				     val, val & BIT(0), 500, 10000);
-+	if (timeout)
-+		return timeout;
-+
-+	writel(0x19, edp->edp + DP_PHY_CFG);
-+	writel(0x1f, edp->tx0 + TXn_HIGHZ_DRVR_EN);
-+	writel(0x04, edp->tx0 + TXn_HIGHZ_DRVR_EN);
-+	writel(0x00, edp->tx0 + TXn_TX_POL_INV);
-+	writel(0x1f, edp->tx1 + TXn_HIGHZ_DRVR_EN);
-+	writel(0x04, edp->tx1 + TXn_HIGHZ_DRVR_EN);
-+	writel(0x00, edp->tx1 + TXn_TX_POL_INV);
-+	writel(0x10, edp->tx0 + TXn_TX_DRV_LVL_OFFSET);
-+	writel(0x10, edp->tx1 + TXn_TX_DRV_LVL_OFFSET);
-+	writel(0x11, edp->tx0 + TXn_RES_CODE_LANE_OFFSET_TX0);
-+	writel(0x11, edp->tx0 + TXn_RES_CODE_LANE_OFFSET_TX1);
-+	writel(0x11, edp->tx1 + TXn_RES_CODE_LANE_OFFSET_TX0);
-+	writel(0x11, edp->tx1 + TXn_RES_CODE_LANE_OFFSET_TX1);
-+
-+	writel(0x10, edp->tx0 + TXn_TX_EMP_POST1_LVL);
-+	writel(0x10, edp->tx1 + TXn_TX_EMP_POST1_LVL);
-+	writel(0x1f, edp->tx0 + TXn_TX_DRV_LVL);
-+	writel(0x1f, edp->tx1 + TXn_TX_DRV_LVL);
-+
-+	writel(0x4, edp->tx0 + TXn_HIGHZ_DRVR_EN);
-+	writel(0x3, edp->tx0 + TXn_TRANSCEIVER_BIAS_EN);
-+	writel(0x4, edp->tx1 + TXn_HIGHZ_DRVR_EN);
-+	writel(0x0, edp->tx1 + TXn_TRANSCEIVER_BIAS_EN);
-+	writel(0x3, edp->edp + DP_PHY_CFG_1);
-+
-+	writel(0x18, edp->edp + DP_PHY_CFG);
-+	udelay(100);
-+
-+	writel(0x19, edp->edp + DP_PHY_CFG);
-+
-+	return readl_poll_timeout(edp->edp + DP_PHY_STATUS,
-+				  val, val & BIT(1), 500, 10000);
-+}
-+
-+static int qcom_edp_phy_power_off(struct phy *phy)
-+{
-+	struct qcom_edp *edp = phy_get_drvdata(phy);
-+
-+	writel(DP_PHY_PD_CTL_PSR_PWRDN, edp->edp + DP_PHY_PD_CTL);
-+
-+	return 0;
-+}
-+
-+static int qcom_edp_phy_exit(struct phy *phy)
-+{
-+	struct qcom_edp *edp = phy_get_drvdata(phy);
-+
-+	clk_bulk_disable_unprepare(ARRAY_SIZE(edp->clks), edp->clks);
-+	regulator_bulk_disable(ARRAY_SIZE(edp->supplies), edp->supplies);
-+
-+	return 0;
-+}
-+
-+static const struct phy_ops qcom_edp_ops = {
-+	.init		= qcom_edp_phy_init,
-+	.configure	= qcom_edp_phy_configure,
-+	.power_on	= qcom_edp_phy_power_on,
-+	.power_off	= qcom_edp_phy_power_off,
-+	.exit		= qcom_edp_phy_exit,
-+	.owner		= THIS_MODULE,
-+};
-+
-+/*
-+ * Display Port PLL driver block diagram for branch clocks
-+ *
-+ *              +------------------------------+
-+ *              |         DP_VCO_CLK           |
-+ *              |                              |
-+ *              |    +-------------------+     |
-+ *              |    |   (DP PLL/VCO)    |     |
-+ *              |    +---------+---------+     |
-+ *              |              v               |
-+ *              |   +----------+-----------+   |
-+ *              |   | hsclk_divsel_clk_src |   |
-+ *              |   +----------+-----------+   |
-+ *              +------------------------------+
-+ *                              |
-+ *          +---------<---------v------------>----------+
-+ *          |                                           |
-+ * +--------v----------------+                          |
-+ * |    dp_phy_pll_link_clk  |                          |
-+ * |     link_clk            |                          |
-+ * +--------+----------------+                          |
-+ *          |                                           |
-+ *          |                                           |
-+ *          v                                           v
-+ * Input to DISPCC block                                |
-+ * for link clk, crypto clk                             |
-+ * and interface clock                                  |
-+ *                                                      |
-+ *                                                      |
-+ *      +--------<------------+-----------------+---<---+
-+ *      |                     |                 |
-+ * +----v---------+  +--------v-----+  +--------v------+
-+ * | vco_divided  |  | vco_divided  |  | vco_divided   |
-+ * |    _clk_src  |  |    _clk_src  |  |    _clk_src   |
-+ * |              |  |              |  |               |
-+ * |divsel_six    |  |  divsel_two  |  |  divsel_four  |
-+ * +-------+------+  +-----+--------+  +--------+------+
-+ *         |                 |                  |
-+ *         v---->----------v-------------<------v
-+ *                         |
-+ *              +----------+-----------------+
-+ *              |   dp_phy_pll_vco_div_clk   |
-+ *              +---------+------------------+
-+ *                        |
-+ *                        v
-+ *              Input to DISPCC block
-+ *              for DP pixel clock
-+ *
-+ */
-+static int qcom_edp_dp_pixel_clk_determine_rate(struct clk_hw *hw,
-+						struct clk_rate_request *req)
-+{
-+	switch (req->rate) {
-+	case 1620000000UL / 2:
-+	case 2700000000UL / 2:
-+	/* 5.4 and 8.1 GHz are same link rate as 2.7GHz, i.e. div 4 and div 6 */
-+		return 0;
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
-+static unsigned long
-+qcom_edp_dp_pixel_clk_recalc_rate(struct clk_hw *hw, unsigned long parent_rate)
-+{
-+	const struct qcom_edp *edp = container_of(hw, struct qcom_edp, dp_pixel_hw);
-+	const struct phy_configure_opts_dp *dp_opts = &edp->dp_opts;
-+
-+	switch (dp_opts->link_rate) {
-+	case 1620:
-+		return 1620000000UL / 2;
-+	case 2700:
-+		return 2700000000UL / 2;
-+	case 5400:
-+		return 5400000000UL / 4;
-+	case 8100:
-+		return 8100000000UL / 6;
-+	default:
-+		return 0;
-+	}
-+}
-+
-+static const struct clk_ops qcom_edp_dp_pixel_clk_ops = {
-+	.determine_rate = qcom_edp_dp_pixel_clk_determine_rate,
-+	.recalc_rate = qcom_edp_dp_pixel_clk_recalc_rate,
-+};
-+
-+static int qcom_edp_dp_link_clk_determine_rate(struct clk_hw *hw,
-+					       struct clk_rate_request *req)
-+{
-+	switch (req->rate) {
-+	case 162000000:
-+	case 270000000:
-+	case 540000000:
-+	case 810000000:
-+		return 0;
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
-+static unsigned long
-+qcom_edp_dp_link_clk_recalc_rate(struct clk_hw *hw, unsigned long parent_rate)
-+{
-+	const struct qcom_edp *edp = container_of(hw, struct qcom_edp, dp_link_hw);
-+	const struct phy_configure_opts_dp *dp_opts = &edp->dp_opts;
-+
-+	switch (dp_opts->link_rate) {
-+	case 1620:
-+	case 2700:
-+	case 5400:
-+	case 8100:
-+		return dp_opts->link_rate * 100000;
-+	default:
-+		return 0;
-+	}
-+}
-+
-+static const struct clk_ops qcom_edp_dp_link_clk_ops = {
-+	.determine_rate = qcom_edp_dp_link_clk_determine_rate,
-+	.recalc_rate = qcom_edp_dp_link_clk_recalc_rate,
-+};
-+
-+static struct clk_hw *
-+qcom_edp_dp_clks_hw_get(struct of_phandle_args *clkspec, void *data)
-+{
-+	unsigned int idx = clkspec->args[0];
-+	struct qcom_edp *edp = data;
-+
-+	if (idx >= 2) {
-+		pr_err("%s: invalid index %u\n", __func__, idx);
-+		return ERR_PTR(-EINVAL);
-+	}
-+
-+	if (idx == 0)
-+		return &edp->dp_link_hw;
-+
-+	return &edp->dp_pixel_hw;
-+}
-+
-+static int qcom_edp_clks_register(struct qcom_edp *edp, struct device_node *np)
-+{
-+	struct clk_init_data init = { };
-+	int ret;
-+
-+	init.ops = &qcom_edp_dp_link_clk_ops;
-+	init.name = "edp_phy_pll_link_clk";
-+	edp->dp_link_hw.init = &init;
-+	ret = devm_clk_hw_register(edp->dev, &edp->dp_link_hw);
-+	if (ret)
-+		return ret;
-+
-+	init.ops = &qcom_edp_dp_pixel_clk_ops;
-+	init.name = "edp_phy_pll_vco_div_clk";
-+	edp->dp_pixel_hw.init = &init;
-+	ret = devm_clk_hw_register(edp->dev, &edp->dp_pixel_hw);
-+	if (ret)
-+		return ret;
-+
-+	return devm_of_clk_add_hw_provider(edp->dev, qcom_edp_dp_clks_hw_get, edp);
-+}
-+
-+static int qcom_edp_phy_probe(struct platform_device *pdev)
-+{
-+	struct phy_provider *phy_provider;
-+	struct device *dev = &pdev->dev;
-+	struct qcom_edp *edp;
-+	int ret;
-+
-+	edp = devm_kzalloc(dev, sizeof(*edp), GFP_KERNEL);
-+	if (!edp)
-+		return -ENOMEM;
-+
-+	edp->dev = dev;
-+
-+	edp->edp = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(edp->edp))
-+		return PTR_ERR(edp->edp);
-+
-+	edp->tx0 = devm_platform_ioremap_resource(pdev, 1);
-+	if (IS_ERR(edp->tx0))
-+		return PTR_ERR(edp->tx0);
-+
-+	edp->tx1 = devm_platform_ioremap_resource(pdev, 2);
-+	if (IS_ERR(edp->tx1))
-+		return PTR_ERR(edp->tx1);
-+
-+	edp->pll = devm_platform_ioremap_resource(pdev, 3);
-+	if (IS_ERR(edp->pll))
-+		return PTR_ERR(edp->pll);
-+
-+	edp->clks[0].id = "aux";
-+	edp->clks[1].id = "cfg_ahb";
-+	ret = devm_clk_bulk_get(dev, ARRAY_SIZE(edp->clks), edp->clks);
-+	if (ret)
-+		return ret;
-+
-+	edp->supplies[0].supply = "vdda-phy";
-+	edp->supplies[1].supply = "vdda-pll";
-+	ret = devm_regulator_bulk_get(dev, ARRAY_SIZE(edp->supplies), edp->supplies);
-+	if (ret)
-+		return ret;
-+
-+	ret = qcom_edp_clks_register(edp, pdev->dev.of_node);
-+	if (ret)
-+		return ret;
-+
-+	edp->phy = devm_phy_create(dev, pdev->dev.of_node, &qcom_edp_ops);
-+	if (IS_ERR(edp->phy)) {
-+		dev_err(dev, "failed to register phy\n");
-+		return PTR_ERR(edp->phy);
-+	}
-+
-+	phy_set_drvdata(edp->phy, edp);
-+
-+	phy_provider = devm_of_phy_provider_register(dev, of_phy_simple_xlate);
-+	return PTR_ERR_OR_ZERO(phy_provider);
-+}
-+
-+static const struct of_device_id qcom_edp_phy_match_table[] = {
-+	{ .compatible = "qcom,sc8180x-edp-phy" },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, qcom_edp_phy_match_table);
-+
-+static struct platform_driver qcom_edp_phy_driver = {
-+	.probe		= qcom_edp_phy_probe,
-+	.driver = {
-+		.name	= "qcom-edp-phy",
-+		.of_match_table = qcom_edp_phy_match_table,
-+	},
-+};
-+
-+module_platform_driver(qcom_edp_phy_driver);
-+
-+MODULE_DESCRIPTION("Qualcomm eDP PHY driver");
-+MODULE_LICENSE("GPL v2");
--- 
-2.29.2
-
+T24gRnJpLCAyMDIxLTEwLTE1IGF0IDAzOjIxICswMjAwLCBLcnp5c3p0b2YgV2lsY3p5xYRza2kg
+d3JvdGU6DQo+IEhpIEtlbHZpbiwNCj4gDQo+IFRoYW5rIHlvdSBmb3Igc2VuZGluZyB0aGUgc2Vy
+aWVzIG92ZXIhDQo+IA0KPiBJIGFtIHRlcnJpYmx5IHNvcnJ5IGZvciBhIHZlcnkgbGF0ZSBjb21t
+ZW50LCBlc3BlY2lhbGx5IHNpbmNlIEJqb3JuDQo+IGFscmVhZHkNCj4gYWNjZXB0ZWQgdGhpcyBz
+ZXJpZXMgdG8gYmUgaW5jbHVkZWQsIGJ1dCBhbGxvdyBtZSBmb3IgYSBzbWFsbA0KPiBxdWVzdGlv
+bg0KPiBiZWxvdy4NCj4gDQo+IFsuLi5dDQo+ID4gQEAgLTExMyw2ICsxMjcsNyBAQCBzdGF0aWMg
+dm9pZCBzdHVzZXJfc2V0X3N0YXRlKHN0cnVjdA0KPiA+IHN3aXRjaHRlY191c2VyICpzdHVzZXIs
+DQo+ID4gICAgICAgICAgICAgICBbTVJQQ19RVUVVRURdID0gIlFVRVVFRCIsDQo+ID4gICAgICAg
+ICAgICAgICBbTVJQQ19SVU5OSU5HXSA9ICJSVU5OSU5HIiwNCj4gPiAgICAgICAgICAgICAgIFtN
+UlBDX0RPTkVdID0gIkRPTkUiLA0KPiA+ICsgICAgICAgICAgICAgW01SUENfSU9fRVJST1JdID0g
+IklPX0VSUk9SIiwNCj4gDQo+IExvb2tpbmcgYXQgdGhlIGFib3ZlLCBhbmQgdGhlbiBsb29raW5n
+IGF0IHN0dXNlcl9zZXRfc3RhdGUoKSwgd2hpY2gNCj4gY29udGFpbnMgdGhlIGZvbGxvd2luZyBs
+b2NhbCBhcnJheSBkZWZpbml0aW9uOg0KPiANCj4gICAgICAgICBjb25zdCBjaGFyICogY29uc3Qg
+c3RhdGVfbmFtZXNbXSA9IHsNCj4gICAgICAgICAgICAgICAgIFtNUlBDX0lETEVdID0gIklETEUi
+LA0KPiAgICAgICAgICAgICAgICAgW01SUENfUVVFVUVEXSA9ICJRVUVVRUQiLA0KPiAgICAgICAg
+ICAgICAgICAgW01SUENfUlVOTklOR10gPSAiUlVOTklORyIsDQo+ICAgICAgICAgICAgICAgICBb
+TVJQQ19ET05FXSA9ICJET05FIiwNCj4gICAgICAgICB9Ow0KPiANCj4gSSB3YXMgd29uZGVyaW5n
+IGlmIHRoZXJlIG1pZ2h0IGJlIGEgc21hbGwgYmVuZWZpdCBvZiBkZWNsYXJpbmcgdGhpcw0KPiBh
+cnJheQ0KPiBzdGF0ZV9uYW1lc1tdLCBvciBsaXN0IG9mIHN0YXRlcyBpZiB5b3Ugd2lzaCwgYXMg
+c3RhdGljIHNvIHRoYXQgd2UNCj4gYXZvaWQNCj4gaGF2aW5nIHRvIGFsbG9jYXRlIHNwYWNlIGFu
+ZCBmaWxsIGl0IGluIHdpdGggdmFsdWVzIGV2ZXJ5IHRpbWUgdGhpcw0KPiBmdW5jdGlvbnMgcnVu
+cz8NCj4gDQo+IFRoZSBmdW5jdGlvbiBpdHNlbGYgaWYgcmVmZXJlbmNlZCBpbiBmZXcgcGxhY2Vz
+IGFzIHBlcjoNCj4gDQo+ICAgSW5kZXggRmlsZSAgICAgICAgICAgICAgICAgICAgICAgICAgIExp
+bmUgQ29udGVudA0KPiAgICAgICAxIGRyaXZlcnMvcGNpL3N3aXRjaC9zd2l0Y2h0ZWMuYyAgMTU5
+IHN0dXNlcl9zZXRfc3RhdGUoc3R1c2VyLA0KPiBNUlBDX1JVTk5JTkcpOw0KPiAgICAgICAyIGRy
+aXZlcnMvcGNpL3N3aXRjaC9zd2l0Y2h0ZWMuYyAgMTc4IHN0dXNlcl9zZXRfc3RhdGUoc3R1c2Vy
+LA0KPiBNUlBDX1FVRVVFRCk7DQo+ICAgICAgIDMgZHJpdmVycy9wY2kvc3dpdGNoL3N3aXRjaHRl
+Yy5jICAyMDYgc3R1c2VyX3NldF9zdGF0ZShzdHVzZXIsDQo+IE1SUENfRE9ORSk7DQo+ICAgICAg
+IDQgZHJpdmVycy9wY2kvc3dpdGNoL3N3aXRjaHRlYy5jICA1Njcgc3R1c2VyX3NldF9zdGF0ZShz
+dHVzZXIsDQo+IE1SUENfSURMRSk7DQo+IA0KPiBFdmVuIHRob3VnaCB0aGUgc3RyaW5nIHJlcHJl
+c2VudGF0aW9uIG9mIHRoZSBzdGF0ZSBpcyBldmVyIG9ubHkNCj4gcHJpbnRlZCBpZg0KPiBhIGRl
+YnVnIGxvZ2dpbmcgaXMgcmVxdWVzdGVkLCB3ZSB3b3VsZCBhbGxvY2F0ZSBhbmQgcG9wdWxhciB0
+aGlzDQo+IGFycmF5DQo+IGV2ZXJ5IHRpbWUgYW55d2F5LCByZWdhcmRsZXNzIG9mIHdoZXRoZXIg
+d2UgcHJpbnQgYW55IGRlYnVnDQo+IGluZm9ybWF0aW9uIG9yDQo+IG5vdC4NCj4gDQo+IFdoYXQg
+ZG8geW91IHRoaW5rPw0KDQpUaGFuayB5b3UgS3J6eXN6dG9mLiBUaGF0IHdpbGwgYmUgYW4gaW1w
+cm92ZW1lbnQuIEkgY2FuIHByb2JhYmx5IHR3ZWFrDQppdCBpbiB0aGUgbmV4dCBwYXRjaHNldCAo
+Y29taW5nIHNvb24pLiANCg0KS2VsdmluDQo+IA0KPiAgICAgICAgIEtyenlzenRvZg0K
