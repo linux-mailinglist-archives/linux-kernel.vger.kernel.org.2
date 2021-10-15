@@ -2,426 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BBD642ECFB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 10:59:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE2D342ED01
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 11:00:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236064AbhJOJBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 05:01:32 -0400
-Received: from de-smtp-delivery-102.mimecast.com ([194.104.111.102]:56843 "EHLO
-        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229656AbhJOJBa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 05:01:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1634288363;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kPxLG7cNlYv5xB6SUDoygGZzA/mpMJCyeJYNItBRkHI=;
-        b=A4jwUPli1SXas4TfHj2okF5kpxnl6rPk3P7kqwLWMF8CDToKo2WEfqGYC9Bz4Zk3ofAEdv
-        nyW9Ud4v5K2vrkXZunLqHGqjRk8wunx2Ad/FbJaQdrB50m4RLw0pS8dHZHKHGtPo2jK/Xw
-        D0++byhCjH6XjYI51LO2L9o7JQOqBHA=
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com
- (mail-am6eur05lp2112.outbound.protection.outlook.com [104.47.18.112])
- (Using TLS) by relay.mimecast.com with ESMTP id
- de-mta-10-d1hDZSe6P7aUeavbzDhlIQ-1; Fri, 15 Oct 2021 10:59:22 +0200
-X-MC-Unique: d1hDZSe6P7aUeavbzDhlIQ-1
+        id S236105AbhJOJCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 05:02:49 -0400
+Received: from mga01.intel.com ([192.55.52.88]:28078 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229656AbhJOJCs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 05:02:48 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10137"; a="251324126"
+X-IronPort-AV: E=Sophos;i="5.85,375,1624345200"; 
+   d="scan'208";a="251324126"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2021 02:00:42 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,375,1624345200"; 
+   d="scan'208";a="716452948"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by fmsmga006.fm.intel.com with ESMTP; 15 Oct 2021 02:00:42 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Fri, 15 Oct 2021 02:00:41 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12 via Frontend Transport; Fri, 15 Oct 2021 02:00:41 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.173)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.12; Fri, 15 Oct 2021 02:00:35 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fg/97wej986ywLxkWbXXrkxb4qBYkqVda33sNlCtRhn1v/cB376F1I5jGS76SOEasT0sN9PP5tirwB9NHponpchLTIZKXLqgv3CmpEVcJYCcmL0F9PoF13Mh2Hzj+dKRz1MjxwB1rtBM5GvD/sLO6MWBD5NguCJazZfBohf1a0uecDAFV8VMYo6C75j91Z2I1TqzpfuJy14V/2DhjRRwbuBL4UgehwX5POQ3Xwr2xEGc0cMkx3O6fTCzahAgA4+lVVDOk64tLdvqw2254s1V0Za+CKGDBF4uawXv2n7n2E1X9sLPLOeipEUEcgaansRmL3TnUmr9I8mO66Gb1pCVdA==
+ b=BBKbynlfEP9SnZh30/AG9/D3bqUgXIP0rcWDSk10Aie7aUEmhvsPUyqMcNmquutunj21jMd3jTk4aYpf5ls2zuVDSqrDk+KtYAZDBKI16DhidRkjLuW/MyETQQxHviYFifMGgZTMv7qiugB6Idf7OOOdSbElPS/CX97loP+lP+RrPKMK3Of0xVBGphvRTTC+GeX4K4FQc1BY9uDmDwgKFSIFa+v6K077A17EsycLsS36iAw6KX/qT3Z9xt/ltZO3IstcalNQftZB/ymHSFJ6hNgSrJgKxhvdjJxk+LVBatwBGeaWgYADzf4ud70KwG8Ma/EWe/4lnnhjIQeGi6cy8A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=BKXCEj6LB1CnpKc3O9GeuXQQ6Ih5mYrTVQ4KdMzlvdI=;
- b=I4ZipRndxS1VXetLuMRot2vb4uUDN2r08Ky064gRHsSE8poVxCPeSh1AYGNS4DaVrtoyI9DQRdWHMbuQaCDFLKu7G7EtYjJ5hLJVHZA+l/DtsKbOVIgSGIEGOxb6bFlVrKCaxTKodm00zwT7zjF3AUf51Vn39WFzbv5uyCLizZ50dXqQAZijFB5dum8BaRQqu2Q4r6hlZBr9pgLA1T4CFm3DyC7FWvXHxd+SDeHGK3PFao/QTWvWaFaudDS6t4Sh07nicY/ln2JelKD1b/5lnLL31Sbt7QSFgS4MscVzNEG1AO8X4hPGCBXGZhDwyOBvkwCKmsVgoKLi5eDPMVvz6g==
+ bh=W+8rh/TFbD2MmmNhkW0leL6gZbLDXJ0y+k5Ux7WAWws=;
+ b=obxbQrPHnDP/5ssWJkfowvme7wVvSthxZTrYkUzltfLjeGYXQQa15bbjiruwg0InGKKF1Y5DvwtnWKKAO2an4Jb+EI6TGJzCuoJalYXTVwttPMEn8cpsmYhSKLLINDoBa6aBNPNyH3kRsPd+04cTwMf4uDJbHYMtga6h2Q9+evzuHMMSxUqQnsq0gAjBTQMyLPnZSiWD/d1hLYPayLlJYo9ZLY9w5AmFCOQAzg6FOgHd+1nMJDLKk5S9DiyoapshlrwWgYN5uS/41OmfPHD5aKvmbHUrvZTohHcOMXYCCVGxBLzw7mpNmx78arnTrT/z7gZHtU6iOmB08OFv9UNJ0g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: linux.dev; dkim=none (message not signed)
- header.d=none;linux.dev; dmarc=none action=none header.from=suse.com;
-Received: from DB7PR04MB4666.eurprd04.prod.outlook.com (2603:10a6:5:2b::14) by
- DB3PR0402MB3834.eurprd04.prod.outlook.com (2603:10a6:8:e::33) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4587.26; Fri, 15 Oct 2021 08:59:20 +0000
-Received: from DB7PR04MB4666.eurprd04.prod.outlook.com
- ([fe80::483f:e29e:cef3:fc5d]) by DB7PR04MB4666.eurprd04.prod.outlook.com
- ([fe80::483f:e29e:cef3:fc5d%7]) with mapi id 15.20.4587.029; Fri, 15 Oct 2021
- 08:59:20 +0000
-Message-ID: <2c33ebaf-66d2-3138-9e75-ab366b395ad9@suse.com>
-Date:   Fri, 15 Oct 2021 16:59:11 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
-Subject: Re: [PATCH v2] md: Kill usage of page->index
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=W+8rh/TFbD2MmmNhkW0leL6gZbLDXJ0y+k5Ux7WAWws=;
+ b=eEZ9ymf5vZJPOeGsP18GZwDseWJPwnxCVXk/odbQTmXC+CTCCDwHmMiLWi/YXLZLIRncq8tNwoOZ3KxD6Zx8Bz8Sl5vk6Dd98jOVUbGHr2R6b/8VlO6T638r/Ou8aeL5chB7SXwg4RQjg5n7XyvtuLmvu/r395ErnN93HnW38cs=
+Received: from BYAPR11MB3256.namprd11.prod.outlook.com (2603:10b6:a03:76::19)
+ by BYAPR11MB3255.namprd11.prod.outlook.com (2603:10b6:a03:1d::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.16; Fri, 15 Oct
+ 2021 09:00:34 +0000
+Received: from BYAPR11MB3256.namprd11.prod.outlook.com
+ ([fe80::61d4:ab77:cc62:fabf]) by BYAPR11MB3256.namprd11.prod.outlook.com
+ ([fe80::61d4:ab77:cc62:fabf%6]) with mapi id 15.20.4608.017; Fri, 15 Oct 2021
+ 09:00:33 +0000
+From:   "Liu, Jing2" <jing2.liu@intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+CC:     "x86@kernel.org" <x86@kernel.org>,
+        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "Arjan van de Ven" <arjan@linux.intel.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "Nakajima, Jun" <jun.nakajima@intel.com>,
+        Jing Liu <jing2.liu@linux.intel.com>,
+        "seanjc@google.com" <seanjc@google.com>,
+        "Cooper, Andrew" <andrew.cooper3@citrix.com>
+Subject: RE: [patch 13/31] x86/fpu: Move KVMs FPU swapping to FPU core
+Thread-Topic: [patch 13/31] x86/fpu: Move KVMs FPU swapping to FPU core
+Thread-Index: AQHXv42x8Iw8v1bdT0WqN+QXiZLaIqvQcYTggAAF7ACAAAOKwIAAIoqAgABafQCAARh7AIAACH/AgAAb+oCAAFYIAIAADomAgAEsGrA=
+Date:   Fri, 15 Oct 2021 09:00:33 +0000
+Message-ID: <BYAPR11MB3256D90BEEDE57988CA39705A9B99@BYAPR11MB3256.namprd11.prod.outlook.com>
+References: <871r4p9fyh.ffs@tglx>
+ <ec9c761d-4b5c-71e2-c1fc-d256b6b78c04@redhat.com>
+ <BL0PR11MB3252511FC48E43484DE79A3CA9B89@BL0PR11MB3252.namprd11.prod.outlook.com>
+ <6bbc5184-a675-1937-eb98-639906a9cf15@redhat.com> <87wnmf66m5.ffs@tglx>
+ <3997787e-402d-4b2b-0f90-4a672c77703f@redhat.com>
+In-Reply-To: <3997787e-402d-4b2b-0f90-4a672c77703f@redhat.com>
+Accept-Language: en-US
 Content-Language: en-US
-To:     Guoqing Jiang <guoqing.jiang@linux.dev>,
-        Kent Overstreet <kent.overstreet@gmail.com>
-CC:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        akpm@linux-foundation.org, linux-raid@vger.kernel.org,
-        linux-block@vger.kernel.org, axboe@kernel.dk,
-        alexander.h.duyck@linux.intel.com
-References: <20211013160034.3472923-1-kent.overstreet@gmail.com>
- <20211013160034.3472923-5-kent.overstreet@gmail.com>
- <bcdd4b56-9b6b-c5cb-2eb7-540fa003d692@linux.dev>
- <04714b0e-297b-7383-ed4f-e39ae5e56433@suse.com>
- <YWg/AGR50Vw7DDuU@moria.home.lan>
- <c2e2edd1-8f6f-1849-df0a-46916e311586@linux.dev>
-From:   "heming.zhao@suse.com" <heming.zhao@suse.com>
-In-Reply-To: <c2e2edd1-8f6f-1849-df0a-46916e311586@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-ClientProxiedBy: HK2PR06CA0002.apcprd06.prod.outlook.com
- (2603:1096:202:2e::14) To DB7PR04MB4666.eurprd04.prod.outlook.com
- (2603:10a6:5:2b::14)
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-reaction: no-action
+dlp-version: 11.6.200.16
+dlp-product: dlpe-windows
+authentication-results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 152c76c8-153a-4ad8-bbe1-08d98fba3f49
+x-ms-traffictypediagnostic: BYAPR11MB3255:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR11MB3255BACD489C893B453D4BA5A9B99@BYAPR11MB3255.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: +Gt7ozZvLNQLHLS61gTFgb2p3ZhAfn3yY5fFu2vQ+xWA3xhIOhboyhQ8Mf+8I9Vyo/0BisCHsEKhNzohi8EmTjl9ch8sQ0v4CFMorH/e5nueTZ7Fz9Iv0NFXgMoCK03zLpIsRofuHOCxY7sObiNbjjDXVKi57KY+x7nztkSf1rY3lirXVc/AOSyKcqx2q3cSNPSbZbtREPdi/e4yB9RTs0hEUV4pChp9sWci3ANtkXcTC4Cz1LlwKneHfkCj3t8mexdNaxFeT8+yXHqluIIjefAcJoeZExILu7YcHPJdfacMrvSsxiVnE/lrEKEejh1K0eKSXa7y3DqTnp64c8YrbMGwY5O+UdUrFPyaKoxNeVP9kpW5vThQ8CTgiUKi6LzwuB8ckw1/D76A5aq6aQkqzzYDUr4Q/JsA84BBHpF/tjWW6iT/SnPmn4SGp/S+s55Zh5CzeddUNTOhdiBjgJTG70JpxQimjnVPkM0e95q++4ls9pewuVSVTBEeJmPTaCa5KxSDqxucVR46USuVJUdwe88dTk171nB8n6pE6NvJfZfb/tXRZJofcY4H+Y2vgrGtiNV8HRqM/XQgQWNT9X03qCQtyNTJXXwBm69gOn0hn1HleDZGvS4+orD6aolDEm0WzANSysckfKBVCtfH9W0Z4koyfqmbADiTfw6Yq7WGP6cFdywa/uuKUL1iYGRpf91ljqsV8R+GK4Z6QwUJpbbAxA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3256.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(83380400001)(4326008)(7416002)(508600001)(82960400001)(110136005)(54906003)(33656002)(38100700002)(2906002)(76116006)(26005)(53546011)(71200400001)(8936002)(86362001)(9686003)(316002)(55016002)(66946007)(64756008)(66556008)(66446008)(66476007)(52536014)(8676002)(5660300002)(6506007)(38070700005)(7696005)(186003)(122000001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?b2RjdXFVZ3BxcHh6c1AwcTJWcXlKRGZjUi9SUGo4NVRpTUp4OWF6d0pWVS9O?=
+ =?utf-8?B?RTlxVHc2elBlWjRjYTBsYk84RmZhaDNJekl4Q2FRZkQ5VE5iWjRFK1hHWkZr?=
+ =?utf-8?B?YnF1bUIrUHFBVHJOWlZySVhwQWYwTDY1SVZIaGlYanFDVENEaWFlMnl6YzZj?=
+ =?utf-8?B?NGxNN2dKb25wak9sN0E0dHc3YmNlN3FsenAwNVcvb1hpY0xGMWZ1VUtrbDhh?=
+ =?utf-8?B?TTNnR0I5VzV4akJRWnRzQU5FUk5Ka3RacGlwdHNCLzlHbFVwZzRra0JjMFpS?=
+ =?utf-8?B?eG03Vlg5dVNCUVZDR0xndER4WXJBTUNCbGRRS0lEcU9YeDV0WVN2dGFYTEZa?=
+ =?utf-8?B?bURRbUdZQWdxSW5zV2c1MkU3YjlUN216Y1VIU3Bndmt0Mnk3cURxWHdLYkJ0?=
+ =?utf-8?B?VnQydlM0Tmk2ODlIdVR5Ti9FcGtaQVl5ZlNiUkc5RHdkMUU3bjgvZ0gxeGFi?=
+ =?utf-8?B?ZkRaNGR1YWo2ZkpmcVhDMWRQSktvN2xjTThOR3FkTWR5RzZsdDNOcEpYZCt6?=
+ =?utf-8?B?eEYwN3M5SUQyS2p3TkZEVkNZYVhjTlVlYmRtb01FZTVJV3VNS1B5SjBjWUsr?=
+ =?utf-8?B?RXZoOWRkRnhmYjBENlVHby9xSzVVa3dVQ2k5SFRycStpakE4R3lGakMrNUdx?=
+ =?utf-8?B?dnFqRnJEaUtGQklaM0FpUDF0OHBhYldWVUFlSXNaMDc2ZkYvaFgvMVFBR0lM?=
+ =?utf-8?B?VEtwa3J1OWhwNWl1Z1hKWm5IczdhclVaUXQ5OWR4OFJDYmtQSEtPQSs3YWJX?=
+ =?utf-8?B?YUlpOHh3RS91KzFhUkp5UW5lOEx0cEpNeDdpZ2RaaXRGeUZtalpSanUyR0tW?=
+ =?utf-8?B?YTJBVE40SENTdHBKWitMTkQrcUoxM01RY0ZRWko3L3B2Q1hEUHBDS2hySWYx?=
+ =?utf-8?B?Ulg5Q0ZmWnRaRmRzMjJqQ2k3ZlpUelcrSEdXMWZpdHZLV09QYWtMb1BwekVz?=
+ =?utf-8?B?SWR5TVNib05jR1BPelJLNXZHZWg4WjVuUk5TRXNRMXl4aXlxWTBsTzFETlFo?=
+ =?utf-8?B?UmtCamIwNFZ4RTJqa1Z4dUZlUjQ5Qnlib2FnSHN3c2ZpQWlVRjYvWWVpaGh5?=
+ =?utf-8?B?UzROVnMzME83WDhiMDRPL3djQ3ZCMkloUnRndG9JSmxEbVhWNExLSG43WVo2?=
+ =?utf-8?B?dG11ODUyeTMyUDZBZW03cWRKOUhVKzU0RDNyZVhWR29WcmxQQlh5SVllS2hV?=
+ =?utf-8?B?N0wxZDlNdThEN3l0Z3Ywc2JCRFl4ZUwwVUNXM3VVM3RMdTZiYlFDYXF0U0Ry?=
+ =?utf-8?B?VGFFQXVmZmZQSlV2UzF6UVVRZ1JsVFZYVDJpMW0zanpISmNVeS9CUG5DZmRM?=
+ =?utf-8?B?MjZKMkhUcUlEcnBhZzdYdllIOXM5WVpSLzIxeGEzdHEzM28yQnY4ZTdiSU9O?=
+ =?utf-8?B?TjVuY0ExeGJxdVAyMDlyNE96alFNK2Q4VHZ3Ny80VktGWk9MWDgzVEVpUFE4?=
+ =?utf-8?B?dHZOUWhZZDNvQkRSTUNPMlBGM2VWYVZBazh2dkNyZnBneUVDMkM1cnU3Q2Vk?=
+ =?utf-8?B?SmVyeFpmaUhYOGFQdlg1N3NBN09GYTZZZmZSNGNQMFVhd0FKR3hoWEV0bjBh?=
+ =?utf-8?B?OFh4YzlsQWNDa2JxT1FpSWZsM0FUWHBOajAySXVWMnRzT1c4d2tZZHR2ajlp?=
+ =?utf-8?B?UGR2ekRxcFYyN3ZDYVVpaFgxUS94UndnOHhwQ2JMeUNyZFRibFNVQ0hxbVVJ?=
+ =?utf-8?B?NGM5endiS20yaUVVZ2hQaGN3T2xCY1BlZVI4K3EydTVJYUgrZGdDeVZaWE55?=
+ =?utf-8?Q?/o4zklLxmK/QxcYOcco2DZrrj9S4iiHaSJl1Q4p?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Received: from [192.168.2.101] (123.123.128.230) by HK2PR06CA0002.apcprd06.prod.outlook.com (2603:1096:202:2e::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.17 via Frontend Transport; Fri, 15 Oct 2021 08:59:17 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 52f00ae1-3eb0-485b-0037-08d98fba1390
-X-MS-TrafficTypeDiagnostic: DB3PR0402MB3834:
-X-Microsoft-Antispam-PRVS: <DB3PR0402MB3834A5A4856222A27C62722797B99@DB3PR0402MB3834.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: m0A8pB7cXaMOtJP2txR2b3NnCytYrllaVKLe3OwqpriM2enQaPh0RWfwvBQKGGXuebxphYRYN+sk0SZXKqpv0rmdgRbS+m3YlNfKvv0VyIp4vySyw9DLLFdxuc2Q6+nB1IWKFJMLWDeJ6C1tuLCa2Nd2uqiOZq9CZO/dS0MCXi76mbxLNKLSnDWx2dNjr/6d54GjmasHBIUpCfd019gDq9HcAh5xQuyXwQUvtuaHY82om1+6Jqym7sfZc0/N6sQ2N0+c4Ot7ZY3zS2RQgK3mmAumgYxIq/r0Jgl7bBbTp6TeWxNIy72ul0O+NJvUHerWqo9XDvGGNF0OWlMUb7c7Zs8NyQQv9T0KxtSS+e3nmbISXCUTxqSEr3A/PVnmncbq269CblXf24HmN2B6zxsotzKby+IgQXvm3TmtORMIkCOxKPg8CX/WSP5a4yumSAxY4B8YNHcC7yvMbVrCwiZ9kOuZdrDOrejTvCW5Ywc5RI1ThBSKpXwb3SVFfqWw3+qD5ptgN5eL8T03h93Svq/e5MTVROwI+7QTvcOeripswiMgS7SgOLWb8PFIHI9JV9CAqQVUoJEl8JdM0mzRSGlAW7SMu03BsGlQHlUkaClq5OX6upNHVyO0WExbCNU1xRs6Aatl9+PvHOLhrCgUB8kb9tN3MpO3YcIdiqsozysEk1XO67/f2U0weOwkU/ue7k/4HPaPx5nWKuPbWmRhMu21eAhdm097R6aQEgFnUi7GpXAV5tjpSFIcctNXTN/jXi42
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB7PR04MB4666.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(2616005)(8676002)(6486002)(956004)(26005)(83380400001)(110136005)(316002)(36756003)(4326008)(508600001)(38100700002)(6666004)(53546011)(16576012)(66946007)(5660300002)(31686004)(86362001)(2906002)(31696002)(66476007)(186003)(66556008)(8936002)(9126006)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?1InWgnO+vnO/zrJJZQDxL09XBq2gXIJyr1a04DY4JmFk85yGm4aiuU7JCABw?=
- =?us-ascii?Q?aCkheO5saBzkCEqFxJTO3IzS0uos0/+K5KcN4vfTiT+Qn8936I1aZZ1q1H/A?=
- =?us-ascii?Q?C1ZLwtkRGu1n48z7piIHIsPEOVNS2+o4AVhHSRQsV9hpzFHw2nGPbVhsu70E?=
- =?us-ascii?Q?7NR0apikEHlnioz1Ru2Q4AUH/+dt2bs4iAV2g4fRjrdQqwU4Rry7CQz491wT?=
- =?us-ascii?Q?smMoSHC2TVnQpVJds9hlWiiIJX6KRfpb7pOHjcFEAtPJokQWyS+S7EEK8N+u?=
- =?us-ascii?Q?CJC3NRwUdZVd6eUURDd8YC5Ls1m/ybnrHjKtQ9nhUAH0mpPy1Z8WmWuK/8Ih?=
- =?us-ascii?Q?63C8NjVfu+PDzGwOZkcki1d5tgSfOvurHNrVPEIXAODcAQBNOmTDmFLYvVg0?=
- =?us-ascii?Q?7CKxvXZw8EyqEjGMnW80SumCMEAMwgvPrnejmFbN4STTYg5y+jPLIAKZTW83?=
- =?us-ascii?Q?+OGL15WBflouChgfQO5H40IdNjUJTxo+KLs4dxynJBeVMNawHXrDnqa+cDFP?=
- =?us-ascii?Q?0jH1lA8lz1L9usd3baKAJQdNRLxUHQGiEj1RhOcOvmlkprYlm1M91m2MHzKc?=
- =?us-ascii?Q?YTq7aroQN3DPeUyWc3AhdSRCWrWHdi1yCLZhuBLpo6Z/dDckPDAW1K+9jPlV?=
- =?us-ascii?Q?9HWbByC9ktLr7MQksiRGfvOD9tzcq070+YXm+MlONBYUlB+U2OvBkIG7avnI?=
- =?us-ascii?Q?xh3b83mncZ5WONxijYUU0MBkrbV8NcCz9z8DPR2wPxxmGujF2oFa1AGdL/dp?=
- =?us-ascii?Q?Pak2dSXteaGdLMzoiWsAhjO31oA0ByDP6a2GXjjl8wfmTgQuELQufZJmTmAK?=
- =?us-ascii?Q?WRKAc2W3ukH1ByJwG0Aj9BRE8DKz3tgEcUB11u1qY6x0SUSvYoMAySu2XWA9?=
- =?us-ascii?Q?Ne252W2T4u/XXCzlAq91DfxgifF1Fjiw1CKPQ0AFl9VjoONLKbXZsR8ktsiF?=
- =?us-ascii?Q?/yTdNBQ+0Qu7VO66ZjDmtoojj3O26bvPMG7aEAee/UDMwtM4fdbW9rNLn1dy?=
- =?us-ascii?Q?CDMq36UBjrSxgXPvHHqP0m148ICNNVAeRw7ESp98kZVD7KMsdVWQaGVBosOt?=
- =?us-ascii?Q?/m7ONwTd0YWGPkeOKaOJbS6hkrizcIqpxm/Mzesou9vbY4igUj/caQKGdU7M?=
- =?us-ascii?Q?heCLzu5pBD+zjCIcsiWk5uP2UVKtbsMbRx1yElkoafxfzxIkpmiesOzSE0QO?=
- =?us-ascii?Q?A3TQHTP+W3HGkhPZkqa2wroQNVSK7eTPEQAFGrjpK9mZpSYWQw3cF9qrxuQW?=
- =?us-ascii?Q?3oSQ4oBtSVdXwj10beIHxNW9wU5nyCUCFiWDybIdb7DUX5hJdJ9EYV1rO/lp?=
- =?us-ascii?Q?/z0AwpxzkLr3A2ma9jOzKJ1i?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 52f00ae1-3eb0-485b-0037-08d98fba1390
-X-MS-Exchange-CrossTenant-AuthSource: DB7PR04MB4666.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Oct 2021 08:59:20.7607
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3256.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 152c76c8-153a-4ad8-bbe1-08d98fba3f49
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Oct 2021 09:00:33.2245
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: MObkPFbqQ6Nbif/+ORGsghYA4b83+nXq0vYb3+J1FVM4KjMbVvRKT1zeRbR0A5RL5D7GGOI0Lr51k7Ty3hjzKA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB3PR0402MB3834
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: lr64jFi2B/TZTN8sQ7brnTOiwQdzRXVFmcT5hdPT8ekXWnG/voByBI8aWqJ8ABKYdJ2uKSjSo9oe5MazFMYGvA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB3255
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I agree Guoqing's comments.
-
-In Documentation/driver-api/md/md-cluster.rst, there is a pic in "1. On-dis=
-k format".
-Which describes the layout of "sb+bitmap" area.
-
-And even in non-cluster array, bitmap area more than 1 pages also needs ind=
-ex/offset.
-After the serial patches removing page->index, md layer should create a sim=
-ilar
-struct to manage it.
-
-- Heming
-
-On 10/15/21 11:01, Guoqing Jiang wrote:
->=20
->=20
-> On 10/14/21 10:30 PM, Kent Overstreet wrote:
->> On Thu, Oct 14, 2021 at 04:58:46PM +0800,heming.zhao@suse.com=C2=A0 wrot=
-e:
->>> Hello all,
->>>
->>> The page->index takes an important role for cluster-md module.
->>> i.e, a two-node HA env, node A bitmap may be managed in first 4K area, =
-then
->>> node B bitmap is in 8K area (the second page). this patch removes the i=
-ndex
->>> and fix/hardcode index with value 0, which will only operate first node=
- bitmap.
->>>
->>> If this serial patches are important and must be merged in mainline, we=
- should
->>> redesign code logic for the related code.
->>>
->>> Thanks,
->>> Heming
->> Can you look at and test the updated patch below? The more I look at the=
- md
->> bitmap code the more it scares me.
->>
->> -- >8 --
->> Subject: [PATCH] md: Kill usage of page->index
->>
->> As part of the struct page cleanups underway, we want to remove as much
->> usage of page->mapping and page->index as possible, as frequently they
->> are known from context - as they are here in the md bitmap code.
->>
->> Signed-off-by: Kent Overstreet<kent.overstreet@gmail.com>
->> ---
->> =C2=A0 drivers/md/md-bitmap.c | 49 ++++++++++++++++++++-----------------=
------
->> =C2=A0 drivers/md/md-bitmap.h |=C2=A0 1 +
->> =C2=A0 2 files changed, 24 insertions(+), 26 deletions(-)
->>
->> diff --git a/drivers/md/md-bitmap.c b/drivers/md/md-bitmap.c
->> index e29c6298ef..316e4cd5a7 100644
->> --- a/drivers/md/md-bitmap.c
->> +++ b/drivers/md/md-bitmap.c
->> @@ -165,10 +165,8 @@ static int read_sb_page(struct mddev *mddev, loff_t=
- offset,
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (sync_page_io(=
-rdev, target,
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 roundup(size, bdev_logical_block_size(=
-rdev->bdev)),
->> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 page, REQ_OP_READ, 0, true)) {
->> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 page=
-->index =3D index;
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 page, REQ_OP_READ, 0, true))
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 return 0;
->> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return -EIO;
->> =C2=A0 }
->> @@ -209,7 +207,8 @@ static struct md_rdev *next_active_rdev(struct md_rd=
-ev *rdev, struct mddev *mdde
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return NULL;
->> =C2=A0 }
->> -static int write_sb_page(struct bitmap *bitmap, struct page *page, int =
-wait)
->> +static int write_sb_page(struct bitmap *bitmap, struct page *page,
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 unsigned long index, int wait)
->> =C2=A0 {
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct md_rdev *rdev;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct block_device *bdev;
->> @@ -224,7 +223,7 @@ static int write_sb_page(struct bitmap *bitmap, stru=
-ct page *page, int wait)
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bdev =3D (rdev->m=
-eta_bdev) ? rdev->meta_bdev : rdev->bdev;
->> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (page->index =3D=3D store=
-->file_pages-1) {
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (index =3D=3D store->file=
-_pages-1) {
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 int last_page_size =3D store->bytes & (PAGE_SIZE-1);
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 if (last_page_size =3D=3D 0)
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 last_page_size =3D PAGE_SIZE;
->> @@ -236,8 +235,7 @@ static int write_sb_page(struct bitmap *bitmap, stru=
-ct page *page, int wait)
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (mddev->extern=
-al) {
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 /* Bitmap could be anywhere. */
->> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (=
-rdev->sb_start + offset + (page->index
->> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * (PAGE_SIZE/512))
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (=
-rdev->sb_start + offset + index * PAGE_SECTORS
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 > rdev->data_offset
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 &&
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 rdev->sb_start + offset
->> @@ -247,7 +245,7 @@ static int write_sb_page(struct bitmap *bitmap, stru=
-ct page *page, int wait)
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 } else if (offset=
- < 0) {
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 /* DATA=C2=A0 BITMAP METADATA=C2=A0 */
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 if (offset
->> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 + (long)(page->index * (PAGE_SIZE/512))
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 + (long)(index * PAGE_SECTORS)
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 + size/512 > 0)
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* bitmap runs in to metadata */
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto bad_alignment;
->> @@ -259,7 +257,7 @@ static int write_sb_page(struct bitmap *bitmap, stru=
-ct page *page, int wait)
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 /* METADATA BITMAP DATA */
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 if (rdev->sb_start
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 + offset
->> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 + page->index*(PAGE_SIZE/512) + size/512
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 + index * PAGE_SECTORS + size/512
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 > rdev->data_offset)
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* bitmap runs in to data */
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto bad_alignment;
->> @@ -268,7 +266,7 @@ static int write_sb_page(struct bitmap *bitmap, stru=
-ct page *page, int wait)
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 md_super_write(md=
-dev, rdev,
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 rdev->sb_start + offset
->> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 + page->index * (PAGE_SIZE/512),
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 + index * PAGE_SECTORS,
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 size,
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 page);
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->> @@ -285,12 +283,13 @@ static void md_bitmap_file_kick(struct bitmap *bit=
-map);
->> =C2=A0 /*
->> =C2=A0=C2=A0 * write out a page to a file
->> =C2=A0=C2=A0 */
->> -static void write_page(struct bitmap *bitmap, struct page *page, int wa=
-it)
->> +static void write_page(struct bitmap *bitmap, struct page *page,
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 unsigned long index, int wait)
->> =C2=A0 {
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct buffer_head *bh;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (bitmap->storage.file =3D=3D NULL) {
->> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 switch (write_sb_page(bitmap=
-, page, wait)) {
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 switch (write_sb_page(bitmap=
-, page, index, wait)) {
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 case -EINVAL:
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 set_bit(BITMAP_WRITE_ERROR, &bitmap->flags);
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->> @@ -399,7 +398,6 @@ static int read_page(struct file *file, unsigned lon=
-g index,
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 blk_cur++;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bh =3D bh->b_this=
-_page;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->> -=C2=A0=C2=A0=C2=A0 page->index =3D index;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 wait_event(bitmap->write_wait,
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
- atomic_read(&bitmap->pending_writes)=3D=3D0);
->> @@ -472,7 +470,7 @@ void md_bitmap_update_sb(struct bitmap *bitmap)
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 sb->sectors_reserved =3D cpu_to_le32(bitm=
-ap->mddev->
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bi=
-tmap_info.space);
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 kunmap_atomic(sb);
->> -=C2=A0=C2=A0=C2=A0 write_page(bitmap, bitmap->storage.sb_page, 1);
->> +=C2=A0=C2=A0=C2=A0 write_page(bitmap, bitmap->storage.sb_page, bitmap->=
-storage.sb_index, 1);
->=20
-> I guess it is fine for sb_page now.
->=20
-> [...]
->=20
->> @@ -1027,7 +1024,7 @@ void md_bitmap_unplug(struct bitmap *bitmap)
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 "md bitmap_unplug");
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 }
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 clear_page_attr(bitmap, i, BITMAP_PAGE_PENDING);
->> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 writ=
-e_page(bitmap, bitmap->storage.filemap[i], 0);
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 writ=
-e_page(bitmap, bitmap->storage.filemap[i], i, 0);
->=20
-> But for filemap page, I am not sure the above is correct.
->=20
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 writing =3D 1;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->> @@ -1137,7 +1134,7 @@ static int md_bitmap_init_from_disk(struct bitmap =
-*bitmap, sector_t start)
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 memset(paddr + offset, 0xff,
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 PA=
-GE_SIZE - offset);
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 kunmap_atomic(paddr);
->> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 write_page(bitmap, page, 1);
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 write_page(bitmap, page, index, 1);
->=20
-> Ditto.
->=20
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D -EIO;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (test_bit(BITMAP_WRITE_ERROR,
->> @@ -1336,7 +1333,7 @@ void md_bitmap_daemon_work(struct mddev *mddev)
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (bitmap->stora=
-ge.filemap &&
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 test_and_clear_page_attr(bitmap, j,
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 BITMAP_PAGE_NEEDWRITE)) {
->> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 writ=
-e_page(bitmap, bitmap->storage.filemap[j], 0);
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 writ=
-e_page(bitmap, bitmap->storage.filemap[j], j, 0);
->=20
-> Ditto.
->=20
->=20
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->> diff --git a/drivers/md/md-bitmap.h b/drivers/md/md-bitmap.h
->> index cfd7395de8..6e820eea32 100644
->> --- a/drivers/md/md-bitmap.h
->> +++ b/drivers/md/md-bitmap.h
->> @@ -207,6 +207,7 @@ struct bitmap {
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 * w/ filemap pages */
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsigned long fil=
-e_pages;=C2=A0=C2=A0=C2=A0 /* number of pages in the file*/
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsigned long byt=
-es;=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* total bytes in the bitmap =
-*/
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsigned long sb_index;=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* sb page index */
->=20
-> I guess it resolve the issue for sb_page, and we might need to do similar=
- things
-> for filemap as well if I am not misunderstood.
->=20
-> Thanks,
-> Guoqing
->=20
-
+DQpPbiAxMC8xNC8yMDIxIDExOjAxIFBNLCBQYW9sbyBCb256aW5pIHdyb3RlOg0KWy4uLl0NCj4g
+Q2FsbHMgaW50byB0aGUgZnVuY3Rpb24sIGJ1dCBkb2Vzbid0IG5lY2Vzc2FyaWx5IGFsbG9jYXRl
+IGFueXRoaW5nLg0KPiBXaGF0IHlvdSB3cm90ZSBiZWxvdyBsb29rcyBjb3JyZWN0IHRvIG1lLCB0
+aGFua3MuDQo+IA0KDQpGb3IgdGhlIGd1ZXN0IGR5bmFtaWMgc3RhdGUgc3VwcG9ydCwgYmFzZWQg
+b24gdGhlIGxhdGVzdCBkaXNjdXNzaW9uLA0KZm91ciBjb3BpZXMgb2YgWEZEIG5lZWQgYmUgY2Fy
+ZWQgYW5kIHN3aXRjaGVkLCBJJ2QgbGlrZSB0byBsaXN0IGFzIGZvbGxvd3MuDQoNCi0gdmNwdS0+
+YXJjaC54ZmQ6IHRoaXMgaXMgdGhlIHJlYWwgZ3Vlc3QgdmFsdWUgZm9yIHJ1bm5pbmcuDQpTaW5j
+ZSBrZXJuZWwgaW5pdCBYRkQgYmVmb3JlIFhDUjAsIHNvIEkgdGhpbmsgS1ZNIGNhbiBpbml0aWFs
+aXplIGl0IGFzDQpiaXRbbl09MCwgZm9yIGEgZ3Vlc3Qgc3RhcnQgdmFsdWUuIE90aGVyd2lzZSwg
+a3ZtX2FyY2hfdmNwdV9jcmVhdGUoKQ0KbmVlZCBpbml0aWFsaXplcyB2Y3B1LT5hcmNoLnhmZD1n
+dWVzdF9mcHUtPnhmZD11c2VyX2ZwdS0+eGZkPTEuDQpHdWVzdCB3cm1zciBYRkQgdHJhcCB3aWxs
+IG1ha2UgaXQgdXBkYXRlLg0KDQotIHVzZXJfZnB1LT5mcHN0YXRlLT54ZmQ6IFFlbXUgaXRzZWxm
+IGFuZCBub3QgZm9yIGd1ZXN0LCB3aGljaCBpcw0KcHJvYmFibHkgYWx3YXlzIHNldC4NCg0KLSBn
+dWVzdF9mcHUtPmZwc3RhdGUtPnhmZDogdGhpcyBpcyBmb3IgS1ZNIGludGVybmFsIHZhbHVlIGJl
+dHdlZW4gdGltZVsqXS4NCktWTSByZWluaXRpYWxpemVzIGl0IGFzIGJpdFtuXT0wIChub3QgdGhl
+IHNhbWUgYXMgdXNlcl9mcHUpLCBhbmQgaXQgd2lsbCBiZQ0KdXBkYXRlZCB3aGVuIGd1ZXN0IHdy
+bXNyIHRyYXAuIFRodXMsIGJlZm9yZSBwYXNzdGhyb3VnaCwgaXQncyB0aGUgc2FtZQ0KYXMgdmNw
+dS0+YXJjaC54ZmQsIHRodXMgdm1lbnRlci92bWV4aXQgbmVlZCBub3QgcmV3cml0ZSBtc3IuDQpB
+ZnRlciBwYXNzdGhyb3VnaCwgdGhpcyBrZWVwcyBiaXRbbl0gYXMgMCBmb3JldmVyLg0KDQotIGN1
+cnJlbnRfZnB1LT5mcHN0YXRlLT54ZmQ6IGl0IHNob3VsZCBiZSB0aGUgc2FtZSBhcyBLVk0gaW50
+ZXJuYWwgdmFsdWUNCmJldHdlZW4gdGltZVsqXS4NClsqXSB0aGlzIG1lYW5zIGJldHdlZW4ga3Zt
+X2xvYWRfZ3Vlc3RfZnB1IGFuZCBrdm1fcHV0X2d1ZXN0X2ZwdS4NCg0KRnJvbSBndWVzdCBib290
+aW5nIHRpbWVsaW5lLCAgdGhlIHZhbHVlcyBhcmU6IA0KDQpCb290aW5nIHN0YXJ0Li4uICAgIyBJ
+biB0aGlzIHRpbWUsIHZjcHUtPmFyY2gueGZkW25dPWd1ZXN0X2ZwdS0+eGZkW25dPTANCkluaXQg
+WEZEIGJ5IFdSTVNSKFhGRFtuXSwgMSkgIAkjIFRoZW4sIHZjcHUtPmFyY2gueGZkW25dPWd1ZXN0
+X2ZwdS0+eGZkW25dPTENCkluaXQgWENSMCBieSBYU0VUQlYgCQ0KLi4uDQojTk0gV1JNU1IoWEZE
+W25dLCAwKSAgIyBUaGVuLCBndWVzdF9mcHUtPnhmZFtuXT0wLCB2Y3B1LT5hcmNoLnhmZFtuXT0w
+Lg0KdmNwdS0+YXJjaC54ZmQgd2lsbCBiZSB1cGRhdGVkIGluIGxhdGVyIHZtZXhpdHMuIA0KDQpC
+VFcsIHdlIG9ubHkgbmVlZCBsYXp5LXBhc3N0aHJvdWdoIFhGRCBXUklURSBhbmQgcGFzc3Rocm91
+Z2gNClJFQUQgZGlyZWN0bHkuDQoNClRoYW5rcywNCkppbmcNCg0KPiBQYW9sbw0KPiANCj4gPiBB
+bHNvIHlvdSByZWFsbHkgc2hvdWxkIG5vdCB3YWl0IHVudGlsIF9hbGxfIGR5bmFtaWMgc3RhdGVz
+IGFyZSBjbGVhcmVkDQo+ID4gaW4gZ3Vlc3QgWEZELiAgQmVjYXVzZSBhIGd1ZXN0IHdoaWNoIGhh
+cyBiaXQgMTggYW5kIDE5IGF2YWlsYWJsZSBidXQNCj4gPiBvbmx5ID4gdXNlcyBvbmUgb2YgdGhl
+bSBpcyBnb2luZyB0byB0cmFwIG9uIGV2ZXJ5IG90aGVyIGNvbnRleHQgc3dpdGNoIGR1ZQ0KPiB0
+byBYRkQgd3JpdGVzLg0KDQo=
