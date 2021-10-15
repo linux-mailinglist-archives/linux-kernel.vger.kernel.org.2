@@ -2,68 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9B4A42EEE2
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 12:32:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AE8342EEE4
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 12:33:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238159AbhJOKe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 06:34:59 -0400
-Received: from relay11.mail.gandi.net ([217.70.178.231]:52177 "EHLO
+        id S238147AbhJOKfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 06:35:05 -0400
+Received: from relay11.mail.gandi.net ([217.70.178.231]:49711 "EHLO
         relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238151AbhJOKen (ORCPT
+        with ESMTP id S238006AbhJOKer (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 06:34:43 -0400
+        Fri, 15 Oct 2021 06:34:47 -0400
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 05F3F10000D;
-        Fri, 15 Oct 2021 10:32:34 +0000 (UTC)
+        by relay11.mail.gandi.net (Postfix) with ESMTPSA id C342C100008;
+        Fri, 15 Oct 2021 10:32:39 +0000 (UTC)
 From:   Miquel Raynal <miquel.raynal@bootlin.com>
 To:     Miquel Raynal <miquel.raynal@bootlin.com>,
         Richard Weinberger <richard@nod.at>,
         Vignesh Raghavendra <vigneshr@ti.com>,
         Tudor Ambarus <Tudor.Ambarus@microchip.com>
 Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH 1/9] mtd: rawnand: ams-delta: Keep the driver compatible with on-die ECC engines
-Date:   Fri, 15 Oct 2021 12:32:34 +0200
-Message-Id: <20211015103234.949898-1-miquel.raynal@bootlin.com>
+        linux-arm-kernel@lists.infradead.org,
+        Vladimir Zapolskiy <vz@mleia.com>
+Subject: Re: [PATCH 8/8] Revert "mtd: rawnand: cs553x: Fix external use of SW Hamming ECC helper"
+Date:   Fri, 15 Oct 2021 12:32:39 +0200
+Message-Id: <20211015103239.949962-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210928222258.199726-2-miquel.raynal@bootlin.com>
+In-Reply-To: <20210928221507.199198-9-miquel.raynal@bootlin.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'd707bb74daae07879e0fc1b4b960f8f2d0a5fe5d'
+X-linux-mtd-patch-commit: b'c625823ad8c095afb9601e06ea9fba07c865f378'
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-09-28 at 22:22:40 UTC, Miquel Raynal wrote:
-> Following the introduction of the generic ECC engine infrastructure, it
-> was necessary to reorganize the code and move the ECC configuration in
-> the ->attach_chip() hook. Failing to do that properly lead to a first
-> series of fixes supposed to stabilize the situation. Unfortunately, this
-> only fixed the use of software ECC engines, preventing any other kind of
-> engine to be used, including on-die ones.
+On Tue, 2021-09-28 at 22:15:07 UTC, Miquel Raynal wrote:
+> This reverts commit 56a8d3fd1f342d10ee7b27e9ac0f4d00b5fbb91c.
 > 
-> It is now time to (finally) fix the situation by ensuring that we still
-> provide a default (eg. software ECC) but will still support different
-> ECC engines such as on-die ECC engines if properly described in the
-> device tree.
+> Before the introduction of the ECC framework infrastructure, many
+> drivers used the ->calculate/correct() Hamming helpers directly. The
+> point of this framework was to avoid this kind of hackish calls and use a
+> proper and generic API but it is true that in certain cases, drivers
+> still need to use these helpers in order to do ECC computations on
+> behalf of their limited hardware.
 > 
-> There are no changes needed on the core side in order to do this, but we
-> just need to leverage the logic there which allows:
-> 1- a subsystem default (set to Host engines in the raw NAND world)
-> 2- a driver specific default (here set to software ECC engines)
-> 3- any type of engine requested by the user (ie. described in the DT)
+> Right after the introduction of the ECC engine core introduction, it was
+> spotted that it was not possible to use the shiny rawnand software ECC
+> helpers so easily because an ECC engine object should have been
+> allocated and initialized first. While this works well in most cases,
+> for these drivers just leveraging the power of a single helper in
+> conjunction with some pretty old and limited hardware, it did not fit.
 > 
-> As the raw NAND subsystem has not yet been fully converted to the ECC
-> engine infrastructure, in order to provide a default ECC engine for this
-> driver we need to set chip->ecc.engine_type *before* calling
-> nand_scan(). During the initialization step, the core will consider this
-> entry as the default engine for this driver. This value may of course
-> be overloaded by the user if the usual DT properties are provided.
+> The idea back then was to declare intermediate helpers which would make
+> use of the exported software ECC engine bare functions while keeping the
+> rawnand layer compatibility. As there was already functions with the
+> rawnand_sw_hamming_ prefix it was decided to declare new local helpers
+> for this purpose in each driver needing one.
 > 
-> Fixes: 59d93473323a ("mtd: rawnand: ams-delta: Move the ECC initialization to ->attach_chip()")
-> Cc: stable@vger.kernel.org
+> Besides being far from optimal, this design choice was blamed by Linus
+> when he pulled the "fixes" pull request [1] so that is why now it is
+> time to clean this mess up.
+> 
+> The implementation of the rawnand_ecc_sw_* helpers has now been enhanced
+> to support both cases, when the ECC object is instantiated and when it is
+> not. This way, we can still use the existing and exported rawnand
+> helpers while avoiding the need for each driver to declare its own
+> helper, thus this fix from [2] can now be safely reverted.
+> 
+> [1] https://lore.kernel.org/lkml/CAHk-=wh_ZHF685Fni8V9is17mj=pFisUaZ_0=gq6nbK+ZcyQmg@mail.gmail.com/
+> [2] https://lore.kernel.org/linux-mtd/20210413161840.345208-1-miquel.raynal@bootlin.com
+> 
 > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 
 Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next.
