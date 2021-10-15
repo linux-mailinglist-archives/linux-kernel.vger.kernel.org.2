@@ -2,79 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BAA942FB89
+	by mail.lfdr.de (Postfix) with ESMTP id D6AE042FB8B
 	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 20:59:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242182AbhJOTA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 15:00:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33968 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242076AbhJOTAz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 15:00:55 -0400
-Received: from relay03.th.seeweb.it (relay03.th.seeweb.it [IPv6:2001:4b7a:2000:18::164])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D0D3C061764
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 11:58:47 -0700 (PDT)
-Received: from [192.168.1.101] (83.6.166.47.neoplus.adsl.tpnet.pl [83.6.166.47])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id C660A1F504;
-        Fri, 15 Oct 2021 20:58:43 +0200 (CEST)
-Message-ID: <f4af0e40-9e93-dba9-7401-cdfc76ba667e@somainline.org>
-Date:   Fri, 15 Oct 2021 20:58:42 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
-Subject: Re: [PATCH 4/8] cpufreq: qcom_cpufreq_nvmem: Simplify reading kryo
- speedbin
-Content-Language: en-US
-To:     Yassine Oudjana <y.oudjana@protonmail.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        id S242102AbhJOTBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 15:01:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58626 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242091AbhJOTA6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 15:00:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E9B9361041;
+        Fri, 15 Oct 2021 18:58:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634324331;
+        bh=G82GvShkI2sS0Zha329b0vmAJ+/o/V8FAjLI2CyDuHE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HEcftEAp7E/3KdVqr9ES8s9gv/a7pp/vZmNc2SdZRqaV6jwAmcx5TMfUb5/zuCkFw
+         QJe9FWB98sKeyIu7UDoWBOKsjlFrxivPC7Qk5Fg8oskNQ62JI8JmOaJiHYMtO4rp+Y
+         1C8BwGt3rCoXZXEzLPoYYRQPcL8N6GeQ2ZbmUhfCwjFRAAhxxPwiiwuYiiKZ2zvcHC
+         biQ8dmmnkAN4CCULB9N2VvtSszyN7sh0mw2PYxsKZPK7W+I8ccCrDlix5nJevD26hk
+         fea53Hv4pyVoNatdrBWVumdFeQDfy1vRMIV2Kjr/V2Picb8G1MW35RRBEuB2MLgEBs
+         Nni976TeDnvUw==
+Date:   Fri, 15 Oct 2021 19:58:48 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Mark Gross <markgross@kernel.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Daniel Scally <djrscally@gmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
         Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Ilia Lin <ilia.lin@kernel.org>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Loic Poulain <loic.poulain@linaro.org>
-Cc:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
-        phone-devel@vger.kernel.org
-References: <20211014083016.137441-1-y.oudjana@protonmail.com>
- <20211014083016.137441-5-y.oudjana@protonmail.com>
-From:   Konrad Dybcio <konrad.dybcio@somainline.org>
-In-Reply-To: <20211014083016.137441-5-y.oudjana@protonmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+        Stephen Boyd <sboyd@kernel.org>, Len Brown <lenb@kernel.org>,
+        linux-acpi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Kate Hsuan <hpa@redhat.com>, linux-media@vger.kernel.org,
+        linux-clk@vger.kernel.org
+Subject: Re: [PATCH 05/12] regulator: Introduce tps68470-regulator driver
+Message-ID: <YWnPaI/ZECdfYre9@sirena.org.uk>
+References: <20211008162121.6628-1-hdegoede@redhat.com>
+ <20211008162121.6628-6-hdegoede@redhat.com>
+ <YWQU/SYTT5Vk24XH@sirena.org.uk>
+ <f6f2d7e8-fdb8-ed64-0cdd-65aded9fc42c@redhat.com>
+ <YWmwZJvDYjPWJdb4@sirena.org.uk>
+ <d0d1dc05-4cc6-2f47-88a9-700cfc356d86@redhat.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Fik2/uEMPbbf9stB"
+Content-Disposition: inline
+In-Reply-To: <d0d1dc05-4cc6-2f47-88a9-700cfc356d86@redhat.com>
+X-Cookie: 1: No code table for op: ++post
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 14.10.2021 10:32, Yassine Oudjana wrote:
-> In preparation for adding a separate device tree for MSM8996 Pro, skip reading
-> msm-id from smem and just read the speedbin efuse.
->
-While I'd really like for this to be merged, it's gonna totally wreck backwards
+--Fik2/uEMPbbf9stB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-compatibility.. But then, since APCC was not defined properly before commit
+On Fri, Oct 15, 2021 at 08:50:13PM +0200, Hans de Goede wrote:
 
-0a275a35ceab07 arm64: dts: qcom: msm8996: Make CPUCC actually probe (and work)
+> Are you happy with the platform_data for this driver as defined in
+> patch 4/12 ? :
 
-there's only 5.14/5.15 (both of which were non-LTS) which would *actually* break given
+Some of the other review comments lead me to believe that you'd be
+sending out a new version at some point?
 
-somebody decided that "ah yes, pulling in DTs from these specific mainline kernel releases
+> https://lore.kernel.org/platform-driver-x86/20211008162121.6628-1-hdegoede@redhat.com/T/#m745cc1191f531a57ae7998f5c8817ba9a46f0fed
 
-is a good idea"...
+I am very confused about why it's in the driver without a DMI quirk
+and/or clear comments about why and saying that this is a terrible
+example to copy.  I'd also expect to get compile test coverage for the
+driver.
 
+--Fik2/uEMPbbf9stB
+Content-Type: application/pgp-signature; name="signature.asc"
 
-If I were to judge, it would probably be fine to rid the old mechanism..
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFpz2gACgkQJNaLcl1U
+h9Duwwf7BD9CuMWRm3gNfjStvs3aYG6Zil6RBWStSHHnVqi6JXOSXL/qEtD/MSTx
+fYmQ9GikR+iOnZk916F+Iux8DMGV0XunUnnv0X0C7yt3fpo+GtJYpHsYdLeGYaxC
+BkAvEs3C4EEGWtf3OLtcqE/PZwFaXPFvj8yk1iM/VXnHWtsottsklIQQD+eCKSVV
+Q98ZH/m/NmS2sQyTYBfcfIHtUIT0n2P3XnlG3CocoXyxfAnrCoiTJKD6zUxt+kdJ
+h/Rn5VFcYOZXZQd0ZFbwwFSz2+2Rq5pqmL26NKtExZxr6Wy0C4AbYLojiwLstbiI
+yRE9TQbogn37aDMHN8Ip5k4G99YqZw==
+=cCEU
+-----END PGP SIGNATURE-----
 
-Konrad
-
+--Fik2/uEMPbbf9stB--
