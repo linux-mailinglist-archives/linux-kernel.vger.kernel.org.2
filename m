@@ -2,193 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 295D142FB64
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 20:47:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D88D642FB6C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 20:49:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238591AbhJOSt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 14:49:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59614 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237973AbhJOStZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 14:49:25 -0400
-Received: from mail-ua1-x929.google.com (mail-ua1-x929.google.com [IPv6:2607:f8b0:4864:20::929])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AD8CC061570
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 11:47:18 -0700 (PDT)
-Received: by mail-ua1-x929.google.com with SMTP id u5so19813786uao.13
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 11:47:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=usp.br; s=usp-google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :content-transfer-encoding;
-        bh=LPuZL7++oiK3AKTEYNGUGNnkKUKEOaVSI1la1HbR00o=;
-        b=fka0ul0BUfdhnVcBo1ENmq87Cad2QyqOfAPSd1MhKesS67N7GYB5RP4RW7muabK00X
-         EfKWc4Dz8dE9UCAk9i5cRKFIES59lAm+6HS/Kp/6werbFT1eEkjjAQtNCasprLrdE5zX
-         bUrA40WoTf5Mcis8WZ1sXspWdWUtLspbEzmfyKuSDiktjWlvbhyyza/tYSbqwi1HhGrG
-         Bx+DlqiPKTGUD4DNVq4BZ5xsoC2qXcDypsha9S9oi6KLmOWE0BvwGyfEAJ1uei27NOtp
-         VRHDZ1BbhBvx0NS7ltYwRI2rBl8TMmMZUBl4e2ZFmjQimY56ipdBOEkXCT6jdR+X7gFP
-         HPRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:content-transfer-encoding;
-        bh=LPuZL7++oiK3AKTEYNGUGNnkKUKEOaVSI1la1HbR00o=;
-        b=Hr1irhOUQpuYzo1rKiEEKA12qSLknzWMqc9E/m7VVkoEqzSDhya7YQvCJjGvuxeVKG
-         mODZWVNoPlowNqQsLDT2MqNGS2ONavBXl4LYSFVqdm8aHbBPPMTNgXF2siA/SQKiBYWk
-         /KxckA/r2N5SVbWG9TOOM8T3IRnX3UEmehBOFm2soxE1i/grDa52uKaNsNbd31fIVjsF
-         /82O+y2Qm0UhDIr+HrRM5/i7yw7rOerb+nQu/i6DRUXjLhVba6bDbLBM+KKbKZ5T4w/1
-         iB5HdWZn3NX3jE3jX+7MiGldWeR8TLIm/1sCXWVcWMUVS6V/TmqVdWAdINssRDr6xY8q
-         +4NQ==
-X-Gm-Message-State: AOAM533XWDZ205P9NFyYvp4YmAS6dIlAFZk+CaRKo71G5uJjRmN0qilk
-        VGTzHQBDxjhwimh60XZzP8+/Jg==
-X-Google-Smtp-Source: ABdhPJxkhdsZhhDUidLwL9QQSKDSaoYgaN82kqvwy+WU/pFWmZG+dpJDRpsnJunEco8maCH+Cat/nA==
-X-Received: by 2002:a67:fc1a:: with SMTP id o26mr15817278vsq.23.1634323637365;
-        Fri, 15 Oct 2021 11:47:17 -0700 (PDT)
-Received: from Andryuu.br ([2804:431:c7fd:7238:7ee3:38a1:5467:1c06])
-        by smtp.gmail.com with ESMTPSA id w27sm4256133vsi.25.2021.10.15.11.47.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Oct 2021 11:47:17 -0700 (PDT)
-Date:   Fri, 15 Oct 2021 15:47:12 -0300
-From:   =?iso-8859-1?Q?Andr=E9?= Gustavo Nakagomi Lopez <andregnl@usp.br>
-To:     jic23@kernel.org, lars@metafoo.de, vz@mleia.com
-Cc:     linux-iio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, andregnl@usp.br
-Subject: [PATCH v2] iio: adc: lpc18xx_adc: Convert probe to device managed
- version
-Message-ID: <YWnMsGlc/I35gYvy@Andryuu.br>
+        id S241666AbhJOSvx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 14:51:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54956 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241634AbhJOSvw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 14:51:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 03C7761041;
+        Fri, 15 Oct 2021 18:49:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634323785;
+        bh=UaeeKWreQ9XHoXCUz87V9ZmiFfq/pWLzYxxosXs7xg4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=e0GAhgqd7hVJ9kNATLgfHaFFE01fIZcWK74zeJgx6las3UNSQ9cCatbepp6UTpxKX
+         pfPvpXMw66J76b6NCPZ9YZLjBNaVJurVKMK2kPw4ZQmYYw63ozr9Ecj1+4HqG98zZm
+         fz72oSvFZhd/NQSNqjoHwbtnocVifBNTrU+i1eU5SW8MRodts6v6NX0ZGFvjvFiC7Y
+         OPmNLImKAdQhEkShzpdIqO8fetD+ci6j1g2Wtz1CMOvmZpIedDHL7KVhtHCR3kbOnc
+         ijdJe7ZV9N0VlI51sn7lobB/Ce6VvvaCUiRWN+xDmvdsDRgo3gNEKkqV4XYF4NzaZP
+         D3HQBMAeOgxaw==
+Date:   Fri, 15 Oct 2021 13:49:43 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Richard Zhu <hongxing.zhu@nxp.com>
+Cc:     l.stach@pengutronix.de, bhelgaas@google.com,
+        lorenzo.pieralisi@arm.com, linux-pci@vger.kernel.org,
+        linux-imx@nxp.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kernel@pengutronix.de
+Subject: Re: [RESEND v2 4/5] PCI: imx6: Fix the clock reference handling
+ unbalance when link never came up
+Message-ID: <20211015184943.GA2139079@bhelgaas>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1634277941-6672-5-git-send-email-hongxing.zhu@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The remove function and the goto sections are not necessary if devm
-functions are used.
+On Fri, Oct 15, 2021 at 02:05:40PM +0800, Richard Zhu wrote:
+> When link never came up, driver probe would be failed with error -110.
+> To keep usage counter balance of the clocks, disable the previous
+> enabled clocks when link is down.
+> Move definitions of the imx6_pcie_clk_disable() function to the proper
+> place. Because it wouldn't be used in imx6_pcie_suspend_noirq() only.
 
-Convert device register to devm version. Add hook functions to release
-device resources, and use them inside probe with devm_add_action,
-which will release resources on driver detach.
+Add blank line between paragraphs.
 
-To maintain the order of which device resources were released/reseted,
-register the hook functions as soon as resources are obtained/initialized.
-Since devres actions are called on driver detach, the remove
-function and the error-handling goto sections are no longer necessary.
+Can you please split this into two patches:
 
-Signed-off-by: André Gustavo Nakagomi Lopez <andregnl@usp.br>
----
-Change log V1 -> V2:
-       -Renamed lpc18xx_clk_disable_unprepare function
-       -Removed platform_set_drvdata(pdev, indio_dev)
-       -Renamed lpc18xx_writel to lpc18xx_clear_cr_reg
-       -devm_iio_device_register now returns directly in the end of probe function
- drivers/iio/adc/lpc18xx_adc.c | 61 ++++++++++++++++++-----------------
- 1 file changed, 31 insertions(+), 30 deletions(-)
+  1) the imx6_pcie_clk_disable() move
+  2) the actual fix
 
-diff --git a/drivers/iio/adc/lpc18xx_adc.c b/drivers/iio/adc/lpc18xx_adc.c
-index 3566990ae87d..7d50107427ac 100644
---- a/drivers/iio/adc/lpc18xx_adc.c
-+++ b/drivers/iio/adc/lpc18xx_adc.c
-@@ -115,6 +115,23 @@ static const struct iio_info lpc18xx_adc_info = {
- 	.read_raw = lpc18xx_adc_read_raw,
- };
- 
-+static void lpc18xx_clear_cr_reg(void *data)
-+{
-+	struct lpc18xx_adc *adc = data;
-+
-+	writel(0, adc->base + LPC18XX_ADC_CR);
-+}
-+
-+static void lpc18xx_clk_disable(void *clk)
-+{
-+	clk_disable_unprepare(clk);
-+}
-+
-+static void lpc18xx_regulator_disable(void *vref)
-+{
-+	regulator_disable(vref);
-+}
-+
- static int lpc18xx_adc_probe(struct platform_device *pdev)
- {
- 	struct iio_dev *indio_dev;
-@@ -127,7 +144,6 @@ static int lpc18xx_adc_probe(struct platform_device *pdev)
- 	if (!indio_dev)
- 		return -ENOMEM;
- 
--	platform_set_drvdata(pdev, indio_dev);
- 	adc = iio_priv(indio_dev);
- 	adc->dev = &pdev->dev;
- 	mutex_init(&adc->lock);
-@@ -163,44 +179,30 @@ static int lpc18xx_adc_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
-+	ret = devm_add_action_or_reset(&pdev->dev, lpc18xx_regulator_disable, adc->vref);
-+	if (ret)
-+		return ret;
-+
- 	ret = clk_prepare_enable(adc->clk);
- 	if (ret) {
- 		dev_err(&pdev->dev, "unable to enable clock\n");
--		goto dis_reg;
-+		return ret;
- 	}
- 
-+	ret = devm_add_action_or_reset(&pdev->dev, lpc18xx_clk_disable,
-+				       adc->clk);
-+	if (ret)
-+		return ret;
-+
- 	adc->cr_reg = (clkdiv << LPC18XX_ADC_CR_CLKDIV_SHIFT) |
- 			LPC18XX_ADC_CR_PDN;
- 	writel(adc->cr_reg, adc->base + LPC18XX_ADC_CR);
- 
--	ret = iio_device_register(indio_dev);
--	if (ret) {
--		dev_err(&pdev->dev, "unable to register device\n");
--		goto dis_clk;
--	}
--
--	return 0;
--
--dis_clk:
--	writel(0, adc->base + LPC18XX_ADC_CR);
--	clk_disable_unprepare(adc->clk);
--dis_reg:
--	regulator_disable(adc->vref);
--	return ret;
--}
--
--static int lpc18xx_adc_remove(struct platform_device *pdev)
--{
--	struct iio_dev *indio_dev = platform_get_drvdata(pdev);
--	struct lpc18xx_adc *adc = iio_priv(indio_dev);
--
--	iio_device_unregister(indio_dev);
--
--	writel(0, adc->base + LPC18XX_ADC_CR);
--	clk_disable_unprepare(adc->clk);
--	regulator_disable(adc->vref);
-+	ret = devm_add_action_or_reset(&pdev->dev, lpc18xx_clear_cr_reg, adc);
-+	if (ret)
-+		return ret;
- 
--	return 0;
-+	return devm_iio_device_register(&pdev->dev, indio_dev);
- }
- 
- static const struct of_device_id lpc18xx_adc_match[] = {
-@@ -211,7 +213,6 @@ MODULE_DEVICE_TABLE(of, lpc18xx_adc_match);
- 
- static struct platform_driver lpc18xx_adc_driver = {
- 	.probe	= lpc18xx_adc_probe,
--	.remove	= lpc18xx_adc_remove,
- 	.driver	= {
- 		.name = "lpc18xx-adc",
- 		.of_match_table = lpc18xx_adc_match,
--- 
-2.33.0
+It's hard to tell exactly where the fix is when things are mixed
+together.
 
+> Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
+> ---
+>  drivers/pci/controller/dwc/pci-imx6.c | 47 ++++++++++++++-------------
+>  1 file changed, 24 insertions(+), 23 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
+> index cc837f8bf6d4..d6a5d99ffa52 100644
+> --- a/drivers/pci/controller/dwc/pci-imx6.c
+> +++ b/drivers/pci/controller/dwc/pci-imx6.c
+> @@ -514,6 +514,29 @@ static int imx6_pcie_clk_enable(struct imx6_pcie *imx6_pcie)
+>  	return ret;
+>  }
+>  
+> +static void imx6_pcie_clk_disable(struct imx6_pcie *imx6_pcie)
+> +{
+> +	clk_disable_unprepare(imx6_pcie->pcie);
+> +	clk_disable_unprepare(imx6_pcie->pcie_phy);
+> +	clk_disable_unprepare(imx6_pcie->pcie_bus);
+> +
+> +	switch (imx6_pcie->drvdata->variant) {
+> +	case IMX6SX:
+> +		clk_disable_unprepare(imx6_pcie->pcie_inbound_axi);
+> +		break;
+> +	case IMX7D:
+> +		regmap_update_bits(imx6_pcie->iomuxc_gpr, IOMUXC_GPR12,
+> +				   IMX7D_GPR12_PCIE_PHY_REFCLK_SEL,
+> +				   IMX7D_GPR12_PCIE_PHY_REFCLK_SEL);
+> +		break;
+> +	case IMX8MQ:
+> +		clk_disable_unprepare(imx6_pcie->pcie_aux);
+> +		break;
+> +	default:
+> +		break;
+> +	}
+> +}
+> +
+>  static void imx7d_pcie_wait_for_phy_pll_lock(struct imx6_pcie *imx6_pcie)
+>  {
+>  	u32 val;
+> @@ -853,6 +876,7 @@ static int imx6_pcie_start_link(struct dw_pcie *pci)
+>  		dw_pcie_readl_dbi(pci, PCIE_PORT_DEBUG0),
+>  		dw_pcie_readl_dbi(pci, PCIE_PORT_DEBUG1));
+>  	imx6_pcie_reset_phy(imx6_pcie);
+> +	imx6_pcie_clk_disable(imx6_pcie);
+>  	if (imx6_pcie->vpcie && regulator_is_enabled(imx6_pcie->vpcie) > 0)
+>  		regulator_disable(imx6_pcie->vpcie);
+>  	return ret;
+> @@ -941,29 +965,6 @@ static void imx6_pcie_pm_turnoff(struct imx6_pcie *imx6_pcie)
+>  	usleep_range(1000, 10000);
+>  }
+>  
+> -static void imx6_pcie_clk_disable(struct imx6_pcie *imx6_pcie)
+> -{
+> -	clk_disable_unprepare(imx6_pcie->pcie);
+> -	clk_disable_unprepare(imx6_pcie->pcie_phy);
+> -	clk_disable_unprepare(imx6_pcie->pcie_bus);
+> -
+> -	switch (imx6_pcie->drvdata->variant) {
+> -	case IMX6SX:
+> -		clk_disable_unprepare(imx6_pcie->pcie_inbound_axi);
+> -		break;
+> -	case IMX7D:
+> -		regmap_update_bits(imx6_pcie->iomuxc_gpr, IOMUXC_GPR12,
+> -				   IMX7D_GPR12_PCIE_PHY_REFCLK_SEL,
+> -				   IMX7D_GPR12_PCIE_PHY_REFCLK_SEL);
+> -		break;
+> -	case IMX8MQ:
+> -		clk_disable_unprepare(imx6_pcie->pcie_aux);
+> -		break;
+> -	default:
+> -		break;
+> -	}
+> -}
+> -
+>  static int imx6_pcie_suspend_noirq(struct device *dev)
+>  {
+>  	struct imx6_pcie *imx6_pcie = dev_get_drvdata(dev);
+> -- 
+> 2.25.1
+> 
