@@ -2,189 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AA5942F53E
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 16:29:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2741142F544
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 16:30:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240235AbhJOObL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 10:31:11 -0400
-Received: from smtp-fw-9103.amazon.com ([207.171.188.200]:9928 "EHLO
-        smtp-fw-9103.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236879AbhJOObJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 10:31:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1634308143; x=1665844143;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=/jE8U7yzXykvUrQPM0Hdx0/Cxqcuc/IceX/e+gpTSV4=;
-  b=F5YlVFKG4738TkBIi65wRYBrdp8M8pSc5mGBOxYm+t5TkR+fxgLM4oYi
-   9Bmz3f6DY8pXyFxRZvUdBo/EeX4OYeNBcYehWEMyxGZMV39/9AWIVvXep
-   2IbS0L/Lyxazcu39yOkyaasanZm25f1HRMGLiXGYP/PZJm1bxtUOTwOxW
-   I=;
-X-IronPort-AV: E=Sophos;i="5.85,375,1624320000"; 
-   d="scan'208";a="965006834"
-Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-pdx-2a-cb1ffea5.us-west-2.amazon.com) ([10.25.36.210])
-  by smtp-border-fw-9103.sea19.amazon.com with ESMTP; 15 Oct 2021 14:28:55 +0000
-Received: from EX13D16EUB003.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
-        by email-inbound-relay-pdx-2a-cb1ffea5.us-west-2.amazon.com (Postfix) with ESMTPS id C2B0F610D0;
-        Fri, 15 Oct 2021 14:28:54 +0000 (UTC)
-Received: from [10.85.100.8] (10.43.162.89) by EX13D16EUB003.ant.amazon.com
- (10.43.166.99) with Microsoft SMTP Server (TLS) id 15.0.1497.24; Fri, 15 Oct
- 2021 14:28:47 +0000
-Message-ID: <c078d7fd-7c32-8a3a-3958-c0b79a67ddc7@amazon.com>
-Date:   Fri, 15 Oct 2021 17:28:41 +0300
+        id S240293AbhJOOcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 10:32:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36688 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236879AbhJOOcR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 10:32:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 70DF8610E5;
+        Fri, 15 Oct 2021 14:30:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634308211;
+        bh=AEtWb/xpPvXYdf5GA4X8ida+83gqErYx/NpU8kM27To=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ueP0q1Ga0z7mOhcyKp/GuEGLiCZThinNlPsNosw9QnHZaOMvYTqeJ4lwBMzuP68vV
+         GgEVup4n4FW2P7NGUwUyiygSyPT4lg5tl9tM4cljUmC9AYEyKRQhE2VIYqCM8315pB
+         DzyyXz9yelcP9M5njE+39pYX7w8RSLgwalaSJbCqN29U54OJStSQU10lNR7Af/ERZQ
+         W7sbJRdE1FRiULJJrxhDKIE50jsaR1IJbx533jER8wUbGTteia+vy8x1KmhZ5B1KPE
+         y3UMpKckf4vipJ68+B/aAdlmt5Ht6NSJPuiFcvc7NNkLwVE8q9NQGKamq1RQQI2dTB
+         fZYFB28Gf93aw==
+Date:   Fri, 15 Oct 2021 15:30:07 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        patches@opensource.cirrus.com
+Subject: Re: [PATCH 06/16] ASoC: cs42l42: Reset GPIO is mandatory
+Message-ID: <YWmQb8oudyZr8tsz@sirena.org.uk>
+References: <20211015133619.4698-1-rf@opensource.cirrus.com>
+ <20211015133619.4698-7-rf@opensource.cirrus.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:91.0)
- Gecko/20100101 Thunderbird/91.2.0
-Subject: Re: [PATCH v3 4/4] nitro_enclaves: Add KUnit tests for contiguous
- physical memory regions merging
-Content-Language: en-US
-To:     "Longpeng(Mike)" <longpeng2@huawei.com>
-CC:     <arei.gonglei@huawei.com>, <gregkh@linuxfoundation.org>,
-        <kamal@canonical.com>, <pbonzini@redhat.com>,
-        <sgarzare@redhat.com>, <stefanha@redhat.com>,
-        <vkuznets@redhat.com>, <linux-kernel@vger.kernel.org>,
-        <ne-devel-upstream@amazon.com>, <lexnv@amazon.com>,
-        <alcioa@amazon.com>
-References: <20211009013248.1174-1-longpeng2@huawei.com>
- <20211009013248.1174-5-longpeng2@huawei.com>
-From:   "Paraschiv, Andra-Irina" <andraprs@amazon.com>
-In-Reply-To: <20211009013248.1174-5-longpeng2@huawei.com>
-X-Originating-IP: [10.43.162.89]
-X-ClientProxiedBy: EX13D04UWB003.ant.amazon.com (10.43.161.231) To
- EX13D16EUB003.ant.amazon.com (10.43.166.99)
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="jSS0e2uIyUoUwoHo"
+Content-Disposition: inline
+In-Reply-To: <20211015133619.4698-7-rf@opensource.cirrus.com>
+X-Cookie: I'm having an emotional outburst!!
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CgpPbiAwOS8xMC8yMDIxIDA0OjMyLCBMb25ncGVuZyhNaWtlKSB3cm90ZToKPiBGcm9tOiBMb25n
-cGVuZyA8bG9uZ3BlbmcyQGh1YXdlaS5jb20+Cj4gCj4gQWRkIEtVbml0IHRlc3RzIGZvciB0aGUg
-Y29udGlndW91cyBwaHlzaWNhbCBtZW1vcnkgcmVnaW9ucyBtZXJnaW5nCj4gZnVuY3Rpb25hbGl0
-eSBmcm9tIHRoZSBOaXRybyBFbmNsYXZlcyBtaXNjIGRldmljZSBsb2dpYy4KPiAKPiBXZSdsbCBz
-ZWUgdGhlIGZvbGxvd2luZyBtZXNzYWdlIHVzaW5nIGRtZXNnIGlmIGV2ZXJ5dGhpbmcgZ29lcyB3
-ZWxsOgo+IAo+IFsuLi5dICAgICAjIFN1YnRlc3Q6IG5lX21pc2NfZGV2X3Rlc3QKPiBbLi4uXSAg
-ICAgMS4uMQo+IFsuLi5dIChOVUxMIGRldmljZSAqKTogUGh5c2ljYWwgbWVtIHJlZ2lvbiBhZGRy
-ZXNzIGlzIG5vdCAyIE1pQiBhbGlnbmVkCj4gWy4uLl0gKE5VTEwgZGV2aWNlICopOiBQaHlzaWNh
-bCBtZW0gcmVnaW9uIHNpemUgaXMgbm90IG11bHRpcGxlIG9mIDIgTWlCCj4gWy4uLl0gKE5VTEwg
-ZGV2aWNlICopOiBQaHlzaWNhbCBtZW0gcmVnaW9uIGFkZHJlc3MgaXMgbm90IDIgTWlCIGFsaWdu
-ZWQKPiBbLi4uXSAgICAgb2sgMSAtIG5lX21pc2NfZGV2X3Rlc3RfbWVyZ2VfcGh5c19jb250aWdf
-bWVtb3J5X3JlZ2lvbnMKPiBbLi4uXSBvayAxIC0gbmVfbWlzY19kZXZfdGVzdAo+IAo+IFNpZ25l
-ZC1vZmYtYnk6IExvbmdwZW5nIDxsb25ncGVuZzJAaHVhd2VpLmNvbT4KPiAtLS0KPiBDaGFuZ2Vz
-IHYyIC0+IHYzOgo+ICAgIC0gdXBkYXRlIHRoZSBjb21taXQgdGl0bGUgYW5kIGNvbW1pdCBtZXNz
-YWdlLiAgW0FuZHJhXQo+ICAgIC0gYWxpZ24gdGhlIGZpbGVkcyBpbiAnc3RydWN0IHBoeXNfcmVn
-aW9uc190ZXN0Jy4gIFtBbmRyYV0KPiAgICAtIHJlbmFtZSAncGh5c19yZWdpb25zX3Rlc3RjYXNl
-cycgdG8gJ3BoeXNfcmVnaW9uc190ZXN0X2Nhc2VzJy4gIFtBbmRyYV0KPiAgICAtIGFkZCBjb21t
-ZW50cyBiZWZvcmUgZWFjaCB0ZXN0IGNhc2VzLiAgW0FuZHJhXQo+ICAgIC0gaW5pdGlhbGl6ZSB0
-aGUgdmFyaWFibGVzIGluIG5lX21pc2NfZGV2X3Rlc3RfbWVyZ2VfcGh5c19jb250aWdfbWVtb3J5
-X3JlZ2lvbnMuICBbQW5kcmFdCj4gLS0tCj4gICBkcml2ZXJzL3ZpcnQvbml0cm9fZW5jbGF2ZXMv
-bmVfbWlzY19kZXZfdGVzdC5jIHwgMTM2ICsrKysrKysrKysrKysrKysrKysrKysrKysKPiAgIDEg
-ZmlsZSBjaGFuZ2VkLCAxMzYgaW5zZXJ0aW9ucygrKQo+IAo+IGRpZmYgLS1naXQgYS9kcml2ZXJz
-L3ZpcnQvbml0cm9fZW5jbGF2ZXMvbmVfbWlzY19kZXZfdGVzdC5jIGIvZHJpdmVycy92aXJ0L25p
-dHJvX2VuY2xhdmVzL25lX21pc2NfZGV2X3Rlc3QuYwo+IGluZGV4IGJjYjc1NWUuLjdiZDZiMzQg
-MTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy92aXJ0L25pdHJvX2VuY2xhdmVzL25lX21pc2NfZGV2X3Rl
-c3QuYwo+ICsrKyBiL2RyaXZlcnMvdmlydC9uaXRyb19lbmNsYXZlcy9uZV9taXNjX2Rldl90ZXN0
-LmMKPiBAQCAtMiw3ICsyLDE0MyBAQAo+ICAgCj4gICAjaW5jbHVkZSA8a3VuaXQvdGVzdC5oPgo+
-ICAgCj4gKyNkZWZpbmUgTUFYX1BIWVNfUkVHSU9OUwkxNgo+ICsjZGVmaW5lIElOVkFMSURfVkFM
-VUUJCSh+MHVsbCkKPiArCj4gK3N0cnVjdCBwaHlzX3JlZ2lvbnNfdGVzdCB7Cj4gKwl1NjQgcGFk
-ZHI7Cj4gKwl1NjQgc2l6ZTsKPiArCWludCBleHBlY3RfcmM7Cj4gKwlpbnQgZXhwZWN0X251bTsK
-ClBsZWFzZSBrZWVwIHRoZSBzYW1lIGZpZWxkIHR5cGUgYXMgIm51bSI6ICJ1bnNpZ25lZCBsb25n
-Ii4KCkFuZCBqdXN0IGFsaWduIHRoZSBmaWVsZCBuYW1lcyBhcyBtZW50aW9uZWQgaW4gdGhlIGZp
-cnN0IHBhdGNoIG9mIHRoZSAKc2VyaWVzLCBzbyB0aGV5IGFyZSBlYXNpbHkgdmlzdWFsaXplZC4K
-Cj4gKwl1NjQgZXhwZWN0X2xhc3RfcGFkZHI7Cj4gKwl1NjQgZXhwZWN0X2xhc3Rfc2l6ZTsKPiAr
-fSBwaHlzX3JlZ2lvbnNfdGVzdF9jYXNlc1tdID0gewo+ICsJLyoKPiArCSAqIEFkZCB0aGUgcmVn
-aW9uIGZyb20gMHgxMDAwIHRvICgweDEwMDAgKyAweDIwMDAwMCAtIDEpOgo+ICsJICogICBFeHBl
-Y3RlZCByZXN1bHQ6Cj4gKwkgKiAgICAgICBGYWlsZWQsIHN0YXJ0IGFkZHJlc3MgaXMgbm90IDJN
-LWFsaWduZWQKPiArCSAqCj4gKwkgKiBOb3cgdGhlIGluc3RhbmNlIG9mIHN0cnVjdCBwaHlzX2Nv
-bnRpZ19tZW1fcmVnaW9ucyBpczoKPiArCSAqICAgbnVtID0gMAo+ICsJICogICByZWdpb24gPSB7
-fQo+ICsJICovCj4gKwl7MHgxMDAwLCAweDIwMDAwMCwgLUVJTlZBTCwgMCwgSU5WQUxJRF9WQUxV
-RSwgSU5WQUxJRF9WQUxVRX0sCj4gKwo+ICsJLyoKPiArCSAqIEFkZCB0aGUgcmVnaW9uIGZyb20g
-MHgyMDAwMDAgdG8gKDB4MjAwMDAwICsgMHgxMDAwIC0gMSk6Cj4gKwkgKiAgIEV4cGVjdGVkIHJl
-c3VsdDoKPiArCSAqICAgICAgIEZhaWxlZCwgc2l6ZSBpcyBub3QgMk0tYWxpZ25lZAo+ICsJICoK
-PiArCSAqIE5vdyB0aGUgaW5zdGFuY2Ugb2Ygc3RydWN0IHBoeXNfY29udGlnX21lbV9yZWdpb25z
-IGlzOgo+ICsJICogICBudW0gPSAwCj4gKwkgKiAgIHJlZ2lvbiA9IHt9Cj4gKwkgKi8KPiArCXsw
-eDIwMDAwMCwgMHgxMDAwLCAtRUlOVkFMLCAwLCBJTlZBTElEX1ZBTFVFLCBJTlZBTElEX1ZBTFVF
-fSwKPiArCj4gKwkvKgo+ICsJICogQWRkIHRoZSByZWdpb24gZnJvbSAweDIwMDAwMCB0byAoMHgy
-MDAwMDAgKyAweDIwMDAwMCAtIDEpOgo+ICsJICogICBFeHBlY3RlZCByZXN1bHQ6Cj4gKwkgKiAg
-ICAgICBTdWNjZXNzZnVsCj4gKwkgKgo+ICsJICogTm93IHRoZSBpbnN0YW5jZSBvZiBzdHJ1Y3Qg
-cGh5c19jb250aWdfbWVtX3JlZ2lvbnMgaXM6Cj4gKwkgKiAgIG51bSA9IDEKPiArCSAqICAgcmVn
-aW9uID0gewo+ICsJICogICAgICAge3N0YXJ0PTB4MjAwMDAwLCBlbmQ9MHgzZmZmZmZ9LCAvLyBs
-ZW49MHgyMDAwMDAKPiArCSAqICAgfQo+ICsJICovCj4gKwl7MHgyMDAwMDAsIDB4MjAwMDAwLCAw
-LCAxLCAweDIwMDAwMCwgMHgyMDAwMDB9LAo+ICsKPiArCS8qCj4gKwkgKiBBZGQgdGhlIHJlZ2lv
-biBmcm9tIDB4MCB0byAoMHgwICsgMHgyMDAwMDAgLSAxKToKPiArCSAqICAgRXhwZWN0ZWQgcmVz
-dWx0Ogo+ICsJICogICAgICAgU3VjY2Vzc2Z1bAo+ICsJICoKPiArCSAqIE5vdyB0aGUgaW5zdGFu
-Y2Ugb2Ygc3RydWN0IHBoeXNfY29udGlnX21lbV9yZWdpb25zIGlzOgo+ICsJICogICBudW0gPSAy
-Cj4gKwkgKiAgIHJlZ2lvbiA9IHsKPiArCSAqICAgICAgIHtzdGFydD0weDIwMDAwMCwgZW5kPTB4
-M2ZmZmZmfSwgLy8gbGVuPTB4MjAwMDAwCj4gKwkgKiAgICAgICB7c3RhcnQ9MHgwLCAgICAgIGVu
-ZD0weDFmZmZmZn0sIC8vIGxlbj0weDIwMDAwMAo+ICsJICogICB9Cj4gKwkgKi8KPiArCXsweDAs
-IDB4MjAwMDAwLCAwLCAyLCAweDAsIDB4MjAwMDAwfSwKPiArCj4gKwkvKgo+ICsJICogQWRkIHRo
-ZSByZWdpb24gZnJvbSAweDYwMDAwMCB0byAoMHg2MDAwMDAgKyAweDQwMDAwMCAtIDEpOgo+ICsJ
-ICogICBFeHBlY3RlZCByZXN1bHQ6Cj4gKwkgKiAgICAgICBTdWNjZXNzZnVsCj4gKwkgKgo+ICsJ
-ICogTm93IHRoZSBpbnN0YW5jZSBvZiBzdHJ1Y3QgcGh5c19jb250aWdfbWVtX3JlZ2lvbnMgaXM6
-Cj4gKwkgKiAgIG51bSA9IDMKPiArCSAqICAgcmVnaW9uID0gewo+ICsJICogICAgICAge3N0YXJ0
-PTB4MjAwMDAwLCBlbmQ9MHgzZmZmZmZ9LCAvLyBsZW49MHgyMDAwMDAKPiArCSAqICAgICAgIHtz
-dGFydD0weDAsICAgICAgZW5kPTB4MWZmZmZmfSwgLy8gbGVuPTB4MjAwMDAwCj4gKwkgKiAgICAg
-ICB7c3RhcnQ9MHg2MDAwMDAsIGVuZD0weDlmZmZmZn0sIC8vIGxlbj0weDQwMDAwMAo+ICsJICog
-ICB9Cj4gKwkgKi8KPiArCXsweDYwMDAwMCwgMHg0MDAwMDAsIDAsIDMsIDB4NjAwMDAwLCAweDQw
-MDAwMH0sCj4gKwo+ICsJLyoKPiArCSAqIEFkZCB0aGUgcmVnaW9uIGZyb20gMHhhMDAwMDAgdG8g
-KDB4YTAwMDAwICsgMHg0MDAwMDAgLSAxKToKPiArCSAqICAgRXhwZWN0ZWQgcmVzdWx0Ogo+ICsJ
-ICogICAgICAgU3VjY2Vzc2Z1bCwgbWVyZ2luZyBjYXNlIQo+ICsJICoKPiArCSAqIE5vdyB0aGUg
-aW5zdGFuY2Ugb2Ygc3RydWN0IHBoeXNfY29udGlnX21lbV9yZWdpb25zIGlzOgo+ICsJICogICBu
-dW0gPSAzCj4gKwkgKiAgIHJlZ2lvbiA9IHsKPiArCSAqICAgICAgIHtzdGFydD0weDIwMDAwMCwg
-ZW5kPTB4M2ZmZmZmfSwgLy8gbGVuPTB4MjAwMDAwCj4gKwkgKiAgICAgICB7c3RhcnQ9MHgwLCAg
-ICAgIGVuZD0weDFmZmZmZn0sIC8vIGxlbj0weDIwMDAwMAo+ICsJICogICAgICAge3N0YXJ0PTB4
-NjAwMDAwLCBlbmQ9MHhkZmZmZmZ9LCAvLyBsZW49MHg4MDAwMDAKPiArCSAqICAgfQo+ICsJICov
-Cj4gKwl7MHhhMDAwMDAsIDB4NDAwMDAwLCAwLCAzLCAweDYwMDAwMCwgMHg4MDAwMDB9LAo+ICsK
-PiArCS8qCj4gKwkgKiBBZGQgdGhlIHJlZ2lvbiBmcm9tIDB4MTAwMCB0byAoMHgxMDAwICsgMHgy
-MDAwMDAgLSAxKToKPiArCSAqICAgRXhwZWN0ZWQgcmVzdWx0Ogo+ICsJICogICAgICAgRmFpbGVk
-LCBzdGFydCBhZGRyZXNzIGlzIG5vdCAyTS1hbGlnbmVkCj4gKwkgKgo+ICsJICogTm93IHRoZSBp
-bnN0YW5jZSBvZiBzdHJ1Y3QgcGh5c19jb250aWdfbWVtX3JlZ2lvbnMgaXM6Cj4gKwkgKiAgIG51
-bSA9IDMKPiArCSAqICAgcmVnaW9uID0gewo+ICsJICogICAgICAge3N0YXJ0PTB4MjAwMDAwLCBl
-bmQ9MHgzZmZmZmZ9LCAvLyBsZW49MHgyMDAwMDAKPiArCSAqICAgICAgIHtzdGFydD0weDAsICAg
-ICAgZW5kPTB4MWZmZmZmfSwgLy8gbGVuPTB4MjAwMDAwCj4gKwkgKiAgICAgICB7c3RhcnQ9MHg2
-MDAwMDAsIGVuZD0weGRmZmZmZn0sIC8vIGxlbj0weDgwMDAwMAo+ICsJICogICB9Cj4gKwkgKi8K
-PiArCXsweDEwMDAsIDB4MjAwMDAwLCAtRUlOVkFMLCAzLCAweDYwMDAwMCwgMHg4MDAwMDB9LAoK
-TmljZSwgSSBsaWtlIGhvdyB0aGUgY29tbWVudHMgYXJlIHN0cnVjdHVyZWQuCgpQbGVhc2UgYWxz
-byB1cGRhdGUgZnJvbSAicmVnaW9uIiB0byAicmVnaW9ucyIgYW5kICJzdHJ1Y3QgCnBoeXNfY29u
-dGlnX21lbV9yZWdpb25zIiB0byAibmVfcGh5c19jb250aWdfbWVtX3JlZ2lvbnMiLCBhZnRlciB0
-aGUgCnN1Z2dlc3RlZCBuYW1pbmcgY2hhbmdlcyBpbiB0aGUgZmlyc3QgcGF0Y2ggb2YgdGhlIHNl
-cmllcy4KCj4gK307Cj4gKwo+ICtzdGF0aWMgdm9pZCBuZV9taXNjX2Rldl90ZXN0X21lcmdlX3Bo
-eXNfY29udGlnX21lbW9yeV9yZWdpb25zKHN0cnVjdCBrdW5pdCAqdGVzdCkKPiArewo+ICsJc3Ry
-dWN0IHBoeXNfY29udGlnX21lbV9yZWdpb25zICpyZWdpb25zOwoKc3RydWN0IHBoeXNfY29udGln
-X21lbV9yZWdpb25zICpyZWdpb25zOyA9PiBzdHJ1Y3QgCm5lX3BoeXNfY29udGlnX21lbV9yZWdp
-b25zIHBoeXNfY29udGlnX21lbV9yZWdpb25zID0ge307Cgo+ICsJc2l6ZV90IHN6ID0gMDsKPiAr
-CWludCByYyA9IDA7Cj4gKwlpbnQgaSA9IDA7Cj4gKwo+ICsJc3ogPSBzaXplb2YoKnJlZ2lvbnMp
-ICsgTUFYX1BIWVNfUkVHSU9OUyAqIHNpemVvZihzdHJ1Y3QgcmFuZ2UpOwo+ICsJcmVnaW9ucyA9
-IGt1bml0X2t6YWxsb2ModGVzdCwgc3osIEdGUF9LRVJORUwpOwoKQW5kIHRoZW4gY2FuIGFsbG9j
-IHRoZSBuZWNlc3NhcnkgbWVtb3J5IGZvciB0aGUgInJlZ2lvbnMiIGZpZWxkOgoKcGh5c19jb250
-aWdfbWVtX3JlZ2lvbnMucmVnaW9ucyA9IGt1bml0X2tjYWxsb2ModGVzdCwgTUFYX1BIWVNfUkVH
-SU9OUywgCnNpemVvZigqcGh5c19jb250aWdfbWVtX3JlZ2lvbnMucmVnaW9ucyksIEdGUF9LRVJO
-RUwpOwoKPiArCUtVTklUX0FTU0VSVF9UUlVFKHRlc3QsIHJlZ2lvbnMgIT0gTlVMTCk7Cj4gKwo+
-ICsJZm9yIChpID0gMDsgaSA8IEFSUkFZX1NJWkUocGh5c19yZWdpb25zX3Rlc3RfY2FzZXMpOyBp
-KyspIHsKPiArCQlzdHJ1Y3QgcGh5c19yZWdpb25zX3Rlc3QgKmVudHJ5ID0gcGh5c19yZWdpb25z
-X3Rlc3RfY2FzZXMgKyBpOwoKQ291bGQgcmVuYW1lICJlbnRyeSIgdG8gInRlc3RfY2FzZSIuCgpD
-YW4gYWxzbyBhZGQ6Cgp1bnNpZ25lZCBsb25nIG51bSA9IDA7Cgo+ICsKPiArCQlyYyA9IG5lX21l
-cmdlX3BoeXNfY29udGlnX21lbW9yeV9yZWdpb25zKHJlZ2lvbnMsCj4gKwkJCQkJCQkgZW50cnkt
-PnBhZGRyLCBlbnRyeS0+c2l6ZSk7CgpBbmQgdGhlbiBjYW4gdXBkYXRlIGl0IGhlcmUgYW5kIHVz
-ZSBpdCBmdXJ0aGVyIG9uOgoKbnVtID0gcGh5c19jb250aWdfbWVtX3JlZ2lvbnMubnVtOwoKPiAr
-CQlLVU5JVF9FWFBFQ1RfRVEodGVzdCwgcmMsIGVudHJ5LT5leHBlY3RfcmMpOwo+ICsJCUtVTklU
-X0VYUEVDVF9FUSh0ZXN0LCByZWdpb25zLT5udW0sIGVudHJ5LT5leHBlY3RfbnVtKTsKPiArCj4g
-KwkJaWYgKGVudHJ5LT5leHBlY3RfbGFzdF9wYWRkciA9PSBJTlZBTElEX1ZBTFVFKQo+ICsJCQlj
-b250aW51ZTsKPiArCj4gKwkJS1VOSVRfRVhQRUNUX0VRKHRlc3QsIHJlZ2lvbnMtPnJlZ2lvblty
-ZWdpb25zLT5udW0gLSAxXS5zdGFydCwKPiArCQkJCWVudHJ5LT5leHBlY3RfbGFzdF9wYWRkcik7
-Cj4gKwkJS1VOSVRfRVhQRUNUX0VRKHRlc3QsIHJhbmdlX2xlbigmcmVnaW9ucy0+cmVnaW9uW3Jl
-Z2lvbnMtPm51bSAtIDFdKSwKPiArCQkJCWVudHJ5LT5leHBlY3RfbGFzdF9zaXplKTsKPiArCX0K
-CkF0IHRoZSBlbmQgbmVlZCB0byBhbHNvIGZyZWUgdGhlIGFsbG9jYXRlZCBtZW1vcnkgZm9yIHRo
-ZSAicmVnaW9ucyIgCmZpZWxkIHVzaW5nICJrdW5pdF9mcmVlIiBbMV0uCgpbMV0gCmh0dHBzOi8v
-Z2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L3RvcnZhbGRzL2xpbnV4Lmdp
-dC90cmVlL2luY2x1ZGUva3VuaXQvdGVzdC5oI242MzEKClRoYW5rcywKQW5kcmEKCj4gK30KPiAr
-Cj4gICBzdGF0aWMgc3RydWN0IGt1bml0X2Nhc2UgbmVfbWlzY19kZXZfdGVzdF9jYXNlc1tdID0g
-ewo+ICsJS1VOSVRfQ0FTRShuZV9taXNjX2Rldl90ZXN0X21lcmdlX3BoeXNfY29udGlnX21lbW9y
-eV9yZWdpb25zKSwKPiAgIAl7fQo+ICAgfTsKPiAgIAo+IAoKCgpBbWF6b24gRGV2ZWxvcG1lbnQg
-Q2VudGVyIChSb21hbmlhKSBTLlIuTC4gcmVnaXN0ZXJlZCBvZmZpY2U6IDI3QSBTZi4gTGF6YXIg
-U3RyZWV0LCBVQkM1LCBmbG9vciAyLCBJYXNpLCBJYXNpIENvdW50eSwgNzAwMDQ1LCBSb21hbmlh
-LiBSZWdpc3RlcmVkIGluIFJvbWFuaWEuIFJlZ2lzdHJhdGlvbiBudW1iZXIgSjIyLzI2MjEvMjAw
-NS4K
 
+--jSS0e2uIyUoUwoHo
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, Oct 15, 2021 at 02:36:09PM +0100, Richard Fitzgerald wrote:
+
+> The hard RESET must be used to correctly power-up the cs42l42, as
+> described in the datasheet.
+
+> The code was getting the GPIO with devm_gpiod_get_optional(). Change
+> this to devm_gpiod_get().
+
+Does that power sequencing have to be done by the CPU though?  Usually
+if a GPIO is not supplied it's because the sequencing is done during the
+general power up sequence (PMICs can be programmed to assert GPIOs as
+part of the their sequencing for example).
+
+--jSS0e2uIyUoUwoHo
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFpkG8ACgkQJNaLcl1U
+h9Dyqgf+LJrZXj+uSKJIZ0JT5Qh4ifQCqaIfbbYyPJ4Bdnq2KyOv9i8KNczYj8sS
+yfb2lRfd0I5iFDg9gKshaeER4HsgD/AetI9Ndz+AI4pYQHtyj7GEU0jj2rw4jQbO
+EgjqNobNWM8BkIbwZf4de/e7oL44wlgq4REspzgFUDO7nfbsfc8y5F40VOSeLbat
+B+tv99B7EKofPRlx6gFVdXdWn5LW//8SMyDcFpRqLWX/iKeYBcPGc/P9Q2NCIi1Z
++Xz9J4XOZ3VH5n2nXrA7E9GYYM7G0s1er2tJs7pXFW8k5RPAD+ONMJ/bPz9flX/f
+7eKJLWkhyRLt5F8ekZmY7nNPNJBERQ==
+=cfD/
+-----END PGP SIGNATURE-----
+
+--jSS0e2uIyUoUwoHo--
