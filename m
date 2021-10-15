@@ -2,168 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66B3A42F816
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 18:27:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3CC342F818
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 18:28:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241308AbhJOQ3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 12:29:43 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3985 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241277AbhJOQ3m (ORCPT
+        id S241317AbhJOQaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 12:30:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55190 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241277AbhJOQaK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 12:29:42 -0400
-Received: from fraeml704-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HWBRK1snbz67bX1;
-        Sat, 16 Oct 2021 00:23:57 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml704-chm.china.huawei.com (10.206.15.53) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Fri, 15 Oct 2021 18:27:33 +0200
-Received: from localhost (10.202.226.41) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Fri, 15 Oct
- 2021 17:27:33 +0100
-Date:   Fri, 15 Oct 2021 17:27:32 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Dan Williams <dan.j.williams@intel.com>
-CC:     <linux-cxl@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <hch@lst.de>
-Subject: Re: [PATCH v3 06/10] cxl/pci: Add @base to cxl_register_map
-Message-ID: <20211015172732.000012fc@Huawei.com>
-In-Reply-To: <163379786922.692348.2318044990911111834.stgit@dwillia2-desk3.amr.corp.intel.com>
-References: <163379783658.692348.16064992154261275220.stgit@dwillia2-desk3.amr.corp.intel.com>
-        <163379786922.692348.2318044990911111834.stgit@dwillia2-desk3.amr.corp.intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
+        Fri, 15 Oct 2021 12:30:10 -0400
+Received: from mail-oo1-xc2f.google.com (mail-oo1-xc2f.google.com [IPv6:2607:f8b0:4864:20::c2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2101BC061570
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 09:28:03 -0700 (PDT)
+Received: by mail-oo1-xc2f.google.com with SMTP id c29-20020a4ad21d000000b002b6cf3f9aceso3133960oos.13
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 09:28:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=RgIDQ0FG20osRDpTRNFAIet2HylHqSSCsjU4120MrAI=;
+        b=PllHVHZMs51VlTKRux3tLKSSyB/q8Xv5kEQu9HCq45HdyBVISFlGgwGCI+WOdI9Umj
+         10KyNhvTKZzbdirzK9rpF4ZdGCW8ZmhEqigSizPcRcOq4DeRZgItB4/dMPQFU5KbJYFL
+         AcDInzdpv7XjujbIzyBcvGhfxH6Mvt6O0gFp45zqipwCcEsmMRJfqF6jv7/UBxviKKsk
+         zCbmTQWx0HDH/JpFHS3e7+8wXL313lLkTrXm+dg0gHF0u5/9RkQbGnOEwh8CQdWoXKcz
+         M+KT40gEbItZY7f1aKH0Bz0ZwlTqW9vkXydsDgT0tyAilzGw7k8X4dBLuoMPmG32JVdF
+         0HxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=RgIDQ0FG20osRDpTRNFAIet2HylHqSSCsjU4120MrAI=;
+        b=yJymjTlA4kZFqAdZkIO6TuTCsaPNDaKvGMfh/0q1zjCQp5OdyktiGRA8IoqA3u5I+G
+         5ATVYVLgoIjUlSv9WGMVQrkLQSknMAlowUQk7dwlaOUBHONphDgNpnUBMb2BnHirQfsM
+         yWRAH84VIcocOQSa8pVbZOcTdL/cM93ej2g+pCOTQ/EzGqUQwYOv8TWyD00KPSVtBxyB
+         nYh+uKwUyKJAAfc3Csdv/5mn8t3C7T+5b87XjYmjTikq5jXVbCd/ITUsGWHKlHikmZFN
+         kn9/qIObXV9W/usRK+5s89TaVy80ymzV+QW59d05LK/o62N9xZYyhQRBtFZOcswcelB4
+         bvBg==
+X-Gm-Message-State: AOAM53126kqC/vS9tW/buSl50MaZKDoG2H0Xfy6Dz+lEjKkKLbBnUVEh
+        Z4H1P2eCvwNwTIf+GJgHTq+gYg==
+X-Google-Smtp-Source: ABdhPJyXO5Y2cCfWU5uq3Q2vd2dUzS2qs+KvKHyLrYjXEBRhkXaq73F7k5W5kTQgK3kR7rMO1pg7YA==
+X-Received: by 2002:a4a:e093:: with SMTP id w19mr6596702oos.63.1634315282423;
+        Fri, 15 Oct 2021 09:28:02 -0700 (PDT)
+Received: from [192.168.17.16] ([189.219.72.19])
+        by smtp.gmail.com with ESMTPSA id bf3sm1251401oib.34.2021.10.15.09.28.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Oct 2021 09:28:01 -0700 (PDT)
+Subject: Re: [PATCH 5.10 00/22] 5.10.74-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     shuah@kernel.org, f.fainelli@gmail.com, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
+        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, linux@roeck-us.net
+References: <20211014145207.979449962@linuxfoundation.org>
+From:   =?UTF-8?Q?Daniel_D=c3=adaz?= <daniel.diaz@linaro.org>
+Message-ID: <dc5be9a8-5e5e-1070-758a-d18f8c8b6af9@linaro.org>
+Date:   Fri, 15 Oct 2021 11:28:00 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.226.41]
-X-ClientProxiedBy: lhreml727-chm.china.huawei.com (10.201.108.78) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+In-Reply-To: <20211014145207.979449962@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 9 Oct 2021 09:44:29 -0700
-Dan Williams <dan.j.williams@intel.com> wrote:
+Hello!
 
-> In addition to carrying @barno, @block_offset, and @reg_type, add @base
-> to keep all map/unmap parameters in one object. The helpers
-> cxl_{map,unmap}_regblock() handle adjusting @base to the @block_offset
-> at map and unmap time.
+On 10/14/21 9:54 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.74 release.
+> There are 22 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-
-I don't really mind them, but why the renames
-from cxl_pci_* to cxl_* ?
-
-Jonathan
-> ---
->  drivers/cxl/cxl.h |    1 +
->  drivers/cxl/pci.c |   31 ++++++++++++++++---------------
->  2 files changed, 17 insertions(+), 15 deletions(-)
+> Responses should be made by Sat, 16 Oct 2021 14:51:59 +0000.
+> Anything received after that time might be too late.
 > 
-> diff --git a/drivers/cxl/cxl.h b/drivers/cxl/cxl.h
-> index a6687e7fd598..7cd16ef144dd 100644
-> --- a/drivers/cxl/cxl.h
-> +++ b/drivers/cxl/cxl.h
-> @@ -140,6 +140,7 @@ struct cxl_device_reg_map {
->  };
->  
->  struct cxl_register_map {
-> +	void __iomem *base;
->  	u64 block_offset;
->  	u8 reg_type;
->  	u8 barno;
-> diff --git a/drivers/cxl/pci.c b/drivers/cxl/pci.c
-> index 9f006299a0e3..b42407d067ac 100644
-> --- a/drivers/cxl/pci.c
-> +++ b/drivers/cxl/pci.c
-> @@ -306,8 +306,7 @@ static int cxl_pci_setup_mailbox(struct cxl_mem *cxlm)
->  	return 0;
->  }
->  
-> -static void __iomem *cxl_pci_map_regblock(struct pci_dev *pdev,
-> -					  struct cxl_register_map *map)
-> +static int cxl_map_regblock(struct pci_dev *pdev, struct cxl_register_map *map)
->  {
->  	void __iomem *addr;
->  	int bar = map->barno;
-> @@ -318,24 +317,27 @@ static void __iomem *cxl_pci_map_regblock(struct pci_dev *pdev,
->  	if (pci_resource_len(pdev, bar) < offset) {
->  		dev_err(dev, "BAR%d: %pr: too small (offset: %#llx)\n", bar,
->  			&pdev->resource[bar], (unsigned long long)offset);
-> -		return NULL;
-> +		return -ENXIO;
->  	}
->  
->  	addr = pci_iomap(pdev, bar, 0);
->  	if (!addr) {
->  		dev_err(dev, "failed to map registers\n");
-> -		return addr;
-> +		return -ENOMEM;
->  	}
->  
->  	dev_dbg(dev, "Mapped CXL Memory Device resource bar %u @ %#llx\n",
->  		bar, offset);
->  
-> -	return addr;
-> +	map->base = addr + map->block_offset;
-> +	return 0;
->  }
->  
-> -static void cxl_pci_unmap_regblock(struct pci_dev *pdev, void __iomem *base)
-> +static void cxl_unmap_regblock(struct pci_dev *pdev,
-> +			       struct cxl_register_map *map)
->  {
-> -	pci_iounmap(pdev, base);
-> +	pci_iounmap(pdev, map->base - map->block_offset);
-> +	map->base = NULL;
->  }
->  
->  static int cxl_pci_dvsec(struct pci_dev *pdev, int dvsec)
-> @@ -361,12 +363,12 @@ static int cxl_pci_dvsec(struct pci_dev *pdev, int dvsec)
->  	return 0;
->  }
->  
-> -static int cxl_probe_regs(struct pci_dev *pdev, void __iomem *base,
-> -			  struct cxl_register_map *map)
-> +static int cxl_probe_regs(struct pci_dev *pdev, struct cxl_register_map *map)
->  {
->  	struct cxl_component_reg_map *comp_map;
->  	struct cxl_device_reg_map *dev_map;
->  	struct device *dev = &pdev->dev;
-> +	void __iomem *base = map->base;
->  
->  	switch (map->reg_type) {
->  	case CXL_REGLOC_RBI_COMPONENT:
-> @@ -442,7 +444,6 @@ static void cxl_decode_regblock(u32 reg_lo, u32 reg_hi,
->   */
->  static int cxl_pci_setup_regs(struct cxl_mem *cxlm)
->  {
-> -	void __iomem *base;
->  	u32 regloc_size, regblocks;
->  	int regloc, i, n_maps, ret = 0;
->  	struct device *dev = cxlm->dev;
-> @@ -475,12 +476,12 @@ static int cxl_pci_setup_regs(struct cxl_mem *cxlm)
->  		if (map->reg_type > CXL_REGLOC_RBI_MEMDEV)
->  			continue;
->  
-> -		base = cxl_pci_map_regblock(pdev, map);
-> -		if (!base)
-> -			return -ENOMEM;
-> +		ret = cxl_map_regblock(pdev, map);
-> +		if (ret)
-> +			return ret;
->  
-> -		ret = cxl_probe_regs(pdev, base + map->block_offset, map);
-> -		cxl_pci_unmap_regblock(pdev, base);
-> +		ret = cxl_probe_regs(pdev, map);
-> +		cxl_unmap_regblock(pdev, map);
->  		if (ret)
->  			return ret;
->  
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.74-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
 > 
+> thanks,
+> 
+> greg k-h
 
+Results from Linaro's test farm.
+No regressions on arm64, arm, x86_64, and i386.
+
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+## Build
+* kernel: 5.10.74-rc1
+* git: ['https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git', 'https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc']
+* git branch: linux-5.10.y
+* git commit: bcc91adcbbcd65b4413d295cb433daa73ffa3700
+* git describe: v5.10.73-23-gbcc91adcbbcd
+* test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/build/v5.10.73-23-gbcc91adcbbcd
+
+## No regressions (compared to v5.10.73)
+
+## No fixes (compared to v5.10.73)
+
+## Test result summary
+total: 91036, pass: 77180, fail: 547, skip: 12462, xfail: 847
+
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 289 total, 289 passed, 0 failed
+* arm64: 39 total, 39 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 38 total, 38 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 39 total, 39 passed, 0 failed
+* parisc: 12 total, 12 passed, 0 failed
+* powerpc: 36 total, 36 passed, 0 failed
+* riscv: 30 total, 30 passed, 0 failed
+* s390: 18 total, 18 passed, 0 failed
+* sh: 24 total, 24 passed, 0 failed
+* sparc: 12 total, 12 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 39 total, 39 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* kselftest-android
+* kselftest-arm64
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+
+Greetings!
+
+Daniel Díaz
+daniel.diaz@linaro.org
+
+-- 
+Linaro LKFT
+https://lkft.linaro.org
