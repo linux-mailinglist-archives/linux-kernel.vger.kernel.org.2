@@ -2,69 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A61E42FA15
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 19:23:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45DC742FA19
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 19:23:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242431AbhJORZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 13:25:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40120 "EHLO
+        id S242342AbhJORZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 13:25:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237519AbhJORYm (ORCPT
+        with ESMTP id S242341AbhJORZA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 13:24:42 -0400
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46B6BC0613EC
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 10:22:23 -0700 (PDT)
-Received: by mail-oi1-x22d.google.com with SMTP id e63so14000152oif.8
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 10:22:23 -0700 (PDT)
+        Fri, 15 Oct 2021 13:25:00 -0400
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33786C061780
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 10:22:24 -0700 (PDT)
+Received: by mail-oi1-x22c.google.com with SMTP id t4so14016868oie.5
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 10:22:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=UQGBuMylvu9UpPG16xaz7lVAENRpwI6V6j3bp4rN4V8=;
-        b=Z32jp32n95zqUqhWkMrX4wuXD7gqEWBUoQ3lI3z+JPu9Fqs8D/TCdHv+/oKcxvuVsG
-         5MY5DZtqjnWF45OCt8tP248VQrelq4DcFwkxYxGoVTrSToE2pBu0O0A0l0XVWNAN3fUG
-         efgStWf1jtSTQp/PZpdavWMCawX29qpoDDGIaIRW+/soU9tgtY1BRlAkbEL0t6dhAk+t
-         tWgdSnaMz4d9TWk166bIDJh2rApyQi8cTisbI8ueK6nyA3KDTjHFCzw/kI+XWq6torNd
-         dg4vCsPgcBUuRrHxqxYrOPAMIheidts6ccxkhsuxY4Hl0wrvmGuY6We0/7bjZ2B5hzDW
-         aRlg==
+        bh=rzyEN2IKemEthFw0BhV4JmnKiL6LJx2wO9/bgd19Ox4=;
+        b=M493+FP1Xy2KglJSyE0b3mrxkEeDorK3QcDt8nbhgmASBjTYSH4ElUGss0AaxmLdMq
+         aSKRC1MxYuiOngTyM0o5zjs2fo2XVFAZOiAWWDwv3q+7niV1iOiuN+09r2k8gT0PMPHc
+         kHieRShGPo6MA1/AFtYVnU++oaorAI6NIM2g4vgO8rXi4eRGZai8dCQUc9qTmGoWwni9
+         AVOYtv1HR/iRoJ8U7aBmfidQA9VrCZzK7ANKrXdUmkmR8ZGMELU24+TuevtMOIJ5U9hF
+         /JmSeOAYjgiX/OdNaqVNbnAYZxqRouj1kqYtcGYG9rdKdds88ya69iuNg5VFh3jCxHaA
+         Dggw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=UQGBuMylvu9UpPG16xaz7lVAENRpwI6V6j3bp4rN4V8=;
-        b=aJr6c1z1MLjcvx9Hl82+VWK6erSuK1f/XU2yfzHlULfnua4jF6QEuXeE55cBR920xI
-         vQjiIQnukmR8mcMBld5lU8u426PPHdzDawBl+5UHuZ0JPB2KyWukLXLejVchpLSI/TnV
-         lNPnwZoVBx3dUG3Kw/dVbDxEcp7ZZa9DmcxJu37frK1hSbhWI+HZUTnlg3vL9LIHlkra
-         hFJOUEioMqBQd7O+SadZicThUfsovj1ffWqD72s9RXkPADSlMwQ7uuOI87IX8a8WgYHR
-         8lLHW8FxAc+XeU1H8IDpjircE/EXlMjdBwVWAja/tnFU//6wQFNEqUWzQpG9+PcxmFpk
-         L3UQ==
-X-Gm-Message-State: AOAM533rvcU1ehPByqaAR7XB0bzkcb6JLJNrbgsn1+rTHHsFneoXCFgN
-        kIsfVYLu+JcibV1E3c4CzOqILg==
-X-Google-Smtp-Source: ABdhPJwa8s1a0Vpv49BVQ3zzH13cErd4RoRJClmYGmIqUl6vc5OL2TMuNEsVurpHsk1CKWr2KKNkXw==
-X-Received: by 2002:a05:6808:1802:: with SMTP id bh2mr8031298oib.142.1634318542710;
-        Fri, 15 Oct 2021 10:22:22 -0700 (PDT)
+        bh=rzyEN2IKemEthFw0BhV4JmnKiL6LJx2wO9/bgd19Ox4=;
+        b=HBThnVcSZnAqQ//txGg0IgDPV4LlWLr8PSRQlleRAqU7LPKFPD2xzJOPm+FZT+78FY
+         RrHxFCwwIHxRvyZdv3ijKC896bR0toAPZTCBBn4ih0+Kdb5NOmv20CI/lwOa31bMWndo
+         FiuJdCDU0Imt0+Q7JqX/fH92eXh+bygygMgBsFTsF8tHsWx5giBEdtzLwzLuuBWkQQv4
+         b4/EVfpX+acTkqae1hkq4WJdPbnIkCvdS1vsfLjHAEC3W4XKnBbtf7VgOvzl+dI0A3AO
+         KZl7aiKSrqDay2GMIukq92C41r5X8U3zKFnCj1UJrUuM3V2VZ+ihl+PbR8nYGg7vjJ2y
+         SNbQ==
+X-Gm-Message-State: AOAM533RtXyEMhKkaRYl2dXCF5SWiPPyYkSwqLqsppnyqn+QJRCgN34Q
+        En7gLoO34WErRQs2qB5TZ/U6gQ==
+X-Google-Smtp-Source: ABdhPJz1rE34/rvD821RRnUmK8MzG4eBOu/mcVUiajrQWknwaD7hxsRnR2OCOahn7vdL+bbnp6zaZw==
+X-Received: by 2002:aca:bd02:: with SMTP id n2mr18572809oif.113.1634318543564;
+        Fri, 15 Oct 2021 10:22:23 -0700 (PDT)
 Received: from builder.lan ([2600:1700:a0:3dc8:3697:f6ff:fe85:aac9])
-        by smtp.gmail.com with ESMTPSA id s206sm1289635oia.33.2021.10.15.10.22.21
+        by smtp.gmail.com with ESMTPSA id s206sm1289635oia.33.2021.10.15.10.22.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Oct 2021 10:22:22 -0700 (PDT)
+        Fri, 15 Oct 2021 10:22:23 -0700 (PDT)
 From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-Cc:     linux-stm32@st-md-mailman.stormreply.com,
-        Rob Herring <robh@kernel.org>,
-        linux-remoteproc@vger.kernel.org,
-        Stefano Stabellini <stefanos@xilinx.com>,
-        linux-kernel@vger.kernel.org,
-        Bruce Ashfield <bruce.ashfield@xilinx.com>,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: (subset) [RFC PATCH 3/7] remoteproc: Remove vdev_to_rvdev and vdev_to_rproc from remoteproc API
-Date:   Fri, 15 Oct 2021 12:22:12 -0500
-Message-Id: <163431847249.251657.1509146684272045901.b4-ty@linaro.org>
+To:     mathieu.poirier@linaro.org, james.quinlan@broadcom.com,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        ohad@wizery.com
+Cc:     kernel-janitors@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: (subset) [PATCH] remoteproc: Fix a memory leak in an error handling path in 'rproc_handle_vdev()'
+Date:   Fri, 15 Oct 2021 12:22:13 -0500
+Message-Id: <163431847249.251657.11309404044031278395.b4-ty@linaro.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20211001101234.4247-4-arnaud.pouliquen@foss.st.com>
-References: <20211001101234.4247-1-arnaud.pouliquen@foss.st.com> <20211001101234.4247-4-arnaud.pouliquen@foss.st.com>
+In-Reply-To: <e6d0dad6620da4fdf847faa903f79b735d35f262.1630755377.git.christophe.jaillet@wanadoo.fr>
+References: <e6d0dad6620da4fdf847faa903f79b735d35f262.1630755377.git.christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -72,17 +67,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 1 Oct 2021 12:12:30 +0200, Arnaud Pouliquen wrote:
-> These both functions are only used by the remoteproc_virtio.
-> There is no reason to expose them in the API.
-> Move the functions in remoteproc_virtio.c
+On Sat, 4 Sep 2021 13:37:32 +0200, Christophe JAILLET wrote:
+> If 'copy_dma_range_map() fails, the memory allocated for 'rvdev' will leak.
+> Move the 'copy_dma_range_map()' call after the device registration so
+> that 'rproc_rvdev_release()' can be called to free some resources.
 > 
+> Also, branch to the error handling path if 'copy_dma_range_map()' instead
+> of a direct return to avoid some other leaks.
 > 
+> [...]
 
 Applied, thanks!
 
-[3/7] remoteproc: Remove vdev_to_rvdev and vdev_to_rproc from remoteproc API
-      commit: 9955548919c47a6987b40d90a30fd56bbc043e7b
+[1/1] remoteproc: Fix a memory leak in an error handling path in 'rproc_handle_vdev()'
+      commit: 0374a4ea7269645c46c3eb288526ea072fa19e79
 
 Best regards,
 -- 
