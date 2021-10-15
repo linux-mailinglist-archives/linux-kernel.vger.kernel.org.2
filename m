@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 507D542E6C7
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 04:47:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF6F242E6C9
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 04:47:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232960AbhJOCtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 22:49:09 -0400
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:54335 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229704AbhJOCtI (ORCPT
+        id S233087AbhJOCtM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 22:49:12 -0400
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:55701 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232833AbhJOCtJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 22:49:08 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R641e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=xianting.tian@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0Us1cFSh_1634266020;
-Received: from localhost(mailfrom:xianting.tian@linux.alibaba.com fp:SMTPD_---0Us1cFSh_1634266020)
+        Thu, 14 Oct 2021 22:49:09 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R981e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=xianting.tian@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0Us1llkI_1634266021;
+Received: from localhost(mailfrom:xianting.tian@linux.alibaba.com fp:SMTPD_---0Us1llkI_1634266021)
           by smtp.aliyun-inc.com(127.0.0.1);
           Fri, 15 Oct 2021 10:47:01 +0800
 From:   Xianting Tian <xianting.tian@linux.alibaba.com>
@@ -23,103 +23,38 @@ Cc:     shile.zhang@linux.alibaba.com, linuxppc-dev@lists.ozlabs.org,
         virtualization@lists.linux-foundation.org,
         linux-kernel@vger.kernel.org,
         Xianting Tian <xianting.tian@linux.alibaba.com>
-Subject: [PATCH v11 0/3] make hvc pass dma capable memory to its backend
-Date:   Fri, 15 Oct 2021 10:46:55 +0800
-Message-Id: <20211015024658.1353987-1-xianting.tian@linux.alibaba.com>
+Subject: [PATCH v11 1/3] tty: hvc: use correct dma alignment size
+Date:   Fri, 15 Oct 2021 10:46:56 +0800
+Message-Id: <20211015024658.1353987-2-xianting.tian@linux.alibaba.com>
 X-Mailer: git-send-email 2.17.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211015024658.1353987-1-xianting.tian@linux.alibaba.com>
+References: <20211015024658.1353987-1-xianting.tian@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear all,
+Use L1_CACHE_BYTES as the dma alignment size, use 'sizeof(long)' as
+dma alignment is wrong.
 
-This patch series make hvc framework pass DMA capable memory to
-put_chars() of hvc backend(eg, virtio-console), and revert commit
-c4baad5029 ("virtio-console: avoid DMA from stack”)
+Signed-off-by: Xianting Tian <xianting.tian@linux.alibaba.com>
+Signed-off-by: Shile Zhang <shile.zhang@linux.alibaba.com>
+---
+ drivers/tty/hvc/hvc_console.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-V1
-virtio-console: avoid DMA from vmalloc area
-https://lkml.org/lkml/2021/7/27/494
+diff --git a/drivers/tty/hvc/hvc_console.c b/drivers/tty/hvc/hvc_console.c
+index 5bb8c4e44..5957ab728 100644
+--- a/drivers/tty/hvc/hvc_console.c
++++ b/drivers/tty/hvc/hvc_console.c
+@@ -49,7 +49,7 @@
+ #define N_OUTBUF	16
+ #define N_INBUF		16
+ 
+-#define __ALIGNED__ __attribute__((__aligned__(sizeof(long))))
++#define __ALIGNED__ __attribute__((__aligned__(L1_CACHE_BYTES)))
+ 
+ static struct tty_driver *hvc_driver;
+ static struct task_struct *hvc_task;
+-- 
+2.17.1
 
-For v1 patch, Arnd Bergmann suggests to fix the issue in the first
-place:
-Make hvc pass DMA capable memory to put_chars()
-The fix suggestion is included in v2.
-
-V2
-[PATCH 1/2] tty: hvc: pass DMA capable memory to put_chars()
-https://lkml.org/lkml/2021/8/1/8
-[PATCH 2/2] virtio-console: remove unnecessary kmemdup()
-https://lkml.org/lkml/2021/8/1/9
-
-For v2 patch, Arnd Bergmann suggests to make new buf part of the
-hvc_struct structure, and fix the compile issue.
-The fix suggestion is included in v3.
-
-V3
-[PATCH v3 1/2] tty: hvc: pass DMA capable memory to put_chars()
-https://lkml.org/lkml/2021/8/3/1347
-[PATCH v3 2/2] virtio-console: remove unnecessary kmemdup()
-https://lkml.org/lkml/2021/8/3/1348
-
-For v3 patch, Jiri Slaby suggests to make 'char c[N_OUTBUF]' part of
-hvc_struct, and make 'hp->outbuf' aligned and use struct_size() to
-calculate the size of hvc_struct. The fix suggestion is included in
-v4.
-
-V4
-[PATCH v4 0/2] make hvc pass dma capable memory to its backend
-https://lkml.org/lkml/2021/8/5/1350
-[PATCH v4 1/2] tty: hvc: pass DMA capable memory to put_chars()
-https://lkml.org/lkml/2021/8/5/1351
-[PATCH v4 2/2] virtio-console: remove unnecessary kmemdup()
-https://lkml.org/lkml/2021/8/5/1352
-
-For v4 patch, Arnd Bergmann suggests to introduce another
-array(cons_outbuf[]) for the buffer pointers next to the cons_ops[]
-and vtermnos[] arrays. This fix included in this v5 patch.
-
-V5
-Arnd Bergmann suggests to use "L1_CACHE_BYTES" as dma alignment,
-use 'sizeof(long)' as dma alignment is wrong. fix it in v6.
-
-V6
-It contains coding error, fix it in v7 and it worked normally
-according to test result.
-
-V7
-Greg KH suggests to add test and code review developer,
-Jiri Slaby suggests to use lockless buffer and fix dma alignment
-in separate patch.
-fix above things in v8. 
-
-V8
-This contains coding error when switch to use new buffer. fix it in v9.
-
-V9
-It didn't make things much clearer, it needs add more comments for new added buf.
-Add use lock to protect new added buffer. fix in v10.
-
-V10
-Remove 'char outchar' and its lock from hvc_struct, adjust hvc_struct and use
-pahole to display the struct layout.
-fix it in v11.
-
-********TEST STEPS*********
-1, config guest console=hvc0
-2, start guest
-3, login guest
-    Welcome to Buildroot
-    buildroot login: root
-    # 
-    # cat /proc/cmdline 
-    console=hvc0 root=/dev/vda rw init=/sbin/init
-    #
-
-drivers/tty/hvc/hvc_console.c | 36 ++++++++++++++++++++---------------
-drivers/tty/hvc/hvc_console.h | 21 +++++++++++++++++++-
-drivers/char/virtio_console.c | 12 ++----------
-3 file changed
