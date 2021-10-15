@@ -2,118 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80BA442EF73
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 13:13:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CC6742EF6F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 13:13:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238348AbhJOLPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 07:15:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38142 "EHLO
+        id S238296AbhJOLPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 07:15:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238318AbhJOLPw (ORCPT
+        with ESMTP id S230031AbhJOLPf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 07:15:52 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF79FC061755;
-        Fri, 15 Oct 2021 04:13:45 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id t9so39409963lfd.1;
-        Fri, 15 Oct 2021 04:13:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=LSI5oUUXkL8OiMsYr9YZBaNLQBQQhatS/MOSPJ3+9wg=;
-        b=gJWR5ocJpGyJ1rfcWDdYR43oHq+aWAa1Fme6AHiJbTqUSSo4BusdfozTCw5qv5Be63
-         KSClH0AbCFmfVB/9Z3MltgnmdoHEhPyx6MY41gc8LkLCYeGDtYsR9HBHEaMfP73EcayH
-         Ji3/L89ZrSk2QnVWfUDSZbqaNeuDxeJADv4kYqTf3w2Y4EROEHJP6ThomtlygFZ6yoOr
-         N34LPXYwB70QNTwLvJRp+okDqvT4oaoAx2wjyOeslde9jtc+zfzyjNxU3p0Tq2CmrTtd
-         txaAFgp34lZg0AsRgmo9Buc/JL9JHot4jSlIRFf3Ex4MHaHHzZY4JfdmSH/l7IKsviHp
-         r3Ww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=LSI5oUUXkL8OiMsYr9YZBaNLQBQQhatS/MOSPJ3+9wg=;
-        b=3Gd0eVE/uZ232GFeauu/7WlJ2IzTqHW9bF9azRh9DmtTkvvy8l6VEqbuESzbn40Vdf
-         y/toLnXT5h5KSXziPCCoZA8Xv4FjCacfmJPvrjkc4tFOFzOUTbaWVCfd0Wha8sBaFOVN
-         xOTL+cTTMYHSIyBhjyrUSul/8bCNI+PXbh1ohz3Q0/q4v3YVbevOwooHoGL6ywdhlRmT
-         AfNH5VpAOJVOnmvqsXAL3kMFrMeu7+kSdopc6nE3ogHxs5x5WDRQMY6QrYqL4JOvKb/K
-         6BIDpfkqoqGqC/YSvrzdSnl5W+ie5Ah3JYyMosL07p095E4kcQH9QB+eX884YxpY3Kgi
-         /S3A==
-X-Gm-Message-State: AOAM5318IxLl7xaFTUj86IkPYsyqzmqiel37OYLMLXLDWWRbnbWD9dhG
-        unjsddXGFfavKO/ccEfVLBc=
-X-Google-Smtp-Source: ABdhPJw77iypYK9/c3uV5UaLuCOp2Nt1OGbb7nWeNVQ88UZsY4IQoCm0pPU1HgtX2gb74GRrjdfB6Q==
-X-Received: by 2002:a05:6512:12c6:: with SMTP id p6mr10393057lfg.40.1634296424290;
-        Fri, 15 Oct 2021 04:13:44 -0700 (PDT)
-Received: from localhost.localdomain (84-72-105-84.dclient.hispeed.ch. [84.72.105.84])
-        by smtp.gmail.com with ESMTPSA id s25sm534647ljd.63.2021.10.15.04.13.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Oct 2021 04:13:43 -0700 (PDT)
-From:   Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>
-Cc:     Nicolas Frattaroli <frattaroli.nicolas@gmail.com>,
-        Peter Geis <pgwipeout@gmail.com>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] arm64: dts: rockchip: enable spdif on Quartz64 A
-Date:   Fri, 15 Oct 2021 13:13:02 +0200
-Message-Id: <20211015111303.1365328-2-frattaroli.nicolas@gmail.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211015111303.1365328-1-frattaroli.nicolas@gmail.com>
-References: <20211015111303.1365328-1-frattaroli.nicolas@gmail.com>
+        Fri, 15 Oct 2021 07:15:35 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D9B5C061570;
+        Fri, 15 Oct 2021 04:13:29 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id D09C92E3;
+        Fri, 15 Oct 2021 13:13:27 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1634296407;
+        bh=tWD9NVmhN9DuN457X3NoNn6LabUJ9LwUAwP/i5PEFtw=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=iQ08DwkZqTD3TFA0XcfpaoqY/qM7OvFGnyex5XYdZBgbRjc3Mr4r4g9g5iEBUzHxy
+         a3Gz4njG/l85k7t0hvCAANtiDs0aMgs/zrKgg99Hev78EVGKr0fRVKTFyFic2amb2L
+         gb6bYlGZMeZZ72mCMhgw2gKvIpnC82e203yyi9kU=
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20211012214703.25433-1-rikard.falkeborn@gmail.com>
+References: <20211012214703.25433-1-rikard.falkeborn@gmail.com>
+Subject: Re: [PATCH] media: imx: Constify static struct v4l2_m2m_ops
+From:   Kieran Bingham <kieran.bingham@ideasonboard.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Steve Longerbeam <slongerbeam@gmail.com>
+Date:   Fri, 15 Oct 2021 12:13:25 +0100
+Message-ID: <163429640538.4171071.8827493049115866396@Monstersaurus>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Co-developed-by: Peter Geis <pgwipeout@gmail.com>
-Signed-off-by: Peter Geis <pgwipeout@gmail.com>
-Signed-off-by: Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
----
- .../boot/dts/rockchip/rk3566-quartz64-a.dts   | 23 +++++++++++++++++++
- 1 file changed, 23 insertions(+)
+Quoting Rikard Falkeborn (2021-10-12 22:47:03)
+> The only usage of m2m_ops is to pass its address to v4l2_m2m_init(),
+> which  takes a pointer to const v4l2_m2m_ops as argument. Make it const
+> to allow the compiler to put it in read-only memory.
+>=20
+> Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts b/arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts
-index a244f7b87e38..d272839405c5 100644
---- a/arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts
-@@ -58,6 +58,25 @@ led-diy {
- 		};
- 	};
- 
-+	spdif_sound: spdif-sound {
-+		compatible = "simple-audio-card";
-+		simple-audio-card,name = "SPDIF";
-+
-+		simple-audio-card,cpu {
-+			sound-dai = <&spdif>;
-+		};
-+
-+		simple-audio-card,codec {
-+			sound-dai = <&spdif_dit>;
-+		};
-+	};
-+
-+	spdif_dit: spdif-dit {
-+		compatible = "linux,spdif-dit";
-+		#sound-dai-cells = <0>;
-+	};
-+
-+
- 	vcc12v_dcin: vcc12v_dcin {
- 		compatible = "regulator-fixed";
- 		regulator-name = "vcc12v_dcin";
-@@ -458,6 +477,10 @@ &sdmmc0 {
- 	status = "okay";
- };
- 
-+&spdif {
-+	status = "okay";
-+};
-+
- &tsadc {
- 	/* tshut mode 0:CRU 1:GPIO */
- 	rockchip,hw-tshut-mode = <1>;
--- 
-2.33.0
+Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
 
+> ---
+>  drivers/staging/media/imx/imx-media-csc-scaler.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/staging/media/imx/imx-media-csc-scaler.c b/drivers/s=
+taging/media/imx/imx-media-csc-scaler.c
+> index eb6da9b9d8ba..1fd39a2fca98 100644
+> --- a/drivers/staging/media/imx/imx-media-csc-scaler.c
+> +++ b/drivers/staging/media/imx/imx-media-csc-scaler.c
+> @@ -820,7 +820,7 @@ static const struct v4l2_file_operations ipu_csc_scal=
+er_fops =3D {
+>         .mmap           =3D v4l2_m2m_fop_mmap,
+>  };
+> =20
+> -static struct v4l2_m2m_ops m2m_ops =3D {
+> +static const struct v4l2_m2m_ops m2m_ops =3D {
+>         .device_run     =3D device_run,
+>         .job_abort      =3D job_abort,
+>  };
+> --=20
+> 2.33.0
+>
