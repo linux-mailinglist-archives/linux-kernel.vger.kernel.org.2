@@ -2,88 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFE2742E621
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 03:28:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA95742E5C5
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 03:14:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232242AbhJOBaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 21:30:06 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:30303 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231871AbhJOBaF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 21:30:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1634261280; x=1665797280;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=/8ELnxm3qwPuqI4ajB9klaDzyOwohX5IHI+2TL0f6Ng=;
-  b=e4SvXk4o5cglvEADYl2RCuS9TsMPsw0JmribBqxUbcmZVoK88pwUYnXB
-   2MH6XAU4BQQw7Yh0bJB1Wh51vDNOJiGDDk5xuQOk+bhiRHIwEGLgtR5Gk
-   08fST4/GbQa/rvRHYwvIOSGkQcKDD/na7TTIOF5RfFi52Zdx1Rl8TEtpK
-   w=;
-Received: from ironmsg07-lv.qualcomm.com ([10.47.202.151])
-  by alexa-out.qualcomm.com with ESMTP; 14 Oct 2021 18:27:59 -0700
-X-QCInternal: smtphost
-Received: from nalasex01c.na.qualcomm.com ([10.47.97.35])
-  by ironmsg07-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2021 18:27:59 -0700
-Received: from [10.231.205.174] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7; Thu, 14 Oct 2021
- 18:27:57 -0700
-Subject: Re: [RESEND PATCH v1 1/9] spmi: pmic-arb: add a print in cleanup_irq
-To:     Stephen Boyd <sboyd@kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <collinsd@codeaurora.org>, <subbaram@codeaurora.org>,
-        Abhijeet Dharmapurikar <adharmap@codeaurora.org>
-References: <1631860384-26608-1-git-send-email-quic_fenglinw@quicinc.com>
- <1631860384-26608-2-git-send-email-quic_fenglinw@quicinc.com>
- <163406078422.936959.12726677103787301939@swboyd.mtv.corp.google.com>
- <6c91a6ad-0ff2-a431-138a-2ec83f2bfa74@quicinc.com>
- <163415372158.936959.16897606198271075227@swboyd.mtv.corp.google.com>
- <e94d4b54-316e-220e-aaec-f60311c37745@quicinc.com>
- <163426014715.936959.6136985763712059359@swboyd.mtv.corp.google.com>
-From:   Fenglin Wu <quic_fenglinw@quicinc.com>
-Message-ID: <83fa65c8-3442-ee26-22ed-e26b013cca14@quicinc.com>
-Date:   Fri, 15 Oct 2021 09:27:55 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S231847AbhJOBQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 21:16:29 -0400
+Received: from mga02.intel.com ([134.134.136.20]:23823 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229959AbhJOBQ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 21:16:28 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10137"; a="214988210"
+X-IronPort-AV: E=Sophos;i="5.85,374,1624345200"; 
+   d="scan'208";a="214988210"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2021 18:14:22 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,374,1624345200"; 
+   d="scan'208";a="660202696"
+Received: from michael-optiplex-9020.sh.intel.com (HELO localhost) ([10.239.159.182])
+  by orsmga005.jf.intel.com with ESMTP; 14 Oct 2021 18:14:20 -0700
+Date:   Fri, 15 Oct 2021 09:28:21 +0800
+From:   Yang Weijiang <weijiang.yang@intel.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Yang Weijiang <weijiang.yang@intel.com>, pbonzini@redhat.com,
+        jmattson@google.com, like.xu.linux@gmail.com, vkuznets@redhat.com,
+        wei.w.wang@intel.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 15/15] KVM: x86/cpuid: Advise Arch LBR feature in CPUID
+Message-ID: <20211015012821.GA29942@intel.com>
+References: <1629791777-16430-1-git-send-email-weijiang.yang@intel.com>
+ <1629791777-16430-16-git-send-email-weijiang.yang@intel.com>
+ <YWjE0iQ6fDdJpDfT@google.com>
 MIME-Version: 1.0
-In-Reply-To: <163426014715.936959.6136985763712059359@swboyd.mtv.corp.google.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YWjE0iQ6fDdJpDfT@google.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Oct 15, 2021 at 12:01:22AM +0000, Sean Christopherson wrote:
+> s/Advise/Advertise
+> 
+> On Tue, Aug 24, 2021, Yang Weijiang wrote:
+> > Add Arch LBR feature bit in CPU cap-mask to expose the feature.
+> > Only max LBR depth is supported for guest, and it's consistent
+> > with host Arch LBR settings.
+> > 
+> > Co-developed-by: Like Xu <like.xu@linux.intel.com>
+> > Signed-off-by: Like Xu <like.xu@linux.intel.com>
+> > Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
+> > ---
+> >  arch/x86/kvm/cpuid.c | 33 ++++++++++++++++++++++++++++++++-
+> >  1 file changed, 32 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+> > index 03025eea1524..d98ebefd5d72 100644
+> > --- a/arch/x86/kvm/cpuid.c
+> > +++ b/arch/x86/kvm/cpuid.c
+> > @@ -88,6 +88,16 @@ static int kvm_check_cpuid(struct kvm_cpuid_entry2 *entries, int nent)
+> >  		if (vaddr_bits != 48 && vaddr_bits != 57 && vaddr_bits != 0)
+> >  			return -EINVAL;
+> >  	}
+> > +	best = cpuid_entry2_find(entries, nent, 0x1c, 0);
+> > +	if (best) {
+> > +		unsigned int eax, ebx, ecx, edx;
+> > +
+> > +		/* Reject user-space CPUID if depth is different from host's.*/
+> 
+> Why disallow this?  I don't see why it would be illegal for userspace to specify
+> fewer LBRs, and KVM should darn well verify that any MSRs it's exposing to the
+> guest actually exist.
+Hi, Sean,
+Thanks for the comments!
+The treatment for LBR depth is a bit special, only the host value can be
+supported now, i.e., 32. If userspace set the value other that 32, would like
+to notify it as early as possible.
+Do you want to remove the check here and correct the invalid setting silently when
+guest is querying CPUID?
 
-On 10/15/2021 9:09 AM, Stephen Boyd wrote:
-> Quoting Fenglin Wu (2021-10-13 19:26:55)
->> On 10/14/2021 3:35 AM, Stephen Boyd wrote:
->>> Quoting Fenglin Wu (2021-10-12 21:15:42)
->>>> On 10/13/2021 1:46 AM, Stephen Boyd wrote:
->>>>> Quoting Fenglin Wu (2021-09-16 23:32:56)
->>>>>> From: Abhijeet Dharmapurikar <adharmap@codeaurora.org>
->>>>>>
->>>>>> The cleanup_irq() was meant to clear and mask interrupts that were
->>>>>> left enabled in the hardware but there was no interrupt handler
->>>>>> registered for it. Add an error print when it gets invoked.
->>>>> Why? Don't we get the genirq spurious irq message in this scenario?
->>>> Thanks for reviewing the change.
->>>>
->>>> No, there is no existing message printed out in this special case ( IRQ
->>>> fired for not registered interrupt).
->>> Ah I see so the irq doesn't have a flow handler? Shouldn't you call
->>> handle_bad_irq() in this case so we get a irq descriptor print?
->> In such case, the irq number is not valid and there won't be a valid
->> irq_desc, hence it's not possible to call handle_bad_irq() here.
-> I mean handle_bad_irq() on the irqdesc for the spmi pmic arb chained
-> irq. Because things are not good with the chained irq.
-Okay, how about this, Update periph_interrupt() function with a return
-value, and return -EINVAL once an invalid IRQ is detected. In
-pmic_arb_chained_irq(), call handle_bad_irq() if periph_interrupt()
-returned -EINVAL.
+> 
+> > +		cpuid_count(0x1c, 0, &eax, &ebx, &ecx, &edx);
+> > +
+> > +		if ((best->eax & 0xff) != BIT(fls(eax & 0xff) - 1))
+> > +			return -EINVAL;
+> > +	}
+> >  
+> >  	return 0;
+> >  }
