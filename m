@@ -2,101 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A6AA42EBFD
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 10:23:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB4AC42EC0C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 10:23:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237065AbhJOIZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 04:25:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54662 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235337AbhJOIYr (ORCPT
+        id S237096AbhJOIZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 04:25:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:51096 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237104AbhJOIZH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 04:24:47 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D965DC06178C
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 01:22:19 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id b188so1913789iof.8
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 01:22:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=rf85IIrYDoX56EbvJwzXLS38sc5yj7QH4axMImYh7js=;
-        b=n3SmbojP6uzhIIBRVEZYykEfaLGU/2FyaEIqbjys7FVjHBDuiBtrz/o0kbB/24n7iT
-         csqbeBlz72+T7buAqi9plb+D05DJf1PAFXXaYQth34bQB1SXQtdmmObscR48dy5tGM8w
-         IQ+KB5QI4Mtn1CS0aQDTJozCjG12hopsf3VoGD9VN6n53lANSIxqiHmBqr14tJKRYBzT
-         yN6vohcA3z8Ze/KBVZZR5ZKoSSDjpVPCyA28FmwQaXmqdi9D2PxkaD1swAdLLjvw02kG
-         yCKusfmGXNaV//JK7AyxD3JumSB4jLb0UnazIqVWU2XN+al6ULvAyamn0KLq2nTLfTq2
-         GZIg==
+        Fri, 15 Oct 2021 04:25:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634286180;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XcA/AKdnJAyfY5MWpoSYVc+I5H9/vFXIYe/jlFy9tUs=;
+        b=B9PSHY+H3pBUZI75BG4/g5+MJ571rd0c5R1dMxWDfFztRnAL8vwvQrz/sK5vN/G/feNNNT
+        7lwJ2M55otDgNVOrSHEqhn/twajFrOu8gPNxwj8pruODNKAwFfMVWwt9s5EJ8wsovAlK4Q
+        BgcUZ7+rxApw54z1ZuQ0PZmIvkDq0F0=
+Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com
+ [209.85.214.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-424-TM-0xB3KO8uupdVwbF41pw-1; Fri, 15 Oct 2021 04:22:59 -0400
+X-MC-Unique: TM-0xB3KO8uupdVwbF41pw-1
+Received: by mail-pl1-f197.google.com with SMTP id y13-20020a1709029b8d00b0013dc7c668e2so3591562plp.16
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 01:22:59 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=rf85IIrYDoX56EbvJwzXLS38sc5yj7QH4axMImYh7js=;
-        b=grVf55+yW4rzQdFayOVHUo7IcITyupfC23/u5TySinrSmI0iN+eNzJzVX7YEara0rU
-         LOHxKXOjjgZbZHXuYVMtfTZgd//KlfQNXX/w62YXZ0FedKtROgyCXHDTtT4Uml9g0Cq3
-         BMVI2kTxE0IdUNuw6fj7vP3dtlBkdUhNZv5tMO2TST1WL+FNroVeSM4fgarZvhVBTE2e
-         CK7Scl5D3m6oFQxWQfph4JiOmkr+wEEgSNgJBMpe/j3z5/MlitxqnTdyMlSWpnkoZD9w
-         ZXuGfhM8D2OqQgD76pq1cKRCfAs89zoqVlp4PHK1Mx6Nl2JfP246rHdU/2G4wshB8nJb
-         /y4g==
-X-Gm-Message-State: AOAM530TcpB2oYTMMWbAzmT7DDnKI4W5t0qKsFvqB0V+3P/iAi2OXkHh
-        5x03275WUPz8GXm9E3LagcKlV5WeJzL6CP2oAig=
-X-Google-Smtp-Source: ABdhPJwbxXt3mChrNac2IaoGhBb9UDVvRSxxM5aIVZkdeLYFWzyRCXjfasFEraNgzZBr0CMqgLtT60xxb3L9aX1sMAU=
-X-Received: by 2002:a5d:9d56:: with SMTP id k22mr2737038iok.177.1634286139129;
- Fri, 15 Oct 2021 01:22:19 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=XcA/AKdnJAyfY5MWpoSYVc+I5H9/vFXIYe/jlFy9tUs=;
+        b=0w6irTwy2XitMBZWhQkBSUoo1FGeDqJw9QzR6Od6DD2fLjq86pmHK0PiD/e3FSd70Y
+         FpMkpYjNqppl6X2Znjc0VJsKQ3enNHcOoH/QM9WaS0Pt3NAlrusCrX8XvkJbbOorTKnK
+         0G16Y7dY5qAXplrlpa3ytxClqISDkMfAh1QZZCXVZ5Hfxd0vv4ecVTWn48D/mg9T1toC
+         vJJJAd0N/3KqohJegqEkChlqg82K/2+KbFlc9El1Vt2pKWsBtKNtSB216wzWIRTEkHEX
+         ftYrz5QAGydrwOoqe1SAomkAD2sSVVU5ManfvlOk/LcvfIaCMlNPjO4re4DzLHxTB1qM
+         cStg==
+X-Gm-Message-State: AOAM5302UnrK/fWJcEBgFSdQIwMz63qvai9boNoswvGGq2w0ThnyK2OS
+        nhfd/EbWwcXeZ+cDAryou70FerX2FykqQfe/t54WOA4zNhS3GT6q+mbH/bSD7Ait/BtLs200P0k
+        Q5yk2/1stjrGAkrOjgZYG4voN
+X-Received: by 2002:a62:3893:0:b0:44b:9369:5de5 with SMTP id f141-20020a623893000000b0044b93695de5mr10422265pfa.40.1634286178115;
+        Fri, 15 Oct 2021 01:22:58 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz9xNgyFYLdtunayxJlaElANQTbK2Vwxt3HZMQjMl+A6afFTAZ2n7HSq2zfQBFbsHEzgY7crQ==
+X-Received: by 2002:a62:3893:0:b0:44b:9369:5de5 with SMTP id f141-20020a623893000000b0044b93695de5mr10422247pfa.40.1634286177886;
+        Fri, 15 Oct 2021 01:22:57 -0700 (PDT)
+Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id e12sm4288876pfl.67.2021.10.15.01.22.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Oct 2021 01:22:57 -0700 (PDT)
+Subject: Re: [PATCH v5 4/8] vdpa: add new callback get_vq_num_min in
+ vdpa_config_ops
+To:     Wu Zongyong <wuzongyong@linux.alibaba.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, mst@redhat.com
+Cc:     wei.yang1@linux.alibaba.com
+References: <cover.1632882380.git.wuzongyong@linux.alibaba.com>
+ <cover.1634281805.git.wuzongyong@linux.alibaba.com>
+ <25435d5cde12f298133196e866662b0ef2225205.1634281805.git.wuzongyong@linux.alibaba.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <e658c9e3-9949-6451-c555-a3ffbe1568db@redhat.com>
+Date:   Fri, 15 Oct 2021 16:22:54 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-Received: by 2002:a05:6e02:17cb:0:0:0:0 with HTTP; Fri, 15 Oct 2021 01:22:18
- -0700 (PDT)
-Reply-To: mr.sawadogomichel1@gmail.com
-From:   "Mr.Sawadogo Michel" <usmanmushi2018@gmail.com>
-Date:   Fri, 15 Oct 2021 01:22:18 -0700
-Message-ID: <CAAF7X7-iGRikEw_2H0BSbt_d3p+5vFfovdXJU4_s1qw=-E6ukg@mail.gmail.com>
-Subject: Hello Dear Friend
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <25435d5cde12f298133196e866662b0ef2225205.1634281805.git.wuzongyong@linux.alibaba.com>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Dear Friend,
 
-My name is Mr.Sawadogo Michel. I have decided to seek a confidential
-co-operation  with you in the execution of the deal described
-here-under for our both  mutual benefit and I hope you will keep it a
-top secret because of the nature  of the transaction, During the
-course of our bank year auditing, I discovered  an unclaimed/abandoned
-fund, sum total of {US$19.3 Million United State  Dollars} in the bank
-account that belongs to a Saudi Arabia businessman Who unfortunately
-lost his life and entire family in a Motor Accident.
+ÔÚ 2021/10/15 ÏÂÎç3:14, Wu Zongyong Ð´µÀ:
+> This callback is optional. For vdpa devices that not support to change
+> virtqueue size, get_vq_num_min and get_vq_num_max will return the same
+> value, so that users can choose a correct value for that device.
+>
+> Suggested-by: Jason Wang <jasowang@redhat.com>
+> Signed-off-by: Wu Zongyong <wuzongyong@linux.alibaba.com>
 
-Now our bank has been waiting for any of the relatives to come-up for
-the claim but nobody has done that. I personally has been unsuccessful
-in locating any of the relatives, now, I sincerely seek your consent
-to present you as the next of kin / Will Beneficiary to the deceased
-so that the proceeds of this account valued at {US$19.3 Million United
-State Dollars} can be paid to you, which we will share in these
-percentages ratio, 60% to me and 40% to you. All I request is your
-utmost sincere co-operation; trust and maximum confidentiality to
-achieve this project successfully. I have carefully mapped out the
-moralities for execution of this transaction under a legitimate
-arrangement to protect you from any breach of the law both in your
-country and here in Burkina Faso when the fund is being transferred to
-your bank account.
 
-I will have to provide all the relevant document that will be
-requested to indicate that you are the rightful beneficiary of this
-legacy and our bank will release the fund to you without any further
-delay, upon your consideration and acceptance of this offer, please
-send me the following information as stated below so we can proceed
-and get this fund transferred to your designated bank account
-immediately.
+Acked-by: Jason Wang <jasowang@redhat.com>
 
--Your Full Name:
--Your Contact Address:
--Your direct Mobile telephone Number:
--Your Date of Birth:
--Your occupation:
 
-I await your swift response and re-assurance.
+> ---
+>   include/linux/vdpa.h | 4 ++++
+>   1 file changed, 4 insertions(+)
+>
+> diff --git a/include/linux/vdpa.h b/include/linux/vdpa.h
+> index a896ee021e5f..30864848950b 100644
+> --- a/include/linux/vdpa.h
+> +++ b/include/linux/vdpa.h
+> @@ -171,6 +171,9 @@ struct vdpa_map_file {
+>    * @get_vq_num_max:		Get the max size of virtqueue
+>    *				@vdev: vdpa device
+>    *				Returns u16: max size of virtqueue
+> + * @get_vq_num_min:		Get the min size of virtqueue (optional)
+> + *				@vdev: vdpa device
+> + *				Returns u16: min size of virtqueue
+>    * @get_device_id:		Get virtio device id
+>    *				@vdev: vdpa device
+>    *				Returns u32: virtio device id
+> @@ -266,6 +269,7 @@ struct vdpa_config_ops {
+>   	void (*set_config_cb)(struct vdpa_device *vdev,
+>   			      struct vdpa_callback *cb);
+>   	u16 (*get_vq_num_max)(struct vdpa_device *vdev);
+> +	u16 (*get_vq_num_min)(struct vdpa_device *vdev);
+>   	u32 (*get_device_id)(struct vdpa_device *vdev);
+>   	u32 (*get_vendor_id)(struct vdpa_device *vdev);
+>   	u8 (*get_status)(struct vdpa_device *vdev);
 
-Best regards,
-Mr.Sawadogo Michel.
