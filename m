@@ -2,191 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B936642FEAF
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 01:30:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B700742FEF1
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 01:38:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243518AbhJOXcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 19:32:51 -0400
-Received: from mga06.intel.com ([134.134.136.31]:18906 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243501AbhJOXcu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 19:32:50 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10138"; a="288867325"
-X-IronPort-AV: E=Sophos;i="5.85,376,1624345200"; 
-   d="scan'208";a="288867325"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2021 16:30:43 -0700
-X-IronPort-AV: E=Sophos;i="5.85,376,1624345200"; 
-   d="scan'208";a="718282802"
-Received: from dwillia2-desk3.jf.intel.com (HELO dwillia2-desk3.amr.corp.intel.com) ([10.54.39.25])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2021 16:30:43 -0700
-Subject: [PATCH v6 07/10] cxl/pci: Split cxl_pci_setup_regs()
-From:   Dan Williams <dan.j.williams@intel.com>
-To:     linux-cxl@vger.kernel.org
-Cc:     Ben Widawsky <ben.widawsky@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Fri, 15 Oct 2021 16:30:42 -0700
-Message-ID: <163434053788.914258.18412599112859205220.stgit@dwillia2-desk3.amr.corp.intel.com>
-In-Reply-To: <163379787433.692348.2451270397309803556.stgit@dwillia2-desk3.amr.corp.intel.com>
-References: <163379787433.692348.2451270397309803556.stgit@dwillia2-desk3.amr.corp.intel.com>
-User-Agent: StGit/0.18-3-g996c
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        id S235740AbhJOXkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 19:40:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40536 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232515AbhJOXkX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 19:40:23 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17A3DC061570
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 16:38:16 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id t7-20020a258387000000b005b6d7220c79so12863980ybk.16
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 16:38:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=LgZx2gyU7+brRv5aiN0oii+nN50bf2cC7za5oQ9rp8U=;
+        b=PLYjtcfo6gK6CFeWjXpE8xbQDQwDhU9poRm7tfVdSwucK14C58F2qlAJyifG2TETMZ
+         xCS1MK+g2ziKWxjBBndKXROcdahBsjMq+l4zuSCs4zQUpcbMQtptwde/OjouuJc08DMX
+         NmyE7hX5uj+KcQqMH2F9IyRGnc7exCPAAMrBmVYbdvm8Rd/kHHa3XzFvZQ89nQQndkmW
+         1pREFIuxdM+StPhYs7Oeu3/0GIMoLw5dC8ENcbYzk5soyfpJLgTP7yrFL96S7qhiS6La
+         dSHtJE/cC6IIqlQ5mvUerca3ClSj+4jcrptvTKP6FjlXA/PJF9eYIN1shNGZQSugbFAz
+         OWkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=LgZx2gyU7+brRv5aiN0oii+nN50bf2cC7za5oQ9rp8U=;
+        b=LRPj/5AqDpKqBUtAWWSaFFc6XNidb8739myN1cqNrpdAd2fKYmO60rqHWKN28XGcCy
+         kb8MQjTmTZrwBtJaejj4rikAhupoN5lkCjykDNAhuUOpZGdiNUVSoFmfIkdjwDSh6icu
+         fel4Rei0VvuPEi9X+LJGcXKrZuHOIMxv3ccCWbGpKJblBae8y9ZZlw+qR3rR9zLF5W92
+         u0dPI1kWy4JoVR1mYDWNO1QARDmfzKGLiUhD7YdI5+uDy1R5WECDlKrWj62ZtfVDdrEu
+         bhBX0PQtEmGIniAOpqdLoKB0YmAI4x7ot62fVEVD7UZQun80CI7KPp2/uD1AkQdaTQul
+         0I8Q==
+X-Gm-Message-State: AOAM533v3JtswcvIik1HfcB83DOus5pyivB3O4EVltH8RBXiSEjV2OXp
+        qRyWJNsWA69JKdw3EnDiG3vDJYh2bQ==
+X-Google-Smtp-Source: ABdhPJxEDGdVVMenm/sX8xOmG9IFsHUV1PDfzHRM1HesKJwF9WfDiTdctWGq2QGDt8ymMQeubkzAlrcVoA==
+X-Received: from ava-linux2.mtv.corp.google.com ([2620:15c:211:200:b298:286b:4728:da92])
+ (user=tkjos job=sendgmr) by 2002:a25:6150:: with SMTP id v77mr15450286ybb.530.1634341095202;
+ Fri, 15 Oct 2021 16:38:15 -0700 (PDT)
+Date:   Fri, 15 Oct 2021 16:38:11 -0700
+Message-Id: <20211015233811.3532235-1-tkjos@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
+Subject: [PATCH] binder: don't detect sender/target during buffer cleanup
+From:   Todd Kjos <tkjos@google.com>
+To:     tkjos@google.com, gregkh@linuxfoundation.org, christian@brauner.io,
+        arve@android.com, jannh@google.com, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org, maco@google.com
+Cc:     joel@joelfernandes.org, kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ben Widawsky <ben.widawsky@intel.com>
+When freeing txn buffers, binder_transaction_buffer_release()
+attempts to detect whether the current context is the target by
+comparing current->group_leader to proc->tsk. This is an unreliable
+test. Instead explicitly pass an 'is_failure' boolean.
 
-In preparation for moving parts of register mapping to cxl_core, split
-cxl_pci_setup_regs() into a helper that finds register blocks,
-(cxl_find_regblock()), and a generic wrapper that probes the precise
-register sets within a block (cxl_setup_regs()).
+Detecting the sender was being used as a way to tell if the
+transaction failed to be sent.  When cleaning up after
+failing to send a transaction, there is no need to close
+the fds associated with a BINDER_TYPE_FDA object. Now
+'is_failure' can be used to accurately detect this case.
 
-Move the actual mapping (cxl_map_regs()) of the only register-set that
-cxl_pci cares about (memory device registers) up a level from the former
-cxl_pci_setup_regs() into cxl_pci_probe().
-
-With this change the unused component registers are no longer mapped,
-but the helpers are primed to move into the core.
-
-[djbw: drop cxl_map_regs() for component registers]
-
-Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
-[djbw: rebase on the cxl_register_map refactor]
-Reviewed-by: Ira Weiny <ira.weiny@intel.com>
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+Fixes: 44d8047f1d87 ("binder: use standard functions to allocate fds")
+Signed-off-by: Todd Kjos <tkjos@google.com>
 ---
-Changes since v3:
-- fixup grammar in kernel-doc for cxl_find_regblock() (Jonathan)
+ drivers/android/binder.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
- drivers/cxl/pci.c |   73 +++++++++++++++++++++++++++--------------------------
- 1 file changed, 37 insertions(+), 36 deletions(-)
-
-diff --git a/drivers/cxl/pci.c b/drivers/cxl/pci.c
-index 7d5e5548b316..691a4e59ad8b 100644
---- a/drivers/cxl/pci.c
-+++ b/drivers/cxl/pci.c
-@@ -433,72 +433,69 @@ static void cxl_decode_regblock(u32 reg_lo, u32 reg_hi,
+diff --git a/drivers/android/binder.c b/drivers/android/binder.c
+index 9edacc8b9768..fe4c3b49eec1 100644
+--- a/drivers/android/binder.c
++++ b/drivers/android/binder.c
+@@ -1870,7 +1870,7 @@ static void binder_transaction_buffer_release(struct binder_proc *proc,
+ 		binder_dec_node(buffer->target_node, 1, 0);
+ 
+ 	off_start_offset = ALIGN(buffer->data_size, sizeof(void *));
+-	off_end_offset = is_failure ? failed_at :
++	off_end_offset = is_failure && failed_at ? failed_at :
+ 				off_start_offset + buffer->offsets_size;
+ 	for (buffer_offset = off_start_offset; buffer_offset < off_end_offset;
+ 	     buffer_offset += sizeof(binder_size_t)) {
+@@ -1956,9 +1956,8 @@ static void binder_transaction_buffer_release(struct binder_proc *proc,
+ 			binder_size_t fd_buf_size;
+ 			binder_size_t num_valid;
+ 
+-			if (proc->tsk != current->group_leader) {
++			if (is_failure) {
+ 				/*
+-				 * Nothing to do if running in sender context
+ 				 * The fd fixups have not been applied so no
+ 				 * fds need to be closed.
+ 				 */
+@@ -3185,6 +3184,7 @@ static void binder_transaction(struct binder_proc *proc,
+  * binder_free_buf() - free the specified buffer
+  * @proc:	binder proc that owns buffer
+  * @buffer:	buffer to be freed
++ * @is_failure:	failed to send transaction
+  *
+  * If buffer for an async transaction, enqueue the next async
+  * transaction from the node.
+@@ -3194,7 +3194,7 @@ static void binder_transaction(struct binder_proc *proc,
+ static void
+ binder_free_buf(struct binder_proc *proc,
+ 		struct binder_thread *thread,
+-		struct binder_buffer *buffer)
++		struct binder_buffer *buffer, bool is_failure)
+ {
+ 	binder_inner_proc_lock(proc);
+ 	if (buffer->transaction) {
+@@ -3222,7 +3222,7 @@ binder_free_buf(struct binder_proc *proc,
+ 		binder_node_inner_unlock(buf_node);
+ 	}
+ 	trace_binder_transaction_buffer_release(buffer);
+-	binder_transaction_buffer_release(proc, thread, buffer, 0, false);
++	binder_transaction_buffer_release(proc, thread, buffer, 0, is_failure);
+ 	binder_alloc_free_buf(&proc->alloc, buffer);
  }
  
- /**
-- * cxl_pci_setup_regs() - Setup necessary MMIO.
-- * @cxlm: The CXL memory device to communicate with.
-+ * cxl_find_regblock() - Locate register blocks by type
-+ * @pdev: The CXL PCI device to enumerate.
-+ * @type: Register Block Indicator id
-+ * @map: Enumeration output, clobbered on error
-  *
-- * Return: 0 if all necessary registers mapped.
-+ * Return: 0 if register block enumerated, negative error code otherwise
-  *
-- * A memory device is required by spec to implement a certain set of MMIO
-- * regions. The purpose of this function is to enumerate and map those
-- * registers.
-+ * A CXL DVSEC may point to one or more register blocks, search for them
-+ * by @type.
-  */
--static int cxl_pci_setup_regs(struct cxl_mem *cxlm)
-+static int cxl_find_regblock(struct pci_dev *pdev, enum cxl_regloc_type type,
-+			     struct cxl_register_map *map)
- {
- 	u32 regloc_size, regblocks;
--	int regloc, i, n_maps, ret = 0;
--	struct device *dev = cxlm->dev;
--	struct pci_dev *pdev = to_pci_dev(dev);
--	struct cxl_register_map *map, maps[CXL_REGLOC_RBI_TYPES];
-+	int regloc, i;
+@@ -3424,7 +3424,7 @@ static int binder_thread_write(struct binder_proc *proc,
+ 				     proc->pid, thread->pid, (u64)data_ptr,
+ 				     buffer->debug_id,
+ 				     buffer->transaction ? "active" : "finished");
+-			binder_free_buf(proc, thread, buffer);
++			binder_free_buf(proc, thread, buffer, false);
+ 			break;
+ 		}
  
- 	regloc = cxl_pci_dvsec(pdev, PCI_DVSEC_ID_CXL_REGLOC_DVSEC_ID);
--	if (!regloc) {
--		dev_err(dev, "register location dvsec not found\n");
-+	if (!regloc)
- 		return -ENXIO;
--	}
- 
--	/* Get the size of the Register Locator DVSEC */
- 	pci_read_config_dword(pdev, regloc + PCI_DVSEC_HEADER1, &regloc_size);
- 	regloc_size = FIELD_GET(PCI_DVSEC_HEADER1_LENGTH_MASK, regloc_size);
- 
- 	regloc += PCI_DVSEC_ID_CXL_REGLOC_BLOCK1_OFFSET;
- 	regblocks = (regloc_size - PCI_DVSEC_ID_CXL_REGLOC_BLOCK1_OFFSET) / 8;
- 
--	for (i = 0, n_maps = 0; i < regblocks; i++, regloc += 8) {
-+	for (i = 0; i < regblocks; i++, regloc += 8) {
- 		u32 reg_lo, reg_hi;
- 
- 		pci_read_config_dword(pdev, regloc, &reg_lo);
- 		pci_read_config_dword(pdev, regloc + 4, &reg_hi);
- 
--		map = &maps[n_maps];
- 		cxl_decode_regblock(reg_lo, reg_hi, map);
- 
--		/* Ignore unknown register block types */
--		if (map->reg_type > CXL_REGLOC_RBI_MEMDEV)
--			continue;
-+		if (map->reg_type == type)
-+			return 0;
-+	}
- 
--		ret = cxl_map_regblock(pdev, map);
--		if (ret)
--			return ret;
-+	return -ENODEV;
-+}
- 
--		ret = cxl_probe_regs(pdev, map);
--		cxl_unmap_regblock(pdev, map);
--		if (ret)
--			return ret;
-+static int cxl_setup_regs(struct pci_dev *pdev, enum cxl_regloc_type type,
-+			  struct cxl_register_map *map)
-+{
-+	int rc;
- 
--		n_maps++;
--	}
-+	rc = cxl_find_regblock(pdev, type, map);
-+	if (rc)
-+		return rc;
- 
--	for (i = 0; i < n_maps; i++) {
--		ret = cxl_map_regs(cxlm, &maps[i]);
--		if (ret)
--			break;
--	}
-+	rc = cxl_map_regblock(pdev, map);
-+	if (rc)
-+		return rc;
-+
-+	rc = cxl_probe_regs(pdev, map);
-+	cxl_unmap_regblock(pdev, map);
- 
--	return ret;
-+	return rc;
- }
- 
- static int cxl_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- {
-+	struct cxl_register_map map;
- 	struct cxl_memdev *cxlmd;
- 	struct cxl_mem *cxlm;
- 	int rc;
-@@ -518,7 +515,11 @@ static int cxl_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 	if (IS_ERR(cxlm))
- 		return PTR_ERR(cxlm);
- 
--	rc = cxl_pci_setup_regs(cxlm);
-+	rc = cxl_setup_regs(pdev, CXL_REGLOC_RBI_MEMDEV, &map);
-+	if (rc)
-+		return rc;
-+
-+	rc = cxl_map_regs(cxlm, &map);
- 	if (rc)
- 		return rc;
- 
+@@ -4117,7 +4117,7 @@ static int binder_thread_read(struct binder_proc *proc,
+ 			buffer->transaction = NULL;
+ 			binder_cleanup_transaction(t, "fd fixups failed",
+ 						   BR_FAILED_REPLY);
+-			binder_free_buf(proc, thread, buffer);
++			binder_free_buf(proc, thread, buffer, true);
+ 			binder_debug(BINDER_DEBUG_FAILED_TRANSACTION,
+ 				     "%d:%d %stransaction %d fd fixups failed %d/%d, line %d\n",
+ 				     proc->pid, thread->pid,
+-- 
+2.33.0.1079.g6e70778dc9-goog
 
