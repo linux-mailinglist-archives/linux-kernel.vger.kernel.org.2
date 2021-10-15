@@ -2,102 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8027342E560
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 02:45:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE8DA42E569
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 02:45:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234657AbhJOAr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 20:47:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38192 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233304AbhJOArZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 20:47:25 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BEA9C061570
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 17:45:20 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id oa12-20020a17090b1bcc00b0019f715462a8so6037758pjb.3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 17:45:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=P+/y6cfCnkpf4h7nEzOZEu4s3NlJU3OS/ECOtQ/Xuc8=;
-        b=tU/7IJDelI3YP64XCJzPolotjnzzXyoGuhQZ89VgcBkYmC0K44u/Rd0gHVUGe5nIN0
-         HZMM3D8Vs9iyowGN+do61yhmRX3njzckUbJlhHzz/SXTQmG88H5hpJs5v2K4JQ1ZXogA
-         DPqTQTUsojXh+WviX4uPDUOoycPersbnqWebKYohYZGi2q5dwEeDFioq5tXrlaEu3HsV
-         NBBd3RDudIfdHfG/yrZO+I0cVYbeYvxgh9NyYYCw9S4M1V1JVb/dn0YTwRA8v1qZFuJ6
-         ftkAW7PAH2QPhqic/it1IVk7qCxVn3z8p5PeVMcmGU6adaOR3lXSlBhQRmjRxsn4RlKX
-         LrFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=P+/y6cfCnkpf4h7nEzOZEu4s3NlJU3OS/ECOtQ/Xuc8=;
-        b=NkYm2WW7P07Skq88AIji00+QHd5x+HgK3ERAG6ucruhvLRwWeyQneV6e70Ymu1l6Ah
-         eR+ktnfOstisqPvWqwgXBCWSNiMVlhEjE3Zt/VZI7CkLFwSavcyYtB8qPHt4gOj+xTKS
-         h1esiTobt+nLRtP6cCodFRsksCL/vQf4ILVU+6tGhDfk0p+iQR+3GCmtpERIEwFdvHx3
-         UIb6dLBUB7FBBDfl1yK2pUpaNoZm6G4nMzOXFnACnXMPSFmi+DsAwzKu1IbiuTmh/NUO
-         VUXfQue9Zq7FuvBfTSZTZsmVSmDvQSqs2eqCD/J//tAAxeButrI6wpghTg0hyxIaWLsA
-         1eCw==
-X-Gm-Message-State: AOAM531LND5hOnx7WZAE9xZmV9edo8XZNNbA4BHWCAm8MfojWkzK2mVa
-        1XndqxKj7XbGtRNb+23rPWtEvQ==
-X-Google-Smtp-Source: ABdhPJwfa/mi9hyzSxTdd7t58O6VReDwfghkIEXliheIZI+vkt5XSPqVq0DAH0gy13sQzk6Xvj+h5Q==
-X-Received: by 2002:a17:90b:4c4a:: with SMTP id np10mr10077433pjb.233.1634258719594;
-        Thu, 14 Oct 2021 17:45:19 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id s8sm3381246pfh.186.2021.10.14.17.45.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Oct 2021 17:45:18 -0700 (PDT)
-Date:   Fri, 15 Oct 2021 00:45:15 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 05/10] x86/tdx: Handle port I/O
-Message-ID: <YWjPG7h/fzupVPnA@google.com>
-References: <20210922225239.3501262-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210922225239.3501262-6-sathyanarayanan.kuppuswamy@linux.intel.com>
- <c2fa7839-49d5-3e1c-97c4-c1b77e11ef93@amd.com>
- <6cb4efa4-6f40-37f4-8807-e44b2c069021@linux.intel.com>
- <0f2a09ca-b098-03ba-a166-6f31c718220b@amd.com>
+        id S234675AbhJOAr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 20:47:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59014 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233304AbhJOArw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 20:47:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 95BA861139;
+        Fri, 15 Oct 2021 00:45:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634258746;
+        bh=/cGUNPRumW5g4NtZnw/TZ7a5zAOOWtph9g3h6h3+tl8=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=PDLNZVFqTtqdsi7F/5aHfz8OjFU2hoe+4+XEy/wqvWt7D1AGFoStAqarfiKP5SMdz
+         lbIE+NLWRxDJdaPfdzlHF/WRWe84x9eiu8W1DheLHJgqRh5nOCIsyLFmf5KDTVTJOn
+         9xrBuzZuO8OY8x8bQK2J4V2RoQr6/8UQXtNQzdL+hgkrCcw8mPjcnUlFzQn47RvKOs
+         g/RzbVEJbKUjwOFmHH8XkhhQYxN7pT/TDL3CQHN+W/q9j/CHLgn1iYobveKeiG47aH
+         oVSQmDS/kZdfc4rQMVGyXg48eJikByueFcYK0W0/zNkEQKVbpTsLaZpRT2fnGO6l8+
+         69xH9cwt0b5HQ==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0f2a09ca-b098-03ba-a166-6f31c718220b@amd.com>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <4090acf8-c8af-d98c-2121-9fd105365e55@gmail.com>
+References: <20210920181145.19543-1-digetx@gmail.com> <20210920181145.19543-6-digetx@gmail.com> <163425700766.1688384.4481739110941660602@swboyd.mtv.corp.google.com> <4090acf8-c8af-d98c-2121-9fd105365e55@gmail.com>
+Subject: Re: [PATCH v12 05/35] dt-bindings: clock: tegra-car: Document new clock sub-nodes
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-pwm@vger.kernel.org,
+        linux-mmc@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        David Heidelberg <david@ixit.cz>
+To:     Adrian Hunter <adrian.hunter@intel.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        Nishanth Menon <nm@ti.com>, Peter Chen <peter.chen@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Uwe =?utf-8?q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Viresh Kumar <vireshk@kernel.org>
+Date:   Thu, 14 Oct 2021 17:45:45 -0700
+Message-ID: <163425874534.1688384.5636050222516713710@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021, Tom Lendacky wrote:
-> On 9/23/21 12:24 PM, Kuppuswamy, Sathyanarayanan wrote:
-> > Any reason for using sev_enable_key over CC attribute? IMO, CC attribute
-> > exist to generalize the common feature code. My impression is SEV is
-> > specific to AMD code.
+Quoting Dmitry Osipenko (2021-10-14 17:43:49)
+> 15.10.2021 03:16, Stephen Boyd =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> > Quoting Dmitry Osipenko (2021-09-20 11:11:15)
+> >> diff --git a/Documentation/devicetree/bindings/clock/nvidia,tegra20-ca=
+r.yaml b/Documentation/devicetree/bindings/clock/nvidia,tegra20-car.yaml
+> >> index 459d2a525393..f832abb7f11a 100644
+> >> --- a/Documentation/devicetree/bindings/clock/nvidia,tegra20-car.yaml
+> >> +++ b/Documentation/devicetree/bindings/clock/nvidia,tegra20-car.yaml
+> >> @@ -42,6 +42,36 @@ properties:
+> >>    "#reset-cells":
+> >>      const: 1
+> >> =20
+> >> +patternProperties:
+> >> +  "^(sclk)|(pll-[cem])$":
+> >> +    type: object
+> >> +    properties:
+> >> +      compatible:
+> >> +        enum:
+> >> +          - nvidia,tegra20-sclk
+> >> +          - nvidia,tegra30-sclk
+> >> +          - nvidia,tegra30-pllc
+> >> +          - nvidia,tegra30-plle
+> >> +          - nvidia,tegra30-pllm
+> >> +
+> >> +      operating-points-v2: true
+> >> +
+> >> +      clocks:
+> >> +        items:
+> >> +          - description: node's clock
+> >> +
+> >> +      power-domains:
+> >> +        maxItems: 1
+> >> +        description: phandle to the core SoC power domain
+> >=20
+> > Is this done to associate the power domain with a particular clk? And an
+> > OPP table with a particular clk?
+>=20
+> Yes
+>=20
 
-Unless CC attributes have static_<whatever> support, that would add a CMP+Jcc to
-every I/O instruction in the kernel.
-
-> When the SEV series was initially submitted, it originally did an
-> sev_active() check. For various reasons a static key and the
-> sev_key_active() call was requested.
-> 
-> My suggestion was to change the name to something that doesn't have SEV/sev
-> in it that can be used by both SEV and TDX. The sev_enable_key can be moved
-> to a common file (maybe cc_platform.c) and renamed. Then
-> arch/x86/include/asm/io.h can change the #ifdef from CONFIG_AMD_MEM_ENCRYPT
-> to CONFIG_ARCH_HAS_CC_PLATFORM.
-> 
-> Not sure if anyone else feels the same, though, so just my suggestion.
-
-+1 to a static key to gate high volume and/or performance critical things that
-are common to SEV and TDX.
+Ok. Can Ulf/Viresh review this patch series?
