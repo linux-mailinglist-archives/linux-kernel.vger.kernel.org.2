@@ -2,107 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECA5A42FAC5
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 20:07:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0B7442FACB
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 20:14:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242541AbhJOSJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 14:09:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50692 "EHLO
+        id S242546AbhJOSQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 14:16:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242377AbhJOSJ3 (ORCPT
+        with ESMTP id S237653AbhJOSQE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 14:09:29 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73163C061570
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 11:07:22 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id i12so27826398wrb.7
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 11:07:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=nxtq8epWJL/jhmwohXGzfNuEJ0aADKyx5lNAaZVeTp0=;
-        b=yWeEwuasIkiPhkjbn81eCjsbVr2dUyMx0cw0/wClB0RJZWbVFaoJCqOVezrI+EEN57
-         jhu8bq2tYBQmyCZzX6qAXJzgR9b23fwmRd8316N0aSjduPo2isBHBKL24NIGqMP5OB3h
-         YjjgJuQiNRln696MnY/HGV0T4MCAB0d+VLhMkEDUgAWu90N4cBoWYPI9jJvr+gGdtZCx
-         YPgUvo19Xu9dc2nFKfd6ZGfq0Hdy4OKhSWkOtga/hHnkMIodF6CD5KkP6YIDS7JzWeRN
-         +R/eCiui1zoFF8hRwPt4bJ+qSyy+9jLabNiFp+7tm2cA5m8PMGA+zInmWnX0GAc/Y4qh
-         Ikyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nxtq8epWJL/jhmwohXGzfNuEJ0aADKyx5lNAaZVeTp0=;
-        b=inqEcTaShY8S37LLNNWDR+4ICVrd07JrsrHAsogzOE4HmgcRjv1uAlNNxQgzVVhNcX
-         6QXQneUIv4IxbaEAGJusRUFmqL83Ay71PyUo9yo5pxWxvDs3m4jA/hqVTe6mJXFm4Xm7
-         mxg9i1+eRYtflkEJi564AWclRjPJZMSq1UFseTR1fd24YU5D2y20yXVF446xWCAaejQJ
-         ldSaqnzbfdMoYxTH3n+Le86LaZtlRP73rI8nwfHhvRGmvyXGbiwnOc6dncUKpb4hElEh
-         t+vsncfV+X7iODySUeBA3STGj/qHH85FBybnAPM6OgC2ShZgJpazp7XvDpWpjxFINQ7X
-         LIoA==
-X-Gm-Message-State: AOAM531dDJLDVeWsb0oS+OTjTJVNE0dGG1QiGGEoj7qQc09v2CLc6Ju/
-        iPzhMzxCCsU34iGx8+UJj48hMg==
-X-Google-Smtp-Source: ABdhPJzHBqFfgVKb3EVdigfjWR1r041E4GoKwVYBmqQkOwKwzI8aovWBo+6Z7TSYzTDTWw6gC/6pLw==
-X-Received: by 2002:a05:6000:18a3:: with SMTP id b3mr16312728wri.178.1634321241050;
-        Fri, 15 Oct 2021 11:07:21 -0700 (PDT)
-Received: from equinox (2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.a.1.e.e.d.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:dfde:e1a0::2])
-        by smtp.gmail.com with ESMTPSA id j1sm6536340wrb.56.2021.10.15.11.07.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Oct 2021 11:07:20 -0700 (PDT)
-Date:   Fri, 15 Oct 2021 19:07:18 +0100
-From:   Phillip Potter <phil@philpotter.co.uk>
-To:     Michael Straube <straube.linux@gmail.com>
-Cc:     Larry.Finger@lwfinger.net, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org
-Subject: Re: [PATCH 0/7] staging: r8188eu: odm cleanups
-Message-ID: <YWnDVkwcnVEEoxm4@equinox>
-References: <20211015163507.9091-1-straube.linux@gmail.com>
+        Fri, 15 Oct 2021 14:16:04 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEDEEC061570
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 11:13:57 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <l.stach@pengutronix.de>)
+        id 1mbRiJ-0000MK-T4; Fri, 15 Oct 2021 20:13:51 +0200
+Message-ID: <b1c38eb0cbded46d5f3c087e641b18cdb4f500ac.camel@pengutronix.de>
+Subject: Re: [RESEND v2 1/5] PCI: imx6: Encapsulate the clock enable into
+ one standalone function
+From:   Lucas Stach <l.stach@pengutronix.de>
+To:     Richard Zhu <hongxing.zhu@nxp.com>, bhelgaas@google.com,
+        lorenzo.pieralisi@arm.com
+Cc:     linux-pci@vger.kernel.org, linux-imx@nxp.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de
+Date:   Fri, 15 Oct 2021 20:13:50 +0200
+In-Reply-To: <1634277941-6672-2-git-send-email-hongxing.zhu@nxp.com>
+References: <1634277941-6672-1-git-send-email-hongxing.zhu@nxp.com>
+         <1634277941-6672-2-git-send-email-hongxing.zhu@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.4 (3.40.4-1.fc34) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211015163507.9091-1-straube.linux@gmail.com>
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: l.stach@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 15, 2021 at 06:35:00PM +0200, Michael Straube wrote:
-> This series removes:
-> - empty / unused functions from odm.c
-> - two never set / unused fields from odm_dm_struct
-> - the function ODM_CmnInfoPtrArrayHook()
+Am Freitag, dem 15.10.2021 um 14:05 +0800 schrieb Richard Zhu:
+> No function changes, just encapsulate the i.MX PCIe clocks enable
+> operations into one standalone function
 > 
-> Tested on x86_64 with Inter-Tech DMG-02.
-> 
-> Michael Straube (7):
->   staging: r8188eu: remove empty functions from odm.c
->   staging: r8188eu: remove ODM_SingleDualAntennaDefaultSetting()
->   staging: r8188eu: remove GetPSDData()
->   staging: r8188eu: remove ODM_AntselStatistics_88C()
->   staging: r8188eu: pBandType is never set
->   staging: r8188eu: pMacPhyMode is not used
->   staging: r8188eu: remove ODM_CmnInfoPtrArrayHook()
-> 
->  drivers/staging/r8188eu/hal/HalPhyRf_8188e.c  |   2 +-
->  drivers/staging/r8188eu/hal/odm.c             | 144 ------------------
->  drivers/staging/r8188eu/hal/odm_HWConfig.c    |   7 +-
->  drivers/staging/r8188eu/hal/odm_interface.c   |   5 -
->  drivers/staging/r8188eu/hal/rtl8188e_dm.c     |   2 +-
->  .../staging/r8188eu/hal/rtl8188e_hal_init.c   |   5 +-
->  drivers/staging/r8188eu/include/odm.h         |  38 -----
->  .../staging/r8188eu/include/odm_interface.h   |   2 -
->  drivers/staging/r8188eu/include/odm_precomp.h |   2 -
->  9 files changed, 6 insertions(+), 201 deletions(-)
-> 
-> -- 
-> 2.33.0
-> 
+> Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
 
-Dear Michael,
+Reviewed-by: Lucas Stach <l.stach@pengutronix.de>
 
-Looks good to me. Built and tested on my USB-N10 Nano, works well. Many
-thanks.
+> ---
+>  drivers/pci/controller/dwc/pci-imx6.c | 79 ++++++++++++++++-----------
+>  1 file changed, 48 insertions(+), 31 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
+> index 26f49f797b0f..1fa1dba6da81 100644
+> --- a/drivers/pci/controller/dwc/pci-imx6.c
+> +++ b/drivers/pci/controller/dwc/pci-imx6.c
+> @@ -470,38 +470,16 @@ static int imx6_pcie_enable_ref_clk(struct imx6_pcie *imx6_pcie)
+>  	return ret;
+>  }
+>  
+> -static void imx7d_pcie_wait_for_phy_pll_lock(struct imx6_pcie *imx6_pcie)
+> -{
+> -	u32 val;
+> -	struct device *dev = imx6_pcie->pci->dev;
+> -
+> -	if (regmap_read_poll_timeout(imx6_pcie->iomuxc_gpr,
+> -				     IOMUXC_GPR22, val,
+> -				     val & IMX7D_GPR22_PCIE_PHY_PLL_LOCKED,
+> -				     PHY_PLL_LOCK_WAIT_USLEEP_MAX,
+> -				     PHY_PLL_LOCK_WAIT_TIMEOUT))
+> -		dev_err(dev, "PCIe PLL lock timeout\n");
+> -}
+> -
+> -static void imx6_pcie_deassert_core_reset(struct imx6_pcie *imx6_pcie)
+> +static int imx6_pcie_clk_enable(struct imx6_pcie *imx6_pcie)
+>  {
+>  	struct dw_pcie *pci = imx6_pcie->pci;
+>  	struct device *dev = pci->dev;
+>  	int ret;
+>  
+> -	if (imx6_pcie->vpcie && !regulator_is_enabled(imx6_pcie->vpcie)) {
+> -		ret = regulator_enable(imx6_pcie->vpcie);
+> -		if (ret) {
+> -			dev_err(dev, "failed to enable vpcie regulator: %d\n",
+> -				ret);
+> -			return;
+> -		}
+> -	}
+> -
+>  	ret = clk_prepare_enable(imx6_pcie->pcie_phy);
+>  	if (ret) {
+>  		dev_err(dev, "unable to enable pcie_phy clock\n");
+> -		goto err_pcie_phy;
+> +		return ret;
+>  	}
+>  
+>  	ret = clk_prepare_enable(imx6_pcie->pcie_bus);
+> @@ -524,6 +502,51 @@ static void imx6_pcie_deassert_core_reset(struct imx6_pcie *imx6_pcie)
+>  
+>  	/* allow the clocks to stabilize */
+>  	usleep_range(200, 500);
+> +	return 0;
+> +
+> +err_ref_clk:
+> +	clk_disable_unprepare(imx6_pcie->pcie);
+> +err_pcie:
+> +	clk_disable_unprepare(imx6_pcie->pcie_bus);
+> +err_pcie_bus:
+> +	clk_disable_unprepare(imx6_pcie->pcie_phy);
+> +
+> +	return ret;
+> +}
+> +
+> +static void imx7d_pcie_wait_for_phy_pll_lock(struct imx6_pcie *imx6_pcie)
+> +{
+> +	u32 val;
+> +	struct device *dev = imx6_pcie->pci->dev;
+> +
+> +	if (regmap_read_poll_timeout(imx6_pcie->iomuxc_gpr,
+> +				     IOMUXC_GPR22, val,
+> +				     val & IMX7D_GPR22_PCIE_PHY_PLL_LOCKED,
+> +				     PHY_PLL_LOCK_WAIT_USLEEP_MAX,
+> +				     PHY_PLL_LOCK_WAIT_TIMEOUT))
+> +		dev_err(dev, "PCIe PLL lock timeout\n");
+> +}
+> +
+> +static void imx6_pcie_deassert_core_reset(struct imx6_pcie *imx6_pcie)
+> +{
+> +	struct dw_pcie *pci = imx6_pcie->pci;
+> +	struct device *dev = pci->dev;
+> +	int ret;
+> +
+> +	if (imx6_pcie->vpcie && !regulator_is_enabled(imx6_pcie->vpcie)) {
+> +		ret = regulator_enable(imx6_pcie->vpcie);
+> +		if (ret) {
+> +			dev_err(dev, "failed to enable vpcie regulator: %d\n",
+> +				ret);
+> +			return;
+> +		}
+> +	}
+> +
+> +	ret = imx6_pcie_clk_enable(imx6_pcie);
+> +	if (ret) {
+> +		dev_err(dev, "unable to enable pcie clocks\n");
+> +		goto err_clks;
+> +	}
+>  
+>  	/* Some boards don't have PCIe reset GPIO. */
+>  	if (gpio_is_valid(imx6_pcie->reset_gpio)) {
+> @@ -578,13 +601,7 @@ static void imx6_pcie_deassert_core_reset(struct imx6_pcie *imx6_pcie)
+>  
+>  	return;
+>  
+> -err_ref_clk:
+> -	clk_disable_unprepare(imx6_pcie->pcie);
+> -err_pcie:
+> -	clk_disable_unprepare(imx6_pcie->pcie_bus);
+> -err_pcie_bus:
+> -	clk_disable_unprepare(imx6_pcie->pcie_phy);
+> -err_pcie_phy:
+> +err_clks:
+>  	if (imx6_pcie->vpcie && regulator_is_enabled(imx6_pcie->vpcie) > 0) {
+>  		ret = regulator_disable(imx6_pcie->vpcie);
+>  		if (ret)
 
-For whole series:
-Acked-by: Phillip Potter <phil@philpotter.co.uk>
 
-Regards,
-Phil
