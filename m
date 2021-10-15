@@ -2,189 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AD1142F769
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 17:53:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC53342F76A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 17:53:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241040AbhJOPzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 11:55:17 -0400
-Received: from mout.gmx.net ([212.227.17.22]:44995 "EHLO mout.gmx.net"
+        id S241059AbhJOPzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 11:55:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40974 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230236AbhJOPzP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 11:55:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1634313181;
-        bh=+UHew0luVMjbFHLFFxpMVAj6c4oCiqqrwNFkNSmpVnc=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=bNMoRusyJ3ZAITJjBXEGnrF/VZf/Lg1Tc1XGprY/P+wmg7YOSAvz1H0PrrNBvpEw4
-         rRNswxHoPFTOPwrRpArgTEYu+MJCb8p/kj4qqLkHoSg3E8zF9z+Qo563/UY/1Zstc6
-         Fig975eH6tseR0OkPg9TCHQcpcg70i502R2TEUwc=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from titan ([79.150.72.99]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MOiHf-1mNTvO2Jjz-00QBxU; Fri, 15
- Oct 2021 17:53:01 +0200
-Date:   Fri, 15 Oct 2021 17:52:48 +0200
-From:   Len Baker <len.baker@gmx.com>
-To:     Li Fei1 <fei1.li@intel.com>
-Cc:     Len Baker <len.baker@gmx.com>, keescook@chromium.org,
-        gustavoars@kernel.org, linux-hardening@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] virt: acrn: Prefer array_syze and struct_size over open
- coded arithmetic
-Message-ID: <20211015155248.GA3289@titan>
-References: <20211011103902.15638-1-len.baker@gmx.com>
- <20211012013429.GA28284@louislifei-OptiPlex-7050>
+        id S241057AbhJOPzh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 11:55:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 84B47611C3;
+        Fri, 15 Oct 2021 15:53:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634313210;
+        bh=tS7FNEBnAqgSHdk65hsLK29FdzL2hDC78AqH8UwzefQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=OHrT4b+SXSuzTq0H9xDZZZmLV0zTtfVyFhvo0WO+8kDr+LNwOlJwZyu236ozwh1P1
+         z1vxqAjo/G2GZMv/36ip5n1rnG/PrlIJ2DRS4cce8m/X2T+ppbftBvWLTmL+IcoJfO
+         DdhmyBKbUoL/+En8EUTqYo8qKEY6rNc28nYOtMAxpXcI0/ELQaDQ18lojFFS+LggTO
+         ja94yuGAkrgzF81MNoaBGitniK3CZr5Cy0ggPOKEaHXn78wEf+HmmtkLeKOCvIizyi
+         sAQfqUyjIS50kyOm0VLdHCBQm/RE0zUDOfuU+/nPYxu4loQGJ/jebSivyV4SMfCO9w
+         5fLI0WllxY6dg==
+Received: by mail-ed1-f44.google.com with SMTP id 5so9652748edw.7;
+        Fri, 15 Oct 2021 08:53:30 -0700 (PDT)
+X-Gm-Message-State: AOAM531EvUv+o6Gx+uQAr0vaYzUTEIBEjqhszrOd09gfTQ9ACytKwQCy
+        1cIAgsWkZC6Z1VwrQFGIE4CGNv2ZJ2kb9tnbSw==
+X-Google-Smtp-Source: ABdhPJyunKq1cAJC1qKjKHXJiMRTFQMjgAl20IaC76YoHiF4Qkdg9DiyQSuuX7aMF23U9kNTRN7zoPQXaEPnO3vi8No=
+X-Received: by 2002:a17:906:71d4:: with SMTP id i20mr7804418ejk.390.1634313206877;
+ Fri, 15 Oct 2021 08:53:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211012013429.GA28284@louislifei-OptiPlex-7050>
-X-Provags-ID: V03:K1:8I+AheHcTcMLiJ9hfpPED3m8oSKH+eBB1bHCp+r/xQVcTprDcm5
- KBjwwnuV0I8gSMJkr/DGJSkw5Eh17+rMInQaQDotNJwy1e/kdlFWsLwb6BUCPV1DgRreeu/
- 4lN1pSKPBSNicTfDn3rogaqBhNbBziQrLjiaKyqmAOSmYqhmyIrADq5RxNuqrYXhad4gwzO
- 0vzVDRxos3NRV6UgnXjCQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:VPU8bzKmywU=:8hWSVEQaIaHe5wtqLtao/J
- HLmxpJlmhigxNo9PyfGSlvuOZREkvznZNMpECXE/P3iC8febf8b31ZEuyWy6OprJb1J07dO2h
- PUAEa2fQKDUQmzjUd26HvlcWFQ9kbI9Kqtwu4LOt3Iys0RY6ScTPKu+JdHqadjzZ4CNPhaT6j
- dGFmALgUGolB9H2DFL/DcR3NskXry6fmKU90n/Zy4RjuQ4jndk7gM+ONMB9LCmish2ojRelu6
- uk8XZIEjTFEIxbH+XXEejEYnx2SCPIjAAtgkBdK5DZzJeob4Yk33+FiC4WD+rhd/qsM+EyEFy
- jYYnXGmuq/ir7knbSrvFzyIoJzd8TmbY7iorvh2y4komJY/RvarTi7OuOLdEV2WfBRg7aimID
- l40T80Zn5tpBAfjxEf4ZpnXgBr4jXR2x9V6qwK9+29+LIEOfnyvsHJhJKPlWN7Xf5brow9aUw
- BIr3tjQiaJw654tHNNHB2N2aaUgrKlJDtHShSP80Web+vqQxGCf7BNWe4MsFS7n9+tZt/iMXk
- LbWWyRuN9HFdJFRtk3LwIZQDbRNu3yD6hlubhnWcL82IjbqbUTkQayzDmhXwhLUGsygcTyCss
- KNOs7sZZC5JLPtUJ+RuOt/MtFJ8I4Ia+LO170gwOQMG4Z6vRfNVk3Bl7tQP/fBaR9SDUoFXVy
- pFN1S4Q+R3PcbVeMUG6jmxPr+PEsvlhxw6z73ljex/e7WOq/w8WOZEZHyz+Vn1HfJay9iKJHl
- iUZWAXAvJtBvPGaIa65BpRH+pEut8kY84EgDWpOC6MyS0BQtOqa3FAfm/px7McLD/TIGQ/ezK
- r3ClWprt+R3IyGfoqQHeAOhX2eRWUadf/hG6VtanV6EF5dNPlZ/dUXKzdcfzMMdFQcEZK3Lut
- DnxoX3ty7pZ3XCh7C+TKtKtk2mV54ZRlawnpRrmFgofxp9n0W+PyKRk7/UYtHDwd1M/xhMTHp
- FPnKIJWEgrQmxyE+yzYdxBm0QINS3OjUjQVooEyU6KaGkXARKGiRlZ17rf4/IBtwoWt8kdmTV
- Tq2CbOpy5qJm64jQAEY80j8JXSW4gB9fHE+QncHItm7wvrzCDBM0XG+qkPbIeyKWsm8dmcYiI
- qX+ZGYM+UudPmo=
-Content-Transfer-Encoding: quoted-printable
+References: <20210914204800.3945732-1-robh@kernel.org> <20210914204800.3945732-5-robh@kernel.org>
+ <20211014165810.GA39276@lakrids.cambridge.arm.com>
+In-Reply-To: <20211014165810.GA39276@lakrids.cambridge.arm.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Fri, 15 Oct 2021 10:53:15 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqJHfpcvKekEFm-d7rMJ=UNc7dXwfaMMkUWZYsnPg=QNPQ@mail.gmail.com>
+Message-ID: <CAL_JsqJHfpcvKekEFm-d7rMJ=UNc7dXwfaMMkUWZYsnPg=QNPQ@mail.gmail.com>
+Subject: Re: [PATCH v10 4/5] arm64: perf: Enable PMU counter userspace access
+ for perf event
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Honnappa Nagarahalli <honnappa.nagarahalli@arm.com>,
+        Zachary.Leaf@arm.com, Raphael Gault <raphael.gault@arm.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Itaru Kitayama <itaru.kitayama@gmail.com>,
+        Vince Weaver <vincent.weaver@maine.edu>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Li,
-
-On Tue, Oct 12, 2021 at 09:34:29AM +0800, Li Fei1 wrote:
-> On Mon, Oct 11, 2021 at 12:39:02PM +0200, Len Baker wrote:
-> > As noted in the "Deprecated Interfaces, Language Features, Attributes,
-> > and Conventions" documentation [1], size calculations (especially
-> > multiplication) should not be performed in memory allocator (or simila=
-r)
-> > function arguments due to the risk of them overflowing. This could lea=
-d
-> > to values wrapping around and a smaller allocation being made than the
-> > caller was expecting. Using those allocations could lead to linear
-> > overflows of heap memory and other misbehaviors.
-> >
-> > So, use the array_size() helper to do the arithmetic instead of the
-> > argument "count * size" in the vzalloc() function.
-> >
-> > Also, take the opportunity to add a flexible array member of struct
-> > vm_memory_region_op to the vm_memory_region_batch structure. And then,
-> > change the code accordingly and use the struct_size() helper to do the
-> > arithmetic instead of the argument "size + size * count" in the kzallo=
-c
-> > function.
-> >
-> > This code was detected with the help of Coccinelle and audited and fix=
-ed
-> > manually.
-> >
-> > [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#ope=
-n-coded-arithmetic-in-allocator-arguments
-> >
-> > Signed-off-by: Len Baker <len.baker@gmx.com>
+On Thu, Oct 14, 2021 at 11:58 AM Mark Rutland <mark.rutland@arm.com> wrote:
 >
-> Hi Baker
+> Hi Rob,
 >
-> Thanks for helping us to fix this issue. This patch looks good to me.
-> Please add Signed-off-by: Fei Li <fei1.li@intel.com>.
-
-I can't add the "Signed-off-by" tag by myself. However, if you are in the
-path to forward the patch to the mainline (maintainer's tree), you can
-add by yourself the "Signed-off-by" tag before send a "pull" to Linus.
-See [1] for more information.
-
-[1] https://www.kernel.org/doc/html/latest/process/submitting-patches.html=
-#sign-your-work-the-developer-s-certificate-of-origin
-
-If you don't have a maintainer's tree, you can give (as a maintainer) an
-"Acked-by" tag that then I can add to the patch. More info in [2].
-
-[2] https://www.kernel.org/doc/html/latest/process/submitting-patches.html=
-#when-to-use-acked-by-cc-and-co-developed-by
-
-> Only two minor comments.
+> This looks pretty good!
 >
+> I have one largish query below, and otherwise only trivialities that I'm
+> happy to fix up.
 >
-> > ---
-> >  drivers/virt/acrn/acrn_drv.h | 10 ++++++----
-> >  drivers/virt/acrn/mm.c       |  9 ++++-----
-> >  2 files changed, 10 insertions(+), 9 deletions(-)
+> On Tue, Sep 14, 2021 at 03:47:59PM -0500, Rob Herring wrote:
+
+[...]
+
+> >  static inline bool armv8pmu_event_is_chained(struct perf_event *event)
+> >  {
+> >       int idx = event->hw.idx;
+> >       struct arm_pmu *cpu_pmu = to_arm_pmu(event->pmu);
 > >
-> > diff --git a/drivers/virt/acrn/acrn_drv.h b/drivers/virt/acrn/acrn_drv=
-.h
-> > index 1be54efa666c..fcc2e3e5232a 100644
-> > --- a/drivers/virt/acrn/acrn_drv.h
-> > +++ b/drivers/virt/acrn/acrn_drv.h
-> > @@ -48,6 +48,7 @@ struct vm_memory_region_op {
-> >   * @reserved:		Reserved.
-> >   * @regions_num:	The number of vm_memory_region_op.
-> >   * @regions_gpa:	Physical address of a vm_memory_region_op array.
-> > + * @regions_op:		Flexible array of vm_memory_region_op.
-> One Tab please.
+> > -     return !WARN_ON(idx < 0) &&
+> > +     return !(event->hw.flags & PERF_EVENT_FLAG_USER_READ_CNT) &&
+> >              armv8pmu_event_is_64bit(event) &&
+> >              !armv8pmu_has_long_event(cpu_pmu) &&
+> >              (idx != ARMV8_IDX_CYCLE_COUNTER);
+> > @@ -720,6 +726,27 @@ static inline u32 armv8pmu_getreset_flags(void)
+> >       return value;
+>
+> Above this, could we please add:
+>
+> | static inline bool armv8pmu_event_has_user_read(struct perf_event *event)
+> | {
+> |       return event->hw.flags & PERF_EVENT_FLAG_USER_READ_CNT;
+> | }
+>
+> ... and use that where we look at PERF_EVENT_FLAG_USER_READ_CNT?
 
-Sorry, but if I use only one tab, the parameters description are not all
-aligned.
+Sure, but as this is a common flag now, I should probably make that a
+common function in linux/perf_event.h and have x86 code use it too.
 
-> >   *
-> >   * HC_VM_SET_MEMORY_REGIONS uses this structure to manage EPT mapping=
-s of
-> >   * multiple memory regions of a User VM. A &struct vm_memory_region_b=
-atch
-> > @@ -55,10 +56,11 @@ struct vm_memory_region_op {
-> >   * ACRN Hypervisor.
-> >   */
-> >  struct vm_memory_region_batch {
-> > -	u16	vmid;
-> > -	u16	reserved[3];
-> > -	u32	regions_num;
-> > -	u64	regions_gpa;
-> > +	u16				vmid;
-> > +	u16				reserved[3];
-> > +	u32				regions_num;
-> > +	u64				regions_gpa;
-> > +	struct vm_memory_region_op	regions_op[];
-> Please use Whitespace instead of Tab.
-
-Sorry, but I don't understand. Do you prefer something like?:
-
-diff --git a/drivers/virt/acrn/acrn_drv.h b/drivers/virt/acrn/acrn_drv.h
-index fcc2e3e5232a..5663c17ad37c 100644
-=2D-- a/drivers/virt/acrn/acrn_drv.h
-+++ b/drivers/virt/acrn/acrn_drv.h
-@@ -56,11 +56,11 @@ struct vm_memory_region_op {
-  * ACRN Hypervisor.
-  */
- struct vm_memory_region_batch {
--	u16				vmid;
--	u16				reserved[3];
--	u32				regions_num;
--	u64				regions_gpa;
--	struct vm_memory_region_op	regions_op[];
-+	u16			   vmid;
-+	u16			   reserved[3];
-+	u32			   regions_num;
-+	u64			   regions_gpa;
-+	struct vm_memory_region_op regions_op[];
- };
-
- /**
-
-Moreover, for the v2 I will fix the typo "syze->size" in the subject as
-suggested Kees ;)
-
-Regards,
-Len
+Rob
