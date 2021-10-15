@@ -2,175 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8C5442FD85
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 23:35:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1ECB42FD89
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 23:36:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243154AbhJOVh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 17:37:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40994 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238700AbhJOVhw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 17:37:52 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 091A5C061762
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 14:35:46 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id lk8-20020a17090b33c800b001a0a284fcc2so10259348pjb.2
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 14:35:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fXK9I7sL2UAvUUHr680VS0N7hcJaT8a/qC/oAjWAekg=;
-        b=i/plbNWQsfMbAtipP0bedfIRhU9GtT0vQBPBSqxQOXPLHpycgRU2/2eFgrucmm2h2H
-         jyUzWsmXl3g4lj7XR6uQJW5kj6zHZDhfr5oLknCnvhs4hYYOrFP7YzLzzikPK/mnLAUp
-         qzqAv/u7xWCe7UATWzGpSateqcXcucSLev7S0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fXK9I7sL2UAvUUHr680VS0N7hcJaT8a/qC/oAjWAekg=;
-        b=uzT34TcEsmdo8YwjlYHi3Ltfv/i9hDoR0jenI1yyY8RcycemHod8P5JoTRqJPAKKBt
-         i7Zejck68IGSk8V4dlBFtI5yPJH3FFkVU3198MS789pg7V8f30kL2aTHqrWb32anmKUa
-         xjbb8SMEloslk2fJpu7f17hJiyzHdLtbw9zHhUT8p/CDwuGqG9yF1VsaG7ulTNmAcOaw
-         jQDdX3YQUyxor3DWrb/gAY7FAWpp7C6DO9gQTRtkXHkDVulqfI4Gu0EUvvNXBJdXKukh
-         8HbNmgLjJVvsHTTzq81b1CYTcpJJIkmQNE6wikCep61ZBRwxYbUder7YtnOE8zBaigcL
-         egug==
-X-Gm-Message-State: AOAM533xv6kNErHllrcA9GDuqkhvE+fdP4YhPTrp2ejUm713bjtOwHO8
-        luKjWOVpf++IlAEjK2a+HiZ7qA==
-X-Google-Smtp-Source: ABdhPJzGiIkXXBmy5DDoWMNsGgWcXqtw/xBNMBOjRI4bsAE2X+6lsLV+71+RhBCvt+ERtsGfcdpHpA==
-X-Received: by 2002:a17:90b:1a86:: with SMTP id ng6mr16246857pjb.120.1634333745601;
-        Fri, 15 Oct 2021 14:35:45 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id q10sm5538176pgn.31.2021.10.15.14.35.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Oct 2021 14:35:45 -0700 (PDT)
-Date:   Fri, 15 Oct 2021 14:35:44 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v2 13/13] lkdtm: Add a test for function descriptors
- protection
-Message-ID: <202110151433.6270D717@keescook>
-References: <cover.1634190022.git.christophe.leroy@csgroup.eu>
- <08a3dfbc55e1c7a0a1917b22f0ca6cabd9895ab2.1634190022.git.christophe.leroy@csgroup.eu>
+        id S243157AbhJOVil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 17:38:41 -0400
+Received: from mail-bn8nam08on2081.outbound.protection.outlook.com ([40.107.100.81]:35425
+        "EHLO NAM04-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S238695AbhJOVik (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 17:38:40 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PO8gje/yQCqTn7Em7nYlVvdm024a19UoI32pbcb93zUNCX3elgUkCHw7FYHh3fiJ+tJk/50azVVvZclonhtU2WpWTdkRimSCxGC/9JDAdNYRHz0eFBEf8uz4+Sc4Wc94mn4uZPLqNRkBKlDsqZxhGtRbnG4jPQTptMNtri2FkmQ5Il0Su68jpa7s4r31BxqE3d3Wh+hCLeM7uQuEd3xIH649QKwvgYaPCJxHeEWOtx7Ne/QKDXsaNxADln8Jm0bU4fXuV8ZTksbG8wJ5QIYcPtMsEqbkZRfpL0f9k53XT3YrjG2uRQ8jkDc/dOHLhqmXQYD906QrnENp/TiBCPpmTg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=P3h9fz5Ki3AHgK4Hewb5FRWNN6JZtTriZgagUjliRao=;
+ b=SLvJ3Is7EQbQzt+e1MFqdOM9n2SZjOvIDdIGXpTgEsxZYv7qvHBFzGg6gE8AiJO6Bl0KaxSA9OkGJtN8YPdXu6A9np2hcSt2r2yffAvIAMs8H2Dz7M7rMrPNtrDhsGOsF4U+pXCOnSKVu55EJ4dKV08V5oNNs+HrS0wGVIuoEE0GndVPhax2ATIMrjLc9xJPsTEMmoPY3tg3JQGWXufDXAeG+ukIz88HoMXKiAR3byjQBKQypFPGLnr9XJfm7+5TrjE6gKNO4TrcFuMXFyYJNeWSKU57WBaF3/8m1dyLYuwQQW2lJBOfG0GBAPkvzZdkAFsfBXfZ+kkoD/zAE3THyg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=P3h9fz5Ki3AHgK4Hewb5FRWNN6JZtTriZgagUjliRao=;
+ b=ICwO1JirfmwmPb+CT4CqTnVRt5XbKIVBE/GhtQXl6ClPO3w8vaqlnwQQfVWEnD7nAwnXnXFMiXi4i9hpRtMtyQjCkd3Dx/ZOBKvBQkFiJq9VrvPLWAv7LceeKhQPdikoH2KB7Wesiag0934LVr2foLoy7Z5BKHGidzf45ZFSARk=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from DM4PR12MB5229.namprd12.prod.outlook.com (2603:10b6:5:398::12)
+ by DM8PR12MB5414.namprd12.prod.outlook.com (2603:10b6:8:3e::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.17; Fri, 15 Oct
+ 2021 21:36:31 +0000
+Received: from DM4PR12MB5229.namprd12.prod.outlook.com
+ ([fe80::a87d:568d:994f:c5f9]) by DM4PR12MB5229.namprd12.prod.outlook.com
+ ([fe80::a87d:568d:994f:c5f9%7]) with mapi id 15.20.4608.017; Fri, 15 Oct 2021
+ 21:36:30 +0000
+Subject: Re: [PATCH 3/5 V10] KVM: SEV: Add support for SEV-ES intra host
+ migration
+To:     Peter Gonda <pgonda@google.com>, kvm@vger.kernel.org
+Cc:     Marc Orr <marcorr@google.com>, Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        David Rientjes <rientjes@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
+References: <20211012204858.3614961-1-pgonda@google.com>
+ <20211012204858.3614961-4-pgonda@google.com>
+From:   Tom Lendacky <thomas.lendacky@amd.com>
+Message-ID: <00cba883-204e-67ea-8dba-3e834af1aa6e@amd.com>
+Date:   Fri, 15 Oct 2021 16:36:27 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <20211012204858.3614961-4-pgonda@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SA9P221CA0021.NAMP221.PROD.OUTLOOK.COM
+ (2603:10b6:806:25::26) To DM4PR12MB5229.namprd12.prod.outlook.com
+ (2603:10b6:5:398::12)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <08a3dfbc55e1c7a0a1917b22f0ca6cabd9895ab2.1634190022.git.christophe.leroy@csgroup.eu>
+Received: from office-ryzen.texastahm.com (67.79.209.213) by SA9P221CA0021.NAMP221.PROD.OUTLOOK.COM (2603:10b6:806:25::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.15 via Frontend Transport; Fri, 15 Oct 2021 21:36:29 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f33579e3-7810-47ff-e0c4-08d99023da02
+X-MS-TrafficTypeDiagnostic: DM8PR12MB5414:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM8PR12MB5414BCB269F574EA5B18C90CECB99@DM8PR12MB5414.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: UVQROzawNa02iis5xy5CBIkU/QV52gf0CG9BKYfItjG/y60pP2rBZNXYvaUwNSZilbW61RRqTbrqmkjO4MckHdc14N7cVYhXHtO/Ac/amHEHqlQflCVcTPTc2Lih/8jb2LJrcFzME1lZ8yosbKZpGcCYEzs6/zcw1bS/OjdrecNDSlQrFZexVGW5CpWLnDxU7eeP7R6zL2PN6ofuO948+fVidlpWcILiuS7fjup6aFVguyaYgFeBtKPdbv6Ckg9w1NRyWRcW34z0fUOzOvkapNCrmctwkqRpob2yJe/xmwkQixmTfQi3XwFYqFFd/uB+Vcuu3zpho+8MC1/fhWKCJPAL4Z0JT6urEIJ/hf8sDjmYaLHfqiHz0nm+ZS4xEpXh353ZwpsbzN7V92pRjHnwEVHvUl6ddyljxGSOVgnlu5N4W7U3QLpyZ1l7aeM3E51uH98f65RUVErBTbOv+QQvCFhfvIi4VJAZidbI0UauJgkSlXFcWyQyy1atVz463XDO4MrmgEAHZnwXlsUk9cKYG6z5QojdM9FQfmlixqI1c3rr4EbxyEfZH08XOINTbdAFqSLEUNuNV0Hbx02pBR0meh5oS0H9G+UUni67FZ7cLdInZvdN7afqMRoiMUN2p39Ur92sOkeAgmGgXsN6i5VXU5vDtzZjic1UbOaNRjsmJlYqy4O6nOIgpfC6pJCbMlH1UINiYITINQzSSjuV5MM5hlSnbMIuDcAsCg2rpEXYq3VLK/+9uv5NhSwn6gxjiUJo
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5229.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(83380400001)(31696002)(4326008)(508600001)(7416002)(54906003)(86362001)(53546011)(26005)(31686004)(6486002)(8936002)(316002)(36756003)(38100700002)(66556008)(956004)(66476007)(66946007)(2616005)(6512007)(186003)(2906002)(6506007)(5660300002)(8676002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?R0x1N2lGSFZLVjRXazRZZW54R1grUEZSRjBkQVgxMU5aZ3RZaUlRdGJxcEs3?=
+ =?utf-8?B?L1FISlRPcFV5THU2cTVYc3YrTTVNdm9MNVo3eWU2TkFITlZTelZvRU1jbWtU?=
+ =?utf-8?B?MENieCtHM0V1c210YTJraldGa24zb2srNUVlUmFqUUZsUTIvemhRQjVGLy9C?=
+ =?utf-8?B?WS81M3Buakpmd3B5VGxJVEkyYWJBZG1QYzVoYkhUZUVsU2VNNjFGYWttVlhB?=
+ =?utf-8?B?QnhsbWQ4c2JWNGkzQUoyRXdTejRDM202U0wrcTVPWFpNOHhyVTNaR1dlMWRw?=
+ =?utf-8?B?Y2dyUW1qTVlsL0xyMmEwQXZlVHhBWUFtMFEwSkpKK3NNRHZWNENFcnc5cVVs?=
+ =?utf-8?B?ZnBKa3dKamtpREtNNFZQVEQyOUF1d01MTmY1WmlBQ1d5Z0d2V0hZT2JLS2cx?=
+ =?utf-8?B?a0RtS3JrYW05elFJcDNSQjNQZFNaTmN0SVF3NWljOG5aY2xKdWZWU1lseXps?=
+ =?utf-8?B?VHRkQTRRMFNNOEM5cDVtUDljWTh6VTg4Rm9nNjdCWHRKeXdvam1WMmhmaFAy?=
+ =?utf-8?B?NlhEVVBndUJZSTdrNm9vYytaZXZkOVU3Sm1SYlFTZ2dvdmYydjV1OFV5RDhx?=
+ =?utf-8?B?ZStHY3JReVRod05HOG9vRGhINnMrUmRTQzF0WE5aVGlHRzlRcXVPV1pJVzNh?=
+ =?utf-8?B?bGdXSUJoeGtlSS9ISjhjd2xwRVdPU2lNU2xJV1RvaWI3WnhSc0FuUG9qelFr?=
+ =?utf-8?B?K2pFTzArTUVhWVkvellET25FY1JOb1NrTm9sVHBRZ0JSLzBFZnMvdDZBQ3Bp?=
+ =?utf-8?B?cC9ueUpPRVU3eDFsZ1dFTUJ6dktXcWpNeG0xWFdKeHdPL1F0SHhXQy9BSktH?=
+ =?utf-8?B?cXNMaWhCZG9ucXdnVWgyd1NWekNsRUt3QktVWFNBa0VORytNbzlkUktrS0o5?=
+ =?utf-8?B?WXhabTg1VHZRTS8zWklQdHFwWXc3Sm9mcEtrei9wZ0o4NGlqM2VQcE5HdGdE?=
+ =?utf-8?B?T1duMHByQWw2UzZzcmlSZjl0d1NiM3MrTW50N3lUNkpVR2wwQndHN2VtZWhI?=
+ =?utf-8?B?K1ZabkVWN1lzZU9IOVViVUxYUHFrNHlxeXJEUmZWY2xWMm40M1ZxclhpZG05?=
+ =?utf-8?B?SzFjVmQ1NE9Kd1RRYUpTbVFPd1Y1TitneWtwOGQ1QXpvcjF6cktCbUFoWXE2?=
+ =?utf-8?B?REtVanFla09ZdkdsSUF5OEhKY0hIWjZVbVJYVHNZYkNQMHRPNHg5RWlZbE1s?=
+ =?utf-8?B?eFg3c1hSZFhtUE1pa3lwalFyMm81c2c0VjF4YU80MXlmZDR5YzQxTWpyNWhy?=
+ =?utf-8?B?RG9GYm9yQ2lESmVsNHlQOXpLNnExTE9iS01pRWVWV3B2eVBVYTVPcmNDeEFX?=
+ =?utf-8?B?bmFMWG9EN28wWVFScVhROXNRdVhYRzZnbmpvTWwxQ0JidXlwTHhMcVlUSi9u?=
+ =?utf-8?B?ZlNmYVVMdmZqdnZ4eEYvUFJwRTI5OFh5Z3M4TmozRXBBZG0zYmQ3SGFwQjZE?=
+ =?utf-8?B?MUVDL0tEbDVSOVZUSHAyR2ZlWmdzQW0rWTZMeVBJTGdBWUdnbHVla282MVRu?=
+ =?utf-8?B?MHdINHF6VFJPM2lObFh0L3pRZlBXdklrTTBaN3NldWZRUlBXYkZDTzc1OGFi?=
+ =?utf-8?B?SHZDbW9lQVFTdm5udHB0UDJ5bDllVmg0UitNR3ZUTEZOUUZQNno0blFJSHVJ?=
+ =?utf-8?B?b2dQemE1MXN6K0JQUHhtd3VhaWNkeGZ1bDFLVjFoanRvRUE1eUZzRTIrRnBV?=
+ =?utf-8?B?Tjd2a2MzTlVDZEphdzdIYURFNWV5Y01vZ3FJTnRIRHQ1TjVPb00vbFFsSktj?=
+ =?utf-8?Q?0HSBmK4eil+i7cB1L6p5Sh5x/XON0qPHbcOMMj0?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f33579e3-7810-47ff-e0c4-08d99023da02
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5229.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Oct 2021 21:36:30.6906
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: mLCjp/iKyUxUiVifTnVyoPugPkKFWhDZKS3UCUGMBS29NdHUhwODPenoVMrN+RELNjr0ZVxaUSBGZhf7RB6vcg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM8PR12MB5414
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 07:50:02AM +0200, Christophe Leroy wrote:
-> Add WRITE_OPD to check that you can't modify function
-> descriptors.
+On 10/12/21 3:48 PM, Peter Gonda wrote:
+> For SEV-ES to work with intra host migration the VMSAs, GHCB metadata,
+> and other SEV-ES info needs to be preserved along with the guest's
+> memory.
 > 
-> Gives the following result when function descriptors are
-> not protected:
-> 
-> 	lkdtm: Performing direct entry WRITE_OPD
-> 	lkdtm: attempting bad 16 bytes write at c00000000269b358
-> 	lkdtm: FAIL: survived bad write
-> 	lkdtm: do_nothing was hijacked!
-> 
-> Looks like a standard compiler barrier(); is not enough to force
-> GCC to use the modified function descriptor. Add to add a fake empty
-> inline assembly to force GCC to reload the function descriptor.
-> 
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> Signed-off-by: Peter Gonda <pgonda@google.com>
+> Reviewed-by: Marc Orr <marcorr@google.com>
+> Cc: Marc Orr <marcorr@google.com>
+> Cc: Paolo Bonzini <pbonzini@redhat.com>
+> Cc: Sean Christopherson <seanjc@google.com>
+> Cc: David Rientjes <rientjes@google.com>
+> Cc: Dr. David Alan Gilbert <dgilbert@redhat.com>
+> Cc: Brijesh Singh <brijesh.singh@amd.com>
+> Cc: Tom Lendacky <thomas.lendacky@amd.com>
+> Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
+> Cc: Wanpeng Li <wanpengli@tencent.com>
+> Cc: Jim Mattson <jmattson@google.com>
+> Cc: Joerg Roedel <joro@8bytes.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> Cc: kvm@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
 > ---
->  drivers/misc/lkdtm/core.c  |  1 +
->  drivers/misc/lkdtm/lkdtm.h |  1 +
->  drivers/misc/lkdtm/perms.c | 22 ++++++++++++++++++++++
->  3 files changed, 24 insertions(+)
+>   arch/x86/kvm/svm/sev.c | 48 +++++++++++++++++++++++++++++++++++++++++-
+>   1 file changed, 47 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/misc/lkdtm/core.c b/drivers/misc/lkdtm/core.c
-> index fe6fd34b8caf..de092aa03b5d 100644
-> --- a/drivers/misc/lkdtm/core.c
-> +++ b/drivers/misc/lkdtm/core.c
-> @@ -148,6 +148,7 @@ static const struct crashtype crashtypes[] = {
->  	CRASHTYPE(WRITE_RO),
->  	CRASHTYPE(WRITE_RO_AFTER_INIT),
->  	CRASHTYPE(WRITE_KERN),
-> +	CRASHTYPE(WRITE_OPD),
->  	CRASHTYPE(REFCOUNT_INC_OVERFLOW),
->  	CRASHTYPE(REFCOUNT_ADD_OVERFLOW),
->  	CRASHTYPE(REFCOUNT_INC_NOT_ZERO_OVERFLOW),
-> diff --git a/drivers/misc/lkdtm/lkdtm.h b/drivers/misc/lkdtm/lkdtm.h
-> index c212a253edde..188bd0fd6575 100644
-> --- a/drivers/misc/lkdtm/lkdtm.h
-> +++ b/drivers/misc/lkdtm/lkdtm.h
-> @@ -105,6 +105,7 @@ void __init lkdtm_perms_init(void);
->  void lkdtm_WRITE_RO(void);
->  void lkdtm_WRITE_RO_AFTER_INIT(void);
->  void lkdtm_WRITE_KERN(void);
-> +void lkdtm_WRITE_OPD(void);
->  void lkdtm_EXEC_DATA(void);
->  void lkdtm_EXEC_STACK(void);
->  void lkdtm_EXEC_KMALLOC(void);
-> diff --git a/drivers/misc/lkdtm/perms.c b/drivers/misc/lkdtm/perms.c
-> index 96b3ebfcb8ed..3870bc82d40d 100644
-> --- a/drivers/misc/lkdtm/perms.c
-> +++ b/drivers/misc/lkdtm/perms.c
-> @@ -44,6 +44,11 @@ static noinline void do_overwritten(void)
->  	return;
->  }
->  
-> +static noinline void do_almost_nothing(void)
+> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> index 42ff1ccfe1dc..a486ab08a766 100644
+> --- a/arch/x86/kvm/svm/sev.c
+> +++ b/arch/x86/kvm/svm/sev.c
+> @@ -1600,6 +1600,46 @@ static void sev_migrate_from(struct kvm_sev_info *dst,
+>   	list_replace_init(&src->regions_list, &dst->regions_list);
+>   }
+>   
+> +static int sev_es_migrate_from(struct kvm *dst, struct kvm *src)
 > +{
-> +	pr_info("do_nothing was hijacked!\n");
-> +}
+> +	int i;
+> +	struct kvm_vcpu *dst_vcpu, *src_vcpu;
+> +	struct vcpu_svm *dst_svm, *src_svm;
 > +
->  static void *setup_function_descriptor(func_desc_t *fdesc, void *dst)
->  {
->  	memcpy(fdesc, do_nothing, sizeof(*fdesc));
-> @@ -143,6 +148,23 @@ void lkdtm_WRITE_KERN(void)
->  	do_overwritten();
->  }
->  
-> +void lkdtm_WRITE_OPD(void)
-> +{
-> +	size_t size = sizeof(func_desc_t);
-> +	void (*func)(void) = do_nothing;
+> +	if (atomic_read(&src->online_vcpus) != atomic_read(&dst->online_vcpus))
+> +		return -EINVAL;
 > +
-> +	if (!have_function_descriptors()) {
-> +		pr_info("Platform doesn't have function descriptors.\n");
-
-This should be more explicit ('xfail'):
-
-	pr_info("XFAIL: platform doesn't use function descriptors.\n");
-
-> +		return;
+> +	kvm_for_each_vcpu(i, src_vcpu, src) {
+> +		if (!src_vcpu->arch.guest_state_protected)
+> +			return -EINVAL;
 > +	}
-> +	pr_info("attempting bad %zu bytes write at %px\n", size, do_nothing);
-> +	memcpy(do_nothing, do_almost_nothing, size);
-> +	pr_err("FAIL: survived bad write\n");
 > +
-> +	asm("" : "=m"(func));
+> +	kvm_for_each_vcpu(i, src_vcpu, src) {
+> +		src_svm = to_svm(src_vcpu);
+> +		dst_vcpu = kvm_get_vcpu(dst, i);
+> +		dst_svm = to_svm(dst_vcpu);
+> +
+> +		/*
+> +		 * Transfer VMSA and GHCB state to the destination.  Nullify and
+> +		 * clear source fields as appropriate, the state now belongs to
+> +		 * the destination.
+> +		 */
+> +		dst_vcpu->vcpu_id = src_vcpu->vcpu_id;
+> +		memcpy(&dst_svm->sev_es, &src_svm->sev_es,
+> +		       sizeof(dst_svm->sev_es));
+> +		dst_svm->vmcb->control.ghcb_gpa =
+> +				src_svm->vmcb->control.ghcb_gpa;
+> +		dst_svm->vmcb->control.vmsa_pa = __pa(dst_svm->sev_es.vmsa);
+> +		dst_vcpu->arch.guest_state_protected = true;
 
-Since this is a descriptor, I assume no icache flush is needed. Are
-function descriptors strictly dcache? (Is anything besides just a
-barrier needed?)
+Maybe just add a blank line here to separate the setting and clearing 
+(only if you have to do another version).
 
-> +	func();
+> +		src_svm->vmcb->control.ghcb_gpa = 0;
+> +		src_svm->vmcb->control.vmsa_pa = 0;
+> +		src_vcpu->arch.guest_state_protected = false;
+
+In the previous patch you were clearing some of the fields that are now in 
+the vcpu_sev_es_state. Did you want to memset that to zero now?
+
+Thanks,
+Tom
+
+> +	}
+> +	to_kvm_svm(src)->sev_info.es_active = false;
+> +
+> +	return 0;
 > +}
 > +
->  void lkdtm_EXEC_DATA(void)
->  {
->  	execute_location(data_area, CODE_WRITE);
-> -- 
-> 2.31.1
-> 
-
--- 
-Kees Cook
