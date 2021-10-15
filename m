@@ -2,175 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96D9342EF46
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 13:05:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E34EB42EF45
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 13:05:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238258AbhJOLGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 07:06:44 -0400
-Received: from mga14.intel.com ([192.55.52.115]:11765 "EHLO mga14.intel.com"
+        id S238256AbhJOLGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 07:06:37 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:49304 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238270AbhJOLGn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 07:06:43 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10137"; a="228176022"
-X-IronPort-AV: E=Sophos;i="5.85,375,1624345200"; 
-   d="scan'208";a="228176022"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2021 04:04:36 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,375,1624345200"; 
-   d="scan'208";a="481658692"
-Received: from lkp-server02.sh.intel.com (HELO 08b2c502c3de) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 15 Oct 2021 04:04:32 -0700
-Received: from kbuild by 08b2c502c3de with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mbL0o-0007nV-HW; Fri, 15 Oct 2021 11:04:30 +0000
-Date:   Fri, 15 Oct 2021 19:03:50 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [gustavoars:for-next/kspp] BUILD SUCCESS
- 3915822ab3a5122dcbae0529febfefd3e999eb04
-Message-ID: <61696016.H5EFEOjxr/UxWdV+%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S238241AbhJOLGg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 07:06:36 -0400
+Received: from zn.tnic (p200300ec2f0cfb0087c6997658fca07e.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:fb00:87c6:9976:58fc:a07e])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 0F48F1EC0593;
+        Fri, 15 Oct 2021 13:04:29 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1634295869;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hrJLWbbRUBeuLFY0ZXFJKj4jdgvFkQtSue6zAwY5Snw=;
+        b=RaStao5GeW3kwT/Xxp0Y189C1BvagALuCuIkuRrrCfAXXVhKC38p7l9w4ANF44do1QCgBn
+        0iO6uYq0Z1qDUYCSSrlho4XqanV6iBFoTD36/ye+3hX7U17NZa4BW5jcbLJ6snFWj32ylf
+        S3bmJEGNctQ0Pqyvaf2JucLZW0FhzRI=
+Date:   Fri, 15 Oct 2021 13:04:28 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Ville =?utf-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
+        Ser Olmy <ser.olmy@protonmail.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [regression] commit d298b03506d3 ("x86/fpu: Restore the masking
+ out of reserved MXCSR bits")
+Message-ID: <YWlgPJwxmFL5nX4c@zn.tnic>
+References: <YWgYIYXLriayyezv@intel.com>
+ <YWg+O1AXrWLO3Sf9@zn.tnic>
+ <YWg/5h3OcQKE94Nz@intel.com>
+ <YWhCAqDxAuTh1YwE@intel.com>
+ <YWhFOJCF1pxIBANv@zn.tnic>
+ <YWhG0kv/d/hddf+t@intel.com>
+ <YWhsvSM5tAvwqprN@intel.com>
+ <YWhwdDI5ECoMZQzU@zn.tnic>
+ <YWh7GgCgdtwRj3GU@intel.com>
+ <YWiAPQCRm4RnOiCd@zn.tnic>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YWiAPQCRm4RnOiCd@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git for-next/kspp
-branch HEAD: 3915822ab3a5122dcbae0529febfefd3e999eb04  Merge branch 'for-next/cast-function' into for-next/kspp
+Ok, here it is.
 
-elapsed time: 865m
+Ser, I'd appreciate you running it too, to make sure your box is still
+ok.
 
-configs tested: 115
-configs skipped: 3
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-i386                 randconfig-c001-20211014
-sh                          polaris_defconfig
-powerpc                     rainier_defconfig
-arm                             ezx_defconfig
-s390                             alldefconfig
-mips                 decstation_r4k_defconfig
-arm                          collie_defconfig
-s390                       zfcpdump_defconfig
-mips                        qi_lb60_defconfig
-arm                  colibri_pxa270_defconfig
-powerpc                     tqm8560_defconfig
-xtensa                         virt_defconfig
-mips                         bigsur_defconfig
-arc                              alldefconfig
-riscv                    nommu_k210_defconfig
-sh                           se7206_defconfig
-sh                           se7722_defconfig
-arm                         s3c6400_defconfig
-sparc                       sparc32_defconfig
-powerpc                     tqm8540_defconfig
-powerpc                     tqm8541_defconfig
-nios2                         3c120_defconfig
-mips                      fuloong2e_defconfig
-powerpc                   lite5200b_defconfig
-powerpc                        warp_defconfig
-openrisc                    or1ksim_defconfig
-powerpc                 mpc8560_ads_defconfig
-arm                        vexpress_defconfig
-powerpc                      pmac32_defconfig
-powerpc                 mpc8315_rdb_defconfig
-arm                  randconfig-c002-20211014
-x86_64               randconfig-c001-20211014
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-xtensa                           allyesconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a006-20211014
-x86_64               randconfig-a004-20211014
-x86_64               randconfig-a001-20211014
-x86_64               randconfig-a005-20211014
-x86_64               randconfig-a002-20211014
-x86_64               randconfig-a003-20211014
-i386                 randconfig-a003-20211014
-i386                 randconfig-a001-20211014
-i386                 randconfig-a005-20211014
-i386                 randconfig-a004-20211014
-i386                 randconfig-a002-20211014
-i386                 randconfig-a006-20211014
-arc                  randconfig-r043-20211014
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-x86_64                           allyesconfig
-
-clang tested configs:
-arm                  randconfig-c002-20211014
-i386                 randconfig-c001-20211014
-s390                 randconfig-c005-20211014
-x86_64               randconfig-c007-20211014
-powerpc              randconfig-c003-20211014
-riscv                randconfig-c006-20211014
-x86_64               randconfig-a012-20211014
-x86_64               randconfig-a015-20211014
-x86_64               randconfig-a016-20211014
-x86_64               randconfig-a014-20211014
-x86_64               randconfig-a011-20211014
-x86_64               randconfig-a013-20211014
-i386                 randconfig-a016-20211014
-i386                 randconfig-a014-20211014
-i386                 randconfig-a011-20211014
-i386                 randconfig-a015-20211014
-i386                 randconfig-a012-20211014
-i386                 randconfig-a013-20211014
-hexagon              randconfig-r041-20211014
-s390                 randconfig-r044-20211014
-riscv                randconfig-r042-20211014
-hexagon              randconfig-r045-20211014
+Thx.
 
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+From: Borislav Petkov <bp@suse.de>
+Date: Fri, 15 Oct 2021 12:46:25 +0200
+Subject: [PATCH] x86/fpu: Mask out the invalid MXCSR bits properly
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+This is a fix for the fix (yeah, /facepalm).
+
+The correct mask to use is not the negation of the MXCSR_MASK but the
+actual mask which contains the supported bits in the MXCSR register.
+
+Reported and debugged by Ville Syrjälä <ville.syrjala@linux.intel.com>
+
+Fixes: d298b03506d3 ("x86/fpu: Restore the masking out of reserved MXCSR bits")
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/YWgYIYXLriayyezv@intel.com
+---
+ arch/x86/kernel/fpu/signal.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/x86/kernel/fpu/signal.c b/arch/x86/kernel/fpu/signal.c
+index fa17a27390ab..831b25c5e705 100644
+--- a/arch/x86/kernel/fpu/signal.c
++++ b/arch/x86/kernel/fpu/signal.c
+@@ -385,7 +385,7 @@ static int __fpu_restore_sig(void __user *buf, void __user *buf_fx,
+ 				return -EINVAL;
+ 		} else {
+ 			/* Mask invalid bits out for historical reasons (broken hardware). */
+-			fpu->state.fxsave.mxcsr &= ~mxcsr_feature_mask;
++			fpu->state.fxsave.mxcsr &= mxcsr_feature_mask;
+ 		}
+ 
+ 		/* Enforce XFEATURE_MASK_FPSSE when XSAVE is enabled */
+-- 
+2.29.2
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
