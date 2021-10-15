@@ -2,160 +2,430 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1250542EB13
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 10:08:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4933C42EC5C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 10:29:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234044AbhJOIKI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 04:10:08 -0400
-Received: from mailout3.samsung.com ([203.254.224.33]:49450 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236637AbhJOIKG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 04:10:06 -0400
-Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20211015080759epoutp03ee501efddeee8f26bc247786031998ad~uJc2ABsFo1328313283epoutp03v
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 08:07:59 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20211015080759epoutp03ee501efddeee8f26bc247786031998ad~uJc2ABsFo1328313283epoutp03v
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1634285279;
-        bh=i/8snz7oQQF/veQVY2UXngyhVMdyor5+6y2YvZnUbcY=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=SraTBmD6WmTIdJXqI90dg2DXotTaF4bB0wPXEE5MZJXeUfTKtYc2hIS99smEBpJ7d
-         U/WONngV/yMoeDgz2MVy5vOBnF1GypVIKpy5PKb0a0cUkrC7eSMvwYrl1/j+78WH4b
-         6l/fHzJ3r7YaavCkbQBkhgPQnu4eg/AQz/8X3IBM=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
-        20211015080758epcas1p4756d38a9aa4bb067dbd8e496b924fd3b~uJc1ejYvd0145601456epcas1p40;
-        Fri, 15 Oct 2021 08:07:58 +0000 (GMT)
-Received: from epsmges1p5.samsung.com (unknown [182.195.38.231]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4HVzQy3jySz4x9QK; Fri, 15 Oct
-        2021 08:07:54 +0000 (GMT)
-Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
-        epsmges1p5.samsung.com (Symantec Messaging Gateway) with SMTP id
-        14.30.13888.3D639616; Fri, 15 Oct 2021 17:07:47 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20211015080747epcas1p2c3992e77b2c68f8ea3eab68cbc6e5530~uJcrGr-lq1458514585epcas1p24;
-        Fri, 15 Oct 2021 08:07:47 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20211015080747epsmtrp2609be969588b22ed88f3be7f9a3c7121~uJcrFsBw20472204722epsmtrp2o;
-        Fri, 15 Oct 2021 08:07:47 +0000 (GMT)
-X-AuditID: b6c32a39-227ff70000003640-6f-616936d3a991
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        A7.92.08750.3D639616; Fri, 15 Oct 2021 17:07:47 +0900 (KST)
-Received: from [10.113.221.102] (unknown [10.113.221.102]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20211015080747epsmtip1243c85b809ac914d7cd799a3f3fb0288~uJcqz-OF02744627446epsmtip1b;
-        Fri, 15 Oct 2021 08:07:47 +0000 (GMT)
-Subject: Re: [PATCH v2 5/6] arm64: dts: allwinner: a64: Update MBUS node
-To:     Samuel Holland <samuel@sholland.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
-From:   Chanwoo Choi <cw00.choi@samsung.com>
-Organization: Samsung Electronics
-Message-ID: <27543cc4-1294-0a28-d020-5d578f4bc7b0@samsung.com>
-Date:   Fri, 15 Oct 2021 17:29:16 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
-        Thunderbird/59.0
+        id S236759AbhJOIb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 04:31:27 -0400
+Received: from mx3.molgen.mpg.de ([141.14.17.11]:58707 "EHLO mx1.molgen.mpg.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235478AbhJOIbZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 04:31:25 -0400
+Received: from [192.168.0.2] (ip5f5ae90e.dynamic.kabel-deutschland.de [95.90.233.14])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 7FEBA61E5FE02;
+        Fri, 15 Oct 2021 10:29:16 +0200 (CEST)
+Subject: Re: [PATCH 2/6] media: aspeed: add dprintk for more detailed log
+ control
+To:     Jammy Huang <jammy_huang@aspeedtech.com>
+Cc:     "eajames@linux.ibm.com" <eajames@linux.ibm.com>,
+        "mchehab@kernel.org" <mchehab@kernel.org>,
+        "joel@jms.id.au" <joel@jms.id.au>,
+        "andrew@aj.id.au" <andrew@aj.id.au>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>
+References: <20211014034819.2283-1-jammy_huang@aspeedtech.com>
+ <20211014034819.2283-3-jammy_huang@aspeedtech.com>
+ <5b8f81aa-9d08-dc42-8bd5-e9e7560f37f6@molgen.mpg.de>
+ <c367c670-5e57-4bf2-06ab-06c4af0853c7@aspeedtech.com>
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+Message-ID: <ca3b21b1-a982-cc9a-bda4-800033cc1d5f@molgen.mpg.de>
+Date:   Fri, 15 Oct 2021 10:29:16 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-In-Reply-To: <20211004012739.39053-6-samuel@sholland.org>
+In-Reply-To: <c367c670-5e57-4bf2-06ab-06c4af0853c7@aspeedtech.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrHJsWRmVeSWpSXmKPExsWy7bCmru5ls8xEg8tPbCzmHznHavF8/jpG
-        i7NNb9gtNj2+xmpxedccNovPvUcYLabs28Vm0da5jNXi4ilXi9uNK9gsWvceYbd4/qiTzeLf
-        tY0sFj8PnWdy4PN4f6OV3WPDo9WsHjtn3WX32LSqk81j85J6jxebZzJ69G1Zxejx6utcRo/P
-        m+QCOKOybTJSE1NSixRS85LzUzLz0m2VvIPjneNNzQwMdQ0tLcyVFPISc1NtlVx8AnTdMnOA
-        bldSKEvMKQUKBSQWFyvp29kU5ZeWpCpk5BeX2CqlFqTkFJgW6BUn5haX5qXr5aWWWBkaGBiZ
-        AhUmZGes+nmCveAWV8W0I78YGxjPc3QxcnJICJhIzNh2mKmLkYtDSGAHo8TT1zfYIZxPjBKH
-        z15hhHA+M0rs3/mGDabl+emHrBCJXYwS516uhKp6zyjx5cQ5oAwHh7CAh8SyjRogcRGBiUwS
-        s+8fYAFxmAXeMkos3LWDGWQUm4CWxP4XN8DG8gsoSlz98ZgRxOYVsJM4PbsbLM4ioCoxc2YP
-        K4gtKhAmcXJbC1SNoMTJmU9YQJZxClhKtD53BQkzC4hL3HoynwnClpfY/nYOM8heCYE3HBKz
-        T85jhnjBRaJ5dwMrhC0s8er4FnYIW0ri87u9UG9WS6w8eYQNormDUWLL/gtQDcYS+5dOZgJZ
-        zCygKbF+lz5EWFFi5++5jBCL+STefe0BB4SEAK9ER5sQRImyxOUHd5kgbEmJxe2dbBMYlWYh
-        +WYWkhdmIXlhFsKyBYwsqxjFUguKc9NTiw0LTOHRnZyfu4kRnLC1LHcwTn/7Qe8QIxMH4yFG
-        CQ5mJRHedwfSE4V4UxIrq1KL8uOLSnNSiw8xmgLDdyKzlGhyPjBn5JXEG5pYGpiYGRmbWBia
-        GSqJ8x57bZkoJJCeWJKanZpakFoE08fEwSnVwGRQ1qp3dcr34yuaeie6NayzZX/yv1bac+GJ
-        ya8O/StfGnTAL1l78eaH8nuPxyRssjKt5+HfGuzH9/5ve9Edxakrfwft3NRzd73dqccuLTc3
-        VwhIpManVGhFi+vFhhXHbrt0+LFzf6j13NWt3SvO5z7MNmZrunyhfzbb5C6dWOeKxzF8WRM+
-        sexjC8u/u6PVXebZkala8snaPpsPbo389y7s0vyXW7kE3XikN+tvdBDb3rue65FpytU/Srfm
-        HlCP/jBz1trtsyMjGyc4vZJrOsUheSFU1u7StoZXKtdValsL2N9/NjI3/LWyba/1Gstz4Sb6
-        p/51a9tV/Ji/+mnFs9ZUrwt/7xl3uR6obxMI81ViKc5INNRiLipOBAAQ6VBeYQQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrBIsWRmVeSWpSXmKPExsWy7bCSnO5ls8xEgwt/5S3mHznHavF8/jpG
-        i7NNb9gtNj2+xmpxedccNovPvUcYLabs28Vm0da5jNXi4ilXi9uNK9gsWvceYbd4/qiTzeLf
-        tY0sFj8PnWdy4PN4f6OV3WPDo9WsHjtn3WX32LSqk81j85J6jxebZzJ69G1Zxejx6utcRo/P
-        m+QCOKO4bFJSczLLUov07RK4Mlb9PMFecIurYtqRX4wNjOc5uhg5OSQETCSen37I2sXIxSEk
-        sINRYvvP3awQCUmJaRePMncxcgDZwhKHDxdD1LxllHh+dx87SFxYwENi2UYNkLiIwGQmiZNb
-        jzOBOMwgRa8uXGeE6NjNKPHmVzsTyFQ2AS2J/S9usIHY/AKKEld/PGYEsXkF7CROz+4Gi7MI
-        qErMnNkDdoWoQJjEziWPmSBqBCVOznzCArKZU8BSovW5K0iYWUBd4s+8S8wQtrjErSfzmSBs
-        eYntb+cwT2AUnoWkexaSlllIWmYhaVnAyLKKUTK1oDg3PbfYsMAoL7Vcrzgxt7g0L10vOT93
-        EyM4crW0djDuWfVB7xAjEwfjIUYJDmYlEd53B9IThXhTEiurUovy44tKc1KLDzFKc7AoifNe
-        6DoZLySQnliSmp2aWpBaBJNl4uCUamBaaLsj+7ru3FcPrbel/F5ke0Y1eur8h9tTPy+443XG
-        UGx21LZN29p9HXV3fo14ODueY7X27rPn18SUBS2aI7Lwi8TxGYvb9879dvXzb82Nb09sjNSY
-        UvVS/NvW0IfT8qvuuPF6bwvx1UzYdCL3j8BhhhKzdbbbz/XPPvLvOfuzVM/LvVYfK+SFogwO
-        XoxO2b2hg8l5ZvmGRSc9e5dazv2fMMvum6So6XvTKctytz8IW+xh6cT0rHHF1XUh//RYs97O
-        ZJfz+nP93Wy5IkGhFzs17RwN5gdkLwtv6JV75jS/98KKi09/LojKN9Y4HO1Uc/90305390OS
-        f8xDumd9Epmvzfwm5ObkkwbJ/C7N3UwBB5VYijMSDbWYi4oTAVBdymBLAwAA
-X-CMS-MailID: 20211015080747epcas1p2c3992e77b2c68f8ea3eab68cbc6e5530
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20211004012804epcas1p4a6ad04a1d71344d15a3a04ba852414d6
-References: <20211004012739.39053-1-samuel@sholland.org>
-        <CGME20211004012804epcas1p4a6ad04a1d71344d15a3a04ba852414d6@epcas1p4.samsung.com>
-        <20211004012739.39053-6-samuel@sholland.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/4/21 10:27 AM, Samuel Holland wrote:
-> In order to support memory dynamic frequency scaling (MDFS), the MBUS
-> binding now requires enumerating more resources. Provide them in the
-> device tree.
-> 
-> Signed-off-by: Samuel Holland <samuel@sholland.org>
-> ---
->  arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi | 10 ++++++++--
->  1 file changed, 8 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-> index 6ddb717f2f98..609a59c6c778 100644
-> --- a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-> +++ b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-> @@ -1129,8 +1129,14 @@ pwm: pwm@1c21400 {
->  
->  		mbus: dram-controller@1c62000 {
->  			compatible = "allwinner,sun50i-a64-mbus";
-> -			reg = <0x01c62000 0x1000>;
-> -			clocks = <&ccu 112>;
-> +			reg = <0x01c62000 0x1000>,
-> +			      <0x01c63000 0x1000>;
-> +			reg-names = "mbus", "dram";
-> +			clocks = <&ccu CLK_MBUS>,
-> +				 <&ccu CLK_DRAM>,
-> +				 <&ccu CLK_BUS_DRAM>;
-> +			clock-names = "mbus", "dram", "bus";
-> +			interrupts = <GIC_SPI 69 IRQ_TYPE_LEVEL_HIGH>;
->  			#address-cells = <1>;
->  			#size-cells = <1>;
->  			dma-ranges = <0x00000000 0x40000000 0xc0000000>;
-> 
+Dear Jammy,
 
-Reviewed-by: Chanwoo Choi <cw00.choi@samsung.com>
 
--- 
-Best Regards,
-Chanwoo Choi
-Samsung Electronics
+Thank you for your reply.
+
+Am 15.10.21 um 04:16 schrieb Jammy Huang:
+
+> I will try to come out another patch which uses either 
+> v4l2_info/v4l2_err/v4l2_warn/v4l2_dbg
+> or other 'native' Linux kernel solution.
+> 
+> On 2021/10/14 下午 02:28, Paul Menzel wrote:
+>> [Cc: +Steven, +Ingo for tracing questions]
+>>
+>> Dear Jammy,
+>>
+>>
+>> Am 14.10.21 um 05:48 schrieb Jammy Huang:
+>>> Add dprintk to categorize the log into NOTICE/INFO/TRACE/IRQ/REG.
+>>> The on/off is controlled by module_param, debug.
+>> Currently dev_dbg is dynamic debug, which can be controlled using the
+>> Linux kernel command line or debugfs already?
+>>
+>>   From your patch:
+>>
+>>> +MODULE_PARM_DESC(debug, "set debugging level 
+>>> (0=reg,2=irq,4=trace,8=info(|-able)).");
+>> What does (|-able) mean? Maybe give some examples in the commit message
+>> as documentation?
+> I will modify the description to make this more clear.
+>>
+>> Lastly, instead of parameter name `debug`, I’d use `log_level`, which
+>> would be more accurate.
+> Your consideration is understood, but please refer to the following 2 
+> cases:
+> 
+> 1. "include/media/v4l2-common.h"
+> 
+>   70 #define v4l2_dbg(level, debug, dev, fmt, arg...)                        \
+>   71         do {                                                            \
+>   72                 if (debug >= (level))                                   \
+>   73                         v4l2_printk(KERN_DEBUG, dev, fmt , ## arg);     \
+>   74         } while (0)
+
+Searching for `v4l2_dbg` in `drivers/media` that seems to quite commonly 
+used, though certain drivers also use their own debugging facility.
+
+> 2. "drivers/media/platform/vivid/vivid-core.c"
+> 
+> 135 unsigned vivid_debug;
+> 136 module_param(vivid_debug, uint, 0644);
+> 137 MODULE_PARM_DESC(vivid_debug, " activates debug info");
+
+That seems to be used like a boolean, and dynamic debug could replace it?
+
+>> Why is more granularity needed/useful, and not just debug and non-debug,
+>> where the existing Linux kernel levels `pr_info`, `pr_warn`, … are used?
+>> Looking at the amount of log messages, the granularity does not look 
+>> needed.
+> 
+> As you said, there isn't large amount of log messages currently. But 
+> during the development of the aspeed-jpeg support, the amount of log
+> increased. That is why I want to add this log control. Besides, the
+> log of reg-access, aspeed_video_read/aspeed_video_write/ 
+> aspeed_video_update,is too noisy.
+
+I would have thought that it’s easily selectable by using tools like 
+grep. No idea, if the log messages are only going to be used by 
+developers, or also for normal users.
+
+Each driver seems to define their own parameter, and it often not 
+(userfriendly) documented, what the values mean. (Your patch does 
+document it.)
+
+ From `drivers/media/platform/mtk-jpeg/mtk_jpeg_core.c`:
+
+     static int debug;
+     module_param(debug, int, 0644);
+
+I guess, I was mostly confused by the info level, and would move that 
+outside the debugging, or rename it, so it’s more clear.
+
+As written, for developers, tracing using ftrace could be a solution 
+too, but probably not for normal users.
+
+Anyway, I just wanted to provide a user level view. If the maintainers 
+are fine with it, the current solution is also good.
+
+
+Kind regards,
+
+Paul
+
+
+>>> Signed-off-by: Jammy Huang <jammy_huang@aspeedtech.com>
+>>> ---
+>>>    drivers/media/platform/aspeed-video.c | 73 ++++++++++++++++++++++-----
+>>>    1 file changed, 60 insertions(+), 13 deletions(-)
+>>>
+>>> diff --git a/drivers/media/platform/aspeed-video.c 
+>>> b/drivers/media/platform/aspeed-video.c
+>>> index 6259cf17a7cc..7b8129b0ca5f 100644
+>>> --- a/drivers/media/platform/aspeed-video.c
+>>> +++ b/drivers/media/platform/aspeed-video.c
+>>> @@ -31,6 +31,19 @@
+>>>    #include <media/v4l2-ioctl.h>
+>>>    #include <media/videobuf2-dma-contig.h>
+>>> +
+>>> +#define LOG_REG        BIT(4)
+>>> +#define LOG_DEBUG    BIT(3)
+>>> +#define LOG_TRACE    BIT(2)
+>> Could ftrace be used for this? It looks like there are static functions.
+>> No idea, if there is already a “native” Linux kernel solution for this.
+>>
+>>> +#define LOG_INFO    BIT(1)
+>>> +#define LOG_NOTICE    BIT(0)
+>>> +
+>>> +#define dprintk(level, fmt, arg...) do {                    \
+>>> +    if (debug & level)                            \
+>>> +        pr_debug(pr_fmt("[%s]: " fmt), DEVICE_NAME, ##arg);        \
+>>> +} while (0)
+>>> +
+>>> +
+>>>    #define DEVICE_NAME            "aspeed-video"
+>>>    #define ASPEED_VIDEO_JPEG_NUM_QUALITIES    12
+>>> @@ -390,6 +403,8 @@ static const struct v4l2_dv_timings_cap 
+>>> aspeed_video_timings_cap = {
+>>>        },
+>>>    };
+>>> +static unsigned int debug;
+>>> +
+>>>    static void aspeed_video_init_jpeg_table(u32 *table, bool yuv420)
+>>>    {
+>>>        int i;
+>>> @@ -437,7 +452,7 @@ static void aspeed_video_update(struct 
+>>> aspeed_video *video, u32 reg, u32 clear,
+>>>        t &= ~clear;
+>>>        t |= bits;
+>>>        writel(t, video->base + reg);
+>>> -    dev_dbg(video->dev, "update %03x[%08x -> %08x]\n", reg, before,
+>>> +    dprintk(LOG_REG, "update %03x[%08x -> %08x]\n", reg, before,
+>>>            readl(video->base + reg));
+>>>    }
+>>> @@ -445,14 +460,14 @@ static u32 aspeed_video_read(struct 
+>>> aspeed_video *video, u32 reg)
+>>>    {
+>>>        u32 t = readl(video->base + reg);
+>>> -    dev_dbg(video->dev, "read %03x[%08x]\n", reg, t);
+>>> +    dprintk(LOG_REG, "read %03x[%08x]\n", reg, t);
+>>>        return t;
+>>>    }
+>>>    static void aspeed_video_write(struct aspeed_video *video, u32 
+>>> reg, u32 val)
+>>>    {
+>>>        writel(val, video->base + reg);
+>>> -    dev_dbg(video->dev, "write %03x[%08x]\n", reg,
+>>> +    dprintk(LOG_REG, "write %03x[%08x]\n", reg,
+>>>            readl(video->base + reg));
+>>>    }
+>>> @@ -474,13 +489,13 @@ static int aspeed_video_start_frame(struct 
+>>> aspeed_video *video)
+>>>        u32 seq_ctrl = aspeed_video_read(video, VE_SEQ_CTRL);
+>>>        if (video->v4l2_input_status) {
+>>> -        dev_dbg(video->dev, "No signal; don't start frame\n");
+>>> +        dprintk(LOG_NOTICE, "No signal; don't start frame\n");
+>>>            return 0;
+>>>        }
+>>>        if (!(seq_ctrl & VE_SEQ_CTRL_COMP_BUSY) ||
+>>>            !(seq_ctrl & VE_SEQ_CTRL_CAP_BUSY)) {
+>>> -        dev_dbg(video->dev, "Engine busy; don't start frame\n");
+>>> +        dprintk(LOG_NOTICE, "Engine busy; don't start frame\n");
+>>>            return -EBUSY;
+>>>        }
+>>> @@ -489,7 +504,7 @@ static int aspeed_video_start_frame(struct 
+>>> aspeed_video *video)
+>>>                           struct aspeed_video_buffer, link);
+>>>        if (!buf) {
+>>>            spin_unlock_irqrestore(&video->lock, flags);
+>>> -        dev_dbg(video->dev, "No buffers; don't start frame\n");
+>>> +        dprintk(LOG_NOTICE, "No buffers; don't start frame\n");
+>>>            return -EPROTO;
+>>>        }
+>>> @@ -565,7 +580,7 @@ static void aspeed_video_bufs_done(struct 
+>>> aspeed_video *video,
+>>>    static void aspeed_video_irq_res_change(struct aspeed_video 
+>>> *video, ulong delay)
+>>>    {
+>>> -    dev_dbg(video->dev, "Resolution changed; resetting\n");
+>>> +    dprintk(LOG_INFO, "Resolution changed; resetting\n");
+>>>        set_bit(VIDEO_RES_CHANGE, &video->flags);
+>>>        clear_bit(VIDEO_FRAME_INPRG, &video->flags);
+>>> @@ -590,6 +605,12 @@ static irqreturn_t aspeed_video_irq(int irq, 
+>>> void *arg)
+>>>        struct aspeed_video *video = arg;
+>>>        u32 sts = aspeed_video_read(video, VE_INTERRUPT_STATUS);
+>>> +    dprintk(LOG_DEBUG, "irq sts=%#x %s%s%s%s\n", sts,
+>>> +        sts & VE_INTERRUPT_MODE_DETECT_WD ? ", unlock" : "",
+>>> +        sts & VE_INTERRUPT_MODE_DETECT ? ", lock" : "",
+>>> +        sts & VE_INTERRUPT_CAPTURE_COMPLETE ? ", capture-done" : "",
+>>> +        sts & VE_INTERRUPT_COMP_COMPLETE ? ", comp-done" : "");
+>>> +
+>> Please split adding new log messages out into a separate commit.
+>>
+>>>        /*
+>>>         * Resolution changed or signal was lost; reset the engine and
+>>>         * re-initialize
+>>> @@ -766,7 +787,7 @@ static void 
+>>> aspeed_video_calc_compressed_size(struct aspeed_video *video,
+>>>        aspeed_video_write(video, VE_STREAM_BUF_SIZE,
+>>>                   compression_buffer_size_reg);
+>>> -    dev_dbg(video->dev, "Max compressed size: %x\n",
+>>> +    dprintk(LOG_INFO, "Max compressed size: %#x\n",
+>>>            video->max_compressed_size);
+>>>    }
+>>> @@ -804,7 +825,7 @@ static void aspeed_video_get_resolution(struct 
+>>> aspeed_video *video)
+>>>                                  res_check(video),
+>>>                                  MODE_DETECT_TIMEOUT);
+>>>            if (!rc) {
+>>> -            dev_dbg(video->dev, "Timed out; first mode detect\n");
+>>> +            dprintk(LOG_INFO, "Timed out; first mode detect\n");
+>>>                clear_bit(VIDEO_RES_DETECT, &video->flags);
+>>>                return;
+>>>            }
+>>> @@ -822,7 +843,7 @@ static void aspeed_video_get_resolution(struct 
+>>> aspeed_video *video)
+>>>                                  MODE_DETECT_TIMEOUT);
+>>>            clear_bit(VIDEO_RES_DETECT, &video->flags);
+>>>            if (!rc) {
+>>> -            dev_dbg(video->dev, "Timed out; second mode detect\n");
+>>> +            dprintk(LOG_INFO, "Timed out; second mode detect\n");
+>>>                return;
+>>>            }
+>>> @@ -856,7 +877,7 @@ static void aspeed_video_get_resolution(struct 
+>>> aspeed_video *video)
+>>>        } while (invalid_resolution && (tries++ < 
+>>> INVALID_RESOLUTION_RETRIES));
+>>>        if (invalid_resolution) {
+>>> -        dev_dbg(video->dev, "Invalid resolution detected\n");
+>>> +        dprintk(LOG_NOTICE, "Invalid resolution detected\n");
+>>>            return;
+>>>        }
+>>> @@ -873,7 +894,7 @@ static void aspeed_video_get_resolution(struct 
+>>> aspeed_video *video)
+>>>        aspeed_video_update(video, VE_SEQ_CTRL, 0,
+>>>                    VE_SEQ_CTRL_AUTO_COMP | VE_SEQ_CTRL_EN_WATCHDOG);
+>>> -    dev_dbg(video->dev, "Got resolution: %dx%d\n", det->width,
+>>> +    dprintk(LOG_INFO, "Got resolution: %dx%d\n", det->width,
+>>>            det->height);
+>>>    }
+>>> @@ -907,6 +928,7 @@ static void aspeed_video_set_resolution(struct 
+>>> aspeed_video *video)
+>>>        /* Don't use direct mode below 1024 x 768 (irqs don't fire) */
+>>>        if (size < DIRECT_FETCH_THRESHOLD) {
+>>> +        dprintk(LOG_INFO, "Capture: Sync Mode\n");
+>>>            aspeed_video_write(video, VE_TGS_0,
+>>>                       FIELD_PREP(VE_TGS_FIRST,
+>>>                              video->frame_left - 1) |
+>>> @@ -918,6 +940,7 @@ static void aspeed_video_set_resolution(struct 
+>>> aspeed_video *video)
+>>>                              video->frame_bottom + 1));
+>>>            aspeed_video_update(video, VE_CTRL, 0, VE_CTRL_INT_DE);
+>>>        } else {
+>>> +        dprintk(LOG_INFO, "Capture: Direct Mode\n");
+>>>            aspeed_video_update(video, VE_CTRL, 0, VE_CTRL_DIRECT_FETCH);
+>>>        }
+>>> @@ -934,6 +957,10 @@ static void aspeed_video_set_resolution(struct 
+>>> aspeed_video *video)
+>>>            if (!aspeed_video_alloc_buf(video, &video->srcs[1], size))
+>>>                goto err_mem;
+>>> +        dprintk(LOG_INFO, "src buf0 addr(%#x) size(%d)\n",
+>>> +            video->srcs[0].dma, video->srcs[0].size);
+>>> +        dprintk(LOG_INFO, "src buf1 addr(%#x) size(%d)\n",
+>>> +            video->srcs[1].dma, video->srcs[1].size);
+>>>            aspeed_video_write(video, VE_SRC0_ADDR, video->srcs[0].dma);
+>>>            aspeed_video_write(video, VE_SRC1_ADDR, video->srcs[1].dma);
+>>>        }
+>>> @@ -1010,6 +1037,8 @@ static void aspeed_video_start(struct 
+>>> aspeed_video *video)
+>>>    static void aspeed_video_stop(struct aspeed_video *video)
+>>>    {
+>>> +    dprintk(LOG_TRACE, "%s\n", __func__);
+>>> +
+>>>        set_bit(VIDEO_STOPPED, &video->flags);
+>>>        cancel_delayed_work_sync(&video->res_work);
+>>> @@ -1198,6 +1227,9 @@ static int aspeed_video_set_dv_timings(struct 
+>>> file *file, void *fh,
+>>>        timings->type = V4L2_DV_BT_656_1120;
+>>> +    dprintk(LOG_INFO, "set new timings(%dx%d)\n", timings->bt.width,
+>>> +        timings->bt.height);
+>>> +
+>>>        return 0;
+>>>    }
+>>> @@ -1362,6 +1394,8 @@ static void aspeed_video_resolution_work(struct 
+>>> work_struct *work)
+>>>                              res_work);
+>>>        u32 input_status = video->v4l2_input_status;
+>>> +    dprintk(LOG_TRACE, "%s+\n", __func__);
+>>> +
+>>>        aspeed_video_on(video);
+>>>        /* Exit early in case no clients remain */
+>>> @@ -1380,6 +1414,7 @@ static void aspeed_video_resolution_work(struct 
+>>> work_struct *work)
+>>>                .u.src_change.changes = V4L2_EVENT_SRC_CH_RESOLUTION,
+>>>            };
+>>> +        dprintk(LOG_INFO, "fire source change event\n");
+>>>            v4l2_event_queue(&video->vdev, &ev);
+>>>        } else if (test_bit(VIDEO_STREAMING, &video->flags)) {
+>>>            /* No resolution change so just restart streaming */
+>>> @@ -1389,6 +1424,8 @@ static void aspeed_video_resolution_work(struct 
+>>> work_struct *work)
+>>>    done:
+>>>        clear_bit(VIDEO_RES_CHANGE, &video->flags);
+>>>        wake_up_interruptible_all(&video->wait);
+>>> +
+>>> +    dprintk(LOG_TRACE, "%s-\n", __func__);
+>>>    }
+>>>    static int aspeed_video_open(struct file *file)
+>>> @@ -1476,6 +1513,7 @@ static int aspeed_video_start_streaming(struct 
+>>> vb2_queue *q,
+>>>        int rc;
+>>>        struct aspeed_video *video = vb2_get_drv_priv(q);
+>>> +    dprintk(LOG_TRACE, "%s\n", __func__);
+>>>        video->sequence = 0;
+>>>        video->perf.duration_max = 0;
+>>>        video->perf.duration_min = 0xffffffff;
+>>> @@ -1495,13 +1533,15 @@ static void 
+>>> aspeed_video_stop_streaming(struct vb2_queue *q)
+>>>        int rc;
+>>>        struct aspeed_video *video = vb2_get_drv_priv(q);
+>>> +    dprintk(LOG_TRACE, "%s+\n", __func__);
+>>> +
+>>>        clear_bit(VIDEO_STREAMING, &video->flags);
+>>>        rc = wait_event_timeout(video->wait,
+>>>                    !test_bit(VIDEO_FRAME_INPRG, &video->flags),
+>>>                    STOP_TIMEOUT);
+>>>        if (!rc) {
+>>> -        dev_dbg(video->dev, "Timed out when stopping streaming\n");
+>>> +        dprintk(LOG_NOTICE, "Timed out when stopping streaming\n");
+>>>            /*
+>>>             * Need to force stop any DMA and try and get HW into a good
+>>> @@ -1516,6 +1556,7 @@ static void aspeed_video_stop_streaming(struct 
+>>> vb2_queue *q)
+>>>        }
+>>>        aspeed_video_bufs_done(video, VB2_BUF_STATE_ERROR);
+>>> +    dprintk(LOG_TRACE, "%s-\n", __func__);
+>>>    }
+>>>    static void aspeed_video_buf_queue(struct vb2_buffer *vb)
+>>> @@ -1715,6 +1756,7 @@ static int aspeed_video_init(struct 
+>>> aspeed_video *video)
+>>>            dev_err(dev, "Unable to request IRQ %d\n", irq);
+>>>            return rc;
+>>>        }
+>>> +    dev_info(video->dev, "irq %d\n", irq);
+>>>        video->eclk = devm_clk_get(dev, "eclk");
+>>>        if (IS_ERR(video->eclk)) {
+>>> @@ -1751,6 +1793,8 @@ static int aspeed_video_init(struct 
+>>> aspeed_video *video)
+>>>            rc = -ENOMEM;
+>>>            goto err_release_reserved_mem;
+>>>        }
+>>> +    dev_info(video->dev, "alloc mem size(%d) at %#x for jpeg header\n",
+>>> +         VE_JPEG_HEADER_SIZE, video->jpeg.dma);
+>>>        aspeed_video_init_jpeg_table(video->jpeg.virt, video->yuv420);
+>>> @@ -1856,6 +1900,9 @@ static struct platform_driver 
+>>> aspeed_video_driver = {
+>>>    module_platform_driver(aspeed_video_driver);
+>>> +module_param(debug, int, 0644);
+>>> +MODULE_PARM_DESC(debug, "set debugging level 
+>>> (0=reg,2=irq,4=trace,8=info(|-able)).");
+>>> +
+>>>    MODULE_DESCRIPTION("ASPEED Video Engine Driver");
+>>>    MODULE_AUTHOR("Eddie James");
+>>>    MODULE_LICENSE("GPL v2");
+>>
+>> Kind regards,
+>>
+>> Paul
