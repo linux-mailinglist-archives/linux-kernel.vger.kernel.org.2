@@ -2,78 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6080D42EF6D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 13:12:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9C4242EF71
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 13:13:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238328AbhJOLOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 07:14:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37814 "EHLO
+        id S238345AbhJOLPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 07:15:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230031AbhJOLOb (ORCPT
+        with ESMTP id S238318AbhJOLPm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 07:14:31 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1708C061570;
-        Fri, 15 Oct 2021 04:12:25 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 714062E3;
-        Fri, 15 Oct 2021 13:12:23 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1634296343;
-        bh=uynZabXZy8nfj/k/5uQB3ukn1EYdSOycveOzbdcINP8=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=rAmuAb8yHDL15D8KxoZTtm6i60MM2L+sydajRhUETQbJvbbeZ8XSmSdJM80LjzI/J
-         R9S2qAJ8n6Sq/0UjLpmapaCYOVgtqTHxfvC9Hmcy17AHm6NiOOXm/e8ZdZubwLd7MG
-         YkLvPrAuAmz/jSZOVRaegyZnHbU5L3lepJPBAKqQ=
-Content-Type: text/plain; charset="utf-8"
+        Fri, 15 Oct 2021 07:15:42 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05FA0C061570;
+        Fri, 15 Oct 2021 04:13:36 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id g36so23392478lfv.3;
+        Fri, 15 Oct 2021 04:13:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=96jnA4ej/Uzri1MzuZ9UoSs3Fw1wfRJ3Z/GoE9dIJXE=;
+        b=QorjoxGzfxWLxsFjAE+2QAcprbyddJkXxfvG+tUBRIWWMbQkCZJ0L72XWxTvcrYTR+
+         7sxnnPb+nXNGhcwXEmZAb7aspra0lXbt0YdfFAzhKusySohB/3VM4Dw43S75sg2xpQ2a
+         Y49OMqsGlX+nDiDF2bUX/s5K9qTuAErMhYOqbYA60liaY4sIIZmMM+vVujZt/y7/UHe7
+         3kooHCFoXNMi4VFkndM7Sh+XoMNLGU9vwEEdL/N1RgrwMkx/RK8TovMGueViiJoPM8A9
+         m+qgzpkWJa2rUopXCd9cROY2SopzmqiLQ+215B3TlxYbRbZWIoN7o7UNCXeue3l5TQqF
+         WS7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=96jnA4ej/Uzri1MzuZ9UoSs3Fw1wfRJ3Z/GoE9dIJXE=;
+        b=KBIyNS1/ZhnByg8XdtamtWUTje2dTnuyXIKZzNrRauJ8JFzjXXC8gKt4nQ2zUHeWBc
+         rLiAqDkGjL+uiPkYdz9hoxGrCkhHcWBQi2MwBPmeSigPQgDpuhPQL7rUmhgesHo7TA+j
+         pGGL1429iYNnaMa3rRZY7rB3GbhnCUY3tLdrPdZwP21iRGKcTgixxQ+k5A7evoHQmwYW
+         85Om2XoIUfo1i35KKJVHbuyEJ9tsWgfYg+BuNomsn+wXvdvQSBtdnedN/HoJPTfo2f2U
+         kA8nJkn5e7oZzPRQ5bPZM2yk1q0wtjIjS/zYl+VDu0h5J/pF2YRjrU6VbxA0O9TEXEVb
+         bcrw==
+X-Gm-Message-State: AOAM530/TRZx3eSD5qWhzA++bnQjpukWCSFpu+v37rJPjmNLQ/XRCRLH
+        3WgLFSfdsHWdLsTzEwtT/As=
+X-Google-Smtp-Source: ABdhPJx+ctQa7OfRWwCG5zVAX/y0wrmmRLdqUITithI8O9z8oH8ze1L6DTb8XMoQEHCzGx4BF9Y/rg==
+X-Received: by 2002:a05:651c:511:: with SMTP id o17mr12577381ljp.441.1634296414372;
+        Fri, 15 Oct 2021 04:13:34 -0700 (PDT)
+Received: from localhost.localdomain (84-72-105-84.dclient.hispeed.ch. [84.72.105.84])
+        by smtp.gmail.com with ESMTPSA id s25sm534647ljd.63.2021.10.15.04.13.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Oct 2021 04:13:33 -0700 (PDT)
+From:   Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
+To:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>
+Cc:     Peter Geis <pgwipeout@gmail.com>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] arm64: dts: rockchip: add spdif node to rk356x
+Date:   Fri, 15 Oct 2021 13:13:01 +0200
+Message-Id: <20211015111303.1365328-1-frattaroli.nicolas@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20211012221144.30638-1-rikard.falkeborn@gmail.com>
-References: <20211012221144.30638-1-rikard.falkeborn@gmail.com>
-Subject: Re: [PATCH] staging: media: rkvdec: Constify static struct v4l2_m2m_ops
-From:   Kieran Bingham <kieran.bingham@ideasonboard.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>
-To:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Date:   Fri, 15 Oct 2021 12:12:20 +0100
-Message-ID: <163429634048.4171071.2327108342733912267@Monstersaurus>
-User-Agent: alot/0.9.1
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Rikard Falkeborn (2021-10-12 23:11:44)
-> The only usage of rkvdec_m2m_ops is to pass its address to v4l2_m2m_init(=
-),
-> which takes a pointer to const v4l2_m2m_ops as argument. Make it const
-> to allow the compiler to put it in read-only memory.
->=20
-> Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+From: Peter Geis <pgwipeout@gmail.com>
 
-Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+This adds the spdif node to the rk356x device tree.
 
-> ---
->  drivers/staging/media/rkvdec/rkvdec.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/staging/media/rkvdec/rkvdec.c b/drivers/staging/medi=
-a/rkvdec/rkvdec.c
-> index bf00fe6534a3..28aab5c7fe33 100644
-> --- a/drivers/staging/media/rkvdec/rkvdec.c
-> +++ b/drivers/staging/media/rkvdec/rkvdec.c
-> @@ -677,7 +677,7 @@ static void rkvdec_device_run(void *priv)
->                 rkvdec_job_finish(ctx, VB2_BUF_STATE_ERROR);
->  }
-> =20
-> -static struct v4l2_m2m_ops rkvdec_m2m_ops =3D {
-> +static const struct v4l2_m2m_ops rkvdec_m2m_ops =3D {
->         .device_run =3D rkvdec_device_run,
->  };
-> =20
-> --=20
-> 2.33.0
->
+Signed-off-by: Peter Geis <pgwipeout@gmail.com>
+---
+ arch/arm64/boot/dts/rockchip/rk356x.dtsi | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/rockchip/rk356x.dtsi b/arch/arm64/boot/dts/rockchip/rk356x.dtsi
+index b721a34ffa8c..f0e3fe445ace 100644
+--- a/arch/arm64/boot/dts/rockchip/rk356x.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk356x.dtsi
+@@ -608,6 +608,20 @@ sdhci: mmc@fe310000 {
+ 		status = "disabled";
+ 	};
+ 
++	spdif: spdif@fe460000 {
++		compatible = "rockchip,rk3568-spdif";
++		reg = <0x0 0xfe460000 0x0 0x1000>;
++		interrupts = <GIC_SPI 102 IRQ_TYPE_LEVEL_HIGH>;
++		dmas = <&dmac1 1>;
++		dma-names = "tx";
++		clock-names = "mclk", "hclk";
++		clocks = <&cru MCLK_SPDIF_8CH>, <&cru HCLK_SPDIF_8CH>;
++		#sound-dai-cells = <0>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&spdifm0_tx>;
++		status = "disabled";
++	};
++
+ 	dmac0: dmac@fe530000 {
+ 		compatible = "arm,pl330", "arm,primecell";
+ 		reg = <0x0 0xfe530000 0x0 0x4000>;
+-- 
+2.33.0
+
