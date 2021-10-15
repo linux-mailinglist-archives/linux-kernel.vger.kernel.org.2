@@ -2,169 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4688E42F6D2
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 17:16:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 644A942F6D7
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 17:17:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240896AbhJOPSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 11:18:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38664 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232051AbhJOPSW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 11:18:22 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3B2AC061570;
-        Fri, 15 Oct 2021 08:16:15 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id nn3-20020a17090b38c300b001a03bb6c4ebso7512563pjb.1;
-        Fri, 15 Oct 2021 08:16:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Rsq7Coa4DOxPOn0eZbpZdLfOClr4GNCnmw0Rnrrt1Qw=;
-        b=hSxnHl3oyN/MtM+qsldq6hsB1s7pGGZvJuASUryBHZCU+ZEL6mFCa+LtSZlsPk+Mgl
-         zs2SzaxQgnKpwzxL39QHUcwxwaf4a33HvycHcpvF6cWAQn/W9JCWr+btdMEbeuxhoS+F
-         vQ4NfS0llRXA+CWI6qZrx5qNuMywGXiv0KB5EBtZ8lkaSZPDLOnHksy1KtjMoqdII5mI
-         sQCDLmlhqaLD71rnga3U1iVmsRLXnRAHu3ZRG/Dr2yOFz0l7dOSDLgt82MGIG+EiRc0j
-         34dAlMzS2KD0Qn9OU0ynsLHSUCMSkPfL1ECpVAqJ7KADGWkSpMe/yuK4HuMJ4exCEbr9
-         zjtg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Rsq7Coa4DOxPOn0eZbpZdLfOClr4GNCnmw0Rnrrt1Qw=;
-        b=SQkn3K0YW2NsHKao7SwyHY6YnWFYgaw7o+VtrNTjqvUdp+uQHeqTQUcbznWYBIFYTr
-         1NvagOh/pfSilyvGd1rZ576JajO2NYZ7wZw+Zc9KzkznQql1r5YwpQHqoRbTE5pNCZBj
-         AqGS+E0zESTLIRaGweuPuTDRGCZWr45Je9vEVkiSteI1iuuAeY5BNPQE7ySkA1iMkw+Q
-         BgqnpY5ase+Gqbgbl9Tg+VxhKmFhV1wdNvnmK6389K4Okf7kbIhbGTm6Hyq1raBqwqLJ
-         MhaZVM1UxXQM1LAbEluybP1rvm0ah7dEkAOF1UMFPqqX2A3f3H1jUFkzBQ/USb3TqG2n
-         P0IQ==
-X-Gm-Message-State: AOAM532W6ULQ3WXNG1ufhCb1ZDP6uDF1LUh5m0QcWy4fHmxVASy93pUB
-        RqbR79ClkLTVgdSl3PhKof65w0sUkU2h5Ke/
-X-Google-Smtp-Source: ABdhPJyCqbZfWSMhuuPRjAv0uUPvUBqyW5wVqCXkRUL4kLCQLYBGm/nfmiSu2Y23rgpo7KvQd5u0Ow==
-X-Received: by 2002:a17:90a:df0e:: with SMTP id gp14mr14183780pjb.35.1634310975311;
-        Fri, 15 Oct 2021 08:16:15 -0700 (PDT)
-Received: from theprophet ([2406:7400:63:4806:9a51:7f4b:9b5c:337a])
-        by smtp.gmail.com with ESMTPSA id on17sm12250018pjb.47.2021.10.15.08.16.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Oct 2021 08:16:14 -0700 (PDT)
-Date:   Fri, 15 Oct 2021 20:45:59 +0530
-From:   Naveen Naidu <naveennaidu479@gmail.com>
-To:     bhelgaas@google.com
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lukas Wunner <lukas@wunner.de>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Amey Narkhede <ameynarkhede03@gmail.com>
-Subject: Re: [PATCH v2 18/24] PCI: pciehp: Use RESPONSE_IS_PCI_ERROR() to
- check read from hardware
-Message-ID: <20211015151553.wjztlftdmi2xnsyd@theprophet>
-References: <cover.1634306198.git.naveennaidu479@gmail.com>
- <2bc987dc1dfb753c37a65b6c8c98c32e66a4d2a0.1634306198.git.naveennaidu479@gmail.com>
+        id S240918AbhJOPTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 11:19:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60154 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230246AbhJOPTG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 11:19:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 583E3604E9;
+        Fri, 15 Oct 2021 15:17:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634311020;
+        bh=0P/nqlzCxPBNYjpNGvCgDjhUfvGhQ4sWoGMp6EBS3EQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=QfIIeWcPiv3PwB/krvJVEO32ocEy2fGPpblJMrJsmTChX2GH6N6v0Fg4rjAzjLnbp
+         aEtfIMNHHSfLdPkjGBg2idWqyxm5iUSclTAmnJPaBo60gucmoqlckcJqJGNIUr2Apa
+         inWnaRnL0v9yW3+UQxiwtuCjzc1n3Zw6gE08/lsrAbV1WjRq/oyJCJMtP8vo1Bd+IS
+         EM2qVtap060vWwLHLSb4tUFuqiNz8rrveP5HtWMF4/a0s5u3Jp5TZIoHZnyvQ7mVJ9
+         R7H3o+zPzqBkYUdV85KJuW16JR9Ihrx9ZdQT9Sj49JSC2n+85aRua9Wk5U+wwcQyoX
+         6LIqUnvh0BouQ==
+Received: by mail-wr1-f43.google.com with SMTP id e12so27133431wra.4;
+        Fri, 15 Oct 2021 08:17:00 -0700 (PDT)
+X-Gm-Message-State: AOAM5333+Me3sXrhzhO8ev3dhrki51aqjCc3aYy3g01FUmVBe8kbl+6b
+        x6h6b5SrM0leEkVGoDAlJu+iAVClds1lG+9HdP0=
+X-Google-Smtp-Source: ABdhPJxEPK+TqBi5jntB9NZ2aiQ169wvUQqCk0nO/GYgvmQPSRyiZRUTCn36xHT9UsW2ewN4zNDGavkD+wcIhmpOVJQ=
+X-Received: by 2002:adf:b1c4:: with SMTP id r4mr15042210wra.428.1634311018725;
+ Fri, 15 Oct 2021 08:16:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2bc987dc1dfb753c37a65b6c8c98c32e66a4d2a0.1634306198.git.naveennaidu479@gmail.com>
+References: <20211013150232.2942146-1-arnd@kernel.org> <328f581e-7f1d-efc3-036c-66e729297e9c@gmail.com>
+ <132eb082-c646-765b-7b32-8a9943d10d0e@nvidia.com>
+In-Reply-To: <132eb082-c646-765b-7b32-8a9943d10d0e@nvidia.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Fri, 15 Oct 2021 17:16:42 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0QR8a6vxp6r_RtN5QvwxR-umKy6Ye7VNyyt_1BS4yQ7Q@mail.gmail.com>
+Message-ID: <CAK8P3a0QR8a6vxp6r_RtN5QvwxR-umKy6Ye7VNyyt_1BS4yQ7Q@mail.gmail.com>
+Subject: Re: [PATCH] mlx5: allow larger xsk chunk_size
+To:     Maxim Mikityanskiy <maximmi@nvidia.com>
+Cc:     Tariq Toukan <ttoukan.linux@gmail.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Aya Levin <ayal@nvidia.com>,
+        Eran Ben Elisha <eranbe@nvidia.com>,
+        Vladyslav Tarasiuk <vladyslavt@nvidia.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Networking <netdev@vger.kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/10, Naveen Naidu wrote:
-> An MMIO read from a PCI device that doesn't exist or doesn't respond
-> causes a PCI error.  There's no real data to return to satisfy the
-> CPU read, so most hardware fabricates ~0 data.
-> 
-> Use RESPONSE_IS_PCI_ERROR() to check the response we get when we read
-> data from hardware.
-> 
-> This helps unify PCI error response checking and make error checks
-> consistent and easier to find.
-> 
-> Compile tested only.
-> 
-> Acked-by: Lukas Wunner <lukas@wunner.de>
-> Signed-off-by: Naveen Naidu <naveennaidu479@gmail.com>
-> ---
->  drivers/pci/hotplug/pciehp_hpc.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/pci/hotplug/pciehp_hpc.c b/drivers/pci/hotplug/pciehp_hpc.c
-> index 3024d7e85e6a..8a2f6bb643b5 100644
-> --- a/drivers/pci/hotplug/pciehp_hpc.c
-> +++ b/drivers/pci/hotplug/pciehp_hpc.c
-> @@ -89,7 +89,7 @@ static int pcie_poll_cmd(struct controller *ctrl, int timeout)
->  
->  	do {
->  		pcie_capability_read_word(pdev, PCI_EXP_SLTSTA, &slot_status);
-> -		if (slot_status == (u16) ~0) {
-> +		if (RESPONSE_IS_PCI_ERROR(&slot_status)) {
->  			ctrl_info(ctrl, "%s: no response from device\n",
->  				  __func__);
->  			return 0;
-> @@ -165,7 +165,7 @@ static void pcie_do_write_cmd(struct controller *ctrl, u16 cmd,
->  	pcie_wait_cmd(ctrl);
->  
->  	pcie_capability_read_word(pdev, PCI_EXP_SLTCTL, &slot_ctrl);
-> -	if (slot_ctrl == (u16) ~0) {
-> +	if (RESPONSE_IS_PCI_ERROR(&slot_ctrl)) {
->  		ctrl_info(ctrl, "%s: no response from device\n", __func__);
->  		goto out;
->  	}
-> @@ -236,7 +236,7 @@ int pciehp_check_link_active(struct controller *ctrl)
->  	int ret;
->  
->  	ret = pcie_capability_read_word(pdev, PCI_EXP_LNKSTA, &lnk_status);
-> -	if (ret == PCIBIOS_DEVICE_NOT_FOUND || lnk_status == (u16)~0)
-> +	if (ret == PCIBIOS_DEVICE_NOT_FOUND || RESPONSE_IS_PCI_ERROR(&lnk_status))
->  		return -ENODEV;
->  
->  	ret = !!(lnk_status & PCI_EXP_LNKSTA_DLLLA);
-> @@ -443,7 +443,7 @@ int pciehp_card_present(struct controller *ctrl)
->  	int ret;
->  
->  	ret = pcie_capability_read_word(pdev, PCI_EXP_SLTSTA, &slot_status);
-> -	if (ret == PCIBIOS_DEVICE_NOT_FOUND || slot_status == (u16)~0)
-> +	if (ret == PCIBIOS_DEVICE_NOT_FOUND || RESPONSE_IS_PCI_ERROR(&slot_status))
->  		return -ENODEV;
->  
->  	return !!(slot_status & PCI_EXP_SLTSTA_PDS);
-> @@ -621,7 +621,7 @@ static irqreturn_t pciehp_isr(int irq, void *dev_id)
->  
->  read_status:
->  	pcie_capability_read_word(pdev, PCI_EXP_SLTSTA, &status);
-> -	if (status == (u16) ~0) {
-> +	if (RESPONSE_IS_PCI_ERROR(&status)) {
->  		ctrl_info(ctrl, "%s: no response from device\n", __func__);
->  		if (parent)
->  			pm_runtime_put(parent);
-> -- 
-> 2.25.1
-> 
+On Fri, Oct 15, 2021 at 3:27 PM Maxim Mikityanskiy <maximmi@nvidia.com> wrote:
+> > On 10/13/2021 6:02 PM, Arnd Bergmann wrote:
+> >> From: Arnd Bergmann <arnd@arndb.de>
+> >>
+> >> When building with 64KB pages, clang points out that xsk->chunk_size
+> >> can never be PAGE_SIZE:
+> >>
+> >> drivers/net/ethernet/mellanox/mlx5/core/en/xsk/setup.c:19:22: error:
+> >> result of comparison of constant 65536 with expression of type 'u16'
+> >> (aka 'unsigned short') is always false
+> >> [-Werror,-Wtautological-constant-out-of-range-compare]
+> >>          if (xsk->chunk_size > PAGE_SIZE ||
+> >>              ~~~~~~~~~~~~~~~ ^ ~~~~~~~~~
+> >>
+> >> I'm not familiar with the details of this code, but from a quick look
+> >> I found that it gets assigned from a 32-bit variable that can be
+> >> PAGE_SIZE, and that the layout of 'xsk' is not part of an ABI or
+> >> a hardware structure, so extending the members to 32 bits as well
+> >> should address both the behavior on 64KB page kernels, and the
+> >> warning I saw.
+>
+> This change is not enough to fix the behavior. mlx5e_xsk_is_pool_sane
+> checks that chunk_size <= 65535. Your patch just silences the warning,
+> but doesn't improve 64 KB page support.
+>
+> While mlx5e_xsk_is_pool_sane is simply a sanity check, it's not enough
+> to remove it to support 64 KB pages. It will need careful review of
+> assumptions in data path, because many places use 16-bit values for
+> packet size and headroom, and it comes down to the hardware interface
+> (see mpwrq_get_cqe_byte_cnt - the hardware passes the incoming packet
+> size as a 16-bit value) and hardware limitations.
+>
+> For example, MLX5_MPWQE_LOG_STRIDE_SZ_MAX is defined to 13 (Tariq, is it
+> a hardware limitation or just an arbitrary value?), which means the max
+> stride size in striding RQ is 2^13 = 8192, which will make the driver
+> fall back to legacy RQ (slower). We also need to check if legacy RQ
+> works fine with such large buffers, but so far I didn't find any reason
+> why not.
+>
+> I genuinely think allocating 64 KB per packet is waste of memory, and
+> supporting it isn't very useful, as long as it's possible to use smaller
+> frame sizes, and given that it would be slower because of lack of
+> striding RQ support.
 
-Lukas, I have added your Acked-by tag from the v1 [1] of patch series,
-since this patch has not changed in v2. I hope that's okay. If not, I
-apologize for that and can resend the patch series without the tag.
-Apologies for the inconvenience.
+Fair enough. I wouldn't be concerned about wasting memory here,
+as 64KB pages are much more wasteful in other areas already, but
+if there are no possible upsides and making it work is hard, then
+we don't need to bother.
 
-[1]: https://lore.kernel.org/linux-pci/20211011194740.GA14357@wunner.de/
+> It could be implemented as a feature for net-next, though, but only
+> after careful testing and expanding all relevant variables (the hardware
+> also uses a few bits as flags, so the max frame size will be smaller
+> than 2^32 anyway, but hopefully bigger than 2^16 if there are no other
+> limitations).
+>
+> For net, I suggest to silence the warning in some other way (cast type
+> before comparing?)
 
-Also, regarding your comments from v1 patch series [1] about re-naming the
-RESPONSE_IS_PCI_ERROR to RESPONSE_IS_PCI_TIMEOUT. We could indeed change
-the change to RESPONSE_IS_PCI_TIMEOUT for pciehp, but then I'm afraid
-that picehp would be the odd one out. I mean, since in all the other
-places we are using RESPONE_IS_PCI_TIMEOUT to see if any error occured
-while reading from a device.
+Ok, sending the trivial workaround as v2 now.
 
-RESPONSE_IS_PCI_ERROR stills gives an idea to the readers that some PCI
-error occured. It was my understanding that timeout is also a kind of
-PCI error (I might be horribly wrong here, given my very less experience
-with PCI subsystem) so it would be okay to use RESPONSE_IS_PCI_ERROR
-here.
-
-If that is not the case please let me know. But I am not sure what to
-do here? If RESPONSE_IS_PCI_ERROR does not fit here, should the right
-option would be to revert/remove this patch from the series?
-
-Thanks,
-Naveen
+        Arnd
