@@ -2,75 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C92442F203
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 15:19:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46CE442F20E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 15:24:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239351AbhJONV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 09:21:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38810 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234701AbhJONV2 (ORCPT
+        id S239372AbhJON0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 09:26:13 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:32192 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239323AbhJON0M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 09:21:28 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 481A9C061570
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 06:19:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=xLRSIGsUfzGiK6WuxdgtdmvcVSjUeO6E6oJeq4OnRs0=; b=h2XBkXF8LeeKfvMCtxOY2LWz1O
-        PwtQgKj1fcUO67xpNiI+6qoPqGj81MgQN6fBwGiIf9OXLpvpxtRrL+yrjULODmqnQdoD+u4ksVtTE
-        I+eBkEC7SLHAJ5vnIAVHNBeIFUr8jiqQG0J8a7OYwiqw7qGf66e0ouuEomqkSwOG7kTJYVdk+ox2t
-        w3lQdFrNQWFxCSdGi4I5P02SOkYK4Fs8LjOjNpeymKBvPNomKkU4GwPxD3STaelLb1QA6vjiRe2XN
-        eJLscyae/TmjoTp069tZiQ/rn+MMi0j64iKYP1uPN+69rcH2RobmXuwo38/euYO3cCLNcEhTBtekr
-        2FJIpibQ==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mbN7G-007B1X-1j; Fri, 15 Oct 2021 13:19:18 +0000
-Date:   Fri, 15 Oct 2021 06:19:18 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Zqiang <qiang.zhang1211@gmail.com>, hch@infradead.org,
-        akpm@linux-foundation.org, sunhao.th@gmail.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Mikulas Patocka <mpatocka@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH] mm: backing-dev: use kfree_rcu() instead of
- synchronize_rcu_expedited()
-Message-ID: <YWl/1gI+O2+PnKhz@infradead.org>
-References: <20211014082433.30733-1-qiang.zhang1211@gmail.com>
- <YWgTZjDtZik/9l4J@casper.infradead.org>
- <CALm+0cUt7iD5zex4-hRv=i1wPd66tz3JYGHz8P8ZFTZcyOCD1A@mail.gmail.com>
- <d697d61e-27a2-a25c-3ae1-e41457d08705@gmail.com>
- <YWl1rDO6gCFJE4hp@casper.infradead.org>
+        Fri, 15 Oct 2021 09:26:12 -0400
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19FCDR7A022067;
+        Fri, 15 Oct 2021 13:24:03 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2021-07-09; bh=QgrHz9GaMzKY1YbM+7BWEHWE54Ob64ad0dGBJQHfW2c=;
+ b=pAcWNWzoVAy52ULn5NjNbasGrtGeyWQrYeqKdnAQBg8HYNiBwdM7mYLGCDRYw5FQa72t
+ Uhxp7tWe1CUi30PT+06DUVsakrwAVhH6wtyZpS3TkA/DW+Z6lvkSWEHKop8sS0aePiRr
+ fyIXzJRC5n2RnQ78NPzhpsB7WPaki45M5a46BPB0qrPQqyoIvGfq2cAfuAyUo/4loXaV
+ DSFasQvF+PyJGe2+M20bZZTDN1NscVCi4iF3T/ruXz5s0xcyW2x1CMQt6bD+PvW35JBN
+ /ZKSTE7ShL2GwMVU5pFkJthfMHceKHXZfoFhTdD/m0Hb8BndJ4VE8udi281PnLutNUQd Kw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3bpfvegmve-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 15 Oct 2021 13:24:02 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 19FDKs5B058577;
+        Fri, 15 Oct 2021 13:23:54 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3020.oracle.com with ESMTP id 3bmae47425-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 15 Oct 2021 13:23:54 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 19FDNst3071336;
+        Fri, 15 Oct 2021 13:23:54 GMT
+Received: from t460.home (dhcp-10-175-9-30.vpn.oracle.com [10.175.9.30])
+        by aserp3020.oracle.com with ESMTP id 3bmae473vd-1;
+        Fri, 15 Oct 2021 13:23:54 +0000
+From:   Vegard Nossum <vegard.nossum@oracle.com>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Vegard Nossum <vegard.nossum@oracle.com>,
+        Hans de Goede <hdegoede@redhat.com>
+Subject: [PATCH] efi: select CRYPTO for EFI_EMBEDDED_FIRMWARE
+Date:   Fri, 15 Oct 2021 15:19:46 +0200
+Message-Id: <20211015131946.13374-1-vegard.nossum@oracle.com>
+X-Mailer: git-send-email 2.23.0.718.g5ad94255a8
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YWl1rDO6gCFJE4hp@casper.infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-GUID: UhVRJyX6SpHV_yfbLOBVUdbA1nI6RBob
+X-Proofpoint-ORIG-GUID: UhVRJyX6SpHV_yfbLOBVUdbA1nI6RBob
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 15, 2021 at 01:35:56PM +0100, Matthew Wilcox wrote:
->  struct backing_dev_info {
->         u64 id;
-> -       struct rb_node rb_node; /* keyed by ->id */
-> +       union {
-> +               struct rb_node rb_node; /* keyed by ->id */
-> +               struct rcu_head rcu;
-> +       };
->         struct list_head bdi_list;
->         unsigned long ra_pages; /* max readahead in PAGE_SIZE units */
->         unsigned long io_pages; /* max allowed IO size */
-> 
-> 
-> Christoph, independent of the inode lifetime problem, this actually seems
-> like a good approach to take.  I don't see why we should synchronize_rcu()
-> here?  Adding Jens (original introducer of the synchronize_rcu()), Mikulas
-> (converted it to use _expedited) and Tejun (worked around a problem when
-> using _expedited).
+Fix the following build warning:
 
-The kfree+rcu + your suggestion does seem like a good idea in general to
-me.  But I'd still like to fix the actual bug being reported before
-optimizing the area in a way that papers over the bug.
+  WARNING: unmet direct dependencies detected for CRYPTO_LIB_SHA256
+    Depends on [n]: CRYPTO [=n]
+    Selected by [y]:
+    - EFI_EMBEDDED_FIRMWARE [=y] && EFI [=y]
+
+Fixes: f0df68d5bae88 ("efi: Add embedded peripheral firmware support")
+Cc: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
+---
+ drivers/firmware/efi/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/firmware/efi/Kconfig b/drivers/firmware/efi/Kconfig
+index 2c3dac5ecb36d..f914da9845acc 100644
+--- a/drivers/firmware/efi/Kconfig
++++ b/drivers/firmware/efi/Kconfig
+@@ -248,6 +248,7 @@ endmenu
+ config EFI_EMBEDDED_FIRMWARE
+ 	bool
+ 	depends on EFI
++	select CRYPTO
+ 	select CRYPTO_LIB_SHA256
+ 
+ config UEFI_CPER
+-- 
+2.23.0.718.g5ad94255a8
+
