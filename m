@@ -2,102 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 765F942E8E6
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 08:22:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54B0842E8E9
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 08:23:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234307AbhJOGYS convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 15 Oct 2021 02:24:18 -0400
-Received: from relay7-d.mail.gandi.net ([217.70.183.200]:41373 "EHLO
-        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232124AbhJOGYQ (ORCPT
+        id S234327AbhJOGZg convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 15 Oct 2021 02:25:36 -0400
+Received: from mail-ua1-f54.google.com ([209.85.222.54]:36810 "EHLO
+        mail-ua1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232124AbhJOGZe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 02:24:16 -0400
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 49C9020002;
-        Fri, 15 Oct 2021 06:22:08 +0000 (UTC)
-Date:   Fri, 15 Oct 2021 08:22:06 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Boris Brezillon <boris.brezillon@collabora.com>
-Cc:     Sean Nyekjaer <sean@geanix.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/3] mtd: core: protect access to mtd devices while in
- suspend
-Message-ID: <20211015082206.244a2316@xps13>
-In-Reply-To: <20211011160546.707b737b@collabora.com>
-References: <20211011115253.38497-1-sean@geanix.com>
-        <20211011160546.707b737b@collabora.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Fri, 15 Oct 2021 02:25:34 -0400
+Received: by mail-ua1-f54.google.com with SMTP id e10so11357563uab.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 23:23:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Cj1vfKTbWBgindpWlIKN3ENuln6j1Vta1kOip6OU7u4=;
+        b=QtXT92WfMfyBwFK7s6HSUYFlcbHioNP/gT4Yb9qpwHGQzQWkPsUtpuHi3375S4+sdO
+         /F53n+0cc3V0OgUJ7kSB02JV96vrgL6Y5LzaLxoNM1RACJf8e6LFI7LV6Naas7yIyJQb
+         g7dVlDZxVU3hlLjMd1N1euumEEaSAjIWmOBnFKTIkEpxzt1Fb8wzOxJOSFdoR3mIdMpt
+         UV+s740XhdW+WX+e7CFTUkv6O10AsdsWtiYHM7mw40gha538wdUqkhzrkEF232X5rylo
+         7RYhHaKmE/ilbJ7561Iiz8DqqBq+0qfrYizfMBSgdkH6SteKXK4vUSNsodRWYJrboxX+
+         at9A==
+X-Gm-Message-State: AOAM532Dw3KRwjgoNuO8MSuPJZVHqPb26s0FS/Tavj2XgUo22QsW8uxY
+        sq3W83UPc8vFyj1KBLE4KMtwojfRD/EunA==
+X-Google-Smtp-Source: ABdhPJxqhsNuOzqN1Mq8uSExukASfbBrE78QV7lOSy+PAEABq+Kyr7PcBsvORM7a7NSpNvf9C/ib/w==
+X-Received: by 2002:a67:cb87:: with SMTP id h7mr12306250vsl.0.1634279007786;
+        Thu, 14 Oct 2021 23:23:27 -0700 (PDT)
+Received: from mail-ua1-f44.google.com (mail-ua1-f44.google.com. [209.85.222.44])
+        by smtp.gmail.com with ESMTPSA id m184sm3111072vsc.6.2021.10.14.23.23.27
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Oct 2021 23:23:27 -0700 (PDT)
+Received: by mail-ua1-f44.google.com with SMTP id e2so15957955uax.7
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 23:23:27 -0700 (PDT)
+X-Received: by 2002:a67:d111:: with SMTP id u17mr12166090vsi.37.1634279007509;
+ Thu, 14 Oct 2021 23:23:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+References: <20211014212906.2331293-1-niklas.soderlund+renesas@ragnatech.se>
+In-Reply-To: <20211014212906.2331293-1-niklas.soderlund+renesas@ragnatech.se>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 15 Oct 2021 08:23:16 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdW71ux2Z--j1yR2FEYmyHJ3uQHBf-iq-+DLB9Wgz_Qj=g@mail.gmail.com>
+Message-ID: <CAMuHMdW71ux2Z--j1yR2FEYmyHJ3uQHBf-iq-+DLB9Wgz_Qj=g@mail.gmail.com>
+Subject: =?UTF-8?Q?Re=3A_=5BPATCH=5D_mailmap=3A_Fix_text_encoding_for_Niklas_S?=
+        =?UTF-8?Q?=C3=B6derlund?=
+To:     =?UTF-8?Q?Niklas_S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sean,
+Hi Niklas,
 
-boris.brezillon@collabora.com wrote on Mon, 11 Oct 2021 16:05:46 +0200:
+On Thu, Oct 14, 2021 at 11:29 PM Niklas Söderlund
+<niklas.soderlund+renesas@ragnatech.se> wrote:
+> There are a commits that mess up the encoding of 'ö' in Söderlund, add a
 
-> On Mon, 11 Oct 2021 13:52:50 +0200
-> Sean Nyekjaer <sean@geanix.com> wrote:
-> 
-> > Follow-up on discussion in https://lkml.org/lkml/2021/10/4/41
-> > 
-> > Changes since from rfc v1/v2:
-> >  - added access protection for all device access hooks in mtd_info.
-> >  - added Suggested-by to [1/3] patch.
-> >  - removed refereces to commit ef347c0cfd61 ("mtd: rawnand: gpmi: Implement exec_op")
-> >    from commit msg as commit 013e6292aaf5 ("mtd: rawnand: Simplify the locking") is 
-> >    to be blamed.
-> >  - tested on a kernel with LOCKDEP enabled.
-> > 
-> > @Miquel: I havn't covered every ioctl, to me it looks like they havn't
-> > direct device access.
+are commits?
 
-Yes indeed it looks like they re-use most of the mtdcore.c functions,
-so it should be fine.
+> correct entry to .mailmap.
+>
+> Signed-off-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
+> ---
+> Hi Geert,
+>
+> Would it be OK for you to pick this fix thru your tree?
 
-> > One (small) issue still present. gpmi_nand.c uses the rwsem before it's
-> > initialized. Seems cumbersome to have every mtd/nand driver to call
-> > init_waitqueue_head() and init_rwsem(). Could we somehow move the call
-> > to mtd_set_dev_defaults() before nand_create_bbt()?  
-> 
-> I have a nasty trick for that one, but I'm not sure Miquel will like it
-> (actually, I don't like it either, but it's so simple compared to the
-> other options we have that I'm tempted to go for this approach until
-> someone has time to invest in a cleaner solution :-)):
-> 
-> diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-> index 3d6c6e880520..a9ac2d528a4d 100644
-> --- a/drivers/mtd/nand/raw/nand_base.c
-> +++ b/drivers/mtd/nand/raw/nand_base.c
-> @@ -6222,8 +6222,6 @@ static int nand_scan_tail(struct nand_chip *chip)
->         mtd->_sync = nand_sync;
->         mtd->_lock = nand_lock;
->         mtd->_unlock = nand_unlock;
-> -       mtd->_suspend = nand_suspend;
-> -       mtd->_resume = nand_resume;
->         mtd->_reboot = nand_shutdown;
->         mtd->_block_isreserved = nand_block_isreserved;
->         mtd->_block_isbad = nand_block_isbad;
-> @@ -6269,6 +6267,13 @@ static int nand_scan_tail(struct nand_chip *chip)
->         if (ret)
->                 goto err_free_secure_regions;
->  
-> +       /*
-> +        * Populate the suspend/resume hooks after the BBT has been scanned to
-> +        * avoid using the suspend lock and resume waitqueue which are only
-> +        * initialized when mtd_device_register() is called.
-> +        */
-> +       mtd->_suspend = nand_suspend;
-> +       mtd->_resume = nand_resume;
->         return 0;
+I guess so, would renesas-arm-dt-for-v5.16 be suitable? ;-)
 
-I'm fine with this as long as it is documented for now.
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in renesas-devel for v5.16.
 
-Thanks,
-Miquèl
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
