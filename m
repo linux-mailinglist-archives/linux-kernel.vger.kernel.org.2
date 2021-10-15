@@ -2,113 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F0BD42F429
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 15:47:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4394C42F427
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 15:47:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240024AbhJONth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 09:49:37 -0400
-Received: from fanzine.igalia.com ([178.60.130.6]:39183 "EHLO
-        fanzine.igalia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239979AbhJONt3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 09:49:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com; s=20170329;
-        h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date; bh=efKAtlmYggIp5/MGcRZxUjTZmUepgUuaKpetxmlwKGs=;
-        b=qAUDLPghuO/I2MfyNv/MxnH6vBHtxy0YDeVCZr6P+ePT9ElYuULZfVWb50jk3MgbRmPXtfhycYTlcZxO+feQmdCYCPZB/Sum2qGrlc2q1fG699Q5avDZFBxBc/OxCybx6Lbka15F1QeqCq9gQHkTwrzs4ziscefRH+1aN570IcxDLtxlYWu5d9Y4yq3e3DdK0I1et6JYqtKyKEKTSHEEOHSdQwj5q/VWsd1W9p6L4gxHGKSdIme5/1uXnzlvYSf95oZnFMgVJR/Gqv7+nOnicaK0Mzt9ynVMNHD7XewS3x2HuxqwYZiLCx83zQyhj9PB1rYJfEicw1nJTBQ9tGzwkg==;
-Received: from a95-92-181-29.cpe.netcabo.pt ([95.92.181.29] helo=mail.igalia.com)
-        by fanzine.igalia.com with esmtpsa 
-        (Cipher TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim)
-        id 1mbNYF-0005Nr-SN; Fri, 15 Oct 2021 15:47:12 +0200
-Date:   Fri, 15 Oct 2021 14:46:59 +0100
-From:   Melissa Wen <mwen@igalia.com>
-To:     Yang Li <yang.lee@linux.alibaba.com>
-Cc:     airlied@linux.ie, daniel@ffwll.ch, emma@anholt.net,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] drm/v3d: nullify pointer se with a NULL
-Message-ID: <20211015134631.l76ai6mdxzrflnv6@mail.igalia.com>
-References: <1634282081-72255-1-git-send-email-yang.lee@linux.alibaba.com>
+        id S240021AbhJONtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 09:49:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49602 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236384AbhJONtL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 09:49:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E703600D4;
+        Fri, 15 Oct 2021 13:47:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634305624;
+        bh=/Mbkfa1+NWegcrBQ2TkZ79kV27LgRGCLcWrVVKv5bso=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=nFTGJ9ZoXcJf1EMxema9sKSnQ885ZjmovVsTDv7tZ14EqNpCbEkJMEgAJCSjLTdLJ
+         4XipYSuidch6U2ZFN2nyfVLs0UYmWMyAuzmgJuHypwT3VHaPpdLMZNCCxZZBjwj/3S
+         7Mv1mUFkyC7kQYmeb/HWfLNz2davT3oYGPFEDKxqq6HmyRDPa33Tvz7VKkv9zD6YrS
+         1b4XD29rPBJSXNO3/9nvgzVjYbiYB0BsY6xwp6w8AGGVssqc8DbkygbpG4z3mAlmnV
+         9dqzrCjox0hdfjn0Le1hQorrHmFWi1jcXl8/1AGiYHAhEwdAlcOkgJyj0Yw64T5A2U
+         TdMoBSeRJ5DcA==
+Subject: Re: [PATCH v3 4/5] dt-bindings: clock: Document Exynos850 CMU
+ bindings
+To:     Sam Protsenko <semen.protsenko@linaro.org>
+Cc:     Ryu Euiyoul <ryu.real@samsung.com>, Tom Gall <tom.gall@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Amit Pundir <amit.pundir@linaro.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        =?UTF-8?Q?Pawe=c5=82_Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Rob Herring <robh+dt@kernel.org>
+References: <20211008154352.19519-1-semen.protsenko@linaro.org>
+ <20211008154352.19519-5-semen.protsenko@linaro.org>
+ <7049b3a9-dc8f-2ae9-01e6-eb3b6f461400@kernel.org>
+ <CGME20211011101326eucas1p17e6deeaa2449bf3f0d6306fb930cce17@eucas1p1.samsung.com>
+ <CAPLW+4kJK=kaiCLDXX1EGLhbKJo5pcHQY9QCj0SVyGQP1n7q0g@mail.gmail.com>
+ <ef781890-76ca-3392-9a17-3856fa1834cf@samsung.com>
+ <CAPLW+4mXMLadAi6U3GiXqRHAGnLH79rZeK6w=EcbOccjqH4N9w@mail.gmail.com>
+From:   Sylwester Nawrocki <snawrocki@kernel.org>
+Message-ID: <bfe13b9f-fcb5-18a5-c14f-6efa0f61909f@kernel.org>
+Date:   Fri, 15 Oct 2021 15:46:59 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="sy5z73mtirs5p2lh"
-Content-Disposition: inline
-In-Reply-To: <1634282081-72255-1-git-send-email-yang.lee@linux.alibaba.com>
+In-Reply-To: <CAPLW+4mXMLadAi6U3GiXqRHAGnLH79rZeK6w=EcbOccjqH4N9w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 12.10.2021 10:13, Sam Protsenko wrote:
+> On Mon, 11 Oct 2021 at 13:42, Sylwester Nawrocki<s.nawrocki@samsung.com>  wrote:
+>> On 11.10.2021 12:13, Sam Protsenko wrote:
+>>> On Sat, 9 Oct 2021 at 23:41, Sylwester Nawrocki<snawrocki@kernel.org>  wrote:
+>>>> On 08.10.2021 17:43, Sam Protsenko wrote:
+>>>>> Provide dt-schema documentation for Exynos850 SoC clock controller.
+>>>>>
+>>>>> Signed-off-by: Sam Protsenko<semen.protsenko@linaro.org>
+>>>>> Reviewed-by: Krzysztof Kozlowski<krzysztof.kozlowski@canonical.com>
+>>>>> Acked-by: Chanwoo Choi<cw00.choi@samsung.com>
+>> [...]
+>>>>> +++ b/Documentation/devicetree/bindings/clock/samsung,exynos850-clock.yaml
+>>>>> @@ -0,0 +1,185 @@
+>> [...]
+>>>>> +
+>>>>> +title: Samsung Exynos850 SoC clock controller
+>>>>> +
+>>>>> +maintainers:
+>>>>> +  - Sam Protsenko<semen.protsenko@linaro.org>
+>>>>> +  - Chanwoo Choi<cw00.choi@samsung.com>
+>>>>> +  - Krzysztof Kozlowski<krzysztof.kozlowski@canonical.com>
+>>>>> +  - Sylwester Nawrocki<s.nawrocki@samsung.com>
+>>>>> +  - Tomasz Figa<tomasz.figa@gmail.com>
+>>>>> +
+>>>>> +description: |
+>>>>> +  Exynos850 clock controller is comprised of several CMU units, generating
+>>>>> +  clocks for different domains. Those CMU units are modeled as separate device
+>>>>> +  tree nodes, and might depend on each other. Root clocks in that clock tree are
+>>>>> +  two external clocks:: OSCCLK (26 MHz) and RTCCLK (32768 Hz). Those external
+>>>>> +  clocks must be defined as fixed-rate clocks in dts.
+>>>>> +
+>>>>> +  CMU_TOP is a top-level CMU, where all base clocks are prepared using PLLs and
+>>>>> +  dividers; all other leaf clocks (other CMUs) are usually derived from CMU_TOP.
+>>>>> +
+>>>>> +  Each clock is assigned an identifier and client nodes can use this identifier
+>>>>> +  to specify the clock which they consume. All clocks that available for usage
 
---sy5z73mtirs5p2lh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+>>>> s/All clocks that available/All clocks available ?
+>>>> No need to resend, I can amend it when applying.
+>>>>
+>>> Yeah, not a native speaker, I tend to do such mistakes sometimes:)
+>>> Please fix when applying.
+>>>
+>>> Btw, I can see that you already applied 3 out of 5 patches from this
+>>> patch series here: [1]. Can you please also apply the rest, or is
+>>> there any outstanding comments that I missed?
+>> The patches look good to me, I just wanted to allow some for Rob to have
+>> a look and provide an Ack.
+>>
+> Can you please review this one?
 
-On 10/15, Yang Li wrote:
-> Currently a plain integer is being used to nullify the pointer
-> struct v3d_submit_ext *se. Use NULL instead. Cleans up sparse
-> warnings:
-> drivers/gpu/drm/v3d/v3d_gem.c:777:53: warning: Using plain integer as
-> NULL pointer
-> drivers/gpu/drm/v3d/v3d_gem.c:1010:45: warning: Using plain integer as
-> NULL pointer
->=20
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-> ---
->  drivers/gpu/drm/v3d/v3d_gem.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/gpu/drm/v3d/v3d_gem.c b/drivers/gpu/drm/v3d/v3d_gem.c
-> index e47ae40..c7ed2e1 100644
-> --- a/drivers/gpu/drm/v3d/v3d_gem.c
-> +++ b/drivers/gpu/drm/v3d/v3d_gem.c
-> @@ -774,7 +774,7 @@ void v3d_job_put(struct v3d_job *job)
-> =20
->  	if (args->flags & DRM_V3D_SUBMIT_CL_FLUSH_CACHE) {
->  		ret =3D v3d_job_init(v3d, file_priv, (void *)&clean_job, sizeof(*clean=
-_job),
-> -				   v3d_job_free, 0, 0, V3D_CACHE_CLEAN);
-> +				   v3d_job_free, 0, NULL, V3D_CACHE_CLEAN);
->  		if (ret)
->  			goto fail;
-> =20
-> @@ -1007,7 +1007,7 @@ void v3d_job_put(struct v3d_job *job)
->  		goto fail;
-> =20
->  	ret =3D v3d_job_init(v3d, file_priv, (void *)&clean_job, sizeof(*clean_=
-job),
-> -			   v3d_job_free, 0, 0, V3D_CACHE_CLEAN);
-> +			   v3d_job_free, 0, NULL, V3D_CACHE_CLEAN);
->  	if (ret)
->  		goto fail;
+The binding is rather straightforward so I applied the patch now, thank you.
 
-Thanks,=20
 
-Reviewed-by: Melissa Wen <mwen@igalia.com>
 
-and I'll apply do drm-misc-next.
-> =20
-> --=20
-> 1.8.3.1
->=20
-
---sy5z73mtirs5p2lh
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEd8WOo/JViG+Tu+XIwqF3j0dLehwFAmFphlMACgkQwqF3j0dL
-ehwpLA//ULEGEdPpO2KNeJZPMQ71+SAI2FQnmyKY121P8rjTPstiV+xOaDt2OUPx
-CdlXExjTTAn+sZgmjTQ0YPzif29asr53RPSj8A9lun4OEaKxh7aUt9Z2g4eT7mZd
-RFUqssYPVa/YcZQLYnEgWXaKHLTITDlku0gtIdpJJ1b6//q/lwq7QbFXHHynmqqI
-Fdf0bIcj4Ar6e8en5x1zD/JpTMu6CayyLFbLXcrcoJjLPen7bdHyuidQHs9wG+16
-wSGUM+/JoTjFe6/GGqha1EyWqWPALk5n7qpvcZXsEBXdjyS15JAIb34BjbBsCJKQ
-/fmDrDX0ZaI17WGbC0WPVdrISSG8awqZZtMfagxPqHs5nGr2fUGCAzd0vbFWVqyw
-pAjGa9n4eOczw3fGF/d15ovq7uSf3nIHOR8oAPQ76bvQ9z3PkAiLu7XsM33FVQ0f
-J0h9drUBpwm2wkNw7GxAETiQYejH0IFW94gOIlPNMmPHIfNXgU2LWYKn49lqNx91
-V720+IDbcSvlDnGGe8sPa8HhzX0e5QuiuVgMWg0ZGeEPv3F3j5w0HOBcNwYdPp6n
-+1gTfspWGQgJf2RkJ8PRcv8JphxwLfblqvtbnfrz7GMKV7pN1K+rwWUVDuF2O2Dq
-CNruvovZySRN6RTqonspjL04r30LAXKQg/Br0vTCe3teH2pN9ek=
-=sQ+y
------END PGP SIGNATURE-----
-
---sy5z73mtirs5p2lh--
