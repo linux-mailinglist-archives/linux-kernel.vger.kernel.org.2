@@ -2,134 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBA7C42EE36
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 11:57:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C230842EE3D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 11:59:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234730AbhJOJ7M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 05:59:12 -0400
-Received: from mga02.intel.com ([134.134.136.20]:54697 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233716AbhJOJ7K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 05:59:10 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10137"; a="215049129"
-X-IronPort-AV: E=Sophos;i="5.85,375,1624345200"; 
-   d="scan'208";a="215049129"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2021 02:57:04 -0700
-X-IronPort-AV: E=Sophos;i="5.85,375,1624345200"; 
-   d="scan'208";a="492394407"
-Received: from tzahur-mobl.ger.corp.intel.com (HELO localhost) ([10.251.211.201])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2021 02:57:01 -0700
-From:   Jani Nikula <jani.nikula@intel.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the drm-misc tree
-In-Reply-To: <20211015202648.258445ef@canb.auug.org.au>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20211015202648.258445ef@canb.auug.org.au>
-Date:   Fri, 15 Oct 2021 12:56:58 +0300
-Message-ID: <87h7divcet.fsf@intel.com>
+        id S234793AbhJOKBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 06:01:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49420 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232995AbhJOKBY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 06:01:24 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5955DC061570
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 02:59:14 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id s136so4885997pgs.4
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 02:59:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amikom.ac.id; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=/DC7Rq1fFrlfrYv5t8fcJ70LswSguGl1a9h5omIZjFg=;
+        b=HatCpaOic/i4oT6J/grf5xzXW9B4JZituWL3+ZK7s4ndFNyqFJ+Mz9q/+t0wMZ+Pl3
+         WJh1JuPNEmI5Bh/Ly04tDGgKKv8D1i3mTUrk4El0QoAbj37VEyGKXS06hGcI/Y2ehhl4
+         q5vh+/8U31yZSpr5zvuMhnMufT8tBQLvu+YHY/1aplyO+0dFW3bVAm/IhCWiwI2Sz6Nk
+         gq/KNlNmF44ij9EdNo5+BiN2zvYuwPgO2GPe+EfFf1InHxObb2UULvXpqNMdLxOov8aa
+         fC+ScopIVOM3ZGYupUCByCwKJU7zFTcjG4QkHLgxH6zrpeRKrzNCROQ6uJ+bGpGbgZ1N
+         peLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=/DC7Rq1fFrlfrYv5t8fcJ70LswSguGl1a9h5omIZjFg=;
+        b=1rQ4pKiPg9aPgZ0k9qhG7KDKZ+78SKFinTFw1e/GyPYZAUaL8iI74d7IY4J32FZIp+
+         wX1JQKtczWgUlI6L0CWGquMtOiU8AmRmtzzMEVBMt+7HhZbxeQkcYd8hpChplmm/b2xP
+         ofrFHI8UAqKe/HFmwPvOOGPoPzqx9T5OFk2OAHQHfjgeGNSD0ECVxKfInbsZW9fbQi1V
+         3HyHBC1JjcPc/mAEDNAnNyY3E0K/0i4L71tOkk2KnvhZwJIEIjYlqq07p/8Jpl/sxfF8
+         +o9gzrjoVTn+FkvpqCBxB8MgpzrpCWw0SU9kwQMLPvff3UhMzOuDE3uXT6b1jvJLzJYp
+         pY+g==
+X-Gm-Message-State: AOAM531tCDeyFK6C3srld/73JPedBk4eWmBIjaaGjUwxcbkwqUiyhzRP
+        lOQlfXTYv4t1SiECkdQj+Fpknw==
+X-Google-Smtp-Source: ABdhPJwtFU5HeLv9LTCoJkDqaAw4RaQEdxWQFfNExO6k5mbi1vIJ74+xWDBNQQJx4y8bowNBbOoPXw==
+X-Received: by 2002:a65:6392:: with SMTP id h18mr8327763pgv.397.1634291953811;
+        Fri, 15 Oct 2021 02:59:13 -0700 (PDT)
+Received: from integral.. ([182.2.71.75])
+        by smtp.gmail.com with ESMTPSA id l207sm4772917pfd.199.2021.10.15.02.59.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Oct 2021 02:59:13 -0700 (PDT)
+From:   Ammar Faizi <ammar.faizi@students.amikom.ac.id>
+To:     Bedirhan KURT <windowz414@gnuweeb.org>
+Cc:     Willy Tarreau <w@1wt.eu>,
+        Ammar Faizi <ammar.faizi@students.amikom.ac.id>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        David Laight <David.Laight@ACULAB.COM>,
+        Peter Cordes <peter@cordes.ca>,
+        Louvian Lyndal <louvianlyndal@gmail.com>
+Subject: Re: [PATCH 2/2] tools/nolibc: x86-64: Fix startup code bug
+Date:   Fri, 15 Oct 2021 16:58:19 +0700
+Message-Id: <Z0HPX3gxjjYhZnksAQfP6g-ammarfaizi2@gnuweeb.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <a6a31152-69db-73c6-5083-cf9f9af8ca41@gnuweeb.org>
+References: <a6a31152-69db-73c6-5083-cf9f9af8ca41@gnuweeb.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 15 Oct 2021, Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> Hi all,
+On Fri, Oct 15, 2021 at 4:26 PM Bedirhan KURT <windowz414@gnuweeb.org> wrote:
 >
-> After merging the drm-misc tree, today's linux-next build (arm
-> multi_v7_defconfig) failed like this:
+> (Sending again as previous email had my Ubuntu username as sender and
+> Thunderbird attached my GPG key on it. Hope I cancelled on time.)
 >
-> drivers/gpu/drm/drm_modeset_lock.c:111:29: error: conflicting types for '__stack_depot_save'
->   111 | static depot_stack_handle_t __stack_depot_save(void)
->       |                             ^~~~~~~~~~~~~~~~~~
-> In file included from include/linux/page_ext.h:7,
->                  from include/linux/mm.h:25,
->                  from include/linux/kallsyms.h:13,
->                  from include/linux/bpf.h:20,
->                  from include/linux/bpf-cgroup.h:5,
->                  from include/linux/cgroup-defs.h:22,
->                  from include/linux/cgroup.h:28,
->                  from include/linux/memcontrol.h:13,
->                  from include/linux/swap.h:9,
->                  from include/linux/suspend.h:5,
->                  from include/linux/regulator/consumer.h:35,
->                  from include/linux/i2c.h:18,
->                  from include/drm/drm_crtc.h:28,
->                  from include/drm/drm_atomic.h:31,
->                  from drivers/gpu/drm/drm_modeset_lock.c:24:
-> include/linux/stackdepot.h:18:22: note: previous declaration of '__stack_depot_save' was here
->    18 | depot_stack_handle_t __stack_depot_save(unsigned long *entries,
->       |                      ^~~~~~~~~~~~~~~~~~
+> Hi Ammar,
 >
-> Caused by commit
+> I've tested your patchset on my local clone of Linux kernel with up to
+> date fetch of master branch and this is the output I've gotten after
+> executing the test binary compiled;
 >
->   cd06ab2fd48f ("drm/locking: add backtrace for locking contended locks without backoff")
+[...]
 >
-> This may only have been revealed because of another fix I have had to
-> apply today.
+> I hope these are helpful and I could help throughout this patchset. I
+> didn't get any SegFaults compared to my tests with same code on pure
+> state either so I think everything works just fine. You can append me in
+> Tested-by tag if you want.
 >
-> I have applied the following patch for today.
->
-> From: Stephen Rothwell <sfr@canb.auug.org.au>
-> Date: Fri, 15 Oct 2021 20:17:52 +1100
-> Subject: [PATCH] drm/locking: fix for name conflict
->
-> Fixes: cd06ab2fd48f ("drm/locking: add backtrace for locking contended locks without backoff")
-> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
 
-My bad, what was I thinking using stack depot's "namespace".
+Thanks for testing!
 
-The fix looks good, but I'd rename __stack_depot_print too added in the
-same commit. Do you want to respin or shall I take it from here?
-
-Thanks,
-Jani.
-
-
-
-> ---
->  drivers/gpu/drm/drm_modeset_lock.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/gpu/drm/drm_modeset_lock.c b/drivers/gpu/drm/drm_modeset_lock.c
-> index 4d32b61fa1fd..ee36dd20900d 100644
-> --- a/drivers/gpu/drm/drm_modeset_lock.c
-> +++ b/drivers/gpu/drm/drm_modeset_lock.c
-> @@ -79,7 +79,7 @@
->  static DEFINE_WW_CLASS(crtc_ww_class);
->  
->  #if IS_ENABLED(CONFIG_DRM_DEBUG_MODESET_LOCK)
-> -static noinline depot_stack_handle_t __stack_depot_save(void)
-> +static noinline depot_stack_handle_t __drm_stack_depot_save(void)
->  {
->  	unsigned long entries[8];
->  	unsigned int n;
-> @@ -108,7 +108,7 @@ static void __stack_depot_print(depot_stack_handle_t stack_depot)
->  	kfree(buf);
->  }
->  #else /* CONFIG_DRM_DEBUG_MODESET_LOCK */
-> -static depot_stack_handle_t __stack_depot_save(void)
-> +static depot_stack_handle_t __drm_stack_depot_save(void)
->  {
->  	return 0;
->  }
-> @@ -317,7 +317,7 @@ static inline int modeset_lock(struct drm_modeset_lock *lock,
->  		ret = 0;
->  	} else if (ret == -EDEADLK) {
->  		ctx->contended = lock;
-> -		ctx->stack_depot = __stack_depot_save();
-> +		ctx->stack_depot = __drm_stack_depot_save();
->  	}
->  
->  	return ret;
-> -- 
-> 2.33.0
+Tested-by: Bedirhan KURT <windowz414@gnuweeb.org>
 
 -- 
-Jani Nikula, Intel Open Source Graphics Center
+Ammar Faizi
