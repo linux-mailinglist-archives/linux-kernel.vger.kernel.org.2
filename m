@@ -2,75 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4E1A42F8B5
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 18:51:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8175F42F8B4
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 18:51:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241665AbhJOQx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 12:53:27 -0400
-Received: from smtprelay0140.hostedemail.com ([216.40.44.140]:60616 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S236997AbhJOQxN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S241597AbhJOQxW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 12:53:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34216 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241642AbhJOQxN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 15 Oct 2021 12:53:13 -0400
-Received: from omf04.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay03.hostedemail.com (Postfix) with ESMTP id EEC578384364;
-        Fri, 15 Oct 2021 16:51:00 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf04.hostedemail.com (Postfix) with ESMTPA id C92EBD1517;
-        Fri, 15 Oct 2021 16:50:59 +0000 (UTC)
-Message-ID: <8536d4a99103982688de6cdaeea51bc92a67af90.camel@perches.com>
-Subject: Re: [PATCH 1/2] checkpatch: Add check item for RFC tags is outside
- the subject prefix
-From:   Joe Perches <joe@perches.com>
-To:     Cai Huoqing <caihuoqing@baidu.com>
-Cc:     Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andy Whitcroft <apw@canonical.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Fri, 15 Oct 2021 09:50:58 -0700
-In-Reply-To: <20211015075853.4038-1-caihuoqing@baidu.com>
-References: <20211015075853.4038-1-caihuoqing@baidu.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.4-1 
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4FA4861151;
+        Fri, 15 Oct 2021 16:51:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634316666;
+        bh=RIPWXigVIiL/KIysb2frOp/h0Gpodru2TBwLYvNjvA0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Rbd82HI+29vw+xRsqztUngZmVZeuHdyB7vrE01gYHgutD5HGl0byYQvLpvLFUJl8k
+         2FYL4ZH/3AKsuT0Eyk00tiNajdw3REjKzscPv1u8xe304cDLJzUf844ENqu5ot3vdR
+         PgAwlGxY1fTwo3IYhGdRGKnUH+aWjPvjEmQo8S0ZeNfYHPJp+b1TI5hpaJNl1blfDf
+         RNnif/yBnhXH292ZHR49Y6d4EigmYDd+Gw7kOwcjBnMyEzz9LWpLTCTkVKsX3c07+M
+         vHLIfXIW8RAA5pCEBurGfuJmV40L6Q6xEdBs+fgrMllofDT1oAaoC/a/unbhDQXa+m
+         XotdnzWNMFU+g==
+Date:   Fri, 15 Oct 2021 17:51:03 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     George Song <george.song@maximintegrated.com>
+Cc:     lgirdwood@gmail.com, robh+dt@kernel.org,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, george.song@analog.com,
+        ryans.lee@maximintegrated.com, steves.lee@maximintegrated.com
+Subject: Re: [v2 1/2] ASoC: dt-bindings: max98520: changed signed-off-by
+ email address
+Message-ID: <YWmxd/tnHRXUEAxy@sirena.org.uk>
+References: <20211015072709.3167-1-george.song@maximintegrated.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.65
-X-Stat-Signature: pqmsez3o4czcb891jrtsp7wfi11fphbg
-X-Rspamd-Server: rspamout02
-X-Rspamd-Queue-Id: C92EBD1517
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1+6HaJSlAtVEd4O7sPpjarRmFmgrMz/hgc=
-X-HE-Tag: 1634316659-100383
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="qnzJ+0DBWvYa9boS"
+Content-Disposition: inline
+In-Reply-To: <20211015072709.3167-1-george.song@maximintegrated.com>
+X-Cookie: 1: No code table for op: ++post
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-10-15 at 15:58 +0800, Cai Huoqing wrote:
-> Some patches have been sent, the RFC tag of which is
-> outside the subject prefix is incorrect. like this:
-> "Subject: [PATCH v2] RFC:"
-> 
-> Perfer "Subject: [RFC PATCH v2]" to "Subject: [PATCH v2] RFC:",
-> so add check item for it.
 
-typo of prefer but does this matter enough to make it a test?
+--qnzJ+0DBWvYa9boS
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Same typo in next patch.
+On Fri, Oct 15, 2021 at 04:27:08PM +0900, George Song wrote:
+> changed signed-off-by email address to maximintegrated group.
+>=20
+> Signed-off-by: George Song <george.song@maximintegrated.com>
+> ---
+>  Documentation/devicetree/bindings/sound/maxim,max98520.yaml | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-[]
-> @@ -3121,6 +3121,12 @@ sub process {
->  			     "A patch subject line should describe the change not the tool that found it\n" . $herecurr);
->  		}
->  
-> +# Check if RFC tags is outside the subject prefix
-> +		if ($in_header_lines && $line =~ /^Subject:.*patch\s*.*]\s*rfc:/i) {
-> +			WARN("RFC_TAG_PREFIX",
-> +			     "RFC tag is outside subject prefix, try \"git format-patch --rfc\"\n" . $herecurr);
-> +		}
-> +
->  # Check for Gerrit Change-Ids not in any patch context
->  		if ($realfile eq '' && !$has_patch_separator && $line =~ /^\s*change-id:/i) {
->  			if (ERROR("GERRIT_CHANGE_ID",
+This file isn't upstream - it looks like you've sent an incremental
+patch against a previous posting instead of revising your patch?  Once a
+patch is accepted upstream you should send incremental changes but until
+then you should repost the whole thing.
 
+--qnzJ+0DBWvYa9boS
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFpsXYACgkQJNaLcl1U
+h9AIIQf6A8SeB3TftCfbbOY4e0oQWkqlTMdDLv3LOQlzGhIShHYNBDgOZzOkaZ0F
+T622F+iBFCT/en8TD/TJbZDS1SiYE21A/hEBnsXbXcxfUqsl01gy2IomMp4XQq86
+QiXj1QmxCrZ5KvFaFv2cwgRgJaFx5QpMaVjmJJyXlczDJ9NiZ7WmXzhaPXRtCGkV
+F1npJhwp70tIpSDiKtcCctctH/8gcc9KaTnC5dyoWHrBITlu3+JP3IuNRvRAvVGg
+DcJ/APxrWHLrsh47n32PM0sHjD6SZNnmbI3Qj8XIhMnsNddqR6mDlHIqDSOKKbfU
+ZDb612znVSVnEUHCLtSGoK7YnW0o0A==
+=aMTI
+-----END PGP SIGNATURE-----
+
+--qnzJ+0DBWvYa9boS--
