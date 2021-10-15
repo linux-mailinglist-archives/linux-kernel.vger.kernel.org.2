@@ -2,227 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54DA542E658
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 04:03:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D81F42E65D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 04:06:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234744AbhJOCGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 22:06:02 -0400
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:53778 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232271AbhJOCF7 (ORCPT
+        id S234891AbhJOCIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 22:08:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56356 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234867AbhJOCIi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 22:05:59 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R351e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0Us1M8r0_1634263432;
-Received: from localhost(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0Us1M8r0_1634263432)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 15 Oct 2021 10:03:52 +0800
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-To:     akpm@linux-foundation.org, mike.kravetz@oracle.com
-Cc:     mhocko@kernel.org, guro@fb.com, corbet@lwn.net,
-        yaozhenguo1@gmail.com, baolin.wang@linux.alibaba.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Subject: [PATCH v3] hugetlb: Support node specified when using cma for gigantic hugepages
-Date:   Fri, 15 Oct 2021 10:03:41 +0800
-Message-Id: <bb790775ca60bb8f4b26956bb3f6988f74e075c7.1634261144.git.baolin.wang@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Thu, 14 Oct 2021 22:08:38 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EA10C061570
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 19:06:33 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id d125so6061257iof.5
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 19:06:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ez587ft9rqr8sTeod+Afv+LsY8b+Xmu4wMHtAealLmU=;
+        b=FbzUk1lC6UGTtGCEL3MXXivdBwD/G3cAIjD7Ih8LpdBtbTVuFjJ+2S4MhJJonliG6u
+         4ry/NRCSREmFB0NxVjW9zdPgBFl/nBquFHnkI8wM/nlxf/j3YNVxNgC7CDqHWR+0q9Ad
+         IcnD9xZh8J2ywWzt10LmGKS9svnEQAVaFloLjGMo7d0Vv1I1eDhA7EXk83N6Ve0lm8co
+         kmGL9PZhWQ06ozuBhiYh4TfEWLtGe+PawtMfGR0s40hZEsrPYbf9+PSJtWYMsQpR0fRW
+         LDJNg+7OCIIbro+a/5NRidfAyc0stYNhdnji4ZVqys2hx/DpigBhTz+q+q+iSLRzu5ew
+         2REA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ez587ft9rqr8sTeod+Afv+LsY8b+Xmu4wMHtAealLmU=;
+        b=V+IxFl41Rs4nKdTPCXRAbWMqtVkstHT9cexdYTmVmuOmyBn2bZg/1hmKNwYWEjvlHg
+         58Tw4U/Yfcvd2CDk88MaL+BZxkMM6ELfWH/cJU29l0sJQhMaetQbqvf//CfMC/UZoIML
+         HqnttF7pKQqDzRiYpJP4eyXuzkYjSEMQtnacdHilySx/ax5e+hEAsb69/fQbrS4A1UiS
+         dIW4WmWBLYpOEmfZ2yCINKNSSB9kp3ygx2g7t74Agtr0B2LGCIBrnvm8TYnrZUTtkayt
+         K7cv2vD6tRfs71h1yaY2GpJ/BWxyCJ3WyEqkSLNYyKrka8BZefZ9F9RQzdJ5L1eFSDlu
+         Xnfw==
+X-Gm-Message-State: AOAM532d2/aBJHpkcq00a7kqtHYvgwse+KiL8iXZei10BY43YBEGQQrn
+        PJ9Jih+2Jcnfl9mQTraepesQNtna4zBlXiUqULo=
+X-Google-Smtp-Source: ABdhPJyF6K3gLFM7HtRbgXXhFfdoW8ppZhJnP8vBqqSzDphdligAw3eLw83kq1SVc5ZZ5cP5U4lBhX8ai1o7qhXj3J8=
+X-Received: by 2002:a05:6602:27d4:: with SMTP id l20mr1840790ios.94.1634263592376;
+ Thu, 14 Oct 2021 19:06:32 -0700 (PDT)
+MIME-Version: 1.0
+References: <20211010102429.99577-4-laoar.shao@gmail.com> <20211014072707.GA18719@xsang-OptiPlex-9020>
+ <CALOAHbD540exB5DDfB8DDh8WXvsag9JsdMmC0yxriWMaoAVfOg@mail.gmail.com>
+ <1529739526.13983.1634215325995.JavaMail.zimbra@efficios.com>
+ <CALOAHbDGH1vp7a9BYLDKCCrh-W2205O707LXNM+Yvt5tQ7Swag@mail.gmail.com>
+ <173454728.14036.1634216949862.JavaMail.zimbra@efficios.com>
+ <CALOAHbBTxLvuiuT4tT2_7C+jaXBoh0uTjzLRm+njO4tKxCtPwg@mail.gmail.com>
+ <1171592945.14099.1634219447199.JavaMail.zimbra@efficios.com>
+ <CALOAHbAhT1bTAThrmA1zYE5q8shR4dxZf5fqcq_9wVrV+XwVEQ@mail.gmail.com> <202110140910.295E856@keescook>
+In-Reply-To: <202110140910.295E856@keescook>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Fri, 15 Oct 2021 10:05:56 +0800
+Message-ID: <CALOAHbAQ06+G776+7WqWBag+Q1gO5M+Qg3axYd4=Tpbzx1i=tg@mail.gmail.com>
+Subject: Re: [sched.h] 317419b91e: perf-sanity-tests.Parse_sched_tracepoints_fields.fail
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        acme <acme@kernel.org>, rostedt <rostedt@goodmis.org>,
+        kernel test robot <oliver.sang@intel.com>,
+        0day robot <lkp@intel.com>, Petr Mladek <pmladek@suse.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        lkp <lkp@lists.01.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Qiang Zhang <qiang.zhang@windriver.com>,
+        robdclark <robdclark@chromium.org>,
+        christian <christian@brauner.io>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        bristot <bristot@redhat.com>,
+        aubrey li <aubrey.li@linux.intel.com>,
+        yu c chen <yu.c.chen@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now the size of CMA area for gigantic hugepages runtime allocation is
-balanced for all online nodes, but we also want to specify the size of
-CMA per-node, or only one node in some cases, which are similar with
-patch [1].
+On Fri, Oct 15, 2021 at 12:14 AM Kees Cook <keescook@chromium.org> wrote:
+>
+> On Thu, Oct 14, 2021 at 10:40:04PM +0800, Yafang Shao wrote:
+> > On Thu, Oct 14, 2021 at 9:50 PM Mathieu Desnoyers
+> > <mathieu.desnoyers@efficios.com> wrote:
+> > >
+> > > ----- On Oct 14, 2021, at 9:11 AM, Yafang Shao laoar.shao@gmail.com wrote:
+> > >
+> > > > On Thu, Oct 14, 2021 at 9:09 PM Mathieu Desnoyers
+> > > > <mathieu.desnoyers@efficios.com> wrote:
+> > > >>
+> > > >> ----- On Oct 14, 2021, at 9:05 AM, Yafang Shao laoar.shao@gmail.com wrote:
+> > > >> [...]
+> > > >> >> If it happens that this ABI break is noticed by more than an in-tree test
+> > > >> >> program, then
+> > > >> >> the kernel's ABI rules will require that this trace field size stays unchanged.
+> > > >> >> This brings
+> > > >> >> up once more the whole topic of "Tracepoints ABI" which has been discussed
+> > > >> >> repeatedly in
+> > > >> >> the past.
+> > > >> >>
+> > > >> >
+> > > >> > I will check if any other in-tree tools depends on TASK_COMM_LEN.
+> > > >>
+> > > >> That's a start, but given this is a userspace ABI, out-of-tree userland
+> > > >> tools which depend of this to be fixed-size are also relevant.
+> > > >>
+> > > >
+> > > > TASK_COMM_LEN isn't defined in include/uapi/ directory, so it seems
+> > > > that it isn't the uerspace ABI?
+> > >
+> > > One case where this 16 bytes size is expected by userspace is prctl(2) PR_GET_NAME
+> > > and PR_SET_NAME.
+> > >
+> >
+> > the prctl(2) man page says that:
+> > : PR_SET_NAME
+> > :        If the length of the string, including the terminating
+> > :        null byte, exceeds 16 bytes, the string is silently truncated.
+> > : PR_GET_NAME
+> > :         The buffer should allow space for up to 16 bytes
+> > :          the returned string will be null-terminated.
+> >
+> > As the string returned to user space is null-terminated, extending
+> > task comm won't break the prctl(2) user code.
+>
+> If userspace was:
+>
+>         char comm[16];
+>         int important_values;
+>
+>         ...
+>
+>         prctl(PR_GET_NAME, pid, comm);
+>
+> the kernel will clobber "important_values", so prctl() must enforce the
+> old size (and terminate it correctly). It's not okay for us to expect
+> that userspace get recompiled -- old binaries must continue to work
+> correctly on kernel kernels.
+>
+>         case PR_GET_NAME:
+>                 get_task_comm(comm, me);
+>                 if (copy_to_user((char __user *)arg2, comm, sizeof(comm)))
+>                         return -EFAULT;
+>                 break;
+>
+> This looks like it needs to be explicitly NUL terminated at 16 as well.
+>
 
-For example, on some multi-nodes systems, each node's memory can be
-different, allocating the same size of CMA for each node is not suitable
-for the low-memory nodes. Meanwhile some workloads like DPDK mentioned by
-Zhenguo in patch [1] only need hugepages in one node.
+Right. After replacing strncpy with strscpy_pad() in
+__get_task_comm(), the string will be NUL terminated.
 
-On the other hand, we have some machines with multiple types of memory,
-like DRAM and PMEM (persistent memory). On this system, we may want to
-specify all the hugepages only on DRAM node, or specify the proportion
-of DRAM node and PMEM node, to tuning the performance of the workloads.
+> I'd say we need a TASK_COMM_LEN_V1 to use in all the old hard-coded
+> places.
+>
 
-Thus this patch adds node format for 'hugetlb_cma' parameter to support
-specifying the size of CMA per-node. An example is as follows:
+Sure, it will be easy to grep then.
 
-hugetlb_cma=0:5G,2:5G
+> >
+> > > The other case I am referring to is with ftrace and perf:
+> > >
+> > > mount -t tracefs nodev /sys/kernel/tracing
+> > > cat /sys/kernel/tracing/events/sched/sched_switch/format
+> > >
+> > > name: sched_switch
+> > > ID: 314
+> > > format:
+> > > [...]
+> > >         field:char prev_comm[16];       offset:8;       size:16;        signed:1;
+> > > [...]
+> > >         field:char next_comm[16];       offset:40;      size:16;        signed:1;
+> > >
+> > > Both of those fields expose a fixed-size of 16 bytes.
+> > >
+> > > AFAIK Steven's intent was that by parsing this file, trace viewers could adapt to
+> > > changes in the event field layout. Unfortunately, there have been cases where
+> > > trace viewers had a hard expectation on the field layout. Hopefully those have
+> > > all been fixed a while ago.
+> > >
+> >
+> > I don't have a clear idea what will happen to trace viewers if we
+> > extend task comm.
+> >
+> > Steven, do you have any suggestions ?
+> >
+> > --
+> > Thanks
+> > Yafang
+>
+> --
+> Kees Cook
 
-which means allocating 5G size of CMA area on node 0 and node 2
-respectively. And the users should use the node specific sysfs file to
-allocate the gigantic hugepages if specified the CMA size on that node.
 
-[1]
-https://lkml.kernel.org/r/20211005054729.86457-1-yaozhenguo1@gmail.com
 
-Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
----
-Changes from v2:
- - Update the commit log.
- - Remove hugetlb_cma_nodes_allowed nodemask and related code.
- - Rebase on the current linux-next branch.
-
-Changes from v1:
- - Update the commit log.
- - Avoid changing the behavior for 'balanced' gigantic huge page pool
-   allocations.
- - Catch the invalid node specified in hugetlb_cma_reserve().
- - Validate the size of CMA for each node in hugetlb_cma_reserve().
----
- Documentation/admin-guide/kernel-parameters.txt |  6 +-
- mm/hugetlb.c                                    | 86 ++++++++++++++++++++++---
- 2 files changed, 81 insertions(+), 11 deletions(-)
-
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index ad94a2a..395d17e 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -1587,8 +1587,10 @@
- 			registers.  Default set by CONFIG_HPET_MMAP_DEFAULT.
- 
- 	hugetlb_cma=	[HW,CMA] The size of a CMA area used for allocation
--			of gigantic hugepages.
--			Format: nn[KMGTPE]
-+			of gigantic hugepages. Or using node format, the size
-+			of a CMA area per node can be specified.
-+			Format: nn[KMGTPE] or (node format)
-+				<node>:nn[KMGTPE][,<node>:nn[KMGTPE]]
- 
- 			Reserve a CMA area of given size and allocate gigantic
- 			hugepages using the CMA allocator. If enabled, the
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 058158f..ee0db48 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -50,6 +50,7 @@
- 
- #ifdef CONFIG_CMA
- static struct cma *hugetlb_cma[MAX_NUMNODES];
-+static unsigned long hugetlb_cma_size_in_node[MAX_NUMNODES] __initdata;
- static bool hugetlb_cma_page(struct page *page, unsigned int order)
- {
- 	return cma_pages_valid(hugetlb_cma[page_to_nid(page)], page,
-@@ -6766,7 +6767,38 @@ void hugetlb_unshare_all_pmds(struct vm_area_struct *vma)
- 
- static int __init cmdline_parse_hugetlb_cma(char *p)
- {
--	hugetlb_cma_size = memparse(p, &p);
-+	int nid, count = 0;
-+	unsigned long tmp;
-+	char *s = p;
-+
-+	while (*s) {
-+		if (sscanf(s, "%lu%n", &tmp, &count) != 1)
-+			break;
-+
-+		if (s[count] == ':') {
-+			nid = tmp;
-+			if (nid < 0 || nid >= MAX_NUMNODES)
-+				break;
-+
-+			s += count + 1;
-+			tmp = memparse(s, &s);
-+			hugetlb_cma_size_in_node[nid] = tmp;
-+			hugetlb_cma_size += tmp;
-+
-+			/*
-+			 * Skip the separator if have one, otherwise
-+			 * break the parsing.
-+			 */
-+			if (*s == ',')
-+				s++;
-+			else
-+				break;
-+		} else {
-+			hugetlb_cma_size = memparse(p, &p);
-+			break;
-+		}
-+	}
-+
- 	return 0;
- }
- 
-@@ -6775,6 +6807,7 @@ static int __init cmdline_parse_hugetlb_cma(char *p)
- void __init hugetlb_cma_reserve(int order)
- {
- 	unsigned long size, reserved, per_node;
-+	bool node_specific_cma_alloc = false;
- 	int nid;
- 
- 	cma_reserve_called = true;
-@@ -6782,6 +6815,31 @@ void __init hugetlb_cma_reserve(int order)
- 	if (!hugetlb_cma_size)
- 		return;
- 
-+	for (nid = 0; nid < MAX_NUMNODES; nid++) {
-+		if (hugetlb_cma_size_in_node[nid] == 0)
-+			continue;
-+
-+		if (!node_state(nid, N_ONLINE)) {
-+			pr_warn("hugetlb_cma: invalid node %d specified\n", nid);
-+			hugetlb_cma_size -= hugetlb_cma_size_in_node[nid];
-+			hugetlb_cma_size_in_node[nid] = 0;
-+			continue;
-+		}
-+
-+		if (hugetlb_cma_size_in_node[nid] < (PAGE_SIZE << order)) {
-+			pr_warn("hugetlb_cma: cma area of node %d should be at least %lu MiB\n",
-+				nid, (PAGE_SIZE << order) / SZ_1M);
-+			hugetlb_cma_size -= hugetlb_cma_size_in_node[nid];
-+			hugetlb_cma_size_in_node[nid] = 0;
-+		} else {
-+			node_specific_cma_alloc = true;
-+		}
-+	}
-+
-+	/* Validate the CMA size again in case some invalid nodes specified. */
-+	if (!hugetlb_cma_size)
-+		return;
-+
- 	if (hugetlb_cma_size < (PAGE_SIZE << order)) {
- 		pr_warn("hugetlb_cma: cma area should be at least %lu MiB\n",
- 			(PAGE_SIZE << order) / SZ_1M);
-@@ -6789,20 +6847,30 @@ void __init hugetlb_cma_reserve(int order)
- 		return;
- 	}
- 
--	/*
--	 * If 3 GB area is requested on a machine with 4 numa nodes,
--	 * let's allocate 1 GB on first three nodes and ignore the last one.
--	 */
--	per_node = DIV_ROUND_UP(hugetlb_cma_size, nr_online_nodes);
--	pr_info("hugetlb_cma: reserve %lu MiB, up to %lu MiB per node\n",
--		hugetlb_cma_size / SZ_1M, per_node / SZ_1M);
-+	if (!node_specific_cma_alloc) {
-+		/*
-+		 * If 3 GB area is requested on a machine with 4 numa nodes,
-+		 * let's allocate 1 GB on first three nodes and ignore the last one.
-+		 */
-+		per_node = DIV_ROUND_UP(hugetlb_cma_size, nr_online_nodes);
-+		pr_info("hugetlb_cma: reserve %lu MiB, up to %lu MiB per node\n",
-+			hugetlb_cma_size / SZ_1M, per_node / SZ_1M);
-+	}
- 
- 	reserved = 0;
- 	for_each_node_state(nid, N_ONLINE) {
- 		int res;
- 		char name[CMA_MAX_NAME];
- 
--		size = min(per_node, hugetlb_cma_size - reserved);
-+		if (node_specific_cma_alloc) {
-+			if (hugetlb_cma_size_in_node[nid] == 0)
-+				continue;
-+
-+			size = hugetlb_cma_size_in_node[nid];
-+		} else {
-+			size = min(per_node, hugetlb_cma_size - reserved);
-+		}
-+
- 		size = round_up(size, PAGE_SIZE << order);
- 
- 		snprintf(name, sizeof(name), "hugetlb%d", nid);
 -- 
-1.8.3.1
-
+Thanks
+Yafang
