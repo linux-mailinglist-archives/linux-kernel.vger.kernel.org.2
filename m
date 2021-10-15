@@ -2,159 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F70242FF3B
+	by mail.lfdr.de (Postfix) with ESMTP id E4E1642FF3D
 	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 01:54:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243594AbhJOX4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 19:56:15 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:17746 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243579AbhJOX4C (ORCPT
+        id S239194AbhJOX4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 19:56:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44068 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239379AbhJOX4L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 19:56:02 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1634342035; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=n3BK7738hTdiczHIt7ONeEK/GbdKAOD/zY0ItqmwjZU=;
- b=GzsBWXJJXa0ULg5WWk5wXd6THdu08o8aOeKvV5U1cxUsCW8PzEjUm+dl7SzrxOy4isyFttb4
- TAyqN9iLPbSiA16eFeQs2aj7zGUsZnJQUgwJvbLItwjBUJQpqz7Z1YjaaWi6U2KR5S5/5noB
- Buzh847taSXGtehta+LLnXWLTAs=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 616a1492f922f9e77218eb9d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 15 Oct 2021 23:53:54
- GMT
-Sender: abhinavk=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 3B04CC4314F; Fri, 15 Oct 2021 23:53:53 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: abhinavk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0CEE9C4360D;
-        Fri, 15 Oct 2021 23:53:48 +0000 (UTC)
+        Fri, 15 Oct 2021 19:56:11 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0F9BC061776;
+        Fri, 15 Oct 2021 16:54:00 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id y12so45725407eda.4;
+        Fri, 15 Oct 2021 16:54:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=6VJ+9sIi1sqUsRf5nSziAM0Dhgkx6JgfPmLuGEZTces=;
+        b=H63SeNNPhxbZ4wC7PPU0lHqQx61e8P4OAK+AAPDv5gblrGbDXBYKjhgWO57hTx1kVS
+         orr3t90pArPAQI1W78i0x9ahucKgECq1IoC1shjPc9u0cAxrgMlfatpXX32sAJi21VUZ
+         09I5AKOaQT8di2kM3eN107rMkUQfw9zZ8zqB9wPSQprZke5QM/YJBUTRC+T3vT+kXq/w
+         xNU4sjsufpWnOzcGzIeKt1pZFGapPj+NiL+qy7EifGrYqRAQ1KNsmv2Ewfd4sAgQ1ZzU
+         vFoQuDByjS4Evg0/htdw6+fcFclHTt3b0/b8T4hwrAwfl4cZ/SR8mIrMVEuER/Q98LEY
+         6N/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6VJ+9sIi1sqUsRf5nSziAM0Dhgkx6JgfPmLuGEZTces=;
+        b=BB4r7rhPTi5k9NQLq8be2uqeOUczItpgPWBfRgeKSNcs4w1qwqwcUrNwHyR2lfqQsd
+         fHMDlfHLu0XGnm2VXwuA8VGal6jDZFwLaF0kjq8DzGMBma3SbgGFudDGWEkq8pJV3sTI
+         NnckBmBZf0uHNTe5YJFVU019lSEDGex+o9GgRM7JfqfAoUVPDtbPNC/UdBAQELZ3UWIE
+         iy0AF7shYQ5LA932Zy3wdbBktcGw7+F9wU/XKTiT8tvPfwVdqKfPE9Mv+JTJ/+3RKUwB
+         yyP+CYJ2yBvmslHor1NH6PFTPGlJp4c3Xf8VM20qsH3+Xf/zfi0DMR164LhT1cO3WXbl
+         83MA==
+X-Gm-Message-State: AOAM532oRF301u9D73+KcItFOIWWO7vH7RqsoZTPCUcF9U1hFsacX6TG
+        elitzVbeZdPPsqqH2u1Qnwo=
+X-Google-Smtp-Source: ABdhPJyTrSsc6NLGRHfgdV896wTJdHWXVRCYx5XN2+d4sdnnapwSJ9/SuKFBv81HwNIKcajw1OYtVQ==
+X-Received: by 2002:a17:906:f8d0:: with SMTP id lh16mr10030127ejb.367.1634342039511;
+        Fri, 15 Oct 2021 16:53:59 -0700 (PDT)
+Received: from p14s ([140.238.219.56])
+        by smtp.gmail.com with ESMTPSA id nb29sm6357942ejc.54.2021.10.15.16.53.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Oct 2021 16:53:59 -0700 (PDT)
+Date:   Sat, 16 Oct 2021 01:53:56 +0200
+From:   Joerie de Gram <j.de.gram@gmail.com>
+To:     Mario Limonciello <mario.limonciello@amd.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Basavaraj Natikar <Basavaraj.Natikar@amd.com>,
+        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
+        "open list:PIN CONTROL SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Nehal Shah <Nehal-bakulchandra.Shah@amd.com>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>
+Subject: Re: [PATCH] pinctrl: amd: Fix wakeups when IRQ is shared with SCI
+Message-ID: <YWoUlGFMWAXTvMuR@p14s>
+References: <20211015144332.700-1-mario.limonciello@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 15 Oct 2021 16:53:48 -0700
-From:   abhinavk@codeaurora.org
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Rob Clark <robdclark@gmail.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [Freedreno] [PATCH] drm/msm/dp: Move debugfs files into
- subdirectory
-In-Reply-To: <20211015231702.1784254-1-bjorn.andersson@linaro.org>
-References: <20211015231702.1784254-1-bjorn.andersson@linaro.org>
-Message-ID: <f72263e0d4c118653fff8b1341dc487b@codeaurora.org>
-X-Sender: abhinavk@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211015144332.700-1-mario.limonciello@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-10-15 16:17, Bjorn Andersson wrote:
-> In the cleanup path of the MSM DP driver the DP driver's debugfs files
-> are destroyed by invoking debugfs_remove_recursive() on debug->root,
-> which during initialization has been set to minor->debugfs_root.
-> 
-> To allow cleaning up the DP driver's debugfs files either each dentry
-> needs to be kept track of or the files needs to be put in a 
-> subdirectory
-> which can be removed in one go.
-> 
-> By choosing to put the debugfs files in a subdirectory, based on the
-> name of the associated connector this also solves the problem that 
-> these
-> names would collide as support for multiple DP instances are 
-> introduced.
-> 
-> One alternative solution to the problem with colliding file names would
-> have been to put keep track of the individual files and put them under
-> the connector's debugfs directory. But while the drm_connector has been
-> allocated, its associated debugfs directory has not been created at the
-> time of initialization of the dp_debug.
-> 
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+On Fri, Oct 15, 2021 at 09:43:32AM -0500, Mario Limonciello wrote:
+> +			if (irq < 0 && !(regval & BIT(WAKE_STS_OFF)))
+> +				return true;
 
-I have been thinking about this problem ever since multi-DP has been 
-posted :)
-Creating sub-directories seems right but at the moment it looks like IGT 
-which
-uses these debugfs nodes doesnt check sub-directories:
+Shouldn't be negated. WAKE_STS_OFF is set on wakeup.
 
-https://gitlab.freedesktop.org/drm/igt-gpu-tools/-/blob/master/tools/msm_dp_compliance.c#L215
+With that change:
 
-It looks for the DP debugfs nodes under /sys/kernel/debug/dri/*/
-
-We have to fix IGT too to be able to handle multi-DP cases. I will try 
-to come up
-with a proposal to address this.
-
-Till then, can we go with the other solution to keep track of the 
-dentries?
-
-> ---
-> 
-> This depends on
-> https://lore.kernel.org/linux-arm-msm/20211010030435.4000642-1-bjorn.andersson@linaro.org/
-> reducing the connector from a double pointer.
-> 
->  drivers/gpu/drm/msm/dp/dp_debug.c | 15 +++++++++------
->  1 file changed, 9 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/dp/dp_debug.c
-> b/drivers/gpu/drm/msm/dp/dp_debug.c
-> index da4323556ef3..67da4c69eca1 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_debug.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_debug.c
-> @@ -210,26 +210,29 @@ static const struct file_operations 
-> test_active_fops = {
->  static int dp_debug_init(struct dp_debug *dp_debug, struct drm_minor 
-> *minor)
->  {
->  	int rc = 0;
-> +	char path[64];
->  	struct dp_debug_private *debug = container_of(dp_debug,
->  			struct dp_debug_private, dp_debug);
-> 
-> -	debugfs_create_file("dp_debug", 0444, minor->debugfs_root,
-> +	snprintf(path, sizeof(path), "msm_dp-%s", debug->connector->name);
-> +
-> +	debug->root = debugfs_create_dir(path, minor->debugfs_root);
-> +
-> +	debugfs_create_file("dp_debug", 0444, debug->root,
->  			debug, &dp_debug_fops);
-> 
->  	debugfs_create_file("msm_dp_test_active", 0444,
-> -			minor->debugfs_root,
-> +			debug->root,
->  			debug, &test_active_fops);
-> 
->  	debugfs_create_file("msm_dp_test_data", 0444,
-> -			minor->debugfs_root,
-> +			debug->root,
->  			debug, &dp_test_data_fops);
-> 
->  	debugfs_create_file("msm_dp_test_type", 0444,
-> -			minor->debugfs_root,
-> +			debug->root,
->  			debug, &dp_test_type_fops);
-> 
-> -	debug->root = minor->debugfs_root;
-> -
->  	return rc;
->  }
+Reported-by: Joerie de Gram <j.de.gram@gmail.com>
+Tested-by: Joerie de Gram <j.de.gram@gmail.com>
