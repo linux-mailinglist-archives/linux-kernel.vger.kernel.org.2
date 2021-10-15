@@ -2,221 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B675742FA88
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 19:49:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D42B42FA8E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 19:50:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242208AbhJORvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 13:51:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46602 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237670AbhJORvm (ORCPT
+        id S242293AbhJORxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 13:53:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47361 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237670AbhJORw6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 13:51:42 -0400
-Received: from mail-oo1-xc35.google.com (mail-oo1-xc35.google.com [IPv6:2607:f8b0:4864:20::c35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BA1FC061762
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 10:49:36 -0700 (PDT)
-Received: by mail-oo1-xc35.google.com with SMTP id b5-20020a4ac285000000b0029038344c3dso3232785ooq.8
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 10:49:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=43KZbMJr+Za/CNOJToS0Ey8f/TY2vPY1kQzcAcOdopM=;
-        b=YTiUa+HFYnA0o1Z2gpCbYBvWeYGppMCfqFoE2X5PEhx2+NwhYomxfWx+aHRhRSvplx
-         dqc0hKBO07Ro7uJI/E52v8+IS4FH+P52az9ZsHmzlSfyI23bskaZ03TY6nyP7gUmar+t
-         rjsZNG2pgtErYBo2LaxjInI0oq5azme9n7DT0MK8RxM0JEaW6FRizx04otp4sbN4TIno
-         jNscTvYs75Rr8fP779NIaEp9YkO6efg8rI01/pkfTrlsHRtDUfilCrlV+mZ6eBFjzaSG
-         ZnNfe+LDNH6puZFGF/udVwjSK8+b85RYT40FKQ5P1tAkFYfiGPS6jKlj4/lA2BFjzx1m
-         1uGg==
+        Fri, 15 Oct 2021 13:52:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634320251;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TsfQJ+QgzOOfLaCjggWbwpgeV1kvleQ7Jz1X1qSYym0=;
+        b=ARo7Xu3iYD7fUu+qfdP2c5UwSgLB7o/hVB6t3/qKXu1tvLVakHl/jTE1t2r3mdSGIL2gO+
+        AoMRF7DDOp3KOmFyBwRhBdoCEGYEiE9v7ZyxKBC7270wc0dbZnw3cH4EIpA9TLD16vbBzZ
+        Ok2Fcn+tLaqdCMRO8nQiE3cWfqj32UM=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-235-alzmxp_zNRu8UwJAACQm1g-1; Fri, 15 Oct 2021 13:50:50 -0400
+X-MC-Unique: alzmxp_zNRu8UwJAACQm1g-1
+Received: by mail-ed1-f71.google.com with SMTP id f4-20020a50e084000000b003db585bc274so8886193edl.17
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 10:50:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=43KZbMJr+Za/CNOJToS0Ey8f/TY2vPY1kQzcAcOdopM=;
-        b=iDvP0WR6wUntNyh+RY5+8eKh9ODVhvwTl9+zU955Z5mPOAGWQ1r+As+XGe9yusKhwp
-         KBBodwRcu0p3Kesh75U9ZvJbv257oAFvzX0sjFP28mvQzbbXzKB7a1qo/7hfhL6koQNK
-         F+vnmxmj0MCj7Rwv29WvT8jwJr0FEMnRDr6Etf9pHuh9i+xaFvybIvZmKr0O8HS8SDia
-         9jz3bMlPcJd2H5yZ06BC9TADg1LhRkWMvzOI2VYkcqDVPbaB9WuVpGL3UGyUZ/qJYEml
-         IsvDUP2uKUGRAThkzyUaNwX/yLMpuhq6OhB+RYm3o1yJOcl52668W9KT+8MLNLFTmpgU
-         G06A==
-X-Gm-Message-State: AOAM530u8Rx0xe6O+OZK4y8r/8JdpP7Tro7xOiCWLSx1ffdCqbC24Zn4
-        AgG7IL+eMwN0FGYEhgPIYUeDRQ==
-X-Google-Smtp-Source: ABdhPJy5oKG3E+9PYxHwpivZZuKT3ljoxKicrpxx1cZFrU0NpgMwdeMpkmY/9ESYGm77RHZswHQ43Q==
-X-Received: by 2002:a4a:e9f0:: with SMTP id w16mr10102024ooc.3.1634320175509;
-        Fri, 15 Oct 2021 10:49:35 -0700 (PDT)
-Received: from [192.168.17.16] ([189.219.72.19])
-        by smtp.gmail.com with ESMTPSA id r22sm1084472otq.5.2021.10.15.10.49.34
+        bh=TsfQJ+QgzOOfLaCjggWbwpgeV1kvleQ7Jz1X1qSYym0=;
+        b=MBYnWb3YIIKS4mApXYLm1e0TBbXUTE2/Azy04KBt3JfdkorX3suT0K37g61BZencDL
+         2fWjtdG5y6XM1zJQQrI92pCzU0J96NrdkCFvM4gLmhrWJIISCIbV2f43sib/xr+bTHE5
+         PxQA7WMLbStGrWMQYbTnRwilJw0QKTMka7U2ZIgQfss5b3e5G0elv6Q4mnsFOLX1v4wQ
+         XQMF5O7oV4GO5gufeuwGyN8UupR2qLXu22nSCXOuwMptZjtSk5DERHCDEBGXU8wmiGBA
+         lAfRAYKQvjhjYCyv5NfhpFECGELTfxRW5HMXaqtWb/gO1yF+1Sj4JrMQligMnKVBOBSj
+         0GKw==
+X-Gm-Message-State: AOAM531/44Ighlpt5NjVUpxp8JWOylRL70dubGwb2IMokJUq/iB+apZM
+        OgqHsPkIIIVkD6bXpuBhKdx3/NatTM7YigFlMcRlr7+UwJBlmVcps8TsVLMXoV2SAbj/Is8vu6i
+        MWMAQCpWq/s1pG0d3rFcg0Ls4
+X-Received: by 2002:a17:906:abd3:: with SMTP id kq19mr8652278ejb.285.1634320248920;
+        Fri, 15 Oct 2021 10:50:48 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwlvUF01PAH9b4uRCsZicwTcvW53v52vttAUA9z7TDvslDRI455Y9rszntyFoG5LxAZ43rs5w==
+X-Received: by 2002:a17:906:abd3:: with SMTP id kq19mr8652246ejb.285.1634320248691;
+        Fri, 15 Oct 2021 10:50:48 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id y21sm4572949ejk.30.2021.10.15.10.50.44
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Oct 2021 10:49:35 -0700 (PDT)
-Subject: Re: [PATCH 4.14 00/33] 4.14.251-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     shuah@kernel.org, f.fainelli@gmail.com, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
-        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, linux@roeck-us.net
-References: <20211014145208.775270267@linuxfoundation.org>
-From:   =?UTF-8?Q?Daniel_D=c3=adaz?= <daniel.diaz@linaro.org>
-Message-ID: <e1379685-c2b7-e7d3-8829-3a9db2e53bf7@linaro.org>
-Date:   Fri, 15 Oct 2021 12:49:33 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Fri, 15 Oct 2021 10:50:48 -0700 (PDT)
+Message-ID: <b148def5-9d34-bfa7-db6e-afaf11728639@redhat.com>
+Date:   Fri, 15 Oct 2021 19:50:40 +0200
 MIME-Version: 1.0
-In-Reply-To: <20211014145208.775270267@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH 0/2] KVM: x86: Fix and cleanup for recent AVIC changes
 Content-Language: en-US
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Maxim Levitsky <mlevitsk@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211009010135.4031460-1-seanjc@google.com>
+ <9e9e91149ab4fa114543b69eaf493f84d2f33ce2.camel@redhat.com>
+ <YWRJwZF1toUuyBdC@google.com> <YWRtHmAUaKcbWEzH@google.com>
+ <ebf038b7b242dd19aba1e4adb6f4ef2701c53748.camel@redhat.com>
+ <YWmpKTk/7MOCzm15@google.com>
+ <5faa7e49-9eb6-a075-982a-aa7947a5a3d6@redhat.com>
+ <YWmt/A4pemf2050j@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <YWmt/A4pemf2050j@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+On 15/10/21 18:36, Sean Christopherson wrote:
+>> Installing a SPTE based on global state is weird because this is a vCPU
+>> action; installing it based on vCPU state is weird because it is knowingly
+>> out of date.
+> If that's the argument, then kvm_faultin_page() should explicitly check for a
+> pending KVM_REQ_APICV_UPDATE, because I would then argue that contuining on when
+> KVM_knows_  its new SPTE will either get zapped (page fault wins the race) or
+> will get rejected (kvm_zap_gfn_range() wins the race) is just as wrong.  The SPTE
+> _cannot_  be used even if the page fault wins the race, becuase all vCPUs need to
+> process KVM_REQ_APICV_UPDATE and thus will be blocked until the initiating vCPU
+> zaps the range and drops the APICv lock.
 
-On 10/14/21 9:53 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.14.251 release.
-> There are 33 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sat, 16 Oct 2021 14:51:59 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.251-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+Right, that was my counter-argument - no need to check for the request 
+because the request "synchronizes" with the actual use of the PTE, via 
+kvm_make_all_cpus_request + kvm_zap_gfn_range.
 
-## Build
-* kernel: 4.14.251-rc1
-* git: ['https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git', 'https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc']
-* git branch: linux-4.14.y
-* git commit: dc0579022db410506fd874cd458c580df7f09db3
-* git describe: v4.14.250-34-gdc0579022db4
-* test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.14.y/build/v4.14.250-34-gdc0579022db4
+> And I personally do_not_  want to add a check for the request because it implies
+> the check is sufficient, which it is not, because the page fault doesn't yet hold
+> mmu_lock.
 
-## No regressions (compared to v4.14.250)
+Of course, that would be even worse.
 
-## No fixes (compared to v4.14.250)
+> Since all answers are some form of wrong, IMO we should at least be coherent with
+> respect to the original page fault.
 
-## Test result summary
-total: 77548, pass: 61810, fail: 761, skip: 12833, xfail: 2144
+Okay, you win if you send a patch with a comment. :)
 
-## Build Summary
-* arm: 129 total, 129 passed, 0 failed
-* arm64: 34 total, 34 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 18 total, 18 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 24 total, 24 passed, 0 failed
-* sparc: 12 total, 12 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 18 total, 18 passed, 0 failed
+Paolo
 
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* kselftest-android
-* kselftest-arm64
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
-
--- 
-Linaro LKFT
-https://lkft.linaro.org
