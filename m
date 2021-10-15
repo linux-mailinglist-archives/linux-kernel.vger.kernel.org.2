@@ -2,69 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3A5B42F435
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 15:49:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 273F042F436
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 15:49:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240058AbhJONvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 09:51:35 -0400
-Received: from mail-ot1-f51.google.com ([209.85.210.51]:41638 "EHLO
-        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236777AbhJONv3 (ORCPT
+        id S240068AbhJONv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 09:51:56 -0400
+Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:30264 "EHLO
+        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236777AbhJONvy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 09:51:29 -0400
-Received: by mail-ot1-f51.google.com with SMTP id v2-20020a05683018c200b0054e3acddd91so12895755ote.8;
-        Fri, 15 Oct 2021 06:49:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Emypu18e0IXK8TFQk7ooPj168yx7xW+uYOA6VkCV8JE=;
-        b=o8IjwzNbf6PeJNkfWKPvK54nZeK3FTte3f1DAnOmdcfKDHOixFO8+NG5TDl5cLPIPU
-         XHIpLVm8Cfbb9AeGkfC+yry9WS4O5LOEhYGvb1vhx0y2E5T5ZztEOcu1IiZYRJEzaOyL
-         kGLjLkLhs6CyqXHuF/iJSQ00ag9UU/XV9yNzz5xq559+lEju+GOyKe6lKzRq67KTmbcb
-         nCZqidTwWZgXpGH947wbix3vfbxbICPG6jlXwX3jIz/j92YKvl4JfcuWmvt7LcJTV1ix
-         EZahlR+KTj1qyGRJiWnF7thk/yQ+iP9OpWizmtDdFJXy3tPFMtjCKeVavr3LmB2Xjbsd
-         jX3g==
-X-Gm-Message-State: AOAM533rVlBAavSwc8skg+O/bRHRqgV/AaPmEu+Zd9h+AhuIDCo0wRlE
-        neXro+C7wMgNh5MQF+cBMTwaAvO9og==
-X-Google-Smtp-Source: ABdhPJxUclsuv2sYJlz+mVj3QUqsf0dR1i3duEqsYs1RlI/V8CQynEpT+T1LpMNFTS8H1xYbHJ7fjQ==
-X-Received: by 2002:a9d:19e3:: with SMTP id k90mr7958187otk.99.1634305762209;
-        Fri, 15 Oct 2021 06:49:22 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id p14sm967286oov.0.2021.10.15.06.49.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Oct 2021 06:49:21 -0700 (PDT)
-Received: (nullmailer pid 1423603 invoked by uid 1000);
-        Fri, 15 Oct 2021 13:49:20 -0000
-Date:   Fri, 15 Oct 2021 08:49:20 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Cc:     airlied@linux.ie, seanpaul@chromium.org, robh+dt@kernel.org,
-        devicetree@vger.kernel.org, daniel@ffwll.ch,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH] dt-bindings: display/bridge: ptn3460: Convert to YAML
- binding
-Message-ID: <YWmG4KddWr4lo6kY@robh.at.kernel.org>
-References: <20211007075822.62411-1-angelogioacchino.delregno@collabora.com>
+        Fri, 15 Oct 2021 09:51:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1634305788; x=1665841788;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=lamDEBA7dYs2MJzjajS3xwrpLgVtnW5r1ldFm8O+qVA=;
+  b=bJrUrIvcgJHqi04MP1vEkM2KbO/PHnpQStxVIg6U/LZsiL/079NSEWL0
+   +0m2R2RwHcM+6olaGHdrLBDF72ikLw4KJKuQgwi+BpyP2PWk3CP1c3RIm
+   NuaTN9x1HJqMyzAMsccmRU4V1gOVQOZnNs5izsUAMjw/9fWYjnXdhfzTj
+   c=;
+X-IronPort-AV: E=Sophos;i="5.85,375,1624320000"; 
+   d="scan'208";a="153740994"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-iad-1a-87b71607.us-east-1.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-33001.sea14.amazon.com with ESMTP; 15 Oct 2021 13:49:40 +0000
+Received: from EX13D16EUB003.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
+        by email-inbound-relay-iad-1a-87b71607.us-east-1.amazon.com (Postfix) with ESMTPS id 88567140FE4;
+        Fri, 15 Oct 2021 13:49:37 +0000 (UTC)
+Received: from [10.85.100.8] (10.43.161.147) by EX13D16EUB003.ant.amazon.com
+ (10.43.166.99) with Microsoft SMTP Server (TLS) id 15.0.1497.24; Fri, 15 Oct
+ 2021 13:49:31 +0000
+Message-ID: <779dcfe2-0eb6-97ea-f33c-5725939b00f8@amazon.com>
+Date:   Fri, 15 Oct 2021 16:49:24 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211007075822.62411-1-angelogioacchino.delregno@collabora.com>
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:91.0)
+ Gecko/20100101 Thunderbird/91.2.0
+Subject: Re: [PATCH v3 2/4] nitro_enclaves: Sanity check physical memory
+ regions during merging
+Content-Language: en-US
+To:     "Longpeng(Mike)" <longpeng2@huawei.com>
+CC:     <arei.gonglei@huawei.com>, <gregkh@linuxfoundation.org>,
+        <kamal@canonical.com>, <pbonzini@redhat.com>,
+        <sgarzare@redhat.com>, <stefanha@redhat.com>,
+        <vkuznets@redhat.com>, <linux-kernel@vger.kernel.org>,
+        <ne-devel-upstream@amazon.com>, <lexnv@amazon.com>,
+        <alcioa@amazon.com>
+References: <20211009013248.1174-1-longpeng2@huawei.com>
+ <20211009013248.1174-3-longpeng2@huawei.com>
+From:   "Paraschiv, Andra-Irina" <andraprs@amazon.com>
+In-Reply-To: <20211009013248.1174-3-longpeng2@huawei.com>
+X-Originating-IP: [10.43.161.147]
+X-ClientProxiedBy: EX13D45UWB004.ant.amazon.com (10.43.161.54) To
+ EX13D16EUB003.ant.amazon.com (10.43.166.99)
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 07 Oct 2021 09:58:22 +0200, AngeloGioacchino Del Regno wrote:
-> Convert the NXP PTN3460 eDP to LVDS bridge documentation to YAML.
-> 
-> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-> ---
->  .../bindings/display/bridge/nxp,ptn3460.yaml  | 106 ++++++++++++++++++
->  .../bindings/display/bridge/ptn3460.txt       |  39 -------
->  2 files changed, 106 insertions(+), 39 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/display/bridge/nxp,ptn3460.yaml
->  delete mode 100644 Documentation/devicetree/bindings/display/bridge/ptn3460.txt
-> 
+CgpPbiAwOS8xMC8yMDIxIDA0OjMyLCBMb25ncGVuZyhNaWtlKSB3cm90ZToKPiAKPiBGcm9tOiBM
+b25ncGVuZyA8bG9uZ3BlbmcyQGh1YXdlaS5jb20+Cj4gCj4gU2FuaXR5IGNoZWNrIHRoZSBwaHlz
+aWNhbCBtZW1vcnkgcmVnaW9ucyBkdXJpbmcgdGhlIG1lcmdlIG9mIGNvbnRpZ3VvdXMKPiByZWdp
+b25zLiBUaHVzIHdlIGNhbiB0ZXN0IHRoZSBwaHlzaWNhbCBtZW1vcnkgcmVnaW9ucyBzZXR1cCBs
+b2dpYwo+IGluZGl2aWR1YWxseSwgaW5jbHVkaW5nIHRoZSBlcnJvciBjYXNlcyBjb21pbmcgZnJv
+bSB0aGUgc2FuaXR5IGNoZWNrcy4KPiAKPiBTaWduZWQtb2ZmLWJ5OiBMb25ncGVuZyA8bG9uZ3Bl
+bmcyQGh1YXdlaS5jb20+Cj4gLS0tCj4gQ2hhbmdlcyB2MiAtPiB2MzoKPiAgICAtIHVwZGF0ZSB0
+aGUgY29tbWl0IHRpdGxlIGFuZCBjb21taXQgbWVzc2FnZS4gIFtBbmRyYV0KPiAgICAtIGFkZCBj
+b21tZW50cyBiZWZvcmUgdGhlIGZ1bmN0aW9uIGRlZmluaXRpb24uICBbQW5kcmFdCj4gICAgLSBy
+ZW1vdmUgJ2lubGluZScgYXR0cmlidXRlIG9mIG5lX3Nhbml0eV9jaGVja19waHlzX21lbV9yZWdp
+b24uIFtBbmRyYV0KPiAgICAtIGxlYXZlIGEgYmxhbmsgbGluZSBiZWZvcmUgcmV0dXJuLiAgW0Fu
+ZHJhXQo+ICAgIC0gbW92ZSBzYW5pdHkgY2hlY2sgaW4gbmVfbWVyZ2VfcGh5c19jb250aWdfbWVt
+b3J5X3JlZ2lvbnMgdG8KPiAgICAgIHRoZSBiZWdpbm5pbmcgb2YgdGhlIGZ1bmN0aW9uLiAgW0Fu
+ZHJhXQo+ICAgIC0gZG91YmxlIHNhbml0eSBjaGVja2luZyBhZnRlciB0aGUgbWVyZ2Ugb2YgcGh5
+c2ljYWwgY29udGlndW91cwo+ICAgICAgbWVtb3J5IHJlZ2lvbnMgaGFzIGJlZW4gY29tcGxldGVk
+LiAgW0FuZHJhXQo+IC0tLQo+ICAgZHJpdmVycy92aXJ0L25pdHJvX2VuY2xhdmVzL25lX21pc2Nf
+ZGV2LmMgfCA3OSArKysrKysrKysrKysrKysrKysrKy0tLS0tLS0tLS0tCj4gICAxIGZpbGUgY2hh
+bmdlZCwgNTIgaW5zZXJ0aW9ucygrKSwgMjcgZGVsZXRpb25zKC0pCj4gCj4gZGlmZiAtLWdpdCBh
+L2RyaXZlcnMvdmlydC9uaXRyb19lbmNsYXZlcy9uZV9taXNjX2Rldi5jIGIvZHJpdmVycy92aXJ0
+L25pdHJvX2VuY2xhdmVzL25lX21pc2NfZGV2LmMKPiBpbmRleCBlZWE1M2U5Li5hOGZhNTZiIDEw
+MDY0NAo+IC0tLSBhL2RyaXZlcnMvdmlydC9uaXRyb19lbmNsYXZlcy9uZV9taXNjX2Rldi5jCj4g
+KysrIGIvZHJpdmVycy92aXJ0L25pdHJvX2VuY2xhdmVzL25lX21pc2NfZGV2LmMKPiBAQCAtODM2
+LDYgKzgzNiwzNiBAQCBzdGF0aWMgaW50IG5lX3Nhbml0eV9jaGVja191c2VyX21lbV9yZWdpb25f
+cGFnZShzdHJ1Y3QgbmVfZW5jbGF2ZSAqbmVfZW5jbGF2ZSwKPiAgIH0KPiAKPiAgIC8qKgo+ICsg
+KiBuZV9zYW5pdHlfY2hlY2tfcGh5c19tZW1fcmVnaW9uKCkgLSBTYW5pdHkgY2hlY2sgdGhlIHN0
+YXJ0IGFkZHJlc3MgYW5kIHRoZSBzaXplCj4gKyAqICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgIG9mIGEgcGh5c2ljYWwgbWVtb3J5IHJlZ2lvbi4KPiArICogQHBoeXNfbWVtX3Jl
+Z2lvbl9wYWRkciA6IFBoeXNpY2FsIHN0YXJ0IGFkZHJlc3Mgb2YgdGhlIHJlZ2lvbiB0byBiZSBz
+YW5pdHkgY2hlY2tlZC4KPiArICogQHBoeXNfbWVtX3JlZ2lvbl9zaXplICA6IExlbmd0aCBvZiB0
+aGUgcmVnaW9uIHRvIGJlIHNhbml0eSBjaGVja2VkLgo+ICsgKgo+ICsgKiBSZXR1cm46CgpQbGVh
+c2UgYWRkIHRoaXMganVzdCBiZWZvcmUgIlJldHVybiIsIHNpbWlsYXIgdG8gb3RoZXIgZGVmaW5l
+ZCBmdW5jdGlvbnMgCihlLmcuIFsxXSk6CgoqIENvbnRleHQ6IFByb2Nlc3MgY29udGV4dC4gVGhp
+cyBmdW5jdGlvbiBpcyBjYWxsZWQgd2l0aCB0aGUgbmVfZW5jbGF2ZSAKbXV0ZXggaGVsZC4KKiBS
+ZXR1cm46Ci4uLi4uLgoKWzFdIApodHRwczovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgv
+a2VybmVsL2dpdC90b3J2YWxkcy9saW51eC5naXQvdHJlZS9kcml2ZXJzL3ZpcnQvbml0cm9fZW5j
+bGF2ZXMvbmVfbWlzY19kZXYuYyNuNzI1Cgo+ICsgKiAqIDAgb24gc3VjY2Vzcy4KPiArICogKiBO
+ZWdhdGl2ZSByZXR1cm4gdmFsdWUgb24gZmFpbHVyZS4KPiArICovCj4gK3N0YXRpYyBpbnQgbmVf
+c2FuaXR5X2NoZWNrX3BoeXNfbWVtX3JlZ2lvbih1NjQgcGh5c19tZW1fcmVnaW9uX3BhZGRyLAo+
+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB1NjQgcGh5c19tZW1f
+cmVnaW9uX3NpemUpCj4gK3sKPiArICAgICAgIGlmIChwaHlzX21lbV9yZWdpb25fc2l6ZSAmIChO
+RV9NSU5fTUVNX1JFR0lPTl9TSVpFIC0gMSkpIHsKPiArICAgICAgICAgICAgICAgZGV2X2Vycl9y
+YXRlbGltaXRlZChuZV9taXNjX2Rldi50aGlzX2RldmljZSwKPiArICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAiUGh5c2ljYWwgbWVtIHJlZ2lvbiBzaXplIGlzIG5vdCBtdWx0aXBs
+ZSBvZiAyIE1pQlxuIik7Cj4gKwo+ICsgICAgICAgICAgICAgICByZXR1cm4gLUVJTlZBTDsKPiAr
+ICAgICAgIH0KPiArCj4gKyAgICAgICBpZiAoIUlTX0FMSUdORUQocGh5c19tZW1fcmVnaW9uX3Bh
+ZGRyLCBORV9NSU5fTUVNX1JFR0lPTl9TSVpFKSkgewo+ICsgICAgICAgICAgICAgICBkZXZfZXJy
+X3JhdGVsaW1pdGVkKG5lX21pc2NfZGV2LnRoaXNfZGV2aWNlLAo+ICsgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICJQaHlzaWNhbCBtZW0gcmVnaW9uIGFkZHJlc3MgaXMgbm90IDIg
+TWlCIGFsaWduZWRcbiIpOwo+ICsKPiArICAgICAgICAgICAgICAgcmV0dXJuIC1FSU5WQUw7Cj4g
+KyAgICAgICB9Cj4gKwo+ICsgICAgICAgcmV0dXJuIDA7Cj4gK30KPiArCj4gKy8qKgo+ICAgICog
+bmVfbWVyZ2VfcGh5c19jb250aWdfbWVtb3J5X3JlZ2lvbnMoKSAtIEFkZCBhIG1lbW9yeSByZWdp
+b24gYW5kIG1lcmdlIHRoZSBhZGphY2VudAo+ICAgICogICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgIHJlZ2lvbnMgaWYgdGhleSBhcmUgcGh5c2ljYWwgY29udGlndW91cy4K
+PiAgICAqIEByZWdpb25zICAgOiBQcml2YXRlIGRhdGEgYXNzb2NpYXRlZCB3aXRoIHRoZSBwaHlz
+aWNhbCBjb250aWd1b3VzIG1lbW9yeSByZWdpb25zLgo+IEBAIC04NDMsMjMgKzg3MywzMCBAQCBz
+dGF0aWMgaW50IG5lX3Nhbml0eV9jaGVja191c2VyX21lbV9yZWdpb25fcGFnZShzdHJ1Y3QgbmVf
+ZW5jbGF2ZSAqbmVfZW5jbGF2ZSwKPiAgICAqIEBwYWdlX3NpemUgOiBMZW5ndGggb2YgdGhlIHJl
+Z2lvbiB0byBiZSBhZGRlZC4KPiAgICAqCj4gICAgKiBSZXR1cm46Cj4gLSAqICogTm8gcmV0dXJu
+IHZhbHVlLgo+ICsgKiAqIDAgb24gc3VjY2Vzcy4KPiArICogKiBOZWdhdGl2ZSByZXR1cm4gdmFs
+dWUgb24gZmFpbHVyZS4KPiAgICAqLwo+IC1zdGF0aWMgdm9pZAo+ICtzdGF0aWMgaW50Cj4gICBu
+ZV9tZXJnZV9waHlzX2NvbnRpZ19tZW1vcnlfcmVnaW9ucyhzdHJ1Y3QgcGh5c19jb250aWdfbWVt
+X3JlZ2lvbnMgKnJlZ2lvbnMsCj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IHU2NCBwYWdlX3BhZGRyLCB1NjQgcGFnZV9zaXplKQo+ICAgewo+IC0gICAgICAgLyogUGh5c2lj
+YWwgY29udGlndW91cywganVzdCBtZXJnZSAqLwo+ICsgICAgICAgaW50IHJjID0gMDsKPiArCj4g
+KyAgICAgICByYyA9IG5lX3Nhbml0eV9jaGVja19waHlzX21lbV9yZWdpb24ocGFnZV9wYWRkciwg
+cGFnZV9zaXplKTsKPiArICAgICAgIGlmIChyYyA8IDApCj4gKyAgICAgICAgICAgICAgIHJldHVy
+biByYzsKPiArCj4gICAgICAgICAgaWYgKHJlZ2lvbnMtPm51bSAmJgo+ICAgICAgICAgICAgICAo
+cmVnaW9ucy0+cmVnaW9uW3JlZ2lvbnMtPm51bSAtIDFdLmVuZCArIDEpID09IHBhZ2VfcGFkZHIp
+IHsKPiArICAgICAgICAgICAgICAgLyogUGh5c2ljYWwgY29udGlndW91cywganVzdCBtZXJnZSAq
+LwoKQ2FuIG1vdmUgdGhpcyBjb21tZW50IGJlZm9yZSB0aGUgImlmICguLi4pIiBsaW5lLgoKVGhh
+bmtzLApBbmRyYQoKPiAgICAgICAgICAgICAgICAgIHJlZ2lvbnMtPnJlZ2lvbltyZWdpb25zLT5u
+dW0gLSAxXS5lbmQgKz0gcGFnZV9zaXplOwo+IC0KPiAtICAgICAgICAgICAgICAgcmV0dXJuOwo+
+ICsgICAgICAgfSBlbHNlIHsKPiArICAgICAgICAgICAgICAgcmVnaW9ucy0+cmVnaW9uW3JlZ2lv
+bnMtPm51bV0uc3RhcnQgPSBwYWdlX3BhZGRyOwo+ICsgICAgICAgICAgICAgICByZWdpb25zLT5y
+ZWdpb25bcmVnaW9ucy0+bnVtXS5lbmQgPSBwYWdlX3BhZGRyICsgcGFnZV9zaXplIC0gMTsKPiAr
+ICAgICAgICAgICAgICAgcmVnaW9ucy0+bnVtKys7Cj4gICAgICAgICAgfQo+IAo+IC0gICAgICAg
+cmVnaW9ucy0+cmVnaW9uW3JlZ2lvbnMtPm51bV0uc3RhcnQgPSBwYWdlX3BhZGRyOwo+IC0gICAg
+ICAgcmVnaW9ucy0+cmVnaW9uW3JlZ2lvbnMtPm51bV0uZW5kID0gcGFnZV9wYWRkciArIHBhZ2Vf
+c2l6ZSAtIDE7Cj4gLSAgICAgICByZWdpb25zLT5udW0rKzsKPiArICAgICAgIHJldHVybiAwOwo+
+ICAgfQo+IAo+ICAgLyoqCj4gQEAgLTk0MCw5ICs5NzcsMTEgQEAgc3RhdGljIGludCBuZV9zZXRf
+dXNlcl9tZW1vcnlfcmVnaW9uX2lvY3RsKHN0cnVjdCBuZV9lbmNsYXZlICpuZV9lbmNsYXZlLAo+
+ICAgICAgICAgICAgICAgICAgaWYgKHJjIDwgMCkKPiAgICAgICAgICAgICAgICAgICAgICAgICAg
+Z290byBwdXRfcGFnZXM7Cj4gCj4gLSAgICAgICAgICAgICAgIG5lX21lcmdlX3BoeXNfY29udGln
+X21lbW9yeV9yZWdpb25zKHBoeXNfY29udGlnX21lbV9yZWdpb25zLAo+IC0gICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBwYWdlX3RvX3BoeXMobmVfbWVt
+X3JlZ2lvbi0+cGFnZXNbaV0pLAo+IC0gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICBwYWdlX3NpemUobmVfbWVtX3JlZ2lvbi0+cGFnZXNbaV0pKTsKPiAr
+ICAgICAgICAgICAgICAgcmMgPSBuZV9tZXJnZV9waHlzX2NvbnRpZ19tZW1vcnlfcmVnaW9ucyhw
+aHlzX2NvbnRpZ19tZW1fcmVnaW9ucywKPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICBwYWdlX3RvX3BoeXMobmVfbWVtX3JlZ2lvbi0+cGFn
+ZXNbaV0pLAo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgIHBhZ2Vfc2l6ZShuZV9tZW1fcmVnaW9uLT5wYWdlc1tpXSkpOwo+ICsgICAgICAg
+ICAgICAgICBpZiAocmMgPCAwKQo+ICsgICAgICAgICAgICAgICAgICAgICAgIGdvdG8gcHV0X3Bh
+Z2VzOwo+IAo+ICAgICAgICAgICAgICAgICAgbWVtb3J5X3NpemUgKz0gcGFnZV9zaXplKG5lX21l
+bV9yZWdpb24tPnBhZ2VzW2ldKTsKPiAKPiBAQCAtOTY1LDIzICsxMDA0LDkgQEAgc3RhdGljIGlu
+dCBuZV9zZXRfdXNlcl9tZW1vcnlfcmVnaW9uX2lvY3RsKHN0cnVjdCBuZV9lbmNsYXZlICpuZV9l
+bmNsYXZlLAo+ICAgICAgICAgICAgICAgICAgdTY0IHBoeXNfcmVnaW9uX2FkZHIgPSByYW5nZS0+
+c3RhcnQ7Cj4gICAgICAgICAgICAgICAgICB1NjQgcGh5c19yZWdpb25fc2l6ZSA9IHJhbmdlX2xl
+bihyYW5nZSk7Cj4gCj4gLSAgICAgICAgICAgICAgIGlmIChwaHlzX3JlZ2lvbl9zaXplICYgKE5F
+X01JTl9NRU1fUkVHSU9OX1NJWkUgLSAxKSkgewo+IC0gICAgICAgICAgICAgICAgICAgICAgIGRl
+dl9lcnJfcmF0ZWxpbWl0ZWQobmVfbWlzY19kZXYudGhpc19kZXZpY2UsCj4gLSAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAiUGh5c2ljYWwgbWVtIHJlZ2lvbiBzaXpl
+IGlzIG5vdCBtdWx0aXBsZSBvZiAyIE1pQlxuIik7Cj4gLQo+IC0gICAgICAgICAgICAgICAgICAg
+ICAgIHJjID0gLUVJTlZBTDsKPiAtCj4gLSAgICAgICAgICAgICAgICAgICAgICAgZ290byBwdXRf
+cGFnZXM7Cj4gLSAgICAgICAgICAgICAgIH0KPiAtCj4gLSAgICAgICAgICAgICAgIGlmICghSVNf
+QUxJR05FRChwaHlzX3JlZ2lvbl9hZGRyLCBORV9NSU5fTUVNX1JFR0lPTl9TSVpFKSkgewo+IC0g
+ICAgICAgICAgICAgICAgICAgICAgIGRldl9lcnJfcmF0ZWxpbWl0ZWQobmVfbWlzY19kZXYudGhp
+c19kZXZpY2UsCj4gLSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAi
+UGh5c2ljYWwgbWVtIHJlZ2lvbiBhZGRyZXNzIGlzIG5vdCAyIE1pQiBhbGlnbmVkXG4iKTsKPiAt
+Cj4gLSAgICAgICAgICAgICAgICAgICAgICAgcmMgPSAtRUlOVkFMOwo+IC0KPiArICAgICAgICAg
+ICAgICAgcmMgPSBuZV9zYW5pdHlfY2hlY2tfcGh5c19tZW1fcmVnaW9uKHBoeXNfcmVnaW9uX2Fk
+ZHIsIHBoeXNfcmVnaW9uX3NpemUpOwo+ICsgICAgICAgICAgICAgICBpZiAocmMgPCAwKQo+ICAg
+ICAgICAgICAgICAgICAgICAgICAgICBnb3RvIHB1dF9wYWdlczsKPiAtICAgICAgICAgICAgICAg
+fQo+ICAgICAgICAgIH0KPiAKPiAgICAgICAgICBuZV9tZW1fcmVnaW9uLT5tZW1vcnlfc2l6ZSA9
+IG1lbV9yZWdpb24ubWVtb3J5X3NpemU7Cj4gLS0KPiAxLjguMy4xCj4gCgoKCkFtYXpvbiBEZXZl
+bG9wbWVudCBDZW50ZXIgKFJvbWFuaWEpIFMuUi5MLiByZWdpc3RlcmVkIG9mZmljZTogMjdBIFNm
+LiBMYXphciBTdHJlZXQsIFVCQzUsIGZsb29yIDIsIElhc2ksIElhc2kgQ291bnR5LCA3MDAwNDUs
+IFJvbWFuaWEuIFJlZ2lzdGVyZWQgaW4gUm9tYW5pYS4gUmVnaXN0cmF0aW9uIG51bWJlciBKMjIv
+MjYyMS8yMDA1Lgo=
 
-Reviewed-by: Rob Herring <robh@kernel.org>
