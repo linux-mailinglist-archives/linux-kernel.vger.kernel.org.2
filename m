@@ -2,82 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 145C442E772
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 05:57:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EE7E42E784
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 06:11:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235314AbhJOD7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 23:59:55 -0400
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:38612 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233955AbhJOD7y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 23:59:54 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R571e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=hao.xiang@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0Us2TCZa_1634270267;
-Received: from localhost(mailfrom:hao.xiang@linux.alibaba.com fp:SMTPD_---0Us2TCZa_1634270267)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 15 Oct 2021 11:57:47 +0800
-From:   Hao Xiang <hao.xiang@linux.alibaba.com>
-To:     kvm@vger.kernel.org
-Cc:     shannon.zhao@linux.alibaba.com, pbonzini@redhat.com,
-        linux-kernel@vger.kernel.org,
-        Hao Xiang <hao.xiang@linux.alibaba.com>
-Subject: [PATCH v2] KVM: VMX: Remove redundant handling of bus lock vmexit
-Date:   Fri, 15 Oct 2021 11:57:45 +0800
-Message-Id: <1634270265-99421-1-git-send-email-hao.xiang@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S233562AbhJOENP convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 15 Oct 2021 00:13:15 -0400
+Received: from [200.156.93.75] ([200.156.93.75]:36488 "EHLO mail.lmdc.uff.br"
+        rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org with ESMTP
+        id S229445AbhJOENO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 00:13:14 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.lmdc.uff.br (Postfix) with ESMTP id 1441615B6AC26;
+        Thu, 14 Oct 2021 21:39:05 -0300 (-03)
+Received: from mail.lmdc.uff.br ([127.0.0.1])
+        by localhost (mail.lmdc.uff.br [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id lxPokaafj-mT; Thu, 14 Oct 2021 21:39:04 -0300 (-03)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.lmdc.uff.br (Postfix) with ESMTP id 85AE115A15C07;
+        Thu, 14 Oct 2021 21:32:25 -0300 (-03)
+X-Virus-Scanned: amavisd-new at lmdc.uff.br
+Received: from mail.lmdc.uff.br ([127.0.0.1])
+        by localhost (mail.lmdc.uff.br [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id YCQdwBxoriun; Thu, 14 Oct 2021 21:32:25 -0300 (-03)
+Received: from [192.168.0.199] (unknown [105.112.156.122])
+        by mail.lmdc.uff.br (Postfix) with ESMTPSA id 0257415B563D1;
+        Thu, 14 Oct 2021 21:26:03 -0300 (-03)
+Content-Type: text/plain; charset="iso-8859-1"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: Re:.
+To:     Mrs Vera <inf09392@att.net>
+From:   "Mrs Vera" <inf09392@att.net>
+Date:   Thu, 14 Oct 2021 17:25:54 -0700
+Reply-To: verakvan101@zohomail.in
+Message-Id: <20211015002604.0257415B563D1@mail.lmdc.uff.br>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hardware may or may not set exit_reason.bus_lock_detected on BUS_LOCK
-VM-Exits. Dealing with KVM_RUN_X86_BUS_LOCK in handle_bus_lock_vmexit
-could be redundant when exit_reason.basic is EXIT_REASON_BUS_LOCK.
-
-We can remove redundant handling of bus lock vmexit. Force Setting
-exit_reason.bus_lock_detected in handle_bus_lock_vmexit(), and deal with
-KVM_RUN_X86_BUS_LOCK only in vmx_handle_exit().
-
-Suggested-by: Sean Christopherson <seanjc@google.com>
-Signed-off-by: Hao Xiang <hao.xiang@linux.alibaba.com>
----
-v1 -> v2: a little modifications of comments
-
- arch/x86/kvm/vmx/vmx.c | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
-
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 116b089..22be02e 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -5562,9 +5562,13 @@ static int handle_encls(struct kvm_vcpu *vcpu)
- 
- static int handle_bus_lock_vmexit(struct kvm_vcpu *vcpu)
- {
--	vcpu->run->exit_reason = KVM_EXIT_X86_BUS_LOCK;
--	vcpu->run->flags |= KVM_RUN_X86_BUS_LOCK;
--	return 0;
-+	/*
-+	 * Hardware may or may not set the BUS_LOCK_DETECTED flag on BUS_LOCK
-+	 * VM-Exits, force setting the flag so that the logic in vmx_handle_exit()
-+	 * doesn't have to handle the flag and the basic exit reason.
-+	 */
-+	to_vmx(vcpu)->exit_reason.bus_lock_detected = true;
-+	return 1;
- }
- 
- /*
-@@ -6051,9 +6055,8 @@ static int vmx_handle_exit(struct kvm_vcpu *vcpu, fastpath_t exit_fastpath)
- 	int ret = __vmx_handle_exit(vcpu, exit_fastpath);
- 
- 	/*
--	 * Even when current exit reason is handled by KVM internally, we
--	 * still need to exit to user space when bus lock detected to inform
--	 * that there is a bus lock in guest.
-+	 * Exit to user space when bus lock detected to inform that there is
-+	 * a bus lock in guest.
- 	 */
- 	if (to_vmx(vcpu)->exit_reason.bus_lock_detected) {
- 		if (ret > 0)
--- 
-1.8.3.1
-
+My name is Vera Hollin Kvan,i have an urgent matter to discuss with you please do not ignore this message make sure you reply me urgently 
