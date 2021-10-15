@@ -2,141 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FD9B42F0B6
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 14:25:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAA0942F0B7
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 14:25:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238789AbhJOM1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 08:27:23 -0400
-Received: from mail-ot1-f54.google.com ([209.85.210.54]:34715 "EHLO
-        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231612AbhJOM1V (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 08:27:21 -0400
-Received: by mail-ot1-f54.google.com with SMTP id g62-20020a9d2dc4000000b0054752cfbc59so12597421otb.1;
-        Fri, 15 Oct 2021 05:25:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=I+FJSF2aUqnp4JnahjPPraJRIER8Ss0fZqzyewPOdxw=;
-        b=EW3v1KVNZd2R9lxH4k5dPjnV3OU3qhnpqI9uuGyMEMZgmkEn2SH5QBEoEOOV38L1nN
-         zGpv2hrGcnpuYV2wuSlCyhrNo/+Al5zvasaM4hVWRxAQqHg62cgBbnDb3U0wwtDw3A4T
-         Qgq1pvbis+WfaXMLeO+gl+EmkX3GwmXLLe/suKqb0YfR2V655LmAUsPp1RGYUeh3xRgO
-         6UuTWroSaPEI9WIEyBzQO8hSFxImPTAf3QeCtD+Q94G9VlRGlOeOniv4zhaXfXC4aP8x
-         RHvjeX8QTpV90sMsmkMDPtt8c4HvdYpOF5McyEg8iQfF7MHuK+UkTQzN7t2E/ypIOp/R
-         S1aA==
-X-Gm-Message-State: AOAM530jNBNwzwE9X04hpTKjVdl/jHpWEm5HzakJ2nHdUUOkmz6GKTPG
-        wI8IfouN/WYiz+HKmp2fvSgMhI18j7YFVZFVmjE=
-X-Google-Smtp-Source: ABdhPJzpvYsJ5DJ8Ndb1O60aAq9rYn4j18kammzbD1H0cXoBb64cvv3HURFg9ZcXvkn9GrV9ZqkCi38FC78xu40vhVA=
-X-Received: by 2002:a9d:65c1:: with SMTP id z1mr7364319oth.198.1634300714380;
- Fri, 15 Oct 2021 05:25:14 -0700 (PDT)
+        id S238799AbhJOM1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 08:27:45 -0400
+Received: from mga01.intel.com ([192.55.52.88]:40352 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231612AbhJOM1o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 08:27:44 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10137"; a="251350189"
+X-IronPort-AV: E=Sophos;i="5.85,375,1624345200"; 
+   d="scan'208";a="251350189"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2021 05:25:37 -0700
+X-IronPort-AV: E=Sophos;i="5.85,375,1624345200"; 
+   d="scan'208";a="492524674"
+Received: from ideak-desk.fi.intel.com ([10.237.68.141])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2021 05:25:34 -0700
+Date:   Fri, 15 Oct 2021 15:25:30 +0300
+From:   Imre Deak <imre.deak@intel.com>
+To:     Jani Nikula <jani.nikula@intel.com>,
+        Mat Jonczyk <mat.jonczyk@o2.pl>
+Cc:     "sashal@kernel.org" <sashal@kernel.org>,
+        "jose.souza@intel.com" <jose.souza@intel.com>,
+        "ville.syrjala@linux.intel.com" <ville.syrjala@linux.intel.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [stable regression] 5.14.12 breaks graphics on an Intel GM45
+ laptop
+Message-ID: <20211015122530.GA819141@ideak-desk.fi.intel.com>
+References: <c23b96a63fea4ebd9e044bbd3c53b74a@grupawp.pl>
+ <87k0ievjo0.fsf@intel.com>
+ <20211015082349.GA759059@ideak-desk.fi.intel.com>
 MIME-Version: 1.0
-References: <20211015024504.947520-1-william.xuanziyang@huawei.com>
-In-Reply-To: <20211015024504.947520-1-william.xuanziyang@huawei.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 15 Oct 2021 14:25:03 +0200
-Message-ID: <CAJZ5v0h5-P+br-+44hv82jKdd=5Y-46daXMWLwsg9WDoEfG17g@mail.gmail.com>
-Subject: Re: [PATCH v2] thermal/core: fix a UAF bug in __thermal_cooling_device_register()
-To:     Ziyang Xuan <william.xuanziyang@huawei.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        "Zhang, Rui" <rui.zhang@intel.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211015082349.GA759059@ideak-desk.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 15, 2021 at 4:46 AM Ziyang Xuan
-<william.xuanziyang@huawei.com> wrote:
->
-> When device_register() return failed, program will goto out_kfree_type
-> to release 'cdev->device' by put_device(). That will call thermal_release()
-> to free 'cdev'. But the follow-up processes access 'cdev' continually.
-> That trggers the UAF bug.
->
-> ====================================================================
-> BUG: KASAN: use-after-free in __thermal_cooling_device_register+0x75b/0xa90
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1.1 04/01/2014
-> Call Trace:
->  dump_stack_lvl+0xe2/0x152
->  print_address_description.constprop.0+0x21/0x140
->  ? __thermal_cooling_device_register+0x75b/0xa90
->  kasan_report.cold+0x7f/0x11b
->  ? __thermal_cooling_device_register+0x75b/0xa90
->  __thermal_cooling_device_register+0x75b/0xa90
->  ? memset+0x20/0x40
->  ? __sanitizer_cov_trace_pc+0x1d/0x50
->  ? __devres_alloc_node+0x130/0x180
->  devm_thermal_of_cooling_device_register+0x67/0xf0
->  max6650_probe.cold+0x557/0x6aa
-> ......
->
-> Freed by task 258:
->  kasan_save_stack+0x1b/0x40
->  kasan_set_track+0x1c/0x30
->  kasan_set_free_info+0x20/0x30
->  __kasan_slab_free+0x109/0x140
->  kfree+0x117/0x4c0
->  thermal_release+0xa0/0x110
->  device_release+0xa7/0x240
->  kobject_put+0x1ce/0x540
->  put_device+0x20/0x30
->  __thermal_cooling_device_register+0x731/0xa90
->  devm_thermal_of_cooling_device_register+0x67/0xf0
->  max6650_probe.cold+0x557/0x6aa [max6650]
->
-> Do not use 'cdev' again after put_device() to fix the problem like doing
-> in thermal_zone_device_register().
->
-> Fixes: 584837618100 ("thermal/drivers/core: Use a char pointer for the cooling device name")
-> Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
-> Reported-by: kernel test robot <lkp@intel.com>
-> Reported-by: kernel test robot <lkp@intel.com>
-> ---
->  drivers/thermal/thermal_core.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
-> index 97ef9b040b84..d2c196b298c1 100644
-> --- a/drivers/thermal/thermal_core.c
-> +++ b/drivers/thermal/thermal_core.c
-> @@ -888,7 +888,7 @@ __thermal_cooling_device_register(struct device_node *np,
->  {
->         struct thermal_cooling_device *cdev;
->         struct thermal_zone_device *pos = NULL;
-> -       int ret;
-> +       int id, ret;
->
->         if (!ops || !ops->get_max_state || !ops->get_cur_state ||
->             !ops->set_cur_state)
-> @@ -901,7 +901,7 @@ __thermal_cooling_device_register(struct device_node *np,
->         ret = ida_simple_get(&thermal_cdev_ida, 0, 0, GFP_KERNEL);
->         if (ret < 0)
->                 goto out_kfree_cdev;
-> -       cdev->id = ret;
-> +       cdev->id = id = ret;
+On Fri, Oct 15, 2021 at 11:23:56AM +0300, Imre Deak wrote:
+> On Fri, Oct 15, 2021 at 10:20:15AM +0300, Jani Nikula wrote:
+> > On Thu, 14 Oct 2021, mat.jonczyk <mat.jonczyk@o2.pl> wrote:
+> > > Hello,
+> > > 
+> > > Kernel 5.14.12 breaks GPU support on an Dell Satellite E6500 laptop with GM45 integrated graphics. The screen does not update after
+> > > the i965 module gets loaded. Same problem happens on 5.15.0-rc5.
+> > > 
+> > > paź 14 23:05:34 mjonczyk-laptop kernel: pci 0000:00:00.0: Intel GM45 Chipset
+> > > paź 14 23:05:34 mjonczyk-laptop kernel: pci 0000:00:00.0: detected gtt size: 2097152K total, 262144K mappable
+> > > paź 14 23:05:34 mjonczyk-laptop kernel: pci 0000:00:00.0: detected 32768K stolen memory
+> > > paź 14 23:05:34 mjonczyk-laptop kernel: input: Integrated_Webcam_2M: Integrate as
+> > > /devices/pci0000:00/0000:00:1a.7/usb1/1-6/1-6:1.0/input/input22
+> > > paź 14 23:05:34 mjonczyk-laptop kernel: usbcore: registered new interface driver uvcvideo
+> > > paź 14 23:05:34 mjonczyk-laptop kernel: checking generic (e0000000 3c0000) vs hw (f6c00000 400000)
+> > > paź 14 23:05:34 mjonczyk-laptop kernel: checking generic (e0000000 3c0000) vs hw (e0000000 10000000)
+> > > paź 14 23:05:34 mjonczyk-laptop kernel: fb0: switching to inteldrmfb from VESA VGA
+> > > paź 14 23:05:34 mjonczyk-laptop kernel: Console: switching to colour dummy device 80x25
+> > > paź 14 23:05:34 mjonczyk-laptop kernel: i915 0000:00:02.0: vgaarb: deactivate vga console
+> > > paź 14 23:05:34 mjonczyk-laptop kernel: i915 0000:00:02.0: vgaarb: changed VGA decodes:
+> > > olddecodes=io+mem,decodes=io+mem:owns=io+mem
+> > > paź 14 23:05:34 mjonczyk-laptop kernel: usb 3-1.3: New USB device found, idVendor=413c, idProduct=8156, bcdDevice= 4.56
+> > > paź 14 23:05:34 mjonczyk-laptop kernel: usb 3-1.3: New USB device strings: Mfr=1, Product=2, SerialNumber=0
+> > > paź 14 23:05:34 mjonczyk-laptop kernel: usb 3-1.3: Product: Dell Wireless 370 Bluetooth Mini-card
+> > > paź 14 23:05:34 mjonczyk-laptop kernel: usb 3-1.3: Manufacturer: Dell Computer Corp
+> > > paź 14 23:05:34 mjonczyk-laptop kernel: invalid opcode: 0000 [#1] SMP PTI
+> > > paź 14 23:05:34 mjonczyk-laptop kernel: CPU: 1 PID: 303 Comm: systemd-udevd Not tainted 5.14.12-051412-generic #202110130438
+> > > paź 14 23:05:34 mjonczyk-laptop kernel: Hardware name: Dell Inc. Latitude E6500                  /0NY667, BIOS A29 06/04/2013
+> > > paź 14 23:05:34 mjonczyk-laptop kernel: RIP: 0010:intel_dp_sync_state+0xe0/0xf0 [i915]
+> > > paź 14 23:05:34 mjonczyk-laptop kernel: Code: 85 69 ff ff ff 48 8b 9f 60 01 00 00 80 bb 73 01 00 00 00 0f 85 64 ff ff ff 48 8d bb 60 01
+> > > 00 00 e8 a5 cb ff ff e9 53 ff ff ff <0f> 0b 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 0f 1f 44 00 00 55
+> > > paź 14 23:05:34 mjonczyk-laptop kernel: RSP: 0000:ffff9d6c006bf870 EFLAGS: 00010282
+> > > paź 14 23:05:34 mjonczyk-laptop kernel: RAX: ffffffffffffffff RBX: ffff9096c7b84000 RCX: ffff9096c76544e0
+> > > paź 14 23:05:34 mjonczyk-laptop kernel: RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff9096c7b841a6
+> > > paź 14 23:05:34 mjonczyk-laptop kernel: RBP: ffff9d6c006bf890 R08: 00000000ffffff92 R09: ffffffffc0797464
+> > > paź 14 23:05:34 mjonczyk-laptop kernel: R10: 0000000000000002 R11: ffff9096c7b84df0 R12: 0000000000000000
+> > > paź 14 23:05:34 mjonczyk-laptop kernel: R13: 0000000000000000 R14: 0000000000000004 R15: ffff9096c7b84000
+> > > paź 14 23:05:34 mjonczyk-laptop kernel: FS:  00007fc523e0a880(0000) GS:ffff9096dbd00000(0000) knlGS:0000000000000000
+> > > paź 14 23:05:34 mjonczyk-laptop kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > > paź 14 23:05:34 mjonczyk-laptop kernel: CR2: 0000559a4efd6110 CR3: 000000010570e000 CR4: 00000000000006e0
+> > > paź 14 23:05:34 mjonczyk-laptop kernel: Call Trace:
+> > > paź 14 23:05:34 mjonczyk-laptop kernel:  intel_modeset_readout_hw_state+0x2a4/0xb90 [i915]
+> > > paź 14 23:05:34 mjonczyk-laptop kernel:  ? __cond_resched+0x1a/0x50
+> > > paź 14 23:05:34 mjonczyk-laptop kernel:  intel_modeset_setup_hw_state+0x17f/0x650 [i915]
+> > > paź 14 23:05:34 mjonczyk-laptop kernel:  ? drm_modeset_lock_all_ctx+0x1a8/0x3c0 [drm]
+> > > paź 14 23:05:34 mjonczyk-laptop kernel:  ? drm_warn_on_modeset_not_all_locked.part.0+0x5e/0x90 [drm]
+> > > paź 14 23:05:34 mjonczyk-laptop kernel:  intel_modeset_init_nogem+0x293/0x4d0 [i915]
+> > > paź 14 23:05:34 mjonczyk-laptop kernel:  ? intel_irq_postinstall+0x470/0x5b0 [i915]
+> > > paź 14 23:05:34 mjonczyk-laptop kernel:  i915_driver_probe+0x1ab/0x440 [i915]
+> > > paź 14 23:05:34 mjonczyk-laptop kernel:  ? mutex_lock+0x13/0x40
+> > > paź 14 23:05:34 mjonczyk-laptop kernel:  i915_pci_probe+0x58/0x140 [i915]
+> > > paź 14 23:05:34 mjonczyk-laptop kernel:  local_pci_probe+0x48/0x80
+> > > paź 14 23:05:34 mjonczyk-laptop kernel:  pci_device_probe+0x105/0x1d0
+> > > paź 14 23:05:34 mjonczyk-laptop kernel:  really_probe+0x20c/0x410
+> > > paź 14 23:05:34 mjonczyk-laptop kernel:  __driver_probe_device+0x109/0x180
+> > > paź 14 23:05:34 mjonczyk-laptop kernel:  driver_probe_device+0x23/0x90
+> > > paź 14 23:05:34 mjonczyk-laptop kernel:  __driver_attach+0xac/0x1b0
+> > > paź 14 23:05:34 mjonczyk-laptop kernel:  ? __device_attach_driver+0xe0/0xe0
+> > > paź 14 23:05:34 mjonczyk-laptop kernel:  bus_for_each_dev+0x7e/0xc0
+> > > paź 14 23:05:34 mjonczyk-laptop kernel:  driver_attach+0x1e/0x20
+> > > paź 14 23:05:34 mjonczyk-laptop kernel:  bus_add_driver+0x135/0x1f0
+> > > paź 14 23:05:34 mjonczyk-laptop kernel:  driver_register+0x95/0xf0
+> > > paź 14 23:05:34 mjonczyk-laptop kernel:  __pci_register_driver+0x68/0x70
+> > > paź 14 23:05:34 mjonczyk-laptop kernel:  i915_init+0x66/0x86 [i915]
+> > > paź 14 23:05:34 mjonczyk-laptop kernel:  ? 0xffffffffc0c80000
+> > > paź 14 23:05:34 mjonczyk-laptop kernel:  do_one_initcall+0x48/0x1d0
+> > > paź 14 23:05:34 mjonczyk-laptop kernel:  ? kmem_cache_alloc_trace+0x159/0x2c0
+> > > paź 14 23:05:34 mjonczyk-laptop kernel:  do_init_module+0x62/0x290
+> > > paź 14 23:05:34 mjonczyk-laptop kernel:  load_module+0xaa3/0xb30
+> > > paź 14 23:05:34 mjonczyk-laptop kernel:  __do_sys_finit_module+0xbf/0x120
+> > > paź 14 23:05:34 mjonczyk-laptop kernel:  __x64_sys_finit_module+0x18/0x20
+> > > paź 14 23:05:34 mjonczyk-laptop kernel:  do_syscall_64+0x5c/0xc0
+> > > paź 14 23:05:34 mjonczyk-laptop kernel:  ? exit_to_user_mode_prepare+0x37/0xb0
+> > > paź 14 23:05:34 mjonczyk-laptop kernel:  ? syscall_exit_to_user_mode+0x27/0x50
+> > > paź 14 23:05:34 mjonczyk-laptop kernel:  ? __x64_sys_mmap+0x33/0x40
+> > > paź 14 23:05:34 mjonczyk-laptop kernel:  ? do_syscall_64+0x69/0xc0
+> > > paź 14 23:05:34 mjonczyk-laptop kernel:  ? __x64_sys_lseek+0x18/0x20
+> > > paź 14 23:05:34 mjonczyk-laptop kernel:  ? do_syscall_64+0x69/0xc0
+> > > paź 14 23:05:34 mjonczyk-laptop kernel:  ? do_syscall_64+0x69/0xc0
+> > > paź 14 23:05:34 mjonczyk-laptop kernel:  ? do_syscall_64+0x69/0xc0
+> > > paź 14 23:05:34 mjonczyk-laptop kernel:  ? common_interrupt+0x5a/0xa0
+> > > paź 14 23:05:34 mjonczyk-laptop kernel:  ? asm_common_interrupt+0x8/0x40
+> > > paź 14 23:05:34 mjonczyk-laptop kernel:  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> > > paź 14 23:05:34 mjonczyk-laptop kernel: RIP: 0033:0x7fc52438c89d
+> > > paź 14 23:05:34 mjonczyk-laptop kernel: Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca
+> > > 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d c3 f5 0c 00 f7 d8 64 89 01 48
+> > > paź 14 23:05:34 mjonczyk-laptop kernel: RSP: 002b:00007ffee98db388 EFLAGS: 00000246 ORIG_RAX: 0000000000000139
+> > > paź 14 23:05:34 mjonczyk-laptop kernel: RAX: ffffffffffffffda RBX: 0000559a4f001eb0 RCX: 00007fc52438c89d
+> > > paź 14 23:05:34 mjonczyk-laptop kernel: RDX: 0000000000000000 RSI: 00007fc524269ded RDI: 0000000000000017
+> > > paź 14 23:05:34 mjonczyk-laptop kernel: RBP: 0000000000020000 R08: 0000000000000000 R09: 0000000000000000
+> > > paź 14 23:05:34 mjonczyk-laptop kernel: R10: 0000000000000017 R11: 0000000000000246 R12: 00007fc524269ded
+> > > paź 14 23:05:34 mjonczyk-laptop kernel: R13: 0000000000000000 R14: 0000559a4edadd00 R15: 0000559a4f001eb0
+> > > paź 14 23:05:34 mjonczyk-laptop kernel: Modules linked in: dell_smm_hwmon(+) snd_hda_codec_generic(+) snd_hda_intel kvm(+)
+> > > snd_intel_dspcfg snd_intel_sdw_acpi snd_hda_codec snd_hda_core snd_hwdep snd_pcm dell_wmi ledtrig_audio dell_smbios dcdbas
+> > > uvcvideo cdc_mbim sparse_keymap dell_wmi_descriptor wmi_bmof snd_seq_midi cdc_wdm videobuf2_vmalloc snd_seq_midi_event
+> > > serio_raw videobuf2_memops i915(+) snd_rawmidi cdc_ncm iwldvm videobuf2_v4l2 snd_seq cdc_ether mac80211 videobuf2_common
+> > > qcserial usbnet usb_wwan mii libarc4 ttm videodev usbserial snd_seq_device pcmcia input_leds mc drm_kms_helper iwlwifi snd_timer
+> > > joydev cec yenta_socket rc_core pcmcia_rsrc pcmcia_core i2c_algo_bit fb_sys_fops syscopyarea snd sysfillrect sysimgblt cfg80211
+> > > soundcore mac_hid sch_fq_codel msr parport_pc ppdev lp drm parport ip_tables x_tables autofs4 wacom hid_generic usbhid gpio_ich
+> > > hid sdhci_pci firewire_ohci cqhci ahci i2c_i801 firewire_core xhci_pci psmouse lpc_ich libahci i2c_smbus sdhci crc_itu_t xhci_pci_renesas
+> > > e1000e wmi video
+> > > paź 14 23:05:34 mjonczyk-laptop kernel: ---[ end trace 80e312eaeb64de58 ]---
+> > > paź 14 23:05:34 mjonczyk-laptop kernel: RIP: 0010:intel_dp_sync_state+0xe0/0xf0 [i915]
+> > > paź 14 23:05:34 mjonczyk-laptop kernel: Code: 85 69 ff ff ff 48 8b 9f 60 01 00 00 80 bb 73 01 00 00 00 0f 85 64 ff ff ff 48 8d bb 60 01
+> > > 00 00 e8 a5 cb ff ff e9 53 ff ff ff <0f> 0b 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 0f 1f 44 00 00 55
+> > > paź 14 23:05:34 mjonczyk-laptop kernel: RSP: 0000:ffff9d6c006bf870 EFLAGS: 00010282
+> > > paź 14 23:05:34 mjonczyk-laptop kernel: RAX: ffffffffffffffff RBX: ffff9096c7b84000 RCX: ffff9096c76544e0
+> > > paź 14 23:05:34 mjonczyk-laptop kernel: RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff9096c7b841a6
+> > > paź 14 23:05:34 mjonczyk-laptop kernel: RBP: ffff9d6c006bf890 R08: 00000000ffffff92 R09: ffffffffc0797464
+> > > paź 14 23:05:34 mjonczyk-laptop kernel: R10: 0000000000000002 R11: ffff9096c7b84df0 R12: 0000000000000000
+> > > paź 14 23:05:34 mjonczyk-laptop kernel: R13: 0000000000000000 R14: 0000000000000004 R15: ffff9096c7b84000
+> > > paź 14 23:05:34 mjonczyk-laptop kernel: FS:  00007fc523e0a880(0000) GS:ffff9096dbd00000(0000) knlGS:0000000000000000
+> > > paź 14 23:05:34 mjonczyk-laptop kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > > paź 14 23:05:34 mjonczyk-laptop kernel: CR2: 0000559a4efd6110 CR3: 000000010570e000 CR4: 00000000000006e0
+> > > paź 14 23:05:35 mjonczyk-laptop kernel: snd_hda_codec_idt hdaudioC0D0: autoconfig for 92HD71B7X: line_outs=1
+> > > (0xf/0x0/0x0/0x0/0x0) type:line
+> > > paź 14 23:05:35 mjonczyk-laptop kernel: snd_hda_codec_idt hdaudioC0D0:    speaker_outs=1 (0xd/0x0/0x0/0x0/0x0)
+> > > 
+> > > The most likely culprit is "drm/i915/tc: Fix TypeC port init/resume time sanitization", so I'm CCing its authors.
+> > > I'll test tomorrow with this patch reverted. Please excuse me for writing this in HTML format, but my main machine is temporarily
+> > > broken.
+> > 
+> > Imre, intel_dp_sync_state() is now called on g4x DP encoders where
+> > encoder->get_hw_state() returns false. Seems like a fragile change
+> > that's not mentioned in the commit message or ->sync_state
+> > documentation. Could be the culprit, though the backtrace isn't
+> > conclusive.
+> 
+> Yes, the above is the culprit commit, thanks for the report and decoding
+> the crash log. I'll follow up with the fix shortly.
 
-I'd prefer this to be two statements, but I can fix it up.
+Mat,
 
-Daniel, would there be any issues if I applied it?
+actually a bit puzzled what's going on. The crash happens on an UD2
+undefined instruction and couldn't figure out how we could end up
+running such code.
 
->
->         cdev->type = kstrdup(type ? type : "", GFP_KERNEL);
->         if (!cdev->type) {
-> @@ -942,8 +942,9 @@ __thermal_cooling_device_register(struct device_node *np,
->  out_kfree_type:
->         kfree(cdev->type);
->         put_device(&cdev->device);
-> +       cdev = NULL;
->  out_ida_remove:
-> -       ida_simple_remove(&thermal_cdev_ida, cdev->id);
-> +       ida_simple_remove(&thermal_cdev_ida, id);
->  out_kfree_cdev:
->         kfree(cdev);
->         return ERR_PTR(ret);
-> --
-> 2.25.1
->
+The only relevant change wrt. the crash in my patch is to read out the
+DPCD on a disabled encoder, however this shouldn't be a problem. It's
+not required though so to make the pre-DDI code uniform with DDI platforms
+I sent
+https://patchwork.freedesktop.org/series/95878/
+
+Could you please give this patch a go?
+
+Could you provide a full dmesg log booting with drm.debug=0x10e and
+capturing the crash? (If you have a working VGA console, or ssh access
+to the machine, you could boot with
+modprobe.blacklist=i915,snd_hda_intel 3
+and modprobe i915 manually).
+
+Could you also provide your i915.ko binary?
+
+Probably better to keep track of this issue on a ticket you could open
+at
+https://gitlab.freedesktop.org/drm/intel/-/issues/new
+
+Thanks,
+Imre
+
+> > BR,
+> > Jani.
+> > 
+> > 
+> > 
+> > 
+> > > 
+> > > I am testing this on Ubuntu 20.04 using kernels from Ubuntu mainline PPA:
+> > > https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.14.12/
+> > > https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.15-rc5/
+> > > 
+> > > Greetings,
+> > > Mateusz Jończyk
+> > 
+> > -- 
+> > Jani Nikula, Intel Open Source Graphics Center
