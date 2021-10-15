@@ -2,60 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F11EE42EE6E
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 12:07:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B84F42EE7E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 12:11:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237764AbhJOKJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 06:09:43 -0400
-Received: from mga04.intel.com ([192.55.52.120]:29528 "EHLO mga04.intel.com"
+        id S232809AbhJOKNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 06:13:42 -0400
+Received: from mga03.intel.com ([134.134.136.65]:61305 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237638AbhJOKJN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 06:09:13 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10137"; a="226661320"
+        id S232265AbhJOKNh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 06:13:37 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10137"; a="227842309"
 X-IronPort-AV: E=Sophos;i="5.85,375,1624345200"; 
-   d="scan'208";a="226661320"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2021 03:07:04 -0700
+   d="scan'208";a="227842309"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2021 03:11:19 -0700
 X-IronPort-AV: E=Sophos;i="5.85,375,1624345200"; 
-   d="scan'208";a="442474635"
+   d="scan'208";a="592935094"
 Received: from smile.fi.intel.com (HELO smile) ([10.237.72.159])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2021 03:07:02 -0700
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2021 03:11:17 -0700
 Received: from andy by smile with local (Exim 4.95)
         (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mbMvA-000OuS-Cu;
-        Fri, 15 Oct 2021 16:06:48 +0300
-Date:   Fri, 15 Oct 2021 16:06:48 +0300
+        id 1mbMzF-000Owa-Ny;
+        Fri, 15 Oct 2021 16:11:01 +0300
+Date:   Fri, 15 Oct 2021 16:11:01 +0300
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     changlianzhi <changlianzhi@uniontech.com>
-Cc:     linux-kernel@vger.kernel.org, dmitry.torokhov@gmail.com,
-        gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        linux-input@vger.kernel.org, 282827961@qq.com
-Subject: Re: [PATCH] input&tty: Fix the keyboard led light display problem
-Message-ID: <YWl86Jlv8Qs5PzXW@smile.fi.intel.com>
-References: <35696980-2a55-c5c1-3fa9-eadf251dcdde@uniontech.com>
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     akpm@linux-foundation.org,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] linux/container_of.h: switch to static_assert
+Message-ID: <YWl95fZ69qpECxqi@smile.fi.intel.com>
+References: <20211015090530.2774079-1-linux@rasmusvillemoes.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <35696980-2a55-c5c1-3fa9-eadf251dcdde@uniontech.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211015090530.2774079-1-linux@rasmusvillemoes.dk>
 Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 15, 2021 at 04:16:35PM +0800, changlianzhi wrote:
-> Switching from the desktop environment to the tty environment,
-> the state of the keyboard led lights and the state of the keyboard
-> lock are inconsistent. This is because the attribute kb->kbdmode
-> of the tty bound in the desktop environment (xorg) is set to
-> VC_OFF, which causes the ledstate and kb->ledflagstate
-> values of the bound tty to always be 0, which causes the switch
-> from the desktop When to the tty environment, the LED light
-> status is inconsistent with the keyboard lock status.
+On Fri, Oct 15, 2021 at 11:05:30AM +0200, Rasmus Villemoes wrote:
+> _Static_assert() is evaluated already in the compiler's frontend, and
+> gives a somehat more to-the-point error, compared to the BUILD_BUG_ON
+> macro, which only fires after the optimizer has had a chance to
+> eliminate calls to functions marked with
+> __attribute__((error)). In theory, this might make builds a tiny bit
+> faster.
+> 
+> There's also a little less gunk in the error message emitted:
+> 
+> lib/sort.c: In function ‘foo’:
+> ./include/linux/build_bug.h:78:41: error: static assertion failed: "pointer type mismatch in container_of()"
+>    78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
+> 
+> compared to
+> 
+> lib/sort.c: In function ‘foo’:
+> ././include/linux/compiler_types.h:322:38: error: call to ‘__compiletime_assert_2’ declared with attribute error: pointer type mismatch in container_of()
+>   322 |  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+> 
+> While at it, fix the copy-pasto in container_of_safe().
 
-Have you even read what others tell you?!
+Thanks, Rasmus!
+Make sense to me.
+Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-If you continue this way, I think it will be guaranteed that your email
-ends up in a ban list.
+> Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+> ---
+> akpm: This is obviously on top of Andy's kernel.h splitup series, so
+> should go along with those if acked.
+
+Nevertheless, kbuild bot is not happy about bottom_half.h (_RET_IP_, _THIS_IP_
+definitions). Do you have any idea what to do the best? (I think those macros
+deserve a separate header as well).
 
 -- 
 With Best Regards,
