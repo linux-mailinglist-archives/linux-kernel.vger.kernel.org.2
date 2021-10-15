@@ -2,112 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28F5E42FC06
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 21:26:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3FAD42FC12
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 21:26:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242722AbhJOT17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 15:27:59 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:51974 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242676AbhJOT1y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 15:27:54 -0400
-Received: from [10.137.106.139] (unknown [131.107.159.11])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 50A6D20B9D2C;
-        Fri, 15 Oct 2021 12:25:47 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 50A6D20B9D2C
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1634325947;
-        bh=iz0OUUGcbTJk4nrU+ApuutZ1DanuurOwgDRQYPbpGYg=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=j35gnGlO9Cn/z/bxPioO0Bs7FWnJVMl3oznd4K+vOiayEoS/zpJ46fPC3THh6KPYk
-         k6ZlmeEffCer/uhY0m0oEMHJ5OiHuwD3CrhQ7R7PPkkkLwD3YQpkMtJ3VX9dd50urh
-         HDOHaFVOjVtI693ZRpcyX8d4NAN+o0Z1MUujXyh4=
-Message-ID: <8802b1ff-3028-642a-22c5-bc4896450a60@linux.microsoft.com>
-Date:   Fri, 15 Oct 2021 12:25:47 -0700
+        id S242777AbhJOT2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 15:28:13 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:39968 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242721AbhJOT2B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 15:28:01 -0400
+Received: from zn.tnic (p200300ec2f0cfb00bb7b1559c428a59f.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:fb00:bb7b:1559:c428:a59f])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id EB41F1EC051F;
+        Fri, 15 Oct 2021 21:25:51 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1634325952;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=diUPBadghGnVRGSh80f0o42e9M3rUKFPPTqan9vhLOA=;
+        b=Aa967DoR7YNNJtpW+XvIMGckgMIqnKf5WypS+n71Jwi1W4jKxEmlyo5W21VMfikUR5xxfp
+        d4PG0ZhQrn9nDqP5swC0wLWgkj8ffB6PJQjCUUDyevOfcDTDo9/z46DsAb1RgF0tN6Vtwu
+        7YvMzKQb0AgVYdBUff+P9WyENt/4qW4=
+Date:   Fri, 15 Oct 2021 21:25:50 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Chatradhi, Naveen Krishna" <nchatrad@amd.com>
+Cc:     linux-edac@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, mingo@redhat.com, mchehab@kernel.org,
+        yazen.ghannam@amd.com
+Subject: Re: [PATCH v4 0/4] x86/edac/amd64: Add support for noncpu nodes
+Message-ID: <YWnVvgluSC03Z1mg@zn.tnic>
+References: <20210823185437.94417-1-nchatrad@amd.com>
+ <20211014185400.10451-1-nchatrad@amd.com>
+ <YWiKpw5MwtAiwNyB@zn.tnic>
+ <9f78573d-c969-da1d-8a7d-4abd7d8a75f2@amd.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [RFC PATCH v7 07/16] ipe: add auditing support
-Content-Language: en-US
-To:     Steve Grubb <sgrubb@redhat.com>, corbet@lwn.net, axboe@kernel.dk,
-        agk@redhat.com, snitzer@redhat.com, ebiggers@kernel.org,
-        tytso@mit.edu, paul@paul-moore.com, eparis@redhat.com,
-        jmorris@namei.org, serge@hallyn.com, linux-audit@redhat.com
-Cc:     linux-security-module@vger.kernel.org, linux-doc@vger.kernel.org,
-        jannh@google.com, linux-fscrypt@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        dm-devel@redhat.com
-References: <1634151995-16266-1-git-send-email-deven.desai@linux.microsoft.com>
- <1634151995-16266-8-git-send-email-deven.desai@linux.microsoft.com>
- <2159283.iZASKD2KPV@x2>
-From:   Deven Bowers <deven.desai@linux.microsoft.com>
-In-Reply-To: <2159283.iZASKD2KPV@x2>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <9f78573d-c969-da1d-8a7d-4abd7d8a75f2@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/13/2021 1:02 PM, Steve Grubb wrote:
+On Fri, Oct 15, 2021 at 05:48:32PM +0530, Chatradhi, Naveen Krishna wrote:
+> Could you please review the latest one (above link)
 
-> Hello,
->
-> On Wednesday, October 13, 2021 3:06:26 PM EDT deven.desai@linux.microsoft.com
-> wrote:
->> Users of IPE require a way to identify when and why an operation fails,
->> allowing them to both respond to violations of policy and be notified
->> of potentially malicious actions on their systens with respect to IPE
->> itself.
-> Would you mind sending examples of audit events so that we can see what the
-> end result is? Some people add them to the commit text. But we still need to
-> see what they look like.
->
-> Thanks,
-> -Steve
+Ok.
+ 
+> or should i push them as v5, to avoid the confusion.
 
-Sure, sorry. I’ll add them to the commit description (and the documentation
-patch at the end) for v8 – In the interest of asynchronous feedback, I’ve
-copied the relevant examples:
+Nah, not necessary.
 
-AUDIT1420 IPE ctx_pid=229 ctx_op=EXECUTE ctx_hook=MMAP ctx_enforce=0
-ctx_comm="grep" ctx_pathname="/usr/lib/libc-2.23.so"
-ctx_ino=532 ctx_dev=vda rule="DEFAULT op=EXECUTE action=DENY"
+The goal is to always avoid spamming maintainers with patchsets if not
+absolutely necessary. :-)
 
-AUDIT1420 IPE ctx_pid=229 ctx_op=EXECUTE ctx_hook=MMAP ctx_enforce=0
-ctx_comm="grep" ctx_pathname="/usr/lib/libc-2.23.so"
-ctx_ino=532 ctx_dev=vda rule="DEFAULT action=DENY"
+Thx.
 
-AUDIT1420 IPE ctx_pid=253 ctx_op=EXECUTE ctx_hook=MMAP ctx_enforce=1
-ctx_comm="anon" rule="DEFAULT op=EXECUTE action=DENY"
+-- 
+Regards/Gruss,
+    Boris.
 
-These three audit records represent various types of results after 
-evaluating
-the trust of a resource. The first two differ in the rule that was 
-matched in
-IPE's policy, the first being an operation-specific default, the second 
-being
-a global default. The third is an example of what is audited when anonymous
-memory is blocked (as there is no way to verify the trust of an anonymous
-page).
-
-The remaining three events, AUDIT_TRUST_POLICY_LOAD (1421),
-AUDIT_TRUST_POLICY_ACTIVATE (1422), and AUDIT_TRUST_STATUS (1423) have this
-form:
-
-AUDIT1421 IPE policy_name="my-policy" policy_version=0.0.0 
-<hash_alg_name>=<hash>
-AUDIT1422 IPE policy_name="my-policy" policy_version=0.0.0 
-<hash_alg_name>=<hash>
-AUDIT1423 IPE enforce=1
-
-The 1421 (AUDIT_TRUST_POLICY_LOAD) event represents a new policy was loaded
-into the kernel, but not is not marked as the policy to enforce. The
-
-The 1422 (AUDIT_TRUST_POLICY_ACTIVATE) event represents a policy that was
-already loaded was made the enforcing policy.
-
-The 1423 (AUDIT_TRUST_STATUS) event represents a switch between 
-permissive and
-enforce, it is added in 08/16 (the following patch)
-
+https://people.kernel.org/tglx/notes-about-netiquette
