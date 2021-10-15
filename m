@@ -2,102 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D4E442FCFD
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 22:27:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FDF542FCFF
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 22:28:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242958AbhJOU3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 16:29:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54144 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238545AbhJOU3l (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 16:29:41 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 513A4C061762
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 13:27:34 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id v20so7080203plo.7
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 13:27:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=aaCe1c/Il7mwzazLNOhBGe2zeoY0WJjHVx8W7f1BZpY=;
-        b=VHlnVWlZ/Pi2ld0Wgs4bKW4ri4LZhR1mLrjD69QcbOsw5z3yd7R0KP+xvCIFwoCuF6
-         45XI8i1uJ89nfB+II5BqxkkMe7Q5HyhfoIve+oqsATzlugEJXT8kZCH8NAuTpdVRpH23
-         IckZs4yOSQ3AGBE1qy6aZRWByu55YprOLoPFlSOodj4vA64qeuoxyqkZwXp2VJMbr1ys
-         hm8/fjdTMe4NI1MsXOqsPhkmAqOl7Z69QZQc22mmlXVdI8SaBN5ZJyuIXb16u/BUK+vp
-         p8jFDDinLpd1p6zcVEI04X9REwumzJqZgZ/8zPyCUeuieKdYE3KHSle5dIxhjLTV3xJj
-         RFkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=aaCe1c/Il7mwzazLNOhBGe2zeoY0WJjHVx8W7f1BZpY=;
-        b=OnaMDoaUI7ljpyYfYk/JN4hwIFmSXEW2Js6zgb5g9bR2v5FrQODznbS8xztdQSQRHR
-         ZVzFn1Ok0MmQN3CsmlU+Kc9tYdEQgHRWvr0uwMrXtROKFCEAahmUBEvZsidKU5H3kIuT
-         PJUKNVL1eTWo35/w1GKIkA+TlVBbvhvoT1vylm6xerJz/7y3r6qWp5wTbNtY0mClY5yv
-         DOj7yG2UkrGZm+Ym0GQZ5akat/v3gFSveZV0hiL0+0BEk9d+1N2065NMniYLligO/R6D
-         Nl0aKgkTSKDmeWgFWvqgE/BnwkbNYUZMhD0kHy5kesO7gXftsZ9mi2p+LQQLyFIG+s7u
-         wwOQ==
-X-Gm-Message-State: AOAM533lHCB/jTYWbfjjqu0vLos7513n2203UpleX/7VZDTIwkXG/zfD
-        EwdOGhyy3+aOg658O1BXUZrKAw==
-X-Google-Smtp-Source: ABdhPJyMgV4d0MRDRJMTxbsrDlkWbmCHM9MvjK5KFtNvkfUV62+XAfcThk5V8SCnlNHJcjIB0quT5g==
-X-Received: by 2002:a17:90a:858e:: with SMTP id m14mr30194808pjn.1.1634329653554;
-        Fri, 15 Oct 2021 13:27:33 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id i2sm12231684pjg.48.2021.10.15.13.27.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Oct 2021 13:27:32 -0700 (PDT)
-Date:   Fri, 15 Oct 2021 20:27:29 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
-        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
-Subject: Re: [PATCH Part2 v5 05/45] x86/sev: Add helper functions for
- RMPUPDATE and PSMASH instruction
-Message-ID: <YWnkMXdL89AHPF10@google.com>
-References: <20210820155918.7518-1-brijesh.singh@amd.com>
- <20210820155918.7518-6-brijesh.singh@amd.com>
- <YWnC++azH3xXrMm6@google.com>
- <3fc1b403-73a1-cf2e-2990-66d2c1ecdfa3@amd.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3fc1b403-73a1-cf2e-2990-66d2c1ecdfa3@amd.com>
+        id S242993AbhJOUaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 16:30:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59132 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238545AbhJOUaJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 16:30:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AEE7D610E5;
+        Fri, 15 Oct 2021 20:28:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1634329683;
+        bh=+hYQMU6HoRUMtiXuwckcki+zu/fY1O6s+B9DModVMd8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=iqvxEEFB220JWHdFvhux+d3aQApzxz61s1utNdtBG5JrTIsC0+Jllr9B0pOLvv/te
+         oHXjcGZgse48FuZj6GqItrT55GXOLnemOos9Ta9dyx43TsKO6cc0aG+U7vg3KwXhW3
+         JVRw6w30qbQcTdMjloV/mS/CTtZ/a8i0BbbvNzt8=
+Date:   Fri, 15 Oct 2021 13:28:00 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Yang Shi <shy828301@gmail.com>
+Cc:     naoya.horiguchi@nec.com, hughd@google.com,
+        kirill.shutemov@linux.intel.com, willy@infradead.org,
+        peterx@redhat.com, osalvador@suse.de, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC v4 PATCH 0/6] Solve silent data loss caused by poisoned
+ page cache (shmem/tmpfs)
+Message-Id: <20211015132800.357d891d0b3ad34adb9c7383@linux-foundation.org>
+In-Reply-To: <20211014191615.6674-1-shy828301@gmail.com>
+References: <20211014191615.6674-1-shy828301@gmail.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 15, 2021, Brijesh Singh wrote:
-> On 10/15/21 1:05 PM, Sean Christopherson wrote:
-> > On Fri, Aug 20, 2021, Brijesh Singh wrote:
-> >> +	if (!cpu_feature_enabled(X86_FEATURE_SEV_SNP))
-> > Shouldn't this be a WARN_ON_ONCE()?
-> 
-> Since some of these function are called while handling the PSC so I
-> tried to avoid using the WARN -- mainly because if the warn_on_panic=1
-> is set on the host then it will result in the kernel panic.
+On Thu, 14 Oct 2021 12:16:09 -0700 Yang Shi <shy828301@gmail.com> wrote:
 
-But why would KVM be handling PSC requests if SNP is disabled?
+> When discussing the patch that splits page cache THP in order to offline the
+> poisoned page, Noaya mentioned there is a bigger problem [1] that prevents this
+> from working since the page cache page will be truncated if uncorrectable
+> errors happen.  By looking this deeper it turns out this approach (truncating
+> poisoned page) may incur silent data loss for all non-readonly filesystems if
+> the page is dirty.  It may be worse for in-memory filesystem, e.g. shmem/tmpfs
+> since the data blocks are actually gone.
+> 
+> To solve this problem we could keep the poisoned dirty page in page cache then
+> notify the users on any later access, e.g. page fault, read/write, etc.  The
+> clean page could be truncated as is since they can be reread from disk later on.
+> 
+> The consequence is the filesystems may find poisoned page and manipulate it as
+> healthy page since all the filesystems actually don't check if the page is
+> poisoned or not in all the relevant paths except page fault.  In general, we
+> need make the filesystems be aware of poisoned page before we could keep the
+> poisoned page in page cache in order to solve the data loss problem.
+
+Is the "RFC" still accurate, or might it be an accidental leftover?
+
+I grabbed this series as-is for some testing, but I do think it wouild
+be better if it was delivered as two separate series - one series for
+the -stable material and one series for the 5.16-rc1 material.
+
