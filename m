@@ -2,62 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23B0F42FA45
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 19:30:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9A7742FA4D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 19:31:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237569AbhJORc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 13:32:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42216 "EHLO
+        id S237841AbhJORdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 13:33:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234748AbhJORc5 (ORCPT
+        with ESMTP id S235261AbhJORds (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 13:32:57 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DA0DC061570
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 10:30:50 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id s3so8018499ild.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 10:30:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=71QdEmlwBmyzW2/4qEGlb6RuQKZwUgr5VIqT5E3Y77g=;
-        b=CuAs2zi92viUamsYJfvcyIidFsn55ajCcSI9EuNpq+XkugQc1Qq1Rj14uIxxjOV4xQ
-         DXxb9kYSchXFteCH6YiaDTNmWIWvF3RtxiD8IdwNIrVmlVZLBVDZ3aZDWarTOJcFC/Va
-         2J1qFGZwJGLBX5cktq5wor78lHHJW0XFiDRd/g4pscMXAHf9AcUsshotZtEIerR1NX8Q
-         zNaGWW96To2QHQ1VID3Zvsx/u02lqwrEo3JhAM95pCXw5OE+2XiGGpIA37GIHb9k11mm
-         EDpZ7DXZMCnJodwkYwgVj8qUPwJfL9QnuypYziDhwXyFpjtHmJUO+RM3we5qvjFc12JT
-         3jAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=71QdEmlwBmyzW2/4qEGlb6RuQKZwUgr5VIqT5E3Y77g=;
-        b=3OvpXIdm0zOs8/+pBtl6YRt9+/hHfOO+MclvG+VIGLQJ47HBhllNKXjzSFeRjqwPPa
-         NDqQZyDYwL8tJiCmGcEfzeZvlERlEBQBLBo8F+0ZizjVpSVUvNFUZ/Ja9H45hqKbTMyO
-         gGmQmgQ6wWMZ8cgGPJqEzrmKL3y1iuULkSN7olQZwGnlW/nzepvfol0Tx3/CBAzUMxUL
-         rVI4uWdW1PTlHK1cQ0yB0Ya8bBf1rEmQM3e8sjc7RRcYsamW6/xDos9v29PNcaIpff7/
-         3xvvZzR2AJvGZJqsjiHfojPZSIbbhJYvO9pOuc4eqem0YAbfCMUTOCJFO1GOM31SGhiq
-         xnlw==
-X-Gm-Message-State: AOAM5309yaVBI8KI1VJemnLvxsoBYvTq6oMUIPokzIX0So5gHtdOfmsf
-        fuBI0vlFisVLlZHrxio4DLNqX+nzLjftfwyye1Y=
-X-Google-Smtp-Source: ABdhPJzs8xKbvx5nI6M+sjNibovdpzdBpCfb/4nM4GTSRS90pvm3V9hE5So7zG+Nzxiz9hp6C2rpyl35VNscojANqJc=
-X-Received: by 2002:a05:6e02:1985:: with SMTP id g5mr5105721ilf.158.1634319049958;
- Fri, 15 Oct 2021 10:30:49 -0700 (PDT)
+        Fri, 15 Oct 2021 13:33:48 -0400
+Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26BA6C061570;
+        Fri, 15 Oct 2021 10:31:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=uUlcTDK4XPU+iizrpIkJOrRHPABQ0RGWVp54/0NzJKk=; b=NgbjHiyaDO4zvgJzUVTEBWtoLd
+        MxI2VAOvKixcFxmUR9Q78HrsKsnDB2feafuRocMJlVJca+AtlN2zmCFgfeF73UGfFhvY36HHdpv+c
+        p1/8xX3sPuI7ChCJO1bKSWXZ0nrU7NiH+lVFMaTQ4HoVgLCIiqAeSMRNDIBy98+Bb908T9VbJT4zJ
+        VTKMweCE7STFbx6SekAkMWFyslODFau0/CJz9pXg1M5OcXwK3M7uRgMch3FDaVwHYbHdPwaAjj2ZP
+        IHpqOF83NJkwFyvrlkb19rWiAs7nWP3NODSCnSsYVSn/uKy59n0CpkMd0lNUHlfse0jti5fbGEnEE
+        EJKPi/Fg==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mbR3L-008L4Y-Lv; Fri, 15 Oct 2021 17:31:31 +0000
+Date:   Fri, 15 Oct 2021 10:31:31 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Ming Lei <ming.lei@redhat.com>
+Cc:     tj@kernel.org, gregkh@linuxfoundation.org,
+        akpm@linux-foundation.org, minchan@kernel.org, jeyu@kernel.org,
+        shuah@kernel.org, bvanassche@acm.org, dan.j.williams@intel.com,
+        joe@perches.com, tglx@linutronix.de, keescook@chromium.org,
+        rostedt@goodmis.org, linux-spdx@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 11/12] zram: fix crashes with cpu hotplug multistate
+Message-ID: <YWm68xUnAofop3PZ@bombadil.infradead.org>
+References: <20210927163805.808907-1-mcgrof@kernel.org>
+ <20210927163805.808907-12-mcgrof@kernel.org>
+ <YWeOJP2UJWYF94fu@T590>
+ <YWeR4moCRh+ZHOmH@T590>
+ <YWiSAN6xfYcUDJCb@bombadil.infradead.org>
+ <YWjCpLUNPF3s4P2U@T590>
+ <YWjJ0O7K+31Iz3ox@bombadil.infradead.org>
+ <YWk9e957Hb+I7HvR@T590>
 MIME-Version: 1.0
-Received: by 2002:a6b:fd1a:0:0:0:0:0 with HTTP; Fri, 15 Oct 2021 10:30:49
- -0700 (PDT)
-Reply-To: jeai2nasri@yahoo.com
-From:   Jean nasri <tel802e@gmail.com>
-Date:   Fri, 15 Oct 2021 19:30:49 +0200
-Message-ID: <CA+byAN5RE6Q7nkrMy9ONSxgN8ShdnnPvtVhwLeDw82=KD1GmiQ@mail.gmail.com>
-Subject: Hi there
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YWk9e957Hb+I7HvR@T590>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-Do you have an account to receive donation funds? Please reply for
-further explanation.
-Nasri.
+On Fri, Oct 15, 2021 at 04:36:11PM +0800, Ming Lei wrote:
+> On Thu, Oct 14, 2021 at 05:22:40PM -0700, Luis Chamberlain wrote:
+> > On Fri, Oct 15, 2021 at 07:52:04AM +0800, Ming Lei wrote:
+> ...
+> > > 
+> > > We need to understand the exact reason why there is still cpuhp node
+> > > left, can you share us the exact steps for reproducing the issue?
+> > > Otherwise we may have to trace and narrow down the reason.
+> > 
+> > See my commit log for my own fix for this issue.
+> 
+> OK, thanks!
+> 
+> I can reproduce the issue, and the reason is that reset_store fails
+> zram_remove() when unloading module, then the warning is caused.
+> 
+> The top 3 patches in the following tree can fix the issue:
+> 
+> https://github.com/ming1/linux/commits/my_v5.15-blk-dev
+
+Thanks for trying an alternative fix! A crash stops yes, however this
+also ends up leaving the driver in an unrecoverable state after a few
+tries. Ie, you CTRL-C the scripts and try again over and over again and
+the driver ends up in a situation where it just says:
+
+zram: Can't change algorithm for initialized device
+
+And the zram module can't be removed at that point.
+
+  Luis
