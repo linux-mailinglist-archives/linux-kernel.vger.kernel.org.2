@@ -2,116 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D439942F542
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 16:29:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AA5942F53E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 16:29:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240281AbhJOObv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 10:31:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55022 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236879AbhJOObs (ORCPT
+        id S240235AbhJOObL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 10:31:11 -0400
+Received: from smtp-fw-9103.amazon.com ([207.171.188.200]:9928 "EHLO
+        smtp-fw-9103.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236879AbhJOObJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 10:31:48 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9F6AC061570;
-        Fri, 15 Oct 2021 07:29:41 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id q2-20020a17090a2e0200b001a0fd4efd49so2915188pjd.1;
-        Fri, 15 Oct 2021 07:29:41 -0700 (PDT)
+        Fri, 15 Oct 2021 10:31:09 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=SRGYUiiPkOf4nvJAYXjsEdQZ9uhs5fYStilswkWIKIU=;
-        b=mbgR3J7vdSv9ydYMWh/7rebsHNDZK201cmfpd/sP/GQkhd7GlhzenAoBzgbBCwnXBG
-         CAq8Zpd7QORKvVApiIrhgnRPNKEK6ST35pkfMd2FtfsY5vF/zq9X/vg6fa8YhckkADYt
-         tNNUwtsmHFdgdufpXYRbBziX3kyROMiDVTqLMytC6w1scCrqwTlHO4q4/hvjGJxLhCdK
-         gGvHdPu6r4bqi2JeA9S+O8smBkUr6IXgrL4IhUajdlqSSLTjzIjCJiR5JOdmQHbXd4Gi
-         ztnyD8kyLx77TpkEuO5F74jpZ9qlaIOOpVRconGOVNyvkwY0mi4nv74+v7Wm2sRMk4yc
-         Xbbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=SRGYUiiPkOf4nvJAYXjsEdQZ9uhs5fYStilswkWIKIU=;
-        b=70XKNl1I57Ka7HIzIYdzZGckeoz1b1cgP2Ps6E3kKgc/3rCkQJk9aGJPjagZQl+9GJ
-         iZlCcfcp/DWyNakikjym3wh5ykG6EizewHo6Ml14aqsQxKgaqE+yRNVTbylyveOlivFj
-         ClU7TT08Ouv3synab5FR+67SZjZ7VhhjqT807qAB+fRO3qb8+lJfCUb5Ur7/ptkLi7tV
-         juLXi2TXmlUq+4g/b0WYEM/GTvVhnJyP2O6jb3OCEuN4CZcZtdy0LfkUeD1deQdK73xX
-         g/FPbAsAJyoYfm8q9c/uawoQCRDK8hfluHHLJSxUa1d/SHdT0zz6je3zbG4Qn9jkTLyi
-         YNqQ==
-X-Gm-Message-State: AOAM5334yhUY++VbAd/y3HRDFNXbjFFwghyp/pQFuxMJgC8O4PmNQzw6
-        1WCo2fdcB+0PdKq1bQQv/zk=
-X-Google-Smtp-Source: ABdhPJyjQOHOMIPirQe+ArNXa7MTJzJ4Tjdlo6+nV496dLZOdE/edVf0nuqiqNA+WJIBx+vicXR27g==
-X-Received: by 2002:a17:90a:de0b:: with SMTP id m11mr13852310pjv.90.1634308181312;
-        Fri, 15 Oct 2021 07:29:41 -0700 (PDT)
-Received: from localhost.localdomain ([2406:7400:63:4806:9a51:7f4b:9b5c:337a])
-        by smtp.gmail.com with ESMTPSA id j12sm5210806pff.127.2021.10.15.07.29.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Oct 2021 07:29:40 -0700 (PDT)
-From:   Naveen Naidu <naveennaidu479@gmail.com>
-To:     bhelgaas@google.com
-Cc:     Naveen Naidu <naveennaidu479@gmail.com>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rob Herring <robh@kernel.org>,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
-Subject: [PATCH v2 02/24] PCI: Set error response in config access defines when ops->read() fails
-Date:   Fri, 15 Oct 2021 19:58:17 +0530
-Message-Id: <b913b4966938b7cad8c049dc34093e6c4b2fae68.1634306198.git.naveennaidu479@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1634306198.git.naveennaidu479@gmail.com>
-References: <cover.1634306198.git.naveennaidu479@gmail.com>
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1634308143; x=1665844143;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=/jE8U7yzXykvUrQPM0Hdx0/Cxqcuc/IceX/e+gpTSV4=;
+  b=F5YlVFKG4738TkBIi65wRYBrdp8M8pSc5mGBOxYm+t5TkR+fxgLM4oYi
+   9Bmz3f6DY8pXyFxRZvUdBo/EeX4OYeNBcYehWEMyxGZMV39/9AWIVvXep
+   2IbS0L/Lyxazcu39yOkyaasanZm25f1HRMGLiXGYP/PZJm1bxtUOTwOxW
+   I=;
+X-IronPort-AV: E=Sophos;i="5.85,375,1624320000"; 
+   d="scan'208";a="965006834"
+Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-pdx-2a-cb1ffea5.us-west-2.amazon.com) ([10.25.36.210])
+  by smtp-border-fw-9103.sea19.amazon.com with ESMTP; 15 Oct 2021 14:28:55 +0000
+Received: from EX13D16EUB003.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-pdx-2a-cb1ffea5.us-west-2.amazon.com (Postfix) with ESMTPS id C2B0F610D0;
+        Fri, 15 Oct 2021 14:28:54 +0000 (UTC)
+Received: from [10.85.100.8] (10.43.162.89) by EX13D16EUB003.ant.amazon.com
+ (10.43.166.99) with Microsoft SMTP Server (TLS) id 15.0.1497.24; Fri, 15 Oct
+ 2021 14:28:47 +0000
+Message-ID: <c078d7fd-7c32-8a3a-3958-c0b79a67ddc7@amazon.com>
+Date:   Fri, 15 Oct 2021 17:28:41 +0300
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:91.0)
+ Gecko/20100101 Thunderbird/91.2.0
+Subject: Re: [PATCH v3 4/4] nitro_enclaves: Add KUnit tests for contiguous
+ physical memory regions merging
+Content-Language: en-US
+To:     "Longpeng(Mike)" <longpeng2@huawei.com>
+CC:     <arei.gonglei@huawei.com>, <gregkh@linuxfoundation.org>,
+        <kamal@canonical.com>, <pbonzini@redhat.com>,
+        <sgarzare@redhat.com>, <stefanha@redhat.com>,
+        <vkuznets@redhat.com>, <linux-kernel@vger.kernel.org>,
+        <ne-devel-upstream@amazon.com>, <lexnv@amazon.com>,
+        <alcioa@amazon.com>
+References: <20211009013248.1174-1-longpeng2@huawei.com>
+ <20211009013248.1174-5-longpeng2@huawei.com>
+From:   "Paraschiv, Andra-Irina" <andraprs@amazon.com>
+In-Reply-To: <20211009013248.1174-5-longpeng2@huawei.com>
+X-Originating-IP: [10.43.162.89]
+X-ClientProxiedBy: EX13D04UWB003.ant.amazon.com (10.43.161.231) To
+ EX13D16EUB003.ant.amazon.com (10.43.166.99)
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make PCI_OP_READ and PCI_USER_READ_CONFIG set the data value with error
-response (~0), when the PCI device read by a host controller fails.
-
-This ensures that the controller drivers no longer need to fabricate
-(~0) value when they detect error. It also  gurantees that the error
-response (~0) is always set when the controller drivers fails to read a
-config register from a device.
-
-This makes error response fabrication consistent and helps in removal of
-a lot of repeated code.
-
-Suggested-by: Rob Herring <robh@kernel.org>
-Signed-off-by: Naveen Naidu <naveennaidu479@gmail.com>
----
- drivers/pci/access.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/pci/access.c b/drivers/pci/access.c
-index 46935695cfb9..b3b2006ed1d2 100644
---- a/drivers/pci/access.c
-+++ b/drivers/pci/access.c
-@@ -42,7 +42,10 @@ int noinline pci_bus_read_config_##size \
- 	if (PCI_##size##_BAD) return PCIBIOS_BAD_REGISTER_NUMBER;	\
- 	pci_lock_config(flags);						\
- 	res = bus->ops->read(bus, devfn, pos, len, &data);		\
--	*value = (type)data;						\
-+	if (res)									\
-+		SET_PCI_ERROR_RESPONSE(value);			\
-+	else										\
-+		*value = (type)data;						\
- 	pci_unlock_config(flags);					\
- 	return res;							\
- }
-@@ -228,7 +231,10 @@ int pci_user_read_config_##size						\
- 	ret = dev->bus->ops->read(dev->bus, dev->devfn,			\
- 					pos, sizeof(type), &data);	\
- 	raw_spin_unlock_irq(&pci_lock);				\
--	*val = (type)data;						\
-+	if (ret)								\
-+		SET_PCI_ERROR_RESPONSE(val);			\
-+	else									\
-+		*val = (type)data;						\
- 	return pcibios_err_to_errno(ret);				\
- }									\
- EXPORT_SYMBOL_GPL(pci_user_read_config_##size);
--- 
-2.25.1
+CgpPbiAwOS8xMC8yMDIxIDA0OjMyLCBMb25ncGVuZyhNaWtlKSB3cm90ZToKPiBGcm9tOiBMb25n
+cGVuZyA8bG9uZ3BlbmcyQGh1YXdlaS5jb20+Cj4gCj4gQWRkIEtVbml0IHRlc3RzIGZvciB0aGUg
+Y29udGlndW91cyBwaHlzaWNhbCBtZW1vcnkgcmVnaW9ucyBtZXJnaW5nCj4gZnVuY3Rpb25hbGl0
+eSBmcm9tIHRoZSBOaXRybyBFbmNsYXZlcyBtaXNjIGRldmljZSBsb2dpYy4KPiAKPiBXZSdsbCBz
+ZWUgdGhlIGZvbGxvd2luZyBtZXNzYWdlIHVzaW5nIGRtZXNnIGlmIGV2ZXJ5dGhpbmcgZ29lcyB3
+ZWxsOgo+IAo+IFsuLi5dICAgICAjIFN1YnRlc3Q6IG5lX21pc2NfZGV2X3Rlc3QKPiBbLi4uXSAg
+ICAgMS4uMQo+IFsuLi5dIChOVUxMIGRldmljZSAqKTogUGh5c2ljYWwgbWVtIHJlZ2lvbiBhZGRy
+ZXNzIGlzIG5vdCAyIE1pQiBhbGlnbmVkCj4gWy4uLl0gKE5VTEwgZGV2aWNlICopOiBQaHlzaWNh
+bCBtZW0gcmVnaW9uIHNpemUgaXMgbm90IG11bHRpcGxlIG9mIDIgTWlCCj4gWy4uLl0gKE5VTEwg
+ZGV2aWNlICopOiBQaHlzaWNhbCBtZW0gcmVnaW9uIGFkZHJlc3MgaXMgbm90IDIgTWlCIGFsaWdu
+ZWQKPiBbLi4uXSAgICAgb2sgMSAtIG5lX21pc2NfZGV2X3Rlc3RfbWVyZ2VfcGh5c19jb250aWdf
+bWVtb3J5X3JlZ2lvbnMKPiBbLi4uXSBvayAxIC0gbmVfbWlzY19kZXZfdGVzdAo+IAo+IFNpZ25l
+ZC1vZmYtYnk6IExvbmdwZW5nIDxsb25ncGVuZzJAaHVhd2VpLmNvbT4KPiAtLS0KPiBDaGFuZ2Vz
+IHYyIC0+IHYzOgo+ICAgIC0gdXBkYXRlIHRoZSBjb21taXQgdGl0bGUgYW5kIGNvbW1pdCBtZXNz
+YWdlLiAgW0FuZHJhXQo+ICAgIC0gYWxpZ24gdGhlIGZpbGVkcyBpbiAnc3RydWN0IHBoeXNfcmVn
+aW9uc190ZXN0Jy4gIFtBbmRyYV0KPiAgICAtIHJlbmFtZSAncGh5c19yZWdpb25zX3Rlc3RjYXNl
+cycgdG8gJ3BoeXNfcmVnaW9uc190ZXN0X2Nhc2VzJy4gIFtBbmRyYV0KPiAgICAtIGFkZCBjb21t
+ZW50cyBiZWZvcmUgZWFjaCB0ZXN0IGNhc2VzLiAgW0FuZHJhXQo+ICAgIC0gaW5pdGlhbGl6ZSB0
+aGUgdmFyaWFibGVzIGluIG5lX21pc2NfZGV2X3Rlc3RfbWVyZ2VfcGh5c19jb250aWdfbWVtb3J5
+X3JlZ2lvbnMuICBbQW5kcmFdCj4gLS0tCj4gICBkcml2ZXJzL3ZpcnQvbml0cm9fZW5jbGF2ZXMv
+bmVfbWlzY19kZXZfdGVzdC5jIHwgMTM2ICsrKysrKysrKysrKysrKysrKysrKysrKysKPiAgIDEg
+ZmlsZSBjaGFuZ2VkLCAxMzYgaW5zZXJ0aW9ucygrKQo+IAo+IGRpZmYgLS1naXQgYS9kcml2ZXJz
+L3ZpcnQvbml0cm9fZW5jbGF2ZXMvbmVfbWlzY19kZXZfdGVzdC5jIGIvZHJpdmVycy92aXJ0L25p
+dHJvX2VuY2xhdmVzL25lX21pc2NfZGV2X3Rlc3QuYwo+IGluZGV4IGJjYjc1NWUuLjdiZDZiMzQg
+MTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy92aXJ0L25pdHJvX2VuY2xhdmVzL25lX21pc2NfZGV2X3Rl
+c3QuYwo+ICsrKyBiL2RyaXZlcnMvdmlydC9uaXRyb19lbmNsYXZlcy9uZV9taXNjX2Rldl90ZXN0
+LmMKPiBAQCAtMiw3ICsyLDE0MyBAQAo+ICAgCj4gICAjaW5jbHVkZSA8a3VuaXQvdGVzdC5oPgo+
+ICAgCj4gKyNkZWZpbmUgTUFYX1BIWVNfUkVHSU9OUwkxNgo+ICsjZGVmaW5lIElOVkFMSURfVkFM
+VUUJCSh+MHVsbCkKPiArCj4gK3N0cnVjdCBwaHlzX3JlZ2lvbnNfdGVzdCB7Cj4gKwl1NjQgcGFk
+ZHI7Cj4gKwl1NjQgc2l6ZTsKPiArCWludCBleHBlY3RfcmM7Cj4gKwlpbnQgZXhwZWN0X251bTsK
+ClBsZWFzZSBrZWVwIHRoZSBzYW1lIGZpZWxkIHR5cGUgYXMgIm51bSI6ICJ1bnNpZ25lZCBsb25n
+Ii4KCkFuZCBqdXN0IGFsaWduIHRoZSBmaWVsZCBuYW1lcyBhcyBtZW50aW9uZWQgaW4gdGhlIGZp
+cnN0IHBhdGNoIG9mIHRoZSAKc2VyaWVzLCBzbyB0aGV5IGFyZSBlYXNpbHkgdmlzdWFsaXplZC4K
+Cj4gKwl1NjQgZXhwZWN0X2xhc3RfcGFkZHI7Cj4gKwl1NjQgZXhwZWN0X2xhc3Rfc2l6ZTsKPiAr
+fSBwaHlzX3JlZ2lvbnNfdGVzdF9jYXNlc1tdID0gewo+ICsJLyoKPiArCSAqIEFkZCB0aGUgcmVn
+aW9uIGZyb20gMHgxMDAwIHRvICgweDEwMDAgKyAweDIwMDAwMCAtIDEpOgo+ICsJICogICBFeHBl
+Y3RlZCByZXN1bHQ6Cj4gKwkgKiAgICAgICBGYWlsZWQsIHN0YXJ0IGFkZHJlc3MgaXMgbm90IDJN
+LWFsaWduZWQKPiArCSAqCj4gKwkgKiBOb3cgdGhlIGluc3RhbmNlIG9mIHN0cnVjdCBwaHlzX2Nv
+bnRpZ19tZW1fcmVnaW9ucyBpczoKPiArCSAqICAgbnVtID0gMAo+ICsJICogICByZWdpb24gPSB7
+fQo+ICsJICovCj4gKwl7MHgxMDAwLCAweDIwMDAwMCwgLUVJTlZBTCwgMCwgSU5WQUxJRF9WQUxV
+RSwgSU5WQUxJRF9WQUxVRX0sCj4gKwo+ICsJLyoKPiArCSAqIEFkZCB0aGUgcmVnaW9uIGZyb20g
+MHgyMDAwMDAgdG8gKDB4MjAwMDAwICsgMHgxMDAwIC0gMSk6Cj4gKwkgKiAgIEV4cGVjdGVkIHJl
+c3VsdDoKPiArCSAqICAgICAgIEZhaWxlZCwgc2l6ZSBpcyBub3QgMk0tYWxpZ25lZAo+ICsJICoK
+PiArCSAqIE5vdyB0aGUgaW5zdGFuY2Ugb2Ygc3RydWN0IHBoeXNfY29udGlnX21lbV9yZWdpb25z
+IGlzOgo+ICsJICogICBudW0gPSAwCj4gKwkgKiAgIHJlZ2lvbiA9IHt9Cj4gKwkgKi8KPiArCXsw
+eDIwMDAwMCwgMHgxMDAwLCAtRUlOVkFMLCAwLCBJTlZBTElEX1ZBTFVFLCBJTlZBTElEX1ZBTFVF
+fSwKPiArCj4gKwkvKgo+ICsJICogQWRkIHRoZSByZWdpb24gZnJvbSAweDIwMDAwMCB0byAoMHgy
+MDAwMDAgKyAweDIwMDAwMCAtIDEpOgo+ICsJICogICBFeHBlY3RlZCByZXN1bHQ6Cj4gKwkgKiAg
+ICAgICBTdWNjZXNzZnVsCj4gKwkgKgo+ICsJICogTm93IHRoZSBpbnN0YW5jZSBvZiBzdHJ1Y3Qg
+cGh5c19jb250aWdfbWVtX3JlZ2lvbnMgaXM6Cj4gKwkgKiAgIG51bSA9IDEKPiArCSAqICAgcmVn
+aW9uID0gewo+ICsJICogICAgICAge3N0YXJ0PTB4MjAwMDAwLCBlbmQ9MHgzZmZmZmZ9LCAvLyBs
+ZW49MHgyMDAwMDAKPiArCSAqICAgfQo+ICsJICovCj4gKwl7MHgyMDAwMDAsIDB4MjAwMDAwLCAw
+LCAxLCAweDIwMDAwMCwgMHgyMDAwMDB9LAo+ICsKPiArCS8qCj4gKwkgKiBBZGQgdGhlIHJlZ2lv
+biBmcm9tIDB4MCB0byAoMHgwICsgMHgyMDAwMDAgLSAxKToKPiArCSAqICAgRXhwZWN0ZWQgcmVz
+dWx0Ogo+ICsJICogICAgICAgU3VjY2Vzc2Z1bAo+ICsJICoKPiArCSAqIE5vdyB0aGUgaW5zdGFu
+Y2Ugb2Ygc3RydWN0IHBoeXNfY29udGlnX21lbV9yZWdpb25zIGlzOgo+ICsJICogICBudW0gPSAy
+Cj4gKwkgKiAgIHJlZ2lvbiA9IHsKPiArCSAqICAgICAgIHtzdGFydD0weDIwMDAwMCwgZW5kPTB4
+M2ZmZmZmfSwgLy8gbGVuPTB4MjAwMDAwCj4gKwkgKiAgICAgICB7c3RhcnQ9MHgwLCAgICAgIGVu
+ZD0weDFmZmZmZn0sIC8vIGxlbj0weDIwMDAwMAo+ICsJICogICB9Cj4gKwkgKi8KPiArCXsweDAs
+IDB4MjAwMDAwLCAwLCAyLCAweDAsIDB4MjAwMDAwfSwKPiArCj4gKwkvKgo+ICsJICogQWRkIHRo
+ZSByZWdpb24gZnJvbSAweDYwMDAwMCB0byAoMHg2MDAwMDAgKyAweDQwMDAwMCAtIDEpOgo+ICsJ
+ICogICBFeHBlY3RlZCByZXN1bHQ6Cj4gKwkgKiAgICAgICBTdWNjZXNzZnVsCj4gKwkgKgo+ICsJ
+ICogTm93IHRoZSBpbnN0YW5jZSBvZiBzdHJ1Y3QgcGh5c19jb250aWdfbWVtX3JlZ2lvbnMgaXM6
+Cj4gKwkgKiAgIG51bSA9IDMKPiArCSAqICAgcmVnaW9uID0gewo+ICsJICogICAgICAge3N0YXJ0
+PTB4MjAwMDAwLCBlbmQ9MHgzZmZmZmZ9LCAvLyBsZW49MHgyMDAwMDAKPiArCSAqICAgICAgIHtz
+dGFydD0weDAsICAgICAgZW5kPTB4MWZmZmZmfSwgLy8gbGVuPTB4MjAwMDAwCj4gKwkgKiAgICAg
+ICB7c3RhcnQ9MHg2MDAwMDAsIGVuZD0weDlmZmZmZn0sIC8vIGxlbj0weDQwMDAwMAo+ICsJICog
+ICB9Cj4gKwkgKi8KPiArCXsweDYwMDAwMCwgMHg0MDAwMDAsIDAsIDMsIDB4NjAwMDAwLCAweDQw
+MDAwMH0sCj4gKwo+ICsJLyoKPiArCSAqIEFkZCB0aGUgcmVnaW9uIGZyb20gMHhhMDAwMDAgdG8g
+KDB4YTAwMDAwICsgMHg0MDAwMDAgLSAxKToKPiArCSAqICAgRXhwZWN0ZWQgcmVzdWx0Ogo+ICsJ
+ICogICAgICAgU3VjY2Vzc2Z1bCwgbWVyZ2luZyBjYXNlIQo+ICsJICoKPiArCSAqIE5vdyB0aGUg
+aW5zdGFuY2Ugb2Ygc3RydWN0IHBoeXNfY29udGlnX21lbV9yZWdpb25zIGlzOgo+ICsJICogICBu
+dW0gPSAzCj4gKwkgKiAgIHJlZ2lvbiA9IHsKPiArCSAqICAgICAgIHtzdGFydD0weDIwMDAwMCwg
+ZW5kPTB4M2ZmZmZmfSwgLy8gbGVuPTB4MjAwMDAwCj4gKwkgKiAgICAgICB7c3RhcnQ9MHgwLCAg
+ICAgIGVuZD0weDFmZmZmZn0sIC8vIGxlbj0weDIwMDAwMAo+ICsJICogICAgICAge3N0YXJ0PTB4
+NjAwMDAwLCBlbmQ9MHhkZmZmZmZ9LCAvLyBsZW49MHg4MDAwMDAKPiArCSAqICAgfQo+ICsJICov
+Cj4gKwl7MHhhMDAwMDAsIDB4NDAwMDAwLCAwLCAzLCAweDYwMDAwMCwgMHg4MDAwMDB9LAo+ICsK
+PiArCS8qCj4gKwkgKiBBZGQgdGhlIHJlZ2lvbiBmcm9tIDB4MTAwMCB0byAoMHgxMDAwICsgMHgy
+MDAwMDAgLSAxKToKPiArCSAqICAgRXhwZWN0ZWQgcmVzdWx0Ogo+ICsJICogICAgICAgRmFpbGVk
+LCBzdGFydCBhZGRyZXNzIGlzIG5vdCAyTS1hbGlnbmVkCj4gKwkgKgo+ICsJICogTm93IHRoZSBp
+bnN0YW5jZSBvZiBzdHJ1Y3QgcGh5c19jb250aWdfbWVtX3JlZ2lvbnMgaXM6Cj4gKwkgKiAgIG51
+bSA9IDMKPiArCSAqICAgcmVnaW9uID0gewo+ICsJICogICAgICAge3N0YXJ0PTB4MjAwMDAwLCBl
+bmQ9MHgzZmZmZmZ9LCAvLyBsZW49MHgyMDAwMDAKPiArCSAqICAgICAgIHtzdGFydD0weDAsICAg
+ICAgZW5kPTB4MWZmZmZmfSwgLy8gbGVuPTB4MjAwMDAwCj4gKwkgKiAgICAgICB7c3RhcnQ9MHg2
+MDAwMDAsIGVuZD0weGRmZmZmZn0sIC8vIGxlbj0weDgwMDAwMAo+ICsJICogICB9Cj4gKwkgKi8K
+PiArCXsweDEwMDAsIDB4MjAwMDAwLCAtRUlOVkFMLCAzLCAweDYwMDAwMCwgMHg4MDAwMDB9LAoK
+TmljZSwgSSBsaWtlIGhvdyB0aGUgY29tbWVudHMgYXJlIHN0cnVjdHVyZWQuCgpQbGVhc2UgYWxz
+byB1cGRhdGUgZnJvbSAicmVnaW9uIiB0byAicmVnaW9ucyIgYW5kICJzdHJ1Y3QgCnBoeXNfY29u
+dGlnX21lbV9yZWdpb25zIiB0byAibmVfcGh5c19jb250aWdfbWVtX3JlZ2lvbnMiLCBhZnRlciB0
+aGUgCnN1Z2dlc3RlZCBuYW1pbmcgY2hhbmdlcyBpbiB0aGUgZmlyc3QgcGF0Y2ggb2YgdGhlIHNl
+cmllcy4KCj4gK307Cj4gKwo+ICtzdGF0aWMgdm9pZCBuZV9taXNjX2Rldl90ZXN0X21lcmdlX3Bo
+eXNfY29udGlnX21lbW9yeV9yZWdpb25zKHN0cnVjdCBrdW5pdCAqdGVzdCkKPiArewo+ICsJc3Ry
+dWN0IHBoeXNfY29udGlnX21lbV9yZWdpb25zICpyZWdpb25zOwoKc3RydWN0IHBoeXNfY29udGln
+X21lbV9yZWdpb25zICpyZWdpb25zOyA9PiBzdHJ1Y3QgCm5lX3BoeXNfY29udGlnX21lbV9yZWdp
+b25zIHBoeXNfY29udGlnX21lbV9yZWdpb25zID0ge307Cgo+ICsJc2l6ZV90IHN6ID0gMDsKPiAr
+CWludCByYyA9IDA7Cj4gKwlpbnQgaSA9IDA7Cj4gKwo+ICsJc3ogPSBzaXplb2YoKnJlZ2lvbnMp
+ICsgTUFYX1BIWVNfUkVHSU9OUyAqIHNpemVvZihzdHJ1Y3QgcmFuZ2UpOwo+ICsJcmVnaW9ucyA9
+IGt1bml0X2t6YWxsb2ModGVzdCwgc3osIEdGUF9LRVJORUwpOwoKQW5kIHRoZW4gY2FuIGFsbG9j
+IHRoZSBuZWNlc3NhcnkgbWVtb3J5IGZvciB0aGUgInJlZ2lvbnMiIGZpZWxkOgoKcGh5c19jb250
+aWdfbWVtX3JlZ2lvbnMucmVnaW9ucyA9IGt1bml0X2tjYWxsb2ModGVzdCwgTUFYX1BIWVNfUkVH
+SU9OUywgCnNpemVvZigqcGh5c19jb250aWdfbWVtX3JlZ2lvbnMucmVnaW9ucyksIEdGUF9LRVJO
+RUwpOwoKPiArCUtVTklUX0FTU0VSVF9UUlVFKHRlc3QsIHJlZ2lvbnMgIT0gTlVMTCk7Cj4gKwo+
+ICsJZm9yIChpID0gMDsgaSA8IEFSUkFZX1NJWkUocGh5c19yZWdpb25zX3Rlc3RfY2FzZXMpOyBp
+KyspIHsKPiArCQlzdHJ1Y3QgcGh5c19yZWdpb25zX3Rlc3QgKmVudHJ5ID0gcGh5c19yZWdpb25z
+X3Rlc3RfY2FzZXMgKyBpOwoKQ291bGQgcmVuYW1lICJlbnRyeSIgdG8gInRlc3RfY2FzZSIuCgpD
+YW4gYWxzbyBhZGQ6Cgp1bnNpZ25lZCBsb25nIG51bSA9IDA7Cgo+ICsKPiArCQlyYyA9IG5lX21l
+cmdlX3BoeXNfY29udGlnX21lbW9yeV9yZWdpb25zKHJlZ2lvbnMsCj4gKwkJCQkJCQkgZW50cnkt
+PnBhZGRyLCBlbnRyeS0+c2l6ZSk7CgpBbmQgdGhlbiBjYW4gdXBkYXRlIGl0IGhlcmUgYW5kIHVz
+ZSBpdCBmdXJ0aGVyIG9uOgoKbnVtID0gcGh5c19jb250aWdfbWVtX3JlZ2lvbnMubnVtOwoKPiAr
+CQlLVU5JVF9FWFBFQ1RfRVEodGVzdCwgcmMsIGVudHJ5LT5leHBlY3RfcmMpOwo+ICsJCUtVTklU
+X0VYUEVDVF9FUSh0ZXN0LCByZWdpb25zLT5udW0sIGVudHJ5LT5leHBlY3RfbnVtKTsKPiArCj4g
+KwkJaWYgKGVudHJ5LT5leHBlY3RfbGFzdF9wYWRkciA9PSBJTlZBTElEX1ZBTFVFKQo+ICsJCQlj
+b250aW51ZTsKPiArCj4gKwkJS1VOSVRfRVhQRUNUX0VRKHRlc3QsIHJlZ2lvbnMtPnJlZ2lvblty
+ZWdpb25zLT5udW0gLSAxXS5zdGFydCwKPiArCQkJCWVudHJ5LT5leHBlY3RfbGFzdF9wYWRkcik7
+Cj4gKwkJS1VOSVRfRVhQRUNUX0VRKHRlc3QsIHJhbmdlX2xlbigmcmVnaW9ucy0+cmVnaW9uW3Jl
+Z2lvbnMtPm51bSAtIDFdKSwKPiArCQkJCWVudHJ5LT5leHBlY3RfbGFzdF9zaXplKTsKPiArCX0K
+CkF0IHRoZSBlbmQgbmVlZCB0byBhbHNvIGZyZWUgdGhlIGFsbG9jYXRlZCBtZW1vcnkgZm9yIHRo
+ZSAicmVnaW9ucyIgCmZpZWxkIHVzaW5nICJrdW5pdF9mcmVlIiBbMV0uCgpbMV0gCmh0dHBzOi8v
+Z2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L3RvcnZhbGRzL2xpbnV4Lmdp
+dC90cmVlL2luY2x1ZGUva3VuaXQvdGVzdC5oI242MzEKClRoYW5rcywKQW5kcmEKCj4gK30KPiAr
+Cj4gICBzdGF0aWMgc3RydWN0IGt1bml0X2Nhc2UgbmVfbWlzY19kZXZfdGVzdF9jYXNlc1tdID0g
+ewo+ICsJS1VOSVRfQ0FTRShuZV9taXNjX2Rldl90ZXN0X21lcmdlX3BoeXNfY29udGlnX21lbW9y
+eV9yZWdpb25zKSwKPiAgIAl7fQo+ICAgfTsKPiAgIAo+IAoKCgpBbWF6b24gRGV2ZWxvcG1lbnQg
+Q2VudGVyIChSb21hbmlhKSBTLlIuTC4gcmVnaXN0ZXJlZCBvZmZpY2U6IDI3QSBTZi4gTGF6YXIg
+U3RyZWV0LCBVQkM1LCBmbG9vciAyLCBJYXNpLCBJYXNpIENvdW50eSwgNzAwMDQ1LCBSb21hbmlh
+LiBSZWdpc3RlcmVkIGluIFJvbWFuaWEuIFJlZ2lzdHJhdGlvbiBudW1iZXIgSjIyLzI2MjEvMjAw
+NS4K
 
