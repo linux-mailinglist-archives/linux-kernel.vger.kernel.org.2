@@ -2,86 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4EC642EC3D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 10:26:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5244042EC47
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 10:27:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235078AbhJOI20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 04:28:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53204 "EHLO mail.kernel.org"
+        id S234744AbhJOI3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 04:29:37 -0400
+Received: from mga06.intel.com ([134.134.136.31]:28228 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236976AbhJOI2A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 04:28:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C1F8B6115C;
-        Fri, 15 Oct 2021 08:25:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634286354;
-        bh=aBYrQ1RwqNb90dGA4folI8lt2W24F5L9RUAriOorGhY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DwlwWIyprCEyaubGD9kSzHTWNUl9r4q45c5FPl8E9+1tAgWAqCfnzgDqvPwbQlN63
-         b61pF8n3+ODMXl3Re3acQAdieDRTjXbFGNFUzXJvogmJWmPfSXe89xSEE7+jILyJAB
-         EsJld7VitKjSI32hSlaxOarQwX2pDMij9nlErECk=
-Date:   Fri, 15 Oct 2021 10:25:51 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     changlianzhi <changlianzhi@uniontech.com>
-Cc:     linux-kernel@vger.kernel.org, dmitry.torokhov@gmail.com,
-        jirislaby@kernel.org, andriy.shevchenko@linux.intel.com,
-        linux-input@vger.kernel.org, 282827961@qq.com
-Subject: Re: [PATCH] input&tty: Fix the keyboard led light display problem
-Message-ID: <YWk7D09iprF3P0pH@kroah.com>
-References: <61693925.1c69fb81.a058.27f2SMTPIN_ADDED_BROKEN@mx.google.com>
+        id S234424AbhJOI3a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 04:29:30 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10137"; a="288740861"
+X-IronPort-AV: E=Sophos;i="5.85,375,1624345200"; 
+   d="scan'208";a="288740861"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2021 01:26:24 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,375,1624345200"; 
+   d="scan'208";a="592912322"
+Received: from lkp-server02.sh.intel.com (HELO 08b2c502c3de) ([10.239.97.151])
+  by orsmga004.jf.intel.com with ESMTP; 15 Oct 2021 01:26:23 -0700
+Received: from kbuild by 08b2c502c3de with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mbIXm-0007Vc-EN; Fri, 15 Oct 2021 08:26:22 +0000
+Date:   Fri, 15 Oct 2021 16:26:19 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [gustavoars:for-next/clang-fallthrough] BUILD SUCCESS
+ 9bed5200e04d2a3dcd3a420d249e947eac7ec7c1
+Message-ID: <61693b2b.bvYhHJ0tmv69W+Of%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <61693925.1c69fb81.a058.27f2SMTPIN_ADDED_BROKEN@mx.google.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 15, 2021 at 04:16:35PM +0800, changlianzhi wrote:
-> Switching from the desktop environment to the tty environment,
-> the state of the keyboard led lights and the state of the keyboard
-> lock are inconsistent. This is because the attribute kb->kbdmode
-> of the tty bound in the desktop environment (xorg) is set to
-> VC_OFF, which causes the ledstate and kb->ledflagstate
-> values of the bound tty to always be 0, which causes the switch
-> from the desktop When to the tty environment, the LED light
-> status is inconsistent with the keyboard lock status.
-> 
-> Signed-off-by: lianzhi chang <changlianzhi@uniontech.com>
-> ---
-> drivers/input/input.c | 46 ++++++++++++++++++++++++++++++++++++++-
-> drivers/tty/vt/keyboard.c | 19 ++++++++++++++--
-> include/linux/input.h | 3 +++
-> 3 files changed, 65 insertions(+), 3 deletions(-)
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git for-next/clang-fallthrough
+branch HEAD: 9bed5200e04d2a3dcd3a420d249e947eac7ec7c1  Makefile: Enable -Wimplicit-fallthrough for Clang
 
-Hi,
+elapsed time: 857m
 
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
+configs tested: 147
+configs skipped: 3
 
-You are receiving this message because of the following common error(s)
-as indicated below:
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-- Your patch is malformed (tabs converted to spaces, linewrapped, etc.)
-  and can not be applied.  Please read the file,
-  Documentation/email-clients.txt in order to fix this.
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                 randconfig-c001-20211014
+arm                            zeus_defconfig
+sh                           se7206_defconfig
+sh                         ap325rxa_defconfig
+powerpc                     ep8248e_defconfig
+powerpc                     mpc83xx_defconfig
+mips                           ip32_defconfig
+powerpc                     stx_gp3_defconfig
+mips                        bcm63xx_defconfig
+arm                        spear3xx_defconfig
+powerpc                    socrates_defconfig
+powerpc                       ebony_defconfig
+powerpc                     kmeter1_defconfig
+s390                       zfcpdump_defconfig
+mips                        qi_lb60_defconfig
+arm                  colibri_pxa270_defconfig
+powerpc                     tqm8560_defconfig
+xtensa                         virt_defconfig
+mips                         bigsur_defconfig
+arc                              alldefconfig
+m68k                            q40_defconfig
+sh                        edosk7760_defconfig
+mips                malta_qemu_32r6_defconfig
+powerpc                   lite5200b_defconfig
+arm                         orion5x_defconfig
+sh                      rts7751r2d1_defconfig
+arc                                 defconfig
+riscv                            alldefconfig
+powerpc                      ppc40x_defconfig
+m68k                           sun3_defconfig
+m68k                        stmark2_defconfig
+powerpc                      tqm8xx_defconfig
+powerpc                    adder875_defconfig
+arc                        nsim_700_defconfig
+mips                      malta_kvm_defconfig
+powerpc                      arches_defconfig
+mips                        bcm47xx_defconfig
+xtensa                              defconfig
+powerpc                     tqm8541_defconfig
+nios2                         3c120_defconfig
+mips                      fuloong2e_defconfig
+powerpc                        warp_defconfig
+openrisc                    or1ksim_defconfig
+arm                  colibri_pxa300_defconfig
+s390                          debug_defconfig
+m68k                         apollo_defconfig
+sh                               j2_defconfig
+sh                             espt_defconfig
+powerpc                 mpc8560_ads_defconfig
+arm                        vexpress_defconfig
+powerpc                      pmac32_defconfig
+powerpc                 mpc8315_rdb_defconfig
+m68k                          hp300_defconfig
+sh                          rsk7269_defconfig
+ia64                                defconfig
+riscv                          rv32_defconfig
+sh                        sh7757lcr_defconfig
+arm                            qcom_defconfig
+arm                       aspeed_g5_defconfig
+xtensa                       common_defconfig
+powerpc                      ppc44x_defconfig
+arm                  randconfig-c002-20211014
+x86_64               randconfig-c001-20211014
+arm                  randconfig-c002-20211015
+i386                 randconfig-c001-20211015
+x86_64               randconfig-c001-20211015
+ia64                             allmodconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+nds32                             allnoconfig
+arc                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                                defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+i386                             allyesconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a006-20211014
+x86_64               randconfig-a004-20211014
+x86_64               randconfig-a001-20211014
+x86_64               randconfig-a005-20211014
+x86_64               randconfig-a002-20211014
+x86_64               randconfig-a003-20211014
+i386                 randconfig-a003-20211014
+i386                 randconfig-a001-20211014
+i386                 randconfig-a005-20211014
+i386                 randconfig-a004-20211014
+i386                 randconfig-a002-20211014
+i386                 randconfig-a006-20211014
+arc                  randconfig-r043-20211014
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+x86_64                           allyesconfig
 
-- This looks like a new version of a previously submitted patch, but you
-  did not list below the --- line any changes from the previous version.
-  Please read the section entitled "The canonical patch format" in the
-  kernel file, Documentation/SubmittingPatches for what needs to be done
-  here to properly describe this.
+clang tested configs:
+arm                  randconfig-c002-20211014
+i386                 randconfig-c001-20211014
+s390                 randconfig-c005-20211014
+x86_64               randconfig-c007-20211014
+powerpc              randconfig-c003-20211014
+riscv                randconfig-c006-20211014
+x86_64               randconfig-a012-20211014
+x86_64               randconfig-a015-20211014
+x86_64               randconfig-a016-20211014
+x86_64               randconfig-a014-20211014
+x86_64               randconfig-a011-20211014
+x86_64               randconfig-a013-20211014
+i386                 randconfig-a016-20211014
+i386                 randconfig-a014-20211014
+i386                 randconfig-a011-20211014
+i386                 randconfig-a015-20211014
+i386                 randconfig-a012-20211014
+i386                 randconfig-a013-20211014
+hexagon              randconfig-r041-20211014
+s390                 randconfig-r044-20211014
+riscv                randconfig-r042-20211014
+hexagon              randconfig-r045-20211014
 
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
-
-thanks,
-
-greg k-h's patch email bot
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
