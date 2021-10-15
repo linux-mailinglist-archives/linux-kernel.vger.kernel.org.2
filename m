@@ -2,103 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03AAC42FD3A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 23:08:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2091942FD3E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 23:09:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243055AbhJOVJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 17:09:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34760 "EHLO
+        id S238499AbhJOVLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 17:11:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235480AbhJOVJw (ORCPT
+        with ESMTP id S234257AbhJOVLp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 17:09:52 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91084C061570
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 14:07:45 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id y15so46899448lfk.7
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 14:07:45 -0700 (PDT)
+        Fri, 15 Oct 2021 17:11:45 -0400
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D93F0C061570;
+        Fri, 15 Oct 2021 14:09:38 -0700 (PDT)
+Received: by mail-io1-xd2b.google.com with SMTP id r134so9173265iod.11;
+        Fri, 15 Oct 2021 14:09:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bC5/do6YaE4lPDo0l97sBVrMnwWkBfvui2f3ar33Hc4=;
-        b=eYZpMby4iGA+yh0NGF+8l+PJgizeDoLcmjeHyV4wtpwUUMvIQ3AXzmd7sgsMKFaAEZ
-         HGwEWFsnA97BC5nK+vWjNWmsqMZ1Im1rXEY1pB+nOsZ6WjOO8J5sIu6bld0z5TfTDJp4
-         nW8LdiaYhaDDgRW3w1oYL3q+CgM6oBiybdB+JAvQLP5CDM1kzoLNiqOdZ5+q9aUqW5Fh
-         LjA+irP2bBP9CUjvT5nVex/k8Ng3w7CGm6lIea3dkjWeVYyIajfpVaz4erDghnSWB9QH
-         1MWXfqPPPWTdbi+W92psmMlulWP2oV2+G6KaHPsRCyKzXxGhzPE7WaF0VB4CIkc9zhv7
-         9yUg==
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=YNpQQVSWroKAuwC5UuKPiU7mURzWsyubKVyYeWLs8+g=;
+        b=oi1+0T20an49s5CDeWeeJydx7NnCyGlYcNCY8HrZXBcSv9xoZQQnFi9ywLRriPGdr6
+         qudl1OOjImSiBDWFed1YW6Id5h2UY45MqQn0rh0hsk10se0Ow3NtdmoYie6Wf/A+T9+t
+         orjszynzQ0gDabjt6gvL/77sYF83TQRQwNwRToZNsOU6pNZMXKXBZD9iJkXBvZTbuOMN
+         PL45gIzU8Jv9zN1hciWKxGKdY6LFjNec0ymQq4byhP34RPVWS0JiPQyOhUTt8d2Sww9e
+         6sJ1Eks+EnGj8i2ownluYmcU3kQwoGc4wzPLYh00SzycqEO81Dumx6K5WQVbh82NDcMs
+         d57A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bC5/do6YaE4lPDo0l97sBVrMnwWkBfvui2f3ar33Hc4=;
-        b=kyIaQy0dw6qu2Y2oXvqgsjxPLdDFRg07Q/IR9NTmB8UFhfBWfyzzBI9/V9pCsKg06d
-         4OzpcmJqxytw4S4RgXW6dWZLuTpW/r0Nd3rEJ4XTg9Dom/4lFbFYY5cR9qVC2ipi3c5m
-         oXQHbXo07mF2fxHmXoOm975AMCn6nvcJlbFzda2FakVN/IgD89u+kIH+d8zfPDc1izSQ
-         /COlMqdVPuozU1G+DSNoBL0eQKTvIzYF5nK+XDvDON7vrcSAcwwANOUObiQGBozGMKoR
-         PUbgJYzdSgpurnJDzAli6rA6yOVcQ164huj6k1k8Ta5UPQAEbIfWT3YXUamXdz65ccmB
-         VJvA==
-X-Gm-Message-State: AOAM531hDbILCPf9NOZR5T17JBoH1pTL8+sMrYf15la/k/lRVMXaIl53
-        W4HbacTvkqDTk3KWresXWA0=
-X-Google-Smtp-Source: ABdhPJwkecQzQcx4sJp1365mMubW5NhJvbb3QNHQkc1WY9qZz7N2viBUYDjQts57NocZZ1Q8Ya36dg==
-X-Received: by 2002:a2e:bc03:: with SMTP id b3mr15169664ljf.54.1634332063982;
-        Fri, 15 Oct 2021 14:07:43 -0700 (PDT)
-Received: from localhost.localdomain (84-72-105-84.dclient.hispeed.ch. [84.72.105.84])
-        by smtp.gmail.com with ESMTPSA id a29sm125876ljq.37.2021.10.15.14.07.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Oct 2021 14:07:43 -0700 (PDT)
-From:   Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
-To:     Nicolas Frattaroli <frattaroli.nicolas@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, Heiko Stuebner <heiko@sntech.de>
-Cc:     linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: rockchip: i2s-tdm: Fix refcount test
-Date:   Fri, 15 Oct 2021 23:07:29 +0200
-Message-Id: <20211015210730.308946-1-frattaroli.nicolas@gmail.com>
-X-Mailer: git-send-email 2.33.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=YNpQQVSWroKAuwC5UuKPiU7mURzWsyubKVyYeWLs8+g=;
+        b=Nvb77/R2UC361LRYuzGuYqJERI2XJhm4M3LzkCdnvIBnEmlyEPD9GPugZBtXF5+2zW
+         0CKMJw8hJ0RQH1PNZNgTfOHbVGmxoMeI7F5fPiA3MrLFt8fE1ZmegQHOpWgHFveb0lxu
+         SQg0CP5r9DXuX0MoRaCJeseOmldrGChazh8tfDNOZi07mxWcv7wGIHjR5OmQ4pXlkdl9
+         lMTtq4zlSjVcbg2T4ulSt399JKxqUSev6QGJVv2NJmP+CEhmI5Y0Pm6L23MmzMmIihH4
+         txhXOIyHWdedE7p2zh7cuRh8XV1VLW7PWdcmAhS5POcJETbbCjLks6hP4GBkW3+aesiV
+         C+Rg==
+X-Gm-Message-State: AOAM531iIA+gTccFPqeYuXAYAm6munEjYTufeUCQf72XrqDAyjWfxXWw
+        qQxS+m01s8F3l8+fm3BQvB4lrrR5pDJoLLfab3o=
+X-Google-Smtp-Source: ABdhPJwNHMuJdFv5OsLXSbaXl6t1UaleaMHzJy6EthxddRG46f4m4rR0YdTy2mlgiRyrZDlIM8Rf+ky5htBI36XHwA4=
+X-Received: by 2002:a05:6638:1192:: with SMTP id f18mr9632310jas.114.1634332178263;
+ Fri, 15 Oct 2021 14:09:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211012032503.459821-1-masahiroy@kernel.org>
+In-Reply-To: <20211012032503.459821-1-masahiroy@kernel.org>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Fri, 15 Oct 2021 23:09:01 +0200
+Message-ID: <CA+icZUV=XTDSiZQwg7=kMkqkS1hyST_yqAwm+6Zd3_X6ApHbbA@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: split DEBUG_CFLAGS out to scripts/Makefile.debug
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kbuild@vger.kernel.org,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During development of V5 of the i2s-tdm patch series, I replaced
-the atomic refcount with a regular integer, as it was only ever
-accessed within a spinlock.
+On Tue, Oct 12, 2021 at 5:25 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> To slim down the top Makefile, split out the code block surrounded by
+> ifdef CONFIG_DEBUG_INFO ... endif.
+>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 
-Foolishly, I got the semantics of atomic_dec_and_test wrong, which
-resulted in a test for 0 actually becoming a test for >0.
+Nice.
 
-The result was that setting the audio frequency broke; switching
-from 44100 Hz audio playback to 96000 Hz audio playback would
-garble the sound most unpleasantly.
+Reviewed-by: Sedat Dilek <sedat.dilek@gmail.com>
 
-Fix this by checking for --refcount == 0, which is what it should
-have been all along.
+- Sedat -
 
-Fixes: 081068fd6414 ("ASoC: rockchip: add support for i2s-tdm controller")
-Signed-off-by: Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
----
- sound/soc/rockchip/rockchip_i2s_tdm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/rockchip/rockchip_i2s_tdm.c b/sound/soc/rockchip/rockchip_i2s_tdm.c
-index 396277eaa417..5d3abbada72a 100644
---- a/sound/soc/rockchip/rockchip_i2s_tdm.c
-+++ b/sound/soc/rockchip/rockchip_i2s_tdm.c
-@@ -408,7 +408,7 @@ static void rockchip_snd_txrxctrl(struct snd_pcm_substream *substream,
- 		else
- 			rockchip_disable_rde(i2s_tdm->regmap);
- 
--		if (--i2s_tdm->refcount) {
-+		if (--i2s_tdm->refcount == 0) {
- 			rockchip_snd_xfer_clear(i2s_tdm,
- 						I2S_CLR_TXC | I2S_CLR_RXC);
- 		}
--- 
-2.33.1
-
+> ---
+>
+>  Makefile               | 39 +--------------------------------------
+>  scripts/Makefile.debug | 33 +++++++++++++++++++++++++++++++++
+>  2 files changed, 34 insertions(+), 38 deletions(-)
+>  create mode 100644 scripts/Makefile.debug
+>
+> diff --git a/Makefile b/Makefile
+> index ee5896261d2f..8e3224470dc1 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -847,44 +847,6 @@ ifdef CONFIG_ZERO_CALL_USED_REGS
+>  KBUILD_CFLAGS  += -fzero-call-used-regs=used-gpr
+>  endif
+>
+> -DEBUG_CFLAGS   :=
+> -
+> -ifdef CONFIG_DEBUG_INFO
+> -
+> -ifdef CONFIG_DEBUG_INFO_SPLIT
+> -DEBUG_CFLAGS   += -gsplit-dwarf
+> -else
+> -DEBUG_CFLAGS   += -g
+> -endif
+> -
+> -ifndef CONFIG_AS_IS_LLVM
+> -KBUILD_AFLAGS  += -Wa,-gdwarf-2
+> -endif
+> -
+> -ifndef CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT
+> -dwarf-version-$(CONFIG_DEBUG_INFO_DWARF4) := 4
+> -dwarf-version-$(CONFIG_DEBUG_INFO_DWARF5) := 5
+> -DEBUG_CFLAGS   += -gdwarf-$(dwarf-version-y)
+> -endif
+> -
+> -ifdef CONFIG_DEBUG_INFO_REDUCED
+> -DEBUG_CFLAGS   += -fno-var-tracking
+> -ifdef CONFIG_CC_IS_GCC
+> -DEBUG_CFLAGS   += -femit-struct-debug-baseonly
+> -endif
+> -endif
+> -
+> -ifdef CONFIG_DEBUG_INFO_COMPRESSED
+> -DEBUG_CFLAGS   += -gz=zlib
+> -KBUILD_AFLAGS  += -gz=zlib
+> -KBUILD_LDFLAGS += --compress-debug-sections=zlib
+> -endif
+> -
+> -endif # CONFIG_DEBUG_INFO
+> -
+> -KBUILD_CFLAGS += $(DEBUG_CFLAGS)
+> -export DEBUG_CFLAGS
+> -
+>  ifdef CONFIG_FUNCTION_TRACER
+>  ifdef CONFIG_FTRACE_MCOUNT_USE_CC
+>    CC_FLAGS_FTRACE      += -mrecord-mcount
+> @@ -1033,6 +995,7 @@ KBUILD_CPPFLAGS += $(call cc-option,-fmacro-prefix-map=$(srctree)/=)
+>
+>  # include additional Makefiles when needed
+>  include-y                      := scripts/Makefile.extrawarn
+> +include-$(CONFIG_DEBUG_INFO)   += scripts/Makefile.debug
+>  include-$(CONFIG_KASAN)                += scripts/Makefile.kasan
+>  include-$(CONFIG_KCSAN)                += scripts/Makefile.kcsan
+>  include-$(CONFIG_UBSAN)                += scripts/Makefile.ubsan
+> diff --git a/scripts/Makefile.debug b/scripts/Makefile.debug
+> new file mode 100644
+> index 000000000000..9f39b0130551
+> --- /dev/null
+> +++ b/scripts/Makefile.debug
+> @@ -0,0 +1,33 @@
+> +DEBUG_CFLAGS   :=
+> +
+> +ifdef CONFIG_DEBUG_INFO_SPLIT
+> +DEBUG_CFLAGS   += -gsplit-dwarf
+> +else
+> +DEBUG_CFLAGS   += -g
+> +endif
+> +
+> +ifndef CONFIG_AS_IS_LLVM
+> +KBUILD_AFLAGS  += -Wa,-gdwarf-2
+> +endif
+> +
+> +ifndef CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT
+> +dwarf-version-$(CONFIG_DEBUG_INFO_DWARF4) := 4
+> +dwarf-version-$(CONFIG_DEBUG_INFO_DWARF5) := 5
+> +DEBUG_CFLAGS   += -gdwarf-$(dwarf-version-y)
+> +endif
+> +
+> +ifdef CONFIG_DEBUG_INFO_REDUCED
+> +DEBUG_CFLAGS   += -fno-var-tracking
+> +ifdef CONFIG_CC_IS_GCC
+> +DEBUG_CFLAGS   += -femit-struct-debug-baseonly
+> +endif
+> +endif
+> +
+> +ifdef CONFIG_DEBUG_INFO_COMPRESSED
+> +DEBUG_CFLAGS   += -gz=zlib
+> +KBUILD_AFLAGS  += -gz=zlib
+> +KBUILD_LDFLAGS += --compress-debug-sections=zlib
+> +endif
+> +
+> +KBUILD_CFLAGS += $(DEBUG_CFLAGS)
+> +export DEBUG_CFLAGS
+> --
+> 2.30.2
+>
