@@ -2,65 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C0D742FC8F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 21:52:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67A9A42FC9A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 21:55:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242838AbhJOTyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 15:54:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49846 "EHLO mail.kernel.org"
+        id S242882AbhJOT5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 15:57:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52396 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238441AbhJOTyQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 15:54:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A94E860200;
-        Fri, 15 Oct 2021 19:52:09 +0000 (UTC)
+        id S242867AbhJOT5f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 15:57:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E64A61181;
+        Fri, 15 Oct 2021 19:55:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634327530;
-        bh=hxwAnk1FabSqj7op8VZYmRJzUis5S3d4s2vbmcC+0G8=;
-        h=Date:From:To:Cc:Subject:From;
-        b=TwJgksIF/ABRFEoVIT6fC//RyS5YRuq8Z5OwFBqS16wOAFTK368o/HZicsiFBcE3q
-         YZYvIQbAuihfPb00hBdmeYeeQUtkTSWBzgSHK5zraabU98NHM84MNYQWWULm22IkN4
-         ZEMViqUD7OxqEXaHS7NWGmPT0q4KUblvBKlipbjZ1+NM2kbCJ7nVTbFmUCD847CDCI
-         s2Lk6V+qqA4b9Uun7gmDgMbtcAICwrpk26lrRUK2tPzgykkpQopA8oZHMAQ+VtuGtU
-         ziuFJVosb9OABmDsYbL1nxay12VxAIV+HoX0SEy+SnLom00Y3dnqs93PL7BUZ18x+2
-         hwY6Y16upLtDw==
-Date:   Fri, 15 Oct 2021 14:52:08 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Wang Hai <wanghai38@huawei.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Hulk Robot <hulkci@huawei.com>
-Subject: [GIT PULL] PCI fixes for v5.15
-Message-ID: <20211015195208.GA2151683@bhelgaas>
+        s=k20201202; t=1634327729;
+        bh=uKWdkwX9NSpxgNBJUsKI6brrTvS5lkZVCUyevjasO24=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=VUWIy5Fv534KjAIcIc4BeurLiZrgBQGhUIc+tNGNCGwSSgMTryAKKzaXG6Lf2ExLQ
+         nUimrhT6T448pHEv+OJK9rN58B+fiLxSjN3MzyZ9Yz7L2UtkR8rALhcyiJPXmkCSS5
+         Uknr+liDuXPKBoe3nffM4bIgNKhRsIUBz7jlrnQHlt14Z80MLNJ34Q3HOuRK3VwL9p
+         SnyTZSH2BwiYCo1PIAmZ6HQKmoZDkH7PDBBI5AuNc3myDD1xs2JQXpMlmwr86dTYsH
+         3LcO6QOJVjPiCky1F71vuAB04UiePhkedgbqJ/+JrMFIKC2LGv9Hz4X0yb6CtBPose
+         e/biAPjuXycog==
+Date:   Fri, 15 Oct 2021 12:55:27 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Rob Herring <robh@kernel.org>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc:     Prasanna Vengateshan <prasanna.vengateshan@microchip.com>,
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Ansuel Smith <ansuelsmth@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        netdev@vger.kernel.org, Vivien Didelot <vivien.didelot@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>, Shawn Guo <shawnguo@kernel.org>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Alvin =?UTF-8?B?xaBpcHJhZ2E=?= <alsi@bang-olufsen.dk>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 5/6] dt-bindings: net: dsa: sja1105: add
+ {rx,tx}-internal-delay-ps
+Message-ID: <20211015125527.28445238@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <1634221864.138006.3295871.nullmailer@robh.at.kernel.org>
+References: <20211013222313.3767605-1-vladimir.oltean@nxp.com>
+        <20211013222313.3767605-6-vladimir.oltean@nxp.com>
+        <1634221864.138006.3295871.nullmailer@robh.at.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit e4e737bb5c170df6135a127739a9e6148ee3da82:
+On Thu, 14 Oct 2021 09:31:04 -0500 Rob Herring wrote:
+> On Thu, 14 Oct 2021 01:23:12 +0300, Vladimir Oltean wrote:
+> > Add a schema validator to nxp,sja1105.yaml and to dsa.yaml for explicit
+> > MAC-level RGMII delays. These properties must be per port and must be
+> > present only for a phy-mode that represents RGMII.
+> > 
+> > We tell dsa.yaml that these port properties might be present, we also
+> > define their valid values for SJA1105. We create a common definition for
+> > the RX and TX valid range, since it's quite a mouthful.
+> > 
+> > We also modify the example to include the explicit RGMII delay properties.
+> > On the fixed-link ports (in the example, port 4), having these explicit
+> > delays is actually mandatory, since with the new behavior, the driver
+> > shouts that it is interpreting what delays to apply based on phy-mode.
+> > 
+> > Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+> 
+> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+> on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-  Linux 5.15-rc2 (2021-09-19 17:28:22 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/helgaas/pci.git pci-v5.15-fixes-2
-
-for you to fetch changes up to 2b94b6b79b7c24092a6169db9e83c4565be0db42:
-
-  PCI/MSI: Handle msi_populate_sysfs() errors correctly (2021-10-12 20:32:58 -0500)
-
-----------------------------------------------------------------
-PCI fixes:
-
-  - Don't save msi_populate_sysfs() error code as dev->msi_irq_groups
-    so we don't dereference the error code as a pointer (Wang Hai)
-
-----------------------------------------------------------------
-Wang Hai (1):
-      PCI/MSI: Handle msi_populate_sysfs() errors correctly
-
- drivers/pci/msi.c | 18 ++++++++++++------
- 1 file changed, 12 insertions(+), 6 deletions(-)
+FWIW I dropped the set from pw based on Rob's report, I see a mention
+of possible issues with fsl-lx2160a-bluebox3.dts, but it's not clear
+to me which DT is disagreeing with the schema.. or is the schema itself
+not 100?
