@@ -2,102 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAC3842FAF6
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 20:27:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE51342FAF8
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 20:28:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242610AbhJOS33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 14:29:29 -0400
-Received: from mga18.intel.com ([134.134.136.126]:65297 "EHLO mga18.intel.com"
+        id S242616AbhJOSaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 14:30:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46692 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237667AbhJOS32 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 14:29:28 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10138"; a="214900521"
-X-IronPort-AV: E=Sophos;i="5.85,376,1624345200"; 
-   d="scan'208";a="214900521"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2021 11:27:11 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,376,1624345200"; 
-   d="scan'208";a="571833563"
-Received: from irvmail001.ir.intel.com ([10.43.11.63])
-  by fmsmga002.fm.intel.com with ESMTP; 15 Oct 2021 11:27:05 -0700
-Received: from alobakin-mobl.ger.corp.intel.com (dkaczkow-MOBL2.ger.corp.intel.com [10.213.18.206])
-        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 19FIR2T7023903;
-        Fri, 15 Oct 2021 19:27:02 +0100
-From:   Alexander Lobakin <alexandr.lobakin@intel.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Borislav Petkov <bp@suse.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Kristen Carlson Accardi <kristen@linux.intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Arnd Bergmann <arnd@arndb.de>, Joerg Roedel <jroedel@suse.de>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Jing Yangyang <jing.yangyang@zte.com.cn>,
-        Abaci Robot <abaci@linux.alibaba.com>,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Miroslav Benes <mbenes@suse.cz>,
-        "H. Nikolaus Schaller" <hns@goldelico.com>,
-        Fangrui Song <maskray@google.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        linux-arch@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH 0/4] x86: Various clean-ups in support of FGKASLR
-Date:   Fri, 15 Oct 2021 20:27:01 +0200
-Message-Id: <20211015182701.13573-1-alexandr.lobakin@intel.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211013175742.1197608-1-keescook@chromium.org>
-References: <20211013175742.1197608-1-keescook@chromium.org>
+        id S237667AbhJOSaX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 14:30:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4412360F36;
+        Fri, 15 Oct 2021 18:28:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634322496;
+        bh=vlXFCcBoyVQ7iQiLse67gO6LLe1CSZH6R8FPMdiU0yE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CGfJXlXTJ9OVFEU2EBteumRtqnc1EoMesBUzy2+do6QV6OkaO1pps3fDuSc7hdN61
+         xICU37Xoju6jvaikQsuleeh/oRFuRjToYPg7ThZQC+IimT3QB6Mm16CXP1FASJ1/ar
+         yGCzkf3f+x9BgVBcp5Fnx66pbze/Lfu+2bNGQ1K4gEAMUyHYtvMWLGzz9itXFynscc
+         hz+RpWX5KvMQhTHvcgLh3Uub2QMEY7yVcqKi8Ie+fiQXgKS5LmrSnJvcPAc+6SeCkD
+         m9JAYZtzLKN7EHbIXdZiRs5TS/pciCRWzE+6udTEk/kQWrnhaHa5SukBM3v6Xwt/iR
+         dMKe6wyAaMpaA==
+Date:   Fri, 15 Oct 2021 19:28:13 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     madvenka@linux.microsoft.com
+Cc:     mark.rutland@arm.com, jpoimboe@redhat.com, ardb@kernel.org,
+        nobuta.keiya@fujitsu.com, sjitindarsingh@gmail.com,
+        catalin.marinas@arm.com, will@kernel.org, jmorris@namei.org,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v10 01/11] arm64: Select STACKTRACE in arch/arm64/Kconfig
+Message-ID: <YWnIPU4dRmJHTkXZ@sirena.org.uk>
+References: <c05ce30dcc9be1bd6b5e24a2ca8fe1d66246980b>
+ <20211015025847.17694-1-madvenka@linux.microsoft.com>
+ <20211015025847.17694-2-madvenka@linux.microsoft.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="zvxU7vCc3P+aDYhz"
+Content-Disposition: inline
+In-Reply-To: <20211015025847.17694-2-madvenka@linux.microsoft.com>
+X-Cookie: 1: No code table for op: ++post
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kees Cook <keescook@chromium.org>
-Date: Wed, 13 Oct 2021 10:57:38 -0700
 
-> Hi,
-> 
-> These are a small set of patches that clean up various things that are
-> each stand-alone improvements, but they're also needed for the coming
-> FGKASLR series[1]. I thought it best to just get these landed instead
-> of having them continue to tag along with FGKASLR, especially the
-> early malloc() fix, which is a foot-gun waiting to happen. :)
+--zvxU7vCc3P+aDYhz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks for picking this! Those really are standalone guys.
+On Thu, Oct 14, 2021 at 09:58:37PM -0500, madvenka@linux.microsoft.com wrot=
+e:
+> From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+>=20
+> Currently, there are multiple functions in ARM64 code that walk the
+> stack using start_backtrace() and unwind_frame() or start_backtrace()
+> and walk_stackframe(). They should all be converted to use
+> arch_stack_walk(). This makes maintenance easier.
 
-> Thanks!
-> 
-> -Kees
-> 
-> [1] https://lore.kernel.org/lkml/20210831144114.154-1-alexandr.lobakin@intel.com/
-> 
-> Kees Cook (2):
->   x86/boot: Allow a "silent" kaslr random byte fetch
->   x86/boot/compressed: Avoid duplicate malloc() implementations
-> 
-> Kristen Carlson Accardi (2):
->   x86/tools/relocs: Support >64K section headers
->   vmlinux.lds.h: Have ORC lookup cover entire _etext - _stext
-> 
->  arch/x86/boot/compressed/kaslr.c  |   4 --
->  arch/x86/boot/compressed/misc.c   |   3 +
->  arch/x86/boot/compressed/misc.h   |   2 +
->  arch/x86/lib/kaslr.c              |  18 ++++--
->  arch/x86/tools/relocs.c           | 103 ++++++++++++++++++++++--------
->  include/asm-generic/vmlinux.lds.h |   3 +-
->  include/linux/decompress/mm.h     |  12 +++-
->  7 files changed, 107 insertions(+), 38 deletions(-)
-> 
-> -- 
-> 2.30.2
+Reviwed-by: Mark Brown <broonie@kernel.org>
 
-Thanks,
-Al
+Arguably this should be squashed in with the first user but that's
+getting bikesheddy and could make hassle merging things in so meh.
+
+--zvxU7vCc3P+aDYhz
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFpyD0ACgkQJNaLcl1U
+h9AaDQgAgGtwF4e6Cy8OuH+Y3EjvGOYWHK1l4qaJrL3MSElhZEt9xRNmyG5Kyx8f
+tM7BVjn3M1CCnxh4hsjQDvIIbtYhDioRhFpGZaSvXkfblLLVtlUC93+gGl00jVAF
+Uylnps1nQh2z9rMyBt1kiM1vnOJTLfz6SstxE7RDeZfJlXovAJJT4tXHG3Bsq6uB
+iXn6Ejp+eegbzOGYLMPcvHvFIMz/MIGfnkZPjwcGEgRhYomG1MKdczAJnCAdMAwx
+3o6iLc3g/Gqd4b9J4BNfj1OWaehyEC9+Q7fwtfZEiEo7LSEiUDT+Pl/p4wy9nZsJ
+3vS1Uij/5VZvA2dlbqwogAarLoBk/w==
+=FSRi
+-----END PGP SIGNATURE-----
+
+--zvxU7vCc3P+aDYhz--
