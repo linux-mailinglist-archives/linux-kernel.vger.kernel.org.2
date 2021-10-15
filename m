@@ -2,139 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33AE042E8F1
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 08:24:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED75A42E8EF
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 08:24:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234388AbhJOG0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 02:26:54 -0400
-Received: from mail-bn8nam08on2049.outbound.protection.outlook.com ([40.107.100.49]:53027
-        "EHLO NAM04-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234377AbhJOG0v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 02:26:51 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JKhpzGDWFJ9GkeEPHR9bnRaXNluQFI1nX9f3pzxaDW9DvfMtwJYdE5kX0o5/GYD/TWWjhVoBfsa7zqW3a1DSce6owljuK2j38TKNcTBPwQzU8U2xOwEllbmJByehwLAcyb2ACExLb6YiJMfHCmVhT/bj5IB8u7QTHQiKYNoLb2K5m8EmDgx+1Vh+tR1JLWxoUdUxm7Kj12YHimIcZaqRUDWdomdrDA7ZJE8KpQ5+3l0eQWrohN5niYq486lNn7be+2f3LYeUhSRekGoVHEuWhLH9WUZfXLq0uDIfAL9DpJdgQHi/kOXAB7Z7fORYZo3mw2aCQJqk5/h/t3FOAQz4pg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Hc7Y1YUqupuq0pARW229CukMQKDnUf9bXiuCo5CW+tg=;
- b=AXpSr4iHuHE764xCKn5SzYaj/3lRtSuhkZFvCqVOirgRUhjLTXR+4Qq8DZDNiSv4sXIioRq9Bz+O+6JR8529M4vh6ywRlvFljYi67F4uAqaAHjjHdtrhTb8NUhMtPGycanVYT7siL1gjAVRIW6+jAb6bhcZLWKKidoY0cRA2l3O2fXKp8kNqfpKsUT4Fbb61UCwjhDYTqy8jWSZTv/E76+iLLWRgAyvywKqzKouQGYHRjyIGPMCw/kYy23ykkcvfHcenc7+hYlt3UrjeYx3gNWic0t2TDB+vrB16yVBUT5uKhy6eEvcP1J3hNfpPFryBYQGD3AY6DL+r7PjQqtQyaQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=nvidia.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Hc7Y1YUqupuq0pARW229CukMQKDnUf9bXiuCo5CW+tg=;
- b=b6Mkgg46Bl1oWIChjQOmVenNSQ6B/GP3xI4Uu2VJpucU7WIf0aRvJetRQNLTzXdv5IoMTzrCJQNyaf7FI8c7tynI4DL48GpSpicv0lsdu8DrVnX6yaSOzKU3B5HAschYnp5oZIH3VLLKP+wyJtFMLnLiBdb+qze12dj6RFiflO/6l8FwBnw9kv3IzrKGVDC2paaBVainyjd1c+QitiTFnghgCFpAJ2wkL1ygnt+XbP0/Hyz1x3jw4udFpfHydISA+1glrea282l+LHzk3sOK/md94CljrTbs4T4EUH6dN8sanajM0tyq+7AliF3Vcy0L2uM75MEjWgxQbrDKIMG6Dg==
-Received: from DM6PR04CA0001.namprd04.prod.outlook.com (2603:10b6:5:334::6) by
- BYAPR12MB4981.namprd12.prod.outlook.com (2603:10b6:a03:10d::29) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.15; Fri, 15 Oct
- 2021 06:24:43 +0000
-Received: from DM6NAM11FT066.eop-nam11.prod.protection.outlook.com
- (2603:10b6:5:334:cafe::bc) by DM6PR04CA0001.outlook.office365.com
- (2603:10b6:5:334::6) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.16 via Frontend
- Transport; Fri, 15 Oct 2021 06:24:42 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- DM6NAM11FT066.mail.protection.outlook.com (10.13.173.179) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4608.15 via Frontend Transport; Fri, 15 Oct 2021 06:24:42 +0000
-Received: from [10.25.97.183] (172.20.187.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Fri, 15 Oct
- 2021 06:24:37 +0000
-Subject: Re: [RFC PATCH v3 04/13] ASoC: soc-pcm: introduce
- snd_soc_dpcm_fe_lock_irq/unlock_irq()
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        <alsa-devel@alsa-project.org>
-CC:     <tiwai@suse.de>, <broonie@kernel.org>, <vkoul@kernel.org>,
-        Gyeongtaek Lee <gt82.lee@samsung.com>,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20211013143050.244444-1-pierre-louis.bossart@linux.intel.com>
- <20211013143050.244444-5-pierre-louis.bossart@linux.intel.com>
-From:   Sameer Pujar <spujar@nvidia.com>
-Message-ID: <a98ea2c6-e617-0fb7-8b24-99b8edc8868a@nvidia.com>
-Date:   Fri, 15 Oct 2021 11:54:34 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S234366AbhJOG0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 02:26:48 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:49629 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232124AbhJOG0r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 02:26:47 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4HVx7q1sVsz9sSD;
+        Fri, 15 Oct 2021 08:24:39 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id HClYwJ8ghBf8; Fri, 15 Oct 2021 08:24:39 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4HVx7q0sMcz9sSB;
+        Fri, 15 Oct 2021 08:24:39 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 072218B788;
+        Fri, 15 Oct 2021 08:24:39 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id jDarZQCPleJ2; Fri, 15 Oct 2021 08:24:38 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.202.255])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 9DC558B763;
+        Fri, 15 Oct 2021 08:24:37 +0200 (CEST)
+Subject: Re: [PATCH v2 06/13] asm-generic: Use HAVE_FUNCTION_DESCRIPTORS to
+ define associated stubs
+To:     Nicholas Piggin <npiggin@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Helge Deller <deller@gmx.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Kees Cook <keescook@chromium.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linux-arch@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <cover.1634190022.git.christophe.leroy@csgroup.eu>
+ <4fda65cda906e56aa87806b658e0828c64792403.1634190022.git.christophe.leroy@csgroup.eu>
+ <1634278340.5yp7xtm7um.astroid@bobo.none>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <7523a005-ea69-7c4c-64ad-bc2537921975@csgroup.eu>
+Date:   Fri, 15 Oct 2021 08:24:37 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20211013143050.244444-5-pierre-louis.bossart@linux.intel.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <1634278340.5yp7xtm7um.astroid@bobo.none>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr-FR
 Content-Transfer-Encoding: 8bit
-Content-Language: en-GB
-X-Originating-IP: [172.20.187.6]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: bc0807cb-c554-45b5-6880-08d98fa47981
-X-MS-TrafficTypeDiagnostic: BYAPR12MB4981:
-X-Microsoft-Antispam-PRVS: <BYAPR12MB498103A45260BB27AE4FD5B4A7B99@BYAPR12MB4981.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: /HZGnOrCLJgHhKUfrwapwzgwRE3FwdVJRKGdvUPS9cGHbosVAomheHaT7X+Dq/TKOiq8VIRzxGvWDmuyI8zgrlY+zxBYPU712fG+48QxSAU6Xai5ZBIpXwo+X/zEqlvuT9vRYseRAqFz+uRRC54FCxE5Tvl7Zdc/yiaUKXLG6gNVYNKEc9LPOKU7Ur1dJmqtBmkoi8TS/B0b2bDKNq2YxNOslmlvrrlUV2N8Fx7XmKb10wl0iXE2J03C1wnEEluLlHEFTV+NtK7LPP2G6GIn5xFhCGVNfKOUfNwcR36bkq53Islc8lGrSdLF4FL4xyyNJpoEpkDRIkim/VZ6dWWHVhh5wGrlPEhiYfyDA/41uKJwBetW50PDn6wHHTHRgDwVZmlpqQXV02NFJG3t4QgyY+Zo2eYa7agaBb+buO7SxNMbYQX3uJQmPlnd/S2ktDuy+deRNG5O1YTLibrP0LMIhJCOxt2BpaQwJU4mPxAK36JWLqO92Dx1Moem/gbaxmKwXP1UM3kJOtjfTWBE1QbmGvDpfrc9tyOEODtqDgT/zcTpj/9DtDtMR1p6DdxZyhahGMFYXU0btqCdkSG7dmOhOrrVXom+5RQESNQl+7hjCfMXbQqGel0ndik6gkqtQ68lpxxc+bppvh017Rd+sMMr2wpq6la2KZ29StK7RskwWIqrHjpbx1s1lv8bkHKwY4+zwf7Vd2Gc1ZXPlap+1cGouNR2wLL5+9cdhiPNnubyG6U=
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(36840700001)(46966006)(31696002)(70586007)(7636003)(5660300002)(31686004)(336012)(16576012)(7416002)(54906003)(316002)(36860700001)(508600001)(82310400003)(6666004)(83380400001)(2616005)(70206006)(8936002)(86362001)(4326008)(53546011)(36756003)(426003)(47076005)(16526019)(356005)(8676002)(186003)(2906002)(110136005)(26005)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Oct 2021 06:24:42.4598
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: bc0807cb-c554-45b5-6880-08d98fa47981
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT066.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB4981
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 10/13/2021 8:00 PM, Pierre-Louis Bossart wrote:
-> In preparation for more changes, add two new helpers to gradually
-> modify the DPCM locks.
->
-> Since DPCM functions are not used from interrupt handlers, we can only
-> use the lock_irq case.
->
-> While most of the uses of DPCM are internal to soc-pcm.c, some drivers
-> in soc/fsl and soc/sh do make use of DPCM-related loops that will
-> require protection, adding EXPORT_SYMBOL_GPL() is needed for those
-> drivers.
->
-> The stream argument is unused in this patch but will be enabled in
-> follow-up patches.
->
-> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> ---
->   include/sound/soc-dpcm.h |  3 +++
->   sound/soc/soc-pcm.c      | 42 +++++++++++++++++++++++-----------------
->   2 files changed, 27 insertions(+), 18 deletions(-)
+Le 15/10/2021 à 08:16, Nicholas Piggin a écrit :
+> Excerpts from Christophe Leroy's message of October 14, 2021 3:49 pm:
+>> Replace HAVE_DEREFERENCE_FUNCTION_DESCRIPTOR by
+>> HAVE_FUNCTION_DESCRIPTORS and use it instead of
+>> 'dereference_function_descriptor' macro to know
+>> whether an arch has function descriptors.
+>>
+>> To limit churn in one of the following patches, use
+>> an #ifdef/#else construct with empty first part
+>> instead of an #ifndef in asm-generic/sections.h
+> 
+> Is it worth putting this into Kconfig if you're going to
+> change it? In any case
 
-1. Till this patch and with DEBUG_LOCKDEP config enabled, I see 
-following warning:
-    "WARNING: CPU: 0 PID: 0 at kernel/locking/irqflag-debug.c:10 
-warn_bogus_irq_restore+0x30/0x40"
+That was what I wanted to do in the begining but how can I do that in 
+Kconfig ?
 
-    However test passed though. Interestingly it was seen only for the 
-first time I ran a 2x1 mixer test.
+#ifdef __powerpc64__
+#if defined(_CALL_ELF) && _CALL_ELF == 2
+#define PPC64_ELF_ABI_v2
+#else
+#define PPC64_ELF_ABI_v1
+#endif
+#endif /* __powerpc64__ */
 
-2. Also after I load sound modules and card gets registered, I see some 
-hw_param() calls for FE and BE. This seems harmless at this point, but 
-is getting problematic with subsequent patches. This was not happening 
-earier.
+#ifdef PPC64_ELF_ABI_v1
+#define HAVE_DEREFERENCE_FUNCTION_DESCRIPTOR 1
+
+Christophe
+
+> 
+> Reviewed-by: Nicholas Piggin <npiggin@gmail.com>
+> 
+>>
+>> Reviewed-by: Kees Cook <keescook@chromium.org>
+>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+>> ---
+>>   arch/ia64/include/asm/sections.h    | 5 +++--
+>>   arch/parisc/include/asm/sections.h  | 6 ++++--
+>>   arch/powerpc/include/asm/sections.h | 6 ++++--
+>>   include/asm-generic/sections.h      | 3 ++-
+>>   include/linux/kallsyms.h            | 2 +-
+>>   5 files changed, 14 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/arch/ia64/include/asm/sections.h b/arch/ia64/include/asm/sections.h
+>> index 35f24e52149a..6e55e545bf02 100644
+>> --- a/arch/ia64/include/asm/sections.h
+>> +++ b/arch/ia64/include/asm/sections.h
+>> @@ -9,6 +9,9 @@
+>>   
+>>   #include <linux/elf.h>
+>>   #include <linux/uaccess.h>
+>> +
+>> +#define HAVE_FUNCTION_DESCRIPTORS 1
+>> +
+>>   #include <asm-generic/sections.h>
+>>   
+>>   extern char __phys_per_cpu_start[];
+>> @@ -27,8 +30,6 @@ extern char __start_gate_brl_fsys_bubble_down_patchlist[], __end_gate_brl_fsys_b
+>>   extern char __start_unwind[], __end_unwind[];
+>>   extern char __start_ivt_text[], __end_ivt_text[];
+>>   
+>> -#define HAVE_DEREFERENCE_FUNCTION_DESCRIPTOR 1
+>> -
+>>   #undef dereference_function_descriptor
+>>   static inline void *dereference_function_descriptor(void *ptr)
+>>   {
+>> diff --git a/arch/parisc/include/asm/sections.h b/arch/parisc/include/asm/sections.h
+>> index bb52aea0cb21..85149a89ff3e 100644
+>> --- a/arch/parisc/include/asm/sections.h
+>> +++ b/arch/parisc/include/asm/sections.h
+>> @@ -2,6 +2,10 @@
+>>   #ifndef _PARISC_SECTIONS_H
+>>   #define _PARISC_SECTIONS_H
+>>   
+>> +#ifdef CONFIG_64BIT
+>> +#define HAVE_FUNCTION_DESCRIPTORS 1
+>> +#endif
+>> +
+>>   /* nothing to see, move along */
+>>   #include <asm-generic/sections.h>
+>>   
+>> @@ -9,8 +13,6 @@ extern char __alt_instructions[], __alt_instructions_end[];
+>>   
+>>   #ifdef CONFIG_64BIT
+>>   
+>> -#define HAVE_DEREFERENCE_FUNCTION_DESCRIPTOR 1
+>> -
+>>   #undef dereference_function_descriptor
+>>   void *dereference_function_descriptor(void *);
+>>   
+>> diff --git a/arch/powerpc/include/asm/sections.h b/arch/powerpc/include/asm/sections.h
+>> index 32e7035863ac..bba97b8c38cf 100644
+>> --- a/arch/powerpc/include/asm/sections.h
+>> +++ b/arch/powerpc/include/asm/sections.h
+>> @@ -8,6 +8,10 @@
+>>   
+>>   #define arch_is_kernel_initmem_freed arch_is_kernel_initmem_freed
+>>   
+>> +#ifdef PPC64_ELF_ABI_v1
+>> +#define HAVE_FUNCTION_DESCRIPTORS 1
+>> +#endif
+>> +
+>>   #include <asm-generic/sections.h>
+>>   
+>>   extern bool init_mem_is_free;
+>> @@ -69,8 +73,6 @@ static inline int overlaps_kernel_text(unsigned long start, unsigned long end)
+>>   
+>>   #ifdef PPC64_ELF_ABI_v1
+>>   
+>> -#define HAVE_DEREFERENCE_FUNCTION_DESCRIPTOR 1
+>> -
+>>   #undef dereference_function_descriptor
+>>   static inline void *dereference_function_descriptor(void *ptr)
+>>   {
+>> diff --git a/include/asm-generic/sections.h b/include/asm-generic/sections.h
+>> index d16302d3eb59..b677e926e6b3 100644
+>> --- a/include/asm-generic/sections.h
+>> +++ b/include/asm-generic/sections.h
+>> @@ -59,7 +59,8 @@ extern char __noinstr_text_start[], __noinstr_text_end[];
+>>   extern __visible const void __nosave_begin, __nosave_end;
+>>   
+>>   /* Function descriptor handling (if any).  Override in asm/sections.h */
+>> -#ifndef dereference_function_descriptor
+>> +#ifdef HAVE_FUNCTION_DESCRIPTORS
+>> +#else
+>>   #define dereference_function_descriptor(p) ((void *)(p))
+>>   #define dereference_kernel_function_descriptor(p) ((void *)(p))
+>>   #endif
+>> diff --git a/include/linux/kallsyms.h b/include/linux/kallsyms.h
+>> index a1d6fc82d7f0..9f277baeb559 100644
+>> --- a/include/linux/kallsyms.h
+>> +++ b/include/linux/kallsyms.h
+>> @@ -57,7 +57,7 @@ static inline int is_ksym_addr(unsigned long addr)
+>>   
+>>   static inline void *dereference_symbol_descriptor(void *ptr)
+>>   {
+>> -#ifdef HAVE_DEREFERENCE_FUNCTION_DESCRIPTOR
+>> +#ifdef HAVE_FUNCTION_DESCRIPTORS
+>>   	struct module *mod;
+>>   
+>>   	ptr = dereference_kernel_function_descriptor(ptr);
+>> -- 
+>> 2.31.1
+>>
+>>
+>>
