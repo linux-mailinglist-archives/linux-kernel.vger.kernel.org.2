@@ -2,81 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A5F242EF1C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 12:50:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C888542EF1E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 12:50:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238114AbhJOKwQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 06:52:16 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:41668
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229690AbhJOKwM (ORCPT
+        id S238148AbhJOKws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 06:52:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32916 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229690AbhJOKwp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 06:52:12 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 10FA43F22D;
-        Fri, 15 Oct 2021 10:50:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1634295005;
-        bh=X4YwiosBIxIOm7QIAfV/oUAM58MbArX1kagItuGPD/A=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=cyQR5Nu0KTe4743+qpozHm1TuFbgKrGIYGCDH/8HuXUpCaHAi3hhLLpc3XWv1wm0b
-         e9CXzE7xEMy/UP+EZdSdumFMCQ4FiO9hQZbxbvp5+5RD/4d+eNmLwLn2qE9BfWxysc
-         43DnhOZn2tt028Ve/2YPanHwhTrpTJ4hQuuLzxVaW2DaPMR/C/4F/wo9k7qR0A9tcQ
-         gUjrLxnOzWwa3Kgr9w8tER0qftLga73Py7UHcwagmpHGi9mJVTAjmQskEBqqkaeBTc
-         qQovsLRVgfvdM5VcNYBSUxqvsj9CFqLih95dqzE1hyJQYshZJnQoYMdGAPJjCKn7oz
-         NB2rKFpd+oX9Q==
-From:   Colin King <colin.king@canonical.com>
-To:     Kalle Valo <kvalo@codeaurora.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Ping-Ke Shih <pkshih@realtek.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] rtw89: Fix two spelling mistakes in debug messages
-Date:   Fri, 15 Oct 2021 11:50:04 +0100
-Message-Id: <20211015105004.11817-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.32.0
+        Fri, 15 Oct 2021 06:52:45 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF084C061570;
+        Fri, 15 Oct 2021 03:50:38 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1634295037;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Wlb45V5A8Kz+I2XPfAf31iLoraQsYB+xMp+K09OrwfQ=;
+        b=v6r5WEL5nQ8VDcA4MiOjTGW08wEGS+VF2L4OKaH+oAX9BNkE9pYGgZ/2bMw9ki7fOV2R2Y
+        UpWalX2+rNCVuq2vW+DKv9c6/7YChyo+JGGDiDcGsCXMqEmA8ECJhXMBVqFBaZOTnVMf3F
+        coU2ALclY/gt/TiMu5ByHrxntWcviwdiR/gdZUcT3+44cJFQHLoBgusAWMSb1DB2MA7e1j
+        HKdWg5Uw91KtkHnXUwTwqGErSCy51KGDAK0+gId4UyotT8ecDwAncmupm0mYyt1N41Coft
+        yQ9w36+CX0GbmjHq2dNzTurkADMSG0hp69AnrVTmKBc6VXvcjbbHPvZshvNaow==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1634295037;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Wlb45V5A8Kz+I2XPfAf31iLoraQsYB+xMp+K09OrwfQ=;
+        b=/wJpfc5acJjZ2uFIHmcahvO+iXqBMGuYvL6vEeipZP3A9O7rdi42hGLe4X79K6Y1sq/EP+
+        0GaZiRqCcuMU8lDA==
+To:     "Liu, Jing2" <jing2.liu@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     "x86@kernel.org" <x86@kernel.org>,
+        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "Nakajima, Jun" <jun.nakajima@intel.com>,
+        Jing Liu <jing2.liu@linux.intel.com>,
+        "seanjc@google.com" <seanjc@google.com>,
+        "Cooper, Andrew" <andrew.cooper3@citrix.com>
+Subject: RE: [patch 13/31] x86/fpu: Move KVMs FPU swapping to FPU core
+In-Reply-To: <BYAPR11MB3256D90BEEDE57988CA39705A9B99@BYAPR11MB3256.namprd11.prod.outlook.com>
+References: <871r4p9fyh.ffs@tglx>
+ <ec9c761d-4b5c-71e2-c1fc-d256b6b78c04@redhat.com>
+ <BL0PR11MB3252511FC48E43484DE79A3CA9B89@BL0PR11MB3252.namprd11.prod.outlook.com>
+ <6bbc5184-a675-1937-eb98-639906a9cf15@redhat.com> <87wnmf66m5.ffs@tglx>
+ <3997787e-402d-4b2b-0f90-4a672c77703f@redhat.com>
+ <BYAPR11MB3256D90BEEDE57988CA39705A9B99@BYAPR11MB3256.namprd11.prod.outlook.com>
+Date:   Fri, 15 Oct 2021 12:50:36 +0200
+Message-ID: <877dee5zpf.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+Jing,
 
-There are two spelling mistakes in rtw89_debug messages. Fix them.
+On Fri, Oct 15 2021 at 09:00, Jing2 Liu wrote:
+> On 10/14/2021 11:01 PM, Paolo Bonzini wrote:
+> For the guest dynamic state support, based on the latest discussion,
+> four copies of XFD need be cared and switched, I'd like to list as
+> follows.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/net/wireless/realtek/rtw89/phy.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+There will not be 4 copies. Read my last mail and think about the
+consequences.
 
-diff --git a/drivers/net/wireless/realtek/rtw89/phy.c b/drivers/net/wireless/realtek/rtw89/phy.c
-index 53c36cc82c57..ab134856baac 100644
---- a/drivers/net/wireless/realtek/rtw89/phy.c
-+++ b/drivers/net/wireless/realtek/rtw89/phy.c
-@@ -1715,7 +1715,7 @@ static s32 rtw89_phy_multi_sta_cfo_calc(struct rtw89_dev *rtwdev)
- 			target_cfo = clamp(cfo_avg, max_cfo_lb, min_cfo_ub);
- 		} else {
- 			rtw89_debug(rtwdev, RTW89_DBG_CFO,
--				    "No intersection of cfo torlence windows\n");
-+				    "No intersection of cfo tolerance windows\n");
- 			target_cfo = phy_div(cfo_khz_all, (s32)sta_cnt);
- 		}
- 		for (i = 0; i < CFO_TRACK_MAX_USER; i++)
-@@ -2749,7 +2749,7 @@ static void rtw89_phy_dig_dyn_pd_th(struct rtw89_dev *rtwdev, u8 rssi,
- 			    dig->igi_rssi, final_rssi, under_region, val);
- 	} else {
- 		rtw89_debug(rtwdev, RTW89_DBG_DIG,
--			    "Dynamic PD th dsiabled, Set PD_low_bd=0\n");
-+			    "Dynamic PD th disabled, Set PD_low_bd=0\n");
- 	}
- 
- 	rtw89_phy_write32_mask(rtwdev, R_SEG0R_PD, B_SEG0R_PD_LOWER_BOUND_MSK,
--- 
-2.32.0
+I'm really tired of this tinkering frenzy. There is only one correct
+approach to this:
+
+   1) Define the requirements
+
+   2) Define the best trapping mechanism
+
+   3) Sit down, look at the existing code including the FPU rework for
+      AMX. Come up with a proper integration plan
+
+   4) Clean up the existing KVM FPU mess further so the integration
+      can be done smoothly
+
+   5) Add the required infrastructure in FPU core and KVM
+
+   6) Add the trapping mechanics
+
+   7) Enable feature
+
+What you are doing is looking for the quickest way to duct tape this
+into the existing mess.
+
+That might be matching the KVM expectations, but it's not going to
+happen.
+
+KVM already violates all well known rules of encapsulation and just
+fiddles in the guts of FPU mechanism, duplicates code in buggy ways.
+
+This has to stop now!
+
+You are free to ignore me, but all you are going to achieve is to delay
+AMX integration further. Seriously, I'm not even going to reply to
+anything which is not based on the above approach.
+
+I'm sure you can figure out at which point we are at the moment.
+
+Thanks,
+
+        tglx
 
