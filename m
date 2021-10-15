@@ -2,204 +2,289 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF9B642E5A8
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 02:59:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2742342E5A9
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 03:00:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230121AbhJOBBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 21:01:46 -0400
-Received: from esa1.hgst.iphmx.com ([68.232.141.245]:17432 "EHLO
-        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229912AbhJOBBp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 21:01:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1634259581; x=1665795581;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=8JFpecjHXcYkC+i4o+EU7JFbGNhc8aM0hmbgN604w7Y=;
-  b=eyf1L6rh4vf7xsUaTHNfv1ZAiSQQZJtHwZJmPUZYy6xQTxpZ+qKNWTL/
-   3Wk23P1aELlY37AEpXNNezMdLNH2qe6BGBl+Nr/LXK2ZJp4aV1PWE6QgF
-   lMJod4TleVQd5uUvw36ECRWGaX3MrWLxkSR2XEpmN+wuo6MtSe/F6SDFo
-   BDZTDRDCuY1T869g7piVcqLXlrmNv2WQdGlsein6a+rNisEbaVxwWyKt3
-   4EnL02yYW6l0s5eMuT4RL8OAZ+LU16x8xJ7xwJrYUuuWVNOrFMC1atDN6
-   GDIMssHFkt+XXVtj2o/ZF02Zq+2L5uPFS3fvUi1n7cVxExWLI09uHHimt
-   g==;
-X-IronPort-AV: E=Sophos;i="5.85,374,1624291200"; 
-   d="scan'208";a="294632332"
-Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 15 Oct 2021 08:59:41 +0800
-IronPort-SDR: JcDV9JH3UVRw7LwLwtOfRg1e7XfcOcj6r38lJtBbyLjKyTOTaX3VuBMwVslbO66+4v2M5Tf3bs
- AzgCNBOTreiA0n2a4So2sY4X4lJwArchBzdmfeArIlr4c5R6nmT9k+ry/o/BVpLifTdKtCffVh
- TXfobo6q5oqHbzfRDrJS98B5AZckESr8VXr6H36WMbkiFioCcj+2BzOPD5Kv0TmcmdOFQWWoZr
- Husy3nhpsxOMgP2q0p5oN0bBOjqfJSBNUIpdaHaMf5KoncVKn403MC233N0gwUk6w+eheqsB5g
- KhMu/8glR82Gra/c3A7g8nAX
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2021 17:33:51 -0700
-IronPort-SDR: +m0qknXAcnQobyw4clInTVXdbOE7u3un/3Ac4/lXPxK7N3z2HVL7KFAAbrPd9c0CnXju2ktCvM
- aQnYegrusLovT1yS1tXtJz5tB2CLpA2OIRRMEBU98zwNxVJpKlbKH3R6PXkPFbcs8hB9aVqNP3
- fgJ8dRncouCnVUa01H8XPSW1PFLBP8lfYqFDKnkIjA6bza8IrO0pJIF1bjO2P7CP6RcwO5N4yu
- uLCfdE8tq0TTpeLzKfFITrBKnnrhexbHFIQehtRggDAc/llXJGYeN5v7DbResCMffnURKwHGT5
- NUc=
-WDCIronportException: Internal
-Received: from usg-ed-osssrv.wdc.com ([10.3.10.180])
-  by uls-op-cesaip01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2021 17:59:39 -0700
-Received: from usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1])
-        by usg-ed-osssrv.wdc.com (Postfix) with ESMTP id 4HVnwq4HpMz1RvlC
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 17:59:39 -0700 (PDT)
-Authentication-Results: usg-ed-osssrv.wdc.com (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)"
-        header.d=opensource.wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=
-        opensource.wdc.com; h=content-transfer-encoding:mime-version
-        :x-mailer:message-id:date:subject:to:from; s=dkim; t=1634259579;
-         x=1636851580; bh=8JFpecjHXcYkC+i4o+EU7JFbGNhc8aM0hmbgN604w7Y=; b=
-        r/WyyGuf8uEiD2lnz2Q3r3p5PbqS77bGtE9lOqjAZ2UQC76kXihztc2XQTo1JvmK
-        GWXBEMtlXpsapBObO3x6co7YgXJBPUZeUJ9RMnG9WHohMXIetfqtk6Av75dvM9LF
-        XgZL0QyJvXpEkjWOemuK6gidYujYQhe1lwWmDrPLWn+ZNw4tB9bYcvKDLsDssj5e
-        dLmvpEI8hzuYeoVcPXYU97yZJy8kEVBTvRdaVQ7+JXeGtO7DgjQGPTUiOxz36G+T
-        46LDB38wDAn1PnBZbgHpX0cWmuPzveTt9NFDF3cP5Mqn4WoLvmcGeQ5A5grLMFvN
-        19dhlWjcAD3WISrU4CqtyQ==
-X-Virus-Scanned: amavisd-new at usg-ed-osssrv.wdc.com
-Received: from usg-ed-osssrv.wdc.com ([127.0.0.1])
-        by usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id sVw9CH8XuV1o for <linux-kernel@vger.kernel.org>;
-        Thu, 14 Oct 2021 17:59:39 -0700 (PDT)
-Received: from toolbox.alistair23.me (unknown [10.225.165.37])
-        by usg-ed-osssrv.wdc.com (Postfix) with ESMTPSA id 4HVnwl3kp8z1RvTg;
-        Thu, 14 Oct 2021 17:59:34 -0700 (PDT)
-From:   Alistair Francis <alistair.francis@opensource.wdc.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     alistair23@gmail.com, arnd@arndb.de,
-        Alistair Francis <alistair.francis@wdc.com>
-Subject: [PATCH] uapi: futex: Add a futex syscall
-Date:   Fri, 15 Oct 2021 10:59:23 +1000
-Message-Id: <20211015005923.2659140-1-alistair.francis@opensource.wdc.com>
-X-Mailer: git-send-email 2.31.1
+        id S230324AbhJOBCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 21:02:05 -0400
+Received: from mga01.intel.com ([192.55.52.88]:35716 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229912AbhJOBCD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 21:02:03 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10137"; a="251265714"
+X-IronPort-AV: E=Sophos;i="5.85,374,1624345200"; 
+   d="scan'208";a="251265714"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2021 17:59:58 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,374,1624345200"; 
+   d="scan'208";a="660197380"
+Received: from lkp-server02.sh.intel.com (HELO 08b2c502c3de) ([10.239.97.151])
+  by orsmga005.jf.intel.com with ESMTP; 14 Oct 2021 17:59:56 -0700
+Received: from kbuild by 08b2c502c3de with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mbBZj-0006wS-4A; Fri, 15 Oct 2021 00:59:55 +0000
+Date:   Fri, 15 Oct 2021 08:59:35 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [paulmck-rcu:rcu/next] BUILD SUCCESS
+ 4b246eab47507c5bca631f31ea9c873a55875f6f
+Message-ID: <6168d277.uh3taNzlAc8vtPaz%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alistair Francis <alistair.francis@wdc.com>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git rcu/next
+branch HEAD: 4b246eab47507c5bca631f31ea9c873a55875f6f  rcu/nocb: Make local rcu_nocb_lock_irqsave() safe against concurrent deoffloading
 
-This commit adds two futex syscall wrappers that are exposed to
-userspace.
+elapsed time: 1532m
 
-Neither the kernel or glibc currently expose a futex wrapper, so
-userspace is left performing raw syscalls. This has mostly been becuase
-the overloading of one of the arguments makes it impossible to provide a
-single type safe function.
+configs tested: 229
+configs skipped: 4
 
-Until recently the single syscall has worked fine. With the introduction
-of a 64-bit time_t futex call on 32-bit architectures, this has become
-more complex. The logic of handling the two possible futex syscalls is
-complex and often implemented incorrectly.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-This patch adds two futux syscall functions that correctly handle the
-time_t complexity for userspace.
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                 randconfig-c001-20211014
+sh                         microdev_defconfig
+powerpc                   lite5200b_defconfig
+powerpc                      cm5200_defconfig
+powerpc                  iss476-smp_defconfig
+powerpc                     akebono_defconfig
+mips                         tb0226_defconfig
+mips                        nlm_xlr_defconfig
+sh                             shx3_defconfig
+sh                           se7705_defconfig
+powerpc                      chrp32_defconfig
+mips                      pic32mzda_defconfig
+arm                         orion5x_defconfig
+mips                     loongson1b_defconfig
+arm                            mmp2_defconfig
+mips                          rb532_defconfig
+arm                          exynos_defconfig
+sh                        edosk7705_defconfig
+arm                       aspeed_g5_defconfig
+sh                          sdk7786_defconfig
+sparc                            alldefconfig
+ia64                         bigsur_defconfig
+powerpc                 mpc85xx_cds_defconfig
+arm                            zeus_defconfig
+sh                           se7206_defconfig
+sh                         ap325rxa_defconfig
+sh                   sh7724_generic_defconfig
+arm                           spitz_defconfig
+arm                       multi_v4t_defconfig
+xtensa                           alldefconfig
+sh                          polaris_defconfig
+powerpc                     rainier_defconfig
+arm                             ezx_defconfig
+s390                             alldefconfig
+mips                 decstation_r4k_defconfig
+arm                          collie_defconfig
+arm                            qcom_defconfig
+arc                      axs103_smp_defconfig
+powerpc                   currituck_defconfig
+mips                  decstation_64_defconfig
+powerpc                     skiroot_defconfig
+arm                        shmobile_defconfig
+powerpc                      mgcoge_defconfig
+arm                        spear6xx_defconfig
+mips                          ath79_defconfig
+arm                      integrator_defconfig
+xtensa                    xip_kc705_defconfig
+mips                      maltaaprp_defconfig
+powerpc                         ps3_defconfig
+powerpc                 mpc8560_ads_defconfig
+um                             i386_defconfig
+csky                                defconfig
+arm                        vexpress_defconfig
+powerpc                 mpc837x_mds_defconfig
+mips                        workpad_defconfig
+mips                     loongson2k_defconfig
+arc                     haps_hs_smp_defconfig
+m68k                          atari_defconfig
+um                                  defconfig
+mips                         tb0287_defconfig
+sh                      rts7751r2d1_defconfig
+powerpc                      pasemi_defconfig
+mips                         bigsur_defconfig
+xtensa                    smp_lx200_defconfig
+m68k                           sun3_defconfig
+arm                         cm_x300_defconfig
+arm                         lubbock_defconfig
+arm                         palmz72_defconfig
+mips                            gpr_defconfig
+powerpc                      tqm8xx_defconfig
+powerpc                    adder875_defconfig
+arc                        nsim_700_defconfig
+arm                       aspeed_g4_defconfig
+arm                     eseries_pxa_defconfig
+mips                        omega2p_defconfig
+powerpc                 mpc836x_mds_defconfig
+arm                       omap2plus_defconfig
+arc                        vdk_hs38_defconfig
+powerpc                 mpc8272_ads_defconfig
+arm64                            alldefconfig
+sh                        sh7757lcr_defconfig
+arm                         shannon_defconfig
+alpha                            allyesconfig
+powerpc                    amigaone_defconfig
+parisc                              defconfig
+powerpc                      arches_defconfig
+sparc                       sparc32_defconfig
+sh                           se7750_defconfig
+sh                          r7780mp_defconfig
+sh                           se7751_defconfig
+m68k                             alldefconfig
+nds32                               defconfig
+mips                         tb0219_defconfig
+sh                          urquell_defconfig
+arm                        mvebu_v5_defconfig
+powerpc                 mpc8315_rdb_defconfig
+powerpc                     tqm8541_defconfig
+nios2                         3c120_defconfig
+mips                      fuloong2e_defconfig
+powerpc                        warp_defconfig
+openrisc                    or1ksim_defconfig
+arm                         lpc18xx_defconfig
+sh                          landisk_defconfig
+powerpc                 xes_mpc85xx_defconfig
+mips                malta_qemu_32r6_defconfig
+mips                         mpc30x_defconfig
+arm                         vf610m4_defconfig
+x86_64                              defconfig
+sh                           sh2007_defconfig
+powerpc                      ppc64e_defconfig
+powerpc                 canyonlands_defconfig
+mips                        bcm63xx_defconfig
+sh                           se7780_defconfig
+powerpc                      pmac32_defconfig
+sh                             sh03_defconfig
+powerpc                     ep8248e_defconfig
+m68k                       m5249evb_defconfig
+ia64                      gensparse_defconfig
+powerpc                    ge_imp3a_defconfig
+powerpc                     sequoia_defconfig
+m68k                        m5307c3_defconfig
+m68k                       m5208evb_defconfig
+arm                        mvebu_v7_defconfig
+powerpc                    gamecube_defconfig
+arm                          ixp4xx_defconfig
+powerpc                     stx_gp3_defconfig
+m68k                          hp300_defconfig
+sh                          rsk7269_defconfig
+riscv                          rv32_defconfig
+powerpc                   motionpro_defconfig
+arm                          pcm027_defconfig
+powerpc                mpc7448_hpc2_defconfig
+m68k                             allyesconfig
+xtensa                       common_defconfig
+powerpc                      ppc44x_defconfig
+arm                  randconfig-c002-20211014
+x86_64               randconfig-c001-20211014
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                                defconfig
+m68k                             allmodconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nios2                            allyesconfig
+alpha                               defconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+xtensa                           allyesconfig
+s390                                defconfig
+parisc                           allyesconfig
+s390                             allyesconfig
+s390                             allmodconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a006-20211014
+x86_64               randconfig-a004-20211014
+x86_64               randconfig-a001-20211014
+x86_64               randconfig-a005-20211014
+x86_64               randconfig-a002-20211014
+x86_64               randconfig-a003-20211014
+i386                 randconfig-a003-20211014
+i386                 randconfig-a001-20211014
+i386                 randconfig-a005-20211014
+i386                 randconfig-a004-20211014
+i386                 randconfig-a002-20211014
+i386                 randconfig-a006-20211014
+x86_64               randconfig-a015-20211013
+x86_64               randconfig-a012-20211013
+x86_64               randconfig-a016-20211013
+x86_64               randconfig-a014-20211013
+x86_64               randconfig-a013-20211013
+x86_64               randconfig-a011-20211013
+i386                 randconfig-a016-20211013
+i386                 randconfig-a014-20211013
+i386                 randconfig-a011-20211013
+i386                 randconfig-a015-20211013
+i386                 randconfig-a012-20211013
+i386                 randconfig-a013-20211013
+arc                  randconfig-r043-20211013
+s390                 randconfig-r044-20211013
+riscv                randconfig-r042-20211013
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allyesconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+x86_64                           allyesconfig
 
-This idea is based on previous discussions: https://lkml.org/lkml/2021/9/=
-21/143
+clang tested configs:
+arm                  randconfig-c002-20211014
+i386                 randconfig-c001-20211014
+s390                 randconfig-c005-20211014
+x86_64               randconfig-c007-20211014
+powerpc              randconfig-c003-20211014
+riscv                randconfig-c006-20211014
+x86_64               randconfig-a012-20211014
+x86_64               randconfig-a015-20211014
+x86_64               randconfig-a016-20211014
+x86_64               randconfig-a014-20211014
+x86_64               randconfig-a011-20211014
+x86_64               randconfig-a013-20211014
+i386                 randconfig-a016-20211014
+i386                 randconfig-a014-20211014
+i386                 randconfig-a011-20211014
+i386                 randconfig-a015-20211014
+i386                 randconfig-a012-20211014
+i386                 randconfig-a013-20211014
+hexagon              randconfig-r041-20211013
+hexagon              randconfig-r045-20211013
+hexagon              randconfig-r041-20211014
+s390                 randconfig-r044-20211014
+riscv                randconfig-r042-20211014
+hexagon              randconfig-r045-20211014
 
-Signed-off-by: Alistair Francis <alistair.francis@wdc.com>
 ---
- include/uapi/linux/futex_syscall.h | 79 ++++++++++++++++++++++++++++++
- 1 file changed, 79 insertions(+)
- create mode 100644 include/uapi/linux/futex_syscall.h
-
-diff --git a/include/uapi/linux/futex_syscall.h b/include/uapi/linux/fute=
-x_syscall.h
-new file mode 100644
-index 0000000000000..039d371346159
---- /dev/null
-+++ b/include/uapi/linux/futex_syscall.h
-@@ -0,0 +1,79 @@
-+/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-+#ifndef _UAPI_LINUX_FUTEX_SYSCALL_H
-+#define _UAPI_LINUX_FUTEX_SYSCALL_H
-+
-+#include <errno.h>
-+#include <linux/types.h>
-+#include <linux/time_types.h>
-+
-+/**
-+ * futex_syscall_timeout() - __NR_futex/__NR_futex_time64 syscall wrappe=
-r
-+ * @uaddr:  address of first futex
-+ * @op:   futex op code
-+ * @val:  typically expected value of uaddr, but varies by op
-+ * @timeout:  an absolute struct timespec
-+ * @uaddr2: address of second futex for some ops
-+ * @val3: varies by op
-+ */
-+static inline int
-+futex_syscall_timeout(volatile u_int32_t *uaddr, int op, u_int32_t val,
-+		      struct timespec *timeout, volatile u_int32_t *uaddr2, int val3)
-+{
-+#if defined(__NR_futex_time64)
-+	if (sizeof(*timeout) !=3D sizeof(struct __kernel_old_timespec)) {
-+		int ret =3D  syscall(__NR_futex_time64, uaddr, op, val, timeout, uaddr=
-2, val3);
-+
-+		if (ret =3D=3D 0 || errno !=3D ENOSYS)
-+			return ret;
-+	}
-+#endif
-+
-+#if defined(__NR_futex)
-+	if (sizeof(*timeout) =3D=3D sizeof(struct __kernel_old_timespec))
-+		return syscall(__NR_futex, uaddr, op, val, timeout, uaddr2, val3);
-+
-+	if (timeout && timeout->tv_sec =3D=3D (long)timeout->tv_sec) {
-+		struct __kernel_old_timespec ts32;
-+
-+		ts32.tv_sec =3D (__kernel_long_t) timeout->tv_sec;
-+		ts32.tv_nsec =3D (__kernel_long_t) timeout->tv_nsec;
-+
-+		return syscall(__NR_futex, uaddr, op, val, ts32, uaddr2, val3);
-+	} else if (!timeout) {
-+		return syscall(__NR_futex, uaddr, op, val, NULL, uaddr2, val3);
-+	}
-+#endif
-+
-+	errno =3D ENOSYS;
-+	return -1;
-+}
-+
-+/**
-+ * futex_syscall_nr_requeue() - __NR_futex/__NR_futex_time64 syscall wra=
-pper
-+ * @uaddr:  address of first futex
-+ * @op:   futex op code
-+ * @val:  typically expected value of uaddr, but varies by op
-+ * @nr_requeue:  an op specific meaning
-+ * @uaddr2: address of second futex for some ops
-+ * @val3: varies by op
-+ */
-+static inline int
-+futex_syscall_nr_requeue(volatile u_int32_t *uaddr, int op, u_int32_t va=
-l,
-+			 u_int32_t nr_requeue, volatile u_int32_t *uaddr2, int val3)
-+{
-+#if defined(__NR_futex_time64)
-+	int ret =3D  syscall(__NR_futex_time64, uaddr, op, val, nr_requeue, uad=
-dr2, val3);
-+
-+	if (ret =3D=3D 0 || errno !=3D ENOSYS)
-+		return ret;
-+#endif
-+
-+#if defined(__NR_futex)
-+	return syscall(__NR_futex, uaddr, op, val, nr_requeue, uaddr2, val3);
-+#endif
-+
-+	errno =3D ENOSYS;
-+	return -1;
-+}
-+
-+#endif /* _UAPI_LINUX_FUTEX_SYSCALL_H */
---=20
-2.31.1
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
