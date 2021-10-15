@@ -2,101 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC96442E533
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 02:21:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F11942E539
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 02:23:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234026AbhJOAXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 20:23:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32896 "EHLO
+        id S234588AbhJOAZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 20:25:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232796AbhJOAXP (ORCPT
+        with ESMTP id S232796AbhJOAY5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 20:23:15 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78181C061753
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 17:21:09 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id p16so34398975lfa.2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 17:21:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=axcc21xdI/dvORlK9JnY4plyzJWNbNS1Oplgc4UgVPQ=;
-        b=Vkna6zOYpmrV6tfJTpvlreMclp67ltxLbYGSiwE+44ex2NwtqiQS8YhV7jr/PeCtNF
-         bIecXGY3fpYF7Q9pPdaUWzd3fjd9PCTU+RsVkROOQnikztXmitWv039xuwlFszGxg5Lw
-         /LRZcYlWN5eQjrYAKVXF1WfuxnIhmYtQj30kaSIgQH6kO31YIjcV5MbB5MX5HjULHXvg
-         BdPn4vtiV+29Y1ce90UjbWU8qEG0Q3/8X+lSWSRzx4IwU2/YjkGP5mXV80vW0T6o/dkg
-         JLtY6iJrK5NmqDpBNibkvByacmoSSoQrvsqE42gOoz/jX8RV7hTDl7Z2u5Kpkqw2Qs1m
-         i0Bw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=axcc21xdI/dvORlK9JnY4plyzJWNbNS1Oplgc4UgVPQ=;
-        b=6mFNff4yXl4i3KhwLXT7qXSOgn9iT0cnwYe7Y/pTnB1zWcITI/FpffmMTOO++pbcIh
-         g85/8q120cb++tiszPEQU1hkTG5G2tyFABCclSf2R+PszD5K7/jwiR2RaJd2kdt7/Ax9
-         gjO6b1o1TkGudnAhZU/lHF7lUEypIbUy7V23R2KU//D46O2ylUuejpMUj8zSmPJ1MsPt
-         DZrh3xk54SWWOWDCRPiqlJb6S989RlSeLyb7nFscvemnyCanO/8qqg/ICd5hU1kEOPBG
-         B9E360qpqpciTcM0vlcDtls6fzudW4DaAeYwvYecjb5dUITwuQkvYYUzjxTMZ1KIj0HW
-         FFEA==
-X-Gm-Message-State: AOAM531hQ9peLK5M5s9qTJTLMi8qX6sAeUnCX1sloon6ezr0fhw+pC+6
-        IyvGJ/3kCPi4PVpIZ7tYlPek95AiFt3tBzI/LEarvKFdrkQ=
-X-Google-Smtp-Source: ABdhPJwNeN0mOd7mY/vsrY80L4MJjAYh7Wko7XKqQaD5V0rIKucUbvX8H4lpmKqsHw9HeLJ5Mhu/GMSZZ3EU7mlTU9M=
-X-Received: by 2002:a2e:b690:: with SMTP id l16mr2155205ljo.112.1634257267086;
- Thu, 14 Oct 2021 17:21:07 -0700 (PDT)
+        Thu, 14 Oct 2021 20:24:57 -0400
+Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F35BC061570;
+        Thu, 14 Oct 2021 17:22:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=OUxfpVYwd1GISRQGHaPwsHIXWhsw5Vl+rVIwmaXqPus=; b=BWCEZGQgSTnq6IcezkJ/FcXHOX
+        lTsyP6U1zNSYHW6xi0f7JJ/gCPvqj5otkDqItzlhW1Jh55zXpKcM3fMrJeRhMIuPL6+RhQ3Nqn/Kl
+        uBbNmBHqO3JiXHgvV1GcTEQJZ6EY4wjDP+fTc7q6pbqMPMMfdsgp56QzmIINFg0L6V85vp8atq7fk
+        8pnKiGXMngNHmU0ez9ghshWUrWlNzzWI0Q65GDzrsUu3rwz/nuVYxt0YupIpziAiygEuBaViYVohr
+        w+7OjuR2T6zzzMpZXZUhn/BgTJgcOXEfmECx6G/qkn6GymAjKvvxvxVOwKeHMzxvQHh1x4Iw/9oJb
+        wqMk+ESA==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mbAzg-004lOG-7L; Fri, 15 Oct 2021 00:22:40 +0000
+Date:   Thu, 14 Oct 2021 17:22:40 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Ming Lei <ming.lei@redhat.com>
+Cc:     tj@kernel.org, gregkh@linuxfoundation.org,
+        akpm@linux-foundation.org, minchan@kernel.org, jeyu@kernel.org,
+        shuah@kernel.org, bvanassche@acm.org, dan.j.williams@intel.com,
+        joe@perches.com, tglx@linutronix.de, keescook@chromium.org,
+        rostedt@goodmis.org, linux-spdx@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 11/12] zram: fix crashes with cpu hotplug multistate
+Message-ID: <YWjJ0O7K+31Iz3ox@bombadil.infradead.org>
+References: <20210927163805.808907-1-mcgrof@kernel.org>
+ <20210927163805.808907-12-mcgrof@kernel.org>
+ <YWeOJP2UJWYF94fu@T590>
+ <YWeR4moCRh+ZHOmH@T590>
+ <YWiSAN6xfYcUDJCb@bombadil.infradead.org>
+ <YWjCpLUNPF3s4P2U@T590>
 MIME-Version: 1.0
-References: <20211015095327.42344a21@canb.auug.org.au>
-In-Reply-To: <20211015095327.42344a21@canb.auug.org.au>
-From:   Todd Kjos <tkjos@google.com>
-Date:   Thu, 14 Oct 2021 17:20:54 -0700
-Message-ID: <CAHRSSEwR9c1jV_Hy6DbH9aZ5Q02AeR_dkay9W9od0RpiYKdgLg@mail.gmail.com>
-Subject: Re: linux-next: Fixes tags needs some work in the selinux tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Paul Moore <paul@paul-moore.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YWjCpLUNPF3s4P2U@T590>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 3:53 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->
-> Hi all,
->
-> In commit
->
->   fef994d85ac9 ("binder: use cred instead of task for getsecid")
->
-> Fixes tag
->
->   Fixes: ec74136ded79 ("binder: create node flag to request sender's
->
-> has these problem(s):
->
->   - Subject has leading but no trailing parentheses
->   - Subject has leading but no trailing quotes
->
-> In commit
->
->   d1c927fb8b52 ("binder: use cred instead of task for selinux checks")
->
-> Fixes tag
->
->   Fixes: 79af73079d75 ("Add security hooks to binder and implement the
->
-> has these problem(s):
->
->   - Subject has leading but no trailing parentheses
->   - Subject has leading but no trailing quotes
->
-> Please do not split Fixes tags over more than one line.
+On Fri, Oct 15, 2021 at 07:52:04AM +0800, Ming Lei wrote:
+> On Thu, Oct 14, 2021 at 01:24:32PM -0700, Luis Chamberlain wrote:
+> > On Thu, Oct 14, 2021 at 10:11:46AM +0800, Ming Lei wrote:
+> > > On Thu, Oct 14, 2021 at 09:55:48AM +0800, Ming Lei wrote:
+> > > > On Mon, Sep 27, 2021 at 09:38:04AM -0700, Luis Chamberlain wrote:
+> > > 
+> > > ...
+> > > 
+> > > > 
+> > > > Hello Luis,
+> > > > 
+> > > > Can you test the following patch and see if the issue can be addressed?
+> > > > 
+> > > > Please see the idea from the inline comment.
+> > > > 
+> > > > Also zram_index_mutex isn't needed in zram disk's store() compared with
+> > > > your patch, then the deadlock issue you are addressing in this series can
+> > > > be avoided.
+> > > > 
+> > > > 
+> > > > diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
+> > > > index fcaf2750f68f..3c17927d23a7 100644
+> > > > --- a/drivers/block/zram/zram_drv.c
+> > > > +++ b/drivers/block/zram/zram_drv.c
+> > > > @@ -1985,11 +1985,17 @@ static int zram_remove(struct zram *zram)
+> > > >  
+> > > >  	/* Make sure all the pending I/O are finished */
+> > > >  	fsync_bdev(bdev);
+> > > > -	zram_reset_device(zram);
+> > > >  
+> > > >  	pr_info("Removed device: %s\n", zram->disk->disk_name);
+> > > >  
+> > > >  	del_gendisk(zram->disk);
+> > > > +
+> > > > +	/*
+> > > > +	 * reset device after gendisk is removed, so any change from sysfs
+> > > > +	 * store won't come in, then we can really reset device here
+> > > > +	 */
+> > > > +	zram_reset_device(zram);
+> > > > +
+> > > >  	blk_cleanup_disk(zram->disk);
+> > > >  	kfree(zram);
+> > > >  	return 0;
+> > > > @@ -2073,7 +2079,12 @@ static int zram_remove_cb(int id, void *ptr, void *data)
+> > > >  static void destroy_devices(void)
+> > > >  {
+> > > >  	class_unregister(&zram_control_class);
+> > > > +
+> > > > +	/* hold the global lock so new device can't be added */
+> > > > +	mutex_lock(&zram_index_mutex);
+> > > >  	idr_for_each(&zram_index_idr, &zram_remove_cb, NULL);
+> > > > +	mutex_unlock(&zram_index_mutex);
+> > > > +
+> > > 
+> > > Actually zram_index_mutex isn't needed when calling zram_remove_cb()
+> > > since the zram-control sysfs interface has been removed, so userspace
+> > > can't add new device any more, then the issue is supposed to be fixed
+> > > by the following one line change, please test it:
+> > > 
+> > > diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
+> > > index fcaf2750f68f..96dd641de233 100644
+> > > --- a/drivers/block/zram/zram_drv.c
+> > > +++ b/drivers/block/zram/zram_drv.c
+> > > @@ -1985,11 +1985,17 @@ static int zram_remove(struct zram *zram)
+> > >  
+> > >  	/* Make sure all the pending I/O are finished */
+> > >  	fsync_bdev(bdev);
+> > > -	zram_reset_device(zram);
+> > >  
+> > >  	pr_info("Removed device: %s\n", zram->disk->disk_name);
+> > >  
+> > >  	del_gendisk(zram->disk);
+> > > +
+> > > +	/*
+> > > +	 * reset device after gendisk is removed, so any change from sysfs
+> > > +	 * store won't come in, then we can really reset device here
+> > > +	 */
+> > > +	zram_reset_device(zram);
+> > > +
+> > >  	blk_cleanup_disk(zram->disk);
+> > >  	kfree(zram);
+> > >  	return 0;
+> > 
+> > Sorry but nope, the cpu multistate issue is still present and we end up
+> > eventually with page faults. I tried with both patches.
+> 
+> In theory disksize_store() can't come in after del_gendisk() returns,
+> then zram_reset_device() should cleanup everything, that is the issue
+> you described in commit log.
+> 
+> We need to understand the exact reason why there is still cpuhp node
+> left, can you share us the exact steps for reproducing the issue?
+> Otherwise we may have to trace and narrow down the reason.
 
-Stephen / Paul - do you want me to upload a new series for this or is
-this something you would normally do since it is a simple change?
+See my commit log for my own fix for this issue.
 
->
->
-> --
-> Cheers,
-> Stephen Rothwell
+  Luis
