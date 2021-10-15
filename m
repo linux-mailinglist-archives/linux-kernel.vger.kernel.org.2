@@ -2,202 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89AE742E739
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 05:30:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1D5C42E74E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 05:38:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234183AbhJODcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 23:32:03 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:8193 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234153AbhJODcC (ORCPT
+        id S235175AbhJODkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 23:40:35 -0400
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:44311 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234139AbhJODk1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 23:32:02 -0400
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 19F38CnT038176;
-        Fri, 15 Oct 2021 11:08:12 +0800 (GMT-8)
-        (envelope-from jammy_huang@aspeedtech.com)
-Received: from [192.168.2.115] (192.168.2.115) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 15 Oct
- 2021 11:29:54 +0800
-Message-ID: <e94e8b49-e7cc-c358-3b6b-1af82c70982c@aspeedtech.com>
-Date:   Fri, 15 Oct 2021 11:29:55 +0800
+        Thu, 14 Oct 2021 23:40:27 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R421e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0Us2dp9w_1634269099;
+Received: from localhost.localdomain(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0Us2dp9w_1634269099)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 15 Oct 2021 11:38:19 +0800
+From:   Shuai Xue <xueshuai@linux.alibaba.com>
+To:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        bp@alien8.de, tony.luck@intel.com, james.morse@arm.com,
+        lenb@kernel.org, rjw@rjwysocki.net
+Cc:     xueshuai@linux.alibaba.com, zhangliguang@linux.alibaba.com,
+        zhuo.song@linux.alibaba.com
+Subject: [PATCH] ACPI, APEI, EINJ: Relax platform response timeout to 1 second.
+Date:   Fri, 15 Oct 2021 11:38:17 +0800
+Message-Id: <20211015033817.16719-1-xueshuai@linux.alibaba.com>
+X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH 6/6] media: aspeed: richer debugfs
-Content-Language: en-US
-To:     Paul Menzel <pmenzel@molgen.mpg.de>
-CC:     "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "andrew@aj.id.au" <andrew@aj.id.au>,
-        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
-        "eajames@linux.ibm.com" <eajames@linux.ibm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mchehab@kernel.org" <mchehab@kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>
-References: <20211014034819.2283-1-jammy_huang@aspeedtech.com>
- <20211014034819.2283-7-jammy_huang@aspeedtech.com>
- <f7d3900f-9e1c-1c2b-f14a-a3828852eadc@molgen.mpg.de>
- <53fa3d1a-d75b-2fb1-a315-c6406f33289c@molgen.mpg.de>
-From:   Jammy Huang <jammy_huang@aspeedtech.com>
-In-Reply-To: <53fa3d1a-d75b-2fb1-a315-c6406f33289c@molgen.mpg.de>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [192.168.2.115]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 19F38CnT038176
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Paul,
+When injecting an error into the platform, the OSPM executes an
+EXECUTE_OPERATION action to instruct the platform to begin the injection
+operation. And then, the OSPM busy waits for a while by continually
+executing CHECK_BUSY_STATUS action until the platform indicates that the
+operation is complete. More specifically, the platform is limited to
+respond within 1 millisecond right now. This is too strict for some
+platforms.
 
-Thanks for you help. I will have an updated patch later accordingly.
+For example, in Arm platfrom, when injecting a Processor Correctable error,
+the OSPM will warn:
+    Firmware does not respond in time.
 
-On 2021/10/14 下午 02:57, Paul Menzel wrote:
-> Dear Jammy,
->
->
-> Am 14.10.21 um 08:54 schrieb Paul Menzel:
->
->> Am 14.10.21 um 05:48 schrieb Jammy Huang:
->> media: aspeed: richer debugfs
-> It’d be great if you used a statement by adding a verb in imperative
-> mood [1]. Maybe:
->
->> Extend debug message
-> or
->
->> Add more debug log messages
->>> updated as below:
->>>
->>> Caputre:
->> Capture
->>
->>>     Mode                : Direct fetch
->>>     VGA bpp mode        : 32
->>>     Signal              : Unlock
->>>     Width               : 1920
->>>     Height              : 1080
->>>     FRC                 : 30
->>>
->>> Compression:
->>>     Format              : JPEG
->>>     Subsampling         : 444
->>>     Quality             : 0
->>>     HQ Mode             : N/A
->>>     HQ Quality          : 0
->>>     Mode                : N/A
->>>
->>> Performance:
->>>     Frame#              : 0
->>>     Frame Duration(ms)  :
->>>       Now               : 0
->>>       Min               : 0
->>>       Max               : 0
->>>     FPS                 : 0
->> Do you have output with non-zero values? ;-)
->>
->> On what device did you test this?
->>
->>> Signed-off-by: Jammy Huang <jammy_huang@aspeedtech.com>
->>> ---
->>>    drivers/media/platform/aspeed-video.c | 41 +++++++++++++++++++++++++--
->>>    1 file changed, 38 insertions(+), 3 deletions(-)
->>>
->>> diff --git a/drivers/media/platform/aspeed-video.c
->>> b/drivers/media/platform/aspeed-video.c
->>> index e1031fd09ac6..f2e5c49ee906 100644
->>> --- a/drivers/media/platform/aspeed-video.c
->>> +++ b/drivers/media/platform/aspeed-video.c
->>> @@ -464,6 +464,9 @@ static const struct v4l2_dv_timings_cap
->>> aspeed_video_timings_cap = {
->>>        },
->>>    };
->>> +static const char * const compress_mode_str[] = {"DCT Only",
->>> +    "DCT VQ mix 2-color", "DCT VQ mix 4-color"};
->>> +
->>>    static unsigned int debug;
->>>    static void aspeed_video_init_jpeg_table(u32 *table, bool yuv420)
->>> @@ -1077,8 +1080,6 @@ static void aspeed_video_set_resolution(struct
->>> aspeed_video *video)
->>>    static void aspeed_video_update_regs(struct aspeed_video *video)
->>>    {
->>> -    static const char * const compress_mode_str[] = {"DCT Only",
->>> -        "DCT VQ mix 2-color", "DCT VQ mix 4-color"};
->>>        u32 comp_ctrl =    FIELD_PREP(VE_COMP_CTRL_DCT_LUM,
->>> video->jpeg_quality) |
->>>            FIELD_PREP(VE_COMP_CTRL_DCT_CHR, video->jpeg_quality | 0x10) |
->>>            FIELD_PREP(VE_COMP_CTRL_EN_HQ, video->hq_mode) |
->>> @@ -1795,9 +1796,29 @@ static const struct vb2_ops
->>> aspeed_video_vb2_ops = {
->>>    static int aspeed_video_debugfs_show(struct seq_file *s, void *data)
->>>    {
->>>        struct aspeed_video *v = s->private;
->>> +    u32 val08;
->> Why does `08` refer to?
->>
->>>        seq_puts(s, "\n");
->>> +    val08 = aspeed_video_read(v, VE_CTRL);
->>> +    seq_puts(s, "Caputre:\n");
->>> +    if (FIELD_GET(VE_CTRL_DIRECT_FETCH, val08)) {
->>> +        seq_printf(s, "  %-20s:\tDirect fetch\n", "Mode");
->>> +        seq_printf(s, "  %-20s:\t%s\n", "VGA bpp mode",
->>> +               FIELD_GET(VE_CTRL_INT_DE, val08) ? "16" : "32");
->>> +    } else {
->>> +        seq_printf(s, "  %-20s:\tSync\n", "Mode");
->>> +        seq_printf(s, "  %-20s:\t%s\n", "Video source",
->>> +               FIELD_GET(VE_CTRL_SOURCE, val08) ?
->>> +               "external" : "internal");
->>> +        seq_printf(s, "  %-20s:\t%s\n", "DE source",
->>> +               FIELD_GET(VE_CTRL_INT_DE, val08) ?
->>> +               "internal" : "external");
->>> +        seq_printf(s, "  %-20s:\t%s\n", "Cursor overlay",
->>> +               FIELD_GET(VE_CTRL_AUTO_OR_CURSOR, val08) ?
->>> +               "Without" : "With");
->>> +    }
->>> +
->>>        seq_printf(s, "  %-20s:\t%s\n", "Signal",
->>>               v->v4l2_input_status ? "Unlock" : "Lock");
->>>        seq_printf(s, "  %-20s:\t%d\n", "Width", v->pix_fmt.width);
->>> @@ -1806,6 +1827,21 @@ static int aspeed_video_debugfs_show(struct
->>> seq_file *s, void *data)
->>>        seq_puts(s, "\n");
->>> +    seq_puts(s, "Compression:\n");
->>> +    seq_printf(s, "  %-20s:\t%s\n", "Format",
->>> +           v->partial_jpeg ? "Aspeed" : "JPEG");
->>> +    seq_printf(s, "  %-20s:\t%s\n", "Subsampling",
->>> +           v->yuv420 ? "420" : "444");
->>> +    seq_printf(s, "  %-20s:\t%d\n", "Quality", v->jpeg_quality);
->>> +    seq_printf(s, "  %-20s:\t%s\n", "HQ Mode",
->>> +           v->partial_jpeg ? (v->hq_mode ? "on" : "off") : "N/A");
->>> +    seq_printf(s, "  %-20s:\t%d\n", "HQ Quality", v->jpeg_hq_quality);
->>> +    seq_printf(s, "  %-20s:\t%s\n", "Mode",
->>> +           v->partial_jpeg ? compress_mode_str[v->compression_mode]
->>> +                   : "N/A");
->>> +
->>> +    seq_puts(s, "\n");
->>> +
->>>        seq_puts(s, "Performance:\n");
->>>        seq_printf(s, "  %-20s:\t%d\n", "Frame#", v->sequence);
->>>        seq_printf(s, "  %-20s:\n", "Frame Duration(ms)");
->> Remove the colon, and add a space before (?
->>
->>> @@ -1814,7 +1850,6 @@ static int aspeed_video_debugfs_show(struct
->>> seq_file *s, void *data)
->>>        seq_printf(s, "    %-18s:\t%d\n", "Max", v->perf.duration_max);
->>>        seq_printf(s, "  %-20s:\t%d\n", "FPS",
->>> 1000/(v->perf.totaltime/v->sequence));
->>> -
->>>        return 0;
->>>    }
->
-> Kind regards,
->
-> Paul
->
->
-> [1]: https://chris.beams.io/posts/git-commit/
+And a message is printed on the console:
+    echo: write error: Input/output error
+
+We observe that the waiting time for DDR error injection is about 10 ms
+and that for PCIe error injection is about 500 ms in Arm platfrom.
+
+In this patch, we relax the response timeout to 1 second and allow user to
+pass the time out value as a argument.
+
+Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
+---
+ drivers/acpi/apei/einj.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/acpi/apei/einj.c b/drivers/acpi/apei/einj.c
+index 133156759551..fa2386ee37db 100644
+--- a/drivers/acpi/apei/einj.c
++++ b/drivers/acpi/apei/einj.c
+@@ -14,6 +14,7 @@
+ 
+ #include <linux/kernel.h>
+ #include <linux/module.h>
++#include <linux/moduleparam.h>
+ #include <linux/init.h>
+ #include <linux/io.h>
+ #include <linux/debugfs.h>
+@@ -28,9 +29,9 @@
+ #undef pr_fmt
+ #define pr_fmt(fmt) "EINJ: " fmt
+ 
+-#define SPIN_UNIT		100			/* 100ns */
+-/* Firmware should respond within 1 milliseconds */
+-#define FIRMWARE_TIMEOUT	(1 * NSEC_PER_MSEC)
++#define SPIN_UNIT		100			/* 100us */
++/* Firmware should respond within 1 seconds */
++#define FIRMWARE_TIMEOUT	(1 * USEC_PER_SEC)
+ #define ACPI5_VENDOR_BIT	BIT(31)
+ #define MEM_ERROR_MASK		(ACPI_EINJ_MEMORY_CORRECTABLE | \
+ 				ACPI_EINJ_MEMORY_UNCORRECTABLE | \
+@@ -40,6 +41,8 @@
+  * ACPI version 5 provides a SET_ERROR_TYPE_WITH_ADDRESS action.
+  */
+ static int acpi5;
++static int timeout_default = FIRMWARE_TIMEOUT;
++module_param(timeout_default, int, 0644);
+ 
+ struct set_error_type_with_address {
+ 	u32	type;
+@@ -176,7 +179,7 @@ static int einj_timedout(u64 *t)
+ 		return 1;
+ 	}
+ 	*t -= SPIN_UNIT;
+-	ndelay(SPIN_UNIT);
++	udelay(SPIN_UNIT);
+ 	touch_nmi_watchdog();
+ 	return 0;
+ }
+@@ -403,7 +406,7 @@ static int __einj_error_inject(u32 type, u32 flags, u64 param1, u64 param2,
+ 			       u64 param3, u64 param4)
+ {
+ 	struct apei_exec_context ctx;
+-	u64 val, trigger_paddr, timeout = FIRMWARE_TIMEOUT;
++	u64 val, trigger_paddr, timeout = timeout_default;
+ 	int rc;
+ 
+ 	einj_exec_ctx_init(&ctx);
+-- 
+2.20.1.12.g72788fdb
+
