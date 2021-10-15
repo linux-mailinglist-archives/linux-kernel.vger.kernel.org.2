@@ -2,166 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E8CF42F808
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 18:22:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9180242F809
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 18:23:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241200AbhJOQY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 12:24:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51316 "EHLO mail.kernel.org"
+        id S241260AbhJOQZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 12:25:11 -0400
+Received: from mga11.intel.com ([192.55.52.93]:5041 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236598AbhJOQY5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 12:24:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A510604DB;
-        Fri, 15 Oct 2021 16:22:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634314970;
-        bh=yThbssGrc0NqhJCJciVSOLwdJ3xsnZpy7ynah9IDzjc=;
-        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
-        b=lYOu8edKHuQbRSL/wGuTXlaXasBfYAfN7FTaCQyYMjjyuBs2Va3CZWVJEcI/y2Yzl
-         6vxWj0N4i2Q7IvTvUn39GNE7p287Kp1LOL4bhevh9Y1ydrOgKuDSd21LMq+m3V83ZT
-         NYhzYaaJ7jbM97TL3d/6BmnKebyhcL4B30RbcMo7GKr7rXM5KwqPToeNiX6+XWzqAT
-         WQP3bd24A2ZudEhkQaClfRXg0g1sQ5h0Tm6+Hi5gQfHAOjUCbM7JymxAIEDThXKeGR
-         kXNmc5WsIjApnLywAYuTjOKNGunpJelflf32K51VcP3Mljcd/T6T9iJyowum4877yS
-         THelCJ7YMklMg==
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailauth.nyi.internal (Postfix) with ESMTP id A482727C005A;
-        Fri, 15 Oct 2021 12:22:48 -0400 (EDT)
-Received: from imap48 ([10.202.2.98])
-  by compute6.internal (MEProxy); Fri, 15 Oct 2021 12:22:48 -0400
-X-ME-Sender: <xms:2KppYYHZXc5F5814GuviBQt3dBPMqTAe0JUJV4z8kZGLCGlUelmp5w>
-    <xme:2KppYRWeQdgPQcdge5LwC622kGmkflWN2ZlcdAfq06vaJt7APC76YjSoYOCwbCU_t
-    iAo4ibBexziw9S66ts>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvddugedgleekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgfgsehtqhertderreejnecuhfhrohhmpedftehn
-    ugihucfnuhhtohhmihhrshhkihdfuceolhhuthhosehkvghrnhgvlhdrohhrgheqnecugg
-    ftrfgrthhtvghrnhepvdelheejjeevhfdutdeggefftdejtdffgeevteehvdfgjeeiveei
-    ueefveeuvdetnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
-    homheprghnugihodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdduudeiudek
-    heeifedvqddvieefudeiiedtkedqlhhuthhopeepkhgvrhhnvghlrdhorhhgsehlihhnuh
-    igrdhluhhtohdruhhs
-X-ME-Proxy: <xmx:2KppYSKFs_BxNt8MPsCSd3Yt4phhexq-QIIRpk_0ACGioKc0CA6-RA>
-    <xmx:2KppYaGnR0Lq_Oe8tejDTU163rQhIuANvunN6fnlNIhEyYkNK_b2yg>
-    <xmx:2KppYeXJzPshJpwXSicxkvhdEfrw-LVlndq2de9HLrL8vhhp2CkL4Q>
-    <xmx:2KppYXOfvXRd_SOq3yEJrwB-Cn41d9yFKsL5J-a37dW2qLNHqe_J-uHxowg>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 50FAA21E0063; Fri, 15 Oct 2021 12:22:48 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-1345-g8441cd7852-fm-20211006.001-g8441cd78
-Mime-Version: 1.0
-Message-Id: <eda70a35-33a8-43b4-a839-65f2a1f91bb5@www.fastmail.com>
-In-Reply-To: <8735p25llh.ffs@tglx>
-References: <20211013181658.1020262-1-samitolvanen@google.com>
- <20211013181658.1020262-4-samitolvanen@google.com>
- <7377e6b9-7130-4c20-a0c8-16de4620c995@www.fastmail.com> <8735p25llh.ffs@tglx>
-Date:   Fri, 15 Oct 2021 09:22:27 -0700
-From:   "Andy Lutomirski" <luto@kernel.org>
-To:     "Thomas Gleixner" <tglx@linutronix.de>,
-        "Sami Tolvanen" <samitolvanen@google.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>
-Cc:     "Kees Cook" <keescook@chromium.org>,
-        "Josh Poimboeuf" <jpoimboe@redhat.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        "Nathan Chancellor" <nathan@kernel.org>,
-        "Nick Desaulniers" <ndesaulniers@google.com>,
-        "Sedat Dilek" <sedat.dilek@gmail.com>,
-        "Steven Rostedt" <rostedt@goodmis.org>,
-        linux-hardening@vger.kernel.org,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        llvm@lists.linux.dev
-Subject: Re: [PATCH v5 03/15] linkage: Add DECLARE_NOT_CALLED_FROM_C
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        id S241225AbhJOQZJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 12:25:09 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10138"; a="225406966"
+X-IronPort-AV: E=Sophos;i="5.85,376,1624345200"; 
+   d="scan'208";a="225406966"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2021 09:23:02 -0700
+X-IronPort-AV: E=Sophos;i="5.85,376,1624345200"; 
+   d="scan'208";a="492623169"
+Received: from liminghu-mobl.ccr.corp.intel.com (HELO [10.212.23.213]) ([10.212.23.213])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2021 09:23:01 -0700
+Subject: Re: [RFC PATCH v3 05/13] ASoC: soc-pcm: align BE 'atomicity' with
+ that of the FE
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     alsa-devel@alsa-project.org,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Sameer Pujar <spujar@nvidia.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Takashi Iwai <tiwai@suse.com>, vkoul@kernel.org,
+        broonie@kernel.org, Gyeongtaek Lee <gt82.lee@samsung.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+References: <20211013143050.244444-1-pierre-louis.bossart@linux.intel.com>
+ <20211013143050.244444-6-pierre-louis.bossart@linux.intel.com>
+ <2847a6d1-d97f-4161-c8b6-03672cf6645c@nvidia.com>
+ <s5hmtnavisi.wl-tiwai@suse.de>
+ <e2a79095-b8ce-9dd4-3e6d-00f8dda99f30@linux.intel.com>
+ <s5h1r4muwlj.wl-tiwai@suse.de>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <8aa4fa07-2b55-3927-f482-c2fd2b01a22e@linux.intel.com>
+Date:   Fri, 15 Oct 2021 11:22:58 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <s5h1r4muwlj.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+> The FE stream locks are necessary only two points: at adding and
+> deleting the BE in the link.  We used dpcm_lock in other places, but
+> those are superfluous or would make problem if converted to a FE
+> stream lock.
 
-On Fri, Oct 15, 2021, at 8:55 AM, Thomas Gleixner wrote:
-> On Thu, Oct 14 2021 at 19:51, Andy Lutomirski wrote:
->> On Wed, Oct 13, 2021, at 11:16 AM, Sami Tolvanen wrote:
->>>=20
->>> +/*
->>> + * Declares a function not callable from C using an opaque type. De=
-fined as
->>> + * an array to allow the address of the symbol to be taken without =
-'&'.
->>> + */
->> I=E2=80=99m not convinced that taking the address without using & is a
->> laudable goal.  The magical arrays-are-pointers-too behavior of C is a
->> mistake, not a delightful simplification.
->
->>> +#ifndef DECLARE_NOT_CALLED_FROM_C
->>> +#define DECLARE_NOT_CALLED_FROM_C(sym) \
->>> +	extern const u8 sym[]
->>> +#endif
+I must be missing a fundamental concept here - possibly a set of concepts...
+
+It is my understanding that the FE-BE connection can be updated
+dynamically without any relationship to the usual ALSA steps, e.g. as a
+result of a control being changed by a user.
+
+So if you only protect the addition/removal, isn't there a case where
+the for_each_dpcm_be() loop would either miss a BE or point to an
+invalid one?
+
+In other words, don't we need the *same* lock to be used
+a) before changing and
+b) walking through the list?
+
+I also don't get what would happen if the dpcm_lock was converted to an
+FE stream lock. It works fine in my tests, so if there's limitation I
+didn't see it.
+
+>>> In addition, a lock around dpcm_show_state() might be needed to be
+>>> replaced with card->pcm_mutex, and we may need to revisit whether all
+>>> other paths take card->pcm_mutex.
 >>
->
->> The relevant property of these symbols isn=E2=80=99t that they=E2=80=99=
-re not called
->> from C.  The relevant thing is that they are just and not objects of a
->> type that the programmer cares to tell the compiler about. (Or that
->> the compiler understands, for that matter. On a system with XO memory
->> or if they=E2=80=99re in a funny section, dereferencing them may fail=
-.)
->
-> I agree.
->
->> So I think we should use incomplete structs, which can=E2=80=99t be
->> dereferenced and will therefore be less error prone.
->
-> While being late to that bike shed painting party, I really have to ask
-> the question _why_ can't the compiler provide an annotation for these
-> kind of things which:
->
->     1) Make the build fail when invoked directly
->
->     2) Tell CFI that this is _NOT_ something it can understand
->
-> -void clear_page_erms(void *page);
-> +void __bikeshedme clear_page_erms(void *page);
->
-> That still tells me:
->
->     1) This is a function
->   =20
->     2) It has a regular argument which is expected to be in RDI
->
-> which even allows to do analyis of e.g. the alternative call which
-> invokes that function.
->
-> DECLARE_NOT_CALLED_FROM_C(clear_page_erms);
->
-> loses these properties and IMO it's a tasteless hack.
->
+>> What happens if we show the state while a trigger happens? That's my
+>> main concern with using two separate locks (pcm_mutex and FE stream
+>> lock) to protect the same list, there are still windows of time where
+>> the list is not protected.
+> 
+> With the proper use of mutex, the list itself is protected.
+> If we need to protect the concurrent access to each BE in the show
+> method, an additional BE lock is needed in that part.  But that's a
+> subtle issue, as the link traversal itself is protected by the mutex.
 
+If I look at your patch2, dpcm_be_disconnect() protects the list removal
+with the fe stream lock, but the show state is protected by both the
+pcm_mutex and the fe stream lock.
 
-Ah, but clear_page_erms is a different beast entirely as compared to, sa=
-y, the syscall entry. It *is* a C function.  So I see two ways to handle=
- it:
+I have not been able to figure out when you need
+a) the pcm_mutex only
+b) the fe stream lock only
+c) both pcm_mutex and fe stream lock
 
-1. Make it completely opaque.  Tglx doesn=E2=80=99t like it, and I agree=
-, but it would *work*.
-
-2. Make it a correctly typed function. In clang CFI land, this may or ma=
-y not be =E2=80=9Ccanonical=E2=80=9D (or non canonical?).
-
-I think #2 is far better. I complained about this quite a few versions a=
-go, and, sorry, the word =E2=80=9Ccanonical=E2=80=9D is pretty much a no=
-n-starter. There needs to be a way to annotate a function pointer type a=
-nd an extern function declaration that says =E2=80=9Cthe callee follows =
-the ABI *without CFI*=E2=80=9D and the compiler needs to do the right th=
-ing. And whatever attribute or keyword gets used needs to give the reade=
-r at least some chance of understanding.
-
-(If there is a technical reason why function *pointers* of this type can=
-=E2=80=99t be called, perhaps involving IBT, so be it.  But the type sys=
-tem should really be aware of C-ABI functions that come from outside the=
- CFI world.)
-
-It looks like clear_page might be improved by using static_call some day=
-, and then proper typing will be a requirement.
-
-Would it help if I file a clang bug about this?
