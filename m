@@ -2,169 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 729F142F1AE
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 15:05:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECD7542F1B8
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 15:07:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239210AbhJONHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 09:07:06 -0400
-Received: from relay5-d.mail.gandi.net ([217.70.183.197]:56513 "EHLO
-        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239201AbhJONHF (ORCPT
+        id S239235AbhJONJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 09:09:58 -0400
+Received: from polaris.svanheule.net ([84.16.241.116]:35164 "EHLO
+        polaris.svanheule.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239196AbhJONJy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 09:07:05 -0400
-Received: (Authenticated sender: alex@ghiti.fr)
-        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 401031C0007;
-        Fri, 15 Oct 2021 13:04:51 +0000 (UTC)
-Subject: Re: [PATCH] kasan: Always respect CONFIG_KASAN_STACK
-From:   Alexandre ghiti <alex@ghiti.fr>
-To:     Nathan Chancellor <nathan@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>
-Cc:     elver@google.com, akpm@linux-foundation.org,
-        ryabinin.a.a@gmail.com, glider@google.com, andreyknvl@gmail.com,
-        dvyukov@google.com, ndesaulniers@google.com,
-        Arnd Bergmann <arnd@arndb.de>, kasan-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        linux-riscv@lists.infradead.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, linux-mm@kvack.org
-References: <YUyWYpDl2Dmegz0a@archlinux-ax161>
- <mhng-b5f8a6a0-c3e8-4d25-9daa-346fdc8a2e5e@palmerdabbelt-glaptop>
- <YWhg8/UzjJsB51Gd@archlinux-ax161>
- <afeaea5f-70f2-330f-f032-fb0c8b5d0aa5@ghiti.fr>
-Message-ID: <990a894c-1806-5ab2-775e-a6f2355c2299@ghiti.fr>
-Date:   Fri, 15 Oct 2021 15:04:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Fri, 15 Oct 2021 09:09:54 -0400
+Received: from [130.246.252.99] (stfc-guest-0076.rl.ac.uk [130.246.252.99])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: sander@svanheule.net)
+        by polaris.svanheule.net (Postfix) with ESMTPSA id 11DA5261E09;
+        Fri, 15 Oct 2021 15:07:47 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svanheule.net;
+        s=mail1707; t=1634303267;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OouvDrdrM4gIu0RFlsE/NFaiid3M9GLimFnmOS+qiNo=;
+        b=0v2bOaVZ3NpU8VICqzq/wcFsuLnj6Xm8Z3N9czerUEedYsRZIqy8rdgy/PqHzn/Fvi8Vk3
+        9BJWixHjelcBefcge8x88R816jaqpGVsD+Fbnz0z++/DA+8uOlKaOHcKqaACWkCVpekmYm
+        IE+Kz0T9hleWx7186Uh9SxDe3OWeNawDeBXLTYN2SQl4Wj77GfiEvF1JE2JVc0m7vWIUIM
+        ygmLdqDpUe0TB5tPHPsWy6Y4WaOmT4UIeULZ8hv1Hj8KQ4pYEpBXbfs0eT+LoN5JzX7TG+
+        SY2C0XBABRJeExXj4Q//FUuGWBZg6xNRy9N0FUXqRg/giy+15kilhMVLQZ0s7Q==
+Message-ID: <5fae298a1a9daac74818b779677d4e1735ddc527.camel@svanheule.net>
+Subject: Re: [PATCH 2/2] watchdog: Add Realtek Otto watchdog timer
+From:   Sander Vanheule <sander@svanheule.net>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org
+Date:   Fri, 15 Oct 2021 14:07:45 +0100
+In-Reply-To: <c81fd654-011f-0375-7dde-61365c898efb@roeck-us.net>
+References: <cover.1634131707.git.sander@svanheule.net>
+         <7eb1e3d8a5bd3b221be0408bd6f0272e6d435ade.1634131707.git.sander@svanheule.net>
+         <20211013184852.GA955578@roeck-us.net>
+         <4cf85218627371e1d07238257d0a89f824606415.camel@svanheule.net>
+         <6b1a9479-c456-ceeb-5aa2-6121f5c5d67f@roeck-us.net>
+         <b1c8713cd10358355d4086e6d80ce6f10d295fe8.camel@svanheule.net>
+         <c81fd654-011f-0375-7dde-61365c898efb@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.4 (3.40.4-2.fc34) 
 MIME-Version: 1.0
-In-Reply-To: <afeaea5f-70f2-330f-f032-fb0c8b5d0aa5@ghiti.fr>
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/14/21 8:31 PM, Alex Ghiti wrote:
-> Hi Nathan,
->
-> Le 14/10/2021 à 18:55, Nathan Chancellor a écrit :
->> On Fri, Oct 08, 2021 at 11:46:55AM -0700, Palmer Dabbelt wrote:
->>> On Thu, 23 Sep 2021 07:59:46 PDT (-0700), nathan@kernel.org wrote:
->>>> On Thu, Sep 23, 2021 at 12:07:17PM +0200, Marco Elver wrote:
->>>>> On Wed, 22 Sept 2021 at 22:55, Nathan Chancellor
->>>>> <nathan@kernel.org> wrote:
->>>>>> Currently, the asan-stack parameter is only passed along if
->>>>>> CFLAGS_KASAN_SHADOW is not empty, which requires
->>>>>> KASAN_SHADOW_OFFSET to
->>>>>> be defined in Kconfig so that the value can be checked. In RISC-V's
->>>>>> case, KASAN_SHADOW_OFFSET is not defined in Kconfig, which means
->>>>>> that
->>>>>> asan-stack does not get disabled with clang even when
->>>>>> CONFIG_KASAN_STACK
->>>>>> is disabled, resulting in large stack warnings with allmodconfig:
->>>>>>
->>>>>> drivers/video/fbdev/omap2/omapfb/displays/panel-lgphilips-lb035q02.c:117:12:
->>>>>>
->>>>>> error: stack frame size (14400) exceeds limit (2048) in function
->>>>>> 'lb035q02_connect' [-Werror,-Wframe-larger-than]
->>>>>> static int lb035q02_connect(struct omap_dss_device *dssdev)
->>>>>>             ^
->>>>>> 1 error generated.
->>>>>>
->>>>>> Ensure that the value of CONFIG_KASAN_STACK is always passed
->>>>>> along to
->>>>>> the compiler so that these warnings do not happen when
->>>>>> CONFIG_KASAN_STACK is disabled.
->>>>>>
->>>>>> Link: https://github.com/ClangBuiltLinux/linux/issues/1453
->>>>>> References: 6baec880d7a5 ("kasan: turn off asan-stack for clang-8
->>>>>> and earlier")
->>>>>> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
->>>>>
->>>>> Reviewed-by: Marco Elver <elver@google.com>
->>>>
->>>> Thanks!
->>>>
->>>>> [ Which tree are you planning to take it through? ]
->>>>
->>>> Gah, I was intending for it to go through -mm, then I cc'd neither
->>>> Andrew nor linux-mm... :/ Andrew, do you want me to resend or can you
->>>> grab it from LKML?
->>>
->>> Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
->>>
->>> (assuming you still want it through somewhere else)
->>
->> Thanks, it is now in mainline as commit 19532869feb9 ("kasan: always
->> respect CONFIG_KASAN_STACK").
->>
->>>>> Note, arch/riscv/include/asm/kasan.h mentions KASAN_SHADOW_OFFSET in
->>>>> comment (copied from arm64). Did RISC-V just forget to copy over the
->>>>> Kconfig option?
->>>>
->>>> I do see it defined in that file as well but you are right that
->>>> they did
->>>> not copy the Kconfig logic, even though it was present in the tree
->>>> when
->>>> RISC-V KASAN was implemented. Perhaps they should so that they get
->>>> access to the other flags in the "else" branch?
->>>
->>> Ya, looks like we just screwed this up.  I'm seeing some warnings like
->>>
->>>     cc1: warning: ‘-fsanitize=kernel-address’ with stack protection
->>> is not supported without ‘-fasan-shadow-offset=’ for this target
->>
->> Hmmm, I thought I did a GCC build with this change but I must not have
->> :/
->>
->>> which is how I ended up here, I'm assuming that's what you're
->>> talking about
->>> here?  LMK if you were planning on sending along a fix or if you
->>> want me to
->>> go figure it out.
->>
->> I took a look at moving the logic into Kconfig like arm64 before sending
->> this change and I did not really understand it well enough to do so. I
->> think it would be best if you were able to do that so that nothing gets
->> messed up.
->>
->
-> I'll do it tomorrow, I'm the last one who touched kasan on riscv :)
->
+On Thu, 2021-10-14 at 09:56 -0700, Guenter Roeck wrote:
+> On 10/14/21 3:26 AM, Sander Vanheule wrote:
+> > On Wed, 2021-10-13 at 14:03 -0700, Guenter Roeck wrote:
+> > > On 10/13/21 12:46 PM, Sander Vanheule wrote:
+> > > > On Wed, 2021-10-13 at 11:48 -0700, Guenter Roeck wrote:
+> > > > > On Wed, Oct 13, 2021 at 03:29:00PM +0200, Sander Vanheule wrote:
+> > > > [...]
+> > > > 
+> > > > > > 
+> > > > > > diff --git a/drivers/watchdog/realtek_otto_wdt.c
+> > > > > > b/drivers/watchdog/realtek_otto_wdt.c
+> > > > > > new file mode 100644
+> > > > > > index 000000000000..64c9cba6b0b1
+> > > > > > --- /dev/null
+> > > > > > +++ b/drivers/watchdog/realtek_otto_wdt.c
+> > > > > > @@ -0,0 +1,411 @@
+> > > > > > +// SPDX-License-Identifier: GPL-2.0-only
+> > > > > > +
+> > > > > > +/*
+> > > > > > + * Realtek Otto MIPS platform watchdog
+> > > > > > + *
+> > > > > > + * Watchdog timer that will reset the system after timeout, using the
+> > > > > > selected
+> > > > > > + * reset mode.
+> > > > > > + *
+> > > > > > + * Counter scaling and timeouts:
+> > > > > > + * - Base prescale of (2 << 25), providing tick duration T_0: 168ms @
+> > > > > > 200MHz
+> > > > > > + * - PRESCALE: logarithmic prescaler adding a factor of {1, 2, 4, 8}
+> > > > > > + * - Phase 1: Times out after (PHASE1 + 1) × PRESCALE × T_0
+> > > > > > + *   Generates an interrupt, WDT cannot be stopped after phase 1
+> > > > > > + * - Phase 2: starts after phase 1, times out after (PHASE2 + 1) ×
+> > > > > > PRESCALE × T_0
+> > > > > > + *   Resets the system according to RST_MODE
+> > > > > 
+> > > > > Why is there a phase2 interrupt if phase2 resets the chip ?
+> > > > > 
+> > > > 
+> > > > The SoC's reset controller has an interrupt line for phase2, even though
+> > > > then it then the
+> > > > WDT also resets the system. I don't have any documentation about this
+> > > > peripheral; just
+> > > > some vendor code and there the phase2 interrupt isn't enabled. I mainly
+> > > > added it here for
+> > > > completeness.
+> > > > 
+> > > 
+> > > It seems pointless to mandate an interrupt just for completeness.
+> > 
+> > Okay, then I will just drop it here. As I understand, the bindings should be as
+> > complete as possible, so I think the phase2 interrupt definition should remain
+> > there?
+> > 
+> 
+> I still don't see the point of it if there is no known use case. At the very
+> least it will need to be optional, but even then I would expect a description
+> of the use case.
+> 
+> FWIW, technically I suspect that there is a means for the watchdog to generate
+> a second interrupt instead of resetting the hardware (otherwise the second
+> interrupt would not really make sense), but without hardware and without
+> datasheet it is impossible to confirm that.
 
-Adding KASAN_SHADOW_OFFSET config makes kasan kernel fails to boot.
-It receives a *write* fault at the beginning of a memblock_alloc
-function while populating the kernel shadow memory: the trap address is
-in the kasan shadow virtual address range and this corresponds to a
-kernel address in init_stack. The question is: how do I populate the
-stack shadow mapping without using memblock API? It's weird, I don't
-find anything on other architectures.
+I haven't found any WDT reset enable/disable flag for the RTL838x and RTL839x series,
+but I noticed the RTL930x series does have a potentially interesting field in their
+reset controller.
 
-And just a short note: I have realized this will break with the sv48
-patchset as we decide at runtime the address space width and the kasan
-shadow start address is different between sv39 and sv48. I will have to
-do like x86 and move the kasan shadow start at the end of the address
-space so that it is the same for both sv39 and sv48.
+WD_RST_EN: https://svanheule.net/realtek/longan/register/rst_glb_ctrl_0
 
-Thanks,
+Sadly we don't have any proper datasheets. All we have is the register layouts from
+the source archives, which we've been trying to document ourselves. I've ordered some
+hardware with an RTL9302 SoC, so I should be able to provide an update next week.
 
-Alex
+Best,
+Sander
 
-
-> Thanks,
->
-> Alex
->
->> Cheers,
->> Nathan
->>
->> _______________________________________________
->> linux-riscv mailing list
->> linux-riscv@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/linux-riscv
->>
->
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
