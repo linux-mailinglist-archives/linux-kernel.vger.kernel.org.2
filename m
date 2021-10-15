@@ -2,74 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0CB442F9A6
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 19:05:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CE1442F9AA
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 19:06:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241955AbhJORHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 13:07:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41703 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241981AbhJORHR (ORCPT
+        id S237875AbhJORIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 13:08:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36298 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242018AbhJORIK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 13:07:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634317510;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=/ylNS4/x2ePFO7q1tP1Dy6i8S8Qh2yZkvFSuzVQxuoQ=;
-        b=asjPv6oDVa/F0MxYKEU8+MV4UpFZZuSp+97xo6dPQxzEvF5fr6XXIJ+XvMQbZcce6qrz/k
-        lg1piSCyrLeyR4GsTQCkRjKIej8WommculkQMovn1E/if6eqnehyHVlkgEccaQWo93NX8c
-        VJwUnUlW6wpjijISNXUNIUGrVq+fRBc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-58-GS9HGaIJPiG3dlVAgS_miQ-1; Fri, 15 Oct 2021 13:05:09 -0400
-X-MC-Unique: GS9HGaIJPiG3dlVAgS_miQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 306791923763;
-        Fri, 15 Oct 2021 17:05:08 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E45F95BAFB;
-        Fri, 15 Oct 2021 17:05:07 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: [PATCH] KVM: X86: fix lazy allocation of rmaps
-Date:   Fri, 15 Oct 2021 13:05:07 -0400
-Message-Id: <20211015170507.136732-1-pbonzini@redhat.com>
+        Fri, 15 Oct 2021 13:08:10 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71917C061570;
+        Fri, 15 Oct 2021 10:06:04 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id j190so2400539pgd.0;
+        Fri, 15 Oct 2021 10:06:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=fgXRhIDv4avAhYWPVKqD4fihMIZxTJmiPhjtzsC9r0g=;
+        b=blvEzhzRWWIU/TZxsMK2Eh5RErZ/DFjMxSPdwQiUQELylPvjitlEA2KS+l/0PNDtzr
+         gFi1fmsOpzzU4aeTXv4XEqxpYH9pDazJwktWCjuz0XjRoxCe5EyjCehBOyrKoPrpPNOf
+         bzow4Pf69nfg6Gx5qGYdFuBJREmLyx7HNBAh+kT7f+VBGrADy6E4wkuRwy45RVEVVqzz
+         BQdC2+yD2vCj0tKEqeqjsiv2EFoP2VOmUfPwTklwkp0Qjytc5RA9so9uZMXn8TImDK4M
+         zKRA+NbzDx8cfy76+2szt6uqCWVJcGZn0Ob4I7HnaZfoCou6N6B6jJ2eqNZcbEPMnXJZ
+         5PPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fgXRhIDv4avAhYWPVKqD4fihMIZxTJmiPhjtzsC9r0g=;
+        b=SRz+hpFFfLUC0iBsU2oqHImg2LBtdAiMJIKwY6g3VdVnyxGWTwmtO86nFRuX754i8V
+         in/OgoKrfRGyvKglrrUVYKF2oCqZv3LLykmvE7pXTkcbRlwErf3bf2Y2/3v0/2CTGXw1
+         9AFCPL0hQAzhEmoojTun3acy0TIZyCdsRsoMQThBYDjJ6jW+Kf7+zVJ6msOCgxg6yMYm
+         oow4fly1Rl+SoXGAVUgiPCWmfQhmMUmK5+VnlZOPo6hvZ23G9cSu6Wfd958XQjUsSnuj
+         lO8iiPVfvQkMIohPE0RhIqsAqWbBBbUD30VyzxTWNAVjGGCqPc226L8+raSYdtCp4dYP
+         P3sw==
+X-Gm-Message-State: AOAM531RnSSD4vYASq/VBb+j9NUy9iUs19lQqZdPwJv+NymLYMGKVzVB
+        QHo1sDeN6XZiv7i5A2GK9jg=
+X-Google-Smtp-Source: ABdhPJwm9rJNVdj0Qh6+rCPdEpEM9SAT0p+nmVQMRFCjROXihNP69pqeyY8uGOfEu5PUiAhQgGi4Hw==
+X-Received: by 2002:a63:1a1b:: with SMTP id a27mr9985068pga.220.1634317563746;
+        Fri, 15 Oct 2021 10:06:03 -0700 (PDT)
+Received: from theprophet ([2406:7400:63:4806:ba0d:a155:7e81:f0b2])
+        by smtp.gmail.com with ESMTPSA id m22sm5376221pfo.71.2021.10.15.10.05.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Oct 2021 10:06:03 -0700 (PDT)
+Date:   Fri, 15 Oct 2021 22:35:52 +0530
+From:   Naveen Naidu <naveennaidu479@gmail.com>
+To:     Ray Jui <ray.jui@broadcom.com>
+Cc:     bhelgaas@google.com,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        "maintainer:BROADCOM IPROC ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        "moderated list:BROADCOM IPROC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v2 06/24] PCI: iproc: Remove redundant error fabrication
+ when device read fails
+Message-ID: <20211015170552.kl2unzbynygvw3lv@theprophet>
+References: <cover.1634306198.git.naveennaidu479@gmail.com>
+ <71757601a719e2ff6ca27615183e322a7709ff65.1634306198.git.naveennaidu479@gmail.com>
+ <a3f9ab4e-094b-437e-5c7b-7f72c50b3ff5@broadcom.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a3f9ab4e-094b-437e-5c7b-7f72c50b3ff5@broadcom.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If allocation of rmaps fails, but some of the pointers have already been written,
-those pointers can be cleaned up when the memslot is freed, or even reused later
-for another attempt at allocating the rmaps.  Therefore there is no need to
-WARN, as done for example in memslot_rmap_alloc, but the allocation *must* be
-skipped lest KVM will overwrite the previous pointer and will indeed leak memory.
+On 15/10, Ray Jui wrote:
+> 
+> 
+> On 10/15/2021 7:38 AM, Naveen Naidu wrote:
+> > An MMIO read from a PCI device that doesn't exist or doesn't respond
+> > causes a PCI error. There's no real data to return to satisfy the
+> > CPU read, so most hardware fabricates ~0 data.
+> > 
+> > The host controller drivers sets the error response values (~0) and
+> > returns an error when faulty hardware read occurs. But the error
+> > response value (~0) is already being set in PCI_OP_READ and
+> > PCI_USER_READ_CONFIG whenever a read by host controller driver fails.
+> > 
+> > Thus, it's no longer necessary for the host controller drivers to
+> > fabricate any error response.
+> > 
+> > This helps unify PCI error response checking and make error check
+> > consistent and easier to find.
+> > 
+> > Signed-off-by: Naveen Naidu <naveennaidu479@gmail.com>
+> > ---
+> >  drivers/pci/controller/pcie-iproc.c | 4 +---
+> >  1 file changed, 1 insertion(+), 3 deletions(-)
+> > 
+> > diff --git a/drivers/pci/controller/pcie-iproc.c b/drivers/pci/controller/pcie-iproc.c
+> > index 30ac5fbefbbf..e3d86416a4fb 100644
+> > --- a/drivers/pci/controller/pcie-iproc.c
+> > +++ b/drivers/pci/controller/pcie-iproc.c
+> > @@ -659,10 +659,8 @@ static int iproc_pci_raw_config_read32(struct iproc_pcie *pcie,
+> >  	void __iomem *addr;
+> >  
+> >  	addr = iproc_pcie_map_cfg_bus(pcie, 0, devfn, where & ~0x3);
+> > -	if (!addr) {
+> > -		*val = ~0;
+> > +	if (!addr)
+> >  		return PCIBIOS_DEVICE_NOT_FOUND;
+> > -	}
+> >  
+> >  	*val = readl(addr);
+> >  
+> > 
+> 
+> I think it would be helpful if you include us in the review of the PCI
+> core code change (pci.h and access.c) so we get the right context to
+> review this change at the individual driver level.
+>
 
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- arch/x86/kvm/x86.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+I apologize for the rookie mistake ^^', I'll see to it from next time 
+that I always add proper recepients to the patches so that everyone 
+gets enough context.
 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 07f5760ea30c..cba7a99374bc 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -11392,7 +11392,8 @@ static int memslot_rmap_alloc(struct kvm_memory_slot *slot,
- 		int level = i + 1;
- 		int lpages = __kvm_mmu_slot_lpages(slot, npages, level);
- 
--		WARN_ON(slot->arch.rmap[i]);
-+		if (slot->arch.rmap[i])
-+			continue;
- 
- 		slot->arch.rmap[i] = vcalloc(lpages, sz);
- 		if (!slot->arch.rmap[i]) {
--- 
-2.27.0
+> The driver change looks fine to me, as long as the change in the core is
+> reviewed and approved.
+> 
+
+Thank you very much for taking the time to review it.
+
+> Thanks,
+> 
+> Ray
+
 
