@@ -2,194 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B41B42E914
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 08:33:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70C9B42E91C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 08:36:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234581AbhJOGgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 02:36:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58320 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231315AbhJOGgA (ORCPT
+        id S234662AbhJOGiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 02:38:52 -0400
+Received: from mx0b-0064b401.pphosted.com ([205.220.178.238]:20784 "EHLO
+        mx0b-0064b401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234617AbhJOGit (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 02:36:00 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BFF4C061570;
-        Thu, 14 Oct 2021 23:33:54 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id e5-20020a17090a804500b001a116ad95caso1031928pjw.2;
-        Thu, 14 Oct 2021 23:33:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id;
-        bh=LgmdE1XOeelCIv9kprKZKgpgZX3+QsY9KrSqoYhDPwk=;
-        b=SL1fMcOyAqx0UTJqjwDaIm09RWUguTv2VxPrz+sUUZi9iFYZn96Orj1xgRgZ9A1gfH
-         G7uvomr81v1Uiua6NV4PmgQHa3vcd3VzElW/Kr7ozHlm/qEqzhmbhrHXfNqIcVtOBwGy
-         cN3rY/XaZwVe4Oy1P+RgPmzSW5X5ayRPzHjoj72B/hmECCt6P6QJhx9FmuZX3Hd326N8
-         /CjalOsY7ZgJ42sLA9SR/NzuFppJT7d+6zYDK0vCsnOwp9Gvaw3nM2vsim1USScEVtpX
-         b4kymYwcomjvsOvBN5bna1be+kDQoLdkiLy9xzDemN8LDPQfokQGPHKb7nzu9sau5Bh6
-         RH5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=LgmdE1XOeelCIv9kprKZKgpgZX3+QsY9KrSqoYhDPwk=;
-        b=rqJ4fA8YSzRTMUDsqvYprD40iO1EtpFbe3zqg2jsSEnJ/JMaIRDXvlXppdeD5Zmui1
-         DUy/BBE8808jGlqU/XV0WF3SNb4jqwoxXC7cKxnYvxfpFU/ITQNBNb2fIfjata2OTLj9
-         HQ187iXRXsYSQXBR443SKaE0PZDtRVYz57ER7tP5ilOC0/OofHendw8bZeA3qHMUhwP+
-         uG4WzhYVhP6NSf5Xcxw844SgEWCszewCvgWN4KMdLCWZEeF1md2sOvE5MXKzdPPHv1tA
-         3OI20I5NV0kW8wvcm5P890gqgfmZ2N0Fh5XpV4LLMASGTZ69Injew5zydei3cD2L+TDa
-         80AQ==
-X-Gm-Message-State: AOAM530GAjYhLy9HGxStzIkPrPCOBqZ7gcuV0yW+eQMtOKfw/M5hrd87
-        xApYFYomBmgaOaOxTl3XxQ==
-X-Google-Smtp-Source: ABdhPJyCn0Z5GgQIXcv2A+f7t9yhBa5Cgu2IEWK+5DuCeY/cLJBG9WxTykagaHOeniC1+cmLMMDqsQ==
-X-Received: by 2002:a17:90a:cc01:: with SMTP id b1mr11623433pju.104.1634279634035;
-        Thu, 14 Oct 2021 23:33:54 -0700 (PDT)
-Received: from vultr.guest ([107.191.53.97])
-        by smtp.gmail.com with ESMTPSA id gk1sm2723795pjb.2.2021.10.14.23.33.52
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 14 Oct 2021 23:33:53 -0700 (PDT)
-From:   Zheyu Ma <zheyuma97@gmail.com>
-To:     james.smart@broadcom.com, dick.kennedy@broadcom.com,
-        jejb@linux.ibm.com, martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Zheyu Ma <zheyuma97@gmail.com>
-Subject: [PATCH] scsi: lpfc: Fix the misuse of the logging function
-Date:   Fri, 15 Oct 2021 06:33:41 +0000
-Message-Id: <1634279621-27115-1-git-send-email-zheyuma97@gmail.com>
-X-Mailer: git-send-email 2.7.4
+        Fri, 15 Oct 2021 02:38:49 -0400
+Received: from pps.filterd (m0250811.ppops.net [127.0.0.1])
+        by mx0a-0064b401.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19F60123020169;
+        Fri, 15 Oct 2021 06:36:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com; h=from : to : cc :
+ subject : date : message-id : content-type : mime-version; s=PPS06212021;
+ bh=+9/RWztobMX48VXIRfjVaITc3jQ09VTGNm/CzZ6n4iM=;
+ b=bsxd7mzJNQJkCz/17HVd1t98HDklVMVCKlOzdv54CAzA2AzgqyOIDQe+b5X6XqkrN662
+ yz8ccMJN2mf57TXAKZQpa0ACHMZWn7zCKev23XpBaNeUsgVB0obc0fp+YvimycnYEAWd
+ yECjVja2jQxy8XRy5gpNbuKT1yFAFy+oRaNMzCORxiJ8Pf3atAkazfE5IgUw2RF4FyXz
+ tlIHzPNNnV0rZP5/mSanVAwcsSg9Jn7hl74zh+hAx7mfxqotc17EoBzKCwVfV4B9RdA1
+ Oargyi46IQ6oB882SJU3jr17Vr9wG4FzqxaelyQE7wb4QyBQSoNqazed8hJdQ2lJsfCy vw== 
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2169.outbound.protection.outlook.com [104.47.57.169])
+        by mx0a-0064b401.pphosted.com with ESMTP id 3bpd1cs5wn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 15 Oct 2021 06:36:24 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PIq7LY+p5RFreX7zLzVg1MLFj7cUyaknjJ3RpIYpbCPSIUAFJz0VVyxksgr6AqMD1Sqr8JeeFUH8yd7oP1MbTZfOIOKMs8aeJd4QFlIu/AoXHQHSYMX2Wfg1gZq5VrFVl89TKFgfSl0+MZFfyuY0casvIdj7Hyv8RLyP1CknvbY+6ms0loiBxAdg2Y5X3oWPATgsAAUYjzdxfzPOavHd89/FfGSZP9ifiHbLYACWKmcb7M1Bg2ggzm7Z1WW8n9mJ3ZNuUNrcvMpscXY43d4O60+jcreyIOCisASa7yQSV7QsAt57wqsTkJrkZNAKnMK4bfmT6b5PYaCx41IpSoAx8Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+9/RWztobMX48VXIRfjVaITc3jQ09VTGNm/CzZ6n4iM=;
+ b=nQ2NvrRA4Emyz9J6kfGCem6LGNMB9r4PM1+vkau3yNYHNUAPtLKs+gPCMMMpGORQ0R+NiNhYu//e2HET/oe4oyvKFUwuWiWdX8jhx9muSNNY67FUDNUvbhhWxJniF35YxUpjPM4QnllOI5kow1/7qjnblM6pL3hNF9FuN1VmsVAIPNgO5nEiwtEpsSdS2MX62bNRQZHCR7til6dshtMeJiEd1Kg2FAr+WFxi7zqRI0PLN9aBiKUR2nyzd1OIiBMLfG6l6oKj+f6H8hECUwzY5l3cAu80MRZZFTkuznS3tNERvFd2iy3pPmeghHN0wrIF7LOjlzA5KbdRhArRMGNfWw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+Authentication-Results: nxp.com; dkim=none (message not signed)
+ header.d=none;nxp.com; dmarc=none action=none header.from=windriver.com;
+Received: from PH0PR11MB5191.namprd11.prod.outlook.com (2603:10b6:510:3e::24)
+ by PH0PR11MB4792.namprd11.prod.outlook.com (2603:10b6:510:32::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.15; Fri, 15 Oct
+ 2021 06:36:22 +0000
+Received: from PH0PR11MB5191.namprd11.prod.outlook.com
+ ([fe80::c11a:b99e:67ce:4a14]) by PH0PR11MB5191.namprd11.prod.outlook.com
+ ([fe80::c11a:b99e:67ce:4a14%8]) with mapi id 15.20.4608.017; Fri, 15 Oct 2021
+ 06:36:21 +0000
+From:   Meng.Li@windriver.com
+To:     Roy.Pledge@nxp.com, leoyang.li@nxp.com, ruxandra.radulescu@nxp.com,
+        horia.geanta@nxp.com
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org, meng.li@windriver.com
+Subject: [PATCH] soc: fsl: dpio: protect smp_processor_id when get processor id
+Date:   Fri, 15 Oct 2021 14:36:01 +0800
+Message-Id: <20211015063601.23303-1-Meng.Li@windriver.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-ClientProxiedBy: HKAPR03CA0025.apcprd03.prod.outlook.com
+ (2603:1096:203:c9::12) To PH0PR11MB5191.namprd11.prod.outlook.com
+ (2603:10b6:510:3e::24)
+MIME-Version: 1.0
+Received: from pek-mli1-d2.wrs.com (60.247.85.82) by HKAPR03CA0025.apcprd03.prod.outlook.com (2603:1096:203:c9::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.8 via Frontend Transport; Fri, 15 Oct 2021 06:36:19 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c00f66bb-d566-4215-204d-08d98fa61a10
+X-MS-TrafficTypeDiagnostic: PH0PR11MB4792:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <PH0PR11MB4792E2E73B176B01BB1B82EEF1B99@PH0PR11MB4792.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: GZqcAqHhoO+/wNpzOhAFMr+Uc+LKAx6JKzTiASINGQDcYZ8ZQNb5Bz1boITzPDZxMwnIm3fcXH7TULjDyyIZj3pFFEU/RjEb8AFxj+YZLQspgWuoMKEwePLK04hvvefGHDZGD5W5GrPInh0e1v6zW8+FzN/Wm2FyqXjSYVqzt0rawW3eakA9gZJAAwfRmqSW75FX606JcMPMo5DM1+qeBkh8CrpAvMoI++vQyT0OIQgkR07uvz88W4mtV1CFPFPo0IkH9vMIMhBGl55sxSKlUWoNgLkz9RabHF1g950gUPo9RT4mgZ3uLT8BqHSBEP4U7qfCerfY/zAIqVr83yEzV2GnvqKa93R6NjhETGNqG3FtuiOD0i9TgCWBAxpXzu4lldcRal/CdF3k2OSUmsRBzuyWtppGZU3p6kCRbEZZQGbS1IsxWT7NKHvqDI+7m2hojn1ITfTlJao3uTG4lvvUYUhAvxt1zBofQo6ANyqn/QTUeIYcRff7FBcYrMUZKSf//00hfhfj+Se8znAnMZKQVIKBHXSiCy16iebqWk/ZbJVHryM+mU2hJyGe1e6/coxKMGu+mMcZm9KHZ08unNK/s63pDRo60ybVftU4yMRk1WA4JRICzc3FrpFTaWLQUvsvcJmGG3J20g9ZRcOPSkW+akX0ZEOaHHCK5NJ4o6SBt77HWrclJcncC1N399GOxcCSy0khlWS/IzYdXvW5hQZU8g==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5191.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(2616005)(6486002)(508600001)(36756003)(26005)(38100700002)(316002)(186003)(83380400001)(86362001)(38350700002)(8676002)(956004)(52116002)(107886003)(1076003)(8936002)(6512007)(66946007)(6506007)(4326008)(66556008)(6666004)(66476007)(2906002)(9686003)(5660300002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?w7RpdVahCmzhcsdhSx3YElqL+OM8xfuVwuRbG9y9LFqIcTqoOqo87Eks3/kJ?=
+ =?us-ascii?Q?Ke8j0BH8HORpJR3wV8I728yAzSNYmtwqZLzT+CEKvxJA/udLxFM7jeuk/P/x?=
+ =?us-ascii?Q?Y5Sr+BtcTtGSTAT39pZGMMWtoVsJ+KckMacQMBAF/bXm/oytAy4yfbJZTgOa?=
+ =?us-ascii?Q?E7UEiKZpGE/RZeQeOwkciyiHB9lj4hDcCsbaB7FrRuGRmfwBBop0N9xa8prk?=
+ =?us-ascii?Q?9e9ufp6jIWLuEcPgtFGxix2BM/MwUZjeH+rKipBUUlwCmEwsfYIRHw1UM3CS?=
+ =?us-ascii?Q?OdxvfT6CwomBi+Qb0yMMpz7Ks+/uI6XmlEmjKgOJceDzpwUuN+wGf4NfDWut?=
+ =?us-ascii?Q?AyM6P5xLO9odhzdfqP0aavkx1CFcESDGB/7hVV0ZzC6IorHLdyxqqfv7Ai2t?=
+ =?us-ascii?Q?ps4flnGt2kQSGN61yePTzA//2LTGw0kY1iuBJlcbIFWxOejEjPj+3Sop8cUM?=
+ =?us-ascii?Q?WvC+lDRS6dq634HD49Jq1DQd0s5fF9S41g54GM91p8/orktMUDBYKUpqEwdI?=
+ =?us-ascii?Q?q8CaReRrnVMGe5uXLIPofzd4laRUQj6GNLNR+aR6bIYRJ8c9Z9TN06JLYSpU?=
+ =?us-ascii?Q?arwjE22htkLaZl3f9pPbfHtFwWaC/4sTkRNNK6+JHCRxgBhC4tBZWGeMTS2d?=
+ =?us-ascii?Q?yoqYgVAeA6BxjUlDL3lAhmrPScfRbV0tkZEMQkULXatWOlg8jiUkcmQlL8fK?=
+ =?us-ascii?Q?IbzzoL8fV7ToZcVUTZYMFrj0/y84/0KIAQnnUxNe7YBnZCntJvbg3L1Ujh8K?=
+ =?us-ascii?Q?nGydab983Sr2FE9HCQ/1YFv2uWOtCpW+owM7hfVGtd2vCiaITXtZjxICwUAA?=
+ =?us-ascii?Q?eONgPVu1yxTeoL6hmdpUaXDzjp5O16srTx+SaQxK23zDjcym3fkN6jtin/y8?=
+ =?us-ascii?Q?lguJGLemmVzPoQTjhBDeu6fyexEFQ8gDznDZr3Ve98dDjOsvCWZTMbNV2cW7?=
+ =?us-ascii?Q?0XcZ7Ux+PEGHFBMJnFKoULWowIXVjdXh1GoCQpjg8R14LjODkdDcPxdXXPuJ?=
+ =?us-ascii?Q?rMbH0+UR2CmSK7xa32DgpQtWT3nvbdV3+8/+eVcULYDUHeiXtpwRXD/ZiEQH?=
+ =?us-ascii?Q?/Hqk9cbG97CKtvHf3kEDZFzSgQSts7r1Qrd31bMPvVLEHCl2nXJSXWJQzsj2?=
+ =?us-ascii?Q?XS/AlXT902ZQnbixrsFdek2qOW4xK6wpBk+sXkL/VbE45egoxpFG152JpqVD?=
+ =?us-ascii?Q?UKoDs2uVIT5E+3vdf+SAXyWwccrPxjVtlHqIWMNQPK0O/8buwikpjPFsA2o8?=
+ =?us-ascii?Q?oGbROTHK5UgSPvAPUYEJW2WLPIQWqHPCZQwCc36DwW9AiGApfyyQhzSzjXvz?=
+ =?us-ascii?Q?Er4zEQINK7CWyb1YM0f711lT?=
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c00f66bb-d566-4215-204d-08d98fa61a10
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5191.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Oct 2021 06:36:21.6055
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 3WpICt0ri9uwLN+JY3IUnUULAGHR2BxLKHWaZOuXVmL2PK4Pl5ZSh95kfbij9hbs62wTs29GgqV1+hrECv7bow==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB4792
+X-Proofpoint-ORIG-GUID: 2NXwBzrD7qcRzIeXww1gDOCJSnxrKbaF
+X-Proofpoint-GUID: 2NXwBzrD7qcRzIeXww1gDOCJSnxrKbaF
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-15_02,2021-10-14_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 impostorscore=0
+ mlxscore=0 suspectscore=0 lowpriorityscore=0 clxscore=1011 phishscore=0
+ priorityscore=1501 malwarescore=0 mlxlogscore=681 bulkscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109230001
+ definitions=main-2110150041
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the driver fails in lpfc_enable_pci_dev(), it will call
-lpfc_printf_log(), and in a certain case the lpfc_dmp_dbg() is
-eventually called, this function uses 'phba->port_list_lock', and at
-this time this lock is not been initialized, which may cause a bug.
+From: Meng Li <meng.li@windriver.com>
 
-Fix this by using 'dev_printk' to replace the previous function.
+When enable debug kernel configs,there will be calltrace as below:
 
-The following log reveals it:
+BUG: using smp_processor_id() in preemptible [00000000] code: swapper/0/1
+caller is debug_smp_processor_id+0x20/0x30
+CPU: 6 PID: 1 Comm: swapper/0 Not tainted 5.10.63-yocto-standard #1
+Hardware name: NXP Layerscape LX2160ARDB (DT)
+Call trace:
+ dump_backtrace+0x0/0x1a0
+ show_stack+0x24/0x30
+ dump_stack+0xf0/0x13c
+ check_preemption_disabled+0x100/0x110
+ debug_smp_processor_id+0x20/0x30
+ dpaa2_io_query_fq_count+0xdc/0x154
+ dpaa2_eth_stop+0x144/0x314
+ __dev_close_many+0xdc/0x160
+ __dev_change_flags+0xe8/0x220
+ dev_change_flags+0x30/0x70
+ ic_close_devs+0x50/0x78
+ ip_auto_config+0xed0/0xf10
+ do_one_initcall+0xac/0x460
+ kernel_init_freeable+0x30c/0x378
+ kernel_init+0x20/0x128
+ ret_from_fork+0x10/0x38
 
-[   32.955597  ] INFO: trying to register non-static key.
-[   32.956002  ] The code is fine but needs lockdep annotation, or maybe
-[   32.956491  ] you didn't initialize this object before use?
-[   32.956916  ] turning off the locking correctness validator.
-[   32.958801  ] Call Trace:
-[   32.958994  ]  dump_stack_lvl+0xa8/0xd1
-[   32.959286  ]  dump_stack+0x15/0x17
-[   32.959547  ]  assign_lock_key+0x212/0x220
-[   32.959853  ]  ? SOFTIRQ_verbose+0x10/0x10
-[   32.960158  ]  ? lock_is_held_type+0xd6/0x130
-[   32.960483  ]  register_lock_class+0x126/0x790
-[   32.960815  ]  ? rcu_read_lock_sched_held+0x33/0x70
-[   32.961233  ]  __lock_acquire+0xe9/0x1e20
-[   32.961565  ]  ? delete_node+0x71e/0x790
-[   32.961859  ]  ? __this_cpu_preempt_check+0x13/0x20
-[   32.962220  ]  ? lock_is_held_type+0xd6/0x130
-[   32.962545  ]  lock_acquire+0x244/0x490
-[   32.962831  ]  ? lpfc_dmp_dbg+0x65/0x600 [lpfc]
-[   32.963241  ]  ? __kasan_check_write+0x14/0x20
-[   32.963572  ]  ? read_lock_is_recursive+0x20/0x20
-[   32.963921  ]  ? __this_cpu_preempt_check+0x13/0x20
-[   32.964284  ]  ? lpfc_dmp_dbg+0x65/0x600 [lpfc]
-[   32.964685  ]  ? _raw_spin_lock_irqsave+0x29/0x70
-[   32.965086  ]  ? __kasan_check_read+0x11/0x20
-[   32.965410  ]  ? trace_irq_disable_rcuidle+0x85/0x170
-[   32.965787  ]  _raw_spin_lock_irqsave+0x4e/0x70
-[   32.966124  ]  ? lpfc_dmp_dbg+0x65/0x600 [lpfc]
-[   32.966526  ]  lpfc_dmp_dbg+0x65/0x600 [lpfc]
-[   32.966913  ]  ? lockdep_init_map_type+0x162/0x710
-[   32.967269  ]  ? error_prone+0x25/0x30 [lpfc]
-[   32.967657  ]  lpfc_enable_pci_dev+0x157/0x250 [lpfc]
+Because smp_processor_id() should be invoked in preempt disable status.
+So, add preempt_disable/enable() to protect smp_processor_id().
 
-Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
+Fixes: c89105c9b390 ("staging: fsl-mc: Move DPIO from staging to drivers/soc/fsl")
+Cc: stable@vger.kernel.org
+Signed-off-by: Meng Li <Meng.Li@windriver.com>
 ---
- drivers/scsi/lpfc/lpfc_init.c | 12 +++++-------
- drivers/scsi/lpfc/lpfc_scsi.c |  5 ++---
- drivers/scsi/lpfc/lpfc_sli.c  | 10 ++++------
- 3 files changed, 11 insertions(+), 16 deletions(-)
+ drivers/soc/fsl/dpio/dpio-service.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/scsi/lpfc/lpfc_init.c b/drivers/scsi/lpfc/lpfc_init.c
-index 0ec322f0e3cb..226b9ccfffb3 100644
---- a/drivers/scsi/lpfc/lpfc_init.c
-+++ b/drivers/scsi/lpfc/lpfc_init.c
-@@ -7331,10 +7331,10 @@ static void lpfc_log_intr_mode(struct lpfc_hba *phba, uint32_t intr_mode)
- static int
- lpfc_enable_pci_dev(struct lpfc_hba *phba)
- {
--	struct pci_dev *pdev;
-+	struct pci_dev *pdev = phba->pcidev;
+diff --git a/drivers/soc/fsl/dpio/dpio-service.c b/drivers/soc/fsl/dpio/dpio-service.c
+index 19f47ea9dab0..afc3b89b0fc5 100644
+--- a/drivers/soc/fsl/dpio/dpio-service.c
++++ b/drivers/soc/fsl/dpio/dpio-service.c
+@@ -58,8 +58,11 @@ static inline struct dpaa2_io *service_select_by_cpu(struct dpaa2_io *d,
+ 	 * If cpu == -1, choose the current cpu, with no guarantees about
+ 	 * potentially being migrated away.
+ 	 */
+-	if (cpu < 0)
+-		cpu = smp_processor_id();
++        if (cpu < 0) {
++                preempt_disable();
++                cpu = smp_processor_id();
++                preempt_enable();
++        }
  
- 	/* Obtain PCI device reference */
--	if (!phba->pcidev)
-+	if (!pdev)
- 		goto out_error;
- 	else
- 		pdev = phba->pcidev;
-@@ -7358,8 +7358,7 @@ lpfc_enable_pci_dev(struct lpfc_hba *phba)
- out_disable_device:
- 	pci_disable_device(pdev);
- out_error:
--	lpfc_printf_log(phba, KERN_ERR, LOG_TRACE_EVENT,
--			"1401 Failed to enable pci device\n");
-+	dev_err(&pdev->dev, "1401 Failed to enable pci device\n");
- 	return -ENODEV;
- }
- 
-@@ -8401,9 +8400,8 @@ lpfc_init_api_table_setup(struct lpfc_hba *phba, uint8_t dev_grp)
- 		phba->lpfc_stop_port = lpfc_stop_port_s4;
- 		break;
- 	default:
--		lpfc_printf_log(phba, KERN_ERR, LOG_TRACE_EVENT,
--				"1431 Invalid HBA PCI-device group: 0x%x\n",
--				dev_grp);
-+		dev_err(&phba->pcidev->dev,
-+				"1431 Invalid HBA PCI-device group: 0x%x\n", dev_grp);
- 		return -ENODEV;
- 	}
- 	return 0;
-diff --git a/drivers/scsi/lpfc/lpfc_scsi.c b/drivers/scsi/lpfc/lpfc_scsi.c
-index 0fde1e874c7a..8ffce2d2a993 100644
---- a/drivers/scsi/lpfc/lpfc_scsi.c
-+++ b/drivers/scsi/lpfc/lpfc_scsi.c
-@@ -5096,9 +5096,8 @@ lpfc_scsi_api_table_setup(struct lpfc_hba *phba, uint8_t dev_grp)
- 		phba->lpfc_scsi_prep_cmnd_buf = lpfc_scsi_prep_cmnd_buf_s4;
- 		break;
- 	default:
--		lpfc_printf_log(phba, KERN_ERR, LOG_TRACE_EVENT,
--				"1418 Invalid HBA PCI-device group: 0x%x\n",
--				dev_grp);
-+		dev_err(&phba->pcidev->dev,
-+				"1418 Invalid HBA PCI-device group: 0x%x\n", dev_grp);
- 		return -ENODEV;
- 	}
- 	phba->lpfc_rampdown_queue_depth = lpfc_rampdown_queue_depth;
-diff --git a/drivers/scsi/lpfc/lpfc_sli.c b/drivers/scsi/lpfc/lpfc_sli.c
-index ffd8a140638c..c1cf0ad018e0 100644
---- a/drivers/scsi/lpfc/lpfc_sli.c
-+++ b/drivers/scsi/lpfc/lpfc_sli.c
-@@ -10010,9 +10010,8 @@ lpfc_mbox_api_table_setup(struct lpfc_hba *phba, uint8_t dev_grp)
- 		phba->lpfc_sli_brdready = lpfc_sli_brdready_s4;
- 		break;
- 	default:
--		lpfc_printf_log(phba, KERN_ERR, LOG_TRACE_EVENT,
--				"1420 Invalid HBA PCI-device group: 0x%x\n",
--				dev_grp);
-+		dev_err(&phba->pcidev->dev,
-+				"1420 Invalid HBA PCI-device group: 0x%x\n", dev_grp);
- 		return -ENODEV;
- 	}
- 	return 0;
-@@ -11178,9 +11177,8 @@ lpfc_sli_api_table_setup(struct lpfc_hba *phba, uint8_t dev_grp)
- 		phba->__lpfc_sli_issue_fcp_io = __lpfc_sli_issue_fcp_io_s4;
- 		break;
- 	default:
--		lpfc_printf_log(phba, KERN_ERR, LOG_TRACE_EVENT,
--				"1419 Invalid HBA PCI-device group: 0x%x\n",
--				dev_grp);
-+		dev_err(&phba->pcidev->dev,
-+				"1419 Invalid HBA PCI-device group: 0x%x\n", dev_grp);
- 		return -ENODEV;
- 	}
- 	phba->lpfc_get_iocb_from_iocbq = lpfc_get_iocb_from_iocbq;
+ 	/* If a specific cpu was requested, pick it up immediately */
+ 	return dpio_by_cpu[cpu];
 -- 
-2.17.6
+2.17.1
 
