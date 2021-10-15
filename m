@@ -2,124 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D195C42F106
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 14:37:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E899E42F107
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 14:37:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235718AbhJOMjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 08:39:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57280 "EHLO
+        id S235869AbhJOMjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 08:39:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234422AbhJOMjO (ORCPT
+        with ESMTP id S235537AbhJOMjO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 15 Oct 2021 08:39:14 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2BA8C061762
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 05:37:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=bLMlIGZRWtJG5pdz8uzZaobV5511jJzZGIeS5RrEQlA=; b=dTvSQqRlNUuDdupsVJe/26lTrb
-        sqieoyjQM+BFfZ2yQhFU/HiRNOpjWcaiFp4nb7+h/qFQ0Jun5nCI9Pcp1v78/KHTwt51ZAuMpNHsV
-        R9LT5vv4gWpbM1KSLNtxXbOJsoM2XCi/1N/uQG2En82V8smzln0tV8pH4Fnlxl2c9WKumeDEqoYuY
-        OCn92q7gM2EFnBSMZzGFFT3TiGPROBJS+9zTgVT9JO51NfQeG3DvrwhrFW2n3F8/Ia/YAdZhhWgfk
-        qNrcwTOfu1PRElsZtS8Y6pzt5tE9y1efVwpHSiM661d+htuXZ+GsuMz7QwL5wUeiV3LCEQh+g/jsD
-        MqXlJQWg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mbMRJ-0090ze-0Z; Fri, 15 Oct 2021 12:36:11 +0000
-Date:   Fri, 15 Oct 2021 13:35:56 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Zqiang <qiang.zhang1211@gmail.com>
-Cc:     hch@infradead.org, akpm@linux-foundation.org, sunhao.th@gmail.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Mikulas Patocka <mpatocka@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH] mm: backing-dev: use kfree_rcu() instead of
- synchronize_rcu_expedited()
-Message-ID: <YWl1rDO6gCFJE4hp@casper.infradead.org>
-References: <20211014082433.30733-1-qiang.zhang1211@gmail.com>
- <YWgTZjDtZik/9l4J@casper.infradead.org>
- <CALm+0cUt7iD5zex4-hRv=i1wPd66tz3JYGHz8P8ZFTZcyOCD1A@mail.gmail.com>
- <d697d61e-27a2-a25c-3ae1-e41457d08705@gmail.com>
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27E65C061764
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 05:37:08 -0700 (PDT)
+Received: by mail-il1-x130.google.com with SMTP id j8so6933050ila.11
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 05:37:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OBCobx1elChS3S72aWgPkS35OCuA3QaSZD8Frtc45ag=;
+        b=iJTMVr8H9Pc1mfOZ3QaqwqH7z0uikzveNVHw3RlNcVIO4ADVpV26rzeDIpkQyb3Xin
+         bOMAyTKd8pebx+gbZO51dAmO6ur/GHab1k25f/GHBfUBmbgNkwoiIDnDaCbLWlmMaWR5
+         ohmjzl5q0NHxwOPkAFojgY8uwWcwJ1t6a5z42UnNYkEgitm/43iz88WfL9CbC/pB7dVY
+         gRhjuGrgocpww19juqupsYVoTGAngXYV3WyAlOolzz26L6Pe7/MQANlEY75dWARdjhgU
+         QxMCD3H498TL3YOPUFzN2RK5urlwBRfkFYBmM/Gs7b6vg4+7ikucU1WyNq6xq6spH5RC
+         hDKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OBCobx1elChS3S72aWgPkS35OCuA3QaSZD8Frtc45ag=;
+        b=3nZh4OtsoB2McQ73hzaPtoWaDFZwm7k/Z7Y24+X08Poce2Jn6iiFRTD1MLsAkgOHvE
+         h85jXFnljYsEcQKLLfkiaEW2d7KLXgToalMMKO20TIFlnsQ6RXaUqkvGncQd59pXCZHg
+         zKLHTlcbUdf+XO8RuvX3shm+K82xnwrMo7NriGL477QSpTNBWRBBY1e4JV3z4129CsCZ
+         FcC39608nLniXT0mJr+JO5cSHWGenDda5xuwxHTYmx2RmVrC6s/ZRBqOXM5/VxOdS55h
+         Uf8jOHnVPrVoBMeDzqSiZBuIpl2JikFNszjyTSWxgh5Yq9IrW4Y6dR9iokcWbkAn10DZ
+         7jXw==
+X-Gm-Message-State: AOAM530n0xd9/Kpthe179NKT8poqCYeN7QLpwOgbt2pABj/+BYkyckdO
+        8AMi2Z7ISE+r0TlV5xWTSCNYUafo1UWwfMZADOw=
+X-Google-Smtp-Source: ABdhPJy08tjEX/TX/biV5oNsvhja4qA/4EvwJCIrAXxvtOgtJmRKi6+IKCsjW5Z5vwGkurS7u2XPMLAkgUrh0ierg9k=
+X-Received: by 2002:a05:6e02:1688:: with SMTP id f8mr3667088ila.72.1634301427629;
+ Fri, 15 Oct 2021 05:37:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <d697d61e-27a2-a25c-3ae1-e41457d08705@gmail.com>
+References: <20211014132331.GA4811@kernel.org> <YWhGQLHnA9BIVBpr@hirez.programming.kicks-ass.net>
+ <CAKwvOdnkDUfRKzmLThQGW02Ew6x=KM0MQyHge7=kc673NYxo2g@mail.gmail.com> <d1c957c4-a2df-935c-2992-3540f05fb110@rasmusvillemoes.dk>
+In-Reply-To: <d1c957c4-a2df-935c-2992-3540f05fb110@rasmusvillemoes.dk>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Fri, 15 Oct 2021 14:36:56 +0200
+Message-ID: <CANiq72ne8m4q1rRToJsH1A+b1_7FAk1wYtcwvKc9zH_8sR2-gQ@mail.gmail.com>
+Subject: Re: [PATCH] compiler_types: mark __compiletime_assert failure as __noreturn
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        llvm@lists.linux.dev,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 15, 2021 at 01:06:02PM +0800, Zqiang wrote:
-> 
-> On 2021/10/15 上午10:57, Qiang Zhang wrote:
-> > 
-> > 
-> > Matthew Wilcox <willy@infradead.org <mailto:willy@infradead.org>>
-> > 于2021年10月14日周四 下午7:26写道：
-> > 
-> >     On Thu, Oct 14, 2021 at 04:24:33PM +0800, Zqiang wrote:
-> >     > The bdi_remove_from_list() is called in RCU softirq, however the
-> >     > synchronize_rcu_expedited() will produce sleep action, use
-> >     kfree_rcu()
-> >     > instead of it.
-> >     >
-> >     > Reported-by: Hao Sun <sunhao.th@gmail.com
-> >     <mailto:sunhao.th@gmail.com>>
-> >     > Signed-off-by: Zqiang <qiang.zhang1211@gmail.com
-> >     <mailto:qiang.zhang1211@gmail.com>>
-> >     > ---
-> >     >  include/linux/backing-dev-defs.h | 1 +
-> >     >  mm/backing-dev.c                 | 4 +---
-> >     >  2 files changed, 2 insertions(+), 3 deletions(-)
-> >     >
-> >     > diff --git a/include/linux/backing-dev-defs.h
-> >     b/include/linux/backing-dev-defs.h
-> >     > index 33207004cfde..35a093384518 100644
-> >     > --- a/include/linux/backing-dev-defs.h
-> >     > +++ b/include/linux/backing-dev-defs.h
-> >     > @@ -202,6 +202,7 @@ struct backing_dev_info {
-> >     >  #ifdef CONFIG_DEBUG_FS
-> >     >       struct dentry *debug_dir;
-> >     >  #endif
-> >     > +     struct rcu_head rcu;
-> >     >  };
-> > 
-> >     >Instead of growing struct backing_dev_info, it seems to me this
-> >     rcu_head
-> >     >could be placed in a union with rb_node, since it will have been
-> >     removed
-> >     >from the bdi_tree by this point and the tree is never walked under
-> >     >RCU protection?
-> > 
-> > 
-> > Thanks for your advice, I find this bdi_tree is traversed under the
-> > protection of a spin lock, not under the protection of RCU.
-> > I find this modification does not avoid the problem described in patch,
-> > the flush_delayed_work() may be called in release_bdi()
-> > The same will cause problems.
-> > may be  we can replace queue_rcu_work() of call_rcu(&inode->i_rcu,
-> > i_callback) or do you have any better suggestions?
+On Fri, Oct 15, 2021 at 10:11 AM Rasmus Villemoes
+<linux@rasmusvillemoes.dk> wrote:
+>
+> A yakshave that would be worthwhile is to kill off the macro
+> compiletime_assert() completely - three is a crowd. It sounds like it
+> would be implemented in terms of _Static_assert, but it's actually
+> __attribute__(error). We can fold the definition of compiletime_assert
+> into BUILD_BUG_ON_MSG.
 
-What?  All I was suggesting was:
+Agreed, two should be enough.
 
-+++ b/include/linux/backing-dev-defs.h
-@@ -168,7 +168,10 @@ struct bdi_writeback {
- 
- struct backing_dev_info {
-        u64 id;
--       struct rb_node rb_node; /* keyed by ->id */
-+       union {
-+               struct rb_node rb_node; /* keyed by ->id */
-+               struct rcu_head rcu;
-+       };
-        struct list_head bdi_list;
-        unsigned long ra_pages; /* max readahead in PAGE_SIZE units */
-        unsigned long io_pages; /* max allowed IO size */
+> Why do we even have a no-op version if !__OPTIMIZE__? AFAIK there's no
+> CONFIG_O0 option, and such a build wouldn't be interesting at all - it
+> can't be expected to boot, and it would likely throw warnings left and
+> right.
 
+Yeah, I don't think it would compile as it is anyway.
 
-Christoph, independent of the inode lifetime problem, this actually seems
-like a good approach to take.  I don't see why we should synchronize_rcu()
-here?  Adding Jens (original introducer of the synchronize_rcu()), Mikulas
-(converted it to use _expedited) and Tejun (worked around a problem when
-using _expedited).
+Perhaps it is there for some kind of tooling? For a static analyzer or
+something like sparse (if it didn't have its own define)...
+
+But yeah, every use of it should have a comment explaining why it is
+there, like crypto/jitterentropy.c does. There are a couple without
+it.
+
+Cheers,
+Miguel
