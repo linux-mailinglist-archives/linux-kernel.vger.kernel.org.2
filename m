@@ -2,96 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5983F42EAC9
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 09:57:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B10FA42EACD
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 09:58:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236362AbhJOH7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 03:59:40 -0400
-Received: from mail-ua1-f44.google.com ([209.85.222.44]:35547 "EHLO
-        mail-ua1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234653AbhJOH7j (ORCPT
+        id S236447AbhJOIAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 04:00:45 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:7506 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236397AbhJOIAn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 03:59:39 -0400
-Received: by mail-ua1-f44.google.com with SMTP id q13so16358299uaq.2;
-        Fri, 15 Oct 2021 00:57:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=i5vb3wGtSZYL9XNwuV89eijT6RI8LwaEwuKKZHudGy8=;
-        b=rUEYa3kAInm5Fe/ugCAUHVDL4OkWnyzcTSVcLAJwCP/Kr0eNIf/OwItx4Qf6w9hhrF
-         8+e70Sf2ssioQQBkEvAIbwgRdqzcT/qcV7BH07pQ4M4xJ497fwv8pkpMRn7Ir9hd62tI
-         jcNwQA4nSih4Oa9aioKF8V8Re52FVDvETq0JzyGp3NP8H2lK0BTrOg/TqeK7fbBwcP6/
-         IdPHZvTZSiYYoX1aZpH6CYh0km/A1gGo7WKVCuC6adOa/nFW4Nx8Mis4LQQ4lYa8fGO3
-         LR22mxnylHonSKmAvxzV4XOehutiiaDtZBH/BBFkV+zrCvfTkUmk/vDumL+qYuOLGiMA
-         bhug==
-X-Gm-Message-State: AOAM53056IX4Q8D0fjim8DQN1ParTv1f1coUnpFi9xhxCbMg+tZpaQRG
-        ub+ZQtHiSXJD5BCgnNX6M/TAz6k2BUIyhQ==
-X-Google-Smtp-Source: ABdhPJwObPnMXTrqwUd4xyP7nMBPhZ7iLEzWjT2LCX0iV6nfw73cEAeDZr+bAOpgim3AQ8qRPVF26Q==
-X-Received: by 2002:ab0:6c4b:: with SMTP id q11mr12340433uas.128.1634284652573;
-        Fri, 15 Oct 2021 00:57:32 -0700 (PDT)
-Received: from mail-ua1-f54.google.com (mail-ua1-f54.google.com. [209.85.222.54])
-        by smtp.gmail.com with ESMTPSA id w20sm3226543vkw.28.2021.10.15.00.57.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Oct 2021 00:57:32 -0700 (PDT)
-Received: by mail-ua1-f54.google.com with SMTP id q13so16358198uaq.2;
-        Fri, 15 Oct 2021 00:57:31 -0700 (PDT)
-X-Received: by 2002:ab0:58c1:: with SMTP id r1mr11403589uac.89.1634284651673;
- Fri, 15 Oct 2021 00:57:31 -0700 (PDT)
+        Fri, 15 Oct 2021 04:00:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1634284718; x=1665820718;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=oCB7i+Ff2eyLa/FEWfr5IeaOAbYgKZzhb8tXmlEFifA=;
+  b=ZyKELkkxVoQSEMwiVBfq6YilsscDXG2Xww2xPkgdYqXVQoaSqglZON6P
+   7xtj0iF3/UGI31DzyWy0C6fqaiwKN6oxYPrF76wVvoPQMth4vlMqSWp6a
+   B/wLvsUbqZ3zqVoWvdtta6RayHNPoHnotx7wYD/16cs77H+h7mvj5xfZE
+   zBhPv0cq9RMO6imz+/YcrJZdGfKN39IPKSFxCJrgeEM3sD/USesaOJHUg
+   SJrWkS/2EdffRt7bm5GGQjB7Hy64IVxjBsLlqpIAfxBH4PCxmFntVydXM
+   iF+RiI1x9dxLAlK9VAuHytbgDZuWPqCFKnstQnYWSGADSQWn9CqONu6oH
+   A==;
+IronPort-SDR: c/fIwTs9DiQJoYJ7tivX1d/2TCEAVBJIdSFIT28xXiTocPRNKnFt+9N3K2qdviZZ7r6lKr2Z1S
+ IqD91CqzojTzEBrkYq6lJxCCg1Fyy5fwZt7aS2x9qzvQ6pAHBjh2UM9wPt/zZaPYGbo7WnDzTC
+ JdzVLC3PCcWY9y9UaDwdYgyho5EJJlau3jK9gpmik846tw6Vo9sC1j/mfMc9epMdhyuACetOj6
+ IXu9iWVmxAHvDQGad5Wg8c2xz4K6yjurrgZWtrwQgvkauKwYuDmnUVp5Yp0eLzJ0rsv4hj7Ml2
+ TUMYWUm0Zyrzl/YZEQ+dsDRZ
+X-IronPort-AV: E=Sophos;i="5.85,375,1624345200"; 
+   d="scan'208";a="135630219"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 15 Oct 2021 00:58:37 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Fri, 15 Oct 2021 00:58:36 -0700
+Received: from [10.12.67.94] (10.10.115.15) by chn-vm-ex03.mchp-main.com
+ (10.10.85.151) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
+ Transport; Fri, 15 Oct 2021 00:58:35 -0700
+Subject: Re: [PATCH v5 10/15] clk: at91: clk-master: fix prescaler logic
+To:     Claudiu Beznea <claudiu.beznea@microchip.com>,
+        <mturquette@baylibre.com>, <sboyd@kernel.org>,
+        <alexandre.belloni@bootlin.com>, <ludovic.desroches@microchip.com>
+CC:     <linux-clk@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20211011112719.3951784-1-claudiu.beznea@microchip.com>
+ <20211011112719.3951784-11-claudiu.beznea@microchip.com>
+From:   Nicolas Ferre <nicolas.ferre@microchip.com>
+Organization: microchip
+Message-ID: <220aaf60-0ee1-97d1-6b65-eb3b57ddab10@microchip.com>
+Date:   Fri, 15 Oct 2021 09:58:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <CAMuHMdUvNM8Tu-+Ed0vjB2-_JUQe7ojUPbzJM=Vy1m_j31sNSg@mail.gmail.com>
- <20211007200250.20661-1-nikita.yoush@cogentembedded.com> <CAMuHMdU2Nr1V035Ntz-XNrc10t7femUFt_WV+Q3EHiWZD5HmkQ@mail.gmail.com>
- <c8234074-a22e-72f9-fbe7-e65d6af74eec@cogentembedded.com> <CAMuHMdU1OhyqnREnwpEUubUsR1DUF_3a1z2MpWxe5U6rWCLUUA@mail.gmail.com>
-In-Reply-To: <CAMuHMdU1OhyqnREnwpEUubUsR1DUF_3a1z2MpWxe5U6rWCLUUA@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 15 Oct 2021 09:57:20 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdWbQPN+TsE0LZm-sp46cOoiwjCQw0wS5e2Z1ua66qdntQ@mail.gmail.com>
-Message-ID: <CAMuHMdWbQPN+TsE0LZm-sp46cOoiwjCQw0wS5e2Z1ua66qdntQ@mail.gmail.com>
-Subject: Re: [PATCH v2] pinctrl: renesas: r8a779[56]x: add MediaLB pins
-To:     Nikita Yushchenko <nikita.yoush@cogentembedded.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrey Gusakov <andrey.gusakov@cogentembedded.com>,
-        Vladimir Barinov <vladimir.barinov@cogentembedded.com>,
-        LUU HOAI <hoai.luu.ub@renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211011112719.3951784-11-claudiu.beznea@microchip.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nikita,
+On 11/10/2021 at 13:27, Claudiu Beznea wrote:
+> When prescaler value read from register is MASTER_PRES_MAX it means
+> that the input clock will be divided by 3. Fix the code to reflect
+> this.
+> 
+> Fixes: 7a110b9107ed8 ("clk: at91: clk-master: re-factor master clock")
+> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 
-On Thu, Oct 14, 2021 at 9:39 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> On Thu, Oct 14, 2021 at 9:27 PM Nikita Yushchenko
-> <nikita.yoush@cogentembedded.com> wrote:
-> > > Obviously not only the mlb_3pin groups, but also the functions have to
-> > > be moved to the automotive[] arrays ;-)
-> > >
-> > > I'll fix these up while applying, so no need to resend.
-> >
-> > Looking at error mail from build robot (cited below).
-> >
-> > Looks like also must put definitions of mlb_3pin_groups[] / mlb_3pin_mux[] / mlb_3pin_pins[] under GEN3
-> > ifdefs.
-> >
-> > What are the proper steps now - send a v3 of the original patch, or send a fix to what is in linux-next ?
->
-> No worries, I'll fix it up tomorrow myself (unless you beat me to it,
-> then I'll fold
-> your fix into the original commit ;-)
+Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
 
-Fixed in
-https://git.kernel.org/pub/scm/linux/kernel/git/geert/renesas-drivers.git/commit/?h=renesas-pinctrl-for-v5.16&id=ce34fb3cb4a8165a51a90d0ea437d75f34a6d031
+> ---
+>   drivers/clk/at91/clk-master.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/clk/at91/clk-master.c b/drivers/clk/at91/clk-master.c
+> index 6da9ae34313a..e67bcd03a827 100644
+> --- a/drivers/clk/at91/clk-master.c
+> +++ b/drivers/clk/at91/clk-master.c
+> @@ -386,7 +386,7 @@ static unsigned long clk_master_pres_recalc_rate(struct clk_hw *hw,
+>   
+>   	val &= master->layout->mask;
+>   	pres = (val >> master->layout->pres_shift) & MASTER_PRES_MASK;
+> -	if (pres == 3 && characteristics->have_div3_pres)
+> +	if (pres == MASTER_PRES_MAX && characteristics->have_div3_pres)
+>   		pres = 3;
+>   	else
+>   		pres = (1 << pres);
+> 
 
-Gr{oetje,eeting}s,
 
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+-- 
+Nicolas Ferre
