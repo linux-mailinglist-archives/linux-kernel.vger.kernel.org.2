@@ -2,158 +2,342 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8652342ED94
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 11:26:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 385C142ED9D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 11:27:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237305AbhJOJ3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 05:29:01 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:60505 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236567AbhJOJ3A (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 05:29:00 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HW1B30QRsz4xR9;
-        Fri, 15 Oct 2021 20:26:49 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1634290012;
-        bh=xl0h0ehAPbQXQoQuuUp7RGzzyhb5d9ztn2d3GE74Wjs=;
-        h=Date:From:To:Cc:Subject:From;
-        b=bA+KmpzGZSqV/9vXYWF8PRZvTIbOFj4L6qXMHG1rQ5ERg1ajrO8ea3ymi9CLpSbaG
-         faBpHJfomvbbxG1Nwd6TTQyvJd3NRgisKlUsGpDnTUOEIMHc+RVccSf4Tek+kOkZEa
-         vz/juFVpep+LoYcqp8ctuQP37UAx0yD822EbTt3MSTmiwsBR/xnIGSWSpxEd/6S8aO
-         UZ2niUXbeHg4zpaQ9RlNZycTdWCaB2z/K4qrRHOSKf7l+fMgsrxd8K6wQKHrFtkCHr
-         2WqtsCpeT2mjlBWW3W0OlW/yQBSc+rTq7qG0Zg9KBfzX1foXM7jfGn5p4Flu4FMQP2
-         x99eI359eH9QA==
-Date:   Fri, 15 Oct 2021 20:26:48 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>
-Cc:     Jani Nikula <jani.nikula@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the drm-misc tree
-Message-ID: <20211015202648.258445ef@canb.auug.org.au>
+        id S237329AbhJOJ31 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 15 Oct 2021 05:29:27 -0400
+Received: from aposti.net ([89.234.176.197]:50856 "EHLO aposti.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237265AbhJOJ30 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 05:29:26 -0400
+Date:   Fri, 15 Oct 2021 10:27:08 +0100
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH 2/3] mtd: rawnand: Export nand_read_page_hwecc_oob_first()
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Harvey Hunt <harveyhuntnexus@gmail.com>, list@opendingux.net,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, stable@vger.kernel.org
+Message-Id: <89I01R.QTBARVYLTBT02@crapouillou.net>
+In-Reply-To: <20211015105146.3d2fbd08@xps13>
+References: <20211009184952.24591-1-paul@crapouillou.net>
+        <20211009184952.24591-3-paul@crapouillou.net>
+        <20211015081313.60018976@xps13> <70G01R.2VROMW06O3O83@crapouillou.net>
+        <20211015105146.3d2fbd08@xps13>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/tYZFJ6chdxiLHwqx9EJihw_";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/tYZFJ6chdxiLHwqx9EJihw_
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
 
-After merging the drm-misc tree, today's linux-next build (arm
-multi_v7_defconfig) failed like this:
+Le ven., oct. 15 2021 at 10:51:46 +0200, Miquel Raynal 
+<miquel.raynal@bootlin.com> a écrit :
+> Hi Paul,
+> 
+> paul@crapouillou.net wrote on Fri, 15 Oct 2021 09:38:31 +0100:
+> 
+>>  Hi Miquel,
+>> 
+>>  Le ven., oct. 15 2021 at 08:13:13 +0200, Miquel Raynal 
+>> <miquel.raynal@bootlin.com> a écrit :
+>>  > Hi Paul,
+>>  >
+>>  > paul@crapouillou.net wrote on Sat,  9 Oct 2021 20:49:51 +0200:
+>>  >
+>>  >>  Move the function nand_read_page_hwecc_oob_first() (previously
+>>  >>  nand_davinci_read_page_hwecc_oob_first()) to nand_base.c, and 
+>> >> export it
+>>  >>  as a GPL symbol, so that it can be used by more modules.
+>>  >> >>  Cc: <stable@vger.kernel.org> # v5.2
+>>  >>  Fixes: a0ac778eb82c ("mtd: rawnand: ingenic: Add support for 
+>> the >> JZ4740")
+>>  >>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+>>  >>  ---
+>>  >>   drivers/mtd/nand/raw/davinci_nand.c | 70 >> 
+>> +----------------------------
+>>  >>   drivers/mtd/nand/raw/nand_base.c    | 69 >> 
+>> ++++++++++++++++++++++++++++
+>>  >>   include/linux/mtd/rawnand.h         |  2 +
+>>  >>   3 files changed, 72 insertions(+), 69 deletions(-)
+>>  >> >>  diff --git a/drivers/mtd/nand/raw/davinci_nand.c >> 
+>> b/drivers/mtd/nand/raw/davinci_nand.c
+>>  >>  index 89de24d3bb7a..45fec8c192ab 100644
+>>  >>  --- a/drivers/mtd/nand/raw/davinci_nand.c
+>>  >>  +++ b/drivers/mtd/nand/raw/davinci_nand.c
+>>  >>  @@ -371,74 +371,6 @@ static int 
+>> nand_davinci_correct_4bit(struct >> nand_chip *chip, u_char *data,
+>>  >>   	return corrected;
+>>  >>   }
+>>  >> >>  -/**
+>>  >>  - * nand_read_page_hwecc_oob_first - hw ecc, read oob first
+>>  >>  - * @chip: nand chip info structure
+>>  >>  - * @buf: buffer to store read data
+>>  >>  - * @oob_required: caller requires OOB data read to 
+>> chip->oob_poi
+>>  >>  - * @page: page number to read
+>>  >>  - *
+>>  >>  - * Hardware ECC for large page chips, require OOB to be read 
+>> >> first. For this
+>>  >>  - * ECC mode, the write_page method is re-used from ECC_HW. 
+>> These >> methods
+>>  >>  - * read/write ECC from the OOB area, unlike the 
+>> ECC_HW_SYNDROME >> support with
+>>  >>  - * multiple ECC steps, follows the "infix ECC" scheme and >> 
+>> reads/writes ECC from
+>>  >>  - * the data area, by overwriting the NAND manufacturer bad 
+>> block >> markings.
+>>  >>  - */
+>>  >>  -static int nand_davinci_read_page_hwecc_oob_first(struct 
+>> nand_chip >> *chip,
+>>  >>  -						  uint8_t *buf,
+>>  >>  -						  int oob_required, int page)
+>>  >>  -{
+>>  >>  -	struct mtd_info *mtd = nand_to_mtd(chip);
+>>  >>  -	int i, eccsize = chip->ecc.size, ret;
+>>  >>  -	int eccbytes = chip->ecc.bytes;
+>>  >>  -	int eccsteps = chip->ecc.steps;
+>>  >>  -	uint8_t *p = buf;
+>>  >>  -	uint8_t *ecc_code = chip->ecc.code_buf;
+>>  >>  -	unsigned int max_bitflips = 0;
+>>  >>  -
+>>  >>  -	/* Read the OOB area first */
+>>  >>  -	ret = nand_read_oob_op(chip, page, 0, chip->oob_poi, >> 
+>> mtd->oobsize);
+>>  >>  -	if (ret)
+>>  >>  -		return ret;
+>>  >>  -
+>>  >>  -	ret = nand_read_page_op(chip, page, 0, NULL, 0);
+>>  >>  -	if (ret)
+>>  >>  -		return ret;
+>>  >>  -
+>>  >>  -	ret = mtd_ooblayout_get_eccbytes(mtd, ecc_code, 
+>> chip->oob_poi, 0,
+>>  >>  -					 chip->ecc.total);
+>>  >>  -	if (ret)
+>>  >>  -		return ret;
+>>  >>  -
+>>  >>  -	for (i = 0; eccsteps; eccsteps--, i += eccbytes, p += 
+>> eccsize) {
+>>  >>  -		int stat;
+>>  >>  -
+>>  >>  -		chip->ecc.hwctl(chip, NAND_ECC_READ);
+>>  >>  -
+>>  >>  -		ret = nand_read_data_op(chip, p, eccsize, false, false);
+>>  >>  -		if (ret)
+>>  >>  -			return ret;
+>>  >>  -
+>>  >>  -		stat = chip->ecc.correct(chip, p, &ecc_code[i], NULL);
+>>  >>  -		if (stat == -EBADMSG &&
+>>  >>  -		    (chip->ecc.options & NAND_ECC_GENERIC_ERASED_CHECK)) {
+>>  >>  -			/* check for empty pages with bitflips */
+>>  >>  -			stat = nand_check_erased_ecc_chunk(p, eccsize,
+>>  >>  -							   &ecc_code[i],
+>>  >>  -							   eccbytes, NULL, 0,
+>>  >>  -							   chip->ecc.strength);
+>>  >>  -		}
+>>  >>  -
+>>  >>  -		if (stat < 0) {
+>>  >>  -			mtd->ecc_stats.failed++;
+>>  >>  -		} else {
+>>  >>  -			mtd->ecc_stats.corrected += stat;
+>>  >>  -			max_bitflips = max_t(unsigned int, max_bitflips, stat);
+>>  >>  -		}
+>>  >>  -	}
+>>  >>  -	return max_bitflips;
+>>  >>  -}
+>>  >>  -
+>>  >>   >> 
+>> /*----------------------------------------------------------------------
+>>  */
+>>  >> >>   /* An ECC layout for using 4-bit ECC with small-page flash, 
+>> storing
+>>  >>  @@ -648,7 +580,7 @@ static int davinci_nand_attach_chip(struct 
+>> >> nand_chip *chip)
+>>  >>   			} else if (chunks == 4 || chunks == 8) {
+>>  >>   				mtd_set_ooblayout(mtd,
+>>  >>   						  nand_get_large_page_ooblayout());
+>>  >>  -				chip->ecc.read_page = 
+>> nand_davinci_read_page_hwecc_oob_first;
+>>  >>  +				chip->ecc.read_page = nand_read_page_hwecc_oob_first;
+>>  >>   			} else {
+>>  >>   				return -EIO;
+>>  >>   			}
+>>  >>  diff --git a/drivers/mtd/nand/raw/nand_base.c >> 
+>> b/drivers/mtd/nand/raw/nand_base.c
+>>  >>  index 3d6c6e880520..cb5f343b9fa2 100644
+>>  >>  --- a/drivers/mtd/nand/raw/nand_base.c
+>>  >>  +++ b/drivers/mtd/nand/raw/nand_base.c
+>>  >>  @@ -3160,6 +3160,75 @@ static int nand_read_page_hwecc(struct 
+>> >> nand_chip *chip, uint8_t *buf,
+>>  >>   	return max_bitflips;
+>>  >>   }
+>>  >> >>  +/**
+>>  >>  + * nand_read_page_hwecc_oob_first - Hardware ECC page read 
+>> with ECC
+>>  >>  + *                                  data read from OOB area
+>>  >>  + * @chip: nand chip info structure
+>>  >>  + * @buf: buffer to store read data
+>>  >>  + * @oob_required: caller requires OOB data read to 
+>> chip->oob_poi
+>>  >>  + * @page: page number to read
+>>  >>  + *
+>>  >>  + * Hardware ECC for large page chips, require OOB to be read 
+>> >> first. For this
+>>  >
+>>  > requires
+>>  >
+>>  > With this ECC configuration?
+>>  >
+>>  >>  + * ECC mode, the write_page method is re-used from ECC_HW. 
+>> These >> methods
+>>  >
+>>  > I do not understand this sentence nor the next one about 
+>> syndrome. I
+>>  > believe it is related to your engine and should not leak into the 
+>> > core.
+>>  >
+>>  >>  + * read/write ECC from the OOB area, unlike the 
+>> ECC_HW_SYNDROME >> support with
+>>  >>  + * multiple ECC steps, follows the "infix ECC" scheme and >> 
+>> reads/writes ECC from
+>>  >>  + * the data area, by overwriting the NAND manufacturer bad 
+>> block >> markings.
+>>  >
+>>  > That's a sentence I don't like. What do you mean exactly?
+>>  >
+>>  > What "Infix ECC" scheme is?
+>>  >
+>>  > Do you mean that unlike the syndrome  mode it *does not* 
+>> overwrite the
+>>  > BBM ?
+>> 
+>>  I don't mean anything. I did not write that comment. I just moved 
+>> the function verbatim with no changes. If something needs to be 
+>> fixed, then it needs to be fixed before/after this patch.
+> 
+> Well, this comment should be adapted because as-is I don't think it's
+> wise to move it around.
 
-drivers/gpu/drm/drm_modeset_lock.c:111:29: error: conflicting types for '__=
-stack_depot_save'
-  111 | static depot_stack_handle_t __stack_depot_save(void)
-      |                             ^~~~~~~~~~~~~~~~~~
-In file included from include/linux/page_ext.h:7,
-                 from include/linux/mm.h:25,
-                 from include/linux/kallsyms.h:13,
-                 from include/linux/bpf.h:20,
-                 from include/linux/bpf-cgroup.h:5,
-                 from include/linux/cgroup-defs.h:22,
-                 from include/linux/cgroup.h:28,
-                 from include/linux/memcontrol.h:13,
-                 from include/linux/swap.h:9,
-                 from include/linux/suspend.h:5,
-                 from include/linux/regulator/consumer.h:35,
-                 from include/linux/i2c.h:18,
-                 from include/drm/drm_crtc.h:28,
-                 from include/drm/drm_atomic.h:31,
-                 from drivers/gpu/drm/drm_modeset_lock.c:24:
-include/linux/stackdepot.h:18:22: note: previous declaration of '__stack_de=
-pot_save' was here
-   18 | depot_stack_handle_t __stack_depot_save(unsigned long *entries,
-      |                      ^~~~~~~~~~~~~~~~~~
+OK.
 
-Caused by commit
+I think it says that BBM can be overwritten with this configuration, 
+but that would be if the OOB layout covers the BBM area.
 
-  cd06ab2fd48f ("drm/locking: add backtrace for locking contended locks wit=
-hout backoff")
+>> 
+>>  >>  + */
+>>  >>  +int nand_read_page_hwecc_oob_first(struct nand_chip *chip, 
+>> uint8_t >> *buf,
+>>  >>  +				   int oob_required, int page)
+>>  >>  +{
+>>  >>  +	struct mtd_info *mtd = nand_to_mtd(chip);
+>>  >>  +	int i, eccsize = chip->ecc.size, ret;
+>>  >>  +	int eccbytes = chip->ecc.bytes;
+>>  >>  +	int eccsteps = chip->ecc.steps;
+>>  >>  +	uint8_t *p = buf;
+>>  >>  +	uint8_t *ecc_code = chip->ecc.code_buf;
+>>  >>  +	unsigned int max_bitflips = 0;
+>>  >>  +
+>>  >>  +	/* Read the OOB area first */
+>>  >>  +	ret = nand_read_oob_op(chip, page, 0, chip->oob_poi, >> 
+>> mtd->oobsize);
+>>  >>  +	if (ret)
+>>  >>  +		return ret;
+>>  >>  +
+>>  >>  +	ret = nand_read_page_op(chip, page, 0, NULL, 0);
+>>  >
+>>  > Definitely not, your are requesting the chip to do the read_page
+>>  > operation twice. You only need a nand_change_read_column I 
+>> believe.
+>> 
+>>  Again, this code is just being moved around - don't shoot the 
+>> messenger :)
+> 
+> haha
+> 
+> Well, now you touch the core, so I need to be more careful, and the
+> code is definitely wrong, so even if we don't move that code off, you
+> definitely want to fix it in order to improve your performances.
 
-This may only have been revealed because of another fix I have had to
-apply today.
+I don't see the read_page being done twice?
 
-I have applied the following patch for today.
+There's one read_oob, one read_page, then read_data in the loop.
 
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Fri, 15 Oct 2021 20:17:52 +1100
-Subject: [PATCH] drm/locking: fix for name conflict
+>>  >>  +	if (ret)
+>>  >>  +		return ret;
+>>  >>  +
+>>  >>  +	ret = mtd_ooblayout_get_eccbytes(mtd, ecc_code, 
+>> chip->oob_poi, 0,
+>>  >>  +					 chip->ecc.total);
+>>  >>  +	if (ret)
+>>  >>  +		return ret;
+>>  >>  +
+>>  >>  +	for (i = 0; eccsteps; eccsteps--, i += eccbytes, p += 
+>> eccsize) {
+>>  >>  +		int stat;
+>>  >>  +
+>>  >>  +		chip->ecc.hwctl(chip, NAND_ECC_READ);
+>>  >>  +
+>>  >>  +		ret = nand_read_data_op(chip, p, eccsize, false, false);
+>>  >>  +		if (ret)
+>>  >>  +			return ret;
+>>  >>  +
+>>  >>  +		stat = chip->ecc.correct(chip, p, &ecc_code[i], NULL);
+>>  >>  +		if (stat == -EBADMSG &&
+>>  >>  +		    (chip->ecc.options & NAND_ECC_GENERIC_ERASED_CHECK)) {
+>>  >>  +			/* check for empty pages with bitflips */
+>>  >>  +			stat = nand_check_erased_ecc_chunk(p, eccsize,
+>>  >>  +							   &ecc_code[i],
+>>  >>  +							   eccbytes, NULL, 0,
+>>  >>  +							   chip->ecc.strength);
+>>  >>  +		}
+>>  >>  +
+>>  >>  +		if (stat < 0) {
+>>  >>  +			mtd->ecc_stats.failed++;
+>>  >>  +		} else {
+>>  >>  +			mtd->ecc_stats.corrected += stat;
+>>  >>  +			max_bitflips = max_t(unsigned int, max_bitflips, stat);
+>>  >>  +		}
+>>  >>  +	}
+>>  >>  +	return max_bitflips;
+>>  >>  +}
+>>  >>  +EXPORT_SYMBOL_GPL(nand_read_page_hwecc_oob_first);
+>>  >>  +
+>>  >>   /**
+>>  >>    * nand_read_page_syndrome - [REPLACEABLE] hardware ECC 
+>> syndrome >> based page read
+>>  >>    * @chip: nand chip info structure
+>>  >>  diff --git a/include/linux/mtd/rawnand.h >> 
+>> b/include/linux/mtd/rawnand.h
+>>  >>  index b2f9dd3cbd69..5b88cd51fadb 100644
+>>  >>  --- a/include/linux/mtd/rawnand.h
+>>  >>  +++ b/include/linux/mtd/rawnand.h
+>>  >>  @@ -1539,6 +1539,8 @@ int nand_read_data_op(struct nand_chip 
+>> *chip, >> void *buf, unsigned int len,
+>>  >>   		      bool force_8bit, bool check_only);
+>>  >>   int nand_write_data_op(struct nand_chip *chip, const void *buf,
+>>  >>   		       unsigned int len, bool force_8bit);
+>>  >>  +int nand_read_page_hwecc_oob_first(struct nand_chip *chip, 
+>> uint8_t >> *buf,
+>>  >>  +				   int oob_required, int page);
+>>  >
+>>  > You certainly want to add this symbol closer to the other 
+>> read/write
+>>  > page helpers?
+>> 
+>>  Where would that be? The other read/write page helpers are all 
+>> "static" so they don't appear in any header.
+> 
+> I believe we should keep this header local as long as there are no
+> other users.
 
-Fixes: cd06ab2fd48f ("drm/locking: add backtrace for locking contended lock=
-s without backoff")
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- drivers/gpu/drm/drm_modeset_lock.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+I'll move it to internal.h then.
 
-diff --git a/drivers/gpu/drm/drm_modeset_lock.c b/drivers/gpu/drm/drm_modes=
-et_lock.c
-index 4d32b61fa1fd..ee36dd20900d 100644
---- a/drivers/gpu/drm/drm_modeset_lock.c
-+++ b/drivers/gpu/drm/drm_modeset_lock.c
-@@ -79,7 +79,7 @@
- static DEFINE_WW_CLASS(crtc_ww_class);
-=20
- #if IS_ENABLED(CONFIG_DRM_DEBUG_MODESET_LOCK)
--static noinline depot_stack_handle_t __stack_depot_save(void)
-+static noinline depot_stack_handle_t __drm_stack_depot_save(void)
- {
- 	unsigned long entries[8];
- 	unsigned int n;
-@@ -108,7 +108,7 @@ static void __stack_depot_print(depot_stack_handle_t st=
-ack_depot)
- 	kfree(buf);
- }
- #else /* CONFIG_DRM_DEBUG_MODESET_LOCK */
--static depot_stack_handle_t __stack_depot_save(void)
-+static depot_stack_handle_t __drm_stack_depot_save(void)
- {
- 	return 0;
- }
-@@ -317,7 +317,7 @@ static inline int modeset_lock(struct drm_modeset_lock =
-*lock,
- 		ret =3D 0;
- 	} else if (ret =3D=3D -EDEADLK) {
- 		ctx->contended =3D lock;
--		ctx->stack_depot =3D __stack_depot_save();
-+		ctx->stack_depot =3D __drm_stack_depot_save();
- 	}
-=20
- 	return ret;
---=20
-2.33.0
-
---=20
 Cheers,
-Stephen Rothwell
+-Paul
 
---Sig_/tYZFJ6chdxiLHwqx9EJihw_
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFpSVgACgkQAVBC80lX
-0Gw7Kgf/ZuKzlxTQSDLKFDfn6/O5S38xFR4DSOjqJwWETTSS1gTN1tdS/1TxVI/G
-y6+7Y5jDRBuMaxCVAFETuImKwexIXsoh6um+iVJaXW90a7PDK737ldIACmqMurmr
-Q+BeiAjZ8+NA1amrOv/nhiMOPWL+cW2v8OHj4t4MWZYB9HspgtkRia6qlLBQcttZ
-pA33MK0v3gZFZ/KCfIFqFe6AD01LDvhepOrMuOC0mnBw6a2dktAEh/wuMN+KqExf
-k2M/wUEwgyQjB8Y9OH0aJDmmHnTbPIJ+WZZ030zyX1oMPhN2dqq9jw8E29HqryjI
-Y8+MtBPX2O2Df9cT9zQdLlKmDFx2Vg==
-=4IfR
------END PGP SIGNATURE-----
-
---Sig_/tYZFJ6chdxiLHwqx9EJihw_--
