@@ -2,75 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BE9342EABB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 09:56:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AC4342EABD
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 09:56:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236396AbhJOH6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 03:58:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48998 "EHLO
+        id S236424AbhJOH6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 03:58:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236414AbhJOH6J (ORCPT
+        with ESMTP id S232099AbhJOH6b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 03:58:09 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 139ACC061570
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 00:56:03 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id j21so38616652lfe.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 00:56:02 -0700 (PDT)
+        Fri, 15 Oct 2021 03:58:31 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A394AC061570
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 00:56:24 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id m42so1740962wms.2
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 00:56:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=PPuRIwNEu3lQ7n00DIZZ0IEDneXxbqy0QPWov0TPJ18=;
-        b=L8oJ8X1bIATNS1p3u3vouYKH65VE2DR6h2LWNm7iTIOMl8180IJCUrIHQf/6g90Gu2
-         9VluYDwjPG3l1Pam3kWi3MywYUlDA+TIxHnncxK5juhRBCksbiIAhfzpXs4ZXIwD5L5Z
-         zFEEhjioY0ohlIxXA3LfL1QXx0NVGQgUQwJik=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:cc:references:from:organization:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=PPuRIwNEu3lQ7n00DIZZ0IEDneXxbqy0QPWov0TPJ18=;
-        b=i+XuTNDDiE5YW8zler5uPh79P+MWTMGzX9MziZyJwOT/YYsRwAMs9PCe3p9YN8z9aW
-         cUyZsE7xCdShVdv2kTkCu2WICKOqCQv7NtlpH6GP8z3QvFWtj5RIPHpvwG3iI1l/1moy
-         1R48TM/L+MF7SD8fwXKCWgFpssImTdgD6D5yj1XrN9Tfo7QgbVMUDkaPeYx4uAOZwUSU
-         Od/6t+F/hYFavCQGSkQqljEMKYfqR+36027wPhZRFyHOlArtHVx4yXrewwTyW0bvVzZc
-         a3tXUKnXECfr62KQkThz0pH908WapVj7x7qMMc5G739R+roE10lTuqcQ9FGDJORrcttd
-         aXNA==
-X-Gm-Message-State: AOAM531t4l+s7yE+LEqIFML8Xubc2bjO4tM3LJwSQx57hrq4SVEqXP2/
-        vXlEU7F/Zd4O3kN4AjHumwE5dg==
-X-Google-Smtp-Source: ABdhPJzdUtRux6WI2D2oEDRHfy11ixOE81eDxDr3iZieeFyjgZ3goRG48l7Ign83ZwlxQ3ExYNu+FQ==
-X-Received: by 2002:a2e:9c8d:: with SMTP id x13mr11362051lji.29.1634284561422;
-        Fri, 15 Oct 2021 00:56:01 -0700 (PDT)
-Received: from [172.16.11.1] ([81.216.59.226])
-        by smtp.gmail.com with ESMTPSA id s10sm478462lji.50.2021.10.15.00.55.59
+        bh=ouMND3NfgeuvBPlPm7cUu4Hy0WrY9I65gt8nxTJtUhE=;
+        b=qHuQFtnCrLeQOkmQQhzU1KpIIJj3II+/U6afpBeQdPql25AeJeVFH6laPhmGzuz/Vz
+         puoNkFkIilpJR9iF5nvC0NJ/3UilqqAlrg9izXiOZL5eL9/06OA/wpXvCB3D/56Pwh58
+         Nvfb17mlh1LI4BlOe1yo8IFdENfILjqgC9cl7idZSQ4RKoYYHNU/x3UOhReyZ6HtAvNg
+         WZa4gT+ObZROiNOGjNpQWDu8kz5bAubm7vfdZSbiWfMV4tAIMWOKfTcA8kXCEj5+A39L
+         XFtoKYYZkgX/CQMdkfCyj6uuQxIMKKulRE1EG8HecSnDmtIYl4lmMWIOs1H6RC6AGIPs
+         oAxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=ouMND3NfgeuvBPlPm7cUu4Hy0WrY9I65gt8nxTJtUhE=;
+        b=xLP+/GJiWiq0vSwX7lWSxBREqdVGLgy5XPHqn5/dokCgiuXzF3/ruwyiZStXCuqDVj
+         lumQgyfTEdLyTBcBD8hQEXcWe2oo6eDTS0asVXBnwW8ee0mZuBG3v1ZY0GpXRAJJTSSi
+         p6FLllwmo/HQZEPspBB+O55wTftbaygFdGaDe56YkKkOgNE+UsLeLX4cXSpH+7rZ7KKO
+         IlzuILdTR9K3V572lh0P+rF/irsLVQeUuXqqegwMo7tP1VcoMr6Ui1hzSW2jnzA9Qrbo
+         UNpps/MSyEZefMj6MXS9p3nzZYi8aFhiLhThKouxzDMQyPiwa1h1U2D6HRWnFzNlnKwF
+         R26A==
+X-Gm-Message-State: AOAM53104tR7cJB4hX4mLNtdmfPbnciBUcRBCHyBYtOlea4tYzlCejvz
+        2nz3r94xbo5+geksSACdqZH3MsD96J+5QA==
+X-Google-Smtp-Source: ABdhPJz16Agy1BFqoD4jlLaknHtUbUto/Gw7QmEJ6N1uhX8dPx0OUNX4UbhtHbEjgazVmylcYz0WpA==
+X-Received: by 2002:a1c:4d15:: with SMTP id o21mr25135821wmh.167.1634284582825;
+        Fri, 15 Oct 2021 00:56:22 -0700 (PDT)
+Received: from ?IPv6:2001:861:44c0:66c0:f6e3:13bd:45ae:5eeb? ([2001:861:44c0:66c0:f6e3:13bd:45ae:5eeb])
+        by smtp.gmail.com with ESMTPSA id l20sm14239892wmq.42.2021.10.15.00.56.22
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Oct 2021 00:56:00 -0700 (PDT)
-Subject: Re: [PATCH] compiler_types: mark __compiletime_assert failure as
- __noreturn
-To:     Nick Desaulniers <ndesaulniers@google.com>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        llvm@lists.linux.dev,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Joe Perches <joe@perches.com>
-References: <20211014132331.GA4811@kernel.org>
- <YWhGQLHnA9BIVBpr@hirez.programming.kicks-ass.net>
- <CAKwvOdnkDUfRKzmLThQGW02Ew6x=KM0MQyHge7=kc673NYxo2g@mail.gmail.com>
- <CANiq72nt+8bCGAm8yhvTZfS64ovOi9_U=Gym7biUhdEsc3Neaw@mail.gmail.com>
- <CANiq72=UVCmjr1tpSwcoOkid5tWZirKCnV17_Peqy-LBmEQHEg@mail.gmail.com>
- <CAKwvOdkSFhzSwo2hfFjXXHypC8eU+VBCnRVjvNima7qx85z65Q@mail.gmail.com>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <e8d28845-3931-c122-f398-f3eaed9e659a@rasmusvillemoes.dk>
-Date:   Fri, 15 Oct 2021 09:55:58 +0200
+        Fri, 15 Oct 2021 00:56:22 -0700 (PDT)
+Subject: Re: [PATCH 7/7] drm/meson: encoder_cvbs: switch to bridge with
+ ATTACH_NO_CONNECTOR
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     daniel@ffwll.ch, Laurent.pinchart@ideasonboard.com,
+        martin.blumenstingl@googlemail.com,
+        dri-devel@lists.freedesktop.org, linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20211014152606.2289528-1-narmstrong@baylibre.com>
+ <20211014152606.2289528-8-narmstrong@baylibre.com>
+ <YWhzyIBemCrm9U5v@ravnborg.org>
+From:   Neil Armstrong <narmstrong@baylibre.com>
+Organization: Baylibre
+Message-ID: <774b3d69-6b54-433b-c59d-7f3375456072@baylibre.com>
+Date:   Fri, 15 Oct 2021 09:56:21 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <CAKwvOdkSFhzSwo2hfFjXXHypC8eU+VBCnRVjvNima7qx85z65Q@mail.gmail.com>
+In-Reply-To: <YWhzyIBemCrm9U5v@ravnborg.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -78,112 +75,323 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/10/2021 20.55, Nick Desaulniers wrote:
-> On Thu, Oct 14, 2021 at 11:41 AM Miguel Ojeda
-> <miguel.ojeda.sandonis@gmail.com> wrote:
+Hi Sam,
+
+On 14/10/2021 20:15, Sam Ravnborg wrote:
+> Hi Neil,
+> 
+> with include order fixed and the comment below considered:
+> Acked-by: Sam Ravnborg <sam@ravnborg.org>
+> 
+> 	Sam
+> 
+> 
+> On Thu, Oct 14, 2021 at 05:26:06PM +0200, Neil Armstrong wrote:
+>> Drop the local connector and move all callback to bridge funcs in order
+>> to leverage the generic CVBS diplay connector.
 >>
->> On Thu, Oct 14, 2021 at 8:33 PM Miguel Ojeda
->> <miguel.ojeda.sandonis@gmail.com> wrote:
->>>
->>> That would be a nice to do, but I am not sure about introducing one
->>> more macro about this... I think it would be simpler to submit patches
->>> for moves into `static_assert` even if we have to "flip" the meaning.
+>> This will also permit adding custom cvbs connectors for ADC based HPD
+>> detection on some Amlogic SoC based boards.
+>>
+>> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+>> ---
+>>  drivers/gpu/drm/meson/meson_encoder_cvbs.c | 178 +++++++++------------
+>>  1 file changed, 79 insertions(+), 99 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/meson/meson_encoder_cvbs.c b/drivers/gpu/drm/meson/meson_encoder_cvbs.c
+>> index 01024c5f610c..0b974667cf55 100644
+>> --- a/drivers/gpu/drm/meson/meson_encoder_cvbs.c
+>> +++ b/drivers/gpu/drm/meson/meson_encoder_cvbs.c
+>> @@ -13,6 +13,9 @@
+>>  #include <linux/of_graph.h>
+>>  
+>>  #include <drm/drm_atomic_helper.h>
+>> +#include <drm/drm_simple_kms_helper.h>
+>> +#include <drm/drm_bridge.h>
+>> +#include <drm/drm_bridge_connector.h>
+>>  #include <drm/drm_device.h>
+>>  #include <drm/drm_edid.h>
+>>  #include <drm/drm_probe_helper.h>
+> alphabetic order.
 > 
-> $ grep -r BUILD_BUG_ON | wc -l
-> 3405
+>> @@ -30,14 +33,14 @@
+>>  
+>>  struct meson_encoder_cvbs {
+>>  	struct drm_encoder	encoder;
+>> -	struct drm_connector	connector;
+>> +	struct drm_bridge	bridge;
+>> +	struct drm_bridge	*next_bridge;
+>> +	struct drm_connector	*connector;
+> Maybe drop this - see later.
 > 
->> Actually, what would be ideal is a compiler-backed lint that checks
->> whether it could be an `static_assert`, perhaps in clang-tidy?
+>>  	struct meson_drm	*priv;
+>>  };
+>> -#define encoder_to_meson_encoder_cvbs(x) \
+>> -	container_of(x, struct meson_encoder_cvbs, encoder)
+>>  
+>> -#define connector_to_meson_encoder_cvbs(x) \
+>> -	container_of(x, struct meson_encoder_cvbs, connector)
+>> +#define bridge_to_meson_encoder_cvbs(x) \
+>> +	container_of(x, struct meson_encoder_cvbs, bridge)
+>>  
+>>  /* Supported Modes */
+>>  
+>> @@ -81,21 +84,18 @@ meson_cvbs_get_mode(const struct drm_display_mode *req_mode)
+>>  	return NULL;
+>>  }
+>>  
+>> -/* Connector */
+>> -
+>> -static void meson_cvbs_connector_destroy(struct drm_connector *connector)
+>> +static int meson_encoder_cvbs_attach(struct drm_bridge *bridge,
+>> +				     enum drm_bridge_attach_flags flags)
+>>  {
+>> -	drm_connector_cleanup(connector);
+>> -}
+>> +	struct meson_encoder_cvbs *meson_encoder_cvbs =
+>> +					bridge_to_meson_encoder_cvbs(bridge);
+>>  
+>> -static enum drm_connector_status
+>> -meson_cvbs_connector_detect(struct drm_connector *connector, bool force)
+>> -{
+>> -	/* FIXME: Add load-detect or jack-detect if possible */
+>> -	return connector_status_connected;
+>> +	return drm_bridge_attach(bridge->encoder, meson_encoder_cvbs->next_bridge,
+>> +				 &meson_encoder_cvbs->bridge, flags);
+>>  }
+>>  
+>> -static int meson_cvbs_connector_get_modes(struct drm_connector *connector)
+>> +static int meson_encoder_cvbs_get_modes(struct drm_bridge *bridge,
+>> +					struct drm_connector *connector)
+>>  {
+>>  	struct drm_device *dev = connector->dev;
+>>  	struct drm_display_mode *mode;
+>> @@ -116,40 +116,18 @@ static int meson_cvbs_connector_get_modes(struct drm_connector *connector)
+>>  	return i;
+>>  }
+>>  
+>> -static int meson_cvbs_connector_mode_valid(struct drm_connector *connector,
+>> -					   struct drm_display_mode *mode)
+>> +static int meson_encoder_cvbs_mode_valid(struct drm_bridge *bridge,
+>> +					const struct drm_display_info *display_info,
+>> +					const struct drm_display_mode *mode)
+>>  {
+>> -	/* Validate the modes added in get_modes */
+>> -	return MODE_OK;
+>> -}
+>> -
+>> -static const struct drm_connector_funcs meson_cvbs_connector_funcs = {
+>> -	.detect			= meson_cvbs_connector_detect,
+>> -	.fill_modes		= drm_helper_probe_single_connector_modes,
+>> -	.destroy		= meson_cvbs_connector_destroy,
+>> -	.reset			= drm_atomic_helper_connector_reset,
+>> -	.atomic_duplicate_state	= drm_atomic_helper_connector_duplicate_state,
+>> -	.atomic_destroy_state	= drm_atomic_helper_connector_destroy_state,
+>> -};
+>> -
+>> -static const
+>> -struct drm_connector_helper_funcs meson_cvbs_connector_helper_funcs = {
+>> -	.get_modes	= meson_cvbs_connector_get_modes,
+>> -	.mode_valid	= meson_cvbs_connector_mode_valid,
+>> -};
+>> +	if (meson_cvbs_get_mode(mode))
+>> +		return MODE_OK;
+>>  
+>> -/* Encoder */
+>> -
+>> -static void meson_encoder_cvbs_encoder_destroy(struct drm_encoder *encoder)
+>> -{
+>> -	drm_encoder_cleanup(encoder);
+>> +	return MODE_BAD;
+>>  }
+>>  
+>> -static const struct drm_encoder_funcs meson_encoder_cvbs_encoder_funcs = {
+>> -	.destroy        = meson_encoder_cvbs_encoder_destroy,
+>> -};
+>> -
+>> -static int meson_encoder_cvbs_encoder_atomic_check(struct drm_encoder *encoder,
+>> +static int meson_encoder_cvbs_atomic_check(struct drm_bridge *bridge,
+>> +					struct drm_bridge_state *bridge_state,
+>>  					struct drm_crtc_state *crtc_state,
+>>  					struct drm_connector_state *conn_state)
+>>  {
+>> @@ -159,10 +137,10 @@ static int meson_encoder_cvbs_encoder_atomic_check(struct drm_encoder *encoder,
+>>  	return -EINVAL;
+>>  }
+>>  
+>> -static void meson_encoder_cvbs_encoder_disable(struct drm_encoder *encoder)
+>> +static void meson_encoder_cvbs_disable(struct drm_bridge *bridge)
+>>  {
+>>  	struct meson_encoder_cvbs *meson_encoder_cvbs =
+>> -					encoder_to_meson_encoder_cvbs(encoder);
+>> +					bridge_to_meson_encoder_cvbs(bridge);
+>>  	struct meson_drm *priv = meson_encoder_cvbs->priv;
+>>  
+>>  	/* Disable CVBS VDAC */
+>> @@ -175,10 +153,10 @@ static void meson_encoder_cvbs_encoder_disable(struct drm_encoder *encoder)
+>>  	}
+>>  }
+>>  
+>> -static void meson_encoder_cvbs_encoder_enable(struct drm_encoder *encoder)
+>> +static void meson_encoder_cvbs_enable(struct drm_bridge *bridge)
+>>  {
+>>  	struct meson_encoder_cvbs *meson_encoder_cvbs =
+>> -					encoder_to_meson_encoder_cvbs(encoder);
+>> +					bridge_to_meson_encoder_cvbs(bridge);
+>>  	struct meson_drm *priv = meson_encoder_cvbs->priv;
+>>  
+>>  	/* VDAC0 source is not from ATV */
+>> @@ -198,13 +176,13 @@ static void meson_encoder_cvbs_encoder_enable(struct drm_encoder *encoder)
+>>  	}
+>>  }
+>>  
+>> -static void meson_encoder_cvbs_encoder_mode_set(struct drm_encoder *encoder,
+>> -				   struct drm_display_mode *mode,
+>> -				   struct drm_display_mode *adjusted_mode)
+>> +static void meson_encoder_cvbs_mode_set(struct drm_bridge *bridge,
+>> +				   const struct drm_display_mode *mode,
+>> +				   const struct drm_display_mode *adjusted_mode)
+>>  {
+>>  	const struct meson_cvbs_mode *meson_mode = meson_cvbs_get_mode(mode);
+>>  	struct meson_encoder_cvbs *meson_encoder_cvbs =
+>> -					encoder_to_meson_encoder_cvbs(encoder);
+>> +					bridge_to_meson_encoder_cvbs(bridge);
+>>  	struct meson_drm *priv = meson_encoder_cvbs->priv;
+>>  
+>>  	if (meson_mode) {
+>> @@ -218,76 +196,78 @@ static void meson_encoder_cvbs_encoder_mode_set(struct drm_encoder *encoder,
+>>  	}
+>>  }
+>>  
+>> -static const struct drm_encoder_helper_funcs
+>> -				meson_encoder_cvbs_encoder_helper_funcs = {
+>> -	.atomic_check	= meson_encoder_cvbs_encoder_atomic_check,
+>> -	.disable	= meson_encoder_cvbs_encoder_disable,
+>> -	.enable		= meson_encoder_cvbs_encoder_enable,
+>> -	.mode_set	= meson_encoder_cvbs_encoder_mode_set,
+>> +static const struct drm_bridge_funcs meson_encoder_cvbs_bridge_funcs = {
+>> +	.attach = meson_encoder_cvbs_attach,
+>> +	.enable	= meson_encoder_cvbs_enable,
+>> +	.disable = meson_encoder_cvbs_disable,
+>> +	.mode_valid = meson_encoder_cvbs_mode_valid,
+>> +	.mode_set = meson_encoder_cvbs_mode_set,
+>> +	.get_modes = meson_encoder_cvbs_get_modes,
+>> +	.atomic_check = meson_encoder_cvbs_atomic_check,
+>>  };
+>>  
+>> -static bool meson_encoder_cvbs_connector_is_available(struct meson_drm *priv)
+>> -{
+>> -	struct device_node *remote;
+>> -
+>> -	remote = of_graph_get_remote_node(priv->dev->of_node, 0, 0);
+>> -	if (!remote)
+>> -		return false;
+>> -
+>> -	of_node_put(remote);
+>> -	return true;
+>> -}
+>> -
+>>  int meson_encoder_cvbs_init(struct meson_drm *priv)
+>>  {
+>>  	struct drm_device *drm = priv->drm;
+>>  	struct meson_encoder_cvbs *meson_encoder_cvbs;
+>> -	struct drm_connector *connector;
+>> -	struct drm_encoder *encoder;
+>> +	struct device_node *remote;
+>>  	int ret;
+>>  
+>> -	if (!meson_encoder_cvbs_connector_is_available(priv)) {
+>> +	meson_encoder_cvbs = devm_kzalloc(priv->dev, sizeof(*meson_encoder_cvbs), GFP_KERNEL);
+>> +	if (!meson_encoder_cvbs)
+>> +		return -ENOMEM;
+>> +
+>> +	/* CVBS Connector Bridge */
+>> +	remote = of_graph_get_remote_node(priv->dev->of_node, 0, 0);
+>> +	if (!remote) {
+>>  		dev_info(drm->dev, "CVBS Output connector not available\n");
+>>  		return 0;
+>>  	}
+>>  
+>> -	meson_encoder_cvbs = devm_kzalloc(priv->dev, sizeof(*meson_encoder_cvbs),
+>> -				       GFP_KERNEL);
+>> -	if (!meson_encoder_cvbs)
+>> -		return -ENOMEM;
+>> +	meson_encoder_cvbs->next_bridge = of_drm_find_bridge(remote);
+>> +	if (!meson_encoder_cvbs->next_bridge) {
+>> +		dev_err(priv->dev, "Failed to find CVBS Connector bridge\n");
+>> +		return -EPROBE_DEFER;
+>> +	}
+>>  
+>> -	meson_encoder_cvbs->priv = priv;
+>> -	encoder = &meson_encoder_cvbs->encoder;
+>> -	connector = &meson_encoder_cvbs->connector;
+>> +	/* CVBS Encoder Bridge */
+>> +	meson_encoder_cvbs->bridge.funcs = &meson_encoder_cvbs_bridge_funcs;
+>> +	meson_encoder_cvbs->bridge.of_node = priv->dev->of_node;
+>> +	meson_encoder_cvbs->bridge.type = DRM_MODE_CONNECTOR_Composite;
+>> +	meson_encoder_cvbs->bridge.ops = DRM_BRIDGE_OP_MODES;
+>> +	meson_encoder_cvbs->bridge.interlace_allowed = true;
+>>  
+>> -	/* Connector */
+>> +	drm_bridge_add(&meson_encoder_cvbs->bridge);
+>>  
+>> -	drm_connector_helper_add(connector,
+>> -				 &meson_cvbs_connector_helper_funcs);
+>> +	meson_encoder_cvbs->priv = priv;
+>>  
+>> -	ret = drm_connector_init(drm, connector, &meson_cvbs_connector_funcs,
+>> -				 DRM_MODE_CONNECTOR_Composite);
+>> +	/* Encoder */
+>> +	ret = drm_simple_encoder_init(priv->drm, &meson_encoder_cvbs->encoder,
+>> +				      DRM_MODE_ENCODER_TVDAC);
+>>  	if (ret) {
+>> -		dev_err(priv->dev, "Failed to init CVBS connector\n");
+>> +		dev_err(priv->dev, "Failed to init CVBS encoder: %d\n", ret);
+>>  		return ret;
+>>  	}
+>>  
+>> -	connector->interlace_allowed = 1;
+>> +	meson_encoder_cvbs->encoder.possible_crtcs = BIT(0);
+>>  
+>> -	/* Encoder */
+>> -
+>> -	drm_encoder_helper_add(encoder, &meson_encoder_cvbs_encoder_helper_funcs);
+>> -
+>> -	ret = drm_encoder_init(drm, encoder, &meson_encoder_cvbs_encoder_funcs,
+>> -			       DRM_MODE_ENCODER_TVDAC, "meson_encoder_cvbs");
+>> +	/* Attach CVBS Encoder Bridge to Encoder */
+>> +	ret = drm_bridge_attach(&meson_encoder_cvbs->encoder, &meson_encoder_cvbs->bridge, NULL,
+>> +				DRM_BRIDGE_ATTACH_NO_CONNECTOR);
+>>  	if (ret) {
+>> -		dev_err(priv->dev, "Failed to init CVBS encoder\n");
+>> +		dev_err(priv->dev, "Failed to attach bridge: %d\n", ret);
+>>  		return ret;
+>>  	}
+>>  
+>> -	encoder->possible_crtcs = BIT(0);
+>> -
+>> -	drm_connector_attach_encoder(connector, encoder);
+>> +	/* Initialize & attach Bridge Connector */
+>> +	meson_encoder_cvbs->connector = drm_bridge_connector_init(priv->drm,
+>> +							&meson_encoder_cvbs->encoder);
+> I did not see other uses of meson_encoder_cvbs->connector, so if I am
+> right a local variable can be used and the member dropped.
+
+You're right, I'll drop this.
+
+Thanks
+Neil
+
 > 
-> Oh, that is a good idea.  There is one already for recommending the
-> use of static_assert instead of assert.  That's actually very nice.
+>> +	if (IS_ERR(meson_encoder_cvbs->connector)) {
+>> +		dev_err(priv->dev, "Unable to create CVBS bridge connector\n");
+>> +		return PTR_ERR(meson_encoder_cvbs->connector);
+>> +	}
+>> +	drm_connector_attach_encoder(meson_encoder_cvbs->connector,
+>> +				     &meson_encoder_cvbs->encoder);
+>>  
+>>  	return 0;
+>>  }
+>> -- 
+>> 2.25.1
 
-So I did
-
-diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
-index b6ff83a714ca..e212220216e8 100644
---- a/include/linux/compiler_types.h
-+++ b/include/linux/compiler_types.h
-@@ -295,12 +295,17 @@ struct ftrace_likely_data {
- # define __compiletime_object_size(obj) -1
- #endif
-
-+#include <linux/const.h>
-+
- #ifdef __OPTIMIZE__
- # define __compiletime_assert(condition, msg, prefix, suffix)          \
-        do {                                                            \
-                extern void prefix ## suffix(void)
-__compiletime_error(msg); \
-+               extern void prefix ## suffix ## ice(void)
-__compiletime_warning("Ice ice baby"); \
-                if (!(condition))                                       \
-                        prefix ## suffix();                             \
-+               if (__is_constexpr(condition))                          \
-+                       prefix ## suffix ## ice();                      \
-        } while (0)
- #else
- # define __compiletime_assert(condition, msg, prefix, suffix) do { }
-while (0)
-
-and that throws a gazillion warnings. Picking one at random shows that
-container_of() has a BUILD_BUG_ON. So we could do
-
-diff --git a/include/linux/kernel.h b/include/linux/kernel.h
-index 2776423a587e..0a1969b11619 100644
---- a/include/linux/kernel.h
-+++ b/include/linux/kernel.h
-@@ -492,9 +492,9 @@ static inline void ftrace_dump(enum ftrace_dump_mode
-oops_dump_mode) { }
-  */
- #define container_of(ptr, type, member) ({                             \
-        void *__mptr = (void *)(ptr);                                   \
--       BUILD_BUG_ON_MSG(!__same_type(*(ptr), ((type *)0)->member) &&   \
--                        !__same_type(*(ptr), void),                    \
--                        "pointer type mismatch in container_of()");    \
-+       static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
-+                     __same_type(*(ptr), void),                        \
-+                     "pointer type mismatch in container_of()");       \
-        ((type *)(__mptr - offsetof(type, member))); })
-
- /**
-@@ -507,9 +507,9 @@ static inline void ftrace_dump(enum ftrace_dump_mode
-oops_dump_mode) { }
-  */
- #define container_of_safe(ptr, type, member) ({
-        \
-        void *__mptr = (void *)(ptr);                                   \
--       BUILD_BUG_ON_MSG(!__same_type(*(ptr), ((type *)0)->member) &&   \
--                        !__same_type(*(ptr), void),                    \
--                        "pointer type mismatch in container_of()");    \
-+       static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
-+                     __same_type(*(ptr), void),                        \
-+                     "pointer type mismatch in container_of_safe()");  \
-        IS_ERR_OR_NULL(__mptr) ? ERR_CAST(__mptr) :                     \
-                ((type *)(__mptr - offsetof(type, member))); })
-
-[fixing the copy-pasto in container_of_safe while at it].
-
-Basically, all BUILD_BUG_ONs like that that do type checking are very
-obviously candidates for using static_assert instead (they very
-naturally go at the end of all the locally declared variables, so one
-won't hit the declaration-after-statement problem that can otherwise
-prevent using static_assert).
-
-> I was playing with trying to adapt clang-tidy's C++11 `auto` fixit to
-> work on GNU C code to automate the replacement of:
-> 
-> __typeof(x) y = (x);
-> 
-> with:
-> 
-> __auto_type y = (x);
-> 
-> in macros.  That's perhaps interesting, too.  Given the volume of code
-> in the kernel, I wouldn't waste time with one off patches;
-
-Well, for the kind of macros that are used _everywhere_ a few one-off
-patches might be in order. It's also interesting if one could measure
-any speedup from switching those core macros to static_assert.
-
-Rasmus
