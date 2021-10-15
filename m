@@ -2,56 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70E1E42FBC8
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 21:12:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F5D542FBD1
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 21:13:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242649AbhJOTOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 15:14:37 -0400
-Received: from relay4-d.mail.gandi.net ([217.70.183.196]:43041 "EHLO
-        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234151AbhJOTOf (ORCPT
+        id S242672AbhJOTQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 15:16:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37470 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242668AbhJOTPy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 15:14:35 -0400
-Received: (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id EE94DE0007;
-        Fri, 15 Oct 2021 19:12:26 +0000 (UTC)
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Yang Yingliang <yangyingliang@huawei.com>,
-        linux-kernel@vger.kernel.org, linux-rtc@vger.kernel.org
-Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        a.zummo@towertech.it
-Subject: Re: [PATCH v2] rtc: class: check return value when calling dev_set_name()
-Date:   Fri, 15 Oct 2021 21:12:22 +0200
-Message-Id: <163432513382.815620.12291665932227521048.b4-ty@bootlin.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211012041629.2504158-1-yangyingliang@huawei.com>
-References: <20211012041629.2504158-1-yangyingliang@huawei.com>
+        Fri, 15 Oct 2021 15:15:54 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D345C061570
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 12:13:46 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id n8so45516189lfk.6
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 12:13:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HBzr0B3tGGPW4EBa2LvZed6scqvnq5Oml+sl03YQDio=;
+        b=BA/5lSdu+5ROrNUsKhvi+0xgDXMbeH1IeW/bUOWfcmhvn1b5gplsN/lhjVCre6mi7A
+         T02zPFwlJIn5jPNjwH4oOtQyucvs6lBBcy+OrsPY3YL/FYdY0J233zlFzQbbtj4HgTc2
+         L9417guhXF0JmPaEr+m4IC2Neu+S/CP0pe8W1DeWsGEaRfcbKuXMoiVVLIsmZUAZYhDW
+         i839MhmZ7hNt4oiL/fD/Ou4ujKkHeGGDRRmS1Lm9czlqguFwu1qDQyHbuiiIuclaTR8n
+         zgTo8mkTKOfB8QZ+Z9qaTsaUNQSAUoM7AdYTjJhuqe3g1u8w9OuBkFHS5pOcW6IIJz3a
+         cmzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HBzr0B3tGGPW4EBa2LvZed6scqvnq5Oml+sl03YQDio=;
+        b=knKxQy4e2pT148EqRtCag84syxUzG5f/n8Hm/QMuysXHlkVFjFVQazIXo+eZ6QEF0o
+         vI9OzKKl/mMV7ZmP8mrRtnj98hnoj7UaJi0UiEbMNzwAiilBMP9fbEz0dBLF5Cek2zsM
+         3YH+dSk//hIJi8ZWzYRrwZGTgGYJNeyKMJLp7lXvUqklFp0HcpE6dRHAUFbE1EaepZvA
+         J++bAEdzVbdnL7Ibkgs9dexOqVgzuRYROu8YAlcP1EsaVSHj3XeZnwHYGr9l0D5bWpvl
+         ZmZCTySAMop73/E+TtVsMaYOmFXdV4L1zOGVHXKNTbf100i3z9LxOzj9LaqHKqbl0Ard
+         yyTQ==
+X-Gm-Message-State: AOAM5319cTR0QJ80Lrr3ykJAGoqzvK32pcHB1U2Qola9iGnnzQU709VS
+        Oznfauw1LoeXavi/XUoIeaPr4bUEjo5EVvhLRd+JmQ==
+X-Google-Smtp-Source: ABdhPJz8/p6IXPlhwfOmIFLJc3rweNG7wsVdft9QVM6g2UNGOxECgfrMdFD6Bhxm1ySa6xlaQxoW0bTsBpferjnjiCE=
+X-Received: by 2002:a05:6512:3ba3:: with SMTP id g35mr13415925lfv.651.1634325224740;
+ Fri, 15 Oct 2021 12:13:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <1634167668-60198-1-git-send-email-ashimida@linux.alibaba.com>
+ <CAKwvOdkv70XDdK-k3n4ycFQsz+h7V-sTiH8RuxxaLofp-okweQ@mail.gmail.com> <722d9662-e27c-2efb-e8cf-d505b6950475@linux.alibaba.com>
+In-Reply-To: <722d9662-e27c-2efb-e8cf-d505b6950475@linux.alibaba.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Fri, 15 Oct 2021 12:13:33 -0700
+Message-ID: <CAKwvOdnMvBP-1=YbXTpYOgWqCBy44tUvWdtMXp8p485bYnPYNQ@mail.gmail.com>
+Subject: Re: [PATCH] [PATCH V4]ARM64: SCS: Add gcc plugin to support Shadow
+ Call Stack
+To:     Dan Li <ashimida@linux.alibaba.com>
+Cc:     masahiroy@kernel.org, michal.lkml@markovi.net,
+        catalin.marinas@arm.com, will@kernel.org, keescook@chromium.org,
+        nathan@kernel.org, tglx@linutronix.de, akpm@linux-foundation.org,
+        samitolvanen@google.com, frederic@kernel.org, rppt@kernel.org,
+        mark.rutland@arm.com, yifeifz2@illinois.edu, rostedt@goodmis.org,
+        viresh.kumar@linaro.org, andreyknvl@gmail.com,
+        colin.king@canonical.com, ojeda@kernel.org,
+        luc.vanoostenryck@gmail.com, elver@google.com,
+        nivedita@alum.mit.edu, ardb@kernel.org,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-hardening@vger.kernel.org, clang-built-linux@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Oct 2021 12:16:29 +0800, Yang Yingliang wrote:
-> I got a null-ptr-deref report when doing fault injection test:
-> 
-> BUG: kernel NULL pointer dereference, address: 0000000000000000
-> RIP: 0010:strcmp+0xc/0x20
-> Call Trace:
->  __devm_rtc_register_device.cold.7+0x16a/0x2df
->  rv3029_probe+0x4b1/0x770 [rtc_rv3029c2]
->  rv3029_i2c_probe+0x141/0x180 [rtc_rv3029c2]
->  i2c_device_probe+0xa07/0xbb0
->  really_probe+0x285/0xc30
-> 
-> [...]
+On Fri, Oct 15, 2021 at 11:29 AM Dan Li <ashimida@linux.alibaba.com> wrote:
+>
+>
+>
+> On 10/15/21 2:44 AM, Nick Desaulniers wrote:
+> >   On Wed, Oct 13, 2021 at 4:28 PM Dan Li <ashimida@linux.alibaba.com> wrote:
+> >> --- a/include/linux/compiler-gcc.h
+> >> +++ b/include/linux/compiler-gcc.h
+> >> @@ -50,6 +50,10 @@
+> >>   #define __latent_entropy __attribute__((latent_entropy))
+> >>   #endif
+> >>
+> >> +#if defined(SHADOW_CALL_STACK_PLUGIN) && !defined(__CHECKER__)
+> >> +#define __noscs __attribute__((no_shadow_call_stack))
+> >> +#endif
+> >
+> > Cool this is a nice addition, and something I don't think that clang
+> > has.  For any new feature, having a function attribute to disable it
+> > at the function granularity is nice, and plays better with LTO than -f
+> > group flags.  Though that begs the question: what happens if a __noscs
+> > callee is inlined into a non-__noscs caller, or vice versa?
+> Thanks Nick,
+>
+> According to my understanding, all inline optimizations in gcc should
+> happen before inserting scs insns (scs and paciasp/autiasp use the
+> same insertion point). Therefore, the check for the __noscs attribute
+> will also occur after all inlining is completed.
+>
+> As in the following example:
+> - Since __noscs attribute is specified, scs_test1 does not insert scs insns
+> - Since normal functions scs_test2/3 uses x30, it needs to insert scs insns
+> - Since __noscs attribute is specified, scs_test4 after inlining does not
+> need to insert scs insns
+>
+> __always_inline __noscs void scs_test1(void)
+> {
+>      asm volatile("mov x1, x1\n\t":::"x30");
+> }
+>
+> //scs insns inserted after function inline
+> void scs_test2(void)
+> {
+>      scs_test1();
+> }
 
-Applied, thanks!
+That may be surprising to developers.  Perhaps __always_inline on
+scs_test1 is distracting this test case, but I suspect it may not make
+a difference.  This particular issue comes up time and again with
+stack protectors; ie. the callee is marked no stack protector, then
+gets inlined into a caller and suddenly gets a stack protector.
 
-[1/1] rtc: class: check return value when calling dev_set_name()
-      commit: 24d23181e43d72ca692a479e70dfe5b0b5dd33f1
+>
+> __always_inline void scs_test3(void)
+> {
+>      asm volatile("mov x3, x3\n\t":::"x30");
+> }
+>
+> //no scs insns inserted
+> __noscs void scs_test4(void)
+> {
+>      scs_test3();
+> }
+>
+> ffff800010012900 <scs_test1>:
+> ffff800010012900:       a9bf7bfd        stp     x29, x30, [sp, #-16]!
+> ffff800010012904:       910003fd        mov     x29, sp
+> ffff800010012908:       aa0103e1        mov     x1, x1
+> ffff80001001290c:       a8c17bfd        ldp     x29, x30, [sp], #16
+> ffff800010012910:       d65f03c0        ret
+>
+> ffff800010012914 <scs_test2>:
+> ffff800010012914:       f800865e        str     x30, [x18], #8
+> ffff800010012918:       a9bf7bfd        stp     x29, x30, [sp, #-16]!
+> ffff80001001291c:       910003fd        mov     x29, sp
+> ffff800010012920:       aa0103e1        mov     x1, x1
+> ffff800010012924:       a8c17bfd        ldp     x29, x30, [sp], #16
+> ffff800010012928:       f85f8e5e        ldr     x30, [x18, #-8]!
+> ffff80001001292c:       d65f03c0        ret
+>
+> ffff800010012930 <scs_test3>:
+> ffff800010012930:       f800865e        str     x30, [x18], #8
+> ffff800010012934:       a9bf7bfd        stp     x29, x30, [sp, #-16]!
+> ffff800010012938:       910003fd        mov     x29, sp
+> ffff80001001293c:       aa0303e3        mov     x3, x3
+> ffff800010012940:       a8c17bfd        ldp     x29, x30, [sp], #16
+> ffff800010012944:       f85f8e5e        ldr     x30, [x18, #-8]!
+> ffff800010012948:       d65f03c0        ret
+> ffff80001001294c:       d503201f        nop
+>
+> ffff800010012950 <scs_test4>:
+> ffff800010012950:       a9bf7bfd        stp     x29, x30, [sp, #-16]!
+> ffff800010012954:       910003fd        mov     x29, sp
+> ffff800010012958:       aa0303e3        mov     x3, x3
+> ffff80001001295c:       a8c17bfd        ldp     x29, x30, [sp], #16
+> ffff800010012960:       d65f03c0        ret
+> > I noticed that __noscs isn't actually applied anywhere in the kernel,
+> > yet, at least in this series.  Were there any places necessary that
+> > you've found thus far?
+> At present, I have not found a function that must use the __noscs
+> attribute in the kernel. I have only used this attribute in test cases.
 
-Best regards,
+
 -- 
-Alexandre Belloni <alexandre.belloni@bootlin.com>
+Thanks,
+~Nick Desaulniers
