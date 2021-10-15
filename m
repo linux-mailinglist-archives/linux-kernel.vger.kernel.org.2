@@ -2,60 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFF6042E925
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 08:38:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D60542E92D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 08:39:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233075AbhJOGkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 02:40:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59350 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235600AbhJOGkb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 02:40:31 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4595C061570;
-        Thu, 14 Oct 2021 23:38:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=K97DMnnazcODhbgliFQHh1Vy35s1DHvETiPvQk+kYvU=; b=II9nnmGbJHPhf/kRHW6+QL4OlR
-        Blde0ncvwiIimQOlKudkXZn3iyQNXilqe646yZsB84SzBGx5bHJGUrzXajr0JRSQu/pPrHE9i4thm
-        aMNPY3YH7V2wV8FKkICbTAoidHBGLsSgTYgdJ3jTMqJukTgxruRacULWLm7VzSk3rUt+ZVrKC6FmW
-        AIMvrtM2ey9wU0ivoGElozmoNTzkmbWq5d7oAamQ9C3RvFoGmYElirhH2pDuRmMSn6pzC0bClI4j5
-        HLBAUCb/b7QEgWE8wIgE5yN/JnIC3EVe7FpGwy0gnd4IOiXa2A1Ygw86Sa9bqmifdGsrjx5A3n84r
-        u+LO46QQ==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mbGrG-005ZKF-D9; Fri, 15 Oct 2021 06:38:22 +0000
-Date:   Thu, 14 Oct 2021 23:38:22 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     Shiyang Ruan <ruansy.fnst@fujitsu.com>,
-        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        nvdimm@lists.linux.dev, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, dan.j.williams@intel.com,
-        david@fromorbit.com, hch@infradead.org, jane.chu@oracle.com
-Subject: Re: [PATCH v7 8/8] fsdax: add exception for reflinked files
-Message-ID: <YWkh3mNc2+roMn40@infradead.org>
-References: <20210924130959.2695749-1-ruansy.fnst@fujitsu.com>
- <20210924130959.2695749-9-ruansy.fnst@fujitsu.com>
- <20211014192450.GJ24307@magnolia>
+        id S235586AbhJOGlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 02:41:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56990 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229716AbhJOGla (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 02:41:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B89B861184;
+        Fri, 15 Oct 2021 06:39:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1634279964;
+        bh=eHMP1L5p7U9JjkTgxLAgLmWgChOZElqg0ECTI25pFiM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vH5xyVPI7ANQGLw7FNvgZFKqHpopiBvQMnPds7bxMgnbwjA8XxmviHtF/zfnjwhNU
+         G+6HLYm08gIDuOVCObdDG0AXRoBnmlvhxa2cYdTI/5DF97VTndUoIbYg+t2Ivojhxv
+         cDly48omx4tvWBlX4moZM+FA+Sex7vXvTIsISXTU=
+Date:   Fri, 15 Oct 2021 08:39:20 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Matthias Kaehlcke <mka@chromium.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Peter Chen <peter.chen@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        Bastien Nocera <hadess@hadess.net>,
+        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Roger Quadros <rogerq@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Al Cooper <alcooperx@gmail.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>,
+        Andy Gross <agross@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Aswath Govindraju <a-govindraju@ti.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Fabrice Gasnier <fabrice.gasnier@st.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Jens Axboe <axboe@kernel.dk>, Johan Hovold <johan@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Lionel Debieve <lionel.debieve@st.com>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Mark Brown <broonie@kernel.org>,
+        Martin =?iso-8859-1?Q?J=FCcker?= <martin.juecker@gmail.com>,
+        Nishanth Menon <nm@ti.com>,
+        Olivier Moysan <olivier.moysan@st.com>,
+        Pawel Laszczak <pawell@cadence.com>,
+        Robert Richter <rric@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tony Lindgren <tony@atomide.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Will Deacon <will@kernel.org>,
+        William Cohen <wcohen@redhat.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        linux-omap <linux-omap@vger.kernel.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        =?utf-8?Q?=C5=81ukasz?= Stelmach <l.stelmach@samsung.com>
+Subject: Re: [PATCH v16 0/7] usb: misc: Add onboard_usb_hub driver
+Message-ID: <YWkiGGBKOVokBye9@kroah.com>
+References: <20210813195228.2003500-1-mka@chromium.org>
+ <YUoRq1RrOIoiBJ5+@google.com>
+ <CAD=FV=WrddUhWT0wUVZD0gN_+8Zy1VGY77LYLYBvhaPQQ_SqZw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211014192450.GJ24307@magnolia>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <CAD=FV=WrddUhWT0wUVZD0gN_+8Zy1VGY77LYLYBvhaPQQ_SqZw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 12:24:50PM -0700, Darrick J. Wong wrote:
-> It feels a little dangerous to have page->mapping for shared storage
-> point to an actual address_space when there are really multiple
-> potential address_spaces out there.  If the mm or dax folks are ok with
-> doing this this way then I'll live with it, but it seems like you'd want
-> to leave /some/ kind of marker once you know that the page has multiple
-> owners and therefore regular mm rmap via page->mapping won't work.
+On Thu, Oct 14, 2021 at 02:38:55PM -0700, Doug Anderson wrote:
+> Hi,
+> 
+> On Tue, Sep 21, 2021 at 10:09 AM Matthias Kaehlcke <mka@chromium.org> wrote:
+> >
+> > Hi Greg,
+> >
+> > are there any actions pending or can this land in usb-testing?
+> >
+> > I confirmed that this series can be rebased on top of v5.15-rc2
+> > without conflicts.
+> 
+> I'm quite interested to know what the next action items are, too. This
+> is one of the very few patches we have for trogdor (excluding MIPI
+> camera, which is a long story) that we're carrying downstream, so I'm
+> keenly interested in making sure it's unblocked (if, indeed, it's
+> blocked on anything).
+> 
+> If folks feel that this needs more review eyes before landing again
+> then I'll try to find some time in the next week or two. If it's just
+> waiting for the merge window to open/close so it can have maximal bake
+> time, that's cool too. Please yell if there's something that I can do
+> to help, though! :-)
 
-Yes, I thing poisoning page->mapping for the rmap enabled case seems
-like a better idea.
+I would love more review-eyes on this please.
+
+It's in my queue to review, I just need to spend the time on it, sorry
+for the delay.
+
+greg k-h
