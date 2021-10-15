@@ -2,112 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E2AE42FD98
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 23:45:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF90642FDA1
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 23:48:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243179AbhJOVrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 17:47:42 -0400
-Received: from mail-oi1-f171.google.com ([209.85.167.171]:38864 "EHLO
-        mail-oi1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238695AbhJOVrk (ORCPT
+        id S238697AbhJOVuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 17:50:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44094 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229921AbhJOVue (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 17:47:40 -0400
-Received: by mail-oi1-f171.google.com with SMTP id t4so14951505oie.5;
-        Fri, 15 Oct 2021 14:45:33 -0700 (PDT)
+        Fri, 15 Oct 2021 17:50:34 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 968E5C061570;
+        Fri, 15 Oct 2021 14:48:27 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id w19so42995557edd.2;
+        Fri, 15 Oct 2021 14:48:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Fy8JX1MISO+E6iiO8M4K0L0jBN1ZBpTt5D/TgO1B54U=;
+        b=U7+cTP+WOIeSHVdUukK9i8mAbLqOyx+qsv7LKqyA1d9LnYKxTxqGp1qFfzQBmZyub+
+         2WS2AsPbS3Bzn0j4xDW2BZBmYT14PRpRBy200SYYKaHLTLw5c++3nj7sinEL6J2+v0Zr
+         rwP3kfkTJquHOTMXOuyjwxtkES4zGr5M9wjHJJZ1J7bAr3qG12JioOORDjt/yCPNKI2e
+         LCBig775MW/n7T7ugT5XMIRgbePHsJppd0XpLXu8CRjlyDYyls5yD3jDl1bWo+cVwgwE
+         tK3WeidHc6CVSXMf6j/+gPQKKU8wM75aPxRVHInezczSE8WO1B73zapsU87whFU0gn35
+         Xgcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=NYOyme/cinRUC3bVzCpIQa4360myarzWLY66zGOmnyw=;
-        b=em9lMnAlGSyml7XvWGy4vWsm+YZZNN5iIpW+anlCUECLGDMwa5u7nPYny51pWSnEvj
-         HwbuJJRw3TkTqDUdgiyQU0nZsIvfSflinbL4ES0hhLCciWPs2CZ5Gu7lIhBVjuk9AKU6
-         jbxtXsjN1hsICwL4ekhqMuT4NIgddwdE5hoWYgDFF89RFKv8B0dOnsIybtLfkeS/CyUw
-         foBgHhRL0dEVpgEzffu6Pb/TwEL6XPzBr9EAEqs9htZWkNMzSRSjEpn+k3rZBgxYCjqz
-         IXSWrAuadhEvAGwWiLBkM84o4oYEb86aC5GTGN0rcMyv9Psg89SLqq/5+/vVx7Rcj5FO
-         Insg==
-X-Gm-Message-State: AOAM533H93c3rkvi0jwS78hxlvCoc/Lmug1uhwnhCMs/8dTzdTjNT9DU
-        vOMvjuLzJdqlVMYTkFydmg==
-X-Google-Smtp-Source: ABdhPJyxArKeXBHH7sHkPc47Cnex9p1URhiMiWu4n0F61RgItK1JWSN1OQ8mY/jCwu8apIz9fTyk1g==
-X-Received: by 2002:aca:d64a:: with SMTP id n71mr14261693oig.40.1634334333530;
-        Fri, 15 Oct 2021 14:45:33 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id m7sm1261843oiw.49.2021.10.15.14.45.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Oct 2021 14:45:32 -0700 (PDT)
-Received: (nullmailer pid 2254012 invoked by uid 1000);
-        Fri, 15 Oct 2021 21:45:31 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Moudy Ho <moudy.ho@mediatek.com>
-Cc:     acourbot@chromium.org, srv_heupstream@mediatek.com,
-        pihsun@chromium.org, linux-mediatek@lists.infradead.org,
-        Rob Landley <rob@landley.net>, allen-kh.cheng@mediatek.com,
-        randy.wu@mediatek.com, tfiga@chromium.org,
-        daoyuan huang <daoyuan.huang@mediatek.com>,
-        linux-media@vger.kernel.org,
-        Ping-Hsun Wu <ping-hsun.wu@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Maoguang Meng <maoguang.meng@mediatek.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        sj.huang@mediatek.com, menghui.lin@mediatek.com,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, drinkcat@chromium.org,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        devicetree@vger.kernel.org, hsinyi@google.com,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>
-In-Reply-To: <20211015123832.17914-6-moudy.ho@mediatek.com>
-References: <20211015123832.17914-1-moudy.ho@mediatek.com> <20211015123832.17914-6-moudy.ho@mediatek.com>
-Subject: Re: [PATCH v8 5/7] dt-binding: mt8183: add Mediatek MDP3 dt-bindings
-Date:   Fri, 15 Oct 2021 16:45:31 -0500
-Message-Id: <1634334331.594718.2254011.nullmailer@robh.at.kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Fy8JX1MISO+E6iiO8M4K0L0jBN1ZBpTt5D/TgO1B54U=;
+        b=IS2z4he2rfqmoIqn7vOAUWODR0vH4THyLLPjakhl+4arwJKk0Up2ZdVeFVZPWDeDvI
+         5GJpHKQxcKlfHoqIJM+HwMuQ+WXWQnblrwvHvowiJY6r17qJRLf4M+OPXVjrEnf7Bopf
+         a3AU574tZmFqUkpU8bhMf5PFTSM816mTOyqwxyVfq28XzHyoMdYZv4mAzDD+VLBfOKls
+         6o6JR8UF+Pu6tz8EgrbtAdC7V2zxOO2LhFrbIN3EX7FOzdGHLpPd1r8A6MHiRT06j9TR
+         f2mjm0Paz8MXW5RYP/3eF3l5m6fAeZ8QvNYjB5co1i6xgOo/1SQYvifD5nSTWsGVad2f
+         +JHA==
+X-Gm-Message-State: AOAM531dE+XkkKFXtkWVNBAXPfdKAaOhJ+ka68CEVCjOc1g2RJYZIqm0
+        Eu2NC40lrzWmeSu2K933oDnwEXxjd3PxDCXB9zg=
+X-Google-Smtp-Source: ABdhPJxzPoBGmacpktimn0FUL9PLamaLUctIWvwvIPEK4LcwDaz5KhCkQGyMHTGRHT4amHjaBl4V4kjNsLgEvuuxKys=
+X-Received: by 2002:a17:907:6297:: with SMTP id nd23mr10244354ejc.62.1634334506069;
+ Fri, 15 Oct 2021 14:48:26 -0700 (PDT)
+MIME-Version: 1.0
+References: <20211014191615.6674-1-shy828301@gmail.com> <20211015132800.357d891d0b3ad34adb9c7383@linux-foundation.org>
+In-Reply-To: <20211015132800.357d891d0b3ad34adb9c7383@linux-foundation.org>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Fri, 15 Oct 2021 14:48:14 -0700
+Message-ID: <CAHbLzkrRdT1gZm-FBmZU8WKqsLYfC6Q2cF8iGDWqOV6==xfsnA@mail.gmail.com>
+Subject: Re: [RFC v4 PATCH 0/6] Solve silent data loss caused by poisoned page
+ cache (shmem/tmpfs)
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
+        <naoya.horiguchi@nec.com>, Hugh Dickins <hughd@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Peter Xu <peterx@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 15 Oct 2021 20:38:30 +0800, Moudy Ho wrote:
-> This patch adds DT binding document for Media Data Path 3 (MDP3)
-> a unit in multimedia system used for scaling and color format convert.
-> 
-> Signed-off-by: Moudy Ho <moudy.ho@mediatek.com>
-> ---
->  .../bindings/arm/mediatek/mediatek,ccorr.yaml |  59 +++++
->  .../bindings/arm/mediatek/mediatek,rdma.yaml  | 211 ++++++++++++++++++
->  .../bindings/arm/mediatek/mediatek,wdma.yaml  |  70 ++++++
->  .../bindings/media/mediatek,mdp3-rsz.yaml     |  68 ++++++
->  .../bindings/media/mediatek,mdp3-wrot.yaml    |  70 ++++++
->  5 files changed, 478 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,ccorr.yaml
->  create mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,rdma.yaml
->  create mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,wdma.yaml
->  create mode 100644 Documentation/devicetree/bindings/media/mediatek,mdp3-rsz.yaml
->  create mode 100644 Documentation/devicetree/bindings/media/mediatek,mdp3-wrot.yaml
-> 
+On Fri, Oct 15, 2021 at 1:28 PM Andrew Morton <akpm@linux-foundation.org> wrote:
+>
+> On Thu, 14 Oct 2021 12:16:09 -0700 Yang Shi <shy828301@gmail.com> wrote:
+>
+> > When discussing the patch that splits page cache THP in order to offline the
+> > poisoned page, Noaya mentioned there is a bigger problem [1] that prevents this
+> > from working since the page cache page will be truncated if uncorrectable
+> > errors happen.  By looking this deeper it turns out this approach (truncating
+> > poisoned page) may incur silent data loss for all non-readonly filesystems if
+> > the page is dirty.  It may be worse for in-memory filesystem, e.g. shmem/tmpfs
+> > since the data blocks are actually gone.
+> >
+> > To solve this problem we could keep the poisoned dirty page in page cache then
+> > notify the users on any later access, e.g. page fault, read/write, etc.  The
+> > clean page could be truncated as is since they can be reread from disk later on.
+> >
+> > The consequence is the filesystems may find poisoned page and manipulate it as
+> > healthy page since all the filesystems actually don't check if the page is
+> > poisoned or not in all the relevant paths except page fault.  In general, we
+> > need make the filesystems be aware of poisoned page before we could keep the
+> > poisoned page in page cache in order to solve the data loss problem.
+>
+> Is the "RFC" still accurate, or might it be an accidental leftover?
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+Yeah, I think it can be removed.
 
-yamllint warnings/errors:
-./Documentation/devicetree/bindings/arm/mediatek/mediatek,wdma.yaml:20:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
-./Documentation/devicetree/bindings/arm/mediatek/mediatek,rdma.yaml:211:7: [error] no new line character at the end of file (new-line-at-end-of-file)
-./Documentation/devicetree/bindings/arm/mediatek/mediatek,ccorr.yaml:19:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
-./Documentation/devicetree/bindings/media/mediatek,mdp3-wrot.yaml:20:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
-./Documentation/devicetree/bindings/media/mediatek,mdp3-rsz.yaml:20:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
+>
+> I grabbed this series as-is for some testing, but I do think it wouild
+> be better if it was delivered as two separate series - one series for
+> the -stable material and one series for the 5.16-rc1 material.
 
-dtschema/dtc warnings/errors:
+Yeah, the patch 1/6 and patch 2/6 should go to -stable, then the
+remaining patches are for 5.16-rc1. Thanks for taking them.
 
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/patch/1541634
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+>
