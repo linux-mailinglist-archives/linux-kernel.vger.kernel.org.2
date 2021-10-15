@@ -2,93 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A943142F9E2
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 19:14:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1646D42F9E6
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 19:16:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242101AbhJORQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 13:16:57 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:60030 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238023AbhJORQz (ORCPT
+        id S242121AbhJORSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 13:18:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38708 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238023AbhJORSE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 13:16:55 -0400
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 3.0.0)
- id 615faa74ca6a96bd; Fri, 15 Oct 2021 19:14:48 +0200
-Received: from kreacher.localnet (unknown [213.134.175.255])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id 2DAE666A8C0;
-        Fri, 15 Oct 2021 19:14:47 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux ACPI <linux-acpi@vger.kernel.org>,
-        "Andreas K. Huettel" <andreas.huettel@ur.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>
-Subject: [PATCH v1 2/2][RFT] ACPI: PM: Check states of power resources during initialization
-Date:   Fri, 15 Oct 2021 19:14:10 +0200
-Message-ID: <8835496.CDJkKcVGEf@kreacher>
-In-Reply-To: <21226252.EfDdHjke4D@kreacher>
-References: <21226252.EfDdHjke4D@kreacher>
+        Fri, 15 Oct 2021 13:18:04 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4419C061570;
+        Fri, 15 Oct 2021 10:15:57 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id d23so9158272pgh.8;
+        Fri, 15 Oct 2021 10:15:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=WBU+852C24LCvIYpivfs9O8LFGGPFOo7ZH8BtmCdNC4=;
+        b=TGfr9UStHYoJqjhC96U1rii6CH1JoT64eerkCrevRB1+VHlvfdxYw+8k5YsPgefD12
+         /TUetV2v90RArPFFuGLnBJhmQO0NgmWGz9GVNWDpTleRdoVEos9skunFO9pizdcwAFRB
+         Gz1r7xFlXZgc+/WUTiyvQ5E7sGUwrYY7XJDB7bN08DQigYuXipQD8BLHQfASkybG84bJ
+         yAi3sQmD+V6h2bHSc+PB9DP1PxsEHZ3xr0RcQiXXKJphtJezEefUd/A0pL2JvyG7nNjb
+         Inz5ZBhrcTRXe2xtG9ZnnReUUJ6Q2AjwG3K65OLbDoBUdxisCC5niKKp9QIVZJQs+H0b
+         EqdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=WBU+852C24LCvIYpivfs9O8LFGGPFOo7ZH8BtmCdNC4=;
+        b=NMru2sTLSJku5LrXQcoXwRz0qUshsbxqxtzoeeLFIvQASiinGqAbBTZygjILcDTlLS
+         OHBoJ0ychyahc1/yzfadtDqvyB8cr6boqJ7NL9FPVBmBmVWAY4av1VnVXtsw0n4hkkhT
+         pAaqr+Ar0EINQspss64OFNd//ch9YDPVbdrKRKveUwlXBALpkxaW/4J88VuZEgY60v2t
+         38Ti1nss6HQMrBckWuw+HvyWdzQoiJO5nbJhVVtuROA5Sc811ACjmwC4N4bfHS3cZGGB
+         r2no4Yb4HP8MRxMXaFrAo47PzIg7/Rg32pe0clLJakpnZdGwxowDUXNSwZCvYvX5bTNx
+         PADg==
+X-Gm-Message-State: AOAM533L4Pyc8i+1UKuim7mbkP1NpEZDv+QfRB9V7ROToaUHZWfpyc2k
+        rqNLQ5IhcIy5Ux8f/+wtqPU=
+X-Google-Smtp-Source: ABdhPJwgNMSm+od/U5t8OTywgAa7TjHYL+xQLgxBtdELzHFcnmEcyqci9dj4evEifJzdqwOhBJjIBQ==
+X-Received: by 2002:a62:5297:0:b0:3f4:263a:b078 with SMTP id g145-20020a625297000000b003f4263ab078mr12524004pfb.20.1634318157160;
+        Fri, 15 Oct 2021 10:15:57 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id bb12sm1837350pjb.0.2021.10.15.10.15.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Oct 2021 10:15:56 -0700 (PDT)
+Subject: Re: [PATCH net-next 6/6] net: dsa: sja1105: parse
+ {rx,tx}-internal-delay-ps properties for RGMII delays
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Prasanna Vengateshan <prasanna.vengateshan@microchip.com>,
+        Ansuel Smith <ansuelsmth@gmail.com>,
+        =?UTF-8?Q?Alvin_=c5=a0ipraga?= <alsi@bang-olufsen.dk>
+References: <20211013222313.3767605-1-vladimir.oltean@nxp.com>
+ <20211013222313.3767605-7-vladimir.oltean@nxp.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <cfe7abdb-5f6e-a0f5-ddd8-6500b794de62@gmail.com>
+Date:   Fri, 15 Oct 2021 10:15:41 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 213.134.175.255
-X-CLIENT-HOSTNAME: 213.134.175.255
-X-VADE-SPAMSTATE: spam:medium
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddrudeljedguddtfecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucfuphgrmhfkphgprhhtucdlfedttddmnecujfgurhephffvufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdejlefghfeiudektdelkeekvddugfeghffggeejgfeukeejleevgffgvdeluddtnecukfhppedvudefrddufeegrddujeehrddvheehnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepvddufedrudefgedrudejhedrvdehhedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegrnhgurhgvrghsrdhhuhgvthhtvghlsehurhdruggvpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqphgtihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhpmhesvhhg
- vghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehmihhkrgdrfigvshhtvghrsggvrhhgsehlihhnuhigrdhinhhtvghlrdgtohhm
-X-DCC--Metrics: v370.home.net.pl 1024; Body=6 Fuz1=6 Fuz2=6
+In-Reply-To: <20211013222313.3767605-7-vladimir.oltean@nxp.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On 10/13/21 3:23 PM, Vladimir Oltean wrote:
+> This change does not fix any functional issue or address any real life
+> use case that wasn't possible before. It is just a small step in the
+> process of standardizing the way in which Ethernet MAC drivers may apply
+> RGMII delays (traditionally these have been applied by PHYs, with no
+> clear definition of what to do in the case of a fixed-link).
+> 
+> The sja1105 driver used to apply MAC-level RGMII delays on the RX data
+> lines when in fixed-link mode and using a phy-mode of "rgmii-rxid" or
+> "rgmii-id" and on the TX data lines when using "rgmii-txid" or "rgmii-id".
+> But the standard definitions don't say anything about behaving
+> differently when the port is in fixed-link vs when it isn't, and the new
+> device tree bindings are about having a way of applying the delays in a
+> way that is independent of the phy-mode and of the fixed-link property.
+> 
+> When the {rx,tx}-internal-delay-ps properties are present, use them,
+> otherwise fall back to the old behavior and warn.
+> 
+> One other thing to note is that the SJA1105 hardware applies a delay
+> value in degrees rather than in picoseconds (the delay in ps changes
+> depending on the frequency of the RGMII clock - 125 MHz at 1G, 25 MHz at
+> 100M, 2.5MHz at 10M). I assume that is fine, we calculate the phase
+> shift of the internal delay lines assuming that the device tree meant
+> gigabit, and we let the hardware scale those according to the link speed.
+> 
+> Link: https://patchwork.kernel.org/project/netdevbpf/patch/20210723173108.459770-6-prasanna.vengateshan@microchip.com/
+> Link: https://patchwork.ozlabs.org/project/netdev/patch/20200616074955.GA9092@laureti-dev/#2461123
+> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-To avoid situations in which the actual states of certain ACPI power
-resources are not known just because they have never been referenced
-by any device configuration objects, check the initial states of all
-power resources as soon as they are found in the ACPI namespace (and
-fall back to turning them on if the state check fails).
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
-
-Andreas, please test this patch (on top of the [1/2]) and let me know
-if it works for you.
-
-Thanks!
-
----
- drivers/acpi/power.c |   30 +++++++++++++-----------------
- 1 file changed, 13 insertions(+), 17 deletions(-)
-
-Index: linux-pm/drivers/acpi/power.c
-===================================================================
---- linux-pm.orig/drivers/acpi/power.c
-+++ linux-pm/drivers/acpi/power.c
-@@ -923,6 +919,7 @@ struct acpi_device *acpi_add_power_resou
- 	union acpi_object acpi_object;
- 	struct acpi_buffer buffer = { sizeof(acpi_object), &acpi_object };
- 	acpi_status status;
-+	u8 state_dummy;
- 	int result;
- 
- 	acpi_bus_get_device(handle, &device);
-@@ -951,6 +948,10 @@ struct acpi_device *acpi_add_power_resou
- 	resource->order = acpi_object.power_resource.resource_order;
- 	resource->state = ACPI_POWER_RESOURCE_STATE_UNKNOWN;
- 
-+	/* Get the initial state or just flip it on if that fails. */
-+	if (acpi_power_get_state(resource, &state_dummy))
-+		__acpi_power_on(resource);
-+
- 	pr_info("%s [%s]\n", acpi_device_name(device), acpi_device_bid(device));
- 
- 	device->flags.match_driver = true;
-
-
-
+FWIW, this is definitively a step in the right direction, and this is a
+good way to deal with the phy-mode RGMII mess that has plagued us, thanks!
+-- 
+Florian
