@@ -2,124 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAE1942F700
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 17:25:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ED9B42F701
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 17:26:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240973AbhJOP1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 11:27:16 -0400
-Received: from mga06.intel.com ([134.134.136.31]:23112 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232267AbhJOP1L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 11:27:11 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10138"; a="288795650"
-X-IronPort-AV: E=Sophos;i="5.85,376,1624345200"; 
-   d="scan'208";a="288795650"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2021 08:25:05 -0700
-X-IronPort-AV: E=Sophos;i="5.85,376,1624345200"; 
-   d="scan'208";a="718137364"
-Received: from fongchan-mobl.amr.corp.intel.com (HELO [10.252.130.142]) ([10.252.130.142])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2021 08:25:04 -0700
-Subject: Re: [PATCH v1] x86/fpu: Remove opmask state from avx512_timestamp
- check
-To:     Noah Goldstein <goldstein.w.n@gmail.com>,
-        Borislav Petkov <bp@alien8.de>
-Cc:     tglx@linutronix.de, mingo@redhat.com, X86 ML <x86@kernel.org>,
-        hpa@zytor.com, Andy Lutomirski <luto@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        aubrey <aubrey.li@intel.com>,
-        "Chen, Tim C" <tim.c.chen@intel.com>,
-        "Van De Ven, Arjan" <arjan.van.de.ven@intel.com>
-References: <20210920053951.4093668-1-goldstein.w.n@gmail.com>
- <CAFUsyfJWXJEc1879uX_YOJg7cvie0gitv+bu83DiUXiE74uQww@mail.gmail.com>
- <CAFUsyfJQ8_=QnZjZ2zS45wwB6AaRgL4JO8_sT1a_rXUsfh_1WQ@mail.gmail.com>
- <YWfqEIaCKOwSWGHF@zn.tnic>
- <CAFUsyfLf5a6-L7f2AjLx3j8+qbG7EU9iLPJCTA0+UoOUg3C61A@mail.gmail.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <53c43d2d-0e2e-654b-417d-d3dcbca42fc5@intel.com>
-Date:   Fri, 15 Oct 2021 08:25:01 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S240972AbhJOP2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 11:28:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40916 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232267AbhJOP2X (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 11:28:23 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C4AFC061570
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 08:26:16 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id c29so8672260pfp.2
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 08:26:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=iS/q0+UgVJbQqV3Q9KW/gMKSm2K7WnWW8AcEkaTN11M=;
+        b=B6cDwuKwMEgEb+r66i3DN6N2B5h5WKnAWBmiyIlUS+cG58/ZgtrCXIPo7fnAcHxDkP
+         Jd0yo52lCEFPHdqSDPuZmKco7SjwbtvxQSGHLQnjL6Zc5OGv7fQfDCu3mE9A4JjeiU/3
+         L9ud+a7kg/ZHzzdZcqGhyIJJ5Q84HBsGMbqt3JMn6CrcNAqwdHDpqyegxpezuEKsyWBV
+         REz0ov8V0MPN8qCklCNhUt5FcHY0afVvxJoN0eS2M9nNKK/MVjJgmbkGX5jJAXFgz8Zi
+         QLF0cwVVVjXtzzTngVVCECjOcooU50Qw/Z6dz2g9fi3zOOwCfoFYp1NBKRl9lmbRCuO4
+         5llQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=iS/q0+UgVJbQqV3Q9KW/gMKSm2K7WnWW8AcEkaTN11M=;
+        b=B/Z72ILugi75cP41SK4QthqzomYM5RrIINNNbvDzEbucwqaKMjfu9kB10oBL99m/PO
+         7Hh0rSUd4wkGy/v9z5ch3K1xGP4CcK+x04IHB2T24jylvEGIu7ByTwSSILchHizujSI9
+         GQzFDsitjsFviULUT1aNHhnxJR0K/Uxfdr9TCN67qvEhXb6GFK+MkcziNo8I9y6BL8GO
+         neVOqR/rOMluADnAF1SOBJcyUt+vEFMeszAuJcbeokrXUCX1+tMuQdjhJ8Jlk/GEBvNJ
+         NnfrNlb4fiCZZPTu/rby2g3dGKkJDlAyjrcofmy3ZV5B0LToiPib41Yk3x6fPn+VvX3B
+         cf4A==
+X-Gm-Message-State: AOAM530xFvM2vt5A/O4lFJa/GliXApPI7Dj0BLD0RDjBg2xUmZyrsRWl
+        PgkBAKaNon7pkHgkw6y55PL05Js4UVnceSarCFSI9DYG37A=
+X-Google-Smtp-Source: ABdhPJxMNZK8lvUlL76El1EAEmZ2UCdWVDcJef9RAvLtGAs4U5wMSx0cAOoTGJ6AvngNNplV2X0H5OeZo8sI3kC0l9Q=
+X-Received: by 2002:a05:6a00:1a8d:b0:44d:72f1:96e5 with SMTP id
+ e13-20020a056a001a8d00b0044d72f196e5mr12374520pfv.40.1634311575927; Fri, 15
+ Oct 2021 08:26:15 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAFUsyfLf5a6-L7f2AjLx3j8+qbG7EU9iLPJCTA0+UoOUg3C61A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20211014143507.4ad2c0f7@gandalf.local.home> <CAEbi=3d=yO+D_SjQavqizc2tHyWda3t9zXbN84cbvYYNP=epKA@mail.gmail.com>
+ <20211015101814.6b372c10@gandalf.local.home>
+In-Reply-To: <20211015101814.6b372c10@gandalf.local.home>
+From:   Greentime Hu <green.hu@gmail.com>
+Date:   Fri, 15 Oct 2021 23:25:39 +0800
+Message-ID: <CAEbi=3c3uWSCxQsGf5SVTBpMwwgkm-Kb2uShvwz6jAoVWpBqwQ@mail.gmail.com>
+Subject: Re: [PATCH] nds32/ftrace: Fix Error: invalid operands (*UND* and
+ *UND* sections) for `^'
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Nick Hu <nickhu@andestech.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, Zong Li <zong@andestech.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        kernel test robot <lkp@intel.com>,
+        Alan Kao <alankao@andestech.com>, kclin@andestech.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/14/21 8:49 AM, Noah Goldstein wrote:
-> Irrelevant of the still existing flaws, it makes the output more accurate.
-> 
-> Is there a cost to the change I am not seeing?
+Steven Rostedt <rostedt@goodmis.org> =E6=96=BC 2021=E5=B9=B410=E6=9C=8815=
+=E6=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8B=E5=8D=8810:18=E5=AF=AB=E9=81=93=EF=
+=BC=9A
+>
+> On Fri, 15 Oct 2021 08:54:35 +0800
+> Greentime Hu <green.hu@gmail.com> wrote:
+>
+> > loop in Alan and KC
+>
+> Any thoughts?
+>
+> This has passed my tests, and I want to send it off to Linus. But it woul=
+d
+> be nice to have an acked by from one of the nds32 maintainers.
+>
+> If I don't hear back today, I'll just send my queue without this update t=
+o
+> Linus, as I want to get my changes in before the next rc release.
+>
+> Thanks!
 
-We'd want to make sure that this doesn't break anything.  It probably
-won't, but it theoretically could.
-
-For instance, if someone was doing:
-
-	avx512_foo();
-	xsave->xstate_bv &= ~XFEATURE_MASK_ZMMS;
-	XRSTOR(xsave, -1);
-
-That would leave the opmask in place, but would lead to the ZMM
-registers tracked as being in their init state.
-
-This would be *very* unlikely, but it would be great if Aubrey (the
-original avx512_timestamp patch author) could make sure that it doesn't
-break anything.
-
-Also, there's the side issue of AVX-256 use.  AVX-256 uses the ZMM
-registers which are a part of XFEATURE_MASK_AVX512, but does not incur
-the same frequency penalties of the full 512-bit-wide instructions.
-Since ZMM_Hi256 is the *only* ZMM state which is truly 512-bit-only, we
-could argue that it's the only one we should consider.
-
-Noah, thanks for bringing this up.  I'm not opposed to your patch, but
-let's just make sure that it doesn't break anything and also that we
-shouldn't do a bit more at the same time (ignore Hi16_ZMM for
-avx512_timestamp).
+Acked-by: Greentime Hu <green.hu@gmail.com>
+Thanks you, Steven.
