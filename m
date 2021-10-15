@@ -2,88 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD0B542FCF7
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 22:24:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D4E442FCFD
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 22:27:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242451AbhJOU0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 16:26:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53418 "EHLO
+        id S242958AbhJOU3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 16:29:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235134AbhJOU0V (ORCPT
+        with ESMTP id S238545AbhJOU3l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 16:26:21 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D92DC061570
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 13:24:14 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id e59-20020a9d01c1000000b00552c91a99f7so5078939ote.6
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 13:24:14 -0700 (PDT)
+        Fri, 15 Oct 2021 16:29:41 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 513A4C061762
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 13:27:34 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id v20so7080203plo.7
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 13:27:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxtx.org; s=google;
+        d=google.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=BL7U1pxKQ1P/Y+0bevmH2mhx87DdSXQSXmhQt0mxhns=;
-        b=IXwypPzlEZXLpnlAWC45zlWGXU/izQQzhW14UKov9bYsg9qkLIjhyYM6HlyrafUIPB
-         Hdm3WWF8zK0KY4rZfrhMiKzTr0a5AuJC/R40V+9irfacZHm82kMm7KX/IQMJx+37OuOI
-         X2l5BsGextKLtCYAaiGJlkgp9dkRcGbaWS5uA=
+        bh=aaCe1c/Il7mwzazLNOhBGe2zeoY0WJjHVx8W7f1BZpY=;
+        b=VHlnVWlZ/Pi2ld0Wgs4bKW4ri4LZhR1mLrjD69QcbOsw5z3yd7R0KP+xvCIFwoCuF6
+         45XI8i1uJ89nfB+II5BqxkkMe7Q5HyhfoIve+oqsATzlugEJXT8kZCH8NAuTpdVRpH23
+         IckZs4yOSQ3AGBE1qy6aZRWByu55YprOLoPFlSOodj4vA64qeuoxyqkZwXp2VJMbr1ys
+         hm8/fjdTMe4NI1MsXOqsPhkmAqOl7Z69QZQc22mmlXVdI8SaBN5ZJyuIXb16u/BUK+vp
+         p8jFDDinLpd1p6zcVEI04X9REwumzJqZgZ/8zPyCUeuieKdYE3KHSle5dIxhjLTV3xJj
+         RFkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=BL7U1pxKQ1P/Y+0bevmH2mhx87DdSXQSXmhQt0mxhns=;
-        b=tvQafTrFP397Xsf+1r9VAy8qCTwcKeAYP02YY0SRWhKTBT1zJbiJuTZNyn8ENefgj9
-         bcCVi05cnPmu/slJNPJwImvozz036Y9GDsZQqPMcqX1dyrAwBxOtj717LdIdHQUJ4yL7
-         DggwGAJohGutmn0YvzIaBNRSB0NacF5l5pB9eq8XEBuN6ef5WMSeJhOY6d+G25SMRK7b
-         X0vp7GqEMEYilrN0jJ5zFlQVoVrq97/r3OJctN2DzP98IdhsQmPJgUE0UILdYeCdlh0I
-         1SPh3XOJkha5UuQMlgdF76EkhyfAL5bzMpDg2nDm4GyMFDoU5HHny0+8xlqLKDCst+yS
-         Iekg==
-X-Gm-Message-State: AOAM532TcuDvA2t8n9uWLBDI6GFdn/mOF9heNAvsrm122uAgGxGCwVMT
-        ydfsm9eUe0/3uiAz/s1ubOSqfQ==
-X-Google-Smtp-Source: ABdhPJzLYjCdvnPQgpS3/OlN4s6myAfrvaU61VZL6iYP/jZD9LoFIYtZZCGqi5/QFLyzNG/gGyMRkg==
-X-Received: by 2002:a9d:72d8:: with SMTP id d24mr9341913otk.149.1634329452511;
-        Fri, 15 Oct 2021 13:24:12 -0700 (PDT)
-Received: from fedora64.linuxtx.org (104-189-158-32.lightspeed.rcsntx.sbcglobal.net. [104.189.158.32])
-        by smtp.gmail.com with ESMTPSA id o80sm1419803ota.68.2021.10.15.13.24.11
+        bh=aaCe1c/Il7mwzazLNOhBGe2zeoY0WJjHVx8W7f1BZpY=;
+        b=OnaMDoaUI7ljpyYfYk/JN4hwIFmSXEW2Js6zgb5g9bR2v5FrQODznbS8xztdQSQRHR
+         ZVzFn1Ok0MmQN3CsmlU+Kc9tYdEQgHRWvr0uwMrXtROKFCEAahmUBEvZsidKU5H3kIuT
+         PJUKNVL1eTWo35/w1GKIkA+TlVBbvhvoT1vylm6xerJz/7y3r6qWp5wTbNtY0mClY5yv
+         DOj7yG2UkrGZm+Ym0GQZ5akat/v3gFSveZV0hiL0+0BEk9d+1N2065NMniYLligO/R6D
+         Nl0aKgkTSKDmeWgFWvqgE/BnwkbNYUZMhD0kHy5kesO7gXftsZ9mi2p+LQQLyFIG+s7u
+         wwOQ==
+X-Gm-Message-State: AOAM533lHCB/jTYWbfjjqu0vLos7513n2203UpleX/7VZDTIwkXG/zfD
+        EwdOGhyy3+aOg658O1BXUZrKAw==
+X-Google-Smtp-Source: ABdhPJyMgV4d0MRDRJMTxbsrDlkWbmCHM9MvjK5KFtNvkfUV62+XAfcThk5V8SCnlNHJcjIB0quT5g==
+X-Received: by 2002:a17:90a:858e:: with SMTP id m14mr30194808pjn.1.1634329653554;
+        Fri, 15 Oct 2021 13:27:33 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id i2sm12231684pjg.48.2021.10.15.13.27.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Oct 2021 13:24:12 -0700 (PDT)
-Date:   Fri, 15 Oct 2021 15:24:09 -0500
-From:   Justin Forbes <jmforbes@linuxtx.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.14 00/30] 5.14.13-rc1 review
-Message-ID: <YWnjaWkA0rbViQJ5@fedora64.linuxtx.org>
-References: <20211014145209.520017940@linuxfoundation.org>
+        Fri, 15 Oct 2021 13:27:32 -0700 (PDT)
+Date:   Fri, 15 Oct 2021 20:27:29 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
+        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
+Subject: Re: [PATCH Part2 v5 05/45] x86/sev: Add helper functions for
+ RMPUPDATE and PSMASH instruction
+Message-ID: <YWnkMXdL89AHPF10@google.com>
+References: <20210820155918.7518-1-brijesh.singh@amd.com>
+ <20210820155918.7518-6-brijesh.singh@amd.com>
+ <YWnC++azH3xXrMm6@google.com>
+ <3fc1b403-73a1-cf2e-2990-66d2c1ecdfa3@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211014145209.520017940@linuxfoundation.org>
+In-Reply-To: <3fc1b403-73a1-cf2e-2990-66d2c1ecdfa3@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 04:54:05PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.14.13 release.
-> There are 30 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Fri, Oct 15, 2021, Brijesh Singh wrote:
+> On 10/15/21 1:05 PM, Sean Christopherson wrote:
+> > On Fri, Aug 20, 2021, Brijesh Singh wrote:
+> >> +	if (!cpu_feature_enabled(X86_FEATURE_SEV_SNP))
+> > Shouldn't this be a WARN_ON_ONCE()?
 > 
-> Responses should be made by Sat, 16 Oct 2021 14:51:59 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.13-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+> Since some of these function are called while handling the PSC so I
+> tried to avoid using the WARN -- mainly because if the warn_on_panic=1
+> is set on the host then it will result in the kernel panic.
 
-Tested rc1 against the Fedora build system (aarch64, armv7, ppc64le,
-s390x, x86_64), and boot tested x86_64. No regressions noted.
-
-Tested-by: Justin M. Forbes <jforbes@fedoraproject.org>
+But why would KVM be handling PSC requests if SNP is disabled?
