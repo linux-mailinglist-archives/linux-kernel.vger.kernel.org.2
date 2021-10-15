@@ -2,396 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AC4342EABD
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 09:56:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3174642EABF
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 09:56:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236424AbhJOH6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 03:58:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49092 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232099AbhJOH6b (ORCPT
+        id S236428AbhJOH6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 03:58:52 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:48651 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236397AbhJOH6v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 03:58:31 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A394AC061570
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 00:56:24 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id m42so1740962wms.2
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 00:56:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ouMND3NfgeuvBPlPm7cUu4Hy0WrY9I65gt8nxTJtUhE=;
-        b=qHuQFtnCrLeQOkmQQhzU1KpIIJj3II+/U6afpBeQdPql25AeJeVFH6laPhmGzuz/Vz
-         puoNkFkIilpJR9iF5nvC0NJ/3UilqqAlrg9izXiOZL5eL9/06OA/wpXvCB3D/56Pwh58
-         Nvfb17mlh1LI4BlOe1yo8IFdENfILjqgC9cl7idZSQ4RKoYYHNU/x3UOhReyZ6HtAvNg
-         WZa4gT+ObZROiNOGjNpQWDu8kz5bAubm7vfdZSbiWfMV4tAIMWOKfTcA8kXCEj5+A39L
-         XFtoKYYZkgX/CQMdkfCyj6uuQxIMKKulRE1EG8HecSnDmtIYl4lmMWIOs1H6RC6AGIPs
-         oAxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=ouMND3NfgeuvBPlPm7cUu4Hy0WrY9I65gt8nxTJtUhE=;
-        b=xLP+/GJiWiq0vSwX7lWSxBREqdVGLgy5XPHqn5/dokCgiuXzF3/ruwyiZStXCuqDVj
-         lumQgyfTEdLyTBcBD8hQEXcWe2oo6eDTS0asVXBnwW8ee0mZuBG3v1ZY0GpXRAJJTSSi
-         p6FLllwmo/HQZEPspBB+O55wTftbaygFdGaDe56YkKkOgNE+UsLeLX4cXSpH+7rZ7KKO
-         IlzuILdTR9K3V572lh0P+rF/irsLVQeUuXqqegwMo7tP1VcoMr6Ui1hzSW2jnzA9Qrbo
-         UNpps/MSyEZefMj6MXS9p3nzZYi8aFhiLhThKouxzDMQyPiwa1h1U2D6HRWnFzNlnKwF
-         R26A==
-X-Gm-Message-State: AOAM53104tR7cJB4hX4mLNtdmfPbnciBUcRBCHyBYtOlea4tYzlCejvz
-        2nz3r94xbo5+geksSACdqZH3MsD96J+5QA==
-X-Google-Smtp-Source: ABdhPJz16Agy1BFqoD4jlLaknHtUbUto/Gw7QmEJ6N1uhX8dPx0OUNX4UbhtHbEjgazVmylcYz0WpA==
-X-Received: by 2002:a1c:4d15:: with SMTP id o21mr25135821wmh.167.1634284582825;
-        Fri, 15 Oct 2021 00:56:22 -0700 (PDT)
-Received: from ?IPv6:2001:861:44c0:66c0:f6e3:13bd:45ae:5eeb? ([2001:861:44c0:66c0:f6e3:13bd:45ae:5eeb])
-        by smtp.gmail.com with ESMTPSA id l20sm14239892wmq.42.2021.10.15.00.56.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Oct 2021 00:56:22 -0700 (PDT)
-Subject: Re: [PATCH 7/7] drm/meson: encoder_cvbs: switch to bridge with
- ATTACH_NO_CONNECTOR
-To:     Sam Ravnborg <sam@ravnborg.org>
-Cc:     daniel@ffwll.ch, Laurent.pinchart@ideasonboard.com,
-        martin.blumenstingl@googlemail.com,
-        dri-devel@lists.freedesktop.org, linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20211014152606.2289528-1-narmstrong@baylibre.com>
- <20211014152606.2289528-8-narmstrong@baylibre.com>
- <YWhzyIBemCrm9U5v@ravnborg.org>
-From:   Neil Armstrong <narmstrong@baylibre.com>
-Organization: Baylibre
-Message-ID: <774b3d69-6b54-433b-c59d-7f3375456072@baylibre.com>
-Date:   Fri, 15 Oct 2021 09:56:21 +0200
+        Fri, 15 Oct 2021 03:58:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1634284605; x=1665820605;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=BGy4nKkFSUYhNDse2rH6kKGMeEkum5mhKIYnkWkpkE8=;
+  b=waztTigSx7/gmIrbuachBcpRhn3P2/mpGtk1ec10SwZiyMCOoJMKuBHE
+   zqgXhawW4cpbXF5ni0NGa2GnvKGdhqC2k5NDlSD6DMxzXf+4VN55/CC17
+   kVI6FYWPYjtQLo30+Mh2z4AbRVDYkZHzzdNRfeW4izOLX22U3R6aH3tU6
+   DLvSFqSAHyzwPmnu8Q/TDp8mvQmnmc8z0iSe0aVHxWzLLRtYGBDQhtvAs
+   MmMxWFN1HCqwzWeypYnbbNEFCqZG3pabmz2Ril7U8g14og65Yxyz/dcNS
+   iADKkvX7Z9NA97tq5MIKNIQKp9ATmGe4v3COpeOsAg2R/CiVXR/M7C07F
+   Q==;
+IronPort-SDR: wbQTdL9+1lsQc4C8EYa3Qtfm+H2Ex4UJVsau1O2LN5QhbzRynAliwGZw3GLSTvTm3MPFOr4+xs
+ aqvcUdWRYdZEkz3WS873x1ORSXuDFK4GNRdlR66dPoZTRxQ4+KFP212xtK0R7FW6tLnuR1AGYW
+ ph7LMqeR6tEk0CbSqN/LqKiozI4s3yXQ+xBfYNMbiwdqdNNTBXblf3zNq5BfVjHliIPFlWusyW
+ ksSxSPGMsGTODZuwpKTClU/G1t+1vyZ/2Gf2Yg7T6IY5Ww5HxZBXT9P94k+1/MQRiaIeSyWgjn
+ YZQv2bqre/RoQIHMrzT9HFJc
+X-IronPort-AV: E=Sophos;i="5.85,375,1624345200"; 
+   d="scan'208";a="140403841"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 15 Oct 2021 00:56:44 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Fri, 15 Oct 2021 00:56:44 -0700
+Received: from [10.12.67.94] (10.10.115.15) by chn-vm-ex02.mchp-main.com
+ (10.10.85.144) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
+ Transport; Fri, 15 Oct 2021 00:56:43 -0700
+Subject: Re: [PATCH v5 09/15] clk: at91: clk-master: mask mckr against
+ layout->mask
+To:     Claudiu Beznea <claudiu.beznea@microchip.com>,
+        <mturquette@baylibre.com>, <sboyd@kernel.org>,
+        <alexandre.belloni@bootlin.com>, <ludovic.desroches@microchip.com>
+CC:     <linux-clk@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20211011112719.3951784-1-claudiu.beznea@microchip.com>
+ <20211011112719.3951784-10-claudiu.beznea@microchip.com>
+From:   Nicolas Ferre <nicolas.ferre@microchip.com>
+Organization: microchip
+Message-ID: <579573e1-ab48-75b2-b185-5885ac5a15c5@microchip.com>
+Date:   Fri, 15 Oct 2021 09:56:42 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <YWhzyIBemCrm9U5v@ravnborg.org>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20211011112719.3951784-10-claudiu.beznea@microchip.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sam,
+On 11/10/2021 at 13:27, Claudiu Beznea wrote:
+> Mask values read/written from/to MCKR against layout->mask as this
+> mask may be different b/w PMC versions.
+> 
+> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 
-On 14/10/2021 20:15, Sam Ravnborg wrote:
-> Hi Neil,
-> 
-> with include order fixed and the comment below considered:
-> Acked-by: Sam Ravnborg <sam@ravnborg.org>
-> 
-> 	Sam
-> 
-> 
-> On Thu, Oct 14, 2021 at 05:26:06PM +0200, Neil Armstrong wrote:
->> Drop the local connector and move all callback to bridge funcs in order
->> to leverage the generic CVBS diplay connector.
->>
->> This will also permit adding custom cvbs connectors for ADC based HPD
->> detection on some Amlogic SoC based boards.
->>
->> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
->> ---
->>  drivers/gpu/drm/meson/meson_encoder_cvbs.c | 178 +++++++++------------
->>  1 file changed, 79 insertions(+), 99 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/meson/meson_encoder_cvbs.c b/drivers/gpu/drm/meson/meson_encoder_cvbs.c
->> index 01024c5f610c..0b974667cf55 100644
->> --- a/drivers/gpu/drm/meson/meson_encoder_cvbs.c
->> +++ b/drivers/gpu/drm/meson/meson_encoder_cvbs.c
->> @@ -13,6 +13,9 @@
->>  #include <linux/of_graph.h>
->>  
->>  #include <drm/drm_atomic_helper.h>
->> +#include <drm/drm_simple_kms_helper.h>
->> +#include <drm/drm_bridge.h>
->> +#include <drm/drm_bridge_connector.h>
->>  #include <drm/drm_device.h>
->>  #include <drm/drm_edid.h>
->>  #include <drm/drm_probe_helper.h>
-> alphabetic order.
-> 
->> @@ -30,14 +33,14 @@
->>  
->>  struct meson_encoder_cvbs {
->>  	struct drm_encoder	encoder;
->> -	struct drm_connector	connector;
->> +	struct drm_bridge	bridge;
->> +	struct drm_bridge	*next_bridge;
->> +	struct drm_connector	*connector;
-> Maybe drop this - see later.
-> 
->>  	struct meson_drm	*priv;
->>  };
->> -#define encoder_to_meson_encoder_cvbs(x) \
->> -	container_of(x, struct meson_encoder_cvbs, encoder)
->>  
->> -#define connector_to_meson_encoder_cvbs(x) \
->> -	container_of(x, struct meson_encoder_cvbs, connector)
->> +#define bridge_to_meson_encoder_cvbs(x) \
->> +	container_of(x, struct meson_encoder_cvbs, bridge)
->>  
->>  /* Supported Modes */
->>  
->> @@ -81,21 +84,18 @@ meson_cvbs_get_mode(const struct drm_display_mode *req_mode)
->>  	return NULL;
->>  }
->>  
->> -/* Connector */
->> -
->> -static void meson_cvbs_connector_destroy(struct drm_connector *connector)
->> +static int meson_encoder_cvbs_attach(struct drm_bridge *bridge,
->> +				     enum drm_bridge_attach_flags flags)
->>  {
->> -	drm_connector_cleanup(connector);
->> -}
->> +	struct meson_encoder_cvbs *meson_encoder_cvbs =
->> +					bridge_to_meson_encoder_cvbs(bridge);
->>  
->> -static enum drm_connector_status
->> -meson_cvbs_connector_detect(struct drm_connector *connector, bool force)
->> -{
->> -	/* FIXME: Add load-detect or jack-detect if possible */
->> -	return connector_status_connected;
->> +	return drm_bridge_attach(bridge->encoder, meson_encoder_cvbs->next_bridge,
->> +				 &meson_encoder_cvbs->bridge, flags);
->>  }
->>  
->> -static int meson_cvbs_connector_get_modes(struct drm_connector *connector)
->> +static int meson_encoder_cvbs_get_modes(struct drm_bridge *bridge,
->> +					struct drm_connector *connector)
->>  {
->>  	struct drm_device *dev = connector->dev;
->>  	struct drm_display_mode *mode;
->> @@ -116,40 +116,18 @@ static int meson_cvbs_connector_get_modes(struct drm_connector *connector)
->>  	return i;
->>  }
->>  
->> -static int meson_cvbs_connector_mode_valid(struct drm_connector *connector,
->> -					   struct drm_display_mode *mode)
->> +static int meson_encoder_cvbs_mode_valid(struct drm_bridge *bridge,
->> +					const struct drm_display_info *display_info,
->> +					const struct drm_display_mode *mode)
->>  {
->> -	/* Validate the modes added in get_modes */
->> -	return MODE_OK;
->> -}
->> -
->> -static const struct drm_connector_funcs meson_cvbs_connector_funcs = {
->> -	.detect			= meson_cvbs_connector_detect,
->> -	.fill_modes		= drm_helper_probe_single_connector_modes,
->> -	.destroy		= meson_cvbs_connector_destroy,
->> -	.reset			= drm_atomic_helper_connector_reset,
->> -	.atomic_duplicate_state	= drm_atomic_helper_connector_duplicate_state,
->> -	.atomic_destroy_state	= drm_atomic_helper_connector_destroy_state,
->> -};
->> -
->> -static const
->> -struct drm_connector_helper_funcs meson_cvbs_connector_helper_funcs = {
->> -	.get_modes	= meson_cvbs_connector_get_modes,
->> -	.mode_valid	= meson_cvbs_connector_mode_valid,
->> -};
->> +	if (meson_cvbs_get_mode(mode))
->> +		return MODE_OK;
->>  
->> -/* Encoder */
->> -
->> -static void meson_encoder_cvbs_encoder_destroy(struct drm_encoder *encoder)
->> -{
->> -	drm_encoder_cleanup(encoder);
->> +	return MODE_BAD;
->>  }
->>  
->> -static const struct drm_encoder_funcs meson_encoder_cvbs_encoder_funcs = {
->> -	.destroy        = meson_encoder_cvbs_encoder_destroy,
->> -};
->> -
->> -static int meson_encoder_cvbs_encoder_atomic_check(struct drm_encoder *encoder,
->> +static int meson_encoder_cvbs_atomic_check(struct drm_bridge *bridge,
->> +					struct drm_bridge_state *bridge_state,
->>  					struct drm_crtc_state *crtc_state,
->>  					struct drm_connector_state *conn_state)
->>  {
->> @@ -159,10 +137,10 @@ static int meson_encoder_cvbs_encoder_atomic_check(struct drm_encoder *encoder,
->>  	return -EINVAL;
->>  }
->>  
->> -static void meson_encoder_cvbs_encoder_disable(struct drm_encoder *encoder)
->> +static void meson_encoder_cvbs_disable(struct drm_bridge *bridge)
->>  {
->>  	struct meson_encoder_cvbs *meson_encoder_cvbs =
->> -					encoder_to_meson_encoder_cvbs(encoder);
->> +					bridge_to_meson_encoder_cvbs(bridge);
->>  	struct meson_drm *priv = meson_encoder_cvbs->priv;
->>  
->>  	/* Disable CVBS VDAC */
->> @@ -175,10 +153,10 @@ static void meson_encoder_cvbs_encoder_disable(struct drm_encoder *encoder)
->>  	}
->>  }
->>  
->> -static void meson_encoder_cvbs_encoder_enable(struct drm_encoder *encoder)
->> +static void meson_encoder_cvbs_enable(struct drm_bridge *bridge)
->>  {
->>  	struct meson_encoder_cvbs *meson_encoder_cvbs =
->> -					encoder_to_meson_encoder_cvbs(encoder);
->> +					bridge_to_meson_encoder_cvbs(bridge);
->>  	struct meson_drm *priv = meson_encoder_cvbs->priv;
->>  
->>  	/* VDAC0 source is not from ATV */
->> @@ -198,13 +176,13 @@ static void meson_encoder_cvbs_encoder_enable(struct drm_encoder *encoder)
->>  	}
->>  }
->>  
->> -static void meson_encoder_cvbs_encoder_mode_set(struct drm_encoder *encoder,
->> -				   struct drm_display_mode *mode,
->> -				   struct drm_display_mode *adjusted_mode)
->> +static void meson_encoder_cvbs_mode_set(struct drm_bridge *bridge,
->> +				   const struct drm_display_mode *mode,
->> +				   const struct drm_display_mode *adjusted_mode)
->>  {
->>  	const struct meson_cvbs_mode *meson_mode = meson_cvbs_get_mode(mode);
->>  	struct meson_encoder_cvbs *meson_encoder_cvbs =
->> -					encoder_to_meson_encoder_cvbs(encoder);
->> +					bridge_to_meson_encoder_cvbs(bridge);
->>  	struct meson_drm *priv = meson_encoder_cvbs->priv;
->>  
->>  	if (meson_mode) {
->> @@ -218,76 +196,78 @@ static void meson_encoder_cvbs_encoder_mode_set(struct drm_encoder *encoder,
->>  	}
->>  }
->>  
->> -static const struct drm_encoder_helper_funcs
->> -				meson_encoder_cvbs_encoder_helper_funcs = {
->> -	.atomic_check	= meson_encoder_cvbs_encoder_atomic_check,
->> -	.disable	= meson_encoder_cvbs_encoder_disable,
->> -	.enable		= meson_encoder_cvbs_encoder_enable,
->> -	.mode_set	= meson_encoder_cvbs_encoder_mode_set,
->> +static const struct drm_bridge_funcs meson_encoder_cvbs_bridge_funcs = {
->> +	.attach = meson_encoder_cvbs_attach,
->> +	.enable	= meson_encoder_cvbs_enable,
->> +	.disable = meson_encoder_cvbs_disable,
->> +	.mode_valid = meson_encoder_cvbs_mode_valid,
->> +	.mode_set = meson_encoder_cvbs_mode_set,
->> +	.get_modes = meson_encoder_cvbs_get_modes,
->> +	.atomic_check = meson_encoder_cvbs_atomic_check,
->>  };
->>  
->> -static bool meson_encoder_cvbs_connector_is_available(struct meson_drm *priv)
->> -{
->> -	struct device_node *remote;
->> -
->> -	remote = of_graph_get_remote_node(priv->dev->of_node, 0, 0);
->> -	if (!remote)
->> -		return false;
->> -
->> -	of_node_put(remote);
->> -	return true;
->> -}
->> -
->>  int meson_encoder_cvbs_init(struct meson_drm *priv)
->>  {
->>  	struct drm_device *drm = priv->drm;
->>  	struct meson_encoder_cvbs *meson_encoder_cvbs;
->> -	struct drm_connector *connector;
->> -	struct drm_encoder *encoder;
->> +	struct device_node *remote;
->>  	int ret;
->>  
->> -	if (!meson_encoder_cvbs_connector_is_available(priv)) {
->> +	meson_encoder_cvbs = devm_kzalloc(priv->dev, sizeof(*meson_encoder_cvbs), GFP_KERNEL);
->> +	if (!meson_encoder_cvbs)
->> +		return -ENOMEM;
->> +
->> +	/* CVBS Connector Bridge */
->> +	remote = of_graph_get_remote_node(priv->dev->of_node, 0, 0);
->> +	if (!remote) {
->>  		dev_info(drm->dev, "CVBS Output connector not available\n");
->>  		return 0;
->>  	}
->>  
->> -	meson_encoder_cvbs = devm_kzalloc(priv->dev, sizeof(*meson_encoder_cvbs),
->> -				       GFP_KERNEL);
->> -	if (!meson_encoder_cvbs)
->> -		return -ENOMEM;
->> +	meson_encoder_cvbs->next_bridge = of_drm_find_bridge(remote);
->> +	if (!meson_encoder_cvbs->next_bridge) {
->> +		dev_err(priv->dev, "Failed to find CVBS Connector bridge\n");
->> +		return -EPROBE_DEFER;
->> +	}
->>  
->> -	meson_encoder_cvbs->priv = priv;
->> -	encoder = &meson_encoder_cvbs->encoder;
->> -	connector = &meson_encoder_cvbs->connector;
->> +	/* CVBS Encoder Bridge */
->> +	meson_encoder_cvbs->bridge.funcs = &meson_encoder_cvbs_bridge_funcs;
->> +	meson_encoder_cvbs->bridge.of_node = priv->dev->of_node;
->> +	meson_encoder_cvbs->bridge.type = DRM_MODE_CONNECTOR_Composite;
->> +	meson_encoder_cvbs->bridge.ops = DRM_BRIDGE_OP_MODES;
->> +	meson_encoder_cvbs->bridge.interlace_allowed = true;
->>  
->> -	/* Connector */
->> +	drm_bridge_add(&meson_encoder_cvbs->bridge);
->>  
->> -	drm_connector_helper_add(connector,
->> -				 &meson_cvbs_connector_helper_funcs);
->> +	meson_encoder_cvbs->priv = priv;
->>  
->> -	ret = drm_connector_init(drm, connector, &meson_cvbs_connector_funcs,
->> -				 DRM_MODE_CONNECTOR_Composite);
->> +	/* Encoder */
->> +	ret = drm_simple_encoder_init(priv->drm, &meson_encoder_cvbs->encoder,
->> +				      DRM_MODE_ENCODER_TVDAC);
->>  	if (ret) {
->> -		dev_err(priv->dev, "Failed to init CVBS connector\n");
->> +		dev_err(priv->dev, "Failed to init CVBS encoder: %d\n", ret);
->>  		return ret;
->>  	}
->>  
->> -	connector->interlace_allowed = 1;
->> +	meson_encoder_cvbs->encoder.possible_crtcs = BIT(0);
->>  
->> -	/* Encoder */
->> -
->> -	drm_encoder_helper_add(encoder, &meson_encoder_cvbs_encoder_helper_funcs);
->> -
->> -	ret = drm_encoder_init(drm, encoder, &meson_encoder_cvbs_encoder_funcs,
->> -			       DRM_MODE_ENCODER_TVDAC, "meson_encoder_cvbs");
->> +	/* Attach CVBS Encoder Bridge to Encoder */
->> +	ret = drm_bridge_attach(&meson_encoder_cvbs->encoder, &meson_encoder_cvbs->bridge, NULL,
->> +				DRM_BRIDGE_ATTACH_NO_CONNECTOR);
->>  	if (ret) {
->> -		dev_err(priv->dev, "Failed to init CVBS encoder\n");
->> +		dev_err(priv->dev, "Failed to attach bridge: %d\n", ret);
->>  		return ret;
->>  	}
->>  
->> -	encoder->possible_crtcs = BIT(0);
->> -
->> -	drm_connector_attach_encoder(connector, encoder);
->> +	/* Initialize & attach Bridge Connector */
->> +	meson_encoder_cvbs->connector = drm_bridge_connector_init(priv->drm,
->> +							&meson_encoder_cvbs->encoder);
-> I did not see other uses of meson_encoder_cvbs->connector, so if I am
-> right a local variable can be used and the member dropped.
+Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
 
-You're right, I'll drop this.
-
-Thanks
-Neil
-
+> ---
+>   drivers/clk/at91/clk-master.c | 7 +++++--
+>   1 file changed, 5 insertions(+), 2 deletions(-)
 > 
->> +	if (IS_ERR(meson_encoder_cvbs->connector)) {
->> +		dev_err(priv->dev, "Unable to create CVBS bridge connector\n");
->> +		return PTR_ERR(meson_encoder_cvbs->connector);
->> +	}
->> +	drm_connector_attach_encoder(meson_encoder_cvbs->connector,
->> +				     &meson_encoder_cvbs->encoder);
->>  
->>  	return 0;
->>  }
->> -- 
->> 2.25.1
+> diff --git a/drivers/clk/at91/clk-master.c b/drivers/clk/at91/clk-master.c
+> index 2093e13b5068..6da9ae34313a 100644
+> --- a/drivers/clk/at91/clk-master.c
+> +++ b/drivers/clk/at91/clk-master.c
+> @@ -186,8 +186,8 @@ static int clk_master_div_set_rate(struct clk_hw *hw, unsigned long rate,
+>   	if (ret)
+>   		goto unlock;
+>   
+> -	tmp = mckr & master->layout->mask;
+> -	tmp = (tmp >> MASTER_DIV_SHIFT) & MASTER_DIV_MASK;
+> +	mckr &= master->layout->mask;
+> +	tmp = (mckr >> MASTER_DIV_SHIFT) & MASTER_DIV_MASK;
+>   	if (tmp == div)
+>   		goto unlock;
+>   
+> @@ -384,6 +384,7 @@ static unsigned long clk_master_pres_recalc_rate(struct clk_hw *hw,
+>   	regmap_read(master->regmap, master->layout->offset, &val);
+>   	spin_unlock_irqrestore(master->lock, flags);
+>   
+> +	val &= master->layout->mask;
+>   	pres = (val >> master->layout->pres_shift) & MASTER_PRES_MASK;
+>   	if (pres == 3 && characteristics->have_div3_pres)
+>   		pres = 3;
+> @@ -403,6 +404,8 @@ static u8 clk_master_pres_get_parent(struct clk_hw *hw)
+>   	regmap_read(master->regmap, master->layout->offset, &mckr);
+>   	spin_unlock_irqrestore(master->lock, flags);
+>   
+> +	mckr &= master->layout->mask;
+> +
+>   	return mckr & AT91_PMC_CSS;
+>   }
+>   
+> 
 
+
+-- 
+Nicolas Ferre
