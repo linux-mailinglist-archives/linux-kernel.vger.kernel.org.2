@@ -2,203 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D81F42E65D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 04:06:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B61042E65C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 04:06:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234891AbhJOCIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 22:08:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56356 "EHLO
+        id S234876AbhJOCIR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 22:08:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234867AbhJOCIi (ORCPT
+        with ESMTP id S234867AbhJOCIP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 22:08:38 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EA10C061570
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 19:06:33 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id d125so6061257iof.5
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 19:06:33 -0700 (PDT)
+        Thu, 14 Oct 2021 22:08:15 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54F05C061570;
+        Thu, 14 Oct 2021 19:06:09 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id n11so5437840plf.4;
+        Thu, 14 Oct 2021 19:06:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ez587ft9rqr8sTeod+Afv+LsY8b+Xmu4wMHtAealLmU=;
-        b=FbzUk1lC6UGTtGCEL3MXXivdBwD/G3cAIjD7Ih8LpdBtbTVuFjJ+2S4MhJJonliG6u
-         4ry/NRCSREmFB0NxVjW9zdPgBFl/nBquFHnkI8wM/nlxf/j3YNVxNgC7CDqHWR+0q9Ad
-         IcnD9xZh8J2ywWzt10LmGKS9svnEQAVaFloLjGMo7d0Vv1I1eDhA7EXk83N6Ve0lm8co
-         kmGL9PZhWQ06ozuBhiYh4TfEWLtGe+PawtMfGR0s40hZEsrPYbf9+PSJtWYMsQpR0fRW
-         LDJNg+7OCIIbro+a/5NRidfAyc0stYNhdnji4ZVqys2hx/DpigBhTz+q+q+iSLRzu5ew
-         2REA==
+        h=to:cc:references:from:organization:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=DQqSPjrKwdbRev245xbK+egMBqTVOHtR7p4QVsFq+Oo=;
+        b=Es0zndR+K0ck5zcLcQ31wnjrDMBUTmUGkgTJwriyrLdW2/KhowUJzurdMacY7GFAe7
+         CUlfkZSMPnM3GFOFM3T/lGO8n/PRRA2lqLP+lLgt4VGVXqXeY7iDZe6CGN3i9gF7D5GF
+         YASbtP3K1H/pwGn8nKOI3u2a9a4mouL633Joqi9zXsjR+Hez0tZYlvYCxGsW/Q8geTcQ
+         CIEuPc66WC/sE3jZPXZbjFXhMQUOrfkDBWYqnc9D5eSplv2txB6zycs9ilC1HCxM/iIv
+         CAV1LSdLqwCxtJpIDUpeqkteAEj46mmU0nJW5aZc32iTlh9pASomEkX+FQrIL25ZHWZO
+         BSDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ez587ft9rqr8sTeod+Afv+LsY8b+Xmu4wMHtAealLmU=;
-        b=V+IxFl41Rs4nKdTPCXRAbWMqtVkstHT9cexdYTmVmuOmyBn2bZg/1hmKNwYWEjvlHg
-         58Tw4U/Yfcvd2CDk88MaL+BZxkMM6ELfWH/cJU29l0sJQhMaetQbqvf//CfMC/UZoIML
-         HqnttF7pKQqDzRiYpJP4eyXuzkYjSEMQtnacdHilySx/ax5e+hEAsb69/fQbrS4A1UiS
-         dIW4WmWBLYpOEmfZ2yCINKNSSB9kp3ygx2g7t74Agtr0B2LGCIBrnvm8TYnrZUTtkayt
-         K7cv2vD6tRfs71h1yaY2GpJ/BWxyCJ3WyEqkSLNYyKrka8BZefZ9F9RQzdJ5L1eFSDlu
-         Xnfw==
-X-Gm-Message-State: AOAM532d2/aBJHpkcq00a7kqtHYvgwse+KiL8iXZei10BY43YBEGQQrn
-        PJ9Jih+2Jcnfl9mQTraepesQNtna4zBlXiUqULo=
-X-Google-Smtp-Source: ABdhPJyF6K3gLFM7HtRbgXXhFfdoW8ppZhJnP8vBqqSzDphdligAw3eLw83kq1SVc5ZZ5cP5U4lBhX8ai1o7qhXj3J8=
-X-Received: by 2002:a05:6602:27d4:: with SMTP id l20mr1840790ios.94.1634263592376;
- Thu, 14 Oct 2021 19:06:32 -0700 (PDT)
+        h=x-gm-message-state:to:cc:references:from:organization:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=DQqSPjrKwdbRev245xbK+egMBqTVOHtR7p4QVsFq+Oo=;
+        b=FAwbyDefC4ec/m5j50OHfvOO6GOJnyYrSKgYQk+8yh4MELJlvE+oE/0/k4HtYIAhE0
+         DGdexc0UKPyXoyNJSAVWTrZ7nt19vVre+9KxIcpqEOf0ovaIhWiNht9sRVoK16cOxHIw
+         2qmDNHPVHB3RGREyAcfzHzW0XyZWokQ2vz6mDI+KZDqn/OuXzrrf2S16G7Otn8s05mhB
+         R0Y0/E7L6HqUAp8/AaXfkAZJyvXl31Lrk2Q8ls6GiAaSOsam4ASPhXr5n2djtCc7lagO
+         1rdeG/zNKqo97vofq38D+Gc3070hbomwccY1I2oH33SQlhvW5YOA4kno8WbkCI2detGQ
+         uVhA==
+X-Gm-Message-State: AOAM531xsCeV5OFBbViEPLKqURLpEsZ0K0rAYgDM0PJ8PsH+/Fq0qgvA
+        NFw4uVqOKxVjiWxaPtjhxYymLMEXvIZxyjy9
+X-Google-Smtp-Source: ABdhPJwMRZ1qM7bPfc0qYRz5GNcfo36bvrFmsOWET9m6FAAtIgtQoTWe5X38NY6+1Jwxr6wVviTZBg==
+X-Received: by 2002:a17:90a:47:: with SMTP id 7mr10312813pjb.46.1634263568730;
+        Thu, 14 Oct 2021 19:06:08 -0700 (PDT)
+Received: from Likes-MacBook-Pro.local ([103.7.29.32])
+        by smtp.gmail.com with ESMTPSA id q12sm3638052pgv.26.2021.10.14.19.06.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Oct 2021 19:06:08 -0700 (PDT)
+To:     Yang Weijiang <weijiang.yang@intel.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     pbonzini@redhat.com, jmattson@google.com, vkuznets@redhat.com,
+        wei.w.wang@intel.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1629791777-16430-1-git-send-email-weijiang.yang@intel.com>
+ <1629791777-16430-16-git-send-email-weijiang.yang@intel.com>
+ <YWjE0iQ6fDdJpDfT@google.com> <20211015012821.GA29942@intel.com>
+From:   Like Xu <like.xu.linux@gmail.com>
+Organization: Tencent
+Subject: Re: [PATCH v8 15/15] KVM: x86/cpuid: Advise Arch LBR feature in CPUID
+Message-ID: <dfe0dee9-905a-9296-4a5b-e88eb9e942a1@gmail.com>
+Date:   Fri, 15 Oct 2021 10:05:58 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <20211010102429.99577-4-laoar.shao@gmail.com> <20211014072707.GA18719@xsang-OptiPlex-9020>
- <CALOAHbD540exB5DDfB8DDh8WXvsag9JsdMmC0yxriWMaoAVfOg@mail.gmail.com>
- <1529739526.13983.1634215325995.JavaMail.zimbra@efficios.com>
- <CALOAHbDGH1vp7a9BYLDKCCrh-W2205O707LXNM+Yvt5tQ7Swag@mail.gmail.com>
- <173454728.14036.1634216949862.JavaMail.zimbra@efficios.com>
- <CALOAHbBTxLvuiuT4tT2_7C+jaXBoh0uTjzLRm+njO4tKxCtPwg@mail.gmail.com>
- <1171592945.14099.1634219447199.JavaMail.zimbra@efficios.com>
- <CALOAHbAhT1bTAThrmA1zYE5q8shR4dxZf5fqcq_9wVrV+XwVEQ@mail.gmail.com> <202110140910.295E856@keescook>
-In-Reply-To: <202110140910.295E856@keescook>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Fri, 15 Oct 2021 10:05:56 +0800
-Message-ID: <CALOAHbAQ06+G776+7WqWBag+Q1gO5M+Qg3axYd4=Tpbzx1i=tg@mail.gmail.com>
-Subject: Re: [sched.h] 317419b91e: perf-sanity-tests.Parse_sched_tracepoints_fields.fail
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        acme <acme@kernel.org>, rostedt <rostedt@goodmis.org>,
-        kernel test robot <oliver.sang@intel.com>,
-        0day robot <lkp@intel.com>, Petr Mladek <pmladek@suse.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        lkp <lkp@lists.01.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Qiang Zhang <qiang.zhang@windriver.com>,
-        robdclark <robdclark@chromium.org>,
-        christian <christian@brauner.io>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        bristot <bristot@redhat.com>,
-        aubrey li <aubrey.li@linux.intel.com>,
-        yu c chen <yu.c.chen@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211015012821.GA29942@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 15, 2021 at 12:14 AM Kees Cook <keescook@chromium.org> wrote:
->
-> On Thu, Oct 14, 2021 at 10:40:04PM +0800, Yafang Shao wrote:
-> > On Thu, Oct 14, 2021 at 9:50 PM Mathieu Desnoyers
-> > <mathieu.desnoyers@efficios.com> wrote:
-> > >
-> > > ----- On Oct 14, 2021, at 9:11 AM, Yafang Shao laoar.shao@gmail.com wrote:
-> > >
-> > > > On Thu, Oct 14, 2021 at 9:09 PM Mathieu Desnoyers
-> > > > <mathieu.desnoyers@efficios.com> wrote:
-> > > >>
-> > > >> ----- On Oct 14, 2021, at 9:05 AM, Yafang Shao laoar.shao@gmail.com wrote:
-> > > >> [...]
-> > > >> >> If it happens that this ABI break is noticed by more than an in-tree test
-> > > >> >> program, then
-> > > >> >> the kernel's ABI rules will require that this trace field size stays unchanged.
-> > > >> >> This brings
-> > > >> >> up once more the whole topic of "Tracepoints ABI" which has been discussed
-> > > >> >> repeatedly in
-> > > >> >> the past.
-> > > >> >>
-> > > >> >
-> > > >> > I will check if any other in-tree tools depends on TASK_COMM_LEN.
-> > > >>
-> > > >> That's a start, but given this is a userspace ABI, out-of-tree userland
-> > > >> tools which depend of this to be fixed-size are also relevant.
-> > > >>
-> > > >
-> > > > TASK_COMM_LEN isn't defined in include/uapi/ directory, so it seems
-> > > > that it isn't the uerspace ABI?
-> > >
-> > > One case where this 16 bytes size is expected by userspace is prctl(2) PR_GET_NAME
-> > > and PR_SET_NAME.
-> > >
-> >
-> > the prctl(2) man page says that:
-> > : PR_SET_NAME
-> > :        If the length of the string, including the terminating
-> > :        null byte, exceeds 16 bytes, the string is silently truncated.
-> > : PR_GET_NAME
-> > :         The buffer should allow space for up to 16 bytes
-> > :          the returned string will be null-terminated.
-> >
-> > As the string returned to user space is null-terminated, extending
-> > task comm won't break the prctl(2) user code.
->
-> If userspace was:
->
->         char comm[16];
->         int important_values;
->
->         ...
->
->         prctl(PR_GET_NAME, pid, comm);
->
-> the kernel will clobber "important_values", so prctl() must enforce the
-> old size (and terminate it correctly). It's not okay for us to expect
-> that userspace get recompiled -- old binaries must continue to work
-> correctly on kernel kernels.
->
->         case PR_GET_NAME:
->                 get_task_comm(comm, me);
->                 if (copy_to_user((char __user *)arg2, comm, sizeof(comm)))
->                         return -EFAULT;
->                 break;
->
-> This looks like it needs to be explicitly NUL terminated at 16 as well.
->
+On 15/10/2021 9:28 am, Yang Weijiang wrote:
+> On Fri, Oct 15, 2021 at 12:01:22AM +0000, Sean Christopherson wrote:
+>> s/Advise/Advertise
+>>
+>> On Tue, Aug 24, 2021, Yang Weijiang wrote:
+>>> Add Arch LBR feature bit in CPU cap-mask to expose the feature.
+>>> Only max LBR depth is supported for guest, and it's consistent
+>>> with host Arch LBR settings.
+>>>
+>>> Co-developed-by: Like Xu <like.xu@linux.intel.com>
+>>> Signed-off-by: Like Xu <like.xu@linux.intel.com>
+>>> Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
+>>> ---
+>>>   arch/x86/kvm/cpuid.c | 33 ++++++++++++++++++++++++++++++++-
+>>>   1 file changed, 32 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+>>> index 03025eea1524..d98ebefd5d72 100644
+>>> --- a/arch/x86/kvm/cpuid.c
+>>> +++ b/arch/x86/kvm/cpuid.c
+>>> @@ -88,6 +88,16 @@ static int kvm_check_cpuid(struct kvm_cpuid_entry2 *entries, int nent)
+>>>   		if (vaddr_bits != 48 && vaddr_bits != 57 && vaddr_bits != 0)
+>>>   			return -EINVAL;
+>>>   	}
+>>> +	best = cpuid_entry2_find(entries, nent, 0x1c, 0);
+>>> +	if (best) {
+>>> +		unsigned int eax, ebx, ecx, edx;
+>>> +
+>>> +		/* Reject user-space CPUID if depth is different from host's.*/
+>>
+>> Why disallow this?  I don't see why it would be illegal for userspace to specify
+>> fewer LBRs, 
 
-Right. After replacing strncpy with strscpy_pad() in
-__get_task_comm(), the string will be NUL terminated.
+The emulation of guest LBR *depends* on the host LBR driver to save/restore LBRs 
+entries
+(which are pass-through to the guest and store the guest branch instructions 
+rips actually).
 
-> I'd say we need a TASK_COMM_LEN_V1 to use in all the old hard-coded
-> places.
->
+Currently, the host side does not support the use of different lbr depths on the 
+same host
+to customize this part of the overhead. The host perf LBR driver assumes that 
+the lbr depths
+of different tasks on different cpu's are the same and are the maximum value.
 
-Sure, it will be easy to grep then.
+The KVM LBR implementation may not break it until additional support is applied 
+on the host side.
 
-> >
-> > > The other case I am referring to is with ftrace and perf:
-> > >
-> > > mount -t tracefs nodev /sys/kernel/tracing
-> > > cat /sys/kernel/tracing/events/sched/sched_switch/format
-> > >
-> > > name: sched_switch
-> > > ID: 314
-> > > format:
-> > > [...]
-> > >         field:char prev_comm[16];       offset:8;       size:16;        signed:1;
-> > > [...]
-> > >         field:char next_comm[16];       offset:40;      size:16;        signed:1;
-> > >
-> > > Both of those fields expose a fixed-size of 16 bytes.
-> > >
-> > > AFAIK Steven's intent was that by parsing this file, trace viewers could adapt to
-> > > changes in the event field layout. Unfortunately, there have been cases where
-> > > trace viewers had a hard expectation on the field layout. Hopefully those have
-> > > all been fixed a while ago.
-> > >
-> >
-> > I don't have a clear idea what will happen to trace viewers if we
-> > extend task comm.
-> >
-> > Steven, do you have any suggestions ?
-> >
-> > --
-> > Thanks
-> > Yafang
->
-> --
-> Kees Cook
+We'd better not let the guest down if the user space specifies fewer or more LBRs,
+and explicitly rejecting it in the CPUID settings is an option, or just let the 
+error happen.
 
-
-
--- 
-Thanks
-Yafang
+and KVM should darn well verify that any MSRs it's exposing to the
+>> guest actually exist.
+> Hi, Sean,
+> Thanks for the comments!
+> The treatment for LBR depth is a bit special, only the host value can be
+> supported now, i.e., 32. If userspace set the value other that 32, would like
+> to notify it as early as possible.
+> Do you want to remove the check here and correct the invalid setting silently when
+> guest is querying CPUID?
+> 
+>>
+>>> +		cpuid_count(0x1c, 0, &eax, &ebx, &ecx, &edx);
+>>> +
+>>> +		if ((best->eax & 0xff) != BIT(fls(eax & 0xff) - 1))
+>>> +			return -EINVAL;
+>>> +	}
+>>>   
+>>>   	return 0;
+>>>   }
