@@ -2,50 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCC4D42EAF9
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 10:04:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E6F442EAFF
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 10:05:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236654AbhJOIGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 04:06:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50788 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236674AbhJOIGZ (ORCPT
+        id S236657AbhJOIHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 04:07:24 -0400
+Received: from mout.kundenserver.de ([212.227.126.135]:46279 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236629AbhJOIHJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 04:06:25 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF9D0C06176D;
-        Fri, 15 Oct 2021 01:04:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=V/RBXrqenGIWpxRD/50XfbTnyayQ4rCJg+f2/Q6o6SE=; b=r6glmjWkT+gZH6ooBvITyfccYt
-        JaaszEtEuYPaeO57o+V7o7Vflli4fwJvNLMhfOjZ5WvgHU9UviQy21o5fAG2UasCRG+nG+HXoDS77
-        kU9UGTllbnmpxf4aRm0YaiQPeem4z0yRyU2UORAv0KQNhdtQnlw1Uvp3TDMMd4RF9XwBASq/uurpr
-        dWBGN40T8zsx9FA8XHJ3Js+21m8LnUdmqpnnOPxMo5MSY7vD8kZBtH6kBGhvOSBkKDsE748PnSwyf
-        oDhh2RVvsK+51K1gS5hZxpaWntgpBmgifGQPhJpVFppDEvNMVMSfxi1blUtzkbRmvUmehIQxEjpA6
-        xiorRq5w==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mbICF-005qYt-AQ; Fri, 15 Oct 2021 08:04:07 +0000
-Date:   Fri, 15 Oct 2021 01:04:07 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Zqiang <qiang.zhang1211@gmail.com>
-Cc:     willy@infradead.org, hch@infradead.org, akpm@linux-foundation.org,
-        sunhao.th@gmail.com, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] fs: inode: use queue_rcu_work() instead of call_rcu()
-Message-ID: <YWk195naAMYhh3EV@infradead.org>
-References: <20211015080216.4871-1-qiang.zhang1211@gmail.com>
+        Fri, 15 Oct 2021 04:07:09 -0400
+Received: from mail-wr1-f41.google.com ([209.85.221.41]) by
+ mrelayeu.kundenserver.de (mreue012 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MS1G7-1m90m913tL-00TUQ2; Fri, 15 Oct 2021 10:04:58 +0200
+Received: by mail-wr1-f41.google.com with SMTP id t2so25008771wrb.8;
+        Fri, 15 Oct 2021 01:04:57 -0700 (PDT)
+X-Gm-Message-State: AOAM530FHdl4QLXhJTqD7jHFvLYo8WwDJ8c22vApkju4E6AB45xJwbpY
+        EaJbNWP0GXaTz3rVG/EXJJL8no6bZYgWMliTaH0=
+X-Google-Smtp-Source: ABdhPJyMHuHnDGl2si8ITF+4TGXXgV0nuTwHzfeF7WqCGbb9eY4i99zzKLMdO9DWc/nq3na7Ws9y9ewKPsg0Jk/Kqqs=
+X-Received: by 2002:adf:f481:: with SMTP id l1mr12016275wro.411.1634285097750;
+ Fri, 15 Oct 2021 01:04:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211015080216.4871-1-qiang.zhang1211@gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+References: <20211015005634.2658470-1-alistair.francis@opensource.wdc.com>
+In-Reply-To: <20211015005634.2658470-1-alistair.francis@opensource.wdc.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 15 Oct 2021 10:04:41 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a28zpO5Sy78CHts=p4G5v0bhxeCJhUK41bMQ8nqYV8z_A@mail.gmail.com>
+Message-ID: <CAK8P3a28zpO5Sy78CHts=p4G5v0bhxeCJhUK41bMQ8nqYV8z_A@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] perf bench futex: Use a 64-bit time_t
+To:     Alistair Francis <alistair.francis@opensource.wdc.com>
+Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
+        linux-perf-users@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alistair Francis <alistair23@gmail.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Darren Hart <dvhart@infradead.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Atish Patra <atish.patra@wdc.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Alistair Francis <alistair.francis@wdc.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:svj4o8UDMApwuFcuNXj7pxpjFVchrJM1P6yD6ye98s3GpluP7I1
+ i5j3G+TKfv7DebTKtAn1BWAQhkjw8hWe7ePMxxNniwZPIUqFc/gAwyo6tOd8Bo+LY7QpONE
+ vYa/o/fEhPSzTEVeOJUfdNIhxAPtSFe+IwvJ0bPy3b5YZKA2uFIYUpfVO+HQwM1SuJBDXhO
+ u1RtYw8ejJI1ts2C8hJqw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:UtxibgzrXDc=:kaJU0WtF7yMJGGqC4gavvP
+ kFbd6TFVczCNzYvaKSXy2ul4uUDDT987wwM1JL2sjTCNdHGQzmOOI9YB/pMxtkxxSQ0nUs+6P
+ TwaNJd4u4HV+YJ2qM7ho6RYI+Dn+0u1fqPzxR4Xa/blTDbKRqxd3Bx4tWTi+X2h48xrUaDHNz
+ GIfYg+uevWUujvou3+zB3pTIGs5eVKVjWdspq2KkVHhvsPuLQXXQIPH9o7h11mPHhcWzHtRa3
+ 1VYwUUO3MEIxkU0BX8uLaU/MJf+EHcdpGJs4+zZN/lwQ5XFN9X6h6ra0+8FjqnD+W7XGAdpi9
+ y1ais6Jxz2+95Vsz8O/ai1ZQHJN+TpRIJArK8kRJ0StUFGc60znYu8rjuNDzojjPKWVyRR3sw
+ 7MEP+cxgZRF9ctL5c6klSkYkY8ZM1gHN1NgZ24fj+Z61iRKEVygJiQ5FE6/R5SWBUsDhVFaW8
+ HS8fxhmFPkxWSY+cd0k29k3pUgshOiH6gTSfrfSlFd5tdsuky2wq9JohkTewQDpFFKFSTRYm9
+ gaNym5Nf7U/nReJbYmQ46dFn2MdcZ6/lI/RZZqvwQ0QxYDHqUUPPK6GJNqyxCZ3vBZHMxZAZ3
+ EeMOOY5M/lkLFbJOkfrdj9whtCwkrpJpeWJ3c1HuWGlGHvMhQrdzqvHVyjnVsLVoLkU5SNAeK
+ NegUgBurcBvBRdxXYdG3JaCSEarYlX/J8tDm07NVBxHqHuc/GLgNNX3hVKqin4YqUmAVpptk1
+ l9ivL4luwONEc2j2Y4hIr+XHdCBPZWaZb4pBxg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-NAK.
+On Fri, Oct 15, 2021 at 2:56 AM Alistair Francis
+<alistair.francis@opensource.wdc.com> wrote:
+>
+> From: Alistair Francis <alistair.francis@wdc.com>
+>
+> Convert tools/perf to only use a 64-bit time_t. On 64-bit architectures
+> this isn't a functional change. On 32-bit architectures we now only
+> perform 64-bit time_t syscalls (__NR_futex_time64) and use a struct
+> timespec64.
+>
+> This won't work on kernels before 5.1, but as perf is tied to the kernel
+> that's ok.
+>
+> This allows us to build perf for 32-bit architectures with 64-bit time_t
+> like RISC-V 32-bit.
+>
+> Signed-off-by: Alistair Francis <alistair.francis@wdc.com>
 
-1. We need to sort ounderlying issue first as I already said _twice_.
-2. this has a major penality on all file systems
+Reviewed-by: Arnd Bergmann <arnd@arndb.de>
