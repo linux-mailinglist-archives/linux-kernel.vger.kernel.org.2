@@ -2,216 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0326A42EDBF
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 11:33:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8EDE42EDC7
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 11:35:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237460AbhJOJfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 05:35:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43468 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236690AbhJOJfb (ORCPT
+        id S237474AbhJOJh1 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 15 Oct 2021 05:37:27 -0400
+Received: from relay11.mail.gandi.net ([217.70.178.231]:53311 "EHLO
+        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236690AbhJOJh0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 05:35:31 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73021C061570
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 02:33:24 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id h185-20020a256cc2000000b005bdce4db0easo10511921ybc.12
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 02:33:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=6myK6WnI6dJ3vgs3FhgJcImZgK4luWhZru749g0AYEM=;
-        b=rGL6DqoXuJLBeaNawkHojQD7EDvEZGyvkXsfO18Q3++92kGCrOllm0bBEpvg4I7nsI
-         YfWbkz8lI7OSGeVEmpvHkw6wIVklrXxOU/4OuAVlmW33XU+M4LgiZ0mm4wYGUuOIH9KH
-         qp0maWA7PJjgTfWstyEo7TUSAVMoJ9b+5NGpQxcYHhm08BTcMvJyb0gTp3FqVAVE/A7j
-         gHIGhu94L5UWaE83SXmtLCjUBVQzKXjgwkRSSrVE+xxXLgt9kIvtGL4HHJUDUGcydMXo
-         ufaHlAtFmsl2tjdoOhNwV/SDkjr/Iw8dRVZZnoN2FYEk2QnYKZp3i27apZ0QncWWTJPo
-         Yp4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=6myK6WnI6dJ3vgs3FhgJcImZgK4luWhZru749g0AYEM=;
-        b=EtxpYdZuKYZaX5BCnBpjTKKw3DoczRJkm5kk/j4EKJwPUktpFdTIs0np7oMFkI7Sx5
-         ZiDq5GrIAAQqI3+f7yTEmFf0s/zW16irmk0Kt54yS1Sx3iN0eLjAHTgR9zBfqPJEXkSe
-         CHh+L2ygzuyK/1JocMXqpPI0G/y/5Ig6oveCiZJJlopVspjxE0rkqvpiHufifoZh4pSL
-         XdzfUeFoTfoFK8sz4Q+txX3+TkLRZ1jkWlMJvoMGWF63+70j4qiVu83tX8m8i5m3L57d
-         wWxkqDgxPrljRlZ5fN1gm/c8eRJ1liDLyD4Av1T5X21Px80qoHvmKDVsbSOfS3SVuVgh
-         UH7g==
-X-Gm-Message-State: AOAM530wq1wl654BxhLadqS6DoxlHvkdhn9NJ0Qm3P/w8Q9V5Y4GOJIp
-        tyHi/qbMHvROVx/hAps1QGkHW7lX61qmxA==
-X-Google-Smtp-Source: ABdhPJw0cWvVwG/eQ+2pTAA9FuOD8iTsTNLXdLHhlfF3wP4k06jKbAivbM/OuxLD1XL/kblT/6f2qQ2WYcnAhQ==
-X-Received: from beeg.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:11db])
- (user=jackmanb job=sendgmr) by 2002:a05:6902:707:: with SMTP id
- k7mr13103612ybt.545.1634290403688; Fri, 15 Oct 2021 02:33:23 -0700 (PDT)
-Date:   Fri, 15 Oct 2021 09:33:18 +0000
-Message-Id: <20211015093318.1273686-1-jackmanb@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
-Subject: [[PATCH bpf-next]] selftests/bpf: Some more atomic tests
-From:   Brendan Jackman <jackmanb@google.com>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        linux-kernel@vger.kernel.org, Brendan Jackman <jackmanb@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Fri, 15 Oct 2021 05:37:26 -0400
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 5FFA710000E;
+        Fri, 15 Oct 2021 09:35:17 +0000 (UTC)
+Date:   Fri, 15 Oct 2021 11:35:15 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Harvey Hunt <harveyhuntnexus@gmail.com>, list@opendingux.net,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH 2/3] mtd: rawnand: Export
+ nand_read_page_hwecc_oob_first()
+Message-ID: <20211015113515.7b10a2d5@xps13>
+In-Reply-To: <89I01R.QTBARVYLTBT02@crapouillou.net>
+References: <20211009184952.24591-1-paul@crapouillou.net>
+        <20211009184952.24591-3-paul@crapouillou.net>
+        <20211015081313.60018976@xps13>
+        <70G01R.2VROMW06O3O83@crapouillou.net>
+        <20211015105146.3d2fbd08@xps13>
+        <89I01R.QTBARVYLTBT02@crapouillou.net>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some new verifier tests that hit some important gaps in the parameter
-space for atomic ops.
+Hi Paul,
 
-There are already exhaustive tests for the JIT part in
-lib/test_bpf.c, but these exercise the verifier too.
+> >>  */  
+> >>  >> >>   /* An ECC layout for using 4-bit ECC with small-page flash, >> storing  
+> >>  >>  @@ -648,7 +580,7 @@ static int davinci_nand_attach_chip(struct >> >> nand_chip *chip)
+> >>  >>   			} else if (chunks == 4 || chunks == 8) {
+> >>  >>   				mtd_set_ooblayout(mtd,
+> >>  >>   						  nand_get_large_page_ooblayout());
+> >>  >>  -				chip->ecc.read_page = >> nand_davinci_read_page_hwecc_oob_first;
+> >>  >>  +				chip->ecc.read_page = nand_read_page_hwecc_oob_first;
+> >>  >>   			} else {
+> >>  >>   				return -EIO;
+> >>  >>   			}
+> >>  >>  diff --git a/drivers/mtd/nand/raw/nand_base.c >> >> b/drivers/mtd/nand/raw/nand_base.c
+> >>  >>  index 3d6c6e880520..cb5f343b9fa2 100644
+> >>  >>  --- a/drivers/mtd/nand/raw/nand_base.c
+> >>  >>  +++ b/drivers/mtd/nand/raw/nand_base.c
+> >>  >>  @@ -3160,6 +3160,75 @@ static int nand_read_page_hwecc(struct >> >> nand_chip *chip, uint8_t *buf,
+> >>  >>   	return max_bitflips;
+> >>  >>   }  
+> >>  >> >>  +/**  
+> >>  >>  + * nand_read_page_hwecc_oob_first - Hardware ECC page read >> with ECC
+> >>  >>  + *                                  data read from OOB area
+> >>  >>  + * @chip: nand chip info structure
+> >>  >>  + * @buf: buffer to store read data
+> >>  >>  + * @oob_required: caller requires OOB data read to >> chip->oob_poi
+> >>  >>  + * @page: page number to read
+> >>  >>  + *
+> >>  >>  + * Hardware ECC for large page chips, require OOB to be read >> >> first. For this  
+> >>  >
+> >>  > requires
+> >>  >
+> >>  > With this ECC configuration?
+> >>  >  
+> >>  >>  + * ECC mode, the write_page method is re-used from ECC_HW. >> These >> methods  
+> >>  >
+> >>  > I do not understand this sentence nor the next one about >> syndrome. I
+> >>  > believe it is related to your engine and should not leak into the >> > core.
+> >>  >  
+> >>  >>  + * read/write ECC from the OOB area, unlike the >> ECC_HW_SYNDROME >> support with
+> >>  >>  + * multiple ECC steps, follows the "infix ECC" scheme and >> >> reads/writes ECC from
+> >>  >>  + * the data area, by overwriting the NAND manufacturer bad >> block >> markings.  
+> >>  >
+> >>  > That's a sentence I don't like. What do you mean exactly?
+> >>  >
+> >>  > What "Infix ECC" scheme is?
+> >>  >
+> >>  > Do you mean that unlike the syndrome  mode it *does not* >> overwrite the
+> >>  > BBM ?  
+> >> >>  I don't mean anything. I did not write that comment. I just moved >> the function verbatim with no changes. If something needs to be >> fixed, then it needs to be fixed before/after this patch.  
+> > 
+> > Well, this comment should be adapted because as-is I don't think it's
+> > wise to move it around.  
+> 
+> OK.
+> 
+> I think it says that BBM can be overwritten with this configuration, but that would be if the OOB layout covers the BBM area.
 
-Signed-off-by: Brendan Jackman <jackmanb@google.com>
----
- .../selftests/bpf/verifier/atomic_cmpxchg.c   | 38 +++++++++++++
- .../selftests/bpf/verifier/atomic_fetch.c     | 57 +++++++++++++++++++
- .../selftests/bpf/verifier/atomic_invalid.c   | 25 ++++++++
- 3 files changed, 120 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/verifier/atomic_fetch.c
- create mode 100644 tools/testing/selftests/bpf/verifier/atomic_invalid.c
+If the ooblayout prevents the BBM to be smatched I'm fine and this
+sentence should disappear because it's misleading.
 
-diff --git a/tools/testing/selftests/bpf/verifier/atomic_cmpxchg.c b/tools/testing/selftests/bpf/verifier/atomic_cmpxchg.c
-index 6e52dfc64415..c22dc83a41fd 100644
---- a/tools/testing/selftests/bpf/verifier/atomic_cmpxchg.c
-+++ b/tools/testing/selftests/bpf/verifier/atomic_cmpxchg.c
-@@ -119,3 +119,41 @@
- 	},
- 	.result = ACCEPT,
- },
-+{
-+	"Dest pointer in r0 - fail",
-+	.insns = {
-+		/* val = 0; */
-+		BPF_ST_MEM(BPF_DW, BPF_REG_10, -8, 0),
-+		/* r0 = &val */
-+		BPF_MOV64_REG(BPF_REG_0, BPF_REG_10),
-+		/* r0 = atomic_cmpxchg(&val, r0, 1); */
-+		BPF_MOV64_IMM(BPF_REG_1, 1),
-+		BPF_ATOMIC_OP(BPF_DW, BPF_CMPXCHG, BPF_REG_10, BPF_REG_1, -8),
-+		/* if (r0 != 0) exit(1); */
-+		BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 0, 2),
-+		BPF_MOV64_IMM(BPF_REG_0, 1),
-+		BPF_EXIT_INSN(),
-+		/* exit(0); */
-+		BPF_MOV64_IMM(BPF_REG_0, 0),
-+		BPF_EXIT_INSN(),
-+	},
-+	.result = ACCEPT,
-+},
-+{
-+	"Dest pointer in r0 - succeed",
-+	.insns = {
-+		/* r0 = &val */
-+		BPF_MOV64_REG(BPF_REG_0, BPF_REG_10),
-+		/* val = r0; */
-+		BPF_STX_MEM(BPF_DW, BPF_REG_10, BPF_REG_0, -8),
-+		/* r0 = atomic_cmpxchg(&val, r0, 0); */
-+		BPF_MOV64_IMM(BPF_REG_1, 0),
-+		BPF_ATOMIC_OP(BPF_DW, BPF_CMPXCHG, BPF_REG_10, BPF_REG_1, -8),
-+		/* r1 = *r0 */
-+		BPF_LDX_MEM(BPF_DW, BPF_REG_1, BPF_REG_0, -8),
-+		/* exit(0); */
-+		BPF_MOV64_IMM(BPF_REG_0, 0),
-+		BPF_EXIT_INSN(),
-+	},
-+	.result = ACCEPT,
-+},
-diff --git a/tools/testing/selftests/bpf/verifier/atomic_fetch.c b/tools/testing/selftests/bpf/verifier/atomic_fetch.c
-new file mode 100644
-index 000000000000..3bc9ff7a860b
---- /dev/null
-+++ b/tools/testing/selftests/bpf/verifier/atomic_fetch.c
-@@ -0,0 +1,57 @@
-+#define __ATOMIC_FETCH_OP_TEST(src_reg, dst_reg, operand1, op, operand2, expect) \
-+	{								\
-+		"atomic fetch " #op ", src=" #dst_reg " dst=" #dst_reg,	\
-+		.insns = {						\
-+			/* u64 val = operan1; */			\
-+			BPF_ST_MEM(BPF_DW, BPF_REG_10, -8, operand1),	\
-+			/* u64 old = atomic_fetch_add(&val, operand2); */ \
-+			BPF_MOV64_REG(dst_reg, BPF_REG_10),		\
-+			BPF_MOV64_IMM(src_reg, operand2),		\
-+			BPF_ATOMIC_OP(BPF_DW, op,			\
-+				      dst_reg, src_reg, -8),		\
-+			/* if (old != operand1) exit(1); */		\
-+			BPF_JMP_IMM(BPF_JEQ, src_reg, operand1, 2),	\
-+			BPF_MOV64_IMM(BPF_REG_0, 1),			\
-+			BPF_EXIT_INSN(),				\
-+			/* if (val != result) exit (2); */		\
-+			BPF_LDX_MEM(BPF_DW, BPF_REG_1, BPF_REG_10, -8),	\
-+			BPF_JMP_IMM(BPF_JEQ, BPF_REG_1, expect, 2),	\
-+			BPF_MOV64_IMM(BPF_REG_0, 2),			\
-+			BPF_EXIT_INSN(),				\
-+			/* exit(0); */					\
-+			BPF_MOV64_IMM(BPF_REG_0, 0),			\
-+			BPF_EXIT_INSN(),				\
-+		},							\
-+		.result = ACCEPT,					\
-+	}
-+__ATOMIC_FETCH_OP_TEST(BPF_REG_1, BPF_REG_2, 1, BPF_ADD | BPF_FETCH, 2, 3),
-+__ATOMIC_FETCH_OP_TEST(BPF_REG_0, BPF_REG_1, 1, BPF_ADD | BPF_FETCH, 2, 3),
-+__ATOMIC_FETCH_OP_TEST(BPF_REG_1, BPF_REG_0, 1, BPF_ADD | BPF_FETCH, 2, 3),
-+__ATOMIC_FETCH_OP_TEST(BPF_REG_2, BPF_REG_3, 1, BPF_ADD | BPF_FETCH, 2, 3),
-+__ATOMIC_FETCH_OP_TEST(BPF_REG_4, BPF_REG_5, 1, BPF_ADD | BPF_FETCH, 2, 3),
-+__ATOMIC_FETCH_OP_TEST(BPF_REG_9, BPF_REG_8, 1, BPF_ADD | BPF_FETCH, 2, 3),
-+__ATOMIC_FETCH_OP_TEST(BPF_REG_1, BPF_REG_2, 0x010, BPF_AND | BPF_FETCH, 0x011, 0x010),
-+__ATOMIC_FETCH_OP_TEST(BPF_REG_0, BPF_REG_1, 0x010, BPF_AND | BPF_FETCH, 0x011, 0x010),
-+__ATOMIC_FETCH_OP_TEST(BPF_REG_1, BPF_REG_0, 0x010, BPF_AND | BPF_FETCH, 0x011, 0x010),
-+__ATOMIC_FETCH_OP_TEST(BPF_REG_2, BPF_REG_3, 0x010, BPF_AND | BPF_FETCH, 0x011, 0x010),
-+__ATOMIC_FETCH_OP_TEST(BPF_REG_4, BPF_REG_5, 0x010, BPF_AND | BPF_FETCH, 0x011, 0x010),
-+__ATOMIC_FETCH_OP_TEST(BPF_REG_9, BPF_REG_8, 0x010, BPF_AND | BPF_FETCH, 0x011, 0x010),
-+__ATOMIC_FETCH_OP_TEST(BPF_REG_1, BPF_REG_2, 0x010, BPF_OR | BPF_FETCH, 0x011, 0x011),
-+__ATOMIC_FETCH_OP_TEST(BPF_REG_0, BPF_REG_1, 0x010, BPF_OR | BPF_FETCH, 0x011, 0x011),
-+__ATOMIC_FETCH_OP_TEST(BPF_REG_1, BPF_REG_0, 0x010, BPF_OR | BPF_FETCH, 0x011, 0x011),
-+__ATOMIC_FETCH_OP_TEST(BPF_REG_2, BPF_REG_3, 0x010, BPF_OR | BPF_FETCH, 0x011, 0x011),
-+__ATOMIC_FETCH_OP_TEST(BPF_REG_4, BPF_REG_5, 0x010, BPF_OR | BPF_FETCH, 0x011, 0x011),
-+__ATOMIC_FETCH_OP_TEST(BPF_REG_9, BPF_REG_8, 0x010, BPF_OR | BPF_FETCH, 0x011, 0x011),
-+__ATOMIC_FETCH_OP_TEST(BPF_REG_1, BPF_REG_2, 0x010, BPF_XOR | BPF_FETCH, 0x011, 0x001),
-+__ATOMIC_FETCH_OP_TEST(BPF_REG_0, BPF_REG_1, 0x010, BPF_XOR | BPF_FETCH, 0x011, 0x001),
-+__ATOMIC_FETCH_OP_TEST(BPF_REG_1, BPF_REG_0, 0x010, BPF_XOR | BPF_FETCH, 0x011, 0x001),
-+__ATOMIC_FETCH_OP_TEST(BPF_REG_2, BPF_REG_3, 0x010, BPF_XOR | BPF_FETCH, 0x011, 0x001),
-+__ATOMIC_FETCH_OP_TEST(BPF_REG_4, BPF_REG_5, 0x010, BPF_XOR | BPF_FETCH, 0x011, 0x001),
-+__ATOMIC_FETCH_OP_TEST(BPF_REG_9, BPF_REG_8, 0x010, BPF_XOR | BPF_FETCH, 0x011, 0x001),
-+__ATOMIC_FETCH_OP_TEST(BPF_REG_1, BPF_REG_2, 0x010, BPF_XCHG, 0x011, 0x011),
-+__ATOMIC_FETCH_OP_TEST(BPF_REG_0, BPF_REG_1, 0x010, BPF_XCHG, 0x011, 0x011),
-+__ATOMIC_FETCH_OP_TEST(BPF_REG_1, BPF_REG_0, 0x010, BPF_XCHG, 0x011, 0x011),
-+__ATOMIC_FETCH_OP_TEST(BPF_REG_2, BPF_REG_3, 0x010, BPF_XCHG, 0x011, 0x011),
-+__ATOMIC_FETCH_OP_TEST(BPF_REG_4, BPF_REG_5, 0x010, BPF_XCHG, 0x011, 0x011),
-+__ATOMIC_FETCH_OP_TEST(BPF_REG_9, BPF_REG_8, 0x010, BPF_XCHG, 0x011, 0x011),
-+#undef __ATOMIC_FETCH_OP_TEST
-diff --git a/tools/testing/selftests/bpf/verifier/atomic_invalid.c b/tools/testing/selftests/bpf/verifier/atomic_invalid.c
-new file mode 100644
-index 000000000000..39272720b2f6
---- /dev/null
-+++ b/tools/testing/selftests/bpf/verifier/atomic_invalid.c
-@@ -0,0 +1,25 @@
-+#define __INVALID_ATOMIC_ACCESS_TEST(op)					\
-+	{								\
-+		"atomic " #op " access through non-pointer ",			\
-+		.insns = {						\
-+			BPF_MOV64_IMM(BPF_REG_0, 1),			\
-+			BPF_MOV64_IMM(BPF_REG_1, 0),			\
-+			BPF_ATOMIC_OP(BPF_DW, op, BPF_REG_1, BPF_REG_0, -8), \
-+			BPF_MOV64_IMM(BPF_REG_0, 0),			\
-+			BPF_EXIT_INSN(),				\
-+		},							\
-+		.result = REJECT,					\
-+		.errstr = "R1 invalid mem access 'inv'"			\
-+	}
-+__INVALID_ATOMIC_ACCESS_TEST(BPF_ADD),
-+__INVALID_ATOMIC_ACCESS_TEST(BPF_ADD | BPF_FETCH),
-+__INVALID_ATOMIC_ACCESS_TEST(BPF_ADD),
-+__INVALID_ATOMIC_ACCESS_TEST(BPF_ADD | BPF_FETCH),
-+__INVALID_ATOMIC_ACCESS_TEST(BPF_AND),
-+__INVALID_ATOMIC_ACCESS_TEST(BPF_AND | BPF_FETCH),
-+__INVALID_ATOMIC_ACCESS_TEST(BPF_OR),
-+__INVALID_ATOMIC_ACCESS_TEST(BPF_OR | BPF_FETCH),
-+__INVALID_ATOMIC_ACCESS_TEST(BPF_XOR),
-+__INVALID_ATOMIC_ACCESS_TEST(BPF_XOR | BPF_FETCH),
-+__INVALID_ATOMIC_ACCESS_TEST(BPF_XCHG),
-+__INVALID_ATOMIC_ACCESS_TEST(BPF_CMPXCHG),
--- 
-2.33.0.1079.g6e70778dc9-goog
+> >> >>  >>  + */  
+> >>  >>  +int nand_read_page_hwecc_oob_first(struct nand_chip *chip, >> uint8_t >> *buf,
+> >>  >>  +				   int oob_required, int page)
+> >>  >>  +{
+> >>  >>  +	struct mtd_info *mtd = nand_to_mtd(chip);
+> >>  >>  +	int i, eccsize = chip->ecc.size, ret;
+> >>  >>  +	int eccbytes = chip->ecc.bytes;
+> >>  >>  +	int eccsteps = chip->ecc.steps;
+> >>  >>  +	uint8_t *p = buf;
+> >>  >>  +	uint8_t *ecc_code = chip->ecc.code_buf;
+> >>  >>  +	unsigned int max_bitflips = 0;
+> >>  >>  +
+> >>  >>  +	/* Read the OOB area first */
+> >>  >>  +	ret = nand_read_oob_op(chip, page, 0, chip->oob_poi, >> >> mtd->oobsize);
+> >>  >>  +	if (ret)
+> >>  >>  +		return ret;
+> >>  >>  +
+> >>  >>  +	ret = nand_read_page_op(chip, page, 0, NULL, 0);  
+> >>  >
+> >>  > Definitely not, your are requesting the chip to do the read_page
+> >>  > operation twice. You only need a nand_change_read_column I >> believe.  
+> >> >>  Again, this code is just being moved around - don't shoot the >> messenger :)  
+> > 
+> > haha
+> > 
+> > Well, now you touch the core, so I need to be more careful, and the
+> > code is definitely wrong, so even if we don't move that code off, you
+> > definitely want to fix it in order to improve your performances.  
+> 
+> I don't see the read_page being done twice?
+> 
+> There's one read_oob, one read_page, then read_data in the loop.
 
+read_oob and read_page both end up sending READ0 and READSTART so
+they do request the chip to perform an internal read twice. You
+need this only once. The call to nand_read_page_op() should be a
+nand_change_read_column() with no data requested. 
+
+> >>  >>   /**
+> >>  >>    * nand_read_page_syndrome - [REPLACEABLE] hardware ECC >> syndrome >> based page read
+> >>  >>    * @chip: nand chip info structure
+> >>  >>  diff --git a/include/linux/mtd/rawnand.h >> >> b/include/linux/mtd/rawnand.h
+> >>  >>  index b2f9dd3cbd69..5b88cd51fadb 100644
+> >>  >>  --- a/include/linux/mtd/rawnand.h
+> >>  >>  +++ b/include/linux/mtd/rawnand.h
+> >>  >>  @@ -1539,6 +1539,8 @@ int nand_read_data_op(struct nand_chip >> *chip, >> void *buf, unsigned int len,
+> >>  >>   		      bool force_8bit, bool check_only);
+> >>  >>   int nand_write_data_op(struct nand_chip *chip, const void *buf,
+> >>  >>   		       unsigned int len, bool force_8bit);
+> >>  >>  +int nand_read_page_hwecc_oob_first(struct nand_chip *chip, >> uint8_t >> *buf,
+> >>  >>  +				   int oob_required, int page);  
+> >>  >
+> >>  > You certainly want to add this symbol closer to the other >> read/write
+> >>  > page helpers?  
+> >> >>  Where would that be? The other read/write page helpers are all >> "static" so they don't appear in any header.  
+> > 
+> > I believe we should keep this header local as long as there are no
+> > other users.  
+> 
+> I'll move it to internal.h then.
+
+Why do you want to put it there is there is only one user?
+
+Thanks,
+Miquèl
