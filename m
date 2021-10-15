@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA21F42EC78
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 10:36:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBAE542EC81
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 10:36:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237121AbhJOIiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 04:38:16 -0400
-Received: from comms.puri.sm ([159.203.221.185]:44610 "EHLO comms.puri.sm"
+        id S237150AbhJOIiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 04:38:51 -0400
+Received: from comms.puri.sm ([159.203.221.185]:44794 "EHLO comms.puri.sm"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237075AbhJOIiO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 04:38:14 -0400
+        id S237146AbhJOIir (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 04:38:47 -0400
 Received: from localhost (localhost [127.0.0.1])
-        by comms.puri.sm (Postfix) with ESMTP id 5A054DFE3F;
-        Fri, 15 Oct 2021 01:36:08 -0700 (PDT)
+        by comms.puri.sm (Postfix) with ESMTP id 8698EDFE40;
+        Fri, 15 Oct 2021 01:36:11 -0700 (PDT)
 Received: from comms.puri.sm ([127.0.0.1])
         by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id quN_lx_fwOP8; Fri, 15 Oct 2021 01:36:07 -0700 (PDT)
+        with ESMTP id KTQfCWuuvvJJ; Fri, 15 Oct 2021 01:36:10 -0700 (PDT)
 From:   Martin Kepplinger <martin.kepplinger@puri.sm>
 To:     robh@kernel.org, shawnguo@kernel.org, festevam@gmail.com,
         krzk@kernel.org
@@ -24,9 +24,9 @@ Cc:     kernel@pengutronix.de, linux-imx@nxp.com, kernel@puri.sm,
         devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
         Martin Kepplinger <martin.kepplinger@puri.sm>
-Subject: [RFC PATCH v1 1/4] arm64: dts: split out a shared imx8mq-librem5-r3.dtsi description
-Date:   Fri, 15 Oct 2021 10:35:03 +0200
-Message-Id: <20211015083506.4182875-2-martin.kepplinger@puri.sm>
+Subject: [RFC PATCH v1 2/4] arm64: dts: imx8mq-librem5: describe power supply for cameras
+Date:   Fri, 15 Oct 2021 10:35:04 +0200
+Message-Id: <20211015083506.4182875-3-martin.kepplinger@puri.sm>
 In-Reply-To: <20211015083506.4182875-1-martin.kepplinger@puri.sm>
 References: <20211015083506.4182875-1-martin.kepplinger@puri.sm>
 MIME-Version: 1.0
@@ -35,140 +35,126 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Librem 5 r3 ("Dogwood") and r4 ("Evergreen") revisions are quite
-similar. Add a shared imx8mq-librem5-r3.dtsi description to be included
-in r3 and later dts files in order to avoid duplication.
+CAMERA_PWR_EN controls two different power supplies that cameras will use.
+The hardware killswitch controls a third one. Describe that appropriately.
 
-This is no change in the descriptions but only refactoring.
+The pinctrl that describes the gpio that is used in 2 places here is added
+to the pmic. The pmic is powered early enough to make sure this will work.
 
-Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
+this patch is not ideal and hence an RFC I'm not yet signing-off on: When
+putting the same pinctrl property into the 2 regulator nodes (instead of the
+pmic), we get:
+
+imx8mq-pinctrl 30330000.pinctrl: pin MX8MQ_IOMUXC_GPIO1_IO00 already requested by regulator-csi-1v8; cannot claim for regulator-vcam-2v8
+imx8mq-pinctrl 30330000.pinctrl: pin-10 (regulator-vcam-2v8) status -22
+imx8mq-pinctrl 30330000.pinctrl: could not request pin 10 (MX8MQ_IOMUXC_GPIO1_IO00) from group camerapwrgrp  on device 30330000.pinctrl
+
+so that's a limitation to use the pinctrl only in one place. Is that
+intended or am I missing something?
+
+The one other possibility I see is to add *another* regulator that looks
+something like so - that would be the only one controlling the gpio and having
+the pinctrl property:
+
+	reg_camera_pwr_en: regulator-camera-pwr-en {
+		compatible = "regulator-fixed";
+		regulator-name = "CAMERA_PWR_EN";
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_camera_pwr>;
+		gpio = <&gpio1 0 GPIO_ACTIVE_HIGH>;
+		enable-active-high;
+	};
+
+and the regulators I actually *want* to describe would all include
+
+		vin-supply = <&reg_camera_pwr_en>;
+
+My problem with that alternative is that I basically describe a regulator that
+doesn't really exist in hardware. Do you know what's the prefererred way to
+describe our hardware here?
+
+thank you very much!
+
+                                martin
 ---
- .../boot/dts/freescale/imx8mq-librem5-r3.dts  | 25 ++-------------
- .../boot/dts/freescale/imx8mq-librem5-r3.dtsi | 32 +++++++++++++++++++
- .../boot/dts/freescale/imx8mq-librem5-r4.dts  | 16 ++--------
- 3 files changed, 36 insertions(+), 37 deletions(-)
- create mode 100644 arch/arm64/boot/dts/freescale/imx8mq-librem5-r3.dtsi
+ .../boot/dts/freescale/imx8mq-librem5.dtsi    | 50 ++++++++++++++++++-
+ 1 file changed, 49 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mq-librem5-r3.dts b/arch/arm64/boot/dts/freescale/imx8mq-librem5-r3.dts
-index cd3c3edd48fa..4533a84fb0b9 100644
---- a/arch/arm64/boot/dts/freescale/imx8mq-librem5-r3.dts
-+++ b/arch/arm64/boot/dts/freescale/imx8mq-librem5-r3.dts
-@@ -1,14 +1,9 @@
- // SPDX-License-Identifier: (GPL-2.0+ OR MIT)
--// Copyright (C) 2020 Purism SPC <kernel@puri.sm>
-+// Copyright (C) 2021 Purism SPC <kernel@puri.sm>
- 
- /dts-v1/;
- 
--#include "imx8mq-librem5.dtsi"
--
--/ {
--	model = "Purism Librem 5r3";
--	compatible = "purism,librem5r3", "purism,librem5", "fsl,imx8mq";
--};
-+#include "imx8mq-librem5-r3.dtsi"
- 
- &a53_opp_table {
- 	opp-1000000000 {
-@@ -16,22 +11,6 @@ opp-1000000000 {
+diff --git a/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi b/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi
+index 3f7524400a63..c385f9e0d5f7 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi
+@@ -60,6 +60,40 @@ reg_aud_1v8: regulator-audio-1v8 {
+ 		enable-active-high;
  	};
- };
  
--&accel_gyro {
--	mount-matrix =  "1",  "0",  "0",
--			"0",  "1",  "0",
--			"0",  "0", "-1";
--};
--
--&bq25895 {
--	ti,battery-regulation-voltage = <4200000>; /* uV */
--	ti,charge-current = <1500000>; /* uA */
--	ti,termination-current = <144000>;  /* uA */
--};
--
- &buck3_reg {
- 	regulator-always-on;
- };
--
--&proximity {
--	proximity-near-level = <25>;
--};
-diff --git a/arch/arm64/boot/dts/freescale/imx8mq-librem5-r3.dtsi b/arch/arm64/boot/dts/freescale/imx8mq-librem5-r3.dtsi
-new file mode 100644
-index 000000000000..e872eb4b1cf9
---- /dev/null
-+++ b/arch/arm64/boot/dts/freescale/imx8mq-librem5-r3.dtsi
-@@ -0,0 +1,32 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+// Copyright (C) 2021 Purism SPC <kernel@puri.sm>
++	/*
++	 * the pinctrl for reg_csi_1v8 and reg_vcam_1v8 is added to the PMIC
++	 * since we can't have it twice in the 2 different regulator nodes.
++	 */
++	reg_csi_1v8: regulator-csi-1v8 {
++		compatible = "regulator-fixed";
++		regulator-name = "CAMERA_VDDIO_1V8";
++		regulator-min-microvolt = <1800000>;
++		regulator-max-microvolt = <1800000>;
++		vin-supply = <&reg_vdd_3v3>;
++		gpio = <&gpio1 0 GPIO_ACTIVE_HIGH>;
++		enable-active-high;
++	};
 +
-+/dts-v1/;
++	/* controlled by the CAMERA_POWER_KEY HKS */
++	reg_vcam_1v2: regulator-vcam-1v2 {
++		compatible = "regulator-fixed";
++		regulator-name = "CAMERA_VDDD_1V2";
++		regulator-min-microvolt = <1200000>;
++		regulator-max-microvolt = <1200000>;
++		vin-supply = <&reg_vdd_1v8>;
++		enable-active-high;
++	};
 +
-+/*
-+ * This file describes hardware that is shared among r3 ("Dogwood") and
-+ * later revisions of the Librem 5 so it has to be included in dts there.
-+ */
++	reg_vcam_2v8: regulator-vcam-2v8 {
++		compatible = "regulator-fixed";
++		regulator-name = "CAMERA_VDDA_2V8";
++		regulator-min-microvolt = <2800000>;
++		regulator-max-microvolt = <2800000>;
++		vin-supply = <&reg_vdd_3v3>;
++		gpio = <&gpio1 0 GPIO_ACTIVE_HIGH>;
++		enable-active-high;
++	};
 +
-+#include "imx8mq-librem5.dtsi"
-+
-+/ {
-+	model = "Purism Librem 5r3";
-+	compatible = "purism,librem5r3", "purism,librem5", "fsl,imx8mq";
-+};
-+
-+&accel_gyro {
-+	mount-matrix =  "1",  "0",  "0",
-+			"0",  "1",  "0",
-+			"0",  "0", "-1";
-+};
-+
-+&bq25895 {
-+	ti,battery-regulation-voltage = <4200000>; /* uV */
-+	ti,charge-current = <1500000>; /* uA */
-+	ti,termination-current = <144000>;  /* uA */
-+};
-+
-+&proximity {
-+	proximity-near-level = <25>;
-+};
-diff --git a/arch/arm64/boot/dts/freescale/imx8mq-librem5-r4.dts b/arch/arm64/boot/dts/freescale/imx8mq-librem5-r4.dts
-index cbfb49aa2563..30d65bef6939 100644
---- a/arch/arm64/boot/dts/freescale/imx8mq-librem5-r4.dts
-+++ b/arch/arm64/boot/dts/freescale/imx8mq-librem5-r4.dts
-@@ -1,31 +1,19 @@
- // SPDX-License-Identifier: (GPL-2.0+ OR MIT)
--// Copyright (C) 2020 Purism SPC <kernel@puri.sm>
-+// Copyright (C) 2021 Purism SPC <kernel@puri.sm>
+ 	reg_gnss: regulator-gnss {
+ 		compatible = "regulator-fixed";
+ 		pinctrl-names = "default";
+@@ -307,6 +341,20 @@ MX8MQ_IOMUXC_NAND_DQS_GPIO3_IO14	0x83
+ 		>;
+ 	};
  
- /dts-v1/;
- 
--#include "imx8mq-librem5.dtsi"
-+#include "imx8mq-librem5-r3.dtsi"
- 
- / {
- 	model = "Purism Librem 5r4";
- 	compatible = "purism,librem5r4", "purism,librem5", "fsl,imx8mq";
- };
- 
--&accel_gyro {
--	mount-matrix =  "1",  "0",  "0",
--			"0",  "1",  "0",
--			"0",  "0", "-1";
--};
--
- &bat {
- 	maxim,rsns-microohm = <1667>;
- };
- 
--&bq25895 {
--	ti,battery-regulation-voltage = <4200000>; /* uV */
--	ti,charge-current = <1500000>; /* uA */
--	ti,termination-current = <144000>;  /* uA */
--};
--
- &led_backlight {
- 	led-max-microamp = <25000>;
- };
++	pinctrl_camera_pwr: camerapwrgrp {
++		fsl,pins = <
++			/* CAMERA_PWR_EN_3V3 */
++			MX8MQ_IOMUXC_GPIO1_IO00_GPIO1_IO0	0x83
++		>;
++	};
++
++	pinctrl_csi1: csi1grp {
++		fsl,pins = <
++			/* CSI1_NRST */
++			MX8MQ_IOMUXC_ENET_RXC_GPIO1_IO25	0x83
++		>;
++	};
++
+ 	pinctrl_charger_in: chargeringrp {
+ 		fsl,pins = <
+ 			/* CHRG_INT */
+@@ -689,7 +737,7 @@ pmic: pmic@4b {
+ 		compatible = "rohm,bd71837";
+ 		reg = <0x4b>;
+ 		pinctrl-names = "default";
+-		pinctrl-0 = <&pinctrl_pmic>;
++		pinctrl-0 = <&pinctrl_pmic>, <&pinctrl_camera_pwr>;
+ 		clocks = <&pmic_osc>;
+ 		clock-names = "osc";
+ 		clock-output-names = "pmic_clk";
 -- 
 2.30.2
 
