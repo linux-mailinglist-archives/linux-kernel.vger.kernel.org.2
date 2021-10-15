@@ -2,79 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E78DD42FD9D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 23:45:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E2AE42FD98
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 23:45:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243198AbhJOVrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 17:47:46 -0400
-Received: from mail-oi1-f178.google.com ([209.85.167.178]:43702 "EHLO
-        mail-oi1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243184AbhJOVrn (ORCPT
+        id S243179AbhJOVrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 17:47:42 -0400
+Received: from mail-oi1-f171.google.com ([209.85.167.171]:38864 "EHLO
+        mail-oi1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238695AbhJOVrk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 17:47:43 -0400
-Received: by mail-oi1-f178.google.com with SMTP id o4so14942145oia.10;
-        Fri, 15 Oct 2021 14:45:36 -0700 (PDT)
+        Fri, 15 Oct 2021 17:47:40 -0400
+Received: by mail-oi1-f171.google.com with SMTP id t4so14951505oie.5;
+        Fri, 15 Oct 2021 14:45:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=y230wbruUO278KEc5ibVVtXYhkQ0A+OdNtSa2bP4utE=;
-        b=10LkF2PQgCJ83lm9HJbxPFWhXnxVwprZO3KizY+J1Mt/sN2legGavT+QFbz4mFALex
-         XwonrdMd90lXJbps7TJibuprxLPFEMurZbqK7stxlEMCCFO/MXVQFQaIo93p+bthaMA/
-         f2QJqzqUdqVf+aKBMkbblDyvPr4rHn62CPRWCzBwE7lPOvDoBOD1CeI19F5VxHs2X7as
-         dA9XnF2cCBil3uRfZaTAzIIfViJEkC7w8rX6yak0S+KcBcOI6laSsRnwCFutchE7FJd9
-         a3MFPPQq6RdbceR0Ppw8aHXHw/o26C+iTomfzNMSsDQAfF9DAdMtzeI21QS5JZapxr5x
-         XYWg==
-X-Gm-Message-State: AOAM5318pal/DCjH9Xa85z+A53XpsPJ5AIVLORpotJ1RGv12b5qsBI3y
-        lgLccAXNP7zJ6vCEbjvLNdBry5k/9Q==
-X-Google-Smtp-Source: ABdhPJwt7GgQZCmeygfLarqNYmCXA+GZUidu6mgG0L5mNIjv29t+Nr4qM2fGE8qBBV5xIdnKzv2aFw==
-X-Received: by 2002:aca:4283:: with SMTP id p125mr18034071oia.81.1634334336304;
-        Fri, 15 Oct 2021 14:45:36 -0700 (PDT)
+        bh=NYOyme/cinRUC3bVzCpIQa4360myarzWLY66zGOmnyw=;
+        b=em9lMnAlGSyml7XvWGy4vWsm+YZZNN5iIpW+anlCUECLGDMwa5u7nPYny51pWSnEvj
+         HwbuJJRw3TkTqDUdgiyQU0nZsIvfSflinbL4ES0hhLCciWPs2CZ5Gu7lIhBVjuk9AKU6
+         jbxtXsjN1hsICwL4ekhqMuT4NIgddwdE5hoWYgDFF89RFKv8B0dOnsIybtLfkeS/CyUw
+         foBgHhRL0dEVpgEzffu6Pb/TwEL6XPzBr9EAEqs9htZWkNMzSRSjEpn+k3rZBgxYCjqz
+         IXSWrAuadhEvAGwWiLBkM84o4oYEb86aC5GTGN0rcMyv9Psg89SLqq/5+/vVx7Rcj5FO
+         Insg==
+X-Gm-Message-State: AOAM533H93c3rkvi0jwS78hxlvCoc/Lmug1uhwnhCMs/8dTzdTjNT9DU
+        vOMvjuLzJdqlVMYTkFydmg==
+X-Google-Smtp-Source: ABdhPJyxArKeXBHH7sHkPc47Cnex9p1URhiMiWu4n0F61RgItK1JWSN1OQ8mY/jCwu8apIz9fTyk1g==
+X-Received: by 2002:aca:d64a:: with SMTP id n71mr14261693oig.40.1634334333530;
+        Fri, 15 Oct 2021 14:45:33 -0700 (PDT)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id v24sm1232483oou.45.2021.10.15.14.45.35
+        by smtp.gmail.com with ESMTPSA id m7sm1261843oiw.49.2021.10.15.14.45.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Oct 2021 14:45:35 -0700 (PDT)
-Received: (nullmailer pid 2254015 invoked by uid 1000);
+        Fri, 15 Oct 2021 14:45:32 -0700 (PDT)
+Received: (nullmailer pid 2254012 invoked by uid 1000);
         Fri, 15 Oct 2021 21:45:31 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, neil@brown.name,
-        devicetree@vger.kernel.org, john@phrozen.org
-In-Reply-To: <20211015191741.12963-1-sergio.paracuellos@gmail.com>
-References: <20211015191741.12963-1-sergio.paracuellos@gmail.com>
-Subject: Re: [PATCH] dt-bindings: bus: add palmbus device tree bindings
+To:     Moudy Ho <moudy.ho@mediatek.com>
+Cc:     acourbot@chromium.org, srv_heupstream@mediatek.com,
+        pihsun@chromium.org, linux-mediatek@lists.infradead.org,
+        Rob Landley <rob@landley.net>, allen-kh.cheng@mediatek.com,
+        randy.wu@mediatek.com, tfiga@chromium.org,
+        daoyuan huang <daoyuan.huang@mediatek.com>,
+        linux-media@vger.kernel.org,
+        Ping-Hsun Wu <ping-hsun.wu@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Maoguang Meng <maoguang.meng@mediatek.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        sj.huang@mediatek.com, menghui.lin@mediatek.com,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, drinkcat@chromium.org,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        devicetree@vger.kernel.org, hsinyi@google.com,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>
+In-Reply-To: <20211015123832.17914-6-moudy.ho@mediatek.com>
+References: <20211015123832.17914-1-moudy.ho@mediatek.com> <20211015123832.17914-6-moudy.ho@mediatek.com>
+Subject: Re: [PATCH v8 5/7] dt-binding: mt8183: add Mediatek MDP3 dt-bindings
 Date:   Fri, 15 Oct 2021 16:45:31 -0500
-Message-Id: <1634334331.609042.2254014.nullmailer@robh.at.kernel.org>
+Message-Id: <1634334331.594718.2254011.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 15 Oct 2021 21:17:41 +0200, Sergio Paracuellos wrote:
-> Add device tree bindings for palmbus controller present in all the MIPS
-> ralink based SoCs.
+On Fri, 15 Oct 2021 20:38:30 +0800, Moudy Ho wrote:
+> This patch adds DT binding document for Media Data Path 3 (MDP3)
+> a unit in multimedia system used for scaling and color format convert.
 > 
-> Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> Signed-off-by: Moudy Ho <moudy.ho@mediatek.com>
 > ---
->  .../devicetree/bindings/bus/palmbus.yaml      | 81 +++++++++++++++++++
->  1 file changed, 81 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/bus/palmbus.yaml
+>  .../bindings/arm/mediatek/mediatek,ccorr.yaml |  59 +++++
+>  .../bindings/arm/mediatek/mediatek,rdma.yaml  | 211 ++++++++++++++++++
+>  .../bindings/arm/mediatek/mediatek,wdma.yaml  |  70 ++++++
+>  .../bindings/media/mediatek,mdp3-rsz.yaml     |  68 ++++++
+>  .../bindings/media/mediatek,mdp3-wrot.yaml    |  70 ++++++
+>  5 files changed, 478 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,ccorr.yaml
+>  create mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,rdma.yaml
+>  create mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,wdma.yaml
+>  create mode 100644 Documentation/devicetree/bindings/media/mediatek,mdp3-rsz.yaml
+>  create mode 100644 Documentation/devicetree/bindings/media/mediatek,mdp3-wrot.yaml
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
 on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
 yamllint warnings/errors:
+./Documentation/devicetree/bindings/arm/mediatek/mediatek,wdma.yaml:20:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
+./Documentation/devicetree/bindings/arm/mediatek/mediatek,rdma.yaml:211:7: [error] no new line character at the end of file (new-line-at-end-of-file)
+./Documentation/devicetree/bindings/arm/mediatek/mediatek,ccorr.yaml:19:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
+./Documentation/devicetree/bindings/media/mediatek,mdp3-wrot.yaml:20:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
+./Documentation/devicetree/bindings/media/mediatek,mdp3-rsz.yaml:20:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
 
 dtschema/dtc warnings/errors:
-Error: Documentation/devicetree/bindings/bus/palmbus.example.dts:22.13-14 syntax error
-FATAL ERROR: Unable to parse input tree
-make[1]: *** [scripts/Makefile.lib:385: Documentation/devicetree/bindings/bus/palmbus.example.dt.yaml] Error 1
-make[1]: *** Waiting for unfinished jobs....
-make: *** [Makefile:1441: dt_binding_check] Error 2
 
 doc reference errors (make refcheckdocs):
 
-See https://patchwork.ozlabs.org/patch/1541885
+See https://patchwork.ozlabs.org/patch/1541634
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
