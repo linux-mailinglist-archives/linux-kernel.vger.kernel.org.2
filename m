@@ -2,82 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98E3842E4FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 02:02:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29B7F42E4FD
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 02:02:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234542AbhJOAED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 20:04:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59960 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234521AbhJOAEC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 20:04:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DB5B3601FA;
-        Fri, 15 Oct 2021 00:01:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634256117;
-        bh=DaQPSl2wogcEKfQYg0cqX/7olwg80m3cW1DGsTWwlkU=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=KJMTaLLOD2lKZBlE6svvM5iL3VrAo1kVHp2PCnYkV2oUAQzaf4Zptbel8C95pvYTJ
-         FUrcqhbVzFpXYH/J+U8iHeDDMre+5I8iDtZVhuoezOwzCaJQSOD1m2BAyM0On4eJ2L
-         9E/4mHCsvU+2++1lkqYX1XShm82UQzm8AkTJYxoHNEtpITy2itz4Wt5tHXy5KO3iwB
-         yG2J24aaHShM77oFbBacjosWV4+oV9Wp/Sf7qEbFH9zRGogN7vEYVupJ/D54tRL7KC
-         9RMYnYG13Ymdf13UVvKBfbqjxkJYzm2kaoi5WiAB7L/FiIlNzHpQNPQPTKUmyYyjA7
-         MZ0K3aT85OlvQ==
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <070b1b25-3718-5f3a-869b-a3954fdcc7c5@linaro.org>
-References: <20210829154757.784699-1-dmitry.baryshkov@linaro.org> <20210829154757.784699-8-dmitry.baryshkov@linaro.org> <YV8WsQb9H7+CaLjP@ripper> <4614587c-b87a-4375-cb6a-6af6f5462c6b@linaro.org> <163415465484.936110.9292145029740247591@swboyd.mtv.corp.google.com> <070b1b25-3718-5f3a-869b-a3954fdcc7c5@linaro.org>
-Subject: Re: [PATCH v7 7/8] clk: qcom: dispcc-sm8250: stop using mmcx regulator
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Taniya Das <tdas@codeaurora.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-clk@vger.kernel.org,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
+        id S234551AbhJOAEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 20:04:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57000 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231305AbhJOAEm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 20:04:42 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87CB3C061570
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 17:02:36 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id t2so23261722wrb.8
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 17:02:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=philpotter-co-uk.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NJ9h42EZq8V8uTouqjvpCukohjQ9nZfHHgB0TycmMIw=;
+        b=R0zAUSmojL5KI/7M53aTElLzbIT3uHUA22GUriEBCrFpOfsheRN0osk804I/tADXz5
+         2VZrqgitHi8VxW+iPFwo4Aikx7BpA57/BcnNNaaXtWo3RmxMCGQxZaHgamkVX9YzJmHZ
+         Pvg0iTpIx4pg/sFrrbRa9k07pcBrkF0BAeBt3ADjVhW2992+px1ht2ZER/3n5dG+EDff
+         IJvjV/djYlunF46NjPu1L+IGD/eHEfqZSQ5qHCkLblB4kKMNZrodmSg91UQwcNPfGzZm
+         zlWDaPQThPQgTe7dfnbO+h+GhOEduzBBRCsBWYozfpm8xG121Bxz3gr/G5l3EKNHDmBa
+         sN/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NJ9h42EZq8V8uTouqjvpCukohjQ9nZfHHgB0TycmMIw=;
+        b=KMORd5e7ObtCHVW6v4NPtuH+rhaIFHwxdbocvqjlJYxwatioiUIBxSX5cV9o0qe+oB
+         SAXycxgx84m1JMwX+Wo9caU6evP+qWAGiRgVQh87m4rsJHnNdMjanf3FKqR9xrVJSgxF
+         Rz63Tao3y2AMnCsMTvZvtcUneT01GvHGNW8RgETZxLUNBiwI7F/sYDG16Nep+VMmby9j
+         j5sEo3y5cRFQz/xmqmcPXdnbx1teNIXH/wHU17YWJ2AXdyjn4BDH4anYPXhHeNBEbNUl
+         E6cxu+h8wQCLQhMUoLWJ8g4DfIY1nFK8IU18z/MSQyIeJwhpTJy0mC6e+KyfXRZcqXjE
+         hqww==
+X-Gm-Message-State: AOAM533eQl3/TAatVkh6eaG4rqtlIAWVDxHpZ8eSaN7VMd4E31TEQuoa
+        PQ/g84zo7m+JjUdeWCyZRremfA==
+X-Google-Smtp-Source: ABdhPJy6u3Pn1Ya+r5+UZe7oicb5emKBZw0WhCRDptFGPB4wevvGZLR6bbEUcnppFwAmSgSaYp19og==
+X-Received: by 2002:adf:de0e:: with SMTP id b14mr10451098wrm.271.1634256155106;
+        Thu, 14 Oct 2021 17:02:35 -0700 (PDT)
+Received: from localhost.localdomain (3.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.6.1.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:df16::3])
+        by smtp.gmail.com with ESMTPSA id l16sm3534684wmj.33.2021.10.14.17.02.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Oct 2021 17:02:34 -0700 (PDT)
+From:   Phillip Potter <phil@philpotter.co.uk>
+To:     gregkh@linuxfoundation.org
+Cc:     Larry.Finger@lwfinger.net, straube.linux@gmail.com,
+        martin@kaiser.cx, linux-staging@lists.linux.dev,
         linux-kernel@vger.kernel.org
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Thu, 14 Oct 2021 17:01:55 -0700
-Message-ID: <163425611555.1688384.11653527408173081635@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Subject: [PATCH] staging: r8188eu: remove MSG_88E calls from hal/usb_halinit.c
+Date:   Fri, 15 Oct 2021 01:02:33 +0100
+Message-Id: <20211015000233.842-1-phil@philpotter.co.uk>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Dmitry Baryshkov (2021-10-14 02:53:41)
-> On 13/10/2021 22:50, Stephen Boyd wrote:
-> > Quoting Dmitry Baryshkov (2021-10-07 09:16:13)
-> >> On 07/10/2021 18:48, Bjorn Andersson wrote:
-> >>> On Sun 29 Aug 08:47 PDT 2021, Dmitry Baryshkov wrote:
-> >>>
-> >>>> Now as the common qcom clock controller code has been taught about p=
-ower
-> >>>> domains, stop mentioning mmcx supply as a way to power up the clock
-> >>>> controller's gdsc.
-> >>>>
-> >>>> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> >>>> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> >>>
-> >>> Once we merge these, I expect that the boards will start crashing if
-> >>> the kernel is booted using an existing DTB?
-> >>>
-> >>> Is it okay to just merge the first 6 patches in the series now and
-> >>> postpone these two until we've had the dts change sitting for a while?
-> >>
-> >> Sure it is.
-> >>
-> >=20
-> > What's the merge strategy? It goes through arm-soc?
->=20
-> I think this should go through the clk tree. There is little chance of=20
-> conflicts.
->=20
->=20
+Remove both MSG_88E calls from hal/usb_halinit.c, as these calls serve
+no purpose other than to print the name of the function they are in
+(_ReadAdapterInfo8188EU) on entry and on exit, with a timing of the
+function, which is better accomplished by other means. Also remove
+the jiffies assignment at the start of the function, as it is no
+longer used.
 
-Ok. So I take the first 6 through clk tree and then we wait for the last
-two?
+Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+---
+ drivers/staging/r8188eu/hal/usb_halinit.c | 6 ------
+ 1 file changed, 6 deletions(-)
+
+diff --git a/drivers/staging/r8188eu/hal/usb_halinit.c b/drivers/staging/r8188eu/hal/usb_halinit.c
+index f6db5b05e6e7..abbd107ad3c1 100644
+--- a/drivers/staging/r8188eu/hal/usb_halinit.c
++++ b/drivers/staging/r8188eu/hal/usb_halinit.c
+@@ -1073,15 +1073,9 @@ static void _ReadRFType(struct adapter *Adapter)
+ 
+ static int _ReadAdapterInfo8188EU(struct adapter *Adapter)
+ {
+-	u32 start = jiffies;
+-
+-	MSG_88E("====> %s\n", __func__);
+-
+ 	_ReadRFType(Adapter);/* rf_chip -> _InitRFType() */
+ 	_ReadPROMContent(Adapter);
+ 
+-	MSG_88E("<==== %s in %d ms\n", __func__, rtw_get_passing_time_ms(start));
+-
+ 	return _SUCCESS;
+ }
+ 
+-- 
+2.31.1
+
