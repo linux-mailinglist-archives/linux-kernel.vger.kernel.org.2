@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8375542EEE8
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 12:33:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F42542EEE9
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 12:33:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238188AbhJOKfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 06:35:25 -0400
-Received: from relay1-d.mail.gandi.net ([217.70.183.193]:38925 "EHLO
-        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237983AbhJOKfK (ORCPT
+        id S238173AbhJOKfc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 06:35:32 -0400
+Received: from relay6-d.mail.gandi.net ([217.70.183.198]:58917 "EHLO
+        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238201AbhJOKfQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 06:35:10 -0400
+        Fri, 15 Oct 2021 06:35:16 -0400
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 7B11A24000B;
-        Fri, 15 Oct 2021 10:33:02 +0000 (UTC)
+        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 50B1BC0009;
+        Fri, 15 Oct 2021 10:33:07 +0000 (UTC)
 From:   Miquel Raynal <miquel.raynal@bootlin.com>
 To:     Miquel Raynal <miquel.raynal@bootlin.com>,
         Richard Weinberger <richard@nod.at>,
@@ -23,22 +23,22 @@ To:     Miquel Raynal <miquel.raynal@bootlin.com>,
 Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
         Vladimir Zapolskiy <vz@mleia.com>
-Subject: Re: [PATCH 4/8] Revert "mtd: rawnand: tmio: Fix external use of SW Hamming ECC helper"
-Date:   Fri, 15 Oct 2021 12:33:02 +0200
-Message-Id: <20211015103302.950223-1-miquel.raynal@bootlin.com>
+Subject: Re: [PATCH 3/8] Revert "mtd: rawnand: txx9ndfmc: Fix external use of SW Hamming ECC helper"
+Date:   Fri, 15 Oct 2021 12:33:06 +0200
+Message-Id: <20211015103306.950290-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210928221507.199198-5-miquel.raynal@bootlin.com>
+In-Reply-To: <20210928221507.199198-4-miquel.raynal@bootlin.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'048fbdd599101074285d605936a70a21632da9a4'
+X-linux-mtd-patch-commit: b'e7f466c51ce9179a7b5105f93fdb3e85ef6b61ce'
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-09-28 at 22:15:03 UTC, Miquel Raynal wrote:
-> This reverts commit 6a4c5ada577467a5f79e06f2c5e69c09983c22fb.
+On Tue, 2021-09-28 at 22:15:02 UTC, Miquel Raynal wrote:
+> This reverts commit 3d227a0b0ce319edbff6fd0d8af4d66689e477cc.
 > 
 > Before the introduction of the ECC framework infrastructure, many
 > drivers used the ->calculate/correct() Hamming helpers directly. The
