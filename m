@@ -2,108 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6248B42EE95
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 12:14:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CCBA42EE9C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 12:15:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237891AbhJOKQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 06:16:49 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:46250
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237879AbhJOKQn (ORCPT
+        id S237943AbhJOKRK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 06:17:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53106 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237885AbhJOKRE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 06:16:43 -0400
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com [209.85.167.71])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 648E73FFFE
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 10:14:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1634292876;
-        bh=CdE6XumrF2NcE/za+fvknc1KEQDwW8iRNC51K+hZP/8=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=tAz7uEPHbUf5Sa1SrcMyb2vQoB9hlWRwYcAJDClm1La5Yb1nqBilGWqHnr81RQ4pT
-         m+TqlrB8h0Z3I71IW2sfx1Lfayz9N1kXkNZwp54SpmrXUyPIvnQTeBH1ZlSn+yvd4E
-         LsfxdthH0BAQ0L2ZLEhixe/Klrx8rV5eZ19gA2HpLn6fQKq4/UReoVroEqAT1DXIG1
-         DNdsKzFtGjEkn/sGiU4VxPfQ/p7F/+0ago6GIcOc3jD5NKpOcbawVyS3kj6TH2uDp1
-         WxLTBEkAhHBTQD2OY55IGqecLETA7uGZq//H14wCvVAiWCIqBuxP1U6GCxa8eaeSwK
-         cZY0TkE/kp8Sw==
-Received: by mail-lf1-f71.google.com with SMTP id br42-20020a056512402a00b003fd94a74905so6368454lfb.7
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 03:14:36 -0700 (PDT)
+        Fri, 15 Oct 2021 06:17:04 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74092C061753;
+        Fri, 15 Oct 2021 03:14:58 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id s64so21439515yba.11;
+        Fri, 15 Oct 2021 03:14:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZTDCpxGbeuWo2eDKtm3bA2A8qW6ZaIJb8O6pyREdQeA=;
+        b=Oo9miBv8zvbpx9UbpKzN5puJZy7wQq6nWt4BuBIXYZZsDZdwKmPGjKeWxVig0J0J9U
+         YxS1NeNWePdLu5ro2hpjheWwl8/9D3MzSDN7kgjxKsWmqACP+Xn4VjDjo7ORtN6k6dPW
+         Xxo0nmVPM2kgaurX2RqeHG5G6g8GieY2Os26DwcIzmUS6hZUibUnDR17MY2zow2pjE8Z
+         FBWyGIbVergDurjvgN353Lkvqd8vrFGmSlMY0NdnyvIZRYh5syMm/4uyfwpnFgklCMjy
+         8MwzKjWKuVJ3qeCThCp0GayV9E4ktFP/WuzdV/OsZ3FtuqZttx1oVitCV4+G4vf5BDDf
+         IaSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=CdE6XumrF2NcE/za+fvknc1KEQDwW8iRNC51K+hZP/8=;
-        b=nat+rSxIkLvAnEN70h5EaspwdzL8t27Dm99bQEVnY8ljYbtYzdfhKTMfAOgJ4sYGj/
-         hdnx+345Q/XX4ZbrEURP7rFrXjG+bS5P7sY54sN2Hkt2q+6RW7szlZOH+cimC25JTdBT
-         1LTowGIU3ofzUSELMBEudUxGCjJiYhxZzo+bL1fh/ielTHKoHaoZ+ZTg8mPznfTyOiBE
-         5kQYeLwRk2lBbinytJ8jkgb+qCpst8mCIb8dLLHRU+Fbgj94XzVzgeNTc5H0cRDeJ5qo
-         o9zCVvZaWGAR8bRybJdWS5S5TUjuDu2EvmqKUzdq09skWleyhehYVuTPnJQtZP0VAFQK
-         +yLw==
-X-Gm-Message-State: AOAM530VRTd8yjIk1B0sFBx/6yN2jQJXtysCTGZnFnP1kgqhKSIGgwpd
-        LdRe+QfpkxPH+Ym9vRc1A9Vh0R5OKnze/6qAMH/FuzLOo3fxHiw6YuNzNTZ48y1IKPPN59HeMrI
-        h3chGcNjRNtV/yMmpaZnIphODsLdXVSTCJT0xTZUvwQ==
-X-Received: by 2002:ac2:5210:: with SMTP id a16mr10411971lfl.279.1634292875712;
-        Fri, 15 Oct 2021 03:14:35 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxQgMT9cOGhLuYlrqwp4pUS3jckme2wuIOcB+vqpicsE0eC/dex6Vr1nu/QRypdBcOyi/UfDg==
-X-Received: by 2002:ac2:5210:: with SMTP id a16mr10411936lfl.279.1634292875341;
-        Fri, 15 Oct 2021 03:14:35 -0700 (PDT)
-Received: from [192.168.3.161] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
-        by smtp.gmail.com with ESMTPSA id s23sm463520lfi.139.2021.10.15.03.14.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Oct 2021 03:14:34 -0700 (PDT)
-Subject: Re: [PATCH v4 1/2] [RFT] clk: samsung: add support for CPU clocks
-To:     Will McVicker <willmcvicker@google.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     kernel-team@android.com,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20211014195347.3635601-1-willmcvicker@google.com>
- <20211014195347.3635601-2-willmcvicker@google.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <0e256e4e-829d-dd3f-9451-e8c4481edf11@canonical.com>
-Date:   Fri, 15 Oct 2021 12:14:33 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZTDCpxGbeuWo2eDKtm3bA2A8qW6ZaIJb8O6pyREdQeA=;
+        b=iFI631cLog/RT9XsKBKekdb4ptbdBTTyqrLAziawH253DZ5HJ/P8JqilZiFfiODBTB
+         MEjBesJiiZMe246zsVIdae7sjrDluoaQBdxwJJBwWlZ1IiJw4VUbcRXM/KMMqU8d4HYZ
+         LsXMmjb18O6AP10wJ9WLSFg5Bm6nm1Xx7Rp4aAr6GNOWaj2ZHJsHXCrzrSxcFUE3opx8
+         iI9H0dw5iQQoMtFPHple2oOsd9vc0GMgrqflrAhEuOLtFlzQvqtjUeuctU6svc95ONYe
+         u+DwmcSJ9iiGHqVBT1TSaD3jqQZHHsOevRH8Ux6LTLTZ/p68eCsc6+G2uGkksw2cQS0l
+         lzlQ==
+X-Gm-Message-State: AOAM5316XOkuJLm6mmJFZFsME7SDEws3k6SUeDrmASH0vQnuu7h7ayjC
+        Zv7OVuGHo/BEgXN62eeHWVCVso+LlMPPqPA/sqg=
+X-Google-Smtp-Source: ABdhPJxZCLP+mddS3lhVDgJN0jp2gMO9M1+8VzhY+veemJYIZYG/1ydxrTn3ALlotQ5/YbUymtiyTdwL1VhxymGR2FE=
+X-Received: by 2002:a25:346:: with SMTP id 67mr11229803ybd.345.1634292897782;
+ Fri, 15 Oct 2021 03:14:57 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20211014195347.3635601-2-willmcvicker@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20211015100941.17621-1-heinrich.schuchardt@canonical.com>
+In-Reply-To: <20211015100941.17621-1-heinrich.schuchardt@canonical.com>
+From:   Bin Meng <bmeng.cn@gmail.com>
+Date:   Fri, 15 Oct 2021 18:14:46 +0800
+Message-ID: <CAEUhbmUSmi9mbiHpatBjGgRjrtyJPms9BRmyBPs5BWeVb7n1Nw@mail.gmail.com>
+Subject: Re: [PATCH 1/1] dt-bindings: reg-io-width for SiFive CLINT
+To:     Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
+Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Guo Ren <guoren@linux.alibaba.com>, Xiang W <wxjstz@126.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Atish Patra <atish.patra@wdc.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        OpenSBI <opensbi@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/10/2021 21:53, Will McVicker wrote:
-> Adds 'struct samsung_cpu_clock' and corresponding CPU clock registration
-> function to the samsung common clk driver. This allows samsung clock
-> drivers to register their CPU clocks with the samsung_cmu_register_one()
-> API.
-> 
-> Currently the exynos5433 apollo and atlas clks have their own custom
-> init functions to handle registering their CPU clocks. With this patch
-> we can drop their custom CLK_OF_DECLARE functions and directly call
-> samsung_cmu_register_one().
-> 
-> Signed-off-by: Will McVicker <willmcvicker@google.com>
+On Fri, Oct 15, 2021 at 6:09 PM Heinrich Schuchardt
+<heinrich.schuchardt@canonical.com> wrote:
+>
+> The CLINT in the T-HEAD 9xx processors do not support 64bit mmio access to
+> the MTIMER device. The current schema does not allow to specify this.
+>
+> OpenSBI currently uses a property 'clint,has-no-64bit-mmio' to indicate the
+> restriction. Samuael Holland suggested in
+> lib: utils/timer: Use standard property to specify 32-bit I/O
+> https://github.com/smaeul/opensbi/commit/b95e9cf7cf93b0af16fc89204378bc59ff30008e
+> to use "reg-io-width = <4>;" as the reg-io-width property is generally used
+> in the devicetree schema for such a condition.
+>
+> A release candidate of the ACLINT specification is available at
+> https://github.com/riscv/riscv-aclint/releases
+>
+> Add reg-io-width as optional property to the SiFive Core Local Interruptor.
+>
+> Signed-off-by: Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
 > ---
->  drivers/clk/samsung/clk-cpu.c | 18 ++++++++++++++++++
->  drivers/clk/samsung/clk.c     |  2 ++
->  drivers/clk/samsung/clk.h     | 26 ++++++++++++++++++++++++++
->  3 files changed, 46 insertions(+)
-> 
+>  Documentation/devicetree/bindings/timer/sifive,clint.yaml | 7 +++++++
+>  1 file changed, 7 insertions(+)
+>
+> diff --git a/Documentation/devicetree/bindings/timer/sifive,clint.yaml b/Documentation/devicetree/bindings/timer/sifive,clint.yaml
+> index a35952f48742..266012d887b5 100644
+> --- a/Documentation/devicetree/bindings/timer/sifive,clint.yaml
+> +++ b/Documentation/devicetree/bindings/timer/sifive,clint.yaml
+> @@ -41,6 +41,13 @@ properties:
+>    reg:
+>      maxItems: 1
+>
+> +  reg-io-width:
+> +    description: |
+> +      Some CLINT implementations, e.g. on the T-HEAD 9xx, only support
+> +      32bit access for MTIMER.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    const: 4
 
+But this is not a "sifive,clint" anyway. Should there be a new
+dt-bindings for T-Head clint variant?
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> +
+>    interrupts-extended:
+>      minItems: 1
 
-
-Best regards,
-Krzysztof
+Regards,
+Bin
