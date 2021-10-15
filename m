@@ -2,135 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AD0F42E94F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 08:49:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0FC042E951
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 08:49:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234333AbhJOGvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S235724AbhJOGvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 02:51:42 -0400
+Received: from mail-eopbgr1300135.outbound.protection.outlook.com ([40.107.130.135]:26777
+        "EHLO APC01-HK2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235695AbhJOGvh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 15 Oct 2021 02:51:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33660 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231949AbhJOGvg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 02:51:36 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D929EC061570;
-        Thu, 14 Oct 2021 23:49:29 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id p16so37688137lfa.2;
-        Thu, 14 Oct 2021 23:49:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=EddHbOUdADVimAbGlRz3BSKwi7rBdjCzr1uQlPDasjY=;
-        b=PmwPPO/GA/ClMdgV82YfF48PkWuhObrNiEQ1AVmHXtVjAzwjqHXrOkBSYDYYMl4cHw
-         OALDVYwz8N8AHBj6bFrjupDyUm5olb7WdS9DeH6MH0cfe7rnxMMgO2I/5lANMr9T0xk4
-         /TJS7SjUg1d9gFDei7Xra85sa304nA5F7tngZe1B2R8VNRHL2qntWXWmyyYX2f8gSlIm
-         WTUidy6ETXbRk4J0uyUA4U/MwZ90eWSwKMCscKPL10wOKDd2eCnYi1WwvsurqF6vpw6X
-         WOjIqlxOpwnBedK7eg09FBjgP/pyjJ20R7/+XTOQHbxySesutUzXWr7nJKYYWqzPdNa6
-         cc5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=EddHbOUdADVimAbGlRz3BSKwi7rBdjCzr1uQlPDasjY=;
-        b=b7T4vD+tn06LEinXcxdUA+Snl8sdg/0G5VuX7uOojqoeo9XXFjVMjqgqXWQPUlH9OW
-         p9qr8zAffzZ1oqrQZkCVOtDMKwLH1igMZaprRfCjndaxrDJpikP93DCU3+bddDZSeOfM
-         h6xrSaOcfclnbhgpy/xD3eOGjY6Q4EZfDWNjzgznnWJ6kTRSa78KCizTBX+O70JckWY9
-         rSNYWE6THNrNzE+GNd46KPWFmcMpgCslek24hWieFXgwQHAcl6PVsJeZEbNecJpIdKLr
-         3ybdULjHy1zSrLxGOx6yG8viXWNNeOMptvmLWggZaJYgrQEw/HSZfadtmc2vv2+bmYNK
-         2Smg==
-X-Gm-Message-State: AOAM531O7FaTyQ/BdGmiEX0zz2os1f91Oi9kVQQHQRs7SXSSTj5/Bvjj
-        /DXvn0ObSd9vmzh6a5arUp3652+oaKk=
-X-Google-Smtp-Source: ABdhPJyygzlRnZV944jPDBS6uILWDq3znMl83/ecUVpOGvqQn62q4swoXqP/LuPMyGP29IBpI5gY3A==
-X-Received: by 2002:a2e:90b:: with SMTP id 11mr11288492ljj.186.1634280567802;
-        Thu, 14 Oct 2021 23:49:27 -0700 (PDT)
-Received: from [192.168.2.145] (79-139-176-16.dynamic.spd-mgts.ru. [79.139.176.16])
-        by smtp.googlemail.com with ESMTPSA id s11sm69237ljp.60.2021.10.14.23.49.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Oct 2021 23:49:27 -0700 (PDT)
-Subject: Re: [PATCH] cpuidle: tegra: add ARCH_SUSPEND_POSSIBLE dependency
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thierry Reding <treding@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        He Ying <heying24@huawei.com>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20211013160125.772873-1-arnd@kernel.org>
- <2fdbd732-2496-2267-6636-2f682c39e928@gmail.com>
- <CAK8P3a2jwJb_B8y3juin74kpW5cRJb2GQrYyTW8qJ+9y-x0cmQ@mail.gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <86f9d315-7d98-ed92-0245-9d99f7131d1a@gmail.com>
-Date:   Fri, 15 Oct 2021 09:49:20 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=h11GGOICq/nNRebGhOPfAHoYBwmDUjWMhNEy5iR60p06EUOMmrT3i8hQchuNA/RwP06AUeIp2+sRfhbTivxy7AwIsGQpKWePqZsCxZ2ZduQ0W7YFumaroyAeEjDq+JeXjaStmXnUxk6wt2+T/ibdf24zB8FOs6Y0++0dlgODiDPJUIKeTaCMuiosHg8NNhAR6dv8xgri1Nxbp4twFGXn3JuynyOFkSSULRhcw/Izt9mNvcjG6yz2EmRgIYHiJG9Tjpc7GXjbBOu4YUtSC9MdJgzGxdhy5iAi0uouPZt7A3j1FDmC3KKtT2vZIRIG/PXPZUgY50aDmE7D+szZWpOZTg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=MMPJ1INLkALIISx17gyF+dCIt29qJXm7HbWIXdMcUF0=;
+ b=O1Ky+02ZtM/ddFkBZ8D657LpgyVviLrbkuXicbak/98jUw5lkLkT4cF9QXUvHPtICFonN66/vFvah4khLNqSVhJFstJpNZwhpm6XGOKju3AHmolexafBLfAI77bikXzeY2n52F06n/5P7mzNkrmPlBoPlwSB/WbHUDPX1WtDC/Hl54+ERVii+9vh/qmNcvZ4i1nYZSK+9vuNA16zItn7/AfYpnAK5DpkrpHoZjtMU+41zxWVEBD/FotiSo/+cyqJ7iB0DApUsF4PVUm3ZrUk2S9NgjzxrFFQhnYnibwiMuot/Socg6T7Hbd8aj8HJ+z4TVHm3NVo6PdvQvrQRyVRdA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
+ s=selector2-vivo0-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MMPJ1INLkALIISx17gyF+dCIt29qJXm7HbWIXdMcUF0=;
+ b=Ocn9/GYGSHtN6CEZZPT+V4jiaVMEM6hVOf2i9u80rU5hX22ewS7oe3vpj5VPWDTJfnLhyevTyoy/pqrFmyaTpcFKIdTydoWYP+9X7yZd7kq343alUJV6jtc/Db+69yBp2OI+KOHllRf/63Tm7dqbu7hDVhK8s4bmGxKnQbMfSmU=
+Authentication-Results: linux.intel.com; dkim=none (message not signed)
+ header.d=none;linux.intel.com; dmarc=none action=none header.from=vivo.com;
+Received: from SL2PR06MB3082.apcprd06.prod.outlook.com (2603:1096:100:37::17)
+ by SL2PR06MB3388.apcprd06.prod.outlook.com (2603:1096:100:3c::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.16; Fri, 15 Oct
+ 2021 06:49:29 +0000
+Received: from SL2PR06MB3082.apcprd06.prod.outlook.com
+ ([fe80::4c9b:b71f:fb67:6414]) by SL2PR06MB3082.apcprd06.prod.outlook.com
+ ([fe80::4c9b:b71f:fb67:6414%6]) with mapi id 15.20.4608.017; Fri, 15 Oct 2021
+ 06:49:29 +0000
+From:   Qing Wang <wangqing@vivo.com>
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Qing Wang <wangqing@vivo.com>
+Subject: [PATCH] media: ccs: replace snprintf in show functions with sysfs_emit
+Date:   Thu, 14 Oct 2021 23:49:22 -0700
+Message-Id: <1634280562-4629-1-git-send-email-wangqing@vivo.com>
+X-Mailer: git-send-email 2.7.4
+Content-Type: text/plain
+X-ClientProxiedBy: HK2PR06CA0015.apcprd06.prod.outlook.com
+ (2603:1096:202:2e::27) To SL2PR06MB3082.apcprd06.prod.outlook.com
+ (2603:1096:100:37::17)
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a2jwJb_B8y3juin74kpW5cRJb2GQrYyTW8qJ+9y-x0cmQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Received: from ubuntu.localdomain (218.213.202.189) by HK2PR06CA0015.apcprd06.prod.outlook.com (2603:1096:202:2e::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.4608.17 via Frontend Transport; Fri, 15 Oct 2021 06:49:28 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 949315ff-fe40-4e98-068f-08d98fa7efcf
+X-MS-TrafficTypeDiagnostic: SL2PR06MB3388:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SL2PR06MB3388D5AF1B5771DE9CB5F18FBDB99@SL2PR06MB3388.apcprd06.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2887;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: LyIIFe45H68gT2qg7JkxUzIZ7psspsOb1dYjTAV/sjAUXWjDSouYIzhl2m9OFCnCDfaJTED1AScZfz3E5NID2NAiwpXpSIFS5FAGk8xpCgztczMBFFLfh1XUURGxsZDYClNjoz9zjir7wcR04rm9o7tnEOP7ABFOKNQsT6JrT7nAleIbNksfaDlcA6PnCfp8pFE170RiZrtaXS1oBVRvJTxwUzJNYEGu350bb2OOX0zuqJcBj5J9oiudPxwF80dfpNpvJsCDa1uRyNsPzd7REpoUNMibsRyZwoGMXVWLy7P3STMn+AqBIcNVsOSFiw9JbVNNoBt0WfpJx0UN+o2/hRJTpLhMoxdGyWHj+3lj/va6tb0T4AvHFYZI8wn04DoST9hl3l3/OcQIvGb3NgLzjEbVgrmHUfwo1PscrVZ43L3rn8+giiH6sEnQTREGpc5N2/1OFus3rGh1DflcB2cYsVMZYLS97tsFzkof7TzHGRokEvPesUaHtSO/j/C3IYOIgC0HskZ4l/TQtYUupI94MHkJ7q57YBPcpze5TqvLvQvAKrWZl86JcIWab6ug7V//Nl8hgsPB+i6De61S5DPxiJcWIouDzcdRFYLahS8+nB/XA56PetTaia5aX+ZqPCaDBebPskB5Ae0Qw5kk6ZiZTMS55pUalzbzWcnsK1kAIITlva7K0wap8wjUj1mSq66AAHWZkJgG8KLfRKv//YPSng==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SL2PR06MB3082.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(38350700002)(38100700002)(2616005)(316002)(2906002)(26005)(107886003)(8676002)(66556008)(83380400001)(186003)(66946007)(6486002)(956004)(508600001)(36756003)(4326008)(66476007)(6666004)(6506007)(8936002)(110136005)(5660300002)(86362001)(6512007)(52116002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?sBPvtwJhZZtV4pz/is5F7e9xeWlnbIZ8/1x/mZvuSa34YQu274HhyQGz7y4I?=
+ =?us-ascii?Q?/yihn+ijWBInAOHlfggCuYbk/o4qO7c9ZG8Bxdq4AU4d/J8IjHYdkAOiA6Z7?=
+ =?us-ascii?Q?l17bDggyPrRmeXfbf9e5MYAWskRAgylOEHlLo/ofgYSZZVR4w02Jz0Y6rlA8?=
+ =?us-ascii?Q?+M2E+3Ap35RRLhyjz87aJt2Si3N4flmrBCOUCYSp/waHrFsN3PPL4By51+f2?=
+ =?us-ascii?Q?2Nu2zDsOBgmcX8kUfO64/CXSlxAXcTjUGkV27Owfm2KIJF2+tQfyTtJBE6Cy?=
+ =?us-ascii?Q?ksvzhInNZMYUAkILfPhy5ZMw4nhLv6TPyIbMlB16KearCa1QIkUTSPCaTxw8?=
+ =?us-ascii?Q?uMlXu+AHVFwTPJ7Y6LGoQG80Mu0hUYB7C6XshpLR5lgPYSdtNEXkomKnPD7A?=
+ =?us-ascii?Q?OIQ+xG2nqgXnsJaH99LW02JlRZFqi4FrM0W8gKaHGijxTq71jZoGRLTD7R+c?=
+ =?us-ascii?Q?EbT8YoS1Ieh2pDe+bmPeEQ4OrztMssHo0+t5cuz33U4WQWfWiNwjXuW7YXJh?=
+ =?us-ascii?Q?nRSnWt5tzCcDLoTp1QEFygw7auOiP3i8lZL7Wl40cz4ZmTl5ovI92cE/if/D?=
+ =?us-ascii?Q?2pjd9fg9a0TiyvgxlJ19FcZ378gMt7QZJLu9NIbZ3jve8va6p36+dYtR2RhC?=
+ =?us-ascii?Q?GmG8cPpB/bCRGzVLA1/m3o2+vZL6+9+YcuMBM/XdMmGWjtKsUluAcyWfJ7IX?=
+ =?us-ascii?Q?9DIeTJU2wZrp/kyNTL+hCdKPevDapc9Qc7MCC8bniGYEQPfL+0OLQyvpeCRU?=
+ =?us-ascii?Q?xs4xsVgOssMRswd5PEakkueobYZkEP62XjVAxpy3MYuVU6mNsyJUk8dRvIoa?=
+ =?us-ascii?Q?9WT2tU4YxThiNn0O8w7vmtvcs9FK99jHMI9J25J6yejhxsmO4WgEdMKN0551?=
+ =?us-ascii?Q?x14gsdvQrGum6PHtZ6Ar8+3E2GsjdXL79Xih7nf/87+le16tz/AOp8gsGmQf?=
+ =?us-ascii?Q?uXyLEpzeCi71UURo+L5U3ZnqqiZxN3WXQNuvw0tbGiNqDK1tHquIRMsowUip?=
+ =?us-ascii?Q?FyCQLgGCwPVwZlhicKA3+Xi/GT9w8dl0HObw9HdCQpezrby/zB8smvf0ZQDB?=
+ =?us-ascii?Q?wj4AeeSVrHsph1pdmD7CR59LEwBdHT8/ocBNp8MbzKkDDYIcp2FmqWjTN1DS?=
+ =?us-ascii?Q?xzX3XBDJM/TY8K9m0q6dmsv9e/cu9t+C/nIr/Nic7oQ+aPK54YP9qkIzp7Mo?=
+ =?us-ascii?Q?mNFslZ9Nd3UVKIlKoJTKgdMw/GIRvcGcLky0C8ZLHmgxdLxyoKiLllPXts1L?=
+ =?us-ascii?Q?1uCWaRljCz0GwT7I12Z64uGHEZR+P4rT8Ez0OmkKUFtyysxtutKfQHT5c6p3?=
+ =?us-ascii?Q?DGslzlCo9LFQ9IL9Lf+c4UBE?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 949315ff-fe40-4e98-068f-08d98fa7efcf
+X-MS-Exchange-CrossTenant-AuthSource: SL2PR06MB3082.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Oct 2021 06:49:29.7237
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: CEJMoDTlNBF+Wk9RmTHQkBxeN3GVxUFARf8k/8NPAfhVMJ+1zL9NYybNbhQaKu0gi/sagEMaeh+9nLm2YWvmGg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SL2PR06MB3388
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-14.10.2021 17:41, Arnd Bergmann пишет:
-> On Thu, Oct 14, 2021 at 12:25 AM Dmitry Osipenko <digetx@gmail.com> wrote:
->>
->> 13.10.2021 19:01, Arnd Bergmann пишет:
->>> From: Arnd Bergmann <arnd@arndb.de>
->>>
->>> Some StrongARM processors don't support suspend, which leads
->>> to a build failure with the tegra cpuidle driver:
->>>
->>> WARNING: unmet direct dependencies detected for ARM_CPU_SUSPEND
->>>   Depends on [n]: ARCH_SUSPEND_POSSIBLE [=n]
->>>   Selected by [y]:
->>>   - ARM_TEGRA_CPUIDLE [=y] && CPU_IDLE [=y] && (ARM [=y] || ARM64) && (ARCH_TEGRA [=n] || COMPILE_TEST [=y]) && !ARM64 && MMU [=y]
->>>
->>> arch/arm/kernel/sleep.o: in function `__cpu_suspend':
->>> (.text+0x68): undefined reference to `cpu_sa110_suspend_size'
->>>
->>> Add an explicit dependency to make randconfig builds avoid
->>> this combination.
->>>
->>> Fixes: faae6c9f2e68 ("cpuidle: tegra: Enable compile testing")
->>> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
->>> ---
->>>  drivers/cpuidle/Kconfig.arm | 1 +
->>>  1 file changed, 1 insertion(+)
->>>
->>> diff --git a/drivers/cpuidle/Kconfig.arm b/drivers/cpuidle/Kconfig.arm
->>> index 2cc3c208a180..af97992eaa82 100644
->>> --- a/drivers/cpuidle/Kconfig.arm
->>> +++ b/drivers/cpuidle/Kconfig.arm
->>> @@ -100,6 +100,7 @@ config ARM_MVEBU_V7_CPUIDLE
->>>  config ARM_TEGRA_CPUIDLE
->>>       bool "CPU Idle Driver for NVIDIA Tegra SoCs"
->>>       depends on (ARCH_TEGRA || COMPILE_TEST) && !ARM64 && MMU
->>> +     depends on ARCH_SUSPEND_POSSIBLE
->>>       select ARCH_NEEDS_CPU_IDLE_COUPLED if SMP
->>>       select ARM_CPU_SUSPEND
->>>       help
->>>
->>
->> Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
-> 
-> Thanks!
-> 
-> I realized now that we should drop the '&& MMU' after my fix, for both
-> the tegra and qualcomm drivers, reverting the change from 498ba2a8a275
-> ("cpuidle: Fix ARM_QCOM_SPM_CPUIDLE configuration") that got failed
-> to fix this problem. I'll resend it as a series of three patches with your R-b
-> on this patch.
-> 
-> On a related note, I now see that the "||COMPILE_TEST" bit for the
-> arm-specific cpuidle drivers is not all that useful because we can curently
-> not hit that on non-ARM machines at all. I'll try changing that as well, but
-> this is probably nontrivial.
+show() must not use snprintf() when formatting the value to be
+returned to user space.
 
-Ack
+Fix the following coccicheck warning:
+drivers/media/i2c/ccs/ccs-core.c:2717: WARNING: use scnprintf or sprintf.
+
+Use sysfs_emit instead of scnprintf or sprintf makes more sense.
+
+Signed-off-by: Qing Wang <wangqing@vivo.com>
+---
+ drivers/media/i2c/ccs/ccs-core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/media/i2c/ccs/ccs-core.c b/drivers/media/i2c/ccs/ccs-core.c
+index a9403a2..21a156d 100644
+--- a/drivers/media/i2c/ccs/ccs-core.c
++++ b/drivers/media/i2c/ccs/ccs-core.c
+@@ -2715,11 +2715,11 @@ ccs_sysfs_ident_read(struct device *dev, struct device_attribute *attr,
+ 	struct ccs_module_info *minfo = &sensor->minfo;
+ 
+ 	if (minfo->mipi_manufacturer_id)
+-		return snprintf(buf, PAGE_SIZE, "%4.4x%4.4x%2.2x\n",
++		return sysfs_emit(buf, "%4.4x%4.4x%2.2x\n",
+ 				minfo->mipi_manufacturer_id, minfo->model_id,
+ 				minfo->revision_number) + 1;
+ 	else
+-		return snprintf(buf, PAGE_SIZE, "%2.2x%4.4x%2.2x\n",
++		return sysfs_emit(buf, "%2.2x%4.4x%2.2x\n",
+ 				minfo->smia_manufacturer_id, minfo->model_id,
+ 				minfo->revision_number) + 1;
+ }
+-- 
+2.7.4
 
