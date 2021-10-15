@@ -2,111 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBB6D42EAB5
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 09:55:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBEA842EAB7
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 09:55:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236385AbhJOH5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 03:57:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48826 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233654AbhJOH5a (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 03:57:30 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E7DAC061570
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 00:55:24 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id m22so25123371wrb.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 00:55:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=Az2xgl/hqgMdBeapdM+S02nJjvIpkUB+Xfp9egegKmk=;
-        b=TuBAsa+PAiwlc3R6RMz71TDggPdL0gRU5iOxKDpcj9fsaFxF2sRxBrAu2tYSkRCWvE
-         5thcX96h3Clsr9aGJMh6aIappjnXdXiCY/Cq4SF2cXuAHnzryElDFUfkJTTGtNbPWfyM
-         ANYPILq8tFctt3YyII9vgcPzUeLbag+Bsu40crrmha/MIODxphP2L78VlsE57UOUNkEU
-         mcMl1truMLyyrf2fTXSN2uQ1Ny9r70sUaACikT5WvHyCHiyv3LT3J+p57Pdu7YLuDKMI
-         9kgMeANUW0MkC9szJdDJSfsEvGlQ96Au95kb82A7/WkrIkLpMywsMCtnap3nskRK4rat
-         QwhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=Az2xgl/hqgMdBeapdM+S02nJjvIpkUB+Xfp9egegKmk=;
-        b=t5UW4r0GfxUP1SFb2ZuL1+lxaOUuF77i0iIoQLeGEJvxWq9WgJLyLUxVlRryC5OSA0
-         jOnXlecaUMGrkxB4iXcspHggZPj+RjLhpObJl0danl6+lI1f3nvOn1VATUAP339FuQ8G
-         y6cH/PyVNffABl7edRUOt/UagJV4sCP1YhfIOu+GlIy56pR/FzgFAM+oGGSeO6lN2f+F
-         IiR/v89u1QDUOHNjEjDdGnoKdIVHgosEzm92bl1326k4ry/YSaMe96fUUfjhbSmD/FZw
-         cNl84TRC0HG84f0f1yqLsXwmH1JGpnEfN0kHCNNYEhDPN+83yjaDjrvDmKj5iAHx2geG
-         arIg==
-X-Gm-Message-State: AOAM530e6FOxrWqu2gJpWsNl0r43FrQhiDtRmN2rkBiERjwJCSLMt/FH
-        Y6DNJzwVZWosqv1Xx/Da8HWOdvM/aKI=
-X-Google-Smtp-Source: ABdhPJxv7R034R/SUDdZKI6hxGD+U1s9d3IXvIGVHhT9qiWfdnY/JRWE1BwLNYF5dZaGUqkL8lSYuA==
-X-Received: by 2002:adf:a48f:: with SMTP id g15mr12003376wrb.259.1634284522895;
-        Fri, 15 Oct 2021 00:55:22 -0700 (PDT)
-Received: from ?IPV6:2a02:8108:96c0:3b88::40c9? ([2a02:8108:96c0:3b88::40c9])
-        by smtp.gmail.com with ESMTPSA id p12sm849530wrr.67.2021.10.15.00.55.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Oct 2021 00:55:22 -0700 (PDT)
-Message-ID: <6c637ef5-79dd-5503-d445-e7a768f528a6@gmail.com>
-Date:   Fri, 15 Oct 2021 09:55:21 +0200
+        id S236390AbhJOH5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 03:57:37 -0400
+Received: from mout02.posteo.de ([185.67.36.66]:59803 "EHLO mout02.posteo.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233654AbhJOH5e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 03:57:34 -0400
+Received: from submission (posteo.de [89.146.220.130]) 
+        by mout02.posteo.de (Postfix) with ESMTPS id AB908240101
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 09:55:25 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.de; s=2017;
+        t=1634284525; bh=8LBwH0+3amptIJvQVsPMwO8fecT2f8DQCw7UNZ5r/x0=;
+        h=Subject:From:To:Cc:Date:From;
+        b=rN+HWPH5iGcYrxdE5iIgeROTr7sLXpVu/wY+xCS69j/nYs0xp+VtwQgaYdvh0IBcT
+         K8CGVOqxAlYxp1WvWYFtIquXeJl4rvdAM3n8Mfmv0TP2EvOR7woP8e48ME8NuYNhbZ
+         Ure0KiUjim58YXxo/xMcWdIKWz6IPTLzSnYLDygRAe1xPQJhJq9bEp0KaAHL4qw7pw
+         cHXwLq+MwV6PPuKdzUON8IfOhYaDcSl/e4FnIQZfKkkXPV6/m/NXnG4ifOaYd2+zmH
+         cCnt0mlXQHqNpqoep2GfPEb5UB3fngclJ1LTiTYbkP8LisyDcOF+94l1XPCjKDQXKL
+         EweOeMV0cNIqQ==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4HVz8W2b9Vz6tmN;
+        Fri, 15 Oct 2021 09:55:23 +0200 (CEST)
+Message-ID: <b42514b749d78e1c5c48d3e39ac64decc8965600.camel@posteo.de>
+Subject: Re: [PATCH] scsi: sd: fix crashes in sd_resume_runtime
+From:   Martin Kepplinger <martink@posteo.de>
+To:     Miles Chen <miles.chen@mediatek.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Bart Van Assche <bvanassche@acm.org>
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, wsd_upstream@mediatek.com,
+        Stanley Chu <stanley.chu@mediatek.com>
+Date:   Fri, 15 Oct 2021 07:55:22 +0000
+In-Reply-To: <20211015074654.19615-1-miles.chen@mediatek.com>
+References: <20211015074654.19615-1-miles.chen@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.2
-Subject: Re: [PATCH] staging: r8188eu: remove MSG_88E calls from
- hal/usb_halinit.c
-Content-Language: en-US
-To:     Phillip Potter <phil@philpotter.co.uk>, gregkh@linuxfoundation.org
-Cc:     Larry.Finger@lwfinger.net, martin@kaiser.cx,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20211015000233.842-1-phil@philpotter.co.uk>
-From:   Michael Straube <straube.linux@gmail.com>
-In-Reply-To: <20211015000233.842-1-phil@philpotter.co.uk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/15/21 02:02, Phillip Potter wrote:
-> Remove both MSG_88E calls from hal/usb_halinit.c, as these calls serve
-> no purpose other than to print the name of the function they are in
-> (_ReadAdapterInfo8188EU) on entry and on exit, with a timing of the
-> function, which is better accomplished by other means. Also remove
-> the jiffies assignment at the start of the function, as it is no
-> longer used.
+Am Freitag, dem 15.10.2021 um 15:46 +0800 schrieb Miles Chen:
+> After merging commit ed4246d37f3b ("scsi: sd: REQUEST SENSE for
+> BLIST_IGN_MEDIA_CHANGE devices in runtime_resume()"), I hit the
+> following crash on my device.
 > 
-> Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+> static int sd_resume_runtime(struct device *dev)
+> {
+>         struct scsi_disk *sdkp = dev_get_drvdata(dev);
+>         struct scsi_device *sdp = sdkp->device; // sdkp == NULL and
+> crash
+> 
+>         if (sdp->ignore_media_change) {
+>         ...
+> }
+> 
+> I checked sd_resume() and found that sdkp is possbile to be NULL, and
+> there is a null pointer test in sd_resume() for this case.
+> To fix this crash, follow sd_resume() to test if sdkp is NULL
+> before dereferencing it.
+> 
+> Crash:
+> [    4.695171][  T151] Unable to handle kernel NULL pointer
+> dereference at virtual address 0000000000000008
+> [    4.696591][  T151] Mem abort info:
+> [    4.697919][  T151]   ESR = 0x96000005
+> [    4.699692][  T151]   EC = 0x25: DABT (current EL), IL = 32 bits
+> [    4.701990][  T151]   SET = 0, FnV = 0
+> [    4.702513][  T151]   EA = 0, S1PTW = 0
+> [    4.704431][  T151]   FSC = 0x05: level 1 translation fault
+> [    4.705254][  T151] Data abort info:
+> [    4.705806][  T151]   ISV = 0, ISS = 0x00000005
+> [    4.706484][  T151]   CM = 0, WnR = 0
+> [    4.707048][  T151] [0000000000000008] user address but active_mm
+> is swapper
+> [    4.710577][  T151] Internal error: Oops: 96000005 [#1] PREEMPT
+> SMP
+> [    4.832361][  T151] Kernel Offset: 0x12acc80000 from
+> 0xffffffc010000000
+> [    4.833254][  T151] PHYS_OFFSET: 0x40000000
+> [    4.833814][  T151] pstate: 80400005 (Nzcv daif +PAN -UAO)
+> [    4.834546][  T151] pc : sd_resume_runtime+0x20/0x14c
+> [    4.835227][  T151] lr : scsi_runtime_resume+0x84/0xe4
+> [    4.835916][  T151] sp : ffffffc0110db8d0
+> [    4.836450][  T151] x29: ffffffc0110db8d0 x28: 0000000000000001
+> [    4.837258][  T151] x27: ffffff80c0bd1ac0 x26: ffffff80c0bd1ad0
+> [    4.838063][  T151] x25: ffffff80cea7e448 x24: ffffffd2bf961000
+> [    4.838867][  T151] x23: ffffffd2be69f838 x22: ffffffd2bd9dfb4c
+> [    4.839670][  T151] x21: 0000000000000000 x20: ffffff80cea7e000
+> [    4.840474][  T151] x19: ffffff80cea7e260 x18: ffffffc0110dd078
+> [    4.841277][  T151] x17: 00000000658783d9 x16: 0000000051469dac
+> [    4.842081][  T151] x15: 00000000b87f6327 x14: 0000000068fd680d
+> [    4.842885][  T151] x13: ffffff80c0bd2470 x12: ffffffd2bfa7f5f0
+> [    4.843688][  T151] x11: 0000000000000078 x10: 0000000000000001
+> [    4.844492][  T151] x9 : 00000000000000b1 x8 : ffffffd2be69f88c
+> [    4.845295][  T151] x7 : ffffffd2bd9e0e5c x6 : 0000000000000000
+> [    4.846099][  T151] x5 : 0000000000000080 x4 : 0000000000000001
+> [    4.846902][  T151] x3 : 68fd680dfe4ebe5e x2 : 0000000000000003
+> [    4.847706][  T151] x1 : ffffffd2bf7f9380 x0 : ffffff80cea7e260
+> [    4.856708][  T151]  die+0x16c/0x59c
+> [    4.857191][  T151]  __do_kernel_fault+0x1e8/0x210
+> [    4.857833][  T151]  do_page_fault+0xa4/0x654
+> [    4.858418][  T151]  do_translation_fault+0x6c/0x1b0
+> [    4.859083][  T151]  do_mem_abort+0x68/0x10c
+> [    4.859655][  T151]  el1_abort+0x40/0x64
+> [    4.860182][  T151]  el1h_64_sync_handler+0x54/0x88
+> [    4.860834][  T151]  el1h_64_sync+0x7c/0x80
+> [    4.861395][  T151]  sd_resume_runtime+0x20/0x14c
+> [    4.862025][  T151]  scsi_runtime_resume+0x84/0xe4
+> [    4.862667][  T151]  __rpm_callback+0x1f4/0x8cc
+> [    4.863275][  T151]  rpm_resume+0x7e8/0xaa4
+> [    4.863836][  T151]  __pm_runtime_resume+0xa0/0x110
+> [    4.864489][  T151]  sd_probe+0x30/0x428
+> [    4.865016][  T151]  really_probe+0x14c/0x500
+> [    4.865602][  T151]  __driver_probe_device+0xb4/0x18c
+> [    4.866278][  T151]  driver_probe_device+0x60/0x2c4
+> [    4.866931][  T151]  __device_attach_driver+0x228/0x2bc
+> [    4.867630][  T151]  __device_attach_async_helper+0x154/0x21c
+> [    4.868398][  T151]  async_run_entry_fn+0x5c/0x1c4
+> [    4.869038][  T151]  process_one_work+0x3ac/0x590
+> [    4.869670][  T151]  worker_thread+0x320/0x758
+> [    4.870265][  T151]  kthread+0x2e8/0x35c
+> [    4.870792][  T151]  ret_from_fork+0x10/0x20
+> 
+> Cc: Stanley Chu <stanley.chu@mediatek.com>
+> Fixes: ed4246d37f3b ("scsi: sd: REQUEST SENSE for
+> BLIST_IGN_MEDIA_CHANGE devices in runtime_resume()")
+> Signed-off-by: Miles Chen <miles.chen@mediatek.com>
 > ---
->   drivers/staging/r8188eu/hal/usb_halinit.c | 6 ------
->   1 file changed, 6 deletions(-)
+>  drivers/scsi/sd.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/staging/r8188eu/hal/usb_halinit.c b/drivers/staging/r8188eu/hal/usb_halinit.c
-> index f6db5b05e6e7..abbd107ad3c1 100644
-> --- a/drivers/staging/r8188eu/hal/usb_halinit.c
-> +++ b/drivers/staging/r8188eu/hal/usb_halinit.c
-> @@ -1073,15 +1073,9 @@ static void _ReadRFType(struct adapter *Adapter)
->   
->   static int _ReadAdapterInfo8188EU(struct adapter *Adapter)
->   {
-> -	u32 start = jiffies;
-> -
-> -	MSG_88E("====> %s\n", __func__);
-> -
->   	_ReadRFType(Adapter);/* rf_chip -> _InitRFType() */
->   	_ReadPROMContent(Adapter);
->   
-> -	MSG_88E("<==== %s in %d ms\n", __func__, rtw_get_passing_time_ms(start));
-> -
->   	return _SUCCESS;
->   }
->   
-> 
+> diff --git a/drivers/scsi/sd.c b/drivers/scsi/sd.c
+> index 523bf2fdc253..fce63335084e 100644
+> --- a/drivers/scsi/sd.c
+> +++ b/drivers/scsi/sd.c
+> @@ -3683,7 +3683,12 @@ static int sd_resume(struct device *dev)
+>  static int sd_resume_runtime(struct device *dev)
+>  {
+>         struct scsi_disk *sdkp = dev_get_drvdata(dev);
+> -       struct scsi_device *sdp = sdkp->device;
+> +       struct scsi_device *sdp;
+> +
+> +       if (!sdkp)      /* E.g.: runtime resume at the start of
+> sd_probe() */
+> +               return 0;
+> +
+> +       sdp = sdkp->device;
+>  
+>         if (sdp->ignore_media_change) {
+>                 /* clear the device's sense data */
 
-Looks good to me.
+I'm fine with this, thank you.
 
-Acked-by: Michael Straube <straube.linux@gmail.com>
+Reviewed-by: Martin Kepplinger <martin.kepplinger@puri.sm>
 
-Thanks,
-Michael
+
+
