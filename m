@@ -2,67 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DB5E42E922
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 08:38:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFF6042E925
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 08:38:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235569AbhJOGkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 02:40:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56324 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233075AbhJOGkV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 02:40:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BB0D060724;
-        Fri, 15 Oct 2021 06:38:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634279895;
-        bh=c+hC/02ps9Zl5VAHvbVkFeONHX0JbnrHm1oSYVMThgg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=03GGlSBRo4urnsj9cq1GKEAnHfS47+LpJa7fjJkO9+YE/tjimjK11y5v8BN1o6w+T
-         yLTYy2nmXA8Y41qm+jrzah6mCR/+NplEr3xjAzjjnCzbBP/iO4loJzAbN0sjEZtp4w
-         DWTk0W63YDrY5lSFhoUKyEcB6aEjMGqBZhYjJ5QY=
-Date:   Fri, 15 Oct 2021 08:38:12 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Wesley Cheng <wcheng@codeaurora.org>
-Cc:     balbi@kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jackp@codeaurora.org
-Subject: Re: [PATCH] usb: dwc3: gadget: Remove dev_err() when queuing to
- inactive gadget/ep
-Message-ID: <YWkh1NXmmMbf59Ee@kroah.com>
-References: <20211014233534.2382-1-wcheng@codeaurora.org>
+        id S233075AbhJOGkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 02:40:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59350 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235600AbhJOGkb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 02:40:31 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4595C061570;
+        Thu, 14 Oct 2021 23:38:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=K97DMnnazcODhbgliFQHh1Vy35s1DHvETiPvQk+kYvU=; b=II9nnmGbJHPhf/kRHW6+QL4OlR
+        Blde0ncvwiIimQOlKudkXZn3iyQNXilqe646yZsB84SzBGx5bHJGUrzXajr0JRSQu/pPrHE9i4thm
+        aMNPY3YH7V2wV8FKkICbTAoidHBGLsSgTYgdJ3jTMqJukTgxruRacULWLm7VzSk3rUt+ZVrKC6FmW
+        AIMvrtM2ey9wU0ivoGElozmoNTzkmbWq5d7oAamQ9C3RvFoGmYElirhH2pDuRmMSn6pzC0bClI4j5
+        HLBAUCb/b7QEgWE8wIgE5yN/JnIC3EVe7FpGwy0gnd4IOiXa2A1Ygw86Sa9bqmifdGsrjx5A3n84r
+        u+LO46QQ==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mbGrG-005ZKF-D9; Fri, 15 Oct 2021 06:38:22 +0000
+Date:   Thu, 14 Oct 2021 23:38:22 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     Shiyang Ruan <ruansy.fnst@fujitsu.com>,
+        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        nvdimm@lists.linux.dev, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, dan.j.williams@intel.com,
+        david@fromorbit.com, hch@infradead.org, jane.chu@oracle.com
+Subject: Re: [PATCH v7 8/8] fsdax: add exception for reflinked files
+Message-ID: <YWkh3mNc2+roMn40@infradead.org>
+References: <20210924130959.2695749-1-ruansy.fnst@fujitsu.com>
+ <20210924130959.2695749-9-ruansy.fnst@fujitsu.com>
+ <20211014192450.GJ24307@magnolia>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211014233534.2382-1-wcheng@codeaurora.org>
+In-Reply-To: <20211014192450.GJ24307@magnolia>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 04:35:34PM -0700, Wesley Cheng wrote:
-> Since function drivers will still be active until dwc3_disconnect_gadget()
-> is called, some applications will continue to queue packets to DWC3
-> gadget.  This can lead to a flood of messages regarding failed ep queue,
-> as the endpoint is in the process of being disabled.  Remove the print as
-> function drivers will likely log queuing errors as well.
-> 
-> Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
-> ---
->  drivers/usb/dwc3/gadget.c | 5 +----
->  1 file changed, 1 insertion(+), 4 deletions(-)
-> 
-> diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
-> index 4845682a0408..674a9a527125 100644
-> --- a/drivers/usb/dwc3/gadget.c
-> +++ b/drivers/usb/dwc3/gadget.c
-> @@ -1812,11 +1812,8 @@ static int __dwc3_gadget_ep_queue(struct dwc3_ep *dep, struct dwc3_request *req)
->  {
->  	struct dwc3		*dwc = dep->dwc;
->  
-> -	if (!dep->endpoint.desc || !dwc->pullups_connected || !dwc->connected) {
-> -		dev_err(dwc->dev, "%s: can't queue to disabled endpoint\n",
-> -				dep->name);
+On Thu, Oct 14, 2021 at 12:24:50PM -0700, Darrick J. Wong wrote:
+> It feels a little dangerous to have page->mapping for shared storage
+> point to an actual address_space when there are really multiple
+> potential address_spaces out there.  If the mm or dax folks are ok with
+> doing this this way then I'll live with it, but it seems like you'd want
+> to leave /some/ kind of marker once you know that the page has multiple
+> owners and therefore regular mm rmap via page->mapping won't work.
 
-Why not just change this to dev_dbg() instead?
-
-thanks,
-
-greg k-h
+Yes, I thing poisoning page->mapping for the rmap enabled case seems
+like a better idea.
