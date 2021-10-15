@@ -2,340 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AF6642FB2D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 20:42:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A09842FB2C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 20:41:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241258AbhJOSnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 14:43:51 -0400
-Received: from mx0b-0064b401.pphosted.com ([205.220.178.238]:25970 "EHLO
-        mx0b-0064b401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234721AbhJOSnt (ORCPT
+        id S238591AbhJOSni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 14:43:38 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:37740 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234721AbhJOSng (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 14:43:49 -0400
-Received: from pps.filterd (m0250812.ppops.net [127.0.0.1])
-        by mx0a-0064b401.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19FIcLh7000930;
-        Fri, 15 Oct 2021 18:41:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com; h=subject : to : cc
- : references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=PPS06212021;
- bh=GxnEXCkHtMusQISLZyc+uXHkSoG1TGbhBZEua24I7Ds=;
- b=YssCJQ/84WTgIx/vYP8uEWA3juaP6Q+J2Fibs3+t8tu5c7YlF1Cfa8hcF8HNQxRRwwvc
- SAUkR/Wfl7uW8rWlG2bv+pVG0uBMTyz8oUKc/b62xjTZGeY7YPVszu1xex/VrMJJyWOD
- b4ABBeE+xvq8B+2X1wZvfxdFkRFwoPHu9Job1yCzXDodZXqgZk8bJUWgupM4tWs2mr6N
- 172eKPFOPt8Bjz+Ho8jdXDT0MXknwoYrSGYdyE2geraPoukWl2BHHRSvvLjPENTyW+Wy
- J8R9vY8f/KQCTdUy6WgFh7ZVT0EEhujUTmJJxMIwb0RrTv+qTjL5eZtySI9OHDGfoMQl aA== 
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2105.outbound.protection.outlook.com [104.47.58.105])
-        by mx0a-0064b401.pphosted.com with ESMTP id 3bq57b8jta-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 15 Oct 2021 18:41:29 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jwU2Ovr8Fum/FqrF7KyMvucG7Ql6CWPgVIEBZ/JbqZnEcDg+v0yGlR+RXOhGgRgukGggeLDs9evrPerzWSDW13NzzWnn4lo8jbISxeK7kQNszh0ab5j9jFueA6uOs6QS1TA4+4gjX90ss7b17ObDQOxnqKtjm6Dno2Ep87nEjN4GV4Wv+5FtAYOkQAk4xbUpcUsvXDWSeMDeYSC6NHU11BHALfJEQPtdeaXEK6WXPYHFRZMwc1hhI5+MmbfYDIW07BM6qC0JX1q/dxJ9VFEpVQwCDP7ySZXHhxLqwJkky5+SsNO9TJM30q0VNTjDyaWEYvUIouqfxucjc1qKTK6g1g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=GxnEXCkHtMusQISLZyc+uXHkSoG1TGbhBZEua24I7Ds=;
- b=ho3VkfWfwRK5LqnvyN5zmJeVET8iRtNKjACAAF75FreekYiiRgACHqp8Bf5wUaCgGh+x36XqVi95Wpxu6p0MYyJYFBmDmlMLc+gJ4tr0Z6rldsaqYCBK865Wv+6aHFHb62LfFIBc2ShgYzEt/jgm+VOeA/eHloUNYs0XwKvb51s+WtIadZJZ9aCuoIUv6obWTApsi1AaD4UaipIX35W/2zY0HYVgDcrowMo37ddG4CNwhAM3XhehmZpWdsUqeQssAjB+rTvHiNcvuGtGC1QoesxWYWNqI0FtccRo/6F2ZiWsza19AuQNGUkFh6BChDdujkdhyGJ2Rl+sDIUA+FQDeQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
-Authentication-Results: infradead.org; dkim=none (message not signed)
- header.d=none;infradead.org; dmarc=none action=none
- header.from=windriver.com;
-Received: from DM8PR11MB5734.namprd11.prod.outlook.com (2603:10b6:8:31::22) by
- DM6PR11MB2602.namprd11.prod.outlook.com (2603:10b6:5:c0::22) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4587.22; Fri, 15 Oct 2021 18:41:24 +0000
-Received: from DM8PR11MB5734.namprd11.prod.outlook.com
- ([fe80::5db7:737e:8ef0:c831]) by DM8PR11MB5734.namprd11.prod.outlook.com
- ([fe80::5db7:737e:8ef0:c831%3]) with mapi id 15.20.4608.016; Fri, 15 Oct 2021
- 18:41:24 +0000
-Subject: Re: [peterz-queue:locking/core 41/43] kernel/locking/rwsem.c:1023:19:
- error: variable has incomplete type 'enum owner_state'
-To:     kernel test robot <lkp@intel.com>
-Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
-References: <202110152145.nWCivoXy-lkp@intel.com>
-From:   "Xu, Yanfei" <yanfei.xu@windriver.com>
-Message-ID: <8c0f011a-db83-001e-3cce-326cb8228a75@windriver.com>
-Date:   Sat, 16 Oct 2021 02:41:17 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <202110152145.nWCivoXy-lkp@intel.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: HK0PR03CA0114.apcprd03.prod.outlook.com
- (2603:1096:203:b0::30) To DM8PR11MB5734.namprd11.prod.outlook.com
- (2603:10b6:8:31::22)
+        Fri, 15 Oct 2021 14:43:36 -0400
+Received: by mail-io1-f72.google.com with SMTP id w8-20020a0566022c0800b005dc06acea8dso5336387iov.4
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 11:41:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=C9qzMgtikG7//mWRAn6u+TEQfkg+k6W7H+VEycaQP6c=;
+        b=yxAt1HNt/9h9FPS8F5/XuMmyHfJMBY3AjIs4FqhxTw8oSptZS1mZ7lw+vUU7S2lW6T
+         FV8YcuUFVDMAbhhr4AJO1u8TYcdyFcQE+jLJHBOWpd19UeH9f+LaW5pBoaIQn9lgbqdo
+         jwsIcGxYQnC7iCLcFw8hFg3jtuPwr82jViuJtYbaAv8Ppj7xFTEbjG3ly6Fh48VA16MW
+         LNJRPnBpdlIBIRvzL4B4WL6/Nc469ZQU4OSoJAdoeuaU/F2x8NCoBIbhJFvA39QgaIUB
+         fc4Zs2yawhOVOmJ/ZTRFanf6iyrArzIf90BLdP4Cd/hlPAeLTHGFpWSTt4OM6P5BywMu
+         OVIA==
+X-Gm-Message-State: AOAM531aZ8uLvBpiLpvg5JcKFeTU2UV/NVpmn9oqnD9q2q6Kd71pgh+N
+        GN0iKlaeem8/dMb4D0YjcS4ScmRt979sUx14D+epSGWy/j1E
+X-Google-Smtp-Source: ABdhPJwRTDpFWbInru7t3H6MNxB/H9UgGnrJZsvsuwEMwftkoGaAniJYfFPj+m1mbEDoTNXcQjDYYCKLGbpG63HHVI2HGC03dFcA
 MIME-Version: 1.0
-Received: from [128.224.163.131] (60.247.85.82) by HK0PR03CA0114.apcprd03.prod.outlook.com (2603:1096:203:b0::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.15 via Frontend Transport; Fri, 15 Oct 2021 18:41:22 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a3c51a3a-a73d-42a8-ff3f-08d9900b63dc
-X-MS-TrafficTypeDiagnostic: DM6PR11MB2602:
-X-Microsoft-Antispam-PRVS: <DM6PR11MB26027EC0D64AF87BDC3A7783E4B99@DM6PR11MB2602.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4303;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ZA2Zti2MKCJu8UglVrufUmSf4igTVkmLPa5r0QSGArQHmQUkJbOYz5jMFqm68nJKdjnQz452m1+H5uVLwfrltrGHdS8PDT3IUzcpJ41gfYMDkuXkoOev6CzIPTpkKkRN4GKkApU2caySsaMBTaLglmaAepiaPPuLoDd+5tYEJAyDR3BADtRnoJUSazJJpYDXtM7MMMjrbezr+x0AIOElLUYFHNt/5PXO4w6R9u2PLaJK9bME1YJYXxhEQ0roTfGrxdHhLC7KiTDmZCFaB/srxdZgzETZpNR7DtMfJ0XBNYZY/wvK6mn18LDmtuUSsBkpvGtg86+4CsAlszsBlq6O11fF3uL/sB4qHDB9RfVT1qdp5AXwkJqjVqJGrtH+1LkhodLPU9cjMo44Je71WzqiOqDTLB+97fz/GcQEiu6SiW4J4rn+zPzj+HOUzCmzJG9MmKRqp3/5EX0WkUcsn1MSHdw041JiwAP+CXnrmbBtduGv/xSWMd0LUbuTANcKRzzxERAX6zZvyXy/JxgmM0GvZNcm/fHxLxk64v8m5a6VmphVyxrOL/qKRr0+9E7GZN9WsojOnvYGUh4FZGN4w3Fd336JEUITPxer7zB2tP2G3R45pCRjDm5L5jgXTFKWN33+dSD5Evprlr4VWfrL2AUmvaG3zJqbsPFYIRUdSOvt1Uc88QWYzsvzcRVGbP+nibxR+DDafN/AwrXBsUC5adtvi3n9w95iUyqrYNrP/USJ2W7DAMia6uhtQDe4Tw0ewoDvWT6kCDfu9Z+vvuN2qmJAfNZiNjvXaJaZpMffeis6jYSXeDLAu5AaVPNjMcDO8vHUhU+XO+A9ZBBQktadYW/JcQi8+duU6+LBM55Gri6iSPvisN5riNHth1OV6dsGMu8QxZ3e92eHWuEN64mQH4Jl0IY15ALClV52PMsaWOvIPMo=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR11MB5734.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(83380400001)(5660300002)(8936002)(66946007)(26005)(6666004)(956004)(316002)(53546011)(36756003)(6706004)(38100700002)(508600001)(66476007)(2616005)(38350700002)(4326008)(16576012)(186003)(66556008)(86362001)(31696002)(6486002)(2906002)(966005)(6916009)(8676002)(52116002)(31686004)(78286007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?Windows-1252?Q?H0HN4J9v7L3d/hnx383FekNGOk23HqZjmHMkVf06ci+IqZ7Egz7Mpg3m?=
- =?Windows-1252?Q?TuV/DNRKFEVCB+pBpiZOIy3908l0JM7oQA2rBcgweP5u+4RzE7wJcFWw?=
- =?Windows-1252?Q?gKv16I+IU4P+ktpV6mLF+wind8Ypm0eFgaJzpBfLBccXGvS+bERJuxEJ?=
- =?Windows-1252?Q?xJD72TSRg5BpauvSF0IFb2HoBlhCu9XHxkMqfSn9N3YjZZy3e3HoCe+E?=
- =?Windows-1252?Q?E+mQVBdqKbM50DvkFBAHpxIJaCZ2r31QOdqhqz0CEQPhh6k33o9VP0W3?=
- =?Windows-1252?Q?Xdz3hzbp9LjZbMiJ4SC20K+S+b/eYBefoU1fzsSb/b4G7S/swCkKax68?=
- =?Windows-1252?Q?jXPklj/DDOmsP9JeVahjVc545gJ4x6VSnAy/wP7OhAENZ3WVT08k6G7m?=
- =?Windows-1252?Q?1Ed800yTt27RBQ63DJxCbcoUKDgPLziFYTpFvOlG1nLu7NF8zL7ypjBz?=
- =?Windows-1252?Q?CnyxfBzJZqVtUaoZ8Koh1KeCeBglX5XHHw0uCkaRLzdDboGByMIlD5XS?=
- =?Windows-1252?Q?LTxfPZlurhvkuei1Yoxzz06Oh4+JR647/Rws7cEMmGoY/VDfyAysqKRh?=
- =?Windows-1252?Q?qh9gtNnlxpSnHC34R6+SB/co7R7aHsQKrkTsyIs5oeAYGrpkJV9/WJUj?=
- =?Windows-1252?Q?/ZHFtsfKUp44BlhV7dx1+XDzzlYwPLunUwFnSUVfuFzewRK1/xp9ehoS?=
- =?Windows-1252?Q?CPtnDsHxtE0sLl2qOw6W4Dpw9akckAWk3Km5RcFVD1O36EZdTuBpkk4R?=
- =?Windows-1252?Q?FVSpBTyGHreAYcw1zsrzZtJ9fbsqsYEZpiKgmuTQfiTguS+BmMwwiecZ?=
- =?Windows-1252?Q?Gspq/0GeyWPTuj/omGxmsuv7KKF/QpOOHVLG5GChmCmwkqLaCKcrWY8L?=
- =?Windows-1252?Q?BjKMITSmVku6LLpXO6z+svdS4424qGymVKOZOxhB0ZD+8S66w49EjyPG?=
- =?Windows-1252?Q?mSRTpKdsjymDueTA4MW7B+QXYZogVy1DU4DfoFUrO6bdi1gDRJ2jX3mW?=
- =?Windows-1252?Q?jDJ0+nm2WfebDt9ZOrrROvdVSXqxiZbNK949IlgkpmLzFf7fid0IrWFh?=
- =?Windows-1252?Q?DYpuCL0nqwvyZAWW0qEpRCmPn0gmq2LTDnU/fUyFGsiIZXbqsMnMuqDF?=
- =?Windows-1252?Q?ZBBU/LOkUaNSo+66r1VjhfGr90PznAh8nYmsCjT7C4VkBFLPAnz4TaXr?=
- =?Windows-1252?Q?uX5fEG6bL0JdbI8GZx5hS0s366dVlNFzymkOxX8DrNtezbgo2tJTz5Wq?=
- =?Windows-1252?Q?byxPR04iyvCe/y62wT/NSF520oWcLO8UXhqk2SAipqAa9FscT8hE1evj?=
- =?Windows-1252?Q?LK81bjXgbSmuJeIHWOE1ziLYhKLWatui2y58mzB4JzcwG51KCYQX2ayT?=
- =?Windows-1252?Q?+rxHVCworXv8Pb1Y7Fx0rEA9jL4yGGM0rgiTfouWd8VnaMHW2CUScLbc?=
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a3c51a3a-a73d-42a8-ff3f-08d9900b63dc
-X-MS-Exchange-CrossTenant-AuthSource: DM8PR11MB5734.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Oct 2021 18:41:24.7229
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: I4cT1fUdyv/3QSXkFNcNfXiYHw4X10ZtIG9qMuffgLoiZP+Beuc+zCV/RCVIjnCFj+F2DPv+7GR+LhLpVrfvHQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB2602
-X-Proofpoint-ORIG-GUID: 6LyB1HL3cAAWb9X2w7lBOYugKUnxt-Hl
-X-Proofpoint-GUID: 6LyB1HL3cAAWb9X2w7lBOYugKUnxt-Hl
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-15_06,2021-10-14_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxscore=0
- bulkscore=0 phishscore=0 spamscore=0 lowpriorityscore=0 mlxlogscore=999
- priorityscore=1501 suspectscore=0 impostorscore=0 clxscore=1011
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110150114
+X-Received: by 2002:a05:6638:35a9:: with SMTP id v41mr5314058jal.67.1634323289945;
+ Fri, 15 Oct 2021 11:41:29 -0700 (PDT)
+Date:   Fri, 15 Oct 2021 11:41:29 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000253ad405ce688b39@google.com>
+Subject: [syzbot] INFO: rcu detected stall in sys_exit_group (7)
+From:   syzbot <syzbot+1c1c0d391f04584c1611@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, jhs@mojatatu.com, jiri@resnulli.us,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        vinicius.gomes@intel.com, xiyou.wangcong@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    64570fbc14f8 Linux 5.15-rc5
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=14eb8094b00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=119202188070a966
+dashboard link: https://syzkaller.appspot.com/bug?extid=1c1c0d391f04584c1611
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15eccf14b00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14428810b00000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+1c1c0d391f04584c1611@syzkaller.appspotmail.com
+
+rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
+rcu: 	1-...!: (1 GPs behind) idle=d93/1/0x4000000000000000 softirq=8752/8753 fqs=1 
+	(detected by 0, t=10502 jiffies, g=8413, q=152)
+Sending NMI from CPU 0 to CPUs 1:
+NMI backtrace for cpu 1
+CPU: 1 PID: 6876 Comm: syz-executor436 Not tainted 5.15.0-rc5-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:__lock_release kernel/locking/lockdep.c:5332 [inline]
+RIP: 0010:lock_release+0x2d3/0x720 kernel/locking/lockdep.c:5645
+Code: 24 50 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 0f b6 04 02 84 c0 74 08 3c 03 0f 8e 7f 03 00 00 48 89 da 45 89 a7 f0 09 00 00 <48> b8 00 00 00 00 00 fc ff df 48 c1 ea 03 80 3c 02 00 0f 85 aa 03
+RSP: 0018:ffffc90000dc0cf8 EFLAGS: 00000046
+RAX: 0000000000000000 RBX: ffff88807ab85fa0 RCX: ffffc90000dc0d48
+RDX: ffff88807ab85fa0 RSI: 0000000000000000 RDI: ffff88807ab85fc2
+RBP: 1ffff920001b81a1 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000000 R12: 0000000000000001
+R13: 0000000000000002 R14: ffff88807ab85f70 R15: ffff88807ab85580
+FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fb09f92e370 CR3: 000000006f7cc000 CR4: 0000000000350ee0
+Call Trace:
+ <IRQ>
+ __raw_spin_unlock include/linux/spinlock_api_smp.h:150 [inline]
+ _raw_spin_unlock+0x12/0x40 kernel/locking/spinlock.c:186
+ spin_unlock include/linux/spinlock.h:403 [inline]
+ advance_sched+0x435/0x9a0 net/sched/sch_taprio.c:759
+ __run_hrtimer kernel/time/hrtimer.c:1685 [inline]
+ __hrtimer_run_queues+0x609/0xe50 kernel/time/hrtimer.c:1749
+ hrtimer_interrupt+0x31c/0x790 kernel/time/hrtimer.c:1811
+ local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1086 [inline]
+ __sysvec_apic_timer_interrupt+0x146/0x530 arch/x86/kernel/apic/apic.c:1103
+ sysvec_apic_timer_interrupt+0x8e/0xc0 arch/x86/kernel/apic/apic.c:1097
+ </IRQ>
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:638
+RIP: 0010:test_bit include/asm-generic/bitops/instrumented-non-atomic.h:134 [inline]
+RIP: 0010:cpumask_test_cpu include/linux/cpumask.h:344 [inline]
+RIP: 0010:cpu_online include/linux/cpumask.h:895 [inline]
+RIP: 0010:trace_lock_acquire include/trace/events/lock.h:13 [inline]
+RIP: 0010:lock_acquire+0xa7/0x510 kernel/locking/lockdep.c:5596
+Code: a8 00 00 00 31 c0 0f 1f 44 00 00 65 8b 15 79 3d a6 7e 83 fa 07 0f 87 dc 03 00 00 89 d2 be 08 00 00 00 48 89 d0 48 89 54 24 08 <48> c1 f8 06 48 8d 3c c5 90 59 6e 8d e8 28 ff 61 00 48 8b 54 24 08
+RSP: 0018:ffffc900036cf8c8 EFLAGS: 00000297
+RAX: 0000000000000001 RBX: 1ffff920006d9f1b RCX: 0000000000000000
+RDX: 0000000000000001 RSI: 0000000000000008 RDI: ffff8880b9d2cb60
+RBP: 0000000000000001 R08: 0000000000000001 R09: 0000000000000000
+R10: ffffffff819f4f2c R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: ffff8880b9d2cb60 R15: 0000000000000000
+ local_lock_acquire include/linux/local_lock_internal.h:29 [inline]
+ activate_page mm/swap.c:334 [inline]
+ mark_page_accessed+0x1062/0x19d0 mm/swap.c:422
+ zap_pte_range mm/memory.c:1359 [inline]
+ zap_pmd_range mm/memory.c:1481 [inline]
+ zap_pud_range mm/memory.c:1510 [inline]
+ zap_p4d_range mm/memory.c:1531 [inline]
+ unmap_page_range+0xd45/0x2a10 mm/memory.c:1552
+ unmap_single_vma+0x198/0x310 mm/memory.c:1597
+ unmap_vmas+0x16d/0x2f0 mm/memory.c:1629
+ exit_mmap+0x1d0/0x630 mm/mmap.c:3171
+ __mmput+0x122/0x4b0 kernel/fork.c:1115
+ mmput+0x58/0x60 kernel/fork.c:1136
+ exit_mm kernel/exit.c:501 [inline]
+ do_exit+0xabc/0x2a30 kernel/exit.c:812
+ do_group_exit+0x125/0x310 kernel/exit.c:922
+ __do_sys_exit_group kernel/exit.c:933 [inline]
+ __se_sys_exit_group kernel/exit.c:931 [inline]
+ __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:931
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7fb09f8b0669
+Code: Unable to access opcode bytes at RIP 0x7fb09f8b063f.
+RSP: 002b:00007fff211b6b38 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+RAX: ffffffffffffffda RBX: 00007fb09f92b410 RCX: 00007fb09f8b0669
+RDX: 000000000000003c RSI: 00000000000000e7 RDI: 0000000000000000
+RBP: 0000000000000000 R08: ffffffffffffffc0 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007fb09f92b410
+R13: 0000000000000001 R14: 0000000000000000 R15: 0000000000000001
+INFO: NMI handler (nmi_cpu_backtrace_handler) took too long to run: 1.102 msecs
+rcu: rcu_preempt kthread starved for 10500 jiffies! g8413 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x0 ->cpu=0
+rcu: 	Unless rcu_preempt kthread gets sufficient CPU time, OOM is now expected behavior.
+rcu: RCU grace-period kthread stack dump:
+task:rcu_preempt     state:R  running task     stack:28696 pid:   14 ppid:     2 flags:0x00004000
+Call Trace:
+ context_switch kernel/sched/core.c:4940 [inline]
+ __schedule+0x940/0x26f0 kernel/sched/core.c:6287
+ schedule+0xd3/0x270 kernel/sched/core.c:6366
+ schedule_timeout+0x14a/0x2a0 kernel/time/timer.c:1881
+ rcu_gp_fqs_loop+0x186/0x800 kernel/rcu/tree.c:1957
+ rcu_gp_kthread+0x1de/0x320 kernel/rcu/tree.c:2130
+ kthread+0x3e5/0x4d0 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+rcu: Stack dump where RCU GP kthread last ran:
+NMI backtrace for cpu 0
+CPU: 0 PID: 153 Comm: kworker/u4:2 Not tainted 5.15.0-rc5-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: events_unbound toggle_allocation_gate
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+ nmi_cpu_backtrace.cold+0x47/0x144 lib/nmi_backtrace.c:105
+ nmi_trigger_cpumask_backtrace+0x1ae/0x220 lib/nmi_backtrace.c:62
+ trigger_single_cpu_backtrace include/linux/nmi.h:164 [inline]
+ rcu_check_gp_kthread_starvation.cold+0x1fb/0x200 kernel/rcu/tree_stall.h:481
+ print_other_cpu_stall kernel/rcu/tree_stall.h:586 [inline]
+ check_cpu_stall kernel/rcu/tree_stall.h:729 [inline]
+ rcu_pending kernel/rcu/tree.c:3880 [inline]
+ rcu_sched_clock_irq+0x2125/0x2200 kernel/rcu/tree.c:2599
+ update_process_times+0x16d/0x200 kernel/time/timer.c:1785
+ tick_sched_handle+0x9b/0x180 kernel/time/tick-sched.c:226
+ tick_sched_timer+0x1b0/0x2d0 kernel/time/tick-sched.c:1421
+ __run_hrtimer kernel/time/hrtimer.c:1685 [inline]
+ __hrtimer_run_queues+0x1c0/0xe50 kernel/time/hrtimer.c:1749
+ hrtimer_interrupt+0x31c/0x790 kernel/time/hrtimer.c:1811
+ local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1086 [inline]
+ __sysvec_apic_timer_interrupt+0x146/0x530 arch/x86/kernel/apic/apic.c:1103
+ sysvec_apic_timer_interrupt+0x8e/0xc0 arch/x86/kernel/apic/apic.c:1097
+ </IRQ>
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:638
+RIP: 0010:csd_lock_wait kernel/smp.c:440 [inline]
+RIP: 0010:smp_call_function_many_cond+0x452/0xc20 kernel/smp.c:969
+Code: 0b 00 85 ed 74 4d 48 b8 00 00 00 00 00 fc ff df 4d 89 f4 4c 89 f5 49 c1 ec 03 83 e5 07 49 01 c4 83 c5 03 e8 10 48 0b 00 f3 90 <41> 0f b6 04 24 40 38 c5 7c 08 84 c0 0f 85 33 06 00 00 8b 43 08 31
+RSP: 0018:ffffc9000178f9f8 EFLAGS: 00000293
+RAX: 0000000000000000 RBX: ffff8880b9d367c0 RCX: 0000000000000000
+RDX: ffff8880162fd580 RSI: ffffffff816ab670 RDI: 0000000000000003
+RBP: 0000000000000003 R08: 0000000000000000 R09: 0000000000000001
+R10: ffffffff816ab696 R11: 0000000000000000 R12: ffffed10173a6cf9
+R13: 0000000000000001 R14: ffff8880b9d367c8 R15: 0000000000000001
+ on_each_cpu_cond_mask+0x56/0xa0 kernel/smp.c:1135
+ on_each_cpu include/linux/smp.h:71 [inline]
+ text_poke_sync arch/x86/kernel/alternative.c:929 [inline]
+ text_poke_bp_batch+0x1b3/0x560 arch/x86/kernel/alternative.c:1114
+ text_poke_flush arch/x86/kernel/alternative.c:1268 [inline]
+ text_poke_flush arch/x86/kernel/alternative.c:1265 [inline]
+ text_poke_finish+0x16/0x30 arch/x86/kernel/alternative.c:1275
+ arch_jump_label_transform_apply+0x13/0x20 arch/x86/kernel/jump_label.c:146
+ jump_label_update+0x1d5/0x430 kernel/jump_label.c:830
+ static_key_enable_cpuslocked+0x1b1/0x260 kernel/jump_label.c:177
+ static_key_enable+0x16/0x20 kernel/jump_label.c:190
+ toggle_allocation_gate mm/kfence/core.c:626 [inline]
+ toggle_allocation_gate+0x100/0x390 mm/kfence/core.c:618
+ process_one_work+0x9bf/0x16b0 kernel/workqueue.c:2297
+ worker_thread+0x658/0x11f0 kernel/workqueue.c:2444
+ kthread+0x3e5/0x4d0 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+----------------
+Code disassembly (best guess):
+   0:	24 50                	and    $0x50,%al
+   2:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+   9:	fc ff df
+   c:	48 c1 ea 03          	shr    $0x3,%rdx
+  10:	0f b6 04 02          	movzbl (%rdx,%rax,1),%eax
+  14:	84 c0                	test   %al,%al
+  16:	74 08                	je     0x20
+  18:	3c 03                	cmp    $0x3,%al
+  1a:	0f 8e 7f 03 00 00    	jle    0x39f
+  20:	48 89 da             	mov    %rbx,%rdx
+  23:	45 89 a7 f0 09 00 00 	mov    %r12d,0x9f0(%r15)
+* 2a:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax <-- trapping instruction
+  31:	fc ff df
+  34:	48 c1 ea 03          	shr    $0x3,%rdx
+  38:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1)
+  3c:	0f                   	.byte 0xf
+  3d:	85                   	.byte 0x85
+  3e:	aa                   	stos   %al,%es:(%rdi)
+  3f:	03                   	.byte 0x3
 
 
-On 10/15/21 9:51 PM, kernel test robot wrote:
-> [Please note: This e-mail is from an EXTERNAL e-mail address]
-> 
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git locking/core
-> head:   44e63f63c47dfb202eb25cdd97d04ec7e47f51d8
-> commit: b08614038dba3f6982e1e7701f23784bb0aedba6 [41/43] locking/rwsem: disable preemption for spinning region
-> config: hexagon-randconfig-r041-20211014 (attached as .config)
-> compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project acb3b187c4c88650a6a717a1bcb234d27d0d7f54)
-> reproduce (this is a W=1 build):
->          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->          chmod +x ~/bin/make.cross
->          # https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git/commit/?id=b08614038dba3f6982e1e7701f23784bb0aedba6
->          git remote add peterz-queue https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git
->          git fetch --no-tags peterz-queue locking/core
->          git checkout b08614038dba3f6982e1e7701f23784bb0aedba6
->          # save the attached .config to linux build tree
->          mkdir build_dir
->          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=hexagon SHELL=/bin/bash kernel/locking/
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All errors (new ones prefixed by >>):
-> 
->>> kernel/locking/rwsem.c:1023:19: error: variable has incomplete type 'enum owner_state'
->             enum owner_state owner_state;
->                              ^
->     kernel/locking/rwsem.c:1023:7: note: forward declaration of 'enum owner_state'
->             enum owner_state owner_state;
->                  ^
->     1 error generated.
-> 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-
-Hi Peter,
-
-I send a patch named ("locking/rwsem: Introduce 
-__rwsem_spin_on_owner()") for fixing this.
-
-Thanks,
-Yanfei
-
-> 
-> vim +1023 kernel/locking/rwsem.c
-> 
->    1012
->    1013  /*
->    1014   * Wait until we successfully acquire the write lock
->    1015   */
->    1016  static struct rw_semaphore *
->    1017  rwsem_down_write_slowpath(struct rw_semaphore *sem, int state)
->    1018  {
->    1019          long count;
->    1020          enum writer_wait_state wstate;
->    1021          struct rwsem_waiter waiter;
->    1022          struct rw_semaphore *ret = sem;
->> 1023          enum owner_state owner_state;
->    1024          DEFINE_WAKE_Q(wake_q);
->    1025
->    1026          /* do optimistic spinning and steal lock if possible */
->    1027          if (rwsem_can_spin_on_owner(sem) && rwsem_optimistic_spin(sem)) {
->    1028                  /* rwsem_optimistic_spin() implies ACQUIRE on success */
->    1029                  return sem;
->    1030          }
->    1031
->    1032          /*
->    1033           * Optimistic spinning failed, proceed to the slowpath
->    1034           * and block until we can acquire the sem.
->    1035           */
->    1036          waiter.task = current;
->    1037          waiter.type = RWSEM_WAITING_FOR_WRITE;
->    1038          waiter.timeout = jiffies + RWSEM_WAIT_TIMEOUT;
->    1039
->    1040          raw_spin_lock_irq(&sem->wait_lock);
->    1041
->    1042          /* account for this before adding a new element to the list */
->    1043          wstate = list_empty(&sem->wait_list) ? WRITER_FIRST : WRITER_NOT_FIRST;
->    1044
->    1045          list_add_tail(&waiter.list, &sem->wait_list);
->    1046
->    1047          /* we're now waiting on the lock */
->    1048          if (wstate == WRITER_NOT_FIRST) {
->    1049                  count = atomic_long_read(&sem->count);
->    1050
->    1051                  /*
->    1052                   * If there were already threads queued before us and:
->    1053                   *  1) there are no active locks, wake the front
->    1054                   *     queued process(es) as the handoff bit might be set.
->    1055                   *  2) there are no active writers and some readers, the lock
->    1056                   *     must be read owned; so we try to wake any read lock
->    1057                   *     waiters that were queued ahead of us.
->    1058                   */
->    1059                  if (count & RWSEM_WRITER_MASK)
->    1060                          goto wait;
->    1061
->    1062                  rwsem_mark_wake(sem, (count & RWSEM_READER_MASK)
->    1063                                          ? RWSEM_WAKE_READERS
->    1064                                          : RWSEM_WAKE_ANY, &wake_q);
->    1065
->    1066                  if (!wake_q_empty(&wake_q)) {
->    1067                          /*
->    1068                           * We want to minimize wait_lock hold time especially
->    1069                           * when a large number of readers are to be woken up.
->    1070                           */
->    1071                          raw_spin_unlock_irq(&sem->wait_lock);
->    1072                          wake_up_q(&wake_q);
->    1073                          wake_q_init(&wake_q);   /* Used again, reinit */
->    1074                          raw_spin_lock_irq(&sem->wait_lock);
->    1075                  }
->    1076          } else {
->    1077                  atomic_long_or(RWSEM_FLAG_WAITERS, &sem->count);
->    1078          }
->    1079
->    1080  wait:
->    1081          /* wait until we successfully acquire the lock */
->    1082          set_current_state(state);
->    1083          for (;;) {
->    1084                  if (rwsem_try_write_lock(sem, wstate)) {
->    1085                          /* rwsem_try_write_lock() implies ACQUIRE on success */
->    1086                          break;
->    1087                  }
->    1088
->    1089                  raw_spin_unlock_irq(&sem->wait_lock);
->    1090
->    1091                  /*
->    1092                   * After setting the handoff bit and failing to acquire
->    1093                   * the lock, attempt to spin on owner to accelerate lock
->    1094                   * transfer. If the previous owner is a on-cpu writer and it
->    1095                   * has just released the lock, OWNER_NULL will be returned.
->    1096                   * In this case, we attempt to acquire the lock again
->    1097                   * without sleeping.
->    1098                   */
->    1099                  if (wstate == WRITER_HANDOFF) {
->    1100                          preempt_disable();
->    1101                          owner_state = rwsem_spin_on_owner(sem);
->    1102                          preempt_enable();
->    1103                          if (owner_state == OWNER_NULL)
->    1104                                  goto trylock_again;
->    1105                  }
->    1106
->    1107                  /* Block until there are no active lockers. */
->    1108                  for (;;) {
->    1109                          if (signal_pending_state(state, current))
->    1110                                  goto out_nolock;
->    1111
->    1112                          schedule();
->    1113                          lockevent_inc(rwsem_sleep_writer);
->    1114                          set_current_state(state);
->    1115                          /*
->    1116                           * If HANDOFF bit is set, unconditionally do
->    1117                           * a trylock.
->    1118                           */
->    1119                          if (wstate == WRITER_HANDOFF)
->    1120                                  break;
->    1121
->    1122                          if ((wstate == WRITER_NOT_FIRST) &&
->    1123                              (rwsem_first_waiter(sem) == &waiter))
->    1124                                  wstate = WRITER_FIRST;
->    1125
->    1126                          count = atomic_long_read(&sem->count);
->    1127                          if (!(count & RWSEM_LOCK_MASK))
->    1128                                  break;
->    1129
->    1130                          /*
->    1131                           * The setting of the handoff bit is deferred
->    1132                           * until rwsem_try_write_lock() is called.
->    1133                           */
->    1134                          if ((wstate == WRITER_FIRST) && (rt_task(current) ||
->    1135                              time_after(jiffies, waiter.timeout))) {
->    1136                                  wstate = WRITER_HANDOFF;
->    1137                                  lockevent_inc(rwsem_wlock_handoff);
->    1138                                  break;
->    1139                          }
->    1140                  }
->    1141  trylock_again:
->    1142                  raw_spin_lock_irq(&sem->wait_lock);
->    1143          }
->    1144          __set_current_state(TASK_RUNNING);
->    1145          list_del(&waiter.list);
->    1146          raw_spin_unlock_irq(&sem->wait_lock);
->    1147          lockevent_inc(rwsem_wlock);
->    1148
->    1149          return ret;
->    1150
->    1151  out_nolock:
->    1152          __set_current_state(TASK_RUNNING);
->    1153          raw_spin_lock_irq(&sem->wait_lock);
->    1154          list_del(&waiter.list);
->    1155
->    1156          if (unlikely(wstate == WRITER_HANDOFF))
->    1157                  atomic_long_add(-RWSEM_FLAG_HANDOFF,  &sem->count);
->    1158
->    1159          if (list_empty(&sem->wait_list))
->    1160                  atomic_long_andnot(RWSEM_FLAG_WAITERS, &sem->count);
->    1161          else
->    1162                  rwsem_mark_wake(sem, RWSEM_WAKE_ANY, &wake_q);
->    1163          raw_spin_unlock_irq(&sem->wait_lock);
->    1164          wake_up_q(&wake_q);
->    1165          lockevent_inc(rwsem_wlock_fail);
->    1166
->    1167          return ERR_PTR(-EINTR);
->    1168  }
->    1169
-> 
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-> 
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
