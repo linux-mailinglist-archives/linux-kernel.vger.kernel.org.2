@@ -2,101 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D95C42ED0C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 11:02:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76BF742ED12
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 11:04:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236424AbhJOJEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 05:04:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40834 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236345AbhJOJEr (ORCPT
+        id S236097AbhJOJGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 05:06:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36650 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235730AbhJOJGe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 05:04:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634288560;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PhlIsRLo815t+m2jVfDd0ZVZoAGb7rOYgz0mDMFFLoY=;
-        b=HtXIOO5bcslkKF1RKEflO70XW+oQ5aZx55hGr2p3jJ7BFMxE1wuJvt1/xs810E7Uha/0P0
-        BHYSoD9fz6pTg0selOkDUrHhM+Mo8lzgZKr2kUlEACOD1BNOe+N+XWdnXX8benpWxmyNLC
-        ZG6RUddvM03Zf7ufXUZzx1Njrt+zLT8=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-168-lFqk9N0LMW-MEvBhtl78zg-1; Fri, 15 Oct 2021 05:02:39 -0400
-X-MC-Unique: lFqk9N0LMW-MEvBhtl78zg-1
-Received: by mail-ed1-f70.google.com with SMTP id u23-20020a50a417000000b003db23c7e5e2so7654282edb.8
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 02:02:39 -0700 (PDT)
+        Fri, 15 Oct 2021 05:06:34 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB24DC061755
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 02:04:27 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id ls18so6757632pjb.3
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 02:04:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Va56VXzThcapfyuRQ5Jm4rTPogdKDliZvBqOga5mRCw=;
+        b=hnSlvkSy8cjPjchSs3Hpxei9lPzOzdRKnGEDp0hhdCM+8yKQM4Kt1BRIwSd26KLl2l
+         EFt5IAwN/0QrDf9Ta4giZbi+cJSj/gjcY7WvJljtnfU+YA/iP4/es2U9Po4uq36kYsqt
+         ZJkQW2CtqgeF7zNus5pDXLAia3sR2pzy+X97VVYBrEUz4GSuz34o7soP/h9oeIV5YShH
+         J5rb+9ip9FiehgJgt/fE4mfeSqpbFLNggzPBdWu+jW0bLOZEiexIKguWCTWM3PUQXc3d
+         qBvugIE6AYBQ6nGxzs2FajNbJidlKnQD4W9TkFUG+Ccbcta63FTpS54osYsbSKjCJdnD
+         waxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=PhlIsRLo815t+m2jVfDd0ZVZoAGb7rOYgz0mDMFFLoY=;
-        b=ytOyvlmK9gMlrVfnFXzhPcw6Y2tjPGsYo61EHxILqD3VA4E0B3pmaGJikInmp44S88
-         mBp7+qfo2lRVWLhVw+FBBO44czhdEIvRGik0W8wTko5FEifD/zsF19oZ2FMedu0oURen
-         vw1d8QK0E7/GVMQkM5xDuXXAgsSit50KWXCa1Jsiav01f9ivB+deCtQQMyVLcI5C9UJ3
-         Tn1bpvcxwHQyw0q+toFl4ZAAI5IC7bvBkota83F78V1sWWjp5kvPj0atPMXRGYv0mqe8
-         tDiDyHUHv0Kt7hcUqUmSmh82XWO3xomlSmDIKJB6PMgQpOeZf606gODUPSJwI7ILcYqr
-         HeeQ==
-X-Gm-Message-State: AOAM530b0mTXjqEiD0W7W+4s4Bj8w+FI4XtuOlHesMRAuxedZID5bI5u
-        HI6jGRf1+H1X6IwNHRSuG6hJOzg/Rj8TxKl4g2MiIKjZrYS3v7sC1ezqWAp76UDrt34rC15LL9Y
-        LS8/F2t9ZCFunwwC7Vvepr9V0
-X-Received: by 2002:a05:6402:1157:: with SMTP id g23mr16943909edw.379.1634288557818;
-        Fri, 15 Oct 2021 02:02:37 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxjBoqUowr96DKoVb83o/A9q/NX7u5qyRXRA1DgBIXoYK9ebh5lAWp8ZEEhPoxT2B5TTbDAjQ==
-X-Received: by 2002:a05:6402:1157:: with SMTP id g23mr16943848edw.379.1634288557311;
-        Fri, 15 Oct 2021 02:02:37 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id j21sm4003886edr.64.2021.10.15.02.02.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Oct 2021 02:02:36 -0700 (PDT)
-Message-ID: <7b2c41cb-31fd-3755-dd34-86e7926f2f49@redhat.com>
-Date:   Fri, 15 Oct 2021 11:02:35 +0200
+        bh=Va56VXzThcapfyuRQ5Jm4rTPogdKDliZvBqOga5mRCw=;
+        b=LIZjmTHBP8RmX3N2gVwXsWsoInlOSasMHVyXKn8g9y4bOkgpIFiZF4adiSlmt2g4QL
+         pHJoEW5vlftucwT2mLYZ9SZWNWE4ZF+flyv8dMCTOErKgu6LHDj1NwmtLKQ0kRdr1lbw
+         NqNB/SbaXSDikFeSP3jjrfa98XNvw8whZ2sHhKKN55lXZEJgPW74oYoifBlsIHTsbZM2
+         +9ckLEhvdav5lOX1uE8djDrtwBqL9ocZPoBa1uSqsubPA3LFM47mO5xsbwhSuNPCi5EL
+         jBCJbHUKSJyg2AM+TvbM1J1CtTvZ6oKW0N1YVpm48PL0kepXDcb2+KZQhAAiKYs5jhaV
+         K1qQ==
+X-Gm-Message-State: AOAM530xBF70S+LfLBxAf2MrsuOrhj6G5mX7uO+7+l2uURqeFF5HTM3G
+        dgY8cKE0tqvhvxu6tysSZ2kdKg==
+X-Google-Smtp-Source: ABdhPJwUUlt2PziUSmkUXhAgxMM7TpA7Blg+ObSbfCjY4jh7FhM1njWaFNuIMt+ySOT3pqCxqR6rXA==
+X-Received: by 2002:a17:903:41c2:b0:13f:f26:d6b9 with SMTP id u2-20020a17090341c200b0013f0f26d6b9mr10019185ple.14.1634288667413;
+        Fri, 15 Oct 2021 02:04:27 -0700 (PDT)
+Received: from C02CV1DAMD6P.bytedance.net ([139.177.225.226])
+        by smtp.gmail.com with ESMTPSA id k190sm4366009pfd.211.2021.10.15.02.04.23
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 15 Oct 2021 02:04:27 -0700 (PDT)
+From:   Chengming Zhou <zhouchengming@bytedance.com>
+To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, zhouchengming@bytedance.com
+Subject: [PATCH] bpf: use count for prealloc hashtab too
+Date:   Fri, 15 Oct 2021 17:03:53 +0800
+Message-Id: <20211015090353.31248-1-zhouchengming@bytedance.com>
+X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH 0/2] KVM: x86: Revert to fix apic_hw_disabled underflow
-Content-Language: en-US
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+9fc046ab2b0cf295a063@syzkaller.appspotmail.com,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-References: <20211013003554.47705-1-seanjc@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <20211013003554.47705-1-seanjc@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/10/21 02:35, Sean Christopherson wrote:
-> Revert (mostly) a patch from the vCPU RESET cleanup that open coded some
-> APIC shenanigans to avoid stuffing vcpu->arch.apic_base at vCPU creation,
-> and completely overlooked the side effects on apic_hw_disabled.  I went
-> for a revert as I think the original behavior is the least awful solution,
-> just somewhat poorly documented.
-> 
-> The second patch adds WARNs to detect "overflow", where "overflow" means
-> KVM incorrectly increments apic_hw_disabled.
-> 
-> Sean Christopherson (2):
->    Revert "KVM: x86: Open code necessary bits of kvm_lapic_set_base() at
->      vCPU RESET"
->    KVM: x86: WARN if APIC HW/SW disable static keys are non-zero on
->      unload
-> 
->   arch/x86/kvm/lapic.c | 20 +++++++++++++-------
->   1 file changed, 13 insertions(+), 7 deletions(-)
-> 
+We only use count for kmalloc hashtab not for prealloc hashtab, because
+__pcpu_freelist_pop() return NULL when no more elem in pcpu freelist.
 
-Queued for 5.15, thanks.
+But the problem is that __pcpu_freelist_pop() will traverse all CPUs and
+spin_lock for all CPUs to find there is no more elem at last.
 
-Paolo
+We encountered bad case on big system with 96 CPUs that alloc_htab_elem()
+would last for 1ms. This patch use count for prealloc hashtab too,
+avoid traverse and spin_lock for all CPUs in this case.
+
+Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+---
+ kernel/bpf/hashtab.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+index 32471ba02708..0c432a23aa00 100644
+--- a/kernel/bpf/hashtab.c
++++ b/kernel/bpf/hashtab.c
+@@ -855,12 +855,12 @@ static void htab_put_fd_value(struct bpf_htab *htab, struct htab_elem *l)
+ static void free_htab_elem(struct bpf_htab *htab, struct htab_elem *l)
+ {
+ 	htab_put_fd_value(htab, l);
++	atomic_dec(&htab->count);
+ 
+ 	if (htab_is_prealloc(htab)) {
+ 		check_and_free_timer(htab, l);
+ 		__pcpu_freelist_push(&htab->freelist, &l->fnode);
+ 	} else {
+-		atomic_dec(&htab->count);
+ 		l->htab = htab;
+ 		call_rcu(&l->rcu, htab_elem_free_rcu);
+ 	}
+@@ -938,6 +938,11 @@ static struct htab_elem *alloc_htab_elem(struct bpf_htab *htab, void *key,
+ 		} else {
+ 			struct pcpu_freelist_node *l;
+ 
++			if (atomic_inc_return(&htab->count) > htab->map.max_entries) {
++				l_new = ERR_PTR(-E2BIG);
++				goto dec_count;
++			}
++
+ 			l = __pcpu_freelist_pop(&htab->freelist);
+ 			if (!l)
+ 				return ERR_PTR(-E2BIG);
+-- 
+2.11.0
 
