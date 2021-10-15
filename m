@@ -2,108 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6763E42F5CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 16:42:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C383642F5E4
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 16:43:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240600AbhJOOn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 10:43:58 -0400
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:13336 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240605AbhJOOny (ORCPT
+        id S235773AbhJOOpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 10:45:18 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:55382 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237154AbhJOOpR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 10:43:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1634308908; x=1665844908;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=9tJXikfeFqXFLvozQFAnutFEBzkbc2DDc4AO1Qx2cbM=;
-  b=UsQdzRnaBhFZnNEg1Y5KDI/eHp6ri+mWpO95TE1+RHVLd39/V1CAt2Vf
-   GHEEv4b13WT4GWuZZkf6ScNCwTB5jYNVpDF+XJnw77g3MwTfbxrUvJlnw
-   PyTSMRws0ZTO7sPg3Mw9JsZT/lDGtEPCN4bVc8yhYtTx2cPBvtyvg3qTy
-   OtKEGUNSu+glDpyqM52noIpY78C9WqN6hH2VNX0lglEPmgekpr46oOwnE
-   dva1CTih36lCJ8yys+dxwmCG2XxwsTnOXWyTqp9c0CVDsMthE6FZKi3+D
-   NS2DIM14HIng5P9VrQTv4xYJnoS0VvrKJGQtZI8/VSTsFczjpGGUq0SqE
-   g==;
-IronPort-SDR: W+oc4kns8kbpohM77eURWSvCXnQ6UdX23+EvT8brmt8ax1TGMenE7BPUKJ33A9JjOhlXJ/oxhd
- +gZmonQyr7MSTDy1Sq4Q3bWeTrBKdjrB3SKg2UaVhtKNg2620SRKcze96J+eVJKsGwNpqFcUWp
- yTWLDS2mQC0ld0iiH1UK1EY6VqXDfRRA0+XUlHm1WadT6ylpL0SJ9oshRXk4wUm7iEEmMRwsOz
- VPYERhwyZM4pG01Wd9QLdSkZbKt1Jzr97wOEbU2AU1Kgr9R9t+tTtZLj+qHAVhQjfSB+ogG+q8
- ByTikYQwE4jMLgqBRXpJf8Zr
-X-IronPort-AV: E=Sophos;i="5.85,376,1624345200"; 
-   d="scan'208";a="135665731"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 15 Oct 2021 07:41:47 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Fri, 15 Oct 2021 07:41:46 -0700
-Received: from soft-dev3-1.microsemi.net (10.10.115.15) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Fri, 15 Oct 2021 07:41:44 -0700
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     <linus.walleij@linaro.org>, <robh+dt@kernel.org>,
-        <lars.povlsen@microchip.com>, <Steen.Hegelund@microchip.com>,
-        <UNGLinuxDriver@microchip.com>, <p.zabel@pengutronix.de>,
-        <linux-gpio@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Horatiu Vultur <horatiu.vultur@microchip.com>
-Subject: [PATCH v5 2/2] pinctrl: microchip sgpio: use reset driver
-Date:   Fri, 15 Oct 2021 16:42:59 +0200
-Message-ID: <20211015144259.219909-3-horatiu.vultur@microchip.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211015144259.219909-1-horatiu.vultur@microchip.com>
-References: <20211015144259.219909-1-horatiu.vultur@microchip.com>
+        Fri, 15 Oct 2021 10:45:17 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52]:48230)
+        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mbOQP-001lT2-P8; Fri, 15 Oct 2021 08:43:09 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:36892 helo=email.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mbOQO-007RxG-Qp; Fri, 15 Oct 2021 08:43:09 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Alexey Gladkov <legion@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-nfs@vger.kernel.org,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Sargun Dhillon <sargun@sargun.me>
+References: <20211014160230.106976-1-legion@kernel.org>
+Date:   Fri, 15 Oct 2021 09:43:01 -0500
+In-Reply-To: <20211014160230.106976-1-legion@kernel.org> (Alexey Gladkov's
+        message of "Thu, 14 Oct 2021 18:02:30 +0200")
+Message-ID: <87o87qxsay.fsf@disp2133>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
+X-XM-SPF: eid=1mbOQO-007RxG-Qp;;;mid=<87o87qxsay.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1/IMy026dG3gJOeucUGJ4SAuwgKEo298OU=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa01.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-0.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG autolearn=disabled
+        version=3.4.2
+X-Spam-Virus: No
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4965]
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa01 0; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: ; sa01 0; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Alexey Gladkov <legion@kernel.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 335 ms - load_scoreonly_sql: 0.03 (0.0%),
+        signal_user_changed: 4.2 (1.3%), b_tie_ro: 2.9 (0.9%), parse: 0.98
+        (0.3%), extract_message_metadata: 10 (3.1%), get_uri_detail_list: 0.87
+        (0.3%), tests_pri_-1000: 10 (3.1%), tests_pri_-950: 1.06 (0.3%),
+        tests_pri_-900: 0.79 (0.2%), tests_pri_-90: 136 (40.6%), check_bayes:
+        135 (40.1%), b_tokenize: 3.7 (1.1%), b_tok_get_all: 4.9 (1.5%),
+        b_comp_prob: 1.34 (0.4%), b_tok_touch_all: 122 (36.3%), b_finish: 0.73
+        (0.2%), tests_pri_0: 158 (47.2%), check_dkim_signature: 0.35 (0.1%),
+        check_dkim_adsp: 1.87 (0.6%), poll_dns_idle: 0.54 (0.2%),
+        tests_pri_10: 2.6 (0.8%), tests_pri_500: 7 (2.2%), rewrite_mail: 0.00
+        (0.0%)
+Subject: Re: [PATCH] Fix user namespace leak
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On lan966x platform when the switch gets reseted then also the sgpio
-gets reseted. The fix for this is to extend also the sgpio driver to
-call the reset driver which will be reseted only once by the first
-driver that is probed.
+Alexey Gladkov <legion@kernel.org> writes:
 
-Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
----
- drivers/pinctrl/pinctrl-microchip-sgpio.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+> Fixes: 61ca2c4afd9d ("NFS: Only reference user namespace from nfs4idmap struct instead of cred")
+> Signed-off-by: Alexey Gladkov <legion@kernel.org>
 
-diff --git a/drivers/pinctrl/pinctrl-microchip-sgpio.c b/drivers/pinctrl/pinctrl-microchip-sgpio.c
-index 072bccdea2a5..529808c5af18 100644
---- a/drivers/pinctrl/pinctrl-microchip-sgpio.c
-+++ b/drivers/pinctrl/pinctrl-microchip-sgpio.c
-@@ -17,6 +17,7 @@
- #include <linux/pinctrl/pinmux.h>
- #include <linux/platform_device.h>
- #include <linux/property.h>
-+#include <linux/reset.h>
- 
- #include "core.h"
- #include "pinconf.h"
-@@ -803,6 +804,7 @@ static int microchip_sgpio_probe(struct platform_device *pdev)
- 	int div_clock = 0, ret, port, i, nbanks;
- 	struct device *dev = &pdev->dev;
- 	struct fwnode_handle *fwnode;
-+	struct reset_control *reset;
- 	struct sgpio_priv *priv;
- 	struct clk *clk;
- 	u32 val;
-@@ -813,6 +815,11 @@ static int microchip_sgpio_probe(struct platform_device *pdev)
- 
- 	priv->dev = dev;
- 
-+	reset = devm_reset_control_get_optional_shared(&pdev->dev, NULL);
-+	if (IS_ERR(reset))
-+		return dev_err_probe(dev, PTR_ERR(reset), "Failed to get reset\n");
-+	reset_control_reset(reset);
-+
- 	clk = devm_clk_get(dev, NULL);
- 	if (IS_ERR(clk))
- 		return dev_err_probe(dev, PTR_ERR(clk), "Failed to get clock\n");
--- 
-2.33.0
+Reviewed-by: "Eric W. Biederman" <ebiederm@xmission.com>
 
+nfs folks do you want to pick this up?
+
+> ---
+>  fs/nfs/nfs4idmap.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/fs/nfs/nfs4idmap.c b/fs/nfs/nfs4idmap.c
+> index 8d8aba305ecc..f331866dd418 100644
+> --- a/fs/nfs/nfs4idmap.c
+> +++ b/fs/nfs/nfs4idmap.c
+> @@ -487,7 +487,7 @@ nfs_idmap_new(struct nfs_client *clp)
+>  err_destroy_pipe:
+>  	rpc_destroy_pipe_data(idmap->idmap_pipe);
+>  err:
+> -	get_user_ns(idmap->user_ns);
+> +	put_user_ns(idmap->user_ns);
+>  	kfree(idmap);
+>  	return error;
+>  }
