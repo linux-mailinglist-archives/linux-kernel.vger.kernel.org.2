@@ -2,71 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 011C942F445
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 15:52:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2593E42F39B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 15:35:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240118AbhJONyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 09:54:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51970 "EHLO mail.kernel.org"
+        id S237133AbhJONhz convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 15 Oct 2021 09:37:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45774 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231278AbhJONyi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 09:54:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 468AB6054F;
-        Fri, 15 Oct 2021 13:52:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634305951;
-        bh=fi2tMOxqhnQ+/2k5cabOxx3Wrm847QYTHSmSkasymKc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=FKVHtTx5+lYWaGpyCMIZ0MiYmg9CQf7R2SOI2u6akDNxIgpkoHlAydcjjexrltGe3
-         0+GUMMpJtSSr7YSF8/WrU827uQht8WiS55EoIYH/AihacMopnPSilGKzsIPHRJiv99
-         nTaaiOhDGxeB02xKjTbVVlVHcCMw/rnJEW29aUCKvAdo6Uxm8yQxklHBqTrncduq3f
-         cN+RNY+iewikBP+/fHBPhW5GzrtIKuGp/eTohbseEqg+NPj10dzx35hpVq+R9KA3mG
-         V1uBqa5NFixv9uf7C6ya5ucSQFjtEk0k1uqgW7Wv4Y6kXnhofX92O4lRzyIA71D4Jt
-         KSwFEr1DGqtjw==
-From:   Mark Brown <broonie@kernel.org>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH] random: Document add_hwgenerator_randomness() with other input functions
-Date:   Fri, 15 Oct 2021 14:34:30 +0100
-Message-Id: <20211015133430.111886-1-broonie@kernel.org>
-X-Mailer: git-send-email 2.30.2
+        id S236973AbhJONhx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 09:37:53 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 667A761151;
+        Fri, 15 Oct 2021 13:35:44 +0000 (UTC)
+Date:   Fri, 15 Oct 2021 09:35:42 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
+Cc:     Petr Mladek <pmladek@suse.com>, Guo Ren <guoren@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Jisheng Zhang <jszhang@kernel.org>, linux-csky@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        live-patching@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] ftrace: disable preemption between
+ ftrace_test_recursion_trylock/unlock()
+Message-ID: <20211015093542.7d9a9671@gandalf.local.home>
+In-Reply-To: <3c87e825-e907-cba0-e95f-28878356fc71@linux.alibaba.com>
+References: <609b565a-ed6e-a1da-f025-166691b5d994@linux.alibaba.com>
+        <7e4738b5-21d4-c4d0-3136-a096bbb5cd2c@linux.alibaba.com>
+        <YWhJP41cNwDphYsv@alley>
+        <5e907ed3-806b-b0e5-518d-d2f3b265377f@linux.alibaba.com>
+        <YWktujP6DcMnRIXT@alley>
+        <3c87e825-e907-cba0-e95f-28878356fc71@linux.alibaba.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1063; h=from:subject; bh=fi2tMOxqhnQ+/2k5cabOxx3Wrm847QYTHSmSkasymKc=; b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBhaYM1Ff3mACyCF6nxOjVy8ZboZeCgjmMVuwFtErVU G0PiwWSJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCYWmDNQAKCRAk1otyXVSH0OgoB/ 0Ug3byfLS+LGDaFATkGNr+ydTyvIaSbeIhGsWzTG3sF4Jwb+Pv2F377CHI3kUfuLchpTRFB4VlWZKe W6mRt0cnnNRPijQzOz6gvz/jJu8WNrMmVlIYtah2MqcXUsgtmITtbJhcBPFqxEIQb/z+w78IGMzWAK U10/BaRmQ3N4DhbQ+5b9X+srt4Hgit3hjMDJMfmxV3wLNw7wJv1LWxflPhbxmGDe7oCOhkZK4kiIMN cr92JEj6MES4EkqTsQKgqIcVjT64AcA9Su50sMC7QvF846sbnfe+eAaH2BwrLEJl9TPYlTRii5NsxP 9+Vr20TQadi8odbjTmIRPNpuUd799F
-X-Developer-Key: i=broonie@kernel.org; a=openpgp; fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The section at the top of random.c which documents the input functions
-available does not document add_hwgenerator_randomness() which might lead
-a reader to overlook it. Add a brief note about it.
+On Fri, 15 Oct 2021 17:12:26 +0800
+王贇 <yun.wang@linux.alibaba.com> wrote:
 
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- drivers/char/random.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+> Maybe take some example would be easier to understand...
+> 
+> Currently there are two way of using ftrace_test_recursion_trylock(),
+> one with TRACE_FTRACE_XXX we mark as A, one with TRACE_LIST_XXX we mark
+> as B, then:
+> 
+> A followed by B on same context got bit > 0
+> B followed by A on any context got bit 0
+> A followed by A on same context got bit > 0
+> A followed by A followed by A on same context got bit -1
+> B followed by B on same context got bit > 0
+> B followed by B followed by B on same context got bit -1
+> 
+> If we get rid of the TRACE_TRANSITION_BIT which allowed recursion for
+> onetime, then it would be:
 
-diff --git a/drivers/char/random.c b/drivers/char/random.c
-index 605969ed0f96..456a4f43d935 100644
---- a/drivers/char/random.c
-+++ b/drivers/char/random.c
-@@ -228,6 +228,14 @@
-  * particular randomness source.  They do this by keeping track of the
-  * first and second order deltas of the event timings.
-  *
-+ * There is also an interface for true hardware RNGs:
-+ *
-+ *	void add_hwgenerator_randomness(const char *buffer, size_t count,
-+ *				size_t entropy);
-+ *
-+ * This will credit entropy as specified by the caller, if the entropy
-+ * pool is full it will block until more entropy is needed.
-+ *
-  * Ensuring unpredictability at system startup
-  * ============================================
-  *
--- 
-2.30.2
+We can't get rid of the transition bit. It's there to fix a bug. Or at
+least until we finish the "noinst" issue which may be true now? I have to
+go revisit it.
+
+The reason for the transition bit, is because we were dropping function
+traces, that people relied on being there. The problem is that the
+recursion protection allows for nested context. That is, it will not detect
+recursion if we an interrupt triggers during a trace (while the recursion
+lock is held) and then that interrupt does a trace. It is allowed to call
+the ftrace_test_recursion_trylock() again.
+
+But, what happens if the trace occurs after the interrupt triggers, but
+before the preempt_count states that we are now in interrupt context? As
+preempt_count is used by this code to determine what context we are in, if
+a trace happens in this "transition" state, without the transition bit, a
+recursion is detected (false positive) and the event is dropped. People are
+then confused on how an interrupt happened, but the entry of the interrupt
+never triggered (according to the trace).
+
+The transition bit allows one level of recursion to handle this case.
+
+The "noinst" work may also remove all locations that can be traced before
+the context is updated. I need to see if that is now the case, and if it
+is, we can remove the transition bit.
+
+This is not the design issue I mentioned earlier. I'm still working on that
+one.
+
+-- Steve
+
+
+> 
+> A followed by B on same context got bit > 0
+> B followed by A on any context got bit 0
+> A followed by A on same context got bit -1
+> B followed by B on same context got bit -1
+> 
+> So as long as no continuously AAA it's safe?
 
