@@ -2,59 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 663A442EED0
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 12:31:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4263142EED2
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 12:32:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238039AbhJOKeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 06:34:01 -0400
-Received: from relay11.mail.gandi.net ([217.70.178.231]:36373 "EHLO
+        id S238037AbhJOKeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 06:34:04 -0400
+Received: from relay11.mail.gandi.net ([217.70.178.231]:41251 "EHLO
         relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237984AbhJOKdm (ORCPT
+        with ESMTP id S238058AbhJOKdy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 06:33:42 -0400
+        Fri, 15 Oct 2021 06:33:54 -0400
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id F2BD9100004;
-        Fri, 15 Oct 2021 10:31:30 +0000 (UTC)
+        by relay11.mail.gandi.net (Postfix) with ESMTPSA id C3C7810000A;
+        Fri, 15 Oct 2021 10:31:46 +0000 (UTC)
 From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Cc:     Linus Walleij <linusw@kernel.org>, Imre Kaloz <kaloz@openwrt.org>,
-        Krzysztof Halasa <khalasa@piap.pl>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] [RFC] mtd: fixup CFI on ixp4xx
-Date:   Fri, 15 Oct 2021 12:31:30 +0200
-Message-Id: <20211015103130.949127-1-miquel.raynal@bootlin.com>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        miquel.raynal@bootlin.com
+Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH] MAINTAINERS: Add entry for Qualcomm NAND controller driver
+Date:   Fri, 15 Oct 2021 12:31:46 +0200
+Message-Id: <20211015103146.949256-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210927141045.1597593-1-arnd@kernel.org>
+In-Reply-To: <20211004123926.53462-1-manivannan.sadhasivam@linaro.org>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'603362b4a58393061dcfed1c7f0d0fd4aba61126'
+X-linux-mtd-patch-commit: b'73e197df1949347bbc1902605b6c7fe8e3b04249'
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-09-27 at 14:10:37 UTC, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+On Mon, 2021-10-04 at 12:39:26 UTC, Manivannan Sadhasivam wrote:
+> Since I maintain the dt-binding for this controller, I'm stepping
+> forward to maintain the driver also.
 > 
-> drivers/mtd/maps/ixp4xx.c requires MTD_CFI_BE_BYTE_SWAP to be set
-> in order to compile.
-> 
-> drivers/mtd/maps/ixp4xx.c:57:4: error: #error CONFIG_MTD_CFI_BE_BYTE_SWAP required
-> 
-> This patch avoids the #error output by enforcing the policy in
-> Kconfig. Not sure if this is the right approach, but it helps doing
-> randconfig builds.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> Acked-by: Linus Walleij <linus.walleij@linaro.org>
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next, thanks.
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
 
 Miquel
