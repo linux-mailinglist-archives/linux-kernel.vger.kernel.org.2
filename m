@@ -2,86 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1301E42F726
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 17:45:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1932342F73C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 17:47:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241025AbhJOPrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 11:47:39 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:55796
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241000AbhJOPri (ORCPT
+        id S241033AbhJOPtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 11:49:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20958 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234829AbhJOPtO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 11:47:38 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 04C033FFE2;
-        Fri, 15 Oct 2021 15:45:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1634312731;
-        bh=q+4cmHqckaQN4b4ZCrwGPFRF8idW9plChE4guiMleiU=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=u6Lau5Vyk4CpnT8Xo+XbOROx3DyLrgYdbZ46qMf4VCTG3qrYt4Gvl/sPTxpRxsfS7
-         XIu0GCz7ff4u8ctbgDlJNIXpaKhPW0IYlMNUdyL0Kb2qqnP+5Y+JYuqJh4GDT1KcMi
-         cNFZLmJt8BpybXDSF7CEDZQmpgkC5c0FA48tLLJG7O1GlQrBwJgpzLjdE6qY5vPy8J
-         r7ix4AQqzLzYVH9VN+r2cRiCrvpBxZFVVjSuTVCBtsbLkHdqy8eJytuucWm1QkMa2n
-         hMRmTrj0f9ZBbxvchSklN202vkiBrPH64mEbq8yi8jTSrgCWbeUzpwFepxm5Cv2VVN
-         3Sgo8V9JXajnA==
-From:   Colin King <colin.king@canonical.com>
-To:     Kalle Valo <kvalo@codeaurora.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Ping-Ke Shih <pkshih@realtek.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] rtw89: Fix potential dereference of the null pointer sta
-Date:   Fri, 15 Oct 2021 16:45:30 +0100
-Message-Id: <20211015154530.34356-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.32.0
+        Fri, 15 Oct 2021 11:49:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634312827;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/+Q0m93eDQUsQs996BqvSBuleHVWdL0Hp5smaHrBxAk=;
+        b=eBVrbuDgxjnXaUnPuBKwpwgU0pnsn4fIgGJwYSfzb3wVYQTfO5i7J1woZxFmUaBiwigk/a
+        d28rUgLbq6TvErbOvWSpU38hpzQtqxih8rRCXJExI01iJ1iORDiA1KGJUPTAAzeae208sI
+        edjZlbP02yPp6toKpF7ihhmmsNHnMiM=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-254-f-t_n8O1PGKSalit9L18lQ-1; Fri, 15 Oct 2021 11:47:06 -0400
+X-MC-Unique: f-t_n8O1PGKSalit9L18lQ-1
+Received: by mail-wr1-f71.google.com with SMTP id j19-20020adfb313000000b00160a9de13b3so6103706wrd.8
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 08:47:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:organization:in-reply-to
+         :content-transfer-encoding;
+        bh=/+Q0m93eDQUsQs996BqvSBuleHVWdL0Hp5smaHrBxAk=;
+        b=xlRNtAjMrz/EqTOJu/0gB1mBy/t8kc8AaUcU+FWLFN4F88ZtGoCqdUgAPi9Dpomaaa
+         dq59xZX9phGiMgIWpDHmA8kTNqMADAlmeL87FIDO66FVwwK8c1vmLfsmRAxqOJzqsHzQ
+         /kqmNV3nErmduMQbB30iaOTeBCIzvAL61q4ODSjLm0B1qWpHafeS4jzsJvHU/SJdCjxO
+         lQaxwqFDwkGno5IW3pSovPKu3GWREue0/59e2YOPgx//06Yh20ZnT3C4sssq96DBetNp
+         baiLwIGuLSPhK+ikfaLGOX+YGwjnYk3L76tbopLzaOha0RfXtXxnKyMhbz9e38aXDS+Q
+         rTSQ==
+X-Gm-Message-State: AOAM532laTZMlb5agDdLHkjlrJInQnoxkUq9Z/mnwN1RK6dJlMgNUI/M
+        zbBq9Ob7nluOy2PukGvFrf7n9tw+h2CoL/WWNBEwvk+fk0DMhfJGj3YaDHwNisRnzi7mb3JRYQO
+        FwQuPKLPDZAggd4RxzphDYZAY
+X-Received: by 2002:a05:600c:4ecb:: with SMTP id g11mr12990757wmq.67.1634312824940;
+        Fri, 15 Oct 2021 08:47:04 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyZ8cZ4RHjQrgJ/5N2T4Zi0Zesg0WM8aufR8Y+rPU6qtgwPr28uz+3Y80ilegTf+T+SZ91+/Q==
+X-Received: by 2002:a05:600c:4ecb:: with SMTP id g11mr12990737wmq.67.1634312824703;
+        Fri, 15 Oct 2021 08:47:04 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c6a01.dip0.t-ipconnect.de. [91.12.106.1])
+        by smtp.gmail.com with ESMTPSA id w1sm10807575wmc.19.2021.10.15.08.47.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Oct 2021 08:47:04 -0700 (PDT)
+Message-ID: <b99b5960-b1ec-b968-1d9c-d125a23c59fe@redhat.com>
+Date:   Fri, 15 Oct 2021 17:47:03 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: selftests/vm madv_populate.c test
+Content-Language: en-US
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <b703a326-66f7-bf35-58ee-f60e504ea5ef@linuxfoundation.org>
+ <0a20f6b6-5985-8b3e-a577-7495dcf7d2b8@redhat.com>
+ <3a06d58e-7301-6fbc-a305-d9f7c7220843@linuxfoundation.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <3a06d58e-7301-6fbc-a305-d9f7c7220843@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On 15.10.21 17:45, Shuah Khan wrote:
+> On 9/18/21 1:41 AM, David Hildenbrand wrote:
+>> On 18.09.21 00:45, Shuah Khan wrote:
+>>> Hi David,
+>>>
+>>> I am running into the following warning when try to build this test:
+>>>
+>>> madv_populate.c:334:2: warning: #warning "missing MADV_POPULATE_READ or MADV_POPULATE_WRITE definition" [-Wcpp]
+>>>     334 | #warning "missing MADV_POPULATE_READ or MADV_POPULATE_WRITE definition"
+>>>         |  ^~~~~~~
+>>>
+>>>
+>>> I see that the following handling is in place. However there is no
+>>> other information to explain why the check is necessary.
+>>>
+>>> #if defined(MADV_POPULATE_READ) && defined(MADV_POPULATE_WRITE)
+>>>
+>>> #else /* defined(MADV_POPULATE_READ) && defined(MADV_POPULATE_WRITE) */
+>>>
+>>> #warning "missing MADV_POPULATE_READ or MADV_POPULATE_WRITE definition"
+>>>
+>>> I do see these defined in:
+>>>
+>>> include/uapi/asm-generic/mman-common.h:#define MADV_POPULATE_READ       22
+>>> include/uapi/asm-generic/mman-common.h:#define MADV_POPULATE_WRITE      23
+>>>
+>>> Is this the case of missing include from madv_populate.c?
+>>
+>> Hi Shuan,
+>>
+>> note that we're including "#include <sys/mman.h>", which in my
+>> understanding maps to the version installed on your system instead
+>> of the one in our build environment.ing.
+>>
+>> So as soon as you have a proper kernel + the proper headers installed
+>> and try to build, it would pick up MADV_POPULATE_READ and
+>> MADV_POPULATE_WRITE from the updated headers. That makes sense: you
+>> annot run any MADV_POPULATE_READ/MADV_POPULATE_WRITE tests on a kernel
+>> that doesn't support it.
+>>
+>> See vm/userfaultfd.c where we do something similar.
+>>
+> 
+> Kselftest is for testing the kernel with kernel headers. That is the
+> reason why there is the dependency on header install.
+> 
+>>
+>> As soon as we have a proper environment, it seems to work just fine:
+>>
+>> Linux vm-0 5.15.0-0.rc1.20210915git3ca706c189db.13.fc36.x86_64 #1 SMP Thu Sep 16 11:32:54 UTC 2021 x86_64 x86_64 x86_64 GNU/Linux
+>> [root@vm-0 linux]# cat /etc/redhat-release
+>> Fedora release 36 (Rawhide)
+> 
+> This is a distro release. We don't want to have dependency on headers
+> from the distro to run selftests. Hope this makes sense.
+> 
+> I still see this on my test system running Linux 5.15-rc5.
 
-The pointer rtwsta is dereferencing pointer sta before sta is
-being null checked, so there is a potential null pointer deference
-issue that may occur. Fix this by only assigning rtwsta after sta
-has been null checked. Add in a null pointer check on rtwsta before
-dereferencing it too.
+Did you also install Linux headers? I assume no, correct?
 
-Fixes: e3ec7017f6a2 ("rtw89: add Realtek 802.11ax driver")
-Addresses-Coverity: ("Dereference before null check")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/net/wireless/realtek/rtw89/core.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/wireless/realtek/rtw89/core.c b/drivers/net/wireless/realtek/rtw89/core.c
-index 06fb6e5b1b37..26f52a25f545 100644
---- a/drivers/net/wireless/realtek/rtw89/core.c
-+++ b/drivers/net/wireless/realtek/rtw89/core.c
-@@ -1534,9 +1534,14 @@ static bool rtw89_core_txq_agg_wait(struct rtw89_dev *rtwdev,
- {
- 	struct rtw89_txq *rtwtxq = (struct rtw89_txq *)txq->drv_priv;
- 	struct ieee80211_sta *sta = txq->sta;
--	struct rtw89_sta *rtwsta = (struct rtw89_sta *)sta->drv_priv;
-+	struct rtw89_sta *rtwsta;
- 
--	if (!sta || rtwsta->max_agg_wait <= 0)
-+	if (!sta)
-+		return false;
-+	rtwsta = (struct rtw89_sta *)sta->drv_priv;
-+	if (!rtwsta)
-+		return false;
-+	if (rtwsta->max_agg_wait <= 0)
- 		return false;
- 
- 	if (rtwdev->stats.tx_tfc_lv <= RTW89_TFC_MID)
 -- 
-2.32.0
+Thanks,
+
+David / dhildenb
 
