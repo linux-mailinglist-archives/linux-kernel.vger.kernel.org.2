@@ -2,108 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57B6642FDD8
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 00:08:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5239742FDDA
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 00:08:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243236AbhJOWJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 18:09:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48270 "EHLO
+        id S243247AbhJOWJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 18:09:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238929AbhJOWJX (ORCPT
+        with ESMTP id S238929AbhJOWJb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 18:09:23 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60A27C061570
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 15:07:16 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id a25so43356145edx.8
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 15:07:16 -0700 (PDT)
+        Fri, 15 Oct 2021 18:09:31 -0400
+Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47ACBC061762;
+        Fri, 15 Oct 2021 15:07:24 -0700 (PDT)
+Received: by mail-oo1-xc2b.google.com with SMTP id o26-20020a4abe9a000000b002b74bffdef0so1964247oop.12;
+        Fri, 15 Oct 2021 15:07:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KEPuILzn8A/tb4FgOT0nL/Q0aVprlx+TzeMfH0xSkng=;
-        b=ItI+9yo9glXHT4IvBd+1RhAfsc5PnfbvkeLAGL38PcdKsXZ0kscSOA0bux1h24L5AJ
-         R9R923qh5I98RpB26cp7oC8SgLgt1VkEEMJ9v5mrRWLB1BeDwW6nscU9ilENcIYSxyFR
-         l2TYYmwAaRLibcHsp/u7Xxl6vz6eI4BCJROzsYU+NAe8Dwf/SOSko4OM57bipfymsKl7
-         8LHRUcAlVr/YJb0tQpfu1BQjLPZM9X+9chhaob3Um5k9LGik3zZIiHquzNUWrpSIxi9o
-         fYAHJ4eVoB+YkbDPLh5p/XlwO8l6U1zuZXxM05N13qkTxXFg0p1oGGvGUDgxLspsPxLx
-         EwZw==
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=eS8nHuHriNS5l6IN8PTWxa/Qc+6xmGafmB+qixDPI9s=;
+        b=lJBJueFJOwJVKTCIolHk+n0wLeAROAduNFCVAOIHE4Qce8d5ZR/D3NeRhzGlsXauav
+         TpEG4flMkndzhX9mIbayK9G7OyiTxPPWWUkSAW7myWE0XFPX1jfuf/SNH9rbQDb53b1J
+         5s/TG4sOdWM0IhlQz4RhhGEJLQlTKO2Qp55VcVQlQxLGUOiciePIyerKlX5uI/oKXTfX
+         ZsuwpALni/vapd/fvpdwDp+NC59uUMFYsia8gBJ8Aa+oMidz0aY47awv10ZOw3OEMvzF
+         /ioqR+PTtAPQsa24YE2ipxRSXkqIyO2fG8nDShphXxsniBmlZnO1ScrNUYYv8ZvOZ9P6
+         oMpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KEPuILzn8A/tb4FgOT0nL/Q0aVprlx+TzeMfH0xSkng=;
-        b=yTfhMyVtQ2FjWijaX0CiXMIbnlPmQisUJf9WbMGmvQqRZOAyVQUx7Q6PyHtZxMlugj
-         zHCK5Ykgg96QdnPjIFvck6Ua9JcBLpsRh+34I+kCUqpVxggP/tH2oSTVgdR5GKK66l2x
-         Tj1F/9gFgY3NhqD3w4rcbQ8aa1rjUsIWSSAvCM8WejH4h8HXxLRZPimBfJ7VXHcfoBNs
-         5tFvpqlnkk7QsMPlitdFmoep4mquWT8WevqA6925SDjWzM6T3P+jQXlnGm4NFf5WKPP2
-         k+4aZ1i3zqk/QW38jbMwSY+sGtVd7GhAabOEjRAgeqOIqyr5CQtCTZ+mLI+DB/XAsi+e
-         gPKg==
-X-Gm-Message-State: AOAM531vslNUWXO+/ERxpEOqJLyLmB8IG9AzsHYv0dacDeFIhD3+m7jV
-        /288Ue7Mg7bA8IqRSj+TWcx3edEIQCo0YwpANt2od1kX89E=
-X-Google-Smtp-Source: ABdhPJz1ai8dR1OFBDh7IzSW9u4hxzvcUqM2tgq5qQyCsHsN1/wnXC4Qz2Hcy2NMTPIAjsBrcoY7rEAFdcOFm9FB9KQ=
-X-Received: by 2002:aa7:cb41:: with SMTP id w1mr21546574edt.327.1634335634903;
- Fri, 15 Oct 2021 15:07:14 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=eS8nHuHriNS5l6IN8PTWxa/Qc+6xmGafmB+qixDPI9s=;
+        b=jS1Upq55pPAFHF30eGcy3O6xBH0enZXy5hcgtx1l0+VKnlRtIQKsEzzpOG9Z6Dh6pj
+         kgBZs5SeH9cUxXlZEh4R7sZsYEi6Fr1Wn6dRX27EHdF/sg38cAkDSHvZdrVoZQ7wWGnV
+         Xa2Jcvy0UGSD9XJ4i8gS/DT3C1wpy51rEBMlOcxBvc6lCPCNgFYcJP9zG0ov2nurw69F
+         LSwYMwvSrsrFcIcn+kVXIZq6N7r2dI7fmFS9chtj0ZHACc64T34wyVjZTnXyFXm891Hr
+         zd02nOkOmxRqBdUWdDbKeNXw6L3QfFmx/4so4s4hkNUKK/LKP30KGW90XaZGooMICQ+L
+         RAPw==
+X-Gm-Message-State: AOAM533bqstkLqDRuebo749+I5DXzV6YkVameWbeExKPrE2GxItWWXoc
+        /ziKBeISX24Kr05u7BA4AWE=
+X-Google-Smtp-Source: ABdhPJx5E6UbozI8sMmBF5j329D5SHJ8hlb5KPUJ1JNj48+hxWSXjOjIJYbk2EhL9n0TAR0alsmrtg==
+X-Received: by 2002:a4a:a68b:: with SMTP id f11mr11077512oom.16.1634335643667;
+        Fri, 15 Oct 2021 15:07:23 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id c9sm1440352otn.77.2021.10.15.15.07.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Oct 2021 15:07:23 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Fri, 15 Oct 2021 15:07:21 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.10 00/22] 5.10.74-rc1 review
+Message-ID: <20211015220721.GE1480361@roeck-us.net>
+References: <20211014145207.979449962@linuxfoundation.org>
 MIME-Version: 1.0
-References: <20211015141107.2430800-1-narmstrong@baylibre.com> <20211015141107.2430800-5-narmstrong@baylibre.com>
-In-Reply-To: <20211015141107.2430800-5-narmstrong@baylibre.com>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Sat, 16 Oct 2021 00:07:04 +0200
-Message-ID: <CAFBinCB_Z+errWL4C-K3WrPu2B7gxr3NRFsF3_Xoy48XDsOb-A@mail.gmail.com>
-Subject: Re: [PATCH v2 4/6] drm/meson: encoder_hdmi: switch to bridge DRM_BRIDGE_ATTACH_NO_CONNECTOR
-To:     Neil Armstrong <narmstrong@baylibre.com>
-Cc:     daniel@ffwll.ch, Laurent.pinchart@ideasonboard.com,
-        sam@ravnborg.org, dri-devel@lists.freedesktop.org,
-        linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211014145207.979449962@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Neil,
+On Thu, Oct 14, 2021 at 04:54:06PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.74 release.
+> There are 22 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sat, 16 Oct 2021 14:51:59 +0000.
+> Anything received after that time might be too late.
+> 
 
-On Fri, Oct 15, 2021 at 4:11 PM Neil Armstrong <narmstrong@baylibre.com> wrote:
->
-> This implements the necessary change to no more use the embedded
-> connector in dw-hdmi and use the dedicated bridge connector driver
-> by passing DRM_BRIDGE_ATTACH_NO_CONNECTOR to the bridge attach call.
->
-> The necessary connector properties are added to handle the same
-> functionalities as the embedded dw-hdmi connector, i.e. the HDR
-> metadata, the CEC notifier & other flags.
->
-> The dw-hdmi output_port is set to 1 in order to look for a connector
-> next bridge in order to get DRM_BRIDGE_ATTACH_NO_CONNECTOR working.
->
-> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
-> Acked-by: Sam Ravnborg <sam@ravnborg.org>
-another great piece which helps a lot with HDMI support for the 32-bit SoCs!
-I have one question below - but regardless of the answer there this gets my:
-Acked-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Build results:
+	total: 159 pass: 159 fail: 0
+Qemu test results:
+	total: 472 pass: 472 fail: 0
 
-[...]
-> +       pdev = of_find_device_by_node(remote);
-I am wondering if we should use something like:
-    encoder_hdmi->cec_notifier_pdev
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-> +       if (pdev) {
-> +               struct cec_connector_info conn_info;
-> +               struct cec_notifier *notifier;
-> +
-> +               cec_fill_conn_info_from_drm(&conn_info, meson_encoder_hdmi->connector);
-> +
-> +               notifier = cec_notifier_conn_register(&pdev->dev, NULL, &conn_info);
-> +               if (!notifier)
-> +                       return -ENOMEM;
-> +
-> +               meson_encoder_hdmi->cec_notifier = notifier;
-> +       }
-and then move this logic to meson_encoder_hdmi_attach()
-This would be important if .detach() and .attach() can be called
-multiple times (for example during suspend and resume). But I am not
-sure if that's a supported use-case.
-
-
-Best regards,
-Martin
+Guenter
