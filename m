@@ -2,99 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9180242F809
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 18:23:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25D2B42F80B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 18:23:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241260AbhJOQZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 12:25:11 -0400
-Received: from mga11.intel.com ([192.55.52.93]:5041 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241225AbhJOQZJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 12:25:09 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10138"; a="225406966"
-X-IronPort-AV: E=Sophos;i="5.85,376,1624345200"; 
-   d="scan'208";a="225406966"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2021 09:23:02 -0700
-X-IronPort-AV: E=Sophos;i="5.85,376,1624345200"; 
-   d="scan'208";a="492623169"
-Received: from liminghu-mobl.ccr.corp.intel.com (HELO [10.212.23.213]) ([10.212.23.213])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2021 09:23:01 -0700
-Subject: Re: [RFC PATCH v3 05/13] ASoC: soc-pcm: align BE 'atomicity' with
- that of the FE
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     alsa-devel@alsa-project.org,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Sameer Pujar <spujar@nvidia.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Takashi Iwai <tiwai@suse.com>, vkoul@kernel.org,
-        broonie@kernel.org, Gyeongtaek Lee <gt82.lee@samsung.com>,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-References: <20211013143050.244444-1-pierre-louis.bossart@linux.intel.com>
- <20211013143050.244444-6-pierre-louis.bossart@linux.intel.com>
- <2847a6d1-d97f-4161-c8b6-03672cf6645c@nvidia.com>
- <s5hmtnavisi.wl-tiwai@suse.de>
- <e2a79095-b8ce-9dd4-3e6d-00f8dda99f30@linux.intel.com>
- <s5h1r4muwlj.wl-tiwai@suse.de>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <8aa4fa07-2b55-3927-f482-c2fd2b01a22e@linux.intel.com>
-Date:   Fri, 15 Oct 2021 11:22:58 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
+        id S241272AbhJOQZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 12:25:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50577 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241257AbhJOQZw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 12:25:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634315024;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0dUjwksIDHaSNxgE7CPJrIi+Tw+7V2d+HBzHTp7KGdE=;
+        b=h8+1yD/xsr41dZ4or3X7sFAVKEg5dz+V2B1DZv/RhFnL4ebyetKyC7RoQWbweGf1h5wvNr
+        WVALWZSoDGJSnFFoX/x5Wi7E4Q3+3t7a2wGBTav+COO7xbhWqa2HMCXb//qNbmtHwpmQNn
+        I84LNUiEyqcfkwhhKzPzgTOxWF1KmRc=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-355-gjbTLLJJNhGYer1HZdTzxQ-1; Fri, 15 Oct 2021 12:23:43 -0400
+X-MC-Unique: gjbTLLJJNhGYer1HZdTzxQ-1
+Received: by mail-ed1-f70.google.com with SMTP id c30-20020a50f61e000000b003daf3955d5aso8722050edn.4
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 09:23:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=0dUjwksIDHaSNxgE7CPJrIi+Tw+7V2d+HBzHTp7KGdE=;
+        b=qAfbtU+xdl7+MBhpAp0OHVVzHXNGAe5ljf7Onl4lcOW6tEXed5OkRDjeH4gHrW15N/
+         jcNsq5QVhRXsF3+sBosp3ak2lAPk7kGQSFeNWM1q3ET2dV/6UIvO0Nw82ezRJeCIjGuy
+         HoOMQaQyhDVeJWCKFFN0bs2Ab1V4SO9l3nC/jrYQs2iJYlRZVH/QgYDir5gjD4P3jA2Y
+         uHutYJGLKeb0CytreyPpDeMRTeqt/IByLCSI+s3JNcVH6pkIcEKINsPkS5g8pZQZrmc0
+         gU7o+P884zSVshnYNxe3rNyGhgrRAhUO0FQ9S82z4rN3RjL4zV4r4XJfotY8KB+Eo8u0
+         tUFw==
+X-Gm-Message-State: AOAM5308/5CZb0io8Vm7xltPrjbBRi0K3Dpqk6a1EX5qgA+mX0hfDQCx
+        OJeFg7FoGcUo8u7bcu8a4+K2L9ubnVjnzgA2T+GDu4mrSnhCJ+6JEh0BguVj8ShHCNpaskuybGy
+        /rUJdvKRTIUbcYx14CiTKYedb
+X-Received: by 2002:a17:906:3990:: with SMTP id h16mr7584876eje.47.1634315021904;
+        Fri, 15 Oct 2021 09:23:41 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzsQGA+8BsCmr7SQSB0VxlYyCNedYLjMfVkD5Via97XqRMdShpt4MdstGB3XKIGMWZfy2B2uw==
+X-Received: by 2002:a17:906:3990:: with SMTP id h16mr7584844eje.47.1634315021664;
+        Fri, 15 Oct 2021 09:23:41 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id d14sm4480865ejd.92.2021.10.15.09.23.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Oct 2021 09:23:41 -0700 (PDT)
+Message-ID: <5faa7e49-9eb6-a075-982a-aa7947a5a3d6@redhat.com>
+Date:   Fri, 15 Oct 2021 18:23:40 +0200
 MIME-Version: 1.0
-In-Reply-To: <s5h1r4muwlj.wl-tiwai@suse.de>
-Content-Type: text/plain; charset=windows-1252
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH 0/2] KVM: x86: Fix and cleanup for recent AVIC changes
 Content-Language: en-US
+To:     Sean Christopherson <seanjc@google.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211009010135.4031460-1-seanjc@google.com>
+ <9e9e91149ab4fa114543b69eaf493f84d2f33ce2.camel@redhat.com>
+ <YWRJwZF1toUuyBdC@google.com> <YWRtHmAUaKcbWEzH@google.com>
+ <ebf038b7b242dd19aba1e4adb6f4ef2701c53748.camel@redhat.com>
+ <YWmpKTk/7MOCzm15@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <YWmpKTk/7MOCzm15@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-> The FE stream locks are necessary only two points: at adding and
-> deleting the BE in the link.  We used dpcm_lock in other places, but
-> those are superfluous or would make problem if converted to a FE
-> stream lock.
-
-I must be missing a fundamental concept here - possibly a set of concepts...
-
-It is my understanding that the FE-BE connection can be updated
-dynamically without any relationship to the usual ALSA steps, e.g. as a
-result of a control being changed by a user.
-
-So if you only protect the addition/removal, isn't there a case where
-the for_each_dpcm_be() loop would either miss a BE or point to an
-invalid one?
-
-In other words, don't we need the *same* lock to be used
-a) before changing and
-b) walking through the list?
-
-I also don't get what would happen if the dpcm_lock was converted to an
-FE stream lock. It works fine in my tests, so if there's limitation I
-didn't see it.
-
->>> In addition, a lock around dpcm_show_state() might be needed to be
->>> replaced with card->pcm_mutex, and we may need to revisit whether all
->>> other paths take card->pcm_mutex.
+On 15/10/21 18:15, Sean Christopherson wrote:
 >>
->> What happens if we show the state while a trigger happens? That's my
->> main concern with using two separate locks (pcm_mutex and FE stream
->> lock) to protect the same list, there are still windows of time where
->> the list is not protected.
+>>                                          - now vCPU1 finally starts running the page fault code.
+>>
+>>                                          - vCPU1 AVIC is still enabled
+>>                                            (because vCPU1 never handled KVM_REQ_APICV_UPDATE),
+>>                                            so the page fault code will populate the SPTE.
+> But vCPU1 won't install the SPTE if it loses the race to acquire mmu_lock, because
+> kvm_zap_gfn_range() bumps the notifier sequence and so vCPU1 will retry the fault.
+> If vCPU1 wins the race, i.e. sees the same sequence number, then the zap is
+> guaranteed to find the newly-installed SPTE.
 > 
-> With the proper use of mutex, the list itself is protected.
-> If we need to protect the concurrent access to each BE in the show
-> method, an additional BE lock is needed in that part.  But that's a
-> subtle issue, as the link traversal itself is protected by the mutex.
+> And IMO, retrying is the desired behavior.  Installing a SPTE based on the global
+> state works, but it's all kinds of weird to knowingly take an action the directly
+> contradicts the current vCPU state.
 
-If I look at your patch2, dpcm_be_disconnect() protects the list removal
-with the fe stream lock, but the show state is protected by both the
-pcm_mutex and the fe stream lock.
+I think both of you are correct. :)
 
-I have not been able to figure out when you need
-a) the pcm_mutex only
-b) the fe stream lock only
-c) both pcm_mutex and fe stream lock
+Installing a SPTE based on global state is weird because this is a vCPU 
+action; installing it based on vCPU state is weird because it is 
+knowingly out of date.  I tend to be more on Maxim's side, but that may 
+be simply because I have reviewed the code earlier and the various 
+interleavings are still somewhere in my brain.
+
+It certainly deserves a comment though.  The behavior wrt the sequence 
+number is particularly important if you use the vCPU state, but it's 
+worth pointing out even with the current code; this exchange shows that 
+it can be confusing.
+
+Paolo
 
