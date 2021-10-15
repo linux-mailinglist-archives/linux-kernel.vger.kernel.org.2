@@ -2,95 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1EB042E5A5
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 02:57:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF9B642E5A8
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 02:59:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234714AbhJOA7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 20:59:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37198 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234745AbhJOA7f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 20:59:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C6E8461040;
-        Fri, 15 Oct 2021 00:57:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634259449;
-        bh=WFqaaGetsrU0F1LXNipYaIrryMD5ZYTRfecIsz8rLq8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=snUtZ9excOZNnlFFMRUeJVIxjWJFru1Xvrjr8xypife31DULY3UMsHv/mzQYLm0MG
-         c9DxNx3iz2b741uRBsnAMYRZ+n1uDj8mCPhiw5S4bGh+diRuhvtguhDaKgMyzVNPZJ
-         JMqzlqoOm0y4OKUSb6bYHxmoZL/bAftajHT41L60WYI5G2r0aIP/0RT10ferHe+p3u
-         fFaj0Te7y9rhfifV+KsydswLpAWBKsvPSTk4yFR929qVA6SrgPJ06LFpK9R2i6QtXE
-         39BAhklqvLUNInES41D5KZmnAg0pRVkCWRpIrusVtvG31ZOFmiyzB57FODAtapjC4w
-         k1qCMqgGYq9Tg==
-Date:   Thu, 14 Oct 2021 17:57:29 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Rustam Kovhaev <rkovhaev@gmail.com>
-Cc:     Vlastimil Babka <vbabka@suse.cz>,
-        David Rientjes <rientjes@google.com>,
-        Dave Chinner <david@fromorbit.com>, linux-xfs@vger.kernel.org,
-        cl@linux.com, penberg@kernel.org, iamjoonsoo.kim@lge.com,
-        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, gregkh@linuxfoundation.org,
-        Al Viro <viro@zeniv.linux.org.uk>, dvyukov@google.com
-Subject: Re: [PATCH] xfs: use kmem_cache_free() for kmem_cache objects
-Message-ID: <20211015005729.GD24333@magnolia>
-References: <YVYGcLbu/aDKXkag@nuc10>
- <a9b3cd91-8ee6-a654-b2a8-00c3efb69559@suse.cz>
- <YVZXF3mbaW+Pe+Ji@nuc10>
- <1e0df91-556e-cee5-76f7-285d28fe31@google.com>
- <20211012204320.GP24307@magnolia>
- <20211012204345.GQ24307@magnolia>
- <9db5d16a-2999-07a4-c49d-7417601f834f@suse.cz>
- <20211012232255.GS24307@magnolia>
- <3928ef69-eaac-241c-eb32-d2dd2eab9384@suse.cz>
- <YWcPyYk0Rlyvl9a9@nuc10>
+        id S230121AbhJOBBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 21:01:46 -0400
+Received: from esa1.hgst.iphmx.com ([68.232.141.245]:17432 "EHLO
+        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229912AbhJOBBp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 21:01:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1634259581; x=1665795581;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=8JFpecjHXcYkC+i4o+EU7JFbGNhc8aM0hmbgN604w7Y=;
+  b=eyf1L6rh4vf7xsUaTHNfv1ZAiSQQZJtHwZJmPUZYy6xQTxpZ+qKNWTL/
+   3Wk23P1aELlY37AEpXNNezMdLNH2qe6BGBl+Nr/LXK2ZJp4aV1PWE6QgF
+   lMJod4TleVQd5uUvw36ECRWGaX3MrWLxkSR2XEpmN+wuo6MtSe/F6SDFo
+   BDZTDRDCuY1T869g7piVcqLXlrmNv2WQdGlsein6a+rNisEbaVxwWyKt3
+   4EnL02yYW6l0s5eMuT4RL8OAZ+LU16x8xJ7xwJrYUuuWVNOrFMC1atDN6
+   GDIMssHFkt+XXVtj2o/ZF02Zq+2L5uPFS3fvUi1n7cVxExWLI09uHHimt
+   g==;
+X-IronPort-AV: E=Sophos;i="5.85,374,1624291200"; 
+   d="scan'208";a="294632332"
+Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 15 Oct 2021 08:59:41 +0800
+IronPort-SDR: JcDV9JH3UVRw7LwLwtOfRg1e7XfcOcj6r38lJtBbyLjKyTOTaX3VuBMwVslbO66+4v2M5Tf3bs
+ AzgCNBOTreiA0n2a4So2sY4X4lJwArchBzdmfeArIlr4c5R6nmT9k+ry/o/BVpLifTdKtCffVh
+ TXfobo6q5oqHbzfRDrJS98B5AZckESr8VXr6H36WMbkiFioCcj+2BzOPD5Kv0TmcmdOFQWWoZr
+ Husy3nhpsxOMgP2q0p5oN0bBOjqfJSBNUIpdaHaMf5KoncVKn403MC233N0gwUk6w+eheqsB5g
+ KhMu/8glR82Gra/c3A7g8nAX
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2021 17:33:51 -0700
+IronPort-SDR: +m0qknXAcnQobyw4clInTVXdbOE7u3un/3Ac4/lXPxK7N3z2HVL7KFAAbrPd9c0CnXju2ktCvM
+ aQnYegrusLovT1yS1tXtJz5tB2CLpA2OIRRMEBU98zwNxVJpKlbKH3R6PXkPFbcs8hB9aVqNP3
+ fgJ8dRncouCnVUa01H8XPSW1PFLBP8lfYqFDKnkIjA6bza8IrO0pJIF1bjO2P7CP6RcwO5N4yu
+ uLCfdE8tq0TTpeLzKfFITrBKnnrhexbHFIQehtRggDAc/llXJGYeN5v7DbResCMffnURKwHGT5
+ NUc=
+WDCIronportException: Internal
+Received: from usg-ed-osssrv.wdc.com ([10.3.10.180])
+  by uls-op-cesaip01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2021 17:59:39 -0700
+Received: from usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1])
+        by usg-ed-osssrv.wdc.com (Postfix) with ESMTP id 4HVnwq4HpMz1RvlC
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 17:59:39 -0700 (PDT)
+Authentication-Results: usg-ed-osssrv.wdc.com (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)"
+        header.d=opensource.wdc.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=
+        opensource.wdc.com; h=content-transfer-encoding:mime-version
+        :x-mailer:message-id:date:subject:to:from; s=dkim; t=1634259579;
+         x=1636851580; bh=8JFpecjHXcYkC+i4o+EU7JFbGNhc8aM0hmbgN604w7Y=; b=
+        r/WyyGuf8uEiD2lnz2Q3r3p5PbqS77bGtE9lOqjAZ2UQC76kXihztc2XQTo1JvmK
+        GWXBEMtlXpsapBObO3x6co7YgXJBPUZeUJ9RMnG9WHohMXIetfqtk6Av75dvM9LF
+        XgZL0QyJvXpEkjWOemuK6gidYujYQhe1lwWmDrPLWn+ZNw4tB9bYcvKDLsDssj5e
+        dLmvpEI8hzuYeoVcPXYU97yZJy8kEVBTvRdaVQ7+JXeGtO7DgjQGPTUiOxz36G+T
+        46LDB38wDAn1PnBZbgHpX0cWmuPzveTt9NFDF3cP5Mqn4WoLvmcGeQ5A5grLMFvN
+        19dhlWjcAD3WISrU4CqtyQ==
+X-Virus-Scanned: amavisd-new at usg-ed-osssrv.wdc.com
+Received: from usg-ed-osssrv.wdc.com ([127.0.0.1])
+        by usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id sVw9CH8XuV1o for <linux-kernel@vger.kernel.org>;
+        Thu, 14 Oct 2021 17:59:39 -0700 (PDT)
+Received: from toolbox.alistair23.me (unknown [10.225.165.37])
+        by usg-ed-osssrv.wdc.com (Postfix) with ESMTPSA id 4HVnwl3kp8z1RvTg;
+        Thu, 14 Oct 2021 17:59:34 -0700 (PDT)
+From:   Alistair Francis <alistair.francis@opensource.wdc.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     alistair23@gmail.com, arnd@arndb.de,
+        Alistair Francis <alistair.francis@wdc.com>
+Subject: [PATCH] uapi: futex: Add a futex syscall
+Date:   Fri, 15 Oct 2021 10:59:23 +1000
+Message-Id: <20211015005923.2659140-1-alistair.francis@opensource.wdc.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YWcPyYk0Rlyvl9a9@nuc10>
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 09:56:41AM -0700, Rustam Kovhaev wrote:
-> On Wed, Oct 13, 2021 at 09:38:31AM +0200, Vlastimil Babka wrote:
-> > On 10/13/21 01:22, Darrick J. Wong wrote:
-> > > On Tue, Oct 12, 2021 at 11:32:25PM +0200, Vlastimil Babka wrote:
-> > >> On 10/12/2021 10:43 PM, Darrick J. Wong wrote:
-> > >> > On Tue, Oct 12, 2021 at 01:43:20PM -0700, Darrick J. Wong wrote:
-> > >> >> On Sun, Oct 03, 2021 at 06:07:20PM -0700, David Rientjes wrote:
-> > >> >>
-> > >> >> I audited the entire xfs (kernel) codebase and didn't find any other
-> > >> >> usage errors.  Thanks for the patch; I'll apply it to for-next.
-> > >> 
-> > >> Which patch, the one that started this thread and uses kmem_cache_free() instead
-> > >> of kfree()? I thought we said it's not the best way?
-> > > 
-> > > It's probably better to fix slob to be able to tell that a kmem_free'd
-> > > object actually belongs to a cache and should get freed that way, just
-> > > like its larger sl[ua]b cousins.
-> > 
-> > Agreed. Rustam, do you still plan to do that?
-> 
-> Yes, I do, thank you.
+From: Alistair Francis <alistair.francis@wdc.com>
 
-Note that I left out the parts of the patch that changed mm/slob.c
-because I didn't think that was appropriate for a patch titled 'xfs:'.
+This commit adds two futex syscall wrappers that are exposed to
+userspace.
 
-> 
-> > 
-> > > However, even if that does come to pass, anybody /else/ who wants to
-> > > start(?) using XFS on a SLOB system will need this patch to fix the
-> > > minor papercut.  Now that I've checked the rest of the codebase, I don't
-> > > find it reasonable to make XFS mutually exclusive with SLOB over two
-> > > instances of slab cache misuse.  Hence the RVB. :)
-> > 
-> > Ok. I was just wondering because Dave's first reply was that actually you'll
-> > need to expand the use of kfree() instead of kmem_cache_free().
+Neither the kernel or glibc currently expose a futex wrapper, so
+userspace is left performing raw syscalls. This has mostly been becuase
+the overloading of one of the arguments makes it impossible to provide a
+single type safe function.
 
-I look forward to doing this, but since XFS is a downstream consumer of
-the kmem apis, we'll have to wait until the slob changes land to do
-that.
+Until recently the single syscall has worked fine. With the introduction
+of a 64-bit time_t futex call on 32-bit architectures, this has become
+more complex. The logic of handling the two possible futex syscalls is
+complex and often implemented incorrectly.
 
---D
+This patch adds two futux syscall functions that correctly handle the
+time_t complexity for userspace.
+
+This idea is based on previous discussions: https://lkml.org/lkml/2021/9/=
+21/143
+
+Signed-off-by: Alistair Francis <alistair.francis@wdc.com>
+---
+ include/uapi/linux/futex_syscall.h | 79 ++++++++++++++++++++++++++++++
+ 1 file changed, 79 insertions(+)
+ create mode 100644 include/uapi/linux/futex_syscall.h
+
+diff --git a/include/uapi/linux/futex_syscall.h b/include/uapi/linux/fute=
+x_syscall.h
+new file mode 100644
+index 0000000000000..039d371346159
+--- /dev/null
++++ b/include/uapi/linux/futex_syscall.h
+@@ -0,0 +1,79 @@
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++#ifndef _UAPI_LINUX_FUTEX_SYSCALL_H
++#define _UAPI_LINUX_FUTEX_SYSCALL_H
++
++#include <errno.h>
++#include <linux/types.h>
++#include <linux/time_types.h>
++
++/**
++ * futex_syscall_timeout() - __NR_futex/__NR_futex_time64 syscall wrappe=
+r
++ * @uaddr:  address of first futex
++ * @op:   futex op code
++ * @val:  typically expected value of uaddr, but varies by op
++ * @timeout:  an absolute struct timespec
++ * @uaddr2: address of second futex for some ops
++ * @val3: varies by op
++ */
++static inline int
++futex_syscall_timeout(volatile u_int32_t *uaddr, int op, u_int32_t val,
++		      struct timespec *timeout, volatile u_int32_t *uaddr2, int val3)
++{
++#if defined(__NR_futex_time64)
++	if (sizeof(*timeout) !=3D sizeof(struct __kernel_old_timespec)) {
++		int ret =3D  syscall(__NR_futex_time64, uaddr, op, val, timeout, uaddr=
+2, val3);
++
++		if (ret =3D=3D 0 || errno !=3D ENOSYS)
++			return ret;
++	}
++#endif
++
++#if defined(__NR_futex)
++	if (sizeof(*timeout) =3D=3D sizeof(struct __kernel_old_timespec))
++		return syscall(__NR_futex, uaddr, op, val, timeout, uaddr2, val3);
++
++	if (timeout && timeout->tv_sec =3D=3D (long)timeout->tv_sec) {
++		struct __kernel_old_timespec ts32;
++
++		ts32.tv_sec =3D (__kernel_long_t) timeout->tv_sec;
++		ts32.tv_nsec =3D (__kernel_long_t) timeout->tv_nsec;
++
++		return syscall(__NR_futex, uaddr, op, val, ts32, uaddr2, val3);
++	} else if (!timeout) {
++		return syscall(__NR_futex, uaddr, op, val, NULL, uaddr2, val3);
++	}
++#endif
++
++	errno =3D ENOSYS;
++	return -1;
++}
++
++/**
++ * futex_syscall_nr_requeue() - __NR_futex/__NR_futex_time64 syscall wra=
+pper
++ * @uaddr:  address of first futex
++ * @op:   futex op code
++ * @val:  typically expected value of uaddr, but varies by op
++ * @nr_requeue:  an op specific meaning
++ * @uaddr2: address of second futex for some ops
++ * @val3: varies by op
++ */
++static inline int
++futex_syscall_nr_requeue(volatile u_int32_t *uaddr, int op, u_int32_t va=
+l,
++			 u_int32_t nr_requeue, volatile u_int32_t *uaddr2, int val3)
++{
++#if defined(__NR_futex_time64)
++	int ret =3D  syscall(__NR_futex_time64, uaddr, op, val, nr_requeue, uad=
+dr2, val3);
++
++	if (ret =3D=3D 0 || errno !=3D ENOSYS)
++		return ret;
++#endif
++
++#if defined(__NR_futex)
++	return syscall(__NR_futex, uaddr, op, val, nr_requeue, uaddr2, val3);
++#endif
++
++	errno =3D ENOSYS;
++	return -1;
++}
++
++#endif /* _UAPI_LINUX_FUTEX_SYSCALL_H */
+--=20
+2.31.1
+
