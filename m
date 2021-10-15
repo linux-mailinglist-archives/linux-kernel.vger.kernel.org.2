@@ -2,117 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADE2042ED64
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 11:17:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05F2C42ED67
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 11:17:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237127AbhJOJTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 05:19:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23151 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235937AbhJOJTe (ORCPT
+        id S237184AbhJOJT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 05:19:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237140AbhJOJT4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 05:19:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634289448;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1KdI1b95Ma9fj82jtMmONBjcr0AQBV2wvVKzB96XPbs=;
-        b=PsFCgDe5pmbb1YgrnLQWWvP5Uko7z0mIlLoOF7O9RUOmOU+EtPCPilwkYC6+ndIMU2ZZuN
-        rGg6l9xC3QCZxSIVmPFI5zEUwQunhAHf0OJdBUZ0Ae6x4AUjyPB5ocECJ7R2RA/shbpCCJ
-        XYI69WLQ76Y8OsPdMPgSf9HhemJsf8U=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-50-vRhSAf23MFmg3xIvS89DNA-1; Fri, 15 Oct 2021 05:17:26 -0400
-X-MC-Unique: vRhSAf23MFmg3xIvS89DNA-1
-Received: by mail-wm1-f72.google.com with SMTP id p3-20020a05600c204300b0030daa138dfeso460729wmg.9
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 02:17:25 -0700 (PDT)
+        Fri, 15 Oct 2021 05:19:56 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB917C061753
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 02:17:49 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id i20so34649025edj.10
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 02:17:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=monstr-eu.20210112.gappssmtp.com; s=20210112;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+VMRnA7HC88DlpNpC3CNIQMXTLRNrlmvCLC0hTrELVM=;
+        b=OBH8KAuhrWlDFQYqW2OVpe/t/9f7uJUBC8qZlup9bg4CXkuH7z9Mq7JlRVh8Rpw8/o
+         xmj5h4iaRn6qN+QNpiMed7w6X6CGTcw1woDIY59URg9r/mSl9hIapkSxnYzVo0txvKm4
+         zWs9WprTDIq5pSRwd6DIucwyGexMsmo73nPHixb+qav5qGP5NGXiq9hJTtcoXfE1SFJD
+         SrdWL2Q65uY6H83ON3f0O0OWL8ppPCyzZKBTHqjowucszF9agGPlC7COaXfkINymuBIO
+         6gDKw8vGRyB7z0GFZCF0koqqd7yVqBNIslymiid1IvRv827Ti14JBmwwwaGvdTx2d7fa
+         7VWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=1KdI1b95Ma9fj82jtMmONBjcr0AQBV2wvVKzB96XPbs=;
-        b=rkXjq+Ys6HmRX5ve6l5hITb9D6ndIiuOoxaHVFtR+bul/Bh76+jeq606/HoKYEzXAw
-         GURrWxYuanbbUNMMMA3iphB1NMM55g6BpnPXJFf5c81bzeySfGgW/1oB67HJIGuxE2Vs
-         2u7IrNfQFdN/z1DHzpN4ySSu0C7Wy54cq5os8FZ/qG0S/0DtmF9RjaInWPLZeK1+JVD+
-         G3dM++jvfyFbw0VGZ2pwP2yosP0ExsKJfUC3S5vliWvXJ7qfGZpgV2Nkg/D5vq1ySCC/
-         NIBvWNI1NnWqdVWBtrNOLlEo+rTJls/wDBAANd7HYto9fvCzs+vuBjfMkPQcw1mBc+dW
-         XItw==
-X-Gm-Message-State: AOAM531HkHl1Y7gCobwMJS2AggeYL0yEb2/rX4h2Mlx+zYS8V8kPzHKk
-        BOvVNo5uBqVSf23xySfKS94Hx51cB6AOX+gBV9KGKoc9o318LdvoXbtJ1v9w/F+HsxwNEDhowSz
-        wPbpl9bXY0oVVdadVrqqIpYEm
-X-Received: by 2002:a7b:c386:: with SMTP id s6mr25302238wmj.183.1634289444897;
-        Fri, 15 Oct 2021 02:17:24 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzHMWc5BlwaRILOSv4LqsRXCXOvU26NnAoPb3/TeCePM3GlKLRXnpPWiu9jHQLYw72aPn5o9w==
-X-Received: by 2002:a7b:c386:: with SMTP id s6mr25302215wmj.183.1634289444691;
-        Fri, 15 Oct 2021 02:17:24 -0700 (PDT)
-Received: from smtpclient.apple ([2a01:e0a:466:71c0:b1f7:fa09:b694:af37])
-        by smtp.gmail.com with ESMTPSA id n12sm4593102wms.27.2021.10.15.02.17.23
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 15 Oct 2021 02:17:23 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
-Subject: Re: [BUG] [5.15] Compilation error in arch/x86/kvm/mmu/spte.h with
- clang-14
-From:   Christophe de Dinechin <cdupontd@redhat.com>
-In-Reply-To: <fb1da4d3-9e3e-4604-2f30-30292f9d13aa@redhat.com>
-Date:   Fri, 15 Oct 2021 11:17:22 +0200
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Jim Mattson <jmattson@google.com>, torvic9@mailbox.org,
-        "vkuznets@redhat.com" <vkuznets@redhat.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "bp@alien8.de" <bp@alien8.de>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <9F0C48F4-A62B-456C-9EBD-DB02026631D1@redhat.com>
-References: <1446878298.170497.1633338512925@office.mailbox.org>
- <b6abc5a3-39ea-b463-9df5-f50bdcb16d08@redhat.com>
- <936688112.157288.1633339838738@office.mailbox.org>
- <c4773ecc-053f-9bc6-03af-5039397a4531@redhat.com>
- <CAKwvOd=rrM4fGdGMkD5+kdA49a6K+JcUiR4K2-go=MMt++ukPA@mail.gmail.com>
- <CALMp9eRzadC50n=d=NFm7osVgKr+=UG7r2cWV2nOCfoPN41vvQ@mail.gmail.com>
- <YWht7v/1RuAiHIvC@archlinux-ax161> <YWh3iBoitI9UNmqV@google.com>
- <CAKwvOdkC7ydAWs+nB3cxEOrbb7uEjiyBWg1nOOBtKqaCh3zhBg@mail.gmail.com>
- <fb1da4d3-9e3e-4604-2f30-30292f9d13aa@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-X-Mailer: Apple Mail (2.3654.120.0.1.13)
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=+VMRnA7HC88DlpNpC3CNIQMXTLRNrlmvCLC0hTrELVM=;
+        b=MeTNrXjS4yNXg0mhbv6gFSwO3M1eIZ6zkIduuI58U15CI258hnXPxsw8NKIasu1yFU
+         11z0fgMmKkVrwiP23EHsEuAflYfo2hRQNwra+gAxtBwIC0g0Ngj5ueLlKxh0UzNxVW0E
+         Rany72jt3mpp+hGj3CU+cEwy3w2HN4jJZjbC0pOAPoaNxAaSmQCGs0qy2RJA9+CAQboS
+         JtbJJZijsxDtFT9pifk/ckIHS3LGduSJHHsBFBiX8INqLI/Wf39rFLlA7oVywphXJd2k
+         CDjJDD71ohpzkdqyG/Et128x3BtTB4GGNKgqqRn5AHS5o/eIPzJoDTLJ1RknmAqcrck/
+         IcOw==
+X-Gm-Message-State: AOAM531v8/kXh4LREfrUSAllKfJYWiqXg+BoKgIjfbfcbY93c16Y850x
+        FeF2H+kJJxU3mP++K82B5bxcbSqdsMDHjA==
+X-Google-Smtp-Source: ABdhPJwgYy+cpJiy9KN3qbY+IYbfp9B6teWAybvgXQMxWUacfG5m7ZFNGhZD67R18rF67hLBbX24Og==
+X-Received: by 2002:a17:906:520b:: with SMTP id g11mr5433292ejm.502.1634289468222;
+        Fri, 15 Oct 2021 02:17:48 -0700 (PDT)
+Received: from localhost ([2a02:768:2307:40d6:f666:9af6:3fed:e53b])
+        by smtp.gmail.com with ESMTPSA id m15sm5532409edd.5.2021.10.15.02.17.47
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 15 Oct 2021 02:17:47 -0700 (PDT)
+Sender: Michal Simek <monstr@monstr.eu>
+From:   Michal Simek <michal.simek@xilinx.com>
+To:     linux-kernel@vger.kernel.org, monstr@monstr.eu,
+        michal.simek@xilinx.com, git@xilinx.com
+Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH] arm64: zynqmp: Fix comment about number of gpio line names
+Date:   Fri, 15 Oct 2021 11:17:46 +0200
+Message-Id: <c3480ba47ac9761903485ebfac127f297053d4da.1634289461.git.michal.simek@xilinx.com>
+X-Mailer: git-send-email 2.33.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+ZynqMP has 174 gpio lines connected to PS controller but DT is describing
+them from 0 to 173 not 174.
 
+Fixes: 7a4c31ee877a ("arm64: zynqmp: Add support for Xilinx Kria SOM board")
+Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+---
 
-> On 14 Oct 2021, at 22:50, Paolo Bonzini <pbonzini@redhat.com> wrote:
->=20
-> On 14/10/21 21:06, Nick Desaulniers wrote:
->>> If we want to fix this, my vote is for casting to an int and =
-updating the comment
->> At the least, I think bitwise operations should only be performed on
->> unsigned types.
->=20
-> This is not a bitwise operation, it's a non-short-circuiting boolean =
-operation.  I'll apply Jim's suggestion.
+ arch/arm64/boot/dts/xilinx/zynqmp-sm-k26-revA.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-What about making it an inline function, which would require evaluation =
-of arguments:
-
-	static __always_inline bool BITWISE_BOOLEAN_OR(bool a, bool b)
-	{
-	    return a || b; // Safe here, because arguments have been =
-evaluated
-	}
-
-Suggesting that because I'm always nervous about casts in macros hiding =
-something that the type  system would otherwise catch.
-
-
-Christophe
->=20
-> Paolo
->=20
+diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-sm-k26-revA.dts b/arch/arm64/boot/dts/xilinx/zynqmp-sm-k26-revA.dts
+index 550b389153e6..bb2602dd2805 100644
+--- a/arch/arm64/boot/dts/xilinx/zynqmp-sm-k26-revA.dts
++++ b/arch/arm64/boot/dts/xilinx/zynqmp-sm-k26-revA.dts
+@@ -285,5 +285,5 @@ &gpio {
+ 			  "", "", "", "", "", /* 155 - 159 */
+ 			  "", "", "", "", "", /* 160 - 164 */
+ 			  "", "", "", "", "", /* 165 - 169 */
+-			  "", "", "", ""; /* 170 - 174 */
++			  "", "", "", ""; /* 170 - 173 */
+ };
+-- 
+2.33.1
 
