@@ -2,129 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B65542FBD3
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 21:14:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C86842FBDB
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 21:17:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242660AbhJOTQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 15:16:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37700 "EHLO
+        id S242525AbhJOTTx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 15:19:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233027AbhJOTQy (ORCPT
+        with ESMTP id S233027AbhJOTTw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 15:16:54 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7211CC061570;
-        Fri, 15 Oct 2021 12:14:47 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id e12so28152829wra.4;
-        Fri, 15 Oct 2021 12:14:47 -0700 (PDT)
+        Fri, 15 Oct 2021 15:19:52 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1A56C061570;
+        Fri, 15 Oct 2021 12:17:45 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id y3so28267653wrl.1;
+        Fri, 15 Oct 2021 12:17:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=Ipq9+EXyzEcuYpTRY9Y+kbIGH9VBg09BZhdAzkrItDs=;
-        b=BaMsZ0P8JjX8c/KxJ4EEt776Nycim34n7F/GGvMD4m/eFCMqRR9Dmh8m14t4LfOCpT
-         2QH3cv3BIXptAbJCDpKNwxqCL1dc/Qctd9kU8fI2OL8jONdzFOBOOauUCq/t+ELn11Y0
-         DHNB1bTA2KgImdvTNZBjh8e/kUETMexHz8MjF2hAUuPNgfNgeRLHjzRC4hRbzqHjFekp
-         NOfjm+4WYJtqylL4fPUHLdusRx87sbkOvJhDoHsT6eRr6CO5XHGF2OTScSaxiRWEICCu
-         Yj3Cx8b1NotgDAyQFcMvYqAX+YQ9jN0u7hKtRlat3JpxqgnZYdXTaQ0RmpVtWK3BQcXF
-         0aSA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Iba2xUxNfqwouiEqt/f6pt++LWM4C+lzC054mKzStIY=;
+        b=mukjM33GmlsZu/FmsHAIYZD8ruHg0OZVMIzOg28+Ka4iXF09QRGc4H7N81+eQ4pz+B
+         x3neLYVfe/9PG4dy9XkhRWCWTeNkHLRfm9LbDVz82oGI6Kk+Jc0tXO3mt6jRpQ4W+6Rm
+         mkCql9Mf0xDYPxUC9VhFzcsbVGS61ty8KsMTsR7snerUhhBp3ApqrzQv6JczE7iThzxA
+         lnTSov5cZLKVgfIrNb/qhqOZbcjAT0EY/fP8ap8Q0idBMy8nxRt1J7cJn7U9/99lE87E
+         1geMNqVq/OSlk5R6dSPeOJXzlgPl0AueD6rFlmhBKN+jdWvS4lYC6KXsr1lrARsmjHyK
+         iBIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=Ipq9+EXyzEcuYpTRY9Y+kbIGH9VBg09BZhdAzkrItDs=;
-        b=dtknBXULTABM2Br1sWkJOaH0FAKZi9gUAzTFBotrd8ageY7UQhbVuo6nDAmBO1/Hk+
-         Wd7uKnDrPtByfcXGyW3ifZ2MPQbBgCylYQVEh4NJaie+xT+WRyUGmrrWSrRygMqzVc+5
-         5ICuG5TlgcbjHfueopb3HXwo/bACRT0vrBQ/EfB7XaryZuc2Wpvq5Ht6wYeu2wTOdBZg
-         QOoo2Oiv8Wuk4Vk4oOaJVVusjrbyKjr2neRD+DQ3QHpbWzjdmEW3OGPSGV4ptG06C3rc
-         iJHcFlH+fmnWzWyFmJs0r2KMvLMnYXC7BQZMqmLhIm3VG7WYBo5jbtzov+vcCrafee6m
-         O6Xw==
-X-Gm-Message-State: AOAM533CnSc6W1EXynbQngAtgB5R3wGJOngcZZ2g9vGE8Pyv7Cqm1F9Z
-        aWRl69EshKoUL/U5z4tMrg==
-X-Google-Smtp-Source: ABdhPJzlSx3ML0KPYsDAoukcZigA6bbc8nXm4srhmSlX/Q2c7HlWx2kZykU6xA2UUQiOP5CXvcJ3Jg==
-X-Received: by 2002:a5d:598a:: with SMTP id n10mr16579781wri.81.1634325286039;
-        Fri, 15 Oct 2021 12:14:46 -0700 (PDT)
-Received: from [192.168.200.23] (ip5b435a69.dynamic.kabel-deutschland.de. [91.67.90.105])
-        by smtp.gmail.com with ESMTPSA id b19sm11512430wmj.9.2021.10.15.12.14.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Oct 2021 12:14:45 -0700 (PDT)
-Subject: Re: [PATCH v1 1/6] clk: divider: Implement and wire up
- .determine_rate by default
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     linux-clk@vger.kernel.org, sboyd@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>,
-        linux-rockchip@lists.infradead.org
-References: <20210702225145.2643303-1-martin.blumenstingl@googlemail.com>
- <20210702225145.2643303-2-martin.blumenstingl@googlemail.com>
- <4eb964ac-4fff-b59d-2660-2f84d8af5901@gmail.com>
- <CAFBinCAVtd8gmcuvGU79-85CqhSU8a3mBCa_jweeZBd59u+amQ@mail.gmail.com>
- <CAFBinCAT-FxcHpt=NCt4g-OfzEUhvxh8TNRcY2hb5kdxna0Uyw@mail.gmail.com>
-From:   Alex Bee <knaerzche@gmail.com>
-Message-ID: <67995168-e0fc-0916-7c34-3efedf4bad00@gmail.com>
-Date:   Fri, 15 Oct 2021 21:14:36 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Iba2xUxNfqwouiEqt/f6pt++LWM4C+lzC054mKzStIY=;
+        b=Y090JtzpH/1BbFVPgoYatGGrwvWbwHFFlfu28ZWSrxRs7LREZQ6f+hPwogifDZr1k/
+         pkaMfhnrFetQqsWbBrH+ZidL8Cxqo4JIDJQsFW3kazEl4mSlhuMXE3RSAPs7ojayhyUf
+         dltpLAes2apLksebg7njGAwfjHUmdANONedVkrjdP+od8qCGAW6vDBoWQgq3ywVI9w2D
+         owe61JdhZ7Kgnlz9bjFxaN3eCGKeFh8N/bURYEaCclyJPprpftB73fhzbNWdQ4piqfuT
+         5tChPSdZkwg5H6wCN8d9OUaMTzDTyFDVx4noxTAfOmdTgPeHT5gd6F0DK8tSD42ogoo3
+         Pyrg==
+X-Gm-Message-State: AOAM5331mYUFB++jOVbmfqRCD8Oo/dM0qiAfs4UdfEo9SaGp4rkn/DXg
+        WKE+J5vZ23n80tfjWrlg21sCZ8XqC3A=
+X-Google-Smtp-Source: ABdhPJwrJLpbGZrxdxIOCO3v3xY3m/TeMbSP2VxtUzhbFOeBVLAHOqGl7wC4toB8Sa7jrQrZc6XIpw==
+X-Received: by 2002:a05:6000:1449:: with SMTP id v9mr16178127wrx.433.1634325464089;
+        Fri, 15 Oct 2021 12:17:44 -0700 (PDT)
+Received: from localhost.localdomain (252.red-83-54-181.dynamicip.rima-tde.net. [83.54.181.252])
+        by smtp.gmail.com with ESMTPSA id z1sm5591513wrt.94.2021.10.15.12.17.42
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 15 Oct 2021 12:17:43 -0700 (PDT)
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+To:     devicetree@vger.kernel.org
+Cc:     robh@kernel.org, john@phrozen.org, neil@brown.name,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] dt-bindings: bus: add palmbus device tree bindings
+Date:   Fri, 15 Oct 2021 21:17:41 +0200
+Message-Id: <20211015191741.12963-1-sergio.paracuellos@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-In-Reply-To: <CAFBinCAT-FxcHpt=NCt4g-OfzEUhvxh8TNRcY2hb5kdxna0Uyw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add device tree bindings for palmbus controller present in all the MIPS
+ralink based SoCs.
 
-Am 14.10.21 um 23:34 schrieb Martin Blumenstingl:
-> On Thu, Oct 14, 2021 at 2:11 PM Martin Blumenstingl
-> <martin.blumenstingl@googlemail.com> wrote:
-> [...]
->>> Reverting this commit makes it work again: Unless there is a quick and
->>> obvious fix for that, I guess this should be done for 5.15 - even if the
->>> real issue is somewhere else.
->> Reverting this patch is fine from the Amlogic SoC point of view.
->> The main goal was to clean up / improve the CCF code.
->> Nothing (that I am aware of) is going to break in Amlogic land if we
->> revert this.
-> Unfortunately only now I realized that reverting this patch would also
-> require reverting the other five patches in this series (since they
-> depend on this one).
-Indeed, that whole series would need have to reverted, which is clear 
-(to me) when looking at the patches.
-> For this reason I propose changing the order of the checks in
-> clk-composite.c - see the attached patch (which I can send as a proper
-> one once agreed that this is the way to go forward)
+Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+---
+ .../devicetree/bindings/bus/palmbus.yaml      | 81 +++++++++++++++++++
+ 1 file changed, 81 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/bus/palmbus.yaml
 
-Yes, your patch papers over the actual issue (no best parent-selection 
-in case determine_rate is used) and fixes it for now - as expected.
+diff --git a/Documentation/devicetree/bindings/bus/palmbus.yaml b/Documentation/devicetree/bindings/bus/palmbus.yaml
+new file mode 100644
+index 000000000000..d5159a4f3cf8
+--- /dev/null
++++ b/Documentation/devicetree/bindings/bus/palmbus.yaml
+@@ -0,0 +1,81 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/bus/palmbus.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Ralink PalmBus Device Tree Bindings
++
++maintainers:
++  - Sergio Paracuellos <sergio.paracuellos@gmail.com>
++
++description: |
++  The ralink palmbus controller can be found in all ralink MIPS
++  SoCs. It provides an external bus for connecting multiple
++  external devices to the SoC.
++
++properties:
++  $nodename:
++    pattern: "^palmbus(@[0-9a-f]+)?$"
++
++  "#address-cells":
++    const: 1
++
++  "#size-cells":
++    const: 1
++
++  compatible:
++    const: palmbus
++
++  reg:
++    maxItems: 1
++
++  ranges: true
++
++patternProperties:
++  # All other properties should be child nodes with unit-address and 'reg'
++  "^[a-zA-Z][a-zA-Z0-9,+\\-._]{0,63}@[0-9a-fA-F]+$":
++    type: object
++    properties:
++      reg:
++        maxItems: 1
++
++    required:
++      - reg
++
++required:
++  - compatible
++  - reg
++  - "#address-cells"
++  - "#size-cells"
++  - ranges
++
++additionalProperties: false
++
++examples:
++  - |
++    palmbus@1e000000 {
++        compatible = "palmbus";
++        reg = <0x1e000000 0x100000>
++        #address-cells = <1>;
++        #size-cells = <1>;
++        ranges = <0x0 0x1e000000 0x0fffff>;
++
++        syscon@0 {
++            compatible = "mediatek,mt7621-sysc", "syscon";
++            reg = <0x0 0x100>;
++            #clock-cells = <1>;
++            #reset-cells = <1>;
++            ralink,memctl = <&memc>;
++            clock-output-names = "xtal", "cpu", "bus",
++                                 "50m", "125m", "150m",
++                                 "250m", "270m";
++        };
++
++        wdt@100 {
++            compatible = "mediatek,mt7621-wdt";
++            reg = <0x100 0x100>;
++        };
++    };
++
++...
+-- 
+2.33.0
 
-But it is not a long-term solution, as we will be at the same point, as 
-soon as round_rate gets removed from clk-divider. For me, who is 
-semi-knowledged in clock-framework, it was relatively hard to figure out 
-what was going on. "I'll do this later" has often been heard here.
-
-Though, I don't fully follow why moving the priority of determine_rate 
-lower would have been necessary anyways: from what I understand 
-determine_rate is expected to be the future-replacement of round_rate 
-everywhere and should be preferred.
-
-I guess it's up to the maintainers on how to proceed.
-
-Alex
-
-> Off-list Alex also suggested that I should use rate_ops.determine_rate
-> if available.
-> While I agree that this makes sense in general my plan is to do this
-> in a follow-up patch.
-> Changing the order of the conditions is needed anyways and it *should*
-> fix the issue reported here (but I have no way of testing that
-> unfortunately).
->
-> Alex, it would be great if you (or someone with Rockchip boards) could
-> test the attached patch and let me know if it fixes the reported
-> problem.
->
->
-> Best regards,
-> Martin
