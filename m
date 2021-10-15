@@ -2,85 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A3F142EDC9
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 11:36:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2044442EDCB
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 11:36:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237541AbhJOJiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 05:38:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44084 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236727AbhJOJiL (ORCPT
+        id S237484AbhJOJif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 05:38:35 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:48800 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236690AbhJOJic (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 05:38:11 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9191C061570
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 02:36:05 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id r2so8067868pgl.10
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 02:36:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=A+kABcpWl5XxkQdy8GVu6UutPeMvCwc5El4ILSgOxyA=;
-        b=CTckGThWx99BeEmmpCecOoOFRE4LurGhMWexxNlLQEyaC0LOXYXQ76c0Tb9sAxEExj
-         SLyqtARZhFq4DnlaAGSjeOenWfNltBzPd2xO47x/Vo03PPDgkIQV2bIqy3oKnTEjdjx5
-         NttU0KD1eC+g36CXTORH6FOtmZ2++jfeHzJJME+zapW931RIZBLdym/5HZoqNRvrFIpX
-         nIH5NhZRW11qXZCSzQi4AHabqbYZeKkCkuOVUl2LKcJzASTZqw59JqUxF4cP0Bee9t2W
-         YsQV7rDU/qFggGuEs21Z31PagYH+9n9eCzEosLxyYI9egm2i8x9S/7I5OiOXr6JDXuor
-         VxCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=A+kABcpWl5XxkQdy8GVu6UutPeMvCwc5El4ILSgOxyA=;
-        b=ufBfrWktOPtjG+LvzB194V4sg2WKd1rYT43+dBH4wdQgHlTW+xzgyKKQ0Toxp4TTEK
-         T0AcnJW2XmIzg32KQi3FkFhOUZ1QV0lVytrVOxzXJkTbSpq4L31dSA/yrIJz4HeGt1rG
-         E/Z26jbWzqmUkWbd3xyCmfRqdmETLoGp6RhNmhHig29WgQx4Sb70i73CY4Kzikgkabf7
-         hvsTeGZqAVVqs3Kzu5ab5jUYvDTNHN+dFfJdXjt1foOIAbZjXcU4JRARHBlLcSFG1EQy
-         4oHY0g7PUNDOcDyWXNV6nCrhTFEhuA0Fsc9yPkNvbFRbMiYsCQTn7Z03NQ+f6iT1nr9p
-         uGRw==
-X-Gm-Message-State: AOAM533sDo+Oy5CW+Y4h8e7Q25gxO7ppWn6O54vRZc65TSDOtuSxBLvT
-        oO2Owyd3htsax2XGu/yo8/M=
-X-Google-Smtp-Source: ABdhPJzTd8AeBKBhl1ChlDOpc9y+GVVrXndPBMVKfJEufwVbC7S9stK8peXzsriDnfaSDScLxtg9iA==
-X-Received: by 2002:a63:8f02:: with SMTP id n2mr8413116pgd.270.1634290565423;
-        Fri, 15 Oct 2021 02:36:05 -0700 (PDT)
-Received: from ?IPV6:2601:645:8400:1:ffb7:9e6f:baa:dfce? ([2601:645:8400:1:ffb7:9e6f:baa:dfce])
-        by smtp.gmail.com with ESMTPSA id e15sm4383332pfc.134.2021.10.15.02.36.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Oct 2021 02:36:05 -0700 (PDT)
-Message-ID: <5fe0ffa5-f2db-ca79-5a10-305310066ff9@gmail.com>
-Date:   Fri, 15 Oct 2021 02:36:03 -0700
+        Fri, 15 Oct 2021 05:38:32 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1634290585;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=qMD82jDLRghwt3jUSaceVpHhA/FFqOYNqRPnvzBrsR0=;
+        b=kdiS5uUNNb8ErRkx2YhowReaY5Jp8AFcpGiQnPNF8HccAObqB7VCQE6/lFH+0Egnhn4cVJ
+        3KuuY+YGtm7LURfj6QEVDA2prln1fjXD6Wqs6T6/roFhR9ipLXqbUjR4nxrYBIB72RRBCU
+        GL7uTzEa1vWgaOmPqsvqXw0wEnTMUqYYxh1EoV2hbOjy7s7hTTPYGmjWkhRezP0kbmbSms
+        JzVWmATTUc1TcLssZIGwkoYg5K9eEX8UQClQn6RhgxOLat5Mq3KjRPsnQFMqtB+ubcqXzE
+        GQRjEDbPAYKA8jk1b3CQDJfnS9+BWW2hXrMbAjOeN65puzY9PIS6kTCF9NTa5Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1634290585;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=qMD82jDLRghwt3jUSaceVpHhA/FFqOYNqRPnvzBrsR0=;
+        b=jiZNgPmBgqXDEeIgVyWjulnz0GG8uTrrHzpws/Cp0A+R+UbmdoMtf/pkEEGC3bRfOvLnh0
+        FKAGiFL1KEGM+2Bg==
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        "Liu, Jing2" <jing2.liu@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     "x86@kernel.org" <x86@kernel.org>,
+        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "Nakajima, Jun" <jun.nakajima@intel.com>,
+        Jing Liu <jing2.liu@linux.intel.com>,
+        "seanjc@google.com" <seanjc@google.com>,
+        "Cooper, Andrew" <andrew.cooper3@citrix.com>
+Subject: Re: [patch 13/31] x86/fpu: Move KVMs FPU swapping to FPU core
+In-Reply-To: <87lf2v5shb.ffs@tglx>
+References: <871r4p9fyh.ffs@tglx>
+ <ec9c761d-4b5c-71e2-c1fc-d256b6b78c04@redhat.com>
+ <BL0PR11MB3252511FC48E43484DE79A3CA9B89@BL0PR11MB3252.namprd11.prod.outlook.com>
+ <6bbc5184-a675-1937-eb98-639906a9cf15@redhat.com> <87wnmf66m5.ffs@tglx>
+ <3997787e-402d-4b2b-0f90-4a672c77703f@redhat.com> <87lf2v5shb.ffs@tglx>
+Date:   Fri, 15 Oct 2021 11:36:25 +0200
+Message-ID: <87a6ja6352.ffs@tglx>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: Performance regression: thread wakeup time (latency) increased up
- to 3x
-Content-Language: en-US
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-References: <035c23b4-118e-6a35-36d9-1b11e3d679f8@gmail.com>
- <YWlBUVDy9gOMiXls@hirez.programming.kicks-ass.net>
-From:   Norbert <nbrtt01@gmail.com>
-In-Reply-To: <YWlBUVDy9gOMiXls@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/15/21 01:52, Peter Zijlstra wrote:
-> On Fri, Oct 15, 2021 at 12:43:45AM -0700, Norbert wrote:
->> Performance regression: thread wakeup time (latency) increased up to 3x.
+Paolo,
+
+On Thu, Oct 14 2021 at 21:14, Thomas Gleixner wrote:
+> On Thu, Oct 14 2021 at 17:01, Paolo Bonzini wrote:
+>>> vcpu_create()
+>>> 
+>>>    fpu_init_fpstate_user(guest_fpu, supported_xcr0)
+>>> 
+>>> That will (it does not today) do:
+>>> 
+>>>       guest_fpu::__state_perm = supported_xcr0 & xstate_get_group_perm();
+>>> 
+>>> The you have the information you need right in the guest FPU.
 >>
->> Happened between 5.13.8 and 5.14.0. Still happening at least on 5.14.11.
-> 
-> Could you git-bisect this?
-> 
+>> Good, I wasn't aware of the APIs that will be there.
+>
+> Me neither, but that's a pretty obvious consequence of the work I'm
+> doing for AMX. So I made it up for you. :)
 
-So far I haven't built a kernel yet, I'm quite new to Linux in that way, 
-so it may take me some time to figure it all out, but yes.
+let me make some more up for you!
 
-(By the way, of course I meant that throughput *de*creases, not increases.)
+If you carefully look at part 2 of the rework, then you might notice
+that there is a fundamental change which allows to do a real
+simplification for KVM FPU handling:
+
+   current->thread.fpu.fpstate
+
+is now a pointer. So you can spare one FPU allocation because we can now
+do:
+
+fpu_attach_guest_fpu(supported_xcr0)
+{
+        guest_fpstate = alloc_fpstate(supported_xcr0);
+        fpu_init_fpstate_user(guest_fpstate, supported_xcr0);
+        current->thread.fpu.guest_fpstate = guest_fpstate;
+}
+
+fpu_swap_kvm_fpu() becomes in the first step:
+
+fpu_swap_kvm_fpu(bool enter_guest)
+{
+        safe_fpregs_to_fpstate(current->thread.fpu.fpstate);
+
+        swap(current->thread.fpu.fpstate, current->thread.fpu.guest_fpstate);
+
+        restore_fpregs_from_fpstate(current->thread.fpu.fpstate);
+}
+
+@enter guest will allow to do some sanity checks
+
+In a second step:
+
+fpu_swap_kvm_fpu(bool enter_guest, u64 guest_needs_features)
+{
+        possibly_reallocate(enter_guest, guest_needs_features);
+        safe_fpregs_to_fpstate(current->thread.fpu.fpstate);
+
+        swap(current->thread.fpu.fpstate, current->thread.fpu.guest_fpstate);
+
+        restore_fpregs_from_fpstate(current->thread.fpu.fpstate);
+        possibly_reallocate(enter_guest, guest_needs_features);
+}
+
+@guest_needs_features is the information which you gather via guest XCR0
+and guest XFD.
+
+So fpu_swap_kvm_fpu() is going to be the place where reallocation happens
+and that's good enough for both cases:
+
+vcpu_run()
+
+     fpu_swap_kvm_fpu(); <- 1
+
+     while (...)
+           vmenter();
+
+     fpu_swap_kvm_fpu(); <- 2
+
+#1 QEMU user space used feature and has already large fpstate
+
+#2 Guest requires feature but has not used it yet (XCR0/XFD trapping)
+
+See?
+
+It's not only correct, it's also simple and truly beautiful.
+
+Thanks,
+
+        tglx
