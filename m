@@ -2,100 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A959042F0B2
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 14:25:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FD9B42F0B6
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 14:25:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238782AbhJOM1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 08:27:04 -0400
-Received: from mga14.intel.com ([192.55.52.115]:28965 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231612AbhJOM1D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 08:27:03 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10137"; a="228185588"
-X-IronPort-AV: E=Sophos;i="5.85,375,1624345200"; 
-   d="scan'208";a="228185588"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2021 05:24:56 -0700
-X-IronPort-AV: E=Sophos;i="5.85,375,1624345200"; 
-   d="scan'208";a="492523934"
-Received: from liminghu-mobl.ccr.corp.intel.com (HELO [10.212.23.213]) ([10.212.23.213])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2021 05:24:55 -0700
-Subject: Re: [RFC PATCH v3 04/13] ASoC: soc-pcm: introduce
- snd_soc_dpcm_fe_lock_irq/unlock_irq()
-To:     Sameer Pujar <spujar@nvidia.com>, alsa-devel@alsa-project.org
-Cc:     tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org,
-        Gyeongtaek Lee <gt82.lee@samsung.com>,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20211013143050.244444-1-pierre-louis.bossart@linux.intel.com>
- <20211013143050.244444-5-pierre-louis.bossart@linux.intel.com>
- <a98ea2c6-e617-0fb7-8b24-99b8edc8868a@nvidia.com>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <6d7c8d71-d131-fd92-c1c6-e4f4380a4f77@linux.intel.com>
-Date:   Fri, 15 Oct 2021 07:24:52 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
+        id S238789AbhJOM1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 08:27:23 -0400
+Received: from mail-ot1-f54.google.com ([209.85.210.54]:34715 "EHLO
+        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231612AbhJOM1V (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 08:27:21 -0400
+Received: by mail-ot1-f54.google.com with SMTP id g62-20020a9d2dc4000000b0054752cfbc59so12597421otb.1;
+        Fri, 15 Oct 2021 05:25:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=I+FJSF2aUqnp4JnahjPPraJRIER8Ss0fZqzyewPOdxw=;
+        b=EW3v1KVNZd2R9lxH4k5dPjnV3OU3qhnpqI9uuGyMEMZgmkEn2SH5QBEoEOOV38L1nN
+         zGpv2hrGcnpuYV2wuSlCyhrNo/+Al5zvasaM4hVWRxAQqHg62cgBbnDb3U0wwtDw3A4T
+         Qgq1pvbis+WfaXMLeO+gl+EmkX3GwmXLLe/suKqb0YfR2V655LmAUsPp1RGYUeh3xRgO
+         6UuTWroSaPEI9WIEyBzQO8hSFxImPTAf3QeCtD+Q94G9VlRGlOeOniv4zhaXfXC4aP8x
+         RHvjeX8QTpV90sMsmkMDPtt8c4HvdYpOF5McyEg8iQfF7MHuK+UkTQzN7t2E/ypIOp/R
+         S1aA==
+X-Gm-Message-State: AOAM530jNBNwzwE9X04hpTKjVdl/jHpWEm5HzakJ2nHdUUOkmz6GKTPG
+        wI8IfouN/WYiz+HKmp2fvSgMhI18j7YFVZFVmjE=
+X-Google-Smtp-Source: ABdhPJzpvYsJ5DJ8Ndb1O60aAq9rYn4j18kammzbD1H0cXoBb64cvv3HURFg9ZcXvkn9GrV9ZqkCi38FC78xu40vhVA=
+X-Received: by 2002:a9d:65c1:: with SMTP id z1mr7364319oth.198.1634300714380;
+ Fri, 15 Oct 2021 05:25:14 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <a98ea2c6-e617-0fb7-8b24-99b8edc8868a@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20211015024504.947520-1-william.xuanziyang@huawei.com>
+In-Reply-To: <20211015024504.947520-1-william.xuanziyang@huawei.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 15 Oct 2021 14:25:03 +0200
+Message-ID: <CAJZ5v0h5-P+br-+44hv82jKdd=5Y-46daXMWLwsg9WDoEfG17g@mail.gmail.com>
+Subject: Re: [PATCH v2] thermal/core: fix a UAF bug in __thermal_cooling_device_register()
+To:     Ziyang Xuan <william.xuanziyang@huawei.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        "Zhang, Rui" <rui.zhang@intel.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Oct 15, 2021 at 4:46 AM Ziyang Xuan
+<william.xuanziyang@huawei.com> wrote:
+>
+> When device_register() return failed, program will goto out_kfree_type
+> to release 'cdev->device' by put_device(). That will call thermal_release()
+> to free 'cdev'. But the follow-up processes access 'cdev' continually.
+> That trggers the UAF bug.
+>
+> ====================================================================
+> BUG: KASAN: use-after-free in __thermal_cooling_device_register+0x75b/0xa90
+> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1.1 04/01/2014
+> Call Trace:
+>  dump_stack_lvl+0xe2/0x152
+>  print_address_description.constprop.0+0x21/0x140
+>  ? __thermal_cooling_device_register+0x75b/0xa90
+>  kasan_report.cold+0x7f/0x11b
+>  ? __thermal_cooling_device_register+0x75b/0xa90
+>  __thermal_cooling_device_register+0x75b/0xa90
+>  ? memset+0x20/0x40
+>  ? __sanitizer_cov_trace_pc+0x1d/0x50
+>  ? __devres_alloc_node+0x130/0x180
+>  devm_thermal_of_cooling_device_register+0x67/0xf0
+>  max6650_probe.cold+0x557/0x6aa
+> ......
+>
+> Freed by task 258:
+>  kasan_save_stack+0x1b/0x40
+>  kasan_set_track+0x1c/0x30
+>  kasan_set_free_info+0x20/0x30
+>  __kasan_slab_free+0x109/0x140
+>  kfree+0x117/0x4c0
+>  thermal_release+0xa0/0x110
+>  device_release+0xa7/0x240
+>  kobject_put+0x1ce/0x540
+>  put_device+0x20/0x30
+>  __thermal_cooling_device_register+0x731/0xa90
+>  devm_thermal_of_cooling_device_register+0x67/0xf0
+>  max6650_probe.cold+0x557/0x6aa [max6650]
+>
+> Do not use 'cdev' again after put_device() to fix the problem like doing
+> in thermal_zone_device_register().
+>
+> Fixes: 584837618100 ("thermal/drivers/core: Use a char pointer for the cooling device name")
+> Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Reported-by: kernel test robot <lkp@intel.com>
+> ---
+>  drivers/thermal/thermal_core.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
+> index 97ef9b040b84..d2c196b298c1 100644
+> --- a/drivers/thermal/thermal_core.c
+> +++ b/drivers/thermal/thermal_core.c
+> @@ -888,7 +888,7 @@ __thermal_cooling_device_register(struct device_node *np,
+>  {
+>         struct thermal_cooling_device *cdev;
+>         struct thermal_zone_device *pos = NULL;
+> -       int ret;
+> +       int id, ret;
+>
+>         if (!ops || !ops->get_max_state || !ops->get_cur_state ||
+>             !ops->set_cur_state)
+> @@ -901,7 +901,7 @@ __thermal_cooling_device_register(struct device_node *np,
+>         ret = ida_simple_get(&thermal_cdev_ida, 0, 0, GFP_KERNEL);
+>         if (ret < 0)
+>                 goto out_kfree_cdev;
+> -       cdev->id = ret;
+> +       cdev->id = id = ret;
 
+I'd prefer this to be two statements, but I can fix it up.
 
-On 10/15/21 1:24 AM, Sameer Pujar wrote:
-> 
-> 
-> On 10/13/2021 8:00 PM, Pierre-Louis Bossart wrote:
->> In preparation for more changes, add two new helpers to gradually
->> modify the DPCM locks.
->>
->> Since DPCM functions are not used from interrupt handlers, we can only
->> use the lock_irq case.
->>
->> While most of the uses of DPCM are internal to soc-pcm.c, some drivers
->> in soc/fsl and soc/sh do make use of DPCM-related loops that will
->> require protection, adding EXPORT_SYMBOL_GPL() is needed for those
->> drivers.
->>
->> The stream argument is unused in this patch but will be enabled in
->> follow-up patches.
->>
->> Signed-off-by: Pierre-Louis Bossart
->> <pierre-louis.bossart@linux.intel.com>
->> ---
->>   include/sound/soc-dpcm.h |  3 +++
->>   sound/soc/soc-pcm.c      | 42 +++++++++++++++++++++++-----------------
->>   2 files changed, 27 insertions(+), 18 deletions(-)
-> 
-> 1. Till this patch and with DEBUG_LOCKDEP config enabled, I see
+Daniel, would there be any issues if I applied it?
 
-Did you mean "with this patch included", yes?
-
-> following warning:
->    "WARNING: CPU: 0 PID: 0 at kernel/locking/irqflag-debug.c:10
-> warn_bogus_irq_restore+0x30/0x40"
-> 
->    However test passed though. Interestingly it was seen only for the
-> first time I ran a 2x1 mixer test.
-> 
-> 2. Also after I load sound modules and card gets registered, I see some
-> hw_param() calls for FE and BE. This seems harmless at this point, but
-> is getting problematic with subsequent patches. This was not happening
-> earier.
-
-This patch doesn't change any of the flow, it just adds a wrapper in
-preparation for the transition to the FE pcm lock.
-
-The only change is that we use spin_lock_irq instead of the
-irqsave/restore version, but that was also Takashi's recommendation.
-
-the test results would suggest that on Tegra DPCM functions are used
-from an interrupt context?
+>
+>         cdev->type = kstrdup(type ? type : "", GFP_KERNEL);
+>         if (!cdev->type) {
+> @@ -942,8 +942,9 @@ __thermal_cooling_device_register(struct device_node *np,
+>  out_kfree_type:
+>         kfree(cdev->type);
+>         put_device(&cdev->device);
+> +       cdev = NULL;
+>  out_ida_remove:
+> -       ida_simple_remove(&thermal_cdev_ida, cdev->id);
+> +       ida_simple_remove(&thermal_cdev_ida, id);
+>  out_kfree_cdev:
+>         kfree(cdev);
+>         return ERR_PTR(ret);
+> --
+> 2.25.1
+>
