@@ -2,92 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F2FE42FC29
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 21:29:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DE0642FC3C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 21:36:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242691AbhJOTbb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 15:31:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41578 "EHLO mail.kernel.org"
+        id S242732AbhJOTiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 15:38:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44566 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235265AbhJOTbW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 15:31:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AB9A461151;
-        Fri, 15 Oct 2021 19:29:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1634326156;
-        bh=3JS/1kbwClvIz4bw9kp2a/P9fTD2/8UbJaeK5lJxnkE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=DsnBwVbi/py5VyDgLutJnKvgeqNbFgDvx0Zz4vICvFjeLGosgjY4Ycv+xb7CRY8Sr
-         AMAD0Rjun8jZyoTyj+OTinSaI029/rK6FHalqQJkQ/RiEOTLVWUCRxfnTJU9DXo8dw
-         Hxb+Z6cuMsUwa2c7cyJKBOdFFPQupnhIBj7roG6s=
-Date:   Fri, 15 Oct 2021 12:29:12 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     "George G. Davis" <george_davis@mentor.com>,
-        Shuah Khan <shuah@kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Eugeniu Rosca <erosca@de.adit-jv.com>,
-        "George G. Davis" <davis.george@siemens.com>,
-        Konstantin Khlebnikov <koct9i@gmail.com>
-Subject: Re: [RFC][PATCH] selftests/vm/transhuge-stress: fix ram size thinko
-Message-Id: <20211015122912.d42e5a8c41d623b544f7dd38@linux-foundation.org>
-In-Reply-To: <41be8425-761b-fa55-40c5-687b397e8ad2@linuxfoundation.org>
-References: <20210825135843.29052-1-george_davis@mentor.com>
-        <41be8425-761b-fa55-40c5-687b397e8ad2@linuxfoundation.org>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+        id S235221AbhJOTiG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 15:38:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B140B61164;
+        Fri, 15 Oct 2021 19:35:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634326559;
+        bh=AZ5p6oEVThK3Hju2UMF66DeyAGk6wtxhmCc/P49JGZY=;
+        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
+        b=QG1N0CPTSMVPjvRQ/dBLSGz7kCaVVYvN8kYBGIb9n7YZhEASCwZMnHkWb8Ku9NIE1
+         BWQraZItdtSwjvKcoM/ZW/ME8P052uovATvI7XZIjvU3UHwg2xFQYRN1/DW22I632/
+         6VG0HxKEYsV7oJLb5l/bVQ5gHOe2jnILeRerv9qCRV6Gvaqt86S8SlgjL7Vks35MGg
+         yq+qGZ7BY1yu1LC9/kFlKlrJYL51WXrWh1AJri42/nquhEqRnBcqDz3aICfOwrAqhG
+         K/YsJ77uvJMtParKPyCafpjSabB309SfL4qbXPT6OWvrXrjZu0FvB4Op4AZyZGQ7UU
+         g+h6mVbOsgOhg==
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailauth.nyi.internal (Postfix) with ESMTP id BD6DA27C0054;
+        Fri, 15 Oct 2021 15:35:57 -0400 (EDT)
+Received: from imap48 ([10.202.2.98])
+  by compute6.internal (MEProxy); Fri, 15 Oct 2021 15:35:57 -0400
+X-ME-Sender: <xms:HdhpYVS3E_KDyVr09KiFeRY-MRjhWyiP5lu9oyj7m8uUBvi_wdK2Fg>
+    <xme:HdhpYeyigOqf6ue2VNZzUSfaFQbPmHDAwSHRbl7aibVBsXwOkPJA4_vmRM5V8CKPC
+    dw68ollmPaLCgFKmps>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvddugedgudefkecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedftehn
+    ugihucfnuhhtohhmihhrshhkihdfuceolhhuthhosehkvghrnhgvlhdrohhrgheqnecugg
+    ftrfgrthhtvghrnhephfelhfdugeetvdfhfeeuveevtdegueekhfffheetffdtleevtdeh
+    tdeivdeuvedunecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghruf
+    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrnhguhidomhgvshhmthhprghu
+    thhhphgvrhhsohhnrghlihhthidqudduiedukeehieefvddqvdeifeduieeitdekqdhluh
+    htoheppehkvghrnhgvlhdrohhrgheslhhinhhugidrlhhuthhordhush
+X-ME-Proxy: <xmx:HdhpYa2-FTzPO0fAaKG4u5I9xftlZGa5Z8lb1HIFmkQtMFU0IwF8hw>
+    <xmx:HdhpYdAJ8TAAORamFxldXaN_0t3V3NNYgSNg7w9g050ccioVUns5-w>
+    <xmx:HdhpYejRdQ3UIOSEhz8ASRxIybaVFlpSKGowGWwyOoDGNyBPQHCUlw>
+    <xmx:HdhpYTauFATTZqnctJ6ZvWlWOjq_qCIVZQOBhDLGKHtHvAiSPK0gy8d-H7o>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 626A821E0066; Fri, 15 Oct 2021 15:35:57 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-1345-g8441cd7852-fm-20211006.001-g8441cd78
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Message-Id: <ecbe49c8-b30b-456c-931a-cc65647b0958@www.fastmail.com>
+In-Reply-To: <CABCJKuc+mN4vw_sanZQKcb1=SyfT4h3JK2wpBuaB2qZH3Croxg@mail.gmail.com>
+References: <20211013181658.1020262-1-samitolvanen@google.com>
+ <20211013181658.1020262-4-samitolvanen@google.com>
+ <7377e6b9-7130-4c20-a0c8-16de4620c995@www.fastmail.com> <8735p25llh.ffs@tglx>
+ <87zgra41dh.ffs@tglx>
+ <CABCJKuc+mN4vw_sanZQKcb1=SyfT4h3JK2wpBuaB2qZH3Croxg@mail.gmail.com>
+Date:   Fri, 15 Oct 2021 12:35:37 -0700
+From:   "Andy Lutomirski" <luto@kernel.org>
+To:     "Sami Tolvanen" <samitolvanen@google.com>,
+        "Thomas Gleixner" <tglx@linutronix.de>
+Cc:     "the arch/x86 maintainers" <x86@kernel.org>,
+        "Kees Cook" <keescook@chromium.org>,
+        "Josh Poimboeuf" <jpoimboe@redhat.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        "Nathan Chancellor" <nathan@kernel.org>,
+        "Nick Desaulniers" <ndesaulniers@google.com>,
+        "Sedat Dilek" <sedat.dilek@gmail.com>,
+        "Steven Rostedt" <rostedt@goodmis.org>,
+        linux-hardening@vger.kernel.org,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        llvm@lists.linux.dev
+Subject: Re: [PATCH v5 03/15] linkage: Add DECLARE_NOT_CALLED_FROM_C
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 15 Oct 2021 09:38:24 -0600 Shuah Khan <skhan@linuxfoundation.org> wrote:
+On Fri, Oct 15, 2021, at 11:42 AM, Sami Tolvanen wrote:
+>>   https://lore.kernel.org/lkml/alpine.LFD.2.00.1001251002430.3574@localhost.localdomain/
+>>
+>> That said, I still want to have a coherent technical explanation why the
+>> compiler people cannot come up with a sensible annotation for these
+>> things.
+>
+> I can only assume they didn't think about this specific use case.
 
-> On 8/25/21 7:58 AM, George G. Davis wrote:
-> > From: "George G. Davis" <davis.george@siemens.com>
-> > 
-> > When executing transhuge-stress with an argument to specify the virtual
-> > memory size for testing, the ram size is reported as 0, e.g.
-> > 
-> > transhuge-stress 384
-> > thp-mmap: allocate 192 transhuge pages, using 384 MiB virtual memory and 0 MiB of ram
-> > thp-mmap: 0.184 s/loop, 0.957 ms/page,   2090.265 MiB/s  192 succeed,    0 failed
-> > 
-> > This appears to be due to a thinko in commit 0085d61fe05e
-> > ("selftests/vm/transhuge-stress: stress test for memory compaction"),
-> > where, at a guess, the intent was to base "xyz MiB of ram" on `ram`
-> > size. Here are results after using `ram` size:
-> > 
-> > thp-mmap: allocate 192 transhuge pages, using 384 MiB virtual memory and 14 MiB of ram
-> > 
-> > Fixes: 0085d61fe05e ("selftests/vm/transhuge-stress: stress test for memory compaction")
-> > Signed-off-by: George G. Davis <davis.george@siemens.com>
-> > ---
-> >   tools/testing/selftests/vm/transhuge-stress.c | 2 +-
-> >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/tools/testing/selftests/vm/transhuge-stress.c b/tools/testing/selftests/vm/transhuge-stress.c
-> > index fd7f1b4a96f9..5e4c036f6ad3 100644
-> > --- a/tools/testing/selftests/vm/transhuge-stress.c
-> > +++ b/tools/testing/selftests/vm/transhuge-stress.c
-> > @@ -79,7 +79,7 @@ int main(int argc, char **argv)
-> >   
-> >   	warnx("allocate %zd transhuge pages, using %zd MiB virtual memory"
-> >   	      " and %zd MiB of ram", len >> HPAGE_SHIFT, len >> 20,
-> > -	      len >> (20 + HPAGE_SHIFT - PAGE_SHIFT - 1));
-> > +	      ram >> (20 + HPAGE_SHIFT - PAGE_SHIFT - 1));
-> >   
-> >   	pagemap_fd = open("/proc/self/pagemap", O_RDONLY);
-> >   	if (pagemap_fd < 0)
-> > 
-> 
-> Sorry for the delay on this. The change looks good to me.
+I must be missing something here.  Linux is full of C-ABI functions implemented in asm.  Just off of a quick grep:
 
-Konstantin, coould you please take a look?
+asm_load_gs_index, memset, memmove, basically everything in arch/x86/lib/*.S
 
-> Andrew! Would you like me to take this through kselftest tree?
+If they're just declared and called directly from C, it should just work.  But an *indirect* call needs some sort of special handling.  How does this work in your patchset?
 
-Is OK thanks - I'll add it to my mm/thp pile.
+Then we get to these nasty cases where, for some reason, we need to explicitly grab the actual entry point or we need to grab the actual literal address that we can call indirectly.  This might be alternative_call, where we're trying to be fast and we want to bypass the CFI magic because, despite what the compiler might try to infer, we are doing a direct call (so it can't be the wrong address due a runtime attack, ENDBR isn't needed, etc).  And I can easily believe that the opposite comes to mind.  And there are things like exception entries, where C calls make no sense, CFI makes no sense, and they should be totally opaque.
+
+So I tend to think that tglx is right *and* we need an attribute, because there really are multiple things going on here.
+
+SYM_FUNC_START(c_callable_func)
+  ...
+  ret
+SYM_FUNC_END
+
+extern __magic int c_callable_func(whatever);
+
+Surely *something* needs to go where __magic is to tell the compiler that we have a function that wasn't generated by a CFI-aware compiler and that it's just a C ABI function.  (Or maybe this is completely implicit?  I can't keep track of exactly which thing generates which code in clang CFI.)
+
+But we *also* have the read-the-address thing:
+
+void something(void)
+{
+  /* actual C body */
+}
+alternative_call(something, someotherthing, ...);
+
+That wants to expand to assembly code that does:
+
+CALL [target]
+
+where [target] is the actual first instruction of real code and not a CFI prologue.  Or, inversely, we want:
+
+void (*ptr)(void) = something;
+
+which (I presume -- correct me if I'm wrong) wants the CFI landing pad.  It's not the same address.
+
+And this all wants to work both for asm-defined functions and C-defined functions.  This really is orthogonal to the is-it-asm-or-is-it-C things.  All four combinations are possible.
+
+Does this make any sense?  I kind of thing we want the attributes and the builtin, along the lines of:
+
+asm("call %m", function_nocfi_address(something));
+
+or however else we wire it up.
+
+(And, of course, the things that aren't C functions at all, like exception entries, should be opaque.)
