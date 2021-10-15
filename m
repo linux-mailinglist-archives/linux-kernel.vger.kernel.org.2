@@ -2,184 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBF3C42EDBC
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 11:32:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8652342ED94
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 11:26:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237457AbhJOJez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 05:34:55 -0400
-Received: from [103.31.38.59] ([103.31.38.59]:59548 "EHLO gnuweeb.org"
-        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236612AbhJOJel (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 05:34:41 -0400
-X-Greylist: delayed 345 seconds by postgrey-1.27 at vger.kernel.org; Fri, 15 Oct 2021 05:34:41 EDT
-Received: from [192.168.1.106] (unknown [88.228.240.209])
-        by gnuweeb.org (Postfix) with ESMTPSA id E4C44BFE92;
-        Fri, 15 Oct 2021 09:26:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=gnuweeb.org;
-        s=default; t=1634290006;
-        bh=aG/cfoq5IGboJiFr9IqfLaiqReXtHsobpcnKwsrFouI=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=RqN91KZ/XgN1jb0vP2/Q/hIVVx7w9SNfyMOb5R8RAo2xBHnj1cTtsr+20RwOcfRSX
-         YUESmdplRrer2l+6bsu9hzIYa3dKA7kvaGqkpGZJON9w5zu9HZ2F8BDpyeL8X4JCgb
-         kI15RgcKfSsQl1BXiH9x4rWqA3rW36w9bZS0qvU06LvAfL1CihzqGMYzKTpo2/qL3g
-         2vM0xHCCdYr9JuWsG1m2OZvCwQ5WSN3iucTS6uCQyQf3+s73Nfz1Ezya+aYy4qZhXK
-         4p+vZvAUfVj1I4Nxyhv8JRW1QTCx4KvF6/17E+sDzuO51+RCbjHBKpPDJ7jzsgx22F
-         zGIMWzRz0sSoQ==
-Message-ID: <a6a31152-69db-73c6-5083-cf9f9af8ca41@gnuweeb.org>
-Date:   Fri, 15 Oct 2021 12:26:39 +0300
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.2
-Subject: Re: [PATCH 2/2] tools/nolibc: x86-64: Fix startup code bug
-Content-Language: en-US
-To:     Ammar Faizi <ammar.faizi@students.amikom.ac.id>,
-        Willy Tarreau <w@1wt.eu>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
+        id S237305AbhJOJ3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 05:29:01 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:60505 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236567AbhJOJ3A (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 05:29:00 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HW1B30QRsz4xR9;
+        Fri, 15 Oct 2021 20:26:49 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1634290012;
+        bh=xl0h0ehAPbQXQoQuuUp7RGzzyhb5d9ztn2d3GE74Wjs=;
+        h=Date:From:To:Cc:Subject:From;
+        b=bA+KmpzGZSqV/9vXYWF8PRZvTIbOFj4L6qXMHG1rQ5ERg1ajrO8ea3ymi9CLpSbaG
+         faBpHJfomvbbxG1Nwd6TTQyvJd3NRgisKlUsGpDnTUOEIMHc+RVccSf4Tek+kOkZEa
+         vz/juFVpep+LoYcqp8ctuQP37UAx0yD822EbTt3MSTmiwsBR/xnIGSWSpxEd/6S8aO
+         UZ2niUXbeHg4zpaQ9RlNZycTdWCaB2z/K4qrRHOSKf7l+fMgsrxd8K6wQKHrFtkCHr
+         2WqtsCpeT2mjlBWW3W0OlW/yQBSc+rTq7qG0Zg9KBfzX1foXM7jfGn5p4Flu4FMQP2
+         x99eI359eH9QA==
+Date:   Fri, 15 Oct 2021 20:26:48 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>
+Cc:     Jani Nikula <jani.nikula@intel.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        David Laight <David.Laight@ACULAB.COM>,
-        Peter Cordes <peter@cordes.ca>,
-        Louvian Lyndal <louvianlyndal@gmail.com>
-References: <CtypPaXXhVINRV0090UVzA-ammarfaizi2@gnuweeb.org>
- <6sZ9qpcJvtqCksJQVaiZyA-ammarfaizi2@gnuweeb.org>
-From:   Bedirhan KURT <windowz414@gnuweeb.org>
-In-Reply-To: <6sZ9qpcJvtqCksJQVaiZyA-ammarfaizi2@gnuweeb.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the drm-misc tree
+Message-ID: <20211015202648.258445ef@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/tYZFJ6chdxiLHwqx9EJihw_";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-KFNlbmRpbmcgYWdhaW4gYXMgcHJldmlvdXMgZW1haWwgaGFkIG15IFVidW50dSB1c2VybmFt
-ZSBhcyBzZW5kZXIgYW5kDQpUaHVuZGVyYmlyZCBhdHRhY2hlZCBteSBHUEcga2V5IG9uIGl0
-LiBIb3BlIEkgY2FuY2VsbGVkIG9uIHRpbWUuKQ0KDQpIaSBBbW1hciwNCg0KSSd2ZSB0ZXN0
-ZWQgeW91ciBwYXRjaHNldCBvbiBteSBsb2NhbCBjbG9uZSBvZiBMaW51eCBrZXJuZWwgd2l0
-aCB1cCB0bw0KZGF0ZSBmZXRjaCBvZiBtYXN0ZXIgYnJhbmNoIGFuZCB0aGlzIGlzIHRoZSBv
-dXRwdXQgSSd2ZSBnb3R0ZW4gYWZ0ZXINCmV4ZWN1dGluZyB0aGUgdGVzdCBiaW5hcnkgY29t
-cGlsZWQ7DQoNCmBgYA0KIyBJIGhhdmUgcmVwbGFjZWQgUG93ZXJsaW5lLXNwZWNpZmljIGNo
-YXJhY3RlcnMgdG8gYXZvaWQgZm9udCByZW5kZXJpbmcNCiMgaXNzdWUuDQoNCiAgd2luZG93
-enl0Y2hAV2luZG93WlVidW50dSA+IH4vbGludXggPiBtYXN0ZXIgPiAuL3Rlc3QNCg0KRHVt
-cGluZyBhcmd2Li4uDQouL3Rlc3QNCg0KRHVtcGluZyBlbnZwLi4uDQpTWVNURU1EX0VYRUNf
-UElEPTYxNjgNClNTSF9BVVRIX1NPQ0s9L3J1bi91c2VyLzEwMDEva2V5cmluZy9zc2gNCkxB
-TkdVQUdFPWVuX1VTOmVuDQpMQU5HPWVuX1VTLlVURi04DQpQQVBFUlNJWkU9bGV0dGVyDQpT
-RVNTSU9OX01BTkFHRVI9bG9jYWwvV2luZG93WlVidW50dTpAL3RtcC8uSUNFLXVuaXgvMzQ3
-Mix1bml4L1dpbmRvd1pVYnVudHU6L3RtcC8uSUNFLXVuaXgvMzQ3Mg0KWERHX0NVUlJFTlRf
-REVTS1RPUD11YnVudHU6R05PTUUNCkxDX0lERU5USUZJQ0FUSU9OPWVuX1VTLlVURi04DQpE
-RUZBVUxUU19QQVRIPS91c3Ivc2hhcmUvZ2NvbmYvdWJ1bnR1LXhvcmcuZGVmYXVsdC5wYXRo
-DQpYREdfU0VTU0lPTl9DTEFTUz11c2VyDQpfPS9ob21lL3dpbmRvd3p5dGNoL2xpbnV4Ly4v
-dGVzdA0KQ09MT1JURVJNPXRydWVjb2xvcg0KR1BHX0FHRU5UX0lORk89L3J1bi91c2VyLzEw
-MDEvZ251cGcvUy5ncGctYWdlbnQ6MDoxDQpRVF9JTV9NT0RVTEU9aWJ1cw0KREVTS1RPUF9T
-RVNTSU9OPXVidW50dS14b3JnDQpVU0VSPXdpbmRvd3p5dGNoDQpYREdfTUVOVV9QUkVGSVg9
-Z25vbWUtDQpMQ19NRUFTVVJFTUVOVD1lbl9VUy5VVEYtOA0KR19FTkFCTEVfRElBR05PU1RJ
-Qz0wDQpIT01FPS9ob21lL3dpbmRvd3p5dGNoDQpHTk9NRV9URVJNSU5BTF9TQ1JFRU49L29y
-Zy9nbm9tZS9UZXJtaW5hbC9zY3JlZW4vZjg5ZjBlNDZfYjRjNl80YzBhXzg0MzRfNGZkNzM4
-NDVkNWFhDQpKT1VSTkFMX1NUUkVBTT04OjkyMzA0DQpEQlVTX1NFU1NJT05fQlVTX0FERFJF
-U1M9dW5peDpwYXRoPS9ydW4vdXNlci8xMDAxL2J1cw0KWE1PRElGSUVSUz1AaW09aWJ1cw0K
-TENfTlVNRVJJQz1lbl9VUy5VVEYtOA0KU1NIX0FHRU5UX0xBVU5DSEVSPWdub21lLWtleXJp
-bmcNCkdUS19NT0RVTEVTPWdhaWw6YXRrLWJyaWRnZQ0KWERHX0RBVEFfRElSUz0vdXNyL3No
-YXJlL3VidW50dS14b3JnOi9ob21lL3dpbmRvd3p5dGNoLy5sb2NhbC9zaGFyZS9mbGF0cGFr
-L2V4cG9ydHMvc2hhcmU6L3Zhci9saWIvZmxhdHBhay9leHBvcnRzL3NoYXJlOi91c3IvbG9j
-YWwvc2hhcmUvOi91c3Ivc2hhcmUvOi92YXIvbGliL3NuYXBkL2Rlc2t0b3ANCldJTkRPV1BB
-VEg9Mg0KWERHX1NFU1NJT05fREVTS1RPUD11YnVudHUteG9yZw0KWERHX0NPTkZJR19ESVJT
-PS9ldGMveGRnL3hkZy11YnVudHUteG9yZzovZXRjL3hkZw0KUVRfQUNDRVNTSUJJTElUWT0x
-DQpHTk9NRV9ERVNLVE9QX1NFU1NJT05fSUQ9dGhpcy1pcy1kZXByZWNhdGVkDQpNQU5BR0VS
-UElEPTMxODkNCkxDX1RJTUU9ZW5fVVMuVVRGLTgNCk1BTkRBVE9SWV9QQVRIPS91c3Ivc2hh
-cmUvZ2NvbmYvdWJ1bnR1LXhvcmcubWFuZGF0b3J5LnBhdGgNCkxPR05BTUU9d2luZG93enl0
-Y2gNCkdOT01FX1RFUk1JTkFMX1NFUlZJQ0U9OjEuMTE1DQpMQ19QQVBFUj1lbl9VUy5VVEYt
-OA0KR05PTUVfU0hFTExfU0VTU0lPTl9NT0RFPXVidW50dQ0KUEFUSD0vdXNyL2xvY2FsL3Ni
-aW46L3Vzci9sb2NhbC9iaW46L3Vzci9zYmluOi91c3IvYmluOi9zYmluOi9iaW46L3Vzci9n
-YW1lczovdXNyL2xvY2FsL2dhbWVzOi9zbmFwL2Jpbjovc25hcC9iaW4NClhER19SVU5USU1F
-X0RJUj0vcnVuL3VzZXIvMTAwMQ0KU0hFTEw9L2Jpbi96c2gNClhER19TRVNTSU9OX1RZUEU9
-eDExDQpMQ19NT05FVEFSWT1lbl9VUy5VVEYtOA0KTENfVEVMRVBIT05FPWVuX1VTLlVURi04
-DQpVU0VSTkFNRT13aW5kb3d6eXRjaA0KVlRFX1ZFUlNJT049NjQwMg0KSU5WT0NBVElPTl9J
-RD02MDUyOTA2ZTU4ODg0YjU0ODdkM2M4ODMxNDk2MTcyMg0KUFdEPS9ob21lL3dpbmRvd3p5
-dGNoL2xpbnV4DQpTSExWTD0xDQpYQVVUSE9SSVRZPS9ydW4vdXNlci8xMDAxL2dkbS9YYXV0
-aG9yaXR5DQpMQ19OQU1FPWVuX1VTLlVURi04DQpJTV9DT05GSUdfUEhBU0U9MQ0KR0RNU0VT
-U0lPTj11YnVudHUteG9yZw0KTENfQUREUkVTUz1lbl9VUy5VVEYtOA0KRElTUExBWT06MA0K
-VEVSTT14dGVybS0yNTZjb2xvcg0KT0xEUFdEPS9ob21lL3dpbmRvd3p5dGNoL3R3cnByZWJh
-c2UvcmVjb3ZlcnlfZGV2aWNlX3Zlc3RlbF90ZW9zDQpaU0g9L2hvbWUvd2luZG93enl0Y2gv
-Lm9oLW15LXpzaA0KUEFHRVI9bGVzcw0KTEVTUz0tUg0KTFNDT0xPUlM9R3hmeGN4ZHhieGVn
-ZWRhYmFnYWNhZA0KTFNfQ09MT1JTPXJzPTA6ZGk9MDE7MzQ6bG49MDE7MzY6bWg9MDA6cGk9
-NDA7MzM6c289MDE7MzU6ZG89MDE7MzU6YmQ9NDA7MzM7MDE6Y2Q9NDA7MzM7MDE6b3I9NDA7
-MzE7MDE6bWk9MDA6c3U9Mzc7NDE6c2c9MzA7NDM6Y2E9MzA7NDE6dHc9MzA7NDI6b3c9MzQ7
-NDI6c3Q9Mzc7NDQ6ZXg9MDE7MzI6Ki50YXI9MDE7MzE6Ki50Z3o9MDE7MzE6Ki5hcmM9MDE7
-MzE6Ki5hcmo9MDE7MzE6Ki50YXo9MDE7MzE6Ki5saGE9MDE7MzE6Ki5sejQ9MDE7MzE6Ki5s
-emg9MDE7MzE6Ki5sem1hPTAxOzMxOioudGx6PTAxOzMxOioudHh6PTAxOzMxOioudHpvPTAx
-OzMxOioudDd6PTAxOzMxOiouemlwPTAxOzMxOiouej0wMTszMToqLmR6PTAxOzMxOiouZ3o9
-MDE7MzE6Ki5scno9MDE7MzE6Ki5sej0wMTszMToqLmx6bz0wMTszMToqLnh6PTAxOzMxOiou
-enN0PTAxOzMxOioudHpzdD0wMTszMToqLmJ6Mj0wMTszMToqLmJ6PTAxOzMxOioudGJ6PTAx
-OzMxOioudGJ6Mj0wMTszMToqLnR6PTAxOzMxOiouZGViPTAxOzMxOioucnBtPTAxOzMxOiou
-amFyPTAxOzMxOioud2FyPTAxOzMxOiouZWFyPTAxOzMxOiouc2FyPTAxOzMxOioucmFyPTAx
-OzMxOiouYWx6PTAxOzMxOiouYWNlPTAxOzMxOiouem9vPTAxOzMxOiouY3Bpbz0wMTszMToq
-Ljd6PTAxOzMxOioucno9MDE7MzE6Ki5jYWI9MDE7MzE6Ki53aW09MDE7MzE6Ki5zd209MDE7
-MzE6Ki5kd209MDE7MzE6Ki5lc2Q9MDE7MzE6Ki5qcGc9MDE7MzU6Ki5qcGVnPTAxOzM1Oiou
-bWpwZz0wMTszNToqLm1qcGVnPTAxOzM1OiouZ2lmPTAxOzM1OiouYm1wPTAxOzM1OioucGJt
-PTAxOzM1OioucGdtPTAxOzM1OioucHBtPTAxOzM1OioudGdhPTAxOzM1OioueGJtPTAxOzM1
-OioueHBtPTAxOzM1OioudGlmPTAxOzM1OioudGlmZj0wMTszNToqLnBuZz0wMTszNToqLnN2
-Zz0wMTszNToqLnN2Z3o9MDE7MzU6Ki5tbmc9MDE7MzU6Ki5wY3g9MDE7MzU6Ki5tb3Y9MDE7
-MzU6Ki5tcGc9MDE7MzU6Ki5tcGVnPTAxOzM1OioubTJ2PTAxOzM1OioubWt2PTAxOzM1Oiou
-d2VibT0wMTszNToqLndlYnA9MDE7MzU6Ki5vZ209MDE7MzU6Ki5tcDQ9MDE7MzU6Ki5tNHY9
-MDE7MzU6Ki5tcDR2PTAxOzM1Oioudm9iPTAxOzM1OioucXQ9MDE7MzU6Ki5udXY9MDE7MzU6
-Ki53bXY9MDE7MzU6Ki5hc2Y9MDE7MzU6Ki5ybT0wMTszNToqLnJtdmI9MDE7MzU6Ki5mbGM9
-MDE7MzU6Ki5hdmk9MDE7MzU6Ki5mbGk9MDE7MzU6Ki5mbHY9MDE7MzU6Ki5nbD0wMTszNToq
-LmRsPTAxOzM1OioueGNmPTAxOzM1OioueHdkPTAxOzM1OioueXV2PTAxOzM1OiouY2dtPTAx
-OzM1OiouZW1mPTAxOzM1Oioub2d2PTAxOzM1Oioub2d4PTAxOzM1OiouYWFjPTAwOzM2Oiou
-YXU9MDA7MzY6Ki5mbGFjPTAwOzM2OioubTRhPTAwOzM2OioubWlkPTAwOzM2OioubWlkaT0w
-MDszNjoqLm1rYT0wMDszNjoqLm1wMz0wMDszNjoqLm1wYz0wMDszNjoqLm9nZz0wMDszNjoq
-LnJhPTAwOzM2Oioud2F2PTAwOzM2Oioub2dhPTAwOzM2Oioub3B1cz0wMDszNjoqLnNweD0w
-MDszNjoqLnhzcGY9MDA7MzY6DQpgYGANCg0KSSBob3BlIHRoZXNlIGFyZSBoZWxwZnVsIGFu
-ZCBJIGNvdWxkIGhlbHAgdGhyb3VnaG91dCB0aGlzIHBhdGNoc2V0LiBJDQpkaWRuJ3QgZ2V0
-IGFueSBTZWdGYXVsdHMgY29tcGFyZWQgdG8gbXkgdGVzdHMgd2l0aCBzYW1lIGNvZGUgb24g
-cHVyZQ0Kc3RhdGUgZWl0aGVyIHNvIEkgdGhpbmsgZXZlcnl0aGluZyB3b3JrcyBqdXN0IGZp
-bmUuIFlvdSBjYW4gYXBwZW5kIG1lIGluIA0KVGVzdGVkLWJ5IHRhZyBpZiB5b3Ugd2FudC4N
-Cg0KLS0NCkJlZGlyaGFuIEtVUlQNCg0KT24gMTAvMTUvMjEgMTE6NTcsIEFtbWFyIEZhaXpp
-IHdyb3RlOg0KPiBIaSwNCj4gDQo+IFRoaXMgaXMgYSBjb2RlIHRvIHRlc3QuDQo+IA0KPiBD
-b21waWxlIHdpdGg6DQo+ICAgIGdjYyAtTzMgLWdnZGIzIC1ub3N0ZGxpYiAtbyB0ZXN0IHRl
-c3QuYw0KPiANCj4gVGVjaG5pY2FsIGV4cGxhbmF0aW9uOg0KPiBUaGUgU3lzdGVtIFYgQUJJ
-IG1hbmRhdGVzIHRoZSAlcnNwIG11c3QgYmUgMTYtYnl0ZSBhbGlnbmVkIGJlZm9yZQ0KPiBw
-ZXJmb3JtaW5nIGEgZnVuY3Rpb24gY2FsbCwgYnV0IHRoZSBjdXJyZW50IG5vbGliYy5oIHZp
-b2xhdGVzIGl0Lg0KPiANCj4gVGhpcyAlcnNwIGFsaWdubWVudCB2aW9sYXRpb24gbWFrZXMg
-dGhlIGNhbGxlZSBjYW4ndCBhbGlnbiBpdHMgc3RhY2sNCj4gcHJvcGVybHkuIE5vdGUgdGhh
-dCB0aGUgY2FsbGVlIG1heSBoYXZlIGEgc2l0dWF0aW9uIHdoZXJlIGl0IHJlcXVpcmVzDQo+
-IHZlY3RvciBhbGlnbmVkIG1vdmUuIEZvciBleGFtcGxlLCBgbW92YXBzYCB3aXRoIG1lbW9y
-eSBvcGVyYW5kIHcuci50Lg0KPiB4bW0gcmVnaXN0ZXJzLCBpdCByZXF1aXJlcyB0aGUgc3Jj
-L2RzdCBhZGRyZXNzIGJlIDE2LWJ5dGUgYWxpZ25lZC4NCj4gDQo+IFNpbmNlIHRoZSBjYWxs
-ZWUgY2FuJ3QgYWxpZ24gaXRzIHN0YWNrIHByb3Blcmx5LCBpdCB3aWxsIHNlZ2ZhdWx0IHdo
-ZW4NCj4gZXhlY3V0aW5nIGBtb3ZhcHNgLiBUaGUgZm9sbG93aW5nIEMgY29kZSBpcyB0aGUg
-cmVwcm9kdWNlciBhbmQgdGVzdA0KPiB0byBlbnN1cmUgdGhlIGJ1ZyByZWFsbHkgZXhpc3Rz
-IGFuZCB0aGlzIHBhdGNoIGZpeGVzIGl0Lg0KPiANCj4gYGBgDQo+IC8qIFNQRFgtTGljZW5z
-ZS1JZGVudGlmaWVyOiBMR1BMLTIuMSBPUiBNSVQgKi8NCj4gDQo+IC8qDQo+ICAgKiBCdWcg
-cmVwcm9kdWNlciBhbmQgdGVzdCBmb3IgV2lsbHkncyBub2xpYmMgKHg4Ni02NCkgYnkgQW1t
-YXIuDQo+ICAgKg0KPiAgICogQ29tcGlsZSB3aXRoOg0KPiAgICogIGdjYyAtTzMgLWdnZGIz
-IC1ub3N0ZGxpYiAtbyB0ZXN0IHRlc3QuYw0KPiAgICovDQo+IA0KPiAjaW5jbHVkZSAidG9v
-bHMvaW5jbHVkZS9ub2xpYmMvbm9saWJjLmgiDQo+IA0KPiBzdGF0aWMgdm9pZCBkdW1wX2Fy
-Z3YoaW50IGFyZ2MsIGNoYXIgKmFyZ3ZbXSkNCj4gew0KPiAJaW50IGk7DQo+IAljb25zdCBj
-aGFyIHN0cltdID0gIlxuRHVtcGluZyBhcmd2Li4uXG4iOw0KPiANCj4gCXdyaXRlKDEsIHN0
-ciwgc3RybGVuKHN0cikpOw0KPiAJZm9yIChpID0gMDsgaSA8IGFyZ2M7IGkrKykgew0KPiAJ
-CXdyaXRlKDEsIGFyZ3ZbaV0sIHN0cmxlbihhcmd2W2ldKSk7DQo+IAkJd3JpdGUoMSwgIlxu
-IiwgMSk7DQo+IAl9DQo+IH0NCj4gDQo+IHN0YXRpYyB2b2lkIGR1bXBfZW52cChjaGFyICpl
-bnZwW10pDQo+IHsNCj4gCWludCBpID0gMDsNCj4gCWNvbnN0IGNoYXIgc3RyW10gPSAiXG5E
-dW1waW5nIGVudnAuLi5cbiI7DQo+IA0KPiAJd3JpdGUoMSwgc3RyLCBzdHJsZW4oc3RyKSk7
-DQo+IAl3aGlsZSAoZW52cFtpXSAhPSBOVUxMKSB7DQo+IAkJd3JpdGUoMSwgZW52cFtpXSwg
-c3RybGVuKGVudnBbaV0pKTsNCj4gCQl3cml0ZSgxLCAiXG4iLCAxKTsNCj4gCQlpKys7DQo+
-IAl9DQo+IH0NCj4gDQo+ICNkZWZpbmUgcmVhZF9iYXJyaWVyKFBUUikgX19hc21fXyB2b2xh
-dGlsZSgiIjo6InIiKFBUUik6Im1lbW9yeSIpDQo+IA0KPiBfX2F0dHJpYnV0ZV9fKChfX3Rh
-cmdldF9fKCJzc2UyIikpKQ0KPiBzdGF0aWMgdm9pZCB0ZXN0X3NzZV9tb3ZlX2FsaWduZWQo
-dm9pZCkNCj4gew0KPiAJaW50IGk7DQo+IAlpbnQgYXJyWzMyXSBfX2F0dHJpYnV0ZV9fKChf
-X2FsaWduZWRfXygxNikpKTsNCj4gDQo+IAkvKg0KPiAJICogVGhlIGFzc2lnbm1lbnQgaW5z
-aWRlIHRoaXMgbG9vcCBpcyB2ZXJ5IGxpa2VseQ0KPiAJICogcGVyZm9ybWVkIHdpdGggYWxp
-Z25lZCBtb3ZlLCB0aHVzIGlmIHdlIGRvbid0DQo+IAkgKiBhbGlnbiB0aGUgJXJzcCBwcm9w
-ZXJseSwgaXQgd2lsbCBmYXVsdCENCj4gCSAqDQo+IAkgKiBJZiB3ZSBmYXVsdCBkdWUgdG8g
-bWlzYWxpZ25lZCBoZXJlLCB0aGVuIHRoZXJlDQo+IAkgKiBtdXN0IGJlIGEgY2FsbGVyIGJl
-bG93IHVzIHRoYXQgdmlvbGF0ZXMgU3lzVg0KPiAJICogQUJJIHcuci50LiB0byAlcnNwIGFs
-aWdubWVudCBiZWZvcmUgZnVuYyBjYWxsLg0KPiAJICovDQo+IAlmb3IgKGkgPSAwOyBpIDwg
-MzI7IGkrKykNCj4gCQlhcnJbaV0gPSAxOw0KPiANCj4gCXJlYWRfYmFycmllcihhcnIpOw0K
-PiB9DQo+IA0KPiBpbnQgbWFpbihpbnQgYXJnYywgY2hhciAqYXJndltdLCBjaGFyICplbnZw
-W10pDQo+IHsNCj4gCWR1bXBfYXJndihhcmdjLCBhcmd2KTsNCj4gCWR1bXBfZW52cChlbnZw
-KTsNCj4gCXRlc3Rfc3NlX21vdmVfYWxpZ25lZCgpOw0KPiAJcmV0dXJuIDA7DQo+IH0NCj4g
-YGBgDQo+IA0K
+--Sig_/tYZFJ6chdxiLHwqx9EJihw_
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+
+Hi all,
+
+After merging the drm-misc tree, today's linux-next build (arm
+multi_v7_defconfig) failed like this:
+
+drivers/gpu/drm/drm_modeset_lock.c:111:29: error: conflicting types for '__=
+stack_depot_save'
+  111 | static depot_stack_handle_t __stack_depot_save(void)
+      |                             ^~~~~~~~~~~~~~~~~~
+In file included from include/linux/page_ext.h:7,
+                 from include/linux/mm.h:25,
+                 from include/linux/kallsyms.h:13,
+                 from include/linux/bpf.h:20,
+                 from include/linux/bpf-cgroup.h:5,
+                 from include/linux/cgroup-defs.h:22,
+                 from include/linux/cgroup.h:28,
+                 from include/linux/memcontrol.h:13,
+                 from include/linux/swap.h:9,
+                 from include/linux/suspend.h:5,
+                 from include/linux/regulator/consumer.h:35,
+                 from include/linux/i2c.h:18,
+                 from include/drm/drm_crtc.h:28,
+                 from include/drm/drm_atomic.h:31,
+                 from drivers/gpu/drm/drm_modeset_lock.c:24:
+include/linux/stackdepot.h:18:22: note: previous declaration of '__stack_de=
+pot_save' was here
+   18 | depot_stack_handle_t __stack_depot_save(unsigned long *entries,
+      |                      ^~~~~~~~~~~~~~~~~~
+
+Caused by commit
+
+  cd06ab2fd48f ("drm/locking: add backtrace for locking contended locks wit=
+hout backoff")
+
+This may only have been revealed because of another fix I have had to
+apply today.
+
+I have applied the following patch for today.
+
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Fri, 15 Oct 2021 20:17:52 +1100
+Subject: [PATCH] drm/locking: fix for name conflict
+
+Fixes: cd06ab2fd48f ("drm/locking: add backtrace for locking contended lock=
+s without backoff")
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ drivers/gpu/drm/drm_modeset_lock.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/gpu/drm/drm_modeset_lock.c b/drivers/gpu/drm/drm_modes=
+et_lock.c
+index 4d32b61fa1fd..ee36dd20900d 100644
+--- a/drivers/gpu/drm/drm_modeset_lock.c
++++ b/drivers/gpu/drm/drm_modeset_lock.c
+@@ -79,7 +79,7 @@
+ static DEFINE_WW_CLASS(crtc_ww_class);
+=20
+ #if IS_ENABLED(CONFIG_DRM_DEBUG_MODESET_LOCK)
+-static noinline depot_stack_handle_t __stack_depot_save(void)
++static noinline depot_stack_handle_t __drm_stack_depot_save(void)
+ {
+ 	unsigned long entries[8];
+ 	unsigned int n;
+@@ -108,7 +108,7 @@ static void __stack_depot_print(depot_stack_handle_t st=
+ack_depot)
+ 	kfree(buf);
+ }
+ #else /* CONFIG_DRM_DEBUG_MODESET_LOCK */
+-static depot_stack_handle_t __stack_depot_save(void)
++static depot_stack_handle_t __drm_stack_depot_save(void)
+ {
+ 	return 0;
+ }
+@@ -317,7 +317,7 @@ static inline int modeset_lock(struct drm_modeset_lock =
+*lock,
+ 		ret =3D 0;
+ 	} else if (ret =3D=3D -EDEADLK) {
+ 		ctx->contended =3D lock;
+-		ctx->stack_depot =3D __stack_depot_save();
++		ctx->stack_depot =3D __drm_stack_depot_save();
+ 	}
+=20
+ 	return ret;
+--=20
+2.33.0
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/tYZFJ6chdxiLHwqx9EJihw_
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFpSVgACgkQAVBC80lX
+0Gw7Kgf/ZuKzlxTQSDLKFDfn6/O5S38xFR4DSOjqJwWETTSS1gTN1tdS/1TxVI/G
+y6+7Y5jDRBuMaxCVAFETuImKwexIXsoh6um+iVJaXW90a7PDK737ldIACmqMurmr
+Q+BeiAjZ8+NA1amrOv/nhiMOPWL+cW2v8OHj4t4MWZYB9HspgtkRia6qlLBQcttZ
+pA33MK0v3gZFZ/KCfIFqFe6AD01LDvhepOrMuOC0mnBw6a2dktAEh/wuMN+KqExf
+k2M/wUEwgyQjB8Y9OH0aJDmmHnTbPIJ+WZZ030zyX1oMPhN2dqq9jw8E29HqryjI
+Y8+MtBPX2O2Df9cT9zQdLlKmDFx2Vg==
+=4IfR
+-----END PGP SIGNATURE-----
+
+--Sig_/tYZFJ6chdxiLHwqx9EJihw_--
