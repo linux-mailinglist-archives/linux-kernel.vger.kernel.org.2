@@ -2,94 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C15CC42FD25
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 22:58:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96F0042FD2F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 23:00:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243006AbhJOU7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 16:59:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60738 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236330AbhJOU7v (ORCPT
+        id S243041AbhJOVCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 17:02:03 -0400
+Received: from hostingweb31-40.netsons.net ([89.40.174.40]:37390 "EHLO
+        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231621AbhJOVCC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 16:59:51 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56043C061570
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 13:57:44 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id p68so9165545iof.6
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 13:57:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Uge5ZOWl3q4I1NVteqpVHF8PMneDZ2lRgKnZvb5BpEs=;
-        b=Ksyb4zr3uS7UeYs0WW2FtpwpHOu77tfrzgWD1YWS46TV+RqPzTp0Qzlh2+74FpcVl+
-         cXtiFr4uAG5IfMpdsb8SrDhK9kPYRwY/VFOI03nOVz4saLoFoT/7EyNgIf9Zr4wcBmHH
-         xUAqn4IF9BAllx3I8NBKKG/SlCjUMRHAhPeXA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Uge5ZOWl3q4I1NVteqpVHF8PMneDZ2lRgKnZvb5BpEs=;
-        b=T5/SPvTh3mVEoiXdOeQw7BGQbefXs4b30mIkam2ue42Le7XOwZ/bZYLUCW0YARRIzr
-         yPUkYaSASKERlfpw6q6O4A9hiHR2tiZLprJbLMKAjLRuQZWrd4TfGUW7lx6wZCx/pGHC
-         mRpxM19+Gn/DYNQTTCB7NeUQWJwdeBG2vHm6gTIYudGsfEd5sYvm3n0YK1LSOpitSLru
-         6zND3Qu1SStVs/PUe7RfCdH0YpYYmLmD3ujonTgDC6rHKG9prOWkdSpc9X2gj9pFd3Cp
-         Wcsvr6mABIhjs1U0RpmjbR62PIF5hg/dLec3fhv7s9+/THNAI84LnUUN2DqAOOcXvjpu
-         MvBw==
-X-Gm-Message-State: AOAM531fnNkdafasTtKc0Xs3F5eJJyZXCA0CXgCU7tDzenmAi6V+3cAx
-        neMtTD2D8ii+BjXTF0dhw3Cpyg==
-X-Google-Smtp-Source: ABdhPJwCrgcPsrDwyU90LRG28xpnvr/V2Y/qzR7lmpRTOWlHhV2Eaye89tf1xQWb7tpBJjDnEUMaig==
-X-Received: by 2002:a05:6602:2d4d:: with SMTP id d13mr5351258iow.53.1634331463787;
-        Fri, 15 Oct 2021 13:57:43 -0700 (PDT)
-Received: from shuah-t480s.internal (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id ay5sm3455111iob.46.2021.10.15.13.57.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Oct 2021 13:57:43 -0700 (PDT)
-From:   Shuah Khan <skhan@linuxfoundation.org>
-To:     mcgrof@kernel.org, jeyu@kernel.org
-Cc:     Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] module: fix validate_section_offset() overflow bug on 64-bit
-Date:   Fri, 15 Oct 2021 14:57:41 -0600
-Message-Id: <20211015205741.38283-2-skhan@linuxfoundation.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211015205741.38283-1-skhan@linuxfoundation.org>
-References: <20211015205741.38283-1-skhan@linuxfoundation.org>
+        Fri, 15 Oct 2021 17:02:02 -0400
+Received: from [77.244.183.192] (port=63076 helo=[192.168.178.41])
+        by hostingweb31.netsons.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <luca@lucaceresoli.net>)
+        id 1mbUIz-007DZ3-HN; Fri, 15 Oct 2021 22:59:53 +0200
+Subject: Re: [PATCH 4/8] rtc: max77686: remove useless variable
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
+        linux-rtc@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        Chiwoong Byun <woong.byun@samsung.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>
+References: <20211011155615.257529-1-luca@lucaceresoli.net>
+ <20211011155615.257529-5-luca@lucaceresoli.net> <YWm7VpFY3LABdKmn@piout.net>
+From:   Luca Ceresoli <luca@lucaceresoli.net>
+Message-ID: <61be8df2-cec5-8df0-425d-aae458710112@lucaceresoli.net>
+Date:   Fri, 15 Oct 2021 22:59:51 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YWm7VpFY3LABdKmn@piout.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lucaceresoli.net
+X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca@lucaceresoli.net
+X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-validate_section_offset() uses unsigned long local variable to
-add/store shdr->sh_offset and shdr->sh_size on all platforms.
-unsigned long is too short when sh_offset is Elf64_Off which
-would be the case on 64bit ELF headers.
+Hi,
 
-Fix the overflow problem using the right size local variable when
-CONFIG_64BIT is defined.
+On 15/10/21 19:33, Alexandre Belloni wrote:
+> On 11/10/2021 17:56:11+0200, Luca Ceresoli wrote:
+>>> rtc_24hr_mode is set to 1 in max77686_rtc_probe()->max77686_rtc_init_reg()
+>> before being read and is never set back to 0 again. As such, it is de facto
+>> a constant.
+>>
+>> Remove the variable and the unreachable code.
+>>
+>> Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
+>> ---
+>>  drivers/rtc/rtc-max77686.c | 11 +----------
+>>  1 file changed, 1 insertion(+), 10 deletions(-)
+>>
+>> diff --git a/drivers/rtc/rtc-max77686.c b/drivers/rtc/rtc-max77686.c
+>> index 7e765207f28e..9901c596998a 100644
+>> --- a/drivers/rtc/rtc-max77686.c
+>> +++ b/drivers/rtc/rtc-max77686.c
+>> @@ -99,7 +99,6 @@ struct max77686_rtc_info {
+>>  
+>>  	int rtc_irq;
+>>  	int virq;
+>> -	int rtc_24hr_mode;
+>>  };
+>>  
+>>  enum MAX77686_RTC_OP {
+>> @@ -278,13 +277,7 @@ static void max77686_rtc_data_to_tm(u8 *data, struct rtc_time *tm,
+>>  
+>>  	tm->tm_sec = data[RTC_SEC] & mask;
+>>  	tm->tm_min = data[RTC_MIN] & mask;
+>> -	if (info->rtc_24hr_mode) {
+>> -		tm->tm_hour = data[RTC_HOUR] & 0x1f;
+>> -	} else {
+>> -		tm->tm_hour = data[RTC_HOUR] & 0x0f;
+>> -		if (data[RTC_HOUR] & HOUR_PM_MASK)
+> 
+> So I guess HOUR_PM_SHIFT and HOUR_PM_MASK can also be removed
 
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
----
- kernel/module.c | 4 ++++
- 1 file changed, 4 insertions(+)
+Sure. Coming in v2.
 
-diff --git a/kernel/module.c b/kernel/module.c
-index f5d6e388478c..e7402fb1f4e7 100644
---- a/kernel/module.c
-+++ b/kernel/module.c
-@@ -2942,7 +2942,11 @@ static int module_sig_check(struct load_info *info, int flags)
- 
- static int validate_section_offset(struct load_info *info, Elf_Shdr *shdr)
- {
-+#if defined(CONFIG_64BIT)
-+	unsigned long long secend;
-+#else
- 	unsigned long secend;
-+#endif
- 
- 	/*
- 	 * Check for both overflow and offset/size being
+Thanks.
 -- 
-2.30.2
-
+Luca
