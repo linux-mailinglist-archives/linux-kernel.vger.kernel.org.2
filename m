@@ -2,230 +2,309 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F15D442EC8B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 10:37:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0280242EC96
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 10:38:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235730AbhJOIjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 04:39:51 -0400
-Received: from smtpbg506.qq.com ([203.205.250.33]:52526 "EHLO smtpbg506.qq.com"
+        id S235803AbhJOIkv convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 15 Oct 2021 04:40:51 -0400
+Received: from aposti.net ([89.234.176.197]:47964 "EHLO aposti.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231825AbhJOIju (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 04:39:50 -0400
-X-Greylist: delayed 2009 seconds by postgrey-1.27 at vger.kernel.org; Fri, 15 Oct 2021 04:39:49 EDT
-X-QQ-mid: bizesmtp40t1634287059t21lhum5
-Received: from localhost.localdomain (unknown [113.57.152.160])
-        by esmtp6.qq.com (ESMTP) with 
-        id ; Fri, 15 Oct 2021 16:37:34 +0800 (CST)
-X-QQ-SSF: 01400000002000B0D000B00B0000000
-X-QQ-FEAT: Nl5n8N+tNRHNcBZCplKORxUHxUqP9LhxmCOG246XWsRT5s/HGA8FiNUuCP6OS
-        MnUt42H7QNlIUSHqG5Oz9B9UlIBe74tnmQs/n9e3L/6pHB2rQ7Gna0cLEfwZ32XHl5Og2mp
-        hIuvDyxYKhyyesBu5ul0gaCoL8z7FCupk+9+jydzIZc7og8u8n28/zM0hGRdrs5KIX6lWnI
-        yzW55zLqX+79Iv2WEmZ60M9AgHMzONRzfa4m9mRD5vokOkAX4Fz4cl5FmM01aW94LYUmaRU
-        FWVLb1yiIKB9zesTyuwnUFtJMyiirxJhiV9aXo16HhQ5pfpJ1o4m1B8ilwjH4ZcEjyp/KyS
-        2IA+TilpVYcr41zPMx7bvf2A/F94VTiEgFdI0VcuIkxhM66RSA=
-X-QQ-GoodBg: 2
-From:   lianzhi chang <changlianzhi@uniontech.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-input@vger.kernel.org,
-        lianzhi chang <changlianzhi@uniontech.com>
-Subject: [PATCH] input&tty: Fix the keyboard led light display problem
-Date:   Fri, 15 Oct 2021 16:37:31 +0800
-Message-Id: <20211015083731.7643-1-changlianzhi@uniontech.com>
-X-Mailer: git-send-email 2.20.1
+        id S231825AbhJOIku (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 04:40:50 -0400
+Date:   Fri, 15 Oct 2021 09:38:31 +0100
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH 2/3] mtd: rawnand: Export nand_read_page_hwecc_oob_first()
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Harvey Hunt <harveyhuntnexus@gmail.com>, list@opendingux.net,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, stable@vger.kernel.org
+Message-Id: <70G01R.2VROMW06O3O83@crapouillou.net>
+In-Reply-To: <20211015081313.60018976@xps13>
+References: <20211009184952.24591-1-paul@crapouillou.net>
+        <20211009184952.24591-3-paul@crapouillou.net>
+        <20211015081313.60018976@xps13>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign1
-X-QQ-Bgrelay: 1
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Switching from the desktop environment to the tty environment,
-the state of the keyboard led lights and the state of the keyboard
-lock are inconsistent. This is because the attribute kb->kbdmode
-of the tty bound in the desktop environment (xorg) is set to
-VC_OFF, which causes the ledstate and kb->ledflagstate
-values of the bound tty to always be 0, which causes the switch
-from the desktop When to the tty environment, the LED light
-status is inconsistent with the keyboard lock status.
+Hi Miquel,
 
-Signed-off-by: lianzhi chang <changlianzhi@uniontech.com>
----
-The latest changes:
-(1) Move the definition of ledstate to the input module (/drivers/input/input.c), 
-and set or get its value through the input_update_ledstate and input_get_ledstate 
-functions.
-(2) To update the ledstate reference in keyboard.c, you must first get the value 
-through input_get_ledstate.
-(3) Other necessary changes
+Le ven., oct. 15 2021 at 08:13:13 +0200, Miquel Raynal 
+<miquel.raynal@bootlin.com> a écrit :
+> Hi Paul,
+> 
+> paul@crapouillou.net wrote on Sat,  9 Oct 2021 20:49:51 +0200:
+> 
+>>  Move the function nand_read_page_hwecc_oob_first() (previously
+>>  nand_davinci_read_page_hwecc_oob_first()) to nand_base.c, and 
+>> export it
+>>  as a GPL symbol, so that it can be used by more modules.
+>> 
+>>  Cc: <stable@vger.kernel.org> # v5.2
+>>  Fixes: a0ac778eb82c ("mtd: rawnand: ingenic: Add support for the 
+>> JZ4740")
+>>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+>>  ---
+>>   drivers/mtd/nand/raw/davinci_nand.c | 70 
+>> +----------------------------
+>>   drivers/mtd/nand/raw/nand_base.c    | 69 
+>> ++++++++++++++++++++++++++++
+>>   include/linux/mtd/rawnand.h         |  2 +
+>>   3 files changed, 72 insertions(+), 69 deletions(-)
+>> 
+>>  diff --git a/drivers/mtd/nand/raw/davinci_nand.c 
+>> b/drivers/mtd/nand/raw/davinci_nand.c
+>>  index 89de24d3bb7a..45fec8c192ab 100644
+>>  --- a/drivers/mtd/nand/raw/davinci_nand.c
+>>  +++ b/drivers/mtd/nand/raw/davinci_nand.c
+>>  @@ -371,74 +371,6 @@ static int nand_davinci_correct_4bit(struct 
+>> nand_chip *chip, u_char *data,
+>>   	return corrected;
+>>   }
+>> 
+>>  -/**
+>>  - * nand_read_page_hwecc_oob_first - hw ecc, read oob first
+>>  - * @chip: nand chip info structure
+>>  - * @buf: buffer to store read data
+>>  - * @oob_required: caller requires OOB data read to chip->oob_poi
+>>  - * @page: page number to read
+>>  - *
+>>  - * Hardware ECC for large page chips, require OOB to be read 
+>> first. For this
+>>  - * ECC mode, the write_page method is re-used from ECC_HW. These 
+>> methods
+>>  - * read/write ECC from the OOB area, unlike the ECC_HW_SYNDROME 
+>> support with
+>>  - * multiple ECC steps, follows the "infix ECC" scheme and 
+>> reads/writes ECC from
+>>  - * the data area, by overwriting the NAND manufacturer bad block 
+>> markings.
+>>  - */
+>>  -static int nand_davinci_read_page_hwecc_oob_first(struct nand_chip 
+>> *chip,
+>>  -						  uint8_t *buf,
+>>  -						  int oob_required, int page)
+>>  -{
+>>  -	struct mtd_info *mtd = nand_to_mtd(chip);
+>>  -	int i, eccsize = chip->ecc.size, ret;
+>>  -	int eccbytes = chip->ecc.bytes;
+>>  -	int eccsteps = chip->ecc.steps;
+>>  -	uint8_t *p = buf;
+>>  -	uint8_t *ecc_code = chip->ecc.code_buf;
+>>  -	unsigned int max_bitflips = 0;
+>>  -
+>>  -	/* Read the OOB area first */
+>>  -	ret = nand_read_oob_op(chip, page, 0, chip->oob_poi, 
+>> mtd->oobsize);
+>>  -	if (ret)
+>>  -		return ret;
+>>  -
+>>  -	ret = nand_read_page_op(chip, page, 0, NULL, 0);
+>>  -	if (ret)
+>>  -		return ret;
+>>  -
+>>  -	ret = mtd_ooblayout_get_eccbytes(mtd, ecc_code, chip->oob_poi, 0,
+>>  -					 chip->ecc.total);
+>>  -	if (ret)
+>>  -		return ret;
+>>  -
+>>  -	for (i = 0; eccsteps; eccsteps--, i += eccbytes, p += eccsize) {
+>>  -		int stat;
+>>  -
+>>  -		chip->ecc.hwctl(chip, NAND_ECC_READ);
+>>  -
+>>  -		ret = nand_read_data_op(chip, p, eccsize, false, false);
+>>  -		if (ret)
+>>  -			return ret;
+>>  -
+>>  -		stat = chip->ecc.correct(chip, p, &ecc_code[i], NULL);
+>>  -		if (stat == -EBADMSG &&
+>>  -		    (chip->ecc.options & NAND_ECC_GENERIC_ERASED_CHECK)) {
+>>  -			/* check for empty pages with bitflips */
+>>  -			stat = nand_check_erased_ecc_chunk(p, eccsize,
+>>  -							   &ecc_code[i],
+>>  -							   eccbytes, NULL, 0,
+>>  -							   chip->ecc.strength);
+>>  -		}
+>>  -
+>>  -		if (stat < 0) {
+>>  -			mtd->ecc_stats.failed++;
+>>  -		} else {
+>>  -			mtd->ecc_stats.corrected += stat;
+>>  -			max_bitflips = max_t(unsigned int, max_bitflips, stat);
+>>  -		}
+>>  -	}
+>>  -	return max_bitflips;
+>>  -}
+>>  -
+>>   
+>> /*----------------------------------------------------------------------*/
+>> 
+>>   /* An ECC layout for using 4-bit ECC with small-page flash, storing
+>>  @@ -648,7 +580,7 @@ static int davinci_nand_attach_chip(struct 
+>> nand_chip *chip)
+>>   			} else if (chunks == 4 || chunks == 8) {
+>>   				mtd_set_ooblayout(mtd,
+>>   						  nand_get_large_page_ooblayout());
+>>  -				chip->ecc.read_page = nand_davinci_read_page_hwecc_oob_first;
+>>  +				chip->ecc.read_page = nand_read_page_hwecc_oob_first;
+>>   			} else {
+>>   				return -EIO;
+>>   			}
+>>  diff --git a/drivers/mtd/nand/raw/nand_base.c 
+>> b/drivers/mtd/nand/raw/nand_base.c
+>>  index 3d6c6e880520..cb5f343b9fa2 100644
+>>  --- a/drivers/mtd/nand/raw/nand_base.c
+>>  +++ b/drivers/mtd/nand/raw/nand_base.c
+>>  @@ -3160,6 +3160,75 @@ static int nand_read_page_hwecc(struct 
+>> nand_chip *chip, uint8_t *buf,
+>>   	return max_bitflips;
+>>   }
+>> 
+>>  +/**
+>>  + * nand_read_page_hwecc_oob_first - Hardware ECC page read with ECC
+>>  + *                                  data read from OOB area
+>>  + * @chip: nand chip info structure
+>>  + * @buf: buffer to store read data
+>>  + * @oob_required: caller requires OOB data read to chip->oob_poi
+>>  + * @page: page number to read
+>>  + *
+>>  + * Hardware ECC for large page chips, require OOB to be read 
+>> first. For this
+> 
+> requires
+> 
+> With this ECC configuration?
+> 
+>>  + * ECC mode, the write_page method is re-used from ECC_HW. These 
+>> methods
+> 
+> I do not understand this sentence nor the next one about syndrome. I
+> believe it is related to your engine and should not leak into the 
+> core.
+> 
+>>  + * read/write ECC from the OOB area, unlike the ECC_HW_SYNDROME 
+>> support with
+>>  + * multiple ECC steps, follows the "infix ECC" scheme and 
+>> reads/writes ECC from
+>>  + * the data area, by overwriting the NAND manufacturer bad block 
+>> markings.
+> 
+> That's a sentence I don't like. What do you mean exactly?
+> 
+> What "Infix ECC" scheme is?
+> 
+> Do you mean that unlike the syndrome  mode it *does not* overwrite the
+> BBM ?
 
- drivers/input/input.c     | 46 ++++++++++++++++++++++++++++++++++++++-
- drivers/tty/vt/keyboard.c | 19 ++++++++++++++--
- include/linux/input.h     |  3 +++
- 3 files changed, 65 insertions(+), 3 deletions(-)
+I don't mean anything. I did not write that comment. I just moved the 
+function verbatim with no changes. If something needs to be fixed, then 
+it needs to be fixed before/after this patch.
 
-diff --git a/drivers/input/input.c b/drivers/input/input.c
-index ccaeb2426385..8c0ef947ac34 100644
---- a/drivers/input/input.c
-+++ b/drivers/input/input.c
-@@ -37,6 +37,11 @@ static DEFINE_IDA(input_ida);
- static LIST_HEAD(input_dev_list);
- static LIST_HEAD(input_handler_list);
- 
-+#define VC_SCROLLOCK	0	/* scroll-lock mode */
-+#define VC_NUMLOCK	1	/* numeric lock mode */
-+#define VC_CAPSLOCK	2	/* capslock mode */
-+static unsigned int ledstate = -1U;			/* undefined */
-+
- /*
-  * input_mutex protects access to both input_dev_list and input_handler_list.
-  * This also causes input_[un]register_device and input_[un]register_handler
-@@ -472,8 +477,12 @@ void input_inject_event(struct input_handle *handle,
- 
- 		rcu_read_lock();
- 		grab = rcu_dereference(dev->grab);
--		if (!grab || grab == handle)
-+		if (!grab || grab == handle) {
- 			input_handle_event(dev, type, code, value);
-+
-+			if (type == EV_LED && code <= LED_SCROLLL)
-+				input_update_ledstate(code, value);
-+		}
- 		rcu_read_unlock();
- 
- 		spin_unlock_irqrestore(&dev->event_lock, flags);
-@@ -481,6 +490,41 @@ void input_inject_event(struct input_handle *handle,
- }
- EXPORT_SYMBOL(input_inject_event);
- 
-+void input_update_ledstate(unsigned int flag, unsigned int value)
-+{
-+	unsigned int bit;
-+
-+	switch (flag) {
-+	case LED_NUML:
-+		bit = VC_NUMLOCK;
-+		break;
-+	case LED_CAPSL:
-+		bit = VC_CAPSLOCK;
-+		break;
-+	case LED_SCROLLL:
-+		bit = VC_SCROLLOCK;
-+		break;
-+	default:
-+		WARN_ON_ONCE(1);
-+		return;
-+	}
-+
-+	if (ledstate == -1U)
-+		ledstate = 0;
-+
-+	if (value)
-+		ledstate |= BIT(bit);
-+	else
-+		ledstate &= ~BIT(bit);
-+}
-+EXPORT_SYMBOL(input_update_ledstate);
-+
-+unsigned int input_get_ledstate(void)
-+{
-+	return ledstate;
-+}
-+EXPORT_SYMBOL(input_get_ledstate);
-+
- /**
-  * input_alloc_absinfo - allocates array of input_absinfo structs
-  * @dev: the input device emitting absolute events
-diff --git a/drivers/tty/vt/keyboard.c b/drivers/tty/vt/keyboard.c
-index c7fbbcdcc346..0cfccb1d7992 100644
---- a/drivers/tty/vt/keyboard.c
-+++ b/drivers/tty/vt/keyboard.c
-@@ -151,7 +151,6 @@ static bool rep;			/* flag telling character repeat */
- 
- static int shift_state = 0;
- 
--static unsigned int ledstate = -1U;			/* undefined */
- static unsigned char ledioctl;
- 
- /*
-@@ -1021,10 +1020,14 @@ struct kbd_led_trigger {
- 
- static int kbd_led_trigger_activate(struct led_classdev *cdev)
- {
-+	unsigned int ledstate;
-+
- 	struct kbd_led_trigger *trigger =
- 		container_of(cdev->trigger, struct kbd_led_trigger, trigger);
- 
- 	tasklet_disable(&keyboard_tasklet);
-+
-+	ledstate = input_get_ledstate();
- 	if (ledstate != -1U)
- 		led_trigger_event(&trigger->trigger,
- 				  ledstate & trigger->mask ?
-@@ -1137,6 +1140,10 @@ static void kbd_init_leds(void)
-  */
- static unsigned char getledstate(void)
- {
-+	unsigned int ledstate;
-+
-+	ledstate = input_get_ledstate();
-+
- 	return ledstate & 0xff;
- }
- 
-@@ -1248,16 +1255,21 @@ void vt_kbd_con_stop(unsigned int console)
- static void kbd_bh(struct tasklet_struct *unused)
- {
- 	unsigned int leds;
-+	unsigned int ledstate;
- 	unsigned long flags;
-+	struct kbd_struct *kb = kbd_table + fg_console;
-+
-+	if (kb->kbdmode == VC_OFF)
-+		return;
- 
- 	spin_lock_irqsave(&led_lock, flags);
- 	leds = getleds();
-+	ledstate = input_get_ledstate();
- 	leds |= (unsigned int)kbd->lockstate << 8;
- 	spin_unlock_irqrestore(&led_lock, flags);
- 
- 	if (leds != ledstate) {
- 		kbd_propagate_led_state(ledstate, leds);
--		ledstate = leds;
- 	}
- }
- 
-@@ -1604,8 +1616,11 @@ static void kbd_disconnect(struct input_handle *handle)
-  */
- static void kbd_start(struct input_handle *handle)
- {
-+	unsigned int ledstate;
-+
- 	tasklet_disable(&keyboard_tasklet);
- 
-+	ledstate = input_get_ledstate();
- 	if (ledstate != -1U)
- 		kbd_update_leds_helper(handle, &ledstate);
- 
-diff --git a/include/linux/input.h b/include/linux/input.h
-index 0354b298d874..0e0ba53a9cc7 100644
---- a/include/linux/input.h
-+++ b/include/linux/input.h
-@@ -420,6 +420,9 @@ ktime_t *input_get_timestamp(struct input_dev *dev);
- void input_event(struct input_dev *dev, unsigned int type, unsigned int code, int value);
- void input_inject_event(struct input_handle *handle, unsigned int type, unsigned int code, int value);
- 
-+void input_update_ledstate(unsigned int flag, unsigned int value);
-+unsigned int input_get_ledstate(void);
-+
- static inline void input_report_key(struct input_dev *dev, unsigned int code, int value)
- {
- 	input_event(dev, EV_KEY, code, !!value);
--- 
-2.20.1
+>>  + */
+>>  +int nand_read_page_hwecc_oob_first(struct nand_chip *chip, uint8_t 
+>> *buf,
+>>  +				   int oob_required, int page)
+>>  +{
+>>  +	struct mtd_info *mtd = nand_to_mtd(chip);
+>>  +	int i, eccsize = chip->ecc.size, ret;
+>>  +	int eccbytes = chip->ecc.bytes;
+>>  +	int eccsteps = chip->ecc.steps;
+>>  +	uint8_t *p = buf;
+>>  +	uint8_t *ecc_code = chip->ecc.code_buf;
+>>  +	unsigned int max_bitflips = 0;
+>>  +
+>>  +	/* Read the OOB area first */
+>>  +	ret = nand_read_oob_op(chip, page, 0, chip->oob_poi, 
+>> mtd->oobsize);
+>>  +	if (ret)
+>>  +		return ret;
+>>  +
+>>  +	ret = nand_read_page_op(chip, page, 0, NULL, 0);
+> 
+> Definitely not, your are requesting the chip to do the read_page
+> operation twice. You only need a nand_change_read_column I believe.
 
+Again, this code is just being moved around - don't shoot the messenger 
+:)
+
+>>  +	if (ret)
+>>  +		return ret;
+>>  +
+>>  +	ret = mtd_ooblayout_get_eccbytes(mtd, ecc_code, chip->oob_poi, 0,
+>>  +					 chip->ecc.total);
+>>  +	if (ret)
+>>  +		return ret;
+>>  +
+>>  +	for (i = 0; eccsteps; eccsteps--, i += eccbytes, p += eccsize) {
+>>  +		int stat;
+>>  +
+>>  +		chip->ecc.hwctl(chip, NAND_ECC_READ);
+>>  +
+>>  +		ret = nand_read_data_op(chip, p, eccsize, false, false);
+>>  +		if (ret)
+>>  +			return ret;
+>>  +
+>>  +		stat = chip->ecc.correct(chip, p, &ecc_code[i], NULL);
+>>  +		if (stat == -EBADMSG &&
+>>  +		    (chip->ecc.options & NAND_ECC_GENERIC_ERASED_CHECK)) {
+>>  +			/* check for empty pages with bitflips */
+>>  +			stat = nand_check_erased_ecc_chunk(p, eccsize,
+>>  +							   &ecc_code[i],
+>>  +							   eccbytes, NULL, 0,
+>>  +							   chip->ecc.strength);
+>>  +		}
+>>  +
+>>  +		if (stat < 0) {
+>>  +			mtd->ecc_stats.failed++;
+>>  +		} else {
+>>  +			mtd->ecc_stats.corrected += stat;
+>>  +			max_bitflips = max_t(unsigned int, max_bitflips, stat);
+>>  +		}
+>>  +	}
+>>  +	return max_bitflips;
+>>  +}
+>>  +EXPORT_SYMBOL_GPL(nand_read_page_hwecc_oob_first);
+>>  +
+>>   /**
+>>    * nand_read_page_syndrome - [REPLACEABLE] hardware ECC syndrome 
+>> based page read
+>>    * @chip: nand chip info structure
+>>  diff --git a/include/linux/mtd/rawnand.h 
+>> b/include/linux/mtd/rawnand.h
+>>  index b2f9dd3cbd69..5b88cd51fadb 100644
+>>  --- a/include/linux/mtd/rawnand.h
+>>  +++ b/include/linux/mtd/rawnand.h
+>>  @@ -1539,6 +1539,8 @@ int nand_read_data_op(struct nand_chip *chip, 
+>> void *buf, unsigned int len,
+>>   		      bool force_8bit, bool check_only);
+>>   int nand_write_data_op(struct nand_chip *chip, const void *buf,
+>>   		       unsigned int len, bool force_8bit);
+>>  +int nand_read_page_hwecc_oob_first(struct nand_chip *chip, uint8_t 
+>> *buf,
+>>  +				   int oob_required, int page);
+> 
+> You certainly want to add this symbol closer to the other read/write
+> page helpers?
+
+Where would that be? The other read/write page helpers are all "static" 
+so they don't appear in any header.
+
+Cheers,
+-Paul
+
+>> 
+>>   /* Scan and identify a NAND device */
+>>   int nand_scan_with_ids(struct nand_chip *chip, unsigned int 
+>> max_chips,
+> 
+> 
+> Thanks,
+> Miquèl
 
 
