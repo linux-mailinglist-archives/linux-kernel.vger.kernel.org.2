@@ -2,85 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA44A42EBF5
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 10:22:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A6AA42EBFD
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 10:23:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235359AbhJOIYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 04:24:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51508 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235117AbhJOIYZ (ORCPT
+        id S237065AbhJOIZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 04:25:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54662 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235337AbhJOIYr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 04:24:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634286139;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/hVtSE3UAjwBOXw7iqPb3EiCk271xlAhTvppR9x36J8=;
-        b=W72Pe2cCEI9McLon5buHiuyHt7Vie0u7fghypsaJtuk0U3YTmQdBs2dTdv1GTNw4xfjw/X
-        7YnBzzVg2ojpObpIdBv7Ks06wrrM5CtcRIO3kCZBGgKVMboOSmojqspDFFxJ2A5KbraAhO
-        YrWEYbRtke0GAWetXoOxqlbJlFgkIgk=
-Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com
- [209.85.210.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-419-2PYU8ze0NdyRh2tPw_oZIQ-1; Fri, 15 Oct 2021 04:22:17 -0400
-X-MC-Unique: 2PYU8ze0NdyRh2tPw_oZIQ-1
-Received: by mail-pf1-f200.google.com with SMTP id t79-20020a627852000000b0044d0ecd9f7aso4907219pfc.13
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 01:22:17 -0700 (PDT)
+        Fri, 15 Oct 2021 04:24:47 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D965DC06178C
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 01:22:19 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id b188so1913789iof.8
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 01:22:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=rf85IIrYDoX56EbvJwzXLS38sc5yj7QH4axMImYh7js=;
+        b=n3SmbojP6uzhIIBRVEZYykEfaLGU/2FyaEIqbjys7FVjHBDuiBtrz/o0kbB/24n7iT
+         csqbeBlz72+T7buAqi9plb+D05DJf1PAFXXaYQth34bQB1SXQtdmmObscR48dy5tGM8w
+         IQ+KB5QI4Mtn1CS0aQDTJozCjG12hopsf3VoGD9VN6n53lANSIxqiHmBqr14tJKRYBzT
+         yN6vohcA3z8Ze/KBVZZR5ZKoSSDjpVPCyA28FmwQaXmqdi9D2PxkaD1swAdLLjvw02kG
+         yCKusfmGXNaV//JK7AyxD3JumSB4jLb0UnazIqVWU2XN+al6ULvAyamn0KLq2nTLfTq2
+         GZIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=/hVtSE3UAjwBOXw7iqPb3EiCk271xlAhTvppR9x36J8=;
-        b=U4EuA+UuLsVR715gVaMo2CgdoNEeDJa5oo2KfSxrXSGKvgCRYts6SzGR/falmlLIfC
-         2AQHyHb1XqFBcxN6rjO8XBY/XL9T7OMWMRp2kuxyzxjxPXc8TtfVM23XssmQdN4YPY2b
-         W2LdcXwGZPUSlg3Y1TuwpjNamgzzkcSl1xunvSCd6/BOUis/AHKv4mmy847XEfpN8tRo
-         NPb+9Fx352w8pdDq8n1kcLIGv+nBJhAhs9+h7lK8+87yf4VDGsFBJFhYS3xAtWih0maq
-         rQppqbTYYWR3V5d3DJTZW5TE+jiLDddNeS+Y78viF5wnNjqTbQIMViLTDkfgTZhorzFn
-         66CQ==
-X-Gm-Message-State: AOAM531ypIsdw98hI2fju6ndw8MOwuw0md8UxolM3bExBkMwM4SsMNDa
-        3qOLdukYidwxDMnN15DoLHpwffW5V/uYesqj646OD2xivy+1NaWzPGxmDlXgMWdGc/o8IT0cfrF
-        4zLHoD5JwXlOeAK9r6n8NF17k
-X-Received: by 2002:a05:6a00:1883:b0:44c:e073:f2ce with SMTP id x3-20020a056a00188300b0044ce073f2cemr10065109pfh.37.1634286136501;
-        Fri, 15 Oct 2021 01:22:16 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzrC0PzzXQnPwaFNb+dmRT5iTWFhKV0XBcPLsrEtEELLmF3JRURWafF67rkt2hIgZ25jkwhrw==
-X-Received: by 2002:a05:6a00:1883:b0:44c:e073:f2ce with SMTP id x3-20020a056a00188300b0044ce073f2cemr10065073pfh.37.1634286136192;
-        Fri, 15 Oct 2021 01:22:16 -0700 (PDT)
-Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id oo9sm4771857pjb.53.2021.10.15.01.22.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Oct 2021 01:22:15 -0700 (PDT)
-Subject: Re: [PATCH v5 1/8] virtio-pci: introduce legacy device module
-To:     Wu Zongyong <wuzongyong@linux.alibaba.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, mst@redhat.com
-Cc:     wei.yang1@linux.alibaba.com
-References: <cover.1632882380.git.wuzongyong@linux.alibaba.com>
- <cover.1634281805.git.wuzongyong@linux.alibaba.com>
- <17a38d70dd6f598f98eca68731746b6945a36d36.1634281805.git.wuzongyong@linux.alibaba.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <d6f47283-2bbf-e7b8-f52b-776914eb3015@redhat.com>
-Date:   Fri, 15 Oct 2021 16:22:12 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=rf85IIrYDoX56EbvJwzXLS38sc5yj7QH4axMImYh7js=;
+        b=grVf55+yW4rzQdFayOVHUo7IcITyupfC23/u5TySinrSmI0iN+eNzJzVX7YEara0rU
+         LOHxKXOjjgZbZHXuYVMtfTZgd//KlfQNXX/w62YXZ0FedKtROgyCXHDTtT4Uml9g0Cq3
+         BMVI2kTxE0IdUNuw6fj7vP3dtlBkdUhNZv5tMO2TST1WL+FNroVeSM4fgarZvhVBTE2e
+         CK7Scl5D3m6oFQxWQfph4JiOmkr+wEEgSNgJBMpe/j3z5/MlitxqnTdyMlSWpnkoZD9w
+         ZXuGfhM8D2OqQgD76pq1cKRCfAs89zoqVlp4PHK1Mx6Nl2JfP246rHdU/2G4wshB8nJb
+         /y4g==
+X-Gm-Message-State: AOAM530TcpB2oYTMMWbAzmT7DDnKI4W5t0qKsFvqB0V+3P/iAi2OXkHh
+        5x03275WUPz8GXm9E3LagcKlV5WeJzL6CP2oAig=
+X-Google-Smtp-Source: ABdhPJwbxXt3mChrNac2IaoGhBb9UDVvRSxxM5aIVZkdeLYFWzyRCXjfasFEraNgzZBr0CMqgLtT60xxb3L9aX1sMAU=
+X-Received: by 2002:a5d:9d56:: with SMTP id k22mr2737038iok.177.1634286139129;
+ Fri, 15 Oct 2021 01:22:19 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <17a38d70dd6f598f98eca68731746b6945a36d36.1634281805.git.wuzongyong@linux.alibaba.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Received: by 2002:a05:6e02:17cb:0:0:0:0 with HTTP; Fri, 15 Oct 2021 01:22:18
+ -0700 (PDT)
+Reply-To: mr.sawadogomichel1@gmail.com
+From:   "Mr.Sawadogo Michel" <usmanmushi2018@gmail.com>
+Date:   Fri, 15 Oct 2021 01:22:18 -0700
+Message-ID: <CAAF7X7-iGRikEw_2H0BSbt_d3p+5vFfovdXJU4_s1qw=-E6ukg@mail.gmail.com>
+Subject: Hello Dear Friend
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello Dear Friend,
 
-ÔÚ 2021/10/15 ÏÂÎç3:14, Wu Zongyong Ð´µÀ:
-> +void vp_legacy_set_queue_enable(struct virtio_pci_legacy_device *ldev,
-> +				u16 idx, bool enable);
+My name is Mr.Sawadogo Michel. I have decided to seek a confidential
+co-operation  with you in the execution of the deal described
+here-under for our both  mutual benefit and I hope you will keep it a
+top secret because of the nature  of the transaction, During the
+course of our bank year auditing, I discovered  an unclaimed/abandoned
+fund, sum total of {US$19.3 Million United State  Dollars} in the bank
+account that belongs to a Saudi Arabia businessman Who unfortunately
+lost his life and entire family in a Motor Accident.
 
+Now our bank has been waiting for any of the relatives to come-up for
+the claim but nobody has done that. I personally has been unsuccessful
+in locating any of the relatives, now, I sincerely seek your consent
+to present you as the next of kin / Will Beneficiary to the deceased
+so that the proceeds of this account valued at {US$19.3 Million United
+State Dollars} can be paid to you, which we will share in these
+percentages ratio, 60% to me and 40% to you. All I request is your
+utmost sincere co-operation; trust and maximum confidentiality to
+achieve this project successfully. I have carefully mapped out the
+moralities for execution of this transaction under a legitimate
+arrangement to protect you from any breach of the law both in your
+country and here in Burkina Faso when the fund is being transferred to
+your bank account.
 
-Similar to previous one, this function is not implemented in this patch.
+I will have to provide all the relevant document that will be
+requested to indicate that you are the rightful beneficiary of this
+legacy and our bank will release the fund to you without any further
+delay, upon your consideration and acceptance of this offer, please
+send me the following information as stated below so we can proceed
+and get this fund transferred to your designated bank account
+immediately.
 
-Thanks
+-Your Full Name:
+-Your Contact Address:
+-Your direct Mobile telephone Number:
+-Your Date of Birth:
+-Your occupation:
 
+I await your swift response and re-assurance.
+
+Best regards,
+Mr.Sawadogo Michel.
