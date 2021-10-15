@@ -2,82 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37D8642E96B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 08:52:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 934F242E970
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 08:55:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234497AbhJOGy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 02:54:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34678 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233916AbhJOGy5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 02:54:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E7636108B;
-        Fri, 15 Oct 2021 06:52:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634280771;
-        bh=kJLNNbvPPxCqKxbEnHqwodixRci4rQ5VNfWqTPDU11U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=npfqi6Bwgq784kVm6QnBH/YRbtpYfPoX2HhfQmec2i/s0SBnhQKUpNASSu47zYWrZ
-         VjN2sAEgsEbQwBd26MSIdXODu5UBkjlsRS4aoaZKGDkSNuZOInJ33I3doI2KkeEPMm
-         SaVLTIa/gm5QnPFgoz8g/CNrrOJdNG7Mx7MVzdCA=
-Date:   Fri, 15 Oct 2021 08:52:49 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     lianzhi chang <changlianzhi@uniontech.com>
-Cc:     linux-kernel@vger.kernel.org, dmitry.torokhov@gmail.com,
-        jirislaby@kernel.org, andriy.shevchenko@linux.intel.com,
-        linux-input@vger.kernel.org, 282827961@qq.com
-Subject: Re: [PATCH] input&tty: Fix the keyboard led light display problem
-Message-ID: <YWklQYRE87UJ6HRz@kroah.com>
-References: <20211015064534.26260-1-changlianzhi@uniontech.com>
+        id S234561AbhJOG5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 02:57:25 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:58324 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231387AbhJOG5Y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 02:57:24 -0400
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 651671F4502B;
+        Fri, 15 Oct 2021 07:55:17 +0100 (BST)
+Date:   Fri, 15 Oct 2021 08:55:11 +0200
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Sean Nyekjaer <sean@geanix.com>
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] mtd: core: protect access to MTD devices while in
+ suspend
+Message-ID: <20211015085511.0e2ac916@collabora.com>
+In-Reply-To: <20211011115253.38497-2-sean@geanix.com>
+References: <20211011115253.38497-1-sean@geanix.com>
+        <20211011115253.38497-2-sean@geanix.com>
+Organization: Collabora
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211015064534.26260-1-changlianzhi@uniontech.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 15, 2021 at 02:45:34PM +0800, lianzhi chang wrote:
-> Switching from the desktop environment to the tty environment,
-> the state of the keyboard led lights and the state of the keyboard
-> lock are inconsistent. This is because the attribute kb->kbdmode
-> of the tty bound in the desktop environment (xorg) is set to
-> VC_OFF, which causes the ledstate and kb->ledflagstate
-> values of the bound tty to always be 0, which causes the switch
-> from the desktop When to the tty environment, the LED light
-> status is inconsistent with the keyboard lock status.
-> 
-> Signed-off-by: lianzhi chang <changlianzhi@uniontech.com>
-> ---
->  drivers/input/input.c     | 46 ++++++++++++++++++++++++++++++++++++++-
->  drivers/tty/vt/keyboard.c | 19 ++++++++++++++--
->  include/linux/input.h     |  3 +++
->  3 files changed, 65 insertions(+), 3 deletions(-)
+On Mon, 11 Oct 2021 13:52:51 +0200
+Sean Nyekjaer <sean@geanix.com> wrote:
 
-Hi,
+>  struct mtd_info {
+> @@ -476,10 +478,49 @@ static inline u32 mtd_oobavail(struct mtd_info *mtd, struct mtd_oob_ops *ops)
+>  	return ops->mode == MTD_OPS_AUTO_OOB ? mtd->oobavail : mtd->oobsize;
+>  }
+>  
+> +static inline void mtd_start_access(struct mtd_info *mtd)
+> +{
+> +	struct mtd_info *master = mtd_get_master(mtd);
 
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
+mtd_start_{access,end}() should only be called on master devices, so I
+guess you can drop the mtd_get_master() call and use mtd directly.
+Maybe add a WARN_ON_ONCE(mtd != mtd_get_master(mtd)) so we can
+easily catch silly mistakes.
 
-You are receiving this message because of the following common error(s)
-as indicated below:
+> +
+> +	/*
+> +	 * Don't take the suspend_lock on devices that don't
+> +	 * implement the suspend hook. Otherwise, lockdep will
+> +	 * complain about nested locks when trying to suspend MTD
+> +	 * partitions or MTD devices created by gluebi which are
+> +	 * backed by real devices.
+> +	 */
+> +	if (!master->_suspend)
+> +		return;
+> +
+> +	/*
+> +	 * Wait until the device is resumed. Should we have a
+> +	 * non-blocking mode here?
+> +	 */
+> +	while (1) {
+> +		down_read(&master->master.suspend_lock);
+> +		if (!master->master.suspended)
+> +			return;
+> +
+> +		up_read(&master->master.suspend_lock);
+> +		wait_event(master->master.resume_wq, master->master.suspended == 0);
+> +	}
+> +}
+> +
+> +static inline void mtd_end_access(struct mtd_info *mtd)
+> +{
+> +	struct mtd_info *master = mtd_get_master(mtd);
+> +
+> +	if (!master->_suspend)
+> +		return;
+> +
+> +	up_read(&master->master.suspend_lock);
+> +}
+> +
+>  static inline int mtd_max_bad_blocks(struct mtd_info *mtd,
+>  				     loff_t ofs, size_t len)
+>  {
+>  	struct mtd_info *master = mtd_get_master(mtd);
+> +	int ret;
+>  
+>  	if (!master->_max_bad_blocks)
+>  		return -ENOTSUPP;
+> @@ -487,8 +528,12 @@ static inline int mtd_max_bad_blocks(struct mtd_info *mtd,
+>  	if (mtd->size < (len + ofs) || ofs < 0)
+>  		return -EINVAL;
+>  
+> -	return master->_max_bad_blocks(master, mtd_get_master_ofs(mtd, ofs),
+> -				       len);
+> +	mtd_start_access(mtd);
+> +	ret = master->_max_bad_blocks(master, mtd_get_master_ofs(mtd, ofs),
+> +				      len);
+> +	mtd_end_access(mtd);
 
-- This looks like a new version of a previously submitted patch, but you
-  did not list below the --- line any changes from the previous version.
-  Please read the section entitled "The canonical patch format" in the
-  kernel file, Documentation/SubmittingPatches for what needs to be done
-  here to properly describe this.
+Please pass the master to those functions, there's no point walking the
+parent chain again in the start/end_access() functions if you already
+have the master retrieved in the caller. Oh, and there seems to be a
+common pattern here, so maybe it's worth adding those macros:
 
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
+#define mtd_no_suspend_void_call(master, method, ...) \
+	mtd_start_access(master); \
+	master->method(master, __VA_ARGS__); \
+	mtd_end_access(master);
 
-thanks,
+#define mtd_no_suspend_ret_call(ret, master, method, ...) \
+	mtd_start_access(master); \
+	ret = master->method(master, __VA_ARGS__); \
+	mtd_end_access(master);
 
-greg k-h's patch email bot
+I don't really like the helper names, so feel free to propose something
+else.
+
+> +
+> +	return ret;
+>  }
+>  
+
