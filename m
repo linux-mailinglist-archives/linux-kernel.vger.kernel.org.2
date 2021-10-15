@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F29942EE5C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 12:04:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10E6142EE53
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 12:03:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237713AbhJOKGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 06:06:36 -0400
+        id S237556AbhJOKFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 06:05:18 -0400
 Received: from pegase2.c-s.fr ([93.17.235.10]:50767 "EHLO pegase2.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237591AbhJOKFg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 06:05:36 -0400
+        id S234891AbhJOKFM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 06:05:12 -0400
 Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4HW1zw1WY3z9sSL;
-        Fri, 15 Oct 2021 12:03:08 +0200 (CEST)
+        by localhost (Postfix) with ESMTP id 4HW1zq0sBZz9sSZ;
+        Fri, 15 Oct 2021 12:03:03 +0200 (CEST)
 X-Virus-Scanned: amavisd-new at c-s.fr
 Received: from pegase2.c-s.fr ([172.26.127.65])
         by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id DI58JirztcI5; Fri, 15 Oct 2021 12:03:08 +0200 (CEST)
+        with ESMTP id uy0dESsDVIQY; Fri, 15 Oct 2021 12:03:03 +0200 (CEST)
 Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4HW1zp6zB7z9sST;
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4HW1zp5vbGz9sSC;
         Fri, 15 Oct 2021 12:03:02 +0200 (CEST)
 Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id D71C98B78C;
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id B1F448B763;
         Fri, 15 Oct 2021 12:03:02 +0200 (CEST)
 X-Virus-Scanned: amavisd-new at c-s.fr
 Received: from messagerie.si.c-s.fr ([127.0.0.1])
         by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id dCvEUkDQ25A9; Fri, 15 Oct 2021 12:03:02 +0200 (CEST)
+        with ESMTP id sSzxvQmz7fL4; Fri, 15 Oct 2021 12:03:02 +0200 (CEST)
 Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.202.255])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 55F348B792;
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 4A2B48B78D;
         Fri, 15 Oct 2021 12:03:02 +0200 (CEST)
 Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
-        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1) with ESMTPS id 19FA2roL2627039
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1) with ESMTPS id 19FA2rYN2627043
         (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
         Fri, 15 Oct 2021 12:02:53 +0200
 Received: (from chleroy@localhost)
-        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1/Submit) id 19FA2r1R2627038;
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1/Submit) id 19FA2r4l2627042;
         Fri, 15 Oct 2021 12:02:53 +0200
 X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
 From:   Christophe Leroy <christophe.leroy@csgroup.eu>
@@ -45,132 +45,75 @@ To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
         Michael Ellerman <mpe@ellerman.id.au>
 Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
         linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH v1 5/8] powerpc/fsl_booke: Tell map_mem_in_cams() if init is done
-Date:   Fri, 15 Oct 2021 12:02:46 +0200
-Message-Id: <3b69a7e0b393b16984ade882a5eae5d727717459.1634292136.git.christophe.leroy@csgroup.eu>
+Subject: [PATCH v1 6/8] powerpc/fsl_booke: Allocate separate TLBCAMs for readonly memory
+Date:   Fri, 15 Oct 2021 12:02:47 +0200
+Message-Id: <8ca169bc288261a0e0558712f979023c3a960ebb.1634292136.git.christophe.leroy@csgroup.eu>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <d1ad9fdd9b27da3fdfa16510bb542ed51fa6e134.1634292136.git.christophe.leroy@csgroup.eu>
 References: <d1ad9fdd9b27da3fdfa16510bb542ed51fa6e134.1634292136.git.christophe.leroy@csgroup.eu>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1634292165; l=4478; s=20211009; h=from:subject:message-id; bh=/SjyXb3zlDtvbYhrULnG+J2Dv+4vb9SRFhiGiimbiq8=; b=syby9d/3+5z8OCh/oYw/19Kg13YPGLV59pVaQ/raTjlOeKwu17Xpy7v0o9Izg+ALI5nPm2ZuIGJl 444k5O1nBq390n6b9RBURO+rntb/GW32IN8ki1QZBoivTip4hTgt
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1634292165; l=1790; s=20211009; h=from:subject:message-id; bh=GPLh52T+W0mzC2UX9R8EBFDtXmxOTxApVX7K4yTxS6U=; b=g2esoAizBI6LY1HMtyZdbCbuNoPnEKXFfdIey+HcspLzoq0P1sccJYP7gwakIYmzdvcw5a5Zqbob Xae0/NIjAUcwr+o0q7kYWN57bV2mOf1uVcJnZ9YIrDkOmMil1fae
 X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to be able to call map_mem_in_cams() once more
-after init for STRICT_KERNEL_RWX, add an argument.
+Reorganise TLBCAM allocation so that when STRICT_KERNEL_RWX is
+enabled, TLBCAMs are allocated such that readonly memory uses
+different TLBCAMs.
 
-For now, map_mem_in_cams() is always called only during init.
+This results in an allocation looking like:
+
+Memory CAM mapping: 4/4/4/1/1/1/1/16/16/16/64/64/64/256/256 Mb, residual: 256Mb
 
 Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- arch/powerpc/mm/mmu_decl.h           |  2 +-
- arch/powerpc/mm/nohash/fsl_book3e.c  | 12 ++++++------
- arch/powerpc/mm/nohash/kaslr_booke.c |  2 +-
- arch/powerpc/mm/nohash/tlb.c         |  4 ++--
- 4 files changed, 10 insertions(+), 10 deletions(-)
+ arch/powerpc/mm/nohash/fsl_book3e.c | 25 ++++++++++++++++++++++---
+ 1 file changed, 22 insertions(+), 3 deletions(-)
 
-diff --git a/arch/powerpc/mm/mmu_decl.h b/arch/powerpc/mm/mmu_decl.h
-index dd1cabc2ea0f..e13a3c0caa02 100644
---- a/arch/powerpc/mm/mmu_decl.h
-+++ b/arch/powerpc/mm/mmu_decl.h
-@@ -126,7 +126,7 @@ unsigned long mmu_mapin_ram(unsigned long base, unsigned long top);
- 
- #ifdef CONFIG_PPC_FSL_BOOK3E
- extern unsigned long map_mem_in_cams(unsigned long ram, int max_cam_idx,
--				     bool dryrun);
-+				     bool dryrun, bool init);
- extern unsigned long calc_cam_sz(unsigned long ram, unsigned long virt,
- 				 phys_addr_t phys);
- #ifdef CONFIG_PPC32
 diff --git a/arch/powerpc/mm/nohash/fsl_book3e.c b/arch/powerpc/mm/nohash/fsl_book3e.c
-index fdf1029e62f0..375b2b8238c1 100644
+index 375b2b8238c1..c1bc11f46344 100644
 --- a/arch/powerpc/mm/nohash/fsl_book3e.c
 +++ b/arch/powerpc/mm/nohash/fsl_book3e.c
-@@ -167,7 +167,7 @@ unsigned long calc_cam_sz(unsigned long ram, unsigned long virt,
- 
- static unsigned long map_mem_in_cams_addr(phys_addr_t phys, unsigned long virt,
- 					unsigned long ram, int max_cam_idx,
--					bool dryrun)
-+					bool dryrun, bool init)
+@@ -171,15 +171,34 @@ static unsigned long map_mem_in_cams_addr(phys_addr_t phys, unsigned long virt,
  {
  	int i;
  	unsigned long amount_mapped = 0;
-@@ -202,12 +202,12 @@ static unsigned long map_mem_in_cams_addr(phys_addr_t phys, unsigned long virt,
- 	return amount_mapped;
- }
++	unsigned long boundary;
++
++	if (strict_kernel_rwx_enabled())
++		boundary = (unsigned long)(_sinittext - _stext);
++	else
++		boundary = ram;
  
--unsigned long map_mem_in_cams(unsigned long ram, int max_cam_idx, bool dryrun)
-+unsigned long map_mem_in_cams(unsigned long ram, int max_cam_idx, bool dryrun, bool init)
- {
- 	unsigned long virt = PAGE_OFFSET;
- 	phys_addr_t phys = memstart_addr;
+ 	/* Calculate CAM values */
+-	for (i = 0; ram && i < max_cam_idx; i++) {
++	for (i = 0; boundary && i < max_cam_idx; i++) {
++		unsigned long cam_sz;
++		pgprot_t prot = PAGE_KERNEL_X;
++
++		cam_sz = calc_cam_sz(boundary, virt, phys);
++		if (!dryrun)
++			settlbcam(i, virt, phys, cam_sz, pgprot_val(prot), 0);
++
++		boundary -= cam_sz;
++		amount_mapped += cam_sz;
++		virt += cam_sz;
++		phys += cam_sz;
++	}
++	for (ram -= amount_mapped; ram && i < max_cam_idx; i++) {
+ 		unsigned long cam_sz;
++		pgprot_t prot = PAGE_KERNEL_X;
  
--	return map_mem_in_cams_addr(phys, virt, ram, max_cam_idx, dryrun);
-+	return map_mem_in_cams_addr(phys, virt, ram, max_cam_idx, dryrun, init);
- }
+ 		cam_sz = calc_cam_sz(ram, virt, phys);
+ 		if (!dryrun)
+-			settlbcam(i, virt, phys, cam_sz,
+-				  pgprot_val(PAGE_KERNEL_X), 0);
++			settlbcam(i, virt, phys, cam_sz, pgprot_val(prot), 0);
  
- #ifdef CONFIG_PPC32
-@@ -248,7 +248,7 @@ void __init adjust_total_lowmem(void)
- 	ram = min((phys_addr_t)__max_low_memory, (phys_addr_t)total_lowmem);
- 
- 	i = switch_to_as1();
--	__max_low_memory = map_mem_in_cams(ram, CONFIG_LOWMEM_CAM_NUM, false);
-+	__max_low_memory = map_mem_in_cams(ram, CONFIG_LOWMEM_CAM_NUM, false, true);
- 	restore_to_as0(i, 0, 0, 1);
- 
- 	pr_info("Memory CAM mapping: ");
-@@ -319,11 +319,11 @@ notrace void __init relocate_init(u64 dt_ptr, phys_addr_t start)
- 		/* map a 64M area for the second relocation */
- 		if (memstart_addr > start)
- 			map_mem_in_cams(0x4000000, CONFIG_LOWMEM_CAM_NUM,
--					false);
-+					false, true);
- 		else
- 			map_mem_in_cams_addr(start, PAGE_OFFSET + offset,
- 					0x4000000, CONFIG_LOWMEM_CAM_NUM,
--					false);
-+					false, true);
- 		restore_to_as0(n, offset, __va(dt_ptr), 1);
- 		/* We should never reach here */
- 		panic("Relocation error");
-diff --git a/arch/powerpc/mm/nohash/kaslr_booke.c b/arch/powerpc/mm/nohash/kaslr_booke.c
-index 4c74e8a5482b..8fc49b1b4a91 100644
---- a/arch/powerpc/mm/nohash/kaslr_booke.c
-+++ b/arch/powerpc/mm/nohash/kaslr_booke.c
-@@ -314,7 +314,7 @@ static unsigned long __init kaslr_choose_location(void *dt_ptr, phys_addr_t size
- 		pr_warn("KASLR: No safe seed for randomizing the kernel base.\n");
- 
- 	ram = min_t(phys_addr_t, __max_low_memory, size);
--	ram = map_mem_in_cams(ram, CONFIG_LOWMEM_CAM_NUM, true);
-+	ram = map_mem_in_cams(ram, CONFIG_LOWMEM_CAM_NUM, true, false);
- 	linear_sz = min_t(unsigned long, ram, SZ_512M);
- 
- 	/* If the linear size is smaller than 64M, do not randmize */
-diff --git a/arch/powerpc/mm/nohash/tlb.c b/arch/powerpc/mm/nohash/tlb.c
-index 5872f69141d5..fc195b9f524b 100644
---- a/arch/powerpc/mm/nohash/tlb.c
-+++ b/arch/powerpc/mm/nohash/tlb.c
-@@ -643,7 +643,7 @@ static void early_init_this_mmu(void)
- 
- 		if (map)
- 			linear_map_top = map_mem_in_cams(linear_map_top,
--							 num_cams, false);
-+							 num_cams, true, true);
- 	}
- #endif
- 
-@@ -764,7 +764,7 @@ void setup_initial_memory_limit(phys_addr_t first_memblock_base,
- 		num_cams = (mfspr(SPRN_TLB1CFG) & TLBnCFG_N_ENTRY) / 4;
- 
- 		linear_sz = map_mem_in_cams(first_memblock_size, num_cams,
--					    true);
-+					    false, true);
- 
- 		ppc64_rma_size = min_t(u64, linear_sz, 0x40000000);
- 	} else
+ 		ram -= cam_sz;
+ 		amount_mapped += cam_sz;
 -- 
 2.31.1
 
