@@ -2,122 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B05B42F990
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 19:03:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63E3342F99A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 19:05:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241942AbhJORFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 13:05:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20219 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241930AbhJORFg (ORCPT
+        id S241966AbhJORG7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 13:06:59 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:64962 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241934AbhJORGz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 13:05:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634317409;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4dN0h5lrPhvnBjfapbewXwM2oI6C3bfdTUY0cpFI420=;
-        b=h7UESZug+LNe+whWmgIuNPBuNaZkjscNcROSxNz3fvN6cWpBOdmBr/3mNJePcBzkIFYmyg
-        7pwWnFfGGot10cFVGOSfCYjMZTVGyiFhqRhh1WVeH95Zkz8zre0/1BRv1BUfELkfR2MQ/Q
-        kKHCnGhhZSwBA3e+OuMmlCN+3hzknKE=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-586-NPmrZq8CMxSAX1vAL5Fpgw-1; Fri, 15 Oct 2021 13:03:27 -0400
-X-MC-Unique: NPmrZq8CMxSAX1vAL5Fpgw-1
-Received: by mail-wm1-f71.google.com with SMTP id f20-20020a05600c155400b0030db7b29174so998582wmg.2
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 10:03:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4dN0h5lrPhvnBjfapbewXwM2oI6C3bfdTUY0cpFI420=;
-        b=SQZNHeXYkC4O5YiNnnYDj5DkWmb5x5x6tDagQj1md7YUlkIxMyKSXrvF5D86u01/SL
-         BZWREKUs5DWiCB6uFcnj0VLf7U6F+weBlklRWOGEEHaqC1bol9IgbNFL9CTra1g5Vx24
-         KWFCfe6/fwpHoWJM4XSDQY1KsmoT2IixrYdTRjYMji235bq0tFbRoae1Nr7eSV5prIL2
-         UXb+qFDypM5Eb99tyhdfHHPqWkhn6IVIeCK/EzL23HMObjNXwCcNH9dm0p5XQvVlXcTa
-         LVQ50NhYTr2LSJqwbP3i0GiOXiODMGa/huN3VQ2yziaBeAszYabK5uRWFeeK3+ZtutoL
-         BPzA==
-X-Gm-Message-State: AOAM532lddw3KoY1kx7wDsctJ9SD/Gh9OA7CPO/t5NOVo/H/Eqqplh2F
-        DCvww43rVt7y6p05siNRqssmWyRidmu38gzR9NVI0OsKy/4S4c5dTcgXo7vzYsF2PVtq41ybIof
-        7JUWuD4V9PmbJyT1SvlOKu559tP7YBaQQMa6F1lFG
-X-Received: by 2002:adf:ab02:: with SMTP id q2mr15557767wrc.263.1634317405830;
-        Fri, 15 Oct 2021 10:03:25 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxuITPOE/K90c/SbO06sQj8xZQDKAWVzRhH1M2nwElKhxcOuDwq0V7UNRKWNgSvAODtWO0Um5tIncG3lJ74Y3w=
-X-Received: by 2002:adf:ab02:: with SMTP id q2mr15557737wrc.263.1634317405624;
- Fri, 15 Oct 2021 10:03:25 -0700 (PDT)
+        Fri, 15 Oct 2021 13:06:55 -0400
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 3.0.0)
+ id 168a8063eefe7ff3; Fri, 15 Oct 2021 19:04:48 +0200
+Received: from kreacher.localnet (unknown [213.134.175.255])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id 4440566A8C0;
+        Fri, 15 Oct 2021 19:04:47 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linux PCI <linux-pci@vger.kernel.org>
+Subject: [PATCH v1 2/3] ACPI: PM: Fix sharing of wakeup power resources
+Date:   Fri, 15 Oct 2021 19:03:16 +0200
+Message-ID: <2077987.irdbgypaU6@kreacher>
+In-Reply-To: <4347933.LvFx2qVVIh@kreacher>
+References: <4347933.LvFx2qVVIh@kreacher>
 MIME-Version: 1.0
-References: <20211015131115.12720-1-vegard.nossum@oracle.com>
- <20211015133635.GA26418@gondor.apana.org.au> <3bba3fed-b8f8-b7ce-f26f-8d1ed221144a@oracle.com>
-In-Reply-To: <3bba3fed-b8f8-b7ce-f26f-8d1ed221144a@oracle.com>
-From:   Chris Leech <cleech@redhat.com>
-Date:   Fri, 15 Oct 2021 10:03:14 -0700
-Message-ID: <CAPnfmXJPQTcZmPkYVDL4feDH7_P742N1H885suQzJc6u2A9QYQ@mail.gmail.com>
-Subject: Re: [PATCH] scsi: libiscsi: select CRYPTO_HASH for ISCSI_TCP
-To:     Vegard Nossum <vegard.nossum@oracle.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        Lee Duncan <lduncan@suse.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        open-iscsi@googlegroups.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 213.134.175.255
+X-CLIENT-HOSTNAME: 213.134.175.255
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddrvddugedguddtjecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdejlefghfeiudektdelkeekvddugfeghffggeejgfeukeejleevgffgvdeluddtnecukfhppedvudefrddufeegrddujeehrddvheehnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepvddufedrudefgedrudejhedrvdehhedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehmihhkrgdrfigvshhtvghrsggvrhhgsehlihhnuhigrdhinhhtvghlrdgtohhmpdhrtghpthht
+ oheplhhinhhugidqphgtihesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=5 Fuz1=5 Fuz2=5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 15, 2021 at 6:54 AM Vegard Nossum <vegard.nossum@oracle.com> wrote:
->
->
-> On 10/15/21 3:36 PM, Herbert Xu wrote:
-> > On Fri, Oct 15, 2021 at 03:11:15PM +0200, Vegard Nossum wrote:
-> >> Fix the following build/link error by adding a dependency on CRYPTO_HASH:
-> >>
-> >>   ld: drivers/scsi/libiscsi_tcp.o: in function `iscsi_tcp_dgst_header':
-> >>   libiscsi_tcp.c:(.text+0x237): undefined reference to `crypto_ahash_digest'
-> >>   ld: drivers/scsi/libiscsi_tcp.o: in function `iscsi_tcp_segment_done':
-> >>   libiscsi_tcp.c:(.text+0x1325): undefined reference to `crypto_ahash_final'
-> >>
-> >> Fixes: 5d6ac29b9ebf2 ("iscsi_tcp: Use ahash")
-> >> Cc: Herbert Xu <herbert@gondor.apana.org.au>
-> >> Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
-> >> ---
-> >>  drivers/scsi/Kconfig | 1 +
-> >>  1 file changed, 1 insertion(+)
-> >>
-> >> diff --git a/drivers/scsi/Kconfig b/drivers/scsi/Kconfig
-> >> index 6e3a04107bb65..09764f3c42447 100644
-> >> --- a/drivers/scsi/Kconfig
-> >> +++ b/drivers/scsi/Kconfig
-> >> @@ -290,6 +290,7 @@ config ISCSI_TCP
-> >>      tristate "iSCSI Initiator over TCP/IP"
-> >>      depends on SCSI && INET
-> >>      select CRYPTO
-> >> +    select CRYPTO_HASH
-> >>      select CRYPTO_MD5
-> >>      select CRYPTO_CRC32C
-> >>      select SCSI_ISCSI_ATTRS
-> >
-> > CRYPTO_MD5 already selects CRYPTO_HASH so this shouldn't be needed.
->
-> You're right, my apologies.
->
-> libiscsi_tcp.o is built for CONFIG_ISCSI_TCP, but it's _also_ built for
-> CONFIG_SCSI_CXGB3_ISCSI and CONFIG_SCSI_CXGB4_ISCSI. I missed that when
-> I looked at the Makefile and wrongly assumed that CONFIG_ISCSI_TCP was
-> missing the select.
->
-> I'm not sure what the right fix here would be -- should
-> CONFIG_SCSI_CXGB[34]_ISCSI depend on CONFIG_ISCSI_TCP..? Or should we
-> add those CRYPTO* selects in there as well?
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-(apologies for the HTML reply that got rejected by the lists, and the
-double reply to those directly addressed)
+If an ACPI wakeup power resource is shared between multiple devices,
+it may not be managed correctly.
 
-Are  Kconfig entries for libiscsi and libiscsi_tcp needed to handle
-this properly?  Currently they're added to the object lists with each
-configured driver that requires them.  I'm not even sure what happens
-if you manage to configure them into both obj-y and obj-m.
+Suppose, for example, that two devices, A and B, share a wakeup power
+resource P whose wakeup_enabled flag is 0 initially.  Next, suppose
+that wakeup power is enabled for A and B, in this order, and disabled
+for B.  When wakeup power is enabled for A, P will be turned on and
+its wakeup_enabled flag will be set.  Next, when wakeup power is
+enabled for B, P will not be touched, because its wakeup_enabled flag
+is set.  Now, when wakeup power is disabled for B, P will be turned
+off which is incorrect, because A will still need P in order to signal
+wakeup.
 
-- Chris Leech
+Moreover, if wakeup power is enabled for A and then disabled for B,
+the latter will cause P to be turned off incorrectly (it will be still
+needed by A), because acpi_disable_wakeup_device_power() is allowed
+to manipulate power resources when the wakeup.prepare_count counter
+of the given device is 0.
+
+While the first issue could be addressed by changing the
+wakeup_enabled power resource flag into a counter, addressing the
+second one requires modifying acpi_disable_wakeup_device_power() to
+do nothing when the target device's wakeup.prepare_count reference
+counter is zero and that would cause the new counter to be redundant.
+Namely, if acpi_disable_wakeup_device_power() is modified as per the
+above, every change of the new counter following a wakeup.prepare_count
+change would be reflected by the analogous change of the main reference
+counter of the given power resource.
+
+Accordingly, modify acpi_disable_wakeup_device_power() to do nothing
+when the target device's wakeup.prepare_count reference counter is
+zero and drop the power resource wakeup_enabled flag altogether.
+
+While at it, ensure that all of the power resources that can be
+turned off will be turned off when disabling device wakeup due to
+a power resource manipulation error, to prevent energy from being
+wasted.
+
+Fixes: b5d667eb392e ("ACPI / PM: Take unusual configurations of power resources into account")
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/acpi/power.c |   73 ++++++++++++++++++---------------------------------
+ 1 file changed, 26 insertions(+), 47 deletions(-)
+
+Index: linux-pm/drivers/acpi/power.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/power.c
++++ linux-pm/drivers/acpi/power.c
+@@ -52,7 +52,6 @@ struct acpi_power_resource {
+ 	u32 order;
+ 	unsigned int ref_count;
+ 	u8 state;
+-	bool wakeup_enabled;
+ 	struct mutex resource_lock;
+ 	struct list_head dependents;
+ };
+@@ -710,8 +709,7 @@ int acpi_device_sleep_wake(struct acpi_d
+  */
+ int acpi_enable_wakeup_device_power(struct acpi_device *dev, int sleep_state)
+ {
+-	struct acpi_power_resource_entry *entry;
+-	int err = 0;
++	int err;
+ 
+ 	if (!dev || !dev->wakeup.flags.valid)
+ 		return -EINVAL;
+@@ -721,26 +719,13 @@ int acpi_enable_wakeup_device_power(stru
+ 	if (dev->wakeup.prepare_count++)
+ 		goto out;
+ 
+-	list_for_each_entry(entry, &dev->wakeup.resources, node) {
+-		struct acpi_power_resource *resource = entry->resource;
+-
+-		mutex_lock(&resource->resource_lock);
+-
+-		if (!resource->wakeup_enabled) {
+-			err = acpi_power_on_unlocked(resource);
+-			if (!err)
+-				resource->wakeup_enabled = true;
+-		}
+-
+-		mutex_unlock(&resource->resource_lock);
+-
+-		if (err) {
+-			dev_err(&dev->dev,
+-				"Cannot turn wakeup power resources on\n");
+-			dev->wakeup.flags.valid = 0;
+-			goto out;
+-		}
++	err = acpi_power_on_list(&dev->wakeup.resources);
++	if (err) {
++		dev_err(&dev->dev, "Cannot turn on wakeup power resources\n");
++		dev->wakeup.flags.valid = 0;
++		goto out;
+ 	}
++
+ 	/*
+ 	 * Passing 3 as the third argument below means the device may be
+ 	 * put into arbitrary power state afterward.
+@@ -763,46 +748,40 @@ int acpi_enable_wakeup_device_power(stru
+ int acpi_disable_wakeup_device_power(struct acpi_device *dev)
+ {
+ 	struct acpi_power_resource_entry *entry;
+-	int err = 0;
++	int err;
+ 
+ 	if (!dev || !dev->wakeup.flags.valid)
+ 		return -EINVAL;
+ 
+ 	mutex_lock(&acpi_device_lock);
+ 
+-	if (--dev->wakeup.prepare_count > 0)
++	if (dev->wakeup.prepare_count > 1) {
++		dev->wakeup.prepare_count--;
+ 		goto out;
++	}
+ 
+-	/*
+-	 * Executing the code below even if prepare_count is already zero when
+-	 * the function is called may be useful, for example for initialisation.
+-	 */
+-	if (dev->wakeup.prepare_count < 0)
+-		dev->wakeup.prepare_count = 0;
++	/* Do nothing if wakeup power has not been enabled for this device. */
++	if (!dev->wakeup.prepare_count)
++		goto out;
+ 
+ 	err = acpi_device_sleep_wake(dev, 0, 0, 0);
+ 	if (err)
+ 		goto out;
+ 
++	/*
++	 * All of the power resources in the list need to be turned off even if
++	 * there are errors.
++	 */
+ 	list_for_each_entry(entry, &dev->wakeup.resources, node) {
+-		struct acpi_power_resource *resource = entry->resource;
+-
+-		mutex_lock(&resource->resource_lock);
+-
+-		if (resource->wakeup_enabled) {
+-			err = acpi_power_off_unlocked(resource);
+-			if (!err)
+-				resource->wakeup_enabled = false;
+-		}
+-
+-		mutex_unlock(&resource->resource_lock);
++		int ret;
+ 
+-		if (err) {
+-			dev_err(&dev->dev,
+-				"Cannot turn wakeup power resources off\n");
+-			dev->wakeup.flags.valid = 0;
+-			break;
+-		}
++		ret = acpi_power_off(entry->resource);
++		if (ret && !err)
++			err = ret;
++	}
++	if (err) {
++		dev_err(&dev->dev, "Cannot turn off wakeup power resources\n");
++		dev->wakeup.flags.valid = 0;
+ 	}
+ 
+  out:
+
+
 
