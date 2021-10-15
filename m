@@ -2,164 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D60AE42F869
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 18:39:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03DDA42F86D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 18:40:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241480AbhJOQlJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 12:41:09 -0400
-Received: from todd.t-8ch.de ([159.69.126.157]:32893 "EHLO todd.t-8ch.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235894AbhJOQlI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 12:41:08 -0400
-Date:   Fri, 15 Oct 2021 18:38:51 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=weissschuh.net;
-        s=mail; t=1634315938;
-        bh=BdM/MiBquRGKWBf5ex7P/Eueuf6sv5qpuQAqP4mi+4g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Frnb8HXX49zeNR+wJVPVqmLM0V1WgMpSRNLcqysXybmm1k+T7zSyMbIXnV2yHRhIe
-         JioGLQJNJnGPf14iwZOvoME3MTHZA23KdMDtMg5Ymq+5lU9wWW4ZSN2MEJvQCH97yF
-         4UWLP8ryzuyygi+C5NlFhn0cfHcFDjlBVAH3LuP8=
-From:   thomas@weissschuh.net
-To:     Denis Pauk <pauk.denis@gmail.com>
-Cc:     eugene.shalygin@gmail.com, andy.shevchenko@gmail.com,
-        platform-driver-x86@vger.kernel.org, Tor Vic <torvic9@mailbox.org>,
-        Oleksandr Natalenko <oleksandr@natalenko.name>,
-        kernel test robot <lkp@intel.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 1/2] hwmon: (asus_wmi_ec_sensors) Support B550 Asus
- WMI.
-Message-ID: <0590836c-156d-4b67-b0f6-255afaceeb5e@t-8ch.de>
-References: <20211015055808.327453-1-pauk.denis@gmail.com>
- <20211015055808.327453-2-pauk.denis@gmail.com>
+        id S241491AbhJOQmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 12:42:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29791 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237414AbhJOQmB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 12:42:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634315994;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=E4LKFDRNGrYewkIQEu16Zm63HJjl+j0dZzAICvUOLVM=;
+        b=CBjO6tr8fYwuZhZFO0HMUscuN+Os6YFooRl+XbVGo1YwhMnqK4qyd/tBdoBeT5Vz/liFGw
+        3UCz8CnXIKKK4000l1v0BtZkJ47ClqUk8RHlRFpMXGbIjH+C/BuEsFhHKSDRGiCfZxv5P4
+        D9sQ6E8QbDiU1PvFVi2gFIrsJL7wl7U=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-395--waiP4VYOwOS_mUfnNNLKA-1; Fri, 15 Oct 2021 12:39:53 -0400
+X-MC-Unique: -waiP4VYOwOS_mUfnNNLKA-1
+Received: by mail-wr1-f69.google.com with SMTP id r16-20020adfbb10000000b00160958ed8acso6120036wrg.16
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 09:39:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:organization:in-reply-to
+         :content-transfer-encoding;
+        bh=E4LKFDRNGrYewkIQEu16Zm63HJjl+j0dZzAICvUOLVM=;
+        b=AnBk/vnTMoTCZrZKv1CtiwsfUKKkM3FxMPvXBA62/tKD6FMFcYUlbhPu2glGBA8N0X
+         uF2ZCt0G2cB1iNXt9IpdN6vnenunznoWiXwmhNEvwrPld574J5m3fPbRyEZrlb/wIuyW
+         azi1tlapZrPQYSvcmr4IcPKj+L51TFQPg14Y8mChNV8Fp91ASx60H8gI0YSw5faPg2lY
+         +6bhMkBoDLEtxw6jR9sZjfgnwvmpdhZbAX4J1Ae/xoAvPCUouVGOdOnMabaK1MR0UFC4
+         +4gehBb4Zo3N10rAjehCrnxDmOiIXo2vvcSL09SqutdB7Qu7sdQwhq5RvmA5CNJYHUng
+         f+QA==
+X-Gm-Message-State: AOAM533V4+3+MU2vZZg6ByZ1CVlHnoa69c1tzHE3iHxtZ4XDKY6bCuqi
+        4apNDBJA1ZhNf34o/W8+3Aw5/MSvMon6RwIibxjUaMD79sNZlFRKh2XBg2P7/aVE8iKzEwrnTrd
+        4LzZexgdv/WUC6NVSz3lXbrj9
+X-Received: by 2002:a1c:2b85:: with SMTP id r127mr27224256wmr.134.1634315992102;
+        Fri, 15 Oct 2021 09:39:52 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyu+oFauM+GGmdwcOZ7EltiO+NPKXOxlX3q1W1CdIvB6o2LNj90pM8GL+iApDfNPPofqFTTsA==
+X-Received: by 2002:a1c:2b85:: with SMTP id r127mr27224197wmr.134.1634315991799;
+        Fri, 15 Oct 2021 09:39:51 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c6a01.dip0.t-ipconnect.de. [91.12.106.1])
+        by smtp.gmail.com with ESMTPSA id y8sm4956776wmi.43.2021.10.15.09.39.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Oct 2021 09:39:51 -0700 (PDT)
+Message-ID: <3563a3e8-b971-b604-7388-766ecfce4634@redhat.com>
+Date:   Fri, 15 Oct 2021 18:39:49 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211015055808.327453-2-pauk.denis@gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH v10 3/3] mm: add anonymous vma name refcounting
+Content-Language: en-US
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     Michal Hocko <mhocko@suse.com>, Kees Cook <keescook@chromium.org>,
+        Pavel Machek <pavel@ucw.cz>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Colin Cross <ccross@google.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        vincenzo.frascino@arm.com,
+        =?UTF-8?B?Q2hpbndlbiBDaGFuZyAo5by16Yym5paHKQ==?= 
+        <chinwen.chang@mediatek.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Jann Horn <jannh@google.com>, apopple@nvidia.com,
+        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
+        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
+        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
+        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
+        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
+        Chris Hyser <chris.hyser@oracle.com>,
+        Peter Collingbourne <pcc@google.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
+        Rolf Eike Beer <eb@emlix.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
+        cxfcosmos@gmail.com, LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-mm <linux-mm@kvack.org>,
+        kernel-team <kernel-team@android.com>
+References: <92cbfe3b-f3d1-a8e1-7eb9-bab735e782f6@rasmusvillemoes.dk>
+ <20211007101527.GA26288@duo.ucw.cz>
+ <CAJuCfpGp0D9p3KhOWhcxMO1wEbo-J_b2Anc-oNwdycx4NTRqoA@mail.gmail.com>
+ <YV8jB+kwU95hLqTq@dhcp22.suse.cz>
+ <CAJuCfpG-Nza3YnpzvHaS_i1mHds3nJ+PV22xTAfgwvj+42WQNA@mail.gmail.com>
+ <YV8u4B8Y9AP9xZIJ@dhcp22.suse.cz>
+ <CAJuCfpHAG_C5vE-Xkkrm2kynTFF-Jd06tQoCWehHATL0W2mY_g@mail.gmail.com>
+ <202110071111.DF87B4EE3@keescook> <YV/mhyWH1ZwWazdE@dhcp22.suse.cz>
+ <202110081344.FE6A7A82@keescook> <YWP3c/bozz5npQ8O@dhcp22.suse.cz>
+ <CAJuCfpHQVMM4+6Lm_EnFk06+KrOjSjGA19K2cv9GmP3k9LW5vg@mail.gmail.com>
+ <26f9db1e-69e9-1a54-6d49-45c0c180067c@redhat.com>
+ <CAJuCfpGTCM_Rf3GEyzpR5UOTfgGKTY0_rvAbGdtjbyabFhrRAw@mail.gmail.com>
+ <CAJuCfpE2j91_AOwwRs_pYBs50wfLTwassRqgtqhXsh6fT+4MCg@mail.gmail.com>
+ <b46d9bfe-17a9-0de9-271d-a3e6429e3f5f@redhat.com>
+ <CAJuCfpG=fNMDuYUo8UwjB-kDzR2gxmRmTJCqgojfPe6RULwc4A@mail.gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <CAJuCfpG=fNMDuYUo8UwjB-kDzR2gxmRmTJCqgojfPe6RULwc4A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-10-15T08:58+0300, Denis Pauk wrote:
-> +/*
-> + * The next four functions converts to/from BRxx string argument format
-> + * The format of the string is as follows:
-> + * The string consists of two-byte UTF-16 characters
-> + * The value of the very first byte int the string is equal to the total length
-> + * of the next string in bytes, thus excluding the first two-byte character
-> + * The rest of the string encodes pairs of (bank, index) pairs, where both
-> + * values are byte-long (0x00 to 0xFF)
-> + * Numbers are encoded as UTF-16 hex values
-> + */
-> +static void asus_wmi_ec_decode_reply_buffer(const u8 *inp, u8 *out, u32 length)
-> +{
-> +	char buffer[ASUSWMI_MAX_BUF_LEN * 2];
-> +	const char *pos = buffer;
-> +	const u8 *data = inp + 2;
-> +	unsigned int i;
-> +	u32 len;
-> +
-> +	len = min3((u32)ASUSWMI_MAX_BUF_LEN, (length - 2) / 4, (u32)inp[0] / 4);
 
-This will still access out of bounds memory when length == 0.
+>>>
+>>> 1. Forking a process with anonymous vmas named using memfd is 5-15%
+>>> slower than with prctl (depends on the number of VMAs in the process
+>>> being forked). Profiling shows that i_mmap_lock_write() dominates
+>>> dup_mmap(). Exit path is also slower by roughly 9% with
+>>> free_pgtables() and fput() dominating exit_mmap(). Fork performance is
+>>> important for Android because almost all processes are forked from
+>>> zygote, therefore this limitation already makes this approach
+>>> prohibitive.
+>>
+>> Interesting, naturally I wonder if that can be optimized.
+> 
+> Maybe but it looks like we simply do additional things for file-backed
+> memory, which seems natural. The call to i_mmap_lock_write() is from
+> here: https://elixir.bootlin.com/linux/latest/source/kernel/fork.c#L565
+> 
+>>
+>>>
+>>> 2. mremap() usage to grow the mapping has an issue when used with memfds:
+>>>
+>>> fd = memfd_create(name, MFD_ALLOW_SEALING);
+>>> ftruncate(fd, size_bytes);
+>>> ptr = mmap(NULL, size_bytes, prot, MAP_PRIVATE, fd, 0);
+>>> close(fd);
+>>> ptr = mremap(ptr, size_bytes, size_bytes * 2, MREMAP_MAYMOVE);
+>>> touch_mem(ptr, size_bytes * 2);
+>>>
+>>> This would generate a SIGBUS in touch_mem(). I believe it's because
+>>> ftruncate() specified the size to be size_bytes and we are accessing
+>>> more than that after remapping. prctl() does not have this limitation
+>>> and we do have a usecase for growing a named VMA.
+>>
+>> Can't you simply size the memfd much larger? I mean, it doesn't really
+>> cost much, does it?
+> 
+> If we know beforehand what the max size it can reach then that would
+> be possible. I would really hate to miscalculate here and cause a
+> simple memory access to generate signals. Tracking such corner cases
+> in the field is not an easy task and I would rather avoid the
+> possibility of it.
 
-> +
-> +	utf16s_to_utf8s((wchar_t *)data, len * 2,  UTF16_LITTLE_ENDIAN, buffer, len * 2);
-> +
-> +	for (i = 0; i < len; i++, pos += 2)
-> +		out[i] = (hex_to_bin(pos[0]) << 4) + hex_to_bin(pos[1]);
-> +}
+The question would be if you cannot simply add some extremely large
+number, because the file size itself doesn't really matter for memfd IIRC.
 
-> +static int asus_wmi_ec_find_sensor_index(const struct asus_wmi_ec_info *ec,
-> +					 enum hwmon_sensor_types type, int channel)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < ec->nr_sensors; i++) {
-> +		if (known_ec_sensors[ec->sensors[i].info_index].type == type) {
-> +			if (channel == 0)
-> +				return i;
-> +
-> +			channel--;
-> +		}
-> +	}
-> +	return -EINVAL;
-> +}
-> +
-> +static int asus_wmi_ec_get_cached_value_or_update(int sensor_index,
-> +						  struct asus_wmi_sensors *state,
-> +						  u32 *value)
+Having that said, without trying it out, I wouldn't know from the top of
+my head if memremap would work that way on an already closed fd that ahs
+a sufficient size :/ If you have the example still somewhere, I would be
+interested if that would work in general.
 
-In both drivers there is function like this where the caller is responsible
-for halding the mutex. Maybe the mutex could be handled by the function
-directly.
+[...]
 
-> +{
-> +	int ret;
-> +
-> +	if (time_after(jiffies, state->ec.last_updated + HZ)) {
-> +		ret = asus_wmi_ec_block_read(ASUSWMI_METHODID_BREC,
-> +					     state->ec.read_arg,
-> +					     state->ec.read_buffer);
-> +		if (ret)
-> +			return ret;
-> +
-> +		asus_wmi_ec_update_ec_sensors(&state->ec);
-> +		state->ec.last_updated = jiffies;
-> +	}
-> +
-> +	*value = state->ec.sensors[sensor_index].cached_value;
-> +	return 0;
-> +}
+>>
+>>>
+>>> 4. There is a usecase in the Android userspace where vma naming
+>>> happens after memory was allocated. Bionic linker does in-memory
+>>> relocations and then names some relocated sections.
+>>
+>> Would renaming a memfd be an option or is that "too late" ?
+> 
+> My understanding is that linker allocates space to load and relocate
+> the code, performs the relocations in that space and then names some
+> of the regions after that. Whether it can be redesigned to allocate
+> multiple named regions and perform the relocation between them I did
+> not really try since it would be a project by itself.
+> 
+> TBH, at some point I just look at the amount of required changes (both
+> kernel and userspace) and new limitations that userspace has to adhere
+> to for fitting memfds to my usecase, and I feel that it's just not
+> worth it. In the end we end up using the same refcounted strings with
+> vma->vm_file->f_count as the refcount and name stored in
+> vma->vm_file->f_path->dentry but with more overhead.
 
-> +static umode_t asus_wmi_ec_hwmon_is_visible(const void *drvdata,
-> +					    enum hwmon_sensor_types type, u32 attr,
-> +					    int channel)
-> +{
-> +	int index;
-> +	const struct asus_wmi_sensors *sensor_data = drvdata;
-> +
-> +	index = asus_wmi_ec_find_sensor_index(&sensor_data->ec, type, channel);
-> +
-> +	return index == 0xff ? 0 : 0444;
+Yes, but it's glued to files which naturally have names :)
 
-Should this not check for index < 0?
+Again, I appreciate that you looked into alternatives! I can see the
+late renaming could be the biggest blocker if user space cannot be
+adjusted easily to be compatible with that using memfds.
 
-> +}
+-- 
+Thanks,
 
-> +static int asus_wmi_probe(struct wmi_device *wdev, const void *context)
-> +{
-> +	struct asus_wmi_sensors *sensor_data;
-> +	struct asus_wmi_data *board_sensors;
-> +	const enum known_ec_sensor *bsi;
-> +	const struct dmi_system_id *dmi_id;
-> +	struct device *dev = &wdev->dev;
-> +
-> +	dmi_id = dmi_first_match(asus_wmi_ec_dmi_table);
-> +	if (!dmi_id)
-> +		return -ENODEV;
-> +
-> +	board_sensors = dmi_id->driver_data;
-> +	if (!board_sensors)
-> +		return -ENODEV;
-> +
-> +	bsi = board_sensors->known_board_sensors;
-> +
-> +	sensor_data = devm_kzalloc(dev, sizeof(struct asus_wmi_sensors),
-> +				   GFP_KERNEL);
+David / dhildenb
 
-sizeof(*sensor_data);
-
-> +	if (!sensor_data)
-> +		return -ENOMEM;
-> +
-> +	mutex_init(&sensor_data->lock);
-> +
-> +	dev_set_drvdata(dev, sensor_data);
-> +
-> +	/* ec init */
-> +	return asus_wmi_ec_configure_sensor_setup(dev,
-> +						  sensor_data, bsi);
-> +}
