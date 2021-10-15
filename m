@@ -2,107 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A36B042E4F7
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 02:01:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98E3842E4FB
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 02:02:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234531AbhJOADf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 20:03:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56722 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234522AbhJOADd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 20:03:33 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B5F8C061753
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 17:01:27 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id v20so5249904plo.7
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 17:01:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3C1UrZNNXgMxvdH1/V3N3KiefA7iOJG+Xsr0iS00I+4=;
-        b=bquRmN1WDdNC+Xvp9GU1gkulRsAi+hLpDT7ovRmfKSW5wHeW8q2jpWZ2q6yvRB+iy4
-         x6l63zvB2JlX4cDBwiC6gqgtTzq+g9CVnSuHGXw1kHkSRzO9S3OILhFdqXRoZ5AW5/RI
-         ibxcWwDssnQafrp3/zYMx3lbDfTAgdBnlp9xPwkGmGjrtupn7RBsqytlQzU0d9yzX8zr
-         SVqAnCiXwERwnYKxkQxGzUlGnNLWaUdDTF10ENK6DGSOVXIyG2p+/kzDPq23lY2xOov6
-         galxjAbKjCeF9QOcfP8aacjpMZkeh41SH/WuY6phUv4kD0yMhc2D8nddDN0ER0dewQ8m
-         UWww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3C1UrZNNXgMxvdH1/V3N3KiefA7iOJG+Xsr0iS00I+4=;
-        b=6KlDdLDVYb7YPV+qzmsxHfaM46Ku6aQgp+ghlatlWfN2MiARTo3ArUQ3YGwQ5hPEkP
-         xUguRnNBIo/E0kKcBZ6iyBVsBfdan2o26+N1NmU0gYTLxCuqEgx7yR2lYcUHayUB3TQ2
-         I3clSWheOgv3WWYHe0aOBjoOZreYCGhLRsQoH96XQzK13v22/ZgCLu9FkKadguyzot9I
-         R5IPQvsQSBbSAT5NdLmkRvBNy75ram8NJ1Yj3VBbfDCw+V18QuSUk2rr4cx6OrdHgQPF
-         kDUVLnuqWsTDaDCinvkeAUW2R1jybAXuoE6zcmvCGJ6muIB10bhCac9P/Fi5jP/tZp3u
-         GVBw==
-X-Gm-Message-State: AOAM531z8JA7/StRhGS+FgVQfBptUQlkTfJGNMzKEDA1M1ZNaqsqV5lh
-        zUpNV5BS9Sp2skELw4kp6mx3KA==
-X-Google-Smtp-Source: ABdhPJxKNeoqz2Pi1Hzq6i+4pc/DGIz9rsMqNfGSauVNUWty86uVdHPI/a68vELFfd9L5IjJ6qUDBA==
-X-Received: by 2002:a17:902:b40a:b0:13d:cbcd:2e64 with SMTP id x10-20020a170902b40a00b0013dcbcd2e64mr7973030plr.18.1634256086629;
-        Thu, 14 Oct 2021 17:01:26 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id o12sm3277449pgn.33.2021.10.14.17.01.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Oct 2021 17:01:26 -0700 (PDT)
-Date:   Fri, 15 Oct 2021 00:01:22 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Yang Weijiang <weijiang.yang@intel.com>
-Cc:     pbonzini@redhat.com, jmattson@google.com, like.xu.linux@gmail.com,
-        vkuznets@redhat.com, wei.w.wang@intel.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 15/15] KVM: x86/cpuid: Advise Arch LBR feature in CPUID
-Message-ID: <YWjE0iQ6fDdJpDfT@google.com>
-References: <1629791777-16430-1-git-send-email-weijiang.yang@intel.com>
- <1629791777-16430-16-git-send-email-weijiang.yang@intel.com>
+        id S234542AbhJOAED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 20:04:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59960 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234521AbhJOAEC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 20:04:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DB5B3601FA;
+        Fri, 15 Oct 2021 00:01:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634256117;
+        bh=DaQPSl2wogcEKfQYg0cqX/7olwg80m3cW1DGsTWwlkU=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=KJMTaLLOD2lKZBlE6svvM5iL3VrAo1kVHp2PCnYkV2oUAQzaf4Zptbel8C95pvYTJ
+         FUrcqhbVzFpXYH/J+U8iHeDDMre+5I8iDtZVhuoezOwzCaJQSOD1m2BAyM0On4eJ2L
+         9E/4mHCsvU+2++1lkqYX1XShm82UQzm8AkTJYxoHNEtpITy2itz4Wt5tHXy5KO3iwB
+         yG2J24aaHShM77oFbBacjosWV4+oV9Wp/Sf7qEbFH9zRGogN7vEYVupJ/D54tRL7KC
+         9RMYnYG13Ymdf13UVvKBfbqjxkJYzm2kaoi5WiAB7L/FiIlNzHpQNPQPTKUmyYyjA7
+         MZ0K3aT85OlvQ==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1629791777-16430-16-git-send-email-weijiang.yang@intel.com>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <070b1b25-3718-5f3a-869b-a3954fdcc7c5@linaro.org>
+References: <20210829154757.784699-1-dmitry.baryshkov@linaro.org> <20210829154757.784699-8-dmitry.baryshkov@linaro.org> <YV8WsQb9H7+CaLjP@ripper> <4614587c-b87a-4375-cb6a-6af6f5462c6b@linaro.org> <163415465484.936110.9292145029740247591@swboyd.mtv.corp.google.com> <070b1b25-3718-5f3a-869b-a3954fdcc7c5@linaro.org>
+Subject: Re: [PATCH v7 7/8] clk: qcom: dispcc-sm8250: stop using mmcx regulator
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-kernel@vger.kernel.org
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Thu, 14 Oct 2021 17:01:55 -0700
+Message-ID: <163425611555.1688384.11653527408173081635@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-s/Advise/Advertise
+Quoting Dmitry Baryshkov (2021-10-14 02:53:41)
+> On 13/10/2021 22:50, Stephen Boyd wrote:
+> > Quoting Dmitry Baryshkov (2021-10-07 09:16:13)
+> >> On 07/10/2021 18:48, Bjorn Andersson wrote:
+> >>> On Sun 29 Aug 08:47 PDT 2021, Dmitry Baryshkov wrote:
+> >>>
+> >>>> Now as the common qcom clock controller code has been taught about p=
+ower
+> >>>> domains, stop mentioning mmcx supply as a way to power up the clock
+> >>>> controller's gdsc.
+> >>>>
+> >>>> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> >>>> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> >>>
+> >>> Once we merge these, I expect that the boards will start crashing if
+> >>> the kernel is booted using an existing DTB?
+> >>>
+> >>> Is it okay to just merge the first 6 patches in the series now and
+> >>> postpone these two until we've had the dts change sitting for a while?
+> >>
+> >> Sure it is.
+> >>
+> >=20
+> > What's the merge strategy? It goes through arm-soc?
+>=20
+> I think this should go through the clk tree. There is little chance of=20
+> conflicts.
+>=20
+>=20
 
-On Tue, Aug 24, 2021, Yang Weijiang wrote:
-> Add Arch LBR feature bit in CPU cap-mask to expose the feature.
-> Only max LBR depth is supported for guest, and it's consistent
-> with host Arch LBR settings.
-> 
-> Co-developed-by: Like Xu <like.xu@linux.intel.com>
-> Signed-off-by: Like Xu <like.xu@linux.intel.com>
-> Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
-> ---
->  arch/x86/kvm/cpuid.c | 33 ++++++++++++++++++++++++++++++++-
->  1 file changed, 32 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-> index 03025eea1524..d98ebefd5d72 100644
-> --- a/arch/x86/kvm/cpuid.c
-> +++ b/arch/x86/kvm/cpuid.c
-> @@ -88,6 +88,16 @@ static int kvm_check_cpuid(struct kvm_cpuid_entry2 *entries, int nent)
->  		if (vaddr_bits != 48 && vaddr_bits != 57 && vaddr_bits != 0)
->  			return -EINVAL;
->  	}
-> +	best = cpuid_entry2_find(entries, nent, 0x1c, 0);
-> +	if (best) {
-> +		unsigned int eax, ebx, ecx, edx;
-> +
-> +		/* Reject user-space CPUID if depth is different from host's.*/
-
-Why disallow this?  I don't see why it would be illegal for userspace to specify
-fewer LBRs, and KVM should darn well verify that any MSRs it's exposing to the
-guest actually exist.
-
-> +		cpuid_count(0x1c, 0, &eax, &ebx, &ecx, &edx);
-> +
-> +		if ((best->eax & 0xff) != BIT(fls(eax & 0xff) - 1))
-> +			return -EINVAL;
-> +	}
->  
->  	return 0;
->  }
+Ok. So I take the first 6 through clk tree and then we wait for the last
+two?
