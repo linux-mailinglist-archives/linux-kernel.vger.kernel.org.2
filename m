@@ -2,182 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF23542FB15
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 20:34:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1C5242FB19
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 20:35:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238164AbhJOSgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 14:36:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56710 "EHLO
+        id S241250AbhJOShG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 14:37:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238043AbhJOSgQ (ORCPT
+        with ESMTP id S238031AbhJOShD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 14:36:16 -0400
-Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF966C061762;
-        Fri, 15 Oct 2021 11:34:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=9RF/xBkDb26d0/d/9ZXnO6GztufkDJdAq9Z00xKtzto=; b=tRH5yZ929XAkcM4IfLVtsLDdza
-        Dk4q4rDNKOaoso42/j3VNFUeFWQBSeli9TgmtS+A2bHzkR+7eReA0q/ZkjiKXtG9N0AaCn8bH+ouc
-        vCoak9BcPHTJChXwuSb8NVhA4kSGUfe53BcBSONoK7hlEwio6Z9lmfEn6QjTI214xRdUEP55/6uSl
-        WZZFLuTIchauYq1n5ZyZ65ad3Vch7e8R0gsSTyFvfbo7928k2bzQwjNp7U4+00q7iLshz2jxmRpNC
-        BJztgD1aAf7z2ggJuI+cgCIrV4zOfuzjB0K/LlARYJe6Lm1ZV6+HubzPmlQgJcWcuupXSB8nD1QQE
-        RwAhjXng==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mbS1v-008T3z-Vm; Fri, 15 Oct 2021 18:34:07 +0000
-Date:   Fri, 15 Oct 2021 11:34:07 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc:     linux-raid@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, axboe@kernel.dk, hch@lst.de,
-        efremov@linux.com, song@kernel.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, viro@zeniv.linux.org.uk, hare@suse.de,
-        jack@suse.cz, ming.lei@redhat.com, tj@kernel.org
-Subject: Re: [PATCH v2 1/2] block: make __register_blkdev() return an error
-Message-ID: <YWnJnyysQQ86i5e/@bombadil.infradead.org>
-References: <20210927220332.1074647-1-mcgrof@kernel.org>
- <20210927220332.1074647-2-mcgrof@kernel.org>
- <11a884b0-53f2-5174-fcb2-6247cece7104@i-love.sakura.ne.jp>
+        Fri, 15 Oct 2021 14:37:03 -0400
+Received: from mail-ua1-x92b.google.com (mail-ua1-x92b.google.com [IPv6:2607:f8b0:4864:20::92b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BADDEC061570;
+        Fri, 15 Oct 2021 11:34:56 -0700 (PDT)
+Received: by mail-ua1-x92b.google.com with SMTP id h4so19908104uaw.1;
+        Fri, 15 Oct 2021 11:34:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sdvpEps5RpPexHJoN2yLUAHP53T3CGc/Z15Qzk7WYlQ=;
+        b=Oh5YqBS9BrZMxjbxK5OnqaHgU0HD5E1rfRlMO0HnG7CYJVNXh1UppQgLwvxC4AbGkO
+         KVPPfZnAWxtEbMfpj8LEQ5K8J9Ea8yJRae8hprvomTJaGRDbSTwqfHTjL1leJgjgf6Dc
+         9v8Ui9Au6A0rIaEJLDkJkSRXIuxlXXnIAvtqFC+uZRrvoDz7m35gtaUm7aDdTYWeOxBu
+         BgRTWEKrznwt5h5UcZJbZ09I+rBfmmUWvhLI530ZbFLVfd85/qnHtaveusVGCj24qvEs
+         n3OGu+o0VubvxnI3eB/XHi3fSkeFGzStk6V9PyN1sOGaiVMTinxISrFT0nqdpwpgdXpW
+         AzNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sdvpEps5RpPexHJoN2yLUAHP53T3CGc/Z15Qzk7WYlQ=;
+        b=mNjp/xl1/T7w6Ak5eottkFjb5f29uPKFe90ec9XXVpdaADagWfINmZKH2zlZyQa/im
+         JrzJMMcI7C0QgueA23lFBEI8eX2xWBcDgr8fECVp3TRTK/BW8rH/D9wfota8w33Gz91o
+         7URPFUBnqpR3mMpWS8jW5YhNK6VFP5B8eeErkl6OAVTPK6K+3imVfmdLKUBOZe86kevT
+         GiFrnbmXKdoMN1vsqZuMoTphht6j5m3kt3bVGN0rIulntTNkIKbIfnUnRMrI1STfOORn
+         mL0EXLudqSTgiilh/lkjobm9KngciLBqDg72vAtXLVmV9r3Lpr/fjADmj1pAOqWTsIaA
+         yZGg==
+X-Gm-Message-State: AOAM533Uda3dVaCHGkXXUaWMYscbU7VmvKTIFFOINq0N4u9z1ve7b0hS
+        1Wcpcsqv3chJ3+hpGK+DREXaGTlT06YwfayNyk++CeW9
+X-Google-Smtp-Source: ABdhPJx55Xc6Bp0Vri8rnJIqfP9F32H7316jWFrB+R94r+SZ4FMQ3YR2ju4nRXmyGtaORK9Kku94MppZ0bCJyJzkR9Y=
+X-Received: by 2002:ab0:3386:: with SMTP id y6mr14790557uap.53.1634322895780;
+ Fri, 15 Oct 2021 11:34:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <11a884b0-53f2-5174-fcb2-6247cece7104@i-love.sakura.ne.jp>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+References: <1634277941-6672-1-git-send-email-hongxing.zhu@nxp.com> <1634277941-6672-4-git-send-email-hongxing.zhu@nxp.com>
+In-Reply-To: <1634277941-6672-4-git-send-email-hongxing.zhu@nxp.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Fri, 15 Oct 2021 15:34:45 -0300
+Message-ID: <CAOMZO5DD9mouiBvYE0JwHEAJKENC3Af=j3tQbCsUfWCi8Ji8ug@mail.gmail.com>
+Subject: Re: [RESEND v2 3/5] PCI: imx6: Fix the regulator dump when link never
+ came up
+To:     Richard Zhu <hongxing.zhu@nxp.com>
+Cc:     Lucas Stach <l.stach@pengutronix.de>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        linux-pci@vger.kernel.org, NXP Linux Team <linux-imx@nxp.com>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 09:19:47AM +0900, Tetsuo Handa wrote:
-> On 2021/09/28 7:03, Luis Chamberlain wrote:
-> > diff --git a/drivers/block/ataflop.c b/drivers/block/ataflop.c
-> > index 5dc9b3d32415..be0627345b21 100644
-> > --- a/drivers/block/ataflop.c
-> > +++ b/drivers/block/ataflop.c
-> > @@ -1989,24 +1989,34 @@ static int ataflop_alloc_disk(unsigned int drive, unsigned int type)
-> >  
-> >  static DEFINE_MUTEX(ataflop_probe_lock);
-> >  
-> > -static void ataflop_probe(dev_t dev)
-> > +static int ataflop_probe(dev_t dev)
-> >  {
-> >  	int drive = MINOR(dev) & 3;
-> >  	int type  = MINOR(dev) >> 2;
-> > +	int err = 0;
-> >  
-> >  	if (type)
-> >  		type--;
-> >  
-> > -	if (drive >= FD_MAX_UNITS || type >= NUM_DISK_MINORS)
-> > -		return;
-> > +	if (drive >= FD_MAX_UNITS || type >= NUM_DISK_MINORS) {
-> > +		err = -EINVAL;
-> > +		goto out;
-> > +	}
-> > +
-> >  	mutex_lock(&ataflop_probe_lock);
-> >  	if (!unit[drive].disk[type]) {
-> > -		if (ataflop_alloc_disk(drive, type) == 0) {
-> > -			add_disk(unit[drive].disk[type]);
-> > +		err = ataflop_alloc_disk(drive, type);
-> > +		if (err == 0) {
-> > +			err = add_disk(unit[drive].disk[type]);
-> > +			if (err)
-> > +				blk_cleanup_disk(unit[drive].disk[type]);
-> >  			unit[drive].registered[type] = true;
-> 
-> Why setting registered to true despite add_disk() failed?
-> del_gendisk() without successful add_disk() sounds wrong.
+Hi Richard,
 
-That was a mistake, fixed.
+On Fri, Oct 15, 2021 at 3:32 AM Richard Zhu <hongxing.zhu@nxp.com> wrote:
+>
+> When PCIe PHY link never came up and vpcie regulator is present, there
+> would be following dump when try to put the regulator.
+> Disable this regulator to fix this dump when link never came up.
+>
+>   imx6q-pcie 33800000.pcie: Phy link never came up
+>   imx6q-pcie: probe of 33800000.pcie failed with error -110
+>   ------------[ cut here ]------------
+>   WARNING: CPU: 3 PID: 119 at drivers/regulator/core.c:2256 _regulator_put.part.0+0x14c/0x158
+>   Modules linked in:
+>   CPU: 3 PID: 119 Comm: kworker/u8:2 Not tainted 5.13.0-rc7-next-20210625-94710-ge4e92b2588a3 #10
+>   Hardware name: FSL i.MX8MM EVK board (DT)
+>   Workqueue: events_unbound async_run_entry_fn
+>   pstate: 80000005 (Nzcv daif -PAN -UAO -TCO BTYPE=--)
+>   pc : _regulator_put.part.0+0x14c/0x158
+>   lr : regulator_put+0x34/0x48
+>   sp : ffff8000122ebb30
+>   x29: ffff8000122ebb30 x28: ffff800011be7000 x27: 0000000000000000
+>   x26: 0000000000000000 x25: 0000000000000000 x24: ffff00000025f2bc
+>   x23: ffff00000025f2c0 x22: ffff00000025f010 x21: ffff8000122ebc18
+>   x20: ffff800011e3fa60 x19: ffff00000375fd80 x18: 0000000000000010
+>   x17: 000000040044ffff x16: 00400032b5503510 x15: 0000000000000108
+>   x14: ffff0000003cc938 x13: 00000000ffffffea x12: 0000000000000000
+>   x11: 0000000000000000 x10: ffff80001076ba88 x9 : ffff80001076a540
+>   x8 : ffff00000025f2c0 x7 : ffff0000001f4450 x6 : ffff000000176cd8
+>   x5 : ffff000003857880 x4 : 0000000000000000 x3 : ffff800011e3fe30
+>   x2 : ffff0000003cc4c0 x1 : 0000000000000000 x0 : 0000000000000001
+>   Call trace:
+>    _regulator_put.part.0+0x14c/0x158
+>    regulator_put+0x34/0x48
+>    devm_regulator_release+0x10/0x18
+>    release_nodes+0x38/0x60
+>    devres_release_all+0x88/0xd0
+>    really_probe+0xd0/0x2e8
+>    __driver_probe_device+0x74/0xd8
+>    driver_probe_device+0x7c/0x108
+>    __device_attach_driver+0x8c/0xd0
+>    bus_for_each_drv+0x74/0xc0
+>    __device_attach_async_helper+0xb4/0xd8
+>    async_run_entry_fn+0x30/0x100
+>    process_one_work+0x19c/0x320
+>    worker_thread+0x48/0x418
+>    kthread+0x14c/0x158
+>    ret_from_fork+0x10/0x18
+>   ---[ end trace 3664ca4a50ce849b ]---
+>
+> Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
 
-> Don't we need to undo ataflop_alloc_disk() because it sets
-> unit[drive].disk[type] to non-NULL ?
-
-ataflop_alloc_disk() just calls blk_mq_alloc_disk() for its
-allocation, and so blk_cleanup_disk() does that for us. Please
-let me know if I missed anything.
-
-> > diff --git a/drivers/block/brd.c b/drivers/block/brd.c
-> > index c2bf4946f4e3..82a93044de95 100644
-> > --- a/drivers/block/brd.c
-> > +++ b/drivers/block/brd.c
-> > @@ -426,10 +426,11 @@ static int brd_alloc(int i)
-> >  	return err;
-> >  }
-> >  
-> > -static void brd_probe(dev_t dev)
-> > +static int brd_probe(dev_t dev)
-> >  {
-> >  	int i = MINOR(dev) / max_part;
-> >  	struct brd_device *brd;
-> > +	int err = 0;
-> >  
-> >  	mutex_lock(&brd_devices_mutex);
-> >  	list_for_each_entry(brd, &brd_devices, brd_list) {
-> > @@ -437,9 +438,11 @@ static void brd_probe(dev_t dev)
-> >  			goto out_unlock;
-> >  	}
-> >  
-> > -	brd_alloc(i);
-> > +	err = brd_alloc(i);
-> >  out_unlock:
-> >  	mutex_unlock(&brd_devices_mutex);
-> > +
-> > +	return err;
-> >  }
-> >  
-> >  static void brd_del_one(struct brd_device *brd)
-> 
-> https://lkml.kernel.org/r/e205f13d-18ff-a49c-0988-7de6ea5ff823@i-love.sakura.ne.jp
-> will require this part to be updated.
-
-Indeed, rebased, thanks for the heads up!
-
-> > diff --git a/drivers/block/floppy.c b/drivers/block/floppy.c
-> > index 0434f28742e7..95a1c8ef62f7 100644
-> > --- a/drivers/block/floppy.c
-> > +++ b/drivers/block/floppy.c
-> > @@ -4517,21 +4517,27 @@ static int floppy_alloc_disk(unsigned int drive, unsigned int type)
-> >  
-> >  static DEFINE_MUTEX(floppy_probe_lock);
-> >  
-> > -static void floppy_probe(dev_t dev)
-> > +static int floppy_probe(dev_t dev)
-> >  {
-> >  	unsigned int drive = (MINOR(dev) & 3) | ((MINOR(dev) & 0x80) >> 5);
-> >  	unsigned int type = (MINOR(dev) >> 2) & 0x1f;
-> > +	int err = 0;
-> >  
-> >  	if (drive >= N_DRIVE || !floppy_available(drive) ||
-> >  	    type >= ARRAY_SIZE(floppy_type))
-> > -		return;
-> > +		return -EINVAL;
-> >  
-> >  	mutex_lock(&floppy_probe_lock);
-> >  	if (!disks[drive][type]) {
-> > -		if (floppy_alloc_disk(drive, type) == 0)
-> > -			add_disk(disks[drive][type]);
-> > +		if (floppy_alloc_disk(drive, type) == 0) {
-> > +			err = add_disk(disks[drive][type]);
-> > +			if (err)
-> > +				blk_cleanup_disk(disks[drive][type]);
-> 
-> This makes future floppy_probe() no-op once add_disk() failed (or maybe a bad
-> thing happens somewhere else), for disks[drive][type] was set to non-NULL by
-> floppy_alloc_disk() but blk_cleanup_disk() does not reset it to NULL.
-
-Thanks!
-
-I think just setting disks[drive][type] = NULL after the
-blk_cleanup_disk() fixes that issue.
-
-> According to floppy_module_exit() which tries to cleanup it, implementing
-> undo might be complicated...
-
-I can't see what would be missing from just setting disks[drive][type] = NULL.
-Can you clarify?
-
-  Luis
+I am seeing this on imx6 too. When you send a v2, after addressing
+Lucas' comments, please add a Fixes tag/
