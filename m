@@ -2,129 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 588AA42F689
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 17:05:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83AF342F69A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 17:07:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240603AbhJOPHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 11:07:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:51639 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233121AbhJOPHk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 11:07:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634310334;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=UfQ0LrN6xpoaV3mY9Eud18l2Ja+hZhU4wb39sPJMTdc=;
-        b=aZJOM0Ymu0UkEbnm38b2HPLVcUgzFYzD25/bKERyoc90izLu2MqiUB5FIdDjEMh1aXeUG6
-        soWRKG2e94+CH0i7ZF9ykwJAxOmx2yj8D59lfDzQ7ca1Wc82/gMXrew73s9cSj0moXkFr8
-        5opGUCjXv6x4iv3Jy/acxtu7QwSZBNs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-36-EmXBQodWPnG2JXnGC71XrQ-1; Fri, 15 Oct 2021 11:05:30 -0400
-X-MC-Unique: EmXBQodWPnG2JXnGC71XrQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5E2561006AA2;
-        Fri, 15 Oct 2021 15:05:28 +0000 (UTC)
-Received: from vitty.brq.redhat.com (unknown [10.40.195.155])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DE15F2C175;
-        Fri, 15 Oct 2021 15:05:25 +0000 (UTC)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        David Matlack <dmatlack@google.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH RFC] KVM: SVM: reduce guest MAXPHYADDR by one in case C-bit is a physical bit
-Date:   Fri, 15 Oct 2021 17:05:24 +0200
-Message-Id: <20211015150524.2030966-1-vkuznets@redhat.com>
+        id S240367AbhJOPJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 11:09:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57282 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233121AbhJOPJm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 11:09:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9AEF161056;
+        Fri, 15 Oct 2021 15:07:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634310454;
+        bh=VqVN67UtuHpTrgFPMCOrupVQ95C6IzxTdbZV92zwU7s=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=lMLfXe+pqpWUumfOHLTB6cnWR+wC+Yu0aDd8RD11AzyPN1Z8oSA4bZg33zYvBqE/9
+         Kl3VsZHTO/cPRSsYfBeAhrM6fCENx/CAzzg2vA7omGCorZEuIPhJl8PQyudSB+dXPb
+         76ubY18qNUC1NCEs+vd1Hmf2EPh89g9EVObAPzpncBf4Fb5tbopdQb8inWwoKJ2KZC
+         27cF3zU0HO0QBe3n51JGtC5CAOzPYNDUfcbCjA+EKHosyD2NwZGMd1B8904N/RRop9
+         OAXzDuMR4qFmBZymzrPmExyrHWBd1gXPGjsxhWXIShE+fQxPJKr4yIvx73JZgTotSU
+         0Qz7eWRy848Pw==
+Subject: Re: [PATCH v4 1/2] [RFT] clk: samsung: add support for CPU clocks
+To:     Will McVicker <willmcvicker@google.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     kernel-team@android.com,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20211014195347.3635601-1-willmcvicker@google.com>
+ <20211014195347.3635601-2-willmcvicker@google.com>
+From:   Sylwester Nawrocki <snawrocki@kernel.org>
+Message-ID: <7204d800-17f8-1903-a76b-eea6cccba718@kernel.org>
+Date:   Fri, 15 Oct 2021 17:07:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <20211014195347.3635601-2-willmcvicker@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Several selftests (memslot_modification_stress_test, kvm_page_table_test,
-dirty_log_perf_test,.. ) which rely on vm_get_max_gfn() started to fail
-since commit ef4c9f4f65462 ("KVM: selftests: Fix 32-bit truncation of
-vm_get_max_gfn()") on AMD EPYC 7401P:
+On 14.10.2021 21:53, Will McVicker wrote:
+> Adds 'struct samsung_cpu_clock' and corresponding CPU clock registration
+> function to the samsung common clk driver. This allows samsung clock
+> drivers to register their CPU clocks with the samsung_cmu_register_one()
+> API.
+> 
+> Currently the exynos5433 apollo and atlas clks have their own custom
+> init functions to handle registering their CPU clocks. With this patch
+> we can drop their custom CLK_OF_DECLARE functions and directly call
+> samsung_cmu_register_one().
+> 
+> Signed-off-by: Will McVicker <willmcvicker@google.com>
 
- ./tools/testing/selftests/kvm/demand_paging_test
- Testing guest mode: PA-bits:ANY, VA-bits:48,  4K pages
- guest physical test memory offset: 0xffffbffff000
- Finished creating vCPUs and starting uffd threads
- Started all vCPUs
- ==== Test Assertion Failure ====
-   demand_paging_test.c:63: false
-   pid=47131 tid=47134 errno=0 - Success
-      1	0x000000000040281b: vcpu_worker at demand_paging_test.c:63
-      2	0x00007fb36716e431: ?? ??:0
-      3	0x00007fb36709c912: ?? ??:0
-   Invalid guest sync status: exit_reason=SHUTDOWN
-
-The commit, however, seems to be correct, it just revealed an already
-present issue. AMD CPUs which support SEV may have a reduced physical
-address space, e.g. on AMD EPYC 7401P I see:
-
- Address sizes:  43 bits physical, 48 bits virtual
-
-The guest physical address space, however, is not reduced as stated in
-commit e39f00f60ebd ("KVM: x86: Use kernel's x86_phys_bits to handle
-reduced MAXPHYADDR"). This seems to be almost correct, however, APM has one
-more clause (15.34.6):
-
-  Note that because guest physical addresses are always translated through
-  the nested page tables, the size of the guest physical address space is
-  not impacted by any physical address space reduction indicated in CPUID
-  8000_001F[EBX]. If the C-bit is a physical address bit however, the guest
-  physical address space is effectively reduced by 1 bit.
-
-Implement the reduction.
-
-Fixes: e39f00f60ebd (KVM: x86: Use kernel's x86_phys_bits to handle reduced MAXPHYADDR)
-Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
----
-- RFC: I may have misdiagnosed the problem as I didn't dig to where exactly
- the guest crashes.
----
- arch/x86/kvm/cpuid.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
-
-diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-index 751aa85a3001..04ae280a0b66 100644
---- a/arch/x86/kvm/cpuid.c
-+++ b/arch/x86/kvm/cpuid.c
-@@ -923,13 +923,20 @@ static inline int __do_cpuid_func(struct kvm_cpuid_array *array, u32 function)
- 		 *
- 		 * If TDP is enabled but an explicit guest MAXPHYADDR is not
- 		 * provided, use the raw bare metal MAXPHYADDR as reductions to
--		 * the HPAs do not affect GPAs.
-+		 * the HPAs do not affect GPAs. The value, however, has to be
-+		 * reduced by 1 in case C-bit is a physical bit (APM section
-+		 * 15.34.6).
- 		 */
--		if (!tdp_enabled)
-+		if (!tdp_enabled) {
- 			g_phys_as = boot_cpu_data.x86_phys_bits;
--		else if (!g_phys_as)
-+		} else if (!g_phys_as) {
- 			g_phys_as = phys_as;
- 
-+			if (kvm_cpu_cap_has(X86_FEATURE_SEV) &&
-+			    (cpuid_ebx(0x8000001f) & 0x3f) < g_phys_as)
-+				g_phys_as -= 1;
-+		}
-+
- 		entry->eax = g_phys_as | (virt_as << 8);
- 		entry->edx = 0;
- 		cpuid_entry_override(entry, CPUID_8000_0008_EBX);
--- 
-2.31.1
-
+Patch applied, thank you.
