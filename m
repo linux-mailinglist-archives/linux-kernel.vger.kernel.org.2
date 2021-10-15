@@ -2,92 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8E8342F92A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 18:56:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3E2842F984
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 19:00:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241802AbhJOQ6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 12:58:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33828 "EHLO
+        id S241900AbhJORCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 13:02:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241827AbhJOQ6N (ORCPT
+        with ESMTP id S241885AbhJORCT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 12:58:13 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78293C061762
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 09:56:06 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id pi19-20020a17090b1e5300b0019fdd3557d3so7687872pjb.5
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 09:56:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AaNCt4OmVhLvoFGzEVj4sViAisbx0ICeCpQAIecvxqI=;
-        b=hPtUn5xDRLIFQwIqC+vCxBy4ne14xnuKSSFL/3XuvrTqwY+L33IRim9F2QSX1FS3GD
-         eClTIOjeUdFZVfeE+zB1ywC5h1IGnSmSp2ez0scC7FNzaRz4FeN0jr63F3Zj/8YTtXCi
-         nSxnRATEQS8yMwDArMMsqHk2WXiSvivnMRsv8kE0IcV3BRU07VcwAWWY3cqDGTIvNBfF
-         Saxncu/BJD3qtFZs2xGayUjxYicDKj2djElyb2NEL4WpJYZsI/lB9X0RYGWfBeGRplzJ
-         cbowtfklm7xgb2l08imWEz0EaRUVsPxHl2s2rxsglcMGRcaCV6XZ1QDNL6R4A397ZYWQ
-         f0Aw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AaNCt4OmVhLvoFGzEVj4sViAisbx0ICeCpQAIecvxqI=;
-        b=RaEL2Ec5NAxJLvz2eaoX6OEyoh7slHvJwhDGlXALk3NdDhYeRve+Cwwm/kB9UVlqRm
-         cdRL8OuAJ0Go7YKaA3BMyV5Cu3Q16RSGtqMsw5Q14w7vQ1xZtZSt7mThYP/SaHZg7A8A
-         LMXloapM6MCSrgrPXVRpAxHFkKPKA7Ie5ILcI04lRLh6y6KGM0xVXU59MxUOW5YpdcDA
-         7JEZdilmPcaackWCYHM84wgRcL47AqWIFORTDuRbh+FiBEisIW9/134nw7ad1EWZuNVI
-         BQUMpz1FDH8vuenkKWsErYCsQtxaS/UzLAyCdgDiOj7DP6cRaE7byrY27+C8k+ag1eSg
-         OZlg==
-X-Gm-Message-State: AOAM531rpFChsP2p7X3Us2dcaQVybsqvp6hnIEsB03JL6+HAvO0OwB+9
-        PnFGOftJS/ALkS1HaedSfWJVZI4/czN5Mb05yG/e3w==
-X-Google-Smtp-Source: ABdhPJyOtIyBzAL4O7WPCBfNYHHReQtLzXKDwE0ySONpN92H2FI0Q4u1sLjT3ZL/ZjCgpIvxqAwijeO87SXsPlIQUqc=
-X-Received: by 2002:a17:902:ab50:b0:13f:4c70:9322 with SMTP id
- ij16-20020a170902ab5000b0013f4c709322mr11958655plb.89.1634316966039; Fri, 15
- Oct 2021 09:56:06 -0700 (PDT)
+        Fri, 15 Oct 2021 13:02:19 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DED1DC061570
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 10:00:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=BAfNBN8URhyP72a4qvxS6wQ+QWtB4yuONqxLBe7hw1k=; b=eAm7eFoIm1yDIu5xxzP2xBHCLW
+        3bVjgc8tdfS6UwzXnL6Ko0weNSQpuor+hVlyI3jEkpAtlWct98GnfhW0eN4DD+s7SSQQ5KeZJaJkw
+        uHd9IJCatGPiCtDBvxE1tRCbpqR8UrJlP4dRIu1mXO4MjrpLe8dF/UbDvduUhDOD0TB5CZlWupDwA
+        O3Z0ee3kHw/Dw1wU81ztGYr1r5lVY0ao/wvnwLtDForsrecLkeTvWTT3o0rJwf2qfzKAcXO+u07Ra
+        zbvZHL0CXKh5HEtm/OMn2HQiv9YCGqiVNOqwFmh3Kp01y8bC9/vrm7MGQpY0iXCLP35RWPQUoh3I0
+        qomBZIAQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mbQVX-0098xn-Rj; Fri, 15 Oct 2021 16:57:05 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 113609857C7; Fri, 15 Oct 2021 18:56:36 +0200 (CEST)
+Date:   Fri, 15 Oct 2021 18:56:35 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     x86@kernel.org, jpoimboe@redhat.com, andrew.cooper3@citrix.com,
+        linux-kernel@vger.kernel.org, alexei.starovoitov@gmail.com,
+        ndesaulniers@google.com
+Subject: Re: [PATCH 4/9] x86/alternative: Implement .retpoline_sites support
+Message-ID: <20211015165635.GH174703@worktop.programming.kicks-ass.net>
+References: <20211013122217.304265366@infradead.org>
+ <20211013123645.002402102@infradead.org>
+ <YWmPCF+g+sF4+ieh@zn.tnic>
 MIME-Version: 1.0
-References: <163379783658.692348.16064992154261275220.stgit@dwillia2-desk3.amr.corp.intel.com>
- <163379786922.692348.2318044990911111834.stgit@dwillia2-desk3.amr.corp.intel.com>
- <20211015172732.000012fc@Huawei.com>
-In-Reply-To: <20211015172732.000012fc@Huawei.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Fri, 15 Oct 2021 09:55:57 -0700
-Message-ID: <CAPcyv4j9W4NJFTPk8c5_nG_fAUpecnY886jKmhYzZONW4RCf5Q@mail.gmail.com>
-Subject: Re: [PATCH v3 06/10] cxl/pci: Add @base to cxl_register_map
-To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc:     linux-cxl@vger.kernel.org, Linux PCI <linux-pci@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YWmPCF+g+sF4+ieh@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 15, 2021 at 9:27 AM Jonathan Cameron
-<Jonathan.Cameron@huawei.com> wrote:
->
-> On Sat, 9 Oct 2021 09:44:29 -0700
-> Dan Williams <dan.j.williams@intel.com> wrote:
->
-> > In addition to carrying @barno, @block_offset, and @reg_type, add @base
-> > to keep all map/unmap parameters in one object. The helpers
-> > cxl_{map,unmap}_regblock() handle adjusting @base to the @block_offset
-> > at map and unmap time.
-> >
-> > Signed-off-by: Dan Williams <dan.j.williams@intel.com>
->
-> I don't really mind them, but why the renames
-> from cxl_pci_* to cxl_* ?
+On Fri, Oct 15, 2021 at 04:24:08PM +0200, Borislav Petkov wrote:
+> On Wed, Oct 13, 2021 at 02:22:21PM +0200, Peter Zijlstra wrote:
+> > +static int patch_retpoline(void *addr, struct insn *insn, u8 *bytes)
+> > +{
+> > +	void (*target)(void);
+> > +	int reg, i = 0;
+> > +
+> > +	if (cpu_feature_enabled(X86_FEATURE_RETPOLINE))
+> > +		return -1;
+> > +
+> > +	target = addr + insn->length + insn->immediate.value;
+> > +	reg = (target - &__x86_indirect_thunk_rax) /
+> > +	      (&__x86_indirect_thunk_rcx - &__x86_indirect_thunk_rax);
+> 
+> I guess you should compute those values once so that it doesn't have to
+> do them for each function invocation. And it does them here when I look
+> at the asm it generates.
 
-Primarily because we had a mix of some functions including the _pci
-and some not, and I steered towards just dropping it. I think the
-"PCI" aspect of the function is clear by its function signature, and
-that was being muddied by passing @cxlm unnecessarily. So instead of:
+Takes away the simplicity of the thing. It can't know these values at
+compile time (due to external symbols etc..) although I suppose LTO
+might be able to fix that.
 
-cxl_pci_$foo(struct cxl_mem *cxlm...)
+Other than that, the above is the trivial form of reverse indexing an
+array.
 
-...I went with:
+> > +
+> > +	if (WARN_ON_ONCE(reg & ~0xf))
+> > +		return -1;
+> 
+> Sanity-checking the alignment of those thunks?
 
-cxl_$foo(struct pci_dev *pdev...)
+Nah, the target address of the instruction; if that's not a retpoline
+thunk (for whatever raisin) then the computation will not result in a
+valid reg and we should bail.
 
-...concerns?
+> > +
+> > +	i = emit_indirect(insn->opcode.bytes[0], reg, bytes);
+> > +	if (i < 0)
+> > +		return i;
+> > +
+> > +	for (; i < insn->length;)
+> > +		bytes[i++] = BYTES_NOP1;
+> 
+> Why not:
+> 
+>         nop_len = insn->length - i;
+>         if (nop_len) {
+>                 memcpy(&bytes[i], x86_nops[nop_len], nop_len);
+>                 i += nop_len;
+>         }
+> 
+> and then you save yourself the optimize_nops() call because it'll take
+> the right-sized NOP directly.
+
+That's not immediately safe; if for some reason or other the original
+instrucion is 15 bytes long, and we generated 2 bytes, then we need 13
+nop bytes, the above will then do an out-of-bound array access (due to
+the nops array only doing 8 byte nops at max).
+
+I wanted this code to be simple and obvious.
