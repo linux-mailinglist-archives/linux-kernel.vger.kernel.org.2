@@ -2,58 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 960F842E636
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 03:42:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41A3C42E63C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 03:46:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233143AbhJOBoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 21:44:30 -0400
-Received: from mga06.intel.com ([134.134.136.31]:18332 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229832AbhJOBo3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 21:44:29 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10137"; a="288695890"
-X-IronPort-AV: E=Sophos;i="5.85,374,1624345200"; 
-   d="scan'208";a="288695890"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2021 18:42:23 -0700
-X-IronPort-AV: E=Sophos;i="5.85,374,1624345200"; 
-   d="scan'208";a="592827275"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.239.159.119])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2021 18:42:21 -0700
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Yang Shi <shy828301@gmail.com>
-Cc:     dave.hansen@linux.intel.com, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm: migrate: make demotion knob depend on migration
-References: <20211015005559.246709-1-shy828301@gmail.com>
-Date:   Fri, 15 Oct 2021 09:42:19 +0800
-In-Reply-To: <20211015005559.246709-1-shy828301@gmail.com> (Yang Shi's message
-        of "Thu, 14 Oct 2021 17:55:59 -0700")
-Message-ID: <875ytznjwk.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        id S233586AbhJOBsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 21:48:05 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:43634 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229832AbhJOBsE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 21:48:04 -0400
+X-UUID: 6afdd2f74d7b426d89963329f900a6b2-20211015
+X-UUID: 6afdd2f74d7b426d89963329f900a6b2-20211015
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <sam.shih@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1215342424; Fri, 15 Oct 2021 09:45:56 +0800
+Received: from mtkexhb01.mediatek.inc (172.21.101.102) by
+ mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.2.792.15; Fri, 15 Oct 2021 09:45:54 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by mtkexhb01.mediatek.inc
+ (172.21.101.102) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 15 Oct
+ 2021 09:45:54 +0800
+Received: from mtksdccf07 (172.21.84.99) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 15 Oct 2021 09:45:54 +0800
+Message-ID: <e7cb3220b925209d8f5229c207d5efbc42d58794.camel@mediatek.com>
+Subject: Re: [PATCH v7 1/4] dt-bindings: pinctrl: update bindings for MT7986
+ SoC
+From:   Sam Shih <sam.shih@mediatek.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Ryder Lee <Ryder.Lee@mediatek.com>,
+        <linux-gpio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, Sean Wang <sean.wang@kernel.org>,
+        "John Crispin" <john@phrozen.org>,
+        <linux-arm-kernel@lists.infradead.org>
+Date:   Fri, 15 Oct 2021 09:45:54 +0800
+In-Reply-To: <1634221864.165084.3295876.nullmailer@robh.at.kernel.org>
+References: <20211014075836.17681-1-sam.shih@mediatek.com>
+         <20211014075836.17681-2-sam.shih@mediatek.com>
+         <1634221864.165084.3295876.nullmailer@robh.at.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+Content-Transfer-Encoding: 7bit
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yang Shi <shy828301@gmail.com> writes:
+Hi
 
-> The memory demotion needs to call migrate_pages() to do the jobs.  And
-> it is controlled by a knob, however, the knob doesn't depend on
-> CONFIG_MIGRATION.  The knob could be truned on even though MIGRATION is
-> disabled, this will not cause any crash since migrate_pages() would just
-> return -ENOSYS.  But it is definitely not optimal to go through demotion
-> path then retry regular swap every time.
->
-> And it doesn't make too much sense to have the knob visible to the users
-> when !MIGRATION.  Move the related code from mempolicy.[h|c] to migrate.[h|c].
+On Thu, 2021-10-14 at 09:31 -0500, Rob Herring wrote:
+> On Thu, 14 Oct 2021 15:58:33 +0800, Sam Shih wrote:
+> > This updates bindings for MT7986 pinctrl driver. The
+> > difference of pinctrl between mt7986a and mt7986b is that pin-41 to
+> > pin-65 do not exist on mt7986b
+> > 
+> > Signed-off-by: Sam Shih <sam.shih@mediatek.com>
+> > 
+> > ---
+> > v7 : updated pinctcl node binding description, and separate pinctrl
+> >      part into a single patch series
+> > 
+> > Original thread:
+> > 
+https://urldefense.com/v3/__https://lore.kernel.org/all/8348ed3e-c561-ad7e-fe9e-a31ed346d8d0@gmail.com/__;!!CTRNKA9wMg0ARbw!yJc1hf6XafeskaOgY8TmMDpGDHuIDhx6AGIpuOiJRl7jCVYcnPmr6I4XKz2iy6O4$
+> >  
+> > 
+> > v6 : fixed yamllint warnings/errors v2
+> > v5 : fixed yamllint warnings/errors v1
+> > v4 : used yaml format instead of txt format document
+> > v3 : make mt7986 pinctrl bindings as a separate file
+> > v2 : deleted the redundant description of mt7986a/mt7986b
+> > ---
+> >  .../pinctrl/mediatek,mt7986-pinctrl.yaml      | 364
+> > ++++++++++++++++++
+> >  1 file changed, 364 insertions(+)
+> >  create mode 100644
+> > Documentation/devicetree/bindings/pinctrl/mediatek,mt7986-
+> > pinctrl.yaml
+> > 
+> 
+> My bot found errors running 'make DT_CHECKER_FLAGS=-m
+> dt_binding_check'
+> on your patch (DT_CHECKER_FLAGS is new in v5.13):
+> 
+> yamllint warnings/errors:
+> 
+> dtschema/dtc warnings/errors:
+> Documentation/devicetree/bindings/pinctrl/mediatek,mt7986-
+> pinctrl.example.dts:52.36-57.15: ERROR (duplicate_node_names): 
+> /example-0/soc/pinctrl@1001f000/uart1-pins: Duplicate node name
+> ERROR: Input tree has errors, aborting (use -f to force output)
+> make[1]: *** [scripts/Makefile.lib:385:
+> Documentation/devicetree/bindings/pinctrl/mediatek,mt7986-
+> pinctrl.example.dt.yaml] Error 2
+> make[1]: *** Waiting for unfinished jobs....
+> make: *** [Makefile:1441: dt_binding_check] Error 2
+> 
 
-Sounds reasonable to me.  Thanks!
+Sorry, I took the wrong patch in my local environment for submmit
 
-> Signed-off-by: Yang Shi <shy828301@gmail.com>
+This should be "uart2_pins: uart2-pins { ... "
 
-Acked-by: "Huang, Ying" <ying.huang@intel.com>
+I will send next patch to fix this.
 
-Best Regards,
-Huang, Ying
++        uart2_pins: uart1-pins {
++          mux {
++            function = "uart";
++            groups = "uart2";
++          };
++        };
+
+
+
+> doc reference errors (make refcheckdocs):
+> 
+> See 
+> https://urldefense.com/v3/__https://patchwork.ozlabs.org/patch/1540821__;!!CTRNKA9wMg0ARbw!yJc1hf6XafeskaOgY8TmMDpGDHuIDhx6AGIpuOiJRl7jCVYcnPmr6I4XK9R-t-CX$
+>  
+> 
+> This check can fail if there are any dependencies. The base for a
+> patch
+> series is generally the most recent rc1.
+> 
+> If you already ran 'make dt_binding_check' and didn't see the above
+> error(s), then make sure 'yamllint' is installed and dt-schema is up
+> to
+> date:
+> 
+> pip3 install dtschema --upgrade
+> 
+> Please check and re-submit.
+
+Thanks,
+Sam
+> 
+
