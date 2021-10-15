@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22DD042FA03
+	by mail.lfdr.de (Postfix) with ESMTP id 6BE7A42FA04
 	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 19:22:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242280AbhJORYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 13:24:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40120 "EHLO
+        id S237509AbhJORYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 13:24:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242236AbhJORYC (ORCPT
+        with ESMTP id S242242AbhJORYE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 13:24:02 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C924DC061769
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 10:21:55 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id b126-20020a251b84000000b005bd8aca71a2so11989862ybb.4
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 10:21:55 -0700 (PDT)
+        Fri, 15 Oct 2021 13:24:04 -0400
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50827C061764
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 10:21:58 -0700 (PDT)
+Received: by mail-qv1-xf49.google.com with SMTP id s12-20020ad44b2c000000b00383ab64e632so8791050qvw.17
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 10:21:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=rsYPFR1jhYl+rt/YSejsll2uuYIPQ++qbGkxFjBNOBE=;
-        b=TUaJpJoGUek7AuGhL69HnX6CeQOu9+kmVisSSauyZM0x5XXo+Jz5QYHUy2ErCyW0RP
-         SBroCJnUlt8AiSQBxGAHkKkMGhSqDKcUYdOMo39ao+1l53Oy9D6qTY6FBtZ1VPy2qnAh
-         Vpgmzwtk4BQRzDBumAK/I1kbsYda+EXDuzOfS73WGJB0uqO0OIuw70Jc0Zsp1AhvCxZ0
-         lbuuej50Muuc4geLT/X1qoXENWdbSdcGbds6qJG/da1dnwR5uFYfdgHDGolypQPJkeI9
-         oM2qFdQ3qcE5hhycyViVIgtL1aglmdenvl405vdLoSwwgPPdxYErA2fqN5y3NxTN5m8P
-         VghA==
+        bh=saTdX1OS8/RkEbmI7IafbCeo19AfbaExGBL4qsFfKCI=;
+        b=CTTi5a4CTUhk7/nowaumv7wyLcNPBLya+Q23bqT+fZEPGNpSvRZiuvdGzljb3SS9VA
+         m701i4VunyWbOOemrneCmI6yzgfMhNJU9uofenMBzA2bcuXysuzfeqtyoW7d/czifCd5
+         KEgcvZOnFpP6FTkmXZj0cGwiXZUpKPNL+GTVQWmIeTlaAShfNWrGTaLOW9I8i21MiPBU
+         uRlzphCv8QrGjerccmW1ThgqFs2YgLpCEqf6tVJk541kBIKc9QEHJy2SzaVSc5B3xwMj
+         vzasiC1KinsV78RiZ0dD/dKXCE++0roP6JzFPw8M9P5ZNpYB77FGr9sZ+/bamPe1H44H
+         iUeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=rsYPFR1jhYl+rt/YSejsll2uuYIPQ++qbGkxFjBNOBE=;
-        b=CaWQIH/n00FJ9RNl49vTbl3n/eswUMavpu02DAuwLDrgT4pmG0iJQtQ9EZXyygpzAk
-         DJ9bC+yCVNhBWaNmpkOQ3rYthaMJp3vKAbQXHT9z2mdDSA7lyaMxvhq+wgbSrE9tZm5+
-         lGqkQO1NYPHV+Zxd11OxJHQ8a7U+2I/F9naQ17d7zx8vZdFc0sTl2XP4ITMzDEWaqt3e
-         Ih9oOBY/i8M52qYfa7TrE1fmZFrYBhLNgU5EqzSt9LTQjs/crzE016iX5KvKyPCHRyoQ
-         hRP6sbVaXZjCyrSdhYICEbyR62/YytcoMMr5qbDrOxwmMVpaM2XYi71vsyyH13+0vD8T
-         UXCA==
-X-Gm-Message-State: AOAM533cw442R4cw7nBn00S5DxA6Y5wOGW6XJfyAzXWKlZQCibZa+pH8
-        WyIJ5Q15+SnZ1bF/VslS7bpkka6HBezr
-X-Google-Smtp-Source: ABdhPJxRsJGUxnaywkkW6o2x/B1uRvDpggoDuH3uqALPZJq9gOp7swAXh4OEqiw57r+i7bX3q8pBinG+FWbk
+        bh=saTdX1OS8/RkEbmI7IafbCeo19AfbaExGBL4qsFfKCI=;
+        b=YO3JxfVHWgKzZ4KdcFlAyB8tZQ6gi8sZ9LMCmV5Z/9lsFNz1o9xO4Gk4PT+kC3resJ
+         5X5baJK02LsxHHaxLzlu4ApX+xNG5d8RIXwJjsz5N70/SiBtzEU+vdsNkzzUrZYb+YGK
+         hSFbeXtnhZGMsXpPyI4GhW/rP0ng0t+FizIZjHYIRU/lma6AG2Pb5lRYcKr9IM/DWsW/
+         YyW3ptoOEf1d29EHSUoFnnW06W/FHRaX2ReLzWqLxhvewnXe2SUnd05W6wphaeMblu4H
+         ozsfQd7vsiTYxRMMzYsPlTETcA3mVtGJULM7x6IvVkZis/Q7pQU5+pv0y9VNvDSNFAa5
+         X6aA==
+X-Gm-Message-State: AOAM531Zho7gOS2wKxvW2FrVpcb/W1ARhW+COvqG+tqEv/xivT5FS48f
+        Ghf14kN8eCD8aGtdvQc29qgk5/s2xa23
+X-Google-Smtp-Source: ABdhPJzOKAq5CPIASDYyRYGNTqsz2Gs4ajq2c7AlxB44WdMYCvuoPwSjXSyO6nDYN4rrvtDqdSmX+H0qNoU0
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:69bc:7451:58ad:6585])
- (user=irogers job=sendgmr) by 2002:a25:1487:: with SMTP id
- 129mr15316536ybu.206.1634318515023; Fri, 15 Oct 2021 10:21:55 -0700 (PDT)
-Date:   Fri, 15 Oct 2021 10:21:18 -0700
+ (user=irogers job=sendgmr) by 2002:a05:622a:1a90:: with SMTP id
+ s16mr11710297qtc.97.1634318517388; Fri, 15 Oct 2021 10:21:57 -0700 (PDT)
+Date:   Fri, 15 Oct 2021 10:21:19 -0700
 In-Reply-To: <20211015172132.1162559-1-irogers@google.com>
-Message-Id: <20211015172132.1162559-8-irogers@google.com>
+Message-Id: <20211015172132.1162559-9-irogers@google.com>
 Mime-Version: 1.0
 References: <20211015172132.1162559-1-irogers@google.com>
 X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
-Subject: [PATCH v2 07/21] perf metric: Add metric new and free
+Subject: [PATCH v2 08/21] perf metric: Only add a referenced metric once
 From:   Ian Rogers <irogers@google.com>
 To:     Andi Kleen <ak@linux.intel.com>, Jiri Olsa <jolsa@redhat.com>,
         Jin Yao <yao.jin@linux.intel.com>,
@@ -95,200 +95,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Metrics are complex enough that a new/free reduces the risk of memory
-leaks. Move static functions used in new.
+If a metric references other metrics then the same other metrics may be
+referenced more than once, but the events and metric ref are only needed
+once. An example of this is in tests/parse-metric.c where DCache_L2_Hits
+references the metric DCache_L2_All_Hits twice, once directly and once
+through DCache_L2_All.
 
 Acked-by: Andi Kleen <ak@linux.intel.com>
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/metricgroup.c | 137 +++++++++++++++++++---------------
- 1 file changed, 75 insertions(+), 62 deletions(-)
+ tools/perf/util/metricgroup.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
 diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
-index 3e5f02938452..e4ce19389258 100644
+index e4ce19389258..6c4c51e35aa7 100644
 --- a/tools/perf/util/metricgroup.c
 +++ b/tools/perf/util/metricgroup.c
-@@ -127,6 +127,78 @@ struct metric {
- 	bool has_constraint;
- };
- 
-+static void metricgroup___watchdog_constraint_hint(const char *name, bool foot)
-+{
-+	static bool violate_nmi_constraint;
-+
-+	if (!foot) {
-+		pr_warning("Splitting metric group %s into standalone metrics.\n", name);
-+		violate_nmi_constraint = true;
-+		return;
-+	}
-+
-+	if (!violate_nmi_constraint)
-+		return;
-+
-+	pr_warning("Try disabling the NMI watchdog to comply NO_NMI_WATCHDOG metric constraint:\n"
-+		   "    echo 0 > /proc/sys/kernel/nmi_watchdog\n"
-+		   "    perf stat ...\n"
-+		   "    echo 1 > /proc/sys/kernel/nmi_watchdog\n");
-+}
-+
-+static bool metricgroup__has_constraint(const struct pmu_event *pe)
-+{
-+	if (!pe->metric_constraint)
-+		return false;
-+
-+	if (!strcmp(pe->metric_constraint, "NO_NMI_WATCHDOG") &&
-+	    sysctl__nmi_watchdog_enabled()) {
-+		metricgroup___watchdog_constraint_hint(pe->metric_name, false);
-+		return true;
-+	}
-+
-+	return false;
-+}
-+
-+static struct metric *metric__new(const struct pmu_event *pe,
-+				  bool metric_no_group,
-+				  int runtime)
-+{
-+	struct metric *m;
-+
-+	m = zalloc(sizeof(*m));
-+	if (!m)
-+		return NULL;
-+
-+	m->pctx = expr__ctx_new();
-+	if (!m->pctx) {
-+		free(m);
-+		return NULL;
-+	}
-+
-+	m->metric_name = pe->metric_name;
-+	m->metric_expr = pe->metric_expr;
-+	m->metric_unit = pe->unit;
-+	m->pctx->runtime = runtime;
-+	m->has_constraint = metric_no_group || metricgroup__has_constraint(pe);
-+	INIT_LIST_HEAD(&m->metric_refs);
-+	m->metric_refs_cnt = 0;
-+
-+	return m;
-+}
-+
-+static void metric__free(struct metric *m)
-+{
-+	struct metric_ref_node *ref, *tmp;
-+
-+	list_for_each_entry_safe(ref, tmp, &m->metric_refs, list) {
-+		list_del(&ref->list);
-+		free(ref);
-+	}
-+	expr__ctx_free(m->pctx);
-+	free(m);
-+}
-+
- #define RECURSION_ID_MAX 1000
- 
- struct expr_ids {
-@@ -736,39 +808,6 @@ static void metricgroup__add_metric_non_group(struct strbuf *events,
- 	}
- }
- 
--static void metricgroup___watchdog_constraint_hint(const char *name, bool foot)
--{
--	static bool violate_nmi_constraint;
--
--	if (!foot) {
--		pr_warning("Splitting metric group %s into standalone metrics.\n", name);
--		violate_nmi_constraint = true;
--		return;
--	}
--
--	if (!violate_nmi_constraint)
--		return;
--
--	pr_warning("Try disabling the NMI watchdog to comply NO_NMI_WATCHDOG metric constraint:\n"
--		   "    echo 0 > /proc/sys/kernel/nmi_watchdog\n"
--		   "    perf stat ...\n"
--		   "    echo 1 > /proc/sys/kernel/nmi_watchdog\n");
--}
--
--static bool metricgroup__has_constraint(const struct pmu_event *pe)
--{
--	if (!pe->metric_constraint)
--		return false;
--
--	if (!strcmp(pe->metric_constraint, "NO_NMI_WATCHDOG") &&
--	    sysctl__nmi_watchdog_enabled()) {
--		metricgroup___watchdog_constraint_hint(pe->metric_name, false);
--		return true;
--	}
--
--	return false;
--}
--
- int __weak arch_get_runtimeparam(const struct pmu_event *pe __maybe_unused)
- {
- 	return 1;
-@@ -813,23 +852,10 @@ static int __add_metric(struct list_head *metric_list,
- 		 * We got in here for the parent group,
- 		 * allocate it and put it on the list.
+@@ -870,12 +870,18 @@ static int __add_metric(struct list_head *metric_list,
+ 		*mp = m;
+ 	} else {
+ 		/*
+-		 * We got here for the referenced metric, via the
+-		 * recursive metricgroup__add_metric call, add
+-		 * it to the parent group.
++		 * This metric was referenced in a metric higher in the
++		 * tree. Check if the same metric is already resolved in the
++		 * metric_refs list.
  		 */
--		m = zalloc(sizeof(*m));
-+		m = metric__new(pe, metric_no_group, runtime);
- 		if (!m)
+ 		m = *mp;
+ 
++		list_for_each_entry(ref, &m->metric_refs, list) {
++			if (!strcmp(pe->metric_name, ref->metric_name))
++				return 0;
++		}
++
++		/*Add the new referenced metric to the pare the parent group. */
+ 		ref = malloc(sizeof(*ref));
+ 		if (!ref)
  			return -ENOMEM;
- 
--		m->pctx = expr__ctx_new();
--		if (!m->pctx) {
--			free(m);
--			return -ENOMEM;
--		}
--		m->metric_name = pe->metric_name;
--		m->metric_expr = pe->metric_expr;
--		m->metric_unit = pe->unit;
--		m->pctx->runtime = runtime;
--		m->has_constraint = metric_no_group || metricgroup__has_constraint(pe);
--		INIT_LIST_HEAD(&m->metric_refs);
--		m->metric_refs_cnt = 0;
--
- 		parent = expr_ids__alloc(ids);
- 		if (!parent) {
- 			free(m);
-@@ -877,8 +903,7 @@ static int __add_metric(struct list_head *metric_list,
- 	 */
- 	if (expr__find_ids(pe->metric_expr, NULL, m->pctx) < 0) {
- 		if (m->metric_refs_cnt == 0) {
--			expr__ctx_free(m->pctx);
--			free(m);
-+			metric__free(m);
- 			*mp = NULL;
- 		}
- 		return -EINVAL;
-@@ -1251,25 +1276,13 @@ static int metricgroup__add_metric_list(const char *list, bool metric_no_group,
- 	return ret;
- }
- 
--static void metric__free_refs(struct metric *metric)
--{
--	struct metric_ref_node *ref, *tmp;
--
--	list_for_each_entry_safe(ref, tmp, &metric->metric_refs, list) {
--		list_del(&ref->list);
--		free(ref);
--	}
--}
--
- static void metricgroup__free_metrics(struct list_head *metric_list)
- {
- 	struct metric *m, *tmp;
- 
- 	list_for_each_entry_safe (m, tmp, metric_list, nd) {
--		metric__free_refs(m);
--		expr__ctx_free(m->pctx);
- 		list_del_init(&m->nd);
--		free(m);
-+		metric__free(m);
- 	}
- }
- 
 -- 
 2.33.0.1079.g6e70778dc9-goog
 
