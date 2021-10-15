@@ -2,106 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0333242F21B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 15:25:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9AB442F2D4
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 15:29:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239404AbhJON10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 09:27:26 -0400
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:34023 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239400AbhJON1Y (ORCPT
+        id S239401AbhJONbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 09:31:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239643AbhJONaD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 09:27:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1634304318; x=1665840318;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=ztoqgqQaf0S6laz4BagIDcZq+SkBeBXQipu6xdcNRDM=;
-  b=L/k3dWoGED277KhLJZOrvpUkbJJ4JCpk1q+i9OLvBiH3vCP78i0cL/Ii
-   Lj6zzKJbpzCqudT8cs6eZ3wfimtKfzJtjTETivwyq1HW9FJyas0NSDTN7
-   wgapWwp6Xgivbl9XDgDI3hZG+FqMfcghswnNP+GMoypjuoBOWdKFwP37I
-   Rt8xdIM/l2saYqVtgcUXajvYyZBVvOhgegQ7YpYZIV4bi3I2WBqqx1HFJ
-   h1oeZAy/LdVU35lg/4lJpFRDM1UsxC8HwNRwykWumdX+IpHixFz7Y1VfW
-   6sz2A3Rw+Tqtvn4y+fp7sA8w0fprXEk2dmZko7gTPmSuawm4iihm9YsTa
-   w==;
-IronPort-SDR: 6jy7qIJYIv4MHZN6f7DhDOJLfn8aniG64iZCZJ4S0Y9ZNI3L3MYyqZJ14RlvYit/y6HCIvnLqH
- TH7w7jKG+qEl626uB24XkkL89sqzX7JdxLNVqpfC3iSAybbkSqVy+wCGzME4Nftmsb71CNysVh
- YX4LAYbuwyG16fl3R4NxL0CN1XjTE01E9tphd0W5KZn5cS+1vWkW3MhPf7T89CoqitYek4s0t7
- ReavjlwEvSd7YGbEyLIn+lMU/84sDGefrGt3wZwTdnTrUnwSoeJTE+31UuD/k6xNcnTP2CUzcS
- Qyt2vmMWTc0tSqHPNoiOj74/
-X-IronPort-AV: E=Sophos;i="5.85,375,1624345200"; 
-   d="scan'208";a="73075277"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 15 Oct 2021 06:25:17 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Fri, 15 Oct 2021 06:25:17 -0700
-Received: from soft-dev3-1.microsemi.net (10.10.115.15) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Fri, 15 Oct 2021 06:25:15 -0700
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     <linus.walleij@linaro.org>, <robh+dt@kernel.org>,
-        <lars.povlsen@microchip.com>, <Steen.Hegelund@microchip.com>,
-        <UNGLinuxDriver@microchip.com>, <p.zabel@pengutronix.de>,
-        <linux-gpio@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Horatiu Vultur <horatiu.vultur@microchip.com>
-Subject: [PATCH v4 2/2] pinctrl: microchip sgpio: use reset driver
-Date:   Fri, 15 Oct 2021 15:25:26 +0200
-Message-ID: <20211015132526.200816-3-horatiu.vultur@microchip.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211015132526.200816-1-horatiu.vultur@microchip.com>
-References: <20211015132526.200816-1-horatiu.vultur@microchip.com>
+        Fri, 15 Oct 2021 09:30:03 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F3CCC061771
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 06:27:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=2Y+dllbYuaiNXvJfYYEEAwgqi7pueU8vq8fs+ZarrgY=; b=SGQyE/A4j13kyQc5N0v+OCaRqW
+        yjxg7YfsyPVPrMemGvzPbgkfotObNeHVUjACtqLbV14f8Minl0p6ZvRxsGGaDZ9ZLIk2XaHJKChIZ
+        sTWLx4QvQcKj1hc3PTuWDGMKafF7L5MoOvTi/XvmaWTOKO5y3IC+Z+Fx7ifU8IueCRSXXRLRdIpVC
+        Vn1gUx9NGSSxrThHrDPjtb4UF4ExbA1ftMAJKg5b2b09nCRTVqcjE3oiY9wjJTaWBgLqSRQV+Ige9
+        xPACpucrtc6D5Pepdfn8bbSk8IxCB17YuA3UONcpK3f31p+UL66GDqQE/76BO3tGgvGvwHLNuxfO9
+        btNbIMLw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mbNDk-0092PI-PZ; Fri, 15 Oct 2021 13:26:29 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id EC8923004E7;
+        Fri, 15 Oct 2021 15:26:00 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id CAF3521BE7655; Fri, 15 Oct 2021 15:26:00 +0200 (CEST)
+Date:   Fri, 15 Oct 2021 15:26:00 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Borislav Petkov <bp@suse.de>
+Subject: Re: [PATCH] x86/apic: reduce cache line misses in
+ __x2apic_send_IPI_mask()
+Message-ID: <YWmBaNoMGMZOACoT@hirez.programming.kicks-ass.net>
+References: <20211007031756.345269-1-eric.dumazet@gmail.com>
+ <20211007072917.GN174703@worktop.programming.kicks-ass.net>
+ <CANn89iKOa+tqerm80vHvHEurc2UxTq_heQuOUE0KnVuJht8AKA@mail.gmail.com>
+ <YV7+/0+Q1n67wCF8@hirez.programming.kicks-ass.net>
+ <CANn89iLEz5POFii_=wU=2J0A9CE3H5JPq3sQFUQ8E400YumUpw@mail.gmail.com>
+ <CANn89iKg2Te8if2t_8oaAo6wL2BFNr2cP3D2w+jDePkFO5xREg@mail.gmail.com>
+ <YWWDbIU+Cpppc7PV@hirez.programming.kicks-ass.net>
+ <CANn89iL5mmbVojrUC4GHKC+0WSxzs_obqbt=rn2S_cmkddAriQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANn89iL5mmbVojrUC4GHKC+0WSxzs_obqbt=rn2S_cmkddAriQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On lan966x platform when the switch gets reseted then also the sgpio
-gets reseted. The fix for this is to extend also the sgpio driver to
-call the reset driver which will be reseted only once by the first
-driver that is probed.
+On Wed, Oct 13, 2021 at 11:02:46AM -0700, Eric Dumazet wrote:
+> On Tue, Oct 12, 2021 at 5:46 AM Peter Zijlstra <peterz@infradead.org> wrote:
+> 
+> > I'm really conflicted about this. On the one hand, yes absolutely. On
+> > the other hand, urgh, code ugly :-)
+> 
+> That was indeed some ugly hack.
+> 
+> I cooked this more generic patch instead, I am currently testing it.
+> (generic as : we no longer disable hard irqs, regardless of some CONFIG option )
+> 
+> diff --git a/arch/x86/kernel/apic/x2apic_cluster.c
+> b/arch/x86/kernel/apic/x2apic_cluster.c
+> index e696e22d0531976f7cba72ed17443592eac72c13..7ad81467ce33349dee1ceaf0cefc8375d60213f6
+> 100644
+> --- a/arch/x86/kernel/apic/x2apic_cluster.c
+> +++ b/arch/x86/kernel/apic/x2apic_cluster.c
+> @@ -22,7 +22,10 @@ struct cluster_mask {
+>   */
+>  static u32 *x86_cpu_to_logical_apicid __read_mostly;
+> 
+> -static DEFINE_PER_CPU(cpumask_var_t, ipi_mask);
 
-Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
----
- drivers/pinctrl/pinctrl-microchip-sgpio.c | 5 +++++
- 1 file changed, 5 insertions(+)
+This might maybe do with a comment explaining where the 3 comes from.
+Also see below.
 
-diff --git a/drivers/pinctrl/pinctrl-microchip-sgpio.c b/drivers/pinctrl/pinctrl-microchip-sgpio.c
-index 072bccdea2a5..23f5a744edc4 100644
---- a/drivers/pinctrl/pinctrl-microchip-sgpio.c
-+++ b/drivers/pinctrl/pinctrl-microchip-sgpio.c
-@@ -17,6 +17,7 @@
- #include <linux/pinctrl/pinmux.h>
- #include <linux/platform_device.h>
- #include <linux/property.h>
-+#include <linux/reset.h>
- 
- #include "core.h"
- #include "pinconf.h"
-@@ -803,6 +804,7 @@ static int microchip_sgpio_probe(struct platform_device *pdev)
- 	int div_clock = 0, ret, port, i, nbanks;
- 	struct device *dev = &pdev->dev;
- 	struct fwnode_handle *fwnode;
-+	struct reset_control *reset;
- 	struct sgpio_priv *priv;
- 	struct clk *clk;
- 	u32 val;
-@@ -813,6 +815,9 @@ static int microchip_sgpio_probe(struct platform_device *pdev)
- 
- 	priv->dev = dev;
- 
-+	reset = devm_reset_control_get_optional_shared(&pdev->dev, NULL);
-+	reset_control_reset(reset);
-+
- 	clk = devm_clk_get(dev, NULL);
- 	if (IS_ERR(clk))
- 		return dev_err_probe(dev, PTR_ERR(clk), "Failed to get clock\n");
--- 
-2.33.0
+> +#define IPI_NEST_MAX 3
+> +static DEFINE_PER_CPU(cpumask_var_t, ipi_mask[IPI_NEST_MAX]);
+> +static DEFINE_PER_CPU(int, ipi_nest_level);
+> +
+>  static DEFINE_PER_CPU_READ_MOSTLY(struct cluster_mask *, cluster_masks);
+>  static struct cluster_mask *cluster_hotplug_mask;
+> 
+> @@ -45,14 +48,18 @@ __x2apic_send_IPI_mask(const struct cpumask *mask,
+> int vector, int apic_dest)
+>  {
+>         unsigned int cpu, clustercpu;
+>         struct cpumask *tmpmsk;
+> -       unsigned long flags;
+> +       int nest_level;
+>         u32 dest;
+> 
+>         /* x2apic MSRs are special and need a special fence: */
+>         weak_wrmsr_fence();
+> -       local_irq_save(flags);
+> 
+> -       tmpmsk = this_cpu_cpumask_var_ptr(ipi_mask);
+> +       preempt_disable();
+> +       nest_level = this_cpu_inc_return(ipi_nest_level) - 1;
+> +       if (WARN_ON_ONCE(nest_level >= IPI_NEST_MAX))
+> +               goto end;
 
+So this matches the: task, softirq, irq nesting and realistically won't
+trigger I suppose, but that WARN is not giving me warm and fuzzies, just
+not sending the IPI is terrible behaviour if we ever do hit this.
+
+I think I would prefer to trip x2apic_send_IPI_all() over sending too
+few IPIs.
+
+That *might* in some distant future kill some NOHZ_FULL userspace, but
+at least it won't make the system grind to a halt as a missing IPI can.
+
+Thomas, any opinions there?
+
+> +
+> +       tmpmsk = this_cpu_cpumask_var_ptr(ipi_mask[nest_level]);
+>         cpumask_copy(tmpmsk, mask);
+>         /* If IPI should not be sent to self, clear current CPU */
+>         if (apic_dest != APIC_DEST_ALLINC)
+> @@ -74,7 +81,9 @@ __x2apic_send_IPI_mask(const struct cpumask *mask,
+> int vector, int apic_dest)
+>                 cpumask_andnot(tmpmsk, tmpmsk, &cmsk->mask);
+>         }
+> 
+> -       local_irq_restore(flags);
+> +end:
+> +       this_cpu_dec(ipi_nest_level);
+> +       preempt_enable();
+>  }
+> 
+>  static void x2apic_send_IPI_mask(const struct cpumask *mask, int vector)
