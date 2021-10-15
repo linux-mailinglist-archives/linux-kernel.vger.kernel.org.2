@@ -2,214 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D73942E8C9
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 08:16:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7916242E8D0
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 08:17:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232736AbhJOGS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 02:18:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54370 "EHLO
+        id S233133AbhJOGTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 02:19:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231202AbhJOGSY (ORCPT
+        with ESMTP id S231959AbhJOGTP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 02:18:24 -0400
+        Fri, 15 Oct 2021 02:19:15 -0400
 Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D109BC061753;
-        Thu, 14 Oct 2021 23:16:17 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id om14so6504742pjb.5;
-        Thu, 14 Oct 2021 23:16:17 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EC4CC061570
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 23:17:09 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id gn3so996672pjb.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 23:17:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=YE7nTA2V96Pevc/UvOLQEZXUKaX0lJLTFtXdRp3w5Ps=;
-        b=CrFzPHDXpxCtTQkDeVW16flYjdq+s8jnsSTPHvMLMn6glP8lVoC75CrOgBR5LFre4E
-         ESlq2c+cqzAkGsZvZTlzyvCDZCyDsackyuz0XOoNL1a7K3X/+fnNhV0HhckNv0Bc2RKL
-         ZCpqwBaJFD6NBlxeRiQKAl44uQh9zdUXcdQV4DrpkN1e32i7kUnVxqqJX3Xv+MGdZ5qu
-         RnWmvAjvBlA43GmAIWxu+G8YOQprP1SiObu+cLBAu2tzRiEmX763yjFnibUqZ/iPIeWe
-         vrh286dsF8lmqN0J7X6k14NRFqwGZUZe514CRrnBhBAB20uAZmqXZaUUOZK2mFwNQ9oN
-         tzYA==
+        h=from:to:subject:date:message-id;
+        bh=Orm3UeNHwghzj3N/xisLRG+91t3d+f7m71sow6oNdJA=;
+        b=CKkg/YiO3XvCr+Zcpr88QGN42HIvqQgz+W9kRXFsHty6eTR9KbfoTy6YQHZ6php8AQ
+         B1rDsUpraLSi7qP6UzJ+ycyNzDvgp2JJ5ZkD8DAhuhobKmgkE0m4j/kcasnp23uVnlo8
+         t4ah4M8lA0CJQSoovEbY0VrX7QWSkLXI7o1tRTkvmCarTmhUhvLmJBzo5vUsOHcMmZpq
+         eR4xx1me6mUAhv3/jAvb0OVzoGWbkkMKUJUxGDRm6fu40NvWitVxvASwdhtzSX35nS/9
+         hhkUNPOab3Z/kD0HYNGZPJf35u/q6yI9/TpfNEHFgPirNf+Gg/0orVfkEKbbyCDGpKwO
+         qQnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=YE7nTA2V96Pevc/UvOLQEZXUKaX0lJLTFtXdRp3w5Ps=;
-        b=3F36v26CKhHm1lvg3lrrUVQ3BeyfxTtCFHt0LgVfqRdS2dIb97En4lZy5Xpf1H5BUf
-         le6/hdalK7uHUV2R6AEXEzHPfo7nhaJwBCnDb7fyN8yi50aiz7o2qW7wi2Dqi8SqykB/
-         XPrtLjBy5VEuaIxyUbHBQ6co/jYIp+DqJIOOVdnA40hHAM9Mj736K8jpyiAl552EyC4R
-         W7NEiCta/zHksVzjfS0vAy4vwUiyPalyKQrVMQmD8eonk0Tx1fLSMfmk9qJjR+VnlEP3
-         ournU/1rCouAsFvbkUrcDdi2AUEXb1rgmelDEG7vWnyvYELj0Lz0DygWUDuHN0gMkg/r
-         ZI1g==
-X-Gm-Message-State: AOAM530ue3fwJu0DdK08Dy3JItKKsyUXjZwxAbPNZSPHMEgYjd1Ih3uX
-        zX39dP+/kAxozMinYpVn6lQ=
-X-Google-Smtp-Source: ABdhPJwYYUl5EQRMuVepLASUxMZmHpBPgBCkyvr9GXt6diHoOjWk1MRhDXh2MAsBwZP8Hx+MTJpsOA==
-X-Received: by 2002:a17:90a:708c:: with SMTP id g12mr25440278pjk.13.1634278577314;
-        Thu, 14 Oct 2021 23:16:17 -0700 (PDT)
-Received: from localhost (14-203-144-177.static.tpgi.com.au. [14.203.144.177])
-        by smtp.gmail.com with ESMTPSA id v22sm4156445pff.93.2021.10.14.23.16.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Oct 2021 23:16:17 -0700 (PDT)
-Date:   Fri, 15 Oct 2021 16:16:12 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH v2 06/13] asm-generic: Use HAVE_FUNCTION_DESCRIPTORS to
- define associated stubs
+        h=x-gm-message-state:from:to:subject:date:message-id;
+        bh=Orm3UeNHwghzj3N/xisLRG+91t3d+f7m71sow6oNdJA=;
+        b=tBrpfPPQ7VFVIhfeSQOz5IYs8WQRnQJm9lCLj4XzSjnRkKgZ/1IfR9OJaFx9/dg/tH
+         SL1Lyi9gOqExqZe5RirPtTCj0wple4zLUBFj3y6wVzES8tKl/NouGWrX8hszefUacZR5
+         Gz5Cso6U7JktgmZLkXJna9UlZl+BI7C1STE5L4fPATeWBvYafGFVmLvezNOAZNGJHDuY
+         w+hk/cMQnORhRL8I2fqVSwaxl9xBe3GC1+XmAg9YvQpkdM1zkXW3SrpVwRy+xkghPqJn
+         S+QgMTGA41o0oQm2wAJIU0nBTeoyfd7cxvFvSh1qxh3PLF3jfukK/2xMIvGozl4ETAad
+         wMXg==
+X-Gm-Message-State: AOAM532FoAAWyfgTgegeaoILwOyh25Ob/ny6p0eGFE0slHaaxJEt9dgh
+        T3mDussKKdCjdaTj2BPh98MGOi/GiCk=
+X-Google-Smtp-Source: ABdhPJzDLnq2OQWwwG/BVEjydEFPwpwL3SFgrjNa/2TKCLqyjwYcM8yEYoPrycVYPeTWEhQuFD/inA==
+X-Received: by 2002:a17:902:9303:b029:12c:29c:43f9 with SMTP id bc3-20020a1709029303b029012c029c43f9mr9418992plb.5.1634278628867;
+        Thu, 14 Oct 2021 23:17:08 -0700 (PDT)
+Received: from bj03382pcu.spreadtrum.com ([117.18.48.102])
+        by smtp.gmail.com with ESMTPSA id 197sm4056947pfv.6.2021.10.14.23.17.06
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 14 Oct 2021 23:17:08 -0700 (PDT)
+From:   Huangzhaoyang <huangzhaoyang@gmail.com>
 To:     Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Helge Deller <deller@gmx.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Kees Cook <keescook@chromium.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Mackerras <paulus@samba.org>
-Cc:     linux-arch@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-References: <cover.1634190022.git.christophe.leroy@csgroup.eu>
-        <4fda65cda906e56aa87806b658e0828c64792403.1634190022.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <4fda65cda906e56aa87806b658e0828c64792403.1634190022.git.christophe.leroy@csgroup.eu>
-MIME-Version: 1.0
-Message-Id: <1634278340.5yp7xtm7um.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Zhaoyang Huang <zhaoyang.huang@unisoc.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [Resend PATCH] psi : calc cfs task memstall time more precisely
+Date:   Fri, 15 Oct 2021 14:16:52 +0800
+Message-Id: <1634278612-17055-1-git-send-email-huangzhaoyang@gmail.com>
+X-Mailer: git-send-email 1.7.9.5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Christophe Leroy's message of October 14, 2021 3:49 pm:
-> Replace HAVE_DEREFERENCE_FUNCTION_DESCRIPTOR by
-> HAVE_FUNCTION_DESCRIPTORS and use it instead of
-> 'dereference_function_descriptor' macro to know
-> whether an arch has function descriptors.
->=20
-> To limit churn in one of the following patches, use
-> an #ifdef/#else construct with empty first part
-> instead of an #ifndef in asm-generic/sections.h
+From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
 
-Is it worth putting this into Kconfig if you're going to
-change it? In any case
+In an EAS enabled system, there are two scenarios discordant to current design,
 
-Reviewed-by: Nicholas Piggin <npiggin@gmail.com>
+1. workload used to be heavy uneven among cores for sake of scheduler policy.
+RT task usually preempts CFS task in little core.
+2. CFS task's memstall time is counted as simple as exit - entry so far, which
+ignore the preempted time by RT, DL and Irqs.
 
->=20
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> ---
->  arch/ia64/include/asm/sections.h    | 5 +++--
->  arch/parisc/include/asm/sections.h  | 6 ++++--
->  arch/powerpc/include/asm/sections.h | 6 ++++--
->  include/asm-generic/sections.h      | 3 ++-
->  include/linux/kallsyms.h            | 2 +-
->  5 files changed, 14 insertions(+), 8 deletions(-)
->=20
-> diff --git a/arch/ia64/include/asm/sections.h b/arch/ia64/include/asm/sec=
-tions.h
-> index 35f24e52149a..6e55e545bf02 100644
-> --- a/arch/ia64/include/asm/sections.h
-> +++ b/arch/ia64/include/asm/sections.h
-> @@ -9,6 +9,9 @@
-> =20
->  #include <linux/elf.h>
->  #include <linux/uaccess.h>
-> +
-> +#define HAVE_FUNCTION_DESCRIPTORS 1
-> +
->  #include <asm-generic/sections.h>
-> =20
->  extern char __phys_per_cpu_start[];
-> @@ -27,8 +30,6 @@ extern char __start_gate_brl_fsys_bubble_down_patchlist=
-[], __end_gate_brl_fsys_b
->  extern char __start_unwind[], __end_unwind[];
->  extern char __start_ivt_text[], __end_ivt_text[];
-> =20
-> -#define HAVE_DEREFERENCE_FUNCTION_DESCRIPTOR 1
-> -
->  #undef dereference_function_descriptor
->  static inline void *dereference_function_descriptor(void *ptr)
->  {
-> diff --git a/arch/parisc/include/asm/sections.h b/arch/parisc/include/asm=
-/sections.h
-> index bb52aea0cb21..85149a89ff3e 100644
-> --- a/arch/parisc/include/asm/sections.h
-> +++ b/arch/parisc/include/asm/sections.h
-> @@ -2,6 +2,10 @@
->  #ifndef _PARISC_SECTIONS_H
->  #define _PARISC_SECTIONS_H
-> =20
-> +#ifdef CONFIG_64BIT
-> +#define HAVE_FUNCTION_DESCRIPTORS 1
-> +#endif
-> +
->  /* nothing to see, move along */
->  #include <asm-generic/sections.h>
-> =20
-> @@ -9,8 +13,6 @@ extern char __alt_instructions[], __alt_instructions_end=
-[];
-> =20
->  #ifdef CONFIG_64BIT
-> =20
-> -#define HAVE_DEREFERENCE_FUNCTION_DESCRIPTOR 1
-> -
->  #undef dereference_function_descriptor
->  void *dereference_function_descriptor(void *);
-> =20
-> diff --git a/arch/powerpc/include/asm/sections.h b/arch/powerpc/include/a=
-sm/sections.h
-> index 32e7035863ac..bba97b8c38cf 100644
-> --- a/arch/powerpc/include/asm/sections.h
-> +++ b/arch/powerpc/include/asm/sections.h
-> @@ -8,6 +8,10 @@
-> =20
->  #define arch_is_kernel_initmem_freed arch_is_kernel_initmem_freed
-> =20
-> +#ifdef PPC64_ELF_ABI_v1
-> +#define HAVE_FUNCTION_DESCRIPTORS 1
-> +#endif
-> +
->  #include <asm-generic/sections.h>
-> =20
->  extern bool init_mem_is_free;
-> @@ -69,8 +73,6 @@ static inline int overlaps_kernel_text(unsigned long st=
-art, unsigned long end)
-> =20
->  #ifdef PPC64_ELF_ABI_v1
-> =20
-> -#define HAVE_DEREFERENCE_FUNCTION_DESCRIPTOR 1
-> -
->  #undef dereference_function_descriptor
->  static inline void *dereference_function_descriptor(void *ptr)
->  {
-> diff --git a/include/asm-generic/sections.h b/include/asm-generic/section=
-s.h
-> index d16302d3eb59..b677e926e6b3 100644
-> --- a/include/asm-generic/sections.h
-> +++ b/include/asm-generic/sections.h
-> @@ -59,7 +59,8 @@ extern char __noinstr_text_start[], __noinstr_text_end[=
-];
->  extern __visible const void __nosave_begin, __nosave_end;
-> =20
->  /* Function descriptor handling (if any).  Override in asm/sections.h */
-> -#ifndef dereference_function_descriptor
-> +#ifdef HAVE_FUNCTION_DESCRIPTORS
-> +#else
->  #define dereference_function_descriptor(p) ((void *)(p))
->  #define dereference_kernel_function_descriptor(p) ((void *)(p))
->  #endif
-> diff --git a/include/linux/kallsyms.h b/include/linux/kallsyms.h
-> index a1d6fc82d7f0..9f277baeb559 100644
-> --- a/include/linux/kallsyms.h
-> +++ b/include/linux/kallsyms.h
-> @@ -57,7 +57,7 @@ static inline int is_ksym_addr(unsigned long addr)
-> =20
->  static inline void *dereference_symbol_descriptor(void *ptr)
->  {
-> -#ifdef HAVE_DEREFERENCE_FUNCTION_DESCRIPTOR
-> +#ifdef HAVE_FUNCTION_DESCRIPTORS
->  	struct module *mod;
-> =20
->  	ptr =3D dereference_kernel_function_descriptor(ptr);
-> --=20
-> 2.31.1
->=20
->=20
->=20
+With these two constraints, the percpu nonidle time would be mainly consumed by
+none CFS tasks and couldn't be averaged. Eliminating them by calc the time growth
+via the proportion of cfs_rq's utilization on the whole rq.
+
+eg.
+Here is the scenario which this commit want to fix, that is the rt and irq consume
+some utilization of the whole rq. This scenario could be typical in a core
+which is assigned to deal with all irqs. Furthermore, the rt task used to run on
+little core under EAS.
+
+Binder:305_3-314    [002] d..1   257.880195: psi_memtime_fixup: original:30616,adjusted:25951,se:89,cfs:353,rt:139,dl:0,irq:18
+droid.phone-1525    [001] d..1   265.145492: psi_memtime_fixup: original:61616,adjusted:53492,se:55,cfs:225,rt:121,dl:0,irq:15
+
+Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+---
+ kernel/sched/psi.c | 20 +++++++++++++++++++-
+ 1 file changed, 19 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
+index cc25a3c..754a836 100644
+--- a/kernel/sched/psi.c
++++ b/kernel/sched/psi.c
+@@ -182,6 +182,8 @@ struct psi_group psi_system = {
+ 
+ static void psi_avgs_work(struct work_struct *work);
+ 
++static unsigned long psi_memtime_fixup(u32 growth);
++
+ static void group_init(struct psi_group *group)
+ {
+ 	int cpu;
+@@ -492,6 +494,21 @@ static u64 window_update(struct psi_window *win, u64 now, u64 value)
+ 	return growth;
+ }
+ 
++static unsigned long psi_memtime_fixup(u32 growth)
++{
++	struct rq *rq = task_rq(current);
++	unsigned long growth_fixed = (unsigned long)growth;
++
++	if (!(current->policy == SCHED_NORMAL || current->policy == SCHED_BATCH))
++		return growth_fixed;
++
++	if (current->in_memstall)
++		growth_fixed = div64_ul((1024 - rq->avg_rt.util_avg - rq->avg_dl.util_avg
++					- rq->avg_irq.util_avg + 1) * growth, 1024);
++
++	return growth_fixed;
++}
++
+ static void init_triggers(struct psi_group *group, u64 now)
+ {
+ 	struct psi_trigger *t;
+@@ -658,6 +675,7 @@ static void record_times(struct psi_group_cpu *groupc, u64 now)
+ 	}
+ 
+ 	if (groupc->state_mask & (1 << PSI_MEM_SOME)) {
++		delta = psi_memtime_fixup(delta);
+ 		groupc->times[PSI_MEM_SOME] += delta;
+ 		if (groupc->state_mask & (1 << PSI_MEM_FULL))
+ 			groupc->times[PSI_MEM_FULL] += delta;
+@@ -928,8 +946,8 @@ void psi_memstall_leave(unsigned long *flags)
+ 	 */
+ 	rq = this_rq_lock_irq(&rf);
+ 
+-	current->in_memstall = 0;
+ 	psi_task_change(current, TSK_MEMSTALL, 0);
++	current->in_memstall = 0;
+ 
+ 	rq_unlock_irq(rq, &rf);
+ }
+-- 
+1.9.1
+
