@@ -2,180 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F16CE42EA15
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 09:27:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8628842EA18
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 09:27:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236079AbhJOH3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 03:29:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42220 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236050AbhJOH3D (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 03:29:03 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E2B7C061760;
-        Fri, 15 Oct 2021 00:26:57 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id y30so17315035edi.0;
-        Fri, 15 Oct 2021 00:26:57 -0700 (PDT)
+        id S236081AbhJOH3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 03:29:46 -0400
+Received: from mail-bn8nam12on2091.outbound.protection.outlook.com ([40.107.237.91]:2145
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S236078AbhJOH3j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 03:29:39 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Bn/PSwo19mL62Q0aa/E8/gaUZ2eNz4hsOJnpDMp9ci/ITyrlXreCjw7Qcwue5TEat/l2Y2jkr+mzhLdPbI0kLBy0J544ec3I6qpN9YqhbWdSCGjYUJ81hjJmqt6G/fnJwEyUoskZODs4qzSY2u//MAQyD0hhPepDbUeFVY/HE5CGYmsMyAIUo3mhKWlKe8ulPCIYQVjwlvjCjCyU+3BSKJRiR9FrSI7S3Zycx00NSmaS8DESFV3VVNVWvRhkcR3gC1XiqC+goh1lYWVdSWpqlt2ga7ebg7lbgpnB/4l+rAErvs4422/Ph15TcF1gIY115a27e74sdvNOIby1cRH3dw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=mNFI+RY5anTIaorob768jixp8wTZxUCTwlTB4pfA5m8=;
+ b=VimxtWxK7bx1iR2Hw6XqxFW2TuNdSfZaJLWzA7c9qdaBdOfPzDWMdbN3LWBvh4A2HlaXlhGcgx3nSTRShpZ04H0THesSkBm8i77KkJSzom20tCnLR2SD2QGUQxMm/ypUpUQT+Wj/tnM73EdOWyINkAdsSMSeCZPCs9KQB+fzDZEpi1iZjtlXfwrZa2gEWeHreQu7/ouht/IEdUDXCMkLa7oTY0gAMYC/3P1V6jMyxC9oE7Aa8aDRKbuqIz0XOasN7CCZ73K66CpodU8bk4CybIpqpIVTLYFo2ohRbNAhlBmTAWyakUEIcTxMU5LY3fFFjvnBCtE1rj6SF6frv6yrUA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=maximintegrated.com; dmarc=pass action=none
+ header.from=maximintegrated.com; dkim=pass header.d=maximintegrated.com;
+ arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=AX2BpCwAHsJ9vAVMGMg+034+7Y/IY2VhzAS++Px6BtQ=;
-        b=Gl6loNmsS/lpioR+G0SjkAxS4RdAdyW3fzUgX3JY7yXFMfJ6EnQsDW4M+vSGk/F/V2
-         JvHqTR4LP/hzaWfq8ImEKbWJJAG/EpIkZoOthUG+eIq6B6jXWaomiZsb2hII7oWEx9yu
-         Au6kLkTAvNpPhnFmL93z+F83nbQpWq3q6m6HM4en+xW3wr+TFnSvbFaVh+sbgjIO9ZUS
-         vHboQ6fBEp58dxiQEKuVykzUypOkcgtZtT9K4cz9mzPl3E0Dk08eSI1OLrSIL2Il7y62
-         SzZc0rAxdOL0+pzsnPVePqXnQQKBJN9zbtXSWxF/Ozmc2DPvf/xnjf6QTtMYGlDj4rUt
-         EZDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=AX2BpCwAHsJ9vAVMGMg+034+7Y/IY2VhzAS++Px6BtQ=;
-        b=FAr6gwSW8iUN6+lgT0AhaVXFpvX0r6dTaVI86d8QMod6DXW94QYDA1QsB9iBblDobo
-         XZViASqYgUOgMnNiQoK7CYoin94Yca/8VljJejNmMmFGsxu7E49ZOJb6dg1fWv/gw8Z4
-         +X/GM8BTJibBU50fTm8Gwv0HcCjQgyacnsbXsXT7NGWo5UbwahgRy8glOiDhvtTS4rvu
-         4EDwWkjiBpW7Vr1ybAXdSMBtytWv/LILUCay5LX5aCRcUzk6h5yoMZs1snVjmCWvwKDz
-         0QydoSC9fr/R4d9aokn8VaO2j06Yh7fqWyJqqJCqlOQbyJ+Thu6S6BIAtYDlkxmvvuNc
-         eEhg==
-X-Gm-Message-State: AOAM532JNyQFEmRrkhhUZ4Z6o55wMZ+6Tol1Py5VXA1YzYBAhkJnJFHg
-        svs8j1fzpNwZJcMZBokR7pg=
-X-Google-Smtp-Source: ABdhPJwh4HvHQcedjSGAlTEY+pXeFSAT3UYiM/HjyPORXRzWpcbgwIJ8nm8uj/2+P618AoXTaGjfpw==
-X-Received: by 2002:aa7:ca0d:: with SMTP id y13mr15325489eds.335.1634282815944;
-        Fri, 15 Oct 2021 00:26:55 -0700 (PDT)
-Received: from ponky.lan ([2a04:241e:501:3870:bac1:743:3859:80df])
-        by smtp.gmail.com with ESMTPSA id l25sm3873107edc.31.2021.10.15.00.26.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Oct 2021 00:26:55 -0700 (PDT)
-From:   Leonard Crestez <cdleonard@gmail.com>
-To:     David Ahern <dsahern@kernel.org>,
-        Eric Dumazet <edumazet@google.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
-        Yonghong Song <yhs@fb.com>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        Florian Westphal <fw@strlen.de>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 4/4] selftests: net/fcnal: Test --{force,no}-bind-key-ifindex
-Date:   Fri, 15 Oct 2021 10:26:07 +0300
-Message-Id: <9b00cba5116604773554db98405691076c66b71a.1634282515.git.cdleonard@gmail.com>
+ d=maximintegrated.onmicrosoft.com;
+ s=selector2-maximintegrated-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mNFI+RY5anTIaorob768jixp8wTZxUCTwlTB4pfA5m8=;
+ b=GcL30PXgw4wY8tBE5dsUmxNgQLNLoaY0PNiwErbNLLJGwaFIU0KgkjkTSiNUh6tzBM+scjkQ7HTBVySg+RrEYn8awPYmYhUFVLch80TYyipju1fMONxdllLaF/qCMVx2BWG0s+gQPeVkaeLzC4jv2Aj1pIwXc6Dw2v+bHSYPl38=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none
+ header.from=maximintegrated.com;
+Received: from BYAPR11MB3671.namprd11.prod.outlook.com (2603:10b6:a03:b3::15)
+ by BYAPR11MB2726.namprd11.prod.outlook.com (2603:10b6:a02:be::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.24; Fri, 15 Oct
+ 2021 07:27:29 +0000
+Received: from BYAPR11MB3671.namprd11.prod.outlook.com
+ ([fe80::49d4:a1dd:5b55:4c94]) by BYAPR11MB3671.namprd11.prod.outlook.com
+ ([fe80::49d4:a1dd:5b55:4c94%6]) with mapi id 15.20.4608.016; Fri, 15 Oct 2021
+ 07:27:29 +0000
+From:   George Song <george.song@maximintegrated.com>
+To:     lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org
+Cc:     alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, george.song@analog.com,
+        ryans.lee@maximintegrated.com, steves.lee@maximintegrated.com,
+        George Song <george.song@maximintegrated.com>
+Subject: [v2 1/2] ASoC: dt-bindings: max98520: changed signed-off-by email address
+Date:   Fri, 15 Oct 2021 16:27:08 +0900
+Message-Id: <20211015072709.3167-1-george.song@maximintegrated.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1634282515.git.cdleonard@gmail.com>
-References: <cover.1634282515.git.cdleonard@gmail.com>
-MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SL2P216CA0052.KORP216.PROD.OUTLOOK.COM
+ (2603:1096:100:19::14) To BYAPR11MB3671.namprd11.prod.outlook.com
+ (2603:10b6:a03:b3::15)
+MIME-Version: 1.0
+Received: from SEL-LT-028891.maxim-ic.internal (223.62.163.157) by SL2P216CA0052.KORP216.PROD.OUTLOOK.COM (2603:1096:100:19::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.16 via Frontend Transport; Fri, 15 Oct 2021 07:27:26 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c8e00bee-b5c9-42e7-9ffe-08d98fad3e77
+X-MS-TrafficTypeDiagnostic: BYAPR11MB2726:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR11MB2726F47F902F25239EBD9E4EF4B99@BYAPR11MB2726.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:361;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: aoeUo73M/4JMwnRlquYkhqzWe1unucpa+zTQE3MkQftCVTUBLJBNkA6qNRqGbuidsXALHKz4ojcldcbAIEnsl1kNFKO8Dp8KGJMJTTjkvY5Q+XOJBrtB9aAlMEbghrCsxhOC1VY/b/oANqdBeELvDVlBah1KuN9yi/dyypYegbVpAE28Q1kSOSaaB+muMrAR1twwxQX1L6/JgM8QCDVDhhWa6OaeBL+p/anZNBuEbHaUT6UXyi5wriF20L0HpR4MeYoKDDLkdHepmbrqdROeevKF9dva29uk8PzOaI+UGUGogAJRIrYGT7+hS+8PHPV3ez6I1K9P21vQn7DhIiLp6XAT5ica/ZkiBYqpviKswekWHeyk4Y7IKc/LvKA3IKUE7mTtfj7MX4UOANr3NwuHl3gyBBfHV9Q2CrHN0bY+P0o3vUN2Vc0RwcozDy15lJs/X37Sq01YMmWeMK6ZVKB/PgShhjdLZ/fgBxawEFByFpGUsIFvDjzKMlnP7w6tE057Brt25VLoh118dO+PpufhH9v92aL2N3sXQpuDFpHC9jrpSwEdr/XG8HRC5w+K7uk3XpPrD/svsrfXcXKENwnlScv3f/6DlzTT2SHW1jZRh5uGb5UIgyyNbxYO3fyH1wdnI0CZIHN0Vguh/bIwLQ0V9ynkiiSjAl9NocSAYMUu8G86S6OPocn78B7XrrB0OC5n8Y+2NsaA8iscd2nJbFZfWhOtWzuupnD9dWDrhoxuuPfOaKOPZUmANhbLHqDt7if65MULXbxUqQQUXBuxS4siJb+73MCKloHTaFEWiESquLw=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3671.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(52116002)(1076003)(8676002)(186003)(4744005)(6666004)(6486002)(26005)(956004)(8936002)(6512007)(2616005)(508600001)(86362001)(966005)(5660300002)(38100700002)(107886003)(4326008)(6506007)(44832011)(316002)(66556008)(66476007)(83380400001)(66946007)(2906002)(38350700002)(36756003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?yM+l4INa9lOpU6HEUZaDNsTo01YyqE+cPsDpafTvTWMtO5jBA1oYPM1R3i99?=
+ =?us-ascii?Q?Vm1SFlrkU2K8LB6thcp6au77KioYHKwh9z1wbiJrdpd+MBjW1ZdGufRjNMLo?=
+ =?us-ascii?Q?y78ZJQOnUbxg/ds9gZNsUG/xZCy8b/yuR5OIt+3l1IPj1iThPOIGsCicE34q?=
+ =?us-ascii?Q?vYfaBgVBaWdV0qek8vtshsUBk4NMEjPaevOK944RIQDcsGdiyrBzq4Mkd0as?=
+ =?us-ascii?Q?IeMS8OWFJdbymsHH39keJpYJSUQ8KnGV31qLaxzClq209lsy44RDftijxNZ2?=
+ =?us-ascii?Q?ez2Pqw9MGSHGmmg1kYtTue8f5xoN51h4IGMygDx+nUYlU0fXi2NVFB/N9Vu5?=
+ =?us-ascii?Q?GG+6QPyt2iU3WOD6x9bYDvxidMRSsapnsWL1qT2GKK1yBt+d2EPNkrGPjbl8?=
+ =?us-ascii?Q?EbGpq1ImcMBANm4xPW1TiKOw+9sJJ1ty0XDlFeTNnrJ7CfBadPTjHEb3WG9b?=
+ =?us-ascii?Q?lseW/aPpvFBYnVoXTvFfzeq5pF1pZNfDhXf5ztDu8VwsnWbekX5wzdEo4PtO?=
+ =?us-ascii?Q?6eOw8bwK1ZXn959xJT3a7IBQWrXUZjCCKu7B3v3RczAFnCFm5r9hokarermR?=
+ =?us-ascii?Q?+G+r4bqEeC09rCB/NGzZCkMvCfS6oedm+L/sgC+SkTaSG6FvNLdWKMJMlBj4?=
+ =?us-ascii?Q?ODy8UuKFbKYpbHwT4XzsRIa40Ky9C/FQ/bxIPQWiJ23oIrTtmW8KKLaoV6Or?=
+ =?us-ascii?Q?03HYMpqdFptlD3/ARKVktKiJRqWqqLz03v7Auwm5KQ40dMB/YuX27Oi5pV/G?=
+ =?us-ascii?Q?O6nKBwO1IZYVMdooOGFKZE7fK4nqGtyzO5WUrStDrarolamnIycYTciTonT+?=
+ =?us-ascii?Q?fay5P1yLfq5Mp8KFSLp33XnHWssMiDdEQOyLnvqk+cp2DLKPz0yXUliMDNDN?=
+ =?us-ascii?Q?+VIy/22BXFvos4cauGRBK6FJbg/pcmGd8lfmTAfxl9sRjEW7h458q5xxkwQp?=
+ =?us-ascii?Q?6y7LTR1HffcJIRb91iJQIOrhoEh+QjRpy+smy+BKT7ri/E8YhnCrc8PkjaJX?=
+ =?us-ascii?Q?7P6GCmWTP/GqZfzH63ezC7ghvlTYa2GwHwFGRtrZzyAJ6LLsh1qtqTc3Wg4F?=
+ =?us-ascii?Q?94hBHYzOz3lrrxKQ0EXcrtV3X9g648eUh4yKOKjiibbNSBJy5KGYmk/xT7+8?=
+ =?us-ascii?Q?OYXY8S5eRH3CxEJ1NZhtmOI9RWR9MYvdMLGgNXOw63M40/hBAt0eP3GDIQAt?=
+ =?us-ascii?Q?SqtK3c3nkYvCCPLV6doL3ycwMXm1XTfkvsPXAPZeTGHkJjJgfQk3ZVYdlVow?=
+ =?us-ascii?Q?CzXWL9KdW5jkUGMS7E4nI8sdOr6dyeomTnWQhu5FSR5CBEO5M5I518BbQe+t?=
+ =?us-ascii?Q?+BRkVEgdW9bdLP3Z2ktEA3nP?=
+X-OriginatorOrg: maximintegrated.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c8e00bee-b5c9-42e7-9ffe-08d98fad3e77
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3671.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Oct 2021 07:27:29.2725
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: fbd909df-ea69-4788-a554-f24b7854ad03
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: rqWpso8LXcNUxc80bWj2hY5sg8RKQyni+EEKX5886UkIB2G9/XAMCvDcecnmyOcWiI+JtZ3OphF9IW2L5DeNuOyz+bkm8GcyjQqjc93Fg9c=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB2726
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Test that applications binding listening sockets to VRFs without
-specifying TCP_MD5SIG_FLAG_IFINDEX will work as expected. This would
-be broken if __tcp_md5_do_lookup always made a strict comparison on
-l3index. See this email:
+changed signed-off-by email address to maximintegrated group.
 
-https://lore.kernel.org/netdev/209548b5-27d2-2059-f2e9-2148f5a0291b@gmail.com/
-
-Applications using tcp_l3mdev_accept=1 and a single global socket (not
-bound to any interface) also should have a way to specify keys that are
-only for the default VRF, this is done by --force-bind-key-ifindex
-without otherwise binding to a device.
-
-Signed-off-by: Leonard Crestez <cdleonard@gmail.com>
-Reviewed-by: David Ahern <dsahern@kernel.org>
+Signed-off-by: George Song <george.song@maximintegrated.com>
 ---
- tools/testing/selftests/net/fcnal-test.sh | 60 +++++++++++++++++++++++
- 1 file changed, 60 insertions(+)
+ Documentation/devicetree/bindings/sound/maxim,max98520.yaml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/net/fcnal-test.sh b/tools/testing/selftests/net/fcnal-test.sh
-index 13350cd5c8ac..8e67a252b672 100755
---- a/tools/testing/selftests/net/fcnal-test.sh
-+++ b/tools/testing/selftests/net/fcnal-test.sh
-@@ -287,10 +287,16 @@ set_sysctl()
- 	echo "SYSCTL: $*"
- 	echo
- 	run_cmd sysctl -q -w $*
- }
+diff --git a/Documentation/devicetree/bindings/sound/maxim,max98520.yaml b/Documentation/devicetree/bindings/sound/maxim,max98520.yaml
+index d1f2b5ee775a..ad38f56e1c49 100644
+--- a/Documentation/devicetree/bindings/sound/maxim,max98520.yaml
++++ b/Documentation/devicetree/bindings/sound/maxim,max98520.yaml
+@@ -7,7 +7,7 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ title: Maxim Integrated MAX98520 Speaker Amplifier Driver
  
-+# get sysctl values in NS-A
-+get_sysctl()
-+{
-+	${NSA_CMD} sysctl -n $*
-+}
-+
- ################################################################################
- # Setup for tests
+ maintainers:
+-  - George Song <George.song@analog.com>
++  - George Song <George.song@maximintegrated.com>
  
- addr2str()
- {
-@@ -1001,10 +1007,64 @@ ipv4_tcp_md5()
- 
- 	log_start
- 	run_cmd nettest -s -I ${NSA_DEV} -M ${MD5_PW} -m ${NS_NET}
- 	log_test $? 1 "MD5: VRF: Device must be a VRF - prefix"
- 
-+	test_ipv4_md5_vrf__vrf_server__no_bind_ifindex
-+	test_ipv4_md5_vrf__global_server__bind_ifindex0
-+}
-+
-+test_ipv4_md5_vrf__vrf_server__no_bind_ifindex()
-+{
-+	log_start
-+	show_hint "Simulates applications using VRF without TCP_MD5SIG_FLAG_IFINDEX"
-+	run_cmd nettest -s -I ${VRF} -M ${MD5_PW} -m ${NS_NET} --no-bind-key-ifindex &
-+	sleep 1
-+	run_cmd_nsb nettest -r ${NSA_IP} -X ${MD5_PW}
-+	log_test $? 0 "MD5: VRF: VRF-bound server, unbound key accepts connection"
-+
-+	log_start
-+	show_hint "Binding both the socket and the key is not required but it works"
-+	run_cmd nettest -s -I ${VRF} -M ${MD5_PW} -m ${NS_NET} --force-bind-key-ifindex &
-+	sleep 1
-+	run_cmd_nsb nettest -r ${NSA_IP} -X ${MD5_PW}
-+	log_test $? 0 "MD5: VRF: VRF-bound server, bound key accepts connection"
-+}
-+
-+test_ipv4_md5_vrf__global_server__bind_ifindex0()
-+{
-+	# This particular test needs tcp_l3mdev_accept=1 for Global server to accept VRF connections
-+	local old_tcp_l3mdev_accept
-+	old_tcp_l3mdev_accept=$(get_sysctl net.ipv4.tcp_l3mdev_accept)
-+	set_sysctl net.ipv4.tcp_l3mdev_accept=1
-+
-+	log_start
-+	run_cmd nettest -s -M ${MD5_PW} -m ${NS_NET} --force-bind-key-ifindex &
-+	sleep 1
-+	run_cmd_nsb nettest -r ${NSA_IP} -X ${MD5_PW}
-+	log_test $? 2 "MD5: VRF: Global server, Key bound to ifindex=0 rejects VRF connection"
-+
-+	log_start
-+	run_cmd nettest -s -M ${MD5_PW} -m ${NS_NET} --force-bind-key-ifindex &
-+	sleep 1
-+	run_cmd_nsc nettest -r ${NSA_IP} -X ${MD5_PW}
-+	log_test $? 0 "MD5: VRF: Global server, key bound to ifindex=0 accepts non-VRF connection"
-+	log_start
-+
-+	run_cmd nettest -s -M ${MD5_PW} -m ${NS_NET} --no-bind-key-ifindex &
-+	sleep 1
-+	run_cmd_nsb nettest -r ${NSA_IP} -X ${MD5_PW}
-+	log_test $? 0 "MD5: VRF: Global server, key not bound to ifindex accepts VRF connection"
-+
-+	log_start
-+	run_cmd nettest -s -M ${MD5_PW} -m ${NS_NET} --no-bind-key-ifindex &
-+	sleep 1
-+	run_cmd_nsc nettest -r ${NSA_IP} -X ${MD5_PW}
-+	log_test $? 0 "MD5: VRF: Global server, key not bound to ifindex accepts non-VRF connection"
-+
-+	# restore value
-+	set_sysctl net.ipv4.tcp_l3mdev_accept="$old_tcp_l3mdev_accept"
- }
- 
- ipv4_tcp_novrf()
- {
- 	local a
+ properties:
+   compatible:
 -- 
 2.25.1
 
