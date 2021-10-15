@@ -2,44 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF32342F153
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 14:49:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC49842F156
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 14:49:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239046AbhJOMvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 08:51:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60046 "EHLO
+        id S239058AbhJOMv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 08:51:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239000AbhJOMvU (ORCPT
+        with ESMTP id S239054AbhJOMvY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 08:51:20 -0400
+        Fri, 15 Oct 2021 08:51:24 -0400
 Received: from mail.fris.de (mail.fris.de [IPv6:2a01:4f8:c2c:390b::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3C4FC061570;
-        Fri, 15 Oct 2021 05:49:13 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 8B089BFBEE;
-        Fri, 15 Oct 2021 14:49:02 +0200 (CEST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21FC8C061570;
+        Fri, 15 Oct 2021 05:49:18 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id DEB32BFC0F;
+        Fri, 15 Oct 2021 14:49:14 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fris.de; s=dkim;
-        t=1634302144; h=from:subject:date:message-id:to:cc:mime-version:
+        t=1634302156; h=from:subject:date:message-id:to:cc:mime-version:
          content-transfer-encoding:in-reply-to:references;
-        bh=gGkJ6r4naCo3lRMpJdXIMzGVr36JcaJta+yBdVR+9gI=;
-        b=VzlB3nVXLSjPTnEeCv+Y17dXGq8VFWXhqcOBl4oFan4S3/0nxDsk+wlzM3DEhGOhrThC2U
-        HIs+RU8QWFzIpjlubGBoJCEp4UjCNPGqIUzLtCaTAcdD5m6IuKBjpBlnoiVuGYQHuHtw3i
-        ImmPYZp9oSSpA3DPieKVBxPiuBByOUdMkWsPCAnVhBeYxBiHguilQQ56aj5J0DUjWaJNNH
-        2phYmuxxMzY5FeFhD/n70TG8HISxPDCQSTTUjA6WNePrTDecZQLhxZH3177uc8x1cYMwzy
-        owy3iz+AA4dLjw0NwQLPmhnQfPf9ImWpnW0o/KNJXHz5exIHS9Jj87YWWbLIcw==
+        bh=b3WwxseBuxxlm1edv2TBXG5FbEqMfGNzQKzPCy8l4AI=;
+        b=T3B2ZHCYIOEjYoN2Fy5rz6oP3gJ3f7yXxiTpjRyXgUuZSaeRw2XJysmckQs/RE68ttVt8M
+        XbyiL/FzBvzoN3KkXeiJENFFhDk8uLygFUt4VdIRkSN5RlJ8j/nSIa0rgBdwTBftC6HPjF
+        EsjSTmkNPZw2NYzjqp29n++NzP2l4wJ5Byg4K9SQgWEitSop+Ku87Y9OwbicY3MscaO5Wf
+        rdVjrsYgbWlekTIcfnue1mdsHm47FZELmLRnbPGsi+C1APLW7gOUp8wNwafXGwjm+eHcfY
+        r/VyFLzjvhfWaP5Tg0Ktds3LFkMQZhv3SGUya+6rXEvJIX68mzI7hc61rgKfbQ==
 From:   Frieder Schrempf <frieder@fris.de>
-To:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+To:     devicetree@vger.kernel.org,
+        Frieder Schrempf <frieder.schrempf@kontron.de>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
         Sascha Hauer <s.hauer@pengutronix.de>,
         Shawn Guo <shawnguo@kernel.org>
-Cc:     Frieder Schrempf <frieder.schrempf@kontron.de>,
-        Fabio Estevam <festevam@gmail.com>,
+Cc:     stable@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
         Heiko Thiery <heiko.thiery@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
         NXP Linux Team <linux-imx@nxp.com>,
         Pengutronix Kernel Team <kernel@pengutronix.de>
-Subject: [PATCH v2 1/6] arm64: dts: imx8mm-kontron: Add support for ultra high speed modes on SD card
-Date:   Fri, 15 Oct 2021 14:48:35 +0200
-Message-Id: <20211015124841.28226-2-frieder@fris.de>
+Subject: [PATCH v2 2/6] arm64: dts: imx8mm-kontron: Make sure SOC and DRAM supply voltages are correct
+Date:   Fri, 15 Oct 2021 14:48:36 +0200
+Message-Id: <20211015124841.28226-3-frieder@fris.de>
 In-Reply-To: <20211015124841.28226-1-frieder@fris.de>
 References: <20211015124841.28226-1-frieder@fris.de>
 MIME-Version: 1.0
@@ -51,84 +52,52 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Frieder Schrempf <frieder.schrempf@kontron.de>
 
-In order to use ultra high speed modes (UHS) on the SD card slot, we
-add matching pinctrls and fix the voltage switching for LDO5 of the
-PMIC, by providing the SD_VSEL pin as GPIO to the PMIC driver.
+It looks like the voltages for the SOC and DRAM supply weren't properly
+validated before. The datasheet and uboot-imx code tells us that VDD_SOC
+should be 800 mV in suspend and 850 mV in run mode. VDD_DRAM should be
+950 mV for DDR clock frequencies of up to 1.5 GHz.
 
+Let's fix these values to make sure the voltages are within the required
+range.
+
+Fixes: 8668d8b2e67f ("arm64: dts: Add the Kontron i.MX8M Mini SoMs and baseboards")
+Cc: stable@vger.kernel.org
 Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
 ---
 Changes in v2:
-  * Fix pinctrl node names to match bindings
+  * Fix the commit ref in the Fixes tag
+  * Improve commit message
 ---
- .../dts/freescale/imx8mm-kontron-n801x-s.dts  | 28 ++++++++++++++++++-
- .../freescale/imx8mm-kontron-n801x-som.dtsi   |  2 ++
- 2 files changed, 29 insertions(+), 1 deletion(-)
+ arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-som.dtsi | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-s.dts b/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-s.dts
-index d17abb515835..5f6fc4c2c529 100644
---- a/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-s.dts
-+++ b/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-s.dts
-@@ -189,8 +189,10 @@ usbnet: usbether@1 {
- };
- 
- &usdhc2 {
--	pinctrl-names = "default";
-+	pinctrl-names = "default", "state_100mhz", "state_200mhz";
- 	pinctrl-0 = <&pinctrl_usdhc2>;
-+	pinctrl-1 = <&pinctrl_usdhc2_100mhz>;
-+	pinctrl-2 = <&pinctrl_usdhc2_200mhz>;
- 	vmmc-supply = <&reg_vdd_3v3>;
- 	vqmmc-supply = <&reg_nvcc_sd>;
- 	cd-gpios = <&gpio2 12 GPIO_ACTIVE_LOW>;
-@@ -319,4 +321,28 @@ MX8MM_IOMUXC_SD2_DATA3_USDHC2_DATA3		0x1d0
- 			MX8MM_IOMUXC_SD2_CD_B_GPIO2_IO12		0x019
- 		>;
- 	};
-+
-+	pinctrl_usdhc2_100mhz: usdhc2-100mhzgrp {
-+		fsl,pins = <
-+			MX8MM_IOMUXC_SD2_CLK_USDHC2_CLK			0x194
-+			MX8MM_IOMUXC_SD2_CMD_USDHC2_CMD			0x1d4
-+			MX8MM_IOMUXC_SD2_DATA0_USDHC2_DATA0		0x1d4
-+			MX8MM_IOMUXC_SD2_DATA1_USDHC2_DATA1		0x1d4
-+			MX8MM_IOMUXC_SD2_DATA2_USDHC2_DATA2		0x1d4
-+			MX8MM_IOMUXC_SD2_DATA3_USDHC2_DATA3		0x1d4
-+			MX8MM_IOMUXC_SD2_CD_B_GPIO2_IO12		0x019
-+		>;
-+	};
-+
-+	pinctrl_usdhc2_200mhz: usdhc2-200mhzgrp {
-+		fsl,pins = <
-+			MX8MM_IOMUXC_SD2_CLK_USDHC2_CLK			0x196
-+			MX8MM_IOMUXC_SD2_CMD_USDHC2_CMD			0x1d6
-+			MX8MM_IOMUXC_SD2_DATA0_USDHC2_DATA0		0x1d6
-+			MX8MM_IOMUXC_SD2_DATA1_USDHC2_DATA1		0x1d6
-+			MX8MM_IOMUXC_SD2_DATA2_USDHC2_DATA2		0x1d6
-+			MX8MM_IOMUXC_SD2_DATA3_USDHC2_DATA3		0x1d6
-+			MX8MM_IOMUXC_SD2_CD_B_GPIO2_IO12		0x019
-+		>;
-+	};
- };
 diff --git a/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-som.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-som.dtsi
-index 9db9b90bf2bc..6eacc32bc95e 100644
+index 6eacc32bc95e..4df45b5e5f6e 100644
 --- a/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-som.dtsi
 +++ b/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-som.dtsi
-@@ -86,6 +86,7 @@ pca9450: pmic@25 {
- 		pinctrl-0 = <&pinctrl_pmic>;
- 		interrupt-parent = <&gpio1>;
- 		interrupts = <0 IRQ_TYPE_LEVEL_LOW>;
-+		sd-vsel-gpios = <&gpio1 4 GPIO_ACTIVE_HIGH>;
- 
- 		regulators {
+@@ -92,10 +92,12 @@ regulators {
  			reg_vdd_soc: BUCK1 {
-@@ -226,6 +227,7 @@ MX8MM_IOMUXC_I2C1_SDA_I2C1_SDA			0x400001c3
- 	pinctrl_pmic: pmicgrp {
- 		fsl,pins = <
- 			MX8MM_IOMUXC_GPIO1_IO00_GPIO1_IO0		0x141
-+			MX8MM_IOMUXC_GPIO1_IO04_GPIO1_IO4		0x141
- 		>;
- 	};
+ 				regulator-name = "buck1";
+ 				regulator-min-microvolt = <800000>;
+-				regulator-max-microvolt = <900000>;
++				regulator-max-microvolt = <850000>;
+ 				regulator-boot-on;
+ 				regulator-always-on;
+ 				regulator-ramp-delay = <3125>;
++				nxp,dvs-run-voltage = <850000>;
++				nxp,dvs-standby-voltage = <800000>;
+ 			};
  
+ 			reg_vdd_arm: BUCK2 {
+@@ -112,7 +114,7 @@ reg_vdd_arm: BUCK2 {
+ 			reg_vdd_dram: BUCK3 {
+ 				regulator-name = "buck3";
+ 				regulator-min-microvolt = <850000>;
+-				regulator-max-microvolt = <900000>;
++				regulator-max-microvolt = <950000>;
+ 				regulator-boot-on;
+ 				regulator-always-on;
+ 			};
 -- 
 2.33.0
 
