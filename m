@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87FA742EEEA
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 12:33:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB7EF42EEEC
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 12:33:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238212AbhJOKff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 06:35:35 -0400
-Received: from relay6-d.mail.gandi.net ([217.70.183.198]:34505 "EHLO
-        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235075AbhJOKfX (ORCPT
+        id S235271AbhJOKfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 06:35:45 -0400
+Received: from relay5-d.mail.gandi.net ([217.70.183.197]:55525 "EHLO
+        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238166AbhJOKf1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 06:35:23 -0400
+        Fri, 15 Oct 2021 06:35:27 -0400
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id F2A7EC0012;
-        Fri, 15 Oct 2021 10:33:13 +0000 (UTC)
+        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 473811C0005;
+        Fri, 15 Oct 2021 10:33:19 +0000 (UTC)
 From:   Miquel Raynal <miquel.raynal@bootlin.com>
 To:     Miquel Raynal <miquel.raynal@bootlin.com>,
         Richard Weinberger <richard@nod.at>,
@@ -22,60 +22,34 @@ To:     Miquel Raynal <miquel.raynal@bootlin.com>,
         Tudor Ambarus <Tudor.Ambarus@microchip.com>
 Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
-        Vladimir Zapolskiy <vz@mleia.com>
-Subject: Re: [PATCH 2/8] mtd: rawnand: Let callers use the bare Hamming helpers
-Date:   Fri, 15 Oct 2021 12:33:13 +0200
-Message-Id: <20211015103313.950354-1-miquel.raynal@bootlin.com>
+        Vladimir Zapolskiy <vz@mleia.com>, stable@vger.kernel.org
+Subject: Re: [PATCH 1/8] mtd: rawnand: fsmc: Fix use of SM ORDER
+Date:   Fri, 15 Oct 2021 12:33:18 +0200
+Message-Id: <20211015103318.950418-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210928221507.199198-3-miquel.raynal@bootlin.com>
+In-Reply-To: <20210928221507.199198-2-miquel.raynal@bootlin.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'd8467112d645ec56760c78928e1e5a3f6faa9b74'
+X-linux-mtd-patch-commit: b'9be1446ece291a1f08164bd056bed3d698681f8b'
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-09-28 at 22:15:01 UTC, Miquel Raynal wrote:
-> Before the introduction of the ECC framework infrastructure, many
-> drivers used the ->calculate/correct() Hamming helpers directly. The
-> point of this framework was to avoid this kind of hackish calls and use a
-> proper and generic API but it is true that in certain cases, drivers
-> still need to use these helpers in order to do ECC computations on
-> behalf of their limited hardware.
+On Tue, 2021-09-28 at 22:15:00 UTC, Miquel Raynal wrote:
+> The introduction of the generic ECC engine API lead to a number of
+> changes in various drivers which broke some of them. Here is a typical
+> example: I expected the SM_ORDER option to be handled by the Hamming ECC
+> engine internals. Problem: the fsmc driver does not instantiate (yet) a
+> real ECC engine object so we had to use a 'bare' ECC helper instead of
+> the shiny rawnand functions. However, when not intializing this engine
+> properly and using the bare helpers, we do not get the SM ORDER feature
+> handled automatically. It looks like this was lost in the process so
+> let's ensure we use the right SM ORDER now.
 > 
-> Right after the introduction of the ECC engine core introduction, it was
-> spotted that it was not possible to use the shiny rawnand software ECC
-> helpers so easily because an ECC engine object should have been
-> allocated and initialized first. While this works well in most cases,
-> for these drivers just leveraging the power of a single helper in
-> conjunction with some pretty old and limited hardware, it did not fit.
-> 
-> The idea back then was to declare intermediate helpers which would make
-> use of the exported software ECC engine bare functions while keeping the
-> rawnand layer compatibility. As there was already functions with the
-> rawnand_sw_hamming_ prefix it was decided to declare new local helpers
-> for this purpose in each driver needing one.
-> 
-> Besides being far from optimal, this design choice was blamed by Linus
-> when he pulled the "fixes" pull request [1] so that is why now it is
-> time to clean this mess up.
-> 
-> Enhancing the implementation of the rawnand_ecc_sw_* helpers to support
-> both cases, when the ECC object is instantiated and when it is not is a
-> quite elegant way to solve this situation. This way, we can still use
-> the existing and exported rawnand helpers while avoiding the need for
-> each driver to declare its own helper.
-> 
-> Following this change, most of the fixes sent in [2] can now be safely
-> reverted. Only the fsmc fix will need to be kept because there is
-> actually something specific to the driver to do in its ->correct()
-> helper.
-> 
-> [1] https://lore.kernel.org/lkml/CAHk-=wh_ZHF685Fni8V9is17mj=pFisUaZ_0=gq6nbK+ZcyQmg@mail.gmail.com/
-> [2] https://lore.kernel.org/linux-mtd/20210413161840.345208-1-miquel.raynal@bootlin.com/
-> 
+> Fixes: ad9ffdce4539 ("mtd: rawnand: fsmc: Fix external use of SW Hamming ECC helper")
+> Cc: stable@vger.kernel.org
 > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 
 Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next.
