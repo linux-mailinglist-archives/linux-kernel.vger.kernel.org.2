@@ -2,211 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D177342FE96
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 01:11:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4328442FE94
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 01:11:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243485AbhJOXNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 19:13:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34632 "EHLO
+        id S243473AbhJOXN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 19:13:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238995AbhJOXNu (ORCPT
+        with ESMTP id S238995AbhJOXN0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 19:13:50 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85E8EC061570
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 16:11:43 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id m67so15230233oif.6
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 16:11:43 -0700 (PDT)
+        Fri, 15 Oct 2021 19:13:26 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 310FBC061570
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 16:11:19 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id d21-20020a9d4f15000000b0054e677e0ac5so59628otl.11
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 16:11:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=EC0kJnu6bT1KCV0QTTsc1q9gjgvVry2x+/hU79zV+y8=;
-        b=ZH6PT1ICNF4TTkAQzEBIlRgueYlRGldJGhK5KII5/zTOk8X2Uyp1zpilDOUx3t+28o
-         EZnKcxJz3cW4HpQEFWAdcy5GPhMdW15tUi9M4uPKuDjr2zTRw00xuxOAVPSV2NTO4bim
-         YZgSLWgDs8zS+p5J1y6O2OYfJGOzoqUsr0NT1rdPNwWcFXNWWawyzhRxp5ui5P1quur7
-         gGFs2mRcGxo95UihU/nZsLjNSpLIEEE3UyY3pTDYui7SWmfZM0sCrK0rXVxGtqZ0irKt
-         ENoxTZPniQm5pxm3Sf+MQQCIKp/sgQq9m2CktTtOBtFNfhnPUjrxvzUiRbFSkkTdRU8R
-         41RQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HUmZDgtmuXy7pQJ38Tzw5qxbkrp4xNejQK3lDNZjLFg=;
+        b=vkr6f/Hnqm9g23KalLp7H/Lvpczy/LuFqXn7egw6IF25H2KapElTrVg3Oqh1ajaUZY
+         ulzMIZfZog772rpAe5L1W7zbyXfyvIJ+b8YfW/EWJ/n7Ono02IFwDP58Tl7GGuhp3RNn
+         a/IUG0Fj6kytSJpwHC6E9t/JWfxDXMxBV5F3XYTdPqwAWsIsIor7koJ8WK5B5Pv3jmSU
+         rOOEO8VcI2OecCLlM/twc+zcaPYuWkg+Q9q13hisWtswSTJK5QRvsD7VxwS6nNUcSIgB
+         pipXe5b7SwCtu69ZrAhp/LhgXR6gPTNVPqedmym1S5l34I4IvmgPInmbyuYxoH28qvkF
+         O1fw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=EC0kJnu6bT1KCV0QTTsc1q9gjgvVry2x+/hU79zV+y8=;
-        b=oQ2aYDizOQXKuAFWk0fiqayOQlp3zx9wz8/LHbUCcdEQLxaeR+OObjOfVeTsj+lViZ
-         mGX9GbeCZRkz0ypNdwvzNFszZ0KmtG1JSdtNJFkSsrLjAFrl4i5LyF/gxAaZ8Ay4ZM/0
-         GvydIm+1y5kZVE5V2aaOr0lUxVaP1IJOCp1NgPS0xY0BdqBiYnsbcBrCi8Zs3ZtQSNdv
-         D4AW0qQou1DQswKh7JyU0q9PJTataQjmN5o76XHhpJWgt5qhW3cmFIRhm1VFZT2xihq9
-         mnxULyn+1m4R7WBCT+JWjO9TvFfSnTaI8He1mCFz9Eqzkx5a/uT2Y6uEupyqTvAQSRpx
-         xnpw==
-X-Gm-Message-State: AOAM531MGkUEuCre8HKDR+CS6v/k9wudMDOY8OMTQXZEgJ4AigWzkdHF
-        Dy0OvRkH5/HJrCpubjkjocGeWdaiuA02uQWn
-X-Google-Smtp-Source: ABdhPJwdl4PYi6aqkad4kJV0X4BJyQf3As8t/5DTM41Z3RJ5ruHOJTmIXaVn6PXiM+8IasLbQRRQGg==
-X-Received: by 2002:a05:6808:1805:: with SMTP id bh5mr4099182oib.47.1634339502907;
-        Fri, 15 Oct 2021 16:11:42 -0700 (PDT)
-Received: from [192.168.17.16] ([189.219.72.19])
-        by smtp.gmail.com with ESMTPSA id i13sm1556994oig.35.2021.10.15.16.11.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Oct 2021 16:11:42 -0700 (PDT)
-Subject: Re: [PATCH 4.4 00/18] 4.4.289-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-References: <20211014145206.330102860@linuxfoundation.org>
-From:   =?UTF-8?Q?Daniel_D=c3=adaz?= <daniel.diaz@linaro.org>
-Message-ID: <0dbedba1-a6b7-89b3-2ba9-23f0c0afa60f@linaro.org>
-Date:   Fri, 15 Oct 2021 18:11:41 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        bh=HUmZDgtmuXy7pQJ38Tzw5qxbkrp4xNejQK3lDNZjLFg=;
+        b=eLzKy1RES9MTDXnBa2g72AoX5sZfiPo3VbZ51XjUilXVzwgpXN9K3O1S1CSgKRXaLm
+         UT38apnwWjcNL2DYsvP0GMeCjc5LU2ArxyYyvpPLRWlFeyuAKAFI8TX2Xhdoz+A8HxaN
+         3FNJKH6SKip20ZeHuOV+JqIe5YYREwt0IeCwag7TGXbKe609MhyfX9UEBWh93P5ex+JL
+         FN+5wc42yIWs2wgJf5eu2u/AMKyjobMTRiuN/n+n6zx4m+t8KzZ3zUpoXntK+vef0bPQ
+         VcsSif/VGGtEjpIZaoq5P4JsvGQZ1D4cZfbAAjDEjrGCZ6YXn4NMT9QEmvWiz8LbM41W
+         hNag==
+X-Gm-Message-State: AOAM530D5MaMShh248z9QcZUu8/sS/Ki2mtkvxo3hCQ95fYtxmZT3Lzh
+        fBExjv7URURf4PrKrltRaU08WA==
+X-Google-Smtp-Source: ABdhPJzF/3yWadmmoHsXojqWAjiA8AD4RF0snFNDRgkCZDIdsm7bW/taSm0djFzOBF5ICbjuMjL3OA==
+X-Received: by 2002:a9d:a61:: with SMTP id 88mr10612502otg.152.1634339478519;
+        Fri, 15 Oct 2021 16:11:18 -0700 (PDT)
+Received: from localhost.localdomain ([2600:1700:a0:3dc8:205:1bff:fec0:b9b3])
+        by smtp.gmail.com with ESMTPSA id 103sm1527969otj.44.2021.10.15.16.11.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Oct 2021 16:11:18 -0700 (PDT)
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Kuogee Hsieh <khsieh@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>
+Cc:     linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/msm/dp: Only create debugfs for PRIMARY minor
+Date:   Fri, 15 Oct 2021 16:13:07 -0700
+Message-Id: <20211015231307.1784165-1-bjorn.andersson@linaro.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <20211014145206.330102860@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+dpu_kms_debugfs_init() and hence dp_debug_get() gets invoked for each
+minor being registered. But dp_debug_get() will allocate a new struct
+dp_debug for each call and this will be associated as dp->debug.
 
-On 10/14/21 9:53 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.4.289 release.
-> There are 18 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sat, 16 Oct 2021 14:51:59 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.289-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+As such dp_debug will create debugfs files in both the PRIMARY and the
+RENDER minor's debugfs directory, but only the last reference will be
+remembered.
 
-Results from Linaro's test farm.
-No regressions on arm64, arm, x86_64, and i386.
+The only use of this reference today is in the cleanup path in
+dp_display_deinit_sub_modules() and the dp_debug_private object does
+outlive the debugfs entries in either case, so there doesn't seem to be
+any adverse effects of this, but per the code the current behavior is
+unexpected, so change it to only create dp_debug for the PRIMARY minor.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+---
+ drivers/gpu/drm/msm/dp/dp_display.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-## Build
-* kernel: 4.4.289-rc1
-* git: ['https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git', 'https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc']
-* git branch: linux-4.4.y
-* git commit: f9c6c370e0b0668289ebd46e9b1311e1a8b6e7a1
-* git describe: v4.4.288-19-gf9c6c370e0b0
-* test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.4.y/build/v4.4.288-19-gf9c6c370e0b0
-
-## No regressions (compared to v4.4.288)
-
-## No fixes (compared to v4.4.288)
-
-## Test result summary
-total: 53612, pass: 42920, fail: 246, skip: 9117, xfail: 1329
-
-## Build Summary
-* arm: 128 total, 128 passed, 0 failed
-* arm64: 33 total, 33 passed, 0 failed
-* i386: 17 total, 17 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 24 total, 24 passed, 0 failed
-* sparc: 12 total, 12 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 17 total, 17 passed, 0 failed
-
-## Test suites summary
-* fwts
-* kselftest-android
-* kselftest-bpf
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-membarrier
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* ssuite
-* v4l2-compliance
-
-
-Greetings!
-
-Daniel Díaz
-daniel.diaz@linaro.org
-
+diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+index 3aa67c53dbc0..06773b58bb60 100644
+--- a/drivers/gpu/drm/msm/dp/dp_display.c
++++ b/drivers/gpu/drm/msm/dp/dp_display.c
+@@ -10,6 +10,7 @@
+ #include <linux/component.h>
+ #include <linux/of_irq.h>
+ #include <linux/delay.h>
++#include <drm/drm_file.h>
+ #include <drm/drm_panel.h>
+ 
+ #include "msm_drv.h"
+@@ -1463,6 +1464,10 @@ void msm_dp_debugfs_init(struct msm_dp *dp_display, struct drm_minor *minor)
+ 	dp = container_of(dp_display, struct dp_display_private, dp_display);
+ 	dev = &dp->pdev->dev;
+ 
++	/* Only create one set of debugfs per DP instance */
++	if (minor->type != DRM_MINOR_PRIMARY)
++		return;
++
+ 	dp->debug = dp_debug_get(dev, dp->panel, dp->usbpd,
+ 					dp->link, dp->dp_display.connector,
+ 					minor);
 -- 
-Linaro LKFT
-https://lkft.linaro.org
+2.29.2
+
