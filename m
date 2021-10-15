@@ -2,132 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44A0F42E70A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 05:03:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C763C42E710
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 05:07:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229873AbhJODFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 23:05:21 -0400
-Received: from mga06.intel.com ([134.134.136.31]:8262 "EHLO mga06.intel.com"
+        id S231760AbhJODJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 23:09:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43374 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229526AbhJODFO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 23:05:14 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10137"; a="288705308"
-X-IronPort-AV: E=Sophos;i="5.85,374,1624345200"; 
-   d="scan'208";a="288705308"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2021 20:03:08 -0700
-X-IronPort-AV: E=Sophos;i="5.85,374,1624345200"; 
-   d="scan'208";a="571624023"
-Received: from anmone-mobl.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.254.15.192])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2021 20:03:06 -0700
-Subject: Re: [PATCH v10 08/11] x86/tdx: Wire up KVM hypercalls
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
-        VMware Inc <pv-drivers@vmware.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        linux-kernel@vger.kernel.org
-References: <20211009053747.1694419-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211009053747.1694419-9-sathyanarayanan.kuppuswamy@linux.intel.com>
- <87ilxz7vq6.ffs@tglx>
-From:   Sathyanarayanan Kuppuswamy 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <dd9ceec3-2ae4-c468-0a6a-de14965b65a2@linux.intel.com>
-Date:   Thu, 14 Oct 2021 20:03:05 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
+        id S229526AbhJODJX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 23:09:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 380EC60C4D;
+        Fri, 15 Oct 2021 03:07:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634267238;
+        bh=lN+3oZQbY/EQ0fp4ws24tRucNMoqvvmRfObT4W1c5RM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SEq0Cn+qrI5W8LAR49cuzxjOTZAkfsKRK7p9M/3Jw1MTsGmVO0tnwZWGGZmpGYG8m
+         3fXgBfRbPfF1wrK94Aer7wDKSrwLyGair/DC1X/sSZ6bObkWi3CSrZQr2LS+Zw3XlW
+         swRn6gJ+5lNVa/upNjkC//a9O/pqhIH0RcOGMTIs17HHyUkOEmEN6oohVZy3eMSg9J
+         Z4o+xUmuCoGvSzPtAemR5UKJN2qlADkrhUiYwTsLLehBPynNqTdpQS7wMPiu4fLVze
+         oyiXAKnQ3N/JSVlo+HMYOUeFvyfqYxH5izLvqTbffH5sNNswEewx2421eIqYxM9LfU
+         HA/70+ZKZqtyA==
+Date:   Fri, 15 Oct 2021 11:07:10 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Oleksij Rempel <o.rempel@pengutronix.de>
+Subject: Re: [PATCH] ARM: dts: imx6dl-prtrvt: drop undocumented TRF7970A NFC
+ properties
+Message-ID: <20211015030709.GB22881@dragon>
+References: <20211010133215.145722-1-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
-In-Reply-To: <87ilxz7vq6.ffs@tglx>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211010133215.145722-1-krzysztof.kozlowski@canonical.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Oct 10, 2021 at 03:32:15PM +0200, Krzysztof Kozlowski wrote:
+> Neither the bindings nor the device driver use/document
+> "vin-voltage-override" and "t5t-rmb-extra-byte-quirk" properties.
+> 
+> Cc: Oleksij Rempel <o.rempel@pengutronix.de>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-On 10/14/21 3:21 AM, Thomas Gleixner wrote:
-> On Fri, Oct 08 2021 at 22:37, Kuppuswamy Sathyanarayanan wrote:
->> From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
->>   
->>   #ifdef CONFIG_KVM_GUEST
->> @@ -32,6 +34,10 @@ static inline bool kvm_check_and_clear_guest_paused(void)
->>   static inline long kvm_hypercall0(unsigned int nr)
->>   {
->>   	long ret;
->> +
->> +	if (cc_platform_has(CC_ATTR_GUEST_TDX))
->> +		return tdx_kvm_hypercall(nr, 0, 0, 0, 0);
-> So if TDX is not enabled in Kconfig this cannot be optimized out unless
-> CC_PLATFORM is disabled as well. But what's worse is that every
-> hypercall needs to call into cc_platform_has().
->
-> None of the hypercalls is used before the early TDX detection. So we can
-> simply use
->
->         if (cpu_feature_enabled(X86_FEATURE_TDX_GUEST))
->
-> here, right? Then you add X86_FEATURE_TDX_GUEST to the disabled feature
-> bits correctly and all of the above is solved.
->
-> Hmm?
-
-
-Make sense. Since this will only be used after tdx_early_init() call,
-and X86_FEATURE_TDX_GUEST is also set in that call, we can just use
-cpu_feature_enabled(X86_FEATURE_TDX_GUEST) as you have mentioned.
-
-I will fix this in next version.
-
->   
->> +#if defined(CONFIG_KVM_GUEST) && defined(CONFIG_INTEL_TDX_GUEST)
->> +static inline long tdx_kvm_hypercall(unsigned int nr, unsigned long p1,
->> +				     unsigned long p2, unsigned long p3,
->> +				     unsigned long p4)
->> +{
->> +	struct tdx_hypercall_output out;
->> +	u64 err;
->> +
->> +	err = __tdx_hypercall(TDX_HYPERCALL_VENDOR_KVM, nr, p1, p2,
->> +			      p3, p4, &out);
->> +
->> +	/*
->> +	 * Non zero return value means buggy TDX module (which is fatal).
->> +	 * So use BUG_ON() to panic.
->> +	 */
->> +	BUG_ON(err);
->> +
->> +	return out.r10;
->> +}
-> Can we make that a proper exported function (instead of
-> tdx_kvm_hypercall) so we don't end up with the very same code inlined
-> all over the place?
-
-
-Initially it was an exported function. But we made it inline in tdx.h
-to simplify the implementation. But if exported function is preferred,
-I will fix it in next version.
-
->
-> Thanks,
->
->          tglx
->
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
-
+Applied, thanks!
