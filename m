@@ -2,134 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8924442F9F4
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 19:16:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BAC242F9FB
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 19:19:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242170AbhJORSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 13:18:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38874 "EHLO
+        id S242081AbhJORWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 13:22:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242179AbhJORSj (ORCPT
+        with ESMTP id S237969AbhJORV7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 13:18:39 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 536D5C061764
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 10:16:33 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id f11so5024969pfc.12
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 10:16:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Yz4DxDEI/Cdimscz6u8043i4TbobnMf/UyaeMP7e7fk=;
-        b=R+KdF0sGuMsU7NaWwXEV/CtpO8oPzKODFyJvx0XbcWSvuHqF6hiQZv0LcDzeZlPsPp
-         1Wk/T7I/I2ySHJMwuJCIw1zOMTF39MFy3f0A/U1Yj4qhbbOwEyMh6lTbrhzhoLsVb/1G
-         Wy5ziNpFCQ9trOiwO5Yn9yB5nzCOxN1IH6C8L6ebAdFNj0zM1jJPBnEgUP1cLTVTItg5
-         OR4GLXAbs+Wrs8agQaTMqNPq5uqBhKNbp4UnFMPc5saHaH0gV3JwymJCdLlQYlmE9XyU
-         RdfTsPcPKpc2OApqgCf5oKTjrzZiMVwLPni1+ovOkHwwYg6ibTiFy20NBmOBy74jdQFL
-         hq7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Yz4DxDEI/Cdimscz6u8043i4TbobnMf/UyaeMP7e7fk=;
-        b=G5DcD7eniOTSl1Xv1dME57zqsz1+vM1Wfux/W/8QTbkOuA99DD0tsmaW9Tw2eloloY
-         FMB3QITv+POuMvPhx/jMWO1TodRBi0xS3JmzJiDEHTn96Mob2HqE2HXKVRJ2Q9Az9GkS
-         Ehq0aHEY4woG4RW9WTt6boNjyq1CuDR2NCZMruy6+41GqGoD6KEDrNkC+Bh0js7+GufH
-         lGAgr4qs0jkD41RcteFrhkg+lcSvC6xMeTr2HIBmNJHxI2BCYKxa1VkJBrrqPubfGE3U
-         wnFElVjK+3zNWV0ybHVvfOB7bzNZNT9T0Ctk+8v+pkKH36qS/V8+fBNBGlBc+dWAYBS2
-         of5g==
-X-Gm-Message-State: AOAM532g0b5ES6zCz6vX5MmhPxcCX9QrxJq3X9jh1PK0g836jig72SLn
-        9YKu47oJZmVUCQYdcI/ax9FdiQ==
-X-Google-Smtp-Source: ABdhPJzhWqYnWQxyRmrq2ph14bPlsygjQ8Zd2kY5FuLjbc+VOkShpD1Vy52EHoVShBuQrHaJwf5uKQ==
-X-Received: by 2002:a62:9215:0:b0:44c:4de1:f777 with SMTP id o21-20020a629215000000b0044c4de1f777mr12957675pfd.31.1634318192625;
-        Fri, 15 Oct 2021 10:16:32 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id a7sm5398634pfo.32.2021.10.15.10.16.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Oct 2021 10:16:31 -0700 (PDT)
-Date:   Fri, 15 Oct 2021 17:16:28 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
-        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
-Subject: Re: [PATCH Part2 v5 39/45] KVM: SVM: Introduce ops for the post gfn
- map and unmap
-Message-ID: <YWm3bOFcUSlyZjNb@google.com>
-References: <20210820155918.7518-1-brijesh.singh@amd.com>
- <20210820155918.7518-40-brijesh.singh@amd.com>
- <YWYm/Gw8PbaAKBF0@google.com>
- <YWc+sRwHxEmcZZxB@google.com>
- <4e41dcff-7c7b-cf36-434a-c7732e7e8ff2@amd.com>
+        Fri, 15 Oct 2021 13:21:59 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D30CC061570;
+        Fri, 15 Oct 2021 10:19:52 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: andrzej.p)
+        with ESMTPSA id 74A091F4502D
+Subject: Re: [PATCH v7 11/11] media: hantro: Support NV12 on the G2 core
+To:     =?UTF-8?Q?Jernej_=c5=a0krabec?= <jernej.skrabec@gmail.com>,
+        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-staging@lists.linux.dev
+Cc:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+        Fabio Estevam <festevam@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>, kernel@collabora.com,
+        Ezequiel Garcia <ezequiel@collabora.com>
+References: <20210929160439.6601-1-andrzej.p@collabora.com>
+ <20210929160439.6601-12-andrzej.p@collabora.com> <3448839.R56niFO833@kista>
+From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+Message-ID: <84fd4395-5cac-c933-7639-dd3cd844a9cf@collabora.com>
+Date:   Fri, 15 Oct 2021 19:19:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4e41dcff-7c7b-cf36-434a-c7732e7e8ff2@amd.com>
+In-Reply-To: <3448839.R56niFO833@kista>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 15, 2021, Brijesh Singh wrote:
-> 
-> On 10/13/21 1:16 PM, Sean Christopherson wrote:
-> > On Wed, Oct 13, 2021, Sean Christopherson wrote:
-> >> On Fri, Aug 20, 2021, Brijesh Singh wrote:
-> >>> When SEV-SNP is enabled in the guest VM, the guest memory pages can
-> >>> either be a private or shared. A write from the hypervisor goes through
-> >>> the RMP checks. If hardware sees that hypervisor is attempting to write
-> >>> to a guest private page, then it triggers an RMP violation #PF.
-> >>>
-> >>> To avoid the RMP violation, add post_{map,unmap}_gfn() ops that can be
-> >>> used to verify that its safe to map a given guest page. Use the SRCU to
-> >>> protect against the page state change for existing mapped pages.
-> >> SRCU isn't protecting anything.  The synchronize_srcu_expedited() in the PSC code
-> >> forces it to wait for existing maps to go away, but it doesn't prevent new maps
-> >> from being created while the actual RMP updates are in-flight.  Most telling is
-> >> that the RMP updates happen _after_ the synchronize_srcu_expedited() call.
-> > Argh, another goof on my part.  Rereading prior feedback, I see that I loosely
-> > suggested SRCU as a possible solution.  That was a bad, bad suggestion.  I think
-> > (hope) I made it offhand without really thinking it through.  SRCU can't work in
-> > this case, because the whole premise of Read-Copy-Update is that there can be
-> > multiple copies of the data.  That simply can't be true for the RMP as hardware
-> > operates on a single table.
-> >
-> > In the future, please don't hesitate to push back on and/or question suggestions,
-> > especially those that are made without concrete examples, i.e. are likely off the
-> > cuff.  My goal isn't to set you up for failure :-/
-> 
-> What do you think about going back to my initial proposal of per-gfn
-> tracking [1] ? We can limit the changes to just for the kvm_vcpu_map()
-> and let the copy_to_user() take a fault and return an error (if it
-> attempt to write to guest private). If PSC happen while lock is held
-> then simplify return and let the guest retry PSC.
+Hi Jernej,
 
-That approach is also broken as it doesn't hold a lock when updating host_write_track,
-e.g. the count can be corrupted if writers collide, and nothing blocks writers on
-in-progress readers.
+W dniu 14.10.2021 o 19:42, Jernej Škrabec pisze:
+> Hi Andrzej!
+> 
+> Dne sreda, 29. september 2021 ob 18:04:39 CEST je Andrzej Pietrasiewicz
+> napisal(a):
+>> The G2 decoder block produces NV12 4x4 tiled format (NV12_4L4).
+>> Enable the G2 post-processor block, in order to produce regular NV12.
+>>
+>> The logic in hantro_postproc.c is leveraged to take care of allocating
+>> the extra buffers and configure the post-processor, which is
+>> significantly simpler than the one on the G1.
+> 
+> Quick summary of discussion on LibreELEC Slack:
+> When using NV12 format on Allwinner H6 variant of G2 (needs some driver
+> changes), I get frames out of order. If I use native NV12 tiled format, frames
+> are ordered correctly.
+> 
+> Currently I'm not sure if this is issue with my changes or is this general
+> issue.
+> 
+> I would be grateful if anyone can test frame order with and without
+> postprocessing enabled on imx8. Take some dynamic video with a lot of short
+> scenes. It's pretty obvious when frames are out of order.
+> 
 
-I'm not opposed to a scheme that blocks PSC while KVM is reading, but I don't want
-to spend time iterating on the KVM case until consensus has been reached on how
-exactly RMP updates will be handled, and in general how the kernel will manage
-guest private memory.
+I checked on imx8 and cannot observe any such artifacts.
+
+Andrzej
+
+> However, given that frames themself are correctly decoded and without
+> postprocessing in right order, that shouldn't block merging previous patches.
+> I tried few different videos and frames were all decoded correctly.
+> 
+> Best regards,
+> Jernej
+> 
+>>
+>> Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+>> Signed-off-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+>> ---
+>>   .../staging/media/hantro/hantro_g2_vp9_dec.c  |  6 ++--
+>>   drivers/staging/media/hantro/hantro_hw.h      |  1 +
+>>   .../staging/media/hantro/hantro_postproc.c    | 31 +++++++++++++++++++
+>>   drivers/staging/media/hantro/imx8m_vpu_hw.c   | 11 +++++++
+>>   4 files changed, 46 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/staging/media/hantro/hantro_g2_vp9_dec.c b/drivers/
+> staging/media/hantro/hantro_g2_vp9_dec.c
+>> index 7f827b9f0133..1a26be72c878 100644
+>> --- a/drivers/staging/media/hantro/hantro_g2_vp9_dec.c
+>> +++ b/drivers/staging/media/hantro/hantro_g2_vp9_dec.c
+>> @@ -152,7 +152,7 @@ static void config_output(struct hantro_ctx *ctx,
+>>   	hantro_reg_write(ctx->dev, &g2_out_dis, 0);
+>>   	hantro_reg_write(ctx->dev, &g2_output_format, 0);
+>>   
+>> -	luma_addr = vb2_dma_contig_plane_dma_addr(&dst->base.vb.vb2_buf,
+> 0);
+>> +	luma_addr = hantro_get_dec_buf_addr(ctx, &dst->base.vb.vb2_buf);
+>>   	hantro_write_addr(ctx->dev, G2_OUT_LUMA_ADDR, luma_addr);
+>>   
+>>   	chroma_addr = luma_addr + chroma_offset(ctx, dec_params);
+>> @@ -191,7 +191,7 @@ static void config_ref(struct hantro_ctx *ctx,
+>>   	hantro_reg_write(ctx->dev, &ref_reg->hor_scale, (refw << 14) /
+> dst->vp9.width);
+>>   	hantro_reg_write(ctx->dev, &ref_reg->ver_scale, (refh << 14) /
+> dst->vp9.height);
+>>   
+>> -	luma_addr = vb2_dma_contig_plane_dma_addr(&buf->base.vb.vb2_buf,
+> 0);
+>> +	luma_addr = hantro_get_dec_buf_addr(ctx, &buf->base.vb.vb2_buf);
+>>   	hantro_write_addr(ctx->dev, ref_reg->y_base, luma_addr);
+>>   
+>>   	chroma_addr = luma_addr + chroma_offset(ctx, dec_params);
+>> @@ -236,7 +236,7 @@ static void config_ref_registers(struct hantro_ctx *ctx,
+>>   	config_ref(ctx, dst, &ref_regs[1], dec_params, dec_params-
+>> golden_frame_ts);
+>>   	config_ref(ctx, dst, &ref_regs[2], dec_params, dec_params-
+>> alt_frame_ts);
+>>   
+>> -	mv_addr = vb2_dma_contig_plane_dma_addr(&mv_ref->base.vb.vb2_buf,
+> 0) +
+>> +	mv_addr = hantro_get_dec_buf_addr(ctx, &mv_ref->base.vb.vb2_buf) +
+>>   		  mv_offset(ctx, dec_params);
+>>   	hantro_write_addr(ctx->dev, G2_REF_MV_ADDR(0), mv_addr);
+>>   
+>> diff --git a/drivers/staging/media/hantro/hantro_hw.h b/drivers/staging/
+> media/hantro/hantro_hw.h
+>> index 2961d399fd60..3d4a5dc1e6d5 100644
+>> --- a/drivers/staging/media/hantro/hantro_hw.h
+>> +++ b/drivers/staging/media/hantro/hantro_hw.h
+>> @@ -274,6 +274,7 @@ extern const struct hantro_variant rk3399_vpu_variant;
+>>   extern const struct hantro_variant sama5d4_vdec_variant;
+>>   
+>>   extern const struct hantro_postproc_ops hantro_g1_postproc_ops;
+>> +extern const struct hantro_postproc_ops hantro_g2_postproc_ops;
+>>   
+>>   extern const u32 hantro_vp8_dec_mc_filter[8][6];
+>>   
+>> diff --git a/drivers/staging/media/hantro/hantro_postproc.c b/drivers/
+> staging/media/hantro/hantro_postproc.c
+>> index 4549aec08feb..79a66d001738 100644
+>> --- a/drivers/staging/media/hantro/hantro_postproc.c
+>> +++ b/drivers/staging/media/hantro/hantro_postproc.c
+>> @@ -11,6 +11,7 @@
+>>   #include "hantro.h"
+>>   #include "hantro_hw.h"
+>>   #include "hantro_g1_regs.h"
+>> +#include "hantro_g2_regs.h"
+>>   
+>>   #define HANTRO_PP_REG_WRITE(vpu, reg_name, val) \
+>>   { \
+>> @@ -99,6 +100,21 @@ static void hantro_postproc_g1_enable(struct hantro_ctx
+> *ctx)
+>>   	HANTRO_PP_REG_WRITE(vpu, display_width, ctx->dst_fmt.width);
+>>   }
+>>   
+>> +static void hantro_postproc_g2_enable(struct hantro_ctx *ctx)
+>> +{
+>> +	struct hantro_dev *vpu = ctx->dev;
+>> +	struct vb2_v4l2_buffer *dst_buf;
+>> +	size_t chroma_offset = ctx->dst_fmt.width * ctx->dst_fmt.height;
+>> +	dma_addr_t dst_dma;
+>> +
+>> +	dst_buf = hantro_get_dst_buf(ctx);
+>> +	dst_dma = vb2_dma_contig_plane_dma_addr(&dst_buf->vb2_buf, 0);
+>> +
+>> +	hantro_write_addr(vpu, G2_RS_OUT_LUMA_ADDR, dst_dma);
+>> +	hantro_write_addr(vpu, G2_RS_OUT_CHROMA_ADDR, dst_dma +
+> chroma_offset);
+>> +	hantro_reg_write(vpu, &g2_out_rs_e, 1);
+>> +}
+>> +
+>>   void hantro_postproc_free(struct hantro_ctx *ctx)
+>>   {
+>>   	struct hantro_dev *vpu = ctx->dev;
+>> @@ -127,6 +143,9 @@ int hantro_postproc_alloc(struct hantro_ctx *ctx)
+>>   	if (ctx->vpu_src_fmt->fourcc == V4L2_PIX_FMT_H264_SLICE)
+>>   		buf_size += hantro_h264_mv_size(ctx->dst_fmt.width,
+>>   						ctx-
+>> dst_fmt.height);
+>> +	else if (ctx->vpu_src_fmt->fourcc == V4L2_PIX_FMT_VP9_FRAME)
+>> +		buf_size += hantro_vp9_mv_size(ctx->dst_fmt.width,
+>> +					       ctx-
+>> dst_fmt.height);
+>>   
+>>   	for (i = 0; i < num_buffers; ++i) {
+>>   		struct hantro_aux_buf *priv = &ctx->postproc.dec_q[i];
+>> @@ -152,6 +171,13 @@ static void hantro_postproc_g1_disable(struct
+> hantro_ctx *ctx)
+>>   	HANTRO_PP_REG_WRITE_S(vpu, pipeline_en, 0x0);
+>>   }
+>>   
+>> +static void hantro_postproc_g2_disable(struct hantro_ctx *ctx)
+>> +{
+>> +	struct hantro_dev *vpu = ctx->dev;
+>> +
+>> +	hantro_reg_write(vpu, &g2_out_rs_e, 0);
+>> +}
+>> +
+>>   void hantro_postproc_disable(struct hantro_ctx *ctx)
+>>   {
+>>   	struct hantro_dev *vpu = ctx->dev;
+>> @@ -172,3 +198,8 @@ const struct hantro_postproc_ops hantro_g1_postproc_ops
+> = {
+>>   	.enable = hantro_postproc_g1_enable,
+>>   	.disable = hantro_postproc_g1_disable,
+>>   };
+>> +
+>> +const struct hantro_postproc_ops hantro_g2_postproc_ops = {
+>> +	.enable = hantro_postproc_g2_enable,
+>> +	.disable = hantro_postproc_g2_disable,
+>> +};
+>> diff --git a/drivers/staging/media/hantro/imx8m_vpu_hw.c b/drivers/staging/
+> media/hantro/imx8m_vpu_hw.c
+>> index 455a107ffb02..1a43f6fceef9 100644
+>> --- a/drivers/staging/media/hantro/imx8m_vpu_hw.c
+>> +++ b/drivers/staging/media/hantro/imx8m_vpu_hw.c
+>> @@ -132,6 +132,14 @@ static const struct hantro_fmt imx8m_vpu_dec_fmts[] = {
+>>   	},
+>>   };
+>>   
+>> +static const struct hantro_fmt imx8m_vpu_g2_postproc_fmts[] = {
+>> +	{
+>> +		.fourcc = V4L2_PIX_FMT_NV12,
+>> +		.codec_mode = HANTRO_MODE_NONE,
+>> +		.postprocessed = true,
+>> +	},
+>> +};
+>> +
+>>   static const struct hantro_fmt imx8m_vpu_g2_dec_fmts[] = {
+>>   	{
+>>   		.fourcc = V4L2_PIX_FMT_NV12_4L4,
+>> @@ -301,6 +309,9 @@ const struct hantro_variant imx8mq_vpu_g2_variant = {
+>>   	.dec_offset = 0x0,
+>>   	.dec_fmts = imx8m_vpu_g2_dec_fmts,
+>>   	.num_dec_fmts = ARRAY_SIZE(imx8m_vpu_g2_dec_fmts),
+>> +	.postproc_fmts = imx8m_vpu_g2_postproc_fmts,
+>> +	.num_postproc_fmts = ARRAY_SIZE(imx8m_vpu_g2_postproc_fmts),
+>> +	.postproc_ops = &hantro_g2_postproc_ops,
+>>   	.codec = HANTRO_HEVC_DECODER | HANTRO_VP9_DECODER,
+>>   	.codec_ops = imx8mq_vpu_g2_codec_ops,
+>>   	.init = imx8mq_vpu_hw_init,
+>> -- 
+>> 2.17.1
+>>
+>>
+> 
+> 
+
