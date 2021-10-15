@@ -2,114 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5526342E571
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 02:49:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 887B642E57D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 02:51:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232822AbhJOAvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 20:51:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33030 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229546AbhJOAvr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 20:51:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F36D6108B;
-        Fri, 15 Oct 2021 00:49:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634258981;
-        bh=D/rmRCWzleCXcmAZUbTDdP635Cxw3PLWPDCklIf6UsY=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=potzwP9u4hIGu0ac2cRCXAz7f/8BhdKHZ6KpNuERpInZA2y0NKK8YA2d/9rNvR8Vi
-         0QgoNX9mPDuHBbWZcXRIzUuBKrCDFpjMrqUxPbWvGbveP+cPIEPFVsFsQbP+UHaVdI
-         wdnAjcf2ETE79gLV3F3Ua1rS2tU710czHTHOMSdqPnOATCuXfcXg64csQDqfgBCLfF
-         v74totrWzYtr4V7tFrhluGL81fYIbHBXvXEyeRoHb5fbc3BN6SznesqbBGZcxqmRzC
-         Rd1rwUC7KAa/5moXgwKkJERVALR+2vY9Ly4VSnHbLHaNRwKz8x7KBsP2lVVcVReobb
-         7DtGQgazTnGMw==
-Content-Type: text/plain; charset="utf-8"
+        id S233079AbhJOAx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 20:53:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39624 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232556AbhJOAx5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 20:53:57 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EF0BC061753
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 17:51:51 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id t16so31152724eds.9
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 17:51:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NcRK/FMVq0d7lZR4RgJDlpzm/0Nvfg5lOqEnDV14pGI=;
+        b=HML4pD7AnS2Vr6k1owyyANHoletVzaGLhW97xCsJ5G3v9Wcm1tNIRMIsPjILEAjWlI
+         +mZTYKkzN9IK/swYK3PiuYyQUigHN1ZNAAtr6FdDp49PIRmqN2euUNXvHrE4i1BJjLGx
+         GqmGMCXg/KaXwLRn7WyQGBYbo2ngUpngQtP+Oaj1uAKz5PuqGJ8wBILJ0wzSHAMNH3cq
+         +cKmvTz1eHfameLcaMU3ke95r/iPrbUWXIM8jy1KN6ixYtwcp9HjIqGyk/2Gi7nBo/13
+         9oycwknqH06imOZDYRGABe8BDK79p81Kv7ZFw6IlfPleRh6V8qJ0WfLiqNq+BffhG4dh
+         zrEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NcRK/FMVq0d7lZR4RgJDlpzm/0Nvfg5lOqEnDV14pGI=;
+        b=O/nuN9EmvQHQNWr2WbB25F5OL98MbF9ny0v0pcD6xaEiJYcf4Qr6zr+oEPWxTPGTlU
+         kiAe/bvsMvx4noeZfdwTJl/43D0zGIinBYAAlPQaHXK3A5zi9GkJO1/ZSZGwerOFR8s9
+         9BasZUIZqQS5Ms174Ypb9D8MG+F4bG8QwrEhKNssahoviXYVVHo1HZdCS71FarSsKLil
+         hZNfCkUV90CNTt5PDTfTl7K3YODoiM1Klpo1OO02mHCzKSJyeg2gOljcOa2hp32Xo827
+         57HCvrf+obXULm31khB3fTiQ7+yMtiYdQblj7CDClqccMHOcJrti3G9/ASsdFqo86L7l
+         /ugw==
+X-Gm-Message-State: AOAM530MN2u7Zm1IxTZbhne0gIkEjL8lwVfGEDn1F4aqzJdHkzJ1H0sJ
+        idRUsqPE0a88UWPCXANf1Dt4RuFOq1BD0W/PC2SFKJM58Q==
+X-Google-Smtp-Source: ABdhPJyN18BWWGLLUDpiphSW+3Z/VIWJ/mmcSvKDvqZF8BKKyiTackXdTeu9WpZbjK7c0Y4Ro+yX/INJU8pwDjqLXuE=
+X-Received: by 2002:a17:906:3d22:: with SMTP id l2mr3016297ejf.187.1634259109991;
+ Thu, 14 Oct 2021 17:51:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <YWjPexTTQYyZ9JNM@ripper>
-References: <20210829154757.784699-1-dmitry.baryshkov@linaro.org> <20210829154757.784699-8-dmitry.baryshkov@linaro.org> <YV8WsQb9H7+CaLjP@ripper> <4614587c-b87a-4375-cb6a-6af6f5462c6b@linaro.org> <163415465484.936110.9292145029740247591@swboyd.mtv.corp.google.com> <070b1b25-3718-5f3a-869b-a3954fdcc7c5@linaro.org> <163425629248.1688384.14367506222343416862@swboyd.mtv.corp.google.com> <CAA8EJpo4SCSPMVstxO_eTGHVNCEkhguJDcfE4=6Y3YSDQ+SeOw@mail.gmail.com> <163425751841.1688384.11770181770221059842@swboyd.mtv.corp.google.com> <YWjPexTTQYyZ9JNM@ripper>
-Subject: Re: [PATCH v7 7/8] clk: qcom: dispcc-sm8250: stop using mmcx regulator
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Taniya Das <tdas@codeaurora.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Michael Turquette <mturquette@baylibre.com>,
-        DRM DRIVER FOR MSM ADRENO GPU 
-        <linux-arm-msm@vger.kernel.org>,
-        OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS 
-        <devicetree@vger.kernel.org>,
-        COMMON CLK FRAMEWORK <linux-clk@vger.kernel.org>,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        open list <linux-kernel@vger.kernel.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Date:   Thu, 14 Oct 2021 17:49:40 -0700
-Message-ID: <163425898010.1688384.4973790117705709295@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+References: <20211015095327.42344a21@canb.auug.org.au> <CAHRSSEwR9c1jV_Hy6DbH9aZ5Q02AeR_dkay9W9od0RpiYKdgLg@mail.gmail.com>
+In-Reply-To: <CAHRSSEwR9c1jV_Hy6DbH9aZ5Q02AeR_dkay9W9od0RpiYKdgLg@mail.gmail.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Thu, 14 Oct 2021 20:51:38 -0400
+Message-ID: <CAHC9VhSsFzMxBdJHYOgq4X-PwQWLX2+UP5_T_U38mYd1_BeSHw@mail.gmail.com>
+Subject: Re: linux-next: Fixes tags needs some work in the selinux tree
+To:     Todd Kjos <tkjos@google.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Bjorn Andersson (2021-10-14 17:46:51)
-> On Thu 14 Oct 17:25 PDT 2021, Stephen Boyd wrote:
->=20
-> > Quoting Dmitry Baryshkov (2021-10-14 17:15:39)
-> > > On Fri, 15 Oct 2021 at 03:04, Stephen Boyd <sboyd@kernel.org> wrote:
-> > > >
-> > > > Quoting Dmitry Baryshkov (2021-10-14 02:53:41)
-> > > > > On 13/10/2021 22:50, Stephen Boyd wrote:
-> > > > > > Quoting Dmitry Baryshkov (2021-10-07 09:16:13)
-> > > > > >> On 07/10/2021 18:48, Bjorn Andersson wrote:
-> > > > > >>> On Sun 29 Aug 08:47 PDT 2021, Dmitry Baryshkov wrote:
-> > > > > >>>
-> > > > > >>>> Now as the common qcom clock controller code has been taught=
- about power
-> > > > > >>>> domains, stop mentioning mmcx supply as a way to power up th=
-e clock
-> > > > > >>>> controller's gdsc.
-> > > > > >>>>
-> > > > > >>>> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> > > > > >>>> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > > > > >>>
-> > > > > >>> Once we merge these, I expect that the boards will start cras=
-hing if
-> > > > > >>> the kernel is booted using an existing DTB?
-> > > > > >>>
-> > > > > >>> Is it okay to just merge the first 6 patches in the series no=
-w and
-> > > > > >>> postpone these two until we've had the dts change sitting for=
- a while?
-> > > > > >>
-> > > > > >> Sure it is.
-> > > > > >>
-> > > > > >
-> > > > > > What's the merge strategy? It goes through arm-soc?
-> > > > >
-> > > > > I think this should go through the clk tree. There is little chan=
-ce of
-> > > > > conflicts.
-> > > > >
-> > > >
-> > > > The other thing that concerns me is that we don't have backwards
-> > > > compat code. If things are going to start crashing that's not very =
-nice.
-> > > > Is there some way to make it work with old and new DTB for one rele=
-ase
-> > > > so that we don't have to worry about this problem?
-> > >=20
-> > > I have to admit that I did not check that, but without the patch 7 the
-> > > dispcc and videocc would be compatible with the old DTB. The 'supply =
-=3D
-> > > "mmcx"' would ensure that it is used if it is defined.
-> > >=20
-> >=20
-> > So I can skip patch 7 and take everything else?
->=20
-> If you take patch 1-5 and I pick up patch 6 for v5.16 then we should
-> have transitioned with backwards compatibility.
->=20
+On Thu, Oct 14, 2021 at 8:21 PM Todd Kjos <tkjos@google.com> wrote:
+> On Thu, Oct 14, 2021 at 3:53 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> >
+> > Hi all,
+> >
+> > In commit
+> >
+> >   fef994d85ac9 ("binder: use cred instead of task for getsecid")
+> >
+> > Fixes tag
+> >
+> >   Fixes: ec74136ded79 ("binder: create node flag to request sender's
+> >
+> > has these problem(s):
+> >
+> >   - Subject has leading but no trailing parentheses
+> >   - Subject has leading but no trailing quotes
+> >
+> > In commit
+> >
+> >   d1c927fb8b52 ("binder: use cred instead of task for selinux checks")
+> >
+> > Fixes tag
+> >
+> >   Fixes: 79af73079d75 ("Add security hooks to binder and implement the
+> >
+> > has these problem(s):
+> >
+> >   - Subject has leading but no trailing parentheses
+> >   - Subject has leading but no trailing quotes
+> >
+> > Please do not split Fixes tags over more than one line.
 
-Ok. Sounds like a deal.
+Thanks Stephen, my apologies for not catching this during the merge.
+
+> Stephen / Paul - do you want me to upload a new series for this or is
+> this something you would normally do since it is a simple change?
+
+I fixed it up and did a force push to selinux/next, it should be taken
+care of now.
+
+-- 
+paul moore
+www.paul-moore.com
