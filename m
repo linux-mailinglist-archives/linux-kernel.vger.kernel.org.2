@@ -2,86 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C4AF42E52B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 02:18:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B59242E52C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 02:20:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233491AbhJOAUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 20:20:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40866 "EHLO mail.kernel.org"
+        id S233814AbhJOAWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 20:22:06 -0400
+Received: from mga01.intel.com ([192.55.52.88]:1619 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230288AbhJOAUk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 20:20:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C825C6108E;
-        Fri, 15 Oct 2021 00:18:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634257115;
-        bh=Z3UOu6jr8cU0ilKr740bQYqd9+n2GwanZcjiupK2hcw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=TIVeO1aC2FcrKNIr/3WL8ZR085bRXEFNNCodVeZm3H47FdkJCsjdBpv3dDXnjZ9Wv
-         Z3ByY6m1HSgPc3NTszZ7nLLI3eeRlWvQcX8irs5hb3xzRTk20rvAlu0YwE8MzmFcJm
-         yeFFAbJrwVP4tGHVjya0ykDVYMnl/RuYu7cPtiyi87YVr82eQhDk1sv6qQKiFrDrFY
-         dRz8o5RsERQS3ZHt66YbYRwS/nDBhA3wChRnDnijVMgdnxzbqsOWoO0HnkJ4JFgqWs
-         xpQFMwkd36g+M75Z/VTkWrFt2b+XJFOMZbnTSb4dX97kqSTNMDN4eQm1iOz9cdKrly
-         +DbcA9Gl2A0vw==
-Date:   Fri, 15 Oct 2021 09:18:32 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Ananth N Mavinakayanahalli <ananth@linux.ibm.com>,
-        Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 6/8] ARM: clang: Do not relay on lr register for
- stacktrace
-Message-Id: <20211015091832.3e114751496041931f214bab@kernel.org>
-In-Reply-To: <YWhghNxpJD51ZDgD@shell.armlinux.org.uk>
-References: <163369609308.636038.15295764725220907794.stgit@devnote2>
-        <163369614818.636038.5019945597127474028.stgit@devnote2>
-        <YWhghNxpJD51ZDgD@shell.armlinux.org.uk>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S229743AbhJOAWF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 20:22:05 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10137"; a="251260416"
+X-IronPort-AV: E=Sophos;i="5.85,374,1624345200"; 
+   d="scan'208";a="251260416"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2021 17:19:58 -0700
+X-IronPort-AV: E=Sophos;i="5.85,374,1624345200"; 
+   d="scan'208";a="571588334"
+Received: from anmone-mobl.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.254.15.192])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2021 17:19:55 -0700
+Subject: Re: [PATCH v10 05/11] x86/tdx: Add __tdx_module_call() and
+ __tdx_hypercall() helper functions
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
+        VMware Inc <pv-drivers@vmware.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        linux-kernel@vger.kernel.org
+References: <20211009053747.1694419-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20211009053747.1694419-6-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <87r1co6p5y.ffs@tglx>
+From:   Sathyanarayanan Kuppuswamy 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <d2928fc1-206d-3c9b-c204-2f1783772b13@linux.intel.com>
+Date:   Thu, 14 Oct 2021 17:19:54 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <87r1co6p5y.ffs@tglx>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Oct 2021 17:53:24 +0100
-"Russell King (Oracle)" <linux@armlinux.org.uk> wrote:
 
-> On Fri, Oct 08, 2021 at 09:29:08PM +0900, Masami Hiramatsu wrote:
-> > Currently the stacktrace on clang compiled arm kernel uses the 'lr'
-> > register to find the first frame address from pt_regs. However, that
-> > is wrong after calling another function, because the 'lr' register
-> > is used by 'bl' instruction and never be recovered.
-> > 
-> > As same as gcc arm kernel, directly use the frame pointer (x11) of
-> > the pt_regs to find the first frame address.
-> 
-> Can I ask that the subject line is corrected. It's "rely" not "relay".
+On 10/14/21 12:28 AM, Thomas Gleixner wrote:
+> On Fri, Oct 08 2021 at 22:37, Kuppuswamy Sathyanarayanan wrote:
+>>   
+>> +#ifdef CONFIG_INTEL_TDX_GUEST
+>> +#include <asm/tdx.h>
+>> +#endif
+> Please get rid of the #ifdef and make sure that tdx.h can be included unconditionally.
 
-Oops, yes, that's my typo. Thanks for correcting!
 
-> 
-> Also, the frame pointer is called "r11" not "x11" if you want to use
-> the numerical register reference for 32-bit ARM registers.
+It can be included unconditionally. I will remove it in next version.
 
-Oh, I mixed up the register name between arm64 and ARM...
+>
+>> +	/* Restore callee-saved GPRs as mandated by the x86_64 ABI */
+>> +	pop %r12
+>> +	pop %r13
+>> +	pop %r14
+>> +	pop %r15
+>> +
+>> +	jmp 2f
+>> +1:
+> ASM supports named labels.
 
-Thank you,
+I will use a meaningful label instead of 1 or 2. I will fix this in next 
+version.
 
-> 
-> Thanks.
-> 
-> -- 
-> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-> FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+>
+>> +       movq $(-EINVAL), %rax
+>> +2:
+>> +       FRAME_END
+>> +
+>> +       retq
+>> +SYM_FUNC_END(__tdx_hypercall)
+>
+>> +/*
+>> + * Wrapper for standard use of __tdx_hypercall with BUG_ON() check
+>> + * for TDCALL error.
+>> + */
+>> +static inline u64 _tdx_hypercall(u64 fn, u64 r12, u64 r13, u64 r14,
+>> +				 u64 r15, struct tdx_hypercall_output *out)
+>> +{
+>> +	struct tdx_hypercall_output outl;
+>> +	u64 err;
+>> +
+>> +	/* __tdx_hypercall() does not accept NULL output pointer */
+>> +	if (!out)
+>> +		out = &outl;
+>> +
+>> +	err = __tdx_hypercall(TDX_HYPERCALL_STANDARD, fn, r12, r13, r14,
+>> +			      r15, out);
+>> +
+>> +	/* Non zero return value indicates buggy TDX module, so panic */
+>> +	BUG_ON(err);
+> BUG() does not necessarily panic. If you want to panic in then invoke
+> the function which does that, i.e. panic().
 
+
+Yes, we want to panic here. I will use panic() in next version.
+
+
+>
+> Thanks,
+>
+>          tglx
 
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
+
