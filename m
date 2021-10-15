@@ -2,86 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6060242ECCE
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 10:52:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88A2742ECD5
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 10:52:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235359AbhJOIyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 04:54:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22104 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235133AbhJOIyB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 04:54:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634287915;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=lf0in5Yit487S3UgW6DfUsaPo/c3rA66pC5gvHMVdJ8=;
-        b=iafUbjXlYAS0swwh6IVGQxBfTh/16a84VRHQRJ/WJafOOPRJQATm7kCflOM1eoTD0Cht0f
-        0X/YSspsGhGv433fx7fKvZEQNNEr34TfZlbJZCdQlBuzrwxY817vmt1THih799e6HgBBet
-        O+XrK8liI7lwV/JtBKoNbwc6t8vWTCs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-302-9Mrrryo2MICuyG19KOiv7w-1; Fri, 15 Oct 2021 04:51:51 -0400
-X-MC-Unique: 9Mrrryo2MICuyG19KOiv7w-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1496C9F933;
-        Fri, 15 Oct 2021 08:51:50 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1123D10016F4;
-        Fri, 15 Oct 2021 08:51:49 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     nathan@kernel.org, seanjc@google.com, torvic9@mailbox.org,
-        Jim Mattson <jmattson@google.com>
-Subject: [PATCH] KVM: x86: avoid warning with -Wbitwise-instead-of-logical
-Date:   Fri, 15 Oct 2021 04:51:48 -0400
-Message-Id: <20211015085148.67943-1-pbonzini@redhat.com>
+        id S235907AbhJOIyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 04:54:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46952 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235391AbhJOIyJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 04:54:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D7EF26109E;
+        Fri, 15 Oct 2021 08:52:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1634287923;
+        bh=W0xAcJkW8KdBFsJ63oVYPtXGFhdoFVWNeDyM8kiFZ8M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jLqEoyo3OdfLn5YKYCXm4p+vFFf9v1O/fleKCvft+boHLGAy22Pra75iPEGpvAv1l
+         X2KwqEU0hw0zrjB8LyPBJcqYbyhzGp06itzL06FB/gbebMxNvEUwCjn1AHdh+HGhXZ
+         E4/RQPqcHcmHuyJ74in2eZAijam1OnLrAgvdOXGg=
+Date:   Fri, 15 Oct 2021 10:52:01 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Ming Lei <ming.lei@redhat.com>
+Cc:     Luis Chamberlain <mcgrof@kernel.org>, tj@kernel.org,
+        akpm@linux-foundation.org, minchan@kernel.org, jeyu@kernel.org,
+        shuah@kernel.org, bvanassche@acm.org, dan.j.williams@intel.com,
+        joe@perches.com, tglx@linutronix.de, keescook@chromium.org,
+        rostedt@goodmis.org, linux-spdx@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 11/12] zram: fix crashes with cpu hotplug multistate
+Message-ID: <YWlBMZW5cYJJKGGR@kroah.com>
+References: <20210927163805.808907-1-mcgrof@kernel.org>
+ <20210927163805.808907-12-mcgrof@kernel.org>
+ <YWeOJP2UJWYF94fu@T590>
+ <YWeR4moCRh+ZHOmH@T590>
+ <YWiSAN6xfYcUDJCb@bombadil.infradead.org>
+ <YWjCpLUNPF3s4P2U@T590>
+ <YWjJ0O7K+31Iz3ox@bombadil.infradead.org>
+ <YWk9e957Hb+I7HvR@T590>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YWk9e957Hb+I7HvR@T590>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a new warning in clang top-of-tree (will be clang 14):
+On Fri, Oct 15, 2021 at 04:36:11PM +0800, Ming Lei wrote:
+> On Thu, Oct 14, 2021 at 05:22:40PM -0700, Luis Chamberlain wrote:
+> > On Fri, Oct 15, 2021 at 07:52:04AM +0800, Ming Lei wrote:
+> ...
+> > > 
+> > > We need to understand the exact reason why there is still cpuhp node
+> > > left, can you share us the exact steps for reproducing the issue?
+> > > Otherwise we may have to trace and narrow down the reason.
+> > 
+> > See my commit log for my own fix for this issue.
+> 
+> OK, thanks!
+> 
+> I can reproduce the issue, and the reason is that reset_store fails
+> zram_remove() when unloading module, then the warning is caused.
+> 
+> The top 3 patches in the following tree can fix the issue:
+> 
+> https://github.com/ming1/linux/commits/my_v5.15-blk-dev
 
-In file included from arch/x86/kvm/mmu/mmu.c:27:
-arch/x86/kvm/mmu/spte.h:318:9: error: use of bitwise '|' with boolean operands [-Werror,-Wbitwise-instead-of-logical]
-        return __is_bad_mt_xwr(rsvd_check, spte) |
-               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                                                 ||
-arch/x86/kvm/mmu/spte.h:318:9: note: cast one or both operands to int to silence this warning
+At a quick glance, those look sane to me, nice work.
 
-Reported-by: torvic9@mailbox.org
-Suggested-by: Jim Mattson <jmattson@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- arch/x86/kvm/mmu/spte.h | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/kvm/mmu/spte.h b/arch/x86/kvm/mmu/spte.h
-index eb7b227fc6cf..32bc7268c9ea 100644
---- a/arch/x86/kvm/mmu/spte.h
-+++ b/arch/x86/kvm/mmu/spte.h
-@@ -314,9 +314,12 @@ static __always_inline bool is_rsvd_spte(struct rsvd_bits_validate *rsvd_check,
- 	 * Use a bitwise-OR instead of a logical-OR to aggregate the reserved
- 	 * bits and EPT's invalid memtype/XWR checks to avoid an extra Jcc
- 	 * (this is extremely unlikely to be short-circuited as true).
-+	 *
-+	 * (int) avoids clang's "use of bitwise '|' with boolean operands"
-+	 * warning.
- 	 */
--	return __is_bad_mt_xwr(rsvd_check, spte) |
--	       __is_rsvd_bits_set(rsvd_check, spte, level);
-+	return (int)__is_bad_mt_xwr(rsvd_check, spte) |
-+	       (int)__is_rsvd_bits_set(rsvd_check, spte, level);
- }
- 
- static inline bool spte_can_locklessly_be_made_writable(u64 spte)
--- 
-2.27.0
-
+greg k-h
