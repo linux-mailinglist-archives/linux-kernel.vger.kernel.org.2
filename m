@@ -2,169 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8EDE42EDC7
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 11:35:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A3F142EDC9
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 11:36:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237474AbhJOJh1 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 15 Oct 2021 05:37:27 -0400
-Received: from relay11.mail.gandi.net ([217.70.178.231]:53311 "EHLO
-        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236690AbhJOJh0 (ORCPT
+        id S237541AbhJOJiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 05:38:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44084 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236727AbhJOJiL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 05:37:26 -0400
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 5FFA710000E;
-        Fri, 15 Oct 2021 09:35:17 +0000 (UTC)
-Date:   Fri, 15 Oct 2021 11:35:15 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Harvey Hunt <harveyhuntnexus@gmail.com>, list@opendingux.net,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH 2/3] mtd: rawnand: Export
- nand_read_page_hwecc_oob_first()
-Message-ID: <20211015113515.7b10a2d5@xps13>
-In-Reply-To: <89I01R.QTBARVYLTBT02@crapouillou.net>
-References: <20211009184952.24591-1-paul@crapouillou.net>
-        <20211009184952.24591-3-paul@crapouillou.net>
-        <20211015081313.60018976@xps13>
-        <70G01R.2VROMW06O3O83@crapouillou.net>
-        <20211015105146.3d2fbd08@xps13>
-        <89I01R.QTBARVYLTBT02@crapouillou.net>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Fri, 15 Oct 2021 05:38:11 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9191C061570
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 02:36:05 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id r2so8067868pgl.10
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 02:36:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=A+kABcpWl5XxkQdy8GVu6UutPeMvCwc5El4ILSgOxyA=;
+        b=CTckGThWx99BeEmmpCecOoOFRE4LurGhMWexxNlLQEyaC0LOXYXQ76c0Tb9sAxEExj
+         SLyqtARZhFq4DnlaAGSjeOenWfNltBzPd2xO47x/Vo03PPDgkIQV2bIqy3oKnTEjdjx5
+         NttU0KD1eC+g36CXTORH6FOtmZ2++jfeHzJJME+zapW931RIZBLdym/5HZoqNRvrFIpX
+         nIH5NhZRW11qXZCSzQi4AHabqbYZeKkCkuOVUl2LKcJzASTZqw59JqUxF4cP0Bee9t2W
+         YsQV7rDU/qFggGuEs21Z31PagYH+9n9eCzEosLxyYI9egm2i8x9S/7I5OiOXr6JDXuor
+         VxCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=A+kABcpWl5XxkQdy8GVu6UutPeMvCwc5El4ILSgOxyA=;
+        b=ufBfrWktOPtjG+LvzB194V4sg2WKd1rYT43+dBH4wdQgHlTW+xzgyKKQ0Toxp4TTEK
+         T0AcnJW2XmIzg32KQi3FkFhOUZ1QV0lVytrVOxzXJkTbSpq4L31dSA/yrIJz4HeGt1rG
+         E/Z26jbWzqmUkWbd3xyCmfRqdmETLoGp6RhNmhHig29WgQx4Sb70i73CY4Kzikgkabf7
+         hvsTeGZqAVVqs3Kzu5ab5jUYvDTNHN+dFfJdXjt1foOIAbZjXcU4JRARHBlLcSFG1EQy
+         4oHY0g7PUNDOcDyWXNV6nCrhTFEhuA0Fsc9yPkNvbFRbMiYsCQTn7Z03NQ+f6iT1nr9p
+         uGRw==
+X-Gm-Message-State: AOAM533sDo+Oy5CW+Y4h8e7Q25gxO7ppWn6O54vRZc65TSDOtuSxBLvT
+        oO2Owyd3htsax2XGu/yo8/M=
+X-Google-Smtp-Source: ABdhPJzTd8AeBKBhl1ChlDOpc9y+GVVrXndPBMVKfJEufwVbC7S9stK8peXzsriDnfaSDScLxtg9iA==
+X-Received: by 2002:a63:8f02:: with SMTP id n2mr8413116pgd.270.1634290565423;
+        Fri, 15 Oct 2021 02:36:05 -0700 (PDT)
+Received: from ?IPV6:2601:645:8400:1:ffb7:9e6f:baa:dfce? ([2601:645:8400:1:ffb7:9e6f:baa:dfce])
+        by smtp.gmail.com with ESMTPSA id e15sm4383332pfc.134.2021.10.15.02.36.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Oct 2021 02:36:05 -0700 (PDT)
+Message-ID: <5fe0ffa5-f2db-ca79-5a10-305310066ff9@gmail.com>
+Date:   Fri, 15 Oct 2021 02:36:03 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: Performance regression: thread wakeup time (latency) increased up
+ to 3x
+Content-Language: en-US
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+References: <035c23b4-118e-6a35-36d9-1b11e3d679f8@gmail.com>
+ <YWlBUVDy9gOMiXls@hirez.programming.kicks-ass.net>
+From:   Norbert <nbrtt01@gmail.com>
+In-Reply-To: <YWlBUVDy9gOMiXls@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
-
-> >>  */  
-> >>  >> >>   /* An ECC layout for using 4-bit ECC with small-page flash, >> storing  
-> >>  >>  @@ -648,7 +580,7 @@ static int davinci_nand_attach_chip(struct >> >> nand_chip *chip)
-> >>  >>   			} else if (chunks == 4 || chunks == 8) {
-> >>  >>   				mtd_set_ooblayout(mtd,
-> >>  >>   						  nand_get_large_page_ooblayout());
-> >>  >>  -				chip->ecc.read_page = >> nand_davinci_read_page_hwecc_oob_first;
-> >>  >>  +				chip->ecc.read_page = nand_read_page_hwecc_oob_first;
-> >>  >>   			} else {
-> >>  >>   				return -EIO;
-> >>  >>   			}
-> >>  >>  diff --git a/drivers/mtd/nand/raw/nand_base.c >> >> b/drivers/mtd/nand/raw/nand_base.c
-> >>  >>  index 3d6c6e880520..cb5f343b9fa2 100644
-> >>  >>  --- a/drivers/mtd/nand/raw/nand_base.c
-> >>  >>  +++ b/drivers/mtd/nand/raw/nand_base.c
-> >>  >>  @@ -3160,6 +3160,75 @@ static int nand_read_page_hwecc(struct >> >> nand_chip *chip, uint8_t *buf,
-> >>  >>   	return max_bitflips;
-> >>  >>   }  
-> >>  >> >>  +/**  
-> >>  >>  + * nand_read_page_hwecc_oob_first - Hardware ECC page read >> with ECC
-> >>  >>  + *                                  data read from OOB area
-> >>  >>  + * @chip: nand chip info structure
-> >>  >>  + * @buf: buffer to store read data
-> >>  >>  + * @oob_required: caller requires OOB data read to >> chip->oob_poi
-> >>  >>  + * @page: page number to read
-> >>  >>  + *
-> >>  >>  + * Hardware ECC for large page chips, require OOB to be read >> >> first. For this  
-> >>  >
-> >>  > requires
-> >>  >
-> >>  > With this ECC configuration?
-> >>  >  
-> >>  >>  + * ECC mode, the write_page method is re-used from ECC_HW. >> These >> methods  
-> >>  >
-> >>  > I do not understand this sentence nor the next one about >> syndrome. I
-> >>  > believe it is related to your engine and should not leak into the >> > core.
-> >>  >  
-> >>  >>  + * read/write ECC from the OOB area, unlike the >> ECC_HW_SYNDROME >> support with
-> >>  >>  + * multiple ECC steps, follows the "infix ECC" scheme and >> >> reads/writes ECC from
-> >>  >>  + * the data area, by overwriting the NAND manufacturer bad >> block >> markings.  
-> >>  >
-> >>  > That's a sentence I don't like. What do you mean exactly?
-> >>  >
-> >>  > What "Infix ECC" scheme is?
-> >>  >
-> >>  > Do you mean that unlike the syndrome  mode it *does not* >> overwrite the
-> >>  > BBM ?  
-> >> >>  I don't mean anything. I did not write that comment. I just moved >> the function verbatim with no changes. If something needs to be >> fixed, then it needs to be fixed before/after this patch.  
-> > 
-> > Well, this comment should be adapted because as-is I don't think it's
-> > wise to move it around.  
+On 10/15/21 01:52, Peter Zijlstra wrote:
+> On Fri, Oct 15, 2021 at 12:43:45AM -0700, Norbert wrote:
+>> Performance regression: thread wakeup time (latency) increased up to 3x.
+>>
+>> Happened between 5.13.8 and 5.14.0. Still happening at least on 5.14.11.
 > 
-> OK.
+> Could you git-bisect this?
 > 
-> I think it says that BBM can be overwritten with this configuration, but that would be if the OOB layout covers the BBM area.
 
-If the ooblayout prevents the BBM to be smatched I'm fine and this
-sentence should disappear because it's misleading.
+So far I haven't built a kernel yet, I'm quite new to Linux in that way, 
+so it may take me some time to figure it all out, but yes.
 
-> >> >>  >>  + */  
-> >>  >>  +int nand_read_page_hwecc_oob_first(struct nand_chip *chip, >> uint8_t >> *buf,
-> >>  >>  +				   int oob_required, int page)
-> >>  >>  +{
-> >>  >>  +	struct mtd_info *mtd = nand_to_mtd(chip);
-> >>  >>  +	int i, eccsize = chip->ecc.size, ret;
-> >>  >>  +	int eccbytes = chip->ecc.bytes;
-> >>  >>  +	int eccsteps = chip->ecc.steps;
-> >>  >>  +	uint8_t *p = buf;
-> >>  >>  +	uint8_t *ecc_code = chip->ecc.code_buf;
-> >>  >>  +	unsigned int max_bitflips = 0;
-> >>  >>  +
-> >>  >>  +	/* Read the OOB area first */
-> >>  >>  +	ret = nand_read_oob_op(chip, page, 0, chip->oob_poi, >> >> mtd->oobsize);
-> >>  >>  +	if (ret)
-> >>  >>  +		return ret;
-> >>  >>  +
-> >>  >>  +	ret = nand_read_page_op(chip, page, 0, NULL, 0);  
-> >>  >
-> >>  > Definitely not, your are requesting the chip to do the read_page
-> >>  > operation twice. You only need a nand_change_read_column I >> believe.  
-> >> >>  Again, this code is just being moved around - don't shoot the >> messenger :)  
-> > 
-> > haha
-> > 
-> > Well, now you touch the core, so I need to be more careful, and the
-> > code is definitely wrong, so even if we don't move that code off, you
-> > definitely want to fix it in order to improve your performances.  
-> 
-> I don't see the read_page being done twice?
-> 
-> There's one read_oob, one read_page, then read_data in the loop.
-
-read_oob and read_page both end up sending READ0 and READSTART so
-they do request the chip to perform an internal read twice. You
-need this only once. The call to nand_read_page_op() should be a
-nand_change_read_column() with no data requested. 
-
-> >>  >>   /**
-> >>  >>    * nand_read_page_syndrome - [REPLACEABLE] hardware ECC >> syndrome >> based page read
-> >>  >>    * @chip: nand chip info structure
-> >>  >>  diff --git a/include/linux/mtd/rawnand.h >> >> b/include/linux/mtd/rawnand.h
-> >>  >>  index b2f9dd3cbd69..5b88cd51fadb 100644
-> >>  >>  --- a/include/linux/mtd/rawnand.h
-> >>  >>  +++ b/include/linux/mtd/rawnand.h
-> >>  >>  @@ -1539,6 +1539,8 @@ int nand_read_data_op(struct nand_chip >> *chip, >> void *buf, unsigned int len,
-> >>  >>   		      bool force_8bit, bool check_only);
-> >>  >>   int nand_write_data_op(struct nand_chip *chip, const void *buf,
-> >>  >>   		       unsigned int len, bool force_8bit);
-> >>  >>  +int nand_read_page_hwecc_oob_first(struct nand_chip *chip, >> uint8_t >> *buf,
-> >>  >>  +				   int oob_required, int page);  
-> >>  >
-> >>  > You certainly want to add this symbol closer to the other >> read/write
-> >>  > page helpers?  
-> >> >>  Where would that be? The other read/write page helpers are all >> "static" so they don't appear in any header.  
-> > 
-> > I believe we should keep this header local as long as there are no
-> > other users.  
-> 
-> I'll move it to internal.h then.
-
-Why do you want to put it there is there is only one user?
-
-Thanks,
-Miquèl
+(By the way, of course I meant that throughput *de*creases, not increases.)
