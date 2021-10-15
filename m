@@ -2,129 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2409A42EFBB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 13:27:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F1C942EFBD
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 13:29:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235353AbhJOL31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 07:29:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41382 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233527AbhJOL3S (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 07:29:18 -0400
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6836C061764
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 04:27:12 -0700 (PDT)
-Received: by mail-oi1-x235.google.com with SMTP id e63so12579960oif.8
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 04:27:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NKgeFjMzQGbOlv7b4giRKfd3xluRkC6Y3aCMzdKTmcI=;
-        b=Wm4Wd6dvvDFnTkE00hxoA1bUki0lOHa+WoFWUIXZWiyl6BYiN/VJMfw+VnMnOCFaCL
-         jQ/04aPgGreSwDm51jxnPJc9pkqywXE26egdgnLAAok719vghfDASfmYTOjn+J9+fwG+
-         q/10lDtvDgAT1UYJHz5rI7tM4bgXHiMlTFU0bfwd97rrUQBuH+ZcmSEP+7HO6CUo/zZr
-         CYvsbAtjc89xss/CKzqeHdvLDimYn1hwLBeYUoQqfujZ+roY4R1sCnIjQGg7W3W/Tmsf
-         Xo/iQrJTbgRFodmMVP5Xapec+3WlJ78UAXbtc9fa6D6bWDahM/6PJbdWmF+2ol5JsZXE
-         T1fw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NKgeFjMzQGbOlv7b4giRKfd3xluRkC6Y3aCMzdKTmcI=;
-        b=wjZOdjXsA/gCPhFQ9Tjf0nKC/P9MT003Jor/C8Cr+Cd/vwOJ48tKw4YzS2gskXELu3
-         70EnCHfM2bowlpMR/XFUNPpTeol4yjDM/yzOb1JLroPswFng+ulBDCpvS/CjGc5M0OMm
-         UPbVsuIrKS13BY+QhXOa6E3tbVkpo+FoMopd9UCMHh3FHkaNm9RtDt7Qvvw/MB8gVKrA
-         i7rQYeciDsAUlPx05hLTwvjXuJdaQ/cq26cYLzcFLV/ayhLSyH835eE1axnLHw4NpeL5
-         RJCKECV6AycQGGjkEUhnyjzO8YwNvFPCkDCvodBUlgKgX8o0MB4K90jiIuJW7NDdWWjT
-         3DlA==
-X-Gm-Message-State: AOAM530ayXOj67PYWz/ITCUFd75AVB1vRsPsB1ljZIB7IXNatcOClQSO
-        Pb6+gg3ONc7w0KcItPYG0lGvojB+MOOW4n7NY7ZVyA==
-X-Google-Smtp-Source: ABdhPJyDcpqGbwskrQSivF3Hrk9czLe3jAaUJI090sO0PPQ/+jfBKyc4oV3D64eX1CbrHycowOE0cMxWzV6ZAtM7o8E=
-X-Received: by 2002:a05:6808:2218:: with SMTP id bd24mr513771oib.94.1634297231969;
- Fri, 15 Oct 2021 04:27:11 -0700 (PDT)
+        id S234319AbhJOLbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 07:31:50 -0400
+Received: from mga01.intel.com ([192.55.52.88]:36994 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232184AbhJOLbs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 07:31:48 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10137"; a="251342787"
+X-IronPort-AV: E=Sophos;i="5.85,375,1624345200"; 
+   d="scan'208";a="251342787"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2021 04:29:42 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,375,1624345200"; 
+   d="scan'208";a="461540208"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by orsmga002.jf.intel.com with ESMTP; 15 Oct 2021 04:29:42 -0700
+Received: from orsmsx609.amr.corp.intel.com (10.22.229.22) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Fri, 15 Oct 2021 04:29:41 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx609.amr.corp.intel.com (10.22.229.22) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12 via Frontend Transport; Fri, 15 Oct 2021 04:29:41 -0700
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (104.47.51.46) by
+ edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.12; Fri, 15 Oct 2021 04:29:41 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=d6x82sm4RAU9ho//fUOU2AA0QfwxJTLshaokFmdrriRPrBFnG10nsWyPbnu/mReqrBnhR5e/qOXjeseoscIP92a2qsH/YB6qaYyyqG5nEsOkfe1XmOFFocFy5TCBe4qKqBWJF3TqHHoxmI8JiHKiCNUdsizgIKfxMSfL56IzL1MVj0dcO4LFUeZ2EOtaTZavHCQQzPsxjNufIJJZe4AUR/a+NFfHNrNGr/UENiVkQORbOBjbAhjDdaO0lz70o3ySs1m0sldfQeGM8/3dn8LpZbUvFP2FNMkQqWieu/iuPpa9sk/uCBk6LtQe39a4yd4VIhpvIlS2ImRghgyFAZvdzA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=nEwEEonB2JcsD8tOKtiU7DPFByWYOFEiwmbtoJMBZVU=;
+ b=TRSDXk54npOBFjnO7GmuLwBKJ41rPA1a0xIgHsn/y2/QlfCUIXv30uYcQWJzyCimhDO5NJgsdg/Cabee39T9hm5L3829IKMXx4oNPQ8gljiH0ZQE33xfVbaZJobQP9MZdY+kTirSxeq9JqdvMBfRxqpHcjK5SWChpYA3IxoY14xO7lkRI2eADbCcjMSiztk62ZU/DewcBhv+VQyvd2ow+P07Xs98fdDdTK4I14bauQ6OGR8Vzho/i/1wJEyH/5DJA1HS7rQn/Q+6JhpO+S7Ax6NCkyxrBBzgzAaBSwyuntRp6Hz54887HhJSC8+Pd8IQsCI2FQ1eeWr/N4g0kh6p4w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nEwEEonB2JcsD8tOKtiU7DPFByWYOFEiwmbtoJMBZVU=;
+ b=odzStZP208dvs11+96uW92zA7X9RJXtfqMN3H4I7k42dmboa3LoqZT5/a3n3B/J8hwsAR1V8sd2VzlDUnbQyXK9E7kSizV9KAQUOAG0ZNe9ftKnQvE1Xh2zTA/HLskQ8dItzi0MZqYVQLmoBtMa/ZBnADfhGHaHgOCPov3QH6Og=
+Received: from PH0PR11MB5658.namprd11.prod.outlook.com (2603:10b6:510:e2::23)
+ by PH0PR11MB5642.namprd11.prod.outlook.com (2603:10b6:510:e5::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.17; Fri, 15 Oct
+ 2021 11:29:38 +0000
+Received: from PH0PR11MB5658.namprd11.prod.outlook.com
+ ([fe80::5009:9c8c:4cb4:e119]) by PH0PR11MB5658.namprd11.prod.outlook.com
+ ([fe80::5009:9c8c:4cb4:e119%6]) with mapi id 15.20.4587.026; Fri, 15 Oct 2021
+ 11:29:38 +0000
+From:   "Liu, Yi L" <yi.l.liu@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "hch@lst.de" <hch@lst.de>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "lkml@metux.net" <lkml@metux.net>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "lushenming@huawei.com" <lushenming@huawei.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "yi.l.liu@linux.intel.com" <yi.l.liu@linux.intel.com>,
+        "Tian, Jun J" <jun.j.tian@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
+        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "dwmw2@infradead.org" <dwmw2@infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
+        "david@gibson.dropbear.id.au" <david@gibson.dropbear.id.au>,
+        "nicolinc@nvidia.com" <nicolinc@nvidia.com>
+Subject: RE: [RFC 01/20] iommu/iommufd: Add /dev/iommu core
+Thread-Topic: [RFC 01/20] iommu/iommufd: Add /dev/iommu core
+Thread-Index: AQHXrSFn+yRWuHvsGk21Z769W7oSJKuupBEAgCVKaUCAACPrgIAAAxPQ
+Date:   Fri, 15 Oct 2021 11:29:38 +0000
+Message-ID: <PH0PR11MB5658E36269B5A490EADE417FC3B99@PH0PR11MB5658.namprd11.prod.outlook.com>
+References: <20210919063848.1476776-1-yi.l.liu@intel.com>
+ <20210919063848.1476776-2-yi.l.liu@intel.com>
+ <20210921154138.GM327412@nvidia.com>
+ <PH0PR11MB56583356619B3ECC23AB1BA8C3B99@PH0PR11MB5658.namprd11.prod.outlook.com>
+ <20211015111807.GD2744544@nvidia.com>
+In-Reply-To: <20211015111807.GD2744544@nvidia.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: nvidia.com; dkim=none (message not signed)
+ header.d=none;nvidia.com; dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: d91e6b4c-0e43-4b15-2536-08d98fcf12b0
+x-ms-traffictypediagnostic: PH0PR11MB5642:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <PH0PR11MB56420C06145689A29AAE483AC3B99@PH0PR11MB5642.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2089;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 9AKjAMJzK8NB9s/sl6TmuRlUqdaIqvK4TyzfflXZi85BOSJMRbBme/waLuXIfiACiVPn2cVzZ6CDdgICZL4WguoEzNN8XTtFXaaIKFgHkUfvFcOznrSfxL9n/IsAbX1AGIsnOj0xmF152XLySkiTMNvy3DON2mdAsGnYvmsF6gGd/5qCGNNPTas0/Fpnt6A+nY9LSAJjSZtWobPtPw0TYlU9Exop5tz6aOWNMSnlHeqTJYN60pZGclVZGhm0CBnjJ4OWt2f14xtGxG5heoTFjYZMiQEA2N4e7OEzR1bVKy4vhy65tEC6noJP4dz//XaDBvL21bvQOvGYaJGjQ3xxVT6xK5a+/dwbPtwUPa86UdUs7r/fiYljNA6f9B9Y1Q2xs6YLOqe3RPpuJkfTap7YqfhKvtv3PO53nAYlXC4Ezat6Z9+AjWwMPRu6Oq24C+L3sANwk/aaYjcVv78veb0jC7XJz+4Xbt14QIs5/H6Hp5iyTQNYVjf/Ky0b8gMmVhL5XUGy9QgbZO6XnbSEhLzuw8umMJcUckEtaHh+qofxQ4wteEUGZ3jFB6UkMFIlGWiu3GQ4UyavunesISFls86E/F2ASdgJcGgxFs41qT7h6YDLL24zBoTrecsza+TpPEwRTR6Vb8FFOe38+XH3EkhT2ETFhIyu7kfPc+f60cB6fon2lVe2jxGcg7OxLoP6b9Do/HR0sxm8aWyUvnrDC1TMXw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5658.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(76116006)(54906003)(4744005)(316002)(86362001)(508600001)(33656002)(26005)(5660300002)(6506007)(52536014)(66446008)(8676002)(7696005)(8936002)(6916009)(66476007)(66556008)(66946007)(186003)(64756008)(38070700005)(9686003)(71200400001)(83380400001)(4326008)(7416002)(2906002)(82960400001)(38100700002)(122000001)(55016002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?o+uTd+0i4653DHuQw9yMUmuIcCLSZO9bdFbiJlwDi6uO6RrQZEy7PYPrT7WA?=
+ =?us-ascii?Q?fYMjc5umBRxCjW7OcagL8FDSOBROvgR8Mur1MRWeI7TmGKN6oT/iYKMWyZgG?=
+ =?us-ascii?Q?VoBbymLTW0jQrqU9c/W7+T3U3wxcNz16Tgps+dtCN6i511evOheHdEIWSVPt?=
+ =?us-ascii?Q?HXLqjVxPltRpASPUppUadifdQ67HHJDZxXTfL47k5QpdPe4pH9LkHqhzhOAu?=
+ =?us-ascii?Q?BQn61fDpj7HG+ZYhvUK0Q3pq7wHZMf9MnBRrXqnm18XIL8tZngBbBMUk3VTr?=
+ =?us-ascii?Q?Sxr0hMhpmprFn9BU1aclvvRRZ/LKYzg6hw52uqaA1tICgv+5ucZnekyAQAnX?=
+ =?us-ascii?Q?Cj1GSuAWuIJBEyjCdT4Q8eNI+oUjLgQC8MZXFyqrqwlj/WGSevlSYqZ8KGxp?=
+ =?us-ascii?Q?Te72/nksrYdBj50TZDVqrnItRULh4jaOG/e56/1dEWIgXuc+MKtsvhBwvIMZ?=
+ =?us-ascii?Q?BJ6jZKtQsQBH8tKU5e0n0WgsnTLWoO+EoJEBuo3LUsbmhggA0wsVHubigpSx?=
+ =?us-ascii?Q?CAu8wIKyr71DVrZPBPWHlGNVdINtgxYM41RgGOOIxxwKC4jWjiX/RaJ52g9i?=
+ =?us-ascii?Q?DQRCpBGXQD96aZ4yR1lUMvYYl/ZAvlSu2qbmLUa2jKqt2mW6VmqqEY1v4snT?=
+ =?us-ascii?Q?fHSIP/lIOSRw08mVxQhgzJqFVx6Ha7mDWnejAHLKpt+8RwEGvUW3TeCq09xM?=
+ =?us-ascii?Q?nfy3MKzkWuEEA8OHP1Ubwehb06HZrlZpalqv72ZKVYuMVykikvO0hpVf8I0D?=
+ =?us-ascii?Q?pQnKPCCFhKynONuCEyvatQBlgp/w7hBzEaMlSJeb1WcVxRdc7W5TTHF6Msks?=
+ =?us-ascii?Q?viHIrpWLz8p7Yp/1W8aXL6THUqC+2xFQOWNzS/vPQEiN0L//tyrtxtGTPLNy?=
+ =?us-ascii?Q?HcT4C3xID2yKk/RyELYE3XC4kNuVwZVoon6gZwRzhVzTeLHHkuJa9wouECxW?=
+ =?us-ascii?Q?IXfcKp31N7jSoR/L/kDG5XGF6oi2PbN5czewT9bFmn97QJqRFkJWBBezD6AF?=
+ =?us-ascii?Q?K5MBwCePbJxzjs9qybYlo/Ccg2epEtjrb2EBpqy/Q3V2Olb3Nn2N16M6Nesl?=
+ =?us-ascii?Q?KDfZ7Im0/LB5tuyGhnBkAd4CD/3ZDUYcKgCMFuaiVCPUGsHe8wMvlgtAN3ay?=
+ =?us-ascii?Q?cR/hdWsTFYTAPtcZGYJxoz+voqxhAUiYplOvZ0RGc2CXKDEH6BtL/fRq0L3n?=
+ =?us-ascii?Q?bshOGPzIsyowJrEswq/vL67JOyauTvrZmUDMYzhrM12FAVLThlwrVJWi29s6?=
+ =?us-ascii?Q?V9iZtpEoyLN0IrLJLz6q9++CT8nxfnWz9dtVaIn51KRA+g+1lcqu9xIUY2mB?=
+ =?us-ascii?Q?vhlfW+OPTxl30ThhMBaz/lHO?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20211011165707.138157-1-marcan@marcan.st> <20211011165707.138157-5-marcan@marcan.st>
- <20211012032144.2ltlpat7orrsyr6k@vireshk-i7> <b7cd51ec-38e5-11d8-5193-1170c9d60ac9@marcan.st>
- <20211012055143.xmkbvhbnolspgjin@vireshk-i7> <caf16a6c-f127-7f27-ed17-0522d9f1fb9e@marcan.st>
- <CAPDyKFoVjVYkc4+v-=eD+JbC10GazGt8A1LtD1so3PKMmVcyMg@mail.gmail.com>
- <bd07f4b3-6ebf-e074-c1cd-0ef501e8324f@marcan.st> <CAPDyKFrFX93XV8a7e7oo1N5weWp2auq=_94fTnzr2EkO3c37Ug@mail.gmail.com>
- <ca820b86-fc12-63b9-ec6b-5823ddd73aba@marcan.st>
-In-Reply-To: <ca820b86-fc12-63b9-ec6b-5823ddd73aba@marcan.st>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 15 Oct 2021 13:26:35 +0200
-Message-ID: <CAPDyKFpCw1M8bK5T6a+=x-kHaCco88wiRnvUm5Dy90XU360=4A@mail.gmail.com>
-Subject: Re: [RFC PATCH 4/9] opp: core: Don't warn if required OPP device does
- not exist
-To:     Hector Martin <marcan@marcan.st>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        Saravana Kannan <saravanak@google.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Sven Peter <sven@svenpeter.dev>, Marc Zyngier <maz@kernel.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5658.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d91e6b4c-0e43-4b15-2536-08d98fcf12b0
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Oct 2021 11:29:38.1682
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 3wwuHHIx6PMaX53WmuspXMdJdhQypcsg2MbRerc0ACuYm+QpIzItT5asdZgZR394W8KqPscKjqj9ajuQD/uGqQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB5642
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Oct 2021 at 19:02, Hector Martin <marcan@marcan.st> wrote:
->
-> On 14/10/2021 21.55, Ulf Hansson wrote:
-> > On Thu, 14 Oct 2021 at 13:43, Hector Martin <marcan@marcan.st> wrote:
-> >> I was poking around and noticed the OPP core can already integrate with
-> >> interconnect requirements, so perhaps the memory controller can be an
-> >> interconnect provider, and the CPU nodes can directly reference it as a
-> >> consumer? This seems like a more accurate model of what the hardware
-> >> does, and I think I saw some devices doing this already.
+> From: Jason Gunthorpe <jgg@nvidia.com>
+> Sent: Friday, October 15, 2021 7:18 PM
+>=20
+> On Fri, Oct 15, 2021 at 09:18:06AM +0000, Liu, Yi L wrote:
+>=20
+> > >   Acquire from the xarray is
+> > >    rcu_lock()
+> > >    ioas =3D xa_load()
+> > >    if (ioas)
+> > >       if (down_read_trylock(&ioas->destroying_lock))
 > >
-> > Yeah, that could work too. And, yes, I agree, it may be a better
-> > description of the HW.
-> >
-> >>
-> >> (only problem is I have no idea of the actual bandwidth numbers involved
-> >> here... I'll have to run some benchmarks to make sure this isn't just
-> >> completely dummy data)
-> >>
->
-> So... I tried getting bandwidth numbers and failed. It seems these
-> registers don't actually affect peak performance in any measurable way.
-> I'm also getting almost the same GeekBench scores on macOS with and
-> without this mechanism enabled, although there is one subtest that seems
-> to show a measurable difference.
->
-> My current guess is this is something more subtle (latencies? idle
-> timers and such?) than a performance state. If that is the case, do you
-> have any ideas as to the best way to model it in Linux? Should we even
-> bother if it mostly has a minimal performance gain for typical workloads?
+> > all good suggestions, will refine accordingly. Here destroying_lock is =
+a
+> > rw_semaphore. right? Since down_read_trylock() accepts a rwsem.
+>=20
+> Yes, you probably need a sleeping lock
 
-For latency constraints, we have dev_pm_qos. This will make the genpd
-governor, to prevent deeper idle states for the device and its
-corresponding PM domain (genpd). But that doesn't sound like a good
-fit here.
+got it. thanks,
 
-If you are right, it rather sounds like there is some kind of
-quiescence mode of the memory controller that can be prevented. But I
-have no clue, of course. :-)
-
->
-> I'll try to do some latency tests, see if I can make sense of what it's
-> actually doing.
->
-
-Kind regards
-Uffe
+Regards,
+Yi Liu
