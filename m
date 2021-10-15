@@ -2,81 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B20642F9B0
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 19:08:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2A4D42F9B3
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 19:09:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242000AbhJORLD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 13:11:03 -0400
-Received: from mga04.intel.com ([192.55.52.120]:25206 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237786AbhJORLB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 13:11:01 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10138"; a="226726371"
-X-IronPort-AV: E=Sophos;i="5.85,376,1624345200"; 
-   d="scan'208";a="226726371"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2021 10:08:53 -0700
-X-IronPort-AV: E=Sophos;i="5.85,376,1624345200"; 
-   d="scan'208";a="492640732"
-Received: from liminghu-mobl.ccr.corp.intel.com (HELO [10.212.23.213]) ([10.212.23.213])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2021 10:08:51 -0700
-Subject: Re: [RFC PATCH v3 05/13] ASoC: soc-pcm: align BE 'atomicity' with
- that of the FE
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     alsa-devel@alsa-project.org,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Sameer Pujar <spujar@nvidia.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Takashi Iwai <tiwai@suse.com>, vkoul@kernel.org,
-        broonie@kernel.org, Gyeongtaek Lee <gt82.lee@samsung.com>,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-References: <20211013143050.244444-1-pierre-louis.bossart@linux.intel.com>
- <20211013143050.244444-6-pierre-louis.bossart@linux.intel.com>
- <2847a6d1-d97f-4161-c8b6-03672cf6645c@nvidia.com>
- <s5hmtnavisi.wl-tiwai@suse.de>
- <e2a79095-b8ce-9dd4-3e6d-00f8dda99f30@linux.intel.com>
- <s5h1r4muwlj.wl-tiwai@suse.de>
- <8aa4fa07-2b55-3927-f482-c2fd2b01a22e@linux.intel.com>
- <s5hmtnateeo.wl-tiwai@suse.de>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <c0803288-efb1-aaeb-218f-e1a6ba87abd7@linux.intel.com>
-Date:   Fri, 15 Oct 2021 12:08:48 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
+        id S242007AbhJORLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 13:11:31 -0400
+Received: from mail-ua1-f48.google.com ([209.85.222.48]:45811 "EHLO
+        mail-ua1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237971AbhJORLa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 13:11:30 -0400
+Received: by mail-ua1-f48.google.com with SMTP id a17so10334786uax.12;
+        Fri, 15 Oct 2021 10:09:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AXjyyUEyNr3tFFEGe2AFpPE4BVE0IzJYsKN0OEXvERA=;
+        b=1Ep/On6eoXBaI/wycMG/7l8fWhEt0u0hqoUrIPZrs/OVCdvwaLqbze1jXoTFnN5Czp
+         wnhRxiPZ43EETsk7r2OK/iAeLLGqcKbi7UJdQbEnGSRj48gktL2Dhy91Ug0xxOBAOJTr
+         hl2jHUCLkc1BTOWkY5Lm5OkVWWNsJmQNYEXDGnnRw8e0J++BkRDkdP1zbyE0wuWANZ3f
+         bPN6gUPa9PYDOuQUfFsJmm9D0pKaB37v0GEj/lFBEhY2jNHG+aF5mE4ouPxxOYkmSMRX
+         1u26t6wxcDRBlVnjqa7tzfXukEqza6wqbsWT//Ktf99f58+4mf5ksL7X/+u8xNduzZBd
+         04AQ==
+X-Gm-Message-State: AOAM533fvIPzW5Q0vtbC0Gr7sfO+cTq1/uJ1gecuEb9ttVz+cyRfZnUO
+        5A1GWCcmxTiHJIe+eQpJOJydka5AhGYToQ==
+X-Google-Smtp-Source: ABdhPJxTjkI/i0Cr+wX6s5fm+I0G4Mi+Aue9KSeIQT4UovxhiXPaW4JMBSfoFUXuFdZSPyVJWhju8A==
+X-Received: by 2002:ab0:5b03:: with SMTP id u3mr13593844uae.41.1634317762584;
+        Fri, 15 Oct 2021 10:09:22 -0700 (PDT)
+Received: from mail-ua1-f52.google.com (mail-ua1-f52.google.com. [209.85.222.52])
+        by smtp.gmail.com with ESMTPSA id d2sm3864937vsl.8.2021.10.15.10.09.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Oct 2021 10:09:22 -0700 (PDT)
+Received: by mail-ua1-f52.google.com with SMTP id q13so19394787uaq.2;
+        Fri, 15 Oct 2021 10:09:21 -0700 (PDT)
+X-Received: by 2002:a67:d583:: with SMTP id m3mr15400411vsj.41.1634317761438;
+ Fri, 15 Oct 2021 10:09:21 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <s5hmtnateeo.wl-tiwai@suse.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210923064137.60722-1-zhang.lyra@gmail.com> <20210923064137.60722-3-zhang.lyra@gmail.com>
+ <YV1XpL7ibF1y4LbV@google.com> <CAL_Jsq+eqqv=qtKOiNdEpYGi2amek_m+Q-Z9A769pXXqJ4R88A@mail.gmail.com>
+ <YWVD0RXHVLxuXEIN@google.com> <CAMuHMdWqYVp1JyzZoidAJhPy9ypRnSOWHJLz5knDUMcFHPOzAw@mail.gmail.com>
+ <YWfSz00Rj5AVhkgT@google.com> <CAL_Jsq+GHt+DqHa0GeLKWoni+Lghg5wg5ssREZBdSD-=K3XQ1A@mail.gmail.com>
+ <163425256290.1688384.5646232860050218479@swboyd.mtv.corp.google.com> <CAL_JsqJV_CoPH7VrX-D5=u2WsoUpp-pTKbcR2y+gWxhv+WKcEg@mail.gmail.com>
+In-Reply-To: <CAL_JsqJV_CoPH7VrX-D5=u2WsoUpp-pTKbcR2y+gWxhv+WKcEg@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 15 Oct 2021 19:09:10 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdU1TCOvDwx6pjg=0-hLkFywRGQsZUNM+0aJLb96fZGAQA@mail.gmail.com>
+Message-ID: <CAMuHMdU1TCOvDwx6pjg=0-hLkFywRGQsZUNM+0aJLb96fZGAQA@mail.gmail.com>
+Subject: Re: [PATCH v4 2/4] dt-bindings: mfd: sprd: Add bindings for ums512
+ global registers
+To:     Rob Herring <robh+dt@kernel.org>, Stephen Boyd <sboyd@kernel.org>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS 
+        <devicetree@vger.kernel.org>, Baolin Wang <baolin.wang7@gmail.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Rob, Stephen,
 
->> I have not been able to figure out when you need
->> a) the pcm_mutex only
->> b) the fe stream lock only
->> c) both pcm_mutex and fe stream lock
-> 
-> The pcm_mutex is needed for every sleepable function that treat DPCM
-> FE link, but the mutex is taken only at the upper level, i.e. the
-> top-most caller like PCM ops FE itself or the DAPM calls.
-> 
-> That said, pcm_mutex is the top-most protection of BE links in FE.
-> But, there is a code path where a mutex can't be used, and that's the
-> FE and BE trigger.  For protecting against this, the FE stream lock is
-> taken only at the placing both adding and deleting a BE *in addition*.
-> At those places, both pcm_mutex and FE stream lock are taken.
-> 
-> BE stream lock is taken in addition below the above mutex and FE
-> locks.
+On Fri, Oct 15, 2021 at 3:59 PM Rob Herring <robh+dt@kernel.org> wrote:
+> On Thu, Oct 14, 2021 at 6:02 PM Stephen Boyd <sboyd@kernel.org> wrote:
+> > Quoting Rob Herring (2021-10-14 09:18:16)
+> > > On Thu, Oct 14, 2021 at 1:48 AM Lee Jones <lee.jones@linaro.org> wrote:
+> > > >
+> > > > I don't explicitly build DT documentation.
+> > > >
+> > > > Since I use the build bots to let me know if there are strange !(C,
+> > > > ASM, arm, aarch64, mips, ppc, x86) build issues or ones with odd
+> > > > configuration possibilities (randconfig) in the repos I maintain, you
+> > > > might have to convince them that this is important too.
+> > >
+> > > It's really just a matter of turning on the build in
+> > > allyesconfig/allmodconfig builds. I've not done that primarily because
+> > > there's one person I don't want to yell at me, but I could probably
+> > > make it arm and/or arm64 only. It's really arch and config
+> > > independent, so doing it multiple times is kind of pointless.
+> > >
+> > > I assume for bots you mean kernel-ci mainly? Do you run that before
+> > > stuff gets into linux-next? IMO, that's too late. But still a slight
+> > > improvement if things go in via one tree. Otherwise, I see the
+> > > breakage twice, 1st linux-next then the merge window.
+> > >
+> >
+> > I run `make dt_binding_check DT_SCHEMA_FILES="<path to yaml file>"` but
+> > nowadays this seems to check all the bindings and not just the one
+> > binding I care to check. Did something break?
+>
+> It should apply all the schemas to the example in DT_SCHEMA_FILES.
+> Originally, it only applied DT_SCHEMA_FILES schema to the example in
+> DT_SCHEMA_FILES.
 
-Thanks Takashi, now I get the idea. Makes sense indeed. I'll make sure
-to add this explanation to the commit message/cover so that it's not lost.
+Probably Stephen means that yamllint is still run on all files, which
+I tried to fix in [1]?
 
-I added your three patches to my tests, so far so good, code is that
-https://github.com/thesofproject/linux/pull/3215
+I've been running an improved version for months, but I haven't sent
+it out yet.
 
-Thanks and have a nice week-end.
--Pierre
+[1] https://lore.kernel.org/linux-devicetree/20210309112148.2309116-1-geert+renesas@glider.be
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
