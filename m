@@ -2,79 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1EAC42EA9F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 09:53:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D7AC42EAA3
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 09:53:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236312AbhJOHzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 03:55:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29269 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236271AbhJOHz3 (ORCPT
+        id S236270AbhJOHzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 03:55:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48348 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236314AbhJOHzk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 03:55:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634284403;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=WSCdihYmmS0IN1GmuVO1Ycrr/Th2rhDypmITMXSUWgM=;
-        b=SU3BX66towafNnIq+UcQdCeJ0oKY5/o02T7rr7p3tA7SPvP1gUjG3xeTCIJY2VxSWvG3NL
-        DL4B7f/WG8mqfIPcvplOxAHMlq04xygzJ7JI+hlTkDrMaQyv4tQK3LFjAi0A7L/20uWznF
-        AgOM/Eyv43PpbSm0Ld0dZfkHLhMDFX4=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-442-4KnnprpcM7SHEAga-fGv_Q-1; Fri, 15 Oct 2021 03:53:21 -0400
-X-MC-Unique: 4KnnprpcM7SHEAga-fGv_Q-1
-Received: by mail-ed1-f69.google.com with SMTP id g28-20020a50d0dc000000b003dae69dfe3aso7475963edf.7
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 00:53:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+        Fri, 15 Oct 2021 03:55:40 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18A5AC061760
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 00:53:34 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id g25so24826881wrb.2
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 00:53:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:cc:references:from:organization:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=WSCdihYmmS0IN1GmuVO1Ycrr/Th2rhDypmITMXSUWgM=;
-        b=PaUEpK7+yxWZ/HFuWgQG6o3rwp22OMBIynGrhgHZ/k2oWvbfAoJ/hALHL9w2cdCGeu
-         LpWyLp3aEB1YxLndw1UIALW2d/FPUytRGtsDyl7Mmtw7C+G2fu8tLpe1cDAUCJC+18U4
-         pznBWwkTK+a7JxC1ohMIGcGIZDazaUbU6GNBtad7v8ouMjGPnhEM+xOpvuZpgfDhoess
-         /lSAp1itqRGdTO0vGOGHvfXtqoJyZ+ZI65Gs2DzuYOB7RYzElNp1arZNZiEfhkzF60jT
-         jHTK69Xb1AsgALL0fizZCwLpaJQbi0iJbkJkg1LR4rnaG4JQc2OHnGm9T6TsirJ2ErAK
-         tOhQ==
-X-Gm-Message-State: AOAM530ISzaki9pjky99UKzSKsI66VyHTAu2SHwgdcSBL9rQbKKdQwyG
-        hhNk++nwyn/j3U4hJjwDZ6OU3sbcWI0oQP81eSOyqiC+3d3jFm8UYSvqWyfhyhtcZIF8XQosB0F
-        pO3+gH/Q1miNWkDXblooneZjyvAPdwqckiHiD2inuBvGNXyWlAASQdfY2UBhfq/qzmd2EVlyKzJ
-        ed
-X-Received: by 2002:a50:da4e:: with SMTP id a14mr15562008edk.154.1634284400348;
-        Fri, 15 Oct 2021 00:53:20 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyKwzRN7rZPYuvP0ikraKZR0NQIEUYRQJlDmLs7FqK/noKjG07rVbr2fRTQwVGXutgUYCgiRA==
-X-Received: by 2002:a50:da4e:: with SMTP id a14mr15561982edk.154.1634284400178;
-        Fri, 15 Oct 2021 00:53:20 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id a9sm4080539edr.96.2021.10.15.00.53.18
+        bh=r0spq/U0Y1vUnnJkuA8fNer3gwXr4La5+YzTv1JANT4=;
+        b=OPKHsjsMlECFIRSoyAxu0nUIdT9MWAa07Xu3fjBTCoVAF0BBsOrOtvPtXCMdcLuPQ+
+         3B3ZcONLcdihxRhdhBmgnow0TFyuzfxG1SAh1XPErSy5wm2DqBm/UtvpE4fdVtYS9bPU
+         b6DWraJF69wd7i8OrBWEMwJHgfqLVjE5LAGTJ+PrjuPnK4u58nBjDdwCselzwtHbIZd1
+         ulGl9TytTaixcaZjx8GGMa2LhIE3Epa6gc0G5A+4+anxFSYH1sOF/1bbnS+rrnKR6kq0
+         W6uJti3CPiuwi6fyyPjd/bQ+luOL5WAkzx54V7LueZKdeSAYuV1tghauq6rVn/7mXHa8
+         ydvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=r0spq/U0Y1vUnnJkuA8fNer3gwXr4La5+YzTv1JANT4=;
+        b=BKyJW0HTQZfucMbukQSI3ck5BucUHV2RWOZyetoljxZE6x8SIsB+l5EcHZj6AYElw0
+         Phjb0aECkh/L9GF807sWqfQBzgHEiTB+EZF4qSpUo1ur+Vx/Awq285LO1r2rwLfaU0Nz
+         EA+Fw6U+xofyvZBV0iYwX3jMfjxIaZAXstYYfhFeEa0n8N/eEBynTTNMRYtf61KRGEKl
+         DPDTdxaUMJ5LUtNXsIgXUlsQif1RvhNQUtDGUIum3Rh3UaYp8J7V0umR/3yRLpjTTmmx
+         ZOY4iziGumE/nmu2s+9TqX4HFij9kRX7xpdKbKcG85Wlf+HmLLy/+w/HYxqQgGlu/k2X
+         Otjw==
+X-Gm-Message-State: AOAM530UxYCdCzohtrym28rpJcNUuxeWXmcight05qqeaZhHlO2darbM
+        oLwJthoukEVMnQ8LDOeOn3yxe/QUDLzKmw==
+X-Google-Smtp-Source: ABdhPJwNyqlhUMZpM2GkOpFAlS8ek+MAN89gKyE9g9mbwBMMGFkXf9TpS6bjzZ8K8545wj7L+GVp0A==
+X-Received: by 2002:adf:eb4f:: with SMTP id u15mr12566299wrn.215.1634284411932;
+        Fri, 15 Oct 2021 00:53:31 -0700 (PDT)
+Received: from ?IPv6:2001:861:44c0:66c0:f6e3:13bd:45ae:5eeb? ([2001:861:44c0:66c0:f6e3:13bd:45ae:5eeb])
+        by smtp.gmail.com with ESMTPSA id b10sm4144098wrf.68.2021.10.15.00.53.31
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Oct 2021 00:53:19 -0700 (PDT)
-Subject: Re: [PATCH v4 0/1] x86/PCI: Ignore E820 reservations for bridge
- windows on newer systems
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Myron Stowe <myron.stowe@redhat.com>,
-        Juha-Pekka Heikkila <juhapekka.heikkila@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>, linux-acpi@vger.kernel.org,
-        linux-pci@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211014211104.GA2048701@bhelgaas>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <8761ccf4-ee6a-348e-0d9f-531adc5dd73a@redhat.com>
-Date:   Fri, 15 Oct 2021 09:53:18 +0200
+        Fri, 15 Oct 2021 00:53:31 -0700 (PDT)
+Subject: Re: [PATCH 2/7] drm/meson: remove useless recursive components
+ matching
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     daniel@ffwll.ch, Laurent.pinchart@ideasonboard.com,
+        martin.blumenstingl@googlemail.com,
+        dri-devel@lists.freedesktop.org, linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20211014152606.2289528-1-narmstrong@baylibre.com>
+ <20211014152606.2289528-3-narmstrong@baylibre.com>
+ <YWhtuscoVWCdQAkY@ravnborg.org>
+From:   Neil Armstrong <narmstrong@baylibre.com>
+Organization: Baylibre
+Message-ID: <56fe9cd4-6903-b1d3-d2bd-8b559fdd4304@baylibre.com>
+Date:   Fri, 15 Oct 2021 09:53:30 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20211014211104.GA2048701@bhelgaas>
+In-Reply-To: <YWhtuscoVWCdQAkY@ravnborg.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -82,29 +75,127 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Sam,
 
-On 10/14/21 11:11 PM, Bjorn Helgaas wrote:
-> On Thu, Oct 14, 2021 at 05:39:07PM +0200, Hans de Goede wrote:
->> Hi All,
->>
->> Here is v4 of my patch to address the E820 reservations vs PCI host bridge
->> ranges issue which are causing touchpad and/or thunderbolt issues on many
->> different laptop models.
->>
->> I believe that this is ready for merging now.
->>
->> Bjorn, can you review/ack this please ?
->>
->> x86/tip folks it would be ideal if you can pick this up and send it out
->> as a fix to Linus for 5.15. This fixes a bug which has been plaguing a
->> lot of users (see all the bug links in the commit msg).
+On 14/10/2021 19:49, Sam Ravnborg wrote:
+> Hi Neil,
 > 
-> FWIW, I think there's a v5 coming.
+> one comment below. Other than that
+> Acked-by: Sam Ravnborg <sam@ravnborg.org>
+> 
+> 	Sam
+> 
+> On Thu, Oct 14, 2021 at 05:26:01PM +0200, Neil Armstrong wrote:
+>> The initial design was recursive to cover all port/endpoints, but only the first layer
+>> of endpoints should be covered by the components list.
+>> This also breaks the MIPI-DSI init/bridge attach sequence, thus only parse the
+>> first endpoints instead of recursing.
+>>
+>> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+>> ---
+>>  drivers/gpu/drm/meson/meson_drv.c | 62 +++++++++++--------------------
+>>  1 file changed, 21 insertions(+), 41 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/meson/meson_drv.c b/drivers/gpu/drm/meson/meson_drv.c
+>> index bc0d60df04ae..b53606d8825f 100644
+>> --- a/drivers/gpu/drm/meson/meson_drv.c
+>> +++ b/drivers/gpu/drm/meson/meson_drv.c
+>> @@ -427,46 +427,6 @@ static int compare_of(struct device *dev, void *data)
+>>  	return dev->of_node == data;
+>>  }
+>>  
+>> -/* Possible connectors nodes to ignore */
+>> -static const struct of_device_id connectors_match[] = {
+>> -	{ .compatible = "composite-video-connector" },
+>> -	{ .compatible = "svideo-connector" },
+>> -	{ .compatible = "hdmi-connector" },
+>> -	{ .compatible = "dvi-connector" },
+>> -	{}
+>> -};
+>> -
+>> -static int meson_probe_remote(struct platform_device *pdev,
+>> -			      struct component_match **match,
+>> -			      struct device_node *parent,
+>> -			      struct device_node *remote)
+>> -{
+>> -	struct device_node *ep, *remote_node;
+>> -	int count = 1;
+>> -
+>> -	/* If node is a connector, return and do not add to match table */
+>> -	if (of_match_node(connectors_match, remote))
+>> -		return 1;
+>> -
+>> -	component_match_add(&pdev->dev, match, compare_of, remote);
+>> -
+>> -	for_each_endpoint_of_node(remote, ep) {
+>> -		remote_node = of_graph_get_remote_port_parent(ep);
+>> -		if (!remote_node ||
+>> -		    remote_node == parent || /* Ignore parent endpoint */
+>> -		    !of_device_is_available(remote_node)) {
+>> -			of_node_put(remote_node);
+>> -			continue;
+>> -		}
+>> -
+>> -		count += meson_probe_remote(pdev, match, remote, remote_node);
+>> -
+>> -		of_node_put(remote_node);
+>> -	}
+>> -
+>> -	return count;
+>> -}
+>> -
+>>  static void meson_drv_shutdown(struct platform_device *pdev)
+>>  {
+>>  	struct meson_drm *priv = dev_get_drvdata(&pdev->dev);
+>> @@ -478,6 +438,13 @@ static void meson_drv_shutdown(struct platform_device *pdev)
+>>  	drm_atomic_helper_shutdown(priv->drm);
+>>  }
+>>  
+>> +/* Possible connectors nodes to ignore */
+>> +static const struct of_device_id connectors_match[] = {
+>> +	{ .compatible = "composite-video-connector" },
+>> +	{ .compatible = "svideo-connector" },
+>> +	{}
+>> +};
+>> +
+>>  static int meson_drv_probe(struct platform_device *pdev)
+>>  {
+>>  	struct component_match *match = NULL;
+>> @@ -492,8 +459,21 @@ static int meson_drv_probe(struct platform_device *pdev)
+>>  			continue;
+>>  		}
+>>  
+>> -		count += meson_probe_remote(pdev, &match, np, remote);
+>> +		/* If an analog connector is detected, count it as an output */
+>> +		if (of_match_node(connectors_match, remote)) {
+>> +			++count;
+>> +			of_node_put(remote);
+>> +			continue;
+>> +		}
+>> +
+>> +		DRM_DEBUG_DRIVER("parent %pOF remote match add %pOF parent %s\n",
+>> +				  np, remote, dev_name(&pdev->dev));
+> Avoid the deprecated logging functions.
+> Use drm_dbg() or if there is no drm_device just dev_dbg().
+> 
+> I assume the driver uses DRM_xxx all over, so I understand if you keep
+> it as-is.
 
-Yes I posted a v5 yesterday evening (CEST).
+Since it's in the probe function, I will move to dev_dbg().
+I'll probably do a print cleanup all over the driver.
 
-Regards,
+> 
+>> +
+>> +		component_match_add(&pdev->dev, &match, compare_of, remote);
+>> +
+>>  		of_node_put(remote);
+>> +
+>> +		++count;
+>>  	}
+>>  
+>>  	if (count && !match)
+>> -- 
+>> 2.25.1
 
-Hans
-
+Thanks,
+Neil
