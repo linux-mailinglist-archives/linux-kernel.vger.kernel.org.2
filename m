@@ -2,73 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A51E42E986
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 08:58:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FF0C42E98E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 08:59:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235816AbhJOHAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 03:00:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37164 "EHLO mail.kernel.org"
+        id S235787AbhJOHBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 03:01:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37876 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235806AbhJOHAF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 03:00:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9625B6108B;
-        Fri, 15 Oct 2021 06:57:58 +0000 (UTC)
+        id S232270AbhJOHBM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 03:01:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 178BA6108B;
+        Fri, 15 Oct 2021 06:59:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634281079;
-        bh=aV5aNS+CjapJRcawRhUEtxjrkQRFiQpiNmzl1k0dNDs=;
+        s=korg; t=1634281146;
+        bh=9z0dR3D3D7TMKMx2B0oPkFhP6DQ3gTm16QqQoHLMboM=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YIVVfaczpV+gPuxwxTblzQqiuGIfk9twnF9CbPcNzd8XoXgQqWeKzETUPr7ACRoBl
-         rL48+jXZO3fkrX1d+M1WAuHZ312TkKJTXxcc8PeqmR3vm5lSxJZyYGO2Er3t/bYNga
-         zMKHSCSmt80l7ieaTLz2W7bcO5c5JokTs06sIP8A=
-Date:   Fri, 15 Oct 2021 08:57:56 +0200
+        b=WvWJZN1d4Kd5Hhnm41gYoFmagWIcu/CtGhxd24TrUocdXVefSViqfYJLiyxVFaLBv
+         3yTOCRKMO2AOY7TrFo1z4pwJ3kQPOQ2l9LBFfwVdtgTK+OsfvkVKKGiQDKSrE2py13
+         lyGlxeBrhVgGA9mB+VaRUETaea5WQzWiwrIMj0/o=
+Date:   Fri, 15 Oct 2021 08:59:03 +0200
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     Qing Wang <wangqing@vivo.com>
-Cc:     Jiri Slaby <jirislaby@kernel.org>, Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>, linux-serial@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] tty: 8250: replace snprintf in show functions with
+Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] tty: vt: replace snprintf in show functions with
  sysfs_emit
-Message-ID: <YWkmdELuWa6ITIIR@kroah.com>
-References: <1634280682-5002-1-git-send-email-wangqing@vivo.com>
+Message-ID: <YWkmt6NePIUnNUXf@kroah.com>
+References: <1634280696-5056-1-git-send-email-wangqing@vivo.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1634280682-5002-1-git-send-email-wangqing@vivo.com>
+In-Reply-To: <1634280696-5056-1-git-send-email-wangqing@vivo.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 11:51:22PM -0700, Qing Wang wrote:
+On Thu, Oct 14, 2021 at 11:51:36PM -0700, Qing Wang wrote:
 > show() must not use snprintf() when formatting the value to be
 > returned to user space.
 
-Why must it not?  What is broken in the existing code?
+Again, who is making this "must" requirement?
+
+I, as the sysfs maintainer, am not saying that all existing show
+functions MUST be converted, so I find it hard to believe that someone
+else is...
+
 
 > 
-> Fix the coccicheck warnings:
-> WARNING: use scnprintf or sprintf.
-> 
-> Signed-off-by: Qing Wang <wangqing@vivo.com>
-> ---
->  drivers/tty/serial/8250/8250_aspeed_vuart.c | 6 +++---
->  drivers/tty/serial/8250/8250_port.c         | 2 +-
->  2 files changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/tty/serial/8250/8250_aspeed_vuart.c b/drivers/tty/serial/8250/8250_aspeed_vuart.c
-> index 2350fb3..082b9bd 100644
-> --- a/drivers/tty/serial/8250/8250_aspeed_vuart.c
-> +++ b/drivers/tty/serial/8250/8250_aspeed_vuart.c
-> @@ -82,7 +82,7 @@ static ssize_t lpc_address_show(struct device *dev,
->  	addr = (aspeed_vuart_readb(vuart, ASPEED_VUART_ADDRH) << 8) |
->  		(aspeed_vuart_readb(vuart, ASPEED_VUART_ADDRL));
->  
-> -	return snprintf(buf, PAGE_SIZE - 1, "0x%x\n", addr);
-> +	return sysfs_emit(buf - 1, "0x%x\n", addr);
+> Fix the following coccicheck warning:
+> drivers/tty/vt/vt.c:3902: WARNING: use scnprintf or sprintf.
+> drivers/tty/vt/vt.c:3910: WARNING: use scnprintf or sprintf.
 
-what is the buf-1 thing here for?
+Someone needs to change this warning to show the correct thing here.
 
-Doing a tree-wide change for this type of thing might not be wanted by
-many maintainers, especially if you introduce bugs like this :(
+thanks,
 
 greg k-h
