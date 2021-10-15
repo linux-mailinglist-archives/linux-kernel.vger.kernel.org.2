@@ -2,130 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B59242E52C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 02:20:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A3D342E531
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 02:20:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233814AbhJOAWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 20:22:06 -0400
-Received: from mga01.intel.com ([192.55.52.88]:1619 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229743AbhJOAWF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 20:22:05 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10137"; a="251260416"
-X-IronPort-AV: E=Sophos;i="5.85,374,1624345200"; 
-   d="scan'208";a="251260416"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2021 17:19:58 -0700
-X-IronPort-AV: E=Sophos;i="5.85,374,1624345200"; 
-   d="scan'208";a="571588334"
-Received: from anmone-mobl.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.254.15.192])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2021 17:19:55 -0700
-Subject: Re: [PATCH v10 05/11] x86/tdx: Add __tdx_module_call() and
- __tdx_hypercall() helper functions
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
-        VMware Inc <pv-drivers@vmware.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        linux-kernel@vger.kernel.org
-References: <20211009053747.1694419-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211009053747.1694419-6-sathyanarayanan.kuppuswamy@linux.intel.com>
- <87r1co6p5y.ffs@tglx>
-From:   Sathyanarayanan Kuppuswamy 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <d2928fc1-206d-3c9b-c204-2f1783772b13@linux.intel.com>
-Date:   Thu, 14 Oct 2021 17:19:54 -0700
+        id S234025AbhJOAWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 20:22:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60996 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233877AbhJOAWm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 20:22:42 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82A23C061760
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 17:20:36 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id i24so33174920lfj.13
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 17:20:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=4vhitf+OB83J8FxwqIn9yUkbnWD0KiX07u4IYQ5OV/U=;
+        b=xUmU3e+AN56evNuz4VZTGL6egGEFJoSWXOq7mTf/QievLJEK9IDj0ug7WLkMKBCo6q
+         mtUUeoN0jb2sXlQSrwQ+HlKUPLFLWKvgmFVZ1WBurZl1DfIABIhb1BRQ0Hc1l9ut7En/
+         ptulesDYXCV9NO+f71elALiwFgDS1Hk1Zozcdk9yp0JoVdMWiXi3ly+KsfUTxEV5x8LC
+         9hMR5z+Wguj5h/SNjuvZmB9lM99hLG7ycHmHGfFgZJ1sOpNqM6Mna8Asx06sxnmI090U
+         StG18anaC9n72pkBJNjEcAUUMnLtBuF2N73K2aEEiW8LfDDPZhalnKuhAq9UfNu2+e8T
+         i8wg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=4vhitf+OB83J8FxwqIn9yUkbnWD0KiX07u4IYQ5OV/U=;
+        b=BkjTYx3BjaXUkpDdpCQbPZztBQjGHDfZR+zv6dl1lBrXPKF0mFEW5nVGdh7VvTRtTV
+         pv1z6r6kSpCXSJ+xk4XCkI8k8m9oK8EZNCqc22OZP4nkQYO/m5bpuhh19hXq9KnpRq7j
+         XP8BB9WpGKbz2/RRZqGnzcf2VaUwDkUnqqPlvSHw+claFFs0SrQuJv/ea3JqeGoW/Bkd
+         ywF/tRy4wpVht4rS/eaoBRgdhfuKGm/HOXurPfHeBYNY3hGeuEsfj+hYgPgvE4bydVVn
+         ZqGouA4///iBEv8kj7hETi86OAbDRuCsp1GnxLJw+McRMmexwDKF3hN5FJtBmyienFXd
+         t+LA==
+X-Gm-Message-State: AOAM530Zv12wbwWbUZiwHOXvxeiYNLIegX70cevWt8OxRX+FQ29zmvz3
+        RK0F2t3pNRow9Ov3nFUY1Ax2RTtwqlEaLg==
+X-Google-Smtp-Source: ABdhPJx6x0dTEEVnYH4yVgOyMjDIvJKuYHi4fB7VV7o/4PmA1vJvYO0ins5SRxNn566R4asXHr2pOg==
+X-Received: by 2002:a2e:7204:: with SMTP id n4mr10014059ljc.430.1634257234634;
+        Thu, 14 Oct 2021 17:20:34 -0700 (PDT)
+Received: from [192.168.1.211] ([37.153.55.125])
+        by smtp.gmail.com with ESMTPSA id s14sm355304lfe.14.2021.10.14.17.20.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Oct 2021 17:20:34 -0700 (PDT)
+Subject: Re: [PATCH v3 2/4] thermal/drivers/qcom/spmi-adc-tm5: Add support for
+ HC variant
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thara Gopinath <thara.gopinath@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20211005032531.2251928-1-bjorn.andersson@linaro.org>
+ <20211005032531.2251928-3-bjorn.andersson@linaro.org>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Message-ID: <7142a85a-9bd6-015c-89c6-e7bbac5af534@linaro.org>
+Date:   Fri, 15 Oct 2021 03:20:33 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-In-Reply-To: <87r1co6p5y.ffs@tglx>
+In-Reply-To: <20211005032531.2251928-3-bjorn.andersson@linaro.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 05/10/2021 06:25, Bjorn Andersson wrote:
+> The variant of the ADC Thermal Monitor block found in e.g. PM8998 is
+> "HC", add support for this variant to the ADC TM5 driver in order to
+> support using VADC channels as thermal_zones on SDM845 et al.
+> 
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-On 10/14/21 12:28 AM, Thomas Gleixner wrote:
-> On Fri, Oct 08 2021 at 22:37, Kuppuswamy Sathyanarayanan wrote:
->>   
->> +#ifdef CONFIG_INTEL_TDX_GUEST
->> +#include <asm/tdx.h>
->> +#endif
-> Please get rid of the #ifdef and make sure that tdx.h can be included unconditionally.
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
+> ---
+> 
+> Changes since v2:
+> - Dropped conditional return ret right before unconditionatl return ret;
+> 
+>   drivers/thermal/qcom/qcom-spmi-adc-tm5.c | 41 +++++++++++++++++++++++-
+>   1 file changed, 40 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/thermal/qcom/qcom-spmi-adc-tm5.c b/drivers/thermal/qcom/qcom-spmi-adc-tm5.c
+> index 8494cc04aa21..824671cf494a 100644
+> --- a/drivers/thermal/qcom/qcom-spmi-adc-tm5.c
+> +++ b/drivers/thermal/qcom/qcom-spmi-adc-tm5.c
+> @@ -82,6 +82,7 @@ struct adc_tm5_data {
+>   	const u32	full_scale_code_volt;
+>   	unsigned int	*decimation;
+>   	unsigned int	*hw_settle;
+> +	bool		is_hc;
+>   };
+>   
+>   enum adc_tm5_cal_method {
+> @@ -146,6 +147,14 @@ static const struct adc_tm5_data adc_tm5_data_pmic = {
+>   					 64000, 128000 },
+>   };
+>   
+> +static const struct adc_tm5_data adc_tm_hc_data_pmic = {
+> +	.full_scale_code_volt = 0x70e4,
+> +	.decimation = (unsigned int []) { 256, 512, 1024 },
+> +	.hw_settle = (unsigned int []) { 0, 100, 200, 300, 400, 500, 600, 700,
+> +					 1000, 2000, 4000, 6000, 8000, 10000 },
+> +	.is_hc = true,
+> +};
+> +
+>   static int adc_tm5_read(struct adc_tm5_chip *adc_tm, u16 offset, u8 *data, int len)
+>   {
+>   	return regmap_bulk_read(adc_tm->regmap, adc_tm->base + offset, data, len);
+> @@ -375,6 +384,29 @@ static int adc_tm5_register_tzd(struct adc_tm5_chip *adc_tm)
+>   	return 0;
+>   }
+>   
+> +static int adc_tm_hc_init(struct adc_tm5_chip *chip)
+> +{
+> +	unsigned int i;
+> +	u8 buf[2];
+> +	int ret;
+> +
+> +	for (i = 0; i < chip->nchannels; i++) {
+> +		if (chip->channels[i].channel >= ADC_TM5_NUM_CHANNELS) {
+> +			dev_err(chip->dev, "Invalid channel %d\n", chip->channels[i].channel);
+> +			return -EINVAL;
+> +		}
+> +	}
+> +
+> +	buf[0] = chip->decimation;
+> +	buf[1] = chip->avg_samples | ADC_TM5_FAST_AVG_EN;
+> +
+> +	ret = adc_tm5_write(chip, ADC_TM5_ADC_DIG_PARAM, buf, sizeof(buf));
+> +	if (ret)
+> +		dev_err(chip->dev, "block write failed: %d\n", ret);
+> +
+> +	return ret;
+> +}
+> +
+>   static int adc_tm5_init(struct adc_tm5_chip *chip)
+>   {
+>   	u8 buf[4], channels_available;
+> @@ -591,7 +623,10 @@ static int adc_tm5_probe(struct platform_device *pdev)
+>   		return ret;
+>   	}
+>   
+> -	ret = adc_tm5_init(adc_tm);
+> +	if (adc_tm->data->is_hc)
+> +		ret = adc_tm_hc_init(adc_tm);
+> +	else
+> +		ret = adc_tm5_init(adc_tm);
+>   	if (ret) {
+>   		dev_err(dev, "adc-tm init failed\n");
+>   		return ret;
+> @@ -612,6 +647,10 @@ static const struct of_device_id adc_tm5_match_table[] = {
+>   		.compatible = "qcom,spmi-adc-tm5",
+>   		.data = &adc_tm5_data_pmic,
+>   	},
+> +	{
+> +		.compatible = "qcom,spmi-adc-tm-hc",
+> +		.data = &adc_tm_hc_data_pmic,
+> +	},
+>   	{ }
+>   };
+>   MODULE_DEVICE_TABLE(of, adc_tm5_match_table);
+> 
 
-It can be included unconditionally. I will remove it in next version.
-
->
->> +	/* Restore callee-saved GPRs as mandated by the x86_64 ABI */
->> +	pop %r12
->> +	pop %r13
->> +	pop %r14
->> +	pop %r15
->> +
->> +	jmp 2f
->> +1:
-> ASM supports named labels.
-
-I will use a meaningful label instead of 1 or 2. I will fix this in next 
-version.
-
->
->> +       movq $(-EINVAL), %rax
->> +2:
->> +       FRAME_END
->> +
->> +       retq
->> +SYM_FUNC_END(__tdx_hypercall)
->
->> +/*
->> + * Wrapper for standard use of __tdx_hypercall with BUG_ON() check
->> + * for TDCALL error.
->> + */
->> +static inline u64 _tdx_hypercall(u64 fn, u64 r12, u64 r13, u64 r14,
->> +				 u64 r15, struct tdx_hypercall_output *out)
->> +{
->> +	struct tdx_hypercall_output outl;
->> +	u64 err;
->> +
->> +	/* __tdx_hypercall() does not accept NULL output pointer */
->> +	if (!out)
->> +		out = &outl;
->> +
->> +	err = __tdx_hypercall(TDX_HYPERCALL_STANDARD, fn, r12, r13, r14,
->> +			      r15, out);
->> +
->> +	/* Non zero return value indicates buggy TDX module, so panic */
->> +	BUG_ON(err);
-> BUG() does not necessarily panic. If you want to panic in then invoke
-> the function which does that, i.e. panic().
-
-
-Yes, we want to panic here. I will use panic() in next version.
-
-
->
-> Thanks,
->
->          tglx
 
 -- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
-
+With best wishes
+Dmitry
