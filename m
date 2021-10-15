@@ -2,141 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BF3142F7E6
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 18:15:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5580042F7E4
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 18:15:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241209AbhJOQR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 12:17:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48884 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241203AbhJOQRy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 12:17:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6484561090;
-        Fri, 15 Oct 2021 16:15:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634314546;
-        bh=J6lMIRppIQQR2yDU8HEFtiobkHUlT4L+X3PXR/XHp8k=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=fUxjpQpKZEMfW+RRIp60SX1iX/UwmX2w7X5lIZEpj7biPSsFXPDMUQafV+MRGFMmQ
-         EL8HPMjTiB8NjmWVoshAD7lta4yw5ks7FQ5A97AWaT6RIcAyKWEtDQ6UK7wHLXbbG3
-         Z1ztXj9KpCB5OMJzlWulfrEP66XP61txqi1cOfM0ryOvkLKJse4YDrrC9cAeT803ZX
-         I1dRqcI6sM7uBu908E4buE0sgeJjzPDGbl1FQ9Mcim+RVQCz+xQivYjOcEswbqaOuG
-         3L1+rjNW2B0Xd0lB3zf/uOnVZtTN0eV7Al82PBbYtkmb3ud3BZvtdUS/bkKYpz+Va3
-         4TlkTUzrYEe4g==
-Received: by mail-ed1-f48.google.com with SMTP id t16so40103749eds.9;
-        Fri, 15 Oct 2021 09:15:46 -0700 (PDT)
-X-Gm-Message-State: AOAM5330xQeEoC3oy4XV9gncJb3ptN4/iAdPOz0bILr8TYnsScTPvcPq
-        iWa9BEFbV5IfNl9RR7wP8qKcXabwPAQQSon2pA==
-X-Google-Smtp-Source: ABdhPJwsRQPmyqCZEJ2EspO5jNkdQ+LeDKtD0EmxJMsNFClADPbMWi8f8wb8874t+JF0p3aYra/8VjChk0VBCZZRh6M=
-X-Received: by 2002:a05:6402:84d:: with SMTP id b13mr19328337edz.6.1634314544839;
- Fri, 15 Oct 2021 09:15:44 -0700 (PDT)
+        id S241200AbhJOQRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 12:17:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237297AbhJOQRs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 12:17:48 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E086C061762
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 09:15:42 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id ls14-20020a17090b350e00b001a00e2251c8so7611304pjb.4
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 09:15:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/yO2HrsaIO4jpccfAAiSxchb2+pTUm4acP48FhP+BCA=;
+        b=bUBg8DXOOANy6KqSvBqBwr4pmyBcze1Of2z9SGdN5dWXFYYcJCS3vbytUgV0rOMiXo
+         GWyiRqa92v7zE6Wie+Z5fZSeJJwNmg6uI83gYFm7yoJh3zOGrbqaqKa4kWr/QJX/JzAy
+         Wjh2ICUvay/45VlCQ+O4NREOW3J8aYh44wTEnIam8IrkM13thHKeaa1u3IkbqXFngGsN
+         2TE/Qcq9m0sDKU8HbgukX7FK7ddZSNkCl9F/C+pVe1AihjHOcswuFhxTuqTzXb5Tty4N
+         HXka1s1G5TpdFKO/1FPAPld9HHa4ihY+PcFZzbG+9BKR9734/e2DJMFK1gsG+zFlPWrI
+         m8Ww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/yO2HrsaIO4jpccfAAiSxchb2+pTUm4acP48FhP+BCA=;
+        b=oKxHzdXTNtJk70n1i/C4VPzU4Mz9Tj+256PP13tYFzNXVkEsP3iGergGe6UBx7OdpL
+         djy39RrcYJP0qQN7+dJ+lP5G7BGjpqx26kNqVrz7bRrHE9owwpeeKstA0whgrr9m7rk6
+         1GGcQU3WtfONAgk7gtVns7CcwjAMHsB8O5TvM8kPyenG3tgilgbjYbfmhM9XjIzMHjDK
+         knwY4TyS5o4vi8nPzCyCanvwgclls+B+zaVYhRwDQakmyqUcawxO8/WN2vrZWJHMxXCG
+         s38hWh0CMy6+CHQQxofLsurHLH6FyABWS6z9ONDyH+uvTmP/8vGNnpM0ftLHdKeYHvz5
+         ihNw==
+X-Gm-Message-State: AOAM5330AvI0x7qsAGyEdSutoXfHT68ORohNQR83LYF2jXwoueFP3PFq
+        EXuqlMcKVWxB9lz5GLEBS0kaxg==
+X-Google-Smtp-Source: ABdhPJxZHQrhEOGz7VbH6I1+z+OM+fUVzje7Ks0ZhZ0Abhzq5LbftH60+HZoOCIbUBbOEvaq9B5Cyw==
+X-Received: by 2002:a17:90b:4c11:: with SMTP id na17mr14895117pjb.105.1634314541686;
+        Fri, 15 Oct 2021 09:15:41 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id z11sm11914561pjl.45.2021.10.15.09.15.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Oct 2021 09:15:41 -0700 (PDT)
+Date:   Fri, 15 Oct 2021 16:15:37 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] KVM: x86: Fix and cleanup for recent AVIC changes
+Message-ID: <YWmpKTk/7MOCzm15@google.com>
+References: <20211009010135.4031460-1-seanjc@google.com>
+ <9e9e91149ab4fa114543b69eaf493f84d2f33ce2.camel@redhat.com>
+ <YWRJwZF1toUuyBdC@google.com>
+ <YWRtHmAUaKcbWEzH@google.com>
+ <ebf038b7b242dd19aba1e4adb6f4ef2701c53748.camel@redhat.com>
 MIME-Version: 1.0
-References: <20211014224201.24027-1-agust@denx.de>
-In-Reply-To: <20211014224201.24027-1-agust@denx.de>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Fri, 15 Oct 2021 11:15:32 -0500
-X-Gmail-Original-Message-ID: <CAL_Jsq+_K9X010eKz0uwGH33h3vwwEE-+f=z9YWEdhji4yHxWg@mail.gmail.com>
-Message-ID: <CAL_Jsq+_K9X010eKz0uwGH33h3vwwEE-+f=z9YWEdhji4yHxWg@mail.gmail.com>
-Subject: Re: [PATCH v2] powerpc/mpc512x: dts: fix PSC node warnings
-To:     Anatolij Gustschin <agust@denx.de>
-Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ebf038b7b242dd19aba1e4adb6f4ef2701c53748.camel@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 5:42 PM Anatolij Gustschin <agust@denx.de> wrote:
->
-> Rework PSC node description to fix build warnings like:
-> mpc5121.dtsi:397.13-406.5: Warning (spi_bus_bridge): /soc@80000000/psc@11400: node name for SPI buses should be 'spi'
-> mpc5121.dtsi:409.13-418.5: Warning (spi_bus_bridge): /soc@80000000/psc@11500: node name for SPI buses should be 'spi'
-> mpc5121.dtsi:457.13-466.5: Warning (spi_bus_bridge): /soc@80000000/psc@11900: node name for SPI buses should be 'spi'
+On Tue, Oct 12, 2021, Maxim Levitsky wrote:
+> On Mon, 2021-10-11 at 16:58 +0000, Sean Christopherson wrote:
+> > Argh, I forgot the memslot is still there, so the access won't be treated as MMIO
+> > and thus won't end up in the MMIO cache.
+> > 
+> > So I agree that the code is functionally ok, but I'd still prefer to switch to
+> > kvm_vcpu_apicv_active() so that this code is coherent with respect to the APICv
+> > status at the time the fault occurred.
+> > 
+> > My objection to using kvm_apicv_activated() is that the result is completely
+> > non-deterministic with respect to the vCPU's APICv status at the time of the
+> > fault.  It works because all of the other mechanisms that are in place, e.g.
+> > elevating the MMU notifier count, but the fact that the result is non-deterministic
+> > means that using the per-vCPU status is also functionally ok.
+> 
+> The problem is that it is just not correct to use local AVIC enable state 
+> to determine if we want to populate the SPTE or or just jump to the emulation.
+> 
+> 
+> For example, assuming that the AVIC is now enabled on all vCPUs,
+> we can have this scenario:
+> 
+>     vCPU0                                   vCPU1
+>     =====                                   =====
+> 
+> - disable AVIC
+> - VMRUN
+>                                         - #NPT on AVIC MMIO access
+>                                         - *stuck on something prior to the page fault code*
+> - enable AVIC
+> - VMRUN
+>                                         - *still stuck on something prior to the page fault code*
+> 
+> - disable AVIC:
+> 
+>   - raise KVM_REQ_APICV_UPDATE request
+> 					
+>   - set global avic state to disable
+> 
+>   - zap the SPTE (does nothing, doesn't race
+> 	with anything either)
+> 
+>   - handle KVM_REQ_APICV_UPDATE -
+>     - disable vCPU0 AVIC
+> 
+> - VMRUN
+> 					- *still stuck on something prior to the page fault code*
+> 
+>                                                             ...
+>                                                             ...
+>                                                             ...
+> 
+>                                         - now vCPU1 finally starts running the page fault code.
+> 
+>                                         - vCPU1 AVIC is still enabled 
+>                                           (because vCPU1 never handled KVM_REQ_APICV_UPDATE),
+>                                           so the page fault code will populate the SPTE.
 
-Okay, I now see the block supports either spi or serial modes. I would
-handle this a bit differently that doesn't create a bunch of new .dtsi
-files.
+But vCPU1 won't install the SPTE if it loses the race to acquire mmu_lock, because
+kvm_zap_gfn_range() bumps the notifier sequence and so vCPU1 will retry the fault.
+If vCPU1 wins the race, i.e. sees the same sequence number, then the zap is
+guaranteed to find the newly-installed SPTE.
 
->
-> Signed-off-by: Anatolij Gustschin <agust@denx.de>
-> ---
-> Changes in v2:
->  - extract PSC nodes to files which can be included
->    separately and extended as needed
->
->  arch/powerpc/boot/dts/ac14xx.dts            | 118 ++++++++--------
->  arch/powerpc/boot/dts/mpc5121-psc0.dtsi     |  16 +++
->  arch/powerpc/boot/dts/mpc5121-psc1.dtsi     |  15 ++
->  arch/powerpc/boot/dts/mpc5121-psc10.dtsi    |  15 ++
->  arch/powerpc/boot/dts/mpc5121-psc11.dtsi    |  15 ++
->  arch/powerpc/boot/dts/mpc5121-psc2.dtsi     |  15 ++
->  arch/powerpc/boot/dts/mpc5121-psc3.dtsi     |  15 ++
->  arch/powerpc/boot/dts/mpc5121-psc4-spi.dtsi |  17 +++
->  arch/powerpc/boot/dts/mpc5121-psc4.dtsi     |  15 ++
->  arch/powerpc/boot/dts/mpc5121-psc5-spi.dtsi |  17 +++
->  arch/powerpc/boot/dts/mpc5121-psc5.dtsi     |  15 ++
->  arch/powerpc/boot/dts/mpc5121-psc6.dtsi     |  15 ++
->  arch/powerpc/boot/dts/mpc5121-psc7.dtsi     |  15 ++
->  arch/powerpc/boot/dts/mpc5121-psc8.dtsi     |  15 ++
->  arch/powerpc/boot/dts/mpc5121-psc9-spi.dtsi |  17 +++
->  arch/powerpc/boot/dts/mpc5121-psc9.dtsi     |  15 ++
->  arch/powerpc/boot/dts/mpc5121.dtsi          | 148 +-------------------
->  arch/powerpc/boot/dts/mpc5121ads.dts        |  42 +++---
->  arch/powerpc/boot/dts/pdm360ng.dts          | 104 +++++++-------
->  19 files changed, 371 insertions(+), 273 deletions(-)
->  create mode 100644 arch/powerpc/boot/dts/mpc5121-psc0.dtsi
->  create mode 100644 arch/powerpc/boot/dts/mpc5121-psc1.dtsi
->  create mode 100644 arch/powerpc/boot/dts/mpc5121-psc10.dtsi
->  create mode 100644 arch/powerpc/boot/dts/mpc5121-psc11.dtsi
->  create mode 100644 arch/powerpc/boot/dts/mpc5121-psc2.dtsi
->  create mode 100644 arch/powerpc/boot/dts/mpc5121-psc3.dtsi
->  create mode 100644 arch/powerpc/boot/dts/mpc5121-psc4-spi.dtsi
->  create mode 100644 arch/powerpc/boot/dts/mpc5121-psc4.dtsi
->  create mode 100644 arch/powerpc/boot/dts/mpc5121-psc5-spi.dtsi
->  create mode 100644 arch/powerpc/boot/dts/mpc5121-psc5.dtsi
->  create mode 100644 arch/powerpc/boot/dts/mpc5121-psc6.dtsi
->  create mode 100644 arch/powerpc/boot/dts/mpc5121-psc7.dtsi
->  create mode 100644 arch/powerpc/boot/dts/mpc5121-psc8.dtsi
->  create mode 100644 arch/powerpc/boot/dts/mpc5121-psc9-spi.dtsi
->  create mode 100644 arch/powerpc/boot/dts/mpc5121-psc9.dtsi
+And IMO, retrying is the desired behavior.  Installing a SPTE based on the global
+state works, but it's all kinds of weird to knowingly take an action the directly
+contradicts the current vCPU state.
 
-[...]
+FWIW, I had gone so far as to type this up to handle the situation you described
+before remembering the sequence interaction.
 
-> diff --git a/arch/powerpc/boot/dts/mpc5121.dtsi b/arch/powerpc/boot/dts/mpc5121.dtsi
-> index 3f66b91a8e3c..21674da8beb1 100644
-> --- a/arch/powerpc/boot/dts/mpc5121.dtsi
-> +++ b/arch/powerpc/boot/dts/mpc5121.dtsi
-> @@ -87,7 +87,7 @@
->                 };
->         };
->
-> -       soc@80000000 {
-> +       soc: soc@80000000 {
->                 compatible = "fsl,mpc5121-immr";
->                 #address-cells = <1>;
->                 #size-cells = <1>;
-> @@ -343,152 +343,6 @@
->                         clock-names = "ipg";
->                 };
->
-> -               /* 512x PSCs are not 52xx PSC compatible */
-> -
-> -               /* PSC0 */
-> -               psc@11000 {
+		/*
+		 * If the APIC access page exists but is disabled, go directly
+		 * to emulation without caching the MMIO access or creating a
+		 * MMIO SPTE.  That way the cache doesn't need to be purged
+		 * when the AVIC is re-enabled.
+		 */
+		if (slot && slot->id == APIC_ACCESS_PAGE_PRIVATE_MEMSLOT) {
+			/*
+			 * Retry the fault if an APICv update is pending, as
+			 * the kvm_zap_gfn_range() when APICv becomes inhibited
+			 * may have already occurred, in which case installing
+			 * a SPTE would be incorrect.
+			 */
+			if (!kvm_vcpu_apicv_active(vcpu)) {
+				*r = RET_PF_EMULATE;
+				return true;
+			} else if (kvm_test_request(KVM_REQ_APICV_UPDATE, vcpu)) {
+				*r = RET_PF_RETRY;
+				return true;
+			}
+		}
 
-I would just put here 'serial@11000' and 'spi@11000' nodes with both
-nodes set to disabled. Then the board dts just has to change status of
-the the nodes it wants to enable (and add child nodes for spi).
-Overlapping addresses are okay if nodes are disabled.
-
-> -                       compatible = "fsl,mpc5121-psc";
-> -                       reg = <0x11000 0x100>;
-> -                       interrupts = <40 0x8>;
-> -                       fsl,rx-fifo-size = <16>;
-> -                       fsl,tx-fifo-size = <16>;
-> -                       clocks = <&clks MPC512x_CLK_PSC0>,
-> -                                <&clks MPC512x_CLK_PSC0_MCLK>;
-> -                       clock-names = "ipg", "mclk";
-> -               };
+>                                         - handle KVM_REQ_APICV_UPDATE
+>                                            - finally disable vCPU1 AVIC
+> 
+>                                         - VMRUN (vCPU1 AVIC disabled, SPTE populated)
+> 
+> 					                 ***boom***
