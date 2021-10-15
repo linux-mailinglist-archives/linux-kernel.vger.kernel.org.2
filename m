@@ -2,61 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8F2042ECDC
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 10:53:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B55BB42ECDB
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 10:52:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234459AbhJOIzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 04:55:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33958 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235948AbhJOIy6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 04:54:58 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE2E8C061762
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 01:52:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=kAEEo2bMo6/W8jfykUA5d09Ap+RguoOMMLVNz+7/o4o=; b=qvoIa/BfsX2Ay4vRwY1vzpwBJe
-        RoAsHNxUPycxn1csWxDtG4n0RKTV5kDmiZD3KuHaJu1zxxkzTrnxxTUsuQlEdbzasoTizeC7EbAOd
-        LHm8DGPaTiO0/L8E1yoVFh9V+tg2ea74SoIWBq7HRQN5WZRnykJCGaQfwSdoaM7a1IytsoxDSgtDK
-        PtHCftnH9dYsJtvj8E4fmACtH7UiDxcBQ0dg1HtRo29EYPOupf6GkXbtc/EixRha6oE3JaQEKS1z/
-        61qc682ZOpiEofUqZP7xKt5lOTtVyUk1FpVPAMemJyRfTBXwq2hAatmOX8LDDwneIIkMbgnmBnZaq
-        hJgP0LbA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mbIx9-009yU0-Fg; Fri, 15 Oct 2021 08:52:35 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D285030031A;
-        Fri, 15 Oct 2021 10:52:33 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id B964420125B2E; Fri, 15 Oct 2021 10:52:33 +0200 (CEST)
-Date:   Fri, 15 Oct 2021 10:52:33 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Norbert <nbrtt01@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: Performance regression: thread wakeup time (latency) increased
- up to 3x
-Message-ID: <YWlBUVDy9gOMiXls@hirez.programming.kicks-ass.net>
-References: <035c23b4-118e-6a35-36d9-1b11e3d679f8@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <035c23b4-118e-6a35-36d9-1b11e3d679f8@gmail.com>
+        id S235771AbhJOIyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 04:54:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47444 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234459AbhJOIyu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 04:54:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5FA0A61053;
+        Fri, 15 Oct 2021 08:52:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634287964;
+        bh=WmLhFzVqAqmD2RimdfqsPkp2Nun4vez4+tb7P7hMIFU=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:From;
+        b=GF3D8JU24hp5t79Ik+GzZGC6/vNO4EXuqAmiFXcf7I3m7qGUbnFW5O2xjMJnpzjMW
+         ktHtU7sMNIfJs8c3rA0sYOqkITjn31DdeBTja/FA+rGoq+DscCBSoflavJYD5RHhFv
+         XerWeIl5MCSt7POEg1ZYc5JmU8DN/RzVCQPKLRLYj49p8an3WCwAUk5y3LCh7aX6ik
+         jn8SwDeFZVND897gUkPbyJKlE1ew1kHreq5Zndadt07eAY2j0R2wBOZjKoNwEEQ/sD
+         fPYvv/CiMLWiqZWUYGgmgCMTYwSS/RV13qviOZQG+pVhl7Nq9xsyx/bn+1sRfWX5/X
+         CmfnjqMceavFg==
+From:   SeongJae Park <sj@kernel.org>
+To:     SeongJae Park <sj@kernel.org>
+Cc:     SeongJae Park <sj38.park@gmail.com>, shuah@kernel.org,
+        gregkh@linuxfoundation.org, akpm@linux-foundation.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        SeongJae Park <sjpark@amazon.de>
+Subject: Re: [PATCH v2] selftests/kselftest/runner/run_one(): Allow running non-executable files
+Date:   Fri, 15 Oct 2021 08:52:41 +0000
+Message-Id: <20211015085241.16262-1-sj@kernel.org>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20211008095828.1796-1-sj@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 15, 2021 at 12:43:45AM -0700, Norbert wrote:
-> Performance regression: thread wakeup time (latency) increased up to 3x.
-> 
-> Happened between 5.13.8 and 5.14.0. Still happening at least on 5.14.11.
+Gentle ping.
 
-Could you git-bisect this?
+On Fri, 8 Oct 2021 09:58:28 +0000 SeongJae Park <sj@kernel.org> wrote:
+
+> Hello Shuah,
+> 
+> 
+> I was wondering if you had a chance to read this patch.
+> 
+> Without this patch, DAMON selftest fails as below:
+> 
+>     $ make -C tools/testing/selftests/damon/ run_tests
+>     make: Entering directory '/home/sjpark/linux/tools/testing/selftests/damon'
+>     TAP version 13
+>     1..1
+>     # selftests: damon: debugfs_attrs.sh
+>     # Warning: file debugfs_attrs.sh is not executable, correct this.
+>     not ok 1 selftests: damon: debugfs_attrs.sh
+>     make: Leaving directory '/home/sjpark/linux/tools/testing/selftests/damon'
+> 
+> If you disagree in the approach, please also take a look in this one:
+> https://lore.kernel.org/linux-kselftest/20210810112050.22225-1-sj38.park@gmail.com/
+> 
+> 
+> Thanks,
+> SJ
+> 
+> 
+> On Mon, 13 Sep 2021 11:24:42 +0000 SeongJae Park <sj38.park@gmail.com> wrote:
+> 
+> > From: SeongJae Park <sjpark@amazon.de>
+> > 
+> > Hello Shuah,
+> > 
+> > 
+> > Could you I ask your comment for this patch?
+> > 
+> > 
+> > Thanks,
+> > SJ
+> > 
+> > On Tue, 10 Aug 2021 16:45:34 +0000 SeongJae Park <sj38.park@gmail.com> wrote:
+> > 
+> > > From: SeongJae Park <sjpark@amazon.de>
+> > > 
+> > > When running a test program, 'run_one()' checks if the program has the
+> > > execution permission and fails if it doesn't.  However, it's easy to
+> > > mistakenly missing the permission, as some common tools like 'diff'
+> > > don't support the permission change well[1].  Compared to that, making
+> > > mistakes in the test program's path would only rare, as those are
+> > > explicitly listed in 'TEST_PROGS'.  Therefore, it might make more sense
+> > > to resolve the situation on our own and run the program.
+> > > 
+> > > For the reason, this commit makes the test program runner function to
+> > > still print the warning message but try parsing the interpreter of the
+> > > program and explicitly run it with the interpreter, in the case.
+> > > 
+> > > [1] https://lore.kernel.org/mm-commits/YRJisBs9AunccCD4@kroah.com/
+> > > 
+> > > Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > Signed-off-by: SeongJae Park <sjpark@amazon.de>
+> > > ---
+> > > Changes from v1
+> > > (https://lore.kernel.org/linux-kselftest/20210810140459.23990-1-sj38.park@gmail.com/)
+> > > - Parse and use the interpreter instead of changing the file
+> > > 
+> > >  tools/testing/selftests/kselftest/runner.sh | 28 +++++++++++++--------
+> > >  1 file changed, 18 insertions(+), 10 deletions(-)
+> > > 
+> > > diff --git a/tools/testing/selftests/kselftest/runner.sh b/tools/testing/selftests/kselftest/runner.sh
+> > > index cc9c846585f0..a9ba782d8ca0 100644
+> > > --- a/tools/testing/selftests/kselftest/runner.sh
+> > > +++ b/tools/testing/selftests/kselftest/runner.sh
+> > > @@ -33,9 +33,9 @@ tap_timeout()
+> > >  {
+> > >  	# Make sure tests will time out if utility is available.
+> > >  	if [ -x /usr/bin/timeout ] ; then
+> > > -		/usr/bin/timeout --foreground "$kselftest_timeout" "$1"
+> > > +		/usr/bin/timeout --foreground "$kselftest_timeout" $1
+> > >  	else
+> > > -		"$1"
+> > > +		$1
+> > >  	fi
+> > >  }
+> > >  
+> > > @@ -65,17 +65,25 @@ run_one()
+> > >  
+> > >  	TEST_HDR_MSG="selftests: $DIR: $BASENAME_TEST"
+> > >  	echo "# $TEST_HDR_MSG"
+> > > -	if [ ! -x "$TEST" ]; then
+> > > -		echo -n "# Warning: file $TEST is "
+> > > -		if [ ! -e "$TEST" ]; then
+> > > -			echo "missing!"
+> > > -		else
+> > > -			echo "not executable, correct this."
+> > > -		fi
+> > > +	if [ ! -e "$TEST" ]; then
+> > > +		echo "# Warning: file $TEST is missing!"
+> > >  		echo "not ok $test_num $TEST_HDR_MSG"
+> > >  	else
+> > > +		cmd="./$BASENAME_TEST"
+> > > +		if [ ! -x "$TEST" ]; then
+> > > +			echo "# Warning: file $TEST is not executable"
+> > > +
+> > > +			if [ $(head -n 1 "$TEST" | cut -c -2) = "#!" ]
+> > > +			then
+> > > +				interpreter=$(head -n 1 "$TEST" | cut -c 3-)
+> > > +				cmd="$interpreter ./$BASENAME_TEST"
+> > > +			else
+> > > +				echo "not ok $test_num $TEST_HDR_MSG"
+> > > +				return
+> > > +			fi
+> > > +		fi
+> > >  		cd `dirname $TEST` > /dev/null
+> > > -		((((( tap_timeout ./$BASENAME_TEST 2>&1; echo $? >&3) |
+> > > +		((((( tap_timeout "$cmd" 2>&1; echo $? >&3) |
+> > >  			tap_prefix >&4) 3>&1) |
+> > >  			(read xs; exit $xs)) 4>>"$logfile" &&
+> > >  		echo "ok $test_num $TEST_HDR_MSG") ||
+> > > -- 
+> > > 2.17.1
+> > > 
