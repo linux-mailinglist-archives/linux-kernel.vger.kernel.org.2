@@ -2,84 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36A6B42F858
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 18:36:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0100C42F85A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 18:36:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241496AbhJOQiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 12:38:10 -0400
-Received: from mout.web.de ([212.227.15.3]:34719 "EHLO mout.web.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241495AbhJOQiG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 12:38:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1634315756;
-        bh=pcVgNhS6myDv9N/VWR+/xe0MmsJiTjI/xPFVEyQrs9k=;
-        h=X-UI-Sender-Class:Date:Subject:From:To:Cc;
-        b=jsItQAKMJnjoVT4bGpkKCFCRiTmfVftAx1VDpCs/yi0waVLBhFyAU6QwhaCBYXGRK
-         Za8bM/k2KjMLomUJe8r76fNsHRh1/C3C27jWTkMrnQPiV4KjnX0QtG4D2C/jRN8CLY
-         d0Xv7gxJMxjLN4kUMmsbhHzgioqXD3eBZKnvkAxE=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [192.168.178.70] ([178.9.208.239]) by smtp.web.de (mrweb006
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1MjPUE-1mzzUM1AAU-00l8Wh; Fri, 15
- Oct 2021 18:35:56 +0200
-Date:   Fri, 15 Oct 2021 18:35:53 +0200
-Subject: Re: ???UNSURE??? Re: Unwanted activation of root-processes getting
- highly activated
-Message-ID: <nwmbn5ljrnojusbpg2gicmti.1634315753655@email.android.com>
-From:   andreas-stoewing <andreas-stoewing@web.de>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     linux-kernel@vger.kernel.org
+        id S241365AbhJOQip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 12:38:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57162 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236948AbhJOQic (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 12:38:32 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A53DC061768
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 09:36:21 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id c4so6726950pls.6
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 09:36:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=bNuTjMh21ZDjBhYohz0NUqfViUN9CkYGywP8rKjYXXQ=;
+        b=srByqXdaiZB1vx5JOLc2pqo7KYtDXrCyqsP9LUwM20nGG0hXX+GFBs3ibK3fZ2+6P6
+         qkv3rQS+7lMejdN0xsWovm8h2tnF/wQVk60r80WOndc1nvVXg/cq4T07kzO7WKFO/nyq
+         E+FOY4FM0BCjaO4JJFS1JH6Cxkeo88jB5KiZ9YRzmPkoSMC6dHtC6Qifd6gVxOg907B8
+         y5Sirgcz+UMrlKro0+KDG6EnNIKzRUr51p9o7mAC4bR1oVMgr9kxYiFcGg97gdZ+NJu0
+         bpeZB7b1gMSFDXypYVAjTMprbxvmAw8h9M2ECooguHaKT6gEfWBpnrKZNjT7XfGzpyKd
+         ZeXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bNuTjMh21ZDjBhYohz0NUqfViUN9CkYGywP8rKjYXXQ=;
+        b=VUTTk0j7biji5NQafpn7u8iabfStXeTWZrkvHz2uEQZEZR9yZeW3C2CeH9RaGIPR+Q
+         qxeNcSbd/5YfSzWw+awLQyPPWB1jv3XjErV5fucXdMwTM0HAdX1c1X2IaCL7DU3DJyFB
+         e6TdsFEyBdspmBCTnQ1TvoBTkUl16ag6XgzKJkuWVXKdCgrK6JBoTrSz+I53XsQilg6c
+         dnMFeHJc94TM1F9JNZJA1JMDOTYMsTLURnDRbkqOuk/RaIfWN0XafDRtAa+BPRxfk+sK
+         lynv9V25CiGpJPSWrd3mZgbYk6GtyZyzmcZe8wi7JW9xrhyZiqn+L4KxxP7VPyjgVPcr
+         khBg==
+X-Gm-Message-State: AOAM5312Be0zpf5S7Gvv+ps0BvicKD+jSxqq1vIyuRzZ8YkIlcjehuPA
+        zjrzC8G/3yO564WnwVQKV6NYwQ==
+X-Google-Smtp-Source: ABdhPJzHa77Mqwcb/UXTiiWN+F7q/weAnzXN+ZDwNq5zIfaSRjShl+af95vFZNzbpUq3Twu/Aujk5g==
+X-Received: by 2002:a17:90a:191a:: with SMTP id 26mr15092301pjg.79.1634315780283;
+        Fri, 15 Oct 2021 09:36:20 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id a3sm6094427pfv.174.2021.10.15.09.36.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Oct 2021 09:36:18 -0700 (PDT)
+Date:   Fri, 15 Oct 2021 16:36:12 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Maxim Levitsky <mlevitsk@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] KVM: x86: Fix and cleanup for recent AVIC changes
+Message-ID: <YWmt/A4pemf2050j@google.com>
+References: <20211009010135.4031460-1-seanjc@google.com>
+ <9e9e91149ab4fa114543b69eaf493f84d2f33ce2.camel@redhat.com>
+ <YWRJwZF1toUuyBdC@google.com>
+ <YWRtHmAUaKcbWEzH@google.com>
+ <ebf038b7b242dd19aba1e4adb6f4ef2701c53748.camel@redhat.com>
+ <YWmpKTk/7MOCzm15@google.com>
+ <5faa7e49-9eb6-a075-982a-aa7947a5a3d6@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: base64
-X-Provags-ID: V03:K1:ZRwYWt4OSk9Gh6r0q/C3Ygqfq7hD0k1mFOZwdL3Yxo8/tk01nzb
- 543A3p6K7KiEloEilgIM4R1x1yAYnGsHcbLmvwNFB9V8DHYXX2hJSReddNxqgXW0fAkPP7d
- lhHvLRVXTqjy+iNYkDZKbBQv7YjaleEZUuOKvwp3nNT/fpvzmbu4O2dueHYC1NB3meBpSVn
- a7UiIUp/rbbDBL5+pCxUA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:F6MG+ZaaAlE=:8J83q/UqrSfsI65Br8wwCj
- 7/mhJjGBHwC3d3He0ed/cdhH6w8x/6ZLa6+68TJr+tFLbrsl5L66fgjKa1x5l5WNnSQHjLxRG
- Vx4c9rcYF5l/v+dkeSH4wqhqksrmR8cHIlLL9UYkNq1QZNDYlEB5Q17DK/W/5n4j+jOFwBjzF
- aPlNDTB6DLgHDFLEXpu8FmKRB85ss0I3UP0ADko6YoiDd8zBUXuhjw0Tsax1sgRGkkxFJaD3J
- IbaZxCdHZMsrybR1YIJ3wKNKN7wff737555uL/zna36/qD8gDTOjn6958ue7Ya8H7/BQt5fnD
- l3iSGGXGmZBoZJbSaCt9Y0+Qswo08eYThE1WiKdQRZnvDjyUQ50gdS0mG1J2PQbYEp6yighKu
- i2grEAksakgVQPMzXBdCZz0ZkzaMCNWByJgaez6i3wU8jK2zfRYGskzHSgfmd1dHhFhcVoqHa
- dyeprqCKdrU4jv50Y8CgQ8506l0fkwEzUDEpDtpm0Ic+5Zv+B2G+L0Qnin6ntXIGEvnVSuFSo
- H9T/RrWPP2I1mW9KogC7qVyS9ZggjkrGpJrIG1qEVcC1PXCeMnkjzG7bMjMrtZD0c2o0aA5AQ
- GOiMAjXY0aGgnmaX9Tv7oH6oCALEyganK38FmDtGIF4yDiy/tcK1EFDXWqzh1ICtJUFU3AXJT
- j2Cx/z+fBzHDT6gKJo4vn2ctf3THNYA6xblAltsa9oMxQN/bYVbIz7FSoQQKJb1tse/Dki0EG
- Oh1o1kNi+fGQxksRCU++TF8Ly+EaGVW6XLzEVzYzBt4/c7MukuvuT+JhDRr7tXfQUXhBCGrEa
- s/h7iHvN4qstLbpvISqzeCZ7OjE9kZpksyj7s6+LoRyJdcpzVPqr8J5qxEh+pCZdsyexkrT4h
- dfdIgTaQ++2g+ctnU/PzXn4lYZy3K+0ZjIZld9umeLyxcOMUcYuonf6JWYUfR5anL1XU9ITyB
- 5l+mA2HB2RfU9W16I325j+mB3pJQ+j00XF165vqUo0c5ysm+JEBPV64+L3/anvALG+pC2lujd
- tyACiVQgekiJBoop02XJr0l/6fR7qRK7dqh0Mp7sdMAaKQUnQ3WeeV0kmnAmXN6HoyhfQx6DM
- GqMZ87u7XBoP6k=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5faa7e49-9eb6-a075-982a-aa7947a5a3d6@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-TGlzdGVkIHByb2Nlc3NlcyBnZXQgYWxyZWFkeSBoaWdobHkgYWN0aXZlIGR1cmluZyB0aGUgc3Rh
-cnQgb2YgcGFsZSBtb29uLCBiZWZvcmUgdGhlIHN1cmZpbmcgaXRzZWxmLiBObyB3ZWJzaWRlIGlz
-IGNhbGxlZCwgd2hlbiBpdCBhbHJlYWR5IGhhcHBlbnMuIAoKCkdlc2VuZGV0IHZvbiBBbmRyZWFz
-CgpBbSAxNC4xMC4yMDIxIDIwOjI3IHNjaHJpZWIgVGhlb2RvcmUgVHMnbyA8dHl0c29AbWl0LmVk
-dT46Cj4KPiBPbiBUaHUsIE9jdCAxNCwgMjAyMSBhdCAxMjo0MDowOFBNICswMDAwLCBzZWNyZXQg
-d3JvdGU6IAo+ID4gSGksIAo+ID4gRmlyZWphaWwgbXVzdCBoYXZlIGNhdXNlZCB0aGUgaGlnaCBh
-Y3Rpdml0eS4gCj4gPiBXaGVuZXZlciBJIHN0b3AgaXQgKHByb2Nlc3MgZmlyZWphaWwpLCB0aGV5
-IGxvd2VyIHRvIG9yaWdpbi4gCj4KPiBUaGlzIGlzIHdoYXQgSSBoYWQgYmVlbiB0cnlpbmcgdG8g
-dGVsbCB5b3UgcmVwZWF0ZWRseS7CoCBGaXJlamFpbCAKPiAoZmlyZWZveCBydW4gaW4gYSBzYW5k
-Ym94L2phaWwpIGlzIGEgYnJvd3NlciB3aGljaCB3aWxsIGRvIHZhcmlvdXMgCj4gYWN0aXZpdGll
-cyBvbiBiZWhhbGYgb2Ygd2hhdGV2ZXIgd2ViIHBhZ2VzIHRoYXQgeW91IHZpc2l0LsKgIFNvbWUg
-b2YgCj4gdGhlc2Ugd2VicGFnZXMgbWF5IGhhdmUgamF2YXNjcmlwdCwgb3Igb3RoZXIgd2ViLWJh
-c2VkIGFwcGxpY2F0aW9uIAo+IGNvZGUgd2hpY2ggaXMgY2F1c2luZyBhIGxvdCBvZiBmaWxlIEkv
-Ty7CoCBTbyB3aGVuIHZpc2l0aW5nIHRoYXQgd2ViIAo+IHBhZ2UgY2F1c2VzIGZpcmVmb3ggdG8g
-ZXhlY3V0ZSBhIGxvdCBvZiBmaWxlIEkvTywgb24gYmVoYWxmIG9mIHRoZSB3ZWIgCj4gc2l0ZSwg
-aW4gb3JkZXIgdG8gc2VydmljZSB0aGUgZmlsZSBJL08sIHRoZSBrZXJuZWwgd2lsbCBkbyB0aGF0
-IHdvcmsgCj4gaW4gdGhlIGtlcm5lbCB0aHJlYWRzIHRoYXQgeW91IHNlZW0gdG8gYmUgb2JqZWN0
-aW5nIHRvIGhhdmluZyAKPiBhY3Rpdml0eS4gCj4KPiBIb3dldmVyLCB0aG9zZSBrZXJuZWwgdGhy
-ZWFkcyBiZWluZyBhY3RpdmUgd2hlbiB0aGVyZSBpcyBmaWxlIEkvTyBpcyAKPiAqbm9ybWFsKi7C
-oCBJdCBpcyB0aGUgc3lzdGVtIHdvcmtpbmcgYXMgaW50ZW5kZWQuwqAgSSBkb24ndCBrbm93IHdo
-eSB5b3UgCj4gd291bGQgYmUgb2JqZWN0aW5nIHRvIHRob3NlIGtlcm5lbCB0aHJlYWRzIGJlaW5n
-IGFjdGl2ZSwgYnV0IGlmIHlvdSAKPiBkb24ndCBsaWtlIGl0LCBkb24ndCBkbyBhbnkgZmlsZSBJ
-L08sIGFuZCBpZiB0aGF0IG1lYW5zIG5vdCB1c2luZyAKPiBmaXJlZm94IChvciAiZmlyZWphaWwi
-KSB0byB2aXNpdCB0aG9zZSB3ZWIgc2l0ZXMuIAo+Cj4gUmVnYXJkcywgCj4KPiAtIFRlZCAK
+On Fri, Oct 15, 2021, Paolo Bonzini wrote:
+> On 15/10/21 18:15, Sean Christopherson wrote:
+> > > 
+> > >                                          - now vCPU1 finally starts running the page fault code.
+> > > 
+> > >                                          - vCPU1 AVIC is still enabled
+> > >                                            (because vCPU1 never handled KVM_REQ_APICV_UPDATE),
+> > >                                            so the page fault code will populate the SPTE.
+> > But vCPU1 won't install the SPTE if it loses the race to acquire mmu_lock, because
+> > kvm_zap_gfn_range() bumps the notifier sequence and so vCPU1 will retry the fault.
+> > If vCPU1 wins the race, i.e. sees the same sequence number, then the zap is
+> > guaranteed to find the newly-installed SPTE.
+> > 
+> > And IMO, retrying is the desired behavior.  Installing a SPTE based on the global
+> > state works, but it's all kinds of weird to knowingly take an action the directly
+> > contradicts the current vCPU state.
+> 
+> I think both of you are correct. :)
+> 
+> Installing a SPTE based on global state is weird because this is a vCPU
+> action; installing it based on vCPU state is weird because it is knowingly
+> out of date.
 
+If that's the argument, then kvm_faultin_page() should explicitly check for a
+pending KVM_REQ_APICV_UPDATE, because I would then argue that contuining on when
+KVM _knows_ its new SPTE will either get zapped (page fault wins the race) or
+will get rejected (kvm_zap_gfn_range() wins the race) is just as wrong.  The SPTE
+_cannot_ be used even if the page fault wins the race, becuase all vCPUs need to
+process KVM_REQ_APICV_UPDATE and thus will be blocked until the initiating vCPU
+zaps the range and drops the APICv lock.
+
+And I personally do _not_ want to add a check for the request because it implies
+the check is sufficient, which it is not, because the page fault doesn't yet hold
+mmu_lock.
+
+Since all answers are some form of wrong, IMO we should at least be coherent with
+respect to the original page fault.
