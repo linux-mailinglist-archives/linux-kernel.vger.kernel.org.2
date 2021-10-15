@@ -2,79 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D22542E686
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 04:28:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EDC742E692
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 04:30:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235021AbhJOCap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 22:30:45 -0400
-Received: from mx22.baidu.com ([220.181.50.185]:51886 "EHLO baidu.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234986AbhJOCao (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 22:30:44 -0400
-Received: from BC-Mail-Ex26.internal.baidu.com (unknown [172.31.51.20])
-        by Forcepoint Email with ESMTPS id C5B1299473A1198EF05A;
-        Fri, 15 Oct 2021 10:28:32 +0800 (CST)
-Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- BC-Mail-Ex26.internal.baidu.com (172.31.51.20) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Fri, 15 Oct 2021 10:28:32 +0800
-Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Fri, 15 Oct 2021 10:28:31 +0800
-From:   Cai Huoqing <caihuoqing@baidu.com>
-To:     <killertofu@gmail.com>, <Ping.Cheng@wacom.com>
-CC:     <jikos@kernel.org>, <caihuoqing@baidu.com>,
-        <benjamin.tissoires@redhat.com>, <linux-input@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <Jason.Gerecke@wacom.com>,
-        <skomra@gmail.com>, <joshua.dickens@wacom.com>
-Subject: [PATCH v2 2/2] HID: wacom: Make use of the helper function devm_add_action_or_reset()
-Date:   Fri, 15 Oct 2021 10:28:03 +0800
-Message-ID: <20211015022803.3827-2-caihuoqing@baidu.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211015022803.3827-1-caihuoqing@baidu.com>
-References: <20211015022803.3827-1-caihuoqing@baidu.com>
+        id S235067AbhJOCcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 22:32:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58544 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231653AbhJOCcO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 22:32:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 67937611EE;
+        Fri, 15 Oct 2021 02:30:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634265008;
+        bh=lSIr6MyD6q/GPpZY1UyRAsdJL5XBCTjf6lA2sgPOLDg=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=qgohciPcWZmF99Ru1fI2OofUu7k6R1CD3SPkx2pEUdZzlORAx0c1fzUj54c6ZReU4
+         e2NDk1yJM+GjlSfcyQ9I+BsXRL191IM4RY+/Cs82/GpX+AngeTQLZmc1cDzqGFzxA1
+         th2wA3X2NGZpE6ch8BzEXZvjVeK9v46d1I0nf0u4o+/s11N+N6Yt6AXlUpjULYMXGF
+         IqYdZjUo+YS2ZVfevW4M6hxNfuOVf0pmLucNhjUoUZZ9USHCOnpkz+EAss/h1yD4iV
+         U9wacO6eN4EZsm9wWUnohoQtLXxydOMTq5SOt6FeaqV/bBwmNCFgxOUci2oiVse9bf
+         4f6WflqH3lmGw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 5FDD660A38;
+        Fri, 15 Oct 2021 02:30:08 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.31.63.8]
-X-ClientProxiedBy: BC-Mail-Ex31.internal.baidu.com (172.31.51.25) To
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] hv_netvsc: Add comment of netvsc_xdp_xmit()
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163426500838.31820.16091657260521518155.git-patchwork-notify@kernel.org>
+Date:   Fri, 15 Oct 2021 02:30:08 +0000
+References: <1634174786-1810351-1-git-send-email-jiasheng@iscas.ac.cn>
+In-Reply-To: <1634174786-1810351-1-git-send-email-jiasheng@iscas.ac.cn>
+To:     Jiasheng Jiang <jiasheng@iscas.ac.cn>
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, decui@microsoft.com, davem@davemloft.net,
+        kuba@kernel.org, linux-hyperv@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The helper function devm_add_action_or_reset() will internally
-call devm_add_action(), and if devm_add_action() fails then it will
-execute the action mentioned and return the error code. So
-use devm_add_action_or_reset() instead of devm_add_action()
-to simplify the error handling, reduce the code.
+Hello:
 
-Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
----
-v1->v2:
-	*Sort to patch series with [PATCH v2 1/2] from Jason
+This patch was applied to netdev/net-next.git (master)
+by Jakub Kicinski <kuba@kernel.org>:
 
- drivers/hid/wacom_sys.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+On Thu, 14 Oct 2021 01:26:26 +0000 you wrote:
+> Adding comment to avoid the misusing of netvsc_xdp_xmit().
+> Otherwise the value of skb->queue_mapping could be 0 and
+> then the return value of skb_get_rx_queue() could be MAX_U16
+> cause by overflow.
+> 
+> Fixes: 351e158 ("hv_netvsc: Add XDP support")
+> Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
+> 
+> [...]
 
-diff --git a/drivers/hid/wacom_sys.c b/drivers/hid/wacom_sys.c
-index 62f50e4b837d..2717d39600b4 100644
---- a/drivers/hid/wacom_sys.c
-+++ b/drivers/hid/wacom_sys.c
-@@ -894,11 +894,9 @@ static int wacom_add_shared_data(struct hid_device *hdev)
- 
- 	wacom_wac->shared = &data->shared;
- 
--	retval = devm_add_action(&hdev->dev, wacom_remove_shared_data, wacom);
--	if (retval) {
--		wacom_remove_shared_data(wacom);
-+	retval = devm_add_action_or_reset(&hdev->dev, wacom_remove_shared_data, wacom);
-+	if (retval)
- 		return retval;
--	}
- 
- 	if (wacom_wac->features.device_type & WACOM_DEVICETYPE_TOUCH)
- 		wacom_wac->shared->touch = hdev;
--- 
-2.25.1
+Here is the summary with links:
+  - hv_netvsc: Add comment of netvsc_xdp_xmit()
+    https://git.kernel.org/netdev/net-next/c/78e0a006914b
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
