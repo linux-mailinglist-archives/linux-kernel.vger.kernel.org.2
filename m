@@ -2,115 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC85042FDA9
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 23:52:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CC6242FDB3
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 23:55:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243168AbhJOVyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 17:54:18 -0400
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:60782 "EHLO
-        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229921AbhJOVyR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 17:54:17 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=ashimida@linux.alibaba.com;NM=1;PH=DS;RN=28;SR=0;TI=SMTPD_---0UsFO8L2_1634334723;
-Received: from ashimida.local(mailfrom:ashimida@linux.alibaba.com fp:SMTPD_---0UsFO8L2_1634334723)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Sat, 16 Oct 2021 05:52:05 +0800
-Subject: Re: [PATCH] [PATCH V4]ARM64: SCS: Add gcc plugin to support Shadow
- Call Stack
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     masahiroy@kernel.org, michal.lkml@markovi.net,
-        catalin.marinas@arm.com, will@kernel.org, keescook@chromium.org,
-        nathan@kernel.org, tglx@linutronix.de, akpm@linux-foundation.org,
-        samitolvanen@google.com, frederic@kernel.org, rppt@kernel.org,
-        mark.rutland@arm.com, yifeifz2@illinois.edu, rostedt@goodmis.org,
-        viresh.kumar@linaro.org, andreyknvl@gmail.com,
-        colin.king@canonical.com, ojeda@kernel.org,
-        luc.vanoostenryck@gmail.com, elver@google.com,
-        nivedita@alum.mit.edu, ardb@kernel.org,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-hardening@vger.kernel.org, clang-built-linux@googlegroups.com
-References: <1634167668-60198-1-git-send-email-ashimida@linux.alibaba.com>
- <CAKwvOdkv70XDdK-k3n4ycFQsz+h7V-sTiH8RuxxaLofp-okweQ@mail.gmail.com>
- <722d9662-e27c-2efb-e8cf-d505b6950475@linux.alibaba.com>
- <CAKwvOdnMvBP-1=YbXTpYOgWqCBy44tUvWdtMXp8p485bYnPYNQ@mail.gmail.com>
-From:   Dan Li <ashimida@linux.alibaba.com>
-Message-ID: <d1873b11-2aa2-d08c-921c-0a28c4edd33f@linux.alibaba.com>
-Date:   Sat, 16 Oct 2021 05:52:03 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.1
+        id S243200AbhJOV54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 17:57:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52518 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229921AbhJOV5z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 17:57:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CD0C661184;
+        Fri, 15 Oct 2021 21:55:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634334948;
+        bh=a/PKEB79rge1XrRUfmeasHckwgBHCh9o8ibzTCo/fw0=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=B++huS3Zx4+xJH4mRegAJ9HTh26DHfq/mDCB/4lo9wviALq/OMCqnNkVUGIyBKzr6
+         pSlfrvt3OafxB0wTL1giMzIHXVQLAuoYZZIP8lnjxLY1gDw7EqK8zJY/GkPaknjsML
+         g0BXXm6QmcSV1gDkftnylIqRRwO0DQVOXa9nH0ybQChWM2KbfmV9RO/lvmyzYsZ0ZU
+         eY5uEsuHBo24mEq8LBj+p5Ouu9/IXW59MdSxy4tjVXufQbWGhYnrGF+zfk7upVFEWk
+         E3XDHZJHYZy3CTuSVadKurlnolyFwgZWvd73gMjvGH+eZhJpPV5vk+Kg4px1F/xdU8
+         eEdbozZP3KCsw==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <CAKwvOdnMvBP-1=YbXTpYOgWqCBy44tUvWdtMXp8p485bYnPYNQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20211015093701.pfvkighxsndj4ujg@pali>
+References: <20210930095838.28145-1-pali@kernel.org> <20210930095838.28145-4-pali@kernel.org> <163425678347.1688384.10695189000353676651@swboyd.mtv.corp.google.com> <20211015090937.gnt66hgugrhwnkei@pali> <20211015093701.pfvkighxsndj4ujg@pali>
+Subject: Re: [PATCH v7 3/6] dt-bindings: mvebu-uart: document DT bindings for marvell,armada-3700-uart-clock
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Vladimir Vid <vladimir.vid@sartura.hr>,
+        Marek =?utf-8?q?Beh=C3=BAn?= <kabel@kernel.org>,
+        linux-clk@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org
+To:     Pali =?utf-8?q?Roh=C3=A1r?= <pali@kernel.org>
+Date:   Fri, 15 Oct 2021 14:55:47 -0700
+Message-ID: <163433494758.1688384.5994009027317282677@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Quoting Pali Roh=C3=A1r (2021-10-15 02:37:01)
+> On Friday 15 October 2021 11:09:37 Pali Roh=C3=A1r wrote:
+> > On Thursday 14 October 2021 17:13:03 Stephen Boyd wrote:
+> > > Quoting Pali Roh=C3=A1r (2021-09-30 02:58:35)
+> > > > diff --git a/Documentation/devicetree/bindings/clock/marvell,armada=
+-3700-uart-clock.yaml b/Documentation/devicetree/bindings/clock/marvell,arm=
+ada-3700-uart-clock.yaml
+> > > > new file mode 100644
+> > > > index 000000000000..175f5c8f2bc5
+> > > > --- /dev/null
+> > > > +++ b/Documentation/devicetree/bindings/clock/marvell,armada-3700-u=
+art-clock.yaml
+> > > > @@ -0,0 +1,59 @@
+> > > [..]
+> > > > +  '#clock-cells':
+> > > > +    const: 1
+> > > > +
+> > > > +required:
+> > > > +  - compatible
+> > > > +  - reg
+> > > > +  - clocks
+> > > > +  - clock-names
+> > > > +  - '#clock-cells'
+> > > > +
+> > > > +additionalProperties: false
+> > > > +
+> > > > +examples:
+> > > > +  - |
+> > > > +    uartclk: clock-controller@12010 {
+> > >=20
+> > > The uart device is at 0x12000 and the clock-controller is at 0x12010?
+> > > This looks like a node is being put into DT to represent a clk driver.
+> > > Why can't we register a clk from the uart device driver itself? I thi=
+nk
+> > > we talked about this a month or two ago but it still isn't clear to m=
+e.
+> >=20
+> > We have already talked about it and I have already wrote reasons. UART
+> > clk is shared for both UART1 and UART2. And UART clk regs are in both
+> > address spaces of UART1 and UART2. UART1 or UART2 can be independently
+> > disabled on particular board (as pins are MPP which may be configured to
+> > different function). So you have a board only with UART2, you have to
+> > disable UART1 node, but at the same time you have to access UART clk to
+> > drive UART2. And UART clk bits are in UART1 address space.
+>=20
+> It is explained also in commit message of patch 2/6.
 
+Cool, thanks for the pointer.
 
-On 10/16/21 3:13 AM, Nick Desaulniers wrote:
-> On Fri, Oct 15, 2021 at 11:29 AM Dan Li <ashimida@linux.alibaba.com> wrote:
->>
->>
->>
->> On 10/15/21 2:44 AM, Nick Desaulniers wrote:
->>>    On Wed, Oct 13, 2021 at 4:28 PM Dan Li <ashimida@linux.alibaba.com> wrote:
->>>> --- a/include/linux/compiler-gcc.h
->>>> +++ b/include/linux/compiler-gcc.h
->>>> @@ -50,6 +50,10 @@
->>>>    #define __latent_entropy __attribute__((latent_entropy))
->>>>    #endif
->>>>
->>>> +#if defined(SHADOW_CALL_STACK_PLUGIN) && !defined(__CHECKER__)
->>>> +#define __noscs __attribute__((no_shadow_call_stack))
->>>> +#endif
->>>
->>> Cool this is a nice addition, and something I don't think that clang
->>> has.  For any new feature, having a function attribute to disable it
->>> at the function granularity is nice, and plays better with LTO than -f
->>> group flags.  Though that begs the question: what happens if a __noscs
->>> callee is inlined into a non-__noscs caller, or vice versa?
->> Thanks Nick,
->>
->> According to my understanding, all inline optimizations in gcc should
->> happen before inserting scs insns (scs and paciasp/autiasp use the
->> same insertion point). Therefore, the check for the __noscs attribute
->> will also occur after all inlining is completed.
->>
->> As in the following example:
->> - Since __noscs attribute is specified, scs_test1 does not insert scs insns
->> - Since normal functions scs_test2/3 uses x30, it needs to insert scs insns
->> - Since __noscs attribute is specified, scs_test4 after inlining does not
->> need to insert scs insns
->>
->> __always_inline __noscs void scs_test1(void)
->> {
->>       asm volatile("mov x1, x1\n\t":::"x30");
->> }
->>
->> //scs insns inserted after function inline
->> void scs_test2(void)
->> {
->>       scs_test1();
->> }
-> 
-> That may be surprising to developers.  Perhaps __always_inline on
-> scs_test1 is distracting this test case, but I suspect it may not make
-> a difference.  This particular issue comes up time and again with
-> stack protectors; ie. the callee is marked no stack protector, then
-> gets inlined into a caller and suddenly gets a stack protector.
->
-Yes.
+Why are the two uarts split into different device nodes? It looks like
+it's one device that was split into two nodes because they're fairly
+similar hardware blocks, and one or the other may not be used on the
+board so we want to use status =3D "disabled" to indicate that. Sadly the
+hardware team has delivered them as a single package into the SoC at
+address 0x12000 and then stuck a common clk for both uarts into the same
+uart wrapper. Here's a clk, job done!
 
-I haven’t noticed this issue. I just took a quick look at the stack
-canary code, and found that the instructions are generated in the
-RTL stage like scs/pac (AST => GIMPLE => RTL => asm output), and
-the inlining should have been completed before this.
+Is it a problem to map UART1 address space when it isn't used on the
+board? I'm trying to understand why it can't work to register two uart
+ports from one device node and driver. It seems to be the main reason
+why we're introducing another node for the clk registers when it feels
+like it could all be handled in the existing uart driver.
 
-Generally, instructions that are sensitive to assembly order can
-only be inserted during RTL, otherwise their order is difficult to
-guarantee. I think this may be the reason why the similar problem
-always appears.
+For example, we could have a static clk pointer in the uart driver
+indicating the clk has been registered, and then register the clk if
+uart1 or uart2 is the first device to probe and then store that clk in a
+global (with clk_hw_get_clk(), I think that's a thing now). If uart2
+probes first it can take the reg property and subtract some number to
+find the clk, and if uart1 probes first it can take the reg property and
+add some number to find the clk. Either way, the binding doesn't change
+in this case and we don't have to add another binding for this same uart
+hardware.
+
+Then if someone wants to cleanup the binding they can combine both uarts
+into one node, make a new compatible string and add some property to
+indicate that one or the other uart isn't used. Probably also add some
+property to map the uart alias to the uart hardware block inside the
+wrapper node.
