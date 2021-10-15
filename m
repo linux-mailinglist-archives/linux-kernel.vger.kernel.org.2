@@ -2,152 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CC2642F40C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 15:44:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51F5842F41D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 15:45:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239762AbhJONqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 09:46:04 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:39804
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236048AbhJONqD (ORCPT
+        id S239990AbhJONrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 09:47:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44796 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239647AbhJONrC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 09:46:03 -0400
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com [209.85.167.72])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 5FF5F40062
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 13:43:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1634305436;
-        bh=eEc0Vi/iayffTVpVwLxFg1C5akct/CAQN7k1AuOgZVk=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=mYxgOPN5Jb1TUhAxbERSP6oDQkg7DCQNK8eFutEd5A20s2mxFGybFNL+foQd1WRpG
-         ZxaqsIrJ4T2/uNSLlE7x+VPfqv6PMJtFujJyThFfRwUKGLx46/KB1/lzKKKteR1Ban
-         fSIrwVAkj09TyzqyOaOm5IbQ+1sEFc7IXLpaMFSys5AEJx0Tw43kTKAuM6jHgfox+K
-         rhLBTjx1GycliuZg+ol0ifw31Ln3IapsrFgbLyyUZHq6P33QnExUczT8WadfsLB/ay
-         VntUX7yQTQiN8P6+ASCPK2gpPgKnK6TSawYMOZduT0eNCfQb3/TooFbh4uMdFsbqa4
-         6cHROuIcSZLcw==
-Received: by mail-lf1-f72.google.com with SMTP id g10-20020a05651222ca00b003fda3f05c17so6756855lfu.11
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 06:43:56 -0700 (PDT)
+        Fri, 15 Oct 2021 09:47:02 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB565C061762
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 06:44:55 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id g14so8440321pfm.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 06:44:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=zimEHaa8boz7suXsDIx5TYAWL4pCIFUnpVjWJ99Ya3Q=;
+        b=MMacAUqGHA05CB6dO+d10bTCMV6YZg8fNsN8QjMkWyCUbh1cvhp+jLwLYNoEi0ANPi
+         tT5UckVy4yelnkGZRUloIFfqD6gCT4yeq0c4biaz1U4ac6lPMk/qJQLW4/goyvoMhvDN
+         iG1pfRX/ccLrvySqpWyRFKktEzR5fWB4JEnyBJ/rPy6kWz4t5xhMwbg6OU5faLMzAVBZ
+         t4ubC5CJnuuyG5zAHSuO7cSi9dfYB507+YJKheKAWNJu+ckfSDophohTtKMFZCqkpeYx
+         KbkDCbNguoPwIhMgW9hI1CW9MMlxaUQaglQUB1aBoYYsle+TG7O4LcDH2ABI3RY1NW3i
+         5c6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=eEc0Vi/iayffTVpVwLxFg1C5akct/CAQN7k1AuOgZVk=;
-        b=gku75wM1laitsO+s/yUMSd+Dhr6RuwDm98ldO6bgYDyKtmbaOvYgT9+Cihxq+vYojz
-         oDGKAdnaYjsfvrvIG5TYGwTTytnSclOXiyMcheTzNnXziGz9e+X7jo8kYLpDQJGoYqDh
-         xJB5uwHZSdooODoMwF8uh4mhnrLl6yj3BSVReAII8ZWkkjb4849/H0ITUa1jTRm6l/wY
-         ZYtbjkRQtYohq6/8SbV1/pDzPq8NzfJb/LjSd664pi48T6VsW1U5MJ+4+uncIXNI0ILt
-         qAFBCcy6g2OxOHa0LEBiLkO/4x6lmIHyWyKAzO0MF/Ocs0hHZyqAc52MXtSRYnRHWTPx
-         V1WQ==
-X-Gm-Message-State: AOAM530yQpLY6575KRp8kteqtixUrMQeLrIk0AnFzgI+QV6qEwZj2jzD
-        1Ye/e+9gkgQODOHQ4NYJ7f6poztoZ2QTpb6R4t+MhzHN35TtyJG1Trpm8vbQcTE2nHAKFmFZyap
-        a+eX6J1mDAqxL4TOmgf4dfjY/eloooJ85pFpOlANQSA==
-X-Received: by 2002:a05:6512:308b:: with SMTP id z11mr11244757lfd.330.1634305435637;
-        Fri, 15 Oct 2021 06:43:55 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzZ+/w4Io+W6PbEi76wSIW7Mdthem4+NCuHObjSgdwIOXIeUa8NDjlAeavafuyp7tD/WUbVmQ==
-X-Received: by 2002:a05:6512:308b:: with SMTP id z11mr11244728lfd.330.1634305435410;
-        Fri, 15 Oct 2021 06:43:55 -0700 (PDT)
-Received: from [192.168.3.161] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
-        by smtp.gmail.com with ESMTPSA id bd19sm557333ljb.28.2021.10.15.06.43.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Oct 2021 06:43:54 -0700 (PDT)
-Subject: Re: [PATCH v4 03/13] memory: mtk-smi: Use clk_bulk clock ops
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Yong Wu <yong.wu@mediatek.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org, youlin.pei@mediatek.com,
-        anan.sun@mediatek.com, ming-fan.chen@mediatek.com,
-        yi.kuo@mediatek.com, anthony.huang@mediatek.com,
-        Ikjoon Jang <ikjn@chromium.org>
-References: <20210914113703.31466-1-yong.wu@mediatek.com>
- <20210914113703.31466-4-yong.wu@mediatek.com>
- <e466b3fb-d9fe-bb20-23c2-f9766a35f120@collabora.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <ab5c6dd1-7eed-4515-8781-c79e5317d038@canonical.com>
-Date:   Fri, 15 Oct 2021 15:43:53 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=zimEHaa8boz7suXsDIx5TYAWL4pCIFUnpVjWJ99Ya3Q=;
+        b=x3BCE7lgf+gi8vjNQpIyGF8SmnB/oAUMFcagvRpND8dk0m2+qqbgNGRPnBY6RqoCbV
+         LlBKZvKYUzCUz/TBXpfh0FYgx5WUUSb3re2QLMOiY0YGZuPx1CZDOEqjF28g8jeGO8Uo
+         PFU3vubqI9eWUkY+ZAzry6cI5ROH9WYNJrT7Ou5sdwBrZQFaebD5IT2+r0PdBYkPCXHy
+         xiuaxiHbJnk8n1Z6+cHWtwBAymLRmm3gSGl/4jM/5Lzx+M70A9YsMu9tzd5TJRGHTAJe
+         T+MoZZntBcmkZPunAr9Ct9l36wB5g27BRYL4ijqwJ9Et5iHU9lMAYi+C7dpr1XxaaSU3
+         irwQ==
+X-Gm-Message-State: AOAM5315XaIdUhV0OFd/yLL4JadVybj3q7HgqqUOeOrbFNLNaFqld4Cv
+        6CKg0iiPYX4Hdykm5sss4XNjIQ==
+X-Google-Smtp-Source: ABdhPJyXcW0NY6hb5uxr9hkmKKgxAfPW45Ii+fi04i4RUJ0SArTy2VUA4xhiREiWN2dPrSkvQbQcLQ==
+X-Received: by 2002:a62:5fc6:0:b0:44c:591a:5bf6 with SMTP id t189-20020a625fc6000000b0044c591a5bf6mr11446966pfb.36.1634305495222;
+        Fri, 15 Oct 2021 06:44:55 -0700 (PDT)
+Received: from dragon (80.251.214.228.16clouds.com. [80.251.214.228])
+        by smtp.gmail.com with ESMTPSA id y22sm5069176pjj.5.2021.10.15.06.44.52
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 15 Oct 2021 06:44:55 -0700 (PDT)
+Date:   Fri, 15 Oct 2021 21:44:47 +0800
+From:   Shawn Guo <shawn.guo@linaro.org>
+To:     Maulik Shah <mkshah@codeaurora.org>
+Cc:     swboyd@chromium.org, mka@chromium.org, evgreen@chromium.org,
+        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, agross@kernel.org,
+        dianders@chromium.org, linux@roeck-us.net, rnayak@codeaurora.org,
+        lsrao@codeaurora.org
+Subject: Re: [PATCH v12 0/5] Introduce SoC sleep stats driver
+Message-ID: <20211015134446.GA7231@dragon>
+References: <1634107104-22197-1-git-send-email-mkshah@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <e466b3fb-d9fe-bb20-23c2-f9766a35f120@collabora.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1634107104-22197-1-git-send-email-mkshah@codeaurora.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/10/2021 15:38, AngeloGioacchino Del Regno wrote:
->> Use clk_bulk interface instead of the orginal one to simplify the code.
->>
->> For SMI larbs: Require apb/smi clocks while gals is optional.
->> For SMI common: Require apb/smi/gals0/gal1 in has_gals case. Otherwise,
->>                  also only require apb/smi, No optional clk here.
->>
->> About the "has_gals" flag, for smi larbs, the gals clock also may be
->> optional even this platform support it. thus it always use
->> *_bulk_get_optional, then the flag has_gals is unnecessary. Remove it.
->> The smi_common's has_gals still keep it.
->>
->> Also remove clk fail logs since bulk interface already output fail log.
->>
->> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
+On Wed, Oct 13, 2021 at 12:08:19PM +0530, Maulik Shah wrote:
+> Changes in v12:
+> - Address Stephan's comments from v11
+> - Rename driver and compatible to qcom,rpm(h)-stats
+> - Skip reading SMEM for RPM targets
+> - Make driver register in late_init to avoid -EPROBE_DEFER from smem.
+> - Change size to 0x10000 for RPM targets since area contains many others stats.
 > 
-> Hello Yong,
-> thanks for the patch! However, I have an improvement to point out:
+> Changes in v11:
+> - Address Bjorn's comments from v10
+> - Add a case for RPM based targets dynamic offset in driver
+> - Update commit messages to use qcom sleep stats instead of soc sleep stats
+> - Drop individual target dtsi changes for sc7180 and sc7280
+> - Add single change to enable sleep stats for RPMh based targets
+> - Add single change to enable sleep stats for RPM based targets
 > 
->> ---
->>   drivers/memory/mtk-smi.c | 143 +++++++++++++++------------------------
->>   1 file changed, 55 insertions(+), 88 deletions(-)
->>
->> diff --git a/drivers/memory/mtk-smi.c b/drivers/memory/mtk-smi.c
->> index c5fb51f73b34..f91eaf5c3ab0 100644
->> --- a/drivers/memory/mtk-smi.c
->> +++ b/drivers/memory/mtk-smi.c
->> @@ -60,6 +60,20 @@ enum mtk_smi_gen {
->>   	MTK_SMI_GEN2
->>   };
->>   
->> +#define MTK_SMI_CLK_NR_MAX			4
+> Changes in v10:
+> - Updated device node name to use memory instead of aop_msgram
+> - Remove Lina's email from maintainers 
+> - Rename driver to qcom_sleep_stats. Update makefile, Kconfig accordingly
+> - Address Bjorn's comments from v9
 > 
-> This refers to mtk_smi_common_clks[] and should be probably moved after that.
-> In any case, I don't think that there's any need to manually define this as 4,
-> as you can simply use the macro ARRAY_SIZE(mtk_smi_common_clks).
-> Using that will make you able to not update this definition everytime an update
-> occurs to the mtk_smi_common_clks array.
+> Changes in v9:
+> - Remove soft dependency on smem module
+> - Return -EIO to userspace in case of error
+> - Make struct sleep_stats *stat a const pointer
+> - Remove the driver from soc_sleep_stats_driver name
+> - Remove offset address and directly mention the msgram address in dtsi
+> - Use devm_platform_get_and_ioremap_resource() to ioremap dtsi address
+> - Update device node name to mention aop_msgram instead rpmh-sleep-stats
+> - Update dtsi and documentation accordingly but retain the reviews
 > 
->> +
->> +/* larbs: Require apb/smi clocks while gals is optional. */
->> +static const char * const mtk_smi_larb_clks[] = {"apb", "smi", "gals"};
->> +#define MTK_SMI_LARB_REQ_CLK_NR		2
->> +#define MTK_SMI_LARB_OPT_CLK_NR		1
->> +
->> +/*
->> + * common: Require these four clocks in has_gals case. Otherwise, only apb/smi are required.
->> + */
->> +static const char * const mtk_smi_common_clks[] = {"apb", "smi", "gals0", "gals1"};
->> +#define MTK_SMI_COM_REQ_CLK_NR		2
->> +#define MTK_SMI_COM_GALS_REQ_CLK_NR	MTK_SMI_CLK_NR_MAX
->> +
+> Changes in v8:
+> - Addressed bjorn's comments in driver from v7
+> - Update aoss_qmp device node reg size for sc7280
 > 
-> Apart from that,
-> Acked-By: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> Changes in v7:
+> - Fix example in bindings documentation as per #address/size-cells = <1>.
+> - Add comment in driver from where 'ddr' subsystems name is read.
+> - Update comment in driver to s/beside/besides and others from v6.
+> - Rename debugfs_create_entries() from v6.
+> - Drop use of memcpy_fromio() to find the name.
+> - Use sizeof(*prv_data) in devm_kzalloc().
+> - Add change to define readq() if its not yet defined for compile support.
+> - Add wpss subsystem in the list of subsystems.
+> - Add module soft dependency on smem module.
+> - Add new change to add device node for sc7280.
+> 
+> Changes in v6:
+> - Address stephen's comments from v5 which includes below
+> - Pad 0 in documentation example to make address 8 digit
+> - define macro to calculate offset in driver
+> - Add appended_stats_avail to prv_data instead of using entire stats_config
+> - make array subsystems[] as const
+> - Add comment for SSR case
+> - Use memcpy_fromio() and devm_kcalloc() during probe
+> - Change file permission mode from 444 to 400 
+> 
+> - Address guenter's comments to add depends on QCOM_SMEM
+> 
+> - Add adsp_island and cdsp_island subsystems
+> - Use strim() to remove whitespace in stat name
+> 
+> Changes in v5:
+> - Remove underscore from node name in Documentation and DTSI change
+> - Remove global config from driver change
+> 
+> Changes in v4:
+> - Address bjorn's comments from v3 on change 2.
+> - Add bjorn's Reviewed-by on change 3 and 4.
+> 
+> Changes in v3:
+> - Address stephen's comments from v2 in change 1 and 2.
+> - Address bjorn's comments from v2 in change 3 and 4.
+> - Add Rob and bjorn's Reviewed-by on YAML change.
+> 
+> Changes in v2:
+> - Convert Documentation to YAML.
+> - Address stephen's comments from v1.
+> - Use debugfs instead of sysfs.
+> - Add sc7180 dts changes for sleep stats
+> - Add defconfig changes to enable driver
+> - Include subsystem stats from [1] in this single stats driver.
+> - Address stephen's comments from [1]
+> - Update cover letter inline to mention [1]
+> 
+> Qualcomm Technologies, Inc. (QTI)'s chipsets support SoC level low power
+> modes. SoCs Always On Processor/Resource Power Manager produces statistics
+> of the SoC sleep modes involving lowering or powering down of the rails and
+> the oscillator clock.
+> 
+> Additionally multiple subsystems present on SoC like modem, spss, adsp,
+> cdsp maintains their low power mode statistics in shared memory (SMEM).
+> 
+> Statistics includes SoC sleep mode type, number of times LPM entered, time
+> of last entry, exit, and accumulated sleep duration in seconds.
+> 
+> This series adds a driver to read the stats and export to debugfs.
+> 
+> [1] https://lore.kernel.org/patchwork/patch/1149381/
+> 
+> Mahesh Sivasubramanian (2):
+>   dt-bindings: Introduce QCOM Sleep stats bindings
+>   soc: qcom: Add Sleep stats driver
+> 
+> Maulik Shah (3):
+>   arm64: defconfig: Enable Sleep stats driver
+>   arm64: dts: qcom: Enable RPMh Sleep stats
+>   arm64: dts: qcom: Enable RPM Sleep stats
 
-The patchset was merged around a month ago:
-https://lore.kernel.org/lkml/163229303729.7874.4095337797772755570.b4-ty@canonical.com/
+On SDM660:
 
-
-Best regards,
-Krzysztof
+Tested-by: Shawn Guo <shawn.guo@linaro.org>
