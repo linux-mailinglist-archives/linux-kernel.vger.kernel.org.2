@@ -2,206 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11FCB42EDDC
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 11:38:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39A2642EDE4
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 11:41:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237546AbhJOJkU convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 15 Oct 2021 05:40:20 -0400
-Received: from aposti.net ([89.234.176.197]:51550 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237489AbhJOJkS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 05:40:18 -0400
-Date:   Fri, 15 Oct 2021 10:38:00 +0100
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH 2/3] mtd: rawnand: Export nand_read_page_hwecc_oob_first()
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Harvey Hunt <harveyhuntnexus@gmail.com>, list@opendingux.net,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, stable@vger.kernel.org
-Message-Id: <CRI01R.KF0NPTKK5WYV1@crapouillou.net>
-In-Reply-To: <20211015113515.7b10a2d5@xps13>
-References: <20211009184952.24591-1-paul@crapouillou.net>
-        <20211009184952.24591-3-paul@crapouillou.net>
-        <20211015081313.60018976@xps13> <70G01R.2VROMW06O3O83@crapouillou.net>
-        <20211015105146.3d2fbd08@xps13> <89I01R.QTBARVYLTBT02@crapouillou.net>
-        <20211015113515.7b10a2d5@xps13>
+        id S237524AbhJOJnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 05:43:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45324 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237422AbhJOJnl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 05:43:41 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 625B6C061570
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 02:41:35 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id s17so6953059ioa.13
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 02:41:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=N/9Cjwbow4gQwX9XQhOljIzy+rv03aN7aFZ2XRfJ3dw=;
+        b=SQmyqjdhNlZzfunv4WhO/v7IvIaQOSz5mrD0KgdA4IyH7HaS1yQ6UK+RvonPj6gNV6
+         fnxihMFImVsytVdsP8DxqM36FoB05+m9tlpdO2OMRTgjghO0Zh6gb78TUa9SoBvGe9bD
+         PtFkq8V+CDd2p9iwN6/VaRJkFuTiYo06nRU+WGChVZv6EYdhRfDseVK8BO9xuvXubbhM
+         pNFNOWGR4akZ+vgcDgcNHr1aZJsBp7Bjww96Yv/biCQit/u90yWaeSYsc+h2HeZenBNK
+         ktu6XOFzHC7LjvkBC80A1pDznz7FcoHxvyHRpiqihJoocSf8aGkrRU0nJN9oEhZTWQl1
+         ik0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=N/9Cjwbow4gQwX9XQhOljIzy+rv03aN7aFZ2XRfJ3dw=;
+        b=EKF0TLlVCXar45lYxMqr0lkwrGwHiiEyMhZ4dilTxzK4gsq/Np+Q3yV59QjPk74OIz
+         XxOrVYpIlyckoqz3+3PcxN/agKCl0Kv80pWoqka+LKK+TmV1FotSpdzluLR/q6xpeMrQ
+         Dedb4r+RqaCSKh6Eutd0m5IhpuY8sseiyrjKxjtbsRgwaXS2bPFjLmBwZiSARaC9D6Tu
+         q+OM44EBHoUQqpTzCGBJuDpwVmZp7E+JBKpskOHp7Yvx8oQhBbUZqv4dyJwiPAablRBM
+         iOZViFGvxESDQBQeQbkoXVsafDJBVyfeHMesJqVU6RF+RzrcdJdT06oqSmZcdVLxEDsA
+         8H0w==
+X-Gm-Message-State: AOAM533zAnuh8y9VlpdP4ahLFhxI1vizgIE/PmlRf6Ckrw279piaBNSa
+        IVk43fMP9ZBE/XaceolxKYtP65wTWp1LMI330Vc=
+X-Google-Smtp-Source: ABdhPJxu5BMdOXsp7NDP24Ux0EvjITerC6WK7GEyqP9R2UlWAg0bSfZABhzh9s81GieX0Fdak7DLoQl0vE0+5HKYcAM=
+X-Received: by 2002:a05:6602:148b:: with SMTP id a11mr3078869iow.85.1634290894846;
+ Fri, 15 Oct 2021 02:41:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+References: <CtypPaXXhVINRV0090UVzA-ammarfaizi2@gnuweeb.org> <6sZ9qpcJvtqCksJQVaiZyA-ammarfaizi2@gnuweeb.org>
+In-Reply-To: <6sZ9qpcJvtqCksJQVaiZyA-ammarfaizi2@gnuweeb.org>
+From:   Louvian Lyndal <louvianlyndal@gmail.com>
+Date:   Fri, 15 Oct 2021 16:41:20 +0700
+Message-ID: <CAP2ubg+p9sxJRKVhRAqYE0RKVU0Xz81YYy+=fysRiScMtAV2LQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] tools/nolibc: x86-64: Fix startup code bug
+To:     Ammar Faizi <ammar.faizi@students.amikom.ac.id>
+Cc:     Willy Tarreau <w@1wt.eu>, Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        David Laight <David.Laight@aculab.com>,
+        Peter Cordes <peter@cordes.ca>,
+        Bedirhan KURT <windowz414@gnuweeb.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, Oct 15, 2021 at 3:57 PM Ammar Faizi wrote:
+>
+> Hi,
+>
+> This is a code to test.
+>
+> Compile with:
+>   gcc -O3 -ggdb3 -nostdlib -o test test.c
+>
+> Technical explanation:
+> The System V ABI mandates the %rsp must be 16-byte aligned before
+> performing a function call, but the current nolibc.h violates it.
+>
+> This %rsp alignment violation makes the callee can't align its stack
+> properly. Note that the callee may have a situation where it requires
+> vector aligned move. For example, `movaps` with memory operand w.r.t.
+> xmm registers, it requires the src/dst address be 16-byte aligned.
+>
+> Since the callee can't align its stack properly, it will segfault when
+> executing `movaps`. The following C code is the reproducer and test
+> to ensure the bug really exists and this patch fixes it.
 
-Le ven., oct. 15 2021 at 11:35:15 +0200, Miquel Raynal 
-<miquel.raynal@bootlin.com> a écrit :
-> Hi Paul,
-> 
->>  >>  */
->>  >>  >> >>   /* An ECC layout for using 4-bit ECC with small-page 
->> flash, >> storing
->>  >>  >>  @@ -648,7 +580,7 @@ static int 
->> davinci_nand_attach_chip(struct >> >> nand_chip *chip)
->>  >>  >>   			} else if (chunks == 4 || chunks == 8) {
->>  >>  >>   				mtd_set_ooblayout(mtd,
->>  >>  >>   						  nand_get_large_page_ooblayout());
->>  >>  >>  -				chip->ecc.read_page = >> 
->> nand_davinci_read_page_hwecc_oob_first;
->>  >>  >>  +				chip->ecc.read_page = nand_read_page_hwecc_oob_first;
->>  >>  >>   			} else {
->>  >>  >>   				return -EIO;
->>  >>  >>   			}
->>  >>  >>  diff --git a/drivers/mtd/nand/raw/nand_base.c >> >> 
->> b/drivers/mtd/nand/raw/nand_base.c
->>  >>  >>  index 3d6c6e880520..cb5f343b9fa2 100644
->>  >>  >>  --- a/drivers/mtd/nand/raw/nand_base.c
->>  >>  >>  +++ b/drivers/mtd/nand/raw/nand_base.c
->>  >>  >>  @@ -3160,6 +3160,75 @@ static int 
->> nand_read_page_hwecc(struct >> >> nand_chip *chip, uint8_t *buf,
->>  >>  >>   	return max_bitflips;
->>  >>  >>   }
->>  >>  >> >>  +/**
->>  >>  >>  + * nand_read_page_hwecc_oob_first - Hardware ECC page read 
->> >> with ECC
->>  >>  >>  + *                                  data read from OOB area
->>  >>  >>  + * @chip: nand chip info structure
->>  >>  >>  + * @buf: buffer to store read data
->>  >>  >>  + * @oob_required: caller requires OOB data read to >> 
->> chip->oob_poi
->>  >>  >>  + * @page: page number to read
->>  >>  >>  + *
->>  >>  >>  + * Hardware ECC for large page chips, require OOB to be 
->> read >> >> first. For this
->>  >>  >
->>  >>  > requires
->>  >>  >
->>  >>  > With this ECC configuration?
->>  >>  >
->>  >>  >>  + * ECC mode, the write_page method is re-used from ECC_HW. 
->> >> These >> methods
->>  >>  >
->>  >>  > I do not understand this sentence nor the next one about >> 
->> syndrome. I
->>  >>  > believe it is related to your engine and should not leak into 
->> the >> > core.
->>  >>  >
->>  >>  >>  + * read/write ECC from the OOB area, unlike the >> 
->> ECC_HW_SYNDROME >> support with
->>  >>  >>  + * multiple ECC steps, follows the "infix ECC" scheme and 
->> >> >> reads/writes ECC from
->>  >>  >>  + * the data area, by overwriting the NAND manufacturer bad 
->> >> block >> markings.
->>  >>  >
->>  >>  > That's a sentence I don't like. What do you mean exactly?
->>  >>  >
->>  >>  > What "Infix ECC" scheme is?
->>  >>  >
->>  >>  > Do you mean that unlike the syndrome  mode it *does not* >> 
->> overwrite the
->>  >>  > BBM ?
->>  >> >>  I don't mean anything. I did not write that comment. I just 
->> moved >> the function verbatim with no changes. If something needs 
->> to be >> fixed, then it needs to be fixed before/after this patch.
->>  >
->>  > Well, this comment should be adapted because as-is I don't think 
->> it's
->>  > wise to move it around.
->> 
->>  OK.
->> 
->>  I think it says that BBM can be overwritten with this 
->> configuration, but that would be if the OOB layout covers the BBM 
->> area.
-> 
-> If the ooblayout prevents the BBM to be smatched I'm fine and this
-> sentence should disappear because it's misleading.
-> 
->>  >> >>  >>  + */
->>  >>  >>  +int nand_read_page_hwecc_oob_first(struct nand_chip *chip, 
->> >> uint8_t >> *buf,
->>  >>  >>  +				   int oob_required, int page)
->>  >>  >>  +{
->>  >>  >>  +	struct mtd_info *mtd = nand_to_mtd(chip);
->>  >>  >>  +	int i, eccsize = chip->ecc.size, ret;
->>  >>  >>  +	int eccbytes = chip->ecc.bytes;
->>  >>  >>  +	int eccsteps = chip->ecc.steps;
->>  >>  >>  +	uint8_t *p = buf;
->>  >>  >>  +	uint8_t *ecc_code = chip->ecc.code_buf;
->>  >>  >>  +	unsigned int max_bitflips = 0;
->>  >>  >>  +
->>  >>  >>  +	/* Read the OOB area first */
->>  >>  >>  +	ret = nand_read_oob_op(chip, page, 0, chip->oob_poi, >> 
->> >> mtd->oobsize);
->>  >>  >>  +	if (ret)
->>  >>  >>  +		return ret;
->>  >>  >>  +
->>  >>  >>  +	ret = nand_read_page_op(chip, page, 0, NULL, 0);
->>  >>  >
->>  >>  > Definitely not, your are requesting the chip to do the 
->> read_page
->>  >>  > operation twice. You only need a nand_change_read_column I >> 
->> believe.
->>  >> >>  Again, this code is just being moved around - don't shoot 
->> the >> messenger :)
->>  >
->>  > haha
->>  >
->>  > Well, now you touch the core, so I need to be more careful, and 
->> the
->>  > code is definitely wrong, so even if we don't move that code off, 
->> you
->>  > definitely want to fix it in order to improve your performances.
->> 
->>  I don't see the read_page being done twice?
->> 
->>  There's one read_oob, one read_page, then read_data in the loop.
-> 
-> read_oob and read_page both end up sending READ0 and READSTART so
-> they do request the chip to perform an internal read twice. You
-> need this only once. The call to nand_read_page_op() should be a
-> nand_change_read_column() with no data requested.
+Hello,
+With the current nolibc.h, the program segfault on movaps:
+Program received signal SIGSEGV, Segmentation fault.
+0x0000555555555032 in dump_argv (argv=0x7fffffffe288, argc=1) at test.c:15
+15        const char str[] = "\nDumping argv...\n";
+(gdb) x/20i main
+   0x555555555000 <main>:    endbr64
+   0x555555555004 <main+4>:    push   %r14
+   0x555555555006 <main+6>:    push   %r13
+   0x555555555008 <main+8>:    mov    %edi,%r13d
+   0x55555555500b <main+11>:    push   %r12
+   0x55555555500d <main+13>:    push   %rbp
+   0x55555555500e <main+14>:    mov    %rdx,%rbp
+   0x555555555011 <main+17>:    mov    $0xa,%edx
+   0x555555555016 <main+22>:    push   %rbx
+   0x555555555017 <main+23>:    mov    %rsi,%rbx
+   0x55555555501a <main+26>:    sub    $0x8,%rsp
+   0x55555555501e <main+30>:    movdqa 0xffa(%rip),%xmm0        # 0x555555556020
+   0x555555555026 <main+38>:    mov    %dx,-0x68(%rsp)
+   0x55555555502b <main+43>:    lea    -0x78(%rsp),%r12
+   0x555555555030 <main+48>:    xor    %edx,%edx
+=> 0x555555555032 <main+50>:    movaps %xmm0,-0x78(%rsp)
+   0x555555555037 <main+55>:    nopw   0x0(%rax,%rax,1)
+   0x555555555040 <main+64>:    add    $0x1,%rdx
+   0x555555555044 <main+68>:    cmpb   $0x0,(%r12,%rdx,1)
+   0x555555555049 <main+73>:    jne    0x555555555040 <main+64>
+(gdb) p $rsp-0x78
+$1 = (void *) 0x7fffffffe1c8
+(gdb)
 
-OK.
+Apparently it's because $rsp-0x78 is not multiple of 16. After this
+patchset, it works fine. gcc version 11.1.0
 
-> 
->>  >>  >>   /**
->>  >>  >>    * nand_read_page_syndrome - [REPLACEABLE] hardware ECC >> 
->> syndrome >> based page read
->>  >>  >>    * @chip: nand chip info structure
->>  >>  >>  diff --git a/include/linux/mtd/rawnand.h >> >> 
->> b/include/linux/mtd/rawnand.h
->>  >>  >>  index b2f9dd3cbd69..5b88cd51fadb 100644
->>  >>  >>  --- a/include/linux/mtd/rawnand.h
->>  >>  >>  +++ b/include/linux/mtd/rawnand.h
->>  >>  >>  @@ -1539,6 +1539,8 @@ int nand_read_data_op(struct 
->> nand_chip >> *chip, >> void *buf, unsigned int len,
->>  >>  >>   		      bool force_8bit, bool check_only);
->>  >>  >>   int nand_write_data_op(struct nand_chip *chip, const void 
->> *buf,
->>  >>  >>   		       unsigned int len, bool force_8bit);
->>  >>  >>  +int nand_read_page_hwecc_oob_first(struct nand_chip *chip, 
->> >> uint8_t >> *buf,
->>  >>  >>  +				   int oob_required, int page);
->>  >>  >
->>  >>  > You certainly want to add this symbol closer to the other >> 
->> read/write
->>  >>  > page helpers?
->>  >> >>  Where would that be? The other read/write page helpers are 
->> all >> "static" so they don't appear in any header.
->>  >
->>  > I believe we should keep this header local as long as there are no
->>  > other users.
->> 
->>  I'll move it to internal.h then.
-> 
-> Why do you want to put it there is there is only one user?
-
-But there are two users: davinci_nand.c and (with patch [3/3]) 
-ingenic/ingenic_nand_drv.c.
-
--Paul
-
-
+Tested-by: Louvian Lyndal <louvianlyndal@gmail.com>
