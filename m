@@ -2,79 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67A9A42FC9A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 21:55:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46AF242FC9F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 21:56:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242882AbhJOT5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 15:57:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52396 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242867AbhJOT5f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 15:57:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E64A61181;
-        Fri, 15 Oct 2021 19:55:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634327729;
-        bh=uKWdkwX9NSpxgNBJUsKI6brrTvS5lkZVCUyevjasO24=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=VUWIy5Fv534KjAIcIc4BeurLiZrgBQGhUIc+tNGNCGwSSgMTryAKKzaXG6Lf2ExLQ
-         nUimrhT6T448pHEv+OJK9rN58B+fiLxSjN3MzyZ9Yz7L2UtkR8rALhcyiJPXmkCSS5
-         Uknr+liDuXPKBoe3nffM4bIgNKhRsIUBz7jlrnQHlt14Z80MLNJ34Q3HOuRK3VwL9p
-         SnyTZSH2BwiYCo1PIAmZ6HQKmoZDkH7PDBBI5AuNc3myDD1xs2JQXpMlmwr86dTYsH
-         3LcO6QOJVjPiCky1F71vuAB04UiePhkedgbqJ/+JrMFIKC2LGv9Hz4X0yb6CtBPose
-         e/biAPjuXycog==
-Date:   Fri, 15 Oct 2021 12:55:27 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Rob Herring <robh@kernel.org>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     Prasanna Vengateshan <prasanna.vengateshan@microchip.com>,
-        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Ansuel Smith <ansuelsmth@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        netdev@vger.kernel.org, Vivien Didelot <vivien.didelot@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>, Shawn Guo <shawnguo@kernel.org>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Alvin =?UTF-8?B?xaBpcHJhZ2E=?= <alsi@bang-olufsen.dk>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 5/6] dt-bindings: net: dsa: sja1105: add
- {rx,tx}-internal-delay-ps
-Message-ID: <20211015125527.28445238@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <1634221864.138006.3295871.nullmailer@robh.at.kernel.org>
-References: <20211013222313.3767605-1-vladimir.oltean@nxp.com>
-        <20211013222313.3767605-6-vladimir.oltean@nxp.com>
-        <1634221864.138006.3295871.nullmailer@robh.at.kernel.org>
+        id S242906AbhJOT6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 15:58:06 -0400
+Received: from mail.efficios.com ([167.114.26.124]:44090 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242897AbhJOT6D (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 15:58:03 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 9699E251023;
+        Fri, 15 Oct 2021 15:55:56 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id 9wT8PKr05D3g; Fri, 15 Oct 2021 15:55:55 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 68186250DA7;
+        Fri, 15 Oct 2021 15:55:55 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 68186250DA7
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1634327755;
+        bh=MXGjdD09LWEfTk5KuZoTHi2rl/afydBcqYhBo/MudXs=;
+        h=From:To:Date:Message-Id:MIME-Version;
+        b=ViP7H/rAcPgzGpDd3/cCsVe6gUqfMuyvuggtcXOo++YK6CVxBtEKuJGFFoLefvfgW
+         /0AIiF1AlyJ63hyB6HK8VcS50NSVeeto9zSugzlggPD5fqucWwcZtIWGwuosh5VFU3
+         o7yyL9ttNMU6+6hLeUEOOnGyLBQrHW5Ln3gFhK9hmgx649xOn3rCJmXhA06kIwd6JT
+         AmdTmgHkzR1PwVwPHIttUfv2JKLazDl39A/FVOg7MB7BaErEc+Al8E940OO9xOYMgj
+         oWOgLyvvFyzq+pJ4SZrlVYDronTieU0Z4lHwotPjgKxlG3qsXpkgqmeuCnT4WjLfBz
+         g1OOVqXXlZq1w==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 54CW4Fcd6RAd; Fri, 15 Oct 2021 15:55:55 -0400 (EDT)
+Received: from thinkos.etherlink (192-222-188-69.qc.cable.ebox.net [192.222.188.69])
+        by mail.efficios.com (Postfix) with ESMTPSA id 4D41C251110;
+        Fri, 15 Oct 2021 15:55:55 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Subject: [PATCH] tracing: Fix missing trace_boot_init_histograms kstrdup NULL checks
+Date:   Fri, 15 Oct 2021 15:55:50 -0400
+Message-Id: <20211015195550.22742-1-mathieu.desnoyers@efficios.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Oct 2021 09:31:04 -0500 Rob Herring wrote:
-> On Thu, 14 Oct 2021 01:23:12 +0300, Vladimir Oltean wrote:
-> > Add a schema validator to nxp,sja1105.yaml and to dsa.yaml for explicit
-> > MAC-level RGMII delays. These properties must be per port and must be
-> > present only for a phy-mode that represents RGMII.
-> > 
-> > We tell dsa.yaml that these port properties might be present, we also
-> > define their valid values for SJA1105. We create a common definition for
-> > the RX and TX valid range, since it's quite a mouthful.
-> > 
-> > We also modify the example to include the explicit RGMII delay properties.
-> > On the fixed-link ports (in the example, port 4), having these explicit
-> > delays is actually mandatory, since with the new behavior, the driver
-> > shouts that it is interpreting what delays to apply based on phy-mode.
-> > 
-> > Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-> 
-> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-> on your patch (DT_CHECKER_FLAGS is new in v5.13):
+trace_boot_init_histograms misses NULL pointer checks for kstrdup
+failure.
 
-FWIW I dropped the set from pw based on Rob's report, I see a mention
-of possible issues with fsl-lx2160a-bluebox3.dts, but it's not clear
-to me which DT is disagreeing with the schema.. or is the schema itself
-not 100?
+Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+---
+ kernel/trace/trace_boot.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/kernel/trace/trace_boot.c b/kernel/trace/trace_boot.c
+index 8d252f63cd78..0580287d7a0d 100644
+--- a/kernel/trace/trace_boot.c
++++ b/kernel/trace/trace_boot.c
+@@ -430,6 +430,8 @@ trace_boot_init_histograms(struct trace_event_file *f=
+ile,
+ 		/* All digit started node should be instances. */
+ 		if (trace_boot_compose_hist_cmd(node, buf, size) =3D=3D 0) {
+ 			tmp =3D kstrdup(buf, GFP_KERNEL);
++			if (!tmp)
++				return;
+ 			if (trigger_process_regex(file, buf) < 0)
+ 				pr_err("Failed to apply hist trigger: %s\n", tmp);
+ 			kfree(tmp);
+@@ -439,6 +441,8 @@ trace_boot_init_histograms(struct trace_event_file *f=
+ile,
+ 	if (xbc_node_find_subkey(hnode, "keys")) {
+ 		if (trace_boot_compose_hist_cmd(hnode, buf, size) =3D=3D 0) {
+ 			tmp =3D kstrdup(buf, GFP_KERNEL);
++			if (!tmp)
++				return;
+ 			if (trigger_process_regex(file, buf) < 0)
+ 				pr_err("Failed to apply hist trigger: %s\n", tmp);
+ 			kfree(tmp);
+--=20
+2.20.1
+
