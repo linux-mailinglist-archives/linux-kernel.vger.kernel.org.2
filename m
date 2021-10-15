@@ -2,146 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A258E42FA38
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 19:24:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7364E42FA39
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 19:25:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237732AbhJOR06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 13:26:58 -0400
-Received: from mail-mw2nam12on2054.outbound.protection.outlook.com ([40.107.244.54]:4608
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S237584AbhJOR0t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 13:26:49 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nT1/ZxghRS4v/dw+ZLA5gxUXPWynitMDd7+JpoXtSvxP2Rhd9ivTe4Ed1RByox2bTMgp7mO4sTZmpp+LpkPJncsfuoW98yQeLiz0Qr8CLElRHndKqRUATk1eNg1Sv9NaEJoYIULZwK3YLaHKzxVmvWGOrfBmAcGEwB+w5YbFEgEVCQZaikr6wRzOnloZfvIOQn+ZErkzVM81ZCavt/leDkKvD2laRehm6uOYQeqDqj7G8X64M4P34z0epdmPyExAXZAOHlfFfUBxGzU2N9TrHGWpxYlYQ1rOCawGR8fIy3kvczn2L+UJ0GnyQLbRR4o5L4yTuU1iXqHpBhQoSP5c0g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=6R+B+i+sdUGDofKwnROtjeoanx7R9RwSUO5zwOWPITc=;
- b=EgYuj5m4/JeyQgPV+CafEEK8VJKqXIqxHgXlPWA7Z9ill7jt1ianN3nyf0v+9IFNC9OmpNZIy6b6Yr/vzv7B/KPo0EwVNvEuwRWtLiaoQ2nf9tzghlsW+fuVzH5CvIbbikMGEzSebIoHxIQsHvPf9672CGDixw8nK75Nlaq7u+lJ6Hp+m0c1kgUpW8MyHB/IGKm5jWKjfe85JDw0lROM9yesKUsRTnkuvBX4b4XEZ77Ih91fiyt0mJufX6o+fWTMjn9wB2y9mgv0m1Yj9aj+EGvOfOeeeTg0UDW6ikcfNgSyg81ew46tIIxIun+8s6K8ATHdwaldUL7uOqUqHZ3ajQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6R+B+i+sdUGDofKwnROtjeoanx7R9RwSUO5zwOWPITc=;
- b=iaR4IDQAqOl29fOsJIlGe8nehil8cRVsmVFraegq/Piw6CHmmpejy6CQkwxfdGxeuxiuE04g1xrFVZLda3gvtIXfWViQTCttmquNZwDEhLSBGr+vwhvF4wz+B4OFPwKaFbPsDOJCBSRij81MH4M4GPc1rnwFJXG8VX6sPybaxGY=
-Received: from MWHPR12CA0050.namprd12.prod.outlook.com (2603:10b6:300:103::12)
- by BN8PR12MB3619.namprd12.prod.outlook.com (2603:10b6:408:46::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.17; Fri, 15 Oct
- 2021 17:24:39 +0000
-Received: from CO1NAM11FT006.eop-nam11.prod.protection.outlook.com
- (2603:10b6:300:103:cafe::2c) by MWHPR12CA0050.outlook.office365.com
- (2603:10b6:300:103::12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.14 via Frontend
- Transport; Fri, 15 Oct 2021 17:24:39 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CO1NAM11FT006.mail.protection.outlook.com (10.13.174.246) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4608.15 via Frontend Transport; Fri, 15 Oct 2021 17:24:38 +0000
-Received: from tlendack-t1.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Fri, 15 Oct
- 2021 12:24:36 -0500
-From:   Tom Lendacky <thomas.lendacky@amd.com>
-To:     <linux-kernel@vger.kernel.org>, <x86@kernel.org>
-CC:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        <stable@vger.kernel.org>
-Subject: [PATCH] x86/sme: Use #define USE_EARLY_PGTABLE_L5 in mem_encrypt_identity.c
-Date:   Fri, 15 Oct 2021 12:24:16 -0500
-Message-ID: <2cb8329655f5c753905812d951e212022a480475.1634318656.git.thomas.lendacky@amd.com>
-X-Mailer: git-send-email 2.33.1
+        id S232671AbhJOR1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 13:27:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40924 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230460AbhJOR1X (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 13:27:23 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 174BAC061570;
+        Fri, 15 Oct 2021 10:25:17 -0700 (PDT)
+Date:   Fri, 15 Oct 2021 19:25:13 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1634318714;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=1WN9cr+JBrgxENw+1ro55q+PzK5+4flkdw5BKQfBtas=;
+        b=USqP1XOCxpg4j9eyl3g80G+zz/nWQU65bkh7N4XdlvZ9ZsQi6bvhKO2F6EeFwZeNvXLoTz
+        qHNQn4A6QeutTAbIk1o/KwEJ0Ebn4rYqsLvkuweURZBUPD3fbdnLq+IVUdINW5tG3wyLss
+        Z1WtIdUJrT7Cndv/6n7LMANRb3MwtzJKqNt9eArciy0jZ6my1CXgbeySd/K3OxzX10o/sz
+        aCexCWocNoiam2GKrRjZwtMPCY/D03BKvlfX6JvzrjYKFpbl6vR6VMd3KmiwwJLlUDIhxy
+        6OHKQwPeR/i2/NEaR5FRB+HuVXEde9uYcaZUQOBldi3XEjCgvPb1UwNaQ2T6yw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1634318714;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=1WN9cr+JBrgxENw+1ro55q+PzK5+4flkdw5BKQfBtas=;
+        b=YveGSGpgD8VAhGx15vwUnifWJIa3js7R5yYW6WB+buWSVavnryp25GZ5AtbKp9lanx1DBK
+        RDE19U9Om8PyDhCg==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: [ANNOUNCE] v5.15-rc5-rt10
+Message-ID: <20211015172513.d744ewiogtecrqu2@linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e4d8eac7-e871-46d9-8470-08d99000aa8c
-X-MS-TrafficTypeDiagnostic: BN8PR12MB3619:
-X-Microsoft-Antispam-PRVS: <BN8PR12MB361927F709805A17C2FCFACBECB99@BN8PR12MB3619.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: y7aBl2I6HEq+5Ade163fbcZwdGzP/sv7qRo+qEqIbJ7S4ob7Gkg2T0nohIHjAtJOLHvl6nVsmBo1giKyIMC5Kjgyyhph0dbqO9yLfhMgK4YcRtLgN2wyfj1V+9xw3ycdqKa3Ybp9Snd+/b1IRhOGWTr+rmyorGr1FUqQZzSeqLYcWQHDOayEmPhexMKWu/dBtyCyyj/0ZKA/DXSOZW+s+ql8wRtGW+9syV68jjO0YX48zyxYbriR3Of6pOttuQgW6JGzH/9szRJ6+qZQv+MD/ynGEPMA1XnmnoFArezyqLXQhSdCYd50+vJ/3E0TMqT9NwC4cuIlxb5KT1wx78kWV8BrCGq7jk5OPGM0Cxxx9NnpYYfBJueIkIsIpLoN11D58jktS1X8/VG+jxWWCFLk7L6mnRn4VfCvbdO2cvUEt9eoErZo0ZQYlYH58rItCW0WC1rmLqG4l/lyeK4klhzkrQSfgqC/zK3nnko/BAnQODevxb+437GNTruMt7ldtr2uDlGpjgHN16SVxa8FFX25PZa/fLBi++JCNxTn+hYc29ZlcQWDb1aAiGvhTsq33FiCOgmyL/bhcBUgA5KjJ3W5BvRamQGNAPD3iyZ6tp7f1h14QIShY1fvn4tivQ/9BQnjExHGDJS4hNKml617LrdiGA36LJiwVWNe66oIG9bLo2nQjuSE7VuudGj6lDB63jueCbYFIwAhe2UvRURriQC6Dwn0aXmp+0sZZf4jOWJ8sd0=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(36840700001)(46966006)(8936002)(316002)(16526019)(86362001)(336012)(26005)(7696005)(36756003)(5660300002)(2906002)(186003)(70586007)(426003)(6666004)(2616005)(70206006)(8676002)(110136005)(83380400001)(4326008)(36860700001)(508600001)(7416002)(47076005)(54906003)(82310400003)(81166007)(356005)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Oct 2021 17:24:38.3852
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: e4d8eac7-e871-46d9-8470-08d99000aa8c
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT006.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR12MB3619
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When runtime support for converting between 4-level and 5-level pagetables
-was added to the kernel, the SME code that built pagetables was updated
-to use the pagetable functions, e.g. p4d_offset(), etc., in order to
-simplify the code. However, the use of the pagetable functions in early
-boot code requires the use of the USE_EARLY_PGTABLE_L5 #define in order to
-ensure that proper definition of pgtable_l5_enabled() is used.
+Dear RT folks!
 
-Without the #define, pgtable_l5_enabled() is #defined as
-cpu_feature_enabled(X86_FEATURE_LA57). In early boot, the CPU features
-have not yet been discovered and populated, so pgtable_l5_enabled() will
-return false even when 5-level paging is enabled. This causes the SME code
-to always build 4-level pagetables to perform the in-place encryption.
-If 5-level paging is enabled, switching to the SME pagetables results in
-a page-fault that kills the boot.
+I'm pleased to announce the v5.15-rc5-rt10 patch set. 
 
-Adding the #define results in pgtable_l5_enabled() using the
-__pgtable_l5_enabled variable set in early boot and the SME code building
-pagetables for the proper paging level.
+Changes since v5.15-rc5-rt9:
 
-Cc: <stable@vger.kernel.org> # 4.18.x
-Fixes: aad983913d77 ("x86/mm/encrypt: Simplify sme_populate_pgd() and sme_populate_pgd_large()")
-Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
----
- arch/x86/mm/mem_encrypt_identity.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+  - Use delayed signals on ARM64 to avoid sleeping-while-atomic warnings
+    while software breakpoints are used. Patch by He Zhe.
 
-diff --git a/arch/x86/mm/mem_encrypt_identity.c b/arch/x86/mm/mem_encrypt_identity.c
-index f8c612902038..3f0abb403340 100644
---- a/arch/x86/mm/mem_encrypt_identity.c
-+++ b/arch/x86/mm/mem_encrypt_identity.c
-@@ -27,6 +27,15 @@
- #undef CONFIG_PARAVIRT_XXL
- #undef CONFIG_PARAVIRT_SPINLOCKS
+Known issues
+     - netconsole triggers WARN.
+
+     - The "Memory controller" (CONFIG_MEMCG) has been disabled.
+
+     - Valentin Schneider reported a few splats on ARM64, see
+          https://lkml.kernel.org/r/20210810134127.1394269-1-valentin.schneider@arm.com
+
+The delta patch against v5.15-rc5-rt9 is appended below and can be found here:
  
-+/*
-+ * This code runs before CPU feature bits are set. By default, the
-+ * pgtable_l5_enabled() function uses bit X86_FEATURE_LA57 to determine if
-+ * 5-level paging is active, so that won't work here. USE_EARLY_PGTABLE_L5
-+ * is provided to handle this situation and, instead, use a variable that
-+ * has been set by the early boot code.
-+ */
-+#define USE_EARLY_PGTABLE_L5
-+
- #include <linux/kernel.h>
- #include <linux/mm.h>
- #include <linux/mem_encrypt.h>
--- 
-2.33.1
+     https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.15/incr/patch-5.15-rc5-rt9-rt10.patch.xz
 
+You can get this release via the git tree at:
+
+    git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git v5.15-rc5-rt10
+
+The RT patch against v5.15-rc5 can be found here:
+
+    https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.15/older/patch-5.15-rc5-rt10.patch.xz
+
+The split quilt queue is available at:
+
+    https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.15/older/patches-5.15-rc5-rt10.tar.xz
+
+Sebastian
+
+diff --git a/arch/arm64/include/asm/signal.h b/arch/arm64/include/asm/signal.h
+index ef449f5f4ba80..5e535c3e49260 100644
+--- a/arch/arm64/include/asm/signal.h
++++ b/arch/arm64/include/asm/signal.h
+@@ -22,4 +22,8 @@ static inline void __user *arch_untagged_si_addr(void __user *addr,
+ }
+ #define arch_untagged_si_addr arch_untagged_si_addr
+ 
++#if defined(CONFIG_PREEMPT_RT)
++#define ARCH_RT_DELAYS_SIGNAL_SEND
++#endif
++
+ #endif
+diff --git a/arch/arm64/kernel/signal.c b/arch/arm64/kernel/signal.c
+index 8a9194ed981ce..1d65f2801e138 100644
+--- a/arch/arm64/kernel/signal.c
++++ b/arch/arm64/kernel/signal.c
+@@ -928,6 +928,14 @@ void do_notify_resume(struct pt_regs *regs, unsigned long thread_flags)
+ 		} else {
+ 			local_daif_restore(DAIF_PROCCTX);
+ 
++#ifdef ARCH_RT_DELAYS_SIGNAL_SEND
++			if (unlikely(current->forced_info.si_signo)) {
++				struct task_struct *t = current;
++				force_sig_info(&t->forced_info);
++				t->forced_info.si_signo = 0;
++			}
++#endif
++
+ 			if (thread_flags & _TIF_UPROBE)
+ 				uprobe_notify_resume(regs);
+ 
+diff --git a/localversion-rt b/localversion-rt
+index 22746d6390a42..d79dde624aaac 100644
+--- a/localversion-rt
++++ b/localversion-rt
+@@ -1 +1 @@
+--rt9
++-rt10
