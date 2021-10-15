@@ -2,253 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F07E42F4FA
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 16:14:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98FA642F4FB
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 16:16:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237056AbhJOOQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 10:16:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51650 "EHLO
+        id S236970AbhJOOSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 10:18:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234739AbhJOOQp (ORCPT
+        with ESMTP id S234160AbhJOOST (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 10:16:45 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9098C061570;
-        Fri, 15 Oct 2021 07:14:38 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id o20so26853844wro.3;
-        Fri, 15 Oct 2021 07:14:38 -0700 (PDT)
+        Fri, 15 Oct 2021 10:18:19 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 822D1C061762
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 07:16:13 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id i76so6333309pfe.13
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 07:16:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=u0LS74NGxs4Ls/GakwMB1m+mPagiusP+lWbngHZ06ko=;
-        b=fuZ/x4GU2rmFgoIzrLqjckyOIpI613dnJ2kqkRuaHIaR4+dHGImUHHhrcJr1HMBoUT
-         g9QQZ7oqDqqxBtGke4yYq9WOpJumj9DLVvfB3ege/Q5qiGlX5efDDemkfhZtspfjGrE1
-         xcHP0/dWDI2XaEDprmBeV/Dzfkxdlh5tSmFvOUV6qaY5Wfwq4ET+9UR+LUEMUacORyzq
-         xzBIZ2gjRKm1ghUIefRupZc9zCpTJ+r+x/xA6wW8Uz0SPAOQnH9AtLy7HkmUokWJY14/
-         TSCczUZ0t+pkyjRKA0FV2Hnjh/t6dSBmNONPedldjKaSMe9PrznvxNaJQSBplmZfZ9lQ
-         8KgA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=cQSzYDsggFl8upEXTgG7vVR8z62QkXf5gqGOcLIHjKU=;
+        b=PssTITKzkxd85I31lnbK8Qyd73nN6bTOOJVVoXTE9dvERrfkP18XLbw0lx8tCBqrEA
+         M8QMbXwKY9XT3GoEM1gJvF4+5DL4rrjMuJKcVNukCOM1HfTawPUNxZVzjPyIuY0PAGDK
+         s1JtlONXeEAg+ZHhq0bDSRbXFwmTAZ6TH8CHrRChf2phLcQFsnQSHyNEFpRBwuPTsz+9
+         FCfxs0CClDQkS/a6aONvB75KEX+KhKeK465GvX+Y2+29O6m3TUmK95wnoPK+tyQeJxk1
+         F+Zkv1LGtV6b09o/enW7PEhnbhCfbc3LKUQBuvEAMx76bjUYbPs6pHcmeRezXKZajbVu
+         1naQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=u0LS74NGxs4Ls/GakwMB1m+mPagiusP+lWbngHZ06ko=;
-        b=f9k9mzq4EplxrmPF9JMSD/BNxjEQNet9K41KKMvxecd94CPqYuvB1vHGTabiZWcnmN
-         VgoSinKqnuKiHbz5H+ygRrVMV216PxKIZCVhkL7wTWPb0+qM22yz4pBXrl144Ewx/Qx4
-         ZMgZ5gYQswtyCdRYxsBBfges9xfF+7q6QCHB23VDU0mKXR5LxINA2mrmOtC7OGqZAp6M
-         5plsO74sIX0zNWog8wtVD9th9pVmbDrq+XvB0ZwScmQ9dsBP2ERJG4WB8YeX3pmg4lH6
-         cE2hYwAOC+kO2mNudgT0sW7ySXxuAgZxdNxUCSMl6MBJN5mKW6IklxaXHQA+JTiiOc6t
-         BxeQ==
-X-Gm-Message-State: AOAM532lTFbdEzoNCr2XHaMH6thXZL9RyzvT6aAOW4VuBBOhVvpmvY3a
-        MHctUasH9AJQYXupYAmzXA==
-X-Google-Smtp-Source: ABdhPJx1KlAErP0MVOhgnRMDJYrRtFEAIhfxUA8d7qKZdigdDGl26QfV464by6KddRDp8E6k11KyRQ==
-X-Received: by 2002:adf:bc48:: with SMTP id a8mr14440226wrh.19.1634307277266;
-        Fri, 15 Oct 2021 07:14:37 -0700 (PDT)
-Received: from ?IPv6:2a02:810b:f40:4200:8be2:5749:97e2:d75b? ([2a02:810b:f40:4200:8be2:5749:97e2:d75b])
-        by smtp.gmail.com with ESMTPSA id b19sm11080921wmb.1.2021.10.15.07.14.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Oct 2021 07:14:36 -0700 (PDT)
-Subject: Re: [PATCH v2 0/4] media: HEVC: RPS clean up
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        =?UTF-8?Q?Jernej_=c5=a0krabec?= <jernej.skrabec@gmail.com>,
-        mchehab@kernel.org, p.zabel@pengutronix.de,
-        gregkh@linuxfoundation.org, mripard@kernel.org,
-        paul.kocialkowski@bootlin.com, wens@csie.org,
-        hverkuil-cisco@xs4all.nl, jc@kynesim.co.uk,
-        ezequiel@vanguardiasur.com.ar
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev
-References: <20211012143552.661751-1-benjamin.gaignard@collabora.com>
- <21222555.EfDdHjke4D@kista>
- <3c5851ac-3b8a-decc-93c1-01a65b1f8611@collabora.com>
- <1705005.VLH7GnMWUR@kista> <4f8f6da3-70b1-5dd8-27b7-c9f9fd37920b@gmail.com>
- <9d9645a1-9d44-4fec-55e7-5b0a1c69e7ab@collabora.com>
-From:   Alex Bee <knaerzche@gmail.com>
-Message-ID: <7d6df94a-e0bb-b364-5ab1-3ef4d02803dc@gmail.com>
-Date:   Fri, 15 Oct 2021 16:14:28 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=cQSzYDsggFl8upEXTgG7vVR8z62QkXf5gqGOcLIHjKU=;
+        b=dmOIp/MKjrVz8gQryY1GGQS52T06Add90TfM1lzzJxcoOdIEysL8YuW/g5CEDVTCHY
+         cI1+0oYoIKWSh6LqeKBg9N4UGG/4nUFlRPelCg/74iUSp+UctlaoIG5uf3rkYarVtddE
+         O2ZonPy7I14m6+k8FQkQOKdQe/5N5h2i4qcBntR+1OLFcocE9oEOrsxPjbIH1oLWAbro
+         1IBk/G5XvLIt2RFtWThK31/tMmbi7tc0DMVE4Y1rnbw7y6hl3Xe+11RHdZvy5sqAE263
+         2+Q8cxIyRiv/qvYoBVbkIM0EpoCsPGWnbrIVg8aT+bB2wl5tur7ZoA6qPI01jkK/oVps
+         8dEQ==
+X-Gm-Message-State: AOAM533RC2uMcV5PL7fE6Jz2wiwHZR6xyevs3L2ZggJanch5N6mYsmpX
+        fW6JJQIZNO4KIE+L6PbIGRkJZw==
+X-Google-Smtp-Source: ABdhPJyPAWpWo3XYeTjPeOZKWB1JZNg/wgaZ79old44NbH90CBBxxA99HJEp2zv6WP0pJ73o5gmGug==
+X-Received: by 2002:a62:7506:0:b0:44c:efe8:4167 with SMTP id q6-20020a627506000000b0044cefe84167mr12018725pfc.59.1634307372973;
+        Fri, 15 Oct 2021 07:16:12 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s (23.83.225.140.16clouds.com. [23.83.225.140])
+        by smtp.gmail.com with ESMTPSA id c12sm4973471pgw.39.2021.10.15.07.16.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Oct 2021 07:16:12 -0700 (PDT)
+Date:   Fri, 15 Oct 2021 22:16:01 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     German Gomez <german.gomez@arm.com>
+Cc:     Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org,
+        John Garry <john.garry@huawei.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
+        James Clark <James.Clark@arm.com>
+Subject: Re: [PATCH 4/5] perf arm-spe: Implement find_snapshot callback
+Message-ID: <20211015141601.GA66946@leoy-ThinkPad-X240s>
+References: <20210923135016.GG400258@leoy-ThinkPad-X240s>
+ <20210923144048.GB603008@leoy-ThinkPad-X240s>
+ <1c6a3a73-27dc-6673-7fe7-34bc7fcb0a68@arm.com>
+ <20211004122724.GC174271@leoy-ThinkPad-X240s>
+ <6b092f13-832f-5d1d-a504-aea96c81bf17@arm.com>
+ <20211006095124.GC14400@leoy-ThinkPad-X240s>
+ <377b54ef-b9c0-9cfc-ef0c-0187d7c493cc@arm.com>
+ <20211013003916.GA130842@leoy-ThinkPad-X240s>
+ <20211013075125.GA6701@willie-the-truck>
+ <35209d5c-6387-5248-ab61-a1e1cb0553de@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <9d9645a1-9d44-4fec-55e7-5b0a1c69e7ab@collabora.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <35209d5c-6387-5248-ab61-a1e1cb0553de@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi German,
 
-Am 15.10.21 um 16:06 schrieb Benjamin Gaignard:
->
-> Le 15/10/2021 à 12:33, Alex Bee a écrit :
->> Hi Benjamin, Jernej
->> Am 12.10.21 um 18:08 schrieb Jernej Škrabec:
->>> CC: Alex Bee
->>>
->>> Alex, please take a look to these patches too.
->> These patches don't remove anything that would be need for rkvdec 
->> hevc - but indeed - we need some more:
->> https://github.com/LibreELEC/LibreELEC.tv/blob/master/projects/Rockchip/patches/linux/default/linux-2001-v4l-wip-rkvdec-hevc.patch#L242-L305 
->>
->>
->> v4l2_ctrl_hevc_sps:
->> __u8    video_parameter_set_id
->> __u8    seq_parameter_set_id
->>
->> v4l2_ctrl_hevc_pps:
->> __u8    pic_parameter_set_id
->> __u16    short_term_ref_pic_set_size
->> __u16    long_term_ref_pic_set_size
->>
->> As far as I can see, they are all part of the spec and should be 
->> therefore good to go in the uapi.
->
-> Do you have any plan to upstream these fields in HEVC uAPI ?
+On Fri, Oct 15, 2021 at 01:33:39PM +0100, German Gomez wrote:
+> Hi Leo,
+> 
+> Would you be ok with the current patch the way it is?
 
-I might be upstreaming them at some point, yes.
+Sorry for my failure to catch up the discussion.
 
-With this I just wanted to underline Jernej said: HEVC uapi is NOT ready 
-to get unstaged yet.
+As you and Will have mentioned in other emails that it will lead to
+breakage if we change to monotonical increasing head, I read the code
+and realized the difficulty to use monotonical increasing head in Arm
+SPE driver.  So let's use the way as this patch set is.
 
->
-> Regards,
-> Benjamin
->
->>
->> As you might now, even rkvdec is a frame-based decoder, it doesn't 
->> fully parse slice headers in HW for HEVC and we need to set 
->> references in SW which requires looping over the slices. Downstream 
->> we have a hack to give num_slices in v4l2_ctrl_hevc_sps for doing that.
->> That could fully go away, if V4L2_CID_MPEG_VIDEO_HEVC_SLICE_PARAMS 
->> could get dynamic array control support and would make upstreaming 
->> this a lot easier - as far as I'm concered this would be required for 
->> RPi HEVC decoder as well.
->> As a last resort we could also implement a HW specifc control à la
->> V4L2_CID_HANTRO_HEVC_SLICE_HEADER_SKIP - but I'd like to avoid that, 
->> knowing it would certainly be better from performance pov.
->>
->> Alex.
->>>
->>> Dne torek, 12. oktober 2021 ob 17:57:50 CEST je Benjamin Gaignard 
->>> napisal(a):
->>>>
->>>> Le 12/10/2021 à 17:34, Jernej Škrabec a écrit :
->>>>> Hi Benjamin!
->>>>>
->>>>> Dne torek, 12. oktober 2021 ob 16:35:48 CEST je Benjamin Gaignard
->>> napisal(a):
->>>>>> This series aims to clean up Reference Picture Set usage and flags.
->>>>>>
->>>>>> Long term flag was named with RPS prefix while it is not used for 
->>>>>> RPS
->>>>>> but for mark long term references in DBP. Remane it and remove 
->>>>>> the two
->>>>>> other useless RPS flags.
->>>>>>
->>>>>> Clarify documentation about RPS lists content and make sure that 
->>>>>> Hantro
->>>>>> driver use them correctly (i.e without look up in DBP).
->>>>>>
->>>>>> These patches are the last in my backlog impacting HEVC uAPI.
->>>>>>   From my point of view, once they get merged, you could start 
->>>>>> talking
->>>>>> about how move HEVC uAPI to stable.
->>>>> With your changes, HEVC uAPI controls still won't be complete. Cedrus
->>> needs
->>>>> entry point control, which in turn needs dynamic array support. 
->>>>> I'm a bit
->>> lazy
->>>>> implementing that control, but I guess I can take a look in a 
->>>>> month or so.
->>>>> rkvdec also needs more fields for HEVC. With patches collected here:
->>>>> https://github.com/LibreELEC/LibreELEC.tv/blob/master/projects/Rockchip/ 
->>>>>
->>>>> patches/linux/default/linux-2001-v4l-wip-rkvdec-hevc.patch
->>>>> fluster HEVC test score is reportedly 121/135 (8-bit tests only).
->>>>
->>>> Hi Jernej,
->>>>
->>>> Thanks for your feedback, getting a list of missing items in HEVC uAPI
->>>> will definitively help to fill the hope.
->>>> The patch you mention for rkvdec are already merged in mainline 
->>>> kernel (at
->>>> least for uAPI part).
->>>
->>> Are they? What about:
->>> video_parameter_set_id
->>> seq_parameter_set_id
->>> pic_parameter_set_id
->>> short_term_ref_pic_set_size
->>> long_term_ref_pic_set_size
->>>
->>> At least I don't see them in linux-next. Maybe that information can be
->>> obtained in some other way?
->>>
->>>> Cedrus needs are about num_entry_point_offsets, offset_len_minus1 and
->>> entry_point_offset_minus1[ i ]
->>>> in HEVC specifications ?
->>>
->>> Yes, Cedrus needs to know whole list of entry points. I don't think 
->>> we need to
->>> worry about offset_len_minus1, list could be pre-processed - just 
->>> number of
->>> entry points and their values.
->>>
->>> Best regards,
->>> Jernej
->>>
->>>>
->>>> Regards,
->>>> Benjamin
->>>>
->>>>>
->>>>> I would certainly wait with moving HEVC uAPI to stable.
->>>>>
->>>>> Best regards,
->>>>> Jernej
->>>>>
->>>>>> version 2:
->>>>>> - change DPB field name from rps to flags
->>>>>>
->>>>>> Please note that the only purpose of commits 3 and 4 is to allow 
->>>>>> to test
->>>>>> G2 hardware block for IMX8MQ until a proper solution isuing power 
->>>>>> domain
->>>>>> can be found. Do not merge them.
->>>>>>
->>>>>> GStreamer HEVC plugin merge request can be found here:
->>>>>> https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/1079 
->>>>>>
->>>>>>
->>>>>> With those piece of code fluster score is 77/147.
->>>>>>
->>>>>> Benjamin
->>>>>>
->>>>>> Benjamin Gaignard (4):
->>>>>>     media: hevc: Remove RPS named flags
->>>>>>     media: hevc: Embedded indexes in RPS
->>>>>>     media: hantro: Use syscon instead of 'ctrl' register
->>>>>>     arm64: dts: imx8mq: Add node to G2 hardware
->>>>>>
->>>>>>    .../media/v4l/ext-ctrls-codec.rst             | 14 +++---
->>>>>>    arch/arm64/boot/dts/freescale/imx8mq.dtsi     | 43 
->>>>>> +++++++++++++----
->>>>>>    drivers/staging/media/hantro/hantro.h         |  5 +-
->>>>>>    .../staging/media/hantro/hantro_g2_hevc_dec.c | 27 +++--------
->>>>>>    drivers/staging/media/hantro/imx8m_vpu_hw.c   | 48 
->>>>>> ++++++++++++-------
->>>>>>    .../staging/media/sunxi/cedrus/cedrus_h265.c  |  2 +-
->>>>>>    include/media/hevc-ctrls.h                    |  6 +--
->>>>>>    7 files changed, 84 insertions(+), 61 deletions(-)
->>>>>>
->>>>>> -- 
->>>>>> 2.30.2
->>>>>>
->>>>>>
->>>>>
->>>>
->>>
->>>
->>
+> In case it's of
+> any help, I'm sharing the testing steps that James and I went through
+> when testing this internally, if you want to add to it
+> 
+> - Test that only a portion of the buffer is saved until there is a wraparound
+> 
+> $ ./perf record -vvv -e arm_spe/period=148576/u -S -- taskset --cpu-list 0 stress --cpu 1 & while true; do sleep 0.2; killall -s USR2 perf; done
+> 
+> - Test snapshot mode in CPU mode
+> 
+> $ sudo ./perf record -vvv -C 0 -e arm_spe/period=148576/u -S -- taskset --cpu-list 0 stress --cpu 1 &
+> 
+> - Test that auxtrace buffers correspond to an aux record
+> - Test snapshot default sizes in sudo and user modes
+> - Test small snapshot size
+> 
+> $ ./perf record -vvv -e arm_spe/period=148576/u -S1000 -m16,16 -- taskset --cpu-list 0 stress --cpu 1 &
+> 
+> If there are any concerns with the patches, please let me know and I
+> will try to address them.
+
+Thanks for sharing the testing cases.  Could give me a bit more time for
+the test at my side?  And please expect I might give some comments if
+I think it's necessary.
+
+Thanks,
+Leo
