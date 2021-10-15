@@ -2,80 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10F5C42F208
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 15:22:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83F5342F194
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 14:59:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239356AbhJONY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 09:24:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39444 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230500AbhJONYX (ORCPT
+        id S239117AbhJONBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 09:01:18 -0400
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:39760 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236536AbhJONBR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 09:24:23 -0400
-X-Greylist: delayed 1548 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 15 Oct 2021 06:22:15 PDT
-Received: from mailserv1.kapsi.fi (mailserv1.kapsi.fi [IPv6:2001:67c:1be8::25:1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0CB4C061570;
-        Fri, 15 Oct 2021 06:22:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=ext.kapsi.fi; s=20161220; h=Subject:Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Sender:
-        Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-        :Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=o0wfY5rWG9bmKz4fgn2nS2DQacNRL7NBVJevnu+cu7A=; b=C4BLm5NskSbrQTV1sjBDGHez2B
-        Bb9TCosJPdsS3LYNjtqn7rEp5XDA3EZZLlAsYyjnOXOXTNOIIHA9zB6eHu3G6sTJEfVJRe81gxD2f
-        pQwakmwJIfNhZN2HSYcyXmTbgLp5xpJimHu9+xQNU+W2I/P6EZJ0tYtxzogoXGR+CE8tzRVBALNe1
-        AvTIQc2Yid5js5hUlYgBszJugfslQewUiudB5VoKuCwj4N2I2X9sDKxKzkkWYAlOAGgzsaoED+YBw
-        xCDxOaWlqyKmGWCWinE5mBcM8PlQDA6Ue/pQwnmLzNr14iNVdB2oK6unt7vEatV0fjd6QC87JCLrG
-        mwOwocig==;
-Received: from a2ef-817a-a3e5-8122-5100-87f3-07d0-2001.dyn.estpak.ee ([2001:7d0:87f3:5100:8122:a3e5:817a:a2ef]:52775)
-        by mailserv1.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <maukka@ext.kapsi.fi>)
-        id 1mbMl5-0000tY-BT; Fri, 15 Oct 2021 15:56:23 +0300
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Mauri Sandberg <sandberg@mailfence.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Drew Fustini <drew@beagleboard.org>
-References: <20210325122832.119147-1-sandberg@mailfence.com>
- <20210621172053.107045-1-maukka@ext.kapsi.fi>
- <20210621172053.107045-3-maukka@ext.kapsi.fi>
- <CAHp75VcjGpveAHNAW7Xf7d_Zf6LGSSyD6+qBiF9xxvb+EKs3tg@mail.gmail.com>
-From:   Mauri Sandberg <maukka@ext.kapsi.fi>
-Message-ID: <c7b9688f-5f52-94e3-532c-2177132869de@ext.kapsi.fi>
-Date:   Fri, 15 Oct 2021 15:56:23 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Fri, 15 Oct 2021 09:01:17 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=xianting.tian@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UsAq25q_1634302746;
+Received: from B-LB6YLVDL-0141.local(mailfrom:xianting.tian@linux.alibaba.com fp:SMTPD_---0UsAq25q_1634302746)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 15 Oct 2021 20:59:06 +0800
+Subject: Re: [PATCH v11 2/3] tty: hvc: pass DMA capable memory to put_chars()
+To:     gregkh@linuxfoundation.org, jirislaby@kernel.org, amit@kernel.org,
+        arnd@arndb.de, osandov@fb.com
+Cc:     shile.zhang@linux.alibaba.com, linuxppc-dev@lists.ozlabs.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+References: <20211015024658.1353987-1-xianting.tian@linux.alibaba.com>
+ <20211015024658.1353987-3-xianting.tian@linux.alibaba.com>
+From:   Xianting Tian <xianting.tian@linux.alibaba.com>
+Message-ID: <b09fbe3f-2b2c-202e-31f4-51b9e527e2f7@linux.alibaba.com>
+Date:   Fri, 15 Oct 2021 20:59:06 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VcjGpveAHNAW7Xf7d_Zf6LGSSyD6+qBiF9xxvb+EKs3tg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:7d0:87f3:5100:8122:a3e5:817a:a2ef
-X-SA-Exim-Mail-From: maukka@ext.kapsi.fi
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mailserv1.kapsi.fi
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A autolearn=ham autolearn_force=no version=3.4.2
-Subject: Re: [PATCH v5 2/2] gpio: gpio-cascade: add generic GPIO cascade
-X-SA-Exim-Version: 4.2.1 (built Tue, 02 Aug 2016 21:08:31 +0000)
-X-SA-Exim-Scanned: Yes (on mailserv1.kapsi.fi)
+In-Reply-To: <20211015024658.1353987-3-xianting.tian@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Greg and experts
 
-On 21.6.2021 20.43, Andy Shevchenko wrote:
+Is this version ok for you?  thanks
 
->> +       gc->of_node = np;
-> 
-> This should be guarded by CONFIG_OF_GPIO.
-In the Kconfig I have a dependency to OF_GPIO. Is the guarding still 
-necessary? Or should the guard be added and dependency removed? Or have 
-them both?
+在 2021/10/15 上午10:46, Xianting Tian 写道:
+> As well known, hvc backend can register its opertions to hvc backend.
+> the operations contain put_chars(), get_chars() and so on.
+>
+> Some hvc backend may do dma in its operations. eg, put_chars() of
+> virtio-console. But in the code of hvc framework, it may pass DMA
+> incapable memory to put_chars() under a specific configuration, which
+> is explained in commit c4baad5029(virtio-console: avoid DMA from stack):
+> 1, c[] is on stack,
+>     hvc_console_print():
+>          char c[N_OUTBUF] __ALIGNED__;
+>          cons_ops[index]->put_chars(vtermnos[index], c, i);
+> 2, ch is on stack,
+>     static void hvc_poll_put_char(,,char ch)
+>     {
+>          struct tty_struct *tty = driver->ttys[0];
+>          struct hvc_struct *hp = tty->driver_data;
+>          int n;
+>
+>          do {
+>                  n = hp->ops->put_chars(hp->vtermno, &ch, 1);
+>          } while (n <= 0);
+>     }
+>
+> Commit c4baad5029 is just the fix to avoid DMA from stack memory, which
+> is passed to virtio-console by hvc framework in above code. But I think
+> the fix is aggressive, it directly uses kmemdup() to alloc new buffer
+> from kmalloc area and do memcpy no matter the memory is in kmalloc area
+> or not. But most importantly, it should better be fixed in the hvc
+> framework, by changing it to never pass stack memory to the put_chars()
+> function in the first place. Otherwise, we still face the same issue if
+> a new hvc backend using dma added in the furture.
+>
+> In this patch, add 'char cons_outbuf[]' as part of 'struct hvc_struct',
+> so hp->cons_outbuf is no longer the stack memory, we can use it in above
+> cases safely. We also add lock to protect cons_outbuf instead of using
+> the global lock of hvc.
+>
+> Introduce another array(cons_hvcs[]) for hvc pointers next to the
+> cons_ops[] and vtermnos[] arrays. With the array, we can easily find
+> hvc's cons_outbuf and its lock.
+>
+> With the patch, we can revert the fix c4baad5029.
+>
+> Signed-off-by: Xianting Tian <xianting.tian@linux.alibaba.com>
+> Signed-off-by: Shile Zhang <shile.zhang@linux.alibaba.com>
+> ---
+>   drivers/tty/hvc/hvc_console.c | 36 ++++++++++++++++++++---------------
+>   drivers/tty/hvc/hvc_console.h | 21 +++++++++++++++++++-
+>   2 files changed, 41 insertions(+), 16 deletions(-)
+>
+> diff --git a/drivers/tty/hvc/hvc_console.c b/drivers/tty/hvc/hvc_console.c
+> index 5957ab728..11f2463a1 100644
+> --- a/drivers/tty/hvc/hvc_console.c
+> +++ b/drivers/tty/hvc/hvc_console.c
+> @@ -41,16 +41,6 @@
+>    */
+>   #define HVC_CLOSE_WAIT (HZ/100) /* 1/10 of a second */
+>   
+> -/*
+> - * These sizes are most efficient for vio, because they are the
+> - * native transfer size. We could make them selectable in the
+> - * future to better deal with backends that want other buffer sizes.
+> - */
+> -#define N_OUTBUF	16
+> -#define N_INBUF		16
+> -
+> -#define __ALIGNED__ __attribute__((__aligned__(L1_CACHE_BYTES)))
+> -
+>   static struct tty_driver *hvc_driver;
+>   static struct task_struct *hvc_task;
+>   
+> @@ -142,6 +132,7 @@ static int hvc_flush(struct hvc_struct *hp)
+>   static const struct hv_ops *cons_ops[MAX_NR_HVC_CONSOLES];
+>   static uint32_t vtermnos[MAX_NR_HVC_CONSOLES] =
+>   	{[0 ... MAX_NR_HVC_CONSOLES - 1] = -1};
+> +static struct hvc_struct *cons_hvcs[MAX_NR_HVC_CONSOLES];
+>   
+>   /*
+>    * Console APIs, NOT TTY.  These APIs are available immediately when
+> @@ -151,9 +142,11 @@ static uint32_t vtermnos[MAX_NR_HVC_CONSOLES] =
+>   static void hvc_console_print(struct console *co, const char *b,
+>   			      unsigned count)
+>   {
+> -	char c[N_OUTBUF] __ALIGNED__;
+> +	char *c;
+>   	unsigned i = 0, n = 0;
+>   	int r, donecr = 0, index = co->index;
+> +	unsigned long flags;
+> +	struct hvc_struct *hp;
+>   
+>   	/* Console access attempt outside of acceptable console range. */
+>   	if (index >= MAX_NR_HVC_CONSOLES)
+> @@ -163,6 +156,13 @@ static void hvc_console_print(struct console *co, const char *b,
+>   	if (vtermnos[index] == -1)
+>   		return;
+>   
+> +	hp = cons_hvcs[index];
+> +	if (!hp)
+> +		return;
+> +
+> +	c = hp->cons_outbuf;
+> +
+> +	spin_lock_irqsave(&hp->cons_outbuf_lock, flags);
+>   	while (count > 0 || i > 0) {
+>   		if (count > 0 && i < sizeof(c)) {
+>   			if (b[n] == '\n' && !donecr) {
+> @@ -191,6 +191,7 @@ static void hvc_console_print(struct console *co, const char *b,
+>   			}
+>   		}
+>   	}
+> +	spin_unlock_irqrestore(&hp->cons_outbuf_lock, flags);
+>   	hvc_console_flush(cons_ops[index], vtermnos[index]);
+>   }
+>   
+> @@ -878,9 +879,13 @@ static void hvc_poll_put_char(struct tty_driver *driver, int line, char ch)
+>   	struct tty_struct *tty = driver->ttys[0];
+>   	struct hvc_struct *hp = tty->driver_data;
+>   	int n;
+> +	unsigned long flags;
+>   
+>   	do {
+> -		n = hp->ops->put_chars(hp->vtermno, &ch, 1);
+> +		spin_lock_irqsave(&hp->cons_outbuf_lock, flags);
+> +		hp->cons_outbuf[0] = ch;
+> +		n = hp->ops->put_chars(hp->vtermno, &hp->cons_outbuf[0], 1);
+> +		spin_unlock_irqrestore(&hp->cons_outbuf_lock, flags);
+>   	} while (n <= 0);
+>   }
+>   #endif
+> @@ -922,8 +927,7 @@ struct hvc_struct *hvc_alloc(uint32_t vtermno, int data,
+>   			return ERR_PTR(err);
+>   	}
+>   
+> -	hp = kzalloc(ALIGN(sizeof(*hp), sizeof(long)) + outbuf_size,
+> -			GFP_KERNEL);
+> +	hp = kzalloc(struct_size(hp, outbuf, outbuf_size), GFP_KERNEL);
+>   	if (!hp)
+>   		return ERR_PTR(-ENOMEM);
+>   
+> @@ -931,13 +935,13 @@ struct hvc_struct *hvc_alloc(uint32_t vtermno, int data,
+>   	hp->data = data;
+>   	hp->ops = ops;
+>   	hp->outbuf_size = outbuf_size;
+> -	hp->outbuf = &((char *)hp)[ALIGN(sizeof(*hp), sizeof(long))];
+>   
+>   	tty_port_init(&hp->port);
+>   	hp->port.ops = &hvc_port_ops;
+>   
+>   	INIT_WORK(&hp->tty_resize, hvc_set_winsz);
+>   	spin_lock_init(&hp->lock);
+> +	spin_lock_init(&hp->cons_outbuf_lock);
+>   	mutex_lock(&hvc_structs_mutex);
+>   
+>   	/*
+> @@ -964,6 +968,7 @@ struct hvc_struct *hvc_alloc(uint32_t vtermno, int data,
+>   	if (i < MAX_NR_HVC_CONSOLES) {
+>   		cons_ops[i] = ops;
+>   		vtermnos[i] = vtermno;
+> +		cons_hvcs[i] = hp;
+>   	}
+>   
+>   	list_add_tail(&(hp->next), &hvc_structs);
+> @@ -988,6 +993,7 @@ int hvc_remove(struct hvc_struct *hp)
+>   	if (hp->index < MAX_NR_HVC_CONSOLES) {
+>   		vtermnos[hp->index] = -1;
+>   		cons_ops[hp->index] = NULL;
+> +		cons_hvcs[hp->index] = NULL;
+>   	}
+>   
+>   	/* Don't whack hp->irq because tty_hangup() will need to free the irq. */
+> diff --git a/drivers/tty/hvc/hvc_console.h b/drivers/tty/hvc/hvc_console.h
+> index 18d005814..2c32ab67b 100644
+> --- a/drivers/tty/hvc/hvc_console.h
+> +++ b/drivers/tty/hvc/hvc_console.h
+> @@ -32,12 +32,21 @@
+>    */
+>   #define HVC_ALLOC_TTY_ADAPTERS	8
+>   
+> +/*
+> + * These sizes are most efficient for vio, because they are the
+> + * native transfer size. We could make them selectable in the
+> + * future to better deal with backends that want other buffer sizes.
+> + */
+> +#define N_OUTBUF	16
+> +#define N_INBUF		16
+> +
+> +#define __ALIGNED__ __attribute__((__aligned__(L1_CACHE_BYTES)))
+> +
+>   struct hvc_struct {
+>   	struct tty_port port;
+>   	spinlock_t lock;
+>   	int index;
+>   	int do_wakeup;
+> -	char *outbuf;
+>   	int outbuf_size;
+>   	int n_outbuf;
+>   	uint32_t vtermno;
+> @@ -48,6 +57,16 @@ struct hvc_struct {
+>   	struct work_struct tty_resize;
+>   	struct list_head next;
+>   	unsigned long flags;
+> +
+> +	/*
+> +	 * the buf and its lock are used in hvc console api for putting chars,
+> +	 * and also used in hvc_poll_put_char() for putting single char.
+> +	 */
+> +	spinlock_t cons_outbuf_lock;
+> +	char cons_outbuf[N_OUTBUF] __ALIGNED__;
+> +
+> +	/* the buf is used for putting chars to tty */
+> +	char outbuf[] __ALIGNED__;
+>   };
+>   
+>   /* implemented by a low level driver */
