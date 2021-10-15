@@ -2,180 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A3D342E531
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 02:20:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC96442E533
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 02:21:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234025AbhJOAWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 20:22:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60996 "EHLO
+        id S234026AbhJOAXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 20:23:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233877AbhJOAWm (ORCPT
+        with ESMTP id S232796AbhJOAXP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 20:22:42 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82A23C061760
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 17:20:36 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id i24so33174920lfj.13
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 17:20:36 -0700 (PDT)
+        Thu, 14 Oct 2021 20:23:15 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78181C061753
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 17:21:09 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id p16so34398975lfa.2
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 17:21:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=4vhitf+OB83J8FxwqIn9yUkbnWD0KiX07u4IYQ5OV/U=;
-        b=xUmU3e+AN56evNuz4VZTGL6egGEFJoSWXOq7mTf/QievLJEK9IDj0ug7WLkMKBCo6q
-         mtUUeoN0jb2sXlQSrwQ+HlKUPLFLWKvgmFVZ1WBurZl1DfIABIhb1BRQ0Hc1l9ut7En/
-         ptulesDYXCV9NO+f71elALiwFgDS1Hk1Zozcdk9yp0JoVdMWiXi3ly+KsfUTxEV5x8LC
-         9hMR5z+Wguj5h/SNjuvZmB9lM99hLG7ycHmHGfFgZJ1sOpNqM6Mna8Asx06sxnmI090U
-         StG18anaC9n72pkBJNjEcAUUMnLtBuF2N73K2aEEiW8LfDDPZhalnKuhAq9UfNu2+e8T
-         i8wg==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=axcc21xdI/dvORlK9JnY4plyzJWNbNS1Oplgc4UgVPQ=;
+        b=Vkna6zOYpmrV6tfJTpvlreMclp67ltxLbYGSiwE+44ex2NwtqiQS8YhV7jr/PeCtNF
+         bIecXGY3fpYF7Q9pPdaUWzd3fjd9PCTU+RsVkROOQnikztXmitWv039xuwlFszGxg5Lw
+         /LRZcYlWN5eQjrYAKVXF1WfuxnIhmYtQj30kaSIgQH6kO31YIjcV5MbB5MX5HjULHXvg
+         BdPn4vtiV+29Y1ce90UjbWU8qEG0Q3/8X+lSWSRzx4IwU2/YjkGP5mXV80vW0T6o/dkg
+         JLtY6iJrK5NmqDpBNibkvByacmoSSoQrvsqE42gOoz/jX8RV7hTDl7Z2u5Kpkqw2Qs1m
+         i0Bw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4vhitf+OB83J8FxwqIn9yUkbnWD0KiX07u4IYQ5OV/U=;
-        b=BkjTYx3BjaXUkpDdpCQbPZztBQjGHDfZR+zv6dl1lBrXPKF0mFEW5nVGdh7VvTRtTV
-         pv1z6r6kSpCXSJ+xk4XCkI8k8m9oK8EZNCqc22OZP4nkQYO/m5bpuhh19hXq9KnpRq7j
-         XP8BB9WpGKbz2/RRZqGnzcf2VaUwDkUnqqPlvSHw+claFFs0SrQuJv/ea3JqeGoW/Bkd
-         ywF/tRy4wpVht4rS/eaoBRgdhfuKGm/HOXurPfHeBYNY3hGeuEsfj+hYgPgvE4bydVVn
-         ZqGouA4///iBEv8kj7hETi86OAbDRuCsp1GnxLJw+McRMmexwDKF3hN5FJtBmyienFXd
-         t+LA==
-X-Gm-Message-State: AOAM530Zv12wbwWbUZiwHOXvxeiYNLIegX70cevWt8OxRX+FQ29zmvz3
-        RK0F2t3pNRow9Ov3nFUY1Ax2RTtwqlEaLg==
-X-Google-Smtp-Source: ABdhPJx6x0dTEEVnYH4yVgOyMjDIvJKuYHi4fB7VV7o/4PmA1vJvYO0ins5SRxNn566R4asXHr2pOg==
-X-Received: by 2002:a2e:7204:: with SMTP id n4mr10014059ljc.430.1634257234634;
-        Thu, 14 Oct 2021 17:20:34 -0700 (PDT)
-Received: from [192.168.1.211] ([37.153.55.125])
-        by smtp.gmail.com with ESMTPSA id s14sm355304lfe.14.2021.10.14.17.20.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Oct 2021 17:20:34 -0700 (PDT)
-Subject: Re: [PATCH v3 2/4] thermal/drivers/qcom/spmi-adc-tm5: Add support for
- HC variant
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thara Gopinath <thara.gopinath@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20211005032531.2251928-1-bjorn.andersson@linaro.org>
- <20211005032531.2251928-3-bjorn.andersson@linaro.org>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Message-ID: <7142a85a-9bd6-015c-89c6-e7bbac5af534@linaro.org>
-Date:   Fri, 15 Oct 2021 03:20:33 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=axcc21xdI/dvORlK9JnY4plyzJWNbNS1Oplgc4UgVPQ=;
+        b=6mFNff4yXl4i3KhwLXT7qXSOgn9iT0cnwYe7Y/pTnB1zWcITI/FpffmMTOO++pbcIh
+         g85/8q120cb++tiszPEQU1hkTG5G2tyFABCclSf2R+PszD5K7/jwiR2RaJd2kdt7/Ax9
+         gjO6b1o1TkGudnAhZU/lHF7lUEypIbUy7V23R2KU//D46O2ylUuejpMUj8zSmPJ1MsPt
+         DZrh3xk54SWWOWDCRPiqlJb6S989RlSeLyb7nFscvemnyCanO/8qqg/ICd5hU1kEOPBG
+         B9E360qpqpciTcM0vlcDtls6fzudW4DaAeYwvYecjb5dUITwuQkvYYUzjxTMZ1KIj0HW
+         FFEA==
+X-Gm-Message-State: AOAM531hQ9peLK5M5s9qTJTLMi8qX6sAeUnCX1sloon6ezr0fhw+pC+6
+        IyvGJ/3kCPi4PVpIZ7tYlPek95AiFt3tBzI/LEarvKFdrkQ=
+X-Google-Smtp-Source: ABdhPJwNeN0mOd7mY/vsrY80L4MJjAYh7Wko7XKqQaD5V0rIKucUbvX8H4lpmKqsHw9HeLJ5Mhu/GMSZZ3EU7mlTU9M=
+X-Received: by 2002:a2e:b690:: with SMTP id l16mr2155205ljo.112.1634257267086;
+ Thu, 14 Oct 2021 17:21:07 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20211005032531.2251928-3-bjorn.andersson@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <20211015095327.42344a21@canb.auug.org.au>
+In-Reply-To: <20211015095327.42344a21@canb.auug.org.au>
+From:   Todd Kjos <tkjos@google.com>
+Date:   Thu, 14 Oct 2021 17:20:54 -0700
+Message-ID: <CAHRSSEwR9c1jV_Hy6DbH9aZ5Q02AeR_dkay9W9od0RpiYKdgLg@mail.gmail.com>
+Subject: Re: linux-next: Fixes tags needs some work in the selinux tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Paul Moore <paul@paul-moore.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/10/2021 06:25, Bjorn Andersson wrote:
-> The variant of the ADC Thermal Monitor block found in e.g. PM8998 is
-> "HC", add support for this variant to the ADC TM5 driver in order to
-> support using VADC channels as thermal_zones on SDM845 et al.
-> 
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+On Thu, Oct 14, 2021 at 3:53 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi all,
+>
+> In commit
+>
+>   fef994d85ac9 ("binder: use cred instead of task for getsecid")
+>
+> Fixes tag
+>
+>   Fixes: ec74136ded79 ("binder: create node flag to request sender's
+>
+> has these problem(s):
+>
+>   - Subject has leading but no trailing parentheses
+>   - Subject has leading but no trailing quotes
+>
+> In commit
+>
+>   d1c927fb8b52 ("binder: use cred instead of task for selinux checks")
+>
+> Fixes tag
+>
+>   Fixes: 79af73079d75 ("Add security hooks to binder and implement the
+>
+> has these problem(s):
+>
+>   - Subject has leading but no trailing parentheses
+>   - Subject has leading but no trailing quotes
+>
+> Please do not split Fixes tags over more than one line.
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Stephen / Paul - do you want me to upload a new series for this or is
+this something you would normally do since it is a simple change?
 
-> ---
-> 
-> Changes since v2:
-> - Dropped conditional return ret right before unconditionatl return ret;
-> 
->   drivers/thermal/qcom/qcom-spmi-adc-tm5.c | 41 +++++++++++++++++++++++-
->   1 file changed, 40 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/thermal/qcom/qcom-spmi-adc-tm5.c b/drivers/thermal/qcom/qcom-spmi-adc-tm5.c
-> index 8494cc04aa21..824671cf494a 100644
-> --- a/drivers/thermal/qcom/qcom-spmi-adc-tm5.c
-> +++ b/drivers/thermal/qcom/qcom-spmi-adc-tm5.c
-> @@ -82,6 +82,7 @@ struct adc_tm5_data {
->   	const u32	full_scale_code_volt;
->   	unsigned int	*decimation;
->   	unsigned int	*hw_settle;
-> +	bool		is_hc;
->   };
->   
->   enum adc_tm5_cal_method {
-> @@ -146,6 +147,14 @@ static const struct adc_tm5_data adc_tm5_data_pmic = {
->   					 64000, 128000 },
->   };
->   
-> +static const struct adc_tm5_data adc_tm_hc_data_pmic = {
-> +	.full_scale_code_volt = 0x70e4,
-> +	.decimation = (unsigned int []) { 256, 512, 1024 },
-> +	.hw_settle = (unsigned int []) { 0, 100, 200, 300, 400, 500, 600, 700,
-> +					 1000, 2000, 4000, 6000, 8000, 10000 },
-> +	.is_hc = true,
-> +};
-> +
->   static int adc_tm5_read(struct adc_tm5_chip *adc_tm, u16 offset, u8 *data, int len)
->   {
->   	return regmap_bulk_read(adc_tm->regmap, adc_tm->base + offset, data, len);
-> @@ -375,6 +384,29 @@ static int adc_tm5_register_tzd(struct adc_tm5_chip *adc_tm)
->   	return 0;
->   }
->   
-> +static int adc_tm_hc_init(struct adc_tm5_chip *chip)
-> +{
-> +	unsigned int i;
-> +	u8 buf[2];
-> +	int ret;
-> +
-> +	for (i = 0; i < chip->nchannels; i++) {
-> +		if (chip->channels[i].channel >= ADC_TM5_NUM_CHANNELS) {
-> +			dev_err(chip->dev, "Invalid channel %d\n", chip->channels[i].channel);
-> +			return -EINVAL;
-> +		}
-> +	}
-> +
-> +	buf[0] = chip->decimation;
-> +	buf[1] = chip->avg_samples | ADC_TM5_FAST_AVG_EN;
-> +
-> +	ret = adc_tm5_write(chip, ADC_TM5_ADC_DIG_PARAM, buf, sizeof(buf));
-> +	if (ret)
-> +		dev_err(chip->dev, "block write failed: %d\n", ret);
-> +
-> +	return ret;
-> +}
-> +
->   static int adc_tm5_init(struct adc_tm5_chip *chip)
->   {
->   	u8 buf[4], channels_available;
-> @@ -591,7 +623,10 @@ static int adc_tm5_probe(struct platform_device *pdev)
->   		return ret;
->   	}
->   
-> -	ret = adc_tm5_init(adc_tm);
-> +	if (adc_tm->data->is_hc)
-> +		ret = adc_tm_hc_init(adc_tm);
-> +	else
-> +		ret = adc_tm5_init(adc_tm);
->   	if (ret) {
->   		dev_err(dev, "adc-tm init failed\n");
->   		return ret;
-> @@ -612,6 +647,10 @@ static const struct of_device_id adc_tm5_match_table[] = {
->   		.compatible = "qcom,spmi-adc-tm5",
->   		.data = &adc_tm5_data_pmic,
->   	},
-> +	{
-> +		.compatible = "qcom,spmi-adc-tm-hc",
-> +		.data = &adc_tm_hc_data_pmic,
-> +	},
->   	{ }
->   };
->   MODULE_DEVICE_TABLE(of, adc_tm5_match_table);
-> 
-
-
--- 
-With best wishes
-Dmitry
+>
+>
+> --
+> Cheers,
+> Stephen Rothwell
