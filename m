@@ -2,112 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E0F842F884
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 18:44:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0039F42F887
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 18:45:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241532AbhJOQqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 12:46:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59012 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241523AbhJOQqO (ORCPT
+        id S235777AbhJOQrH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 12:47:07 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3987 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241546AbhJOQqn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 12:46:14 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A6F3C061764
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 09:44:07 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id o133so8824219pfg.7
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 09:44:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=zSHOcs5t+6dTQwUxuGH/T7ott4w7EhNYJHh3Z2GocjA=;
-        b=AIhx2i9vMNxJmE3uzyIojUAXtN7O9RaN/DTCaA0s69W6dr/F02lHnP46eAy1BAczkS
-         q/3YYgROnZDdu5KCTulYeoTevurQP6Gw5YJGpPrpkCXsWSaAG/7Dih1O8GYvfBoti6ih
-         kWI3J8o2p5RY4iOXrGsIDYzHDgFP2sUvsa2EIaEjcIgIwtaQ4NTbC8eQrJm1x3x3O5im
-         YMvd241FxnNuepC7dK1eisKKJKQ1BpEAqBI/BIduLf6/9f4tVUulzs16bdEq/8dAKwNO
-         viQuoJJMMY0w+TJ+XEfkw8zNkCYHm85q8evdIoeYwNcXPQO/lnBVnHZmNXVduzKXLEZ2
-         LbIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zSHOcs5t+6dTQwUxuGH/T7ott4w7EhNYJHh3Z2GocjA=;
-        b=tLKM3yWCf6TD/cXEiFNXPvzfC0A4NRMmfER87BQG9ftvLKLct5bkC4LOmQVoE0DgvR
-         PUIaeuceyyAKQlAxLPh6OKBs6iQcfB/i4K5cb1biU4zAtAHl7VOCoOnY0O+OEDV1kLS2
-         PybwzwEnueoFsVMK1aIW/hi/KsDOSV2z6ho7hHW+3IxN+DOLpgRlUkbtzHdGZoeFVCUP
-         kRcR2+FRNUchU9izuYWHV8YeHCZEl8Fz7xX2dsJ9/TB7ae1+wHelZ8aJORFecJYHMzOo
-         MZSqrvqUjVv1HmdEPtStpCq5cTzsLg3jOrnkFgKa8p5jc4dJqeggxVi1HKGvaOZ+6sda
-         v3/w==
-X-Gm-Message-State: AOAM5313fSu7Ym2uuJzv0/qGkdffnzW+dQ/wo5T8gJvdwaOZAQQGPswy
-        IIKZ0BLjHUN9QAvp4KR4ummmTw==
-X-Google-Smtp-Source: ABdhPJxtVTeCPQ5dOb7/w00ASS1IRHqKuVloMz2UwAfLuAU9TDr2EVBRJZOlG0vE0DE86rBAGM7T6w==
-X-Received: by 2002:a63:e613:: with SMTP id g19mr10102661pgh.12.1634316246676;
-        Fri, 15 Oct 2021 09:44:06 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id o14sm5451095pfh.84.2021.10.15.09.44.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Oct 2021 09:44:06 -0700 (PDT)
-Date:   Fri, 15 Oct 2021 16:44:02 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
-        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
-Subject: Re: [PATCH Part2 v5 34/45] KVM: SVM: Do not use long-lived GHCB map
- while setting scratch area
-Message-ID: <YWmv0uerMuujn/Wo@google.com>
-References: <20210820155918.7518-1-brijesh.singh@amd.com>
- <20210820155918.7518-35-brijesh.singh@amd.com>
- <YWdNisk78f5BVNv3@google.com>
- <fb6e3800-7eaf-868d-365a-9b76665bd06c@amd.com>
+        Fri, 15 Oct 2021 12:46:43 -0400
+Received: from fraeml744-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HWBqj5665z67PhJ;
+        Sat, 16 Oct 2021 00:41:37 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml744-chm.china.huawei.com (10.206.15.225) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Fri, 15 Oct 2021 18:44:35 +0200
+Received: from localhost (10.202.226.41) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Fri, 15 Oct
+ 2021 17:44:34 +0100
+Date:   Fri, 15 Oct 2021 17:44:33 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Dan Williams <dan.j.williams@intel.com>
+CC:     <linux-cxl@vger.kernel.org>, Ben Widawsky <ben.widawsky@intel.com>,
+        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <hch@lst.de>
+Subject: Re: [PATCH v3 07/10] cxl/pci: Split cxl_pci_setup_regs()
+Message-ID: <20211015174433.0000368a@Huawei.com>
+In-Reply-To: <163379787433.692348.2451270397309803556.stgit@dwillia2-desk3.amr.corp.intel.com>
+References: <163379783658.692348.16064992154261275220.stgit@dwillia2-desk3.amr.corp.intel.com>
+        <163379787433.692348.2451270397309803556.stgit@dwillia2-desk3.amr.corp.intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fb6e3800-7eaf-868d-365a-9b76665bd06c@amd.com>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.226.41]
+X-ClientProxiedBy: lhreml727-chm.china.huawei.com (10.201.108.78) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 15, 2021, Brijesh Singh wrote:
-> 
-> On 10/13/21 2:20 PM, Sean Christopherson wrote:
-> > On Fri, Aug 20, 2021, Brijesh Singh wrote:
-> >> The setup_vmgexit_scratch() function may rely on a long-lived GHCB
-> >> mapping if the GHCB shared buffer area was used for the scratch area.
-> >> In preparation for eliminating the long-lived GHCB mapping, always
-> >> allocate a buffer for the scratch area so it can be accessed without
-> >> the GHCB mapping.
-> > Would it make sense to post this patch and the next (Remove the long-lived GHCB
-> > host map) in a separate mini-series?  It's needed for SNP, but AFAICT there's
-> > nothing that depends on SNP.  Getting this merged ahead of time would reduce the
-> > size of the SNP series by a smidge.
-> 
-> While testing with random configs, I am seeing some might_sleep() warns.
-> This is happening mainly because during the vmrun the GHCB is accessed
-> with preempt disabled. The kvm_vcpu_map() -> kmap() reports the warning.
-> I am leaning towards creating a cache on the vmgexit and use that cache
-> instead of the doing a kmap() on every access. Does that sound okay to you ?
+On Sat, 9 Oct 2021 09:44:34 -0700
+Dan Williams <dan.j.williams@intel.com> wrote:
 
-Since SEV is 64-bit only, it should be ok to add a kvm_vcpu_map_atomic() variant.
+> From: Ben Widawsky <ben.widawsky@intel.com>
+> 
+> In preparation for moving parts of register mapping to cxl_core, split
+
+Ah. Guess this planned move is why the naming change in the earlier patch.
+Fair enough, but perhaps call it out there as well as here.
+
+No comments to add to this one.
+
+> cxl_pci_setup_regs() into a helper that finds register blocks,
+> (cxl_find_regblock()), and a generic wrapper that probes the precise
+> register sets within a block (cxl_setup_regs()).
+> 
+> Move the actual mapping (cxl_map_regs()) of the only register-set that
+> cxl_pci cares about (memory device registers) up a level from the former
+> cxl_pci_setup_regs() into cxl_pci_probe().
+> 
+> With this change the unused component registers are no longer mapped,
+> but the helpers are primed to move into the core.
+> 
+> Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
+> [djbw: rebase on the cxl_register_map refactor]
+> [djbw: drop cxl_map_regs() for component registers]
+> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+
+> ---
+>  drivers/cxl/pci.c |   73 +++++++++++++++++++++++++++--------------------------
+>  1 file changed, 37 insertions(+), 36 deletions(-)
+> 
+> diff --git a/drivers/cxl/pci.c b/drivers/cxl/pci.c
+> index b42407d067ac..b6bc8e5ca028 100644
+> --- a/drivers/cxl/pci.c
+> +++ b/drivers/cxl/pci.c
+> @@ -433,72 +433,69 @@ static void cxl_decode_regblock(u32 reg_lo, u32 reg_hi,
+>  }
+>  
+>  /**
+> - * cxl_pci_setup_regs() - Setup necessary MMIO.
+> - * @cxlm: The CXL memory device to communicate with.
+> + * cxl_find_regblock() - Locate register blocks by type
+> + * @pdev: The CXL PCI device to enumerate.
+> + * @type: Register Block Indicator id
+> + * @map: Enumeration output, clobbered on error
+>   *
+> - * Return: 0 if all necessary registers mapped.
+> + * Return: 0 if register block enumerated, negative error code otherwise
+>   *
+> - * A memory device is required by spec to implement a certain set of MMIO
+> - * regions. The purpose of this function is to enumerate and map those
+> - * registers.
+> + * A CXL DVSEC may additional point one or more register blocks, search
+
+may point to one or more...
+(perhaps - I'm not quite sure of the intended meaning)
+
+> + * for them by @type.
+>   */
+> -static int cxl_pci_setup_regs(struct cxl_mem *cxlm)
+> +static int cxl_find_regblock(struct pci_dev *pdev, enum cxl_regloc_type type,
+> +			     struct cxl_register_map *map)
+>  {
+>  	u32 regloc_size, regblocks;
+> -	int regloc, i, n_maps, ret = 0;
+> -	struct device *dev = cxlm->dev;
+> -	struct pci_dev *pdev = to_pci_dev(dev);
+> -	struct cxl_register_map *map, maps[CXL_REGLOC_RBI_TYPES];
+> +	int regloc, i;
+>  
+>  	regloc = cxl_pci_dvsec(pdev, PCI_DVSEC_ID_CXL_REGLOC_DVSEC_ID);
+> -	if (!regloc) {
+> -		dev_err(dev, "register location dvsec not found\n");
+> +	if (!regloc)
+>  		return -ENXIO;
+> -	}
+>  
+> -	/* Get the size of the Register Locator DVSEC */
+>  	pci_read_config_dword(pdev, regloc + PCI_DVSEC_HEADER1, &regloc_size);
+>  	regloc_size = FIELD_GET(PCI_DVSEC_HEADER1_LENGTH_MASK, regloc_size);
+>  
+>  	regloc += PCI_DVSEC_ID_CXL_REGLOC_BLOCK1_OFFSET;
+>  	regblocks = (regloc_size - PCI_DVSEC_ID_CXL_REGLOC_BLOCK1_OFFSET) / 8;
+>  
+> -	for (i = 0, n_maps = 0; i < regblocks; i++, regloc += 8) {
+> +	for (i = 0; i < regblocks; i++, regloc += 8) {
+>  		u32 reg_lo, reg_hi;
+>  
+>  		pci_read_config_dword(pdev, regloc, &reg_lo);
+>  		pci_read_config_dword(pdev, regloc + 4, &reg_hi);
+>  
+> -		map = &maps[n_maps];
+>  		cxl_decode_regblock(reg_lo, reg_hi, map);
+>  
+> -		/* Ignore unknown register block types */
+> -		if (map->reg_type > CXL_REGLOC_RBI_MEMDEV)
+> -			continue;
+> +		if (map->reg_type == type)
+> +			return 0;
+> +	}
+>  
+> -		ret = cxl_map_regblock(pdev, map);
+> -		if (ret)
+> -			return ret;
+> +	return -ENODEV;
+> +}
+>  
+> -		ret = cxl_probe_regs(pdev, map);
+> -		cxl_unmap_regblock(pdev, map);
+> -		if (ret)
+> -			return ret;
+> +static int cxl_setup_regs(struct pci_dev *pdev, enum cxl_regloc_type type,
+> +			  struct cxl_register_map *map)
+> +{
+> +	int rc;
+>  
+> -		n_maps++;
+> -	}
+> +	rc = cxl_find_regblock(pdev, type, map);
+> +	if (rc)
+> +		return rc;
+>  
+> -	for (i = 0; i < n_maps; i++) {
+> -		ret = cxl_map_regs(cxlm, &maps[i]);
+> -		if (ret)
+> -			break;
+> -	}
+> +	rc = cxl_map_regblock(pdev, map);
+> +	if (rc)
+> +		return rc;
+> +
+> +	rc = cxl_probe_regs(pdev, map);
+> +	cxl_unmap_regblock(pdev, map);
+>  
+> -	return ret;
+> +	return rc;
+>  }
+>  
+>  static int cxl_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+>  {
+> +	struct cxl_register_map map;
+>  	struct cxl_memdev *cxlmd;
+>  	struct cxl_mem *cxlm;
+>  	int rc;
+> @@ -518,7 +515,11 @@ static int cxl_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+>  	if (IS_ERR(cxlm))
+>  		return PTR_ERR(cxlm);
+>  
+> -	rc = cxl_pci_setup_regs(cxlm);
+> +	rc = cxl_setup_regs(pdev, CXL_REGLOC_RBI_MEMDEV, &map);
+> +	if (rc)
+> +		return rc;
+> +
+> +	rc = cxl_map_regs(cxlm, &map);
+>  	if (rc)
+>  		return rc;
+>  
+> 
+
