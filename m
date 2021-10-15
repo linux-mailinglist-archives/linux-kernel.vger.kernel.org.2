@@ -2,107 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5DAC42F76E
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 17:53:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA31642F772
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 17:55:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241070AbhJOP4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 11:56:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42462 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241057AbhJOPz7 (ORCPT
+        id S241045AbhJOP5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 11:57:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47394 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233273AbhJOP5b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 11:55:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634313232;
+        Fri, 15 Oct 2021 11:57:31 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7698AC061570;
+        Fri, 15 Oct 2021 08:55:24 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1634313323;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=L1ebZTRDtvYaS1oh3yKgiezKno+o3JSTu41X1RB0t/A=;
-        b=cu7BI9A5vWyZRjdJASq863DU8d79ttspJP1n36PLI/QQ3jI0vyN4NBPMyDp17yDN1x7y1h
-        fr3+eAjbLBzk9x998o9yguUYV1tcD6WpLiKpnGfEO4dOS3SlJXal0pNg5VoiG/Ed3h/7tM
-        7nLDWOkpNkPmn0+olgo+lQijBMVgpm8=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-503-0PjyNcz8MJqkCPJx_B9fhA-1; Fri, 15 Oct 2021 11:53:51 -0400
-X-MC-Unique: 0PjyNcz8MJqkCPJx_B9fhA-1
-Received: by mail-ed1-f70.google.com with SMTP id l22-20020aa7c316000000b003dbbced0731so8643103edq.6
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 08:53:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=L1ebZTRDtvYaS1oh3yKgiezKno+o3JSTu41X1RB0t/A=;
-        b=wlqpeXywjOXToDrJTrwihWjha82CLWIivzdgZoWWqQTvJaYQzY21bIOFIjW98IqOat
-         PjR9Awe4vnIAl+BsivLJPHwUtHXHxPz+5IHsNYzodbN9qV3DcWmCxRif/h4UdGSGv4Vr
-         QeX2MjtYpdKaoO+56WrkH119NcADdEl9UXIDw3j6Dry9k/z3lWVRrm8PsY+sGVAv5472
-         Dfe2t+frGfny4YuWLBj5U146jMZELGJgjBlsUOVyOXRfl1/qBSTowx+ecBpU6HB6U7Ye
-         6IWhfMMVJiUJ2OGn1nq3IsXojCIXUucQpFJXldCuMT2YwOFaJ5AB1sx/5nsmmRPLpRsZ
-         l5PQ==
-X-Gm-Message-State: AOAM530f8+X3/mfEUx/pRmKqE6dOxHwpBVw6Xhyu0m4aZ1wmFKfqvlou
-        +sz8ofP3wsiC+d1at1xfVqm+KXPQgUh57XYM1iSs+qsg8xxB+NUqk2rhD29ypAToN9Ye5Yd/RXi
-        Ygs3qD5ATbc/ufr5YQs35ZRIG
-X-Received: by 2002:a17:906:b782:: with SMTP id dt2mr8125135ejb.310.1634313229572;
-        Fri, 15 Oct 2021 08:53:49 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy62GL1pasUanwiI/flEzTGOV8RVWPvZh1VUyETyszJmioLKXqT8Zc+p5y0zX8PPTgQkB7DfQ==
-X-Received: by 2002:a17:906:b782:: with SMTP id dt2mr8125105ejb.310.1634313229351;
-        Fri, 15 Oct 2021 08:53:49 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id b2sm4510545ejj.124.2021.10.15.08.53.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Oct 2021 08:53:48 -0700 (PDT)
-Message-ID: <689cf4f5-6004-de51-f5ca-9a7acee37499@redhat.com>
-Date:   Fri, 15 Oct 2021 17:53:47 +0200
+        bh=sFrKPQRzDTKs0QNA4mzAX7Wpe5TO8YTE5o8WYqOKeDs=;
+        b=gijAJFHIcbUh9LlKhz+b8pZZHFCP4uYbKvBkMt2yaZSzUj9mnNfFbgXutfB5sgZvwlpbFK
+        brLdXbTaboyu9xuuT6rXSOowyLUBdH3/JOq/EP8OQMri9RQyaG6hHAytKesFsrF6P8XKrM
+        OG5Q5C5nI7NcuN3IwRGPlgfpk7CY4KNYieXHj8bRZzJV6gsZjNZDV3289/Jo6WXveOxU99
+        H5XU9Y/3D2x5+e1o6ByUKtt4azsRaIxCFeEUK44x/F7jfwBL9A/NuR9dEH3ZnK5aWzPzIB
+        BJnbXbme5143vkUD5DNTB8qCnS7xgrc31C5Mc59/40UvA+yLqy0VPpI5SXCfqg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1634313323;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sFrKPQRzDTKs0QNA4mzAX7Wpe5TO8YTE5o8WYqOKeDs=;
+        b=pSsHnrcLqmy+2ohuajOXale7osrdx/UQbalyx0Q6La/AG+Xq5YkKptrunxW9PcgrVUhBVG
+        1GZj3RWM2dyqjpCQ==
+To:     Andy Lutomirski <luto@kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        the arch/x86 maintainers <x86@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-hardening@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        llvm@lists.linux.dev
+Subject: Re: [PATCH v5 03/15] linkage: Add DECLARE_NOT_CALLED_FROM_C
+In-Reply-To: <7377e6b9-7130-4c20-a0c8-16de4620c995@www.fastmail.com>
+References: <20211013181658.1020262-1-samitolvanen@google.com>
+ <20211013181658.1020262-4-samitolvanen@google.com>
+ <7377e6b9-7130-4c20-a0c8-16de4620c995@www.fastmail.com>
+Date:   Fri, 15 Oct 2021 17:55:22 +0200
+Message-ID: <8735p25llh.ffs@tglx>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [patch 13/31] x86/fpu: Move KVMs FPU swapping to FPU core
-Content-Language: en-US
-To:     "Liu, Jing2" <jing2.liu@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     "x86@kernel.org" <x86@kernel.org>,
-        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "Nakajima, Jun" <jun.nakajima@intel.com>,
-        Jing Liu <jing2.liu@linux.intel.com>,
-        "seanjc@google.com" <seanjc@google.com>,
-        "Cooper, Andrew" <andrew.cooper3@citrix.com>
-References: <871r4p9fyh.ffs@tglx>
- <ec9c761d-4b5c-71e2-c1fc-d256b6b78c04@redhat.com>
- <BL0PR11MB3252511FC48E43484DE79A3CA9B89@BL0PR11MB3252.namprd11.prod.outlook.com>
- <6bbc5184-a675-1937-eb98-639906a9cf15@redhat.com> <87wnmf66m5.ffs@tglx>
- <3997787e-402d-4b2b-0f90-4a672c77703f@redhat.com> <87lf2v5shb.ffs@tglx>
- <87a6ja6352.ffs@tglx>
- <BYAPR11MB3256B3120DEB5FE0DD53B5B9A9B99@BYAPR11MB3256.namprd11.prod.outlook.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <BYAPR11MB3256B3120DEB5FE0DD53B5B9A9B99@BYAPR11MB3256.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/10/21 16:24, Liu, Jing2 wrote:
->> fpu_swap_kvm_fpu(bool enter_guest, u64 guest_needs_features) {
->>          possibly_reallocate(enter_guest, guest_needs_features);
-> When KVM traps guest wrmsr XFD in #NM, I think KVM need allocate
-> fpstate buffer for full features.
+On Thu, Oct 14 2021 at 19:51, Andy Lutomirski wrote:
+> On Wed, Oct 13, 2021, at 11:16 AM, Sami Tolvanen wrote:
+>>=20
+>> +/*
+>> + * Declares a function not callable from C using an opaque type. Define=
+d as
+>> + * an array to allow the address of the symbol to be taken without '&'.
+>> + */
+> I=E2=80=99m not convinced that taking the address without using & is a
+> laudable goal.  The magical arrays-are-pointers-too behavior of C is a
+> mistake, not a delightful simplification.
 
-You mean XCR0 and XFD (not XFD in #NM), but yeah at the point of 
-fpu_swap_kvm_fpu we are in atomic context.
+>> +#ifndef DECLARE_NOT_CALLED_FROM_C
+>> +#define DECLARE_NOT_CALLED_FROM_C(sym) \
+>> +	extern const u8 sym[]
+>> +#endif
+>
 
-Still, for now the first pass of AMX implementation doesn't need to do 
-anything but swap the pointers, and it can simply allocate the full 
-buffer at vCPU creation.
+> The relevant property of these symbols isn=E2=80=99t that they=E2=80=99re=
+ not called
+> from C.  The relevant thing is that they are just and not objects of a
+> type that the programmer cares to tell the compiler about. (Or that
+> the compiler understands, for that matter. On a system with XO memory
+> or if they=E2=80=99re in a funny section, dereferencing them may fail.)
 
-Paolo
+I agree.
 
-> Because in next vmexit, guest might have dynamic state and KVM
-> can be preempted before running fpu_swap_kvm_fpu().
-> Thus, here the current->thread.fpu.fpstate already has enough space
-> for saving guest.
+> So I think we should use incomplete structs, which can=E2=80=99t be
+> dereferenced and will therefore be less error prone.
+
+While being late to that bike shed painting party, I really have to ask
+the question _why_ can't the compiler provide an annotation for these
+kind of things which:
+
+    1) Make the build fail when invoked directly
+
+    2) Tell CFI that this is _NOT_ something it can understand
+
+-void clear_page_erms(void *page);
++void __bikeshedme clear_page_erms(void *page);
+
+That still tells me:
+
+    1) This is a function
+=20=20=20=20
+    2) It has a regular argument which is expected to be in RDI
+
+which even allows to do analyis of e.g. the alternative call which
+invokes that function.
+
+DECLARE_NOT_CALLED_FROM_C(clear_page_erms);
+
+loses these properties and IMO it's a tasteless hack.
+
+Thanks,
+
+        tglx
 
