@@ -2,112 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E4E442E9C0
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 09:12:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D59742E9C2
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 09:12:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235895AbhJOHOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 03:14:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38786 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234497AbhJOHOK (ORCPT
+        id S235919AbhJOHOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 03:14:37 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:28945 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234497AbhJOHOg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 03:14:10 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CD5AC061755
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 00:12:04 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id n40-20020a05600c3ba800b0030da2439b21so1994115wms.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 00:12:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=IzYgq+z20hgwILm2p4l/2rgHn4rRXdLiFXw3mcnpODQ=;
-        b=F7zeI77HxLebM0OPMBq6NZ97maLjYDrwOEVWHeB5kwwJeGsg/WsHAaCLv6D1gM+RyD
-         WUTh2vhqAEes0G2CVpE/vrwy4TkCGlrHHfvgPj5VESEhFDg4NVATGrIam5cHybynvHaM
-         YJU7PN6O6YbQk/Fu7D/sEeAQ2Pfgif+oO7qsFjt/9drJXIhL8IRyMbFXou0WO0lO/G5C
-         Ae4fyeXX8RDWK4HRWakXyawWZFkyGABwRcuXoMco/C6UPkbDvbkDnjz60K1WiObv7q8b
-         UL5QWgAeiNQm8KXlFbZ+YalsTUZ+LoGkuXpJ8RICK2zK1mYk1RD8hcNj6ao8sgmNGg3U
-         Qlqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=IzYgq+z20hgwILm2p4l/2rgHn4rRXdLiFXw3mcnpODQ=;
-        b=piOdDYMPnPhP/CeJYp1XzhQjUumd5h6qYAVhruWMa9OpKx9voqULkJSv+wFhdMdzP7
-         vdvh9ox5M6J5cZO9Qe6GUVMY+JW6dob75hsHyItyIfRgVc6BGRbPwaTyTlqC84ZoKsXB
-         xsJ+JWAPkRGdi0GHpEwdduHatz43M1UBHshGtNxg5WTMIrBRv3CaB2oQDsNxhgVFDQYx
-         FYzQyGj0Ytytwii4RV+trCTX+CtIhTVXqSQ3pXGzI0gEtIyGgIVoQSm+GmT6VciWBvoE
-         o43j5jnoxJxGBd4FCBVoUoGBpVXI/JS55avlZPm2nY6zacIaMcTiQBRmENjB1a/RYiF0
-         MzZw==
-X-Gm-Message-State: AOAM531aBkKIU27JaK+V1pUDlkXVBPl+2Efpd4GA0lOX09HqzuVQBPnO
-        zmlMAaSeOdTjdl0BzbNAP/GMcca+g+8HdMgj
-X-Google-Smtp-Source: ABdhPJxK3uo8JrIoKA/rDT0p9uBdZt4h8LAooLr15qDifh2ZkIN3d6fRJbbw3J7Nzz2zH2zqUufVUg==
-X-Received: by 2002:a05:600c:22c6:: with SMTP id 6mr25145329wmg.106.1634281922460;
-        Fri, 15 Oct 2021 00:12:02 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:c62a:318d:9792:450f? ([2a01:e34:ed2f:f020:c62a:318d:9792:450f])
-        by smtp.googlemail.com with ESMTPSA id k17sm4049669wrc.93.2021.10.15.00.12.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Oct 2021 00:12:01 -0700 (PDT)
-Subject: Re: [PATCH v3 0/4] arm64: dts: qcom: sdm845: Add thermal zones for
- PM8998 ADC
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Amit Kucheria <amitk@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thara Gopinath <thara.gopinath@linaro.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20211005032531.2251928-1-bjorn.andersson@linaro.org>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <cc0398ea-cd44-8580-c606-d0716ad9412c@linaro.org>
-Date:   Fri, 15 Oct 2021 09:12:00 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Fri, 15 Oct 2021 03:14:36 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HVy5q1vvBzbnCB;
+        Fri, 15 Oct 2021 15:07:59 +0800 (CST)
+Received: from kwepemm600001.china.huawei.com (7.193.23.3) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Fri, 15 Oct 2021 15:12:28 +0800
+Received: from [10.174.176.245] (10.174.176.245) by
+ kwepemm600001.china.huawei.com (7.193.23.3) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Fri, 15 Oct 2021 15:12:27 +0800
+Subject: Re: [PATCH] USB: serial: Fix possible memleak in keyspan_port_probe()
+To:     Johan Hovold <johan@kernel.org>
+CC:     <gregkh@linuxfoundation.org>, <linux-usb@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20211014132033.554304-1-wanghai38@huawei.com>
+ <YWg6fBsl/1ui2vcR@hovoldconsulting.com>
+From:   "wanghai (M)" <wanghai38@huawei.com>
+Message-ID: <92fd3812-4b20-1a59-f58d-be1b6a88d2e7@huawei.com>
+Date:   Fri, 15 Oct 2021 15:12:27 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20211005032531.2251928-1-bjorn.andersson@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <YWg6fBsl/1ui2vcR@hovoldconsulting.com>
+Content-Type: text/plain; charset="gbk"; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.176.245]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemm600001.china.huawei.com (7.193.23.3)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-Hi,
-
-I will pick patches 1 et 2
-
-Thanks
-
-  -- Daniel
-
-
-On 05/10/2021 05:25, Bjorn Andersson wrote:
-> Describe ADC channels, related thermal monitor channels and add thermal
-> zones for these.
-> 
-> Bjorn Andersson (4):
->   dt-bindings: thermal: qcom: add HC variant of adc-thermal monitor
->     bindings
->   thermal/drivers/qcom/spmi-adc-tm5: Add support for HC variant
->   arm64: dts: qcom: pm8998: Add ADC Thermal Monitor node
->   arm64: dts: qcom: sdm845: mtp: Add vadc channels and thermal zones
-> 
->  .../bindings/thermal/qcom-spmi-adc-tm-hc.yaml | 149 ++++++++++++++++++
->  arch/arm64/boot/dts/qcom/pm8998.dtsi          |  10 ++
->  arch/arm64/boot/dts/qcom/sdm845-mtp.dts       | 140 ++++++++++++++++
->  drivers/thermal/qcom/qcom-spmi-adc-tm5.c      |  41 ++++-
->  4 files changed, 339 insertions(+), 1 deletion(-)
->  create mode 100644 Documentation/devicetree/bindings/thermal/qcom-spmi-adc-tm-hc.yaml
-> 
-
-
+ÔÚ 2021/10/14 22:11, Johan Hovold Ð´µÀ:
+> On Thu, Oct 14, 2021 at 09:20:33PM +0800, Wang Hai wrote:
+>> I got memory leak as follows when doing fault injection test:
+>>
+>> unreferenced object 0xffff888258228440 (size 64):
+>>    comm "kworker/7:2", pid 2005, jiffies 4294989509 (age 824.540s)
+>>    hex dump (first 32 bytes):
+>>      00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>>      00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>>    backtrace:
+>>      [<ffffffff8167939c>] slab_post_alloc_hook+0x9c/0x490
+>>      [<ffffffff8167f627>] kmem_cache_alloc_trace+0x1f7/0x470
+>>      [<ffffffffa02ac0e4>] keyspan_port_probe+0xa4/0x5d0 [keyspan]
+>>      [<ffffffffa0294c07>] usb_serial_device_probe+0x97/0x1d0 [usbserial]
+>>      [<ffffffff82b50ca7>] really_probe+0x167/0x460
+>>      [<ffffffff82b51099>] __driver_probe_device+0xf9/0x180
+>>      [<ffffffff82b51173>] driver_probe_device+0x53/0x130
+>>      [<ffffffff82b516f5>] __device_attach_driver+0x105/0x130
+>>      [<ffffffff82b4cfe9>] bus_for_each_drv+0x129/0x190
+>>      [<ffffffff82b50a69>] __device_attach+0x1c9/0x270
+>>      [<ffffffff82b518d0>] device_initial_probe+0x20/0x30
+>>      [<ffffffff82b4f062>] bus_probe_device+0x142/0x160
+>>      [<ffffffff82b4a4e9>] device_add+0x829/0x1300
+>>      [<ffffffffa0295fda>] usb_serial_probe.cold+0xc9b/0x14ac [usbserial]
+>>      [<ffffffffa02266aa>] usb_probe_interface+0x1aa/0x3c0 [usbcore]
+>>      [<ffffffff82b50ca7>] really_probe+0x167/0x460
+>>
+>> If it fails to allocate memory for an out_buffer[i] or in_buffer[i],
+>> the previously allocated memory for out_buffer or in_buffer needs to
+>> be freed on the error handling path, otherwise a memory leak will result.
+>>
+>> Fixes: bad41a5bf177 ("USB: keyspan: fix port DMA-buffer allocations")
+>> Reported-by: Hulk Robot <hulkci@huawei.com>
+>> Signed-off-by: Wang Hai <wanghai38@huawei.com>
+>> ---
+>>   drivers/usb/serial/keyspan.c | 7 +++----
+>>   1 file changed, 3 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/usb/serial/keyspan.c b/drivers/usb/serial/keyspan.c
+>> index 87b89c99d517..ba27a9f0275b 100644
+>> --- a/drivers/usb/serial/keyspan.c
+>> +++ b/drivers/usb/serial/keyspan.c
+>> @@ -2901,7 +2901,7 @@ static int keyspan_port_probe(struct usb_serial_port *port)
+>>   
+>>   	p_priv->inack_buffer = kzalloc(INACK_BUFLEN, GFP_KERNEL);
+>>   	if (!p_priv->inack_buffer)
+>> -		goto err_inack_buffer;
+>> +		goto err_out_buffer;
+>>   
+>>   	p_priv->outcont_buffer = kzalloc(OUTCONT_BUFLEN, GFP_KERNEL);
+>>   	if (!p_priv->outcont_buffer)
+>> @@ -2953,13 +2953,12 @@ static int keyspan_port_probe(struct usb_serial_port *port)
+>>   
+>>   err_outcont_buffer:
+>>   	kfree(p_priv->inack_buffer);
+>> -err_inack_buffer:
+>> +err_out_buffer:
+>>   	for (i = 0; i < ARRAY_SIZE(p_priv->out_buffer); ++i)
+>>   		kfree(p_priv->out_buffer[i]);
+>> -err_out_buffer:
+>> +err_in_buffer:
+>>   	for (i = 0; i < ARRAY_SIZE(p_priv->in_buffer); ++i)
+>>   		kfree(p_priv->in_buffer[i]);
+>> -err_in_buffer:
+>>   	kfree(p_priv);
+>>   
+>>   	return -ENOMEM;
+> Good catch. Fortunately these small allocations would currently never
+> fail, but we should fix it up nonetheless.
+>
+> The fix looks correct, but you're now mixing two styles of error labels
+> (i.e. naming them after where you jump from and after what they do,
+> respectively).
+>
+> Since you're touching all but one label, could you rename also the last
+> one after what is done and include a "free_" infix in the label names
+> (e.g. err_free_in_buffer, etc)?
+Okay, thank you for your suggestion, I will send the v2 patch.
+>
+> Johan
+> .
+>
 -- 
-<http://www.linaro.org/> Linaro.org â”‚ Open source software for ARM SoCs
+Wang Hai
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
