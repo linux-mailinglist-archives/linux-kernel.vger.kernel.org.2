@@ -2,241 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C49842E709
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 05:01:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44A0F42E70A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 05:03:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231256AbhJODDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 23:03:47 -0400
-Received: from out0.migadu.com ([94.23.1.103]:45611 "EHLO out0.migadu.com"
+        id S229873AbhJODFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 23:05:21 -0400
+Received: from mga06.intel.com ([134.134.136.31]:8262 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229526AbhJODDi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 23:03:38 -0400
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1634266887;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3JKKcKQvzmKtnZfQe0695j3qKTRuj5F96dGAJHbJWhM=;
-        b=sHRXBvQ3uzVNSyW2U4PMQMJqqgDHZce78OlRAvH4+YgVDmf0vBv7+1VNVN14ajTRIc+Rln
-        v3wLKO7D6AKu7/vjqnf57mwYy7cCS60P1fXxtHavMKvZonqswopZfomK0rOXs6QMumB9E4
-        Nq65njoCBlTOoltGah1kWIxOzX3YSAg=
-From:   Guoqing Jiang <guoqing.jiang@linux.dev>
-Subject: Re: [PATCH v2] md: Kill usage of page->index
-To:     Kent Overstreet <kent.overstreet@gmail.com>,
-        "heming.zhao@suse.com" <heming.zhao@suse.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        akpm@linux-foundation.org, linux-raid@vger.kernel.org,
-        linux-block@vger.kernel.org, axboe@kernel.dk,
-        alexander.h.duyck@linux.intel.com
-References: <20211013160034.3472923-1-kent.overstreet@gmail.com>
- <20211013160034.3472923-5-kent.overstreet@gmail.com>
- <bcdd4b56-9b6b-c5cb-2eb7-540fa003d692@linux.dev>
- <04714b0e-297b-7383-ed4f-e39ae5e56433@suse.com>
- <YWg/AGR50Vw7DDuU@moria.home.lan>
-Message-ID: <c2e2edd1-8f6f-1849-df0a-46916e311586@linux.dev>
-Date:   Fri, 15 Oct 2021 11:01:21 +0800
+        id S229526AbhJODFO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 23:05:14 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10137"; a="288705308"
+X-IronPort-AV: E=Sophos;i="5.85,374,1624345200"; 
+   d="scan'208";a="288705308"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2021 20:03:08 -0700
+X-IronPort-AV: E=Sophos;i="5.85,374,1624345200"; 
+   d="scan'208";a="571624023"
+Received: from anmone-mobl.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.254.15.192])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2021 20:03:06 -0700
+Subject: Re: [PATCH v10 08/11] x86/tdx: Wire up KVM hypercalls
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
+        VMware Inc <pv-drivers@vmware.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        linux-kernel@vger.kernel.org
+References: <20211009053747.1694419-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20211009053747.1694419-9-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <87ilxz7vq6.ffs@tglx>
+From:   Sathyanarayanan Kuppuswamy 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <dd9ceec3-2ae4-c468-0a6a-de14965b65a2@linux.intel.com>
+Date:   Thu, 14 Oct 2021 20:03:05 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <YWg/AGR50Vw7DDuU@moria.home.lan>
+In-Reply-To: <87ilxz7vq6.ffs@tglx>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: guoqing.jiang@linux.dev
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-
-On 10/14/21 10:30 PM, Kent Overstreet wrote:
-> On Thu, Oct 14, 2021 at 04:58:46PM +0800,heming.zhao@suse.com  wrote:
->> Hello all,
->>
->> The page->index takes an important role for cluster-md module.
->> i.e, a two-node HA env, node A bitmap may be managed in first 4K area, then
->> node B bitmap is in 8K area (the second page). this patch removes the index
->> and fix/hardcode index with value 0, which will only operate first node bitmap.
->>
->> If this serial patches are important and must be merged in mainline, we should
->> redesign code logic for the related code.
->>
->> Thanks,
->> Heming
-> Can you look at and test the updated patch below? The more I look at the md
-> bitmap code the more it scares me.
+On 10/14/21 3:21 AM, Thomas Gleixner wrote:
+> On Fri, Oct 08 2021 at 22:37, Kuppuswamy Sathyanarayanan wrote:
+>> From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+>>   
+>>   #ifdef CONFIG_KVM_GUEST
+>> @@ -32,6 +34,10 @@ static inline bool kvm_check_and_clear_guest_paused(void)
+>>   static inline long kvm_hypercall0(unsigned int nr)
+>>   {
+>>   	long ret;
+>> +
+>> +	if (cc_platform_has(CC_ATTR_GUEST_TDX))
+>> +		return tdx_kvm_hypercall(nr, 0, 0, 0, 0);
+> So if TDX is not enabled in Kconfig this cannot be optimized out unless
+> CC_PLATFORM is disabled as well. But what's worse is that every
+> hypercall needs to call into cc_platform_has().
 >
-> -- >8 --
-> Subject: [PATCH] md: Kill usage of page->index
+> None of the hypercalls is used before the early TDX detection. So we can
+> simply use
 >
-> As part of the struct page cleanups underway, we want to remove as much
-> usage of page->mapping and page->index as possible, as frequently they
-> are known from context - as they are here in the md bitmap code.
+>         if (cpu_feature_enabled(X86_FEATURE_TDX_GUEST))
 >
-> Signed-off-by: Kent Overstreet<kent.overstreet@gmail.com>
-> ---
->   drivers/md/md-bitmap.c | 49 ++++++++++++++++++++----------------------
->   drivers/md/md-bitmap.h |  1 +
->   2 files changed, 24 insertions(+), 26 deletions(-)
+> here, right? Then you add X86_FEATURE_TDX_GUEST to the disabled feature
+> bits correctly and all of the above is solved.
 >
-> diff --git a/drivers/md/md-bitmap.c b/drivers/md/md-bitmap.c
-> index e29c6298ef..316e4cd5a7 100644
-> --- a/drivers/md/md-bitmap.c
-> +++ b/drivers/md/md-bitmap.c
-> @@ -165,10 +165,8 @@ static int read_sb_page(struct mddev *mddev, loff_t offset,
->   
->   		if (sync_page_io(rdev, target,
->   				 roundup(size, bdev_logical_block_size(rdev->bdev)),
-> -				 page, REQ_OP_READ, 0, true)) {
-> -			page->index = index;
-> +				 page, REQ_OP_READ, 0, true))
->   			return 0;
-> -		}
->   	}
->   	return -EIO;
->   }
-> @@ -209,7 +207,8 @@ static struct md_rdev *next_active_rdev(struct md_rdev *rdev, struct mddev *mdde
->   	return NULL;
->   }
->   
-> -static int write_sb_page(struct bitmap *bitmap, struct page *page, int wait)
-> +static int write_sb_page(struct bitmap *bitmap, struct page *page,
-> +			 unsigned long index, int wait)
->   {
->   	struct md_rdev *rdev;
->   	struct block_device *bdev;
-> @@ -224,7 +223,7 @@ static int write_sb_page(struct bitmap *bitmap, struct page *page, int wait)
->   
->   		bdev = (rdev->meta_bdev) ? rdev->meta_bdev : rdev->bdev;
->   
-> -		if (page->index == store->file_pages-1) {
-> +		if (index == store->file_pages-1) {
->   			int last_page_size = store->bytes & (PAGE_SIZE-1);
->   			if (last_page_size == 0)
->   				last_page_size = PAGE_SIZE;
-> @@ -236,8 +235,7 @@ static int write_sb_page(struct bitmap *bitmap, struct page *page, int wait)
->   		 */
->   		if (mddev->external) {
->   			/* Bitmap could be anywhere. */
-> -			if (rdev->sb_start + offset + (page->index
-> -						       * (PAGE_SIZE/512))
-> +			if (rdev->sb_start + offset + index * PAGE_SECTORS
->   			    > rdev->data_offset
->   			    &&
->   			    rdev->sb_start + offset
-> @@ -247,7 +245,7 @@ static int write_sb_page(struct bitmap *bitmap, struct page *page, int wait)
->   		} else if (offset < 0) {
->   			/* DATA  BITMAP METADATA  */
->   			if (offset
-> -			    + (long)(page->index * (PAGE_SIZE/512))
-> +			    + (long)(index * PAGE_SECTORS)
->   			    + size/512 > 0)
->   				/* bitmap runs in to metadata */
->   				goto bad_alignment;
-> @@ -259,7 +257,7 @@ static int write_sb_page(struct bitmap *bitmap, struct page *page, int wait)
->   			/* METADATA BITMAP DATA */
->   			if (rdev->sb_start
->   			    + offset
-> -			    + page->index*(PAGE_SIZE/512) + size/512
-> +			    + index * PAGE_SECTORS + size/512
->   			    > rdev->data_offset)
->   				/* bitmap runs in to data */
->   				goto bad_alignment;
-> @@ -268,7 +266,7 @@ static int write_sb_page(struct bitmap *bitmap, struct page *page, int wait)
->   		}
->   		md_super_write(mddev, rdev,
->   			       rdev->sb_start + offset
-> -			       + page->index * (PAGE_SIZE/512),
-> +			       + index * PAGE_SECTORS,
->   			       size,
->   			       page);
->   	}
-> @@ -285,12 +283,13 @@ static void md_bitmap_file_kick(struct bitmap *bitmap);
->   /*
->    * write out a page to a file
->    */
-> -static void write_page(struct bitmap *bitmap, struct page *page, int wait)
-> +static void write_page(struct bitmap *bitmap, struct page *page,
-> +		       unsigned long index, int wait)
->   {
->   	struct buffer_head *bh;
->   
->   	if (bitmap->storage.file == NULL) {
-> -		switch (write_sb_page(bitmap, page, wait)) {
-> +		switch (write_sb_page(bitmap, page, index, wait)) {
->   		case -EINVAL:
->   			set_bit(BITMAP_WRITE_ERROR, &bitmap->flags);
->   		}
-> @@ -399,7 +398,6 @@ static int read_page(struct file *file, unsigned long index,
->   		blk_cur++;
->   		bh = bh->b_this_page;
->   	}
-> -	page->index = index;
->   
->   	wait_event(bitmap->write_wait,
->   		   atomic_read(&bitmap->pending_writes)==0);
-> @@ -472,7 +470,7 @@ void md_bitmap_update_sb(struct bitmap *bitmap)
->   	sb->sectors_reserved = cpu_to_le32(bitmap->mddev->
->   					   bitmap_info.space);
->   	kunmap_atomic(sb);
-> -	write_page(bitmap, bitmap->storage.sb_page, 1);
-> +	write_page(bitmap, bitmap->storage.sb_page, bitmap->storage.sb_index, 1);
+> Hmm?
 
-I guess it is fine for sb_page now.
 
-[...]
+Make sense. Since this will only be used after tdx_early_init() call,
+and X86_FEATURE_TDX_GUEST is also set in that call, we can just use
+cpu_feature_enabled(X86_FEATURE_TDX_GUEST) as you have mentioned.
 
-> @@ -1027,7 +1024,7 @@ void md_bitmap_unplug(struct bitmap *bitmap)
->   							  "md bitmap_unplug");
->   			}
->   			clear_page_attr(bitmap, i, BITMAP_PAGE_PENDING);
-> -			write_page(bitmap, bitmap->storage.filemap[i], 0);
-> +			write_page(bitmap, bitmap->storage.filemap[i], i, 0);
-
-But for filemap page, I am not sure the above is correct.
-
->   			writing = 1;
->   		}
->   	}
-> @@ -1137,7 +1134,7 @@ static int md_bitmap_init_from_disk(struct bitmap *bitmap, sector_t start)
->   				memset(paddr + offset, 0xff,
->   				       PAGE_SIZE - offset);
->   				kunmap_atomic(paddr);
-> -				write_page(bitmap, page, 1);
-> +				write_page(bitmap, page, index, 1);
-
-Ditto.
+I will fix this in next version.
 
 >   
->   				ret = -EIO;
->   				if (test_bit(BITMAP_WRITE_ERROR,
-> @@ -1336,7 +1333,7 @@ void md_bitmap_daemon_work(struct mddev *mddev)
->   		if (bitmap->storage.filemap &&
->   		    test_and_clear_page_attr(bitmap, j,
->   					     BITMAP_PAGE_NEEDWRITE)) {
-> -			write_page(bitmap, bitmap->storage.filemap[j], 0);
-> +			write_page(bitmap, bitmap->storage.filemap[j], j, 0);
+>> +#if defined(CONFIG_KVM_GUEST) && defined(CONFIG_INTEL_TDX_GUEST)
+>> +static inline long tdx_kvm_hypercall(unsigned int nr, unsigned long p1,
+>> +				     unsigned long p2, unsigned long p3,
+>> +				     unsigned long p4)
+>> +{
+>> +	struct tdx_hypercall_output out;
+>> +	u64 err;
+>> +
+>> +	err = __tdx_hypercall(TDX_HYPERCALL_VENDOR_KVM, nr, p1, p2,
+>> +			      p3, p4, &out);
+>> +
+>> +	/*
+>> +	 * Non zero return value means buggy TDX module (which is fatal).
+>> +	 * So use BUG_ON() to panic.
+>> +	 */
+>> +	BUG_ON(err);
+>> +
+>> +	return out.r10;
+>> +}
+> Can we make that a proper exported function (instead of
+> tdx_kvm_hypercall) so we don't end up with the very same code inlined
+> all over the place?
 
-Ditto.
 
+Initially it was an exported function. But we made it inline in tdx.h
+to simplify the implementation. But if exported function is preferred,
+I will fix it in next version.
 
->   		}
->   	}
->   
-> diff --git a/drivers/md/md-bitmap.h b/drivers/md/md-bitmap.h
-> index cfd7395de8..6e820eea32 100644
-> --- a/drivers/md/md-bitmap.h
-> +++ b/drivers/md/md-bitmap.h
-> @@ -207,6 +207,7 @@ struct bitmap {
->   						 * w/ filemap pages */
->   		unsigned long file_pages;	/* number of pages in the file*/
->   		unsigned long bytes;		/* total bytes in the bitmap */
-> +		unsigned long sb_index;		/* sb page index */
+>
+> Thanks,
+>
+>          tglx
+>
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
 
-I guess it resolve the issue for sb_page, and we might need to do 
-similar things
-for filemap as well if I am not misunderstood.
-
-Thanks,
-Guoqing
