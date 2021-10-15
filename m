@@ -2,89 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 327B442E628
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 03:30:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7498742E62A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 03:30:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232609AbhJOBcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 21:32:19 -0400
-Received: from mga04.intel.com ([192.55.52.120]:47617 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232443AbhJOBcS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 21:32:18 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10137"; a="226601384"
-X-IronPort-AV: E=Sophos;i="5.85,374,1624345200"; 
-   d="scan'208";a="226601384"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2021 18:30:12 -0700
-X-IronPort-AV: E=Sophos;i="5.85,374,1624345200"; 
-   d="scan'208";a="492269607"
-Received: from xiaoyaol-mobl.ccr.corp.intel.com (HELO [10.239.13.123]) ([10.239.13.123])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2021 18:30:08 -0700
-Subject: Re: [PATCH v7 6/6] x86/split_lock: Fix the split lock #AC handling
- when running as guest
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Sathyanarayanan Kuppuswamy 
-        <sathyanarayanan.kuppuwamy@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        linux-kernel@vger.kernel.org
-References: <20211005230550.1819406-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211005230550.1819406-7-sathyanarayanan.kuppuswamy@linux.intel.com>
- <YWdB+rGPWDIVzuBY@google.com>
- <38a70cf2-1849-97fd-82a2-10ce64c6be8c@linux.intel.com>
- <71884ac9-6da3-e75d-af1e-f8f24a7562cb@intel.com>
- <YWhG+UcaRyNptzw9@google.com>
-From:   Xiaoyao Li <xiaoyao.li@intel.com>
-Message-ID: <1d3c97cd-d243-6a2c-9964-4d1d22691db0@intel.com>
-Date:   Fri, 15 Oct 2021 09:30:06 +0800
+        id S232973AbhJOBcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 21:32:41 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:52280 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232412AbhJOBck (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 21:32:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1634261435; x=1665797435;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=3RB4x/Hcpo1xEsEDOIOtbyRQNwDAYquXesLgKuTnCHA=;
+  b=W244kfxyfbTxqyyV8lXQmYWfk5MRhSX6ILxH6HFIyE29gUHNhXhgKyYi
+   75xenustQ526yS9Za/+PC3W12hiZ+Ji0TrbSZ3iNFeLuO4r/ycgifpvvZ
+   Jks87mn1ZvxEFTXQM9zqsWyWgPb3UlQEebnXN5P8RKrFHjlJCd8svGJ02
+   k=;
+Received: from ironmsg07-lv.qualcomm.com ([10.47.202.151])
+  by alexa-out.qualcomm.com with ESMTP; 14 Oct 2021 18:30:35 -0700
+X-QCInternal: smtphost
+Received: from nalasex01c.na.qualcomm.com ([10.47.97.35])
+  by ironmsg07-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2021 18:30:34 -0700
+Received: from [10.231.205.174] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7; Thu, 14 Oct 2021
+ 18:30:33 -0700
+Subject: Re: [RESEND PATCH v1 8/9] spmi: pmic-arb: make interrupt support
+ optional
+To:     Stephen Boyd <sboyd@kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <collinsd@codeaurora.org>, <subbaram@codeaurora.org>
+References: <1631860384-26608-1-git-send-email-quic_fenglinw@quicinc.com>
+ <1631860384-26608-9-git-send-email-quic_fenglinw@quicinc.com>
+ <163406051353.936959.12718174954614897750@swboyd.mtv.corp.google.com>
+ <3bf1fbf3-e741-ef08-a4e4-b348b877d02a@quicinc.com>
+ <163415390922.936959.12352892206436080955@swboyd.mtv.corp.google.com>
+ <23918853-ed37-f11f-9e1e-5f302910e320@quicinc.com>
+ <163426062521.936959.3490351816619205076@swboyd.mtv.corp.google.com>
+From:   Fenglin Wu <quic_fenglinw@quicinc.com>
+Message-ID: <0e7b222f-2802-a286-3408-5a7dd942a132@quicinc.com>
+Date:   Fri, 15 Oct 2021 09:30:30 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.14.0
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-In-Reply-To: <YWhG+UcaRyNptzw9@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <163426062521.936959.3490351816619205076@swboyd.mtv.corp.google.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/14/2021 11:04 PM, Sean Christopherson wrote:
-> On Thu, Oct 14, 2021, Xiaoyao Li wrote:
->> On 10/14/2021 5:32 AM, Sathyanarayanan Kuppuswamy wrote:
->>> + Xiaoyao
->>>
->>> On 10/13/21 1:30 PM, Sean Christopherson wrote:
->>>> On Tue, Oct 05, 2021, Kuppuswamy Sathyanarayanan wrote:
->>>>> From: Xiaoyao Li <xiaoyao.li@intel.com>
->>>>>
->>>>> If running as guest and hypervisor enables
->>>>> MSR_TEST_CTRL.SPLIT_LOCK_DETECT during its running, it can get split
->>>>> lock #AC even though sld_state is sld_off.
->>>> That's a hypervisor bug, no?  The hypervisor should never inject a fault
->>>> that the guest cannot reasonably expect.
->>
->> What if hypervisor doesn't intercept #AC and host enables SPLIT_LOCK_DETECT
->> during guest running? That's exactly the case TDX is facing.
-> 
-> That's a hypervisor bug.  Since it sounds like the TDX Module buries its head in
-> the sand for split-lock #AC, KVM should refuse to run TDX guests if split-lock #AC
-> is enabled.  Ideally the TDX Module would provide support for conditionally
-> intercepting #AC, e.g. intercept and re-inject "normal" #AC, and exit to the VMM
-> for split-lock #AC.  That would give VMMs the option of enabling split-lock
-> detection in fatal mode for guests.
-> 
 
-We have bus lock VM exit for it.
+On 10/15/2021 9:17 AM, Stephen Boyd wrote:
+> Quoting Fenglin Wu (2021-10-13 20:20:57)
+>> On 10/14/2021 3:38 AM, Stephen Boyd wrote:
+>>> Quoting Fenglin Wu (2021-10-13 01:36:54)
+>>>> On 10/13/2021 1:41 AM, Stephen Boyd wrote:
+>>>>> Quoting Fenglin Wu (2021-09-16 23:33:03)
+>>>>>> From: David Collins <collinsd@codeaurora.org>
+>>>>>>
+>>>>>> Make the support of PMIC peripheral interrupts optional for
+>>>>>> spmi-pmic-arb devices.  This is useful in situations where
+>>>>>> SPMI address mapping is required without the need for IRQ
+>>>>>> support.
+>>>>>>
+>>>>>> Signed-off-by: David Collins <collinsd@codeaurora.org>
+>>>>>> Signed-off-by: Fenglin Wu <quic_fenglinw@quicinc.com>
+>>>>>> ---
+>>>>>>     drivers/spmi/spmi-pmic-arb.c | 45 +++++++++++++++++++++++++++-----------------
+>>>>> Is there a binding update? Can the binding be converted to YAML as well?
+>>>> This change doesn't add/update any dtsi properties but just checking if an
+>>>> existing property is present to decide if IRQ support is required, so no
+>>>> binding change is needed.
+>>> The property is now optional in the binding. Please update the binding.
+>> Right, thanks for pointing it out. I forgot that part.
+>> I will update the binding. How about only update the interrupt properties as
+>> optional in this series then I can come up with following patch to convert
+>> the binding to YAML format?
+> Sure. The benefit of converting it to YAML is that we can use the
+> checker to quickly validate the binding vs. having to read the whole
+> thing to understand that it's correct. Converting an existing binding to
+> YAML shouldn't be that hard.
+Thanks, will do that for sure after this series of the changes.
