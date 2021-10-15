@@ -2,133 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D59742E9C2
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 09:12:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ECE142E9C9
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 09:14:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235919AbhJOHOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 03:14:37 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:28945 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234497AbhJOHOg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 03:14:36 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HVy5q1vvBzbnCB;
-        Fri, 15 Oct 2021 15:07:59 +0800 (CST)
-Received: from kwepemm600001.china.huawei.com (7.193.23.3) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Fri, 15 Oct 2021 15:12:28 +0800
-Received: from [10.174.176.245] (10.174.176.245) by
- kwepemm600001.china.huawei.com (7.193.23.3) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Fri, 15 Oct 2021 15:12:27 +0800
-Subject: Re: [PATCH] USB: serial: Fix possible memleak in keyspan_port_probe()
-To:     Johan Hovold <johan@kernel.org>
-CC:     <gregkh@linuxfoundation.org>, <linux-usb@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20211014132033.554304-1-wanghai38@huawei.com>
- <YWg6fBsl/1ui2vcR@hovoldconsulting.com>
-From:   "wanghai (M)" <wanghai38@huawei.com>
-Message-ID: <92fd3812-4b20-1a59-f58d-be1b6a88d2e7@huawei.com>
-Date:   Fri, 15 Oct 2021 15:12:27 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S235925AbhJOHQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 03:16:09 -0400
+Received: from mail-eopbgr1320117.outbound.protection.outlook.com ([40.107.132.117]:24896
+        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232174AbhJOHQH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 03:16:07 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=G3p1O7aCHYN1hOiyoj6oziDKINNWe81+CLfU6He+1dXct78T57V0McPHq1MG+jTuuoIVcuwJacB4qZ+A/tjuDEDeZNMcuJVGpKGxtRTF8MGoX06LguNLP/Tx0L/IMee/UK6prhiIJOE8KjS20NSHEL0Vd0d7cEsiRPgFCD1ktzYglGVO/pIs5rxt2ABzYQuzfyJ8LcEl8qQMJK/HgwoGr9TW3FogSA48KDP06lAfQiAs95pq9omWemxLn6xiRYx3zt7QNUm+mUT4SVDrGC+KUcPJyjyP3Qjsqws6xRJazGCDqmiBJsvAY04n5/bDiYWV6D1z4pG3WTh1wHfdLvldPA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=onhTa38iZf9Ib8eaPCK3cdqwRJCrwBKzbJWmTpmz1sg=;
+ b=nKWuxJNEBNDsVcSQVHBq29Ja8ECtAwWQnjeUx4E7HpiZiruLIxWPElwMITvlvT+mGOVrm9U/YgrWF5Q9VRJhNX0WAU5KupaRHtyGsTzG7hPQuidAL/IELXxQs9cIklKMFqg11YJayloim1AxFrew2HJHu0bc0Dtq9PW8sdw8GnIYODXbZGu+za+YGrKNi9IKijx2CHrPiQFSwLkRLAgzZklsNww467e0VtxfDQRvgexILG1FQOXZtDQJvyankEzV703oMaR0+OZqCf7svZHbEfLOaJd8ut/uDeTP8bdDeymSw1su7YwPZ93ZUEH5+AqFO7kJ6zbJRUV3xd7ksexwhg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
+ s=selector2-vivo0-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=onhTa38iZf9Ib8eaPCK3cdqwRJCrwBKzbJWmTpmz1sg=;
+ b=d5u02pLZlo5Ng/c82CQkgMl60RsjUPe/9slFB1jilobzGehd9YcPkzvKXazXbnao/Sujf0Adlx4uOeAnuVaqItEutaSSboO+zSrL9c8srWtcdpyikMupkJAyDpc3U5XfmgLZsDjJBxTmVOSjWAfb1oLS2N7zBI/JsK+HGrEHd78=
+Received: from SL2PR06MB3082.apcprd06.prod.outlook.com (2603:1096:100:37::17)
+ by SL2PR06MB3017.apcprd06.prod.outlook.com (2603:1096:100:3a::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.17; Fri, 15 Oct
+ 2021 07:13:58 +0000
+Received: from SL2PR06MB3082.apcprd06.prod.outlook.com
+ ([fe80::4c9b:b71f:fb67:6414]) by SL2PR06MB3082.apcprd06.prod.outlook.com
+ ([fe80::4c9b:b71f:fb67:6414%6]) with mapi id 15.20.4608.017; Fri, 15 Oct 2021
+ 07:13:58 +0000
+From:   =?utf-8?B?546L5pOO?= <wangqing@vivo.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     Jiri Slaby <jirislaby@kernel.org>, Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: =?utf-8?B?5Zue5aSNOiBbUEFUQ0hdIHR0eTogODI1MDogcmVwbGFjZSBzbnByaW50ZiBp?=
+ =?utf-8?Q?n_show_functions_with_sysfs=5Femit?=
+Thread-Topic: [PATCH] tty: 8250: replace snprintf in show functions with
+ sysfs_emit
+Thread-Index: AQHXwZEVJVJmBr4nx0GWJTtwbTjYeqvToNQAgAADm8M=
+Date:   Fri, 15 Oct 2021 07:13:58 +0000
+Message-ID: <SL2PR06MB30828C16C885776950205E5DBDB99@SL2PR06MB3082.apcprd06.prod.outlook.com>
+References: <1634280682-5002-1-git-send-email-wangqing@vivo.com>
+ <AOQACwDzEi5UM3m3ezm-D4o5.9.1634281082401.Hmail.wangqing@vivo.com>
+In-Reply-To: <AOQACwDzEi5UM3m3ezm-D4o5.9.1634281082401.Hmail.wangqing@vivo.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+suggested_attachment_session_id: 4d1f9652-7ace-d9b8-c04f-a6948663a246
+authentication-results: linuxfoundation.org; dkim=none (message not signed)
+ header.d=none;linuxfoundation.org; dmarc=none action=none
+ header.from=vivo.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 9d73300a-f7c3-44f8-99e6-08d98fab5b98
+x-ms-traffictypediagnostic: SL2PR06MB3017:
+x-microsoft-antispam-prvs: <SL2PR06MB3017EBBA747C1B535F6F06BBBDB99@SL2PR06MB3017.apcprd06.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 67fZiBvD/zGQJCbqvSRTROl0HKTKfz5JV6Zag0LCFt6nnF8zXwJ2Qztzdq8CxrKep8ORKXEDKUX9RLH+QX+oDvdd7+SiQ29Gsz7ho+JLFTIRdS2ZQb1AJb/XGSL3x35XzrmGpQnNY3rEcNXh2kTBDPXDpw7jGqdJS//zI8H/PbgLBosGzMYx4HGPdu440fbFnBsbTonNIIRl5oHsQUJt9H7Oj1SRMSWLGKNa1eAwcjvqHLGvyzhmFzb1b/x8VYywxa28xtCFUEUd2er5R/IQ2XzO5egw11HlO9Du2vNS7p79M76tp4berd2r670haDMGqZmAXsBG02zYGrB6zyET4hDphaStA2gaeOv/U07SJU6AmssVsUJ7DB/GgIBMiosAFKSi+VeRCNKM7hxRORgIDBoWP/+i0HG3lclg2BJ14HMDpfh27AvpBTDb0HxVBT8z2QoxZEQzA2xQvv/IuhOZY39WuLAi5R8+fSBE/DaSQpps0cqrqLo93PJ2PHHQnnRAyCPPrSeKAQwjxD2CLD7/mtYQzjLJa29371EYuvLBP9vx4AAJVa654uMjl+GYRXB4jSIuX9VYj/lE0P/AdPWlvp7p0HZp2Y9yLaYD7DIaTxbnGHjsXSihMSwxNXR5yr8wP9ZiVkoGOe4fnawKGzL7pRd5fv3ghn6K73Glnq/JZ/AMiQkEYeSko2LanwZTc2/NCQha6PSm4AUplIMLIhDikQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SL2PR06MB3082.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(33656002)(55016002)(186003)(6916009)(4326008)(54906003)(316002)(85182001)(38070700005)(2906002)(224303003)(26005)(76116006)(7696005)(91956017)(38100700002)(66946007)(66476007)(66556008)(64756008)(66446008)(5660300002)(83380400001)(8936002)(71200400001)(52536014)(6506007)(508600001)(9686003)(122000001)(86362001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?cVpaZkhEeFd4eEFCZlp6V3JJcDJsanJDOHRrSDlFZHNWWERLZE5IV1NxdkpG?=
+ =?utf-8?B?cktZOVpLZWVNeW00R095b3FoRHBibk5VZ2tIYlliSTdNS2RRbG9ESFJaM2dT?=
+ =?utf-8?B?aytmZzlwQ0Jsa1FVclJTb083UzRrTFFSdU40Z0hWTW5JOHo4MDNMQTZwR055?=
+ =?utf-8?B?bVBSYkdOVldDcGZVeHhEM0ZoMmFzYysvZlpWanJvdnkxUW8zc25tRmU3aVpz?=
+ =?utf-8?B?ampyZmxsUlg2N2JiS0MwM2pjS2lvbFVLL2hiMjYxUXlYbmVaelBNOENNR21Q?=
+ =?utf-8?B?WW5ocHdKTjZYVDFYbzk4SDRhTjNWSS9pbWtkZE9PVHlBMWdqU2lsVGxOWHpQ?=
+ =?utf-8?B?QlBIU0lFZ1Q4bmprVVVVa3lKdU0zaEVyMndPZENPYjBGMnBYR3YyUmdqaVZG?=
+ =?utf-8?B?Y25RdlJabFBoNmdGUGdsN3Q5S2ZXcklkSkVabUZ4eDlVcUlqbUZZQWhQdFN4?=
+ =?utf-8?B?OWhlMEdsVi9XLzRsSzVaRDBSaDM1dG9BUXNZWGp2Q0Y0Ym0yMzF5ZkFyNTkv?=
+ =?utf-8?B?R1pzU2FWc2UyYTdpNG13dUZ6Wjl3blZsVlZsd1RvajEvZjU5anQ5L0pZQlNB?=
+ =?utf-8?B?dWh0Q0svem9odGdMSTJWbGNVZzV3dndLUGJOYUVldVUvS21ySXp0NjBWQ1Ex?=
+ =?utf-8?B?MjNzQ2xFY3RMOTMwbHNPK3Mrd3FNZVdabzN2K2RCYTFqOFhuLzRsTTBuWFdv?=
+ =?utf-8?B?VXhKUVZveVp4VHVFK2lQYWdQYU90TnJmb015S0xIa0JyVTJGQWtjMTZKZVJp?=
+ =?utf-8?B?ZUxVdHVNQVV3UEJsNmxkYmJlSDhxUGZBdlJ0OEdKeVhNbThRWmxvdkFpSFJw?=
+ =?utf-8?B?STRKM09lbHpaQVkxK00zeGlnVGRrT3lOcHgxakcrbjhCNVZzdWNHZytLbFhO?=
+ =?utf-8?B?eXIyVzJUMVF2akozakd6K253dU1mQTFaLzhTeWR2cVJqc1lWbDI2MUxEdnNF?=
+ =?utf-8?B?d2luVkxwRGIwVTdtV09VNERPWVpQVmNOUndtS0xFc0hUMjBRTGxtK0o4aWE2?=
+ =?utf-8?B?RmVoUHZuUzJGaUFLTnNvdGVNWUF1WHYxMlZlVjJOV3dsSjJGZkRtTVJYanNq?=
+ =?utf-8?B?bHZsNEdxTGVnR2d4NCtqdmVuQ0NEZjBTNFZ4TVQ2U2JHeTI3dU1iRk5MbWpH?=
+ =?utf-8?B?am9TemRKaHlCQkxMeitHbEx2M25mUUx2WHZjUThKQUZtMVFqcVBxKzc5cnBz?=
+ =?utf-8?B?eC9hcHJiamFRMWEzRXlYbzVvLzM2SXdJakV6emtMbEZKcWdXMXlLUHZ1Qzc0?=
+ =?utf-8?B?bjhuaEx3ZzZjQTdRdGNFbEVEak1jbC82cld4T0FlMEx0ek1JY2xLbFBYNWZz?=
+ =?utf-8?B?Nk5kaVZmdU5XQTJ0MUp5NWhjWitwQVhPdDg4QUVEbEdNR0lhVldNdmJTaUFU?=
+ =?utf-8?B?RlpxbUZvTFZ3clFFQkg3SjcxNEIyVWpwMUI4UkRTL0N5MmQwbWJPU2FMNlZG?=
+ =?utf-8?B?Q0VLSk5NZ09VZkl0OFJaYU92c1NXYVNreGlidkJZZkVsSGl0eDJzcVE2K3cy?=
+ =?utf-8?B?VkxiQUd4dWZkL0lIeU5kelduMkpYRE9kN2RMNzk0UU1BbFJRbnRQK1RmT1Ay?=
+ =?utf-8?B?aStPZStlTWc0QkRLTW5CWUgzd2JVcFd5eHV4OTlrLzAwd2VBS0ROZW5ndHpo?=
+ =?utf-8?B?b1YxYmZ5bnhibmtKSDJOQVErVnh0WE9xNkxHbk1LckJoSWVtcGZuWXNsd1VN?=
+ =?utf-8?B?b2ppRWI3K3BSNTQzK0NNc3k1LzQxYXI2cTVhRWwvMUtmc0tLVE1KbmcwYjlX?=
+ =?utf-8?Q?rrv/1j5TvmaGeQa6+XHIf/r5Yff0u/yT0UKYPQB?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <YWg6fBsl/1ui2vcR@hovoldconsulting.com>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.176.245]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemm600001.china.huawei.com (7.193.23.3)
-X-CFilter-Loop: Reflected
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SL2PR06MB3082.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9d73300a-f7c3-44f8-99e6-08d98fab5b98
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Oct 2021 07:13:58.6883
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Co0Q4sAymvHHBw05zDfDkBQ70sINxCHTpnDbtpaJIEYjJwkpMSSpxolw3p7AxNNfxc8qcOH/8Y2fSjKXIa1i3A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SL2PR06MB3017
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-ÔÚ 2021/10/14 22:11, Johan Hovold Ð´µÀ:
-> On Thu, Oct 14, 2021 at 09:20:33PM +0800, Wang Hai wrote:
->> I got memory leak as follows when doing fault injection test:
->>
->> unreferenced object 0xffff888258228440 (size 64):
->>    comm "kworker/7:2", pid 2005, jiffies 4294989509 (age 824.540s)
->>    hex dump (first 32 bytes):
->>      00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->>      00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->>    backtrace:
->>      [<ffffffff8167939c>] slab_post_alloc_hook+0x9c/0x490
->>      [<ffffffff8167f627>] kmem_cache_alloc_trace+0x1f7/0x470
->>      [<ffffffffa02ac0e4>] keyspan_port_probe+0xa4/0x5d0 [keyspan]
->>      [<ffffffffa0294c07>] usb_serial_device_probe+0x97/0x1d0 [usbserial]
->>      [<ffffffff82b50ca7>] really_probe+0x167/0x460
->>      [<ffffffff82b51099>] __driver_probe_device+0xf9/0x180
->>      [<ffffffff82b51173>] driver_probe_device+0x53/0x130
->>      [<ffffffff82b516f5>] __device_attach_driver+0x105/0x130
->>      [<ffffffff82b4cfe9>] bus_for_each_drv+0x129/0x190
->>      [<ffffffff82b50a69>] __device_attach+0x1c9/0x270
->>      [<ffffffff82b518d0>] device_initial_probe+0x20/0x30
->>      [<ffffffff82b4f062>] bus_probe_device+0x142/0x160
->>      [<ffffffff82b4a4e9>] device_add+0x829/0x1300
->>      [<ffffffffa0295fda>] usb_serial_probe.cold+0xc9b/0x14ac [usbserial]
->>      [<ffffffffa02266aa>] usb_probe_interface+0x1aa/0x3c0 [usbcore]
->>      [<ffffffff82b50ca7>] really_probe+0x167/0x460
->>
->> If it fails to allocate memory for an out_buffer[i] or in_buffer[i],
->> the previously allocated memory for out_buffer or in_buffer needs to
->> be freed on the error handling path, otherwise a memory leak will result.
->>
->> Fixes: bad41a5bf177 ("USB: keyspan: fix port DMA-buffer allocations")
->> Reported-by: Hulk Robot <hulkci@huawei.com>
->> Signed-off-by: Wang Hai <wanghai38@huawei.com>
->> ---
->>   drivers/usb/serial/keyspan.c | 7 +++----
->>   1 file changed, 3 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/usb/serial/keyspan.c b/drivers/usb/serial/keyspan.c
->> index 87b89c99d517..ba27a9f0275b 100644
->> --- a/drivers/usb/serial/keyspan.c
->> +++ b/drivers/usb/serial/keyspan.c
->> @@ -2901,7 +2901,7 @@ static int keyspan_port_probe(struct usb_serial_port *port)
->>   
->>   	p_priv->inack_buffer = kzalloc(INACK_BUFLEN, GFP_KERNEL);
->>   	if (!p_priv->inack_buffer)
->> -		goto err_inack_buffer;
->> +		goto err_out_buffer;
->>   
->>   	p_priv->outcont_buffer = kzalloc(OUTCONT_BUFLEN, GFP_KERNEL);
->>   	if (!p_priv->outcont_buffer)
->> @@ -2953,13 +2953,12 @@ static int keyspan_port_probe(struct usb_serial_port *port)
->>   
->>   err_outcont_buffer:
->>   	kfree(p_priv->inack_buffer);
->> -err_inack_buffer:
->> +err_out_buffer:
->>   	for (i = 0; i < ARRAY_SIZE(p_priv->out_buffer); ++i)
->>   		kfree(p_priv->out_buffer[i]);
->> -err_out_buffer:
->> +err_in_buffer:
->>   	for (i = 0; i < ARRAY_SIZE(p_priv->in_buffer); ++i)
->>   		kfree(p_priv->in_buffer[i]);
->> -err_in_buffer:
->>   	kfree(p_priv);
->>   
->>   	return -ENOMEM;
-> Good catch. Fortunately these small allocations would currently never
-> fail, but we should fix it up nonetheless.
->
-> The fix looks correct, but you're now mixing two styles of error labels
-> (i.e. naming them after where you jump from and after what they do,
-> respectively).
->
-> Since you're touching all but one label, could you rename also the last
-> one after what is done and include a "free_" infix in the label names
-> (e.g. err_free_in_buffer, etc)?
-Okay, thank you for your suggestion, I will send the v2 patch.
->
-> Johan
-> .
->
--- 
-Wang Hai
-
+Cj4+IHNob3coKSBtdXN0IG5vdCB1c2Ugc25wcmludGYoKSB3aGVuIGZvcm1hdHRpbmcgdGhlIHZh
+bHVlIHRvIGJlCj4+IHJldHVybmVkIHRvIHVzZXIgc3BhY2UuCj4KPldoeSBtdXN0IGl0IG5vdD/C
+oCBXaGF0IGlzIGJyb2tlbiBpbiB0aGUgZXhpc3RpbmcgY29kZT8KClJlcGx5ZWQgaW4gYW5vdGhl
+ciBlbWFpbC4KCj4KPj4gCj4+IEZpeCB0aGUgY29jY2ljaGVjayB3YXJuaW5nczoKPj4gV0FSTklO
+RzogdXNlIHNjbnByaW50ZiBvciBzcHJpbnRmLgo+PiAKPj4gU2lnbmVkLW9mZi1ieTogUWluZyBX
+YW5nIDx3YW5ncWluZ0B2aXZvLmNvbT4KPj4gLS0tCj4+wqAgZHJpdmVycy90dHkvc2VyaWFsLzgy
+NTAvODI1MF9hc3BlZWRfdnVhcnQuYyB8IDYgKysrLS0tCj4+wqAgZHJpdmVycy90dHkvc2VyaWFs
+LzgyNTAvODI1MF9wb3J0LmPCoMKgwqDCoMKgwqDCoMKgIHwgMiArLQo+PsKgIDIgZmlsZXMgY2hh
+bmdlZCwgNCBpbnNlcnRpb25zKCspLCA0IGRlbGV0aW9ucygtKQo+PiAKPj4gZGlmZiAtLWdpdCBh
+L2RyaXZlcnMvdHR5L3NlcmlhbC84MjUwLzgyNTBfYXNwZWVkX3Z1YXJ0LmMgYi9kcml2ZXJzL3R0
+eS9zZXJpYWwvODI1MC84MjUwX2FzcGVlZF92dWFydC5jCj4+IGluZGV4IDIzNTBmYjMuLjA4MmI5
+YmQgMTAwNjQ0Cj4+IC0tLSBhL2RyaXZlcnMvdHR5L3NlcmlhbC84MjUwLzgyNTBfYXNwZWVkX3Z1
+YXJ0LmMKPj4gKysrIGIvZHJpdmVycy90dHkvc2VyaWFsLzgyNTAvODI1MF9hc3BlZWRfdnVhcnQu
+Ywo+PiBAQCAtODIsNyArODIsNyBAQCBzdGF0aWMgc3NpemVfdCBscGNfYWRkcmVzc19zaG93KHN0
+cnVjdCBkZXZpY2UgKmRldiwKPj7CoMKgwqDCoMKgwqDCoCBhZGRyID0gKGFzcGVlZF92dWFydF9y
+ZWFkYih2dWFydCwgQVNQRUVEX1ZVQVJUX0FERFJIKSA8PCA4KSB8Cj4+wqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgIChhc3BlZWRfdnVhcnRfcmVhZGIodnVhcnQsIEFTUEVFRF9WVUFSVF9B
+RERSTCkpOwo+PsKgIAo+PiAtwqDCoMKgwqAgcmV0dXJuIHNucHJpbnRmKGJ1ZiwgUEFHRV9TSVpF
+IC0gMSwgIjB4JXhcbiIsIGFkZHIpOwo+PiArwqDCoMKgwqAgcmV0dXJuIHN5c2ZzX2VtaXQoYnVm
+IC0gMSwgIjB4JXhcbiIsIGFkZHIpOwo+Cj53aGF0IGlzIHRoZSBidWYtMSB0aGluZyBoZXJlIGZv
+cj8KPgo+RG9pbmcgYSB0cmVlLXdpZGUgY2hhbmdlIGZvciB0aGlzIHR5cGUgb2YgdGhpbmcgbWln
+aHQgbm90IGJlIHdhbnRlZCBieQo+bWFueSBtYWludGFpbmVycywgZXNwZWNpYWxseSBpZiB5b3Ug
+aW50cm9kdWNlIGJ1Z3MgbGlrZSB0aGlzIDooCgpTb3JyeSBmb3IgdGhpcywgbXkgdG9vbCBuZWVk
+cyB0byBiZSBvcHRpbWl6ZWQuClBsZWFzZSBpZ25vcmUgdGhpcyBwYXRjaC4KClRoYW5rcywKClFp
+bmcKPgo+Z3JlZyBrLWgKPgo=
