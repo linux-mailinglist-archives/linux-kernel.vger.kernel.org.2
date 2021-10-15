@@ -2,74 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3188542F9DC
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 19:13:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A943142F9E2
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 19:14:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242090AbhJORPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 13:15:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42952 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242068AbhJORPQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 13:15:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 188F4610E8;
-        Fri, 15 Oct 2021 17:13:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634317990;
-        bh=VRvCgVl+c//XzNBQ2V8OIkV7ggBQcxC5gMCr8ztLdFg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BD8Jd/d9u6v7/jMJ5e5lFdrL4ElC2BTL/Uwx3emFlTdYpFT6ufTCCcmSiNBkg+iuL
-         uk4bFKHBY+DufTQ7kh5RgPEhLAbzn+jl3TnLFtIHkAu938jjvVXstGbuE0vp4djR/b
-         Ce6l7O0B3bcpHD3hle1Q/ZKd6mhYnHkl1A1JwBcZiLFKhuLzF8FSAJyovS3gzi2Smp
-         VoeqrbHXVq+L7uW5lWIyyzJuo/LIPPgX2ID700bqeOgoS5fq1cb4hIsKlYo1m2v3Fn
-         t5TscUJ1KLnlv7CssbVOZ3QDRzLqVskQ/3DMBWvfpL1yxjvjVKgQ8TpI+t/p5o5lbZ
-         P22JEfqV6kWjg==
-Date:   Fri, 15 Oct 2021 10:13:05 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev
-Subject: Re: [PATCH] staging: wlan-ng: Avoid bitwise vs logical OR warning in
- hfa384x_usb_throttlefn()
-Message-ID: <YWm2oVk9YKzjhYYi@archlinux-ax161>
-References: <20211014215703.3705371-1-nathan@kernel.org>
- <20211015094344.GQ8429@kadam>
+        id S242101AbhJORQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 13:16:57 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:60030 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238023AbhJORQz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 13:16:55 -0400
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 3.0.0)
+ id 615faa74ca6a96bd; Fri, 15 Oct 2021 19:14:48 +0200
+Received: from kreacher.localnet (unknown [213.134.175.255])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id 2DAE666A8C0;
+        Fri, 15 Oct 2021 19:14:47 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>,
+        "Andreas K. Huettel" <andreas.huettel@ur.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>
+Subject: [PATCH v1 2/2][RFT] ACPI: PM: Check states of power resources during initialization
+Date:   Fri, 15 Oct 2021 19:14:10 +0200
+Message-ID: <8835496.CDJkKcVGEf@kreacher>
+In-Reply-To: <21226252.EfDdHjke4D@kreacher>
+References: <21226252.EfDdHjke4D@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211015094344.GQ8429@kadam>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 213.134.175.255
+X-CLIENT-HOSTNAME: 213.134.175.255
+X-VADE-SPAMSTATE: spam:medium
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddrudeljedguddtfecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucfuphgrmhfkphgprhhtucdlfedttddmnecujfgurhephffvufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdejlefghfeiudektdelkeekvddugfeghffggeejgfeukeejleevgffgvdeluddtnecukfhppedvudefrddufeegrddujeehrddvheehnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepvddufedrudefgedrudejhedrvdehhedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegrnhgurhgvrghsrdhhuhgvthhtvghlsehurhdruggvpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqphgtihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhpmhesvhhg
+ vghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehmihhkrgdrfigvshhtvghrsggvrhhgsehlihhnuhigrdhinhhtvghlrdgtohhm
+X-DCC--Metrics: v370.home.net.pl 1024; Body=6 Fuz1=6 Fuz2=6
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 15, 2021 at 12:43:44PM +0300, Dan Carpenter wrote:
-> On Thu, Oct 14, 2021 at 02:57:03PM -0700, Nathan Chancellor wrote:
-> > A new warning in clang points out a place in this file where a bitwise
-> > OR is being used with boolean expressions:
-> > 
-> > In file included from drivers/staging/wlan-ng/prism2usb.c:2:
-> > drivers/staging/wlan-ng/hfa384x_usb.c:3787:7: warning: use of bitwise '|' with boolean operands [-Wbitwise-instead-of-logical]
-> >             ((test_and_clear_bit(THROTTLE_RX, &hw->usb_flags) &&
-> >             ~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > drivers/staging/wlan-ng/hfa384x_usb.c:3787:7: note: cast one or both operands to int to silence this warning
-> > 1 warning generated.
-> 
-> Both sides of this bitwise OR are bool, so | and || are equivalent
-> logically.  Clang should not warn about it.
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-I do not disagree. The original motivation for the warning was code like
+To avoid situations in which the actual states of certain ACPI power
+resources are not known just because they have never been referenced
+by any device configuration objects, check the initial states of all
+power resources as soon as they are found in the ACPI namespace (and
+fall back to turning them on if the state check fails).
 
-if (a() & b())
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
 
-where a '&&' was intended to short circuit the call to b() if a() was
-false but then it expanded to encompass bitwise OR as well. The clang
-developers felt that warning on bitwise OR was worthwhile because most
-of the time, '||' was intended. Feel free to comment on the Phabricator
-thread if you feel strongly, there are not too many instances of this
-warning and I think the '&' vs '&&' aspect of the warning is useful.
+Andreas, please test this patch (on top of the [1/2]) and let me know
+if it works for you.
 
-https://reviews.llvm.org/D108003
+Thanks!
 
-Cheers,
-Nathan
+---
+ drivers/acpi/power.c |   30 +++++++++++++-----------------
+ 1 file changed, 13 insertions(+), 17 deletions(-)
+
+Index: linux-pm/drivers/acpi/power.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/power.c
++++ linux-pm/drivers/acpi/power.c
+@@ -923,6 +919,7 @@ struct acpi_device *acpi_add_power_resou
+ 	union acpi_object acpi_object;
+ 	struct acpi_buffer buffer = { sizeof(acpi_object), &acpi_object };
+ 	acpi_status status;
++	u8 state_dummy;
+ 	int result;
+ 
+ 	acpi_bus_get_device(handle, &device);
+@@ -951,6 +948,10 @@ struct acpi_device *acpi_add_power_resou
+ 	resource->order = acpi_object.power_resource.resource_order;
+ 	resource->state = ACPI_POWER_RESOURCE_STATE_UNKNOWN;
+ 
++	/* Get the initial state or just flip it on if that fails. */
++	if (acpi_power_get_state(resource, &state_dummy))
++		__acpi_power_on(resource);
++
+ 	pr_info("%s [%s]\n", acpi_device_name(device), acpi_device_bid(device));
+ 
+ 	device->flags.match_driver = true;
+
+
+
