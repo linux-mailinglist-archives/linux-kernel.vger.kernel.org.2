@@ -2,120 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4394C42F427
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 15:47:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAAF742F42B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 15:47:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240021AbhJONtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 09:49:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49602 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236384AbhJONtL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 09:49:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E703600D4;
-        Fri, 15 Oct 2021 13:47:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634305624;
-        bh=/Mbkfa1+NWegcrBQ2TkZ79kV27LgRGCLcWrVVKv5bso=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=nFTGJ9ZoXcJf1EMxema9sKSnQ885ZjmovVsTDv7tZ14EqNpCbEkJMEgAJCSjLTdLJ
-         4XipYSuidch6U2ZFN2nyfVLs0UYmWMyAuzmgJuHypwT3VHaPpdLMZNCCxZZBjwj/3S
-         7Mv1mUFkyC7kQYmeb/HWfLNz2davT3oYGPFEDKxqq6HmyRDPa33Tvz7VKkv9zD6YrS
-         1b4XD29rPBJSXNO3/9nvgzVjYbiYB0BsY6xwp6w8AGGVssqc8DbkygbpG4z3mAlmnV
-         9dqzrCjox0hdfjn0Le1hQorrHmFWi1jcXl8/1AGiYHAhEwdAlcOkgJyj0Yw64T5A2U
-         TdMoBSeRJ5DcA==
-Subject: Re: [PATCH v3 4/5] dt-bindings: clock: Document Exynos850 CMU
- bindings
-To:     Sam Protsenko <semen.protsenko@linaro.org>
-Cc:     Ryu Euiyoul <ryu.real@samsung.com>, Tom Gall <tom.gall@linaro.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Amit Pundir <amit.pundir@linaro.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        =?UTF-8?Q?Pawe=c5=82_Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Rob Herring <robh+dt@kernel.org>
-References: <20211008154352.19519-1-semen.protsenko@linaro.org>
- <20211008154352.19519-5-semen.protsenko@linaro.org>
- <7049b3a9-dc8f-2ae9-01e6-eb3b6f461400@kernel.org>
- <CGME20211011101326eucas1p17e6deeaa2449bf3f0d6306fb930cce17@eucas1p1.samsung.com>
- <CAPLW+4kJK=kaiCLDXX1EGLhbKJo5pcHQY9QCj0SVyGQP1n7q0g@mail.gmail.com>
- <ef781890-76ca-3392-9a17-3856fa1834cf@samsung.com>
- <CAPLW+4mXMLadAi6U3GiXqRHAGnLH79rZeK6w=EcbOccjqH4N9w@mail.gmail.com>
-From:   Sylwester Nawrocki <snawrocki@kernel.org>
-Message-ID: <bfe13b9f-fcb5-18a5-c14f-6efa0f61909f@kernel.org>
-Date:   Fri, 15 Oct 2021 15:46:59 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <CAPLW+4mXMLadAi6U3GiXqRHAGnLH79rZeK6w=EcbOccjqH4N9w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+        id S240040AbhJONtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 09:49:40 -0400
+Received: from pv50p00im-ztdg10021201.me.com ([17.58.6.45]:57234 "EHLO
+        pv50p00im-ztdg10021201.me.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240025AbhJONtg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 09:49:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
+        t=1634305647; bh=CPeJvY4pYhOkCExADo3lmJ41anrz9lUx3u3bKJGG9hY=;
+        h=Content-Type:Mime-Version:Subject:From:Date:Message-Id:To;
+        b=YUmIudzckk61gqi2THQ0L2BDQRolmXCbNzyrjMwD+CxGHYjZK8MzZ/DEvVSSejbuC
+         sxBXFWJK6ZifRaNw0zISu2ZbK+N5rQk6y5znfbF7QFKGXAJquFc+Bts5L7KUwKXDzV
+         PlMZwfcunQFft7B4gBkVvZgxyF6C/o0BjH8Jb/mzO00lldQy5uQz5Gv6Vm/4jkLBJL
+         IOIA8zgCzAKgaFoZE3bSSB0LvhJVVPJ4rt0ph8SnEqWW69zgneosCsxg7FtDIrfdIF
+         7eDj73wIT6JQ+Qv+itlaOuIOSGJpRDgilJ4vIgM1f5p8bMx/d22s3v+VgfSNX7OQ1q
+         MEi1ohAG6Pnxg==
+Received: from 192.168.1.7 (unknown [120.245.2.212])
+        by pv50p00im-ztdg10021201.me.com (Postfix) with ESMTPSA id ED236A402E2;
+        Fri, 15 Oct 2021 13:47:18 +0000 (UTC)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
+Subject: Re: [PATCH v2 0/6] Use generic code for randomization of virtual
+ address of x86
+From:   Xiongwei Song <sxwjean@me.com>
+In-Reply-To: <20211011143150.318239-1-sxwjean@me.com>
+Date:   Fri, 15 Oct 2021 21:47:15 +0800
+Cc:     Xiongwei Song <sxwjean@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Kees Cook <keescook@chromium.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Huang Rui <ray.huang@amd.com>,
+        Yazen Ghannam <yazen.ghannam@amd.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Balbir Singh <sblbir@amazon.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org
 Content-Transfer-Encoding: 7bit
+Message-Id: <61781C95-6735-48B8-B32E-ECF189318953@me.com>
+References: <20211011143150.318239-1-sxwjean@me.com>
+To:     linux-mm@kvack.org, x86@kernel.org
+X-Mailer: Apple Mail (2.3608.120.23.2.4)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.425,18.0.790
+ definitions=2021-10-15_04:2021-10-14,2021-10-15 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 clxscore=1015 mlxscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-2009150000 definitions=main-2110150085
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12.10.2021 10:13, Sam Protsenko wrote:
-> On Mon, 11 Oct 2021 at 13:42, Sylwester Nawrocki<s.nawrocki@samsung.com>  wrote:
->> On 11.10.2021 12:13, Sam Protsenko wrote:
->>> On Sat, 9 Oct 2021 at 23:41, Sylwester Nawrocki<snawrocki@kernel.org>  wrote:
->>>> On 08.10.2021 17:43, Sam Protsenko wrote:
->>>>> Provide dt-schema documentation for Exynos850 SoC clock controller.
->>>>>
->>>>> Signed-off-by: Sam Protsenko<semen.protsenko@linaro.org>
->>>>> Reviewed-by: Krzysztof Kozlowski<krzysztof.kozlowski@canonical.com>
->>>>> Acked-by: Chanwoo Choi<cw00.choi@samsung.com>
->> [...]
->>>>> +++ b/Documentation/devicetree/bindings/clock/samsung,exynos850-clock.yaml
->>>>> @@ -0,0 +1,185 @@
->> [...]
->>>>> +
->>>>> +title: Samsung Exynos850 SoC clock controller
->>>>> +
->>>>> +maintainers:
->>>>> +  - Sam Protsenko<semen.protsenko@linaro.org>
->>>>> +  - Chanwoo Choi<cw00.choi@samsung.com>
->>>>> +  - Krzysztof Kozlowski<krzysztof.kozlowski@canonical.com>
->>>>> +  - Sylwester Nawrocki<s.nawrocki@samsung.com>
->>>>> +  - Tomasz Figa<tomasz.figa@gmail.com>
->>>>> +
->>>>> +description: |
->>>>> +  Exynos850 clock controller is comprised of several CMU units, generating
->>>>> +  clocks for different domains. Those CMU units are modeled as separate device
->>>>> +  tree nodes, and might depend on each other. Root clocks in that clock tree are
->>>>> +  two external clocks:: OSCCLK (26 MHz) and RTCCLK (32768 Hz). Those external
->>>>> +  clocks must be defined as fixed-rate clocks in dts.
->>>>> +
->>>>> +  CMU_TOP is a top-level CMU, where all base clocks are prepared using PLLs and
->>>>> +  dividers; all other leaf clocks (other CMUs) are usually derived from CMU_TOP.
->>>>> +
->>>>> +  Each clock is assigned an identifier and client nodes can use this identifier
->>>>> +  to specify the clock which they consume. All clocks that available for usage
+Hi Experts,
 
->>>> s/All clocks that available/All clocks available ?
->>>> No need to resend, I can amend it when applying.
->>>>
->>> Yeah, not a native speaker, I tend to do such mistakes sometimes:)
->>> Please fix when applying.
->>>
->>> Btw, I can see that you already applied 3 out of 5 patches from this
->>> patch series here: [1]. Can you please also apply the rest, or is
->>> there any outstanding comments that I missed?
->> The patches look good to me, I just wanted to allow some for Rob to have
->> a look and provide an Ack.
->>
-> Can you please review this one?
+Gentle reminder.  Any comments would be appreciated.
+Thank you so much.
 
-The binding is rather straightforward so I applied the patch now, thank you.
+Regards,
+Xiongwei
 
-
+> On Oct 11, 2021, at 10:31 PM, sxwjean@me.com wrote:
+> 
+> From: Xiongwei Song <sxwjean@gmail.com>
+> 
+> Hello,
+> 
+> This patchset are to use generic code for randomization of virtual address
+> of x86. Since the basic code logic of x86 is same as generic code, so no
+> need to implement these functions on x86.
+> 
+> Patch 1~3 are prepared to change the generic code to apply to x86.
+> 
+> Patch 4 is to switch to generic arch_pick_mmap_layout() with 
+> ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT enabled. Also provided basically
+> test and the result was put in commit message too.
+> 
+> Patch 5~6 are used to handle the legacy things.
+> 
+> Test programs(to verify if the entropy of return value of mmap is kept
+> after applying the patchset):
+> - C code for mmap test:
+> 	#include <stdio.h>
+> 	#include <stdlib.h>
+> 	#include <sys/mman.h>
+> 
+> 	int main(int argc, char *argv[])
+> 	{
+> 		unsigned long *addr;
+> 
+> 		addr = mmap(NULL, 4096, PROT_READ, MAP_SHARED|MAP_ANONYMOUS, -1, 0);
+> 		if (addr == MAP_FAILED) {
+> 			printf("NULL\n");
+> 		} else {
+> 			printf("%lx\n", (unsigned long)addr);
+> 			munmap(addr, 4096);
+> 		}
+> 
+> 		return 0;
+> 	}
+> 
+> - Shell script for collecting output of C progarm above and give a
+>  statistics:
+> 	#!/bin/bash
+> 	declare -a COUNT
+> 
+> 	if [ "$1" == "" ]; then
+> 	    echo "Please give a test number!"
+> 	    exit 1
+> 	fi
+> 	number=$1
+> 
+> 	for ((i=0; i<$number; i++))
+> 	do
+> 	    addr=$(mmaptest)
+> 	    addr=$(((16#$addr&0xf000000000)>>36))
+> 	    COUNT[$addr]=$((COUNT[$addr]+1))
+> 	done
+> 
+> 	echo "    Virtual Address Range     |   hit times   "
+> 	echo "----------------------------------------"
+> 	for ((i=0; i<16; i++))
+> 	do
+> 	    j=`echo "obase=16; $i" | bc`
+> 	    echo "0x7f${j,,}000000000 - 0x7f${j,,}ffffff000 |   ${COUNT[i]}"
+> 	done
+> 
+> Run 10 thousands times C progam, collect the output with shell script, get
+> the test results below:
+> 	Before the patchset:
+>            Virtual Address Range       | hit times
+>        ----------------------------------------
+>        0x7f0000000000 - 0x7f0ffffff000 |   655 
+>        0x7f1000000000 - 0x7f1ffffff000 |   617 
+>        0x7f2000000000 - 0x7f2ffffff000 |   636 
+>        0x7f3000000000 - 0x7f3ffffff000 |   625 
+>        0x7f4000000000 - 0x7f4ffffff000 |   651 
+>        0x7f5000000000 - 0x7f5ffffff000 |   591 
+>        0x7f6000000000 - 0x7f6ffffff000 |   623 
+>        0x7f7000000000 - 0x7f7ffffff000 |   627 
+>        0x7f8000000000 - 0x7f8ffffff000 |   638 
+>        0x7f9000000000 - 0x7f9ffffff000 |   586 
+>        0x7fa000000000 - 0x7faffffff000 |   637 
+>        0x7fb000000000 - 0x7fbffffff000 |   607 
+>        0x7fc000000000 - 0x7fcffffff000 |   618 
+>        0x7fd000000000 - 0x7fdffffff000 |   656 
+>        0x7fe000000000 - 0x7feffffff000 |   614 
+>        0x7ff000000000 - 0x7ffffffff000 |   619 
+> 
+> 	After the patchset:
+>            Virtual Address Range       | hit times
+>        ----------------------------------------
+>        0x7f0000000000 - 0x7f0ffffff000 |   661 
+>        0x7f1000000000 - 0x7f1ffffff000 |   645 
+>        0x7f2000000000 - 0x7f2ffffff000 |   609 
+>        0x7f3000000000 - 0x7f3ffffff000 |   594 
+>        0x7f4000000000 - 0x7f4ffffff000 |   616 
+>        0x7f5000000000 - 0x7f5ffffff000 |   622 
+>        0x7f6000000000 - 0x7f6ffffff000 |   617 
+>        0x7f7000000000 - 0x7f7ffffff000 |   582 
+>        0x7f8000000000 - 0x7f8ffffff000 |   618 
+>        0x7f9000000000 - 0x7f9ffffff000 |   629 
+>        0x7fa000000000 - 0x7faffffff000 |   635 
+>        0x7fb000000000 - 0x7fbffffff000 |   625 
+>        0x7fc000000000 - 0x7fcffffff000 |   614 
+>        0x7fd000000000 - 0x7fdffffff000 |   610 
+>        0x7fe000000000 - 0x7feffffff000 |   648
+>        0x7ff000000000 - 0x7ffffffff000 |   675
+> 
+> v1 -> v2:
+> - Spilt the patch 2 of v1 as Kees suggested.
+> - Drop patch 1 of v1, which renamed TIF_ADDR32 to TIF_32BIT, which is
+>  unreasonable for x86. Because in x86, 64bit process can call 32bit
+>  syscall. Thanks Peterz for pointing this out. 
+> 
+> v1:
+> - https://lkml.org/lkml/2021/9/21/482
+> - https://lkml.org/lkml/2021/9/21/484
+> - https://lkml.org/lkml/2021/9/27/688
+> 
+> Please review.
+> 
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: Andy Lutomirski <luto@kernel.org>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Al Viro <viro@zeniv.linux.org.uk>
+> Cc: Gabriel Krisman Bertazi <krisman@collabora.com>
+> Cc: Lai Jiangshan <laijs@linux.alibaba.com>
+> Cc: Huang Rui <ray.huang@amd.com>
+> Cc: Yazen Ghannam <yazen.ghannam@amd.com>
+> Cc: Kim Phillips <kim.phillips@amd.com>
+> Cc: Oleg Nesterov <oleg@redhat.com>
+> Cc: Balbir Singh <sblbir@amazon.com>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: sxwjean@me.com
+> Cc: linux-kernel@vger.kernel.org
+> 
+> Xiongwei Song (6):
+>  mm/util: Assign a meaningful value to mmap_legacy_base
+>  mm/util: Allow to pass a specific task size when getting mmapping base
+>  mm/util: Support CONFIG_HAVE_ARCH_COMPAT_MMAP_BASES
+>  x86/mm: Randomize VA with generit arch_pick_mmap_layout()
+>  x86/mm: Discard the defination of HAVE_ARCH_PICK_MMAP_LAYOUT
+>  x86/elf: Discard ARCH_HAS_ELF_RANDOMIZE selection
+> 
+> arch/x86/Kconfig                 |   2 +-
+> arch/x86/include/asm/compat.h    |   5 ++
+> arch/x86/include/asm/processor.h |   5 +-
+> arch/x86/mm/mmap.c               | 112 -------------------------------
+> mm/util.c                        |  35 +++++++---
+> 5 files changed, 37 insertions(+), 122 deletions(-)
+> 
+> -- 
+> 2.30.2
+> 
 
