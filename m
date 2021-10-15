@@ -2,89 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D029742FCCC
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 22:12:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E0ED42FCD9
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 22:14:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242941AbhJOUOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 16:14:12 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:35046 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231983AbhJOUOL (ORCPT
+        id S242952AbhJOUQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 16:16:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36395 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234165AbhJOUQm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 16:14:11 -0400
-X-UUID: 2d9840d1db584ae7ac416bc77cb6dd95-20211016
-X-UUID: 2d9840d1db584ae7ac416bc77cb6dd95-20211016
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
-        (envelope-from <miles.chen@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 936355359; Sat, 16 Oct 2021 04:11:58 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.2.792.15; Sat, 16 Oct 2021 04:11:56 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Sat, 16 Oct 2021 04:11:56 +0800
-From:   <miles.chen@mediatek.com>
-To:     <bvanassche@acm.org>
-CC:     <jejb@linux.ibm.com>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <linux-scsi@vger.kernel.org>,
-        <martin.petersen@oracle.com>, <martink@posteo.de>,
-        <matthias.bgg@gmail.com>, <miles.chen@mediatek.com>,
-        <stanley.chu@mediatek.com>, <wsd_upstream@mediatek.com>
-Subject: Re: [PATCH] scsi: sd: fix crashes in sd_resume_runtime
-Date:   Sat, 16 Oct 2021 04:11:55 +0800
-Message-ID: <20211015201155.12212-1-miles.chen@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <fe7bacf4-aa9a-6742-8382-a7c9b31236a7@acm.org>
-References: <fe7bacf4-aa9a-6742-8382-a7c9b31236a7@acm.org>
+        Fri, 15 Oct 2021 16:16:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634328875;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ob0cXS+iTVqhTc0LL+1lwvmPqj++Muh+HEaU63BqtuQ=;
+        b=OGWzt5e25yJYQiQD7/uF8o+UKGtYVDv5oE7oDURTcvbPBEYtOKPrlhvQfdWBaxwjDQS0JO
+        X9ECFLmDU7/O8GHVKiQtm2jVhUTa6cWeaclrBzB9SRvErD9jVWnhZ2vZT45KU4dmQW2N2Q
+        Slx3SPuQYj63wlRBl3g6xijzBjJWYHU=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-440-hSYBd5cyMTSl8xqBpgKxdw-1; Fri, 15 Oct 2021 16:14:34 -0400
+X-MC-Unique: hSYBd5cyMTSl8xqBpgKxdw-1
+Received: by mail-ed1-f71.google.com with SMTP id t18-20020a056402021200b003db9e6b0e57so9246754edv.10
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 13:14:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ob0cXS+iTVqhTc0LL+1lwvmPqj++Muh+HEaU63BqtuQ=;
+        b=TUrhyqvZeEUf9UzD9mS6hxWMsPzSd/MJihiF89oJasIG9mzbAo64lqcoO2GyFLf3Hp
+         U4j9Tdym5kOIZK67tBd8MvFtXSGdz7DUF35KHPCSJWTNqeYHgMbynFOfI5he6GytlN2A
+         mwBiKeX7Cdc8HTuL3/oVRF2dyhE4RFRuUnUPWUxd3GsGGcAgFmHbewkjGWn7Ad724R1u
+         1pPCGHl+DaAnZwVFvBH8j15g+p/JaDWq6vXqKFWRXxmyPUSZp4an/cK/CjRyZltB8Q2R
+         prQfTutWE6gICx139WV8OWl+UJq6nrdk/pjqaejmHENW47233mcworyVfIxD0twkn0/8
+         /yxg==
+X-Gm-Message-State: AOAM530/po/Ulaa8xK9Lf2v2ZI3b2oF7/u3YUQ5ro7jC+0tiuBe2nTMh
+        y/MX0b4Pb8GSKEjMXlGNSR8JMoMWUearLMXRdCgyTwbKMmelqJwD5L0W7ZaBJ9cTZwYQ1eDUtq5
+        W0XrTnOgPI59MGuKZPkVy0YLH
+X-Received: by 2002:a17:906:25d7:: with SMTP id n23mr9598467ejb.322.1634328872857;
+        Fri, 15 Oct 2021 13:14:32 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxezyePB9FvDabIoN4SDBtXb0EfYt6tXjhJ1dDf14blwJ1cW4KunpzRXCflX2qy8gweIQsg7g==
+X-Received: by 2002:a17:906:25d7:: with SMTP id n23mr9598434ejb.322.1634328872644;
+        Fri, 15 Oct 2021 13:14:32 -0700 (PDT)
+Received: from x1.localdomain ([2a0e:5700:4:11:334c:7e36:8d57:40cb])
+        by smtp.gmail.com with ESMTPSA id z18sm4752728ejl.67.2021.10.15.13.14.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Oct 2021 13:14:31 -0700 (PDT)
+Subject: Re: [PATCH 05/12] regulator: Introduce tps68470-regulator driver
+To:     Mark Brown <broonie@kernel.org>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Mark Gross <markgross@kernel.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Daniel Scally <djrscally@gmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, Len Brown <lenb@kernel.org>,
+        linux-acpi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Kate Hsuan <hpa@redhat.com>, linux-media@vger.kernel.org,
+        linux-clk@vger.kernel.org
+References: <20211008162121.6628-1-hdegoede@redhat.com>
+ <20211008162121.6628-6-hdegoede@redhat.com> <YWQU/SYTT5Vk24XH@sirena.org.uk>
+ <f6f2d7e8-fdb8-ed64-0cdd-65aded9fc42c@redhat.com>
+ <YWmwZJvDYjPWJdb4@sirena.org.uk>
+ <d0d1dc05-4cc6-2f47-88a9-700cfc356d86@redhat.com>
+ <YWnPaI/ZECdfYre9@sirena.org.uk>
+ <843f939a-7e43-bc12-e9fc-582e01129b63@redhat.com>
+ <YWnZIZTPiuAIazV+@sirena.org.uk>
+ <c595b143-d7ed-e76b-7734-e03d14e0f76e@redhat.com>
+ <YWndpGgBtLEAEaNj@sirena.org.uk>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <1805d16e-87ab-c291-6a73-adabf41344ca@redhat.com>
+Date:   Fri, 15 Oct 2021 22:14:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+In-Reply-To: <YWndpGgBtLEAEaNj@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miles Chen <miles.chen@mediatek.com>
+Hi,
 
-> Fixing this crash by adding a check inside sd_resume_runtime() seems wrong to me. sd_probe() namely calls dev_set_drvdata(dev, sdkp) before
-> sd_probe() has finished so even with the above patch applied sd_resume() can be called before sd_probe() has finished.
+On 10/15/21 9:59 PM, Mark Brown wrote:
+> On Fri, Oct 15, 2021 at 09:48:24PM +0200, Hans de Goede wrote:
+>> On 10/15/21 9:40 PM, Mark Brown wrote:
 > 
-> With which kernel version has this crash been encountered? The
-> scsi_autopm_get_device() / scsi_autopm_put_device() pair added by commit
-> 6fe8c1dbefd6 ("scsi: balance out autopm get/put calls in scsi_sysfs_add_sdev()"; kernel v3.18) should be sufficient to prevent the reported crash.
+>>> I can't see how the quirking gets propagated through into the driver and
+>>> I'd really expect that in a situation like this the platform data would
+>>> be passed through as platform data from the code doing the quirks,
 > 
-> Thanks,
+>> That is exactly what is happening here. The platform_data in this
+>> case is just an array of regulator_init_data pointers (one per
+>> regulator in the PMIC):
+> 
+> No, it's not.  What normally happens is that whatever registers the
+> device will when registering the device supply platform data that the
+> device later picks up from the struct device during probe.  What you're
+> saying is that the idea here is that driver unconditionally declares
+> platform data and then other code scribbles over that before the driver
+> instantiates.  This is cleaner in that it keeps the platform
+> configuration together and safer since the device can't exist before
+> it's configuration is provided.
 
-Thanks for your comment.
+Right, this is the standard device-tree model. Unfortunately the
+information about which supplies are needed and the constraints
+for those supplies is missing from the ACPI description for the
+devices which we are dealing with here.
 
-I hit this in v5.15-rc1 merge, I can still reproduce this with v5.15-rc5.
-I found two ways to avoid the crash:
-1) revert commit ed4246d37f3b ("scsi: sd: REQUEST SENSE for
-BLIST_IGN_MEDIA_CHANGE devices in runtime_resume()") works for me.
-2) adding the NULL point check in this patch.
+Daniel Scally tried to solve this by allowing specifying this
+in software-firmware-nodes. Which you nacked because those need
+separate parsing code in the regulator core.
 
-From the backtrace, dev_set_drvdata() is called after sd_resume_runtime()
-is called. 
+During that discussion you said that instead we should sinmply
+directly pass the regulator_init_data, rather then first
+encoding this in device-properties in a swnode and then
+decoding those again in the regulator core.
 
-sd_probe()
-{
- scsi_autopm_get_device()
-   pm_runtime_get_sync()
-     __pm_runtime_resume()
-       rpm_resume()
-        ...
-	 sd_resume_runtime() // crash here
+And passing the regulator_init_data is exactly what we are doing
+now; and now again this is not what we should be doing ?
 
-  dev_set_drvdata(dev, sdkp); // sdkp is set later
-}
+Also note that the current solution is exactly what I suggested
+we should do during the discussion with Daniel and I even provided
+example code and you said absolutely nothing about this!
 
-[    4.861395][  T151]  sd_resume_runtime+0x20/0x14c
-[    4.862025][  T151]  scsi_runtime_resume+0x84/0xe4
-[    4.862667][  T151]  __rpm_callback+0x1f4/0x8cc
-[    4.863275][  T151]  rpm_resume+0x7e8/0xaa4
-[    4.863836][  T151]  __pm_runtime_resume+0xa0/0x110
-[    4.864489][  T151]  sd_probe+0x30/0x428
-[    4.865016][  T151]  really_probe+0x14c/0x500
+>> So we have the code doing the quirks determining the regulator_init_data
+>> and passing this through platform_data, which AFAICT is exactly what
+>> you want?
+> 
+> No.  There should be no sign of the platform data getting allocated or
+> initialised in the driver consuming the platform data.  It should purely
+> be reading the data it gets passed by the platform initialisation code.
+> 
+> Please make the use of platform data look like normal platform data use
+> rather than going and inventing some new scheme.
+
+I'm sorry but I no longer have any clue what it is what you want us to do /
+how you want us to solve this.
+
+AFAIK what the current code is doing is exactly what you requested during
+the discussion with Daniel.
+
+If this is not to your looking please provide some pseudo code explaining
+how you want us to solve this problem instead of the current solution.
+
+And please keep in mind that we *cannot* change the ACPI firmware interfaces
+and that whether we like it or not things simply work different in the ACPI
+world.
+
+Frankly I'm quit unhappy, angry even about how you are blocking progress
+here. You don't like APCI we get it, can we get over that now please?
+
+So far all you seem to be doing is shooting down solutions, then first
+being quiet about suggested alternative solutions and then once the
+alternative solutions are implemented shoot them down again...
+
+And all that without adding anything constructive. All you have
+told us is how things should not be done (according to you).
+
+So fine everything we come up is wrong, please tell us how we should
+solve this instead then!
+
+Regards,
+
+Hans
+
 
