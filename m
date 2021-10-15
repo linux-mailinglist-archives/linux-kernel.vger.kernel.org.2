@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9603A42F12D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 14:42:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A67D642F12E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 14:42:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239009AbhJOMoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 08:44:20 -0400
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:50449 "EHLO
+        id S238987AbhJOMoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 08:44:23 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:50457 "EHLO
         esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239027AbhJOMmK (ORCPT
+        with ESMTP id S236015AbhJOMmL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 08:42:10 -0400
+        Fri, 15 Oct 2021 08:42:11 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1634301604; x=1665837604;
+  t=1634301605; x=1665837605;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=FFhnSGyMQDVLLTdJBAuezExujaSNKafiTG09LfRK2zA=;
-  b=vur40sFF0rJS8uuxN0ZZ9j8XVsoC0zCuUufc2wNJdQXRlfq91AUzScLK
-   tF2DIxVUYTFdg/9C3HZ00MMpIQCLsSc6xwRn4dzXdci1jRlAPaEp41law
-   U4Yw4fLUUbBtjMqomNE/lpj+h2h4y3/oQMx/7szyZzLWEU5fVjxK7ywsn
-   TBc7GgHTj4txp5XPv6nNxQkW3i5qTWidHhKkly/SsVQTaRL4VrkC1Qcp+
-   O7sEXBJWAF+toOC5F0d1AKcpdHFiQSvnw8OoXpXI2bwpMR3w9YvWt/HE7
-   49FU583Wmw47Emb2GelW48TM1y36ekiCTqLqkHY+t0kWuuYgcY3s/Cgh1
-   w==;
-IronPort-SDR: UapXFEetIrlcNLwdnSOYDsjB+xKztjNIjiotAGYk/V9MX3gGfcl1IUQ53wFhVBUxmHh87UXvSG
- +AG9ok3CZhNLeR8H5T2sDy2CxdRLJwGP4eohaSeGsUilbV4oTgZDUaxCOKYwdizLl/FKj/HcGJ
- 2GaGR7im+jG28QavjIWCgahKrZtziG5+1aK5rWAWqOnDK4jUcBb8fk30mH1W8M1EZ/4wUZ2Bjp
- wOuclpUW/78ClNTl4V/YGO93o69Vbx6Kwvg2d0QovBw4iwfnVZwyTsnGzUYbcdWhs/7QSksefg
- kfxWqgLFb4iN/mfmeLe7PG3m
+  bh=j70I3MLfR+S39GoQ5y05nrBzwqYPqS8zv9d7ynokaLU=;
+  b=Ae0C7W4Hci2S/V90J7jl5pBph8u7Tn3oaIx06fJ1NJTHLz3cuvjGPRtF
+   KHBl9IF3flvgng/nPi3r8gxkfyNfz/gdkO1lS76u+UIUp+MlUuwEdb/+h
+   p2KNf6JDRft0FaCP3tO4UXs/aKvL/3T8L+3BOjBFGD6LwcM0bRA6kxFbS
+   9WV11B8qC2oP3q0Z6uzpD7mnymE/5cqBnhrRgwjk3XA/qOl4w2bfqd+s3
+   vPMACkeQxlyYqT1yfX5pxRqM2S0u4i11dSoGOesyomeFAIc8pDTuU3oO4
+   ySCUVw6OMic4ps+86f/+M7yZABA1bzlv6xY8Hw4bBFrSQV4oR7vVknLh0
+   g==;
+IronPort-SDR: +pD9xwTIUtt26j80oNLa49sgvVJDiV0Pr+WJA0vbFYMRhuvpy0uGP1W11EXfY7YFkUKdXQZpd6
+ qMpGHMpcPVfAPTtracTFCDwHBxR3d2wgz5DMOuGGFztEeqH97mFc0Gf2C2EtVA8JcuJXXgn9Qw
+ ELBn9RZMO8dA6qlvXMzVvD8oHMLN2SYDM1PIOaXaqYWXsLy4FJO1fMFIuPSG4lTXatZ+6kXDoT
+ IRjpbMWCbtHPGK2FwUUlnWoBg6YXobqMxYfcBrt3e7gAhrfInK/Dm2w96VZ6OaCjedtwfGuIqY
+ Smr4+2IXcr7pYy1aiwBmpdgG
 X-IronPort-AV: E=Sophos;i="5.85,375,1624345200"; 
-   d="scan'208";a="73070427"
+   d="scan'208";a="73070434"
 Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 15 Oct 2021 05:40:02 -0700
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 15 Oct 2021 05:40:04 -0700
 Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
  chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Fri, 15 Oct 2021 05:40:01 -0700
+ 15.1.2176.14; Fri, 15 Oct 2021 05:40:04 -0700
 Received: from soft-dev3-1.microsemi.net (10.10.115.15) by
  chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Fri, 15 Oct 2021 05:40:00 -0700
+ 15.1.2176.14 via Frontend Transport; Fri, 15 Oct 2021 05:40:02 -0700
 From:   Horatiu Vultur <horatiu.vultur@microchip.com>
 To:     <kishon@ti.com>, <vkoul@kernel.org>, <robh+dt@kernel.org>,
         <andrew@lunn.ch>, <alexandre.belloni@bootlin.com>,
         <linux-phy@lists.infradead.org>, <devicetree@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>
 CC:     Horatiu Vultur <horatiu.vultur@microchip.com>
-Subject: [PATCH v3 1/3] dt-bindings: phy: Add lan966x-serdes binding
-Date:   Fri, 15 Oct 2021 14:39:18 +0200
-Message-ID: <20211015123920.176782-2-horatiu.vultur@microchip.com>
+Subject: [PATCH v3 2/3] dt-bindings: phy: Add constants for lan966x serdes
+Date:   Fri, 15 Oct 2021 14:39:19 +0200
+Message-ID: <20211015123920.176782-3-horatiu.vultur@microchip.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211015123920.176782-1-horatiu.vultur@microchip.com>
 References: <20211015123920.176782-1-horatiu.vultur@microchip.com>
@@ -60,65 +60,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document the lan966x ethernet serdes phy driver bindings.
+Lan966x has: 2 integrated PHYs, 3 SerDes and 2 RGMII interfaces. Which
+requires to be muxed based on the HW representation.
+
+So add constants for each interface to be able to distinguish them.
 
 Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
 ---
- .../phy/microchip,lan966x-serdes.yaml         | 45 +++++++++++++++++++
- 1 file changed, 45 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/phy/microchip,lan966x-serdes.yaml
+ include/dt-bindings/phy/phy-lan966x-serdes.h | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+ create mode 100644 include/dt-bindings/phy/phy-lan966x-serdes.h
 
-diff --git a/Documentation/devicetree/bindings/phy/microchip,lan966x-serdes.yaml b/Documentation/devicetree/bindings/phy/microchip,lan966x-serdes.yaml
+diff --git a/include/dt-bindings/phy/phy-lan966x-serdes.h b/include/dt-bindings/phy/phy-lan966x-serdes.h
 new file mode 100644
-index 000000000000..8902466831c1
+index 000000000000..8a05f93ecf41
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/phy/microchip,lan966x-serdes.yaml
-@@ -0,0 +1,45 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/phy/microchip,lan966x-serdes.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
++++ b/include/dt-bindings/phy/phy-lan966x-serdes.h
+@@ -0,0 +1,14 @@
++/* SPDX-License-Identifier: (GPL-2.0 OR MIT) */
 +
-+title: Microchip Lan966x Serdes controller
++#ifndef __PHY_LAN966X_SERDES_H__
++#define __PHY_LAN966X_SERDES_H__
 +
-+maintainers:
-+  - Horatiu Vultur <horatiu.vultur@microchip.com>
++#define PHY(x)		(x)
++#define PHY_MAX		PHY(2)
++#define SERDES6G(x)	(PHY_MAX + 1 + (x))
++#define SERDES6G_MAX	SERDES6G(3)
++#define RGMII(x)	(SERDES6G_MAX + 1 + (x))
++#define RGMII_MAX	RGMII(2)
++#define SERDES_MAX	(RGMII_MAX + 1)
 +
-+properties:
-+  $nodename:
-+    pattern: "^serdes@[0-9a-f]+$"
-+
-+  compatible:
-+    const: microchip,lan966x-serdes
-+
-+  reg:
-+    items:
-+      - description: HSIO registers
-+      - description: HW_STAT register
-+
-+  '#phy-cells':
-+    const: 2
-+    description: |
-+      - Port index
-+      - Serdes index
-+
-+required:
-+  - compatible
-+  - reg
-+  - '#phy-cells'
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    serdes: serdes@e2004010 {
-+      compatible = "microchip,lan966x-serdes";
-+      reg = <0xe202c000 0x9c>, <0xe2004010 0x4>;
-+      #phy-cells = <2>;
-+    };
-+
-+...
++#endif
 -- 
 2.33.0
 
