@@ -2,234 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCB0C42F02B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 14:05:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A3F342F02E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 14:06:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238642AbhJOMHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 08:07:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29618 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235378AbhJOMHg (ORCPT
+        id S238649AbhJOMIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 08:08:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50186 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229921AbhJOMIS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 08:07:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634299530;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JvoH5oMSp2BXCD8LbAzv1uYST/vLBcsCP136QtwFNwM=;
-        b=PanOJQeOja2mHxSxrPSR7QAXUJTV8UgSiLOa83uNxsLMXst84iTk0DT55n+Q3x4q5BjXRA
-        DPlGLGJ9o36E2a3K2l8yECOsQb6hEyZZ1nCLw772g9pp1qKU9pP8DZNzQF8RANd6WGNdm1
-        kATi6OkmWSR5yaSww1Ve2sDLKDQ6HU8=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-215-sOzBIIzEOkimhIQlS7YU3w-1; Fri, 15 Oct 2021 08:05:28 -0400
-X-MC-Unique: sOzBIIzEOkimhIQlS7YU3w-1
-Received: by mail-wm1-f70.google.com with SMTP id s10-20020a1cf20a000000b0030d66991388so802981wmc.7
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 05:05:28 -0700 (PDT)
+        Fri, 15 Oct 2021 08:08:18 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A1CBC061570;
+        Fri, 15 Oct 2021 05:06:12 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id z2so2350370wmc.3;
+        Fri, 15 Oct 2021 05:06:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=2pgx0g7Ab7G9I2hs6+wwaJaXi+B3ZQHmcz1sfiWia5A=;
+        b=p9mF5RB3QcxoH1nzcEzae/jHbNvfWVcw7H7HO+Fj86UQt9K3rhLQuXfj1nb0qqvpIA
+         Dg0olTtP9ma+CeksRGL56SJV1XVJB+azvRd3888/mR/zKtVXVF6x1qsUrKagFFmGbJvb
+         qyS/D9YCldWULqp8R0thYoqPFz5iSr0Rjminq+iniEzE89oYXV8gfMn6kfuXTCPXTKFQ
+         DsyhZl8cCqgCZyz6Do4vVqEONM7FHf23ZqIinSQ+ibZ83LAMahLC6OGiNN/GDYrQ1QlK
+         hOvbSrw24A5rqZzRVQ0ZhJo4aIGjyLEFv+4iC4zKHXGtBo6EPMcqCyjG4HIOejbpXw6S
+         5rBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JvoH5oMSp2BXCD8LbAzv1uYST/vLBcsCP136QtwFNwM=;
-        b=ISzqlBfSlLBNxFgKd+Lrcu1FSlJ/4JBvnlBE186DKpZZEmEI8yNoZf3f51ptLknZOT
-         6rYEJqrlbvNTqi0DOmD51X4A/TFQIkNAgS3NixyRIrcgFHCV3a8HcG+wggrPHvqmS5LO
-         CYKWC5nsrp66C9pBRNaG1gaYI1O9KhiI77UNwnv0D+OEyPD7VmOBvM4SrJnVtQBTLW9W
-         FCmlrnOOtPQ8Qaf4b1crDPNt95zEGnxa+vab41bP+nV5SzGJIu4XJKZDsFZj1IsIhTYQ
-         WsqPi8Wa0YYzPP/XBMaCILv9bK6Y0iAe9AFjQbhIPvu4Oode8WUtunKBRTmBYh0FdvCi
-         CpZw==
-X-Gm-Message-State: AOAM532ChFnYnURjuoS1/cH44OqCnMphRKbzDN41J+9WaKQ4wqLohETw
-        DHTJW5p2v4VM5gho8cKxgYGwFNlGeGTSvv4zTI69yO8JFes2T9+3IQ5mKu8YrU7sUg371c+Bkv/
-        xPrwGeV/nThTE/P7w/Kg31n1R
-X-Received: by 2002:a1c:a558:: with SMTP id o85mr12304161wme.110.1634299527704;
-        Fri, 15 Oct 2021 05:05:27 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxPw+HEJn+F00fk/SX9viUW+5VgyF3kV0jrtkEF8y8/rC2NWO+DXscmzJBN5cRnME77odizdw==
-X-Received: by 2002:a1c:a558:: with SMTP id o85mr12304122wme.110.1634299527418;
-        Fri, 15 Oct 2021 05:05:27 -0700 (PDT)
-Received: from krava (nat-pool-brq-u.redhat.com. [213.175.37.12])
-        by smtp.gmail.com with ESMTPSA id r9sm4560020wrn.95.2021.10.15.05.05.26
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=2pgx0g7Ab7G9I2hs6+wwaJaXi+B3ZQHmcz1sfiWia5A=;
+        b=k4pSNr5zYlVrdQLbYxEHtEskYprAnmby2MrQMdTEQZnutqc5Q1+z73SVj19yznrg7b
+         vtUfqLnH0lyqy0S4DyhLQhCX3s7EJ4/rERmLUxEYRO1qlp0iCjKopcmjpylVAZMV/1b7
+         X8ua2CN/4vYPbEsmvRZM3bKV7uo9/ITRVU2SQPmrdZxAvhQt4VVQkSRNQQCvuQ8cUjxp
+         bwKhgNv7uBAupIuGeNyvWSU/itUdI6g+ESDdufIHqaxSsLu4EdOx1pW8x30W29v959tb
+         hNYvbxBudVkjs9rjm60ADJkDqnJVtzhrj/EDJ7NoX6jT5RsU01/SxL2H/1BPlVX1lR6r
+         QwCQ==
+X-Gm-Message-State: AOAM531paV/ysYmWvCsAaNwglaDPWtNEvHuhnD7KIkhPveDn+wypweE2
+        RhtpQb5d4ki49ymcp67X416o8GwQ1x8=
+X-Google-Smtp-Source: ABdhPJwSdzurtgFgxXDGbUKhIi2uu02rWc1l+HCi+1IONPSJyiSZnabW2KnH8jXzGtkWKVBYzoIZHQ==
+X-Received: by 2002:a05:600c:1c10:: with SMTP id j16mr26328587wms.12.1634299570676;
+        Fri, 15 Oct 2021 05:06:10 -0700 (PDT)
+Received: from localhost.localdomain (dynamic-2a01-0c23-c1f2-fb00-f22f-74ff-fe21-0725.c23.pool.telefonica.de. [2a01:c23:c1f2:fb00:f22f:74ff:fe21:725])
+        by smtp.googlemail.com with ESMTPSA id j1sm4869155wrd.28.2021.10.15.05.06.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Oct 2021 05:05:26 -0700 (PDT)
-Date:   Fri, 15 Oct 2021 14:05:25 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>
-Subject: Re: [PATCH 7/8] ftrace: Add multi direct modify interface
-Message-ID: <YWluhdDMfkNGwlhz@krava>
-References: <20211008091336.33616-1-jolsa@kernel.org>
- <20211008091336.33616-8-jolsa@kernel.org>
- <20211014162819.5c85618b@gandalf.local.home>
+        Fri, 15 Oct 2021 05:06:10 -0700 (PDT)
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+To:     sboyd@kernel.org
+Cc:     heiko@sntech.de, knaerzche@gmail.com,
+        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        martin.blumenstingl@googlemail.com
+Subject: [PATCH] clk: composite: Also consider .determine_rate for rate + mux composites
+Date:   Fri, 15 Oct 2021 14:05:59 +0200
+Message-Id: <20211015120559.3515645-1-martin.blumenstingl@googlemail.com>
+X-Mailer: git-send-email 2.33.1
+In-Reply-To: <163425193558.1688384.15520943968787313145@swboyd.mtv.corp.google.com>
+References: <163425193558.1688384.15520943968787313145@swboyd.mtv.corp.google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211014162819.5c85618b@gandalf.local.home>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 04:28:19PM -0400, Steven Rostedt wrote:
-> On Fri,  8 Oct 2021 11:13:35 +0200
-> Jiri Olsa <jolsa@redhat.com> wrote:
-> 
-> > +	/*
-> > +	 * Shutdown the ops, change 'direct' pointer for each
-> > +	 * ops entry in direct_functions hash and startup the
-> > +	 * ops back again.
-> > +	 *
-> > +	 * Note there is no callback called for @ops object after
-> > +	 * this ftrace_shutdown call until ftrace_startup is called
-> > +	 * later on.
-> > +	 */
-> > +	err = ftrace_shutdown(ops, 0);
-> > +	if (err)
-> > +		goto out_unlock;
-> 
-> I believe I said before that we can do this by adding a stub ops that match
-> all the functions with the direct ops being modified. This will cause the
-> loop function to be called, which will call the direct function helper,
-> which will then call the direct function that is found. That is, there is
-> no "pause" in calling the direct callers. Either the old direct is called,
-> or the new one. When the function returns, all are calling the new one.
-> 
-> That is, instead of:
-> 
-> [ Changing direct call from my_direct_1 to my_direct_2 ]
-> 
->   <traced_func>:
->      call my_direct_1
-> 
->  ||||||||||||||||||||
->  vvvvvvvvvvvvvvvvvvvv
-> 
->   <traced_func>:
->      nop
-> 
->  ||||||||||||||||||||
->  vvvvvvvvvvvvvvvvvvvv
-> 
->   <traced_func>:
->      call my_direct_2
-> 
-> 
-> We have it do:
-> 
->   <traced_func>:
->      call my_direct_1
-> 
->  ||||||||||||||||||||
->  vvvvvvvvvvvvvvvvvvvv
-> 
->   <traced_func>:
->      call ftrace_caller
-> 
-> 
->   <ftrace_caller>:
->     [..]
->     call ftrace_ops_list_func
-> 
-> 
-> ftrace_ops_list_func()
-> {
-> 	ops->func() -> direct_helper -> set rax to my_direct_1 or my_direct_2
-> }
-> 
->    call rax (to either my_direct_1 or my_direct_2
+Commit 69a00fb3d69706 ("clk: divider: Implement and wire up
+.determine_rate by default") switches clk_divider_ops to implement
+.determine_rate by default. This breaks composite clocks with multiple
+parents because clk-composite.c does not use the special handling for
+mux + divider combinations anymore (that was restricted to rate clocks
+which only implement .round_rate, but not .determine_rate).
 
-nice! :) I did not see that as a problem and something that can be
-done later, thanks for doing this
+Alex reports:
+  This breaks lot of clocks for Rockchip which intensively uses
+  composites,  i.e. those clocks will always stay at the initial parent,
+  which in some cases  is the XTAL clock and I strongly guess it is the
+  same for other platforms,  which use composite clocks having more than
+  one parent (e.g. mediatek, ti ...)
 
-> 
->  ||||||||||||||||||||
->  vvvvvvvvvvvvvvvvvvvv
-> 
->   <traced_func>:
->      call my_direct_2
-> 
-> 
-> I did this on top of this patch:
+  Example (RK3399)
+  clk_sdio is set (initialized) with XTAL (24 MHz) as parent in u-boot.
+  It will always stay at this parent, even if the mmc driver sets a rate
+  of  200 MHz (fails, as the nature of things), which should switch it
+  to   any of its possible parent PLLs defined in
+  mux_pll_src_cpll_gpll_npll_ppll_upll_24m_p (see clk-rk3399.c)  - which
+  never happens.
 
-ATM I'm bit stuck on the bpf side of this whole change, I'll test
-it with my other changes when I unstuck myself ;-)
+Restore the original behavior by changing the priority of the conditions
+inside clk-composite.c. Now the special rate + mux case (with rate_ops
+having a .round_rate - which is still the case for the default
+clk_divider_ops) is preferred over rate_ops which have .determine_rate
+defined (and not further considering the mux).
 
-thanks,
-jirka
+Fixes: 69a00fb3d69706 ("clk: divider: Implement and wire up .determine_rate by default")
+Reported-by: Alex Bee <knaerzche@gmail.com>
+Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+---
+Re-sending this as inline patch instead of attaching it.
 
-> 
-> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> ---
->  kernel/trace/ftrace.c | 33 ++++++++++++++++++++-------------
->  1 file changed, 20 insertions(+), 13 deletions(-)
-> 
-> diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-> index 30120342176e..7ad1e8ae5855 100644
-> --- a/kernel/trace/ftrace.c
-> +++ b/kernel/trace/ftrace.c
-> @@ -5561,8 +5561,12 @@ EXPORT_SYMBOL_GPL(unregister_ftrace_direct_multi);
->   */
->  int modify_ftrace_direct_multi(struct ftrace_ops *ops, unsigned long addr)
->  {
-> -	struct ftrace_hash *hash = ops->func_hash->filter_hash;
-> +	struct ftrace_hash *hash;
->  	struct ftrace_func_entry *entry, *iter;
-> +	static struct ftrace_ops tmp_ops = {
-> +		.func		= ftrace_stub,
-> +		.flags		= FTRACE_OPS_FL_STUB,
-> +	};
->  	int i, size;
->  	int err;
->  
-> @@ -5572,21 +5576,22 @@ int modify_ftrace_direct_multi(struct ftrace_ops *ops, unsigned long addr)
->  		return -EINVAL;
->  
->  	mutex_lock(&direct_mutex);
-> -	mutex_lock(&ftrace_lock);
-> +
-> +	/* Enable the tmp_ops to have the same functions as the direct ops */
-> +	ftrace_ops_init(&tmp_ops);
-> +	tmp_ops.func_hash = ops->func_hash;
-> +
-> +	err = register_ftrace_function(&tmp_ops);
-> +	if (err)
-> +		goto out_direct;
->  
->  	/*
-> -	 * Shutdown the ops, change 'direct' pointer for each
-> -	 * ops entry in direct_functions hash and startup the
-> -	 * ops back again.
-> -	 *
-> -	 * Note there is no callback called for @ops object after
-> -	 * this ftrace_shutdown call until ftrace_startup is called
-> -	 * later on.
-> +	 * Now the ftrace_ops_list_func() is called to do the direct callers.
-> +	 * We can safely change the direct functions attached to each entry.
->  	 */
-> -	err = ftrace_shutdown(ops, 0);
-> -	if (err)
-> -		goto out_unlock;
-> +	mutex_lock(&ftrace_lock);
->  
-> +	hash = ops->func_hash->filter_hash;
->  	size = 1 << hash->size_bits;
->  	for (i = 0; i < size; i++) {
->  		hlist_for_each_entry(iter, &hash->buckets[i], hlist) {
-> @@ -5597,10 +5602,12 @@ int modify_ftrace_direct_multi(struct ftrace_ops *ops, unsigned long addr)
->  		}
->  	}
->  
-> -	err = ftrace_startup(ops, 0);
-> +	/* Removing the tmp_ops will add the updated direct callers to the functions */
-> +	unregister_ftrace_function(&tmp_ops);
->  
->   out_unlock:
->  	mutex_unlock(&ftrace_lock);
-> + out_direct:
->  	mutex_unlock(&direct_mutex);
->  	return err;
->  }
-> -- 
-> 2.31.1
-> 
+ drivers/clk/clk-composite.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/clk/clk-composite.c b/drivers/clk/clk-composite.c
+index 0506046a5f4b..510a9965633b 100644
+--- a/drivers/clk/clk-composite.c
++++ b/drivers/clk/clk-composite.c
+@@ -58,11 +58,8 @@ static int clk_composite_determine_rate(struct clk_hw *hw,
+ 	long rate;
+ 	int i;
+ 
+-	if (rate_hw && rate_ops && rate_ops->determine_rate) {
+-		__clk_hw_set_clk(rate_hw, hw);
+-		return rate_ops->determine_rate(rate_hw, req);
+-	} else if (rate_hw && rate_ops && rate_ops->round_rate &&
+-		   mux_hw && mux_ops && mux_ops->set_parent) {
++	if (rate_hw && rate_ops && rate_ops->round_rate &&
++	    mux_hw && mux_ops && mux_ops->set_parent) {
+ 		req->best_parent_hw = NULL;
+ 
+ 		if (clk_hw_get_flags(hw) & CLK_SET_RATE_NO_REPARENT) {
+@@ -107,6 +104,9 @@ static int clk_composite_determine_rate(struct clk_hw *hw,
+ 
+ 		req->rate = best_rate;
+ 		return 0;
++	} else if (rate_hw && rate_ops && rate_ops->determine_rate) {
++		__clk_hw_set_clk(rate_hw, hw);
++		return rate_ops->determine_rate(rate_hw, req);
+ 	} else if (mux_hw && mux_ops && mux_ops->determine_rate) {
+ 		__clk_hw_set_clk(mux_hw, hw);
+ 		return mux_ops->determine_rate(mux_hw, req);
+-- 
+2.33.0
 
