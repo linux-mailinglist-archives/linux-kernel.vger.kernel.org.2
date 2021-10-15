@@ -2,198 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECFD542ECEC
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 10:57:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56E2342ECF6
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 10:58:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235819AbhJOI7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 04:59:24 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:45042 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229656AbhJOI7V (ORCPT
+        id S235771AbhJOJAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 05:00:44 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:24321 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229656AbhJOJAn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 04:59:21 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 7E2EF21A5C;
-        Fri, 15 Oct 2021 08:57:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1634288234; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1gJCQ4LKq38Wz8fQyxCuZehL+Con9ahBr+7Hnu4iI6I=;
-        b=F/r+O+h+iiCGNp8KwZBMENDfACFkFv6d6ZqDw/HzgdY9FPQsFXmjr+XBgfDafwPyPlvjLr
-        cv1FM7lLUVEWR36EcsyHyQ4/LTSrBYa7POxhrGK3rXJyDCpUpr9q4dPgIMYfvdbQU29mw8
-        kQN/FeVyFSq8LWEm86jsroGvst3aKdA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1634288234;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1gJCQ4LKq38Wz8fQyxCuZehL+Con9ahBr+7Hnu4iI6I=;
-        b=8Ac48pcXCsDs029dgkoosGntR8ftiitK/LY3GrjgF0Qb8QXn6VhOzoPZ4SoP4O2j0PCm8p
-        3Q5Gbqe5LNpgwkCg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3098F13B87;
-        Fri, 15 Oct 2021 08:57:14 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id CuQlC2pCaWHeIgAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Fri, 15 Oct 2021 08:57:14 +0000
-Message-ID: <6abd9213-19a9-6d58-cedc-2414386d2d81@suse.cz>
-Date:   Fri, 15 Oct 2021 10:57:13 +0200
+        Fri, 15 Oct 2021 05:00:43 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HW0SF2s2Czbd24;
+        Fri, 15 Oct 2021 16:54:05 +0800 (CST)
+Received: from kwepemm600001.china.huawei.com (7.193.23.3) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Fri, 15 Oct 2021 16:58:35 +0800
+Received: from huawei.com (10.175.104.82) by kwepemm600001.china.huawei.com
+ (7.193.23.3) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Fri, 15 Oct
+ 2021 16:58:34 +0800
+From:   Wang Hai <wanghai38@huawei.com>
+To:     <mchehab@kernel.org>
+CC:     <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] media: dmxdev: fix UAF when dvb_register_device() fails
+Date:   Fri, 15 Oct 2021 16:57:41 +0800
+Message-ID: <20211015085741.1203283-1-wanghai38@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v3] lib/stackdepot: allow optional init and stack_table
- allocation by kvmalloc()
-Content-Language: en-US
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        kasan-dev@googlegroups.com, Dmitry Vyukov <dvyukov@google.com>,
-        Marco Elver <elver@google.com>,
-        Vijayanand Jitta <vjitta@codeaurora.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Oliver Glitta <glittao@gmail.com>,
-        Imran Khan <imran.f.khan@oracle.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        kernel test robot <oliver.sang@intel.com>
-References: <20211012090621.1357-1-vbabka@suse.cz>
- <20211013073005.11351-1-vbabka@suse.cz>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20211013073005.11351-1-vbabka@suse.cz>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.82]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemm600001.china.huawei.com (7.193.23.3)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/13/21 09:30, Vlastimil Babka wrote:
-> Currently, enabling CONFIG_STACKDEPOT means its stack_table will be allocated
-> from memblock, even if stack depot ends up not actually used. The default size
-> of stack_table is 4MB on 32-bit, 8MB on 64-bit.
-> 
-> This is fine for use-cases such as KASAN which is also a config option and
-> has overhead on its own. But it's an issue for functionality that has to be
-> actually enabled on boot (page_owner) or depends on hardware (GPU drivers)
-> and thus the memory might be wasted. This was raised as an issue [1] when
-> attempting to add stackdepot support for SLUB's debug object tracking
-> functionality. It's common to build kernels with CONFIG_SLUB_DEBUG and enable
-> slub_debug on boot only when needed, or create only specific kmem caches with
-> debugging for testing purposes.
-> 
-> It would thus be more efficient if stackdepot's table was allocated only when
-> actually going to be used. This patch thus makes the allocation (and whole
-> stack_depot_init() call) optional:
-> 
-> - Add a CONFIG_STACKDEPOT_ALWAYS_INIT flag to keep using the current
->   well-defined point of allocation as part of mem_init(). Make CONFIG_KASAN
->   select this flag.
-> - Other users have to call stack_depot_init() as part of their own init when
->   it's determined that stack depot will actually be used. This may depend on
->   both config and runtime conditions. Convert current users which are
->   page_owner and several in the DRM subsystem. Same will be done for SLUB
->   later.
-> - Because the init might now be called after the boot-time memblock allocation
->   has given all memory to the buddy allocator, change stack_depot_init() to
->   allocate stack_table with kvmalloc() when memblock is no longer available.
->   Also handle allocation failure by disabling stackdepot (could have
->   theoretically happened even with memblock allocation previously), and don't
->   unnecessarily align the memblock allocation to its own size anymore.
-> 
-> [1] https://lore.kernel.org/all/CAMuHMdW=eoVzM1Re5FVoEN87nKfiLmM2+Ah7eNu2KXEhCvbZyA@mail.gmail.com/
+I got a use-after-free report:
+
+dvbdev: dvb_register_device: failed to create device dvb1.dvr0 (-12)
 ...
-> ---
-> Changes in v3:
-> - stack_depot_init_mutex made static and moved inside stack_depot_init()
->   Reported-by: kernel test robot <lkp@intel.com>
-> - use !stack_table condition instead of stack_table == NULL
->   reported by checkpatch on freedesktop.org patchwork
+==================================================================
+BUG: KASAN: use-after-free in dvb_dmxdev_release+0xce/0x2f0
+...
+Call Trace:
+ dump_stack_lvl+0x6c/0x8b
+ print_address_description.constprop.0+0x48/0x70
+ kasan_report.cold+0x82/0xdb
+ __asan_load4+0x6b/0x90
+ dvb_dmxdev_release+0xce/0x2f0
+...
+Allocated by task 7666:
+ kasan_save_stack+0x23/0x50
+ __kasan_kmalloc+0x83/0xa0
+ kmem_cache_alloc_trace+0x22e/0x470
+ dvb_register_device+0x12f/0x980
+ dvb_dmxdev_init+0x1f3/0x230
+...
+Freed by task 7666:
+ kasan_save_stack+0x23/0x50
+ kasan_set_track+0x20/0x30
+ kasan_set_free_info+0x24/0x40
+ __kasan_slab_free+0xf2/0x130
+ kfree+0xd1/0x5c0
+ dvb_register_device.cold+0x1ac/0x1fa
+ dvb_dmxdev_init+0x1f3/0x230
+...
 
-The last change above was missing because I forgot git commit --amend before
-git format-patch. More importantly there was a bot report for FLATMEM. Please
-add this fixup. Thanks.
+When dvb_register_device() in dvb_dmxdev_init() fails, dvb_dmxdev_init()
+does not return a failure, and the memory pointed to by dvbdev or
+dvr_dvbdev is invalid at this point. If they are used subsequently, it
+will result in UFA or null-ptr-deref.
 
-----8<----
-From a971a1670491f8fbbaab579eef3c756a5263af95 Mon Sep 17 00:00:00 2001
-From: Vlastimil Babka <vbabka@suse.cz>
-Date: Thu, 7 Oct 2021 10:49:09 +0200
-Subject: [PATCH] lib/stackdepot: allow optional init and stack_table
- allocation by kvmalloc() - fixup
+If dvb_register_device() in dvb_dmxdev_init() fails, fix the bug by making
+dvb_dmxdev_init() return an error as well.
 
-On FLATMEM, we call page_ext_init_flatmem_late() just before kmem_cache_init()
-which means stack_depot_init() (called by page owner init) will not recognize
-properly it should use kvmalloc() and not memblock_alloc(). memblock_alloc()
-will also not issue a warning and return a block memory that can be invalid and
-cause kernel page fault when saving stacks, as reported by the kernel test
-robot [1].
-
-Fix this by moving page_ext_init_flatmem_late() below kmem_cache_init() so that
-slab_is_available() is true during stack_depot_init(). SPARSEMEM doesn't have
-this issue, as it doesn't do page_ext_init_flatmem_late(), but a different
-page_ext_init() even later in the boot process.
-
-Thanks to Mike Rapoport for pointing out the FLATMEM init ordering issue.
-
-While at it, also actually resolve a checkpatch warning in stack_depot_init()
-from DRM CI, which was supposed to be in the original patch already.
-
-[1] https://lore.kernel.org/all/20211014085450.GC18719@xsang-OptiPlex-9020/
-
-Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-Reported-by: kernel test robot <oliver.sang@intel.com>
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
 ---
- init/main.c      | 7 +++++--
- lib/stackdepot.c | 2 +-
- 2 files changed, 6 insertions(+), 3 deletions(-)
+ drivers/media/dvb-core/dmxdev.c | 18 +++++++++++++++---
+ 1 file changed, 15 insertions(+), 3 deletions(-)
 
-diff --git a/init/main.c b/init/main.c
-index ca2765c8e45c..0ab632f681c5 100644
---- a/init/main.c
-+++ b/init/main.c
-@@ -845,9 +845,12 @@ static void __init mm_init(void)
- 	stack_depot_early_init();
- 	mem_init();
- 	mem_init_print_info();
--	/* page_owner must be initialized after buddy is ready */
--	page_ext_init_flatmem_late();
- 	kmem_cache_init();
-+	/*
-+	 * page_owner must be initialized after buddy is ready, and also after
-+	 * slab is ready so that stack_depot_init() works properly
-+	 */
-+	page_ext_init_flatmem_late();
- 	kmemleak_init();
- 	pgtable_init();
- 	debug_objects_mem_init();
-diff --git a/lib/stackdepot.c b/lib/stackdepot.c
-index 049d7d025d78..1f8ea6d0899b 100644
---- a/lib/stackdepot.c
-+++ b/lib/stackdepot.c
-@@ -172,7 +172,7 @@ __ref int stack_depot_init(void)
- 	static DEFINE_MUTEX(stack_depot_init_mutex);
+diff --git a/drivers/media/dvb-core/dmxdev.c b/drivers/media/dvb-core/dmxdev.c
+index 5d5a48475a54..01f288fa37e0 100644
+--- a/drivers/media/dvb-core/dmxdev.c
++++ b/drivers/media/dvb-core/dmxdev.c
+@@ -1413,7 +1413,7 @@ static const struct dvb_device dvbdev_dvr = {
+ };
+ int dvb_dmxdev_init(struct dmxdev *dmxdev, struct dvb_adapter *dvb_adapter)
+ {
+-	int i;
++	int i, ret;
  
- 	mutex_lock(&stack_depot_init_mutex);
--	if (!stack_depot_disable && stack_table == NULL) {
-+	if (!stack_depot_disable && !stack_table) {
- 		size_t size = (STACK_HASH_SIZE * sizeof(struct stack_record *));
- 		int i;
+ 	if (dmxdev->demux->open(dmxdev->demux) < 0)
+ 		return -EUSERS;
+@@ -1432,14 +1432,26 @@ int dvb_dmxdev_init(struct dmxdev *dmxdev, struct dvb_adapter *dvb_adapter)
+ 					    DMXDEV_STATE_FREE);
+ 	}
  
+-	dvb_register_device(dvb_adapter, &dmxdev->dvbdev, &dvbdev_demux, dmxdev,
++	ret = dvb_register_device(dvb_adapter, &dmxdev->dvbdev, &dvbdev_demux, dmxdev,
+ 			    DVB_DEVICE_DEMUX, dmxdev->filternum);
+-	dvb_register_device(dvb_adapter, &dmxdev->dvr_dvbdev, &dvbdev_dvr,
++	if (ret < 0)
++		goto err_register_dvbdev;
++
++	ret = dvb_register_device(dvb_adapter, &dmxdev->dvr_dvbdev, &dvbdev_dvr,
+ 			    dmxdev, DVB_DEVICE_DVR, dmxdev->filternum);
++	if (ret < 0)
++		goto err_register_dvr_dvbdev;
+ 
+ 	dvb_ringbuffer_init(&dmxdev->dvr_buffer, NULL, 8192);
+ 
+ 	return 0;
++
++err_register_dvr_dvbdev:
++	dvb_unregister_device(dmxdev->dvbdev);
++err_register_dvbdev:
++	vfree(dmxdev->filter);
++	dmxdev->filter = NULL;
++	return ret;
+ }
+ 
+ EXPORT_SYMBOL(dvb_dmxdev_init);
 -- 
-2.33.0
+2.25.1
 
