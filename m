@@ -2,146 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8A9E42F81D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 18:29:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12FBA42F820
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 18:30:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241324AbhJOQbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 12:31:45 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3986 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236936AbhJOQbk (ORCPT
+        id S241331AbhJOQcd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 12:32:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55716 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241276AbhJOQc3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 12:31:40 -0400
-Received: from fraeml703-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HWBTb6rkGz67lSs;
-        Sat, 16 Oct 2021 00:25:55 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml703-chm.china.huawei.com (10.206.15.52) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Fri, 15 Oct 2021 18:29:31 +0200
-Received: from localhost (10.202.226.41) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Fri, 15 Oct
- 2021 17:29:31 +0100
-Date:   Fri, 15 Oct 2021 17:29:30 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Dan Williams <dan.j.williams@intel.com>
-CC:     Ira Weiny <ira.weiny@intel.com>, <linux-cxl@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v3 06/10] cxl/pci: Add @base to cxl_register_map
-Message-ID: <20211015172930.00007f21@Huawei.com>
-In-Reply-To: <CAPcyv4hP5ohs10-xC+h=QOH7yiUXji55ubwVG1XfMA006tjR8A@mail.gmail.com>
-References: <163379783658.692348.16064992154261275220.stgit@dwillia2-desk3.amr.corp.intel.com>
-        <163379786922.692348.2318044990911111834.stgit@dwillia2-desk3.amr.corp.intel.com>
-        <20211010042056.GJ3114988@iweiny-DESK2.sc.intel.com>
-        <CAPcyv4hP5ohs10-xC+h=QOH7yiUXji55ubwVG1XfMA006tjR8A@mail.gmail.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
+        Fri, 15 Oct 2021 12:32:29 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 976BDC061570
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 09:30:21 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id s4so24074859ybs.8
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 09:30:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kz5lMVwvOCVrmogtVEWpwErQFfGGKuUYVGz/2nToq3M=;
+        b=j2u09yM5l/323Ka448VaPv1LG7LqAaEYz0PZdr1r/KNJ1g2xJcBMLqZlsDpDMzRb5h
+         9Vy7xuf0SdACs1IMILrxi2L2UVJpAsywRRr1wlr5kvTFterFPXO+6ywJpiSQ4e/m+cM8
+         HkgnzQJrFHocBgUiBBO64Kr/Y8YCS+F/TYQTUnYmIgNybQ/pb8n1BVRhTgQnTVh8uh7A
+         84xYZ7CxxEBn2+EMqvpOKBHpTNCtrX+jqsTafZriRQS7NIZ/Z7URojLuuB00AHf2noJ2
+         v7mme9NkiL8tUyYNnljRWXFEhhl2qhFvqKMCOwGjGThZIS6buys8ohJ7+5kkZuBoV1dT
+         7fPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kz5lMVwvOCVrmogtVEWpwErQFfGGKuUYVGz/2nToq3M=;
+        b=mzY1qP6G79QWtGFlityH+5IfmrRqBJswT5rM2BkK2jYv79G7z7YA9Fu1i0jDmF3ltp
+         GdxWyOdUkv7EcAbnMBfNqXkc4SRDFOf55RPTtuz/4ed8cvTQbf23o+AihBhqNIP8WhR8
+         8AHaV0yW/ycfE7fEqv5EcGy9WUaayBFfT3cKG3kbA5MNTtEw75UAvJrdrSZWH8PHwuMn
+         G2i4egGkSho93u/bLlENlD57nJ5BJnl3yUZ8+/G6p9DrZQMqVB3XY2qi6lKhd1rIULIa
+         yCYSfQfXTNo9oxvAvWKfBYvJT4lnvQtyMusSwRnJAvaayFMhZ6TxRs8Qtq/9xPWRJ+4O
+         kpZw==
+X-Gm-Message-State: AOAM532AOUi/RnAcbQe3q1H0pV6WkXph2BJKsRiVHYGzcndzvL3r3Oo/
+        i4KNMzpnaFjsG2M5EhAaY86IDN+SfUmYpj1AU8GF1g==
+X-Google-Smtp-Source: ABdhPJyQziOQe5F3EOcgL5uw4MWVkI519Ki6NKatykqIbO5nuXsaj+RptOUZLkH+K74gIqKrcOujKI9DJiSsZkQ5uC0=
+X-Received: by 2002:a25:bd03:: with SMTP id f3mr13232331ybk.412.1634315420493;
+ Fri, 15 Oct 2021 09:30:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.226.41]
-X-ClientProxiedBy: lhreml727-chm.china.huawei.com (10.201.108.78) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+References: <92cbfe3b-f3d1-a8e1-7eb9-bab735e782f6@rasmusvillemoes.dk>
+ <20211007101527.GA26288@duo.ucw.cz> <CAJuCfpGp0D9p3KhOWhcxMO1wEbo-J_b2Anc-oNwdycx4NTRqoA@mail.gmail.com>
+ <YV8jB+kwU95hLqTq@dhcp22.suse.cz> <CAJuCfpG-Nza3YnpzvHaS_i1mHds3nJ+PV22xTAfgwvj+42WQNA@mail.gmail.com>
+ <YV8u4B8Y9AP9xZIJ@dhcp22.suse.cz> <CAJuCfpHAG_C5vE-Xkkrm2kynTFF-Jd06tQoCWehHATL0W2mY_g@mail.gmail.com>
+ <202110071111.DF87B4EE3@keescook> <YV/mhyWH1ZwWazdE@dhcp22.suse.cz>
+ <202110081344.FE6A7A82@keescook> <YWP3c/bozz5npQ8O@dhcp22.suse.cz>
+ <CAJuCfpHQVMM4+6Lm_EnFk06+KrOjSjGA19K2cv9GmP3k9LW5vg@mail.gmail.com>
+ <26f9db1e-69e9-1a54-6d49-45c0c180067c@redhat.com> <CAJuCfpGTCM_Rf3GEyzpR5UOTfgGKTY0_rvAbGdtjbyabFhrRAw@mail.gmail.com>
+ <CAJuCfpE2j91_AOwwRs_pYBs50wfLTwassRqgtqhXsh6fT+4MCg@mail.gmail.com> <b46d9bfe-17a9-0de9-271d-a3e6429e3f5f@redhat.com>
+In-Reply-To: <b46d9bfe-17a9-0de9-271d-a3e6429e3f5f@redhat.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Fri, 15 Oct 2021 09:30:09 -0700
+Message-ID: <CAJuCfpG=fNMDuYUo8UwjB-kDzR2gxmRmTJCqgojfPe6RULwc4A@mail.gmail.com>
+Subject: Re: [PATCH v10 3/3] mm: add anonymous vma name refcounting
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Michal Hocko <mhocko@suse.com>, Kees Cook <keescook@chromium.org>,
+        Pavel Machek <pavel@ucw.cz>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Colin Cross <ccross@google.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        vincenzo.frascino@arm.com,
+        =?UTF-8?B?Q2hpbndlbiBDaGFuZyAo5by16Yym5paHKQ==?= 
+        <chinwen.chang@mediatek.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Jann Horn <jannh@google.com>, apopple@nvidia.com,
+        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
+        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
+        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
+        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
+        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
+        Chris Hyser <chris.hyser@oracle.com>,
+        Peter Collingbourne <pcc@google.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
+        Rolf Eike Beer <eb@emlix.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
+        cxfcosmos@gmail.com, LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-mm <linux-mm@kvack.org>,
+        kernel-team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Oct 2021 15:53:20 -0700
-Dan Williams <dan.j.williams@intel.com> wrote:
-
-> On Sat, Oct 9, 2021 at 9:21 PM Ira Weiny <ira.weiny@intel.com> wrote:
+On Fri, Oct 15, 2021 at 1:04 AM David Hildenbrand <david@redhat.com> wrote:
+>
+> On 14.10.21 22:16, Suren Baghdasaryan wrote:
+> > On Tue, Oct 12, 2021 at 10:01 AM Suren Baghdasaryan <surenb@google.com> wrote:
+> >>
+> >> On Tue, Oct 12, 2021 at 12:44 AM David Hildenbrand <david@redhat.com> wrote:
+> >>>
+> >>>> I'm still evaluating the proposal to use memfds but I'm not sure if
+> >>>> the issue that David Hildenbrand mentioned about additional memory
+> >>>> consumed in pagecache (which has to be addressed) is the only one we
+> >>>> will encounter with this approach. If anyone knows of any potential
+> >>>> issues with using memfds as named anonymous memory, I would really
+> >>>> appreciate your feedback before I go too far in that direction.
+> >>>
+> >>> [MAP_PRIVATE memfd only behave that way with 4k, not with huge pages, so
+> >>> I think it just has to be fixed. It doesn't make any sense to allocate a
+> >>> page for the pagecache ("populate the file") when accessing via a
+> >>> private mapping that's supposed to leave the file untouched]
+> >>>
+> >>> My gut feeling is if you really need a string as identifier, then try
+> >>> going with memfds. Yes, we might hit some road blocks to be sorted out,
+> >>> but it just logically makes sense to me: Files have names. These names
+> >>> exist before mapping and after mapping. They "name" the content.
+> >>
+> >> I'm investigating this direction. I don't have much background with
+> >> memfds, so I'll need to digest the code first.
 > >
-> > On Sat, Oct 09, 2021 at 09:44:29AM -0700, Dan Williams wrote:  
-> > > In addition to carrying @barno, @block_offset, and @reg_type, add @base
-> > > to keep all map/unmap parameters in one object. The helpers
-> > > cxl_{map,unmap}_regblock() handle adjusting @base to the @block_offset
-> > > at map and unmap time.
-> > >
-> > > Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-> > > ---
-> > >  drivers/cxl/cxl.h |    1 +
-> > >  drivers/cxl/pci.c |   31 ++++++++++++++++---------------
-> > >  2 files changed, 17 insertions(+), 15 deletions(-)
-> > >
-> > > diff --git a/drivers/cxl/cxl.h b/drivers/cxl/cxl.h
-> > > index a6687e7fd598..7cd16ef144dd 100644
-> > > --- a/drivers/cxl/cxl.h
-> > > +++ b/drivers/cxl/cxl.h
-> > > @@ -140,6 +140,7 @@ struct cxl_device_reg_map {
-> > >  };
-> > >
-> > >  struct cxl_register_map {
-> > > +     void __iomem *base;
-> > >       u64 block_offset;
-> > >       u8 reg_type;
-> > >       u8 barno;
-> > > diff --git a/drivers/cxl/pci.c b/drivers/cxl/pci.c
-> > > index 9f006299a0e3..b42407d067ac 100644
-> > > --- a/drivers/cxl/pci.c
-> > > +++ b/drivers/cxl/pci.c
-> > > @@ -306,8 +306,7 @@ static int cxl_pci_setup_mailbox(struct cxl_mem *cxlm)
-> > >       return 0;
-> > >  }
-> > >
-> > > -static void __iomem *cxl_pci_map_regblock(struct pci_dev *pdev,
-> > > -                                       struct cxl_register_map *map)
-> > > +static int cxl_map_regblock(struct pci_dev *pdev, struct cxl_register_map *map)
-> > >  {
-> > >       void __iomem *addr;
-> > >       int bar = map->barno;
-> > > @@ -318,24 +317,27 @@ static void __iomem *cxl_pci_map_regblock(struct pci_dev *pdev,
-> > >       if (pci_resource_len(pdev, bar) < offset) {
-> > >               dev_err(dev, "BAR%d: %pr: too small (offset: %#llx)\n", bar,
-> > >                       &pdev->resource[bar], (unsigned long long)offset);
-> > > -             return NULL;
-> > > +             return -ENXIO;
-> > >       }
-> > >
-> > >       addr = pci_iomap(pdev, bar, 0);
-> > >       if (!addr) {
-> > >               dev_err(dev, "failed to map registers\n");
-> > > -             return addr;
-> > > +             return -ENOMEM;
-> > >       }
-> > >
-> > >       dev_dbg(dev, "Mapped CXL Memory Device resource bar %u @ %#llx\n",
-> > >               bar, offset);
-> > >
-> > > -     return addr;
-> > > +     map->base = addr + map->block_offset;
-> > > +     return 0;
-> > >  }
-> > >
-> > > -static void cxl_pci_unmap_regblock(struct pci_dev *pdev, void __iomem *base)
-> > > +static void cxl_unmap_regblock(struct pci_dev *pdev,
-> > > +                            struct cxl_register_map *map)
-> > >  {
-> > > -     pci_iounmap(pdev, base);
-> > > +     pci_iounmap(pdev, map->base - map->block_offset);  
+> > I've done some investigation into the possibility of using memfds to
+> > name anonymous VMAs. Here are my findings:
+>
+> Thanks for exploring the alternatives!
+
+Thanks for pointing to them!
+
+>
 > >
-> > I know we need to get these in soon.  But I think map->base should be 'base'
-> > and map->block_offset should be handled in cxl_probe_regs() rather than
-> > subtract it here..  
-> 
-> But why? The goal of the cxl_register_map cleanups is to reduce the
-> open-coding for details that can just be passed around in a @map
-> instance. Once cxl_map_regblock() sets up @base there's little reason
-> to consider the hardware regblock details.
+> > 1. Forking a process with anonymous vmas named using memfd is 5-15%
+> > slower than with prctl (depends on the number of VMAs in the process
+> > being forked). Profiling shows that i_mmap_lock_write() dominates
+> > dup_mmap(). Exit path is also slower by roughly 9% with
+> > free_pgtables() and fput() dominating exit_mmap(). Fork performance is
+> > important for Android because almost all processes are forked from
+> > zygote, therefore this limitation already makes this approach
+> > prohibitive.
+>
+> Interesting, naturally I wonder if that can be optimized.
 
-I agree with Ira to the extent that this was a little confusing.   Perhaps it is worth
-a comment at the structure definition to make the relationship of block_offset
-and base clear?
+Maybe but it looks like we simply do additional things for file-backed
+memory, which seems natural. The call to i_mmap_lock_write() is from
+here: https://elixir.bootlin.com/linux/latest/source/kernel/fork.c#L565
 
-Jonathan
-
-> 
-> > Either way this is cleaner than what it was.
+>
 > >
-> > Reviewed-by: Ira Weiny <ira.weiny@intel.com>  
-> 
-> Thanks!
+> > 2. mremap() usage to grow the mapping has an issue when used with memfds:
+> >
+> > fd = memfd_create(name, MFD_ALLOW_SEALING);
+> > ftruncate(fd, size_bytes);
+> > ptr = mmap(NULL, size_bytes, prot, MAP_PRIVATE, fd, 0);
+> > close(fd);
+> > ptr = mremap(ptr, size_bytes, size_bytes * 2, MREMAP_MAYMOVE);
+> > touch_mem(ptr, size_bytes * 2);
+> >
+> > This would generate a SIGBUS in touch_mem(). I believe it's because
+> > ftruncate() specified the size to be size_bytes and we are accessing
+> > more than that after remapping. prctl() does not have this limitation
+> > and we do have a usecase for growing a named VMA.
+>
+> Can't you simply size the memfd much larger? I mean, it doesn't really
+> cost much, does it?
 
+If we know beforehand what the max size it can reach then that would
+be possible. I would really hate to miscalculate here and cause a
+simple memory access to generate signals. Tracking such corner cases
+in the field is not an easy task and I would rather avoid the
+possibility of it.
+
+>
+> >
+> > 3. Leaves an fd exposed, even briefly, which may lead to unexpected
+> > flaws (e.g. anything using mmap MAP_SHARED could allow exposures or
+> > overwrites). Even MAP_PRIVATE, if an attacker writes into the file
+> > after ftruncate() and before mmap(), can cause private memory to be
+> > initialized with unexpected data.
+>
+> I don't quite follow. Can you elaborate what exactly the issue here is?
+> We use a temporary fd, yes, but how is that a problem?
+>
+> Any attacker can just write any random memory memory in the address
+> space, so I don't see the issue.
+
+It feels to me that introducing another handle to the memory region is
+a potential attack vector but I'm not a security expert. Maybe Kees
+can assess this better?
+
+>
+> >
+> > 4. There is a usecase in the Android userspace where vma naming
+> > happens after memory was allocated. Bionic linker does in-memory
+> > relocations and then names some relocated sections.
+>
+> Would renaming a memfd be an option or is that "too late" ?
+
+My understanding is that linker allocates space to load and relocate
+the code, performs the relocations in that space and then names some
+of the regions after that. Whether it can be redesigned to allocate
+multiple named regions and perform the relocation between them I did
+not really try since it would be a project by itself.
+
+TBH, at some point I just look at the amount of required changes (both
+kernel and userspace) and new limitations that userspace has to adhere
+to for fitting memfds to my usecase, and I feel that it's just not
+worth it. In the end we end up using the same refcounted strings with
+vma->vm_file->f_count as the refcount and name stored in
+vma->vm_file->f_path->dentry but with more overhead.
+Thanks,
+Suren.
+
+>
+> >
+> > In the light of these findings, could the current patchset be reconsidered?
+> > Thanks,
+> > Suren.
+> >
+>
+>
+> --
+> Thanks,
+>
+> David / dhildenb
+>
