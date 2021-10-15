@@ -2,87 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE1EE42FB75
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 20:52:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 379D742FB74
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 20:51:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241943AbhJOSxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 14:53:55 -0400
-Received: from thorn.bewilderbeest.net ([71.19.156.171]:57903 "EHLO
-        thorn.bewilderbeest.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241925AbhJOSxy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 14:53:54 -0400
-Received: from hatter.bewilderbeest.net (71-212-29-146.tukw.qwest.net [71.212.29.146])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: zev)
-        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id 096282B1;
-        Fri, 15 Oct 2021 11:51:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
-        s=thorn; t=1634323907;
-        bh=AezE/UqyGxsDzy1We/7x0OMj8tS2QaSlROEBATVr1F0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=OAwP3QFC8t9LdMSjKT+4DWtey+rZZv1PR6BpuxdwVeMh4h8gNGKqgTywyyvFYgZ0p
-         p9LHbYylGnBdGMJCdVLQxfRmULUziwdH/ripZUncjMWZB/oST3zbwOhmLAihzOT1sQ
-         1CQP8/GLE9bH4gMBLnc9lWy9AbnWfnhOBDo5Qvao=
-From:   Zev Weiss <zev@bewilderbeest.net>
-To:     linux-mtd@lists.infradead.org
-Cc:     Zev Weiss <zev@bewilderbeest.net>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Michael Walle <michael@walle.cc>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Tian Tao <tiantao6@hisilicon.com>, Petr Malat <oss@malat.biz>,
-        Jon Hunter <jonathanh@nvidia.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH] mtd: core: clear out unregistered devices a bit more
-Date:   Fri, 15 Oct 2021 11:50:48 -0700
-Message-Id: <20211015185049.3318-1-zev@bewilderbeest.net>
-X-Mailer: git-send-email 2.33.0
+        id S241552AbhJOSxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 14:53:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55882 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241681AbhJOSxt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 14:53:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 857D160F56;
+        Fri, 15 Oct 2021 18:51:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634323902;
+        bh=TQmj55y7eunqvNATXkqXYrIJmoAAD05XhzrJljA7J5g=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=We7LgKd2Hk9dPOpOXVmJG9arRaMlkYVsvIYXVH0l1WFgiwlNXweMoN2eK3GL+LkpU
+         YnVHEjZLHZaIyxxI/ApMDJVs/i4AwGX/WSeQXy2wLkmcBODqMV4lPDV4RMpWabfX69
+         dQeHEONicd3cvjFExiccCMnGDZOB2TebHHJ3uWrq0hjuHs8EpuTNOoAQps6IeGnkgz
+         44aCKt4Sa/9i+TmyB7eKeCrrxLJZcK76+zk64Vmm4ziJIE+Pcvo6dqeIc4hD2cYrQC
+         on1YYbIpYynQihZLb2YnnFYIcNvRbNOcgEknDI2Y5ayYX7Ji73Dq5rv7OYXlHPDEaV
+         V+xWrAK0nTDmQ==
+Date:   Fri, 15 Oct 2021 13:51:41 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Richard Zhu <hongxing.zhu@nxp.com>
+Cc:     l.stach@pengutronix.de, bhelgaas@google.com,
+        lorenzo.pieralisi@arm.com, linux-pci@vger.kernel.org,
+        linux-imx@nxp.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kernel@pengutronix.de
+Subject: Re: [RESEND v2 4/5] PCI: imx6: Fix the clock reference handling
+ unbalance when link never came up
+Message-ID: <20211015185141.GA2139462@bhelgaas>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211015184943.GA2139079@bhelgaas>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This allows an MTD device that has been unregistered to be easily
-re-registered later without triggering spurious "already registered"
-warnings in mtd_device_parse_register() and add_mtd_device().
+On Fri, Oct 15, 2021 at 01:49:45PM -0500, Bjorn Helgaas wrote:
+> On Fri, Oct 15, 2021 at 02:05:40PM +0800, Richard Zhu wrote:
+> > When link never came up, driver probe would be failed with error -110.
+> > To keep usage counter balance of the clocks, disable the previous
+> > enabled clocks when link is down.
+> > Move definitions of the imx6_pcie_clk_disable() function to the proper
+> > place. Because it wouldn't be used in imx6_pcie_suspend_noirq() only.
 
-Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
----
- drivers/mtd/mtdcore.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+> > -static void imx6_pcie_clk_disable(struct imx6_pcie *imx6_pcie)
+> > -{
+> > -	clk_disable_unprepare(imx6_pcie->pcie);
+> > -	clk_disable_unprepare(imx6_pcie->pcie_phy);
+> > -	clk_disable_unprepare(imx6_pcie->pcie_bus);
+> > -
+> > -	switch (imx6_pcie->drvdata->variant) {
+> > -	case IMX6SX:
+> > -		clk_disable_unprepare(imx6_pcie->pcie_inbound_axi);
+> > -		break;
+> > -	case IMX7D:
+> > -		regmap_update_bits(imx6_pcie->iomuxc_gpr, IOMUXC_GPR12,
+> > -				   IMX7D_GPR12_PCIE_PHY_REFCLK_SEL,
+> > -				   IMX7D_GPR12_PCIE_PHY_REFCLK_SEL);
+> > -		break;
+> > -	case IMX8MQ:
+> > -		clk_disable_unprepare(imx6_pcie->pcie_aux);
+> > -		break;
+> > -	default:
+> > -		break;
 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 153229198947..0a0fca737d43 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -747,6 +747,9 @@ int del_mtd_device(struct mtd_info *mtd)
- 
- 		device_unregister(&mtd->dev);
- 
-+		/* Clear dev so mtd can be safely re-registered later if desired */
-+		memset(&mtd->dev, 0, sizeof(mtd->dev));
-+
- 		idr_remove(&mtd_idr, mtd->index);
- 		of_node_put(mtd_get_of_node(mtd));
- 
-@@ -1018,8 +1021,10 @@ int mtd_device_unregister(struct mtd_info *master)
- {
- 	int err;
- 
--	if (master->_reboot)
-+	if (master->_reboot) {
- 		unregister_reboot_notifier(&master->reboot_notifier);
-+		memset(&master->reboot_notifier, 0, sizeof(master->reboot_notifier));
-+	}
- 
- 	if (master->otp_user_nvmem)
- 		nvmem_unregister(master->otp_user_nvmem);
--- 
-2.33.0
+While you're at it, this "default: break;" thing is pointless.
+Normally it's better to just *move* something without changing it at
+all, but this is such a simple thing I think you could drop this at
+the same time as the move.
 
+> > -	}
+> > -}
