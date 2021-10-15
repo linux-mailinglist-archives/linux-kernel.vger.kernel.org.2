@@ -2,126 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03C1D42F1AC
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 15:04:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DC1F42F1B5
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 15:07:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239188AbhJONHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 09:07:00 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:52574 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235659AbhJONG7 (ORCPT
+        id S239224AbhJONJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 09:09:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35924 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235689AbhJONJB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 09:06:59 -0400
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19FAbXld027694;
-        Fri, 15 Oct 2021 15:04:42 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=aEZaGrrmg2Zt0uaWNQWpGKoc5PGCSBKRzFbdK81ndw4=;
- b=XJQZbyU06bU80GmeDLNEzaNWWEaw/jV7LFiDiasBNwye7RS/RS3IEjk17UBedUoeaJ8X
- gHOv7CVvZZriDpPq5/Hypw2NiSiLSPlNVn5nIXSMr5bVzZnwnBMqOYZhCVqDVmn9KOtg
- iBHeX6lygsOeWDBNlSJwtPI1K80gdrzMOb6B87tm3j5n2cXOcPIDF4hap7q2FGDspmIv
- 4pmnCl8cH+ek+KL5pbuBcjAQ2bd+mI1PmBvarztRj7NmZrr7rhwVJ2jQPKYr/XFsMGJD
- aA5/R13lwJkRiImViRHbYbJb62ysiG+4c4qpJ77FaEBelYjiHEEbEx3YZMXN1NWohO4x xQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 3bq32bavrb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 15 Oct 2021 15:04:42 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id DC5DA10002A;
-        Fri, 15 Oct 2021 15:04:41 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id B0B0922A6CB;
-        Fri, 15 Oct 2021 15:04:41 +0200 (CEST)
-Received: from lmecxl0912.lme.st.com (10.75.127.48) by SFHDAG2NODE2.st.com
- (10.75.127.5) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Fri, 15 Oct
- 2021 15:04:40 +0200
-Subject: Re: [PATCH v2] ARM: dts: stm32: fix AV96 board SAI2 pin muxing on
- stm32mp15
-To:     Olivier Moysan <olivier.moysan@foss.st.com>,
-        Marek Vasut <marex@denx.de>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>
-References: <20211004090304.8984-1-olivier.moysan@foss.st.com>
-From:   Alexandre TORGUE <alexandre.torgue@foss.st.com>
-Message-ID: <cc69637e-7b3e-33b6-69ca-94c1cb8f1b21@foss.st.com>
-Date:   Fri, 15 Oct 2021 15:04:40 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Fri, 15 Oct 2021 09:09:01 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E09EC061570;
+        Fri, 15 Oct 2021 06:06:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=GcG/LD4wXLRkh+mkTSYxktAgp6NtEFjg5wt7NUrIBQ8=; b=uayJR1a282ytfFfr7pGkZzKhEI
+        IluB/YpfG7Onwx7r1QjKfC1tsftLKfxav3VC38k67GpIyk/1ybeAGQUxvDR+zHqr8EKJVPlRZBA9/
+        /wpTA2a/mIgs+KwDypwHUlt5exYlO5YauSTxiForL6Zk2ddG+l9BfoSzKxtnDQxKPvn5PwybVyKMr
+        2sXVB6PGJ0CaomGm5OmpmwcYJjrxCbBh03Lz6TD+0UpZALAbk0Ks+Tm2EO0gwNMexvTrd+iVHfAOl
+        L1EzBGZvN5/X+htNwR68fjDLwpfpBBFno+c1d7bIoN6mV3eoharT65WSKmRRs2o1NAkDG7hXrV1hK
+        6PnwqnJg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mbMtI-0091pf-5y; Fri, 15 Oct 2021 13:05:05 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1918F300577;
+        Fri, 15 Oct 2021 15:04:50 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C9DB5212B43C0; Fri, 15 Oct 2021 15:04:50 +0200 (CEST)
+Date:   Fri, 15 Oct 2021 15:04:50 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     Barry Song <21cnbao@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        LAK <linux-arm-kernel@lists.infradead.org>,
+        linux-ia64@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        sparclinux@vger.kernel.org, Aubrey Li <aubrey.li@linux.intel.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86 <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Sergei Trofimovich <slyfox@gentoo.org>,
+        David Hildenbrand <david@redhat.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Chris Down <chris@chrisdown.name>,
+        Vipin Sharma <vipinsh@google.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Hugh Dickins <hughd@google.com>,
+        Michal Hocko <mhocko@kernel.org>
+Subject: Re: [PATCH 2/2] sched: Centralize SCHED_{SMT, MC, CLUSTER}
+ definitions
+Message-ID: <YWl8cogsS2Lah1mk@hirez.programming.kicks-ass.net>
+References: <20211008115347.425234-1-valentin.schneider@arm.com>
+ <20211008115347.425234-3-valentin.schneider@arm.com>
+ <CAGsJ_4wqtcOdsFDzR98PFbjxRyTqzf7P3p3erup84SXESYonYw@mail.gmail.com>
+ <87bl3zlex8.mognet@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <20211004090304.8984-1-olivier.moysan@foss.st.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.48]
-X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE2.st.com
- (10.75.127.5)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-15_04,2021-10-14_02,2020-04-07_01
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87bl3zlex8.mognet@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/4/21 11:03 AM, Olivier Moysan wrote:
-> Fix SAI2A and SAI2B pin muxings for AV96 board on STM32MP15.
-> Change sai2a-4 & sai2a-5 to sai2a-2 & sai2a-2.
-> Change sai2a-4 & sai2a-sleep-5 to sai2b-2 & sai2b-sleep-2
-> 
-> Fixes: dcf185ca8175 ("ARM: dts: stm32: Add alternate pinmux for SAI2 pins on stm32mp15")
-> 
-> Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
-> ---
->   arch/arm/boot/dts/stm32mp15-pinctrl.dtsi | 8 ++++----
->   1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi b/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
-> index 5b60ecbd718f..2ebafe27a865 100644
-> --- a/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
-> +++ b/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
-> @@ -1179,7 +1179,7 @@
->   		};
->   	};
->   
-> -	sai2a_pins_c: sai2a-4 {
-> +	sai2a_pins_c: sai2a-2 {
->   		pins {
->   			pinmux = <STM32_PINMUX('D', 13, AF10)>, /* SAI2_SCK_A */
->   				 <STM32_PINMUX('D', 11, AF10)>, /* SAI2_SD_A */
-> @@ -1190,7 +1190,7 @@
->   		};
->   	};
->   
-> -	sai2a_sleep_pins_c: sai2a-5 {
-> +	sai2a_sleep_pins_c: sai2a-2 {
->   		pins {
->   			pinmux = <STM32_PINMUX('D', 13, ANALOG)>, /* SAI2_SCK_A */
->   				 <STM32_PINMUX('D', 11, ANALOG)>, /* SAI2_SD_A */
-> @@ -1235,14 +1235,14 @@
->   		};
->   	};
->   
-> -	sai2b_pins_c: sai2a-4 {
-> +	sai2b_pins_c: sai2b-2 {
->   		pins1 {
->   			pinmux = <STM32_PINMUX('F', 11, AF10)>; /* SAI2_SD_B */
->   			bias-disable;
->   		};
->   	};
->   
-> -	sai2b_sleep_pins_c: sai2a-sleep-5 {
-> +	sai2b_sleep_pins_c: sai2b-sleep-2 {
->   		pins {
->   			pinmux = <STM32_PINMUX('F', 11, ANALOG)>; /* SAI2_SD_B */
->   		};
->
+On Fri, Oct 08, 2021 at 04:22:27PM +0100, Valentin Schneider wrote:
 
-Applied on stm32-next.
+> So x86 has it default yes, and a lot of others (e.g. arm64) have it default
+> no.
+> 
+> IMO you don't gain much by disabling them. SCHED_MC and SCHED_CLUSTER only
+> control the presence of a sched_domain_topology_level - if it's useless it
+> gets degenerated at domain build time. Some valid reasons for not using
+> them is if the architecture defines its own topology table (e.g. powerpc
+> has CACHE and MC levels which are not gated behind any CONFIG).
+> 
+> SCHED_SMT has an impact on code generated in sched/core.c, but that is also
+> gated by a static key.
+> 
+> So I'd say having them default yes is sensible. I'd even say we should
+> change the "If unsure say N here." to "Y".
 
-Thanks
-Alex
+Right, so I tend to agree (and also that we should fix that Kconfig help
+text). But it would be very nice to have feedback from the affected arch
+maintainers.
+
