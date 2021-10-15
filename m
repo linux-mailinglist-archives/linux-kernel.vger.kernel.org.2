@@ -2,59 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC37F42F50D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 16:18:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DF8842F52E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 16:24:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237318AbhJOOU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 10:20:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33326 "EHLO mail.kernel.org"
+        id S240244AbhJOO0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 10:26:18 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:52664 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237269AbhJOOUY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 10:20:24 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        id S229572AbhJOO0R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 10:26:17 -0400
+Received: from zn.tnic (p200300ec2f0cfb008d2f1a8e7c2e2a2a.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:fb00:8d2f:1a8e:7c2e:2a2a])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7FF6D61090;
-        Fri, 15 Oct 2021 14:18:16 +0000 (UTC)
-Date:   Fri, 15 Oct 2021 10:18:14 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Greentime Hu <green.hu@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Nick Hu <nickhu@andestech.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, Zong Li <zong@andestech.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        kernel test robot <lkp@intel.com>,
-        Alan Kao <alankao@andestech.com>, kclin@andestech.com
-Subject: Re: [PATCH] nds32/ftrace: Fix Error: invalid operands (*UND* and
- *UND* sections) for `^'
-Message-ID: <20211015101814.6b372c10@gandalf.local.home>
-In-Reply-To: <CAEbi=3d=yO+D_SjQavqizc2tHyWda3t9zXbN84cbvYYNP=epKA@mail.gmail.com>
-References: <20211014143507.4ad2c0f7@gandalf.local.home>
-        <CAEbi=3d=yO+D_SjQavqizc2tHyWda3t9zXbN84cbvYYNP=epKA@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9A9C21EC04CB;
+        Fri, 15 Oct 2021 16:24:09 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1634307849;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=Lc1E4iwrSHe8PO+0SCS5cjv2ePeUMjBU1jpHzVgu7bg=;
+        b=UQi/PrugAflCt9Wu9DUym807iOA77Uai/CZRTsYoda6lXjoacNoke+X8C/8sBprIrr5BgJ
+        CPUkNZnfvCbYGNmvAW/iYPXVqyxhMt7QW3V2j5lreUvYkwBspv/Sg8Hz1M2arwUpC8PDdl
+        TkxMB1jNO+qAVS26b1+FS+i3LbpbW1M=
+Date:   Fri, 15 Oct 2021 16:24:08 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     x86@kernel.org, jpoimboe@redhat.com, andrew.cooper3@citrix.com,
+        linux-kernel@vger.kernel.org, alexei.starovoitov@gmail.com,
+        ndesaulniers@google.com
+Subject: Re: [PATCH 4/9] x86/alternative: Implement .retpoline_sites support
+Message-ID: <YWmPCF+g+sF4+ieh@zn.tnic>
+References: <20211013122217.304265366@infradead.org>
+ <20211013123645.002402102@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211013123645.002402102@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 15 Oct 2021 08:54:35 +0800
-Greentime Hu <green.hu@gmail.com> wrote:
+On Wed, Oct 13, 2021 at 02:22:21PM +0200, Peter Zijlstra wrote:
+> +static int patch_retpoline(void *addr, struct insn *insn, u8 *bytes)
+> +{
+> +	void (*target)(void);
+> +	int reg, i = 0;
+> +
+> +	if (cpu_feature_enabled(X86_FEATURE_RETPOLINE))
+> +		return -1;
+> +
+> +	target = addr + insn->length + insn->immediate.value;
+> +	reg = (target - &__x86_indirect_thunk_rax) /
+> +	      (&__x86_indirect_thunk_rcx - &__x86_indirect_thunk_rax);
 
-> loop in Alan and KC
+I guess you should compute those values once so that it doesn't have to
+do them for each function invocation. And it does them here when I look
+at the asm it generates.
 
-Any thoughts?
+> +
+> +	if (WARN_ON_ONCE(reg & ~0xf))
+> +		return -1;
 
-This has passed my tests, and I want to send it off to Linus. But it would
-be nice to have an acked by from one of the nds32 maintainers.
+Sanity-checking the alignment of those thunks?
 
-If I don't hear back today, I'll just send my queue without this update to
-Linus, as I want to get my changes in before the next rc release.
+> +
+> +	i = emit_indirect(insn->opcode.bytes[0], reg, bytes);
+> +	if (i < 0)
+> +		return i;
+> +
+> +	for (; i < insn->length;)
+> +		bytes[i++] = BYTES_NOP1;
 
-Thanks!
+Why not:
 
--- Steve
+        nop_len = insn->length - i;
+        if (nop_len) {
+                memcpy(&bytes[i], x86_nops[nop_len], nop_len);
+                i += nop_len;
+        }
+
+and then you save yourself the optimize_nops() call because it'll take
+the right-sized NOP directly.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
