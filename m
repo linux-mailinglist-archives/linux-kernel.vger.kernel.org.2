@@ -2,87 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E8D242ECCD
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 10:51:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F17D42ED15
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 11:05:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235296AbhJOIyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 04:54:02 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:25191 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235011AbhJOIyA (ORCPT
+        id S236385AbhJOJHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 05:07:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36934 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236176AbhJOJHp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 04:54:00 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4HW0NN2DXGz8tgt;
-        Fri, 15 Oct 2021 16:50:44 +0800 (CST)
-Received: from dggpemm500002.china.huawei.com (7.185.36.229) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Fri, 15 Oct 2021 16:51:53 +0800
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- dggpemm500002.china.huawei.com (7.185.36.229) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Fri, 15 Oct 2021 16:51:52 +0800
-From:   Xiongfeng Wang <wangxiongfeng2@huawei.com>
-To:     <mark.rutland@arm.com>, <catalin.marinas@arm.com>,
-        <will@kernel.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <moyufeng@huawei.com>,
-        <wangxiongfeng2@huawei.com>
-Subject: [RFC PATCH v2] arm64: barrier: add macro dgh() to control memory accesses merging
-Date:   Fri, 15 Oct 2021 17:05:11 +0800
-Message-ID: <20211015090511.92421-1-wangxiongfeng2@huawei.com>
-X-Mailer: git-send-email 2.20.1
+        Fri, 15 Oct 2021 05:07:45 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A023DC061570
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 02:05:38 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id j21so39320894lfe.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 02:05:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rasmusvillemoes.dk; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rmzSrjTAZEQ7N3R2i2Z86dnNVR/pshIwOWi26WbD4R0=;
+        b=OXrBFUPYT5iXWiAtLLHhBy7KA/lg9vqaQ4jvCMSvyFgtnq5wdPw3ORmv8IYKQglzJQ
+         KJSYvutHRRjpXPYPUua+Bd64k0nlsvuczjMXRCE6DEx0yjDLHxj0PUNHqZSllUwJawXE
+         2W1W/G8Wr3Zx1iLn9mToAIvsEbMNP4+nsBpGQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rmzSrjTAZEQ7N3R2i2Z86dnNVR/pshIwOWi26WbD4R0=;
+        b=GHCkdKNE91g4xInD2GCyGSJaEfId2pxVAmgTpzFvgc2kNYhljbS7A7AefeV+p0U4oF
+         Qf2O4Cchn6NjPxNuXouL7Nbb7viuoMIw2k8ceAvhFDLP7wnkKghAfk199/1WmIsGU4sY
+         L8yzASz3JUpIbNLuQb4lhw//7QCUTzYkQvbMVZVlUryS3GE1zrtKL5JwPGMsoB5i/sBY
+         ixm2aXpiwxXDBvpGLSvH7UdoKNbfQPKz9HEr1pC1cybFKCD/sRpkT8BktGSaZWMDIhep
+         2iPrKSJ7lVDAKwyUyWWlgWdWmCX8EcnMjwFenM8N9wSSlu8aZzAWZ0bcCkF4bMV0keJT
+         V/Ww==
+X-Gm-Message-State: AOAM532Rwk+WIHD56D1Gi8s5ESgDIweMbDltNyJidfM0+tadEbNFrpig
+        AB5iQPktVyWiKEBlsjaBtei0zw==
+X-Google-Smtp-Source: ABdhPJxyKQlE5zcgtUlqEhvFs/tAugf+7V2YEmfP278GklO7ekewZIRLa0CPWQgAZL5zzZsDmIlSwA==
+X-Received: by 2002:a05:6512:338b:: with SMTP id h11mr10530600lfg.310.1634288736951;
+        Fri, 15 Oct 2021 02:05:36 -0700 (PDT)
+Received: from prevas-ravi.prevas.se ([81.216.59.226])
+        by smtp.gmail.com with ESMTPSA id v12sm491708ljp.124.2021.10.15.02.05.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Oct 2021 02:05:36 -0700 (PDT)
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+To:     akpm@linux-foundation.org
+Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] linux/container_of.h: switch to static_assert
+Date:   Fri, 15 Oct 2021 11:05:30 +0200
+Message-Id: <20211015090530.2774079-1-linux@rasmusvillemoes.dk>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm500002.china.huawei.com (7.185.36.229)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DGH (Data Gathering Hint) prohibits merging memory accesses with
-Normal-NC or Device-GRE attributes before the hint instruction with any
-memory accesses appearing after the hint instruction. It can be used for
-performance benefit to prevent the prior access waiting too long just to
-be merged. This patch provide a macro to expose it to the arch code.
+_Static_assert() is evaluated already in the compiler's frontend, and
+gives a somehat more to-the-point error, compared to the BUILD_BUG_ON
+macro, which only fires after the optimizer has had a chance to
+eliminate calls to functions marked with
+__attribute__((error)). In theory, this might make builds a tiny bit
+faster.
 
-Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
-Signed-off-by: Cheng Jian <cj.chengjian@huawei.com>
-Signed-off-by: Yufeng Mo <moyufeng@huawei.com>
+There's also a little less gunk in the error message emitted:
 
+lib/sort.c: In function ‘foo’:
+./include/linux/build_bug.h:78:41: error: static assertion failed: "pointer type mismatch in container_of()"
+   78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
+
+compared to
+
+lib/sort.c: In function ‘foo’:
+././include/linux/compiler_types.h:322:38: error: call to ‘__compiletime_assert_2’ declared with attribute error: pointer type mismatch in container_of()
+  322 |  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+
+While at it, fix the copy-pasto in container_of_safe().
+
+Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
 ---
-v1->v2:
-    extract this single patch from the origin patchset.
-    remove the macro in the assemble code.
-    add comments for macro dgh().
-    modify the commit message a little bit.
----
- arch/arm64/include/asm/barrier.h | 8 ++++++++
- 1 file changed, 8 insertions(+)
+akpm: This is obviously on top of Andy's kernel.h splitup series, so
+should go along with those if acked.
 
-diff --git a/arch/arm64/include/asm/barrier.h b/arch/arm64/include/asm/barrier.h
-index 451e11e5fd23..d71a7457d619 100644
---- a/arch/arm64/include/asm/barrier.h
-+++ b/arch/arm64/include/asm/barrier.h
-@@ -18,6 +18,14 @@
- #define wfe()		asm volatile("wfe" : : : "memory")
- #define wfi()		asm volatile("wfi" : : : "memory")
+ include/linux/container_of.h | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/include/linux/container_of.h b/include/linux/container_of.h
+index dd56019838c6..2f4944b791b8 100644
+--- a/include/linux/container_of.h
++++ b/include/linux/container_of.h
+@@ -16,9 +16,9 @@
+  */
+ #define container_of(ptr, type, member) ({				\
+ 	void *__mptr = (void *)(ptr);					\
+-	BUILD_BUG_ON_MSG(!__same_type(*(ptr), ((type *)0)->member) &&	\
+-			 !__same_type(*(ptr), void),			\
+-			 "pointer type mismatch in container_of()");	\
++	static_assert(__same_type(*(ptr), ((type *)0)->member) ||	\
++		      __same_type(*(ptr), void),			\
++		      "pointer type mismatch in container_of()");	\
+ 	((type *)(__mptr - offsetof(type, member))); })
  
-+/*
-+ * Data Gathering Hint:
-+ * This instruction prohibits merging memory accesses with Normal-NC or
-+ * Device-GRE attributes before the hint instruction with any memory accesses
-+ * appearing after the hint instruction.
-+ */
-+#define dgh()		asm volatile("hint #6" : : : "memory")
-+
- #define isb()		asm volatile("isb" : : : "memory")
- #define dmb(opt)	asm volatile("dmb " #opt : : : "memory")
- #define dsb(opt)	asm volatile("dsb " #opt : : : "memory")
+ /**
+@@ -31,9 +31,9 @@
+  */
+ #define container_of_safe(ptr, type, member) ({				\
+ 	void *__mptr = (void *)(ptr);					\
+-	BUILD_BUG_ON_MSG(!__same_type(*(ptr), ((type *)0)->member) &&	\
+-			 !__same_type(*(ptr), void),			\
+-			 "pointer type mismatch in container_of()");	\
++	static_assert(__same_type(*(ptr), ((type *)0)->member) ||	\
++		      __same_type(*(ptr), void),			\
++		      "pointer type mismatch in container_of_safe()");	\
+ 	IS_ERR_OR_NULL(__mptr) ? ERR_CAST(__mptr) :			\
+ 		((type *)(__mptr - offsetof(type, member))); })
+ 
 -- 
-2.20.1
+2.31.1
 
