@@ -2,239 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3CC342F818
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 18:28:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33EBB42F81A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 18:28:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241317AbhJOQaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 12:30:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55190 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241277AbhJOQaK (ORCPT
+        id S241339AbhJOQav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 12:30:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59594 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241319AbhJOQaN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 12:30:10 -0400
-Received: from mail-oo1-xc2f.google.com (mail-oo1-xc2f.google.com [IPv6:2607:f8b0:4864:20::c2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2101BC061570
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 09:28:03 -0700 (PDT)
-Received: by mail-oo1-xc2f.google.com with SMTP id c29-20020a4ad21d000000b002b6cf3f9aceso3133960oos.13
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 09:28:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=RgIDQ0FG20osRDpTRNFAIet2HylHqSSCsjU4120MrAI=;
-        b=PllHVHZMs51VlTKRux3tLKSSyB/q8Xv5kEQu9HCq45HdyBVISFlGgwGCI+WOdI9Umj
-         10KyNhvTKZzbdirzK9rpF4ZdGCW8ZmhEqigSizPcRcOq4DeRZgItB4/dMPQFU5KbJYFL
-         AcDInzdpv7XjujbIzyBcvGhfxH6Mvt6O0gFp45zqipwCcEsmMRJfqF6jv7/UBxviKKsk
-         zCbmTQWx0HDH/JpFHS3e7+8wXL313lLkTrXm+dg0gHF0u5/9RkQbGnOEwh8CQdWoXKcz
-         M+KT40gEbItZY7f1aKH0Bz0ZwlTqW9vkXydsDgT0tyAilzGw7k8X4dBLuoMPmG32JVdF
-         0HxQ==
+        Fri, 15 Oct 2021 12:30:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634315287;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fVoo/wEaPXgvHRpj8N841l0tEm3CQ7P8YvLK3b5GSH8=;
+        b=SddQnWX1P4JExWe/+i283c/1hZ+ZOQQhdCWQ6ciCuQ9HKrkOYNOBEPC+OlQ/f68ChPTQsz
+        HPUTknI/ak213s/ZGVDW3oWJYCvdGZJrNSpK5HcnkybNjHg5GOXtrpO+/KVb4yn7mhMVJJ
+        QSEh0oGkEpQowyxAKY9PMdQqNPDQg3U=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-346-BlZIci3XNG2YASFo4RsoNA-1; Fri, 15 Oct 2021 12:28:05 -0400
+X-MC-Unique: BlZIci3XNG2YASFo4RsoNA-1
+Received: by mail-wr1-f72.google.com with SMTP id c4-20020a5d6cc4000000b00160edc8bb28so6142112wrc.9
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 09:28:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:organization:in-reply-to
          :content-transfer-encoding;
-        bh=RgIDQ0FG20osRDpTRNFAIet2HylHqSSCsjU4120MrAI=;
-        b=yJymjTlA4kZFqAdZkIO6TuTCsaPNDaKvGMfh/0q1zjCQp5OdyktiGRA8IoqA3u5I+G
-         5ATVYVLgoIjUlSv9WGMVQrkLQSknMAlowUQk7dwlaOUBHONphDgNpnUBMb2BnHirQfsM
-         yWRAH84VIcocOQSa8pVbZOcTdL/cM93ej2g+pCOTQ/EzGqUQwYOv8TWyD00KPSVtBxyB
-         nYh+uKwUyKJAAfc3Csdv/5mn8t3C7T+5b87XjYmjTikq5jXVbCd/ITUsGWHKlHikmZFN
-         kn9/qIObXV9W/usRK+5s89TaVy80ymzV+QW59d05LK/o62N9xZYyhQRBtFZOcswcelB4
-         bvBg==
-X-Gm-Message-State: AOAM53126kqC/vS9tW/buSl50MaZKDoG2H0Xfy6Dz+lEjKkKLbBnUVEh
-        Z4H1P2eCvwNwTIf+GJgHTq+gYg==
-X-Google-Smtp-Source: ABdhPJyXO5Y2cCfWU5uq3Q2vd2dUzS2qs+KvKHyLrYjXEBRhkXaq73F7k5W5kTQgK3kR7rMO1pg7YA==
-X-Received: by 2002:a4a:e093:: with SMTP id w19mr6596702oos.63.1634315282423;
-        Fri, 15 Oct 2021 09:28:02 -0700 (PDT)
-Received: from [192.168.17.16] ([189.219.72.19])
-        by smtp.gmail.com with ESMTPSA id bf3sm1251401oib.34.2021.10.15.09.28.01
+        bh=fVoo/wEaPXgvHRpj8N841l0tEm3CQ7P8YvLK3b5GSH8=;
+        b=I4BY4gIkBHSXRNh8Q6p3D1cQzvaCsbitxsXzBDMPJjbjyz69SPlvAFXorHaxig8ig3
+         y5M/i+t0BE61kDDBH1RVAmLDeaLb7NMB+wxWrf1MLS7870Hqsv6z3mU8eFgOntQINZ67
+         /HixqGOGgPiZpNkHwwA78ymT3OEleex1iJBTExWnnuKg6MAq5nWODHiR3sfx4B55hPpn
+         5D89nmKeYr3rq01xOgqGOKiKKDeePji8wRQMODgyV7kEEdqxGWfeC9uaTSFlc+LeD7F6
+         rV3ZHoNr5PamDzteVCKVwK6u4e1QlHlVuRYsIxCF/3ousdQpbnYRGhCUrxjnUaP9kJpZ
+         KZPQ==
+X-Gm-Message-State: AOAM532lYwpzBgHAC/KjyXnNXjBthQh5yanRCYD0c8gdPnOYNBPO5mcx
+        g1VFuQGpx81MX51HM/J2gfOV0lewgM5EjR+sRhYjNdIPjyc5lTvsT0w3Mv7YAfEfso9YzRqADMc
+        J53hZlCYVCCYRVMM5S2o4+Tjv
+X-Received: by 2002:adf:bbd1:: with SMTP id z17mr15316192wrg.61.1634315284536;
+        Fri, 15 Oct 2021 09:28:04 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyY38Kw6/5SnX3X+xiuKSGHMv/fr5pKGXrlQpNCFnZijaAf2HmdUja4ZtS2emZG3U+LBrAreQ==
+X-Received: by 2002:adf:bbd1:: with SMTP id z17mr15316179wrg.61.1634315284327;
+        Fri, 15 Oct 2021 09:28:04 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c6a01.dip0.t-ipconnect.de. [91.12.106.1])
+        by smtp.gmail.com with ESMTPSA id 143sm11383330wma.37.2021.10.15.09.28.03
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Oct 2021 09:28:01 -0700 (PDT)
-Subject: Re: [PATCH 5.10 00/22] 5.10.74-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     shuah@kernel.org, f.fainelli@gmail.com, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
-        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, linux@roeck-us.net
-References: <20211014145207.979449962@linuxfoundation.org>
-From:   =?UTF-8?Q?Daniel_D=c3=adaz?= <daniel.diaz@linaro.org>
-Message-ID: <dc5be9a8-5e5e-1070-758a-d18f8c8b6af9@linaro.org>
-Date:   Fri, 15 Oct 2021 11:28:00 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Fri, 15 Oct 2021 09:28:03 -0700 (PDT)
+Message-ID: <54baa765-9ad6-233a-dc60-25073c1625f4@redhat.com>
+Date:   Fri, 15 Oct 2021 18:28:03 +0200
 MIME-Version: 1.0
-In-Reply-To: <20211014145207.979449962@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: selftests/vm madv_populate.c test
 Content-Language: en-US
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <b703a326-66f7-bf35-58ee-f60e504ea5ef@linuxfoundation.org>
+ <0a20f6b6-5985-8b3e-a577-7495dcf7d2b8@redhat.com>
+ <3a06d58e-7301-6fbc-a305-d9f7c7220843@linuxfoundation.org>
+ <b99b5960-b1ec-b968-1d9c-d125a23c59fe@redhat.com>
+ <77f4c6a9-141d-e103-7339-0055cc00f752@redhat.com>
+ <ccd3b3e4-6441-34f3-a099-392cda82cb8e@redhat.com>
+ <78de0991-8e9a-693c-c020-472daa9ce916@redhat.com>
+ <dd300ce7-f336-5815-ae0d-6064eea438b6@linuxfoundation.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <dd300ce7-f336-5815-ae0d-6064eea438b6@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
-
-On 10/14/21 9:54 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.74 release.
-> There are 22 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On 15.10.21 18:25, Shuah Khan wrote:
+> On 10/15/21 10:19 AM, David Hildenbrand wrote:
+>> On 15.10.21 18:15, David Hildenbrand wrote:
+>>> On 15.10.21 18:06, David Hildenbrand wrote:
+>>>> On 15.10.21 17:47, David Hildenbrand wrote:
+>>>>> On 15.10.21 17:45, Shuah Khan wrote:
+>>>>>> On 9/18/21 1:41 AM, David Hildenbrand wrote:
+>>>>>>> On 18.09.21 00:45, Shuah Khan wrote:
+>>>>>>>> Hi David,
+>>>>>>>>
+>>>>>>>> I am running into the following warning when try to build this test:
+>>>>>>>>
+>>>>>>>> madv_populate.c:334:2: warning: #warning "missing MADV_POPULATE_READ or MADV_POPULATE_WRITE definition" [-Wcpp]
+>>>>>>>>      334 | #warning "missing MADV_POPULATE_READ or MADV_POPULATE_WRITE definition"
+>>>>>>>>          |  ^~~~~~~
+>>>>>>>>
+>>>>>>>>
+>>>>>>>> I see that the following handling is in place. However there is no
+>>>>>>>> other information to explain why the check is necessary.
+>>>>>>>>
+>>>>>>>> #if defined(MADV_POPULATE_READ) && defined(MADV_POPULATE_WRITE)
+>>>>>>>>
+>>>>>>>> #else /* defined(MADV_POPULATE_READ) && defined(MADV_POPULATE_WRITE) */
+>>>>>>>>
+>>>>>>>> #warning "missing MADV_POPULATE_READ or MADV_POPULATE_WRITE definition"
+>>>>>>>>
+>>>>>>>> I do see these defined in:
+>>>>>>>>
+>>>>>>>> include/uapi/asm-generic/mman-common.h:#define MADV_POPULATE_READ       22
+>>>>>>>> include/uapi/asm-generic/mman-common.h:#define MADV_POPULATE_WRITE      23
+>>>>>>>>
+>>>>>>>> Is this the case of missing include from madv_populate.c?
+>>>>>>>
+>>>>>>> Hi Shuan,
+>>>>>>>
+>>>>>>> note that we're including "#include <sys/mman.h>", which in my
+>>>>>>> understanding maps to the version installed on your system instead
+>>>>>>> of the one in our build environment.ing.
+>>>>>>>
+>>>>>>> So as soon as you have a proper kernel + the proper headers installed
+>>>>>>> and try to build, it would pick up MADV_POPULATE_READ and
+>>>>>>> MADV_POPULATE_WRITE from the updated headers. That makes sense: you
+>>>>>>> annot run any MADV_POPULATE_READ/MADV_POPULATE_WRITE tests on a kernel
+>>>>>>> that doesn't support it.
+>>>>>>>
+>>>>>>> See vm/userfaultfd.c where we do something similar.
+>>>>>>>
+>>>>>>
+>>>>>> Kselftest is for testing the kernel with kernel headers. That is the
+>>>>>> reason why there is the dependency on header install.
+>>>>>>
+>>>>>>>
+>>>>>>> As soon as we have a proper environment, it seems to work just fine:
+>>>>>>>
+>>>>>>> Linux vm-0 5.15.0-0.rc1.20210915git3ca706c189db.13.fc36.x86_64 #1 SMP Thu Sep 16 11:32:54 UTC 2021 x86_64 x86_64 x86_64 GNU/Linux
+>>>>>>> [root@vm-0 linux]# cat /etc/redhat-release
+>>>>>>> Fedora release 36 (Rawhide)
+>>>>>>
+>>>>>> This is a distro release. We don't want to have dependency on headers
+>>>>>> from the distro to run selftests. Hope this makes sense.
+>>>>>>
+>>>>>> I still see this on my test system running Linux 5.15-rc5.
+>>>>>
+>>>>> Did you also install Linux headers? I assume no, correct?
+>>>>>
+>>>>
+>>>> What happens in your environment when compiling and running the
+>>>> memfd_secret test?
+>>>>
+>>>> If assume you'll see a "skip" when executing, because it might also
+>>>> refer to the local version of linux headers and although it builds, it
+>>>> really cannot build something "functional". It just doesn't add a
+>>>> "#warning" to make that obvious.
+>>>>
+>>>
+>>> The following works but looks extremely hackish.
+>>>
+>>> diff --git a/tools/testing/selftests/vm/madv_populate.c
+>>> b/tools/testing/selftests/vm/madv_populate.c
+>>> index b959e4ebdad4..ab26163db540 100644
+>>> --- a/tools/testing/selftests/vm/madv_populate.c
+>>> +++ b/tools/testing/selftests/vm/madv_populate.c
+>>> @@ -14,12 +14,11 @@
+>>>   #include <unistd.h>
+>>>   #include <errno.h>
+>>>   #include <fcntl.h>
+>>> +#include "../../../../usr/include/linux/mman.h"
+>>>   #include <sys/mman.h>
+>>>
+>>>   #include "../kselftest.h"
+>>>
+>>> -#if defined(MADV_POPULATE_READ) && defined(MADV_POPULATE_WRITE)
+>>> -
+>>>   /*
+>>>    * For now, we're using 2 MiB of private anonymous memory for all tests.
+>>>    */
+>>> @@ -328,15 +327,3 @@ int main(int argc, char **argv)
+>>>                                     err, ksft_test_num());
+>>>          return ksft_exit_pass();
+>>>   }
+>>> -
+>>> -#else /* defined(MADV_POPULATE_READ) && defined(MADV_POPULATE_WRITE) */
+>>> -
+>>> -#warning "missing MADV_POPULATE_READ or MADV_POPULATE_WRITE definition"
+>>> -
+>>> -int main(int argc, char **argv)
+>>> -{
+>>> -       ksft_print_header();
+>>> -       ksft_exit_skip("MADV_POPULATE_READ or MADV_POPULATE_WRITE not
+>>> defined\n");
+>>> -}
+>>> -
+>>> -#endif /* defined(MADV_POPULATE_READ) && defined(MADV_POPULATE_WRITE) */
+>>>
+>>>
+>>> There has to be some clean way to achieve the same.
+>>>
+>>
+>> Sorry for the spam,
+>>
+>> diff --git a/tools/testing/selftests/vm/Makefile
+>> b/tools/testing/selftests/vm/Makefile
+>> index d9605bd10f2d..ce198b329ff5 100644
+>> --- a/tools/testing/selftests/vm/Makefile
+>> +++ b/tools/testing/selftests/vm/Makefile
+>> @@ -23,7 +23,7 @@ MACHINE ?= $(shell echo $(uname_M) | sed -e
+>> 's/aarch64.*/arm64/' -e 's/ppc64.*/p
+>>   # LDLIBS.
+>>   MAKEFLAGS += --no-builtin-rules
+>>
+>> -CFLAGS = -Wall -I ../../../../usr/include $(EXTRA_CFLAGS)
+>> +CFLAGS = -Wall -idirafter ../../../../usr/include $(EXTRA_CFLAGS)
+>>   LDLIBS = -lrt -lpthread
+>>   TEST_GEN_FILES = compaction_test
+>>   TEST_GEN_FILES += gup_test
+>>
+>>
+>> Seems to set the right include path priority.
+>>
+>>
 > 
-> Responses should be made by Sat, 16 Oct 2021 14:51:59 +0000.
-> Anything received after that time might be too late.
+> Yes. It works on linux-next-20211012
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.74-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+> Do you mind sending a me patch for this?
 
-Results from Linaro's test farm.
-No regressions on arm64, arm, x86_64, and i386.
+I just double-checked (after make clean) and there is still something
+wrong :( the only think that seems to work is the
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
++#include "../../../../usr/include/linux/mman.h"
+ #include <sys/mman.h>
 
-## Build
-* kernel: 5.10.74-rc1
-* git: ['https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git', 'https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc']
-* git branch: linux-5.10.y
-* git commit: bcc91adcbbcd65b4413d295cb433daa73ffa3700
-* git describe: v5.10.73-23-gbcc91adcbbcd
-* test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/build/v5.10.73-23-gbcc91adcbbcd
+hack.
 
-## No regressions (compared to v5.10.73)
-
-## No fixes (compared to v5.10.73)
-
-## Test result summary
-total: 91036, pass: 77180, fail: 547, skip: 12462, xfail: 847
-
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 289 total, 289 passed, 0 failed
-* arm64: 39 total, 39 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 38 total, 38 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 39 total, 39 passed, 0 failed
-* parisc: 12 total, 12 passed, 0 failed
-* powerpc: 36 total, 36 passed, 0 failed
-* riscv: 30 total, 30 passed, 0 failed
-* s390: 18 total, 18 passed, 0 failed
-* sh: 24 total, 24 passed, 0 failed
-* sparc: 12 total, 12 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 39 total, 39 passed, 0 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* kselftest-android
-* kselftest-arm64
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
-
-
-Greetings!
-
-Daniel Díaz
-daniel.diaz@linaro.org
+Using "-nostdinc" won't work because we need other headers :(
 
 -- 
-Linaro LKFT
-https://lkft.linaro.org
+Thanks,
+
+David / dhildenb
+
