@@ -2,119 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B478A42E781
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 06:09:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7577542E787
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 06:12:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233407AbhJOELU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 00:11:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33658 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229445AbhJOELR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 00:11:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BECF56058D;
-        Fri, 15 Oct 2021 04:09:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634270951;
-        bh=9wYm3/Ll/jdCBRIBMa/tBI8ZuMw1Bu4NWha2opzSxxs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qnmgFXiUhKMpnzEMW25QN3ISvoR/hFcdtG9WibPtzTgAEwCOGBoTRKX6+AEFVJeOE
-         Wa7lrGomgZKJv8uA3WTt/VyFmOFDOAichm8mU+YoUzjHjKUH+YnWa/CWJbzEW9gsFO
-         jGtostUbsgEh5rjWd/F2opcNMKaNFKk+Z+N3bWkBpPyKWTV0uDmxWOJpR/3+EsXr7e
-         bmiAzgiqM//+4ZQolnROtYThQ1oROfe2iYcR+K5ad3OBmmdVtUWg8OpeTw/avcbTHa
-         Xk4wBzeqINZfx1x6v91ezroeFoWNcQH3DAlsLiCHuREfqD3yR1bYMWIREw1YaYokO/
-         z0Gp54GQ8p6UA==
-Date:   Fri, 15 Oct 2021 12:09:05 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Frieder Schrempf <frieder.schrempf@kontron.de>
-Cc:     Frieder Schrempf <frieder@fris.de>, devicetree@vger.kernel.org,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>, stable@vger.kernel.org,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>
-Subject: Re: [PATCH 4/8] arm64: dts: imx8mm-kontron: Fix reg_rst_eth2 and
- reg_vdd_5v regulators
-Message-ID: <20211015040904.GG22881@dragon>
-References: <20210930155633.2745201-1-frieder@fris.de>
- <20210930155633.2745201-5-frieder@fris.de>
- <20211005070949.GB20743@dragon>
- <725cc24e-f264-60ea-e30c-c50a61f7fe88@kontron.de>
+        id S233948AbhJOEOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 00:14:10 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:51964
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233680AbhJOEOH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 00:14:07 -0400
+Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com [209.85.167.199])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 197554005C
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 04:12:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1634271120;
+        bh=VkQNKanW6J45PUNBM67VvUtIKTUpwQuF1nL5FyFppEE=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=c37he0BdOhePTj6VKY5MRr4NWuYcRpEBK1Jh5mzS2QqffuHSNAMwrr9WTX3QG4Jlg
+         TOLwjnha18pA/u/lbur2VDejuFQrLAch6GIhvkUkP31WoSyPkg3pEMfcW3xUTwDP3q
+         BZ3K/avyMbod+sdQwtpDjzM8aWGb9jJrqvVPjH6TfWyAHOzntBpXXbFHdx2PO0Gyna
+         IH73Bxf4tzZKfwwp1FQ8E8h/FpAHKfl91VGd/yU38S7ns1FxkSFzFb+IoGbMyJQsGM
+         /jTVuRhTGxp9pRjBtmvkpWlXGmq4bdRu+sJ01wrCesKa3RqgelQyJ4mfUw26hs6wYf
+         CehlUdwOuS5aA==
+Received: by mail-oi1-f199.google.com with SMTP id x145-20020aca3197000000b002986e47af95so4759213oix.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 21:12:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VkQNKanW6J45PUNBM67VvUtIKTUpwQuF1nL5FyFppEE=;
+        b=K0ShsX6o8X9qYAzl9XX63GjkGMi4Kj0t1RYw/N60hwdVl3aSchSocDD7/yqZ7jcSHE
+         N6iA+yDQPiYcx82txtrUAxfs7EoqFr9ACkoYshnI9wJtuEnN/pN1sG9UBa3SvxWkJ8A4
+         3ViM4XHGglefZWykDdV1k/PyMEV1Y768Gwmzqar2+bY1by2oFeKnNPY59fEIUgOr5RGr
+         uPj7MGyOvBfhCQoGyYFmEky3qFW9ZEnSZHbFKFi+9w/SbmUkd+qzBmcM9/iMsYp/Y5p/
+         24CXRFzU1KnC/XNS0JMvLcvW3VzSerFW+W3uxfetLMlYdGVgiGB18rNE0tOf9d8iDSOP
+         ANzQ==
+X-Gm-Message-State: AOAM532dsjFsBkR/T2b1hZ6xyE8TSKUK/BrkErQJ12Qn8gXvry3t5rul
+        5eG6CKt07u8d0+xNV/Yf4QULKVAcyseA4VYI4pQw2VZjF/cdmxGZ1/W/TNbn5trp0fpuI2NwJbo
+        cRuhfV7yOAksz8KaWXOYSSYE+u4mqkl+uG0nE14bu+J/gjfXm6FgZ33aF7Q==
+X-Received: by 2002:a05:6808:10d5:: with SMTP id s21mr16056002ois.98.1634271118912;
+        Thu, 14 Oct 2021 21:11:58 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwaiHm2G7XZVZEqFR4bQ7ScvEI4IpC62Z7F9tOh8xzse8b/KH/rrxlb0aJs1f/fExK7bOuM0e6I+M3e6iNUcqE=
+X-Received: by 2002:a05:6808:10d5:: with SMTP id s21mr16055983ois.98.1634271118568;
+ Thu, 14 Oct 2021 21:11:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <725cc24e-f264-60ea-e30c-c50a61f7fe88@kontron.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <CAAd53p4v+CmupCu2+3vY5N64WKkxcNvpk1M7+hhNoposx+aYCg@mail.gmail.com>
+ <20211008135821.GA1326355@bhelgaas>
+In-Reply-To: <20211008135821.GA1326355@bhelgaas>
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date:   Fri, 15 Oct 2021 12:11:47 +0800
+Message-ID: <CAAd53p5w_tE8URs0R7eog6X-kMSUQAeLiGS-CvDvnfQq+=i3TA@mail.gmail.com>
+Subject: Re: [RFC] [PATCH net-next v6 3/3] r8169: Implement dynamic ASPM mechanism
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        nic_swsd <nic_swsd@realtek.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Anthony Wong <anthony.wong@canonical.com>,
+        Linux Netdev List <netdev@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 07:06:57PM +0200, Frieder Schrempf wrote:
-> On 05.10.21 09:09, Shawn Guo wrote:
-> > On Thu, Sep 30, 2021 at 05:56:27PM +0200, Frieder Schrempf wrote:
-> >> From: Frieder Schrempf <frieder.schrempf@kontron.de>
-> >>
-> >> The regulator reg_vdd_5v represents the fixed 5V supply on the board which
-> >> can't be switched off. Mark it as always-on.
-> >>
-> >> The regulator reg_rst_eth2 should keep the reset signal of the USB ethernet
-> >> adapter deassertet anytime. Fix the polarity and mark it as always-on.
-> > 
-> > It seems to be wrong from the beginning that the reset is modelled by a
-> > regulator.
-> 
-> Right, but at least at the time when I upstreamed this, there was no way
-> to pass the reset GPIO to a USB device driver and using a regulator
-> seems to be an accepted workaround as far as I understand.
+On Fri, Oct 8, 2021 at 9:58 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+>
+> On Fri, Oct 08, 2021 at 02:18:55PM +0800, Kai-Heng Feng wrote:
+> > On Fri, Oct 8, 2021 at 3:11 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
+> > > On Fri, Oct 08, 2021 at 12:15:52AM +0800, Kai-Heng Feng wrote:
+> > > > r8169 NICs on some platforms have abysmal speed when ASPM is enabled.
+> > > > Same issue can be observed with older vendor drivers.
+> > > >
+> > > > The issue is however solved by the latest vendor driver. There's a new
+> > > > mechanism, which disables r8169's internal ASPM when the NIC traffic has
+> > > > more than 10 packets per second, and vice versa. The possible reason for
+> > > > this is likely because the buffer on the chip is too small for its ASPM
+> > > > exit latency.
+> > > > ...
+>
+> > > I suppose that on the Intel system, if we enable ASPM, the link goes
+> > > to L1.2, and the NIC immediately receives 1000 packets in that second
+> > > before we can disable ASPM again, we probably drop a few packets?
+> > >
+> > > Whereas on the AMD system, we probably *never* drop any packets even
+> > > with L1.2 enabled all the time?
+> >
+> > Yes and yes.
+>
+> The fact that we drop some packets with dynamic ASPM on the Intel
+> system means we must be giving up some performance.
+>
+> And I guess that on the AMD system, we should get full performance but
+> we must be using a little more power (probably unmeasurable) because
+> ASPM *could* be always enabled but dynamic ASPM disables it some of
+> the time.
 
-Do we have the solution in usb driver now?  If so, we should probably
-switch to that, instead of patching the workaround?
+Yes that's the case here.
 
-Shawn
+>
+> > > And if we actually knew the root cause and could set the correct LTR
+> > > values or whatever is wrong on the Intel system, we probably wouldn't
+> > > need this dynamic scheme?
+> >
+> > Because Realtek already implemented the dynamic ASPM workaround in
+> > their Windows and Linux driver, they never bother to find the root
+> > cause.
+> > So we'll never know what really happens here.
+>
+> Looks like it.  Somebody with a PCIe analyzer could probably make
+> progress, but I agree, that doesn't seem likely.
+>
+> Realtek no doubt has the equipment to do this, but apparently they
+> don't think it's worthwhile.  In their defense, the Linux ASPM code is
+> pretty impenetrable and there could be a problem there that causes or
+> contributes to this.
 
-> 
-> > 
-> >>
-> >> Fixes: 21c4f45b335f ("arm64: dts: Add the Kontron i.MX8M Mini SoMs and baseboards")
-> >> Cc: stable@vger.kernel.org
-> >> Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
-> >> ---
-> >>  arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-s.dts | 5 ++++-
-> >>  1 file changed, 4 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-s.dts b/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-s.dts
-> >> index 62ba3bd08a0c..f2c8ccefd1bf 100644
-> >> --- a/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-s.dts
-> >> +++ b/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-s.dts
-> >> @@ -70,7 +70,9 @@ reg_rst_eth2: regulator-rst-eth2 {
-> >>  		regulator-name = "rst-usb-eth2";
-> >>  		pinctrl-names = "default";
-> >>  		pinctrl-0 = <&pinctrl_usb_eth2>;
-> >> -		gpio = <&gpio3 2 GPIO_ACTIVE_LOW>;
-> >> +		gpio = <&gpio3 2 GPIO_ACTIVE_HIGH>;
-> >> +		enable-active-high;
-> >> +		regulator-always-on;
-> >>  	};
-> >>  
-> >>  	reg_vdd_5v: regulator-5v {
-> >> @@ -78,6 +80,7 @@ reg_vdd_5v: regulator-5v {
-> >>  		regulator-name = "vdd-5v";
-> >>  		regulator-min-microvolt = <5000000>;
-> >>  		regulator-max-microvolt = <5000000>;
-> >> +		regulator-always-on;
-> > 
-> > You do not have any on/off control over the regulator.  So how does this
-> > always-on property make any difference?
-> 
-> Right, this doesn't make a difference and is definitely not a fix, I
-> will drop it. Anyway, this regulator is just there for completeness of
-> the hardware description.
-> 
-> > 
-> >>  	};
-> >>  };
-> >>  
-> >> -- 
-> >> 2.33.0
-> >>
+I do hope they can put more effort on their ethernet driver like what
+they do on their wireless drivers.
+
+Kai-Heng
+
+>
+> Bjorn
