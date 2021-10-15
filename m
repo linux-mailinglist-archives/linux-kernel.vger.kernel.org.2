@@ -2,132 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 680BF42EF8C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 13:22:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1724C42EF91
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 13:23:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238446AbhJOLZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 07:25:02 -0400
-Received: from mga01.intel.com ([192.55.52.88]:36651 "EHLO mga01.intel.com"
+        id S238466AbhJOLZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 07:25:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42080 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229632AbhJOLZB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 07:25:01 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10137"; a="251342299"
-X-IronPort-AV: E=Sophos;i="5.85,375,1624345200"; 
-   d="scan'208";a="251342299"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2021 04:22:54 -0700
-X-IronPort-AV: E=Sophos;i="5.85,375,1624345200"; 
-   d="scan'208";a="492467004"
-Received: from liminghu-mobl.ccr.corp.intel.com (HELO [10.212.23.213]) ([10.212.23.213])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2021 04:22:53 -0700
-Subject: Re: [RFC PATCH v3 05/13] ASoC: soc-pcm: align BE 'atomicity' with
- that of the FE
-To:     Takashi Iwai <tiwai@suse.de>, Sameer Pujar <spujar@nvidia.com>
-Cc:     alsa-devel@alsa-project.org,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <lgirdwood@gmail.com>, vkoul@kernel.org,
-        broonie@kernel.org, Gyeongtaek Lee <gt82.lee@samsung.com>,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-References: <20211013143050.244444-1-pierre-louis.bossart@linux.intel.com>
- <20211013143050.244444-6-pierre-louis.bossart@linux.intel.com>
- <2847a6d1-d97f-4161-c8b6-03672cf6645c@nvidia.com>
- <s5hmtnavisi.wl-tiwai@suse.de>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <e2a79095-b8ce-9dd4-3e6d-00f8dda99f30@linux.intel.com>
-Date:   Fri, 15 Oct 2021 06:22:50 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
+        id S238457AbhJOLZy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 07:25:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F3B3A60F44;
+        Fri, 15 Oct 2021 11:23:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634297028;
+        bh=wyXEhEzOBvLAIMRDrGKRdIrm47BJjwyoash09jNKF+k=;
+        h=References:From:To:Cc:Subject:Date:In-reply-to:From;
+        b=dDvEIVTVG9LSQrXHccTlcBaooUrllOdarq6rCDegFYktGHYRvjYPkVn4AejoYTr/G
+         MwnpNdqclcDlxEK3+kV2Qfx2hhbwL8brvFd4eaZr/iRhT5N48PjWEdE+vTZj1flC/1
+         H/U5G8Y7royz3iGKQWdJnyZQtBaBTjjG8itFRckLLM7uArXxJJTCnCaL8seIvMgdoj
+         hRzVh5e6AMfeXChiMjj3Sn4fCueL7LKpiiEB8h86KzZj1mn9CylYnYnL02p50AE0Q2
+         ZUmWS9AaA49Ox11rwqBARjoEx3ePL4zc7NjfV+EVvaGegXDRFczQicjqDK3Q7buQtm
+         cRAyyMipmeQKQ==
+References: <20211014233534.2382-1-wcheng@codeaurora.org>
+ <YWkh1NXmmMbf59Ee@kroah.com>
+User-agent: mu4e 1.6.6; emacs 28.0.60
+From:   Felipe Balbi <balbi@kernel.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Wesley Cheng <wcheng@codeaurora.org>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jackp@codeaurora.org
+Subject: Re: [PATCH] usb: dwc3: gadget: Remove dev_err() when queuing to
+ inactive gadget/ep
+Date:   Fri, 15 Oct 2021 14:23:13 +0300
+In-reply-to: <YWkh1NXmmMbf59Ee@kroah.com>
+Message-ID: <87bl3qbkfz.fsf@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <s5hmtnavisi.wl-tiwai@suse.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+Greg KH <gregkh@linuxfoundation.org> writes:
 
+> On Thu, Oct 14, 2021 at 04:35:34PM -0700, Wesley Cheng wrote:
+>> Since function drivers will still be active until dwc3_disconnect_gadget()
+>> is called, some applications will continue to queue packets to DWC3
+>> gadget.  This can lead to a flood of messages regarding failed ep queue,
+>> as the endpoint is in the process of being disabled.  Remove the print as
+>> function drivers will likely log queuing errors as well.
+>> 
+>> Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
+>> ---
+>>  drivers/usb/dwc3/gadget.c | 5 +----
+>>  1 file changed, 1 insertion(+), 4 deletions(-)
+>> 
+>> diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
+>> index 4845682a0408..674a9a527125 100644
+>> --- a/drivers/usb/dwc3/gadget.c
+>> +++ b/drivers/usb/dwc3/gadget.c
+>> @@ -1812,11 +1812,8 @@ static int __dwc3_gadget_ep_queue(struct dwc3_ep *dep, struct dwc3_request *req)
+>>  {
+>>  	struct dwc3		*dwc = dep->dwc;
+>>  
+>> -	if (!dep->endpoint.desc || !dwc->pullups_connected || !dwc->connected) {
+>> -		dev_err(dwc->dev, "%s: can't queue to disabled endpoint\n",
+>> -				dep->name);
+>
+> Why not just change this to dev_dbg() instead?
 
->> In normal PCM, atomicity seems to apply only for trigger(). Other
->> callbacks like prepare, hw_params are executed in non-atomic
->> context. So when 'nonatomic' flag is false, still it is possible to
->> sleep in a prepare or hw_param callback and this is true for FE as
->> well. So I am not sure if atomicity is applicable as a whole even for
->> FE.
+I agree. A dev_dbg() would be better here. We don't want to loose this
+message forever as it may prevent us from finding buggy function
+drivers.
 
-The typical path is snd_pcm_elapsed() on the FE, which will trigger the
-BE. When we add the BE lock in patch7, things break: what matters is the
-FE context, the locks used for the BE have to be aligned with the FE
-atomicity.
-
-My test results show the problem:
-https://github.com/thesofproject/linux/pull/3209#issuecomment-941229502
-and this patch fixes the issue.
-
-I am all ears if someone has a better solution, but the problem is real.
-
-I chose to add this patch first, before the BE lock is added in
-dpcm_be_dai_trigger(), and if this causes problems already there are
-even more issues in DPCM :-(
-
-If this patch causes issues outside of the trigger phase, then maybe we
-could just change the BE nonatomic flag temporarily and restore it after
-taking the lock, but IMHO something else is broken in other drivers.
-
->> At this point it does not cause serious problems, but with subsequent
->> patches (especially when patch 7/13 is picked) I see failures. Please
->> refer to patch 7/13 thread for more details.
->>
->>
->> I am wondering if it is possible to only use locks internally for DPCM
->> state management and decouple BE callbacks from this, like normal PCMs
->> do?
-> 
-> Actually the patch looks like an overkill by adding the FE stream lock
-> at every loop, and this caused the problem, AFAIU.
-> 
-> Basically we need to protect the link addition / deletion while the
-> list traversal (there is a need for protection of BE vs BE access
-> race, but that's a different code path).  For the normal cases, it
-> seems already protected by card->pcm_mutex, but the problem is the FE
-> trigger case.  It was attempted by dpcm_lock, but that failed because
-> it couldn't be applied properly there.
-> 
-> That said, what we'd need is only:
-> - Drop dpcm_lock codes once
-
-I am not able to follow this sentence, what did you mean here?
-
-> - Put FE stream lock around dpcm_be_connect() and dpcm_be_disconnect()
-> 
-> That should suffice for the race at trigger.  The FE stream lock is
-> already taken at trigger callback, and the rest list addition /
-> deletion are called from different code paths without stream locks, so
-> the explicit FE stream lock is needed there.
-
-I am not able to follow what you meant after "the rest". This sentence
-mentions the FE stream lock in two places, but the second is not clear
-to me.
-
-> In addition, a lock around dpcm_show_state() might be needed to be
-> replaced with card->pcm_mutex, and we may need to revisit whether all
-> other paths take card->pcm_mutex.
-
-What happens if we show the state while a trigger happens? That's my
-main concern with using two separate locks (pcm_mutex and FE stream
-lock) to protect the same list, there are still windows of time where
-the list is not protected.
-
-same with the use of for_each_dpcm_be() in soc-compress, SH and FSL
-drivers, there's no other mutex there.
-
-My approach might have been overkill in some places, but it's comprehensive.
-
-
-> Also, BE-vs-BE race can be protected by taking a BE lock inside
-> dpcm_be_dai_trigger().
-
-that's what I did, no?
+-- 
+balbi
