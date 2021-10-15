@@ -2,309 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0280242EC96
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 10:38:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1D8B42EC9F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 10:41:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235803AbhJOIkv convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 15 Oct 2021 04:40:51 -0400
-Received: from aposti.net ([89.234.176.197]:47964 "EHLO aposti.net"
+        id S234497AbhJOInY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 04:43:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39164 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231825AbhJOIku (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 04:40:50 -0400
-Date:   Fri, 15 Oct 2021 09:38:31 +0100
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH 2/3] mtd: rawnand: Export nand_read_page_hwecc_oob_first()
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Harvey Hunt <harveyhuntnexus@gmail.com>, list@opendingux.net,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, stable@vger.kernel.org
-Message-Id: <70G01R.2VROMW06O3O83@crapouillou.net>
-In-Reply-To: <20211015081313.60018976@xps13>
-References: <20211009184952.24591-1-paul@crapouillou.net>
-        <20211009184952.24591-3-paul@crapouillou.net>
-        <20211015081313.60018976@xps13>
+        id S237235AbhJOInW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 04:43:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DDEB4611C2;
+        Fri, 15 Oct 2021 08:41:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1634287276;
+        bh=kAdxWi7lhPZh6+Y8to2Q5TxPurbAjRC53PQ5fvWF+08=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AziAd0fSfqteyBGRKJxuec31+ee4K4lWuN8L82JOX6B9y2s9q38DpbG0j77B0Kgzy
+         r3aGyEUYNZM+sk1tRqeIJuvdIs+N61cuoZQWXjNEBNB1BTSZbx4CgDrua/d4j1k6t9
+         yIU2TfyBswB7ZdY77N+Xrcm3ve1rmhGSI8Q4XjqE=
+Date:   Fri, 15 Oct 2021 10:41:13 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     lianzhi chang <changlianzhi@uniontech.com>
+Cc:     linux-kernel@vger.kernel.org, dmitry.torokhov@gmail.com,
+        jirislaby@kernel.org, andriy.shevchenko@linux.intel.com,
+        linux-input@vger.kernel.org, 282827961@qq.com
+Subject: Re: [PATCH] input&tty: Fix the keyboard led light display problem
+Message-ID: <YWk+qaUnN+M/dX9o@kroah.com>
+References: <20211015083613.7429-1-changlianzhi@uniontech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211015083613.7429-1-changlianzhi@uniontech.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Miquel,
+On Fri, Oct 15, 2021 at 04:36:13PM +0800, lianzhi chang wrote:
+> Switching from the desktop environment to the tty environment,
+> the state of the keyboard led lights and the state of the keyboard
+> lock are inconsistent. This is because the attribute kb->kbdmode
+> of the tty bound in the desktop environment (xorg) is set to
+> VC_OFF, which causes the ledstate and kb->ledflagstate
+> values of the bound tty to always be 0, which causes the switch
+> from the desktop When to the tty environment, the LED light
+> status is inconsistent with the keyboard lock status.
+> 
+> Signed-off-by: lianzhi chang <changlianzhi@uniontech.com>
+> ---
+> The latest changes:
+> (1) Move the definition of ledstate to the input module (/drivers/input/input.c), 
+> and set or get its value through the input_update_ledstate and input_get_ledstate 
+> functions.
+> (2) To update the ledstate reference in keyboard.c, you must first get the value 
+> through input_get_ledstate.
+> (3) Other necessary changes
 
-Le ven., oct. 15 2021 at 08:13:13 +0200, Miquel Raynal 
-<miquel.raynal@bootlin.com> a écrit :
-> Hi Paul,
-> 
-> paul@crapouillou.net wrote on Sat,  9 Oct 2021 20:49:51 +0200:
-> 
->>  Move the function nand_read_page_hwecc_oob_first() (previously
->>  nand_davinci_read_page_hwecc_oob_first()) to nand_base.c, and 
->> export it
->>  as a GPL symbol, so that it can be used by more modules.
->> 
->>  Cc: <stable@vger.kernel.org> # v5.2
->>  Fixes: a0ac778eb82c ("mtd: rawnand: ingenic: Add support for the 
->> JZ4740")
->>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
->>  ---
->>   drivers/mtd/nand/raw/davinci_nand.c | 70 
->> +----------------------------
->>   drivers/mtd/nand/raw/nand_base.c    | 69 
->> ++++++++++++++++++++++++++++
->>   include/linux/mtd/rawnand.h         |  2 +
->>   3 files changed, 72 insertions(+), 69 deletions(-)
->> 
->>  diff --git a/drivers/mtd/nand/raw/davinci_nand.c 
->> b/drivers/mtd/nand/raw/davinci_nand.c
->>  index 89de24d3bb7a..45fec8c192ab 100644
->>  --- a/drivers/mtd/nand/raw/davinci_nand.c
->>  +++ b/drivers/mtd/nand/raw/davinci_nand.c
->>  @@ -371,74 +371,6 @@ static int nand_davinci_correct_4bit(struct 
->> nand_chip *chip, u_char *data,
->>   	return corrected;
->>   }
->> 
->>  -/**
->>  - * nand_read_page_hwecc_oob_first - hw ecc, read oob first
->>  - * @chip: nand chip info structure
->>  - * @buf: buffer to store read data
->>  - * @oob_required: caller requires OOB data read to chip->oob_poi
->>  - * @page: page number to read
->>  - *
->>  - * Hardware ECC for large page chips, require OOB to be read 
->> first. For this
->>  - * ECC mode, the write_page method is re-used from ECC_HW. These 
->> methods
->>  - * read/write ECC from the OOB area, unlike the ECC_HW_SYNDROME 
->> support with
->>  - * multiple ECC steps, follows the "infix ECC" scheme and 
->> reads/writes ECC from
->>  - * the data area, by overwriting the NAND manufacturer bad block 
->> markings.
->>  - */
->>  -static int nand_davinci_read_page_hwecc_oob_first(struct nand_chip 
->> *chip,
->>  -						  uint8_t *buf,
->>  -						  int oob_required, int page)
->>  -{
->>  -	struct mtd_info *mtd = nand_to_mtd(chip);
->>  -	int i, eccsize = chip->ecc.size, ret;
->>  -	int eccbytes = chip->ecc.bytes;
->>  -	int eccsteps = chip->ecc.steps;
->>  -	uint8_t *p = buf;
->>  -	uint8_t *ecc_code = chip->ecc.code_buf;
->>  -	unsigned int max_bitflips = 0;
->>  -
->>  -	/* Read the OOB area first */
->>  -	ret = nand_read_oob_op(chip, page, 0, chip->oob_poi, 
->> mtd->oobsize);
->>  -	if (ret)
->>  -		return ret;
->>  -
->>  -	ret = nand_read_page_op(chip, page, 0, NULL, 0);
->>  -	if (ret)
->>  -		return ret;
->>  -
->>  -	ret = mtd_ooblayout_get_eccbytes(mtd, ecc_code, chip->oob_poi, 0,
->>  -					 chip->ecc.total);
->>  -	if (ret)
->>  -		return ret;
->>  -
->>  -	for (i = 0; eccsteps; eccsteps--, i += eccbytes, p += eccsize) {
->>  -		int stat;
->>  -
->>  -		chip->ecc.hwctl(chip, NAND_ECC_READ);
->>  -
->>  -		ret = nand_read_data_op(chip, p, eccsize, false, false);
->>  -		if (ret)
->>  -			return ret;
->>  -
->>  -		stat = chip->ecc.correct(chip, p, &ecc_code[i], NULL);
->>  -		if (stat == -EBADMSG &&
->>  -		    (chip->ecc.options & NAND_ECC_GENERIC_ERASED_CHECK)) {
->>  -			/* check for empty pages with bitflips */
->>  -			stat = nand_check_erased_ecc_chunk(p, eccsize,
->>  -							   &ecc_code[i],
->>  -							   eccbytes, NULL, 0,
->>  -							   chip->ecc.strength);
->>  -		}
->>  -
->>  -		if (stat < 0) {
->>  -			mtd->ecc_stats.failed++;
->>  -		} else {
->>  -			mtd->ecc_stats.corrected += stat;
->>  -			max_bitflips = max_t(unsigned int, max_bitflips, stat);
->>  -		}
->>  -	}
->>  -	return max_bitflips;
->>  -}
->>  -
->>   
->> /*----------------------------------------------------------------------*/
->> 
->>   /* An ECC layout for using 4-bit ECC with small-page flash, storing
->>  @@ -648,7 +580,7 @@ static int davinci_nand_attach_chip(struct 
->> nand_chip *chip)
->>   			} else if (chunks == 4 || chunks == 8) {
->>   				mtd_set_ooblayout(mtd,
->>   						  nand_get_large_page_ooblayout());
->>  -				chip->ecc.read_page = nand_davinci_read_page_hwecc_oob_first;
->>  +				chip->ecc.read_page = nand_read_page_hwecc_oob_first;
->>   			} else {
->>   				return -EIO;
->>   			}
->>  diff --git a/drivers/mtd/nand/raw/nand_base.c 
->> b/drivers/mtd/nand/raw/nand_base.c
->>  index 3d6c6e880520..cb5f343b9fa2 100644
->>  --- a/drivers/mtd/nand/raw/nand_base.c
->>  +++ b/drivers/mtd/nand/raw/nand_base.c
->>  @@ -3160,6 +3160,75 @@ static int nand_read_page_hwecc(struct 
->> nand_chip *chip, uint8_t *buf,
->>   	return max_bitflips;
->>   }
->> 
->>  +/**
->>  + * nand_read_page_hwecc_oob_first - Hardware ECC page read with ECC
->>  + *                                  data read from OOB area
->>  + * @chip: nand chip info structure
->>  + * @buf: buffer to store read data
->>  + * @oob_required: caller requires OOB data read to chip->oob_poi
->>  + * @page: page number to read
->>  + *
->>  + * Hardware ECC for large page chips, require OOB to be read 
->> first. For this
-> 
-> requires
-> 
-> With this ECC configuration?
-> 
->>  + * ECC mode, the write_page method is re-used from ECC_HW. These 
->> methods
-> 
-> I do not understand this sentence nor the next one about syndrome. I
-> believe it is related to your engine and should not leak into the 
-> core.
-> 
->>  + * read/write ECC from the OOB area, unlike the ECC_HW_SYNDROME 
->> support with
->>  + * multiple ECC steps, follows the "infix ECC" scheme and 
->> reads/writes ECC from
->>  + * the data area, by overwriting the NAND manufacturer bad block 
->> markings.
-> 
-> That's a sentence I don't like. What do you mean exactly?
-> 
-> What "Infix ECC" scheme is?
-> 
-> Do you mean that unlike the syndrome  mode it *does not* overwrite the
-> BBM ?
+You have not changed the subject line at all.
 
-I don't mean anything. I did not write that comment. I just moved the 
-function verbatim with no changes. If something needs to be fixed, then 
-it needs to be fixed before/after this patch.
+Look at how others submit patches that are new versions on the mailing
+list, and most importantly, read the documentation we have about this.
 
->>  + */
->>  +int nand_read_page_hwecc_oob_first(struct nand_chip *chip, uint8_t 
->> *buf,
->>  +				   int oob_required, int page)
->>  +{
->>  +	struct mtd_info *mtd = nand_to_mtd(chip);
->>  +	int i, eccsize = chip->ecc.size, ret;
->>  +	int eccbytes = chip->ecc.bytes;
->>  +	int eccsteps = chip->ecc.steps;
->>  +	uint8_t *p = buf;
->>  +	uint8_t *ecc_code = chip->ecc.code_buf;
->>  +	unsigned int max_bitflips = 0;
->>  +
->>  +	/* Read the OOB area first */
->>  +	ret = nand_read_oob_op(chip, page, 0, chip->oob_poi, 
->> mtd->oobsize);
->>  +	if (ret)
->>  +		return ret;
->>  +
->>  +	ret = nand_read_page_op(chip, page, 0, NULL, 0);
-> 
-> Definitely not, your are requesting the chip to do the read_page
-> operation twice. You only need a nand_change_read_column I believe.
+thanks,
 
-Again, this code is just being moved around - don't shoot the messenger 
-:)
-
->>  +	if (ret)
->>  +		return ret;
->>  +
->>  +	ret = mtd_ooblayout_get_eccbytes(mtd, ecc_code, chip->oob_poi, 0,
->>  +					 chip->ecc.total);
->>  +	if (ret)
->>  +		return ret;
->>  +
->>  +	for (i = 0; eccsteps; eccsteps--, i += eccbytes, p += eccsize) {
->>  +		int stat;
->>  +
->>  +		chip->ecc.hwctl(chip, NAND_ECC_READ);
->>  +
->>  +		ret = nand_read_data_op(chip, p, eccsize, false, false);
->>  +		if (ret)
->>  +			return ret;
->>  +
->>  +		stat = chip->ecc.correct(chip, p, &ecc_code[i], NULL);
->>  +		if (stat == -EBADMSG &&
->>  +		    (chip->ecc.options & NAND_ECC_GENERIC_ERASED_CHECK)) {
->>  +			/* check for empty pages with bitflips */
->>  +			stat = nand_check_erased_ecc_chunk(p, eccsize,
->>  +							   &ecc_code[i],
->>  +							   eccbytes, NULL, 0,
->>  +							   chip->ecc.strength);
->>  +		}
->>  +
->>  +		if (stat < 0) {
->>  +			mtd->ecc_stats.failed++;
->>  +		} else {
->>  +			mtd->ecc_stats.corrected += stat;
->>  +			max_bitflips = max_t(unsigned int, max_bitflips, stat);
->>  +		}
->>  +	}
->>  +	return max_bitflips;
->>  +}
->>  +EXPORT_SYMBOL_GPL(nand_read_page_hwecc_oob_first);
->>  +
->>   /**
->>    * nand_read_page_syndrome - [REPLACEABLE] hardware ECC syndrome 
->> based page read
->>    * @chip: nand chip info structure
->>  diff --git a/include/linux/mtd/rawnand.h 
->> b/include/linux/mtd/rawnand.h
->>  index b2f9dd3cbd69..5b88cd51fadb 100644
->>  --- a/include/linux/mtd/rawnand.h
->>  +++ b/include/linux/mtd/rawnand.h
->>  @@ -1539,6 +1539,8 @@ int nand_read_data_op(struct nand_chip *chip, 
->> void *buf, unsigned int len,
->>   		      bool force_8bit, bool check_only);
->>   int nand_write_data_op(struct nand_chip *chip, const void *buf,
->>   		       unsigned int len, bool force_8bit);
->>  +int nand_read_page_hwecc_oob_first(struct nand_chip *chip, uint8_t 
->> *buf,
->>  +				   int oob_required, int page);
-> 
-> You certainly want to add this symbol closer to the other read/write
-> page helpers?
-
-Where would that be? The other read/write page helpers are all "static" 
-so they don't appear in any header.
-
-Cheers,
--Paul
-
->> 
->>   /* Scan and identify a NAND device */
->>   int nand_scan_with_ids(struct nand_chip *chip, unsigned int 
->> max_chips,
-> 
-> 
-> Thanks,
-> Miquèl
-
-
+greg k-h
