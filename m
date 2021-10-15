@@ -2,179 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E0ED42FCD9
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 22:14:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5365B42FCDD
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 22:15:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242952AbhJOUQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 16:16:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36395 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234165AbhJOUQm (ORCPT
+        id S242957AbhJOURr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 16:17:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51436 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235349AbhJOURp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 16:16:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634328875;
+        Fri, 15 Oct 2021 16:17:45 -0400
+Received: from polaris.svanheule.net (polaris.svanheule.net [IPv6:2a00:c98:2060:a004:1::200])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D11DCC061570
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 13:15:38 -0700 (PDT)
+Received: from [130.246.252.99] (stfc-guest-0076.rl.ac.uk [130.246.252.99])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: sander@svanheule.net)
+        by polaris.svanheule.net (Postfix) with ESMTPSA id D6D2326202F;
+        Fri, 15 Oct 2021 22:15:36 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svanheule.net;
+        s=mail1707; t=1634328937;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ob0cXS+iTVqhTc0LL+1lwvmPqj++Muh+HEaU63BqtuQ=;
-        b=OGWzt5e25yJYQiQD7/uF8o+UKGtYVDv5oE7oDURTcvbPBEYtOKPrlhvQfdWBaxwjDQS0JO
-        X9ECFLmDU7/O8GHVKiQtm2jVhUTa6cWeaclrBzB9SRvErD9jVWnhZ2vZT45KU4dmQW2N2Q
-        Slx3SPuQYj63wlRBl3g6xijzBjJWYHU=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-440-hSYBd5cyMTSl8xqBpgKxdw-1; Fri, 15 Oct 2021 16:14:34 -0400
-X-MC-Unique: hSYBd5cyMTSl8xqBpgKxdw-1
-Received: by mail-ed1-f71.google.com with SMTP id t18-20020a056402021200b003db9e6b0e57so9246754edv.10
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 13:14:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ob0cXS+iTVqhTc0LL+1lwvmPqj++Muh+HEaU63BqtuQ=;
-        b=TUrhyqvZeEUf9UzD9mS6hxWMsPzSd/MJihiF89oJasIG9mzbAo64lqcoO2GyFLf3Hp
-         U4j9Tdym5kOIZK67tBd8MvFtXSGdz7DUF35KHPCSJWTNqeYHgMbynFOfI5he6GytlN2A
-         mwBiKeX7Cdc8HTuL3/oVRF2dyhE4RFRuUnUPWUxd3GsGGcAgFmHbewkjGWn7Ad724R1u
-         1pPCGHl+DaAnZwVFvBH8j15g+p/JaDWq6vXqKFWRXxmyPUSZp4an/cK/CjRyZltB8Q2R
-         prQfTutWE6gICx139WV8OWl+UJq6nrdk/pjqaejmHENW47233mcworyVfIxD0twkn0/8
-         /yxg==
-X-Gm-Message-State: AOAM530/po/Ulaa8xK9Lf2v2ZI3b2oF7/u3YUQ5ro7jC+0tiuBe2nTMh
-        y/MX0b4Pb8GSKEjMXlGNSR8JMoMWUearLMXRdCgyTwbKMmelqJwD5L0W7ZaBJ9cTZwYQ1eDUtq5
-        W0XrTnOgPI59MGuKZPkVy0YLH
-X-Received: by 2002:a17:906:25d7:: with SMTP id n23mr9598467ejb.322.1634328872857;
-        Fri, 15 Oct 2021 13:14:32 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxezyePB9FvDabIoN4SDBtXb0EfYt6tXjhJ1dDf14blwJ1cW4KunpzRXCflX2qy8gweIQsg7g==
-X-Received: by 2002:a17:906:25d7:: with SMTP id n23mr9598434ejb.322.1634328872644;
-        Fri, 15 Oct 2021 13:14:32 -0700 (PDT)
-Received: from x1.localdomain ([2a0e:5700:4:11:334c:7e36:8d57:40cb])
-        by smtp.gmail.com with ESMTPSA id z18sm4752728ejl.67.2021.10.15.13.14.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Oct 2021 13:14:31 -0700 (PDT)
-Subject: Re: [PATCH 05/12] regulator: Introduce tps68470-regulator driver
-To:     Mark Brown <broonie@kernel.org>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Mark Gross <markgross@kernel.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Daniel Scally <djrscally@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Len Brown <lenb@kernel.org>,
-        linux-acpi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Kate Hsuan <hpa@redhat.com>, linux-media@vger.kernel.org,
-        linux-clk@vger.kernel.org
-References: <20211008162121.6628-1-hdegoede@redhat.com>
- <20211008162121.6628-6-hdegoede@redhat.com> <YWQU/SYTT5Vk24XH@sirena.org.uk>
- <f6f2d7e8-fdb8-ed64-0cdd-65aded9fc42c@redhat.com>
- <YWmwZJvDYjPWJdb4@sirena.org.uk>
- <d0d1dc05-4cc6-2f47-88a9-700cfc356d86@redhat.com>
- <YWnPaI/ZECdfYre9@sirena.org.uk>
- <843f939a-7e43-bc12-e9fc-582e01129b63@redhat.com>
- <YWnZIZTPiuAIazV+@sirena.org.uk>
- <c595b143-d7ed-e76b-7734-e03d14e0f76e@redhat.com>
- <YWndpGgBtLEAEaNj@sirena.org.uk>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <1805d16e-87ab-c291-6a73-adabf41344ca@redhat.com>
-Date:   Fri, 15 Oct 2021 22:14:30 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        bh=cgs/PndWG4BeGphT6aIRGYaxMI2bBZNUmsRYCal6N3M=;
+        b=prqcmCx+nsmAqAHrLUHYAoy+wz2BfTXVTqU8GH3AvLzClPxLk1FJbLy4VOUSnl+HgRZ/eP
+        ijuLcU9N4p2cMYSFqN91UPMDqcdWZz77lSXoVwm1kKO4qmET2DYJwPWzuGUxxp6xvZP5Rx
+        e1nBe7Dw7xmVL/l8aBZ4dGALCfkB1p2JmB0/0UoCoommr1ZCcZPD8AYCBn4IWq8mcMjbwP
+        oICHhuPHg5ES5NV+no8QotHDONl+umvDq6wrfssxFkLJbjtaXRXzFln1y7N8n2qeP5Kpr9
+        I0Kd+phAOWqOnRcULXj6waq+QDBRmjlGOYUeYaegWFQlnKu7gsVTIjgvECeJ/w==
+Message-ID: <658d4e585fb9d8d295ebb56e7c944a784b9104a8.camel@svanheule.net>
+Subject: Re: [PATCH 2/2] watchdog: Add Realtek Otto watchdog timer
+From:   Sander Vanheule <sander@svanheule.net>
+To:     kernel test robot <lkp@intel.com>, linux-watchdog@vger.kernel.org,
+        devicetree@vger.kernel.org
+Cc:     kbuild-all@lists.01.org, Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org
+Date:   Fri, 15 Oct 2021 21:15:35 +0100
+In-Reply-To: <202110150030.GHlGSh0L-lkp@intel.com>
+References: <7eb1e3d8a5bd3b221be0408bd6f0272e6d435ade.1634131707.git.sander@svanheule.net>
+         <202110150030.GHlGSh0L-lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.4 (3.40.4-2.fc34) 
 MIME-Version: 1.0
-In-Reply-To: <YWndpGgBtLEAEaNj@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 10/15/21 9:59 PM, Mark Brown wrote:
-> On Fri, Oct 15, 2021 at 09:48:24PM +0200, Hans de Goede wrote:
->> On 10/15/21 9:40 PM, Mark Brown wrote:
+On Fri, 2021-10-15 at 00:44 +0800, kernel test robot wrote:
+> Hi Sander,
 > 
->>> I can't see how the quirking gets propagated through into the driver and
->>> I'd really expect that in a situation like this the platform data would
->>> be passed through as platform data from the code doing the quirks,
+> I love your patch! Yet something to improve:
 > 
->> That is exactly what is happening here. The platform_data in this
->> case is just an array of regulator_init_data pointers (one per
->> regulator in the PMIC):
+> [auto build test ERROR on linus/master]
+> [also build test ERROR on v5.15-rc5 next-20211013]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch]
 > 
-> No, it's not.  What normally happens is that whatever registers the
-> device will when registering the device supply platform data that the
-> device later picks up from the struct device during probe.  What you're
-> saying is that the idea here is that driver unconditionally declares
-> platform data and then other code scribbles over that before the driver
-> instantiates.  This is cleaner in that it keeps the platform
-> configuration together and safer since the device can't exist before
-> it's configuration is provided.
-
-Right, this is the standard device-tree model. Unfortunately the
-information about which supplies are needed and the constraints
-for those supplies is missing from the ACPI description for the
-devices which we are dealing with here.
-
-Daniel Scally tried to solve this by allowing specifying this
-in software-firmware-nodes. Which you nacked because those need
-separate parsing code in the regulator core.
-
-During that discussion you said that instead we should sinmply
-directly pass the regulator_init_data, rather then first
-encoding this in device-properties in a swnode and then
-decoding those again in the regulator core.
-
-And passing the regulator_init_data is exactly what we are doing
-now; and now again this is not what we should be doing ?
-
-Also note that the current solution is exactly what I suggested
-we should do during the discussion with Daniel and I even provided
-example code and you said absolutely nothing about this!
-
->> So we have the code doing the quirks determining the regulator_init_data
->> and passing this through platform_data, which AFAICT is exactly what
->> you want?
+> url:   
+> https://github.com/0day-ci/linux/commits/Sander-Vanheule/Add-Realtek-Otto-WDT-support/20211013-213511
+> base:  
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git f4d0cc426f77df68
+> 90aa868f96c2de89686aae8a
+> config: sh-allmodconfig (attached as .config)
+> compiler: sh4-linux-gcc (GCC) 11.2.0
+> reproduce (this is a W=1 build):
+>         wget
+> https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O
+> ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         #
+> https://github.com/0day-ci/linux/commit/32b957f54703ffbffecc825fb8df3106b2aab6b5
+>         git remote add linux-review https://github.com/0day-ci/linux
+>         git fetch --no-tags linux-review Sander-Vanheule/Add-Realtek-Otto-WDT-
+> support/20211013-213511
+>         git checkout 32b957f54703ffbffecc825fb8df3106b2aab6b5
+>         # save the attached .config to linux build tree
+>         mkdir build_dir
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir
+> ARCH=sh SHELL=/bin/bash drivers/
 > 
-> No.  There should be no sign of the platform data getting allocated or
-> initialised in the driver consuming the platform data.  It should purely
-> be reading the data it gets passed by the platform initialisation code.
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
 > 
-> Please make the use of platform data look like normal platform data use
-> rather than going and inventing some new scheme.
+> All errors (new ones prefixed by >>):
+> 
+> > > drivers/clk/clk.c:855:6: error: redefinition of 'clk_unprepare'
+>      855 | void clk_unprepare(struct clk *clk)
+>          |      ^~~~~~~~~~~~~
+>    In file included from drivers/clk/clk.c:9:
+>    include/linux/clk.h:303:20: note: previous definition of 'clk_unprepare' with
+> type 'void(struct clk *)'
+>      303 | static inline void clk_unprepare(struct clk *clk)
+>          |                    ^~~~~~~~~~~~~
+> > > drivers/clk/clk.c:936:5: error: redefinition of 'clk_prepare'
+>      936 | int clk_prepare(struct clk *clk)
+>          |     ^~~~~~~~~~~
+>    In file included from drivers/clk/clk.c:9:
+>    include/linux/clk.h:271:19: note: previous definition of 'clk_prepare' with type
+> 'int(struct clk *)'
+>      271 | static inline int clk_prepare(struct clk *clk)
+>          |                   ^~~~~~~~~~~
+> > > drivers/clk/clk.c:1182:6: error: redefinition of 'clk_is_enabled_when_prepared'
+>     1182 | bool clk_is_enabled_when_prepared(struct clk *clk)
+>          |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>    In file included from drivers/clk/clk.c:9:
+>    include/linux/clk.h:284:20: note: previous definition of
+> 'clk_is_enabled_when_prepared' with type 'bool(struct clk *)' {aka '_Bool(struct
+> clk *)'}
+>      284 | static inline bool clk_is_enabled_when_prepared(struct clk *clk)
+>          |                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> 
+> Kconfig warnings: (for reference only)
+>    WARNING: unmet direct dependencies detected for COMMON_CLK
+>    Depends on !HAVE_LEGACY_CLK
+>    Selected by
+>    - REALTEK_OTTO_WDT && WATCHDOG && (MACH_REALTEK_RTL || COMPILE_TEST
 
-I'm sorry but I no longer have any clue what it is what you want us to do /
-how you want us to solve this.
+I had used "select COMMON_CLK" in Kconfig, where other drivers use "depends on
+COMMON_CLK". I've changed this to the latter now.
 
-AFAIK what the current code is doing is exactly what you requested during
-the discussion with Daniel.
+Since the tested config has both HAVE_LEGACY_CLK and COMMON_CLK set, I don't think
+it's using a valid config anyway. After changing to "depends on COMMON_CLK", the
+make.cross command listed above appears to build without problems.
 
-If this is not to your looking please provide some pseudo code explaining
-how you want us to solve this problem instead of the current solution.
-
-And please keep in mind that we *cannot* change the ACPI firmware interfaces
-and that whether we like it or not things simply work different in the ACPI
-world.
-
-Frankly I'm quit unhappy, angry even about how you are blocking progress
-here. You don't like APCI we get it, can we get over that now please?
-
-So far all you seem to be doing is shooting down solutions, then first
-being quiet about suggested alternative solutions and then once the
-alternative solutions are implemented shoot them down again...
-
-And all that without adding anything constructive. All you have
-told us is how things should not be done (according to you).
-
-So fine everything we come up is wrong, please tell us how we should
-solve this instead then!
-
-Regards,
-
-Hans
-
+Best,
+Sander
 
