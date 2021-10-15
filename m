@@ -2,29 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDFC442FC1C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 21:27:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4DB542FBEC
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 21:21:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238437AbhJOT3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 15:29:00 -0400
-Received: from mslow1.mail.gandi.net ([217.70.178.240]:59915 "EHLO
-        mslow1.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238327AbhJOT2y (ORCPT
+        id S242674AbhJOTXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 15:23:37 -0400
+Received: from relay10.mail.gandi.net ([217.70.178.230]:50585 "EHLO
+        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230009AbhJOTXg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 15:28:54 -0400
-Received: from relay6-d.mail.gandi.net (unknown [217.70.183.198])
-        by mslow1.mail.gandi.net (Postfix) with ESMTP id B66CED67A7
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 19:21:49 +0000 (UTC)
+        Fri, 15 Oct 2021 15:23:36 -0400
 Received: (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id C8EC9C0007;
-        Fri, 15 Oct 2021 19:21:27 +0000 (UTC)
+        by relay10.mail.gandi.net (Postfix) with ESMTPSA id B12A4240002;
+        Fri, 15 Oct 2021 19:21:28 +0000 (UTC)
 From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
 To:     Alessandro Zummo <a.zummo@towertech.it>,
         Alexandre Belloni <alexandre.belloni@bootlin.com>
 Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 3/7] rtc: expose correction feature
-Date:   Fri, 15 Oct 2021 21:21:16 +0200
-Message-Id: <20211015192121.817642-4-alexandre.belloni@bootlin.com>
+Subject: [PATCH 4/7] rtc: add correction parameter
+Date:   Fri, 15 Oct 2021 21:21:17 +0200
+Message-Id: <20211015192121.817642-5-alexandre.belloni@bootlin.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20211015192121.817642-1-alexandre.belloni@bootlin.com>
 References: <20211015192121.817642-1-alexandre.belloni@bootlin.com>
@@ -34,44 +31,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a new feature for RTCs able to correct the oscillator imprecision. This
-is also called offset or trimming. Such drivers have a .set_offset callback,
-use that to set the feature bit from the core.
+Add a new parameter allowing the get and set the correction using ioctls
+instead of just sysfs.
 
 Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
 ---
- drivers/rtc/class.c      | 3 +++
- include/uapi/linux/rtc.h | 3 ++-
- 2 files changed, 5 insertions(+), 1 deletion(-)
+ drivers/rtc/dev.c        | 19 +++++++++++++++++++
+ include/uapi/linux/rtc.h |  1 +
+ 2 files changed, 20 insertions(+)
 
-diff --git a/drivers/rtc/class.c b/drivers/rtc/class.c
-index dbccd71589b9..2e0cbc190a8a 100644
---- a/drivers/rtc/class.c
-+++ b/drivers/rtc/class.c
-@@ -389,6 +389,9 @@ int __devm_rtc_register_device(struct module *owner, struct rtc_device *rtc)
- 	if (!rtc->ops->set_alarm)
- 		clear_bit(RTC_FEATURE_ALARM, rtc->features);
+diff --git a/drivers/rtc/dev.c b/drivers/rtc/dev.c
+index 143c097eff0f..abee1fc4705e 100644
+--- a/drivers/rtc/dev.c
++++ b/drivers/rtc/dev.c
+@@ -398,6 +398,16 @@ static long rtc_dev_ioctl(struct file *file,
+ 			param.uvalue = rtc->features[0];
+ 			break;
  
-+	if (rtc->ops->set_offset)
-+		set_bit(RTC_FEATURE_CORRECTION, rtc->features);
++		case RTC_PARAM_CORRECTION:
++			mutex_unlock(&rtc->ops_lock);
++			if (param.index != 0)
++				return -EINVAL;
++			err = rtc_read_offset(rtc, &offset);
++			mutex_lock(&rtc->ops_lock);
++			if (err == 0)
++				param.svalue = offset;
++			break;
 +
- 	rtc->owner = owner;
- 	rtc_device_get_offset(rtc);
+ 		default:
+ 			err = -EINVAL;
+ 		}
+@@ -416,6 +426,15 @@ static long rtc_dev_ioctl(struct file *file,
  
+ 		switch(param.param) {
+ 		case RTC_PARAM_FEATURES:
++			err = -EINVAL;
++			break;
++
++		case RTC_PARAM_CORRECTION:
++			mutex_unlock(&rtc->ops_lock);
++			if (param.index != 0)
++				return -EINVAL;
++			return rtc_set_offset(rtc, param.svalue);
++
+ 		default:
+ 			err = -EINVAL;
+ 		}
 diff --git a/include/uapi/linux/rtc.h b/include/uapi/linux/rtc.h
-index e4128be7963b..ded2aaab7ec7 100644
+index ded2aaab7ec7..04da6c3082b3 100644
 --- a/include/uapi/linux/rtc.h
 +++ b/include/uapi/linux/rtc.h
-@@ -131,7 +131,8 @@ struct rtc_param {
- #define RTC_FEATURE_ALARM_RES_2S	2
- #define RTC_FEATURE_UPDATE_INTERRUPT	3
- #define RTC_FEATURE_NEED_WEEK_DAY	4
--#define RTC_FEATURE_CNT			5
-+#define RTC_FEATURE_CORRECTION		5
-+#define RTC_FEATURE_CNT			6
+@@ -136,6 +136,7 @@ struct rtc_param {
  
  /* parameter list */
  #define RTC_PARAM_FEATURES		0
++#define RTC_PARAM_CORRECTION		1
+ 
+ #define RTC_MAX_FREQ	8192
+ 
 -- 
 2.31.1
 
