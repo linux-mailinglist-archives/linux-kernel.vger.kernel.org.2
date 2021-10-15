@@ -2,142 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E23B42E508
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 02:08:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B7B742E50C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 02:10:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234462AbhJOAKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 20:10:37 -0400
-Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:44439 "EHLO
-        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233322AbhJOAKe (ORCPT
+        id S234576AbhJOAMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 20:12:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58728 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233322AbhJOAMc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 20:10:34 -0400
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id 90A1F3201D59;
-        Thu, 14 Oct 2021 20:08:28 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Thu, 14 Oct 2021 20:08:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=
-        message-id:subject:from:to:cc:date:in-reply-to:references
-        :content-type:mime-version:content-transfer-encoding; s=fm1; bh=
-        uQ2ph/m96pNwPz5SmsbAnB4GNfg56La5NKbKXh/rpLA=; b=XMPa/VHCYlUnmsVj
-        5GsmfVZY2n/EPEunz6OzUle7J42fCHuZ975jpZN1JU0odZQs2SQoGXPXdiVJkmVV
-        7wsG4p2xFeSO5+6ghcJVJl2WqS9tZB8Q2kjPByH4B59SntDJ4tyA8/NLsBshtKy3
-        E/a9jbOs9lfOjNN/+i5kDwwcz4p+VRigwW5Muan/5VqDOkZC9goBFSjFn/gDzxri
-        aPNTjVymH/pg6rl0ykcW7l8ZxL7p49mW88WTiqB5UQjxNmd0R46KLtcI3G6x+O1e
-        oudSpxGvoW/Y2Xy68UlVr26HAJj0ZklGoEATkdo3BFjBZlmlilPrRM4M2voIQUBG
-        2/vPdA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; bh=uQ2ph/m96pNwPz5SmsbAnB4GNfg56La5NKbKXh/rp
-        LA=; b=n63/Cle+6WI0/ny4JTBshPoGk9cgWLf430Nyt0fE5BrIAPn75aubkKjcZ
-        uqAVbIGi0EhtrlqXyofKtCWRaw01OAf5lLcw2V3ANf0EXRMF9B4iA3xWmeujwqXq
-        px2/IKPZKZS+wWJfvZwcSWhTPizoW1NUx4QqzhAI9/alA1LEYCtgsWb7ciCn2VWV
-        /MB5tY5fRqxcJ/qFzzM8IffogK9a0f92JMUg7mCEUiHfK9YwZL1nGm0faVy6aTTG
-        jUZMyy/e1pXITMKhzqakoIglpaeyC54VKKjIcJA6MuqcpzJ5lVMhrxJGVhuO8XGH
-        8fG1iMSwebiV9oZnXAV6d+f9Gd21w==
-X-ME-Sender: <xms:fMZoYbtGGsRqC2QgiPM57ds9mlBx74BXH3tKh_Lm8P63dVFcrTWoDw>
-    <xme:fMZoYcc7FsGJWwCCXSz3MRDDCul9dY1R-0F0uv4BM6D-FhCmDjSRe8WSjUKxGmiaS
-    fTtdiohe-oe>
-X-ME-Received: <xmr:fMZoYeyVANXmNyaCpToVVEuVYK-H-tE--rceyJzP1rTYYHzEf7QhsXSwleilowFzLCUWEM8>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvddufedgvdejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepkffuhffvffgjfhgtfggggfesthekredttderjeenucfhrhhomhepkfgrnhcu
-    mfgvnhhtuceorhgrvhgvnhesthhhvghmrgifrdhnvghtqeenucggtffrrghtthgvrhhnpe
-    fgleelkeetheelgeehueejueduhfeufffgleehgfevtdehhffhhffhtddugfefheenucev
-    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehrrghvvghnse
-    hthhgvmhgrfidrnhgvth
-X-ME-Proxy: <xmx:fMZoYaNJZVqeXe3H2zFOumWQAf1-dg0mo5qqh6qTnX50zCcTwI-BHg>
-    <xmx:fMZoYb-Q0PXaDvY-c5-HYMNFh1eIbM73TIHnrm4S_sjNl5-9GNFPcg>
-    <xmx:fMZoYaXX055TC3PrIICppBW0tWhQIeonfk8X9RecAGYZv10l_XTscg>
-    <xmx:fMZoYdJWL4Ne781Oz9jGqFvb17exfNpJbkqCOQflGYBK8qQkwvTs3Q>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 14 Oct 2021 20:08:25 -0400 (EDT)
-Message-ID: <2449a6ad3ea38087d546279ac5a483e5c718a2b3.camel@themaw.net>
-Subject: Re: [PATCH] autofs: fix wait name hash calculation in autofs_wait()
-From:   Ian Kent <raven@themaw.net>
-To:     Justin Forbes <jmforbes@linuxtx.org>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        autofs mailing list <autofs@vger.kernel.org>,
-        Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Date:   Fri, 15 Oct 2021 08:08:22 +0800
-In-Reply-To: <CAFxkdAraAe37_5bGLJtTtxZCaKTqgVPh4hTbcVC=08vRt-Zizg@mail.gmail.com>
-References: <163238121836.315941.18066358755443618960.stgit@mickey.themaw.net>
-         <CAFxkdAraAe37_5bGLJtTtxZCaKTqgVPh4hTbcVC=08vRt-Zizg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        Thu, 14 Oct 2021 20:12:32 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE2AEC061570
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 17:10:26 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id ls18so5971772pjb.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 17:10:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=KKAviLRUKqVjp43nqMLg6bveGxLDROIz4blReEr8Bmo=;
+        b=ZBD68KtEuRuJ2LXGX2e4Bq5AGfrbJB7Ct4q5cPqaOIdkz8JGahpzAsLGlpbmGa0qj2
+         HgTKgCzwXvVzOP6SUz7KzzNlWNh+tnwRWS20rjnszlEGubea5dq2zvlTU/CQg4R9ZITI
+         vTcpu8c93VKGxm1TuBo1hNUo+LC6eRQtOQjqY691/6F3GL1EYIyoux9G8Bq37r68yUiq
+         1ZSH61AKIqVtSF6z4dNYil5nXb3BlP+PgpmV3xO0JqjLA7b/44qUnrZ2OQbfX+CaMyoL
+         4iGPd7aT4gg3DBpMvmh7xmVj5NW7ai9ibGHXGw1bGDe29In+oJwcG/GHgWpgXr73ZraR
+         hP+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KKAviLRUKqVjp43nqMLg6bveGxLDROIz4blReEr8Bmo=;
+        b=ArDO9r+S4xXkCxTm4hryJzmnBel9XRvp4NrRPmCzqG4wPc8zyowzYRV3/f4sh8RlCZ
+         W7Jv876EGs7BFdxmQgW6h93WwYcV/DarlLhoMSBpbsDI5Ia8PiYbYkWVhGKcElHyD8L7
+         lKYhep3Aix6NiJNqcP8O3iLB6Hc4+93YkbysFiBvHIfajtbM58Qh8JqysgJF9Zyfb0UV
+         s2gUgGwfWpVpLl0jRRv1cTZf9MCQ97R8Q6CMX0YYHdttHyYQw9ll0c7nN3L2QR6IJe23
+         pXTf4BYuR0eVxLNSQZKMw7vwacWjwce9V2xeltm0nucfqjzlnGwV0dAG7vPtszJzzzez
+         GR7g==
+X-Gm-Message-State: AOAM530t45/ezqxGfYBOJU8z6olfoUvKCnyJlS8+Fwex0UtRCuxXt2z1
+        8+5mT5vom6hSajF3XD6oRCmOhw==
+X-Google-Smtp-Source: ABdhPJwTVpqE5aEbYXFT63sU9y1zGxi+9b4o6MVy6i9quejmJK/oyroXtRQRCRyj99is3chHPVoCTQ==
+X-Received: by 2002:a17:902:d2c6:b0:13f:1ecb:aefd with SMTP id n6-20020a170902d2c600b0013f1ecbaefdmr7991685plc.50.1634256626178;
+        Thu, 14 Oct 2021 17:10:26 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id x13sm3197813pge.37.2021.10.14.17.10.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Oct 2021 17:10:25 -0700 (PDT)
+Date:   Fri, 15 Oct 2021 00:10:21 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     David Stevens <stevensd@chromium.org>
+Cc:     Marc Zyngier <maz@kernel.org>, Paolo Bonzini <pbonzini@redhat.com>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        open list <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org
+Subject: Re: [PATCH v4 4/4] KVM: mmu: remove over-aggressive warnings
+Message-ID: <YWjG7XJ9rx5qLzm7@google.com>
+References: <20210929042908.1313874-1-stevensd@google.com>
+ <20210929042908.1313874-5-stevensd@google.com>
+ <YWYiJy1Z7VZ0SxAd@google.com>
+ <CAD=HUj5HCdBBU2z=yJCCiAhTj0ARj-8XpLqdVbam7Kt9af+SSA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAD=HUj5HCdBBU2z=yJCCiAhTj0ARj-8XpLqdVbam7Kt9af+SSA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-10-14 at 10:11 -0500, Justin Forbes wrote:
-> On Thu, Sep 23, 2021 at 2:20 AM Ian Kent <raven@themaw.net> wrote:
-> > 
-> > There's a mistake in commit 2be7828c9fefc ("get rid of
-> > autofs_getpath()")
-> > that affects kernels from v5.13.0, basically missed because of me
-> > not
-> > fully testing the change for Al.
-> > 
-> > The problem is that the hash calculation for the wait name qstr
-> > hasn't
-> > been updated to account for the change to use dentry_path_raw().
-> > This
-> > prevents the correct matching an existing wait resulting in
-> > multiple
-> > notifications being sent to the daemon for the same mount which
-> > must
-> > not occur.
-> > 
-> > The problem wasn't discovered earlier because it only occurs when
-> > multiple processes trigger a request for the same mount
-> > concurrently
-> > so it only shows up in more aggressive testing.
+On Wed, Oct 13, 2021, David Stevens wrote:
+> On Wed, Oct 13, 2021 at 9:02 AM Sean Christopherson <seanjc@google.com> wrote:
+> >
+> > On Wed, Sep 29, 2021, David Stevens wrote:
+> > > From: David Stevens <stevensd@chromium.org>
+> > >
+> > > Remove two warnings that require ref counts for pages to be non-zero, as
+> > > mapped pfns from follow_pfn may not have an initialized ref count.
+> > >
+> > > Signed-off-by: David Stevens <stevensd@chromium.org>
+> > > ---
+> > >  arch/x86/kvm/mmu/mmu.c | 7 -------
+> > >  virt/kvm/kvm_main.c    | 2 +-
+> > >  2 files changed, 1 insertion(+), 8 deletions(-)
+> > >
+> > > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> > > index 5a1adcc9cfbc..3b469df63bcf 100644
+> > > --- a/arch/x86/kvm/mmu/mmu.c
+> > > +++ b/arch/x86/kvm/mmu/mmu.c
+> > > @@ -617,13 +617,6 @@ static int mmu_spte_clear_track_bits(struct kvm *kvm, u64 *sptep)
+> > >
+> > >       pfn = spte_to_pfn(old_spte);
+> > >
+> > > -     /*
+> > > -      * KVM does not hold the refcount of the page used by
+> > > -      * kvm mmu, before reclaiming the page, we should
+> > > -      * unmap it from mmu first.
+> > > -      */
+> > > -     WARN_ON(!kvm_is_reserved_pfn(pfn) && !page_count(pfn_to_page(pfn)));
+> >
+> > Have you actually observed false positives with this WARN?  I would expect anything
+> > without a struct page to get filtered out by !kvm_is_reserved_pfn(pfn).
 > 
-> I suppose it shows up in more than just testing, as we have a bug
-> where this is impacting a user doing regular desktop things.
+> Those are the type of pfns that were responsible for CVE-2021-22543
+> [1]. One specific example is that amdgpu uses ttm_pool, which makes
+> higher order, non-compound allocation. Without the head/tail metadata,
+> only the first base page in such an allocation has non-zero
+> page_count.
 
-Yes, but what the patch description is talking about is my not
-discovering the problem when I tested the original change.
+Huh.  I hadn't actually read the CVE, or obviously thought critically about the
+problem. :-)
 
-I have a similar Fedora bug too but that came in some time after
-I discovered the problem when testing a new autofs release.
-
-All it takes is multiple processes concurrently triggering an
-autofs automount point. Because the qstr hash doesn't match
-duplicate mount requests are sent to the daemon which is a
-problem.
-
+> [1] https://github.com/google/security-research/security/advisories/GHSA-7wq5-phmq-m584
 > 
-> Justin
+> > If you have observed false positives, I would strongly prefer we find a way to
+> > keep the page_count() sanity check, it has proven very helpful in the past in
+> > finding/debugging bugs during MMU development.
 > 
-> > Fixes: 2be7828c9fefc ("get rid of autofs_getpath()")
-> > Cc: stable@vger.kernel.org
-> > Signed-off-by: Ian Kent <raven@themaw.net>
-> > ---
-> >  fs/autofs/waitq.c |    2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/fs/autofs/waitq.c b/fs/autofs/waitq.c
-> > index 16b5fca0626e..54c1f8b8b075 100644
-> > --- a/fs/autofs/waitq.c
-> > +++ b/fs/autofs/waitq.c
-> > @@ -358,7 +358,7 @@ int autofs_wait(struct autofs_sb_info *sbi,
-> >                 qstr.len = strlen(p);
-> >                 offset = p - name;
-> >         }
-> > -       qstr.hash = full_name_hash(dentry, name, qstr.len);
-> > +       qstr.hash = full_name_hash(dentry, qstr.name, qstr.len);
-> > 
-> >         if (mutex_lock_interruptible(&sbi->wq_mutex)) {
-> >                 kfree(name);
-> > 
-> > 
+> When we see a refcount of zero, I think we can look up spte->(gfn,
+> slot)->hva->vma and determine whether or not the zero refcount is
+> okay, based on vm_flags. That's kind of heavy for a debug check,
+> although at least we'd only pay the cost for unusual mappings. But it
+> still might make sense to switch to a MMU_WARN_ON, in that case. Or we
+> could just ignore the cost, since at least from a superficial reading
+> and some basic tests, tdp_mmu doesn't seem to execute this code path.
+> 
+> Thoughts? I'd lean towards MMU_WARN_ON, but I'd like to know what the
+> maintainers' preferences are before sending an updated patch series.
 
+MMU_WARN_ON is a poor choice, but only because no one turns it on.  I think we've
+discussed turning it into a proper Kconfig (and killing off mmu_audit.c) multiple
+times, but no one has actually followed through.
 
+The TDP MMU indeed doesn't hit this path.  So I'd say just keep this patch as is
+and punt the whole MMU_WARN_ON / audit cleanup to the future.  I bet if we spend
+any time at all, we can think of a big pile of MMU sanity checks we could add to
+KVM, i.e. this can be but one of many checks that applies to all flavors of MMUs.
