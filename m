@@ -2,91 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3BF842E518
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 02:13:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F136442E51D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 02:16:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234578AbhJOAPM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 20:15:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38040 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229718AbhJOAPK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 20:15:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D117460FDC;
-        Fri, 15 Oct 2021 00:13:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634256784;
-        bh=GXQ6Dh4zhTUPR+A2V7JaDgrHk+2tJmJdA1ZsI5rpSH4=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=EEY5oL1O5M1SLzo2ikY6/dNHRHMQsbn/G2GNKe3rG2gCNG9ropEjn56EM4H/iStEu
-         lYr9xSibCNZHXxen0f6bOPPernLsrg0wy6Oxhdp9PxB/5dcv0JbPTkyqGfEggbBxPT
-         Wz3d9wwoYi/8iVENfi+jfk9aSrFniUM1vJOWt07s1tnJD8R4vpdRfAgyrVny/AeY7B
-         u0Bje2o3RRdjEzzVfsP9oam8mZ8uHpUCN2goeZpn2y85H5Ufr+fs62kDP3vCVrsdwH
-         3+Lb0fDrSu4vNng427LfDuJ3sKSgOfA8qhrMy4OGhn6JtpSbqdnpC72qfHNw4xdOxu
-         0Wy50rjcNXuIQ==
-Content-Type: text/plain; charset="utf-8"
+        id S232319AbhJOASD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 20:18:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59938 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230288AbhJOASC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 20:18:02 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70FE6C061570
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 17:15:56 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id l7so7157798qkk.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 17:15:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=s7GfeS32gI4T5cRoYk29Fyp1Z52NUILY3Xlxh32Z6xs=;
+        b=EZeGtuFzkH8pfPvPiQ9aZxa8E/yfOmG4ICvTAnAZeKbvawjJOAS6han9FQ2hOOXPcQ
+         STHK0u/5AWk+ypYEHZa2BLpEDrWdlEselqXq7vawwTBK9Cz380aliYdgo7znLsMub4Ng
+         t7I1o8INVNl1ytvtaMvaHhGfC9nKEzDTc8ONKlbJia6je4sD82sjkJYswVr3l2sWBvhL
+         gRzBD7/21TROm+5b73pcrPokuNabaNTIKDvhjmirKejQQVjrUgnrjCLN3zfIuPQMJvuO
+         kjBh4TwwzfuGIHJdAGaY8wDwpr9t+QhaT/67Ok9t1V0bkvYAcB/V6i0bSyaA1giiyb3C
+         bmug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=s7GfeS32gI4T5cRoYk29Fyp1Z52NUILY3Xlxh32Z6xs=;
+        b=pdwJNTrcw4xh+ysIs8jfqGCo20flMJB8m1IF228ebQ4/rXkunPe6kBxAE0pP3ARMbw
+         zX5m4UynreKGBRmTXPN48s+mBT2sGRdlswHpgHFvUCl/XcJoaQHJne9G1Ay5MfOFY1ey
+         do8MLie2shLpPMG1W6Hcp/d09ZPveWGvcoaoff8S4lEzC3c5v/DDB0vqsatwJ0oItLa6
+         x515WSHsIA4nsKiZ6FfMWbFvp9UhCtAV7l0Xrad1+XPCX0J9dzJkbR3bmD0o2R0yns4K
+         /6LJBYAfelEhlrrzsFVfXGMevWpnFgiVEUfRvyVq0GU3vkrFzMQignuRbMzVtgGYsYaL
+         EdJw==
+X-Gm-Message-State: AOAM530/ry4+6QjpJdlmP/QIN/tlsjeOgufjeoRnqQyhaejJ+P478m+D
+        7pSXVn2d1mcJwkgMOOLGpJFU8h6De4QnO64sGAzGTQ==
+X-Google-Smtp-Source: ABdhPJy04v77K/HBfyt6r1eUBHzQbcFSDZXxVl24akkIgkNKxr+9V8PP31Kr16nzAYOFxrxe56KwiPOPsHmYaOhUMLM=
+X-Received: by 2002:a37:4658:: with SMTP id t85mr7370061qka.195.1634256955634;
+ Thu, 14 Oct 2021 17:15:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210930095838.28145-4-pali@kernel.org>
-References: <20210930095838.28145-1-pali@kernel.org> <20210930095838.28145-4-pali@kernel.org>
-Subject: Re: [PATCH v7 3/6] dt-bindings: mvebu-uart: document DT bindings for marvell,armada-3700-uart-clock
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Vladimir Vid <vladimir.vid@sartura.hr>,
-        Marek =?utf-8?q?Beh=C3=BAn?= <kabel@kernel.org>,
-        linux-clk@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        devicetree@vger.kernel.org
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+References: <20210829154757.784699-1-dmitry.baryshkov@linaro.org>
+ <20210829154757.784699-8-dmitry.baryshkov@linaro.org> <YV8WsQb9H7+CaLjP@ripper>
+ <4614587c-b87a-4375-cb6a-6af6f5462c6b@linaro.org> <163415465484.936110.9292145029740247591@swboyd.mtv.corp.google.com>
+ <070b1b25-3718-5f3a-869b-a3954fdcc7c5@linaro.org> <163425629248.1688384.14367506222343416862@swboyd.mtv.corp.google.com>
+In-Reply-To: <163425629248.1688384.14367506222343416862@swboyd.mtv.corp.google.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Fri, 15 Oct 2021 03:15:39 +0300
+Message-ID: <CAA8EJpo4SCSPMVstxO_eTGHVNCEkhguJDcfE4=6Y3YSDQ+SeOw@mail.gmail.com>
+Subject: Re: [PATCH v7 7/8] clk: qcom: dispcc-sm8250: stop using mmcx regulator
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        Jonathan Marek <jonathan@marek.ca>,
         Michael Turquette <mturquette@baylibre.com>,
-        Pali =?utf-8?q?Roh=C3=A1r?= <pali@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Date:   Thu, 14 Oct 2021 17:13:03 -0700
-Message-ID: <163425678347.1688384.10695189000353676651@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:COMMON CLK FRAMEWORK" <linux-clk@vger.kernel.org>,
+        "Bryan O'Donoghue" <bryan.odonoghue@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Pali Roh=C3=A1r (2021-09-30 02:58:35)
-> diff --git a/Documentation/devicetree/bindings/clock/marvell,armada-3700-=
-uart-clock.yaml b/Documentation/devicetree/bindings/clock/marvell,armada-37=
-00-uart-clock.yaml
-> new file mode 100644
-> index 000000000000..175f5c8f2bc5
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/clock/marvell,armada-3700-uart-cl=
-ock.yaml
-> @@ -0,0 +1,59 @@
-[..]
-> +  '#clock-cells':
-> +    const: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +  - clock-names
-> +  - '#clock-cells'
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    uartclk: clock-controller@12010 {
-
-The uart device is at 0x12000 and the clock-controller is at 0x12010?
-This looks like a node is being put into DT to represent a clk driver.
-Why can't we register a clk from the uart device driver itself? I think
-we talked about this a month or two ago but it still isn't clear to me.
-
-> +      compatible =3D "marvell,armada-3700-uart-clock";
-> +      reg =3D <0x12010 0x4>, <0x12210 0x4>;
-> +      clocks =3D <&tbg 0>, <&tbg 1>, <&tbg 2>, <&tbg 3>, <&xtalclk>;
-> +      clock-names =3D "TBG-A-P", "TBG-B-P", "TBG-A-S", "TBG-B-S", "xtal";
-> +      #clock-cells =3D <1>;
-> +    };
-> --=20
-> 2.20.1
+On Fri, 15 Oct 2021 at 03:04, Stephen Boyd <sboyd@kernel.org> wrote:
 >
+> Quoting Dmitry Baryshkov (2021-10-14 02:53:41)
+> > On 13/10/2021 22:50, Stephen Boyd wrote:
+> > > Quoting Dmitry Baryshkov (2021-10-07 09:16:13)
+> > >> On 07/10/2021 18:48, Bjorn Andersson wrote:
+> > >>> On Sun 29 Aug 08:47 PDT 2021, Dmitry Baryshkov wrote:
+> > >>>
+> > >>>> Now as the common qcom clock controller code has been taught about power
+> > >>>> domains, stop mentioning mmcx supply as a way to power up the clock
+> > >>>> controller's gdsc.
+> > >>>>
+> > >>>> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> > >>>> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > >>>
+> > >>> Once we merge these, I expect that the boards will start crashing if
+> > >>> the kernel is booted using an existing DTB?
+> > >>>
+> > >>> Is it okay to just merge the first 6 patches in the series now and
+> > >>> postpone these two until we've had the dts change sitting for a while?
+> > >>
+> > >> Sure it is.
+> > >>
+> > >
+> > > What's the merge strategy? It goes through arm-soc?
+> >
+> > I think this should go through the clk tree. There is little chance of
+> > conflicts.
+> >
+>
+> The other thing that concerns me is that we don't have backwards
+> compat code. If things are going to start crashing that's not very nice.
+> Is there some way to make it work with old and new DTB for one release
+> so that we don't have to worry about this problem?
+
+I have to admit that I did not check that, but without the patch 7 the
+dispcc and videocc would be compatible with the old DTB. The 'supply =
+"mmcx"' would ensure that it is used if it is defined.
+
+-- 
+With best wishes
+Dmitry
