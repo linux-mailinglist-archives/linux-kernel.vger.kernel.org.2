@@ -2,138 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D72242E733
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 05:24:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1574842E732
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 05:23:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234152AbhJOD0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 23:26:03 -0400
-Received: from mail-eopbgr1300119.outbound.protection.outlook.com ([40.107.130.119]:42976
-        "EHLO APC01-HK2-obe.outbound.protection.outlook.com"
+        id S234135AbhJODZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 23:25:35 -0400
+Received: from mail-oln040093003010.outbound.protection.outlook.com ([40.93.3.10]:20990
+        "EHLO na01-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233893AbhJOD0C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 23:26:02 -0400
+        id S233893AbhJODZd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 23:25:33 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GQVjG54TqkIl+nPelgGPaRmup2RGWY6fvE3ZSDWcwUzgV0jwzuBCbQtBaA3B8qe6K5IVv/ZEwEesQibV4HC2sq2CH1GPAL/PrHqww2+6y1tvjVLoECYC0rbQSMZfn2F0a1uPTTz5MDLMWLX515Orq6VA9wwSNea1d7esfJZDzE1wZGB5obm3LGkZ2DHEC9rCkY1J9dbNa+5TwsQORBcSy6twwlq6poO08BYRMvWIPAgwofNBJWJLW5COxeKSu9UT8eD5uSmD0HvdqS0aeKyISx+24Jz5JS+5cW1Xx3axUZklZ81HGXpaKdMiWXp1OUYUI5UY427jZl0nH4PXz05eEA==
+ b=BqEyxudXYUZApGzmQo8nt5hPWf/oyP5V0pdLq2dQaNu1c2lXLBVqOr2vwAdw0eXOHAxzJC3IAo5QDrFXb2X+nJ1NpQJnzNeNn8a3tmBILj3zqHK4sPLPYpN6i+jhoRyPJllBes1sPIGGkuxQFRIC2BoNXPukJteBepmQT833NSIjcx+idmPTUMcL43AMHIk4s2/aT0vsTGYJ0oISrcQ7rXxKnUJ38ahA3wv6+bqak3E9PyjTrHFtGiwIUeNT8cZTszpU6zlv0zAKvUiE32un6WdM49VyGA5EhP33DTwsn68GEqN5gj9KmKtDqVBIA82Fr46ytw6wSApq+xo5isnOpA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=cW6ax0p1G1cwJsRZpqcEyPuJQ/7WSFdyM0bT0RIOwQc=;
- b=m+N8O51/5T2LnY0X464LHPomGGdzZ+fRRTK97Zc7DhJv18VLn7P5XUWG/7uz5RVFKPReqmFyHmViJsWulHFjgfyjcOueB87+xUndOVFmxf3zSJ72OrYiJoIMXXyWb9ONZ6I5d26RM6Nx/1no9BJga2POwiv9cU2GLLv4JVtHrTiZ2Ji4EqzCE/PGZlB31W3/Wdy/jWCLi7wFTyTmMgvA3RqP+Y43R6S8oNfPOtW6NPz+HZWjLvRIFU7QQxf+1f44sJzQxHz0PbMuJZSGwwtNQR4JXKlGD9sMxKgKC0fN3krGp1TUs2njvFbachkMjYi8wjUsvGCcac6zEV+ZVIZSbA==
+ bh=V7nut9HyzwIoHdElj+7Jt5Wc3F6zk5BqWBSKJnGaJc0=;
+ b=NBBgLQK9DJJ4G2UnC4YZFCHfsvJ3pWBAcq5YeJLB2l4NLj9jmDuAKJNWXbCWHNgpbYF1KSMu7AMti4nV3elveF2VU2KqT0Jj0LPCfinF9H0wks/gSM9XP0DlyVy561ZXP46ij5REuFh7usyZfEUGaO2IDlQm5jSRqgEQJgAn9j5BJJ0CqKj7UiBzDEeDCV3V31mWpHaJMKO195xn3DJNmAbaicyxu2mYSNHXz1g+lBOYMD+wN7WkBc0EiMXoS+rK0SIExNFfT8ZdfcoyNJLyDgDSCjsDfMtZnkCKEn4XsCDU1XbbmzYWMnEB6gqgdnLldBmpQH5C6fbvwM6SzEQtvQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
- s=selector2-vivo0-onmicrosoft-com;
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cW6ax0p1G1cwJsRZpqcEyPuJQ/7WSFdyM0bT0RIOwQc=;
- b=PZ2KfZOGwiUCFwYjQtc4DsmaOt4yEVlF7eGZ+KuIYS8PjXffsUZcA3gqs5NiBFDbE2POg0oS7DWOMdUpFiu5ilf1IVKaT8gjugcexppZLTqD8/hwwmx3/O4broEJR1kxuh330VVT2R6CUM2EN8oBefHUQZ2si3hGPb8Sj6Pmj8U=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=vivo.com;
-Received: from SG2PR06MB3367.apcprd06.prod.outlook.com (2603:1096:4:78::19) by
- SG2PR06MB2859.apcprd06.prod.outlook.com (2603:1096:4:18::17) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4587.20; Fri, 15 Oct 2021 03:23:51 +0000
-Received: from SG2PR06MB3367.apcprd06.prod.outlook.com
- ([fe80::fc12:4e1b:cc77:6c0]) by SG2PR06MB3367.apcprd06.prod.outlook.com
- ([fe80::fc12:4e1b:cc77:6c0%6]) with mapi id 15.20.4608.017; Fri, 15 Oct 2021
- 03:23:51 +0000
-From:   Wan Jiabing <wanjiabing@vivo.com>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Mikhail Durnev <mikhail_durnev@mentor.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Wan Jiabing <wanjiabing@vivo.com>,
-        Joe Perches <joe@perches.com>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-Cc:     kael_w@yeah.net
-Subject: [PATCH] ASoC: rsnd: Add of_node_put() before return
-Date:   Thu, 14 Oct 2021 23:22:10 -0400
-Message-Id: <20211015032305.3771-1-wanjiabing@vivo.com>
-X-Mailer: git-send-email 2.20.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: HKAPR03CA0028.apcprd03.prod.outlook.com
- (2603:1096:203:c9::15) To SG2PR06MB3367.apcprd06.prod.outlook.com
- (2603:1096:4:78::19)
+ bh=V7nut9HyzwIoHdElj+7Jt5Wc3F6zk5BqWBSKJnGaJc0=;
+ b=HJmiFVnsMAeAcpn/aZ44GVjIRMJgLAld/7s+FdLtC3g/0kaFsSSJltWln+UWbMt0oVo1J9gNaLdPF3cRefjOeMTNXz/8heFCapjteL7NhMMUWemiTW33EnKw8DN10T9X2cD3awYD25kGNcCEzWwKhOG5Enr1RPrKQI8dNcS98Fc=
+Received: from MWHPR21MB1593.namprd21.prod.outlook.com (2603:10b6:301:7c::11)
+ by MW2PR2101MB1770.namprd21.prod.outlook.com (2603:10b6:302:8::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.5; Fri, 15 Oct
+ 2021 03:23:21 +0000
+Received: from MWHPR21MB1593.namprd21.prod.outlook.com
+ ([fe80::69df:9264:65fa:5415]) by MWHPR21MB1593.namprd21.prod.outlook.com
+ ([fe80::69df:9264:65fa:5415%6]) with mapi id 15.20.4628.010; Fri, 15 Oct 2021
+ 03:23:21 +0000
+From:   Michael Kelley <mikelley@microsoft.com>
+To:     Sunil Muthuswamy <sunilmut@linux.microsoft.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        "maz@kernel.org" <maz@kernel.org>,
+        Dexuan Cui <decui@microsoft.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>, "hpa@zytor.com" <hpa@zytor.com>,
+        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
+        "robh@kernel.org" <robh@kernel.org>, "kw@linux.com" <kw@linux.com>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "arnd@arndb.de" <arnd@arndb.de>
+CC:     "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>
+Subject: RE: [PATCH v3 0/2] PCI: hv: Hyper-V vPCI for ARM64
+Thread-Topic: [PATCH v3 0/2] PCI: hv: Hyper-V vPCI for ARM64
+Thread-Index: AQHXwRPFtsmvzYjWyU60QghbJrqU5KvTX2Uw
+Date:   Fri, 15 Oct 2021 03:23:21 +0000
+Message-ID: <MWHPR21MB1593DB0B2A35C3C6759E24DDD7B99@MWHPR21MB1593.namprd21.prod.outlook.com>
+References: <1634226794-9540-1-git-send-email-sunilmut@linux.microsoft.com>
+In-Reply-To: <1634226794-9540-1-git-send-email-sunilmut@linux.microsoft.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=e8e169db-070b-44af-a0a4-022ffc2e7eec;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-10-15T03:00:14Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: d680a608-f265-458b-670e-08d98f8b23ec
+x-ms-traffictypediagnostic: MW2PR2101MB1770:
+x-microsoft-antispam-prvs: <MW2PR2101MB177087BEEB13F382AE930973D7B99@MW2PR2101MB1770.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2399;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: hdwMs282I6+Z9S+4NRdQNJ3a6oafSkqP+CDVdzbUH3QYhweIZqrrKb12DP2Si0LWS5mF6JN0+cZG5eoZMRwfZDnSHMKGVN14CrFmD9DnR2SRV76PM+6mE7XDfJ+ELJ5jniNDVCDBRT2QvZgHCB50ls/wN7jYF+tSZH9HyelpABJyUWMtfDQ5FpCAWUl1EhkV250g2cZLfniUyBktDMnOyioaqxKPcvUvavFa1V5LSLG0IjQlCSdspRRNGVfju2lxH7dFQHu1Bzrnt3yES6CUKa83hgASzX23seaVbJvws1nWHHcD1pQVO74I/19LjEBXQB6d/NVziTGlO0awAHEDklxg2oGJDsAwWurXPbShnVqx9mZuAEgtKbUrY8/pvY6LyjveRa3qpFX+0UENP19gMFHhA9qsLE3eXQXPgN0FClDpccZiqtliWj9RYrcH1jTFyWWKp/d/XEj9GGf7iS9OD8930A/a1+w4fjqh3RZN6Q3+TKJb0Uit77o04MzcUMOrVdZtaYXP6SKumfgmntjsRCCHwfMgKuL0TqVJFgeQ8IgLGbXxzcR0WDNj7CFWz4NiNzS7IWKjHlVbWw+Ly0jLzyydLiAfuRobkLfTPSndsIM/lzOUsqIGiNxF+sU2ZfNnVY31M2mFmlQy9c3uMvU85lgiKHkaTE/sdFbor0uTVOo3f1dLLrsPI1RKWpWUB7rrQimqBKYxoksJiOFY9Egs0SAZmQFrD8o26odVa4iTcG4=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR21MB1593.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(186003)(921005)(86362001)(26005)(4326008)(55016002)(52536014)(9686003)(508600001)(7416002)(83380400001)(33656002)(5660300002)(8936002)(122000001)(38100700002)(6506007)(71200400001)(76116006)(82950400001)(10290500003)(107886003)(54906003)(110136005)(8676002)(8990500004)(66556008)(66446008)(7696005)(82960400001)(2906002)(38070700005)(66476007)(66946007)(316002)(64756008);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?eQ27Vvq+s5SmKspaDtaQs2EPwclas1MQbNzCKX7hJZBf3JZC/1u7lkXccGx7?=
+ =?us-ascii?Q?2t2wa0hF+IAVN8vbrv4H58pTBa8eRspFig4uh1Zep0bu8FUkBGuob/s0KoKW?=
+ =?us-ascii?Q?y2gmRsgpMfR16IGEiqySxuni+AlYI6ShMQzqwgSXPB9rFdQDcYgIO0QTEMko?=
+ =?us-ascii?Q?+zX199gLthpsE9ewU4kAGs0+mgdpTD+hXCMe6IUZL955j0N/7K8eZNX6+wJl?=
+ =?us-ascii?Q?8fJ7O+1gKohBLWkhMqkgUk34TPVwI8qjTqgSVwHJV5guhGERb9LhC/NNnYho?=
+ =?us-ascii?Q?yEPTjnAEYi7jF/1oTAcJ08ROt6EwBfGTImcD4P5ZtXvkeQ753cprrmWAlWe2?=
+ =?us-ascii?Q?LNBf1QMI/eA/mtSZLRqU3TUMRPhKITA0h5BqP3Tl8pPOuVwV6+anJjGC2K/4?=
+ =?us-ascii?Q?gDQWiSgnR7qcSBUgjHsI1MjIH46xlPETOJA5297yCVbEKSYrqHSY05Zq08/M?=
+ =?us-ascii?Q?Nz4PfCmxCk1KRWKR20ylpgWSTAX2HQsrf7QE1gKFsDG17WEjsccI7nPoOwa+?=
+ =?us-ascii?Q?gFFFNP9fk6g85gJFFAhXeFLElmFh6xbSMNt6lyi0Drd0f88ioOaqGbACNPVj?=
+ =?us-ascii?Q?OZXGrM4FfcVPAIfLPv6XgXTisGutDDb2b2qxxNT3LB5rEAVhrwgTFcO4zEj3?=
+ =?us-ascii?Q?UoyGcR6f+opC5BegAxmUdsWOLz98NmIOLStSY/H0cD01+wWsTLHMFjc8CAXp?=
+ =?us-ascii?Q?nYCZonosfVlXqJZNykD490Wt/m2oj7UoN5QMNDtCVxhoWWcwThgBR3Ts6aYl?=
+ =?us-ascii?Q?jFhInteVNiAHLYf6vymY3BIVhe4vA1PiSWUAcOiX7aYpHML9OZjYMiEvYsN1?=
+ =?us-ascii?Q?MNXg3ojtAcj+CxAVFnmTHmMkGFgLx6YInNMbbiT3VHbqK17rjq+rEEJ7ejLj?=
+ =?us-ascii?Q?x5qpZxJpBRm8fOtUtb+jtCWTXGEs4tuUf4kp96S/dCALs1UZFnJkEntHEnMi?=
+ =?us-ascii?Q?oc4s5aaHM+xCxoGfxZoRAhh4YA9npzSnjbsabGbwKmZZjsXOJqwlfgoixHho?=
+ =?us-ascii?Q?lcKDTOKRdYhac/g2uBS3WpBwpBHw7PB25RbUxsMiViGElIPzQsw+iaswm7bV?=
+ =?us-ascii?Q?TkkW4dVwM6AlAwX03rQj1VcejJ06A0iFw9+qfmbQ6O5PPlEbLPwDHrHntGNl?=
+ =?us-ascii?Q?/yerQd3U0V1qvjgzrt2xeYwRMb9LkJVGKBclrtNM8VBX+7MdlI+Dc1xZMcDr?=
+ =?us-ascii?Q?4hRB4BConUAd0uWDwX0c4WdANWf6fNb+Nk6pqQEPtivJF4MO5Bqmt76zkxQg?=
+ =?us-ascii?Q?IBXefqV8QgIagcQhtPHKYt54iSPUK7RRyMy6EPXH3IAQp612eKP8XPckOH3G?=
+ =?us-ascii?Q?34W51dEfmqUjPHyOdyIdlY6QIs/XQokiuEMuFc/adyCvqCEsl5+UO4wATJ/E?=
+ =?us-ascii?Q?fZcr4KKbsemNMae3aFVNvbNLh9Vc2g+J31yolnUjRNDsP4JotlwBRobx2BQs?=
+ =?us-ascii?Q?rjqOvLhgqFHRfdk6Y4/ElbzONnKqT+45Fu4NQPHrjGOOWSTFGg+PBrDPIa4N?=
+ =?us-ascii?Q?PzJFztJhsL6SDS2hnEZWUp2rjTse2UquD8xG4TYQirOc8wqiqxm/dDBLXhUg?=
+ =?us-ascii?Q?ezFaUBm+d6uzep0GRTEx6kYFXwIe6PrA/mjE6aVPlJQpAX9ZpxkeYOTgW7tr?=
+ =?us-ascii?Q?f9kI40fxSg6rfHAjkYIcaISDD8xnlEfG1KvLJqYPJyHnL6VuiZc1oBsCT/ym?=
+ =?us-ascii?Q?a+Sm1Q=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Received: from localhost.localdomain (203.90.234.87) by HKAPR03CA0028.apcprd03.prod.outlook.com (2603:1096:203:c9::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.10 via Frontend Transport; Fri, 15 Oct 2021 03:23:49 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 861b0a24-afb3-46ed-5d2d-08d98f8b351c
-X-MS-TrafficTypeDiagnostic: SG2PR06MB2859:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SG2PR06MB2859677D496D90F9E6BD6DE5ABB99@SG2PR06MB2859.apcprd06.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:935;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: OUmeqCilvSvIjnAsk6ysjkH6+G8CO+7CDmDOnUceJPUAkbQp8TkediXOaBGzlRX3aAexGcb7qT4G1ODr3zSkOGejgL00FlDs6Q479CkuXXSS2SAQLd7Op/uSNM4gUniW7B+4xafQmTCHRd45Y8tFNbJJVNGPVac5vZwt8t5C5q+T4m1fKPD/Xzr0pgVTTKt/AmkcLBbsn+rgXoayVwvqA4u0bWBcunIfOBRfToHtxWKXVCDsXx37sRu3zZm5ocnLJcBzsNesviXeCxXKhzSRUoPQZNLbkSOSroe/NoA2b46pF5LXQIFikglfOpl8Pop64KV4X7wPpp+aP7/ci/6+jjCLSiLqL8GDTAsXXqnl6h7QFHJcVcoJ6VO9o4KWvN7whFLualtGoK+Fzthn3AWEQHEdyCnRsKv3xR1eC748QXL4hcbyAAxvSiZw9dXZuhS1+aGvkt3djWp6yBzDztSJftb+nlqlUL/RFVxSRvi/3ix8JpHR8C16cFUuBLeE/93LITczrKCCKiR1kRJb4Yw2jitc1zfEE+HQwCuSrznlF8A/PN3kPUgaBJPact7I7b7E4MjR4ovW/AjmUXdnQqZBKbh+vH6rj9Ejw7sFT3uRRH1YFQW9t8gwvqrtDUyWlHjbUE9sfvb3HRtD6SizSZ2mLbhVxRAMtlMiB1DttqV4cAlxHHbRD8mwOFMA9oWY3isO17yBfbDlvrVwdrNbjxZMUA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR06MB3367.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(6486002)(83380400001)(4326008)(956004)(66476007)(38100700002)(38350700002)(2906002)(6666004)(921005)(5660300002)(316002)(6512007)(52116002)(1076003)(66556008)(2616005)(4744005)(36756003)(6506007)(110136005)(8676002)(86362001)(508600001)(8936002)(26005)(66946007)(186003)(7416002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?OIjxUlV4xYD7xPuwWPpM+EQCt8H8I5M36BDoOPM9QsGe/LP1fCeIxflLoM1H?=
- =?us-ascii?Q?T+NUJvOFdg8Mubds4Uu3JLG870QGp2wxQOtcnxJhnjbodKD+qkP0lD1LrUHC?=
- =?us-ascii?Q?BHv99cwBtLZQ/dVqPT2hDGS7LJzAB2nlUQeEYuz/fM4O5aQvAMO+IyK6kAjF?=
- =?us-ascii?Q?PagRwoNLetnA3DSHiXsTNGTn2T9s/RdR7RkfR5FVSv1VUxcD2qA4kI9xHezK?=
- =?us-ascii?Q?SL3N1q/IOK+sV1YqZ6dS0NtmhFhHuBga6wFYRZUYSOoXWwWxQM2+6VSKkQnf?=
- =?us-ascii?Q?qcLqKI8cN553HYaIlfoO7Le2cLfgfrBBBZPm3AbRoUjOJDdQuq1yOhie7JrL?=
- =?us-ascii?Q?TA0jdPlK1qPqYzu1NO0+XRPo01oSebHyIRytAugicu6XqplVhePYUybCSePD?=
- =?us-ascii?Q?5+kFPkHAoHUFZOqWbBmuNbLJifo/7eRdWtJPLQoCY/elkOf/j5u6y+jJ9nXN?=
- =?us-ascii?Q?PK1ha69KJB5ZOwJcIJtk/qBHSl9/ojlZopnXs49wKldS0a/ccBwxV1ZPEgzw?=
- =?us-ascii?Q?HDN2aCeqMZTyf7l4rxiHnF+x3UkuctSexjC1zebuJRt0Bu97WUQYeshnkzKz?=
- =?us-ascii?Q?Tf8sjZW8wS/36/fOs/BuOC8IJF9LSp4pZl2B761Yn5qBdvLlTvtjvX0pqalJ?=
- =?us-ascii?Q?5woqTvjfAP3jZWRbr5l41r7pnPCnE8Ai3M91p+K2K9BrVniIOdBofo4xHSLr?=
- =?us-ascii?Q?sIri6p1hrgW35axmueDrJAthfSk59nMlorxQDNguTeJRl7WHxU+jY2IT4OtI?=
- =?us-ascii?Q?M/MUUfcG1KZkniCmgQyVcOB1Egiv4qLx/1zszlx6ET815bX2EzdcvLYRJqxg?=
- =?us-ascii?Q?cn0bN+5pkiL8ZHj1L43d2DsLLAftomAg09ZQx5ey21h9EpNtO86bMgiHT3i5?=
- =?us-ascii?Q?Kc9Rn1+SgHH0dSWy16xt6gst7IMiQX/T7PU7Sg5lMSo+pQXmgyX3lZoksP1x?=
- =?us-ascii?Q?3uOoBDyejLl7vcwWy4zFIVFhwD95G9bbqxQHp8D8BC6mE7S8dyNpZ24thzj8?=
- =?us-ascii?Q?F9jbDKBxbXh0FdYMQJcM2v+AzO86aUcTgsQ+rw3gMnK0DzBuGSuYkycFVMsf?=
- =?us-ascii?Q?MXnB9fNMvBQHmrUPVJZwKo7J/qh4ERjcUqtJut/42lGaB8vtzrRzspDvnfCh?=
- =?us-ascii?Q?rlotaQK8IzYpIEm+CLxhE0IhZwl41QVXzAjFIEWqVSL2IkECjcamXAGwgfaU?=
- =?us-ascii?Q?W2Jd6ku0DSqlUOcU0SgiYe7yj/dd5p6i/Tf1zW/EoahKLUrte6TmJD84P5NX?=
- =?us-ascii?Q?wPAfjkkpwzmp9llN0Lu1PsH/IgncMgb0pxJCydGiHGvhyDKd+kh4cRl4IW8J?=
- =?us-ascii?Q?SsZ5uVxHW61/gWVqBzLoxwGa?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 861b0a24-afb3-46ed-5d2d-08d98f8b351c
-X-MS-Exchange-CrossTenant-AuthSource: SG2PR06MB3367.apcprd06.prod.outlook.com
+X-OriginatorOrg: microsoft.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Oct 2021 03:23:50.8200
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR21MB1593.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d680a608-f265-458b-670e-08d98f8b23ec
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Oct 2021 03:23:21.4018
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: jnGtCienE34ObXwy7jBDq0pK5DtWWiAmI5gz7NOVp0L7NgFH+p2q2+gC0aSkYjb0E0QabtKTohtF+hCYvzXuOQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SG2PR06MB2859
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Q3mgD9CC9d/psEDLhknmvg65jWXAFamuUSq89LjBpRGXVQXnfFZN+I0RWqR0+5T+eDWBkFq6CQ6pDfgGX+eueOaM1jlqQ/vLOBWNoZC5R+E=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR2101MB1770
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix following coccicheck warning:
-./sound/soc/sh/rcar/core.c:1223:1-23: WARNING: Function
-for_each_child_of_node should have of_node_put() before return
+From: Sunil Muthuswamy <sunilmut@linux.microsoft.com> Sent: Thursday, Octob=
+er 14, 2021 8:53 AM
+>=20
+> Current Hyper-V vPCI code only compiles and works for x64. There are some
+> hardcoded assumptions about the architectural IRQ chip and other arch
+> defines.
+>=20
+> Add support for Hyper-V vPCI for ARM64 by first breaking the current hard
+> coded dependency using a set of new interfaces and implementing those for
+> X64 first. That is in the first patch. The second patch adds support for
+> Hyper-V vPCI for ARM64 by implementing the above mentioned interfaces. Th=
+at
+> is done by introducing a Hyper-V vPCI specific MSI IRQ domain & chip for
+> allocating SPI vectors.
+>=20
+> changes in v1 -> v2:
+>  - Moved the irqchip implementation to drivers/pci as suggested
+>    by Marc Zyngier
+>  - Addressed Multi-MSI handling issues identified by Marc Zyngier
+>  - Addressed lock/synchronization primitive as suggested by Marc
+>    Zyngier
+>  - Addressed other code feedback from Marc Zyngier
+>=20
+> changes in v2 -> v3:
+>  - Addressed comments from Bjorn Helgaas about patch formatting and
+>    verbiage
+>  - Using 'git send-email' to ensure that the patch series is correctly
+>    threaded. Feedback by Bjorn Helgaas
+>  - Fixed Hyper-V vPCI build break for module build, reported by Boqun Fen=
+g
+>=20
+> Sunil Muthuswamy (2):
+>   PCI: hv: Make the code arch neutral by adding arch specific interfaces
+>   arm64: PCI: hv: Add support for Hyper-V vPCI
+>=20
+>  MAINTAINERS                                 |   2 +
+>  arch/arm64/include/asm/hyperv-tlfs.h        |   9 +
+>  arch/x86/include/asm/hyperv-tlfs.h          |  33 +++
+>  arch/x86/include/asm/mshyperv.h             |   7 -
+>  drivers/pci/Kconfig                         |   2 +-
+>  drivers/pci/controller/Kconfig              |   2 +-
+>  drivers/pci/controller/Makefile             |   2 +-
+>  drivers/pci/controller/pci-hyperv-irqchip.c | 267 ++++++++++++++++++++
+>  drivers/pci/controller/pci-hyperv-irqchip.h |  20 ++
+>  drivers/pci/controller/pci-hyperv.c         |  58 +++--
+>  include/asm-generic/hyperv-tlfs.h           |  33 ---
+>  11 files changed, 373 insertions(+), 62 deletions(-)
+>  create mode 100644 drivers/pci/controller/pci-hyperv-irqchip.c
+>  create mode 100644 drivers/pci/controller/pci-hyperv-irqchip.h
+>=20
+>=20
+> base-commit: e4e737bb5c170df6135a127739a9e6148ee3da82
+> --
+> 2.25.1
 
-Early exits from for_each_child_of_node should decrement the
-node reference counter.
+At a micro-level, I've reviewed the patch set and could give my
+Reviewed-By, though someone more expert on IRQ domains
+than I am should definitely review as well.
 
-Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
----
- sound/soc/sh/rcar/core.c | 1 +
- 1 file changed, 1 insertion(+)
+But I've been thinking about the macro-level organization of
+the code, and the handling of the x86 and ARM64 differences.
+Short of creating two new .c files, one x86 specific and one
+ARM64 specific (which seems like overkill), there's no getting
+away from a few #ifdef's, and indeed pci-hyperv.c already
+has a couple.  The problem space is just messy.
 
-diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index 978bd0406729..6a8fe0da7670 100644
---- a/sound/soc/sh/rcar/core.c
-+++ b/sound/soc/sh/rcar/core.c
-@@ -1225,6 +1225,7 @@ int rsnd_node_count(struct rsnd_priv *priv, struct device_node *node, char *name
- 		if (i < 0) {
- 			dev_err(dev, "strange node numbering (%s)",
- 				of_node_full_name(node));
-+			of_node_put(np);
- 			return 0;
- 		}
- 		i++;
--- 
-2.20.1
+So if that's the case, then I'm not seeing much value in having
+the code in pci-hyperv-irqchip.c broken out into a separate
+source code file.  I did some playing around with organizing
+the new functionality into the existing pci-hyperv.c with the
+needed #ifdef's, and it seems a bit cleaner to me.   The new
+.h file is also eliminated, and there are other small simplifications
+that can be made by having everything in pci-hyperv.c.   With
+this reorg, there are 50+ fewer lines added (though some of
+the savings is admittedly just source code file headers).   I
+can send you a .diff of the reorg'ed code if you want it.
 
+Also, a good bit of the code under #ifdef ARM64 will compile
+just fine on x86, though it wouldn't be used.  It's actually the
+ARM64 side that more naturally fits the Linux IRQ domain model,
+with the x86 side being the special case because of the quirks of
+the x86 interrupt architecture.  When thinking about the code
+from that standpoint, it's another reason to put the code all
+into pci-hyperv.c.
+
+The best overall structure to use is a judgment call because
+there are tradeoffs for any of the choices.  There's no clear
+"right" answer.  As such, my preference to combine all the
+code into pci-hyperv.c is just a suggestion.  I won't try to hold
+up accepting the code if you decide you want to keep the
+current structure with separate pci-hyperv-irqchip.[ch] files.
+
+Michael
