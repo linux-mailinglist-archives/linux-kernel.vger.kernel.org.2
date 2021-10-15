@@ -2,69 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4858742F20F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 15:24:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDDF042F215
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 15:25:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239380AbhJON0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 09:26:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39852 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239368AbhJON0N (ORCPT
+        id S239362AbhJON1V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 09:27:21 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:34023 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235985AbhJON1T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 09:26:13 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA4B1C061570;
-        Fri, 15 Oct 2021 06:24:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Transfer-Encoding
-        :Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=Vf35v0bqiZzdiWrXKHoxlWqdW5cbp+8y9iPSBh82fTg=; b=20134lrxVbhWLR74xnpZwFl2LP
-        MFiVJpXssduTGdPS5Ydo2aYJ1BJiBhUjQ3glVfIgIICFRofxfIbNZuYf/ROs4LyoeIDZb98e+JDD8
-        zurbvXysVzqrxNrpe4EYfMwDkHj3smo938qwbOCgcE2TPLQZOG6F5XbotvFb9fAvPdbmRDsDrHV2t
-        NZB9X0gnYB4CELZE7XXTNCSvoojH9DO7L65UGwxS/oti0YkDdymrV7KuAGvH4yl8S/pu5DHGV6/do
-        2+HaZVf2PecgUha6qUWUun53JR8YGo6IiDrPMOGTBv9JxL2sSzlP5TWYxYpBUCZZY/8d09NO4xnqm
-        JCxfl+hQ==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mbNBs-007Bod-NR; Fri, 15 Oct 2021 13:24:04 +0000
-Date:   Fri, 15 Oct 2021 06:24:04 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Zqiang <qiang.zhang1211@gmail.com>
-Cc:     Christoph Hellwig <hch@infradead.org>, willy@infradead.org,
-        akpm@linux-foundation.org, sunhao.th@gmail.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] fs: inode: use queue_rcu_work() instead of call_rcu()
-Message-ID: <YWmA9OQgPHlZt2lx@infradead.org>
-References: <20211015080216.4871-1-qiang.zhang1211@gmail.com>
- <YWk195naAMYhh3EV@infradead.org>
- <bcc1c2ec-e3f9-34b2-659e-b71fd149f677@gmail.com>
+        Fri, 15 Oct 2021 09:27:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1634304313; x=1665840313;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=rmf3/CTvHOYsMOoYG1qTohpi8i7hVFFCkcZosN22AQ8=;
+  b=IXEHBXgrI9gfx8+4BvjkLfjgQv+zE32/+MuI0COr5BEr5rciJugKo3vq
+   LlIgSPCDANIEC9rtLs5KGl2/hqv94JUZ3XHP3jkOv6qHyfGrn+GUuy0wq
+   0x3zFQtF3oU6b9FUuDxY6ENBUGP+v1jzlVYEPnOEH7sDWgoESqPxX982X
+   xQtVV4njjNG7isldrsrvjRndEtfyaxzbin9xs/wUkiNPMVfonH2/EwE/T
+   OtKtna7j4jLtLtes2TYERkk8kAhW1Ffhk3CJiG1vY/jBaY54O9NIGuSqi
+   bQIRak2eCIJoauTuMUxepo6j9qXK/c1w8w9Ee7FQ52klsnaWddy+yQII3
+   A==;
+IronPort-SDR: j/LE/Cbu3hNCnIgHOntnkSC0+XsWCRvmhrQTGfAjDnBNJkRUjgB5E/BlQKzPrcQYXa6OQ2izWS
+ Yi9hqtgYioTPJsefY0yD0QUJ4vHSSiKCxKdRl8dFhnEr9dovQGEITVgo+zEY0PA0xKmaa0R+We
+ 0vqFeFX998hhA6fGMklqfQM3TiDB0n9uOvYwPzQnjXZvBcHL46AwGJXfyFcLuPCLR/xwxwrKZj
+ JsSHKR9hmbU9c6gxo4E+0H87n/QAdXSitPLhJ8RsC3yBviaRQwLkR9+kaHH7SEZG1TOE16zeM6
+ 5R+ZARUCQ6N6e/P96XXh4FId
+X-IronPort-AV: E=Sophos;i="5.85,375,1624345200"; 
+   d="scan'208";a="73075269"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 15 Oct 2021 06:25:12 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Fri, 15 Oct 2021 06:25:12 -0700
+Received: from soft-dev3-1.microsemi.net (10.10.115.15) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.2176.14 via Frontend Transport; Fri, 15 Oct 2021 06:25:10 -0700
+From:   Horatiu Vultur <horatiu.vultur@microchip.com>
+To:     <linus.walleij@linaro.org>, <robh+dt@kernel.org>,
+        <lars.povlsen@microchip.com>, <Steen.Hegelund@microchip.com>,
+        <UNGLinuxDriver@microchip.com>, <p.zabel@pengutronix.de>,
+        <linux-gpio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Horatiu Vultur <horatiu.vultur@microchip.com>
+Subject: [PATCH v4 0/2] pinctrl: pinctrl-microchip-sgpio: Extend to call reset driver
+Date:   Fri, 15 Oct 2021 15:25:24 +0200
+Message-ID: <20211015132526.200816-1-horatiu.vultur@microchip.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <bcc1c2ec-e3f9-34b2-659e-b71fd149f677@gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 15, 2021 at 04:28:10PM +0800, Zqiang wrote:
-> 
-> On 2021/10/15 下午4:04, Christoph Hellwig wrote:
-> > NAK.
-> > 
-> > 1. We need to sort ounderlying issue first as I already said _twice_.
-> > 2. this has a major penality on all file systems
-> 
-> This problem report by sunhao,  the log
-> 
-> https://drive.google.com/file/d/1M5oyA_IcWSDB2XpnoX8SDmKJA3JhKltz/view?usp=sharing
+This allows the driver to call an optional reset driver.
 
-When I wget that it just returns garbage unfortunately.
+v3->v4:
+ - use devm_reset_control_get_optional_shared
+ - remove the expected name of the reset line
 
-> 
-> but I can not find useful information, not sure if it is related to the loop device driver.
-> are you mean There is a problem about inode lifetime ?
+v2->v3:
+ - fix warnings reported by 'make dtbs_check'
 
-Yes.  This implies that the del_gendisk hasn't been called before the
-block device lifetimes hits 0.
+v1->v2:
+ - add dt-bindings changes
+
+
+Horatiu Vultur (2):
+  dt-bindings: pinctrl: pinctrl-microchip-sgpio: Add reset binding
+  pinctrl: microchip sgpio: use reset driver
+
+ .../devicetree/bindings/pinctrl/microchip,sparx5-sgpio.yaml  | 3 +++
+ drivers/pinctrl/pinctrl-microchip-sgpio.c                    | 5 +++++
+ 2 files changed, 8 insertions(+)
+
+-- 
+2.33.0
+
