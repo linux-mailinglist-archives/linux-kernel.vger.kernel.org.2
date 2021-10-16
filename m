@@ -2,81 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F04B430139
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 10:48:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5544A430153
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 10:52:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243858AbhJPIul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 04:50:41 -0400
-Received: from smtp02.smtpout.orange.fr ([80.12.242.124]:55916 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243825AbhJPIug (ORCPT
+        id S239880AbhJPIyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 04:54:46 -0400
+Received: from conssluserg-01.nifty.com ([210.131.2.80]:53032 "EHLO
+        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236048AbhJPIyp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 04:50:36 -0400
-Received: from pop-os.home ([92.140.161.106])
-        by smtp.orange.fr with ESMTPA
-        id bfMhmb2HZqYovbfMhmCLAi; Sat, 16 Oct 2021 10:48:28 +0200
-X-ME-Helo: pop-os.home
-X-ME-Auth: YWZlNiIxYWMyZDliZWIzOTcwYTEyYzlhMmU3ZiQ1M2U2MzfzZDfyZTMxZTBkMTYyNDBjNDJlZmQ3ZQ==
-X-ME-Date: Sat, 16 Oct 2021 10:48:28 +0200
-X-ME-IP: 92.140.161.106
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     rric@kernel.org, jan.glauber@gmail.com, wsa@kernel.org
-Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] i2c: thunderx: Fix some resource leak
-Date:   Sat, 16 Oct 2021 10:48:26 +0200
-Message-Id: <6657505309174d3ea6df14169d42b6df91298470.1634374036.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        Sat, 16 Oct 2021 04:54:45 -0400
+Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45]) (authenticated)
+        by conssluserg-01.nifty.com with ESMTP id 19G8qQZ2028356;
+        Sat, 16 Oct 2021 17:52:26 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 19G8qQZ2028356
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1634374346;
+        bh=58deza8b/MvQFjM9wKDK2CKyqfQ4yZT6QveafG26adU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=LtsTCIkIPUcvhkWpZSXnWBK2NLtvCpcjp7txYAkxiBouMohyATyRN7NZGnFV1dvKH
+         Syx4rh7npZqmAPYn3MB90wMH8zX5x9eEL9P6XzI5iJpDmCOA6zAfPxwNFeX2KjJibM
+         qIyk4bOKgLvWJP/p60AW3ToLdHF3wZ/fg3Ap2njyDNCpOsweNRhf5cBhwirqzs+36w
+         RXkzHL9NFW9pLy++JEoH+Q3fWX/ow9NiWlWhS0Cv7QzZSEU+vj9cWQpa5dG1vLi8Ae
+         moY6GbxaGyXCZ6DvAQd2V0do8VbwFEjFATCsB0XwFIqMkII8J71pcdNqeyZu8i8HMI
+         upbAUgSPiXCQA==
+X-Nifty-SrcIP: [209.85.216.45]
+Received: by mail-pj1-f45.google.com with SMTP id gn3so3324226pjb.0;
+        Sat, 16 Oct 2021 01:52:26 -0700 (PDT)
+X-Gm-Message-State: AOAM53007sVlv3tI/bcsT9qvvabYjDqh57g7NhrTO6OlwV3L09Vn0nvp
+        cFAsgxjg40F/FMB5XFN+UlA3jBMmtBZER7nDQKk=
+X-Google-Smtp-Source: ABdhPJw4RLNm4WUwuq2e1NujEZKOeDC+dPL+XOGnGPYSPpaZZBPDeAIBJMrNXFk5oEufB/kSYzrvmJEC3IV60ei4oHk=
+X-Received: by 2002:a17:90b:1d06:: with SMTP id on6mr33910048pjb.119.1634374345728;
+ Sat, 16 Oct 2021 01:52:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210927140000.866249-1-masahiroy@kernel.org>
+In-Reply-To: <20210927140000.866249-1-masahiroy@kernel.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sat, 16 Oct 2021 17:51:48 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAT-QLMk1T=PmfWurr8g2HB5=SUZZnexR9ovaFFuzC90vQ@mail.gmail.com>
+Message-ID: <CAK7LNAT-QLMk1T=PmfWurr8g2HB5=SUZZnexR9ovaFFuzC90vQ@mail.gmail.com>
+Subject: Re: [RESEND PATCH 0/4] block: clean up Kconfig and Makefile
+To:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We need to undo a 'pci_request_regions()' call in the error handling path
-of the probe function and in the remove function.
+Hi Jens,
 
-Fixes: 22d40209de3b ("i2c: thunderx: Add i2c driver for ThunderX SOC")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/i2c/busses/i2c-thunderx-pcidrv.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+On Mon, Sep 27, 2021 at 11:00 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+>
+> This is a resend of
+> https://lore.kernel.org/linux-block/20210528184435.252924-1-masahiroy@kernel.org/#t
 
-diff --git a/drivers/i2c/busses/i2c-thunderx-pcidrv.c b/drivers/i2c/busses/i2c-thunderx-pcidrv.c
-index 12c90aa0900e..2d37096a6968 100644
---- a/drivers/i2c/busses/i2c-thunderx-pcidrv.c
-+++ b/drivers/i2c/busses/i2c-thunderx-pcidrv.c
-@@ -177,8 +177,10 @@ static int thunder_i2c_probe_pci(struct pci_dev *pdev,
- 		return ret;
- 
- 	i2c->twsi_base = pcim_iomap(pdev, 0, pci_resource_len(pdev, 0));
--	if (!i2c->twsi_base)
--		return -EINVAL;
-+	if (!i2c->twsi_base) {
-+		ret = -EINVAL;
-+		goto err_release_regions;
-+	}
- 
- 	thunder_i2c_clock_enable(dev, i2c);
- 	ret = device_property_read_u32(dev, "clock-frequency", &i2c->twsi_freq);
-@@ -231,6 +233,8 @@ static int thunder_i2c_probe_pci(struct pci_dev *pdev,
- 
- error:
- 	thunder_i2c_clock_disable(dev, i2c->clk);
-+err_release_regions:
-+	pci_release_regions(pdev);
- 	return ret;
- }
- 
-@@ -241,6 +245,7 @@ static void thunder_i2c_remove_pci(struct pci_dev *pdev)
- 	thunder_i2c_smbus_remove(i2c);
- 	thunder_i2c_clock_disable(&pdev->dev, i2c->clk);
- 	i2c_del_adapter(&i2c->adap);
-+	pci_release_regions(pdev);
- }
- 
- static const struct pci_device_id thunder_i2c_pci_id_table[] = {
+
+ping?
+
+>
+>
+> Masahiro Yamada (4):
+>   block: remove redundant =y from BLK_CGROUP dependency
+>   block: simplify Kconfig files
+>   block: move menu "Partition type" to block/partitions/Kconfig
+>   block: move CONFIG_BLOCK guard to top Makefile
+>
+>  Makefile                 |  3 ++-
+>  block/Kconfig            | 28 ++++++++++------------------
+>  block/Kconfig.iosched    |  4 ----
+>  block/Makefile           |  2 +-
+>  block/partitions/Kconfig |  4 ++++
+>  5 files changed, 17 insertions(+), 24 deletions(-)
+>
+> --
+> 2.30.2
+>
+
+
 -- 
-2.30.2
-
+Best Regards
+Masahiro Yamada
