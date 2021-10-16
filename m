@@ -2,105 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1260430281
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 13:57:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0680F430283
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 13:58:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240361AbhJPL72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 07:59:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59970 "EHLO
+        id S240382AbhJPMAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 08:00:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237354AbhJPL71 (ORCPT
+        with ESMTP id S237354AbhJPMAO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 07:59:27 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D7F3C061570;
-        Sat, 16 Oct 2021 04:57:19 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id oa4so9070295pjb.2;
-        Sat, 16 Oct 2021 04:57:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=u5MO7DkWYSqdzO3qOav/OWM6RlCDZkLzS8EdCFz7uvs=;
-        b=mAH6CE6DMguHwb5ZWFxkZHaKGuOcA+WlqiVStDmUpPUVVtKspPmy1xmnhJPSgCMxVe
-         AVIt/0IHGlUHyMom5+2kj+gmx5AC2uswJTxVwstRgKqXsvR3Sfp+Q9Q6Tpv2hBmZMzHL
-         Dh1sVAqtpi8zIZebYT6cLCajOkdFgf4kfyKZjFlCd4mBckwq8dsYw0LfqwS9ZqyniYSS
-         cb77HaXhnHJMDG+fuHiJIWLQLONEDxNVS7byOzYXSK2xLhO+vSBYS98qh7hsAe0htJl0
-         J2FuIMCFuMyHyM2iHfAVFMwLGlRtp4BntzzUp5M38fCzRGwNpOVFFLGvEL9sf6ZkowTr
-         ZpTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=u5MO7DkWYSqdzO3qOav/OWM6RlCDZkLzS8EdCFz7uvs=;
-        b=0hf0V4N7nn9UBZuV2JF0/PwsfUEnhF4PnqDoMYBXtTu71DRMzghpkqi7+IjXC10ARz
-         9QVt0wK7vEhfzRH1xo1rc6m/RGJiXccM3sMY7AkrW7EXDHJ8RZB8hSOkdcZL5RmbyZIW
-         bZ1CpTtXyv590NANUYtoCclNTehBl8SwtM1Ij7l1qXCE+8qOJ5DFKFY8z7c1GR2sDGA7
-         v4lNln+NqDG590gV+/eLM4+mbMeXP1cIgEd5+76dpmm72D42m4aXodgkhkCYt9X2X9hB
-         dY7OxKt4NKgtoMWbXRtFjVZ39r4BTS9Z1TKL7cbCC1O1y57ceRBU9MNKkI3zzYSHk1du
-         okag==
-X-Gm-Message-State: AOAM532c78+Bj7ex3hr81KAPvxuvfYKnpS+DGA7yKvkhuUyyw2EP+jfZ
-        CSKKsai8k7533BDALuS+u+2S3Y3iA7o=
-X-Google-Smtp-Source: ABdhPJyc4Odc0xXmHIUlm+swXx8CC85V6niPe3fQSl5vJH4+yNbuM5h4XTz1SKA8xbPqUzydhieklQ==
-X-Received: by 2002:a17:90b:4f4b:: with SMTP id pj11mr20437226pjb.4.1634385438903;
-        Sat, 16 Oct 2021 04:57:18 -0700 (PDT)
-Received: from kvm.asia-northeast3-a.c.our-ratio-313919.internal (24.151.64.34.bc.googleusercontent.com. [34.64.151.24])
-        by smtp.gmail.com with ESMTPSA id w12sm1825851pgm.18.2021.10.16.04.57.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 16 Oct 2021 04:57:18 -0700 (PDT)
-Date:   Sat, 16 Oct 2021 11:57:15 +0000
-From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
-To:     linux-fsdevel@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Not [PATCH] :)
-Message-ID: <20211016115715.GA17291@kvm.asia-northeast3-a.c.our-ratio-313919.internal>
-References: <20211016115429.17226-1-42.hyeyoo@gmail.com>
+        Sat, 16 Oct 2021 08:00:14 -0400
+Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [IPv6:2001:67c:2050::465:101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61ED4C061570;
+        Sat, 16 Oct 2021 04:58:06 -0700 (PDT)
+Received: from smtp1.mailbox.org (smtp1.mailbox.org [80.241.60.240])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4HWhV42KNVzQkBP;
+        Sat, 16 Oct 2021 13:58:04 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hauke-m.de; s=MBO0001;
+        t=1634385482;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zsKwS6F8UjWzhAlYTHRy4Hc+M+BiPhF7fV4hrQ8cfa4=;
+        b=UgCKdTq8CohrRhsn3YjXVjEMreslxZcRenBy75dzDrB4s6bXATbear4SwxLqp8sXQaoH8p
+        0xeBdOH+5Tll61/kh0kJLKKy65ZFiHma1aWcwP8tmSFlk2pcC7p9cz+w3ZqfzDarWyBcGh
+        mRl8q6GBwII3NCvyGdTb+Ln6iWyIu4mLWDM825dPay2opaYQZUPGSI8IFWHd5/mBHHVPLV
+        xHVL8H5OOGIzjAaep+JPJHpL3A+x6LQ5wvCglMReep0JB7DM2mADkppYe2c1vVb8U9InDf
+        WwwbROpdvFIPKgkto8sMxk13drafdONfMikvCwagpxwnY5LaUbE5R5Ss3tw7KQ==
+Subject: Re: [PATCH net] net: dsa: lantiq_gswip: fix register definition
+To:     Aleksander Jan Bajkowski <olek2@wp.pl>, andrew@lunn.ch,
+        vivien.didelot@gmail.com, f.fainelli@gmail.com, olteanv@gmail.com,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211015221020.3590-1-olek2@wp.pl>
+From:   Hauke Mehrtens <hauke@hauke-m.de>
+Message-ID: <0abd339a-3a9b-edfc-d697-27fce492bdd0@hauke-m.de>
+Date:   Sat, 16 Oct 2021 13:57:59 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211016115429.17226-1-42.hyeyoo@gmail.com>
+In-Reply-To: <20211015221020.3590-1-olek2@wp.pl>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: D509522F
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 16, 2021 at 11:54:29AM +0000, Hyeonggon Yoo wrote:
-> Hello, it seems there's mismatch in unit (byte and kB) in meminfo.
-> Would something like this will be acceptable?
+On 10/16/21 12:10 AM, Aleksander Jan Bajkowski wrote:
+> I compared the register definitions with the D-Link DWR-966
+> GPL sources and found that the PUAFD field definition was
+> incorrect. This definition is unused and causes no issues.
 > 
-> commit d42f3245c7e2 ("mm: memcg: convert vmstat slab counters
-> to bytes") changed it to bytes but proc seems to print everything in
-> kilobytes.
-> 
+> Fixes: 14fceff4771e ("net: dsa: Add Lantiq / Intel DSA driver for vrx200")
+> Signed-off-by: Aleksander Jan Bajkowski <olek2@wp.pl>
 
-This is not actually patch - I'll send you a patch
-if this is not my misunderstanding :)
+Acked-by: Hauke Mehrtens <hauke@hauke-m.de>
 
-Thanks,
-Hyeonggon.
+Thanks for finding this problem.
 
 > ---
->  fs/proc/meminfo.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>   drivers/net/dsa/lantiq_gswip.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/fs/proc/meminfo.c b/fs/proc/meminfo.c
-> index 6fa761c9cc78..182376582076 100644
-> --- a/fs/proc/meminfo.c
-> +++ b/fs/proc/meminfo.c
-> @@ -52,8 +52,8 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
->  		pages[lru] = global_node_page_state(NR_LRU_BASE + lru);
->  
->  	available = si_mem_available();
-> -	sreclaimable = global_node_page_state_pages(NR_SLAB_RECLAIMABLE_B);
-> -	sunreclaim = global_node_page_state_pages(NR_SLAB_UNRECLAIMABLE_B);
-> +	sreclaimable = global_node_page_state_pages(NR_SLAB_RECLAIMABLE_B) / 1024;
-> +	sunreclaim = global_node_page_state_pages(NR_SLAB_UNRECLAIMABLE_B) / 1024;
->  
->  	show_val_kb(m, "MemTotal:       ", i.totalram);
->  	show_val_kb(m, "MemFree:        ", i.freeram);
-> -- 
-> 2.27.0
+> diff --git a/drivers/net/dsa/lantiq_gswip.c b/drivers/net/dsa/lantiq_gswip.c
+> index 3ff4b7e177f3..dbd4486a173f 100644
+> --- a/drivers/net/dsa/lantiq_gswip.c
+> +++ b/drivers/net/dsa/lantiq_gswip.c
+> @@ -230,7 +230,7 @@
+>   #define GSWIP_SDMA_PCTRLp(p)		(0xBC0 + ((p) * 0x6))
+>   #define  GSWIP_SDMA_PCTRL_EN		BIT(0)	/* SDMA Port Enable */
+>   #define  GSWIP_SDMA_PCTRL_FCEN		BIT(1)	/* Flow Control Enable */
+> -#define  GSWIP_SDMA_PCTRL_PAUFWD	BIT(1)	/* Pause Frame Forwarding */
+> +#define  GSWIP_SDMA_PCTRL_PAUFWD	BIT(3)	/* Pause Frame Forwarding */
+>   
+>   #define GSWIP_TABLE_ACTIVE_VLAN		0x01
+>   #define GSWIP_TABLE_VLAN_MAPPING	0x02
 > 
+
