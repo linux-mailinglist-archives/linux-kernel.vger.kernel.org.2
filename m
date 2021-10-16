@@ -2,122 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5A96430086
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 08:24:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8E8F430087
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 08:26:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239918AbhJPG0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 02:26:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43526 "EHLO
+        id S239932AbhJPG2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 02:28:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239451AbhJPG0d (ORCPT
+        with ESMTP id S239451AbhJPG2O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 02:26:33 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C21BFC061570;
-        Fri, 15 Oct 2021 23:24:25 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id l6so7726542plh.9;
-        Fri, 15 Oct 2021 23:24:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZvOvoZcvvH/Tx90si2pKJuiA/fIC5HYugtK+5A8dZIs=;
-        b=adWh4ygPqc92epNkTraqhJCi7bUk4sjO5zyT+A14oTHay7XdUEdrusc0T7n4dkJWr8
-         iuYo+Wx9Twyue8mGvq71xjUsiHbNgE07aZSGVxQhDBv7t2zmYCjzpcYDD0Lwa3Oewc1O
-         ncs3GLLEsK2mqJt3jrezh6hJ7sDe7oub0C7Q2E0raaAzhpeRysyKDnS7ALzmIgSI7W5J
-         iFVAeygq2FgIZqnuCK2xjln6M6LtSIXKitatPcbCy9tEQJGYyv77WE3dnq+eL+dPLefR
-         Qoie4B4uSaOBdnXp58iT0M0aUVkp7uTxAaQegU6Jz6R/trZj//vVu6CTwYjfQSVd3cBv
-         P12A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZvOvoZcvvH/Tx90si2pKJuiA/fIC5HYugtK+5A8dZIs=;
-        b=uztWHbeQFZlLdZLn6qiwpyzP6kTMY6CbB3xZIBZaTRUTtCMr2c+Gh9zLVWzHsubf4x
-         rZHYzNwDHyPh2JS9PhKSNqpfWnNlbP2N6rbW/zMGpAdn631bgBPc1sNdpMNv56dCGg1M
-         LvcxH1490DMlrs+ngkTPGhckjsIVZ/Efmq1wOvOhOjFjhrKz4mAlcogx0h7tB/YKMmo2
-         QR6fbDrfKjf+83mWw0iFr9faGCy+pzYAwZKcHkmhUEjACbgXmxZXudQMg3LecSVIuhnn
-         jFHnQGcXN8dAVlOJ6GsywJw3yHAsnDBrLT+4K/+zO/68GBLdx5vMC4eK20FRn1YAEbOh
-         s4QQ==
-X-Gm-Message-State: AOAM533RIWhwpxwN/84ac3vlSqecFXAej8z/05AjThT1ez558CMWQnWO
-        BzKYBBHCmRUT4hmmW5JH0Wg=
-X-Google-Smtp-Source: ABdhPJzaqUWxXy8civOeDMmAst1Ydj5bQI6jj4MORNLBbMI0BSepJ0kkZcvj9C/q3tDNOeRM/XNQXA==
-X-Received: by 2002:a17:902:e846:b0:13f:551b:ba23 with SMTP id t6-20020a170902e84600b0013f551bba23mr14791681plg.77.1634365465100;
-        Fri, 15 Oct 2021 23:24:25 -0700 (PDT)
-Received: from localhost.localdomain ([171.211.26.24])
-        by smtp.gmail.com with ESMTPSA id z11sm13147334pjl.45.2021.10.15.23.24.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Oct 2021 23:24:24 -0700 (PDT)
-From:   DENG Qingfang <dqfext@gmail.com>
-To:     Sean Wang <sean.wang@mediatek.com>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     stable@vger.kernel.org
-Subject: [PATCH net] net: dsa: mt7530: correct ds->num_ports
-Date:   Sat, 16 Oct 2021 14:24:14 +0800
-Message-Id: <20211016062414.783863-1-dqfext@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Sat, 16 Oct 2021 02:28:14 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0579EC061570;
+        Fri, 15 Oct 2021 23:26:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=BhYE3boCAjVmx4aSjOWGjKR2hEoYtcDr4JkhxOOfVO4=; b=R2HFpAoV+B6ur9uK6VrlG7o4YP
+        8CLC12444uKYaZfD39HJ+vH2CJkVAHjzrGf9ndDZOSAUcUQZUWrLNYH2YBfQkV0ii+1b67V6SERaN
+        Vqm7L04x1XmobTN+e3pRbtPiFD2G1G7V5WTAu0CgK/331lp5ctq70Dv+6qFdr8pGTEBDMG+IfzEuN
+        i0mXGomZ9a3B99wO84iJyCgUXqbOR1mcktsZzcksQufAqwzFd3sCHCjv+K0OKTLybmQHAZ4RKZgv7
+        VFUMc4UWIhHPI+RfOIyTkGqA34qIJvj6DhS/ZeyLmdaa41JOo6tWDrK6fixNr4LYxv2x9kwB1eOMf
+        C2KcMxlg==;
+Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mbd8u-009wZI-6h; Sat, 16 Oct 2021 06:26:04 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        linux-m68k@lists.linux-m68k.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [RFC PATCH] sound: ISA: not for M68K
+Date:   Fri, 15 Oct 2021 23:26:02 -0700
+Message-Id: <20211016062602.3588-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Setting ds->num_ports to DSA_MAX_PORTS made DSA core allocate unnecessary
-dsa_port's and call mt7530_port_disable for non-existent ports.
+On m68k, compiling drivers under SND_ISA causes build errors:
 
-Set it to MT7530_NUM_PORTS to fix that, and dsa_is_user_port check in
-port_enable/disable is no longer required.
+../sound/core/isadma.c: In function 'snd_dma_program':
+../sound/core/isadma.c:33:17: error: implicit declaration of function 'claim_dma_lock' [-Werror=implicit-function-declaration]
+   33 |         flags = claim_dma_lock();
+      |                 ^~~~~~~~~~~~~~
+../sound/core/isadma.c:41:9: error: implicit declaration of function 'release_dma_lock' [-Werror=implicit-function-declaration]
+   41 |         release_dma_lock(flags);
+      |         ^~~~~~~~~~~~~~~~
 
-Cc: stable@vger.kernel.org
-Signed-off-by: DENG Qingfang <dqfext@gmail.com>
+../sound/isa/sb/sb16_main.c: In function 'snd_sb16_playback_prepare':
+../sound/isa/sb/sb16_main.c:253:72: error: 'DMA_AUTOINIT' undeclared (first use in this function)
+  253 |         snd_dma_program(dma, runtime->dma_addr, size, DMA_MODE_WRITE | DMA_AUTOINIT);
+      |                                                                        ^~~~~~~~~~~~
+../sound/isa/sb/sb16_main.c:253:72: note: each undeclared identifier is reported only once for each function it appears in
+../sound/isa/sb/sb16_main.c: In function 'snd_sb16_capture_prepare':
+../sound/isa/sb/sb16_main.c:322:71: error: 'DMA_AUTOINIT' undeclared (first use in this function)
+  322 |         snd_dma_program(dma, runtime->dma_addr, size, DMA_MODE_READ | DMA_AUTOINIT);
+      |                                                                       ^~~~~~~~~~~~
+
+and more...
+
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org
+Cc: linux-m68k@lists.linux-m68k.org
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- drivers/net/dsa/mt7530.c | 8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
+ sound/core/Makefile |    2 ++
+ sound/isa/Kconfig   |    2 +-
+ sound/pci/Kconfig   |    1 +
+ 3 files changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
-index a3b49abd32f1..dbd15da977b5 100644
---- a/drivers/net/dsa/mt7530.c
-+++ b/drivers/net/dsa/mt7530.c
-@@ -1035,9 +1035,6 @@ mt7530_port_enable(struct dsa_switch *ds, int port,
- {
- 	struct mt7530_priv *priv = ds->priv;
- 
--	if (!dsa_is_user_port(ds, port))
--		return 0;
--
- 	mutex_lock(&priv->reg_mutex);
- 
- 	/* Allow the user port gets connected to the cpu port and also
-@@ -1060,9 +1057,6 @@ mt7530_port_disable(struct dsa_switch *ds, int port)
- {
- 	struct mt7530_priv *priv = ds->priv;
- 
--	if (!dsa_is_user_port(ds, port))
--		return;
--
- 	mutex_lock(&priv->reg_mutex);
- 
- 	/* Clear up all port matrix which could be restored in the next
-@@ -3265,7 +3259,7 @@ mt7530_probe(struct mdio_device *mdiodev)
- 		return -ENOMEM;
- 
- 	priv->ds->dev = &mdiodev->dev;
--	priv->ds->num_ports = DSA_MAX_PORTS;
-+	priv->ds->num_ports = MT7530_NUM_PORTS;
- 
- 	/* Use medatek,mcm property to distinguish hardware type that would
- 	 * casues a little bit differences on power-on sequence.
--- 
-2.25.1
-
+--- linux-next-20211015.orig/sound/isa/Kconfig
++++ linux-next-20211015/sound/isa/Kconfig
+@@ -22,7 +22,7 @@ config SND_SB16_DSP
+ menuconfig SND_ISA
+ 	bool "ISA sound devices"
+ 	depends on ISA || COMPILE_TEST
+-	depends on ISA_DMA_API
++	depends on ISA_DMA_API && !M68K
+ 	default y
+ 	help
+ 	  Support for sound devices connected via the ISA bus.
+--- linux-next-20211015.orig/sound/pci/Kconfig
++++ linux-next-20211015/sound/pci/Kconfig
+@@ -279,6 +279,7 @@ config SND_CS46XX_NEW_DSP
+ config SND_CS5530
+ 	tristate "CS5530 Audio"
+ 	depends on ISA_DMA_API && (X86_32 || COMPILE_TEST)
++	depends on !M68K
+ 	select SND_SB16_DSP
+ 	help
+ 	  Say Y here to include support for audio on Cyrix/NatSemi CS5530 chips.
+--- linux-next-20211015.orig/sound/core/Makefile
++++ linux-next-20211015/sound/core/Makefile
+@@ -9,7 +9,9 @@ ifneq ($(CONFIG_SND_PROC_FS),)
+ snd-y += info.o
+ snd-$(CONFIG_SND_OSSEMUL) += info_oss.o
+ endif
++ifneq ($(CONFIG_M68K),y)
+ snd-$(CONFIG_ISA_DMA_API) += isadma.o
++endif
+ snd-$(CONFIG_SND_OSSEMUL) += sound_oss.o
+ snd-$(CONFIG_SND_VMASTER) += vmaster.o
+ snd-$(CONFIG_SND_JACK)	  += ctljack.o jack.o
