@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C8544301F2
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 12:22:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38D3C4301F6
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 12:22:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244106AbhJPKYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 06:24:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39108 "EHLO
+        id S244126AbhJPKYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 06:24:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240160AbhJPKYp (ORCPT
+        with ESMTP id S244025AbhJPKYr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 06:24:45 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C935C061570
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 03:22:37 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id w19so48117696edd.2
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 03:22:37 -0700 (PDT)
+        Sat, 16 Oct 2021 06:24:47 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2AB7C061570
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 03:22:38 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id a25so48336486edx.8
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 03:22:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=amarulasolutions.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=k6lg1YXQcsQSaHtESENC7NuGsQBvloHafjyXCeclFK4=;
-        b=cZe7t7ecRSVFyGK6rU8otT3u8PVOITqJIX4Q8vpIBzXn17/WMj8MGdaNGNZcpAhqF/
-         TmlJAXSSUSkfPl5wCZNYTcXQmfh0i1Y6YPJXdz5qScCmSi9oP/KDnKSnD8S479xJ6C2x
-         LosDWN4CvbEUZaYo0kufzUiQxs3Blt8WQAqAc=
+        bh=TOmpy4NRsL7YBTrF+WylGCQIQbJLF+1nonIibjI7sao=;
+        b=L0R72lACDyIrElOSQEx1yNWncnTHX4W+bRg2YsBaX0Bl9laj21aG3SLwz/aqbT9sdZ
+         PBHGCmUPWY42/cf6zTnCYyE8ge+fPC/d9bqILGfCtqV8xCDRpYIq+i6XJe+bLSILOtST
+         vg/RvAVy+JnL+yksIIYjtL1oAmxXfMrPvxW8k=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=k6lg1YXQcsQSaHtESENC7NuGsQBvloHafjyXCeclFK4=;
-        b=fvjy4ienUG5qJSUQ+iPgspUpfE5aIeOBO2++lg1LixKv5NGicpZCYydXNG5kSkX/tJ
-         NfNt4Wg0MMwUrWwgoNY2b+c9FDOMdZXEbhMihfgzaaUtOl+fV0mZ55e7NEtSAkJKNUyJ
-         9NUujHcrVa3DRLxYyXncQcA+2k8OXiSutynW1iaB5qxZRZbFw8v74Xl2/H7PfkkEtXq4
-         /HruIn957HEKlMxoJDINw5oIgU9hCxkRNyB9XN/Oq+L6ScHIcINaxJgF0bINsq6a9Z3p
-         OLFi//RVXmAiP1cDa7CGUxjWlxeZofgDdZJZJrNcSGPUVXkXKqubAaQJlV+XIW7yvU0e
-         uUeQ==
-X-Gm-Message-State: AOAM533Tw/RM+sjaTYXTdSmZnlSKnvaXk0NqGgrn1r6R08NUVacUTEyy
-        jY3F3qdyrgVOuxCZkPQ0MtrZcQ==
-X-Google-Smtp-Source: ABdhPJwYr2Usdx2fRzfvE8x6T5AzkhCgdaiWSMcYlqVDwgsemSvZ7/5rzDYKZhxXYIbK96KEblxmUg==
-X-Received: by 2002:a17:906:5212:: with SMTP id g18mr13775067ejm.564.1634379755998;
-        Sat, 16 Oct 2021 03:22:35 -0700 (PDT)
+        bh=TOmpy4NRsL7YBTrF+WylGCQIQbJLF+1nonIibjI7sao=;
+        b=shydc3+OLnej7VZS+aD8qCmUebQvVhn6S7GI4Qdu/xdDWxIEc+ls5vI65HC5UhNWON
+         W90UJRIuF+DWmnqT4WkrtI78/gKOaHwTEpU4H2BNRk3VvTyvcEQnxgJEnK0Qe4k8aNB7
+         lVD7/+ryOoHvTjFMuDCCNkbbTmFKaw+10oCGjCK/pEd6+7ubOJLW4KI+u3/p5Jiwzrud
+         R2j12XMeGo5pZmR5C+yFga/rthK8ejz21V/8tp4M2PwICI3rfuacC45xp/gCxxiiJ4LC
+         vaxyWzwhsXsZ9U9Ahs94bqpN9riRbmqoT4OLxIlnGDm2jdVOA32RvYfwZtxRe42366b8
+         a92Q==
+X-Gm-Message-State: AOAM533IUzU2TJxR/Yyy/I0tVf+HRYLhQQ8CdcalO+fmRwA9BDDpTkpY
+        od4cr/LhD6bQu2XxdqCjomspXA==
+X-Google-Smtp-Source: ABdhPJxscYgap4r49H136i1b/1lIJKmVp7yW8CV076NAEL8vz2YkdB3hn/8i+XZNo9adXbrDQcmRJw==
+X-Received: by 2002:a05:6402:50d4:: with SMTP id h20mr24829965edb.112.1634379757427;
+        Sat, 16 Oct 2021 03:22:37 -0700 (PDT)
 Received: from panicking.lan (93-46-124-24.ip107.fastwebnet.it. [93.46.124.24])
-        by smtp.gmail.com with ESMTPSA id la1sm6117361ejc.48.2021.10.16.03.22.34
+        by smtp.gmail.com with ESMTPSA id la1sm6117361ejc.48.2021.10.16.03.22.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 16 Oct 2021 03:22:35 -0700 (PDT)
+        Sat, 16 Oct 2021 03:22:36 -0700 (PDT)
 From:   Michael Trimarchi <michael@amarulasolutions.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Sam Ravnborg <sam@ravnborg.org>,
@@ -54,40 +54,317 @@ To:     Thierry Reding <thierry.reding@gmail.com>,
         =?UTF-8?q?Heiko=20St=C3=BCbner?= <heiko@sntech.de>
 Cc:     devicetree@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
         dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/5] dt-bindings: vendor-prefix: add Wanchanglong Electronics Technology
-Date:   Sat, 16 Oct 2021 10:22:28 +0000
-Message-Id: <20211016102232.202119-2-michael@amarulasolutions.com>
+Subject: [PATCH 2/5] drm/panel: ilitek-ili9881d: add support for Wanchanglong W552946ABA panel
+Date:   Sat, 16 Oct 2021 10:22:29 +0000
+Message-Id: <20211016102232.202119-3-michael@amarulasolutions.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211016102232.202119-1-michael@amarulasolutions.com>
 References: <20211016102232.202119-1-michael@amarulasolutions.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Wanchanglong Electronics Technology is a company to provide LCD
-modules.
+W552946ABA is a panel by Wanchanglong. This panel utilizes the Ilitek ILI9881D
+controller.
+
+Add this panel's initialzation sequence and timing to ILI9881D driver.
+Tested on px30-evb v11
 
 Signed-off-by: Michael Trimarchi <michael@amarulasolutions.com>
 ---
- Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/gpu/drm/panel/panel-ilitek-ili9881c.c | 238 +++++++++++++++++-
+ 1 file changed, 237 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-index a867f7102c35..5c43391d8c3d 100644
---- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-+++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-@@ -1304,6 +1304,8 @@ patternProperties:
-     description: Wondermedia Technologies, Inc.
-   "^wobo,.*":
-     description: Wobo
-+  "^wanchanglong,.*":
-+    description: Wanchanglong Electronics Technology（SHENZHEN）Co.，Ltd.
-   "^x-powers,.*":
-     description: X-Powers
-   "^xes,.*":
+diff --git a/drivers/gpu/drm/panel/panel-ilitek-ili9881c.c b/drivers/gpu/drm/panel/panel-ilitek-ili9881c.c
+index 0145129d7c66..d1f20758ed08 100644
+--- a/drivers/gpu/drm/panel/panel-ilitek-ili9881c.c
++++ b/drivers/gpu/drm/panel/panel-ilitek-ili9881c.c
+@@ -42,6 +42,7 @@ struct ili9881c_desc {
+ 	const struct ili9881c_instr *init;
+ 	const size_t init_length;
+ 	const struct drm_display_mode *mode;
++	const unsigned long mode_flags;
+ };
+ 
+ struct ili9881c {
+@@ -453,6 +454,213 @@ static const struct ili9881c_instr k101_im2byl02_init[] = {
+ 	ILI9881C_COMMAND_INSTR(0xD3, 0x3F), /* VN0 */
+ };
+ 
++static const struct ili9881c_instr w552946ab_init[] = {
++	ILI9881C_SWITCH_PAGE_INSTR(3),
++	ILI9881C_COMMAND_INSTR(0x01, 0x00),
++	ILI9881C_COMMAND_INSTR(0x02, 0x00),
++	ILI9881C_COMMAND_INSTR(0x03, 0x53),
++	ILI9881C_COMMAND_INSTR(0x04, 0x53),
++	ILI9881C_COMMAND_INSTR(0x05, 0x13),
++	ILI9881C_COMMAND_INSTR(0x06, 0x04),
++	ILI9881C_COMMAND_INSTR(0x07, 0x02),
++	ILI9881C_COMMAND_INSTR(0x08, 0x02),
++	ILI9881C_COMMAND_INSTR(0x09, 0x00),
++	ILI9881C_COMMAND_INSTR(0x0A, 0x00),
++	ILI9881C_COMMAND_INSTR(0x0B, 0x00),
++	ILI9881C_COMMAND_INSTR(0x0C, 0x00),
++	ILI9881C_COMMAND_INSTR(0x0D, 0x00),
++	ILI9881C_COMMAND_INSTR(0x0E, 0x00),
++	ILI9881C_COMMAND_INSTR(0x0F, 0x00),
++
++	ILI9881C_COMMAND_INSTR(0x10, 0x00),
++	ILI9881C_COMMAND_INSTR(0x11, 0x00),
++	ILI9881C_COMMAND_INSTR(0x12, 0x00),
++	ILI9881C_COMMAND_INSTR(0x13, 0x00),
++	ILI9881C_COMMAND_INSTR(0x14, 0x00),
++	ILI9881C_COMMAND_INSTR(0x15, 0x08),
++	ILI9881C_COMMAND_INSTR(0x16, 0x10),
++	ILI9881C_COMMAND_INSTR(0x17, 0x00),
++	ILI9881C_COMMAND_INSTR(0x18, 0x08),
++	ILI9881C_COMMAND_INSTR(0x19, 0x00),
++	ILI9881C_COMMAND_INSTR(0x1A, 0x00),
++	ILI9881C_COMMAND_INSTR(0x1B, 0x00),
++	ILI9881C_COMMAND_INSTR(0x1C, 0x00),
++	ILI9881C_COMMAND_INSTR(0x1D, 0x00),
++	ILI9881C_COMMAND_INSTR(0x1E, 0xC0),
++	ILI9881C_COMMAND_INSTR(0x1F, 0x80),
++
++	ILI9881C_COMMAND_INSTR(0x20, 0x02),
++	ILI9881C_COMMAND_INSTR(0x21, 0x09),
++	ILI9881C_COMMAND_INSTR(0x22, 0x00),
++	ILI9881C_COMMAND_INSTR(0x23, 0x00),
++	ILI9881C_COMMAND_INSTR(0x24, 0x00),
++	ILI9881C_COMMAND_INSTR(0x25, 0x00),
++	ILI9881C_COMMAND_INSTR(0x26, 0x00),
++	ILI9881C_COMMAND_INSTR(0x27, 0x00),
++	ILI9881C_COMMAND_INSTR(0x28, 0x55),
++	ILI9881C_COMMAND_INSTR(0x29, 0x03),
++	ILI9881C_COMMAND_INSTR(0x2A, 0x00),
++	ILI9881C_COMMAND_INSTR(0x2B, 0x00),
++	ILI9881C_COMMAND_INSTR(0x2C, 0x00),
++	ILI9881C_COMMAND_INSTR(0x2D, 0x00),
++	ILI9881C_COMMAND_INSTR(0x2E, 0x00),
++	ILI9881C_COMMAND_INSTR(0x2F, 0x00),
++
++	ILI9881C_COMMAND_INSTR(0x30, 0x00),
++	ILI9881C_COMMAND_INSTR(0x31, 0x00),
++	ILI9881C_COMMAND_INSTR(0x32, 0x00),
++	ILI9881C_COMMAND_INSTR(0x33, 0x00),
++	ILI9881C_COMMAND_INSTR(0x34, 0x04),
++	ILI9881C_COMMAND_INSTR(0x35, 0x05),
++	ILI9881C_COMMAND_INSTR(0x36, 0x05),
++	ILI9881C_COMMAND_INSTR(0x37, 0x00),
++	ILI9881C_COMMAND_INSTR(0x38, 0x3C),
++	ILI9881C_COMMAND_INSTR(0x39, 0x35),
++	ILI9881C_COMMAND_INSTR(0x3A, 0x00),
++	ILI9881C_COMMAND_INSTR(0x3B, 0x40),
++	ILI9881C_COMMAND_INSTR(0x3C, 0x00),
++	ILI9881C_COMMAND_INSTR(0x3D, 0x00),
++	ILI9881C_COMMAND_INSTR(0x3E, 0x00),
++	ILI9881C_COMMAND_INSTR(0x3F, 0x00),
++
++	ILI9881C_COMMAND_INSTR(0x40, 0x00),
++	ILI9881C_COMMAND_INSTR(0x41, 0x88),
++	ILI9881C_COMMAND_INSTR(0x42, 0x00),
++	ILI9881C_COMMAND_INSTR(0x43, 0x00),
++	ILI9881C_COMMAND_INSTR(0x44, 0x1F),
++
++	ILI9881C_COMMAND_INSTR(0x50, 0x01),
++	ILI9881C_COMMAND_INSTR(0x51, 0x23),
++	ILI9881C_COMMAND_INSTR(0x52, 0x45),
++	ILI9881C_COMMAND_INSTR(0x53, 0x67),
++	ILI9881C_COMMAND_INSTR(0x54, 0x89),
++	ILI9881C_COMMAND_INSTR(0x55, 0xaB),
++	ILI9881C_COMMAND_INSTR(0x56, 0x01),
++	ILI9881C_COMMAND_INSTR(0x57, 0x23),
++	ILI9881C_COMMAND_INSTR(0x58, 0x45),
++	ILI9881C_COMMAND_INSTR(0x59, 0x67),
++	ILI9881C_COMMAND_INSTR(0x5A, 0x89),
++	ILI9881C_COMMAND_INSTR(0x5B, 0xAB),
++	ILI9881C_COMMAND_INSTR(0x5C, 0xCD),
++	ILI9881C_COMMAND_INSTR(0x5D, 0xEF),
++	ILI9881C_COMMAND_INSTR(0x5E, 0x03),
++	ILI9881C_COMMAND_INSTR(0x5F, 0x14),
++
++	ILI9881C_COMMAND_INSTR(0x60, 0x15),
++	ILI9881C_COMMAND_INSTR(0x61, 0x0C),
++	ILI9881C_COMMAND_INSTR(0x62, 0x0D),
++	ILI9881C_COMMAND_INSTR(0x63, 0x0E),
++	ILI9881C_COMMAND_INSTR(0x64, 0x0F),
++	ILI9881C_COMMAND_INSTR(0x65, 0x10),
++	ILI9881C_COMMAND_INSTR(0x66, 0x11),
++	ILI9881C_COMMAND_INSTR(0x67, 0x08),
++	ILI9881C_COMMAND_INSTR(0x68, 0x02),
++	ILI9881C_COMMAND_INSTR(0x69, 0x0A),
++	ILI9881C_COMMAND_INSTR(0x6A, 0x02),
++	ILI9881C_COMMAND_INSTR(0x6B, 0x02),
++	ILI9881C_COMMAND_INSTR(0x6C, 0x02),
++	ILI9881C_COMMAND_INSTR(0x6D, 0x02),
++	ILI9881C_COMMAND_INSTR(0x6E, 0x02),
++	ILI9881C_COMMAND_INSTR(0x6F, 0x02),
++
++	ILI9881C_COMMAND_INSTR(0x70, 0x02),
++	ILI9881C_COMMAND_INSTR(0x71, 0x02),
++	ILI9881C_COMMAND_INSTR(0x72, 0x06),
++	ILI9881C_COMMAND_INSTR(0x73, 0x02),
++	ILI9881C_COMMAND_INSTR(0x74, 0x02),
++	ILI9881C_COMMAND_INSTR(0x75, 0x14),
++	ILI9881C_COMMAND_INSTR(0x76, 0x15),
++	ILI9881C_COMMAND_INSTR(0x77, 0x0F),
++	ILI9881C_COMMAND_INSTR(0x78, 0x0E),
++	ILI9881C_COMMAND_INSTR(0x79, 0x0D),
++	ILI9881C_COMMAND_INSTR(0x7A, 0x0C),
++	ILI9881C_COMMAND_INSTR(0x7B, 0x11),
++	ILI9881C_COMMAND_INSTR(0x7C, 0x10),
++	ILI9881C_COMMAND_INSTR(0x7D, 0x06),
++	ILI9881C_COMMAND_INSTR(0x7E, 0x02),
++	ILI9881C_COMMAND_INSTR(0x7F, 0x0A),
++
++	ILI9881C_COMMAND_INSTR(0x80, 0x02),
++	ILI9881C_COMMAND_INSTR(0x81, 0x02),
++	ILI9881C_COMMAND_INSTR(0x82, 0x02),
++	ILI9881C_COMMAND_INSTR(0x83, 0x02),
++	ILI9881C_COMMAND_INSTR(0x84, 0x02),
++	ILI9881C_COMMAND_INSTR(0x85, 0x02),
++	ILI9881C_COMMAND_INSTR(0x86, 0x02),
++	ILI9881C_COMMAND_INSTR(0x87, 0x02),
++	ILI9881C_COMMAND_INSTR(0x88, 0x08),
++	ILI9881C_COMMAND_INSTR(0x89, 0x02),
++	ILI9881C_COMMAND_INSTR(0x8A, 0x02),
++
++	ILI9881C_SWITCH_PAGE_INSTR(4),
++	ILI9881C_COMMAND_INSTR(0x00, 0x80),
++	ILI9881C_COMMAND_INSTR(0x70, 0x00),
++	ILI9881C_COMMAND_INSTR(0x71, 0x00),
++	ILI9881C_COMMAND_INSTR(0x66, 0xFE),
++	ILI9881C_COMMAND_INSTR(0x82, 0x15),
++	ILI9881C_COMMAND_INSTR(0x84, 0x15),
++	ILI9881C_COMMAND_INSTR(0x85, 0x15),
++	ILI9881C_COMMAND_INSTR(0x3a, 0x24),
++	ILI9881C_COMMAND_INSTR(0x32, 0xAC),
++	ILI9881C_COMMAND_INSTR(0x8C, 0x80),
++	ILI9881C_COMMAND_INSTR(0x3C, 0xF5),
++	ILI9881C_COMMAND_INSTR(0x88, 0x33),
++
++	ILI9881C_SWITCH_PAGE_INSTR(1),
++	ILI9881C_COMMAND_INSTR(0x22, 0x0A),
++	ILI9881C_COMMAND_INSTR(0x31, 0x00),
++	ILI9881C_COMMAND_INSTR(0x53, 0x78),
++	ILI9881C_COMMAND_INSTR(0x50, 0x5B),
++	ILI9881C_COMMAND_INSTR(0x51, 0x5B),
++	ILI9881C_COMMAND_INSTR(0x60, 0x20),
++	ILI9881C_COMMAND_INSTR(0x61, 0x00),
++	ILI9881C_COMMAND_INSTR(0x62, 0x0D),
++	ILI9881C_COMMAND_INSTR(0x63, 0x00),
++
++	ILI9881C_COMMAND_INSTR(0xA0, 0x00),
++	ILI9881C_COMMAND_INSTR(0xA1, 0x10),
++	ILI9881C_COMMAND_INSTR(0xA2, 0x1C),
++	ILI9881C_COMMAND_INSTR(0xA3, 0x13),
++	ILI9881C_COMMAND_INSTR(0xA4, 0x15),
++	ILI9881C_COMMAND_INSTR(0xA5, 0x26),
++	ILI9881C_COMMAND_INSTR(0xA6, 0x1A),
++	ILI9881C_COMMAND_INSTR(0xA7, 0x1D),
++	ILI9881C_COMMAND_INSTR(0xA8, 0x67),
++	ILI9881C_COMMAND_INSTR(0xA9, 0x1C),
++	ILI9881C_COMMAND_INSTR(0xAA, 0x29),
++	ILI9881C_COMMAND_INSTR(0xAB, 0x5B),
++	ILI9881C_COMMAND_INSTR(0xAC, 0x26),
++	ILI9881C_COMMAND_INSTR(0xAD, 0x28),
++	ILI9881C_COMMAND_INSTR(0xAE, 0x5C),
++	ILI9881C_COMMAND_INSTR(0xAF, 0x30),
++	ILI9881C_COMMAND_INSTR(0xB0, 0x31),
++	ILI9881C_COMMAND_INSTR(0xB1, 0x2E),
++	ILI9881C_COMMAND_INSTR(0xB2, 0x32),
++	ILI9881C_COMMAND_INSTR(0xB3, 0x00),
++
++	ILI9881C_COMMAND_INSTR(0xC0, 0x00),
++	ILI9881C_COMMAND_INSTR(0xC1, 0x10),
++	ILI9881C_COMMAND_INSTR(0xC2, 0x1C),
++	ILI9881C_COMMAND_INSTR(0xC3, 0x13),
++	ILI9881C_COMMAND_INSTR(0xC4, 0x15),
++	ILI9881C_COMMAND_INSTR(0xC5, 0x26),
++	ILI9881C_COMMAND_INSTR(0xC6, 0x1A),
++	ILI9881C_COMMAND_INSTR(0xC7, 0x1D),
++	ILI9881C_COMMAND_INSTR(0xC8, 0x67),
++	ILI9881C_COMMAND_INSTR(0xC9, 0x1C),
++	ILI9881C_COMMAND_INSTR(0xCA, 0x29),
++	ILI9881C_COMMAND_INSTR(0xCB, 0x5B),
++	ILI9881C_COMMAND_INSTR(0xCC, 0x26),
++	ILI9881C_COMMAND_INSTR(0xCD, 0x28),
++	ILI9881C_COMMAND_INSTR(0xCE, 0x5C),
++	ILI9881C_COMMAND_INSTR(0xCF, 0x30),
++	ILI9881C_COMMAND_INSTR(0xD0, 0x31),
++	ILI9881C_COMMAND_INSTR(0xD1, 0x2E),
++	ILI9881C_COMMAND_INSTR(0xD2, 0x32),
++	ILI9881C_COMMAND_INSTR(0xD3, 0x00),
++	ILI9881C_SWITCH_PAGE_INSTR(0),
++};
++
+ static inline struct ili9881c *panel_to_ili9881c(struct drm_panel *panel)
+ {
+ 	return container_of(panel, struct ili9881c, panel);
+@@ -603,6 +811,23 @@ static const struct drm_display_mode k101_im2byl02_default_mode = {
+ 	.height_mm	= 217,
+ };
+ 
++static const struct drm_display_mode w552946aba_default_mode = {
++	.clock		= 64000,
++
++	.hdisplay	= 720,
++	.hsync_start	= 720 + 40,
++	.hsync_end	= 720 + 40 + 10,
++	.htotal		= 720 + 40 + 10 + 40,
++
++	.vdisplay	= 1280,
++	.vsync_start	= 1280 + 22,
++	.vsync_end	= 1280 + 22 + 4,
++	.vtotal		= 1280 + 22 + 4 + 11,
++
++	.width_mm	= 68,
++	.height_mm	= 121,
++};
++
+ static int ili9881c_get_modes(struct drm_panel *panel,
+ 			      struct drm_connector *connector)
+ {
+@@ -670,7 +895,7 @@ static int ili9881c_dsi_probe(struct mipi_dsi_device *dsi)
+ 
+ 	drm_panel_add(&ctx->panel);
+ 
+-	dsi->mode_flags = MIPI_DSI_MODE_VIDEO_SYNC_PULSE;
++	dsi->mode_flags = ctx->desc->mode_flags;
+ 	dsi->format = MIPI_DSI_FMT_RGB888;
+ 	dsi->lanes = 4;
+ 
+@@ -691,17 +916,28 @@ static const struct ili9881c_desc lhr050h41_desc = {
+ 	.init = lhr050h41_init,
+ 	.init_length = ARRAY_SIZE(lhr050h41_init),
+ 	.mode = &lhr050h41_default_mode,
++	.mode_flags = MIPI_DSI_MODE_VIDEO_SYNC_PULSE,
+ };
+ 
+ static const struct ili9881c_desc k101_im2byl02_desc = {
+ 	.init = k101_im2byl02_init,
+ 	.init_length = ARRAY_SIZE(k101_im2byl02_init),
+ 	.mode = &k101_im2byl02_default_mode,
++	.mode_flags = MIPI_DSI_MODE_VIDEO_SYNC_PULSE,
++};
++
++static const struct ili9881c_desc w552946aba_desc = {
++	.init = w552946ab_init,
++	.init_length = ARRAY_SIZE(w552946ab_init),
++	.mode = &w552946aba_default_mode,
++	.mode_flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_BURST |
++		      MIPI_DSI_MODE_LPM | MIPI_DSI_MODE_NO_EOT_PACKET,
+ };
+ 
+ static const struct of_device_id ili9881c_of_match[] = {
+ 	{ .compatible = "bananapi,lhr050h41", .data = &lhr050h41_desc },
+ 	{ .compatible = "feixin,k101-im2byl02", .data = &k101_im2byl02_desc },
++	{ .compatible = "wanchanglong,w552946aba", .data = &w552946aba_desc },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(of, ili9881c_of_match);
 -- 
 2.25.1
 
