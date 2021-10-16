@@ -2,80 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AAC54303C4
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 18:31:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C0494303C5
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 18:31:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240300AbhJPQdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 12:33:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52100 "EHLO mail.kernel.org"
+        id S240794AbhJPQeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 12:34:03 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:46128 "EHLO gloria.sntech.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230526AbhJPQdo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 12:33:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1DEBB6109E;
-        Sat, 16 Oct 2021 16:31:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634401896;
-        bh=1Guiab883qyByx7tJNaCujwIVNnfBIN3+AL//FDIewM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XV3xTGX/D7OriQ8vXqDgWuVKrd2TQLz9HHwZIvULkytyCqRt5w7WwHXnT+pqzGQUq
-         86nb8OIutr5oxRMalBCn55As1fQRwm1lkIJjpb5Epy8ViW4Vznuqyo1rdTpc1unxTC
-         VABtCuTnT/1EIxXwBl4r97C8thZ1WjSyb/IPuJiWwQmwJ1dxnjV3GJLbfR7aieDf5L
-         OXSx6+NeDIGlx9RA6+rmhhuknhRLIp7Kz0SfClemAe6BuFthbP10KDmv27I8A6J4Rq
-         Hv/37QSzA7DRq5ifCKSy3rXFAwSLypa/ciyxBNGqKsbTaVvEzxA10pw9sk9mElkHTU
-         CtkNqT6rn8vSg==
-Date:   Sat, 16 Oct 2021 22:01:28 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        hemantk@codeaurora.org, bbhatt@codeaurora.org,
-        loic.poulain@linaro.org, wangqing@vivo.com, mhi@lists.linux.dev,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [PATCH 2/3] bus: mhi: Add inbound buffers allocation flag
-Message-ID: <20211016163128.GC4048@thinkpad>
-References: <20211016065734.28802-1-manivannan.sadhasivam@linaro.org>
- <20211016065734.28802-3-manivannan.sadhasivam@linaro.org>
- <YWqByX6rdfuA1h1F@kroah.com>
+        id S230526AbhJPQeC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Oct 2021 12:34:02 -0400
+Received: from p508fce7c.dip0.t-ipconnect.de ([80.143.206.124] helo=phil.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1mbmb6-0007eW-PS; Sat, 16 Oct 2021 18:31:48 +0200
+From:   Heiko Stuebner <heiko@sntech.de>
+To:     Guo Ren <guoren@kernel.org>
+Cc:     Anup Patel <anup@brainfault.org>,
+        Atish Patra <atish.patra@wdc.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Rob Herring <robh@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+Subject: Re: [PATCH V4 2/3] dt-bindings: update riscv plic compatible string
+Date:   Sat, 16 Oct 2021 18:31:47 +0200
+Message-ID: <1708236.01x493v0YS@phil>
+In-Reply-To: <CAJF2gTQKc1DGcCy_sFjSs8p+VMNGHFrjO2uLZrHnjdD1pZ2RZg@mail.gmail.com>
+References: <20211016032200.2869998-1-guoren@kernel.org> <2216787.nSqPeTNalD@phil> <CAJF2gTQKc1DGcCy_sFjSs8p+VMNGHFrjO2uLZrHnjdD1pZ2RZg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YWqByX6rdfuA1h1F@kroah.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 16, 2021 at 09:39:53AM +0200, Greg KH wrote:
-> On Sat, Oct 16, 2021 at 12:27:33PM +0530, Manivannan Sadhasivam wrote:
-> > From: Loic Poulain <loic.poulain@linaro.org>
-> > 
-> > Currently, the MHI controller driver defines which channels should
-> > have their inbound buffers allocated and queued. But ideally, this is
-> > something that should be decided by the MHI device driver instead,
-> > which actually deals with that buffers.
-> > 
-> > Add a flag parameter to mhi_prepare_for_transfer allowing to specify
-> > if buffers have to be allocated and queued by the MHI stack.
+Am Samstag, 16. Oktober 2021, 14:56:51 CEST schrieb Guo Ren:
+> On Sat, Oct 16, 2021 at 6:35 PM Heiko Stuebner <heiko@sntech.de> wrote:
+> >
+> > Hi Guo,
+> >
+> > Am Samstag, 16. Oktober 2021, 05:21:59 CEST schrieb guoren@kernel.org:
+> > > From: Guo Ren <guoren@linux.alibaba.com>
+> > >
+> > > Add the compatible string "thead,c900-plic" to the riscv plic
+> > > bindings to support allwinner d1 SOC which contains c906 core.
+> >
+> > The compatible strings sound good now, but some things below
+> >
+> > >
+> > > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> > > Cc: Rob Herring <robh@kernel.org>
+> > > Cc: Palmer Dabbelt <palmerdabbelt@google.com>
+> > > Cc: Anup Patel <anup@brainfault.org>
+> > > Cc: Atish Patra <atish.patra@wdc.com>
+> > >
+> > > ---
+> > >
+> > > Changes since V4:
+> > >  - Update description in errata style
+> > >  - Update enum suggested by Anup, Heiko, Samuel
+> > >
+> > > Changes since V3:
+> > >  - Rename "c9xx" to "c900"
+> > >  - Add thead,c900-plic in the description section
+> > > ---
+> > >  .../interrupt-controller/sifive,plic-1.0.0.yaml       | 11 ++++++++++-
+> > >  1 file changed, 10 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml b/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml
+> > > index 08d5a57ce00f..272f29540135 100644
+> > > --- a/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml
+> > > +++ b/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml
+> > > @@ -35,6 +35,12 @@ description:
+> > >    contains a specific memory layout, which is documented in chapter 8 of the
+> > >    SiFive U5 Coreplex Series Manual <https://static.dev.sifive.com/U54-MC-RVCoreIP.pdf>.
+> > >
+> > > +  The C9xx PLIC does not comply with the interrupt claim/completion process defined
+> > > +  by the RISC-V PLIC specification because C9xx PLIC will mask an IRQ when it is
+> > > +  claimed by PLIC driver (i.e. readl(claim) and the IRQ will be unmasked upon
+> > > +  completion by PLIC driver (i.e. writel(claim). This behaviour breaks the handling
+> > > +  of IRQS_ONESHOT by the generic handle_fasteoi_irq() used in the PLIC driver.
+> > > +
+> > >  maintainers:
+> > >    - Sagar Kadam <sagar.kadam@sifive.com>
+> > >    - Paul Walmsley  <paul.walmsley@sifive.com>
+> > > @@ -46,7 +52,10 @@ properties:
+> > >        - enum:
+> > >            - sifive,fu540-c000-plic
+> > >            - canaan,k210-plic
+> > > -      - const: sifive,plic-1.0.0
+> > > +      - enmu:
+> >
+> >         ^ spelling enum
+> >
+> > > +          - sifive,plic-1.0.0
+> > > +          - thead,c900-plic
+> > > +          - allwinner,sun20i-d1-plic
+> >
+> > but in general I'd think that you want something like
+> >
+> >   compatible:
+> >     oneOf:
+> >       - items:
+> >           - enum:
+> >               - sifive,fu540-c000-plic
+> >               - canaan,k210-plic
+> >           - const: sifive,plic-1.0.0
+> >       - items:
+> >           - enum:
+> >               - allwinner,sun20i-d1-plic
+> >           - const: thead,c900-plic
+> >
+> > Having only one item list would allow as valid combinations like
+> > "sifive,fu540-c000-plic", "thead,c900-plic" when checking the schema.
+> >
+> > With the oneOf and separate lists we can make sure that such
+> > "illegal" combinations get flagged by the dtbs_check
+> >
+> > [the enum with the single allwinner entry already leaves
+> >  room for later addition to the c900-plic variant]
+> Thx, I'll fix it in the next version.
 > 
-> This is a horrible api.  Now one has to go and look up why "0" was added
-> to a function as a parameter.
+> another question: Is the allwinner_sun20i_d1_plic needed to IRQCHIP_DECLARE?
 > 
-> If you don't want to allocate the buffer, then make a function of that
-> name and call that.  As you only have one "flag", don't try to make
-> something generic here that is obviously not generic at all.
-> 
+> +IRQCHIP_DECLARE(thead_c900_plic, "thead,c900-plic", thead_c900_plic_init);
+> +IRQCHIP_DECLARE(allwinner_sun20i_d1_plic, "allwinner,sun20i-d1-plic",
+> thead_c900_plic_init);
 
-This is the only API that can be used by the client drivers to pass the
-configurations to the MHI stack. So we wanted to have a flags parameter that
-could be extended in the future also.
+Doing
+	IRQCHIP_DECLARE(thead_c900_plic, "thead,c900-plic", thead_c900_plic_init);
+should be enough for now.
 
-Regarding "0", the default behaviour is to not pre allocate the buffer at all.
-So it made less sense to add a separate flag or an API for that.
+Compatible-parsing happens from left to right, from most-specific to
+most-generic. So having the allwinner-d1 compatible in there is sort of a
+safeguard.
 
-Thanks,
-Mani
+If at some _later point in time_ , some specific new quirk of the D1
+implementation comes to light, we can _then_ just add a 
+	IRQCHIP_DECLARE(allwinner_d1_plic, "allwinner,sun20i-d1-plic", allwinner_d1_plic_init);
 
-> You all can do better than this.
-> 
-> thanks,
-> 
-> greg k-h
+Devicetrees should be stable and newer kernels should work with old
+devicetrees, so having the soc-specific compatible in there just makes it
+future proof :-)
+
+
+Heiko
+
+
