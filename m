@@ -2,95 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13F55430519
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 23:57:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 621FA43051B
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 23:58:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241046AbhJPV72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 17:59:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48942 "EHLO
+        id S244602AbhJPWAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 18:00:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235312AbhJPV70 (ORCPT
+        with ESMTP id S235312AbhJPWAD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 17:59:26 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52761C061765
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 14:57:18 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id qe4-20020a17090b4f8400b0019f663cfcd1so11866768pjb.1
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 14:57:18 -0700 (PDT)
+        Sat, 16 Oct 2021 18:00:03 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64EC0C061765
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 14:57:54 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id j21so58021884lfe.0
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 14:57:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=lR7v2SeiI/rPTDpitBfRCXahGE0ZCHzarZSpq+/okuQ=;
-        b=O/rj1uASFAU7AVI7upqHkb/IgntAN0O5+JJqCM+1f7zJqD5BfrRhNWYIW77zzwENlr
-         CKiPr/inPoD1hARjNIKkZBzNsT7DJ7Yg91HSAMfVDXgLdGDoEzSTZ7XQ8qfWKZzCg18Y
-         5LEONqJDaVEjTjKN02SJJn/7D+kDM99lU5UbAAeiFazUSi7fNC3ZrDz4lCFRn0/VCvs1
-         XTi4uT9Q29IENgEH+dmyU/FlGv4aQcTUfSUIoBslMqW6NoOEWOQP7vUULDiF1m7ph5MH
-         /uGAzmXg08Yn94H5zB9TdELb3OwHrYSEXBlLkMMpoJeh36nbgvCEtIWDjbF/dtH6DxvN
-         RHhQ==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=F8oCc0IEea9FCh4BQiGK/7pFTaDRWDhTVEP/QxC1rXA=;
+        b=Z/HCYkVoBAG65Us8a35vC10l5Wf3GD6TnZk+hCauCiWX7KSbCwpWxDprsvyyDoVypm
+         7pw9J8UtPbybqCPkZjvHDbUAnj/2GhJHd21Aky2mvd8Vs6i5Jlpt7b6XgktCYyboWnu4
+         6ylbVzO5JO11aHmjrs3Guy9bwghGE+w0p7dzwTPbM8AVfi80wTx44s4y58jpIwptePCb
+         mPYN/8AgkYPIBYOOlMq+Nfmg3FAjbxPBx0vSnR541+zhAo4kJfEZjs+qayTpTEHPaNDB
+         OCbe0ao8r/cu5guTZWvAguRKCpxI4OYduVJwdEkuApsylicN3uJQVBVQ1VJSxhq+K/TG
+         47hg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=lR7v2SeiI/rPTDpitBfRCXahGE0ZCHzarZSpq+/okuQ=;
-        b=N4zqJWSoS64gOWkOeuuXQw0P2kRVhGEz8tFnNC18Mshr3G6cNJjbGVlXGIaicNSawg
-         UkLZcZ68Og2i/SxADPT1kc7RPJ4eIs1eyPHfq6CL7RPBMDWHRn67RPgSW3pEsci8b0CW
-         Vb5PEBPBQo7dhaWwuyUv+GKts8Hxw4hqAYL42+LSQqdN1IQNqfNf06GONqmCSnztmTug
-         LIXrrsix84TERutjSKz5rSYc7QxNRVuz5CDUjMW8/snKXg5vnXMyvtjDvnE+QZweUFSJ
-         IUv6HplOLCs4Q4ZEss8knnPYKstOQmgBJCRxjfvkFIf4n8wfYrVWZPG9jYuJjotW2t0W
-         dKhw==
-X-Gm-Message-State: AOAM533oXh5FXMHv5yTChUG/101cOGn/WmhspzTChjmlwQzaxeZi62zv
-        CAb3/3dSt4Fl+UxblFn6of8=
-X-Google-Smtp-Source: ABdhPJxLq4+FJHPQaRNEEuI8Y2uczN276b3TXoygp2NtPHHqEResNravQTmRhPjApKGg3CtJgkT82Q==
-X-Received: by 2002:a17:90a:71c5:: with SMTP id m5mr37000621pjs.105.1634421437722;
-        Sat, 16 Oct 2021 14:57:17 -0700 (PDT)
-Received: from localhost.localdomain ([115.96.219.100])
-        by smtp.googlemail.com with ESMTPSA id y3sm8630080pjg.7.2021.10.16.14.57.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 16 Oct 2021 14:57:17 -0700 (PDT)
-From:   Kushal-kothari <kushalkothari285@gmail.com>
-To:     linux-arm-kernel@lists.infradead.org, mike.rapoport@gmail.com,
-        kushalkothari2850@gmail.com, kushalkothari285@gmail.com,
-        outreachy-kernel@googlegroups.com, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev,
-        nsaenz@kernel.org, bcm-kernel-feedback-list@broadcom.com
-Subject: [PATCH] staging: vc04_services: Fixed checkpatch warning: MSLEEP: msleep < 20ms can sleep for up to 20ms.
-Date:   Sun, 17 Oct 2021 03:25:27 +0530
-Message-Id: <20211016215527.119189-1-kushalkothari285@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=F8oCc0IEea9FCh4BQiGK/7pFTaDRWDhTVEP/QxC1rXA=;
+        b=xpmaSFj1C2Mv//tLcFVWl44DOM27XzJxAoBFPLNqMyENbDvlz2BKG27575lW/Qdeq0
+         ju2OXDTjBsnZzQbQVpTIu1ybDedsTgbf1TixGNqdLMiR9xCwEjfGfk2w1Ifdtautxd2a
+         jA76gbzeNqFXlYWLedDWoC7gaIAAb1I/Y8If+nv8hq9VAVzFSJGTGJUReFuHf47eKIvO
+         7UTkcM8F2OjX3EwrlqkiakW2nfBDBu4lTZKieMOT+xycvr8p6PeGF7o828yIShGNZMPx
+         vIO+N7QJXowpgvJ++I0R/UCAqH0ecolQdimqeK+Obi3+o984xyCE5Bj5glHFa1W1P+U1
+         pxUg==
+X-Gm-Message-State: AOAM5334IxydAnnhOICH7YggfanDjXNiQaqGJk7QlglKoClUoGQ7AyqD
+        0VNeeOVgKp5oQGd4SFuBClvJ6X5SyMEJ/IYEkh0DKh+y9DQ=
+X-Google-Smtp-Source: ABdhPJw3tkY4ofQ0BEM0O3PhgMuQUq+ZSasUs25BatGDnf3HchYalXBN/1NxFHIYf3L6CSeI4FYavJ9uDzzI3/Sb7rU=
+X-Received: by 2002:a05:6512:3d27:: with SMTP id d39mr6386174lfv.229.1634421472660;
+ Sat, 16 Oct 2021 14:57:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <5d683882-257d-87b2-20aa-0871e2902090@amd.com> <20211009033240.21543-1-nakato@nakato.io>
+In-Reply-To: <20211009033240.21543-1-nakato@nakato.io>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Sat, 16 Oct 2021 23:57:41 +0200
+Message-ID: <CACRpkdYgqmNZEGWmjzeFtfiH-hJb6eJRuz7hnxw1GeRUuyTnRA@mail.gmail.com>
+Subject: Re: [PATCH v2] pinctrl: amd: disable and mask interrupts on probe
+To:     Sachi King <nakato@nakato.io>
+Cc:     bnatikar@amd.com, Mario Limonciello <mario.limonciello@amd.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "S-k, Shyam-sundar" <Shyam-sundar.S-k@amd.com>,
+        "Shah, Nehal-bakulchandra" <Nehal-bakulchandra.Shah@amd.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Kushal-kothari <kushalkothari285@gmail.com>
----
- drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On Sat, Oct 9, 2021 at 5:33 AM Sachi King <nakato@nakato.io> wrote:
 
-diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
-index 6fbafdfe340f..80a7898c5331 100644
---- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
-+++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
-@@ -857,7 +857,7 @@ vchiq_bulk_transmit(unsigned int handle, const void *data, unsigned int size,
- 		if (status != VCHIQ_RETRY)
- 			break;
- 
--		msleep(1);
-+		usleep_range(1000, 2000);
- 	}
- 
- 	return status;
-@@ -894,7 +894,7 @@ enum vchiq_status vchiq_bulk_receive(unsigned int handle, void *data,
- 		if (status != VCHIQ_RETRY)
- 			break;
- 
--		msleep(1);
-+		usleep_range(1000, 2000);
- 	}
- 
- 	return status;
--- 
-2.25.1
+> Some systems such as the Microsoft Surface Laptop 4 leave interrupts
+> enabled and configured for use in sleep states on boot, which cause
+> unexpected behaviour such as spurious wakes and failed resumes in
+> s2idle states.
+>
+> As interrupts should not be enabled until they are claimed and
+> explicitly enabled, disabling any interrupts mistakenly left enabled by
+> firmware should be safe.
+>
+> Signed-off-by: Sachi King <nakato@nakato.io>
 
+This v2 version applied for fixes.
+
+Yours,
+Linus Walleij
