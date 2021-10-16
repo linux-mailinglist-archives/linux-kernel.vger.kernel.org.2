@@ -2,114 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1497F430401
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 19:50:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4641C430402
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 19:52:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233723AbhJPRwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 13:52:44 -0400
-Received: from smtprelay0095.hostedemail.com ([216.40.44.95]:33634 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230071AbhJPRwl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 13:52:41 -0400
-Received: from omf09.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay04.hostedemail.com (Postfix) with ESMTP id D9E2E1817352A;
-        Sat, 16 Oct 2021 17:50:31 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf09.hostedemail.com (Postfix) with ESMTPA id C2AD91E04D7;
-        Sat, 16 Oct 2021 17:50:28 +0000 (UTC)
-Message-ID: <8d16c5fa8d6dd2424cc5a136a879e88b90ec0345.camel@perches.com>
-Subject: Re: [PATCH v3 1/5] mwifiex: Don't log error on suspend if
- wake-on-wlan is disabled
-From:   Joe Perches <joe@perches.com>
-To:     Jonas =?ISO-8859-1?Q?Dre=DFler?= <verdre@v0yd.nl>,
-        Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi017@gmail.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Tsuchiya Yuto <kitakar@gmail.com>, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Pali =?ISO-8859-1?Q?Roh=E1r?= <pali@kernel.org>
-Date:   Sat, 16 Oct 2021 10:50:25 -0700
-In-Reply-To: <20211016153244.24353-2-verdre@v0yd.nl>
-References: <20211016153244.24353-1-verdre@v0yd.nl>
-         <20211016153244.24353-2-verdre@v0yd.nl>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.4-1 
+        id S241281AbhJPRyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 13:54:46 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:43906 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230071AbhJPRyk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Oct 2021 13:54:40 -0400
+Received: from zn.tnic (p200300ec2f1ceb006062651ae72baf22.dip0.t-ipconnect.de [IPv6:2003:ec:2f1c:eb00:6062:651a:e72b:af22])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 912441EC0390;
+        Sat, 16 Oct 2021 19:52:30 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1634406750;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=Ted60gA90RO8nogAFVTIhwaV5qp7YGAkBiqZixtBxb0=;
+        b=b4VqB0B09wJUSNd+eREO0vlRLthbd8ZkAyYc8VO5tqnlsL1fmtm+NSF3gz1SMtsXXdGmsS
+        FmrQEhJmDuh3+M6VCME/8LCVb1YuC7Swp2iZ/GyuMwSMRFpRH40Dv3gry7HLcy3WDfqiXu
+        7aRZP1qPqtcUdBRqCfVVt7JRYjPzmJc=
+Date:   Sat, 16 Oct 2021 19:52:29 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Marcos Del Sol Vives <marcos@orca.pet>
+Cc:     x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86: add support DM&P devices
+Message-ID: <YWsRXfdqEpHyPVpL@zn.tnic>
+References: <20211008162246.1638801-1-marcos@orca.pet>
+ <YWcQDYY9CuWKsayl@zn.tnic>
+ <a7e54bfa-a015-2be7-e2c0-7bab47cc2b4a@orca.pet>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.91
-X-Stat-Signature: 1otizh97cxkfe1cfcqkpczgjab9bxe79
-X-Rspamd-Server: rspamout05
-X-Rspamd-Queue-Id: C2AD91E04D7
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1+A2kH2tKDKg0O1jm0nSW8lLql+D1gcUGs=
-X-HE-Tag: 1634406628-700120
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <a7e54bfa-a015-2be7-e2c0-7bab47cc2b4a@orca.pet>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2021-10-16 at 17:32 +0200, Jonas Dreﬂler wrote:
-> It's not an error if someone chooses to put their computer to sleep, not
-> wanting it to wake up because the person next door has just discovered
-> what a magic packet is. So change the loglevel of this annoying message
-> from ERROR to INFO.
+On Thu, Oct 14, 2021 at 06:29:12PM +0000, Marcos Del Sol Vives wrote:
+> Should I change it then?
+
+Yes please.
+
+> Should I also change the other two, possibly in a different patch?
+
+So I looked at
+
+  8d02c2110b3f ("x86: configuration options to compile out x86 CPU support code")
+
+which added some of those !64_BIT deps. And when you look at
+
+config X86_32
+        def_bool !64BIT
+
+and having those items either depend on "!64BIT" or on "X86_32" should
+be equivalent. Former is just weird to have in other Kconfig items
+except X86_32.
+
+So yes, please, in a separate patch.
+
+> I used that text because it's what every other x86 processor flag is
+> also using, even those that also do not do any special initialization.
 > 
-> Signed-off-by: Jonas Dreﬂler <verdre@v0yd.nl>
-> ---
->  drivers/net/wireless/marvell/mwifiex/cfg80211.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/wireless/marvell/mwifiex/cfg80211.c b/drivers/net/wireless/marvell/mwifiex/cfg80211.c
-> index ef697572a293..987558c4fc79 100644
-> --- a/drivers/net/wireless/marvell/mwifiex/cfg80211.c
-> +++ b/drivers/net/wireless/marvell/mwifiex/cfg80211.c
-> @@ -3492,7 +3492,7 @@ static int mwifiex_cfg80211_suspend(struct wiphy *wiphy,
->  	}
->  
->  	if (!wowlan) {
-> -		mwifiex_dbg(adapter, ERROR,
-> +		mwifiex_dbg(adapter, INFO,
->  			    "None of the WOWLAN triggers enabled\n");
+> For example, the CPU_SUP_UMC_32 flag also has the same warning, yet
+> arch/x86/kernel/cpu/umc.c reads "UMC chips appear to be only either 386
+> or 486, so no special init takes place". I thus assumed this was
+> standard text, in case at some point an special init is required.
 
-None of these are have a loglevel of KERN_ERR,
-all of these are logged at KERN_INFO.
+Yah, sounds like they've all been copy-pasted from some item which
+really needs special init.
 
-What I don't understand is why mwifiex_dbg is using KERN_INFO at all
-and not KERN_DEBUG.
+> Do you think it should be then reworded, or should I keep it to mantain
+> consistency with other existing flag descriptions?
 
-[]
+Yeah, please write the correct statement in there and do not take the
+other entries too seriosly - looks like semi-automatic copy-paste took
+place.
 
-drivers/net/wireless/marvell/mwifiex/main.h:#define mwifiex_dbg(adapter, mask, fmt, ...)                                \
-drivers/net/wireless/marvell/mwifiex/main.h-    _mwifiex_dbg(adapter, MWIFIEX_DBG_##mask, fmt, ##__VA_ARGS__)
+> Greetings and thanks for your time,
 
-[]
+Ditto and you're welcome!
 
-drivers/net/wireless/marvell/mwifiex/main.c:void _mwifiex_dbg(const struct mwifiex_adapter *adapter, int mask,
-drivers/net/wireless/marvell/mwifiex/main.c-              const char *fmt, ...)
-drivers/net/wireless/marvell/mwifiex/main.c-{
-drivers/net/wireless/marvell/mwifiex/main.c-    struct va_format vaf;
-drivers/net/wireless/marvell/mwifiex/main.c-    va_list args;
-drivers/net/wireless/marvell/mwifiex/main.c-
-drivers/net/wireless/marvell/mwifiex/main.c-    if (!(adapter->debug_mask & mask))
-drivers/net/wireless/marvell/mwifiex/main.c-            return;
-drivers/net/wireless/marvell/mwifiex/main.c-
-drivers/net/wireless/marvell/mwifiex/main.c-    va_start(args, fmt);
-drivers/net/wireless/marvell/mwifiex/main.c-
-drivers/net/wireless/marvell/mwifiex/main.c-    vaf.fmt = fmt;
-drivers/net/wireless/marvell/mwifiex/main.c-    vaf.va = &args;
-drivers/net/wireless/marvell/mwifiex/main.c-
-drivers/net/wireless/marvell/mwifiex/main.c-    if (adapter->dev)
-drivers/net/wireless/marvell/mwifiex/main.c-            dev_info(adapter->dev, "%pV", &vaf);
-drivers/net/wireless/marvell/mwifiex/main.c-    else
-drivers/net/wireless/marvell/mwifiex/main.c-            pr_info("%pV", &vaf);
-drivers/net/wireless/marvell/mwifiex/main.c-
-drivers/net/wireless/marvell/mwifiex/main.c-    va_end(args);
-drivers/net/wireless/marvell/mwifiex/main.c-}
-drivers/net/wireless/marvell/mwifiex/main.c:EXPORT_SYMBOL_GPL(_mwifiex_dbg);
+:-)
 
+-- 
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
