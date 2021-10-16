@@ -2,171 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA2704300A3
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 08:42:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4816D4300A6
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 08:43:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239976AbhJPGoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 02:44:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58692 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234161AbhJPGoU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 02:44:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D7B4B60C51;
-        Sat, 16 Oct 2021 06:42:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634366533;
-        bh=RXTvpdSIJPEdj8DR1Hd+ZGmvnr6cvXK/MIOSPrX32YA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=e7VuFXm4gpXm26e36Z9AhtuYwSj031q9rXweHLTQ+zbL4rFHCnETdig4XpJnpf97A
-         FgkT9/7JeU798yEa/0Qfbs4CktY/1pmH3hwMMEozUL/Kb8z/RnxODgAsrl/FT+rj7R
-         kb+Or1CC3RB5PVtAJPrztJLopwPYBuJ0wZDD3lIdaOfX9ohnS3tX28Cg+JEc+X0HKY
-         wW/vg9O7SfSy+LvZPt5PaPDu6mJtwCsNdv9xXADtRPC9w7BEre9e1qorcR3chmCeXq
-         oL1GORlbCMka8h5/Dsj8Lq/yrdyEZce7UaiBBblatTpl5etf94XXyJaNMgxQx0LKNy
-         2p9nwPWrbH75Q==
-Received: by pali.im (Postfix)
-        id 4BB337DE; Sat, 16 Oct 2021 08:42:10 +0200 (CEST)
-Date:   Sat, 16 Oct 2021 08:42:10 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Vladimir Vid <vladimir.vid@sartura.hr>,
-        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
-        linux-clk@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v7 3/6] dt-bindings: mvebu-uart: document DT bindings for
- marvell,armada-3700-uart-clock
-Message-ID: <20211016064210.7ahqfqcvf66wtt66@pali>
-References: <20210930095838.28145-1-pali@kernel.org>
- <20210930095838.28145-4-pali@kernel.org>
- <163425678347.1688384.10695189000353676651@swboyd.mtv.corp.google.com>
- <20211015090937.gnt66hgugrhwnkei@pali>
- <20211015093701.pfvkighxsndj4ujg@pali>
- <163433494758.1688384.5994009027317282677@swboyd.mtv.corp.google.com>
+        id S240533AbhJPGpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 02:45:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:48644 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239974AbhJPGpR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Oct 2021 02:45:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634366588;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=H9PD86CwR5nYqF03lqODYpfsY+K3xeFojmjQDbxQ8bg=;
+        b=jUa9tBy+7/OoXgMwI5XGuQ9fBigZpOb22ZX+lQJSBZUJ71EsF9CiE77q80WuZ2d6obGcNz
+        ivtIsNlzy/xSYnfP742Kbm7Sk2TuNTGjAIvQNDzuv5/vHbTIXj0ak6PCDGo7Fw9+/Ky0KU
+        HHDEDf1EGgjJVWkjumX732kdWbpGZn0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-7-uyRxubjWMUqS6LZC3DClnw-1; Sat, 16 Oct 2021 02:43:05 -0400
+X-MC-Unique: uyRxubjWMUqS6LZC3DClnw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D6449362F8;
+        Sat, 16 Oct 2021 06:43:03 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A1ACB5D6D7;
+        Sat, 16 Oct 2021 06:43:02 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     torvalds@linux-foundation.org, kvm@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, seanjc@google.com,
+        Willy Tarreau <w@1wt.eu>, Kees Cook <keescook@chromium.org>,
+        syzbot+e0de2333cbf95ea473e8@syzkaller.appspotmail.com
+Subject: [PATCH] mm: allow huge kvmalloc() calls if they're accounted to memcg
+Date:   Sat, 16 Oct 2021 02:43:02 -0400
+Message-Id: <20211016064302.165220-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <163433494758.1688384.5994009027317282677@swboyd.mtv.corp.google.com>
-User-Agent: NeoMutt/20180716
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday 15 October 2021 14:55:47 Stephen Boyd wrote:
-> Quoting Pali Rohár (2021-10-15 02:37:01)
-> > On Friday 15 October 2021 11:09:37 Pali Rohár wrote:
-> > > On Thursday 14 October 2021 17:13:03 Stephen Boyd wrote:
-> > > > Quoting Pali Rohár (2021-09-30 02:58:35)
-> > > > > diff --git a/Documentation/devicetree/bindings/clock/marvell,armada-3700-uart-clock.yaml b/Documentation/devicetree/bindings/clock/marvell,armada-3700-uart-clock.yaml
-> > > > > new file mode 100644
-> > > > > index 000000000000..175f5c8f2bc5
-> > > > > --- /dev/null
-> > > > > +++ b/Documentation/devicetree/bindings/clock/marvell,armada-3700-uart-clock.yaml
-> > > > > @@ -0,0 +1,59 @@
-> > > > [..]
-> > > > > +  '#clock-cells':
-> > > > > +    const: 1
-> > > > > +
-> > > > > +required:
-> > > > > +  - compatible
-> > > > > +  - reg
-> > > > > +  - clocks
-> > > > > +  - clock-names
-> > > > > +  - '#clock-cells'
-> > > > > +
-> > > > > +additionalProperties: false
-> > > > > +
-> > > > > +examples:
-> > > > > +  - |
-> > > > > +    uartclk: clock-controller@12010 {
-> > > > 
-> > > > The uart device is at 0x12000 and the clock-controller is at 0x12010?
-> > > > This looks like a node is being put into DT to represent a clk driver.
-> > > > Why can't we register a clk from the uart device driver itself? I think
-> > > > we talked about this a month or two ago but it still isn't clear to me.
-> > > 
-> > > We have already talked about it and I have already wrote reasons. UART
-> > > clk is shared for both UART1 and UART2. And UART clk regs are in both
-> > > address spaces of UART1 and UART2. UART1 or UART2 can be independently
-> > > disabled on particular board (as pins are MPP which may be configured to
-> > > different function). So you have a board only with UART2, you have to
-> > > disable UART1 node, but at the same time you have to access UART clk to
-> > > drive UART2. And UART clk bits are in UART1 address space.
-> > 
-> > It is explained also in commit message of patch 2/6.
-> 
-> Cool, thanks for the pointer.
-> 
-> Why are the two uarts split into different device nodes?
+Commit 7661809d493b ("mm: don't allow oversized kvmalloc() calls")
+restricted memory allocation with 'kvmalloc()' to sizes that fit
+in an 'int', to protect against trivial integer conversion issues.
 
-I do not know. Looks like decision of people implementing this driver
-and providing DT bindings.
+However, the WARN triggers with KVM, when it allocates ancillary page
+data whose size essentially depends on whatever userspace has passed to
+the KVM_SET_USER_MEMORY_REGION ioctl.  The warnings are easily raised by
+syzkaller, but the largest allocation that KVM can do is 8 bytes per page
+of guest memory; therefore, a 1 TiB memslot will cause a warning even
+outside fuzzing, and those allocations are known to happen in the wild.
+Google for example already has VMs that create 1.5tb memslots (12tb of
+total guest memory spread across 8 virtual NUMA nodes).
 
-I cannot change this existing DT binding due to backward compatibility.
+Use memcg accounting as evidence that the crazy large allocations are
+expected---in which case, it is indeed a good idea to have them
+properly accounted---and exempt them from the warning.
 
-> It looks like
-> it's one device that was split into two nodes because they're fairly
-> similar hardware blocks, and one or the other may not be used on the
-> board so we want to use status = "disabled" to indicate that. Sadly the
-> hardware team has delivered them as a single package into the SoC at
-> address 0x12000 and then stuck a common clk for both uarts into the same
-> uart wrapper. Here's a clk, job done!
-> 
-> Is it a problem to map UART1 address space when it isn't used on the
-> board? I'm trying to understand why it can't work to register two uart
-> ports from one device node and driver. It seems to be the main reason
-> why we're introducing another node for the clk registers when it feels
-> like it could all be handled in the existing uart driver.
+Cc: Willy Tarreau <w@1wt.eu>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Reported-by: syzbot+e0de2333cbf95ea473e8@syzkaller.appspotmail.com
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+---
+	Linus, what do you think of this?  It is a bit of a hack,
+	but the reasoning in the commit message does make at least
+	some sense.
 
-Mapping address space should work. Also because in UART1 address space
-is configuration of UART clock (which is common for both UART1 and
-UART2). Moreover each UART has its own bit for disabling clock and these
-two bits are in UART1 address space. Also it is a good idea to disable
-unused UART clock (which seems to be magically/automatically done by
-kernel when nobody use specified UART clock, as UART clock driver
-exports two clocks).
+	The alternative would be to just use __vmalloc in KVM, and add
+	__vcalloc too.	The two underscores would suggest that something
+	"different" is going on, but I wonder what you prefer between
+	this and having a __vcalloc with 2-3 uses in the whole source.
 
-> For example, we could have a static clk pointer in the uart driver
-> indicating the clk has been registered, and then register the clk if
-> uart1 or uart2 is the first device to probe and then store that clk in a
-> global (with clk_hw_get_clk(), I think that's a thing now). If uart2
-> probes first it can take the reg property and subtract some number to
-> find the clk, and if uart1 probes first it can take the reg property and
-> add some number to find the clk. Either way, the binding doesn't change
-> in this case and we don't have to add another binding for this same uart
-> hardware.
-> 
-> Then if someone wants to cleanup the binding they can combine both uarts
-> into one node, make a new compatible string and add some property to
-> indicate that one or the other uart isn't used. Probably also add some
-> property to map the uart alias to the uart hardware block inside the
-> wrapper node.
+ mm/util.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-If I was designing this driver and DTS bindings I would have choose
-something like this:
+diff --git a/mm/util.c b/mm/util.c
+index 499b6b5767ed..31fca4a999c6 100644
+--- a/mm/util.c
++++ b/mm/util.c
+@@ -593,8 +593,12 @@ void *kvmalloc_node(size_t size, gfp_t flags, int node)
+ 	if (ret || size <= PAGE_SIZE)
+ 		return ret;
+ 
+-	/* Don't even allow crazy sizes */
+-	if (WARN_ON_ONCE(size > INT_MAX))
++	/*
++	 * Don't even allow crazy sizes unless memcg accounting is
++	 * request.  We take that as a sign that huge allocations
++	 * are indeed expected.
++	 */
++	if (likely(!(flags & __GFP_ACCOUNT)) && WARN_ON_ONCE(size > INT_MAX))
+ 		return NULL;
+ 
+ 	return __vmalloc_node(size, 1, flags, node,
+-- 
+2.27.0
 
-uart@0x12000 {
-    reg = <0x12000 0x18>, <0x12200 0x30>;
-    clock-controller {
-        ...
-    };
-    serial1 {
-        ...
-        status = "disabled";
-    };
-    serial2 {
-        ...
-        status = "disabled";
-    };
-};
-
-Meaning that 0x12000 node would be 3 subnodes and all registers would be
-defined in top level nodes and would be handled by one driver.
-
-This is really how hardware block looks like. But it is not backward
-compatible...
