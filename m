@@ -2,89 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FC4A4301AD
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 11:46:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 218944301B0
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 11:52:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240162AbhJPJsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 05:48:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59364 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240175AbhJPJsL (ORCPT
+        id S240134AbhJPJyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 05:54:33 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:27159 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237133AbhJPJyb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 05:48:11 -0400
-Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53EACC061570
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 02:46:03 -0700 (PDT)
-Received: from martin by viti.kaiser.cx with local (Exim 4.89)
-        (envelope-from <martin@viti.kaiser.cx>)
-        id 1mbgGN-0003BM-0X; Sat, 16 Oct 2021 11:45:59 +0200
-Date:   Sat, 16 Oct 2021 11:45:58 +0200
-From:   Martin Kaiser <lists@kaiser.cx>
-To:     Michael Straube <straube.linux@gmail.com>
-Cc:     gregkh@linuxfoundation.org, Larry.Finger@lwfinger.net,
-        phil@philpotter.co.uk, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 6/7] staging: r8188eu: pMacPhyMode is not used
-Message-ID: <20211016094558.wxgjy4t7k6lslwqb@viti.kaiser.cx>
-References: <20211015163507.9091-1-straube.linux@gmail.com>
- <20211015163507.9091-7-straube.linux@gmail.com>
+        Sat, 16 Oct 2021 05:54:31 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1634377943; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=YDjU1Hp2eUm33Aa/Rzcjoft0RKalrfyE5SPNRjlio3g=; b=Gco+E95wKWhSdw3l3z2nEIhdLWhUTagSXNFestKkTE2a4goeGxUukex8ROMV9fP4yZyosghv
+ hW+d1UibG9K7/r4Mf4kuDp/lpoHWQ+GutwNdzsltQU23opVikqEXB9fAFhH9g9a+MAiYL6Px
+ TG3l3+hoENmxbxUPtIReEnsg0mQ=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 616aa0c6446c6db0cba7dbd1 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 16 Oct 2021 09:52:06
+ GMT
+Sender: quic_luoj=quicinc.com@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C7477C4361A; Sat, 16 Oct 2021 09:52:05 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [192.168.1.4] (unknown [183.192.232.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: luoj)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9866CC4338F;
+        Sat, 16 Oct 2021 09:52:02 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 9866CC4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=fail (p=none dis=none) header.from=quicinc.com
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=quicinc.com
+Subject: Re: [PATCH v2 05/13] net: phy: add qca8081 ethernet phy driver
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        Luo Jie <luoj@codeaurora.org>
+Cc:     andrew@lunn.ch, hkallweit1@gmail.com, davem@davemloft.net,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sricharan@codeaurora.org
+References: <20211015073505.1893-1-luoj@codeaurora.org>
+ <20211015073505.1893-6-luoj@codeaurora.org>
+ <YWkzxd7xzTDngoT9@shell.armlinux.org.uk>
+From:   Jie Luo <quic_luoj@quicinc.com>
+Message-ID: <73d24f3d-3327-5d4b-c308-e5b145cbe6a5@quicinc.com>
+Date:   Sat, 16 Oct 2021 17:51:59 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211015163507.9091-7-straube.linux@gmail.com>
-User-Agent: NeoMutt/20170113 (1.7.2)
-Sender: Martin Kaiser <martin@viti.kaiser.cx>
+In-Reply-To: <YWkzxd7xzTDngoT9@shell.armlinux.org.uk>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thus wrote Michael Straube (straube.linux@gmail.com):
 
-> pMacPhyMode is not used. Remove it from odm_dm_struct and remove
-> related dead code.
-
-> Signed-off-by: Michael Straube <straube.linux@gmail.com>
-> ---
->  drivers/staging/r8188eu/hal/odm.c     | 3 ---
->  drivers/staging/r8188eu/include/odm.h | 3 ---
->  2 files changed, 6 deletions(-)
-
-> diff --git a/drivers/staging/r8188eu/hal/odm.c b/drivers/staging/r8188eu/hal/odm.c
-> index 85bc5050cda5..a2cbe727f6e0 100644
-> --- a/drivers/staging/r8188eu/hal/odm.c
-> +++ b/drivers/staging/r8188eu/hal/odm.c
-> @@ -231,9 +231,6 @@ void ODM_CmnInfoHook(struct odm_dm_struct *pDM_Odm, enum odm_common_info_def Cmn
->  	/*  */
->  	switch	(CmnInfo) {
->  	/*  Dynamic call by reference pointer. */
-> -	case	ODM_CMNINFO_MAC_PHY_MODE:
-> -		pDM_Odm->pMacPhyMode = (u8 *)pValue;
-> -		break;
->  	case	ODM_CMNINFO_TX_UNI:
->  		pDM_Odm->pNumTxBytesUnicast = (u64 *)pValue;
->  		break;
-> diff --git a/drivers/staging/r8188eu/include/odm.h b/drivers/staging/r8188eu/include/odm.h
-> index 9745069060d7..6cbf64df9be7 100644
-> --- a/drivers/staging/r8188eu/include/odm.h
-> +++ b/drivers/staging/r8188eu/include/odm.h
-> @@ -269,7 +269,6 @@ enum odm_common_info_def {
-
->  	/*  Dynamic value: */
->  /*  POINTER REFERENCE-----------  */
-> -	ODM_CMNINFO_MAC_PHY_MODE,	/*  ODM_MAC_PHY_MODE_E */
->  	ODM_CMNINFO_TX_UNI,
->  	ODM_CMNINFO_RX_UNI,
->  	ODM_CMNINFO_WM_MODE,		/*  ODM_WIRELESS_MODE_E */
-> @@ -621,8 +620,6 @@ struct odm_dm_struct {
->  	bool	bool_temp;
->  	struct adapter *adapter_temp;
-
-> -	/*  MAC PHY Mode SMSP/DMSP/DMDP = 0/1/2 */
-> -	u8	*pMacPhyMode;
->  	/* TX Unicast byte count */
->  	u64	*pNumTxBytesUnicast;
->  	/* RX Unicast byte count */
-> -- 
-> 2.33.0
-
-Acked-by: Martin Kaiser <martin@kaiser.cx>
+On 10/15/2021 3:54 PM, Russell King (Oracle) wrote:
+> On Fri, Oct 15, 2021 at 03:34:57PM +0800, Luo Jie wrote:
+>> @@ -1431,6 +1433,18 @@ static struct phy_driver at803x_driver[] = {
+>>   	.get_sset_count = at803x_get_sset_count,
+>>   	.get_strings = at803x_get_strings,
+>>   	.get_stats = at803x_get_stats,
+>> +}, {
+>> +	/* Qualcomm QCA8081 */
+>> +	PHY_ID_MATCH_EXACT(QCA8081_PHY_ID),
+>> +	.name			= "Qualcomm QCA8081 PHY",
+> I don't think we need the " PHY" suffix. This name gets printed in a
+> context where it's obvious it's a network PHY.
+thanks Russell, will remove the suffix " PHY" in the next patch set.
+>
