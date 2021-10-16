@@ -2,72 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1B5D4303A0
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 18:19:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 863134303A2
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 18:20:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239912AbhJPQVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 12:21:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60384 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230374AbhJPQVN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 12:21:13 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D01CC061570;
-        Sat, 16 Oct 2021 09:19:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=IjZSx47/pT12yjNBS4Xi8fL7I8DemHVk6Qp+V3LbhPo=; b=LeyOSoVJ6A8yfeXchlIsBqJX9o
-        pyOgmz8mJzQ8FyXMeEoLRpwIUXfu0ChcbwOjtHVVsBSYdvaWWNROkOG2ylYDhrGYVEx6q1n50c5V1
-        fVeFLNCmH7LxhiNK1nXMqQk000S8RWQcc43M4prvELqkufklSpTWEbtqJcjsS2t0sme+CHzHX0a78
-        r64hgAlHpXB1C3h3KrdKgyv7YOT0mF9ZLgpQzN4TwOzTT/yLF7Q5vlo5D52ibInPuZEgN5Trp87KP
-        s6nu2Vm2H7ZbFr9nK0oXA9vmrS8r9KZkOzvMxBmHRlQFRg4vLFBoXWKmAkZwYTuah5iymJM1QO0t/
-        8Not1XKw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mbmO8-009lbl-S7; Sat, 16 Oct 2021 16:18:29 +0000
-Date:   Sat, 16 Oct 2021 17:18:24 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Len Baker <len.baker@gmx.com>
-Cc:     Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] sysctl: Avoid open coded arithmetic in memory allocator
- functions
-Message-ID: <YWr7UN1+RkayVWy2@casper.infradead.org>
-References: <20211016152829.9836-1-len.baker@gmx.com>
+        id S240647AbhJPQWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 12:22:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51396 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230374AbhJPQWL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Oct 2021 12:22:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3CD9561027;
+        Sat, 16 Oct 2021 16:19:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634401203;
+        bh=xDu3yjHy7Vfc0xSf0OVL8219o+oDBzfxEjriLZOQ+jY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nU7wtoofX+dy7jx95w1zHprMIHYVtW36BixoDqdgmPgycpogYHwH/v8TOhCDghccz
+         CRxr1JGICyOTIwjLG6R7/0yrQ21oqsxk3SpSH/ZIpIzr4p4cn70ql+HFsb6WBjLFP1
+         58tBlGjKqx1t51G2oCYS5a9ho6yGQiJiA4bp7e0W/k5v6tgGLCjUeZKdUwdWAYvDD2
+         fQmRDX/ZiTYPnBHCYFnWn3YuD2hNDYlXwtHKhoVc+tHKE2xDmsEv1zrBcIjGkWlm7y
+         h5PZ6EzL7UYkwFBFjsttJKYwJ0tcRes+CRKYWcOiht4+SoHCZD/fgy8hf7j6DcEoA5
+         Q/pDNR85VnpJg==
+Date:   Sat, 16 Oct 2021 21:49:56 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        hemantk@codeaurora.org, bbhatt@codeaurora.org,
+        loic.poulain@linaro.org, wangqing@vivo.com, mhi@lists.linux.dev,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] bus: mhi: replace snprintf in show functions with
+ sysfs_emit
+Message-ID: <20211016161956.GB4048@thinkpad>
+References: <20211016065734.28802-1-manivannan.sadhasivam@linaro.org>
+ <20211016065734.28802-4-manivannan.sadhasivam@linaro.org>
+ <YWqBTj4slHq7HexS@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211016152829.9836-1-len.baker@gmx.com>
+In-Reply-To: <YWqBTj4slHq7HexS@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 16, 2021 at 05:28:28PM +0200, Len Baker wrote:
-> +static size_t new_dir_size(size_t namelen)
-> +{
-> +	size_t bytes;
-> +
-> +	if (check_add_overflow(sizeof(struct ctl_dir), sizeof(struct ctl_node),
-> +			       &bytes))
-> +		return SIZE_MAX;
-> +	if (check_add_overflow(bytes, array_size(sizeof(struct ctl_table), 2),
-> +			       &bytes))
-> +		return SIZE_MAX;
-> +	if (check_add_overflow(bytes, namelen, &bytes))
-> +		return SIZE_MAX;
-> +	if (check_add_overflow(bytes, (size_t)1, &bytes))
-> +		return SIZE_MAX;
-> +
-> +	return bytes;
-> +}
+On Sat, Oct 16, 2021 at 09:37:50AM +0200, Greg KH wrote:
+> On Sat, Oct 16, 2021 at 12:27:34PM +0530, Manivannan Sadhasivam wrote:
+> > From: Qing Wang <wangqing@vivo.com>
+> > 
+> > coccicheck complains about the use of snprintf() in sysfs show functions.
+> > 
+> > Fix the following coccicheck warning:
+> > drivers/bus/mhi/core/init.c:97:8-16: WARNING: use scnprintf or sprintf.
+> > 
+> > Use sysfs_emit instead of scnprintf or sprintf makes more sense.
+> > 
+> > Signed-off-by: Qing Wang <wangqing@vivo.com>
+> > Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
+> > Reviewed-by: Manivannan Sadhasivam <mani@kernel.org>
+> > Link: https://lore.kernel.org/r/1634095550-3978-1-git-send-email-wangqing@vivo.com
+> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > ---
+> >  drivers/bus/mhi/core/init.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
+> > index 5aaca6d0f52b..a5a5c722731e 100644
+> > --- a/drivers/bus/mhi/core/init.c
+> > +++ b/drivers/bus/mhi/core/init.c
+> > @@ -94,7 +94,7 @@ static ssize_t serial_number_show(struct device *dev,
+> >  	struct mhi_device *mhi_dev = to_mhi_device(dev);
+> >  	struct mhi_controller *mhi_cntrl = mhi_dev->mhi_cntrl;
+> >  
+> > -	return snprintf(buf, PAGE_SIZE, "Serial Number: %u\n",
+> > +	return sysfs_emit(buf, "Serial Number: %u\n",
+> >  			mhi_cntrl->serial_number);
+> 
+> The text "Serial Number: " should not be in here, right?  It's obvious
+> this is a serial number, that's what the documentation and file name
+> says.  Userspace should not have to parse sysfs files.
+> 
 
-I think this is overkill.  All these structs are small and namelen is
-supplied by the kernel, not specified by userspace.  It really complicates
-the code, and I don't see the advantage.
+Right, somehow missed it :/
 
+> And why is only one sysfs entry being changed in this file?  Either they
+> all should be, or none, no need to do this one-patch-per-entry, right?
+> 
+> Note, I have rejected Qing's patches like this for other subsystems
+> already because they are not complete, this is something they are well
+> aware of by now...
+> 
+
+Oh, I'm not aware of this.
+
+Qing: Please modify the other instance of snprintf also.
+
+Thanks,
+Mani
+
+> thanks,
+> 
+> greg k-h
