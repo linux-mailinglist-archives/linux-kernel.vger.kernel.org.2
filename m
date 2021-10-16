@@ -2,80 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 621FA43051B
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 23:58:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7A9F43051C
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 23:59:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244602AbhJPWAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 18:00:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49074 "EHLO
+        id S244648AbhJPWBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 18:01:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235312AbhJPWAD (ORCPT
+        with ESMTP id S235312AbhJPWBp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 18:00:03 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64EC0C061765
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 14:57:54 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id j21so58021884lfe.0
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 14:57:54 -0700 (PDT)
+        Sat, 16 Oct 2021 18:01:45 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8D5AC061765
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 14:59:36 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id r7so33167289wrc.10
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 14:59:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=F8oCc0IEea9FCh4BQiGK/7pFTaDRWDhTVEP/QxC1rXA=;
-        b=Z/HCYkVoBAG65Us8a35vC10l5Wf3GD6TnZk+hCauCiWX7KSbCwpWxDprsvyyDoVypm
-         7pw9J8UtPbybqCPkZjvHDbUAnj/2GhJHd21Aky2mvd8Vs6i5Jlpt7b6XgktCYyboWnu4
-         6ylbVzO5JO11aHmjrs3Guy9bwghGE+w0p7dzwTPbM8AVfi80wTx44s4y58jpIwptePCb
-         mPYN/8AgkYPIBYOOlMq+Nfmg3FAjbxPBx0vSnR541+zhAo4kJfEZjs+qayTpTEHPaNDB
-         OCbe0ao8r/cu5guTZWvAguRKCpxI4OYduVJwdEkuApsylicN3uJQVBVQ1VJSxhq+K/TG
-         47hg==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=gtjoNpKT1+hdasIsYE2uXFGE/XY4xV3IcqIJcmREP+M=;
+        b=P+musAqTZ/9Mm0DHstghqaKJlK5Jt8b8KNAPWI0+2ycX7k8wEFXrFZ6rAlurR8BJPg
+         5bTyY3tcrX/qz/Eq8TUhU9Nx32Avkmi3Lrofe29aqQSyvqJoalXF2WQI/EXjuqzAr9u6
+         igl5vhUTjCnS3YoMP/XBhuf33ilZNzZVcT/w6bggv6RfQGsqodrUcfOXjmmGaDHjCPD0
+         NiGlVLk1bjhqiC+d4W9bdopQdFTWMVtaU0lT1KVP58AvS4i+8d0ZMxa481pRdGJn1pXd
+         qFxe1bdh99LnOQe9pqpeD9StrF6R4ermqFxt17j6zQcPh7SAySjU2+Ewy0iqSjFuq6/G
+         X1YQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=F8oCc0IEea9FCh4BQiGK/7pFTaDRWDhTVEP/QxC1rXA=;
-        b=xpmaSFj1C2Mv//tLcFVWl44DOM27XzJxAoBFPLNqMyENbDvlz2BKG27575lW/Qdeq0
-         ju2OXDTjBsnZzQbQVpTIu1ybDedsTgbf1TixGNqdLMiR9xCwEjfGfk2w1Ifdtautxd2a
-         jA76gbzeNqFXlYWLedDWoC7gaIAAb1I/Y8If+nv8hq9VAVzFSJGTGJUReFuHf47eKIvO
-         7UTkcM8F2OjX3EwrlqkiakW2nfBDBu4lTZKieMOT+xycvr8p6PeGF7o828yIShGNZMPx
-         vIO+N7QJXowpgvJ++I0R/UCAqH0ecolQdimqeK+Obi3+o984xyCE5Bj5glHFa1W1P+U1
-         pxUg==
-X-Gm-Message-State: AOAM5334IxydAnnhOICH7YggfanDjXNiQaqGJk7QlglKoClUoGQ7AyqD
-        0VNeeOVgKp5oQGd4SFuBClvJ6X5SyMEJ/IYEkh0DKh+y9DQ=
-X-Google-Smtp-Source: ABdhPJw3tkY4ofQ0BEM0O3PhgMuQUq+ZSasUs25BatGDnf3HchYalXBN/1NxFHIYf3L6CSeI4FYavJ9uDzzI3/Sb7rU=
-X-Received: by 2002:a05:6512:3d27:: with SMTP id d39mr6386174lfv.229.1634421472660;
- Sat, 16 Oct 2021 14:57:52 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=gtjoNpKT1+hdasIsYE2uXFGE/XY4xV3IcqIJcmREP+M=;
+        b=n4kyHAa72uP4EoK4EYjIR+cjEJTPA64YIhCfBZrga/vNTODH7CFK3h6n5AfCr2gQCP
+         arhF83Bnw0DewR+SIkhN5Iy08UzPbBNnaP7NfsEEYqaOgFRHU6//yoAf1V3L2OyGAQs+
+         NQrEKrqVZVot0k4xVCHAZjCz1ttqHb+WZI+BblqMntnE69+jdnoVAFR1i5DUTjmmxAXB
+         bPgB1kjeeerhCeVu7G/uow3npawPhXR+nNoTOF+dvkAcZdqjj950Gqu0EzZhOei+nsqo
+         NisHFVOOpdlBW77pa2a8uukJYu8JIjFYUwDeltnwQIXQZ4oSnz6D5svkH+XSqf8UeCnz
+         Gzpw==
+X-Gm-Message-State: AOAM532ak95BLJN3ZQcJlEC+1XwrnLWincCzCND++BOE8CLId/PodtTp
+        IuFGLvpIp+/fCbyXf/zJxhOaiHqPzNbtPsKg
+X-Google-Smtp-Source: ABdhPJzi9fi+UK3QNOEaBqZBWAUKkt/tyjVVNQauw2DJMKwiD7UkmiesJqF14ttV27v3yWPSrso3iw==
+X-Received: by 2002:adf:ab1c:: with SMTP id q28mr24890966wrc.39.1634421575345;
+        Sat, 16 Oct 2021 14:59:35 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:f04d:f65f:efd5:698? ([2a01:e34:ed2f:f020:f04d:f65f:efd5:698])
+        by smtp.googlemail.com with ESMTPSA id u13sm63336wri.50.2021.10.16.14.59.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 16 Oct 2021 14:59:34 -0700 (PDT)
+Subject: Re: [PATCH v3 00/17] clocksource/arm_arch_timer: Add basic ARMv8.6
+ support
+To:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Shier <pshier@google.com>,
+        Raghavendra Rao Ananta <rananta@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        kernel-team@android.com
+References: <20211010114306.2910453-1-maz@kernel.org>
+ <20211011110243.GB4068@willie-the-truck> <87mtnfptni.wl-maz@kernel.org>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <2cf7b564-63c2-ac6c-a083-f7ac2caab6fc@linaro.org>
+Date:   Sat, 16 Oct 2021 23:59:33 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <5d683882-257d-87b2-20aa-0871e2902090@amd.com> <20211009033240.21543-1-nakato@nakato.io>
-In-Reply-To: <20211009033240.21543-1-nakato@nakato.io>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sat, 16 Oct 2021 23:57:41 +0200
-Message-ID: <CACRpkdYgqmNZEGWmjzeFtfiH-hJb6eJRuz7hnxw1GeRUuyTnRA@mail.gmail.com>
-Subject: Re: [PATCH v2] pinctrl: amd: disable and mask interrupts on probe
-To:     Sachi King <nakato@nakato.io>
-Cc:     bnatikar@amd.com, Mario Limonciello <mario.limonciello@amd.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "S-k, Shyam-sundar" <Shyam-sundar.S-k@amd.com>,
-        "Shah, Nehal-bakulchandra" <Nehal-bakulchandra.Shah@amd.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <87mtnfptni.wl-maz@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 9, 2021 at 5:33 AM Sachi King <nakato@nakato.io> wrote:
 
-> Some systems such as the Microsoft Surface Laptop 4 leave interrupts
-> enabled and configured for use in sleep states on boot, which cause
-> unexpected behaviour such as spurious wakes and failed resumes in
-> s2idle states.
->
-> As interrupts should not be enabled until they are claimed and
-> explicitly enabled, disabling any interrupts mistakenly left enabled by
-> firmware should be safe.
->
-> Signed-off-by: Sachi King <nakato@nakato.io>
+Hi Marc,
 
-This v2 version applied for fixes.
 
-Yours,
-Linus Walleij
+On 11/10/2021 15:39, Marc Zyngier wrote:
+
+[ ... ]
+
+> Thanks for that. All addressed now. I'll repost the series once we've
+> addressed the question below.
+> 
+>> How do you want to merge this series? It would be nice to have the arch
+>> bits in the arm64 tree, if possible, as we'll be tripping over the cpucaps
+>> stuff otherwise.
+> 
+> I think we should keep the series together, as asm/arch_timer.h gets a
+> beating all over the place, and there is no chance the arm64 bits at
+> the end can apply (let alone work) on their own.
+> 
+> So either Daniel would ack the series for it to go via arm64, or
+> create a stable branch with the first 13 patches that would go in both
+> the clocksource and arm64 trees.
+> 
+> Daniel, any preference?
+
+yes, I prefer a stable branch for this series.
+
+https://git.linaro.org/people/daniel.lezcano/linux.git/log/?h=timers/drivers/armv8.6_arch_timer
+
+
+Thanks
+
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
