@@ -2,147 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBBBD43017E
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 11:29:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC7EB430173
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 11:17:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243930AbhJPJbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 05:31:18 -0400
-Received: from sender4-op-o14.zoho.com ([136.143.188.14]:17427 "EHLO
-        sender4-op-o14.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235334AbhJPJbR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 05:31:17 -0400
-X-Greylist: delayed 906 seconds by postgrey-1.27 at vger.kernel.org; Sat, 16 Oct 2021 05:31:17 EDT
-ARC-Seal: i=1; a=rsa-sha256; t=1634375615; cv=none; 
-        d=zohomail.com; s=zohoarc; 
-        b=BpY3SY0aB26/FbDa40bp/WI+57QCU0IwonMWaoE6jh4M+lvFlYZuKERrjR/UoO+J1qquZ6ULYE5Z1kRtLAnM6wNSGDSuszBmPiCRFf92b3lmBTkHxHSGeoFy/R9QtqCjZ1wAlrsu85Io9VHGaiSrrE77nlMp1ljYKnBLumr0Qf0=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-        t=1634375615; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
-        bh=sYetWd5dkPd+TI2PlmPR4bwqbZoI6NEUiz188dhP0zk=; 
-        b=Z5R5azUjfz63NZD9PKtuSlayMzyDtyd322pRaDg//YpHtVG5/DDnpXSPAKN+XSSULP5lWjQxJyIUQDm5NyUiPcw+YJkf9wqnoohGbHqnXvkuGA4DhjSO0DD3OIFFOiaW77YFjVpE/Gi8ReQTbZaP8O8jfxmgfl/L118SIABrL7c=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-        dkim=pass  header.i=arinc9.com;
-        spf=pass  smtp.mailfrom=arinc.unal@arinc9.com;
-        dmarc=pass header.from=<arinc.unal@arinc9.com>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1634375615;
-        s=zmail; d=arinc9.com; i=arinc.unal@arinc9.com;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding;
-        bh=sYetWd5dkPd+TI2PlmPR4bwqbZoI6NEUiz188dhP0zk=;
-        b=OlKVSVLQPITCn8Uxx/IzUx0aklCUIsMJ57VDMPAODlGQkuvOxIQ30NEFOP/cbrUt
-        MxtYUZEq9LvxI4kyJmn7GHCJApBAfEHrrqevN3BtxHIb+d1Wp53ske722KvXmFugHtL
-        9PqwDxl/rpqh7JuuUSyh2uSdgVs3mjgGKsE8wTMY=
-Received: from [10.10.10.216] (85.117.236.245 [85.117.236.245]) by mx.zohomail.com
-        with SMTPS id 1634375614599922.1792449684986; Sat, 16 Oct 2021 02:13:34 -0700 (PDT)
-Subject: Re: [PATCH v3 net-next 0/7] net: dsa: add support for RTL8365MB-VC
-To:     =?UTF-8?Q?Alvin_=c5=a0ipraga?= <alvin@pqrs.dk>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>
-Cc:     =?UTF-8?Q?Alvin_=c5=a0ipraga?= <alsi@bang-olufsen.dk>,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211015171030.2713493-1-alvin@pqrs.dk>
-From:   =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
-Message-ID: <96111adf-205d-1cca-d05e-20bef29ed29e@arinc9.com>
-Date:   Sat, 16 Oct 2021 12:13:26 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S243901AbhJPJTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 05:19:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51984 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235389AbhJPJTG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Oct 2021 05:19:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0003F61262
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 09:16:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634375819;
+        bh=lZbCj57sS26PhhEqqLIywo2CTki+igIMS5uTDnO/RQo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=fv+uG4YpKUa61aLECR+ZwDU85bj61IhR7WtNAoeQkPHQoUDT+UH+nfe4SF2hAZblC
+         p0YE0X9ximkFMLF7Tf32S+yLabOKVX2FJ7AZvRap6xOe9iUI9pNZW3rFaa5My0QVBf
+         /NW3I4/B2LSQrPbUFUujU5BmhlROMGPEg7n0lj8uDqEk656F6tr/5iWR51JY7Pf9Sy
+         uryq0IPvcffWfka0R5hZUhCXumKwjN2/rIpE1IyqPgnvJEnUVyCfvJymLD+7wQsnDQ
+         S7T48keqwLk1cofaYwiHbUoCV1w5ItpdEsNTqXz1YjU+a/jZlkPiVAD8iS43Q0RVP2
+         Z6pFRX3XI4gfw==
+Received: by mail-vk1-f177.google.com with SMTP id j38so6276988vkd.10
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 02:16:58 -0700 (PDT)
+X-Gm-Message-State: AOAM5337OcXUXbiCxsYHWpseWDWSjvj7UzcCCS4v1LgQhGkX9I6Ho6aY
+        mdEYzikaXEmLz3rygke6HH6AAOftToKTDnwG5mU=
+X-Google-Smtp-Source: ABdhPJy7Dr9uJZRjLPplBn0SwWTsg5Ys8p5qWK0RQe03OuCs93YEQl7H/pLcxBmeE24G/bvo7SZgWy407FkLn5kqPhM=
+X-Received: by 2002:a1f:2a4c:: with SMTP id q73mr16680462vkq.8.1634375817984;
+ Sat, 16 Oct 2021 02:16:57 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20211015171030.2713493-1-alvin@pqrs.dk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-ZohoMailClient: External
+References: <20211016032200.2869998-1-guoren@kernel.org> <20211016032200.2869998-3-guoren@kernel.org>
+ <87mtn9mor9.fsf@linux-m68k.org>
+In-Reply-To: <87mtn9mor9.fsf@linux-m68k.org>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Sat, 16 Oct 2021 17:16:45 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTRYuo+U1wWaz1jiQTk07-6etNMg-2UBDTYmnrLKzVqH8Q@mail.gmail.com>
+Message-ID: <CAJF2gTRYuo+U1wWaz1jiQTk07-6etNMg-2UBDTYmnrLKzVqH8Q@mail.gmail.com>
+Subject: Re: [PATCH V4 2/3] dt-bindings: update riscv plic compatible string
+To:     Andreas Schwab <schwab@linux-m68k.org>
+Cc:     Anup Patel <anup@brainfault.org>,
+        Atish Patra <atish.patra@wdc.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
+        Rob Herring <robh@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tested on net-next master branch kernel on Asus RT-AC88U router using 
-OpenWrt.
+On Sat, Oct 16, 2021 at 3:17 PM Andreas Schwab <schwab@linux-m68k.org> wrote:
+>
+> On Okt 16 2021, guoren@kernel.org wrote:
+>
+> > +  The C9xx PLIC does not comply with the interrupt claim/completion process defined
+> > +  by the RISC-V PLIC specification because C9xx PLIC will mask an IRQ when it is
+> > +  claimed by PLIC driver (i.e. readl(claim) and the IRQ will be unmasked upon
+> > +  completion by PLIC driver (i.e. writel(claim). This behaviour breaks the handling
+>
+> Missing close paren in both parenthetical remarks above.
+Opps, thx. I'll fix it.
 
-DT specification:
+>
+> Andreas.
+>
+> --
+> Andreas Schwab, schwab@linux-m68k.org
+> GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
+> "And now for something completely different."
 
-	ethernet-switch {
-		compatible = "realtek,rtl8365mb";
-		mdc-gpios = <&chipcommon 6 GPIO_ACTIVE_HIGH>;
-		mdio-gpios = <&chipcommon 7 GPIO_ACTIVE_HIGH>;
-		reset-gpios = <&chipcommon 10 GPIO_ACTIVE_LOW>;
-		realtek,disable-leds;
-		dsa,member = <1 0>;
 
-		ports {
-			#address-cells = <1>;
-			#size-cells = <0>;
-			reg = <0>;
 
-			port@0 {
-				reg = <0>;
-				label = "lan5";
-				phy-handle = <&ethphy0>;
-			};
+-- 
+Best Regards
+ Guo Ren
 
-			port@1 {
-				reg = <1>;
-				label = "lan6";
-				phy-handle = <&ethphy1>;
-			};
-
-			port@2 {
-				reg = <2>;
-				label = "lan7";
-				phy-handle = <&ethphy2>;
-			};
-
-			port@3 {
-				reg = <3>;
-				label = "lan8";
-				phy-handle = <&ethphy3>;
-			};
-
-			port@6 {
-				reg = <6>;
-				label = "cpu";
-				ethernet = <&sw0_p5>;
-				phy-mode = "rgmii";
-				tx-internal-delay-ps = <2000>;
-				rx-internal-delay-ps = <2000>;
-
-				fixed-link {
-					speed = <1000>;
-					full-duplex;
-					pause;
-				};
-			};
-		};
-
-		mdio {
-			compatible = "realtek,smi-mdio";
-			#address-cells = <1>;
-			#size-cells = <0>;
-
-			ethphy0: phy@0 {
-				reg = <0>;
-			};
-
-			ethphy1: phy@1 {
-				reg = <1>;
-			};
-
-			ethphy2: phy@2 {
-				reg = <2>;
-			};
-
-			ethphy3: phy@3 {
-				reg = <3>;
-			};
-		};
-	};
-
-Tested-by: Arınç ÜNAL <arinc.unal@arinc9.com>
+ML: https://lore.kernel.org/linux-csky/
