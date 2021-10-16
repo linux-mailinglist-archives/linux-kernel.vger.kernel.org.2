@@ -2,173 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16E94430504
+	by mail.lfdr.de (Postfix) with ESMTP id 6230C430505
 	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 23:17:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244666AbhJPVST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 17:18:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40164 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244660AbhJPVSS (ORCPT
+        id S244674AbhJPVTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 17:19:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46863 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244668AbhJPVS5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 17:18:18 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 078D8C061765
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 14:16:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=WmWx3eQF29prrcm1i33F+svigfcuy8QUDaRai5h7Weo=; b=uZZZ/5qas/J5fErnQnRiDRdN0o
-        WUgkPZeIZTYTHunGeYxis0iO3svEUlyxq4lT5/KhseXLqDDQNx4rrogMnUDeG3Q9RjUC2vc8iKHZw
-        rA0CdEYNXhJ/9YPjZrdUzC11ijndnqPn/MzdjClRFsM1DmzWYowLAlQa077AqvH0NsGZ5iEk66Hbs
-        kuEaU2DHWNROGRW+khQqd5yTj7gmae6Zp4ct7tcK+ZndK66r/HhCbb1GcUshmeYaxazh5yk/EZT9B
-        4caf0wFgv7eUpSxaf8mZx7Y4FCKqTwN+9PBesISzEim+Oow2W7Vi3IpJmEWeUdgGcT2nfS3J2QbWP
-        ZhAcuB/w==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55150)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1mbr29-0003eK-D7; Sat, 16 Oct 2021 22:16:01 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1mbr25-0004MH-Pm; Sat, 16 Oct 2021 22:15:57 +0100
-Date:   Sat, 16 Oct 2021 22:15:57 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Ananth N Mavinakayanahalli <ananth@linux.ibm.com>,
-        Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
+        Sat, 16 Oct 2021 17:18:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634419008;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vuVl/Lm9y3LUoPVRoQC3DsmftxQZFqWY4bGxbzZzkc4=;
+        b=TbW86SeJjgsy+a/B84MVI1g6wxQPkUA4wXtUdvkFhNaO2x+wK3YNz1O3c8YEJotkA3bokR
+        b8XnvloadmFKUREaMLxa/z1dwS1E58zkWBDQIt6BqA4rKMy5eR3GgSwHt0wQaa7WbB+QAR
+        /3+lBRQvi/O/dw2nFIjoH/eimLzmm4M=
+Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com
+ [209.85.210.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-433-Wa4hEdeJNua0YTuF7EbtcQ-1; Sat, 16 Oct 2021 17:16:47 -0400
+X-MC-Unique: Wa4hEdeJNua0YTuF7EbtcQ-1
+Received: by mail-ot1-f71.google.com with SMTP id b27-20020a9d60db000000b0055036944426so7930452otk.9
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 14:16:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=vuVl/Lm9y3LUoPVRoQC3DsmftxQZFqWY4bGxbzZzkc4=;
+        b=4fCJYxnBrgfpdnRGHr/Sg+xkNrtBXDTbNoMNEJ2f1qg1UP1w5HD7uENYJHIEckul0A
+         gvNAAtlfPLYCk36AW4A348aK9dpFXva6Otg0osbnB++GxwZZ5O54Q1ijHtlpLpo14mMW
+         7d/tDlH0OD+pO0asgn3tkng9sST/eBVPZCVobJ2OJYLqLVl1mq/fZXa+P6MeH1mrYBOo
+         +CmrhRFS+7RPEePAkrlJooBe9KdZC+7aGyuJ00ojOxBqOflhUD/jG4W1vZcF+8fJqhjn
+         rem9Y6ubpTz7PS/u2ZaWI0SRUtfyRGMieq769rcCoaefTqHe/ngmNBQi/tWe49gzwj0Z
+         MDQg==
+X-Gm-Message-State: AOAM533F8ZA6d7BtyKgMDaIC1LE/DonjoSM1cVcviyzStvQkq5FWT366
+        Rid+AMJ8lyGuLFTwUWv9Gbzcyx2eeDkyz/oM79gzRaFQDKrjTp0X+9InmVpD1VO2QcpOU7QTRyU
+        WJ+w2Y4NkpkQSLO24+U+HlWtB
+X-Received: by 2002:aca:60c5:: with SMTP id u188mr17386273oib.87.1634419006554;
+        Sat, 16 Oct 2021 14:16:46 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyBX20oEuac4tZkLH0fjEqXPtWWEkbBGKJ/9HICffJyOCrhjoT616RBoDQWmMMJitU2vuhYxg==
+X-Received: by 2002:aca:60c5:: with SMTP id u188mr17386265oib.87.1634419006377;
+        Sat, 16 Oct 2021 14:16:46 -0700 (PDT)
+Received: from treble ([2600:1700:6e32:6c00::15])
+        by smtp.gmail.com with ESMTPSA id f8sm2040834otp.63.2021.10.16.14.16.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 16 Oct 2021 14:16:45 -0700 (PDT)
+Date:   Sat, 16 Oct 2021 14:16:43 -0700
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Sami Tolvanen <samitolvanen@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Nathan Chancellor <nathan@kernel.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 08/10] ARM: kprobes: Make a frame pointer on
- __kretprobe_trampoline
-Message-ID: <YWtBDXJQRLN2T1c6@shell.armlinux.org.uk>
-References: <163430224341.459050.2369208860773018092.stgit@devnote2>
- <163430231601.459050.8640625926942332950.stgit@devnote2>
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-hardening@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        llvm@lists.linux.dev
+Subject: Re: [PATCH v5 03/15] linkage: Add DECLARE_NOT_CALLED_FROM_C
+Message-ID: <20211016211643.h5ylg3hlhnzbee2u@treble>
+References: <20211013181658.1020262-1-samitolvanen@google.com>
+ <20211013181658.1020262-4-samitolvanen@google.com>
+ <7377e6b9-7130-4c20-a0c8-16de4620c995@www.fastmail.com>
+ <8735p25llh.ffs@tglx>
+ <87zgra41dh.ffs@tglx>
+ <CABCJKuc+mN4vw_sanZQKcb1=SyfT4h3JK2wpBuaB2qZH3Croxg@mail.gmail.com>
+ <87wnme3pbv.ffs@tglx>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <163430231601.459050.8640625926942332950.stgit@devnote2>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <87wnme3pbv.ffs@tglx>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 15, 2021 at 09:51:56PM +0900, Masami Hiramatsu wrote:
-> Currently kretprobe on ARM just fills r0-r11 of pt_regs, but
-> that is not enough for the stacktrace. Moreover, from the user
-> kretprobe handler, stacktrace needs a frame pointer on the
-> __kretprobe_trampoline.
+On Sat, Oct 16, 2021 at 12:17:40AM +0200, Thomas Gleixner wrote:
+> For actually callable functions, by some definition of callable,
+> e.g. the clear_page_*() variants a proper attribute would be definitely
+> preferred.
+
+See my last email, clear_page_*() has nothing to do with CFI in the
+first place.
+
+> That attribute should tell the compiler that the function is using the
+> register arguments correctly but is not suitable for direct invocation
+> because it clobbers registers.
 > 
-> This adds a frame pointer on __kretprobe_trampoline for both gcc
-> and clang case. Those have different frame pointer so we need
-> different but similar stack on pt_regs.
+> So the compiler can just refuse to call such a function if used directly
+> without an inline asm wrapper which describes the clobbers, right?
 > 
-> Gcc makes the frame pointer (fp) to point the 'pc' address of
-> the {fp, ip (=sp), lr, pc}, this means {r11, r13, r14, r15}.
-> Thus if we save the r11 (fp) on pt_regs->r12, we can make this
-> set on the end of pt_regs.
+> But thinking more about clobbers. The only "annotation" of clobbers we
+> have today are the clobbers in the inline asm, which is fragile too.
 > 
-> On the other hand, Clang makes the frame pointer to point the
-> 'fp' address of {fp, lr} on stack. Since the next to the
-> pt_regs->lr is pt_regs->sp, I reused the pair of pt_regs->fp
-> and pt_regs->ip.
-> So this stores the 'lr' on pt_regs->ip and make the fp to point
-> pt_regs->fp.
+> Something like
 > 
-> For both cases, saves __kretprobe_trampoline address to
-> pt_regs->lr, so that the stack tracer can identify this frame
-> pointer has been made by the __kretprobe_trampoline.
+>  __attribute__ ((clobbers ("rcx", "rax")))
 > 
-> Note that if the CONFIG_FRAME_POINTER is not set, this keeps
-> fp as is.
+> might be useful by itself because it allows validation of the clobbers
+> in the inline asm wrappers and also allows a analysis tool to look at
+> the ASM code and check whether the above list is correct.
 > 
-> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-> ---
->  arch/arm/probes/kprobes/core.c |   29 ++++++++++++++++++++++++-----
->  1 file changed, 24 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/arm/probes/kprobes/core.c b/arch/arm/probes/kprobes/core.c
-> index 95f23b47ba27..7cbd65a22769 100644
-> --- a/arch/arm/probes/kprobes/core.c
-> +++ b/arch/arm/probes/kprobes/core.c
-> @@ -368,16 +368,35 @@ int __kprobes kprobe_exceptions_notify(struct notifier_block *self,
->  /*
->   * When a retprobed function returns, trampoline_handler() is called,
->   * calling the kretprobe's handler. We construct a struct pt_regs to
-> - * give a view of registers r0-r11 to the user return-handler.  This is
-> - * not a complete pt_regs structure, but that should be plenty sufficient
-> - * for kretprobe handlers which should normally be interested in r0 only
-> - * anyway.
-> + * give a view of registers r0-r11, sp, lr, and pc to the user
-> + * return-handler. This is not a complete pt_regs structure, but that
-> + * should be enough for stacktrace from the return handler with or
-> + * without pt_regs.
->   */
->  void __naked __kprobes __kretprobe_trampoline(void)
->  {
->  	__asm__ __volatile__ (
-> -		"sub	sp, sp, #16		\n\t"
-> +		"ldr	lr, =__kretprobe_trampoline	\n\t"
-> +		"stmdb	sp!, {sp, lr, pc}	\n\t"
+> Hmm?
 
-I think you really do not want to do that.
+Functions are allowed to clobber rcx and rax anyway.
 
-From DDI0406C:
-
-"ARM deprecates the use of instructions with the base register in the
-list and ! specified. If the base register is not the lowest-numbered
-register in the list, such an instruction stores an UNKNOWN value for
-the base register."
-
-However, it doesn't say what value is stored if the base register is
-the lowest-numbered register in the list. The pseudocode given shows
-that it is the original value. However, DDI0100E:
-
-"Operand restrictions
-  If <Rn> is specified as <registers> and base register writeback is
-  specified:
-  • If <Rn> is the lowest-numbered register specified in
-    <register_list>, the original value of <Rn> is stored.
-  • Otherwise, the stored value of <Rn> is UNPREDICTABLE."
-
-So I guess it might be okay... but it seems a bit dodgy to rely on
-this behaviour.
-
-> +#ifdef CONFIG_FRAME_POINTER
-> +	/* __kretprobe_trampoline makes a framepointer on pt_regs. */
-> +#ifdef CONFIG_CC_IS_CLANG
-> +		/* In clang case, pt_regs->ip = lr. */
-> +		"stmdb	sp!, {lr}		\n\t"
->  		"stmdb	sp!, {r0 - r11}		\n\t"
-
-This can be simplified to:
-		"stmdb	sp!, {r0 - r11, lr}	\n\t"
-
-Also, note the value we store for "fp" is __kretprobe_trampoline.
-
-> +		/* fp points regs->r11 (fp) */
-> +		"add	fp, sp,	#44		\n\t"
-> +#else /* !CONFIG_CC_IS_CLANG */
-> +		/* In gcc case, pt_regs->ip = fp. */
-> +		"stmdb	sp!, {fp}		\n\t"
-> +		"stmdb	sp!, {r0 - r11}		\n\t"
-
-This can be simplified to:
-		"stmdb	sp!, {r0 - r12}		\n\t"
-
-since fp is r12.
+The clear_page_*() functions follow the C ABI, like (almost) every other
+asm function in the kernel.  I think there's a misunderstanding here, as
+most of this doesn't have anything to do with CFI anyway.
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Josh
+
