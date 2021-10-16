@@ -2,150 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83645430345
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 17:23:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA558430349
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 17:25:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237531AbhJPPZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 11:25:08 -0400
-Received: from mail-4324.protonmail.ch ([185.70.43.24]:39591 "EHLO
-        mail-4324.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237075AbhJPPZH (ORCPT
+        id S233277AbhJPP1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 11:27:43 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:39994 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233757AbhJPP1j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 11:25:07 -0400
-Date:   Sat, 16 Oct 2021 15:22:52 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1634397776;
-        bh=w0xqkPcv9nCVQOq8BMYP8ncaNLdCAAS0wKe2iu3Cfbs=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=p/l0X2ockchTJ4qagQDhsRfJiEBOYmUAgW/GmT4RkW1zvRNuNi/GPAo4cneJzH9gV
-         5xbIu4LabTzm829Rq3f8azPQQ4jvQ/SIXzcnv56r9JjCavWzJze8HsvzRYE5bc5ZVY
-         8WIBj7+nGoYurch+biJw0Y+VH8+b6cAnmNyw48QA=
-To:     Rob Herring <robh@kernel.org>
-From:   Yassine Oudjana <y.oudjana@protonmail.com>
-Cc:     Loic Poulain <loic.poulain@linaro.org>,
-        Ilia Lin <ilia.lin@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Andy Gross <agross@kernel.org>, phone-devel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
-        Viresh Kumar <vireshk@kernel.org>, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        linux-arm-msm@vger.kernel.org,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Nishanth Menon <nm@ti.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Reply-To: Yassine Oudjana <y.oudjana@protonmail.com>
-Subject: Re: [PATCH 2/8] dt-bindings: clk: qcom: msm8996-apcc: Add MSM8996 Pro compatible
-Message-ID: <7BT21R.3Z6EF61Y47A32@protonmail.com>
-In-Reply-To: <1634221864.197594.3295882.nullmailer@robh.at.kernel.org>
-References: <20211014083016.137441-1-y.oudjana@protonmail.com> <20211014083016.137441-3-y.oudjana@protonmail.com> <1634221864.197594.3295882.nullmailer@robh.at.kernel.org>
+        Sat, 16 Oct 2021 11:27:39 -0400
+Date:   Sat, 16 Oct 2021 18:25:21 +0300
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.baikalelectronics.ru 9ACC680307C7
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Johan Hovold <johan@kernel.org>
+CC:     Serge Semin <fancer.lancer@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        <linux-serial@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 0/3] serial: 8250: fix racy uartclk update
+Message-ID: <20211016152521.zmzhtkswhphos4q7@mobilestation>
+References: <20211015111422.1027-1-johan@kernel.org>
+ <20211015191000.hspyxgkwwd47w4nl@mobilestation>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20211015191000.hspyxgkwwd47w4nl@mobilestation>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello Johan
 
-On Thu, Oct 14 2021 at 18:31:04 +0400, Rob Herring <robh@kernel.org>=20
-wrote:
-> On Thu, 14 Oct 2021 08:32:04 +0000, Yassine Oudjana wrote:
->>  Add a compatible string for msm8996pro-apcc.
->>=20
->>  Signed-off-by: Yassine Oudjana <y.oudjana@protonmail.com>
->>  ---
->>   Documentation/devicetree/bindings/clock/qcom,msm8996-apcc.yaml | 1=20
->> +
->>   1 file changed, 1 insertion(+)
->>=20
->=20
-> Running 'make dtbs_check' with the schema in this patch gives the
-> following warnings. Consider if they are expected or the schema is
-> incorrect. These may not be new warnings.
->=20
-> Note that it is not yet a requirement to have 0 warnings for=20
-> dtbs_check.
-> This will change in the future.
->=20
-> Full log is available here: https://patchwork.ozlabs.org/patch/1540829
->=20
->=20
-> clock-controller@6400000: clock-names:0: 'pwrcl_pll' was expected
-> =09arch/arm64/boot/dts/qcom/apq8096-db820c.dt.yaml
-> =09arch/arm64/boot/dts/qcom/apq8096-ifc6640.dt.yaml
-> =09arch/arm64/boot/dts/qcom/msm8996-mtp.dt.yaml
-> =09arch/arm64/boot/dts/qcom/msm8996-pmi8996-sony-xperia-tone-dora.dt.yaml
-> =09arch/arm64/boot/dts/qcom/msm8996-pmi8996-sony-xperia-tone-kagura.dt.ya=
-ml
-> =09arch/arm64/boot/dts/qcom/msm8996-pmi8996-sony-xperia-tone-keyaki.dt.ya=
-ml
-> =09arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone-dora.dt.yaml
-> =09arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone-kagura.dt.yaml
-> =09arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone-keyaki.dt.yaml
->=20
-> clock-controller@6400000: clock-names: ['xo'] is too short
-> =09arch/arm64/boot/dts/qcom/apq8096-db820c.dt.yaml
-> =09arch/arm64/boot/dts/qcom/apq8096-ifc6640.dt.yaml
-> =09arch/arm64/boot/dts/qcom/msm8996-mtp.dt.yaml
-> =09arch/arm64/boot/dts/qcom/msm8996-pmi8996-sony-xperia-tone-dora.dt.yaml
-> =09arch/arm64/boot/dts/qcom/msm8996-pmi8996-sony-xperia-tone-kagura.dt.ya=
-ml
-> =09arch/arm64/boot/dts/qcom/msm8996-pmi8996-sony-xperia-tone-keyaki.dt.ya=
-ml
-> =09arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone-dora.dt.yaml
-> =09arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone-kagura.dt.yaml
-> =09arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone-keyaki.dt.yaml
->=20
-> clock-controller@6400000: clocks: [[29]] is too short
-> =09arch/arm64/boot/dts/qcom/msm8996-mtp.dt.yaml
->=20
-> clock-controller@6400000: clocks: [[33]] is too short
-> =09arch/arm64/boot/dts/qcom/apq8096-ifc6640.dt.yaml
->=20
-> clock-controller@6400000: clocks: [[36]] is too short
-> =09arch/arm64/boot/dts/qcom/msm8996-pmi8996-sony-xperia-tone-dora.dt.yaml
-> =09arch/arm64/boot/dts/qcom/msm8996-pmi8996-sony-xperia-tone-kagura.dt.ya=
-ml
-> =09arch/arm64/boot/dts/qcom/msm8996-pmi8996-sony-xperia-tone-keyaki.dt.ya=
-ml
-> =09arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone-dora.dt.yaml
-> =09arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone-kagura.dt.yaml
-> =09arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone-keyaki.dt.yaml
->=20
-> clock-controller@6400000: clocks: [[41]] is too short
-> =09arch/arm64/boot/dts/qcom/apq8096-db820c.dt.yaml
->=20
-> clock-controller@6400000: reg: [[104857600, 589824]] is too short
-> =09arch/arm64/boot/dts/qcom/apq8096-db820c.dt.yaml
-> =09arch/arm64/boot/dts/qcom/apq8096-ifc6640.dt.yaml
-> =09arch/arm64/boot/dts/qcom/msm8996-mtp.dt.yaml
-> =09arch/arm64/boot/dts/qcom/msm8996-pmi8996-sony-xperia-tone-dora.dt.yaml
-> =09arch/arm64/boot/dts/qcom/msm8996-pmi8996-sony-xperia-tone-kagura.dt.ya=
-ml
-> =09arch/arm64/boot/dts/qcom/msm8996-pmi8996-sony-xperia-tone-keyaki.dt.ya=
-ml
-> =09arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone-dora.dt.yaml
-> =09arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone-kagura.dt.yaml
-> =09arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone-keyaki.dt.yaml
->=20
+On Fri, Oct 15, 2021 at 10:10:00PM +0300, Serge Semin wrote:
+> On Fri, Oct 15, 2021 at 01:14:19PM +0200, Johan Hovold wrote:
+> > Here's a fix for the asynchronous uartclk-update hack which was added
+> > last year and a couple of related clean ups.
+> 
+> Yeah, that was very unfortunate patchset. Thank you very much for the fix.
+> I'll test it out tomorrow.
+> 
+> -Sergey
 
-Similar to PATCH 1/8[1], these are old warnings.
+The series has been tested on Baikal-T1 SoC with two UART ports
+feed with a common reference clock. It's working well. Thanks again
+for fixing the problem. For the whole series
+Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
+Tested-by: Serge Semin <fancer.lancer@gmail.com>
 
-=09Yassine
+-Sergey
 
-[1]=20
-https://lore.kernel.org/linux-arm-msm/G3T21R.IC4JJ9W0GTB72@protonmail.com/T=
-/#u
-
-
-
+> 
+> > 
+> > Johan
+> > 
+> > 
+> > Johan Hovold (3):
+> >   serial: 8250: fix racy uartclk update
+> >   serial: 8250: rename unlock labels
+> >   serial: 8250_dw: drop bogus uartclk optimisation
+> > 
+> >  drivers/tty/serial/8250/8250_dw.c   | 11 ++++------
+> >  drivers/tty/serial/8250/8250_port.c | 31 ++++++++++++++++++++---------
+> >  2 files changed, 26 insertions(+), 16 deletions(-)
+> > 
+> > -- 
+> > 2.32.0
+> > 
