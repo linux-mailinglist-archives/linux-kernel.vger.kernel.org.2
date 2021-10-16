@@ -2,106 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C1A3430078
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 07:58:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EFB543007C
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 08:04:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239750AbhJPGAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 02:00:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37956 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233998AbhJPGAe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 02:00:34 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A27E4C061570;
-        Fri, 15 Oct 2021 22:58:26 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id d198-20020a1c1dcf000000b00322f53b9b89so86990wmd.0;
-        Fri, 15 Oct 2021 22:58:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=68eNOtWppTlKiNDzdJ7rYhaZj7B9d5e+FYeQLVcNMSo=;
-        b=D+nlQfc9DYD5+coGuBtTTUZqQFt/wx4ryYCCFquF9XNFWO1QbZlhkldAK9VdHKVtKb
-         5ddbqnhObEXe5UgDqw5G+VtgReb9wdJqBixOIHgoB6zqEtsd6JpATx7Knh1DoK+IEoKg
-         gr0uP1w6wry+fmPoSjkpUYfN5p1UhHwNEmU5jW7KVvgmTL97ogxkdULB3w4Dp0okFBlV
-         YJZdtB4K/TjDA9OYDMAFcruwdv53iFGDc/567GE2hZdJHRbVJMaI0Aepwbt5vDAnX5La
-         8IgZULKjwtelcOb7lSSkjKI3lyQcNuZu+M28SkQKyliOvY5mbR1SqpWa5XdyRt0tTw0O
-         BNTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=68eNOtWppTlKiNDzdJ7rYhaZj7B9d5e+FYeQLVcNMSo=;
-        b=fAu5r+kBBF8sFgESrfZBDLXOFcw9sWtJ/KLRRdLHY7w/8shcioF5hlofI4FOzeaJuE
-         A/Se8Td7XAvlZHxxBPGfDriWxd0BIWa75khNDG6UgJKCKGAFx7z7Pk9bZ4UqpKTloRML
-         KUXFHF61X/2P2oGrxghvi66bmvqWEks8jwmkMa4aSB2ZXqRghak0BDoj6e92tMYBrdQv
-         Yc9jgAQSplKVVFIiWyvPxf11tE6T5H+fmuO/JegufM3WA+nt3T9Rf5sH2jMeovDXYmGg
-         loTsJjWk4CLdK4A0LhATjQYLhf65E1ZftunTLTPTgzMkHofIQDqerSfjO9arTsRJighV
-         xx3A==
-X-Gm-Message-State: AOAM530TO1+H3KJHJ9/ibWf+LXLBAMDzzK4OAqs8SvMA1sZ/Gc3eowcn
-        GgugXe2HRtHalI1jw83MB3I=
-X-Google-Smtp-Source: ABdhPJwU5Fum1Kw7UkbSQHzfGpIqocSyY0NqH3rqkuvQXub5yuDceyboyg7DhZSOPO17hhUSFqjnFQ==
-X-Received: by 2002:a1c:1f0e:: with SMTP id f14mr1246663wmf.65.1634363905217;
-        Fri, 15 Oct 2021 22:58:25 -0700 (PDT)
-Received: from localhost.elektrobit.com (eth1-fw1-nbg6.eb.noris.de. [213.95.148.172])
-        by smtp.gmail.com with ESMTPSA id z2sm6487523wrh.44.2021.10.15.22.58.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Oct 2021 22:58:24 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Jakub Kicinski <kuba@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] MAINTAINERS: adjust file entry for of_net.c after movement
-Date:   Sat, 16 Oct 2021 07:58:15 +0200
-Message-Id: <20211016055815.14397-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        id S239782AbhJPGGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 02:06:43 -0400
+Received: from relay.sw.ru ([185.231.240.75]:60208 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233998AbhJPGGm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Oct 2021 02:06:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
+        Subject; bh=xI7kQGX5KyJoY+1LjCTdHRnFhsACsaLASZrxq3vB3gA=; b=xKcMUdmxkPpA+p6rh
+        y0D0ZcC/9R6ITj2oAfdNBB1Ds822WSFnZaFiCfyqVwUYngECrTruzlLlgI2pGWTgLd5XfYJ4s5k0B
+        Iqdr/wHa7dhaA72qYTc0GAVDXaCmbT6HC4eh6JqXmW7Na6pFF5y/sQJnUPvKhJkfsAG21VQopb12g
+        =;
+Received: from [172.29.1.17]
+        by relay.sw.ru with esmtp (Exim 4.94.2)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1mbco1-006BWm-9a; Sat, 16 Oct 2021 09:04:29 +0300
+Subject: Re: [PATCH mm v5] memcg: enable memory accounting in
+ __alloc_pages_bulk
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Michal Hocko <mhocko@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Roman Gushchin <guro@fb.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org, kernel@openvz.org
+References: <0baa2b26-a41b-acab-b75d-72ec241f5151@virtuozzo.com>
+ <65c1afaf-7947-ce28-55b7-06bde7aeb278@virtuozzo.com>
+ <20211015143405.b7d54e4afa4ca7b2d57b6140@linux-foundation.org>
+From:   Vasily Averin <vvs@virtuozzo.com>
+Message-ID: <12d991ba-1702-c648-c4c7-5f9bd507582d@virtuozzo.com>
+Date:   Sat, 16 Oct 2021 09:04:07 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211015143405.b7d54e4afa4ca7b2d57b6140@linux-foundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit e330fb14590c ("of: net: move of_net under net/") moves of_net.c
-to ./net/core/, but misses to adjust the reference to this file in
-MAINTAINERS.
+On 16.10.2021 00:34, Andrew Morton wrote:
+> On Thu, 14 Oct 2021 11:02:57 +0300 Vasily Averin <vvs@virtuozzo.com> wrote:
+> 
+>> Bulk page allocator is used in vmalloc where it can be called
+>> with __GFP_ACCOUNT and must charge allocated pages into memory cgroup.
+> 
+> Is this problem serious enough to justify -stable backporting?  Some
+> words which explaining reasoning for the backport would be helpful.
+> 
+> This patch makes Shakeel's "memcg: page_alloc: skip bulk allocator for
+> __GFP_ACCOUNT" unnecessary.  Which should we use?
 
-Hence, ./scripts/get_maintainer.pl --self-test=patterns complains:
+Please use Shakeel's patch.
 
-   warning: no file matches    F:    drivers/of/of_net.c
+My patch at least requires review, so at present it should be delayed.
+I've submitted it because it may be useful later.
+Moreover  Currently it have minor issue, function in !MEMCG_KMEM branch
+in of memcontrol.h should be declare as static inline.
 
-Adjust the file entry after this file movement.
-
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
-applies cleanly on next-20211015
-
-Jakub, David, please pick this minor non-urgent clean-up patch.
-
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 932699757201..0b69e613112c 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -7085,7 +7085,6 @@ F:	drivers/net/mdio/fwnode_mdio.c
- F:	drivers/net/mdio/of_mdio.c
- F:	drivers/net/pcs/
- F:	drivers/net/phy/
--F:	drivers/of/of_net.c
- F:	include/dt-bindings/net/qca-ar803x.h
- F:	include/linux/*mdio*.h
- F:	include/linux/mdio/*.h
-@@ -7097,6 +7096,7 @@ F:	include/linux/platform_data/mdio-gpio.h
- F:	include/trace/events/mdio.h
- F:	include/uapi/linux/mdio.h
- F:	include/uapi/linux/mii.h
-+F:	net/core/of_net.c
- 
- EXEC & BINFMT API
- R:	Eric Biederman <ebiederm@xmission.com>
--- 
-2.26.2
-
+Thank you,
+	Vasily Averin
