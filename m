@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 738B74300B6
+	by mail.lfdr.de (Postfix) with ESMTP id BD22B4300B7
 	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 08:58:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243705AbhJPHAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 03:00:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50806 "EHLO
+        id S243724AbhJPHAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 03:00:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236874AbhJPHAI (ORCPT
+        with ESMTP id S243712AbhJPHAM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 03:00:08 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B011CC061570
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 23:58:00 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id om14so8712934pjb.5
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 23:58:00 -0700 (PDT)
+        Sat, 16 Oct 2021 03:00:12 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7C52C061764
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 23:58:04 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id r2so10628924pgl.10
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 23:58:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=PkPlTxMLNL0lEUyw8jTf3gF9SNwtyvdHFPx57MbnYJQ=;
-        b=xbNqVVOheQWQTFF0eURdCAN/R7I5PgSPZsP/c5+RBjakjvMKSDFeMlWgetQE6U/Tju
-         RJHEG3bIawnEsva6o4YWuxEW8yddOP1PusJwUG3CBr0BD5j0Ah533VUovZAQ35ziQ1YV
-         CULSuOXucAiE2PdfZL3a7WC0rsd8CJh7/JNm3MNJ/FK3gnIpaIxgGHHy1qnBYQHnoWzf
-         ZB9K/uuW5DadIV9DyAPVQE7UdHn8WkSWJzJuG6yRVaA8MvLMhiIbhvF8mwuCPsw8wbQA
-         qwcfZXavUbY55vxdzxlTmcWKuT/xBVZ5b9LWZCoQbXBKrhIugIM45k3yEP9Zwzpy77ih
-         i5IQ==
+        bh=PSnBBHmQDKKzZaMOl+dSnVydeHhc9eP8o2lCcovzMc8=;
+        b=w8tJccHIf6PPWVXEA/XDUTRC3rJpIf9L7f+3DeKSYA69hhp3JJ2+ro4Fv9KZ/Xq/9m
+         dUO/uHgMzKPjtT8E5gD8qQ3bDhGJSFJu0B+gTihLrXduYR2t/DNvcoqe9oZKdM8yZVqI
+         jPmC1gOU21d28VUAfcuahRmg3+gPdzsppjQLLOJr1rIXfDuwNUY6pqIELm0nsw3TYS01
+         m7aq4vloUggNOYskY6X1O5CTeBlC0Qa9C6oDLoDKDRmOqJ/EJaWLyfQ/43DBP3ZjYl0Q
+         /DfsSiG06mH22sX0cIuCoGUfofelm2Jxy2AtObZ9cxv2p1WFrjcgRGYaEptNJOT0YBEU
+         2X1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=PkPlTxMLNL0lEUyw8jTf3gF9SNwtyvdHFPx57MbnYJQ=;
-        b=28R+KkNnDlAklZNIUHc00/iIaVE68WHxZ4hcHDEQdrQvHqz4BQiBwr6SDtC/Smcqwz
-         piBjLTUyXTGJ+RafvjNrGiajuy7jw4RSEbWfLw3ZaA/P3KQ2CAFPACkPGCB9koah/02t
-         FIUhLFem+dpDA0c/bDKMhdrWqce5OotGSL0Dd43B/JT0lfGzfQHFq/owaZrKdurkjbJQ
-         kpCXJusW9PTOeDcQUVRKEjsmvOoKFRjeFays1JI7mVtLZygQ9kkzWFerpx/m2sZtj18y
-         QFaaA/xijNVVga4VJGGdLIc+KCqvt6ltnCJFNQhn7krgsTIPJhbZjO0a/yIMqY9KJhK/
-         mXwQ==
-X-Gm-Message-State: AOAM5309ZbnnLN9irL7AsMCMKx9vtp5JYNomDbqd3Gh1WvGa7V/Oluae
-        HBiKyHFXoa+GoOWtw4vqrtKS
-X-Google-Smtp-Source: ABdhPJyMuHY4AiWKf98UqHt0sVl0n6KCkCRYUkpK8FMuSfQqVgC5GCE4dVbwLH8XfZesWjiAXow0Jw==
-X-Received: by 2002:a17:903:228c:b0:13e:f389:4ca9 with SMTP id b12-20020a170903228c00b0013ef3894ca9mr15179882plh.80.1634367480191;
-        Fri, 15 Oct 2021 23:58:00 -0700 (PDT)
+        bh=PSnBBHmQDKKzZaMOl+dSnVydeHhc9eP8o2lCcovzMc8=;
+        b=mrfRqNm89BFB1SxIja4NzVAgMl7IDLs/Q3gnyE3aZwV+G9UOc+KKwxsag0XwYpYiGe
+         Xsu/bVvY5KsaNIvt3EDHE+5KwruyKjlWRHajeNjmD+lcfbPsLUKNSO2kzgn2ornMMhuj
+         mw+sx8R+n0bSXDrVCfgXZ3GsXL3vGgmR8eGNeJMTuL8SVJh4medxzMGOqNwLtoCI+QIA
+         eqlZ0hp4DEkJJbfpTxcz69jsACgfIWUeV5VNy4o5NJDLdOSZ3vwuGUCNsy8y4yV93MwK
+         8mmZ81j9V2jtu7EzRyFY8MYFUf4hBgJHzSZWp617DoZTN86lnTolgcBBBWPtVMqQto/l
+         L1gA==
+X-Gm-Message-State: AOAM533hib8mZq5Jw7/KgeUCFH5G92iVLd1lclEYKlXfvlZUDpj0szzq
+        WJhV54BSIBZvC7YnWdjHafeU
+X-Google-Smtp-Source: ABdhPJwUmO50W6OByAHj6jJvQe3hFBMXPRFvTt8Nun1ZWjTZpMCz5WETXvv8NLVtFMiXAdMsS9lLTQ==
+X-Received: by 2002:a63:20f:: with SMTP id 15mr12477340pgc.319.1634367484257;
+        Fri, 15 Oct 2021 23:58:04 -0700 (PDT)
 Received: from localhost.localdomain ([117.202.185.237])
-        by smtp.gmail.com with ESMTPSA id a17sm7024253pfd.54.2021.10.15.23.57.56
+        by smtp.gmail.com with ESMTPSA id a17sm7024253pfd.54.2021.10.15.23.58.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Oct 2021 23:57:59 -0700 (PDT)
+        Fri, 15 Oct 2021 23:58:03 -0700 (PDT)
 From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 To:     gregkh@linuxfoundation.org
 Cc:     hemantk@codeaurora.org, bbhatt@codeaurora.org,
         loic.poulain@linaro.org, wangqing@vivo.com, mhi@lists.linux.dev,
         linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 2/3] bus: mhi: Add inbound buffers allocation flag
-Date:   Sat, 16 Oct 2021 12:27:33 +0530
-Message-Id: <20211016065734.28802-3-manivannan.sadhasivam@linaro.org>
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH 3/3] bus: mhi: replace snprintf in show functions with sysfs_emit
+Date:   Sat, 16 Oct 2021 12:27:34 +0530
+Message-Id: <20211016065734.28802-4-manivannan.sadhasivam@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211016065734.28802-1-manivannan.sadhasivam@linaro.org>
 References: <20211016065734.28802-1-manivannan.sadhasivam@linaro.org>
@@ -67,147 +67,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Loic Poulain <loic.poulain@linaro.org>
+From: Qing Wang <wangqing@vivo.com>
 
-Currently, the MHI controller driver defines which channels should
-have their inbound buffers allocated and queued. But ideally, this is
-something that should be decided by the MHI device driver instead,
-which actually deals with that buffers.
+coccicheck complains about the use of snprintf() in sysfs show functions.
 
-Add a flag parameter to mhi_prepare_for_transfer allowing to specify
-if buffers have to be allocated and queued by the MHI stack.
+Fix the following coccicheck warning:
+drivers/bus/mhi/core/init.c:97:8-16: WARNING: use scnprintf or sprintf.
 
-Keep auto_queue flag for now, but should be removed at some point.
+Use sysfs_emit instead of scnprintf or sprintf makes more sense.
 
-Signed-off-by: Loic Poulain <loic.poulain@linaro.org>
-Tested-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
-Reviewed-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+Signed-off-by: Qing Wang <wangqing@vivo.com>
 Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Acked-by: Jakub Kicinski <kuba@kernel.org>
-Link: https://lore.kernel.org/r/1624566520-20406-1-git-send-email-loic.poulain@linaro.org
+Reviewed-by: Manivannan Sadhasivam <mani@kernel.org>
+Link: https://lore.kernel.org/r/1634095550-3978-1-git-send-email-wangqing@vivo.com
 Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 ---
- drivers/bus/mhi/core/internal.h  | 2 +-
- drivers/bus/mhi/core/main.c      | 9 ++++++---
- drivers/net/mhi_net.c            | 2 +-
- drivers/net/wwan/mhi_wwan_ctrl.c | 2 +-
- include/linux/mhi.h              | 7 ++++++-
- net/qrtr/mhi.c                   | 2 +-
- 6 files changed, 16 insertions(+), 8 deletions(-)
+ drivers/bus/mhi/core/init.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/bus/mhi/core/internal.h b/drivers/bus/mhi/core/internal.h
-index 3a732afaf73e..721739c5e0d5 100644
---- a/drivers/bus/mhi/core/internal.h
-+++ b/drivers/bus/mhi/core/internal.h
-@@ -682,7 +682,7 @@ void mhi_rddm_prepare(struct mhi_controller *mhi_cntrl,
- 		      struct image_info *img_info);
- void mhi_fw_load_handler(struct mhi_controller *mhi_cntrl);
- int mhi_prepare_channel(struct mhi_controller *mhi_cntrl,
--			struct mhi_chan *mhi_chan);
-+			struct mhi_chan *mhi_chan, unsigned int flags);
- int mhi_init_chan_ctxt(struct mhi_controller *mhi_cntrl,
- 		       struct mhi_chan *mhi_chan);
- void mhi_deinit_chan_ctxt(struct mhi_controller *mhi_cntrl,
-diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
-index b15c5bc37dd4..c01ec2fef02c 100644
---- a/drivers/bus/mhi/core/main.c
-+++ b/drivers/bus/mhi/core/main.c
-@@ -1430,7 +1430,7 @@ static void mhi_unprepare_channel(struct mhi_controller *mhi_cntrl,
- }
- 
- int mhi_prepare_channel(struct mhi_controller *mhi_cntrl,
--			struct mhi_chan *mhi_chan)
-+			struct mhi_chan *mhi_chan, unsigned int flags)
- {
- 	int ret = 0;
- 	struct device *dev = &mhi_chan->mhi_dev->dev;
-@@ -1455,6 +1455,9 @@ int mhi_prepare_channel(struct mhi_controller *mhi_cntrl,
- 	if (ret)
- 		goto error_pm_state;
- 
-+	if (mhi_chan->dir == DMA_FROM_DEVICE)
-+		mhi_chan->pre_alloc = !!(flags & MHI_CH_INBOUND_ALLOC_BUFS);
-+
- 	/* Pre-allocate buffer for xfer ring */
- 	if (mhi_chan->pre_alloc) {
- 		int nr_el = get_nr_avail_ring_elements(mhi_cntrl,
-@@ -1610,7 +1613,7 @@ void mhi_reset_chan(struct mhi_controller *mhi_cntrl, struct mhi_chan *mhi_chan)
- }
- 
- /* Move channel to start state */
--int mhi_prepare_for_transfer(struct mhi_device *mhi_dev)
-+int mhi_prepare_for_transfer(struct mhi_device *mhi_dev, unsigned int flags)
- {
- 	int ret, dir;
+diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
+index 5aaca6d0f52b..a5a5c722731e 100644
+--- a/drivers/bus/mhi/core/init.c
++++ b/drivers/bus/mhi/core/init.c
+@@ -94,7 +94,7 @@ static ssize_t serial_number_show(struct device *dev,
+ 	struct mhi_device *mhi_dev = to_mhi_device(dev);
  	struct mhi_controller *mhi_cntrl = mhi_dev->mhi_cntrl;
-@@ -1621,7 +1624,7 @@ int mhi_prepare_for_transfer(struct mhi_device *mhi_dev)
- 		if (!mhi_chan)
- 			continue;
  
--		ret = mhi_prepare_channel(mhi_cntrl, mhi_chan);
-+		ret = mhi_prepare_channel(mhi_cntrl, mhi_chan, flags);
- 		if (ret)
- 			goto error_open_chan;
- 	}
-diff --git a/drivers/net/mhi_net.c b/drivers/net/mhi_net.c
-index d127eb6e9257..975f7f9bdf4c 100644
---- a/drivers/net/mhi_net.c
-+++ b/drivers/net/mhi_net.c
-@@ -319,7 +319,7 @@ static int mhi_net_newlink(struct mhi_device *mhi_dev, struct net_device *ndev)
- 	u64_stats_init(&mhi_netdev->stats.tx_syncp);
- 
- 	/* Start MHI channels */
--	err = mhi_prepare_for_transfer(mhi_dev);
-+	err = mhi_prepare_for_transfer(mhi_dev, 0);
- 	if (err)
- 		goto out_err;
- 
-diff --git a/drivers/net/wwan/mhi_wwan_ctrl.c b/drivers/net/wwan/mhi_wwan_ctrl.c
-index e4d0f696687f..d0a98f34c54d 100644
---- a/drivers/net/wwan/mhi_wwan_ctrl.c
-+++ b/drivers/net/wwan/mhi_wwan_ctrl.c
-@@ -110,7 +110,7 @@ static int mhi_wwan_ctrl_start(struct wwan_port *port)
- 	int ret;
- 
- 	/* Start mhi device's channel(s) */
--	ret = mhi_prepare_for_transfer(mhiwwan->mhi_dev);
-+	ret = mhi_prepare_for_transfer(mhiwwan->mhi_dev, 0);
- 	if (ret)
- 		return ret;
- 
-diff --git a/include/linux/mhi.h b/include/linux/mhi.h
-index 723985879035..56e7934f8b23 100644
---- a/include/linux/mhi.h
-+++ b/include/linux/mhi.h
-@@ -723,8 +723,13 @@ void mhi_device_put(struct mhi_device *mhi_dev);
-  *                            host and device execution environments match and
-  *                            channels are in a DISABLED state.
-  * @mhi_dev: Device associated with the channels
-+ * @flags: MHI channel flags
-  */
--int mhi_prepare_for_transfer(struct mhi_device *mhi_dev);
-+int mhi_prepare_for_transfer(struct mhi_device *mhi_dev,
-+			     unsigned int flags);
-+
-+/* Automatically allocate and queue inbound buffers */
-+#define MHI_CH_INBOUND_ALLOC_BUFS BIT(0)
- 
- /**
-  * mhi_unprepare_from_transfer - Reset UL and DL channels for data transfer.
-diff --git a/net/qrtr/mhi.c b/net/qrtr/mhi.c
-index fa611678af05..29b4fa3b72ab 100644
---- a/net/qrtr/mhi.c
-+++ b/net/qrtr/mhi.c
-@@ -79,7 +79,7 @@ static int qcom_mhi_qrtr_probe(struct mhi_device *mhi_dev,
- 	int rc;
- 
- 	/* start channels */
--	rc = mhi_prepare_for_transfer(mhi_dev);
-+	rc = mhi_prepare_for_transfer(mhi_dev, MHI_CH_INBOUND_ALLOC_BUFS);
- 	if (rc)
- 		return rc;
- 
+-	return snprintf(buf, PAGE_SIZE, "Serial Number: %u\n",
++	return sysfs_emit(buf, "Serial Number: %u\n",
+ 			mhi_cntrl->serial_number);
+ }
+ static DEVICE_ATTR_RO(serial_number);
 -- 
 2.25.1
 
