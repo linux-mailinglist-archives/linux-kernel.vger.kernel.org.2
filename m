@@ -2,198 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A554843028D
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 14:16:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DA6B430292
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 14:22:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240406AbhJPMSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 08:18:49 -0400
-Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.82]:9000 "EHLO
-        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235147AbhJPMSp (ORCPT
+        id S240414AbhJPMYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 08:24:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37182 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235147AbhJPMYn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 08:18:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1634386534;
-    s=strato-dkim-0002; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=FUfmuNlYDkfLlY4FpNd9yLg46kksRppBVzaePpjIQL8=;
-    b=oWOlFdOcdV5JBy2m8+oaiX1xjaeRqb2ZLH3x8YQhlSkx8dkCBpPfCXqXBe1ZU8cAp6
-    8I07K9jJiKRVP7R+xo4/BgJWtX6t43a1Lo5BgbxmeSRMkmYoUilTaV1HIyKUWe7zpB+b
-    h/RfH5cuqmSvwISnkfI4+EPdcnv/LCCh9itNnGn9nrATAIl/JaacTeTM+O9qVcWkMGMs
-    tQGiHUXi6QWT+TMVDRL3fv/E1e0/z1S0itqaHP7/fufwCmeU4sW0lvDlp77gYucjTfJf
-    KXqOW6vhVVqicTjONVuCPmUbrsmw+L1Szd8UHg1AVdL2kXKrlmCh5FQxG5j0jJRgWOo1
-    wa2w==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u267FZF9PwpcNKLUrK85/aY="
-X-RZG-CLASS-ID: mo00
-Received: from gerhold.net
-    by smtp.strato.de (RZmta 47.33.8 AUTH)
-    with ESMTPSA id 301038x9GCFWNO7
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Sat, 16 Oct 2021 14:15:32 +0200 (CEST)
-Date:   Sat, 16 Oct 2021 14:15:26 +0200
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     Arnaud Ferraris <arnaud.ferraris@collabora.com>
-Cc:     linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-sunxi@lists.linux.dev,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        Martin Kepplinger <martink@posteo.de>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Fabio Estevam <festevam@gmail.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Lucas Stach <dev@lynxeye.de>, Angus Ainslie <angus@akkea.ca>,
-        Guido Gunther <agx@sigxcpu.org>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Johan Jonker <jbx6244@gmail.com>,
-        Eddie Cai <eddie.cai.linux@gmail.com>,
-        Shunqian Zheng <zhengsq@rock-chips.com>,
-        Brian Norris <briannorris@chromium.org>,
-        Dan Johansen <strit@manjaro.org>,
-        Simon South <simon@simonsouth.net>,
-        Matthias Brugger <mbrugger@suse.com>
-Subject: Re: [PATCH 3/4] arm64: dts: qcom: add 'chassis-type' property
-Message-ID: <YWrCXnQ3XNocqXhz@gerhold.net>
-References: <20211016102025.23346-1-arnaud.ferraris@collabora.com>
- <20211016102025.23346-4-arnaud.ferraris@collabora.com>
+        Sat, 16 Oct 2021 08:24:43 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02782C061570;
+        Sat, 16 Oct 2021 05:22:34 -0700 (PDT)
+Date:   Sat, 16 Oct 2021 12:22:31 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1634386952;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PAajLHzkK+bz/d1vGmfCT4vXEyfeEfkH7hLzQJ3hlBk=;
+        b=LFEYoZzg8rMl1VAiqNczs4I0l5tJm3esM8io65zJX40/OWp5CyCQBKWSPh/sRtOHaidVEP
+        9KwDJIXq4bKGCnrc7EUvA5jEVRWyrbYPOcfKULnwLRJY2EkqoNAdmQXsCfWhPsnpKrPXPB
+        xJfMRqNMLTs56W3hvJooo9udF/k4OT4YzWQ/XPvEqlFbE+w0awI/Z7bMKwOk1p64vlBWqo
+        RZv1nVSJ4XcVXRDuCAJdd4JTUS6Dh8hq4ZcW+66svmDRRxA2+yBu+g6XK0b1jE2qKmkxoI
+        n7Tuwq/bjKbVmE4R2IIz3kQRDeH0voT60niL3NENq6dlNeXV68A2qG8ZwSKMNQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1634386952;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PAajLHzkK+bz/d1vGmfCT4vXEyfeEfkH7hLzQJ3hlBk=;
+        b=KnqC0+7gnsp+r+o310imQ+wY/sOt0J4cVQMmLWefoki0BfCxh4zEk010IB4OipDZF2SVlA
+        V+OXpQedI9R0SXDQ==
+From:   "tip-bot2 for Borislav Petkov" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/fpu: Mask out the invalid MXCSR bits properly
+Cc:     Borislav Petkov <bp@suse.de>, ville.syrjala@linux.intel.com,
+        Ser Olmy <ser.olmy@protonmail.com>, <stable@vger.kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <YWgYIYXLriayyezv@intel.com>
+References: <YWgYIYXLriayyezv@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211016102025.23346-4-arnaud.ferraris@collabora.com>
+Message-ID: <163438695111.25758.6599528756955601567.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 16, 2021 at 12:20:24PM +0200, Arnaud Ferraris wrote:
-> A new 'chassis-type' root node property has recently been approved for
-> the device-tree specification, in order to provide a simple way for
-> userspace to detect the device form factor and adjust their behavior
-> accordingly.
-> 
-> This patch fills in this property for end-user devices (such as laptops,
-> smartphones and tablets) based on Qualcomm ARM64 processors.
-> 
-> Signed-off-by: Arnaud Ferraris <arnaud.ferraris@collabora.com>
-> ---
->  arch/arm64/boot/dts/qcom/msm8916-alcatel-idol347.dts            | 1 +
->  arch/arm64/boot/dts/qcom/msm8916-asus-z00l.dts                  | 1 +
->  arch/arm64/boot/dts/qcom/msm8916-huawei-g7.dts                  | 1 +
->  arch/arm64/boot/dts/qcom/msm8916-longcheer-l8150.dts            | 1 +
->  arch/arm64/boot/dts/qcom/msm8916-longcheer-l8910.dts            | 1 +
->  arch/arm64/boot/dts/qcom/msm8916-samsung-a3u-eur.dts            | 1 +
->  arch/arm64/boot/dts/qcom/msm8916-samsung-a5u-eur.dts            | 1 +
->  arch/arm64/boot/dts/qcom/msm8916-wingtech-wt88047.dts           | 1 +
-> [...]
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/msm8916-alcatel-idol347.dts b/arch/arm64/boot/dts/qcom/msm8916-alcatel-idol347.dts
-> index 670bd1bebd73..265e539e7e99 100644
-> --- a/arch/arm64/boot/dts/qcom/msm8916-alcatel-idol347.dts
-> +++ b/arch/arm64/boot/dts/qcom/msm8916-alcatel-idol347.dts
-> @@ -9,6 +9,7 @@
->  / {
->  	model = "Alcatel OneTouch Idol 3 (4.7)";
->  	compatible = "alcatel,idol347", "qcom,msm8916";
-> +	chassis-type = "handset";
->  
->  	aliases {
->  		serial0 = &blsp1_uart2;
-> diff --git a/arch/arm64/boot/dts/qcom/msm8916-asus-z00l.dts b/arch/arm64/boot/dts/qcom/msm8916-asus-z00l.dts
-> index cee451e59385..6bc0a29d4b4f 100644
-> --- a/arch/arm64/boot/dts/qcom/msm8916-asus-z00l.dts
-> +++ b/arch/arm64/boot/dts/qcom/msm8916-asus-z00l.dts
-> @@ -8,6 +8,7 @@
->  / {
->  	model = "Asus Zenfone 2 Laser";
->  	compatible = "asus,z00l", "qcom,msm8916";
-> +	chassis-type = "handset";
->  
->  	aliases {
->  		serial0 = &blsp1_uart2;
-> diff --git a/arch/arm64/boot/dts/qcom/msm8916-huawei-g7.dts b/arch/arm64/boot/dts/qcom/msm8916-huawei-g7.dts
-> index e0075b574190..42d93d3fba36 100644
-> --- a/arch/arm64/boot/dts/qcom/msm8916-huawei-g7.dts
-> +++ b/arch/arm64/boot/dts/qcom/msm8916-huawei-g7.dts
-> @@ -25,6 +25,7 @@
->  / {
->  	model = "Huawei Ascend G7";
->  	compatible = "huawei,g7", "qcom,msm8916";
-> +	chassis-type = "handset";
->  
->  	aliases {
->  		serial0 = &blsp1_uart2;
-> diff --git a/arch/arm64/boot/dts/qcom/msm8916-longcheer-l8150.dts b/arch/arm64/boot/dts/qcom/msm8916-longcheer-l8150.dts
-> index 30716eb8fb2d..9c83c96d2c8a 100644
-> --- a/arch/arm64/boot/dts/qcom/msm8916-longcheer-l8150.dts
-> +++ b/arch/arm64/boot/dts/qcom/msm8916-longcheer-l8150.dts
-> @@ -11,6 +11,7 @@
->  / {
->  	model = "Longcheer L8150";
->  	compatible = "longcheer,l8150", "qcom,msm8916-v1-qrd/9-v1", "qcom,msm8916";
-> +	chassis-type = "handset";
->  
->  	aliases {
->  		serial0 = &blsp1_uart2;
-> diff --git a/arch/arm64/boot/dts/qcom/msm8916-longcheer-l8910.dts b/arch/arm64/boot/dts/qcom/msm8916-longcheer-l8910.dts
-> index 27845189ac2b..f9ce123471d4 100644
-> --- a/arch/arm64/boot/dts/qcom/msm8916-longcheer-l8910.dts
-> +++ b/arch/arm64/boot/dts/qcom/msm8916-longcheer-l8910.dts
-> @@ -10,6 +10,7 @@
->  / {
->  	model = "BQ Aquaris X5 (Longcheer L8910)";
->  	compatible = "longcheer,l8910", "qcom,msm8916";
-> +	chassis-type = "handset";
->  
->  	aliases {
->  		serial0 = &blsp1_uart2;
-> diff --git a/arch/arm64/boot/dts/qcom/msm8916-samsung-a3u-eur.dts b/arch/arm64/boot/dts/qcom/msm8916-samsung-a3u-eur.dts
-> index 6cc2eaeb1d33..4ba11b020f9b 100644
-> --- a/arch/arm64/boot/dts/qcom/msm8916-samsung-a3u-eur.dts
-> +++ b/arch/arm64/boot/dts/qcom/msm8916-samsung-a3u-eur.dts
-> @@ -7,6 +7,7 @@
->  / {
->  	model = "Samsung Galaxy A3U (EUR)";
->  	compatible = "samsung,a3u-eur", "qcom,msm8916";
-> +	chassis-type = "handset";
->  
->  	reg_panel_vdd3: regulator-panel-vdd3 {
->  		compatible = "regulator-fixed";
-> diff --git a/arch/arm64/boot/dts/qcom/msm8916-samsung-a5u-eur.dts b/arch/arm64/boot/dts/qcom/msm8916-samsung-a5u-eur.dts
-> index c2eff5aebf85..d978c9ac179d 100644
-> --- a/arch/arm64/boot/dts/qcom/msm8916-samsung-a5u-eur.dts
-> +++ b/arch/arm64/boot/dts/qcom/msm8916-samsung-a5u-eur.dts
-> @@ -7,6 +7,7 @@
->  / {
->  	model = "Samsung Galaxy A5U (EUR)";
->  	compatible = "samsung,a5u-eur", "qcom,msm8916";
-> +	chassis-type = "handset";
->  
->  	reg_touch_key: regulator-touch-key {
->  		compatible = "regulator-fixed";
-> diff --git a/arch/arm64/boot/dts/qcom/msm8916-wingtech-wt88047.dts b/arch/arm64/boot/dts/qcom/msm8916-wingtech-wt88047.dts
-> index 4e20cc0008f7..69a44c6f57fc 100644
-> --- a/arch/arm64/boot/dts/qcom/msm8916-wingtech-wt88047.dts
-> +++ b/arch/arm64/boot/dts/qcom/msm8916-wingtech-wt88047.dts
-> @@ -11,6 +11,7 @@
->  / {
->  	model = "Xiaomi Redmi 2 (Wingtech WT88047)";
->  	compatible = "wingtech,wt88047", "qcom,msm8916";
-> +	chassis-type = "handset";
->  
->  	aliases {
->  		serial0 = &blsp1_uart2;
+The following commit has been merged into the x86/urgent branch of tip:
 
-FWIW:
-Reviewed-by: Stephan Gerhold <stephan@gerhold.net> # msm8916
+Commit-ID:     b2381acd3fd9bacd2c63f53b2c610c89959b31cc
+Gitweb:        https://git.kernel.org/tip/b2381acd3fd9bacd2c63f53b2c610c89959=
+b31cc
+Author:        Borislav Petkov <bp@suse.de>
+AuthorDate:    Fri, 15 Oct 2021 12:46:25 +02:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Sat, 16 Oct 2021 12:37:50 +02:00
 
-Thanks for going through the work to add it to so many devices! :)
-Stephan
+x86/fpu: Mask out the invalid MXCSR bits properly
+
+This is a fix for the fix (yeah, /facepalm).
+
+The correct mask to use is not the negation of the MXCSR_MASK but the
+actual mask which contains the supported bits in the MXCSR register.
+
+Reported and debugged by Ville Syrj=C3=A4l=C3=A4 <ville.syrjala@linux.intel.c=
+om>
+
+Fixes: d298b03506d3 ("x86/fpu: Restore the masking out of reserved MXCSR bits=
+")
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Tested-by: Ville Syrj=C3=A4l=C3=A4 <ville.syrjala@linux.intel.com>
+Tested-by: Ser Olmy <ser.olmy@protonmail.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/YWgYIYXLriayyezv@intel.com
+---
+ arch/x86/kernel/fpu/signal.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/x86/kernel/fpu/signal.c b/arch/x86/kernel/fpu/signal.c
+index fa17a27..831b25c 100644
+--- a/arch/x86/kernel/fpu/signal.c
++++ b/arch/x86/kernel/fpu/signal.c
+@@ -385,7 +385,7 @@ static int __fpu_restore_sig(void __user *buf, void __use=
+r *buf_fx,
+ 				return -EINVAL;
+ 		} else {
+ 			/* Mask invalid bits out for historical reasons (broken hardware). */
+-			fpu->state.fxsave.mxcsr &=3D ~mxcsr_feature_mask;
++			fpu->state.fxsave.mxcsr &=3D mxcsr_feature_mask;
+ 		}
+=20
+ 		/* Enforce XFEATURE_MASK_FPSSE when XSAVE is enabled */
