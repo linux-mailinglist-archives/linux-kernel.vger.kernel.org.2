@@ -2,91 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BA96430304
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 16:28:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2639E430303
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 16:28:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244414AbhJPOa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 10:30:27 -0400
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:35173 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244409AbhJPOa0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 10:30:26 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id B515E5C0151;
-        Sat, 16 Oct 2021 10:28:17 -0400 (EDT)
-Received: from imap47 ([10.202.2.97])
-  by compute1.internal (MEProxy); Sat, 16 Oct 2021 10:28:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
-         h=mime-version:message-id:in-reply-to:references:date:from:to
-        :cc:subject:content-type; s=fm2; bh=GRVN2QCx3h8Dn7GgNwjavdJhWEpR
-        Qp2xWgOHeVQLVvo=; b=YvuFEt51buyLnuxSDUrv9YRlgyQVfGP4h+/v/1tFppYT
-        MQf1RXPnyZeGX019XpTTlHxZz5+xKOQZ31iQlk4xJVATrfImPI0YVMXjRtZOPs2t
-        aHTmXjypvIw9AKLW1+Bf7fAwWBxmcjwOVnPE1hr9x2n5CRLYVQmtRbZMp8ku9moC
-        23uh/sakaRP5HPrng4k9L3qnGnhicX7KfeMXIYBwGQUIDdaqrQPaGt+73nB0Ju+V
-        bJLoSp+l8/1kM86sM1q2nvKUfia/ddZ9AEGTYejGiZrfI2I5HpP2oR/tnUrl/ApL
-        oNxAZaUDPMBgS5j9v4mCaJhRkR2yLnyy0fV2fyGzng==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=GRVN2Q
-        Cx3h8Dn7GgNwjavdJhWEpRQp2xWgOHeVQLVvo=; b=VbZSpCJdYtTZ00mqc5fXsa
-        KQN88RDWOYKti20ui4VnDo7OM+0JBh9FPiCqaOP7/YL+NdSuNXoz8e0a+OS5T0eg
-        FyyVP/+rlUzzuYhKK/AcEBwmVhGlgIfANsIA688mpLQ7SBKU60E+E2Rb3MB/PoCn
-        GlO+yN+bVCW6uJCmi9W3dOoFrDNrXidhTq23RMP78op5V0mhj6TOg0oe7CjEkDm6
-        J0JH3rCOGxIaS6jlttTAbfzrC3hjG/ypZIq3pJrfDVGPEjPbkBnCtYOrTdgXaga8
-        JXTFjMpfO8rZVlxg17D7bv1f1dquMslNIJvnaGPT/x27Vn0mPWoieynx6k4SwLpw
-        ==
-X-ME-Sender: <xms:gOFqYcCU1r8z0YLfxjeSZYxcOQ9RvmvQcM2_pzcwuHZW66HWswCXqg>
-    <xme:gOFqYejx92BPMSd6pIPgYY0Ywi4uR8tiGgFzuf-Lflwyh8uK-hf-zYH8T-jycraB5
-    HOiIILgxn-FxKcoq0s>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvdduiedgjeeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdfuvhgv
-    nhcurfgvthgvrhdfuceoshhvvghnsehsvhgvnhhpvghtvghrrdguvghvqeenucggtffrrg
-    htthgvrhhnpefgieegieffuefhtedtjefgteejteefleefgfefgfdvvddtgffhffduhedv
-    feekffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    hsvhgvnhesshhvvghnphgvthgvrhdruggvvh
-X-ME-Proxy: <xmx:geFqYfnHKDbVwP-Ut9NGO3JARMYuHQnpFC_ewqsZNGl8moD_ysJSGA>
-    <xmx:geFqYSxHdj8XZg39Y5phltkZ1BCg21WuEfA1dSegpiMc4hN8yytI_g>
-    <xmx:geFqYRSaIUqFDMxpApzgL2Cp3_MdV2lOKE4CRLNTYqoLDTR3ZqdP7A>
-    <xmx:geFqYfMFw47j06gBMUM16CG5VpaDCQQM50U9XD_iecx5H3xnSFOIVA>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id EB7802740063; Sat, 16 Oct 2021 10:28:16 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-1345-g8441cd7852-fm-20211006.001-g8441cd78
-Mime-Version: 1.0
-Message-Id: <df7d123b-772d-4969-b091-78b09b6497b9@www.fastmail.com>
-In-Reply-To: <20211013063441.29888-1-wanjiabing@vivo.com>
-References: <20211013063441.29888-1-wanjiabing@vivo.com>
-Date:   Sat, 16 Oct 2021 16:27:55 +0200
-From:   "Sven Peter" <sven@svenpeter.dev>
-To:     "Wan Jiabing" <wanjiabing@vivo.com>,
-        "Alyssa Rosenzweig" <alyssa@rosenzweig.io>,
-        "Joerg Roedel" <joro@8bytes.org>, "Will Deacon" <will@kernel.org>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Cc:     kael_w@yeah.net
-Subject: Re: [PATCH] iommu/dart: use kmemdup instead of kzalloc and memcpy
-Content-Type: text/plain
+        id S244402AbhJPOaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 10:30:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33982 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235901AbhJPOaU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Oct 2021 10:30:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7526F6023F;
+        Sat, 16 Oct 2021 14:28:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634394492;
+        bh=UtxDaouKQps0itBNO4xcZJA5ANZ6urCvPOxooN5Kfz4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=h296bgRMaq4cIlUw7CSO4BK7lCUnZGTwwvLvhy3E1QMsZWeOe2m/3E5IunKwzPrUY
+         fU1FfGQPBbR27F119gMJGvdSzk0vWleL/JpgHcqM0iSGA8Oesf4HsmUx7QMHczVQz9
+         O6F9VBLoMxIc81L5Xc5//U9VZV7wd6hGVx4iBRiFBjAMe60yUNaMA5oUQpcESj6iY+
+         wlNg8IFwd0txclVf8CzeWShgaJofbJr28TNk42Gs/1ppCKhUHW5DuzHdA5aqyrpKyj
+         uVQqgjVN+vILInNtlKjiIplDVpPMjdXJ9HzRG90d3+7JhfXv4hGaxpD9TaG32FJzzK
+         vveFXI8aqDtvA==
+Received: by pali.im (Postfix)
+        id DEEC77DE; Sat, 16 Oct 2021 16:28:09 +0200 (CEST)
+Date:   Sat, 16 Oct 2021 16:28:09 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Jonas =?utf-8?Q?Dre=C3=9Fler?= <verdre@v0yd.nl>
+Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi017@gmail.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: [PATCH v2 4/5] mwifiex: Send DELBA requests according to spec
+Message-ID: <20211016142809.tjezv4dpxrlmdp6v@pali>
+References: <20211016103656.16791-1-verdre@v0yd.nl>
+ <20211016103656.16791-5-verdre@v0yd.nl>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211016103656.16791-5-verdre@v0yd.nl>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Saturday 16 October 2021 12:36:55 Jonas Dreßler wrote:
+> While looking at on-air packets using Wireshark, I noticed we're never
+> setting the initiator bit when sending DELBA requests to the AP: While
+> we set the bit on our del_ba_param_set bitmask, we forget to actually
+> copy that bitmask over to the command struct, which means we never
+> actually set the initiator bit.
+> 
+> Fix that and copy the bitmask over to the host_cmd_ds_11n_delba command
+> struct.
+> 
+> Signed-off-by: Jonas Dreßler <verdre@v0yd.nl>
 
+Hello! This looks like is fixing mwifiex_send_delba() function which was
+added in initial mwifiex commit. So probably it should have following
+tag:
 
-On Wed, Oct 13, 2021, at 08:34, Wan Jiabing wrote:
-> Fix following coccicheck warning:
-> drivers/iommu/apple-dart.c:704:20-27: WARNING opportunity for kmemdup
->
-> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+Fixes: 5e6e3a92b9a4 ("wireless: mwifiex: initial commit for Marvell mwifiex driver")
+
 > ---
->  drivers/iommu/apple-dart.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-
-Looks good to me, thanks!
-
-Acked-by: Sven Peter <sven@svenpeter.dev>
-
-
-Sven
+>  drivers/net/wireless/marvell/mwifiex/11n.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/wireless/marvell/mwifiex/11n.c b/drivers/net/wireless/marvell/mwifiex/11n.c
+> index b0695432b26a..9ff2058bcd7e 100644
+> --- a/drivers/net/wireless/marvell/mwifiex/11n.c
+> +++ b/drivers/net/wireless/marvell/mwifiex/11n.c
+> @@ -657,14 +657,15 @@ int mwifiex_send_delba(struct mwifiex_private *priv, int tid, u8 *peer_mac,
+>  	uint16_t del_ba_param_set;
+>  
+>  	memset(&delba, 0, sizeof(delba));
+> -	delba.del_ba_param_set = cpu_to_le16(tid << DELBA_TID_POS);
+>  
+> -	del_ba_param_set = le16_to_cpu(delba.del_ba_param_set);
+> +	del_ba_param_set = tid << DELBA_TID_POS;
+> +
+>  	if (initiator)
+>  		del_ba_param_set |= IEEE80211_DELBA_PARAM_INITIATOR_MASK;
+>  	else
+>  		del_ba_param_set &= ~IEEE80211_DELBA_PARAM_INITIATOR_MASK;
+>  
+> +	delba.del_ba_param_set = cpu_to_le16(del_ba_param_set);
+>  	memcpy(&delba.peer_mac_addr, peer_mac, ETH_ALEN);
+>  
+>  	/* We don't wait for the response of this command */
+> -- 
+> 2.31.1
+> 
