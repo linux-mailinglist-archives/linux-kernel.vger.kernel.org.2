@@ -2,107 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30608430365
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 17:33:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A665430367
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 17:35:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239638AbhJPPfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 11:35:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50310 "EHLO
+        id S238034AbhJPPhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 11:37:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238772AbhJPPfd (ORCPT
+        with ESMTP id S234575AbhJPPhL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 11:35:33 -0400
-Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [IPv6:2001:67c:2050::465:202])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B86EC06176E;
-        Sat, 16 Oct 2021 08:33:24 -0700 (PDT)
-Received: from smtp1.mailbox.org (smtp1.mailbox.org [80.241.60.240])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4HWnGV5JhCzQkB3;
-        Sat, 16 Oct 2021 17:33:22 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-Message-ID: <33b1bd25-7ed7-4a45-8b18-9454f848b325@v0yd.nl>
-Date:   Sat, 16 Oct 2021 17:33:17 +0200
+        Sat, 16 Oct 2021 11:37:11 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0134AC061570
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 08:35:03 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id e12so31891786wra.4
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 08:35:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=philpotter-co-uk.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=bEDEZvAmdvWI96ksUh1vPO5+Cce7AMzdfq8gX4cXeB0=;
+        b=Hq6Ke+cYGQ7Vn7UrIUFvSLrrJjdTMhBoKwCHr+SWMz6DJQBFc0cpN8ulCOPAz98+Uw
+         GCOJWmV7FD5Nk8UoWaBlITRZcLkn8Wdr9uOjhTS0235QeSm1i5O0OJ5p6EjMq6/Exfxw
+         +z8Dl54DQZP0a7InF/FnOYFR/OXI6gFVnKQOLReGOwkzaBy/x6HhVE5uSw1JdHJb7gHi
+         OXlQFEgfc1Lt0Gp2F4YblO8+PyfW2j88sQxKtIebocpxnrecREl/7cP4RR366mFtU1YF
+         bgNis9w9NJljDB6X8sIe4Ht5eib17GmbnKDIu0YJZEjRDmMdMpLZygu+kaLHP7EWibuv
+         nuJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bEDEZvAmdvWI96ksUh1vPO5+Cce7AMzdfq8gX4cXeB0=;
+        b=rvYmCUXSkXNJASFfpIYdzJk9xzojOULcG+N1SL4gNxgipqNMuw6r9idlh785wjuobZ
+         aOU5UQ4ngjuZ1HA8m2yyW3j+haL5DhIci+LM6edHnrtH1WwE9Cokd8V5wHcMHSLd7sJb
+         71c9TrFQVpGWg0ZACjCf4pUigcihvT3WCerS2Hgy0Sc0TQawt0vu8dq7PUzeo9zdhCs3
+         2JzMyGySwbaZMDAczuzZjZ7Qm0dTL94UwzRD+PeMLQG3orhhbJj9opPuF3emGw4H85Eo
+         +MwTnZ49S6IaCurFxea+qZ98Di9lK4VIPxfn598yBlEYmxg3x1s+Q8M1AHMOrIXsh1dy
+         DOgw==
+X-Gm-Message-State: AOAM5323ZR1rB+bmDJ0y+KWV+Ph3ViS1gYfWj9L/XAkNBqCMJm3Qkmyn
+        y2N6Dw73F3bakdO79yLgIBPR2g==
+X-Google-Smtp-Source: ABdhPJx1KZZ0aSRkB7VxIK+/Q0mee6012xL1e5KGoSoN2i8Q8t4Lj1xS2ptbyZ6iwEWSk42XpbF3tg==
+X-Received: by 2002:adf:e706:: with SMTP id c6mr22879136wrm.377.1634398500950;
+        Sat, 16 Oct 2021 08:35:00 -0700 (PDT)
+Received: from equinox (2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.a.1.e.e.d.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:dfde:e1a0::2])
+        by smtp.gmail.com with ESMTPSA id b19sm13813559wmb.1.2021.10.16.08.35.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 16 Oct 2021 08:35:00 -0700 (PDT)
+Date:   Sat, 16 Oct 2021 16:34:58 +0100
+From:   Phillip Potter <phil@philpotter.co.uk>
+To:     Martin Kaiser <martin@kaiser.cx>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Michael Straube <straube.linux@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH 0/8] staging: r8188eu: another round of removals
+Message-ID: <YWrxIllg1fMkV1/5@equinox>
+References: <20211016113008.27549-1-martin@kaiser.cx>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 4/5] mwifiex: Send DELBA requests according to spec
-Content-Language: en-US
-To:     =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>
-Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi017@gmail.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-References: <20211016103656.16791-1-verdre@v0yd.nl>
- <20211016103656.16791-5-verdre@v0yd.nl>
- <20211016142809.tjezv4dpxrlmdp6v@pali>
-From:   =?UTF-8?Q?Jonas_Dre=c3=9fler?= <verdre@v0yd.nl>
-In-Reply-To: <20211016142809.tjezv4dpxrlmdp6v@pali>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: CD5AC188C
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211016113008.27549-1-martin@kaiser.cx>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/16/21 16:28, Pali Rohár wrote:
-> On Saturday 16 October 2021 12:36:55 Jonas Dreßler wrote:
->> While looking at on-air packets using Wireshark, I noticed we're never
->> setting the initiator bit when sending DELBA requests to the AP: While
->> we set the bit on our del_ba_param_set bitmask, we forget to actually
->> copy that bitmask over to the command struct, which means we never
->> actually set the initiator bit.
->>
->> Fix that and copy the bitmask over to the host_cmd_ds_11n_delba command
->> struct.
->>
->> Signed-off-by: Jonas Dreßler <verdre@v0yd.nl>
+On Sat, Oct 16, 2021 at 01:30:00PM +0200, Martin Kaiser wrote:
+> Remove some more dead code and unused definitions.
 > 
-> Hello! This looks like is fixing mwifiex_send_delba() function which was
-> added in initial mwifiex commit. So probably it should have following
-> tag:
+> Martin Kaiser (8):
+>   staging: r8188eu: remove empty trigger gpio code
+>   staging: r8188eu: interface type is always usb
+>   staging: r8188eu: remove two checks that are always false
+>   staging: r8188eu: remove unused function prototypes
+>   staging: r8188eu: PHY_SetRFPathSwitch_8188E is not used
+>   staging: r8188eu: clean up Hal8188EPhyCfg.h
+>   staging: r8188eu: remove procfs functions
+>   staging: r8188eu: CurrentWirelessMode is not used
 > 
-> Fixes: 5e6e3a92b9a4 ("wireless: mwifiex: initial commit for Marvell mwifiex driver")
+>  drivers/staging/r8188eu/Makefile              |   1 -
+>  drivers/staging/r8188eu/core/rtw_debug.c      | 886 ------------------
+>  .../staging/r8188eu/hal/HalHWImg8188E_BB.c    |  14 +-
+>  .../staging/r8188eu/hal/HalHWImg8188E_MAC.c   |   3 +-
+>  .../staging/r8188eu/hal/HalHWImg8188E_RF.c    |   8 +-
+>  drivers/staging/r8188eu/hal/HalPhyRf_8188e.c  |  38 -
+>  drivers/staging/r8188eu/hal/odm.c             |   3 -
+>  drivers/staging/r8188eu/hal/rtl8188e_dm.c     |   2 -
+>  drivers/staging/r8188eu/hal/usb_halinit.c     |   8 -
+>  .../staging/r8188eu/include/Hal8188EPhyCfg.h  |  78 --
+>  drivers/staging/r8188eu/include/hal_intf.h    |   1 -
+>  drivers/staging/r8188eu/include/odm.h         |  11 +-
+>  .../staging/r8188eu/include/rtl8188e_hal.h    |   1 -
+>  drivers/staging/r8188eu/include/rtw_debug.h   | 148 ---
+>  14 files changed, 6 insertions(+), 1196 deletions(-)
+>  delete mode 100644 drivers/staging/r8188eu/core/rtw_debug.c
+> 
+> -- 
+> 2.20.1
 > 
 
-Hi Pali,
+Dear Martin,
 
-thanks a lot for the quick review, I just addressed this in v3!
+Looks good from what I can see, many thanks. Built and tested on my
+USB-N10 Nano.
 
->> ---
->>   drivers/net/wireless/marvell/mwifiex/11n.c | 5 +++--
->>   1 file changed, 3 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/net/wireless/marvell/mwifiex/11n.c b/drivers/net/wireless/marvell/mwifiex/11n.c
->> index b0695432b26a..9ff2058bcd7e 100644
->> --- a/drivers/net/wireless/marvell/mwifiex/11n.c
->> +++ b/drivers/net/wireless/marvell/mwifiex/11n.c
->> @@ -657,14 +657,15 @@ int mwifiex_send_delba(struct mwifiex_private *priv, int tid, u8 *peer_mac,
->>   	uint16_t del_ba_param_set;
->>   
->>   	memset(&delba, 0, sizeof(delba));
->> -	delba.del_ba_param_set = cpu_to_le16(tid << DELBA_TID_POS);
->>   
->> -	del_ba_param_set = le16_to_cpu(delba.del_ba_param_set);
->> +	del_ba_param_set = tid << DELBA_TID_POS;
->> +
->>   	if (initiator)
->>   		del_ba_param_set |= IEEE80211_DELBA_PARAM_INITIATOR_MASK;
->>   	else
->>   		del_ba_param_set &= ~IEEE80211_DELBA_PARAM_INITIATOR_MASK;
->>   
->> +	delba.del_ba_param_set = cpu_to_le16(del_ba_param_set);
->>   	memcpy(&delba.peer_mac_addr, peer_mac, ETH_ALEN);
->>   
->>   	/* We don't wait for the response of this command */
->> -- 
->> 2.31.1
->>
+For whole series:
+Acked-by: Phillip Potter <phil@philpotter.co.uk>
 
+Regards,
+Phil
