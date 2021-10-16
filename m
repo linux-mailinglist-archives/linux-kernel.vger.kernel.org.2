@@ -2,89 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84F414301D5
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 12:19:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E366F4301D9
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 12:19:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244025AbhJPKU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 06:20:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38064 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244041AbhJPKUX (ORCPT
+        id S244091AbhJPKUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 06:20:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:60132 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244093AbhJPKUa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 06:20:23 -0400
-Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [IPv6:2001:67c:2050::465:102])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2CFBC061570;
-        Sat, 16 Oct 2021 03:18:15 -0700 (PDT)
-Received: from smtp202.mailbox.org (smtp202.mailbox.org [80.241.60.245])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4HWfGs3JNWzQjBM;
-        Sat, 16 Oct 2021 12:18:13 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-From:   =?UTF-8?q?Jonas=20Dre=C3=9Fler?= <verdre@v0yd.nl>
-To:     Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi017@gmail.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     =?UTF-8?q?Jonas=20Dre=C3=9Fler?= <verdre@v0yd.nl>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        Sat, 16 Oct 2021 06:20:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634379502;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=lRKifhuZPEWMV9NZ2wr+qPq6taJBi8mO/4F/nJu9ENk=;
+        b=Kkh/ARh4ZzzY0jfO/HfqlKEgh64pzOBYEwTQodBwTBrukREV9FZ1r51i+1OHjUtJzVEjHv
+        eY7vdtDG00BmvAFqkyjZDzU88lcJavL0VRLpkTp7ZAaQFxt8KXa0zTS1TR+va8qPZ7G1tp
+        NEEnvxWH3DONV69cC8mszAwxsX0fgd4=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-101-pyddv7lWMYmazdgsR9WRCg-1; Sat, 16 Oct 2021 06:18:20 -0400
+X-MC-Unique: pyddv7lWMYmazdgsR9WRCg-1
+Received: by mail-ed1-f69.google.com with SMTP id r11-20020aa7cfcb000000b003d4fbd652b9so10331604edy.14
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 03:18:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=lRKifhuZPEWMV9NZ2wr+qPq6taJBi8mO/4F/nJu9ENk=;
+        b=WM+7nF8emDhIE2YXsCvKMqnAdQeDA5vPzPDVW78yXJW3OWv6B9cus7mJQ/KWrkHSlm
+         XgNQCSqGsYYgqemnlZjkKHzvm/xBjYE/nmSCQbQemmLbWWR69vLSQpD1kRaLZcf8hjwM
+         AwznnYP9CjNvjZA5ZoG9/vef2UzRIsDq3WwB6YPMp8LXUqS7GVkUAlVI5QGCWdeo6wKA
+         zZ/UuD2p/dRL4pfnFzTAPq4upELNProkpy0tpOSQaV1CfGK5R7LvcLHVU49UTKPPStwE
+         xe+29TShS/j/JVkpTm3pQAdbLR7L0UwU1txAnWTn5Q5aTCNAsd3ZCXW0184Yk6Gqi+KO
+         ZIWA==
+X-Gm-Message-State: AOAM530AiM1Uk+CToeena0c0J3by9hOLBbr16k+seKcXgxNNdnJjdyeH
+        okEHPmoQpH+f6fZojOj6/LuYN8dUcHGVCx7ywQeNCwLUVJhKh91oHUHuMOtjZ2dCoYYJzcnNBSz
+        knhgZV/x8n0gO16rtkTmVJYGz
+X-Received: by 2002:a05:6402:1c85:: with SMTP id cy5mr26031896edb.281.1634379499477;
+        Sat, 16 Oct 2021 03:18:19 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwuJiWcON3M4nXKn747LTbTpMeMQmvBtJaORLUCaPCevFz0HcJ8P2t0t0MZp62LMyoxb4bUTQ==
+X-Received: by 2002:a05:6402:1c85:: with SMTP id cy5mr26031859edb.281.1634379499200;
+        Sat, 16 Oct 2021 03:18:19 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id m18sm3371750ejn.62.2021.10.16.03.18.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 16 Oct 2021 03:18:18 -0700 (PDT)
+Subject: Re: [PATCH 05/12] regulator: Introduce tps68470-regulator driver
+To:     Mark Brown <broonie@kernel.org>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Mark Gross <markgross@kernel.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Daniel Scally <djrscally@gmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, Len Brown <lenb@kernel.org>,
+        linux-acpi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
         linux-kernel@vger.kernel.org,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
-Subject: [PATCH 4/4] mwifiex: Send DELBA requests according to spec
-Date:   Sat, 16 Oct 2021 12:17:43 +0200
-Message-Id: <20211016101743.15565-5-verdre@v0yd.nl>
-In-Reply-To: <20211016101743.15565-1-verdre@v0yd.nl>
-References: <20211016101743.15565-1-verdre@v0yd.nl>
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Kate Hsuan <hpa@redhat.com>, linux-media@vger.kernel.org,
+        linux-clk@vger.kernel.org
+References: <YWQU/SYTT5Vk24XH@sirena.org.uk>
+ <f6f2d7e8-fdb8-ed64-0cdd-65aded9fc42c@redhat.com>
+ <YWmwZJvDYjPWJdb4@sirena.org.uk>
+ <d0d1dc05-4cc6-2f47-88a9-700cfc356d86@redhat.com>
+ <YWnPaI/ZECdfYre9@sirena.org.uk>
+ <843f939a-7e43-bc12-e9fc-582e01129b63@redhat.com>
+ <YWnZIZTPiuAIazV+@sirena.org.uk>
+ <c595b143-d7ed-e76b-7734-e03d14e0f76e@redhat.com>
+ <YWndpGgBtLEAEaNj@sirena.org.uk>
+ <1805d16e-87ab-c291-6a73-adabf41344ca@redhat.com>
+ <YWoAtCdikYfMpUnD@sirena.org.uk>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <26a1b636-1b82-2ca6-4f78-b1d22fa556d6@redhat.com>
+Date:   Sat, 16 Oct 2021 12:18:17 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 8A3F926F
+In-Reply-To: <YWoAtCdikYfMpUnD@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We're currently failing to set the initiator bit for DELBA requests:
-While we set the bit on our del_ba_param_set bitmask, we forget to
-actually copy that bitmask over to the command struct, which means we
-never actually set the initiator bit.
+Hi Mark,
 
-Fix that and copy the bitmask over to the host_cmd_ds_11n_delba command
-struct.
+On 10/16/21 12:29 AM, Mark Brown wrote:
+> On Fri, Oct 15, 2021 at 10:14:30PM +0200, Hans de Goede wrote:
+>> On 10/15/21 9:59 PM, Mark Brown wrote:
 
-Signed-off-by: Jonas Dreßler <verdre@v0yd.nl>
----
- drivers/net/wireless/marvell/mwifiex/11n.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+<snip>
 
-diff --git a/drivers/net/wireless/marvell/mwifiex/11n.c b/drivers/net/wireless/marvell/mwifiex/11n.c
-index b0695432b26a..9ff2058bcd7e 100644
---- a/drivers/net/wireless/marvell/mwifiex/11n.c
-+++ b/drivers/net/wireless/marvell/mwifiex/11n.c
-@@ -657,14 +657,15 @@ int mwifiex_send_delba(struct mwifiex_private *priv, int tid, u8 *peer_mac,
- 	uint16_t del_ba_param_set;
- 
- 	memset(&delba, 0, sizeof(delba));
--	delba.del_ba_param_set = cpu_to_le16(tid << DELBA_TID_POS);
- 
--	del_ba_param_set = le16_to_cpu(delba.del_ba_param_set);
-+	del_ba_param_set = tid << DELBA_TID_POS;
-+
- 	if (initiator)
- 		del_ba_param_set |= IEEE80211_DELBA_PARAM_INITIATOR_MASK;
- 	else
- 		del_ba_param_set &= ~IEEE80211_DELBA_PARAM_INITIATOR_MASK;
- 
-+	delba.del_ba_param_set = cpu_to_le16(del_ba_param_set);
- 	memcpy(&delba.peer_mac_addr, peer_mac, ETH_ALEN);
- 
- 	/* We don't wait for the response of this command */
--- 
-2.31.1
+>> During that discussion you said that instead we should sinmply
+>> directly pass the regulator_init_data, rather then first
+>> encoding this in device-properties in a swnode and then
+>> decoding those again in the regulator core.
+> 
+>> And passing the regulator_init_data is exactly what we are doing
+>> now; and now again this is not what we should be doing ?
+> 
+> No, it is not what the driver doing now.  The driver will *optionally*
+> check for platform data, but if none is provided or if it doesn't
+> configure some of the regulators then the driver will provide some hard
+> coded regulator_init_data as a default.  These might be OK on the system
+> you're looking at but will also be used on any other system that happens
+> to instantiate the driver without platform data where there's no
+> guarantee that the information provided will be safe.  These defaults
+> that are being provided may use the same structure that gets used for
+> platform data but they aren't really platform data.
+> 
+> Yes, someone could use this on a system that does things in the standard
+> fashion where the platform data is getting passed in but if it's ever
+> run on any other system then it's going to assume this default platform
+> data with these constraints that have been embedded directly into the
+> driver without anything to ensure that they make sense on that system.
+> 
+> Indeed, now I go back and dig out the rest of the series it seems that
+> there's some drivers/platforms/x86 code added later which does in fact
+> do the right thing for some but not all of the regulators, it supplies
+> some platform data which overrides some but not all of this default
+> regulator_init_data using platform_data having identified the system
+> using DMI information (with configurations quite different to and much
+> more restricted than the defaults provided, exactly why defaults are an
+> issue).  I'm now even more confused about what the information that's
+> there is doing in the driver.  Either it's all unneeded even for your
+> system and should just be deleted, or if any of it is needed then it
+> should be moved to being initialised in the same place everything else
+> is so that it's only used on your system and not on any other system
+> that happens to end up running the driver.
+> 
+> In any case given that your platform does actually have code for
+> identifying it and supplying appropriate platform data the driver itself
+> can be fixed by just deleting the else case of
+> 
+> 	if (pdata && pdata->reg_init_data[i])
+> 		config.init_data = pdata->reg_init_data[i];
+> 	else
+> 		config.init_data = &tps68470_init[i];
+> 
+> and the data structure/macro it uses.  If no configuration is provided
+> by the platform then none should be provided to the core, this in turn
+> means that the regulator framework won't reconfigure the hardware if it
+> doesn't know it's safe to do so.
+
+Ah, ok. The default regulator_init_data in the tps68470_init[]
+array was already there in the out of tree version of this driver
+Daniel and I started with:
+
+https://github.com/intel/linux-intel-lts/blob/4.14/base/drivers/regulator/tps68470-regulator.c
+
+Now that you have pointed this out I would be more then happy to
+delete it and I agree that providing this bogus data is not a
+good idea.
+
+<snip>
+
+> The important thing is to get rid of the hard coded defaults for the
+> regulator_init_data in the driver itself, if there is regulator_init_data
+> in the driver itself then it should be guarded with a DMI or similar
+> quirk.  Like I say above I think now I've gone back and dug through the
+> rest of the series once the default init_data is gone it's probably OK.
+
+Ok, for the next version of this patch-set I will:
+
+1. Remove the default init_data
+2. Change the toplevel comment to be all C++ style matching the SPDX line
+3. Add a || COMPILE_TEST to the Kconfig so that this can be compile-tested
+   without selecting the INTEL_SKL_INT3472 option
+
+Thank you for taking the time to dive a bit deeper into the patch-set
+and make it clear that your objection is the presence of the default
+regulator_init_data; and sorry for loosing my cool a bit in my previous
+email.
+
+Regards,
+
+Hans
 
