@@ -2,107 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD5624301B8
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 12:09:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 345424301BE
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 12:11:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240137AbhJPKKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 06:10:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35988 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235573AbhJPKKo (ORCPT
+        id S243961AbhJPKNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 06:13:20 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:53658 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235335AbhJPKNT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 06:10:44 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DBC8C061570
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 03:08:36 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id r7so30828437wrc.10
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 03:08:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=YVpDip1j3vRjw5WDtQuqw0fNLROhuqjm1S+7iv5ym8w=;
-        b=CJqbEHQfC/SDpz+dWJDHd9frn6eKjckDKbtQ3hcrTbtzZhwLHJJ9j7RXWLqJQrjinj
-         JCEI07rN3LQlS8dF6j9k1Tu1kVzJPNLDcY2qro9YzsXA5ofvg+oUdQH1D3fgcdpZS2PV
-         CdFLpO/PjRMgub5kLv+nNJ+90udKZWJrUg0t5gcvMApSTHVpbPPGPYTsdocLf3TZEFh+
-         3U3qyxp6vV7qTQu7H/q1CLV2UORTtftjf61S2zcZwW/J602FwALmfhBiHwYFINxGAv7Q
-         ETC9v4WNk95mYJraPNUoH08oVLiF97pkJcsT0E0EZYezRXiDYa5993Gs0GtASBUyz1Tv
-         oq0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=YVpDip1j3vRjw5WDtQuqw0fNLROhuqjm1S+7iv5ym8w=;
-        b=gmNN2J1dGIwe1BTOhHxj2DAWZNXQUk2xmWFSTduG6Gd3Lc863hGwRJS4jAxdGoAlHp
-         R8zQz7LIrgiU4gd2Pk8/5NbAt23BXmVkAiWXAr1xEvXsTTYzVvoonCWKyRmL3CY6zzWm
-         E424kwc60FwyU4q9qPdf9IYP1WWoHUudS/IVMtKCAY3tpN9+m/Y8CQ97QnSTcD25TvS3
-         SQCBoTz24DwSHiOtohXLD+2xZG1pshY/OsLFpBSNxLsSt9poZtNJmXvHK0zhAxvtHWls
-         lw6tWPFACiIC0sOmuTzwLlgD+20NzrXFwClYmKpveVs9jfSS5hjwVZD2/mrf6wCnWaxI
-         745g==
-X-Gm-Message-State: AOAM532Dxc4T/+SZxN70fHNlMzRHDpWfSb+Z43jeXfvO0i7YIzI8BlQK
-        56HZamJF0n2HiftBGiKMbZU=
-X-Google-Smtp-Source: ABdhPJxk7zEgVdkCdy6iPiu0cmgs9CXBbcDC3b1AV0x4KEXKFktk0WgszPnh+g92gbJxuDxs6CPJ7A==
-X-Received: by 2002:adf:a45c:: with SMTP id e28mr20584956wra.347.1634378914284;
-        Sat, 16 Oct 2021 03:08:34 -0700 (PDT)
-Received: from ?IPV6:2a02:8108:96c0:3b88::d7f0? ([2a02:8108:96c0:3b88::d7f0])
-        by smtp.gmail.com with ESMTPSA id a5sm7136618wrn.71.2021.10.16.03.08.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 16 Oct 2021 03:08:33 -0700 (PDT)
-Message-ID: <26b353c5-ba77-c446-5a8d-7f2394a795c7@gmail.com>
-Date:   Sat, 16 Oct 2021 12:08:33 +0200
+        Sat, 16 Oct 2021 06:13:19 -0400
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 3.0.0)
+ id 78e70f4d00fd6bb1; Sat, 16 Oct 2021 12:11:09 +0200
+Received: from kreacher.localnet (89-77-51-84.dynamic.chello.pl [89.77.51.84])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id 28C0766A73A;
+        Sat, 16 Oct 2021 12:11:09 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linux PCI <linux-pci@vger.kernel.org>
+Subject: [PATCH v2 2/3] ACPI: PM: Fix sharing of wakeup power resources
+Date:   Sat, 16 Oct 2021 12:11:08 +0200
+Message-ID: <11874779.O9o76ZdvQC@kreacher>
+In-Reply-To: <2077987.irdbgypaU6@kreacher>
+References: <4347933.LvFx2qVVIh@kreacher> <2077987.irdbgypaU6@kreacher>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH 1/7] staging: r8188eu: remove empty functions from odm.c
-Content-Language: en-US
-To:     Martin Kaiser <lists@kaiser.cx>
-Cc:     gregkh@linuxfoundation.org, Larry.Finger@lwfinger.net,
-        phil@philpotter.co.uk, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-References: <20211015163507.9091-1-straube.linux@gmail.com>
- <20211015163507.9091-2-straube.linux@gmail.com>
- <20211016092949.7746u74o2f5lgyzo@viti.kaiser.cx>
-From:   Michael Straube <straube.linux@gmail.com>
-In-Reply-To: <20211016092949.7746u74o2f5lgyzo@viti.kaiser.cx>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 89.77.51.84
+X-CLIENT-HOSTNAME: 89-77-51-84.dynamic.chello.pl
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddrvdduiedgvdehucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvjeelgffhiedukedtleekkedvudfggefhgfegjefgueekjeelvefggfdvledutdenucfkphepkeelrdejjedrhedurdekgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeekledrjeejrdehuddrkeegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepmhhikhgrrdifvghsthgvrhgsvghrgheslhhinhhugidrihhnthgvlhdrtghomhdprhgtphhtthhopehlihhnuhigqdhp
+ tghisehvghgvrhdrkhgvrhhnvghlrdhorhhg
+X-DCC--Metrics: v370.home.net.pl 1024; Body=5 Fuz1=5 Fuz2=5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/16/21 11:29, Martin Kaiser wrote:
-> Thus wrote Michael Straube (straube.linux@gmail.com):
-> 
->> Remove empty functions from odm.c.
-> 
->> Signed-off-by: Michael Straube <straube.linux@gmail.com>
->> ---
->>   drivers/staging/r8188eu/hal/odm.c             | 32 -------------------
->>   drivers/staging/r8188eu/hal/odm_HWConfig.c    |  7 +---
->>   drivers/staging/r8188eu/include/odm.h         |  7 ----
->>   drivers/staging/r8188eu/include/odm_precomp.h |  2 --
->>   4 files changed, 1 insertion(+), 47 deletions(-)
-> 
->> diff --git a/drivers/staging/r8188eu/hal/odm.c b/drivers/staging/r8188eu/hal/odm.c
->> index 2178ffe41bb3..627213392795 100644
->> --- a/drivers/staging/r8188eu/hal/odm.c
->> +++ b/drivers/staging/r8188eu/hal/odm.c
->> @@ -196,13 +196,9 @@ void ODM_DMWatchdog(struct odm_dm_struct *pDM_Odm)
->>   	    (pDM_Odm->AntDivType == CGCS_RX_HW_ANTDIV)	||
->>   	    (pDM_Odm->AntDivType == CG_TRX_SMART_ANTDIV))
->>   		odm_HwAntDiv(pDM_Odm);
->> -	else if (pDM_Odm->AntDivType == CGCS_RX_SW_ANTDIV)
->> -		odm_SwAntDivChkAntSwitch(pDM_Odm, SWAW_STEP_PEAK);
-> 
-> This was the last user of SWAW_STEP_PEAK. The define can be removed now
-> (maybe in a follow-up patch).
-> 
-> Acked-by: Martin Kaiser <martin@kaiser.cx>
-> 
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Thank you for your review Martin. I'll send follow up patches to remove
-this and other now unused variables I missed.
+If an ACPI wakeup power resource is shared between multiple devices,
+it may not be managed correctly.
 
-Thanks again,
-Michael
+Suppose, for example, that two devices, A and B, share a wakeup power
+resource P whose wakeup_enabled flag is 0 initially.  Next, suppose
+that wakeup power is enabled for A and B, in this order, and disabled
+for B.  When wakeup power is enabled for A, P will be turned on and
+its wakeup_enabled flag will be set.  Next, when wakeup power is
+enabled for B, P will not be touched, because its wakeup_enabled flag
+is set.  Now, when wakeup power is disabled for B, P will be turned
+off which is incorrect, because A will still need P in order to signal
+wakeup.
+
+Moreover, if wakeup power is enabled for A and then disabled for B,
+the latter will cause P to be turned off incorrectly (it will be still
+needed by A), because acpi_disable_wakeup_device_power() is allowed
+to manipulate power resources when the wakeup.prepare_count counter
+of the given device is 0.
+
+While the first issue could be addressed by changing the
+wakeup_enabled power resource flag into a counter, addressing the
+second one requires modifying acpi_disable_wakeup_device_power() to
+do nothing when the target device's wakeup.prepare_count reference
+counter is zero and that would cause the new counter to be redundant.
+Namely, if acpi_disable_wakeup_device_power() is modified as per the
+above, every change of the new counter following a wakeup.prepare_count
+change would be reflected by the analogous change of the main reference
+counter of the given power resource.
+
+Accordingly, modify acpi_disable_wakeup_device_power() to do nothing
+when the target device's wakeup.prepare_count reference counter is
+zero and drop the power resource wakeup_enabled flag altogether.
+
+While at it, ensure that all of the power resources that can be
+turned off will be turned off when disabling device wakeup due to
+a power resource manipulation error, to prevent energy from being
+wasted.
+
+Fixes: b5d667eb392e ("ACPI / PM: Take unusual configurations of power resources into account")
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+
+v1 -> v2:
+   * Restore the initialization of err in two places removed by v1 by mistake.
+
+---
+ drivers/acpi/power.c |   69 +++++++++++++++++----------------------------------
+ 1 file changed, 24 insertions(+), 45 deletions(-)
+
+Index: linux-pm/drivers/acpi/power.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/power.c
++++ linux-pm/drivers/acpi/power.c
+@@ -52,7 +52,6 @@ struct acpi_power_resource {
+ 	u32 order;
+ 	unsigned int ref_count;
+ 	u8 state;
+-	bool wakeup_enabled;
+ 	struct mutex resource_lock;
+ 	struct list_head dependents;
+ };
+@@ -710,7 +709,6 @@ int acpi_device_sleep_wake(struct acpi_d
+  */
+ int acpi_enable_wakeup_device_power(struct acpi_device *dev, int sleep_state)
+ {
+-	struct acpi_power_resource_entry *entry;
+ 	int err = 0;
+ 
+ 	if (!dev || !dev->wakeup.flags.valid)
+@@ -721,26 +719,13 @@ int acpi_enable_wakeup_device_power(stru
+ 	if (dev->wakeup.prepare_count++)
+ 		goto out;
+ 
+-	list_for_each_entry(entry, &dev->wakeup.resources, node) {
+-		struct acpi_power_resource *resource = entry->resource;
+-
+-		mutex_lock(&resource->resource_lock);
+-
+-		if (!resource->wakeup_enabled) {
+-			err = acpi_power_on_unlocked(resource);
+-			if (!err)
+-				resource->wakeup_enabled = true;
+-		}
+-
+-		mutex_unlock(&resource->resource_lock);
+-
+-		if (err) {
+-			dev_err(&dev->dev,
+-				"Cannot turn wakeup power resources on\n");
+-			dev->wakeup.flags.valid = 0;
+-			goto out;
+-		}
++	err = acpi_power_on_list(&dev->wakeup.resources);
++	if (err) {
++		dev_err(&dev->dev, "Cannot turn on wakeup power resources\n");
++		dev->wakeup.flags.valid = 0;
++		goto out;
+ 	}
++
+ 	/*
+ 	 * Passing 3 as the third argument below means the device may be
+ 	 * put into arbitrary power state afterward.
+@@ -770,39 +755,33 @@ int acpi_disable_wakeup_device_power(str
+ 
+ 	mutex_lock(&acpi_device_lock);
+ 
+-	if (--dev->wakeup.prepare_count > 0)
++	if (dev->wakeup.prepare_count > 1) {
++		dev->wakeup.prepare_count--;
+ 		goto out;
++	}
+ 
+-	/*
+-	 * Executing the code below even if prepare_count is already zero when
+-	 * the function is called may be useful, for example for initialisation.
+-	 */
+-	if (dev->wakeup.prepare_count < 0)
+-		dev->wakeup.prepare_count = 0;
++	/* Do nothing if wakeup power has not been enabled for this device. */
++	if (!dev->wakeup.prepare_count)
++		goto out;
+ 
+ 	err = acpi_device_sleep_wake(dev, 0, 0, 0);
+ 	if (err)
+ 		goto out;
+ 
++	/*
++	 * All of the power resources in the list need to be turned off even if
++	 * there are errors.
++	 */
+ 	list_for_each_entry(entry, &dev->wakeup.resources, node) {
+-		struct acpi_power_resource *resource = entry->resource;
+-
+-		mutex_lock(&resource->resource_lock);
+-
+-		if (resource->wakeup_enabled) {
+-			err = acpi_power_off_unlocked(resource);
+-			if (!err)
+-				resource->wakeup_enabled = false;
+-		}
+-
+-		mutex_unlock(&resource->resource_lock);
++		int ret;
+ 
+-		if (err) {
+-			dev_err(&dev->dev,
+-				"Cannot turn wakeup power resources off\n");
+-			dev->wakeup.flags.valid = 0;
+-			break;
+-		}
++		ret = acpi_power_off(entry->resource);
++		if (ret && !err)
++			err = ret;
++	}
++	if (err) {
++		dev_err(&dev->dev, "Cannot turn off wakeup power resources\n");
++		dev->wakeup.flags.valid = 0;
+ 	}
+ 
+  out:
+
+
+
+
