@@ -2,263 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 924EE43039B
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 18:12:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6638E430393
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 18:09:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240622AbhJPQOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 12:14:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58914 "EHLO
+        id S240541AbhJPQLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 12:11:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240308AbhJPQO3 (ORCPT
+        with ESMTP id S240308AbhJPQLL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 12:14:29 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A96F3C061570;
-        Sat, 16 Oct 2021 09:12:19 -0700 (PDT)
+        Sat, 16 Oct 2021 12:11:11 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2274C061765
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 09:09:02 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id m42so4770779wms.2
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 09:09:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
-        Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
-        Content-Transfer-Encoding; bh=cGv0cRtIoZQv7vbgTgo11dWD1DUt5PQBZq
-        9G1pLFOG4=; b=DhZKj002d4AgT0khKZVrRIyqV6BSTI79EA3kEjKaJxpwUyh8Ig
-        D0gVUXqEbNfBpvWVhRcIQGx58+ltrKfyH75dzI2wAWSykqNtCMjr7r9PeNezaKbd
-        i3ojOjx+0WM1G+4xi1O/2s2ejc6Gvb5gDjZLaI2qqxiZXGpok8QYfMK1k=
-Received: from xhacker (unknown [101.86.20.138])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygAXHwfT+WphY6c8AA--.23589S3;
-        Sun, 17 Oct 2021 00:12:05 +0800 (CST)
-Date:   Sun, 17 Oct 2021 00:05:08 +0800
-From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.org
-Subject: [PATCH 2/2] riscv: switch to relative exception tables
-Message-ID: <20211017000508.38feb492@xhacker>
-In-Reply-To: <20211017000408.4ae9ecd6@xhacker>
-References: <20211017000408.4ae9ecd6@xhacker>
+        d=linaro.org; s=google;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=YwrD7acOnOmUz8kuzOsdw05t0ErwSAGixf9d/VE1/Tg=;
+        b=zMcWvhGfKX1dbtPtzdAyYPn3nIZhS1uqiQ8m6NhzvTzDv/8odNazih8Jtp1DhIKBFl
+         SLu7C3cO67L7z6JfbKvHnMFNCMEr+CfRLzngfbV4s+b9j8WncaC7czFZMlPAr/VRNdKf
+         btl5Agc6fd7LEp7LRpfK1CzXPu9y62l7Y2PacqExVQKNchEEp8CqqbPyN1ruSk0FZ4ab
+         JhuY7rmhu00oK9EiDfEyu4MPMtxs4XyPmHirSImAfiowVfEE33/194wm71w/Pc/nzUSR
+         XB65/S3+Qm5XFJQfaNFFzeHutQWNeOs4WLLZ4vNP6qLSh6pm36JXy2HD3xhz64VWVawO
+         i/9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=YwrD7acOnOmUz8kuzOsdw05t0ErwSAGixf9d/VE1/Tg=;
+        b=pg4MWIVNuMl3MYymRbSBN2VbprExTOUzhbPvs4JBZl+F2GR532cAcDZjZ2AL8qvQTa
+         Odu33PWg2yib8eMv8LxI4IN5TlNVjaeqlsCsfhpmVtA8ypNTNHOSpMN0kJX2TtRf1Ljy
+         IFAGWT2V4bXaGk1kh1f0tujSmmjfYr2G8+/RGes9Wck64soSTpbVOTx5K+NnOxZDJtOo
+         4ed8urixaTCW6nGNPqfM2jHzrPkDIsomsPutMO+pp50O4RiJQH/d+7w/kvGSABrvLGGb
+         0Io4uHD7kqLHkXOD/Gz6bnpQ64DkVzVcfdPNQjTewmdXNpY7YnEFICqoUZQVE5D+B71H
+         9HXw==
+X-Gm-Message-State: AOAM530GYfE2Jlg4W+XA0I08TA1rpZ1f2lCqXL7A5hP8uDQdmnh6g7PG
+        S+BAveZetr3migrtP/E82Sj7fA==
+X-Google-Smtp-Source: ABdhPJwi/rrSzXlVlH1Tk5NoyfM+ZKFQY/2OeC/C/rVDmiC2Txrtbl2kzlCG5czTNBYQ/5oBB2Cx+w==
+X-Received: by 2002:a05:600c:1c10:: with SMTP id j16mr19481180wms.28.1634400541218;
+        Sat, 16 Oct 2021 09:09:01 -0700 (PDT)
+Received: from [192.168.0.30] (cpc78119-cwma10-2-0-cust590.7-3.cable.virginm.net. [81.96.50.79])
+        by smtp.gmail.com with ESMTPSA id z1sm7731018wrt.94.2021.10.16.09.09.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 16 Oct 2021 09:09:00 -0700 (PDT)
+Message-ID: <0b15a2b6-1fd1-1e52-4896-e588272b25d3@linaro.org>
+Date:   Sat, 16 Oct 2021 17:08:59 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH 2/2] drm/msm/devfreq: Add 1ms delay before clamping freq
+Content-Language: en-US
+To:     Rob Clark <robdclark@gmail.com>, dri-devel@lists.freedesktop.org
+Cc:     freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        Rob Clark <robdclark@chromium.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org
+References: <20210927230455.1066297-1-robdclark@gmail.com>
+ <vFWu4k2fr7YZdUamZdttf2XTTm05kYAza_JI_jGvD28ZV19dUqZmoWkqsf3Bgw_kAbQj87uGiMS0F0O7wtXtEw==@protonmail.internalid>
+ <20210927230455.1066297-2-robdclark@gmail.com>
+From:   Caleb Connolly <caleb.connolly@linaro.org>
+In-Reply-To: <20210927230455.1066297-2-robdclark@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: LkAmygAXHwfT+WphY6c8AA--.23589S3
-X-Coremail-Antispam: 1UD129KBjvJXoW3AFyfJFy8WF4kAFWfZry3twb_yoWxJrWUpF
-        4DCr9YkrZ5Crn7Wa43K3yqgF1rJw4F9a45KryxWr1UZw42qrW8tws5t347ZF1DGFW8ZFyF
-        9ryIgr1jkw4UA3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU90b7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI
-        8067AKxVWUGwA2048vs2IY020Ec7CjxVAFwI0_JFI_Gr1l8cAvFVAK0II2c7xJM28CjxkF
-        64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcV
-        CY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4j6F4UM28EF7xvwVC2z280aVCY
-        1x0267AKxVW8JVW8Jr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I
-        8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCF
-        s4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
-        kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
-        67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
-        CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1x
-        MIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIda
-        VFxhVjvjDU0xZFpf9x07bOg4hUUUUU=
-X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jisheng Zhang <jszhang@kernel.org>
 
-Similar as other architectures such as arm64, x86 and so on, use
-offsets relative to the exception table entry values rather than
-absolute addresses for both the exception locationand the fixup.
+On 28/09/2021 00:04, Rob Clark wrote:
+> From: Rob Clark <robdclark@chromium.org>
+> 
+> Add a short delay before clamping to idle frequency on active->idle
+> transition.  It takes ~0.5ms to increase the freq again on the next
+> idle->active transition, so this helps avoid extra freq transitions
+> on workloads that bounce between CPU and GPU.
+> 
+> Signed-off-by: Rob Clark <robdclark@chromium.org>
+> ---
+> Note that this sort of re-introduces the theoretical race solved
+> by [1].. but that should not be a problem with something along the
+> lines of [2].
+> 
+> [1] https://patchwork.freedesktop.org/patch/455910/?series=95111&rev=1
+> [2] https://patchwork.freedesktop.org/patch/455928/?series=95119&rev=1
+> 
+>   drivers/gpu/drm/msm/msm_gpu.h         |  7 +++++
+>   drivers/gpu/drm/msm/msm_gpu_devfreq.c | 38 +++++++++++++++++++++------
+>   2 files changed, 37 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/msm_gpu.h b/drivers/gpu/drm/msm/msm_gpu.h
+> index 32a859307e81..2fcb6c195865 100644
+> --- a/drivers/gpu/drm/msm/msm_gpu.h
+> +++ b/drivers/gpu/drm/msm/msm_gpu.h
+> @@ -120,6 +120,13 @@ struct msm_gpu_devfreq {
+>   	 * it is inactive.
+>   	 */
+>   	unsigned long idle_freq;
+> +
+> +	/**
+> +	 * idle_work:
+> +	 *
+> +	 * Used to delay clamping to idle freq on active->idle transition.
+> +	 */
+> +	struct msm_hrtimer_work idle_work;
+>   };
+> 
+>   struct msm_gpu {
+> diff --git a/drivers/gpu/drm/msm/msm_gpu_devfreq.c b/drivers/gpu/drm/msm/msm_gpu_devfreq.c
+> index 15b64f35c0f6..36e1930ee26d 100644
+> --- a/drivers/gpu/drm/msm/msm_gpu_devfreq.c
+> +++ b/drivers/gpu/drm/msm/msm_gpu_devfreq.c
+> @@ -96,8 +96,12 @@ static struct devfreq_dev_profile msm_devfreq_profile = {
+>   	.get_cur_freq = msm_devfreq_get_cur_freq,
+>   };
+> 
+> +static void msm_devfreq_idle_work(struct kthread_work *work);
+> +
+>   void msm_devfreq_init(struct msm_gpu *gpu)
+>   {
+> +	struct msm_gpu_devfreq *df = &gpu->devfreq;
+> +
+>   	/* We need target support to do devfreq */
+>   	if (!gpu->funcs->gpu_busy)
+>   		return;
+> @@ -113,25 +117,27 @@ void msm_devfreq_init(struct msm_gpu *gpu)
+>   	msm_devfreq_profile.freq_table = NULL;
+>   	msm_devfreq_profile.max_state = 0;
+> 
+> -	gpu->devfreq.devfreq = devm_devfreq_add_device(&gpu->pdev->dev,
+> +	df->devfreq = devm_devfreq_add_device(&gpu->pdev->dev,
+>   			&msm_devfreq_profile, DEVFREQ_GOV_SIMPLE_ONDEMAND,
+>   			NULL);
+> 
+> -	if (IS_ERR(gpu->devfreq.devfreq)) {
+> +	if (IS_ERR(df->devfreq)) {
+>   		DRM_DEV_ERROR(&gpu->pdev->dev, "Couldn't initialize GPU devfreq\n");
+> -		gpu->devfreq.devfreq = NULL;
+> +		df->devfreq = NULL;
+>   		return;
+>   	}
+> 
+> -	devfreq_suspend_device(gpu->devfreq.devfreq);
+> +	devfreq_suspend_device(df->devfreq);
+> 
+> -	gpu->cooling = of_devfreq_cooling_register(gpu->pdev->dev.of_node,
+> -			gpu->devfreq.devfreq);
+> +	gpu->cooling = of_devfreq_cooling_register(gpu->pdev->dev.of_node, df->devfreq);
+>   	if (IS_ERR(gpu->cooling)) {
+>   		DRM_DEV_ERROR(&gpu->pdev->dev,
+>   				"Couldn't register GPU cooling device\n");
+>   		gpu->cooling = NULL;
+>   	}
+> +
+> +	msm_hrtimer_work_init(&df->idle_work, gpu->worker, msm_devfreq_idle_work,
+> +			      CLOCK_MONOTONIC, HRTIMER_MODE_REL);
+>   }
+> 
+>   void msm_devfreq_cleanup(struct msm_gpu *gpu)
+> @@ -179,6 +185,11 @@ void msm_devfreq_active(struct msm_gpu *gpu)
+>   	unsigned int idle_time;
+>   	unsigned long target_freq = df->idle_freq;
+> 
+> +	/*
+> +	 * Cancel any pending transition to idle frequency:
+> +	 */
+> +	hrtimer_cancel(&df->idle_work.timer);
+> +
+>   	/*
+>   	 * Hold devfreq lock to synchronize with get_dev_status()/
+>   	 * target() callbacks
+> @@ -209,9 +220,12 @@ void msm_devfreq_active(struct msm_gpu *gpu)
+>   	mutex_unlock(&df->devfreq->lock);
+>   }
+> 
+> -void msm_devfreq_idle(struct msm_gpu *gpu)
+> +
+> +static void msm_devfreq_idle_work(struct kthread_work *work)
+>   {
+> -	struct msm_gpu_devfreq *df = &gpu->devfreq;
+> +	struct msm_gpu_devfreq *df = container_of(work,
+> +			struct msm_gpu_devfreq, idle_work.work);
+> +	struct msm_gpu *gpu = container_of(df, struct msm_gpu, devfreq);
+>   	unsigned long idle_freq, target_freq = 0;
+> 
+>   	/*
+> @@ -229,3 +243,11 @@ void msm_devfreq_idle(struct msm_gpu *gpu)
+> 
+>   	mutex_unlock(&df->devfreq->lock);
+>   }
+> +
+> +void msm_devfreq_idle(struct msm_gpu *gpu)
+> +{
+> +	struct msm_gpu_devfreq *df = &gpu->devfreq;
+> +
+> +	msm_hrtimer_queue_work(&df->idle_work, ms_to_ktime(1),
+> +			       HRTIMER_MODE_ABS);
+> +}
+> --
+> 2.31.1
+> 
 
-However, RISCV label difference will actually produce two relocations,
-a pair of R_RISCV_ADD32 and R_RISCV_SUB32. Take below simple code for
-example:
+Hi Rob,
 
-$ cat test.S
-.section .text
-1:
-        nop
-.section __ex_table,"a"
-        .balign 4
-        .long (1b - .)
-.previous
+I tested this patch on the OnePlus 6, with it I'm still able to reproduce the crash introduced by
+("drm/msm: Devfreq tuning").
 
-$ riscv64-linux-gnu-gcc -c test.S
-$ riscv64-linux-gnu-readelf -r test.o
-Relocation section '.rela__ex_table' at offset 0x100 contains 2 entries:
-  Offset          Info           Type           Sym. Value    Sym. Name + Addend
-000000000000  000600000023 R_RISCV_ADD32     0000000000000000 .L1^B1 + 0
-000000000000  000500000027 R_RISCV_SUB32     0000000000000000 .L0  + 0
+Adjusting the delay from 1ms to 5ms seems to help, at least from some very basic testing.
 
-The modpost will complain the R_RISCV_SUB32 relocation, so we need to
-patch modpost.c to skip this relocation for .rela__ex_table section.
+Perhaps the increased power reliability of the external power supply on dev boards is helping to mask the issue (hence 
+why it's harder to reproduce on db845c).
 
-After this patch, the __ex_table section size of defconfig vmlinux is
-reduced from 7072 Bytes to 3536 Bytes.
-
-Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
----
- arch/riscv/include/asm/Kbuild    |  1 -
- arch/riscv/include/asm/extable.h | 25 +++++++++++++++++++++++++
- arch/riscv/include/asm/uaccess.h |  4 ++--
- arch/riscv/lib/uaccess.S         |  4 ++--
- arch/riscv/mm/extable.c          |  2 +-
- scripts/mod/modpost.c            | 27 +++++++++++++++++++++++++++
- scripts/sorttable.c              |  2 +-
- 7 files changed, 58 insertions(+), 7 deletions(-)
- create mode 100644 arch/riscv/include/asm/extable.h
-
-diff --git a/arch/riscv/include/asm/Kbuild b/arch/riscv/include/asm/Kbuild
-index 445ccc97305a..57b86fd9916c 100644
---- a/arch/riscv/include/asm/Kbuild
-+++ b/arch/riscv/include/asm/Kbuild
-@@ -1,6 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0
- generic-y += early_ioremap.h
--generic-y += extable.h
- generic-y += flat.h
- generic-y += kvm_para.h
- generic-y += user.h
-diff --git a/arch/riscv/include/asm/extable.h b/arch/riscv/include/asm/extable.h
-new file mode 100644
-index 000000000000..bc439b0fdb29
---- /dev/null
-+++ b/arch/riscv/include/asm/extable.h
-@@ -0,0 +1,25 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _ASM_RISCV_EXTABLE_H
-+#define _ASM_RISCV_EXTABLE_H
-+
-+/*
-+ * The exception table consists of pairs of relative offsets: the first
-+ * is the relative offset to an instruction that is allowed to fault,
-+ * and the second is the relative offset at which the program should
-+ * continue. No registers are modified, so it is entirely up to the
-+ * continuation code to figure out what to do.
-+ *
-+ * All the routines below use bits of fixup code that are out of line
-+ * with the main instruction path.  This means when everything is well,
-+ * we don't even have to jump over them.  Further, they do not intrude
-+ * on our cache or tlb entries.
-+ */
-+
-+struct exception_table_entry {
-+	int insn, fixup;
-+};
-+
-+#define ARCH_HAS_RELATIVE_EXTABLE
-+
-+extern int fixup_exception(struct pt_regs *regs);
-+#endif
-diff --git a/arch/riscv/include/asm/uaccess.h b/arch/riscv/include/asm/uaccess.h
-index 5e4c9a5a17c5..03e798c7b011 100644
---- a/arch/riscv/include/asm/uaccess.h
-+++ b/arch/riscv/include/asm/uaccess.h
-@@ -49,8 +49,8 @@
- 
- #define _ASM_EXTABLE(from, to)						\
- 	"	.pushsection	__ex_table, \"a\"\n"			\
--	"	.balign "	RISCV_SZPTR "	 \n"			\
--	"	" RISCV_PTR	"(" #from "), (" #to ")\n"		\
-+	"	.balign		4\n"					\
-+	"	.long		(" #from " - .), (" #to " - .)\n"	\
- 	"	.popsection\n"
- 
- /*
-diff --git a/arch/riscv/lib/uaccess.S b/arch/riscv/lib/uaccess.S
-index 63bc691cff91..55f80f84e23f 100644
---- a/arch/riscv/lib/uaccess.S
-+++ b/arch/riscv/lib/uaccess.S
-@@ -7,8 +7,8 @@
- 100:
- 	\op \reg, \addr
- 	.section __ex_table,"a"
--	.balign RISCV_SZPTR
--	RISCV_PTR 100b, \lbl
-+	.balign 4
-+	.long (100b - .), (\lbl - .)
- 	.previous
- 	.endm
- 
-diff --git a/arch/riscv/mm/extable.c b/arch/riscv/mm/extable.c
-index 2fc729422151..6aa8ffac4be7 100644
---- a/arch/riscv/mm/extable.c
-+++ b/arch/riscv/mm/extable.c
-@@ -17,7 +17,7 @@ int fixup_exception(struct pt_regs *regs)
- 
- 	fixup = search_exception_tables(regs->epc);
- 	if (fixup) {
--		regs->epc = fixup->fixup;
-+		regs->epc = (unsigned long)&fixup->fixup + fixup->fixup;
- 		return 1;
- 	}
- 	return 0;
-diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
-index cb8ab7d91d30..0aa14b5bd124 100644
---- a/scripts/mod/modpost.c
-+++ b/scripts/mod/modpost.c
-@@ -1830,6 +1830,27 @@ static int addend_mips_rel(struct elf_info *elf, Elf_Shdr *sechdr, Elf_Rela *r)
- 	return 0;
- }
- 
-+#ifndef EM_RISCV
-+#define EM_RISCV		243
-+#endif
-+
-+#ifndef R_RISCV_SUB32
-+#define R_RISCV_SUB32		39
-+#endif
-+
-+static int addend_riscv_rela(struct elf_info *elf, Elf_Shdr *sechdr, Elf_Rela *r)
-+{
-+	unsigned int r_typ = ELF_R_TYPE(r->r_info);
-+	const char *fromsec;
-+
-+	fromsec = sech_name(elf, sechdr);
-+	fromsec += strlen(".rela");
-+
-+	if (!strcmp("__ex_table", fromsec) && r_typ == R_RISCV_SUB32)
-+		return 1;	/* skip this */
-+	return 0;
-+}
-+
- static void section_rela(const char *modname, struct elf_info *elf,
- 			 Elf_Shdr *sechdr)
- {
-@@ -1866,6 +1887,12 @@ static void section_rela(const char *modname, struct elf_info *elf,
- 		r_sym = ELF_R_SYM(r.r_info);
- #endif
- 		r.r_addend = TO_NATIVE(rela->r_addend);
-+		switch (elf->hdr->e_machine) {
-+		case EM_RISCV:
-+			if (addend_riscv_rela(elf, sechdr, &r))
-+				continue;
-+			break;
-+		}
- 		sym = elf->symtab_start + r_sym;
- 		/* Skip special sections */
- 		if (is_shndx_special(sym->st_shndx))
-diff --git a/scripts/sorttable.c b/scripts/sorttable.c
-index 6ee4fa882919..39e86e4acea3 100644
---- a/scripts/sorttable.c
-+++ b/scripts/sorttable.c
-@@ -346,6 +346,7 @@ static int do_file(char const *const fname, void *addr)
- 	case EM_PARISC:
- 	case EM_PPC:
- 	case EM_PPC64:
-+	case EM_RISCV:
- 		custom_sort = sort_relative_table;
- 		break;
- 	case EM_ARCOMPACT:
-@@ -353,7 +354,6 @@ static int do_file(char const *const fname, void *addr)
- 	case EM_ARM:
- 	case EM_MICROBLAZE:
- 	case EM_MIPS:
--	case EM_RISCV:
- 	case EM_XTENSA:
- 		break;
- 	default:
 -- 
-2.33.0
-
-
+Kind Regards,
+Caleb (they/them)
