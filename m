@@ -2,86 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56D1C430333
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 17:13:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F395C430336
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 17:15:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237173AbhJPPPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 11:15:16 -0400
-Received: from smtprelay0103.hostedemail.com ([216.40.44.103]:54282 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S235703AbhJPPPO (ORCPT
+        id S237389AbhJPPRb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 11:17:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46400 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237124AbhJPPR3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 11:15:14 -0400
-Received: from omf14.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id E02D01018D5AF;
-        Sat, 16 Oct 2021 15:13:05 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf14.hostedemail.com (Postfix) with ESMTPA id 2F15D268E46;
-        Sat, 16 Oct 2021 15:13:04 +0000 (UTC)
-Message-ID: <400d3fe720e336d5dba6e9b95c75baadf22a6a58.camel@perches.com>
-Subject: Re: [PATCH 3/3] bus: mhi: replace snprintf in show functions with
- sysfs_emit
-From:   Joe Perches <joe@perches.com>
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        hemantk@codeaurora.org, bbhatt@codeaurora.org,
-        loic.poulain@linaro.org, wangqing@vivo.com, mhi@lists.linux.dev,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Manivannan Sadhasivam <mani@kernel.org>
-Date:   Sat, 16 Oct 2021 08:13:03 -0700
-In-Reply-To: <YWrqmiT1pC+SbecM@kroah.com>
-References: <20211016065734.28802-1-manivannan.sadhasivam@linaro.org>
-         <20211016065734.28802-4-manivannan.sadhasivam@linaro.org>
-         <YWqBTj4slHq7HexS@kroah.com>
-         <6ddc01b24b1c72f7e92174a037043b5cfffa3431.camel@perches.com>
-         <YWrqmiT1pC+SbecM@kroah.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.4-1 
+        Sat, 16 Oct 2021 11:17:29 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0F53C061570
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 08:15:21 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id g14so11045047pfm.1
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 08:15:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amarulasolutions.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=54yvKUvR70e1EUwEjIQrkBtCHRmu0YRGTVj0j6VpK3k=;
+        b=IysGORiq0W50u0akiTJ9sGN7Z9uuIDcmR686khN26vdHXQFuJn55dgb+npETZ86Uoh
+         djy/tOVziUjsSsKRmrcVh3O6JPhchV2oc/0PetyLF3E0f189sqsTWlvfb+7gmXEM9HRn
+         nKNZGUYgziwq6GFnJBUW0dl8FEC9IWAc9B3GQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=54yvKUvR70e1EUwEjIQrkBtCHRmu0YRGTVj0j6VpK3k=;
+        b=lFFB0Uy/cmz/x53FltZJwcFcWCkuAAFH0R2rKN0x7/3Ew13H9q403x8YlxhYwVe6fv
+         vRF08kc0bSKV9/OxqzN9v/hZ2Wr1xF765EprWceotxnXXF8cmluPZdpspctCgMgZKQ34
+         CJW7fPIBbhzlzYQHdre1CQ+mxCyIsIEfj8A6yXUAmCcrCNUgd5XhushddjoOGiLCkmIp
+         Y+XdsCAZLxV1ZEuZ7bhQoY77JMpfCH271JIlmx5fESt2oXPiP5PYeFNVXXoWYDEFekG2
+         wwn6q94e3LBfShwuhAoyf4hGfFtqqAJX3Wlb7v84szq9t98/en+FYommNMHFalIGNmZG
+         2EVA==
+X-Gm-Message-State: AOAM531bdgKEfqnYgsLfO12W0kT6HHQXoCdRWp3HDTGTnJp1p2mdR6QI
+        fLhmCStwdPP49H0DNdWhaDa47RoUj6Kc4JYQKWPQuQ==
+X-Google-Smtp-Source: ABdhPJy/nsmwbNl980n8mO/eYo1HFVH3q5bZkzrm1syD7NgEFUwCZ6QMxfbKqYniPiykBAAfioXb3n3ioZcUYQ8uhes=
+X-Received: by 2002:a63:334c:: with SMTP id z73mr14603487pgz.160.1634397320877;
+ Sat, 16 Oct 2021 08:15:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.89
-X-Stat-Signature: 9uhebz6odwgnyap79pzfzw94x7mhn8a1
-X-Rspamd-Server: rspamout05
-X-Rspamd-Queue-Id: 2F15D268E46
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1/lF+a3yNodCoxdxWj3to9HFbSG6J4S2Fs=
-X-HE-Tag: 1634397184-28310
+References: <20210107134101.195426-1-paul.kocialkowski@bootlin.com> <62c3e6bccfb3d8c0ef6190861a8608abff34e885.camel@collabora.com>
+In-Reply-To: <62c3e6bccfb3d8c0ef6190861a8608abff34e885.camel@collabora.com>
+From:   Michael Nazzareno Trimarchi <michael@amarulasolutions.com>
+Date:   Sat, 16 Oct 2021 17:15:09 +0200
+Message-ID: <CAOf5uwkuBYuFaoakiBvPb9eomSDdPWOL01w0=-e4Ud-h8QafbQ@mail.gmail.com>
+Subject: Re: [PATCH 0/5] Rockchip PX30 RGA and VPU support
+To:     Ezequiel Garcia <ezequiel@collabora.com>
+Cc:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jacob Chen <jacob-chen@iotwrt.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Alex Bee <knaerzche@gmail.com>, Chris Healy <cphealy@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2021-10-16 at 17:07 +0200, Greg KH wrote:
-> On Sat, Oct 16, 2021 at 03:24:17AM -0700, Joe Perches wrote:
-> > On Sat, 2021-10-16 at 09:37 +0200, Greg KH wrote:
-> > > On Sat, Oct 16, 2021 at 12:27:34PM +0530, Manivannan Sadhasivam wrote:
-> > > > From: Qing Wang <wangqing@vivo.com>
-> > > > coccicheck complains about the use of snprintf() in sysfs show functions.
-> > []
-> > > > diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
-> > []
-> > > > @@ -94,7 +94,7 @@ static ssize_t serial_number_show(struct device *dev,
-> > > >  	struct mhi_device *mhi_dev = to_mhi_device(dev);
-> > > >  	struct mhi_controller *mhi_cntrl = mhi_dev->mhi_cntrl;
-> > > >  
-> > > > -	return snprintf(buf, PAGE_SIZE, "Serial Number: %u\n",
-> > > > +	return sysfs_emit(buf, "Serial Number: %u\n",
-> > > >  			mhi_cntrl->serial_number);
-> > > 
-> > > The text "Serial Number: " should not be in here, right?  It's obvious
-> > > this is a serial number, that's what the documentation and file name
-> > > says.  Userspace should not have to parse sysfs files.
-> > 
-> > sysfs is ABI right?  Parsing or not, it's what's already there.
-> 
-> If no tools rely on this, and we can change it, we should at least try.
-> 
-> We can not change ABI if something breaks.  If nothing relies on it,
-> then it is fine to do so.
+Hi all
 
-That's a quite bad way to think of an ABI.
+On Mon, Jun 21, 2021 at 5:00 AM Ezequiel Garcia <ezequiel@collabora.com> wrote:
+>
+> Hi Paul,
+>
+> On Thu, 2021-01-07 at 14:40 +0100, Paul Kocialkowski wrote:
+> > This series adds the required bits for RGA and VPU support on the
+> > Rockchip PX30 SoC.
+> >
+>
+> Do you plan to resend this series?
+>
+> Alex recently renamed [1] things so some tweaking will be needed,
+> but it shouldn't be complicated.
+>
+> [1] https://lore.kernel.org/linux-media/20210614213215.99389-1-knaerzche@gmail.com/
+>
+> It would be great to have support RK3326 and PX30 :)
 
-All that does is tempt fate as you don't know if something already
-uses it until someone complains and by that time something else may
-be written to depend on the new behavior.
+I can re-spin and test it, but I don't find the whole thread
+
+Michael
+
+>
+> Kindly,
+> Ezequiel
+>
+>
+>
+>
+> _______________________________________________
+> Linux-rockchip mailing list
+> Linux-rockchip@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-rockchip
 
 
+
+-- 
+Michael Nazzareno Trimarchi
+Co-Founder & Chief Executive Officer
+M. +39 347 913 2170
+michael@amarulasolutions.com
+__________________________________
+
+Amarula Solutions BV
+Joop Geesinkweg 125, 1114 AB, Amsterdam, NL
+T. +31 (0)85 111 9172
+info@amarulasolutions.com
+www.amarulasolutions.com
