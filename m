@@ -2,61 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E1B9430432
+	by mail.lfdr.de (Postfix) with ESMTP id 61554430433
 	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 20:31:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244546AbhJPSdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 14:33:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59658 "EHLO mail.kernel.org"
+        id S244552AbhJPSde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 14:33:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59676 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234382AbhJPSd1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S240331AbhJPSd1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 16 Oct 2021 14:33:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 56B6560F59;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 6B732611AF;
         Sat, 16 Oct 2021 18:31:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1634409079;
-        bh=DF5ne+qUSuWncNKjddf1m+kT74Wx7J9mDs0Pwr5GH98=;
+        bh=00uZBzqaHbR8YzwXalsaf0xQALYAxZHIh7dNQMzA/VQ=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=WUEi5WMuGkzmCv4dAYfG+AaQViV/bbuUE+TW4cRgWSpdZeTaaaAYVf47UdsbOV6jd
-         5v/r/x0PH/crq/r1bKGT40mYrs0Mf+JjSGJidyFIF9BuQxI4komXVsdSMAaKdOZ2/F
-         AlMbZDaPoFk5bUxo8QJduys9uB6Mxy1OxbieNUijSDguptwZeBhzCNaDpQ2gm9rnp0
-         BWVoTStKb4XM/kzusjnku4O6H46Iytl6d6oP5cnye2c+w2n/hKkyQKsL7/yILfpW2F
-         48rBJhRg8rp1FY8xt+kR1pQJHgZqQ6OfdPEhm5RwP71aqPQmR0mkMxO1wnbjDwMgQX
-         7D6CLOWg9ry+Q==
+        b=bKWsDYaalHxSsSGBXs16aE+sbf3m08VdRZRfawUcK5os2h3IBf7F0OkroU+up3y9q
+         Y/Ynd0xaFXmcF7fE1dk0FAn56aRVQKz3GhyjBts5fhRZLGn+ZwK90TWj+H60Tw3fPB
+         XKrjP02oO2d60UoQrkWYybOY98ZexiIeOCY9QXBKB1rsg7IYQKyzTuqsY2nD2Wipbi
+         D2J3PpC2g4vxo+yx9EH1cjtnRh5PZbQW209xR7SegYelqwSwABc9HR80/66KyklvzZ
+         ZbeWoybDtm9z8Q4PdzRQa2ql+h4HuIOzRlNuIwbu4GbkYbqWDXxgmu6VEUPrF0iVGQ
+         eCdrQJi1TmfDA==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 4C48660A39;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 5B6A360A90;
         Sat, 16 Oct 2021 18:31:19 +0000 (UTC)
-Subject: Re: [GIT PULL] memblock: fix handling of NOMAP regions with kmemleak
+Subject: Re: [GIT PULL] perf tools fixes for v5.15: 4th batch
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <YWp90alRlwExAmv2@kernel.org>
-References: <YWp90alRlwExAmv2@kernel.org>
+In-Reply-To: <20211016113523.791937-1-acme@kernel.org>
+References: <20211016113523.791937-1-acme@kernel.org>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <YWp90alRlwExAmv2@kernel.org>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/rppt/memblock tags/fixes-2021-10-16
-X-PR-Tracked-Commit-Id: 6e44bd6d34d659c44cd8e7fc925c8a97f49b3c33
+X-PR-Tracked-Message-Id: <20211016113523.791937-1-acme@kernel.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git tags/perf-tools-fixes-for-v5.15-2021-10-16
+X-PR-Tracked-Commit-Id: 3ff6d64e68abc231955d216236615918797614ae
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: ccfb5ceb400720969d6118c740c2fc37bcf990b8
-Message-Id: <163440907930.17248.3933703957751387175.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: d999ade1cc86cd2951d41c11ea769cb4452c8811
+Message-Id: <163440907936.17248.725481396149753023.pr-tracker-bot@kernel.org>
 Date:   Sat, 16 Oct 2021 18:31:19 +0000
-To:     Mike Rapoport <rppt@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Clark Williams <williams@redhat.com>,
+        Kate Carcia <kcarcia@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>,
+        Riccardo Mancini <rickyman7@gmail.com>,
+        Shunsuke Nakamura <nakamura.shun@fujitsu.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 16 Oct 2021 10:22:57 +0300:
+The pull request you sent on Sat, 16 Oct 2021 08:35:23 -0300:
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/rppt/memblock tags/fixes-2021-10-16
+> git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git tags/perf-tools-fixes-for-v5.15-2021-10-16
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/ccfb5ceb400720969d6118c740c2fc37bcf990b8
+https://git.kernel.org/torvalds/c/d999ade1cc86cd2951d41c11ea769cb4452c8811
 
 Thank you!
 
