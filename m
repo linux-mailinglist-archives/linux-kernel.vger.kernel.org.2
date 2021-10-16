@@ -2,154 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C0494303C5
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 18:31:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86F744303C6
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 18:33:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240794AbhJPQeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 12:34:03 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:46128 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230526AbhJPQeC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 12:34:02 -0400
-Received: from p508fce7c.dip0.t-ipconnect.de ([80.143.206.124] helo=phil.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1mbmb6-0007eW-PS; Sat, 16 Oct 2021 18:31:48 +0200
-From:   Heiko Stuebner <heiko@sntech.de>
-To:     Guo Ren <guoren@kernel.org>
-Cc:     Anup Patel <anup@brainfault.org>,
-        Atish Patra <atish.patra@wdc.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Rob Herring <robh@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: Re: [PATCH V4 2/3] dt-bindings: update riscv plic compatible string
-Date:   Sat, 16 Oct 2021 18:31:47 +0200
-Message-ID: <1708236.01x493v0YS@phil>
-In-Reply-To: <CAJF2gTQKc1DGcCy_sFjSs8p+VMNGHFrjO2uLZrHnjdD1pZ2RZg@mail.gmail.com>
-References: <20211016032200.2869998-1-guoren@kernel.org> <2216787.nSqPeTNalD@phil> <CAJF2gTQKc1DGcCy_sFjSs8p+VMNGHFrjO2uLZrHnjdD1pZ2RZg@mail.gmail.com>
+        id S240815AbhJPQfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 12:35:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35348 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230526AbhJPQfN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Oct 2021 12:35:13 -0400
+Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95220C061570
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 09:33:05 -0700 (PDT)
+Received: from martin by viti.kaiser.cx with local (Exim 4.89)
+        (envelope-from <martin@viti.kaiser.cx>)
+        id 1mbmcG-00068K-JN; Sat, 16 Oct 2021 18:33:00 +0200
+Date:   Sat, 16 Oct 2021 18:33:00 +0200
+From:   Martin Kaiser <lists@kaiser.cx>
+To:     Phillip Potter <phil@philpotter.co.uk>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Michael Straube <straube.linux@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH 0/8] staging: r8188eu: another round of removals
+Message-ID: <20211016163300.xlu2zsroe3frocpc@viti.kaiser.cx>
+References: <20211016113008.27549-1-martin@kaiser.cx>
+ <YWrxIllg1fMkV1/5@equinox>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YWrxIllg1fMkV1/5@equinox>
+User-Agent: NeoMutt/20170113 (1.7.2)
+Sender: Martin Kaiser <martin@viti.kaiser.cx>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Samstag, 16. Oktober 2021, 14:56:51 CEST schrieb Guo Ren:
-> On Sat, Oct 16, 2021 at 6:35 PM Heiko Stuebner <heiko@sntech.de> wrote:
-> >
-> > Hi Guo,
-> >
-> > Am Samstag, 16. Oktober 2021, 05:21:59 CEST schrieb guoren@kernel.org:
-> > > From: Guo Ren <guoren@linux.alibaba.com>
-> > >
-> > > Add the compatible string "thead,c900-plic" to the riscv plic
-> > > bindings to support allwinner d1 SOC which contains c906 core.
-> >
-> > The compatible strings sound good now, but some things below
-> >
-> > >
-> > > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> > > Cc: Rob Herring <robh@kernel.org>
-> > > Cc: Palmer Dabbelt <palmerdabbelt@google.com>
-> > > Cc: Anup Patel <anup@brainfault.org>
-> > > Cc: Atish Patra <atish.patra@wdc.com>
-> > >
-> > > ---
-> > >
-> > > Changes since V4:
-> > >  - Update description in errata style
-> > >  - Update enum suggested by Anup, Heiko, Samuel
-> > >
-> > > Changes since V3:
-> > >  - Rename "c9xx" to "c900"
-> > >  - Add thead,c900-plic in the description section
-> > > ---
-> > >  .../interrupt-controller/sifive,plic-1.0.0.yaml       | 11 ++++++++++-
-> > >  1 file changed, 10 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml b/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml
-> > > index 08d5a57ce00f..272f29540135 100644
-> > > --- a/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml
-> > > +++ b/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml
-> > > @@ -35,6 +35,12 @@ description:
-> > >    contains a specific memory layout, which is documented in chapter 8 of the
-> > >    SiFive U5 Coreplex Series Manual <https://static.dev.sifive.com/U54-MC-RVCoreIP.pdf>.
-> > >
-> > > +  The C9xx PLIC does not comply with the interrupt claim/completion process defined
-> > > +  by the RISC-V PLIC specification because C9xx PLIC will mask an IRQ when it is
-> > > +  claimed by PLIC driver (i.e. readl(claim) and the IRQ will be unmasked upon
-> > > +  completion by PLIC driver (i.e. writel(claim). This behaviour breaks the handling
-> > > +  of IRQS_ONESHOT by the generic handle_fasteoi_irq() used in the PLIC driver.
-> > > +
-> > >  maintainers:
-> > >    - Sagar Kadam <sagar.kadam@sifive.com>
-> > >    - Paul Walmsley  <paul.walmsley@sifive.com>
-> > > @@ -46,7 +52,10 @@ properties:
-> > >        - enum:
-> > >            - sifive,fu540-c000-plic
-> > >            - canaan,k210-plic
-> > > -      - const: sifive,plic-1.0.0
-> > > +      - enmu:
-> >
-> >         ^ spelling enum
-> >
-> > > +          - sifive,plic-1.0.0
-> > > +          - thead,c900-plic
-> > > +          - allwinner,sun20i-d1-plic
-> >
-> > but in general I'd think that you want something like
-> >
-> >   compatible:
-> >     oneOf:
-> >       - items:
-> >           - enum:
-> >               - sifive,fu540-c000-plic
-> >               - canaan,k210-plic
-> >           - const: sifive,plic-1.0.0
-> >       - items:
-> >           - enum:
-> >               - allwinner,sun20i-d1-plic
-> >           - const: thead,c900-plic
-> >
-> > Having only one item list would allow as valid combinations like
-> > "sifive,fu540-c000-plic", "thead,c900-plic" when checking the schema.
-> >
-> > With the oneOf and separate lists we can make sure that such
-> > "illegal" combinations get flagged by the dtbs_check
-> >
-> > [the enum with the single allwinner entry already leaves
-> >  room for later addition to the c900-plic variant]
-> Thx, I'll fix it in the next version.
-> 
-> another question: Is the allwinner_sun20i_d1_plic needed to IRQCHIP_DECLARE?
-> 
-> +IRQCHIP_DECLARE(thead_c900_plic, "thead,c900-plic", thead_c900_plic_init);
-> +IRQCHIP_DECLARE(allwinner_sun20i_d1_plic, "allwinner,sun20i-d1-plic",
-> thead_c900_plic_init);
+Thus wrote Phillip Potter (phil@philpotter.co.uk):
 
-Doing
-	IRQCHIP_DECLARE(thead_c900_plic, "thead,c900-plic", thead_c900_plic_init);
-should be enough for now.
+> On Sat, Oct 16, 2021 at 01:30:00PM +0200, Martin Kaiser wrote:
+> > Remove some more dead code and unused definitions.
 
-Compatible-parsing happens from left to right, from most-specific to
-most-generic. So having the allwinner-d1 compatible in there is sort of a
-safeguard.
+> > Martin Kaiser (8):
+> >   staging: r8188eu: remove empty trigger gpio code
+> >   staging: r8188eu: interface type is always usb
+> >   staging: r8188eu: remove two checks that are always false
+> >   staging: r8188eu: remove unused function prototypes
+> >   staging: r8188eu: PHY_SetRFPathSwitch_8188E is not used
+> >   staging: r8188eu: clean up Hal8188EPhyCfg.h
+> >   staging: r8188eu: remove procfs functions
+> >   staging: r8188eu: CurrentWirelessMode is not used
 
-If at some _later point in time_ , some specific new quirk of the D1
-implementation comes to light, we can _then_ just add a 
-	IRQCHIP_DECLARE(allwinner_d1_plic, "allwinner,sun20i-d1-plic", allwinner_d1_plic_init);
+> >  drivers/staging/r8188eu/Makefile              |   1 -
+> >  drivers/staging/r8188eu/core/rtw_debug.c      | 886 ------------------
+> >  .../staging/r8188eu/hal/HalHWImg8188E_BB.c    |  14 +-
+> >  .../staging/r8188eu/hal/HalHWImg8188E_MAC.c   |   3 +-
+> >  .../staging/r8188eu/hal/HalHWImg8188E_RF.c    |   8 +-
+> >  drivers/staging/r8188eu/hal/HalPhyRf_8188e.c  |  38 -
+> >  drivers/staging/r8188eu/hal/odm.c             |   3 -
+> >  drivers/staging/r8188eu/hal/rtl8188e_dm.c     |   2 -
+> >  drivers/staging/r8188eu/hal/usb_halinit.c     |   8 -
+> >  .../staging/r8188eu/include/Hal8188EPhyCfg.h  |  78 --
+> >  drivers/staging/r8188eu/include/hal_intf.h    |   1 -
+> >  drivers/staging/r8188eu/include/odm.h         |  11 +-
+> >  .../staging/r8188eu/include/rtl8188e_hal.h    |   1 -
+> >  drivers/staging/r8188eu/include/rtw_debug.h   | 148 ---
+> >  14 files changed, 6 insertions(+), 1196 deletions(-)
+> >  delete mode 100644 drivers/staging/r8188eu/core/rtw_debug.c
 
-Devicetrees should be stable and newer kernels should work with old
-devicetrees, so having the soc-specific compatible in there just makes it
-future proof :-)
+> > -- 
+> > 2.20.1
 
 
-Heiko
+Hi Phil,
 
+> Looks good from what I can see, many thanks. Built and tested on my
+> USB-N10 Nano.
 
+> For whole series:
+> Acked-by: Phillip Potter <phil@philpotter.co.uk>
+
+thanks for reviewing and testing.
+
+Best regards,
+Martin
