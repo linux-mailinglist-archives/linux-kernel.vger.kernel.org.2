@@ -2,73 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 014DD43030D
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 16:34:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47A7D430312
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 16:36:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235150AbhJPOgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 10:36:50 -0400
-Received: from mail-ot1-f49.google.com ([209.85.210.49]:39859 "EHLO
-        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231577AbhJPOgt (ORCPT
+        id S235901AbhJPOiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 10:38:25 -0400
+Received: from mail-oi1-f170.google.com ([209.85.167.170]:45676 "EHLO
+        mail-oi1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234477AbhJPOiX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 10:36:49 -0400
-Received: by mail-ot1-f49.google.com with SMTP id e59-20020a9d01c1000000b00552c91a99f7so865852ote.6;
-        Sat, 16 Oct 2021 07:34:41 -0700 (PDT)
+        Sat, 16 Oct 2021 10:38:23 -0400
+Received: by mail-oi1-f170.google.com with SMTP id z126so17532076oiz.12;
+        Sat, 16 Oct 2021 07:36:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=j1810wrRi1+sqKNjD8mg1sEmulNnuM8qTf6RHFoW7SQ=;
-        b=z+0MpyzMAB5sEoTtrwBfI6RY/XvZy+GTEfVXWPRtzWc83naRcBdK9THUBy5C6E1CS9
-         K48b5b4QwOKf/p8eWEGdrb3frx6hBwZI39Br8dQHiU1PQxOzDgtzNQP0Mo7vin+62z/g
-         WIGPLHX/jqsloRHi55b2qZjaHP9mQBgROSjBHcGvC1Hzj8maHEMxFE1FGsRYchMU+lI/
-         VtN9eBpWYfZEhc+Va6YZlR2zRDTEf2Wtrx0aUQeembA0QXhz+FJGQMuGOO56EfsNHJaL
-         +NmSMGcLESi5d51aQVoCPMZjqMnnXTn/yD3nrQvqSg81uch8d1LiiFyKJs2dMXh16kqc
-         FkHw==
-X-Gm-Message-State: AOAM531pZHi9BsyJY+TXUVggAKbLd6HTYUmMbMN90tAINbfl9LK7/4Mn
-        S2ytzzaXdAqGYoFSIcVRPw==
-X-Google-Smtp-Source: ABdhPJwFDvklE+gWKoVxXSGwq216GQRczbTqIz0XmD8ebMcayqZ3/KVkyTA3etnzlABCEsG0vNEugg==
-X-Received: by 2002:a9d:86e:: with SMTP id 101mr13164167oty.177.1634394880791;
-        Sat, 16 Oct 2021 07:34:40 -0700 (PDT)
+        bh=pUN/soe8xSqu2oYqVJjty1O05ssnZDWQhxdQWf+Tt2E=;
+        b=pfA2GSHD6vtH0et05GGMKETNljOjcONa42sII7Ta5PIqciIOuJO8dN3QrrBvRK4sq6
+         aKG+5zg44ePAJkUGt5v79SVRSs/wHUlVWiZqtJA8HwQJ1fm6ZEYh68y9/yQtTFX9JnMr
+         d6MZvl8B0kxyoQhd9s2Ev/ziMGT1u9JChTPkWt/OOj1RMbPjt4XitQqw1zd2xXeHD9DF
+         sx4wXIvqykcYJy2dmafh6sv4Sc2r5r3iqtWsjYWxgZFSKaCqus/2lRi+FOYO8qrjCE23
+         MF+cykGQDKTwwdzU8Sltf+ZZ+tipJSvBNZGA0q1J7GzJextOxtPbsHHKXV7g0E+o0Cn1
+         KB9w==
+X-Gm-Message-State: AOAM533yTVP44dN8rXMVIHCOSmTp4GKf7iOYE65srVyh68B1oVtUwJ/+
+        FIvESJuoVXcz8A5n2vmUYCIaaAIsJg==
+X-Google-Smtp-Source: ABdhPJwinL1aGnefiRLjvQIakN5SSu385KEOtMYIcvNVMSg3tHZlJwHzZ9/E1yzoAiD+m/OwbGu++w==
+X-Received: by 2002:aca:6082:: with SMTP id u124mr18564654oib.153.1634394975117;
+        Sat, 16 Oct 2021 07:36:15 -0700 (PDT)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id o80sm1884047ota.68.2021.10.16.07.34.39
+        by smtp.gmail.com with ESMTPSA id d10sm1576926ooj.24.2021.10.16.07.36.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 16 Oct 2021 07:34:40 -0700 (PDT)
-Received: (nullmailer pid 3904092 invoked by uid 1000);
-        Sat, 16 Oct 2021 14:34:39 -0000
-Date:   Sat, 16 Oct 2021 09:34:39 -0500
+        Sat, 16 Oct 2021 07:36:14 -0700 (PDT)
+Received: (nullmailer pid 3906826 invoked by uid 1000);
+        Sat, 16 Oct 2021 14:36:13 -0000
+Date:   Sat, 16 Oct 2021 09:36:13 -0500
 From:   Rob Herring <robh@kernel.org>
-To:     Alistair Francis <alistair@alistair23.me>
-Cc:     shawnguo@kernel.org, dmitry.torokhov@gmail.com,
-        s.hauer@pengutronix.de, linux-imx@nxp.com,
-        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, jikos@kernel.org,
-        linux-kernel@vger.kernel.org, alistair23@gmail.com,
-        benjamin.tissoires@redhat.com
-Subject: Re: [PATCH v11 1/4] HID: wacom_sys: Add support for flipping the
- data values
-Message-ID: <YWri/85NRl8s+h27@robh.at.kernel.org>
-References: <20211009114313.17967-1-alistair@alistair23.me>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Yassine Oudjana <y.oudjana@protonmail.com>,
+        Luca Weiss <luca@z3ntu.xyz>, Pavel Machek <pavel@ucw.cz>,
+        Lee Jones <lee.jones@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Andy Gross <agross@kernel.org>, linux-leds@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org,
+        Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-arm-msm@vger.kernel.org,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Subject: Re: [PATCH v10 1/2] dt-bindings: leds: Add Qualcomm Light Pulse
+ Generator binding
+Message-ID: <YWrjXSAvJimq1UcZ@robh.at.kernel.org>
+References: <20211010043912.136640-1-bjorn.andersson@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211009114313.17967-1-alistair@alistair23.me>
+In-Reply-To: <20211010043912.136640-1-bjorn.andersson@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 09 Oct 2021 21:43:10 +1000, Alistair Francis wrote:
-> Add support to the Wacom HID device for flipping the values based on
-> device tree settings. This allows us to support devices where the panel
-> is installed in a different orientation, such as the reMarkable2.
+On Sat, 09 Oct 2021 21:39:11 -0700, Bjorn Andersson wrote:
+> This adds the binding document describing the three hardware blocks
+> related to the Light Pulse Generator found in a wide range of Qualcomm
+> PMICs.
 > 
-> Signed-off-by: Alistair Francis <alistair@alistair23.me>
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 > ---
->  .../bindings/input/hid-over-i2c.txt           | 20 ++++++
->  drivers/hid/wacom_sys.c                       | 25 ++++++++
->  drivers/hid/wacom_wac.c                       | 61 +++++++++++++++++++
->  drivers/hid/wacom_wac.h                       | 13 ++++
->  4 files changed, 119 insertions(+)
+> 
+> Changes since v9:
+> - "led" child of "multi-led" now needed a patternProperties
+> - use generic "led-controller" and "pwm-controller" in example
+> 
+>  .../bindings/leds/leds-qcom-lpg.yaml          | 173 ++++++++++++++++++
+>  1 file changed, 173 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/leds/leds-qcom-lpg.yaml
 > 
 
 Reviewed-by: Rob Herring <robh@kernel.org>
