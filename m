@@ -2,53 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6229B4304D5
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 21:48:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56B064304D2
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 21:48:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243260AbhJPTub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 15:50:31 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:47178 "EHLO gloria.sntech.de"
+        id S241039AbhJPTuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 15:50:10 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:47126 "EHLO gloria.sntech.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234499AbhJPTua (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 15:50:30 -0400
+        id S234499AbhJPTuG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Oct 2021 15:50:06 -0400
 Received: from p508fce7c.dip0.t-ipconnect.de ([80.143.206.124] helo=phil.fritz.box)
         by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <heiko@sntech.de>)
-        id 1mbpes-0008HL-7N; Sat, 16 Oct 2021 21:47:54 +0200
+        id 1mbpes-0008HL-Gg; Sat, 16 Oct 2021 21:47:54 +0200
 From:   Heiko Stuebner <heiko@sntech.de>
-To:     Arnaud Ferraris <arnaud.ferraris@collabora.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Heiko Stuebner <heiko@sntech.de>, Johan Jonker <jbx6244@gmail.com>,
-        Shunqian Zheng <zhengsq@rock-chips.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Andy Gross <agross@kernel.org>,
-        Guido Gunther <agx@sigxcpu.org>, Chen-Yu Tsai <wens@csie.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Dan Johansen <strit@manjaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Tomasz Figa <tfiga@chromium.org>, linux-sunxi@lists.linux.dev,
-        Lucas Stach <dev@lynxeye.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Brian Norris <briannorris@chromium.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
+To:     Nicolas Frattaroli <frattaroli.nicolas@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Heiko Stuebner <heiko@sntech.de>, Peter Geis <pgwipeout@gmail.com>,
         devicetree@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        Matthias Brugger <mbrugger@suse.com>,
-        Angus Ainslie <angus@akkea.ca>,
-        Martin Kepplinger <martink@posteo.de>,
-        Shawn Guo <shawnguo@kernel.org>, linux-arm-msm@vger.kernel.org,
-        Simon South <simon@simonsouth.net>,
-        Eddie Cai <eddie.cai.linux@gmail.com>
-Subject: Re: (subset) [PATCH 0/4] arm64: dts: add 'chassis-type' property
-Date:   Sat, 16 Oct 2021 21:47:49 +0200
-Message-Id: <163441361289.438137.290850544419428228.b4-ty@sntech.de>
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] arm64: dts: rockchip: add spdif node to rk356x
+Date:   Sat, 16 Oct 2021 21:47:50 +0200
+Message-Id: <163441361289.438137.17829234976642322429.b4-ty@sntech.de>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211016102025.23346-1-arnaud.ferraris@collabora.com>
-References: <20211016102025.23346-1-arnaud.ferraris@collabora.com>
+In-Reply-To: <20211015111303.1365328-1-frattaroli.nicolas@gmail.com>
+References: <20211015111303.1365328-1-frattaroli.nicolas@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -56,21 +35,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 16 Oct 2021 12:20:21 +0200, Arnaud Ferraris wrote:
-> A new root node property named 'chassis-type' has recently been approved
-> added to the device tree specification[1]. This will allow userspace to
-> easily detect the device form factor on DT-based devices, and act
-> accordingly.
-> 
-> This patchset fills in this property for existing ARM64 consumer
-> devices (laptops, phones, tablets...).
-> 
-> [...]
+On Fri, 15 Oct 2021 13:13:01 +0200, Nicolas Frattaroli wrote:
+> This adds the spdif node to the rk356x device tree.
 
 Applied, thanks!
 
-[4/4] arm64: dts: rockchip: add 'chassis-type' property
-      commit: 263b39bce2fbcd3531163300cb9663a4a9517dde
+I did a tiny bit of (alphabetical) sorting
+(clocks about dma)
+
+[1/2] arm64: dts: rockchip: add spdif node to rk356x
+      commit: a65e6523e6dcf1dc4ea167ab78ca6fad01f16d91
+[2/2] arm64: dts: rockchip: enable spdif on Quartz64 A
+      commit: 7ab91acd3624de261d785e94cdfc01a703786e7a
 
 Best regards,
 -- 
