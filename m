@@ -2,113 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8E8F430087
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 08:26:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8133E43008C
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 08:28:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239932AbhJPG2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 02:28:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43902 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239451AbhJPG2O (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 02:28:14 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0579EC061570;
-        Fri, 15 Oct 2021 23:26:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=BhYE3boCAjVmx4aSjOWGjKR2hEoYtcDr4JkhxOOfVO4=; b=R2HFpAoV+B6ur9uK6VrlG7o4YP
-        8CLC12444uKYaZfD39HJ+vH2CJkVAHjzrGf9ndDZOSAUcUQZUWrLNYH2YBfQkV0ii+1b67V6SERaN
-        Vqm7L04x1XmobTN+e3pRbtPiFD2G1G7V5WTAu0CgK/331lp5ctq70Dv+6qFdr8pGTEBDMG+IfzEuN
-        i0mXGomZ9a3B99wO84iJyCgUXqbOR1mcktsZzcksQufAqwzFd3sCHCjv+K0OKTLybmQHAZ4RKZgv7
-        VFUMc4UWIhHPI+RfOIyTkGqA34qIJvj6DhS/ZeyLmdaa41JOo6tWDrK6fixNr4LYxv2x9kwB1eOMf
-        C2KcMxlg==;
-Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mbd8u-009wZI-6h; Sat, 16 Oct 2021 06:26:04 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        linux-m68k@lists.linux-m68k.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [RFC PATCH] sound: ISA: not for M68K
-Date:   Fri, 15 Oct 2021 23:26:02 -0700
-Message-Id: <20211016062602.3588-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.31.1
+        id S239935AbhJPGaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 02:30:24 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:43113 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233802AbhJPGaU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Oct 2021 02:30:20 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4HWY9Q53xqz9sSL;
+        Sat, 16 Oct 2021 08:28:10 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id k-Fz29ksyfF0; Sat, 16 Oct 2021 08:28:10 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4HWY9Q3nwlz9sSH;
+        Sat, 16 Oct 2021 08:28:10 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5E0778B765;
+        Sat, 16 Oct 2021 08:28:10 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 4rYxWz_zPmYc; Sat, 16 Oct 2021 08:28:10 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.203.36])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 215348B763;
+        Sat, 16 Oct 2021 08:28:09 +0200 (CEST)
+Subject: Re: [PATCH v2 13/13] lkdtm: Add a test for function descriptors
+ protection
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org
+References: <cover.1634190022.git.christophe.leroy@csgroup.eu>
+ <08a3dfbc55e1c7a0a1917b22f0ca6cabd9895ab2.1634190022.git.christophe.leroy@csgroup.eu>
+ <202110151433.6270D717@keescook>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <b11bab54-04bd-4244-a043-b3d8df34967b@csgroup.eu>
+Date:   Sat, 16 Oct 2021 08:28:09 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <202110151433.6270D717@keescook>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr-FR
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On m68k, compiling drivers under SND_ISA causes build errors:
 
-../sound/core/isadma.c: In function 'snd_dma_program':
-../sound/core/isadma.c:33:17: error: implicit declaration of function 'claim_dma_lock' [-Werror=implicit-function-declaration]
-   33 |         flags = claim_dma_lock();
-      |                 ^~~~~~~~~~~~~~
-../sound/core/isadma.c:41:9: error: implicit declaration of function 'release_dma_lock' [-Werror=implicit-function-declaration]
-   41 |         release_dma_lock(flags);
-      |         ^~~~~~~~~~~~~~~~
 
-../sound/isa/sb/sb16_main.c: In function 'snd_sb16_playback_prepare':
-../sound/isa/sb/sb16_main.c:253:72: error: 'DMA_AUTOINIT' undeclared (first use in this function)
-  253 |         snd_dma_program(dma, runtime->dma_addr, size, DMA_MODE_WRITE | DMA_AUTOINIT);
-      |                                                                        ^~~~~~~~~~~~
-../sound/isa/sb/sb16_main.c:253:72: note: each undeclared identifier is reported only once for each function it appears in
-../sound/isa/sb/sb16_main.c: In function 'snd_sb16_capture_prepare':
-../sound/isa/sb/sb16_main.c:322:71: error: 'DMA_AUTOINIT' undeclared (first use in this function)
-  322 |         snd_dma_program(dma, runtime->dma_addr, size, DMA_MODE_READ | DMA_AUTOINIT);
-      |                                                                       ^~~~~~~~~~~~
+Le 15/10/2021 à 23:35, Kees Cook a écrit :
+> On Thu, Oct 14, 2021 at 07:50:02AM +0200, Christophe Leroy wrote:
+>> Add WRITE_OPD to check that you can't modify function
+>> descriptors.
+>>
+>> Gives the following result when function descriptors are
+>> not protected:
+>>
+>> 	lkdtm: Performing direct entry WRITE_OPD
+>> 	lkdtm: attempting bad 16 bytes write at c00000000269b358
+>> 	lkdtm: FAIL: survived bad write
+>> 	lkdtm: do_nothing was hijacked!
+>>
+>> Looks like a standard compiler barrier(); is not enough to force
+>> GCC to use the modified function descriptor. Add to add a fake empty
+>> inline assembly to force GCC to reload the function descriptor.
+>>
+>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+>> ---
+>>   drivers/misc/lkdtm/core.c  |  1 +
+>>   drivers/misc/lkdtm/lkdtm.h |  1 +
+>>   drivers/misc/lkdtm/perms.c | 22 ++++++++++++++++++++++
+>>   3 files changed, 24 insertions(+)
+>>
+>> diff --git a/drivers/misc/lkdtm/core.c b/drivers/misc/lkdtm/core.c
+>> index fe6fd34b8caf..de092aa03b5d 100644
+>> --- a/drivers/misc/lkdtm/core.c
+>> +++ b/drivers/misc/lkdtm/core.c
+>> @@ -148,6 +148,7 @@ static const struct crashtype crashtypes[] = {
+>>   	CRASHTYPE(WRITE_RO),
+>>   	CRASHTYPE(WRITE_RO_AFTER_INIT),
+>>   	CRASHTYPE(WRITE_KERN),
+>> +	CRASHTYPE(WRITE_OPD),
+>>   	CRASHTYPE(REFCOUNT_INC_OVERFLOW),
+>>   	CRASHTYPE(REFCOUNT_ADD_OVERFLOW),
+>>   	CRASHTYPE(REFCOUNT_INC_NOT_ZERO_OVERFLOW),
+>> diff --git a/drivers/misc/lkdtm/lkdtm.h b/drivers/misc/lkdtm/lkdtm.h
+>> index c212a253edde..188bd0fd6575 100644
+>> --- a/drivers/misc/lkdtm/lkdtm.h
+>> +++ b/drivers/misc/lkdtm/lkdtm.h
+>> @@ -105,6 +105,7 @@ void __init lkdtm_perms_init(void);
+>>   void lkdtm_WRITE_RO(void);
+>>   void lkdtm_WRITE_RO_AFTER_INIT(void);
+>>   void lkdtm_WRITE_KERN(void);
+>> +void lkdtm_WRITE_OPD(void);
+>>   void lkdtm_EXEC_DATA(void);
+>>   void lkdtm_EXEC_STACK(void);
+>>   void lkdtm_EXEC_KMALLOC(void);
+>> diff --git a/drivers/misc/lkdtm/perms.c b/drivers/misc/lkdtm/perms.c
+>> index 96b3ebfcb8ed..3870bc82d40d 100644
+>> --- a/drivers/misc/lkdtm/perms.c
+>> +++ b/drivers/misc/lkdtm/perms.c
+>> @@ -44,6 +44,11 @@ static noinline void do_overwritten(void)
+>>   	return;
+>>   }
+>>   
+>> +static noinline void do_almost_nothing(void)
+>> +{
+>> +	pr_info("do_nothing was hijacked!\n");
+>> +}
+>> +
+>>   static void *setup_function_descriptor(func_desc_t *fdesc, void *dst)
+>>   {
+>>   	memcpy(fdesc, do_nothing, sizeof(*fdesc));
+>> @@ -143,6 +148,23 @@ void lkdtm_WRITE_KERN(void)
+>>   	do_overwritten();
+>>   }
+>>   
+>> +void lkdtm_WRITE_OPD(void)
+>> +{
+>> +	size_t size = sizeof(func_desc_t);
+>> +	void (*func)(void) = do_nothing;
+>> +
+>> +	if (!have_function_descriptors()) {
+>> +		pr_info("Platform doesn't have function descriptors.\n");
+> 
+> This should be more explicit ('xfail'):
+> 
+> 	pr_info("XFAIL: platform doesn't use function descriptors.\n");
 
-and more...
+Ok
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org
-Cc: linux-m68k@lists.linux-m68k.org
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
----
- sound/core/Makefile |    2 ++
- sound/isa/Kconfig   |    2 +-
- sound/pci/Kconfig   |    1 +
- 3 files changed, 4 insertions(+), 1 deletion(-)
 
---- linux-next-20211015.orig/sound/isa/Kconfig
-+++ linux-next-20211015/sound/isa/Kconfig
-@@ -22,7 +22,7 @@ config SND_SB16_DSP
- menuconfig SND_ISA
- 	bool "ISA sound devices"
- 	depends on ISA || COMPILE_TEST
--	depends on ISA_DMA_API
-+	depends on ISA_DMA_API && !M68K
- 	default y
- 	help
- 	  Support for sound devices connected via the ISA bus.
---- linux-next-20211015.orig/sound/pci/Kconfig
-+++ linux-next-20211015/sound/pci/Kconfig
-@@ -279,6 +279,7 @@ config SND_CS46XX_NEW_DSP
- config SND_CS5530
- 	tristate "CS5530 Audio"
- 	depends on ISA_DMA_API && (X86_32 || COMPILE_TEST)
-+	depends on !M68K
- 	select SND_SB16_DSP
- 	help
- 	  Say Y here to include support for audio on Cyrix/NatSemi CS5530 chips.
---- linux-next-20211015.orig/sound/core/Makefile
-+++ linux-next-20211015/sound/core/Makefile
-@@ -9,7 +9,9 @@ ifneq ($(CONFIG_SND_PROC_FS),)
- snd-y += info.o
- snd-$(CONFIG_SND_OSSEMUL) += info_oss.o
- endif
-+ifneq ($(CONFIG_M68K),y)
- snd-$(CONFIG_ISA_DMA_API) += isadma.o
-+endif
- snd-$(CONFIG_SND_OSSEMUL) += sound_oss.o
- snd-$(CONFIG_SND_VMASTER) += vmaster.o
- snd-$(CONFIG_SND_JACK)	  += ctljack.o jack.o
+> 
+>> +		return;
+>> +	}
+>> +	pr_info("attempting bad %zu bytes write at %px\n", size, do_nothing);
+>> +	memcpy(do_nothing, do_almost_nothing, size);
+>> +	pr_err("FAIL: survived bad write\n");
+>> +
+>> +	asm("" : "=m"(func));
+> 
+> Since this is a descriptor, I assume no icache flush is needed. Are
+> function descriptors strictly dcache? (Is anything besides just a
+> barrier needed?)
+
+No flush is needed, the code just loads the function address from memory 
+into CTR, loads R2 and branch to CTR:
+
+	 19c:	e9 21 00 70 	ld      r9,112(r1)
+	 1a0:	e9 49 00 00 	ld      r10,0(r9)
+	 1a4:	7d 49 03 a6 	mtctr   r10
+	 1a8:	e8 49 00 08 	ld      r2,8(r9)
+	 1ac:	4e 80 04 21 	bctrl
+
+
+> 
+>> +	func();
+>> +}
+>> +
+>>   void lkdtm_EXEC_DATA(void)
+>>   {
+>>   	execute_location(data_area, CODE_WRITE);
+>> -- 
+>> 2.31.1
+>>
+> 
