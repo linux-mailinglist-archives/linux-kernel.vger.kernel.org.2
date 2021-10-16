@@ -2,83 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B23424304E2
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 22:16:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E2C74304E6
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 22:24:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244588AbhJPUSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 16:18:34 -0400
-Received: from wrqvxttq.outbound-mail.sendgrid.net ([149.72.167.116]:45078
-        "EHLO wrqvxttq.outbound-mail.sendgrid.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232786AbhJPUSd (ORCPT
+        id S244601AbhJPUZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 16:25:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57052 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232786AbhJPUZp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 16:18:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wasin.io;
-        h=from:subject:mime-version:to:cc:content-transfer-encoding:
-        content-type;
-        s=s1; bh=qNBGXlLMnPhrJq5G4++xZYyQ0CDuclAGDf2//H9A8Jw=;
-        b=vOZiUPFv7s4UU2Qqs6qcRIpvwIdKNsdpEOPZ31ACdliidt7aC+7cDa5sV63kHcf/6Bp1
-        ePrcVJieJsrBjuo7PVyFVCwUpTsrPy6r8y1pQHGfKsWchBW30Pcu703hIa7nGaCrLbprCn
-        VeTLlpOrWdRq1mkVCWZmL+or4h6+lY84ZTD+cyBJhqfs1BEm/w5mL8mePvVGovIqhMLtwg
-        zCM4nubETAMubzioeHWqP3q8J0xDrmqTZkHVVdd+QQrgfCOv7m8lSKgqp1p7ybvgU2aGBX
-        3gichD9Ff1Ol8C/T1kkkAOkvjDx3XQY7IHfZ7k4NUaSCvhlgvOW+dAFkprgEyT5w==
-Received: by filterdrecv-7bc86b958d-j46hl with SMTP id filterdrecv-7bc86b958d-j46hl-1-616B32BC-29
-        2021-10-16 20:14:53.090010418 +0000 UTC m=+3880496.559941341
-Received: from mail.wasin.io (unknown)
-        by geopod-ismtpd-2-0 (SG) with ESMTP
-        id 67mL071zQ-ioAAmFTANDFg
-        for <linux-kernel@vger.kernel.org>;
-        Sat, 16 Oct 2021 20:14:52.372 +0000 (UTC)
-Received: from mail.wasin.io (localhost.localdomain [127.0.0.1])
-        by mail.wasin.io (Postfix) with ESMTP id D7612A798C
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 03:21:38 +0800 (SGT)
-X-Virus-Scanned: Debian amavisd-new at mail.wasin.io
-Received: from mail.wasin.io ([127.0.0.1])
-        by mail.wasin.io (mail.wasin.io [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id HxiqtIs8WfAh for <linux-kernel@vger.kernel.org>;
-        Sun, 17 Oct 2021 03:21:13 +0800 (SGT)
-Received: from haxpor-desktop.fritz.box (unknown [185.134.6.138])
-        by mail.wasin.io (Postfix) with ESMTPSA id 3270FA7982;
-        Sun, 17 Oct 2021 03:21:07 +0800 (SGT)
-From:   Wasin Thonkaew <wasin@wasin.io>
-Subject: [PATCH] docs: filesystems: Fix grammatical error "with" to "which"
-Date:   Sat, 16 Oct 2021 20:14:53 +0000 (UTC)
-Message-Id: <20211016201157.34240-1-wasin@wasin.io>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-X-SG-EID: =?us-ascii?Q?zTXXJmbXDq374aSgSvBccBfxYYlnkEq2csSLV7s2zvJ+VzBfif=2FVK=2F1r3dRlUa?=
- =?us-ascii?Q?HKdShZ1bg6oUZY4XHrArWueRKIwlXkK3scPV=2FPw?=
- =?us-ascii?Q?9ewJjXT1rQyi5KAKJU+KMZfKH995LK4OPu=2FJBJr?=
- =?us-ascii?Q?9UUNYtOHTzAZ=2FXg8SwGexSFgbKY=2FEB2Uj0lXCtJ?=
- =?us-ascii?Q?8MROQwJcxTVv14ZZX8mOtae=2FFwk3YObpfqU6KOi?=
- =?us-ascii?Q?GPcSGOWjHy7tKwq=2FlI99JcZYkItqiiWFmH49xm?=
-To:     Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        Sat, 16 Oct 2021 16:25:45 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D81CC061765;
+        Sat, 16 Oct 2021 13:23:36 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id g39so990016wmp.3;
+        Sat, 16 Oct 2021 13:23:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aGwCKkKntuz2wAmXcQT+5/s3ZGPk/CPd9kUXaHPNVLQ=;
+        b=MM2GQKAHg6rvRPdHseP1F9D9WF3FtbwGLpr0MA5XPUTxqjpvs+b6UlGMLawheBwmn1
+         uXd9rw8669OZIiYNQ48U40xH4/jgpmCQfzxOtjK1fOXS4ijqTnXTx408dUJ2VoKCwfif
+         JOwEpXy42f02rxq67/VliXBoMaPscEji0nPgIQymuFZ6Xh7NJJJE6ukLw2ObWihFGTpD
+         bIGh+HykFdmN+mb860BW2q3BFAcEqCfJXA/7fDG2qH/6unLG+AxGo2TS/kLDXfTFkMN3
+         y3SRDT4eafrgTmCUfGrORDYOREfZGvfbTXSBg97ci4dCjGH0n0ZmrgbnZgnz0/5rjJst
+         YZug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aGwCKkKntuz2wAmXcQT+5/s3ZGPk/CPd9kUXaHPNVLQ=;
+        b=5qIbE8uIuurBNgAj/ZzXKO1L4DT11EHLG3Gx8RAELBE0Z/4tLpqnCo9pmxZPtLRKyl
+         m70FGbDkG0HftvW2i6ywrUj86gsm3yPmkYkA7uQGLvcPN10u+lkYXuEWehOscQGFPaT0
+         yuCL9+7SEY736xIOAieKPO/lds0sWPSxiUbgGNtlkdlSqv982pIshp8oHht+6rnU02kp
+         pcZ/L/MYLhYZSSk2XQgQ3BV3V/NdAichVITL+S2EFT95TnNhMRatzZZlaDs++IE6wJUv
+         i8erdq8PPkrS+3bAiFVgl5WPrcGQas1Ru6FSIv0cUEVBK2ImkB8cGCDuoIvowAWQ9DNd
+         zzFw==
+X-Gm-Message-State: AOAM531na7xzxMuE6IOXe60pPvoWec/4Hlw06HsEosuXM5o5bpDbQdzx
+        9MnNOH+RGV78Cp6ojBpJt9rmGrMlFPc=
+X-Google-Smtp-Source: ABdhPJyk6c5cua60bnhAe6BzwONSX698teVV3P8gTwrj4P/OW4USjmBd+50gg/6mxmhpRxa4Z0P3mg==
+X-Received: by 2002:a7b:c005:: with SMTP id c5mr19662393wmb.150.1634415814878;
+        Sat, 16 Oct 2021 13:23:34 -0700 (PDT)
+Received: from localhost.localdomain (252.red-83-54-181.dynamicip.rima-tde.net. [83.54.181.252])
+        by smtp.gmail.com with ESMTPSA id f15sm8162777wrt.38.2021.10.16.13.23.33
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 16 Oct 2021 13:23:34 -0700 (PDT)
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+To:     devicetree@vger.kernel.org
+Cc:     robh@kernel.org, john@phrozen.org, neil@brown.name,
         linux-kernel@vger.kernel.org
-Cc:     Wasin Thonkaew <wasin@wasin.io>
-X-Entity-ID: 9qDajD32UCSRojGE52wDxw==
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset=us-ascii
+Subject: [PATCH v4] dt-bindings: bus: add palmbus device tree bindings
+Date:   Sat, 16 Oct 2021 22:23:32 +0200
+Message-Id: <20211016202332.8154-1-sergio.paracuellos@gmail.com>
+X-Mailer: git-send-email 2.33.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Wasin Thonkaew <wasin@wasin.io>
----
- Documentation/filesystems/autofs.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Add device tree bindings for palmbus controller present in all the MIPS
+ralink based SoCs.
 
-diff --git a/Documentation/filesystems/autofs.rst b/Documentation/filesystems/autofs.rst
-index 681c6a492bc0..4f490278d22f 100644
---- a/Documentation/filesystems/autofs.rst
-+++ b/Documentation/filesystems/autofs.rst
-@@ -35,7 +35,7 @@ This document describes only the kernel module and the interactions
- required with any user-space program.  Subsequent text refers to this
- as the "automount daemon" or simply "the daemon".
- 
--"autofs" is a Linux kernel module with provides the "autofs"
-+"autofs" is a Linux kernel module which provides the "autofs"
- filesystem type.  Several "autofs" filesystems can be mounted and they
- can each be managed separately, or all managed by the same daemon.
- 
+Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+---
+changes in v4: The node name pattern is already checked elsewhere. There is only need to
+               define the unit-address part which should be lowercase hex. 
+Changes in v3: change sample to use child node which its bindings are
+               already in YAML format to make dtschema happier.
+Changes in v2: fixed missing semicolon in example.
+ .../devicetree/bindings/bus/palmbus.yaml      | 79 +++++++++++++++++++
+ 1 file changed, 79 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/bus/palmbus.yaml
+
+diff --git a/Documentation/devicetree/bindings/bus/palmbus.yaml b/Documentation/devicetree/bindings/bus/palmbus.yaml
+new file mode 100644
+index 000000000000..4f6352eff050
+--- /dev/null
++++ b/Documentation/devicetree/bindings/bus/palmbus.yaml
+@@ -0,0 +1,79 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/bus/palmbus.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Ralink PalmBus Device Tree Bindings
++
++maintainers:
++  - Sergio Paracuellos <sergio.paracuellos@gmail.com>
++
++description: |
++  The ralink palmbus controller can be found in all ralink MIPS
++  SoCs. It provides an external bus for connecting multiple
++  external devices to the SoC.
++
++properties:
++  $nodename:
++    pattern: "^palmbus(@[0-9a-f]+)?$"
++
++  "#address-cells":
++    const: 1
++
++  "#size-cells":
++    const: 1
++
++  compatible:
++    const: palmbus
++
++  reg:
++    maxItems: 1
++
++  ranges: true
++
++patternProperties:
++  # All other properties should be child nodes with unit-address and 'reg'
++  "^[a-zA-Z][a-zA-Z0-9,+\\-._]{0,63}@[0-9a-fA-F]+$":
++    type: object
++    properties:
++      reg:
++        maxItems: 1
++
++    required:
++      - reg
++
++required:
++  - compatible
++  - reg
++  - "#address-cells"
++  - "#size-cells"
++  - ranges
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/mips-gic.h>
++    #include <dt-bindings/interrupt-controller/irq.h>
++    palmbus@1e000000 {
++        compatible = "palmbus";
++        reg = <0x1e000000 0x100000>;
++        #address-cells = <1>;
++        #size-cells = <1>;
++        ranges = <0x0 0x1e000000 0x0fffff>;
++
++        gpio@600 {
++            #gpio-cells = <2>;
++            #interrupt-cells = <2>;
++            compatible = "mediatek,mt7621-gpio";
++            gpio-controller;
++            gpio-ranges = <&pinctrl 0 0 95>;
++            interrupt-controller;
++            reg = <0x600 0x100>;
++            interrupt-parent = <&gic>;
++            interrupts = <GIC_SHARED 12 IRQ_TYPE_LEVEL_HIGH>;
++        };
++    };
++
++...
 -- 
-2.25.1
+2.33.0
 
