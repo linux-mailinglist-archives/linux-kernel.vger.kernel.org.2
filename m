@@ -2,104 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AECC2430252
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 13:11:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DB14430258
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 13:16:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244286AbhJPLNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 07:13:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49968 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240148AbhJPLNe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 07:13:34 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ABB8C061570
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 04:11:26 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id c29so10652668pfp.2
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 04:11:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=x0vWRzgiWACwH353KgAyIN1/PD+WRG4Iv6Om8IzybD0=;
-        b=c0ib3z8xefMiEmiPcm5PoNwzhIQf33HDFNVe3QQBgkjXCZkPODj4KJiiUim3AcFe/9
-         xFcUsQf4tb/fPWlhmGq8EdNe6p5I4B8/3/ZjMxKCuE1vrQ7YgahqOtUXc+WGG+iA9BLO
-         9vD8/CPqLiSgc5j+tBxdDzlBuusvr8rbYqxsNZdGybrlEOXoDcIVCxD9h3r3dhaOWmUt
-         dc6kEC4Z2cx4yWRrY5CuCm1arkyNgRJ8PJJc24D1yazEmDnI679PUReeoaCGRGjEzVin
-         HmGHJsXLg5RsMzO0dPkLD9gTbt7q+KX0edBZucxnkCA8WAqI+3+S7ZxfIYufd2RkV0t/
-         YvCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=x0vWRzgiWACwH353KgAyIN1/PD+WRG4Iv6Om8IzybD0=;
-        b=6H3gTJ6FqViDVQZJM4Ergt109d7AcS6glpfQ4WsnDGi+o7axMocwGOnfQUi1UjGbK/
-         3ZTHzVrNnc1nhOIAZJ4OhgCflFg0dObpj7T6bmUwkl7Wdk60imx6B1JPc7I+0HX0lLV4
-         UNSEC3QP+AXtYCZK506hZEmrcynw7XP1YPX8jGTyt1Hxqrt+ukoBhuxEkz9DxxDp3AjA
-         AMydL7c/gXesQVabe74G8aJ/LKONNC3ZyxoIElWXb4FCz61IcomN4mABgnWIiWmZG3ce
-         fWAVG0X++8t8r0Wsa08Tq1vdn1KqjvdY5SvPfhF68g+bL/BCQDT1nMGeNEJLPxSZ0DSf
-         uL8Q==
-X-Gm-Message-State: AOAM53053v66vwOnGKskapeQeLEwHMVjv01JJwl0W/rtLpQGwemGFQKQ
-        XNfB0eBsLBa2uOXLIWnlR6M=
-X-Google-Smtp-Source: ABdhPJw67lDQDxfFbB6L2jDdPf2UNYS3gBHFShotIDGRoUF4dFgYWmQ47t04g1MswQ3mfKx38z6CvA==
-X-Received: by 2002:aa7:9f8f:0:b0:44c:cf63:ec7c with SMTP id z15-20020aa79f8f000000b0044ccf63ec7cmr17224152pfr.77.1634382685826;
-        Sat, 16 Oct 2021 04:11:25 -0700 (PDT)
-Received: from baohua-VirtualBox.localdomain (203-173-222-16.dialup.ihug.co.nz. [203.173.222.16])
-        by smtp.gmail.com with ESMTPSA id p20sm7751231pfw.124.2021.10.16.04.11.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 16 Oct 2021 04:11:25 -0700 (PDT)
-From:   Barry Song <21cnbao@gmail.com>
-To:     bristot@redhat.com, bsegall@google.com, dietmar.eggemann@arm.com,
-        juri.lelli@redhat.com, mgorman@suse.de, mingo@redhat.com,
-        peterz@infradead.org, rostedt@goodmis.org,
-        vincent.guittot@linaro.org
-Cc:     linux-kernel@vger.kernel.org, linuxarm@huawei.com,
-        yangyicong@hisilicon.com, Barry Song <song.bao.hua@hisilicon.com>
-Subject: [PATCH v2] sched/fair: Document the slow path and fast path in select_task_rq_fair
-Date:   Sat, 16 Oct 2021 19:11:09 +0800
-Message-Id: <20211016111109.5559-1-21cnbao@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S244292AbhJPLSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 07:18:36 -0400
+Received: from mout.gmx.net ([212.227.15.19]:33795 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236029AbhJPLSf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Oct 2021 07:18:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1634382974;
+        bh=Mhw02uk6pyAcd09twynYEmpbbHs67NvOvVZTeh65TQ4=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=gZKhnmBON9Gg/8BxGCv+oJ0/ws3frGh32IR7U1a57EisAnv8FCzFeeJTFTx3MWZM/
+         2sH7hqesKMUlxkAcOudVEHnoPMis1JirRIEzbJV3Q8mBb7FYtKKz4ffG7UdhZ7MAza
+         +hbJES3Y107oPh93XQzE9fpAcLZMaVIjaWJAPt/w=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from titan ([79.150.72.99]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1M59C2-1mcnbF3JzA-001B53; Sat, 16
+ Oct 2021 13:16:14 +0200
+Date:   Sat, 16 Oct 2021 13:16:02 +0200
+From:   Len Baker <len.baker@gmx.com>
+To:     Daniel Vetter <daniel@ffwll.ch>,
+        Jani Nikula <jani.nikula@linux.intel.com>
+Cc:     Len Baker <len.baker@gmx.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Kees Cook <keescook@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/i915: Prefer struct_size over open coded arithmetic
+Message-ID: <20211016111602.GA1996@titan>
+References: <20211003104258.18550-1-len.baker@gmx.com>
+ <20211011092304.GA5790@titan>
+ <87k0ihxj56.fsf@intel.com>
+ <YWbIQmD1TGikpRm2@phenom.ffwll.local>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YWbIQmD1TGikpRm2@phenom.ffwll.local>
+X-Provags-ID: V03:K1:1BclTLkTU4amNua8fYN+IZPFm5F/GQXpWS5ysQ60YisVJ8xWdDC
+ /wVNME45XYCO+L/RtZkhQg+PaCqrNbdrnQk4MkAVhNTVKSgB5ks64M+aOQgyg6YJn8xsTzx
+ JPiLFzk4L4VDgWJj5ALAUEwzp9ZEFhM7SuKklT5w+M0uQztnaqPmNSb/sOJdVJGGvGv3JJg
+ m0Vmj7TgIZV0yRFK77RsQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:LRQAcnKjBVU=:CUIE1tkUtt8DmHc2DvoXn6
+ CfLCNr20xEgnmwtw/fouwwD9ZLjaaJ4wI5EmfE09iOZ/JrfiNmIOw4uHDWU4vQ9Dxj0ypcI32
+ f2hdSYmXl+i7l824ntWiRLjoFDXR5dot5yqquTPykvH/vJcpSZAmrh0MDsaRHqD6YPd52qJVN
+ izixixj4LjseACXWnd63uhDkIH0sqEqwr4/YII0+J9iBy6RehHRuEwLNTBSh1k7uyCpWKFrBP
+ aZ+pVc3/biTOFiabHA4a80KFCFFPukHPRN6n4KdJXhhVpuASYVDQ1UYKX7pAjJcwR2I7t7THu
+ GLyqdKYrX+q6MZMfQFPwHxqxQBRXkMOhIa9gVxThhWD8A8jY56q5mIjidg45soCI69P1hverj
+ RzQSRVlrCbJpcEvgtDTh4c5B0/ihZp66scW2EkFWcGU+IV7q/MuoQNfrA1GDazKcP7tJ4+ket
+ ZVDM74wwlBNIvyX+xr2sYlV8b08X7dmV64J7fPCm19qk37ak2k5AOA1/fX2wOOWZIcAk5CqrV
+ UGWwFLH2G8vHYFY83YD8goXQJQy6uGM5jCJncxaVSDNEwfd7my6QWLPxM092RSsKZWH+n97Zs
+ aThhPzumI/2XtV5zMqkUER3AU4W9NoQc5YlZ5LAfENHyUXDQGwUPFdKFDT63plQHQUe0xghd2
+ gKYivo+p1wzDtKggurJbRN79ZfzfKH0f2QS/aY2KOn8DJ3u60ONFt8pMg0Xp++Bsfz8qQ35j5
+ x+A3DBhXI9l979SF46JtLVczOih6ojMF+RRzNc3txb/bihWfy8Kk4UPJIeN0aEt7TowXfVckL
+ jW0AxF7EJXTtd5v/rFCVq9f3SOpTS6G10G0c49WiEqVmEn6ELYR78ohT+DYriDQ++SI99dBNM
+ 0Q067/K0q0FFLPwtfiBUPk8tfcgjkNHSjnQ66K2BcAX9QMboYyEyKCJJHehdu6qGHecghJuJG
+ xYVrSymPAVB+xZ5tfS7y6pOBB2U9zQNPp5IYmSvbj5IX+r+u/tfzNpOen9LOqf10avjZDZesv
+ 1JHQneqHXsgZbBLIoAdkpRzuEYOncjmzTxdTl22TnAUBBkzhJXcH5JS0Z0lzA+aZ4m/4ZESkK
+ 1+MBTEdSQVCW1k=
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Barry Song <song.bao.hua@hisilicon.com>
+Hi Daniel and Jani,
 
-All People I know including myself took a long time to figure out
-that typical wakeup will always go to fast path and never go to
-slow path except WF_FORK and WF_EXEC.
-Vincent reminded me once in a linaro meeting and made me understand
-slow path won't happen for WF_TTWU. But my other friends repeatedly
-wasted a lot of time on testing this path like me before I reminded
-them.
-So obviously the code needs some document.
+On Wed, Oct 13, 2021 at 01:51:30PM +0200, Daniel Vetter wrote:
+> On Wed, Oct 13, 2021 at 02:24:05PM +0300, Jani Nikula wrote:
+> > On Mon, 11 Oct 2021, Len Baker <len.baker@gmx.com> wrote:
+> > > Hi,
+> > >
+> > > On Sun, Oct 03, 2021 at 12:42:58PM +0200, Len Baker wrote:
+> > >> As noted in the "Deprecated Interfaces, Language Features, Attribut=
+es,
+> > >> and Conventions" documentation [1], size calculations (especially
+> > >> multiplication) should not be performed in memory allocator (or sim=
+ilar)
+> > >> function arguments due to the risk of them overflowing. This could =
+lead
+> > >> to values wrapping around and a smaller allocation being made than =
+the
+> > >> caller was expecting. Using those allocations could lead to linear
+> > >> overflows of heap memory and other misbehaviors.
+> > >>
+> > >> In this case these are not actually dynamic sizes: all the operands
+> > >> involved in the calculation are constant values. However it is bett=
+er to
+> > >> refactor them anyway, just to keep the open-coded math idiom out of
+> > >> code.
+> > >>
+> > >> So, add at the end of the struct i915_syncmap a union with two flex=
+ible
+> > >> array members (these arrays share the same memory layout). This is
+> > >> possible using the new DECLARE_FLEX_ARRAY macro. And then, use the
+> > >> struct_size() helper to do the arithmetic instead of the argument
+> > >> "size + count * size" in the kmalloc and kzalloc() functions.
+> > >>
+> > >> Also, take the opportunity to refactor the __sync_seqno and __sync_=
+child
+> > >> making them more readable.
+> > >>
+> > >> This code was detected with the help of Coccinelle and audited and =
+fixed
+> > >> manually.
+> > >>
+> > >> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#=
+open-coded-arithmetic-in-allocator-arguments
+> > >>
+> > >> Signed-off-by: Len Baker <len.baker@gmx.com>
+> > >> ---
+> > >>  drivers/gpu/drm/i915/i915_syncmap.c | 12 ++++++++----
+> > >>  1 file changed, 8 insertions(+), 4 deletions(-)
+> > >
+> > > I received a mail telling that this patch doesn't build:
+> > >
+> > > =3D=3D Series Details =3D=3D
+> > >
+> > > Series: drm/i915: Prefer struct_size over open coded arithmetic
+> > > URL   : https://patchwork.freedesktop.org/series/95408/
+> > > State : failure
+> > >
+> > > But it builds without error against linux-next (tag next-20211001). =
+Against
+> > > which tree and branch do I need to build?
+> >
+> > drm-tip [1]. It's a sort of linux-next for graphics. I think there are
+> > still some branches that don't feed to linux-next.
+>
+> Yeah we need to get gt-next in linux-next asap. Joonas promised to send
+> out his patch to make that happen in dim.
+> -Daniel
 
-Cc: Vincent Guittot <vincent.guittot@linaro.org>
-Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
----
- -v2: refine according to Steven's comments, thanks!
+Is there a possibility that you give an "Acked-by" tag? And then this patc=
+h
+goes to the mainline through the Kees' tree or Gustavo's tree?
 
- kernel/sched/fair.c | 5 +++++
- 1 file changed, 5 insertions(+)
+Or is it better to wait for drm-tip to update?
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index f6a05d9b5443..816c8ddf1b6d 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -6951,6 +6951,11 @@ select_task_rq_fair(struct task_struct *p, int prev_cpu, int wake_flags)
- 			break;
- 		}
- 
-+		/*
-+		 * Usually only true for WF_EXEC and WF_FORK, as sched_domains
-+		 * usually do not have SD_BALANCE_WAKE set. That means wakeup
-+		 * will usually go to the fast path.
-+		 */
- 		if (tmp->flags & sd_flag)
- 			sd = tmp;
- 		else if (!want_affine)
--- 
-2.25.1
+Regards,
+Len
 
+>
+> >
+> > BR,
+> > Jani.
+> >
+> >
+> > [1] https://cgit.freedesktop.org/drm/drm-tip
+> >
+> >
+> > >
+> > > Regards,
+> > > Len
+> >
+> > --
+> > Jani Nikula, Intel Open Source Graphics Center
+>
+> --
+> Daniel Vetter
+> Software Engineer, Intel Corporation
+> http://blog.ffwll.ch
