@@ -2,88 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAF3643041B
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 20:14:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A1F0430423
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 20:20:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244560AbhJPSQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 14:16:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57252 "EHLO
+        id S244526AbhJPSWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 14:22:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244534AbhJPSQT (ORCPT
+        with ESMTP id S234320AbhJPSWp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 14:16:19 -0400
-Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D6A8C061765
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 11:14:11 -0700 (PDT)
-Received: from ipservice-092-217-067-147.092.217.pools.vodafone-ip.de ([92.217.67.147] helo=martin-debian-2.paytec.ch)
-        by viti.kaiser.cx with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <martin@kaiser.cx>)
-        id 1mboC7-0006wS-0v; Sat, 16 Oct 2021 20:14:07 +0200
-From:   Martin Kaiser <martin@kaiser.cx>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Michael Straube <straube.linux@gmail.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Martin Kaiser <martin@kaiser.cx>
-Subject: [PATCH 3/3] staging: r8188eu: don't accept SIGTERM for cmd thread
-Date:   Sat, 16 Oct 2021 20:13:43 +0200
-Message-Id: <20211016181343.3686-4-martin@kaiser.cx>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20211016181343.3686-1-martin@kaiser.cx>
-References: <20211016181343.3686-1-martin@kaiser.cx>
+        Sat, 16 Oct 2021 14:22:45 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B505C061765;
+        Sat, 16 Oct 2021 11:20:36 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id g2so4955754wme.4;
+        Sat, 16 Oct 2021 11:20:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lipIEZ+n1vyEC0IkcC3jv40a0eLLrhXH63M7mDRpB6I=;
+        b=eYT8t574M05uVS1H1EfgJk/5BEpGNyusvh4tDe2wGvBLCueBhSscEjrIC9gSXjfplS
+         UWiv4BH+iBcmmj7kaiA/9VXTBDQbo9rIRhSkdr1UjqbhKSbPGfFHnWFn5QW6kKql+xnL
+         xVoEw6Piz4a7XRswSPLxJbvlHh/BB+tQH2gMvtOVoITGvUPtTWbE0jloBwXayqY3e89I
+         XCm8o3dI7Hyy8OQsT/b/hN7mjAJnVe4Jvfj00v6ohzAq+VKqmGQPfDRHNxM3kzm3Foyr
+         ywPiBLx+m0o1fa8xIL7/yQJdikW29dA766rJ5uApIzdcjrAsnqey9g3B5O3bltVr8AXh
+         BGrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lipIEZ+n1vyEC0IkcC3jv40a0eLLrhXH63M7mDRpB6I=;
+        b=IZQdiEwP03GcWrKQCoBAoBladHDs6ec7JEDeY49a+zMM1TLLazZrduk3K0usHkzdUy
+         hXjwfkuSru5TZyDyq7uOCtgCCBHsEDlmPXHFPz1GDkG+B75yxJaTdzP3cxa18BPdA7De
+         rBJbW0LUPQmeuivqB1ujjVdixi4lMSlCPVvJB5+xdCnVhPPnggvakwnJr2h4nMvlE24y
+         OgJTeNLa47kGmGERvaNmo7UjVPPY/Rt2cjbMiQYtS1iwzj47B/pTBvy6pkKq8V3PHCzP
+         vBmr2D2sJkuTWZeM85iEdmCpMwRylAoYkDQ45HG2u7h6563vy0Pup2kfRSZViQqkm12d
+         u6Fg==
+X-Gm-Message-State: AOAM530XMks9d0z5yKJ9iuhBHmiU4gGgvXJNEuRZhsNh+ihSCkgLoCsQ
+        MWfE1IjOJhoBNSLMznW8wWg=
+X-Google-Smtp-Source: ABdhPJwBHG8OptDZ0NKxN0FDnaRmx+SErG5UvPOrK5Bg4V0AE1f8go5bVzGWSHIe+NM7ApQvb0BVmw==
+X-Received: by 2002:a05:600c:354a:: with SMTP id i10mr33401008wmq.70.1634408434928;
+        Sat, 16 Oct 2021 11:20:34 -0700 (PDT)
+Received: from Ansuel-xps.localdomain (93-42-71-246.ip85.fastwebnet.it. [93.42.71.246])
+        by smtp.googlemail.com with ESMTPSA id g1sm14746049wmk.2.2021.10.16.11.20.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 16 Oct 2021 11:20:34 -0700 (PDT)
+From:   Ansuel Smith <ansuelsmth@gmail.com>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Ansuel Smith <ansuelsmth@gmail.com>
+Subject: [PATCH] net: dsa: qca8k: fix delay applied to wrong cpu in parse_port_config
+Date:   Sat, 16 Oct 2021 20:20:24 +0200
+Message-Id: <20211016182024.25037-1-ansuelsmth@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-At the moment, our command thread can be killed by user space.
+Fix delay settings applied to wrong cpu in parse_port_config. The delay
+values is set to the wrong index as the cpu_port_index is incremented
+too early. Start the cpu_port_index to -1 so the correct value is
+applied to address also the case with invalid phy mode and not available
+port.
 
-[root@host ]# kill `pidof RTW_CMD_THREAD`
-
-The driver will then stop working until the module is unloaded
-and reloaded.
-
-Don't process SIGTERM in the command thread. Other drivers that have a
-command thread don't process SIGTERM either.
-
-Signed-off-by: Martin Kaiser <martin@kaiser.cx>
+Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
 ---
- drivers/staging/r8188eu/core/rtw_cmd.c          | 2 --
- drivers/staging/r8188eu/include/osdep_service.h | 5 -----
- 2 files changed, 7 deletions(-)
+ drivers/net/dsa/qca8k.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/staging/r8188eu/core/rtw_cmd.c b/drivers/staging/r8188eu/core/rtw_cmd.c
-index e17332677daa..b834fac41627 100644
---- a/drivers/staging/r8188eu/core/rtw_cmd.c
-+++ b/drivers/staging/r8188eu/core/rtw_cmd.c
-@@ -243,8 +243,6 @@ int rtw_cmd_thread(void *context)
- 	struct adapter *padapter = (struct adapter *)context;
- 	struct cmd_priv *pcmdpriv = &padapter->cmdpriv;
- 
--	thread_enter("RTW_CMD_THREAD");
--
- 	pcmdbuf = pcmdpriv->cmd_buf;
- 
- 	pcmdpriv->cmdthd_running = true;
-diff --git a/drivers/staging/r8188eu/include/osdep_service.h b/drivers/staging/r8188eu/include/osdep_service.h
-index ee8a64bb3126..886a1b6f30b4 100644
---- a/drivers/staging/r8188eu/include/osdep_service.h
-+++ b/drivers/staging/r8188eu/include/osdep_service.h
-@@ -160,11 +160,6 @@ static inline unsigned char _cancel_timer_ex(struct timer_list *ptimer)
- 	return del_timer_sync(ptimer);
- }
- 
--static __inline void thread_enter(char *name)
--{
--	allow_signal(SIGTERM);
--}
--
- static inline void flush_signals_thread(void)
+diff --git a/drivers/net/dsa/qca8k.c b/drivers/net/dsa/qca8k.c
+index ba0411d4c5ae..ee51186720d2 100644
+--- a/drivers/net/dsa/qca8k.c
++++ b/drivers/net/dsa/qca8k.c
+@@ -976,7 +976,7 @@ qca8k_setup_of_pws_reg(struct qca8k_priv *priv)
+ static int
+ qca8k_parse_port_config(struct qca8k_priv *priv)
  {
- 	if (signal_pending (current))
+-	int port, cpu_port_index = 0, ret;
++	int port, cpu_port_index = -1, ret;
+ 	struct device_node *port_dn;
+ 	phy_interface_t mode;
+ 	struct dsa_port *dp;
 -- 
-2.20.1
+2.32.0
 
