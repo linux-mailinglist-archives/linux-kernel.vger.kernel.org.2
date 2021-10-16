@@ -2,49 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0CF343003F
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 06:31:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91F9B430043
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 06:39:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240533AbhJPEdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 00:33:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47396 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239469AbhJPEde (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 00:33:34 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78CA8C061570;
-        Fri, 15 Oct 2021 21:31:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=l2WBiCb5duYJRA9nKpihqrJOH1Qjg6utSrFiu8qAdtc=; b=p+p6uTIkzBB8tDKO/mqyeWKSA3
-        /pq2YOfPUko4iT6IlWoXJWlT9oX8zlieaQEMAJfjgjy3OFVGoYxRlLqXiXPPMZJB9fdTIdnz8LJ+N
-        VCNA5LZu0JDnLPg1LFMdF4XD7wJkh5cddsLWhn5Ib9QZFKNCvdjLtTlg243CBJkLKRsaati0WnFD1
-        QpSKrQN7LY8PenbHTD7+yN6t4NFJDNnk5UuLDDm/8RnZvMK0z/3Vl5/mIksmiXsxPeXoW+ZxnZBOq
-        +QIghsV9yfh01+YV6XRc1F4glFtfU/ZZORmTbvRjv4Wu9Z9xFWOf2aiM21tH/PFBfEBzCUyyfW56X
-        GxYdMVcA==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mbbLo-009jEH-Go; Sat, 16 Oct 2021 04:31:16 +0000
-Date:   Fri, 15 Oct 2021 21:31:16 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     axboe@kernel.dk, liushixin2@huawei.com, bhelgaas@google.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] mtip32xx: Remove redundant 'flush_workqueue()' calls
-Message-ID: <YWpVlNmPgdRRurcw@infradead.org>
-References: <0fea349c808c6cfbf549b0e33701320c7860c8b7.1634234221.git.christophe.jaillet@wanadoo.fr>
+        id S240586AbhJPEls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 00:41:48 -0400
+Received: from verein.lst.de ([213.95.11.211]:56733 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239415AbhJPElr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Oct 2021 00:41:47 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 1695D68BEB; Sat, 16 Oct 2021 06:39:37 +0200 (CEST)
+Date:   Sat, 16 Oct 2021 06:39:36 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     axboe@kernel.dk, geoff@infradead.org, mpe@ellerman.id.au,
+        benh@kernel.crashing.org, paulus@samba.org, jim@jtan.com,
+        minchan@kernel.org, ngupta@vflare.org, senozhatsky@chromium.org,
+        richard@nod.at, miquel.raynal@bootlin.com, vigneshr@ti.com,
+        dan.j.williams@intel.com, vishal.l.verma@intel.com,
+        dave.jiang@intel.com, ira.weiny@intel.com, kbusch@kernel.org,
+        hch@lst.de, sagi@grimberg.me, linux-block@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-mtd@lists.infradead.org,
+        nvdimm@lists.linux.dev, linux-nvme@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 02/13] nvme-multipath: add error handling support for
+ add_disk()
+Message-ID: <20211016043936.GB27339@lst.de>
+References: <20211015235219.2191207-1-mcgrof@kernel.org> <20211015235219.2191207-3-mcgrof@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0fea349c808c6cfbf549b0e33701320c7860c8b7.1634234221.git.christophe.jaillet@wanadoo.fr>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20211015235219.2191207-3-mcgrof@kernel.org>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Looks good,
+Thanks,
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+applied to nvme-5.16.
