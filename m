@@ -2,66 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19A8543017F
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 11:30:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3AAF430181
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 11:31:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243935AbhJPJcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 05:32:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55482 "EHLO
+        id S243901AbhJPJdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 05:33:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235334AbhJPJcE (ORCPT
+        with ESMTP id S235331AbhJPJdE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 05:32:04 -0400
-Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE800C061570
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 02:29:56 -0700 (PDT)
-Received: from martin by viti.kaiser.cx with local (Exim 4.89)
-        (envelope-from <martin@viti.kaiser.cx>)
-        id 1mbg0j-0002zW-EL; Sat, 16 Oct 2021 11:29:49 +0200
-Date:   Sat, 16 Oct 2021 11:29:49 +0200
-From:   Martin Kaiser <lists@kaiser.cx>
-To:     Michael Straube <straube.linux@gmail.com>
-Cc:     gregkh@linuxfoundation.org, Larry.Finger@lwfinger.net,
-        phil@philpotter.co.uk, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/7] staging: r8188eu: remove empty functions from odm.c
-Message-ID: <20211016092949.7746u74o2f5lgyzo@viti.kaiser.cx>
-References: <20211015163507.9091-1-straube.linux@gmail.com>
- <20211015163507.9091-2-straube.linux@gmail.com>
+        Sat, 16 Oct 2021 05:33:04 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D85ADC061570
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 02:30:56 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id z20so48079317edc.13
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 02:30:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=cCK393+kFEEAOfnE7ZpJW9kOHNRURhGg1Is/G68K9KY=;
+        b=coFp7mI3DEhQ1aCy2vIcEaexWkjn+NzHiFcCPsENWCzQOZbPEL3hoc+NPBVhPWrq9R
+         lC/nd1kr+hTnnqsHQYOYqnfp/nLcksLncD/hBlwFy2FJqN7QUlIwnvF3ggvs0/xDFpR7
+         DpgybZdBzpdDzc6b6B5KKUKXBQdsmj6TPOm9rzB3JiVpH2JMxTEZGEqL8yygmOjqZ2UH
+         cpHLtXP5LBbxqG67abZNffUpQKMWfWnLKnMuqQYghUnHGP+begmT17ons3jxfSGOJ9jS
+         6J6md0qrPL6gdhWmHyNtvfVnu4PFXv6I85nQWtnYD6AT5alwskLbdbzW4T6x0NJ8CTIE
+         psJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=cCK393+kFEEAOfnE7ZpJW9kOHNRURhGg1Is/G68K9KY=;
+        b=CveYx0+65b0RYZmKFgZNu/HmZvamVu5Tw+sNKQy7mQ59H3hNc+Mk65tjXB/Z0IwoZY
+         a96cujBIt61d7k+JoSep7Gki3oRqObbCnn49cvtvPm5ZnsOxekJsmW+fPd9H5uHSy2p0
+         kSLS8VmlK9B4ka4q8kzYMVqewW0wglum6ejEHYPqhmNjqUQTdK9eOb6VIFntbHdUTnK0
+         ggQAS4rKyyy2z1qpVY/Mzv9rFw2JomA8VPC+UbjM4/FxDYeXkZYE1O52BjzbIHtFMHuz
+         fz6BhDC02EA5tE4rd7VRbDsCuToEul63vnx2Y/9+RF9n/YAiE59kgMCxZwj5HEYkSDQL
+         LIgQ==
+X-Gm-Message-State: AOAM531zeICA9f6C8rnsZOn/DCRBtajI/B0HsZ51/gCnKVlKl7LgjelZ
+        AGmJFp14M6OmW92BJ0JKPz7j1ueKUt0pLmzU2Yc=
+X-Google-Smtp-Source: ABdhPJwaDKz/M1NV5IthxS9WLi5j221k2zn/IEXbqm5r2Q9dGZwop0Wg9SoGs9+AIo8Z2mrfTDcY5dvXu9QFowl0VSI=
+X-Received: by 2002:a17:906:3745:: with SMTP id e5mr13791580ejc.400.1634376655503;
+ Sat, 16 Oct 2021 02:30:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211015163507.9091-2-straube.linux@gmail.com>
-User-Agent: NeoMutt/20170113 (1.7.2)
-Sender: Martin Kaiser <martin@viti.kaiser.cx>
+Received: by 2002:a17:907:2129:0:0:0:0 with HTTP; Sat, 16 Oct 2021 02:30:54
+ -0700 (PDT)
+Reply-To: dramirparnian58@gmail.com
+From:   "Dr.Amir Parnian," <mrsnicolebenoitemarois09@gmail.com>
+Date:   Sat, 16 Oct 2021 02:30:54 -0700
+Message-ID: <CAL90gPjDEtkHR7+1Yo-ea0158FREgfyc0QsU8RC-mMY0HkbLKA@mail.gmail.com>
+Subject: READ AND REPLY
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thus wrote Michael Straube (straube.linux@gmail.com):
-
-> Remove empty functions from odm.c.
-
-> Signed-off-by: Michael Straube <straube.linux@gmail.com>
-> ---
->  drivers/staging/r8188eu/hal/odm.c             | 32 -------------------
->  drivers/staging/r8188eu/hal/odm_HWConfig.c    |  7 +---
->  drivers/staging/r8188eu/include/odm.h         |  7 ----
->  drivers/staging/r8188eu/include/odm_precomp.h |  2 --
->  4 files changed, 1 insertion(+), 47 deletions(-)
-
-> diff --git a/drivers/staging/r8188eu/hal/odm.c b/drivers/staging/r8188eu/hal/odm.c
-> index 2178ffe41bb3..627213392795 100644
-> --- a/drivers/staging/r8188eu/hal/odm.c
-> +++ b/drivers/staging/r8188eu/hal/odm.c
-> @@ -196,13 +196,9 @@ void ODM_DMWatchdog(struct odm_dm_struct *pDM_Odm)
->  	    (pDM_Odm->AntDivType == CGCS_RX_HW_ANTDIV)	||
->  	    (pDM_Odm->AntDivType == CG_TRX_SMART_ANTDIV))
->  		odm_HwAntDiv(pDM_Odm);
-> -	else if (pDM_Odm->AntDivType == CGCS_RX_SW_ANTDIV)
-> -		odm_SwAntDivChkAntSwitch(pDM_Odm, SWAW_STEP_PEAK);
-
-This was the last user of SWAW_STEP_PEAK. The define can be removed now
-(maybe in a follow-up patch).
-
-Acked-by: Martin Kaiser <martin@kaiser.cx>
+Dear Friend,
+My Name is Dr.Amir Parnian; I am a banker by profession. My reason for
+contacting you is to transfer abandoned $15.5 Million United States
+Dollars to your account.
+Further details of the transaction shall be forwarded to you as soon
+as I receive your return mail indicating your interest.
+Thanks and hope to hear from you soon.
+Dr.Amir Parnian
