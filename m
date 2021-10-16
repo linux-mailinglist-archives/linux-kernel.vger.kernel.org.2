@@ -2,164 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC93542FF98
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 03:08:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D30A42FF9A
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 03:11:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239497AbhJPBKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 21:10:15 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:9200 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233157AbhJPBKO (ORCPT
+        id S239509AbhJPBNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 21:13:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60990 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233157AbhJPBNu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 21:10:14 -0400
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19FK03Jr002506
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 18:08:07 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : mime-version; s=facebook;
- bh=bXmxG/6RI/6YwFWVIKqwZg37uQ52Z24X6dbqeazVyDY=;
- b=L3xJcTWdBY2GiKBCwKoT54Ccshr9cBOVMTCxJ4RYTkugb4sAx1favqtL22HjUb/pqqUq
- lFD65FjRbTEL0Kf31LANQ9LfpwMVGyWoJNidHsaG9YNLjSTnC2yte/scCT52qWOOlbWI
- LkSPefmWJmxP2EDoC7MMEA7X/FZnC+Q425s= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3bqg5vspmu-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 18:08:07 -0700
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.229) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Fri, 15 Oct 2021 18:08:06 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=e/6OjD/QgF0Wp3GV+hPh5P7W6ms2hLLbMIbCGbw2bfAsRwPyrxrfdClTR8j6+JhvhyzGNCnUaH2+kITlDsZfRiaOzR21nUOSEU41uTfsJTshY/Xj6lxB0Ia0K7AhMsTXVgRi74dRWvT+2rcdXcbwvf5iHYK4SYTM/T+j0TzQ1Iag/e5pegek8wAwn4LQpRzH9i7jlbyuGa9S4X6BkuUIBDfZAKaGpV+wQ6rYP3ncJg4pk/L3OjR8fwWtv/4e80nuOzqMaw4QYNlJ5v3RgaPhx65Y+NCZhOsvj3MSS2GkvNInwqR4GD8Gyz72ypz00uxNhZMM2/kTbXt+FjkQRDjp8Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=bXmxG/6RI/6YwFWVIKqwZg37uQ52Z24X6dbqeazVyDY=;
- b=jQ2Xb1iV/qdTH3WTHIRlYwCzAKqOtBwSFWKcy4aAg9vby6ct9nwEq31mbP1yGCtdvNcIRk8tIZ9Ifz8B7iTfdxWdtRAozuHVMAlHe0prHWGKm5/hpsSLczxNlpMrQnosNElekrLcE5Y9xYARCFqaHuiLqURgoJw8g9qYE5DfIzCbOgU1d749nkBwM4g7w3DWViipRnwxwMiYosPzvmUXcwKsLupSt57ZtDnNeSnuVR+9fIjGD4NQL2/4o69iLr+iyKIcsaFEEJkot9hSYja/68zB8QfPRDpmysEDrTEc8vT4Xaom7xzwfMxWKOaVZSiCZ9OE4lluDdPyUeJ0WoB8Mw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from SA1PR15MB5109.namprd15.prod.outlook.com (2603:10b6:806:1dc::10)
- by SA1PR15MB5061.namprd15.prod.outlook.com (2603:10b6:806:1dc::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.16; Sat, 16 Oct
- 2021 01:08:05 +0000
-Received: from SA1PR15MB5109.namprd15.prod.outlook.com
- ([fe80::7d66:9b36:b482:af0f]) by SA1PR15MB5109.namprd15.prod.outlook.com
- ([fe80::7d66:9b36:b482:af0f%8]) with mapi id 15.20.4608.017; Sat, 16 Oct 2021
- 01:08:05 +0000
-From:   Song Liu <songliubraving@fb.com>
-To:     Athira Rajeev <atrajeev@linux.vnet.ibm.com>
-CC:     Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "maddy@linux.vnet.ibm.com" <maddy@linux.vnet.ibm.com>,
-        "kjain@linux.ibm.com" <kjain@linux.ibm.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "eranian@google.com" <eranian@google.com>
-Subject: Re: [V2] perf/core: Avoid calling perf_mux_hrtimer_restart multiple
- times when scheduling event groups
-Thread-Topic: [V2] perf/core: Avoid calling perf_mux_hrtimer_restart multiple
- times when scheduling event groups
-Thread-Index: AQHXwZLlTFeMgeJLOEqerJc97707T6vU0WUA
-Date:   Sat, 16 Oct 2021 01:08:04 +0000
-Message-ID: <6E561141-B584-4DB8-A33E-BCD3FF572FA4@fb.com>
-References: <20211015070403.4809-1-atrajeev@linux.vnet.ibm.com>
-In-Reply-To: <20211015070403.4809-1-atrajeev@linux.vnet.ibm.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3654.120.0.1.13)
-authentication-results: linux.vnet.ibm.com; dkim=none (message not signed)
- header.d=none;linux.vnet.ibm.com; dmarc=none action=none header.from=fb.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 3ab389ca-24f2-4479-9b03-08d99041688b
-x-ms-traffictypediagnostic: SA1PR15MB5061:
-x-microsoft-antispam-prvs: <SA1PR15MB5061A77A7B5797E1C3D8C014B3BA9@SA1PR15MB5061.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-oob-tlc-oobclassifiers: OLM:6790;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 94jgPP4ZfVFMv9yAMsPCzOQAe5yxheiIJqWR3BC5RLBQjQodExsqpP9znvRzYuAF+wS1+Dx49d7JBKoA71oII0hzY6Ybjq8NfnsIEZ9OSYt4GxCfUs52cnKnvEGzKzf17zQKb50Dqoygml4f/ZfpE2xwIwunTw8JdGP3x7ThdKi05g2wL6eCl6HvdO4jZUMiX5NxeDx1jK0aVWMfSa67l9RQBMYOWhSWQ6TjgE4VUlAmL6GtecUxhSUYxpeuS+jnrC6QYJABB+BPJQukQk7XXJBK+hzJwlCqg+SQixncRI93eqieG7edZKGtyT4g4bBV4i1hYHgM+w0ZYvBYKT/8tRc2hOEydIVOyFFt4RUHVI1vgOl/FmFe/dCG1qTU0yp63njj+W/Ekd3XmN4bFAydNP4ESGWaMrEOHG65+xKjEA373eij9eR0hFHoeGxt2DgqI9Y2AMvnMafZEk9q7iIjLYcPbGWdYxtSxKVOTVp4Coib4GtN2g+zS/9+f0+MLb2dXDlTmh0/Szm1ol0afsKRjW74XiaK/zhty3oSbNmlbHqaI7priR7+YH5xOAZMQVqTU1/O/ejlLcAXJro/IR2ZZUfagZ7Pnbaft1aw/C99bMpEyqBApjkIH2AalQzXtb/RaWGPN8sEsJ3s7sqWGCtn75yQ6SAvq5xRwXbLYtmcSedZbsMES8cd9Ga/gPOHiJsH1PQMZNW5sa38/l+NAlzxa+Y9jCnCzp8kHIfthzITZ1pVf2lJfZbqkDWEa0i0s0wK
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5109.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(186003)(6486002)(6512007)(38100700002)(508600001)(122000001)(8936002)(5660300002)(2616005)(316002)(71200400001)(91956017)(66556008)(4326008)(66476007)(38070700005)(76116006)(8676002)(66946007)(64756008)(4744005)(33656002)(53546011)(36756003)(54906003)(2906002)(86362001)(66446008)(6916009)(6506007)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?xBh7+LdgjxYnCM0Q/xdRIhji29oMsleVt4TubFuFTXvffrj/98Dp5/4YV294?=
- =?us-ascii?Q?yMDhrSqiTdoA0tZy3ugb1X8Ed6LC7obGCo5xO4Wg3+G5P+ea+pxCJ1grTRt1?=
- =?us-ascii?Q?RMZCfg0hhrvSLGBE86p9TSNZnOC5NEPreOaEUPStU7urJmCX3ZO57O/+jvrm?=
- =?us-ascii?Q?94f8Vzsa++rq4M4yRCX8yo/aAWwQWpgruycVgJeCAzfvy9aPOOX0jZ55VaJ2?=
- =?us-ascii?Q?/T4fU1bd6c6vk6FQbkI78o0iMVLz+Iw8SV6MEnQnwqnzwTK2Z5oWFaGE9pkM?=
- =?us-ascii?Q?yHvJzkqtConLto0wjrKwEfmMzCkN5co1FgoxJgnLQYney2YGYobc7TkBrizt?=
- =?us-ascii?Q?tORWunZSNmskfcChXc/i8tgkeW7zU/CPOe/i5VmhcU4p1TbDZ0BCLwh6Koky?=
- =?us-ascii?Q?ZZc28NefWSaSw2IUfL+N5eHII4meHMvY8nvNUVUsxLHADqrMrFcRPIai3eeq?=
- =?us-ascii?Q?7CcGg5TwQ5IWYVHJOpkQcOVYHL/xnIwLNugEORbiR1oPbw8uoRxb/eNdJb1o?=
- =?us-ascii?Q?li82gVfGv6QgfQ+NR2+nC6tQL5Ro1/L40+beW6/nq0awU9nWedqVq/1aqNBu?=
- =?us-ascii?Q?i8FmPRad9Six0dedLksnPKID37dXWJBjlp2xHGGIOVRMfKYdnP6oXlq0/F8v?=
- =?us-ascii?Q?AgW03zAYfiGcifZt5CKMbVhUz/uwDV2G9Mzcz4QxpopnTWzhDPdQRgQpvSSU?=
- =?us-ascii?Q?DZQdx57QUIsVHYFwD89NmxkQsVSjjljdXXPwDq5muvDlRC16GJWem7TztBeL?=
- =?us-ascii?Q?icME5LllNI+ho/YXPusclZ4p2kZizBeW+Rt/5Bc2vj/vSPOLGpVsSXN/yxQo?=
- =?us-ascii?Q?RQdIL6bfNfmtPhvNVlVCwrYsfAdMIiq2A/ptSdRQW7zOtx6Vh3ddmN2O7uT8?=
- =?us-ascii?Q?rORbufeDTG5DFN6QgB51YpZf67l/Hlc6nETpLXshEkbeXgCHsokf1DwRdXoG?=
- =?us-ascii?Q?dCE7G+lK5BT/Nobl0QD0XJbcsd8/KDMuIiHYGhZxFo+Sx1l1qCY7AzzPv8dj?=
- =?us-ascii?Q?pDWKAE4vUsniwtNninZrNPYD2UkMOOUFC1lb8/iX5VetTINzTiEphhSqiTJo?=
- =?us-ascii?Q?LgYVMKIiaUxPYuRWzoLY1sKQ2z8PN7bPDJ+k70SepjBg6w/Q8hE0GpkkVKC4?=
- =?us-ascii?Q?SvXt3RrWeXRalWHVvM5xlik8Vp94U6ReqCQlJBX76G3k6I6MCvWcvJQe+ozC?=
- =?us-ascii?Q?XuKFf7EIIgdme8w75dk/BGQjSUMRsn1DcZS761Cw753yc8MkG5p6gDTbIfBO?=
- =?us-ascii?Q?aiGDAoE1FAEkzUY4DDD15aZZ0S/Lhs0DHdv9UsAsT/oG59M0Fzss3fiD1uE0?=
- =?us-ascii?Q?x+k6QB0pTpL7ezp8dCQ2PhEw9zWFbT8hAW4Wfq/si5qhC/n7oQCnmjgMccjw?=
- =?us-ascii?Q?dN8dfEk=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <B4D63C2A27C29F45BCAE1721C67EA397@namprd15.prod.outlook.com>
-MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5109.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3ab389ca-24f2-4479-9b03-08d99041688b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Oct 2021 01:08:04.9281
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: KvAkD6QxKixdGdurHC6r/+F2UVvOh5qw0jK12DSEFZWiTPxObvaLvYUBWDoiJ+S6jJxOPu/AUWUMyPP6CWY6zg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB5061
-X-OriginatorOrg: fb.com
-X-Proofpoint-GUID: tvm9PbqrrgoOKvqgW0ZnMbYNuT7Emr_F
-X-Proofpoint-ORIG-GUID: tvm9PbqrrgoOKvqgW0ZnMbYNuT7Emr_F
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-15_07,2021-10-14_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- bulkscore=0 mlxscore=0 phishscore=0 malwarescore=0 suspectscore=0
- spamscore=0 mlxlogscore=994 adultscore=0 clxscore=1015 lowpriorityscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110160005
-X-FB-Internal: deliver
+        Fri, 15 Oct 2021 21:13:50 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C771C061570
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 18:11:43 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id y7so9754760pfg.8
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 18:11:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20210112.gappssmtp.com; s=20210112;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZnmWcpYjZ93+9/USsjI5yc08CI3gidamSDoWKAiSGj8=;
+        b=GZKEtGQXS3effH9eTB7DvJ1KHialm9ycCtkHxx+6wj/8ovcnezOgoxlFNi6ojEvxLp
+         vCAEn7ozv11GEu8EMAAO6Xf/S0e6bmp47qsDYuHAdVGUM9iRdKA8VHZB3NlFghC7sv46
+         FsXw9Erkf/aCnnEl9pWrTbV385gyLs43Hx18EXRAGlUMmVCL2D5ym2Kj2mhtIYRfBIqv
+         Qrf9XHbOp6LKOl/7m7BM7QkcqNaIymW4OWH4GuGYKHpLO9HqrVXYSv7jB6TA7NC8DT11
+         6sMeUJvndfAQbJjDFrz+sehU5SVlaOfT3aJLAsvtfm2W+JQtKO5tINTrh0I7b0qI/gto
+         kCMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=ZnmWcpYjZ93+9/USsjI5yc08CI3gidamSDoWKAiSGj8=;
+        b=7jsYDsiTwzK9oEBKDItSbZSkh74XRNsbGJTAKaEQl7FbgLP05/RJumQjAQXN+Czatx
+         1UtEmpMUfArWCJV9T8S8euf/i94Tci16/lwa7SFqOHSiZvcTpBNwkO4w3AcrBZSsw5OP
+         FQ0afU26xjegrCvxLvWcv34SPt8kQDUPiDoCv5Rb6Wcj7STP7N9WlhV71teksee+Xq8H
+         IptDVZ0tMqgPE9DfGwx+ozu1Wnl3zdwSiJkAHxp5+wq3GmeSIRNysW274KD4tJ/4jtaF
+         H5bhbu2E1duGGcicpi/C02PMLpubEHXTlpMcIcdxAlq+psSz77+Wo0X90KkfkTxLGUzm
+         opUw==
+X-Gm-Message-State: AOAM533OrncWiWaObklfEkP08Ty5FMDxEYaa1EYPvhe+zRd1fQmPZSiB
+        180mGO79sIvVhLPtwZPtV/YFjQ==
+X-Google-Smtp-Source: ABdhPJxxfRHsneRsqZjvSmgeS3HDNbLOMcOQWWbfnO+S3BjiB+68l3s3+LJr9/SMhEdp2RjiEUtLoA==
+X-Received: by 2002:aa7:8189:0:b0:44c:293a:31e4 with SMTP id g9-20020aa78189000000b0044c293a31e4mr14844220pfi.51.1634346702295;
+        Fri, 15 Oct 2021 18:11:42 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id pj12sm6334412pjb.19.2021.10.15.18.11.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Oct 2021 18:11:41 -0700 (PDT)
+Date:   Fri, 15 Oct 2021 18:11:41 -0700 (PDT)
+X-Google-Original-Date: Fri, 15 Oct 2021 18:11:19 PDT (-0700)
+Subject:     Re: [PATCH] kasan: Always respect CONFIG_KASAN_STACK
+In-Reply-To: <afeaea5f-70f2-330f-f032-fb0c8b5d0aa5@ghiti.fr>
+CC:     nathan@kernel.org, elver@google.com, akpm@linux-foundation.org,
+        ryabinin.a.a@gmail.com, glider@google.com, andreyknvl@gmail.com,
+        dvyukov@google.com, ndesaulniers@google.com,
+        Arnd Bergmann <arnd@arndb.de>, kasan-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        linux-riscv@lists.infradead.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, linux-mm@kvack.org
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     alex@ghiti.fr
+Message-ID: <mhng-8b034488-1592-442a-a206-203c73b3b3bc@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 14 Oct 2021 11:31:00 PDT (-0700), alex@ghiti.fr wrote:
+> Hi Nathan,
+>
+> Le 14/10/2021 à 18:55, Nathan Chancellor a écrit :
+>> On Fri, Oct 08, 2021 at 11:46:55AM -0700, Palmer Dabbelt wrote:
+>>> On Thu, 23 Sep 2021 07:59:46 PDT (-0700), nathan@kernel.org wrote:
+>>>> On Thu, Sep 23, 2021 at 12:07:17PM +0200, Marco Elver wrote:
+>>>>> On Wed, 22 Sept 2021 at 22:55, Nathan Chancellor <nathan@kernel.org> wrote:
+>>>>>> Currently, the asan-stack parameter is only passed along if
+>>>>>> CFLAGS_KASAN_SHADOW is not empty, which requires KASAN_SHADOW_OFFSET to
+>>>>>> be defined in Kconfig so that the value can be checked. In RISC-V's
+>>>>>> case, KASAN_SHADOW_OFFSET is not defined in Kconfig, which means that
+>>>>>> asan-stack does not get disabled with clang even when CONFIG_KASAN_STACK
+>>>>>> is disabled, resulting in large stack warnings with allmodconfig:
+>>>>>>
+>>>>>> drivers/video/fbdev/omap2/omapfb/displays/panel-lgphilips-lb035q02.c:117:12:
+>>>>>> error: stack frame size (14400) exceeds limit (2048) in function
+>>>>>> 'lb035q02_connect' [-Werror,-Wframe-larger-than]
+>>>>>> static int lb035q02_connect(struct omap_dss_device *dssdev)
+>>>>>>             ^
+>>>>>> 1 error generated.
+>>>>>>
+>>>>>> Ensure that the value of CONFIG_KASAN_STACK is always passed along to
+>>>>>> the compiler so that these warnings do not happen when
+>>>>>> CONFIG_KASAN_STACK is disabled.
+>>>>>>
+>>>>>> Link: https://github.com/ClangBuiltLinux/linux/issues/1453
+>>>>>> References: 6baec880d7a5 ("kasan: turn off asan-stack for clang-8 and earlier")
+>>>>>> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+>>>>>
+>>>>> Reviewed-by: Marco Elver <elver@google.com>
+>>>>
+>>>> Thanks!
+>>>>
+>>>>> [ Which tree are you planning to take it through? ]
+>>>>
+>>>> Gah, I was intending for it to go through -mm, then I cc'd neither
+>>>> Andrew nor linux-mm... :/ Andrew, do you want me to resend or can you
+>>>> grab it from LKML?
+>>>
+>>> Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
+>>>
+>>> (assuming you still want it through somewhere else)
+>>
+>> Thanks, it is now in mainline as commit 19532869feb9 ("kasan: always
+>> respect CONFIG_KASAN_STACK").
+>>
+>>>>> Note, arch/riscv/include/asm/kasan.h mentions KASAN_SHADOW_OFFSET in
+>>>>> comment (copied from arm64). Did RISC-V just forget to copy over the
+>>>>> Kconfig option?
+>>>>
+>>>> I do see it defined in that file as well but you are right that they did
+>>>> not copy the Kconfig logic, even though it was present in the tree when
+>>>> RISC-V KASAN was implemented. Perhaps they should so that they get
+>>>> access to the other flags in the "else" branch?
+>>>
+>>> Ya, looks like we just screwed this up.  I'm seeing some warnings like
+>>>
+>>>     cc1: warning: ‘-fsanitize=kernel-address’ with stack protection is not supported without ‘-fasan-shadow-offset=’ for this target
+>>
+>> Hmmm, I thought I did a GCC build with this change but I must not have
+>> :/
+>>
+>>> which is how I ended up here, I'm assuming that's what you're talking about
+>>> here?  LMK if you were planning on sending along a fix or if you want me to
+>>> go figure it out.
+>>
+>> I took a look at moving the logic into Kconfig like arm64 before sending
+>> this change and I did not really understand it well enough to do so. I
+>> think it would be best if you were able to do that so that nothing gets
+>> messed up.
+>>
+>
+> I'll do it tomorrow, I'm the last one who touched kasan on riscv :)
 
+Any luck?  I tried what I think is the simple way to do it last week, 
+(merging with Linus' tree is turning these warnings into build 
+failures) but it's hanging on boot.  Not sure what's going on
 
-> On Oct 15, 2021, at 12:04 AM, Athira Rajeev <atrajeev@linux.vnet.ibm.com> wrote:
-> 
-> Perf uses multiplexing if there are more events to be scheduled than the
-> available counters. With multiplexing, event groups will be rotated at
-> specified interval of time which is set using "hrtimer". During event
-> scheduling, if any of the event group fails to schedule, multiplexing
-> gets enabled by setting "rotate_necessary" for that event context and
-> starting the hrtimer by calling "perf_mux_hrtimer_restart".
-> 
-> Patch adds an optimisation to avoid calling "perf_mux_hrtimer_restart"
-> multiple times if already rotate_necessary is set for that context.
-> Even though "perf_mux_hrtimer_restart" will just return if hrtimer is
-> already active, this could avoid the overhead of calling this function
-> multiple times if there are many event groups. Patch adds the check to
-> avoid calling perf_mux_hrtimer_restart() for each event group on
-> every schedule.
-> 
-> Signed-off-by: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
+    diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+    index c3f3fd583e04..d3998b4a45f1 100644
+    --- a/arch/riscv/Kconfig
+    +++ b/arch/riscv/Kconfig
+    @@ -212,6 +212,12 @@ config PGTABLE_LEVELS
+     config LOCKDEP_SUPPORT
+            def_bool y
+    
+    +config KASAN_SHADOW_OFFSET
+    +       hex
+    +       depends on KASAN_GENERIC
+    +       default 0xdfffffc800000000  if 64BIT
+    +       default 0xffffffff          if 32BIT
+    +
+     source "arch/riscv/Kconfig.socs"
+     source "arch/riscv/Kconfig.erratas"
+    
+    diff --git a/arch/riscv/include/asm/kasan.h b/arch/riscv/include/asm/kasan.h
+    index a2b3d9cdbc86..b00f503ec124 100644
+    --- a/arch/riscv/include/asm/kasan.h
+    +++ b/arch/riscv/include/asm/kasan.h
+    @@ -30,8 +30,7 @@
+     #define KASAN_SHADOW_SIZE      (UL(1) << ((CONFIG_VA_BITS - 1) - KASAN_SHADOW_SCALE_SHIFT))
+     #define KASAN_SHADOW_START     KERN_VIRT_START
+     #define KASAN_SHADOW_END       (KASAN_SHADOW_START + KASAN_SHADOW_SIZE)
+    -#define KASAN_SHADOW_OFFSET    (KASAN_SHADOW_END - (1ULL << \
+    -                                       (64 - KASAN_SHADOW_SCALE_SHIFT)))
+    +#define KASAN_SHADOW_OFFSET    _AC(CONFIG_KASAN_SHADOW_OFFSET, UL)
+    
+     void kasan_init(void);
+     asmlinkage void kasan_early_init(void);
 
-Acked-by: Song Liu <song@kernel.org>
+>
+> Thanks,
+>
+> Alex
+>
+>> Cheers,
+>> Nathan
+>>
+>> _______________________________________________
+>> linux-riscv mailing list
+>> linux-riscv@lists.infradead.org
+>> http://lists.infradead.org/mailman/listinfo/linux-riscv
+>>
