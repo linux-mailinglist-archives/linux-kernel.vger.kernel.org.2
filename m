@@ -2,69 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 614F64300AA
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 08:44:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77B784300AD
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 08:46:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243679AbhJPGqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 02:46:45 -0400
-Received: from smtp02.smtpout.orange.fr ([80.12.242.124]:64574 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236583AbhJPGqj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 02:46:39 -0400
-Received: from pop-os.home ([92.140.161.106])
-        by smtp.orange.fr with ESMTPA
-        id bdQjmA0MmniuxbdQjmKDjp; Sat, 16 Oct 2021 08:44:30 +0200
-X-ME-Helo: pop-os.home
-X-ME-Auth: YWZlNiIxYWMyZDliZWIzOTcwYTEyYzlhMmU3ZiQ1M2U2MzfzZDfyZTMxZTBkMTYyNDBjNDJlZmQ3ZQ==
-X-ME-Date: Sat, 16 Oct 2021 08:44:30 +0200
-X-ME-IP: 92.140.161.106
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     ohad@wizery.com, bjorn.andersson@linaro.org,
-        mathieu.poirier@linaro.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, hongxing.zhu@nxp.com, peng.fan@nxp.com
-Cc:     linux-remoteproc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] remoteproc: imx_rproc: Fix a resource leak in the remove function
-Date:   Sat, 16 Oct 2021 08:44:28 +0200
-Message-Id: <d28ca94a4031bd7297d47c2164e18885a5a6ec19.1634366546.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        id S239955AbhJPGtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 02:49:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60952 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236583AbhJPGs5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Oct 2021 02:48:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C1CF61108;
+        Sat, 16 Oct 2021 06:46:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634366810;
+        bh=ahnp24X17vL4giBapwgLqsYQxgIgv2RuRJVI0FsVq4E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=olWqvhIje6THog/VYiX6uFRrRFyYUj6/9gZ41PjXLWU19WrggyOW6w46XrtDja0Ao
+         1gbpiC/m6MT3wMFWbNCKDXE4l3fQI9cGcyejxZH9Os1vVZL8mRESNcFvywOpT6F3vt
+         muYcOp5hCxTuOV7MF3FlnHPCn1Sg+YDoEYjs+R8FZUxS0Zl/O14sHhc1ZrIaWXFM5W
+         CjW+Vs2G/RHy0Q7q+JNZBdHUIjSS597FKyxG6iBMJjr9A9PU6iS+vHsx8XjaQql+VE
+         RhEenCAGYdSy2I81JBWpf3RywZ+EO2Q939/VYwfarXWqrL1JcyjTwptPUN3jAs9GSF
+         ezeLRtEQ2KUYQ==
+Date:   Sat, 16 Oct 2021 12:16:43 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Qing Wang <wangqing@vivo.com>
+Cc:     Manivannan Sadhasivam <mani@kernel.org>,
+        Hemant Kumar <hemantk@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] bus: mhi: replace snprintf in show functions with
+ sysfs_emit
+Message-ID: <20211016064643.GA23491@thinkpad>
+References: <1634095550-3978-1-git-send-email-wangqing@vivo.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1634095550-3978-1-git-send-email-wangqing@vivo.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'priv->workqueue' is destroyed in the error handling path of the probe but
-not in the remove function.
+On Tue, Oct 12, 2021 at 08:25:50PM -0700, Qing Wang wrote:
+> coccicheck complains about the use of snprintf() in sysfs show functions.
+> 
+> Fix the following coccicheck warning:
+> drivers/bus/mhi/core/init.c:97:8-16: WARNING: use scnprintf or sprintf.
+> 
+> Use sysfs_emit instead of scnprintf or sprintf makes more sense.
+> 
+> Signed-off-by: Qing Wang <wangqing@vivo.com>
 
-Add the missing call to release some resources.
+Reviewed-by: Manivannan Sadhasivam <mani@kernel.org>
 
-Fixes: 2df7062002d0 ("remoteproc: imx_proc: enable virtio/mailbox")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-This patch is speculative. I'm not sure if the added function call is at
-the right place in the remove function.
-Review with care.
----
- drivers/remoteproc/imx_rproc.c | 1 +
- 1 file changed, 1 insertion(+)
+Thanks,
+Mani
 
-diff --git a/drivers/remoteproc/imx_rproc.c b/drivers/remoteproc/imx_rproc.c
-index ff8170dbbc3c..0a45bc0d3f73 100644
---- a/drivers/remoteproc/imx_rproc.c
-+++ b/drivers/remoteproc/imx_rproc.c
-@@ -804,6 +804,7 @@ static int imx_rproc_remove(struct platform_device *pdev)
- 	clk_disable_unprepare(priv->clk);
- 	rproc_del(rproc);
- 	imx_rproc_free_mbox(rproc);
-+	destroy_workqueue(priv->workqueue);
- 	rproc_free(rproc);
- 
- 	return 0;
--- 
-2.30.2
-
+> ---
+>  drivers/bus/mhi/core/init.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
+> index c81b377..f3ddefe 100644
+> --- a/drivers/bus/mhi/core/init.c
+> +++ b/drivers/bus/mhi/core/init.c
+> @@ -94,7 +94,7 @@ static ssize_t serial_number_show(struct device *dev,
+>  	struct mhi_device *mhi_dev = to_mhi_device(dev);
+>  	struct mhi_controller *mhi_cntrl = mhi_dev->mhi_cntrl;
+>  
+> -	return snprintf(buf, PAGE_SIZE, "Serial Number: %u\n",
+> +	return sysfs_emit(buf, "Serial Number: %u\n",
+>  			mhi_cntrl->serial_number);
+>  }
+>  static DEVICE_ATTR_RO(serial_number);
+> -- 
+> 2.7.4
+> 
