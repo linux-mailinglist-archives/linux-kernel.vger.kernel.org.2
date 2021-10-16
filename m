@@ -2,190 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 173CE4302AB
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 14:51:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 160714302AE
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 14:57:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240460AbhJPMxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 08:53:44 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:14536 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S240423AbhJPMxe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 08:53:34 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19GCoplP015190;
-        Sat, 16 Oct 2021 08:51:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=dE+qsRj/XqrO/eHsnSxHWFY7i+yedT2V9nLllEP4mko=;
- b=jZiJ11Ts5fFmlAiecCpjKnkbBshU6yCyf+OpDSfHiQ0wBhHxv8gWptpQtrY+anRBSH4X
- 76Vjx434Q/59lqmTySDPJsxo4sMeYbv+z2ZgxebuwUO6QmbyrhOomM/APMuK4CFRNLP9
- GhUyCH8lsA+6SXisauo/t9B4u+dIp/CM1xO+TrGaA0pKoddFwTq+Cr5UIXjG6f6gWyQk
- sWQtr3eE7dagpDNxH+ERcuXz0ZsTjljDSz/MTff1I4t1qA2EIR/ULcYS6O6BD9FRI20D
- XO0pOdUEUI7SHAFZkjV88PnUnCPqBrzrpyl1wbfkQaId5Ena6fOqW97BKHUDfy0yA3pI hA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3bqt4pvhyn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 16 Oct 2021 08:51:20 -0400
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19GCguaG013190;
-        Sat, 16 Oct 2021 08:51:20 -0400
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3bqt4pvhyc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 16 Oct 2021 08:51:19 -0400
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19GCmES3014297;
-        Sat, 16 Oct 2021 12:51:18 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma04fra.de.ibm.com with ESMTP id 3bqpcasmn0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 16 Oct 2021 12:51:17 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19GCjWFT49938920
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 16 Oct 2021 12:45:32 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 23B4B5204F;
-        Sat, 16 Oct 2021 12:51:14 +0000 (GMT)
-Received: from Madhavan.com (unknown [9.43.125.40])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 6D8145204E;
-        Sat, 16 Oct 2021 12:51:11 +0000 (GMT)
-From:   Madhavan Srinivasan <maddy@linux.ibm.com>
-To:     acme@kernel.org, jolsa@redhat.com
-Cc:     michael@ellerman.id.au, eranian@google.com, mark.rutland@arm.com,
-        namhyung@kernel.org, kjain@linux.ibm.com,
-        atrajeev@linux.vnet.ibm.com, linux-perf-users@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Madhavan Srinivasan <maddy@linux.ibm.com>
-Subject: [PATCH v2 2/2] tools/perf/test: Add endian test for struct branch_flags
-Date:   Sat, 16 Oct 2021 18:20:59 +0530
-Message-Id: <20211016125059.691856-2-maddy@linux.ibm.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211016125059.691856-1-maddy@linux.ibm.com>
-References: <20211016125059.691856-1-maddy@linux.ibm.com>
+        id S240471AbhJPM7M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 08:59:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44288 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240450AbhJPM7L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Oct 2021 08:59:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4FC276120A
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 12:57:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634389023;
+        bh=NsinonKH119OjwifjZy82GsiqQzJfczn0ZJZxIQqkGQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=XeiaRhr3wF7EzNe4FIC+GtRX7tvl7cBWvk560//gRZqKY4ASIGOng+wRLQ0SOY/6F
+         /XV9L6EH5L+f9X+7EzVfjunNkXPMutK+Y/Z/xBGSV2hf5CmTKBc6zkJjD1LpPC8TIo
+         a2j6ePFvhAXeLQdtCARYZ3WzXvgvCzRXB6NDR8f2yFtmD/eio3BfOjkO+od390vzhs
+         nQw/s0d/OEwD9qe2VDv0ayntCHIB+zUPHZLPJMBkZQ+tXh/3RoFo66NxSIh8t5MRyk
+         SrOsbK3XAC3yKdXcHBqe50NjFhKuhnzS9fOBr2Sw6ojGYrluRpC9fOr9Fm0PME8L47
+         1nLPeAVCFR32w==
+Received: by mail-ua1-f48.google.com with SMTP id u5so23329409uao.13
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 05:57:03 -0700 (PDT)
+X-Gm-Message-State: AOAM5311ufag5gDuV+rr4+fEebjT6K6SAC76qgy9Dfqq0lBbe8QuPLkU
+        gkUxs9XjkI6V8IhNtBIkmKV0LWTurYisnGtT0MA=
+X-Google-Smtp-Source: ABdhPJyYmy9I1jJUAIFP49csFzkTWJzf9NeB+lBd1HnG0jVFKArnzAC1PQl3HeHqdbMJJMM348S0sICXFBUlMYIkjsk=
+X-Received: by 2002:a05:6102:32cd:: with SMTP id o13mr19996599vss.50.1634389022294;
+ Sat, 16 Oct 2021 05:57:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: AZzhPL_aRoArKkZzqHkybWhC06A2mvhw
-X-Proofpoint-GUID: yxoSnlNxdN0UrElJX_AURJoYvnY2hv9x
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-16_04,2021-10-14_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_spam_definite policy=outbound score=100 adultscore=0
- impostorscore=0 suspectscore=0 spamscore=0 priorityscore=1501
- clxscore=1015 mlxlogscore=432 malwarescore=0 phishscore=0
- lowpriorityscore=0 mlxscore=0 bulkscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2109230001
- definitions=main-2110160081
+References: <20211016032200.2869998-1-guoren@kernel.org> <20211016032200.2869998-3-guoren@kernel.org>
+ <2216787.nSqPeTNalD@phil>
+In-Reply-To: <2216787.nSqPeTNalD@phil>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Sat, 16 Oct 2021 20:56:51 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTQKc1DGcCy_sFjSs8p+VMNGHFrjO2uLZrHnjdD1pZ2RZg@mail.gmail.com>
+Message-ID: <CAJF2gTQKc1DGcCy_sFjSs8p+VMNGHFrjO2uLZrHnjdD1pZ2RZg@mail.gmail.com>
+Subject: Re: [PATCH V4 2/3] dt-bindings: update riscv plic compatible string
+To:     Heiko Stuebner <heiko@sntech.de>
+Cc:     Anup Patel <anup@brainfault.org>,
+        Atish Patra <atish.patra@wdc.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Rob Herring <robh@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Extend sample-parsing test to include branch_flag
-endian-reverse test. Patch include "util/trace-event.h"
-to sample-parsing for importing bigendian() and extends
-samples_same() to include "needs_swap" to detect/enable
-check for endian-swap.
+On Sat, Oct 16, 2021 at 6:35 PM Heiko Stuebner <heiko@sntech.de> wrote:
+>
+> Hi Guo,
+>
+> Am Samstag, 16. Oktober 2021, 05:21:59 CEST schrieb guoren@kernel.org:
+> > From: Guo Ren <guoren@linux.alibaba.com>
+> >
+> > Add the compatible string "thead,c900-plic" to the riscv plic
+> > bindings to support allwinner d1 SOC which contains c906 core.
+>
+> The compatible strings sound good now, but some things below
+>
+> >
+> > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> > Cc: Rob Herring <robh@kernel.org>
+> > Cc: Palmer Dabbelt <palmerdabbelt@google.com>
+> > Cc: Anup Patel <anup@brainfault.org>
+> > Cc: Atish Patra <atish.patra@wdc.com>
+> >
+> > ---
+> >
+> > Changes since V4:
+> >  - Update description in errata style
+> >  - Update enum suggested by Anup, Heiko, Samuel
+> >
+> > Changes since V3:
+> >  - Rename "c9xx" to "c900"
+> >  - Add thead,c900-plic in the description section
+> > ---
+> >  .../interrupt-controller/sifive,plic-1.0.0.yaml       | 11 ++++++++++-
+> >  1 file changed, 10 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml b/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml
+> > index 08d5a57ce00f..272f29540135 100644
+> > --- a/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml
+> > +++ b/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml
+> > @@ -35,6 +35,12 @@ description:
+> >    contains a specific memory layout, which is documented in chapter 8 of the
+> >    SiFive U5 Coreplex Series Manual <https://static.dev.sifive.com/U54-MC-RVCoreIP.pdf>.
+> >
+> > +  The C9xx PLIC does not comply with the interrupt claim/completion process defined
+> > +  by the RISC-V PLIC specification because C9xx PLIC will mask an IRQ when it is
+> > +  claimed by PLIC driver (i.e. readl(claim) and the IRQ will be unmasked upon
+> > +  completion by PLIC driver (i.e. writel(claim). This behaviour breaks the handling
+> > +  of IRQS_ONESHOT by the generic handle_fasteoi_irq() used in the PLIC driver.
+> > +
+> >  maintainers:
+> >    - Sagar Kadam <sagar.kadam@sifive.com>
+> >    - Paul Walmsley  <paul.walmsley@sifive.com>
+> > @@ -46,7 +52,10 @@ properties:
+> >        - enum:
+> >            - sifive,fu540-c000-plic
+> >            - canaan,k210-plic
+> > -      - const: sifive,plic-1.0.0
+> > +      - enmu:
+>
+>         ^ spelling enum
+>
+> > +          - sifive,plic-1.0.0
+> > +          - thead,c900-plic
+> > +          - allwinner,sun20i-d1-plic
+>
+> but in general I'd think that you want something like
+>
+>   compatible:
+>     oneOf:
+>       - items:
+>           - enum:
+>               - sifive,fu540-c000-plic
+>               - canaan,k210-plic
+>           - const: sifive,plic-1.0.0
+>       - items:
+>           - enum:
+>               - allwinner,sun20i-d1-plic
+>           - const: thead,c900-plic
+>
+> Having only one item list would allow as valid combinations like
+> "sifive,fu540-c000-plic", "thead,c900-plic" when checking the schema.
+>
+> With the oneOf and separate lists we can make sure that such
+> "illegal" combinations get flagged by the dtbs_check
+>
+> [the enum with the single allwinner entry already leaves
+>  room for later addition to the c900-plic variant]
+Thx, I'll fix it in the next version.
 
-Signed-off-by: Madhavan Srinivasan <maddy@linux.ibm.com>
----
-Changelog v1:
-- Updated commit message
+another question: Is the allwinner_sun20i_d1_plic needed to IRQCHIP_DECLARE?
 
- tools/perf/tests/sample-parsing.c | 43 +++++++++++++++++++++++++++----
- 1 file changed, 38 insertions(+), 5 deletions(-)
++IRQCHIP_DECLARE(thead_c900_plic, "thead,c900-plic", thead_c900_plic_init);
++IRQCHIP_DECLARE(allwinner_sun20i_d1_plic, "allwinner,sun20i-d1-plic",
+thead_c900_plic_init);
 
-diff --git a/tools/perf/tests/sample-parsing.c b/tools/perf/tests/sample-parsing.c
-index 8fd8a4ef97da..a67158c12773 100644
---- a/tools/perf/tests/sample-parsing.c
-+++ b/tools/perf/tests/sample-parsing.c
-@@ -13,6 +13,7 @@
- #include "evsel.h"
- #include "debug.h"
- #include "util/synthetic-events.h"
-+#include "util/trace-event.h"
- 
- #include "tests.h"
- 
-@@ -30,9 +31,18 @@
- 	}						\
- } while (0)
- 
-+/*
-+ * Hardcode the expected values for branch_entry flags.
-+ * These are based on the input value (213) specified
-+ * in branch_stack variable.
-+ */
-+#define BS_EXPECTED_BE	0xa00d000000000000
-+#define BS_EXPECTED_LE	0xd5000000
-+#define FLAG(s)	s->branch_stack->entries[i].flags
-+
- static bool samples_same(const struct perf_sample *s1,
- 			 const struct perf_sample *s2,
--			 u64 type, u64 read_format)
-+			 u64 type, u64 read_format, bool needs_swap)
- {
- 	size_t i;
- 
-@@ -100,8 +110,14 @@ static bool samples_same(const struct perf_sample *s1,
- 	if (type & PERF_SAMPLE_BRANCH_STACK) {
- 		COMP(branch_stack->nr);
- 		COMP(branch_stack->hw_idx);
--		for (i = 0; i < s1->branch_stack->nr; i++)
--			MCOMP(branch_stack->entries[i]);
-+		for (i = 0; i < s1->branch_stack->nr; i++) {
-+			if (needs_swap)
-+				return ((bigendian()) ?
-+					(FLAG(s2).value == BS_EXPECTED_BE) :
-+					(FLAG(s2).value == BS_EXPECTED_LE));
-+			else
-+				MCOMP(branch_stack->entries[i]);
-+		}
- 	}
- 
- 	if (type & PERF_SAMPLE_REGS_USER) {
-@@ -248,7 +264,7 @@ static int do_test(u64 sample_type, u64 sample_regs, u64 read_format)
- 		},
- 	};
- 	struct sample_read_value values[] = {{1, 5}, {9, 3}, {2, 7}, {6, 4},};
--	struct perf_sample sample_out;
-+	struct perf_sample sample_out, sample_out_endian;
- 	size_t i, sz, bufsz;
- 	int err, ret = -1;
- 
-@@ -313,12 +329,29 @@ static int do_test(u64 sample_type, u64 sample_regs, u64 read_format)
- 		goto out_free;
- 	}
- 
--	if (!samples_same(&sample, &sample_out, sample_type, read_format)) {
-+	if (!samples_same(&sample, &sample_out, sample_type, read_format, evsel.needs_swap)) {
- 		pr_debug("parsing failed for sample_type %#"PRIx64"\n",
- 			 sample_type);
- 		goto out_free;
- 	}
- 
-+	if (sample_type == PERF_SAMPLE_BRANCH_STACK) {
-+		evsel.needs_swap = true;
-+		evsel.sample_size = __evsel__sample_size(sample_type);
-+		err = evsel__parse_sample(&evsel, event, &sample_out_endian);
-+		if (err) {
-+			pr_debug("%s failed for sample_type %#"PRIx64", error %d\n",
-+				 "evsel__parse_sample", sample_type, err);
-+			goto out_free;
-+		}
-+
-+		if (!samples_same(&sample, &sample_out_endian, sample_type, read_format, evsel.needs_swap)) {
-+			pr_debug("parsing failed for sample_type %#"PRIx64"\n",
-+				 sample_type);
-+			goto out_free;
-+		}
-+	}
-+
- 	ret = 0;
- out_free:
- 	free(event);
--- 
-2.31.1
+>
+> Heiko
 
+>
+>
+>
+
+
+--
+Best Regards
+ Guo Ren
+
+ML: https://lore.kernel.org/linux-csky/
