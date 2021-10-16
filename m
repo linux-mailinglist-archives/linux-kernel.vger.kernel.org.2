@@ -2,64 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14D9C43023C
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 12:54:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F017043023F
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 12:55:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244231AbhJPK4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 06:56:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46258 "EHLO
+        id S244288AbhJPK5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 06:57:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244120AbhJPK4l (ORCPT
+        with ESMTP id S244273AbhJPK4y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 06:56:41 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79180C061764;
-        Sat, 16 Oct 2021 03:54:33 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id x192so18181040lff.12;
-        Sat, 16 Oct 2021 03:54:33 -0700 (PDT)
+        Sat, 16 Oct 2021 06:56:54 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE2A0C061769;
+        Sat, 16 Oct 2021 03:54:44 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id t9so52391885lfd.1;
+        Sat, 16 Oct 2021 03:54:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=y+9bOnIXUtzWVh6jBYBC6CeR5DMs4Q+9HtnUCVf3acw=;
-        b=Y8DwMJemYcnlx6P+YftUdk8rxOVY+oN0oN+w9IT2y0dmmjr6h8QRNCn2Pn49r5v/l4
-         2DKzpzPjJ4Xwbv5tAkAo/CMmPoR51LIjT7XZH2HyogOWz8ilfprw/WcGZ4FdSg/jBgG4
-         gxFA2LFwpBrqVRXsil0OWJkhCX+tevmoV96xJIa8sPJ2paw4J/HPrXfbuL2osgtrBAYo
-         WgC1SPx8lFk3/5BEnFv2AaJuU/TSuExT5K9YaNPFbNgGSN03YgpG0CjRFe42wCwXhcsL
-         np23VuYCvILThoi7s0RGJzfNsPgu1z8C+UBR/RTr+1rXEOoSU3B9hsi/LlKU73y4AMRK
-         H1jA==
+        bh=mlMdlKBxKYJqrC47Y5BkYGrC93FP3AcHRCKSFGPfaNk=;
+        b=jal6pSrzEiKWtd3gwJbzAyVpbwT54fcFA0tyX+Z7NG8h1poK9FZy0NOagT8pyK92Jq
+         yvCN1lmTEGOl7nXvRRC2BEAfTPYURqZVJQlGW9yaPd17VqZl85r0Kab8ZWOsSccxEG13
+         /wQPBcx/4+pW4KZoATEEqcJL0bCgle21lfzv2YMl9DsDm1iLiwK3tBxKF7ls2bzKtLPY
+         J4PHcnKkETud9wMVMZazarhv7vgtWHRdgLqCR6Hwf07W6k3dkXYcjFDbzFKzOB2tQcMB
+         VRvS/AzEvpPoMOqLrq9RqFfk0DYcxrwtnvVXYD79ii14bUP4DiJL9gncGPij5GzdWkxs
+         lPCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=y+9bOnIXUtzWVh6jBYBC6CeR5DMs4Q+9HtnUCVf3acw=;
-        b=oxb80LggEs42odu3tbvxOEl1ArMqi/UBVSqLZnk2qouR6RaVdUG02wB1btB4DOQdvA
-         nfnxmkhpOCIzpnaY40hvpqrKH0PEosn2csfok47EFefVGlW4+aOlLNwJAOh/XFJ9igSH
-         baIu+YwJ/z7z8m8XaYkwOy3pt8KLLED4PN9suyXk3adAy5qtfjmPBIm941973j3PbkeB
-         wvvObJlIhsSxGdTg+/CIzakoY8qIfVvtPx1f0NETcc3F7uYwvXIQ95aTCedkvg8vJXHM
-         0WDisgsXSiLh0jwdGt2MO+a6z2DPi0YVnpqpgqt72akOnTe6ApUzgcNvusNyk6g/2yp9
-         mHmA==
-X-Gm-Message-State: AOAM532V3X1HIdh7qxQEzG+2xgeg8DA2U3ph635G4vTKQCFxAFzHANXG
-        ewjFd9OCieV9ahl/6bP1RSE=
-X-Google-Smtp-Source: ABdhPJylXH+nWmjZF01140Heh3m/n1DiYce+4V6jSo5B/7WqbKmJi/0cw7jiUYbX6TptgPDy3DEgsA==
-X-Received: by 2002:a05:6512:118b:: with SMTP id g11mr16986499lfr.353.1634381671808;
-        Sat, 16 Oct 2021 03:54:31 -0700 (PDT)
+        bh=mlMdlKBxKYJqrC47Y5BkYGrC93FP3AcHRCKSFGPfaNk=;
+        b=1QLgBmSCih09OyN/gzNxodMSMA+HtEE3w1wld+DpJ5VUkGpWhJWyvw/CWwMdWYxXWt
+         ust/TQDkmv+cJAhApAGAkycTrLIErpHOGOR9ipbKoXJq2bGDz542YrybmSK/D3uqtaU1
+         DxB5GnBR2ar9ILoGA2bG4XSw7FOzgPQRcM2/9tVEbNHJhHtwvIyKjFMyEW3WWQ+qV9R6
+         xRNyhZSPWHENYp0ZPI06RJTu18PIF80rh6daine8dM6kQW2qcNcd0vqKHzwBIW39/yYw
+         tz8aNF1/T7Pv4zuvRhzr6NO7c9cnB75yYcFJnvEgXL7s58+B5gdGxhSLU3JVxOyqwifO
+         kH6g==
+X-Gm-Message-State: AOAM531BKsbQZH6ScVkmxh6AIGfyIMy1WTN8pZGLJPFm2znRrUTHjjFA
+        n/tk2Wt9wFadWIMMIv5txZg=
+X-Google-Smtp-Source: ABdhPJxDd7IkXDDhRM+GlrOeQ0wUjy0PbUZHpC3Dk6SdPq8OdfcDc7aYIFIAv7CV7o/cMD23qGCxkA==
+X-Received: by 2002:a2e:9c49:: with SMTP id t9mr19193186ljj.86.1634381683146;
+        Sat, 16 Oct 2021 03:54:43 -0700 (PDT)
 Received: from localhost.localdomain (84-72-105-84.dclient.hispeed.ch. [84.72.105.84])
-        by smtp.gmail.com with ESMTPSA id r3sm814224lfc.131.2021.10.16.03.54.30
+        by smtp.gmail.com with ESMTPSA id r3sm814224lfc.131.2021.10.16.03.54.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 16 Oct 2021 03:54:31 -0700 (PDT)
+        Sat, 16 Oct 2021 03:54:42 -0700 (PDT)
 From:   Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
-To:     Nicolas Frattaroli <frattaroli.nicolas@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>
-Cc:     linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org,
+To:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>
+Cc:     Nicolas Frattaroli <frattaroli.nicolas@gmail.com>,
         devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/4] ASoC: dt-bindings: rockchip: i2s-tdm: Drop rockchip,cru property
-Date:   Sat, 16 Oct 2021 12:53:51 +0200
-Message-Id: <20211016105354.116513-3-frattaroli.nicolas@gmail.com>
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 3/4] arm64: dts: rockchip: Add i2s1 on rk356x
+Date:   Sat, 16 Oct 2021 12:53:52 +0200
+Message-Id: <20211016105354.116513-4-frattaroli.nicolas@gmail.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211016105354.116513-1-frattaroli.nicolas@gmail.com>
 References: <20211016105354.116513-1-frattaroli.nicolas@gmail.com>
@@ -69,57 +65,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This property was only needed for a driver hack, which we can
-remove. Since the bindings were not in any kernel release yet, we
-are able to just drop the property instead of silently accepting
-and ignoring it.
+This adds the necessary device tree node on rk3566 and rk3568
+to enable the I2S1 TDM audio controller.
+
+I2S0 has not been added, as it is connected to HDMI and there is
+no way to test that it's working without a functioning video
+clock (read: VOP2 driver).
 
 Signed-off-by: Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
 ---
- .../bindings/sound/rockchip,i2s-tdm.yaml         | 16 ----------------
- 1 file changed, 16 deletions(-)
+ arch/arm64/boot/dts/rockchip/rk356x.dtsi | 25 ++++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/rockchip,i2s-tdm.yaml b/Documentation/devicetree/bindings/sound/rockchip,i2s-tdm.yaml
-index ce3e18b50230..6a7c004bef17 100644
---- a/Documentation/devicetree/bindings/sound/rockchip,i2s-tdm.yaml
-+++ b/Documentation/devicetree/bindings/sound/rockchip,i2s-tdm.yaml
-@@ -82,12 +82,6 @@ properties:
-         - tx-m
-         - rx-m
+diff --git a/arch/arm64/boot/dts/rockchip/rk356x.dtsi b/arch/arm64/boot/dts/rockchip/rk356x.dtsi
+index b721a34ffa8c..dbe0123e74e8 100644
+--- a/arch/arm64/boot/dts/rockchip/rk356x.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk356x.dtsi
+@@ -608,6 +608,31 @@ sdhci: mmc@fe310000 {
+ 		status = "disabled";
+ 	};
  
--  rockchip,cru:
--    $ref: /schemas/types.yaml#/definitions/phandle
--    description:
--      The phandle of the cru.
--      Required if neither trcm-sync-tx-only nor trcm-sync-rx-only are specified.
--
-   rockchip,grf:
-     $ref: /schemas/types.yaml#/definitions/phandle
-     description:
-@@ -144,15 +138,6 @@ required:
-   - rockchip,grf
-   - "#sound-dai-cells"
- 
--allOf:
--  - if:
--      properties:
--        rockchip,trcm-sync-tx-only: false
--        rockchip,trcm-sync-rx-only: false
--    then:
--      required:
--        - rockchip,cru
--
- additionalProperties: false
- 
- examples:
-@@ -177,7 +162,6 @@ examples:
-             resets = <&cru SRST_M_I2S1_8CH_TX>, <&cru SRST_M_I2S1_8CH_RX>;
-             reset-names = "tx-m", "rx-m";
-             rockchip,trcm-sync-tx-only;
--            rockchip,cru = <&cru>;
-             rockchip,grf = <&grf>;
-             #sound-dai-cells = <0>;
-             pinctrl-names = "default";
++	i2s1_8ch: i2s@fe410000 {
++		compatible = "rockchip,rk3568-i2s-tdm";
++		reg = <0x0 0xfe410000 0x0 0x1000>;
++		interrupts = <GIC_SPI 53 IRQ_TYPE_LEVEL_HIGH>;
++		assigned-clocks = <&cru CLK_I2S1_8CH_TX_SRC>, <&cru CLK_I2S1_8CH_RX_SRC>;
++		assigned-clock-rates = <1188000000>, <1188000000>;
++		clocks = <&cru MCLK_I2S1_8CH_TX>, <&cru MCLK_I2S1_8CH_RX>,
++		<&cru HCLK_I2S1_8CH>;
++		clock-names = "mclk_tx", "mclk_rx", "hclk";
++		dmas = <&dmac1 3>, <&dmac1 2>;
++		dma-names = "rx", "tx";
++		resets = <&cru SRST_M_I2S1_8CH_TX>, <&cru SRST_M_I2S1_8CH_RX>;
++		reset-names = "tx-m", "rx-m";
++		rockchip,grf = <&grf>;
++		#sound-dai-cells = <0>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&i2s1m0_sclktx &i2s1m0_sclkrx
++			     &i2s1m0_lrcktx &i2s1m0_lrckrx
++			     &i2s1m0_sdi0   &i2s1m0_sdi1
++			     &i2s1m0_sdi2   &i2s1m0_sdi3
++			     &i2s1m0_sdo0   &i2s1m0_sdo1
++			     &i2s1m0_sdo2   &i2s1m0_sdo3>;
++		status = "disabled";
++	};
++
+ 	dmac0: dmac@fe530000 {
+ 		compatible = "arm,pl330", "arm,primecell";
+ 		reg = <0x0 0xfe530000 0x0 0x4000>;
 -- 
 2.33.1
 
