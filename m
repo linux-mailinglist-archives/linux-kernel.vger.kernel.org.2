@@ -2,95 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25C3B43016C
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 11:11:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBBBD43017E
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 11:29:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243903AbhJPJN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 05:13:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51434 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236048AbhJPJN0 (ORCPT
+        id S243930AbhJPJbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 05:31:18 -0400
+Received: from sender4-op-o14.zoho.com ([136.143.188.14]:17427 "EHLO
+        sender4-op-o14.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235334AbhJPJbR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 05:13:26 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42986C061764
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 02:11:18 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id a25so47851401edx.8
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 02:11:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=v2uW/uDJiVzmx6sq5G95XgEuBsqcyd3YnNIT04Tmx5U=;
-        b=Em7GtEOUv8tKJyX5/o2e3+Zs3o8HF35CU9eCxOTE2OeSS+3DtXV5dkjwrSSj5VGKSk
-         MWPCrDRHGTay3R+NKcrPdIz7EV8kWBsRX4A5ReYOD43JeZs+cUo8lhz8CCvAmaNCLSNd
-         zl6aMw/FZUcUEPb5TYnFTdXW5ZZqB+lf721rcTCUxn+m/Z8L+U3koEPlcN3/mY/SESkL
-         nNqvM6b1mMAemuF/8nzXaDxdfjJiJXxqFJCrRYJO3CETFnPTQHOaRfrMchVywZf3HjZT
-         XwxlwYjT0u2Bprqxv9ere2zD3Th1QxNn8ZWz+yHWIvtlQvK6ZAch9yP/nPz97lFCz5mE
-         77bQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=v2uW/uDJiVzmx6sq5G95XgEuBsqcyd3YnNIT04Tmx5U=;
-        b=WlAbz77DK03Q5h08STsofeytZT3qIrGBs1PeskJ4Hhyliezjyk+cMYiAsf5NOHAi+t
-         yb3As4tVXidM2UeS3ApaRa5fi5ve0QSyfSeNss5xTjAgP4l78abD/HvhdTIAulbpRn6D
-         85IGTjb1eKo3zKXKsbvRBfqLNgxCX5rMZD6nwiNAPQHdPty4WzjWp87q3MnnNvhFDdM4
-         OeV45q6CrxzDD2koVDmnpDwIdxgCOLUHrKCBjOWLHWDvr3Rn2Xx+V4lP8M9EIpGEpG4f
-         YGwbGIYxQEmVCmplSkqhfAnrSzl79FO7yn57OY8TD/lBKcmVvklRHoy/91wnGNloa8zz
-         UzUA==
-X-Gm-Message-State: AOAM530fxYGjxXyCv1PK0BSw6lJ8V/nfoqCjhNFZLv/bVK336SSk/Y8M
-        HxPeU3jMuoLk4sDj3yBvSlo=
-X-Google-Smtp-Source: ABdhPJw0wiNzR9wde0NKgiJEc9rUrDy41Fh2S/bT+PBgLxC16PXoTPYOCam3k9D8E4BYsgZKwZjEAw==
-X-Received: by 2002:a50:c31a:: with SMTP id a26mr24450970edb.193.1634375476795;
-        Sat, 16 Oct 2021 02:11:16 -0700 (PDT)
-Received: from localhost.localdomain.it (host-79-47-104-180.retail.telecomitalia.it. [79.47.104.180])
-        by smtp.gmail.com with ESMTPSA id o15sm5934723ejj.10.2021.10.16.02.11.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 16 Oct 2021 02:11:16 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Subject: [PATCH 3/3] staging: r8188eu: Remove redundant 'if' statement
-Date:   Sat, 16 Oct 2021 11:10:42 +0200
-Message-Id: <20211016091042.19614-4-fmdefrancesco@gmail.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211016091042.19614-1-fmdefrancesco@gmail.com>
-References: <20211016091042.19614-1-fmdefrancesco@gmail.com>
+        Sat, 16 Oct 2021 05:31:17 -0400
+X-Greylist: delayed 906 seconds by postgrey-1.27 at vger.kernel.org; Sat, 16 Oct 2021 05:31:17 EDT
+ARC-Seal: i=1; a=rsa-sha256; t=1634375615; cv=none; 
+        d=zohomail.com; s=zohoarc; 
+        b=BpY3SY0aB26/FbDa40bp/WI+57QCU0IwonMWaoE6jh4M+lvFlYZuKERrjR/UoO+J1qquZ6ULYE5Z1kRtLAnM6wNSGDSuszBmPiCRFf92b3lmBTkHxHSGeoFy/R9QtqCjZ1wAlrsu85Io9VHGaiSrrE77nlMp1ljYKnBLumr0Qf0=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+        t=1634375615; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
+        bh=sYetWd5dkPd+TI2PlmPR4bwqbZoI6NEUiz188dhP0zk=; 
+        b=Z5R5azUjfz63NZD9PKtuSlayMzyDtyd322pRaDg//YpHtVG5/DDnpXSPAKN+XSSULP5lWjQxJyIUQDm5NyUiPcw+YJkf9wqnoohGbHqnXvkuGA4DhjSO0DD3OIFFOiaW77YFjVpE/Gi8ReQTbZaP8O8jfxmgfl/L118SIABrL7c=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+        dkim=pass  header.i=arinc9.com;
+        spf=pass  smtp.mailfrom=arinc.unal@arinc9.com;
+        dmarc=pass header.from=<arinc.unal@arinc9.com>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1634375615;
+        s=zmail; d=arinc9.com; i=arinc.unal@arinc9.com;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding;
+        bh=sYetWd5dkPd+TI2PlmPR4bwqbZoI6NEUiz188dhP0zk=;
+        b=OlKVSVLQPITCn8Uxx/IzUx0aklCUIsMJ57VDMPAODlGQkuvOxIQ30NEFOP/cbrUt
+        MxtYUZEq9LvxI4kyJmn7GHCJApBAfEHrrqevN3BtxHIb+d1Wp53ske722KvXmFugHtL
+        9PqwDxl/rpqh7JuuUSyh2uSdgVs3mjgGKsE8wTMY=
+Received: from [10.10.10.216] (85.117.236.245 [85.117.236.245]) by mx.zohomail.com
+        with SMTPS id 1634375614599922.1792449684986; Sat, 16 Oct 2021 02:13:34 -0700 (PDT)
+Subject: Re: [PATCH v3 net-next 0/7] net: dsa: add support for RTL8365MB-VC
+To:     =?UTF-8?Q?Alvin_=c5=a0ipraga?= <alvin@pqrs.dk>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>
+Cc:     =?UTF-8?Q?Alvin_=c5=a0ipraga?= <alsi@bang-olufsen.dk>,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211015171030.2713493-1-alvin@pqrs.dk>
+From:   =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+Message-ID: <96111adf-205d-1cca-d05e-20bef29ed29e@arinc9.com>
+Date:   Sat, 16 Oct 2021 12:13:26 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
+In-Reply-To: <20211015171030.2713493-1-alvin@pqrs.dk>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-ZohoMailClient: External
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove a redundant 'if' statement.
+Tested on net-next master branch kernel on Asus RT-AC88U router using 
+OpenWrt.
 
-Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
----
- drivers/staging/r8188eu/core/rtw_cmd.c | 6 ------
- 1 file changed, 6 deletions(-)
+DT specification:
 
-diff --git a/drivers/staging/r8188eu/core/rtw_cmd.c b/drivers/staging/r8188eu/core/rtw_cmd.c
-index 2900c31d8ec9..2263e35b45cb 100644
---- a/drivers/staging/r8188eu/core/rtw_cmd.c
-+++ b/drivers/staging/r8188eu/core/rtw_cmd.c
-@@ -255,12 +255,6 @@ int rtw_cmd_thread(void *context)
- 		if (wait_for_completion_killable(&pcmdpriv->enqueue_cmd))
- 			break;
- 
--		if (padapter->bDriverStopped ||
--		    padapter->bSurpriseRemoved) {
--			DBG_88E("%s: DriverStopped(%d) SurpriseRemoved(%d) break at line %d\n",
--				__func__, padapter->bDriverStopped, padapter->bSurpriseRemoved, __LINE__);
--			break;
--		}
- _next:
- 		if (padapter->bDriverStopped ||
- 		    padapter->bSurpriseRemoved) {
--- 
-2.33.0
+	ethernet-switch {
+		compatible = "realtek,rtl8365mb";
+		mdc-gpios = <&chipcommon 6 GPIO_ACTIVE_HIGH>;
+		mdio-gpios = <&chipcommon 7 GPIO_ACTIVE_HIGH>;
+		reset-gpios = <&chipcommon 10 GPIO_ACTIVE_LOW>;
+		realtek,disable-leds;
+		dsa,member = <1 0>;
 
+		ports {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			reg = <0>;
+
+			port@0 {
+				reg = <0>;
+				label = "lan5";
+				phy-handle = <&ethphy0>;
+			};
+
+			port@1 {
+				reg = <1>;
+				label = "lan6";
+				phy-handle = <&ethphy1>;
+			};
+
+			port@2 {
+				reg = <2>;
+				label = "lan7";
+				phy-handle = <&ethphy2>;
+			};
+
+			port@3 {
+				reg = <3>;
+				label = "lan8";
+				phy-handle = <&ethphy3>;
+			};
+
+			port@6 {
+				reg = <6>;
+				label = "cpu";
+				ethernet = <&sw0_p5>;
+				phy-mode = "rgmii";
+				tx-internal-delay-ps = <2000>;
+				rx-internal-delay-ps = <2000>;
+
+				fixed-link {
+					speed = <1000>;
+					full-duplex;
+					pause;
+				};
+			};
+		};
+
+		mdio {
+			compatible = "realtek,smi-mdio";
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			ethphy0: phy@0 {
+				reg = <0>;
+			};
+
+			ethphy1: phy@1 {
+				reg = <1>;
+			};
+
+			ethphy2: phy@2 {
+				reg = <2>;
+			};
+
+			ethphy3: phy@3 {
+				reg = <3>;
+			};
+		};
+	};
+
+Tested-by: Arınç ÜNAL <arinc.unal@arinc9.com>
