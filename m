@@ -2,109 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEE124300B8
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 08:59:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3605F4300BB
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 09:00:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243725AbhJPHBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 03:01:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51174 "EHLO
+        id S239579AbhJPHCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 03:02:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243712AbhJPHBj (ORCPT
+        with ESMTP id S243732AbhJPHCo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 03:01:39 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB543C061570
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 23:59:31 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id a25so46977388edx.8
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 23:59:31 -0700 (PDT)
+        Sat, 16 Oct 2021 03:02:44 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18AC0C061570
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 00:00:37 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id n11so7784293plf.4
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 00:00:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=SHQt8hFsjogNRuVz15k6SyLo2IuU73v5DLEEAwJxV5s=;
-        b=hJ/gEuwoFNPehp4JyaaX4DCYodDGwPIxXYA4x6erZQ3yeWC3gcjlFFWvUDjSQYdZMR
-         LbNZlhA5M9+eYnH3h5VvdYEBx/dBRD77nnOoNdgWKgNQCxQF0ZMD0dignNrQiSrhT0nr
-         eWgx6q8hVhXE/6DTBnUyeFRVZJdwI1oez0/VUtNbXgiasb/vA4HjNwfNBw9Qm6Wg5ioz
-         8XfM+aCTPUdsrTa6RTU5lGl8vDQeo0gybEw3ZyzWtBcunCq91OA+UrYB5XTpXbus1wUR
-         GEMfwObZdC8EzS2q7rZieQOMYL1mWHQDrV8AhLRiBmBCYckVAoOPeNBLVQ0jrlbNjkFw
-         wjFQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=lMEFPqH1XlcrQLclXfoWUZvVtlxAhYuA7jM+7gecrs0=;
+        b=kFBx6J0X4vJVZN9EcNTc/xZ6BDB7V4AH2wxwj+jC6Oog/fw5n6Z2+alVGaXBP7Bxi4
+         tUDKVlKLD1+6hF/BP6A7FveZAjvuSRdjqWY3zbxLW6ZfmIB8Iw4XthwO78iY4+Owbx1v
+         +qFrn+QaUdxcTLtAWS8cZnJTcRzRZl+FA8FnO6a8nUcGD320pUWDn9/uXeVoffA4sU6H
+         /HP4C2Klv+aXl0EMsGxp6i05zivQuwRvI+PCkYbYiMaJmxvgdsyzaEUxjB7HtzsVh3LF
+         hY4vy9lJo26LCCNokZukCfulxsDf8tFmu0hqX5e7cUCGgkOU5jdxleVfn0o/tIcbkm3d
+         N2NQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=SHQt8hFsjogNRuVz15k6SyLo2IuU73v5DLEEAwJxV5s=;
-        b=7OUeE5Jx+SvnJqOmcjBgAc6lvCHWnMLdMyxzV034OSokCOAo/jkXJT94XyypweBluL
-         O4OpXarJMZqoPDTNMy3yrV8pRJNi1DsaRSd/4RZ16eTznnxO2i3AHV/49PADm3Beg23J
-         azJ6iRGmDpSLZ3kfAkvBI+vRMi4iQSsUsYhs51KWxCRufA6LHBMDJzZQR1M4rOeGqW8l
-         udmPZcXql0GpifoDzfcqUv43NoKS5Wt1r5NbqaBpNMfIygmmPUeAHM3PAsa/3RGwt6YH
-         Pjdco0pwLe+wmIItaHeuuXxBAl7YoSjlPghleii9hjTiqpTBf3gd4YBEtgeAX9Cuh64m
-         kGPA==
-X-Gm-Message-State: AOAM5324nwYMYdd1LXxj4R01bnI2+WEzQKMkJm/XbppXGCeKr7zQb940
-        nQliZgjXcPfTiM+lFyaT8Hs=
-X-Google-Smtp-Source: ABdhPJyTf+7FlIGuWX1Y4Obapq+FYi7LW0FkAHLAe2uM5KX/tbivyWlBPzL3OGvjtHgQ6DfVJ9SkaA==
-X-Received: by 2002:a50:ee85:: with SMTP id f5mr21477313edr.302.1634367569839;
-        Fri, 15 Oct 2021 23:59:29 -0700 (PDT)
-Received: from localhost.localdomain (host-79-47-104-180.retail.telecomitalia.it. [79.47.104.180])
-        by smtp.gmail.com with ESMTPSA id rv25sm5703063ejb.21.2021.10.15.23.59.28
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lMEFPqH1XlcrQLclXfoWUZvVtlxAhYuA7jM+7gecrs0=;
+        b=6eoS//6/+hTeepLsjFqE4kHmu8lJpAkQcR52IfKkpGLJWKnsZkrFioKvRfO+QeqCHp
+         rNtVhbFmcUp6NfwypQhoaFL2akXCg+mkjva/D+MUfJvdYPFuYAPFsbv0SjP8zYKdaOXS
+         W+jwgZ2rDRL25XGlOkij0E+RBEPvx7USaPmByjM9AZnhLnVgakJQJ82YvduinrA3Kudz
+         YZOC3VwSL/EbGC16t576W5JAQNdE0jz9zliWxQJt3SbkwPA8qs1iEJZNvm1nwCwxPaZ4
+         1ZwrF/DdNeSWXjW0R2YZVps78KLx+CXt0/TYKQ8xEuU0du4rftD+bi7Z3FU45fXkpCXQ
+         VmeQ==
+X-Gm-Message-State: AOAM533uDwD79KfQUh52ajKfgDFcT9erxC725eh7d/egZki7YKffQEoI
+        D4nYrwWfMeg7TeN59FUebq1s
+X-Google-Smtp-Source: ABdhPJzHLCxUCh6kG+C8mbPngdevFkS4xm+5wcgywkZaD5/grXGOtrSQ9CSxzAYm4HrAx/djuQJxMg==
+X-Received: by 2002:a17:90b:4b10:: with SMTP id lx16mr18778829pjb.217.1634367636537;
+        Sat, 16 Oct 2021 00:00:36 -0700 (PDT)
+Received: from thinkpad ([117.202.185.237])
+        by smtp.gmail.com with ESMTPSA id j7sm6529767pfh.168.2021.10.16.00.00.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Oct 2021 23:59:29 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Phillip Potter <phil@philpotter.co.uk>
-Cc:     Larry.Finger@lwfinger.net, gregkh@linuxfoundation.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        dan.carpenter@oracle.com
-Subject: Re: [RFC PATCH] staging: r8188eu: Use completions instead of semaphores
-Date:   Sat, 16 Oct 2021 08:59:27 +0200
-Message-ID: <5414235.RPW7nLbG7U@localhost.localdomain>
-In-Reply-To: <YWm/x56aX+rNOlE0@equinox>
-References: <20211015110238.1819-1-fmdefrancesco@gmail.com> <YWm/x56aX+rNOlE0@equinox>
+        Sat, 16 Oct 2021 00:00:36 -0700 (PDT)
+Date:   Sat, 16 Oct 2021 12:30:31 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     gregkh@linuxfoundation.org
+Cc:     hemantk@codeaurora.org, bbhatt@codeaurora.org,
+        loic.poulain@linaro.org, wangqing@vivo.com, mhi@lists.linux.dev,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] MHI patches for v5.16
+Message-ID: <20211016070031.GB23491@thinkpad>
+References: <20211016065734.28802-1-manivannan.sadhasivam@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211016065734.28802-1-manivannan.sadhasivam@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday, October 15, 2021 7:52:07 PM CEST Phillip Potter wrote:
+On Sat, Oct 16, 2021 at 12:27:31PM +0530, Manivannan Sadhasivam wrote:
+> Hi Greg,
 > 
-> Dear Fabio,
+> Here is the small series of MHI patches for v5.16 with summary below:
 > 
-> Sounds like a good approach to me, nice work.
+> 1. MHI got a dedicated mailing list in subspace server. Hence, updated the
+> MAINTAINERS entry adding it as the primary list.
+> 
 
-Dear Phil,
-
-Thanks for the "good job". These words always sound very rewarding :)
-
-Please read my reply to Dan's message. I have decided to go through a 
-different approach and make two patches for the semaphores => condition 
-variables and a third for removing a duplicate 'if' statement in that  
-rtw_cmd_thread() where now we have the semaphores.
-
-As I wrote in that reply, I hope that you and Dan agree with me on this 
-different approach to fix rtw_cmd_thread().
+Missed to mention that now Hemant is a dedicated reviewer since he is not
+handling any of the maintainership duties.
 
 Thanks,
+Mani
 
-Fabio 
-
-> I agree with Dan's
-> feedback also - will wait for the final patchset then give it a test for
-> you :-) Apologies I've been a little on the quiet side as of late.
-
-P.S.: No need to apologize at all :)
-
-I had noticed that you haven't been around for a while. I would have 
-appreciated a review from you (and Larry) on the series of 32 patches that 
-Pavel Skripkin and I co-developed and submitted some weeks ago.
-
-However, I am 100% sure that you really had some important reasons for not 
-being here.
-
+> 2. A leftover patch from 5.15 PR that adds a dedicated flag to the MHI client
+> transfer APIs for inbound buffer allocation by the MHI stack. This is required
+> for some downlink channels like QRTR that depends on pre-allocated buffers.
+> Since the patch modifies the MHI client drivers under "net/", Ack has been
+> collected from the netdev maintainer.
 > 
-> Regards,
-> Phil
+> 3. Fixed up the coccicheck warning by using sysfs_emit instead of snprintf.
 > 
-
-
-
-
+> Please consider merging!
+> 
+> Thanks,
+> Mani
+> 
+> Loic Poulain (1):
+>   bus: mhi: Add inbound buffers allocation flag
+> 
+> Manivannan Sadhasivam (1):
+>   MAINTAINERS: Update the entry for MHI bus
+> 
+> Qing Wang (1):
+>   bus: mhi: replace snprintf in show functions with sysfs_emit
+> 
+>  MAINTAINERS                      | 3 ++-
+>  drivers/bus/mhi/core/init.c      | 2 +-
+>  drivers/bus/mhi/core/internal.h  | 2 +-
+>  drivers/bus/mhi/core/main.c      | 9 ++++++---
+>  drivers/net/mhi_net.c            | 2 +-
+>  drivers/net/wwan/mhi_wwan_ctrl.c | 2 +-
+>  include/linux/mhi.h              | 7 ++++++-
+>  net/qrtr/mhi.c                   | 2 +-
+>  8 files changed, 19 insertions(+), 10 deletions(-)
+> 
+> -- 
+> 2.25.1
+> 
