@@ -2,80 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FFDC430559
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 00:18:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E8A343053B
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 00:17:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244696AbhJPWUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 18:20:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53530 "EHLO
+        id S244731AbhJPWTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 18:19:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244841AbhJPWUj (ORCPT
+        with ESMTP id S244698AbhJPWTE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 18:20:39 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89C7BC0613DF
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 15:18:25 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id p16so57772362lfa.2
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 15:18:25 -0700 (PDT)
+        Sat, 16 Oct 2021 18:19:04 -0400
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC1D8C061765
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 15:16:55 -0700 (PDT)
+Received: by mail-oi1-x22f.google.com with SMTP id q129so18783937oib.0
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 15:16:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5hTZmsVraLnoyoiajwq2kp7kDJD/UBIvDGojNlZOjYA=;
-        b=MlO9EhDO0R+F6a5IFnTIPbpmq5BWUpNHbM6qRx1Se8vfzBsGJpgsGiIfisAVmCOyo8
-         lTiW0jaVH1nUXT0F0YXJntoy6WAyo07Tyh36UXjKY9JKKvpY+pfD0X7zs0DozQ9DQXP6
-         karq1mJ2Le0t4/YNCerJCdx+i1q+nbSTF9hakC6Xo16kJejquw5aMr9bdtYSfioHkoCO
-         70BEy+4R6MmLmofcuDIv2wWHzULVW6hq5ZmyX8PhgEgrkEFcn6x7XKEMCCoMXR5gUhsw
-         G+861Cw4nKW4ccwd0KS42UXE5caVkz3VajZVIPE6ghQLY+1a5QKi4c9DVcbODx/pm7FQ
-         jrGw==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9ujg6PKfSs2XOzYYHdPfFh++V/EwomxD0QVcYgfLZXo=;
+        b=bWLopzPXV0sZJ2LSwu41r+EPZMlLquM8s17awzNbFsWQAvNQP3ysIA6BjXqDaOvT07
+         FoPsOPzBGSkErL9hZs5bUhmBVFlFlw0BEXx1y6vSadNWxyp0syScVEP7xfzYUiKYUcb2
+         XMHDLAonIuvWwiVjsNMWyOc1aNN8Ew1DwZqg79F5xfAFZ5N7w7l68UJ2HoUyDsuXRDGB
+         uTwKq6tDfoTcNb69w6wKA1shhumJFyxEWUfGqJZ+QvJMa7dD5DFIHzkgVlm1sWqtPVyX
+         mDQif9GoD6HwjyWYozcLLiaQQoSKGclDteZbep0MPD7RzQaxsLgAwke+Zm1v0563lals
+         d9eg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5hTZmsVraLnoyoiajwq2kp7kDJD/UBIvDGojNlZOjYA=;
-        b=F/XOUEAIgXZd5QGP2Gm5cdYScrKahl4ytahgzEVtZ4xP3M93Pp3YfeoMw6EHcWhZtm
-         /ls5kRfB1M2xC9qiwjQXMOyzePpKL5iz83DxkEvc/IFKCUw47Y1iLeVlsrh8ytxdpSY7
-         sRCoBpKthC2SzPyLyZn+oK0GOqIhw/afoG2ksDF7IRyPk/565XTubLEvoJU2FQFh4Edl
-         sivP6P8Qk49NAWE9/hjfr2bhkWI5KXlSlSShfZoOUgJDX/rRTnuAUNpbvFlknC5U6nkM
-         gq4ONlwbsGJMmyhxspp9GFIVpvnP0ksd6gQPdx5r4IRtO6zqVkSCWid4yZ9vZ6i3Zh4v
-         QwMg==
-X-Gm-Message-State: AOAM531yLa9d+eDc3ydzmhZhXA6CCmr65297jm/TnJszn/6j0EQI68fj
-        pt3kjknaY6bmMVIovOrcPSwpn/18zH/yssaz+OuAww==
-X-Google-Smtp-Source: ABdhPJy7PQL7FlWahwMf8zqvRh3tgaf9x3NU3N/Jf4Z/TBpgv3e+zIyq80gCL0b/Z+0DKPZ9HVLLg6VScA1ErGJ2s9s=
-X-Received: by 2002:a19:c10a:: with SMTP id r10mr19208289lff.95.1634422703906;
- Sat, 16 Oct 2021 15:18:23 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9ujg6PKfSs2XOzYYHdPfFh++V/EwomxD0QVcYgfLZXo=;
+        b=o5XTAOAGZc5JNsNA4gLSFrHoBfZGA/WLVd01vzEd+/0POvFH9xTOKCP42gcKHoGfXv
+         7XvhuKdZZUdI9DU2yGuwVGKQWIhRa/rvrdHASLy9Mj3zxAhky/2fQn1M3O79CIJTBApz
+         lsp+NfTn3GGMbxxtfpgUt8T1lk1Lby0xGfQc9+CpxV3zRT+TVnZUZqupav01gNJj3H3+
+         4YQzAnFvs/nCzcrLnHDCJgAZikJzoFNoGIuNnUGSDGdP0HDVHBYcorLDjEw3O1lIaroK
+         +77KV54y2/SHT8PryE2uZyTw2aNRl1YCXWON5BOFvxmHozg3VEF79r2kxp6J886Xry2P
+         6G1w==
+X-Gm-Message-State: AOAM5322y3rCuzZx003Xqgdk7xlUquCx2UrsNqZ5eXwBbaqCgNV+1RyQ
+        mPEc4092Af+c0DuOZs2lUWpHVw==
+X-Google-Smtp-Source: ABdhPJx7Ixjt5pToz+8Du+Kf33f+u70q+ZoT74guovCjf5YAM7lolr8SqhxQm3rOVRMfvryCj1ruRQ==
+X-Received: by 2002:aca:5dc5:: with SMTP id r188mr22884478oib.160.1634422615143;
+        Sat, 16 Oct 2021 15:16:55 -0700 (PDT)
+Received: from localhost.localdomain ([2600:1700:a0:3dc8:205:1bff:fec0:b9b3])
+        by smtp.gmail.com with ESMTPSA id d15sm1747058oic.32.2021.10.16.15.16.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 16 Oct 2021 15:16:54 -0700 (PDT)
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Kalyan Thota <kalyan_t@codeaurora.org>,
+        Kuogee Hsieh <khsieh@codeaurora.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v5 0/5] drm/msm/dp: Support multiple DP instances and add sc8180x
+Date:   Sat, 16 Oct 2021 15:18:36 -0700
+Message-Id: <20211016221843.2167329-1-bjorn.andersson@linaro.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <655523d7bf9658eb0b8e49a06c8b79a04052e5d5.1634286595.git.michal.simek@xilinx.com>
-In-Reply-To: <655523d7bf9658eb0b8e49a06c8b79a04052e5d5.1634286595.git.michal.simek@xilinx.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sun, 17 Oct 2021 00:18:13 +0200
-Message-ID: <CACRpkdY4pQXGB0e+HY1UYrbNpSb9tZzcnMh9zETCpSxxQ-HoKg@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: gpio: zynq: Add power-domains
-To:     Michal Simek <michal.simek@xilinx.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Michal Simek <monstr@monstr.eu>, git <git@xilinx.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>,
-        Srinivas Neeli <srinivas.neeli@xilinx.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 15, 2021 at 10:29 AM Michal Simek <michal.simek@xilinx.com> wrote:
+The current implementation supports a single DP instance and the DPU code will
+only match it against INTF_DP instance 0. These patches extends this to allow
+multiple DP instances and support for matching against DP instances beyond 0.
 
-> Describe optional power-domain property to fix dts_check warnings.
-> The similar change was done by commit 8c0aa567146b ("dt-bindings: gpio:
-> fsl-imx-gpio: Add power-domains").
->
-> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+With that in place add SC8180x DP and eDP controllers.
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Bjorn Andersson (7):
+  drm/msm/dp: Remove global g_dp_display variable
+  drm/msm/dp: Modify prototype of encoder based API
+  drm/msm/dp: Allow specifying connector_type per controller
+  drm/msm/dp: Allow attaching a drm_panel
+  drm/msm/dp: Support up to 3 DP controllers
+  dt-bindings: msm/dp: Add SC8180x compatibles
+  drm/msm/dp: Add sc8180x DP controllers
 
-Yours,
-Linus Walleij
+ .../bindings/display/msm/dp-controller.yaml   |   2 +
+ drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c   |  23 +--
+ .../gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c    |   8 +-
+ drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c       |  66 ++++----
+ .../gpu/drm/msm/disp/msm_disp_snapshot_util.c |   8 +-
+ drivers/gpu/drm/msm/dp/dp_display.c           | 153 ++++++++++--------
+ drivers/gpu/drm/msm/dp/dp_display.h           |   2 +
+ drivers/gpu/drm/msm/dp/dp_drm.c               |  13 +-
+ drivers/gpu/drm/msm/dp/dp_parser.c            |  30 +++-
+ drivers/gpu/drm/msm/dp/dp_parser.h            |   3 +-
+ drivers/gpu/drm/msm/msm_drv.h                 |   9 +-
+ 11 files changed, 205 insertions(+), 112 deletions(-)
+
+-- 
+2.29.2
+
