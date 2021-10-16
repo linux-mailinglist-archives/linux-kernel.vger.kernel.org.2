@@ -2,200 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8616643005C
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 07:04:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAC3F43005E
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 07:04:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243478AbhJPFGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 01:06:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54472 "EHLO
+        id S243667AbhJPFG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 01:06:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236843AbhJPFGQ (ORCPT
+        with ESMTP id S236843AbhJPFGz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 01:06:16 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E259C061762
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 22:04:09 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id d23so10450559pgh.8
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Oct 2021 22:04:09 -0700 (PDT)
+        Sat, 16 Oct 2021 01:06:55 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 480C7C061570;
+        Fri, 15 Oct 2021 22:04:47 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id i76so7973751pfe.13;
+        Fri, 15 Oct 2021 22:04:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1nRqPfmxrrw4CktC2ScfbUfntBuVYUtnPZ0553muocI=;
-        b=kl7hgM7vwGZWFu9LWpuyq+dIGP0Viks4UP5QnQQLMzbLucXzOyLk+HA8ZFnUm8LuYk
-         2eEWV1rXCXKL3snTDc6Cau1/G+eBVgLQoDJCF4j41wp/C8lSvmA9lHsnA33vARCg5Zkk
-         WMQ+ubC4tZyoWlckkab1kNqkrGte5WJN4Ijsenp10HOJQ6oBqU4ti/tQ6RRvyNY6lPhY
-         MvXvyhMbUKO2F8Sc9ut7lUxhFRHpvdJT5RrJ9QHAQcE2tzI5s3eCTypjggtKpL9xecxA
-         TYF2VRQAMmIKZlXFmiEJd18T26oSwltNM5lh9oPG67zh7exuchPqofWzQTEzUzMVmjr+
-         cQcA==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VNg5ZuSqXtZnIDT/1CeK+dUC1AUVpXTi6dIHjGdCB00=;
+        b=O6f/lrGFRvziPIrEcq2SK9AmUeLEU3LElV7tq1rCZPWAQ5lx8VJgS5O+2FOZaY0MYc
+         Z09kxUko1rnjEfPnHhu3FfbANUunLACgh7JnMYQw9sWzjc3NxoHQrqFTzypDj2kjohm0
+         oToW0d88Gm03fTTZVGcxB+3vppPNm4WFpUansTv1NV/qwKEhXttEJMJ/1wcow703btaF
+         MuMzXQGNjeRVmsupDxWx0g1ZCbT5PJV3aknIWoDVFTnM23pOEykGlzMC/AU9CXIxGN+a
+         S6CiUlSWASAPZVO/sBMN6KfI9i8ylnS3yALkQoRydqJLLQC4s1mJJXx6bJL/s355/Uw/
+         tnBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1nRqPfmxrrw4CktC2ScfbUfntBuVYUtnPZ0553muocI=;
-        b=hz/2mNFSsCzshx0CYKxmhn1t2DqR1640MiDxMPCvlLEG5sVuY/rdbXBTJ9S9g0MMjB
-         VUmo+wSc7kTKHORuBhBJytJvn2BBwiMF8IkvFC0tPpuc6LjxueUJ98XrqknlRibwozde
-         pLGa9EWQe6n/esFIqRGaI3JUr2o+7bs0ZNeDvaRmWe+rf0AqRoQDe/9o+QzPAGsEuzp2
-         Qco9TIjiJhZCbVQanhzQf7spAjeHira1aQNKkdiYLkkF1GDS4t0bpFZV3uR0ssW13+1n
-         3Ig7A7fzX8oObOtH+my1d376GFa3CirPGetVjz6dlbw1qWiGym9mD2VaiK7ymjKliN1D
-         0P/w==
-X-Gm-Message-State: AOAM531Kc0jqpzTgG5LJ2APhUKTJ6T+Ld6IaDyHgohHZOpD+S2KWD1io
-        0HMzNrw8L5egIIkZ5VdQzYDGyw==
-X-Google-Smtp-Source: ABdhPJyFTYXZY3VXt/hO0dPUs4MLGklG9srMkkjcN27uPXSIJJgmIUpxOwZDQJ2MxXSF5ZkBNhe71w==
-X-Received: by 2002:aa7:8bd3:0:b0:44c:68b3:a52e with SMTP id s19-20020aa78bd3000000b0044c68b3a52emr16055519pfd.74.1634360648469;
-        Fri, 15 Oct 2021 22:04:08 -0700 (PDT)
-Received: from x1 ([2601:1c2:1080:1950:2d9b:6b84:2b5:218c])
-        by smtp.gmail.com with ESMTPSA id 21sm12617106pjg.57.2021.10.15.22.04.07
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VNg5ZuSqXtZnIDT/1CeK+dUC1AUVpXTi6dIHjGdCB00=;
+        b=qTIWn3NGXUOE8uNRSXJB0xqbytfbRevRkNjN0Mowginh2nwxqiC90nfS9ilHioIN84
+         HG6cy1YPZsKv9vTZ1FJXU+/aHhSLZ1i99q5+agcD6QJJeB4+429bPQDsVTvcL9zCnzyx
+         PJen07wIdqzjmMmjCwPI24uftvJAEk4zzXzs1YS+QVGiYsVn8wnffSaxaOcRQB36VeIn
+         AHMEARqRYERne63QFAdjKDvhR7fFdaicjK1GbuBRr/pTIMxUil52YdhT8mHRMle4E6OK
+         Ya6mcQASKqLp8DKZSFdgck8H6B7Ug3mRVVcznW6nEPg7peEvby1Mcl2AUMxbMEeiq7EV
+         MKVg==
+X-Gm-Message-State: AOAM530NKB3TVDYoP/5gH4L7qsGCk+prgN/gjmKbL0ib7oB+QovKPely
+        f7uGXFvINS5nyJIa1tGglB4=
+X-Google-Smtp-Source: ABdhPJzQXYg1bz9xjyuz0BE9PX7NPJ2cEc8GOhsD22CjbWyyyiI0x7xzT6EX3ZLXoChnqKclO8+avA==
+X-Received: by 2002:a63:ea48:: with SMTP id l8mr12304501pgk.99.1634360686763;
+        Fri, 15 Oct 2021 22:04:46 -0700 (PDT)
+Received: from rok-te3.kortoor.gmail.com.beta.tailscale.net ([211.250.198.237])
+        by smtp.googlemail.com with ESMTPSA id u24sm6263989pfm.27.2021.10.15.22.04.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Oct 2021 22:04:08 -0700 (PDT)
-Date:   Fri, 15 Oct 2021 22:04:06 -0700
-From:   Drew Fustini <dfustini@baylibre.com>
-To:     Jason Kridner <jkridner@beagleboard.org>
-Cc:     Johan Hovold <johan@kernel.org>,
-        Benoit Cousson <bcousson@baylibre.com>,
-        Dave Gerlach <d-gerlach@ti.com>, Keerthy <j-keerthy@ti.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        OMAP List <linux-omap@vger.kernel.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ARM: dts: am335x: Add rtc node as system-power-controller
-Message-ID: <20211016050406.GA575510@x1>
-References: <20211012191311.879838-1-dfustini@baylibre.com>
- <YWaJfofs8QAtBnVu@hovoldconsulting.com>
- <20211013214103.GA10628@x1>
- <YWgJkkJ4LuAJhLmk@hovoldconsulting.com>
- <CA+T6QPkUSJZ9Pb8JvfuVuGzfv0cX-HQcT3eALN5Y9882r676MA@mail.gmail.com>
+        Fri, 15 Oct 2021 22:04:46 -0700 (PDT)
+From:   Kyungrok Chung <acadx0@gmail.com>
+To:     Marek Lindner <mareklindner@neomailbox.ch>,
+        Simon Wunderlich <sw@simonwunderlich.de>,
+        Antonio Quartulli <a@unstable.cc>,
+        Sven Eckelmann <sven@narfation.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Roopa Prabhu <roopa@nvidia.com>,
+        Nikolay Aleksandrov <nikolay@nvidia.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>
+Cc:     b.a.t.m.a.n@lists.open-mesh.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bridge@lists.linux-foundation.org,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org
+Subject: [PATCH v2 net-next] net: make use of helper netif_is_bridge_master()
+Date:   Sat, 16 Oct 2021 14:04:38 +0900
+Message-Id: <20211016050439.2592877-1-acadx0@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+T6QPkUSJZ9Pb8JvfuVuGzfv0cX-HQcT3eALN5Y9882r676MA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 10:12:48AM -0400, Jason Kridner wrote:
-> On Thu, Oct 14, 2021 at 6:43 AM Johan Hovold <johan@kernel.org> wrote:
-> 
-> > On Wed, Oct 13, 2021 at 02:41:03PM -0700, Drew Fustini wrote:
-> > > On Wed, Oct 13, 2021 at 09:23:42AM +0200, Johan Hovold wrote:
-> > > > On Tue, Oct 12, 2021 at 12:13:12PM -0700, Drew Fustini wrote:
-> > > > > From: Keerthy <j-keerthy@ti.com>
-> > > > >
-> > > > > PMIC_PWR_EN pin of RTC on am335x-evm, bone, and boneblack is
-> > connected to
-> > > > > PMIC on board, so flag rtc node as system-power-controller to allow
-> > > > > software to poweroff boards.
-> > > >
-> > > > The "system-power-controller" property is already set in
-> > > > bone-common.dtsi since
-> > > >
-> > > >     2876cc4a773c ("ARM: dts: Move most of am335x-boneblack.dts to
-> > am335x-boneblack-common.dtsi")
-> > > >
-> > > > so this probably only affects am335x-evm and that should be reflected
-> > in
-> > > > the commit message.
-> > > >
-> > > > Also, should you now remove the property from boneblack-common? Or just
-> > > > add it to am335x-evm instead?
-> > >
-> > > Thank you for reviewing. Yes, I should improve the commit message as the
-> > > BeagleBone Black is already covered for the rtc system-power-controller
-> > > in am335x-boneblack-common.dtsi.
-> >
-> > So is sancloud-bbe apparently.
-> >
-> > I only noticed because I added support to BeagleBone Black long ago so
-> > unless there'd been a regression it should already be supported.
-> >
-> > > I believe it would be ok to remove system-power-controller from
-> > > am335x-boneblack-common.dtsi and have it in am335x-bone-common.dtsi.
-> > >
-> > > These are the files that include am335x-boneblack-common.dtsi:
-> > > arch/arm/boot/dts/am335x-boneblack-wireless.dts
-> > > arch/arm/boot/dts/am335x-boneblack.dts
-> > > arch/arm/boot/dts/am335x-sancloud-bbe-lite.dts
-> > > arch/arm/boot/dts/am335x-sancloud-bbe.dts
-> > >
-> > > But they all also include am335x-bone-common.dtsi.
-> > >
-> > > However, I just noticed that am335x-evm.dts does not include either
-> > > am335x-boneblack-common.dtsi or am335x-boneblack-common.dtsi. Thus
-> > > rtc system-power-controller should be directly inserted into
-> > > am335x-evm.dts.
-> >
-> > Right.
-> >
-> > > I considered just moving system-power-controller to the rtc node in
-> > > am33xx-l4.dtsi but I don't think that would be correct as this would not
-> > > be valid for all am33xx devices.
-> > >
-> > > Does that seem correct to you?
-> >
-> > No, that wouldn't be right.
-> >
-> > You're more familiar with the different variants here, but unless all
-> > flavours of Bone Black have the signal wired, it should probably be
-> > pushed down into the dts files again.
-> >
-> 
-> I believe anything "bone" is going to have the same RTC power
-> configuration. I believe this could be inconsistent at the AM335x level.
+Make use of netdev helper functions to improve code readability.
+Replace 'dev->priv_flags & IFF_EBRIDGE' with netif_is_bridge_master(dev).
 
-Thanks for the input Jason and Johan.
+Signed-off-by: Kyungrok Chung <acadx0@gmail.com>
+---
 
-These are the dts files that currently include either 
-am335x-bone-common.dtsi or am335x-boneblack-common.dtsi:
+v1->v2:
+  - Apply fixes to batman-adv, core too.
 
-    am335x-bone.dts  
-	am335x-bone-common.dtsi
+ net/batman-adv/multicast.c      | 2 +-
+ net/bridge/br.c                 | 4 ++--
+ net/bridge/br_fdb.c             | 6 +++---
+ net/bridge/br_if.c              | 2 +-
+ net/bridge/br_ioctl.c           | 2 +-
+ net/bridge/br_mdb.c             | 4 ++--
+ net/bridge/br_netfilter_hooks.c | 2 +-
+ net/bridge/br_netlink.c         | 4 ++--
+ net/core/rtnetlink.c            | 2 +-
+ 9 files changed, 14 insertions(+), 14 deletions(-)
 
-    am335x-boneblack.dts
-        am335x-bone-common.dtsi
-	am335x-boneblack-common.dtsi [rtc system-power-controller]
+diff --git a/net/batman-adv/multicast.c b/net/batman-adv/multicast.c
+index a3b6658ed789..433901dcf0c3 100644
+--- a/net/batman-adv/multicast.c
++++ b/net/batman-adv/multicast.c
+@@ -89,7 +89,7 @@ static struct net_device *batadv_mcast_get_bridge(struct net_device *soft_iface)
+ 	rcu_read_lock();
+ 	do {
+ 		upper = netdev_master_upper_dev_get_rcu(upper);
+-	} while (upper && !(upper->priv_flags & IFF_EBRIDGE));
++	} while (upper && !netif_is_bridge_master(upper));
+ 
+ 	dev_hold(upper);
+ 	rcu_read_unlock();
+diff --git a/net/bridge/br.c b/net/bridge/br.c
+index d3a32c6813e0..1fac72cc617f 100644
+--- a/net/bridge/br.c
++++ b/net/bridge/br.c
+@@ -36,7 +36,7 @@ static int br_device_event(struct notifier_block *unused, unsigned long event, v
+ 	bool changed_addr;
+ 	int err;
+ 
+-	if (dev->priv_flags & IFF_EBRIDGE) {
++	if (netif_is_bridge_master(dev)) {
+ 		err = br_vlan_bridge_event(dev, event, ptr);
+ 		if (err)
+ 			return notifier_from_errno(err);
+@@ -349,7 +349,7 @@ static void __net_exit br_net_exit(struct net *net)
+ 
+ 	rtnl_lock();
+ 	for_each_netdev(net, dev)
+-		if (dev->priv_flags & IFF_EBRIDGE)
++		if (netif_is_bridge_master(dev))
+ 			br_dev_delete(dev, &list);
+ 
+ 	unregister_netdevice_many(&list);
+diff --git a/net/bridge/br_fdb.c b/net/bridge/br_fdb.c
+index 46812b659710..a6a68e18c70a 100644
+--- a/net/bridge/br_fdb.c
++++ b/net/bridge/br_fdb.c
+@@ -825,7 +825,7 @@ int br_fdb_dump(struct sk_buff *skb,
+ 	struct net_bridge_fdb_entry *f;
+ 	int err = 0;
+ 
+-	if (!(dev->priv_flags & IFF_EBRIDGE))
++	if (!netif_is_bridge_master(dev))
+ 		return err;
+ 
+ 	if (!filter_dev) {
+@@ -1076,7 +1076,7 @@ int br_fdb_add(struct ndmsg *ndm, struct nlattr *tb[],
+ 		return -EINVAL;
+ 	}
+ 
+-	if (dev->priv_flags & IFF_EBRIDGE) {
++	if (netif_is_bridge_master(dev)) {
+ 		br = netdev_priv(dev);
+ 		vg = br_vlan_group(br);
+ 	} else {
+@@ -1173,7 +1173,7 @@ int br_fdb_delete(struct ndmsg *ndm, struct nlattr *tb[],
+ 	struct net_bridge *br;
+ 	int err;
+ 
+-	if (dev->priv_flags & IFF_EBRIDGE) {
++	if (netif_is_bridge_master(dev)) {
+ 		br = netdev_priv(dev);
+ 		vg = br_vlan_group(br);
+ 	} else {
+diff --git a/net/bridge/br_if.c b/net/bridge/br_if.c
+index 4a02f8bb278a..c11bba3e7ec0 100644
+--- a/net/bridge/br_if.c
++++ b/net/bridge/br_if.c
+@@ -471,7 +471,7 @@ int br_del_bridge(struct net *net, const char *name)
+ 	if (dev == NULL)
+ 		ret =  -ENXIO; 	/* Could not find device */
+ 
+-	else if (!(dev->priv_flags & IFF_EBRIDGE)) {
++	else if (!netif_is_bridge_master(dev)) {
+ 		/* Attempt to delete non bridge device! */
+ 		ret = -EPERM;
+ 	}
+diff --git a/net/bridge/br_ioctl.c b/net/bridge/br_ioctl.c
+index 49c268871fc1..db4ab2c2ce18 100644
+--- a/net/bridge/br_ioctl.c
++++ b/net/bridge/br_ioctl.c
+@@ -26,7 +26,7 @@ static int get_bridge_ifindices(struct net *net, int *indices, int num)
+ 	for_each_netdev_rcu(net, dev) {
+ 		if (i >= num)
+ 			break;
+-		if (dev->priv_flags & IFF_EBRIDGE)
++		if (netif_is_bridge_master(dev))
+ 			indices[i++] = dev->ifindex;
+ 	}
+ 	rcu_read_unlock();
+diff --git a/net/bridge/br_mdb.c b/net/bridge/br_mdb.c
+index 0281453f7766..61ccf46fcc21 100644
+--- a/net/bridge/br_mdb.c
++++ b/net/bridge/br_mdb.c
+@@ -422,7 +422,7 @@ static int br_mdb_dump(struct sk_buff *skb, struct netlink_callback *cb)
+ 	cb->seq = net->dev_base_seq;
+ 
+ 	for_each_netdev_rcu(net, dev) {
+-		if (dev->priv_flags & IFF_EBRIDGE) {
++		if (netif_is_bridge_master(dev)) {
+ 			struct net_bridge *br = netdev_priv(dev);
+ 			struct br_port_msg *bpm;
+ 
+@@ -1016,7 +1016,7 @@ static int br_mdb_parse(struct sk_buff *skb, struct nlmsghdr *nlh,
+ 		return -ENODEV;
+ 	}
+ 
+-	if (!(dev->priv_flags & IFF_EBRIDGE)) {
++	if (!netif_is_bridge_master(dev)) {
+ 		NL_SET_ERR_MSG_MOD(extack, "Device is not a bridge");
+ 		return -EOPNOTSUPP;
+ 	}
+diff --git a/net/bridge/br_netfilter_hooks.c b/net/bridge/br_netfilter_hooks.c
+index 8edfb98ae1d5..b5af68c105a8 100644
+--- a/net/bridge/br_netfilter_hooks.c
++++ b/net/bridge/br_netfilter_hooks.c
+@@ -968,7 +968,7 @@ static int brnf_device_event(struct notifier_block *unused, unsigned long event,
+ 	struct net *net;
+ 	int ret;
+ 
+-	if (event != NETDEV_REGISTER || !(dev->priv_flags & IFF_EBRIDGE))
++	if (event != NETDEV_REGISTER || !netif_is_bridge_master(dev))
+ 		return NOTIFY_DONE;
+ 
+ 	ASSERT_RTNL();
+diff --git a/net/bridge/br_netlink.c b/net/bridge/br_netlink.c
+index 5c6c4305ed23..0c8b5f1a15bc 100644
+--- a/net/bridge/br_netlink.c
++++ b/net/bridge/br_netlink.c
+@@ -106,7 +106,7 @@ static size_t br_get_link_af_size_filtered(const struct net_device *dev,
+ 		p = br_port_get_check_rcu(dev);
+ 		if (p)
+ 			vg = nbp_vlan_group_rcu(p);
+-	} else if (dev->priv_flags & IFF_EBRIDGE) {
++	} else if (netif_is_bridge_master(dev)) {
+ 		br = netdev_priv(dev);
+ 		vg = br_vlan_group_rcu(br);
+ 	}
+@@ -1050,7 +1050,7 @@ int br_dellink(struct net_device *dev, struct nlmsghdr *nlh, u16 flags)
+ 
+ 	p = br_port_get_rtnl(dev);
+ 	/* We want to accept dev as bridge itself as well */
+-	if (!p && !(dev->priv_flags & IFF_EBRIDGE))
++	if (!p && !netif_is_bridge_master(dev))
+ 		return -EINVAL;
+ 
+ 	err = br_afspec(br, p, afspec, RTM_DELLINK, &changed, NULL);
+diff --git a/net/core/rtnetlink.c b/net/core/rtnetlink.c
+index 2dc1b209ba91..d3676666a529 100644
+--- a/net/core/rtnetlink.c
++++ b/net/core/rtnetlink.c
+@@ -4384,7 +4384,7 @@ static int rtnl_fdb_dump(struct sk_buff *skb, struct netlink_callback *cb)
+ 					continue;
+ 
+ 				if (br_dev != netdev_master_upper_dev_get(dev) &&
+-				    !(dev->priv_flags & IFF_EBRIDGE))
++				    netif_is_bridge_master(dev))
+ 					continue;
+ 				cops = ops;
+ 			}
+-- 
+2.33.0
 
-    am335x-boneblack-wireless.dts
-	am335x-bone-common.dtsi
-	am335x-boneblack-common.dtsi [rtc system-power-controller]
-
-    am335x-bonegreen.dts
-	am335x-bone-common.dtsi
-
-    am335x-bonegreen-wireless.dts
-	am335x-bone-common.dtsi
-
-    am335x-sancloud-bbe.dts
-	am335x-bone-common.dtsi
-	am335x-boneblack-common.dtsi [rtc system-power-controller]
-
-    am335x-sancloud-bbe-lite.dts
-	am335x-bone-common.dtsi
-	am335x-boneblack-common.dtsi [rtc system-power-controller]
-
-am335x-boneblack.dts, am335x-boneblack-wireless.dts,
-am335x-sancloud-bbe.dts, and am335x-sancloud-bbe-lite.dts already have
-the rtc system-power-controller through am335x-boneblack-common.dtsi.
-
-Moving rtc system-power-controller from am335x-boneblack-common.dtsi to
-am335x-bone-common.dtsi would have no change for those boards as they
-also include am335x-bone-common.dtsi.
-
-It would add system-power-controller to am335x-bone.dts,
-am335x-bonegreen.dts, and am335x-bonegreen-wireless.dts.
-
-The original bone, green and green wireless have PMIC_POWR_EN (ZCZ C6)
-connected to PWR_EN on the TPS65217B PMIC. Thus system-power-controller
-should be valid for them too.
-
-I will make new patch series that:
-
-  * removes system-power-controller from am335x-boneblack-common.dtsi 
-  * adds system-power-controller to am335x-bone-common.dtsi
-  * adds system-power-controller to am335x-evm.dts, am335x-icev2.dts,
-    am335x-icev2-prueth.dts
-
-However, am335x-evmsk.dts should not have system-power-controller as
-PMIC_POWR_EN is not connected in that board design.
-
-Thanks,
-Drew
