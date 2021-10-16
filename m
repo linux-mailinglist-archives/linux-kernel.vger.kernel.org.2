@@ -2,126 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6B8D430262
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 13:27:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7FF7430268
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 13:29:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244321AbhJPL3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 07:29:09 -0400
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:42305 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229848AbhJPL3D (ORCPT
+        id S244334AbhJPLbV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 07:31:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21752 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244326AbhJPLbO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 07:29:03 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 6E3AB580FDE;
-        Sat, 16 Oct 2021 07:26:54 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Sat, 16 Oct 2021 07:26:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        joshtriplett.org; h=date:from:to:cc:subject:message-id
-        :mime-version:content-type; s=fm1; bh=eILtDThS15EVW64aCebMmA4bjm
-        6AbsJmEdCTRDYtsoQ=; b=JFiW4Y6C8+WQ58dOasxfFFnr8YpBTjrXRJT7CCLPw8
-        3ERsqbu2TKAP5dJ7XQVpq4I9jvULZWJTwVbGgs0wzVeJGTO6kBdHtuu7xc6uVBHf
-        4JRbI87GcaaygnZOTlE3vn7PcsxvMjK8FMEO8IBAOO0zO/oK3lvtXhJSoS6GQesd
-        yyS8KA/Tz/20Kpy2IrngEBv37JFtQRgNJUDnQaqZiWnYDcN13IHVl92SuTV74fc7
-        I//ymom6LQLliYXfWCel2DHVPR4TqEJH68B7V0jEYUBHjjqu7W/1jUTBAUmyYVKN
-        FgeDgHBQ8ou2ExPMlyBQzEHEjQTl72k2BgbJ5Xg+RQNw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:message-id
-        :mime-version:subject:to:x-me-proxy:x-me-proxy:x-me-sender
-        :x-me-sender:x-sasl-enc; s=fm1; bh=eILtDThS15EVW64aCebMmA4bjm6Ab
-        sJmEdCTRDYtsoQ=; b=J61Vyz+Kw9LuRHcEMID+5eIR1Rbxd9OTk1een1HchHNoW
-        Ri0p8oUNmkzThooGzw44teV3Rppah5llq0OFgUishSAeKGMs2BYwx8GZFeeBbmTA
-        /opZFUJOGZdWoVCg1BramyH1B5apbVn7SOBAew8cD8ATDATmHnhvzZ2pkWzJf+nu
-        AlgQb/FIKcbCVokcECmYjJRtjFazhCv3ZP4rd+btdyC904yTTzIA+OXNlWhPlqVj
-        PdExcfh07kCBwL1OMyNtLRXxBWLbXynKKQN3TnCBbwwibRV4te8TITvr03yiNwf3
-        bz/FbNmEaPHees6Bs87BjtEh6f7foPzswkkcrJtwg==
-X-ME-Sender: <xms:_rZqYYp_w5x2fWGh92loCgwp9wPtwEOLFTf6a_AIt8K_o2Cyth_uyw>
-    <xme:_rZqYeplAethZCFcem8ssZLLkkUNJOilC6PZ7E44w4-jzKgGlAEM5In-qbVxETr1A
-    2neDd5rDiR62I-sYkQ>
-X-ME-Received: <xmr:_rZqYdP4QChYK5zgQSX46k4muR7PcgbhmZHZMO-mC8CvjD1li8ORmu9-ovtlPg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvdduiedggedtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfggtggusehttdertddttddvnecuhfhrohhmpeflohhshhcuvfhr
-    ihhplhgvthhtuceojhhoshhhsehjohhshhhtrhhiphhlvghtthdrohhrgheqnecuggftrf
-    grthhtvghrnhepleelgeegtdejjeefuedvudefgefgkedtfeekheevueevvddvhfegfffg
-    vdfgffeknecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    epjhhoshhhsehjohhshhhtrhhiphhlvghtthdrohhrgh
-X-ME-Proxy: <xmx:_rZqYf7vniRMyEPMVgNaMsJHPy5GgVLDBhWl3K9-erkN0Hvsiha10Q>
-    <xmx:_rZqYX4ntiHyzKlLA2d46Q5ha7C1nfBgZ8Ih7L6Pu8yvk3YAFpELpg>
-    <xmx:_rZqYfigGC830MJ30DH0KdLSavTTkLsFxLd4jCzNCFJYrA5XddF87A>
-    <xmx:_rZqYRS9mPwDr2EWIqdxO19at6gTljrh-ySbZ_hkofgPKf5FxSDbNQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 16 Oct 2021 07:26:52 -0400 (EDT)
-Date:   Sat, 16 Oct 2021 13:26:50 +0200
-From:   Josh Triplett <josh@joshtriplett.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] kconfig: lxdialog: Support home/end when editing values
-Message-ID: <257b264c328253acda17ebafd7be6740021b1707.1634383536.git.josh@joshtriplett.org>
+        Sat, 16 Oct 2021 07:31:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634383746;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FpnA9lYWxkJjvg75Ewu7vyuMBg8oJ+36xZYExlcfae0=;
+        b=ZxOgza67eEA3nZSGcVGzOgt8Zo3VMz/s933ufyETQY+x630hAu432e6qGH9wRCM+XZmohj
+        Mc317AnkPnqOV/fTHHKCJCbUBeWKSFds8Auw4Kwqn0fvbwuQHP8rc0QI8VZSjXSYj/5+ED
+        KA9JnhA2yAgXOxpA7Xc48fzHWeX6fVI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-401-AX-aE8PPOTGtJ1ZuG3mfog-1; Sat, 16 Oct 2021 07:29:00 -0400
+X-MC-Unique: AX-aE8PPOTGtJ1ZuG3mfog-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 91F0010A8E00;
+        Sat, 16 Oct 2021 11:28:57 +0000 (UTC)
+Received: from T590 (ovpn-8-19.pek2.redhat.com [10.72.8.19])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4C8695DA61;
+        Sat, 16 Oct 2021 11:28:44 +0000 (UTC)
+Date:   Sat, 16 Oct 2021 19:28:39 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     tj@kernel.org, gregkh@linuxfoundation.org,
+        akpm@linux-foundation.org, minchan@kernel.org, jeyu@kernel.org,
+        shuah@kernel.org, bvanassche@acm.org, dan.j.williams@intel.com,
+        joe@perches.com, tglx@linutronix.de, keescook@chromium.org,
+        rostedt@goodmis.org, linux-spdx@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 11/12] zram: fix crashes with cpu hotplug multistate
+Message-ID: <YWq3Z++uoJ/kcp+3@T590>
+References: <20210927163805.808907-1-mcgrof@kernel.org>
+ <20210927163805.808907-12-mcgrof@kernel.org>
+ <YWeOJP2UJWYF94fu@T590>
+ <YWeR4moCRh+ZHOmH@T590>
+ <YWiSAN6xfYcUDJCb@bombadil.infradead.org>
+ <YWjCpLUNPF3s4P2U@T590>
+ <YWjJ0O7K+31Iz3ox@bombadil.infradead.org>
+ <YWk9e957Hb+I7HvR@T590>
+ <YWm68xUnAofop3PZ@bombadil.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <YWm68xUnAofop3PZ@bombadil.infradead.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When editing long string values, this makes navigation much easier.
+On Fri, Oct 15, 2021 at 10:31:31AM -0700, Luis Chamberlain wrote:
+> On Fri, Oct 15, 2021 at 04:36:11PM +0800, Ming Lei wrote:
+> > On Thu, Oct 14, 2021 at 05:22:40PM -0700, Luis Chamberlain wrote:
+> > > On Fri, Oct 15, 2021 at 07:52:04AM +0800, Ming Lei wrote:
+> > ...
+> > > > 
+> > > > We need to understand the exact reason why there is still cpuhp node
+> > > > left, can you share us the exact steps for reproducing the issue?
+> > > > Otherwise we may have to trace and narrow down the reason.
+> > > 
+> > > See my commit log for my own fix for this issue.
+> > 
+> > OK, thanks!
+> > 
+> > I can reproduce the issue, and the reason is that reset_store fails
+> > zram_remove() when unloading module, then the warning is caused.
+> > 
+> > The top 3 patches in the following tree can fix the issue:
+> > 
+> > https://github.com/ming1/linux/commits/my_v5.15-blk-dev
+> 
+> Thanks for trying an alternative fix! A crash stops yes, however this
 
-Signed-off-by: Josh Triplett <josh@joshtriplett.org>
----
+I doubt it is alternative since your patchset doesn't mention the exact
+reason of 'Error: Removing state 63 which has instances left.', that is
+simply caused by failing to remove zram because ->claim is set during
+unloading module.
 
-Ran into this when repeatedly editing CONFIG_CMDLINE and wanting to
-change the first value.
+Yeah, you mentioned the race between disksize_store() vs. zram_remove(),
+however I don't think it is reproduced easily in the test because the race
+window is pretty small, also it can be fixed easily in my 3rd path
+without any complicated tricks.
 
- scripts/kconfig/lxdialog/inputbox.c | 33 +++++++++++++++++++++++++++++
- 1 file changed, 33 insertions(+)
+Not dig into details of your patchset via grabbing module reference
+count during show/store attribute of kernfs which is done in your patch
+9, but IMO this way isn't necessary:
 
-diff --git a/scripts/kconfig/lxdialog/inputbox.c b/scripts/kconfig/lxdialog/inputbox.c
-index 1dcfb288ee63..25c7cb05b3da 100644
---- a/scripts/kconfig/lxdialog/inputbox.c
-+++ b/scripts/kconfig/lxdialog/inputbox.c
-@@ -181,6 +181,39 @@ int dialog_inputbox(const char *title, const char *prompt, int height, int width
- 					pos++;
- 				}
- 				continue;
-+			case KEY_HOME:
-+				if (pos > 0) {
-+					pos = show_x = input_x = 0;
-+					wmove(dialog, box_y, box_x);
-+					for (i = 0; i < box_width; i++)
-+						waddch(dialog, ' ');
-+					wmove(dialog, box_y, box_x);
-+					for (i = 0; i < box_width && instr[show_x + i]; i++)
-+						waddch(dialog, instr[show_x + i]);
-+					wmove(dialog, box_y, box_x);
-+				}
-+				continue;
-+			case KEY_END:
-+				if (pos < len) {
-+					pos = len;
-+					wmove(dialog, box_y, box_x);
-+					for (i = 0; i < box_width; i++)
-+						waddch(dialog, ' ');
-+					wmove(dialog, box_y, box_x);
-+					if (len < box_width) {
-+						show_x = 0;
-+						input_x = box_width - 1;
-+						for (i = 0; i < box_width && instr[show_x + i]; i++)
-+							waddch(dialog, instr[show_x + i]);
-+					} else {
-+						show_x = len - box_width + 1;
-+						input_x = box_width - 1;
-+					}
-+					for (i = 0; i < box_width && instr[show_x + i]; i++)
-+						waddch(dialog, instr[show_x + i]);
-+					wmove(dialog, box_y, input_x + box_x);
-+				}
-+				continue;
- 			default:
- 				if (key < 0x100 && isprint(key)) {
- 					if (len < MAX_LEN) {
--- 
-2.33.0
+1) any driver module has to cleanup anything which may refer to symbols
+or data defined in module_exit of this driver
+
+2) device_del() is often done in module_exit(), once device_del()
+returns, no any new show/store on the device's kobject attribute
+is possible.
+
+3) it is _not_ a must or pattern for fixing bugs to hold one lock before
+calling device_del(), meantime the lock is required in the device's
+attribute show()/store(), which causes AA deadlock easily. Your approach
+just avoids the issue by not releasing module until all show/store are
+done.
+
+Also the model of using module refcount is usually that if anyone will
+use the module, grab one extra ref, and once the use is done, release
+it. For example of block device, the driver's module refcnt is grabbed
+when the disk/part is opened, and released when the disk/part is closed.
+
+
+> also ends up leaving the driver in an unrecoverable state after a few
+> tries. Ie, you CTRL-C the scripts and try again over and over again and
+> the driver ends up in a situation where it just says:
+> 
+> zram: Can't change algorithm for initialized device
+
+It means the algorithm can't be changed for one initialized device
+at the exact time. That is understandable because two zram02.sh are
+running concurrently.
+
+Your test script just runs two ./zram02.sh tasks concurrently forever,
+so what is your expected result for the test? Of course, it can't be
+over.
+
+I can't reproduce the 'unrecoverable' state in my test, can you share the
+stack trace log after that happens?
+
+Is the zram02.sh still running or slept somewhere in the 'unrecoverable'
+state? If it is still running, it means the current sleep point isn't
+interruptable when running 'CTRL-C'. In my test, after several 'CTRL-C',
+both the two zram02.sh started from two terminals can be terminated. If
+it is slept somewhere forever, it can be one problem.
+
+> 
+> And the zram module can't be removed at that point.
+
+It is just that systemd opens the zram or the disk is opened as swap
+disk, and once systemd closes it or after you run swapoff, it can be
+unloaded.
+
+
+Thanks,
+Ming
 
