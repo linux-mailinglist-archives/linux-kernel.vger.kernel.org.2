@@ -2,80 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FE26430083
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 08:22:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5A96430086
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 08:24:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239829AbhJPGYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 02:24:07 -0400
-Received: from smtp02.smtpout.orange.fr ([80.12.242.124]:64942 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239451AbhJPGYF (ORCPT
+        id S239918AbhJPG0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 02:26:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43526 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239451AbhJPG0d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 02:24:05 -0400
-Received: from pop-os.home ([92.140.161.106])
-        by smtp.orange.fr with ESMTPA
-        id bd4jm9j9qniuxbd4jmKALb; Sat, 16 Oct 2021 08:21:57 +0200
-X-ME-Helo: pop-os.home
-X-ME-Auth: YWZlNiIxYWMyZDliZWIzOTcwYTEyYzlhMmU3ZiQ1M2U2MzfzZDfyZTMxZTBkMTYyNDBjNDJlZmQ3ZQ==
-X-ME-Date: Sat, 16 Oct 2021 08:21:57 +0200
-X-ME-IP: 92.140.161.106
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     ulf.hansson@linaro.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, cjb@laptop.org
-Cc:     linux-mmc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] mmc: mxs-mmc: disable regulator on error and in the remove function
-Date:   Sat, 16 Oct 2021 08:21:44 +0200
-Message-Id: <4aadb3c97835f7b80f00819c3d549e6130384e67.1634365151.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        Sat, 16 Oct 2021 02:26:33 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C21BFC061570;
+        Fri, 15 Oct 2021 23:24:25 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id l6so7726542plh.9;
+        Fri, 15 Oct 2021 23:24:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZvOvoZcvvH/Tx90si2pKJuiA/fIC5HYugtK+5A8dZIs=;
+        b=adWh4ygPqc92epNkTraqhJCi7bUk4sjO5zyT+A14oTHay7XdUEdrusc0T7n4dkJWr8
+         iuYo+Wx9Twyue8mGvq71xjUsiHbNgE07aZSGVxQhDBv7t2zmYCjzpcYDD0Lwa3Oewc1O
+         ncs3GLLEsK2mqJt3jrezh6hJ7sDe7oub0C7Q2E0raaAzhpeRysyKDnS7ALzmIgSI7W5J
+         iFVAeygq2FgIZqnuCK2xjln6M6LtSIXKitatPcbCy9tEQJGYyv77WE3dnq+eL+dPLefR
+         Qoie4B4uSaOBdnXp58iT0M0aUVkp7uTxAaQegU6Jz6R/trZj//vVu6CTwYjfQSVd3cBv
+         P12A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZvOvoZcvvH/Tx90si2pKJuiA/fIC5HYugtK+5A8dZIs=;
+        b=uztWHbeQFZlLdZLn6qiwpyzP6kTMY6CbB3xZIBZaTRUTtCMr2c+Gh9zLVWzHsubf4x
+         rZHYzNwDHyPh2JS9PhKSNqpfWnNlbP2N6rbW/zMGpAdn631bgBPc1sNdpMNv56dCGg1M
+         LvcxH1490DMlrs+ngkTPGhckjsIVZ/Efmq1wOvOhOjFjhrKz4mAlcogx0h7tB/YKMmo2
+         QR6fbDrfKjf+83mWw0iFr9faGCy+pzYAwZKcHkmhUEjACbgXmxZXudQMg3LecSVIuhnn
+         jFHnQGcXN8dAVlOJ6GsywJw3yHAsnDBrLT+4K/+zO/68GBLdx5vMC4eK20FRn1YAEbOh
+         s4QQ==
+X-Gm-Message-State: AOAM533RIWhwpxwN/84ac3vlSqecFXAej8z/05AjThT1ez558CMWQnWO
+        BzKYBBHCmRUT4hmmW5JH0Wg=
+X-Google-Smtp-Source: ABdhPJzaqUWxXy8civOeDMmAst1Ydj5bQI6jj4MORNLBbMI0BSepJ0kkZcvj9C/q3tDNOeRM/XNQXA==
+X-Received: by 2002:a17:902:e846:b0:13f:551b:ba23 with SMTP id t6-20020a170902e84600b0013f551bba23mr14791681plg.77.1634365465100;
+        Fri, 15 Oct 2021 23:24:25 -0700 (PDT)
+Received: from localhost.localdomain ([171.211.26.24])
+        by smtp.gmail.com with ESMTPSA id z11sm13147334pjl.45.2021.10.15.23.24.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Oct 2021 23:24:24 -0700 (PDT)
+From:   DENG Qingfang <dqfext@gmail.com>
+To:     Sean Wang <sean.wang@mediatek.com>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     stable@vger.kernel.org
+Subject: [PATCH net] net: dsa: mt7530: correct ds->num_ports
+Date:   Sat, 16 Oct 2021 14:24:14 +0800
+Message-Id: <20211016062414.783863-1-dqfext@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 'reg_vmmc' regulator is enabled in the probe. It is never disabled.
-Neither in the error handling path of the probe nor in the remove
-function.
+Setting ds->num_ports to DSA_MAX_PORTS made DSA core allocate unnecessary
+dsa_port's and call mt7530_port_disable for non-existent ports.
 
-Register a devm_action to disable it when needed.
+Set it to MT7530_NUM_PORTS to fix that, and dsa_is_user_port check in
+port_enable/disable is no longer required.
 
-Fixes: 4dc5a79f1350 ("mmc: mxs-mmc: enable regulator for mmc slot")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc: stable@vger.kernel.org
+Signed-off-by: DENG Qingfang <dqfext@gmail.com>
 ---
- drivers/mmc/host/mxs-mmc.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/net/dsa/mt7530.c | 8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
 
-diff --git a/drivers/mmc/host/mxs-mmc.c b/drivers/mmc/host/mxs-mmc.c
-index 947581de7860..8c3655d3be96 100644
---- a/drivers/mmc/host/mxs-mmc.c
-+++ b/drivers/mmc/host/mxs-mmc.c
-@@ -552,6 +552,11 @@ static const struct of_device_id mxs_mmc_dt_ids[] = {
- };
- MODULE_DEVICE_TABLE(of, mxs_mmc_dt_ids);
- 
-+static void mxs_mmc_regulator_disable(void *regulator)
-+{
-+	regulator_disable(regulator);
-+}
-+
- static int mxs_mmc_probe(struct platform_device *pdev)
+diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
+index a3b49abd32f1..dbd15da977b5 100644
+--- a/drivers/net/dsa/mt7530.c
++++ b/drivers/net/dsa/mt7530.c
+@@ -1035,9 +1035,6 @@ mt7530_port_enable(struct dsa_switch *ds, int port,
  {
- 	struct device_node *np = pdev->dev.of_node;
-@@ -591,6 +596,11 @@ static int mxs_mmc_probe(struct platform_device *pdev)
- 				"Failed to enable vmmc regulator: %d\n", ret);
- 			goto out_mmc_free;
- 		}
-+
-+		ret = devm_add_action_or_reset(&pdev->dev, mxs_mmc_regulator_disable,
-+					       reg_vmmc);
-+		if (ret)
-+			goto out_mmc_free;
- 	}
+ 	struct mt7530_priv *priv = ds->priv;
  
- 	ssp->clk = devm_clk_get(&pdev->dev, NULL);
+-	if (!dsa_is_user_port(ds, port))
+-		return 0;
+-
+ 	mutex_lock(&priv->reg_mutex);
+ 
+ 	/* Allow the user port gets connected to the cpu port and also
+@@ -1060,9 +1057,6 @@ mt7530_port_disable(struct dsa_switch *ds, int port)
+ {
+ 	struct mt7530_priv *priv = ds->priv;
+ 
+-	if (!dsa_is_user_port(ds, port))
+-		return;
+-
+ 	mutex_lock(&priv->reg_mutex);
+ 
+ 	/* Clear up all port matrix which could be restored in the next
+@@ -3265,7 +3259,7 @@ mt7530_probe(struct mdio_device *mdiodev)
+ 		return -ENOMEM;
+ 
+ 	priv->ds->dev = &mdiodev->dev;
+-	priv->ds->num_ports = DSA_MAX_PORTS;
++	priv->ds->num_ports = MT7530_NUM_PORTS;
+ 
+ 	/* Use medatek,mcm property to distinguish hardware type that would
+ 	 * casues a little bit differences on power-on sequence.
 -- 
-2.30.2
+2.25.1
 
