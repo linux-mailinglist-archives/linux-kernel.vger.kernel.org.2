@@ -2,67 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37E2E430210
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 12:35:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 783A7430213
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 12:37:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244120AbhJPKhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 06:37:50 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:45452 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235855AbhJPKht (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 06:37:49 -0400
-Received: from zn.tnic (p200300ec2f1ceb003bc77e8b3da10c60.dip0.t-ipconnect.de [IPv6:2003:ec:2f1c:eb00:3bc7:7e8b:3da1:c60])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S244177AbhJPKjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 06:39:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42342 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235855AbhJPKjR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Oct 2021 06:39:17 -0400
+Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [IPv6:2001:67c:2050::465:101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 231FFC061570;
+        Sat, 16 Oct 2021 03:37:09 -0700 (PDT)
+Received: from smtp202.mailbox.org (smtp202.mailbox.org [80.241.60.245])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 438A11EC0105;
-        Sat, 16 Oct 2021 12:35:40 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1634380540;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=H3Avw2wjksPe/3ttNQLpNAvBZVGLhcdcKMBwVY6uVRM=;
-        b=cgGqeN/1UirZKtqmpzTlvi2UpO0zno2FgctsBSHqOTuH2Eih//BJZwPgLBeVpKGOQMQiee
-        MBWMP/O7XNY/2Vu/hpuvt4elHdAUJk/aDmMSro7/83wqIh/6Y6dXoeK2wqp/4lBRi1FH6D
-        yBh/COraTnEFV7qsRrGJBTcicxcMOis=
-Date:   Sat, 16 Oct 2021 12:35:39 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Ser Olmy <ser.olmy@protonmail.com>
-Cc:     Ville =?utf-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [regression] commit d298b03506d3 ("x86/fpu: Restore the masking
- out of reserved MXCSR bits")
-Message-ID: <YWqq+/BtR+tqGXJA@zn.tnic>
-References: <YWgYIYXLriayyezv@intel.com>
- <YWhCAqDxAuTh1YwE@intel.com>
- <YWhFOJCF1pxIBANv@zn.tnic>
- <YWhG0kv/d/hddf+t@intel.com>
- <YWhsvSM5tAvwqprN@intel.com>
- <YWhwdDI5ECoMZQzU@zn.tnic>
- <YWh7GgCgdtwRj3GU@intel.com>
- <YWiAPQCRm4RnOiCd@zn.tnic>
- <YWlgPJwxmFL5nX4c@zn.tnic>
- <jrf08svYO7V3wrXiL9wLzsLx74V4QmXRdlfLeeL2zEmta8REOAVFwpEt8npiWRfbrCf_WEfQxJyg45H-VGa83bFfnhTYYe1R7iWao4Y9wRg=@protonmail.com>
+        by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4HWfhf6sDdzQkBW;
+        Sat, 16 Oct 2021 12:37:06 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+From:   =?UTF-8?q?Jonas=20Dre=C3=9Fler?= <verdre@v0yd.nl>
+To:     Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi017@gmail.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     =?UTF-8?q?Jonas=20Dre=C3=9Fler?= <verdre@v0yd.nl>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
+Subject: [PATCH v2 0/5] A few more cleanups and fixes for mwifiex
+Date:   Sat, 16 Oct 2021 12:36:51 +0200
+Message-Id: <20211016103656.16791-1-verdre@v0yd.nl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <jrf08svYO7V3wrXiL9wLzsLx74V4QmXRdlfLeeL2zEmta8REOAVFwpEt8npiWRfbrCf_WEfQxJyg45H-VGa83bFfnhTYYe1R7iWao4Y9wRg=@protonmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 90391353
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 16, 2021 at 07:26:25AM +0000, Ser Olmy wrote:
-> Tested-by: ser.olmy@protonmail.com
-> 
-> Working fine here with the patch applied to a stock 5.14.12 kernel.
+v1: https://lore.kernel.org/linux-wireless/20211016101743.15565-1-verdre@v0yd.nl/T/#t
 
-Thanks!
+Changes between v1 and v2:
+ - Added another commit fixing a bug with host sleep when it was entered 
+explicitly instead of implicitly.
+
+Just a few more cleanups and two fixes for mwifiex.
+
+Jonas Dreßler (5):
+  mwifiex: Don't log error on suspend if wake-on-wlan is disabled
+  mwifiex: Log an error on command failure during key-material upload
+  mwifiex: Fix an incorrect comment
+  mwifiex: Send DELBA requests according to spec
+  mwifiex: Deactive host sleep using HSCFG after it was activated
+    manually
+
+ drivers/net/wireless/marvell/mwifiex/11n.c    |  7 ++++---
+ .../net/wireless/marvell/mwifiex/cfg80211.c   | 12 ++++++++---
+ drivers/net/wireless/marvell/mwifiex/cmdevt.c | 21 +++++++++++++++++++
+ drivers/net/wireless/marvell/mwifiex/main.c   | 18 ++++++++++++++++
+ drivers/net/wireless/marvell/mwifiex/main.h   |  1 +
+ .../net/wireless/marvell/mwifiex/sta_cmd.c    |  4 ++++
+ 6 files changed, 57 insertions(+), 6 deletions(-)
 
 -- 
-Regards/Gruss,
-    Boris.
+2.31.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
