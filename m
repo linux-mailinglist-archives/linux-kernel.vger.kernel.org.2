@@ -2,186 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E07A4303D7
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 18:57:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 545874303D9
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 18:59:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243050AbhJPQ7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 12:59:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40552 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242526AbhJPQ7W (ORCPT
+        id S243239AbhJPRBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 13:01:01 -0400
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:45931 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232517AbhJPRA6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 12:59:22 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DEC6C061570
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 09:57:14 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id 75so11678328pga.3
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 09:57:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=YalpFpEwrjTZgx4SBUn577705skSf8T2nrPpiS9fHsk=;
-        b=hXLtmpPFFfrYOCYsVdq6OnFzruqkgUQWCa0Xb2AZOF6Ofye/9Bgt1wKzXGPLYsPmNY
-         4W68jcb7oybu+mRXUzbihCg1DekTErAFx17Z/8KBMXK6OmBOdJRQJKEvL5nC1ODR44QL
-         syTQ8U5+g7R78m5xUDmvbBTs5QCe8fpp58dfQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=YalpFpEwrjTZgx4SBUn577705skSf8T2nrPpiS9fHsk=;
-        b=gnnJ1X5uZS8Ku6jI4QUZaXXvL8aDCY7pF0jjQI3vWf6bfrIOyvB+BpJfaLhciVLaVo
-         dJNoidXaTXbDUwSC9CSNbrO0RnCcrV2SDiXIsk4s4Uircei2tAPNAg/k3yiJCuulHz9M
-         LxvQezgBUIZBqS5IsJizH/e0rh/9nCOcUfD5dhzlvndi1Z2aKu+XAXzJkrch0pZ0oua/
-         zwLN8Ik1K/ZVp4Eph460YSg63Cgsinr4hKClQn05ZUtoRZHjJjSVBsZT7sX6DWhNnKk+
-         VW98K5o6Y+1FRPyHGqE+I4pFn3nU2BfAqt+aq8kGuHBi6Uo3dRsHeEMZusn6Bq0QPwEf
-         V28Q==
-X-Gm-Message-State: AOAM530JrbOfzM4/FlH9UGo58+CkarkXW3kN/Fo8JG0NNYWka5OijnI4
-        wmzEmrmQFwfkSWvqPZ+Ic3nKhF/cpau79Q==
-X-Google-Smtp-Source: ABdhPJwbPZQc5DY0eg59r3wHqIZD4JnS9HE1ybVukmt4NTwHDOH3zZ2ZHtkcMTNPomv7iCT8wGeeEw==
-X-Received: by 2002:a05:6a00:2181:b0:44d:c18d:7af9 with SMTP id h1-20020a056a00218100b0044dc18d7af9mr124194pfi.16.1634403433494;
-        Sat, 16 Oct 2021 09:57:13 -0700 (PDT)
-Received: from philipchen.mtv.corp.google.com ([2620:15c:202:201:f81c:fe70:b049:bd51])
-        by smtp.gmail.com with ESMTPSA id e9sm8407616pjl.41.2021.10.16.09.57.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 16 Oct 2021 09:57:13 -0700 (PDT)
-From:   Philip Chen <philipchen@chromium.org>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     swboyd@chromium.org, dianders@chromium.org,
-        Philip Chen <philipchen@chromium.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH 2/2] drm/bridge: parade-ps8640: Populate devices on aux-bus
-Date:   Sat, 16 Oct 2021 09:57:04 -0700
-Message-Id: <20211016095644.2.I44ee57ef73528243acf8f29af8d2416b810e1a9d@changeid>
-X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
-In-Reply-To: <20211016095644.1.I9d81c3b44f350707b5373d00524af77c4aae862b@changeid>
-References: <20211016095644.1.I9d81c3b44f350707b5373d00524af77c4aae862b@changeid>
+        Sat, 16 Oct 2021 13:00:58 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R971e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=xhao@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0UsLRY1M_1634403528;
+Received: from B-X3VXMD6M-2058.local(mailfrom:xhao@linux.alibaba.com fp:SMTPD_---0UsLRY1M_1634403528)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sun, 17 Oct 2021 00:58:49 +0800
+From:   xhao@linux.alibaba.com
+Reply-To: xhao@linux.alibaba.com
+Subject: Re: [PATCH] mm/damon/core: Optimize kdamod.%d thread creation code
+To:     sjpark@amazon.de
+Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20211016165616.95849-1-xhao@linux.alibaba.com>
+Message-ID: <41bb07ec-8ec3-5c83-027b-172d8f2bd7a1@linux.alibaba.com>
+Date:   Sun, 17 Oct 2021 00:58:46 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
+In-Reply-To: <20211016165616.95849-1-xhao@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Conventionally, panel is listed under the root in the device tree.
-When userland asks for display mode, ps8640 bridge is responsible
-for returning EDID when ps8640_bridge_get_edid() is called.
 
-Now enable a new option of listing the panel under "aux-bus" of ps8640
-bridge node in the device tree. In this case, panel driver can retrieve
-EDID by triggering AUX transactions, without ps8640_bridge_get_edid()
-calls at all.
+On 2021/10/17 上午12:56, Xin Hao wrote:
+> When the ctx->adaptive_targets list is empty,
+> i did some test on monitor_on interface like this.
+>
+> echo on > /sys/kernel/debug/damon/monitor_on
+> [  851.988307] damon: kdamond (5390) starts
+>
+> Though the ctx->adaptive_targets list is empty, but the
+> kthread_run still be called, and the kdamond.x thread still
+> be created, this is meaningless, so t
 
-To prevent the "old" and "new" options from interfering with each
-other's logic flow, disable DRM_BRIDGE_OP_EDID when the new option
-is taken.
+Sorry there made a mistake, i will send a new one.
 
-Signed-off-by: Philip Chen <philipchen@chromium.org>
----
+>
+> So there adds a judgment. only if the ctx->adaptive_targets
+> list is not empty, and ctx->kdamond pointer is NULL, then call
+> the __damon_start function.
+>
+> Signed-off-by: Xin Hao <xhao@linux.alibaba.com>
+> ---
+>   mm/damon/core.c | 30 ++++++++++++++++++------------
+>   1 file changed, 18 insertions(+), 12 deletions(-)
+>
+> diff --git a/mm/damon/core.c b/mm/damon/core.c
+> index 30e9211f494a..998c707fdca2 100644
+> --- a/mm/damon/core.c
+> +++ b/mm/damon/core.c
+> @@ -107,6 +107,11 @@ void damon_add_target(struct damon_ctx *ctx, struct damon_target *t)
+>   	list_add_tail(&t->list, &ctx->adaptive_targets);
+>   }
+>   
+> +static int damon_target_empty(struct damon_ctx *ctx)
+> +{
+> +	return list_empty(&ctx->adaptive_targets);
+> +}
+> +
+>   static void damon_del_target(struct damon_target *t)
+>   {
+>   	list_del(&t->list);
+> @@ -307,15 +312,14 @@ static int __damon_start(struct damon_ctx *ctx)
+>   	int err = -EBUSY;
+>   
+>   	mutex_lock(&ctx->kdamond_lock);
+> -	if (!ctx->kdamond) {
+> +	ctx->kdamond_stop = false;
+> +	ctx->kdamond = kthread_run(kdamond_fn, ctx, "kdamond.%d",
+> +				   nr_running_ctxs);
+> +	if (IS_ERR(ctx->kdamond)) {
+> +		err = PTR_ERR(ctx->kdamond);
+> +		ctx->kdamond = 0;
+> +	} else {
+>   		err = 0;
+> -		ctx->kdamond_stop = false;
+> -		ctx->kdamond = kthread_run(kdamond_fn, ctx, "kdamond.%d",
+> -				nr_running_ctxs);
+> -		if (IS_ERR(ctx->kdamond)) {
+> -			err = PTR_ERR(ctx->kdamond);
+> -			ctx->kdamond = 0;
+> -		}
+>   	}
+>   	mutex_unlock(&ctx->kdamond_lock);
+>   
+> @@ -347,10 +351,12 @@ int damon_start(struct damon_ctx **ctxs, int nr_ctxs)
+>   	}
+>   
+>   	for (i = 0; i < nr_ctxs; i++) {
+> -		err = __damon_start(ctxs[i]);
+> -		if (err)
+> -			break;
+> -		nr_running_ctxs++;
+> +		if (!damon_target_empty(ctxs[i]) && !ctxs[i]->kdamond) {
+> +			err = __damon_start(ctxs[i]);
+> +			if (err)
+> +				break;
+> +			nr_running_ctxs++;
+> +		}
+>   	}
+>   	mutex_unlock(&damon_lock);
+>   
 
- drivers/gpu/drm/bridge/parade-ps8640.c | 52 ++++++++++++++++++++------
- 1 file changed, 40 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/gpu/drm/bridge/parade-ps8640.c b/drivers/gpu/drm/bridge/parade-ps8640.c
-index acfe1bf0f936..98884f799ea8 100644
---- a/drivers/gpu/drm/bridge/parade-ps8640.c
-+++ b/drivers/gpu/drm/bridge/parade-ps8640.c
-@@ -14,6 +14,7 @@
- #include <linux/regulator/consumer.h>
- 
- #include <drm/drm_bridge.h>
-+#include <drm/drm_dp_aux_bus.h>
- #include <drm/drm_dp_helper.h>
- #include <drm/drm_mipi_dsi.h>
- #include <drm/drm_of.h>
-@@ -149,6 +150,24 @@ static inline struct ps8640 *aux_to_ps8640(struct drm_dp_aux *aux)
- 	return container_of(aux, struct ps8640, aux);
- }
- 
-+static bool ps8640_of_panel_on_aux_bus(struct device *dev)
-+{
-+	struct device_node *bus, *panel;
-+
-+	if (!dev->of_node)
-+		return false;
-+
-+	bus = of_get_child_by_name(dev->of_node, "aux-bus");
-+	if (!bus)
-+		return false;
-+
-+	panel = of_get_child_by_name(bus, "panel");
-+	if (!panel)
-+		return false;
-+
-+	return true;
-+}
-+
- static void ps8640_ensure_hpd(struct ps8640 *ps_bridge)
- {
- 	struct regmap *map = ps_bridge->regmap[PAGE2_TOP_CNTL];
-@@ -546,17 +565,6 @@ static int ps8640_probe(struct i2c_client *client)
- 	if (!ps_bridge)
- 		return -ENOMEM;
- 
--	/* port@1 is ps8640 output port */
--	ret = drm_of_find_panel_or_bridge(np, 1, 0, &panel, NULL);
--	if (ret < 0)
--		return ret;
--	if (!panel)
--		return -ENODEV;
--
--	ps_bridge->panel_bridge = devm_drm_panel_bridge_add(dev, panel);
--	if (IS_ERR(ps_bridge->panel_bridge))
--		return PTR_ERR(ps_bridge->panel_bridge);
--
- 	ps_bridge->supplies[0].supply = "vdd33";
- 	ps_bridge->supplies[1].supply = "vdd12";
- 	ret = devm_regulator_bulk_get(dev, ARRAY_SIZE(ps_bridge->supplies),
-@@ -579,9 +587,16 @@ static int ps8640_probe(struct i2c_client *client)
- 
- 	ps_bridge->bridge.funcs = &ps8640_bridge_funcs;
- 	ps_bridge->bridge.of_node = dev->of_node;
--	ps_bridge->bridge.ops = DRM_BRIDGE_OP_EDID;
- 	ps_bridge->bridge.type = DRM_MODE_CONNECTOR_eDP;
- 
-+	/*
-+	 * In the device tree, if panel is listed under aux-bus of the bridge
-+	 * node, panel driver should be able to retrieve EDID by itself using
-+	 * aux-bus. So let's not set DRM_BRIDGE_OP_EDID here.
-+	 */
-+	if (!ps8640_of_panel_on_aux_bus(&client->dev))
-+		ps_bridge->bridge.ops = DRM_BRIDGE_OP_EDID;
-+
- 	ps_bridge->page[PAGE0_DP_CNTL] = client;
- 
- 	ps_bridge->regmap[PAGE0_DP_CNTL] = devm_regmap_init_i2c(client, ps8640_regmap_config);
-@@ -615,6 +630,19 @@ static int ps8640_probe(struct i2c_client *client)
- 	if (ret)
- 		return ret;
- 
-+	devm_of_dp_aux_populate_ep_devices(&ps_bridge->aux);
-+
-+	/* port@1 is ps8640 output port */
-+	ret = drm_of_find_panel_or_bridge(np, 1, 0, &panel, NULL);
-+	if (ret < 0)
-+		return ret;
-+	if (!panel)
-+		return -ENODEV;
-+
-+	ps_bridge->panel_bridge = devm_drm_panel_bridge_add(dev, panel);
-+	if (IS_ERR(ps_bridge->panel_bridge))
-+		return PTR_ERR(ps_bridge->panel_bridge);
-+
- 	drm_bridge_add(&ps_bridge->bridge);
- 
- 	return 0;
 -- 
-2.33.0.1079.g6e70778dc9-goog
+Best Regards!
+Xin Hao
 
