@@ -2,104 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AF2B43011E
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 10:23:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77D2B43012D
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 10:40:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240006AbhJPIZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 04:25:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41134 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239443AbhJPIZ2 (ORCPT
+        id S239889AbhJPImr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 04:42:47 -0400
+Received: from smtp02.smtpout.orange.fr ([80.12.242.124]:52329 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234494AbhJPImn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 04:25:28 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84936C061570
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 01:23:20 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id e144so10384351iof.3
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 01:23:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Sn3fEWnQVyBE6l38TAM+W6Gz1Wv8DbKyNC4SbW6kXYA=;
-        b=PkWmUSXXeOhuhn5e6ySI0Gkw5Y/k1c/iat8AFXl68yPocD6RcGL1v+CmIbE10O6Gbi
-         TVR47rr4TRpb17VTHk5kqODVc+Z3nXiBMHY+3VZnJ+dVh3EbZtjUdiVNx3vJi2wTZDMa
-         5oW6x9mHG6hzjKBmguL35b80g/aZF+/kscMJPiFv58c3UTFp55UpO70n92JQROBh54ut
-         U1fxGrhuU5t9Nh5JRlgqX4bRvvYYuaZasHTg7s8SSX+QyFX4gldE181JnORXVajcsE6l
-         THBFSai7C4wGVDM/IPVDISvkMp8zhLa6YK+icwtmfrQ/ZfW7mOh3Ke8jzizxABwO7JT+
-         rsgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Sn3fEWnQVyBE6l38TAM+W6Gz1Wv8DbKyNC4SbW6kXYA=;
-        b=5VTxs4ObGtc3ofloaLf6JOo8xhdswwBTQ/bKWiWZ54HasgwixujWWd8XRCT3Xj14c/
-         Ejc2AaRzsSwfnsW2w9HCf/9mEohuLvFqQsJNelSwi3YG627uQWiUsw/WL75ombkqRsTV
-         9yLs7G+gIAs4qoYPKgkiRPab8jzLsgAGXsVQV5hxajAoySNd4n35VDENP8jGS1eHFREs
-         PJaJiDC97w4yKq5XWcCr8TaEJDw4IRTB5AS1ichcYJCis015tjm7BSk4ld4MBzxu4qiE
-         m2zlfZCr+1asECB2BeXEG5mRFnWz2+2E6UOYKPL6do/NABDHJZPNrBU0tmxtFcJmELr6
-         +osA==
-X-Gm-Message-State: AOAM531ymPp4FswGKPye3FGqpT9rJuz19j8H5GUvqjB01jjWuWhR98T3
-        Mkm6Gk+/wCkvIO9TMVM62Af54CDTQijCquhgVLM=
-X-Google-Smtp-Source: ABdhPJyjSDKKSYeeQssqAhi1uUODfRGFbuA4G8uK0J8OU4CTin6tUsQbEOz8APatVo7Qmwpfpgy0LDUe62+YeSqpGs8=
-X-Received: by 2002:a05:6602:2e95:: with SMTP id m21mr7210622iow.21.1634372599984;
- Sat, 16 Oct 2021 01:23:19 -0700 (PDT)
+        Sat, 16 Oct 2021 04:42:43 -0400
+Received: from pop-os.home ([92.140.161.106])
+        by smtp.orange.fr with ESMTPA
+        id bfF0max1HqYovbfF1mCK1f; Sat, 16 Oct 2021 10:40:33 +0200
+X-ME-Helo: pop-os.home
+X-ME-Auth: YWZlNiIxYWMyZDliZWIzOTcwYTEyYzlhMmU3ZiQ1M2U2MzfzZDfyZTMxZTBkMTYyNDBjNDJlZmQ3ZQ==
+X-ME-Date: Sat, 16 Oct 2021 10:40:33 +0200
+X-ME-IP: 92.140.161.106
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     maintainers@bluecherrydvr.com, anton@corp.bluecherry.net,
+        andrey.utkin@corp.bluecherry.net, mchehab@kernel.org
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] media: tw5864: Simplify 'tw5864_finidev()'
+Date:   Sat, 16 Oct 2021 10:40:29 +0200
+Message-Id: <189d4fd72db8707cb495e3a29ab7a276e07f62a0.1634373552.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20210726060855.108250-1-pankaj.gupta.linux@gmail.com> <CAM9Jb+jDU7anniT8eL5yUQw1t_MZzndw=n1LWJ5fWV5k871+wQ@mail.gmail.com>
-In-Reply-To: <CAM9Jb+jDU7anniT8eL5yUQw1t_MZzndw=n1LWJ5fWV5k871+wQ@mail.gmail.com>
-From:   Pankaj Gupta <pankaj.gupta.linux@gmail.com>
-Date:   Sat, 16 Oct 2021 10:23:08 +0200
-Message-ID: <CAM9Jb+i5L4D130psUirHRaHbZc=ODrzOp_OQGxpFfsMXbt3eRg@mail.gmail.com>
-Subject: Re: [RFC v2 0/2] virtio-pmem: Asynchronous flush
-To:     Linux NVDIMM <nvdimm@lists.linux.dev>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        jmoyer <jmoyer@redhat.com>, David Hildenbrand <david@redhat.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Pankaj Gupta <pankaj.gupta@ionos.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Friendly ping!
+Some resources are allocated with 'pci_request_regions()', so use
+'pci_release_regions()' to free them, instead of a verbose
+'release_mem_region()'.
 
-Thanks,
-Pankaj
+There is no point in calling 'devm_kfree()'. The corresponding resource is
+managed, so it will be fried automatically.
 
-On Thu, 19 Aug 2021 at 13:08, Pankaj Gupta <pankaj.gupta.linux@gmail.com> wrote:
->
-> Gentle ping.
->
-> >
-> >  Jeff reported preflush order issue with the existing implementation
-> >  of virtio pmem preflush. Dan suggested[1] to implement asynchronous flush
-> >  for virtio pmem using work queue as done in md/RAID. This patch series
-> >  intends to solve the preflush ordering issue and also makes the flush
-> >  asynchronous for the submitting thread.
-> >
-> >  Submitting this patch series for review. Sorry, It took me long time to
-> >  come back to this due to some personal reasons.
-> >
-> >  RFC v1 -> RFC v2
-> >  - More testing and bug fix.
-> >
-> >  [1] https://marc.info/?l=linux-kernel&m=157446316409937&w=2
-> >
-> > Pankaj Gupta (2):
-> >   virtio-pmem: Async virtio-pmem flush
-> >   pmem: enable pmem_submit_bio for asynchronous flush
-> >
-> >  drivers/nvdimm/nd_virtio.c   | 72 ++++++++++++++++++++++++++++--------
-> >  drivers/nvdimm/pmem.c        | 17 ++++++---
-> >  drivers/nvdimm/virtio_pmem.c | 10 ++++-
-> >  drivers/nvdimm/virtio_pmem.h | 14 +++++++
-> >  4 files changed, 91 insertions(+), 22 deletions(-)
-> >
-> > --
-> > 2.25.1
-> >
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ drivers/media/pci/tw5864/tw5864-core.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/drivers/media/pci/tw5864/tw5864-core.c b/drivers/media/pci/tw5864/tw5864-core.c
+index 23d3cae54a5d..fee3b7711901 100644
+--- a/drivers/media/pci/tw5864/tw5864-core.c
++++ b/drivers/media/pci/tw5864/tw5864-core.c
+@@ -333,11 +333,9 @@ static void tw5864_finidev(struct pci_dev *pci_dev)
+ 
+ 	/* release resources */
+ 	iounmap(dev->mmio);
+-	release_mem_region(pci_resource_start(pci_dev, 0),
+-			   pci_resource_len(pci_dev, 0));
++	pci_release_regions(pci_dev);
+ 
+ 	v4l2_device_unregister(&dev->v4l2_dev);
+-	devm_kfree(&pci_dev->dev, dev);
+ }
+ 
+ static struct pci_driver tw5864_pci_driver = {
+-- 
+2.30.2
+
