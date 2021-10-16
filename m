@@ -2,57 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5990E43038B
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 17:51:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53F27430390
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 18:03:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239946AbhJPPxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 11:53:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48466 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231824AbhJPPxt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 11:53:49 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D3B2F60F70;
-        Sat, 16 Oct 2021 15:51:38 +0000 (UTC)
-Date:   Sat, 16 Oct 2021 16:55:52 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Nikita Travkin <nikita@trvn.ru>, lars@metafoo.de,
-        linux-iio@vger.kernel.org, robh+dt@kernel.org, stephan@gerhold.net,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/4] dt-bindings: vendor-prefixes: Document liteon
- vendor prefix
-Message-ID: <20211016165552.680b2438@jic23-huawei>
-In-Reply-To: <YWiS2J8qdrAitOUZ@robh.at.kernel.org>
-References: <20211006163058.145842-1-nikita@trvn.ru>
-        <YWiS2J8qdrAitOUZ@robh.at.kernel.org>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S240189AbhJPQFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 12:05:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56954 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236852AbhJPQFf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Oct 2021 12:05:35 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C3E2C061570;
+        Sat, 16 Oct 2021 09:03:26 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id E61251F4406A
+Received: by earth.universe (Postfix, from userid 1000)
+        id 4E7773C0CA8; Sat, 16 Oct 2021 18:03:22 +0200 (CEST)
+Date:   Sat, 16 Oct 2021 18:03:22 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Input: cpcap-pwrbutton - do not set input parent
+ explicitly
+Message-ID: <20211016160322.4mtmueo2psn7ptrs@earth.universe>
+References: <YWpiZqrfC9+GQsM4@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="7qspehphhsxdaadr"
+Content-Disposition: inline
+In-Reply-To: <YWpiZqrfC9+GQsM4@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Oct 2021 15:28:08 -0500
-Rob Herring <robh@kernel.org> wrote:
 
-> On Wed, 06 Oct 2021 21:30:55 +0500, Nikita Travkin wrote:
-> > Add vendor prefix for LITE-ON Technology Corp.
-> > 
-> > Signed-off-by: Nikita Travkin <nikita@trvn.ru>
-> > ---
-> >  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >   
-> 
-> Acked-by: Rob Herring <robh@kernel.org>
+--7qspehphhsxdaadr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Series applied to the togreg branch of iio.git which is initially pushed
-out as testing for 0-day to see if it can find anything we missed.
+Hi,
 
-Thanks,
+On Fri, Oct 15, 2021 at 10:25:58PM -0700, Dmitry Torokhov wrote:
+> We are using devm_input_allocate_device() that already sets parent
+> of the input device, there is no need to do that again.
+>=20
+> Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> ---
 
-Jonathan
+Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+
+-- Sebastian
+
+>  drivers/input/misc/cpcap-pwrbutton.c | 1 -
+>  1 file changed, 1 deletion(-)
+>=20
+> diff --git a/drivers/input/misc/cpcap-pwrbutton.c b/drivers/input/misc/cp=
+cap-pwrbutton.c
+> index 372cb44d0635..879790bbf9fe 100644
+> --- a/drivers/input/misc/cpcap-pwrbutton.c
+> +++ b/drivers/input/misc/cpcap-pwrbutton.c
+> @@ -77,7 +77,6 @@ static int cpcap_power_button_probe(struct platform_dev=
+ice *pdev)
+> =20
+>  	button->idev->name =3D "cpcap-pwrbutton";
+>  	button->idev->phys =3D "cpcap-pwrbutton/input0";
+> -	button->idev->dev.parent =3D button->dev;
+>  	input_set_capability(button->idev, EV_KEY, KEY_POWER);
+> =20
+>  	err =3D devm_request_threaded_irq(&pdev->dev, irq, NULL,
+> --=20
+> 2.33.0.1079.g6e70778dc9-goog
+>=20
+>=20
+> --=20
+> Dmitry
+
+--7qspehphhsxdaadr
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmFq98cACgkQ2O7X88g7
++pplaA/9G3bUP7xgLpJwy3Cr768boWbydqcNIVNorlI9alp77T2KT9wQgZTGm+oQ
+0gtWqQ+078wm+IfwUvDSeDIbD4N44L2yRv4zOVgQWos/aF4Lv4f/JBv2zt7jP78q
+T9EljeLZCTRVbsLZObSOspihv+5IwlrnRfkrPAmO8RIE6CzqtwAsZ2lAOLMswDfV
+v/qBXFLKeKDpH/qpXZjnkBDNWj9LbUsYcMPvkkrNbHaVr/j78z6bTQ0kdYy6Lkqc
+GK9NSFyZTmfF2KCrRI+13ocHdkZaX0Dk10ICnV6yCGlSek8K9wN2I2KiOdJRUoFm
+ECZbqU2D6ICi3yUlT76o8IQXyYoo6WqrPSwXFFb+flGJa8WknUPfzi2PmHpZ/IzG
+M3FGwVAJ3bTWC8XaqnNagzY3lKcyFJo4incRTN4nvTH44WCGeUYwYxnQVS/Vziu+
+wq9Pu6JzyER23Zq9E57K+ZKF6B0NKah/+b4ppOg3HidsQhSbHjw6YgLrB95ecgrm
+AfP+Fpw3SZk2f3nMdCeno+c4DeU16hGUhVnUA11Yn6a9jOfI07IO9m4lpTctPLz8
+8CtR2/GapA1zvIX5h0ry2T2ajG6XtY7z7JWpr3VUzAnDnULUK1hRQ6aI4+eqXjjQ
+ZwCXLJxx+vIL5gY1cX5Xgb/bYMyO9mUiC/n54sF/fCF7BZ/Fz7k=
+=EbW4
+-----END PGP SIGNATURE-----
+
+--7qspehphhsxdaadr--
