@@ -2,80 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF652430535
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 00:15:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FFDC430559
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 00:18:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244716AbhJPWRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 18:17:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52936 "EHLO
+        id S244696AbhJPWUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 18:20:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244698AbhJPWRh (ORCPT
+        with ESMTP id S244841AbhJPWUj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 18:17:37 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE560C061765
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 15:15:28 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id w23so979962lje.7
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 15:15:28 -0700 (PDT)
+        Sat, 16 Oct 2021 18:20:39 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89C7BC0613DF
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 15:18:25 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id p16so57772362lfa.2
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 15:18:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=bWD1Wot4CiOZ5+nEEfKw3QurPlGi9CMDSa71U1t30+g=;
-        b=IFM6ftu/K+rQCjJ2/RcVxwyvUdSlM2Md5Xbkm9vIoAkL0ZnaM3wk2YhonAjG+GMsTT
-         o9lJwnq/rmMx9en1D1Z12Fbxvu53+CQZuyXgtQKM6RfWp1H9Pz3NWA74iL5sLWfsDrNC
-         I73KCwAMn+p57HpNRZwtt9Iukx5z0L7Ltcqiw6Hmw7/HrsDKAHbegsI9nKq03GRAAZsm
-         xaF7g2I3r0S6iDAkuQYK8jen+42FtM7HOiWZ+IUu8SfjY0wBAhA35yxSPc7SewGce8gP
-         nRrejWkEWROopQn5fpLbvw5SOYC1CIt4El+8gNM3v8LuC2uuChD/XFv8O4YP7rVbuTkg
-         lAzw==
+        bh=5hTZmsVraLnoyoiajwq2kp7kDJD/UBIvDGojNlZOjYA=;
+        b=MlO9EhDO0R+F6a5IFnTIPbpmq5BWUpNHbM6qRx1Se8vfzBsGJpgsGiIfisAVmCOyo8
+         lTiW0jaVH1nUXT0F0YXJntoy6WAyo07Tyh36UXjKY9JKKvpY+pfD0X7zs0DozQ9DQXP6
+         karq1mJ2Le0t4/YNCerJCdx+i1q+nbSTF9hakC6Xo16kJejquw5aMr9bdtYSfioHkoCO
+         70BEy+4R6MmLmofcuDIv2wWHzULVW6hq5ZmyX8PhgEgrkEFcn6x7XKEMCCoMXR5gUhsw
+         G+861Cw4nKW4ccwd0KS42UXE5caVkz3VajZVIPE6ghQLY+1a5QKi4c9DVcbODx/pm7FQ
+         jrGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=bWD1Wot4CiOZ5+nEEfKw3QurPlGi9CMDSa71U1t30+g=;
-        b=y+FeFBfEMrIiC33lg/dp9om+gvWQjgfLiWansBTE2B09offhjOTw9jb6bSQXqZ/5JN
-         FFkcMi9u4JnbM0py4cYkjQ42bkp1/wscwdGuaLCrF8ia0TJjtFnk3jK4uEDLx0W71yMW
-         dWtxyK430qhOyH4IA7MFG5sqPPP9/u+G4Z6U0mnbyAqoBl5cCFOCdjxT0JTetbc8Do4F
-         DwjHLIyDnLlGGDof2JrepArNkrKLcy0DTZl4Tg+o1evZWHW91N0T1ndVXtX2nqSxSRT4
-         YLAcqchymZoBJrJhr4x44Y0yYcU3S1tSneY/unn5HC1zDm6vS2HrqMqklAESgROnKGId
-         J4IA==
-X-Gm-Message-State: AOAM530uXNrJuVfAu0cKVNfKlivyzxFNwsKTHededOsg3JHyZDoVucVr
-        TJTTF08WFjxqMzwqG2ZOY0C6/FuXeY9fPrG1Fo0wfA+L
-X-Google-Smtp-Source: ABdhPJzsvOIyKWJIPutTL9ipXbUxr8NKxnWe525hIO2sQaIGZxZYcmi2kIQf6tU76Sr0i+hc/mAvbIxzc/BitbUElDo=
-X-Received: by 2002:a2e:b748:: with SMTP id k8mr22367942ljo.358.1634422527329;
- Sat, 16 Oct 2021 15:15:27 -0700 (PDT)
+        bh=5hTZmsVraLnoyoiajwq2kp7kDJD/UBIvDGojNlZOjYA=;
+        b=F/XOUEAIgXZd5QGP2Gm5cdYScrKahl4ytahgzEVtZ4xP3M93Pp3YfeoMw6EHcWhZtm
+         /ls5kRfB1M2xC9qiwjQXMOyzePpKL5iz83DxkEvc/IFKCUw47Y1iLeVlsrh8ytxdpSY7
+         sRCoBpKthC2SzPyLyZn+oK0GOqIhw/afoG2ksDF7IRyPk/565XTubLEvoJU2FQFh4Edl
+         sivP6P8Qk49NAWE9/hjfr2bhkWI5KXlSlSShfZoOUgJDX/rRTnuAUNpbvFlknC5U6nkM
+         gq4ONlwbsGJMmyhxspp9GFIVpvnP0ksd6gQPdx5r4IRtO6zqVkSCWid4yZ9vZ6i3Zh4v
+         QwMg==
+X-Gm-Message-State: AOAM531yLa9d+eDc3ydzmhZhXA6CCmr65297jm/TnJszn/6j0EQI68fj
+        pt3kjknaY6bmMVIovOrcPSwpn/18zH/yssaz+OuAww==
+X-Google-Smtp-Source: ABdhPJy7PQL7FlWahwMf8zqvRh3tgaf9x3NU3N/Jf4Z/TBpgv3e+zIyq80gCL0b/Z+0DKPZ9HVLLg6VScA1ErGJ2s9s=
+X-Received: by 2002:a19:c10a:: with SMTP id r10mr19208289lff.95.1634422703906;
+ Sat, 16 Oct 2021 15:18:23 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211007144019.7461-1-jbx6244@gmail.com>
-In-Reply-To: <20211007144019.7461-1-jbx6244@gmail.com>
+References: <655523d7bf9658eb0b8e49a06c8b79a04052e5d5.1634286595.git.michal.simek@xilinx.com>
+In-Reply-To: <655523d7bf9658eb0b8e49a06c8b79a04052e5d5.1634286595.git.michal.simek@xilinx.com>
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sun, 17 Oct 2021 00:15:16 +0200
-Message-ID: <CACRpkdZOvRjH4OuB=gwFBZj_kXt96dyX-DjK0HNjpV2fC36rLA@mail.gmail.com>
-Subject: Re: [PATCH v3 1/3] dt-bindings: pinctrl: convert rockchip,pinctrl.txt
- to YAML
-To:     Johan Jonker <jbx6244@gmail.com>
-Cc:     =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
+Date:   Sun, 17 Oct 2021 00:18:13 +0200
+Message-ID: <CACRpkdY4pQXGB0e+HY1UYrbNpSb9tZzcnMh9zETCpSxxQ-HoKg@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: gpio: zynq: Add power-domains
+To:     Michal Simek <michal.simek@xilinx.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Michal Simek <monstr@monstr.eu>, git <git@xilinx.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
         Rob Herring <robh+dt@kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>,
+        Srinivas Neeli <srinivas.neeli@xilinx.com>,
         "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
         <devicetree@vger.kernel.org>,
         Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 7, 2021 at 4:40 PM Johan Jonker <jbx6244@gmail.com> wrote:
+On Fri, Oct 15, 2021 at 10:29 AM Michal Simek <michal.simek@xilinx.com> wrote:
 
-> Convert rockchip,pinctrl.txt to YAML
+> Describe optional power-domain property to fix dts_check warnings.
+> The similar change was done by commit 8c0aa567146b ("dt-bindings: gpio:
+> fsl-imx-gpio: Add power-domains").
 >
-> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
 
-Patch applied to the pinctrl tree for v5.16.
-
-Please merged patches 2, 3 into the Rockchip tree for
-the SoC tree.
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
 Yours,
 Linus Walleij
