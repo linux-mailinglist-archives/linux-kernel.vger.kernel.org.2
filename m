@@ -2,86 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 417A64304C8
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 21:33:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6229B4304D5
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 21:48:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240976AbhJPTfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 15:35:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46144 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234580AbhJPTfK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 15:35:10 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DE22C061765
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 12:33:00 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id i20so51533928edj.10
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 12:33:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=C1QhJFF4/w/wmkrgS9B8Sp+Sdrku9F5YiHYF/12cvTY=;
-        b=IgDgGVKdhkvN4VTD26TrFOLexbn6XnMoQKVh77MR8TSY/1ybT3cAdzqRTCGdVttjbF
-         h8luy+JDU9l+V+OAZ+JxathCO9wdnzUYWrFp4HDbpVRFHbo4jZ/Q46bCQgynWsabX92d
-         +pNio31IpkviO/zQSYkPBGwYfPXQ12fkx0Dro5iV+/TatfcdCwR7s6gUQrvLsL+CjHCd
-         t/vwIvyx88BeVsdOv8d2f8JBbVwB7OU1vCVAY0dDQr0Spltr9NO1iBPCHh1jykgQ43fa
-         q58B04HE1ImhyHt0L9S+P3NXh0dvqPGENEXEx6WAa+mY8KrMXktturzl9epNstiX/9C5
-         URWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=C1QhJFF4/w/wmkrgS9B8Sp+Sdrku9F5YiHYF/12cvTY=;
-        b=ePS8LY2HJWqB7dj37BuQopoa3yE0RE2I7jXfSIWBjlJ8qAdpBEV02fNB8/fNjGFJGV
-         E3bw2vyYO8aE77cC7Pxyuv7URwjci5lXihPBhK4Q5l9+ASfFDe/J9Wrpz7OTyRFNOcyG
-         TX9HtGisMXah2NQIDRpfJfa/0hToPfZOuySHhVMpy/JujN6mwlaKYzTHEAXjcLyJz7p1
-         LXyt668iICa6yuyI1+lVgWBkkZXAhm2tcWM8qEgZ9UABK/sFPx7ddS6LxsUCFAtt6ad/
-         Y6x+yke5UuDcEqoZJyi2q0N93wNRTJK868EdpcKnc/GuLZTdLF8h9PwRHmzkAIvIGdo6
-         +Duw==
-X-Gm-Message-State: AOAM5301ZY81HGEVegGZ5N3o+7h7E37yujbdMbYkKBFlipDyKknV/trH
-        6JtwVnpor70+HR/Y6u0OMLE=
-X-Google-Smtp-Source: ABdhPJwcHrIuckPpvXKirx3kK/CVANsiUIp5el7Uj4OfuLJ1NYJGmHbnWXAUQXGeSC9CxVA6PIJuFg==
-X-Received: by 2002:a17:906:52d6:: with SMTP id w22mr16981632ejn.248.1634412778990;
-        Sat, 16 Oct 2021 12:32:58 -0700 (PDT)
-Received: from localhost.localdomain (host-79-47-104-180.retail.telecomitalia.it. [79.47.104.180])
-        by smtp.gmail.com with ESMTPSA id g2sm7363674edq.81.2021.10.16.12.32.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 16 Oct 2021 12:32:58 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] staging: r8188eu: Use completions for signaling start and end kthread
-Date:   Sat, 16 Oct 2021 21:32:57 +0200
-Message-ID: <3725568.Q3VL8gKjhB@localhost.localdomain>
-In-Reply-To: <20211016192604.GV8429@kadam>
-References: <20211016091042.19614-1-fmdefrancesco@gmail.com> <20211016091042.19614-2-fmdefrancesco@gmail.com> <20211016192604.GV8429@kadam>
+        id S243260AbhJPTub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 15:50:31 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:47178 "EHLO gloria.sntech.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234499AbhJPTua (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Oct 2021 15:50:30 -0400
+Received: from p508fce7c.dip0.t-ipconnect.de ([80.143.206.124] helo=phil.fritz.box)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1mbpes-0008HL-7N; Sat, 16 Oct 2021 21:47:54 +0200
+From:   Heiko Stuebner <heiko@sntech.de>
+To:     Arnaud Ferraris <arnaud.ferraris@collabora.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Heiko Stuebner <heiko@sntech.de>, Johan Jonker <jbx6244@gmail.com>,
+        Shunqian Zheng <zhengsq@rock-chips.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Andy Gross <agross@kernel.org>,
+        Guido Gunther <agx@sigxcpu.org>, Chen-Yu Tsai <wens@csie.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Dan Johansen <strit@manjaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Tomasz Figa <tfiga@chromium.org>, linux-sunxi@lists.linux.dev,
+        Lucas Stach <dev@lynxeye.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Brian Norris <briannorris@chromium.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        devicetree@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        Matthias Brugger <mbrugger@suse.com>,
+        Angus Ainslie <angus@akkea.ca>,
+        Martin Kepplinger <martink@posteo.de>,
+        Shawn Guo <shawnguo@kernel.org>, linux-arm-msm@vger.kernel.org,
+        Simon South <simon@simonsouth.net>,
+        Eddie Cai <eddie.cai.linux@gmail.com>
+Subject: Re: (subset) [PATCH 0/4] arm64: dts: add 'chassis-type' property
+Date:   Sat, 16 Oct 2021 21:47:49 +0200
+Message-Id: <163441361289.438137.290850544419428228.b4-ty@sntech.de>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20211016102025.23346-1-arnaud.ferraris@collabora.com>
+References: <20211016102025.23346-1-arnaud.ferraris@collabora.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Saturday, October 16, 2021 9:26:04 PM CEST Dan Carpenter wrote:
-> Yeah, you're right.  This is fine.  It's a bit confusing how Arnd
-> re-used complete to start the function.
+On Sat, 16 Oct 2021 12:20:21 +0200, Arnaud Ferraris wrote:
+> A new root node property named 'chassis-type' has recently been approved
+> added to the device tree specification[1]. This will allow userspace to
+> easily detect the device form factor on DT-based devices, and act
+> accordingly.
 > 
-> regards,
-> dan carpenter
+> This patchset fills in this property for existing ARM64 consumer
+> devices (laptops, phones, tablets...).
 > 
+> [...]
 
-Thanks, Dan.
+Applied, thanks!
 
-What still confuses me is why rtw_start_drv_threads() wants to be notified 
-that the kthread has started. Can you please answer this question?
+[4/4] arm64: dts: rockchip: add 'chassis-type' property
+      commit: 263b39bce2fbcd3531163300cb9663a4a9517dde
 
-Regards,
-
-Fabio
-
-
-
+Best regards,
+-- 
+Heiko Stuebner <heiko@sntech.de>
