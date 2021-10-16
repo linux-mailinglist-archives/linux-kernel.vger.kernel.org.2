@@ -2,104 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2647B43024C
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 13:05:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86FE843024A
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 13:05:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244252AbhJPLGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 07:06:32 -0400
-Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:34907 "EHLO
-        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244205AbhJPLGa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 07:06:30 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.west.internal (Postfix) with ESMTP id 0686E32009DF;
-        Sat, 16 Oct 2021 07:04:21 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Sat, 16 Oct 2021 07:04:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
-         h=from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=fm2; bh=2Qy5WepVKDYgDPKSs+FFAQm9TP
-        1zfOYWpZSciejJiJg=; b=jlpFw8/W8iLLJygFqsu3WovRnG47CqYRUThE0qCQGY
-        cgCfKN1bmgBWnf1HgSqdsyqRgVw1dlPOlq26ibBFj+cKtCnaKaj/gaA/XoJ2ek+c
-        U1nCslOSqNUNZ03NICYzvOLa78zDYI5QBj6Rn0Zy1BCz+1HzXVswO0XMG+jIte/2
-        JMtvy8cAukwL4dwDkVmCr/IOR2W8wyNRaTRuIyLG7S0CInL1ozAVmqyPE43P/eTl
-        Z0fPzBcziP42OMAdyT0+wIX9dAT8qgEn74JQK4FanwFxVvCXPIrr8366kO0QTy0K
-        xFlrMr4GmoyiNwQRb6Hq+rHdnX9SJNJ5uck7103vuYOw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=2Qy5WepVKDYgDPKSs
-        +FFAQm9TP1zfOYWpZSciejJiJg=; b=j3zAA3dZ0wp6lipEDpNTDsBSOWUlboHFV
-        xrmFZI+lJUaDtsXkt5C+IsI4W+aNeOlCT0VStumONAPlTEDd2fmgzRXU4nBUOY8c
-        +HbuLyUiLK1nQyiSGjRAiNmayJYKXUQprEpC7sqJuJ2yi8zX8s0Cr/uBNQxCkYZk
-        bdBCzIzdNciGbzLpVgSybskh90Ng8XoP1Pwj8VoCLWZ6AgJYm8XlSVMsExHu/2uO
-        2Boal0qDzHyvYJ6YIR7IPiu9md3PRlBqElPoZTgdQJbnxfjhUwgCYbSnUA/84TRD
-        kF75CY7jyLU91pMLRyv9ZvG5vMdYwdiyJqSnNrcatr0b//7QjQ//Q==
-X-ME-Sender: <xms:tbFqYQHhRFOZZKNK2R5TefLOq-Q55-pvmwvLr8uZPdgUvhpJXZpm2g>
-    <xme:tbFqYZXPXOkNuVYINXrPkgNxdkVqznLoG220PwevkS8tEi_O4fDm5-UsjoFeGoON2
-    VrDFzDxxKFeJAWwEuc>
-X-ME-Received: <xmr:tbFqYaKYwElJRxDveENDD05LQ0Nh44hTY6FvakoLSc8oClTESpe2PVqNi0UHGVZi1LJye47rdQpt6ThqKrZEoYJnThyaBsBdW7bapC7MoktTdO2f4cW4ZvZXRiOD0w>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvdduiedgfeehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpefuvhgvnhcurfgv
-    thgvrhcuoehsvhgvnhesshhvvghnphgvthgvrhdruggvvheqnecuggftrfgrthhtvghrnh
-    epgeevffdthfdutdekhefhteeuueefgeeuffffkeeijeeikeduhfejgeekueevtdeunecu
-    ffhomhgrihhnpehgihhthhhusgdrtghomhdpohhfthgtrdhnvghtnecuvehluhhsthgvrh
-    fuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepshhvvghnsehsvhgvnhhpvght
-    vghrrdguvghv
-X-ME-Proxy: <xmx:tbFqYSH1XeY2p0ISpzxIfiekz3nxLFjFasRqr0asky8T8Zt2T1NAPQ>
-    <xmx:tbFqYWXJ7FTeLKotFO9d8kgFK27hUpdQrZQ_7tWnX22u3BIJttMvhw>
-    <xmx:tbFqYVMaxaWNcd1kBXrITqFrOFCON0b7kqgO5KWLGevcPFYoSVf-xw>
-    <xmx:tbFqYYcs9j8scEyegW0KRHeDu5X-WYUH13oRcZkpK2Fd-75rbUohKg>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 16 Oct 2021 07:04:20 -0400 (EDT)
-From:   Sven Peter <sven@svenpeter.dev>
-To:     Wolfram Sang <wsa@kernel.org>, Hector Martin <marcan@marcan.st>,
-        Sven Peter <sven@svenpeter.dev>
-Cc:     Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] MAINTAINERS: Add pasemi i2c to ARM/APPLE MACHINE
-Date:   Sat, 16 Oct 2021 13:03:44 +0200
-Message-Id: <20211016110344.53509-1-sven@svenpeter.dev>
-X-Mailer: git-send-email 2.30.1 (Apple Git-130)
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S244177AbhJPLG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 07:06:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34656 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236005AbhJPLGZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Oct 2021 07:06:25 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 253F06108E;
+        Sat, 16 Oct 2021 11:04:18 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mbhU7-00HBTK-S6; Sat, 16 Oct 2021 12:04:15 +0100
+Date:   Sat, 16 Oct 2021 12:04:15 +0100
+Message-ID: <87ilxxut74.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Quentin Perret <qperret@google.com>
+Cc:     James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Fuad Tabba <tabba@google.com>,
+        David Brazdil <dbrazdil@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, kernel-team@android.com
+Subject: Re: [PATCH 03/16] KVM: arm64: Avoid remapping the SVE state in the hyp stage-1
+In-Reply-To: <20211013155831.943476-4-qperret@google.com>
+References: <20211013155831.943476-1-qperret@google.com>
+        <20211013155831.943476-4-qperret@google.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: qperret@google.com, james.morse@arm.com, alexandru.elisei@arm.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, tabba@google.com, dbrazdil@google.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the pasemi i2c platform and core files to the ARM/APPLE MACHINE
-entry in MAINTAINERS.
+On Wed, 13 Oct 2021 16:58:18 +0100,
+Quentin Perret <qperret@google.com> wrote:
+> 
+> We currently map the SVE state into the hypervisor stage-1 on VCPU_RUN,
+> when the vCPU thread's PID has changed. However, this only needs to be
+> done during the first VCPU_RUN as the SVE state doesn't depend on
+> thread-specific data, so move the create_hyp_mapping() call to
+> kvm_vcpu_first_run_init().
+> 
+> Suggested-by: Marc Zyngier <maz@kernel.org>
+> Signed-off-by: Quentin Perret <qperret@google.com>
+> ---
+>  arch/arm64/kvm/arm.c    | 12 ++++++++++++
+>  arch/arm64/kvm/fpsimd.c | 11 -----------
+>  2 files changed, 12 insertions(+), 11 deletions(-)
+> 
+> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+> index fe102cd2e518..c33d8c073820 100644
+> --- a/arch/arm64/kvm/arm.c
+> +++ b/arch/arm64/kvm/arm.c
+> @@ -618,6 +618,18 @@ static int kvm_vcpu_first_run_init(struct kvm_vcpu *vcpu)
+>  	if (ret)
+>  		return ret;
+>  
+> +	if (vcpu->arch.sve_state) {
+> +		void *sve_end;
+> +
+> +		sve_end = vcpu->arch.sve_state + vcpu_sve_state_size(vcpu);
+> +
+> +		ret = create_hyp_mappings(vcpu->arch.sve_state, sve_end,
+> +					  PAGE_HYP);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+> +
+>  	ret = kvm_arm_pmu_v3_enable(vcpu);
+>  
+>  	return ret;
+> diff --git a/arch/arm64/kvm/fpsimd.c b/arch/arm64/kvm/fpsimd.c
+> index 5621020b28de..62c0d78da7be 100644
+> --- a/arch/arm64/kvm/fpsimd.c
+> +++ b/arch/arm64/kvm/fpsimd.c
+> @@ -43,17 +43,6 @@ int kvm_arch_vcpu_run_map_fp(struct kvm_vcpu *vcpu)
+>  	if (ret)
+>  		goto error;
+>  
+> -	if (vcpu->arch.sve_state) {
+> -		void *sve_end;
+> -
+> -		sve_end = vcpu->arch.sve_state + vcpu_sve_state_size(vcpu);
+> -
+> -		ret = create_hyp_mappings(vcpu->arch.sve_state, sve_end,
+> -					  PAGE_HYP);
+> -		if (ret)
+> -			goto error;
+> -	}
+> -
+>  	vcpu->arch.host_thread_info = kern_hyp_va(ti);
+>  	vcpu->arch.host_fpsimd_state = kern_hyp_va(fpsimd);
+>  error:
 
-Signed-off-by: Sven Peter <sven@svenpeter.dev>
----
-As discussed in the i2c series, here are the MAINTAINER changes.
-Hector will take this commit through his tree.
+I actually ended-up implementing a similar patch as part of my 'first
+run' series[1], though I moved the mapping to the point where we
+finalise the vcpu as that's where the allocation takes place.
 
- MAINTAINERS | 3 +++
- 1 file changed, 3 insertions(+)
+Do you see any potential issue with that approach?
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index ad62687a0b3c..ecf239ac427e 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -1729,10 +1729,13 @@ B:	https://github.com/AsahiLinux/linux/issues
- C:	irc://irc.oftc.net/asahi-dev
- T:	git https://github.com/AsahiLinux/linux.git
- F:	Documentation/devicetree/bindings/arm/apple.yaml
-+F:	Documentation/devicetree/bindings/i2c/apple,i2c.yaml
- F:	Documentation/devicetree/bindings/interrupt-controller/apple,aic.yaml
- F:	Documentation/devicetree/bindings/pci/apple,pcie.yaml
- F:	Documentation/devicetree/bindings/pinctrl/apple,pinctrl.yaml
- F:	arch/arm64/boot/dts/apple/
-+F:	drivers/i2c/busses/i2c-pasemi-core.c
-+F:	drivers/i2c/busses/i2c-pasemi-platform.c
- F:	drivers/irqchip/irq-apple-aic.c
- F:	include/dt-bindings/interrupt-controller/apple-aic.h
- F:	include/dt-bindings/pinctrl/apple.h
+Thanks,
+
+	M.
+
+[1] https://lore.kernel.org/r/20211015090822.2994920-2-maz@kernel.org
+
 -- 
-2.25.1
-
+Without deviation from the norm, progress is not possible.
