@@ -2,76 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6F3A43006A
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 07:26:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0802343006D
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 07:34:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236557AbhJPF27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 01:28:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59412 "EHLO
+        id S236973AbhJPFgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 01:36:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230261AbhJPF26 (ORCPT
+        with ESMTP id S230261AbhJPFgg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 01:28:58 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 789B0C061570;
-        Fri, 15 Oct 2021 22:26:51 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id v20so7670125plo.7;
-        Fri, 15 Oct 2021 22:26:51 -0700 (PDT)
+        Sat, 16 Oct 2021 01:36:36 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DDECC061570;
+        Fri, 15 Oct 2021 22:34:29 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id 66so10493944pgc.9;
+        Fri, 15 Oct 2021 22:34:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=vL20q6MI4uIa5jL4lCEU0zzyyrlExue0RuCCFMmvnBY=;
-        b=N7YPb1eJ4ZByCzkVdOUKSNzAhY4IQFyCM0JskLT4dva54fmRQ1Uvnjw5ksIyqjYxLG
-         VvYdJsO3u810fWOE+2Urt6sZE3ivewVHpqbbI94UqCgyU3qvjt0j7wzOXUB0Eqbs8pn2
-         SkxHxATo2HND1szD6oPNWXlmfq9Z3AHiD7np2ARvFL3ZSHNuTHfpcruepa9xVCtsc6h7
-         BnoC8UyQf180bbliDxvhXGUdSyFDwgT715ctKYoUgC59dvtljhcZdYo5a9JpGP7/wCl9
-         hTlwqwzqpPizCEnV2szedYZOwUrduonttQvDRf3ZmvNx1hmwvXaskxUL9Hkdmblx592g
-         XqXA==
+        bh=4CrEqgAufz2diBZFjCMkZibQ9hBmn7hbMG1d+GIZLCI=;
+        b=YB+r4935l23vZCAX9eCeoSsrGYb3PGI9JlHJzMydFyE6ZNdgA1bT54enPAVsowz7kd
+         2VrPtIzhWO0hLf6KgK9XqpEsePbmhSXJ/IOxUJTXhmlp+VAhjQdVsvlUpGPXlo/gmoIv
+         arQNzY9E3nwG71wXjShUS9uXAl8qpkEM/yDlSS3E81//AIcMBDaV+aCyIgYUFq+w6FAl
+         m9deDw0Al7mUqex2rRSql7Q70vyL+c+Ov0urAX+54IQg4r5SN4JuM/pPE2crb1aJwvvP
+         8uQ0mQ2Rh5EirgGVc1DuHTx7khAJEQMyoLLcK9x4WkxKIT/4ZwzRCUbv5sZwUtfrggwx
+         CZ+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=vL20q6MI4uIa5jL4lCEU0zzyyrlExue0RuCCFMmvnBY=;
-        b=YB7X9zEUtBInyIKFGsyxNbycYmmrjMybsaMew4f5pxI0bi4VY2TuxNIUJoD+XnIHQg
-         ARaLDrZk2s+1IKQ+8VFi1NgsNQu9r33JNuV4tTBAKx3SbiqI2z1F4j7P+f6IeK5KsnxB
-         blcoN599nk3bn9GZAmQN/2O0wkZDx6PHhU4WT+uaSwIS4SaAOZIo3hrwv2LA0nWRqs3w
-         mxkcBuqgD+zBW8chwgnQAeugf6ig2B8+h4KqKhLXi8f56L41SSGp7GSG902nDtgYuQuP
-         UR2o90mRSxrAvAevqfDVbLdyCBw1040/K0Fsrke3z0CRoMK71vpqHN/0V6EqRkL8DGNR
-         zWZg==
-X-Gm-Message-State: AOAM531bLdGmUQiGWvTS5AhgXHaiiy+y2IyWL5RuP+1fY9ijtsVAQSpe
-        nVya2Ab/gSLqpi3msxk0Jb5Hc2Zg3u4=
-X-Google-Smtp-Source: ABdhPJyaQ1rJY8UqxahwVhJ1WLq6LOFFeoTcTIad0Z2FeO40ApL3YFtlCLaQAGY8ehNi7fKMNI10og==
-X-Received: by 2002:a17:90b:1e0e:: with SMTP id pg14mr17917982pjb.15.1634362010664;
-        Fri, 15 Oct 2021 22:26:50 -0700 (PDT)
+        bh=4CrEqgAufz2diBZFjCMkZibQ9hBmn7hbMG1d+GIZLCI=;
+        b=kSf1pcRARIgPf/mqRohrKFWNT9IftnDiL20lkqDef+EaV2X9BiO8eO4ICYSmISdG+R
+         SF6Zocbrw4AoySqZYyT82iSHdRs3lWBfgLRJ37ZIz8pBbzCUZkwbqAeV96ltfSB05fPj
+         KAdF/7Kq4v6cfr4PqgzG4qjqieS0Ac1BOKhV12yMUlh0JB9arn+tpVAMonqHbvn0SoSU
+         IF7Ef2QBbDUMYQj0AQgVG9abO29y+/iwSz1uXJ1EMqRKP4pjJeRZOhEfclyfqlFjAlpw
+         A72NtjcG9iXoZDTlBjCeD0v7zIRPoH007Aaxd7chgV3/4e+H2sPSD1tDgb6VzxMiyU9s
+         AiXg==
+X-Gm-Message-State: AOAM531bPHb8+QhvbQ4azNvHlu3P9ZDXEDxGZwGykHA0oEG2fvg8ZAzI
+        Wx7KQjOqTNQ6ry33OLg5B6FizfUv3Ek=
+X-Google-Smtp-Source: ABdhPJziuKfnBhNBnSEVM2dC5KZKAqWvf8WNjpqeRg6XMsQa4Z1QiTxWpCMnQT96XniYj7HliVZE/A==
+X-Received: by 2002:a63:b349:: with SMTP id x9mr12412545pgt.139.1634362468631;
+        Fri, 15 Oct 2021 22:34:28 -0700 (PDT)
 Received: from google.com ([2620:15c:202:201:6a02:4736:3b83:a269])
-        by smtp.gmail.com with ESMTPSA id h23sm6455646pfn.109.2021.10.15.22.26.49
+        by smtp.gmail.com with ESMTPSA id d15sm7084484pfu.12.2021.10.15.22.34.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Oct 2021 22:26:49 -0700 (PDT)
-Date:   Fri, 15 Oct 2021 22:26:47 -0700
+        Fri, 15 Oct 2021 22:34:27 -0700 (PDT)
+Date:   Fri, 15 Oct 2021 22:34:25 -0700
 From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Michael Cullen <michael@michaelcullen.name>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
 Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Input: xpad - Add support for another USB ID of Nacon
- GC-100
-Message-ID: <YWpil1CFXObyY6fy@google.com>
-References: <20211015192051.5196-1-michael@michaelcullen.name>
+Subject: Re: [PATCH] Input: gpio-keys - print button label in IRQ button
+ error messages
+Message-ID: <YWpkYWCFMtR40A6m@google.com>
+References: <f1728883a5bf4481eb1d45e7b7a71005e29e259a.1632467859.git.geert+renesas@glider.be>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211015192051.5196-1-michael@michaelcullen.name>
+In-Reply-To: <f1728883a5bf4481eb1d45e7b7a71005e29e259a.1632467859.git.geert+renesas@glider.be>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 15, 2021 at 09:20:51PM +0200, Michael Cullen wrote:
-> The Nacon GX100XF is already mapped, but it seems there is a Nacon
-> GC-100 (identified as NC5136Wht PCGC-100WHITE though I believe other
-> colours exist) with a different USB ID when in XInput mode.
+Hi Geert,
+On Fri, Sep 24, 2021 at 09:18:02AM +0200, Geert Uytterhoeven wrote:
+> When an error message related to IRQ buttons is printed, no clue is
+> given about the actual button that caused the failure.  Fix this by
+> including the button label, to make it more obvious which button has an
+> incomplete or incorrect hardware description.
 > 
-> Signed-off-by: Michael Cullen <michael@michaelcullen.name>
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> ---
+>  drivers/input/keyboard/gpio_keys.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/input/keyboard/gpio_keys.c b/drivers/input/keyboard/gpio_keys.c
+> index 0f2250c6aa4978d5..fc706918d7b103cb 100644
+> --- a/drivers/input/keyboard/gpio_keys.c
+> +++ b/drivers/input/keyboard/gpio_keys.c
+> @@ -617,14 +617,16 @@ static int gpio_keys_setup_key(struct platform_device *pdev,
+>  		}
+>  	} else {
+>  		if (!button->irq) {
+> -			dev_err(dev, "Found button without gpio or irq\n");
+> +			dev_err(dev, "Found button %s without gpio or irq\n",
+> +				desc);
 
-Applied, thank you.
+I do not believe description is mandatory, so we may end up printing
+"gpio_keys" here. I wonder if it would not be more reliable to print the
+index of the problematic key?
+
+Thanks.
 
 -- 
 Dmitry
