@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C55224304EB
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 22:26:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49F3C4304EF
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 22:33:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244618AbhJPU2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 16:28:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57740 "EHLO
+        id S244591AbhJPUfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 16:35:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244611AbhJPU2r (ORCPT
+        with ESMTP id S233817AbhJPUfg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 16:28:47 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 916C5C061765;
-        Sat, 16 Oct 2021 13:26:38 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id y3so32991183wrl.1;
-        Sat, 16 Oct 2021 13:26:38 -0700 (PDT)
+        Sat, 16 Oct 2021 16:35:36 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77281C061765;
+        Sat, 16 Oct 2021 13:33:27 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id o24-20020a05600c511800b0030d9da600aeso4923754wms.4;
+        Sat, 16 Oct 2021 13:33:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=fY5vUzD6KMxSI0lz5xTBbc8a7TLb2YtsRF/0pt37Up8=;
-        b=U8aK8nq2xTVNye0OfMhx4nremMck2k8EOvWd+g/MQDhf9tCk0CZqtLFO6MaePsrTO4
-         cj4r7k3yif43P/cFQQ1PpHYZ6Ukgivkxjeyku/9defOBXoy3vZLY4Ti+/ffHdcPkxXZ6
-         1HdjRNAaVp+Z3qATIEUX5pJNG/HpnSSLNxhE3rX9WDNDrOH8nVsYIBsJu9NJ+4GqXZ5Y
-         J3fgxeFvPF74/sWpojwhPNXgvEJri1Q4Majda2d8UT9ANoHvKx4P3ldCOzYFXSxGCOcm
-         ZIwMg+kNix1GJIu+F36ao+xF40rJDXmD0J+0YGYwp2uMDkobv3HxNJj417nC4lkbzaPP
-         rSbg==
+        bh=L4cvggOdhnFkBXfDhz5ZZVHZhrlThVGw+xSx4xzlSAM=;
+        b=LPgh6IDQCUK3vW/i6YlnhI9KeTVshzzq0zCzgujdTAsf3CLpyVXfwZsOOo+1Ieb1nv
+         GX2TOEVQUCut0FhX/QF5wii0cNRVKSrC4ZXKC1vO9llR7uyUn06YMue5WA2jXobIEYvO
+         XLMYIvrriD/3/V/Ol5C84NEqIAcTR+Q2k9th5sjnb7sS+w2mZNSfpw80WNdt8mRp95LB
+         4SUHEbPB7n9fqCOzhHO97ez/9AUQyQlgTQR0/gjcNrszB0ArZpPwaUXnaG7LWsDct++e
+         C0dzwi5rFy5TZKaDzoKz9KBhq9SA7FG/pcutYoAP7PfTC0hIWgkor5IYi2gKv7Gl/zRK
+         LFpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=fY5vUzD6KMxSI0lz5xTBbc8a7TLb2YtsRF/0pt37Up8=;
-        b=dxwb5ATHdN1NW0p5Uo4a8GGCNuPqaABm/ujLygqCdSoRviF/f4zMjqprky3pYYt5Tu
-         ZikzVYqzStuwHbogQAlTR2CjPCA54+n5cNADvglRhtAbZ2yMaFBOWmmWAAtpA2VoslTT
-         FIdJ5jY4QFRVLH9i2yunIaJ3hY5h34HN8A7dq08oPqgiHJVR++SxVL2puxMnhNgzNZFl
-         4vodsxjZJBH//SJfSI59vfqXYqiyCzhFPg9iVKrWal2RVgT5LNWhp/Y7+r8videjK0XC
-         aHfh12Nwx/57u2ar5IxWQuptPncKIR6UyEYK8SioNI/dSLRLIUPvLdyVIcoMd6wliqec
-         54UQ==
-X-Gm-Message-State: AOAM530jIagw+ubOOW3exq6k5JNF7mHGtKfIJ3jAOd/sBr8B6ayFV+XD
-        Smdz5gK2WL80H4CAMmRCx9wYkfuLa+c=
-X-Google-Smtp-Source: ABdhPJyogBmPpLEC/pWyBJa83NFjMTy9T/xISx0KESJ67+NPcm7hEeiqhn+P6oxNqBcY3vGY7sVqWA==
-X-Received: by 2002:a05:6000:18a4:: with SMTP id b4mr24261440wri.394.1634415996972;
-        Sat, 16 Oct 2021 13:26:36 -0700 (PDT)
+        bh=L4cvggOdhnFkBXfDhz5ZZVHZhrlThVGw+xSx4xzlSAM=;
+        b=RsgKV4pRBKXLaSpWGxr2fgoSp71Caoi2Oybv7fppdLwGHrQW/fRqm/tPvgWn1VMJQ+
+         ktYXiru0aYdVka6ZuDdx/3Dj8ouV9P1TrEtr754US4xFwgtEHqOtQV/oAMENPPLuQFpG
+         Yj+BLmYoQ76NvP4TTmi3ZnBs78Wog8fyt9uF3MHvYWhkCiidldzOhXEZ56lo6KFAXVsw
+         /OREOBAlU48ZVdfhGFSf3ABvYR0r+IhmQLZKJ1c2Raa0Mf9Pr0cpLvrx67UAW4f+WKKB
+         NH5UpmCase48w+wkYQdA8hSHMLIuidVcPFVTER5iCCWA2Rch57wzFmHPfhH3sU9eG8WY
+         K8sQ==
+X-Gm-Message-State: AOAM530FHxh0CjafSYXe5ka1yR6XK7pouqs8dmSHLLQckWjmCnqIltyu
+        0ril1Lm4laFKV6zhpbgB3NE2XMYnQXQ=
+X-Google-Smtp-Source: ABdhPJzdnsk11pf0AKEyox8tiBm31fMK71Tki6VuG7ucDDD4jK/UTQ9MDKQHbD4UZnCrx6vGD7GEUg==
+X-Received: by 2002:a7b:ca56:: with SMTP id m22mr20890546wml.34.1634416405786;
+        Sat, 16 Oct 2021 13:33:25 -0700 (PDT)
 Received: from localhost.localdomain (252.red-83-54-181.dynamicip.rima-tde.net. [83.54.181.252])
-        by smtp.gmail.com with ESMTPSA id d7sm2138387wrx.22.2021.10.16.13.26.36
+        by smtp.gmail.com with ESMTPSA id w11sm7748826wmc.44.2021.10.16.13.33.24
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 16 Oct 2021 13:26:36 -0700 (PDT)
+        Sat, 16 Oct 2021 13:33:25 -0700 (PDT)
 From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
 To:     devicetree@vger.kernel.org
 Cc:     robh@kernel.org, john@phrozen.org, neil@brown.name,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v4] dt-bindings: bus: add palmbus device tree bindings
-Date:   Sat, 16 Oct 2021 22:26:35 +0200
-Message-Id: <20211016202635.8266-1-sergio.paracuellos@gmail.com>
+Subject: [PATCH v5] dt-bindings: bus: add palmbus device tree bindings
+Date:   Sat, 16 Oct 2021 22:33:23 +0200
+Message-Id: <20211016203323.9165-1-sergio.paracuellos@gmail.com>
 X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -67,6 +67,14 @@ ralink based SoCs.
 
 Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
 ---
+changes in v5: Sent wrong patch in v4. Hence, properly sent it.
+Changes in v4: The node name pattern is already checked elsewhere. There is only need to
+               define the unit-address part which should be lowercase hex. 
+Changes in v3: change sample to use child node which its bindings are
+               already in YAML format to make dtschema happier.
+Changes in v2: fixed missing semicolon in example.
+ .../devicetree/bindings/bus/palmbus.yaml      | 79 +++++++++++++++++++
+ 1 file changed, 79 insertions(+)
  .../devicetree/bindings/bus/palmbus.yaml      | 79 +++++++++++++++++++
  1 file changed, 79 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/bus/palmbus.yaml
