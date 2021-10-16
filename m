@@ -2,158 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E1474300CD
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 09:17:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91CE74300D3
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 09:23:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243766AbhJPHRI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 03:17:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35807 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243765AbhJPHRB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 03:17:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634368492;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BaxIwfVxonTLo15k+nEJpF6xy73a9k6tRs3kATSDU84=;
-        b=OBvny+3wpF0Ss5GQACsPoRaZQ1VbeuvAkL1Gg5f5j77lWF4+ILrj+UXpfhXR+rbLvwKDQQ
-        4YEcGvknMgGwComwn5yO69EG8FgzpQYAYbwashDY1lKLeX6zNjbSk6+GQyAoaPYyrcDV+W
-        fLy67RSLv+Sxc/gyZJLmotYedGq9Nts=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-422-j5OjGMwlMyWSbIE3FCFDOA-1; Sat, 16 Oct 2021 03:14:51 -0400
-X-MC-Unique: j5OjGMwlMyWSbIE3FCFDOA-1
-Received: by mail-ed1-f70.google.com with SMTP id h19-20020aa7de13000000b003db6ad5245bso10190698edv.9
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 00:14:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=BaxIwfVxonTLo15k+nEJpF6xy73a9k6tRs3kATSDU84=;
-        b=BohX8K3iT7eJ9iTUzRDqMj6iTQKT6Uid48ViK0iGklYpntbT/HxaPWgVI1HGWsH4Zc
-         Fp4PA47LkuULiR/TNo+vPFTwZqpEmxPL8rvlQU63HQenWtlOK/xk+fRlnRbScQXlUvYQ
-         0iSQ7/tW44WHV0YFgsFGW/kjPec/a4tmWZ+XB8P0og6QZ9Hs174fqzeGU2QB20C1YuPT
-         r4ShzYs/LOhJuX7q9dcDGYdv382wb3e+FELt7Vdq00+TCx+FOvnVP25wMZi8Jx9lcf0v
-         UyGrx3gsl+AuFJIHhdAx8ymxBYjkv0JIZWRZf2uacXOAw9MH1Y6TVCYn5jfybioxNeb6
-         sq+A==
-X-Gm-Message-State: AOAM533uca4NRi4xzYh7bAfFmZwQ/vakOBTYDPe6RHZIIIDuCX5p72We
-        /ZUZxcjgnhAifsy4N3yc/qtG8bbrT+UxkZrKcwCHOIxymZSYdtTgtQrOqz3itRkuJjuNvR7Gclt
-        Laa5+qneitbG+tab4nLLBHasc
-X-Received: by 2002:a05:6402:4248:: with SMTP id g8mr24081557edb.91.1634368489758;
-        Sat, 16 Oct 2021 00:14:49 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxu7II/lBoJFLzogNCFPfshVOVNcIr3jIwXuw554nr36y9gf/8/fqdLpCAzn7r0OBvbrD0PYA==
-X-Received: by 2002:a05:6402:4248:: with SMTP id g8mr24081533edb.91.1634368489577;
-        Sat, 16 Oct 2021 00:14:49 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
-        by smtp.gmail.com with ESMTPSA id q21sm5982372edi.58.2021.10.16.00.14.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 16 Oct 2021 00:14:48 -0700 (PDT)
-Message-ID: <00419ea5-9b51-0175-0500-0882fd0b4290@redhat.com>
-Date:   Sat, 16 Oct 2021 09:14:46 +0200
+        id S243760AbhJPHZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 03:25:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44610 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234387AbhJPHZM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Oct 2021 03:25:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F83661101;
+        Sat, 16 Oct 2021 07:23:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634368985;
+        bh=Na/z7Ltn27+slBlPaq9aTLbN+gfs2R2C879IfEaXqHc=;
+        h=Date:From:To:Cc:Subject:From;
+        b=hjNL+RjyaV54GD8g3uSD5SQNZHTHxEy3NU7h1j1GUCNwLftZ3eoMd1kpXS0imljMC
+         qgsVynvF7qwWWsdyAp5dDHRRz/agnzJJYJWp5htKAg7QJgnlXG3bf5mEpVZ/aKjp+z
+         0dhy5c/GLNO6FQtUJJeEoayeZ7XPpDDxzJYpog31RZtF7w1qNNHdTBG9l3uYwhYJ7p
+         CEGM3LzYgT6EwHFRasY74beihHRKLVQU/Smot0lT/p16rz1Eo+RTeKgL1GQ/yFuy2z
+         XCOtuk4xCpZYEZWUzi7eUJzzCiptDrPQN8P36maKMYnMzqq4uBkGpon3o+59x4scxn
+         Z1fVp7T5mzVFQ==
+Date:   Sat, 16 Oct 2021 10:22:57 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: [GIT PULL] memblock: fix handling of NOMAP regions with kmemleak
+Message-ID: <YWp90alRlwExAmv2@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH v2 2/2] x86: sgx_vepc: implement SGX_IOC_VEPC_REMOVE ioctl
-Content-Language: en-US
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        dave.hansen@linux.intel.com, x86@kernel.org, yang.zhong@intel.com,
-        jarkko@kernel.org
-References: <20211012105708.2070480-1-pbonzini@redhat.com>
- <20211012105708.2070480-3-pbonzini@redhat.com> <YWoA2lBUuFmDf6zu@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <YWoA2lBUuFmDf6zu@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/10/21 00:29, Sean Christopherson wrote:
-> On Tue, Oct 12, 2021, Paolo Bonzini wrote:
->> diff --git a/arch/x86/kernel/cpu/sgx/virt.c b/arch/x86/kernel/cpu/sgx/virt.c
->> index 59cdf3f742ac..81a0a0f22007 100644
->> --- a/arch/x86/kernel/cpu/sgx/virt.c
->> +++ b/arch/x86/kernel/cpu/sgx/virt.c
->> @@ -150,6 +150,46 @@ static int sgx_vepc_free_page(struct sgx_epc_page *epc_page)
->>   	return 0;
->>   }
->>   
->> +static long sgx_vepc_remove_all(struct sgx_vepc *vepc)
->> +{
->> +	struct sgx_epc_page *entry;
->> +	unsigned long index;
->> +	long failures = 0;
->> +
->> +	xa_for_each(&vepc->page_array, index, entry) {
-> 
-> Might be worth a comment that xa_for_each() is safe to use concurrently with
-> xa_load/xa_store, i.e. this doesn't need to take vepc->lock.
+Hi Linus,
 
-I considered that to be part of the xarray contract (xa_store uses 
-rcu_assign_pointer so it has release semantics, and vepc->page_array is 
-essentially "store once").
+The following changes since commit 64570fbc14f8d7cb3fe3995f20e26bc25ce4b2cc:
 
-> It does raise the
-> question of whether or not the kernel is responsible for providing deterministic
-> results if userspace/guest is accessing previously-unallocated pages.
+  Linux 5.15-rc5 (2021-10-10 17:01:59 -0700)
 
-Garbage in, garbage out -- but you're right below that garbage in, WARN 
-out is not acceptable.  I'm sending a v3 with documentation changes too.
+are available in the Git repository at:
 
-Paolo
+  https://git.kernel.org/pub/scm/linux/kernel/git/rppt/memblock tags/fixes-2021-10-16
 
->> +		int ret = sgx_vepc_remove_page(entry);
-> 
-> I don't see anything that prevents userspace from doing SGX_IOC_VEPC_REMOVE_ALL
-> on multiple threads with the same vEPC.  That means userspace can induce a #GP
-> due to concurrent access.  Taking vepc->lock would solve that particular problem,
-> but I think that's a moot point because the EREMOVE locking rules are relative to
-> the SECS, not the individual page (because of refcounting).  SGX_IOC_VEPC_REMOVE_ALL
-> on any two arbitrary vEPCs could induce a fault if they have children belonging to
-> the same enclave, i.e. share an SECS.
-> 
-> Sadly, I think this needs to be:
-> 
-> 		if (ret == SGX_CHILD_PRESENT)
-> 			failures++;
-> 		else if (ret)
-> 			return -EBUSY;
-> 
->> +		switch (ret) {
->> +		case 0:
->> +			break;
->> +
->> +		case SGX_CHILD_PRESENT:
->> +			failures++;
->> +			break;
->> +
->> +		case SGX_ENCLAVE_ACT:
->> +			/*
->> +			 * Unlike in sgx_vepc_free_page, userspace could be calling
->> +			 * the ioctl while logical processors are running in the
->> +			 * enclave; do not warn.
->> +			 */
->> +			return -EBUSY;
->> +
->> +		default:
->> +			WARN_ONCE(1, EREMOVE_ERROR_MESSAGE, ret, ret);
->> +			failures++;
->> +			break;
->> +		}
->> +		cond_resched();
->> +	}
->> +
->> +	/*
->> +	 * Return the number of pages that failed to be removed, so
->> +	 * userspace knows that there are still SECS pages lying
->> +	 * around.
->> +	 */
->> +	return failures;
->> +}
-> 
+for you to fetch changes up to 6e44bd6d34d659c44cd8e7fc925c8a97f49b3c33:
 
+  memblock: exclude NOMAP regions from kmemleak (2021-10-13 08:36:59 +0300)
+
+----------------------------------------------------------------
+memblock: fix handling of NOMAP regions with kmemleak.
+
+NOMAP regions don't have linear map entries so an attempt to scan these
+areas in kmemleak would fault.
+
+Prevent such faults by excluding NOMAP regions from kmemleak.
+
+----------------------------------------------------------------
+Mike Rapoport (1):
+      memblock: exclude NOMAP regions from kmemleak
+
+ mm/memblock.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+-- 
+Sincerely yours,
+Mike.
