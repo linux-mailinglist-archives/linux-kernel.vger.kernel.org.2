@@ -2,101 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B65274303C1
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 18:28:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AAC54303C4
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 18:31:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240789AbhJPQaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 12:30:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34254 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240679AbhJPQaL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 12:30:11 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FA3DC061570;
-        Sat, 16 Oct 2021 09:28:02 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id v195so1268191ybb.0;
-        Sat, 16 Oct 2021 09:28:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Id1MBaA3OETXuAI2hYM+99prITp5edRSGDU+gsvnGcE=;
-        b=NuSoPB2r7ZFwbh+xm3eq2YpuuZVI5PU0ML/nreO75bHdMjPx2e4dYImScZe8g/Z5vt
-         xTOOaSRYPpP2AGLSgpKT9X5sktrT5wXlZBzEPBaAMQTOzBtNGz5IjUbSaQRzNgxNJXLy
-         HdtCJz+XxkongIkQ0k/PopdAnG1E8o3rgCaDQa1gBcUOEMFEN5GVI4LZTzLFBSS/CGzw
-         /Q15qfaoeRjnoGpPh8ZmYBsIja3EJsQLnAbaZIzSwt6VZ5rlu3xwmjBWQDhfZ6u9/qXV
-         gc+V7G2uz/xPq3kZj1G+zm8djZrl63t2NHpRt1NHWDPbUckEGqg4o09VxKZls4yfy+lf
-         u9eQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Id1MBaA3OETXuAI2hYM+99prITp5edRSGDU+gsvnGcE=;
-        b=E0WDgDQNwfQ3uG5phRlPNIRMIY4yrR3FReOLtoSkqy9NcXzpTdUfPsf7NYMDDw61Qw
-         QFYfnes0e57XGBy3l6AkitMVwZ5+mWUFRn0ZVJ/wcOiQeCIGcfCgLjB/JmjgL9Bffdul
-         hsPP7vFF/x7KjAeMBv4En6AZ1BXxazyPKKbNZZGVGs2q9eDZsiCFQczq3+RZVHC6PeiR
-         insCvDNXYDUrkRDCEbaTaiS0jz5/uK25K8WGLMNcXnkpi/WSzIKZyAGZjbNPb9PTUCQr
-         /bPs9uR6fy6RChTFD085H41w67rcxlZPpS6cndygschjsq3hA6jXWuhe9LKC4ut3HEVq
-         Xczw==
-X-Gm-Message-State: AOAM533Q9QPfUmk64VOQk9fM56hhq59j3n76CzwQV1Oh9iXVSMRYzzBu
-        xVjUHHbplquuPnhqSlJv0cTizYdEvui1kiRD3xvJBg2bnGA=
-X-Google-Smtp-Source: ABdhPJyfGyzFUeWi79yeeWVZEumWi4upZfkpiyd4s2wo5sTM0Siy6+UeUwn8j6UfXBqfuU0rk1Gc+10/1CUdlG1yWhY=
-X-Received: by 2002:a25:ddc7:: with SMTP id u190mr19198236ybg.37.1634401681179;
- Sat, 16 Oct 2021 09:28:01 -0700 (PDT)
+        id S240300AbhJPQdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 12:33:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52100 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230526AbhJPQdo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Oct 2021 12:33:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1DEBB6109E;
+        Sat, 16 Oct 2021 16:31:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634401896;
+        bh=1Guiab883qyByx7tJNaCujwIVNnfBIN3+AL//FDIewM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XV3xTGX/D7OriQ8vXqDgWuVKrd2TQLz9HHwZIvULkytyCqRt5w7WwHXnT+pqzGQUq
+         86nb8OIutr5oxRMalBCn55As1fQRwm1lkIJjpb5Epy8ViW4Vznuqyo1rdTpc1unxTC
+         VABtCuTnT/1EIxXwBl4r97C8thZ1WjSyb/IPuJiWwQmwJ1dxnjV3GJLbfR7aieDf5L
+         OXSx6+NeDIGlx9RA6+rmhhuknhRLIp7Kz0SfClemAe6BuFthbP10KDmv27I8A6J4Rq
+         Hv/37QSzA7DRq5ifCKSy3rXFAwSLypa/ciyxBNGqKsbTaVvEzxA10pw9sk9mElkHTU
+         CtkNqT6rn8vSg==
+Date:   Sat, 16 Oct 2021 22:01:28 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        hemantk@codeaurora.org, bbhatt@codeaurora.org,
+        loic.poulain@linaro.org, wangqing@vivo.com, mhi@lists.linux.dev,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: Re: [PATCH 2/3] bus: mhi: Add inbound buffers allocation flag
+Message-ID: <20211016163128.GC4048@thinkpad>
+References: <20211016065734.28802-1-manivannan.sadhasivam@linaro.org>
+ <20211016065734.28802-3-manivannan.sadhasivam@linaro.org>
+ <YWqByX6rdfuA1h1F@kroah.com>
 MIME-Version: 1.0
-References: <CACAwPwb7edLzX-KO1XVNWuQ3w=U0BfA=_kwiGCjZOpKfZpc2pw@mail.gmail.com>
-In-Reply-To: <CACAwPwb7edLzX-KO1XVNWuQ3w=U0BfA=_kwiGCjZOpKfZpc2pw@mail.gmail.com>
-From:   Maxim Levitsky <maximlevitsky@gmail.com>
-Date:   Sat, 16 Oct 2021 19:27:50 +0300
-Message-ID: <CACAwPwYQHRcrabw9=0tvenPzAcwwW1pTaR6a+AEWBF9Hqf_wXQ@mail.gmail.com>
-Subject: Re: BMI160 accelerometer on AyaNeo tablet
-To:     linux-iio@vger.kernel.org
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: multipart/mixed; boundary="000000000000a1125305ce7acbd8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YWqByX6rdfuA1h1F@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000a1125305ce7acbd8
-Content-Type: text/plain; charset="UTF-8"
+On Sat, Oct 16, 2021 at 09:39:53AM +0200, Greg KH wrote:
+> On Sat, Oct 16, 2021 at 12:27:33PM +0530, Manivannan Sadhasivam wrote:
+> > From: Loic Poulain <loic.poulain@linaro.org>
+> > 
+> > Currently, the MHI controller driver defines which channels should
+> > have their inbound buffers allocated and queued. But ideally, this is
+> > something that should be decided by the MHI device driver instead,
+> > which actually deals with that buffers.
+> > 
+> > Add a flag parameter to mhi_prepare_for_transfer allowing to specify
+> > if buffers have to be allocated and queued by the MHI stack.
+> 
+> This is a horrible api.  Now one has to go and look up why "0" was added
+> to a function as a parameter.
+> 
+> If you don't want to allocate the buffer, then make a function of that
+> name and call that.  As you only have one "flag", don't try to make
+> something generic here that is obviously not generic at all.
+> 
 
-On Sat, Oct 16, 2021 at 7:19 PM Maxim Levitsky <maximlevitsky@gmail.com> wrote:
->
-> I recently bought this device, and it has this accelerometer/gyroscope.
->
-> Unfortunately, the device is advertised in ACPI as 10EC5280, instead of BMI0160
->
-> I attached a patch that does add this 10EC5280 to the list of ACPI ids of this driver, and the device seems to work fine, showing both acceleration and angular velocity in /sys IIO attributes with reasonable values.
->
+This is the only API that can be used by the client drivers to pass the
+configurations to the MHI stack. So we wanted to have a flags parameter that
+could be extended in the future also.
 
-( resend using plain text - reminds me to never use Gmail's web
-interface, even on weekends .)
+Regarding "0", the default behaviour is to not pre allocate the buffer at all.
+So it made less sense to add a separate flag or an API for that.
 
-> Best regards,
->    Maxim Levitsky
+Thanks,
+Mani
 
---000000000000a1125305ce7acbd8
-Content-Type: text/x-patch; charset="US-ASCII"; name="accel_fix.patch"
-Content-Disposition: attachment; filename="accel_fix.patch"
-Content-Transfer-Encoding: base64
-Content-ID: <f_kuu0jvju0>
-X-Attachment-Id: f_kuu0jvju0
-
-Y29tbWl0IDg4MGJiZjJlNWVlMmZhMGU5OTc5ODQ4MjY2NDk5N2E3ZGIyMjVmNTYKQXV0aG9yOiBN
-YXhpbSBMZXZpdHNreSA8bWxldml0c2tAcmVkaGF0LmNvbT4KRGF0ZTogICBTYXQgT2N0IDIgMjA6
-NTQ6MDAgMjAyMSArMDMwMAoKICAgIEJNSTE2MDogQVlBIE5FQSBhY2NlbG9tZXRlciBJRAogICAg
-CiAgICBPbiBBWUEgTkVPLCB0aGUgYWNjZWxlcm9tZXRlciBpcyBCTUkxNjAgYnV0IGl0IGlzIGV4
-cG9zZWQKICAgIHZpYSBBQ1BJIGFzIDEwRUM1MjgwCiAgICAKICAgIFNpZ25lZC1vZmYtYnk6IE1h
-eGltIExldml0c2t5IDxtbGV2aXRza0ByZWRoYXQuY29tPgoKZGlmZiAtLWdpdCBhL2RyaXZlcnMv
-aWlvL2ltdS9ibWkxNjAvYm1pMTYwX2kyYy5jIGIvZHJpdmVycy9paW8vaW11L2JtaTE2MC9ibWkx
-NjBfaTJjLmMKaW5kZXggMjYzOTg2MTRlZGRmYS4uMmIzZTNlMTVlMmUwNCAxMDA2NDQKLS0tIGEv
-ZHJpdmVycy9paW8vaW11L2JtaTE2MC9ibWkxNjBfaTJjLmMKKysrIGIvZHJpdmVycy9paW8vaW11
-L2JtaTE2MC9ibWkxNjBfaTJjLmMKQEAgLTQzLDYgKzQzLDcgQEAgTU9EVUxFX0RFVklDRV9UQUJM
-RShpMmMsIGJtaTE2MF9pMmNfaWQpOwogCiBzdGF0aWMgY29uc3Qgc3RydWN0IGFjcGlfZGV2aWNl
-X2lkIGJtaTE2MF9hY3BpX21hdGNoW10gPSB7CiAJeyJCTUkwMTYwIiwgMH0sCisJeyIxMEVDNTI4
-MCIsIDB9LCAvKiBBWUEgTkVPIHRhYmxldCAqLwogCXsgfSwKIH07CiBNT0RVTEVfREVWSUNFX1RB
-QkxFKGFjcGksIGJtaTE2MF9hY3BpX21hdGNoKTsK
---000000000000a1125305ce7acbd8--
+> You all can do better than this.
+> 
+> thanks,
+> 
+> greg k-h
