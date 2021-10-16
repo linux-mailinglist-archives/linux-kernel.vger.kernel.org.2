@@ -2,433 +2,291 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9DD44302ED
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 16:19:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA2B64302F8
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 16:20:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244372AbhJPOVR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 10:21:17 -0400
-Received: from mail-oi1-f175.google.com ([209.85.167.175]:37492 "EHLO
-        mail-oi1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244348AbhJPOVM (ORCPT
+        id S244394AbhJPOW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 10:22:29 -0400
+Received: from conssluserg-06.nifty.com ([210.131.2.91]:34472 "EHLO
+        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240548AbhJPOW2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 10:21:12 -0400
-Received: by mail-oi1-f175.google.com with SMTP id o83so17525332oif.4;
-        Sat, 16 Oct 2021 07:19:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=aOytoN8C+U3Rn90b6LRYZACEMLn+/RQ2njWL4ku1AlA=;
-        b=4JfezNqalfqkCWJzPkN1jYu37+V6CCCoNrmC3rFH+O95/2dXpNkE1nHsfmKV1rzBnm
-         dNxBcfIwrDrLv2vCV9bn0SbMMnow2kPReYKCfg9dV/bzja/3MbeJBQtnPfWAkHNnEu13
-         Ke0BgjH5Gdeddz/JQGCXLtgb1vFR4p8HpM2u+RUQcghLUAbwluOAT4/AbHJCwu3nfCM/
-         6oDIWY1tzxv957yQfPlP55RFAaL7zWPdiqYNGJ1338LyQrmOYHSbh7bMHgsGYmgnoXlk
-         6kwf43AvSU5jCoSdBMIngPx9dbasyMpj7weQeDHi78QPCJVPDTf2eJ5T9i9pg9LAYfkz
-         lxUA==
-X-Gm-Message-State: AOAM533ii0UaRF5j++Fe0QzTBFB5fkras5QJH2R6TGfT5C+CdFKACBPK
-        aM/hMjoBWx+X51ltQDYnLQ==
-X-Google-Smtp-Source: ABdhPJwH6z7wFjfPNxSwD8xSpolT6ZSFgxQdba+N0JtbkHE6D3GikZ06PyB//4Q7ixNJhIi/SWdbHA==
-X-Received: by 2002:a05:6808:301e:: with SMTP id ay30mr177018oib.75.1634393940896;
-        Sat, 16 Oct 2021 07:19:00 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id 65sm1874803otd.81.2021.10.16.07.18.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 16 Oct 2021 07:19:00 -0700 (PDT)
-Received: (nullmailer pid 3872759 invoked by uid 1000);
-        Sat, 16 Oct 2021 14:18:58 -0000
-Date:   Sat, 16 Oct 2021 09:18:58 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Moudy Ho <moudy.ho@mediatek.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Maoguang Meng <maoguang.meng@mediatek.com>,
-        daoyuan huang <daoyuan.huang@mediatek.com>,
-        Ping-Hsun Wu <ping-hsun.wu@mediatek.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Rob Landley <rob@landley.net>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        tfiga@chromium.org, drinkcat@chromium.org, acourbot@chromium.org,
-        pihsun@chromium.org, menghui.lin@mediatek.com,
-        sj.huang@mediatek.com, allen-kh.cheng@mediatek.com,
-        randy.wu@mediatek.com, srv_heupstream@mediatek.com,
-        hsinyi@google.com
-Subject: Re: [PATCH v8 5/7] dt-binding: mt8183: add Mediatek MDP3 dt-bindings
-Message-ID: <YWrfUo73+UegMKYP@robh.at.kernel.org>
-References: <20211015123832.17914-1-moudy.ho@mediatek.com>
- <20211015123832.17914-6-moudy.ho@mediatek.com>
+        Sat, 16 Oct 2021 10:22:28 -0400
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171]) (authenticated)
+        by conssluserg-06.nifty.com with ESMTP id 19GEJoj2002190
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 23:19:50 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 19GEJoj2002190
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1634393991;
+        bh=6ypZO4eKy8UrY8xuIoKPcuKG3eWAgsGuIUDhYfjtAOE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=f9FVnU6EOfplMhENw007y9BjfZ0OA9PesbiCaz7f54CGoWdqwoRvMjXd5DFxLQnQM
+         7UGKb3HlLeP/K4BpvXSVg9pztr5DNuwUp28Zdvtdozud/tBkoJ1zUrGjE/f6WkMvBq
+         sZM+MZvDQydVOBWnsDOacnFjgVJ9EXcJSjBK0CtEgz9QfdYfxkAbrcX1YSuwFaO85G
+         P2Z6LAgMEESUWGlRJoHZD8kmy3lqXx+3faCkE/b3XpPqWdL1mPbPEg5nVtTTDks8/B
+         +vrwJLXU1i3HAjHW5MJdTjOACykivjnFauWquFI+PxKNVWFz5kdmfgaS3VWp4OOYlH
+         dnzHzlT9pFd2Q==
+X-Nifty-SrcIP: [209.85.210.171]
+Received: by mail-pf1-f171.google.com with SMTP id i76so8768623pfe.13
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 07:19:50 -0700 (PDT)
+X-Gm-Message-State: AOAM532vG0m56Jy++JwizytVxwLil+1UZzKsRqHlEVWual7Vaat3YrH5
+        Fcs10X6oxe6cDuN18TFGAujRN6J5NIQEdfMfZcQ=
+X-Google-Smtp-Source: ABdhPJxUGvZ8xkSec8iz+iwXpfbq+CSOSonObmiQdyuGRr5QZLEuaNX6E+AGfPdDO3rCP94v4yL2nVWkx3c8tcOc+CM=
+X-Received: by 2002:a62:27c7:0:b0:44d:b86:54f2 with SMTP id
+ n190-20020a6227c7000000b0044d0b8654f2mr18001110pfn.68.1634393989868; Sat, 16
+ Oct 2021 07:19:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211015123832.17914-6-moudy.ho@mediatek.com>
+References: <20211012234606.91717-1-ndesaulniers@google.com>
+ <20211012234606.91717-3-ndesaulniers@google.com> <CAK7LNASGRQqL4Qu7ZVOcrW8-oXm7xvB-m7yoMJHnCDR5-_jrDQ@mail.gmail.com>
+ <CAKwvOd=gDxwvBdtDrJmqo4yb2DoswHtcK6f2M+z4s-b1RK5DyQ@mail.gmail.com>
+In-Reply-To: <CAKwvOd=gDxwvBdtDrJmqo4yb2DoswHtcK6f2M+z4s-b1RK5DyQ@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sat, 16 Oct 2021 23:19:12 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASwuz_i7hzNzmT8JVQTMbwt3JARSqh4PB_URcEfzzOq3g@mail.gmail.com>
+Message-ID: <CAK7LNASwuz_i7hzNzmT8JVQTMbwt3JARSqh4PB_URcEfzzOq3g@mail.gmail.com>
+Subject: Re: [PATCH 2/3] arm64: vdso32: lazily invoke COMPAT_CC
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, llvm@lists.linux.dev,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Lucas Henneman <henneman@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 15, 2021 at 08:38:30PM +0800, Moudy Ho wrote:
-> This patch adds DT binding document for Media Data Path 3 (MDP3)
-> a unit in multimedia system used for scaling and color format convert.
-> 
-> Signed-off-by: Moudy Ho <moudy.ho@mediatek.com>
-> ---
->  .../bindings/arm/mediatek/mediatek,ccorr.yaml |  59 +++++
->  .../bindings/arm/mediatek/mediatek,rdma.yaml  | 211 ++++++++++++++++++
->  .../bindings/arm/mediatek/mediatek,wdma.yaml  |  70 ++++++
+On Fri, Oct 15, 2021 at 5:59 AM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> On Tue, Oct 12, 2021 at 8:03 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> >
+> > On Wed, Oct 13, 2021 at 8:46 AM Nick Desaulniers
+> > <ndesaulniers@google.com> wrote:
+> > >
+> > > When running the following command without arm-linux-gnueabi-gcc in
+> > > one's $PATH, the following warning is observed:
+> > >
+> > > $ ARCH=arm64 CROSS_COMPILE_COMPAT=arm-linux-gnueabi- make -j72 LLVM=1 mrproper
+> > > make[1]: arm-linux-gnueabi-gcc: No such file or directory
+> > >
+> > > This is because KCONFIG is not run for mrproper, so CONFIG_CC_IS_CLANG
+> > > is not set, and we end up eagerly evaluating various variables that try
+> > > to invoke CC_COMPAT.
+> > >
+> > > This is a similar problem to what was observed in
+> > > commit 3ec8a5b33dea ("kbuild: do not export LDFLAGS_vmlinux")
+> > >
+> > > Cc: Masahiro Yamada <masahiroy@kernel.org>
+> > > Reported-by: Lucas Henneman <henneman@google.com>
+> > > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> >
+> >
+> > There are two ways to fix it:
+> >
+> >   [1]: sink the error message to /dev/null
+> >         (as in commit dc960bfeedb01cf832c5632ed1f3daed4416b142)
+> >   [2]: use a recursively-expanded variable as you did.
+> >
+> >
+> > "Simple variable (:=) vs recursive variable (=)" is a trade-off.
+> >
+> > Please be careful about the cost when you try the [2] approach.
+> >
+> >
+> >
+> > Simple variables are immediately expanded while parsing Makefile.
+> > There are 7 call-sites for cc32-option, hence
+> > the compiler is invoked 7 times for building vdso32,
+> > 0 times for cleaning.
+> > (Since 57fd251c789647552d32d2fc51bedd4f90d70f9f,
+> > try-run is no-op for 'make clean').
+> >
+> >
+> >
+> >
+> > Recursive variables are expanded every time they are used.
+> >
+> > IIUC, if_changed expands the command line 3 times.
+> > There are 2 objects (note.o and vgettimeofday.o)
+> > There are 7 call-sites for cc32-option.
+> >
+> > So, the compiler is invoked 42 (3 * 2 * 7) times
+> > for building vdso32.
+>
+> With this patch applied:
+> $ ARCH=arm64 CROSS_COMPILE_COMPAT=arm-linux-gnueabi- make LLVM=1 -j72
+> clean defconfig
+> $ ARCH=arm64 CROSS_COMPILE_COMPAT=arm-linux-gnueabi- make LLVM=1 -j72
+> arch/arm64/kernel/vdso32/ V=1 | tr -s ' ' | cut -d ' ' -f 2 | grep
+> clang | wc -l
+> 55
+> $ find arch/arm64/kernel/vdso32/ -name \*.o | xargs rm
+> $ ARCH=arm64 CROSS_COMPILE_COMPAT=arm-linux-gnueabi- make LLVM=1 -j72
+> arch/arm64/kernel/vdso32/ V=1 | tr -s ' ' | cut -d ' ' -f 2 | grep
+> clang | wc -l
+> 2
+>
+> Prior to this series:
+> $ ARCH=arm64 CROSS_COMPILE_COMPAT=arm-linux-gnueabi- make LLVM=1 -j72
+> clean defconfig
+> $ ARCH=arm64 CROSS_COMPILE_COMPAT=arm-linux-gnueabi- make LLVM=1 -j72
+> arch/arm64/kernel/vdso32/ V=1 | tr -s ' ' | cut -d ' ' -f 2 | grep
+> clang | wc -l
+> 55
+> $ find arch/arm64/kernel/vdso32/ -name \*.o | xargs rm
+> $ ARCH=arm64 CROSS_COMPILE_COMPAT=arm-linux-gnueabi- make LLVM=1 -j72
+> arch/arm64/kernel/vdso32/ V=1 | tr -s ' ' | cut -d ' ' -f 2 | grep
+> clang | wc -l
+> 2
+>
+> With patch 3 applied, we can drop CROSS_COMPILE_COMPAT, and we now get:
+> $ ARCH=arm64 make LLVM=1 -j72 clean defconfig
+> ARCH=arm64 make LLVM=1 -j72 arch/arm64/kernel/vdso32/ V=1 | tr -s ' '
+> | cut -d ' ' -f 2 | grep clang | wc -l
+> 44
+> $ find arch/arm64/kernel/vdso32/ -name \*.o | xargs rm
+> $ ARCH=arm64 make LLVM=1 -j72 arch/arm64/kernel/vdso32/ V=1 | tr -s '
+> ' | cut -d ' ' -f 2 | grep clang | wc -l
+> 2
+>
+> Please confirm; perhaps my pipeline missed some invocations? Or was
+> there a different target you were referring to?
 
-These belong in a functional directory, not 'arm'.
 
->  .../bindings/media/mediatek,mdp3-rsz.yaml     |  68 ++++++
->  .../bindings/media/mediatek,mdp3-wrot.yaml    |  70 ++++++
->  5 files changed, 478 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,ccorr.yaml
->  create mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,rdma.yaml
->  create mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,wdma.yaml
->  create mode 100644 Documentation/devicetree/bindings/media/mediatek,mdp3-rsz.yaml
->  create mode 100644 Documentation/devicetree/bindings/media/mediatek,mdp3-wrot.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/arm/mediatek/mediatek,ccorr.yaml b/Documentation/devicetree/bindings/arm/mediatek/mediatek,ccorr.yaml
-> new file mode 100644
-> index 000000000000..40ea7955efc6
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/arm/mediatek/mediatek,ccorr.yaml
-> @@ -0,0 +1,59 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/arm/mediatek/mediatek,ccorr.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Mediatek color correction
-> +
-> +maintainers:
-> +  - Matthias Brugger <matthias.bgg@gmail.com>
-> +
-> +description: |
-> +  Mediatek color correction with 3X3 matrix.
-> +
-> +properties:
-> +  compatible:
-> +    items:
-> +      - enum:
-> +        - mediatek,mt8183-mdp3-ccorr
-> +
-> +  mediatek,mdp3-id:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    maxItems: 1
 
-maxItems is for an array, but you said this is a uint32.
 
-> +    description: |
-> +      There may be multiple blocks with the same function but
-> +      different addresses in MDP3.
-> +      In order to distinguish the connection with other blocks,
-> +      a unique ID is needed to dynamically use one or more identical
-> +      blocks to implement multiple pipelines.
 
-They aren't identical if you need to distinguish them. We should 
-describe the difference rather than make up device indices. Why is this 
-needed?
 
-For connections between components, use the graph binding.
+It is pointless to check the build commands.
 
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  mediatek,gce-client-reg:
-> +    $ref: /schemas/types.yaml#/definitions/phandle-array
-> +    description: |
-> +      The register of client driver can be configured by gce with 4 arguments
-> +      defined in this property, such as phandle of gce, subsys id,
-> +      register offset and size.
-> +      Each GCE subsys id is mapping to a client defined in the header
-> +      include/dt-bindings/gce/<chip>-gce.h.
-> +
-> +  clocks:
-> +    minItems: 1
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/mt8183-clk.h>
-> +    #include <dt-bindings/gce/mt8183-gce.h>
-> +
-> +    mdp3_ccorr: mdp3_ccorr@1401c000 {
-> +      compatible = "mediatek,mt8183-mdp3-ccorr";
-> +      mediatek,mdp3-id = <0>;
-> +      reg = <0x1401c000 0x1000>;
-> +      mediatek,gce-client-reg = <&gce SUBSYS_1401XXXX 0xc000 0x1000>;
-> +      clocks = <&mmsys CLK_MM_MDP_CCORR>;
-> +    };
-> diff --git a/Documentation/devicetree/bindings/arm/mediatek/mediatek,rdma.yaml b/Documentation/devicetree/bindings/arm/mediatek/mediatek,rdma.yaml
-> new file mode 100644
-> index 000000000000..ad0e56923494
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/arm/mediatek/mediatek,rdma.yaml
-> @@ -0,0 +1,211 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/arm/mediatek/mediatek,rdma.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Mediatek Read Direct Memory Access
-> +
-> +maintainers:
-> +  - Matthias Brugger <matthias.bgg@gmail.com>
-> +
-> +description: |
-> +  Mediatek Read Direct Memory Access(RDMA) component used to do read DMA.
-> +  It contains one line buffer to store the sufficient pixel data, and
-> +  must be siblings to the central MMSYS_CONFIG node.
-> +  For a description of the MMSYS_CONFIG binding, see
-> +  Documentation/devicetree/bindings/arm/mediatek/mediatek,mmsys.yaml
-> +  for details.
-> +  The 1st RDMA is also used to be a controller node in Media Data Path 3(MDP3)
-> +  that containing MMSYS, MUTEX, GCE and SCP settings.
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - items:
-> +          - const: mediatek,mt8183-mdp3
+I am talking about how many times $(call cc32-option, ) is evaluated.
 
-This looks less specific than this:
 
-> +          - const: mediatek,mt8183-mdp3-rdma
+How about adding the following debug code?
 
-Which is the wrong order. But why the 2 values to begin with?
+(Everytime cc32-option is evaluated, a file "dummy-cc32-option-<PID>"
+is created)
 
-> +      - items:
-> +          - const: mediatek,mt8183-mdp3-rdma
-> +
-> +  mediatek,scp:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    maxItems: 1
-> +    description: |
-> +      The node of system control processor (SCP), using
-> +      the remoteproc & rpmsg framework.
-> +      $ref: /schemas/remoteproc/mtk,scp.yaml
-> +
-> +  mediatek,mdp3-id:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    maxItems: 1
-> +    description: |
-> +      There may be multiple blocks with the same function but
-> +      different addresses in MDP3.
-> +      In order to distinguish the connection with other blocks,
-> +      a unique ID is needed to dynamically use one or more identical
-> +      blocks to implement multiple pipelines.
-> +
-> +  mdp3-comps:
 
-vendor prefix needed.
 
-> +    $ref: /schemas/types.yaml#/definitions/string-array
-> +    items:
-> +      - enum:
-> +          # MDP direct-link input path selection, create a
-> +          # component for path connectedness of HW pipe control
-> +          - mediatek,mt8183-mdp3-dl1
-> +      - enum:
-> +          - mediatek,mt8183-mdp3-dl2
-> +      - enum:
-> +          # MDP direct-link output path selection, create a
-> +          # component for path connectedness of HW pipe control
-> +          - mediatek,mt8183-mdp3-path1
-> +      - enum:
-> +          - mediatek,mt8183-mdp3-path2
-> +      - enum:
-> +          # Input DMA of ISP PASS2 (DIP) module for raw image input
-> +          - mediatek,mt8183-mdp3-imgi
-> +      - enum:
-> +          # Output DMA of ISP PASS2 (DIP) module for YUV image output
-> +          - mediatek,mt8183-mdp3-exto
-> +    description: |
-> +      MTK sub-system of direct-link or DIP
-> +
-> +  mdp3-comp-ids:
-> +    maxItems: 1
-> +    $ref: /schemas/types.yaml#/definitions/uint32-array
+diff --git a/arch/arm64/kernel/vdso32/Makefile
+b/arch/arm64/kernel/vdso32/Makefile
+index 89299a26638b..e40365f5bc38 100644
+--- a/arch/arm64/kernel/vdso32/Makefile
++++ b/arch/arm64/kernel/vdso32/Makefile
+@@ -26,9 +26,9 @@ LD_COMPAT ?= $(CROSS_COMPILE_COMPAT)ld
+ endif
 
-An array of only 1 item is a 'uint32'
+ cc32-option = $(call try-run,\
+-        $(CC_COMPAT) $(1) -c -x c /dev/null -o "$$TMP",$(1),$(2))
++        $(CC_COMPAT) $(1) -c -x c /dev/null -o "$$TMP"; touch
+dummy-cc32-option-$$$$,$(1),$(2))
+ cc32-disable-warning = $(call try-run,\
+-       $(CC_COMPAT) -W$(strip $(1)) -c -x c /dev/null -o
+"$$TMP",-Wno-$(strip $(1)))
++       $(CC_COMPAT) -W$(strip $(1)) -c -x c /dev/null -o "$$TMP";
+touch dummy-cc32-option-$$$$,-Wno-$(strip $(1)))
 
-> +    description: |
-> +      Pipeline ID of MDP sub-system.
+ # We cannot use the global flags to compile the vDSO files, the main reason
+ # being that the 32-bit compiler may be older than the main (64-bit) compiler
 
-Needs a better description and possibly constraints. Any value 0-2^32 is 
-valid?
 
-> +
-> +  reg:
-> +    minItems: 1
-> +    maxItems: 5
-> +    description: |
-> +      1st: basic HW address
-> +      2nd: mediatek,mt8183-mdp-dl1, mediatek,mt8183-mdp-dl2
-> +      3rd: mediatek,mt8183-mdp-path1
-> +      4th: mediatek,mt8183-mdp-path2
-> +      5th: mediatek,mt8183-mdp3-imgi, mediatek,mt8183-mdp3-exto
 
-This is better expressed as:
 
-items:
-  - description: ...
-  - description: ...
-  - description: ...
-  - description: ...
-  - description: ...
 
-> +
-> +  mediatek,gce-client-reg:
-> +    $ref: /schemas/types.yaml#/definitions/phandle-array
-> +    description: |
-> +      The register of client driver can be configured by gce with 4 arguments
+Without this patch:
 
-So 'maxItems: 4'?
+masahiro@grover:~/ref/linux$ rm dummy-cc32-*
+masahiro@grover:~/ref/linux$ make -s LLVM=1 ARCH=arm64
+CROSS_COMPILE_COMPAT=arm-linux-gnueabi- defconfig clean
+arch/arm64/kernel/vdso32/ -j8
+masahiro@grover:~/ref/linux$ ls -1 dummy-cc32-*
+dummy-cc32-disable-warning-765530
+dummy-cc32-option-765495
+dummy-cc32-option-765500
+dummy-cc32-option-765505
+dummy-cc32-option-765510
+dummy-cc32-option-765515
+dummy-cc32-option-765520
+dummy-cc32-option-765525
 
-> +      defined in this property, such as phandle of gce, subsys id,
-> +      register offset and size.
-> +      Each GCE subsys id is mapping to a client defined in the header
-> +      include/dt-bindings/gce/<chip>-gce.h.
-> +
-> +  power-domains:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    minItems: 1
-> +    maxItems: 6
-> +    description: |
-> +      1st: RDMA0 clock
-> +      2nd: RSZ1 clock
-> +      3rd: direck-link TX clock in MDP side
-> +      4th: direck-link RX clock in MDP side
-> +      5th: direck-link TX clock in ISP side
-> +      6th: direck-link RX clock in ISP side
 
-Again, use 'items'.
 
-> +
-> +  iommus:
-> +    maxItems: 1
-> +
-> +  mediatek,mmsys:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    maxItems: 1
 
-Not an array.
+With this patch:
 
-> +    description: |
 
-Don't need '|' when there is no formatting to maintain.
 
-> +      The node of mux(multiplexer) controller for HW connections.
-> +
-> +  mediatek,mm-mutex:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    maxItems: 1
-> +    description: |
-> +      The node of sof(start of frame) signal controller.
-> +
-> +  mediatek,mailbox-gce:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    description: |
-> +      The node of global command engine (GCE), used to read/write
-> +      registers with critical time limitation.
-> +
-> +  mboxes:
-> +    $ref: /schemas/types.yaml#/definitions/phandle-array
+masahiro@grover:~/ref/linux$ rm dummy-cc32-*
+masahiro@grover:~/ref/linux$ make -s LLVM=1 ARCH=arm64
+CROSS_COMPILE_COMPAT=arm-linux-gnueabi- defconfig clean
+arch/arm64/kernel/vdso32/ -j8
+masahiro@grover:~/ref/linux$ ls -1 dummy-cc32-*
+dummy-cc32-disable-warning-768908
+dummy-cc32-disable-warning-768949
+dummy-cc32-disable-warning-768990
+dummy-cc32-disable-warning-769035
+dummy-cc32-disable-warning-769076
+dummy-cc32-disable-warning-769117
+dummy-cc32-option-768871
+dummy-cc32-option-768878
+dummy-cc32-option-768883
+dummy-cc32-option-768888
+dummy-cc32-option-768893
+dummy-cc32-option-768898
+dummy-cc32-option-768903
+dummy-cc32-option-768914
+dummy-cc32-option-768919
+dummy-cc32-option-768924
+dummy-cc32-option-768929
+dummy-cc32-option-768934
+dummy-cc32-option-768939
+dummy-cc32-option-768944
+dummy-cc32-option-768955
+dummy-cc32-option-768960
+dummy-cc32-option-768965
+dummy-cc32-option-768970
+dummy-cc32-option-768975
+dummy-cc32-option-768980
+dummy-cc32-option-768985
+dummy-cc32-option-768998
+dummy-cc32-option-769005
+dummy-cc32-option-769010
+dummy-cc32-option-769015
+dummy-cc32-option-769020
+dummy-cc32-option-769025
+dummy-cc32-option-769030
+dummy-cc32-option-769041
+dummy-cc32-option-769046
+dummy-cc32-option-769051
+dummy-cc32-option-769056
+dummy-cc32-option-769061
+dummy-cc32-option-769066
+dummy-cc32-option-769071
+dummy-cc32-option-769082
+dummy-cc32-option-769087
+dummy-cc32-option-769092
+dummy-cc32-option-769097
+dummy-cc32-option-769102
+dummy-cc32-option-769107
+dummy-cc32-option-769112
 
-Already has a type. This is where you need to define how many and what 
-each one is if more than 1.
 
-> +
-> +  gce-subsys:
-> +    $ref: /schemas/types.yaml#/definitions/phandle-array
-> +    description: |
-> +      sub-system id corresponding to the global command engine (GCE)
-> +      register address.
-> +
-> +if:
-> +  properties:
-> +    compatible:
-> +      contains:
-> +        const: mediatek,mt8183-mdp3
-> +
-> +then:
-> +  required:
-> +    - mediatek,scp
-> +    - mediatek,mmsys
-> +    - mediatek,mm-mutex
-> +    - mediatek,mailbox-gce
-> +    - mboxes
-> +    - gce-subsys
-> +
-> +required:
-> +  - compatible
-> +  - mediatek,mdp3-id
-> +  - reg
-> +  - clocks
-> +  - mediatek,gce-client-reg
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/mt8183-clk.h>
-> +    #include <dt-bindings/gce/mt8183-gce.h>
-> +    #include <dt-bindings/power/mt8183-power.h>
-> +    #include <dt-bindings/memory/mt8183-larb-port.h>
-> +
-> +    mdp3_rdma0: mdp3_rdma0@14001000 {
-> +      compatible = "mediatek,mt8183-mdp3",
-> +                   "mediatek,mt8183-mdp3-rdma";
-> +      mediatek,scp = <&scp>;
-> +      mediatek,mdp3-id = <0>;
-> +      mdp3-comps = "mediatek,mt8183-mdp3-dl1", "mediatek,mt8183-mdp3-dl2",
-> +                   "mediatek,mt8183-mdp3-path1", "mediatek,mt8183-mdp3-path2",
-> +                   "mediatek,mt8183-mdp3-imgi", "mediatek,mt8183-mdp3-exto";
-> +      mdp3-comp-ids = <0 1 0 1 0 1>;
-> +      reg = <0x14001000 0x1000>,
-> +            <0x14000000 0x1000>,
-> +            <0x14005000 0x1000>,
-> +            <0x14006000 0x1000>,
-> +            <0x15020000 0x1000>;
-> +      mediatek,gce-client-reg = <&gce SUBSYS_1400XXXX 0x1000 0x1000>,
-> +                                <&gce SUBSYS_1400XXXX 0 0x1000>,
-> +                                <&gce SUBSYS_1400XXXX 0x5000 0x1000>,
-> +                                <&gce SUBSYS_1400XXXX 0x6000 0x1000>,
-> +                                <&gce SUBSYS_1502XXXX 0 0x1000>;
-> +      power-domains = <&spm MT8183_POWER_DOMAIN_DISP>;
-> +      clocks = <&mmsys CLK_MM_MDP_RDMA0>,
-> +               <&mmsys CLK_MM_MDP_RSZ1>,
-> +               <&mmsys CLK_MM_MDP_DL_TXCK>,
-> +               <&mmsys CLK_MM_MDP_DL_RX>,
-> +               <&mmsys CLK_MM_IPU_DL_TXCK>,
-> +               <&mmsys CLK_MM_IPU_DL_RX>;
-> +      iommus = <&iommu>;
-> +      mediatek,mmsys = <&mmsys>;
-> +      mediatek,mm-mutex = <&mutex>;
-> +      mediatek,mailbox-gce = <&gce>;
-> +      mboxes = <&gce 20 CMDQ_THR_PRIO_LOWEST 0>,
-> +               <&gce 21 CMDQ_THR_PRIO_LOWEST 0>,
-> +               <&gce 22 CMDQ_THR_PRIO_LOWEST 0>,
-> +               <&gce 23 CMDQ_THR_PRIO_LOWEST 0>;
-> +      gce-subsys = <&gce 0x14000000 SUBSYS_1400XXXX>,
-> +                   <&gce 0x14010000 SUBSYS_1401XXXX>,
-> +                   <&gce 0x14020000 SUBSYS_1402XXXX>,
-> +                   <&gce 0x15020000 SUBSYS_1502XXXX>;
-> +    };
-> \ No newline at end of file
 
-Fix this.
 
-Similar comments on the rest...
 
-Rob
 
+The diff of  the number of expansions:
+
+cc32-option                        7    ->   42
+cc32-disable-warning         1   ->    6
+
+
+
+
+
+-- 
+Best Regards
+Masahiro Yamada
