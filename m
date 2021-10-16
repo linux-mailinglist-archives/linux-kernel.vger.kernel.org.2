@@ -2,77 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77B784300AD
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 08:46:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81F354300AF
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 08:51:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239955AbhJPGtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 02:49:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60952 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236583AbhJPGs5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 02:48:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C1CF61108;
-        Sat, 16 Oct 2021 06:46:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634366810;
-        bh=ahnp24X17vL4giBapwgLqsYQxgIgv2RuRJVI0FsVq4E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=olWqvhIje6THog/VYiX6uFRrRFyYUj6/9gZ41PjXLWU19WrggyOW6w46XrtDja0Ao
-         1gbpiC/m6MT3wMFWbNCKDXE4l3fQI9cGcyejxZH9Os1vVZL8mRESNcFvywOpT6F3vt
-         muYcOp5hCxTuOV7MF3FlnHPCn1Sg+YDoEYjs+R8FZUxS0Zl/O14sHhc1ZrIaWXFM5W
-         CjW+Vs2G/RHy0Q7q+JNZBdHUIjSS597FKyxG6iBMJjr9A9PU6iS+vHsx8XjaQql+VE
-         RhEenCAGYdSy2I81JBWpf3RywZ+EO2Q939/VYwfarXWqrL1JcyjTwptPUN3jAs9GSF
-         ezeLRtEQ2KUYQ==
-Date:   Sat, 16 Oct 2021 12:16:43 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Qing Wang <wangqing@vivo.com>
-Cc:     Manivannan Sadhasivam <mani@kernel.org>,
-        Hemant Kumar <hemantk@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] bus: mhi: replace snprintf in show functions with
- sysfs_emit
-Message-ID: <20211016064643.GA23491@thinkpad>
-References: <1634095550-3978-1-git-send-email-wangqing@vivo.com>
+        id S240534AbhJPGxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 02:53:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27671 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234906AbhJPGxp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Oct 2021 02:53:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634367096;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=H9PD86CwR5nYqF03lqODYpfsY+K3xeFojmjQDbxQ8bg=;
+        b=QOUGzDmml9hTRd+E8X7uWSJiepw339w7g9rxkfXSs+j4EY9BvXxuSXgAQLC/VgsC9igjzk
+        znudfVVy+DBW/jHYBIykxJn/R3y1jcEVnE7tDSdfe07iKua2GUMgzNCaugmzNvaRkffEew
+        2Vk0LHHY1T30fNGYZLY3c1921B9ilb0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-553-0_gGCPVpNsOtAw8zTIaEjA-1; Sat, 16 Oct 2021 02:51:33 -0400
+X-MC-Unique: 0_gGCPVpNsOtAw8zTIaEjA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1D9CB362F8;
+        Sat, 16 Oct 2021 06:51:32 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 444755DA61;
+        Sat, 16 Oct 2021 06:51:31 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     torvalds@linux-foundation.org, kvm@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, seanjc@google.com,
+        Willy Tarreau <w@1wt.eu>, Kees Cook <keescook@chromium.org>,
+        syzbot+e0de2333cbf95ea473e8@syzkaller.appspotmail.com
+Subject: [PATCH] mm: allow huge kvmalloc() calls if they're accounted to memcg
+Date:   Sat, 16 Oct 2021 02:51:30 -0400
+Message-Id: <20211016065130.166128-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1634095550-3978-1-git-send-email-wangqing@vivo.com>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 08:25:50PM -0700, Qing Wang wrote:
-> coccicheck complains about the use of snprintf() in sysfs show functions.
-> 
-> Fix the following coccicheck warning:
-> drivers/bus/mhi/core/init.c:97:8-16: WARNING: use scnprintf or sprintf.
-> 
-> Use sysfs_emit instead of scnprintf or sprintf makes more sense.
-> 
-> Signed-off-by: Qing Wang <wangqing@vivo.com>
+Commit 7661809d493b ("mm: don't allow oversized kvmalloc() calls")
+restricted memory allocation with 'kvmalloc()' to sizes that fit
+in an 'int', to protect against trivial integer conversion issues.
 
-Reviewed-by: Manivannan Sadhasivam <mani@kernel.org>
+However, the WARN triggers with KVM, when it allocates ancillary page
+data whose size essentially depends on whatever userspace has passed to
+the KVM_SET_USER_MEMORY_REGION ioctl.  The warnings are easily raised by
+syzkaller, but the largest allocation that KVM can do is 8 bytes per page
+of guest memory; therefore, a 1 TiB memslot will cause a warning even
+outside fuzzing, and those allocations are known to happen in the wild.
+Google for example already has VMs that create 1.5tb memslots (12tb of
+total guest memory spread across 8 virtual NUMA nodes).
 
-Thanks,
-Mani
+Use memcg accounting as evidence that the crazy large allocations are
+expected---in which case, it is indeed a good idea to have them
+properly accounted---and exempt them from the warning.
 
-> ---
->  drivers/bus/mhi/core/init.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
-> index c81b377..f3ddefe 100644
-> --- a/drivers/bus/mhi/core/init.c
-> +++ b/drivers/bus/mhi/core/init.c
-> @@ -94,7 +94,7 @@ static ssize_t serial_number_show(struct device *dev,
->  	struct mhi_device *mhi_dev = to_mhi_device(dev);
->  	struct mhi_controller *mhi_cntrl = mhi_dev->mhi_cntrl;
->  
-> -	return snprintf(buf, PAGE_SIZE, "Serial Number: %u\n",
-> +	return sysfs_emit(buf, "Serial Number: %u\n",
->  			mhi_cntrl->serial_number);
->  }
->  static DEVICE_ATTR_RO(serial_number);
-> -- 
-> 2.7.4
-> 
+Cc: Willy Tarreau <w@1wt.eu>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Reported-by: syzbot+e0de2333cbf95ea473e8@syzkaller.appspotmail.com
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+---
+	Linus, what do you think of this?  It is a bit of a hack,
+	but the reasoning in the commit message does make at least
+	some sense.
+
+	The alternative would be to just use __vmalloc in KVM, and add
+	__vcalloc too.	The two underscores would suggest that something
+	"different" is going on, but I wonder what you prefer between
+	this and having a __vcalloc with 2-3 uses in the whole source.
+
+ mm/util.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/mm/util.c b/mm/util.c
+index 499b6b5767ed..31fca4a999c6 100644
+--- a/mm/util.c
++++ b/mm/util.c
+@@ -593,8 +593,12 @@ void *kvmalloc_node(size_t size, gfp_t flags, int node)
+ 	if (ret || size <= PAGE_SIZE)
+ 		return ret;
+ 
+-	/* Don't even allow crazy sizes */
+-	if (WARN_ON_ONCE(size > INT_MAX))
++	/*
++	 * Don't even allow crazy sizes unless memcg accounting is
++	 * request.  We take that as a sign that huge allocations
++	 * are indeed expected.
++	 */
++	if (likely(!(flags & __GFP_ACCOUNT)) && WARN_ON_ONCE(size > INT_MAX))
+ 		return NULL;
+ 
+ 	return __vmalloc_node(size, 1, flags, node,
+-- 
+2.27.0
+
