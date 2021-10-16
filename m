@@ -2,89 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E53C1430277
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 13:40:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE48F430278
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 13:43:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235495AbhJPLmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 07:42:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53118 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235006AbhJPLmI (ORCPT
+        id S237253AbhJPLpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 07:45:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57036 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234833AbhJPLpt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 07:42:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634384399;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tjS9YFlVGwtcWTbzJnOhWSoY+8PFA5sGYT0gTfsGBcw=;
-        b=ZdpTbFNszwAvkmv6ltNfNQwPTWMqkUcWZccM5V0hNdxRg27w9//7ZtlyAjxYoVKbyb+BTw
-        wdkq4b4yxgC4YjSz+CfM5a30kMhDaWWify95INUiVLcCfn66MDKPPB3xzLj7MUWQR8rpnd
-        V3OzoeAXfKGqpYOged4IURGDSL06H1A=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-371-j55KhDaxM420diviVA7Ltw-1; Sat, 16 Oct 2021 07:39:58 -0400
-X-MC-Unique: j55KhDaxM420diviVA7Ltw-1
-Received: by mail-wm1-f69.google.com with SMTP id p12-20020a05600c204c00b0030da46b76daso1608610wmg.9
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 04:39:58 -0700 (PDT)
+        Sat, 16 Oct 2021 07:45:49 -0400
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B321FC061570
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 04:43:41 -0700 (PDT)
+Received: by mail-il1-x134.google.com with SMTP id d11so9856044ilc.8
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 04:43:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=3CqjXd61EZ95pSAB/Snxw908qgD8h+YcIUAGi6qrUHc=;
+        b=kmopMgmmQ6RgIo8H3J2E8MsIVe0Fd2eLAZZp2nvijtFfcBQ0PE4pi8/wMcIZ4qf6zx
+         evLXnMohI1jF597rPoThzaqc/h+y804TE6zJIQbZjXP4z/8K9E5TXF9AhJLvVklKDduI
+         adU05u7z0Kuqxj87/GS1o3gdjCpuo3XCkIRZM0YnjVsfgoyob1BbS7TB6d7u7FCLCIC0
+         FijGfxCDAiQ3X5pF0i4t9RU4YWQSPKEw5p4Iz9oir4E6DAAdADZr12kjtyLvxgwujg3h
+         E++HuaRZW6gnBu/C96G2/AZk3iF0Bq4DaU79bgQkY2DhzYQGEkSDCTTHaffJkEa3GypJ
+         /3Gg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tjS9YFlVGwtcWTbzJnOhWSoY+8PFA5sGYT0gTfsGBcw=;
-        b=DRahKjfIasNWiPcYXXQ2SnWt2yHTp5qfenlMF4dVrwt6G1f5jyxG4d8a+F9hZcpduL
-         A10p8Ilk5+q5K9XOyKPsLmNpdQrAcpP5918fEwvV1+gOjteI1rRHqxF8p4Xq8i9vUA2i
-         YS9oLO8zJX7iL5pvIEwEorItOxkZRvPoYLnPzeKjHv3nX7qfYKetaYd5OF/Qg3yATsjW
-         9JYAssG6hR8VyyH8GCONCvkqzYsX6aoh6sTQjxXcpZ9ChD4GDvQQeoSj392ejqE8+xzW
-         jcjRybQjCL1Vssnnk1Gh8kqX7xY5QfMxRfaRLb/nal8K8d3/HOeGyrGU85fDy9EDT4aY
-         TWwQ==
-X-Gm-Message-State: AOAM5311yXPR33FtqAvc0sx0SjIV4/lXzxpg1dsfzUgTP5hd/zBX9ZFM
-        MaO5gbZD1mdarCzC3S63yN6EBjPY7BX3UGBr5WdmbA3TkQYsW6Jst4TQliLPY1kIJCpx31XWG8u
-        vUKs4Rmgw05V49pwK019Mf8jK
-X-Received: by 2002:a5d:47ac:: with SMTP id 12mr20371854wrb.352.1634384397271;
-        Sat, 16 Oct 2021 04:39:57 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwMbnFqzfoci5oeFVy4BTnkfciAlNCmyxciKO8osAJkH83DA6kseDTUUvad29VpBWcw3rw/Vw==
-X-Received: by 2002:a5d:47ac:: with SMTP id 12mr20371836wrb.352.1634384397087;
-        Sat, 16 Oct 2021 04:39:57 -0700 (PDT)
-Received: from krava ([83.240.63.48])
-        by smtp.gmail.com with ESMTPSA id d24sm6867737wmb.35.2021.10.16.04.39.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 16 Oct 2021 04:39:56 -0700 (PDT)
-Date:   Sat, 16 Oct 2021 13:39:55 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>
-Subject: Re: [PATCH 7/8] ftrace: Add multi direct modify interface
-Message-ID: <YWq6C69rQhUcAGe+@krava>
-References: <20211008091336.33616-1-jolsa@kernel.org>
- <20211008091336.33616-8-jolsa@kernel.org>
- <20211014162819.5c85618b@gandalf.local.home>
- <YWluhdDMfkNGwlhz@krava>
- <20211015100509.78d4fb01@gandalf.local.home>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=3CqjXd61EZ95pSAB/Snxw908qgD8h+YcIUAGi6qrUHc=;
+        b=Hk3YW112dAVlTKQpHRM4vjTy2SuTcS01eMSfcR7ZHpDsatbMJMaDz9FScvRDH4wzVX
+         Kd0kRaXTiTdR3p0DIYZ8ImrZ4ZUHX3mA6Lzl+Cj53bA2O8e1zA/NZUfhR+stObjSCgaL
+         aShy5qPVMR+Fr9Xc95c4PrGd6/jGNd92WBkIC4MZt1RvJ569LkEBj9yB8cWRE36SjUSP
+         THJCVUXqa1XzRDgoi6deXmE5doBJEQKtY0umC35a6wJKwJsoM6e7JNVmccUYeuSJTxZc
+         G5r7h0kKHP+AGvWhy0EL8zOyLlbO0yx09MfOvIQLAS1MM83xEHvfbuo5wvrZtWfzewza
+         IEbg==
+X-Gm-Message-State: AOAM532dpDm9kcXFjYsIH3z/3A8CWA7FJRQ/H8xG5lwuQ2hfszeNj4Gx
+        ssBpt6flj6ydzNBCz2dUNeFKvraR8g6ojg+83fU=
+X-Google-Smtp-Source: ABdhPJwR8gCJsZo1VRE21bR8YtFv8H0/hUtGfmQX2bC0uUejtV9rEgOvyj9W2zmmd4CrqSO3+9AQtT5iuAAFtXpYIQc=
+X-Received: by 2002:a92:c569:: with SMTP id b9mr7675737ilj.13.1634384621062;
+ Sat, 16 Oct 2021 04:43:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211015100509.78d4fb01@gandalf.local.home>
+Received: by 2002:a6b:144b:0:0:0:0:0 with HTTP; Sat, 16 Oct 2021 04:43:40
+ -0700 (PDT)
+Reply-To: mrs.sophia_robin.sr@list.ru
+From:   "mrs.sophia_robin" <treasurejustinyak@gmail.com>
+Date:   Sat, 16 Oct 2021 12:43:40 +0100
+Message-ID: <CAHR092E-2cM98iOK4hA2sVQZReZYOZ-zt3Upw9pZ46hULrG2EQ@mail.gmail.com>
+Subject: Hello
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 15, 2021 at 10:05:09AM -0400, Steven Rostedt wrote:
-> On Fri, 15 Oct 2021 14:05:25 +0200
-> Jiri Olsa <jolsa@redhat.com> wrote:
-> 
-> > ATM I'm bit stuck on the bpf side of this whole change, I'll test
-> > it with my other changes when I unstuck myself ;-)
-> 
-> If you want, I'll apply this as a separate change on top of your patch set.
-> As I don't see anything wrong with your current code.
-> 
-> And when you are satisfied with this, just give me a "tested-by" and I'll
-> push it too.
+i'm Mrs.Sophia Robin, a citizen of the united state of America, I work
+at HSBC Bank in Milan Italy, as Telex Manager charge of wire transfer
+department, I'm contacting you personally for investment assistance
+and a long term business relationship in your Country.I'm contacting
+you for an important and  urgent business transaction,
+I want the bank to transfer the money left by Dr. Cheng Chao, A
+Chinese  Politician who died, March 17th 2020, without any trace of
+his family members, he used our bank to launder money overseas through
+the help of their Political advisers. And most of the funds which they
+transferred out of the shores of China, were gold and oil money that
+was supposed to have been used to develop the continent.
 
-sounds great, thanks
-jirka
+Can you invest this money and also help the poor? The amount value at
+$15.5million Dollars  ($US15,500,000), left in his account still
+unclaimed, if you know that you are capable to invest this fund into
+any profitable business in your country kindly send me your details
+information as listed below to enable me draft you an application form
+of claim along with the deposit certificate which you are going to
+fill with your bank account detail necessary and contact the HSBC Bank
+in Italy for immediate transfer of the Amounted sum into your bank
+account direct. Percentage share will be 60,for me/40,for you.
 
+(1) Your full name..................................................
+(2) Your address....................................................
+(3) Your Nationality.................................................
+(4) Your Age / Sex.....................................................
+(5) Your  Occupation............................................
+(6) Your marital status......................................
+(7) Your direct telephone number..................
+(8) Your photo.......................................
+
+Thanks with my best regards.Mrs. Sophia Robin,
+Telex Manager Milan Italy  (H.S.B.C)
