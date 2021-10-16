@@ -2,123 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C9D043020F
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 12:35:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37E2E430210
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 12:35:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244069AbhJPKhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 06:37:19 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:44226 "EHLO gloria.sntech.de"
+        id S244120AbhJPKhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 06:37:50 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:45452 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235855AbhJPKhS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 06:37:18 -0400
-Received: from p508fce7c.dip0.t-ipconnect.de ([80.143.206.124] helo=phil.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1mbh1o-0006T3-F9; Sat, 16 Oct 2021 12:35:00 +0200
-From:   Heiko Stuebner <heiko@sntech.de>
-To:     guoren@kernel.org, anup@brainfault.org, atish.patra@wdc.com,
-        maz@kernel.org, tglx@linutronix.de, palmer@dabbelt.com,
-        robh@kernel.org, guoren@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: Re: [PATCH V4 2/3] dt-bindings: update riscv plic compatible string
-Date:   Sat, 16 Oct 2021 12:34:59 +0200
-Message-ID: <2216787.nSqPeTNalD@phil>
-In-Reply-To: <20211016032200.2869998-3-guoren@kernel.org>
-References: <20211016032200.2869998-1-guoren@kernel.org> <20211016032200.2869998-3-guoren@kernel.org>
+        id S235855AbhJPKht (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Oct 2021 06:37:49 -0400
+Received: from zn.tnic (p200300ec2f1ceb003bc77e8b3da10c60.dip0.t-ipconnect.de [IPv6:2003:ec:2f1c:eb00:3bc7:7e8b:3da1:c60])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 438A11EC0105;
+        Sat, 16 Oct 2021 12:35:40 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1634380540;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=H3Avw2wjksPe/3ttNQLpNAvBZVGLhcdcKMBwVY6uVRM=;
+        b=cgGqeN/1UirZKtqmpzTlvi2UpO0zno2FgctsBSHqOTuH2Eih//BJZwPgLBeVpKGOQMQiee
+        MBWMP/O7XNY/2Vu/hpuvt4elHdAUJk/aDmMSro7/83wqIh/6Y6dXoeK2wqp/4lBRi1FH6D
+        yBh/COraTnEFV7qsRrGJBTcicxcMOis=
+Date:   Sat, 16 Oct 2021 12:35:39 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Ser Olmy <ser.olmy@protonmail.com>
+Cc:     Ville =?utf-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [regression] commit d298b03506d3 ("x86/fpu: Restore the masking
+ out of reserved MXCSR bits")
+Message-ID: <YWqq+/BtR+tqGXJA@zn.tnic>
+References: <YWgYIYXLriayyezv@intel.com>
+ <YWhCAqDxAuTh1YwE@intel.com>
+ <YWhFOJCF1pxIBANv@zn.tnic>
+ <YWhG0kv/d/hddf+t@intel.com>
+ <YWhsvSM5tAvwqprN@intel.com>
+ <YWhwdDI5ECoMZQzU@zn.tnic>
+ <YWh7GgCgdtwRj3GU@intel.com>
+ <YWiAPQCRm4RnOiCd@zn.tnic>
+ <YWlgPJwxmFL5nX4c@zn.tnic>
+ <jrf08svYO7V3wrXiL9wLzsLx74V4QmXRdlfLeeL2zEmta8REOAVFwpEt8npiWRfbrCf_WEfQxJyg45H-VGa83bFfnhTYYe1R7iWao4Y9wRg=@protonmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <jrf08svYO7V3wrXiL9wLzsLx74V4QmXRdlfLeeL2zEmta8REOAVFwpEt8npiWRfbrCf_WEfQxJyg45H-VGa83bFfnhTYYe1R7iWao4Y9wRg=@protonmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Guo,
-
-Am Samstag, 16. Oktober 2021, 05:21:59 CEST schrieb guoren@kernel.org:
-> From: Guo Ren <guoren@linux.alibaba.com>
+On Sat, Oct 16, 2021 at 07:26:25AM +0000, Ser Olmy wrote:
+> Tested-by: ser.olmy@protonmail.com
 > 
-> Add the compatible string "thead,c900-plic" to the riscv plic
-> bindings to support allwinner d1 SOC which contains c906 core.
+> Working fine here with the patch applied to a stock 5.14.12 kernel.
 
-The compatible strings sound good now, but some things below
+Thanks!
 
-> 
-> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> Cc: Rob Herring <robh@kernel.org>
-> Cc: Palmer Dabbelt <palmerdabbelt@google.com>
-> Cc: Anup Patel <anup@brainfault.org>
-> Cc: Atish Patra <atish.patra@wdc.com>
-> 
-> ---
-> 
-> Changes since V4:
->  - Update description in errata style
->  - Update enum suggested by Anup, Heiko, Samuel
-> 
-> Changes since V3:
->  - Rename "c9xx" to "c900"
->  - Add thead,c900-plic in the description section
-> ---
->  .../interrupt-controller/sifive,plic-1.0.0.yaml       | 11 ++++++++++-
->  1 file changed, 10 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml b/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml
-> index 08d5a57ce00f..272f29540135 100644
-> --- a/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml
-> +++ b/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml
-> @@ -35,6 +35,12 @@ description:
->    contains a specific memory layout, which is documented in chapter 8 of the
->    SiFive U5 Coreplex Series Manual <https://static.dev.sifive.com/U54-MC-RVCoreIP.pdf>.
->  
-> +  The C9xx PLIC does not comply with the interrupt claim/completion process defined
-> +  by the RISC-V PLIC specification because C9xx PLIC will mask an IRQ when it is
-> +  claimed by PLIC driver (i.e. readl(claim) and the IRQ will be unmasked upon
-> +  completion by PLIC driver (i.e. writel(claim). This behaviour breaks the handling
-> +  of IRQS_ONESHOT by the generic handle_fasteoi_irq() used in the PLIC driver.
-> +
->  maintainers:
->    - Sagar Kadam <sagar.kadam@sifive.com>
->    - Paul Walmsley  <paul.walmsley@sifive.com>
-> @@ -46,7 +52,10 @@ properties:
->        - enum:
->            - sifive,fu540-c000-plic
->            - canaan,k210-plic
-> -      - const: sifive,plic-1.0.0
-> +      - enmu:
+-- 
+Regards/Gruss,
+    Boris.
 
-	^ spelling enum
-
-> +          - sifive,plic-1.0.0
-> +          - thead,c900-plic
-> +          - allwinner,sun20i-d1-plic
-
-but in general I'd think that you want something like
-
-  compatible:
-    oneOf:
-      - items:
-          - enum:
-              - sifive,fu540-c000-plic
-              - canaan,k210-plic
-          - const: sifive,plic-1.0.0
-      - items:
-          - enum:
-              - allwinner,sun20i-d1-plic
-          - const: thead,c900-plic
-
-Having only one item list would allow as valid combinations like
-"sifive,fu540-c000-plic", "thead,c900-plic" when checking the schema.
-
-With the oneOf and separate lists we can make sure that such
-"illegal" combinations get flagged by the dtbs_check
-
-[the enum with the single allwinner entry already leaves
- room for later addition to the c900-plic variant]
-
-Heiko
-
-
-
+https://people.kernel.org/tglx/notes-about-netiquette
