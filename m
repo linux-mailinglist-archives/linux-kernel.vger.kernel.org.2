@@ -2,77 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BA1743039D
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 18:15:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1B5D4303A0
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 18:19:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240641AbhJPQRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 12:17:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41550 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231197AbhJPQRs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 12:17:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C29C660F70;
-        Sat, 16 Oct 2021 16:15:36 +0000 (UTC)
-Date:   Sat, 16 Oct 2021 21:45:31 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Joe Perches <joe@perches.com>, hemantk@codeaurora.org,
-        bbhatt@codeaurora.org, loic.poulain@linaro.org, wangqing@vivo.com,
-        mhi@lists.linux.dev, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Manivannan Sadhasivam <mani@kernel.org>
-Subject: Re: [PATCH 3/3] bus: mhi: replace snprintf in show functions with
- sysfs_emit
-Message-ID: <20211016161531.GA4048@thinkpad>
-References: <20211016065734.28802-1-manivannan.sadhasivam@linaro.org>
- <20211016065734.28802-4-manivannan.sadhasivam@linaro.org>
- <YWqBTj4slHq7HexS@kroah.com>
- <6ddc01b24b1c72f7e92174a037043b5cfffa3431.camel@perches.com>
- <YWrqmiT1pC+SbecM@kroah.com>
+        id S239912AbhJPQVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 12:21:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60384 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230374AbhJPQVN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Oct 2021 12:21:13 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D01CC061570;
+        Sat, 16 Oct 2021 09:19:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=IjZSx47/pT12yjNBS4Xi8fL7I8DemHVk6Qp+V3LbhPo=; b=LeyOSoVJ6A8yfeXchlIsBqJX9o
+        pyOgmz8mJzQ8FyXMeEoLRpwIUXfu0ChcbwOjtHVVsBSYdvaWWNROkOG2ylYDhrGYVEx6q1n50c5V1
+        fVeFLNCmH7LxhiNK1nXMqQk000S8RWQcc43M4prvELqkufklSpTWEbtqJcjsS2t0sme+CHzHX0a78
+        r64hgAlHpXB1C3h3KrdKgyv7YOT0mF9ZLgpQzN4TwOzTT/yLF7Q5vlo5D52ibInPuZEgN5Trp87KP
+        s6nu2Vm2H7ZbFr9nK0oXA9vmrS8r9KZkOzvMxBmHRlQFRg4vLFBoXWKmAkZwYTuah5iymJM1QO0t/
+        8Not1XKw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mbmO8-009lbl-S7; Sat, 16 Oct 2021 16:18:29 +0000
+Date:   Sat, 16 Oct 2021 17:18:24 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Len Baker <len.baker@gmx.com>
+Cc:     Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] sysctl: Avoid open coded arithmetic in memory allocator
+ functions
+Message-ID: <YWr7UN1+RkayVWy2@casper.infradead.org>
+References: <20211016152829.9836-1-len.baker@gmx.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YWrqmiT1pC+SbecM@kroah.com>
+In-Reply-To: <20211016152829.9836-1-len.baker@gmx.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 16, 2021 at 05:07:06PM +0200, Greg KH wrote:
-> On Sat, Oct 16, 2021 at 03:24:17AM -0700, Joe Perches wrote:
-> > On Sat, 2021-10-16 at 09:37 +0200, Greg KH wrote:
-> > > On Sat, Oct 16, 2021 at 12:27:34PM +0530, Manivannan Sadhasivam wrote:
-> > > > From: Qing Wang <wangqing@vivo.com>
-> > > > coccicheck complains about the use of snprintf() in sysfs show functions.
-> > []
-> > > > diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
-> > []
-> > > > @@ -94,7 +94,7 @@ static ssize_t serial_number_show(struct device *dev,
-> > > >  	struct mhi_device *mhi_dev = to_mhi_device(dev);
-> > > >  	struct mhi_controller *mhi_cntrl = mhi_dev->mhi_cntrl;
-> > > >  
-> > > > -	return snprintf(buf, PAGE_SIZE, "Serial Number: %u\n",
-> > > > +	return sysfs_emit(buf, "Serial Number: %u\n",
-> > > >  			mhi_cntrl->serial_number);
-> > > 
-> > > The text "Serial Number: " should not be in here, right?  It's obvious
-> > > this is a serial number, that's what the documentation and file name
-> > > says.  Userspace should not have to parse sysfs files.
-> > 
-> > sysfs is ABI right?  Parsing or not, it's what's already there.
-> 
-> If no tools rely on this, and we can change it, we should at least try.
-> 
-> We can not change ABI if something breaks.  If nothing relies on it,
-> then it is fine to do so.
-> 
+On Sat, Oct 16, 2021 at 05:28:28PM +0200, Len Baker wrote:
+> +static size_t new_dir_size(size_t namelen)
+> +{
+> +	size_t bytes;
+> +
+> +	if (check_add_overflow(sizeof(struct ctl_dir), sizeof(struct ctl_node),
+> +			       &bytes))
+> +		return SIZE_MAX;
+> +	if (check_add_overflow(bytes, array_size(sizeof(struct ctl_table), 2),
+> +			       &bytes))
+> +		return SIZE_MAX;
+> +	if (check_add_overflow(bytes, namelen, &bytes))
+> +		return SIZE_MAX;
+> +	if (check_add_overflow(bytes, (size_t)1, &bytes))
+> +		return SIZE_MAX;
+> +
+> +	return bytes;
+> +}
 
-Hemant, Bhaumik, do you guys know if there are any possible users (scripts/apps)
-of this ABI? I'm not 100% inclined to change it but if we are _sure_ that there
-are no users yet, then I'm ok with it.
+I think this is overkill.  All these structs are small and namelen is
+supplied by the kernel, not specified by userspace.  It really complicates
+the code, and I don't see the advantage.
 
-Thanks,
-Mani
-
-> thanks,
-> 
-> greg k-h
