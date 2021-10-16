@@ -2,83 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3BCF4301B2
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 11:53:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78E684301B3
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 11:56:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240162AbhJPJzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 05:55:24 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:52343 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240140AbhJPJzX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 05:55:23 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1634377996; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=vlQHGjiycX8bXQaeZ8NFmVxFXANtXPBudym2zYT9hZ8=; b=r0iQ9BDF1pcDfgo+ohORKC2A5Pxqa2QzECBNuIparuWPMIcnWfZIAmaoIDEfSVMWOhSQEFJL
- 6wj07WuSHIU8NGrR6mZsIUU728eTRc6T7BwbdMqH8OAq0nwyoGINBhPPclonPPTZjEcubeHf
- cNDOkbiNaoBuahlvvy0jPNJRe9Y=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 616aa0fb446c6db0cba82b08 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 16 Oct 2021 09:52:59
- GMT
-Sender: quic_luoj=quicinc.com@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 6502FC4360C; Sat, 16 Oct 2021 09:52:58 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [192.168.1.4] (unknown [183.192.232.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: luoj)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 70DDBC4338F;
-        Sat, 16 Oct 2021 09:52:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 70DDBC4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=fail (p=none dis=none) header.from=quicinc.com
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=quicinc.com
-Subject: Re: [PATCH v2 12/13] net: phy: adjust qca8081 master/slave seed value
- if link down
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        Luo Jie <luoj@codeaurora.org>
-Cc:     andrew@lunn.ch, hkallweit1@gmail.com, davem@davemloft.net,
-        kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sricharan@codeaurora.org
-References: <20211015073505.1893-1-luoj@codeaurora.org>
- <20211015073505.1893-13-luoj@codeaurora.org>
- <YWk1TjigOhfx36+3@shell.armlinux.org.uk>
-From:   Jie Luo <quic_luoj@quicinc.com>
-Message-ID: <61001bc5-602c-629d-59ff-f0efaedbc764@quicinc.com>
-Date:   Sat, 16 Oct 2021 17:52:52 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S240202AbhJPJ6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 05:58:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33300 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235573AbhJPJ6T (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Oct 2021 05:58:19 -0400
+Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87C58C061570
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 02:56:11 -0700 (PDT)
+Received: from martin by viti.kaiser.cx with local (Exim 4.89)
+        (envelope-from <martin@viti.kaiser.cx>)
+        id 1mbgQA-0003HW-Jj; Sat, 16 Oct 2021 11:56:06 +0200
+Date:   Sat, 16 Oct 2021 11:56:06 +0200
+From:   Martin Kaiser <lists@kaiser.cx>
+To:     Michael Straube <straube.linux@gmail.com>
+Cc:     gregkh@linuxfoundation.org, Larry.Finger@lwfinger.net,
+        phil@philpotter.co.uk, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 7/7] staging: r8188eu: remove ODM_CmnInfoPtrArrayHook()
+Message-ID: <20211016095606.3bnntfllbbdomgfu@viti.kaiser.cx>
+References: <20211015163507.9091-1-straube.linux@gmail.com>
+ <20211015163507.9091-8-straube.linux@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <YWk1TjigOhfx36+3@shell.armlinux.org.uk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211015163507.9091-8-straube.linux@gmail.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
+Sender: Martin Kaiser <martin@viti.kaiser.cx>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Thus wrote Michael Straube (straube.linux@gmail.com):
 
-On 10/15/2021 4:01 PM, Russell King (Oracle) wrote:
-> On Fri, Oct 15, 2021 at 03:35:04PM +0800, Luo Jie wrote:
->> diff --git a/drivers/net/phy/at803x.c b/drivers/net/phy/at803x.c
->> index 4d283c0c828c..6c5dc4eed752 100644
->> --- a/drivers/net/phy/at803x.c
->> +++ b/drivers/net/phy/at803x.c
->> @@ -1556,6 +1556,22 @@ static int qca808x_read_status(struct phy_device *phydev)
->>   	else
->>   		phydev->interface = PHY_INTERFACE_MODE_SMII;
->>   
->> +	/* generate seed as a lower random value to make PHY linked as SLAVE easily,
->> +	 * excpet for master/slave configuration fault detected.
-> "except"
-will correct it in the next patch set, thanks.
->
+> In ODM_CmnInfoPtrArrayHook() there is only the case
+> ODM_CMNINFO_STA_STATUS and the function is called only with this value.
+> Remove ODM_CmnInfoPtrArrayHook() and fix the three places where it is
+> called.
+
+> Signed-off-by: Michael Straube <straube.linux@gmail.com>
+> ---
+>  drivers/staging/r8188eu/hal/odm.c               | 15 ---------------
+>  drivers/staging/r8188eu/hal/rtl8188e_dm.c       |  2 +-
+>  drivers/staging/r8188eu/hal/rtl8188e_hal_init.c |  5 +++--
+>  drivers/staging/r8188eu/include/odm.h           | 10 ----------
+>  4 files changed, 4 insertions(+), 28 deletions(-)
+
+> diff --git a/drivers/staging/r8188eu/hal/odm.c b/drivers/staging/r8188eu/hal/odm.c
+> index a2cbe727f6e0..0987ff3e382a 100644
+> --- a/drivers/staging/r8188eu/hal/odm.c
+> +++ b/drivers/staging/r8188eu/hal/odm.c
+> @@ -292,21 +292,6 @@ void ODM_CmnInfoHook(struct odm_dm_struct *pDM_Odm, enum odm_common_info_def Cmn
+>  	}
+>  }
+
+> -void ODM_CmnInfoPtrArrayHook(struct odm_dm_struct *pDM_Odm, enum odm_common_info_def CmnInfo, u16 Index, void *pValue)
+> -{
+> -	/*  Hook call by reference pointer. */
+> -	switch	(CmnInfo) {
+> -	/*  Dynamic call by reference pointer. */
+> -	case	ODM_CMNINFO_STA_STATUS:
+> -		pDM_Odm->pODM_StaInfo[Index] = (struct sta_info *)pValue;
+> -		break;
+> -	/* To remove the compiler warning, must add an empty default statement to handle the other values. */
+> -	default:
+> -		/* do nothing */
+> -		break;
+> -	}
+> -}
+> -
+>  /*  Update Band/CHannel/.. The values are dynamic but non-per-packet. */
+>  void ODM_CmnInfoUpdate(struct odm_dm_struct *pDM_Odm, u32 CmnInfo, u64 Value)
+>  {
+> diff --git a/drivers/staging/r8188eu/hal/rtl8188e_dm.c b/drivers/staging/r8188eu/hal/rtl8188e_dm.c
+> index 1ca24a507d6d..f1a1015eedfb 100644
+> --- a/drivers/staging/r8188eu/hal/rtl8188e_dm.c
+> +++ b/drivers/staging/r8188eu/hal/rtl8188e_dm.c
+> @@ -90,7 +90,7 @@ static void Update_ODM_ComInfo_88E(struct adapter *Adapter)
+>  	ODM_CmnInfoInit(dm_odm, ODM_CMNINFO_RF_ANTENNA_TYPE, hal_data->TRxAntDivType);
+
+>  	for (i = 0; i < NUM_STA; i++)
+> -		ODM_CmnInfoPtrArrayHook(dm_odm, ODM_CMNINFO_STA_STATUS, i, NULL);
+> +		dm_odm->pODM_StaInfo[i] = NULL;
+>  }
+
+>  void rtl8188e_InitHalDm(struct adapter *Adapter)
+> diff --git a/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c b/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c
+> index dd8d6b4a9d48..8c00f2dd67da 100644
+> --- a/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c
+> +++ b/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c
+> @@ -1671,13 +1671,14 @@ void rtl8188e_SetHalODMVar(struct adapter *Adapter, enum hal_odm_variable eVaria
+>  	case HAL_ODM_STA_INFO:
+>  		{
+>  			struct sta_info *psta = (struct sta_info *)pValue1;
+> +
+>  			if (bSet) {
+>  				DBG_88E("### Set STA_(%d) info\n", psta->mac_id);
+> -				ODM_CmnInfoPtrArrayHook(podmpriv, ODM_CMNINFO_STA_STATUS, psta->mac_id, psta);
+> +				podmpriv->pODM_StaInfo[psta->mac_id] = psta;
+>  				ODM_RAInfo_Init(podmpriv, psta->mac_id);
+>  			} else {
+>  				DBG_88E("### Clean STA_(%d) info\n", psta->mac_id);
+> -				ODM_CmnInfoPtrArrayHook(podmpriv, ODM_CMNINFO_STA_STATUS, psta->mac_id, NULL);
+> +				podmpriv->pODM_StaInfo[psta->mac_id] = NULL;
+>  		       }
+>  		}
+>  		break;
+> diff --git a/drivers/staging/r8188eu/include/odm.h b/drivers/staging/r8188eu/include/odm.h
+> index 6cbf64df9be7..841603b341bd 100644
+> --- a/drivers/staging/r8188eu/include/odm.h
+> +++ b/drivers/staging/r8188eu/include/odm.h
+> @@ -305,12 +305,6 @@ enum odm_common_info_def {
+>  	ODM_CMNINFO_BT_BUSY,			/* Check Bt is using or not */
+>  	ODM_CMNINFO_BT_DISABLE_EDCA,
+>  /* CALL BY VALUE-------------*/
+> -
+> -	/*  Dynamic ptr array hook itms. */
+> -	ODM_CMNINFO_STA_STATUS,
+> -	ODM_CMNINFO_PHY_STATUS,
+> -	ODM_CMNINFO_MAC_STATUS,
+> -	ODM_CMNINFO_MAX,
+>  };
+
+>  /*  2011/10/20 MH Define ODM support ability.  ODM_CMNINFO_ABILITY */
+> @@ -882,10 +876,6 @@ void ODM_CmnInfoInit(struct odm_dm_struct *pDM_Odm,
+>  void ODM_CmnInfoHook(struct odm_dm_struct *pDM_Odm,
+>  		     enum odm_common_info_def CmnInfo, void *pValue);
+
+> -void ODM_CmnInfoPtrArrayHook(struct odm_dm_struct *pDM_Odm,
+> -			     enum odm_common_info_def CmnInfo,
+> -			     u16 Index, void *pValue);
+> -
+>  void ODM_CmnInfoUpdate(struct odm_dm_struct *pDM_Odm, u32 CmnInfo, u64 Value);
+
+>  #endif
+> -- 
+> 2.33.0
+
+Acked-by: Martin Kaiser <martin@kaiser.cx>
