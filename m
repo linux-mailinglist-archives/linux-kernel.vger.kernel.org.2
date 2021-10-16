@@ -2,169 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DB14430258
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 13:16:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AC7243025D
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 13:21:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244292AbhJPLSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 07:18:36 -0400
-Received: from mout.gmx.net ([212.227.15.19]:33795 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236029AbhJPLSf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 07:18:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1634382974;
-        bh=Mhw02uk6pyAcd09twynYEmpbbHs67NvOvVZTeh65TQ4=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=gZKhnmBON9Gg/8BxGCv+oJ0/ws3frGh32IR7U1a57EisAnv8FCzFeeJTFTx3MWZM/
-         2sH7hqesKMUlxkAcOudVEHnoPMis1JirRIEzbJV3Q8mBb7FYtKKz4ffG7UdhZ7MAza
-         +hbJES3Y107oPh93XQzE9fpAcLZMaVIjaWJAPt/w=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from titan ([79.150.72.99]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1M59C2-1mcnbF3JzA-001B53; Sat, 16
- Oct 2021 13:16:14 +0200
-Date:   Sat, 16 Oct 2021 13:16:02 +0200
-From:   Len Baker <len.baker@gmx.com>
-To:     Daniel Vetter <daniel@ffwll.ch>,
-        Jani Nikula <jani.nikula@linux.intel.com>
-Cc:     Len Baker <len.baker@gmx.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Kees Cook <keescook@chromium.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/i915: Prefer struct_size over open coded arithmetic
-Message-ID: <20211016111602.GA1996@titan>
-References: <20211003104258.18550-1-len.baker@gmx.com>
- <20211011092304.GA5790@titan>
- <87k0ihxj56.fsf@intel.com>
- <YWbIQmD1TGikpRm2@phenom.ffwll.local>
+        id S244309AbhJPLXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 07:23:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52178 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244293AbhJPLXw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Oct 2021 07:23:52 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C0C8C061570;
+        Sat, 16 Oct 2021 04:21:45 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id kk10so9040071pjb.1;
+        Sat, 16 Oct 2021 04:21:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=v+ROWip2DOu/ejvMTpR01JMqGD3ACZ+pK2z8e30nwBU=;
+        b=U6gEy6R2isS5ApGPffAomw4itnMKRCLFRnH5F1vc3cmy3P5fxilDkNWDakQPr6TEn5
+         nY0UTdBZDHpe8Eq9unND/qfujdHhpqp2zCGE+IKpJagGKhMNfSHSVVKPgbHj9+LLW5J6
+         Ekgfu3L/E+Z8d8XQ4c9MDyKQYL2PKl1TtMGnRr+qrzXE7CiAJf2Jzj4KhS3wPv17TUeR
+         5vp5S3rilwTz3+CWsIMVSno2bSXDhtkmZ2m4RZsPJyQ1HNWjdv3RIuob6PT99l4g5nKW
+         EJ015IviUY6BL4tidEGWSu61iZzKrxHS7a6v2cdioxum98KfoxgWB15si2tUKEv7F5Qe
+         hDsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=v+ROWip2DOu/ejvMTpR01JMqGD3ACZ+pK2z8e30nwBU=;
+        b=u16esnGRd+tY1Uqhn+JaF0PHfzJXMaSgS0jpTBVL0AOrlIdipMzrGWa98r1iuMoWTV
+         L6baPjaUXG2i5EaYPiA+9fYcRO8SWpQ4OcDcORC8e9+l/Bek2Bd4YraPw1QdBxS+3oOa
+         V2+6HLLxQwQA0a7HIp2MuJoXbAKqFCjrvYzP/ZMuBz2C3tNrUO+UYjpSltYCnU8DhR7w
+         2itUP5EW6sFyMiXohK1Mlr5C/J+cSBMfmCwmbxwVbh+x4HcvqV+jB5F3ex0AW1xsqrNZ
+         foT70hoASbO8G7jS4nJuv3Rk6QdCMIn451UFC/w53fWNt3rS3WsObWQR3d+f/muOKRrS
+         xVzg==
+X-Gm-Message-State: AOAM532qgwBEHXSt6mcYYV+TpFQF80Zf/poS212FTYH9ID94hoEZYLNX
+        V+QL43P6IpKUyBssP9DwqV0=
+X-Google-Smtp-Source: ABdhPJyaV9NtD0ddKyNyjSDHSOdDhYIYDTt623NEd5phUE6MFqERN6ln5jxLvm5swtvCYllDVMQSbg==
+X-Received: by 2002:a17:90b:4b03:: with SMTP id lx3mr19636771pjb.162.1634383304729;
+        Sat, 16 Oct 2021 04:21:44 -0700 (PDT)
+Received: from rok-te3.kortoor.gmail.com.beta.tailscale.net ([211.250.198.237])
+        by smtp.googlemail.com with ESMTPSA id b16sm7905873pfm.58.2021.10.16.04.21.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 16 Oct 2021 04:21:44 -0700 (PDT)
+From:   Kyungrok Chung <acadx0@gmail.com>
+To:     Marek Lindner <mareklindner@neomailbox.ch>,
+        Simon Wunderlich <sw@simonwunderlich.de>,
+        Antonio Quartulli <a@unstable.cc>,
+        Sven Eckelmann <sven@narfation.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Roopa Prabhu <roopa@nvidia.com>,
+        Nikolay Aleksandrov <nikolay@nvidia.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>
+Cc:     b.a.t.m.a.n@lists.open-mesh.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bridge@lists.linux-foundation.org,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org
+Subject: [PATCH v3 net-next] net: make use of helper netif_is_bridge_master()
+Date:   Sat, 16 Oct 2021 20:21:36 +0900
+Message-Id: <20211016112137.18858-1-acadx0@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YWbIQmD1TGikpRm2@phenom.ffwll.local>
-X-Provags-ID: V03:K1:1BclTLkTU4amNua8fYN+IZPFm5F/GQXpWS5ysQ60YisVJ8xWdDC
- /wVNME45XYCO+L/RtZkhQg+PaCqrNbdrnQk4MkAVhNTVKSgB5ks64M+aOQgyg6YJn8xsTzx
- JPiLFzk4L4VDgWJj5ALAUEwzp9ZEFhM7SuKklT5w+M0uQztnaqPmNSb/sOJdVJGGvGv3JJg
- m0Vmj7TgIZV0yRFK77RsQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:LRQAcnKjBVU=:CUIE1tkUtt8DmHc2DvoXn6
- CfLCNr20xEgnmwtw/fouwwD9ZLjaaJ4wI5EmfE09iOZ/JrfiNmIOw4uHDWU4vQ9Dxj0ypcI32
- f2hdSYmXl+i7l824ntWiRLjoFDXR5dot5yqquTPykvH/vJcpSZAmrh0MDsaRHqD6YPd52qJVN
- izixixj4LjseACXWnd63uhDkIH0sqEqwr4/YII0+J9iBy6RehHRuEwLNTBSh1k7uyCpWKFrBP
- aZ+pVc3/biTOFiabHA4a80KFCFFPukHPRN6n4KdJXhhVpuASYVDQ1UYKX7pAjJcwR2I7t7THu
- GLyqdKYrX+q6MZMfQFPwHxqxQBRXkMOhIa9gVxThhWD8A8jY56q5mIjidg45soCI69P1hverj
- RzQSRVlrCbJpcEvgtDTh4c5B0/ihZp66scW2EkFWcGU+IV7q/MuoQNfrA1GDazKcP7tJ4+ket
- ZVDM74wwlBNIvyX+xr2sYlV8b08X7dmV64J7fPCm19qk37ak2k5AOA1/fX2wOOWZIcAk5CqrV
- UGWwFLH2G8vHYFY83YD8goXQJQy6uGM5jCJncxaVSDNEwfd7my6QWLPxM092RSsKZWH+n97Zs
- aThhPzumI/2XtV5zMqkUER3AU4W9NoQc5YlZ5LAfENHyUXDQGwUPFdKFDT63plQHQUe0xghd2
- gKYivo+p1wzDtKggurJbRN79ZfzfKH0f2QS/aY2KOn8DJ3u60ONFt8pMg0Xp++Bsfz8qQ35j5
- x+A3DBhXI9l979SF46JtLVczOih6ojMF+RRzNc3txb/bihWfy8Kk4UPJIeN0aEt7TowXfVckL
- jW0AxF7EJXTtd5v/rFCVq9f3SOpTS6G10G0c49WiEqVmEn6ELYR78ohT+DYriDQ++SI99dBNM
- 0Q067/K0q0FFLPwtfiBUPk8tfcgjkNHSjnQ66K2BcAX9QMboYyEyKCJJHehdu6qGHecghJuJG
- xYVrSymPAVB+xZ5tfS7y6pOBB2U9zQNPp5IYmSvbj5IX+r+u/tfzNpOen9LOqf10avjZDZesv
- 1JHQneqHXsgZbBLIoAdkpRzuEYOncjmzTxdTl22TnAUBBkzhJXcH5JS0Z0lzA+aZ4m/4ZESkK
- 1+MBTEdSQVCW1k=
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel and Jani,
+Make use of netdev helper functions to improve code readability.
+Replace 'dev->priv_flags & IFF_EBRIDGE' with netif_is_bridge_master(dev).
 
-On Wed, Oct 13, 2021 at 01:51:30PM +0200, Daniel Vetter wrote:
-> On Wed, Oct 13, 2021 at 02:24:05PM +0300, Jani Nikula wrote:
-> > On Mon, 11 Oct 2021, Len Baker <len.baker@gmx.com> wrote:
-> > > Hi,
-> > >
-> > > On Sun, Oct 03, 2021 at 12:42:58PM +0200, Len Baker wrote:
-> > >> As noted in the "Deprecated Interfaces, Language Features, Attribut=
-es,
-> > >> and Conventions" documentation [1], size calculations (especially
-> > >> multiplication) should not be performed in memory allocator (or sim=
-ilar)
-> > >> function arguments due to the risk of them overflowing. This could =
-lead
-> > >> to values wrapping around and a smaller allocation being made than =
-the
-> > >> caller was expecting. Using those allocations could lead to linear
-> > >> overflows of heap memory and other misbehaviors.
-> > >>
-> > >> In this case these are not actually dynamic sizes: all the operands
-> > >> involved in the calculation are constant values. However it is bett=
-er to
-> > >> refactor them anyway, just to keep the open-coded math idiom out of
-> > >> code.
-> > >>
-> > >> So, add at the end of the struct i915_syncmap a union with two flex=
-ible
-> > >> array members (these arrays share the same memory layout). This is
-> > >> possible using the new DECLARE_FLEX_ARRAY macro. And then, use the
-> > >> struct_size() helper to do the arithmetic instead of the argument
-> > >> "size + count * size" in the kmalloc and kzalloc() functions.
-> > >>
-> > >> Also, take the opportunity to refactor the __sync_seqno and __sync_=
-child
-> > >> making them more readable.
-> > >>
-> > >> This code was detected with the help of Coccinelle and audited and =
-fixed
-> > >> manually.
-> > >>
-> > >> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#=
-open-coded-arithmetic-in-allocator-arguments
-> > >>
-> > >> Signed-off-by: Len Baker <len.baker@gmx.com>
-> > >> ---
-> > >>  drivers/gpu/drm/i915/i915_syncmap.c | 12 ++++++++----
-> > >>  1 file changed, 8 insertions(+), 4 deletions(-)
-> > >
-> > > I received a mail telling that this patch doesn't build:
-> > >
-> > > =3D=3D Series Details =3D=3D
-> > >
-> > > Series: drm/i915: Prefer struct_size over open coded arithmetic
-> > > URL   : https://patchwork.freedesktop.org/series/95408/
-> > > State : failure
-> > >
-> > > But it builds without error against linux-next (tag next-20211001). =
-Against
-> > > which tree and branch do I need to build?
-> >
-> > drm-tip [1]. It's a sort of linux-next for graphics. I think there are
-> > still some branches that don't feed to linux-next.
->
-> Yeah we need to get gt-next in linux-next asap. Joonas promised to send
-> out his patch to make that happen in dim.
-> -Daniel
+Signed-off-by: Kyungrok Chung <acadx0@gmail.com>
+---
 
-Is there a possibility that you give an "Acked-by" tag? And then this patc=
-h
-goes to the mainline through the Kees' tree or Gustavo's tree?
+v1->v2:
+  - Apply fixes to batman-adv, core too.
 
-Or is it better to wait for drm-tip to update?
+v2->v3:
+  - Fix wrong logic.
 
-Regards,
-Len
+ net/batman-adv/multicast.c      | 2 +-
+ net/bridge/br.c                 | 4 ++--
+ net/bridge/br_fdb.c             | 6 +++---
+ net/bridge/br_if.c              | 2 +-
+ net/bridge/br_ioctl.c           | 2 +-
+ net/bridge/br_mdb.c             | 4 ++--
+ net/bridge/br_netfilter_hooks.c | 2 +-
+ net/bridge/br_netlink.c         | 4 ++--
+ net/core/rtnetlink.c            | 2 +-
+ 9 files changed, 14 insertions(+), 14 deletions(-)
 
->
-> >
-> > BR,
-> > Jani.
-> >
-> >
-> > [1] https://cgit.freedesktop.org/drm/drm-tip
-> >
-> >
-> > >
-> > > Regards,
-> > > Len
-> >
-> > --
-> > Jani Nikula, Intel Open Source Graphics Center
->
-> --
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> http://blog.ffwll.ch
+diff --git a/net/batman-adv/multicast.c b/net/batman-adv/multicast.c
+index a3b6658ed789..433901dcf0c3 100644
+--- a/net/batman-adv/multicast.c
++++ b/net/batman-adv/multicast.c
+@@ -89,7 +89,7 @@ static struct net_device *batadv_mcast_get_bridge(struct net_device *soft_iface)
+ 	rcu_read_lock();
+ 	do {
+ 		upper = netdev_master_upper_dev_get_rcu(upper);
+-	} while (upper && !(upper->priv_flags & IFF_EBRIDGE));
++	} while (upper && !netif_is_bridge_master(upper));
+ 
+ 	dev_hold(upper);
+ 	rcu_read_unlock();
+diff --git a/net/bridge/br.c b/net/bridge/br.c
+index d3a32c6813e0..1fac72cc617f 100644
+--- a/net/bridge/br.c
++++ b/net/bridge/br.c
+@@ -36,7 +36,7 @@ static int br_device_event(struct notifier_block *unused, unsigned long event, v
+ 	bool changed_addr;
+ 	int err;
+ 
+-	if (dev->priv_flags & IFF_EBRIDGE) {
++	if (netif_is_bridge_master(dev)) {
+ 		err = br_vlan_bridge_event(dev, event, ptr);
+ 		if (err)
+ 			return notifier_from_errno(err);
+@@ -349,7 +349,7 @@ static void __net_exit br_net_exit(struct net *net)
+ 
+ 	rtnl_lock();
+ 	for_each_netdev(net, dev)
+-		if (dev->priv_flags & IFF_EBRIDGE)
++		if (netif_is_bridge_master(dev))
+ 			br_dev_delete(dev, &list);
+ 
+ 	unregister_netdevice_many(&list);
+diff --git a/net/bridge/br_fdb.c b/net/bridge/br_fdb.c
+index 46812b659710..a6a68e18c70a 100644
+--- a/net/bridge/br_fdb.c
++++ b/net/bridge/br_fdb.c
+@@ -825,7 +825,7 @@ int br_fdb_dump(struct sk_buff *skb,
+ 	struct net_bridge_fdb_entry *f;
+ 	int err = 0;
+ 
+-	if (!(dev->priv_flags & IFF_EBRIDGE))
++	if (!netif_is_bridge_master(dev))
+ 		return err;
+ 
+ 	if (!filter_dev) {
+@@ -1076,7 +1076,7 @@ int br_fdb_add(struct ndmsg *ndm, struct nlattr *tb[],
+ 		return -EINVAL;
+ 	}
+ 
+-	if (dev->priv_flags & IFF_EBRIDGE) {
++	if (netif_is_bridge_master(dev)) {
+ 		br = netdev_priv(dev);
+ 		vg = br_vlan_group(br);
+ 	} else {
+@@ -1173,7 +1173,7 @@ int br_fdb_delete(struct ndmsg *ndm, struct nlattr *tb[],
+ 	struct net_bridge *br;
+ 	int err;
+ 
+-	if (dev->priv_flags & IFF_EBRIDGE) {
++	if (netif_is_bridge_master(dev)) {
+ 		br = netdev_priv(dev);
+ 		vg = br_vlan_group(br);
+ 	} else {
+diff --git a/net/bridge/br_if.c b/net/bridge/br_if.c
+index 4a02f8bb278a..c11bba3e7ec0 100644
+--- a/net/bridge/br_if.c
++++ b/net/bridge/br_if.c
+@@ -471,7 +471,7 @@ int br_del_bridge(struct net *net, const char *name)
+ 	if (dev == NULL)
+ 		ret =  -ENXIO; 	/* Could not find device */
+ 
+-	else if (!(dev->priv_flags & IFF_EBRIDGE)) {
++	else if (!netif_is_bridge_master(dev)) {
+ 		/* Attempt to delete non bridge device! */
+ 		ret = -EPERM;
+ 	}
+diff --git a/net/bridge/br_ioctl.c b/net/bridge/br_ioctl.c
+index 49c268871fc1..db4ab2c2ce18 100644
+--- a/net/bridge/br_ioctl.c
++++ b/net/bridge/br_ioctl.c
+@@ -26,7 +26,7 @@ static int get_bridge_ifindices(struct net *net, int *indices, int num)
+ 	for_each_netdev_rcu(net, dev) {
+ 		if (i >= num)
+ 			break;
+-		if (dev->priv_flags & IFF_EBRIDGE)
++		if (netif_is_bridge_master(dev))
+ 			indices[i++] = dev->ifindex;
+ 	}
+ 	rcu_read_unlock();
+diff --git a/net/bridge/br_mdb.c b/net/bridge/br_mdb.c
+index 0281453f7766..61ccf46fcc21 100644
+--- a/net/bridge/br_mdb.c
++++ b/net/bridge/br_mdb.c
+@@ -422,7 +422,7 @@ static int br_mdb_dump(struct sk_buff *skb, struct netlink_callback *cb)
+ 	cb->seq = net->dev_base_seq;
+ 
+ 	for_each_netdev_rcu(net, dev) {
+-		if (dev->priv_flags & IFF_EBRIDGE) {
++		if (netif_is_bridge_master(dev)) {
+ 			struct net_bridge *br = netdev_priv(dev);
+ 			struct br_port_msg *bpm;
+ 
+@@ -1016,7 +1016,7 @@ static int br_mdb_parse(struct sk_buff *skb, struct nlmsghdr *nlh,
+ 		return -ENODEV;
+ 	}
+ 
+-	if (!(dev->priv_flags & IFF_EBRIDGE)) {
++	if (!netif_is_bridge_master(dev)) {
+ 		NL_SET_ERR_MSG_MOD(extack, "Device is not a bridge");
+ 		return -EOPNOTSUPP;
+ 	}
+diff --git a/net/bridge/br_netfilter_hooks.c b/net/bridge/br_netfilter_hooks.c
+index 8edfb98ae1d5..b5af68c105a8 100644
+--- a/net/bridge/br_netfilter_hooks.c
++++ b/net/bridge/br_netfilter_hooks.c
+@@ -968,7 +968,7 @@ static int brnf_device_event(struct notifier_block *unused, unsigned long event,
+ 	struct net *net;
+ 	int ret;
+ 
+-	if (event != NETDEV_REGISTER || !(dev->priv_flags & IFF_EBRIDGE))
++	if (event != NETDEV_REGISTER || !netif_is_bridge_master(dev))
+ 		return NOTIFY_DONE;
+ 
+ 	ASSERT_RTNL();
+diff --git a/net/bridge/br_netlink.c b/net/bridge/br_netlink.c
+index 5c6c4305ed23..0c8b5f1a15bc 100644
+--- a/net/bridge/br_netlink.c
++++ b/net/bridge/br_netlink.c
+@@ -106,7 +106,7 @@ static size_t br_get_link_af_size_filtered(const struct net_device *dev,
+ 		p = br_port_get_check_rcu(dev);
+ 		if (p)
+ 			vg = nbp_vlan_group_rcu(p);
+-	} else if (dev->priv_flags & IFF_EBRIDGE) {
++	} else if (netif_is_bridge_master(dev)) {
+ 		br = netdev_priv(dev);
+ 		vg = br_vlan_group_rcu(br);
+ 	}
+@@ -1050,7 +1050,7 @@ int br_dellink(struct net_device *dev, struct nlmsghdr *nlh, u16 flags)
+ 
+ 	p = br_port_get_rtnl(dev);
+ 	/* We want to accept dev as bridge itself as well */
+-	if (!p && !(dev->priv_flags & IFF_EBRIDGE))
++	if (!p && !netif_is_bridge_master(dev))
+ 		return -EINVAL;
+ 
+ 	err = br_afspec(br, p, afspec, RTM_DELLINK, &changed, NULL);
+diff --git a/net/core/rtnetlink.c b/net/core/rtnetlink.c
+index 2dc1b209ba91..564d24c451af 100644
+--- a/net/core/rtnetlink.c
++++ b/net/core/rtnetlink.c
+@@ -4384,7 +4384,7 @@ static int rtnl_fdb_dump(struct sk_buff *skb, struct netlink_callback *cb)
+ 					continue;
+ 
+ 				if (br_dev != netdev_master_upper_dev_get(dev) &&
+-				    !(dev->priv_flags & IFF_EBRIDGE))
++				    !netif_is_bridge_master(dev))
+ 					continue;
+ 				cops = ops;
+ 			}
+-- 
+2.33.0
+
