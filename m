@@ -2,186 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 317CE430370
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 17:36:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20D32430374
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 17:40:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238174AbhJPPit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 11:38:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51094 "EHLO
+        id S234575AbhJPPmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 11:42:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234575AbhJPPir (ORCPT
+        with ESMTP id S232019AbhJPPmQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 11:38:47 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CE1FC061570;
-        Sat, 16 Oct 2021 08:36:39 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id i24so54405169lfj.13;
-        Sat, 16 Oct 2021 08:36:39 -0700 (PDT)
+        Sat, 16 Oct 2021 11:42:16 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B19AC061570
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 08:40:08 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id y15so55706564lfk.7
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 08:40:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=iXmHQbdUUEj7iD9UdLGIRExPe2SbeX0x9hgeURTYmuQ=;
-        b=gy+a/5BSaOUZjjMeREUgCptM2ybr7PF148YGvG+CqztuyGq8LBhigc7vHDIIyQZ4RR
-         nCkxVRmxG6APD0+J/FGkfKxkl0tNsjzP7W5/HDgmaFfOHmvbOI3WCtMY70n8umX8yEJV
-         FJGDPXjLDrI9pGt9cpA+/Wo5Ds2dyHODEA9wSoRG9q3PsnHlqMpubsdtzMh+a+j199o6
-         sBrVM5rVaDlfadaBelsLV+JFBxj2s8A9ruw+Th0rjBkgDfinqABq4j1GP6WbYKhHhnWW
-         e25hnD271Cbz3yMZERuOiAdnU4nILxFmsh9aOU6cSv/0XCWbnrMGgN49CuZqdBiLmYgo
-         PhGg==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Q88y4WBZj28jEM3JEV3sTlyhWcoR55HQTTGRioE6bb8=;
+        b=RWvfd1Je9hSmT/qatBra/dYlQTeVwbONHHIbOZCZeDtvCB6/MPdCR8sayRyBNajSpU
+         VaErKAyyaJiKiK//fHgCm5ZzDgyJbzmCUwQyFPEje9PuqElBQAPQNfJY5+njP4d/wBn5
+         u6/WqZqcZh9bYzwWafKhBCaXdkenewyb8UgEM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=iXmHQbdUUEj7iD9UdLGIRExPe2SbeX0x9hgeURTYmuQ=;
-        b=77+wQh5JSBvSRipG4bflGBZadMuOCKuoPz4zRYjNOoM7i83MvqLsfzFxgYPTFYB2y5
-         pEVKasO991N6S89jOoOhZ1zKa5cycPk4n7ZaQbjnBP5HCTgzkDHkToC4ndG8nMb4AMe5
-         d5KSiVukiDXNPJ+J71wnoFelNHkmln40qArHEg0yZVc5H0L0OydIDbwJqU7lIH8C792I
-         DKohOws2kGx5oq1wqohQdEvGzKSgpzMyYJTzNE2LkZogzrMHlyxLAuekJ79fVZ4R+gTt
-         HOD2KjDopLVtWKsWdKTzwM+gvr+Q2s7esoUeDi0sNggCPwp92j0gjW2FLrcEDUVFh/sX
-         9iVw==
-X-Gm-Message-State: AOAM531yzIB82WTrmLXDn7gN8ShM1V5KzzFPf+UtrAbkMDKNMihZmVDy
-        X7qs26TZ4lsOA+7HCF/tF+o=
-X-Google-Smtp-Source: ABdhPJxtvgN0MWJt4cva3KTlHcgZzj89zboYkD6ihnqr+bNLevlFAbbJkDz7ATXU/w01SNAG8MS09Q==
-X-Received: by 2002:a2e:a544:: with SMTP id e4mr15585258ljn.225.1634398597937;
-        Sat, 16 Oct 2021 08:36:37 -0700 (PDT)
-Received: from [192.168.2.145] (46-138-48-94.dynamic.spd-mgts.ru. [46.138.48.94])
-        by smtp.googlemail.com with ESMTPSA id w26sm1021100ljh.18.2021.10.16.08.36.36
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Q88y4WBZj28jEM3JEV3sTlyhWcoR55HQTTGRioE6bb8=;
+        b=fh+a9pX12fek7wAfn3SPaJu6a+3FZMkb+PeUvLknJbHnAQSWvw9aBgB6A43qFZEoBf
+         X1dPMSR4ljMK0nhYo1Iub/sZSKMoq7Y+utWhW5CmoBlrxayfzbe2smuNXcTLBOjzhCnI
+         446GR7nYOpMWMqTrzzYokkfmBfROnXx0SPmM4v9IOwUuW590C10x1ZETN2TXw4Uqq+0+
+         dSxnnueELDKNBAxEyC6Nrqw5Y8BHQxC1hVsDG59tFUinJx7/Mq8eUO0ijGNmjyfUvA+b
+         dJ7T4eT3WjdTAEMCLdy1VTIO5IkB4Lr2KMASGuFcT1DTdEpwYz/pTj2G6IcGtCLS1Fn1
+         yARQ==
+X-Gm-Message-State: AOAM533fl9a6o9gTKo8kOUHW3gGnrj2yAVhV07fUUd2Tyud8BfmfVUXS
+        KH1/aydTY/ShZLUBG7w+0yfwZu+BI2ozHA==
+X-Google-Smtp-Source: ABdhPJxA6o40qnnF9Es/XySNzfEXrJtqR3hwovqmMnMzgprDmQTvqC9V+LhbfR06+tOr1dtw9qkm4Q==
+X-Received: by 2002:a2e:868e:: with SMTP id l14mr18979221lji.26.1634398806238;
+        Sat, 16 Oct 2021 08:40:06 -0700 (PDT)
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com. [209.85.167.48])
+        by smtp.gmail.com with ESMTPSA id t22sm921733ljj.61.2021.10.16.08.40.05
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 16 Oct 2021 08:36:37 -0700 (PDT)
-Subject: Re: [PATCH v13 11/35] drm/tegra: dc: Support OPP and SoC core voltage
- scaling
-To:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Viresh Kumar <vireshk@kernel.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Peter Chen <peter.chen@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Nishanth Menon <nm@ti.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        linux-staging@lists.linux.dev, linux-pwm@vger.kernel.org,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Richard Weinberger <richard@nod.at>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        David Heidelberg <david@ixit.cz>
-References: <20210926224058.1252-1-digetx@gmail.com>
- <20210926224058.1252-12-digetx@gmail.com>
- <CAPDyKFobSsFOnmFc4BG353uYgECGD1U1U020oQwB7pX0mfCfvw@mail.gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <9bb95684-de30-697a-139c-1e3e54dade2a@gmail.com>
-Date:   Sat, 16 Oct 2021 18:36:35 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Sat, 16 Oct 2021 08:40:05 -0700 (PDT)
+Received: by mail-lf1-f48.google.com with SMTP id z11so54286167lfj.4
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 08:40:05 -0700 (PDT)
+X-Received: by 2002:a2e:1510:: with SMTP id s16mr19679295ljd.56.1634398804988;
+ Sat, 16 Oct 2021 08:40:04 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAPDyKFobSsFOnmFc4BG353uYgECGD1U1U020oQwB7pX0mfCfvw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20211016064302.165220-1-pbonzini@redhat.com>
+In-Reply-To: <20211016064302.165220-1-pbonzini@redhat.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sat, 16 Oct 2021 08:39:49 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wijGo_yd7GiTMcgR+gv0ESRykwnOn+XHCEvs3xW3x6dCg@mail.gmail.com>
+Message-ID: <CAHk-=wijGo_yd7GiTMcgR+gv0ESRykwnOn+XHCEvs3xW3x6dCg@mail.gmail.com>
+Subject: Re: [PATCH] mm: allow huge kvmalloc() calls if they're accounted to memcg
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     KVM list <kvm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Willy Tarreau <w@1wt.eu>, Kees Cook <keescook@chromium.org>,
+        syzbot+e0de2333cbf95ea473e8@syzkaller.appspotmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-01.10.2021 16:27, Ulf Hansson пишет:
-> On Mon, 27 Sept 2021 at 00:42, Dmitry Osipenko <digetx@gmail.com> wrote:
->>
->> Add OPP and SoC core voltage scaling support to the display controller
->> driver. This is required for enabling system-wide DVFS on pre-Tegra186
->> SoCs.
->>
->> Tested-by: Peter Geis <pgwipeout@gmail.com> # Ouya T30
->> Tested-by: Paul Fertser <fercerpav@gmail.com> # PAZ00 T20
->> Tested-by: Nicolas Chauvet <kwizart@gmail.com> # PAZ00 T20 and TK1 T124
->> Tested-by: Matt Merhar <mattmerhar@protonmail.com> # Ouya T30
->> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->> ---
->>  drivers/gpu/drm/tegra/dc.c | 74 ++++++++++++++++++++++++++++++++++++++
->>  drivers/gpu/drm/tegra/dc.h |  2 ++
->>  2 files changed, 76 insertions(+)
->>
->> diff --git a/drivers/gpu/drm/tegra/dc.c b/drivers/gpu/drm/tegra/dc.c
->> index a29d64f87563..d4047a14e2b6 100644
->> --- a/drivers/gpu/drm/tegra/dc.c
->> +++ b/drivers/gpu/drm/tegra/dc.c
->> @@ -11,9 +11,12 @@
->>  #include <linux/interconnect.h>
->>  #include <linux/module.h>
->>  #include <linux/of_device.h>
->> +#include <linux/pm_domain.h>
->> +#include <linux/pm_opp.h>
->>  #include <linux/pm_runtime.h>
->>  #include <linux/reset.h>
->>
->> +#include <soc/tegra/common.h>
->>  #include <soc/tegra/pmc.h>
->>
->>  #include <drm/drm_atomic.h>
->> @@ -1762,6 +1765,47 @@ int tegra_dc_state_setup_clock(struct tegra_dc *dc,
->>         return 0;
->>  }
->>
->> +static void tegra_dc_update_voltage_state(struct tegra_dc *dc,
->> +                                         struct tegra_dc_state *state)
->> +{
->> +       unsigned long rate, pstate;
->> +       struct dev_pm_opp *opp;
->> +       int err;
->> +
->> +       if (!dc->has_opp_table)
->> +               return;
->> +
->> +       /* calculate actual pixel clock rate which depends on internal divider */
->> +       rate = DIV_ROUND_UP(clk_get_rate(dc->clk) * 2, state->div + 2);
->> +
->> +       /* find suitable OPP for the rate */
->> +       opp = dev_pm_opp_find_freq_ceil(dc->dev, &rate);
->> +
->> +       if (opp == ERR_PTR(-ERANGE))
->> +               opp = dev_pm_opp_find_freq_floor(dc->dev, &rate);
->> +
->> +       if (IS_ERR(opp)) {
->> +               dev_err(dc->dev, "failed to find OPP for %luHz: %pe\n",
->> +                       rate, opp);
->> +               return;
->> +       }
->> +
->> +       pstate = dev_pm_opp_get_required_pstate(opp, 0);
->> +       dev_pm_opp_put(opp);
->> +
->> +       /*
->> +        * The minimum core voltage depends on the pixel clock rate (which
->> +        * depends on internal clock divider of the CRTC) and not on the
->> +        * rate of the display controller clock. This is why we're not using
->> +        * dev_pm_opp_set_rate() API and instead controlling the power domain
->> +        * directly.
->> +        */
->> +       err = dev_pm_genpd_set_performance_state(dc->dev, pstate);
->> +       if (err)
->> +               dev_err(dc->dev, "failed to set power domain state to %lu: %d\n",
->> +                       pstate, err);
-> 
-> Yeah, the above code looks very similar to the code I pointed to in
-> patch6. Perhaps we need to discuss with Viresh, whether it makes sense
-> to fold in a patch adding an opp helper function after all, to avoid
-> the open coding.
-> 
-> Viresh?
+On Fri, Oct 15, 2021 at 11:43 PM Paolo Bonzini <pbonzini@redhat.com> wrote:
+>
+> Use memcg accounting as evidence that the crazy large allocations are
+> expected---in which case, it is indeed a good idea to have them
+> properly accounted---and exempt them from the warning.
 
-I'll keep it open-coded for now. This code is specific to Tegra because
-normally ceil error shouldn't fall back to the floor, but for Tegra it's
-expected to happen and it's a normal condition.
+This is not sensible.
+
+The big allocation warnings are not about whether we have the memory
+or not, or about whether it's accounted or not.
+
+It's about bugs and overflows. Which we've had.
+
+At least GFP_NOWARN would be somewhat sensible - although still wrong.
+It should really be about "I've been careful with growing my
+allocations", not about whether accounting or similar should be
+disabled.
+
+If the allocations really are expected to be that big, and it's
+actually valid, just do vmalloc(), which doesn't warn.
+
+                      Linus
