@@ -2,82 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F207D42FFCC
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 04:58:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 856E642FFCF
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 05:03:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239689AbhJPDAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 15 Oct 2021 23:00:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39892 "EHLO mail.kernel.org"
+        id S239736AbhJPDFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 15 Oct 2021 23:05:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42128 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236923AbhJPDAr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 15 Oct 2021 23:00:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AAA8861214;
-        Sat, 16 Oct 2021 02:58:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1634353119;
-        bh=D4kIgZbs8kCfWbV0F4ekpMVNuf0wAaJd9KI7A+0C9WI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=CrgGt8Ns1FnRIaBmvBUZnFbbpb2xBZVS2k4jMmxbVuQ9JQyL0ADglaflJ6XG+Bgdn
-         zoeOSrDw5k7ixknnQLtxyS0/aEGw2tVvNJnwIykPKtXnTbcvaf3kdmG+y1VIPMuU17
-         SE9Jrj6VrZSlWIu6iLUvVa0aHeOUXpGDu6XLjwts=
-Date:   Fri, 15 Oct 2021 19:58:37 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Zhaoyang Huang <huangzhaoyang@gmail.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mm: skip current when memcg reclaim
-Message-Id: <20211015195837.4b26e56f984aaa1383ea0335@linux-foundation.org>
-In-Reply-To: <CAGWkznGt=9HznGA6R15z=QVZmnk9rGvQ77gN_G9UZk-XqzpF1g@mail.gmail.com>
-References: <1634278529-16983-1-git-send-email-huangzhaoyang@gmail.com>
-        <20211015130035.aacc18a4d1ee141b306c2272@linux-foundation.org>
-        <CAGWkznGt=9HznGA6R15z=QVZmnk9rGvQ77gN_G9UZk-XqzpF1g@mail.gmail.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S239692AbhJPDFB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 15 Oct 2021 23:05:01 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EFED361108;
+        Sat, 16 Oct 2021 03:02:53 +0000 (UTC)
+Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
+        (envelope-from <rostedt@goodmis.org>)
+        id 1mbZyF-006ZR5-Ri; Fri, 15 Oct 2021 23:02:51 -0400
+Message-ID: <20211016030222.926060517@goodmis.org>
+User-Agent: quilt/0.66
+Date:   Fri, 15 Oct 2021 23:02:22 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [for-linus][PATCH 0/7] tracing: Fixes for 5.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 16 Oct 2021 10:28:54 +0800 Zhaoyang Huang <huangzhaoyang@gmail.com> wrote:
 
-> On Sat, Oct 16, 2021 at 4:00 AM Andrew Morton <akpm@linux-foundation.org> wrote:
-> >
-> > On Fri, 15 Oct 2021 14:15:29 +0800 Huangzhaoyang <huangzhaoyang@gmail.com> wrote:
-> >
-> > > From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
-> > >
-> > > Sibling thread of the same process could refault the reclaimed pages
-> > > in the same time, which would be typical in None global reclaim and
-> > > introduce thrashing.
-> >
-> > "None" -> "node", I assume?
-> >
-> > > --- a/mm/vmscan.c
-> > > +++ b/mm/vmscan.c
-> > > @@ -2841,6 +2841,11 @@ static void shrink_node_memcgs(pg_data_t *pgdat, struct scan_control *sc)
-> > >                               sc->memcg_low_skipped = 1;
-> > >                               continue;
-> > >                       }
-> > > +                     /*
-> > > +                      * Don't bother current when its memcg is below low
-> > > +                      */
-> >
-> > The comment explains what the code is doing, but the code itself
-> > already does this.  Please can we have a comment that explains *why*
-> > the code is doing this?
-> We find that the patch help direct reclaiming bail out early and
-> eliminate page thrashing for some scenarios(etc APP start on android).
-> The case could be worse if each APP possess a unique memcg(pages on
-> current's lru are reclaimed more than global reclaim)
+Tracing fixes for 5.15:
 
-What I meant was: please redo the patch with a comment which explains
-"why the code does this", rather than "what the code does".
+ - Fix defined but not use warning/error for osnoise function
 
-Also, as this is a performance enhancement, it is preferred to have
-some performance testing results in the changelog.
+ - Fix memory leak in event probe
 
+ - Fix memblock leak in bootconfig
+
+ - Fix the API of event probes to be like kprobes
+
+ - Added test to check removal of event probe API
+
+ - Fix recordmcount.pl for nds32 failed build
+
+
+
+Colin Ian King (1):
+      tracing: Fix missing * in comment block
+
+Jackie Liu (1):
+      tracing: Fix missing osnoise tracer on max_latency
+
+Masami Hiramatsu (1):
+      bootconfig: init: Fix memblock leak in xbc_make_cmdline()
+
+Steven Rostedt (1):
+      nds32/ftrace: Fix Error: invalid operands (*UND* and *UND* sections) for `^'
+
+Steven Rostedt (VMware) (2):
+      tracing: Fix event probe removal from dynamic events
+      selftests/ftrace: Update test for more eprobe removal process
+
+Vamshi K Sthambamkadi (1):
+      tracing: Fix memory leak in eprobe_register()
+
+----
+ init/main.c                                        |  1 +
+ kernel/trace/trace.c                               | 11 ++--
+ kernel/trace/trace_eprobe.c                        | 61 ++++++++++++++++++++--
+ kernel/trace/trace_events_hist.c                   |  2 +-
+ scripts/recordmcount.pl                            |  2 +-
+ .../ftrace/test.d/dynevent/add_remove_eprobe.tc    | 54 ++++++++++++++++++-
+ 6 files changed, 117 insertions(+), 14 deletions(-)
