@@ -2,199 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DB72430591
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 01:09:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E887430599
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 01:18:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241105AbhJPXLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 19:11:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36480 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241088AbhJPXLo (ORCPT
+        id S241141AbhJPXUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 19:20:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20831 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235619AbhJPXUK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 19:11:44 -0400
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6B4BC061767
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 16:09:35 -0700 (PDT)
-Received: by mail-oi1-x231.google.com with SMTP id t4so18794770oie.5
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 16:09:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=XIUuxz/3xR9ZWSjRj8mW7HoeuGTklmNICX1U7YnsKBs=;
-        b=eSSfyrfBbl1evd4GA7Pa+K4mPIg5doOQ6t94haIHujWkhVuBWMu2tgi6Fv0mZ8OklN
-         2sAfoPKO3ySaVkRxWwf3Mp/DqBSNRfOsiKBw72l7gwzsw8rFuxc+NNjLXjsU001IBnsI
-         LUtkgSdZ94bYRfhAooM2APfEuQ59WF+rXpNhL5r21DOa19ks0hn1+M5kgL7kVQQPbz0M
-         JSRvs4Nl3Xj/oaKePwGZUrDT2I+Cz/wxvS3yXYfSwMr9aj+DvmGQAVLb2ApjOyVTIH7T
-         wpfSz2GODBwYHUfg7NysbEPg64g2+1UwDPTxN9WMoBkn0HEL6Puyk12ihVGtwrJDJ3VO
-         CfTw==
+        Sat, 16 Oct 2021 19:20:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634426281;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HCVbnrjBym+xHk1LNyRIm4ecriHGN7RSnn9/6F207xY=;
+        b=F60h0VNLhb+0RnXNL0fhd6b8AahPm6tjYIwCqS8iPs5c9cjWB/RqAB/Az07tVfSuJwgjoo
+        pLT2lWAme3Uww640i8iAk5XwZ+Rui/WxKghRy8G8ZcGrjUGfcHGcNeTwnX1VDGNJkTexTP
+        E/f3tV4ywtKrAHQ+fCa7N+ftyYZE+Bo=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-553-6ecmdKaRMROivPHq0koEoA-1; Sat, 16 Oct 2021 19:18:00 -0400
+X-MC-Unique: 6ecmdKaRMROivPHq0koEoA-1
+Received: by mail-ed1-f69.google.com with SMTP id v9-20020a50d849000000b003db459aa3f5so11126627edj.15
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 16:18:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XIUuxz/3xR9ZWSjRj8mW7HoeuGTklmNICX1U7YnsKBs=;
-        b=GlYzKofZHe5wrHoLHOEjzN0db0f96vovJHt9NwsBy+bBHAMySraS+PL5yIwBkMLc4h
-         Ar5FqTFADxK78T3GcfwtLAogeftH16wnqcI/+3NbXP5q1y2FqRPAndZmXTKb0QsLjfiY
-         w/4S8KYwJiOuLrB7osWxh4kcn1GC/IrxSNoKSnM/Bl9icGZup5qwF3+AzS3cUKfj6GO5
-         xgbgWFIS/Hz5/scR4yPW+xj7e2yuNjgkoneiNfdc2IW0CEVDQizGXEGrZOsLjUi6Rc13
-         Oo0YlL1VMXLWHuT30hiK7T14GvqEYF1LRlz71IZoIL5Mq5WgTtKVa3FXF3fezbdamnHB
-         gGNw==
-X-Gm-Message-State: AOAM5311CLB50QpGrXvy6DFwc1r33vx3BHJtBVarYJG193/3i2FrlYXH
-        clcpVCx8saV1DMb4AYU7sVm7hTkxmcK/5w==
-X-Google-Smtp-Source: ABdhPJxikg0PiixiDyXxda+GjtGQkG9GOCEnoswQ0EfU9If6Rmt8XfLX1iZeZPdh3OOToOAAtCkU2A==
-X-Received: by 2002:a05:6808:1243:: with SMTP id o3mr14368224oiv.99.1634425775199;
-        Sat, 16 Oct 2021 16:09:35 -0700 (PDT)
-Received: from builder.lan ([2600:1700:a0:3dc8:3697:f6ff:fe85:aac9])
-        by smtp.gmail.com with ESMTPSA id 38sm2098178oti.13.2021.10.16.16.09.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 16 Oct 2021 16:09:34 -0700 (PDT)
-Date:   Sat, 16 Oct 2021 18:09:32 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>, linux-phy@lists.infradead.org,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Stephen Boyd <sboyd@kernel.org>
-Subject: Re: [PATCH v2 2/2] phy: qcom: Introduce new eDP PHY driver
-Message-ID: <YWtbrAlV9x3rLTsQ@builder.lan>
-References: <20211015221312.1699043-1-bjorn.andersson@linaro.org>
- <20211015221312.1699043-2-bjorn.andersson@linaro.org>
- <CAA8EJpqGbiy_d1_RUoPiT0Jz0CgC5WaekkuJFXyzU7z7rkZChw@mail.gmail.com>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=HCVbnrjBym+xHk1LNyRIm4ecriHGN7RSnn9/6F207xY=;
+        b=XCkMoZTOIxpCusxNRRWXsZdbzTZ51rfpt7wEekcdLew9+IfAoMZyRpAvL9ENS3rcgL
+         iPDbSv+jgXSpzZLJFaoo9Jl/5YGnpj7WOLqX1cTsTnoF9NdlC4P4tWZMKCMtDlSqhnlG
+         18cMTzB1KyuCAYFm/uVGmdfpteyy//0PQaYNtjrbgIt/TE+ZIdaD7zDx0B1AHXBPaRAo
+         YIxL1KUVLirkrXlVGxamyi1ZdRWMjbPyigJr+GSxWsHtJKT19054sasoCcqOwdRUilYh
+         w81QT5QT1eNr6ZymdVol1naNz95QKTATvMl47vOMdOwBoh7483UjiBubxNURn3u0Lm1X
+         qbRg==
+X-Gm-Message-State: AOAM531kHyZsuYO4OKHTzPRQGRmERy96BvPkWwZPcLfG6/4i+QRksJaD
+        Lfo3DWFnQGRwvxRdD05k/Yq112sRfYg1M7PJiTI3U9xPlNA7I5PrmyeKXYyweU105Qznskit8Jr
+        ZrkSasJCti34mAZDTRLtLHxi0
+X-Received: by 2002:a05:6402:2807:: with SMTP id h7mr30363786ede.58.1634426278724;
+        Sat, 16 Oct 2021 16:17:58 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxGmDm7spkZZsyiW3CU9rW1i8SA5Shq2Cl8jrzPJ2hC6ecbA1MCb5b6l45djxrXTsZKwIlzkQ==
+X-Received: by 2002:a05:6402:2807:: with SMTP id h7mr30363763ede.58.1634426278477;
+        Sat, 16 Oct 2021 16:17:58 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
+        by smtp.gmail.com with ESMTPSA id c26sm1551864edx.2.2021.10.16.16.17.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 16 Oct 2021 16:17:57 -0700 (PDT)
+Message-ID: <10e3d402-017e-1a0d-b6c7-112117067b03@redhat.com>
+Date:   Sun, 17 Oct 2021 01:17:56 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAA8EJpqGbiy_d1_RUoPiT0Jz0CgC5WaekkuJFXyzU7z7rkZChw@mail.gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH] mm: allow huge kvmalloc() calls if they're accounted to
+ memcg
+Content-Language: en-US
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     KVM list <kvm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Willy Tarreau <w@1wt.eu>, Kees Cook <keescook@chromium.org>,
+        syzbot+e0de2333cbf95ea473e8@syzkaller.appspotmail.com
+References: <20211016064302.165220-1-pbonzini@redhat.com>
+ <CAHk-=wijGo_yd7GiTMcgR+gv0ESRykwnOn+XHCEvs3xW3x6dCg@mail.gmail.com>
+ <510287f2-84ae-b1d2-13b5-22e847284588@redhat.com>
+ <CAHk-=whZ+iCW5yMc3zuTpZrZzjb082xtVyzk3rV+S0SUNrtAAw@mail.gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <CAHk-=whZ+iCW5yMc3zuTpZrZzjb082xtVyzk3rV+S0SUNrtAAw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat 16 Oct 11:36 CDT 2021, Dmitry Baryshkov wrote:
-
-> On Sat, 16 Oct 2021 at 01:11, Bjorn Andersson
-> <bjorn.andersson@linaro.org> wrote:
-[..]
-> > diff --git a/drivers/phy/qualcomm/phy-qcom-edp.c b/drivers/phy/qualcomm/phy-qcom-edp.c
-[..]
-> > +#define QSERDES_COM_SSC_EN_CENTER               0x0010
-> > +#define QSERDES_COM_SSC_ADJ_PER1                0x0014
-> > +#define QSERDES_COM_SSC_PER1                    0x001c
-> > +#define QSERDES_COM_SSC_PER2                    0x0020
-> > +#define QSERDES_COM_SSC_STEP_SIZE1_MODE0        0x0024
-> > +#define QSERDES_COM_SSC_STEP_SIZE2_MODE0        0x0028
+On 16/10/21 20:10, Linus Torvalds wrote:
+> That said, I also do wonder if we could possibly change "kvcalloc()"
+> to avoid the warning. The reason I didn't like your patch is that
+> kvmalloc_node() only takes a "size_t", and the overflow condition
+> there is that "MAX_INT".
 > 
-> I think we might want to use register definitions from phy-qcom-qmp.h,
-> so that it would be obvious, which generations are handled by the
-> driver.
+> But the "kvcalloc()" case that takes a "number of elements and size"
+> should _conceptually_ warn not when the total size overflows, but when
+> either number or the element size overflows.
+
+That makes sense, but the number could still overflow in KVM's case; the
+size is small, just 8, it's the count that's humongous.  In general,
+users of kvcalloc of kvmalloc_array *should* not be doing
+multiplications (that's the whole point of the functions), and that
+lowers a lot the risk of overflows, but the safest way is to provide
+a variant that does not warn.  See the (compile-tested only) patch
+below.
+
+Pulling the WARN in the inline function is a bit ugly.  For kvcalloc()
+and kvmalloc_array(), one of the two is almost always constant, but
+it is unlikely that the compiler eliminates both.  The impact on a
+localyesconfig build seems to be minimal though (about 150 bytes
+larger out of 20 megabytes of code).
+
+Paolo
+
+---------------- 8< -----------------
+From: Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH] mm: add kvmalloc variants that do not to warn
+
+Commit 7661809d493b ("mm: don't allow oversized kvmalloc() calls")
+restricted memory allocation with 'kvmalloc()' to sizes that fit
+in an 'int', to protect against trivial integer conversion issues.
+     
+However, the WARN triggers with KVM when it allocates ancillary page
+data, whose size essentially depends on whatever userspace has passed to
+the KVM_SET_USER_MEMORY_REGION ioctl.  The warnings are quickly found by
+syzkaller, but they can also happen with huge but real-world VMs.
+The largest allocation that KVM can do is 8 bytes per page of guest
+memory, meaning a 1 TiB memslot will cause a warning even outside fuzzing.
+In fact, Google already has VMs that create 1.5 TiB memslots (12 TiB of
+total guest memory spread across 8 virtual NUMA nodes).
+
+For kvcalloc() and kvmalloc_array(), Linus suggested warning if either
+the number or the size are big.  However, this would only move the
+goalpost for KVM's warning without fully avoiding it.  Therefore,
+provide a "double underscore" version of kvcalloc(), kvmalloc_array()
+and kvmalloc_node() that omits the check.
+
+Cc: Willy Tarreau <w@1wt.eu>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 73a52aba448f..92aba7327bd8 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -799,7 +799,15 @@ static inline int is_vmalloc_or_module_addr(const void *x)
+  }
+  #endif
+  
+-extern void *kvmalloc_node(size_t size, gfp_t flags, int node);
++extern void *__kvmalloc_node(size_t size, gfp_t flags, int node);
++static inline void *kvmalloc_node(size_t size, gfp_t flags, int node)
++{
++	/* Don't even allow crazy sizes */
++	if (WARN_ON(size > INT_MAX))
++		return NULL;
++	return __kvmalloc_node(size, flags, node);
++}
++
+  static inline void *kvmalloc(size_t size, gfp_t flags)
+  {
+  	return kvmalloc_node(size, flags, NUMA_NO_NODE);
+@@ -813,14 +821,31 @@ static inline void *kvzalloc(size_t size, gfp_t flags)
+  	return kvmalloc(size, flags | __GFP_ZERO);
+  }
+  
+-static inline void *kvmalloc_array(size_t n, size_t size, gfp_t flags)
++static inline void *__kvmalloc_array(size_t n, size_t size, gfp_t flags)
+  {
+  	size_t bytes;
+  
+  	if (unlikely(check_mul_overflow(n, size, &bytes)))
+  		return NULL;
+  
+-	return kvmalloc(bytes, flags);
++	return __kvmalloc_node(bytes, flags, NUMA_NO_NODE);
++}
++
++static inline void *kvmalloc_array(size_t n, size_t size, gfp_t flags)
++{
++	/*
++	 * Don't allow crazy sizes here, either.  For 64-bit,
++	 * this also lets the compiler avoid the overflow check.
++	 */
++	if (WARN_ON(size > INT_MAX || n > INT_MAX))
++		return NULL;
++
++	return __kvmalloc_array(n, size, flags);
++}
++
++static inline void *__kvcalloc(size_t n, size_t size, gfp_t flags)
++{
++	return __kvmalloc_array(n, size, flags | __GFP_ZERO);
+  }
+  
+  static inline void *kvcalloc(size_t n, size_t size, gfp_t flags)
+diff --git a/mm/util.c b/mm/util.c
+index 499b6b5767ed..0406709d8097 100644
+--- a/mm/util.c
++++ b/mm/util.c
+@@ -558,7 +558,7 @@ EXPORT_SYMBOL(vm_mmap);
+   *
+   * Return: pointer to the allocated memory of %NULL in case of failure
+   */
+-void *kvmalloc_node(size_t size, gfp_t flags, int node)
++void *__kvmalloc_node(size_t size, gfp_t flags, int node)
+  {
+  	gfp_t kmalloc_flags = flags;
+  	void *ret;
+@@ -593,14 +593,10 @@ void *kvmalloc_node(size_t size, gfp_t flags, int node)
+  	if (ret || size <= PAGE_SIZE)
+  		return ret;
+  
+-	/* Don't even allow crazy sizes */
+-	if (WARN_ON_ONCE(size > INT_MAX))
+-		return NULL;
+-
+  	return __vmalloc_node(size, 1, flags, node,
+  			__builtin_return_address(0));
+  }
+-EXPORT_SYMBOL(kvmalloc_node);
++EXPORT_SYMBOL(__kvmalloc_node);
+  
+  /**
+   * kvfree() - Free memory.
+
+> So I would also accept a patch that just changes how "kvcalloc()"
+> works (or how "kvmalloc_array()" works).
+> 
+> It's a bit annoying how we've ended up losing that "n/size"
+> information by the time we hit kvmalloc().
+> 
+>                 Linus
 > 
 
-I reviewed the all the registers and concluded that the QSERDES is V4,
-so I included phy-qcom-qmp.h and used the SERDES_V4 defines instead.
-
-The registers found in the PHY and LANE_TX blocks are specific to this
-PHY, so I'm keeping these here.
-
-[..]
-> > +/*
-> > + * Display Port PLL driver block diagram for branch clocks
-> 
-> Embedded DisplayPort
-> 
-
-Sounds good, I also updated the drawing below where suitable.
-
-> > + *
-> > + *              +------------------------------+
-> > + *              |         DP_VCO_CLK           |
-> > + *              |                              |
-> > + *              |    +-------------------+     |
-> > + *              |    |   (DP PLL/VCO)    |     |
-> > + *              |    +---------+---------+     |
-> > + *              |              v               |
-> > + *              |   +----------+-----------+   |
-[..]
-> > +static struct clk_hw *
-> > +qcom_edp_dp_clks_hw_get(struct of_phandle_args *clkspec, void *data)
-> > +{
-> > +       unsigned int idx = clkspec->args[0];
-> > +       struct qcom_edp *edp = data;
-> > +
-> > +       if (idx >= 2) {
-> > +               pr_err("%s: invalid index %u\n", __func__, idx);
-> > +               return ERR_PTR(-EINVAL);
-> > +       }
-> > +
-> > +       if (idx == 0)
-> > +               return &edp->dp_link_hw;
-> > +
-> > +       return &edp->dp_pixel_hw;
-> > +}
-> 
-> You might want to use of_clk_hw_onecell_get() instead of the special function.
-> 
-
-Yeah, that looks slightly cleaner.
-
-> > +
-> > +static int qcom_edp_clks_register(struct qcom_edp *edp, struct device_node *np)
-> > +{
-> > +       struct clk_init_data init = { };
-> > +       int ret;
-> > +
-> > +       init.ops = &qcom_edp_dp_link_clk_ops;
-> > +       init.name = "edp_phy_pll_link_clk";
-> > +       edp->dp_link_hw.init = &init;
-> > +       ret = devm_clk_hw_register(edp->dev, &edp->dp_link_hw);
-> > +       if (ret)
-> > +               return ret;
-> > +
-> > +       init.ops = &qcom_edp_dp_pixel_clk_ops;
-> > +       init.name = "edp_phy_pll_vco_div_clk";
-> > +       edp->dp_pixel_hw.init = &init;
-> > +       ret = devm_clk_hw_register(edp->dev, &edp->dp_pixel_hw);
-> > +       if (ret)
-> > +               return ret;
-> > +
-> > +       return devm_of_clk_add_hw_provider(edp->dev, qcom_edp_dp_clks_hw_get, edp);
-> > +}
-[..]
-> > +static struct platform_driver qcom_edp_phy_driver = {
-> > +       .probe          = qcom_edp_phy_probe,
-> > +       .driver = {
-> > +               .name   = "qcom-edp-phy",
-> > +               .of_match_table = qcom_edp_phy_match_table,
-> > +       },
-> > +};
-> > +
-> > +module_platform_driver(qcom_edp_phy_driver);
-> > +
-> > +MODULE_DESCRIPTION("Qualcomm eDP PHY driver");
-> 
-> Should we mention that it's a eDP QMP PHY driver in contrast to the
-> old eDP from 8x74/8x84?
-> 
-
-Sure.
-
-> Also MODULE_AUTHOR seems to be missing.
-> 
-
-Okay, I can add one of those.
-
-Thanks,
-Bjorn
-
-> > +MODULE_LICENSE("GPL v2");
-> > --
-> > 2.29.2
-> >
-> 
-> 
-> -- 
-> With best wishes
-> Dmitry
