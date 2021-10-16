@@ -2,188 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B73A43009F
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 08:42:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA2704300A3
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 08:42:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239955AbhJPGoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 02:44:21 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:50517 "EHLO pegase2.c-s.fr"
+        id S239976AbhJPGoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 02:44:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58692 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233802AbhJPGoU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234161AbhJPGoU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 16 Oct 2021 02:44:20 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4HWYTZ2jPNz9sSL;
-        Sat, 16 Oct 2021 08:42:10 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id K3NXrTGrnHQ3; Sat, 16 Oct 2021 08:42:10 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4HWYTZ1gXQz9sSH;
-        Sat, 16 Oct 2021 08:42:10 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 1E83F8B765;
-        Sat, 16 Oct 2021 08:42:10 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 09O0ACPW_BH4; Sat, 16 Oct 2021 08:42:10 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.203.36])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id D7EA88B763;
-        Sat, 16 Oct 2021 08:42:08 +0200 (CEST)
-Subject: Re: [PATCH v2 12/13] lkdtm: Fix execute_[user]_location()
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org
-References: <cover.1634190022.git.christophe.leroy@csgroup.eu>
- <cbee30c66890994e116a8eae8094fa8c5336f90a.1634190022.git.christophe.leroy@csgroup.eu>
- <202110151428.187B1CF@keescook>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <9b4c39d4-1322-89af-585c-679a574576a2@csgroup.eu>
-Date:   Sat, 16 Oct 2021 08:42:08 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D7B4B60C51;
+        Sat, 16 Oct 2021 06:42:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634366533;
+        bh=RXTvpdSIJPEdj8DR1Hd+ZGmvnr6cvXK/MIOSPrX32YA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=e7VuFXm4gpXm26e36Z9AhtuYwSj031q9rXweHLTQ+zbL4rFHCnETdig4XpJnpf97A
+         FgkT9/7JeU798yEa/0Qfbs4CktY/1pmH3hwMMEozUL/Kb8z/RnxODgAsrl/FT+rj7R
+         kb+Or1CC3RB5PVtAJPrztJLopwPYBuJ0wZDD3lIdaOfX9ohnS3tX28Cg+JEc+X0HKY
+         wW/vg9O7SfSy+LvZPt5PaPDu6mJtwCsNdv9xXADtRPC9w7BEre9e1qorcR3chmCeXq
+         oL1GORlbCMka8h5/Dsj8Lq/yrdyEZce7UaiBBblatTpl5etf94XXyJaNMgxQx0LKNy
+         2p9nwPWrbH75Q==
+Received: by pali.im (Postfix)
+        id 4BB337DE; Sat, 16 Oct 2021 08:42:10 +0200 (CEST)
+Date:   Sat, 16 Oct 2021 08:42:10 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Vladimir Vid <vladimir.vid@sartura.hr>,
+        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
+        linux-clk@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v7 3/6] dt-bindings: mvebu-uart: document DT bindings for
+ marvell,armada-3700-uart-clock
+Message-ID: <20211016064210.7ahqfqcvf66wtt66@pali>
+References: <20210930095838.28145-1-pali@kernel.org>
+ <20210930095838.28145-4-pali@kernel.org>
+ <163425678347.1688384.10695189000353676651@swboyd.mtv.corp.google.com>
+ <20211015090937.gnt66hgugrhwnkei@pali>
+ <20211015093701.pfvkighxsndj4ujg@pali>
+ <163433494758.1688384.5994009027317282677@swboyd.mtv.corp.google.com>
 MIME-Version: 1.0
-In-Reply-To: <202110151428.187B1CF@keescook>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr-FR
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <163433494758.1688384.5994009027317282677@swboyd.mtv.corp.google.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Friday 15 October 2021 14:55:47 Stephen Boyd wrote:
+> Quoting Pali Rohár (2021-10-15 02:37:01)
+> > On Friday 15 October 2021 11:09:37 Pali Rohár wrote:
+> > > On Thursday 14 October 2021 17:13:03 Stephen Boyd wrote:
+> > > > Quoting Pali Rohár (2021-09-30 02:58:35)
+> > > > > diff --git a/Documentation/devicetree/bindings/clock/marvell,armada-3700-uart-clock.yaml b/Documentation/devicetree/bindings/clock/marvell,armada-3700-uart-clock.yaml
+> > > > > new file mode 100644
+> > > > > index 000000000000..175f5c8f2bc5
+> > > > > --- /dev/null
+> > > > > +++ b/Documentation/devicetree/bindings/clock/marvell,armada-3700-uart-clock.yaml
+> > > > > @@ -0,0 +1,59 @@
+> > > > [..]
+> > > > > +  '#clock-cells':
+> > > > > +    const: 1
+> > > > > +
+> > > > > +required:
+> > > > > +  - compatible
+> > > > > +  - reg
+> > > > > +  - clocks
+> > > > > +  - clock-names
+> > > > > +  - '#clock-cells'
+> > > > > +
+> > > > > +additionalProperties: false
+> > > > > +
+> > > > > +examples:
+> > > > > +  - |
+> > > > > +    uartclk: clock-controller@12010 {
+> > > > 
+> > > > The uart device is at 0x12000 and the clock-controller is at 0x12010?
+> > > > This looks like a node is being put into DT to represent a clk driver.
+> > > > Why can't we register a clk from the uart device driver itself? I think
+> > > > we talked about this a month or two ago but it still isn't clear to me.
+> > > 
+> > > We have already talked about it and I have already wrote reasons. UART
+> > > clk is shared for both UART1 and UART2. And UART clk regs are in both
+> > > address spaces of UART1 and UART2. UART1 or UART2 can be independently
+> > > disabled on particular board (as pins are MPP which may be configured to
+> > > different function). So you have a board only with UART2, you have to
+> > > disable UART1 node, but at the same time you have to access UART clk to
+> > > drive UART2. And UART clk bits are in UART1 address space.
+> > 
+> > It is explained also in commit message of patch 2/6.
+> 
+> Cool, thanks for the pointer.
+> 
+> Why are the two uarts split into different device nodes?
 
+I do not know. Looks like decision of people implementing this driver
+and providing DT bindings.
 
-Le 15/10/2021 à 23:31, Kees Cook a écrit :
-> On Thu, Oct 14, 2021 at 07:50:01AM +0200, Christophe Leroy wrote:
->> execute_location() and execute_user_location() intent
->> to copy do_nothing() text and execute it at a new location.
->> However, at the time being it doesn't copy do_nothing() function
->> but do_nothing() function descriptor which still points to the
->> original text. So at the end it still executes do_nothing() at
->> its original location allthough using a copied function descriptor.
->>
->> So, fix that by really copying do_nothing() text and build a new
->> function descriptor by copying do_nothing() function descriptor and
->> updating the target address with the new location.
->>
->> Also fix the displayed addresses by dereferencing do_nothing()
->> function descriptor.
->>
->> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
->> ---
->>   drivers/misc/lkdtm/perms.c     | 25 +++++++++++++++++++++----
->>   include/asm-generic/sections.h |  5 +++++
->>   2 files changed, 26 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/misc/lkdtm/perms.c b/drivers/misc/lkdtm/perms.c
->> index 5266dc28df6e..96b3ebfcb8ed 100644
->> --- a/drivers/misc/lkdtm/perms.c
->> +++ b/drivers/misc/lkdtm/perms.c
->> @@ -44,19 +44,32 @@ static noinline void do_overwritten(void)
->>   	return;
->>   }
->>   
->> +static void *setup_function_descriptor(func_desc_t *fdesc, void *dst)
->> +{
->> +	memcpy(fdesc, do_nothing, sizeof(*fdesc));
->> +	fdesc->addr = (unsigned long)dst;
->> +	barrier();
->> +
->> +	return fdesc;
->> +}
-> 
-> How about collapsing the "have_function_descriptors()" check into
-> setup_function_descriptor()?
-> 
-> static void *setup_function_descriptor(func_desc_t *fdesc, void *dst)
-> {
-> 	if (__is_defined(HAVE_FUNCTION_DESCRIPTORS)) {
-> 		memcpy(fdesc, do_nothing, sizeof(*fdesc));
-> 		fdesc->addr = (unsigned long)dst;
-> 		barrier();
-> 		return fdesc;
-> 	} else {
-> 		return dst;
-> 	}
-> }
+I cannot change this existing DT binding due to backward compatibility.
 
-Ok
+> It looks like
+> it's one device that was split into two nodes because they're fairly
+> similar hardware blocks, and one or the other may not be used on the
+> board so we want to use status = "disabled" to indicate that. Sadly the
+> hardware team has delivered them as a single package into the SoC at
+> address 0x12000 and then stuck a common clk for both uarts into the same
+> uart wrapper. Here's a clk, job done!
+> 
+> Is it a problem to map UART1 address space when it isn't used on the
+> board? I'm trying to understand why it can't work to register two uart
+> ports from one device node and driver. It seems to be the main reason
+> why we're introducing another node for the clk registers when it feels
+> like it could all be handled in the existing uart driver.
 
-> 
->> +
->>   static noinline void execute_location(void *dst, bool write)
->>   {
->>   	void (*func)(void) = dst;
->> +	func_desc_t fdesc;
->> +	void *do_nothing_text = dereference_function_descriptor(do_nothing);
->>   
->> -	pr_info("attempting ok execution at %px\n", do_nothing);
->> +	pr_info("attempting ok execution at %px\n", do_nothing_text);
->>   	do_nothing();
->>   
->>   	if (write == CODE_WRITE) {
->> -		memcpy(dst, do_nothing, EXEC_SIZE);
->> +		memcpy(dst, do_nothing_text, EXEC_SIZE);
->>   		flush_icache_range((unsigned long)dst,
->>   				   (unsigned long)dst + EXEC_SIZE);
->>   	}
->>   	pr_info("attempting bad execution at %px\n", func);
->> +	if (have_function_descriptors())
->> +		func = setup_function_descriptor(&fdesc, dst);
->>   	func();
->>   	pr_err("FAIL: func returned\n");
->>   }
->> @@ -67,15 +80,19 @@ static void execute_user_location(void *dst)
->>   
->>   	/* Intentionally crossing kernel/user memory boundary. */
->>   	void (*func)(void) = dst;
->> +	func_desc_t fdesc;
->> +	void *do_nothing_text = dereference_function_descriptor(do_nothing);
->>   
->> -	pr_info("attempting ok execution at %px\n", do_nothing);
->> +	pr_info("attempting ok execution at %px\n", do_nothing_text);
->>   	do_nothing();
->>   
->> -	copied = access_process_vm(current, (unsigned long)dst, do_nothing,
->> +	copied = access_process_vm(current, (unsigned long)dst, do_nothing_text,
->>   				   EXEC_SIZE, FOLL_WRITE);
->>   	if (copied < EXEC_SIZE)
->>   		return;
->>   	pr_info("attempting bad execution at %px\n", func);
->> +	if (have_function_descriptors())
->> +		func = setup_function_descriptor(&fdesc, dst);
->>   	func();
->>   	pr_err("FAIL: func returned\n");
->>   }
-> 
-> 
->> diff --git a/include/asm-generic/sections.h b/include/asm-generic/sections.h
->> index 76163883c6ff..d225318538bd 100644
->> --- a/include/asm-generic/sections.h
->> +++ b/include/asm-generic/sections.h
->> @@ -70,6 +70,11 @@ typedef struct {
->>   } func_desc_t;
->>   #endif
->>   
->> +static inline bool have_function_descriptors(void)
->> +{
->> +	return __is_defined(HAVE_FUNCTION_DESCRIPTORS);
->> +}
->> +
->>   /* random extra sections (if any).  Override
->>    * in asm/sections.h */
->>   #ifndef arch_is_kernel_text
-> 
-> This hunk seems like it should live in a separate patch.
-> 
+Mapping address space should work. Also because in UART1 address space
+is configuration of UART clock (which is common for both UART1 and
+UART2). Moreover each UART has its own bit for disabling clock and these
+two bits are in UART1 address space. Also it is a good idea to disable
+unused UART clock (which seems to be magically/automatically done by
+kernel when nobody use specified UART clock, as UART clock driver
+exports two clocks).
 
-Ok I move it in a previous patch.
+> For example, we could have a static clk pointer in the uart driver
+> indicating the clk has been registered, and then register the clk if
+> uart1 or uart2 is the first device to probe and then store that clk in a
+> global (with clk_hw_get_clk(), I think that's a thing now). If uart2
+> probes first it can take the reg property and subtract some number to
+> find the clk, and if uart1 probes first it can take the reg property and
+> add some number to find the clk. Either way, the binding doesn't change
+> in this case and we don't have to add another binding for this same uart
+> hardware.
+> 
+> Then if someone wants to cleanup the binding they can combine both uarts
+> into one node, make a new compatible string and add some property to
+> indicate that one or the other uart isn't used. Probably also add some
+> property to map the uart alias to the uart hardware block inside the
+> wrapper node.
+
+If I was designing this driver and DTS bindings I would have choose
+something like this:
+
+uart@0x12000 {
+    reg = <0x12000 0x18>, <0x12200 0x30>;
+    clock-controller {
+        ...
+    };
+    serial1 {
+        ...
+        status = "disabled";
+    };
+    serial2 {
+        ...
+        status = "disabled";
+    };
+};
+
+Meaning that 0x12000 node would be 3 subnodes and all registers would be
+defined in top level nodes and would be handled by one driver.
+
+This is really how hardware block looks like. But it is not backward
+compatible...
