@@ -2,242 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A8AD4303B8
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 18:27:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B65274303C1
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 18:28:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236585AbhJPQ3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 12:29:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34024 "EHLO
+        id S240789AbhJPQaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 12:30:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232312AbhJPQ3N (ORCPT
+        with ESMTP id S240679AbhJPQaL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 12:29:13 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07FB3C061570
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 09:27:05 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id i24so54827810lfj.13
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 09:27:04 -0700 (PDT)
+        Sat, 16 Oct 2021 12:30:11 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FA3DC061570;
+        Sat, 16 Oct 2021 09:28:02 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id v195so1268191ybb.0;
+        Sat, 16 Oct 2021 09:28:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=sQ9MmYJBuCFx6xP+hNWvVvbHM5PG9vrczGM888TZF4k=;
-        b=lM7N+OqcjWVuhtLlHxInnpbXNDo3y53iymmzurUdoMREFIZ++mDJjhqRhUJiIvhc8u
-         CoxXopYWB6ay7Nq5kDGcqJ/9MHbeFP8e7bN4e3PSMkmpYjF99JmBLUNvh6NC4/Xn+qla
-         jQX0lOHP/idjHzza6VaebaIRftPiB1xnQWFrDLfx32HidWouwQji4WzpkOb0/HzcQMh1
-         tGCM2uFUKsAfaLLhS/QeuuUAwq06J5xd6PnCAvYA/yYW7R9RZtiKqHvJM91Y1wi6NZD7
-         vcAEkj5DlHyFEwR2Go6CGuQAE9EQkDVSUonHic1Lhcw1GxxZLeGHrAbzYrBYwmQFu7+z
-         WnBg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Id1MBaA3OETXuAI2hYM+99prITp5edRSGDU+gsvnGcE=;
+        b=NuSoPB2r7ZFwbh+xm3eq2YpuuZVI5PU0ML/nreO75bHdMjPx2e4dYImScZe8g/Z5vt
+         xTOOaSRYPpP2AGLSgpKT9X5sktrT5wXlZBzEPBaAMQTOzBtNGz5IjUbSaQRzNgxNJXLy
+         HdtCJz+XxkongIkQ0k/PopdAnG1E8o3rgCaDQa1gBcUOEMFEN5GVI4LZTzLFBSS/CGzw
+         /Q15qfaoeRjnoGpPh8ZmYBsIja3EJsQLnAbaZIzSwt6VZ5rlu3xwmjBWQDhfZ6u9/qXV
+         gc+V7G2uz/xPq3kZj1G+zm8djZrl63t2NHpRt1NHWDPbUckEGqg4o09VxKZls4yfy+lf
+         u9eQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=sQ9MmYJBuCFx6xP+hNWvVvbHM5PG9vrczGM888TZF4k=;
-        b=er/jhP8N+SNe4cMK8z/VdWAj5WvTB2Trvf1dEdFIH7OU5L104ZikYwd2F12aCc9TkD
-         7dNZXZ0flo7T/LUj9Zo84zvWb1ogKZHN9KFX63WN8tENEJ5e8KjtPGJ+Cq6XwRp1z7jb
-         le0FKgRCYm1/BR24v/G9+ln5V+pdbLwU/JddURnnuQyCDr8tyfdBlRicEsQpahp262UY
-         q8KLemMRurawROD3NFz1TAYA3hN8vqYHtIFPKa3badrXhYuiFDCxYfMJjQD6olxumOmZ
-         ZD3ivPnzTScO3xPkd96uR3QiE0WMqOUP85Vl5fQqlP8To01VtlarcAPd1TJgPQPJ8xa3
-         yBPw==
-X-Gm-Message-State: AOAM531KcWxuGkMVJxyv0e92vWF3JZUjrbE3gDX53a35EvtAoE5XGZZk
-        GPLaeaVDpvFUFpAYivf4JZk=
-X-Google-Smtp-Source: ABdhPJwbhiNxospEeLweYzRGJn/g2oXILwqZCvvwt0eL6ckHy82fEKyeAvrxfR3J/8qm97ohBWXgBA==
-X-Received: by 2002:a2e:910b:: with SMTP id m11mr19344897ljg.11.1634401623356;
-        Sat, 16 Oct 2021 09:27:03 -0700 (PDT)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id m7sm890774lfk.63.2021.10.16.09.27.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 16 Oct 2021 09:27:02 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Sat, 16 Oct 2021 18:27:00 +0200
-To:     Chen Wandun <chenwandun@huawei.com>
-Cc:     akpm@linux-foundation.org, shakeelb@google.com, npiggin@gmail.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        edumazet@google.com, wangkefeng.wang@huawei.com,
-        guohanjun@huawei.com
-Subject: Re: [PATCH] mm/vmalloc: introduce alloc_pages_bulk_array_mempolicy
- to accelerate memory allocation
-Message-ID: <20211016162700.GA1914@pc638.lan>
-References: <20210928121040.2547407-1-chenwandun@huawei.com>
- <20211014092952.1500982-1-chenwandun@huawei.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Id1MBaA3OETXuAI2hYM+99prITp5edRSGDU+gsvnGcE=;
+        b=E0WDgDQNwfQ3uG5phRlPNIRMIY4yrR3FReOLtoSkqy9NcXzpTdUfPsf7NYMDDw61Qw
+         QFYfnes0e57XGBy3l6AkitMVwZ5+mWUFRn0ZVJ/wcOiQeCIGcfCgLjB/JmjgL9Bffdul
+         hsPP7vFF/x7KjAeMBv4En6AZ1BXxazyPKKbNZZGVGs2q9eDZsiCFQczq3+RZVHC6PeiR
+         insCvDNXYDUrkRDCEbaTaiS0jz5/uK25K8WGLMNcXnkpi/WSzIKZyAGZjbNPb9PTUCQr
+         /bPs9uR6fy6RChTFD085H41w67rcxlZPpS6cndygschjsq3hA6jXWuhe9LKC4ut3HEVq
+         Xczw==
+X-Gm-Message-State: AOAM533Q9QPfUmk64VOQk9fM56hhq59j3n76CzwQV1Oh9iXVSMRYzzBu
+        xVjUHHbplquuPnhqSlJv0cTizYdEvui1kiRD3xvJBg2bnGA=
+X-Google-Smtp-Source: ABdhPJyfGyzFUeWi79yeeWVZEumWi4upZfkpiyd4s2wo5sTM0Siy6+UeUwn8j6UfXBqfuU0rk1Gc+10/1CUdlG1yWhY=
+X-Received: by 2002:a25:ddc7:: with SMTP id u190mr19198236ybg.37.1634401681179;
+ Sat, 16 Oct 2021 09:28:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211014092952.1500982-1-chenwandun@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <CACAwPwb7edLzX-KO1XVNWuQ3w=U0BfA=_kwiGCjZOpKfZpc2pw@mail.gmail.com>
+In-Reply-To: <CACAwPwb7edLzX-KO1XVNWuQ3w=U0BfA=_kwiGCjZOpKfZpc2pw@mail.gmail.com>
+From:   Maxim Levitsky <maximlevitsky@gmail.com>
+Date:   Sat, 16 Oct 2021 19:27:50 +0300
+Message-ID: <CACAwPwYQHRcrabw9=0tvenPzAcwwW1pTaR6a+AEWBF9Hqf_wXQ@mail.gmail.com>
+Subject: Re: BMI160 accelerometer on AyaNeo tablet
+To:     linux-iio@vger.kernel.org
+Cc:     Lars-Peter Clausen <lars@metafoo.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: multipart/mixed; boundary="000000000000a1125305ce7acbd8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 05:29:52PM +0800, Chen Wandun wrote:
-> It will cause significant performance regressions in some situations
-> as Andrew mentioned in [1]. The main situation is vmalloc, vmalloc
-> will allocate pages with NUMA_NO_NODE by default, that will result
-> in alloc page one by one;
-> 
-> In order to solve this, __alloc_pages_bulk and mempolicy should be
-> considered at the same time.
-> 
-> 1) If node is specified in memory allocation request, it will alloc
-> all pages by __alloc_pages_bulk.
-> 
-> 2) If interleaving allocate memory, it will cauculate how many pages
-> should be allocated in each node, and use __alloc_pages_bulk to alloc
-> pages in each node.
-> 
-> [1]: https://lore.kernel.org/lkml/CALvZod4G3SzP3kWxQYn0fj+VgG-G3yWXz=gz17+3N57ru1iajw@mail.gmail.com/t/#m750c8e3231206134293b089feaa090590afa0f60
-> 
-> Signed-off-by: Chen Wandun <chenwandun@huawei.com>
-> ----------------
-> based on "[PATCH] mm/vmalloc: fix numa spreading for large hash tables"
-> ---
->  include/linux/gfp.h |  4 +++
->  mm/mempolicy.c      | 76 +++++++++++++++++++++++++++++++++++++++++++++
->  mm/vmalloc.c        | 19 +++---------
->  3 files changed, 85 insertions(+), 14 deletions(-)
-> 
-> diff --git a/include/linux/gfp.h b/include/linux/gfp.h
-> index 558299cb2970..b976c4177299 100644
-> --- a/include/linux/gfp.h
-> +++ b/include/linux/gfp.h
-> @@ -531,6 +531,10 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
->  				struct list_head *page_list,
->  				struct page **page_array);
->  
-> +unsigned long alloc_pages_bulk_array_mempolicy(gfp_t gfp,
-> +				unsigned long nr_pages,
-> +				struct page **page_array);
-> +
->  /* Bulk allocate order-0 pages */
->  static inline unsigned long
->  alloc_pages_bulk_list(gfp_t gfp, unsigned long nr_pages, struct list_head *list)
-> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-> index 9f8cd1457829..f456c5eb8d10 100644
-> --- a/mm/mempolicy.c
-> +++ b/mm/mempolicy.c
-> @@ -2196,6 +2196,82 @@ struct page *alloc_pages(gfp_t gfp, unsigned order)
->  }
->  EXPORT_SYMBOL(alloc_pages);
->  
-> +unsigned long alloc_pages_bulk_array_interleave(gfp_t gfp,
-> +		struct mempolicy *pol, unsigned long nr_pages,
-> +		struct page **page_array)
-> +{
-> +	int nodes;
-> +	unsigned long nr_pages_per_node;
-> +	int delta;
-> +	int i;
-> +	unsigned long nr_allocated;
-> +	unsigned long total_allocated = 0;
-> +
-> +	nodes = nodes_weight(pol->nodes);
-> +	nr_pages_per_node = nr_pages / nodes;
-> +	delta = nr_pages - nodes * nr_pages_per_node;
-> +
-> +	for (i = 0; i < nodes; i++) {
-> +		if (delta) {
-> +			nr_allocated = __alloc_pages_bulk(gfp,
-> +					interleave_nodes(pol), NULL,
-> +					nr_pages_per_node + 1, NULL,
-> +					page_array);
-> +			delta--;
-> +		} else {
-> +			nr_allocated = __alloc_pages_bulk(gfp,
-> +					interleave_nodes(pol), NULL,
-> +					nr_pages_per_node, NULL, page_array);
-> +		}
-> +
-> +		page_array += nr_allocated;
-> +		total_allocated += nr_allocated;
-> +	}
-> +
-> +	return total_allocated;
-> +}
-> +
-> +unsigned long alloc_pages_bulk_array_preferred_many(gfp_t gfp, int nid,
-> +		struct mempolicy *pol, unsigned long nr_pages,
-> +		struct page **page_array)
-> +{
-> +	gfp_t preferred_gfp;
-> +	unsigned long nr_allocated = 0;
-> +
-> +	preferred_gfp = gfp | __GFP_NOWARN;
-> +	preferred_gfp &= ~(__GFP_DIRECT_RECLAIM | __GFP_NOFAIL);
-> +
-> +	nr_allocated  = __alloc_pages_bulk(preferred_gfp, nid, &pol->nodes,
-> +					   nr_pages, NULL, page_array);
-> +
-> +	if (nr_allocated < nr_pages)
-> +		nr_allocated += __alloc_pages_bulk(gfp, numa_node_id(), NULL,
-> +				nr_pages - nr_allocated, NULL,
-> +				page_array + nr_allocated);
-> +	return nr_allocated;
-> +}
-> +
-> +unsigned long alloc_pages_bulk_array_mempolicy(gfp_t gfp,
-> +		unsigned long nr_pages, struct page **page_array)
-> +{
-> +	struct mempolicy *pol = &default_policy;
-> +
-> +	if (!in_interrupt() && !(gfp & __GFP_THISNODE))
-> +		pol = get_task_policy(current);
-> +
-> +	if (pol->mode == MPOL_INTERLEAVE)
-> +		return alloc_pages_bulk_array_interleave(gfp, pol,
-> +							 nr_pages, page_array);
-> +
-> +	if (pol->mode == MPOL_PREFERRED_MANY)
-> +		return alloc_pages_bulk_array_preferred_many(gfp,
-> +				numa_node_id(), pol, nr_pages, page_array);
-> +
-> +	return __alloc_pages_bulk(gfp, policy_node(gfp, pol, numa_node_id()),
-> +				  policy_nodemask(gfp, pol), nr_pages, NULL,
-> +				  page_array);
-> +}
-> +
->  struct folio *folio_alloc(gfp_t gfp, unsigned order)
->  {
->  	struct page *page = alloc_pages(gfp | __GFP_COMP, order);
-> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> index b7ac4a8fe2b3..49adba793f3c 100644
-> --- a/mm/vmalloc.c
-> +++ b/mm/vmalloc.c
-> @@ -2856,23 +2856,14 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
->  			 */
->  			nr_pages_request = min(100U, nr_pages - nr_allocated);
->  
-> -			if (nid == NUMA_NO_NODE) {
-> -				for (i = 0; i < nr_pages_request; i++) {
-> -					page = alloc_page(gfp);
-> -					if (page)
-> -						pages[nr_allocated + i] = page;
-> -					else {
-> -						nr = i;
-> -						break;
-> -					}
-> -				}
-> -				if (i >= nr_pages_request)
-> -					nr = nr_pages_request;
-> -			} else {
-> +			if (nid == NUMA_NO_NODE)
-> +				nr = alloc_pages_bulk_array_mempolicy(gfp,
-> +							nr_pages_request,
-> +							pages + nr_allocated);
-> +			else
->  				nr = alloc_pages_bulk_array_node(gfp, nid,
->  							nr_pages_request,
->  							pages + nr_allocated);
-> -			}
->  			nr_allocated += nr;
->  			cond_resched();
->  
-> -- 
-> 2.25.1
-> 
-Now it looks much more correct.
+--000000000000a1125305ce7acbd8
+Content-Type: text/plain; charset="UTF-8"
 
-Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+On Sat, Oct 16, 2021 at 7:19 PM Maxim Levitsky <maximlevitsky@gmail.com> wrote:
+>
+> I recently bought this device, and it has this accelerometer/gyroscope.
+>
+> Unfortunately, the device is advertised in ACPI as 10EC5280, instead of BMI0160
+>
+> I attached a patch that does add this 10EC5280 to the list of ACPI ids of this driver, and the device seems to work fine, showing both acceleration and angular velocity in /sys IIO attributes with reasonable values.
+>
 
---
-Vlad Rezki
+( resend using plain text - reminds me to never use Gmail's web
+interface, even on weekends .)
+
+> Best regards,
+>    Maxim Levitsky
+
+--000000000000a1125305ce7acbd8
+Content-Type: text/x-patch; charset="US-ASCII"; name="accel_fix.patch"
+Content-Disposition: attachment; filename="accel_fix.patch"
+Content-Transfer-Encoding: base64
+Content-ID: <f_kuu0jvju0>
+X-Attachment-Id: f_kuu0jvju0
+
+Y29tbWl0IDg4MGJiZjJlNWVlMmZhMGU5OTc5ODQ4MjY2NDk5N2E3ZGIyMjVmNTYKQXV0aG9yOiBN
+YXhpbSBMZXZpdHNreSA8bWxldml0c2tAcmVkaGF0LmNvbT4KRGF0ZTogICBTYXQgT2N0IDIgMjA6
+NTQ6MDAgMjAyMSArMDMwMAoKICAgIEJNSTE2MDogQVlBIE5FQSBhY2NlbG9tZXRlciBJRAogICAg
+CiAgICBPbiBBWUEgTkVPLCB0aGUgYWNjZWxlcm9tZXRlciBpcyBCTUkxNjAgYnV0IGl0IGlzIGV4
+cG9zZWQKICAgIHZpYSBBQ1BJIGFzIDEwRUM1MjgwCiAgICAKICAgIFNpZ25lZC1vZmYtYnk6IE1h
+eGltIExldml0c2t5IDxtbGV2aXRza0ByZWRoYXQuY29tPgoKZGlmZiAtLWdpdCBhL2RyaXZlcnMv
+aWlvL2ltdS9ibWkxNjAvYm1pMTYwX2kyYy5jIGIvZHJpdmVycy9paW8vaW11L2JtaTE2MC9ibWkx
+NjBfaTJjLmMKaW5kZXggMjYzOTg2MTRlZGRmYS4uMmIzZTNlMTVlMmUwNCAxMDA2NDQKLS0tIGEv
+ZHJpdmVycy9paW8vaW11L2JtaTE2MC9ibWkxNjBfaTJjLmMKKysrIGIvZHJpdmVycy9paW8vaW11
+L2JtaTE2MC9ibWkxNjBfaTJjLmMKQEAgLTQzLDYgKzQzLDcgQEAgTU9EVUxFX0RFVklDRV9UQUJM
+RShpMmMsIGJtaTE2MF9pMmNfaWQpOwogCiBzdGF0aWMgY29uc3Qgc3RydWN0IGFjcGlfZGV2aWNl
+X2lkIGJtaTE2MF9hY3BpX21hdGNoW10gPSB7CiAJeyJCTUkwMTYwIiwgMH0sCisJeyIxMEVDNTI4
+MCIsIDB9LCAvKiBBWUEgTkVPIHRhYmxldCAqLwogCXsgfSwKIH07CiBNT0RVTEVfREVWSUNFX1RB
+QkxFKGFjcGksIGJtaTE2MF9hY3BpX21hdGNoKTsK
+--000000000000a1125305ce7acbd8--
