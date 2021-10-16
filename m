@@ -2,91 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE48F430278
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 13:43:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B8D143027B
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 13:54:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237253AbhJPLpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 07:45:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57036 "EHLO
+        id S240299AbhJPL4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 07:56:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234833AbhJPLpt (ORCPT
+        with ESMTP id S234239AbhJPL4p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 07:45:49 -0400
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B321FC061570
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 04:43:41 -0700 (PDT)
-Received: by mail-il1-x134.google.com with SMTP id d11so9856044ilc.8
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 04:43:41 -0700 (PDT)
+        Sat, 16 Oct 2021 07:56:45 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F21AC061570;
+        Sat, 16 Oct 2021 04:54:37 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id t11so8068931plq.11;
+        Sat, 16 Oct 2021 04:54:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=3CqjXd61EZ95pSAB/Snxw908qgD8h+YcIUAGi6qrUHc=;
-        b=kmopMgmmQ6RgIo8H3J2E8MsIVe0Fd2eLAZZp2nvijtFfcBQ0PE4pi8/wMcIZ4qf6zx
-         evLXnMohI1jF597rPoThzaqc/h+y804TE6zJIQbZjXP4z/8K9E5TXF9AhJLvVklKDduI
-         adU05u7z0Kuqxj87/GS1o3gdjCpuo3XCkIRZM0YnjVsfgoyob1BbS7TB6d7u7FCLCIC0
-         FijGfxCDAiQ3X5pF0i4t9RU4YWQSPKEw5p4Iz9oir4E6DAAdADZr12kjtyLvxgwujg3h
-         E++HuaRZW6gnBu/C96G2/AZk3iF0Bq4DaU79bgQkY2DhzYQGEkSDCTTHaffJkEa3GypJ
-         /3Gg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=c7ZiqylWutAW8VdmYTQ1mDlLaA2GHbwBPKauI4V9wf0=;
+        b=oSVYsUOhtqGy+gdtrDhsdVbv8Uc4lm7hAcUndvKLtlOhzXCKu18YP7WWKsujn0T+tD
+         /DCkB68eF3KgWC7yAV5zLS1/QlkfAVPA+Mb0MkLy9EfRb9U6DcaMZ6hnEei3lomeNcC1
+         OZacKidy5e702433CBiz5XnjvQtEVWmZVvBB3/Qo0OC14RwSkox2FZsspbUyCU3gxqow
+         0iQMxI7ORYblXXboumRMafRk/UitUNAY2I5dn+ja7a2Y+dRH3tdCZ8EgJge7G9YkT/xO
+         sE5kxYjynFXBlPg3u+RS48LhYowlH7BEGOVhvR5Bc86jfhGH8/LKRu3cup+sxzR6FVfS
+         9tZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=3CqjXd61EZ95pSAB/Snxw908qgD8h+YcIUAGi6qrUHc=;
-        b=Hk3YW112dAVlTKQpHRM4vjTy2SuTcS01eMSfcR7ZHpDsatbMJMaDz9FScvRDH4wzVX
-         Kd0kRaXTiTdR3p0DIYZ8ImrZ4ZUHX3mA6Lzl+Cj53bA2O8e1zA/NZUfhR+stObjSCgaL
-         aShy5qPVMR+Fr9Xc95c4PrGd6/jGNd92WBkIC4MZt1RvJ569LkEBj9yB8cWRE36SjUSP
-         THJCVUXqa1XzRDgoi6deXmE5doBJEQKtY0umC35a6wJKwJsoM6e7JNVmccUYeuSJTxZc
-         G5r7h0kKHP+AGvWhy0EL8zOyLlbO0yx09MfOvIQLAS1MM83xEHvfbuo5wvrZtWfzewza
-         IEbg==
-X-Gm-Message-State: AOAM532dpDm9kcXFjYsIH3z/3A8CWA7FJRQ/H8xG5lwuQ2hfszeNj4Gx
-        ssBpt6flj6ydzNBCz2dUNeFKvraR8g6ojg+83fU=
-X-Google-Smtp-Source: ABdhPJwR8gCJsZo1VRE21bR8YtFv8H0/hUtGfmQX2bC0uUejtV9rEgOvyj9W2zmmd4CrqSO3+9AQtT5iuAAFtXpYIQc=
-X-Received: by 2002:a92:c569:: with SMTP id b9mr7675737ilj.13.1634384621062;
- Sat, 16 Oct 2021 04:43:41 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=c7ZiqylWutAW8VdmYTQ1mDlLaA2GHbwBPKauI4V9wf0=;
+        b=jFnnK9qLHtA9Iwwevp9UzWNMn5aR/9cXpBK0PTif2XbkQ+nCYczCIUqZritAmCZByQ
+         sHXtO65WxazhZuyLEr2N+Y+HHfjNn/p1NJcDqBogzUwq7Cw6/K/64mJ8+4fd6s2ftkwh
+         7WFCnYDig6xUrxoGw8z/8z2DYQ8piLfuBQYBalG9bPXsOen/DDxh6ly4AFI26+AiHPpa
+         FpNbzDIiyOCDLpCnGSOyywNhnry4/3j9Eus434msCcTxLbiGprG0BIUE41Iq4oNfxaGe
+         2ifTpeLDywM8LfTtelTLHnignKGHO+rpI5apobO3BTZ5GOe3crc7xZwzWkU37syCps3l
+         fC3Q==
+X-Gm-Message-State: AOAM532NQGygUii02PJHKIWDzbGpij2tdTQTERD+IR/cLxwbwKlKMgM8
+        Lw+OtShyH/781vqJtaJHV04tLYM7iDM=
+X-Google-Smtp-Source: ABdhPJw1IMRjeuaj0z7tb7OLpIE+enDeo2LWvLBTVyw4Iv0KsbHv5EIva7vqY/jNiovb6zGNE1FmFw==
+X-Received: by 2002:a17:903:4042:b0:13f:a8ef:7334 with SMTP id n2-20020a170903404200b0013fa8ef7334mr1004324pla.43.1634385276956;
+        Sat, 16 Oct 2021 04:54:36 -0700 (PDT)
+Received: from kvm.asia-northeast3-a.c.our-ratio-313919.internal (24.151.64.34.bc.googleusercontent.com. [34.64.151.24])
+        by smtp.gmail.com with ESMTPSA id d71sm3588414pga.67.2021.10.16.04.54.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 16 Oct 2021 04:54:36 -0700 (PDT)
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+To:     linux-fsdevel@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [PATCH] Unit mismatch (Slab/SReclaimable/SUnreclaim) in meminfo
+Date:   Sat, 16 Oct 2021 11:54:29 +0000
+Message-Id: <20211016115429.17226-1-42.hyeyoo@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Received: by 2002:a6b:144b:0:0:0:0:0 with HTTP; Sat, 16 Oct 2021 04:43:40
- -0700 (PDT)
-Reply-To: mrs.sophia_robin.sr@list.ru
-From:   "mrs.sophia_robin" <treasurejustinyak@gmail.com>
-Date:   Sat, 16 Oct 2021 12:43:40 +0100
-Message-ID: <CAHR092E-2cM98iOK4hA2sVQZReZYOZ-zt3Upw9pZ46hULrG2EQ@mail.gmail.com>
-Subject: Hello
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-i'm Mrs.Sophia Robin, a citizen of the united state of America, I work
-at HSBC Bank in Milan Italy, as Telex Manager charge of wire transfer
-department, I'm contacting you personally for investment assistance
-and a long term business relationship in your Country.I'm contacting
-you for an important and  urgent business transaction,
-I want the bank to transfer the money left by Dr. Cheng Chao, A
-Chinese  Politician who died, March 17th 2020, without any trace of
-his family members, he used our bank to launder money overseas through
-the help of their Political advisers. And most of the funds which they
-transferred out of the shores of China, were gold and oil money that
-was supposed to have been used to develop the continent.
+Hello, it seems there's mismatch in unit (byte and kB) in meminfo.
+Would something like this will be acceptable?
 
-Can you invest this money and also help the poor? The amount value at
-$15.5million Dollars  ($US15,500,000), left in his account still
-unclaimed, if you know that you are capable to invest this fund into
-any profitable business in your country kindly send me your details
-information as listed below to enable me draft you an application form
-of claim along with the deposit certificate which you are going to
-fill with your bank account detail necessary and contact the HSBC Bank
-in Italy for immediate transfer of the Amounted sum into your bank
-account direct. Percentage share will be 60,for me/40,for you.
+commit d42f3245c7e2 ("mm: memcg: convert vmstat slab counters
+to bytes") changed it to bytes but proc seems to print everything in
+kilobytes.
 
-(1) Your full name..................................................
-(2) Your address....................................................
-(3) Your Nationality.................................................
-(4) Your Age / Sex.....................................................
-(5) Your  Occupation............................................
-(6) Your marital status......................................
-(7) Your direct telephone number..................
-(8) Your photo.......................................
+---
+ fs/proc/meminfo.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Thanks with my best regards.Mrs. Sophia Robin,
-Telex Manager Milan Italy  (H.S.B.C)
+diff --git a/fs/proc/meminfo.c b/fs/proc/meminfo.c
+index 6fa761c9cc78..182376582076 100644
+--- a/fs/proc/meminfo.c
++++ b/fs/proc/meminfo.c
+@@ -52,8 +52,8 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
+ 		pages[lru] = global_node_page_state(NR_LRU_BASE + lru);
+ 
+ 	available = si_mem_available();
+-	sreclaimable = global_node_page_state_pages(NR_SLAB_RECLAIMABLE_B);
+-	sunreclaim = global_node_page_state_pages(NR_SLAB_UNRECLAIMABLE_B);
++	sreclaimable = global_node_page_state_pages(NR_SLAB_RECLAIMABLE_B) / 1024;
++	sunreclaim = global_node_page_state_pages(NR_SLAB_UNRECLAIMABLE_B) / 1024;
+ 
+ 	show_val_kb(m, "MemTotal:       ", i.totalram);
+ 	show_val_kb(m, "MemFree:        ", i.freeram);
+-- 
+2.27.0
+
