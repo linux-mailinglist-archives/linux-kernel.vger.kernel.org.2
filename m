@@ -2,90 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 965CD430309
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 16:33:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 014DD43030D
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 16:34:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234477AbhJPOf0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 10:35:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37214 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231713AbhJPOfZ (ORCPT
+        id S235150AbhJPOgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 10:36:50 -0400
+Received: from mail-ot1-f49.google.com ([209.85.210.49]:39859 "EHLO
+        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231577AbhJPOgt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 10:35:25 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99999C061570
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 07:33:17 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id v17so31591545wrv.9
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 07:33:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=idYztUyu5/NmJ0nSrqXeX0um6ddWJVBcDb90sOh6alA=;
-        b=p4XbeylLjQhni1UJ8oKQys3fJiPZNxE04sbcPo9oeh9VOUPxMoN7IEwoI+arZe7orA
-         P0LrLMPC2sLe6DStZ2SqmsnBYdoIVYP2R6FmgnzwYfSbXA2OAkn5lWou/+87n1N3Hjac
-         eZ86YYLN/EG0qCWNaP+cjnR/WMpXmk80lERhXXZ5rFNJy7EAMa0+2LHR1n0mpS7CD9Ne
-         WSjwRg1xm7m+2nIEGqXiZ1M5ptyElhMrGOwrESVC8nRAwX8t/79B4M+Z8oB4360Seg4A
-         +VlsdKBQajR/9qXZNLRopoqW8XLw6DYP7oN8F3eCHoaHiw6zWz1WynlrY8OQNK6pSvOg
-         2SOA==
+        Sat, 16 Oct 2021 10:36:49 -0400
+Received: by mail-ot1-f49.google.com with SMTP id e59-20020a9d01c1000000b00552c91a99f7so865852ote.6;
+        Sat, 16 Oct 2021 07:34:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=idYztUyu5/NmJ0nSrqXeX0um6ddWJVBcDb90sOh6alA=;
-        b=3Qan7zBPH0BSEAiu8LwmAW2dLYc3ulRXa/XtzLvhpbbpfKPI2j8XJpLe/wMN88TlsP
-         oqWrj65FkPNQiC6zqcNZTBh9zrOD61lpO7D8vHFFA0gcejiU6YlOqN0BboVu3WOlpIjJ
-         R09dcVtX82op/hbjRutB6yPMwGaICiWmltohqsTZdz+r1/aOXD7h/qs3+CyHUIDAnyhJ
-         MPLtI9z+1CGamzZKrlK2mK0PDAPSdeKsphTSBl9gQDS98dr60Ix8Sk9DpQdYLxjbEw0g
-         nf2n8DUqBqlAXVc3rg3/9xhFLtwdESfB+StgVf8KFIpzRJyzwbVoGXDTjgGF6ttXkkc4
-         TatA==
-X-Gm-Message-State: AOAM533hEbfnTOd6TFBRkx9sH6s27va9Lv1OFfjmbKnBrZmI6BE17xJe
-        BaS5zZSfBFdqNruM9J7SN+UKSGaxshjREg==
-X-Google-Smtp-Source: ABdhPJxp8A6H5iId25YJ1awwSy3ISnoW5kjD9/jfit8S8kB8k77RN6ZxXS4EhVhlr1pisZz3AvI6Jw==
-X-Received: by 2002:a5d:6e8d:: with SMTP id k13mr22321139wrz.295.1634394795614;
-        Sat, 16 Oct 2021 07:33:15 -0700 (PDT)
-Received: from equinox (2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.a.1.e.e.d.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:dfde:e1a0::2])
-        by smtp.gmail.com with ESMTPSA id g12sm13315099wme.3.2021.10.16.07.33.14
+        bh=j1810wrRi1+sqKNjD8mg1sEmulNnuM8qTf6RHFoW7SQ=;
+        b=z+0MpyzMAB5sEoTtrwBfI6RY/XvZy+GTEfVXWPRtzWc83naRcBdK9THUBy5C6E1CS9
+         K48b5b4QwOKf/p8eWEGdrb3frx6hBwZI39Br8dQHiU1PQxOzDgtzNQP0Mo7vin+62z/g
+         WIGPLHX/jqsloRHi55b2qZjaHP9mQBgROSjBHcGvC1Hzj8maHEMxFE1FGsRYchMU+lI/
+         VtN9eBpWYfZEhc+Va6YZlR2zRDTEf2Wtrx0aUQeembA0QXhz+FJGQMuGOO56EfsNHJaL
+         +NmSMGcLESi5d51aQVoCPMZjqMnnXTn/yD3nrQvqSg81uch8d1LiiFyKJs2dMXh16kqc
+         FkHw==
+X-Gm-Message-State: AOAM531pZHi9BsyJY+TXUVggAKbLd6HTYUmMbMN90tAINbfl9LK7/4Mn
+        S2ytzzaXdAqGYoFSIcVRPw==
+X-Google-Smtp-Source: ABdhPJwFDvklE+gWKoVxXSGwq216GQRczbTqIz0XmD8ebMcayqZ3/KVkyTA3etnzlABCEsG0vNEugg==
+X-Received: by 2002:a9d:86e:: with SMTP id 101mr13164167oty.177.1634394880791;
+        Sat, 16 Oct 2021 07:34:40 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id o80sm1884047ota.68.2021.10.16.07.34.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 16 Oct 2021 07:33:15 -0700 (PDT)
-Date:   Sat, 16 Oct 2021 15:33:13 +0100
-From:   Phillip Potter <phil@philpotter.co.uk>
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Cc:     Larry.Finger@lwfinger.net, gregkh@linuxfoundation.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        dan.carpenter@oracle.com
-Subject: Re: [RFC PATCH] staging: r8188eu: Use completions instead of
- semaphores
-Message-ID: <YWriqaly1skBHnIX@equinox>
-References: <20211015110238.1819-1-fmdefrancesco@gmail.com>
- <YWm/x56aX+rNOlE0@equinox>
- <5414235.RPW7nLbG7U@localhost.localdomain>
+        Sat, 16 Oct 2021 07:34:40 -0700 (PDT)
+Received: (nullmailer pid 3904092 invoked by uid 1000);
+        Sat, 16 Oct 2021 14:34:39 -0000
+Date:   Sat, 16 Oct 2021 09:34:39 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Alistair Francis <alistair@alistair23.me>
+Cc:     shawnguo@kernel.org, dmitry.torokhov@gmail.com,
+        s.hauer@pengutronix.de, linux-imx@nxp.com,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, jikos@kernel.org,
+        linux-kernel@vger.kernel.org, alistair23@gmail.com,
+        benjamin.tissoires@redhat.com
+Subject: Re: [PATCH v11 1/4] HID: wacom_sys: Add support for flipping the
+ data values
+Message-ID: <YWri/85NRl8s+h27@robh.at.kernel.org>
+References: <20211009114313.17967-1-alistair@alistair23.me>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5414235.RPW7nLbG7U@localhost.localdomain>
+In-Reply-To: <20211009114313.17967-1-alistair@alistair23.me>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 16, 2021 at 08:59:27AM +0200, Fabio M. De Francesco wrote:
-> P.S.: No need to apologize at all :)
+On Sat, 09 Oct 2021 21:43:10 +1000, Alistair Francis wrote:
+> Add support to the Wacom HID device for flipping the values based on
+> device tree settings. This allows us to support devices where the panel
+> is installed in a different orientation, such as the reMarkable2.
 > 
-> I had noticed that you haven't been around for a while. I would have 
-> appreciated a review from you (and Larry) on the series of 32 patches that 
-> Pavel Skripkin and I co-developed and submitted some weeks ago.
-> 
-> However, I am 100% sure that you really had some important reasons for not 
-> being here.
-> 
-> > 
-> > Regards,
-> > Phil
-> > 
+> Signed-off-by: Alistair Francis <alistair@alistair23.me>
+> ---
+>  .../bindings/input/hid-over-i2c.txt           | 20 ++++++
+>  drivers/hid/wacom_sys.c                       | 25 ++++++++
+>  drivers/hid/wacom_wac.c                       | 61 +++++++++++++++++++
+>  drivers/hid/wacom_wac.h                       | 13 ++++
+>  4 files changed, 119 insertions(+)
 > 
 
-I have no excuse, other than simply not having enough hours in the day
-:-)
-
-Regards,
-Phil
+Reviewed-by: Rob Herring <robh@kernel.org>
