@@ -2,83 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACEC64302C8
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 15:23:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5578F4302BF
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 15:23:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240548AbhJPNZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 09:25:25 -0400
-Received: from aposti.net ([89.234.176.197]:55986 "EHLO aposti.net"
+        id S240492AbhJPNZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 09:25:03 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:37972 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240518AbhJPNZX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 09:25:23 -0400
-From:   Paul Cercueil <paul@crapouillou.net>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Harvey Hunt <harveyhuntnexus@gmail.com>, list@opendingux.net,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
-        stable@vger.kernel.org
-Subject: [PATCH v2 5/5] mtd: rawnand/ingenic: JZ4740 needs 'oob_first' read page function
-Date:   Sat, 16 Oct 2021 14:22:28 +0100
-Message-Id: <20211016132228.40254-5-paul@crapouillou.net>
-In-Reply-To: <20211016132228.40254-1-paul@crapouillou.net>
-References: <20211016132228.40254-1-paul@crapouillou.net>
+        id S240431AbhJPNZB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Oct 2021 09:25:01 -0400
+Received: from zn.tnic (p200300ec2f1ceb007fb855408f3fbdbb.dip0.t-ipconnect.de [IPv6:2003:ec:2f1c:eb00:7fb8:5540:8f3f:bdbb])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 31B251EC03C9;
+        Sat, 16 Oct 2021 15:22:52 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1634390572;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=fGrdl/qz1529NFQFPxNJ/LUsbpW0/CbFMjZPDMTEuug=;
+        b=Rs3SENr/TxUofol7iOzjtpxwS4RCmX5JG2fzV54gxx9opx5TJytQLx2sl7dPqGbDlGFkqK
+        nLO/HyaxLFTr+uRuVL29atSiiHSDCQvVjnm1YaVSozPRZORTR7rlS6SHauOTMMgVt0RkkZ
+        sIhpHWkM223fXNEKHJRKGNAH8lmUJOE=
+Date:   Sat, 16 Oct 2021 15:22:49 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     JY Ni <jiayu.ni@linux.alibaba.com>
+Cc:     Luming Yu <luming.yu@gmail.com>,
+        wujinhua <wujinhua@linux.alibaba.com>, x86 <x86@kernel.org>,
+        "zelin.deng" <zelin.deng@linux.alibaba.com>,
+        ak <ak@linux.intel.com>, "luming.yu" <luming.yu@intel.com>,
+        "fan.du" <fan.du@intel.com>,
+        "artie.ding" <artie.ding@linux.alibaba.com>,
+        "tony.luck" <tony.luck@intel.com>, tglx <tglx@linutronix.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "pawan.kumar.gupta" <pawan.kumar.gupta@linux.intel.com>,
+        "fenghua.yu" <fenghua.yu@intel.com>, hpa <hpa@zytor.com>,
+        "ricardo.neri-calderon" <ricardo.neri-calderon@linux.intel.com>,
+        peterz <peterz@infradead.org>
+Subject: Re: =?utf-8?B?5Zue5aSN77yaW1BBVENIXSBwZXJm?= =?utf-8?Q?=3A_optimiz?=
+ =?utf-8?Q?e?= clear page in Intel specified model with movq instruction
+Message-ID: <YWrSKeT+R2S/+udL@zn.tnic>
+References: <1631177151-53723-1-git-send-email-wujinhua@linux.alibaba.com>
+ <YTnWXIB42sCLbM2k@zn.tnic>
+ <bf6fe59d-c760-40d4-8201-4170cd90ffc3.wujinhua@linux.alibaba.com>
+ <YTnq/3rzmD6ADyZm@zn.tnic>
+ <CAJRGBZxHQ3tPrvWWoz9xb0pf=tZ0vrrQYX-Tjr5c=UbxntPtew@mail.gmail.com>
+ <1cac1499-6b00-3c18-b64c-a22f269a2706@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1cac1499-6b00-3c18-b64c-a22f269a2706@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ECC engine on the JZ4740 SoC requires the ECC data to be read before
-the page; using the default page reading function does not work. Indeed,
-the old JZ4740 NAND driver (removed in 5.4) did use the 'OOB first' flag
-that existed back then.
+On Sat, Oct 16, 2021 at 08:58:32PM +0800, JY Ni wrote:
+> I rebased this patch on linux-next repo and measured the time of building a
+> same kernel in original/add-movq-patch version on the same intel CPX server.
 
-Use the newly created nand_read_page_hwecc_oob_first() to address this
-issue.
+...
 
-This issue was not found when the new ingenic-nand driver was developed,
-most likely because the Device Tree used had the nand-ecc-mode set to
-"hw_oob_first", which seems to not be supported anymore.
+> delta = (*build_original_time* - *build_movq_time*) / (*build_movq_time*)
+> 
+> This set of data shows that movq-patch version has better performance than
+> original version in most cases.
 
-Cc: <stable@vger.kernel.org> # v5.2
-Fixes: a0ac778eb82c ("mtd: rawnand: ingenic: Add support for the JZ4740")
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
----
- drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c | 5 +++++
- 1 file changed, 5 insertions(+)
+First of all, please do not top-post but put your answer under the
+quoted text like everyone else.
 
-diff --git a/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c b/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c
-index 0e9d426fe4f2..b18861bdcdc8 100644
---- a/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c
-+++ b/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c
-@@ -32,6 +32,7 @@ struct jz_soc_info {
- 	unsigned long addr_offset;
- 	unsigned long cmd_offset;
- 	const struct mtd_ooblayout_ops *oob_layout;
-+	bool oob_first;
- };
- 
- struct ingenic_nand_cs {
-@@ -240,6 +241,9 @@ static int ingenic_nand_attach_chip(struct nand_chip *chip)
- 	if (chip->bbt_options & NAND_BBT_USE_FLASH)
- 		chip->bbt_options |= NAND_BBT_NO_OOB;
- 
-+	if (nfc->soc_info->oob_first)
-+		chip->ecc.read_page = nand_read_page_hwecc_oob_first;
-+
- 	/* For legacy reasons we use a different layout on the qi,lb60 board. */
- 	if (of_machine_is_compatible("qi,lb60"))
- 		mtd_set_ooblayout(mtd, &qi_lb60_ooblayout_ops);
-@@ -534,6 +538,7 @@ static const struct jz_soc_info jz4740_soc_info = {
- 	.data_offset = 0x00000000,
- 	.cmd_offset = 0x00008000,
- 	.addr_offset = 0x00010000,
-+	.oob_first = true,
- };
- 
- static const struct jz_soc_info jz4725b_soc_info = {
+Then, please explain how exactly you ran that measurement so that I can
+try to reproduce it here too.
+
+And just to make sure we're talking about the same thing: the patch in
+question is this one:
+
+https://lore.kernel.org/r/1631177151-53723-1-git-send-email-wujinhua@linux.alibaba.com
+
+correct?
+
+Thx.
+
 -- 
-2.33.0
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
