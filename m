@@ -2,69 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D4D443055E
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 00:21:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F05F0430561
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 00:23:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235801AbhJPWXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 18:23:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54332 "EHLO
+        id S235945AbhJPWZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 18:25:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233464AbhJPWXa (ORCPT
+        with ESMTP id S233464AbhJPWZf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 18:23:30 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66A1CC061765
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 15:21:21 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id 5so23265504edw.7
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 15:21:21 -0700 (PDT)
+        Sat, 16 Oct 2021 18:25:35 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7BC9C061765
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 15:23:26 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id x27so57252650lfa.9
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 15:23:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=11NI8rJSPz43D1gV7A+JL1F9+LdB46OYj4gEDUOX0Xg=;
-        b=GF+9nhqpBOluFuQibxT2/OKI8O2kYkWPov0QlOb3Mup7J7gOhWH7C4I95DgnYBCMei
-         tBkUDHQMPpbD5BCRrHxPiGS9R/OezX//STkfmrGJ9orTZ5W2a++im8wfCqGDSciCCBWv
-         vENgzT1DT1r9h71lGXNkYevfXJxI5TpoKfPcGsQPW9Ay9Xu8sMJ9YpLyKlqPU+ITFUeY
-         2bKRSnIMLvKK42iuTHcwVw1+g8wt5gejnSkfX4rtuK7dbBN3pAgsaDxDwqCj8gCxlAXz
-         5Egfn0wUPsG8W8CZgfb0Hg4ih6p2ytTImxB2VL1ss3Jow9W32GoxTsic0XiD0Mm8ISjC
-         0xCw==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=p3FVWFHYEJvia2KboNohOnop6t5qjPeV+JIRsjfGAvQ=;
+        b=PcAfAJ7La6ATrlQFcKj7Yet2plWqrYwTqKqG/hqo3fQBaEj6mz9AjBYZpLX7Goa7kG
+         WONoO8E7+mM4nmkHFzZLwRWN6R7cbBo4QYHHG456kCYDvZ/RRM58fp3jMbBN9mJ8Lgi2
+         sLYv9K5RYXsm+91VwuyzZBqiIq5H/yAlZVhhGN9Odnp43B2MXKkQ9N3p0KsiiVgVTciD
+         OOEmPLMpfxafQu6UWwRvwDG7p77SdPnKMTg+bsSib0rt16VzJNDug1yI1+Y5Vqw7FaQK
+         /9lxOCfxHnxNFisfQXozF2WYWF0N6v27DXcrdxFuYLthvGEUF3EWFtE6Nj4sNnzORmBs
+         X0wg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=11NI8rJSPz43D1gV7A+JL1F9+LdB46OYj4gEDUOX0Xg=;
-        b=mCPFPnYD5i7X5T0vtZYtS+N5Kzcq1ZKiVGeEszWf1klc8K4Vq4QXtoPFDU7wyWtJbB
-         Kv7sf8nx4ynMWq+hWhFYkmfaMhhNoF3RraxQVatZMaOSwFaGIHcIE2YJWGwX77/izvqp
-         qM7SbFNYmvzcx6hXWejLRE44bhSlLkxtaFH4aml2XP1dq9fIURpxB2u6JMsDYTfCGBly
-         Bj47x0cDT+wjGQYoxQ4LN2Jg2+j8f70A5WqS1XfdjzUrYMPchnRFf5U/WimkDkImdT6Q
-         QIjkCUOpmqZb5pRA42ID7SE30QJAvF/IWPOkqepRItHPECZ89a26ZZ7w9FUynM6hjue4
-         /d0Q==
-X-Gm-Message-State: AOAM530RTp5f0RRFc/TPIbGacFhz8vpD+e6rxXNPDWlsxlM3kw+HGddn
-        gjiDOZAYmgjXqM4oMCSyELwcCbAbiya8avkGGB8=
-X-Google-Smtp-Source: ABdhPJxZC6TQQX6lR1T9h7xL+EokiDWYtroi/JAbZPN6LHWiSQWAUoN66aloES/f2nkJ8A/k/4Pw6yIHvDW92kAMRxc=
-X-Received: by 2002:a05:6402:350c:: with SMTP id b12mr30532520edd.244.1634422880023;
- Sat, 16 Oct 2021 15:21:20 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=p3FVWFHYEJvia2KboNohOnop6t5qjPeV+JIRsjfGAvQ=;
+        b=3hmF8O/pvWMQc4FXZrRKIXh+xIHncYAoJJriW1NlHW/JIVKGqTRE6UBBf/nlBVlu3X
+         vWvatUTQAYZIXfZZTdEQmt3dYCswsaUYUJCDEWljkKFK5VPQHnOCcmi5SqD6YuAwioNO
+         I35xsYGGpyDM3Cpmp3ku7efNXQo5dPgxhpBH25zfwLbfTHSzjxzG2GWSLu6nDByqqYj4
+         pps2Dma/K/q7sDxljjoNZ4gx/vBO9/6oXMQ0lZcjtnBaFsjfVifrNjXdcBbww+Yu00VI
+         FLCqptMV64AkIwBxOq1tTEJ+TRAzJ0qQy2/L2ldXIKMZJAkoZ+JZ4LUN2kZYBbnhhZw8
+         BBpw==
+X-Gm-Message-State: AOAM530uuRxZrXxM0MFFErvO1XMuBFH5pb/bDoiFPe4tNIR71kVyc5GU
+        eQ6ZzssnWDqryJfgd37rXZoUsWggbcRmxDjQGUsSsw==
+X-Google-Smtp-Source: ABdhPJy82eQjg2a0KgyXHCV7OyYHGgWPCMzm75KYH0/22I29cGhFGc7f/I9ftrW1M4rzVCVFOHqliZaq2imdQccEUC4=
+X-Received: by 2002:a05:6512:3e9:: with SMTP id n9mr21107873lfq.72.1634423005077;
+ Sat, 16 Oct 2021 15:23:25 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:ab4:98c3:0:0:0:0:0 with HTTP; Sat, 16 Oct 2021 15:21:19
- -0700 (PDT)
-Reply-To: ms.lisahugh000@gmail.com
-From:   MS LISA HUGH <olivier.folly0@gmail.com>
-Date:   Sun, 17 Oct 2021 00:21:19 +0200
-Message-ID: <CAG_GOAsf12PZvBp8cqL7znJ++aP_JgY1b8fKG+hO7K3xA4T=Vg@mail.gmail.com>
-Subject: BUSINESS AND DETAILS LATER. >>MS LISA HUGH.
-To:     undisclosed-recipients:;
+References: <20211008081739.26807-1-brgl@bgdev.pl> <CAMRc=McpCw2TgLFCzvwOupd+RW2BoQRJKVTdbR6s2z+O2pJuUQ@mail.gmail.com>
+In-Reply-To: <CAMRc=McpCw2TgLFCzvwOupd+RW2BoQRJKVTdbR6s2z+O2pJuUQ@mail.gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Sun, 17 Oct 2021 00:23:13 +0200
+Message-ID: <CACRpkdYtD-3vX1VW9uLn3zqxD7gYjCXs+NgLHfnsZHhcA4nJyw@mail.gmail.com>
+Subject: Re: [PATCH v7 0/8] gpio: implement the configfs testing module
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Joel Becker <jlbec@evilplan.org>, Christoph Hellwig <hch@lst.de>,
+        Shuah Khan <shuah@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Kent Gibson <warthog618@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Jack Winch <sunt.un.morcov@gmail.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-doc <linux-doc@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend,
+On Fri, Oct 15, 2021 at 4:13 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
 
-I am Ms Lisa Hugh accountant and files keeping by profession with the bank.
+> Another ping...
 
-I need Your help for this transfer($4,500,000,00 ,U.S.DOLLARS)to your
-bank account with your co-operation for both of us benefit.
+If it's hard to get attention I would simply queue these on a immutable branch
+in the GPIO tree, then merge it into what you send to linux-next and offer
+the interested parties to pull it in.
 
-Please send the follow below,
-1)AGE....2)TELEPHONE NUMBER,,,,,...,3)COUNTRY.....4)OCCUPATION......
-Thanks.
-Ms Lisa Hugh
+If noone complains as we get really close to the merge window, just offer
+this branch to Torvalds in a separate pull request.
+
+Yours,
+Linus Walleij
