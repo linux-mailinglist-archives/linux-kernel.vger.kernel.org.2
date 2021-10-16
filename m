@@ -2,96 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4641C430402
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 19:52:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2B29430404
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 19:53:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241281AbhJPRyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 13:54:46 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:43906 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230071AbhJPRyk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 13:54:40 -0400
-Received: from zn.tnic (p200300ec2f1ceb006062651ae72baf22.dip0.t-ipconnect.de [IPv6:2003:ec:2f1c:eb00:6062:651a:e72b:af22])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 912441EC0390;
-        Sat, 16 Oct 2021 19:52:30 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1634406750;
+        id S244457AbhJPRzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 13:55:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40312 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240631AbhJPRzt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Oct 2021 13:55:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634406820;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=Ted60gA90RO8nogAFVTIhwaV5qp7YGAkBiqZixtBxb0=;
-        b=b4VqB0B09wJUSNd+eREO0vlRLthbd8ZkAyYc8VO5tqnlsL1fmtm+NSF3gz1SMtsXXdGmsS
-        FmrQEhJmDuh3+M6VCME/8LCVb1YuC7Swp2iZ/GyuMwSMRFpRH40Dv3gry7HLcy3WDfqiXu
-        7aRZP1qPqtcUdBRqCfVVt7JRYjPzmJc=
-Date:   Sat, 16 Oct 2021 19:52:29 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Marcos Del Sol Vives <marcos@orca.pet>
-Cc:     x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86: add support DM&P devices
-Message-ID: <YWsRXfdqEpHyPVpL@zn.tnic>
-References: <20211008162246.1638801-1-marcos@orca.pet>
- <YWcQDYY9CuWKsayl@zn.tnic>
- <a7e54bfa-a015-2be7-e2c0-7bab47cc2b4a@orca.pet>
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=YRkFwm3tEdyVj4faYV5tH5DTLEkbFSaiBRQ19GNqPNI=;
+        b=CexakwoOPrdHNHTb6XThUIJNG0CYs1PLsKAwP5DCPQRUp4PfpZhjHxOrrtSpouByz5P/3F
+        72zhqEYBmL6wkCHEek7Ih5u8UjsOwx9LjrDXPgv9HrHyk58NmUQhemtLMdAgaBwyvYLDT1
+        zJAr8dRa8ebMAH+8qYCtZ7X0NIBOivA=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-221-A5CBhgiYMZysIkvBMAzmHA-1; Sat, 16 Oct 2021 13:53:39 -0400
+X-MC-Unique: A5CBhgiYMZysIkvBMAzmHA-1
+Received: by mail-wm1-f72.google.com with SMTP id h22-20020a7bc936000000b0030d998aa15eso1752876wml.4
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 10:53:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=YRkFwm3tEdyVj4faYV5tH5DTLEkbFSaiBRQ19GNqPNI=;
+        b=lBoDiGvBKYQVJ1i9FtTrMAzJyRK20S6vqQhRzLDqUJMaaOt0bCIrCsCFOH+BgRaJzs
+         pZFWi71GTb048F9qGnYyMAaDOlAJWFPcYcHUnvza+/gcEmn3JM0baV4fajNdldMwJ/Gl
+         HJF/87BHUDcHp+qdkV8YvLzIRji54g7LDR0CYGkxfsWqMw+VZRkk9QxmVm6q5aZhrTbB
+         TvWwm7wfI5S9SSzozS4ZrcQBy+17u/nJeifp381BkdSjArdNl0A4XcO8bHXCXL5YsryH
+         mxXHi3Ey3d5X2dafGhzXNAprWt4OnKVXL798JWvSDC6VblxwmL5nK9HinsHQJmCvCjMJ
+         BYiQ==
+X-Gm-Message-State: AOAM530PtSa7IYgQb7a2T3sCZQFVgCNqm98AXITENGUD+qKR2mFgAu59
+        UmgKQcusvaPkIWX01rj4Rmty4rm99kyTHEdBIQAXTjRNM8WB2ewqkE3O4o2JsoSKCuRm0XPXhbv
+        x0OEcQGjVjn4dqPwxraLiIO4/
+X-Received: by 2002:a05:6000:1889:: with SMTP id a9mr23905479wri.400.1634406818162;
+        Sat, 16 Oct 2021 10:53:38 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyk3Fx/ay/cz+YUuGkGHAC+9ByjoSXkgkPYf95wPtAmqul6aRAX2lJjQQ+e6V9i+wGzauc0LQ==
+X-Received: by 2002:a05:6000:1889:: with SMTP id a9mr23905459wri.400.1634406817885;
+        Sat, 16 Oct 2021 10:53:37 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id p18sm8598586wrt.54.2021.10.16.10.53.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 16 Oct 2021 10:53:37 -0700 (PDT)
+Message-ID: <510287f2-84ae-b1d2-13b5-22e847284588@redhat.com>
+Date:   Sat, 16 Oct 2021 19:53:35 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <a7e54bfa-a015-2be7-e2c0-7bab47cc2b4a@orca.pet>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH] mm: allow huge kvmalloc() calls if they're accounted to
+ memcg
+Content-Language: en-US
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     KVM list <kvm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Willy Tarreau <w@1wt.eu>, Kees Cook <keescook@chromium.org>,
+        syzbot+e0de2333cbf95ea473e8@syzkaller.appspotmail.com
+References: <20211016064302.165220-1-pbonzini@redhat.com>
+ <CAHk-=wijGo_yd7GiTMcgR+gv0ESRykwnOn+XHCEvs3xW3x6dCg@mail.gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <CAHk-=wijGo_yd7GiTMcgR+gv0ESRykwnOn+XHCEvs3xW3x6dCg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 06:29:12PM +0000, Marcos Del Sol Vives wrote:
-> Should I change it then?
+On 16/10/21 17:39, Linus Torvalds wrote:
+> The big allocation warnings are not about whether we have the memory
+> or not, or about whether it's accounted or not.
+> It's about bugs and overflows. Which we've had.
 
-Yes please.
+Yes, I understand that...
 
-> Should I also change the other two, possibly in a different patch?
+> At least GFP_NOWARN would be somewhat sensible - although still wrong.
 
-So I looked at
+... and it also seemed wrong to overload GFP_NOWARN.
 
-  8d02c2110b3f ("x86: configuration options to compile out x86 CPU support code")
+> It should really be about "I've been careful with growing my
+> allocations", not about whether accounting or similar should be
+> disabled. If the allocations really are expected to be that big, and
+> it's actually valid, just do vmalloc(), which doesn't warn.
+Sounds good, and you'll get a pull request for that tomorrow.  Then I'll 
+send via Andrew a patch to add __vcalloc, so that the accounting is 
+restored.
 
-which added some of those !64_BIT deps. And when you look at
+Paolo
 
-config X86_32
-        def_bool !64BIT
-
-and having those items either depend on "!64BIT" or on "X86_32" should
-be equivalent. Former is just weird to have in other Kconfig items
-except X86_32.
-
-So yes, please, in a separate patch.
-
-> I used that text because it's what every other x86 processor flag is
-> also using, even those that also do not do any special initialization.
-> 
-> For example, the CPU_SUP_UMC_32 flag also has the same warning, yet
-> arch/x86/kernel/cpu/umc.c reads "UMC chips appear to be only either 386
-> or 486, so no special init takes place". I thus assumed this was
-> standard text, in case at some point an special init is required.
-
-Yah, sounds like they've all been copy-pasted from some item which
-really needs special init.
-
-> Do you think it should be then reworded, or should I keep it to mantain
-> consistency with other existing flag descriptions?
-
-Yeah, please write the correct statement in there and do not take the
-other entries too seriosly - looks like semi-automatic copy-paste took
-place.
-
-> Greetings and thanks for your time,
-
-Ditto and you're welcome!
-
-:-)
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
