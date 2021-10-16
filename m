@@ -2,106 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0643D43040C
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 20:05:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBE6A430415
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Oct 2021 20:11:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244495AbhJPSHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 14:07:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42182 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234167AbhJPSHm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 14:07:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C319D61152;
-        Sat, 16 Oct 2021 18:05:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634407534;
-        bh=pXmvpGnGkvZz3jdjF87zxFDCLAD5XPBvBSOagxWkGlU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Y3bDKKx1Az+STi+APpA16lxxIDZL/bZnRM3bS2QupWWTlXAf8jYOjGboy6rT3n1mN
-         FTWXJUvamV3FgxHwiAQJ23Rt/mgkTPX7lfuHv5o3nwMjK/jpbtXpFgT2OCUPwMtWYR
-         W8uDxEebZpFEy3lEe85aPcBV+jzw8Qe0SkZO4RVEURCDCGTrgW+1rhCaD5PqV1cKjd
-         x3OCllujqhmusolMkvyAKG6m/vBUETElNim+yUQ2IdPLIHYBCS7LdvyFEEK0js9P1T
-         ZlIVAMMzCb19yvCQGNcZDVHseQKXI3KwPXHWvYwZYtv3o9UWjVcgD7G1aZsN1sQ2ew
-         2cPCea0Ovj+5g==
-Date:   Sat, 16 Oct 2021 13:10:03 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     jing yangyang <cgel.zte@gmail.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        jing yangyang <jing.yangyang@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH linux-next] firmware/psci: fix application of sizeof to
- pointer
-Message-ID: <20211016181003.GA1193402@embeddedor>
-References: <61d3cc7e5cd4a819381fcb22e1853d6f48a0c927.1629212319.git.jing.yangyang@zte.com.cn>
- <20210824105824.GC96738@C02TD0UTHF1T.local>
+        id S244522AbhJPSNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 14:13:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56456 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235317AbhJPSMt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Oct 2021 14:12:49 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D13A1C061766
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 11:10:38 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id n8so56362609lfk.6
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 11:10:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=S09Oa/SsybBsJJzF//y2gn5/V4eOIeQCpxOLB6Oazhg=;
+        b=eUGVkktStc21n/ufKU/i96QrXSi7kX/unwoGwYFVu2l58jPH2/H5fX/vLmY2F98f3e
+         3ASeoDQELyFiqjRf0y2913aVUpjY+35srDZBQFQG7hFxVvWWYk7JK1RGkaLR+RNMpyX0
+         QLsqd+NCSgMSKuFvlMJTUnjY1bypKZAzBwib0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=S09Oa/SsybBsJJzF//y2gn5/V4eOIeQCpxOLB6Oazhg=;
+        b=pqGavxC6iRWBMSMlROPZDfq2tgL7S0XpqWDWtnqipVoEBuYD5TKlRX858ahv/c+/RJ
+         3iTmbbyK5KkSLK9QDjegiqAZUEwmz/JVTUYpK6LlkJuKUlVA27jN80WRIeh4CERYQaa1
+         FABv33iLOzj5d4kjP9SKVfNIYVZg/Vax58gHToCZ1obnUjRVuFvL87g9bvYfNWeSft98
+         GLOCU+3+dsra2xIKG+TZ/7JP46trGst93f/m3IA6O0XYB7vslpHQDSt4EmsSjfjsX274
+         KpPjeF8WLVnIOChEhiz5vHzx/ISznBuzUJfmKn5RBNdT629udFWC6lrwhJAdZht7d7VA
+         wNwQ==
+X-Gm-Message-State: AOAM530cy3qlBLdSn1cLg+NSyDlaTEm0JfMpHCWYGqVbMw1iFVcfrCVK
+        YBr6psktVaSetQcc8o3l4axILCXTEV+PCjic
+X-Google-Smtp-Source: ABdhPJyPr8BIKoVYdkkp0CA2k/hyIw0NNw/+/wbGC3RRYBEJiSX4FUNYScC4z35FYRN1wc1hO9RGLw==
+X-Received: by 2002:a05:6512:3c8:: with SMTP id w8mr16342544lfp.424.1634407836280;
+        Sat, 16 Oct 2021 11:10:36 -0700 (PDT)
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com. [209.85.208.180])
+        by smtp.gmail.com with ESMTPSA id t16sm912700lfd.159.2021.10.16.11.10.35
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 16 Oct 2021 11:10:35 -0700 (PDT)
+Received: by mail-lj1-f180.google.com with SMTP id o26so214729ljj.2
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 11:10:35 -0700 (PDT)
+X-Received: by 2002:a2e:a407:: with SMTP id p7mr22028098ljn.68.1634407835055;
+ Sat, 16 Oct 2021 11:10:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210824105824.GC96738@C02TD0UTHF1T.local>
+References: <20211016064302.165220-1-pbonzini@redhat.com> <CAHk-=wijGo_yd7GiTMcgR+gv0ESRykwnOn+XHCEvs3xW3x6dCg@mail.gmail.com>
+ <510287f2-84ae-b1d2-13b5-22e847284588@redhat.com>
+In-Reply-To: <510287f2-84ae-b1d2-13b5-22e847284588@redhat.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sat, 16 Oct 2021 11:10:19 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whZ+iCW5yMc3zuTpZrZzjb082xtVyzk3rV+S0SUNrtAAw@mail.gmail.com>
+Message-ID: <CAHk-=whZ+iCW5yMc3zuTpZrZzjb082xtVyzk3rV+S0SUNrtAAw@mail.gmail.com>
+Subject: Re: [PATCH] mm: allow huge kvmalloc() calls if they're accounted to memcg
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     KVM list <kvm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Willy Tarreau <w@1wt.eu>, Kees Cook <keescook@chromium.org>,
+        syzbot+e0de2333cbf95ea473e8@syzkaller.appspotmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 11:58:24AM +0100, Mark Rutland wrote:
-> On Thu, Aug 19, 2021 at 07:30:16PM -0700, jing yangyang wrote:
-> > sizeof when applied to a pointer typed expression gives the size of
-> > the pointer.
-> > 
-> > ./drivers/firmware/psci/psci_checker.c:158:41-47: ERROR application of sizeof to pointer
-> > 
-> > This issue was detected with the help of Coccinelle.
-> > 
-> > Reported-by: Zeal Robot <zealci@zte.com.cn>
-> > Signed-off-by: jing yangyang <jing.yangyang@zte.com.cn>
-> 
-> >From looking at the git history, we should add:
-> 
->   Fixes: 7401056de5f8d4ea ("drivers/firmware: psci_checker: stash and use topology_core_cpumask for hotplug tests)"
-> 
-> With that:
-> 
->   Acked-by: Mark Rutland <mark.rutland@arm.com>
-> 
-> Lorenzo, how do we normally direct these patches?
+On Sat, Oct 16, 2021 at 10:53 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
+>
+> Sounds good, and you'll get a pull request for that tomorrow.  Then I'll
+> send via Andrew a patch to add __vcalloc, so that the accounting is
+> restored.
 
-It seems that these patches are consistently being ignored[1][2][3]. So,
-I'll take this in my -next tree[4] before it gets lost again.
+Ahh. So you used kvmalloc() mainly because the regular vmalloc()
+doesn't do the gfp-flags.
 
-Thanks
---
-Gustavo
+We do have that "__vmalloc()" thing, but the double underscore naming
+makes it a bit unfortunate (since it tends to mean "local special use
+only").
 
-[1] https://lore.kernel.org/lkml/20200917081353.2083241-1-liushixin2@huawei.com/
-[2] https://lore.kernel.org/lkml/1606179525-63938-1-git-send-email-tiantao6@hisilicon.com/
-[3] https://lore.kernel.org/lkml/20211012024229.180058-1-davidcomponentone@gmail.com/
-[4] https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git/log/?h=for-next/kspp-misc-fixes
+I suspect you could just make "vcalloc()".
 
-> 
-> 
-> > ---
-> >  drivers/firmware/psci/psci_checker.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/firmware/psci/psci_checker.c b/drivers/firmware/psci/psci_checker.c
-> > index 9a369a2..116eb46 100644
-> > --- a/drivers/firmware/psci/psci_checker.c
-> > +++ b/drivers/firmware/psci/psci_checker.c
-> > @@ -155,7 +155,7 @@ static int alloc_init_cpu_groups(cpumask_var_t **pcpu_groups)
-> >  	if (!alloc_cpumask_var(&tmp, GFP_KERNEL))
-> >  		return -ENOMEM;
-> >  
-> > -	cpu_groups = kcalloc(nb_available_cpus, sizeof(cpu_groups),
-> > +	cpu_groups = kcalloc(nb_available_cpus, sizeof(*cpu_groups),
-> >  			     GFP_KERNEL);
-> >  	if (!cpu_groups) {
-> >  		free_cpumask_var(tmp);
-> > -- 
-> > 1.8.3.1
-> > 
-> > 
-> 
-> 
-> 
+That said, I also do wonder if we could possibly change "kvcalloc()"
+to avoid the warning. The reason I didn't like your patch is that
+kvmalloc_node() only takes a "size_t", and the overflow condition
+there is that "MAX_INT".
+
+But the "kvcalloc()" case that takes a "number of elements and size"
+should _conceptually_ warn not when the total size overflows, but when
+either number or the element size overflows.
+
+So I would also accept a patch that just changes how "kvcalloc()"
+works (or how "kvmalloc_array()" works).
+
+It's a bit annoying how we've ended up losing that "n/size"
+information by the time we hit kvmalloc().
+
+               Linus
