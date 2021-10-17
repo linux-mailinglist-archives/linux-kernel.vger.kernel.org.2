@@ -2,174 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03F6043096F
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 15:46:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82BB443096C
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 15:44:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343762AbhJQNsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 09:48:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57228 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236636AbhJQNsd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 09:48:33 -0400
-Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2C67C061765;
-        Sun, 17 Oct 2021 06:46:21 -0700 (PDT)
-From:   =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=weissschuh.net;
-        s=mail; t=1634478378;
-        bh=wR87lV2AvLHU2BiA+MBy+H4caEohoJSe1P0T82Xg4Dg=;
-        h=From:To:Cc:Subject:Date:From;
-        b=lNKuPHRHKGNVTavzu/k74VYow1C1bT2cY2gEkAt0HZv3W6RPzPdnuK8ws1GDpB86Q
-         qIn9qku6kTVoe8lEhKpMz6eCnSnSeLksV+uDEoeYltu0v9xl2uloK4ggqukd930OH+
-         tzdOH/klKNJ9yF1Talc+bBsvpxc7ukZmqw+Ui6HQ=
-To:     Eric Van Hensbergen <ericvh@gmail.com>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        v9fs-developer@lists.sourceforge.net, netdev@vger.kernel.org
-Cc:     =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] net/9p: autoload transport modules
-Date:   Sun, 17 Oct 2021 15:46:11 +0200
-Message-Id: <20211017134611.4330-1-linux@weissschuh.net>
-X-Mailer: git-send-email 2.33.1
+        id S1343754AbhJQNrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 09:47:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53412 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237530AbhJQNrB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Oct 2021 09:47:01 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 51A3A60FD8;
+        Sun, 17 Oct 2021 13:44:50 +0000 (UTC)
+Date:   Sun, 17 Oct 2021 14:49:03 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Wang Wensheng <wangwensheng4@huawei.com>
+Cc:     <lars@metafoo.de>, <alexandru.ardelean@analog.com>,
+        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <rui.xiang@huawei.com>
+Subject: Re: [PATCH -next] iio: buffer: Check the return value of
+ kstrdup_const()
+Message-ID: <20211017144903.59ee0f59@jic23-huawei>
+In-Reply-To: <20211011125846.66553-1-wangwensheng4@huawei.com>
+References: <20211011125846.66553-1-wangwensheng4@huawei.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Automatically load transport modules based on the trans= parameter
-passed to mount.
-The removes the requirement for the user to know which module to use.
+On Mon, 11 Oct 2021 12:58:46 +0000
+Wang Wensheng <wangwensheng4@huawei.com> wrote:
 
-Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
----
- include/net/9p/transport.h |  6 ++++++
- net/9p/mod.c               | 30 ++++++++++++++++++++++++------
- net/9p/trans_rdma.c        |  1 +
- net/9p/trans_virtio.c      |  1 +
- net/9p/trans_xen.c         |  1 +
- 5 files changed, 33 insertions(+), 6 deletions(-)
+> We should check the duplication of attr.name properly in
+> iio_buffer_wrap_attr() or a null-pointer-dereference would
+> occur on destroying the related sysfs file.
+> This issue is found by fault-injection.
+> 
+> BUG: kernel NULL pointer dereference, address: 0000000000000000
+> PGD 0 P4D 0
+> Oops: 0000 [#1] SMP PTI
+> RIP: 0010:strlen+0x0/0x20
+> Call Trace:
+>  kernfs_name_hash+0x1c/0xb0
+>  kernfs_find_ns+0xc6/0x160
+>  kernfs_remove_by_name_ns+0x5c/0xb0
+>  remove_files.isra.1+0x42/0x90
+>  internal_create_group+0x42f/0x460
+>  internal_create_groups+0x49/0xc0
+>  device_add+0xb5b/0xbe0
+>  ? kobject_get+0x90/0xa0
+>  cdev_device_add+0x2b/0x90
+>  __iio_device_register+0xa56/0xb40
+> 
+> Fixes: 15097c7a1adc ("iio: buffer: wrap all buffer attributes into iio_dev_attr")
+> Reported-by: Hulk Robot<hulkci@huawei.com>
+> Signed-off-by: Wang Wensheng <wangwensheng4@huawei.com>
+This version seems to be a duplicate with the version Yang Yingliang
+sent a few days later, but that version has the free of the iio_attr which
+is missing here.
 
-diff --git a/include/net/9p/transport.h b/include/net/9p/transport.h
-index 3eb4261b2958..581555d88cba 100644
---- a/include/net/9p/transport.h
-+++ b/include/net/9p/transport.h
-@@ -11,6 +11,8 @@
- #ifndef NET_9P_TRANSPORT_H
- #define NET_9P_TRANSPORT_H
- 
-+#include <linux/module.h>
-+
- #define P9_DEF_MIN_RESVPORT	(665U)
- #define P9_DEF_MAX_RESVPORT	(1023U)
- 
-@@ -55,4 +57,8 @@ void v9fs_unregister_trans(struct p9_trans_module *m);
- struct p9_trans_module *v9fs_get_trans_by_name(char *s);
- struct p9_trans_module *v9fs_get_default_trans(void);
- void v9fs_put_trans(struct p9_trans_module *m);
-+
-+#define MODULE_ALIAS_9P(transport) \
-+	MODULE_ALIAS("9p-" transport)
-+
- #endif /* NET_9P_TRANSPORT_H */
-diff --git a/net/9p/mod.c b/net/9p/mod.c
-index 5126566850bd..aa38b8b0e0f6 100644
---- a/net/9p/mod.c
-+++ b/net/9p/mod.c
-@@ -12,6 +12,7 @@
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
- 
- #include <linux/module.h>
-+#include <linux/kmod.h>
- #include <linux/errno.h>
- #include <linux/sched.h>
- #include <linux/moduleparam.h>
-@@ -87,12 +88,7 @@ void v9fs_unregister_trans(struct p9_trans_module *m)
- }
- EXPORT_SYMBOL(v9fs_unregister_trans);
- 
--/**
-- * v9fs_get_trans_by_name - get transport with the matching name
-- * @s: string identifying transport
-- *
-- */
--struct p9_trans_module *v9fs_get_trans_by_name(char *s)
-+static struct p9_trans_module *_p9_get_trans_by_name(char *s)
- {
- 	struct p9_trans_module *t, *found = NULL;
- 
-@@ -106,6 +102,28 @@ struct p9_trans_module *v9fs_get_trans_by_name(char *s)
- 		}
- 
- 	spin_unlock(&v9fs_trans_lock);
-+
-+	return found;
-+}
-+
-+/**
-+ * v9fs_get_trans_by_name - get transport with the matching name
-+ * @s: string identifying transport
-+ *
-+ */
-+struct p9_trans_module *v9fs_get_trans_by_name(char *s)
-+{
-+	struct p9_trans_module *found = NULL;
-+
-+	found = _p9_get_trans_by_name(s);
-+
-+#ifdef CONFIG_MODULES
-+	if (!found) {
-+		request_module("9p-%s", s);
-+		found = _p9_get_trans_by_name(s);
-+	}
-+#endif
-+
- 	return found;
- }
- EXPORT_SYMBOL(v9fs_get_trans_by_name);
-diff --git a/net/9p/trans_rdma.c b/net/9p/trans_rdma.c
-index af0a8a6cd3fd..480fd27760d7 100644
---- a/net/9p/trans_rdma.c
-+++ b/net/9p/trans_rdma.c
-@@ -767,6 +767,7 @@ static void __exit p9_trans_rdma_exit(void)
- 
- module_init(p9_trans_rdma_init);
- module_exit(p9_trans_rdma_exit);
-+MODULE_ALIAS_9P("rdma");
- 
- MODULE_AUTHOR("Tom Tucker <tom@opengridcomputing.com>");
- MODULE_DESCRIPTION("RDMA Transport for 9P");
-diff --git a/net/9p/trans_virtio.c b/net/9p/trans_virtio.c
-index 490a4c900339..bd5a89c4960d 100644
---- a/net/9p/trans_virtio.c
-+++ b/net/9p/trans_virtio.c
-@@ -794,6 +794,7 @@ static void __exit p9_virtio_cleanup(void)
- 
- module_init(p9_virtio_init);
- module_exit(p9_virtio_cleanup);
-+MODULE_ALIAS_9P("virtio");
- 
- MODULE_DEVICE_TABLE(virtio, id_table);
- MODULE_AUTHOR("Eric Van Hensbergen <ericvh@gmail.com>");
-diff --git a/net/9p/trans_xen.c b/net/9p/trans_xen.c
-index 3ec1a51a6944..e264dcee019a 100644
---- a/net/9p/trans_xen.c
-+++ b/net/9p/trans_xen.c
-@@ -552,6 +552,7 @@ static int p9_trans_xen_init(void)
- 	return rc;
- }
- module_init(p9_trans_xen_init);
-+MODULE_ALIAS_9P("xen");
- 
- static void p9_trans_xen_exit(void)
- {
+Thanks,
 
-base-commit: fac3cb82a54a4b7c49c932f96ef196cf5774344c
--- 
-2.33.1
+Jonathan
+
+> ---
+>  drivers/iio/industrialio-buffer.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
+> index c648e9553edd..f4011c477bac 100644
+> --- a/drivers/iio/industrialio-buffer.c
+> +++ b/drivers/iio/industrialio-buffer.c
+> @@ -1312,6 +1312,8 @@ static struct attribute *iio_buffer_wrap_attr(struct iio_buffer *buffer,
+>  	iio_attr->buffer = buffer;
+>  	memcpy(&iio_attr->dev_attr, dattr, sizeof(iio_attr->dev_attr));
+>  	iio_attr->dev_attr.attr.name = kstrdup_const(attr->name, GFP_KERNEL);
+> +	if (!iio_attr->dev_attr.attr.name)
+> +		return NULL;
+>  	sysfs_attr_init(&iio_attr->dev_attr.attr);
+>  
+>  	list_add(&iio_attr->l, &buffer->buffer_attr_list);
 
