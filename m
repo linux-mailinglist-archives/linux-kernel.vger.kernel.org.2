@@ -2,70 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F02E9430A01
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 17:26:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2FAE430A04
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 17:27:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242036AbhJQP3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 11:29:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51370 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237062AbhJQP26 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 11:28:58 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35830C06161C;
-        Sun, 17 Oct 2021 08:26:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-        :In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=70ZKfllBjZHQa1J4GUObwLCze3CU8wCeQiJAaBSPZwY=; b=C4UNljiRQnxqpGr/gZae9CnIWT
-        j7Uyl2yYks8L0q03i4Yj6wzbXHZfLRSnndsp7bwE+G+8kSeY6JWp3qOqYzPXZm7xgouB3Y3hUQhtB
-        Pk4Hz6DQ4fJj9JpSQmWL3lPFrfCQD6hkq6x6Rwnt4SbkGg8suXrp9MdS/9GwqmQ6jlHlFEgk2ZXtF
-        TIxTzVAunQ+vPdosDdlLDCl2JNMPGbY3ukZHFD5HB/10NLbW6nDO6fT48v5VJRLhpzgc3wB6XGEom
-        dyYnzfPdzBD/IPULfN37GdDBH1ku04zKJuWqNo9uyCNES4imNkH0NlqGgJMRJ5knyNRf5ELnaJOvh
-        Cfc6kr6w==;
-Received: from [2602:306:c5a2:a380:b27b:25ff:fe2c:51a8]
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mc83d-00ANfc-5J; Sun, 17 Oct 2021 15:26:41 +0000
-Subject: Re: [PATCH 00/13] block: add_disk() error handling stragglers
-To:     Luis Chamberlain <mcgrof@kernel.org>, axboe@kernel.dk,
-        mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
-        jim@jtan.com, minchan@kernel.org, ngupta@vflare.org,
-        senozhatsky@chromium.org, richard@nod.at,
-        miquel.raynal@bootlin.com, vigneshr@ti.com,
-        dan.j.williams@intel.com, vishal.l.verma@intel.com,
-        dave.jiang@intel.com, ira.weiny@intel.com, kbusch@kernel.org,
-        hch@lst.de, sagi@grimberg.me
-Cc:     linux-block@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-mtd@lists.infradead.org, nvdimm@lists.linux.dev,
-        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20211015235219.2191207-1-mcgrof@kernel.org>
-From:   Geoff Levand <geoff@infradead.org>
-Message-ID: <a31970d6-8631-9d9d-a36f-8f4fcebfb1e6@infradead.org>
-Date:   Sun, 17 Oct 2021 08:26:33 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S1343926AbhJQP3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 11:29:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52218 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237062AbhJQP3b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Oct 2021 11:29:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 46A4260FE3;
+        Sun, 17 Oct 2021 15:27:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634484442;
+        bh=1IZIYpWcRRGo1hMpX747PkvJcepTsaddkzuhvsbA1ak=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WDCTv9T2R6sikzDWkmR7Lvja37jP0rWvAfH25HQkG1c0oowVGnnz8HX7A0BCGH7Z8
+         KcVtNB37xrIEKOumA4JrQ6DT0IJ4kSf/DC1VcL46GMc+cvkFrNUmNjhfDyalOMBma/
+         CPSCZgrC5xUbqB/5Wt9pY9tgGd1LXvbR05Bcu8FAdptdXfELoBlYlmfIM53ZwPrQEG
+         cibsORm1qGHsWjoagJZ9iLvPQkIXFmNuMBxV8A1pDSDsqdrVdePEui0S6DmhQvnWM2
+         bOLk2mUycicG8Sr5GJu6vyBpOe5TVSqwojLqldKtKx2ca0er6bFtYNDzL+x/V0M4qQ
+         hQd4bqSaqV5rQ==
+Date:   Sun, 17 Oct 2021 17:27:18 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Yang Yingliang <yangyingliang@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org
+Subject: Re: [PATCH] i2c: core: Fix possible memleak in
+ i2c_new_client_device()
+Message-ID: <YWxA1nyTdFbwFD4N@ninjato>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org
+References: <20211015095541.3611223-1-yangyingliang@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20211015235219.2191207-1-mcgrof@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="QU/iwWlS8CwwXil6"
+Content-Disposition: inline
+In-Reply-To: <20211015095541.3611223-1-yangyingliang@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Luis,
 
-On 10/15/21 4:52 PM, Luis Chamberlain wrote:
-> This patch set consists of al the straggler drivers for which we have
-> have no patch reviews done for yet. I'd like to ask for folks to please
-> consider chiming in, specially if you're the maintainer for the driver.
-> Additionally if you can specify if you'll take the patch in yourself or
-> if you want Jens to take it, that'd be great too.
+--QU/iwWlS8CwwXil6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Do you have a git repo with the patch set applied that I can use to test with?
 
-Thanks.
+> In error path after calling i2c_dev_set_name(), the put_device()
+> should be used to give up the device reference, then the name
+> allocated in dev_set_name() will be freed in kobject_cleanup().
 
--Geoff
+I don't see it. dev_set_name does not call device_get, so why should we
+call device_put on failure? No other user of dev_set_name seems to do
+this. So, if this is an imbalance, where does the unmatched get_device
+really come from?
+
+>=20
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+> ---
+>  drivers/i2c/i2c-core-base.c | 13 +++++++------
+>  1 file changed, 7 insertions(+), 6 deletions(-)
+>=20
+> diff --git a/drivers/i2c/i2c-core-base.c b/drivers/i2c/i2c-core-base.c
+> index 54964fbe3f03..190d4fd5e594 100644
+> --- a/drivers/i2c/i2c-core-base.c
+> +++ b/drivers/i2c/i2c-core-base.c
+> @@ -1047,8 +1047,6 @@ i2c_new_client_device(struct i2c_adapter *adap, str=
+uct i2c_board_info const *inf
+>  	client->dev.of_node =3D of_node_get(info->of_node);
+>  	client->dev.fwnode =3D info->fwnode;
+> =20
+> -	i2c_dev_set_name(adap, client, info);
+> -
+>  	if (info->swnode) {
+>  		status =3D device_add_software_node(&client->dev, info->swnode);
+>  		if (status) {
+> @@ -1059,17 +1057,20 @@ i2c_new_client_device(struct i2c_adapter *adap, s=
+truct i2c_board_info const *inf
+>  		}
+>  	}
+> =20
+> +	i2c_dev_set_name(adap, client, info);
+>  	status =3D device_register(&client->dev);
+> -	if (status)
+> -		goto out_remove_swnode;
+> +	if (status) {
+> +		device_remove_software_node(&client->dev);
+> +		of_node_put(info->of_node);
+> +		put_device(&client->dev);
+> +		return ERR_PTR(status);
+> +	}
+> =20
+>  	dev_dbg(&adap->dev, "client [%s] registered with bus id %s\n",
+>  		client->name, dev_name(&client->dev));
+> =20
+>  	return client;
+> =20
+> -out_remove_swnode:
+> -	device_remove_software_node(&client->dev);
+>  out_err_put_of_node:
+>  	of_node_put(info->of_node);
+>  out_err:
+> --=20
+> 2.25.1
+>=20
+
+--QU/iwWlS8CwwXil6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmFsQNIACgkQFA3kzBSg
+Kbbd4w//Qs1pHbM/qY2Ll7hRxFMvEbAN3H5n/7HjEKk0mp+M03ZRfN/FwjaZrQex
+FlsqfhGgJi4MA+ba4uV8mazCb5h7j6aXAT/BdEhaotjmNGoU3lmB5GGHNwyDO6Qv
+CgCY/jLUUItiS+oa8rA20Wsyw4ayspuV1PjvirRsnWXptkaCRs/2OqfvVR9sO6k1
+lVDRoLlDoojyg1xUCpgnh58BuX5FK9p85QhIPKXfvy4MrJZsLMqEVJuVICkLDx8p
+2QCO5qRez1FMSCZ7mtYmQJKrLWAecIXixaglW3YUyt8SQyOnLYGyjc7ihstHErQz
+fr5h6/tW2ll22ePe6C8Wge7vOHag48HFgKWXS61aEdoCyFXHBveExm5yOtY2po5p
+3iSXqbBjHsnT3RpQBOFf8n52zvBDnPhpenPLF/e6vCSELh/6K4Z+v4QLeSRn4DYE
+myb+QmyxRJAyINGAVEGP6f1gX+10imIyoQUqLNfwghsEyy3RAaWAzfxmc6dhHyE7
+Z5U2ryEcQkjUHJNQ2SQ7jM/6HCZkkWyIwfOFBYJtI+u++dQfB+We6TXhlnpALVVK
+QmG+x+W6qPB92imD6Ni2HFKFWyhiZzwhFmkL4hv5AHCxX3cBADeDfvd6aV3vQfmG
+He/IMWOo1lDs4JD0TQOsyhm+6OwiusSFn54nUI6ncRPki/rIklg=
+=Vos8
+-----END PGP SIGNATURE-----
+
+--QU/iwWlS8CwwXil6--
