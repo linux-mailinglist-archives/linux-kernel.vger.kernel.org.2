@@ -2,123 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 557C2430A73
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 18:16:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B472430A77
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 18:19:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242555AbhJQQSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 12:18:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34116 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242551AbhJQQSg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 12:18:36 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E3D8C061768;
-        Sun, 17 Oct 2021 09:16:27 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id e7so13552706pgk.2;
-        Sun, 17 Oct 2021 09:16:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=9w/jSlnBTBOAMBruZ7F0bYt9ffERuon27iktHkxRroI=;
-        b=q11AkCm4AcMtcuzs7/IU+6LYn6G0eySGdkAhKi0/cczuXDIzkk9/3b7kKG5YDRHmfg
-         f6gAtiex7PDyWurvfCt8PBDYo2e5iNBluYjFT+jtgdAgHb7F8OSXE4kXvhm0ZICkv6mv
-         T8wQrxKpISNvusM4d5hnLte5U5G7heYbGIWVZgVNHIUs3XGX8pwFpL8IRjyB1zG+XF2G
-         fGCqdMol0jK9mB+676R9Qv5+UWypCMV3nCsl/UD5HxSZcb5UNN9S2Ykv5V+1GXq8SEsT
-         fvfO3ribDNUjeKt+AE1Ab+J+M6KXxDFGYBsn9baMn1C8gMfm7nW7dmsP8Lmvh+Ob9uqR
-         QOXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=9w/jSlnBTBOAMBruZ7F0bYt9ffERuon27iktHkxRroI=;
-        b=EKENOy+7PbGH9s3oLtMTokkn00XfrK7QBqx5mlnIMLMlWU3ywi7IQSe4qaUeXI1L08
-         GGlYaoUUfRAUVvQO7qWTyPEHYrCAzw2GDr2xUAEfaKeUp3jgiAUFvXlDjriHTkXoy57E
-         +Y2C/f/cg4ZlFufBOrCxV8XX9HZTm+PRQR+2hJNd23oda0MLD2pKh4mt7FvRJ3Q+Vcou
-         mrchMcHH0JBRy838tMTJb/wuWAG4OFSfwhcCQ0Bluc8c2VVMIqVX+zzGbs+jOCtRR91d
-         wlR+kaeUnIZ3WSZ7LRlPqFOvFDDBE/Gwb1nmJ+vK0+RLxqSFbPmWk6sHzPP5gn6WzMKh
-         3dAQ==
-X-Gm-Message-State: AOAM533sgd1DJTQpj1HmPb8gyO/+v4bj/F5+rnizpTLnJazlqHWurgwf
-        edaK8TtRLHaEBmGVXDmDHHU=
-X-Google-Smtp-Source: ABdhPJwPkXXEgV4YgSuir/rTT5JVAZSG3vDmS5P4MEZzqiJR51hn9ilptQn9OVGITxNDICLjZpELxg==
-X-Received: by 2002:a63:b51d:: with SMTP id y29mr13502287pge.75.1634487386673;
-        Sun, 17 Oct 2021 09:16:26 -0700 (PDT)
-Received: from sbwpb-arch.flets-east.jp ([2400:4052:6980:3800:dba7:2b1f:3f26:a5ec])
-        by smtp.gmail.com with ESMTPSA id c11sm16591363pji.38.2021.10.17.09.16.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 Oct 2021 09:16:26 -0700 (PDT)
-From:   Tsuchiya Yuto <kitakar@gmail.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>, Andy Shevchenko <andy@kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RFC PATCH 1/1] ACPI / PMIC: Add i2c address to intel_pmic_bytcrc driver
-Date:   Mon, 18 Oct 2021 01:15:23 +0900
-Message-Id: <20211017161523.43801-2-kitakar@gmail.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211017161523.43801-1-kitakar@gmail.com>
-References: <20211017161523.43801-1-kitakar@gmail.com>
+        id S242573AbhJQQVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 12:21:51 -0400
+Received: from ixit.cz ([94.230.151.217]:43472 "EHLO ixit.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242540AbhJQQVu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Oct 2021 12:21:50 -0400
+Received: from [192.168.1.138] (ip-89-176-96-70.net.upcbroadband.cz [89.176.96.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ixit.cz (Postfix) with ESMTPSA id 3651C24E6D;
+        Sun, 17 Oct 2021 18:19:37 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
+        t=1634487577;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=wWjQh1NDpDiGhtuAQnWHLqSqeC+APKGhQWQnsGPgJHE=;
+        b=XoN2T7JZ0Nvu6lGpniTJNBaigXp3/2OITiaJMVY7+1Nu43G4dusA/he+LDwTFEW6Z/quov
+        5OiE5jKyanylzRmWDl0OdI13ui4e1GHyouKFZqj6X62nasmd0wdW4Nqum5XVVgwQwV8qGd
+        y0qmxBrAdg4FQ0stWO+jZ6UdYXhWHd8=
+Date:   Sun, 17 Oct 2021 18:18:05 +0200
+From:   David Heidelberg <david@ixit.cz>
+Subject: Re: [PATCH v3] dt-bindings: net: nfc: nxp,pn544: Convert txt bindings
+ to yaml
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Rob Herring <robh@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        devicetree@vger.kernel.org, ~okias/devicetree@lists.sr.ht
+Message-Id: <5MQ41R.3H1Q29VJH3GC3@ixit.cz>
+In-Reply-To: <1a315cff-fa34-0fac-8312-9a96d56966c7@canonical.com>
+References: <20211009161941.41634-1-david@ixit.cz>
+        <1633894316.431235.3158667.nullmailer@robh.at.kernel.org>
+        <1a315cff-fa34-0fac-8312-9a96d56966c7@canonical.com>
+X-Mailer: geary/40.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Microsoft Surface 3 (uses Intel's Atom Cherry Trail SoC), executing
-intel_soc_pmic_exec_mipi_pmic_seq_element() results in the following
-error message:
 
-        [ 7196.356682] intel_soc_pmic_exec_mipi_pmic_seq_element: Not implemented
-        [ 7196.356686] intel_soc_pmic_exec_mipi_pmic_seq_element: i2c-addr: 0x6e reg-addr 0x57 value 0x63 mask 0xff
 
-Surface 3 uses the PMIC device INT33FD, and the DSDT describes its _HRV
-value is 0x02 [1]:
+On Sun, Oct 10 2021 at 23:01:24 +0200, Krzysztof Kozlowski 
+<krzysztof.kozlowski@canonical.com> wrote:
+> On 10/10/2021 21:31, Rob Herring wrote:
+>>  On Sat, 09 Oct 2021 18:19:42 +0200, David Heidelberg wrote:
+>>>  Convert bindings for NXP PN544 NFC driver to YAML syntax.
+>>> 
+>>>  Signed-off-by: David Heidelberg <david@ixit.cz>
+>>>  ---
+>>>  v2
+>>>   - Krzysztof is a maintainer
+>>>   - pintctrl dropped
+>>>   - 4 space indent for example
+>>>   - nfc node name
+>>>  v3
+>>>   - remove whole pinctrl
+>>>   .../bindings/net/nfc/nxp,pn544.yaml           | 61 
+>>> +++++++++++++++++++
+>>>   .../devicetree/bindings/net/nfc/pn544.txt     | 33 ----------
+>>>   2 files changed, 61 insertions(+), 33 deletions(-)
+>>>   create mode 100644 
+>>> Documentation/devicetree/bindings/net/nfc/nxp,pn544.yaml
+>>>   delete mode 100644 
+>>> Documentation/devicetree/bindings/net/nfc/pn544.txt
+>>> 
+>> 
+>>  Running 'make dtbs_check' with the schema in this patch gives the
+>>  following warnings. Consider if they are expected or the schema is
+>>  incorrect. These may not be new warnings.
+>> 
+>>  Note that it is not yet a requirement to have 0 warnings for 
+>> dtbs_check.
+>>  This will change in the future.
+>> 
+>>  Full log is available here: 
+>> https://patchwork.ozlabs.org/patch/1538804
+>> 
+>> 
+>>  pn547@28: 'clock-frequency' is a required property
+>>  	arch/arm64/boot/dts/qcom/msm8992-msft-lumia-octagon-talkman.dt.yaml
+>>  	arch/arm64/boot/dts/qcom/msm8994-msft-lumia-octagon-cityman.dt.yaml
+>> 
+> 
+> I think clock-frequency should be dropped from I2C slave device.
+> Similarly to this one:
+> https://lore.kernel.org/linux-nfc/f955726a-eb2d-7b3e-9c5f-978358710eb6@canonical.com/T/#u
+> 
+You have right, it isn't parsed by driver and values match parent i2c 
+bus. I dropped it in next revision.
 
-        Scope (PCI0.I2C7)
-        {
-            Device (PMIC)
-            {
-                Name (_ADR, Zero)  // _ADR: Address
-                Name (_HID, "INT33FD" /* Intel Baytrail Power Management IC */)  // _HID: Hardware ID
-                Name (_CID, "INT33FD" /* Intel Baytrail Power Management IC */)  // _CID: Compatible ID
-                Name (_DDN, "CRYSTAL COVE+ AIC")  // _DDN: DOS Device Name
-                Name (_HRV, 0x02)  // _HRV: Hardware Revision
-                Name (_UID, One)  // _UID: Unique ID
-                Name (_DEP, Package (0x01)  // _DEP: Dependencies
-                {
-                    I2C7
-                })
-        [...]
+David
 
-Due to this _HRV value, intel_pmic_bytcrc is used as the PMIC driver.
-However, the i2c address is currently not defined in this driver.
-This commit adds the missing i2c address 0x6e to the intel_pmic_bytcrc
-driver.
+> 
+> Best regards,
+> Krzysztof
 
-[1] https://github.com/linux-surface/acpidumps/blob/f8db3d150815aa21530635b7e646eee271e3b8fe/surface_3/dsdt.dsl#L10868
-
-References: cc0594c4b0ef ("ACPI / PMIC: Add i2c address for thermal control")
-Signed-off-by: Tsuchiya Yuto <kitakar@gmail.com>
----
- drivers/acpi/pmic/intel_pmic_bytcrc.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/acpi/pmic/intel_pmic_bytcrc.c b/drivers/acpi/pmic/intel_pmic_bytcrc.c
-index 2a692cc4b7ae..a64f50a42c54 100644
---- a/drivers/acpi/pmic/intel_pmic_bytcrc.c
-+++ b/drivers/acpi/pmic/intel_pmic_bytcrc.c
-@@ -282,6 +282,7 @@ static struct intel_pmic_opregion_data intel_crc_pmic_opregion_data = {
- 	.power_table_count= ARRAY_SIZE(power_table),
- 	.thermal_table	= thermal_table,
- 	.thermal_table_count = ARRAY_SIZE(thermal_table),
-+	.pmic_i2c_address = 0x6e,
- };
- 
- static int intel_crc_pmic_opregion_probe(struct platform_device *pdev)
--- 
-2.33.1
 
