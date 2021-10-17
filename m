@@ -2,97 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 068084308A2
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 14:27:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD3054308A8
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 14:29:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242183AbhJQM31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 08:29:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39580 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236317AbhJQM30 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 08:29:26 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81FFEC061765
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 05:27:16 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id e12so35802362wra.4
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 05:27:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=caezwCrYl8J1Db0QePppJD41dRvS6Lu7c4xekHw9rc4=;
-        b=ogmUBzFMtrtluJm3LUTqmaT3xo5LmNaCfiKBDJfpkOna8f++9MsCVdJN50yligWLWW
-         hEm3iq2vrBpiP2gERFUx9lJh/6lpuevO2zC29sADMUWrP0nWnEZiSAB5L1TXZrh3Uds0
-         XWc4TkTPNc5LXYW7N4biGbzW1GdjvskA9F7tc4JE3PBLM+knEMGA232U23+XehALgJnx
-         midr0kGTqtt4mVvi0WbsXIxdQ+dFlFX8Sos/HWGjyh2Zc10DHjYNS+ZgRNf5SnlxBbDH
-         En5nPcptw02TFAlnGI/8JrcX5hWlzPcm/UFp4Z9F9DbLCzDdPgFvPxD/ZnJ3YeawQ5VS
-         3jzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=caezwCrYl8J1Db0QePppJD41dRvS6Lu7c4xekHw9rc4=;
-        b=vDWzPa+Mj0oNm9oqtJ5E8OmARG23DDtJgH/XrcZRCm2D9kKPnPpVyds4714pPEqZDV
-         nDXeNqW324AwQ5QLEAxOX9OpokbZA35gK/91J6QukXDns+zKeVFAttdSATcuGHjG3qsU
-         mH3jsc6cjHvracbZpflZC0FOfpR5QNXMhBt7BLfdeq0VCX0rv8776SvrnJSoyxXDMtNP
-         GfmEQ/uutRnxQIl3wzTTgL+A6dhHfyXIWN6Eg90RDYNT9e1RyOUdvxrtqMGIEqNpYEZf
-         qsDQlr2OCKgwLdfJxlN0FKNn51gXn6SCYBgmK5QkT0bL0op51sn2eZswn8b8Yhg7WHza
-         LYpA==
-X-Gm-Message-State: AOAM531Z71YSwI4tHEdWXbNt7IjN3ngH2o8Hy82LwmuvLUBrJQk6Jcf6
-        CYnM3ydHPMLuNtR23/67WNIZlAWlB4i4jNfs
-X-Google-Smtp-Source: ABdhPJzvGs5Kt+CDR6iUtIq0Pynnn7nw1r8K/anNW4nGI6k1FzSzZBcNGXx9uPVf0gRWbUHvA5OC8Q==
-X-Received: by 2002:adf:aad7:: with SMTP id i23mr27699723wrc.209.1634473634405;
-        Sun, 17 Oct 2021 05:27:14 -0700 (PDT)
-Received: from Mononoke (56.red-88-27-247.staticip.rima-tde.net. [88.27.247.56])
-        by smtp.gmail.com with ESMTPSA id o12sm9713965wrv.78.2021.10.17.05.27.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 Oct 2021 05:27:13 -0700 (PDT)
-Date:   Sun, 17 Oct 2021 14:27:12 +0200
-From:   Sebastian Luchetti <luchetti.linux@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: rts5208: ms.c: Remove two udelay calls and use
- usleep_range instead
-Message-ID: <YWwWoB3+4HQTD4/t@Mononoke>
+        id S245649AbhJQMa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 08:30:59 -0400
+Received: from mout.gmx.net ([212.227.15.15]:49225 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S245634AbhJQMa4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Oct 2021 08:30:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1634473696;
+        bh=cbmUGzU1hyhfVw27QCJZ4UFCSB3owM8yg3KH4pv2Meo=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=FgQF1bnMfZpqiLiWcwmo4tKY92EvGGpLSrDNF8O8Pl2Ok7TFaQFmXtHPkpiNnWcTb
+         +kVIye22YcImxnUMoO/R3nPQLDOuma5QAVqihArxeVkZUN0TWSjXk0iN1w4FOmzGg3
+         aVQFHOxFlgTm/24TudrTjM59RMRGfTkjOhDal5YA=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [157.180.225.22] ([157.180.225.22]) by web-mail.gmx.net
+ (3c-app-gmx-bs33.server.lan [172.19.170.85]) (via HTTP); Sun, 17 Oct 2021
+ 14:28:16 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Message-ID: <trinity-b64203a5-8e23-4d1c-afd1-a29afa69f8f6-1634473696601@3c-app-gmx-bs33>
+From:   Frank Wunderlich <frank-w@public-files.de>
+To:     Daniel Golle <daniel@makrotopia.org>
+Cc:     Nick <vincent@systemli.org>, Kalle Valo <kvalo@codeaurora.org>,
+        nbd@nbd.name, lorenzo.bianconi83@gmail.com, ryder.lee@mediatek.com,
+        davem@davemloft.net, kuba@kernel.org, matthias.bgg@gmail.com,
+        sean.wang@mediatek.com, shayne.chen@mediatek.com,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Robert Foss <robert.foss@linaro.org>
+Subject: Aw: Re: [RFC v2] mt76: mt7615: mt7622: fix ibss and meshpoint
+Content-Type: text/plain; charset=UTF-8
+Date:   Sun, 17 Oct 2021 14:28:16 +0200
+Importance: normal
+Sensitivity: Normal
+In-Reply-To: <YWGXiExg1uBIFr2c@makrotopia.org>
+References: <20211007225725.2615-1-vincent@systemli.org>
+ <87czoe61kh.fsf@codeaurora.org>
+ <274013cd-29e4-9202-423b-bd2b2222d6b8@systemli.org>
+ <YWGXiExg1uBIFr2c@makrotopia.org>
+X-UI-Message-Type: mail
+X-Priority: 3
+X-Provags-ID: V03:K1:fyBM2xVbitALniHvauTUD7yrO0uOEc4mCU0F1K23UQXJGTTN449orREFI7R6/jIwk2Gfz
+ +/t5YHtCN79gYYBepZq88+TxCl9EOmLon24tVUZtoEA+yhKSKkYwyZfIMvm4BmHiBOooqXdvcPkN
+ 2tiEOmsT8A75bnUmNG3cwMe2lVBuOhH9OQ96pnvWguNt1I8QU8ooFGKgHp7PWQok+ckMlwWMpQnU
+ DCRkLgt6buZvFOvW9LKpt8RMxF+gVj07Jt+pnBeV6TmBIIY5cOfKzjCvRfR697xToQ48ZFR4+kSg
+ Ec=
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:uRD9Evc6puo=:G4Jl5nlDqhYHEAGiTmwbT9
+ B4HxHhEQJFhMTmBBoc65QLaRQ+84jKSXRdt59yACNSSbcCvyyGLvnrwSeO2xVx5jBnmJn/eMM
+ z5HhMUlK4WpOrvAoD5QdWjiNvEiZrPiWfGk7WOXa+BDfgAP9dBZzeXQNRptwumLi1LDGEY0+3
+ Q3jjuyfFqb4wN/PWx36xsnYAKK66Z7KL4z1nOmkhWc1UXcetmdrWzsYIb3h4YrWSPIC9gk+DP
+ c4hILA67s3n35PnK2nQJkCHwqGB4ngTOQZBfSDAJXxxvghncAfXIAohXT+9pLtrgj2o4+MSCo
+ VBJO8EtTsIMhJ/z6R1HxiHVOyi2RSGKvdY+fAQ5Y5Ptnb5R2pzM56i5wmIITBA+BPWtrsN0ei
+ 1ZM+BPGhBZTsWFGii7Q5KOVsFm/KiNtwC4FpLXyRhhzEXADby7Wll0Iaorhx/AiY4xeF/7oIQ
+ DuEOOSsnV5vltv7sEUCB00SIPWnSske6NpOh9hxMS150uB75Uy10lSVUddwQbWvC2IrZ4RkiE
+ BRrlxcKZmA5IWfHBU8/4iMAFz2nLGmL4ySQ+0B0CC9xN521KUMjlFkGTxalvCq9mZ2b9muquX
+ wsL7buDtbeD4iQVs8khWkueC1UyJMRmyL+wPVPsbQbvR2skb+cADRMI269FjG/+AUjmjox6aC
+ EuTLt25a8zAvN1KGXCcEn/6StV8u8DB236SL04zPCNRwkhKrD/x5laTLaKYGcJUATGoIF/LKI
+ xAzkrGay/GV/iFmBg9w26NP8IX8TfSCwKUKtp3iUHVI3b+wwpFXAX605EOdKFmo4FXPWTcEEs
+ 4X+LBRj
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes the issue:
-CHECK: usleep_range is preferred over udelay; see
-Documentation/timers/timers-howto.txt
-in two occurrences.
+> Gesendet: Samstag, 09. Oktober 2021 um 15:22 Uhr
+> Von: "Daniel Golle" <daniel@makrotopia.org>
 
-Signed-off-by: Sebastian Luchetti <luchetti.linux@gmail.com>
----
- drivers/staging/rts5208/ms.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> Does Mesh+AP or Ad-Hoc+AP also work on MT7622 and does it still work on
+> MT7615E card with your patch applied?
 
-diff --git a/drivers/staging/rts5208/ms.c b/drivers/staging/rts5208/ms.c
-index 2a6fab5c117a..7292c8f013fd 100644
---- a/drivers/staging/rts5208/ms.c
-+++ b/drivers/staging/rts5208/ms.c
-@@ -3236,7 +3236,7 @@ static int ms_write_multiple_pages(struct rtsx_chip *chip, u16 old_blk,
- 			return STATUS_FAIL;
- 		}
- 
--		udelay(30);
-+		usleep_range(27, 32);
- 
- 		rtsx_init_cmd(chip);
- 
-@@ -4158,7 +4158,7 @@ int mg_set_ICV(struct scsi_cmnd *srb, struct rtsx_chip *chip)
- 
- #ifdef MG_SET_ICV_SLOW
- 	for (i = 0; i < 2; i++) {
--		udelay(50);
-+		usleep_range(47, 52);
- 
- 		rtsx_init_cmd(chip);
- 
--- 
-2.30.2
+tested bananapi-r2 with mt7615 and bananapi-r64 with internal mt7622-wmac
 
+ibss/ad-hoc: working
+AP-Mode: still working
+
+regards Frank
