@@ -2,157 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68027430CE3
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 01:33:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CF5F430CEC
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 01:51:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233866AbhJQXfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 19:35:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44378 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232246AbhJQXfu (ORCPT
+        id S1344774AbhJQXyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 19:54:06 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:43397 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232246AbhJQXyF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 19:35:50 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39129C06161C;
-        Sun, 17 Oct 2021 16:33:40 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id ls18-20020a17090b351200b001a00250584aso13206442pjb.4;
-        Sun, 17 Oct 2021 16:33:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=P7aNeUKcIw+FFmjRjLdtQbrg8hRE0vUHKGwmbGg3MsQ=;
-        b=LJCSIzns44P4F4e4GNg26v7yJxkermL6x6abN9HokumRULDJTDzPntDXK9xcY1VEou
-         eCpJZznzBR8m0UJvJQ9X9PiQKcj8zwVCxqXh6lCK5o2H4k8WRwpFp0RvJwPCGewTdkWV
-         BaFMPsa8vn7VH4WL38VKjaN1+55OrYWicP/RSmK1earac9fgMu5+/vcFIiRRtVDpbyt4
-         CIoGbGzpC5t/rhtsAiYt/ic/bAEsEJvEoJ2rEELMIVK7+XVNmmg7ZXpnPorxLTnW3R1Y
-         91jDoOzESFXMNwmr+gIwJbeVxq0jlviz2p+lWe/idMzmOpIAx+oa72/EPqm5WGKYHonU
-         aNPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=P7aNeUKcIw+FFmjRjLdtQbrg8hRE0vUHKGwmbGg3MsQ=;
-        b=uYgDpBEFKzkUNks7TszWb80QPOjxUeEot0Gx7ALGgSVrvBwuErRGVvI14JLqfyvOFY
-         VWqhGMqSnax7YRsKD3goc/gcAb8jFO1ykvODoQpIIID6NMmocLGGN4wqzcVJxyb2pml3
-         RBtCaCXuiMUdvVkygaVoase3tTROH+63gLGM8Huq+ajcYEbiIlOa/6YItTZAJL3dJ2jM
-         r5VN1kD4JJ7e9ETn8CeL/jpST1Q+nW9ti1A/EwXiprXuFle3+YvczhuH0+1F8IIK6bgk
-         pSCI/LkvwawZ6/SKpSifgTH3GX0Ki1bFspVy19KkZIsMwbznzQ6JKxiWygrj3CadXBpd
-         gzWg==
-X-Gm-Message-State: AOAM531VkyESIU6zeOsWhYgjcdZ6cu5Dl5QtmU9I5a7Jqzn7uQAzdcO9
-        wbFaFrENkKSC+O+b0iKUdSjDfoLZ4RA=
-X-Google-Smtp-Source: ABdhPJz68PwIQIzu5Lj9RNcIxYt3YdlO1S9xwFTW+ltl/3v7cAe4gNoddTizDhk/NRqq9h1g8Ca/Bw==
-X-Received: by 2002:a17:90b:1a91:: with SMTP id ng17mr29400856pjb.61.1634513619413;
-        Sun, 17 Oct 2021 16:33:39 -0700 (PDT)
-Received: from shinobu ([156.146.35.76])
-        by smtp.gmail.com with ESMTPSA id z8sm8122502pgi.45.2021.10.17.16.33.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 Oct 2021 16:33:38 -0700 (PDT)
-Date:   Mon, 18 Oct 2021 08:33:34 +0900
-From:   William Breathitt Gray <vilhelm.gray@gmail.com>
-To:     David Lechner <david@lechnology.com>, jic23@kernel.org
-Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH] counter/counter-sysfs: use sysfs_emit everywhere
-Message-ID: <YWyyzmNGxWKyKiAD@shinobu>
-References: <20211017190106.3472645-1-david@lechnology.com>
+        Sun, 17 Oct 2021 19:54:05 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HXcHF4dMvz4xbb;
+        Mon, 18 Oct 2021 10:51:52 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1634514714;
+        bh=KjGu3MGXsTCBFX+Z8yAnMd7Gs1S9zeIeL3S5XdiB67s=;
+        h=Date:From:To:Cc:Subject:From;
+        b=WleoNlxDPHcZWwn4tP3WO4qsGSfzqAO8CYjan8mQ75oW04t6QRYLC0EF2T5BbC/45
+         9jIfqe1116RYIpPTW9oeeVKDNB+YGXEc4YUScG5ydMbS8ZBvROZ8jza4dp9BGX5OL1
+         B2m6o27M5ReXX5fT/qQtmWPuyyWiqFHrbODzmK/6HCknuNL3J6gD9I42gPIoN1kmCG
+         SvQ2REbdXCRmyyqneM2FTspSxMd2XkFOT0C2+QxpN1GkVZuF4s6ny1rarL3uAnS43z
+         Dq1TnEUCVwXUbFPylffUOxNjARwWEtIxmO9/fqFYQC+djt2pVYKzMTAQeg1gPiDoO+
+         xNlAP2pycox7A==
+Date:   Mon, 18 Oct 2021 10:51:51 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>
+Cc:     Amit Cohen <amcohen@nvidia.com>, Ido Schimmel <idosch@nvidia.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Stephen Suryaputra <ssuryaextr@gmail.com>
+Subject: linux-next: manual merge of the net-next tree with the net tree
+Message-ID: <20211018105151.16ff248d@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="t2Zsd0UZjI6gqdqf"
-Content-Disposition: inline
-In-Reply-To: <20211017190106.3472645-1-david@lechnology.com>
+Content-Type: multipart/signed; boundary="Sig_/Hs2dpeLF+Nct.9OE+F0tNkI";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---t2Zsd0UZjI6gqdqf
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+--Sig_/Hs2dpeLF+Nct.9OE+F0tNkI
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, Oct 17, 2021 at 02:01:06PM -0500, David Lechner wrote:
-> In the counter subsystem, we are already using sysfs_emit(), but there
-> were a few places where we were still using sprintf() in *_show()
-> functions. For consistency and added protections, use sysfs_emit()
-> everywhere.
->=20
-> Suggested-by: Greg KH <gregkh@linuxfoundation.org>
-> Signed-off-by: David Lechner <david@lechnology.com>
+Hi all,
 
-Acked-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+Today's linux-next merge of the net-next tree got a conflict in:
 
-> ---
->  drivers/counter/counter-sysfs.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
->=20
-> diff --git a/drivers/counter/counter-sysfs.c b/drivers/counter/counter-sy=
-sfs.c
-> index 7bf8882ff54d..8c2d7c29ea59 100644
-> --- a/drivers/counter/counter-sysfs.c
-> +++ b/drivers/counter/counter-sysfs.c
-> @@ -113,7 +113,7 @@ static ssize_t counter_comp_u8_show(struct device *de=
-v,
->  		/* data should already be boolean but ensure just to be safe */
->  		data =3D !!data;
-> =20
-> -	return sprintf(buf, "%u\n", (unsigned int)data);
-> +	return sysfs_emit(buf, "%u\n", (unsigned int)data);
->  }
-> =20
->  static ssize_t counter_comp_u8_store(struct device *dev,
-> @@ -196,7 +196,7 @@ static ssize_t counter_comp_u32_show(struct device *d=
-ev,
->  	case COUNTER_COMP_COUNT_MODE:
->  		return sysfs_emit(buf, "%s\n", counter_count_mode_str[data]);
->  	default:
-> -		return sprintf(buf, "%u\n", (unsigned int)data);
-> +		return sysfs_emit(buf, "%u\n", (unsigned int)data);
->  	}
->  }
-> =20
-> @@ -300,7 +300,7 @@ static ssize_t counter_comp_u64_show(struct device *d=
-ev,
->  	if (err < 0)
->  		return err;
-> =20
-> -	return sprintf(buf, "%llu\n", (unsigned long long)data);
-> +	return sysfs_emit(buf, "%llu\n", (unsigned long long)data);
->  }
-> =20
->  static ssize_t counter_comp_u64_store(struct device *dev,
-> @@ -539,7 +539,7 @@ static ssize_t counter_comp_id_show(struct device *de=
-v,
->  {
->  	const size_t id =3D (size_t)to_counter_attribute(attr)->comp.priv;
-> =20
-> -	return sprintf(buf, "%zu\n", id);
-> +	return sysfs_emit(buf, "%zu\n", id);
->  }
-> =20
->  static int counter_comp_id_attr_create(struct device *const dev,
-> --=20
-> 2.25.1
->=20
+  tools/testing/selftests/net/forwarding/forwarding.config.sample
 
---t2Zsd0UZjI6gqdqf
-Content-Type: application/pgp-signature; name="signature.asc"
+between commit:
+
+  0857d6f8c759 ("ipv6: When forwarding count rx stats on the orig netdev")
+
+from the net tree and commit:
+
+  45d45e5323a9 ("testing: selftests: forwarding.config.sample: Add tc flag")
+
+from the net-next tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc tools/testing/selftests/net/forwarding/forwarding.config.sample
+index e5e2fbeca22e,10ce3720aa6f..000000000000
+--- a/tools/testing/selftests/net/forwarding/forwarding.config.sample
++++ b/tools/testing/selftests/net/forwarding/forwarding.config.sample
+@@@ -39,5 -39,6 +39,8 @@@ NETIF_CREATE=3Dye
+  # Timeout (in seconds) before ping exits regardless of how many packets h=
+ave
+  # been sent or received
+  PING_TIMEOUT=3D5
+ +# IPv6 traceroute utility name.
+ +TROUTE6=3Dtraceroute6
++ # Flag for tc match, supposed to be skip_sw/skip_hw which means do not pr=
+ocess
++ # filter by software/hardware
++ TC_FLAG=3Dskip_hw
+
+--Sig_/Hs2dpeLF+Nct.9OE+F0tNkI
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAmFsssMACgkQhvpINdm7
-VJKnWw//XOxQqzTAjJZpNCzK9Oj8JxwVCdx5JLfqXZQvFSHPt1+nAPCrMmpBU0DY
-aggTZ9uOFk9JYqSDHhqXiraJD5Hk6IN4wqEj9OliiLiukfe+5uPjGqOjTuHoCMBv
-eZCtv9jIKYM1OQYzrqPaG+Gm6XDoAtxLEuxgRbF/fmKBoaaVQPC4bcZdmXptknWG
-Jr4u4a+E+VnFl1Tukahno0a6ypHg5tSnJ3mYvmdo+XzMHbqImCM7eHPLP7SdS3Qa
-QdBDV22/3wUSR7sCuqfolpJCjtBVA8as+grAoM3h/15gNoa8BmGD8ApIMz6JF94K
-O0bRaF3wQaYZdho2cuKNhDHjltFw0HKeRM8TfIPkElFQ5it/0npzdrEXulLLvqEF
-1Tjs2qAv8evj3qzyRKLm9wWCh5WcxllohkpHCHGPZPzdQhE63a4YKYJyHr/W6NjN
-QVoJpjj9bS/nDF9VaR9pCol3Z8aZM0cK2/KB6t7B9l2Y5OBmWdxG+7Vmv8vG0Fa4
-OBgZxSdCPBVP8lmenYs4PlwYkAnN31dRuprd4jyym13oFH1HhI3cRN7FI6enkHuT
-Rom9wI8Hhr+ditnHS7qhbKGOdn+3gF1of5rxi1rkObURB33BsXLWDi8gVIrKDE73
-YJ/+5VxPh9lp2sMnmaWTG81GwwYnzG/X4MB/YZUFFfKWBLPL3eo=
-=wExR
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFstxcACgkQAVBC80lX
+0GxDSggAil9dModuqoVIsb9QsFofJDbAHjD0IrUra0WWOLvoB280SlYPRxZLD21J
+dhw+gnoT5HvobYdK6/CqHXT0if8vYhEwwXtR8EDxtUUyBHpYBbA9KdJIhKCuUhVR
+/p5r+3USy09QcVA27nGUhw+t59kpVOlvs41YVgjoyx1rEzOYcXKULrK2AC4VdGnV
+debRzkkBkW2m7MKDfQoOSiN3MLx+iLMETHNk9cCXtiPq9/2Ju+fd2NKj3eI6SEW5
+U8TlewuQfeHOOfKy79SVo23V0NxePsr8Dyv77f6IguX+beRKi0FC12x1cZnHSD3j
+Yg2m5Zc/tRMxD+3i3JgU+qousVaMWQ==
+=vWlO
 -----END PGP SIGNATURE-----
 
---t2Zsd0UZjI6gqdqf--
+--Sig_/Hs2dpeLF+Nct.9OE+F0tNkI--
