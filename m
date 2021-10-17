@@ -2,73 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80C6F430B4C
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 19:49:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C0B5430B53
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 19:53:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232344AbhJQRvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 13:51:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54634 "EHLO
+        id S241871AbhJQRz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 13:55:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232165AbhJQRvT (ORCPT
+        with ESMTP id S237383AbhJQRz4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 13:51:19 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB73AC06161C;
-        Sun, 17 Oct 2021 10:49:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=KSSBKqPE3IR7lwQZjR+3a0AghrBfpGBz1s5IaeJer1M=; b=bVy3pr3xTSQHsfPAJrByY4p9Ok
-        645Hpz9DerbKwzp633yp1zVs6gJ4MQUDZ9m6nRMhpP76+XaKTXkIrUapoK9DzYDB0GQ+AcS3zRZmF
-        pWwQ7NMKsHBlMPUpEEvtiGH+7UGOrOnPAB9oTF9aF57DMMQ7GSePlJBpq5DqD74HJEOWt6NE5ysHQ
-        XfQVMBc6xI0P3PtaiHd5hOk1UxnpBH1GMYAp1v6aiCcTkdAAdCj8A3eSFAD3ZCg1srMj4089t/ruo
-        mZr8jtGemH7fWw192MW33qkRk0UgwOPhBoS+ob3RCd9ChA9mDlzyuY6KEBMeH7JrHwgu1vwDx/ue3
-        lBSATOzA==;
-Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mcAHR-00D6Qz-Ro; Sun, 17 Oct 2021 17:49:05 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org
-Subject: [PATCH] asm-generic: bug.h: add unreachable() in BUG() for CONFIG_BUG not set
-Date:   Sun, 17 Oct 2021 10:49:05 -0700
-Message-Id: <20211017174905.18943-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.31.1
+        Sun, 17 Oct 2021 13:55:56 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 049D8C061769
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 10:53:46 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id z40so13397201qko.7
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 10:53:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=fWbRtmwSvpw1bfC84j16Ls4FeCWDLyhXIFPNaloLQIk=;
+        b=Xg4B6OmLjSlQEg6NcRNZlWH20DlOOKx6JihSJ1qJj8dlCVGCA5H9rUkGWn4f1Ds7Pz
+         c663Y8NkZumHkC9pee4GSaaJ7BH13UyDMPEO+dMUPxGZ5ZA7vSteEmOk0wQvoCJrHyGx
+         KETPJDbGaHV40sIg//1v4GXHvi3Mp9tCcYDSfm9eKRwb0WERXGmEf5nK21CX4Nq+kGww
+         I72ahlIOM1mAdARjbVtSUCjFZajicSmFYHHKBykD2po8NXW8bUEuossQ4D8S55T/4CNf
+         e+omQUwozYW7C5BK9pl+dpJ8GAzsqltB+qfjls2S9+7Rrs76wBMyNVul8aI2Cl6kBI2H
+         kd+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=fWbRtmwSvpw1bfC84j16Ls4FeCWDLyhXIFPNaloLQIk=;
+        b=k0h8q0Vuu4Q/GaT+pHaaF5aSsGHq7ZDBjrAA7jMcpAPNcgabxbETSo5Gahwa8GVCNL
+         gmxWowfN9GDNkidqsqJ/7gfhb3vV3oUESFW337a131VdpYYjRWjNXnnc01BLig70aksM
+         g0gfHo9jrgDVf7x2Z1JAgO/0hC+jhReaBW3qMNVWNHT7l5FxpvhafcqrNi2gILS3aH9P
+         o49eZnhAs6lAWWJ9y1kX1lf1qsCuOmNAwakuHORLhynxEaY1rQz5zQbs3BX4JMG2qpYe
+         V5lBKs6Kb/9Q46K6NgBebJ/30VJjesMExiRSNzA9kOVcXj6PWO7mljLhDJjUPP0q7k9x
+         45+Q==
+X-Gm-Message-State: AOAM533gJVQJq1URW8A1j5eRwIsjQ0Aaw4aDfgctrTmfdqyxJcZ4IxRf
+        6/JOUKe49Tyuap+j3FId9ALYnKcOMDfFQgwcmxk=
+X-Google-Smtp-Source: ABdhPJzHXLyJhVZSvpBhAesFHMD4XP/bNMDBO2B5FuZTaRJuSifsnbifmprH/g9irf7TlzjnBR9OexrgTWXseMG4N8o=
+X-Received: by 2002:a37:9781:: with SMTP id z123mr19073106qkd.140.1634493225664;
+ Sun, 17 Oct 2021 10:53:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a0c:ef82:0:0:0:0:0 with HTTP; Sun, 17 Oct 2021 10:53:45
+ -0700 (PDT)
+Reply-To: mariehamidou0@gmail.com
+From:   MARIE Hamidou <koumbousilatifa@gmail.com>
+Date:   Sun, 17 Oct 2021 19:53:45 +0200
+Message-ID: <CAMp7NG0cWFrkVX2sgzLX4jNwsfm7K6OyD3zqHQa6nshPg-aTdg@mail.gmail.com>
+Subject: Urgent,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When CONFIG_BUG is not set/enabled, there is a warning
-on ARCH=m68k, gcc version 11.1.0-nolibc from Arnd's crosstools:
+Urgent,
 
-../fs/afs/dir.c: In function 'afs_dir_set_page_dirty':
-../fs/afs/dir.c:51:1: error: no return statement in function returning non-void [-Werror=return-type]
+I need your assistance to validate your name in our Bank System to
+enable the Bank transfer the sum of $ 3.5 million Dollars, into your
+nominated bank account to your account for onward investment,
 
-Adding "unreachable()" in the BUG() macro silences the warning.
+or any profitable business in your country and you will take 50% of
+the total  fund , for your assistance.To commence this transaction,  I
+require you to immediately indicate your interest by a return mail for
+more details,
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: linux-arch@vger.kernel.org
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org
----
- include/asm-generic/bug.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
---- linux-next-20211015.orig/include/asm-generic/bug.h
-+++ linux-next-20211015/include/asm-generic/bug.h
-@@ -154,7 +154,7 @@ void __warn(const char *file, int line,
- 
- #else /* !CONFIG_BUG */
- #ifndef HAVE_ARCH_BUG
--#define BUG() do {} while (1)
-+#define BUG() do {unreachable();} while (1)
- #endif
- 
- #ifndef HAVE_ARCH_BUG_ON
+Thanks for your anticipated co-operation.
+Best regards.
+Ms.MARIE Hamidou
