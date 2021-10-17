@@ -2,221 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38680430963
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 15:33:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2648430964
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 15:36:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343730AbhJQNfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 09:35:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54382 "EHLO
+        id S1343741AbhJQNie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 09:38:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343722AbhJQNfX (ORCPT
+        with ESMTP id S242392AbhJQNid (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 09:35:23 -0400
-Received: from mail-ua1-x92a.google.com (mail-ua1-x92a.google.com [IPv6:2607:f8b0:4864:20::92a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DBC3C061768
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 06:33:13 -0700 (PDT)
-Received: by mail-ua1-x92a.google.com with SMTP id i22so647387ual.10
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 06:33:13 -0700 (PDT)
+        Sun, 17 Oct 2021 09:38:33 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D519C061765
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 06:36:23 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id oa12-20020a17090b1bcc00b0019f715462a8so10697393pjb.3
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 06:36:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=usp.br; s=usp-google;
+        d=gmail.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=jWRL5QHYGlFrwRX9nfH0NjktXPsAElv+E6acDVOY5Wo=;
-        b=qjcieQJ/A8crbHHht2Dmi+g5WnQWFklzzXJxq7mO3JE30SquF61AKESe2W7RnSJY/K
-         UXRybWTl55edYG2Hp6vkavuXrFNMXqZkqdUV6vLO5xPnkIfvXbIpq57NM1bb2GOd3UgX
-         ZA1bQCHYKV8/04lg8ha+tKyCySQwosSXBhnk1vgnmgR5+4VLjdQF0T/vq3K8Kd7LGFhx
-         kCpiDgvIEIyOzB9Y/KNqHDhcWAv01NtOr2zAqr5Ih1XEEnrj4pAYMpFtOrkGPUVk8MyT
-         aVW30JqrWmLp3wAjpyRWnIUPpT7ycXBs7WKjiUZvARuZacQadWeVE2vMP/1+vTUCOyTC
-         cNYQ==
+         :content-disposition:in-reply-to;
+        bh=ZTG0rQxetILHRfa9qDwDBnOP2er8Zp8xGRtK4Z0zndo=;
+        b=IUVMlCIy4hEiGx6lOHG+uKZsi00lfJd1em5Tu4rHxxu/5jlK0aosfpxArSiONijhct
+         eBvT2MBa77OiTlxxyjqON8tLolwJbN3k2DU+kty6cP2kumVBe/GqXZ5CJFjlUJtf8Eow
+         B8cei6TvQz5Y/bxXk6nOtOlwvIimCqmjnFF2EL10pxxzM5eSmlBvo2zu8yG/ZWDwvsUQ
+         MVSMeRtyvAAppLfbR28Imas0bpQpRwQXAbFH6PK/+0rOlHWFR0UmCPcHUshDm2Mj9MrW
+         o+ofkTeDb7fnoLrnJ+K50oE79OtEGaUgeTxQvkg8wnerHXeBaZiYK6wHGLp5OHUzWKrT
+         ItIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=jWRL5QHYGlFrwRX9nfH0NjktXPsAElv+E6acDVOY5Wo=;
-        b=4w2Aa6pSl9YEERfosgPd+RZB6HjAnplEWhfFA+fjls3TdZpO5YFdsTq5P6p3SXQhCs
-         kba9Inddcg736vuoq508JkrTIQWi8RhHeDp4rED4oPL4QPXvb+Ky60BX4jYjtBYrim1e
-         G2rpmEyPv4a+SGN7ZKltQly7ceqFhbl4/u9cQkOUGNPXkTrDlbH2PqyKgAgDH261XOFB
-         KkBAv+ACMT1D9HaW467bYJW5zckwrAP8mlb8Uo7EhKv51el4Bf4j0NdtWnxijPkZP637
-         cVoz8ydQr+lcWHRMwu7SW3cbX3WPBc+bcdZ2pYOtCbJRU9PgfbQ4fbFSn/x+IdB7X/AQ
-         xZPw==
-X-Gm-Message-State: AOAM5300+vClgX0pto1JXg965qI639XzfYMzjlqVSFOTB//LjSgAVX1G
-        xRb9Kdy5c7Zu0FS7nsAKT1Z4xw==
-X-Google-Smtp-Source: ABdhPJx3wFK8LQbniuUqDwt6+6Ukbw3fJXLi9Bt4tjRv3cdcV0kSwLUO4P9GhElMXzHZNBl9aWrEOQ==
-X-Received: by 2002:a67:d78e:: with SMTP id q14mr693980vsj.55.1634477592376;
-        Sun, 17 Oct 2021 06:33:12 -0700 (PDT)
-Received: from Andryuu.br ([2804:431:c7fd:7238:311d:169e:a665:1173])
-        by smtp.gmail.com with ESMTPSA id n3sm1728662vsq.28.2021.10.17.06.33.10
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZTG0rQxetILHRfa9qDwDBnOP2er8Zp8xGRtK4Z0zndo=;
+        b=lEW3rkSd98uT7DP9COmh/MiuNafGmjHjX7BeNyJ9sUV3d/Q4o7RK9pfL1ziKYawLnB
+         ZqZd3Z4aBfUpn2AnQn+MLHPilA70zs+Iq3DJsop/rSK4BE7WJ6Seq/bLkLQR81db5+lp
+         +ermXavRjuuvg2r84FRVaNPGuv7EtY2h1CfZ3Oy+AUMwfemTGgpm7LH+73rrgXs+kPFl
+         bN/64T/sZlEn52Fa8++4Z3hjXE+3NBch40Gp1PX2aXdQ1GelGjyDIGZN5o5cuvztUkVm
+         HZHhTGxxI4ODKJ2fnDRxmG/cjrj0MdBgGu4HHWKzvaRfK/LoawW/yHxQBPJaf9X4NjOv
+         1roA==
+X-Gm-Message-State: AOAM531fo56Iim13fYjyH1tLdgmK1NRSRm/bKYtBfebavR7gadC/MAWB
+        9lJjjVVXAX7qbpFGkG7Mh5c=
+X-Google-Smtp-Source: ABdhPJzUPugXC1TCZ5VIvmczslzq7tevs50JeeMWhb65kRxnzzPeefnNWde4loN1mtjfOIOMXoJheA==
+X-Received: by 2002:a17:90a:a386:: with SMTP id x6mr26713944pjp.56.1634477782950;
+        Sun, 17 Oct 2021 06:36:22 -0700 (PDT)
+Received: from kvm.asia-northeast3-a.c.our-ratio-313919.internal (24.151.64.34.bc.googleusercontent.com. [34.64.151.24])
+        by smtp.gmail.com with ESMTPSA id i124sm10524072pfc.153.2021.10.17.06.36.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 Oct 2021 06:33:11 -0700 (PDT)
-Date:   Sun, 17 Oct 2021 10:33:08 -0300
-From:   =?iso-8859-1?Q?Andr=E9?= Gustavo Nakagomi Lopez <andregnl@usp.br>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     linux-iio@vger.kernel.org, lars@metafoo.de, vz@mleia.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] iio: adc: lpc18xx_adc: Convert probe to device
- managed version
-Message-ID: <YWwmFDF7Lig2rAuo@Andryuu.br>
-References: <YWnMsGlc/I35gYvy@Andryuu.br>
- <20211017123533.33883e16@jic23-huawei>
+        Sun, 17 Oct 2021 06:36:22 -0700 (PDT)
+Date:   Sun, 17 Oct 2021 13:36:18 +0000
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+To:     linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Subject: segregated list + slab merging is much better than original SLOB
+Message-ID: <20211017133618.GA7989@kvm.asia-northeast3-a.c.our-ratio-313919.internal>
+References: <20211017042852.GA3050@kvm.asia-northeast3-a.c.our-ratio-313919.internal>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211017123533.33883e16@jic23-huawei>
+In-Reply-To: <20211017042852.GA3050@kvm.asia-northeast3-a.c.our-ratio-313919.internal>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 17, 2021 at 12:35:33PM +0100, Jonathan Cameron wrote:
-> On Fri, 15 Oct 2021 15:47:12 -0300
-> André Gustavo Nakagomi Lopez <andregnl@usp.br> wrote:
+On Sun, Oct 17, 2021 at 04:28:52AM +0000, Hyeonggon Yoo wrote:
+> I've been reading SLUB/SLOB code for a while. SLUB recently became
+> real time compatible by reducing its locking area.
 > 
-> > The remove function and the goto sections are not necessary if devm
-> > functions are used.
-> > 
-> > Convert device register to devm version. Add hook functions to release
-> > device resources, and use them inside probe with devm_add_action,
-> > which will release resources on driver detach.
-> > 
-> > To maintain the order of which device resources were released/reseted,
-> > register the hook functions as soon as resources are obtained/initialized.
-> > Since devres actions are called on driver detach, the remove
-> > function and the error-handling goto sections are no longer necessary.
-> > 
-> > Signed-off-by: André Gustavo Nakagomi Lopez <andregnl@usp.br>
+> for now, SLUB is the only slab allocator for PREEMPT_RT because
+> it works better than SLAB on RT and SLOB uses non-deterministic method,
+> sequential fit.
 > 
-> Hi André
+> But memory usage of SLUB is too high for systems with low memory.
+> So In my local repository I made SLOB to use segregated free list
+> method, which is more more deterministic, to provide bounded latency.
 > 
-> Looks good to me, but I did notice an unrelated issue whilst looking at this driver.
-> Comment on that inline.  Follow up patch welcome!
+> This can be done by managing list of partial pages globally
+> for every power of two sizes (8, 16, 32, ..., PAGE_SIZE) per NUMA nodes.
+> minimal allocation size is size of pointers to keep pointer of next free object
+> like SLUB.
 > 
-> Applied to the togreg branch of iio.git and pushed out as testing to let 0-day
-> see if it can find anything we missed.
+> By making objects in same page to have same size, there's no
+> need to iterate free blocks in a page. (Also iterating pages isn't needed)
 > 
-> Thanks,
+> Some cleanups and more tests (especially with NUMA/RT configs) needed,
+> but want to hear your opinion about the idea. Did not test on RT yet.
 > 
-> Jonathan
-> 
-> 
-> 
-> > ---
-> > Change log V1 -> V2:
-> >        -Renamed lpc18xx_clk_disable_unprepare function
-> >        -Removed platform_set_drvdata(pdev, indio_dev)
-> >        -Renamed lpc18xx_writel to lpc18xx_clear_cr_reg
-> >        -devm_iio_device_register now returns directly in the end of probe function
-> >  drivers/iio/adc/lpc18xx_adc.c | 61 ++++++++++++++++++-----------------
-> >  1 file changed, 31 insertions(+), 30 deletions(-)
-> > 
-> > diff --git a/drivers/iio/adc/lpc18xx_adc.c b/drivers/iio/adc/lpc18xx_adc.c
-> > index 3566990ae87d..7d50107427ac 100644
-> > --- a/drivers/iio/adc/lpc18xx_adc.c
-> > +++ b/drivers/iio/adc/lpc18xx_adc.c
-> > @@ -115,6 +115,23 @@ static const struct iio_info lpc18xx_adc_info = {
-> >  	.read_raw = lpc18xx_adc_read_raw,
-> >  };
-> >  
-> > +static void lpc18xx_clear_cr_reg(void *data)
-> > +{
-> > +	struct lpc18xx_adc *adc = data;
-> > +
-> > +	writel(0, adc->base + LPC18XX_ADC_CR);
-> > +}
-> > +
-> > +static void lpc18xx_clk_disable(void *clk)
-> > +{
-> > +	clk_disable_unprepare(clk);
-> > +}
-> > +
-> > +static void lpc18xx_regulator_disable(void *vref)
-> > +{
-> > +	regulator_disable(vref);
-> > +}
-> > +
-> >  static int lpc18xx_adc_probe(struct platform_device *pdev)
-> >  {
-> >  	struct iio_dev *indio_dev;
-> > @@ -127,7 +144,6 @@ static int lpc18xx_adc_probe(struct platform_device *pdev)
-> >  	if (!indio_dev)
-> >  		return -ENOMEM;
-> >  
-> > -	platform_set_drvdata(pdev, indio_dev);
-> >  	adc = iio_priv(indio_dev);
-> >  	adc->dev = &pdev->dev;
-> >  	mutex_init(&adc->lock);
-> > @@ -163,44 +179,30 @@ static int lpc18xx_adc_probe(struct platform_device *pdev)
-> >  		return ret;
-> >  	}
-> >  
-> > +	ret = devm_add_action_or_reset(&pdev->dev, lpc18xx_regulator_disable, adc->vref);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> >  	ret = clk_prepare_enable(adc->clk);
-> >  	if (ret) {
-> >  		dev_err(&pdev->dev, "unable to enable clock\n");
-> > -		goto dis_reg;
-> > +		return ret;
-> 
-> Unrelated but clk_get_rate() as called before the clk_prepare_enable() is not guaranteed
-> to work.   So a good follow up patch would reorder that to be after the clk is turned on.
-> 
-> 
-> >  	}
-> >  
-> > +	ret = devm_add_action_or_reset(&pdev->dev, lpc18xx_clk_disable,
-> > +				       adc->clk);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> >  	adc->cr_reg = (clkdiv << LPC18XX_ADC_CR_CLKDIV_SHIFT) |
-> >  			LPC18XX_ADC_CR_PDN;
-> >  	writel(adc->cr_reg, adc->base + LPC18XX_ADC_CR);
-> >  
-> > -	ret = iio_device_register(indio_dev);
-> > -	if (ret) {
-> > -		dev_err(&pdev->dev, "unable to register device\n");
-> > -		goto dis_clk;
-> > -	}
-> > -
-> > -	return 0;
-> > -
-> > -dis_clk:
-> > -	writel(0, adc->base + LPC18XX_ADC_CR);
-> > -	clk_disable_unprepare(adc->clk);
-> > -dis_reg:
-> > -	regulator_disable(adc->vref);
-> > -	return ret;
-> > -}
-> > -
-> > -static int lpc18xx_adc_remove(struct platform_device *pdev)
-> > -{
-> > -	struct iio_dev *indio_dev = platform_get_drvdata(pdev);
-> > -	struct lpc18xx_adc *adc = iio_priv(indio_dev);
-> > -
-> > -	iio_device_unregister(indio_dev);
-> > -
-> > -	writel(0, adc->base + LPC18XX_ADC_CR);
-> > -	clk_disable_unprepare(adc->clk);
-> > -	regulator_disable(adc->vref);
-> > +	ret = devm_add_action_or_reset(&pdev->dev, lpc18xx_clear_cr_reg, adc);
-> > +	if (ret)
-> > +		return ret;
-> >  
-> > -	return 0;
-> > +	return devm_iio_device_register(&pdev->dev, indio_dev);
-> >  }
-> >  
-> >  static const struct of_device_id lpc18xx_adc_match[] = {
-> > @@ -211,7 +213,6 @@ MODULE_DEVICE_TABLE(of, lpc18xx_adc_match);
-> >  
-> >  static struct platform_driver lpc18xx_adc_driver = {
-> >  	.probe	= lpc18xx_adc_probe,
-> > -	.remove	= lpc18xx_adc_remove,
-> >  	.driver	= {
-> >  		.name = "lpc18xx-adc",
-> >  		.of_match_table = lpc18xx_adc_match,
+> Below is result of benchmarks and memory usage. (on !RT)
+> with 13% increase in memory usage, it's nine times faster and
+> bounded fragmentation, and importantly provides predictable execution time.
 > 
 
-Ok. Thank you for the review, I will work on the change.
+Hello linux-mm, I improved it and it uses lower memory
+and 9x~13x faster than original SLOB. it shows much less fragmentation
+after hackbench.
+
+Rather than managing global freelist that has power of 2 sizes,
+I made a kmem_cache to manage its own freelist (for each NUMA nodes) and
+Added support for slab merging. So It quite looks like a lightweight SLUB now.
+
+I'll send rfc patch after some testing and code cleaning.
+
+I think it is more RT-friendly becuase it's uses more deterministic
+algorithm (But lock is still shared among cpus). Any opinions for RT?
+
+current SLOB:
+    memory usage:
+        after boot:
+            Slab:               7908 kB
+        after hackbench:
+            Slab:               8544 kB
+  
+    Time: 189.947
+    Performance counter stats for 'hackbench -g 4 -l 10000':
+         379413.20 msec cpu-clock                 #    1.997 CPUs utilized          
+           8818226      context-switches          #   23.242 K/sec                  
+            375186      cpu-migrations            #  988.859 /sec                   
+              3954      page-faults               #   10.421 /sec                   
+      269923095290      cycles                    #    0.711 GHz                    
+      212341582012      instructions              #    0.79  insn per cycle         
+        2361087153      branch-misses                                               
+       58222839688      cache-references          #  153.455 M/sec                  
+        6786521959      cache-misses              #   11.656 % of all cache refs    
+
+     190.002062273 seconds time elapsed
+
+       3.486150000 seconds user
+     375.599495000 seconds sys
+
+SLOB with segregated list + slab merging:
+    memory usage:
+       after boot:
+           Slab:               7560 kB
+        after hackbench:
+           Slab:               7836 kB        
+
+hackbench:
+    Time: 20.780
+    Performance counter stats for 'hackbench -g 4 -l 10000':
+          41509.79 msec cpu-clock                 #    1.996 CPUs utilized          
+            630032      context-switches          #   15.178 K/sec                  
+              8287      cpu-migrations            #  199.640 /sec                   
+              4036      page-faults               #   97.230 /sec                   
+       57477161020      cycles                    #    1.385 GHz                    
+       62775453932      instructions              #    1.09  insn per cycle         
+         164902523      branch-misses                                               
+       22559952993      cache-references          #  543.485 M/sec                  
+         832404011      cache-misses              #    3.690 % of all cache refs    
+
+      20.791893590 seconds time elapsed
+
+       1.423282000 seconds user
+      40.072449000 seconds sys
+-
+Thanks,
+Hyeonggon
