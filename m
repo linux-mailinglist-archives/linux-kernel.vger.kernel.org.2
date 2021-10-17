@@ -2,101 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EE244307F3
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 12:34:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12C514307DA
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 12:21:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245298AbhJQKhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 06:37:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43038 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245275AbhJQKg6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 06:36:58 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A04BCC061767
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 03:34:49 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1mc3Ux-0001EM-0d; Sun, 17 Oct 2021 12:34:35 +0200
-Received: from pengutronix.de (2a03-f580-87bc-d400-11af-1534-a8a1-94ea.ip6.dokom21.de [IPv6:2a03:f580:87bc:d400:11af:1534:a8a1:94ea])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id B2A4269588C;
-        Sun, 17 Oct 2021 10:18:33 +0000 (UTC)
-Date:   Sun, 17 Oct 2021 12:18:32 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Qing Wang <wangqing@vivo.com>
-Cc:     Wolfgang Grandegger <wg@grandegger.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: can: replace snprintf in show functions with
- sysfs_emit
-Message-ID: <20211017101832.undtxyggz6uemhrc@pengutronix.de>
-References: <1634280624-4816-1-git-send-email-wangqing@vivo.com>
+        id S241782AbhJQKXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 06:23:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44424 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231839AbhJQKXH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Oct 2021 06:23:07 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A96F961179;
+        Sun, 17 Oct 2021 10:20:57 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=hot-poop.lan)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mc3Hj-00HJDf-3l; Sun, 17 Oct 2021 11:20:55 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Andrew Jones <drjones@redhat.com>,
+        Raghavendra Rao Ananta <rananta@google.com>,
+        James Morse <james.morse@arm.com>
+Cc:     kvm@vger.kernel.org, Peter Shier <pshier@google.com>,
+        linux-kernel@vger.kernel.org, Oliver Upton <oupton@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Will Deacon <will@kernel.org>,
+        Jing Zhang <jingzhangos@google.com>,
+        kvmarm@lists.cs.columbia.edu, Reiji Watanabe <reijiw@google.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v8 00/15] KVM: arm64: selftests: Introduce arch_timer selftest
+Date:   Sun, 17 Oct 2021 11:20:52 +0100
+Message-Id: <163446603339.1611630.4034254294571112301.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20211007233439.1826892-1-rananta@google.com>
+References: <20211007233439.1826892-1-rananta@google.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="r4wtyintqvqolpk3"
-Content-Disposition: inline
-In-Reply-To: <1634280624-4816-1-git-send-email-wangqing@vivo.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: pbonzini@redhat.com, suzuki.poulose@arm.com, alexandru.elisei@arm.com, drjones@redhat.com, rananta@google.com, james.morse@arm.com, kvm@vger.kernel.org, pshier@google.com, linux-kernel@vger.kernel.org, oupton@google.com, catalin.marinas@arm.com, ricarkol@google.com, will@kernel.org, jingzhangos@google.com, kvmarm@lists.cs.columbia.edu, reijiw@google.com, linux-arm-kernel@lists.infradead.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 7 Oct 2021 23:34:24 +0000, Raghavendra Rao Ananta wrote:
+> The patch series adds a KVM selftest to validate the behavior of
+> ARM's generic timer (patch-14). The test programs the timer IRQs
+> periodically, and for each interrupt, it validates the behaviour
+> against the architecture specifications. The test further provides
+> a command-line interface to configure the number of vCPUs, the
+> period of the timer, and the number of iterations that the test
+> has to run for.
+> 
+> [...]
 
---r4wtyintqvqolpk3
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Applied to next, thanks!
 
-On 14.10.2021 23:50:24, Qing Wang wrote:
-> show() must not use snprintf() when formatting the value to be
-> returned to user space.
->=20
-> Fix the following coccicheck warning:
-> drivers/net/can/at91_can.c:1185: WARNING: use scnprintf or sprintf.
-> drivers/net/can/janz-ican3.c:1834: WARNING: use scnprintf or sprintf.
->=20
-> Use sysfs_emit instead of scnprintf or sprintf makes more sense.
->=20
-> Signed-off-by: Qing Wang <wangqing@vivo.com>
+[01/15] KVM: arm64: selftests: Add MMIO readl/writel support
+        commit: 88ec7e258b70eed5e532d32115fccd11ea2a6287
+[02/15] tools: arm64: Import sysreg.h
+        commit: 272a067df3c89f6f2176a350f88661625a2c8b3b
+[03/15] KVM: arm64: selftests: Use read/write definitions from sysreg.h
+        commit: 272a067df3c89f6f2176a350f88661625a2c8b3b
+[04/15] KVM: arm64: selftests: Introduce ARM64_SYS_KVM_REG
+        commit: b3c79c6130bcfdb0ff3819077deaddce981a0718
+[05/15] KVM: arm64: selftests: Add support for cpu_relax
+        commit: 740826ec02a65a5b25335fddfe8bce4ac99c7a11
+[06/15] KVM: arm64: selftests: Add basic support for arch_timers
+        commit: d977ed39940231839f6856637fe24f41860f7969
+[07/15] KVM: arm64: selftests: Add basic support to generate delays
+        commit: 80166904655976bb9babc48fd283c2bba5799920
+[08/15] KVM: arm64: selftests: Add support to disable and enable local IRQs
+        commit: 5c636d585cfd0d01a89b18fced77a07ab2ef386a
+[09/15] KVM: arm64: selftests: Maintain consistency for vcpuid type
+        commit: 0226cd531c587e0cd51e5ce5622051d319182506
+[10/15] KVM: arm64: selftests: Add guest support to get the vcpuid
+        commit: 17229bdc86c9e618e8832b5ca8451e367e07511b
+[11/15] KVM: arm64: selftests: Add light-weight spinlock support
+        commit: 414de89df1ec453ff4adb9d77ffd596096cb44bd
+[12/15] KVM: arm64: selftests: Add basic GICv3 support
+        commit: 28281652f90acc138f8b4bae8a3bf8cf1ce0d29e
+[13/15] KVM: arm64: selftests: Add host support for vGIC
+        commit: 250b8d6cb3b0312341304fa323b82355d656c018
+[14/15] KVM: arm64: selftests: Add arch_timer test
+        commit: 4959d8650e9f4095a5df6e578377d850f1b94d2f
+[15/15] KVM: arm64: selftests: arch_timer: Support vCPU migration
+        commit: 61f6fadbf9bd6694c72e40d9fa186ceff730ef33
 
-Added to linux-can-next/testing.
+Cheers,
 
-Thanks,
-Marc
+	M.
+-- 
+Without deviation from the norm, progress is not possible.
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
---r4wtyintqvqolpk3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmFr+HUACgkQqclaivrt
-76nCnwgAiBwsQvQVZBI76FzwuzXifXWrwSWVnd39uQefzeAW8fLzPg/8DBu7QtqV
-OsqVqqOES9fHpv0L8CtqOfof4QrFitq9KBMT6AsF7eLK6W1UNaS2utZvenop3Fvv
-RyHpLUnVsCV++lIo9R1+1PSuCVHfKSH07vUiB1Ckki37iMKqVe1qGaCBocwlWKJL
-NlsrVwZIBzGLoNqhmJZuOmxwC3hOZJ9AofdQpnO8CZSpHIm0OlDRSYMkhwCGNwUO
-wSg805lpsp4ZTNuR9wt9RtLOCP5IM0aAYWDV3aRBlfZ+DEtvj2Edl2NxETBlQs7x
-aW3OeqleYWCvoA/3b4GZySi9dHb9hw==
-=LwGq
------END PGP SIGNATURE-----
-
---r4wtyintqvqolpk3--
