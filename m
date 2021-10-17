@@ -2,94 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4B8A4308A1
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 14:22:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 068084308A2
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 14:27:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245639AbhJQMYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 08:24:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38524 "EHLO
+        id S242183AbhJQM31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 08:29:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236317AbhJQMYd (ORCPT
+        with ESMTP id S236317AbhJQM30 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 08:24:33 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6A87C061765
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 05:22:23 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1mc5B9-0003hi-GA; Sun, 17 Oct 2021 14:22:15 +0200
-Received: from pengutronix.de (2a03-f580-87bc-d400-7b24-848c-3829-1203.ip6.dokom21.de [IPv6:2a03:f580:87bc:d400:7b24:848c:3829:1203])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 2A1BD695CC4;
-        Sun, 17 Oct 2021 12:22:13 +0000 (UTC)
-Date:   Sun, 17 Oct 2021 14:22:12 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Ziyang Xuan <william.xuanziyang@huawei.com>
-Cc:     socketcan@hartkopp.net, davem@davemloft.net, kuba@kernel.org,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net v2 0/2] fix tx buffer concurrent access protection
-Message-ID: <20211017122212.v47r3jl6ig7nmuiw@pengutronix.de>
-References: <cover.1633764159.git.william.xuanziyang@huawei.com>
+        Sun, 17 Oct 2021 08:29:26 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81FFEC061765
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 05:27:16 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id e12so35802362wra.4
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 05:27:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=caezwCrYl8J1Db0QePppJD41dRvS6Lu7c4xekHw9rc4=;
+        b=ogmUBzFMtrtluJm3LUTqmaT3xo5LmNaCfiKBDJfpkOna8f++9MsCVdJN50yligWLWW
+         hEm3iq2vrBpiP2gERFUx9lJh/6lpuevO2zC29sADMUWrP0nWnEZiSAB5L1TXZrh3Uds0
+         XWc4TkTPNc5LXYW7N4biGbzW1GdjvskA9F7tc4JE3PBLM+knEMGA232U23+XehALgJnx
+         midr0kGTqtt4mVvi0WbsXIxdQ+dFlFX8Sos/HWGjyh2Zc10DHjYNS+ZgRNf5SnlxBbDH
+         En5nPcptw02TFAlnGI/8JrcX5hWlzPcm/UFp4Z9F9DbLCzDdPgFvPxD/ZnJ3YeawQ5VS
+         3jzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=caezwCrYl8J1Db0QePppJD41dRvS6Lu7c4xekHw9rc4=;
+        b=vDWzPa+Mj0oNm9oqtJ5E8OmARG23DDtJgH/XrcZRCm2D9kKPnPpVyds4714pPEqZDV
+         nDXeNqW324AwQ5QLEAxOX9OpokbZA35gK/91J6QukXDns+zKeVFAttdSATcuGHjG3qsU
+         mH3jsc6cjHvracbZpflZC0FOfpR5QNXMhBt7BLfdeq0VCX0rv8776SvrnJSoyxXDMtNP
+         GfmEQ/uutRnxQIl3wzTTgL+A6dhHfyXIWN6Eg90RDYNT9e1RyOUdvxrtqMGIEqNpYEZf
+         qsDQlr2OCKgwLdfJxlN0FKNn51gXn6SCYBgmK5QkT0bL0op51sn2eZswn8b8Yhg7WHza
+         LYpA==
+X-Gm-Message-State: AOAM531Z71YSwI4tHEdWXbNt7IjN3ngH2o8Hy82LwmuvLUBrJQk6Jcf6
+        CYnM3ydHPMLuNtR23/67WNIZlAWlB4i4jNfs
+X-Google-Smtp-Source: ABdhPJzvGs5Kt+CDR6iUtIq0Pynnn7nw1r8K/anNW4nGI6k1FzSzZBcNGXx9uPVf0gRWbUHvA5OC8Q==
+X-Received: by 2002:adf:aad7:: with SMTP id i23mr27699723wrc.209.1634473634405;
+        Sun, 17 Oct 2021 05:27:14 -0700 (PDT)
+Received: from Mononoke (56.red-88-27-247.staticip.rima-tde.net. [88.27.247.56])
+        by smtp.gmail.com with ESMTPSA id o12sm9713965wrv.78.2021.10.17.05.27.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 Oct 2021 05:27:13 -0700 (PDT)
+Date:   Sun, 17 Oct 2021 14:27:12 +0200
+From:   Sebastian Luchetti <luchetti.linux@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: rts5208: ms.c: Remove two udelay calls and use
+ usleep_range instead
+Message-ID: <YWwWoB3+4HQTD4/t@Mononoke>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="te4ulpsvjqnychhb"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1633764159.git.william.xuanziyang@huawei.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch fixes the issue:
+CHECK: usleep_range is preferred over udelay; see
+Documentation/timers/timers-howto.txt
+in two occurrences.
 
---te4ulpsvjqnychhb
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Sebastian Luchetti <luchetti.linux@gmail.com>
+---
+ drivers/staging/rts5208/ms.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-On 09.10.2021 15:40:08, Ziyang Xuan wrote:
-> Fix tx buffer concurrent access protection in isotp_sendmsg().
->=20
-> v2:
->  - Change state of struct tpcon to u32 for cmpxchg just support 4-byte
->    and 8-byte in some architectures.
->=20
-> Ziyang Xuan (2):
->   can: isotp: add result check for wait_event_interruptible()
->   can: isotp: fix tx buffer concurrent access in isotp_sendmsg()
+diff --git a/drivers/staging/rts5208/ms.c b/drivers/staging/rts5208/ms.c
+index 2a6fab5c117a..7292c8f013fd 100644
+--- a/drivers/staging/rts5208/ms.c
++++ b/drivers/staging/rts5208/ms.c
+@@ -3236,7 +3236,7 @@ static int ms_write_multiple_pages(struct rtsx_chip *chip, u16 old_blk,
+ 			return STATUS_FAIL;
+ 		}
+ 
+-		udelay(30);
++		usleep_range(27, 32);
+ 
+ 		rtsx_init_cmd(chip);
+ 
+@@ -4158,7 +4158,7 @@ int mg_set_ICV(struct scsi_cmnd *srb, struct rtsx_chip *chip)
+ 
+ #ifdef MG_SET_ICV_SLOW
+ 	for (i = 0; i < 2; i++) {
+-		udelay(50);
++		usleep_range(47, 52);
+ 
+ 		rtsx_init_cmd(chip);
+ 
+-- 
+2.30.2
 
-Applied to linux-can/testing, added stable on Cc.
-
-Thanks,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---te4ulpsvjqnychhb
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmFsFXEACgkQqclaivrt
-76nlNwgAr2PaAhzQXcL1Tqr5Orb+SsglkRncI1Vmktt3bwkvfZ0IT98FBHEfISge
-R8x0kp1KRCyMEb32zh1XHrd16ruEVWMMNdLbYUYWD2LITAq3cXJ82SGgtdyWjJTy
-AHUXwGeHlPNmbZJOzcaUZUtKjA4glhUEQtD1wxWUJkwA34vdg2rQmDvkR2Ekqr4e
-dTCQ4PQOZtWUiIxVPXIlkh1/AZR2VOvnpjuNp8TRDnstivcidz5n3hM9dw9hyXdj
-uBuSw0lb4plCu+7zTWFSSGH9wiLcEJ+Yat+DebE2IMLpG5qc1BbcdXfQRr3uvSmV
-F5C+PghtKVjYtDAwX4Q72xx2XhzVfA==
-=Tbwa
------END PGP SIGNATURE-----
-
---te4ulpsvjqnychhb--
