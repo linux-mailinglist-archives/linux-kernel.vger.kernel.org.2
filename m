@@ -2,117 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CB66430BA9
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 21:08:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C012430BAC
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 21:09:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242424AbhJQTLG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 15:11:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233662AbhJQTLE (ORCPT
+        id S1344480AbhJQTLe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 15:11:34 -0400
+Received: from mout.kundenserver.de ([212.227.17.24]:51821 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233662AbhJQTLd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 15:11:04 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7C8BC06161C;
-        Sun, 17 Oct 2021 12:08:54 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id y12so63436656eda.4;
-        Sun, 17 Oct 2021 12:08:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=D4wPfnIdmFR0mVDCTT9DLYHlH1SJpsLuL8bJ7s6TiF8=;
-        b=eqXhpr1xFPJ6ot/+IRHxQv4y0Qu2npluiR4EBgsxDvJyYyLtOJMz8z49dpwQ+QTNXG
-         VG4o1Sbe0nL3M3b/t/sFJYd2zzVO7qjKH9tW7ZuFMtkKUxuC+ll8nM+tpN3pi8QysFGg
-         C61mZ2f43rxRSHFwzuGJJ0mhkYAL6eBaJC+nkS5ohyWutc78gaiN7hu4TRET+Mxm0bSq
-         qg6+thWnZ/5YHTP5MZAMybf+dLkYTKDac8mKPSw+lItQc7QN+fx+3ezezu5ncweFhPku
-         gIVd53ib4HZx6FX53d727UYtWxGExf56chxPQXFIF+kYqtpB3GVbeVybhBvo0Q1KcnG8
-         nSvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=D4wPfnIdmFR0mVDCTT9DLYHlH1SJpsLuL8bJ7s6TiF8=;
-        b=CFkTAEGlS7Oae94qAbVSeH0xxiBwpm5g3ZpM10LovruIy8/a0ZJ+FqOkNeAKMVBQ5K
-         LsU6aFQpNxLNnGVpkwdiBx7HY9p8E5xilbqgWeXzctE797UFy5OAumxBh7C7cQzC7ABl
-         Zi+xXbfkkwyNC5tln7ful8jZ8EjOpIb1VPkVnCnAWTLJXdUgU2CEU0t1rYuYtUg7JHuA
-         q/UJTpKElAHJO2w5Y9+HRpJxGOofOrkJYz4WOlNphxGev8IW+GaFpI30OjO4AcXSY5tK
-         g7t7PGngfAopsaQCsVpOUR7gy0IYFZfIlbgJLSWAhC693OfQwv6t0OcWygYD/wZhUs2m
-         UWjQ==
-X-Gm-Message-State: AOAM531NXsKz2OMwBsxklgRQS6FDY4pWPWz7SoR3tsBuQAn2KliEVG2i
-        WXbQpZ/jmE76WEvgAZkC5uF3P4oINUJENJIF9pw=
-X-Google-Smtp-Source: ABdhPJxA4vOkMI89Yz/fNxUEqKJBbnJJL1WyIvbb0BkBTvaC9TlQZLCw9egWLsYTEwxT45L4WzXIMXCvULOS+joAYd0=
-X-Received: by 2002:a17:907:8a27:: with SMTP id sc39mr23636774ejc.567.1634497732785;
- Sun, 17 Oct 2021 12:08:52 -0700 (PDT)
+        Sun, 17 Oct 2021 15:11:33 -0400
+Received: from mail-wr1-f44.google.com ([209.85.221.44]) by
+ mrelayeu.kundenserver.de (mreue107 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1MmU1H-1n2xhD1PLl-00iR2e; Sun, 17 Oct 2021 21:09:22 +0200
+Received: by mail-wr1-f44.google.com with SMTP id v17so37060051wrv.9;
+        Sun, 17 Oct 2021 12:09:22 -0700 (PDT)
+X-Gm-Message-State: AOAM531IY61lCtEEZ1bTsYBQCf3bZ3blcMIviTm78i3DpBeOtSIYXXbj
+        893BsAF/imR0W1XlZodN7vz9KCq8ZvquafYyw7g=
+X-Google-Smtp-Source: ABdhPJyDj5QI06EOMNONdAE5GwD/ut/fii1dX06b8JHCA0YPirHmFsCDgxXb4szkdoWo0z9BllmdVI49vaK35YUrk8s=
+X-Received: by 2002:adf:f481:: with SMTP id l1mr29223902wro.411.1634497761955;
+ Sun, 17 Oct 2021 12:09:21 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211017161523.43801-1-kitakar@gmail.com> <20211017161523.43801-2-kitakar@gmail.com>
-In-Reply-To: <20211017161523.43801-2-kitakar@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sun, 17 Oct 2021 22:08:16 +0300
-Message-ID: <CAHp75VfZyk_Ar23grNk2PvzRqaSO++CdkU4NWe2guNkwdGivzg@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/1] ACPI / PMIC: Add i2c address to intel_pmic_bytcrc driver
-To:     Tsuchiya Yuto <kitakar@gmail.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>, Andy Shevchenko <andy@kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20211017174905.18943-1-rdunlap@infradead.org>
+In-Reply-To: <20211017174905.18943-1-rdunlap@infradead.org>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Sun, 17 Oct 2021 21:09:05 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3XDY5gMUA3h3tVmQuxSHn_J3qOw_rDurzBx-KFdGhCKA@mail.gmail.com>
+Message-ID: <CAK8P3a3XDY5gMUA3h3tVmQuxSHn_J3qOw_rDurzBx-KFdGhCKA@mail.gmail.com>
+Subject: Re: [PATCH] asm-generic: bug.h: add unreachable() in BUG() for
+ CONFIG_BUG not set
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>
 Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:zGN4sBC/1RH8EFAOfkdOdJQmT5npD9tEpTMumWQlb+0qxZqz3rh
+ Da037rsHRmqxPIsfS4pePB+LzDlhqCngZ+wScR/23OoFfu6/rIKE9+z7muiF50ji8aj6ubI
+ R3xlhBbADMwYR4LyPznoJaGQ2DMmFrvatRKVUyFrDZFnplA1nOh5EVgFxYzKJI/xVwhDEdw
+ tvGszfJgRO/w71tNFko4A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:09/jv+oewuU=:OdXyuaQoEPw5k0YXxrRtP6
+ S4E2JV2NOTvmLytInJ5rHL6mls/LvI0DiBc59ab/XxcAhcWtguDoz2CGh+lJCiZxgmOX0rG3b
+ Qj0uCrCZhvWBx3aBCko1GHkUozI+M9tYXCRoE4ZzAxE0X6uoog/BTHR3SwobFvKcHJdvh7RGG
+ EQ+N2PfwzeInIpQHs5/DoH4hWKiiGmj61taNPmob4u8j7JCA4yNaIQtuWwViZQjvGDcFz5oqy
+ MFSUg17PvZH8YsetgTvScAf7O//eHJh4ZP+e+W5fe2nHTtdHXcMqlg0coMSPsIV62y2NcU9vs
+ gvQrAXm6oraCAoM0zE5Ndvb7kxRx2OALogG8ExGrz/TwkMullm03j4PQCTmvcMz9qU+rfMeWj
+ iHLVTTMVNqjHCk0JJJU6qVn2CKDD1IuPCpCsDJpNBNLjPfldL3pfsCSXE9ZpABYFspm/hi3TY
+ K3XZTeGqw91r7VpnIRKYooOErf9WgiYFcoBRrZhWMxbamKP6BHbVdaSKemx8UyCGgCoWldgzd
+ YVFvz7PfVml+b/RAEfdeoDF51AY8+mOrq6bmm8tj7CmnkyYWQgOgVo6Pf1mo6qT+K2fGuzpcO
+ a53q34zmkwCteMJNqeo6SCnGmawRBiE6llyHGDYpZwmkkehfVbcgcS7OOKFpKWtQ07cEqIxfQ
+ 4dAVlo+kDU/lVvRH6t/6p4Wz13d4icJ/8jUyIHsVijWu8tp8QN2hzbRkDUrJudSgf6u0o41FP
+ xNgombAx9mNIdAq2J3s8AF6H6qLVYY0ithQSvw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 17, 2021 at 7:16 PM Tsuchiya Yuto <kitakar@gmail.com> wrote:
-> On Microsoft Surface 3 (uses Intel's Atom Cherry Trail SoC), executing
-> intel_soc_pmic_exec_mipi_pmic_seq_element() results in the following
-> error message:
+On Sun, Oct 17, 2021 at 7:49 PM Randy Dunlap <rdunlap@infradead.org> wrote:
 >
->         [ 7196.356682] intel_soc_pmic_exec_mipi_pmic_seq_element: Not implemented
->         [ 7196.356686] intel_soc_pmic_exec_mipi_pmic_seq_element: i2c-addr: 0x6e reg-addr 0x57 value 0x63 mask 0xff
+> When CONFIG_BUG is not set/enabled, there is a warning
+> on ARCH=m68k, gcc version 11.1.0-nolibc from Arnd's crosstools:
 >
-> Surface 3 uses the PMIC device INT33FD, and the DSDT describes its _HRV
-> value is 0x02 [1]:
+> ../fs/afs/dir.c: In function 'afs_dir_set_page_dirty':
+> ../fs/afs/dir.c:51:1: error: no return statement in function returning non-void [-Werror=return-type]
 >
->         Scope (PCI0.I2C7)
->         {
->             Device (PMIC)
->             {
->                 Name (_ADR, Zero)  // _ADR: Address
->                 Name (_HID, "INT33FD" /* Intel Baytrail Power Management IC */)  // _HID: Hardware ID
->                 Name (_CID, "INT33FD" /* Intel Baytrail Power Management IC */)  // _CID: Compatible ID
->                 Name (_DDN, "CRYSTAL COVE+ AIC")  // _DDN: DOS Device Name
->                 Name (_HRV, 0x02)  // _HRV: Hardware Revision
->                 Name (_UID, One)  // _UID: Unique ID
->                 Name (_DEP, Package (0x01)  // _DEP: Dependencies
->                 {
->                     I2C7
->                 })
->         [...]
->
-> Due to this _HRV value, intel_pmic_bytcrc is used as the PMIC driver.
-> However, the i2c address is currently not defined in this driver.
-> This commit adds the missing i2c address 0x6e to the intel_pmic_bytcrc
-> driver.
->
-> [1] https://github.com/linux-surface/acpidumps/blob/f8db3d150815aa21530635b7e646eee271e3b8fe/surface_3/dsdt.dsl#L10868
+> Adding "unreachable()" in the BUG() macro silences the warning.
 
-> References: cc0594c4b0ef ("ACPI / PMIC: Add i2c address for thermal control")
+No, I don't think this is the right solution:
 
-Not sure what this tag means.
+> -#define BUG() do {} while (1)
+> +#define BUG() do {unreachable();} while (1)
 
-After reading a bit of code I think the best approach is to quirk the
-drivers/mfd/intel_soc_pmic_core.c with DMI to supply HRV. Setting an
-address to all BYT devices may not be the best since I have no idea if
-there are different addresses in use. It may be the case, but the
-problem is that we have no proof. Also BYT driver uses hardcoded power
-and thermal tables, I'm completely unsure that this would not damage
-hardware in some circumstances.
+Marking this code unreachable() means the compiler is free
+to assume any code path leading here will never be entered,
+which leads to additional undefined behavior and other warnings
+rather than just hanging reproducibly.
 
-Hans, what's your opinion on this?
+The endless loop here should normally be sufficient to tell the
+compiler that the function never returns, so it sounds like a
+problem in gcc for m68k.
 
-P.S. I dunno if _UID correlates to the type of the chipset (BYT/CHT).
+Did you see any other issues like this one on m68k, or the
+same one on another architecture?
 
--- 
-With Best Regards,
-Andy Shevchenko
+        Arnd
