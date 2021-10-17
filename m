@@ -2,258 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C390F430AFA
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 18:57:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DC21430B00
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 19:03:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344298AbhJQQ7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 12:59:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34292 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230114AbhJQQ7u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 12:59:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B0EE60FE3;
-        Sun, 17 Oct 2021 16:57:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634489860;
-        bh=i65g2Y8KtWtfpwM+2KwneRAYUabQyR1gqfyZXHyVTgA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QUBWxfE4pJY7Z1XFqvOkf8unI+keDI3KbXTdlt+2WQbuTZ5kTPfOtLAvujlTUd/r4
-         GgtjLHV8NNga2DgZ2POO6aAWxcHYlKyAqlA1GZ3ZFDOaNwG/tJr/hH4M5ZxPXu1a8X
-         Gqlh/omEgHPOOiBNl91MlaJEAMfK7Vf5kkuS3Y8WM5P4ozZSEJtUW7GxRbVzLL3VL6
-         rGNjYVjhWiJRRYJ0dEAaTMq3JURb720KI8N9IsSitBP3x6eILNq8fPrrEftLc2XEGX
-         lllEi0l1PFWebUG9kTQdJ/JTVagjBLXpbFXGh1ZbpH8+aCdzTBKOB2fpOotM7sKtE8
-         rvOlg2L9sLcIA==
-From:   Gao Xiang <xiang@kernel.org>
-To:     linux-erofs@lists.ozlabs.org, Chao Yu <chao@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Gao Xiang <hsiangkao@linux.alibaba.com>,
-        Yue Hu <huyue2@yulong.com>
-Subject: [PATCH v4 2/3] erofs: introduce the secondary compression head
-Date:   Mon, 18 Oct 2021 00:57:21 +0800
-Message-Id: <20211017165721.2442-1-xiang@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20211009181209.23041-1-xiang@kernel.org>
-References: <20211009181209.23041-1-xiang@kernel.org>
+        id S1344308AbhJQRF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 13:05:27 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:33388 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229565AbhJQRFZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Oct 2021 13:05:25 -0400
+Message-ID: <20211017151447.829495362@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1634490192;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=aZ3sxqmD6RAQ9ctUnJs4ASYjd0+zZLz5efI/2VlHMX4=;
+        b=N2M5sFkB/bp1P5+BoivbWpr/0yTg/aossEy1KRjBoLEpBfhaAjqrmJiVf1GdhqSCu8vMh4
+        6CWRjbXIlLW05Sf5xbpd1d1+BcIxEz2ILASptSJxbL6I0H2wJzNnaDXyBRRypNnaJj/uSx
+        uJsrYt2u9q4J5bciSYfN62mRXCF86HgYUaJY3GBEj5cc4gVKOLVvN5A/op3ZztkoiAORTW
+        oBes1EUw+NfIyqtl5ORvbpzbaP+XCQduPPHwXN2qCdHnnUpwRX2eBBGHpfgOGrQDYR8ZnR
+        rZbwvQbeieJL6P9llrR/7bq5g6/eGXJbEHdP24cEoNw+Zg3Yx3Phkk9RYAp7vw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1634490192;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=aZ3sxqmD6RAQ9ctUnJs4ASYjd0+zZLz5efI/2VlHMX4=;
+        b=WHnlM8vgwmIJc+EdU7fl+eoNw3DR6UJ7IzZTBrnP1dGBJtfXv2Vkahnga0RTaxtjhq5q1u
+        c7VSklZYYowMtXCQ==
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, "Liu, Jing2" <jing2.liu@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        kvm@vger.kernel.org, "Nakajima, Jun" <jun.nakajima@intel.com>,
+        Sean Christopherson <seanjc@google.com>
+Subject: [patch 0/4] x86/fpu/kvm: Sanitize the FPU guest/user handling
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Date:   Sun, 17 Oct 2021 19:03:11 +0200 (CEST)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gao Xiang <hsiangkao@linux.alibaba.com>
-
-Previously, for each HEAD lcluster, it can be either HEAD or PLAIN
-lcluster to indicate whether the whole pcluster is compressed or not.
-
-In this patch, a new HEAD2 head type is introduced to specify another
-compression algorithm other than the primary algorithm for each
-compressed file, which can be used for upcoming LZMA compression and
-LZ4 range dictionary compression for various data patterns.
-
-It has been stayed in the EROFS roadmap for years. Complete it now!
-
-Reviewed-by: Yue Hu <huyue2@yulong.com>
-Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
----
-changes since v3:
- - update comments about on-disk lclusters suggested by Chao.
-
- fs/erofs/erofs_fs.h | 39 ++++++++++++++++++++-------------------
- fs/erofs/zmap.c     | 41 ++++++++++++++++++++++++++++-------------
- 2 files changed, 48 insertions(+), 32 deletions(-)
-
-diff --git a/fs/erofs/erofs_fs.h b/fs/erofs/erofs_fs.h
-index e480b3854d88..87736cbf18cc 100644
---- a/fs/erofs/erofs_fs.h
-+++ b/fs/erofs/erofs_fs.h
-@@ -22,12 +22,14 @@
- #define EROFS_FEATURE_INCOMPAT_BIG_PCLUSTER	0x00000002
- #define EROFS_FEATURE_INCOMPAT_CHUNKED_FILE	0x00000004
- #define EROFS_FEATURE_INCOMPAT_DEVICE_TABLE	0x00000008
-+#define EROFS_FEATURE_INCOMPAT_COMPR_HEAD2	0x00000008
- #define EROFS_ALL_FEATURE_INCOMPAT		\
- 	(EROFS_FEATURE_INCOMPAT_LZ4_0PADDING | \
- 	 EROFS_FEATURE_INCOMPAT_COMPR_CFGS | \
- 	 EROFS_FEATURE_INCOMPAT_BIG_PCLUSTER | \
- 	 EROFS_FEATURE_INCOMPAT_CHUNKED_FILE | \
--	 EROFS_FEATURE_INCOMPAT_DEVICE_TABLE)
-+	 EROFS_FEATURE_INCOMPAT_DEVICE_TABLE | \
-+	 EROFS_FEATURE_INCOMPAT_COMPR_HEAD2)
- 
- #define EROFS_SB_EXTSLOT_SIZE	16
- 
-@@ -303,35 +305,34 @@ struct z_erofs_map_header {
- #define Z_EROFS_VLE_LEGACY_HEADER_PADDING       8
- 
- /*
-- * Fixed-sized output compression ondisk Logical Extent cluster type:
-- *    0 - literal (uncompressed) cluster
-- *    1 - compressed cluster (for the head logical cluster)
-- *    2 - compressed cluster (for the other logical clusters)
-+ * Fixed-sized output compression on-disk logical cluster type:
-+ *    0   - literal (uncompressed) lcluster
-+ *    1,3 - compressed lcluster (for HEAD lclusters)
-+ *    2   - compressed lcluster (for NONHEAD lclusters)
-  *
-  * In detail,
-- *    0 - literal (uncompressed) cluster,
-+ *    0 - literal (uncompressed) lcluster,
-  *        di_advise = 0
-- *        di_clusterofs = the literal data offset of the cluster
-- *        di_blkaddr = the blkaddr of the literal cluster
-+ *        di_clusterofs = the literal data offset of the lcluster
-+ *        di_blkaddr = the blkaddr of the literal pcluster
-  *
-- *    1 - compressed cluster (for the head logical cluster)
-- *        di_advise = 1
-- *        di_clusterofs = the decompressed data offset of the cluster
-- *        di_blkaddr = the blkaddr of the compressed cluster
-+ *    1,3 - compressed lcluster (for HEAD lclusters)
-+ *        di_advise = 1 or 3
-+ *        di_clusterofs = the decompressed data offset of the lcluster
-+ *        di_blkaddr = the blkaddr of the compressed pcluster
-  *
-- *    2 - compressed cluster (for the other logical clusters)
-+ *    2 - compressed cluster (for NONHEAD lclusters)
-  *        di_advise = 2
-  *        di_clusterofs =
-- *           the decompressed data offset in its own head cluster
-- *        di_u.delta[0] = distance to its corresponding head cluster
-- *        di_u.delta[1] = distance to its corresponding tail cluster
-- *                (di_advise could be 0, 1 or 2)
-+ *           the decompressed data offset in its own HEAD lcluster
-+ *        di_u.delta[0] = distance to this HEAD lcluster
-+ *        di_u.delta[1] = distance to the next HEAD lcluster
-  */
- enum {
- 	Z_EROFS_VLE_CLUSTER_TYPE_PLAIN		= 0,
--	Z_EROFS_VLE_CLUSTER_TYPE_HEAD		= 1,
-+	Z_EROFS_VLE_CLUSTER_TYPE_HEAD1		= 1,
- 	Z_EROFS_VLE_CLUSTER_TYPE_NONHEAD	= 2,
--	Z_EROFS_VLE_CLUSTER_TYPE_RESERVED	= 3,
-+	Z_EROFS_VLE_CLUSTER_TYPE_HEAD2		= 3,
- 	Z_EROFS_VLE_CLUSTER_TYPE_MAX
- };
- 
-diff --git a/fs/erofs/zmap.c b/fs/erofs/zmap.c
-index 1c3b068e5a42..85d0289429b3 100644
---- a/fs/erofs/zmap.c
-+++ b/fs/erofs/zmap.c
-@@ -28,7 +28,7 @@ static int z_erofs_fill_inode_lazy(struct inode *inode)
- {
- 	struct erofs_inode *const vi = EROFS_I(inode);
- 	struct super_block *const sb = inode->i_sb;
--	int err;
-+	int err, headnr;
- 	erofs_off_t pos;
- 	struct page *page;
- 	void *kaddr;
-@@ -68,9 +68,11 @@ static int z_erofs_fill_inode_lazy(struct inode *inode)
- 	vi->z_algorithmtype[0] = h->h_algorithmtype & 15;
- 	vi->z_algorithmtype[1] = h->h_algorithmtype >> 4;
- 
--	if (vi->z_algorithmtype[0] >= Z_EROFS_COMPRESSION_MAX) {
--		erofs_err(sb, "unknown compression format %u for nid %llu, please upgrade kernel",
--			  vi->z_algorithmtype[0], vi->nid);
-+	headnr = 0;
-+	if (vi->z_algorithmtype[0] >= Z_EROFS_COMPRESSION_MAX ||
-+	    vi->z_algorithmtype[++headnr] >= Z_EROFS_COMPRESSION_MAX) {
-+		erofs_err(sb, "unknown HEAD%u format %u for nid %llu, please upgrade kernel",
-+			  headnr + 1, vi->z_algorithmtype[headnr], vi->nid);
- 		err = -EOPNOTSUPP;
- 		goto unmap_done;
- 	}
-@@ -178,7 +180,8 @@ static int legacy_load_cluster_from_disk(struct z_erofs_maprecorder *m,
- 		m->clusterofs = 1 << vi->z_logical_clusterbits;
- 		m->delta[0] = le16_to_cpu(di->di_u.delta[0]);
- 		if (m->delta[0] & Z_EROFS_VLE_DI_D0_CBLKCNT) {
--			if (!(vi->z_advise & Z_EROFS_ADVISE_BIG_PCLUSTER_1)) {
-+			if (!(vi->z_advise & (Z_EROFS_ADVISE_BIG_PCLUSTER_1 |
-+					Z_EROFS_ADVISE_BIG_PCLUSTER_2))) {
- 				DBG_BUGON(1);
- 				return -EFSCORRUPTED;
- 			}
-@@ -189,7 +192,8 @@ static int legacy_load_cluster_from_disk(struct z_erofs_maprecorder *m,
- 		m->delta[1] = le16_to_cpu(di->di_u.delta[1]);
- 		break;
- 	case Z_EROFS_VLE_CLUSTER_TYPE_PLAIN:
--	case Z_EROFS_VLE_CLUSTER_TYPE_HEAD:
-+	case Z_EROFS_VLE_CLUSTER_TYPE_HEAD1:
-+	case Z_EROFS_VLE_CLUSTER_TYPE_HEAD2:
- 		m->clusterofs = le16_to_cpu(di->di_clusterofs);
- 		m->pblk = le32_to_cpu(di->di_u.blkaddr);
- 		break;
-@@ -446,7 +450,8 @@ static int z_erofs_extent_lookback(struct z_erofs_maprecorder *m,
- 		}
- 		return z_erofs_extent_lookback(m, m->delta[0]);
- 	case Z_EROFS_VLE_CLUSTER_TYPE_PLAIN:
--	case Z_EROFS_VLE_CLUSTER_TYPE_HEAD:
-+	case Z_EROFS_VLE_CLUSTER_TYPE_HEAD1:
-+	case Z_EROFS_VLE_CLUSTER_TYPE_HEAD2:
- 		m->headtype = m->type;
- 		map->m_la = (lcn << lclusterbits) | m->clusterofs;
- 		break;
-@@ -470,13 +475,18 @@ static int z_erofs_get_extent_compressedlen(struct z_erofs_maprecorder *m,
- 	int err;
- 
- 	DBG_BUGON(m->type != Z_EROFS_VLE_CLUSTER_TYPE_PLAIN &&
--		  m->type != Z_EROFS_VLE_CLUSTER_TYPE_HEAD);
-+		  m->type != Z_EROFS_VLE_CLUSTER_TYPE_HEAD1 &&
-+		  m->type != Z_EROFS_VLE_CLUSTER_TYPE_HEAD2);
-+	DBG_BUGON(m->type != m->headtype);
-+
- 	if (m->headtype == Z_EROFS_VLE_CLUSTER_TYPE_PLAIN ||
--	    !(vi->z_advise & Z_EROFS_ADVISE_BIG_PCLUSTER_1)) {
-+	    ((m->headtype == Z_EROFS_VLE_CLUSTER_TYPE_HEAD1) &&
-+	     !(vi->z_advise & Z_EROFS_ADVISE_BIG_PCLUSTER_1)) ||
-+	    ((m->headtype == Z_EROFS_VLE_CLUSTER_TYPE_HEAD2) &&
-+	     !(vi->z_advise & Z_EROFS_ADVISE_BIG_PCLUSTER_2))) {
- 		map->m_plen = 1 << lclusterbits;
- 		return 0;
- 	}
--
- 	lcn = m->lcn + 1;
- 	if (m->compressedlcs)
- 		goto out;
-@@ -498,7 +508,8 @@ static int z_erofs_get_extent_compressedlen(struct z_erofs_maprecorder *m,
- 
- 	switch (m->type) {
- 	case Z_EROFS_VLE_CLUSTER_TYPE_PLAIN:
--	case Z_EROFS_VLE_CLUSTER_TYPE_HEAD:
-+	case Z_EROFS_VLE_CLUSTER_TYPE_HEAD1:
-+	case Z_EROFS_VLE_CLUSTER_TYPE_HEAD2:
- 		/*
- 		 * if the 1st NONHEAD lcluster is actually PLAIN or HEAD type
- 		 * rather than CBLKCNT, it's a 1 lcluster-sized pcluster.
-@@ -553,7 +564,8 @@ static int z_erofs_get_extent_decompressedlen(struct z_erofs_maprecorder *m)
- 			DBG_BUGON(!m->delta[1] &&
- 				  m->clusterofs != 1 << lclusterbits);
- 		} else if (m->type == Z_EROFS_VLE_CLUSTER_TYPE_PLAIN ||
--			   m->type == Z_EROFS_VLE_CLUSTER_TYPE_HEAD) {
-+			   m->type == Z_EROFS_VLE_CLUSTER_TYPE_HEAD1 ||
-+			   m->type == Z_EROFS_VLE_CLUSTER_TYPE_HEAD2) {
- 			/* go on until the next HEAD lcluster */
- 			if (lcn != headlcn)
- 				break;
-@@ -613,7 +625,8 @@ int z_erofs_map_blocks_iter(struct inode *inode,
- 
- 	switch (m.type) {
- 	case Z_EROFS_VLE_CLUSTER_TYPE_PLAIN:
--	case Z_EROFS_VLE_CLUSTER_TYPE_HEAD:
-+	case Z_EROFS_VLE_CLUSTER_TYPE_HEAD1:
-+	case Z_EROFS_VLE_CLUSTER_TYPE_HEAD2:
- 		if (endoff >= m.clusterofs) {
- 			m.headtype = m.type;
- 			map->m_la = (m.lcn << lclusterbits) | m.clusterofs;
-@@ -654,6 +667,8 @@ int z_erofs_map_blocks_iter(struct inode *inode,
- 
- 	if (m.headtype == Z_EROFS_VLE_CLUSTER_TYPE_PLAIN)
- 		map->m_algorithmformat = Z_EROFS_COMPRESSION_SHIFTED;
-+	else if (m.headtype == Z_EROFS_VLE_CLUSTER_TYPE_HEAD2)
-+		map->m_algorithmformat = vi->z_algorithmtype[1];
- 	else
- 		map->m_algorithmformat = vi->z_algorithmtype[0];
- 
--- 
-2.20.1
-
+Q3VycmVudGx5IEtWTSBhbGxvY2F0ZXMgdHdvIEZQVSBzdHJ1Y3RzIHdoaWNoIGFyZSB1c2VkIGZv
+ciBzYXZpbmcgdGhlIHVzZXIKc3RhdGUgb2YgdGhlIHZDUFUgdGhyZWFkIGFuZCByZXN0b3Jpbmcg
+dGhlIGd1ZXN0IHN0YXRlIHdoZW4gZW50ZXJpbmcKdmNwdV9ydW4oKSBhbmQgZG9pbmcgdGhlIHJl
+dmVyc2Ugb3BlcmF0aW9uIGJlZm9yZSBsZWF2aW5nIHZjcHVfcnVuKCkuCgpXaXRoIHRoZSBuZXcg
+ZnBzdGF0ZSBtZWNoYW5pc20gdGhpcyBjYW4gYmUgcmVkdWNlZCB0byBvbmUgZXh0cmEgYnVmZmVy
+IGJ5CnN3YXBwaW5nIHRoZSBmcHN0YXRlIHBvaW50ZXIgaW4gY3VycmVudDo6dGhyZWFkOjpmcHUu
+IFRoaXMgbWFrZXMgYWxzbyB0aGUKdXBjb21pbmcgc3VwcG9ydCBmb3IgQU1YIGFuZCBYRkQgc2lt
+cGxlciBiZWNhdXNlIHRoZW4gZnBzdGF0ZSBpbmZvcm1hdGlvbgooZmVhdHVyZXMsIHNpemVzLCB4
+ZmQpIGFyZSBhbHdheXMgY29uc2lzdGVudCBhbmQgaXQgZG9lcyBub3QgcmVxdWlyZSBhbnkKbmFz
+dHkgd29ya2Fyb3VuZHMuCgpUaGUgZm9sbG93aW5nIHNlcmllcyBjbGVhbnMgdGhhdCB1cCBhbmQg
+cmVwbGFjZXMgdGhlIGN1cnJlbnQgc2NoZW1lIHdpdGggYQpzaW5nbGUgZ3Vlc3Qgc3RhdGUgd2hp
+Y2ggaXMgc3dpdGNoZWQgaW4gd2hlbiBlbnRlcmluZyB2Y3B1X3J1bigpIGFuZApzd2l0Y2hlZCBv
+dXQgYmVmb3JlIGxlYXZpbmcgaXQuCgpUaGUgcmV3b3JrIGlzIHZhbHVhYmxlIGV2ZW4gd2l0aG91
+dCBBTVgvWEZEIGJlY2F1c2UgaXQgY29uc3VtZXMgbGVzcyBtZW1vcnkKYW5kIHdoZW4gc3dhcHBp
+bmcgdGhlIGZwc3RhdGVzIHRoZXJlIGlzIG5vIG1lbW9yeSBjb3B5IHJlcXVpcmVkIHdoZW4KVElG
+X05FRURfTE9BRF9GUFUgaXMgc2V0IG9uIHRoZSBnb2luZyBvdXQgZnBzdGF0ZS4KClRoZSBzZXJp
+ZXMgaXMgYmFzZWQgb246CgogIGdpdDovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2Vy
+bmVsL2dpdC90Z2x4L2RldmVsLmdpdCB4ODYvZnB1LTMKCmFuZCBpcyBub3cgcGFydCBvZiB0aGUg
+ZnVsbCBBTVggc2VyaWVzOgoKICBnaXQ6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tl
+cm5lbC9naXQvdGdseC9kZXZlbC5naXQgeDg2L2ZwdQoKT24gdG9wIG9mIHRoYXQgSSd2ZSBpbnRl
+Z3JhdGVkIHRoZSBLVk0gcmVhbGxvY2F0aW9uIG1lY2hhbmlzbSBpbnRvOgoKICBnaXQ6Ly9naXQu
+a2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvdGdseC9kZXZlbC5naXQgeDg2L2Zw
+dS1rdm0KClRoZSBsYXR0ZXIgYnVpbGRzLCBib290cyBhbmQgcnVucyBLVk0gZ3Vlc3RzLCBidXQg
+dGhhdCByZWFsbG9jYXRpb24KZnVuY3Rpb25hbGl0eSBpcyBvYnZpb3VzbHkgY29tcGxldGVseSB1
+bnRlc3RlZC4gSSB3YW50IHRvIHNoYXJlIHRoaXMgd2l0aApLVk0gZm9sa3Mgc28gdGhleSBjYW4g
+c3RhcnQgdG8gbG9vayBob3cgdG8gaW50ZWdyYXRlIHRoZWlyIFhGRC9YQ1IwIGFuZApyZWFsbG9j
+YXRpb24gc2NoZW1lIGFzIGRpc2N1c3NlZCBhbmQgb3V0bGluZWQgaGVyZToKCiAgIGh0dHBzOi8v
+bG9yZS5rZXJuZWwub3JnL3IvODdtdG45M3U1OC5mZnNAdGdseAoKYW5kIHRoZSByZWxhdGVkIHRo
+cmVhZC4gSXQncyBhIHRpbnkgaW5jcmVtZW50YWwgdXBkYXRlIG9uIHRvcCBvZiB4ODYvZnB1ICg2
+CmZpbGVzIGNoYW5nZWQsIDE4MyBpbnNlcnRpb25zKCspLCAzNiBkZWxldGlvbnMoLSkpIHdoaWNo
+IHJldXNlcyB0aGUgaG9zdApzaWRlIG1lY2hhbmlzbXMuCgpUaGFua3MsCgoJdGdseAotLS0KIGlu
+Y2x1ZGUvYXNtL2ZwdS9hcGkuaCAgIHwgICAxOSArKysrKystLQogaW5jbHVkZS9hc20vZnB1L3R5
+cGVzLmggfCAgIDQ0ICsrKysrKysrKysrKysrKysrKy0KIGluY2x1ZGUvYXNtL2t2bV9ob3N0Lmgg
+IHwgICAgNyAtLS0KIGtlcm5lbC9mcHUvY29yZS5jICAgICAgIHwgIDExMCArKysrKysrKysrKysr
+KysrKysrKysrKysrKysrKysrKystLS0tLS0tLS0tLS0tLS0KIGt2bS9zdm0vc3ZtLmMgICAgICAg
+ICAgIHwgICAgNyArLS0KIGt2bS94ODYuYyAgICAgICAgICAgICAgIHwgICA4OCArKysrKysrKysr
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQogNiBmaWxlcyBjaGFuZ2VkLCAxNjUgaW5zZXJ0
+aW9ucygrKSwgMTEwIGRlbGV0aW9ucygtKQoKCg==
