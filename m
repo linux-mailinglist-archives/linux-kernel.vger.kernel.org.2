@@ -2,176 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A89FA430722
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 09:54:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD8B0430732
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 10:27:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241490AbhJQH4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 03:56:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36538 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233999AbhJQH4h (ORCPT
+        id S245063AbhJQI3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 04:29:21 -0400
+Received: from mail-m963.mail.126.com ([123.126.96.3]:50978 "EHLO
+        mail-m963.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245032AbhJQI3Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 03:56:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634457267;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+0osY3/SAm8vFbOEyznQ3BBtqYdhl6eYu7QQs/YzIGE=;
-        b=bhtjJvOCBwpW4PmCSKdCGOupZZ9Nb/GVVIshEkwd7zm2ToQK2dWEoUEXOcdgSgKq8Y82GU
-        wtRbUPbG9VkRLQJYWidNif3U2REMf+7rKk3ISPLbu5uj0mYY+zMxCWBLJ9dYJOjcYmek0Q
-        H+2umQ2qGL2hThiIiP7eCYqJSNfhbaY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-354-lYQW2WO-P8Cx1coOwejEIA-1; Sun, 17 Oct 2021 03:54:22 -0400
-X-MC-Unique: lYQW2WO-P8Cx1coOwejEIA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 03F3B800685;
-        Sun, 17 Oct 2021 07:54:21 +0000 (UTC)
-Received: from starship (unknown [10.40.192.246])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2F78F5C1C5;
-        Sun, 17 Oct 2021 07:54:17 +0000 (UTC)
-Message-ID: <eaddf15f13aa688c03d53831c2309a60957bb7f4.camel@redhat.com>
-Subject: Re: [PATCH RFC] KVM: SVM: reduce guest MAXPHYADDR by one in case
- C-bit is a physical bit
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        David Matlack <dmatlack@google.com>,
-        linux-kernel@vger.kernel.org
-Date:   Sun, 17 Oct 2021 10:54:16 +0300
-In-Reply-To: <YWmdLPsa6qccxtEa@google.com>
-References: <20211015150524.2030966-1-vkuznets@redhat.com>
-         <YWmdLPsa6qccxtEa@google.com>
+        Sun, 17 Oct 2021 04:29:16 -0400
+X-Greylist: delayed 1870 seconds by postgrey-1.27 at vger.kernel.org; Sun, 17 Oct 2021 04:29:15 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+        s=s110527; h=Message-ID:Subject:From:Date:MIME-Version; bh=kfvAx
+        b6atL/vWwpV/RLDdStnL8qUxjQfmKzvVV1svv0=; b=a6WZOqw4G5xuXe+lnsjqw
+        1tv72V3TVFYyiXayQp40lpcELhhLTFG69o+Hn+J2zk+Hvz2D0XtBhEwcpIXF+Lo+
+        ZOdnVZ98mxj+Z/v+oomb5gG69+Qi3HjIdmKktDxJ6hc0QWdO6KsEOGnG8TJbUHRg
+        020vdYf0T1kAst/lKAGaxM=
+Received: from [127.0.0.1] (unknown [153.99.123.184])
+        by smtp8 (Coremail) with SMTP id NORpCgBnbrK+1mthlSZQAQ--.27969S2;
+        Sun, 17 Oct 2021 15:54:40 +0800 (CST)
+Message-ID: <2cca0c29a56fd8be0dc9b25f68f5c308484d093b.camel@126.com>
+Subject: Re: [PATCH 1/1] dt-bindings: reg-io-width for SiFive CLINT
+From:   Xiang W <wxjstz@126.com>
+To:     Heinrich Schuchardt <heinrich.schuchardt@canonical.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Guo Ren <guoren@linux.alibaba.com>, Bin Meng <bmeng.cn@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Atish Patra <atish.patra@wdc.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Anup Patel <anup.patel@wdc.com>, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
+        opensbi@lists.infradead.org
+Date:   Sun, 17 Oct 2021 15:54:38 +0800
+In-Reply-To: <20211015100941.17621-1-heinrich.schuchardt@canonical.com>
+References: <20211015100941.17621-1-heinrich.schuchardt@canonical.com>
 Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+User-Agent: Evolution 3.38.3-1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: NORpCgBnbrK+1mthlSZQAQ--.27969S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7CFyDGr15Ar18Wr4ftFWUJwb_yoW8CrW7pa
+        yxCFnFga1Iga4xWayxXa1kCrW5XrWkJw4293WDt347Gr4DWa4FqayagrnrX3W7A3Wv9FZF
+        qa409r15Ga12vr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07U4yIbUUUUU=
+X-Originating-IP: [153.99.123.184]
+X-CM-SenderInfo: pz0m23b26rjloofrz/1tbiIQAvOlpECkDIvgAAsW
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-10-15 at 15:24 +0000, Sean Christopherson wrote:
-> On Fri, Oct 15, 2021, Vitaly Kuznetsov wrote:
-> > Several selftests (memslot_modification_stress_test, kvm_page_table_test,
-> > dirty_log_perf_test,.. ) which rely on vm_get_max_gfn() started to fail
-> > since commit ef4c9f4f65462 ("KVM: selftests: Fix 32-bit truncation of
-> > vm_get_max_gfn()") on AMD EPYC 7401P:
-> > 
-> >  ./tools/testing/selftests/kvm/demand_paging_test
-> >  Testing guest mode: PA-bits:ANY, VA-bits:48,  4K pages
-> >  guest physical test memory offset: 0xffffbffff000
+在 2021-10-15星期五的 12:09 +0200，Heinrich Schuchardt写道：
+> The CLINT in the T-HEAD 9xx processors do not support 64bit mmio
+> access to
+> the MTIMER device. The current schema does not allow to specify this.
 > 
-> This look a lot like the signature I remember from the original bug[1].  I assume
-> you're hitting the magic HyperTransport region[2].  I thought that was fixed, but
-> the hack-a-fix for selftests never got applied[3].
-
-Hi Vitaly and everyone!
-
-You are the 3rd person to suffer from this issue :-( Sean Christopherson was first, I was second.
-
-I reported this, then I think we found out that it is not the HyperTransport region after all,
-and I think that the whole thing lost in 'trying to get answers from AMD'.
-
-https://lore.kernel.org/lkml/ac72b77c-f633-923b-8019-69347db706be@redhat.com/
-
-
-I'll say, a hack to reduce it by 1 bit is still better that failing tests,
-at least until AMD explains to us, about what is going on.
-
-Sorry that you had to debug this.
-
-Best regards,
-	Maxim Levitsky 
-
-
+> OpenSBI currently uses a property 'clint,has-no-64bit-mmio' to
+> indicate the
+> restriction. Samuael Holland suggested in
+> lib: utils/timer: Use standard property to specify 32-bit I/O
+> https://github.com/smaeul/opensbi/commit/b95e9cf7cf93b0af16fc89204378bc59ff30008e
+> to use "reg-io-width = <4>;" as the reg-io-width property is
+> generally used
+> in the devicetree schema for such a condition.
 > 
-> [1] https://lore.kernel.org/lkml/20210623230552.4027702-4-seanjc@google.com/
-> [2] https://lkml.kernel.org/r/7e3a90c0-75a1-b8fe-dbcf-bda16502ace9@amd.com
-> [3] https://lkml.kernel.org/r/20210805105423.412878-1-pbonzini@redhat.com
+> A release candidate of the ACLINT specification is available at
+> https://github.com/riscv/riscv-aclint/releases
 > 
-> >  Finished creating vCPUs and starting uffd threads
-> >  Started all vCPUs
-> >  ==== Test Assertion Failure ====
-> >    demand_paging_test.c:63: false
-> >    pid=47131 tid=47134 errno=0 - Success
-> >       1	0x000000000040281b: vcpu_worker at demand_paging_test.c:63
-> >       2	0x00007fb36716e431: ?? ??:0
-> >       3	0x00007fb36709c912: ?? ??:0
-> >    Invalid guest sync status: exit_reason=SHUTDOWN
-> > 
-> > The commit, however, seems to be correct, it just revealed an already
-> > present issue. AMD CPUs which support SEV may have a reduced physical
-> > address space, e.g. on AMD EPYC 7401P I see:
-> > 
-> >  Address sizes:  43 bits physical, 48 bits virtual
-> > 
-> > The guest physical address space, however, is not reduced as stated in
-> > commit e39f00f60ebd ("KVM: x86: Use kernel's x86_phys_bits to handle
-> > reduced MAXPHYADDR"). This seems to be almost correct, however, APM has one
-> > more clause (15.34.6):
-> > 
-> >   Note that because guest physical addresses are always translated through
-> >   the nested page tables, the size of the guest physical address space is
-> >   not impacted by any physical address space reduction indicated in CPUID
-> >   8000_001F[EBX]. If the C-bit is a physical address bit however, the guest
-> >   physical address space is effectively reduced by 1 bit.
-> > 
-> > Implement the reduction.
-> > 
-> > Fixes: e39f00f60ebd (KVM: x86: Use kernel's x86_phys_bits to handle reduced MAXPHYADDR)
-> > Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-> > ---
-> > - RFC: I may have misdiagnosed the problem as I didn't dig to where exactly
-> >  the guest crashes.
-> > ---
-> >  arch/x86/kvm/cpuid.c | 13 ++++++++++---
-> >  1 file changed, 10 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-> > index 751aa85a3001..04ae280a0b66 100644
-> > --- a/arch/x86/kvm/cpuid.c
-> > +++ b/arch/x86/kvm/cpuid.c
-> > @@ -923,13 +923,20 @@ static inline int __do_cpuid_func(struct kvm_cpuid_array *array, u32 function)
-> >  		 *
-> >  		 * If TDP is enabled but an explicit guest MAXPHYADDR is not
-> >  		 * provided, use the raw bare metal MAXPHYADDR as reductions to
-> > -		 * the HPAs do not affect GPAs.
-> > +		 * the HPAs do not affect GPAs. The value, however, has to be
-> > +		 * reduced by 1 in case C-bit is a physical bit (APM section
-> > +		 * 15.34.6).
-> >  		 */
-> > -		if (!tdp_enabled)
-> > +		if (!tdp_enabled) {
-> >  			g_phys_as = boot_cpu_data.x86_phys_bits;
-> > -		else if (!g_phys_as)
-> > +		} else if (!g_phys_as) {
-> >  			g_phys_as = phys_as;
-> >  
-> > +			if (kvm_cpu_cap_has(X86_FEATURE_SEV) &&
-> > +			    (cpuid_ebx(0x8000001f) & 0x3f) < g_phys_as)
-> > +				g_phys_as -= 1;
+> Add reg-io-width as optional property to the SiFive Core Local
+> Interruptor.
 > 
-> This is incorrect, non-SEV guests do not see a reduced address space.  See Tom's
-> explanation[*]
+> Signed-off-by: Heinrich Schuchardt
+> <heinrich.schuchardt@canonical.com>
+> ---
+>  Documentation/devicetree/bindings/timer/sifive,clint.yaml | 7
+> +++++++
+>  1 file changed, 7 insertions(+)
 > 
-> [*] https://lkml.kernel.org/r/324a95ee-b962-acdf-9bd7-b8b23b9fb991@amd.com
-> 
-> > +		}
-> > +
-> >  		entry->eax = g_phys_as | (virt_as << 8);
-> >  		entry->edx = 0;
-> >  		cpuid_entry_override(entry, CPUID_8000_0008_EBX);
-> > -- 
-> > 2.31.1
-> > 
+> diff --git
+> a/Documentation/devicetree/bindings/timer/sifive,clint.yaml
+> b/Documentation/devicetree/bindings/timer/sifive,clint.yaml
+> index a35952f48742..266012d887b5 100644
+> --- a/Documentation/devicetree/bindings/timer/sifive,clint.yaml
+> +++ b/Documentation/devicetree/bindings/timer/sifive,clint.yaml
+> @@ -41,6 +41,13 @@ properties:
+>    reg:
+>      maxItems: 1
+>  
+> +  reg-io-width:
+> +    description: |
+> +      Some CLINT implementations, e.g. on the T-HEAD 9xx, only
+> support
+> +      32bit access for MTIMER.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    const: 4
+> +
+>    interrupts-extended:
+>      minItems: 1
+>  
+I think we can move has_64bit_mmio to fdt_match->data.This way we no
+longer rely on 'clint, has-no-64bit-mmio' or 'reg-io-width'
+
+Regards,
+Xiang W
 
 
