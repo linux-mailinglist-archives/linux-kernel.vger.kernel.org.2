@@ -2,84 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43E324309B9
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 16:23:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EA554309BB
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 16:23:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343849AbhJQOZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 10:25:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49062 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231156AbhJQOZp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 10:25:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B89B60F25;
-        Sun, 17 Oct 2021 14:23:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634480616;
-        bh=u/RJgwBpG/Tu9YYkznyutqBM6vIUEdyN5FTOH2rAcp8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=erect+gwOpQHpeQmQ+mvrlDf97mqesEDIPrBVBCLXUKv5x+ESvJaDqdKolzrc2XyX
-         LzGI7aVgCh70/ps3CCeVDoaEr/mpwcqZM5CJ3S+B3anvpMq047Ut+xmomuGw3dNVgh
-         y8LlZbKBInRDa8i+GSLz0q9VFF6lKSejG+MN7KhtMtkTgzbLsXAOzaI3aRHTxeebtj
-         AAbTgfBVmZyoEKWARXGMRRT4a1k+8HbftbSjddqjFkmnrw0fvUBIyxmnhKDKREWKNE
-         zHvNXIgdikpcPJmmBE3xezhtx88LlbkuBUdlGDIpAuIQXyfMV9oqhL98NXFdvIu2DP
-         c0EdXalMDI7+Q==
-Date:   Sun, 17 Oct 2021 16:23:32 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jean Delvare <jdelvare@suse.com>
-Subject: Re: [PATCH v1 1/1] i2c: i801: Add support for Intel Ice Lake PCH-N
-Message-ID: <YWwx5NJTFmR6Yqkb@ninjato>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jean Delvare <jdelvare@suse.com>
-References: <20211001172154.15660-1-andriy.shevchenko@linux.intel.com>
+        id S1343862AbhJQOZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 10:25:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37182 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343858AbhJQOZz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Oct 2021 10:25:55 -0400
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81405C061769
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 07:23:45 -0700 (PDT)
+Received: by mail-il1-x132.google.com with SMTP id k3so1894344ilo.7
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 07:23:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=HmFVb8xcAOPn3KFdgt6HcfcE/AmGQRsTzReX+3wjP4g=;
+        b=aRNuyuJrq/vs5oWRNzTycUP/Fg9XrqqlxawcmiY6GzOT3VVhg77DO+5g6T4a1lMBD8
+         V4Fy7cR0E9gqtQ/HNAOxZ0HRNDLiYxo7gLVY+3NbFJ3tEoi/SqZWW37OIh/Vm444vTuj
+         /qWlv3JBPrWp2eEyA9wrirrZDV6wHKmzpYxpyfnUNaQoIr5HIWZBqPhRZYx9YRAE7jwW
+         AJad8Tjj79siCZzMvK/BSS4J93j5zHKgYfIZ3Dj0D/8SJnwidwePXVe3Qsn8p7EG9bST
+         UFaQhbXTNVCuT9ObfL/wrPjP6cxGPUZ6qRPluLWDVKya/gL4RmX7+o3tkvfe0wqDLmce
+         5mJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=HmFVb8xcAOPn3KFdgt6HcfcE/AmGQRsTzReX+3wjP4g=;
+        b=pVwBCyUYHZbhWCLDtb0zrTz/egIoCgL7qRGjF/2Wses4QpVqtBmc/qjTGRu1exp5dh
+         WCD/VvbWfpVI5gN7HDbVsViG8LXO5KiY2G9Ss0PFofH+7aMEF63rOlveKSuXROAcNxB6
+         T9nmarCtFZgMgzu7WBjlBkDX8qDbS8iFww0yhlvUElgI/b93XizyBYyNgPdd8OF0K5hd
+         yfbzU4yVSz2IFzNldc2vuJOAuGd6xbqk6vfxnKiW6MCkC5R6I8kJMByybJ6/VxG/d+I+
+         I1fzvdWcKiaNYVMeFIh2dcLJtUd6ZjCE5lhQBe0TFIFrLO8nFSnPEah43IZQvc5p7jQN
+         Kyqw==
+X-Gm-Message-State: AOAM533yZN3ShEaploESk8PJzqArOyYUuHsatSEPpe3cNoVSC/h8ddze
+        0F0pOdsKNt9kNhSiPtDriIzisg==
+X-Google-Smtp-Source: ABdhPJyqHtmY5cjGgxMH+VFZv2kYgLniApzrSDObuA9jv0+XHREHrnXRPLybVSIbP3U0NTzNuGKaNA==
+X-Received: by 2002:a05:6e02:1aa5:: with SMTP id l5mr10279705ilv.268.1634480624620;
+        Sun, 17 Oct 2021 07:23:44 -0700 (PDT)
+Received: from localhost.localdomain ([66.219.217.159])
+        by smtp.gmail.com with ESMTPSA id v4sm5693755ile.24.2021.10.17.07.23.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 Oct 2021 07:23:44 -0700 (PDT)
+From:   Jens Axboe <axboe@kernel.dk>
+To:     Noah Goldstein <goldstein.w.n@gmail.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org,
+        asml.silence@gmail.com, io-uring@vger.kernel.org
+Subject: Re: [PATCH v1] fs/io_uring: Prioritise checking faster conditions first in io_write
+Date:   Sun, 17 Oct 2021 08:23:41 -0600
+Message-Id: <163448061835.101565.1242197523580881975.b4-ty@kernel.dk>
+X-Mailer: git-send-email 2.33.1
+In-Reply-To: <20211017013229.4124279-1-goldstein.w.n@gmail.com>
+References: <20211017013229.4124279-1-goldstein.w.n@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="6JV+cPk/3aMxWDAh"
-Content-Disposition: inline
-In-Reply-To: <20211001172154.15660-1-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, 16 Oct 2021 20:32:29 -0500, Noah Goldstein wrote:
+> This commit reorders the conditions in a branch in io_write. The
+> reorder to check 'ret2 == -EAGAIN' first as checking
+> '(req->ctx->flags & IORING_SETUP_IOPOLL)' will likely be more
+> expensive due to 2x memory derefences.
+> 
+> 
 
---6JV+cPk/3aMxWDAh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Applied, thanks!
 
-On Fri, Oct 01, 2021 at 08:21:54PM +0300, Andy Shevchenko wrote:
-> Add PCI ID of SMBus controller on Intel Ice Lake PCH-N.
->=20
-> The device can be found on MacBookPro16,2 [1].
->=20
-> [1]: https://linux-hardware.org/?probe=3Df1c5cf0c43
->=20
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+[1/1] fs/io_uring: Prioritise checking faster conditions first in io_write
+      commit: 02a8286be94bb1fce86afa6b487717eb4ca2956e
 
-Applied to for-next, thanks!
+Best regards,
+-- 
+Jens Axboe
 
 
---6JV+cPk/3aMxWDAh
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmFsMeQACgkQFA3kzBSg
-KbY6oRAAg6wFty7kiqnkhMb4/uam1Tg++wcohXBBHfxSGMglrGaDxGQt7q6KFdc0
-4TLKYQez42dwCS8hSxdybT//95ndAKZYIlVQh5YrJtaRZrv7/ALFwEz/W+Waoyhl
-pioG/sWH9q6DQuYeLaAu7n7JzSL6sQjRTXH5xqMMnm0V5i9n4GZ3et51i8H4kWZi
-nwCUnenPV2SWZm40yYku8vf07KBNjlX1wUGEFfnSiZLqIILRN9VaBuYn7u2XO8bp
-XkkxaB6EVHVhW/TuRf7tdj93ABV7hA2uNHvVyjSHr+XvAokkyS8j+LHocn62gSRS
-eHEBdCQKxhDvK1aDoySEGGORqikr2O8B1ZLhiTrwmuyPfZahYY0trxSB6eS7fc3D
-t1XRsJ7RqCtiwMsV8hxt8N+wSH6kNlDRiXzi3f4EUYdzsF5Ty7rzk9SAcDNmkH7e
-6jkpqAz5ZYFXsk1gUwi5/cCkG4U6F/lTgowCJhLAF3KSKnHmDvSPCRd+c+PVaP9V
-xD6ef65WbN9abMAxhJ4WJepcim0jwJ2YHkEAmhEF71VZnYcr0nlQUYsanQAbHQld
-rvGmIsy1vq1k/JbgrRJ4TDc1dW9KlAt0PMdzW93I3UpqUnZKqb/P+F1H0a0YpkHc
-KlvLAXTgsNXj0L1hc+xOidwF+OCZllq9kkyTb4g+I3hVxQz1Vns=
-=J5KV
------END PGP SIGNATURE-----
-
---6JV+cPk/3aMxWDAh--
