@@ -2,163 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF55B430A48
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 17:43:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 035BA430A4A
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 17:43:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241164AbhJQPpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 11:45:13 -0400
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:57857 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237507AbhJQPpM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 11:45:12 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailnew.nyi.internal (Postfix) with ESMTP id CA9EA58174D;
-        Sun, 17 Oct 2021 11:43:01 -0400 (EDT)
-Received: from imap47 ([10.202.2.97])
-  by compute1.internal (MEProxy); Sun, 17 Oct 2021 11:43:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
-         h=mime-version:message-id:in-reply-to:references:date:from:to
-        :cc:subject:content-type; s=fm2; bh=Ar3UQU2Sa++4NZyb+2T9TqxUkLx7
-        OwjH980XzmFd+HI=; b=az5eW2L/b1Av9aQt1pszh/6hgkWXcrHCeG8TF9+6S/gw
-        zN7KBwORoKjoKJgeBNcokVCaG7fmtsYR+td/Vi0yDewtFnd99eSrXszwNkUoXlRr
-        Auz0+uDg+K/R6+1X8deC9/C1nI8iioBPlwDAA5xm5QFRqMAiLXWQFm0itNnC6pRH
-        GyE+AwiW7U2Ck7jmvGcWSzokmkZI2U4ekW2KR0xYe2Tuc4nNamE2TPNKeV3Wnx+x
-        vI1mL73RIGJt0icWMjHPa2ieDmV+B1BDoR7KYOtDW2RugDpY4e0z/uALnOqkkAv2
-        kWWxkl+8X6tB6IZ4IFnJlOBvbbYuyZjtinoycgOSmQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=Ar3UQU
-        2Sa++4NZyb+2T9TqxUkLx7OwjH980XzmFd+HI=; b=k5fZQ9y3A47yKYsHIwY61b
-        IARHhWuUrxxFhvF9MwZqXioArgw+JC2vbA4cn7V/Pq5rpXqR2tZzYNU+Mn0XgCru
-        R+H9WfVdzYF+0tJNJ/HoExyq+Fle+gFiKpuhTjJySLoV++VglowlULdWsRDbxHDm
-        C5JsI0jWTn1X4/hhWc248uJxqDEj0VLKwdpZ/4+5UpcoKfFX1D97JWDanLce48r1
-        jNYIgqlMMuHAuq1Lo7Hm92ujj5ZYtUjiN2rihrYSHohEVk9CIj1RhgCA84E6v6mk
-        +jamEYLpqxk/i0qf6Tb08r4SWm9D5l2sEWqkRXSVWFjCDOKn2WTfPBqUb2PYmpdQ
-        ==
-X-ME-Sender: <xms:hURsYSul-wg9L0xU0Kz9anBBcoQfQF9dJoHuGmETSg8aKTvZV-o7iw>
-    <xme:hURsYXcRJL98kKcS8gFEVhIRcia1ZeLCr8ex_DdD6wo-4z6HOm6GiWPg_XS0drKxb
-    jJAKFyDWgQC20PU7Fg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvddukedgleduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdfuvhgv
-    nhcurfgvthgvrhdfuceoshhvvghnsehsvhgvnhhpvghtvghrrdguvghvqeenucggtffrrg
-    htthgvrhhnpeefieeiffekffetgeffleekgefgiedvgeffvedtleegieefhfejgeehleel
-    hfeuveenucffohhmrghinhepuggvvhhitggvthhrvggvrdhorhhgpdhoiihlrggsshdroh
-    hrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehs
-    vhgvnhesshhvvghnphgvthgvrhdruggvvh
-X-ME-Proxy: <xmx:hURsYdyxIA1MCgEIvVNlNCwRy-3gL4p53vI9ZjbEMfUZYlBEqyChmQ>
-    <xmx:hURsYdPOavpveBE_5aILJN8MJR7V2i_zkRp_g5rVqav7T6lEPWFUbQ>
-    <xmx:hURsYS9mE3aRQrYnH9zyUgbOf6154c8DE5X6xVue_D4ZP1-ii40_ag>
-    <xmx:hURsYVZKbV-TS6VXlMirLhWddRvgTZA9C-C4mZugrfbjoh6x3Cse2A>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 1C0932740061; Sun, 17 Oct 2021 11:43:01 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-1345-g8441cd7852-fm-20211006.001-g8441cd78
-Mime-Version: 1.0
-Message-Id: <8a64dc78-4c8d-4eb2-b6e4-d0470f3eb511@www.fastmail.com>
-In-Reply-To: <1634484570.833028.60701.nullmailer@robh.at.kernel.org>
-References: <20211017114054.67737-1-sven@svenpeter.dev>
- <20211017114054.67737-2-sven@svenpeter.dev>
- <1634484570.833028.60701.nullmailer@robh.at.kernel.org>
-Date:   Sun, 17 Oct 2021 17:42:40 +0200
-From:   "Sven Peter" <sven@svenpeter.dev>
-To:     "Rob Herring" <robh@kernel.org>
-Cc:     "Jassi Brar" <jassisinghbrar@gmail.com>,
-        "Mohamed Mediouni" <mohamed.mediouni@caramail.com>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "Hector Martin" <marcan@marcan.st>, linux-kernel@vger.kernel.org,
-        "Alyssa Rosenzweig" <alyssa@rosenzweig.io>,
-        "Mark Kettenis" <kettenis@openbsd.org>,
-        "Stan Skowronek" <stan@corellium.com>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        "Mark Kettenis" <mark.kettenis@xs4all.nl>
-Subject: Re: [PATCH v3 1/2] dt-bindings: mailbox: Add Apple mailbox bindings
-Content-Type: text/plain
+        id S241441AbhJQPp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 11:45:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59512 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237507AbhJQPp2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Oct 2021 11:45:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 231A660F9E;
+        Sun, 17 Oct 2021 15:43:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634485398;
+        bh=7rtVxTf07dmNllT8+b9Wc8k/EraK1VLR7qga4vJgb+4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IumawfjGFQvmYJtYQi5xoKSPg6/hO3CbBANAd0ig7u1r4b732ITusRACK3UH2hLw/
+         du3nMIQ/X2DHgVpBchW9pripRmmsj/dtyEsVtUxec7BK/2JB/itXDpk5rKFJHoMyuz
+         tXen++ellTcynMc+bv6rM1bviMBzMdARawOe7eYu8iEh3S38P00qs00Rb+hc6oH/Tf
+         hc0LEyuMp6sm9ee6wdvEVVfSz9KUhAmfTxF9lwSJnkt0TNVL3/wXcT5ha1mWT+Vfw0
+         SuPLtwsJKlJXN69ZfCXav5b7ySPsDrUk8nJgf6cSr0amcfvq2bQnAKaqtpzyxZeyFm
+         IqO4nLP023EfQ==
+Date:   Sun, 17 Oct 2021 23:42:55 +0800
+From:   Gao Xiang <xiang@kernel.org>
+To:     Chao Yu <chao@kernel.org>
+Cc:     Gao Xiang <xiang@kernel.org>, linux-erofs@lists.ozlabs.org,
+        LKML <linux-kernel@vger.kernel.org>, Yue Hu <zbestahu@gmail.com>,
+        Gao Xiang <hsiangkao@linux.alibaba.com>
+Subject: Re: [PATCH v2 3/3] erofs: introduce readmore decompression strategy
+Message-ID: <20211017154253.GB4054@hsiangkao-HP-ZHAN-66-Pro-G1>
+Mail-Followup-To: Chao Yu <chao@kernel.org>, Gao Xiang <xiang@kernel.org>,
+        linux-erofs@lists.ozlabs.org, LKML <linux-kernel@vger.kernel.org>,
+        Yue Hu <zbestahu@gmail.com>,
+        Gao Xiang <hsiangkao@linux.alibaba.com>
+References: <20211008200839.24541-1-xiang@kernel.org>
+ <20211008200839.24541-4-xiang@kernel.org>
+ <8e39e5d1-285d-52b6-8fea-8bb9ff10bf5a@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <8e39e5d1-285d-52b6-8fea-8bb9ff10bf5a@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 17, 2021, at 17:29, Rob Herring wrote:
-> On Sun, 17 Oct 2021 13:40:53 +0200, Sven Peter wrote:
->> Apple mailbox controller are found on the M1 and are used for
->> communication with various co-processors.
->> 
->> Reviewed-by: Alyssa Rosenzweig <alyssa@rosenzweig.io>
->> Reviewed-by: Mark Kettenis <kettenis@openbsd.org>
->> Reviewed-by: Rob Herring <robh@kernel.org>
->> Signed-off-by: Sven Peter <sven@svenpeter.dev>
->> ---
->>  .../bindings/mailbox/apple,mailbox.yaml       | 79 +++++++++++++++++++
->>  MAINTAINERS                                   |  1 +
->>  2 files changed, 80 insertions(+)
->>  create mode 100644 Documentation/devicetree/bindings/mailbox/apple,mailbox.yaml
->> 
->
-> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-> on your patch (DT_CHECKER_FLAGS is new in v5.13):
->
-> yamllint warnings/errors:
->
-> dtschema/dtc warnings/errors:
-> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mailbox/apple,mailbox.yaml: 
-> properties:interrupts: 'oneOf' conditional failed, one must be fixed:
-> 	[{'description': 'send fifo is empty interrupt'}, {'description': 
-> 'send fifo is not empty interrupt'}, {'description': 'receive fifo is 
-> empty interrupt'}, {'description': 'receive fifo is not empty 
-> interrupt'}] is too long
-> 	[{'description': 'send fifo is empty interrupt'}, {'description': 
-> 'send fifo is not empty interrupt'}, {'description': 'receive fifo is 
-> empty interrupt'}, {'description': 'receive fifo is not empty 
-> interrupt'}] is too short
-> 	False schema does not allow 4
-> 	1 was expected
-> 	4 is greater than the maximum of 2
-> 	4 is greater than the maximum of 3
-> 	hint: "minItems" is only needed if less than the "items" list length
-> 	from schema $id: http://devicetree.org/meta-schemas/items.yaml#
-> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mailbox/apple,mailbox.yaml: 
-> properties:interrupt-names: 'oneOf' conditional failed, one must be 
-> fixed:
-> 	[{'const': 'send-empty'}, {'const': 'send-not-empty'}, {'const': 
-> 'recv-empty'}, {'const': 'recv-not-empty'}] is too long
-> 	[{'const': 'send-empty'}, {'const': 'send-not-empty'}, {'const': 
-> 'recv-empty'}, {'const': 'recv-not-empty'}] is too short
-> 	False schema does not allow 4
-> 	1 was expected
-> 	4 is greater than the maximum of 2
-> 	4 is greater than the maximum of 3
-> 	hint: "minItems" is only needed if less than the "items" list length
-> 	from schema $id: http://devicetree.org/meta-schemas/items.yaml#
-> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mailbox/apple,mailbox.yaml: 
-> ignoring, error in schema: properties: interrupts
-> warning: no schema found in file: 
-> ./Documentation/devicetree/bindings/mailbox/apple,mailbox.yaml
-> Documentation/devicetree/bindings/mailbox/apple,mailbox.example.dt.yaml:0:0: 
-> /example-0/mailbox@77408000: failed to match any schema with 
-> compatible: ['apple,t8103-asc-mailbox']
->
-> doc reference errors (make refcheckdocs):
->
-> See https://patchwork.ozlabs.org/patch/1542209
->
-> This check can fail if there are any dependencies. The base for a patch
-> series is generally the most recent rc1.
->
-> If you already ran 'make dt_binding_check' and didn't see the above
-> error(s), then make sure 'yamllint' is installed and dt-schema is up to
-> date:
->
-> pip3 install dtschema --upgrade
->
-> Please check and re-submit.
+On Sun, Oct 17, 2021 at 11:34:22PM +0800, Chao Yu wrote:
+> On 2021/10/9 4:08, Gao Xiang wrote:
+> > From: Gao Xiang <hsiangkao@linux.alibaba.com>
+> > 
+> > Previously, the readahead window was strictly followed by EROFS
+> > decompression strategy in order to minimize extra memory footprint.
+> > However, it could become inefficient if just reading the partial
+> > requested data for much big LZ4 pclusters and the upcoming LZMA
+> > implementation.
+> > 
+> > Let's try to request the leading data in a pcluster without
+> > triggering memory reclaiming instead for the LZ4 approach first
+> > to boost up 100% randread of large big pclusters, and it has no real
+> > impact on low memory scenarios.
+> > 
+> > It also introduces a way to expand read lengths in order to decompress
+> > the whole pcluster, which is useful for LZMA since the algorithm
+> > itself is relatively slow and causes CPU bound, but LZ4 is not.
+> > 
+> > Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+> > ---
+> >   fs/erofs/internal.h | 13 ++++++
+> >   fs/erofs/zdata.c    | 99 ++++++++++++++++++++++++++++++++++++---------
+> >   2 files changed, 93 insertions(+), 19 deletions(-)
+> > 
+> > diff --git a/fs/erofs/internal.h b/fs/erofs/internal.h
+> > index 48bfc6eb2b02..7f96265ccbdb 100644
+> > --- a/fs/erofs/internal.h
+> > +++ b/fs/erofs/internal.h
+> > @@ -307,6 +307,19 @@ static inline unsigned int erofs_inode_datalayout(unsigned int value)
+> >   			      EROFS_I_DATALAYOUT_BITS);
+> >   }
+> > +/*
+> > + * Different from grab_cache_page_nowait(), reclaiming is never triggered
+> > + * when allocating new pages.
+> > + */
+> > +static inline
+> > +struct page *erofs_grab_cache_page_nowait(struct address_space *mapping,
+> > +					  pgoff_t index)
+> > +{
+> > +	return pagecache_get_page(mapping, index,
+> > +			FGP_LOCK|FGP_CREAT|FGP_NOFS|FGP_NOWAIT,
+> > +			readahead_gfp_mask(mapping) & ~__GFP_RECLAIM);
+> > +}
+> > +
+> >   extern const struct super_operations erofs_sops;
+> >   extern const struct address_space_operations erofs_raw_access_aops;
+> > diff --git a/fs/erofs/zdata.c b/fs/erofs/zdata.c
+> > index 5c34ef66677f..febb018e10a7 100644
+> > --- a/fs/erofs/zdata.c
+> > +++ b/fs/erofs/zdata.c
+> > @@ -1377,6 +1377,72 @@ static void z_erofs_runqueue(struct super_block *sb,
+> >   	z_erofs_decompress_queue(&io[JQ_SUBMIT], pagepool);
+> >   }
+> > +/*
+> > + * Since partial uptodate is still unimplemented for now, we have to use
+> > + * approximate readmore strategies as a start.
+> > + */
+> > +static void z_erofs_pcluster_readmore(struct z_erofs_decompress_frontend *f,
+> > +				      struct readahead_control *rac,
+> > +				      erofs_off_t end,
+> > +				      struct list_head *pagepool,
+> > +				      bool backmost)
+> > +{
+> > +	struct inode *inode = f->inode;
+> > +	struct erofs_map_blocks *map = &f->map;
+> > +	erofs_off_t cur;
+> > +	int err;
+> > +
+> > +	if (backmost) {
+> > +		map->m_la = end;
+> > +		/* TODO: pass in EROFS_GET_BLOCKS_READMORE for LZMA later */
+> > +		err = z_erofs_map_blocks_iter(inode, map, 0);
+> > +		if (err)
+> > +			return;
+> > +
+> > +		/* expend ra for the trailing edge if readahead */
+> > +		if (rac) {
+> > +			loff_t newstart = readahead_pos(rac);
+> > +
+> > +			cur = round_up(map->m_la + map->m_llen, PAGE_SIZE);
+> > +			readahead_expand(rac, newstart, cur - newstart);
+> > +			return;
+> > +		}
+> > +		end = round_up(end, PAGE_SIZE);
+> > +	} else {
+> > +		end = round_up(map->m_la, PAGE_SIZE);
+> > +
+> > +		if (!map->m_llen)
+> > +			return;
+> > +	}
+> > +
+> > +	cur = map->m_la + map->m_llen - 1;
+> > +	while (cur >= end) {
+> > +		pgoff_t index = cur >> PAGE_SHIFT;
+> > +		struct page *page;
+> > +
+> > +		page = erofs_grab_cache_page_nowait(inode->i_mapping, index);
+> > +		if (!page)
+> > +			goto skip;
+> > +
+> > +		if (PageUptodate(page)) {
+> > +			unlock_page(page);
+> > +			put_page(page);
+> > +			goto skip;
+> > +		}
+> > +
+> > +		err = z_erofs_do_read_page(f, page, pagepool);
+> > +		if (err)
+> > +			erofs_err(inode->i_sb,
+> > +				  "readmore error at page %lu @ nid %llu",
+> > +				  index, EROFS_I(inode)->nid);
+> > +		put_page(page);
+> > +skip:
+> > +		if (cur < PAGE_SIZE)
+> > +			break;
+> > +		cur = (index << PAGE_SHIFT) - 1;
+> 
+> Looks a little bit weird to readahead backward, any special reason here?
 
+Due to the do_read_page implementation, since I'd like to avoid
+to get the exact full extent length (FIEMAP-likewise) inside
+do_read_page but only request the needed range, so it should be
+all in a backward way. Also the submission chain can be then in
+a forward way.
 
-Whoops, looks like this fails some new check added since I submitted
-the last version a month ago.
-I'll drop the "minItems: 4" since the number of items is constant anyway.
+If the question was asked why we should read backward, as I said in the
+commit message, big pclusters matter since we could read in more leading
+data at once.
 
+Thanks,
+Gao Xiang
 
-Sven
+> 
+> Thanks,
