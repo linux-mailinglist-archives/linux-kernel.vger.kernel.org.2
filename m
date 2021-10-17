@@ -2,116 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A3784307A2
+	by mail.lfdr.de (Postfix) with ESMTP id 62FA94307A3
 	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 11:58:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245224AbhJQJ7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 05:59:34 -0400
-Received: from mout.gmx.net ([212.227.17.20]:45923 "EHLO mout.gmx.net"
+        id S245230AbhJQKAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 06:00:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36630 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236079AbhJQJ7d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 05:59:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1634464626;
-        bh=GK27mjfavzFQQjBXkKn0RLCiDGh17zJ13VUyMZ39ERs=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=g4QPrqgqY8bWgQhTWOHyALwiyqEIhfzf/HKIQKPTPGY6TZEFRMJrZBj0MbLPzX0uw
-         UDK1QJfLuNmOw5NXdBONMR05OVNxh1AD8CDN6q+D3/TWDxg536mfm9gAb2vMU53Zzf
-         MyMiyhqK27oR+DMbuFr3agQPgkvTv5twuWz87Rbk=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from localhost.localdomain ([79.150.72.99]) by mail.gmx.net
- (mrgmx104 [212.227.17.174]) with ESMTPSA (Nemesis) id
- 1MSc1B-1m94pM2rqD-00Szo6; Sun, 17 Oct 2021 11:57:05 +0200
-From:   Len Baker <len.baker@gmx.com>
-To:     Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>,
-        Chaitanya Kulkarni <kch@nvidia.com>
-Cc:     Len Baker <len.baker@gmx.com>, Kees Cook <keescook@chromium.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] nvmet: prefer struct_size over open coded arithmetic
-Date:   Sun, 17 Oct 2021 11:56:50 +0200
-Message-Id: <20211017095650.3718-1-len.baker@gmx.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:87l8oHXEfjCElo1TfalS+3I3QAENKqmFPDOlW7QVOffxRttv4nQ
- 2AMPklv1f8oNxtJoCI1kESq9updTTNLaT8S8om5Xk+CPLW75asuvC0IENPAKV627O07UzWS
- JU0rMQ7aE5QwMkuA/Hrhj1oFv7UdgPM1pFkeoifDS3V5cmzqG+Z22u7ngNCUj7rElfftrgD
- Z7FYrBQVEwjaXW11HwaGg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:yuAiV954YSg=:cYURQWGEk30tKqGLBXHtIj
- xwzMpAgdJTjqcuvKEtY8b9OMK5hmvMS6vFB72geh5KDQmb6L2VSIby/8ELL5Hi8e2mWdKJdE7
- kN8c8d2q6zKTvzk4yu/LMKdCdkSnd/pfPcS9tNBu0Mc7GVSYjDJ5Pvj31a6skIkhuBb3ESdcy
- 9WHIIcyk/AUgVIjIzTWstU8h7h4C4CdbbXwzRPOCOTHLWfnaedc0LnFJLA51dPyCpZcI+FKRz
- 6otGxpVaEQ9HjA/gBUA1JAKuMahEDZzeOnurm7934tg+CL11vtjOKNr5+BRkSxBBhHhe0cdzC
- KRgrbbMzBPB8vX3r4fAh0W64z87bGB/PAKnX/krmDiMDyqIfRF+kAMtdjRa7uSBSfbE5c4FRx
- GE9up/5XUTPICti40Eu78nDoyPeUdBq70+A9n2aVbYrLDGo148Mqmnt5i86APP2Wg+LpIr71C
- E6cy9xBvB0240oWdoJTiupbH5+FTiC/D6Q7cIkM2FU0BBq1ZSQ2kqsPL7JUuGY9dTQdtiosKY
- guqOOEja0wSGQXwQ2tB8Oo1AEOi9M/pBdmW2D7/bIadpZ5YsQCEw89BkbP8P/Yc2RObG6zl10
- KgnqZi5A781t+XqWceb07dYGZAmYklqX3aez6cPLq4zgWlCKLTCGp8ZjYzkhbJUwEHdxj6ret
- Bc0VxgXIimfIWqpnmRSDbcFWhW2WPV5dtK4rt2WbaQBsqtVaZvXdZoZUgNSwRB9bc/vpYAcvL
- jGPwxATwLNezpK/ZZGSuFiCYWnVmAeOqbRa53b+d5eSMDYhvA+UdqRVQpaURea58WyhfmTjbS
- Wnbd0NYvhLxVRMkLwvlM5nUb7eErcedBzXWvNHgZRxzIHK42w6nbjxtKwtkFXN+nmxcrN5dvd
- tXByxa0ycZt1BG9R0o7ivvE5py/t1GiHlQFtZZJwYJQzRuj0SFV8Y689DN+9icZ7AQSEJHp5L
- 4/7DhF6CNPKr2Z2PBiKPyXPUZIbQbCw0kCRn3bGdftJzbHqdF/cCypfYjGotYe+Jo8ghk+1HD
- rDov0d2PEF+4IxYO3xLlDlx6iW/WjFxoniNP8gu6S43Kjn5z7mj2Q0b9hPpDABsiRL9Vj3Qo6
- WPOhsZgyYVIzvs=
+        id S234519AbhJQKAB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Oct 2021 06:00:01 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 07D9B60F46;
+        Sun, 17 Oct 2021 09:57:52 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mc2vN-00HJ09-SR; Sun, 17 Oct 2021 10:57:49 +0100
+Date:   Sun, 17 Oct 2021 10:57:49 +0100
+Message-ID: <877decotwi.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Shier <pshier@google.com>,
+        Raghavendra Rao Ananta <rananta@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        kernel-team@android.com
+Subject: Re: [PATCH v3 00/17] clocksource/arm_arch_timer: Add basic ARMv8.6 support
+In-Reply-To: <2cf7b564-63c2-ac6c-a083-f7ac2caab6fc@linaro.org>
+References: <20211010114306.2910453-1-maz@kernel.org>
+        <20211011110243.GB4068@willie-the-truck>
+        <87mtnfptni.wl-maz@kernel.org>
+        <2cf7b564-63c2-ac6c-a083-f7ac2caab6fc@linaro.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: daniel.lezcano@linaro.org, will@kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, mark.rutland@arm.com, tglx@linutronix.de, pshier@google.com, rananta@google.com, ricarkol@google.com, oupton@google.com, catalin.marinas@arm.com, linus.walleij@linaro.org, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As noted in the "Deprecated Interfaces, Language Features, Attributes,
-and Conventions" documentation [1], size calculations (especially
-multiplication) should not be performed in memory allocator (or similar)
-function arguments due to the risk of them overflowing. This could lead
-to values wrapping around and a smaller allocation being made than the
-caller was expecting. Using those allocations could lead to linear
-overflows of heap memory and other misbehaviors.
+Hi Daniel,
 
-In this case this is not actually dynamic size: all the operands
-involved in the calculation are constant values. However it is better to
-refactor this anyway, just to keep the open-coded math idiom out of
-code.
+On Sat, 16 Oct 2021 22:59:33 +0100,
+Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
+> 
+> 
+> Hi Marc,
+> 
+> 
+> On 11/10/2021 15:39, Marc Zyngier wrote:
+> 
+> [ ... ]
+> 
+> > Thanks for that. All addressed now. I'll repost the series once we've
+> > addressed the question below.
+> > 
+> >> How do you want to merge this series? It would be nice to have the arch
+> >> bits in the arm64 tree, if possible, as we'll be tripping over the cpucaps
+> >> stuff otherwise.
+> > 
+> > I think we should keep the series together, as asm/arch_timer.h gets a
+> > beating all over the place, and there is no chance the arm64 bits at
+> > the end can apply (let alone work) on their own.
+> > 
+> > So either Daniel would ack the series for it to go via arm64, or
+> > create a stable branch with the first 13 patches that would go in both
+> > the clocksource and arm64 trees.
+> > 
+> > Daniel, any preference?
+> 
+> yes, I prefer a stable branch for this series.
+> 
+> https://git.linaro.org/people/daniel.lezcano/linux.git/log/?h=timers/drivers/armv8.6_arch_timer
+> 
 
-So, use the struct_size() helper to do the arithmetic instead of the
-argument "size + count * size" in the kmalloc() function.
+OK, this branch is now slightly outdated, since I have reworked it at
+Will's request. -rc5 is also too recent a base for arm64, which is
+usually based on -rc3.
 
-This code was detected with the help of Coccinelle and audited and fixed
-manually.
+I'll repost a new series today or tomorrow and provide tags for both
+you and Will to pull from.
 
-[1] https://www.kernel.org/doc/html/latest/process/deprecated.html#open-co=
-ded-arithmetic-in-allocator-arguments
+Thanks,
 
-Signed-off-by: Len Baker <len.baker@gmx.com>
-=2D--
-Hi,
+	M.
 
-this patch is built against the linux-next tree (tag next-20211015).
-
-Regards,
-Len
-
- drivers/nvme/target/admin-cmd.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/nvme/target/admin-cmd.c b/drivers/nvme/target/admin-c=
-md.c
-index aa6d84d8848e..4aa71625c86a 100644
-=2D-- a/drivers/nvme/target/admin-cmd.c
-+++ b/drivers/nvme/target/admin-cmd.c
-@@ -278,8 +278,8 @@ static void nvmet_execute_get_log_page_ana(struct nvme=
-t_req *req)
- 	u16 status;
-
- 	status =3D NVME_SC_INTERNAL;
--	desc =3D kmalloc(sizeof(struct nvme_ana_group_desc) +
--			NVMET_MAX_NAMESPACES * sizeof(__le32), GFP_KERNEL);
-+	desc =3D kmalloc(struct_size(desc, nsids, NVMET_MAX_NAMESPACES),
-+		       GFP_KERNEL);
- 	if (!desc)
- 		goto out;
-
-=2D-
-2.25.1
-
+-- 
+Without deviation from the norm, progress is not possible.
