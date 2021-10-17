@@ -2,117 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AD144309A1
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 16:12:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D68694309B7
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 16:22:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242523AbhJQOOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 10:14:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41624 "EHLO mail.kernel.org"
+        id S1343847AbhJQOYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 10:24:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48166 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238183AbhJQOOU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 10:14:20 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5B131604DB;
-        Sun, 17 Oct 2021 14:12:09 +0000 (UTC)
-Date:   Sun, 17 Oct 2021 15:16:23 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Yang Yingliang <yangyingliang@huawei.com>
-Cc:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
-        <lars@metafoo.de>, <ardeleanalex@gmail.com>
-Subject: Re: [PATCH] iio: buffer: Fix memory leak in
- __iio_buffer_alloc_sysfs_and_mask()
-Message-ID: <20211017151623.47a66ea9@jic23-huawei>
-In-Reply-To: <20211013094343.315275-1-yangyingliang@huawei.com>
-References: <20211013094343.315275-1-yangyingliang@huawei.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S231156AbhJQOYU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Oct 2021 10:24:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B94960E74;
+        Sun, 17 Oct 2021 14:22:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634480531;
+        bh=GUiahCSDrD8J6IIWMDZtmEEy4K50EAWbaUrB/r7dK8I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=taswiWj6N5VxmlW6rfycTtYTkfkQBVWWxiYDxUmjbCft7EyznB95j4JmWvOTk2psX
+         CP0pHPHINt+AKCjc51uudA1cn+1gWoRu+NVU8NLjzW0jK4JLdiUEB9wyfVHrfKiClX
+         wZ+WMAmiZqPIR1SwH90CNi3YoyAWmCdoKKm6GhsubgOQ00D0PSrxx9op1vXEo/OqX9
+         NqR9yiicr2je7ot/ZOEc1tneDcR7jnnkH6jDaooa2l8nENj66/W0HG7U0F1EV5L/mz
+         LVrP/c45HcmXzocNEbxMYnPC85DaRBYk9X9f/5Oz1+56j3owQ7T80uWhMlgo05a2+z
+         3kslXyxP7G9qQ==
+Date:   Sun, 17 Oct 2021 16:22:07 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     Linux ACPI <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Elie Morisse <syniurge@gmail.com>,
+        Nehal Shah <nehal-bakulchandra.shah@amd.com>,
+        Shyam Sundar S K <shyam-sundar.s-k@amd.com>,
+        linux-i2c@vger.kernel.org
+Subject: Re: [PATCH v2 3/7] i2c: i2c-amd-mp2-plat: ACPI: Use ACPI_COMPANION()
+ directly
+Message-ID: <YWwxj4CQIbDRkITs@ninjato>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Elie Morisse <syniurge@gmail.com>,
+        Nehal Shah <nehal-bakulchandra.shah@amd.com>,
+        Shyam Sundar S K <shyam-sundar.s-k@amd.com>,
+        linux-i2c@vger.kernel.org
+References: <4369779.LvFx2qVVIh@kreacher>
+ <3647069.kQq0lBPeGt@kreacher>
+ <1823250.tdWV9SEqCh@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ICLe6aBUuDu4DwGj"
+Content-Disposition: inline
+In-Reply-To: <1823250.tdWV9SEqCh@kreacher>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Oct 2021 17:43:43 +0800
-Yang Yingliang <yangyingliang@huawei.com> wrote:
 
-> When iio_buffer_wrap_attr() returns NULL or buffer->buffer_group.name alloc
-> fails, the 'attr' which is allocated in __iio_buffer_alloc_sysfs_and_mask()
-> is not freed, and cause memory leak.
-> 
-> unreferenced object 0xffff888014882a00 (size 64):
->   comm "i2c-adjd_s311-8", pid 424, jiffies 4294907737 (age 44.396s)
->   hex dump (first 32 bytes):
->     00 0f 8a 15 80 88 ff ff 00 0e 8a 15 80 88 ff ff  ................
->     80 04 8a 15 80 88 ff ff 80 05 8a 15 80 88 ff ff  ................
->   backtrace:
->     [<0000000021752e67>] __kmalloc+0x1af/0x3c0
->     [<0000000043e8305c>] iio_buffers_alloc_sysfs_and_mask+0xe73/0x1570 [industrialio]
->     [<00000000b7aa5a17>] __iio_device_register+0x483/0x1a30 [industrialio]
->     [<000000003fa0fb2f>] __devm_iio_device_register+0x23/0x90 [industrialio]
->     [<000000003ab040cf>] adjd_s311_probe+0x19c/0x200 [adjd_s311]
->     [<0000000080458969>] i2c_device_probe+0xa31/0xbe0
->     [<00000000e20678ad>] really_probe+0x299/0xc30
->     [<000000006bea9b27>] __driver_probe_device+0x357/0x500
->     [<00000000e1df10d4>] driver_probe_device+0x4e/0x140
->     [<0000000003661beb>] __device_attach_driver+0x257/0x340
->     [<000000005bb4aa26>] bus_for_each_drv+0x166/0x1e0
->     [<00000000272c5236>] __device_attach+0x272/0x420
->     [<00000000d52a96ae>] bus_probe_device+0x1eb/0x2a0
->     [<00000000129f7737>] device_add+0xbf0/0x1f90
->     [<000000005eed4e52>] i2c_new_client_device+0x622/0xb20
->     [<00000000b85a9c43>] new_device_store+0x1fa/0x420
-> 
-> This patch fix to free it before the error return.
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Fixes: 15097c7a1adc ("iio: buffer: wrap all buffer attributes into iio_dev_attr")
-> Fixes: d9a625744ed0 ("iio: core: merge buffer/ & scan_elements/ attributes")
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+--ICLe6aBUuDu4DwGj
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Good find.  This function is clearly trying to do too many things and hence has become
-rather error prone.  Still fixing that is a job for another day.
+On Wed, Oct 13, 2021 at 06:09:39PM +0200, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+>=20
+> The ACPI_HANDLE() macro is a wrapper arond the ACPI_COMPANION()
+> macro and the ACPI handle produced by the former comes from the
+> ACPI device object produced by the latter, so it is way more
+> straightforward to evaluate the latter directly instead of passing
+> the handle produced by the former to acpi_bus_get_device().
+>=20
+> Modify i2c_amd_probe() accordingly (no intentional functional impact).
+>=20
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> Acked-by: Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
 
-Alex, if you have a chance to take a look at this as well it would be great.
-In the meantime I've queued it up in the fixes-togreg branch of iio.git
+Applied to for-next, thanks!
 
-Thanks,
 
-Jonathan
+--ICLe6aBUuDu4DwGj
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> ---
->  drivers/iio/industrialio-buffer.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
-> index 547a92d469ae..ae0912a14578 100644
-> --- a/drivers/iio/industrialio-buffer.c
-> +++ b/drivers/iio/industrialio-buffer.c
-> @@ -1536,6 +1536,7 @@ static int __iio_buffer_alloc_sysfs_and_mask(struct iio_buffer *buffer,
->  		       sizeof(struct attribute *) * buffer_attrcount);
->  
->  	buffer_attrcount += ARRAY_SIZE(iio_buffer_attrs);
-> +	buffer->buffer_group.attrs = attr;
->  
->  	for (i = 0; i < buffer_attrcount; i++) {
->  		struct attribute *wrapped;
-> @@ -1543,7 +1544,7 @@ static int __iio_buffer_alloc_sysfs_and_mask(struct iio_buffer *buffer,
->  		wrapped = iio_buffer_wrap_attr(buffer, attr[i]);
->  		if (!wrapped) {
->  			ret = -ENOMEM;
-> -			goto error_free_scan_mask;
-> +			goto error_free_buffer_attrs;
->  		}
->  		attr[i] = wrapped;
->  	}
-> @@ -1558,8 +1559,6 @@ static int __iio_buffer_alloc_sysfs_and_mask(struct iio_buffer *buffer,
->  		goto error_free_buffer_attrs;
->  	}
->  
-> -	buffer->buffer_group.attrs = attr;
-> -
->  	ret = iio_device_register_sysfs_group(indio_dev, &buffer->buffer_group);
->  	if (ret)
->  		goto error_free_buffer_attr_group_name;
+-----BEGIN PGP SIGNATURE-----
 
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmFsMY8ACgkQFA3kzBSg
+KbYAvQ/+KkX/TyMoXgHkVUp2Z6sm51r1NeYGhhnhOIt2dIYEjAKfjyCswsgF7H4u
+6ncL2XO/ms7cMMEE6ACHih6FNWsssoPtSkxhFfk7bNWEoazd6T+0pCV4NgY5dPqC
+iPS8D2znQmn61fCVCOyucM0SG0iD1boMKu9cnjHUD4BOuqxb6NB9jLYGrDvPubmY
+2ToD+raPu0sqybEtbwtsTD3oZl5wyHINGXfXHiasynh08XI4eMZz8xZ5HzPX8GIG
+nAdqXboEqpo5yE9nCUXrAZOukfoAJhspJE1gLkhEcfldGPzTy5iOFIR9g+YAamub
+VZtZrn+zRwOaNe5x/lG7mZm8/zPInAETNTvHj953QbPhWPvdL6L/ksZFVhHEkWTp
+ntrDB//McYIcQGnpJ7x364IL5q7u95eAfK5Pla+ZU0rad1QBR4avg0ML6oaeRGD1
+wi0SGfC4uncyvhLtUvXi8qfJQP9ZjJ4MfFv8+KACfKx/ThsKrVzMeIFe8tRDh9aV
+mE8oVYaFnGsSq7CxOoO7AlhPTQT8DN5kcv+GX7EFHztmIiPZAZ5IWGjT6NBO0oe/
+v+jDRoe3cTNcKrbzrSP7TB32CAS3yAXcwp3o68nfUl/keV5yE7V/E3oTVDf1GJHc
++BWRvxTM2sZAlTdbrFWQFM5j3b0MuQM6Y/xcen6Av8h5rRdG5as=
+=PhsZ
+-----END PGP SIGNATURE-----
+
+--ICLe6aBUuDu4DwGj--
