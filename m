@@ -2,143 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B64E743087D
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 13:47:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CDCC430885
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 13:53:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236137AbhJQLth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 07:49:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32878 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234082AbhJQLtg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 07:49:36 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 04F8960F57;
-        Sun, 17 Oct 2021 11:47:24 +0000 (UTC)
-Date:   Sun, 17 Oct 2021 12:51:38 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Andriy Tryshnivskyy <andriy.tryshnivskyy@opensynergy.com>
-Cc:     jbhayana@google.com, lars@metafoo.de, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Vasyl.Vavrychuk@opensynergy.com
-Subject: Re: [PATCH v5 1/1] iio/scmi: Add reading "raw" attribute.
-Message-ID: <20211017125138.4f5bbc4d@jic23-huawei>
-In-Reply-To: <20211008182826.24412-2-andriy.tryshnivskyy@opensynergy.com>
-References: <20211008182826.24412-1-andriy.tryshnivskyy@opensynergy.com>
-        <20211008182826.24412-2-andriy.tryshnivskyy@opensynergy.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S245505AbhJQLz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 07:55:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60392 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236245AbhJQLzZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Oct 2021 07:55:25 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D00D7C061765
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 04:53:15 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id g39so2105784wmp.3
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 04:53:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=fcVWJXrW45Et+2LnPbZKeMYi/maZWSV+sabjN0AySK0=;
+        b=LClOC1C7tS7xUCv/rixOnhmQXoj5bE7N5xMo1pKGfyLl9MsyKbCEXwPaO3efjTZkMO
+         nzoMAa2gSlk/+KM4J+X1kleWU9KUfU+KbpRPWPPCtg4KMfGBd1GmkvmEtS2Ncxb+yQ3H
+         /6zIQWTWkrdLMxFYcbGps+1NkNcZZVdXG26hjy/Q9hC1PffBluIJ7thRKMhahPvZ5c6H
+         98EJQBliZ/7mlDRrzuHOzPY3T8PHi5/BPOg5x27frxa3DexDtLsKe9AOl+f3YAMxdSHi
+         64JbHlpDwgfTF9QYq2GEspKf9t3ZecGvQOH2Pu51Ey7536TiwQsfu19T3l54Mg98hilG
+         CZ/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=fcVWJXrW45Et+2LnPbZKeMYi/maZWSV+sabjN0AySK0=;
+        b=yATr/Bvq1BMj4N2ItFwc9ZoBX9dgXi0fWLS9L0PMhcJaBn5T551J6fjMuRQF5A3sCv
+         v4RlkY8yUXfNUr09kEFGon2AiXJjbf5kQ0ftaqa9bunmu6j59O+ltqr5SrywJago1wzE
+         5Mj5TYinFxmB4EGMPCjqfQgDaqoMXvXZZ++QAVjFyrtqHTe0+WfkW1xsZoTIPa6Vjlsm
+         prepx76PzJGbCRT8UQ8xUY800HA+KHMILRTBLLsn92po+gziAss+C57mlhmNW3Lq/h/a
+         bxqgjWItIfPVOv30/rDF45VcVJKWRGKUG651hJjyf2jqqNx75e3Doax0JPBLZEvfNkPQ
+         fIFA==
+X-Gm-Message-State: AOAM5318Aet+gEGiCoRIOoyl0bwhDYVKrohX9aff5iSc4lA1T97H7eeG
+        R52901YPrONDqSHWLu65/Uk=
+X-Google-Smtp-Source: ABdhPJyrZLc6zFYEsptqt7ggfUJG6T1FRqTvMcM/T14D0MmOKX4iVvBgfuZRzbKcS5W0NO21FwtVyg==
+X-Received: by 2002:a7b:c350:: with SMTP id l16mr37279766wmj.151.1634471594508;
+        Sun, 17 Oct 2021 04:53:14 -0700 (PDT)
+Received: from ?IPV6:2a02:8108:96c0:3b88::d7f0? ([2a02:8108:96c0:3b88::d7f0])
+        by smtp.gmail.com with ESMTPSA id q12sm6076354wrp.13.2021.10.17.04.53.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 17 Oct 2021 04:53:14 -0700 (PDT)
+Message-ID: <5909156a-3942-f6a8-9742-1b5898405fbb@gmail.com>
+Date:   Sun, 17 Oct 2021 13:53:13 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH 5/8] staging: r8188eu: PHY_SetRFPathSwitch_8188E is not
+ used
+Content-Language: en-US
+To:     Martin Kaiser <martin@kaiser.cx>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20211016113008.27549-1-martin@kaiser.cx>
+ <20211016113008.27549-6-martin@kaiser.cx>
+From:   Michael Straube <straube.linux@gmail.com>
+In-Reply-To: <20211016113008.27549-6-martin@kaiser.cx>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri,  8 Oct 2021 21:28:26 +0300
-Andriy Tryshnivskyy <andriy.tryshnivskyy@opensynergy.com> wrote:
-
-> Add scmi_iio_get_raw() to read "raw" attribute.
+On 10/16/21 13:30, Martin Kaiser wrote:
+> Remove the PHY_SetRFPathSwitch_8188E function which is not used.
 > 
-> Signed-off-by: Andriy Tryshnivskyy <andriy.tryshnivskyy@opensynergy.com>
+> It was the only caller of phy_setrfpathswitch_8188e, that function
+> can be removed as well.
+> 
+> Signed-off-by: Martin Kaiser <martin@kaiser.cx>
 > ---
-For a single patch series, it is better to put a change log in the patch (here)
-Whilst I can see why you would use this approach rather than the read_raw callback
-there are significant disadvantages in doing so.  The channel can't be used
-by in kernel users such as iio-hwmon.   That may cause you more trouble than
-it is worth in the long run.
-
-Note that you could also define a new IIO_VAL type to still use the two
-(possibly) 32 bit values and return a 64 bit value. That way, with appropriate
-additions in the consumer drivers the channel could still be used.
-
-IIO_VAL_INT_64 perhaps with val as the lower 32 bits and val2 as the upper
-with appropriate care around the sign.
-
-
->  drivers/iio/common/scmi_sensors/scmi_iio.c | 61 ++++++++++++++++++++++
->  1 file changed, 61 insertions(+)
+>   drivers/staging/r8188eu/hal/HalPhyRf_8188e.c  | 38 -------------------
+>   .../staging/r8188eu/include/Hal8188EPhyCfg.h  |  3 --
+>   2 files changed, 41 deletions(-)
 > 
-> diff --git a/drivers/iio/common/scmi_sensors/scmi_iio.c b/drivers/iio/common/scmi_sensors/scmi_iio.c
-> index 7cf2bf282cef..691cbbd61e3a 100644
-> --- a/drivers/iio/common/scmi_sensors/scmi_iio.c
-> +++ b/drivers/iio/common/scmi_sensors/scmi_iio.c
-> @@ -311,6 +311,62 @@ static const struct iio_info scmi_iio_info = {
->  	.write_raw = scmi_iio_write_raw,
->  };
->  
-> +static ssize_t scmi_iio_get_raw(struct iio_dev *iio_dev, uintptr_t private,
-> +				const struct iio_chan_spec *chan, char *buf)
-> +{
-> +	struct scmi_iio_priv *sensor = iio_priv(iio_dev);
-> +	int err;
-> +	u32 sensor_config;
-> +	struct scmi_sensor_reading readings[SCMI_IIO_NUM_OF_AXIS];
-> +	int len = 0;
-> +
-> +	err = iio_device_claim_direct_mode(iio_dev);
-> +	if (err) {
-> +		dev_err(&iio_dev->dev,
-> +			"Error in claiming direct mode for sensor %s err %d",
-> +			sensor->sensor_info->name, err);
+> diff --git a/drivers/staging/r8188eu/hal/HalPhyRf_8188e.c b/drivers/staging/r8188eu/hal/HalPhyRf_8188e.c
+> index f01ee3cd8795..79f407c280be 100644
+> --- a/drivers/staging/r8188eu/hal/HalPhyRf_8188e.c
+> +++ b/drivers/staging/r8188eu/hal/HalPhyRf_8188e.c
+> @@ -1189,41 +1189,3 @@ void PHY_LCCalibrate_8188E(struct adapter *adapt)
+>   		phy_LCCalibrate_8188E(adapt, false);
+>   	}
+>   }
+> -
+> -static void phy_setrfpathswitch_8188e(struct adapter *adapt, bool main, bool is2t)
+> -{
+> -	struct hal_data_8188e	*pHalData = GET_HAL_DATA(adapt);
+> -	struct odm_dm_struct *dm_odm = &pHalData->odmpriv;
+> -
+> -	if (!adapt->hw_init_completed) {
+> -		u8 u1btmp;
+> -		u1btmp = ODM_Read1Byte(dm_odm, REG_LEDCFG2) | BIT(7);
+> -		ODM_Write1Byte(dm_odm, REG_LEDCFG2, u1btmp);
+> -		ODM_SetBBReg(dm_odm, rFPGA0_XAB_RFParameter, BIT(13), 0x01);
+> -	}
+> -
+> -	if (is2t) {	/* 92C */
+> -		if (main)
+> -			ODM_SetBBReg(dm_odm, rFPGA0_XB_RFInterfaceOE, BIT(5) | BIT(6), 0x1);	/* 92C_Path_A */
+> -		else
+> -			ODM_SetBBReg(dm_odm, rFPGA0_XB_RFInterfaceOE, BIT(5) | BIT(6), 0x2);	/* BT */
+> -	} else {			/* 88C */
+> -		if (main)
+> -			ODM_SetBBReg(dm_odm, rFPGA0_XA_RFInterfaceOE, BIT(8) | BIT(9), 0x2);	/* Main */
+> -		else
+> -			ODM_SetBBReg(dm_odm, rFPGA0_XA_RFInterfaceOE, BIT(8) | BIT(9), 0x1);	/* Aux */
+> -	}
+> -}
+> -
+> -void PHY_SetRFPathSwitch_8188E(struct adapter *adapt, bool main)
+> -{
+> -	struct hal_data_8188e	*pHalData = GET_HAL_DATA(adapt);
+> -	struct odm_dm_struct *dm_odm = &pHalData->odmpriv;
+> -
+> -	if (dm_odm->RFType == ODM_2T2R) {
+> -		phy_setrfpathswitch_8188e(adapt, main, true);
+> -	} else {
+> -		/*  For 88C 1T1R */
+> -		phy_setrfpathswitch_8188e(adapt, main, false);
+> -	}
+> -}
+> diff --git a/drivers/staging/r8188eu/include/Hal8188EPhyCfg.h b/drivers/staging/r8188eu/include/Hal8188EPhyCfg.h
+> index 084bccc5dcb9..feae0b32cac6 100644
+> --- a/drivers/staging/r8188eu/include/Hal8188EPhyCfg.h
+> +++ b/drivers/staging/r8188eu/include/Hal8188EPhyCfg.h
+> @@ -195,9 +195,6 @@ void PHY_SetBWMode8188E(struct adapter *adapter,
+>   /*  channel switch related funciton */
+>   void PHY_SwChnl8188E(struct adapter *adapter, u8 channel);
+>   
+> -/*  BB/MAC/RF other monitor API */
+> -void PHY_SetRFPathSwitch_8188E(struct adapter *adapter,	bool main);
+> -
+>   void storePwrIndexDiffRateOffset(struct adapter *adapter, u32 regaddr,
+>   				 u32 mask, u32 data);
+>   /*--------------------------Exported Function prototype---------------------*/
+> 
 
-It's not an error, it just means the device is busy, so at most dev_info()
-or just rely on userspace correctly interpreting EBUSY.
 
-> +		goto err_release;
-> +	}
-> +
-> +	sensor_config = FIELD_PREP(SCMI_SENS_CFG_SENSOR_ENABLED_MASK,
-> +				   SCMI_SENS_CFG_SENSOR_ENABLE);
-> +	err = sensor->sensor_ops->config_set(
-> +		sensor->ph, sensor->sensor_info->id, sensor_config);
-> +	if (err) {
-> +		dev_err(&iio_dev->dev, "Error in enabling sensor %s err %d",
-> +			sensor->sensor_info->name, err);
-> +		goto err_release;
-> +	}
-> +
-> +	err = sensor->sensor_ops->reading_get_timestamped(
-> +		sensor->ph, sensor->sensor_info->id,
-> +		sensor->sensor_info->num_axis, readings);
-> +	if (err) {
-> +		dev_err(&iio_dev->dev,
-> +			"Error in reading raw attribute for sensor %s err %d",
-> +			sensor->sensor_info->name, err);
-> +		goto err_release;
-> +	}
-> +
-> +	sensor_config = FIELD_PREP(SCMI_SENS_CFG_SENSOR_ENABLED_MASK,
-> +				   SCMI_SENS_CFG_SENSOR_DISABLE);
-> +	err = sensor->sensor_ops->config_set(
-> +		sensor->ph, sensor->sensor_info->id, sensor_config);
-> +	if (err) {
-> +		dev_err(&iio_dev->dev, "Error in disabling sensor %s err %d",
-> +			sensor->sensor_info->name, err);
-> +		goto err_release;
-> +	}
-> +
-> +	len = scnprintf(buf, PAGE_SIZE, "%lld\n",
-> +			readings[chan->scan_index].value);
-> +
-> +err_release:
-> +	iio_device_release_direct_mode(iio_dev);
-> +
-> +	return len;
-> +}
-> +
->  static ssize_t scmi_iio_get_raw_available(struct iio_dev *iio_dev,
->  					  uintptr_t private,
->  					  const struct iio_chan_spec *chan,
-> @@ -355,6 +411,11 @@ static ssize_t scmi_iio_get_raw_available(struct iio_dev *iio_dev,
->  }
->  
->  static const struct iio_chan_spec_ext_info scmi_iio_ext_info[] = {
-> +	{
-> +		.name = "raw",
-> +		.read = scmi_iio_get_raw,
-> +		.shared = IIO_SEPARATE,
-> +	},
->  	{
->  		.name = "raw_available",
->  		.read = scmi_iio_get_raw_available,
-
+Acked-by: Michael Straube <straube.linux@gmail.com>
