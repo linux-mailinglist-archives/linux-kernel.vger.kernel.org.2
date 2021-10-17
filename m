@@ -2,75 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B43964305E9
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 03:32:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F2514305EC
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 03:32:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244776AbhJQBee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 21:34:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38930 "EHLO
+        id S244795AbhJQBer (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 21:34:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234417AbhJQBec (ORCPT
+        with ESMTP id S241259AbhJQBeq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 21:34:32 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96919C061767
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 18:32:23 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id q129so19184218oib.0
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 18:32:23 -0700 (PDT)
+        Sat, 16 Oct 2021 21:34:46 -0400
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EA38C061765;
+        Sat, 16 Oct 2021 18:32:38 -0700 (PDT)
+Received: by mail-io1-xd2b.google.com with SMTP id m20so12154074iol.4;
+        Sat, 16 Oct 2021 18:32:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=2wy87Ngcu7gVRUKvzaxFI3AG8ttBjWS13MSfr80Tlnw=;
-        b=Yz2U+KS+8IlSi/BJ9Aa0q6OomQhz9T99n2XyNvmu8tLFnrxR7oWndK9jZGw2pvVYxd
-         zzfe0BKVkv0bWf/kocXFO8C7+cxvQq5UVc2fkF32ONIXJupUWROCG2whGlpy+K50kCXh
-         Rzjx6cBP7z48rwQlRDLo6WSsQYYRbhsSYdNp8=
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Rq7eJiJY5GizzeYQg7HyUDUwFZHc89rYqOhPQrMeQeE=;
+        b=kimjJzbHxu0G4NEaBLJg8zkXM0H0T3NPqqamfR8nbRO7DSxbfPAE0HJsGJoha1T7yh
+         0kB1JThMzIYv5mtsM5xOqVDJdBIdK0tCxx4rhgLC9ZaEy3CL9+D7BvTG262s8/j+HRci
+         2bu1B+chNC0tiVw8GQy4X8WjDYNHu2SIIBUiVzr3oZ37NLUNGm6VC1Z0ZuagbRjrRQPh
+         najpJaSSAk+Ry0+Huc+a1soJoNVdEYrh37vs0LiFzWU08fj6ugLUh8GDWtmWykeTUq8B
+         OGplu/wzP9HH2GcCK0i6cX5HBmdpjp2810n7DiTT7xH7BLxrsS/6/OwRYRDnDEWFZWgv
+         N55Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=2wy87Ngcu7gVRUKvzaxFI3AG8ttBjWS13MSfr80Tlnw=;
-        b=6pECNyhmfzH2JtUEnaQtbODx7fdDcUYVtyVX1pUz5dtJmUXdIMBo3G0YgnP9+lrjkP
-         xIrjYe8dYsxrj004CLtB5Zr6yqInLxarmSwzcjVuSrNWryC8A4W9IKAk1SMPBwkQJw+H
-         mhsjyIdJjWkRj9yy2qCWxGQ+wzPbWmDQiR/rwvqJr87L3qrAXLp80kdPz9+zPgflZpex
-         CSSO4eqyztohCggM5uTkhE9W+pPB/bkl0TFz88rPYQkEVHTPY6Pvv8d50CbtN9QkdnEH
-         GN+mV27BMdbrJPqPK92Mm78Q8mBF0SwIxV+b7683+Pj4lApJ/tYaALaFgZ4SSynBDTXq
-         buKQ==
-X-Gm-Message-State: AOAM530FKZZlufAGKpkoHwdXNzqZtPOsD091NkO4NNWsjEGz3ZlVlzyq
-        KaMQ7f4gG1jZZCr6yHpWzM2Uja8s00J7qEnUftT+jA==
-X-Google-Smtp-Source: ABdhPJy9TGOZNQrC0+Gt3LlttQmcsoNpL5AXVWWKf1RKVOfK+qDdiu0E74boUW3aoYhS7g527dvN6POC4ocGd8TjeKw=
-X-Received: by 2002:a05:6808:23c2:: with SMTP id bq2mr8370296oib.32.1634434342991;
- Sat, 16 Oct 2021 18:32:22 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Sat, 16 Oct 2021 20:32:22 -0500
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Rq7eJiJY5GizzeYQg7HyUDUwFZHc89rYqOhPQrMeQeE=;
+        b=Ww1UTy6zXDo7YwuHTkiOmszpjdk3di820jc4nQTla9NHwnDQi8hlwbntDfYlRXy7WH
+         eQcP/y4JODyFj62aYJmDFH10A7TQNsPnygqeyTGfjANSwS4WnJ3lKRbPAIKZ37QMhxOV
+         yp1igJd6C92I2CrcCUv/yECdxt47CehEfHwxFvPnGX4d4qkTrQriJt7iRZUX4m5Xuiio
+         1cWcpjHvkk8glZFl+/jt35STJKRhBTPd/vtHgiGkOOAdZ2PuXxkvZIrksFtx12rd/C1n
+         3/6YRrc0fTRt3lIPrRQdJAp+GzxkYaPCYGKi8tJ/a1R7Akg6VLjup5Bw63k7doDKRNlZ
+         TV0g==
+X-Gm-Message-State: AOAM531t9HyCGreeFcCVfaFMpr2/FMZfy/x/0cdDwGh+pk6kt/7ugNVB
+        feb5LhfuxDTrrwdG+q7yji0hpCtFPkQ=
+X-Google-Smtp-Source: ABdhPJzFXupUUFg6YPvdcu+wlZeidOXVNm/8ugfr0+x4lmO6H2hd3vuxfC4gyTjRRAGVjvz0avOdGA==
+X-Received: by 2002:a05:6638:a2d:: with SMTP id 13mr13028099jao.12.1634434357408;
+        Sat, 16 Oct 2021 18:32:37 -0700 (PDT)
+Received: from localhost.localdomain (mobile-130-126-255-38.near.illinois.edu. [130.126.255.38])
+        by smtp.googlemail.com with ESMTPSA id m5sm5010533ild.45.2021.10.16.18.32.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 16 Oct 2021 18:32:37 -0700 (PDT)
+From:   Noah Goldstein <goldstein.w.n@gmail.com>
+Cc:     goldstein.w.n@gmail.com, axboe@kernel.dk, asml.silence@gmail.com,
+        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v1] fs/io_uring: Prioritise checking faster conditions first in io_write
+Date:   Sat, 16 Oct 2021 20:32:29 -0500
+Message-Id: <20211017013229.4124279-1-goldstein.w.n@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20211016221843.2167329-8-bjorn.andersson@linaro.org>
-References: <20211016221843.2167329-1-bjorn.andersson@linaro.org> <20211016221843.2167329-8-bjorn.andersson@linaro.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Sat, 16 Oct 2021 20:32:22 -0500
-Message-ID: <CAE-0n53R79HOoBsuLXVkVhYotFam8k4mWZqWnaiJcqcr7w522w@mail.gmail.com>
-Subject: Re: [PATCH v5 7/7] drm/msm/dp: Add sc8180x DP controllers
-To:     Abhinav Kumar <abhinavk@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Kalyan Thota <kalyan_t@codeaurora.org>,
-        Kuogee Hsieh <khsieh@codeaurora.org>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>
-Cc:     Rob Herring <robh+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Bjorn Andersson (2021-10-16 15:18:43)
-> The sc8180x has 2 DP and 1 eDP controllers, add support for these to the
-> DP driver.
->
-> Link: https://lore.kernel.org/linux-arm-msm/20210725042436.3967173-7-bjorn.andersson@linaro.org/
+This commit reorders the conditions in a branch in io_write. The
+reorder to check 'ret2 == -EAGAIN' first as checking
+'(req->ctx->flags & IORING_SETUP_IOPOLL)' will likely be more
+expensive due to 2x memory derefences.
 
-BTW, was the link intentional?
+Signed-off-by: Noah Goldstein <goldstein.w.n@gmail.com>
+---
+ fs/io_uring.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index 6b9e70208782..321de7ddf2cf 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -3660,7 +3660,7 @@ static int io_write(struct io_kiocb *req, unsigned int issue_flags)
+ 		goto done;
+ 	if (!force_nonblock || ret2 != -EAGAIN) {
+ 		/* IOPOLL retry should happen for io-wq threads */
+-		if ((req->ctx->flags & IORING_SETUP_IOPOLL) && ret2 == -EAGAIN)
++		if (ret2 == -EAGAIN && (req->ctx->flags & IORING_SETUP_IOPOLL))
+ 			goto copy_iov;
+ done:
+ 		kiocb_done(kiocb, ret2, issue_flags);
+-- 
+2.25.1
+
