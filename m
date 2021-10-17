@@ -2,68 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A35D430B2F
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 19:20:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E745E430B28
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 19:19:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344412AbhJQRW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 13:22:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48534 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344403AbhJQRWw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 13:22:52 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B952C061765
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 10:20:42 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id 66so13608334pgc.9
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 10:20:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=BInys1GjUr//SczNrV06SUmmwPshVO7ak/x6YbQBYgQ=;
-        b=XB8qWXw34VtutGs8u5dOQwRCOGRuXj6QPwHrxnOdl6RtjI0p4fj3jxf0cpPTVIGxYj
-         Cy9wzVUmVFsrd4uhZY5bBMNE7VAZCowG2JqkNT5XWrlaM+uVcg2ycSAjPBHMgx/lxpiJ
-         FEGBv66RnZLveXJY5mX5u6ug8C7/grC1vhnjyop4eCiotfJE0Acj3YsD+Wg3/gT/Ouxa
-         ZOm4NbUvA4KxBEhJcmYmY0IUJu1AOI/qOa45o0O1sBt3o2BXTnO0bzPdjGMWTpkADUtm
-         7vyaX+ZYDMsl0rtuc8/kjuZzJtGVzxqvCWm6dxQI8yoirG0rF1ymS9+TBUR4cJSZwsgk
-         FI5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=BInys1GjUr//SczNrV06SUmmwPshVO7ak/x6YbQBYgQ=;
-        b=qCmMLTeX6vRqI2CVM4NOCmrOwKf/sEcepFtDx5YrK1I4y7YAAMkjWWRtrV+no7+XO9
-         PlIf7ssYvUx0r7YsFS6TEC2XcVQUPyiavhxkswjcy4Qt3HoE3iDUAAZIk/EV4uIxWV4P
-         oK615eTOHU54LXynsM/8d208JwLAqzWgY2y+KhYbUn4zkmkY5yE6o24Q3iEJysi+xlgv
-         9FH4ZRNZhRwVAog/wIVnfTpN67DvzRaSq2HjR940Cbf3c8IGVmRYrt7cDKKjKs6m19rp
-         cRivgpu9pu4qAEZ4RMlN+qfN5c26JJdOI6yKg53K6XwZBkMo1cDjmRvUqc6B9w0PVRKa
-         ZbIA==
-X-Gm-Message-State: AOAM531aib5T3QRAaFVEsnEldxyVlmqT2C5oUPVDHIrBcKQ5EaJ0Z7E2
-        lS5oLohvRiSjv5UvGKWrPAKtwjVuDxCZh9TQ8k0=
-X-Google-Smtp-Source: ABdhPJwblBLm1EaLs5lYp5Sr4hBxjcSm4+qzZ5ixqfNMjjV009VdK19LagqT67VtvMJs3y4CE63uMiF7hxVfKWaLdMQ=
-X-Received: by 2002:a62:1683:0:b0:3f3:814f:4367 with SMTP id
- 125-20020a621683000000b003f3814f4367mr24310151pfw.68.1634491241487; Sun, 17
- Oct 2021 10:20:41 -0700 (PDT)
+        id S1344381AbhJQRVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 13:21:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48078 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1344366AbhJQRVf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Oct 2021 13:21:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1654960FE3;
+        Sun, 17 Oct 2021 17:19:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634491165;
+        bh=N5I/TK6RMFPLcyd9DVqkH+PDXTwES+K3ZR23ZkNZClY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=R6HSq4fLCJnzfn0amTzAgSD3Ca6FdmcMwGDzJO6fdYhuMhf476KP1gdodhoheltAP
+         9PL6MJbMWs0+bALZEcCtaAJDgJ3G+dHSBchHzPhtEN3kfdO3ubuHNyJCrFnpEaV3nc
+         Egz17o6qOfuQffB6Hx/ta+EtJhjmCR7JpHjRv5Oqbu4cExyYiQw8JQTM2QsfY04Lap
+         nr9xV+MxPrOoIUhs/IPMotuIWhVvVuSnBTByue7bN5jRchNFRa6Hu0akvRBsOp9MyG
+         zvwsmFpk65JAfDKkhx/BtZHwYFCzgxY1kqRVt9JD4ExWTVt4QTaETia8+8mGprlmBz
+         lDnp3rKEA5bTQ==
+Date:   Sun, 17 Oct 2021 12:23:57 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Len Baker <len.baker@gmx.com>
+Cc:     Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>,
+        Chaitanya Kulkarni <kch@nvidia.com>,
+        Kees Cook <keescook@chromium.org>,
+        linux-hardening@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] nvmet: prefer struct_size over open coded arithmetic
+Message-ID: <20211017172357.GA1214270@embeddedor>
+References: <20211017095650.3718-1-len.baker@gmx.com>
 MIME-Version: 1.0
-Received: by 2002:a05:6a10:d109:0:0:0:0 with HTTP; Sun, 17 Oct 2021 10:20:40
- -0700 (PDT)
-Reply-To: avamedicinemed1@gmail.com
-From:   Dr Ava Smith <mrs.nicole10911@gmail.com>
-Date:   Sun, 17 Oct 2021 10:20:40 -0700
-Message-ID: <CABGEg9pGW9a98dKYc0=WRhiuZu2Ys5qC4zT0788+EykDDvi9Cg@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211017095650.3718-1-len.baker@gmx.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Dear,
-My name is Dr Ava Smith from United States.I am a French and American national
-(dual)living in the U.S and sometimes in the U.K for the Purpose of Work.
-I hope you consider my friend request and consider me worthy to be your friend.
-I will share some of my pics and more details about my self when i get
-your response
+On Sun, Oct 17, 2021 at 11:56:50AM +0200, Len Baker wrote:
+> As noted in the "Deprecated Interfaces, Language Features, Attributes,
+> and Conventions" documentation [1], size calculations (especially
+> multiplication) should not be performed in memory allocator (or similar)
+> function arguments due to the risk of them overflowing. This could lead
+> to values wrapping around and a smaller allocation being made than the
+> caller was expecting. Using those allocations could lead to linear
+> overflows of heap memory and other misbehaviors.
+> 
+> In this case this is not actually dynamic size: all the operands
+> involved in the calculation are constant values. However it is better to
+> refactor this anyway, just to keep the open-coded math idiom out of
+> code.
+> 
+> So, use the struct_size() helper to do the arithmetic instead of the
+> argument "size + count * size" in the kmalloc() function.
+> 
+> This code was detected with the help of Coccinelle and audited and fixed
+> manually.
+> 
+> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments
+> 
+> Signed-off-by: Len Baker <len.baker@gmx.com>
+> ---
+> Hi,
+> 
+> this patch is built against the linux-next tree (tag next-20211015).
+
+You don't need to include these lines in every patch. Just add [next]
+to the subject line, like this:
+
+	[PATCH][next] nvmet: prefer struct_size over open coded arithmetic
+
+It should be clear enough for people that you are talking about
+linux-next. And in case someone asks, then you proceed to clarify. :)
+
+> 
+> Regards,
+> Len
+> 
+>  drivers/nvme/target/admin-cmd.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/nvme/target/admin-cmd.c b/drivers/nvme/target/admin-cmd.c
+> index aa6d84d8848e..4aa71625c86a 100644
+> --- a/drivers/nvme/target/admin-cmd.c
+> +++ b/drivers/nvme/target/admin-cmd.c
+> @@ -278,8 +278,8 @@ static void nvmet_execute_get_log_page_ana(struct nvmet_req *req)
+>  	u16 status;
+> 
+>  	status = NVME_SC_INTERNAL;
+> -	desc = kmalloc(sizeof(struct nvme_ana_group_desc) +
+> -			NVMET_MAX_NAMESPACES * sizeof(__le32), GFP_KERNEL);
+> +	desc = kmalloc(struct_size(desc, nsids, NVMET_MAX_NAMESPACES),
+> +		       GFP_KERNEL);
+
+It might be worth exploring if the flexible array is actually needed,
+once the allocation is always determined by NVMET_MAX_NAMESPACES. Maybe
+it can be changed to the following and remove the dynamic allocation
+entirely?
+
+	struct nvme_ana_group_desc {
+		__le32  grpid;
+		__le32  nnsids;
+		__le64  chgcnt;
+		__u8    state;
+		__u8    rsvd17[15];
+		__le32  nsids[NVMET_MAX_NAMESPACES];
+	};
+
+If the above is possible then (at least) these lines should be audited:
+
+drivers/nvme/host/multipath.c-551-              if (WARN_ON_ONCE(offset > ctrl->ana_log_size - sizeof(*desc)))
+
+drivers/nvme/host/multipath.c-566-              offset += sizeof(*desc);
+drivers/nvme/host/multipath.c-567-              if (WARN_ON_ONCE(offset > ctrl->ana_log_size - nsid_buf_size))
+
+If the flexible array remains, then this line could use
+flex_array_size():
+
+drivers/nvme/host/multipath.c-555-              nsid_buf_size = nr_nsids * sizeof(__le32);
+
+struct_size() could be used here, as well:
+
+drivers/nvme/host/multipath.c-847-      ana_log_size = sizeof(struct nvme_ana_rsp_hdr) +
+drivers/nvme/host/multipath.c:848:              ctrl->nanagrpid * sizeof(struct nvme_ana_group_desc) +
+drivers/nvme/host/multipath.c-849-              ctrl->max_namespaces * sizeof(__le32);
+
+drivers/nvme/target/admin-cmd.c:267:    return sizeof(struct nvme_ana_group_desc) + count * sizeof(__le32);
+
 Thanks
-With love
-Ava
+--
+Gustavo
+
+
+>  	if (!desc)
+>  		goto out;
+> 
+> --
+> 2.25.1
+> 
