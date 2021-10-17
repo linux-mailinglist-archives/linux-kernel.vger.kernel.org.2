@@ -2,89 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E877430AB4
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 18:25:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D975A430A83
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 18:20:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344248AbhJQQ1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 12:27:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36232 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344217AbhJQQ1M (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 12:27:12 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4965CC061765;
-        Sun, 17 Oct 2021 09:25:03 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id l6so9600388plh.9;
-        Sun, 17 Oct 2021 09:25:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=va1wOEK7prq0g6xbMM0ouEtB510a8wuP54vz2v0aIcY=;
-        b=GcLww3LN2g8DJDDSHxZm7EUvgM99s3wD5LI+OpFaDduYIS7FQuENACFR/JWHyduY1W
-         HHbFm4kQRYm0hYGCnccoMoVroZFbGjBMwS2Vh7MtEOyinyjwqhNtqgqs7eF/QVT8pYeR
-         gq9UGBjhFMZ6eECqIzaNzLdXKRGOhwCk+w6gTJA6CrMhj1M7Ta0KAqQvQv0FSA9b7tVG
-         hpf6bwTLOox2Mh88rJsl2vj6me9HCOMp8BAyzOZ+qYVdPGsyogvFaFsTp5N/lFTFCZLi
-         c6mh8MYxG185HiaqxlhgXCI97ZTo40XSacdHoSWQtXzXon2WTw00MVBJ8OiSn6X0o3aR
-         xnbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=va1wOEK7prq0g6xbMM0ouEtB510a8wuP54vz2v0aIcY=;
-        b=Dhtto60tpoTHavCCz6uHDHNS+YCVF8cprjPKgHvnCjvZKPziSPyTUk6MzQ403lQdlQ
-         edr6IgfxvoDGjpiRM28NlpFcqLRHBuD9z93Mjss8efYNNijw4Pz/XBTEjgTh5OWqbrb6
-         +jvw57iitOCQzJBMdavLq3TffB/krvSUINS97eZ4mDQvtvsEMma7ARAF7aruWT58LGPZ
-         6Hz54SfBLzqqY9rTUj8TphwmQI4Zd6EGC1yEzYk6qJrHoHpwPNnbHHwPwOGUa1+CzOMK
-         BJXRHflaHeQ2ZBIScryGAWjzHnfYUh6jqS9sQ1ZUiZlAKaqlSpHUIFVYeGVjWABUBT2C
-         +9MQ==
-X-Gm-Message-State: AOAM533YPN3DawFy2VkeI1US0TbBAD2zph9AR6fFYy0PSFdNijivoKNz
-        1wDOGr7HHtuWUoHy5pWfRDpgK7Ps4GQ9QA==
-X-Google-Smtp-Source: ABdhPJwrgPLl1nNNQaWQMXtYN4uy23b/Hi1FG6PMsJgEmMSwZ6zbKOqr+ApFspjeujU5Ii3v0lU/HA==
-X-Received: by 2002:a17:90b:3588:: with SMTP id mm8mr42281447pjb.238.1634487902794;
-        Sun, 17 Oct 2021 09:25:02 -0700 (PDT)
-Received: from sbwpb-arch.flets-east.jp ([2400:4052:6980:3800:dba7:2b1f:3f26:a5ec])
-        by smtp.gmail.com with ESMTPSA id f30sm10814332pfq.142.2021.10.17.09.24.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 Oct 2021 09:25:02 -0700 (PDT)
-From:   Tsuchiya Yuto <kitakar@gmail.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Patrik Gfeller <patrik.gfeller@gmail.com>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Kaixu Xia <kaixuxia@tencent.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Arnd Bergmann <arnd@arndb.de>, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [BUG 5/5] [BUG] media: atomisp: atomisp causes touchscreen to stop working on Microsoft Surface 3
-Date:   Mon, 18 Oct 2021 01:23:36 +0900
-Message-Id: <20211017162337.44860-6-kitakar@gmail.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211017162337.44860-1-kitakar@gmail.com>
-References: <20211017162337.44860-1-kitakar@gmail.com>
+        id S242654AbhJQQWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 12:22:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44868 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242581AbhJQQWd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Oct 2021 12:22:33 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 86A2261151;
+        Sun, 17 Oct 2021 16:20:20 +0000 (UTC)
+Date:   Sun, 17 Oct 2021 17:24:35 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        David Jander <david@protonic.nl>,
+        Robin van der Gracht <robin@protonic.nl>,
+        linux-iio@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: Re: [PATCH v2 1/2] iio: adc: tsc2046: fix scan interval warning
+Message-ID: <20211017172435.791cd280@jic23-huawei>
+In-Reply-To: <20211007093007.1466-2-o.rempel@pengutronix.de>
+References: <20211007093007.1466-1-o.rempel@pengutronix.de>
+        <20211007093007.1466-2-o.rempel@pengutronix.de>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Touchscreen input works fine before loading atomisp driver on Surface 3.
+On Thu,  7 Oct 2021 11:30:06 +0200
+Oleksij Rempel <o.rempel@pengutronix.de> wrote:
 
-However, after loading atomisp driver, touchscreen works only when
-capturing images. This sounds like atomisp turns off something needed
-for touchscreen when atomisp is idle.
+> Sync if statement with the actual warning.
+> 
+> Fixes: 9504db5765e8 ("iio: adc: tsc2046: fix a warning message in tsc2046_adc_update_scan_mode()")
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Applied this one to the fixes-togreg branch of iio.git and marked it for stable.
 
-There is no useful kernel log. Just the touchscreen stops working
-with no log.
+Thanks,
 
-I'll update if I find something further. First of all, can someone
-reproduce this issue on the other devices?
--- 
-2.33.1
+Jonathan
+
+> ---
+>  drivers/iio/adc/ti-tsc2046.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/iio/adc/ti-tsc2046.c b/drivers/iio/adc/ti-tsc2046.c
+> index 170950d5dd49..d84ae6b008c1 100644
+> --- a/drivers/iio/adc/ti-tsc2046.c
+> +++ b/drivers/iio/adc/ti-tsc2046.c
+> @@ -398,7 +398,7 @@ static int tsc2046_adc_update_scan_mode(struct iio_dev *indio_dev,
+>  	priv->xfer.len = size;
+>  	priv->time_per_scan_us = size * 8 * priv->time_per_bit_ns / NSEC_PER_USEC;
+>  
+> -	if (priv->scan_interval_us > priv->time_per_scan_us)
+> +	if (priv->scan_interval_us < priv->time_per_scan_us)
+>  		dev_warn(&priv->spi->dev, "The scan interval (%d) is less then calculated scan time (%d)\n",
+>  			 priv->scan_interval_us, priv->time_per_scan_us);
+>  
 
