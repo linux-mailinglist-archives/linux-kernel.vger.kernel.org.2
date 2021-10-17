@@ -2,59 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A331843082D
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 12:54:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2779A430831
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 13:00:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241856AbhJQK4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 06:56:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36026 "EHLO mail.kernel.org"
+        id S241890AbhJQLCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 07:02:16 -0400
+Received: from mout.gmx.net ([212.227.15.18]:60145 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241828AbhJQK4k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 06:56:40 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5947760F14;
-        Sun, 17 Oct 2021 10:54:28 +0000 (UTC)
-Date:   Sun, 17 Oct 2021 11:58:43 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Maxim Levitsky <maximlevitsky@gmail.com>
-Cc:     linux-iio@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: BMI160 accelerometer on AyaNeo tablet
-Message-ID: <20211017115843.2a872fbe@jic23-huawei>
-In-Reply-To: <CACAwPwYQHRcrabw9=0tvenPzAcwwW1pTaR6a+AEWBF9Hqf_wXQ@mail.gmail.com>
-References: <CACAwPwb7edLzX-KO1XVNWuQ3w=U0BfA=_kwiGCjZOpKfZpc2pw@mail.gmail.com>
-        <CACAwPwYQHRcrabw9=0tvenPzAcwwW1pTaR6a+AEWBF9Hqf_wXQ@mail.gmail.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S241814AbhJQLCO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Oct 2021 07:02:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1634468399;
+        bh=NWbiml2AVqnuk6qWgPp/+YxTsn+eQ0AWnRSoiPOs9jQ=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=TdWVavAm7ozjEAxgHM/ls7uJkmqHSqUuskNeNwOZOd6hGFkCd5qRcwVAiTv+5MB7i
+         EPmXGmOvjDDmY9ZPYkVz8gbgPSNYkjkx/JPZGVO+OMpbXZPTjTzPSxgyOK513C7Akg
+         Fx8OzNR/I0pWNFXragcIRauZlq91yRxzWQFa3cZQ=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from localhost.localdomain ([79.150.72.99]) by mail.gmx.net
+ (mrgmx004 [212.227.17.184]) with ESMTPSA (Nemesis) id
+ 1M2wGs-1mYm6U3ISK-003NHR; Sun, 17 Oct 2021 12:59:59 +0200
+From:   Len Baker <len.baker@gmx.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Len Baker <len.baker@gmx.com>, Kees Cook <keescook@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] mm/list_lru.c: prefer struct_size over open coded arithmetic
+Date:   Sun, 17 Oct 2021 12:59:29 +0200
+Message-Id: <20211017105929.9284-1-len.baker@gmx.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:36UFC7rd2IY4gDEXshqcJ3fOj2x/DvuJ/mUvjYn2PPH/l+rm8I8
+ MBjuGb+/AviEb1Ox6nJEwy6FocUqGjUJTz8i+wDsM8lgZkeTxZMjXOowaz6B8Pavacxm1AV
+ 7uQWIkoz1k2lkFWxgjBKo5akA4qTbk/xRzYiIHTP9tKE1Wv/YoubWbqZOFKDTXDStC+35py
+ lduX0LWgXYPr1KxISImag==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:cbLl6ZiQAD4=:/XbPxqtXiyfmf2kB6HnXSc
+ vOBFLBn+KnxurzEpmst9rlYzrVa6UZFDshmNJtrDBXI4OhXMXmf/FPpP/Wk+9+eVigfJtFp4w
+ 9ld9te5bnNn7l69BTfCg2vCyFdcDZZnBub7e0tCIihKmeRQiFJIm0vNJH/zvYII00R48MHQl9
+ ZN9spdZ2p32SMUB3TwG/2pcyAsPBP69DRr4q8EAbuscn5TvLKogKnZzSv2rFmJDmfh23wXwKA
+ CCTi7FuK4t8uPJDfV/BdvE0nPcU1FPIOJioR+VDuf40Bz6G96hmGx/H9++dWchkWuu6495Vz4
+ 3pvrn42Ws/LBsyRdUi7Li9i59GeANfht0Mcp7IOf6zwrLbBWZByw1bVlgMNX30JZnnXWT15AO
+ RQbbKWou+sgH+tjWSTHwOAGfOOMSXK2XaewETmv9NQRjMtOffgM0yE94Q8eBie8kQ87B+Ekkr
+ qeJVdKGLaOfgZzzT669NeZKv2FZWM0h0yAUWRnc4Zne5KVNPH/Q4vVhvfBdGzBCY1NUZN9qBo
+ EJX8aGppxmiJvJbUp6doI7XgmMjXK64L94VCKRti5VCPPnv0v26xKcZjEXP10N6e8DT3CBITE
+ A9xX6Ui0X+5esuDxzKMgPf/gsMtxpBc+loONj25E5CEn8kuyesOFbN068FvHypZMoU1m2mdF+
+ lRWob1QqSauGm4tDznGTKv3VwMn+2ZrFu06VVram28AbXk8WMOOFc+WoVqgUQumg1TUO68jJ7
+ Uvdy/1eme4qwmF1MxHMFy49pcEzVfYbA7NCzAFA1TW2iQazVikjpbRovp1XJZTTWrs23muaQa
+ FO1IkFGSrBjOEsqlAbCko21ZrTB35800Zt+XnkRGqdc+duSxIaZ2gWYXObsDRIOl76ZL8pkIp
+ wxGsiGStgT7v34/FYIzhlyht9JeSsoeO0sCMPB+TA8BpKQikbYw+p+IZ8EAjmhuPDk/x8pwpj
+ sogBu1PFgXZQXlOVQTxQjyjEMa4c68HCm3Dkaq8vxrnXSeLpGrSTksjYSS0wV59kup5FJxS71
+ +hEdPpOjNgH0UvDcUgWVhFYoXE1XBhNdEQZb+ztMNMn9KQSiWxw93Mj9rg5Q0lAmb1Ysl+xCs
+ Nf+R3GKrGLK6BU=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 16 Oct 2021 19:27:50 +0300
-Maxim Levitsky <maximlevitsky@gmail.com> wrote:
+As noted in the "Deprecated Interfaces, Language Features, Attributes,
+and Conventions" documentation [1], size calculations (especially
+multiplication) should not be performed in memory allocator (or similar)
+function arguments due to the risk of them overflowing. This could lead
+to values wrapping around and a smaller allocation being made than the
+caller was expecting. Using those allocations could lead to linear
+overflows of heap memory and other misbehaviors.
 
->  BMI160: AYA NEA accelometer ID
->     
->     On AYA NEO, the accelerometer is BMI160 but it is exposed
->     via ACPI as 10EC5280
->     
->     Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+So, use the struct_size() helper to do the arithmetic instead of the
+argument "size + count * size" in the kvmalloc() functions.
 
-I guess it is hopelessly optimistic to hope that we could let someone
-at the supplier know that's a totally invalid ACPI id and that they
-should clean up their act.
+Also, take the opportunity to refactor the memcpy() call to use the
+flex_array_size() helper.
 
-Curiously it looks like a valid PCI ID pair though for a realtek device.
+This code was detected with the help of Coccinelle and audited and fixed
+manually.
 
-Ah well.  Applied to the iio-togreg branch of iio.git and pushed out
-as testing to see if 0-day can find any issues with it.
+[1] https://www.kernel.org/doc/html/latest/process/deprecated.html#open-co=
+ded-arithmetic-in-allocator-arguments
 
-Thanks,
+Signed-off-by: Len Baker <len.baker@gmx.com>
+=2D--
+Hi,
 
-Jonathan
- 
+this patch is built against the linux-next tree (tag next-20211015).
+
+Regards,
+Len
+
+ mm/list_lru.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
+
+diff --git a/mm/list_lru.c b/mm/list_lru.c
+index cd58790d0fb3..a6031f1c5bd7 100644
+=2D-- a/mm/list_lru.c
++++ b/mm/list_lru.c
+@@ -354,8 +354,7 @@ static int memcg_init_list_lru_node(struct list_lru_no=
+de *nlru)
+ 	struct list_lru_memcg *memcg_lrus;
+ 	int size =3D memcg_nr_cache_ids;
+
+-	memcg_lrus =3D kvmalloc(sizeof(*memcg_lrus) +
+-			      size * sizeof(void *), GFP_KERNEL);
++	memcg_lrus =3D kvmalloc(struct_size(memcg_lrus, lru, size), GFP_KERNEL);
+ 	if (!memcg_lrus)
+ 		return -ENOMEM;
+
+@@ -389,7 +388,7 @@ static int memcg_update_list_lru_node(struct list_lru_=
+node *nlru,
+
+ 	old =3D rcu_dereference_protected(nlru->memcg_lrus,
+ 					lockdep_is_held(&list_lrus_mutex));
+-	new =3D kvmalloc(sizeof(*new) + new_size * sizeof(void *), GFP_KERNEL);
++	new =3D kvmalloc(struct_size(new, lru, new_size), GFP_KERNEL);
+ 	if (!new)
+ 		return -ENOMEM;
+
+@@ -398,7 +397,7 @@ static int memcg_update_list_lru_node(struct list_lru_=
+node *nlru,
+ 		return -ENOMEM;
+ 	}
+
+-	memcpy(&new->lru, &old->lru, old_size * sizeof(void *));
++	memcpy(&new->lru, &old->lru, flex_array_size(new, lru, old_size));
+
+ 	/*
+ 	 * The locking below allows readers that hold nlru->lock avoid taking
+=2D-
+2.25.1
+
