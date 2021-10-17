@@ -2,165 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B21DD43094B
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 15:19:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D703343094E
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 15:24:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242398AbhJQNVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 09:21:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51382 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236593AbhJQNVn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 09:21:43 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1BF8C061765
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 06:19:32 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id ec8so59474753edb.6
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 06:19:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=UCv4he74RcqUiXAktKxPBYoR/T/c29Xy6EIv1fDVNEY=;
-        b=cLiL8P9M2NtOoXkfyN5vtDTELjJeKPhD5lkKzsIrtRbVtu5ldKMuBeJiT06bQhT3m8
-         K1VKU5Bm5lXW0grWHzcHaLC1Ok5X5huRQhFhm1RZALMGnjBS55iv3wBXe8Lt/Jcu/nW4
-         BQb03zCJVWp9cD9otRgwGk1K6Jw5fv1WMsLqQtQHEVCVdEyKK9ac2WO0bV2En4IgOSzT
-         scYp+GYM98Lz1yB8kEFAAINCw/w9pJ8ZZsTEp8TV1Mg7k45/qYlkfmggejRutCGbC0mj
-         lOrTwNE3zYQVGS3d2egq9o+pDLnkDf0eP6tiZyXP1wZ/kGVADXftC8yjD6pnpC2l6M07
-         oSCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=UCv4he74RcqUiXAktKxPBYoR/T/c29Xy6EIv1fDVNEY=;
-        b=Fm3mZXVZBNdtkLlINpdzO2ZqPTqRGgKY/9TROrFwNZXrMwhwEeu+D6wVlY+YcRNFFm
-         AsZ0jIF+wmXY2anCU1HWHYnZ2x9fYtg92q9iYNK12mx7QdHdnVpKeNoVtYyI4AbMgrlS
-         kiB1xOFhjA7a8Pifj1Av80KJlo5I7Y2ABtWjfo0/8AJ0hb6EM8nCNmg42PIb4/a+5age
-         QM/77SDeL36E2S9bVsCJoSVpBk6l9qz2Z23KmvjXBknPjz6aQ9L0bj/tfRA24c9kDj1l
-         Rbv9z7gq8+byWWptT1untcXEaBa1ECp9DiTWfP76/k5BO/EO2o19yofZfmwpBrWgKVKF
-         TRNQ==
-X-Gm-Message-State: AOAM530QzoZCEhTDBxUhZypZ2IgbVepcX86HSKSbjT7GGcoJofUe1fyL
-        p5KtWAP0HBLXG67Ed1XUlEZIg9lNETg=
-X-Google-Smtp-Source: ABdhPJy5qthGppJ4hCo++d8XQelWRLcrzDA/jFkdxZVTn7incemPzZoHuQscYH2+7ythgABOvu+Ysg==
-X-Received: by 2002:a05:6402:27d2:: with SMTP id c18mr35950623ede.186.1634476771376;
-        Sun, 17 Oct 2021 06:19:31 -0700 (PDT)
-Received: from localhost.localdomain (host-79-47-104-180.retail.telecomitalia.it. [79.47.104.180])
-        by smtp.gmail.com with ESMTPSA id cr9sm8127241edb.17.2021.10.17.06.19.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 Oct 2021 06:19:30 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Phillip Potter <phil@philpotter.co.uk>,
-        Martin Kaiser <martin@kaiser.cx>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Michael Straube <straube.linux@gmail.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] staging: r8188eu: don't accept SIGTERM for cmd thread
-Date:   Sun, 17 Oct 2021 15:19:28 +0200
-Message-ID: <2705995.aOCT9ph2Oq@localhost.localdomain>
-In-Reply-To: <YWv67ozbJGxMa69t@equinox>
-References: <20211016181343.3686-1-martin@kaiser.cx> <2409617.cBYgoVRs56@localhost.localdomain> <YWv67ozbJGxMa69t@equinox>
+        id S1343685AbhJQN0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 09:26:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41030 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1343648AbhJQN0p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Oct 2021 09:26:45 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6181661212;
+        Sun, 17 Oct 2021 13:24:33 +0000 (UTC)
+Date:   Sun, 17 Oct 2021 14:28:47 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     Teng Qi <starmiku1207184332@gmail.com>,
+        lorenzo.bianconi83@gmail.com, lars@metafoo.de,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        islituo@gmail.com, baijiaju1990@gmail.com,
+        TOTE Robot <oslab@tsinghua.edu.cn>
+Subject: Re: [PATCH v2] iio: imu: st_lsm6dsx: Fix an array overflow in
+ st_lsm6dsx_set_odr()
+Message-ID: <20211017142847.07040537@jic23-huawei>
+In-Reply-To: <YWQse08lZHMBe+LX@lore-desk>
+References: <20211011114003.976221-1-starmiku1207184332@gmail.com>
+        <YWQse08lZHMBe+LX@lore-desk>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sunday, October 17, 2021 12:29:02 PM CEST Phillip Potter wrote:
-> On Sat, Oct 16, 2021 at 08:53:15PM +0200, Fabio M. De Francesco wrote:
-> > On Saturday, October 16, 2021 8:13:43 PM CEST Martin Kaiser wrote:
-> > > At the moment, our command thread can be killed by user space.
-> > > 
-> > > [root@host ]# kill `pidof RTW_CMD_THREAD`
-> > > 
-> > > The driver will then stop working until the module is unloaded
-> > > and reloaded.
-> > > 
-> > > Don't process SIGTERM in the command thread. Other drivers that have a
-> > > command thread don't process SIGTERM either.
+On Mon, 11 Oct 2021 14:22:19 +0200
+Lorenzo Bianconi <lorenzo@kernel.org> wrote:
+
+> > The length of hw->settings->odr_table is 2 and ref_sensor->id is an enum
+> > variable whose value is between 0 and 5.
+> > However, the value ST_LSM6DSX_ID_MAX (i.e. 5) is not catched properly in
+> >  switch (sensor->id) {
 > > 
-> > Hi Martin,
+> > If ref_sensor->id is ST_LSM6DSX_ID_MAX, an array overflow will ocurrs in
+> > function st_lsm6dsx_check_odr():
+> >   odr_table = &sensor->hw->settings->odr_table[sensor->id];
 > > 
-> > This is _really_ interesting :)
+> > and in function st_lsm6dsx_set_odr():
+> >   reg = &hw->settings->odr_table[ref_sensor->id].reg;
 > > 
-> > May be that you have had time to read my last email in reply to a message 
-of 
-> > Phillip P. Soon after writing of the arguments in favor of using 
-> > wait_for_completion_killable() (in patch 2/3 of the series I sent today), 
-I 
-> > read your patch.
+> > To fix this array overflow, handle ST_LSM6DSX_ID_GYRO explicitly and 
+> > return -EINVAL for the default case.
 > > 
-> > If you are right (and I think you are) I'll have to send a v2 that 
-replaces 
-> > the killable wait with an uninterruptible one.
-> > 
-> > Unfortunately I have not the needed experience to decide whether or not 
-to 
-> > ack your patch, even if I'm strongly tempted to do it.
-> > 
-> > Let's wait for more experienced people.
-> > 
-> > Thanks,
-> > 
-> > Fabio 
-> > 
+> > Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+> > Signed-off-by: Teng Qi <starmiku1207184332@gmail.com>  
 > 
-> So I myself am a little confused on this one :-)
-> 
-> Based on my understanding, so correct me if I'm wrong, a process (kthread 
-or
-> otherwise) can still be killed if marked TASK_KILLABLE, even if ignoring
-> SIGTERM. Indeed, from a userspace perspective, SIGKILL is unblockable
-> anyway - although of course kernel code can choose how to respond to it.
-> 
+> Acked-by: Lorenzo Bianconi <lorenzo@kernel.org>
 
-@Phil, Correct: the kernel can choose how to respond to signals.
-@Martin, Please correct me if I'm missing something in what follows...
+Hi Teng Qi,
 
-> So in other words, the kthread could still be killed while waiting
-> in the wait_for_completion_killable() call, even if we are ignoring
-> SIGTERM. 
+As discussed previously this isn't technically a 'fix' as the default case can
+never actually occur, so I've modified the patch description a tiny bit make
+that clear.  It's a good change, but we probably don't want to back port it to
+older kernels and most things that claim to be 'fixes' are back ported.
 
-No, this confusion is my fault.
+Applied to the iio-togreg branch of iio.git and pushed out as testing for 0-day
+to see if it can find anything we missed.
 
-I read Martin's patch, but in my mind I exchanged "SIGTERM" with "SIGKILL".
-
-At this moment, without Martin's patch, only SIGTERM is delivered to the 
-kthread. This is due to the line "allow_signal(SIGTERM);".
-
-If we try to kill the kthread with "kill -KILL <PID>", nothing happens. 
-Instead if we use "kill -TERM <PID>", the kthread terminates.
-
-For what is related to my code, there is no functional changes between using 
-the killable or the uninterruptible version (I guess). But for sake of 
-consistency, since SIGKILL is not allowed, I should use either 
-wait_for_completion_interruptible() (without Martin's patch) or 
-wait_for_completion() (with Martin's patch).
-
-However, I re-iterate that, since SIGKILL is not allowed in the current code, 
-"kill -KILL <PID>" has no effect at all and the wait is not interruptible 
-with my killable version of the wait.
-
-> From that perspective I guess, it is therefore not 'incorrect' as
-> such - if indeed we wanted that behaviour.
-> 
-> That said, killing it would still cause the behaviour Martin mentions -
-> I guess we don't want it to be either killable or interruptible based on
-> that logic?
-
-Yes, I agree. I should replace the killable version with the uninterruptible 
-one.
+Always good to see a new robot finding suspicious bits of code like this :)
 
 Thanks,
 
-Fabio
-
-> 
-> Regards,
-> Phil
-> 
-
-
-
+Jonathan
+ 
+> > 
+> > ---
+> > v2:
+> > * explicitly handle ST_LSM6DSX_ID_GYRO and return -EINVAL for the default
+> > case instead of adding an if statement behind the switch statement.
+> >   Thank Lars-Peter Clausen for helpful and friendly advice.
+> > 
+> > ---
+> >  drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c | 6 ++++--
+> >  1 file changed, 4 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c b/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c
+> > index db45f1fc0b81..8dbf744c5651 100644
+> > --- a/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c
+> > +++ b/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c
+> > @@ -1279,6 +1279,8 @@ st_lsm6dsx_set_odr(struct st_lsm6dsx_sensor *sensor, u32 req_odr)
+> >  	int err;
+> >  
+> >  	switch (sensor->id) {
+> > +	case ST_LSM6DSX_ID_GYRO:
+> > +		break;
+> >  	case ST_LSM6DSX_ID_EXT0:
+> >  	case ST_LSM6DSX_ID_EXT1:
+> >  	case ST_LSM6DSX_ID_EXT2:
+> > @@ -1304,8 +1306,8 @@ st_lsm6dsx_set_odr(struct st_lsm6dsx_sensor *sensor, u32 req_odr)
+> >  		}
+> >  		break;
+> >  	}
+> > -	default:
+> > -		break;
+> > +	default: /* should never occur */
+> > +		return -EINVAL;
+> >  	}
+> >  
+> >  	if (req_odr > 0) {
+> > -- 
+> > 2.25.1
+> >   
 
