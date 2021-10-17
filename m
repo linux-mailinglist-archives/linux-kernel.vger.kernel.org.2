@@ -2,44 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99551430878
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 13:45:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB592430879
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 13:45:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245588AbhJQLr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 07:47:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60630 "EHLO mail.kernel.org"
+        id S245595AbhJQLr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 07:47:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60726 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238081AbhJQLrZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 07:47:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 011D360FE3;
-        Sun, 17 Oct 2021 11:45:14 +0000 (UTC)
+        id S245590AbhJQLr2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Oct 2021 07:47:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2AAFF61247;
+        Sun, 17 Oct 2021 11:45:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634471115;
-        bh=ohuMuYmmuyqyemJ4Qv+2X0qk6HWlk0oTy0Gz89ptlUo=;
+        s=k20201202; t=1634471118;
+        bh=ayI/BsDuhmTL6/MoN5FKsc8wItRlW7Q+QmyNwHSEGV4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ba2+hAgqogX5pyL/+cDfcC/L2/wrEGbJ9jKoi7XLGpqxScs6BytFNYjroMCWo/BVH
-         V+GJtRe3JCtiIzpaITvLkS+jLIvdiSb32DsLjoQ3NldEKjX1Yr1DFm8qn725IcxcSv
-         jeT3TatImQUuV2OsfLKFo+Nm+84zySMQ/ebFVXr/9mLOLZ/9UAQQRUOge9SjHjiOSr
-         ZzcA9VZGfmETOOswrvr4h/N1OIO26N6D8Bkr4ffpswJF7NlbOTyIBoNsIwRP9e8+IO
-         +X1ZiW59EdhB9dS+GW6CZDTQsdmututWLb5IXDOjZttz+DPhGsDYCvPpsdTHpiDOkn
-         aXlduszwQTqEw==
+        b=ffeu4mdnudvjUjwc7aGH64aQHJ9GmG1LowOVGKwt1r5WRkJruNJxHRIiYLRtIvBJg
+         RAOJtFYyVG3jNBj9MEWBkrcxCi4IQigxRjuCBD4cEmYfTaUtJUlEiz9SJUlJiSHKQh
+         Ti7U5OwdJZhisWkv0QFTflC1ZK46w4s6mAZCToVQHCP6QUiIpqYfOVZzcgtGbGPWUf
+         fkfqO9MiNKMAWTb7bEQQRJnKADfEiJ5vk61K3n4t+zyNLKQt4HjOGkCgXatLS74kCF
+         eogxxBD9byLuAKBsRX6343pa05/wUFgskdugPYrB2kPpRu8/PMkOV8ZVloONN1rEEw
+         V5UEdUHlOFpxw==
 From:   Mark Brown <broonie@kernel.org>
-To:     Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org,
-        Heiko Stuebner <heiko@sntech.de>, linux-kernel@vger.kernel.org,
-        Takashi Iwai <tiwai@suse.com>
-Subject: Re: (subset) [PATCH 0/4] Getting rid of the reset controller in i2s-tdm
-Date:   Sun, 17 Oct 2021 12:45:06 +0100
-Message-Id: <163447061131.1864024.8259786717418291207.b4-ty@kernel.org>
+To:     linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Ma=C3=ADra=20Canal?= <maira.canal@usp.br>
+Cc:     Mark Brown <broonie@kernel.org>, lgirdwood@gmail.com
+Subject: Re: [PATCH] regulator/lp872x: replacing legacy gpio interface for gpiod
+Date:   Sun, 17 Oct 2021 12:45:07 +0100
+Message-Id: <163447061172.1864174.17204540379675928037.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211016105354.116513-1-frattaroli.nicolas@gmail.com>
-References: <20211016105354.116513-1-frattaroli.nicolas@gmail.com>
+In-Reply-To: <YWma2yTyuwS5XwhY@fedora>
+References: <YWma2yTyuwS5XwhY@fedora>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -47,25 +40,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 16 Oct 2021 12:53:49 +0200, Nicolas Frattaroli wrote:
-> after some discussion with Heiko on IRC, he has admitted to me
-> that the rockchip,cru property, and its corresponding half a reset
-> controller in the driver, is weighing heavily on his mind.
+On Fri, 15 Oct 2021 12:14:35 -0300, Maíra Canal wrote:
+> Removing all linux/gpio.h and linux/of_gpio.h dependencies and replacing
+> them with the gpiod interface
 > 
-> The background is that if the lrck only uses one clock for both rx
-> and tx direction, then according to the downstream driver, the rx
-> and tx resets should be asserted at roughly the same time to keep
-> things in sync.
 > 
-> [...]
 
 Applied, thanks!
 
-[1/4] ASoC: rockchip: i2s-tdm: Strip out direct CRU use
-      commit: d6365d0f0a03c1feb28d86dfd192972ddc647013
-[2/4] ASoC: dt-bindings: rockchip: i2s-tdm: Drop rockchip,cru property
-      commit: 4e52cb9e2c22c9d860910794c82461064baadd9f
+[1/1] regulator/lp872x: replacing legacy gpio interface for gpiod
+      commit: 72bf80cf09c4693780ad93a31b48fa5a4e17a946
 
 Best regards,
 -- 
-Mark Brown <broonie@kernel.org>
+Mark Brown,,, <broonie@kernel.org>
