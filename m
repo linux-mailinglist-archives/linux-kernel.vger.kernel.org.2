@@ -2,117 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5749F43079C
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 11:54:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6446443079F
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 11:57:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245203AbhJQJyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 05:54:22 -0400
-Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:37986
-        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232657AbhJQJyS (ORCPT
+        id S245217AbhJQJ5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 05:57:20 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:44290 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245202AbhJQJ5S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 05:54:18 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3Ads00EKr/4iry/VVJ+OseFNkaV5oseYIsimQD?=
- =?us-ascii?q?101hICG9E/bo8/xG885x6faZslwssTQb+OxoW5PwJE80l6QU3WB5B97LYOClgh?=
- =?us-ascii?q?rKEGgI1+XfKlPbdxEWutQtt5tIQuxOTOf9ClV3lq/BjTWQGdxI+ra6zJw=3D?=
-X-IronPort-AV: E=Sophos;i="5.84,326,1620684000"; 
-   d="scan'208";a="396157498"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 17 Oct 2021 11:52:07 +0200
-Date:   Sun, 17 Oct 2021 11:52:07 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Kushal-kothari <kushalkothari285@gmail.com>
-cc:     linux-arm-kernel@lists.infradead.org, mike.rapoport@gmail.com,
-        kushalkothari2850@gmail.com, outreachy-kernel@googlegroups.com,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        linux-staging@lists.linux.dev, nsaenz@kernel.org,
-        bcm-kernel-feedback-list@broadcom.com
-Subject: Re: [Outreachy kernel] [PATCH v2] staging: vc04_services: replace
- msleep() by usleep_range()
-In-Reply-To: <20211017092900.134752-1-kushalkothari285@gmail.com>
-Message-ID: <alpine.DEB.2.22.394.2110171140040.3026@hadrien>
-References: <20211017092900.134752-1-kushalkothari285@gmail.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Sun, 17 Oct 2021 05:57:18 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 501D91FD5B;
+        Sun, 17 Oct 2021 09:55:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1634464507; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=06TNCNi37ZXj+Ox0cY7DkqXs5djBP1tqOPPk5Ny6a1Y=;
+        b=IVHXhe2aRqghqO8hXEHoVDzxsnE9NxPLIH0almgFF0Mia0K0KTqa5/cZWCSrClszqKVSAm
+        A++mNgyTM7qimxJM7zm80CUijfR5daAYrV2um97pfobkRkHs1kfxSrKe6HDPV0qh1g20dV
+        Sv4bOoIiCga5MAcN241aLft48j0ACA8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1634464507;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=06TNCNi37ZXj+Ox0cY7DkqXs5djBP1tqOPPk5Ny6a1Y=;
+        b=Beu0mlGiqQbhReLsloU5rQOsSEpcyfJnGUYLu3UazI86Ag7zpArnv09bN3PaCfhvSOWnnZ
+        QfdUZnj6sVkb/TCw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 33C981377A;
+        Sun, 17 Oct 2021 09:55:07 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id wKYrDPvya2G5MgAAMHmgww
+        (envelope-from <bp@suse.de>); Sun, 17 Oct 2021 09:55:07 +0000
+Date:   Sun, 17 Oct 2021 11:55:01 +0200
+From:   Borislav Petkov <bp@suse.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] x86/urgent for v5.15-rc6
+Message-ID: <YWvy9bSRaC+m1sV+@zn.tnic>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Linus,
 
+two more urgent x86 fixes for 5.15.
 
-On Sun, 17 Oct 2021, Kushal-kothari wrote:
+Please pull,
+thx.
 
-> Fixed the warning:-msleep < 20ms can sleep for up to 20ms by replacing
-> msleep(unsigned long msecs) by usleep_range(unsigned long min, unsigned long max)
-> in usecs as msleep(1ms~20ms) can sleep for upto 20 ms.
+---
 
-In addition to Greg's comments, the log message is still not really ideal.
-There is still the word Fix that doesn't really contribute anything.  The
-prototypes of msleep and usleep are also not useful - the reader either
-knows them or can easily find them.  A better messge could be something
-like:
+The following changes since commit 64570fbc14f8d7cb3fe3995f20e26bc25ce4b2cc:
 
-"Checkpatch warns that an msleep of less than 20ms can sleep for up to
-20ms.  Replace msleep(1) by a call to usleep_range that makes the possible
-range (1ms - 20ms) explicit."
+  Linux 5.15-rc5 (2021-10-10 17:01:59 -0700)
 
-But the argument to msleep is in milliseconds.  If the appropriate first
-argument to usleep_range is 1000, then it would seem that the second
-argument should be 20000?
+are available in the Git repository at:
 
-One thing that you can do to try to understand such a problem better is to
-see what others have done before to resolve it.  You could try a command
-like
+  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_urgent_for_v5.15_rc6
 
-git log -S msleep -p
+for you to fetch changes up to b2381acd3fd9bacd2c63f53b2c610c89959b31cc:
 
-to see commits that have changed the number of calls to msleep.
+  x86/fpu: Mask out the invalid MXCSR bits properly (2021-10-16 12:37:50 +0200)
 
-I reiterate Greg's comments that making these timing changes without being
-able to test the result is risky.  These are just suggestions of some
-methodologies that you could follow for a change where it is more clear
-that the change is correct.
+----------------------------------------------------------------
+- Do not enable AMD memory encryption in Kconfig by default due to
+shortcomings of some platforms, leading to boot failures.
 
-julia
+- Mask out invalid bits in the MXCSR for 32-bit kernels again because
+Thomas and I don't know how to mask out bits properly. Third time's the
+charm.
 
->
-> Signed-off-by: Kushal-kothari <kushalkothari285@gmail.com>
-> ---
->
-> Changes from v1: Reword both the subject and the log message.
->
->  drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
-> index 6fbafdfe340f..80a7898c5331 100644
-> --- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
-> +++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
-> @@ -857,7 +857,7 @@ vchiq_bulk_transmit(unsigned int handle, const void *data, unsigned int size,
->  		if (status != VCHIQ_RETRY)
->  			break;
->
-> -		msleep(1);
-> +		usleep_range(1000, 2000);
->  	}
->
->  	return status;
-> @@ -894,7 +894,7 @@ enum vchiq_status vchiq_bulk_receive(unsigned int handle, void *data,
->  		if (status != VCHIQ_RETRY)
->  			break;
->
-> -		msleep(1);
-> +		usleep_range(1000, 2000);
->  	}
->
->  	return status;
-> --
-> 2.25.1
->
-> --
-> You received this message because you are subscribed to the Google Groups "outreachy-kernel" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to outreachy-kernel+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/outreachy-kernel/20211017092900.134752-1-kushalkothari285%40gmail.com.
->
+----------------------------------------------------------------
+Borislav Petkov (2):
+      x86/Kconfig: Do not enable AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT automatically
+      x86/fpu: Mask out the invalid MXCSR bits properly
+
+ arch/x86/Kconfig             | 1 -
+ arch/x86/kernel/fpu/signal.c | 2 +-
+ 2 files changed, 1 insertion(+), 2 deletions(-)
+
+-- 
+Regards/Gruss,
+    Boris.
+
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
