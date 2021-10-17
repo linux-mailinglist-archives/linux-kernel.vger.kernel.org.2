@@ -2,176 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA784430A6E
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 18:10:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9491F430A71
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 18:16:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242450AbhJQQND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 12:13:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40692 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242555AbhJQQNA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 12:13:00 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0D05360F24;
-        Sun, 17 Oct 2021 16:10:48 +0000 (UTC)
-Date:   Sun, 17 Oct 2021 17:15:03 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Yang Yingliang <yangyingliang@huawei.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
-        "lars@metafoo.de" <lars@metafoo.de>,
-        "alexandru.ardelean@analog.com" <alexandru.ardelean@analog.com>
-Subject: Re: [PATCH v3] iio: core: fix double free in
- iio_device_unregister_sysfs()
-Message-ID: <20211017171503.095eecad@jic23-huawei>
-In-Reply-To: <CAHp75VdH2CkY-e6P6QvMzDXK6F9boxz4Vb5trwmMoPOCTmkjww@mail.gmail.com>
-References: <20211013030532.956133-1-yangyingliang@huawei.com>
-        <CAHp75VeyQYmKybQwWLmM2QxVQXomrUH0RttRguzRyoWXtc3TFA@mail.gmail.com>
-        <CAHp75VdH2CkY-e6P6QvMzDXK6F9boxz4Vb5trwmMoPOCTmkjww@mail.gmail.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S242519AbhJQQS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 12:18:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34066 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242290AbhJQQS0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Oct 2021 12:18:26 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D21DC06161C;
+        Sun, 17 Oct 2021 09:16:16 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id oa12-20020a17090b1bcc00b0019f715462a8so10844839pjb.3;
+        Sun, 17 Oct 2021 09:16:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=42lYw5pCE0zNrU6J8q4nS26RrdDfNMoAQ5bEAgu6FyY=;
+        b=huZFTc12hwErjEmV708pz9npHN0c/F6etjRVedvmqsQKIfhCkmlFr/cjlFh1pYdQur
+         MkHCXy18LTVGvxN3QgI8rrVhko3WRr5cdHRINcbWqENXfqNctgLJTXnlGDxBbVuzglUE
+         9/ORHPQhoKpIbtos9v66Ure+q5Yzh8E4dfx17rfnj56DRVGMZ48NFMRdqbrKBq6d4yiz
+         +1KIqlv1WPnhaTy42/eTqKcqByc0+gVOy8QwOIgOnTilSkRqgRx+Stcttm14P3pZYRNe
+         gj9S9UJNmJ5100rWlh+lf45pA9vs5Wo4NPh9PHrqJGGj7JaRtH31kUwz2/r8Pomx+JgB
+         LuUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=42lYw5pCE0zNrU6J8q4nS26RrdDfNMoAQ5bEAgu6FyY=;
+        b=bEVZmqdbba5MuWCXMmFaoSIuvb84He2EfZqERakQxWrvAKoHiTpiW7jW9o/ZTo78P6
+         JIo96hfQVmIt45MVw79GX6WuzKCBnZWEmAWW7cBDDv6yK6871+8mD2ar9+diWVtzYbLe
+         HayMwel5XqVf/KLFkW6PhjhRRElXRo+gNuPNNbF2avR2B1SaEgf6FIGRb0vddfKHCvlT
+         kVmnrt13xdSZIwCUsBJi3yiBjlaO5UTohFCteE5ONUYK8QKw0zxXedHptbvkZNXHgkN+
+         sqH8nAd4sew0Me+53ZvRgLaWT4qVsA4QigC0cZHgU1aITzsvnPvrFSYSQY/mJasqoi3l
+         zGAw==
+X-Gm-Message-State: AOAM530uV3annXdblunMtiqTilgZasZr0FI7+Wr9XXec4uLe+y+eYzJo
+        imO9VesRkCiUoBXMXBJIh+Q=
+X-Google-Smtp-Source: ABdhPJy4D1kVJHSvjgoYqFFWfK67+f7kcziXcw85JVrXNW13LxUq0XVkv2DTSSFNqzvhlN17+fkosQ==
+X-Received: by 2002:a17:90b:3850:: with SMTP id nl16mr27555159pjb.127.1634487375841;
+        Sun, 17 Oct 2021 09:16:15 -0700 (PDT)
+Received: from sbwpb-arch.flets-east.jp ([2400:4052:6980:3800:dba7:2b1f:3f26:a5ec])
+        by smtp.gmail.com with ESMTPSA id c11sm16591363pji.38.2021.10.17.09.16.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 Oct 2021 09:16:15 -0700 (PDT)
+From:   Tsuchiya Yuto <kitakar@gmail.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>, Andy Shevchenko <andy@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [RFC PATCH 0/1] add ccove PMIC i2c address for Microsoft Surface 3
+Date:   Mon, 18 Oct 2021 01:15:22 +0900
+Message-Id: <20211017161523.43801-1-kitakar@gmail.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Oct 2021 08:51:38 +0300
-Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+Hi all,
 
-> On Wednesday, October 13, 2021, Andy Shevchenko <andy.shevchenko@gmail.com>
-> wrote:
-> 
-> >
-> >
-> > On Wednesday, October 13, 2021, Yang Yingliang <yangyingliang@huawei.com>
-> > wrote:
-> >  
-> >> I got the double free report:
-> >>
-> >> BUG: KASAN: double-free or invalid-free in kfree+0xce/0x390  
-> >
-> >
-> >  
-> >>  kfree+0xce/0x390  
-> >
-> >
-> >
-> > This line also redundant, but no need to resend, I hope Jonathan can do it
-> > for you.
-> >
-> >  
-> >>  iio_device_unregister_sysfs+0x108/0x13b [industrialio]
-> >>  iio_dev_release+0x9e/0x10e [  
-> >
-> >  
-> >>  
-> 
-> 
-> >  
-> >>  device_release+0xa5/0x240
-> >>  kobject_put+0x1e5/0x540
-> >>  put_device+0x20/0x30
-> >>  devm_iio_device_release+0x21/0x30 [industrialio]  
-> >
-> >  
-> >>  
-> Actually above lines are also part of the noise
-Not sure I'm quite so keen to strip everything back completely (though I do
-agree keeping it fairly minimal is good.
+Firstly, I'm still not used to Linux patch sending flow. Sorry in advance
+if there is some weirdness :-) but I did my best.
 
-Anyhow, tidied it up a bit and applied.  I also added a note that more
-radical surgery is needed to clean up the lifetime management but in the
-meantime this deals with the symptoms.
+I need to use the function intel_soc_pmic_exec_mipi_pmic_seq_element()
+with atomisp Image Signal Processing driver on Microsoft Surface 3
+(Cherry Trail).
 
-Applied to the fixes-togreg branch of iio.git and marked for stable.
+However, it currently fails with the message I added to the commit
+message below. I wondered why. The driver intel_pmic_chtcrc does define
+the i2c address.
 
-Thanks,
+It later turned out that the intel_pmic_bytcrc driver is used on surface3
+instead, where the i2c address is not defined. So, I added the address
+with the patch I'm sending as RFC in this mail. It's working well.
 
-Jonathan
+The question is that, should Surface 3 (Cherry Trail) really use the
+intel_pmic_bytcrc driver?
 
-> 
-> 
-> >  
-> >> If __iio_device_register() fails, iio_dev_opaque->groups will be freed
-> >> in error path in iio_device_unregister_sysfs(), then iio_dev_release()
-> >> will call iio_device_unregister_sysfs() again, it causes double free.
-> >> Set iio_dev_opaque->groups to NULL when it's freed to fix this double
-> >> free.
-> >>
-> >> Fixes: 32f171724e5c ("iio: core: rework iio device group creation")
-> >> Reported-by: Hulk Robot <hulkci@huawei.com>
-> >> Reviewed-by: Alexandru Ardelean <ardeleanalex@gmail.com>
-> >> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-> >> ---
-> >> v1 -> v3:
-> >>   reduce some backtrace in commit message
-> >> ---
-> >>  drivers/iio/industrialio-core.c | 1 +
-> >>  1 file changed, 1 insertion(+)
-> >>
-> >> diff --git a/drivers/iio/industrialio-core.c
-> >> b/drivers/iio/industrialio-core.c
-> >> index 2dbb37e09b8c..2dc837db50f7 100644
-> >> --- a/drivers/iio/industrialio-core.c
-> >> +++ b/drivers/iio/industrialio-core.c
-> >> @@ -1600,6 +1600,7 @@ static void iio_device_unregister_sysfs(struct
-> >> iio_dev *indio_dev)
-> >>         kfree(iio_dev_opaque->chan_attr_group.attrs);
-> >>         iio_dev_opaque->chan_attr_group.attrs = NULL;
-> >>         kfree(iio_dev_opaque->groups);
-> >> +       iio_dev_opaque->groups = NULL;
-> >>  }
-> >>
-> >>  static void iio_dev_release(struct device *device)
-> >> --
-> >> 2.25.1  
-> >
-> >  
-> 
-> 
-> 
-> 
-> 
-> 
-> 
-> 
-> >  
-> >>
-> >>  
-> >  
-> 
-> 
-> 
-> 
-> 
-> 
-> 
-> 
-> 
-> 
-> 
-> 
-> 
-> 
-> 
-> 
-> 
-> 
-> 
-> 
-> 
-> 
-> >
-> >
-> > --
-> > With Best Regards,
-> > Andy Shevchenko
-> >
-> >
-> >  
-> 
+As I wrote in the commit message, the _HRV value of the PMIC is 0x02,
+although the _DDN entry describes it as "CRYSTAL COVE+ AIC". So, maybe,
+it should rather use intel_pmic_chtcrc? Does anyone know the other
+instances where the _HRV value is 0x02 although it's based on Cherry
+Trail SoC ?
+
+So, I also tried using the intel_pmic_chtcrc driver instead, with the
+following (temporary) change [drivers/mfd/intel_soc_pmic_core.c]:
+
++	hrv = 0x03;
++
+	switch (hrv) {
+	case BYT_CRC_HRV:
+		config = &intel_soc_pmic_config_byt_crc;
+		break;
+	case CHT_CRC_HRV:
+		config = &intel_soc_pmic_config_cht_crc;
+		break;
+	default:
+		dev_warn(dev, "Unknown hardware rev %llu, assuming BYT\n", hrv);
+		config = &intel_soc_pmic_config_byt_crc;
+	}
+
+and the function intel_soc_pmic_exec_mipi_pmic_seq_element() worked well
+just like with the intel_pmic_bytcrc driver.
+
+I don't mind which driver is used on surface3 for now, considering that
+the atomisp driver is working with both PMIC drivers. But I'd like to
+hear from maintainers which is better :)
+
+Tested on surface3 with v5.15-rc5.
+
+Regards,
+Tsuchiya Yuto
+
+Tsuchiya Yuto (1):
+  ACPI / PMIC: Add i2c address to intel_pmic_bytcrc driver
+
+ drivers/acpi/pmic/intel_pmic_bytcrc.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+-- 
+2.33.1
 
