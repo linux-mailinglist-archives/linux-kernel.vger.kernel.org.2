@@ -2,92 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61EAA430CC2
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 00:42:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83EA4430CC5
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 00:55:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242897AbhJQWnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 18:43:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33194 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232704AbhJQWnT (ORCPT
+        id S242925AbhJQW5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 18:57:41 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:54683 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233442AbhJQW5k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 18:43:19 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D398FC06161C;
-        Sun, 17 Oct 2021 15:41:08 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id a25so63243603edx.8;
-        Sun, 17 Oct 2021 15:41:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=Limn6bLCuPublZ0I9FNtGu/mfoi+V+L5uBvnzeLAJ8g=;
-        b=I/K7TLKObDaVo20Xl7ItIkFyKnMBfnE5zkY49K5G2mp1n2o53iige7cSOEf2Y/xQip
-         MWn6NsCu9Azk0s9gukE6HltVV5+aE/ZHHS4ViKNor2OXjsB7OLgVral9MdJYd/hNNKx6
-         4nl9x9WDKFKAqPrgOshWBOqZhhGQDOxJhbA+diHi0i5qxU/47NtKx6GKeeRSz68GXgKA
-         gviu9Sbi7eteoIcsum3fgWGHJJ0jh9VXLkcZZ6wwdJzfApR/twmqLTnT7+gEWz+0qJXg
-         trE6iPy/G063/F8HjM3ys4ywL/eHpUSHwL28yMFGuIsADisjmJGmWMlDJjRXg6BheIDU
-         6aZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=Limn6bLCuPublZ0I9FNtGu/mfoi+V+L5uBvnzeLAJ8g=;
-        b=FVvE4bBOxChoKN0XRuPEEtkWEjd15JULT1WGupByocMhdeylc00awi1lww/mJS1SjP
-         1lhmAmP8fdLZZkfeKu/UYFdtoy9ZwRMmYuNQskmDohdnyTZ8bcoKDiPnyxitlNScVD1R
-         MSlFhiw6+nEqyJdIM65FGRLpv/kC+RdDLpcX+gl6qPoGcyGvTIBGC66wGKDAMIFsnYSi
-         wZHXbfHwoodyA711pCxMApjfRtN3yU4TX9f5wtkFOQUujB0i2UnYGvQ65sTghDzfu/24
-         jhLMFeAQPfd8iiTflzgzIpqte0AnZYWbFIFT7OlqXs04E3g6GMk0p9BTs/wrVKI6Pydw
-         2wdw==
-X-Gm-Message-State: AOAM533DnQqy6KNLLUaSbS2/1CYcaY01ccyDxcIC0u27R49o8Z90AgHS
-        B+fthoW14X5ZGpg+AGTROWA=
-X-Google-Smtp-Source: ABdhPJz582iYOOfu22DNRwo0+frZpajUNW3oeIIbuxUUybuyUHkGq/29RGVLC/Y0kldI4nbREuhuRQ==
-X-Received: by 2002:a50:be8f:: with SMTP id b15mr39207157edk.200.1634510467146;
-        Sun, 17 Oct 2021 15:41:07 -0700 (PDT)
-Received: from [192.168.8.198] ([185.69.145.195])
-        by smtp.gmail.com with ESMTPSA id v10sm5475871ejk.112.2021.10.17.15.41.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 17 Oct 2021 15:41:06 -0700 (PDT)
-Message-ID: <9b4a54c6-8aad-628d-5369-71122987c87b@gmail.com>
-Date:   Sun, 17 Oct 2021 22:41:23 +0000
+        Sun, 17 Oct 2021 18:57:40 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HXb2837r5z4xbT;
+        Mon, 18 Oct 2021 09:55:28 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1634511328;
+        bh=9WqkwRQu05GrAEfhShhd3twouja2E2uPIdIhfR23DPE=;
+        h=Date:From:To:Cc:Subject:From;
+        b=XvaLieQ6BXF7tl2z4ceCxUVT1Znh8+p9TjL/fbO7Nh+LAcmMMz4vYVwOsGIjLJYZ5
+         Sz7SAuDlcqqD1oa1OEbccMeI093pwdcQestwoMYU3DHv5041QTU/dQta94HzFscxHU
+         0LO0+T2QoqZzGyxLsVUZYWrGMTzts7CI0sBQ6KDX5KtRhez3na4IW3/xU18pTkMlKm
+         5bAnY4UNcQuQ9kfuqUpqhw4J4reATdJ0YRlg7WsvPojZ/OikdFGsA61xR9H3vHPfSA
+         GIcy1OXalTLhNwbgSEcFQwZRr0Y/D0S5QUdwnI0qlZpkMOXGh4gFurxP6Zi1354WwU
+         9kZpOZl3f/4ww==
+Date:   Mon, 18 Oct 2021 09:55:25 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Bjorn Helgaas <bhelgaas@google.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the pci tree
+Message-ID: <20211018095525.39bea5b0@canb.auug.org.au>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH 0/5] cache request_queue pointer
-Content-Language: en-US
-To:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Christoph Hellwig <hch@infradead.org>
-References: <cover.1634219547.git.asml.silence@gmail.com>
- <dba463cb-3f1e-0972-aeaf-099d7c12bd0e@kernel.dk>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-In-Reply-To: <dba463cb-3f1e-0972-aeaf-099d7c12bd0e@kernel.dk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/0GVZ/qL34XxV3Jm=BrqhzDr";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/17/21 12:59, Jens Axboe wrote:
-> On 10/14/21 8:03 AM, Pavel Begunkov wrote:
->> Cache request_queue in bdev and replace two derefs in
->> bdev->bd_disk->queue with bdev->bd_queue. Benchmarking
->> with nullblk gave me around +1% to peak perf.
->>
->> All patches are self contained and don't rely on others from
->> the set including 1/5 and can be taken separately. And some
->> changes go in separate patches to minimise conflicts. When
->> we agree on the approach, I'll send the rest converting some
->> other spots out of block.
-> 
-> Looks fine to me. Christoph, any concerns?
-> 
-> One note, though - s/fater/faster in patches 2..5 in the commit
-> message.
+--Sig_/0GVZ/qL34XxV3Jm=BrqhzDr
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Noted. I expect there will be a bunch of conflicts, I'll resend
-it, hopefully once you refined and posted some of your stuff.
+Hi all,
 
--- 
-Pavel Begunkov
+After merging the pci tree, today's linux-next build (powerpc
+ppc64_defconfig) failed like this:
+
+drivers/misc/cxl/pci.c: In function 'cxl_vphb_error_detected':
+drivers/misc/cxl/pci.c:1816:15: error: assignment discards 'const' qualifie=
+r from pointer target type [-Werror=3Ddiscarded-qualifiers]
+ 1816 |   err_handler =3D afu_drv->err_handler;
+      |               ^
+drivers/misc/cxl/pci.c: In function 'cxl_pci_slot_reset':
+drivers/misc/cxl/pci.c:2041:16: error: assignment discards 'const' qualifie=
+r from pointer target type [-Werror=3Ddiscarded-qualifiers]
+ 2041 |    err_handler =3D afu_drv->err_handler;
+      |                ^
+drivers/misc/cxl/pci.c: In function 'cxl_pci_resume':
+drivers/misc/cxl/pci.c:2090:16: error: assignment discards 'const' qualifie=
+r from pointer target type [-Werror=3Ddiscarded-qualifiers]
+ 2090 |    err_handler =3D afu_drv->err_handler;
+      |                ^
+cc1: all warnings being treated as errors
+
+Caused by commit
+
+  115c9d41e583 ("cxl: Factor out common dev->driver expressions")
+
+I have used the pci tree from next-20211015 for today.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/0GVZ/qL34XxV3Jm=BrqhzDr
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFsqd0ACgkQAVBC80lX
+0GxqVgf+K7FkvcKIuK5pWKGVpCdnKYZO/zK11tlc7Tiy/xFwhvmvCVP6UqYTTpgQ
+mqOgGr0+adM0s0Yu3RQ3etFUC7DlAEHZKM38a6RWRmsSxID3p3Z5n1ZZSTaKUjMM
+ZpUjOobiexf2fHKDDcThPuwoiRUuTQueYHT9jikupt/yo8wC3uR3b683xfS9kuGD
+rVjUXUFZy+d3z0/o4udTUyKC6zxsla3RhSwtmxkVL6U4Dyq1DBpwzaiBRI9T1dXf
+W+hGT1nxYgWgzZOU7dqfvtGSqdr9QpTTYs9m1gO9fELiiq+ZlIWF4boQbJa4ybqJ
+hqLeOLyU/80/oaLwODbkxccpnJWv2g==
+=zioy
+-----END PGP SIGNATURE-----
+
+--Sig_/0GVZ/qL34XxV3Jm=BrqhzDr--
