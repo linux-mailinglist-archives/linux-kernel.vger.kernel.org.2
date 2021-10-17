@@ -2,107 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B0F3430ACE
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 18:38:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60D65430AD9
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 18:40:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344242AbhJQQjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 12:39:53 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:48492
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230003AbhJQQjw (ORCPT
+        id S1344269AbhJQQmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 12:42:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39654 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344265AbhJQQmc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 12:39:52 -0400
-Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com [209.85.208.198])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 01CA34001A
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 16:37:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1634488659;
-        bh=1RPm1/LKTSEH8C0YJx6dXoFgI89yVIC6crD5lgWAirc=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=GB/2jkttGiT2O3gSLZIsbwSllMctQKrSsyztzWsDbljlV5zNTSfTo35vCHi1wxUKR
-         1bBlMY56nADKVeMt68W2CPN92cDamRoYIcOYm/I68xlenoO8tbWFW3Fg5u0CepcA2Q
-         o2VUxAE4Xcf7IjayPdS+B/VtTVSjkZWLy9bkto7n3KyGKxN1mwMetIDefbDPC8bIlq
-         XGM7hWB0xNa2J8d49mgDr9HW+VyfnHiasUDr3H98isGgsgEWF0vhNoBMy3Tjsp+keI
-         p0bQORe73fZ8TR59UROSgM8qgfXvhU9qhqgig4fwkgPVkLlYvFj3vKhAGHHI+OENOi
-         vGX1VAFqRmPqQ==
-Received: by mail-lj1-f198.google.com with SMTP id a20-20020a2eb554000000b0020de66f70bcso550293ljn.1
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 09:37:38 -0700 (PDT)
+        Sun, 17 Oct 2021 12:42:32 -0400
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A575C061768
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 09:40:23 -0700 (PDT)
+Received: by mail-io1-xd30.google.com with SMTP id d125so13532042iof.5
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 09:40:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=AA9A+Zlva317NIfypRYc9E4tQrCZT2z4OCSN5FYuo3s=;
+        b=6kVA+4A8fvoLxgstDg4L7HTcvrcAPOFtdQVwmBfM3Nr9X6MOyIfztfCEhyPHRMZABq
+         psTj+/Tk3Xg27OQXqClky7pFZFYpPeO+NLITe4JXUE0TbY4t/2c0dle02eri6/yraJv8
+         Z+iIKvez0817fElA/iFZ1WXPhVMuOx7BYitnjfM0VNsRdDm0cefW9ZeTZ/i3y1HaafYd
+         aSIm8HAjoK5nIbvS/adTf0tQZzx6MiXodwe8xsn8YQkRdZFuPQrLv7RIC1/QS9ouU2/w
+         ihvHRRiI6z2R9Zi/G+9Yc5/YOgvNSLsjDUIfokXtEmeHghtvphRN2iG18/6OVOxygAd6
+         eGIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=1RPm1/LKTSEH8C0YJx6dXoFgI89yVIC6crD5lgWAirc=;
-        b=donA8VbHebWg7gMHfuj0m7wnjJVnz9D2GVOddKaQRUjBtMfQxPtXwrWo+7RSzilO8y
-         627XhwnypZ/53iGw3dwj+GR9VRQf9xecUq2NSvC5W4J1mjYSg3RWXngoulM9y4E1z2kI
-         ml9j7JFwrzQU7QLWcYF8URCPXTKCvU53CcxtMacsycdMtezb3hB3u5F2rvKiF54OEByu
-         gvgfRWj1mqIJ4s/TyZofmduDs7IpyUp3MMzsN2vjV0udI+I//HFzaQuiRguTWaYagOiM
-         GjHY2pNBWElmHGbTur2B6JY3EtEH7MZ/qdL8oMcp4iDmhX6X8ZyEHoHzFsgbe+c7e/Ge
-         6Fhw==
-X-Gm-Message-State: AOAM5339w1PHA9ya6rcWdxjVM8Iqwtp2qtymbht7K7D3B2C42lgMy9Z5
-        bCoTgZ643p04MSDdUFz2xFDVI1viapXXPSG5jKhQbQ4oQlb5ibuTDvNejYSbSvQA+dvznJIRBgb
-        Af+vROD1cVDIswnqCtjmoyvfvpnosQWaqmlRFP8CQEA==
-X-Received: by 2002:a05:651c:204d:: with SMTP id t13mr23783985ljo.267.1634488658195;
-        Sun, 17 Oct 2021 09:37:38 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw/lqcEKlBCBJKXljOPkvtPOkonlr9+CwlLqnStL9xaA21H+RrX4917KV+h8+HiIpOwiDIgFg==
-X-Received: by 2002:a05:651c:204d:: with SMTP id t13mr23783965ljo.267.1634488658014;
-        Sun, 17 Oct 2021 09:37:38 -0700 (PDT)
-Received: from [192.168.3.161] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
-        by smtp.gmail.com with ESMTPSA id k23sm46262ljm.29.2021.10.17.09.37.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 17 Oct 2021 09:37:37 -0700 (PDT)
-Subject: Re: [PATCH v4] dt-bindings: net: nfc: nxp,pn544: Convert txt bindings
- to yaml
-To:     David Heidelberg <david@ixit.cz>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ~okias/devicetree@lists.sr.ht
-References: <20211017160210.85543-1-david@ixit.cz>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <0937ddb4-7a5b-b6e0-d6b8-42a912744bd6@canonical.com>
-Date:   Sun, 17 Oct 2021 18:37:36 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=AA9A+Zlva317NIfypRYc9E4tQrCZT2z4OCSN5FYuo3s=;
+        b=Mb3W1XLAOZds72tF7c3nipMDMzQJbUm556uJrLZyuCRhl/0jb9tsxAT0al5E116L2b
+         iVnPguYfMtZc0NhKt71mphqsWF1gK3RiPWmNM3EBNSmzxbxl1dAaj0sLSuhKxdMWhk6o
+         GHQ37aSd/0eaUaWwVEmDN/5MmJsans1hMi3RLKRNfDTDXcqYtpAuvjegQZYlFMJkVnj3
+         WsEZX/WzgYWTPZBpeOYSrEI9rvqUXbxIh97oLUPQgFW3wpOe6phYOEMV2g+ZTK38Qw89
+         0QJ3WgQO2u//7STVqNMc7TO4oa7I3UBzA0EB8Do0j6JzYiZW9agL9iXq0dznLXMAObCC
+         IU/w==
+X-Gm-Message-State: AOAM530SZDKeeZbtVF040SB94grIbPIutfrgkrrqu6S3Chs3TY77294B
+        7RkSWUkcbU+KiSWUmP2G74lbKA==
+X-Google-Smtp-Source: ABdhPJyHtcncnPaLkKEApqHE0z1C3dNkwRnln4ejJBuLmOAJvY9NdNBB+r9YLVK97AatIZ+B071qhw==
+X-Received: by 2002:a02:6666:: with SMTP id l38mr14990150jaf.146.1634488822456;
+        Sun, 17 Oct 2021 09:40:22 -0700 (PDT)
+Received: from localhost.localdomain ([66.219.217.159])
+        by smtp.gmail.com with ESMTPSA id z26sm5576059ioe.9.2021.10.17.09.40.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 Oct 2021 09:40:21 -0700 (PDT)
+From:   Jens Axboe <axboe@kernel.dk>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH block-5.15] blk-cgroup: blk_cgroup_bio_start() should use irq-safe operations on blkg->iostat_cpu
+Date:   Sun, 17 Oct 2021 10:40:18 -0600
+Message-Id: <163448881598.109630.15974180935956486992.b4-ty@kernel.dk>
+X-Mailer: git-send-email 2.33.1
+In-Reply-To: <YWi7NrQdVlxD6J9W@slm.duckdns.org>
+References: <YWi7NrQdVlxD6J9W@slm.duckdns.org>
 MIME-Version: 1.0
-In-Reply-To: <20211017160210.85543-1-david@ixit.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/10/2021 18:02, David Heidelberg wrote:
-> Convert bindings for NXP PN544 NFC driver to YAML syntax.
+On Thu, 14 Oct 2021 13:20:22 -1000, Tejun Heo wrote:
+> c3df5fb57fe8 ("cgroup: rstat: fix A-A deadlock on 32bit around
+> u64_stats_sync") made u64_stats updates irq-safe to avoid A-A deadlocks.
+> Unfortunately, the conversion missed one in blk_cgroup_bio_start(). Fix it.
 > 
-> Signed-off-by: David Heidelberg <david@ixit.cz>
-> ---
-> v2
->  - Krzysztof is a maintainer
->  - pintctrl dropped
->  - 4 space indent for example
->  - nfc node name
-> v3
->  - remove whole pinctrl
-> v4
->  - drop clock-frequency, which is inherited by i2c bus
-> 
->  .../bindings/net/nfc/nxp,pn544.yaml           | 56 +++++++++++++++++++
->  .../devicetree/bindings/net/nfc/pn544.txt     | 33 -----------
->  2 files changed, 56 insertions(+), 33 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/net/nfc/nxp,pn544.yaml
->  delete mode 100644 Documentation/devicetree/bindings/net/nfc/pn544.txt
 > 
 
+Applied, thanks!
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-
+[1/1] blk-cgroup: blk_cgroup_bio_start() should use irq-safe operations on blkg->iostat_cpu
+      commit: 5370b0f49078203acf3c064b634a09707167a864
 
 Best regards,
-Krzysztof
+-- 
+Jens Axboe
+
+
