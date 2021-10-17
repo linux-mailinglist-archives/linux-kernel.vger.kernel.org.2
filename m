@@ -2,90 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA6F7430960
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 15:33:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38680430963
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 15:33:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343709AbhJQNdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 09:33:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45564 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236809AbhJQNdi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 09:33:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D34EA61266;
-        Sun, 17 Oct 2021 13:31:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634477488;
-        bh=u1XYLs8DDwxN3/FCsIgwCHksZ0bYQZv6HnXSBDhzDfc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=NzsGzuYj3uswx80Ap1YJbBsMYjQ82DXhR1gfL8SrZekVD58dCFi7mkPIfHHC2xuCq
-         GowMw0pYAoVa7ACJ/QEJUPOrsHCtJX2VinnLFrjaZ+RlL1lLasgJto1W5zldUSOs7q
-         09UbB/Yy1/ZT1vUURudbtGpuuMagT+Ha4YCaGNCwZ9SsqFEGrBRL6jh/wQIH1ZCF1A
-         ZVjx3/YC/3P4k13X4mS99ZwNEomhJpcUBnz0U04gq+zf9jYAyIGotKvu8wMoxEYL68
-         vBZIk+B+qa+5M03QjdNF6ksNzSfRFxpLxGuSyhdS0WYRHi/n1M9B/O4JPEJepv986a
-         l1Z2KOtlv9z6g==
-Received: by mail-oi1-f173.google.com with SMTP id g125so20617062oif.9;
-        Sun, 17 Oct 2021 06:31:28 -0700 (PDT)
-X-Gm-Message-State: AOAM532r4GwbUuY1fLvGNKSkCLuwzmoBEhPJXmhBo4bcXq8tiK3AB2/d
-        y0bnUXVrYOkEwdUdoJTx5BbDMm6ILo/vmK7gRbA=
-X-Google-Smtp-Source: ABdhPJwLY3AD3ztimj/lJV5pJFYgq5YTJpEFIk/GnGfwMCw0BiTRGVIBW8tUVAbSraA0DjktE6/pz5y7DaqYuZT5vFk=
-X-Received: by 2002:a05:6808:1805:: with SMTP id bh5mr9709124oib.47.1634477488180;
- Sun, 17 Oct 2021 06:31:28 -0700 (PDT)
+        id S1343730AbhJQNfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 09:35:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54382 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343722AbhJQNfX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Oct 2021 09:35:23 -0400
+Received: from mail-ua1-x92a.google.com (mail-ua1-x92a.google.com [IPv6:2607:f8b0:4864:20::92a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DBC3C061768
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 06:33:13 -0700 (PDT)
+Received: by mail-ua1-x92a.google.com with SMTP id i22so647387ual.10
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 06:33:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=usp.br; s=usp-google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=jWRL5QHYGlFrwRX9nfH0NjktXPsAElv+E6acDVOY5Wo=;
+        b=qjcieQJ/A8crbHHht2Dmi+g5WnQWFklzzXJxq7mO3JE30SquF61AKESe2W7RnSJY/K
+         UXRybWTl55edYG2Hp6vkavuXrFNMXqZkqdUV6vLO5xPnkIfvXbIpq57NM1bb2GOd3UgX
+         ZA1bQCHYKV8/04lg8ha+tKyCySQwosSXBhnk1vgnmgR5+4VLjdQF0T/vq3K8Kd7LGFhx
+         kCpiDgvIEIyOzB9Y/KNqHDhcWAv01NtOr2zAqr5Ih1XEEnrj4pAYMpFtOrkGPUVk8MyT
+         aVW30JqrWmLp3wAjpyRWnIUPpT7ycXBs7WKjiUZvARuZacQadWeVE2vMP/1+vTUCOyTC
+         cNYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=jWRL5QHYGlFrwRX9nfH0NjktXPsAElv+E6acDVOY5Wo=;
+        b=4w2Aa6pSl9YEERfosgPd+RZB6HjAnplEWhfFA+fjls3TdZpO5YFdsTq5P6p3SXQhCs
+         kba9Inddcg736vuoq508JkrTIQWi8RhHeDp4rED4oPL4QPXvb+Ky60BX4jYjtBYrim1e
+         G2rpmEyPv4a+SGN7ZKltQly7ceqFhbl4/u9cQkOUGNPXkTrDlbH2PqyKgAgDH261XOFB
+         KkBAv+ACMT1D9HaW467bYJW5zckwrAP8mlb8Uo7EhKv51el4Bf4j0NdtWnxijPkZP637
+         cVoz8ydQr+lcWHRMwu7SW3cbX3WPBc+bcdZ2pYOtCbJRU9PgfbQ4fbFSn/x+IdB7X/AQ
+         xZPw==
+X-Gm-Message-State: AOAM5300+vClgX0pto1JXg965qI639XzfYMzjlqVSFOTB//LjSgAVX1G
+        xRb9Kdy5c7Zu0FS7nsAKT1Z4xw==
+X-Google-Smtp-Source: ABdhPJx3wFK8LQbniuUqDwt6+6Ukbw3fJXLi9Bt4tjRv3cdcV0kSwLUO4P9GhElMXzHZNBl9aWrEOQ==
+X-Received: by 2002:a67:d78e:: with SMTP id q14mr693980vsj.55.1634477592376;
+        Sun, 17 Oct 2021 06:33:12 -0700 (PDT)
+Received: from Andryuu.br ([2804:431:c7fd:7238:311d:169e:a665:1173])
+        by smtp.gmail.com with ESMTPSA id n3sm1728662vsq.28.2021.10.17.06.33.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 Oct 2021 06:33:11 -0700 (PDT)
+Date:   Sun, 17 Oct 2021 10:33:08 -0300
+From:   =?iso-8859-1?Q?Andr=E9?= Gustavo Nakagomi Lopez <andregnl@usp.br>
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     linux-iio@vger.kernel.org, lars@metafoo.de, vz@mleia.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] iio: adc: lpc18xx_adc: Convert probe to device
+ managed version
+Message-ID: <YWwmFDF7Lig2rAuo@Andryuu.br>
+References: <YWnMsGlc/I35gYvy@Andryuu.br>
+ <20211017123533.33883e16@jic23-huawei>
 MIME-Version: 1.0
-References: <YLss6ZNPMIXleLLF@dhcp-128-65.nay.redhat.com> <YL5HvUqtsDXx5CzM@smile.fi.intel.com>
- <YL5U/zSb50SnbLgW@smile.fi.intel.com> <YL9hxPdPj0dYMyaD@dhcp-128-65.nay.redhat.com>
- <CAHp75VcPuf6BLGf7Y3RO2M-gHMFZMTeb4ftnj_tbGS4TxvThxA@mail.gmail.com>
- <YMCsSqzmG4jb1Ojo@dhcp-128-65.nay.redhat.com> <YMQ62d1EFFjRcv6w@dhcp-128-65.nay.redhat.com>
- <YMd39tIPercgljll@smile.fi.intel.com> <YMeM1Xee9Yg3j21D@smile.fi.intel.com>
- <YMeRiDMet2JyOV4P@smile.fi.intel.com> <YV3Oonc5s3UpzRq0@smile.fi.intel.com>
- <CAMj1kXHjXcFePeRWDtxZnC6eHEeELA6kZXOU=sA9oDZ1HzW_Vg@mail.gmail.com> <CAHp75VdLLZsJnektx+n=BGvGeaogN0r=viNJpbR-au5RUURi9Q@mail.gmail.com>
-In-Reply-To: <CAHp75VdLLZsJnektx+n=BGvGeaogN0r=viNJpbR-au5RUURi9Q@mail.gmail.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Sun, 17 Oct 2021 15:31:17 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXFn+6AfVEksrEhPtPTHx-DmfTPwq=F7xpgs6D7EmKHMmA@mail.gmail.com>
-Message-ID: <CAMj1kXFn+6AfVEksrEhPtPTHx-DmfTPwq=F7xpgs6D7EmKHMmA@mail.gmail.com>
-Subject: Re: [PATCH v1 0/2] firmware: dmi_scan: Make it work in kexec'ed kernel
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Dave Young <dyoung@redhat.com>, Jean Delvare <jdelvare@suse.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        =?UTF-8?Q?Javier_Ti=C3=A1?= <javier.tia@gmail.com>,
-        kexec@lists.infradead.org, Eric Biederman <ebiederm@xmission.com>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        Matt Fleming <matt@codeblueprint.co.uk>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211017123533.33883e16@jic23-huawei>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 7 Oct 2021 at 09:23, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
->
-> On Thu, Oct 7, 2021 at 10:20 AM Ard Biesheuvel <ardb@kernel.org> wrote:
-> > On Wed, 6 Oct 2021 at 18:28, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
-> > > On Mon, Jun 14, 2021 at 08:27:36PM +0300, Andy Shevchenko wrote:
-> > > > On Mon, Jun 14, 2021 at 08:07:33PM +0300, Andy Shevchenko wrote:
->
-> ...
->
-> > > > Double checked, confirmed that it's NOT working.
-> > >
-> > > Any news here?
-> > >
-> > > Shall I resend my series?
-> >
-> > As I said before:
-> >
-> > """
-> > I would still prefer to get to the bottom of this before papering over
-> > it with command line options. If the memory gets corrupted by the
-> > first kernel, maybe we are not preserving it correctly in the first
-> > kernel.
-> > """
->
-> And I can't agree more, but above I asked about news, implying if
-> there is anything to test?
-> The issue is still there and it becomes a bit annoying to see my hack
-> patches in every tree I have been using.
->
+On Sun, Oct 17, 2021 at 12:35:33PM +0100, Jonathan Cameron wrote:
+> On Fri, 15 Oct 2021 15:47:12 -0300
+> André Gustavo Nakagomi Lopez <andregnl@usp.br> wrote:
+> 
+> > The remove function and the goto sections are not necessary if devm
+> > functions are used.
+> > 
+> > Convert device register to devm version. Add hook functions to release
+> > device resources, and use them inside probe with devm_add_action,
+> > which will release resources on driver detach.
+> > 
+> > To maintain the order of which device resources were released/reseted,
+> > register the hook functions as soon as resources are obtained/initialized.
+> > Since devres actions are called on driver detach, the remove
+> > function and the error-handling goto sections are no longer necessary.
+> > 
+> > Signed-off-by: André Gustavo Nakagomi Lopez <andregnl@usp.br>
+> 
+> Hi André
+> 
+> Looks good to me, but I did notice an unrelated issue whilst looking at this driver.
+> Comment on that inline.  Follow up patch welcome!
+> 
+> Applied to the togreg branch of iio.git and pushed out as testing to let 0-day
+> see if it can find anything we missed.
+> 
+> Thanks,
+> 
+> Jonathan
+> 
+> 
+> 
+> > ---
+> > Change log V1 -> V2:
+> >        -Renamed lpc18xx_clk_disable_unprepare function
+> >        -Removed platform_set_drvdata(pdev, indio_dev)
+> >        -Renamed lpc18xx_writel to lpc18xx_clear_cr_reg
+> >        -devm_iio_device_register now returns directly in the end of probe function
+> >  drivers/iio/adc/lpc18xx_adc.c | 61 ++++++++++++++++++-----------------
+> >  1 file changed, 31 insertions(+), 30 deletions(-)
+> > 
+> > diff --git a/drivers/iio/adc/lpc18xx_adc.c b/drivers/iio/adc/lpc18xx_adc.c
+> > index 3566990ae87d..7d50107427ac 100644
+> > --- a/drivers/iio/adc/lpc18xx_adc.c
+> > +++ b/drivers/iio/adc/lpc18xx_adc.c
+> > @@ -115,6 +115,23 @@ static const struct iio_info lpc18xx_adc_info = {
+> >  	.read_raw = lpc18xx_adc_read_raw,
+> >  };
+> >  
+> > +static void lpc18xx_clear_cr_reg(void *data)
+> > +{
+> > +	struct lpc18xx_adc *adc = data;
+> > +
+> > +	writel(0, adc->base + LPC18XX_ADC_CR);
+> > +}
+> > +
+> > +static void lpc18xx_clk_disable(void *clk)
+> > +{
+> > +	clk_disable_unprepare(clk);
+> > +}
+> > +
+> > +static void lpc18xx_regulator_disable(void *vref)
+> > +{
+> > +	regulator_disable(vref);
+> > +}
+> > +
+> >  static int lpc18xx_adc_probe(struct platform_device *pdev)
+> >  {
+> >  	struct iio_dev *indio_dev;
+> > @@ -127,7 +144,6 @@ static int lpc18xx_adc_probe(struct platform_device *pdev)
+> >  	if (!indio_dev)
+> >  		return -ENOMEM;
+> >  
+> > -	platform_set_drvdata(pdev, indio_dev);
+> >  	adc = iio_priv(indio_dev);
+> >  	adc->dev = &pdev->dev;
+> >  	mutex_init(&adc->lock);
+> > @@ -163,44 +179,30 @@ static int lpc18xx_adc_probe(struct platform_device *pdev)
+> >  		return ret;
+> >  	}
+> >  
+> > +	ret = devm_add_action_or_reset(&pdev->dev, lpc18xx_regulator_disable, adc->vref);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> >  	ret = clk_prepare_enable(adc->clk);
+> >  	if (ret) {
+> >  		dev_err(&pdev->dev, "unable to enable clock\n");
+> > -		goto dis_reg;
+> > +		return ret;
+> 
+> Unrelated but clk_get_rate() as called before the clk_prepare_enable() is not guaranteed
+> to work.   So a good follow up patch would reorder that to be after the clk is turned on.
+> 
+> 
+> >  	}
+> >  
+> > +	ret = devm_add_action_or_reset(&pdev->dev, lpc18xx_clk_disable,
+> > +				       adc->clk);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> >  	adc->cr_reg = (clkdiv << LPC18XX_ADC_CR_CLKDIV_SHIFT) |
+> >  			LPC18XX_ADC_CR_PDN;
+> >  	writel(adc->cr_reg, adc->base + LPC18XX_ADC_CR);
+> >  
+> > -	ret = iio_device_register(indio_dev);
+> > -	if (ret) {
+> > -		dev_err(&pdev->dev, "unable to register device\n");
+> > -		goto dis_clk;
+> > -	}
+> > -
+> > -	return 0;
+> > -
+> > -dis_clk:
+> > -	writel(0, adc->base + LPC18XX_ADC_CR);
+> > -	clk_disable_unprepare(adc->clk);
+> > -dis_reg:
+> > -	regulator_disable(adc->vref);
+> > -	return ret;
+> > -}
+> > -
+> > -static int lpc18xx_adc_remove(struct platform_device *pdev)
+> > -{
+> > -	struct iio_dev *indio_dev = platform_get_drvdata(pdev);
+> > -	struct lpc18xx_adc *adc = iio_priv(indio_dev);
+> > -
+> > -	iio_device_unregister(indio_dev);
+> > -
+> > -	writel(0, adc->base + LPC18XX_ADC_CR);
+> > -	clk_disable_unprepare(adc->clk);
+> > -	regulator_disable(adc->vref);
+> > +	ret = devm_add_action_or_reset(&pdev->dev, lpc18xx_clear_cr_reg, adc);
+> > +	if (ret)
+> > +		return ret;
+> >  
+> > -	return 0;
+> > +	return devm_iio_device_register(&pdev->dev, indio_dev);
+> >  }
+> >  
+> >  static const struct of_device_id lpc18xx_adc_match[] = {
+> > @@ -211,7 +213,6 @@ MODULE_DEVICE_TABLE(of, lpc18xx_adc_match);
+> >  
+> >  static struct platform_driver lpc18xx_adc_driver = {
+> >  	.probe	= lpc18xx_adc_probe,
+> > -	.remove	= lpc18xx_adc_remove,
+> >  	.driver	= {
+> >  		.name = "lpc18xx-adc",
+> >  		.of_match_table = lpc18xx_adc_match,
+> 
 
-If nobody can be bothered to properly diagnose this, how important is
-it, really?
+Ok. Thank you for the review, I will work on the change.
