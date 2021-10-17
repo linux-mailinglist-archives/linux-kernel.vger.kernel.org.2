@@ -2,96 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83EA4430CC5
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 00:55:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68027430CE3
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 01:33:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242925AbhJQW5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 18:57:41 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:54683 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233442AbhJQW5k (ORCPT
+        id S233866AbhJQXfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 19:35:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44378 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232246AbhJQXfu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 18:57:40 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HXb2837r5z4xbT;
-        Mon, 18 Oct 2021 09:55:28 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1634511328;
-        bh=9WqkwRQu05GrAEfhShhd3twouja2E2uPIdIhfR23DPE=;
-        h=Date:From:To:Cc:Subject:From;
-        b=XvaLieQ6BXF7tl2z4ceCxUVT1Znh8+p9TjL/fbO7Nh+LAcmMMz4vYVwOsGIjLJYZ5
-         Sz7SAuDlcqqD1oa1OEbccMeI093pwdcQestwoMYU3DHv5041QTU/dQta94HzFscxHU
-         0LO0+T2QoqZzGyxLsVUZYWrGMTzts7CI0sBQ6KDX5KtRhez3na4IW3/xU18pTkMlKm
-         5bAnY4UNcQuQ9kfuqUpqhw4J4reATdJ0YRlg7WsvPojZ/OikdFGsA61xR9H3vHPfSA
-         GIcy1OXalTLhNwbgSEcFQwZRr0Y/D0S5QUdwnI0qlZpkMOXGh4gFurxP6Zi1354WwU
-         9kZpOZl3f/4ww==
-Date:   Mon, 18 Oct 2021 09:55:25 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Bjorn Helgaas <bhelgaas@google.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the pci tree
-Message-ID: <20211018095525.39bea5b0@canb.auug.org.au>
+        Sun, 17 Oct 2021 19:35:50 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39129C06161C;
+        Sun, 17 Oct 2021 16:33:40 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id ls18-20020a17090b351200b001a00250584aso13206442pjb.4;
+        Sun, 17 Oct 2021 16:33:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=P7aNeUKcIw+FFmjRjLdtQbrg8hRE0vUHKGwmbGg3MsQ=;
+        b=LJCSIzns44P4F4e4GNg26v7yJxkermL6x6abN9HokumRULDJTDzPntDXK9xcY1VEou
+         eCpJZznzBR8m0UJvJQ9X9PiQKcj8zwVCxqXh6lCK5o2H4k8WRwpFp0RvJwPCGewTdkWV
+         BaFMPsa8vn7VH4WL38VKjaN1+55OrYWicP/RSmK1earac9fgMu5+/vcFIiRRtVDpbyt4
+         CIoGbGzpC5t/rhtsAiYt/ic/bAEsEJvEoJ2rEELMIVK7+XVNmmg7ZXpnPorxLTnW3R1Y
+         91jDoOzESFXMNwmr+gIwJbeVxq0jlviz2p+lWe/idMzmOpIAx+oa72/EPqm5WGKYHonU
+         aNPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=P7aNeUKcIw+FFmjRjLdtQbrg8hRE0vUHKGwmbGg3MsQ=;
+        b=uYgDpBEFKzkUNks7TszWb80QPOjxUeEot0Gx7ALGgSVrvBwuErRGVvI14JLqfyvOFY
+         VWqhGMqSnax7YRsKD3goc/gcAb8jFO1ykvODoQpIIID6NMmocLGGN4wqzcVJxyb2pml3
+         RBtCaCXuiMUdvVkygaVoase3tTROH+63gLGM8Huq+ajcYEbiIlOa/6YItTZAJL3dJ2jM
+         r5VN1kD4JJ7e9ETn8CeL/jpST1Q+nW9ti1A/EwXiprXuFle3+YvczhuH0+1F8IIK6bgk
+         pSCI/LkvwawZ6/SKpSifgTH3GX0Ki1bFspVy19KkZIsMwbznzQ6JKxiWygrj3CadXBpd
+         gzWg==
+X-Gm-Message-State: AOAM531VkyESIU6zeOsWhYgjcdZ6cu5Dl5QtmU9I5a7Jqzn7uQAzdcO9
+        wbFaFrENkKSC+O+b0iKUdSjDfoLZ4RA=
+X-Google-Smtp-Source: ABdhPJz68PwIQIzu5Lj9RNcIxYt3YdlO1S9xwFTW+ltl/3v7cAe4gNoddTizDhk/NRqq9h1g8Ca/Bw==
+X-Received: by 2002:a17:90b:1a91:: with SMTP id ng17mr29400856pjb.61.1634513619413;
+        Sun, 17 Oct 2021 16:33:39 -0700 (PDT)
+Received: from shinobu ([156.146.35.76])
+        by smtp.gmail.com with ESMTPSA id z8sm8122502pgi.45.2021.10.17.16.33.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 Oct 2021 16:33:38 -0700 (PDT)
+Date:   Mon, 18 Oct 2021 08:33:34 +0900
+From:   William Breathitt Gray <vilhelm.gray@gmail.com>
+To:     David Lechner <david@lechnology.com>, jic23@kernel.org
+Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Greg KH <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH] counter/counter-sysfs: use sysfs_emit everywhere
+Message-ID: <YWyyzmNGxWKyKiAD@shinobu>
+References: <20211017190106.3472645-1-david@lechnology.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/0GVZ/qL34XxV3Jm=BrqhzDr";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="t2Zsd0UZjI6gqdqf"
+Content-Disposition: inline
+In-Reply-To: <20211017190106.3472645-1-david@lechnology.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/0GVZ/qL34XxV3Jm=BrqhzDr
-Content-Type: text/plain; charset=US-ASCII
+
+--t2Zsd0UZjI6gqdqf
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+On Sun, Oct 17, 2021 at 02:01:06PM -0500, David Lechner wrote:
+> In the counter subsystem, we are already using sysfs_emit(), but there
+> were a few places where we were still using sprintf() in *_show()
+> functions. For consistency and added protections, use sysfs_emit()
+> everywhere.
+>=20
+> Suggested-by: Greg KH <gregkh@linuxfoundation.org>
+> Signed-off-by: David Lechner <david@lechnology.com>
 
-After merging the pci tree, today's linux-next build (powerpc
-ppc64_defconfig) failed like this:
+Acked-by: William Breathitt Gray <vilhelm.gray@gmail.com>
 
-drivers/misc/cxl/pci.c: In function 'cxl_vphb_error_detected':
-drivers/misc/cxl/pci.c:1816:15: error: assignment discards 'const' qualifie=
-r from pointer target type [-Werror=3Ddiscarded-qualifiers]
- 1816 |   err_handler =3D afu_drv->err_handler;
-      |               ^
-drivers/misc/cxl/pci.c: In function 'cxl_pci_slot_reset':
-drivers/misc/cxl/pci.c:2041:16: error: assignment discards 'const' qualifie=
-r from pointer target type [-Werror=3Ddiscarded-qualifiers]
- 2041 |    err_handler =3D afu_drv->err_handler;
-      |                ^
-drivers/misc/cxl/pci.c: In function 'cxl_pci_resume':
-drivers/misc/cxl/pci.c:2090:16: error: assignment discards 'const' qualifie=
-r from pointer target type [-Werror=3Ddiscarded-qualifiers]
- 2090 |    err_handler =3D afu_drv->err_handler;
-      |                ^
-cc1: all warnings being treated as errors
+> ---
+>  drivers/counter/counter-sysfs.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/drivers/counter/counter-sysfs.c b/drivers/counter/counter-sy=
+sfs.c
+> index 7bf8882ff54d..8c2d7c29ea59 100644
+> --- a/drivers/counter/counter-sysfs.c
+> +++ b/drivers/counter/counter-sysfs.c
+> @@ -113,7 +113,7 @@ static ssize_t counter_comp_u8_show(struct device *de=
+v,
+>  		/* data should already be boolean but ensure just to be safe */
+>  		data =3D !!data;
+> =20
+> -	return sprintf(buf, "%u\n", (unsigned int)data);
+> +	return sysfs_emit(buf, "%u\n", (unsigned int)data);
+>  }
+> =20
+>  static ssize_t counter_comp_u8_store(struct device *dev,
+> @@ -196,7 +196,7 @@ static ssize_t counter_comp_u32_show(struct device *d=
+ev,
+>  	case COUNTER_COMP_COUNT_MODE:
+>  		return sysfs_emit(buf, "%s\n", counter_count_mode_str[data]);
+>  	default:
+> -		return sprintf(buf, "%u\n", (unsigned int)data);
+> +		return sysfs_emit(buf, "%u\n", (unsigned int)data);
+>  	}
+>  }
+> =20
+> @@ -300,7 +300,7 @@ static ssize_t counter_comp_u64_show(struct device *d=
+ev,
+>  	if (err < 0)
+>  		return err;
+> =20
+> -	return sprintf(buf, "%llu\n", (unsigned long long)data);
+> +	return sysfs_emit(buf, "%llu\n", (unsigned long long)data);
+>  }
+> =20
+>  static ssize_t counter_comp_u64_store(struct device *dev,
+> @@ -539,7 +539,7 @@ static ssize_t counter_comp_id_show(struct device *de=
+v,
+>  {
+>  	const size_t id =3D (size_t)to_counter_attribute(attr)->comp.priv;
+> =20
+> -	return sprintf(buf, "%zu\n", id);
+> +	return sysfs_emit(buf, "%zu\n", id);
+>  }
+> =20
+>  static int counter_comp_id_attr_create(struct device *const dev,
+> --=20
+> 2.25.1
+>=20
 
-Caused by commit
-
-  115c9d41e583 ("cxl: Factor out common dev->driver expressions")
-
-I have used the pci tree from next-20211015 for today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/0GVZ/qL34XxV3Jm=BrqhzDr
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+--t2Zsd0UZjI6gqdqf
+Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFsqd0ACgkQAVBC80lX
-0GxqVgf+K7FkvcKIuK5pWKGVpCdnKYZO/zK11tlc7Tiy/xFwhvmvCVP6UqYTTpgQ
-mqOgGr0+adM0s0Yu3RQ3etFUC7DlAEHZKM38a6RWRmsSxID3p3Z5n1ZZSTaKUjMM
-ZpUjOobiexf2fHKDDcThPuwoiRUuTQueYHT9jikupt/yo8wC3uR3b683xfS9kuGD
-rVjUXUFZy+d3z0/o4udTUyKC6zxsla3RhSwtmxkVL6U4Dyq1DBpwzaiBRI9T1dXf
-W+hGT1nxYgWgzZOU7dqfvtGSqdr9QpTTYs9m1gO9fELiiq+ZlIWF4boQbJa4ybqJ
-hqLeOLyU/80/oaLwODbkxccpnJWv2g==
-=zioy
+iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAmFsssMACgkQhvpINdm7
+VJKnWw//XOxQqzTAjJZpNCzK9Oj8JxwVCdx5JLfqXZQvFSHPt1+nAPCrMmpBU0DY
+aggTZ9uOFk9JYqSDHhqXiraJD5Hk6IN4wqEj9OliiLiukfe+5uPjGqOjTuHoCMBv
+eZCtv9jIKYM1OQYzrqPaG+Gm6XDoAtxLEuxgRbF/fmKBoaaVQPC4bcZdmXptknWG
+Jr4u4a+E+VnFl1Tukahno0a6ypHg5tSnJ3mYvmdo+XzMHbqImCM7eHPLP7SdS3Qa
+QdBDV22/3wUSR7sCuqfolpJCjtBVA8as+grAoM3h/15gNoa8BmGD8ApIMz6JF94K
+O0bRaF3wQaYZdho2cuKNhDHjltFw0HKeRM8TfIPkElFQ5it/0npzdrEXulLLvqEF
+1Tjs2qAv8evj3qzyRKLm9wWCh5WcxllohkpHCHGPZPzdQhE63a4YKYJyHr/W6NjN
+QVoJpjj9bS/nDF9VaR9pCol3Z8aZM0cK2/KB6t7B9l2Y5OBmWdxG+7Vmv8vG0Fa4
+OBgZxSdCPBVP8lmenYs4PlwYkAnN31dRuprd4jyym13oFH1HhI3cRN7FI6enkHuT
+Rom9wI8Hhr+ditnHS7qhbKGOdn+3gF1of5rxi1rkObURB33BsXLWDi8gVIrKDE73
+YJ/+5VxPh9lp2sMnmaWTG81GwwYnzG/X4MB/YZUFFfKWBLPL3eo=
+=wExR
 -----END PGP SIGNATURE-----
 
---Sig_/0GVZ/qL34XxV3Jm=BrqhzDr--
+--t2Zsd0UZjI6gqdqf--
