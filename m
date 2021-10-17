@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 331F9430909
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 14:43:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F93443090B
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 14:43:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343572AbhJQMpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 08:45:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35080 "EHLO mail.kernel.org"
+        id S238109AbhJQMp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 08:45:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35096 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237799AbhJQMpA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 08:45:00 -0400
+        id S242245AbhJQMpB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Oct 2021 08:45:01 -0400
 Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 72B9961248;
+        by mail.kernel.org (Postfix) with ESMTPSA id A8E706125F;
         Sun, 17 Oct 2021 12:42:51 +0000 (UTC)
 Received: from sofa.misterjones.org ([185.219.108.64] helo=why.lan)
         by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <maz@kernel.org>)
-        id 1mc5V3-00HKfO-FA; Sun, 17 Oct 2021 13:42:49 +0100
+        id 1mc5V3-00HKfO-U5; Sun, 17 Oct 2021 13:42:49 +0100
 From:   Marc Zyngier <maz@kernel.org>
 To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Daniel Lezcano <daniel.lezcano@linaro.org>,
@@ -34,9 +34,9 @@ Cc:     Mark Rutland <mark.rutland@arm.com>,
         Catalin Marinas <catalin.marinas@arm.com>,
         Linus Walleij <linus.walleij@linaro.org>,
         kernel-team@android.com
-Subject: [PATCH v4 06/17] clocksource/arm_arch_timer: Fix MMIO base address vs callback ordering issue
-Date:   Sun, 17 Oct 2021 13:42:14 +0100
-Message-Id: <20211017124225.3018098-7-maz@kernel.org>
+Subject: [PATCH v4 07/17] clocksource/arm_arch_timer: Move MMIO timer programming over to CVAL
+Date:   Sun, 17 Oct 2021 13:42:15 +0100
+Message-Id: <20211017124225.3018098-8-maz@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20211017124225.3018098-1-maz@kernel.org>
 References: <20211017124225.3018098-1-maz@kernel.org>
@@ -50,95 +50,129 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The MMIO timer base address gets published after we have registered
-the callbacks and the interrupt handler, which is... a bit dangerous.
+Similarily to the sysreg-based timer, move the MMIO over to using
+the CVAL registers instead of TVAL. Note that there is no warranty
+that the 64bit MMIO access will be atomic, but the timer is always
+disabled at the point where we program CVAL.
 
-Fix this by moving the base address publication to the point where
-we register the timer, and expose a pointer to the timer structure
-itself rather than a naked value.
-
-Reviewed-by: Oliver Upton <oupton@google.com>
-Reviewed-by: Mark Rutland <mark.rutland@arm.com>
 Signed-off-by: Marc Zyngier <maz@kernel.org>
 ---
- drivers/clocksource/arm_arch_timer.c | 27 +++++++++++++--------------
- 1 file changed, 13 insertions(+), 14 deletions(-)
+ arch/arm/include/asm/arch_timer.h    |  1 +
+ drivers/clocksource/arm_arch_timer.c | 50 +++++++++++++++++++++-------
+ 2 files changed, 39 insertions(+), 12 deletions(-)
 
+diff --git a/arch/arm/include/asm/arch_timer.h b/arch/arm/include/asm/arch_timer.h
+index a9b2b721c7f9..9f4b895b78f7 100644
+--- a/arch/arm/include/asm/arch_timer.h
++++ b/arch/arm/include/asm/arch_timer.h
+@@ -7,6 +7,7 @@
+ #include <asm/hwcap.h>
+ #include <linux/clocksource.h>
+ #include <linux/init.h>
++#include <linux/io-64-nonatomic-lo-hi.h>
+ #include <linux/types.h>
+ 
+ #include <clocksource/arm_arch_timer.h>
 diff --git a/drivers/clocksource/arm_arch_timer.c b/drivers/clocksource/arm_arch_timer.c
-index 8afe8c814eba..bede10f67f9a 100644
+index bede10f67f9a..f4db3a65bc79 100644
 --- a/drivers/clocksource/arm_arch_timer.c
 +++ b/drivers/clocksource/arm_arch_timer.c
-@@ -54,13 +54,13 @@
+@@ -44,11 +44,13 @@
+ #define CNTACR_RWVT	BIT(4)
+ #define CNTACR_RWPT	BIT(5)
  
- static unsigned arch_timers_present __initdata;
+-#define CNTVCT_LO	0x08
+-#define CNTVCT_HI	0x0c
++#define CNTVCT_LO	0x00
++#define CNTPCT_LO	0x08
+ #define CNTFRQ		0x10
++#define CNTP_CVAL_LO	0x20
+ #define CNTP_TVAL	0x28
+ #define CNTP_CTL	0x2c
++#define CNTV_CVAL_LO	0x30
+ #define CNTV_TVAL	0x38
+ #define CNTV_CTL	0x3c
  
--static void __iomem *arch_counter_base __ro_after_init;
--
- struct arch_timer {
- 	void __iomem *base;
- 	struct clock_event_device evt;
- };
- 
-+static struct arch_timer *arch_timer_mem __ro_after_init;
-+
- #define to_arch_timer(e) container_of(e, struct arch_timer, evt)
- 
- static u32 arch_timer_rate __ro_after_init;
-@@ -973,9 +973,9 @@ static u64 arch_counter_get_cntvct_mem(void)
- 	u32 vct_lo, vct_hi, tmp_hi;
- 
- 	do {
--		vct_hi = readl_relaxed(arch_counter_base + CNTVCT_HI);
--		vct_lo = readl_relaxed(arch_counter_base + CNTVCT_LO);
--		tmp_hi = readl_relaxed(arch_counter_base + CNTVCT_HI);
-+		vct_hi = readl_relaxed(arch_timer_mem->base + CNTVCT_HI);
-+		vct_lo = readl_relaxed(arch_timer_mem->base + CNTVCT_LO);
-+		tmp_hi = readl_relaxed(arch_timer_mem->base + CNTVCT_HI);
- 	} while (vct_hi != tmp_hi);
- 
- 	return ((u64) vct_hi << 32) | vct_lo;
-@@ -1166,25 +1166,25 @@ static int __init arch_timer_mem_register(void __iomem *base, unsigned int irq)
- {
- 	int ret;
- 	irq_handler_t func;
--	struct arch_timer *t;
- 
--	t = kzalloc(sizeof(*t), GFP_KERNEL);
--	if (!t)
-+	arch_timer_mem = kzalloc(sizeof(*arch_timer_mem), GFP_KERNEL);
-+	if (!arch_timer_mem)
- 		return -ENOMEM;
- 
--	t->base = base;
--	t->evt.irq = irq;
--	__arch_timer_setup(ARCH_TIMER_TYPE_MEM, &t->evt);
-+	arch_timer_mem->base = base;
-+	arch_timer_mem->evt.irq = irq;
-+	__arch_timer_setup(ARCH_TIMER_TYPE_MEM, &arch_timer_mem->evt);
- 
- 	if (arch_timer_mem_use_virtual)
- 		func = arch_timer_handler_virt_mem;
- 	else
- 		func = arch_timer_handler_phys_mem;
- 
--	ret = request_irq(irq, func, IRQF_TIMER, "arch_mem_timer", &t->evt);
-+	ret = request_irq(irq, func, IRQF_TIMER, "arch_mem_timer", &arch_timer_mem->evt);
- 	if (ret) {
- 		pr_err("Failed to request mem timer irq\n");
--		kfree(t);
-+		kfree(arch_timer_mem);
-+		arch_timer_mem = NULL;
- 	}
- 
- 	return ret;
-@@ -1442,7 +1442,6 @@ arch_timer_mem_frame_register(struct arch_timer_mem_frame *frame)
- 		return ret;
- 	}
- 
--	arch_counter_base = base;
- 	arch_timers_present |= ARCH_TIMER_TYPE_MEM;
- 
+@@ -112,6 +114,13 @@ void arch_timer_reg_write(int access, enum arch_timer_reg reg, u64 val,
+ 		case ARCH_TIMER_REG_TVAL:
+ 			writel_relaxed((u32)val, timer->base + CNTP_TVAL);
+ 			break;
++		case ARCH_TIMER_REG_CVAL:
++			/*
++			 * Not guaranteed to be atomic, so the timer
++			 * must be disabled at this point.
++			 */
++			writeq_relaxed(val, timer->base + CNTP_CVAL_LO);
++			break;
+ 		default:
+ 			BUILD_BUG();
+ 		}
+@@ -124,6 +133,10 @@ void arch_timer_reg_write(int access, enum arch_timer_reg reg, u64 val,
+ 		case ARCH_TIMER_REG_TVAL:
+ 			writel_relaxed((u32)val, timer->base + CNTV_TVAL);
+ 			break;
++		case ARCH_TIMER_REG_CVAL:
++			/* Same restriction as above */
++			writeq_relaxed(val, timer->base + CNTV_CVAL_LO);
++			break;
+ 		default:
+ 			BUILD_BUG();
+ 		}
+@@ -720,15 +733,36 @@ static int arch_timer_set_next_event_phys(unsigned long evt,
  	return 0;
+ }
+ 
++static u64 arch_counter_get_cnt_mem(struct arch_timer *t, int offset_lo)
++{
++	u32 cnt_lo, cnt_hi, tmp_hi;
++
++	do {
++		cnt_hi = readl_relaxed(t->base + offset_lo + 4);
++		cnt_lo = readl_relaxed(t->base + offset_lo);
++		tmp_hi = readl_relaxed(t->base + offset_lo + 4);
++	} while (cnt_hi != tmp_hi);
++
++	return ((u64) cnt_hi << 32) | cnt_lo;
++}
++
+ static __always_inline void set_next_event_mem(const int access, unsigned long evt,
+ 					   struct clock_event_device *clk)
+ {
++	struct arch_timer *timer = to_arch_timer(clk);
+ 	unsigned long ctrl;
++	u64 cnt;
++
+ 	ctrl = arch_timer_reg_read(access, ARCH_TIMER_REG_CTRL, clk);
+ 	ctrl |= ARCH_TIMER_CTRL_ENABLE;
+ 	ctrl &= ~ARCH_TIMER_CTRL_IT_MASK;
+ 
+-	arch_timer_reg_write(access, ARCH_TIMER_REG_TVAL, evt, clk);
++	if (access ==  ARCH_TIMER_MEM_VIRT_ACCESS)
++		cnt = arch_counter_get_cnt_mem(timer, CNTVCT_LO);
++	else
++		cnt = arch_counter_get_cnt_mem(timer, CNTPCT_LO);
++
++	arch_timer_reg_write(access, ARCH_TIMER_REG_CVAL, evt + cnt, clk);
+ 	arch_timer_reg_write(access, ARCH_TIMER_REG_CTRL, ctrl, clk);
+ }
+ 
+@@ -970,15 +1004,7 @@ bool arch_timer_evtstrm_available(void)
+ 
+ static u64 arch_counter_get_cntvct_mem(void)
+ {
+-	u32 vct_lo, vct_hi, tmp_hi;
+-
+-	do {
+-		vct_hi = readl_relaxed(arch_timer_mem->base + CNTVCT_HI);
+-		vct_lo = readl_relaxed(arch_timer_mem->base + CNTVCT_LO);
+-		tmp_hi = readl_relaxed(arch_timer_mem->base + CNTVCT_HI);
+-	} while (vct_hi != tmp_hi);
+-
+-	return ((u64) vct_hi << 32) | vct_lo;
++	return arch_counter_get_cnt_mem(arch_timer_mem, CNTVCT_LO);
+ }
+ 
+ static struct arch_timer_kvm_info arch_timer_kvm_info;
 -- 
 2.30.2
 
