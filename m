@@ -2,111 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DFF4430C08
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 22:35:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FD3B430C0B
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 22:38:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344565AbhJQUhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 16:37:45 -0400
-Received: from mga18.intel.com ([134.134.136.126]:11991 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242454AbhJQUhf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 16:37:35 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10140"; a="215068719"
-X-IronPort-AV: E=Sophos;i="5.85,380,1624345200"; 
-   d="scan'208";a="215068719"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2021 13:35:25 -0700
-X-IronPort-AV: E=Sophos;i="5.85,380,1624345200"; 
-   d="scan'208";a="565425995"
-Received: from ericalo-mobl.gar.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.254.45.96])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2021 13:35:24 -0700
-Subject: Re: [PATCH v7 05/10] x86/tdx: Handle port I/O
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>, thomas.lendacky@amd.com
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        linux-kernel@vger.kernel.org
-References: <20211005204136.1812078-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211005204136.1812078-6-sathyanarayanan.kuppuswamy@linux.intel.com>
- <87v91v2zkk.ffs@tglx>
-From:   Sathyanarayanan Kuppuswamy 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <eadc3025-a32d-3641-de83-e5f05728a755@linux.intel.com>
-Date:   Sun, 17 Oct 2021 13:35:23 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
+        id S1344578AbhJQUlC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 16:41:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34942 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242454AbhJQUlA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Oct 2021 16:41:00 -0400
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F120C06161C
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 13:38:50 -0700 (PDT)
+Received: by mail-oi1-x233.google.com with SMTP id y207so21599555oia.11
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 13:38:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZaGvfY3IqblYxtF1dOKvBwFgcky9hdAU3fQd5ouClr0=;
+        b=jmfiKiG2pafs8OTavdnFa3dbfQnrKWuAHMls74HqLywnGVAgK225o+wyB8E1mE4pGw
+         zMMvxmZY70xNizzbXjGuu4ocLBcijCsuhV9Rn+Bzt8XcOhs3DTuhoAmWeUlYlD6G+ung
+         jSHFOl1NNU5RjXDwVHoMGtVpNKuF9ss4neXegaSEDnDnM4eEU3ZNX/28nk01xj48wwrQ
+         ek0ztlbthdGUPt7ueLgqziTOrk/uLkSYX9Gz3CM3QbqGyVB1TnwnTzd/BAYtqmP361wf
+         rmgM3EDGrzY19dZfrS1OSyw+qqL1LPC+mFiVU3Qn1MlpV6u23rC8SiMh5rlosnkbQSvn
+         VnfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZaGvfY3IqblYxtF1dOKvBwFgcky9hdAU3fQd5ouClr0=;
+        b=5WJLd8oYAbunWdPdJ58sxW+sFapab0KanxIFBK1uwh0rjuTBK4iRgkhFKAhQkCjs/m
+         2gbMkH+Nx2Rkjj3OPB3/xUCxMme9EAhHXw1a+mZ0R1jtZ/oJ/qvE3gad605vnFX2t0/C
+         f3ujmu9YSMB8tGHzfeKa2MbajN4QngRwaeUHYShP9L2Y2548VWOz8/+fFpoLecllAhAH
+         6Rz22YRtumS5P5ZCL9kR11tD0xQIfEcr26okaLCKq+/4rO497+l2MqTx6QNy2aWV6WIO
+         jzjGhxTS1WKmsoMk5lzDkpNBhjtBjeP++3iZPPFrxD23CoYrilBsL66epmAGo+KsCuOO
+         aYLA==
+X-Gm-Message-State: AOAM531+3ED38hU795T5/ksbM6fJVw3Q4caa9hRHARN3t4RVmOJvXWkU
+        Vw/KUr+kZloA02kMPxPu8EuUUw==
+X-Google-Smtp-Source: ABdhPJxWNhNj+p/C8KWNzF6gwqtNUJl6DTVLWdnaw2eblaWmG+FNum93/5Tebybr7P1cRDBSAWaPPg==
+X-Received: by 2002:aca:ad45:: with SMTP id w66mr17048263oie.148.1634503129850;
+        Sun, 17 Oct 2021 13:38:49 -0700 (PDT)
+Received: from localhost.localdomain ([2600:1700:a0:3dc8:205:1bff:fec0:b9b3])
+        by smtp.gmail.com with ESMTPSA id m7sm2382010oiw.49.2021.10.17.13.38.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 Oct 2021 13:38:49 -0700 (PDT)
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Thara Gopinath <thara.gopinath@linaro.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Subject: [PATCH] arm64: defconfig: Enable Qualcomm LMH driver
+Date:   Sun, 17 Oct 2021 13:40:36 -0700
+Message-Id: <20211017204036.2761122-1-bjorn.andersson@linaro.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <87v91v2zkk.ffs@tglx>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+With the introduction of LMH in '36c6581214c4 ("arm64: dts: qcom:
+sdm845: Add support for LMh node")' the CPUfreq gained a reference for
+the two interrupts from the LMh. This means that if the LMh driver isn't
+enabled CPUfreq will not probe and there's no frequency scaling.
 
-On 10/17/21 12:58 PM, Thomas Gleixner wrote:
-> On Tue, Oct 05 2021 at 13:41, Kuppuswamy Sathyanarayanan wrote:
->>   									\
->>   static inline void outs##bwl(int port, const void *addr, unsigned long count) \
->>   {									\
->> -	if (sev_key_active()) {						\
->> +	if (sev_key_active() ||						\
->> +	    cc_platform_has(CC_ATTR_GUEST_UNROLL_STRING_IO)) {		\
-> Instead of adding an extra check, can you please replace that
-> sev_key_active() with cc_platform_has() completely?
+Enable LMh to make CPUfreq functional again on SDM845.
 
-Yes. sev_key_active() can be removed and replaced with
-cc_platform_has().
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+---
+ arch/arm64/configs/defconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-Thomas Lendacky also proposed to introduce as common
-static key which can be set by both AMD SEV and TDX code.
-
-@Thomas Lendacky, any comments?
-
->
->> +/*
->> + * tdx_handle_early_io() cannot be re-used in #VE handler for handling
->> + * I/O because the way of handling string I/O is different between
->> + * normal and early I/O case. Also, once trace support is enabled,
->> + * tdx_handle_io() will be extended to use trace calls which is also
->> + * not valid for early I/O cases.
->> + */
->> +static void tdx_handle_io(struct pt_regs *regs, u32 exit_qual)
->> +{
->> +	struct tdx_hypercall_output outh;
->> +	int out, size, port, ret;
->> +	bool string;
->> +	u64 mask;
->> +
->> +	string = VE_IS_IO_STRING(exit_qual);
->> +
->> +	/* I/O strings ops are unrolled at build time. */
-> Fancy. The compiler can evaluate sev_key_active() and
-> cc_platform_has() at build time?
-
-It is incorrect. I will fix this in next version. How about following
-change?
-
-I/O strings are replaced with in/out instructions. If string is reported,
-report it with BUG.
-
->
-> Thanks,
->
->          tglx
-
+diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+index 86224aa3a74b..0ae6cd2748d2 100644
+--- a/arch/arm64/configs/defconfig
++++ b/arch/arm64/configs/defconfig
+@@ -577,6 +577,7 @@ CONFIG_TEGRA_BPMP_THERMAL=m
+ CONFIG_TEGRA_SOCTHERM=m
+ CONFIG_QCOM_TSENS=y
+ CONFIG_QCOM_SPMI_TEMP_ALARM=m
++CONFIG_QCOM_LMH=m
+ CONFIG_UNIPHIER_THERMAL=y
+ CONFIG_WATCHDOG=y
+ CONFIG_SL28CPLD_WATCHDOG=m
 -- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+2.29.2
 
