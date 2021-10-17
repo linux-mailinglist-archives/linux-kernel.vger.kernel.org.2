@@ -2,89 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F2514305EC
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 03:32:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76E5F43061C
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 03:56:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244795AbhJQBer (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 21:34:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38994 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241259AbhJQBeq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 21:34:46 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EA38C061765;
-        Sat, 16 Oct 2021 18:32:38 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id m20so12154074iol.4;
-        Sat, 16 Oct 2021 18:32:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Rq7eJiJY5GizzeYQg7HyUDUwFZHc89rYqOhPQrMeQeE=;
-        b=kimjJzbHxu0G4NEaBLJg8zkXM0H0T3NPqqamfR8nbRO7DSxbfPAE0HJsGJoha1T7yh
-         0kB1JThMzIYv5mtsM5xOqVDJdBIdK0tCxx4rhgLC9ZaEy3CL9+D7BvTG262s8/j+HRci
-         2bu1B+chNC0tiVw8GQy4X8WjDYNHu2SIIBUiVzr3oZ37NLUNGm6VC1Z0ZuagbRjrRQPh
-         najpJaSSAk+Ry0+Huc+a1soJoNVdEYrh37vs0LiFzWU08fj6ugLUh8GDWtmWykeTUq8B
-         OGplu/wzP9HH2GcCK0i6cX5HBmdpjp2810n7DiTT7xH7BLxrsS/6/OwRYRDnDEWFZWgv
-         N55Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Rq7eJiJY5GizzeYQg7HyUDUwFZHc89rYqOhPQrMeQeE=;
-        b=Ww1UTy6zXDo7YwuHTkiOmszpjdk3di820jc4nQTla9NHwnDQi8hlwbntDfYlRXy7WH
-         eQcP/y4JODyFj62aYJmDFH10A7TQNsPnygqeyTGfjANSwS4WnJ3lKRbPAIKZ37QMhxOV
-         yp1igJd6C92I2CrcCUv/yECdxt47CehEfHwxFvPnGX4d4qkTrQriJt7iRZUX4m5Xuiio
-         1cWcpjHvkk8glZFl+/jt35STJKRhBTPd/vtHgiGkOOAdZ2PuXxkvZIrksFtx12rd/C1n
-         3/6YRrc0fTRt3lIPrRQdJAp+GzxkYaPCYGKi8tJ/a1R7Akg6VLjup5Bw63k7doDKRNlZ
-         TV0g==
-X-Gm-Message-State: AOAM531t9HyCGreeFcCVfaFMpr2/FMZfy/x/0cdDwGh+pk6kt/7ugNVB
-        feb5LhfuxDTrrwdG+q7yji0hpCtFPkQ=
-X-Google-Smtp-Source: ABdhPJzFXupUUFg6YPvdcu+wlZeidOXVNm/8ugfr0+x4lmO6H2hd3vuxfC4gyTjRRAGVjvz0avOdGA==
-X-Received: by 2002:a05:6638:a2d:: with SMTP id 13mr13028099jao.12.1634434357408;
-        Sat, 16 Oct 2021 18:32:37 -0700 (PDT)
-Received: from localhost.localdomain (mobile-130-126-255-38.near.illinois.edu. [130.126.255.38])
-        by smtp.googlemail.com with ESMTPSA id m5sm5010533ild.45.2021.10.16.18.32.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 16 Oct 2021 18:32:37 -0700 (PDT)
-From:   Noah Goldstein <goldstein.w.n@gmail.com>
-Cc:     goldstein.w.n@gmail.com, axboe@kernel.dk, asml.silence@gmail.com,
-        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1] fs/io_uring: Prioritise checking faster conditions first in io_write
-Date:   Sat, 16 Oct 2021 20:32:29 -0500
-Message-Id: <20211017013229.4124279-1-goldstein.w.n@gmail.com>
+        id S244897AbhJQB6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 21:58:47 -0400
+Received: from vern.gendns.com ([98.142.107.122]:48362 "EHLO vern.gendns.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244849AbhJQB6j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Oct 2021 21:58:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=lechnology.com; s=default; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=oy8DSyGv+jeXmkM7TMu2S60qW6NEmMHEMDkXehA/CE0=; b=WTTXdJZS9XL/KWAAhX67Grq0kU
+        ObLxbh9xN+katVJXZd+mBXCWYAKdxV15H5mn5wq8dyP93QKbPgvUrtll6P5zu1LfAgruWoBwacDew
+        NbbeoYmTzdD/o9SgeRXl00oalUbhtgmE09ujq4T+xja+zDZjZY4Utdn85sM61EEAOl0OIiXbgu0F9
+        gjsvtFnjYB9Wy3VUTWhvFYEiY7HaQwaysWMQnPN1lhIyEvfv6R85ysu8Nq/8nqpmQgxcsHrJEzopH
+        iYT3cq6a1C4LMV0IP5wTcOAsx0iUN2z5yg+FeezsHZnE0ybp7BmwclNEgltjaMqJ0+1iVkaGgQaqn
+        hlixPg9g==;
+Received: from 108-198-5-147.lightspeed.okcbok.sbcglobal.net ([108.198.5.147]:41624 helo=freyr.lechnology.com)
+        by vern.gendns.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <david@lechnology.com>)
+        id 1mbv43-0004D2-KJ; Sat, 16 Oct 2021 21:34:17 -0400
+From:   David Lechner <david@lechnology.com>
+To:     linux-iio@vger.kernel.org
+Cc:     David Lechner <david@lechnology.com>,
+        William Breathitt Gray <vilhelm.gray@gmail.com>,
+        Robert Nelson <robertcnelson@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/8] counter: ti-eqep: implement features for speed measurement
+Date:   Sat, 16 Oct 2021 20:33:35 -0500
+Message-Id: <20211017013343.3385923-1-david@lechnology.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - vern.gendns.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lechnology.com
+X-Get-Message-Sender-Via: vern.gendns.com: authenticated_id: davidmain+lechnology.com/only user confirmed/virtual account not confirmed
+X-Authenticated-Sender: vern.gendns.com: davidmain@lechnology.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit reorders the conditions in a branch in io_write. The
-reorder to check 'ret2 == -EAGAIN' first as checking
-'(req->ctx->flags & IORING_SETUP_IOPOLL)' will likely be more
-expensive due to 2x memory derefences.
+Now that the counter subsystem has a new chrdev for events, we can use this to
+add new features to the TI eQEP driver to be able to do accurate speed
+measurement.
 
-Signed-off-by: Noah Goldstein <goldstein.w.n@gmail.com>
----
- fs/io_uring.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This adds two new device-level components, a Unit Timer and an Edge Capture
+Unit. I don't have much knowledge about other available counter hardware, so
+I don't know if it makes sense to try to make these more generic, e.g.
+counterX/timerY/* and counterX/captureY/*. For now, they are just flat
+(counterX/unit_timer_* and counterX/edge_capture_unit_*) and assume there is
+only one instance per counter device.
 
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index 6b9e70208782..321de7ddf2cf 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -3660,7 +3660,7 @@ static int io_write(struct io_kiocb *req, unsigned int issue_flags)
- 		goto done;
- 	if (!force_nonblock || ret2 != -EAGAIN) {
- 		/* IOPOLL retry should happen for io-wq threads */
--		if ((req->ctx->flags & IORING_SETUP_IOPOLL) && ret2 == -EAGAIN)
-+		if (ret2 == -EAGAIN && (req->ctx->flags & IORING_SETUP_IOPOLL))
- 			goto copy_iov;
- done:
- 		kiocb_done(kiocb, ret2, issue_flags);
+This has been tested on a BeagleBone Blue with LEGO MINDSTORMS motors.
+
+David Lechner (8):
+  counter/ti-eqep: implement over/underflow events
+  counter/ti-eqep: add support for direction
+  counter/ti-eqep: add support for unit timer
+  docs: counter: add unit timer sysfs attributes
+  counter/ti-eqep: add support for latched position
+  docs: counter: add latch_mode and latched_count sysfs attributes
+  counter/ti-eqep: add support for edge capture unit
+  docs: counter: add edge_capture_unit_* attributes
+
+ Documentation/ABI/testing/sysfs-bus-counter | 100 +++-
+ drivers/counter/ti-eqep.c                   | 482 +++++++++++++++++++-
+ include/uapi/linux/counter.h                |   4 +
+ 3 files changed, 575 insertions(+), 11 deletions(-)
+
 -- 
 2.25.1
 
