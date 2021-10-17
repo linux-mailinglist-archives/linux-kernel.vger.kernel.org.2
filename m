@@ -2,76 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48CBD430BB9
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 21:24:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABC8A430BBA
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 21:26:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344507AbhJQT0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 15:26:41 -0400
-Received: from mout.kundenserver.de ([217.72.192.75]:33525 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344499AbhJQT0k (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 15:26:40 -0400
-Received: from mail-wr1-f51.google.com ([209.85.221.51]) by
- mrelayeu.kundenserver.de (mreue109 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1MsI0K-1msCU32rKk-00thw7; Sun, 17 Oct 2021 21:24:29 +0200
-Received: by mail-wr1-f51.google.com with SMTP id g25so37059573wrb.2;
-        Sun, 17 Oct 2021 12:24:29 -0700 (PDT)
-X-Gm-Message-State: AOAM5336Tz9o74sjNpDAp6mRdV0FzD0aWJ9xw3kwkMfQgd7vato6F+be
-        6laaBO+8B7ou4ILx8rmL3o63tA+6s/ovexuuCkI=
-X-Google-Smtp-Source: ABdhPJz06nWeDGDSfJUWmNphkeTeXDInpz4LYmoGZirzU57U59ghhTBygkSOEku0/gJMZVtNDsuBy6/HCoHLpUDvyQU=
-X-Received: by 2002:adf:ab46:: with SMTP id r6mr30191680wrc.71.1634498669396;
- Sun, 17 Oct 2021 12:24:29 -0700 (PDT)
+        id S1344512AbhJQT2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 15:28:31 -0400
+Received: from mx-out.tlen.pl ([193.222.135.158]:38792 "EHLO mx-out.tlen.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1344499AbhJQT2a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Oct 2021 15:28:30 -0400
+Received: (wp-smtpd smtp.tlen.pl 16948 invoked from network); 17 Oct 2021 21:26:17 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=o2.pl; s=1024a;
+          t=1634498777; bh=K4x9QhXuKOZkWxOZ1tfZPtZ3zxAXUZxqrJhTrhSSoaM=;
+          h=From:To:Cc:Subject;
+          b=XqGREuta1s0qalf2wmlNmSmRBkx9QEkpQGw1pBKAKrOUnhGwfQLLIqrZmh/jxW4Ug
+           bTFGlybuXKKd5dI4ZpN57/oKiaLMWpfvpwKsThSytV1q21BGNRIhyWylSQNtvac4Aa
+           8JT4UIgqgyIC7gOxfNOpgdpgFZcSDpGfFLTnmchs=
+Received: from aaet142.neoplus.adsl.tpnet.pl (HELO localhost.localdomain) (mat.jonczyk@o2.pl@[83.4.123.142])
+          (envelope-sender <mat.jonczyk@o2.pl>)
+          by smtp.tlen.pl (WP-SMTPD) with SMTP
+          for <linux-kernel@vger.kernel.org>; 17 Oct 2021 21:26:17 +0200
+From:   =?UTF-8?q?Mateusz=20Jo=C5=84czyk?= <mat.jonczyk@o2.pl>
+To:     linux-kernel@vger.kernel.org, x86@kernel.org
+Cc:     =?UTF-8?q?Mateusz=20Jo=C5=84czyk?= <mat.jonczyk@o2.pl>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
+Subject: [PATCH RESEND v2] x86: warn on native_io_delay() before DMI scan
+Date:   Sun, 17 Oct 2021 21:25:58 +0200
+Message-Id: <20211017192558.266809-1-mat.jonczyk@o2.pl>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20211017174905.18943-1-rdunlap@infradead.org> <CAK8P3a3XDY5gMUA3h3tVmQuxSHn_J3qOw_rDurzBx-KFdGhCKA@mail.gmail.com>
- <8aad5fd2-6850-800a-3c56-199bb5d4f4ae@infradead.org>
-In-Reply-To: <8aad5fd2-6850-800a-3c56-199bb5d4f4ae@infradead.org>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Sun, 17 Oct 2021 21:24:13 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a21-mu=eN7qu+1C11Rwp_S3T0iJ+ronmMGyeYcw=Ym61A@mail.gmail.com>
-Message-ID: <CAK8P3a21-mu=eN7qu+1C11Rwp_S3T0iJ+ronmMGyeYcw=Ym61A@mail.gmail.com>
-Subject: Re: [PATCH] asm-generic: bug.h: add unreachable() in BUG() for
- CONFIG_BUG not set
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:haBaBs10gVyAquHzKBKqLBoRJ/LeMskfs+11vs4S/8Inz0bAkcM
- sHoFQEL+SURAxrKffPnhiPEU/mTIJYo4XLjOaBC2rEzmRmaKz5FhbNX0LMkLhSotuEyy3Nb
- eNHtl7R++MHmJiuy5890LQcfSsz3TojO407pDt4jN1l91iBtqOMP4t5wBylbZKd4pcvLfN+
- 6EzvEcLoJZY70wCqALUJA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:jKTiu5EzBPk=:em/msWDVN5hdGZbjeFCtsj
- 3RABjNWctOOWButhUc5r1I36oIUSiqa6SeJGJCXv8D9lgxaWSebp4mTYwkByRZ9sAtN++3+s/
- cw8+wuA5MRY+AzEtcX9kcgLbKFnoLPUjMmaWURSXQcgWyyAubLYKo8CyOXSmF+UqDEi6UWfTV
- nfZ9D/MtYNXrgUZ4GHDb8tVEnmjnnvnN2NlMyJfHj9D2qnyiEzwq0XTQj7tsnHSlM1voDmRyK
- aj+8FW4zu6Ahfc1zk49P0iXSe61a6rv6Kh91OzwtYiRtvSFfodKTxu7GAnL0/uVFGnFOJeU6S
- yw4k/5oYF7greRQRp5hgi0QzYKMKdkG3s4OCGqp2AIrwJRhIGKp67/dNhMNvnvc6QUH1L5VJk
- /nFAMxjswdBa+wbj1gVcmCzph2+Q1+shWCxAbx+Zfwe4ZR/PUrNhWltwyxIvDZZDCE3Pjv0n5
- 4tVGTKyx4peQz6y1IGj3JiS+JhOFYRPxdhJVFgjVdgmj3Bacbv/MArT5/WVpEg36LZQUkebgc
- BOruDlHl2Im5jg8KCP/UL167D+e+HW2ujWikNF9ncnqgc3Q3aGB0E9KLQ/n3bHlTW5eZFGcVq
- M9jN6aoFj8x0ChQcScTfxSkHkO+ZmrIezFeQk5RkEk8mcLJjui3JA0RhCJbtPkY88BhX8d3E9
- Xz1TaC4N3yKnk+EeQYiruZRctkzvnu1h7Fey84Bqq56OvwWor5T1JhW4W8c0AJDUGdqjkgAlP
- LfmMA1MUmWlZJQnD8fri+iVUPGck6NLuUMdNXRZy8hlJo/gMrlEvtB8Ownhh/2Kgm7v4DZXd+
- zyT3V3efGz9yh9+/GVD/wJgM3ioOIrsEczuBfvt+S69W/tg2AM2xhIH+kcDOg/v/cCi0EbS7O
- veBTe+exRveeSRiaWpRw==
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-WP-MailID: 14a9d553ccf097e6b09d7531a967c5c6
+X-WP-AV: skaner antywirusowy Poczty o2
+X-WP-SPAM: NO 0000000 [AQO0]                               
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 17, 2021 at 9:17 PM Randy Dunlap <rdunlap@infradead.org> wrote:
-> On 10/17/21 12:09 PM, Arnd Bergmann wrote:
-> > On Sun, Oct 17, 2021 at 7:49 PM Randy Dunlap <rdunlap@infradead.org> wrote:
->
-> > Did you see any other issues like this one on m68k, or the
-> > same one on another architecture?
->
-> No and no.
+Writing to IO port 0x80 in native_io_delay() causes system lockups on
+some laptops. This is handled by io_delay_init(), which scans DMI info
+and changes io_delay_type on these laptops.
 
-Ok, maybe before we waste too much time on it, just add an extra
-return statement to afs_dir_set_page_dirty()?
+Therefore, calling native_io_delay() / outb_p() / inb_p() / etc. before
+io_delay_init() may cause problems there and may constitute a kernel
+bug. Warn if this happens.
 
-       Arnd
+Signed-off-by: Mateusz Jończyk <mat.jonczyk@o2.pl>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+---
+
+v2: make io_delay_dmi_scanned static
+
+ arch/x86/kernel/io_delay.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/arch/x86/kernel/io_delay.c b/arch/x86/kernel/io_delay.c
+index fdb6506ceaaa..d6deca551a5c 100644
+--- a/arch/x86/kernel/io_delay.c
++++ b/arch/x86/kernel/io_delay.c
+@@ -29,6 +29,7 @@
+ #endif
+ 
+ int io_delay_type __read_mostly = DEFAULT_IO_DELAY_TYPE;
++static int io_delay_dmi_scanned __read_mostly;
+ 
+ static int __initdata io_delay_override;
+ 
+@@ -37,6 +38,8 @@ static int __initdata io_delay_override;
+  */
+ void native_io_delay(void)
+ {
++	WARN_ON_ONCE(!io_delay_dmi_scanned);
++
+ 	switch (io_delay_type) {
+ 	default:
+ 	case IO_DELAY_TYPE_0X80:
+@@ -123,6 +126,8 @@ void __init io_delay_init(void)
+ {
+ 	if (!io_delay_override)
+ 		dmi_check_system(io_delay_0xed_port_dmi_table);
++
++	io_delay_dmi_scanned = 1;
+ }
+ 
+ static int __init io_delay_param(char *s)
+-- 
+2.25.1
+
