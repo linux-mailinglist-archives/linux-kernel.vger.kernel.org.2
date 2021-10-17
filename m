@@ -2,88 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63DF0430933
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 14:59:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BEA0430938
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 15:03:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343646AbhJQNBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 09:01:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46932 "EHLO
+        id S242316AbhJQNF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 09:05:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343627AbhJQNBe (ORCPT
+        with ESMTP id S236484AbhJQNFV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 09:01:34 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFE2DC061768
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 05:59:24 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id 188so13098932iou.12
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 05:59:24 -0700 (PDT)
+        Sun, 17 Oct 2021 09:05:21 -0400
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E83D6C061768
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 06:03:11 -0700 (PDT)
+Received: by mail-io1-xd29.google.com with SMTP id b188so8247163iof.8
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 06:03:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ytX4HdIZmZ28e1ub8YIdiheHvRBS77VmJQMUomMwZkA=;
-        b=b2D1jO0GcUxp7achKObI+Nv8UhJt1FNRDu1AyUc9+GJ849mv89fpQRQp6IRF1UZKvs
-         Vr1AoR+naW9m9uEQnSrSVCPdouciTZRAi/ZVdmkKeZKmOc9JNn8VaovuT5VVxsjMR1KD
-         8zNfTLGBaAvFb2fT26a8KFooz8U4VrXYRZdFw4tFt1uJRzN4hEOTgyfs+J7DAmh1LSRv
-         XjfQoIPKU6gnVyTjdQ9aoTJKcYP7sITOmaOJtwKKpRKKvJ2XeWmPUXPWH5LYHgxsefkV
-         /AdTg6rBNEFrT21voZkAQOwJIXq0uk1RMboPKEvJOuNv1UlH1d3Xmhekk29Un3mt8Oxc
-         /JEQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=cpHZ7r0xJhtTVNnwnC2/v/oL0NL2Mq8QcDvO2xernog=;
+        b=CmNJkyumqn2veFHFq4gljV+Uvx4uvgW0UcP7OCqp1IeC8MXGY+7pE/ld5GE4VhnY6e
+         kNOKTY+rOpzpSqaa73j0pmtb2hBD5MXsEZH0C1eBtwBXHc4hFNd9keW30ePIV/BCEZrk
+         qEPl1k3RJNgPCA2aK4WE1H2la4/MeIrPRJlNZjTCGEMlZ/I1MenhZZXpkwBDMeslScFG
+         aGSCq5exWY0M9b7RPsQO7mqP9RXbIhVkVp2cfMiUTeaTIHFimvXfIb0pmxR5OASyuy7i
+         m/B6WzIIQgbD2v6y6Kq6IORz8RPzERNOxiNu+vKQKrPyfEmVsR5CQ/N5JrXmp8KHasDX
+         FH9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ytX4HdIZmZ28e1ub8YIdiheHvRBS77VmJQMUomMwZkA=;
-        b=bX0lY7AlV9LgLXCVUyO4I5KlxxZ8ZgzD4h2veaLig1i39IAg2/Ub/ckZxm7rDbOpnK
-         mtdV1eXO43T+q7V/uo24LgIuqI+kD/Vz0CpCepyQCA1P0G2SNL1KYu86QkJkUYMJJoh3
-         BVAAg/ESRd7chJrQtJYf/cgQOSgcdUynGNLt0rfht0hBe0PQ+T/EJR7uLYYs2PBZm+Q/
-         Pn85JfglyN7M/j/KcQYG0ukMS2yNahGrpEHPeTxVSKuylKwcDHJ2YV0D6/ICk0Xns9ov
-         pD3Bp53B267vTrpgnYz/delkTmOFzOOdTG+Nxm3AB7EL/QOQPsRidb77KJqtPXczL0Ap
-         OXlQ==
-X-Gm-Message-State: AOAM531GHCkUSqsqXNgQR2DwwPQlFQYEvXeWdjFD+iCjP2QmhO65rOED
-        tW7kYO4IoSkHyO1jQOJ4eDYw489/Jj7U/Q==
-X-Google-Smtp-Source: ABdhPJynKQdq8QvliNhrBE29N1TiRlprCrIimKQqCsGfTIN8WfnfzrKPRWW++mb6W8hidJYfWUomyg==
-X-Received: by 2002:a02:cb94:: with SMTP id u20mr14596094jap.134.1634475564268;
-        Sun, 17 Oct 2021 05:59:24 -0700 (PDT)
-Received: from [192.168.1.116] ([66.219.217.159])
-        by smtp.gmail.com with ESMTPSA id h10sm5367427ilh.48.2021.10.17.05.59.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 17 Oct 2021 05:59:23 -0700 (PDT)
-Subject: Re: [PATCH 0/5] cache request_queue pointer
-To:     Pavel Begunkov <asml.silence@gmail.com>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Christoph Hellwig <hch@infradead.org>
-References: <cover.1634219547.git.asml.silence@gmail.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=cpHZ7r0xJhtTVNnwnC2/v/oL0NL2Mq8QcDvO2xernog=;
+        b=s6A+Y4AJIOl8WUB8J9BrJluGeQC+Fg+V70tHM8pYoY1WrRiEKithx8TjlNur8TOTru
+         pdu2q5nQlDtceLlIesyYZ+OOQPuNVN9qc5B2c734rmfupm/ufwGwbAz39wWy5JmRQTZw
+         Kb6/0iq6Z/INBknv/No5zC882Riu+hZZJ38hi0mMKCDIFy7g6akggQ+3PUZU0cQ8iuBc
+         n764T+oPd8/SDDpSFwquObHZ3h9NPccZd7x68eZvYDND8XwKqirrTtcXiPEzufRVLQR3
+         qJ/POyWgeMLtu5FAEPYMXAxxdTSq1cE68pTttSWdK52LX0+EqH7cBWL9Pw/x7KxbXKXq
+         DcXQ==
+X-Gm-Message-State: AOAM531JwxBtK8M1ExED+uUAaY68Lt514+3QMfIeXZ1WrwxTn6UTnB69
+        y6hL76UKwpv37aeqiQ96+jFqg95zPRKT6Q==
+X-Google-Smtp-Source: ABdhPJx4iSggqclLbZlTWfHwCsa83vp6P8YD2Msi27jk+2CYfGoHuU7w0epdKWXm5Z6GR/3tPsZYeQ==
+X-Received: by 2002:a6b:f816:: with SMTP id o22mr11299221ioh.106.1634475791291;
+        Sun, 17 Oct 2021 06:03:11 -0700 (PDT)
+Received: from localhost.localdomain ([66.219.217.159])
+        by smtp.gmail.com with ESMTPSA id r11sm5585992ilt.83.2021.10.17.06.03.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 Oct 2021 06:03:10 -0700 (PDT)
 From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <dba463cb-3f1e-0972-aeaf-099d7c12bd0e@kernel.dk>
-Date:   Sun, 17 Oct 2021 06:59:22 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+To:     Paolo Valente <paolo.valente@linaro.org>
+Cc:     Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org
+Subject: Re: [PATCH BUGFIX 0/1] block, bfq: fix bug 214503
+Date:   Sun, 17 Oct 2021 07:03:08 -0600
+Message-Id: <163447578602.89992.1872535198744308847.b4-ty@kernel.dk>
+X-Mailer: git-send-email 2.33.1
+In-Reply-To: <20211015144336.45894-1-paolo.valente@linaro.org>
+References: <20211015144336.45894-1-paolo.valente@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <cover.1634219547.git.asml.silence@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/14/21 8:03 AM, Pavel Begunkov wrote:
-> Cache request_queue in bdev and replace two derefs in
-> bdev->bd_disk->queue with bdev->bd_queue. Benchmarking
-> with nullblk gave me around +1% to peak perf.
+On Fri, 15 Oct 2021 16:43:35 +0200, Paolo Valente wrote:
+> this patch fixes bug 214503 [1]. Commit 2d52c58b9c9b ("block, bfq:
+> honor already-setup queue merges") has not to do with this bug, and
+> can be restored.
 > 
-> All patches are self contained and don't rely on others from
-> the set including 1/5 and can be taken separately. And some
-> changes go in separate patches to minimise conflicts. When
-> we agree on the approach, I'll send the rest converting some
-> other spots out of block.
+> Thanks,
+> Paolo
+> 
+> [...]
 
-Looks fine to me. Christoph, any concerns?
+Applied, thanks!
 
-One note, though - s/fater/faster in patches 2..5 in the commit
-message.
+[1/1] block, bfq: reset last_bfqq_created on group change
+      commit: d29bd41428cfff9b582c248db14a47e2be8457a8
 
+Best regards,
 -- 
 Jens Axboe
+
 
