@@ -2,144 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E745E430B28
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 19:19:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BC36430B36
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 19:27:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344381AbhJQRVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 13:21:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48078 "EHLO mail.kernel.org"
+        id S1344418AbhJQR3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 13:29:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54210 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344366AbhJQRVf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 13:21:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1654960FE3;
-        Sun, 17 Oct 2021 17:19:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634491165;
-        bh=N5I/TK6RMFPLcyd9DVqkH+PDXTwES+K3ZR23ZkNZClY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=R6HSq4fLCJnzfn0amTzAgSD3Ca6FdmcMwGDzJO6fdYhuMhf476KP1gdodhoheltAP
-         9PL6MJbMWs0+bALZEcCtaAJDgJ3G+dHSBchHzPhtEN3kfdO3ubuHNyJCrFnpEaV3nc
-         Egz17o6qOfuQffB6Hx/ta+EtJhjmCR7JpHjRv5Oqbu4cExyYiQw8JQTM2QsfY04Lap
-         nr9xV+MxPrOoIUhs/IPMotuIWhVvVuSnBTByue7bN5jRchNFRa6Hu0akvRBsOp9MyG
-         zvwsmFpk65JAfDKkhx/BtZHwYFCzgxY1kqRVt9JD4ExWTVt4QTaETia8+8mGprlmBz
-         lDnp3rKEA5bTQ==
-Date:   Sun, 17 Oct 2021 12:23:57 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Len Baker <len.baker@gmx.com>
-Cc:     Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>,
-        Chaitanya Kulkarni <kch@nvidia.com>,
-        Kees Cook <keescook@chromium.org>,
-        linux-hardening@vger.kernel.org, linux-nvme@lists.infradead.org,
+        id S1344366AbhJQR3W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Oct 2021 13:29:22 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 107DE60FD8;
+        Sun, 17 Oct 2021 17:27:09 +0000 (UTC)
+Date:   Sun, 17 Oct 2021 18:31:25 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Peter Rosin <peda@axentia.se>
+Cc:     Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        devicetree@vger.kernel.org, kernel@axis.com, lars@metafoo.de,
+        linux-iio@vger.kernel.org, robh+dt@kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] nvmet: prefer struct_size over open coded arithmetic
-Message-ID: <20211017172357.GA1214270@embeddedor>
-References: <20211017095650.3718-1-len.baker@gmx.com>
+Subject: Re: [PATCH v2 0/3] Add settle time support to iio-mux
+Message-ID: <20211017183108.1797d416@jic23-huawei>
+In-Reply-To: <7c14fabc-8811-5875-15a0-67884e2da78d@axentia.se>
+References: <20211007134641.13417-1-vincent.whitchurch@axis.com>
+        <7c14fabc-8811-5875-15a0-67884e2da78d@axentia.se>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211017095650.3718-1-len.baker@gmx.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 17, 2021 at 11:56:50AM +0200, Len Baker wrote:
-> As noted in the "Deprecated Interfaces, Language Features, Attributes,
-> and Conventions" documentation [1], size calculations (especially
-> multiplication) should not be performed in memory allocator (or similar)
-> function arguments due to the risk of them overflowing. This could lead
-> to values wrapping around and a smaller allocation being made than the
-> caller was expecting. Using those allocations could lead to linear
-> overflows of heap memory and other misbehaviors.
+On Sat, 9 Oct 2021 01:09:56 +0200
+Peter Rosin <peda@axentia.se> wrote:
+
+> Hi Vincent!
 > 
-> In this case this is not actually dynamic size: all the operands
-> involved in the calculation are constant values. However it is better to
-> refactor this anyway, just to keep the open-coded math idiom out of
-> code.
+> On 2021-10-07 15:46, Vincent Whitchurch wrote:
+> > On one of our boards we use gpio-mux with iio-mux to read voltages using an ADC
+> > from a few different channels, and on this board the input voltage needs some
+> > time to stabilize after a switch of the mux.
+> > 
+> > This series add devicetree and driver support for this kind of hardware which
+> > requries a settle time after muxing.
+> > 
+> > v1 -> v2:
+> > - Move property support to iio-mux and delay handling to mux core as suggested
+> >   by Peter.
+> > 
+> > v1: https://lore.kernel.org/all/20211004153640.20650-1-vincent.whitchurch@axis.com/
+> > 
+> > Vincent Whitchurch (3):
+> >   mux: add support for delay after muxing
+> >   dt-bindings: iio: io-channel-mux: Add property for settle time
+> >   iio: multiplexer: iio-mux: Support settle-time-us property
+> > 
+> >  .../iio/multiplexer/io-channel-mux.yaml       |  5 +++
+> >  drivers/iio/multiplexer/iio-mux.c             |  7 +++-
+> >  drivers/mux/core.c                            | 36 ++++++++++++++++---
+> >  include/linux/mux/consumer.h                  | 23 +++++++++---
+> >  include/linux/mux/driver.h                    |  4 +++
+> >  5 files changed, 65 insertions(+), 10 deletions(-)
+> >   
 > 
-> So, use the struct_size() helper to do the arithmetic instead of the
-> argument "size + count * size" in the kmalloc() function.
+> This looks really nice, thank you! The only question I see is if it should
+> go via my (virtually unused) mux tree or via the iio tree. Yes, the meat is
+> in mux/core.c, but I'm happy to just ack these patches and have Jonathan
+> handle them. But, I'm also fine with handling it in the mux tree (but I'm
+> getting old and forgetful, and it's been so many moons that I need to
+> re-learn the steps).
 > 
-> This code was detected with the help of Coccinelle and audited and fixed
-> manually.
+> Jonathan, you or me? If you, you can add:
 > 
-> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments
-> 
-> Signed-off-by: Len Baker <len.baker@gmx.com>
-> ---
-> Hi,
-> 
-> this patch is built against the linux-next tree (tag next-20211015).
+> Acked-by: Peter Rosin <peda@axentia.se>
 
-You don't need to include these lines in every patch. Just add [next]
-to the subject line, like this:
+I don't really mind, but the 4/3 and 5/3 have broken my b4 based flow + Rob
+hasn't yet given an Ack on those two, so I'll not pick any of them up just yet.
+I can sort out the two oddly numbered patches if Rob is happy, though they'll
+probably not have the nice link tags that b4 automates.
 
-	[PATCH][next] nvmet: prefer struct_size over open coded arithmetic
+Note Rob didn't actually say he was happy with patch 2 yet as far as I can tell.
 
-It should be clear enough for people that you are talking about
-linux-next. And in case someone asks, then you proceed to clarify. :)
+Thanks,
+
+Jonathan
 
 > 
-> Regards,
-> Len
-> 
->  drivers/nvme/target/admin-cmd.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/nvme/target/admin-cmd.c b/drivers/nvme/target/admin-cmd.c
-> index aa6d84d8848e..4aa71625c86a 100644
-> --- a/drivers/nvme/target/admin-cmd.c
-> +++ b/drivers/nvme/target/admin-cmd.c
-> @@ -278,8 +278,8 @@ static void nvmet_execute_get_log_page_ana(struct nvmet_req *req)
->  	u16 status;
-> 
->  	status = NVME_SC_INTERNAL;
-> -	desc = kmalloc(sizeof(struct nvme_ana_group_desc) +
-> -			NVMET_MAX_NAMESPACES * sizeof(__le32), GFP_KERNEL);
-> +	desc = kmalloc(struct_size(desc, nsids, NVMET_MAX_NAMESPACES),
-> +		       GFP_KERNEL);
+> Cheers,
+> Peter
 
-It might be worth exploring if the flexible array is actually needed,
-once the allocation is always determined by NVMET_MAX_NAMESPACES. Maybe
-it can be changed to the following and remove the dynamic allocation
-entirely?
-
-	struct nvme_ana_group_desc {
-		__le32  grpid;
-		__le32  nnsids;
-		__le64  chgcnt;
-		__u8    state;
-		__u8    rsvd17[15];
-		__le32  nsids[NVMET_MAX_NAMESPACES];
-	};
-
-If the above is possible then (at least) these lines should be audited:
-
-drivers/nvme/host/multipath.c-551-              if (WARN_ON_ONCE(offset > ctrl->ana_log_size - sizeof(*desc)))
-
-drivers/nvme/host/multipath.c-566-              offset += sizeof(*desc);
-drivers/nvme/host/multipath.c-567-              if (WARN_ON_ONCE(offset > ctrl->ana_log_size - nsid_buf_size))
-
-If the flexible array remains, then this line could use
-flex_array_size():
-
-drivers/nvme/host/multipath.c-555-              nsid_buf_size = nr_nsids * sizeof(__le32);
-
-struct_size() could be used here, as well:
-
-drivers/nvme/host/multipath.c-847-      ana_log_size = sizeof(struct nvme_ana_rsp_hdr) +
-drivers/nvme/host/multipath.c:848:              ctrl->nanagrpid * sizeof(struct nvme_ana_group_desc) +
-drivers/nvme/host/multipath.c-849-              ctrl->max_namespaces * sizeof(__le32);
-
-drivers/nvme/target/admin-cmd.c:267:    return sizeof(struct nvme_ana_group_desc) + count * sizeof(__le32);
-
-Thanks
---
-Gustavo
-
-
->  	if (!desc)
->  		goto out;
-> 
-> --
-> 2.25.1
-> 
