@@ -2,131 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 650C6430BE4
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 21:57:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E00BF430BE6
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 21:58:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242781AbhJQT7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 15:59:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54254 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242760AbhJQT7l (ORCPT
+        id S242793AbhJQUAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 16:00:48 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:34028 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242719AbhJQUAr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 15:59:41 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EB2FC061765
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 12:57:30 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id t2so37336649wrb.8
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 12:57:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=xtVQlPdkcZnLgGwDqTZh7i92rf4R+GARneWlElIxelE=;
-        b=FNuPSAsi/VR0J4YFMAIzaA4a9nC7szSv1+eUS1fROFTS7vM9gkgNvr5vnCQOhfivO0
-         mGoVrcJOPPb3Y0SMMu3+OF6lieSI+vN/jRagPKtsEMt0kc9MYo/S1De5cOoXj1TVdP5x
-         kP3JGR4osO2ivEMTKhn8gWw7dZpL4pgJQ9bfMpOpB25M033C6D+sHnc5rtStO2gZR1tQ
-         BxJ8vyH8BFAoWzpSJfJ7qZOhR8B4f3HJrKI8NB+kBC2B/4vS/GckcFhUsKZ+/rCOG9Ts
-         d3Nuzsw9TZq2T5ERg0Tkar/Lhb561sFFyFpSyIQPL08+GY4GheVaSMi2U4o/6xXXGZOQ
-         r2Jg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=xtVQlPdkcZnLgGwDqTZh7i92rf4R+GARneWlElIxelE=;
-        b=RCEo+VyaIHIuTvoSKeeUrPVz//vjHune0c239jHSqX88XYWqiKsskkm1u3Z4l/tubp
-         XjHTjI/q2LkP1hAZpI7RScvCCV85oXOtypqI87SBsUrRoV56GrQZCUdPxkelt7QyauRc
-         p78Td2JDb5Jahr7Gdv7SiCLbS5+OzKWZT9qm1RaM0iHL2cTSafn4OpdQe1yI57ef/H8k
-         cxAaSwmrd/WEtoo3hpxSI+LMbanzFIfFkXsaOEn/jvwrnJGmEUDP2hDq2kFMQdlq6LQw
-         0k50rKOcFACJhP+wnNN42nWcz0dyHDADWlRWVerMqsVFmwOL41EOYDhkugl/eeLtXWyZ
-         KEOg==
-X-Gm-Message-State: AOAM530tVc5OcqR+bDr2wucBuqDWnUv6qPfk+pYh/yBuybMQwhyJqbHN
-        zxN/87bqWgVQGoaJS4R+NtiTfg==
-X-Google-Smtp-Source: ABdhPJyuWQWwOMtuiE7ax1hxiutfdudm1XBNHdVou0KYgqADhW+EOkd3K/Rt4ER1gqkVFICKYENbaQ==
-X-Received: by 2002:a5d:45c9:: with SMTP id b9mr30502649wrs.365.1634500649381;
-        Sun, 17 Oct 2021 12:57:29 -0700 (PDT)
-Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
-        by smtp.googlemail.com with ESMTPSA id d1sm12061110wrr.72.2021.10.17.12.57.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 Oct 2021 12:57:28 -0700 (PDT)
-Date:   Sun, 17 Oct 2021 21:57:27 +0200
-From:   LABBE Corentin <clabbe@baylibre.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     mchehab@kernel.org, hverkuil@xs4all.nl, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, mjpeg-users@lists.sourceforge.net
-Subject: Re: [PATCH v2 06/10] staging: media: zoran: fusion all modules
-Message-ID: <YWyAJ1gqDrSIqAu7@Red>
-References: <20211013185812.590931-1-clabbe@baylibre.com>
- <20211013185812.590931-7-clabbe@baylibre.com>
- <20211014080155.GY2083@kadam>
+        Sun, 17 Oct 2021 16:00:47 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1634500716;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=nayAYxRaMWLhlwjlwBCKqCn9Mc1r6wv7O0VDxjFDwbo=;
+        b=xxPqPbXkwStGcwGk97vgo3gQwK+9SIIutD1PFI5W+Yy8wKFtrrQBNqjfqsDN3Gthen7BuW
+        6Ya+P1wrpX0rbnqtwwpZfhFMo+qH88PRJCiubRU0FaajvrSNZUqgBPaVaGAvUZsJLDsDYV
+        7zbDOeO0Vs4SXEGbIYDKM69DX4NmBwHPtQTdqWCf7gWxYHOgaLTC2dR68Rvmjs8RxJzs/y
+        93jg3gJkRWyLNtYM+D5guYl+jRqRe7Y8rib/tJSvUjFR5I04COZbDyQdE8cKUw8yHbvx+P
+        BRqHmKZeqnIrV6BqqzHH7W+cq2PWntMwGwOJcWQIHTzXGI3TC6iRDT+9sUQE3Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1634500716;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=nayAYxRaMWLhlwjlwBCKqCn9Mc1r6wv7O0VDxjFDwbo=;
+        b=nOgIU5sdnBldu0pc04Vbom9ze/HDO6e12owG/8UTIPsUD5EAIDfgvZ8JjdPzFwxCzuNQIF
+        itNuBVc3UhQ+ojCg==
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>
+Cc:     Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 05/10] x86/tdx: Handle port I/O
+In-Reply-To: <20211005204136.1812078-6-sathyanarayanan.kuppuswamy@linux.intel.com>
+References: <20211005204136.1812078-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20211005204136.1812078-6-sathyanarayanan.kuppuswamy@linux.intel.com>
+Date:   Sun, 17 Oct 2021 21:58:35 +0200
+Message-ID: <87v91v2zkk.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211014080155.GY2083@kadam>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le Thu, Oct 14, 2021 at 11:01:55AM +0300, Dan Carpenter a écrit :
-> On Wed, Oct 13, 2021 at 06:58:08PM +0000, Corentin Labbe wrote:
-> > The zoran driver is split in many modules, but this lead to some
-> > problems.
-> > One of them is that load order is incorrect when everything is built-in.
-> > 
-> > Having more than one module is useless, so fusion all zoran modules in
->                                              ^^^^^^
-> "fusion" isn't the right word.  It should be "fuse" or even better
-> "merge".  Same in the subject.
-> 
+On Tue, Oct 05 2021 at 13:41, Kuppuswamy Sathyanarayanan wrote:
+>  									\
+>  static inline void outs##bwl(int port, const void *addr, unsigned long count) \
+>  {									\
+> -	if (sev_key_active()) {						\
+> +	if (sev_key_active() ||						\
+> +	    cc_platform_has(CC_ATTR_GUEST_UNROLL_STRING_IO)) {		\
 
-Hello
+Instead of adding an extra check, can you please replace that
+sev_key_active() with cc_platform_has() completely?
 
-I will use merge, thanks for the suggestion.
+> +/*
+> + * tdx_handle_early_io() cannot be re-used in #VE handler for handling
+> + * I/O because the way of handling string I/O is different between
+> + * normal and early I/O case. Also, once trace support is enabled,
+> + * tdx_handle_io() will be extended to use trace calls which is also
+> + * not valid for early I/O cases.
+> + */
+> +static void tdx_handle_io(struct pt_regs *regs, u32 exit_qual)
+> +{
+> +	struct tdx_hypercall_output outh;
+> +	int out, size, port, ret;
+> +	bool string;
+> +	u64 mask;
+> +
+> +	string = VE_IS_IO_STRING(exit_qual);
+> +
+> +	/* I/O strings ops are unrolled at build time. */
 
-> > +static int load_codec(struct zoran *zr, u16 codecid)
-> > +{
-> > +	switch (codecid) {
-> > +	case CODEC_TYPE_ZR36060:
-> > +#ifdef CONFIG_VIDEO_ZORAN_ZR36060
-> > +		return zr36060_init_module();
-> > +#else
-> > +		pci_err(zr->pci_dev, "ZR36060 support is not enabled\n");
-> > +		return -EINVAL;
-> > +#endif
-> > +		break;
-> > +	case CODEC_TYPE_ZR36050:
-> > +#ifdef CONFIG_VIDEO_ZORAN_DC30
-> > +		return zr36050_init_module();
-> > +#else
-> > +		pci_err(zr->pci_dev, "ZR36050 support is not enabled\n");
-> > +		return -EINVAL;
-> > +#endif
-> > +		break;
-> > +	case CODEC_TYPE_ZR36016:
-> > +#ifdef CONFIG_VIDEO_ZORAN_DC30
-> > +		return zr36016_init_module();
-> > +#else
-> > +		pci_err(zr->pci_dev, "ZR36016 support is not enabled\n");
-> > +		return -EINVAL;
-> > +#endif
-> > +		break;
-> > +	}
-> 
-> Not related to your patch but if load_codec() fails, the probe function
-> still calls zoran_setup_videocodec() on the failed codec.  It might be
-> better to set the codec to zero?
-> 
-> 		result = load_codec(zr, zr->card.video_codec);
-> 		if (result < 0) {
-> 			pci_err(pdev, "failed to load codec %s: %d\n", codec_name, result);
-> 			zr->card.video_codec = 0;
-> 		}
-> 
+Fancy. The compiler can evaluate sev_key_active() and
+cc_platform_has() at build time?
 
-I will rework by adding a video_codec_init/exit, it will help tracking error (current behavour to ignore error is bad).
-Furthermore, my patch forgot to add call to all "old module" exits, so dedicated function will be better.
+Thanks,
 
-Thanks for the review
-Regards
+        tglx
