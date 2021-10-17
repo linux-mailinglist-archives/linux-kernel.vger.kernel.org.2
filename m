@@ -2,94 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30AA34307BD
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 12:10:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 867C94307C6
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 12:12:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237651AbhJQKMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 06:12:54 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:57578 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234709AbhJQKMx (ORCPT
+        id S241780AbhJQKOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 06:14:44 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:44180
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237627AbhJQKOm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 06:12:53 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        Sun, 17 Oct 2021 06:14:42 -0400
+Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com [209.85.208.197])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id B19822199E;
-        Sun, 17 Oct 2021 10:10:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1634465443; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=cNYpvRQl0L0sXJwGVDZQ2Iuqli37exNPS5euq8LShEI=;
-        b=lFY32vgd08LL3mvHEQXrfSUlSolOUB5MkreDMSEw1s3rjGnmqXK2IZ1YOrY+VwKP5U5klY
-        cQNb70ica9eZmGQAkt304hy+TEbmq8i8Hv+CpUZ1FacxUBS3leRg2Qo8HEVGev51spzpUz
-        u2AbvvLojj2bjFiZ1L8LQ47dxVzzzhw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1634465443;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=cNYpvRQl0L0sXJwGVDZQ2Iuqli37exNPS5euq8LShEI=;
-        b=gAYLtU5KACpS5KAz3oADSSXArteQa3Jn3pd8xf5XzgDmfGm1shYS/fR+t7jPuNu6Fr9Phn
-        eIlhqQPBYb0nwXBw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 95C3C13A39;
-        Sun, 17 Oct 2021 10:10:43 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id d20oJKP2a2HaNgAAMHmgww
-        (envelope-from <bp@suse.de>); Sun, 17 Oct 2021 10:10:43 +0000
-Date:   Sun, 17 Oct 2021 12:10:46 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] perf/urgent for v5.15-rc6
-Message-ID: <YWv2pgdrR0xgfoRI@zn.tnic>
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 373F340018
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 10:12:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1634465552;
+        bh=elX2pBDZzaz8eqhk96ts7Ds6K1T0utB9mlEa7CNLq5A=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=qaLcUjsCHb0vV5hyc5l3Ni4x3iRL3/wAAdFcPle1yuSxs3nYDmtvK7HHs7zlWrDi7
+         XrCsyX/2Zxxirt6iolNcSZPL0Gk0kQ4/QdwEHD6/9UFu7GJ2qTN+M88tJEOi2/rzbQ
+         rB/dneZYL+1IGG/miRkVx7XTlo2my5TR41eP2JWn7XyRAV69z6GY1qEl/Vgz68bqID
+         GPxWgWrfv3/cZtW20Gr2LuKdRjbBMCCYrGDkersD2kByFIZHFwHCOkOBR2TcQ6XOXg
+         QSEobttKZZaB0y6glsiXkACpkJ2B6jYrl4kunavo5XOJWWi7Xr/1D021ILlmkVPakU
+         NwCpVK0S0EmaQ==
+Received: by mail-lj1-f197.google.com with SMTP id z9-20020a2e3509000000b00210f31ea0e3so264021ljz.16
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 03:12:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=elX2pBDZzaz8eqhk96ts7Ds6K1T0utB9mlEa7CNLq5A=;
+        b=m8Usneep17OlUQkb2o61Saw8LZR7jnvlCod8gNs+g67zDMjIw4TZZJZQnQQjDeIbSJ
+         XKDC7xfd67QAESlJFf+hlyp4M1OKkZPzEHim9LDuumQMUAKwABlHx94zlz/vU4rMwkx4
+         +RRxLp4Z5MZVFmIspDur+pdGuhJALgQnaNWxYhriReSAy8Hfkd9M/Ovi66UfkCXl/BxN
+         UriSkqSU76cm0HD3R/TnbQJecfOOPAb12W+5TiSVXySw+H/7AF28aWWjpi49ufwcZ/9q
+         DNYbVz2uwKTIJdq6IlwyaPAwddm5kfYksY3VBvsmYnnK+m4NSOZDuPPeffib2fohWcis
+         zgrg==
+X-Gm-Message-State: AOAM530Zj94+L6CvdecMky12fJ4WoJzocXtb/tWdTqvPoGsOKaP1hOg1
+        ExnZJWCjD2BnrVee3Iwamu85pQycnLu9q3L1tfCyu/PlXaQDl3u/MpUYO3atW+09b+guciSrcbY
+        twAOkHd+lc5zozmGAmfpYAo+9yhLI/+e0O3uQGnmzIQ==
+X-Received: by 2002:a05:6512:988:: with SMTP id w8mr21250568lft.361.1634465551542;
+        Sun, 17 Oct 2021 03:12:31 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz3IsWFOQ9rmXJOqYrT0Qx7hM86wCCMZBN6puet5W+1YsvKevv/Kz/o+HT5Me2RmPCBTDHTTg==
+X-Received: by 2002:a05:6512:988:: with SMTP id w8mr21250548lft.361.1634465551358;
+        Sun, 17 Oct 2021 03:12:31 -0700 (PDT)
+Received: from kozik-lap.lan (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
+        by smtp.gmail.com with ESMTPSA id o26sm1263077ljg.92.2021.10.17.03.12.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 Oct 2021 03:12:31 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Sylwester Nawrocki <snawrocki@kernel.org>
+Subject: [PATCH 1/3] arm64: dts: exynos: add 'chassis-type' property
+Date:   Sun, 17 Oct 2021 12:12:26 +0200
+Message-Id: <20211017101228.19478-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+A new 'chassis-type' root node property has recently been approved for
+the device-tree specification.
 
-please pull a single perf/urgent enhancement for v5.15.
+Add this property for end-user devices (such as laptops,
+smartphones and tablets) based on Samsung Exynos ARM64 SoCs.
 
-Thx.
-
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 ---
+ arch/arm64/boot/dts/exynos/exynos5433-tm2.dts  | 1 +
+ arch/arm64/boot/dts/exynos/exynos5433-tm2e.dts | 1 +
+ 2 files changed, 2 insertions(+)
 
-The following changes since commit 64570fbc14f8d7cb3fe3995f20e26bc25ce4b2cc:
-
-  Linux 5.15-rc5 (2021-10-10 17:01:59 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/perf_urgent_for_v5.15_rc6
-
-for you to fetch changes up to 71920ea97d6d1d800ee8b51951dc3fda3f5dc698:
-
-  perf/x86/msr: Add Sapphire Rapids CPU support (2021-10-15 11:25:26 +0200)
-
-----------------------------------------------------------------
-- Add Sapphire Rapids to the list of CPUs supporting the SMI count MSR
-
-----------------------------------------------------------------
-Kan Liang (1):
-      perf/x86/msr: Add Sapphire Rapids CPU support
-
- arch/x86/events/msr.c | 1 +
- 1 file changed, 1 insertion(+)
-
+diff --git a/arch/arm64/boot/dts/exynos/exynos5433-tm2.dts b/arch/arm64/boot/dts/exynos/exynos5433-tm2.dts
+index fdd0796b29d4..aca01709fd29 100644
+--- a/arch/arm64/boot/dts/exynos/exynos5433-tm2.dts
++++ b/arch/arm64/boot/dts/exynos/exynos5433-tm2.dts
+@@ -13,6 +13,7 @@
+ / {
+ 	model = "Samsung TM2 board";
+ 	compatible = "samsung,tm2", "samsung,exynos5433";
++	chassis-type = "handset";
+ };
+ 
+ &cmu_disp {
+diff --git a/arch/arm64/boot/dts/exynos/exynos5433-tm2e.dts b/arch/arm64/boot/dts/exynos/exynos5433-tm2e.dts
+index 089fc7a1af67..22d26460f3dd 100644
+--- a/arch/arm64/boot/dts/exynos/exynos5433-tm2e.dts
++++ b/arch/arm64/boot/dts/exynos/exynos5433-tm2e.dts
+@@ -13,6 +13,7 @@
+ / {
+ 	model = "Samsung TM2E board";
+ 	compatible = "samsung,tm2e", "samsung,exynos5433";
++	chassis-type = "handset";
+ };
+ 
+ &cmu_disp {
 -- 
-Regards/Gruss,
-    Boris.
+2.30.2
 
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
