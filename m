@@ -2,96 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E00BF430BE6
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 21:58:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5193430BEC
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 22:05:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242793AbhJQUAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 16:00:48 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:34028 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242719AbhJQUAr (ORCPT
+        id S242812AbhJQUHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 16:07:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55896 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233148AbhJQUHU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 16:00:47 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1634500716;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=nayAYxRaMWLhlwjlwBCKqCn9Mc1r6wv7O0VDxjFDwbo=;
-        b=xxPqPbXkwStGcwGk97vgo3gQwK+9SIIutD1PFI5W+Yy8wKFtrrQBNqjfqsDN3Gthen7BuW
-        6Ya+P1wrpX0rbnqtwwpZfhFMo+qH88PRJCiubRU0FaajvrSNZUqgBPaVaGAvUZsJLDsDYV
-        7zbDOeO0Vs4SXEGbIYDKM69DX4NmBwHPtQTdqWCf7gWxYHOgaLTC2dR68Rvmjs8RxJzs/y
-        93jg3gJkRWyLNtYM+D5guYl+jRqRe7Y8rib/tJSvUjFR5I04COZbDyQdE8cKUw8yHbvx+P
-        BRqHmKZeqnIrV6BqqzHH7W+cq2PWntMwGwOJcWQIHTzXGI3TC6iRDT+9sUQE3Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1634500716;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=nayAYxRaMWLhlwjlwBCKqCn9Mc1r6wv7O0VDxjFDwbo=;
-        b=nOgIU5sdnBldu0pc04Vbom9ze/HDO6e12owG/8UTIPsUD5EAIDfgvZ8JjdPzFwxCzuNQIF
-        itNuBVc3UhQ+ojCg==
-To:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 05/10] x86/tdx: Handle port I/O
-In-Reply-To: <20211005204136.1812078-6-sathyanarayanan.kuppuswamy@linux.intel.com>
-References: <20211005204136.1812078-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211005204136.1812078-6-sathyanarayanan.kuppuswamy@linux.intel.com>
-Date:   Sun, 17 Oct 2021 21:58:35 +0200
-Message-ID: <87v91v2zkk.ffs@tglx>
+        Sun, 17 Oct 2021 16:07:20 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26B22C06161C
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 13:05:10 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id j75-20020a1c234e000000b00323023159e1so299127wmj.2
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 13:05:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=B17ugjfsl4NIFBjvUZANXnVzu0w3U/j7jZVs0/846lc=;
+        b=DATvT66RtKTqRcxQ9DWqOw2LxPNEGsz9rz51ZHhCY7hkVrbU3TM8WgLKtqB+1j4NyL
+         wOUXP5Pc+qYbRIzl7Tmo3hruNmndRq3PUSPs5fER8llI/32hmJv0tuy87Fx0l4yMBSGJ
+         QAcLnAD7mLHM3T/rr5ozBJ6lOdIMuIFy998tMTx1IB6/njjPVVAG3de0W+hPKZy2zyno
+         bZALe76UMxF0bMwyhigeepcN8QLEwXmQqVCLv52NpX8Pf9y6tb0gPapICKaYvo7I6yJd
+         wBSQ2o112Ll/ch3V1LYR7ZpcNLZ9lq6kEIutd5V5Rs7ZmMSuZRHpem2O3Fl9FiffYya7
+         JXpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=B17ugjfsl4NIFBjvUZANXnVzu0w3U/j7jZVs0/846lc=;
+        b=nqLENijr/a27v1iJFqpUdUxhRkV8S0GmGRHwuLd9/aWDn5NHrTOd0dzH2lGjjNmA5P
+         v8ndsTgSCv54Mnlpo/cdmodnR+0sKg6sD2T/c+EJ9ZbFYjVfthtKq/vNPW/IEWOnexXv
+         xaTVfKZrvhRcNPNAhdvqXxUq95GuMrnfeH4O9FYXhSqqpifflwNu5sfLusvSp0gRRNkp
+         CKRaMH2Cw7SpgRu23hNbEnc8MKfAPkFjgeFELubEULFur8ZWGtRfgLrZ8wgkTREmpQuv
+         zPH7NUeBgfTg8+5VHMRTaNycnHAdODBvYso2gq5fhyoYCAurIp+fOrVg1Z8JA/Gdy1/I
+         +lJQ==
+X-Gm-Message-State: AOAM531+apnqZMcx2r/qtdly6hqDzb9NdWw4v5cjTjTPjOruL6qgJXiE
+        veNLLtvYR+vLNmg38bWElYkFjA==
+X-Google-Smtp-Source: ABdhPJwcDtpPg2mxmJM2XYwjmyUOwrYqD4Lkj7YPm36EiMTbS1W1XW9FfS2RUez7WsF+rqNC5j9qSQ==
+X-Received: by 2002:a05:600c:1989:: with SMTP id t9mr26088433wmq.48.1634501108682;
+        Sun, 17 Oct 2021 13:05:08 -0700 (PDT)
+Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
+        by smtp.googlemail.com with ESMTPSA id z6sm10909246wro.25.2021.10.17.13.05.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 Oct 2021 13:05:08 -0700 (PDT)
+Date:   Sun, 17 Oct 2021 22:05:06 +0200
+From:   LABBE Corentin <clabbe@baylibre.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     mchehab@kernel.org, hverkuil@xs4all.nl, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev, mjpeg-users@lists.sourceforge.net
+Subject: Re: [PATCH v2 04/10] staging: media: zoran: add debugfs
+Message-ID: <YWyB8kwsqAvHMuhb@Red>
+References: <20211013185812.590931-1-clabbe@baylibre.com>
+ <20211013185812.590931-5-clabbe@baylibre.com>
+ <20211014073752.GM8429@kadam>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211014073752.GM8429@kadam>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05 2021 at 13:41, Kuppuswamy Sathyanarayanan wrote:
->  									\
->  static inline void outs##bwl(int port, const void *addr, unsigned long count) \
->  {									\
-> -	if (sev_key_active()) {						\
-> +	if (sev_key_active() ||						\
-> +	    cc_platform_has(CC_ATTR_GUEST_UNROLL_STRING_IO)) {		\
+Le Thu, Oct 14, 2021 at 10:37:52AM +0300, Dan Carpenter a écrit :
+> On Wed, Oct 13, 2021 at 06:58:06PM +0000, Corentin Labbe wrote:
+> > +config VIDEO_ZORAN_DEBUG
+> > +	bool "Enable zoran debugfs"
+> > +	depends on VIDEO_ZORAN
+> > +	depends on DEBUG_FS
+> > +	help
+> > +	  Say y to enable zoran debug file.
+> > +	  This will create /sys/kernel/debug/CARD_NAME/debug for displaying
+> > +	  stats and debug information.
+> 
+> Why bother with a CONFIG?  Just make it always on?
+> 
 
-Instead of adding an extra check, can you please replace that
-sev_key_active() with cc_platform_has() completely?
+Hello
 
-> +/*
-> + * tdx_handle_early_io() cannot be re-used in #VE handler for handling
-> + * I/O because the way of handling string I/O is different between
-> + * normal and early I/O case. Also, once trace support is enabled,
-> + * tdx_handle_io() will be extended to use trace calls which is also
-> + * not valid for early I/O cases.
-> + */
-> +static void tdx_handle_io(struct pt_regs *regs, u32 exit_qual)
-> +{
-> +	struct tdx_hypercall_output outh;
-> +	int out, size, port, ret;
-> +	bool string;
-> +	u64 mask;
-> +
-> +	string = VE_IS_IO_STRING(exit_qual);
-> +
-> +	/* I/O strings ops are unrolled at build time. */
+I love to provides choice to user (and so avoid a dep on DEBUG_FS), even if I think I am the only one remaining user.
 
-Fancy. The compiler can evaluate sev_key_active() and
-cc_platform_has() at build time?
+> > @@ -1286,6 +1321,12 @@ static int zoran_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+> >  
+> >  	zr->map_mode = ZORAN_MAP_MODE_RAW;
+> >  
+> > +#ifdef CONFIG_VIDEO_ZORAN_DEBUG
+> > +	zr->dbgfs_dir = debugfs_create_dir(ZR_DEVNAME(zr), NULL);
+> > +	debugfs_create_file("debug", 0444,
+> > +					      zr->dbgfs_dir, zr,
+> > +					      &zoran_debugfs_fops);
+> 
+> This whitespace is weird.
 
-Thanks,
+Definitively Yes, fixed!
 
-        tglx
+Thanks
+Regards
