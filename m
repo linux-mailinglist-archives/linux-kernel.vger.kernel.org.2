@@ -2,102 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 975644309CD
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 16:39:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B22254309D8
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 16:47:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237375AbhJQOlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 10:41:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59158 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236695AbhJQOlv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 10:41:51 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 139066103B;
-        Sun, 17 Oct 2021 14:39:39 +0000 (UTC)
-Date:   Sun, 17 Oct 2021 15:43:54 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Yang Yingliang <yangyingliang@huawei.com>
-Cc:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
-        <lars@metafoo.de>, <ardeleanalex@gmail.com>
-Subject: Re: [PATCH] iio: buffer: Fix memory leak in
- iio_buffer_register_legacy_sysfs_groups()
-Message-ID: <20211017154327.6e88bc05@jic23-huawei>
-In-Reply-To: <20211013144242.1685060-1-yangyingliang@huawei.com>
-References: <20211013144242.1685060-1-yangyingliang@huawei.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S1343910AbhJQOtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 10:49:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42326 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238007AbhJQOtS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Oct 2021 10:49:18 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86203C06161C
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 07:47:08 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id g10so60142504edj.1
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 07:47:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=dFqNJFVsy2D7h6GKfy8JazvFD2oIbLBEOiY/RubRa68=;
+        b=j20NxjysulzWzOseqaVPO2JSbqzWx4oePP+UYSEMUaa2SxXOozUaRBcYAE9onpI52u
+         sxMEV+hTUh8BxjZUJvOZHHzAP2HseLy92zraM6IN7IiXI70g7Aqawbv3Wi5ksrigKydR
+         mDZGoJ/8rS7oaEBpt2Q9QcBOBv9tlek+inWcg6Iu3b6Uo5QaLtwiR5iDgtkYgL7l41jc
+         pS+zMmjTY8LhPs2bscmAMMq5+2aEnbU9QmTh0rytU5+QQNAzmY9N5VEN5h65vbT9fij7
+         Hlj6TJxXylA4XcPU2R2UpHOWLqoxt4Dv1iWyTZl3CcQHZAZV9rDqtXWHHpWtgqIRp0aI
+         uA3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=dFqNJFVsy2D7h6GKfy8JazvFD2oIbLBEOiY/RubRa68=;
+        b=Bmo6Z3l2C9KnqcOSaN7pKX47J5Ri7bxrXLqQ8xq8R7rlyxmXoutxghN+NCaCH0BF7p
+         QdlDkb29OIirIqNspxik2MIx6d6Gbn7smPW7PLD22v3dgIeoaUHd0XPFHfZDPzKKBdcS
+         yhsOxrEBliaOJfp9N7FdQ9KCebyvbG1CigtneO+nfhSMsNHpWjMID/q2CJnOIqAD7etk
+         4ClQndNLTB4CJvbk9BrlADkP+OTQf78Y/k1A/Yf0pUd7kgYEk4aTtYTGfJ6dPIGolWk6
+         wDTlEoRMjk7VbOSG9iZXc+ZoBuN4MEPpN7HjGsPcrqb0tfhTxK7R6OYZAlnVM2AT6Sh6
+         r2Ew==
+X-Gm-Message-State: AOAM533e8WyCiM44qvIUyYXnB7W950pSxOUEL+/+Y2RJixnzidfYrw2+
+        d5QPlrZ0UKcdGRWX9nzPUks=
+X-Google-Smtp-Source: ABdhPJzDPWYGnvUlTp5HotGSD2kgRMRr0wml8eHhl9LFxn9XXqtF/LVwSj/ORObo2dokPeGzjG90dA==
+X-Received: by 2002:a17:906:4a09:: with SMTP id w9mr22411227eju.419.1634482027145;
+        Sun, 17 Oct 2021 07:47:07 -0700 (PDT)
+Received: from localhost.localdomain (host-79-47-104-180.retail.telecomitalia.it. [79.47.104.180])
+        by smtp.gmail.com with ESMTPSA id gt35sm839112ejc.105.2021.10.17.07.47.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 Oct 2021 07:47:06 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Martin Kaiser <martin@kaiser.cx>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Michael Straube <straube.linux@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Martin Kaiser <martin@kaiser.cx>
+Subject: Re: [PATCH 3/3] staging: r8188eu: don't accept SIGTERM for cmd thread
+Date:   Sun, 17 Oct 2021 16:47:04 +0200
+Message-ID: <1638491.UCx7rxsUkF@localhost.localdomain>
+In-Reply-To: <20211016181343.3686-4-martin@kaiser.cx>
+References: <20211016181343.3686-1-martin@kaiser.cx> <20211016181343.3686-4-martin@kaiser.cx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Oct 2021 22:42:42 +0800
-Yang Yingliang <yangyingliang@huawei.com> wrote:
-
-> If the second iio_device_register_sysfs_group() fails,
-> 'legacy_buffer_group.attrs' need be freed too or it will
-> cause memory leak:
+On Saturday, October 16, 2021 8:13:43 PM CEST Martin Kaiser wrote:
+> At the moment, our command thread can be killed by user space.
 > 
-> unreferenced object 0xffff888003618280 (size 64):
->   comm "xrun", pid 357, jiffies 4294907259 (age 22.296s)
->   hex dump (first 32 bytes):
->     80 f6 8c 03 80 88 ff ff 80 fb 8c 03 80 88 ff ff  ................
->     00 f9 8c 03 80 88 ff ff 80 fc 8c 03 80 88 ff ff  ................
->   backtrace:
->     [<00000000076bfd43>] __kmalloc+0x1a3/0x2f0
->     [<00000000c32e4886>] iio_buffers_alloc_sysfs_and_mask+0xc31/0x1290 [industrialio]
->     [<000000002fcd0bb8>] __iio_device_register+0x52e/0x1b40 [industrialio]
->     [<000000008116530c>] __devm_iio_device_register+0x22/0x80 [industrialio]
->     [<000000008a47327c>] adjd_s311_probe+0x195/0x200 [adjd_s311]
->     [<00000000f8eeb456>] i2c_device_probe+0xa07/0xbb0
->     [<000000000e86686c>] really_probe+0x285/0xc30
->     [<00000000a49db55c>] __driver_probe_device+0x35f/0x4f0
->     [<00000000d1fd43a1>] driver_probe_device+0x4f/0x140
->     [<000000008cdafdfa>] __device_attach_driver+0x24c/0x330
->     [<000000006466e92e>] bus_for_each_drv+0x15d/0x1e0
->     [<00000000154fbb1c>] __device_attach+0x267/0x410
->     [<000000007c84d5d1>] bus_probe_device+0x1ec/0x2a0
->     [<0000000019967467>] device_add+0xc3d/0x2020
->     [<00000000a16d2d51>] i2c_new_client_device+0x614/0xb00
->     [<00000000a56a901d>] new_device_store+0x1f4/0x410
-I cut this down a bit.
+> [root@host ]# kill `pidof RTW_CMD_THREAD`
 > 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Fixes: d9a625744ed0 ("iio: core: merge buffer/ & scan_elements/ attributes")
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-
-Ouch on this one.  I guess a classic bit of too much churn and resulting bit rot
-leading to this oddity.  At somepoint it would be good to clean this up further
-and tidy up the remove order to match this error path.
-
-Applied to the fixes-togreg branch of iio.git and marked for stable.
-
-Thanks,
-
-Jonathan
-
+> The driver will then stop working until the module is unloaded
+> and reloaded.
+> 
+> Don't process SIGTERM in the command thread. Other drivers that have a
+> command thread don't process SIGTERM either.
+> 
+> Signed-off-by: Martin Kaiser <martin@kaiser.cx>
 > ---
->  drivers/iio/industrialio-buffer.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
-> index ba1c5c898e53..88741385764e 100644
-> --- a/drivers/iio/industrialio-buffer.c
-> +++ b/drivers/iio/industrialio-buffer.c
-> @@ -1367,10 +1367,10 @@ static int iio_buffer_register_legacy_sysfs_groups(struct iio_dev *indio_dev,
->  
->  	return 0;
->  
-> -error_free_buffer_attrs:
-> -	kfree(iio_dev_opaque->legacy_buffer_group.attrs);
->  error_free_scan_el_attrs:
->  	kfree(iio_dev_opaque->legacy_scan_el_group.attrs);
-> +error_free_buffer_attrs:
-> +	kfree(iio_dev_opaque->legacy_buffer_group.attrs);
->  
->  	return ret;
->  }
+>  drivers/staging/r8188eu/core/rtw_cmd.c          | 2 --
+>  drivers/staging/r8188eu/include/osdep_service.h | 5 -----
+>  2 files changed, 7 deletions(-)
+
+Dear Martin,
+
+After thinking a little more about this topic, now I'm ready for...
+
+Acked-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+
+Regards,
+
+Fabio
+
 
