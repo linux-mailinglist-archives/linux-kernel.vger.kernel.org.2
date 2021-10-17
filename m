@@ -2,127 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0679C430BF7
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 22:16:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22D6F430BF3
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 22:16:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242864AbhJQUSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 16:18:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58366 "EHLO
+        id S242839AbhJQUSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 16:18:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242844AbhJQUSu (ORCPT
+        with ESMTP id S233577AbhJQUSm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 16:18:50 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6A37C061765
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 13:16:40 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1mcCa9-00054c-NX; Sun, 17 Oct 2021 22:16:33 +0200
-Received: from pengutronix.de (2a03-f580-87bc-d400-c215-888e-54eb-c2bc.ip6.dokom21.de [IPv6:2a03:f580:87bc:d400:c215:888e:54eb:c2bc])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id AC8B6695E7F;
-        Sun, 17 Oct 2021 20:16:30 +0000 (UTC)
-Date:   Sun, 17 Oct 2021 22:16:29 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Dongliang Mu <mudongliangabcd@gmail.com>
-Cc:     Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>,
-        Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        linux-can@vger.kernel.org,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] driver: net: can: delete napi if register_candev fails
-Message-ID: <20211017201629.xb3d6ux5r2r6bfgj@pengutronix.de>
-References: <20211013040349.2858773-1-mudongliangabcd@gmail.com>
- <CAD-N9QWTP8DLtAN70Xxap+WhNUfh9ixfeDMuNaB2NnpFhuAN8A@mail.gmail.com>
- <20211017123622.nfyis7o235tb2qad@pengutronix.de>
- <CAD-N9QXwHgTdPdp+RN4sDfzxx0oa9T0TNbSt1x9D3vddbY4CQw@mail.gmail.com>
+        Sun, 17 Oct 2021 16:18:42 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6410BC06161C;
+        Sun, 17 Oct 2021 13:16:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=4XUukp+9b1viCm7WWWZGfVXYbKx7reWhMLUTlGTz/mY=; b=OiQ/T7qAoFzQ6AlGWgkM2KtzSU
+        0pr+j+P4ClYOvS5GoS9zIPfR8gutFxP1w47+XD4OCqDP+x2a9Id26Y9moyD2NY2UvSzdsLBEM0sAx
+        1S82gs1kBF/TyGCiK9r0+JGauWZ4UryYDfMlZo7vEdr1HgBchCVjaXiPuhsieqaroQebQnAUGZeQ0
+        3HGPdf6aDDPwTfqoJHxP3r8Gh1a14TYJ/6ACdGOSX9nj/OLq/+mOmh7jqjkN93mJ6/Oy7B8+Hxn/m
+        ZYLQcwr8jA2Gox3L/Xv03W0XiNF5cEgTc2i8MVHM4S7pMZqMdM+3B1KoPohusiqLxiulHPTbzuK0W
+        spHlze4g==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mcCa7-00DH4c-4x; Sun, 17 Oct 2021 20:16:31 +0000
+Subject: Re: [PATCH] asm-generic: bug.h: add unreachable() in BUG() for
+ CONFIG_BUG not set
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>
+References: <20211017174905.18943-1-rdunlap@infradead.org>
+ <CAK8P3a3XDY5gMUA3h3tVmQuxSHn_J3qOw_rDurzBx-KFdGhCKA@mail.gmail.com>
+ <8aad5fd2-6850-800a-3c56-199bb5d4f4ae@infradead.org>
+ <CAK8P3a21-mu=eN7qu+1C11Rwp_S3T0iJ+ronmMGyeYcw=Ym61A@mail.gmail.com>
+ <fec67616-f1d0-08da-f393-489233210cbd@infradead.org>
+ <CAK8P3a2PuTe2h49n72Z-GHnn_wyq-naPm55LJJG+OnCdSLz5tw@mail.gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <0b1f21f5-fe78-2581-610b-5551679786a6@infradead.org>
+Date:   Sun, 17 Oct 2021 13:16:30 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="he3rfgt7idbalay4"
-Content-Disposition: inline
-In-Reply-To: <CAD-N9QXwHgTdPdp+RN4sDfzxx0oa9T0TNbSt1x9D3vddbY4CQw@mail.gmail.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <CAK8P3a2PuTe2h49n72Z-GHnn_wyq-naPm55LJJG+OnCdSLz5tw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 10/17/21 12:38 PM, Arnd Bergmann wrote:
+> On Sun, Oct 17, 2021 at 9:27 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+>> On 10/17/21 12:24 PM, Arnd Bergmann wrote:
+>>> On Sun, Oct 17, 2021 at 9:17 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+>>>> On 10/17/21 12:09 PM, Arnd Bergmann wrote:
+>>>>> On Sun, Oct 17, 2021 at 7:49 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+>>>>
+>>>>> Did you see any other issues like this one on m68k, or the
+>>>>> same one on another architecture?
+>>>>
+>>>> No and no.
+>>>
+>>> Ok, maybe before we waste too much time on it, just add an extra
+>>> return statement to afs_dir_set_page_dirty()?
+>>
+>> I think that patch has already been rejected a few times...
+> 
+> Indeed, this is one I had looked at before:
+> 
+> https://lore.kernel.org/all/CAK8P3a3L6B9HXsOXSu9_c6pz1kN91Vig6EPsetLuYVW=M72XaQ@mail.gmail.com/
+> 
+> It seems that this version:
+> 
+> +#define BUG() do {                                             \
+> +               do {} while (1);                                \
+> +               unreachable();                                  \
+> +       } while (0)
+> 
+> ended up being one that didn't see any objections.
 
---he3rfgt7idbalay4
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Yes, I was just thinking of a change like that while eating lunch. :)
 
-On 17.10.2021 20:52:14, Dongliang Mu wrote:
-> On Sun, Oct 17, 2021 at 8:36 PM Marc Kleine-Budde <mkl@pengutronix.de> wr=
-ote:
-> >
-> > On 13.10.2021 13:21:09, Dongliang Mu wrote:
-> > > On Wed, Oct 13, 2021 at 12:04 PM Dongliang Mu <mudongliangabcd@gmail.=
-com> wrote:
-> > > >
-> > > > If register_candev fails, xcan_probe does not clean the napi
-> > > > created by netif_napi_add.
-> > > >
-> > >
-> > > It seems the netif_napi_del operation is done in the free_candev
-> > > (free_netdev precisely).
-> > >
-> > > list_for_each_entry_safe(p, n, &dev->napi_list, dev_list)
-> > >           netif_napi_del(p);
-> > >
-> > > And list_add_rcu(&napi->dev_list, &dev->napi_list) is done in the
-> > > netif_napi_add.
-> > >
-> > > Therefore, I suggest removing "netif_napi_del" operation in the
-> > > xcan_remove to match probe and remove function.
-> >
-> > Sounds reasonable, can you create a patch for this.
->=20
-> I have submitted one patch - https://lkml.org/lkml/2021/10/17/181
-
-Thanks for the patch.
-
-Regards,
-Marc
-
-BTW: Do you know the new kernel.org mailing list archive available at
-https://lore.kernel.org ?
-You can reference a mail using its Message-ID, in you case it's:
-https://lore.kernel.org/all/20211017125022.3100329-1-mudongliangabcd@gmail.=
-com
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---he3rfgt7idbalay4
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmFshJoACgkQqclaivrt
-76nbhQgArihaNMxrE4COYbunSEx53aLydhCzP9WkKlwYCcjH8u4YdaJsUxVS2OFf
-YTCTJJ0Oq5+aeyuNXwn/pVk3XDcTbdtLlFKAZPcfWtaGoApoKXB9qpaeHrxt/PZn
-6LveUjg9E0y3CJ2wftQaO33lu+/xxZ+Wv7bG7DM+9QxHVn2pUmdUVNmaszlAV9fR
-wtPkt7XqxK/v8A0MVUX/WlGFh6fwXsmVW4f6mwI98cqTZmNoaksT1rxP5FeIDbXz
-8n10wjDwHl1uMUtzd5CTqJumnTAinz8P5WDIFphiERAUpLOPBHHCPTIpvy2AhWyl
-Ga/VxaUwzmWEyICWTo97FT36ayutyQ==
-=ZRPY
------END PGP SIGNATURE-----
-
---he3rfgt7idbalay4--
+-- 
+~Randy
