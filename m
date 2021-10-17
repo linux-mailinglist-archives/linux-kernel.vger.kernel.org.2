@@ -2,220 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 351A0430892
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 14:05:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B207F430894
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 14:11:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245605AbhJQMIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 08:08:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34944 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245576AbhJQMIC (ORCPT
+        id S245613AbhJQMNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 08:13:53 -0400
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:59631 "EHLO
+        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242065AbhJQMNv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 08:08:02 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C0BBC061768
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 05:05:53 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id 187so12492045pfc.10
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 05:05:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=YMV+GzdlocvpvMdKO0g2ndC3o57dFYn2DVsmYDcVJw4=;
-        b=pRU8RRtKsWk0WpcImZG4W3fXbjiJY2nHrWDjCYI8HhsDdTrPrvrkJd/BJHBpq4BQ7H
-         JXiDTmWAyA6+qKctCWn5LNlXz514PgqAgbquzygefoTA/AokpGZMgm7jAIJ3TQzzaquH
-         lUFGa82/5DxGaysD0hNEUeFcWmrheYKoymwxhf7BHt7yX8c2oWxv+9mLV4mN/TSmWrMr
-         ZQWpmaoPyqR85jYP87XvbiIan2sy0jk7XP6cRlQcZe4Jg0UNiLqRmBACrzQHJRkGd7eq
-         Qxiq1Pvlf/8RTrMsmuCFnCDKzllp0NlGufHoYMewkYT9+BPoc0uEr0mTqDg+iNkZKE7J
-         ojmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YMV+GzdlocvpvMdKO0g2ndC3o57dFYn2DVsmYDcVJw4=;
-        b=WPw4RHz54cOyD95WZibWmh/m5BrUUBGJ2qxDAoy69MmS7qYRZy0g87FSkO22mZetTj
-         JKJysArZMMRs7TqrpEQ3VE2PKXE0+aMysV483i7T7G9j1+HNtZMuSY7oSWkolkqnxuws
-         EhuG3c81QLSYS+MF9NUfSuUCKtyQC/QGewrZyH7rehnFF9xEltg1/7wFiN9azlRAonot
-         IHAj+jmz2PegapsVg0h3Xzk6UytZLCXj6pEfkxeFfPLh5GkVkYC/Aj/zehCuzPqZrTVm
-         9b913fHJgwnppEs5jkIyvIKjNBKEuKzC97vd8igPP6n4erNHfVyPryhFHOAk09AhwC/8
-         7hRA==
-X-Gm-Message-State: AOAM531AqPLfnKurc3UIYoHnGB0iFx/xYzs6U9f0RAJc3sQntf+1wvyT
-        4Qj7CjMs3dPteo8tKTomWJ85kQ==
-X-Google-Smtp-Source: ABdhPJy5Ok8KRBDEMCPZbGvK466Q9d4+Iq5MOISjnLu/GA6jIg6D/l1BrGO5u726FO00wt29zBv6kw==
-X-Received: by 2002:a62:17d3:0:b0:44c:6022:9428 with SMTP id 202-20020a6217d3000000b0044c60229428mr22669719pfx.65.1634472352677;
-        Sun, 17 Oct 2021 05:05:52 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([148.163.172.147])
-        by smtp.gmail.com with ESMTPSA id u3sm9998398pfl.155.2021.10.17.05.05.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 Oct 2021 05:05:52 -0700 (PDT)
-Date:   Sun, 17 Oct 2021 20:05:46 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     German Gomez <german.gomez@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org
-Subject: Re: [PATCH 4/5] perf arm-spe: Implement find_snapshot callback
-Message-ID: <20211017120546.GB130233@leoy-ThinkPad-X240s>
-References: <20210916154635.1525-1-german.gomez@arm.com>
- <20210916154635.1525-4-german.gomez@arm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210916154635.1525-4-german.gomez@arm.com>
+        Sun, 17 Oct 2021 08:13:51 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.nyi.internal (Postfix) with ESMTP id 13C8E5C00BE;
+        Sun, 17 Oct 2021 08:11:42 -0400 (EDT)
+Received: from imap47 ([10.202.2.97])
+  by compute1.internal (MEProxy); Sun, 17 Oct 2021 08:11:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
+         h=mime-version:message-id:in-reply-to:references:date:from:to
+        :cc:subject:content-type; s=fm2; bh=ZWWjC4g+NM5m34T/9263lf+QjNfD
+        U6lB85qVjusw3Uk=; b=RlLLzMrH83WWRYMQcp2AOylkuhI1M6VsP1jfyGHstt+9
+        xvswENN14Llbr1WKt+7rdU0pOdMBEeR/XwCYHONnD8Ph3GLIbfuVnL94bZJGDG/9
+        sCAsg7QlSwKYRTc6B3q8j2ZD7PSjCf0XJH5i6XTWex8kP/vg7jgTWswfZVFUiD6w
+        d3RO24O50tYnQtRicxmOQd97iOHCI6TUTNom+DrplcxQlkLyHQ7K9G5uaoGcQMYw
+        s+W3UM7W8cVzWEff2KMDhioOsHYHTq2KpSPZn2Rn5cM0bWfj03jFxKwnRU62UEe9
+        vwJ679WznVn/WCCYihxV6rSFp9ROojNC9V8GsYxPZw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=ZWWjC4
+        g+NM5m34T/9263lf+QjNfDU6lB85qVjusw3Uk=; b=NaRK9y7WCU1crZCmrgVt0S
+        TGTtF4tf9B0urU1UApVzpqDEVX8b0xfbn1Ce6yNdf1T1rHwn3Q7MHDEK7yVFx0eX
+        +HeHfUMLP6aic42ccXsVAmb+Y1+KXBgPGYRL50h0Mt6D+Jf5kahLVHgEDP7OxsI5
+        D24bm4RmmYzMBMyhDmIM09ObIPVrwj7u92Lg5kcBGJnMxQE/9B0E/pW02kG2EcbE
+        DvzzFeWrUJggEvExbkS1BZhyOphoRWayzX5Hp9liAXYJCjdkgWqPjDMO90kJjn/u
+        ++qrxmWAkil7rD4MWpVTSR8qD4kAHmAaDmbjtIMNr0e1NP6ZElJrt+KcriNHRHOw
+        ==
+X-ME-Sender: <xms:_RJsYTQfpB-rWXKZfzmBuU2jY08LOUy2iwLYHEbHjNrZsDKnWPKNcw>
+    <xme:_RJsYUwd0BBsC8m5qKE7qoO-9YMinDgOhFbXHL4zgvWmCqQtvOpP3YR6piLZgg4Ys
+    MBbWFnTHiX9xSFs1yg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvddukedggeekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdfuvhgv
+    nhcurfgvthgvrhdfuceoshhvvghnsehsvhgvnhhpvghtvghrrdguvghvqeenucggtffrrg
+    htthgvrhhnpefgieegieffuefhtedtjefgteejteefleefgfefgfdvvddtgffhffduhedv
+    feekffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    hsvhgvnhesshhvvghnphgvthgvrhdruggvvh
+X-ME-Proxy: <xmx:_RJsYY0ZXwRcWqZrwtQdXq7jvyTVeAqMWH9xpDNVhvttPqA3UjAGwg>
+    <xmx:_RJsYTD7UWbeDjxMhu-IlfjsQ73WbE0Cgmd39enTT04hTFeOPQiFwg>
+    <xmx:_RJsYcjXGKU-NtO1GdPy0FT31LRrGt-NCydOuvaq1Rx4MzTblbAUgA>
+    <xmx:_hJsYYiS652QDuUGDhA9STUEDciK-ExmMh6lAyTPY6p-yuLtljUnxg>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id A5A342740061; Sun, 17 Oct 2021 08:11:41 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-1345-g8441cd7852-fm-20211006.001-g8441cd78
+Mime-Version: 1.0
+Message-Id: <02537a8a-e9c2-46f4-904e-6ff5c0583cbf@www.fastmail.com>
+In-Reply-To: <YWwQ36hoNPrUJifS@sunset>
+References: <20211017114054.67737-1-sven@svenpeter.dev>
+ <20211017114054.67737-3-sven@svenpeter.dev> <YWwQ36hoNPrUJifS@sunset>
+Date:   Sun, 17 Oct 2021 14:11:21 +0200
+From:   "Sven Peter" <sven@svenpeter.dev>
+To:     "Alyssa Rosenzweig" <alyssa@rosenzweig.io>
+Cc:     "Jassi Brar" <jassisinghbrar@gmail.com>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Mark Kettenis" <mark.kettenis@xs4all.nl>,
+        "Hector Martin" <marcan@marcan.st>,
+        "Mohamed Mediouni" <mohamed.mediouni@caramail.com>,
+        "Stan Skowronek" <stan@corellium.com>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] mailbox: apple: Add driver for Apple mailboxes
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 04:46:34PM +0100, German Gomez wrote:
+Hi,
 
-[...]
+On Sun, Oct 17, 2021, at 14:02, Alyssa Rosenzweig wrote:
+>> Apple SoCs such as the M1 come with various co-processors. Mailboxes
+>> are used to communicate with those. This driver adds support for
+>> two variants of those mailboxes.
+>> 
+>> Reviewed-by: Alyssa Rosenzweig <alyssa@rosenzweig.io>
+>> Signed-off-by: Sven Peter <sven@svenpeter.dev>
+>
+> In the future, Reviewed-by tags should be dropped after making major
+> changes to a patch.
 
-> +static int arm_spe_find_snapshot(struct auxtrace_record *itr, int idx,
-> +				  struct auxtrace_mmap *mm, unsigned char *data,
-> +				  u64 *head, u64 *old)
-> +{
-> +	int err;
-> +	bool wrapped;
-> +	struct arm_spe_recording *ptr =
-> +			container_of(itr, struct arm_spe_recording, itr);
-> +
-> +	/*
-> +	 * Allocate memory to keep track of wrapping if this is the first
-> +	 * time we deal with this *mm.
-> +	 */
-> +	if (idx >= ptr->wrapped_cnt) {
-> +		err = arm_spe_alloc_wrapped_array(ptr, idx);
-> +		if (err)
-> +			return err;
-> +	}
-> +
-> +	/*
-> +	 * Check to see if *head has wrapped around.  If it hasn't only the
-> +	 * amount of data between *head and *old is snapshot'ed to avoid
-> +	 * bloating the perf.data file with zeros.  But as soon as *head has
-> +	 * wrapped around the entire size of the AUX ring buffer it taken.
-> +	 */
-> +	wrapped = ptr->wrapped[idx];
-> +	if (!wrapped && arm_spe_buffer_has_wrapped(data, mm->len, *head)) {
-> +		wrapped = true;
-> +		ptr->wrapped[idx] = true;
-> +	}
-> +
-> +	pr_debug3("%s: mmap index %d old head %zu new head %zu size %zu\n",
-> +		  __func__, idx, (size_t)*old, (size_t)*head, mm->len);
-> +
-> +	/*
-> +	 * No wrap has occurred, we can just use *head and *old.
-> +	 */
-> +	if (!wrapped)
-> +		return 0;
-> +
-> +	/*
-> +	 * *head has wrapped around - adjust *head and *old to pickup the
-> +	 * entire content of the AUX buffer.
-> +	 */
-> +	if (*head >= mm->len) {
-> +		*old = *head - mm->len;
-> +	} else {
-> +		*head += mm->len;
-> +		*old = *head - mm->len;
-> +	}
-> +
-> +	return 0;
-> +}
+I don't think there were any major changes since v2, but sure, I'll drop your
+tag in the future. All your comments below already apply to v2.
 
-If run a test case (the test is pasted at the end of the reply), I
-can get quite different AUX trace data with passing different wait
-period before sending the first USR2 signal.
+>
+>> +		writel_relaxed(apple_mbox->hw->irq_bit_recv_not_empty |
+>> +				       apple_mbox->hw->irq_bit_send_empty,
+>> +			       apple_mbox->regs + apple_mbox->hw->irq_enable);
+>
+> Nit: weird wrapping, much easier to read as:
+>
+> +		writel_relaxed(apple_mbox->hw->irq_bit_recv_not_empty |
+> +			       apple_mbox->hw->irq_bit_send_empty,
+> +			       apple_mbox->regs + apple_mbox->hw->irq_enable);
+>
 
-  # sh test_arm_spe_snapshot.sh 2
-  Couldn't synthesize bpf events.
-  stress: info: [5768] dispatching hogs: 1 cpu, 0 io, 0 vm, 0 hdd
-  [ perf record: Woken up 3 times to write data ]
-  [ perf record: Captured and wrote 2.833 MB perf.data ]
+This is just what clang-format does and I'd rather keep it this way.
+Note that the first two lines are the first argument combined with an OR.
 
-  # sh test_arm_spe_snapshot.sh 10
-  Couldn't synthesize bpf events.
-  stress: info: [5776] dispatching hogs: 1 cpu, 0 io, 0 vm, 0 hdd
-  [ perf record: Woken up 3 times to write data ]
-  [ perf record: Captured and wrote 24.356 MB perf.data ]
+>> +static const struct apple_mbox_hw apple_mbox_asc_hw = {
+>> +	.control_full = APPLE_ASC_MBOX_CONTROL_FULL,
+>> +	.control_empty = APPLE_ASC_MBOX_CONTROL_EMPTY,
+>> +
+>> +	.a2i_control = APPLE_ASC_MBOX_A2I_CONTROL,
+>> +	.a2i_send0 = APPLE_ASC_MBOX_A2I_SEND0,
+>> +	.a2i_send1 = APPLE_ASC_MBOX_A2I_SEND1,
+>> +
+>> +	.i2a_control = APPLE_ASC_MBOX_I2A_CONTROL,
+>> +	.i2a_recv0 = APPLE_ASC_MBOX_I2A_RECV0,
+>> +	.i2a_recv1 = APPLE_ASC_MBOX_I2A_RECV1,
+>> +
+>> +	.has_irq_controls = false,
+>> +};
+>
+> Nit: consider dropping the `has_irq_controls = false` assignment.
+> Clearly there are none, or you'd have to fill out the irq_* fields too.
 
-The first command passes argument '2' so the test will wait for 2
-seconds before send USR2 signal for snapshot, and the perf data file is
-2.833 MB (so this means the Arm SPE trace data is about 2MB) for three
-snapshots.  In the second command, the argument '10' means it will wait
-for 10 seconds before sending the USR2 signals, and every time it records
-the trace data from the full AUX buffer (8MB), at the end it gets 24MB
-AUX trace data.
+I'd rather keep it explicit as false here to make the intent clear.
 
-The issue happens in the second command, waiting for 10 seconds leads
-to the *full* AUX ring buffer is filled by Arm SPE, so the function
-arm_spe_buffer_has_wrapped() always return back true for this case.
-Afterwards, arm_spe_find_snapshot() doesn't respect the passed old
-header (from '*old') and assumes the trace data size is 'mm->len'.
+>
+>> +static const struct of_device_id apple_mbox_of_match[] = {
+>> +	{ .compatible = "apple,t8103-asc-mailbox", .data = &apple_mbox_asc_hw },
+>> +	{ .compatible = "apple,t8103-m3-mailbox", .data = &apple_mbox_m3_hw },
+>> +	{}
+>> +};
+>
+> No generic compatibles? I assume this driver hasn't changed much in
+> recent iPhones, and hopefully it won't change much in M1X...
 
-To allow arm_spe_buffer_has_wrapped() to work properly, I think we
-need to clean up the top 8 bytes of the AUX buffer in Arm SPE driver
-when start the PMU event (please note, this change has an assumption
-that is meantioned in another email that suggests to remove redundant
-PERF_RECORD_AUX events so the function arm_spe_perf_aux_output_begin()
-is invoked only once when start PMU event, so we can use the top 8
-bytes in AUX buffer to indicate trace is wrap around or not).
+Then we can always have apple,tXXX-asc-mailbox, apple,t8103-asc-mailbox in the
+device tree. From what I can tell this specific mailbox has only appeared in
+this SoC generation.
+
+>
+>> +/* SPDX-License-Identifier: GPL-2.0-only OR MIT */
+>> +/*
+>> + * Apple mailbox message format
+>> + *
+>> + * Copyright (C) 2021 The Asahi Linux Contributors
+>> + */
+>> +
+>> +#ifndef _LINUX_APPLE_MAILBOX_H_
+>> +#define _LINUX_APPLE_MAILBOX_H_
+>> +
+>> +#include <linux/types.h>
+>> +
+>> +struct apple_mbox_msg {
+>> +	u64 msg0;
+>> +	u32 msg1;
+>> +};
+>> +
+>> +#endif
+>
+> Given this file lacks the context of the driver, and the questions
+> raised in v2 review, it might be beneficial to add a quick comment to
+> apple_mbox_msg explaiing that no, really, this is a 96-bit message.
+
+I don't think that's necessary but it doesn't hurt either I guess.
 
 
-diff --git a/drivers/perf/arm_spe_pmu.c b/drivers/perf/arm_spe_pmu.c
-index d44bcc29d99c..eb35f85d0efb 100644
---- a/drivers/perf/arm_spe_pmu.c
-+++ b/drivers/perf/arm_spe_pmu.c
-@@ -493,6 +493,16 @@ static void arm_spe_perf_aux_output_begin(struct perf_output_handle *handle,
-        if (limit)
-                limit |= BIT(SYS_PMBLIMITR_EL1_E_SHIFT);
-
-+       /*
-+        * Cleanup the top 8 bytes for snapshot mode; these 8 bytes are
-+        * used to indicate if trace data is wrap around if they are not
-+        * zero.
-+        */
-+       if (buf->snapshot) {
-+               void *tail = buf->base + (buf->nr_pages << PAGE_SHIFT) - 8;
-+               memset(tail, 0x0, 8);
-+       }
-+
-        limit += (u64)buf->base;
-        base = (u64)buf->base + PERF_IDX2OFF(handle->head, buf);
-        write_sysreg_s(base, SYS_PMBPTR_EL1);
-
-Thanks,
-Leo
-
----8<---
-
-#!/bin/sh
-
-./perf record -e arm_spe/period=148576/u -C 0 -S -m8M,8M -- taskset --cpu-list 0 stress --cpu 1 &
-
-PERFPID=$!
-
-echo "sleep $1 seconds" > /sys/kernel/debug/tracing/trace_marker
-
-# Wait for perf program
-sleep  $1
-
-# Send signal to snapshot trace data
-kill -USR2 $PERFPID
-sleep .03
-kill -USR2 $PERFPID
-sleep .03
-kill -USR2 $PERFPID
-
-echo "Stop snapshot" > /sys/kernel/debug/tracing/trace_marker
-
-kill $PERFPID
-wait $PERFPID
+Sven
