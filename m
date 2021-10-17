@@ -2,71 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 287F9430BBE
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 21:28:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5801430BC0
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 21:28:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344526AbhJQTaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 15:30:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47734 "EHLO
+        id S1344537AbhJQTay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 15:30:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233508AbhJQTaF (ORCPT
+        with ESMTP id S1344532AbhJQTax (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 15:30:05 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77849C06161C;
-        Sun, 17 Oct 2021 12:27:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=I673tmyoNJuowK+ZSXqaYY+vNHpRaNf5lXVpV9LQ02Q=; b=rwn8Y1apOW6BXYAFqfvq729mb6
-        2e8CP2q1fASg6yDRi4UiV9/JP3T3U/ZKsG+wxxOJf8KwNcHLkVPV8uB9w2YJtwXPa+YDoKgJyvqTZ
-        vifRE2TYizw5QWY4m/+O3jDHD8ZPLqjwK/wmguyGqgsHKEFR2w1kda9OM+l0AJDq/yqZBpTMVMI0I
-        JGovzz92ZHGlTALnU4zvvkWLPkAewTLHaCokDBXVO/TEy5fU7JCw21kcO/TwNdHu3NmuxTWurOJk3
-        K4BI4uhzt/kt9wgG4x6wZTnvzwKyuCiKBuztdOxJfN+ayYF3shxiZp/nhkOsxaBXEW+xliQFlG+nd
-        rQOrPbug==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mcBp4-00DD3j-CL; Sun, 17 Oct 2021 19:27:54 +0000
-Subject: Re: [PATCH] asm-generic: bug.h: add unreachable() in BUG() for
- CONFIG_BUG not set
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>
-References: <20211017174905.18943-1-rdunlap@infradead.org>
- <CAK8P3a3XDY5gMUA3h3tVmQuxSHn_J3qOw_rDurzBx-KFdGhCKA@mail.gmail.com>
- <8aad5fd2-6850-800a-3c56-199bb5d4f4ae@infradead.org>
- <CAK8P3a21-mu=eN7qu+1C11Rwp_S3T0iJ+ronmMGyeYcw=Ym61A@mail.gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <fec67616-f1d0-08da-f393-489233210cbd@infradead.org>
-Date:   Sun, 17 Oct 2021 12:27:53 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Sun, 17 Oct 2021 15:30:53 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71688C061765
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 12:28:43 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1634498919;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3RPNmtrIF8arN45udbVeaoyAnwTpFXPnM4MVTCWf1ug=;
+        b=fqCI6gpvGMN/pYwPc4NOwzHwtZZHi56l1iXcudUdLgsdPyTaowQ2D/uM5o5WzCdkR7uYKW
+        qK7yQam9YVow4hruWPNIELrhLN5gzT65Vo478b1qk99/T06Bc95vqL07QETgjG5ZjYg+6q
+        R3NtoE19u3+N8NvZu1MqtJCS7I9jHjri+Q2GsJrrS6+SrXo4UkAfAsR+/sLcT6I/CGo3WP
+        S37RcJwKvpOWHyZQXYdnM5U2AXI+XNmlvjzEDQsp1evkEDzR1CRZdrbyALKz58C1FmEYF3
+        Y0uYJnS4cJsMkLgnF6TICOu/YCCA6Ifu9Xge4yt9E0gZtM/aUEh9v9F1ZkT6JQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1634498919;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3RPNmtrIF8arN45udbVeaoyAnwTpFXPnM4MVTCWf1ug=;
+        b=kvOdQE1mnNKoZGQ7knDo73rrEbwkOpq/1ofPITqnItj0FwRkD7xPuC9cKpxYmbHNjyk9db
+        27cjHAAQOn0vWWCQ==
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>
+Cc:     Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 02/10] x86/tdx: Add early_is_tdx_guest() interface
+In-Reply-To: <20211005204136.1812078-3-sathyanarayanan.kuppuswamy@linux.intel.com>
+References: <20211005204136.1812078-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20211005204136.1812078-3-sathyanarayanan.kuppuswamy@linux.intel.com>
+Date:   Sun, 17 Oct 2021 21:28:38 +0200
+Message-ID: <871r4j4fix.ffs@tglx>
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a21-mu=eN7qu+1C11Rwp_S3T0iJ+ronmMGyeYcw=Ym61A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/17/21 12:24 PM, Arnd Bergmann wrote:
-> On Sun, Oct 17, 2021 at 9:17 PM Randy Dunlap <rdunlap@infradead.org> wrote:
->> On 10/17/21 12:09 PM, Arnd Bergmann wrote:
->>> On Sun, Oct 17, 2021 at 7:49 PM Randy Dunlap <rdunlap@infradead.org> wrote:
->>
->>> Did you see any other issues like this one on m68k, or the
->>> same one on another architecture?
->>
->> No and no.
-> 
-> Ok, maybe before we waste too much time on it, just add an extra
-> return statement to afs_dir_set_page_dirty()?
+On Tue, Oct 05 2021 at 13:41, Kuppuswamy Sathyanarayanan wrote:
+> +
+> +#define TDX_CPUID_LEAF_ID                       0x21
+> +
+> +static int tdx_guest = -1;
+> +
+> +static inline bool early_cpuid_has_tdx_guest(void)
+> +{
+> +	u32 eax = TDX_CPUID_LEAF_ID, sig[3] = {0};
+> +
+> +	if (cpuid_eax(0) < TDX_CPUID_LEAF_ID)
+> +		return false;
+> +
+> +	cpuid_count(TDX_CPUID_LEAF_ID, 0, &eax, &sig[0], &sig[2], &sig[1]);
+> +
+> +	return !memcmp("IntelTDX    ", sig, 12);
+> +}
+> +
+> +bool early_is_tdx_guest(void)
+> +{
+> +	if (tdx_guest < 0)
+> +		tdx_guest = early_cpuid_has_tdx_guest();
+> +
+> +	return !!tdx_guest;
+> +}
 
-I think that patch has already been rejected a few times...
-
--- 
-~Randy
+Sigh.
