@@ -2,113 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46CC04308AC
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 14:29:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 261B64308AF
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 14:30:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245660AbhJQMcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 08:32:02 -0400
-Received: from mail-ua1-f44.google.com ([209.85.222.44]:40776 "EHLO
-        mail-ua1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245651AbhJQMbz (ORCPT
+        id S245661AbhJQMcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 08:32:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40156 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245657AbhJQMcC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 08:31:55 -0400
-Received: by mail-ua1-f44.google.com with SMTP id e2so2241330uax.7;
-        Sun, 17 Oct 2021 05:29:46 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZNQrmeLcRYkhU7gSap9RiYo7RaZ8Ovh5R/DJnqwEvKY=;
-        b=AJ1DOCof6SmlDUlOwDeP6loJP/W58A1GoYVytgix/yVypJAFFZBnrnKxO0tJ4yErWW
-         LkCwnfvdZhgvSJap8TPDbQnfMA/DIM8dBx9jUO1YccatLsl5Lj30bzgU2hrqMpse7Qes
-         znmfbEGejqg/zicXnyVUoo5pivOsfzW6sypEdS81YDYlZKaibBnSeDHvoYjM3DjfNLJc
-         cnGj1x2oeeN+ojAPRN81DCZPm5zb+61MQclOonS7Z3VM2NcP3M/d7bOYIIrBucsPZwqd
-         dnQUNZ1IiJYE9varwHu+A5PvRFj0UEwi788slSA0vrZpVfSKUO3hehiyoYi4FYIIFsPo
-         K2Pw==
-X-Gm-Message-State: AOAM530GEITODQC5CmIBu484NCaOwQ7zEIcKXugDhlD86rSoaj0/IPUt
-        AgEq0hab6NyoHYPRQY7Aso/VrOh7gtjijw==
-X-Google-Smtp-Source: ABdhPJxLg0q3sxr2Bpd51F2wvK+Dxosx3ycnWqy03AsVO7lzQ6X4K141M2ibwJQ/1Ri7ezP4QLb6zA==
-X-Received: by 2002:ab0:45c4:: with SMTP id u62mr21063253uau.69.1634473785574;
-        Sun, 17 Oct 2021 05:29:45 -0700 (PDT)
-Received: from mail-ua1-f48.google.com (mail-ua1-f48.google.com. [209.85.222.48])
-        by smtp.gmail.com with ESMTPSA id s6sm7593694vkh.45.2021.10.17.05.29.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 17 Oct 2021 05:29:45 -0700 (PDT)
-Received: by mail-ua1-f48.google.com with SMTP id h19so1702834uax.5;
-        Sun, 17 Oct 2021 05:29:45 -0700 (PDT)
-X-Received: by 2002:a67:cb0a:: with SMTP id b10mr23567811vsl.9.1634473784867;
- Sun, 17 Oct 2021 05:29:44 -0700 (PDT)
+        Sun, 17 Oct 2021 08:32:02 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1F16C061768
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 05:29:51 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1mc5IO-0004A5-NX; Sun, 17 Oct 2021 14:29:44 +0200
+Received: from pengutronix.de (2a03-f580-87bc-d400-7b24-848c-3829-1203.ip6.dokom21.de [IPv6:2a03:f580:87bc:d400:7b24:848c:3829:1203])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id BD40E695CCE;
+        Sun, 17 Oct 2021 12:29:43 +0000 (UTC)
+Date:   Sun, 17 Oct 2021 14:29:43 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Zheyu Ma <zheyuma97@gmail.com>
+Cc:     wg@grandegger.com, davem@davemloft.net, kuba@kernel.org,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] can: peak_pci: Fix UAF in peak_pci_remove
+Message-ID: <20211017122943.q4ic472sigcrk4l2@pengutronix.de>
+References: <1634192913-15639-1-git-send-email-zheyuma97@gmail.com>
 MIME-Version: 1.0
-References: <20210923064137.60722-1-zhang.lyra@gmail.com> <20210923064137.60722-2-zhang.lyra@gmail.com>
- <CAMuHMdWq3M3i+5yATeGEUxupU6Gb5ZnJeNsn9czX6tukEbHQng@mail.gmail.com> <CAAfSe-sQB4wXGwGSPYpoF_YmzJjT=dFLTz36haJ6orE_=zai-Q@mail.gmail.com>
-In-Reply-To: <CAAfSe-sQB4wXGwGSPYpoF_YmzJjT=dFLTz36haJ6orE_=zai-Q@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Sun, 17 Oct 2021 14:29:33 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdV8=5p8bdSaw0U+=OdzsQW-Te68XR1o8W_p7oPWjyhGUQ@mail.gmail.com>
-Message-ID: <CAMuHMdV8=5p8bdSaw0U+=OdzsQW-Te68XR1o8W_p7oPWjyhGUQ@mail.gmail.com>
-Subject: Re: [PATCH v4 1/4] dt-bindings: clk: sprd: Add bindings for ums512
- clock controller
-To:     Chunyan Zhang <zhang.lyra@gmail.com>
-Cc:     Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Baolin Wang <baolin.wang7@gmail.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Lee Jones <lee.jones@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="5pdcbj2in2nebprh"
+Content-Disposition: inline
+In-Reply-To: <1634192913-15639-1-git-send-email-zheyuma97@gmail.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Chunyan,
 
-On Sat, Oct 16, 2021 at 10:42 AM Chunyan Zhang <zhang.lyra@gmail.com> wrote:
-> On Wed, 13 Oct 2021 at 22:23, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > On Thu, Sep 23, 2021 at 8:42 AM Chunyan Zhang <zhang.lyra@gmail.com> wrote:
-> > > From: Chunyan Zhang <chunyan.zhang@unisoc.com>
-> > > Add a new bindings to describe ums512 clock compatible strings.
-> > >
-> > > Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
+--5pdcbj2in2nebprh
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> > > --- /dev/null
-> > > +++ b/Documentation/devicetree/bindings/clock/sprd,ums512-clk.yaml
-> >
-> > > +  clock-names:
-> > > +    minItems: 1
-> > > +    maxItems: 4
-> >
-> > After applying this to my local tree, as it is a dependency for 2/4 in
-> > for-mfd-next:
-> >
-> >     Documentation/devicetree/bindings/clock/sprd,ums512-clk.yaml:
-> > properties:clock-names: {'required': ['maxItems']} is not allowed for
-> > {'minItems': 1, 'maxItems': 4, 'items': [{'const': 'ext-26m'},
-> > {'const': 'ext-32k'}, {'const': 'ext-4m'}, {'const': 'rco-100m'}]}
-> >     hint: "maxItems" is not needed with an "items" list
-> >     from schema $id: http://devicetree.org/meta-schemas/items.yaml#
-> >
-> > so please drop the maxItems 4.
->
-> Ok, I will, but I don't have this compile error on my side, how do you
-> get this error report?
->
-> I use the command below:
-> make -k dt_binding_check
-> DT_SCHEMA_FILES=Documentation/devicetree/bindings/clock/sprd,ums512-clk.yaml
-> and,
-> make -k dt_binding_check
+On 14.10.2021 06:28:33, Zheyu Ma wrote:
+> When remove the module peek_pci, referencing 'chan' again after
+> releasing 'dev' will cause UAF.
+>=20
+> Fix this by releasing 'dev' later.
+>=20
+> The following log reveals it:
+>=20
+> [   35.961814 ] BUG: KASAN: use-after-free in peak_pci_remove+0x16f/0x270=
+ [peak_pci]
+> [   35.963414 ] Read of size 8 at addr ffff888136998ee8 by task modprobe/=
+5537
+> [   35.965513 ] Call Trace:
+> [   35.965718 ]  dump_stack_lvl+0xa8/0xd1
+> [   35.966028 ]  print_address_description+0x87/0x3b0
+> [   35.966420 ]  kasan_report+0x172/0x1c0
+> [   35.966725 ]  ? peak_pci_remove+0x16f/0x270 [peak_pci]
+> [   35.967137 ]  ? trace_irq_enable_rcuidle+0x10/0x170
+> [   35.967529 ]  ? peak_pci_remove+0x16f/0x270 [peak_pci]
+> [   35.967945 ]  __asan_report_load8_noabort+0x14/0x20
+> [   35.968346 ]  peak_pci_remove+0x16f/0x270 [peak_pci]
+> [   35.968752 ]  pci_device_remove+0xa9/0x250
+>=20
+> Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
 
-Do you have the latest dt-schema?
+Applied to linux-can/testing.
 
-Gr{oetje,eeting}s,
+Thanks,
+Marc
 
-                        Geert
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+--5pdcbj2in2nebprh
+Content-Type: application/pgp-signature; name="signature.asc"
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmFsFzQACgkQqclaivrt
+76l+jAf/YD2qprHjvgyGwkm0pxyq8/7j2vxoknztrO65wqUoT51GTKnaarLL8Duh
+b3Wslyvw0F2qQH3ATWdPDr6Nn8OaA4cNxN/sb+BSKyiAWdn2DkY7Fk3s0weskLuh
+jUQFs5ejfkUolKSYQQ/jXHNtZoWfgv9AliBMzZovOAMWvlVQDn+7wLQTcmg/OFLJ
+wZJyd/pBIuRQdz6WfYzf6ovt9h4fJtryBF5zlVifyNHT4RBreklCCAsc5fUmFKDX
+IsvNvLPCh1CBH3GLpQkFFAVfKDFakU2oSk4I1qPuG/Cg69aDv4hKAZ4pXzfCtIfk
+8TuQEPj01nxpKiO0ejfeplmJp174dA==
+=6OLJ
+-----END PGP SIGNATURE-----
+
+--5pdcbj2in2nebprh--
