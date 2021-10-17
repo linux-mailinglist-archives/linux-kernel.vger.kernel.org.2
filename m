@@ -2,257 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4DDF430B11
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 19:09:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3172430B1C
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 19:15:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344342AbhJQRLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 13:11:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40804 "EHLO mail.kernel.org"
+        id S1344352AbhJQRRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 13:17:37 -0400
+Received: from mga01.intel.com ([192.55.52.88]:44281 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230420AbhJQRLK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 13:11:10 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E516261038;
-        Sun, 17 Oct 2021 17:08:56 +0000 (UTC)
-Date:   Sun, 17 Oct 2021 18:13:11 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        David Jander <david@protonic.nl>,
-        Robin van der Gracht <robin@protonic.nl>,
-        linux-iio@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: Re: [PATCH v2 2/2] iio: adc: tsc2046: fix sleeping in atomic
- context warning and a deadlock after iio_trigger_poll() call
-Message-ID: <20211017181311.57928c49@jic23-huawei>
-In-Reply-To: <20211007093007.1466-3-o.rempel@pengutronix.de>
-References: <20211007093007.1466-1-o.rempel@pengutronix.de>
-        <20211007093007.1466-3-o.rempel@pengutronix.de>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S230420AbhJQRRg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Oct 2021 13:17:36 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10140"; a="251580226"
+X-IronPort-AV: E=Sophos;i="5.85,380,1624345200"; 
+   d="scan'208";a="251580226"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2021 10:15:26 -0700
+X-IronPort-AV: E=Sophos;i="5.85,380,1624345200"; 
+   d="scan'208";a="526002505"
+Received: from pmmccorm-mobl1.amr.corp.intel.com (HELO [10.209.54.168]) ([10.209.54.168])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2021 10:15:25 -0700
+Subject: Re: [PATCH v8 06/11] x86/traps: Add #VE support for TDX guest
+To:     Borislav Petkov <bp@alien8.de>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
+        VMware Inc <pv-drivers@vmware.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, Peter H Anvin <hpa@zytor.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        linux-kernel@vger.kernel.org
+References: <20211005025205.1784480-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20211005025205.1784480-7-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <YV8pE+QYcS/fUe98@zn.tnic>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
+ oAiUXvGAOxPDsB/P6UEOISPpLl5IuYsSwAeZGkdQ5g6m1xq7AlDJQZddhr/1DC/nMVa/2BoY
+ 2UnKuZuSBu7lgOE193+7Uks3416N2hTkyKUSNkduyoZ9F5twiBhxPJwPtn/wnch6n5RsoXsb
+ ygOEDxLEsSk/7eyFycjE+btUtAWZtx+HseyaGfqkZK0Z9bT1lsaHecmB203xShwCPT49Blxz
+ VOab8668QpaEOdLGhtvrVYVK7x4skyT3nGWcgDCl5/Vp3TWA4K+IofwvXzX2ON/Mj7aQwf5W
+ iC+3nWC7q0uxKwwsddJ0Nu+dpA/UORQWa1NiAftEoSpk5+nUUi0WE+5DRm0H+TXKBWMGNCFn
+ c6+EKg5zQaa8KqymHcOrSXNPmzJuXvDQ8uj2J8XuzCZfK4uy1+YdIr0yyEMI7mdh4KX50LO1
+ pmowEqDh7dLShTOif/7UtQYrzYq9cPnjU2ZW4qd5Qz2joSGTG9eCXLz5PRe5SqHxv6ljk8mb
+ ApNuY7bOXO/A7T2j5RwXIlcmssqIjBcxsRRoIbpCwWWGjkYjzYCjgsNFL6rt4OL11OUF37wL
+ QcTl7fbCGv53KfKPdYD5hcbguLKi/aCccJK18ZwNjFhqr4MliQARAQABzShEYXZpZCBDaHJp
+ c3RvcGhlciBIYW5zZW4gPGRhdmVAc3I3MS5uZXQ+wsF7BBMBAgAlAhsDBgsJCAcDAgYVCAIJ
+ CgsEFgIDAQIeAQIXgAUCTo3k0QIZAQAKCRBoNZUwcMmSsMO2D/421Xg8pimb9mPzM5N7khT0
+ 2MCnaGssU1T59YPE25kYdx2HntwdO0JA27Wn9xx5zYijOe6B21ufrvsyv42auCO85+oFJWfE
+ K2R/IpLle09GDx5tcEmMAHX6KSxpHmGuJmUPibHVbfep2aCh9lKaDqQR07gXXWK5/yU1Dx0r
+ VVFRaHTasp9fZ9AmY4K9/BSA3VkQ8v3OrxNty3OdsrmTTzO91YszpdbjjEFZK53zXy6tUD2d
+ e1i0kBBS6NLAAsqEtneplz88T/v7MpLmpY30N9gQU3QyRC50jJ7LU9RazMjUQY1WohVsR56d
+ ORqFxS8ChhyJs7BI34vQusYHDTp6PnZHUppb9WIzjeWlC7Jc8lSBDlEWodmqQQgp5+6AfhTD
+ kDv1a+W5+ncq+Uo63WHRiCPuyt4di4/0zo28RVcjtzlGBZtmz2EIC3vUfmoZbO/Gn6EKbYAn
+ rzz3iU/JWV8DwQ+sZSGu0HmvYMt6t5SmqWQo/hyHtA7uF5Wxtu1lCgolSQw4t49ZuOyOnQi5
+ f8R3nE7lpVCSF1TT+h8kMvFPv3VG7KunyjHr3sEptYxQs4VRxqeirSuyBv1TyxT+LdTm6j4a
+ mulOWf+YtFRAgIYyyN5YOepDEBv4LUM8Tz98lZiNMlFyRMNrsLV6Pv6SxhrMxbT6TNVS5D+6
+ UorTLotDZKp5+M7BTQRUY85qARAAsgMW71BIXRgxjYNCYQ3Xs8k3TfAvQRbHccky50h99TUY
+ sqdULbsb3KhmY29raw1bgmyM0a4DGS1YKN7qazCDsdQlxIJp9t2YYdBKXVRzPCCsfWe1dK/q
+ 66UVhRPP8EGZ4CmFYuPTxqGY+dGRInxCeap/xzbKdvmPm01Iw3YFjAE4PQ4hTMr/H76KoDbD
+ cq62U50oKC83ca/PRRh2QqEqACvIH4BR7jueAZSPEDnzwxvVgzyeuhwqHY05QRK/wsKuhq7s
+ UuYtmN92Fasbxbw2tbVLZfoidklikvZAmotg0dwcFTjSRGEg0Gr3p/xBzJWNavFZZ95Rj7Et
+ db0lCt0HDSY5q4GMR+SrFbH+jzUY/ZqfGdZCBqo0cdPPp58krVgtIGR+ja2Mkva6ah94/oQN
+ lnCOw3udS+Eb/aRcM6detZr7XOngvxsWolBrhwTQFT9D2NH6ryAuvKd6yyAFt3/e7r+HHtkU
+ kOy27D7IpjngqP+b4EumELI/NxPgIqT69PQmo9IZaI/oRaKorYnDaZrMXViqDrFdD37XELwQ
+ gmLoSm2VfbOYY7fap/AhPOgOYOSqg3/Nxcapv71yoBzRRxOc4FxmZ65mn+q3rEM27yRztBW9
+ AnCKIc66T2i92HqXCw6AgoBJRjBkI3QnEkPgohQkZdAb8o9WGVKpfmZKbYBo4pEAEQEAAcLB
+ XwQYAQIACQUCVGPOagIbDAAKCRBoNZUwcMmSsJeCEACCh7P/aaOLKWQxcnw47p4phIVR6pVL
+ e4IEdR7Jf7ZL00s3vKSNT+nRqdl1ugJx9Ymsp8kXKMk9GSfmZpuMQB9c6io1qZc6nW/3TtvK
+ pNGz7KPPtaDzvKA4S5tfrWPnDr7n15AU5vsIZvgMjU42gkbemkjJwP0B1RkifIK60yQqAAlT
+ YZ14P0dIPdIPIlfEPiAWcg5BtLQU4Wg3cNQdpWrCJ1E3m/RIlXy/2Y3YOVVohfSy+4kvvYU3
+ lXUdPb04UPw4VWwjcVZPg7cgR7Izion61bGHqVqURgSALt2yvHl7cr68NYoFkzbNsGsye9ft
+ M9ozM23JSgMkRylPSXTeh5JIK9pz2+etco3AfLCKtaRVysjvpysukmWMTrx8QnI5Nn5MOlJj
+ 1Ov4/50JY9pXzgIDVSrgy6LYSMc4vKZ3QfCY7ipLRORyalFDF3j5AGCMRENJjHPD6O7bl3Xo
+ 4DzMID+8eucbXxKiNEbs21IqBZbbKdY1GkcEGTE7AnkA3Y6YB7I/j9mQ3hCgm5muJuhM/2Fr
+ OPsw5tV/LmQ5GXH0JQ/TZXWygyRFyyI2FqNTx4WHqUn3yFj8rwTAU1tluRUYyeLy0ayUlKBH
+ ybj0N71vWO936MqP6haFERzuPAIpxj2ezwu0xb1GjTk4ynna6h5GjnKgdfOWoRtoWndMZxbA
+ z5cecg==
+Message-ID: <5b7f13b9-6d32-c97c-aaea-4e256a59f90b@intel.com>
+Date:   Sun, 17 Oct 2021 10:15:22 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <YV8pE+QYcS/fUe98@zn.tnic>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu,  7 Oct 2021 11:30:07 +0200
-Oleksij Rempel <o.rempel@pengutronix.de> wrote:
-
-> If iio_trigger_poll() is called after IRQ was disabled, we will call
-> reenable_trigger() directly from hard IRQ or hrtimer context instead of
-> IRQ thread. In this case we will run in to multiple issue as sleeping in atomic
-> context and a deadlock.
+On 10/7/21 10:06 AM, Borislav Petkov wrote:
+> On Mon, Oct 04, 2021 at 07:52:00PM -0700, Kuppuswamy Sathyanarayanan wrote:
+>> +unsigned long tdx_get_ve_info(struct ve_info *ve)
+>> +{
+>> +	struct tdx_module_output out = {0};
+>> +	u64 ret;
+>> +
+>> +	/*
+>> +	 * NMIs and machine checks are suppressed. Before this point any
+>> +	 * #VE is fatal. After this point (TDGETVEINFO call), NMIs and
+>> +	 * additional #VEs are permitted (but it is expected not to
+>> +	 * happen unless kernel panics).
+>> +	 */
+>> +	ret = __tdx_module_call(TDGETVEINFO, 0, 0, 0, 0, &out);
+> Same question as before - why do you need to clear this @out thing above
+> when __tdx_module_call() will overwrite it?
 > 
-> To avoid this issue, rework the trigger to use state machine. All state
-> changes are done over the hrtimer, so it allows us to drop fsleep() and
-> avoid the deadlock.
-> 
-> Even if the root cause of this issue probably will and can be fixed in the iio
-> core, this patch can be seen as clean-up to provide better internal state
-> machine.
-> 
-> Fixes: 9374e8f5a38d ("iio: adc: add ADC driver for the TI TSC2046 controller")
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> What you should do instead is check that @ve pointer which you get
+> passed in - it might be NULL.
 
-So, I promised a core fix and haven't sent one yet.
+Hi Borislav,
 
-I'm not that keen on this complexity in the driver as to my mind it should need
-a complex state machine to deal with this.
+That ve_info really is specific to handling a fault.  There's only one
+call site:
 
-Let me knock up a quick patch and then be lazy and ask you to test it for me.
-The main delay on that I'd have have figure out a test framework for it rather
-than the actual change.
+> +DEFINE_IDTENTRY(exc_virtualization_exception)
+> +{
+> +	struct ve_info ve;
+...
+> +	ret = tdx_get_ve_info(&ve);
 
-So far I haven't found a clean race free route to ensure in general that we don't
-get a lack of balance between trigger occuring + reenable vs enable / disable.
-So we may still need some state in the individual drivers but it should be simple.
-In this particular case the reference counting on disable_irq may be enough but
-I'm not quite sure so you may want to look closely at that.
-
-Jonathan
-
-> ---
->  drivers/iio/adc/ti-tsc2046.c | 102 ++++++++++++++++++++---------------
->  1 file changed, 58 insertions(+), 44 deletions(-)
-> 
-> diff --git a/drivers/iio/adc/ti-tsc2046.c b/drivers/iio/adc/ti-tsc2046.c
-> index d84ae6b008c1..91f6bd5effe7 100644
-> --- a/drivers/iio/adc/ti-tsc2046.c
-> +++ b/drivers/iio/adc/ti-tsc2046.c
-> @@ -123,14 +123,21 @@ struct tsc2046_adc_ch_cfg {
->  	unsigned int oversampling_ratio;
->  };
->  
-> +enum tsc2046_state {
-> +	TSC2046_STATE_STANDBY,
-> +	TSC2046_STATE_ENABLE_IRQ_POLL,
-> +	TSC2046_STATE_POLL,
-> +	TSC2046_STATE_ENABLE_IRQ,
-> +};
-> +
->  struct tsc2046_adc_priv {
->  	struct spi_device *spi;
->  	const struct tsc2046_adc_dcfg *dcfg;
->  
->  	struct iio_trigger *trig;
->  	struct hrtimer trig_timer;
-> -	spinlock_t trig_lock;
-> -	unsigned int trig_more_count;
-> +	enum tsc2046_state state;
-> +	spinlock_t state_lock;
->  
->  	struct spi_transfer xfer;
->  	struct spi_message msg;
-> @@ -411,21 +418,47 @@ static const struct iio_info tsc2046_adc_info = {
->  	.update_scan_mode = tsc2046_adc_update_scan_mode,
->  };
->  
-> -static enum hrtimer_restart tsc2046_adc_trig_more(struct hrtimer *hrtimer)
-> +static enum hrtimer_restart tsc2046_adc_timer(struct hrtimer *hrtimer)
->  {
->  	struct tsc2046_adc_priv *priv = container_of(hrtimer,
->  						     struct tsc2046_adc_priv,
->  						     trig_timer);
->  	unsigned long flags;
->  
-> -	spin_lock_irqsave(&priv->trig_lock, flags);
-> -
-> -	disable_irq_nosync(priv->spi->irq);
-> -
-> -	priv->trig_more_count++;
-> -	iio_trigger_poll(priv->trig);
-> -
-> -	spin_unlock_irqrestore(&priv->trig_lock, flags);
-> +	spin_lock_irqsave(&priv->state_lock, flags);
-> +	switch (priv->state) {
-> +	case TSC2046_STATE_ENABLE_IRQ_POLL:
-> +		/*
-> +		 * IRQ handler called iio_trigger_poll() to sample ADC.
-> +		 * Here we
-> +		 * - re-enable IRQs
-> +		 * - start hrtimer for timeout if no IRQ will occur
-> +		 */
-> +		priv->state = TSC2046_STATE_POLL;
-> +		enable_irq(priv->spi->irq);
-> +		hrtimer_start(&priv->trig_timer,
-> +			      ns_to_ktime(priv->scan_interval_us *
-> +					  NSEC_PER_USEC),
-> +			      HRTIMER_MODE_REL_SOFT);
-> +		break;
-> +	case TSC2046_STATE_POLL:
-> +		disable_irq_nosync(priv->spi->irq);
-> +		priv->state = TSC2046_STATE_ENABLE_IRQ;
-> +		/* iio_trigger_poll() starts hrtimer */
-> +		iio_trigger_poll(priv->trig);
-> +		break;
-> +	case TSC2046_STATE_ENABLE_IRQ:
-> +		priv->state = TSC2046_STATE_STANDBY;
-> +		enable_irq(priv->spi->irq);
-> +		break;
-> +	case TSC2046_STATE_STANDBY:
-> +		fallthrough;
-> +	default:
-> +		dev_warn(&priv->spi->dev, "Got unexpected state: %i\n",
-> +			 priv->state);
-> +		break;
-> +	}
-> +	spin_unlock_irqrestore(&priv->state_lock, flags);
->  
->  	return HRTIMER_NORESTART;
->  }
-> @@ -434,16 +467,17 @@ static irqreturn_t tsc2046_adc_irq(int irq, void *dev_id)
->  {
->  	struct iio_dev *indio_dev = dev_id;
->  	struct tsc2046_adc_priv *priv = iio_priv(indio_dev);
-> -
-> -	spin_lock(&priv->trig_lock);
-> +	unsigned long flags;
->  
->  	hrtimer_try_to_cancel(&priv->trig_timer);
->  
-> -	priv->trig_more_count = 0;
-> +	spin_lock_irqsave(&priv->state_lock, flags);
->  	disable_irq_nosync(priv->spi->irq);
-> -	iio_trigger_poll(priv->trig);
-> +	priv->state = TSC2046_STATE_ENABLE_IRQ_POLL;
->  
-> -	spin_unlock(&priv->trig_lock);
-> +	/* iio_trigger_poll() starts hrtimer */
-> +	iio_trigger_poll(priv->trig);
-> +	spin_unlock_irqrestore(&priv->state_lock, flags);
->  
->  	return IRQ_HANDLED;
->  }
-> @@ -452,37 +486,16 @@ static void tsc2046_adc_reenable_trigger(struct iio_trigger *trig)
->  {
->  	struct iio_dev *indio_dev = iio_trigger_get_drvdata(trig);
->  	struct tsc2046_adc_priv *priv = iio_priv(indio_dev);
-> -	unsigned long flags;
-> -	int delta;
-> +	ktime_t tim;
->  
->  	/*
->  	 * We can sample it as fast as we can, but usually we do not need so
->  	 * many samples. Reduce the sample rate for default (touchscreen) use
->  	 * case.
-> -	 * Currently we do not need a highly precise sample rate. It is enough
-> -	 * to have calculated numbers.
-> -	 */
-> -	delta = priv->scan_interval_us - priv->time_per_scan_us;
-> -	if (delta > 0)
-> -		fsleep(delta);
-> -
-> -	spin_lock_irqsave(&priv->trig_lock, flags);
-> -
-> -	/*
-> -	 * We need to trigger at least one extra sample to detect state
-> -	 * difference on ADC side.
->  	 */
-> -	if (!priv->trig_more_count) {
-> -		int timeout_ms = DIV_ROUND_UP(priv->scan_interval_us,
-> -					      USEC_PER_MSEC);
-> -
-> -		hrtimer_start(&priv->trig_timer, ms_to_ktime(timeout_ms),
-> -			      HRTIMER_MODE_REL_SOFT);
-> -	}
-> -
-> -	enable_irq(priv->spi->irq);
-> -
-> -	spin_unlock_irqrestore(&priv->trig_lock, flags);
-> +	tim = ns_to_ktime((priv->scan_interval_us - priv->time_per_scan_us) *
-> +			  NSEC_PER_USEC);
-> +	hrtimer_start(&priv->trig_timer, tim, HRTIMER_MODE_REL_SOFT);
->  }
->  
->  static int tsc2046_adc_set_trigger_state(struct iio_trigger *trig, bool enable)
-> @@ -493,8 +506,8 @@ static int tsc2046_adc_set_trigger_state(struct iio_trigger *trig, bool enable)
->  	if (enable) {
->  		enable_irq(priv->spi->irq);
->  	} else {
-> +		hrtimer_cancel(&priv->trig_timer);
->  		disable_irq(priv->spi->irq);
-> -		hrtimer_try_to_cancel(&priv->trig_timer);
->  	}
->  
->  	return 0;
-> @@ -668,10 +681,11 @@ static int tsc2046_adc_probe(struct spi_device *spi)
->  	iio_trigger_set_drvdata(trig, indio_dev);
->  	trig->ops = &tsc2046_adc_trigger_ops;
->  
-> -	spin_lock_init(&priv->trig_lock);
-> +	spin_lock_init(&priv->state_lock);
-> +	priv->state = TSC2046_STATE_STANDBY;
->  	hrtimer_init(&priv->trig_timer, CLOCK_MONOTONIC,
->  		     HRTIMER_MODE_REL_SOFT);
-> -	priv->trig_timer.function = tsc2046_adc_trig_more;
-> +	priv->trig_timer.function = tsc2046_adc_timer;
->  
->  	ret = devm_iio_trigger_register(dev, trig);
->  	if (ret) {
-
+I think it's equivalent to something like a 'pt_regs' or 'stack_info'
+that we pass around in other exception handlers.  It's always stack
+allocated.  It's never dynamically allocated and NULL is never passed
+for some other semantic reason.
