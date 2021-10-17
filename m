@@ -2,79 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B97F8430780
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 11:40:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F906430781
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 11:40:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241662AbhJQJjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 05:39:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55898 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234497AbhJQJjn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 05:39:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 376EF60F23;
-        Sun, 17 Oct 2021 09:37:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634463453;
-        bh=TnThaLix6SFkYNB2+9atk2ZdBdQ0TC8TXqRaqicaHi4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UF11qCPicbcA0HJPW0PLBaAkIKIYHVexVZimVnnT4rwkh/FATGQrEqOI9LLKkqgVl
-         ZdXElZabCc/v+T65lcg0u6cH0YAsOwByFKz6cWwbWBQ1C/Vc3RJ5lyURGOK+XrA+FU
-         sdwc06Sz6NLVxFYLzjNPyqfhicBq2gevOoNxHSR8=
-Date:   Sun, 17 Oct 2021 11:37:30 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Kushal-kothari <kushalkothari285@gmail.com>
-Cc:     linux-arm-kernel@lists.infradead.org, mike.rapoport@gmail.com,
-        kushalkothari2850@gmail.com, outreachy-kernel@googlegroups.com,
-        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev,
-        nsaenz@kernel.org, bcm-kernel-feedback-list@broadcom.com
-Subject: Re: [PATCH v2] staging: vc04_services: replace msleep() by
- usleep_range()
-Message-ID: <YWvu2mZutljJLBY7@kroah.com>
-References: <20211017092900.134752-1-kushalkothari285@gmail.com>
+        id S241714AbhJQJlR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 05:41:17 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:45186 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234497AbhJQJlQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Oct 2021 05:41:16 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 12C7B1C0B76; Sun, 17 Oct 2021 11:39:06 +0200 (CEST)
+Date:   Sun, 17 Oct 2021 11:39:05 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, linux-kernel@vger.kernel.org
+Subject: 5.15-rc on x86-32: chromium dies with floating point exception
+Message-ID: <20211017093905.GA3069@amd>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="Kj7319i9nmIyA2yE"
 Content-Disposition: inline
-In-Reply-To: <20211017092900.134752-1-kushalkothari285@gmail.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 17, 2021 at 02:59:00PM +0530, Kushal-kothari wrote:
-> Fixed the warning:-msleep < 20ms can sleep for up to 20ms by replacing
-> msleep(unsigned long msecs) by usleep_range(unsigned long min, unsigned long max)
 
-No need to put the parameters in a function call.
+--Kj7319i9nmIyA2yE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> in usecs as msleep(1ms~20ms) can sleep for upto 20 ms.
-> 
-> Signed-off-by: Kushal-kothari <kushalkothari285@gmail.com>
+Hi!
 
-We need a "Legal" name here, is that how you sign documents?  Sorry, I
-have to ask.
+I have an "interesting" x86-32 system on thinkpad x60. Depending on
+kernel version, chromium either works or fails with floating point
+exception.
 
-> ---
-> 
-> Changes from v1: Reword both the subject and the log message.
-> 
->  drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
-> index 6fbafdfe340f..80a7898c5331 100644
-> --- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
-> +++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
-> @@ -857,7 +857,7 @@ vchiq_bulk_transmit(unsigned int handle, const void *data, unsigned int size,
->  		if (status != VCHIQ_RETRY)
->  			break;
->  
-> -		msleep(1);
-> +		usleep_range(1000, 2000);
+Working:
 
-You can not just randomly pick a range value here without lots of
-testing and knowing that the hardware really can support this.
+Linux amd 5.12.0+ #104 SMP PREEMPT Tue Apr 27 10:31:57 CEST 2021 i686
+GNU/Linux
 
-Have you done this here?
+Broken:
 
-thanks,
+Linux amd 5.15.0-rc5-next-20211015+ #204 SMP Sun Oct 17 10:29:18 CEST
+2021 i686 GNU/Linux
 
-greg k-h
+pavel@amd:~$ chromium  --temp-profile
+Floating point exception (core dumped)
+
+Is there any chance to get anything useful from the coredump? Besides
+bisection, does someone have any ideas?
+
+Best regards,
+								Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--Kj7319i9nmIyA2yE
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmFr7zkACgkQMOfwapXb+vJwngCeMZGDOEl3EB8aszlQJEDyOFy2
+zIIAn14IcRViAjNw32IZMre6yOeeEtbd
+=iIZu
+-----END PGP SIGNATURE-----
+
+--Kj7319i9nmIyA2yE--
