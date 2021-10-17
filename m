@@ -2,117 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92B1B4307B9
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 12:07:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30AA34307BD
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 12:10:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241765AbhJQKJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 06:09:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40238 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236428AbhJQKJU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 06:09:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A34F603E7;
-        Sun, 17 Oct 2021 10:07:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634465230;
-        bh=bbwKxxD/TTE7Tmqnd/xV2oqt+WsZec3voZmi17TJa4I=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Yh8j9MWCI+zge3JzpIR9zbRD5QqMmQ7vcs7DmZQkt6FhI2SaX1fOVot7t7IhAo5+0
-         Mt1qDceHUQVm/GMBxFxZ8XFo8TZf1TznKEZ0U8kwxvdCpL9dWasY4zjcrt9NrSQW4D
-         UydF35ptrPhByO4c1npTa+6JL1CgN6ATdLA9I6Qs=
-Date:   Sun, 17 Oct 2021 12:07:08 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
+        id S237651AbhJQKMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 06:12:54 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:57578 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234709AbhJQKMx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Oct 2021 06:12:53 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id B19822199E;
+        Sun, 17 Oct 2021 10:10:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1634465443; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=cNYpvRQl0L0sXJwGVDZQ2Iuqli37exNPS5euq8LShEI=;
+        b=lFY32vgd08LL3mvHEQXrfSUlSolOUB5MkreDMSEw1s3rjGnmqXK2IZ1YOrY+VwKP5U5klY
+        cQNb70ica9eZmGQAkt304hy+TEbmq8i8Hv+CpUZ1FacxUBS3leRg2Qo8HEVGev51spzpUz
+        u2AbvvLojj2bjFiZ1L8LQ47dxVzzzhw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1634465443;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=cNYpvRQl0L0sXJwGVDZQ2Iuqli37exNPS5euq8LShEI=;
+        b=gAYLtU5KACpS5KAz3oADSSXArteQa3Jn3pd8xf5XzgDmfGm1shYS/fR+t7jPuNu6Fr9Phn
+        eIlhqQPBYb0nwXBw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 95C3C13A39;
+        Sun, 17 Oct 2021 10:10:43 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id d20oJKP2a2HaNgAAMHmgww
+        (envelope-from <bp@suse.de>); Sun, 17 Oct 2021 10:10:43 +0000
+Date:   Sun, 17 Oct 2021 12:10:46 +0200
+From:   Borislav Petkov <bp@suse.de>
 To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Char/Misc driver fixes for 5.15-rc6
-Message-ID: <YWv1zE2QO+Dsmt64@kroah.com>
+Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] perf/urgent for v5.15-rc6
+Message-ID: <YWv2pgdrR0xgfoRI@zn.tnic>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 9e1ff307c779ce1f0f810c7ecce3d95bbae40896:
+Hi Linus,
 
-  Linux 5.15-rc4 (2021-10-03 14:08:47 -0700)
+please pull a single perf/urgent enhancement for v5.15.
+
+Thx.
+
+---
+
+The following changes since commit 64570fbc14f8d7cb3fe3995f20e26bc25ce4b2cc:
+
+  Linux 5.15-rc5 (2021-10-10 17:01:59 -0700)
 
 are available in the Git repository at:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc.git tags/char-misc-5.15-rc6
+  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/perf_urgent_for_v5.15_rc6
 
-for you to fetch changes up to f42752729e2068a92c7d8b576d0dbbc9c1464149:
+for you to fetch changes up to 71920ea97d6d1d800ee8b51951dc3fda3f5dc698:
 
-  eeprom: 93xx46: fix MODULE_DEVICE_TABLE (2021-10-15 10:54:02 +0200)
-
-----------------------------------------------------------------
-Char/Misc driver fixes for 5.15-rc6
-
-Here are some small char/misc driver fixes for 5.15-rc6 for reported
-issues that include:
-	- habanalabs driver fixes
-	- mei driver fixes and new ids
-	- fpga new device ids
-	- MAINTAINER file updates for fpga subsystem
-	- spi module id table additions and fixes
-	- fastrpc locking fixes
-	- nvmem driver fix
-
-All of these have been in linux-next for a while with no reported issues
-
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+  perf/x86/msr: Add Sapphire Rapids CPU support (2021-10-15 11:25:26 +0200)
 
 ----------------------------------------------------------------
-Alexander Usyskin (1):
-      mei: hbm: drop hbm responses on early shutdown
+- Add Sapphire Rapids to the list of CPUs supporting the SMI count MSR
 
-Andy Shevchenko (1):
-      mei: me: add Ice Lake-N device id.
+----------------------------------------------------------------
+Kan Liang (1):
+      perf/x86/msr: Add Sapphire Rapids CPU support
 
-Arnd Bergmann (2):
-      cb710: avoid NULL pointer subtraction
-      eeprom: 93xx46: fix MODULE_DEVICE_TABLE
+ arch/x86/events/msr.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Greg Kroah-Hartman (3):
-      Merge tag 'misc-habanalabs-fixes-2021-09-29' of https://git.kernel.org/pub/scm/linux/kernel/git/ogabbay/linux into char-misc-linus
-      Merge tag 'fpga-fixes-5.15-rc5' of git://git.kernel.org/pub/scm/linux/kernel/git/mdf/linux-fpga into char-misc-next
-      Merge tag 'fpga-maintainer-update' of git://git.kernel.org/pub/scm/linux/kernel/git/mdf/linux-fpga into char-misc-linus
+-- 
+Regards/Gruss,
+    Boris.
 
-Mark Brown (4):
-      fpga: ice40-spi: Add SPI device ID table
-      misc: gehc: Add SPI ID table
-      eeprom: at25: Add SPI ID table
-      eeprom: 93xx46: Add SPI device ID table
-
-Moritz Fischer (2):
-      MAINTAINERS: Add Hao and Yilun as maintainers
-      MAINTAINERS: Drop outdated FPGA Manager website
-
-Rajaravi Krishna Katta (1):
-      habanalabs: fix resetting args in wait for CS IOCTL
-
-Randy Dunlap (1):
-      misc: HI6421V600_IRQ should depend on HAS_IOMEM
-
-Srinivas Kandagatla (1):
-      misc: fastrpc: Add missing lock before accessing find_vma()
-
-Stephen Boyd (1):
-      nvmem: Fix shift-out-of-bound (UBSAN) with byte size cells
-
- MAINTAINERS                                        |  3 +-
- drivers/fpga/ice40-spi.c                           |  7 +++++
- drivers/misc/Kconfig                               |  1 +
- drivers/misc/cb710/sgbuf2.c                        |  2 +-
- drivers/misc/eeprom/at25.c                         |  8 ++++++
- drivers/misc/eeprom/eeprom_93xx46.c                | 18 ++++++++++++
- drivers/misc/fastrpc.c                             |  2 ++
- drivers/misc/gehc-achc.c                           |  1 +
- .../misc/habanalabs/common/command_submission.c    | 33 +++++++++++++---------
- drivers/misc/mei/hbm.c                             | 12 +++++---
- drivers/misc/mei/hw-me-regs.h                      |  1 +
- drivers/misc/mei/pci-me.c                          |  1 +
- drivers/nvmem/core.c                               |  3 +-
- include/uapi/misc/habanalabs.h                     |  6 ++--
- 14 files changed, 73 insertions(+), 25 deletions(-)
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
