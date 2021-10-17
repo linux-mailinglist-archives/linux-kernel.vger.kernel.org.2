@@ -2,1150 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A8CC430887
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 13:56:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09F3E430888
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 13:57:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245518AbhJQL6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 07:58:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32918 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236245AbhJQL6x (ORCPT
+        id S245537AbhJQL7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 07:59:33 -0400
+Received: from mout.kundenserver.de ([212.227.126.187]:51339 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236245AbhJQL71 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 07:58:53 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAF12C061765
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 04:56:43 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id g39so2110367wmp.3
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 04:56:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=EtnmrqVsOzfWfRN3hSue7Qa3ZvrSmziGGM17hfZP1YM=;
-        b=NdQAbWSy1+TBAkrTuEmixGF8zw02ZEMnBBeZk55w8iKxn3E/88gkKrXZrKDUt8M1tP
-         tt9G0yVPUIs7JYs6bnzKDe1m/cD48u3xIELoKdPfj19geNG4SRj3AC1KqbJlA7JlVFQ3
-         8hQ/TfspTfHWUeezVDTI3nUitqigSAw7nlV4MvMNh0ybNzUaTTi6pxtG1MD7E9qm1ref
-         cL2+JJNx46eGaCD6TONpN1G8WQNZULuNLuXy4PiajWMeKfvEcxRhn5s1VuX+P00/a9aq
-         PvoBHkjcK8x/iNIn9ASCcHciya3D4U7+/59/pXD5TKPFPV6QeI6AmiDRR3SS1l3FraBr
-         gIsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=EtnmrqVsOzfWfRN3hSue7Qa3ZvrSmziGGM17hfZP1YM=;
-        b=es59JZn1Quj1HyJw1HhOxSPuT77XJykK3wszlOfIgS6kwLKr349laasu6x9Q3Ukrqa
-         rCyA9qyPW2mSnjZVUDtZZCvacI6rNLavOX9NNMCdKPzGs33ouMISuYU70UgkPCJBxcc6
-         kk6cbZFoJOeomVE+7ofXwe2kcW5Utsb45eePOKHZ64ym22r8TJuCphvBxGQbofk8QLB8
-         o0Y2PSkhHY0uTxdeR72B128Q8t5jklacke3tBwTzFpLoKFvi2EJGR6UzmbTIBcThimNE
-         qX1r5eFsQR3TPjVfLxnu6uzvsShQZiP9I8SZ2zL8ra4BWTpkBmASPHuBdEBVT+edm3hY
-         KeqQ==
-X-Gm-Message-State: AOAM530zu5RAKu03gFgjTjlSy2Du4NH74pxYS5B9vVL9XQgA02FIUozT
-        B/bu6WUftqQW1iCRVQbIhfQ=
-X-Google-Smtp-Source: ABdhPJwpxjStYL5kw7hNsGFHpnaaOlyozKeH/A5nXj0NobW2frEtwUuaqB8IQo+DYmJUTiFk2+0s0g==
-X-Received: by 2002:a05:600c:4fcd:: with SMTP id o13mr38969833wmq.158.1634471802262;
-        Sun, 17 Oct 2021 04:56:42 -0700 (PDT)
-Received: from ?IPV6:2a02:8108:96c0:3b88::d7f0? ([2a02:8108:96c0:3b88::d7f0])
-        by smtp.gmail.com with ESMTPSA id c185sm9832549wma.8.2021.10.17.04.56.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 17 Oct 2021 04:56:41 -0700 (PDT)
-Message-ID: <1c6c6282-5039-4324-2f8c-9e35d25eaec5@gmail.com>
-Date:   Sun, 17 Oct 2021 13:56:40 +0200
+        Sun, 17 Oct 2021 07:59:27 -0400
+Received: from [192.168.1.107] ([37.4.249.122]) by mrelayeu.kundenserver.de
+ (mreue011 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1MfYgC-1nDcSg2GIC-00fwEU; Sun, 17 Oct 2021 13:56:58 +0200
+Subject: Re: [PATCH v2] staging: vc04_services: replace msleep() by
+ usleep_range()
+To:     Kushal-kothari <kushalkothari285@gmail.com>
+References: <20211017092900.134752-1-kushalkothari285@gmail.com>
+Cc:     linux-arm-kernel@lists.infradead.org, mike.rapoport@gmail.com,
+        kushalkothari2850@gmail.com, outreachy-kernel@googlegroups.com,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        linux-staging@lists.linux.dev, nsaenz@kernel.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        Julia Lawall <julia.lawall@inria.fr>
+From:   Stefan Wahren <stefan.wahren@i2se.com>
+Autocrypt: addr=stefan.wahren@i2se.com; keydata=
+ LS0tLS1CRUdJTiBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0tClZlcnNpb246IEdudVBHIHYy
+ CgptUUlOQkZ0NmdCTUJFQUN1Yi9wQmV2SHhidkplZnlaRzMySklObW4yYnNFUFgyNVY2ZmVq
+ bXlZd21DR0tqRnRMCi9Eb1VNRVZIRHhDSjQ3Qk1YbzM0NGZIVjFDM0FudWRnTjFCZWhMb0J0
+ TEh4bW5lQ3pnSDNLY1B0V1c3cHRqNEcKdEp2OUNRRFp5MjdTS29FUHh5YUk4Q0YweWdSeEpj
+ NzJNOUk5d21zUFo1YlVIc0x1WVdNcVE3SmNSbVBzNkQ4ZwpCa2srOC95bmdFeU5FeHd4SnBS
+ MXlsajVianhXREh5WVF2dUo1THpaS3VPOUxCM2xYVnNjNGJxWEVqYzZWRnVaCkZDQ2svc3lp
+ by9ZaHNlOE4rUXN4N01RYWd6NHdLVWtRUWJmWGcxVnFrVG5BaXZYczQyVm5Ja211NWd6SXcv
+ MHQKUkp2NTBGUmhIaHhweUtBSThCOG5oTjhRdng3TVZrUGM1dkRmZDN1R1lXNDdKUGhWUUJj
+ VXdKd05rLzQ5RjllQQp2ZzJtdE1QRm5GT1JrV1VSdlArRzZGSmZtNitDdk92N1lmUDF1ZXdB
+ aTRsbitKTzFnK2dqVklXbC9XSnB5MG5UCmlwZGZlSDlkSGtnU2lmUXVuWWN1Y2lzTXlvUmJG
+ OTU1dENna0VZOUVNRWRZMXQ4aUdEaUNnWDZzNTBMSGJpM2sKNDUzdWFjcHhmUVhTYUF3UGtz
+ bDhNa0NPc3YyZUVyNElOQ0hZUUR5WmljbEJ1dUNnOEVOYlI2QUdWdFpTUGNRYgplbnpTektS
+ Wm9POUNhcUlEK2ZhdkxpQi9kaHptSEErOWJnSWhtWGZ2WFJMRFp6ZThwbzFkeXQzRTFzaFhp
+ ZGRaClBBOE51SlZ6RUl0MmxtSTZWOHBaRHBuMjIxcmZLaml2UlFpYW9zNTRUZ1pqak1ZSTdu
+ bko3ZTZ4endBUkFRQUIKdENCVGRHVm1ZVzRnVjJGb2NtVnVJRHgzWVdoeVpXNXpkRUJuYlhn
+ dWJtVjBQb2tDTndRVEFRZ0FJUVVDWElkYwo0Z0liQXdVTENRZ0hBZ1lWQ0FrS0N3SUVGZ0lE
+ QVFJZUFRSVhnQUFLQ1JDVWdld1BFWkR5MjFPVEQvOUdpWkxkCnRSWWNteVJKZ2x0aVFRekFp
+ UWRjSUQ3OGxHb1dwL3grci92Y1U2YjZqdVl1ZVR3Z1Iwclc3djdsMklSQnlEN24KSEp4YSt0
+ SVNvUVpCZ2hvbE1JZmI5TXRoR09KTENZNzdrL1FoQWhuMzJOR1prZWp3OXR6a3MvNDBtclpT
+ VVQ4NApaeWJzUVhyTE0vSFI2VElJL0RlUEIwbktEM0ppcHBzMlVIUUQ5cUQySWpFd1NRUGxI
+ akNPckVaaDQ1UFo3bTkrClo5M0x6aVRlc1dabFlRdUxpSndzNHJLcHRIVzFkL3dSZWxzaG1t
+ NlFxY0wybDRDL2U0MGVEQjlncTRkU1poOVgKUEVZbGxpeU5RaDdhMkxTZHVtRTFyK2NTd0lq
+ RS91ZHRSdmRPOWFLb0psT2JVSzVkTmpTUEg3d0tUYndkWGRZRApHUHdEaFhkNThOQXdyK1BY
+ QmxQajB0STFMQ3ErTEJ4ZUt6aFdYK0dWcTlEb2pWanlVREV4Rk5Ga1h1b0M3ZzhtClY5VDB0
+ ZUJpdVpSbm91WEt3VjJGcHRaT0hIN0JVRVd0a0t0aGgxZXRmT1dwaWdCemtVN2JQc2ZJWVQr
+ cnk5dGIKMW9KK3Y0MVBOYXFaRW1QVXBKeHZmek5UN3Ayd01lRDdaajlmMHJ1YlJQdExBSjJR
+ R2pyRkhzdVh3QU9xcHl6ZQoxOEVidHNZazBOMHp1SEVoY2orUEJJQmZoMFlJWWQ1MW9mNkdJ
+ aU95UjlxMFhYdHBsVUo3VDIvSDF1UXFrWGxwCitnVzRWa2lmc2NJckl1eWZueFpXMTJlSXZq
+ NnlicVdMN2FZS0dZbVQ2aUxDUGJIWXlZY2F5bDRFa0ZjckNGN0UKZTBXVC9zY1ZNaE8vNVgv
+ SGFOQTVIQngvcjUycGdMY3Y0aTlNeExRbVUzUmxabUZ1SUZkaGFISmxiaUE4YzNSbApabUZ1
+ TG5kaGFISmxia0JwTW5ObExtTnZiVDZKQWpnRUV3RUNBQ0lGQWx0NmdCTUNHd01HQ3drSUJ3
+ TUNCaFVJCkFna0tDd1FXQWdNQkFoNEJBaGVBQUFvSkVKU0I3QThSa1BMYmpic1AvamdqYVNz
+ NUh0bGtBSXZXUytGcm15N2MKaG5jT0F4TFRWL0Q2UkV3SU95R0poRkt3d29pck55UTJnOXZV
+ YTNZQ1lDZjFmSjh3RWhhS09COWQwTHBNUm5MNApkRVQ4ZDgyMzhFL3BLK0hxTktpSXNKaHM2
+ SnNLOFpnalZRR3JtbWZua0dyWisxdjBIQnV4ZGljZ0duUC9XdHVBClVsOGw2Mi9BTGJheXlq
+ KzYxQ2xyc0V0UklhcU82N0xJWXdQaVBEUkkrWGlNek5pR3pIRi8xUTZHUjAyUkg2YTMKRjg5
+ ejhhUHhjSGkxWnZDdDJ5a3o2VUVjaHpQMHI1Z3FGSisvTC9VcHU4ME1YaVk0djVlSWFCNTJn
+ VlBnaXlNQQpsTDJkRHMxbUladm5yUkxSWTJ0YjNtQVlOa1Y1QjVJRFQzcGtXeTZrS281T0Nn
+ SytZZFlPUjhGTloyb04ydDhPCnJLK1ZudGFLN01NU0tIbG1ZL3NPd3RSbEVoMU9CbXJjQ3dH
+ d21wLzA1R2tSNDZmL0lzaFJWZUZPUmF3K0dBcXQKUDIrQ0ZhMkNOQS9JSG5aTm95aWtsRHpQ
+ UUhVVUdzck5wcERyaFg5Sm1oQm1nMXYyeXdIMU5YdTFpRGZQMUJBdwpLZ29rdDVmNVVhUkY5
+ c0FBNTN2V0V2YlVVTjllZXNGR0x6UFdkSkdRNWhwZC9WSDVJUXk5U0JyaC93SWNla3E1Cm4w
+ a042cGJUSHhHRTUyU2kvTVZJa05UdURaM2FwbjJqbERaNHBPdHBCWEkydlAzYlBPK05pcUJa
+ anNVM3R4TGkKV2R2MkZqeXp6NlhMUndlV1JZVkw1SGE2TER0eG9yMnZ1NlVQMDdwOXh6MXhS
+ WmFPRFczb1lsSEZ6WXBhNFc1ZwpMSGIybEVrSXVVZlNjaWNHYmpqQXRDbFRkR1ZtWVc0Z1Yy
+ Rm9jbVZ1SUR4emRHVm1ZVzR1ZDJGb2NtVnVRR2x1CkxYUmxZMmd1WTI5dFBva0NOd1FUQVFn
+ QUlRVUNYSWRlaHdJYkF3VUxDUWdIQWdZVkNBa0tDd0lFRmdJREFRSWUKQVFJWGdBQUtDUkNV
+ Z2V3UEVaRHkyeUhURC85VUY3UWxEa0d4elE3QWFDSTZOOTVpUWY4LzFvU1VhRE51Mlk2SQpL
+ K0R6UXBiMVRiVE9yM1ZKd3dZOGEzT1d6NU5MU09MTVdlVnh0K29zTW1sUUlHdWJEM09EWko4
+ aXpQbEcvSnJOCnQ1elNkbU41SUE1ZjNlc1dXUVZLdmdoWkFnVERxZHB2K1pIVzJFbXhuQUox
+ dUxGWFhlUWQzVVpjQzVyMy9nL3YKU2FNbzl4ZWszSjVtTnVEbTcxbEVXc0FzL0JBY0ZjK3lu
+ TGh4d0JXQld3c3Z3UjhiSHRKNURPTVd2YUt1RHNrcApJR0ZVZS9LYjJCK2pyYXZRM1RuNnMv
+ SHFKTTBjZXhTSHo1cGUrMHNHdlArdDlKNzIzNEJGUXdlRkV4cmlleThVCkl4T3I0WEFiYWFi
+ U3J5WW5VL3pWSDlVMWkyQUlRWk1XSkFldkN2VmdRL1UrTmVSaFh1ZGU5WVVtRE1EbzJzQjIK
+ VkFGRUFxaUYyUVVIUEEybThhN0VPM3lmTDRyTWswaUh6TElLdmg2L3JIOFFDWThpM1h4VE5M
+ OWlDTHpCV3UvTgpPbkNBYlMremx2TFphaVNNaDVFZnV4VHR2NFBsVmRFamY2MlArWkhJRDE2
+ Z1VEd0VtYXpMQU1yeDY2NmpINWt1ClVDVFZ5bWJMMFR2Qis2TDZBUmw4QU55TTRBRG1rV2tw
+ eU0yMmtDdUlTWUFFZlFSM3VXWFo5WWd4YVBNcWJWK3cKQnJoSmc0SGFONkM2eFRxR3YzcjRC
+ MmFxYjc3L0NWb1JKMVo5Y3BIQ3dpT3pJYUFtdnl6UFU2TXhDRFhaOEZnWQpsVDR2MjNHNWlt
+ SlAyemdYNXMrRjZBQ1VKOVVRUEQwdVRmK0o5RGEycitza2gvc1dPbloreWNvSE5CUXZvY1pF
+ Ck5BSFFmN2tDRFFSYmVvQVRBUkFBMkhkMGZzRFZLNzJSTFNESGJ5ME9oZ0RjRGxWQk0yTSto
+ WVlwTzNmWDFyKysKc2hpcVBLQ0hWQXNRNWJ4ZTdIbUppbUhhNEtLWXMya3YvbWx0L0NhdUNK
+ Ly9wbWN5Y0JNN0d2d25Lem11WHp1QQpHbVZUWkM2V1I1TGtha0ZydEhPelZtc0VHcE52NVJj
+ OWw2SFlGcExrYlNrVmk1U1BRWkp5K0VNZ01DRmdqclpmClZGNnlvdHdFMWFmN0hOdE1oTlBh
+ TEROMW9VS0Y1aitSeVJnNWl3SnVDRGtuSGp3QlFWNHBndzIvNXZTOEE3WlEKdjJNYlcvVExF
+ eXBLWGlmNzhJaGdBelh0RTJYck0xbi9vNlpINzFvUkZGS096NDJsRmR6ZHJTWDBZc3FYZ0hD
+ WAo1Z0l0TGZxemoxcHNNYTlvMWVpTlRFbTFkVlFyVHFueXMwbDE4b2FsUk5zd1lsUW1uWUJ3
+ cHdDa2FUSExNSHdLCmZHQmJvNWRMUEVzaHRWb3dJNm5zZ3FMVHlRSG1xSFlxVVpZSXBpZ21t
+ QzNTd0JXWTFWNmZmVUVta3FwQUFDRW4KTDQvZ1Vnbjd5US81ZDBzZXFuQXEycFNCSE1VVW9D
+ Y1R6RVFVV1ZraUR2M1JrN2hURm1oVHNNcTc4eHYyWFJzWApNUjZ5UWhTVFBGWkNZRFVFeEVs
+ RXNTbzlGV0hXcjZ6SHlZY2M4cURMRnZHOUZQaG1RdVQyczlCbHg2Z0kzMjNHCm5FcTFsd1dQ
+ SlZ6UDRqUWtKS0lBWHdGcHYrVzhDV0xxekRXT3ZkbHJEYVRhVk1zY0ZUZUg1VzZVcHJsNjVq
+ cUYKUUdNcGNSR0NzOEdDVVcxM0gwSXlPdFF0d1dYQTRueStTTDgxcHZpQW1hU1hVOGxhS2FS
+ dTkxVk9WYUY5ZjRzQQpFUUVBQVlrQ0h3UVlBUUlBQ1FVQ1czcUFFd0liREFBS0NSQ1VnZXdQ
+ RVpEeTIrb1hELzljSEhSa0JaT2ZrbVNxCjE0U3Z4MDYyUHRVMEtWNDcwVFNucC9qV29ZSm5L
+ SXczRzBtWElSZ3J0SDJkUHdwSWdWanNZeVJTVk1LbVNwdDUKWnJEZjlOdFRiTldnazhWb0xl
+ WnpZRW8rSjNvUHFGclRNczNhWVl2N2U0K0pLNjk1WW5tUSttT0Q5bmlhOTE1dApyNUFaajk1
+ VWZTVGx5VW15aWMxZDhvdnNmMWZQN1hDVVZSRmNSamZOZkRGMW9ML3BEZ01QNUdaMk93YVRl
+ am15CkN1SGpNOElSMUNpYXZCcFlEbUJuVFlrN1B0aHk2YXRXdllsMGZ5L0NxYWpUS3N4Nytw
+ OXh6aXU4WmZWWCtpS0IKQ2MrSGUrRURFZEdJRGh2TlovSVFIZk9CMlBVWFdHUytzOUZOVHhy
+ L0E2bkxHWG5BOVk2dzkzaVBkWUl3eFM3SwpYTG9LSmVlMTBEamx6c1lzUmZsRk9XMFpPaVNp
+ aElDWGlRVjF1cU02dHpGRzlndFJjaXVzNVVBdGhXYU8xT3dVClNDUW1mQ09tNGZ2TUlKSUE5
+ cnh0b1M2T3FSUWNpRjNjcm1vMHJKQ3ROMmF3WmZnaThYRWlmN2Q2aGp2MEVLTTkKWFpvaUFa
+ WVpEKy9pTG01VGFLV042b0dJdGkwVmpKdjhaWk9aT2ZDYjZ2cUZJa0pXK2FPdTRvclRMRk16
+ MjhhbwpVM1F5V3BOQzhGRm1kWXNWdWE4czZnTjFOSWE2eTNxYS9aQjhiQS9pa3k1OUFFejRp
+ RElScmdVek1FZzhBazdUCmZtMUtpWWVpVHRCRENvMjVCdlhqYnFzeXhrUUQxbmtSbTZGQVZ6
+ RXVPUEllOEp1cVcyeEQ5aXhHWXZqVTVoa1IKZ0pwM2dQNWIrY25HM0xQcXF1UTJFNmdvS1VN
+ TEFia0NEUVJiZmw5REFSQUFzRExjYStMbFAydm5mdEVHaHBjQQpCR1ZOUUVGbkdQckNhdVU2
+ SGhOODA1V3RQVHRtc1JPdUp6cWdVVDBtcHFXSWZacTZzTXd5dkhLOVRzL0tIM0paClVWYlJD
+ M3oyaDNLZmhIL0RhZjk1cGQ2bVBjL2g5dkYvT3kzK2VUV2hnR25QNmNBNWtsUitmTzFXaEc4
+ VnJpWHYKck5lUkcyMHN6emplSG9jblNJY1Q1WHVaUjB1REhPaUd4T2l6MXNNUkZUR3h6R095
+ MTlSOXJ2dTYzdGlJM2Q3dgpnYzc1T0NBZGtlQi9TZUNFbGFSdzBUZjdMWmJQampzRjI2M0JZ
+ bk1mNGtrTkVLdnFXY1UyaWNNcCtxZXpqeW5CCnB2ZXVlMHJDVFFCWUFRbG9GQ1ZUR0hyV1dB
+ NkQ0VzVPMkFmSWRJYzF1MUpDWnAyZjVMV1ZvVUZUVklyUW5RUVUKU0hDaWZyOU1aeExUdFBK
+ ZFU1Mm9TUHczZGs0aExQOGlKSUx1dnYvYXZhakNzUVlIRXR3WXNiZUZaeGl1TGdscApBN1lj
+ Sk5ObXBnQ3BNRDR3VWh2bEN0QUtOQlFXeXIyOTc2OThFUVRuNDZlQmVVNkttMkNpaFhrZ3dD
+ eWY4ZXlLCkxFM3NYZXdhcTVrZ1pXdk5xNml1NXFZSVJCOXl3K2NYYzYwZE9aRE9scTkzWDVT
+ QVJZemFvZXBrSHo0cmtMa1AKUG8rdENIeUhRUHNHblBYYzlXVDgwREM5Tm5KR2R2VWx5NXJk
+ TUk0eHBaeWdlb2tqd293VlFsUFV1Y1M2TXluNwpmOHc4Y2dmQjdDMklBSWNEeDJwUC9IendY
+ dmtDT1FOQTdtVjFsTTA4bitnVmtUcnpweGlwNURicTRDSW9ZeDJNCkpaVDhiR1JINlhqY1VE
+ S2EwOVFoeVpzQUVRRUFBWWtFUkFRWUFRZ0FEd1VDVzM1ZlF3SWJBZ1VKQThKbkFBSXAKQ1JD
+ VWdld1BFWkR5MjhGZElBUVpBUWdBQmdVQ1czNWZRd0FLQ1JCVnhETFBjVk1NamNkc0QvMFJo
+ QXN1UVlPeQpyMTNCbDNOaFhrWUFaR3AyWkZER3VrZTdPU2tWOG9qT09UZFR5ei9jT1JHQ2J5
+ ZEQrRGd2cUZ5VmRuT1hLZ08wCmxKbUd3ckdlTGRnZ0F2aDBpaHJwNU8wWVVKOWJCU1htR01t
+ UVRZSC9BbUxUR2FkYnVqQ1dqNWZGVWtDeXd4aW0KSHV5MFBiMjRwelR2UzUwR1k1WStxSDBG
+ SE5haWdka2tpV04zcnVnN0haRXUvQ3lsUFpqT1h6K0QxUVBNckV4dwo3ZC9NS2FiVis5YU5i
+ UVlabGRJajk4UXd2VUYxS1N6YThqbFVJdnBoUnEyN0FUOGZER1lHUGZERU1nMmNCT2FlCkty
+ N29uUXM0YjdhV082aWZEbHhRVHB6c3pvK0FuODA3Tk1TdFZFRmYrczNBaFZEM2U3bmY4SkJh
+ dmJWckFlMGsKb20yNm96elBubnh6K2xxVlZ0dzZVazRYTUl6dGl4L0h3SFl3dUNuY1VYWndL
+ MEkzeUFKd2pZd29vck9DaEozUwpFVWJKUVB0R3NneFJERXhWQkZlNk5MUC82MnhQOU82dGFj
+ d09kYjBNbVAxYjM5cFJBVEM3YmdkMWxkVUxpNzVaCmxKckowL1NpVkVyb3FOWXk3OXRmbWdB
+ WjJVeFptczlTckV5Nm85UVNmc24xYVh2K01QTDlKYUNHbWtQNnpiTFEKTm5kajBKY2FRbmtD
+ MHZneWRPMUJtNk11OTZQOXVmbEtaY0FTNndtTE01SWRIT3lqTDg4d0h3anVjakFPQnRjdwpw
+ MG9HVG5WT25Sc05ZU084VzhZWi9LZGJ1Nzg1ZGF6TXFKMmlOakFEdUJiZG02TjRqNUVkTW5r
+ TG4wQklmUEpwCmRnbTR2bDJVcExqd1JHci9NM3dtbTVwdnMrNnVCN2hrL0ZKaUQvNGxsRU5Q
+ NGVNMWg3U200aitWcTZOMSt6VEIKSVhKQWViSXFhc0RwNXlaUzdYcnk0STM2bjg1WEVZZkcw
+ MWx0QXlob05WMkRPOFNJUlFwdWkydHErOVJQM1JLMQpKREJ4eEVKWTJFTzVKWjhNeGFQSFEw
+ RFQwNWxSRmpLMkFsaGRFSXRqTGpwSjNmVW05c3FMeE1XeHpQNlV6M2lpCjJ1YTR1bnJ0Nk9D
+ VHFRd2lqRi8zYlRXaXd2VkFBSG5NRlVpb1hzaEhhb2hWRGNWZm5lSU1mVjBiUUNYWWkzTnAK
+ WTB2MFp3Y2lGSCtnU0M3cUQ2WE51aHBWR1NMNElpbGlGeS9TemNhSkV6QUhlTERTaFpQMkNX
+ ZG5DNHZnbDM3dApocHg4aDU1WWhKbjZIU3VVelBnaGFLdFZCMmsrajdaZXlaK1NGeHA3SXVi
+ SEN3TEhsUWhUNzVSd1EzaUF4S242CjBxajUxY1lUbnF4ZFpYVzZmSDNQa3VNellVNUdwcVIv
+ MU9sNWMvd2ZJNmc2QW04eUtXLzBFVUx0K0tuNExGc1MKbTdZM201SDV2MTJVNkpCWXZWK3Ix
+ M2paaW9zNEVFREU5M0Q1c05IMk1JeVJ6Q0RxMXpkZHQ0WHV5S0ZqUEtXMQo5aWJaRGZGVjdL
+ dUNzdnVMMjNzQmMxc0NNb3ArRTFtVC9ReE9JQTZvRFQxTVFzdHdPVnVReURDdi9PdktTZ2Z6
+ CjhGWEdMNkFQY2xqQ3FqOEFKaHhReXN4ZG9pUVA4bS92dStialdHR3Z4dzVzMWxncGlSRFRS
+ VVBnY0pKTmFHWTIKVklEclpRaTROU2lOUTBOSWkrZGp1NGZOTW1DcFFxZzh0YkMzY0FhNnl3
+ bTZvUUIxU0JobURYMmUxMWdSbGx1SQpPblRHUEUwSFRvM2w3MmxoYmc9PQo9cVpNVgotLS0t
+ LUVORCBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0tCg==
+Message-ID: <83076fd7-3183-5665-a9df-63a0b7e13c3f@i2se.com>
+Date:   Sun, 17 Oct 2021 13:56:57 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH 7/8] staging: r8188eu: remove procfs functions
-Content-Language: en-US
-To:     Martin Kaiser <martin@kaiser.cx>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20211016113008.27549-1-martin@kaiser.cx>
- <20211016113008.27549-8-martin@kaiser.cx>
-From:   Michael Straube <straube.linux@gmail.com>
-In-Reply-To: <20211016113008.27549-8-martin@kaiser.cx>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+In-Reply-To: <20211017092900.134752-1-kushalkothari285@gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Provags-ID: V03:K1:3CYSkxYK1sQ+u009ZWdl96JUNObZf6Uvl5mj+g3RLa3SOgOQlRX
+ t050tnvjf3ixtjmmf6aitJ1feUY1LWMWDrn0JqwEEUPC8pEoMMdIapYcVuqSIso227b4Udh
+ /RSNchhZjA/gyd8xo7jMcos4YuCYnV/U9bItHBnw+YQHq1BXNcxhPz+hq1Jb/32h6yadDK1
+ d9gX78XVG82N5/JjUUTEw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:wwnfYvIQVeU=:LUkFPn+pGdQF7TpVsntoWq
+ uLl/KDLpFoDpdWPiNxQAQFWs1LsJ9+gogw4Oovdt4XM3XF7W/mbIS6cj9f1p0zNQyx4BBRLhW
+ 9j71mVUlTQcEJRbGIqfrm1XrojcFQS2/yDfsFEwdQe6PtEiKhhjwmTW1yYdWF1mdqoma0f/qN
+ mtV4daBAj6CXqt4rWF9ojogwz0wNzfYs57WI8DNmqCtCTtQpifhmkcgrebiEf9SzPHsDquCbK
+ iLaFugCtQ8/gs5qbLHz2dhzNRZ8DI+RSSMaLmKxz1rvzIvlBwrUvnTU3Q3hxJy2e2DvP+uTve
+ M1tbZH8btOAbBZ7NzwVKJI3FJ+VPnYg/NQKCO5NrqV6DRmKjVuwhi1NTBE9IiMwHLxm8P1fTW
+ 8ErReoo9F3jt4O3WuX0zKJg1pXW31IOHDj/N+C/sbidw2RuywNiD9IggQTYzxoZDsH5zq7/15
+ 7URuKX8udxEZO7y9RiRFVQz4pVw5emmnxMxLIjme+JIcv5hARyLGDLep2i0KU7Ga+OKKzSaPf
+ +5/5L6tlAvpvL+yZp7vyvWfwIdSE7jA28/7uqQ5XqkjlV5YVlRg+SFdiPWbpG5bX3KRJ5VyOZ
+ /Uu7DNgytO5M670rH8CBNwgQ8nWsxE/wgeM2up+NoniIOmqo4rqF3mPVfIdbcXcp67rCExDmY
+ /B0zuFGguEcOsGyu0SVl9Gcad5QyYC4tFuk+eyQxlvASy9uhPVNjhEpC49PRWJJFuHH7+nZGV
+ wKqngodN2raDpH0JSsvKBuJCgHegqaYSwzbHGvefAETFc7QwX4O6twj7ndY=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/16/21 13:30, Martin Kaiser wrote:
-> It seems that previous versions of this driver provided a procfs
-> interface for debugging.
-> 
-> Remove the procfs helper functions which are no longer used.
-> 
-> Signed-off-by: Martin Kaiser <martin@kaiser.cx>
-> ---
->   drivers/staging/r8188eu/Makefile            |   1 -
->   drivers/staging/r8188eu/core/rtw_debug.c    | 886 --------------------
->   drivers/staging/r8188eu/include/rtw_debug.h | 148 ----
->   3 files changed, 1035 deletions(-)
->   delete mode 100644 drivers/staging/r8188eu/core/rtw_debug.c
-> 
-> diff --git a/drivers/staging/r8188eu/Makefile b/drivers/staging/r8188eu/Makefile
-> index 27826baef377..d63fad20e9d2 100644
-> --- a/drivers/staging/r8188eu/Makefile
-> +++ b/drivers/staging/r8188eu/Makefile
-> @@ -74,7 +74,6 @@ rtk_core :=				\
->   		core/rtw_ap.o		\
->   		core/rtw_br_ext.o	\
->   		core/rtw_cmd.o		\
-> -		core/rtw_debug.o	\
->   		core/rtw_efuse.o	\
->   		core/rtw_ieee80211.o	\
->   		core/rtw_ioctl_set.o	\
-> diff --git a/drivers/staging/r8188eu/core/rtw_debug.c b/drivers/staging/r8188eu/core/rtw_debug.c
-> deleted file mode 100644
-> index 3d613d997a38..000000000000
-> --- a/drivers/staging/r8188eu/core/rtw_debug.c
-> +++ /dev/null
-> @@ -1,886 +0,0 @@
-> -// SPDX-License-Identifier: GPL-2.0
-> -/* Copyright(c) 2007 - 2012 Realtek Corporation. */
-> -
-> -#define _RTW_DEBUG_C_
-> -
-> -#include "../include/rtw_debug.h"
-> -#include "../include/drv_types.h"
-> -
-> -int proc_get_drv_version(char *page, char **start,
-> -			  off_t offset, int count,
-> -			  int *eof, void *data)
-> -{
-> -	int len = 0;
-> -
-> -	len += snprintf(page + len, count - len, "%s\n", DRIVERVERSION);
-> -
-> -	*eof = 1;
-> -	return len;
-> -}
-> -
-> -int proc_get_write_reg(char *page, char **start,
-> -			  off_t offset, int count,
-> -			  int *eof, void *data)
-> -{
-> -	*eof = 1;
-> -	return 0;
-> -}
-> -
-> -int proc_set_write_reg(struct file *file, const char __user *buffer,
-> -		unsigned long count, void *data)
-> -{
-> -	struct net_device *dev = (struct net_device *)data;
-> -	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
-> -	char tmp[32];
-> -	u32 addr, val, len;
-> -
-> -	if (count < 3) {
-> -		DBG_88E("argument size is less than 3\n");
-> -		return -EFAULT;
-> -	}
-> -
-> -	if (buffer && !copy_from_user(tmp, buffer, sizeof(tmp))) {
-> -		int num = sscanf(tmp, "%x %x %x", &addr, &val, &len);
-> -
-> -		if (num !=  3) {
-> -			DBG_88E("invalid write_reg parameter!\n");
-> -			return count;
-> -		}
-> -		switch (len) {
-> -		case 1:
-> -			rtw_write8(padapter, addr, (u8)val);
-> -			break;
-> -		case 2:
-> -			rtw_write16(padapter, addr, (u16)val);
-> -			break;
-> -		case 4:
-> -			rtw_write32(padapter, addr, val);
-> -			break;
-> -		default:
-> -			DBG_88E("error write length =%d", len);
-> -			break;
-> -		}
-> -	}
-> -	return count;
-> -}
-> -
-> -static u32 proc_get_read_addr = 0xeeeeeeee;
-> -static u32 proc_get_read_len = 0x4;
-> -
-> -int proc_get_read_reg(char *page, char **start,
-> -			  off_t offset, int count,
-> -			  int *eof, void *data)
-> -{
-> -	struct net_device *dev = data;
-> -	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
-> -
-> -	int len = 0;
-> -
-> -	if (proc_get_read_addr == 0xeeeeeeee) {
-> -		*eof = 1;
-> -		return len;
-> -	}
-> -
-> -	switch (proc_get_read_len) {
-> -	case 1:
-> -		len += snprintf(page + len, count - len, "rtw_read8(0x%x)=0x%x\n", proc_get_read_addr, rtw_read8(padapter, proc_get_read_addr));
-> -		break;
-> -	case 2:
-> -		len += snprintf(page + len, count - len, "rtw_read16(0x%x)=0x%x\n", proc_get_read_addr, rtw_read16(padapter, proc_get_read_addr));
-> -		break;
-> -	case 4:
-> -		len += snprintf(page + len, count - len, "rtw_read32(0x%x)=0x%x\n", proc_get_read_addr, rtw_read32(padapter, proc_get_read_addr));
-> -		break;
-> -	default:
-> -		len += snprintf(page + len, count - len, "error read length=%d\n", proc_get_read_len);
-> -		break;
-> -	}
-> -
-> -	*eof = 1;
-> -	return len;
-> -}
-> -
-> -int proc_set_read_reg(struct file *file, const char __user *buffer,
-> -		unsigned long count, void *data)
-> -{
-> -	char tmp[16];
-> -	u32 addr, len;
-> -
-> -	if (count < 2) {
-> -		DBG_88E("argument size is less than 2\n");
-> -		return -EFAULT;
-> -	}
-> -
-> -	if (buffer && !copy_from_user(tmp, buffer, sizeof(tmp))) {
-> -		int num = sscanf(tmp, "%x %x", &addr, &len);
-> -
-> -		if (num !=  2) {
-> -			DBG_88E("invalid read_reg parameter!\n");
-> -			return count;
-> -		}
-> -
-> -		proc_get_read_addr = addr;
-> -
-> -		proc_get_read_len = len;
-> -	}
-> -
-> -	return count;
-> -}
-> -
-> -int proc_get_fwstate(char *page, char **start,
-> -			  off_t offset, int count,
-> -			  int *eof, void *data)
-> -{
-> -	struct net_device *dev = data;
-> -	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
-> -	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
-> -
-> -	int len = 0;
-> -
-> -	len += snprintf(page + len, count - len, "fwstate=0x%x\n", get_fwstate(pmlmepriv));
-> -
-> -	*eof = 1;
-> -	return len;
-> -}
-> -
-> -int proc_get_sec_info(char *page, char **start,
-> -			  off_t offset, int count,
-> -			  int *eof, void *data)
-> -{
-> -	struct net_device *dev = data;
-> -	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
-> -	struct security_priv *psecuritypriv = &padapter->securitypriv;
-> -
-> -	int len = 0;
-> -
-> -	len += snprintf(page + len, count - len, "auth_alg=0x%x, enc_alg=0x%x, auth_type=0x%x, enc_type=0x%x\n",
-> -						psecuritypriv->dot11AuthAlgrthm, psecuritypriv->dot11PrivacyAlgrthm,
-> -						psecuritypriv->ndisauthtype, psecuritypriv->ndisencryptstatus);
-> -
-> -	*eof = 1;
-> -	return len;
-> -}
-> -
-> -int proc_get_mlmext_state(char *page, char **start,
-> -			  off_t offset, int count,
-> -			  int *eof, void *data)
-> -{
-> -	struct net_device *dev = data;
-> -	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
-> -	struct mlme_ext_priv	*pmlmeext = &padapter->mlmeextpriv;
-> -	struct mlme_ext_info	*pmlmeinfo = &pmlmeext->mlmext_info;
-> -
-> -	int len = 0;
-> -
-> -	len += snprintf(page + len, count - len, "pmlmeinfo->state=0x%x\n", pmlmeinfo->state);
-> -
-> -	*eof = 1;
-> -	return len;
-> -}
-> -
-> -int proc_get_qos_option(char *page, char **start,
-> -			  off_t offset, int count,
-> -			  int *eof, void *data)
-> -{
-> -	struct net_device *dev = data;
-> -	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
-> -	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
-> -
-> -	int len = 0;
-> -
-> -	len += snprintf(page + len, count - len, "qos_option=%d\n", pmlmepriv->qospriv.qos_option);
-> -
-> -	*eof = 1;
-> -	return len;
-> -}
-> -
-> -int proc_get_ht_option(char *page, char **start,
-> -			  off_t offset, int count,
-> -			  int *eof, void *data)
-> -{
-> -	struct net_device *dev = data;
-> -	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
-> -	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
-> -
-> -	int len = 0;
-> -	len += snprintf(page + len, count - len, "ht_option=%d\n", pmlmepriv->htpriv.ht_option);
-> -	*eof = 1;
-> -	return len;
-> -}
-> -
-> -int proc_get_rf_info(char *page, char **start,
-> -			  off_t offset, int count,
-> -			  int *eof, void *data)
-> -{
-> -	struct net_device *dev = data;
-> -	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
-> -	struct mlme_ext_priv	*pmlmeext = &padapter->mlmeextpriv;
-> -	int len = 0;
-> -
-> -	len += snprintf(page + len, count - len, "cur_ch=%d, cur_bw=%d, cur_ch_offet=%d\n",
-> -					pmlmeext->cur_channel, pmlmeext->cur_bwmode, pmlmeext->cur_ch_offset);
-> -	*eof = 1;
-> -	return len;
-> -}
-> -
-> -int proc_get_ap_info(char *page, char **start,
-> -			  off_t offset, int count,
-> -			  int *eof, void *data)
-> -{
-> -	struct sta_info *psta;
-> -	struct net_device *dev = data;
-> -	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
-> -	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
-> -	struct mlme_ext_priv *pmlmeext = &padapter->mlmeextpriv;
-> -	struct wlan_network *cur_network = &pmlmepriv->cur_network;
-> -	struct sta_priv *pstapriv = &padapter->stapriv;
-> -	int len = 0;
-> -
-> -	psta = rtw_get_stainfo(pstapriv, cur_network->network.MacAddress);
-> -	if (psta) {
-> -		int i;
-> -		struct recv_reorder_ctrl *preorder_ctrl;
-> -
-> -		len += snprintf(page + len, count - len, "SSID=%s\n", cur_network->network.Ssid.Ssid);
-> -		len += snprintf(page + len, count - len, "sta's macaddr:%pM\n", psta->hwaddr);
-> -		len += snprintf(page + len, count - len, "cur_channel=%d, cur_bwmode=%d, cur_ch_offset=%d\n", pmlmeext->cur_channel, pmlmeext->cur_bwmode, pmlmeext->cur_ch_offset);
-> -		len += snprintf(page + len, count - len, "rtsen=%d, cts2slef=%d\n", psta->rtsen, psta->cts2self);
-> -		len += snprintf(page + len, count - len, "state=0x%x, aid=%d, macid=%d, raid=%d\n", psta->state, psta->aid, psta->mac_id, psta->raid);
-> -		len += snprintf(page + len, count - len, "qos_en=%d, ht_en=%d, init_rate=%d\n", psta->qos_option, psta->htpriv.ht_option, psta->init_rate);
-> -		len += snprintf(page + len, count - len, "bwmode=%d, ch_offset=%d, sgi=%d\n", psta->htpriv.bwmode, psta->htpriv.ch_offset, psta->htpriv.sgi);
-> -		len += snprintf(page + len, count - len, "ampdu_enable = %d\n", psta->htpriv.ampdu_enable);
-> -		len += snprintf(page + len, count - len, "agg_enable_bitmap=%x, candidate_tid_bitmap=%x\n", psta->htpriv.agg_enable_bitmap, psta->htpriv.candidate_tid_bitmap);
-> -
-> -		for (i = 0; i < 16; i++) {
-> -			preorder_ctrl = &psta->recvreorder_ctrl[i];
-> -			if (preorder_ctrl->enable)
-> -				len += snprintf(page + len, count - len, "tid=%d, indicate_seq=%d\n", i, preorder_ctrl->indicate_seq);
-> -		}
-> -	} else {
-> -		len += snprintf(page + len, count - len, "can't get sta's macaddr, cur_network's macaddr: %pM\n", cur_network->network.MacAddress);
-> -	}
-> -
-> -	*eof = 1;
-> -	return len;
-> -}
-> -
-> -int proc_get_trx_info(char *page, char **start,
-> -			  off_t offset, int count,
-> -			  int *eof, void *data)
-> -{
-> -	struct net_device *dev = data;
-> -	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
-> -	struct xmit_priv *pxmitpriv = &padapter->xmitpriv;
-> -	struct recv_priv  *precvpriv = &padapter->recvpriv;
-> -	int len = 0;
-> -
-> -	len += snprintf(page + len, count - len, "free_xmitbuf_cnt=%d, free_xmitframe_cnt=%d, free_ext_xmitbuf_cnt=%d, free_recvframe_cnt=%d\n",
-> -				pxmitpriv->free_xmitbuf_cnt, pxmitpriv->free_xmitframe_cnt, pxmitpriv->free_xmit_extbuf_cnt, precvpriv->free_recvframe_cnt);
-> -	len += snprintf(page + len, count - len, "rx_urb_pending_cn=%d\n", precvpriv->rx_pending_cnt);
-> -
-> -	*eof = 1;
-> -	return len;
-> -}
-> -
-> -int proc_get_mac_reg_dump1(char *page, char **start,
-> -			  off_t offset, int count,
-> -			  int *eof, void *data)
-> -{
-> -	struct net_device *dev = data;
-> -	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
-> -	int len = 0;
-> -	int i, j = 1;
-> -
-> -	len += snprintf(page + len, count - len, "\n======= MAC REG =======\n");
-> -
-> -	for (i = 0x0; i < 0x300; i += 4) {
-> -		if (j % 4 == 1)
-> -			len += snprintf(page + len, count - len, "0x%02x", i);
-> -		len += snprintf(page + len, count - len, " 0x%08x ", rtw_read32(padapter, i));
-> -		if ((j++) % 4 == 0)
-> -			len += snprintf(page + len, count - len, "\n");
-> -	}
-> -
-> -	*eof = 1;
-> -	return len;
-> -}
-> -
-> -int proc_get_mac_reg_dump2(char *page, char **start,
-> -			  off_t offset, int count,
-> -			  int *eof, void *data)
-> -{
-> -	struct net_device *dev = data;
-> -	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
-> -	int len = 0;
-> -	int i, j = 1;
-> -
-> -	len += snprintf(page + len, count - len, "\n======= MAC REG =======\n");
-> -	memset(page, 0, count);
-> -	for (i = 0x300; i < 0x600; i += 4) {
-> -		if (j % 4 == 1)
-> -			len += snprintf(page + len, count - len, "0x%02x", i);
-> -		len += snprintf(page + len, count - len, " 0x%08x ", rtw_read32(padapter, i));
-> -		if ((j++) % 4 == 0)
-> -			len += snprintf(page + len, count - len, "\n");
-> -	}
-> -
-> -	*eof = 1;
-> -	return len;
-> -}
-> -
-> -int proc_get_mac_reg_dump3(char *page, char **start,
-> -			  off_t offset, int count,
-> -			  int *eof, void *data)
-> -{
-> -	struct net_device *dev = data;
-> -	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
-> -	int len = 0;
-> -	int i, j = 1;
-> -
-> -	len += snprintf(page + len, count - len, "\n======= MAC REG =======\n");
-> -
-> -	for (i = 0x600; i < 0x800; i += 4) {
-> -		if (j % 4 == 1)
-> -			len += snprintf(page + len, count - len, "0x%02x", i);
-> -		len += snprintf(page + len, count - len, " 0x%08x ", rtw_read32(padapter, i));
-> -		if ((j++) % 4 == 0)
-> -			len += snprintf(page + len, count - len, "\n");
-> -	}
-> -
-> -	*eof = 1;
-> -	return len;
-> -}
-> -
-> -int proc_get_bb_reg_dump1(char *page, char **start,
-> -			  off_t offset, int count,
-> -			  int *eof, void *data)
-> -{
-> -	struct net_device *dev = data;
-> -	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
-> -	int len = 0;
-> -	int i, j = 1;
-> -
-> -	len += snprintf(page + len, count - len, "\n======= BB REG =======\n");
-> -	for (i = 0x800; i < 0xB00; i += 4) {
-> -		if (j % 4 == 1)
-> -			len += snprintf(page + len, count - len, "0x%02x", i);
-> -		len += snprintf(page + len, count - len, " 0x%08x ", rtw_read32(padapter, i));
-> -		if ((j++) % 4 == 0)
-> -			len += snprintf(page + len, count - len, "\n");
-> -	}
-> -	*eof = 1;
-> -	return len;
-> -}
-> -
-> -int proc_get_bb_reg_dump2(char *page, char **start,
-> -			  off_t offset, int count,
-> -			  int *eof, void *data)
-> -{
-> -	struct net_device *dev = data;
-> -	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
-> -	int len = 0;
-> -	int i, j = 1;
-> -
-> -	len += snprintf(page + len, count - len, "\n======= BB REG =======\n");
-> -	for (i = 0xB00; i < 0xE00; i += 4) {
-> -		if (j % 4 == 1)
-> -			len += snprintf(page + len, count - len, "0x%02x", i);
-> -		len += snprintf(page + len, count - len, " 0x%08x ", rtw_read32(padapter, i));
-> -		if ((j++) % 4 == 0)
-> -			len += snprintf(page + len, count - len, "\n");
-> -	}
-> -	*eof = 1;
-> -	return len;
-> -}
-> -
-> -int proc_get_bb_reg_dump3(char *page, char **start,
-> -			  off_t offset, int count,
-> -			  int *eof, void *data)
-> -{
-> -	struct net_device *dev = data;
-> -	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
-> -	int len = 0;
-> -	int i, j = 1;
-> -
-> -	len += snprintf(page + len, count - len, "\n======= BB REG =======\n");
-> -	for (i = 0xE00; i < 0x1000; i += 4) {
-> -		if (j % 4 == 1)
-> -			len += snprintf(page + len, count - len, "0x%02x", i);
-> -		len += snprintf(page + len, count - len, " 0x%08x ", rtw_read32(padapter, i));
-> -		if ((j++) % 4 == 0)
-> -			len += snprintf(page + len, count - len, "\n");
-> -	}
-> -	*eof = 1;
-> -	return len;
-> -}
-> -
-> -int proc_get_rf_reg_dump1(char *page, char **start,
-> -			  off_t offset, int count,
-> -			  int *eof, void *data)
-> -{
-> -	struct net_device *dev = data;
-> -	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
-> -	int len = 0;
-> -	int i, j = 1, path;
-> -	u32 value;
-> -
-> -	len += snprintf(page + len, count - len, "\n======= RF REG =======\n");
-> -	path = 1;
-> -	len += snprintf(page + len, count - len, "\nRF_Path(%x)\n", path);
-> -	for (i = 0; i < 0xC0; i++) {
-> -		value = rtl8188e_PHY_QueryRFReg(padapter, path, i, 0xffffffff);
-> -		if (j % 4 == 1)
-> -			len += snprintf(page + len, count - len, "0x%02x ", i);
-> -		len += snprintf(page + len, count - len, " 0x%08x ", value);
-> -		if ((j++) % 4 == 0)
-> -			len += snprintf(page + len, count - len, "\n");
-> -	}
-> -	*eof = 1;
-> -	return len;
-> -}
-> -
-> -int proc_get_rf_reg_dump2(char *page, char **start,
-> -			  off_t offset, int count,
-> -			  int *eof, void *data)
-> -{
-> -	struct net_device *dev = data;
-> -	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
-> -	int len = 0;
-> -	int i, j = 1, path;
-> -	u32 value;
-> -
-> -	len += snprintf(page + len, count - len, "\n======= RF REG =======\n");
-> -	path = 1;
-> -	len += snprintf(page + len, count - len, "\nRF_Path(%x)\n", path);
-> -	for (i = 0xC0; i < 0x100; i++) {
-> -		value = rtl8188e_PHY_QueryRFReg(padapter, path, i, 0xffffffff);
-> -		if (j % 4 == 1)
-> -			len += snprintf(page + len, count - len, "0x%02x ", i);
-> -		len += snprintf(page + len, count - len, " 0x%08x ", value);
-> -		if ((j++) % 4 == 0)
-> -			len += snprintf(page + len, count - len, "\n");
-> -	}
-> -	*eof = 1;
-> -	return len;
-> -}
-> -
-> -int proc_get_rf_reg_dump3(char *page, char **start,
-> -			  off_t offset, int count,
-> -			  int *eof, void *data)
-> -{
-> -	struct net_device *dev = data;
-> -	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
-> -	int len = 0;
-> -	int i, j = 1, path;
-> -	u32 value;
-> -
-> -	len += snprintf(page + len, count - len, "\n======= RF REG =======\n");
-> -	path = 2;
-> -	len += snprintf(page + len, count - len, "\nRF_Path(%x)\n", path);
-> -	for (i = 0; i < 0xC0; i++) {
-> -		value = rtl8188e_PHY_QueryRFReg(padapter, path, i, 0xffffffff);
-> -		if (j % 4 == 1)
-> -			len += snprintf(page + len, count - len, "0x%02x ", i);
-> -		len += snprintf(page + len, count - len, " 0x%08x ", value);
-> -		if ((j++) % 4 == 0)
-> -			len += snprintf(page + len, count - len, "\n");
-> -	}
-> -
-> -	*eof = 1;
-> -	return len;
-> -}
-> -
-> -int proc_get_rf_reg_dump4(char *page, char **start,
-> -			  off_t offset, int count,
-> -			  int *eof, void *data)
-> -{
-> -	struct net_device *dev = data;
-> -	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
-> -	int len = 0;
-> -	int i, j = 1, path;
-> -	u32 value;
-> -
-> -	len += snprintf(page + len, count - len, "\n======= RF REG =======\n");
-> -	path = 2;
-> -	len += snprintf(page + len, count - len, "\nRF_Path(%x)\n", path);
-> -	for (i = 0xC0; i < 0x100; i++) {
-> -		value = rtl8188e_PHY_QueryRFReg(padapter, path, i, 0xffffffff);
-> -		if (j % 4 == 1)
-> -			len += snprintf(page + len, count - len, "0x%02x ", i);
-> -		len += snprintf(page + len, count - len, " 0x%08x ", value);
-> -		if ((j++) % 4 == 0)
-> -			len += snprintf(page + len, count - len, "\n");
-> -	}
-> -	*eof = 1;
-> -	return len;
-> -}
-> -
-> -int proc_get_rx_signal(char *page, char **start,
-> -			  off_t offset, int count,
-> -			  int *eof, void *data)
-> -{
-> -	struct net_device *dev = data;
-> -	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
-> -	int len = 0;
-> -
-> -	len = snprintf(page + len, count,
-> -		"rssi:%d\n"
-> -		"rxpwdb:%d\n"
-> -		"signal_strength:%u\n"
-> -		"signal_qual:%u\n"
-> -		"noise:%u\n",
-> -		padapter->recvpriv.rssi,
-> -		padapter->recvpriv.rxpwdb,
-> -		padapter->recvpriv.signal_strength,
-> -		padapter->recvpriv.signal_qual,
-> -		padapter->recvpriv.noise
-> -		);
-> -
-> -	*eof = 1;
-> -	return len;
-> -}
-> -
-> -int proc_set_rx_signal(struct file *file, const char __user *buffer,
-> -		unsigned long count, void *data)
-> -{
-> -	struct net_device *dev = (struct net_device *)data;
-> -	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
-> -	char tmp[32];
-> -	u32 is_signal_dbg;
-> -	s32 signal_strength;
-> -
-> -	if (count < 1)
-> -		return -EFAULT;
-> -
-> -	if (buffer && !copy_from_user(tmp, buffer, sizeof(tmp))) {
-> -		int num = sscanf(tmp, "%u %u", &is_signal_dbg, &signal_strength);
-> -		is_signal_dbg = is_signal_dbg == 0 ? 0 : 1;
-> -		if (is_signal_dbg && num != 2)
-> -			return count;
-> -
-> -		signal_strength = signal_strength > 100 ? 100 : signal_strength;
-> -		signal_strength = signal_strength < 0 ? 0 : signal_strength;
-> -
-> -		padapter->recvpriv.is_signal_dbg = is_signal_dbg;
-> -		padapter->recvpriv.signal_strength_dbg = signal_strength;
-> -
-> -		if (is_signal_dbg)
-> -			DBG_88E("set %s %u\n", "DBG_SIGNAL_STRENGTH", signal_strength);
-> -		else
-> -			DBG_88E("set %s\n", "HW_SIGNAL_STRENGTH");
-> -	}
-> -	return count;
-> -}
-> -
-> -int proc_get_ht_enable(char *page, char **start,
-> -			  off_t offset, int count,
-> -			  int *eof, void *data)
-> -{
-> -	struct net_device *dev = data;
-> -	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
-> -	struct registry_priv	*pregpriv = &padapter->registrypriv;
-> -	int len = 0;
-> -
-> -	if (pregpriv)
-> -		len += snprintf(page + len, count - len,
-> -			"%d\n",
-> -			pregpriv->ht_enable
-> -			);
-> -	*eof = 1;
-> -	return len;
-> -}
-> -
-> -int proc_set_ht_enable(struct file *file, const char __user *buffer,
-> -		unsigned long count, void *data)
-> -{
-> -	struct net_device *dev = (struct net_device *)data;
-> -	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
-> -	struct registry_priv	*pregpriv = &padapter->registrypriv;
-> -	char tmp[32];
-> -	s32 mode = 0;
-> -
-> -	if (count < 1)
-> -		return -EFAULT;
-> -
-> -	if (buffer && !copy_from_user(tmp, buffer, sizeof(tmp))) {
-> -		if (pregpriv) {
-> -			pregpriv->ht_enable = mode;
-> -			pr_info("ht_enable=%d\n", pregpriv->ht_enable);
-> -		}
-> -	}
-> -
-> -	return count;
-> -}
-> -
-> -int proc_get_cbw40_enable(char *page, char **start,
-> -			  off_t offset, int count,
-> -			  int *eof, void *data)
-> -{
-> -	struct net_device *dev = data;
-> -	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
-> -	struct registry_priv	*pregpriv = &padapter->registrypriv;
-> -
-> -	int len = 0;
-> -
-> -	if (pregpriv)
-> -		len += snprintf(page + len, count - len,
-> -			"%d\n",
-> -			pregpriv->cbw40_enable
-> -			);
-> -
-> -	*eof = 1;
-> -	return len;
-> -}
-> -
-> -int proc_set_cbw40_enable(struct file *file, const char __user *buffer,
-> -		unsigned long count, void *data)
-> -{
-> -	struct net_device *dev = (struct net_device *)data;
-> -	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
-> -	struct registry_priv	*pregpriv = &padapter->registrypriv;
-> -	char tmp[32];
-> -	s32 mode = 0;
-> -
-> -	if (count < 1)
-> -		return -EFAULT;
-> -
-> -	if (buffer && !copy_from_user(tmp, buffer, sizeof(tmp))) {
-> -		if (pregpriv) {
-> -			pregpriv->cbw40_enable = mode;
-> -			pr_info("cbw40_enable=%d\n", mode);
-> -		}
-> -	}
-> -	return count;
-> -}
-> -
-> -int proc_get_ampdu_enable(char *page, char **start,
-> -			  off_t offset, int count,
-> -			  int *eof, void *data)
-> -{
-> -	struct net_device *dev = data;
-> -	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
-> -	struct registry_priv	*pregpriv = &padapter->registrypriv;
-> -
-> -	int len = 0;
-> -
-> -	if (pregpriv)
-> -		len += snprintf(page + len, count - len,
-> -			"%d\n",
-> -			pregpriv->ampdu_enable
-> -			);
-> -
-> -	*eof = 1;
-> -	return len;
-> -}
-> -
-> -int proc_set_ampdu_enable(struct file *file, const char __user *buffer,
-> -		unsigned long count, void *data)
-> -{
-> -	struct net_device *dev = (struct net_device *)data;
-> -	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
-> -	struct registry_priv	*pregpriv = &padapter->registrypriv;
-> -	char tmp[32];
-> -	s32 mode = 0;
-> -
-> -	if (count < 1)
-> -		return -EFAULT;
-> -
-> -	if (buffer && !copy_from_user(tmp, buffer, sizeof(tmp))) {
-> -		if (pregpriv) {
-> -			pregpriv->ampdu_enable = mode;
-> -			pr_info("ampdu_enable=%d\n", mode);
-> -		}
-> -	}
-> -	return count;
-> -}
-> -
-> -int proc_get_two_path_rssi(char *page, char **start,
-> -			  off_t offset, int count,
-> -			  int *eof, void *data)
-> -{
-> -	struct net_device *dev = data;
-> -	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
-> -
-> -	int len = 0;
-> -
-> -	if (padapter)
-> -		len += snprintf(page + len, count - len,
-> -			"%d %d\n",
-> -			padapter->recvpriv.RxRssi[0],
-> -			padapter->recvpriv.RxRssi[1]
-> -			);
-> -
-> -	*eof = 1;
-> -	return len;
-> -}
-> -
-> -int proc_get_rx_stbc(char *page, char **start,
-> -			  off_t offset, int count,
-> -			  int *eof, void *data)
-> -{
-> -	struct net_device *dev = data;
-> -	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
-> -	struct registry_priv	*pregpriv = &padapter->registrypriv;
-> -
-> -	int len = 0;
-> -
-> -	if (pregpriv)
-> -		len += snprintf(page + len, count - len,
-> -			"%d\n",
-> -			pregpriv->rx_stbc
-> -			);
-> -
-> -	*eof = 1;
-> -	return len;
-> -}
-> -
-> -int proc_set_rx_stbc(struct file *file, const char __user *buffer,
-> -		unsigned long count, void *data)
-> -{
-> -	struct net_device *dev = (struct net_device *)data;
-> -	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
-> -	struct registry_priv	*pregpriv = &padapter->registrypriv;
-> -	char tmp[32];
-> -	u32 mode = 0;
-> -
-> -	if (count < 1)
-> -		return -EFAULT;
-> -
-> -	if (buffer && !copy_from_user(tmp, buffer, sizeof(tmp))) {
-> -		if (pregpriv) {
-> -			pregpriv->rx_stbc = mode;
-> -			printk("rx_stbc=%d\n", mode);
-> -		}
-> -	}
-> -	return count;
-> -}
-> -
-> -int proc_get_rssi_disp(char *page, char **start,
-> -			  off_t offset, int count,
-> -			  int *eof, void *data)
-> -{
-> -	*eof = 1;
-> -	return 0;
-> -}
-> -
-> -int proc_set_rssi_disp(struct file *file, const char __user *buffer,
-> -		unsigned long count, void *data)
-> -{
-> -	struct net_device *dev = (struct net_device *)data;
-> -	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
-> -	char tmp[32];
-> -	u32 enable = 0;
-> -
-> -	if (count < 1) {
-> -		DBG_88E("argument size is less than 1\n");
-> -		return -EFAULT;
-> -	}
-> -
-> -	if (buffer && !copy_from_user(tmp, buffer, sizeof(tmp))) {
-> -		int num = sscanf(tmp, "%x", &enable);
-> -
-> -		if (num !=  1) {
-> -			DBG_88E("invalid set_rssi_disp parameter!\n");
-> -			return count;
-> -		}
-> -
-> -		if (enable) {
-> -			DBG_88E("Turn On Rx RSSI Display Function\n");
-> -			padapter->bRxRSSIDisplay = enable;
-> -		} else {
-> -			DBG_88E("Turn Off Rx RSSI Display Function\n");
-> -			padapter->bRxRSSIDisplay = 0;
-> -		}
-> -	}
-> -	return count;
-> -}
-> -
-> -int proc_get_all_sta_info(char *page, char **start,
-> -			  off_t offset, int count,
-> -			  int *eof, void *data)
-> -{
-> -	struct sta_info *psta;
-> -	struct net_device *dev = data;
-> -	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
-> -	struct sta_priv *pstapriv = &padapter->stapriv;
-> -	int i, j;
-> -	struct list_head *plist, *phead;
-> -	struct recv_reorder_ctrl *preorder_ctrl;
-> -	int len = 0;
-> -
-> -	len += snprintf(page + len, count - len, "sta_dz_bitmap=0x%x, tim_bitmap=0x%x\n", pstapriv->sta_dz_bitmap, pstapriv->tim_bitmap);
-> -
-> -	spin_lock_bh(&pstapriv->sta_hash_lock);
-> -
-> -	for (i = 0; i < NUM_STA; i++) {
-> -		phead = &pstapriv->sta_hash[i];
-> -		plist = phead->next;
-> -
-> -		while (phead != plist) {
-> -			psta = container_of(plist, struct sta_info, hash_list);
-> -
-> -			plist = plist->next;
-> -
-> -			len += snprintf(page + len, count - len, "sta's macaddr: %pM\n", psta->hwaddr);
-> -			len += snprintf(page + len, count - len, "rtsen=%d, cts2slef=%d\n", psta->rtsen, psta->cts2self);
-> -			len += snprintf(page + len, count - len, "state=0x%x, aid=%d, macid=%d, raid=%d\n", psta->state, psta->aid, psta->mac_id, psta->raid);
-> -			len += snprintf(page + len, count - len, "qos_en=%d, ht_en=%d, init_rate=%d\n", psta->qos_option, psta->htpriv.ht_option, psta->init_rate);
-> -			len += snprintf(page + len, count - len, "bwmode=%d, ch_offset=%d, sgi=%d\n", psta->htpriv.bwmode, psta->htpriv.ch_offset, psta->htpriv.sgi);
-> -			len += snprintf(page + len, count - len, "ampdu_enable = %d\n", psta->htpriv.ampdu_enable);
-> -			len += snprintf(page + len, count - len, "agg_enable_bitmap=%x, candidate_tid_bitmap=%x\n", psta->htpriv.agg_enable_bitmap, psta->htpriv.candidate_tid_bitmap);
-> -			len += snprintf(page + len, count - len, "sleepq_len=%d\n", psta->sleepq_len);
-> -			len += snprintf(page + len, count - len, "capability=0x%x\n", psta->capability);
-> -			len += snprintf(page + len, count - len, "flags=0x%x\n", psta->flags);
-> -			len += snprintf(page + len, count - len, "wpa_psk=0x%x\n", psta->wpa_psk);
-> -			len += snprintf(page + len, count - len, "wpa2_group_cipher=0x%x\n", psta->wpa2_group_cipher);
-> -			len += snprintf(page + len, count - len, "wpa2_pairwise_cipher=0x%x\n", psta->wpa2_pairwise_cipher);
-> -			len += snprintf(page + len, count - len, "qos_info=0x%x\n", psta->qos_info);
-> -			len += snprintf(page + len, count - len, "dot118021XPrivacy=0x%x\n", psta->dot118021XPrivacy);
-> -
-> -			for (j = 0; j < 16; j++) {
-> -				preorder_ctrl = &psta->recvreorder_ctrl[j];
-> -				if (preorder_ctrl->enable)
-> -					len += snprintf(page + len, count - len, "tid=%d, indicate_seq=%d\n", j, preorder_ctrl->indicate_seq);
-> -			}
-> -		}
-> -	}
-> -	spin_unlock_bh(&pstapriv->sta_hash_lock);
-> -
-> -	*eof = 1;
-> -	return len;
-> -}
-> -
-> -int proc_get_best_channel(char *page, char **start,
-> -			  off_t offset, int count,
-> -			  int *eof, void *data)
-> -{
-> -	struct net_device *dev = data;
-> -	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
-> -	struct mlme_ext_priv *pmlmeext = &padapter->mlmeextpriv;
-> -	int len = 0;
-> -	u32 i, best_channel_24G = 1, index_24G = 0;
-> -
-> -	for (i = 0; pmlmeext->channel_set[i].ChannelNum != 0; i++) {
-> -		if (pmlmeext->channel_set[i].ChannelNum == 1)
-> -			index_24G = i;
-> -	}
-> -
-> -	for (i = 0; pmlmeext->channel_set[i].ChannelNum != 0; i++) {
-> -		/*  2.4G */
-> -		if (pmlmeext->channel_set[i].ChannelNum == 6) {
-> -			if (pmlmeext->channel_set[i].rx_count < pmlmeext->channel_set[index_24G].rx_count) {
-> -				index_24G = i;
-> -				best_channel_24G = pmlmeext->channel_set[i].ChannelNum;
-> -			}
-> -		}
-> -
-> -		/*  debug */
-> -		len += snprintf(page + len, count - len, "The rx cnt of channel %3d = %d\n",
-> -					pmlmeext->channel_set[i].ChannelNum, pmlmeext->channel_set[i].rx_count);
-> -	}
-> -
-> -	len += snprintf(page + len, count - len, "best_channel_24G = %d\n", best_channel_24G);
-> -
-> -	*eof = 1;
-> -	return len;
-> -}
-> diff --git a/drivers/staging/r8188eu/include/rtw_debug.h b/drivers/staging/r8188eu/include/rtw_debug.h
-> index 002139cacfb5..0a77e3e73a45 100644
-> --- a/drivers/staging/r8188eu/include/rtw_debug.h
-> +++ b/drivers/staging/r8188eu/include/rtw_debug.h
-> @@ -72,152 +72,4 @@ extern u32 GlobalDebugLevel;
->   			pr_info(DRIVER_PREFIX __VA_ARGS__);			\
->   	} while (0)
->   
-> -int proc_get_drv_version(char *page, char **start,
-> -			 off_t offset, int count,
-> -			 int *eof, void *data);
-> -
-> -int proc_get_write_reg(char *page, char **start,
-> -		       off_t offset, int count,
-> -		       int *eof, void *data);
-> -
-> -int proc_set_write_reg(struct file *file, const char __user *buffer,
-> -		       unsigned long count, void *data);
-> -int proc_get_read_reg(char *page, char **start,
-> -		      off_t offset, int count,
-> -		      int *eof, void *data);
-> -
-> -int proc_set_read_reg(struct file *file, const char __user *buffer,
-> -		      unsigned long count, void *data);
-> -
-> -int proc_get_fwstate(char *page, char **start,
-> -		     off_t offset, int count,
-> -		     int *eof, void *data);
-> -int proc_get_sec_info(char *page, char **start,
-> -		      off_t offset, int count,
-> -		      int *eof, void *data);
-> -int proc_get_mlmext_state(char *page, char **start,
-> -			  off_t offset, int count,
-> -			  int *eof, void *data);
-> -
-> -int proc_get_qos_option(char *page, char **start,
-> -			off_t offset, int count,
-> -			int *eof, void *data);
-> -int proc_get_ht_option(char *page, char **start,
-> -		       off_t offset, int count,
-> -		       int *eof, void *data);
-> -int proc_get_rf_info(char *page, char **start,
-> -		     off_t offset, int count,
-> -		     int *eof, void *data);
-> -int proc_get_ap_info(char *page, char **start,
-> -		     off_t offset, int count,
-> -		     int *eof, void *data);
-> -
-> -int proc_get_trx_info(char *page, char **start,
-> -		      off_t offset, int count,
-> -		      int *eof, void *data);
-> -
-> -int proc_get_mac_reg_dump1(char *page, char **start,
-> -			   off_t offset, int count,
-> -			   int *eof, void *data);
-> -
-> -int proc_get_mac_reg_dump2(char *page, char **start,
-> -			   off_t offset, int count,
-> -			   int *eof, void *data);
-> -
-> -int proc_get_mac_reg_dump3(char *page, char **start,
-> -			   off_t offset, int count,
-> -			   int *eof, void *data);
-> -
-> -int proc_get_bb_reg_dump1(char *page, char **start,
-> -			  off_t offset, int count,
-> -			  int *eof, void *data);
-> -
-> -int proc_get_bb_reg_dump2(char *page, char **start,
-> -			  off_t offset, int count,
-> -			  int *eof, void *data);
-> -
-> -int proc_get_bb_reg_dump3(char *page, char **start,
-> -			  off_t offset, int count,
-> -			  int *eof, void *data);
-> -
-> -int proc_get_rf_reg_dump1(char *page, char **start,
-> -			  off_t offset, int count,
-> -			  int *eof, void *data);
-> -
-> -int proc_get_rf_reg_dump2(char *page, char **start,
-> -			  off_t offset, int count,
-> -			  int *eof, void *data);
-> -
-> -int proc_get_rf_reg_dump3(char *page, char **start,
-> -			  off_t offset, int count,
-> -			  int *eof, void *data);
-> -
-> -int proc_get_rf_reg_dump4(char *page, char **start,
-> -			  off_t offset, int count,
-> -			  int *eof, void *data);
-> -
-> -int proc_get_all_sta_info(char *page, char **start,
-> -			  off_t offset, int count,
-> -			  int *eof, void *data);
-> -
-> -int proc_get_best_channel(char *page, char **start,
-> -			  off_t offset, int count,
-> -			  int *eof, void *data);
-> -
-> -int proc_get_rx_signal(char *page, char **start,
-> -		       off_t offset, int count,
-> -		       int *eof, void *data);
-> -
-> -int proc_set_rx_signal(struct file *file, const char __user *buffer,
-> -		       unsigned long count, void *data);
-> -
-> -int proc_get_ht_enable(char *page, char **start,
-> -		       off_t offset, int count,
-> -		       int *eof, void *data);
-> -
-> -int proc_set_ht_enable(struct file *file, const char __user *buffer,
-> -		       unsigned long count, void *data);
-> -
-> -int proc_get_cbw40_enable(char *page, char **start,
-> -			  off_t offset, int count,
-> -			  int *eof, void *data);
-> -
-> -int proc_set_cbw40_enable(struct file *file, const char __user *buffer,
-> -			  unsigned long count, void *data);
-> -
-> -int proc_get_ampdu_enable(char *page, char **start,
-> -			  off_t offset, int count,
-> -			  int *eof, void *data);
-> -
-> -int proc_set_ampdu_enable(struct file *file, const char __user *buffer,
-> -			  unsigned long count, void *data);
-> -
-> -int proc_get_rx_stbc(char *page, char **start,
-> -		     off_t offset, int count,
-> -		     int *eof, void *data);
-> -
-> -int proc_set_rx_stbc(struct file *file, const char __user *buffer,
-> -		     unsigned long count, void *data);
-> -
-> -int proc_get_two_path_rssi(char *page, char **start,
-> -			   off_t offset, int count,
-> -			   int *eof, void *data);
-> -
-> -int proc_get_rssi_disp(char *page, char **start,
-> -		       off_t offset, int count,
-> -		       int *eof, void *data);
-> -
-> -int proc_set_rssi_disp(struct file *file, const char __user *buffer,
-> -		       unsigned long count, void *data);
-> -
-> -#ifdef CONFIG_BT_COEXIST
-> -int proc_get_btcoex_dbg(char *page, char **start,
-> -			off_t offset, int count,
-> -			int *eof, void *data);
-> -
-> -int proc_set_btcoex_dbg(struct file *file, const char *buffer,
-> -			signed long count, void *data);
-> -
-> -#endif /* CONFIG_BT_COEXIST */
-> -
->   #endif	/* __RTW_DEBUG_H__ */
-> 
+Hi,
 
-Acked-by: Michael Straube <straube.linux@gmail.com>
+Am 17.10.21 um 11:29 schrieb Kushal-kothari:
+> Fixed the warning:-msleep < 20ms can sleep for up to 20ms by replacing
+> msleep(unsigned long msecs) by usleep_range(unsigned long min, unsigned long max)
+> in usecs as msleep(1ms~20ms) can sleep for upto 20 ms.
+>
+> Signed-off-by: Kushal-kothari <kushalkothari285@gmail.com>
+> ---
+>
+> Changes from v1: Reword both the subject and the log message.
+>
+>  drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
+> index 6fbafdfe340f..80a7898c5331 100644
+> --- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
+> +++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
+> @@ -857,7 +857,7 @@ vchiq_bulk_transmit(unsigned int handle, const void *data, unsigned int size,
+>  		if (status != VCHIQ_RETRY)
+>  			break;
+>  
+> -		msleep(1);
+> +		usleep_range(1000, 2000);
+
+there was a recent discussion about this checkpatch warning [1]
+
+Best regards
+
+[1]
+https://lore.kernel.org/linux-staging/260b38b8-6f3f-f6cc-0388-09a269ead507@i2se.com/
+
