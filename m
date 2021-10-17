@@ -2,170 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF232430A7C
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 18:19:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 441C0430A5E
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 18:07:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242590AbhJQQWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 12:22:00 -0400
-Received: from ixit.cz ([94.230.151.217]:43496 "EHLO ixit.cz"
+        id S242080AbhJQQJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 12:09:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39268 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242581AbhJQQV7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 12:21:59 -0400
-Received: from localhost.localdomain (ip-89-176-96-70.net.upcbroadband.cz [89.176.96.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        id S241905AbhJQQJS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Oct 2021 12:09:18 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ixit.cz (Postfix) with ESMTPSA id 7314224E6C;
-        Sun, 17 Oct 2021 18:03:41 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
-        t=1634486621;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=Ulq8xD8DTGiFupvcK4aBfnwNO5UWy6Ky14vpXrwkpkU=;
-        b=kKs0wjIfYAFvOHJ1qjN5bwbjbZFop/yPMWHpnhwjTdf3Pr5PRuhIgRCY04N66srkInMSap
-        0oh0nkwQAa4eRz3SUwQ/EXmRpcIDWMDk9py1yPYxlAAxXrWuT15CI8fJGxU5vI8Zvbg+ir
-        NOi0N0lO5hFAWVjUPCOoFAq2iHIe6A4=
-From:   David Heidelberg <david@ixit.cz>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ~okias/devicetree@lists.sr.ht,
-        David Heidelberg <david@ixit.cz>
-Subject: [PATCH v4] dt-bindings: net: nfc: nxp,pn544: Convert txt bindings to yaml
-Date:   Sun, 17 Oct 2021 18:02:10 +0200
-Message-Id: <20211017160210.85543-1-david@ixit.cz>
-X-Mailer: git-send-email 2.33.0
+        by mail.kernel.org (Postfix) with ESMTPSA id 4FCC460E96;
+        Sun, 17 Oct 2021 16:07:06 +0000 (UTC)
+Date:   Sun, 17 Oct 2021 17:11:21 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Olivier Moysan <olivier.moysan@foss.st.com>
+Cc:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>
+Subject: Re: [PATCH v5 0/7] iio: adc: stm32-adc: add internal channels
+ support
+Message-ID: <20211017171121.6f0bdabd@jic23-huawei>
+In-Reply-To: <20211014131228.4692-1-olivier.moysan@foss.st.com>
+References: <20211014131228.4692-1-olivier.moysan@foss.st.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert bindings for NXP PN544 NFC driver to YAML syntax.
+On Thu, 14 Oct 2021 15:12:21 +0200
+Olivier Moysan <olivier.moysan@foss.st.com> wrote:
 
-Signed-off-by: David Heidelberg <david@ixit.cz>
----
-v2
- - Krzysztof is a maintainer
- - pintctrl dropped
- - 4 space indent for example
- - nfc node name
-v3
- - remove whole pinctrl
-v4
- - drop clock-frequency, which is inherited by i2c bus
+> This patchset adds support of ADC2 internal channels VDDCORE, VREFINT and VBAT
+> on STM32MP15x SoCs. The generic IIO channel bindings is also introduced here
+> to provide this feature. The legacy channel binding is kept for backward compatibility.
 
- .../bindings/net/nfc/nxp,pn544.yaml           | 56 +++++++++++++++++++
- .../devicetree/bindings/net/nfc/pn544.txt     | 33 -----------
- 2 files changed, 56 insertions(+), 33 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/net/nfc/nxp,pn544.yaml
- delete mode 100644 Documentation/devicetree/bindings/net/nfc/pn544.txt
+I'm fine with this series, so just waiting for Rob to have a chance for
+a final look at patch 1.
 
-diff --git a/Documentation/devicetree/bindings/net/nfc/nxp,pn544.yaml b/Documentation/devicetree/bindings/net/nfc/nxp,pn544.yaml
-new file mode 100644
-index 000000000000..4592d1194a71
---- /dev/null
-+++ b/Documentation/devicetree/bindings/net/nfc/nxp,pn544.yaml
-@@ -0,0 +1,56 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/net/nfc/nxp,pn544.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: NXP Semiconductors PN544 NFC Controller
-+
-+maintainers:
-+  - Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-+
-+properties:
-+  compatible:
-+    const: nxp,pn544-i2c
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  enable-gpios:
-+    description: Output GPIO pin used for enabling/disabling the PN544
-+
-+  firmware-gpios:
-+    description: Output GPIO pin used to enter firmware download mode
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - enable-gpios
-+  - firmware-gpios
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/gpio/gpio.h>
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+
-+    i2c {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        nfc@28 {
-+            compatible = "nxp,pn544-i2c";
-+            reg = <0x28>;
-+
-+            interrupt-parent = <&gpio1>;
-+            interrupts = <17 IRQ_TYPE_LEVEL_HIGH>;
-+
-+            enable-gpios = <&gpio3 21 GPIO_ACTIVE_HIGH>;
-+            firmware-gpios = <&gpio3 19 GPIO_ACTIVE_HIGH>;
-+        };
-+    };
-diff --git a/Documentation/devicetree/bindings/net/nfc/pn544.txt b/Documentation/devicetree/bindings/net/nfc/pn544.txt
-deleted file mode 100644
-index 2bd82562ce8e..000000000000
---- a/Documentation/devicetree/bindings/net/nfc/pn544.txt
-+++ /dev/null
-@@ -1,33 +0,0 @@
--* NXP Semiconductors PN544 NFC Controller
--
--Required properties:
--- compatible: Should be "nxp,pn544-i2c".
--- clock-frequency: I²C work frequency.
--- reg: address on the bus
--- interrupts: GPIO interrupt to which the chip is connected
--- enable-gpios: Output GPIO pin used for enabling/disabling the PN544
--- firmware-gpios: Output GPIO pin used to enter firmware download mode
--
--Optional SoC Specific Properties:
--- pinctrl-names: Contains only one value - "default".
--- pintctrl-0: Specifies the pin control groups used for this controller.
--
--Example (for ARM-based BeagleBone with PN544 on I2C2):
--
--&i2c2 {
--
--
--	pn544: pn544@28 {
--
--		compatible = "nxp,pn544-i2c";
--
--		reg = <0x28>;
--		clock-frequency = <400000>;
--
--		interrupt-parent = <&gpio1>;
--		interrupts = <17 IRQ_TYPE_LEVEL_HIGH>;
--
--		enable-gpios = <&gpio3 21 GPIO_ACTIVE_HIGH>;
--		firmware-gpios = <&gpio3 19 GPIO_ACTIVE_HIGH>;
--	};
--};
--- 
-2.33.0
+Thanks,
+
+Jonathan
+
+> 
+> Changes in v2:
+> - Add 'deprecated' to channels legacy properties in ADC bindings
+> - Add set/clr service for common registers, to make code more generic in
+>   internal channels enable/disable services.
+> - Expose vrefint channel as a processed channel to return
+>   the actual value of vrefp.
+> - Minor code improvements
+> 
+> Changes in v3:
+> - fix vrefint sampling time check.
+> 
+> Changes in v4:
+> - fix binding
+> - add dedicated spin lock for common register
+> - manage probe_defer on nvmem read
+> 
+> Changes in v5:
+> - fix binding example
+> 
+> v5 resent as serie index was wrong on previous post. sorry !
+> 
+> Olivier Moysan (7):
+>   dt-bindings: iio: stm32-adc: add generic channel binding
+>   dt-bindings: iio: stm32-adc: add nvmem support for vrefint internal
+>     channel
+>   iio: adc: stm32-adc: split channel init into several routines
+>   iio: adc: stm32-adc: add support of generic channels binding
+>   iio: adc: stm32-adc: add support of internal channels
+>   iio: adc: stm32-adc: add vrefint calibration support
+>   iio: adc: stm32-adc: use generic binding for sample-time
+> 
+>  .../bindings/iio/adc/st,stm32-adc.yaml        | 108 ++++-
+>  drivers/iio/adc/stm32-adc-core.c              |   1 +
+>  drivers/iio/adc/stm32-adc-core.h              |  10 +
+>  drivers/iio/adc/stm32-adc.c                   | 422 ++++++++++++++++--
+>  4 files changed, 486 insertions(+), 55 deletions(-)
+> 
 
