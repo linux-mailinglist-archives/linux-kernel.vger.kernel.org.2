@@ -2,72 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC6C9430B83
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 20:27:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C663430B85
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 20:32:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344430AbhJQS3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 14:29:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34622 "EHLO
+        id S1344433AbhJQSev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 14:34:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241716AbhJQS3k (ORCPT
+        with ESMTP id S233541AbhJQSeu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 14:29:40 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A852C06161C
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 11:27:31 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id bp7so8818385qkb.12
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 11:27:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=fWbRtmwSvpw1bfC84j16Ls4FeCWDLyhXIFPNaloLQIk=;
-        b=QI41PugaHIrKs8JI5s8nfcKqkwtlGgyoGdPjD8l1ym4X1L4pM4KaRV4+ptAxgS7Ks3
-         sS8esGkA0kUbm+Cwq3FgL1EfGBiE43ch1w3j/MvSkiDrL0IL94N//yNq1tNzt8QMiIDW
-         RNr3n6kkJ7TZFDfKQAJvxIUUSK5aCihhN1rcVMDtYlONPY/7O+HiDbn1ZaJppWQaSVC2
-         BbHrPzyT6rY45ngA9pDQIwAtmJIev5I6LdipXPg5z4/ceKYmSzYA6gIXG4TqTjOh2HXm
-         XYXmQqdqQ5kuOvCnVUMtGwapI9CUowrWnmwzE+8zZ36lZmBNsTcBTO8o/u0SeuY2YsKE
-         UBDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=fWbRtmwSvpw1bfC84j16Ls4FeCWDLyhXIFPNaloLQIk=;
-        b=UYLxfvgfVV70HWt++bT15Rt+BFNmEvdGr3WyvZUY2kzNTNx1gQ8TSRN0yQX6mqFUdY
-         dzdwztQY3XfqoDndzNt3qLBUdfb0jhE7kRUleUEbn3/sz1UMr1SSnpzlBxTkDdUOOxvy
-         0iOVpsfgDjF3e8nYJp+6hKYJNs3dCdqOUX/nLW8NzMVeFOnf+lWNfVZ9gNDvYH9eLcxO
-         0IOnoHNUpHbI9dSNWPYfCGiPWYVCkzPqf7VfMG2wZ0wtuyAU2rq1QPmNfS/Fw3ui8IEn
-         +CSHKTm00xa+JHgyiCprv9+Lbtyn0k6jy1/REzyejSsuwzpnOqkxID0V7JWG45rm7WiI
-         iD7Q==
-X-Gm-Message-State: AOAM531LlzmlMmJ7n55rVwNuURFlsKqg8P0dk8l1xKmMIovENnJEPspf
-        YA0w64NgiBvhS7c+TiH0M/ti/ym7eYXtA3cTwi8=
-X-Google-Smtp-Source: ABdhPJygXZ5p40APuEfR90kbEToDjKNUxQFCutjwIrMLv1H/53O4jm5vUFXUv3ite5E9lJW72vMq0cMiS2WJ3uHWFdc=
-X-Received: by 2002:a37:4041:: with SMTP id n62mr18946367qka.225.1634495249830;
- Sun, 17 Oct 2021 11:27:29 -0700 (PDT)
+        Sun, 17 Oct 2021 14:34:50 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60833C06161C;
+        Sun, 17 Oct 2021 11:32:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:
+        Subject:Sender:Reply-To:Cc:Content-ID:Content-Description;
+        bh=BXeRFbHZjMx2hu3VGZIooeLW3/JuBfo/4XQ+WnTASNU=; b=uyPn61Oo6Sqb/xUC2vofU+3Ds/
+        KsMpqIUSZ+hjuzZ/m0CCmCbB7x2WL37MRlQB3X27Qe7cUWISKoz5+ij6pEho9xz0+Rntfcp9N4yXC
+        fvHcaBbGFqNxYvGRWLhRysSOGBS/VlveBKbXiB2LzID12FWAtIbM+kGfUV3pGJmwiwGdqcTFcM3aY
+        XJ5+8AiSeeJCoFraPj4dNlTVeSJkPaTlhZBtDtu9UWsmQL1EM+qWJ+ic/4f8XXi3uk7Hubxg3dIA0
+        nzikuQZfrkxIahjubgFZxxJqVopEkOFDTIo5MPddxbknh9NuF7eLauRhQBelrXMs7EaxlX6wcGE6m
+        9IY9mRmQ==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mcAxa-00D99f-I5; Sun, 17 Oct 2021 18:32:38 +0000
+Subject: Re: build reproducibility
+To:     Julia Lawall <julia.lawall@inria.fr>, linux-kernel@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kbuild@vger.kernel.org
+References: <alpine.DEB.2.22.394.2110172002450.4761@hadrien>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <7e5485df-a17b-304b-627d-9a85d2464df3@infradead.org>
+Date:   Sun, 17 Oct 2021 11:32:38 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Received: by 2002:a0c:ef82:0:0:0:0:0 with HTTP; Sun, 17 Oct 2021 11:27:29
- -0700 (PDT)
-Reply-To: mariehamidou0@gmail.com
-From:   MARIE Hamidou <koumbousilatifa@gmail.com>
-Date:   Sun, 17 Oct 2021 20:27:29 +0200
-Message-ID: <CAMp7NG1DvgX72Ni8h+4snM6dybDggTVuuaN=pYRhuOKEUXCWiA@mail.gmail.com>
-Subject: Urgent,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <alpine.DEB.2.22.394.2110172002450.4761@hadrien>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Urgent,
+On 10/17/21 11:12 AM, Julia Lawall wrote:
+> Hello,
+> 
+> If I do the following:
+> 
+> git clean -dfx
+> cp saved_config .config
+> make olddefconfig && make && make modules_install && make install
+> 
+> Should I always end up with the same kernel, regardless of the kernel that
+> is currently running on the machine?
+> 
+> I see a large performance difference between Linux 5.10 and all versions
+> afterwards for a particular benchmark.  I am unable to bisect the problem
+> eg between 5.10 and 5.11, because as soon as I come to a kernel that gives
+> the bad performance, all of the kernels that I generate subsequently in
+> the bisecting process (using the above commands) also have the bad
+> performance.
+> 
+> It could of course be that I have completely misinterpreted the problem,
+> and it has nothing to do with the kernel.  But I have tested the program a
+> lot when only working on variants of Linux 5.9.  I only start to have
+> problems when I use versions >= 5.11.
 
-I need your assistance to validate your name in our Bank System to
-enable the Bank transfer the sum of $ 3.5 million Dollars, into your
-nominated bank account to your account for onward investment,
+Hi,
 
-or any profitable business in your country and you will take 50% of
-the total  fund , for your assistance.To commence this transaction,  I
-require you to immediately indicate your interest by a return mail for
-more details,
+My "guess" is that this has something to do with the build
+reusing some current file(s) that need to be rebuilt.
+I.e., adding a "make clean" or "make proper" might be needed.
 
-Thanks for your anticipated co-operation.
-Best regards.
-Ms.MARIE Hamidou
+I say this only because sometimes I cannot even reproduce
+a build that has errors or warnings unless I prefix it with
+make clean or mrproper. (i.e., nothing to do with booting
+and running the new kernel)
+Even though the .config file has changed and I do
+"make olddefconfig", the same build errors do not show up
+unless I do the clean or mrproper step also.
+
+
+-- 
+~Randy
