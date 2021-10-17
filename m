@@ -2,189 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A04D143079D
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 11:54:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8C29430794
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 11:50:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245209AbhJQJy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 05:54:56 -0400
-Received: from forward102j.mail.yandex.net ([5.45.198.243]:50204 "EHLO
-        forward102j.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S245202AbhJQJye (ORCPT
+        id S245195AbhJQJuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 05:50:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232657AbhJQJuQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 05:54:34 -0400
-X-Greylist: delayed 380 seconds by postgrey-1.27 at vger.kernel.org; Sun, 17 Oct 2021 05:54:33 EDT
-Received: from forward101q.mail.yandex.net (forward101q.mail.yandex.net [IPv6:2a02:6b8:c0e:4b:0:640:4012:bb98])
-        by forward102j.mail.yandex.net (Yandex) with ESMTP id D41464BE721A;
-        Sun, 17 Oct 2021 12:45:47 +0300 (MSK)
-Received: from vla1-eeea27dff809.qloud-c.yandex.net (vla1-eeea27dff809.qloud-c.yandex.net [IPv6:2a02:6b8:c0d:5184:0:640:eeea:27df])
-        by forward101q.mail.yandex.net (Yandex) with ESMTP id CF13413E80002;
-        Sun, 17 Oct 2021 12:45:47 +0300 (MSK)
-Received: from vla1-ef285479e348.qloud-c.yandex.net (2a02:6b8:c0d:35a1:0:640:ef28:5479 [2a02:6b8:c0d:35a1:0:640:ef28:5479])
-        by vla1-eeea27dff809.qloud-c.yandex.net (mxback/Yandex) with ESMTP id 0LWAXeFyjU-jlEKHPY5;
-        Sun, 17 Oct 2021 12:45:47 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=orca.pet; s=mail; t=1634463947;
-        bh=cHwe/DnfGE/JqGgxZvLKYQfLaCg+lBs1hY9ceISCLc0=;
-        h=Date:Subject:To:From:Message-Id:Cc;
-        b=pPiH3tiyy54TTjMj/X5S1arPHdj68fuiHt6ZbUfqu8mzqC8q4e6p2EPzs9Sez5slK
-         W/J7sTYooG8k4SV1Woajwu1Yeqom+GF6N0mejg7E+dfHR3PBURf80tTiU6/Cc65Ye3
-         Ak5qX0tE8pUblfguo2juA1kdic0V4ZBrjzr4ELWY=
-Authentication-Results: vla1-eeea27dff809.qloud-c.yandex.net; dkim=pass header.i=@orca.pet
-Received: by vla1-ef285479e348.qloud-c.yandex.net (smtp/Yandex) with ESMTPS id WPTpRJKjtX-jjZ8N1Mo;
-        Sun, 17 Oct 2021 12:45:46 +0300
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client certificate not present)
-X-Yandex-Fwd: 2
-From:   Marcos Del Sol Vives <marcos@orca.pet>
-To:     x86@kernel.org
-Cc:     Marcos Del Sol Vives <marcos@orca.pet>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] x86: add support DM&P devices
-Date:   Sun, 17 Oct 2021 11:44:10 +0200
-Message-Id: <20211017094408.1512158-1-marcos@orca.pet>
-X-Mailer: git-send-email 2.25.1
+        Sun, 17 Oct 2021 05:50:16 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFA41C061765
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 02:48:06 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id y3so35405119wrl.1
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 02:48:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=philpotter-co-uk.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=VemNr59oeExyJMlI/fohSHUiHaPcBF5eF3WpdYswakk=;
+        b=M9IJbA0mOpSB48bAdJievp/E3liC+59Nwq/hRNPPXENDITFPuot+VH1kNog7eOII3o
+         vfGwgQa1SrHHPVzLn7SgQ2ElwiWKQF/O/Iw5/VNQ6qKs3pEnW+JNyKwMIRJPOdzHfbVb
+         rdnAUpOTZGqYTIxg5Wu1k7BrDnHJKOA88NO+S6meyD0PFL3/3KllBKcSbHsGFaatlJLY
+         IFvdR+HP4cdwzq4UGZwivPyF5XNPH9ZvLdQl0k75I4QLdhIMjrzuvvMpaPUXHJEd7j60
+         4BpC7Lm5dh1dxi4YczI3aKXbUD7geame1JaBChDhlOmItNk5KHun8nLnyzcVbHvUrC42
+         zC4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=VemNr59oeExyJMlI/fohSHUiHaPcBF5eF3WpdYswakk=;
+        b=Zg9w4KXkEXUW+XSuAWo8UY1Dq+6hs6iURweLYwUUa9XET4YhmsDqLrjVFUhmYWshri
+         SBN/WdbxzQEL6ycgoQIEuTam+AxsDCvMT3Q8rWuJtn1blOvWRjxjbn/Ut63iFDQWNLzZ
+         uOlw8sowMeI69oxmtmrtvjkIBhgA3n4K0D0aFij9YEmlxt7mBIhvpLO70mW/3wm0w/pe
+         D8sklYAGLrZyrA5wwRjIBtOKQapPbtEqfwDyDQBV6YqUr9A7AnHMsYawG3rtOc8+QR+H
+         Fy9V5+xhv2zPkWbPng2oyoX9AgaAXRKK7kTwWo9G6WsldjH3XRe2AqM83gmK1nS5Unsb
+         Zqag==
+X-Gm-Message-State: AOAM5339nmWGV/b5Cr1SpZwI7sw3he1AINArq7iy3YYRJp8Vh+BxgT9m
+        /uLo9Kn9Dx/lk0SGXH0gXCRyvw==
+X-Google-Smtp-Source: ABdhPJzhjgHbGfjEBnAo+HUxyGnXmicF9xB0Hdq/zXOQ0Wiy1Jb9RQcq1ZPeZjOOZVJ1NBNiqnA/qA==
+X-Received: by 2002:adf:a40f:: with SMTP id d15mr26831147wra.41.1634464085094;
+        Sun, 17 Oct 2021 02:48:05 -0700 (PDT)
+Received: from equinox (2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.a.1.e.e.d.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:dfde:e1a0::2])
+        by smtp.gmail.com with ESMTPSA id l2sm16216667wmi.1.2021.10.17.02.48.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 Oct 2021 02:48:04 -0700 (PDT)
+Date:   Sun, 17 Oct 2021 10:48:02 +0100
+From:   Phillip Potter <phil@philpotter.co.uk>
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] staging: r8188eu: use completions and clean
+ rtw_cmd_thread()
+Message-ID: <YWvxUg0/5TrVZu8M@equinox>
+References: <20211016091042.19614-1-fmdefrancesco@gmail.com>
+ <YWrvbPkqer43C+Fk@equinox>
+ <3115690.HXPuu0oz9h@localhost.localdomain>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3115690.HXPuu0oz9h@localhost.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DM&P devices were not being properly identified, which resulted in
-unneeded Spectre/Meltdown mitigations being applied.
+On Sat, Oct 16, 2021 at 07:54:51PM +0200, Fabio M. De Francesco wrote:
+> I guess that Dan will disagree with us :) Did you read his last message?
+> 
+> I hope that he has time to review these patches. He expressed some doubts 
+> about splitting the changes in two separate patches. As far as I know, since 
+> Dan is a very experienced engineer (I am not even graduated and everything I 
+> know of Computer Science is self-taught), I could have been wrong in doing 
+> this work the way I did.
+> 
 
-The manufacturer states that these devices execute always in-order and
-don't support either speculative execution or branch prediction, so
-they are not vulnerable to this class of attack. [1]
+I did read it yes, he makes good points, and my motivation is simply
+that the patches look fine as they are to me personally :-)
 
-This is something I've personally tested by a simple timing analysis
-on my Vortex86MX CPU, and can confirm it is true.
+> > given that one semaphore was there for kthread start/stop and the other
+> > for queuing. Looks good to me anyway based on what I know of completion
+> > variables :-) I assume you've not made the waits killable or
+> > interruptible in patch 1 due to the fact they are specifically related
+> > to kthread start/stop?
+> 
+> Good question! :)
+> 
+> Let me explain how I chose to make one wait killable and the other 
+> uninterruptible.
+> 
+> As far as I know, waiters may spin or sleep while waiting to acquire a lock  
+> (see spinlocks or mutexes for instance) or to be awakened (completions and 
+> condition variables for instance).
+> 
+> These were the cases of sleeping waiters. Sleeping can be done in 
+> uninterruptible, interruptible / killable, and timed-out states.
+> 
+> Where I'm 100% sure that the code doesn't require / want to be interrupted 
+> for whatever reason I prefer to use uninterruptible variants (and so I did in 
+> 1/3).
+> 
+> When I'm not sure of the requirement above, I prefer to avoid that the 
+> process or the entire system hangs while waiting to acquire a mutex or to be 
+> awakened by a complete() (and so on).
+> 
+> Conversely, using interruptible versions without proper checking of return 
+> codes and without proper managing of errors may lead to serious bugs.
+> 
+> Kernel threads (kthreads) are like user processes / threads and are scheduled 
+> the same way the former are. One noteworthy difference is that their mm 
+> pointer is NULL (they have not an userspace address spaces). However they are 
+> still threads that have a PID in userspace and they can be killed by root.
+> 
+> This is the output of the "ps -ef" command after "modprobe r8188eu":
+> 
+> localhost:~ # ps -ef | grep RTW
+> root      1726     2  0 19:06 ?        00:00:00 [RTW_CMD_THREAD]
+> 
+> Since the developers who wrote the original code thought that that thread 
+> must be interrupted I thought that restricting interruptions to kills was the 
+> wiser choice in 2/3. Conversely, I cannot see reasons to interrupt the core 
+> part of a driver, so I chose to use an uninterruptible version of 
+> wait_for_completion*() in the other parts of the code.
+> 
+> I warned you that I'm not an engineer, so please double check my argument :)
+> 
 
-Identification for some devices that lack the CPUID product name call
-has also been added, so they appear properly on /proc/cpuinfo.
+Sounds good to me, just wanted to know your reasoning.
 
-1: https://www.ssv-embedded.de/doks/infos/DMP_Ann_180108_Meltdown.pdf
+> > Anyhow:
+> > 
+> > For whole series:
+> > Acked-by: Phillip Potter <phil@philpotter.co.uk>
+> 
+> Thanks for you ack. I really appreciated it.
+> 
 
-Signed-off-by: Marcos Del Sol Vives <marcos@orca.pet>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Cc: linux-kernel@vger.kernel.org
----
- arch/x86/Kconfig.cpu             | 13 +++++++++++
- arch/x86/include/asm/processor.h |  3 ++-
- arch/x86/kernel/cpu/Makefile     |  1 +
- arch/x86/kernel/cpu/common.c     |  2 ++
- arch/x86/kernel/cpu/vortex.c     | 39 ++++++++++++++++++++++++++++++++
- 5 files changed, 57 insertions(+), 1 deletion(-)
- create mode 100644 arch/x86/kernel/cpu/vortex.c
+You're welcome :-)
 
-diff --git a/arch/x86/Kconfig.cpu b/arch/x86/Kconfig.cpu
-index 814fe0d349b0..eefc434351db 100644
---- a/arch/x86/Kconfig.cpu
-+++ b/arch/x86/Kconfig.cpu
-@@ -508,3 +508,16 @@ config CPU_SUP_ZHAOXIN
- 	  CPU might render the kernel unbootable.
- 
- 	  If unsure, say N.
-+
-+config CPU_SUP_VORTEX_32
-+	default y
-+	bool "Support Vortex processors" if PROCESSOR_SELECT
-+	depends on X86_32
-+	help
-+	  This enables detection, tunings and quirks for Vortex processors
-+
-+	  You need this enabled if you want your kernel to run on a
-+	  Vortex CPU. Disabling this option on other types of CPUs
-+	  makes the kernel a tiny bit smaller.
-+
-+	  If unsure, say N.
-diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
-index 9ad2acaaae9b..64e5290b29d0 100644
---- a/arch/x86/include/asm/processor.h
-+++ b/arch/x86/include/asm/processor.h
-@@ -164,7 +164,8 @@ enum cpuid_regs_idx {
- #define X86_VENDOR_NSC		8
- #define X86_VENDOR_HYGON	9
- #define X86_VENDOR_ZHAOXIN	10
--#define X86_VENDOR_NUM		11
-+#define X86_VENDOR_VORTEX	11
-+#define X86_VENDOR_NUM		12
- 
- #define X86_VENDOR_UNKNOWN	0xff
- 
-diff --git a/arch/x86/kernel/cpu/Makefile b/arch/x86/kernel/cpu/Makefile
-index 637b499450d1..9661e3e802be 100644
---- a/arch/x86/kernel/cpu/Makefile
-+++ b/arch/x86/kernel/cpu/Makefile
-@@ -43,6 +43,7 @@ obj-$(CONFIG_CPU_SUP_CENTAUR)		+= centaur.o
- obj-$(CONFIG_CPU_SUP_TRANSMETA_32)	+= transmeta.o
- obj-$(CONFIG_CPU_SUP_UMC_32)		+= umc.o
- obj-$(CONFIG_CPU_SUP_ZHAOXIN)		+= zhaoxin.o
-+obj-$(CONFIG_CPU_SUP_VORTEX_32)		+= vortex.o
- 
- obj-$(CONFIG_X86_MCE)			+= mce/
- obj-$(CONFIG_MTRR)			+= mtrr/
-diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
-index 0f8885949e8c..325d6022599b 100644
---- a/arch/x86/kernel/cpu/common.c
-+++ b/arch/x86/kernel/cpu/common.c
-@@ -1044,6 +1044,8 @@ static const __initconst struct x86_cpu_id cpu_vuln_whitelist[] = {
- 	VULNWL(CENTAUR,	5, X86_MODEL_ANY,	NO_SPECULATION),
- 	VULNWL(INTEL,	5, X86_MODEL_ANY,	NO_SPECULATION),
- 	VULNWL(NSC,	5, X86_MODEL_ANY,	NO_SPECULATION),
-+	VULNWL(VORTEX,	5, X86_MODEL_ANY,	NO_SPECULATION),
-+	VULNWL(VORTEX,	6, X86_MODEL_ANY,	NO_SPECULATION),
- 
- 	/* Intel Family 6 */
- 	VULNWL_INTEL(ATOM_SALTWELL,		NO_SPECULATION | NO_ITLB_MULTIHIT),
-diff --git a/arch/x86/kernel/cpu/vortex.c b/arch/x86/kernel/cpu/vortex.c
-new file mode 100644
-index 000000000000..e2685470ba94
---- /dev/null
-+++ b/arch/x86/kernel/cpu/vortex.c
-@@ -0,0 +1,39 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <linux/kernel.h>
-+#include <asm/processor.h>
-+#include "cpu.h"
-+
-+/*
-+ * No special init required for Vortex processors.
-+ */
-+
-+static const struct cpu_dev vortex_cpu_dev = {
-+	.c_vendor	= "Vortex",
-+	.c_ident	= { "Vortex86 SoC" },
-+	.legacy_models	= {
-+		{
-+			.family = 5,
-+			.model_names = {
-+				[2] = "Vortex86DX",
-+				[8] = "Vortex86MX",
-+			},
-+		},
-+		{
-+			.family = 6,
-+			.model_names = {
-+				/*
-+				 * Both the Vortex86EX and the Vortex86EX2
-+				 * have the same family and model id.
-+				 *
-+				 * However, the -EX2 supports the product name
-+				 * CPUID call, so this name will only be used
-+				 * for the -EX, which does not.
-+				 */
-+				[0] = "Vortex86EX",
-+			},
-+		},
-+	},
-+	.c_x86_vendor	= X86_VENDOR_VORTEX,
-+};
-+
-+cpu_dev_register(vortex_cpu_dev);
--- 
-2.25.1
-
+Regards,
+Phil
