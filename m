@@ -2,82 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD3054308A8
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 14:29:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46CC04308AC
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 14:29:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245649AbhJQMa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 08:30:59 -0400
-Received: from mout.gmx.net ([212.227.15.15]:49225 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245634AbhJQMa4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 08:30:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1634473696;
-        bh=cbmUGzU1hyhfVw27QCJZ4UFCSB3owM8yg3KH4pv2Meo=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=FgQF1bnMfZpqiLiWcwmo4tKY92EvGGpLSrDNF8O8Pl2Ok7TFaQFmXtHPkpiNnWcTb
-         +kVIye22YcImxnUMoO/R3nPQLDOuma5QAVqihArxeVkZUN0TWSjXk0iN1w4FOmzGg3
-         aVQFHOxFlgTm/24TudrTjM59RMRGfTkjOhDal5YA=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [157.180.225.22] ([157.180.225.22]) by web-mail.gmx.net
- (3c-app-gmx-bs33.server.lan [172.19.170.85]) (via HTTP); Sun, 17 Oct 2021
- 14:28:16 +0200
+        id S245660AbhJQMcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 08:32:02 -0400
+Received: from mail-ua1-f44.google.com ([209.85.222.44]:40776 "EHLO
+        mail-ua1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245651AbhJQMbz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Oct 2021 08:31:55 -0400
+Received: by mail-ua1-f44.google.com with SMTP id e2so2241330uax.7;
+        Sun, 17 Oct 2021 05:29:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZNQrmeLcRYkhU7gSap9RiYo7RaZ8Ovh5R/DJnqwEvKY=;
+        b=AJ1DOCof6SmlDUlOwDeP6loJP/W58A1GoYVytgix/yVypJAFFZBnrnKxO0tJ4yErWW
+         LkCwnfvdZhgvSJap8TPDbQnfMA/DIM8dBx9jUO1YccatLsl5Lj30bzgU2hrqMpse7Qes
+         znmfbEGejqg/zicXnyVUoo5pivOsfzW6sypEdS81YDYlZKaibBnSeDHvoYjM3DjfNLJc
+         cnGj1x2oeeN+ojAPRN81DCZPm5zb+61MQclOonS7Z3VM2NcP3M/d7bOYIIrBucsPZwqd
+         dnQUNZ1IiJYE9varwHu+A5PvRFj0UEwi788slSA0vrZpVfSKUO3hehiyoYi4FYIIFsPo
+         K2Pw==
+X-Gm-Message-State: AOAM530GEITODQC5CmIBu484NCaOwQ7zEIcKXugDhlD86rSoaj0/IPUt
+        AgEq0hab6NyoHYPRQY7Aso/VrOh7gtjijw==
+X-Google-Smtp-Source: ABdhPJxLg0q3sxr2Bpd51F2wvK+Dxosx3ycnWqy03AsVO7lzQ6X4K141M2ibwJQ/1Ri7ezP4QLb6zA==
+X-Received: by 2002:ab0:45c4:: with SMTP id u62mr21063253uau.69.1634473785574;
+        Sun, 17 Oct 2021 05:29:45 -0700 (PDT)
+Received: from mail-ua1-f48.google.com (mail-ua1-f48.google.com. [209.85.222.48])
+        by smtp.gmail.com with ESMTPSA id s6sm7593694vkh.45.2021.10.17.05.29.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 17 Oct 2021 05:29:45 -0700 (PDT)
+Received: by mail-ua1-f48.google.com with SMTP id h19so1702834uax.5;
+        Sun, 17 Oct 2021 05:29:45 -0700 (PDT)
+X-Received: by 2002:a67:cb0a:: with SMTP id b10mr23567811vsl.9.1634473784867;
+ Sun, 17 Oct 2021 05:29:44 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <trinity-b64203a5-8e23-4d1c-afd1-a29afa69f8f6-1634473696601@3c-app-gmx-bs33>
-From:   Frank Wunderlich <frank-w@public-files.de>
-To:     Daniel Golle <daniel@makrotopia.org>
-Cc:     Nick <vincent@systemli.org>, Kalle Valo <kvalo@codeaurora.org>,
-        nbd@nbd.name, lorenzo.bianconi83@gmail.com, ryder.lee@mediatek.com,
-        davem@davemloft.net, kuba@kernel.org, matthias.bgg@gmail.com,
-        sean.wang@mediatek.com, shayne.chen@mediatek.com,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Robert Foss <robert.foss@linaro.org>
-Subject: Aw: Re: [RFC v2] mt76: mt7615: mt7622: fix ibss and meshpoint
-Content-Type: text/plain; charset=UTF-8
-Date:   Sun, 17 Oct 2021 14:28:16 +0200
-Importance: normal
-Sensitivity: Normal
-In-Reply-To: <YWGXiExg1uBIFr2c@makrotopia.org>
-References: <20211007225725.2615-1-vincent@systemli.org>
- <87czoe61kh.fsf@codeaurora.org>
- <274013cd-29e4-9202-423b-bd2b2222d6b8@systemli.org>
- <YWGXiExg1uBIFr2c@makrotopia.org>
-X-UI-Message-Type: mail
-X-Priority: 3
-X-Provags-ID: V03:K1:fyBM2xVbitALniHvauTUD7yrO0uOEc4mCU0F1K23UQXJGTTN449orREFI7R6/jIwk2Gfz
- +/t5YHtCN79gYYBepZq88+TxCl9EOmLon24tVUZtoEA+yhKSKkYwyZfIMvm4BmHiBOooqXdvcPkN
- 2tiEOmsT8A75bnUmNG3cwMe2lVBuOhH9OQ96pnvWguNt1I8QU8ooFGKgHp7PWQok+ckMlwWMpQnU
- DCRkLgt6buZvFOvW9LKpt8RMxF+gVj07Jt+pnBeV6TmBIIY5cOfKzjCvRfR697xToQ48ZFR4+kSg
- Ec=
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:uRD9Evc6puo=:G4Jl5nlDqhYHEAGiTmwbT9
- B4HxHhEQJFhMTmBBoc65QLaRQ+84jKSXRdt59yACNSSbcCvyyGLvnrwSeO2xVx5jBnmJn/eMM
- z5HhMUlK4WpOrvAoD5QdWjiNvEiZrPiWfGk7WOXa+BDfgAP9dBZzeXQNRptwumLi1LDGEY0+3
- Q3jjuyfFqb4wN/PWx36xsnYAKK66Z7KL4z1nOmkhWc1UXcetmdrWzsYIb3h4YrWSPIC9gk+DP
- c4hILA67s3n35PnK2nQJkCHwqGB4ngTOQZBfSDAJXxxvghncAfXIAohXT+9pLtrgj2o4+MSCo
- VBJO8EtTsIMhJ/z6R1HxiHVOyi2RSGKvdY+fAQ5Y5Ptnb5R2pzM56i5wmIITBA+BPWtrsN0ei
- 1ZM+BPGhBZTsWFGii7Q5KOVsFm/KiNtwC4FpLXyRhhzEXADby7Wll0Iaorhx/AiY4xeF/7oIQ
- DuEOOSsnV5vltv7sEUCB00SIPWnSske6NpOh9hxMS150uB75Uy10lSVUddwQbWvC2IrZ4RkiE
- BRrlxcKZmA5IWfHBU8/4iMAFz2nLGmL4ySQ+0B0CC9xN521KUMjlFkGTxalvCq9mZ2b9muquX
- wsL7buDtbeD4iQVs8khWkueC1UyJMRmyL+wPVPsbQbvR2skb+cADRMI269FjG/+AUjmjox6aC
- EuTLt25a8zAvN1KGXCcEn/6StV8u8DB236SL04zPCNRwkhKrD/x5laTLaKYGcJUATGoIF/LKI
- xAzkrGay/GV/iFmBg9w26NP8IX8TfSCwKUKtp3iUHVI3b+wwpFXAX605EOdKFmo4FXPWTcEEs
- 4X+LBRj
+References: <20210923064137.60722-1-zhang.lyra@gmail.com> <20210923064137.60722-2-zhang.lyra@gmail.com>
+ <CAMuHMdWq3M3i+5yATeGEUxupU6Gb5ZnJeNsn9czX6tukEbHQng@mail.gmail.com> <CAAfSe-sQB4wXGwGSPYpoF_YmzJjT=dFLTz36haJ6orE_=zai-Q@mail.gmail.com>
+In-Reply-To: <CAAfSe-sQB4wXGwGSPYpoF_YmzJjT=dFLTz36haJ6orE_=zai-Q@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Sun, 17 Oct 2021 14:29:33 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdV8=5p8bdSaw0U+=OdzsQW-Te68XR1o8W_p7oPWjyhGUQ@mail.gmail.com>
+Message-ID: <CAMuHMdV8=5p8bdSaw0U+=OdzsQW-Te68XR1o8W_p7oPWjyhGUQ@mail.gmail.com>
+Subject: Re: [PATCH v4 1/4] dt-bindings: clk: sprd: Add bindings for ums512
+ clock controller
+To:     Chunyan Zhang <zhang.lyra@gmail.com>
+Cc:     Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Baolin Wang <baolin.wang7@gmail.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Lee Jones <lee.jones@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Gesendet: Samstag, 09. Oktober 2021 um 15:22 Uhr
-> Von: "Daniel Golle" <daniel@makrotopia.org>
+Hi Chunyan,
 
-> Does Mesh+AP or Ad-Hoc+AP also work on MT7622 and does it still work on
-> MT7615E card with your patch applied?
+On Sat, Oct 16, 2021 at 10:42 AM Chunyan Zhang <zhang.lyra@gmail.com> wrote:
+> On Wed, 13 Oct 2021 at 22:23, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > On Thu, Sep 23, 2021 at 8:42 AM Chunyan Zhang <zhang.lyra@gmail.com> wrote:
+> > > From: Chunyan Zhang <chunyan.zhang@unisoc.com>
+> > > Add a new bindings to describe ums512 clock compatible strings.
+> > >
+> > > Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
 
-tested bananapi-r2 with mt7615 and bananapi-r64 with internal mt7622-wmac
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/clock/sprd,ums512-clk.yaml
+> >
+> > > +  clock-names:
+> > > +    minItems: 1
+> > > +    maxItems: 4
+> >
+> > After applying this to my local tree, as it is a dependency for 2/4 in
+> > for-mfd-next:
+> >
+> >     Documentation/devicetree/bindings/clock/sprd,ums512-clk.yaml:
+> > properties:clock-names: {'required': ['maxItems']} is not allowed for
+> > {'minItems': 1, 'maxItems': 4, 'items': [{'const': 'ext-26m'},
+> > {'const': 'ext-32k'}, {'const': 'ext-4m'}, {'const': 'rco-100m'}]}
+> >     hint: "maxItems" is not needed with an "items" list
+> >     from schema $id: http://devicetree.org/meta-schemas/items.yaml#
+> >
+> > so please drop the maxItems 4.
+>
+> Ok, I will, but I don't have this compile error on my side, how do you
+> get this error report?
+>
+> I use the command below:
+> make -k dt_binding_check
+> DT_SCHEMA_FILES=Documentation/devicetree/bindings/clock/sprd,ums512-clk.yaml
+> and,
+> make -k dt_binding_check
 
-ibss/ad-hoc: working
-AP-Mode: still working
+Do you have the latest dt-schema?
 
-regards Frank
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
