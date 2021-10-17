@@ -2,131 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EBAB430B07
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 19:03:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3F31430B0D
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 19:06:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344401AbhJQRFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 13:05:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44662 "EHLO
+        id S1344329AbhJQRIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 13:08:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344340AbhJQRFc (ORCPT
+        with ESMTP id S232018AbhJQRIr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 13:05:32 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC7D6C06161C;
-        Sun, 17 Oct 2021 10:03:22 -0700 (PDT)
-Message-ID: <20211017152048.726038584@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1634490199;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=aHWXrxAAqFdnNUVjMAZJd7nF6eNjzsty49yxP1lnWL4=;
-        b=BXQTb/URty11XKDlTMPmGPMX/xT5uyr0QZtzQSX9ecg/718GLsRM523Ovfu/v10VSNHlA0
-        ziXzKwjneX33lTWtmvCaZHzfRUes+at448L4K3jPAFLGgd+wAfdVnMAcM2aJz8CItlz61O
-        mqw7VC/x0kf9mZ+spXqR+t1XuFblgRsKdmVh+eTSJtgPu3aeGHf//WqIvD4KRW03Uj/eK/
-        NSLYt0c6mgikwaUcHWG58XtJo1LccQQsbfMzGeReYdozhQGHym+dSsB9OyqSV2hDYW+jCP
-        InUrk0hdTM2m7eHtd8jLK+dmjf5Gq8DkB+FOTn2rLqRYhv4IFw/1a/bKPULjng==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1634490199;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=aHWXrxAAqFdnNUVjMAZJd7nF6eNjzsty49yxP1lnWL4=;
-        b=WxUCi+DhQ7vev8oFfE+Cq0puViSCljF/COTrEX1ffezZ/GL1snTQuvvkf7By+EG1lIkRUd
-        p7yO+3mqW9d0qOBA==
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     x86@kernel.org, "Liu, Jing2" <jing2.liu@intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        kvm@vger.kernel.org, "Nakajima, Jun" <jun.nakajima@intel.com>,
-        Sean Christopherson <seanjc@google.com>
-Subject: [patch 4/4] x86/fpu: Remove old KVM FPU interface
-References: <20211017151447.829495362@linutronix.de>
+        Sun, 17 Oct 2021 13:08:47 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1442FC06161C
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 10:06:37 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id r18so36739260wrg.6
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 10:06:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0fCaUspJ/VUdAic1iTmIc7QqeE5RksidRh973c3Qk4M=;
+        b=iXSgDZaqTNHBfZliVp3BZ3lobHwLinkJKPO71D2DjocLFxQklwHYd1JQsEvKxwiALq
+         /O9GqpGCwrVNMRsr212X3FzjmWnGPoxjSeN7F1Nw9YvH5/S2JUj6i8C/mXG18skfjtak
+         oLY465w4KJqmcfmKE0NLDQ4UgPvCYH0aocORzpBljun8PsXK0tcVH02FLj2rmayPm701
+         uKw5Fg8TQMEpIXtihfbyS0LI+SX2Q7jiATPTW5qdd2MqJP5H4w30fcE6h5N/96pnNgYO
+         NVH0tx/kO5g4Z5lk6uq9ABbmbr4/JTdKMT7WZSTOlbOfoXKrFK2K/ecYfmksq3BNJI9g
+         HXgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0fCaUspJ/VUdAic1iTmIc7QqeE5RksidRh973c3Qk4M=;
+        b=leJ3Os61bkEptyVycyjh7EDUheGjNMvf4F9Z4XgZAQju4tmPutYh+s4PiAuU250Xcn
+         uQsSR8on/s5CXihyhQe2LsfrJXCWQcir6E1U1hiKzifrqp3QfHyE3CwbD5QiX7JdroRF
+         +76GE/Lma9COIbB3BEbuy3Ft1Ce7rjmQ5akrXU65Uol6MQWVqDmLT0GCjrGqE5zL8zvn
+         4Q1INDwrYG4sYPO1eRZsxvCvrqHnUIZMPFR7L6F3kz0oCTrMsMks9tCksgaYnYKHbq1e
+         9Ty72bFssBI6ZwS6feNlWt3irMvBXNBkLci12y8AdzPM2wVk+1A3zV8gKLC0AFPgW8p/
+         kCIQ==
+X-Gm-Message-State: AOAM533UHz1IL1nYf/kGBQVI2wrvEImnwCMq+5R5ZFZ8ClmBpDqhT5Kc
+        2JJCgidBgQ1qUgNKpAgzUxQ3iJfuoF4=
+X-Google-Smtp-Source: ABdhPJwptV8jz34KDdp9FKnw71xm3aQR2fR8we2XCT2K2ifnpwsil2y7WyfWWNRbuv/KEeb06WIadw==
+X-Received: by 2002:adf:8b9a:: with SMTP id o26mr30517194wra.109.1634490395759;
+        Sun, 17 Oct 2021 10:06:35 -0700 (PDT)
+Received: from localhost.localdomain ([2a02:8108:96c0:3b88::3de4])
+        by smtp.gmail.com with ESMTPSA id f186sm15813352wma.46.2021.10.17.10.06.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 Oct 2021 10:06:35 -0700 (PDT)
+From:   Michael Straube <straube.linux@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Michael Straube <straube.linux@gmail.com>
+Subject: [PATCH v2] staging: r8188eu: remove unnecessary assignment
+Date:   Sun, 17 Oct 2021 19:06:29 +0200
+Message-Id: <20211017170629.13785-1-straube.linux@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Date:   Sun, 17 Oct 2021 19:03:19 +0200 (CEST)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No more users.
+The assignment "pLed->BlinkTimes = 0" is in a code path that is
+executed only if pLed->BlinkTimes is 0. Remove this unnecessary
+assignment.
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Michael Straube <straube.linux@gmail.com>
+---
+v1 -> v2:
+Fixed typos in the subject line and commit message.
+asignment -> assignment
 
----
- arch/x86/include/asm/fpu/api.h |  2 --
- arch/x86/kernel/fpu/core.c     | 32 --------------------------------
- 2 files changed, 34 deletions(-)
----
-diff --git a/arch/x86/include/asm/fpu/api.h b/arch/x86/include/asm/fpu/api.h
-index 239909a95368..286a66ff0bd1 100644
---- a/arch/x86/include/asm/fpu/api.h
-+++ b/arch/x86/include/asm/fpu/api.h
-@@ -131,14 +131,12 @@ static inline void fpstate_init_soft(struct swregs_state *soft) {}
- DECLARE_PER_CPU(struct fpu *, fpu_fpregs_owner_ctx);
- 
- /* fpstate-related functions which are exported to KVM */
--extern void fpu_init_fpstate_user(struct fpu *fpu);
- extern void fpstate_clear_xstate_component(struct fpstate *fps, unsigned int xfeature);
- 
- /* KVM specific functions */
- extern bool fpu_alloc_guest_fpstate(struct fpu_guest *gfpu);
- extern void fpu_free_guest_fpstate(struct fpu_guest *gfpu);
- extern int fpu_swap_kvm_fpstate(struct fpu_guest *gfpu, bool enter_guest, u64 restore_mask);
--extern void fpu_swap_kvm_fpu(struct fpu *save, struct fpu *rstor, u64 restore_mask);
- 
- extern void fpu_copy_guest_fpstate_to_uabi(struct fpu_guest *gfpu, void *buf, unsigned int size, u32 pkru);
- extern int fpu_copy_uabi_to_guest_fpstate(struct fpu_guest *gfpu, const void *buf, u64 xcr0, u32 *vpkru);
-diff --git a/arch/x86/kernel/fpu/core.c b/arch/x86/kernel/fpu/core.c
-index 60681dc8a725..4b09f0f70082 100644
---- a/arch/x86/kernel/fpu/core.c
-+++ b/arch/x86/kernel/fpu/core.c
-@@ -248,29 +248,6 @@ int fpu_swap_kvm_fpstate(struct fpu_guest *guest_fpu, bool enter_guest,
- }
- EXPORT_SYMBOL_GPL(fpu_swap_kvm_fpstate);
- 
--void fpu_swap_kvm_fpu(struct fpu *save, struct fpu *rstor, u64 restore_mask)
--{
--	fpregs_lock();
--
--	if (save) {
--		struct fpstate *fpcur = current->thread.fpu.fpstate;
--
--		if (test_thread_flag(TIF_NEED_FPU_LOAD))
--			memcpy(&save->fpstate->regs, &fpcur->regs, fpcur->size);
--		else
--			save_fpregs_to_fpstate(save);
--	}
--
--	if (rstor) {
--		restore_mask &= XFEATURE_MASK_FPSTATE;
--		restore_fpregs_from_fpstate(rstor->fpstate, restore_mask);
--	}
--
--	fpregs_mark_activate();
--	fpregs_unlock();
--}
--EXPORT_SYMBOL_GPL(fpu_swap_kvm_fpu);
--
- void fpu_copy_guest_fpstate_to_uabi(struct fpu_guest *gfpu, void *buf,
- 				    unsigned int size, u32 pkru)
- {
-@@ -440,15 +417,6 @@ void fpstate_reset(struct fpu *fpu)
- 	__fpstate_reset(fpu->fpstate);
- }
- 
--#if IS_ENABLED(CONFIG_KVM)
--void fpu_init_fpstate_user(struct fpu *fpu)
--{
--	fpstate_reset(fpu);
--	fpstate_init_user(fpu->fpstate);
--}
--EXPORT_SYMBOL_GPL(fpu_init_fpstate_user);
--#endif
--
- /* Clone current's FPU state on fork */
- int fpu_clone(struct task_struct *dst)
- {
+ drivers/staging/r8188eu/core/rtw_led.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/drivers/staging/r8188eu/core/rtw_led.c b/drivers/staging/r8188eu/core/rtw_led.c
+index 09d8c4e85863..0e3453639a8b 100644
+--- a/drivers/staging/r8188eu/core/rtw_led.c
++++ b/drivers/staging/r8188eu/core/rtw_led.c
+@@ -142,7 +142,6 @@ static void SwLedBlink1(struct LED_871x *pLed)
+ 					pLed->BlinkingLedState = RTW_LED_ON;
+ 				_set_timer(&pLed->BlinkTimer, LED_BLINK_NO_LINK_INTERVAL_ALPHA);
+ 			}
+-			pLed->BlinkTimes = 0;
+ 			pLed->bLedBlinkInProgress = false;
+ 		} else {
+ 			if (pLed->bLedOn)
+-- 
+2.33.0
 
