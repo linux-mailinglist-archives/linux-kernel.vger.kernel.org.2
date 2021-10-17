@@ -2,84 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15FAB430BB6
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 21:21:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A46C430BB7
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 21:23:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344490AbhJQTXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 15:23:08 -0400
-Received: from mout.kundenserver.de ([212.227.126.133]:59393 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231243AbhJQTXG (ORCPT
+        id S1344497AbhJQTZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 15:25:51 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:33852 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231243AbhJQTZr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 15:23:06 -0400
-Received: from mail-wm1-f43.google.com ([209.85.128.43]) by
- mrelayeu.kundenserver.de (mreue010 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1MoOIi-1n4sdL3KUy-00op0j; Sun, 17 Oct 2021 21:20:55 +0200
-Received: by mail-wm1-f43.google.com with SMTP id y74-20020a1c7d4d000000b00322f53b9bbfso2761251wmc.3;
-        Sun, 17 Oct 2021 12:20:55 -0700 (PDT)
-X-Gm-Message-State: AOAM53356OjVtO/zPybDPxI7wLLqd9HwheudfyR0lv5V+4c5r0jQfjKe
-        Y8oVPtvNqApXxQ7znkqpCRTAndzIDdV0xoI4nJM=
-X-Google-Smtp-Source: ABdhPJyUlFebsGacqn/DbORh+me3VGF2rJiA/LeldArqxN3agfF/M3+TgUm3ShSK4jjOvlyCwRLNkS5pXcgtKPXtbJI=
-X-Received: by 2002:a1c:4b08:: with SMTP id y8mr27612763wma.98.1634498455480;
- Sun, 17 Oct 2021 12:20:55 -0700 (PDT)
+        Sun, 17 Oct 2021 15:25:47 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1634498616;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=bS8eHN/rHSzUrokdi0mEHrTigThokrL8A9mvGaDhNak=;
+        b=1HpFXb8dFdPw+4UBK2/aIAb1MK3ODgtMFajEYVjNnF2M4OEwGzmOinr21dPpZ5jJ5EN9ru
+        2hy4+01DqdlL1DfFxdP0huThY9QVHY5ikMXOjrcniJizkrDmglBD8LrLcvC9jn2LATOkSV
+        Z12WfKhZIMQpm4/Mrv9k8+kx5Bc/hKKLIgZdOAEqvkmRcL83xN8xDku8UIG4uzaMUyJhTj
+        kn1z+uYV5cfvk2E1L7rVLMV122pySoqV8yBZTU1lQ8K5hzVz9vhTjysj/uFauOaHxEv81L
+        IHlurAZliYI1g3tIpKQ2T0eMOTtQYu8Uth+rAaaRAyL5qkd6LLQ0oy5ouDmTQw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1634498616;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=bS8eHN/rHSzUrokdi0mEHrTigThokrL8A9mvGaDhNak=;
+        b=muj8Z2KDBFC3l+jUyBIXgyIhjip5nsSi0vhmW6PRn1cLBaFnPNYFvsM84PNvxswnDyoSfI
+        VX6hV/1yATNbKPBw==
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>
+Cc:     Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 3/6] x86/topology: Disable CPU online/offline control
+ for TDX guest
+In-Reply-To: <20211005230550.1819406-4-sathyanarayanan.kuppuswamy@linux.intel.com>
+References: <20211005230550.1819406-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20211005230550.1819406-4-sathyanarayanan.kuppuswamy@linux.intel.com>
+Date:   Sun, 17 Oct 2021 21:23:31 +0200
+Message-ID: <877deb4frg.ffs@tglx>
 MIME-Version: 1.0
-References: <20211017175949.23838-1-rdunlap@infradead.org>
-In-Reply-To: <20211017175949.23838-1-rdunlap@infradead.org>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Sun, 17 Oct 2021 21:20:39 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1WHPnLNE7=4872iaVcL708NcVmMhRvAR0OLujP=Y3Tjw@mail.gmail.com>
-Message-ID: <CAK8P3a1WHPnLNE7=4872iaVcL708NcVmMhRvAR0OLujP=Y3Tjw@mail.gmail.com>
-Subject: Re: [PATCH] mmc: winbond: don't build on M68K
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Pierre Ossman <pierre@ossman.eu>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:dgM51z9+nGL2NXo3rQT5QdeK+yEbzUWBb84W2OjKXa0py++sBdC
- SF7zsaIeQ9NJqOZZzIeqgnALDGA+xCEzW1KfxxmenkXzwTCy2MM75vgZNogZbaaygwkFul2
- M0hkS6ypdJs0nRqzEkZE/yqVnkn4nBwFPcVSC+0p11ksoB83iBIxqHHxi1FL8PXwWFWT9+8
- LdgiW/ktnM7ElKQwHnGEw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:g8yRlhRfXJ8=:ypw0LaBLkhA/Pe0Wmq6fme
- 7YagyNTCK1nn/BLLXCA0wEmAECNlo4+JqlEe+vDSKzlXsITqKgLv8vVBTw6d2pYCVaCwVNgfq
- wOqiZ5w44tbnrCRgtPn51SnEul7BYx2b9kX0ZeBwKS/uIzeflCU2urVC1eOrWurVBWrAtI3it
- yUW/e4jgMshCrvcZBGTZuvONfDHuDBQtzfva3VLNi+qkwVI8OacbWq/6HRlDUdu791e97mUn5
- 9uKMl1u9Sj6ApVLQ41puW0B+THNeqUEibF6V6ywGLc5k0jLk2IwnICZ5x48gEDoQDUtnGO1kO
- CsI2OqdXL5TGa6GUceFL/T0OUA/Fn/X30d2IPEe1e5UCE9egRbisf2S8ikIggkXZ7JEfAfGgV
- nqz3ed+i0FLoAdD2q1oamd64RkkHb598oDwL4yHsRqA7ou/9FRKrXS+KhAPac8jO+QutJyf2k
- 1yuW9ofec5OihMuvl/AxZaF+vdo0W0ysbrQWq4scCPN2GEG1CxsYFZJUMq8Y3OxaKP92HGlW+
- JaJQXYHp+te0X5KFOdzpoNDy9uJii+1WWCBoZXol7drDSWe3Ecl9PJdUsr2+I/dTFySdEO7tk
- AUKV/sQUoyDlTHLkjyw2lb9APerU8eWKQzywWxO/kAGbnC9Je2DHvPAXTTcY9JOklNh16vObM
- oQNYdsfBNJ5WpwPTQtR44/8ZYE9rjidIDk5dISsgcM/X6CznVCbfzUqCgyH/gDsxo5Dbq3YAr
- QJLUex2V/Ssrb+Hg+m6LAnz1KtJ8gLvOM35ORcJkaqVcj/H80cCmGk5sBwWrV57Wj5FLn8C3t
- lBRUkk+MH09LzlWBJugDYRLVPLSeM3KMKY4gq5SmoApR1X2OV7wdC8VVm5EGpdJZO113hBZUf
- /B9y9I57lrgql/OD8J/Q==
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 17, 2021 at 7:59 PM Randy Dunlap <rdunlap@infradead.org> wrote:
->
-> The Winbond MMC driver fails to build on ARCH=m68k so prevent
-> that build config. Silences these build errors:
->
-> ../drivers/mmc/host/wbsd.c: In function 'wbsd_request_end':
-> ../drivers/mmc/host/wbsd.c:212:28: error: implicit declaration of function 'claim_dma_lock' [-Werror=implicit-function-declaration]
->   212 |                 dmaflags = claim_dma_lock();
-> ../drivers/mmc/host/wbsd.c:215:17: error: implicit declaration of function 'release_dma_lock'; did you mean 'release_task'? [-Werror=implicit-function-declaration]
->   215 |                 release_dma_lock(dmaflags);
->
+On Tue, Oct 05 2021 at 16:05, Kuppuswamy Sathyanarayanan wrote:
+>  
+> +static int tdx_cpu_offline_prepare(unsigned int cpu)
+> +{
+> +	/*
+> +	 * Per Intel TDX Virtual Firmware Design Guide,
+> +	 * sec 4.3.5 and sec 9.4, Hotplug is not supported
+> +	 * in TDX platforms. So don't support CPU
+> +	 * offline feature once it is turned on.
+> +	 */
+> +	return -EOPNOTSUPP;
+> +}
+> +
+>  unsigned long tdx_get_ve_info(struct ve_info *ve)
+>  {
+>  	struct tdx_module_output out = {0};
+> @@ -451,5 +464,8 @@ void __init tdx_early_init(void)
+>  	pv_ops.irq.safe_halt = tdx_safe_halt;
+>  	pv_ops.irq.halt = tdx_halt;
+>  
+> +	cpuhp_setup_state(CPUHP_AP_ONLINE_DYN, "tdx:cpu_hotplug",
+> +			  NULL, tdx_cpu_offline_prepare);
 
-It looks like m68k and sparc declare this function in asm/floppy.h,
-while everyone
-else has it in asm/dma.h.
+Seriously? This lets the unplug start, which starts to kick off tasks
+from the CPU just to make it fail a few steps later?
 
-Not sure if it's worth fixing in a better way, but I suspect sparc
-would have the
-same issue here.
+The obvious place to prevent this is the CPU hotplug code itself, right?
 
-      Arnd
+Thanks,
+
+        tglx
+---
+diff --git a/kernel/cpu.c b/kernel/cpu.c
+index 192e43a87407..c544eb6c79d3 100644
+--- a/kernel/cpu.c
++++ b/kernel/cpu.c
+@@ -1178,6 +1178,8 @@ static int __ref _cpu_down(unsigned int cpu, int tasks_frozen,
+ 
+ static int cpu_down_maps_locked(unsigned int cpu, enum cpuhp_state target)
+ {
++	if (cc_platform_has(CC_HOTPLUG_DISABLED))
++		return -ENOTSUPP;
+ 	if (cpu_hotplug_disabled)
+ 		return -EBUSY;
+ 	return _cpu_down(cpu, 0, target);
+
+
+        
