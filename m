@@ -2,112 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4B5B4307AD
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 12:03:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3122D4307AF
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 12:05:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245240AbhJQKGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 06:06:00 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:58688
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S245237AbhJQKF6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 06:05:58 -0400
-Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com [209.85.208.197])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id D06ED3FFE2
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 10:03:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1634465028;
-        bh=/w7rnLVxUNTURGieCGfqqQ4bUB62VIx19Vc4b3uH07U=;
-        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=RAV43nb+Xvzmk2b/rUhePogqGjzuJB2LHSGz91ycrLavn6DYaeSWTLd1GXm9fRhWz
-         8w861Ayp6obOuBB9VUMThkiiVCYL2piVKQ61dY31Vk7pQaHbTefifPLwga8gBNw31g
-         10W78NfV3Qi4g8HIuDaBuhfGiIF6P+MQsgOyTS80mIYnlrFpq6GAPa8ARkGdzOU8qn
-         aGlpncOe+BugWtpVt6eEVjpH6p2cKMRjgTBaxfw41jS4/+I/mXfiXStCzKqImd1zVb
-         s+IuNOHamPxQnr/K9VfIxk3VFHWQGSrdQy4pThcJxUSDqT0P2j2n0qbkWDhBzkEuEe
-         sFBCJ41GYYcqQ==
-Received: by mail-lj1-f197.google.com with SMTP id e26-20020a2e985a000000b00211109b97e6so255846ljj.0
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 03:03:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/w7rnLVxUNTURGieCGfqqQ4bUB62VIx19Vc4b3uH07U=;
-        b=y9dGsNDIb6nNfl0212e9Hrno/F12SrilJ/ImiXHm1vma0D6kLE5VF9owX5rkZx7WZx
-         zShS5gBJHC6ZoXIthKDXEmvqrVK6qQ8aYuboW2zknAvIRgg5djs5o06vAYrDZ5jJbDMQ
-         CSJGmPnm1uQur5vn9zrhUz/UoW3uWE7ZCPv3kMMXvDVLBFR9S+1vFciZQKYhLg7vUqq3
-         9aQ3NosqCNMzqVspZZ0V5juQMer4LmEc3guB6T81Si8zozC24AUnv1y6GSpGuK+udau9
-         kzVqdRXs3WHX89fbLNgrdMN0bF46x4uYKM/MZXZISalJbgZYy2/Id+eCBwh78cInA13r
-         ciEg==
-X-Gm-Message-State: AOAM5328p4XcIoRwsTl/7uDUva+l73nTrWUTEOQNldhTVUu5i1vqPoI4
-        7OaqBxI92ShToLazrg+V1LAQxoO8dpc6NvQc/PJ64sOqAioFZKhX+B067iYgXcQrDWW7qF22jUw
-        dE1pYVp2waD2KG0JZ3f9H/s41RVH7slME6uOlGhmSUU90qXG2vY3+8qdRVw==
-X-Received: by 2002:a17:906:919:: with SMTP id i25mr21077563ejd.171.1634465017857;
-        Sun, 17 Oct 2021 03:03:37 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxBD4IVI+3m1jDS1GLi//iCI68rTkdNzvWdP8PXY93uSfBu2PzfjILpnco+k3Rb/r6y11YH8kKxYU50YYZPaHc=
-X-Received: by 2002:a17:906:919:: with SMTP id i25mr21077516ejd.171.1634465017650;
- Sun, 17 Oct 2021 03:03:37 -0700 (PDT)
+        id S245255AbhJQKH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 06:07:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39326 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S245237AbhJQKH2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Oct 2021 06:07:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BACD460FF2;
+        Sun, 17 Oct 2021 10:05:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1634465119;
+        bh=vi7HaI24vuLkfpRHTC43LctuUicv6zO5FUxVompozDA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=v0BWj/4zk9wUzHiCmry3m12tNaXSX1wgUezqDI9HjLlA7LK05hoZyCWiJUWc9eBPq
+         S4wScCNwjQWeLu4YgheknrI1EX7FUBs0ct0AqUisrlPM2EXocsvS/0KZ0IVepTPjeF
+         KZbkfsXwT6gMhm/zoMzjknbj2gAESxFcdjKFB4bU=
+Date:   Sun, 17 Oct 2021 12:05:16 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+Subject: [GIT PULL] USB fixes for 5.15-rc5
+Message-ID: <YWv1XLbDBs/y1d3W@kroah.com>
 MIME-Version: 1.0
-References: <20211016102025.23346-1-arnaud.ferraris@collabora.com>
-In-Reply-To: <20211016102025.23346-1-arnaud.ferraris@collabora.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Date:   Sun, 17 Oct 2021 12:03:26 +0200
-Message-ID: <CA+Eumj5zqbk7Vn7dAvjNWXKK6pCNgu34-VZGudP=BmO0_+0Tgw@mail.gmail.com>
-Subject: Re: [PATCH 0/4] arm64: dts: add 'chassis-type' property
-To:     Arnaud Ferraris <arnaud.ferraris@collabora.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-rockchip@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-        linux-sunxi@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-        devicetree@vger.kernel.org, Martin Kepplinger <martink@posteo.de>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Fabio Estevam <festevam@gmail.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, Lucas Stach <dev@lynxeye.de>,
-        Angus Ainslie <angus@akkea.ca>,
-        Guido Gunther <agx@sigxcpu.org>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Johan Jonker <jbx6244@gmail.com>,
-        Eddie Cai <eddie.cai.linux@gmail.com>,
-        Shunqian Zheng <zhengsq@rock-chips.com>,
-        Brian Norris <briannorris@chromium.org>,
-        Dan Johansen <strit@manjaro.org>,
-        Simon South <simon@simonsouth.net>,
-        Matthias Brugger <mbrugger@suse.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 16 Oct 2021 at 12:20, Arnaud Ferraris
-<arnaud.ferraris@collabora.com> wrote:
->
-> Hello,
->
-> A new root node property named 'chassis-type' has recently been approved
-> added to the device tree specification[1]. This will allow userspace to
-> easily detect the device form factor on DT-based devices, and act
-> accordingly.
->
-> This patchset fills in this property for existing ARM64 consumer
-> devices (laptops, phones, tablets...).
->
-> [1] https://github.com/devicetree-org/devicetree-specification/blob/main/source/chapter3-devicenodes.rst#root-node
->
+The following changes since commit 64570fbc14f8d7cb3fe3995f20e26bc25ce4b2cc:
 
-I'll add the same for Exynos, S3C and S5P. Do you know by any chance
-what is the meaning of "embedded"? How a development board should be
-classified?
+  Linux 5.15-rc5 (2021-10-10 17:01:59 -0700)
 
+are available in the Git repository at:
 
-Best regards,
-Krzysztof
+  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git tags/usb-5.15-rc6
+
+for you to fetch changes up to cd932c2a1ecc8f261ecb8d140fa431c16379931f:
+
+  Merge tag 'usb-serial-5.15-rc6' of https://git.kernel.org/pub/scm/linux/kernel/git/johan/usb-serial into usb-linus (2021-10-15 15:04:02 +0200)
+
+----------------------------------------------------------------
+USB fixes for 5.15-rc6
+
+Here are some small USB fixes that resolve a number of tiny issues.
+They include:
+	- new USB serial driver ids
+	- xhci driver fixes for a bunch of issues
+	- musb error path fixes.
+
+All of these have been in linux-next for a while with no reported
+issues.
+
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+----------------------------------------------------------------
+Aleksander Morgado (1):
+      USB: serial: qcserial: add EM9191 QDL support
+
+Daniele Palmas (1):
+      USB: serial: option: add Telit LE910Cx composition 0x1204
+
+Greg Kroah-Hartman (1):
+      Merge tag 'usb-serial-5.15-rc6' of https://git.kernel.org/pub/scm/linux/kernel/git/johan/usb-serial into usb-linus
+
+Johan Hovold (1):
+      USB: xhci: dbc: fix tty registration race
+
+Jonathan Bell (2):
+      xhci: guard accesses to ep_state in xhci_endpoint_reset()
+      xhci: add quirk for host controllers that don't update endpoint DCS
+
+Miquel Raynal (1):
+      usb: musb: dsps: Fix the probe error path
+
+Nikolay Martynov (1):
+      xhci: Enable trust tx length quirk for Fresco FL11 USB controller
+
+Pavankumar Kondeti (1):
+      xhci: Fix command ring pointer corruption while aborting a command
+
+Tomaz Solc (1):
+      USB: serial: option: add prod. id for Quectel EG91
+
+Yu-Tung Chang (1):
+      USB: serial: option: add Quectel EC200S-CN module support
+
+ drivers/usb/host/xhci-dbgtty.c | 28 +++++++++++++---------------
+ drivers/usb/host/xhci-pci.c    |  6 +++++-
+ drivers/usb/host/xhci-ring.c   | 39 ++++++++++++++++++++++++++++++++++-----
+ drivers/usb/host/xhci.c        |  5 +++++
+ drivers/usb/host/xhci.h        |  1 +
+ drivers/usb/musb/musb_dsps.c   |  4 +++-
+ drivers/usb/serial/option.c    |  8 ++++++++
+ drivers/usb/serial/qcserial.c  |  1 +
+ 8 files changed, 70 insertions(+), 22 deletions(-)
