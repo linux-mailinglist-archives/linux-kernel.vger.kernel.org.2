@@ -2,104 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA10D430CB1
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 00:16:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63602430CBB
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 00:17:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344821AbhJQWSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 18:18:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56026 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344791AbhJQWSB (ORCPT
+        id S1344806AbhJQWT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 18:19:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37431 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1344803AbhJQWT1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 18:18:01 -0400
-Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42F79C061765
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 15:15:50 -0700 (PDT)
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 766C8891AF;
-        Mon, 18 Oct 2021 11:15:46 +1300 (NZDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1634508946;
-        bh=eFnsBx7nDy8zU155HehRFDHuGZyMTD45Zk4pg2rJj1U=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To;
-        b=P6qyE1yQEvf3YOo+4cUmVv54nQ7vekHOWn9rBYvw6ZcjIefNd9JEU3Ly9GDaX4AzL
-         frPSp7b7OJXZCbJBG54UN16WHO9ku8yyF1HVK74Ri6OP8iDZhGpTx9ozAQzYxdlnLL
-         nn1fsLK4jUDIvy9gjUrHUgL7F7HolbU3y3vd//hj+/FdgeomKjuRD62xaHQxdQ2obv
-         bAOOhaeHFLwEaCFapjnWF5wzZTHuyDYDcqhL6B71KDZ3ZXnarCBPrMYiXHeBiL+I8u
-         VKszHuaurDjC5EZOhAitncbAUTBuWcF76fYoEcQJa0+zsw8sUH8znKcTCjtAa40yWZ
-         582tXiCr98fUA==
-Received: from svr-chch-ex1.atlnz.lc (Not Verified[2001:df5:b000:bc8::77]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-        id <B616ca0920003>; Mon, 18 Oct 2021 11:15:46 +1300
-Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) by
- svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) with Microsoft SMTP Server
- (TLS) id 15.0.1497.24; Mon, 18 Oct 2021 11:15:46 +1300
-Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
- svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
- 15.00.1497.024; Mon, 18 Oct 2021 11:15:46 +1300
-From:   Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-To:     Gregory CLEMENT <gregory.clement@bootlin.com>,
-        "andrew@lunn.ch" <andrew@lunn.ch>,
-        "sebastian.hesselbarth@gmail.com" <sebastian.hesselbarth@gmail.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "kostap@marvell.com" <kostap@marvell.com>
-CC:     "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] arm/arm64: dts: Enable 2.5G Ethernet port on
- CN9130-CRB
-Thread-Topic: [PATCH 1/2] arm/arm64: dts: Enable 2.5G Ethernet port on
- CN9130-CRB
-Thread-Index: AQHXu8/xz6pvHnosxU2x4OJ57Y3pG6vQMjUAgAbFTIA=
-Date:   Sun, 17 Oct 2021 22:15:45 +0000
-Message-ID: <ec1d0227-5423-58be-4c73-edebf10dc05a@alliedtelesis.co.nz>
-References: <20211007230619.957016-1-chris.packham@alliedtelesis.co.nz>
- <20211007230619.957016-2-chris.packham@alliedtelesis.co.nz>
- <87czo9dlkd.fsf@BL-laptop>
-In-Reply-To: <87czo9dlkd.fsf@BL-laptop>
-Accept-Language: en-NZ, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.32.1.11]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <9A47793BFF89B946A00EA045BB1AA8A4@atlnz.lc>
-Content-Transfer-Encoding: base64
+        Sun, 17 Oct 2021 18:19:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634509036;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=VC0sWKuJ5MpDbY6DXl9zvz5o696+GJBNvO+SxKY2kO8=;
+        b=G8AeDIZnevTk+99Y+WSEeg/b0eYg1+NVYjZCXSFYjObwSxI1NUpIIZuSExwGgH7Yjyo8w+
+        /z7jgwteZmXKuuTbLaTnt1/7MbTRaeqj6FY9/bSMzkZpLpaN152/wl7pKyOyksDCU/N9/4
+        nWAwiv3kPfDMtHWNnkU+3Y+LPv37N4g=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-510-QdJ2C5jlOyiB7gdhQPqccA-1; Sun, 17 Oct 2021 18:17:15 -0400
+X-MC-Unique: QdJ2C5jlOyiB7gdhQPqccA-1
+Received: by mail-ed1-f70.google.com with SMTP id x5-20020a50f185000000b003db0f796903so12529272edl.18
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 15:17:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=VC0sWKuJ5MpDbY6DXl9zvz5o696+GJBNvO+SxKY2kO8=;
+        b=cCtUt3eV+O7rns1cjV+Af6olrTv4xppEnLAfRX8ipeKoJStPNaJ531J+5fcuR2S3If
+         CHCFGE5EApdDUz7hsAwwiRY50Y0or2k8Kp5z68e8f8hUMXjGwHkGoPAxj7xyFdXJEbVx
+         O4pn44wBC6d304KPGD7OlEgwgFETjb+QijlFXXdsQqk6KJK2oWsWmPPeJ09SZV2zIaRZ
+         H1EipVpGyKYI9egI3yySUC7DxYmCHPjnp5PDYSzq6Nm/vDeKxPJgnwHOp84NVF6SBx5I
+         697I5tMHskOrmaaScK7Q7pvK3Ld/woxq8sqAaKo8MUnhufpkHiG25JVP5M8LaeKLXk1P
+         joBg==
+X-Gm-Message-State: AOAM531Fh3+u96IG3oDDu7HR8PNo3t/vx/zWAx7GesNz7Xy9f+Pqv1qB
+        j+aQK+1dDlurt+18T+ICrGlzJKgnrWUIQ4aMUw6Lbw9qJOPV+Gc3ofLT/olx9/DNLnbtG/MRQgy
+        Fm1nJLGaPxux3QkazCP3iHEnp
+X-Received: by 2002:a17:906:38db:: with SMTP id r27mr24705890ejd.338.1634509034123;
+        Sun, 17 Oct 2021 15:17:14 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx51KnpBX8SOErBYIGNeXUSpnLaZGw8M8o8nNtAQZwgmzpfpG+8uY45Z6g2dYvFNl1kABYCEw==
+X-Received: by 2002:a17:906:38db:: with SMTP id r27mr24705846ejd.338.1634509033862;
+        Sun, 17 Oct 2021 15:17:13 -0700 (PDT)
+Received: from redhat.com ([2.55.147.75])
+        by smtp.gmail.com with ESMTPSA id kw5sm7937099ejc.110.2021.10.17.15.17.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 Oct 2021 15:17:12 -0700 (PDT)
+Date:   Sun, 17 Oct 2021 18:17:04 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     "Reshetova, Elena" <elena.reshetova@intel.com>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Lutomirski, Andy" <luto@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter H Anvin <hpa@zytor.com>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        X86 ML <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>
+Subject: Re: [PATCH v5 12/16] PCI: Add pci_iomap_host_shared(),
+ pci_iomap_host_shared_range()
+Message-ID: <20211017180950-mutt-send-email-mst@kernel.org>
+References: <20211009053103-mutt-send-email-mst@kernel.org>
+ <CAPcyv4hDhjRXYCX_aiOboLF0eaTo6VySbZDa5NQu2ed9Ty2Ekw@mail.gmail.com>
+ <0e6664ac-cbb2-96ff-0106-9301735c0836@linux.intel.com>
+ <DM8PR11MB57501C8F8F5C8B315726882EE7B69@DM8PR11MB5750.namprd11.prod.outlook.com>
+ <20211012171016-mutt-send-email-mst@kernel.org>
+ <DM8PR11MB5750A40FAA6AFF6A29CF70DAE7B89@DM8PR11MB5750.namprd11.prod.outlook.com>
+ <20211014025514-mutt-send-email-mst@kernel.org>
+ <DM8PR11MB57500B2D821E8AAF93EB66CEE7B89@DM8PR11MB5750.namprd11.prod.outlook.com>
+ <20211014052605-mutt-send-email-mst@kernel.org>
+ <DM8PR11MB57505AAA1E1209F7FCA69C11E7B89@DM8PR11MB5750.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=eIJtc0h1 c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=oKJsc7D3gJEA:10 a=IkcTkHD0fZMA:10 a=8gfv0ekSlNoA:10 a=uiirlcVfgVXqUeRm5esA:9 a=QEXdDO2ut3YA:10
-X-SEG-SpamProfiler-Score: 0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DM8PR11MB57505AAA1E1209F7FCA69C11E7B89@DM8PR11MB5750.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQpPbiAxNC8xMC8yMSAzOjUyIGFtLCBHcmVnb3J5IENMRU1FTlQgd3JvdGU6DQo+IEhlbGxvIENo
-cmlzLA0KPg0KPj4gRW5hYmxlIHRoZSAyLjVHIEV0aGVybmV0IHBvcnQgYnkgc2V0dGluZyB0aGUg
-c3RhdHVzIHRvICJva2F5IiBhbmQgdGhlDQo+PiBwaHktbW9kZSB0byAiMjUwMGJhc2UteCIgb24g
-dGhlIGNuOTEzMC1jcmIgYm9hcmRzLiBUZXN0ZWQgb24gYQ0KPj4gQ045MTMwLUNSQi1BLg0KPj4N
-Cj4+IFNpZ25lZC1vZmYtYnk6IENocmlzIFBhY2toYW0gPGNocmlzLnBhY2toYW1AYWxsaWVkdGVs
-ZXNpcy5jby5uej4NCj4gQXMgSSBhbSBub3Qgc3VyZSB0aGF0IG5leHQgd2VlayB0aGUgcHVsbCBy
-ZXF1ZXN0IHdpbGwgYmUgYWNjZXB0ZWQgd2hlbg0KPiB5b3Ugd2lsbCBzZW5kIHRoZSB2MiBmb3Ig
-dGhlIHNlY29uZCBwYXRjaCwgSSBhbHJlYWR5IGFwcGxpZWQgdGhlIG9uZSBvbg0KPiBtdmVidS9k
-dDY0DQpPSyB0aGFua3MuIFRoaXMgcGF0Y2ggaXMgaW5kZXBlbmRlbnQgb2YgdGhlIHN3aXRjaC9z
-ZnAgc28gdGhpcyBzaG91bGQgYmUgDQpmaW5lLg0KPiBUaGFua3MsDQo+DQo+IEdyZWdvcnkNCj4N
-Cj4NCj4+IC0tLQ0KPj4NCj4+IFRoZSBNYXJ2ZWxsIFNESyBhZGRzIDI1MDBiYXNlLXQgYW5kIHVz
-ZXMgaXQgaW4gdGhlIGVxdWl2YWxlbnQgZHRzaSBidXQNCj4+IGxvb2tpbmcgYXQgdGhlIGRvY3Vt
-ZW50YXRpb24gZm9yIGJvdGggdGhlIFNvQyBhbmQgdGhlIFBIWSBJIHRoaW5rDQo+PiAyNTAwYmFz
-ZS14IGlzIGNvcnJlY3QgZm9yIHRoZSBzeXN0ZW0gaW50ZXJmYWNlICh0aGUgbGluZSBzaWRlIGlz
-DQo+PiAyNTAwYmFzZS10KS4NCj4+DQo+PiAgIGFyY2gvYXJtNjQvYm9vdC9kdHMvbWFydmVsbC9j
-bjkxMzAtY3JiLmR0c2kgfCA0ICsrLS0NCj4+ICAgMSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9u
-cygrKSwgMiBkZWxldGlvbnMoLSkNCj4+DQo+PiBkaWZmIC0tZ2l0IGEvYXJjaC9hcm02NC9ib290
-L2R0cy9tYXJ2ZWxsL2NuOTEzMC1jcmIuZHRzaSBiL2FyY2gvYXJtNjQvYm9vdC9kdHMvbWFydmVs
-bC9jbjkxMzAtY3JiLmR0c2kNCj4+IGluZGV4IDUwNWFlNjkyODlmNi4uZTc5MThmMzI1NjQ2IDEw
-MDY0NA0KPj4gLS0tIGEvYXJjaC9hcm02NC9ib290L2R0cy9tYXJ2ZWxsL2NuOTEzMC1jcmIuZHRz
-aQ0KPj4gKysrIGIvYXJjaC9hcm02NC9ib290L2R0cy9tYXJ2ZWxsL2NuOTEzMC1jcmIuZHRzaQ0K
-Pj4gQEAgLTIxNCw4ICsyMTQsOCBAQCAmY3AwX2V0aDEgew0KPj4gICB9Ow0KPj4gICANCj4+ICAg
-JmNwMF9ldGgyIHsNCj4+IC0JLyogVGhpcyBwb3J0IHVzZXMgIjI1MDBiYXNlLXQiIHBoeS1tb2Rl
-ICovDQo+PiAtCXN0YXR1cyA9ICJkaXNhYmxlZCI7DQo+PiArCXN0YXR1cyA9ICJva2F5IjsNCj4+
-ICsJcGh5LW1vZGUgPSAiMjUwMGJhc2UteCI7DQo+PiAgIAlwaHkgPSA8Jm5iYXNldF9waHkwPjsN
-Cj4+ICAgCXBoeXMgPSA8JmNwMF9jb21waHk1IDI+Ow0KPj4gICB9Ow0KPj4gLS0gDQo+PiAyLjMz
-LjANCj4+
+On Thu, Oct 14, 2021 at 12:33:49PM +0000, Reshetova, Elena wrote:
+> > On Thu, Oct 14, 2021 at 07:27:42AM +0000, Reshetova, Elena wrote:
+> > > > On Thu, Oct 14, 2021 at 06:32:32AM +0000, Reshetova, Elena wrote:
+> > > > > > On Tue, Oct 12, 2021 at 06:36:16PM +0000, Reshetova, Elena wrote:
+> > > > > > > > The 5.15 tree has something like ~2.4k IO accesses (including MMIO and
+> > > > > > > > others) in init functions that also register drivers (thanks Elena for
+> > > > > > > > the number)
+> > > > > > >
+> > > > > > > To provide more numbers on this. What I can see so far from a smatch-
+> > based
+> > > > > > > analysis, we have 409 __init style functions (.probe & builtin/module_
+> > > > > > > _platform_driver_probe excluded) for 5.15 with allyesconfig.
+> > > > > >
+> > > > > > I don't think we care about allyesconfig at all though.
+> > > > > > Just don't do that.
+> > > > > > How about allmodconfig? This is closer to what distros actually do.
+> > > > >
+> > > > > It does not make any difference really for the content of the /drivers/*:
+> > > > > gives 408 __init style functions doing IO (.probe & builtin/module_
+> > > > > > > _platform_driver_probe excluded) for 5.15 with allmodconfig:
+> > > > >
+> > > > > ['doc200x_ident_chip',
+> > > > > 'doc_probe', 'doc2001_init', 'mtd_speedtest_init',
+> > > > > 'mtd_nandbiterrs_init', 'mtd_oobtest_init', 'mtd_pagetest_init',
+> > > > > 'tort_init', 'mtd_subpagetest_init', 'fixup_pmc551',
+> > > > > 'doc_set_driver_info', 'init_amd76xrom', 'init_l440gx',
+> > > > > 'init_sc520cdp', 'init_ichxrom', 'init_ck804xrom', 'init_esb2rom',
+> > > > > 'probe_acpi_namespace_devices', 'amd_iommu_init_pci', 'state_next',
+> > > > > 'arm_v7s_do_selftests', 'arm_lpae_run_tests', 'init_iommu_one',
+> > > >
+> > > > Um. ARM? Which architecture is this build for?
+> > >
+> > > The list of smatch IO findings is built for x86, but the smatch cross function
+> > > database covers all archs, so when queried for all potential function callers,
+> > > it would show non x86 arch call chains also.
+> > >
+> > > Here is the original x86 finding and call chain for the 'arm_v7s_do_selftests':
+> > >
+> > >   Detected low-level IO from arm_v7s_do_selftests in fun
+> > > __iommu_queue_command_sync
+> > >
+> > > drivers/iommu/amd/iommu.c:1025 __iommu_queue_command_sync() error:
+> > > {15002074744551330002}
+> > >     'check_host_input' read from the host using function 'readl' to a
+> > > member of the structure 'iommu->cmd_buf_head';
+> > >
+> > > __iommu_queue_command_sync()
+> > >   iommu_completion_wait()
+> > >     amd_iommu_domain_flush_complete()
+> > >       iommu_v1_map_page()
+> > >         arm_v7s_do_selftests()
+> > >
+> > > So, the results can be further filtered if you want a specified arch.
+> > 
+> > So what is it just for x86? Could you tell?
+> 
+> I can probably figure out how to do additional filtering here, but does
+> it really matter for the case that is being discussed here? Andi's point was
+> that there quite many existing places in the kernel when low-level IO
+> happens before the probe stage. So I brought these numbers here.
+> What do you plan to do with the pure x86 results? 
+
+If the list is short - just suggest securing that ;)
+
+
+> And here are the full results for allyesconfig, if anyone is interested (just got permission to create
+> the repository today):
+> https://github.com/intel/ccc-linux-guest-hardening/tree/master/audit/sample_output/5.15-rc1
+> We will be pushing to this repo all the scripts and fuzzing setups we use as part of
+> our Linux guest hardening effort for confidential cloud computing, but it is going to take
+> some time to get all the approvals collected.  
+> 
+> Best Regards,
+> Elena.
+
