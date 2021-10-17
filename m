@@ -2,115 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F5EC4309C8
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 16:32:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 007A84309D2
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 16:40:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237122AbhJQOe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 10:34:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54784 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229994AbhJQOez (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 10:34:55 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9B82A6101E;
-        Sun, 17 Oct 2021 14:32:44 +0000 (UTC)
-Date:   Sun, 17 Oct 2021 15:36:59 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Yang Yingliang <yangyingliang@huawei.com>
-Cc:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
-        <lars@metafoo.de>, <ardeleanalex@gmail.com>
-Subject: Re: [PATCH] iio: buffer: Fix memory leak in
- iio_buffers_alloc_sysfs_and_mask()
-Message-ID: <20211017153659.6db1a442@jic23-huawei>
-In-Reply-To: <20211013144120.1684413-1-yangyingliang@huawei.com>
-References: <20211013144120.1684413-1-yangyingliang@huawei.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S1343897AbhJQOmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 10:42:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40858 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237972AbhJQOmb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Oct 2021 10:42:31 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D98C8C061765
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 07:40:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=80/t/c+UlQL/GFdmduRihZ3yN36jPN478cR6XUY8+rc=; b=EQf/D1wHYBCM3t9+mrYTWvCfzX
+        rI3KoP/nNTFqiMfBT3ddBel9BWMSfC5E3yBXi1brZgOmnxOKvjeCVywhNP79wnQPA6DTIwrj1kQqp
+        IicM1zc1+igaX1EfXsA5lF6YNBzCtcZb4JvwPqkrjMiDoyGFn8X182ZXfVoTn4vx62lmWsurJM//o
+        4use1qlTTP8kK5fO+xnNNgYzs0bAoLN2a672XHjSzdF/aY+M0WU6LqbKmamlwGviQI+E5vLirNwmU
+        EzH0Lh//jwGcFWchb7lgqENAftHA+weR0vullrovJcuH4ZpPH9wzlC/Ed63weY8l8ravGMKswcYN7
+        RDSd1NKA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mc7Jv-00ALY5-4T; Sun, 17 Oct 2021 14:39:34 +0000
+Date:   Sun, 17 Oct 2021 15:39:27 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: Do we really need SLOB nowdays?
+Message-ID: <YWw1n6y/AGED14HD@casper.infradead.org>
+References: <20211017042852.GA3050@kvm.asia-northeast3-a.c.our-ratio-313919.internal>
+ <20211017133618.GA7989@kvm.asia-northeast3-a.c.our-ratio-313919.internal>
+ <20211017135708.GA8442@kvm.asia-northeast3-a.c.our-ratio-313919.internal>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211017135708.GA8442@kvm.asia-northeast3-a.c.our-ratio-313919.internal>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Oct 2021 22:41:20 +0800
-Yang Yingliang <yangyingliang@huawei.com> wrote:
-
-> When 'iio_dev_opaque->buffer_ioctl_handler' alloc fails in
-> iio_buffers_alloc_sysfs_and_mask(), the 'attrs' allocated in
-> iio_buffer_register_legacy_sysfs_groups() will be leaked:
+On Sun, Oct 17, 2021 at 01:57:08PM +0000, Hyeonggon Yoo wrote:
+> On Sun, Oct 17, 2021 at 01:36:18PM +0000, Hyeonggon Yoo wrote:
+> > On Sun, Oct 17, 2021 at 04:28:52AM +0000, Hyeonggon Yoo wrote:
+> > > I've been reading SLUB/SLOB code for a while. SLUB recently became
+> > > real time compatible by reducing its locking area.
+> > > 
+> > > for now, SLUB is the only slab allocator for PREEMPT_RT because
+> > > it works better than SLAB on RT and SLOB uses non-deterministic method,
+> > > sequential fit.
+> > > 
+> > > But memory usage of SLUB is too high for systems with low memory.
+> > > So In my local repository I made SLOB to use segregated free list
+> > > method, which is more more deterministic, to provide bounded latency.
+> > > 
+> > > This can be done by managing list of partial pages globally
+> > > for every power of two sizes (8, 16, 32, ..., PAGE_SIZE) per NUMA nodes.
+> > > minimal allocation size is size of pointers to keep pointer of next free object
+> > > like SLUB.
+> > > 
+> > > By making objects in same page to have same size, there's no
+> > > need to iterate free blocks in a page. (Also iterating pages isn't needed)
+> > > 
+> > > Some cleanups and more tests (especially with NUMA/RT configs) needed,
+> > > but want to hear your opinion about the idea. Did not test on RT yet.
+> > > 
+> > > Below is result of benchmarks and memory usage. (on !RT)
+> > > with 13% increase in memory usage, it's nine times faster and
+> > > bounded fragmentation, and importantly provides predictable execution time.
+> > > 
+> > 
+> > Hello linux-mm, I improved it and it uses lower memory
+> > and 9x~13x faster than original SLOB. it shows much less fragmentation
+> > after hackbench.
+> > 
+> > Rather than managing global freelist that has power of 2 sizes,
+> > I made a kmem_cache to manage its own freelist (for each NUMA nodes) and
+> > Added support for slab merging. So It quite looks like a lightweight SLUB now.
+> > 
+> > I'll send rfc patch after some testing and code cleaning.
+> > 
+> > I think it is more RT-friendly becuase it's uses more deterministic
+> > algorithm (But lock is still shared among cpus). Any opinions for RT?
 > 
-> unreferenced object 0xffff888108568d00 (size 128):
->   comm "88", pid 2014, jiffies 4294963294 (age 26.920s)
->   hex dump (first 32 bytes):
->     80 3e da 02 80 88 ff ff 00 3a da 02 80 88 ff ff  .>.......:......
->     00 35 da 02 80 88 ff ff 00 38 da 02 80 88 ff ff  .5.......8......
->   backtrace:
->     [<0000000095a9e51e>] __kmalloc+0x1a3/0x2f0
->     [<00000000faa3735e>] iio_buffers_alloc_sysfs_and_mask+0xfa3/0x1480 [industrialio]
->     [<00000000a46384dc>] __iio_device_register+0x52e/0x1b40 [industrialio]
->     [<00000000210af05e>] __devm_iio_device_register+0x22/0x80 [industrialio]
->     [<00000000730d7b41>] adjd_s311_probe+0x195/0x200 [adjd_s311]
->     [<00000000c0f70eb9>] i2c_device_probe+0xa07/0xbb0
->     [<00000000b721e9ec>] really_probe+0x285/0xc30
->     [<00000000e6690642>] __driver_probe_device+0x35f/0x4f0
->     [<000000003ee4152f>] driver_probe_device+0x4f/0x140
->     [<0000000055cfdd2f>] __device_attach_driver+0x24c/0x330
->     [<0000000098033282>] bus_for_each_drv+0x15d/0x1e0
->     [<00000000fa1876f5>] __device_attach+0x267/0x410
->     [<00000000838ca724>] bus_probe_device+0x1ec/0x2a0
->     [<00000000f4ce978e>] device_add+0xc3d/0x2020
->     [<000000000ee12e9b>] i2c_new_client_device+0x614/0xb00
->     [<00000000fc5d3221>] new_device_store+0x1f4/0x410
-> 
-> Call iio_buffer_unregister_legacy_sysfs_groups() in error path
-> to fix this.
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Fixes: d9a625744ed0 ("iio: core: merge buffer/ & scan_elements/ attributes")
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Hi
+> Hi there. after some thinking, I got a new question:
+> If a lightweight SLUB is better than SLOB,
+> Do we really need SLOB nowdays?
 
-Another good find, but I'd like to handle this one slightly differently.
-
-This is directly calling the unwind of something done deep in a function called
-by this one.  That's not a clear structure though I can see you copied it from
-iio_buffers_free_sysfs_and_mask() (which will also need modification).
-
-This cleanup needs to be in __iio_buffer_free_sysfs_and_mask() which will need to
-take an additional parameter (index) so that we know we are on index == 0 and hence
-do the legacy cleanup.
-
-Thanks,
-
-Jonathan
-
-
-> ---
->  drivers/iio/industrialio-buffer.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
-> index ae0912a14578..ba1c5c898e53 100644
-> --- a/drivers/iio/industrialio-buffer.c
-> +++ b/drivers/iio/industrialio-buffer.c
-> @@ -1630,7 +1630,7 @@ int iio_buffers_alloc_sysfs_and_mask(struct iio_dev *indio_dev)
->  	iio_dev_opaque->buffer_ioctl_handler = kzalloc(sz, GFP_KERNEL);
->  	if (!iio_dev_opaque->buffer_ioctl_handler) {
->  		ret = -ENOMEM;
-> -		goto error_unwind_sysfs_and_mask;
-> +		goto error_unregister_legacy_sysfs_groups;
->  	}
->  
->  	iio_dev_opaque->buffer_ioctl_handler->ioctl = iio_device_buffer_ioctl;
-> @@ -1639,6 +1639,8 @@ int iio_buffers_alloc_sysfs_and_mask(struct iio_dev *indio_dev)
->  
->  	return 0;
->  
-> +error_unregister_legacy_sysfs_groups:
-> +	iio_buffer_unregister_legacy_sysfs_groups(indio_dev);
->  error_unwind_sysfs_and_mask:
->  	for (; unwind_idx >= 0; unwind_idx--) {
->  		buffer = iio_dev_opaque->attached_buffers[unwind_idx];
-
+Better for what use case?  SLOB is for machines with 1-16MB of RAM.
