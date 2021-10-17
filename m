@@ -2,116 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9BAC430889
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 13:57:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7EC743088D
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 14:00:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245555AbhJQL7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 07:59:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33110 "EHLO
+        id S245519AbhJQMCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 08:02:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236245AbhJQL7m (ORCPT
+        with ESMTP id S236197AbhJQMCo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 07:59:42 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29881C061765
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 04:57:33 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id a196so6227781wme.0
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 04:57:33 -0700 (PDT)
+        Sun, 17 Oct 2021 08:02:44 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2F17C061765
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 05:00:34 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id y3so35830139wrl.1
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 05:00:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=message-id:date:mime-version:user-agent:subject:content-language:to
          :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=KTUXxm7XcmuhId9PdFaJGE2BUd7Idqxheq/X+bEr7U4=;
-        b=YEtOfCJKUCLQ+wLFNEaQGVr88IHegrLP6Mj1B9XjEoVOCi9eMZWInaQ5uQdN1irtxf
-         IQ32nbPmDHy+reY2nCrtev/BjDHQ7nbvto+jIPazHGOnDatQrlmFSAFqiTB7xX00WddT
-         eohkCT+pYXb/ZUxgO7of06DnIPqei8zGOe7LQaVzJ0qS7H7JUlpzdmcCEniQn07qDy/P
-         wRrDX2QKvWR1OmffcehOgvgBjN0V/0FO9jn3MF27XDwyOq09TaPn2CCxwp1wXbLl5sjp
-         55C8G2XjGmirHfnzHAi4C8o3PDDiBWCdTWH4CcAVMW3RiW7KAFdNmXpdk+XBbmGAn2Nk
-         hXUw==
+        bh=DCYEqb1k49K3imC4oVzyozxFv8GwGv/4wZN3QkeC/aQ=;
+        b=QUdiOZ3XvYh028+yHdid/bcKSiTvGrrv+Jm9rHxgaGiHEpAocg2fZvYvnqHGacBSkN
+         G441PhRV06MbBkIQvQn01qxWaWL0Gzxsty7Boz0MkFflbT1AHj0CtIAUb/hhAgJSJBHg
+         1Re8Jyv7IkuZNVl8zNsl0J7x4tgdiKXBYUR0Nz2j0SopECqXWXBH2jNlnyppFrFuUMB7
+         VQI0gvJSaLp3o9YwvTjjb/q0M86C2ZR1nuidDUisLmOF8vMpuGUCQ4QtE069o0OxNEJu
+         8buM0/RJZyEOrVa7dIAbP04bALnc6xRLDyUYTHmx7Y8FVgBS97+BFepWpsnam2fN7Ypr
+         noOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
          :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=KTUXxm7XcmuhId9PdFaJGE2BUd7Idqxheq/X+bEr7U4=;
-        b=fdOZgvT+K4D/D3FesrWft4I0y5ilzyqojEe4BKhtQwyzhM4/A8XENrgoTTGMZqTqgA
-         ZRnC1dSGkLQSmpxJTTC2edoZlDYpd9tsuB3jmRXQFi9XxNmM9Cfc+Y/H1K9tgr8PIW3l
-         i4ikt5RA6SKBwg+Hxu1RZomvBODMiif7HRAMoPDT9ziHw+EcAdC1wcvelu/glQcC8ufn
-         BF8HCiLUDr9tm65vybjnamtz8/TItQbXq4OGtPs1P6P0nEcYRFlEZd+JGw0Ali+CblUi
-         RdS3Q/tzmvAr1h0O6jI9WwdqRsvf/xk5mwZpayWlaeaJMl5pNBy9Mbp+n2k1v/upKwRB
-         1oPQ==
-X-Gm-Message-State: AOAM5305y6+RrjmZRPTPzmy75FT+UYclkgvOjfRwvm+3899TVQ4PqWo6
-        BnmkxDppY5BeBngsPBop4nw=
-X-Google-Smtp-Source: ABdhPJxRX9wwXaN1s71eQ2hYKwTnVO3d7AzM8rhtf/44vQJ6ejDN/nOOSwDV0d0Jr2Q473PEmC83Ng==
-X-Received: by 2002:a1c:21d7:: with SMTP id h206mr38350061wmh.23.1634471851865;
-        Sun, 17 Oct 2021 04:57:31 -0700 (PDT)
+        bh=DCYEqb1k49K3imC4oVzyozxFv8GwGv/4wZN3QkeC/aQ=;
+        b=Fj13ipKm30/wMObeSRB1xKnOv+60Ode9p4qiFFA+6e4B/t9wv+9qENiMHlBIHdmkSK
+         KHkZO6AZf8807v0963aB+LRdnsTDDBC54ZOGuH/tKdX0klgGyouhVz6/uOMKRtGGPvlh
+         meQOGH2jMwqE7P9sIsBb53KQno8UZv4b6trDMs5rJAnrX5HgDynu1Gzc7DDoXl8UDVm3
+         ZRNmUsPYgaFzBDand29fbfeQE4BovhMWdnC3nS/c4YVNeHw7bwhJWRY8wTIfJHgttAEu
+         aQKTYzrH7UBSXo3QEZP2fuegR2yU8RnCPD09fzNsyV0SUjAR2I7++7yjuG7J9xUAU2Xn
+         zuAA==
+X-Gm-Message-State: AOAM533HUgHzD6tL0K9J/YPR1SqClAk6G+f21wQjSpoxYC0seLLyVgp6
+        vhW4DPVbxa7Z9ckda3H3vNr6c1jztZg=
+X-Google-Smtp-Source: ABdhPJwBq7o9ILnHKu0aj4XpjCulBCrGLlcyOXP9feDonAPpRRg9N0T1eNJ/BYAIqvbJTkQRfNzeYg==
+X-Received: by 2002:adf:c00a:: with SMTP id z10mr27618558wre.315.1634472033580;
+        Sun, 17 Oct 2021 05:00:33 -0700 (PDT)
 Received: from ?IPV6:2a02:8108:96c0:3b88::d7f0? ([2a02:8108:96c0:3b88::d7f0])
-        by smtp.gmail.com with ESMTPSA id z8sm9783706wrq.16.2021.10.17.04.57.31
+        by smtp.gmail.com with ESMTPSA id k13sm15603173wmj.41.2021.10.17.05.00.32
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 17 Oct 2021 04:57:31 -0700 (PDT)
-Message-ID: <4a496b20-21bc-890b-54bc-a2358932b1ba@gmail.com>
-Date:   Sun, 17 Oct 2021 13:57:30 +0200
+        Sun, 17 Oct 2021 05:00:33 -0700 (PDT)
+Message-ID: <5318cdca-6200-c966-0f87-74e0e79d27ee@gmail.com>
+Date:   Sun, 17 Oct 2021 14:00:32 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.2.0
-Subject: Re: [PATCH 8/8] staging: r8188eu: CurrentWirelessMode is not used
+Subject: Re: [PATCH 0/2] staging: r8188eu: remove CONFIG_BT_COEXIST
 Content-Language: en-US
 To:     Martin Kaiser <martin@kaiser.cx>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
         Phillip Potter <phil@philpotter.co.uk>,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20211016113008.27549-1-martin@kaiser.cx>
- <20211016113008.27549-9-martin@kaiser.cx>
+References: <20211016172345.23114-1-martin@kaiser.cx>
 From:   Michael Straube <straube.linux@gmail.com>
-In-Reply-To: <20211016113008.27549-9-martin@kaiser.cx>
+In-Reply-To: <20211016172345.23114-1-martin@kaiser.cx>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/16/21 13:30, Martin Kaiser wrote:
-> CurrentWirelessMode in struct hal_data_8188e is not used. Remove the
-> component and the enum with its possible values.
+On 10/16/21 19:23, Martin Kaiser wrote:
+> Remove the remaining code for CONFIG_BT_COEXIST, which is not used for
+> this driver.
 > 
-> Signed-off-by: Martin Kaiser <martin@kaiser.cx>
-> ---
->   drivers/staging/r8188eu/include/Hal8188EPhyCfg.h | 8 --------
->   drivers/staging/r8188eu/include/rtl8188e_hal.h   | 1 -
+> This series should be applied on top of "staging: r8188eu: another round
+> of removals".
+> 
+> Martin Kaiser (2):
+>    staging: r8188eu: remove unused components in pwrctrl_priv
+>    staging: r8188eu: remove BT_COEXIST settings from Makefile
+> 
+>   drivers/staging/r8188eu/Makefile              | 5 -----
+>   drivers/staging/r8188eu/include/rtw_pwrctrl.h | 4 ----
 >   2 files changed, 9 deletions(-)
 > 
-> diff --git a/drivers/staging/r8188eu/include/Hal8188EPhyCfg.h b/drivers/staging/r8188eu/include/Hal8188EPhyCfg.h
-> index 58377edf724d..6f901ce607e8 100644
-> --- a/drivers/staging/r8188eu/include/Hal8188EPhyCfg.h
-> +++ b/drivers/staging/r8188eu/include/Hal8188EPhyCfg.h
-> @@ -48,14 +48,6 @@ enum rf_radio_path {
->   						 * total three groups */
->   #define CHANNEL_GROUP_MAX_88E		6
->   
-> -enum wireless_mode {
-> -	WIRELESS_MODE_UNKNOWN = 0x00,
-> -	WIRELESS_MODE_B			= BIT(0),
-> -	WIRELESS_MODE_G			= BIT(1),
-> -	WIRELESS_MODE_AUTO		= BIT(5),
-> -	WIRELESS_MODE_N_24G		= BIT(3),
-> -};
-> -
->   /* BB/RF related */
->   enum RF_TYPE_8190P {
->   	RF_TYPE_MIN,		/*  0 */
-> diff --git a/drivers/staging/r8188eu/include/rtl8188e_hal.h b/drivers/staging/r8188eu/include/rtl8188e_hal.h
-> index 5fdee1c6299c..ced7e12d9013 100644
-> --- a/drivers/staging/r8188eu/include/rtl8188e_hal.h
-> +++ b/drivers/staging/r8188eu/include/rtl8188e_hal.h
-> @@ -162,7 +162,6 @@ struct hal_data_8188e {
->   	u8	PGMaxGroup;
->   	/* current WIFI_PHY values */
->   	u32	ReceiveConfig;
-> -	enum wireless_mode CurrentWirelessMode;
->   	enum ht_channel_width CurrentChannelBW;
->   	u8	CurrentChannel;
->   	u8	nCur40MhzPrimeSC;/*  Control channel sub-carrier */
-> 
+
+For both patches.
 
 Acked-by: Michael Straube <straube.linux@gmail.com>
