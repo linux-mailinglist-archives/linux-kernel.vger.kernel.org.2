@@ -2,77 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D1704305E5
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 03:31:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78C244305EA
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 03:32:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244588AbhJQBeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 16 Oct 2021 21:34:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38804 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234417AbhJQBeD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 16 Oct 2021 21:34:03 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98270C061765
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 18:31:54 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id d21-20020a9d4f15000000b0054e677e0ac5so922986otl.11
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Oct 2021 18:31:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=Mf0Mwk4Nvj9HUEe3bQ6ZCswhorXqyTpELHryvN43LX0=;
-        b=ktf+x61/yH16k3GIVUn9Uco046qC1qV6GoQrHIzfWAt5dEvcyFOVtXj5zvIJHepK1u
-         Sg1WH8QkUmDWekxPMe/PsUq59SULVXtWX3eR5H0oM9F3SOGMRG0tLQi8L8GUt3MTWL+p
-         v67sCkR29toFeJxP+Xsq2HjrMpOz5ZQIWJ+0Q=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=Mf0Mwk4Nvj9HUEe3bQ6ZCswhorXqyTpELHryvN43LX0=;
-        b=oaGyYM8ihP61xNQy32uAcqOCpV2NmVUympxiC6IX0gDsy9k8mUa+ytX+jVHOZWx7Lo
-         pKfxrXhypMtZOhMqToXUk+lAWgDdr4jl1XTtB9SrkZjwO9brJtdt1h95jmbOX8NYvF2h
-         Wf7lq/ZGNFfO7MwbgoBEccSJVYJo8o4sglpwz+1sGs+i3er73I7fFZ9a8kPfQ1hm1uqH
-         yqwJ+GVQ1UMOV3263wjTssWXL/MYrCHLs/LKl0ImihKjk9INbiI3Gqij3tVoVX0JvDHQ
-         KaJsz8rWMxAQLsfYK6t5o1bWjlblybMlb+WJ6pcpBD3Z0r9hAcPWbXawvK9yiaqSvE4D
-         2JFA==
-X-Gm-Message-State: AOAM533JoWucRQmlr+7czh/g81t1U/EUl1eIIQjxQTyEl1ep7v2QntbM
-        Gj2xLEFIWZ3r0wzISGVzbDxfMeigWK6xcQtgbrd10A==
-X-Google-Smtp-Source: ABdhPJzzZYs3G7Cs5Kx0YRYBhZZYkqRuo62R0Tx74imA+M7M9wHiZ5oWBZcO2tUw6r5JwbttYUQ1DUTJaey7RPOEM34=
-X-Received: by 2002:a05:6830:1c2e:: with SMTP id f14mr14737706ote.159.1634434314051;
- Sat, 16 Oct 2021 18:31:54 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Sat, 16 Oct 2021 20:31:53 -0500
+        id S244790AbhJQBei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 16 Oct 2021 21:34:38 -0400
+Received: from mga18.intel.com ([134.134.136.126]:32969 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244775AbhJQBeg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 16 Oct 2021 21:34:36 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10139"; a="215015190"
+X-IronPort-AV: E=Sophos;i="5.85,379,1624345200"; 
+   d="scan'208";a="215015190"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2021 18:32:27 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,379,1624345200"; 
+   d="scan'208";a="660922237"
+Received: from lkp-server02.sh.intel.com (HELO 08b2c502c3de) ([10.239.97.151])
+  by orsmga005.jf.intel.com with ESMTP; 16 Oct 2021 18:32:25 -0700
+Received: from kbuild by 08b2c502c3de with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mbv2H-0009qB-9U; Sun, 17 Oct 2021 01:32:25 +0000
+Date:   Sun, 17 Oct 2021 09:32:08 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/urgent] BUILD SUCCESS
+ b2381acd3fd9bacd2c63f53b2c610c89959b31cc
+Message-ID: <616b7d18.7DQuSRMAxq7HXjW+%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <20211016221843.2167329-8-bjorn.andersson@linaro.org>
-References: <20211016221843.2167329-1-bjorn.andersson@linaro.org> <20211016221843.2167329-8-bjorn.andersson@linaro.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Sat, 16 Oct 2021 20:31:53 -0500
-Message-ID: <CAE-0n515j1xqZqQUky2eom_Jq9E7rHOHPastZ7Xp2zGbv0ypCQ@mail.gmail.com>
-Subject: Re: [PATCH v5 7/7] drm/msm/dp: Add sc8180x DP controllers
-To:     Abhinav Kumar <abhinavk@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Kalyan Thota <kalyan_t@codeaurora.org>,
-        Kuogee Hsieh <khsieh@codeaurora.org>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>
-Cc:     Rob Herring <robh+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Bjorn Andersson (2021-10-16 15:18:43)
-> The sc8180x has 2 DP and 1 eDP controllers, add support for these to the
-> DP driver.
->
-> Link: https://lore.kernel.org/linux-arm-msm/20210725042436.3967173-7-bjorn.andersson@linaro.org/
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/urgent
+branch HEAD: b2381acd3fd9bacd2c63f53b2c610c89959b31cc  x86/fpu: Mask out the invalid MXCSR bits properly
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+elapsed time: 727m
+
+configs tested: 157
+configs skipped: 72
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                 randconfig-c001-20211016
+sh                                  defconfig
+riscv                            alldefconfig
+mips                        maltaup_defconfig
+arm                           tegra_defconfig
+arm                          collie_defconfig
+sparc                               defconfig
+arc                          axs101_defconfig
+arm                        keystone_defconfig
+xtensa                          iss_defconfig
+powerpc                 canyonlands_defconfig
+sh                           se7721_defconfig
+sh                          landisk_defconfig
+mips                     loongson1b_defconfig
+mips                           xway_defconfig
+ia64                        generic_defconfig
+arm                           h5000_defconfig
+arc                         haps_hs_defconfig
+arm                  colibri_pxa270_defconfig
+sh                        edosk7705_defconfig
+sh                         ap325rxa_defconfig
+sh                           se7751_defconfig
+m68k                        m5272c3_defconfig
+arm                           viper_defconfig
+sparc64                             defconfig
+riscv                             allnoconfig
+mips                            e55_defconfig
+powerpc                     kmeter1_defconfig
+arm                            zeus_defconfig
+arm                         s5pv210_defconfig
+mips                             allmodconfig
+m68k                                defconfig
+arm                         cm_x300_defconfig
+powerpc                    gamecube_defconfig
+powerpc                 mpc837x_mds_defconfig
+mips                   sb1250_swarm_defconfig
+powerpc                 xes_mpc85xx_defconfig
+powerpc                     sequoia_defconfig
+riscv                               defconfig
+microblaze                      mmu_defconfig
+powerpc                   bluestone_defconfig
+xtensa                    xip_kc705_defconfig
+sh                          kfr2r09_defconfig
+mips                     cu1000-neo_defconfig
+sh                 kfr2r09-romimage_defconfig
+powerpc                     asp8347_defconfig
+sparc                       sparc64_defconfig
+mips                     decstation_defconfig
+m68k                       bvme6000_defconfig
+mips                           ip32_defconfig
+mips                            gpr_defconfig
+h8300                            allyesconfig
+mips                           gcw0_defconfig
+powerpc                  iss476-smp_defconfig
+powerpc                  mpc866_ads_defconfig
+arc                 nsimosci_hs_smp_defconfig
+sh                          sdk7786_defconfig
+ia64                          tiger_defconfig
+powerpc                 mpc837x_rdb_defconfig
+x86_64               randconfig-c001-20211016
+arm                  randconfig-c002-20211017
+i386                 randconfig-c001-20211017
+x86_64               randconfig-c001-20211017
+arm                  randconfig-c002-20211016
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+nios2                               defconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                                defconfig
+sparc                            allyesconfig
+i386                                defconfig
+i386                             allyesconfig
+mips                             allyesconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a006-20211016
+x86_64               randconfig-a004-20211016
+x86_64               randconfig-a001-20211016
+x86_64               randconfig-a005-20211016
+x86_64               randconfig-a002-20211016
+x86_64               randconfig-a003-20211016
+i386                 randconfig-a003-20211016
+i386                 randconfig-a001-20211016
+i386                 randconfig-a005-20211016
+i386                 randconfig-a004-20211016
+i386                 randconfig-a002-20211016
+i386                 randconfig-a006-20211016
+x86_64               randconfig-a012-20211017
+x86_64               randconfig-a015-20211017
+x86_64               randconfig-a016-20211017
+x86_64               randconfig-a014-20211017
+x86_64               randconfig-a011-20211017
+x86_64               randconfig-a013-20211017
+i386                 randconfig-a016-20211017
+i386                 randconfig-a014-20211017
+i386                 randconfig-a011-20211017
+i386                 randconfig-a015-20211017
+i386                 randconfig-a012-20211017
+i386                 randconfig-a013-20211017
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+x86_64                           allyesconfig
+
+clang tested configs:
+mips                 randconfig-c004-20211017
+arm                  randconfig-c002-20211017
+i386                 randconfig-c001-20211017
+s390                 randconfig-c005-20211017
+x86_64               randconfig-c007-20211017
+powerpc              randconfig-c003-20211017
+riscv                randconfig-c006-20211017
+i386                 randconfig-a003-20211017
+i386                 randconfig-a001-20211017
+i386                 randconfig-a005-20211017
+i386                 randconfig-a004-20211017
+i386                 randconfig-a002-20211017
+i386                 randconfig-a006-20211017
+x86_64               randconfig-a012-20211016
+x86_64               randconfig-a015-20211016
+x86_64               randconfig-a016-20211016
+x86_64               randconfig-a014-20211016
+x86_64               randconfig-a011-20211016
+x86_64               randconfig-a013-20211016
+i386                 randconfig-a016-20211016
+i386                 randconfig-a014-20211016
+i386                 randconfig-a011-20211016
+i386                 randconfig-a015-20211016
+i386                 randconfig-a012-20211016
+i386                 randconfig-a013-20211016
+x86_64               randconfig-a006-20211017
+x86_64               randconfig-a004-20211017
+x86_64               randconfig-a001-20211017
+x86_64               randconfig-a005-20211017
+x86_64               randconfig-a002-20211017
+x86_64               randconfig-a003-20211017
+hexagon              randconfig-r041-20211016
+s390                 randconfig-r044-20211016
+riscv                randconfig-r042-20211016
+hexagon              randconfig-r045-20211016
+hexagon              randconfig-r041-20211017
+hexagon              randconfig-r045-20211017
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
