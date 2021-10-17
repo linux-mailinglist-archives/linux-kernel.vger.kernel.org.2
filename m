@@ -2,93 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68F06430947
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 15:09:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B21DD43094B
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 15:19:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343682AbhJQNLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 09:11:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49182 "EHLO
+        id S242398AbhJQNVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 09:21:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343671AbhJQNLb (ORCPT
+        with ESMTP id S236593AbhJQNVn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 09:11:31 -0400
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B7EEC061768
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 06:09:22 -0700 (PDT)
-Received: by mail-il1-x132.google.com with SMTP id y17so12134686ilb.9
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 06:09:22 -0700 (PDT)
+        Sun, 17 Oct 2021 09:21:43 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1BF8C061765
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 06:19:32 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id ec8so59474753edb.6
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 06:19:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=E9Jyn0+UnK3sc3mmvA7he3hRp8rjj2TT3D6AT72yd4M=;
-        b=ASbJHIes5zFbIZLmT5kVad1Gphz/29iN5mRZeqZ3tlpfB2PUdfQDCYxs075KhC+NRv
-         +usb2/LkAXg0fIeSB6mt8w9pH+E6c/OzEkv6tDGKbfXIFAQ8t5oyEn+o8Dm+lUJUNx5+
-         Ul8uzxE52kgKEL4dvh9ifK8Bs7hDbeWzFDtGBQT9pQvuXKgTknQxbbEBf0BO1vBzF4qy
-         L/DyRrQaJNeIc5GfM9JkFYQXD4eGf7eTOnQDguECYJz6ORTo/TEr2I9lvVJ6/rauXUJO
-         VfwfWz2j/mdzCKbXt9/EaZfgdFsXIAT6UuwcRy3z9fFP2sHhYSEzdGkFLIglkDES37rW
-         UmDA==
+        bh=UCv4he74RcqUiXAktKxPBYoR/T/c29Xy6EIv1fDVNEY=;
+        b=cLiL8P9M2NtOoXkfyN5vtDTELjJeKPhD5lkKzsIrtRbVtu5ldKMuBeJiT06bQhT3m8
+         K1VKU5Bm5lXW0grWHzcHaLC1Ok5X5huRQhFhm1RZALMGnjBS55iv3wBXe8Lt/Jcu/nW4
+         BQb03zCJVWp9cD9otRgwGk1K6Jw5fv1WMsLqQtQHEVCVdEyKK9ac2WO0bV2En4IgOSzT
+         scYp+GYM98Lz1yB8kEFAAINCw/w9pJ8ZZsTEp8TV1Mg7k45/qYlkfmggejRutCGbC0mj
+         lOrTwNE3zYQVGS3d2egq9o+pDLnkDf0eP6tiZyXP1wZ/kGVADXftC8yjD6pnpC2l6M07
+         oSCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=E9Jyn0+UnK3sc3mmvA7he3hRp8rjj2TT3D6AT72yd4M=;
-        b=8GlMbyOUnYgXgR4Fw3sZleWXGcJAffou0w0brWt0t7pjaNq58DDwqMXXip0Ec87U+o
-         /ErZUwx+mHXfsKAvdroBtP9fjmo5U3tIvnFnE707yjbPA/s1shR7KxwpmyDnF811zQEl
-         oyezqobhVAZh1klxnICVv3YfMQyg85lwvcwVFYtX+7Lu0ZDGvrOJPFnepdr+X083VZIZ
-         wfftNoSW4MJAjXd1EX1ivXF6tIafIEcxqzSiJk3UCfCjMFxJPTiqBwSKmXw28VI1ZsVM
-         S1V3iiahipN8CvX41bgjNC7l6E8FfSd7WUFtnkOLlqwWnDum/06LSMzpTRMVMYt42q6T
-         bEiQ==
-X-Gm-Message-State: AOAM533zf5jIgmlflvdmV2/DOeY+Jj2QnHrH14XYg+49Mkm93PzIM3Pe
-        OpBnKQsy4ZazJG2wQ9LCN7xDsw==
-X-Google-Smtp-Source: ABdhPJyBQfKmB09Bzd5teZfNePKIxWO5jVUrQL469Ya6l1IO9E9yjwNbDWiexPCRyhhuJXu+WSpsNw==
-X-Received: by 2002:a92:c244:: with SMTP id k4mr11177912ilo.3.1634476161731;
-        Sun, 17 Oct 2021 06:09:21 -0700 (PDT)
-Received: from localhost.localdomain ([66.219.217.159])
-        by smtp.gmail.com with ESMTPSA id h5sm2543282ili.12.2021.10.17.06.09.21
+        bh=UCv4he74RcqUiXAktKxPBYoR/T/c29Xy6EIv1fDVNEY=;
+        b=Fm3mZXVZBNdtkLlINpdzO2ZqPTqRGgKY/9TROrFwNZXrMwhwEeu+D6wVlY+YcRNFFm
+         AsZ0jIF+wmXY2anCU1HWHYnZ2x9fYtg92q9iYNK12mx7QdHdnVpKeNoVtYyI4AbMgrlS
+         kiB1xOFhjA7a8Pifj1Av80KJlo5I7Y2ABtWjfo0/8AJ0hb6EM8nCNmg42PIb4/a+5age
+         QM/77SDeL36E2S9bVsCJoSVpBk6l9qz2Z23KmvjXBknPjz6aQ9L0bj/tfRA24c9kDj1l
+         Rbv9z7gq8+byWWptT1untcXEaBa1ECp9DiTWfP76/k5BO/EO2o19yofZfmwpBrWgKVKF
+         TRNQ==
+X-Gm-Message-State: AOAM530QzoZCEhTDBxUhZypZ2IgbVepcX86HSKSbjT7GGcoJofUe1fyL
+        p5KtWAP0HBLXG67Ed1XUlEZIg9lNETg=
+X-Google-Smtp-Source: ABdhPJy5qthGppJ4hCo++d8XQelWRLcrzDA/jFkdxZVTn7incemPzZoHuQscYH2+7ythgABOvu+Ysg==
+X-Received: by 2002:a05:6402:27d2:: with SMTP id c18mr35950623ede.186.1634476771376;
+        Sun, 17 Oct 2021 06:19:31 -0700 (PDT)
+Received: from localhost.localdomain (host-79-47-104-180.retail.telecomitalia.it. [79.47.104.180])
+        by smtp.gmail.com with ESMTPSA id cr9sm8127241edb.17.2021.10.17.06.19.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 Oct 2021 06:09:21 -0700 (PDT)
-From:   Jens Axboe <axboe@kernel.dk>
-To:     Yu Kuai <yukuai3@huawei.com>, ming.lei@redhat.com,
-        josef@toxicpanda.com
-Cc:     Jens Axboe <axboe@kernel.dk>, nbd@other.debian.org,
-        yi.zhang@huawei.com, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org
-Subject: Re: [PATCH v9] nbd: fix uaf in nbd_handle_reply()
-Date:   Sun, 17 Oct 2021 07:09:16 -0600
-Message-Id: <163447615283.94076.11299323774180750344.b4-ty@kernel.dk>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20210916141810.2325276-1-yukuai3@huawei.com>
-References: <20210916093350.1410403-8-yukuai3@huawei.com> <20210916141810.2325276-1-yukuai3@huawei.com>
+        Sun, 17 Oct 2021 06:19:30 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Phillip Potter <phil@philpotter.co.uk>,
+        Martin Kaiser <martin@kaiser.cx>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        Michael Straube <straube.linux@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] staging: r8188eu: don't accept SIGTERM for cmd thread
+Date:   Sun, 17 Oct 2021 15:19:28 +0200
+Message-ID: <2705995.aOCT9ph2Oq@localhost.localdomain>
+In-Reply-To: <YWv67ozbJGxMa69t@equinox>
+References: <20211016181343.3686-1-martin@kaiser.cx> <2409617.cBYgoVRs56@localhost.localdomain> <YWv67ozbJGxMa69t@equinox>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 16 Sep 2021 22:18:10 +0800, Yu Kuai wrote:
-> There is a problem that nbd_handle_reply() might access freed request:
+On Sunday, October 17, 2021 12:29:02 PM CEST Phillip Potter wrote:
+> On Sat, Oct 16, 2021 at 08:53:15PM +0200, Fabio M. De Francesco wrote:
+> > On Saturday, October 16, 2021 8:13:43 PM CEST Martin Kaiser wrote:
+> > > At the moment, our command thread can be killed by user space.
+> > > 
+> > > [root@host ]# kill `pidof RTW_CMD_THREAD`
+> > > 
+> > > The driver will then stop working until the module is unloaded
+> > > and reloaded.
+> > > 
+> > > Don't process SIGTERM in the command thread. Other drivers that have a
+> > > command thread don't process SIGTERM either.
+> > 
+> > Hi Martin,
+> > 
+> > This is _really_ interesting :)
+> > 
+> > May be that you have had time to read my last email in reply to a message 
+of 
+> > Phillip P. Soon after writing of the arguments in favor of using 
+> > wait_for_completion_killable() (in patch 2/3 of the series I sent today), 
+I 
+> > read your patch.
+> > 
+> > If you are right (and I think you are) I'll have to send a v2 that 
+replaces 
+> > the killable wait with an uninterruptible one.
+> > 
+> > Unfortunately I have not the needed experience to decide whether or not 
+to 
+> > ack your patch, even if I'm strongly tempted to do it.
+> > 
+> > Let's wait for more experienced people.
+> > 
+> > Thanks,
+> > 
+> > Fabio 
+> > 
 > 
-> 1) At first, a normal io is submitted and completed with scheduler:
+> So I myself am a little confused on this one :-)
 > 
-> internel_tag = blk_mq_get_tag -> get tag from sched_tags
->  blk_mq_rq_ctx_init
->   sched_tags->rq[internel_tag] = sched_tag->static_rq[internel_tag]
-> ...
-> blk_mq_get_driver_tag
->  __blk_mq_get_driver_tag -> get tag from tags
->  tags->rq[tag] = sched_tag->static_rq[internel_tag]
+> Based on my understanding, so correct me if I'm wrong, a process (kthread 
+or
+> otherwise) can still be killed if marked TASK_KILLABLE, even if ignoring
+> SIGTERM. Indeed, from a userspace perspective, SIGKILL is unblockable
+> anyway - although of course kernel code can choose how to respond to it.
 > 
-> [...]
 
-Applied, thanks!
+@Phil, Correct: the kernel can choose how to respond to signals.
+@Martin, Please correct me if I'm missing something in what follows...
 
-[1/1] nbd: fix uaf in nbd_handle_reply()
-      commit: 52c90e0184f67eecb00b53b79bfdf75e0274f8fd
+> So in other words, the kthread could still be killed while waiting
+> in the wait_for_completion_killable() call, even if we are ignoring
+> SIGTERM. 
 
-Best regards,
--- 
-Jens Axboe
+No, this confusion is my fault.
+
+I read Martin's patch, but in my mind I exchanged "SIGTERM" with "SIGKILL".
+
+At this moment, without Martin's patch, only SIGTERM is delivered to the 
+kthread. This is due to the line "allow_signal(SIGTERM);".
+
+If we try to kill the kthread with "kill -KILL <PID>", nothing happens. 
+Instead if we use "kill -TERM <PID>", the kthread terminates.
+
+For what is related to my code, there is no functional changes between using 
+the killable or the uninterruptible version (I guess). But for sake of 
+consistency, since SIGKILL is not allowed, I should use either 
+wait_for_completion_interruptible() (without Martin's patch) or 
+wait_for_completion() (with Martin's patch).
+
+However, I re-iterate that, since SIGKILL is not allowed in the current code, 
+"kill -KILL <PID>" has no effect at all and the wait is not interruptible 
+with my killable version of the wait.
+
+> From that perspective I guess, it is therefore not 'incorrect' as
+> such - if indeed we wanted that behaviour.
+> 
+> That said, killing it would still cause the behaviour Martin mentions -
+> I guess we don't want it to be either killable or interruptible based on
+> that logic?
+
+Yes, I agree. I should replace the killable version with the uninterruptible 
+one.
+
+Thanks,
+
+Fabio
+
+> 
+> Regards,
+> Phil
+> 
+
+
 
 
