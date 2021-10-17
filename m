@@ -2,97 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B22254309D8
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 16:47:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80B864309DE
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 16:49:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343910AbhJQOtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 10:49:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42326 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238007AbhJQOtS (ORCPT
+        id S1343911AbhJQOvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 10:51:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35235 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237785AbhJQOvQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 10:49:18 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86203C06161C
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 07:47:08 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id g10so60142504edj.1
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 07:47:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=dFqNJFVsy2D7h6GKfy8JazvFD2oIbLBEOiY/RubRa68=;
-        b=j20NxjysulzWzOseqaVPO2JSbqzWx4oePP+UYSEMUaa2SxXOozUaRBcYAE9onpI52u
-         sxMEV+hTUh8BxjZUJvOZHHzAP2HseLy92zraM6IN7IiXI70g7Aqawbv3Wi5ksrigKydR
-         mDZGoJ/8rS7oaEBpt2Q9QcBOBv9tlek+inWcg6Iu3b6Uo5QaLtwiR5iDgtkYgL7l41jc
-         pS+zMmjTY8LhPs2bscmAMMq5+2aEnbU9QmTh0rytU5+QQNAzmY9N5VEN5h65vbT9fij7
-         Hlj6TJxXylA4XcPU2R2UpHOWLqoxt4Dv1iWyTZl3CcQHZAZV9rDqtXWHHpWtgqIRp0aI
-         uA3A==
+        Sun, 17 Oct 2021 10:51:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634482146;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=Ip6ZgePH8xwpK2sHmkpaBxfB7ZKPtwdcnXkOJDJISgI=;
+        b=YFWxJ3HRMfFiZkEBYmkUiDf7hTAIiD7VzyXTE8szJXDPl80boNFLdDBmUv80YNO+k43qFA
+        TvacWhTNv0A97FRAqSqecJJ05UM7+CCryQdY8GIJe3fMPB5woOXgUm40HafkqTwDBfn3go
+        x7yJTHzKQTVRvjgEbJDQlykpZWllXII=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-480-RUbkX6I1NJGbG-28IJSrnA-1; Sun, 17 Oct 2021 10:49:05 -0400
+X-MC-Unique: RUbkX6I1NJGbG-28IJSrnA-1
+Received: by mail-wm1-f70.google.com with SMTP id s22-20020a1ca916000000b0030dcdcd37c5so2311271wme.8
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 07:49:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=dFqNJFVsy2D7h6GKfy8JazvFD2oIbLBEOiY/RubRa68=;
-        b=Bmo6Z3l2C9KnqcOSaN7pKX47J5Ri7bxrXLqQ8xq8R7rlyxmXoutxghN+NCaCH0BF7p
-         QdlDkb29OIirIqNspxik2MIx6d6Gbn7smPW7PLD22v3dgIeoaUHd0XPFHfZDPzKKBdcS
-         yhsOxrEBliaOJfp9N7FdQ9KCebyvbG1CigtneO+nfhSMsNHpWjMID/q2CJnOIqAD7etk
-         4ClQndNLTB4CJvbk9BrlADkP+OTQf78Y/k1A/Yf0pUd7kgYEk4aTtYTGfJ6dPIGolWk6
-         wDTlEoRMjk7VbOSG9iZXc+ZoBuN4MEPpN7HjGsPcrqb0tfhTxK7R6OYZAlnVM2AT6Sh6
-         r2Ew==
-X-Gm-Message-State: AOAM533e8WyCiM44qvIUyYXnB7W950pSxOUEL+/+Y2RJixnzidfYrw2+
-        d5QPlrZ0UKcdGRWX9nzPUks=
-X-Google-Smtp-Source: ABdhPJzDPWYGnvUlTp5HotGSD2kgRMRr0wml8eHhl9LFxn9XXqtF/LVwSj/ORObo2dokPeGzjG90dA==
-X-Received: by 2002:a17:906:4a09:: with SMTP id w9mr22411227eju.419.1634482027145;
-        Sun, 17 Oct 2021 07:47:07 -0700 (PDT)
-Received: from localhost.localdomain (host-79-47-104-180.retail.telecomitalia.it. [79.47.104.180])
-        by smtp.gmail.com with ESMTPSA id gt35sm839112ejc.105.2021.10.17.07.47.05
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=Ip6ZgePH8xwpK2sHmkpaBxfB7ZKPtwdcnXkOJDJISgI=;
+        b=kmy9z+0Xm+F2Q62vUU6U/aUMaFMnvtnXUuCZWP6Ws9ZGxVfi4ErPPjMg911HyMDBhJ
+         vJdqjES76vuyW8ADohqcISUdE9Uw9Z41CqUzEeQ6U7oarvbzjRTFvWqkp2uol21PEbaJ
+         5Smex3243pkJHahzaI9X9XrV3b5etw75qIynplg0r9D946hnuvUohyadtdgnXKEU5JzG
+         QQvtugiEBbuSbc+6FtGrxBpVzggv8s+IR9jfDHvoedQFFiHtW1kVp9tcmwe0/9eJl83z
+         eI6Y5mVzYGdRV+mEbPL0VNOHb/eScSV8Zoyj8fKPJbPOtFcavAhDMUVLLdZz6Qxziv6q
+         ND0Q==
+X-Gm-Message-State: AOAM532jg3UMVgOf0aANd8QON0r9vZaSFIrS1+6IQBXlp6yEvc84OxBX
+        vHIivrZ11FGwRFt0NZzeUsK4uHLZQ3jI39TtwOeWjoPII3DWSk+vUAqua4PklPZGLvwJ5KFmUs0
+        SaaFmKOOjhVqp6uh3AWM2IKdO
+X-Received: by 2002:a05:6000:1683:: with SMTP id y3mr15124348wrd.314.1634482144581;
+        Sun, 17 Oct 2021 07:49:04 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyFBg10YCOIJdS2cG0k9v/rSms6MDVN0cXyAC9SocqmtQ9OZq/KfKELZOAfWYN7H7AEZxW3lg==
+X-Received: by 2002:a05:6000:1683:: with SMTP id y3mr15124332wrd.314.1634482144347;
+        Sun, 17 Oct 2021 07:49:04 -0700 (PDT)
+Received: from redhat.com ([2.55.147.75])
+        by smtp.gmail.com with ESMTPSA id a2sm11630293wrq.9.2021.10.17.07.49.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 Oct 2021 07:47:06 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Martin Kaiser <martin@kaiser.cx>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Michael Straube <straube.linux@gmail.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Martin Kaiser <martin@kaiser.cx>
-Subject: Re: [PATCH 3/3] staging: r8188eu: don't accept SIGTERM for cmd thread
-Date:   Sun, 17 Oct 2021 16:47:04 +0200
-Message-ID: <1638491.UCx7rxsUkF@localhost.localdomain>
-In-Reply-To: <20211016181343.3686-4-martin@kaiser.cx>
-References: <20211016181343.3686-1-martin@kaiser.cx> <20211016181343.3686-4-martin@kaiser.cx>
+        Sun, 17 Oct 2021 07:49:03 -0700 (PDT)
+Date:   Sun, 17 Oct 2021 10:49:00 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        corbet@lwn.net, jasowang@redhat.com, linux-doc@vger.kernel.org,
+        lulu@redhat.com, markver@us.ibm.com, mst@redhat.com,
+        pasic@linux.ibm.com, rdunlap@infradead.org, stable@vger.kernel.org,
+        wuzongyong@linux.alibaba.com, xieyongji@bytedance.com
+Subject: [GIT PULL] virtio,vdpa: fixes
+Message-ID: <20211017104900-mutt-send-email-mst@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mutt-Fcc: =sent
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Saturday, October 16, 2021 8:13:43 PM CEST Martin Kaiser wrote:
-> At the moment, our command thread can be killed by user space.
-> 
-> [root@host ]# kill `pidof RTW_CMD_THREAD`
-> 
-> The driver will then stop working until the module is unloaded
-> and reloaded.
-> 
-> Don't process SIGTERM in the command thread. Other drivers that have a
-> command thread don't process SIGTERM either.
-> 
-> Signed-off-by: Martin Kaiser <martin@kaiser.cx>
-> ---
->  drivers/staging/r8188eu/core/rtw_cmd.c          | 2 --
->  drivers/staging/r8188eu/include/osdep_service.h | 5 -----
->  2 files changed, 7 deletions(-)
+The following changes since commit be9c6bad9b46451ba5bb8d366c51e2475f374981:
 
-Dear Martin,
+  vdpa: potential uninitialized return in vhost_vdpa_va_map() (2021-09-14 18:10:43 -0400)
 
-After thinking a little more about this topic, now I'm ready for...
+are available in the Git repository at:
 
-Acked-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+  https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git tags/for_linus
 
-Regards,
+for you to fetch changes up to bcef9356fc2e1302daf373c83c826aa27954d128:
 
-Fabio
+  vhost-vdpa: Fix the wrong input in config_cb (2021-10-13 08:42:07 -0400)
 
+----------------------------------------------------------------
+virtio,vdpa: fixes
+
+Fixes up some issues in rc5.
+
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+
+----------------------------------------------------------------
+Cindy Lu (1):
+      vhost-vdpa: Fix the wrong input in config_cb
+
+Halil Pasic (1):
+      virtio: write back F_VERSION_1 before validate
+
+Michael S. Tsirkin (1):
+      Revert "virtio-blk: Add validation for block size in config space"
+
+Randy Dunlap (1):
+      VDUSE: fix documentation underline warning
+
+Wu Zongyong (1):
+      vhost_vdpa: unset vq irq before freeing irq
+
+ Documentation/userspace-api/vduse.rst |  2 +-
+ drivers/block/virtio_blk.c            | 37 ++++++-----------------------------
+ drivers/vhost/vdpa.c                  | 10 +++++-----
+ drivers/virtio/virtio.c               | 11 +++++++++++
+ 4 files changed, 23 insertions(+), 37 deletions(-)
 
