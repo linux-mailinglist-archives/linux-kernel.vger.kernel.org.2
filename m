@@ -2,171 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B207F430894
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 14:11:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8E50430895
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 14:15:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245613AbhJQMNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 08:13:53 -0400
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:59631 "EHLO
-        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242065AbhJQMNv (ORCPT
+        id S245619AbhJQMRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 08:17:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37050 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242065AbhJQMRq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 08:13:51 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id 13C8E5C00BE;
-        Sun, 17 Oct 2021 08:11:42 -0400 (EDT)
-Received: from imap47 ([10.202.2.97])
-  by compute1.internal (MEProxy); Sun, 17 Oct 2021 08:11:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
-         h=mime-version:message-id:in-reply-to:references:date:from:to
-        :cc:subject:content-type; s=fm2; bh=ZWWjC4g+NM5m34T/9263lf+QjNfD
-        U6lB85qVjusw3Uk=; b=RlLLzMrH83WWRYMQcp2AOylkuhI1M6VsP1jfyGHstt+9
-        xvswENN14Llbr1WKt+7rdU0pOdMBEeR/XwCYHONnD8Ph3GLIbfuVnL94bZJGDG/9
-        sCAsg7QlSwKYRTc6B3q8j2ZD7PSjCf0XJH5i6XTWex8kP/vg7jgTWswfZVFUiD6w
-        d3RO24O50tYnQtRicxmOQd97iOHCI6TUTNom+DrplcxQlkLyHQ7K9G5uaoGcQMYw
-        s+W3UM7W8cVzWEff2KMDhioOsHYHTq2KpSPZn2Rn5cM0bWfj03jFxKwnRU62UEe9
-        vwJ679WznVn/WCCYihxV6rSFp9ROojNC9V8GsYxPZw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=ZWWjC4
-        g+NM5m34T/9263lf+QjNfDU6lB85qVjusw3Uk=; b=NaRK9y7WCU1crZCmrgVt0S
-        TGTtF4tf9B0urU1UApVzpqDEVX8b0xfbn1Ce6yNdf1T1rHwn3Q7MHDEK7yVFx0eX
-        +HeHfUMLP6aic42ccXsVAmb+Y1+KXBgPGYRL50h0Mt6D+Jf5kahLVHgEDP7OxsI5
-        D24bm4RmmYzMBMyhDmIM09ObIPVrwj7u92Lg5kcBGJnMxQE/9B0E/pW02kG2EcbE
-        DvzzFeWrUJggEvExbkS1BZhyOphoRWayzX5Hp9liAXYJCjdkgWqPjDMO90kJjn/u
-        ++qrxmWAkil7rD4MWpVTSR8qD4kAHmAaDmbjtIMNr0e1NP6ZElJrt+KcriNHRHOw
-        ==
-X-ME-Sender: <xms:_RJsYTQfpB-rWXKZfzmBuU2jY08LOUy2iwLYHEbHjNrZsDKnWPKNcw>
-    <xme:_RJsYUwd0BBsC8m5qKE7qoO-9YMinDgOhFbXHL4zgvWmCqQtvOpP3YR6piLZgg4Ys
-    MBbWFnTHiX9xSFs1yg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvddukedggeekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdfuvhgv
-    nhcurfgvthgvrhdfuceoshhvvghnsehsvhgvnhhpvghtvghrrdguvghvqeenucggtffrrg
-    htthgvrhhnpefgieegieffuefhtedtjefgteejteefleefgfefgfdvvddtgffhffduhedv
-    feekffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    hsvhgvnhesshhvvghnphgvthgvrhdruggvvh
-X-ME-Proxy: <xmx:_RJsYY0ZXwRcWqZrwtQdXq7jvyTVeAqMWH9xpDNVhvttPqA3UjAGwg>
-    <xmx:_RJsYTD7UWbeDjxMhu-IlfjsQ73WbE0Cgmd39enTT04hTFeOPQiFwg>
-    <xmx:_RJsYcjXGKU-NtO1GdPy0FT31LRrGt-NCydOuvaq1Rx4MzTblbAUgA>
-    <xmx:_hJsYYiS652QDuUGDhA9STUEDciK-ExmMh6lAyTPY6p-yuLtljUnxg>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id A5A342740061; Sun, 17 Oct 2021 08:11:41 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-1345-g8441cd7852-fm-20211006.001-g8441cd78
-Mime-Version: 1.0
-Message-Id: <02537a8a-e9c2-46f4-904e-6ff5c0583cbf@www.fastmail.com>
-In-Reply-To: <YWwQ36hoNPrUJifS@sunset>
-References: <20211017114054.67737-1-sven@svenpeter.dev>
- <20211017114054.67737-3-sven@svenpeter.dev> <YWwQ36hoNPrUJifS@sunset>
-Date:   Sun, 17 Oct 2021 14:11:21 +0200
-From:   "Sven Peter" <sven@svenpeter.dev>
-To:     "Alyssa Rosenzweig" <alyssa@rosenzweig.io>
-Cc:     "Jassi Brar" <jassisinghbrar@gmail.com>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "Mark Kettenis" <mark.kettenis@xs4all.nl>,
-        "Hector Martin" <marcan@marcan.st>,
-        "Mohamed Mediouni" <mohamed.mediouni@caramail.com>,
-        "Stan Skowronek" <stan@corellium.com>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/2] mailbox: apple: Add driver for Apple mailboxes
-Content-Type: text/plain
+        Sun, 17 Oct 2021 08:17:46 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21D04C061765
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 05:15:37 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id y3so35881394wrl.1
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 05:15:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=4rGQu9A9hg6MKWxmyhdVi7SLuN8q4rVtdsjRdJ3svpQ=;
+        b=A+3OurShtosqmVYq25zLOfVNdpG6MQ/pqQ+uIG+vGL4jkzWR/U0RVccHEdfm/s+vee
+         /JP6fYXZk2McT/sacQxQZ9G52KtjNEaWQEDajzL0VIByftr7KLT/GrpxvLSjqDgyujlR
+         5MnRw/WevlyGun715FsAeABXmpDcCiqlBZ7s4pehWSXLJq1BI2gwjV6duc/e2mFN3sWC
+         9MZ5hJIbUbGR7UO8gB19ZCLTDYnrjkH9bAvbJHTuDM6qQYgoeDZ/ZpC4PHUkYcbOj1eI
+         /4mJvpgrmdlksvr0U7jbOUt8AD9fVHJjwspuhpBEXMcUToTK5nQaI4K1Uc9RiTJ3ovss
+         jUYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=4rGQu9A9hg6MKWxmyhdVi7SLuN8q4rVtdsjRdJ3svpQ=;
+        b=g/sgxN288w9IvWU25K/WS58pY4j7p93q33OZqtn3JlbvILpEXUq9RgiamY5X1Qb0Wn
+         u/fGi4C7SJwClHwRCaNw4lGd0baHdth7ENlR3Ihe6Vs3BXAS/U077w7XAi90c+lMLn8H
+         1Gx+kptM78nIj3NCzEXz+RdEdvqrk/CvSeDggz9vv8XBgisHBWsvtD/lnIFb2MYLT+mx
+         6PWd8vt6hRNFsjWvSbTy/nSQNhy+OZe5CGculx1oxqEjn5PzhZSnQ+WwQT0Gyr5EWeIb
+         Kvrt6ygu80rimMSAv4yz1uRPgiJtOTn6jpxrXSB+ve3OrN+WONcmNSJLyq0Jv5zQxIgV
+         o91w==
+X-Gm-Message-State: AOAM5319yJ3qAZuQ5SEIk9GtTpYvVQGh0pn/UbfXzxKvhSHP/PQFkgDT
+        khpePGctq9KzDGvp2jypjfI=
+X-Google-Smtp-Source: ABdhPJyIJsVeEecyaw19JmEdHpyfzEypReDKnv2jtc6S/6OR4WdwNGfTHZ7drSqYWhagxTENi24P1A==
+X-Received: by 2002:adf:d1ee:: with SMTP id g14mr28422383wrd.165.1634472935679;
+        Sun, 17 Oct 2021 05:15:35 -0700 (PDT)
+Received: from ?IPV6:2a02:8108:96c0:3b88::d7f0? ([2a02:8108:96c0:3b88::d7f0])
+        by smtp.gmail.com with ESMTPSA id n9sm3813170wro.68.2021.10.17.05.15.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 17 Oct 2021 05:15:35 -0700 (PDT)
+Message-ID: <1072576d-f580-413c-4566-df274a395c65@gmail.com>
+Date:   Sun, 17 Oct 2021 14:15:34 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH 1/3] staging: r8188eu: Makefile: remove unused driver
+ config
+Content-Language: en-US
+To:     Martin Kaiser <martin@kaiser.cx>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20211016173544.25376-1-martin@kaiser.cx>
+ <20211016173544.25376-2-martin@kaiser.cx>
+From:   Michael Straube <straube.linux@gmail.com>
+In-Reply-To: <20211016173544.25376-2-martin@kaiser.cx>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 10/16/21 19:35, Martin Kaiser wrote:
+> Remove config settings from the Makefile that are related to
+> unused or deleted features.
+> 
+> Signed-off-by: Martin Kaiser <martin@kaiser.cx>
+> ---
+>   drivers/staging/r8188eu/Makefile | 10 ----------
+>   1 file changed, 10 deletions(-)
+> 
+> diff --git a/drivers/staging/r8188eu/Makefile b/drivers/staging/r8188eu/Makefile
+> index 1e0cb819f7f3..fccf7e6d1520 100644
+> --- a/drivers/staging/r8188eu/Makefile
+> +++ b/drivers/staging/r8188eu/Makefile
+> @@ -4,8 +4,6 @@ EXTRA_CFLAGS += -O1
+>   
+>   ccflags-y += -D__CHECK_ENDIAN__
+>   
+> -CONFIG_WOWLAN = n
+> -
+>   OUTSRC_FILES :=				\
+>   		hal/HalHWImg8188E_MAC.o	\
+>   		hal/HalHWImg8188E_BB.o	\
+> @@ -36,10 +34,6 @@ OUTSRC_FILES :=				\
+>   		hal/usb_halinit.o	\
+>   		hal/usb_ops_linux.o
+>   
+> -RTL871X = rtl8188e
+> -
+> -HCI_NAME = usb
+> -
+>   _OS_INTFS_FILES :=				\
+>   			os_dep/ioctl_linux.o	\
+>   			os_dep/mlme_linux.o	\
+> @@ -52,10 +46,6 @@ _OS_INTFS_FILES :=				\
+>   
+>   _HAL_INTFS_FILES += $(OUTSRC_FILES)
+>   
+> -ifeq ($(CONFIG_WOWLAN), y)
+> -EXTRA_CFLAGS += -DCONFIG_WOWLAN
+> -endif
+> -
+>   SUBARCH := $(shell uname -m | sed -e "s/i.86/i386/; s/ppc.*/powerpc/; s/armv.l/arm/; s/aarch64/arm64/;")
+>   
+>   ARCH ?= $(SUBARCH)
+> 
 
-On Sun, Oct 17, 2021, at 14:02, Alyssa Rosenzweig wrote:
->> Apple SoCs such as the M1 come with various co-processors. Mailboxes
->> are used to communicate with those. This driver adds support for
->> two variants of those mailboxes.
->> 
->> Reviewed-by: Alyssa Rosenzweig <alyssa@rosenzweig.io>
->> Signed-off-by: Sven Peter <sven@svenpeter.dev>
->
-> In the future, Reviewed-by tags should be dropped after making major
-> changes to a patch.
-
-I don't think there were any major changes since v2, but sure, I'll drop your
-tag in the future. All your comments below already apply to v2.
-
->
->> +		writel_relaxed(apple_mbox->hw->irq_bit_recv_not_empty |
->> +				       apple_mbox->hw->irq_bit_send_empty,
->> +			       apple_mbox->regs + apple_mbox->hw->irq_enable);
->
-> Nit: weird wrapping, much easier to read as:
->
-> +		writel_relaxed(apple_mbox->hw->irq_bit_recv_not_empty |
-> +			       apple_mbox->hw->irq_bit_send_empty,
-> +			       apple_mbox->regs + apple_mbox->hw->irq_enable);
->
-
-This is just what clang-format does and I'd rather keep it this way.
-Note that the first two lines are the first argument combined with an OR.
-
->> +static const struct apple_mbox_hw apple_mbox_asc_hw = {
->> +	.control_full = APPLE_ASC_MBOX_CONTROL_FULL,
->> +	.control_empty = APPLE_ASC_MBOX_CONTROL_EMPTY,
->> +
->> +	.a2i_control = APPLE_ASC_MBOX_A2I_CONTROL,
->> +	.a2i_send0 = APPLE_ASC_MBOX_A2I_SEND0,
->> +	.a2i_send1 = APPLE_ASC_MBOX_A2I_SEND1,
->> +
->> +	.i2a_control = APPLE_ASC_MBOX_I2A_CONTROL,
->> +	.i2a_recv0 = APPLE_ASC_MBOX_I2A_RECV0,
->> +	.i2a_recv1 = APPLE_ASC_MBOX_I2A_RECV1,
->> +
->> +	.has_irq_controls = false,
->> +};
->
-> Nit: consider dropping the `has_irq_controls = false` assignment.
-> Clearly there are none, or you'd have to fill out the irq_* fields too.
-
-I'd rather keep it explicit as false here to make the intent clear.
-
->
->> +static const struct of_device_id apple_mbox_of_match[] = {
->> +	{ .compatible = "apple,t8103-asc-mailbox", .data = &apple_mbox_asc_hw },
->> +	{ .compatible = "apple,t8103-m3-mailbox", .data = &apple_mbox_m3_hw },
->> +	{}
->> +};
->
-> No generic compatibles? I assume this driver hasn't changed much in
-> recent iPhones, and hopefully it won't change much in M1X...
-
-Then we can always have apple,tXXX-asc-mailbox, apple,t8103-asc-mailbox in the
-device tree. From what I can tell this specific mailbox has only appeared in
-this SoC generation.
-
->
->> +/* SPDX-License-Identifier: GPL-2.0-only OR MIT */
->> +/*
->> + * Apple mailbox message format
->> + *
->> + * Copyright (C) 2021 The Asahi Linux Contributors
->> + */
->> +
->> +#ifndef _LINUX_APPLE_MAILBOX_H_
->> +#define _LINUX_APPLE_MAILBOX_H_
->> +
->> +#include <linux/types.h>
->> +
->> +struct apple_mbox_msg {
->> +	u64 msg0;
->> +	u32 msg1;
->> +};
->> +
->> +#endif
->
-> Given this file lacks the context of the driver, and the questions
-> raised in v2 review, it might be beneficial to add a quick comment to
-> apple_mbox_msg explaiing that no, really, this is a 96-bit message.
-
-I don't think that's necessary but it doesn't hurt either I guess.
-
-
-Sven
+Acked-by: Michael Straube <straube.linux@gmail.com>
