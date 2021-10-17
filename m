@@ -2,158 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 961AF430C83
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 23:59:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B62F430C89
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 00:03:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344719AbhJQWBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 18:01:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52358 "EHLO
+        id S1344743AbhJQWF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 18:05:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242831AbhJQWBK (ORCPT
+        with ESMTP id S1344737AbhJQWFx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 18:01:10 -0400
-Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 611FCC06161C;
-        Sun, 17 Oct 2021 14:59:00 -0700 (PDT)
-Received: by mail-qv1-xf34.google.com with SMTP id m13so9218983qvk.1;
-        Sun, 17 Oct 2021 14:59:00 -0700 (PDT)
+        Sun, 17 Oct 2021 18:05:53 -0400
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2258CC061765
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 15:03:43 -0700 (PDT)
+Received: by mail-il1-x12e.google.com with SMTP id d11so12879148ilc.8
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 15:03:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UAYR04dhIfH5S+bn2Qux0e8c7yDxYYlYP/P2nJsD3vU=;
-        b=AkjuwHpW5R51V84paJ8ElkJ52uNL2z3ED5c5AFGvqSQCac0J2hocQ6qdVeys9Blgzz
-         FVrtWOzbKG89PhNVzqkSyqzkwXsX0JowUg2gFzEqJz9HUMo815ny9KG4WCVKmtiKcy41
-         mvZDOPEV2SQz9+X6KoMBja2dPhzytWld6YArJ6GaQYDgBhaTDZVFUctGfg+ITaWE/wQu
-         5BDlFz4CUy5mF2qjKGaxdiOJFrz/8Bag6zIvIhxmMhxu+laKxIFsWZon8U2LZ+Nmv7JR
-         tskL2G2PkjlI2AV8y56hJGb4zUbqAoZr0N/mMeZ09hqI7XOH0UeXyb19jj6eM3avJJUp
-         Z7qQ==
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=a++EeukHLheQaAyV9/MPOEWxfhGKeLO2fJxeA799MI4=;
+        b=jwJaAxsXFjwSP9UUxCP1mNsBL/gJb9sYYNvz5Ea+bTYp7ChX2i3tdiv+CqnhYjXXXS
+         tTwP6yqC+DoROopr4qAtgTtuFRt8ghWv+YKvOTF3fkMKncljBicmVC6vktwaGO3URorI
+         rLAgl/Kl7yTtdmDVd22SJBNc80ZcAjuErGh9rez1oFFB6KeW++7qbFH0z2X2H/4yU4Oh
+         01ZgR98FaruE/K0o5j0EYO0NRjPC/sGl0OLimCpA1EjEuYPxKWK8dhfIZYzJEt1f/Ca4
+         dbtcpd2QF1lg3ESVEG3+vr5C0qaHpEh/h4s16qkICJZt6UcWv3EhDJJctkNk9Qb9SWKj
+         UEZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UAYR04dhIfH5S+bn2Qux0e8c7yDxYYlYP/P2nJsD3vU=;
-        b=E1D0zPREyJELJBOR0ThXKCR8z9OpWRDxVJyVsOEF08qkt90564TjwHd01vlbSRTBD6
-         GRB90ttRCVZp/pJ/rBzaNlVnqJWkWWrf9e3Stu5iP+Rpiw16pZAfDTndlw3sTubS6A/H
-         pXaPaKo1m/+jfq4Tg1nkVZML/74G287Hq0UPDxXOMHG9izAQ5NW9zbEq5JR/DVgzmp6L
-         5BQm6+gBEuJqJqHrHvmdQ8aFfby0Ld77kDXnlZPMpP8MB996RfXkPxnYG0BougD1Mym9
-         Fk2TnkEXLYj6cVJyoYG3bqlVIhHM7Vs00YAmVU+LTc8pfPuzFK01RfNnk/6C1aVSGyuO
-         cOsw==
-X-Gm-Message-State: AOAM532Emx8q8eHPghKIpaLWXJXT2ScOEQIFLT0enLVmZeWyvaroVU0I
-        d5sqfObEhyrh2VIcktTPLPP5uQ6aMJwK658nSbs=
-X-Google-Smtp-Source: ABdhPJw/GPrNCMvIPZopG7TCUhCasU6kY67aJ41lEsQW2vLypC/X03Yl/J6LGA2BqjiAyGx+SE+EPyedkVjzVfktzyg=
-X-Received: by 2002:ad4:5bcf:: with SMTP id t15mr22427849qvt.59.1634507939139;
- Sun, 17 Oct 2021 14:58:59 -0700 (PDT)
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=a++EeukHLheQaAyV9/MPOEWxfhGKeLO2fJxeA799MI4=;
+        b=HZHDHi7hocmSYuhd5HlBqvdwtYyQCpCMcogTlDKBNu0jKS5nLdml3HXHMb1a9tb7IB
+         ckBXI8dQJ0IzRv3gdVpTVH0sVvCekPuQXguwdnSij8zIqhjYjwUp/YqhhzIZsgJA5D2N
+         W6vq2f4RrYyFm2XyeVtHfzdZn/K6I/+GqD1J/OY9cX6GeLYb3yMFEMAI2Mint6dqUCLS
+         68D+Y56EKfEjyO+odYfSsS+2zT5JQTim4xdZ0lbW5xG9EB2VJnnADPWtYzKYHtCr5cfb
+         8AKPcLO75r+E/4qbmjsrfFQQUHJQKE6GxK/cXuFD+ZsWdVigdnqT3ZVKADGVsIDrtVrr
+         FfKQ==
+X-Gm-Message-State: AOAM530UZEQoIfh3w+JFu3OROWSuL1D8UrFs0nleRHgX6GYqoekd7fVu
+        o6zD+EPqhR/ZW56GboGLdKTXFQ==
+X-Google-Smtp-Source: ABdhPJwHjzRFKzWFufectUTBvQGlekfLU+TiHjM9a01CoVk+ADLcYFEtLHi2xTK9v13yo1I2StXLSg==
+X-Received: by 2002:a05:6e02:1d1e:: with SMTP id i30mr12174005ila.248.1634508222329;
+        Sun, 17 Oct 2021 15:03:42 -0700 (PDT)
+Received: from [192.168.1.116] ([66.219.217.159])
+        by smtp.gmail.com with ESMTPSA id i15sm6080256ilb.30.2021.10.17.15.03.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 17 Oct 2021 15:03:40 -0700 (PDT)
+Subject: Re: [syzbot] general protection fault in hctx_lock
+To:     syzbot <syzbot+005b78d4c45263d656dd@syzkaller.appspotmail.com>,
+        hch@lst.de, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <000000000000c7c18505ce93467e@google.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <23531d29-9d96-6744-bab9-797e65379037@kernel.dk>
+Date:   Sun, 17 Oct 2021 16:03:39 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210922125939.427-1-caihuoqing@baidu.com> <nycvar.YFH.7.76.2110071338010.29107@cbobk.fhfr.pm>
- <CANRwn3SZagP7uCSHVDGMPMqQiKyUQJSjq143_DA1y0UPvsmkAA@mail.gmail.com>
- <DB6PR07MB4278FF50AB23B9B69411CA3B9BB19@DB6PR07MB4278.eurprd07.prod.outlook.com>
- <CANRwn3TTgZ9+T7h81tNShvEB8QWkrbKLPrQSnviFKMHa8Zga_Q@mail.gmail.com> <20211015025815.GA3874@LAPTOP-UKSR4ENP.internal.baidu.com>
-In-Reply-To: <20211015025815.GA3874@LAPTOP-UKSR4ENP.internal.baidu.com>
-From:   Ping Cheng <pinglinux@gmail.com>
-Date:   Sun, 17 Oct 2021 14:58:47 -0700
-Message-ID: <CAF8JNhLF8_f1x1K52ay_cmkKqpNiY7P4kMwt=ia6ws9Yd9uoNQ@mail.gmail.com>
-Subject: Re: [PATCH] HID: wacom: Make use of the helper function devm_add_action_or_reset()
-To:     Jiri Kosina <jkosina@suse.cz>,
-        Benjamin Tissoires <benjamin.tissoires@gmail.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Jason Gerecke <killertofu@gmail.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Linux Input <linux-input@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Aaron Skomra <skomra@gmail.com>,
-        "Dickens, Joshua" <joshua.dickens@wacom.com>, caihuoqing@baidu.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <000000000000c7c18505ce93467e@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I tested the set of two patches. I didn't see any issues with them
-applied. But, while reviewing the patches, I noticed a minor logic
-mismatch between the current patch and the original code. I'd hope at
-least one of the maintainers (Jiri, Benjamin, or Dimitry) reviews this
-patch, especially the part that I commented below, to make sure that
-we don't trigger any race condition.
+On 10/17/21 3:40 PM, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    7c832d2f9b95 Add linux-next specific files for 20211015
+> git tree:       linux-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=10e9df10b00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=f6ac42766a768877
+> dashboard link: https://syzkaller.appspot.com/bug?extid=005b78d4c45263d656dd
+> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1154f80cb00000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1750eeecb00000
+> 
+> The issue was bisected to:
+> 
+> commit f328476e373a7ce4b4d16c48fe85571044e025f5
+> Author: Christoph Hellwig <hch@lst.de>
+> Date:   Tue Oct 12 10:40:45 2021 +0000
+> 
+>     blk-mq: cleanup blk_mq_submit_bio
 
-Thank you Huoqing, Jason, and the maintainer team!
+It's a potential use-after-free using rq->mq_hctx after inserting a flush.
+I'll fold in a fix, as I'm shuffling things around anyway.
 
-> > From 7adc05783c7e3120028d0d089bea224903c24ccd Mon Sep 17 00:00:00 2001
-> > From: Jason Gerecke <jason.gerecke@wacom.com>
-> > Date: Thu, 14 Oct 2021 07:31:31 -0700
-> > Subject: [PATCH] RFC: HID: wacom: Shrink critical section in
-> >  `wacom_add_shared_data`
-> >
-> > The size of the critical section in this function appears to be larger
-> > than necessary. The `wacom_udev_list_lock` exists to ensure that one
-> > interface cannot begin checking if a shared object exists while a second
-> > interface is doing the same (otherwise both could determine that that no
-> > object exists yet and create their own independent objects rather than
-> > sharing just one). It should be safe for the critical section to end
-> > once a fresly-allocated shared object would be found by other threads
-> > (i.e., once it has been added to `wacom_udev_list`, which is looped
-> > over by `wacom_get_hdev_data`).
-> >
-> > This commit is a necessary pre-requisite for a later change to swap the
-> > use of `devm_add_action` with `devm_add_action_or_reset`, which would
-> > otherwise deadlock in its error case.
-> >
-> > Signed-off-by: Jason Gerecke <jason.gerecke@wacom.com>
-> > ---
-> >  drivers/hid/wacom_sys.c | 9 ++++-----
-> >  1 file changed, 4 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/drivers/hid/wacom_sys.c b/drivers/hid/wacom_sys.c
-> > index 93f49b766376..62f50e4b837d 100644
-> > --- a/drivers/hid/wacom_sys.c
-> > +++ b/drivers/hid/wacom_sys.c
-> > @@ -881,8 +881,8 @@ static int wacom_add_shared_data(struct hid_device *hdev)
-> >       if (!data) {
-> >               data = kzalloc(sizeof(struct wacom_hdev_data), GFP_KERNEL);
-> >               if (!data) {
-> > -                     retval = -ENOMEM;
-> > -                     goto out;
-> > +                     mutex_unlock(&wacom_udev_list_lock);
-> > +                     return -ENOMEM;
-> >               }
-> >
-> >               kref_init(&data->kref);
-> > @@ -890,11 +890,12 @@ static int wacom_add_shared_data(struct hid_device *hdev)
-> >               list_add_tail(&data->list, &wacom_udev_list);
-> >       }
-> >
-> > +     mutex_unlock(&wacom_udev_list_lock);
-> > +
-> >       wacom_wac->shared = &data->shared;
-> >
-> >       retval = devm_add_action(&hdev->dev, wacom_remove_shared_data, wacom);
-> >       if (retval) {
-> > -             mutex_unlock(&wacom_udev_list_lock);
+-- 
+Jens Axboe
 
-The mutex_unlock was called after devm_add_action is finished, whether
-it is a failure or success. The new code calls mutex_unlock before
-devm_add_action is executed. Is that ok? If there is no concern from
-the maintainers, the patch has been:
-
-Reviewed-by: Ping Cheng <ping.cheng@wacom.com>
-Tested-by: Ping Cheng <ping.cheng@wacom.com>
-
-Cheers,
-Ping
-
-> >               wacom_remove_shared_data(wacom);
-> >               return retval;
-> >       }
-> > @@ -904,8 +905,6 @@ static int wacom_add_shared_data(struct hid_device *hdev)
-> >       else if (wacom_wac->features.device_type & WACOM_DEVICETYPE_PEN)
-> >               wacom_wac->shared->pen = hdev;
-> >
-> > -out:
-> > -     mutex_unlock(&wacom_udev_list_lock);
-> >       return retval;
-> >  }
-> >
-> > --
-> > 2.33.0
-> >
->
