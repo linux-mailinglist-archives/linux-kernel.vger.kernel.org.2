@@ -2,118 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0453C430A3D
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 17:35:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 799AC430A40
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 17:37:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237801AbhJQPhc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 11:37:32 -0400
-Received: from relay10.mail.gandi.net ([217.70.178.230]:45209 "EHLO
-        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234748AbhJQPha (ORCPT
+        id S237957AbhJQPju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 11:39:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53884 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233058AbhJQPjt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 11:37:30 -0400
-Received: (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 719CE240003;
-        Sun, 17 Oct 2021 15:35:16 +0000 (UTC)
-Date:   Sun, 17 Oct 2021 17:35:16 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     William Breathitt Gray <vilhelm.gray@gmail.com>, jic23@kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com, kernel@pengutronix.de,
-        a.fatoum@pengutronix.de, kamel.bouhara@bootlin.com,
-        gwendal@chromium.org, david@lechnology.com,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, syednwaris@gmail.com,
-        patrick.havelange@essensium.com, fabrice.gasnier@st.com,
-        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com,
-        o.rempel@pengutronix.de, jarkko.nikula@linux.intel.com,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [PATCH v17 2/9] counter: Add character device interface
-Message-ID: <YWxCtGcJ8s4gjgZj@piout.net>
-References: <cover.1632884256.git.vilhelm.gray@gmail.com>
- <b8b8c64b4065aedff43699ad1f0e2f8d1419c15b.1632884256.git.vilhelm.gray@gmail.com>
- <YWwqE5T6h5j14M/M@kroah.com>
- <YWwtAm0o6wVMG6xc@piout.net>
- <YWw1zoGX6SwSEVw/@kroah.com>
+        Sun, 17 Oct 2021 11:39:49 -0400
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98BD8C06161C
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 08:37:39 -0700 (PDT)
+Received: by mail-ot1-x329.google.com with SMTP id d21-20020a9d4f15000000b0054e677e0ac5so478440otl.11
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 08:37:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=rhJ3MYQxq7jBWrI9qP0fXJvJ7nX/eTAbsnjrRWMMFSk=;
+        b=GCtnrjiizXGVQMZOGAeOU0DNHpUUeMzYqWIJgqJFXZilHvYermpet4Oe9/jxnwO/iM
+         4AgFbFnGJgxGQrpM7uMVA7pcW3n1CuvoeMXHkG88JRLEceU/B3oYL/oW3AmFLDlz5prj
+         D8+xbpnJUEAFBp17G9Tkg5RfTvbgkAKzlbkg8HqpTiTY4UTUd6X80mzqa/TiqLo8AorA
+         h5Cy5X2Ud8IwTR4zH1E6bQdLrOJ9v0/ISUK+G+0RPz4lSiDa4hodJ8GhxshaqkOF7GS/
+         5t1GsAKrm78wm0P7jvhXir9dNQ1veHeLvZDcWzcNL1UobHtrRlKjdmymivH38WPtiRqB
+         wBZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=rhJ3MYQxq7jBWrI9qP0fXJvJ7nX/eTAbsnjrRWMMFSk=;
+        b=7qPT1Ope+gn91YwfTGX0FOTnp1fDeEtGCcU9sKpEabUzaonCT54ijyRhzYElwRhNwl
+         AlsluvpnMO9LDDcad2b7+cZjSXCWfcaO3tqr9e4BCy9tuy6LpRbIZH3eeqKrbv7n6vnI
+         UgMcl7WeLCOlscuU44rLkotOdgvo2End/l93ZMonNle+ENuQI/xzPVOflPL/tla4oeze
+         r51H2xv+Kutr9l8TLsV8WajNiGuJ0+dq1Ni9kZRQiRBaW7tkGA5ybbN+f+d2HoNylY2Z
+         oukM27tbnTOhllPYRRA64MReBgONumkjthGimxK8bIdy8J7vjLanQCgkw6miOBe1pt97
+         WvBw==
+X-Gm-Message-State: AOAM5323axYIVJLVengE2d8w25m8arYqzEG46ECyhUkqvObCaNlgoccc
+        Gf3e3PQB0+oWBxYiarolARUi4w==
+X-Google-Smtp-Source: ABdhPJwjycxtRcae2uuxEEliyOr1THEo6rI+dgHveXyCqMO2SaAU+kA94jDbKXV5kLu7kDuNKnwebw==
+X-Received: by 2002:a05:6830:95:: with SMTP id a21mr18534612oto.43.1634485059006;
+        Sun, 17 Oct 2021 08:37:39 -0700 (PDT)
+Received: from builder.lan ([2600:1700:a0:3dc8:3697:f6ff:fe85:aac9])
+        by smtp.gmail.com with ESMTPSA id bp21sm2290370oib.31.2021.10.17.08.37.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 Oct 2021 08:37:38 -0700 (PDT)
+Date:   Sun, 17 Oct 2021 10:37:36 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Stephen Boyd <swboyd@chromium.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Rob Clark <robdclark@gmail.com>
+Cc:     Abhinav Kumar <abhinavk@codeaurora.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Kalyan Thota <kalyan_t@codeaurora.org>,
+        Kuogee Hsieh <khsieh@codeaurora.org>,
+        Sean Paul <sean@poorly.run>, Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 7/7] drm/msm/dp: Add sc8180x DP controllers
+Message-ID: <YWxDQInQD8ZDa1IB@builder.lan>
+References: <20211016221843.2167329-1-bjorn.andersson@linaro.org>
+ <20211016221843.2167329-8-bjorn.andersson@linaro.org>
+ <CAE-0n53R79HOoBsuLXVkVhYotFam8k4mWZqWnaiJcqcr7w522w@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YWw1zoGX6SwSEVw/@kroah.com>
+In-Reply-To: <CAE-0n53R79HOoBsuLXVkVhYotFam8k4mWZqWnaiJcqcr7w522w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/10/2021 16:40:14+0200, Greg KH wrote:
-> On Sun, Oct 17, 2021 at 04:02:42PM +0200, Alexandre Belloni wrote:
-> > On 17/10/2021 15:50:11+0200, Greg KH wrote:
-> > > Note, review of this now that it has been submitted in a pull request to
-> > > me, sorry I missed this previously...
-> > > 
-> > > On Wed, Sep 29, 2021 at 12:15:59PM +0900, William Breathitt Gray wrote:
-> > > > +static int counter_chrdev_open(struct inode *inode, struct file *filp)
-> > > > +{
-> > > > +	struct counter_device *const counter = container_of(inode->i_cdev,
-> > > > +							    typeof(*counter),
-> > > > +							    chrdev);
-> > > > +
-> > > > +	/* Ensure chrdev is not opened more than 1 at a time */
-> > > > +	if (!atomic_add_unless(&counter->chrdev_lock, 1, 1))
-> > > > +		return -EBUSY;
-> > > 
-> > > I understand the feeling that you wish to stop userspace from doing
-> > > this, but really, it does not work.  Eventhough you are doing this
-> > > correctly (you should see all the other attempts at doing this), you are
-> > > not preventing userspace from having multiple processes access this
-> > > device node at the same time, so please, don't even attempt to stop this
-> > > from happening.
-> > > 
-> > > So you can drop the atomic "lock" you have here, it's not needed at all.
-> > > 
-> > 
-> > Could you elaborate a bit here because we've had a similar thing in the
-> > RTC subsystem:
-> > 
-> > https://elixir.bootlin.com/linux/latest/source/drivers/rtc/dev.c#L28
-> 
-> Yeah, that too will not work :(  Note, it does stop open from being
-> called from different processes, but think of the following sequence of
-> userspace calls:
-> 	open()
-> 	fork/exec()
-> 	both processes access the file descriptor
-> 
-> or passing a fd across a socket?
-> 
-> Or duplicating the file descriptor and sending it to a different task
-> (like across a socket or many other IPC ways)?
-> 
-> Once userspace has a file descriptor, all bets are off as to where it
-> goes and what it does with it.  There's no need to try to save userspace
-> from itself by preventing multiple opens when really, it doesn't stop
-> anyone who really wants to do this.
-> 
-> If userspace does do multiple read/writes from different threads /
-> processes / whatever on the same file descriptor, it gets to keep the
-> pieces of the mess it causes.  It's not the kernel's job to try to
-> "protect" userspace from itself here.
-> 
-> Look at serial/tty connections as one example of this always being the
-> case.
-> 
-> Does that help?
-> 
+On Sat 16 Oct 20:32 CDT 2021, Stephen Boyd wrote:
 
-Thanks for the explanation, this is now clear to me.
+> Quoting Bjorn Andersson (2021-10-16 15:18:43)
+> > The sc8180x has 2 DP and 1 eDP controllers, add support for these to the
+> > DP driver.
+> >
+> > Link: https://lore.kernel.org/linux-arm-msm/20210725042436.3967173-7-bjorn.andersson@linaro.org/
+> 
+> BTW, was the link intentional?
 
-> > And it would mean I can remove rtc->flags completely.
-> 
-> I think you can do that.
-> 
-> thanks,
-> 
-> greg k-h
+No, I didn't intend for this Link to go upstream, just forgot to clean
+it out as I was sending out the patches.
 
--- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+@Rob, @Dmitry, can you drop this as you apply the patch, or would you
+prefer a resend?
+
+Thanks,
+Bjorn
