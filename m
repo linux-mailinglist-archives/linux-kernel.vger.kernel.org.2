@@ -2,121 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C4484307A8
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 12:01:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4B5B4307AD
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 12:03:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245231AbhJQKDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 06:03:42 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:57306 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234519AbhJQKDl (ORCPT
+        id S245240AbhJQKGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 06:06:00 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:58688
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S245237AbhJQKF6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 06:03:41 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        Sun, 17 Oct 2021 06:05:58 -0400
+Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com [209.85.208.197])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id A292321970;
-        Sun, 17 Oct 2021 10:01:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1634464890; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=hEmSZTL6h9K3pFBzmHbHxjmAJKZVNOfltGHmYQwF5VA=;
-        b=ZTcaHH/0BiwIGAiveDUabgm6Rvg2nfLx+EtVdFVNnHInGUSa6k1RBXtAEz54uDsx8BFa2n
-        YpUZR5Wfa9UHZppc+aVggiRx61SOfVOJ8mgP7n+HcyIBwdvGkFnA8Sy48uzZRm5fI12CSn
-        XrAzgZgBEXb5FjNokbUQgmavNqebLoE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1634464890;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=hEmSZTL6h9K3pFBzmHbHxjmAJKZVNOfltGHmYQwF5VA=;
-        b=Q7kM0BXpNh/FFyF7V5Sexc220EQf66pgAV2uIA0hSKx+0xMtRzL8wZoWQk6XIi61TYhm64
-        +htNGVLqsKplZYDw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9071613A39;
-        Sun, 17 Oct 2021 10:01:30 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id p4szI3r0a2FiNAAAMHmgww
-        (envelope-from <bp@suse.de>); Sun, 17 Oct 2021 10:01:30 +0000
-Date:   Sun, 17 Oct 2021 12:01:33 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-efi <linux-efi@vger.kernel.org>, x86-ml <x86@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] efi/urgent for v5.15-rc6
-Message-ID: <YWv0fTagC0e4D0Jy@zn.tnic>
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id D06ED3FFE2
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 10:03:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1634465028;
+        bh=/w7rnLVxUNTURGieCGfqqQ4bUB62VIx19Vc4b3uH07U=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=RAV43nb+Xvzmk2b/rUhePogqGjzuJB2LHSGz91ycrLavn6DYaeSWTLd1GXm9fRhWz
+         8w861Ayp6obOuBB9VUMThkiiVCYL2piVKQ61dY31Vk7pQaHbTefifPLwga8gBNw31g
+         10W78NfV3Qi4g8HIuDaBuhfGiIF6P+MQsgOyTS80mIYnlrFpq6GAPa8ARkGdzOU8qn
+         aGlpncOe+BugWtpVt6eEVjpH6p2cKMRjgTBaxfw41jS4/+I/mXfiXStCzKqImd1zVb
+         s+IuNOHamPxQnr/K9VfIxk3VFHWQGSrdQy4pThcJxUSDqT0P2j2n0qbkWDhBzkEuEe
+         sFBCJ41GYYcqQ==
+Received: by mail-lj1-f197.google.com with SMTP id e26-20020a2e985a000000b00211109b97e6so255846ljj.0
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 03:03:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/w7rnLVxUNTURGieCGfqqQ4bUB62VIx19Vc4b3uH07U=;
+        b=y9dGsNDIb6nNfl0212e9Hrno/F12SrilJ/ImiXHm1vma0D6kLE5VF9owX5rkZx7WZx
+         zShS5gBJHC6ZoXIthKDXEmvqrVK6qQ8aYuboW2zknAvIRgg5djs5o06vAYrDZ5jJbDMQ
+         CSJGmPnm1uQur5vn9zrhUz/UoW3uWE7ZCPv3kMMXvDVLBFR9S+1vFciZQKYhLg7vUqq3
+         9aQ3NosqCNMzqVspZZ0V5juQMer4LmEc3guB6T81Si8zozC24AUnv1y6GSpGuK+udau9
+         kzVqdRXs3WHX89fbLNgrdMN0bF46x4uYKM/MZXZISalJbgZYy2/Id+eCBwh78cInA13r
+         ciEg==
+X-Gm-Message-State: AOAM5328p4XcIoRwsTl/7uDUva+l73nTrWUTEOQNldhTVUu5i1vqPoI4
+        7OaqBxI92ShToLazrg+V1LAQxoO8dpc6NvQc/PJ64sOqAioFZKhX+B067iYgXcQrDWW7qF22jUw
+        dE1pYVp2waD2KG0JZ3f9H/s41RVH7slME6uOlGhmSUU90qXG2vY3+8qdRVw==
+X-Received: by 2002:a17:906:919:: with SMTP id i25mr21077563ejd.171.1634465017857;
+        Sun, 17 Oct 2021 03:03:37 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxBD4IVI+3m1jDS1GLi//iCI68rTkdNzvWdP8PXY93uSfBu2PzfjILpnco+k3Rb/r6y11YH8kKxYU50YYZPaHc=
+X-Received: by 2002:a17:906:919:: with SMTP id i25mr21077516ejd.171.1634465017650;
+ Sun, 17 Oct 2021 03:03:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+References: <20211016102025.23346-1-arnaud.ferraris@collabora.com>
+In-Reply-To: <20211016102025.23346-1-arnaud.ferraris@collabora.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Date:   Sun, 17 Oct 2021 12:03:26 +0200
+Message-ID: <CA+Eumj5zqbk7Vn7dAvjNWXKK6pCNgu34-VZGudP=BmO0_+0Tgw@mail.gmail.com>
+Subject: Re: [PATCH 0/4] arm64: dts: add 'chassis-type' property
+To:     Arnaud Ferraris <arnaud.ferraris@collabora.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-rockchip@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        linux-sunxi@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org, Martin Kepplinger <martink@posteo.de>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Fabio Estevam <festevam@gmail.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, Lucas Stach <dev@lynxeye.de>,
+        Angus Ainslie <angus@akkea.ca>,
+        Guido Gunther <agx@sigxcpu.org>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Johan Jonker <jbx6244@gmail.com>,
+        Eddie Cai <eddie.cai.linux@gmail.com>,
+        Shunqian Zheng <zhengsq@rock-chips.com>,
+        Brian Norris <briannorris@chromium.org>,
+        Dan Johansen <strit@manjaro.org>,
+        Simon South <simon@simonsouth.net>,
+        Matthias Brugger <mbrugger@suse.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Sat, 16 Oct 2021 at 12:20, Arnaud Ferraris
+<arnaud.ferraris@collabora.com> wrote:
+>
+> Hello,
+>
+> A new root node property named 'chassis-type' has recently been approved
+> added to the device tree specification[1]. This will allow userspace to
+> easily detect the device form factor on DT-based devices, and act
+> accordingly.
+>
+> This patchset fills in this property for existing ARM64 consumer
+> devices (laptops, phones, tablets...).
+>
+> [1] https://github.com/devicetree-org/devicetree-specification/blob/main/source/chapter3-devicenodes.rst#root-node
+>
 
-please pull (forwarded) EFI urgent fixes for 5.15.
+I'll add the same for Exynos, S3C and S5P. Do you know by any chance
+what is the meaning of "embedded"? How a development board should be
+classified?
 
-This is going to be the one before last EFI pull request going through
-the tip tree and Ard will send stuff directly to you in the future.
 
- [ There's one more branch which we'll send to you during the upcoming
-   merge window which should be the last one. ]
-
-The reasoning being, EFI work doesn't really have a lot to do (only)
-with x86 anymore.
-
-Anyway, JFYI.
-
-Please pull,
-thx.
-
----
-
-The following changes since commit 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f:
-
-  Linux 5.15-rc1 (2021-09-12 16:28:37 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/efi-urgent-for-v5.15
-
-for you to fetch changes up to 38fa3206bf441911258e5001ac8b6738693f8d82:
-
-  efi: Change down_interruptible() in virt_efi_reset_system() to down_trylock() (2021-10-05 13:07:01 +0200)
-
-----------------------------------------------------------------
-EFI fixes for v5.15
-
-Low priority fixes but fixes nonetheless:
-- update stub diagnostic print that is no longer accurate
-- avoid statically allocated buffer for CPER error record decoding
-- avoid sleeping on the efi_runtime semaphore when calling the
-  ResetSystem EFI runtime service
-
-----------------------------------------------------------------
-Ard Biesheuvel (1):
-      efi/cper: use stack buffer for error record decoding
-
-Heinrich Schuchardt (1):
-      efi/libstub: Simplify "Exiting bootservices" message
-
-Zhang Jianhua (1):
-      efi: Change down_interruptible() in virt_efi_reset_system() to down_trylock()
-
- drivers/firmware/efi/cper.c             | 4 ++--
- drivers/firmware/efi/libstub/fdt.c      | 2 +-
- drivers/firmware/efi/runtime-wrappers.c | 2 +-
- 3 files changed, 4 insertions(+), 4 deletions(-)
-
--- 
-Regards/Gruss,
-    Boris.
-
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
+Best regards,
+Krzysztof
