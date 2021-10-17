@@ -2,95 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F9D54307FE
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 12:38:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC22D43080D
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 12:41:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245329AbhJQKkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 06:40:18 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:44946 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235835AbhJQKkQ (ORCPT
+        id S245335AbhJQKnJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 06:43:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44422 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235987AbhJQKnH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 06:40:16 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        Sun, 17 Oct 2021 06:43:07 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F812C061767
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 03:40:58 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1mc3b1-0001xb-0R; Sun, 17 Oct 2021 12:40:51 +0200
+Received: from pengutronix.de (2a03-f580-87bc-d400-11af-1534-a8a1-94ea.ip6.dokom21.de [IPv6:2a03:f580:87bc:d400:11af:1534:a8a1:94ea])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id B931B1FD63;
-        Sun, 17 Oct 2021 10:38:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1634467086; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=wL8xtjaYGEluhMiDXGEdJMCUjSyJvHUKLjf2FdHV0xs=;
-        b=lr2L+pIdAWNYNqS/mYBU4U/NP3+j7GmqEn2FrDekd3qxpqK+J+IkcTdmZBW3A2ZhmVh3I9
-        scFXOvwFWojLvYNPWo1eO5IwSNRvPXwMDRM4DdcKtzwoG3rdHIYiVRs1OqwAnQDecjfTGu
-        m8jLBFdnObUahAPiwZP+RYUrT9suPIU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1634467086;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=wL8xtjaYGEluhMiDXGEdJMCUjSyJvHUKLjf2FdHV0xs=;
-        b=o9ltiLUJK0qq5x/vf9MgW0RX3Phy+hs0tFt3jvjDmXhgsDdHZt794h4GZ9s6RtCNE/TnBd
-        zG92thXCbx+8RuCA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9D06D1377A;
-        Sun, 17 Oct 2021 10:38:06 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id is3lJQ79a2H9PQAAMHmgww
-        (envelope-from <bp@suse.de>); Sun, 17 Oct 2021 10:38:06 +0000
-Date:   Sun, 17 Oct 2021 12:38:09 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-edac <linux-edac@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] EDAC fix for v5.15-rc6
-Message-ID: <YWv9Eb+ZYTtWfLSc@zn.tnic>
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 045946958B1;
+        Sun, 17 Oct 2021 10:40:49 +0000 (UTC)
+Date:   Sun, 17 Oct 2021 12:40:48 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Ziyang Xuan <william.xuanziyang@huawei.com>
+Cc:     robin@protonic.nl, linux@rempel-privat.de, socketcan@hartkopp.net,
+        davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net] can: j1939: fix errant alert in j1939_tp_rxtimer
+Message-ID: <20211017104048.lkodbwh3f5iqqgcq@pengutronix.de>
+References: <20210906094219.95924-1-william.xuanziyang@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="tbw24fem2sqsw5rh"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210906094219.95924-1-william.xuanziyang@huawei.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
 
-please pull a single EDAC fix for 5.15.
+--tbw24fem2sqsw5rh
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thx.
+On 06.09.2021 17:42:19, Ziyang Xuan wrote:
+> When the session state is J1939_SESSION_DONE, j1939_tp_rxtimer() will
+> give an alert "rx timeout, send abort", but do nothing actually.
+> Move the alert into session active judgment condition, it is more
+> reasonable.
+>=20
+> One of the scenarioes is that j1939_tp_rxtimer() execute followed by
+             scenarios
 
----
+Typo fixed while applying.
 
-The following changes since commit 64570fbc14f8d7cb3fe3995f20e26bc25ce4b2cc:
+> j1939_xtp_rx_abort_one(). After j1939_xtp_rx_abort_one(), the session
+> state is J1939_SESSION_DONE, then j1939_tp_rxtimer() give an alert.
+>=20
+> Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
+> Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
 
-  Linux 5.15-rc5 (2021-10-10 17:01:59 -0700)
+Added to linux-can/testing, added stable on Cc.
 
-are available in the Git repository at:
+Thanks,
+Marc
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/ras/ras.git tags/edac_urgent_for_v5.15_rc6
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
-for you to fetch changes up to d9b7748ffc45250b4d7bcf22404383229bc495f5:
+--tbw24fem2sqsw5rh
+Content-Type: application/pgp-signature; name="signature.asc"
 
-  EDAC/armada-xp: Fix output of uncorrectable error counter (2021-10-14 11:46:03 +0200)
+-----BEGIN PGP SIGNATURE-----
 
-----------------------------------------------------------------
-- Log the "correct" uncorrectable error count in the armada_xp driver
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmFr/a4ACgkQqclaivrt
+76mBJwf9G6w7bBDtIoaURGYok6UdZsn3FikNLn2EpTiYbO4c0rQb0oEdrHLm2vaS
+hD/889Mcn0GYgStPgbAeF756pQbwtndVQUU2iIzpEXKbhX3914wdQ8TOzZbRiWbY
+jQ+zmBZibV06rlfN2r4n6iWQrBX2UCuHU0B5NBTWIQQvm/LfRHQVmZSmgRGQrE5H
+Pb/B/GkeWXOMYfMihcCdV3krfmNscLjXG2te+yOmNVIQXC9p9/zVwjLIAht1HpsE
+FLc1eWPpeMOlLPlyor0Wyx+DZBug2zPQ5laUMQPeza6U6YFA80xYssQpC2nIGyma
+xflHutzNaKoTeMsM0NHnplP/jXpygg==
+=FaKl
+-----END PGP SIGNATURE-----
 
-----------------------------------------------------------------
-Hans Potsch (1):
-      EDAC/armada-xp: Fix output of uncorrectable error counter
-
- drivers/edac/armada_xp_edac.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
--- 
-Regards/Gruss,
-    Boris.
-
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
+--tbw24fem2sqsw5rh--
