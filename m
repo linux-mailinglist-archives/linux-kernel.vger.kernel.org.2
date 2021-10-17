@@ -2,108 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BC82430B4A
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 19:46:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80C6F430B4C
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 19:49:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232126AbhJQRsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 13:48:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54048 "EHLO
+        id S232344AbhJQRvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 13:51:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbhJQRsh (ORCPT
+        with ESMTP id S232165AbhJQRvT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 13:48:37 -0400
-Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8CF3C06161C
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 10:46:27 -0700 (PDT)
-Received: from martin by viti.kaiser.cx with local (Exim 4.89)
-        (envelope-from <martin@viti.kaiser.cx>)
-        id 1mcAEn-0001Dd-ER; Sun, 17 Oct 2021 19:46:21 +0200
-Date:   Sun, 17 Oct 2021 19:46:21 +0200
-From:   Martin Kaiser <martin@kaiser.cx>
-To:     Michael Straube <straube.linux@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] staging: r8188eu: Makefile: don't overwrite global
- settings
-Message-ID: <20211017174621.dkunl2xhjg4yn2at@viti.kaiser.cx>
-References: <20211016173544.25376-1-martin@kaiser.cx>
- <20211016173544.25376-3-martin@kaiser.cx>
- <c66442a2-51fd-70bf-d9cf-5991c0d88a76@gmail.com>
+        Sun, 17 Oct 2021 13:51:19 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB73AC06161C;
+        Sun, 17 Oct 2021 10:49:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=KSSBKqPE3IR7lwQZjR+3a0AghrBfpGBz1s5IaeJer1M=; b=bVy3pr3xTSQHsfPAJrByY4p9Ok
+        645Hpz9DerbKwzp633yp1zVs6gJ4MQUDZ9m6nRMhpP76+XaKTXkIrUapoK9DzYDB0GQ+AcS3zRZmF
+        pWwQ7NMKsHBlMPUpEEvtiGH+7UGOrOnPAB9oTF9aF57DMMQ7GSePlJBpq5DqD74HJEOWt6NE5ysHQ
+        XfQVMBc6xI0P3PtaiHd5hOk1UxnpBH1GMYAp1v6aiCcTkdAAdCj8A3eSFAD3ZCg1srMj4089t/ruo
+        mZr8jtGemH7fWw192MW33qkRk0UgwOPhBoS+ob3RCd9ChA9mDlzyuY6KEBMeH7JrHwgu1vwDx/ue3
+        lBSATOzA==;
+Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mcAHR-00D6Qz-Ro; Sun, 17 Oct 2021 17:49:05 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org
+Subject: [PATCH] asm-generic: bug.h: add unreachable() in BUG() for CONFIG_BUG not set
+Date:   Sun, 17 Oct 2021 10:49:05 -0700
+Message-Id: <20211017174905.18943-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c66442a2-51fd-70bf-d9cf-5991c0d88a76@gmail.com>
-User-Agent: NeoMutt/20170113 (1.7.2)
-Sender: Martin Kaiser <martin@viti.kaiser.cx>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thus wrote Michael Straube (straube.linux@gmail.com):
+When CONFIG_BUG is not set/enabled, there is a warning
+on ARCH=m68k, gcc version 11.1.0-nolibc from Arnd's crosstools:
 
-> On 10/16/21 19:35, Martin Kaiser wrote:
-> > Remove settings from the Makefile that are set by higher-level Makefiles.
+../fs/afs/dir.c: In function 'afs_dir_set_page_dirty':
+../fs/afs/dir.c:51:1: error: no return statement in function returning non-void [-Werror=return-type]
 
-> > Some of those settings might have been useful when the driver was
-> > maintained out of tree.
+Adding "unreachable()" in the BUG() macro silences the warning.
 
-> > Signed-off-by: Martin Kaiser <martin@kaiser.cx>
-> > ---
-> >   drivers/staging/r8188eu/Makefile | 14 --------------
-> >   1 file changed, 14 deletions(-)
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: linux-arch@vger.kernel.org
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org
+---
+ include/asm-generic/bug.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> > diff --git a/drivers/staging/r8188eu/Makefile b/drivers/staging/r8188eu/Makefile
-> > index fccf7e6d1520..8294fb69ecf9 100644
-> > --- a/drivers/staging/r8188eu/Makefile
-> > +++ b/drivers/staging/r8188eu/Makefile
-> > @@ -1,8 +1,3 @@
-> > -SHELL := /bin/bash
-> > -EXTRA_CFLAGS += $(USER_EXTRA_CFLAGS)
-> > -EXTRA_CFLAGS += -O1
-> > -
-> > -ccflags-y += -D__CHECK_ENDIAN__
-> >   OUTSRC_FILES :=				\
-> >   		hal/HalHWImg8188E_MAC.o	\
-> > @@ -46,15 +41,6 @@ _OS_INTFS_FILES :=				\
-> >   _HAL_INTFS_FILES += $(OUTSRC_FILES)
-> > -SUBARCH := $(shell uname -m | sed -e "s/i.86/i386/; s/ppc.*/powerpc/; s/armv.l/arm/; s/aarch64/arm64/;")
-> > -
-> > -ARCH ?= $(SUBARCH)
-> > -CROSS_COMPILE ?=
-> > -KVER  ?= $(if $(KERNELRELEASE),$(KERNELRELEASE),$(shell uname -r))
-> > -KSRC ?= $(if $(KERNEL_SRC),$(KERNEL_SRC),/lib/modules/$(KVER)/build)
-> > -MODDESTDIR := /lib/modules/$(KVER)/kernel/drivers/net/wireless
-> > -INSTALL_PREFIX :=
-> > -
-> >   rtk_core :=				\
-> >   		core/rtw_ap.o		\
-> >   		core/rtw_br_ext.o	\
-
-
-> Hi Martin, this patch introduces a GCC warning on my system.
-
-> drivers/staging/r8188eu/os_dep/ioctl_linux.c: In function
-> 'rtw_wx_set_enc_ext':
-> drivers/staging/r8188eu/os_dep/ioctl_linux.c:1929:9: warning: 'strncpy'
-> specified bound 16 equals destination size [-Wstringop-truncation]
->  1929 |         strncpy((char *)param->u.crypt.alg, alg_name,
-> IEEE_CRYPT_ALG_NAME_LEN);
->       |
-
-
-Hi Michael,
-
-thanks for reporting this. So far, I can't reproduce the warning, even
-if I enable -Wstringop-truncation explicitly. I tried this with gcc
-8.3.0 (Debian buster) on x86_64.
-
-Could you send me your complete compiler command line for this file
-(make V=1)?
-
-Maybe it's not ok to delete the EXTRA_CFLAGS. I guessed that the
-optimisation level would be set by a higher-level Makefile...
-
-Thanks,
-Martin
+--- linux-next-20211015.orig/include/asm-generic/bug.h
++++ linux-next-20211015/include/asm-generic/bug.h
+@@ -154,7 +154,7 @@ void __warn(const char *file, int line,
+ 
+ #else /* !CONFIG_BUG */
+ #ifndef HAVE_ARCH_BUG
+-#define BUG() do {} while (1)
++#define BUG() do {unreachable();} while (1)
+ #endif
+ 
+ #ifndef HAVE_ARCH_BUG_ON
