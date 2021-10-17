@@ -2,111 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEC7C4308BA
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 14:36:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9845C4308BE
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 14:36:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245675AbhJQMif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 08:38:35 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:41243 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237477AbhJQMib (ORCPT
+        id S245688AbhJQMis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 08:38:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41634 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245685AbhJQMin (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 08:38:31 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        Sun, 17 Oct 2021 08:38:43 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAD10C061769
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 05:36:33 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1mc5Or-0004sm-Ic; Sun, 17 Oct 2021 14:36:25 +0200
+Received: from pengutronix.de (2a03-f580-87bc-d400-7b24-848c-3829-1203.ip6.dokom21.de [IPv6:2a03:f580:87bc:d400:7b24:848c:3829:1203])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HXKHn24Wnz4xbc;
-        Sun, 17 Oct 2021 23:36:21 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1634474181;
-        bh=Dw1rY37uJhO7CntwmBCrGxDeK8CeNQ/IuMdrDqnsJyY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=VmPuR+yyn5IfRb2PK9EhLP9nTZuxF91PaXmIq6K5ktEmca9dNc+Bx42ERRGlVfOmI
-         osMxxS5H2xinjOYOmLRBaNBlJ/4TkYlm+ySNGRVD1u9M6DmC+/9vlnQmpyW6qGeOGE
-         9aw5jp1tfY72kd9kt4mdW+OegqKLzczBSoF3tviFJDs7fNrTao4YXca/48zfzJJ8E5
-         nud/2qhRhf9/Qiw6ggHn3UKt2ZLLTMBc9WURlSqIFOpiYoUHW2Yksn243DqbN5NZvu
-         S60AWeITzUK0MhOKisifjUhZnZedJQXTnA5pst6kDIrqCfSkPNRQ1T7TVC5lmXO9fP
-         BdFBhiG27JX/g==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     clg@kaod.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: [GIT PULL] Please pull powerpc/linux.git powerpc-5.15-4 tag
-Date:   Sun, 17 Oct 2021 23:36:20 +1100
-Message-ID: <87sfwzde0r.fsf@mpe.ellerman.id.au>
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 44EC5695CD8;
+        Sun, 17 Oct 2021 12:36:23 +0000 (UTC)
+Date:   Sun, 17 Oct 2021 14:36:22 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Dongliang Mu <mudongliangabcd@gmail.com>
+Cc:     Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>,
+        Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        linux-can@vger.kernel.org,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] driver: net: can: delete napi if register_candev fails
+Message-ID: <20211017123622.nfyis7o235tb2qad@pengutronix.de>
+References: <20211013040349.2858773-1-mudongliangabcd@gmail.com>
+ <CAD-N9QWTP8DLtAN70Xxap+WhNUfh9ixfeDMuNaB2NnpFhuAN8A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="dfm43gs7fxhcrzkr"
+Content-Disposition: inline
+In-Reply-To: <CAD-N9QWTP8DLtAN70Xxap+WhNUfh9ixfeDMuNaB2NnpFhuAN8A@mail.gmail.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA256
 
-Hi Linus,
+--dfm43gs7fxhcrzkr
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Please pull some more powerpc fixes for 5.15:
+On 13.10.2021 13:21:09, Dongliang Mu wrote:
+> On Wed, Oct 13, 2021 at 12:04 PM Dongliang Mu <mudongliangabcd@gmail.com>=
+ wrote:
+> >
+> > If register_candev fails, xcan_probe does not clean the napi
+> > created by netif_napi_add.
+> >
+>=20
+> It seems the netif_napi_del operation is done in the free_candev
+> (free_netdev precisely).
+>=20
+> list_for_each_entry_safe(p, n, &dev->napi_list, dev_list)
+>           netif_napi_del(p);
+>=20
+> And list_add_rcu(&napi->dev_list, &dev->napi_list) is done in the
+> netif_napi_add.
+>=20
+> Therefore, I suggest removing "netif_napi_del" operation in the
+> xcan_remove to match probe and remove function.
 
-The following changes since commit eb8257a12192f43ffd41bd90932c39dade958042:
+Sounds reasonable, can you create a patch for this.
 
-  pseries/eeh: Fix the kdump kernel crash during eeh_pseries_init (2021-10-=
-07 23:37:22 +1100)
+regards,
+Marc
 
-are available in the git repository at:
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/po=
-werpc-5.15-4
+--dfm43gs7fxhcrzkr
+Content-Type: application/pgp-signature; name="signature.asc"
 
-for you to fetch changes up to cdeb5d7d890e14f3b70e8087e745c4a6a7d9f337:
-
-  KVM: PPC: Book3S HV: Make idle_kvm_start_guest() return 0 if it went to g=
-uest (2021-10-16 00:40:03 +1100)
-
-- ------------------------------------------------------------------
-powerpc fixes for 5.15 #4
-
-Fix a bug where guests on P9 with interrupts passed through could get stuck=
- in
-synchronize_irq().
-
-Fix a bug in KVM on P8 where secondary threads entering a guest would write=
- outside their
-allocated stack.
-
-Fix a bug in KVM on P8 where secondary threads could confuse the host offli=
-ne code and
-cause the guest or host to crash.
-
-Thanks to: C=C3=A9dric Le Goater
-
-- ------------------------------------------------------------------
-C=C3=A9dric Le Goater (1):
-      powerpc/xive: Discard disabled interrupts in get_irqchip_state()
-
-Michael Ellerman (2):
-      KVM: PPC: Book3S HV: Fix stack handling in idle_kvm_start_guest()
-      KVM: PPC: Book3S HV: Make idle_kvm_start_guest() return 0 if it went =
-to guest
-
-
- arch/powerpc/kvm/book3s_hv_rmhandlers.S | 28 ++++++++++++--------
- arch/powerpc/sysdev/xive/common.c       |  3 ++-
- 2 files changed, 19 insertions(+), 12 deletions(-)
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAEBCAAdFiEEJFGtCPCthwEv2Y/bUevqPMjhpYAFAmFsGG0ACgkQUevqPMjh
-pYCAJRAAi8wEtHdIziXc22xYVaI8znMeogpoYnqKmEjRoGhyv79JNzh1/kOsNWyQ
-E8hGut8YrKl+0xswbF41E5qdQCLfHiJYhqe8Ltl38ltoSx5YO/FqTtDMuVvc9bO1
-SuyNOQWwrfPo6PolAHKtWv+yn7lMV6tP2NBp0lXe6DQkrCC7FEQ/s+12qQFmmnmb
-hZ4KQuu27kcWqADTyhqipH+pLS+0nSdWFrBXyxQVtPlAxy0trvwU3m+9rNvcWcob
-D07uH8n0TS1nORYs0s8YStxz5Kme0ICUIj64hvox7T1CqcTldl5iMrpzjvHRUa+s
-sbuAgjAnyaksCiKyDJjIo8NtpXFYYLq4SeAn0/6dCxb3gtyQsRBDG9oe7F/q5jvO
-j0flo6Bmcl4es3dTEz5mX7G/EChniTYyeq4xfVFZpA/56LkXeCdcTkBeyTeopBSe
-QLtR40DUFYBZZVBUotBp9K13Grqg8xrvLYFZhUihA5rnC7HRZjwt70Rh3FmZUKcd
-i7blHpIssf8obH5ERhEUOF4ITHwmFkLDBgqTh/jlPYlMBz4FYn/2IxWnMfZQpv3u
-igC6DHCwJ9FmTI0iGyN2xbxGqW/WrAZrRCTFB3lZSw38O4e31viIXbfi9u+Iib2e
-j0oUBZmoroH6POha/udMK/FUdxTlkS8OTiUDM7K2J81L7Cz9F6k=3D
-=3Da0+j
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmFsGMMACgkQqclaivrt
+76n7igf8CvP7xI7j1Eqn4NDnUwcP2SDkko7tGu/cFltCOZ6NwQ5DNo+VwAvhQIwA
+wO2XgNcA81EuK+TX4Oq0+XjvCbiaVjS2Y3bwHNNVpJbUhDmqiq0QknGGbfwqkTks
+OXlv5INJSkVLCvadeTIenBUgB4KLygX0XM0hyZCejRf3SeCM/LJvJuYt6jtxWCjM
+qZndqek8+fvgllTBkVO/sv5fvyxDq0JErWfbTuxk6aLI6tiRqBhQgi0li+VHVcSV
+F9e7Tw9tSVMo63RhCoAu4Glina1nHl/G/ToEfOgJZjo56a212y2Gfs6QSyW53VCR
+oQsEjpBIfaG3B/RFfvw9/70gG4CuwQ==
+=KM5O
 -----END PGP SIGNATURE-----
+
+--dfm43gs7fxhcrzkr--
