@@ -2,99 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FECB430A4F
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 17:48:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 780C6430A58
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 18:00:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241485AbhJQPui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 11:50:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32930 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237507AbhJQPuh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 11:50:37 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3E40461038;
-        Sun, 17 Oct 2021 15:48:26 +0000 (UTC)
-Date:   Sun, 17 Oct 2021 16:52:40 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Yang Yingliang <yangyingliang@huawei.com>
-Cc:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
-        <lars@metafoo.de>, <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH] iio: core: check return value when calling
- dev_set_name()
-Message-ID: <20211017165240.56fdc296@jic23-huawei>
-In-Reply-To: <20211012063624.3167460-1-yangyingliang@huawei.com>
-References: <20211012063624.3167460-1-yangyingliang@huawei.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S241829AbhJQQCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 12:02:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58816 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237507AbhJQQCp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Oct 2021 12:02:45 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A12C7C06161C
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 09:00:35 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id w14so60264877edv.11
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 09:00:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id;
+        bh=8kT8uxQmVp/XocDx24aLnGXhZi2Xo78WndzfJoxUXf4=;
+        b=qrLR02zphJEnatJargVO7TxpS34lT74UJQ7lr8oE5lRkxlgLQ8ArQlSrMq0GflGD4D
+         7dsC4ii8/jjoRXXFbXupZOzWH72mJb3LlTLH51cGjaN1yZtLeYc/5IbApZp/Vef1FWLv
+         O/AxFsGAUDTwmk8J170VCDyJIOH8E6WyzOhazTkVUwtTpQvU++ESv905EVNkdr2mXK2S
+         1DDGvigBCQr5Rvcn8nh1zzwlQEdsXI/GzB8f6/MOmg4Kw9q9PTawl64ev7SjmyS1jQoc
+         YTIdRXAompcx+ZsrJvdyZdBUbv6WIDveBO4RmE7looBbHelfcJlV7jz1ubenysiOzKEZ
+         cvxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=8kT8uxQmVp/XocDx24aLnGXhZi2Xo78WndzfJoxUXf4=;
+        b=n2Aut80nYzNy/1M4kOx6L6Jvn+LAbswG5+OsuPSF1KZ8TN9yTYAXx1yYB3ncg9+Bax
+         sfEV8iwsxEzMpBC+mNjITQkxU0s3NtADFsxjlsG0mNffoOY0xzzs6pnBSz0VejHsP/fV
+         C+DQgsME98hk7zAfiIK85wcOgCflSDakgoN+I0f5V+1rrlQgS1D0LbvelqmJT0BtV6Fb
+         5BOv9Q1ey/kzk/kAmbKqS5zXHRT/1WX86ur8D3S7CPpI/wxuD+NREtN0ocHTsFWnfBN8
+         Dy8A74yOSduHCOfFP9eUPZR4s8KZWLjmj0bgONF4wdVa0Zpgf9158jsutCrOZ5gxYb1e
+         I1/w==
+X-Gm-Message-State: AOAM5317EngO1l25HopYMZOFkTlS2RfdodWzzdUKaJIQwgUjnCqNqn86
+        AvxolHUMJ4iXR/B+da/UuJY=
+X-Google-Smtp-Source: ABdhPJwTB0vfk1m5xsCYFd2NXY/+qkTRYqLJ8qato/ZDGtv+VE5V+xBNUFGnEFhH9R8hZ1fiItRyuA==
+X-Received: by 2002:a05:6402:3547:: with SMTP id f7mr36201251edd.395.1634486434122;
+        Sun, 17 Oct 2021 09:00:34 -0700 (PDT)
+Received: from localhost.localdomain ([87.200.95.144])
+        by smtp.gmail.com with ESMTPSA id yz9sm7693135ejb.51.2021.10.17.09.00.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 Oct 2021 09:00:33 -0700 (PDT)
+From:   Christian Hewitt <christianshewitt@gmail.com>
+To:     Jerome Brunet <jbrunet@baylibre.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Christian Hewitt <christianshewitt@gmail.com>,
+        Matthias Reichl <hias@horus.com>
+Subject: [PATCH] ASoC: meson: implement driver_name for snd_soc_card in meson-card-utils
+Date:   Sun, 17 Oct 2021 16:00:28 +0000
+Message-Id: <20211017160028.23318-1-christianshewitt@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Oct 2021 14:36:24 +0800
-Yang Yingliang <yangyingliang@huawei.com> wrote:
+Implement driver_name to provide an alternative to card_name for userspace
+configuration of Amlogic audio cards.
 
-> I got a null-ptr-deref report when doing fault injection test:
-> 
-> BUG: kernel NULL pointer dereference, address: 0000000000000000
-> RIP: 0010:strlen+0x0/0x20
-> Call Trace:
->  start_creating+0x199/0x2f0
->  debugfs_create_dir+0x25/0x430
->  __iio_device_register+0x4da/0x1b40 [industrialio]
->  __devm_iio_device_register+0x22/0x80 [industrialio]
->  max1027_probe+0x639/0x860 [max1027]
->  spi_probe+0x183/0x210
->  really_probe+0x285/0xc30
-> 
-> If dev_set_name() fails, the dev_name() is null, check the return
-> value of dev_set_name() to avoid the null-ptr-deref.
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Fixes: e553f182d55b ("staging: iio: core: Introduce debugfs support...")
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Suggested-by: Matthias Reichl <hias@horus.com>
+Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
+---
+The meson AIU/AXG drivers currently require alsa confs based on the board
+model name which is unique to each board. This is very flexible for audio
+use-cases, but not very maintainable for distros with a single use-case
+that need to support a large number of different Amlogic boards. Using a
+driver name to match the card conf instead of card/model name reduces the
+number of confs needed in the LibreELEC (Kodi) distro from 41 to 2.
 
-Hi Yang Yingliang,
+ sound/soc/meson/meson-card-utils.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-I've been delaying replying to these for a few days because you have
-identified a more significant issue whilst working in this area and I wanted
-to take a deeper look at it.
-
-After we call device_initialize() a few lines above this all the cleanup
-on error should be done via a put_device() call, not by cleaning it up manually.
-
-However, that's clearly a much more substantial change so I'm going to apply this
-for now and deal with that cleanup at a later date.
-
-Thanks,
-
-Jonathan
-
-
-> ---
->  drivers/iio/industrialio-core.c | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
-> index 2dc837db50f7..3e1e86d987cc 100644
-> --- a/drivers/iio/industrialio-core.c
-> +++ b/drivers/iio/industrialio-core.c
-> @@ -1665,7 +1665,13 @@ struct iio_dev *iio_device_alloc(struct device *parent, int sizeof_priv)
->  		kfree(iio_dev_opaque);
->  		return NULL;
->  	}
-> -	dev_set_name(&indio_dev->dev, "iio:device%d", iio_dev_opaque->id);
-> +
-> +	if (dev_set_name(&indio_dev->dev, "iio:device%d", iio_dev_opaque->id)) {
-> +		ida_simple_remove(&iio_ida, iio_dev_opaque->id);
-> +		kfree(iio_dev_opaque);
-> +		return NULL;
-> +	}
-> +
->  	INIT_LIST_HEAD(&iio_dev_opaque->buffer_list);
->  	INIT_LIST_HEAD(&iio_dev_opaque->ioctl_handlers);
->  
+diff --git a/sound/soc/meson/meson-card-utils.c b/sound/soc/meson/meson-card-utils.c
+index 415cc0046e4b..29b0174f4b5c 100644
+--- a/sound/soc/meson/meson-card-utils.c
++++ b/sound/soc/meson/meson-card-utils.c
+@@ -302,6 +302,7 @@ int meson_card_probe(struct platform_device *pdev)
+ 
+ 	priv->card.owner = THIS_MODULE;
+ 	priv->card.dev = dev;
++	priv->card.driver_name = dev->driver->name;
+ 	priv->match_data = data;
+ 
+ 	ret = snd_soc_of_parse_card_name(&priv->card, "model");
+-- 
+2.17.1
 
