@@ -2,209 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C07D43073F
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 10:38:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC1B9430744
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 10:43:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245080AbhJQIkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 04:40:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45968 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234310AbhJQIkg (ORCPT
+        id S245090AbhJQIpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 04:45:18 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:38930 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234310AbhJQIpR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 04:40:36 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D472C061765;
-        Sun, 17 Oct 2021 01:38:24 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id i24so58710405lfj.13;
-        Sun, 17 Oct 2021 01:38:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=opxUgAexG3s+/01pbgkqJfjPAUC0LEyYCXhf01ZbC0c=;
-        b=D7kQyoaL09G2+qKjzlGip7Tt2fmqCCpaZgG45v9JMgbOfXMzpbe/F4Zokvs+VPF/lD
-         WfrP/tvOaQ8QBq3g7FNly2cBTmnmgB1n+NoFfi8LpcH9hw6cxOgxmQsUnhUWqjQsOPdk
-         EUwCSAhuwGMtcYj4aJlAvkIXk38IFW5ZrLYFxPg1cXOn2fOiRk64e8LzpJPHNmNOPPVJ
-         0E1w2kLkFxNQpvmJiOkeYPr8EOUsx5Je8yU7KPsBWr2sFivNGheJ7VSh8C9+gTO/FKEG
-         CVJzyRbEzNl6m5aC5n8JeMKgPz7GJOq6ARqSDsndsJRJcrWKQ8cr/YdS6AaPiYKrPPMN
-         8Cuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=opxUgAexG3s+/01pbgkqJfjPAUC0LEyYCXhf01ZbC0c=;
-        b=ih44PBZ6QNwV7BCEkge3vL2xWF1sbABGl09D6sl7h/QnYGFz/5wjWt67ubeVYjAvDB
-         0AsJwTM7bAWQzyWbh5uGFgGH4NnJpG8imcG2RdTOjHEZjiMEQF0r8E9o0UE8mUPDZYXP
-         97t6ZMgNVc9TVeyL7uW1ylXwpDq9yatvVRS47l6o3Z1JqO2x1UnktZK9a5p9eaw+QIVn
-         mknBiVFPDRg5OkGlJewdtneZk93q2kNUUcVrz95ilod8bMW90x1SK67R0kalOCL4j7F8
-         HnqKsNllCUflAQ/0rgo2adgXZ7uMbephuU1ipnq7beXLqC8qfGVpcHtW2eG8lOCdxvq+
-         ApzA==
-X-Gm-Message-State: AOAM533Vpylkfiae+sWdq/M7elKjeo4WxYcA2Mna4iyKdlO4lXW0H7h+
-        ZZnkiFRQ2xdG5OXMKZTsY+I=
-X-Google-Smtp-Source: ABdhPJxQusOyrULmSzYae9aV203LQo0/dtj0Yz/g3SI3pMK/z/tMpwc72My6KFI8vzlhgvLi1jfZ/w==
-X-Received: by 2002:a05:6512:a8d:: with SMTP id m13mr23749109lfu.305.1634459902328;
-        Sun, 17 Oct 2021 01:38:22 -0700 (PDT)
-Received: from [192.168.2.145] (46-138-48-94.dynamic.spd-mgts.ru. [46.138.48.94])
-        by smtp.googlemail.com with ESMTPSA id r30sm1092639lfp.298.2021.10.17.01.38.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 17 Oct 2021 01:38:21 -0700 (PDT)
-Subject: Re: [PATCH v13 20/35] mtd: rawnand: tegra: Add runtime PM and OPP
- support
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Peter Chen <peter.chen@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Nishanth Menon <nm@ti.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Michael Turquette <mturquette@baylibre.com>,
+        Sun, 17 Oct 2021 04:45:17 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19H7HXAw016844;
+        Sun, 17 Oct 2021 04:43:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=6RwZW99qh3M/ds06hYXsN2uDhgqT4qYMGiB8BadkOvY=;
+ b=QM77rOr0jNmrSyK/HJxmFeOQC43mZclwNaSfoGyZp7h4czek6GBUod3jao7u1lc1lPya
+ STWufwATXmrV1VXfXz28RI+LQDlOG2zO0C4Mfx/4iPqSagq74Y/BBa0yS6I0eI/j+A2F
+ QBUzXvVqQ+MV3AP44mitO/75fl/qWbnK4hEI/4/WqjUTGbpklQ08wXdHm0RrRxvtk0QA
+ YykQ5TXUI9/1uRLGStT7/iW/j4z6Y/RnaGYXr0AqXUO9/eLWUSXKm86guZgkic3wR/pr
+ y1g5yhXIRudKFda3JfIAdbLbzk93BvJwqx2sY9OkYEJX59bPWXgxuqllIv4fgsrWK9pI Bw== 
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3brfahrypd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 17 Oct 2021 04:43:05 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19H8gjjs009405;
+        Sun, 17 Oct 2021 08:43:03 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma05fra.de.ibm.com with ESMTP id 3bqpc94t62-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 17 Oct 2021 08:43:03 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19H8bD4462259542
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 17 Oct 2021 08:37:13 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 060844C040;
+        Sun, 17 Oct 2021 08:43:00 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B7AB94C044;
+        Sun, 17 Oct 2021 08:42:59 +0000 (GMT)
+Received: from osiris (unknown [9.145.149.250])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Sun, 17 Oct 2021 08:42:59 +0000 (GMT)
+Date:   Sun, 17 Oct 2021 10:42:58 +0200
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        linux-staging@lists.linux.dev, linux-pwm@vger.kernel.org,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Richard Weinberger <richard@nod.at>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        David Heidelberg <david@ixit.cz>
-References: <20210926224058.1252-1-digetx@gmail.com>
- <20210926224058.1252-21-digetx@gmail.com>
- <CAPDyKFoF2QxZss_h9B1NFqOqgeF=TQ6LajCedGiJ9_P8X5M0NA@mail.gmail.com>
- <0bcbcd3d-2154-03d2-f572-dc9032125c26@gmail.com>
- <CAPDyKFohA9iu2UQfwoc0pCrCGupdwnUTWjKOtP09_C2KaFSo8w@mail.gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <073114ea-490b-89a9-e82d-852b34cb11df@gmail.com>
-Date:   Sun, 17 Oct 2021 11:38:20 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        linux-s390 <linux-s390@vger.kernel.org>
+Subject: Re: [GIT PULL] s390 updates for 5.15-rc6
+Message-ID: <YWviEupI518iFjOb@osiris>
+References: <your-ad-here.call-01634376368-ext-7035@work.hours>
+ <CAHk-=whoe211F8ND-9hZvfnib0UA4gga8DZJ+YaBZNbE4fubdg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAPDyKFohA9iu2UQfwoc0pCrCGupdwnUTWjKOtP09_C2KaFSo8w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=whoe211F8ND-9hZvfnib0UA4gga8DZJ+YaBZNbE4fubdg@mail.gmail.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: YQ0PcJdQPRWhq4Htd9fKKbebFbd8eDan
+X-Proofpoint-ORIG-GUID: YQ0PcJdQPRWhq4Htd9fKKbebFbd8eDan
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-17_03,2021-10-14_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=843
+ impostorscore=0 phishscore=0 clxscore=1015 spamscore=0 lowpriorityscore=0
+ priorityscore=1501 adultscore=0 mlxscore=0 bulkscore=0 suspectscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110170058
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-01.10.2021 18:01, Ulf Hansson пишет:
-> On Fri, 1 Oct 2021 at 16:35, Dmitry Osipenko <digetx@gmail.com> wrote:
->>
->> 01.10.2021 17:24, Ulf Hansson пишет:
->>> On Mon, 27 Sept 2021 at 00:42, Dmitry Osipenko <digetx@gmail.com> wrote:
->>>>
->>>> The NAND on Tegra belongs to the core power domain and we're going to
->>>> enable GENPD support for the core domain. Now NAND must be resumed using
->>>> runtime PM API in order to initialize the NAND power state. Add runtime PM
->>>> and OPP support to the NAND driver.
->>>>
->>>> Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
->>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->>>> ---
->>>>  drivers/mtd/nand/raw/tegra_nand.c | 55 ++++++++++++++++++++++++++-----
->>>>  1 file changed, 47 insertions(+), 8 deletions(-)
->>>>
->>>> diff --git a/drivers/mtd/nand/raw/tegra_nand.c b/drivers/mtd/nand/raw/tegra_nand.c
->>>> index 32431bbe69b8..098fcc9cb9df 100644
->>>> --- a/drivers/mtd/nand/raw/tegra_nand.c
->>>> +++ b/drivers/mtd/nand/raw/tegra_nand.c
->>>> @@ -17,8 +17,11 @@
->>>>  #include <linux/mtd/rawnand.h>
->>>>  #include <linux/of.h>
->>>>  #include <linux/platform_device.h>
->>>> +#include <linux/pm_runtime.h>
->>>>  #include <linux/reset.h>
->>>>
->>>> +#include <soc/tegra/common.h>
->>>> +
->>>>  #define COMMAND                                        0x00
->>>>  #define   COMMAND_GO                           BIT(31)
->>>>  #define   COMMAND_CLE                          BIT(30)
->>>> @@ -1151,6 +1154,7 @@ static int tegra_nand_probe(struct platform_device *pdev)
->>>>                 return -ENOMEM;
->>>>
->>>>         ctrl->dev = &pdev->dev;
->>>> +       platform_set_drvdata(pdev, ctrl);
->>>>         nand_controller_init(&ctrl->controller);
->>>>         ctrl->controller.ops = &tegra_nand_controller_ops;
->>>>
->>>> @@ -1166,14 +1170,22 @@ static int tegra_nand_probe(struct platform_device *pdev)
->>>>         if (IS_ERR(ctrl->clk))
->>>>                 return PTR_ERR(ctrl->clk);
->>>>
->>>> -       err = clk_prepare_enable(ctrl->clk);
->>>> +       err = devm_pm_runtime_enable(&pdev->dev);
->>>> +       if (err)
->>>> +               return err;
->>>> +
->>>> +       err = devm_tegra_core_dev_init_opp_table_common(&pdev->dev);
->>>> +       if (err)
->>>> +               return err;
->>>> +
->>>> +       err = pm_runtime_resume_and_get(&pdev->dev);
->>>>         if (err)
->>>>                 return err;
->>>>
->>>>         err = reset_control_reset(rst);
->>>>         if (err) {
->>>>                 dev_err(ctrl->dev, "Failed to reset HW: %d\n", err);
->>>> -               goto err_disable_clk;
->>>> +               goto err_put_pm;
->>>>         }
->>>>
->>>>         writel_relaxed(HWSTATUS_CMD_DEFAULT, ctrl->regs + HWSTATUS_CMD);
->>>> @@ -1188,21 +1200,19 @@ static int tegra_nand_probe(struct platform_device *pdev)
->>>>                                dev_name(&pdev->dev), ctrl);
->>>>         if (err) {
->>>>                 dev_err(ctrl->dev, "Failed to get IRQ: %d\n", err);
->>>> -               goto err_disable_clk;
->>>> +               goto err_put_pm;
->>>>         }
->>>>
->>>>         writel_relaxed(DMA_MST_CTRL_IS_DONE, ctrl->regs + DMA_MST_CTRL);
->>>>
->>>>         err = tegra_nand_chips_init(ctrl->dev, ctrl);
->>>>         if (err)
->>>> -               goto err_disable_clk;
->>>> -
->>>> -       platform_set_drvdata(pdev, ctrl);
->>>> +               goto err_put_pm;
->>>>
->>>
->>> There is no corresponding call pm_runtime_put() here. Is it
->>> intentional to always leave the device runtime resumed after ->probe()
->>> has succeeded?
->>>
->>> I noticed you included some comments about this for some other
->>> drivers, as those needed more tweaks. Is that also the case for this
->>> driver?
->>
->> Could you please clarify? There is pm_runtime_put() in both probe-error
->> and remove() code paths here.
+On Sat, Oct 16, 2021 at 09:22:12AM -0700, Linus Torvalds wrote:
+> On Sat, Oct 16, 2021 at 2:26 AM Vasily Gorbik <gor@linux.ibm.com> wrote:
+> >
+> > - Fix broken strrchr implementation.
 > 
-> I was not considering the error path of ->probe() (or ->remove()), but
-> was rather thinking about when ->probe() completes successfully. Then
-> you keep the device runtime resumed, because you have called
-> pm_runtime_resume_and_get() for it.
+> I pulled this, but had to look at this commit just because it struck me as odd.
 > 
-> Shouldn't you have a corresponding pm_runtime_put() in ->probe(),
-> allowing it to be runtime suspended, until the device is really needed
-> later on. No?
+> Is the generic strrchr() implementation so bad for s390 that it shows
+> up? It looks like the s390 implementation wants to avoid checking
+> separately against the final NUL character and basically uses the
+> optimized strlen function to do so, but when strrchr has to walk the
+> string _anyway_ this all looks a bit odd.
 
-This driver doesn't support active power management. I don't have Tegra
-hardware that uses NAND storage for testing, so it's up to somebody else
-to implement dynamic power management. NAND doesn't require high
-voltages, so it's fine to keep the old driver behaviour by keeping
-hardware resumed since the probe time.
+The difference is that it walks the string from the end to the start,
+taking into account that searching for the end of the string can be
+considered fast.
+
+> Not a big deal. I just get the feeling that s390 (and probably other
+> architectures) might be a bit too eager to make their own helper
+> string functions for reasons that may be historical ("we didn't have
+> generic string functions at all long ago") or misguided ("we'll do an
+> architecture-optimized version even for things that don't matter").
+
+This function exists for historical reasons, and in this case it is
+probably more the "optimized version for things that don't matter".
+
+The only caller which sort of gets called more frequently seems to be
+kbasename().
+
+Some numbers, running 1.000.000 strrchr on an 80 byte string:
+
+ s390  generic   search for
+ 57us     55us   first character in string
+ 15us     55us   last character in string
+ 44us     55us   character in middle of string
+
+So yes, we could probably just drop our own implementation, given that
+it hardly matters in real life.
