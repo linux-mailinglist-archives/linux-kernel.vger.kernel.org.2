@@ -2,103 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06CD6430874
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 13:43:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 389F6430875
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 13:43:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245575AbhJQLpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 07:45:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58110 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242072AbhJQLpP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 07:45:15 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19107C061765
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 04:43:06 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id v17so35563962wrv.9
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 04:43:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=w43DUiLVu811xq4h9m7lzBE38oZ98PZ1zshE3bWj7o8=;
-        b=DbFlZLiG0MN0WOZuyaG/l8Si2MvzjNcxOd4FdBV9pm/jJLgBiD0xgZowc3Z3BIj9cl
-         dWzNFrr8BnpSJSr8SoajqBQCR/pca6u4gg7mvhn1R9e3EgzYtBjrRSJXPHV3YtzSYVji
-         G5OL00Y0XWRfOsdpiQm6XUiFens0IobzI8ukYjgbLR+P0tlo/hUE4NSJXRk5JGaRPFY3
-         CaiX8wzBBHw0AFG6KUo4Ez03jklEQEDKSLkFz2qSvtYeE7dfzTaGTkDfmme8IS5DM1id
-         0dhsEKHhfBS5VzxLtY1HMmh2l8UDBQ0fw1NfEis2K0RW228H4ZfIGEsRpYt2kT/6ZnfK
-         z1fQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=w43DUiLVu811xq4h9m7lzBE38oZ98PZ1zshE3bWj7o8=;
-        b=sFiQAdfaH5BEVKdn7YqycTDZEj2Alrlvop3xCA8mKzc3mY2sfExtqd+ZStVLWJhVEC
-         qJoYyrR+qRwQoa2KvQYbgSEdheA/mzyTlUGSx7nYo/Iy00UImUBIODWbuGGZ2ozwucVN
-         EUG2a5mvGXEB77UzsQ2tB3A1CVi2GmOWlrkGdPklh49WHwBLaFKoisNuubptqzpOkqOl
-         fHrVxZlJaOLYkbeBmYLVtkjeo021GDVyN2EQwSaHI+DAtaX1YUPFnOn6d558lJsoiZM8
-         ar01rpmyAaJETrjuEbWw/qGw0SVL/SIa/baFnDX5xicsbVer9Rbl5sYn5Qk3sxzrupBp
-         vIMQ==
-X-Gm-Message-State: AOAM531fcHhCYbMjTVklBnlxU88CMvEU0xCz8aBiSoQZycYj6tAS75/Z
-        6SfhHsMdSJzlcqUktGvVmp0=
-X-Google-Smtp-Source: ABdhPJw+wMcjBrWpM02et9VFMg3YLgHJHyeU2EXD50X3FyZPqcg4zj9rtPL9pEND3JNan09AJajmSw==
-X-Received: by 2002:adf:a411:: with SMTP id d17mr28486301wra.393.1634470984667;
-        Sun, 17 Oct 2021 04:43:04 -0700 (PDT)
-Received: from ?IPV6:2a02:8108:96c0:3b88::d7f0? ([2a02:8108:96c0:3b88::d7f0])
-        by smtp.gmail.com with ESMTPSA id 25sm15967705wmo.18.2021.10.17.04.43.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 17 Oct 2021 04:43:04 -0700 (PDT)
-Message-ID: <4531a88c-2b35-e409-b7f9-cb4253c9c708@gmail.com>
-Date:   Sun, 17 Oct 2021 13:43:03 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH] staging: r8188eu: remove unused constants and variables
-Content-Language: en-US
-To:     Martin Kaiser <lists@kaiser.cx>
-Cc:     gregkh@linuxfoundation.org, Larry.Finger@lwfinger.net,
-        phil@philpotter.co.uk, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-References: <20211017111705.18989-1-straube.linux@gmail.com>
- <20211017112356.b4dwrrxfcgwskhy3@viti.kaiser.cx>
-From:   Michael Straube <straube.linux@gmail.com>
-In-Reply-To: <20211017112356.b4dwrrxfcgwskhy3@viti.kaiser.cx>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+        id S245584AbhJQLpn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 07:45:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60348 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238081AbhJQLpm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Oct 2021 07:45:42 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7AD0960F46;
+        Sun, 17 Oct 2021 11:43:32 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mc4Ze-00HK3Z-8n; Sun, 17 Oct 2021 12:43:30 +0100
+Date:   Sun, 17 Oct 2021 12:43:29 +0100
+Message-ID: <871r4jq3ku.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Alexandru Elisei <alexandru.elisei@arm.com>
+Cc:     james.morse@arm.com, suzuki.poulose@arm.com,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        will@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v4 04/39] KVM: arm64: Defer CMOs for locked memslots until a VCPU is run
+In-Reply-To: <20210825161815.266051-5-alexandru.elisei@arm.com>
+References: <20210825161815.266051-1-alexandru.elisei@arm.com>
+        <20210825161815.266051-5-alexandru.elisei@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: alexandru.elisei@arm.com, james.morse@arm.com, suzuki.poulose@arm.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, will@kernel.org, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/17/21 13:23, Martin Kaiser wrote:
-> Thus wrote Michael Straube (straube.linux@gmail.com):
+On Wed, 25 Aug 2021 17:17:40 +0100,
+Alexandru Elisei <alexandru.elisei@arm.com> wrote:
 > 
->> Remove some unused constants and variables that are left over from
->> previous cleanup patches.
+> KVM relies on doing dcache maintenance on stage 2 faults to present to a
+> gueste running with the MMU off the same view of memory as userspace. For
+> locked memslots, KVM so far has done the dcache maintenance when a memslot
+> is locked, but that leaves KVM in a rather awkward position: what userspace
+> writes to guest memory after the memslot is locked, but before a VCPU is
+> run, might not be visible to the guest.
 > 
->> Suggested-by: Martin Kaiser <martin@kaiser.cx>
->> Signed-off-by: Michael Straube <straube.linux@gmail.com>
->> ---
->>   drivers/staging/r8188eu/hal/odm.c          |  8 --------
->>   drivers/staging/r8188eu/hal/odm_HWConfig.c |  3 ---
->>   drivers/staging/r8188eu/include/odm.h      | 17 -----------------
->>   3 files changed, 28 deletions(-)
+> Fix this by deferring the dcache maintenance until the first VCPU is run.
+> 
+> Signed-off-by: Alexandru Elisei <alexandru.elisei@arm.com>
+> ---
+>  arch/arm64/include/asm/kvm_host.h |  7 ++++
+>  arch/arm64/include/asm/kvm_mmu.h  |  5 +++
+>  arch/arm64/kvm/arm.c              |  3 ++
+>  arch/arm64/kvm/mmu.c              | 56 ++++++++++++++++++++++++++++---
+>  4 files changed, 67 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+> index 97ff3ed5d4b7..ed67f914d169 100644
+> --- a/arch/arm64/include/asm/kvm_host.h
+> +++ b/arch/arm64/include/asm/kvm_host.h
+> @@ -112,6 +112,10 @@ struct kvm_arch_memory_slot {
+>  	u32 flags;
+>  };
+>  
+> +/* kvm->arch.mmu_pending_ops flags */
+> +#define KVM_LOCKED_MEMSLOT_FLUSH_DCACHE	0
+> +#define KVM_MAX_MMU_PENDING_OPS		1
+> +
+>  struct kvm_arch {
+>  	struct kvm_s2_mmu mmu;
+>  
+> @@ -135,6 +139,9 @@ struct kvm_arch {
+>  	 */
+>  	bool return_nisv_io_abort_to_user;
+>  
+> +	/* Defer MMU operations until a VCPU is run. */
+> +	unsigned long mmu_pending_ops;
 
-> 
-> 
-> Hi Michael,
-> 
-> Looks good, thanks.
-> 
-> Acked-by: Martin Kaiser <martin@kaiser.cx>
-> 
+This has a funny taste of VM-wide requests...
 
-Thank you, Martin.
+> +
+>  	/*
+>  	 * VM-wide PMU filter, implemented as a bitmap and big enough for
+>  	 * up to 2^10 events (ARMv8.0) or 2^16 events (ARMv8.1+).
+> diff --git a/arch/arm64/include/asm/kvm_mmu.h b/arch/arm64/include/asm/kvm_mmu.h
+> index ef079b5eb475..525c223e769f 100644
+> --- a/arch/arm64/include/asm/kvm_mmu.h
+> +++ b/arch/arm64/include/asm/kvm_mmu.h
+> @@ -219,6 +219,11 @@ void kvm_toggle_cache(struct kvm_vcpu *vcpu, bool was_enabled);
+>  int kvm_mmu_lock_memslot(struct kvm *kvm, u64 slot, u64 flags);
+>  int kvm_mmu_unlock_memslot(struct kvm *kvm, u64 slot, u64 flags);
+>  
+> +#define kvm_mmu_has_pending_ops(kvm)	\
+> +	(!bitmap_empty(&(kvm)->arch.mmu_pending_ops, KVM_MAX_MMU_PENDING_OPS))
+> +
+> +void kvm_mmu_perform_pending_ops(struct kvm *kvm);
+> +
+>  static inline unsigned int kvm_get_vmid_bits(void)
+>  {
+>  	int reg = read_sanitised_ftr_reg(SYS_ID_AA64MMFR1_EL1);
+> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+> index efb3501c6016..144c982912d8 100644
+> --- a/arch/arm64/kvm/arm.c
+> +++ b/arch/arm64/kvm/arm.c
+> @@ -829,6 +829,9 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu)
+>  	if (unlikely(!kvm_vcpu_initialized(vcpu)))
+>  		return -ENOEXEC;
+>  
+> +	if (unlikely(kvm_mmu_has_pending_ops(vcpu->kvm)))
+> +		kvm_mmu_perform_pending_ops(vcpu->kvm);
+> +
+>  	ret = kvm_vcpu_first_run_init(vcpu);
 
-Greg, I forgot to mention that this patch should be applied on top of
-the series.
+Is there any reason why this isn't done as part of the 'first run'
+handling? I am refactoring that part to remove as many things as
+possible from the fast path, and would love not to go back to piling
+more stuff here.
 
-[PATCH 0/7] staging: r8188eu: odm cleanups
+Or do you expect this to happen more than once per VM (despite what
+the comment says)?
+
+>  	if (ret)
+>  		return ret;
+> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+> index 59c2bfef2fd1..94fa08f3d9d3 100644
+> --- a/arch/arm64/kvm/mmu.c
+> +++ b/arch/arm64/kvm/mmu.c
+> @@ -1253,6 +1253,41 @@ int kvm_handle_guest_abort(struct kvm_vcpu *vcpu)
+>  	return ret;
+>  }
+>  
+> +/*
+> + * It's safe to do the CMOs when the first VCPU is run because:
+> + * - VCPUs cannot run until mmu_cmo_needed is cleared.
+> + * - Memslots cannot be modified because we hold the kvm->slots_lock.
+
+It would be good to document the expected locking order for this kind
+of stuff.
+
+> + *
+> + * It's safe to periodically release the mmu_lock because:
+> + * - VCPUs cannot run.
+> + * - Any changes to the stage 2 tables triggered by the MMU notifiers also take
+> + *   the mmu_lock, which means accesses will be serialized.
+> + * - Stage 2 tables cannot be freed from under us as long as at least one VCPU
+> + *   is live, which means that the VM will be live.
+> + */
+> +void kvm_mmu_perform_pending_ops(struct kvm *kvm)
+> +{
+> +	struct kvm_memory_slot *memslot;
+> +
+> +	mutex_lock(&kvm->slots_lock);
+> +	if (!kvm_mmu_has_pending_ops(kvm))
+> +		goto out_unlock;
+> +
+> +	if (test_bit(KVM_LOCKED_MEMSLOT_FLUSH_DCACHE, &kvm->arch.mmu_pending_ops)) {
+> +		kvm_for_each_memslot(memslot, kvm_memslots(kvm)) {
+> +			if (!memslot_is_locked(memslot))
+> +				continue;
+> +			stage2_flush_memslot(kvm, memslot);
+> +		}
+> +	}
+> +
+> +	bitmap_zero(&kvm->arch.mmu_pending_ops, KVM_MAX_MMU_PENDING_OPS);
+
+clear_bit() instead? I understand that you want to support multiple
+ops, but this looks odd.
+
+> +
+> +out_unlock:
+> +	mutex_unlock(&kvm->slots_lock);
+> +	return;
+> +}
+> +
+>  static int try_rlimit_memlock(unsigned long npages)
+>  {
+>  	unsigned long lock_limit;
+> @@ -1293,7 +1328,8 @@ static int lock_memslot(struct kvm *kvm, struct kvm_memory_slot *memslot,
+>  	struct kvm_memory_slot_page *page_entry;
+>  	bool writable = flags & KVM_ARM_LOCK_MEM_WRITE;
+>  	enum kvm_pgtable_prot prot = KVM_PGTABLE_PROT_R;
+> -	struct kvm_pgtable *pgt = kvm->arch.mmu.pgt;
+> +	struct kvm_pgtable pgt;
+> +	struct kvm_pgtable_mm_ops mm_ops;
+>  	struct vm_area_struct *vma;
+>  	unsigned long npages = memslot->npages;
+>  	unsigned int pin_flags = FOLL_LONGTERM;
+> @@ -1311,6 +1347,16 @@ static int lock_memslot(struct kvm *kvm, struct kvm_memory_slot *memslot,
+>  		pin_flags |= FOLL_WRITE;
+>  	}
+>  
+> +	/*
+> +	 * Make a copy of the stage 2 translation table struct to remove the
+> +	 * dcache callback so we can postpone the cache maintenance operations
+> +	 * until the first VCPU is run.
+> +	 */
+> +	mm_ops = *kvm->arch.mmu.pgt->mm_ops;
+> +	mm_ops.dcache_clean_inval_poc = NULL;
+> +	pgt = *kvm->arch.mmu.pgt;
+> +	pgt.mm_ops = &mm_ops;
+
+Huhuh... Can't really say I'm in love with this. Are you trying to
+avoid a double dcache clean to PoC? Is this a performance or a
+correctness issue?
+
+> +
+>  	hva = memslot->userspace_addr;
+>  	ipa = memslot->base_gfn << PAGE_SHIFT;
+>  
+> @@ -1362,13 +1408,13 @@ static int lock_memslot(struct kvm *kvm, struct kvm_memory_slot *memslot,
+>  			goto out_err;
+>  		}
+>  
+> -		ret = kvm_pgtable_stage2_map(pgt, ipa, PAGE_SIZE,
+> +		ret = kvm_pgtable_stage2_map(&pgt, ipa, PAGE_SIZE,
+>  					     page_to_phys(page_entry->page),
+>  					     prot, &cache);
+>  		spin_unlock(&kvm->mmu_lock);
+>  
+>  		if (ret) {
+> -			kvm_pgtable_stage2_unmap(pgt, memslot->base_gfn << PAGE_SHIFT,
+> +			kvm_pgtable_stage2_unmap(&pgt, memslot->base_gfn << PAGE_SHIFT,
+>  						 i << PAGE_SHIFT);
+>  			unpin_memslot_pages(memslot, writable);
+>  			goto out_err;
+> @@ -1387,7 +1433,7 @@ static int lock_memslot(struct kvm *kvm, struct kvm_memory_slot *memslot,
+>  	 */
+>  	ret = account_locked_vm(current->mm, npages, true);
+>  	if (ret) {
+> -		kvm_pgtable_stage2_unmap(pgt, memslot->base_gfn << PAGE_SHIFT,
+> +		kvm_pgtable_stage2_unmap(&pgt, memslot->base_gfn << PAGE_SHIFT,
+>  					 npages << PAGE_SHIFT);
+>  		unpin_memslot_pages(memslot, writable);
+>  		goto out_err;
+> @@ -1397,6 +1443,8 @@ static int lock_memslot(struct kvm *kvm, struct kvm_memory_slot *memslot,
+>  	if (writable)
+>  		memslot->arch.flags |= KVM_MEMSLOT_LOCK_WRITE;
+>  
+> +	set_bit(KVM_LOCKED_MEMSLOT_FLUSH_DCACHE, &kvm->arch.mmu_pending_ops);
+> +
+>  	kvm_mmu_free_memory_cache(&cache);
+>  
+>  	return 0;
 
 Thanks,
-Michael
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
