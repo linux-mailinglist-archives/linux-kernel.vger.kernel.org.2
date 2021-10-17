@@ -2,94 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7331430B92
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 20:42:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E69D430B99
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 20:54:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344459AbhJQSop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 14:44:45 -0400
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:16483 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231517AbhJQSom (ORCPT
+        id S1344464AbhJQS4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 14:56:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40408 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231517AbhJQS42 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 14:44:42 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3Alu3RXasYaaCFfrr/5E0jv4Rd7skDXdV00zEX?=
- =?us-ascii?q?/kB9WHVpm5Sj5qWTdYcgpHvJYVEqKQodcLG7SdG9qBznlKKdjbN6AV7mZniFhI?=
- =?us-ascii?q?LKFvAZ0WKB+V3d8kTFn4Y36U4jSdkcNDSaNzRHZLPBjjVQZOxO/DDoys2VbKzl?=
- =?us-ascii?q?vhBQpElRGsddBilCe3+mLnE=3D?=
-X-IronPort-AV: E=Sophos;i="5.84,326,1620684000"; 
-   d="scan'208";a="534379835"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 17 Oct 2021 20:42:31 +0200
-Date:   Sun, 17 Oct 2021 20:42:31 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Randy Dunlap <rdunlap@infradead.org>
-cc:     linux-kernel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kbuild@vger.kernel.org
-Subject: Re: build reproducibility
-In-Reply-To: <7e5485df-a17b-304b-627d-9a85d2464df3@infradead.org>
-Message-ID: <alpine.DEB.2.22.394.2110172041010.4761@hadrien>
-References: <alpine.DEB.2.22.394.2110172002450.4761@hadrien> <7e5485df-a17b-304b-627d-9a85d2464df3@infradead.org>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Sun, 17 Oct 2021 14:56:28 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8F4AC06161C;
+        Sun, 17 Oct 2021 11:54:18 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id y12so63335512eda.4;
+        Sun, 17 Oct 2021 11:54:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=C+zh36+Rf8LA5j9GE3yib+BELqUEujVmIps2lBIxNDQ=;
+        b=cLsk47RhHJ5smIpH5tDGZywPoY25oLnvU3zzdLWeyoIFXGwbrg3FHfqV9DVfFOhiGv
+         tckUyDMQaTpX1Xtdg18CwukPSmiLAvkI0v5yPv/296TJomoirslFKU+FhOQ8OdTVsd90
+         dYHMb9nfb2+qSLKbgxSL/mNbSeoBQoRqPAWQZ+M/hsMKOUWV6UTtnX5JpJb5b4EuGnhx
+         9SP2qmraRtutpoKTc5PTl1aH8k/LLKq2sMBJCyh3bCGacE0mr/za2+99Yhqrmj1QjSsg
+         eqtHJ2B6JnNeAcKaY3Auo+PQ7zyUtJY8CQ6ZVtKVOQAsYHl5QgqAASJw3A4rje1839ti
+         MCOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=C+zh36+Rf8LA5j9GE3yib+BELqUEujVmIps2lBIxNDQ=;
+        b=jP82JNE7zU9Qxb4dFGlia7aJmZfNvZSflpHHyYAldwtxtDTGvwhuNMoOgWC+8ur8LX
+         ljPLsUgNQ2K3qKc6Yi6d8pEnX4YRuKP7btXBuPzgcJViNqFEVXJ7r6AkwesgWabDpWjd
+         pqiu8PVFpUF1JWFHPwCq6GbQttUB6d7Tdy8546oENM6jpCo9Tx/HP//Xi+CgQOzAdzwz
+         SQkHiQ0bNRk22vdhcg/QdGqlI/CwlZc0gPYdaciQfQe7PvKJ6x4mw5nAnC61k8DB02ak
+         XFJS8St+z5iUTs9H5wlaC3zdmJO59ibjuVuM/SRtaNkGJPi2CoeK2t+dhnkzn1S4dEfh
+         JEag==
+X-Gm-Message-State: AOAM532jtm3qi5Ad8mPoO4c5LdUKH29MRaUqH6U1R149VvyVdwJ8NhUl
+        IFtrcHoo74vdV+1OmgqtHIZptx4ro4xS/VLHHr0=
+X-Google-Smtp-Source: ABdhPJxNZ7z3tWSBcsqNYxk3UDyHhnqXZ14WC99ED+wHCbTZ/G70duLkvnW+MBNY8JYeSY0rG190QAXredmfi+hT1qw=
+X-Received: by 2002:a50:d987:: with SMTP id w7mr37622877edj.240.1634496857232;
+ Sun, 17 Oct 2021 11:54:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20211017161523.43801-1-kitakar@gmail.com>
+In-Reply-To: <20211017161523.43801-1-kitakar@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sun, 17 Oct 2021 21:53:41 +0300
+Message-ID: <CAHp75Vd8KFCZ0kDSuhbqxGBu66KhcGO9zHPshncB7vZzsHnNDg@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/1] add ccove PMIC i2c address for Microsoft Surface 3
+To:     Tsuchiya Yuto <kitakar@gmail.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>, Andy Shevchenko <andy@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On Sun, 17 Oct 2021, Randy Dunlap wrote:
-
-> On 10/17/21 11:12 AM, Julia Lawall wrote:
-> > Hello,
-> >
-> > If I do the following:
-> >
-> > git clean -dfx
-> > cp saved_config .config
-> > make olddefconfig && make && make modules_install && make install
-> >
-> > Should I always end up with the same kernel, regardless of the kernel that
-> > is currently running on the machine?
-> >
-> > I see a large performance difference between Linux 5.10 and all versions
-> > afterwards for a particular benchmark.  I am unable to bisect the problem
-> > eg between 5.10 and 5.11, because as soon as I come to a kernel that gives
-> > the bad performance, all of the kernels that I generate subsequently in
-> > the bisecting process (using the above commands) also have the bad
-> > performance.
-> >
-> > It could of course be that I have completely misinterpreted the problem,
-> > and it has nothing to do with the kernel.  But I have tested the program a
-> > lot when only working on variants of Linux 5.9.  I only start to have
-> > problems when I use versions >= 5.11.
+On Sun, Oct 17, 2021 at 7:16 PM Tsuchiya Yuto <kitakar@gmail.com> wrote:
 >
-> Hi,
+> Hi all,
 >
-> My "guess" is that this has something to do with the build
-> reusing some current file(s) that need to be rebuilt.
-> I.e., adding a "make clean" or "make proper" might be needed.
+> Firstly, I'm still not used to Linux patch sending flow. Sorry in advance
+> if there is some weirdness :-) but I did my best.
+>
+> I need to use the function intel_soc_pmic_exec_mipi_pmic_seq_element()
+> with atomisp Image Signal Processing driver on Microsoft Surface 3
+> (Cherry Trail).
+>
+> However, it currently fails with the message I added to the commit
+> message below. I wondered why. The driver intel_pmic_chtcrc does define
+> the i2c address.
+>
+> It later turned out that the intel_pmic_bytcrc driver is used on surface3
+> instead, where the i2c address is not defined. So, I added the address
+> with the patch I'm sending as RFC in this mail. It's working well.
+>
+> The question is that, should Surface 3 (Cherry Trail) really use the
+> intel_pmic_bytcrc driver?
 
-This was my guess too.  But I have the git clean -dfx.  I did a comparison
-with make distclean and this does a little more (mostly some files in
-tools).
+I believe Cherry Trail should use the chtcrc driver.
 
-thanks,
-julia
-
->
-> I say this only because sometimes I cannot even reproduce
-> a build that has errors or warnings unless I prefix it with
-> make clean or mrproper. (i.e., nothing to do with booting
-> and running the new kernel)
-> Even though the .config file has changed and I do
-> "make olddefconfig", the same build errors do not show up
-> unless I do the clean or mrproper step also.
->
->
-> --
-> ~Randy
->
+-- 
+With Best Regards,
+Andy Shevchenko
