@@ -2,102 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6446443079F
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 11:57:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A3784307A2
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 11:58:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245217AbhJQJ5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 05:57:20 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:44290 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245202AbhJQJ5S (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 05:57:18 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 501D91FD5B;
-        Sun, 17 Oct 2021 09:55:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1634464507; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=06TNCNi37ZXj+Ox0cY7DkqXs5djBP1tqOPPk5Ny6a1Y=;
-        b=IVHXhe2aRqghqO8hXEHoVDzxsnE9NxPLIH0almgFF0Mia0K0KTqa5/cZWCSrClszqKVSAm
-        A++mNgyTM7qimxJM7zm80CUijfR5daAYrV2um97pfobkRkHs1kfxSrKe6HDPV0qh1g20dV
-        Sv4bOoIiCga5MAcN241aLft48j0ACA8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1634464507;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=06TNCNi37ZXj+Ox0cY7DkqXs5djBP1tqOPPk5Ny6a1Y=;
-        b=Beu0mlGiqQbhReLsloU5rQOsSEpcyfJnGUYLu3UazI86Ag7zpArnv09bN3PaCfhvSOWnnZ
-        QfdUZnj6sVkb/TCw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 33C981377A;
-        Sun, 17 Oct 2021 09:55:07 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id wKYrDPvya2G5MgAAMHmgww
-        (envelope-from <bp@suse.de>); Sun, 17 Oct 2021 09:55:07 +0000
-Date:   Sun, 17 Oct 2021 11:55:01 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] x86/urgent for v5.15-rc6
-Message-ID: <YWvy9bSRaC+m1sV+@zn.tnic>
+        id S245224AbhJQJ7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 05:59:34 -0400
+Received: from mout.gmx.net ([212.227.17.20]:45923 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236079AbhJQJ7d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Oct 2021 05:59:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1634464626;
+        bh=GK27mjfavzFQQjBXkKn0RLCiDGh17zJ13VUyMZ39ERs=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=g4QPrqgqY8bWgQhTWOHyALwiyqEIhfzf/HKIQKPTPGY6TZEFRMJrZBj0MbLPzX0uw
+         UDK1QJfLuNmOw5NXdBONMR05OVNxh1AD8CDN6q+D3/TWDxg536mfm9gAb2vMU53Zzf
+         MyMiyhqK27oR+DMbuFr3agQPgkvTv5twuWz87Rbk=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from localhost.localdomain ([79.150.72.99]) by mail.gmx.net
+ (mrgmx104 [212.227.17.174]) with ESMTPSA (Nemesis) id
+ 1MSc1B-1m94pM2rqD-00Szo6; Sun, 17 Oct 2021 11:57:05 +0200
+From:   Len Baker <len.baker@gmx.com>
+To:     Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>,
+        Chaitanya Kulkarni <kch@nvidia.com>
+Cc:     Len Baker <len.baker@gmx.com>, Kees Cook <keescook@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] nvmet: prefer struct_size over open coded arithmetic
+Date:   Sun, 17 Oct 2021 11:56:50 +0200
+Message-Id: <20211017095650.3718-1-len.baker@gmx.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:87l8oHXEfjCElo1TfalS+3I3QAENKqmFPDOlW7QVOffxRttv4nQ
+ 2AMPklv1f8oNxtJoCI1kESq9updTTNLaT8S8om5Xk+CPLW75asuvC0IENPAKV627O07UzWS
+ JU0rMQ7aE5QwMkuA/Hrhj1oFv7UdgPM1pFkeoifDS3V5cmzqG+Z22u7ngNCUj7rElfftrgD
+ Z7FYrBQVEwjaXW11HwaGg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:yuAiV954YSg=:cYURQWGEk30tKqGLBXHtIj
+ xwzMpAgdJTjqcuvKEtY8b9OMK5hmvMS6vFB72geh5KDQmb6L2VSIby/8ELL5Hi8e2mWdKJdE7
+ kN8c8d2q6zKTvzk4yu/LMKdCdkSnd/pfPcS9tNBu0Mc7GVSYjDJ5Pvj31a6skIkhuBb3ESdcy
+ 9WHIIcyk/AUgVIjIzTWstU8h7h4C4CdbbXwzRPOCOTHLWfnaedc0LnFJLA51dPyCpZcI+FKRz
+ 6otGxpVaEQ9HjA/gBUA1JAKuMahEDZzeOnurm7934tg+CL11vtjOKNr5+BRkSxBBhHhe0cdzC
+ KRgrbbMzBPB8vX3r4fAh0W64z87bGB/PAKnX/krmDiMDyqIfRF+kAMtdjRa7uSBSfbE5c4FRx
+ GE9up/5XUTPICti40Eu78nDoyPeUdBq70+A9n2aVbYrLDGo148Mqmnt5i86APP2Wg+LpIr71C
+ E6cy9xBvB0240oWdoJTiupbH5+FTiC/D6Q7cIkM2FU0BBq1ZSQ2kqsPL7JUuGY9dTQdtiosKY
+ guqOOEja0wSGQXwQ2tB8Oo1AEOi9M/pBdmW2D7/bIadpZ5YsQCEw89BkbP8P/Yc2RObG6zl10
+ KgnqZi5A781t+XqWceb07dYGZAmYklqX3aez6cPLq4zgWlCKLTCGp8ZjYzkhbJUwEHdxj6ret
+ Bc0VxgXIimfIWqpnmRSDbcFWhW2WPV5dtK4rt2WbaQBsqtVaZvXdZoZUgNSwRB9bc/vpYAcvL
+ jGPwxATwLNezpK/ZZGSuFiCYWnVmAeOqbRa53b+d5eSMDYhvA+UdqRVQpaURea58WyhfmTjbS
+ Wnbd0NYvhLxVRMkLwvlM5nUb7eErcedBzXWvNHgZRxzIHK42w6nbjxtKwtkFXN+nmxcrN5dvd
+ tXByxa0ycZt1BG9R0o7ivvE5py/t1GiHlQFtZZJwYJQzRuj0SFV8Y689DN+9icZ7AQSEJHp5L
+ 4/7DhF6CNPKr2Z2PBiKPyXPUZIbQbCw0kCRn3bGdftJzbHqdF/cCypfYjGotYe+Jo8ghk+1HD
+ rDov0d2PEF+4IxYO3xLlDlx6iW/WjFxoniNP8gu6S43Kjn5z7mj2Q0b9hPpDABsiRL9Vj3Qo6
+ WPOhsZgyYVIzvs=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+As noted in the "Deprecated Interfaces, Language Features, Attributes,
+and Conventions" documentation [1], size calculations (especially
+multiplication) should not be performed in memory allocator (or similar)
+function arguments due to the risk of them overflowing. This could lead
+to values wrapping around and a smaller allocation being made than the
+caller was expecting. Using those allocations could lead to linear
+overflows of heap memory and other misbehaviors.
 
-two more urgent x86 fixes for 5.15.
+In this case this is not actually dynamic size: all the operands
+involved in the calculation are constant values. However it is better to
+refactor this anyway, just to keep the open-coded math idiom out of
+code.
 
-Please pull,
-thx.
+So, use the struct_size() helper to do the arithmetic instead of the
+argument "size + count * size" in the kmalloc() function.
 
----
+This code was detected with the help of Coccinelle and audited and fixed
+manually.
 
-The following changes since commit 64570fbc14f8d7cb3fe3995f20e26bc25ce4b2cc:
+[1] https://www.kernel.org/doc/html/latest/process/deprecated.html#open-co=
+ded-arithmetic-in-allocator-arguments
 
-  Linux 5.15-rc5 (2021-10-10 17:01:59 -0700)
+Signed-off-by: Len Baker <len.baker@gmx.com>
+=2D--
+Hi,
 
-are available in the Git repository at:
+this patch is built against the linux-next tree (tag next-20211015).
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_urgent_for_v5.15_rc6
+Regards,
+Len
 
-for you to fetch changes up to b2381acd3fd9bacd2c63f53b2c610c89959b31cc:
+ drivers/nvme/target/admin-cmd.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-  x86/fpu: Mask out the invalid MXCSR bits properly (2021-10-16 12:37:50 +0200)
+diff --git a/drivers/nvme/target/admin-cmd.c b/drivers/nvme/target/admin-c=
+md.c
+index aa6d84d8848e..4aa71625c86a 100644
+=2D-- a/drivers/nvme/target/admin-cmd.c
++++ b/drivers/nvme/target/admin-cmd.c
+@@ -278,8 +278,8 @@ static void nvmet_execute_get_log_page_ana(struct nvme=
+t_req *req)
+ 	u16 status;
 
-----------------------------------------------------------------
-- Do not enable AMD memory encryption in Kconfig by default due to
-shortcomings of some platforms, leading to boot failures.
+ 	status =3D NVME_SC_INTERNAL;
+-	desc =3D kmalloc(sizeof(struct nvme_ana_group_desc) +
+-			NVMET_MAX_NAMESPACES * sizeof(__le32), GFP_KERNEL);
++	desc =3D kmalloc(struct_size(desc, nsids, NVMET_MAX_NAMESPACES),
++		       GFP_KERNEL);
+ 	if (!desc)
+ 		goto out;
 
-- Mask out invalid bits in the MXCSR for 32-bit kernels again because
-Thomas and I don't know how to mask out bits properly. Third time's the
-charm.
+=2D-
+2.25.1
 
-----------------------------------------------------------------
-Borislav Petkov (2):
-      x86/Kconfig: Do not enable AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT automatically
-      x86/fpu: Mask out the invalid MXCSR bits properly
-
- arch/x86/Kconfig             | 1 -
- arch/x86/kernel/fpu/signal.c | 2 +-
- 2 files changed, 1 insertion(+), 2 deletions(-)
-
--- 
-Regards/Gruss,
-    Boris.
-
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
