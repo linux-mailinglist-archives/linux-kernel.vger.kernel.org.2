@@ -2,119 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FD15430823
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 12:48:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4794E430802
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 12:39:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245363AbhJQKud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 06:50:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242155AbhJQKua (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 06:50:30 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B19F3C061765
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 03:48:20 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1mc3i7-0002kV-U1; Sun, 17 Oct 2021 12:48:11 +0200
-Received: from pengutronix.de (unknown [195.138.59.174])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id AFA186958B6;
-        Sun, 17 Oct 2021 10:44:00 +0000 (UTC)
-Date:   Sun, 17 Oct 2021 12:43:29 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Ziyang Xuan <william.xuanziyang@huawei.com>
-Cc:     robin@protonic.nl, linux@rempel-privat.de, socketcan@hartkopp.net,
-        davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] can: j1939: fix UAF for rx_kref of j1939_priv
-Message-ID: <20211017104329.ccz3r5lsadqpbuj5@pengutronix.de>
-References: <20210926104757.2021540-1-william.xuanziyang@huawei.com>
+        id S245331AbhJQKl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 06:41:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52530 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235835AbhJQKl2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Oct 2021 06:41:28 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 12CDA60D42;
+        Sun, 17 Oct 2021 10:39:16 +0000 (UTC)
+Date:   Sun, 17 Oct 2021 11:43:31 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Pekka Korpinen <pekka.korpinen@iki.fi>
+Cc:     ardeleanalex@gmail.com, Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Jean-Francois Dagenais <jeff.dagenais@gmail.com>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] iio: dac: ad5446: Fix ad5622_write() return value
+Message-ID: <20211017114306.6a56a718@jic23-huawei>
+In-Reply-To: <20210929185755.2384-1-pekka.korpinen@iki.fi>
+References: <20d11fbb-ba93-802c-1abc-60d7f5ec0c0c@metafoo.de>
+        <20210929185755.2384-1-pekka.korpinen@iki.fi>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="lfm2fzo7ig3sk3dm"
-Content-Disposition: inline
-In-Reply-To: <20210926104757.2021540-1-william.xuanziyang@huawei.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 29 Sep 2021 21:57:55 +0300
+Pekka Korpinen <pekka.korpinen@iki.fi> wrote:
 
---lfm2fzo7ig3sk3dm
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On 26.09.2021 18:47:57, Ziyang Xuan wrote:
-> It will trigger UAF for rx_kref of j1939_priv as following.
->=20
->         cpu0                                    cpu1
-> j1939_sk_bind(socket0, ndev0, ...)
-> j1939_netdev_start
->                                         j1939_sk_bind(socket1, ndev0, ...)
->                                         j1939_netdev_start
-> j1939_priv_set
->                                         j1939_priv_get_by_ndev_locked
-> j1939_jsk_add
-> .....
-> j1939_netdev_stop
-> kref_put_lock(&priv->rx_kref, ...)
->                                         kref_get(&priv->rx_kref, ...)
->                                         REFCOUNT_WARN("addition on 0;...")
->=20
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D
-> refcount_t: addition on 0; use-after-free.
-> WARNING: CPU: 1 PID: 20874 at lib/refcount.c:25 refcount_warn_saturate+0x=
-169/0x1e0
-> RIP: 0010:refcount_warn_saturate+0x169/0x1e0
-> Call Trace:
->  j1939_netdev_start+0x68b/0x920
->  j1939_sk_bind+0x426/0xeb0
->  ? security_socket_bind+0x83/0xb0
->=20
-> The rx_kref's kref_get() and kref_put() should use j1939_netdev_lock to
-> protect.
->=20
-> Fixes: 9d71dd0c70099 ("can: add support of SAE J1939 protocol")
-> Reported-by: syzbot+85d9878b19c94f9019ad@syzkaller.appspotmail.com
-> Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
-
-Added to linux-can/testing, added stable on Cc.
+> On success i2c_master_send() returns the number of bytes written. The
+> call from iio_write_channel_info(), however, expects the return value to
+> be zero on success.
+> 
+> This bug causes incorrect consumption of the sysfs buffer in
+> iio_write_channel_info(). When writing more than two characters to
+> out_voltage0_raw, the ad5446 write handler is called multiple times
+> causing unexpected behavior.
+> 
+> Fixes: 3ec36a2cf0d5 ("iio:ad5446: Add support for I2C based DACs")
+> Signed-off-by: Pekka Korpinen <pekka.korpinen@iki.fi>
+Applied to the fixes-togreg branch of iio.git and marked for stable.
 
 Thanks,
-Marc
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+Jonathan
 
---lfm2fzo7ig3sk3dm
-Content-Type: application/pgp-signature; name="signature.asc"
+> ---
+> v1->v2: Check against expected result, otherwise -EIO. Add Fixes tag.
+> 
+> A similar bug was fixed for ad5064.c in 2015 - commit 03fe472ef33b
+> ("iio:ad5064: Make sure ad5064_i2c_write() returns 0 on success").
+> 
+>  drivers/iio/dac/ad5446.c | 9 ++++++++-
+>  1 file changed, 8 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/iio/dac/ad5446.c b/drivers/iio/dac/ad5446.c
+> index 488ec69967d6..e50718422411 100644
+> --- a/drivers/iio/dac/ad5446.c
+> +++ b/drivers/iio/dac/ad5446.c
+> @@ -531,8 +531,15 @@ static int ad5622_write(struct ad5446_state *st, unsigned val)
+>  {
+>  	struct i2c_client *client = to_i2c_client(st->dev);
+>  	__be16 data = cpu_to_be16(val);
+> +	int ret;
+> +
+> +	ret = i2c_master_send(client, (char *)&data, sizeof(data));
+> +	if (ret < 0)
+> +		return ret;
+> +	if (ret != sizeof(data))
+> +		return -EIO;
+>  
+> -	return i2c_master_send(client, (char *)&data, sizeof(data));
+> +	return 0;
+>  }
+>  
+>  /*
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmFr/k8ACgkQqclaivrt
-76n81Af+NxBLZqG3wWfCjpl7IxccdICWAetFxDreGHh2/XjF61A99AZ0cTFUA+88
-Ygo2PxOaIUDcRE6Ffb+d6HOeDdHZYCKmHNuB7UnUVsIQNoGVV09hRd9gHzTe0SmW
-IWZTml85rCHRu4mIlvIVfINn21umaPPhqlsggYp4cxB2/uyrvLmC1j0Rh00IGx/1
-FgNGSIJW1xlacOXtikg8OoPu1mn/8iAYuz69AVWppchPRJ86hqByc6eYRKirmqcc
-S0r7Zccb2gZ8cNs5MNGyram8MCB6Jw5+m87rcCxXdJiecqDQra1987MaTEEF7y//
-Kcm2E4tnvCZNT7gW8/fvfs8t1Pkenw==
-=qnl1
------END PGP SIGNATURE-----
-
---lfm2fzo7ig3sk3dm--
