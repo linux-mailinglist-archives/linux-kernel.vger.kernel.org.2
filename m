@@ -2,91 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E69D430B99
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 20:54:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E87BA430B9C
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 20:56:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344464AbhJQS4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 14:56:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40408 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231517AbhJQS42 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 14:56:28 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8F4AC06161C;
-        Sun, 17 Oct 2021 11:54:18 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id y12so63335512eda.4;
-        Sun, 17 Oct 2021 11:54:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=C+zh36+Rf8LA5j9GE3yib+BELqUEujVmIps2lBIxNDQ=;
-        b=cLsk47RhHJ5smIpH5tDGZywPoY25oLnvU3zzdLWeyoIFXGwbrg3FHfqV9DVfFOhiGv
-         tckUyDMQaTpX1Xtdg18CwukPSmiLAvkI0v5yPv/296TJomoirslFKU+FhOQ8OdTVsd90
-         dYHMb9nfb2+qSLKbgxSL/mNbSeoBQoRqPAWQZ+M/hsMKOUWV6UTtnX5JpJb5b4EuGnhx
-         9SP2qmraRtutpoKTc5PTl1aH8k/LLKq2sMBJCyh3bCGacE0mr/za2+99Yhqrmj1QjSsg
-         eqtHJ2B6JnNeAcKaY3Auo+PQ7zyUtJY8CQ6ZVtKVOQAsYHl5QgqAASJw3A4rje1839ti
-         MCOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=C+zh36+Rf8LA5j9GE3yib+BELqUEujVmIps2lBIxNDQ=;
-        b=jP82JNE7zU9Qxb4dFGlia7aJmZfNvZSflpHHyYAldwtxtDTGvwhuNMoOgWC+8ur8LX
-         ljPLsUgNQ2K3qKc6Yi6d8pEnX4YRuKP7btXBuPzgcJViNqFEVXJ7r6AkwesgWabDpWjd
-         pqiu8PVFpUF1JWFHPwCq6GbQttUB6d7Tdy8546oENM6jpCo9Tx/HP//Xi+CgQOzAdzwz
-         SQkHiQ0bNRk22vdhcg/QdGqlI/CwlZc0gPYdaciQfQe7PvKJ6x4mw5nAnC61k8DB02ak
-         XFJS8St+z5iUTs9H5wlaC3zdmJO59ibjuVuM/SRtaNkGJPi2CoeK2t+dhnkzn1S4dEfh
-         JEag==
-X-Gm-Message-State: AOAM532jtm3qi5Ad8mPoO4c5LdUKH29MRaUqH6U1R149VvyVdwJ8NhUl
-        IFtrcHoo74vdV+1OmgqtHIZptx4ro4xS/VLHHr0=
-X-Google-Smtp-Source: ABdhPJxNZ7z3tWSBcsqNYxk3UDyHhnqXZ14WC99ED+wHCbTZ/G70duLkvnW+MBNY8JYeSY0rG190QAXredmfi+hT1qw=
-X-Received: by 2002:a50:d987:: with SMTP id w7mr37622877edj.240.1634496857232;
- Sun, 17 Oct 2021 11:54:17 -0700 (PDT)
+        id S1344472AbhJQS6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 14:58:17 -0400
+Received: from vern.gendns.com ([98.142.107.122]:55906 "EHLO vern.gendns.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231517AbhJQS6Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Oct 2021 14:58:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=lechnology.com; s=default; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=9PqkJUqJulCDeghcpLaEnGtiSrJltHL41kG/Aty9XQY=; b=jfvXVbktfn2torihkWpnF5Uo4B
+        TmTeZ8ZQgaTIX/UJ+wxb1x4OWFtyrfgCV9/jWddw9IUBbqYLTofiDlRKGmNdmXM+sfvNjFSHtMYxD
+        SUox1FlQzzmGCZdIZ4HB1E3ULMqEMD++wVvoaxZhBoMNsHdO4SalsXt4RygvgHawmigYj3y4r+FFb
+        va7U4AKk+m8c3coqwMqIzR8c0Q5WEwV5AExwCqqq+hUQu03OSmlKyVtbpA2J4uyikMbhMxADdLNvh
+        c9Zw1ZlJfC9Fy5eO588z12mQLHAz/CWxo3jp8Cl5NHY8N4YDzFd6DNWhO9lmaGQPe7wzHqT08M3wj
+        8aljALng==;
+Received: from 108-198-5-147.lightspeed.okcbok.sbcglobal.net ([108.198.5.147]:60964 helo=freyr.lechnology.com)
+        by vern.gendns.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <david@lechnology.com>)
+        id 1mcBKF-0005I6-IE; Sun, 17 Oct 2021 14:56:04 -0400
+From:   David Lechner <david@lechnology.com>
+To:     linux-iio@vger.kernel.org
+Cc:     David Lechner <david@lechnology.com>,
+        William Breathitt Gray <vilhelm.gray@gmail.com>,
+        linux-kernel@vger.kernel.org, Greg KH <gregkh@linuxfoundation.org>
+Subject: [PATCH] counter: drop chrdev_lock
+Date:   Sun, 17 Oct 2021 13:55:21 -0500
+Message-Id: <20211017185521.3468640-1-david@lechnology.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20211017161523.43801-1-kitakar@gmail.com>
-In-Reply-To: <20211017161523.43801-1-kitakar@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sun, 17 Oct 2021 21:53:41 +0300
-Message-ID: <CAHp75Vd8KFCZ0kDSuhbqxGBu66KhcGO9zHPshncB7vZzsHnNDg@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/1] add ccove PMIC i2c address for Microsoft Surface 3
-To:     Tsuchiya Yuto <kitakar@gmail.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>, Andy Shevchenko <andy@kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - vern.gendns.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lechnology.com
+X-Get-Message-Sender-Via: vern.gendns.com: authenticated_id: davidmain+lechnology.com/only user confirmed/virtual account not confirmed
+X-Authenticated-Sender: vern.gendns.com: davidmain@lechnology.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 17, 2021 at 7:16 PM Tsuchiya Yuto <kitakar@gmail.com> wrote:
->
-> Hi all,
->
-> Firstly, I'm still not used to Linux patch sending flow. Sorry in advance
-> if there is some weirdness :-) but I did my best.
->
-> I need to use the function intel_soc_pmic_exec_mipi_pmic_seq_element()
-> with atomisp Image Signal Processing driver on Microsoft Surface 3
-> (Cherry Trail).
->
-> However, it currently fails with the message I added to the commit
-> message below. I wondered why. The driver intel_pmic_chtcrc does define
-> the i2c address.
->
-> It later turned out that the intel_pmic_bytcrc driver is used on surface3
-> instead, where the i2c address is not defined. So, I added the address
-> with the patch I'm sending as RFC in this mail. It's working well.
->
-> The question is that, should Surface 3 (Cherry Trail) really use the
-> intel_pmic_bytcrc driver?
+This removes the chrdev_lock from the counter subsystem. This was
+intended to prevent opening the chrdev more than once. However, this
+doesn't work in practice since userspace can duplicate file descriptors
+and pass file descriptors to other processes. Since this protection
+can't be relied on, it is best to just remove it.
 
-I believe Cherry Trail should use the chtcrc driver.
+Suggested-by: Greg KH <gregkh@linuxfoundation.org>
+Signed-off-by: David Lechner <david@lechnology.com>
+---
+ drivers/counter/counter-chrdev.c |  6 ------
+ drivers/counter/counter-sysfs.c  | 13 +++----------
+ include/linux/counter.h          |  7 -------
+ 3 files changed, 3 insertions(+), 23 deletions(-)
 
+diff --git a/drivers/counter/counter-chrdev.c b/drivers/counter/counter-chrdev.c
+index 967c94ae95bb..b747dc81cfc6 100644
+--- a/drivers/counter/counter-chrdev.c
++++ b/drivers/counter/counter-chrdev.c
+@@ -384,10 +384,6 @@ static int counter_chrdev_open(struct inode *inode, struct file *filp)
+ 							    typeof(*counter),
+ 							    chrdev);
+ 
+-	/* Ensure chrdev is not opened more than 1 at a time */
+-	if (!atomic_add_unless(&counter->chrdev_lock, 1, 1))
+-		return -EBUSY;
+-
+ 	get_device(&counter->dev);
+ 	filp->private_data = counter;
+ 
+@@ -419,7 +415,6 @@ static int counter_chrdev_release(struct inode *inode, struct file *filp)
+ 	mutex_unlock(&counter->ops_exist_lock);
+ 
+ 	put_device(&counter->dev);
+-	atomic_dec(&counter->chrdev_lock);
+ 
+ 	return ret;
+ }
+@@ -445,7 +440,6 @@ int counter_chrdev_add(struct counter_device *const counter)
+ 	mutex_init(&counter->events_lock);
+ 
+ 	/* Initialize character device */
+-	atomic_set(&counter->chrdev_lock, 0);
+ 	cdev_init(&counter->chrdev, &counter_fops);
+ 
+ 	/* Allocate Counter events queue */
+diff --git a/drivers/counter/counter-sysfs.c b/drivers/counter/counter-sysfs.c
+index 1ccd771da25f..7bf8882ff54d 100644
+--- a/drivers/counter/counter-sysfs.c
++++ b/drivers/counter/counter-sysfs.c
+@@ -796,25 +796,18 @@ static int counter_events_queue_size_write(struct counter_device *counter,
+ 					   u64 val)
+ {
+ 	DECLARE_KFIFO_PTR(events, struct counter_event);
+-	int err = 0;
+-
+-	/* Ensure chrdev is not opened more than 1 at a time */
+-	if (!atomic_add_unless(&counter->chrdev_lock, 1, 1))
+-		return -EBUSY;
++	int err;
+ 
+ 	/* Allocate new events queue */
+ 	err = kfifo_alloc(&events, val, GFP_KERNEL);
+ 	if (err)
+-		goto exit_early;
++		return err;
+ 
+ 	/* Swap in new events queue */
+ 	kfifo_free(&counter->events);
+ 	counter->events.kfifo = events.kfifo;
+ 
+-exit_early:
+-	atomic_dec(&counter->chrdev_lock);
+-
+-	return err;
++	return 0;
+ }
+ 
+ static struct counter_comp counter_num_signals_comp =
+diff --git a/include/linux/counter.h b/include/linux/counter.h
+index 22b14a552b1d..0fd99e255a50 100644
+--- a/include/linux/counter.h
++++ b/include/linux/counter.h
+@@ -297,7 +297,6 @@ struct counter_ops {
+  * @events:		queue of detected Counter events
+  * @events_wait:	wait queue to allow blocking reads of Counter events
+  * @events_lock:	lock to protect Counter events queue read operations
+- * @chrdev_lock:	lock to limit chrdev to a single open at a time
+  * @ops_exist_lock:	lock to prevent use during removal
+  */
+ struct counter_device {
+@@ -325,12 +324,6 @@ struct counter_device {
+ 	DECLARE_KFIFO_PTR(events, struct counter_event);
+ 	wait_queue_head_t events_wait;
+ 	struct mutex events_lock;
+-	/*
+-	 * chrdev_lock is locked by counter_chrdev_open() and unlocked by
+-	 * counter_chrdev_release(), so a mutex is not possible here because
+-	 * chrdev_lock will invariably be held when returning to user space
+-	 */
+-	atomic_t chrdev_lock;
+ 	struct mutex ops_exist_lock;
+ };
+ 
 -- 
-With Best Regards,
-Andy Shevchenko
+2.25.1
+
