@@ -2,129 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C4BB430891
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 14:04:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 351A0430892
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 14:05:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245599AbhJQMGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 08:06:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34668 "EHLO
+        id S245605AbhJQMIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 08:08:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236197AbhJQMGs (ORCPT
+        with ESMTP id S245576AbhJQMIC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 08:06:48 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0DC4C061765
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 05:04:38 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id f5so13141658pgc.12
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 05:04:38 -0700 (PDT)
+        Sun, 17 Oct 2021 08:08:02 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C0BBC061768
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 05:05:53 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id 187so12492045pfc.10
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 05:05:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Qq03a+PidrCNh8KWEP4qyu9+wQdfQDZm37dtOyQ0wD8=;
-        b=S7KVlzb3R8FtndW0L60yfi7xIYMIilDD11/IuCB1DgBvi+hhDo9ytDmM0OnBhzDG13
-         ehpXjlaAC4G5NZAo/RAaDLsUHEkL/t72lMqE48vapd1YMzzSW5VW5icGB1hutj/iqB3s
-         LZgY0JzT0vKl6u7D/aehvSwR9uZyqoIgnpL9pGmYjrgSthLVJbdsCrhfVcUx/mJG4dBi
-         RYNCy/oOCykLxoUNNEagEq1gEcyCzsnNOcXzZRk1intPC69zuTrqL4ccmMviBwggTJzq
-         HFZa6wvmcunshbIzqbOOx8G72ZwuiIKfn642mB/7rryfrM5POMEv+nh59DHIQzzF3ax4
-         JQWw==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=YMV+GzdlocvpvMdKO0g2ndC3o57dFYn2DVsmYDcVJw4=;
+        b=pRU8RRtKsWk0WpcImZG4W3fXbjiJY2nHrWDjCYI8HhsDdTrPrvrkJd/BJHBpq4BQ7H
+         JXiDTmWAyA6+qKctCWn5LNlXz514PgqAgbquzygefoTA/AokpGZMgm7jAIJ3TQzzaquH
+         lUFGa82/5DxGaysD0hNEUeFcWmrheYKoymwxhf7BHt7yX8c2oWxv+9mLV4mN/TSmWrMr
+         ZQWpmaoPyqR85jYP87XvbiIan2sy0jk7XP6cRlQcZe4Jg0UNiLqRmBACrzQHJRkGd7eq
+         Qxiq1Pvlf/8RTrMsmuCFnCDKzllp0NlGufHoYMewkYT9+BPoc0uEr0mTqDg+iNkZKE7J
+         ojmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Qq03a+PidrCNh8KWEP4qyu9+wQdfQDZm37dtOyQ0wD8=;
-        b=8GeeGFJPPPbzdvDPIKaW+Lcg3I91bgdqLFZH4a5DrQZ1yQFsYXHDuq5yC3TdX9U3Qq
-         ROq2ZeA8/PSKFjWaWhmQGfAHAzvvlYOCPf7T0TKjAI4J70K80V8m5XNIsROHLb3xBEgU
-         K+a/lUk+uyvmAaIaSAxMcO/Nz3oFsEQxZHMXoXOA56tF9I5vj27WxCQsJhCdrYJdfkP0
-         CDIrrUYRjeKXa625+yk4zs7A7IE+U/dMvjteKAwjJMvxPwXNUzeq5UfXVa+77L1KizhZ
-         k8guXx7W94zXIQhvvGH4eYzJROpu7e8F7Uv/wE25ex1HFWdljaWYcN2KpJQNhOD1i1Ob
-         FGHw==
-X-Gm-Message-State: AOAM5330xoNeu1eqy2cF0HqZw6LbBMBByykHXeBz60daTXC7x2dnMZhh
-        zaTnOZz0X307j1qKka8FTk/solp4u9SpsA==
-X-Google-Smtp-Source: ABdhPJwKR4opiNwNEH+N6oK18PSufkLg3oecl7aOvTzJCoqkMXWLSuwHgMy85PN5QrI6TGPdqn2GCA==
-X-Received: by 2002:a05:6a00:a10:b0:412:448c:89c7 with SMTP id p16-20020a056a000a1000b00412448c89c7mr22544171pfh.83.1634472278446;
-        Sun, 17 Oct 2021 05:04:38 -0700 (PDT)
-Received: from desktop.cluster.local ([43.132.141.9])
-        by smtp.gmail.com with ESMTPSA id z4sm10530413pfz.99.2021.10.17.05.04.36
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YMV+GzdlocvpvMdKO0g2ndC3o57dFYn2DVsmYDcVJw4=;
+        b=WPw4RHz54cOyD95WZibWmh/m5BrUUBGJ2qxDAoy69MmS7qYRZy0g87FSkO22mZetTj
+         JKJysArZMMRs7TqrpEQ3VE2PKXE0+aMysV483i7T7G9j1+HNtZMuSY7oSWkolkqnxuws
+         EhuG3c81QLSYS+MF9NUfSuUCKtyQC/QGewrZyH7rehnFF9xEltg1/7wFiN9azlRAonot
+         IHAj+jmz2PegapsVg0h3Xzk6UytZLCXj6pEfkxeFfPLh5GkVkYC/Aj/zehCuzPqZrTVm
+         9b913fHJgwnppEs5jkIyvIKjNBKEuKzC97vd8igPP6n4erNHfVyPryhFHOAk09AhwC/8
+         7hRA==
+X-Gm-Message-State: AOAM531AqPLfnKurc3UIYoHnGB0iFx/xYzs6U9f0RAJc3sQntf+1wvyT
+        4Qj7CjMs3dPteo8tKTomWJ85kQ==
+X-Google-Smtp-Source: ABdhPJy5Ok8KRBDEMCPZbGvK466Q9d4+Iq5MOISjnLu/GA6jIg6D/l1BrGO5u726FO00wt29zBv6kw==
+X-Received: by 2002:a62:17d3:0:b0:44c:6022:9428 with SMTP id 202-20020a6217d3000000b0044c60229428mr22669719pfx.65.1634472352677;
+        Sun, 17 Oct 2021 05:05:52 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s ([148.163.172.147])
+        by smtp.gmail.com with ESMTPSA id u3sm9998398pfl.155.2021.10.17.05.05.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 Oct 2021 05:04:37 -0700 (PDT)
-From:   menglong8.dong@gmail.com
-X-Google-Original-From: imagedong@tencent.com
-To:     tj@kernel.org
-Cc:     jiangshanlai@gmail.com, linux-kernel@vger.kernel.org,
-        mengensun@tencent.com, Menglong Dong <imagedong@tencent.com>
-Subject: [PATCH v2] workqueue: make sysfs of unbound kworker cpumask more clever
-Date:   Sun, 17 Oct 2021 20:04:02 +0800
-Message-Id: <20211017120402.2423524-1-imagedong@tencent.com>
-X-Mailer: git-send-email 2.27.0
+        Sun, 17 Oct 2021 05:05:52 -0700 (PDT)
+Date:   Sun, 17 Oct 2021 20:05:46 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     German Gomez <german.gomez@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org
+Subject: Re: [PATCH 4/5] perf arm-spe: Implement find_snapshot callback
+Message-ID: <20211017120546.GB130233@leoy-ThinkPad-X240s>
+References: <20210916154635.1525-1-german.gomez@arm.com>
+ <20210916154635.1525-4-german.gomez@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210916154635.1525-4-german.gomez@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Menglong Dong <imagedong@tencent.com>
+On Thu, Sep 16, 2021 at 04:46:34PM +0100, German Gomez wrote:
 
-Some unfriendly component, such as dpdk, write the same mask to
-unbound kworker cpumask again and again. Every time it write to
-this interface some work is queue to cpu, even though the mask
-is same with the original mask.
+[...]
 
-So, fix it by return success and do nothing if the cpumask is
-equal with the old one.
+> +static int arm_spe_find_snapshot(struct auxtrace_record *itr, int idx,
+> +				  struct auxtrace_mmap *mm, unsigned char *data,
+> +				  u64 *head, u64 *old)
+> +{
+> +	int err;
+> +	bool wrapped;
+> +	struct arm_spe_recording *ptr =
+> +			container_of(itr, struct arm_spe_recording, itr);
+> +
+> +	/*
+> +	 * Allocate memory to keep track of wrapping if this is the first
+> +	 * time we deal with this *mm.
+> +	 */
+> +	if (idx >= ptr->wrapped_cnt) {
+> +		err = arm_spe_alloc_wrapped_array(ptr, idx);
+> +		if (err)
+> +			return err;
+> +	}
+> +
+> +	/*
+> +	 * Check to see if *head has wrapped around.  If it hasn't only the
+> +	 * amount of data between *head and *old is snapshot'ed to avoid
+> +	 * bloating the perf.data file with zeros.  But as soon as *head has
+> +	 * wrapped around the entire size of the AUX ring buffer it taken.
+> +	 */
+> +	wrapped = ptr->wrapped[idx];
+> +	if (!wrapped && arm_spe_buffer_has_wrapped(data, mm->len, *head)) {
+> +		wrapped = true;
+> +		ptr->wrapped[idx] = true;
+> +	}
+> +
+> +	pr_debug3("%s: mmap index %d old head %zu new head %zu size %zu\n",
+> +		  __func__, idx, (size_t)*old, (size_t)*head, mm->len);
+> +
+> +	/*
+> +	 * No wrap has occurred, we can just use *head and *old.
+> +	 */
+> +	if (!wrapped)
+> +		return 0;
+> +
+> +	/*
+> +	 * *head has wrapped around - adjust *head and *old to pickup the
+> +	 * entire content of the AUX buffer.
+> +	 */
+> +	if (*head >= mm->len) {
+> +		*old = *head - mm->len;
+> +	} else {
+> +		*head += mm->len;
+> +		*old = *head - mm->len;
+> +	}
+> +
+> +	return 0;
+> +}
 
-Signed-off-by: Mengen Sun <mengensun@tencent.com>
-Signed-off-by: Menglong Dong <imagedong@tencent.com>
----
-v2:
-- reorganize the code to avoid unnecessary saved_cpumask alloc
----
- kernel/workqueue.c | 15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
+If run a test case (the test is pasted at the end of the reply), I
+can get quite different AUX trace data with passing different wait
+period before sending the first USR2 signal.
 
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index 1b3eb1e9531f..76988f39ed5a 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -5384,9 +5384,6 @@ int workqueue_set_unbound_cpumask(cpumask_var_t cpumask)
- 	int ret = -EINVAL;
- 	cpumask_var_t saved_cpumask;
- 
--	if (!zalloc_cpumask_var(&saved_cpumask, GFP_KERNEL))
--		return -ENOMEM;
--
- 	/*
- 	 * Not excluding isolated cpus on purpose.
- 	 * If the user wishes to include them, we allow that.
-@@ -5394,6 +5391,15 @@ int workqueue_set_unbound_cpumask(cpumask_var_t cpumask)
- 	cpumask_and(cpumask, cpumask, cpu_possible_mask);
- 	if (!cpumask_empty(cpumask)) {
- 		apply_wqattrs_lock();
-+		if (cpumask_equal(cpumask, wq_unbound_cpumask)) {
-+			ret = 0;
-+			goto out_unlock;
-+		}
+  # sh test_arm_spe_snapshot.sh 2
+  Couldn't synthesize bpf events.
+  stress: info: [5768] dispatching hogs: 1 cpu, 0 io, 0 vm, 0 hdd
+  [ perf record: Woken up 3 times to write data ]
+  [ perf record: Captured and wrote 2.833 MB perf.data ]
+
+  # sh test_arm_spe_snapshot.sh 10
+  Couldn't synthesize bpf events.
+  stress: info: [5776] dispatching hogs: 1 cpu, 0 io, 0 vm, 0 hdd
+  [ perf record: Woken up 3 times to write data ]
+  [ perf record: Captured and wrote 24.356 MB perf.data ]
+
+The first command passes argument '2' so the test will wait for 2
+seconds before send USR2 signal for snapshot, and the perf data file is
+2.833 MB (so this means the Arm SPE trace data is about 2MB) for three
+snapshots.  In the second command, the argument '10' means it will wait
+for 10 seconds before sending the USR2 signals, and every time it records
+the trace data from the full AUX buffer (8MB), at the end it gets 24MB
+AUX trace data.
+
+The issue happens in the second command, waiting for 10 seconds leads
+to the *full* AUX ring buffer is filled by Arm SPE, so the function
+arm_spe_buffer_has_wrapped() always return back true for this case.
+Afterwards, arm_spe_find_snapshot() doesn't respect the passed old
+header (from '*old') and assumes the trace data size is 'mm->len'.
+
+To allow arm_spe_buffer_has_wrapped() to work properly, I think we
+need to clean up the top 8 bytes of the AUX buffer in Arm SPE driver
+when start the PMU event (please note, this change has an assumption
+that is meantioned in another email that suggests to remove redundant
+PERF_RECORD_AUX events so the function arm_spe_perf_aux_output_begin()
+is invoked only once when start PMU event, so we can use the top 8
+bytes in AUX buffer to indicate trace is wrap around or not).
+
+
+diff --git a/drivers/perf/arm_spe_pmu.c b/drivers/perf/arm_spe_pmu.c
+index d44bcc29d99c..eb35f85d0efb 100644
+--- a/drivers/perf/arm_spe_pmu.c
++++ b/drivers/perf/arm_spe_pmu.c
+@@ -493,6 +493,16 @@ static void arm_spe_perf_aux_output_begin(struct perf_output_handle *handle,
+        if (limit)
+                limit |= BIT(SYS_PMBLIMITR_EL1_E_SHIFT);
+
++       /*
++        * Cleanup the top 8 bytes for snapshot mode; these 8 bytes are
++        * used to indicate if trace data is wrap around if they are not
++        * zero.
++        */
++       if (buf->snapshot) {
++               void *tail = buf->base + (buf->nr_pages << PAGE_SHIFT) - 8;
++               memset(tail, 0x0, 8);
++       }
 +
-+		if (!zalloc_cpumask_var(&saved_cpumask, GFP_KERNEL)) {
-+			ret = -ENOMEM;
-+			goto out_unlock;
-+		}
- 
- 		/* save the old wq_unbound_cpumask. */
- 		cpumask_copy(saved_cpumask, wq_unbound_cpumask);
-@@ -5406,10 +5412,11 @@ int workqueue_set_unbound_cpumask(cpumask_var_t cpumask)
- 		if (ret < 0)
- 			cpumask_copy(wq_unbound_cpumask, saved_cpumask);
- 
-+		free_cpumask_var(saved_cpumask);
-+out_unlock:
- 		apply_wqattrs_unlock();
- 	}
- 
--	free_cpumask_var(saved_cpumask);
- 	return ret;
- }
- 
--- 
-2.27.0
+        limit += (u64)buf->base;
+        base = (u64)buf->base + PERF_IDX2OFF(handle->head, buf);
+        write_sysreg_s(base, SYS_PMBPTR_EL1);
 
+Thanks,
+Leo
+
+---8<---
+
+#!/bin/sh
+
+./perf record -e arm_spe/period=148576/u -C 0 -S -m8M,8M -- taskset --cpu-list 0 stress --cpu 1 &
+
+PERFPID=$!
+
+echo "sleep $1 seconds" > /sys/kernel/debug/tracing/trace_marker
+
+# Wait for perf program
+sleep  $1
+
+# Send signal to snapshot trace data
+kill -USR2 $PERFPID
+sleep .03
+kill -USR2 $PERFPID
+sleep .03
+kill -USR2 $PERFPID
+
+echo "Stop snapshot" > /sys/kernel/debug/tracing/trace_marker
+
+kill $PERFPID
+wait $PERFPID
