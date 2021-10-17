@@ -2,131 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2779A430831
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 13:00:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3854E430839
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Oct 2021 13:08:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241890AbhJQLCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 07:02:16 -0400
-Received: from mout.gmx.net ([212.227.15.18]:60145 "EHLO mout.gmx.net"
+        id S245398AbhJQLKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 07:10:06 -0400
+Received: from comms.puri.sm ([159.203.221.185]:52880 "EHLO comms.puri.sm"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241814AbhJQLCO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 07:02:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1634468399;
-        bh=NWbiml2AVqnuk6qWgPp/+YxTsn+eQ0AWnRSoiPOs9jQ=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=TdWVavAm7ozjEAxgHM/ls7uJkmqHSqUuskNeNwOZOd6hGFkCd5qRcwVAiTv+5MB7i
-         EPmXGmOvjDDmY9ZPYkVz8gbgPSNYkjkx/JPZGVO+OMpbXZPTjTzPSxgyOK513C7Akg
-         Fx8OzNR/I0pWNFXragcIRauZlq91yRxzWQFa3cZQ=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from localhost.localdomain ([79.150.72.99]) by mail.gmx.net
- (mrgmx004 [212.227.17.184]) with ESMTPSA (Nemesis) id
- 1M2wGs-1mYm6U3ISK-003NHR; Sun, 17 Oct 2021 12:59:59 +0200
-From:   Len Baker <len.baker@gmx.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Len Baker <len.baker@gmx.com>, Kees Cook <keescook@chromium.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] mm/list_lru.c: prefer struct_size over open coded arithmetic
-Date:   Sun, 17 Oct 2021 12:59:29 +0200
-Message-Id: <20211017105929.9284-1-len.baker@gmx.com>
-X-Mailer: git-send-email 2.25.1
+        id S235960AbhJQLKF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Oct 2021 07:10:05 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by comms.puri.sm (Postfix) with ESMTP id AEB44DFA1F;
+        Sun, 17 Oct 2021 04:07:25 -0700 (PDT)
+Received: from comms.puri.sm ([127.0.0.1])
+        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id BdkqQhRX4NpW; Sun, 17 Oct 2021 04:07:24 -0700 (PDT)
+Date:   Sun, 17 Oct 2021 13:07:13 +0200
+From:   Dorota Czaplejewicz <dorota.czaplejewicz@puri.sm>
+To:     Philipp Zabel <p.zabel@pengutronix.de>
+Cc:     Steve Longerbeam <slongerbeam@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel@puri.sm, phone-devel@vger.kernel.org
+Subject: Re: [PATCH] media: imx: Round line size to 4 bytes
+Message-ID: <20211017130713.4668c616.dorota.czaplejewicz@puri.sm>
+In-Reply-To: <1d8878e86b862ae8d551b6796e86c4fb1eb5d671.camel@pengutronix.de>
+References: <20211006110207.256325-1-dorota.czaplejewicz@puri.sm>
+        <7d61fdbd161fce40874766bde5f95c3b73f1a96d.camel@pengutronix.de>
+        <20211013112636.6963344d.dorota.czaplejewicz@puri.sm>
+        <1d8878e86b862ae8d551b6796e86c4fb1eb5d671.camel@pengutronix.de>
+Organization: Purism
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:36UFC7rd2IY4gDEXshqcJ3fOj2x/DvuJ/mUvjYn2PPH/l+rm8I8
- MBjuGb+/AviEb1Ox6nJEwy6FocUqGjUJTz8i+wDsM8lgZkeTxZMjXOowaz6B8Pavacxm1AV
- 7uQWIkoz1k2lkFWxgjBKo5akA4qTbk/xRzYiIHTP9tKE1Wv/YoubWbqZOFKDTXDStC+35py
- lduX0LWgXYPr1KxISImag==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:cbLl6ZiQAD4=:/XbPxqtXiyfmf2kB6HnXSc
- vOBFLBn+KnxurzEpmst9rlYzrVa6UZFDshmNJtrDBXI4OhXMXmf/FPpP/Wk+9+eVigfJtFp4w
- 9ld9te5bnNn7l69BTfCg2vCyFdcDZZnBub7e0tCIihKmeRQiFJIm0vNJH/zvYII00R48MHQl9
- ZN9spdZ2p32SMUB3TwG/2pcyAsPBP69DRr4q8EAbuscn5TvLKogKnZzSv2rFmJDmfh23wXwKA
- CCTi7FuK4t8uPJDfV/BdvE0nPcU1FPIOJioR+VDuf40Bz6G96hmGx/H9++dWchkWuu6495Vz4
- 3pvrn42Ws/LBsyRdUi7Li9i59GeANfht0Mcp7IOf6zwrLbBWZByw1bVlgMNX30JZnnXWT15AO
- RQbbKWou+sgH+tjWSTHwOAGfOOMSXK2XaewETmv9NQRjMtOffgM0yE94Q8eBie8kQ87B+Ekkr
- qeJVdKGLaOfgZzzT669NeZKv2FZWM0h0yAUWRnc4Zne5KVNPH/Q4vVhvfBdGzBCY1NUZN9qBo
- EJX8aGppxmiJvJbUp6doI7XgmMjXK64L94VCKRti5VCPPnv0v26xKcZjEXP10N6e8DT3CBITE
- A9xX6Ui0X+5esuDxzKMgPf/gsMtxpBc+loONj25E5CEn8kuyesOFbN068FvHypZMoU1m2mdF+
- lRWob1QqSauGm4tDznGTKv3VwMn+2ZrFu06VVram28AbXk8WMOOFc+WoVqgUQumg1TUO68jJ7
- Uvdy/1eme4qwmF1MxHMFy49pcEzVfYbA7NCzAFA1TW2iQazVikjpbRovp1XJZTTWrs23muaQa
- FO1IkFGSrBjOEsqlAbCko21ZrTB35800Zt+XnkRGqdc+duSxIaZ2gWYXObsDRIOl76ZL8pkIp
- wxGsiGStgT7v34/FYIzhlyht9JeSsoeO0sCMPB+TA8BpKQikbYw+p+IZ8EAjmhuPDk/x8pwpj
- sogBu1PFgXZQXlOVQTxQjyjEMa4c68HCm3Dkaq8vxrnXSeLpGrSTksjYSS0wV59kup5FJxS71
- +hEdPpOjNgH0UvDcUgWVhFYoXE1XBhNdEQZb+ztMNMn9KQSiWxw93Mj9rg5Q0lAmb1Ysl+xCs
- Nf+R3GKrGLK6BU=
+Content-Type: multipart/signed; boundary="Sig_/3Pfy1EoRadhkVVrPdaPSq/H";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As noted in the "Deprecated Interfaces, Language Features, Attributes,
-and Conventions" documentation [1], size calculations (especially
-multiplication) should not be performed in memory allocator (or similar)
-function arguments due to the risk of them overflowing. This could lead
-to values wrapping around and a smaller allocation being made than the
-caller was expecting. Using those allocations could lead to linear
-overflows of heap memory and other misbehaviors.
+--Sig_/3Pfy1EoRadhkVVrPdaPSq/H
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-So, use the struct_size() helper to do the arithmetic instead of the
-argument "size + count * size" in the kvmalloc() functions.
+Hello,
 
-Also, take the opportunity to refactor the memcpy() call to use the
-flex_array_size() helper.
+On Thu, 14 Oct 2021 13:26:26 +0200
+Philipp Zabel <p.zabel@pengutronix.de> wrote:
 
-This code was detected with the help of Coccinelle and audited and fixed
-manually.
+> Hi Dorota,
+>=20
+> On Wed, 2021-10-13 at 11:26 +0200, Dorota Czaplejewicz wrote:
+> > On Fri, 08 Oct 2021 14:19:41 +0200 Philipp Zabel <p.zabel@pengutronix.d=
+e> wrote: =20
+> [...]
+> > > I wonder: if you use 4-byte aligned width and odd height, does the CSI
+> > > write over the end of the buffer? =20
+> >=20
+> > I tested this case, and found a glitch which suggests the last 4 bytes =
+are ignored:
+> >=20
+> > https://source.puri.sm/Librem5/linux-next/uploads/cfb59e3832431aaa3a695=
+49455502568/image.png =20
+>=20
+> Thank you for testing, so it appears that at least without FBUF_STRIDE
+> the only requirement is that the whole image size must be a multiple of
+> 8 bytes.
+>=20
+> > That would be taken care of rounding up towards a number decided at run=
+time, like:
+> >=20
+> > divisor =3D 8 >> (mbus->height % 2); =20
+>=20
+> Which would then cause the CSI to write past the end of the buffer?
+>=20
+I'm not sure if you point out the mistake here (should be "4 <<"), or the f=
+act that rounding is happening. If it's the latter, then it's of no concern=
+: the values derived here are used to calculate buffer size.
 
-[1] https://www.kernel.org/doc/html/latest/process/deprecated.html#open-co=
-ded-arithmetic-in-allocator-arguments
+I'm submitting a new series where this is fixed.
 
-Signed-off-by: Len Baker <len.baker@gmx.com>
-=2D--
-Hi,
+> I'd rather make sure that either the number of lines is even or the
+> width is a multiple of 8 bytes.
+>=20
+> > > > Signed-off-by: Dorota Czaplejewicz <dorota.czaplejewicz@puri.sm>
+> > > > ---
+> > > >=20
+> > > > Hello,
+> > > >=20
+> > > > my previous patch identified something that was not a problem,
+> > > > so I'm sending a different one.
+> > > >=20
+> > > > This has been tested on the Librem 5.
+> > > >=20
+> > > > Cheers,
+> > > > Dorota
+> > > >=20
+> > > >  drivers/staging/media/imx/imx-media-utils.c | 4 ++--
+> > > >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > > >=20
+> > > > diff --git a/drivers/staging/media/imx/imx-media-utils.c b/drivers/=
+staging/media/imx/imx-media-utils.c
+> > > > index 5128915a5d6f..a303003929e3 100644
+> > > > --- a/drivers/staging/media/imx/imx-media-utils.c
+> > > > +++ b/drivers/staging/media/imx/imx-media-utils.c
+> > > > @@ -545,13 +545,13 @@ int imx_media_mbus_fmt_to_pix_fmt(struct v4l2=
+_pix_format *pix,
+> > > >  	}
+> > > > =20
+> > > >  	/* Round up width for minimum burst size */
+> > > > -	width =3D round_up(mbus->width, 8);
+> > > > +	width =3D round_up(mbus->width, 4);
+> > > > =20
+> > > >  	/* Round up stride for IDMAC line start address alignment */
+> > > >  	if (cc->planar)
+> > > >  		stride =3D round_up(width, 16);
+> > > >  	else
+> > > > -		stride =3D round_up((width * cc->bpp) >> 3, 8);
+> > > > +		stride =3D round_up((width * cc->bpp) >> 3, 4);   =20
+> > >=20
+> > > Second, even if this works fine on the i.MX7/8M CSI, the alignment is
+> > > still required for the i.MX5/6 IPU, for which this code and the comme=
+nts
+> > > were written. So we need a way to differentiate the two cases here.
+> > >=20
+> > > regards
+> > > Philipp =20
+> >=20
+> > How best to go about this? I can see in the file imx-media-capture.c
+> > that there the video device lives in struct capture_priv.vdev.vfd.
+> > Would that be the right place to query about the underlying hardware?
+> >=20
+> > Then the following functions would gain a new "small_divisor" parameter:
+> > - imx_media_mbus_fmt_to_pix_fmt (a GPL symbol)
+> > - imx_media_mbus_fmt_to_ipu_image (a GPL symbol)
+> > - __capture_try_fmt =20
+>=20
+> That sounds like it would work around the current code when it (at least
+> part of imx_media_mbus_fmt_to_pix_fmt()) should be split between i.MX5/6
+> and i.MX7/8 implementations. For example rounding up the stride is not
+> useful on i.MX7/8, it just doesn't currently hurt because imx7-media-csi=
+=20
+> is not using bytesperline to set up FBUF_STRIDE. And certainly the
+> comments don't apply.
+>=20
+> imx_media_mbus_fmt_to_ipu_image() is unused and should probably be
+> dropped, same as imx_media_ipu_image_to_mbus_fmt().
 
-this patch is built against the linux-next tree (tag next-20211015).
+Done in next series.
+>=20
+> > Those would have to extract the device type from struct capture_priv:
+> > - __capture_legacy_try_fmt
+> > - capture_try_fmt_vid_cap
+> > - capture_s_fmt_vid_cap
+> > - capture_init_format =20
+>=20
+> Maybe imx_media_mbus_fmt_to_pix_fmt should be moved into imx-media-
+> capture.c be passed struct capture_priv to avoid duplicating the device
+> type check?
+>=20
+I opted not to, in favor of passing the actual device type. It comes out to=
+ the same thing, except a simple value is passed around instead of a device.
+
+> imx_media_capture_device_init() could gain a new parameter (or maybe
+> replace legacy_api) to set the device type.
+
+Thanks, this is what I was missing.
 
 Regards,
-Len
+Dorota
+>=20
+> regards
+> Philipp
 
- mm/list_lru.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/mm/list_lru.c b/mm/list_lru.c
-index cd58790d0fb3..a6031f1c5bd7 100644
-=2D-- a/mm/list_lru.c
-+++ b/mm/list_lru.c
-@@ -354,8 +354,7 @@ static int memcg_init_list_lru_node(struct list_lru_no=
-de *nlru)
- 	struct list_lru_memcg *memcg_lrus;
- 	int size =3D memcg_nr_cache_ids;
+--Sig_/3Pfy1EoRadhkVVrPdaPSq/H
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
--	memcg_lrus =3D kvmalloc(sizeof(*memcg_lrus) +
--			      size * sizeof(void *), GFP_KERNEL);
-+	memcg_lrus =3D kvmalloc(struct_size(memcg_lrus, lru, size), GFP_KERNEL);
- 	if (!memcg_lrus)
- 		return -ENOMEM;
+-----BEGIN PGP SIGNATURE-----
 
-@@ -389,7 +388,7 @@ static int memcg_update_list_lru_node(struct list_lru_=
-node *nlru,
+iQIzBAEBCAAdFiEExKRqtqfFqmh+lu1oADBpX4S8ZncFAmFsA+EACgkQADBpX4S8
+ZncnvQ/+NEAYfdFoRmGgvfSL+jRzj/+XIvhViKP2W+CzU2lE4Y+YdG/4DQsAq4hv
+K34krzBX8ZG8wdxP4kTCKRmqZfQ47sRDW594mpvcTG4fsovyLlhr8TnMW69AMzXB
+nvaM5DSZhpz6msI9paaROyX6IXK7LRfehDlOLyCZO/U3u1Z3ujvKXyw45waM1LN/
+6hCBqflMO+pGV4XhVHlRc+1DlXn5o2/7XTVvT2qtVCkiyBFy24WaDYjtCjCtI6o1
+rIOGxdl5X6GiYL1Z5+Or3QOIQQxtbTaUhLxAzXyX5r/gb08BZQmJLJJHIEUSJfMf
+tr5m6eiCZhQxqfG9IagFM6c43kv4cVuf8tf7UrEu3wrFAziaJKfNvfWSOE6NbrLv
+JrP5XVNAigQNXss8NmQzyxSeHIJWH33+6oODC1SZ2q+8I1PrH6CvK+eFZQ1KAwUI
+OLp+SCd7BeXrG2s1gqTmTFP8t7rgWZ0eZc86h3nt2mCdsIGFQdB3ZF0X7Y4AQM+N
+nbcG1SyBAEX0Hdqm+2W5OnUjchi/5QZ6KyScPDO6ABolUd0kDzC8Cd3m4MOoqtXf
+moat42ZqQBvtmPmaxeuxJeVjpoOnp5z9/wihbtAqMVC0du/wbb61zQaB2iP5reVL
+VAOgMIzp141f8DPRf2954PcecPzjq+E5qZsFkUNafzk00f6BkG4=
+=pJAi
+-----END PGP SIGNATURE-----
 
- 	old =3D rcu_dereference_protected(nlru->memcg_lrus,
- 					lockdep_is_held(&list_lrus_mutex));
--	new =3D kvmalloc(sizeof(*new) + new_size * sizeof(void *), GFP_KERNEL);
-+	new =3D kvmalloc(struct_size(new, lru, new_size), GFP_KERNEL);
- 	if (!new)
- 		return -ENOMEM;
-
-@@ -398,7 +397,7 @@ static int memcg_update_list_lru_node(struct list_lru_=
-node *nlru,
- 		return -ENOMEM;
- 	}
-
--	memcpy(&new->lru, &old->lru, old_size * sizeof(void *));
-+	memcpy(&new->lru, &old->lru, flex_array_size(new, lru, old_size));
-
- 	/*
- 	 * The locking below allows readers that hold nlru->lock avoid taking
-=2D-
-2.25.1
-
+--Sig_/3Pfy1EoRadhkVVrPdaPSq/H--
