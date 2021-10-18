@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC0E4431DC6
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:53:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4746431CC7
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:43:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234104AbhJRNyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:54:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56732 "EHLO mail.kernel.org"
+        id S232756AbhJRNo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:44:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40186 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234116AbhJRNwd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:52:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 78F2061381;
-        Mon, 18 Oct 2021 13:38:49 +0000 (UTC)
+        id S233258AbhJRNmm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:42:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A003B61353;
+        Mon, 18 Oct 2021 13:34:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634564329;
-        bh=D9VwApYEqHKpSLReLdDLcfcGkIsVyjtRW/I6FbVQjvU=;
+        s=korg; t=1634564051;
+        bh=cesyj4anBa+P1NwYCsv+OIjAb5LzGTtCQDFHTqD9RZc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HUuPgaPtAgD0UHl05XcE+fm2t9lT9qFI3dnkPH8OBEn/5EVLgATz0+J3T9zSuq8Ld
-         tdkf0ixvkpxlk9GIW6mHlWFbK657mfTu+EWF7Jj11KVnb4+QuRopzZ0aRljyYkWJ7/
-         EySDUFb8apXK7n6/DHDuYGAY76+wLEQTxkaUk+Qo=
+        b=fuUofMGt4CFSgXLiArmPLtum/chiqOSv1bmquRNNBoqfBRLgEAq0WoLhGvGzvkhrB
+         +j0E2qYq1qO35fj4pyvVyOmtXJmH2Ud/WUfnY+eKmqSYBcBlhw/NdW5mhAwoeYT3X5
+         6U+ZHQfLZzMpT1hEsFMRGiqy2pYinGuYGqsRKfDY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Michael Cullen <michael@michaelcullen.name>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: [PATCH 5.14 049/151] Input: xpad - add support for another USB ID of Nacon GC-100
-Date:   Mon, 18 Oct 2021 15:23:48 +0200
-Message-Id: <20211018132342.290000692@linuxfoundation.org>
+        stable@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Subject: [PATCH 5.10 013/103] s390: fix strrchr() implementation
+Date:   Mon, 18 Oct 2021 15:23:49 +0200
+Message-Id: <20211018132335.141328601@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132340.682786018@linuxfoundation.org>
-References: <20211018132340.682786018@linuxfoundation.org>
+In-Reply-To: <20211018132334.702559133@linuxfoundation.org>
+References: <20211018132334.702559133@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,39 +40,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Cullen <michael@michaelcullen.name>
+From: Roberto Sassu <roberto.sassu@huawei.com>
 
-commit 3378a07daa6cdd11e042797454c706d1c69f9ca6 upstream.
+commit 8e0ab8e26b72a80e991c66a8abc16e6c856abe3d upstream.
 
-The Nacon GX100XF is already mapped, but it seems there is a Nacon
-GC-100 (identified as NC5136Wht PCGC-100WHITE though I believe other
-colours exist) with a different USB ID when in XInput mode.
+Fix two problems found in the strrchr() implementation for s390
+architectures: evaluate empty strings (return the string address instead of
+NULL, if '\0' is passed as second argument); evaluate the first character
+of non-empty strings (the current implementation stops at the second).
 
-Signed-off-by: Michael Cullen <michael@michaelcullen.name>
-Link: https://lore.kernel.org/r/20211015192051.5196-1-michael@michaelcullen.name
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Cc: stable@vger.kernel.org
+Reported-by: Heiko Carstens <hca@linux.ibm.com> (incorrect behavior with empty strings)
+Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+Link: https://lore.kernel.org/r/20211005120836.60630-1-roberto.sassu@huawei.com
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/input/joystick/xpad.c |    2 ++
- 1 file changed, 2 insertions(+)
+ arch/s390/lib/string.c |   13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
---- a/drivers/input/joystick/xpad.c
-+++ b/drivers/input/joystick/xpad.c
-@@ -334,6 +334,7 @@ static const struct xpad_device {
- 	{ 0x24c6, 0x5b03, "Thrustmaster Ferrari 458 Racing Wheel", 0, XTYPE_XBOX360 },
- 	{ 0x24c6, 0x5d04, "Razer Sabertooth", 0, XTYPE_XBOX360 },
- 	{ 0x24c6, 0xfafe, "Rock Candy Gamepad for Xbox 360", 0, XTYPE_XBOX360 },
-+	{ 0x3285, 0x0607, "Nacon GC-100", 0, XTYPE_XBOX360 },
- 	{ 0x3767, 0x0101, "Fanatec Speedster 3 Forceshock Wheel", 0, XTYPE_XBOX },
- 	{ 0xffff, 0xffff, "Chinese-made Xbox Controller", 0, XTYPE_XBOX },
- 	{ 0x0000, 0x0000, "Generic X-Box pad", 0, XTYPE_UNKNOWN }
-@@ -451,6 +452,7 @@ static const struct usb_device_id xpad_t
- 	XPAD_XBOXONE_VENDOR(0x24c6),		/* PowerA Controllers */
- 	XPAD_XBOXONE_VENDOR(0x2e24),		/* Hyperkin Duke X-Box One pad */
- 	XPAD_XBOX360_VENDOR(0x2f24),		/* GameSir Controllers */
-+	XPAD_XBOX360_VENDOR(0x3285),		/* Nacon GC-100 */
- 	{ }
- };
+--- a/arch/s390/lib/string.c
++++ b/arch/s390/lib/string.c
+@@ -246,14 +246,13 @@ EXPORT_SYMBOL(strcmp);
+ #ifdef __HAVE_ARCH_STRRCHR
+ char *strrchr(const char *s, int c)
+ {
+-       size_t len = __strend(s) - s;
++	ssize_t len = __strend(s) - s;
  
+-       if (len)
+-	       do {
+-		       if (s[len] == (char) c)
+-			       return (char *) s + len;
+-	       } while (--len > 0);
+-       return NULL;
++	do {
++		if (s[len] == (char)c)
++			return (char *)s + len;
++	} while (--len >= 0);
++	return NULL;
+ }
+ EXPORT_SYMBOL(strrchr);
+ #endif
 
 
