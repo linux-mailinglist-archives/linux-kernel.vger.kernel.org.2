@@ -2,98 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18FC543251B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 19:32:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 312B143251F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 19:33:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234158AbhJRRe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 13:34:58 -0400
-Received: from mail-ot1-f50.google.com ([209.85.210.50]:41492 "EHLO
-        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234113AbhJRRex (ORCPT
+        id S234160AbhJRRfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 13:35:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35222 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234143AbhJRRfw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 13:34:53 -0400
-Received: by mail-ot1-f50.google.com with SMTP id v2-20020a05683018c200b0054e3acddd91so737582ote.8;
-        Mon, 18 Oct 2021 10:32:42 -0700 (PDT)
+        Mon, 18 Oct 2021 13:35:52 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69961C061745
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 10:33:41 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id t2so42874804wrb.8
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 10:33:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=rC/hLNrxKboWrLVaDMklS7HEEU6bUXhMqtNh39WY+UE=;
+        b=ah07nRlqopbTXRyZyr14fX2esaI6ry80CfTbZPLGsNidfYq3PUrTRosgXKm/11VEqL
+         Sd2wYy+zZpVerDvvz3ns2S7Y318B/E2p5paJ8rKguqMMq4ABPimTJs50hePALFHQ/zDH
+         kuGsxV2aX2ayWX1J3mz1XYsEWLOIakXk0j69IsfhV9PDLr9JNFM3Kcbt7qHJBHOhCMCg
+         rgH5A8hBqi0Tzz41jxRjIYc+CcEdnG9DQHFgwQDY6n12Bk7mJSLZoJV/TzEifl/nnc+w
+         wqyfLz93DBjiq/88MkRYrsISeFQEWh7t1ZLu6KuuU0tQDXERBeBKuEeROeDvuCb3ZTGu
+         Eo3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=RHy3ZoTJ5ER11Swn75LpbiD1h4u7AequpZ+0XI4U4+w=;
-        b=mVg6JxP+gug6ZEiCKwXAr2llagvkk7JT3itss2qouh/3SlF6awayG2SubxZU3M5dHu
-         nmCb3MzFsJ/V/1oVLcHA4ydqeFMnH+0jU8S4JTrhOkGHVn/DKhkU0263dfBkUrcGl7sM
-         6J2FwdVkDK7AhatvX8cZsGs4aRrpigx7vNx2oRrP7fnhsAgkLY06pcVMjYIZqUiLC/yT
-         rb5+UfiJyJv7PPtsXYXtVYuvs7HrrQDvWfQug0cdxqxMGYAVZ1PNZ5Or2k3B9ODn9JdJ
-         93rOKlAk1VHYg+LiiQaWbZg05+cCC3iLt2zF+ym+eXdNFQQQFleME7Q5wB5Ql8SVtbOE
-         R6TQ==
-X-Gm-Message-State: AOAM5308vHH4l/7mWm2cNM2RQwNQUKwLEKWL9tK4iqVwWvyvXwwJAVQe
-        IYjU0EUFNTNaxURm1iCfBA==
-X-Google-Smtp-Source: ABdhPJzfQ44Eru9QB7/gzKIkq4F5Lwz75ZrkkyfLU9Xtzn7rDzu9ppJs/+xdULly0x2mhJkpvhriBA==
-X-Received: by 2002:a05:6830:1f27:: with SMTP id e7mr1020556oth.234.1634578361786;
-        Mon, 18 Oct 2021 10:32:41 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id m23sm2584303oom.34.2021.10.18.10.32.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 10:32:41 -0700 (PDT)
-Received: (nullmailer pid 2612843 invoked by uid 1000);
-        Mon, 18 Oct 2021 17:32:38 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Tinghan Shen <tinghan.shen@mediatek.com>
-Cc:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Benson Leung <bleung@chromium.org>,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        linux-mediatek@lists.infradead.org,
-        Lee Jones <lee.jones@linaro.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Guenter Roeck <groeck@chromium.org>, devicetree@vger.kernel.org
-In-Reply-To: <20211018115111.14096-1-tinghan.shen@mediatek.com>
-References: <20211018115111.14096-1-tinghan.shen@mediatek.com>
-Subject: Re: [PATCH] dt-bindings: mfd: change naming of mediatek rpmsg property
-Date:   Mon, 18 Oct 2021 12:32:38 -0500
-Message-Id: <1634578358.531021.2612842.nullmailer@robh.at.kernel.org>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=rC/hLNrxKboWrLVaDMklS7HEEU6bUXhMqtNh39WY+UE=;
+        b=ADMGgZK0ngLOkPcLUfb9kfQBiRCY3mqbljdjNwCDHWTyEv1IV2eU28jOQz9MGOur29
+         nsEsBr5sproiiqYQT4PK4b9Lk1/gCgq+XSaOWbudb0EGU1joGzP+2lqpWg1IC2wPKqun
+         OTXYzQC2FbNuTx5KyxWhho5YpUhx7hZCF0ZuQo7SNOg6cmQqHShV/HJ7Ktb0xnP6t5dF
+         uETkymgey2lZ7yUmFkRDtw9knKDnXK/Haptq+Djmnzv9hN4AjI2BXoiUzaJ+ri90UBlt
+         rST3OUMMF1/42PHKh8x+iVWPCdhW0Pe0f4Bb+mDB5U+Yw/eVcZEcNf5uX8HMCSuSik5J
+         PvPQ==
+X-Gm-Message-State: AOAM531N8EVmNEui8yZrIXU5wICBLx8t9QtmMzU+FLq2rBDk8flZL1iv
+        jp/FmzgDRj8GqkVUvMVuahJrtA==
+X-Google-Smtp-Source: ABdhPJzTofO8JworMFPCFBKd0dnbRO1NBjt4FTsjxc0YxtMZ2929zmD3/Ot6adQDm2boDaCVAp/n8g==
+X-Received: by 2002:a5d:4002:: with SMTP id n2mr144182wrp.420.1634578419759;
+        Mon, 18 Oct 2021 10:33:39 -0700 (PDT)
+Received: from [192.168.0.30] (cpc78119-cwma10-2-0-cust590.7-3.cable.virginm.net. [81.96.50.79])
+        by smtp.gmail.com with ESMTPSA id g25sm12989366wrc.88.2021.10.18.10.33.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Oct 2021 10:33:39 -0700 (PDT)
+Message-ID: <5c460ee3-9079-02a7-e674-a4dde5815f0d@linaro.org>
+Date:   Mon, 18 Oct 2021 18:33:36 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH] drm/msm/devfreq: Restrict idle clamping to a618 for now
+Content-Language: en-US
+To:     John Stultz <john.stultz@linaro.org>,
+        Rob Clark <robdclark@gmail.com>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <freedreno@lists.freedesktop.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Amit Pundir <amit.pundir@linaro.org>
+References: <20211018153627.2787882-1-robdclark@gmail.com>
+ <CALAqxLU=O2yaJ=ZOtg0S-zX4KyirbXNx+0iF3EJ9d4=rVL6Z=Q@mail.gmail.com>
+From:   Caleb Connolly <caleb.connolly@linaro.org>
+In-Reply-To: <CALAqxLU=O2yaJ=ZOtg0S-zX4KyirbXNx+0iF3EJ9d4=rVL6Z=Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 18 Oct 2021 19:51:11 +0800, Tinghan Shen wrote:
-> Change from "mtk,rpmsg-name" to "mediatek,rpmsg-name" to sync with the
-> vendor name defined in vendor-prefixes.yaml.
+Hi all,
+
+On 18/10/2021 17:42, John Stultz wrote:
+> On Mon, Oct 18, 2021 at 8:31 AM Rob Clark <robdclark@gmail.com> wrote:
+>>
+>> From: Rob Clark <robdclark@chromium.org>
+>>
+>> Until we better understand the stability issues caused by frequent
+>> frequency changes, lets limit them to a618.
+>>
+>> Signed-off-by: Rob Clark <robdclark@chromium.org>
+>> ---
+>> Caleb/John, I think this should help as a workaround for the power
+>> instability issues on a630.. could you give it a try?
 > 
-> Signed-off-by: Tinghan Shen <tinghan.shen@mediatek.com>
-> ---
->  Documentation/devicetree/bindings/mfd/google,cros-ec.yaml | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> While I hit it fairly often, I can't reliably reproduce the crash, but
+> in limited testing this seems ok to me.
+> I've not hit the crash so far, nor seen any other negative side
+> effects over 5.14.
+> 
+> So for what that's worth:
+> Tested-by: John Stultz <john.stultz@linaro.org>
+> 
+> Caleb has better luck tripping this issue right away, so they can
+> hopefully provide a more assured response.
+This prevents the crash on the OnePlus 6 as the frequency can no longer go to zero.
+
+I would like to find a better solution that still allows proper idling on a630, but that can wait for 5.16.
+
+Tested-by: Caleb Connolly <caleb.connolly@linaro.org>
+> 
+> thanks
+> -john
 > 
 
-Running 'make dtbs_check' with the schema in this patch gives the
-following warnings. Consider if they are expected or the schema is
-incorrect. These may not be new warnings.
-
-Note that it is not yet a requirement to have 0 warnings for dtbs_check.
-This will change in the future.
-
-Full log is available here: https://patchwork.ozlabs.org/patch/1542563
-
-
-cros_ec: 'mtk,rpmsg-name' does not match any of the regexes: '^extcon[0-9]*$', '^i2c-tunnel[0-9]*$', '^regulator@[0-9]+$', 'pinctrl-[0-9]+'
-	arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-burnet.dt.yaml
-	arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-damu.dt.yaml
-	arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-fennel14.dt.yaml
-	arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-fennel-sku1.dt.yaml
-	arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-fennel-sku6.dt.yaml
-	arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-juniper-sku16.dt.yaml
-	arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-kappa.dt.yaml
-	arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-kenzo.dt.yaml
-	arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-willow-sku0.dt.yaml
-	arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-willow-sku1.dt.yaml
-	arch/arm64/boot/dts/mediatek/mt8183-kukui-kakadu.dt.yaml
-	arch/arm64/boot/dts/mediatek/mt8183-kukui-kodama-sku16.dt.yaml
-	arch/arm64/boot/dts/mediatek/mt8183-kukui-kodama-sku272.dt.yaml
-	arch/arm64/boot/dts/mediatek/mt8183-kukui-kodama-sku288.dt.yaml
-	arch/arm64/boot/dts/mediatek/mt8183-kukui-kodama-sku32.dt.yaml
-	arch/arm64/boot/dts/mediatek/mt8183-kukui-krane-sku0.dt.yaml
-	arch/arm64/boot/dts/mediatek/mt8183-kukui-krane-sku176.dt.yaml
-
+-- 
+Kind Regards,
+Caleb (they/them)
