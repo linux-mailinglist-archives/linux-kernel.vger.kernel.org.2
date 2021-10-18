@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B45D8431BB9
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:32:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 607FE431C15
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:37:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232691AbhJRNej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:34:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43210 "EHLO mail.kernel.org"
+        id S232011AbhJRNiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:38:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54280 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231818AbhJRNci (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:32:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CA82A61381;
-        Mon, 18 Oct 2021 13:29:23 +0000 (UTC)
+        id S233189AbhJRNfo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:35:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 18EB1613AC;
+        Mon, 18 Oct 2021 13:30:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634563764;
-        bh=UrQb19vn92t+wlWhi0MJjKgCXzBQqaBIrbL0uQajCP4=;
+        s=korg; t=1634563849;
+        bh=sLaf6NbJ5YMqr38GrMe4lz5avGf1o6298sUlcl840DY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uUb6DAW4Ck2kbUukpNPisk91aNXBdcZoDuvRFC0U/ehXcCITWhmFSA0EwciZYPdux
-         +qEJP9vjTtHol5eQHHOpULAAxaPhGP6UAckKqRvyohsbSbDNC/qMVkJQopsocXNqvy
-         cDd0nO5NYoJyis1xuZ2JQ2nANltLbz9TbupyRDT4=
+        b=NDDpfk4QgSmKGt/Zrewe0UdC6I8tWB1CQJwkw7yIUPQXURX2LtX3WZ59VLG5oqtrS
+         jd+9BKPLbajHMTqxp2U7deep4t2ljvGGnDlAkFoyeMcgtUp1/oNcDmvlO3mlTngnHz
+         XUl7AalNj9MN8RViwwllvC3SRiRhzO4P+w+5zDmo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jiri Valek - 2N <valek@2n.cz>,
+        stable@vger.kernel.org, Billy Tsai <billy_tsai@aspeedtech.com>,
         Stable@vger.kernel.org,
         Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 4.19 29/50] iio: light: opt3001: Fixed timeout error when 0 lux
+Subject: [PATCH 5.4 38/69] iio: adc: aspeed: set driver data when adc probe.
 Date:   Mon, 18 Oct 2021 15:24:36 +0200
-Message-Id: <20211018132327.502221865@linuxfoundation.org>
+Message-Id: <20211018132330.739621517@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132326.529486647@linuxfoundation.org>
-References: <20211018132326.529486647@linuxfoundation.org>
+In-Reply-To: <20211018132329.453964125@linuxfoundation.org>
+References: <20211018132329.453964125@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,44 +40,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiri Valek - 2N <valek@2n.cz>
+From: Billy Tsai <billy_tsai@aspeedtech.com>
 
-commit 26d90b5590579def54382a2fc34cfbe8518a9851 upstream.
+commit eb795cd97365a3d3d9da3926d234a7bc32a3bb15 upstream.
 
-Reading from sensor returned timeout error under
-zero light conditions.
+Fix the issue when adc remove will get the null driver data.
 
-Signed-off-by: Jiri Valek - 2N <valek@2n.cz>
-Fixes: ac663db3678a ("iio: light: opt3001: enable operation w/o IRQ")
-Link: https://lore.kernel.org/r/20210920125351.6569-1-valek@2n.cz
+Fixed: commit 573803234e72 ("iio: Aspeed ADC")
+Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
+Link: https://lore.kernel.org/r/20210831071458.2334-2-billy_tsai@aspeedtech.com
 Cc: <Stable@vger.kernel.org>
 Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/iio/light/opt3001.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/iio/adc/aspeed_adc.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/iio/light/opt3001.c
-+++ b/drivers/iio/light/opt3001.c
-@@ -283,6 +283,8 @@ static int opt3001_get_lux(struct opt300
- 		ret = wait_event_timeout(opt->result_ready_queue,
- 				opt->result_ready,
- 				msecs_to_jiffies(OPT3001_RESULT_READY_LONG));
-+		if (ret == 0)
-+			return -ETIMEDOUT;
- 	} else {
- 		/* Sleep for result ready time */
- 		timeout = (opt->int_time == OPT3001_INT_TIME_SHORT) ?
-@@ -319,9 +321,7 @@ err:
- 		/* Disallow IRQ to access the device while lock is active */
- 		opt->ok_to_ignore_lock = false;
+--- a/drivers/iio/adc/aspeed_adc.c
++++ b/drivers/iio/adc/aspeed_adc.c
+@@ -184,6 +184,7 @@ static int aspeed_adc_probe(struct platf
  
--	if (ret == 0)
--		return -ETIMEDOUT;
--	else if (ret < 0)
-+	if (ret < 0)
- 		return ret;
+ 	data = iio_priv(indio_dev);
+ 	data->dev = &pdev->dev;
++	platform_set_drvdata(pdev, indio_dev);
  
- 	if (opt->use_irq) {
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	data->base = devm_ioremap_resource(&pdev->dev, res);
 
 
