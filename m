@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 562DA431B8C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:31:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16E4A431C68
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:39:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232467AbhJRNdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:33:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43996 "EHLO mail.kernel.org"
+        id S233593AbhJRNks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:40:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56366 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232943AbhJRNb5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:31:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 532B36128A;
-        Mon, 18 Oct 2021 13:28:54 +0000 (UTC)
+        id S233674AbhJRNig (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:38:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 62377610A1;
+        Mon, 18 Oct 2021 13:32:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634563734;
-        bh=DkzIO5A03SRxsi4IHh9zWKcpfsQxM/uye2P9HevFwXU=;
+        s=korg; t=1634563932;
+        bh=czaI13gQk7wRy9J0Hi5zKCZKM6yOkAkNqxw0VBmSeSw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=t1w2BjXI+QLk3RK4jI6X8E4BuP5igk6MlwPBEyqLNT282DLAbJYNVfFQFU6jPdgd9
-         Jjqr8Z2eUCURLYgF87CLT8Yjpmua9IPyvzHJuK21l2b5Cbr0fYg+3diqd44iWqIfJ9
-         1yOVee3UekUNc/8kUjECkWRfND0a1qkE5RfSNVMI=
+        b=aGo6WtnJHOYw/89TV5fypRFw4vBxTOYZYEH98KqI+Yhj8EJx8PA7qR0Re0B0D9BI8
+         8a/CyX0Oc6Wl13BqzPiA5sfJYTvruwdqGYygbm0WNWNvv4msnntbx+j0kYMxp4NnBJ
+         q7EahB46FeazlVpnu3uD+RHeNALPHtU2i74Q+SAY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Rob Clark <robdclark@chromium.org>
-Subject: [PATCH 4.19 43/50] drm/msm: Fix null pointer dereference on pointer edp
-Date:   Mon, 18 Oct 2021 15:24:50 +0200
-Message-Id: <20211018132327.942629074@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Ziyang Xuan <william.xuanziyang@huawei.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.4 53/69] nfc: fix error handling of nfc_proto_register()
+Date:   Mon, 18 Oct 2021 15:24:51 +0200
+Message-Id: <20211018132331.242568414@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132326.529486647@linuxfoundation.org>
-References: <20211018132326.529486647@linuxfoundation.org>
+In-Reply-To: <20211018132329.453964125@linuxfoundation.org>
+References: <20211018132329.453964125@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,44 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Ziyang Xuan <william.xuanziyang@huawei.com>
 
-commit 2133c4fc8e1348dcb752f267a143fe2254613b34 upstream.
+commit 0911ab31896f0e908540746414a77dd63912748d upstream.
 
-The initialization of pointer dev dereferences pointer edp before
-edp is null checked, so there is a potential null pointer deference
-issue. Fix this by only dereferencing edp after edp has been null
-checked.
+When nfc proto id is using, nfc_proto_register() return -EBUSY error
+code, but forgot to unregister proto. Fix it by adding proto_unregister()
+in the error handling case.
 
-Addresses-Coverity: ("Dereference before null check")
-Fixes: ab5b0107ccf3 ("drm/msm: Initial add eDP support in msm drm driver (v5)")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Link: https://lore.kernel.org/r/20210929121857.213922-1-colin.king@canonical.com
-Signed-off-by: Rob Clark <robdclark@chromium.org>
+Fixes: c7fe3b52c128 ("NFC: add NFC socket family")
+Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Link: https://lore.kernel.org/r/20211013034932.2833737-1-william.xuanziyang@huawei.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/msm/edp/edp_ctrl.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ net/nfc/af_nfc.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/gpu/drm/msm/edp/edp_ctrl.c
-+++ b/drivers/gpu/drm/msm/edp/edp_ctrl.c
-@@ -1090,7 +1090,7 @@ void msm_edp_ctrl_power(struct edp_ctrl
- int msm_edp_ctrl_init(struct msm_edp *edp)
- {
- 	struct edp_ctrl *ctrl = NULL;
--	struct device *dev = &edp->pdev->dev;
-+	struct device *dev;
- 	int ret;
+--- a/net/nfc/af_nfc.c
++++ b/net/nfc/af_nfc.c
+@@ -60,6 +60,9 @@ int nfc_proto_register(const struct nfc_
+ 		proto_tab[nfc_proto->id] = nfc_proto;
+ 	write_unlock(&proto_tab_lock);
  
- 	if (!edp) {
-@@ -1098,6 +1098,7 @@ int msm_edp_ctrl_init(struct msm_edp *ed
- 		return -EINVAL;
- 	}
- 
-+	dev = &edp->pdev->dev;
- 	ctrl = devm_kzalloc(dev, sizeof(*ctrl), GFP_KERNEL);
- 	if (!ctrl)
- 		return -ENOMEM;
++	if (rc)
++		proto_unregister(nfc_proto->proto);
++
+ 	return rc;
+ }
+ EXPORT_SYMBOL(nfc_proto_register);
 
 
