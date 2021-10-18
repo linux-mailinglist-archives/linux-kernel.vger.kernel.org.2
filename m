@@ -2,258 +2,736 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A0624311D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 10:06:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B83E54311D7
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 10:07:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231178AbhJRIIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 04:08:53 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:50964 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230472AbhJRIIs (ORCPT
+        id S231222AbhJRIJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 04:09:37 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:14148 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230392AbhJRIJg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 04:08:48 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id EE6821FD6D;
-        Mon, 18 Oct 2021 08:06:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1634544396; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wjnYlqyFpwvyLi8dGiMLHrHOrOtOAEOnOWsvVUDLPZU=;
-        b=yOWkZX1kU+PfHQGPYTok2ul0fV3rDBrKqcFpP/1uFvWwBaNZhldu29mzgMWEyY4xjaCLL3
-        iBJLe8R2kMBd7WE39SC8DYxXKmsA6xK+zJsY/c7fIRv0uINRCluz5gDUvQbFHyCV7uDqBY
-        Jx7dk9qov5uW7a+FrJpEqnI9g2QggT4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1634544396;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wjnYlqyFpwvyLi8dGiMLHrHOrOtOAEOnOWsvVUDLPZU=;
-        b=zIP9M63nTTcTdRT632qPT6+rJBoWktufHHO8y2+UrUJiejjeyopoHg+qlAWo1qM7M9TQSO
-        N1JzDKPcyffcbUDA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 254EA13CC9;
-        Mon, 18 Oct 2021 08:06:36 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id MgS8BQwrbWEgIAAAMHmgww
-        (envelope-from <osalvador@suse.de>); Mon, 18 Oct 2021 08:06:36 +0000
-Date:   Mon, 18 Oct 2021 10:06:34 +0200
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        David Hildenbrand <david@redhat.com>,
-        Michal Hocko <mhocko@suse.com>, Zi Yan <ziy@nvidia.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Naoya Horiguchi <naoya.horiguchi@linux.dev>,
-        David Rientjes <rientjes@google.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Nghia Le <nghialm78@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v4 5/5] hugetlb: add hugetlb demote page support
-Message-ID: <20211018080634.GC11960@linux>
-References: <20211007181918.136982-1-mike.kravetz@oracle.com>
- <20211007181918.136982-6-mike.kravetz@oracle.com>
- <6ca29b8e-527c-d6ec-900e-e6a43e4f8b73@oracle.com>
+        Mon, 18 Oct 2021 04:09:36 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19I7kvhx005360;
+        Mon, 18 Oct 2021 04:07:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : from : to : cc
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=pp1; bh=PjP0LVxEVD7rdZG+/WunyUrJmkQDZ0ipTCYGHQiqS9k=;
+ b=NPfveTw5I3nBuzPqlze9vwA6whYvjHF5qtGNeKiU0kXRavhtMZwD4M3KYcRnAq3dAdMl
+ xAMIfhAy5ADAlqUUJIcJULPqyJ4YA+cy48GdtSs7jyrAfTvW0hmiMb9TS7gtU9n136eh
+ YT/66gG5BHU5KnEVELdIRJEcCyN9NP+N5llA/o12+NxS4VYhxihqDt5LMXpJCF7woeiM
+ Zl3hqzhuF5IjvJrgWcUZRuszMBCQ3co5BJYZOQxa37lWnC5DkStQfenRhP3FRtXN3DKm
+ weeEuwJuvvttkWS02SYlq2LDH/ml4fChM0dkklWMKaWj+YvdJFk+ynFhHkC15kRV2lWW zg== 
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bs1u53uyu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 18 Oct 2021 04:07:15 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19I843kM027035;
+        Mon, 18 Oct 2021 08:07:13 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma04ams.nl.ibm.com with ESMTP id 3bqpca3ryk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 18 Oct 2021 08:07:12 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19I879kk45023508
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 18 Oct 2021 08:07:09 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5F516A4059;
+        Mon, 18 Oct 2021 08:07:09 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 21A67A4051;
+        Mon, 18 Oct 2021 08:07:08 +0000 (GMT)
+Received: from lep8c.aus.stglabs.ibm.com (unknown [9.40.192.207])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 18 Oct 2021 08:07:07 +0000 (GMT)
+Subject: [REPOST RFC PATCH v2] powerpc/papr_scm: Move duplicate definitions to
+ common header files
+From:   Shivaprasad G Bhat <sbhat@linux.ibm.com>
+To:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        mpe@ellerman.id.au
+Cc:     nvdimm@lists.linux.dev, aneesh.kumar@linux.ibm.com,
+        sbhat@linux.ibm.com, vaibhav@linux.ibm.com,
+        dan.j.williams@intel.com
+Date:   Mon, 18 Oct 2021 03:07:07 -0500
+Message-ID: <163454440296.431294.2368481747380790011.stgit@lep8c.aus.stglabs.ibm.com>
+User-Agent: StGit/1.1+40.g1b20
+Content-Type: text/plain; charset="utf-8"
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: UosL8jcmtyi-HL5FcCvOOKDOhYym0cep
+X-Proofpoint-ORIG-GUID: UosL8jcmtyi-HL5FcCvOOKDOhYym0cep
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6ca29b8e-527c-d6ec-900e-e6a43e4f8b73@oracle.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-18_02,2021-10-14_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ impostorscore=0 mlxlogscore=999 bulkscore=0 spamscore=0 clxscore=1011
+ adultscore=0 suspectscore=0 mlxscore=0 phishscore=0 malwarescore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110180050
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 08, 2021 at 01:57:48PM -0700, Mike Kravetz wrote:
-> From 25e4dac59f4d203f3a7e86d3591d70c1e956d11c Mon Sep 17 00:00:00 2001
-> From: Mike Kravetz <mike.kravetz@oracle.com>
-> Date: Fri, 8 Oct 2021 13:21:21 -0700
-> Subject: [PATCH v4 5/5] hugetlb: add hugetlb demote page support
-> 
-> Demote page functionality will split a huge page into a number of huge
-> pages of a smaller size.  For example, on x86 a 1GB huge page can be
-> demoted into 512 2M huge pages.  Demotion is done 'in place' by simply
-> splitting the huge page.
-> 
-> Added '*_for_demote' wrappers for remove_hugetlb_page,
-> destroy_compound_hugetlb_page and prep_compound_gigantic_page for use
-> by demote code.
-> 
-> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+papr_scm and ndtest share common PDSM payload structs like
+nd_papr_pdsm_health. Presently these structs are duplicated across
+papr_pdsm.h and ndtest.h header files. Since 'ndtest' is essentially
+arch independent and can run on platforms other than PPC64, a way
+needs to be deviced to avoid redundancy and duplication of PDSM
+structs in future.
 
-Reviewed-by: Oscar Salvador <osalvador@suse.de>
+So the patch proposes moving the PDSM header from arch/powerpc/include-
+-/uapi/ to the generic include/uapi/linux directory. Also, there are
+some #defines common between papr_scm and ndtest which are not exported
+to the user space. So, move them to a header file which can be shared
+across ndtest and papr_scm via newly introduced include/linux/papr_scm.h.
 
-> ---
->  mm/hugetlb.c | 100 ++++++++++++++++++++++++++++++++++++++++++++++-----
->  1 file changed, 92 insertions(+), 8 deletions(-)
-> 
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index 794e0c4c1b3c..e1883510309a 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -1270,7 +1270,7 @@ static int hstate_next_node_to_free(struct hstate *h, nodemask_t *nodes_allowed)
->  		((node = hstate_next_node_to_free(hs, mask)) || 1);	\
->  		nr_nodes--)
->  
-> -#ifdef CONFIG_ARCH_HAS_GIGANTIC_PAGE
-> +/* used to demote non-gigantic_huge pages as well */
->  static void __destroy_compound_gigantic_page(struct page *page,
->  					unsigned int order, bool demote)
->  {
-> @@ -1293,6 +1293,13 @@ static void __destroy_compound_gigantic_page(struct page *page,
->  	__ClearPageHead(page);
->  }
->  
-> +static void destroy_compound_hugetlb_page_for_demote(struct page *page,
-> +					unsigned int order)
-> +{
-> +	__destroy_compound_gigantic_page(page, order, true);
-> +}
-> +
-> +#ifdef CONFIG_ARCH_HAS_GIGANTIC_PAGE
->  static void destroy_compound_gigantic_page(struct page *page,
->  					unsigned int order)
->  {
-> @@ -1438,6 +1445,12 @@ static void remove_hugetlb_page(struct hstate *h, struct page *page,
->  	__remove_hugetlb_page(h, page, adjust_surplus, false);
->  }
->  
-> +static void remove_hugetlb_page_for_demote(struct hstate *h, struct page *page,
-> +							bool adjust_surplus)
-> +{
-> +	__remove_hugetlb_page(h, page, adjust_surplus, true);
-> +}
-> +
->  static void add_hugetlb_page(struct hstate *h, struct page *page,
->  			     bool adjust_surplus)
->  {
-> @@ -1779,6 +1792,12 @@ static bool prep_compound_gigantic_page(struct page *page, unsigned int order)
->  	return __prep_compound_gigantic_page(page, order, false);
->  }
->  
-> +static bool prep_compound_gigantic_page_for_demote(struct page *page,
-> +							unsigned int order)
-> +{
-> +	return __prep_compound_gigantic_page(page, order, true);
-> +}
-> +
->  /*
->   * PageHuge() only returns true for hugetlbfs pages, but not for normal or
->   * transparent huge pages.  See the PageTransHuge() documentation for more
-> @@ -3304,9 +3323,72 @@ static int set_max_huge_pages(struct hstate *h, unsigned long count, int nid,
->  	return 0;
->  }
->  
-> +static int demote_free_huge_page(struct hstate *h, struct page *page)
-> +{
-> +	int i, nid = page_to_nid(page);
-> +	struct hstate *target_hstate;
-> +	int rc = 0;
-> +
-> +	target_hstate = size_to_hstate(PAGE_SIZE << h->demote_order);
-> +
-> +	remove_hugetlb_page_for_demote(h, page, false);
-> +	spin_unlock_irq(&hugetlb_lock);
-> +
-> +	rc = alloc_huge_page_vmemmap(h, page);
-> +	if (rc) {
-> +		/* Allocation of vmemmmap failed, we can not demote page */
-> +		spin_lock_irq(&hugetlb_lock);
-> +		set_page_refcounted(page);
-> +		add_hugetlb_page(h, page, false);
-> +		return rc;
-> +	}
-> +
-> +	/*
-> +	 * Use destroy_compound_hugetlb_page_for_demote for all huge page
-> +	 * sizes as it will not ref count pages.
-> +	 */
-> +	destroy_compound_hugetlb_page_for_demote(page, huge_page_order(h));
-> +
-> +	/*
-> +	 * Taking target hstate mutex synchronizes with set_max_huge_pages.
-> +	 * Without the mutex, pages added to target hstate could be marked
-> +	 * as surplus.
-> +	 *
-> +	 * Note that we already hold h->resize_lock.  To prevent deadlock,
-> +	 * use the convention of always taking larger size hstate mutex first.
-> +	 */
-> +	mutex_lock(&target_hstate->resize_lock);
-> +	for (i = 0; i < pages_per_huge_page(h);
-> +				i += pages_per_huge_page(target_hstate)) {
-> +		if (hstate_is_gigantic(target_hstate))
-> +			prep_compound_gigantic_page_for_demote(page + i,
-> +							target_hstate->order);
-> +		else
-> +			prep_compound_page(page + i, target_hstate->order);
-> +		set_page_private(page + i, 0);
-> +		set_page_refcounted(page + i);
-> +		prep_new_huge_page(target_hstate, page + i, nid);
-> +		put_page(page + i);
-> +	}
-> +	mutex_unlock(&target_hstate->resize_lock);
-> +
-> +	spin_lock_irq(&hugetlb_lock);
-> +
-> +	/*
-> +	 * Not absolutely necessary, but for consistency update max_huge_pages
-> +	 * based on pool changes for the demoted page.
-> +	 */
-> +	h->max_huge_pages--;
-> +	target_hstate->max_huge_pages += pages_per_huge_page(h);
-> +
-> +	return rc;
-> +}
-> +
->  static int demote_pool_huge_page(struct hstate *h, nodemask_t *nodes_allowed)
->  	__must_hold(&hugetlb_lock)
->  {
-> +	int nr_nodes, node;
-> +	struct page *page;
->  	int rc = 0;
->  
->  	lockdep_assert_held(&hugetlb_lock);
-> @@ -3317,9 +3399,15 @@ static int demote_pool_huge_page(struct hstate *h, nodemask_t *nodes_allowed)
->  		return -EINVAL;		/* internal error */
->  	}
->  
-> -	/*
-> -	 * TODO - demote fucntionality will be added in subsequent patch
-> -	 */
-> +	for_each_node_mask_to_free(h, nr_nodes, node, nodes_allowed) {
-> +		if (!list_empty(&h->hugepage_freelists[node])) {
-> +			page = list_entry(h->hugepage_freelists[node].next,
-> +					struct page, lru);
-> +			rc = demote_free_huge_page(h, page);
-> +			break;
-> +		}
-> +	}
-> +
->  	return rc;
->  }
->  
-> @@ -3554,10 +3642,6 @@ static ssize_t demote_store(struct kobject *kobj,
->  		/*
->  		 * Check for available pages to demote each time thorough the
->  		 * loop as demote_pool_huge_page will drop hugetlb_lock.
-> -		 *
-> -		 * NOTE: demote_pool_huge_page does not yet drop hugetlb_lock
-> -		 * but will when full demote functionality is added in a later
-> -		 * patch.
->  		 */
->  		if (nid != NUMA_NO_NODE)
->  			nr_available = h->free_huge_pages_node[nid];
-> -- 
-> 2.31.1
-> 
-> 
+Signed-off-by: Shivaprasad G Bhat <sbhat@linux.ibm.com>
+Signed-off-by: Vaibhav Jain <vaibhav@linux.ibm.com>
+Suggested-by: "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+---
+Changelog:
 
--- 
-Oscar Salvador
-SUSE Labs
+Since v1:
+Link: https://patchwork.kernel.org/project/linux-nvdimm/patch/162505488483.72147.12741153746322191381.stgit@56e104a48989/
+* Removed dependency on this patch for the other patches
+
+ MAINTAINERS                               |    2 
+ arch/powerpc/include/uapi/asm/papr_pdsm.h |  165 -----------------------------
+ arch/powerpc/platforms/pseries/papr_scm.c |   43 --------
+ include/linux/papr_scm.h                  |   48 ++++++++
+ include/uapi/linux/papr_pdsm.h            |  165 +++++++++++++++++++++++++++++
+ tools/testing/nvdimm/test/ndtest.c        |    2 
+ tools/testing/nvdimm/test/ndtest.h        |  120 ---------------------
+ 7 files changed, 219 insertions(+), 326 deletions(-)
+ delete mode 100644 arch/powerpc/include/uapi/asm/papr_pdsm.h
+ create mode 100644 include/linux/papr_scm.h
+ create mode 100644 include/uapi/linux/papr_pdsm.h
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 5b33791bb8e97..3e78f595f3d91 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -10746,6 +10746,8 @@ F:	drivers/rtc/rtc-opal.c
+ F:	drivers/scsi/ibmvscsi/
+ F:	drivers/tty/hvc/hvc_opal.c
+ F:	drivers/watchdog/wdrtas.c
++F:	include/linux/papr_scm.h
++F:	include/uapi/linux/papr_pdsm.h
+ F:	tools/testing/selftests/powerpc
+ N:	/pmac
+ N:	powermac
+diff --git a/arch/powerpc/include/uapi/asm/papr_pdsm.h b/arch/powerpc/include/uapi/asm/papr_pdsm.h
+deleted file mode 100644
+index 17439925045cf..0000000000000
+--- a/arch/powerpc/include/uapi/asm/papr_pdsm.h
++++ /dev/null
+@@ -1,165 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+-/*
+- * PAPR nvDimm Specific Methods (PDSM) and structs for libndctl
+- *
+- * (C) Copyright IBM 2020
+- *
+- * Author: Vaibhav Jain <vaibhav at linux.ibm.com>
+- */
+-
+-#ifndef _UAPI_ASM_POWERPC_PAPR_PDSM_H_
+-#define _UAPI_ASM_POWERPC_PAPR_PDSM_H_
+-
+-#include <linux/types.h>
+-#include <linux/ndctl.h>
+-
+-/*
+- * PDSM Envelope:
+- *
+- * The ioctl ND_CMD_CALL exchange data between user-space and kernel via
+- * envelope which consists of 2 headers sections and payload sections as
+- * illustrated below:
+- *  +-----------------+---------------+---------------------------+
+- *  |   64-Bytes      |   8-Bytes     |       Max 184-Bytes       |
+- *  +-----------------+---------------+---------------------------+
+- *  | ND-HEADER       |  PDSM-HEADER  |      PDSM-PAYLOAD         |
+- *  +-----------------+---------------+---------------------------+
+- *  | nd_family       |               |                           |
+- *  | nd_size_out     | cmd_status    |                           |
+- *  | nd_size_in      | reserved      |     nd_pdsm_payload       |
+- *  | nd_command      | payload   --> |                           |
+- *  | nd_fw_size      |               |                           |
+- *  | nd_payload ---> |               |                           |
+- *  +---------------+-----------------+---------------------------+
+- *
+- * ND Header:
+- * This is the generic libnvdimm header described as 'struct nd_cmd_pkg'
+- * which is interpreted by libnvdimm before passed on to papr_scm. Important
+- * member fields used are:
+- * 'nd_family'		: (In) NVDIMM_FAMILY_PAPR_SCM
+- * 'nd_size_in'		: (In) PDSM-HEADER + PDSM-IN-PAYLOAD (usually 0)
+- * 'nd_size_out'        : (In) PDSM-HEADER + PDSM-RETURN-PAYLOAD
+- * 'nd_command'         : (In) One of PAPR_PDSM_XXX
+- * 'nd_fw_size'         : (Out) PDSM-HEADER + size of actual payload returned
+- *
+- * PDSM Header:
+- * This is papr-scm specific header that precedes the payload. This is defined
+- * as nd_cmd_pdsm_pkg.  Following fields aare available in this header:
+- *
+- * 'cmd_status'		: (Out) Errors if any encountered while servicing PDSM.
+- * 'reserved'		: Not used, reserved for future and should be set to 0.
+- * 'payload'            : A union of all the possible payload structs
+- *
+- * PDSM Payload:
+- *
+- * The layout of the PDSM Payload is defined by various structs shared between
+- * papr_scm and libndctl so that contents of payload can be interpreted. As such
+- * its defined as a union of all possible payload structs as
+- * 'union nd_pdsm_payload'. Based on the value of 'nd_cmd_pkg.nd_command'
+- * appropriate member of the union is accessed.
+- */
+-
+-/* Max payload size that we can handle */
+-#define ND_PDSM_PAYLOAD_MAX_SIZE 184
+-
+-/* Max payload size that we can handle */
+-#define ND_PDSM_HDR_SIZE \
+-	(sizeof(struct nd_pkg_pdsm) - ND_PDSM_PAYLOAD_MAX_SIZE)
+-
+-/* Various nvdimm health indicators */
+-#define PAPR_PDSM_DIMM_HEALTHY       0
+-#define PAPR_PDSM_DIMM_UNHEALTHY     1
+-#define PAPR_PDSM_DIMM_CRITICAL      2
+-#define PAPR_PDSM_DIMM_FATAL         3
+-
+-/* struct nd_papr_pdsm_health.extension_flags field flags */
+-
+-/* Indicate that the 'dimm_fuel_gauge' field is valid */
+-#define PDSM_DIMM_HEALTH_RUN_GAUGE_VALID 1
+-
+-/* Indicate that the 'dimm_dsc' field is valid */
+-#define PDSM_DIMM_DSC_VALID 2
+-
+-/*
+- * Struct exchanged between kernel & ndctl in for PAPR_PDSM_HEALTH
+- * Various flags indicate the health status of the dimm.
+- *
+- * extension_flags	: Any extension fields present in the struct.
+- * dimm_unarmed		: Dimm not armed. So contents wont persist.
+- * dimm_bad_shutdown	: Previous shutdown did not persist contents.
+- * dimm_bad_restore	: Contents from previous shutdown werent restored.
+- * dimm_scrubbed	: Contents of the dimm have been scrubbed.
+- * dimm_locked		: Contents of the dimm cant be modified until CEC reboot
+- * dimm_encrypted	: Contents of dimm are encrypted.
+- * dimm_health		: Dimm health indicator. One of PAPR_PDSM_DIMM_XXXX
+- * dimm_fuel_gauge	: Life remaining of DIMM as a percentage from 0-100
+- */
+-struct nd_papr_pdsm_health {
+-	union {
+-		struct {
+-			__u32 extension_flags;
+-			__u8 dimm_unarmed;
+-			__u8 dimm_bad_shutdown;
+-			__u8 dimm_bad_restore;
+-			__u8 dimm_scrubbed;
+-			__u8 dimm_locked;
+-			__u8 dimm_encrypted;
+-			__u16 dimm_health;
+-
+-			/* Extension flag PDSM_DIMM_HEALTH_RUN_GAUGE_VALID */
+-			__u16 dimm_fuel_gauge;
+-
+-			/* Extension flag PDSM_DIMM_DSC_VALID */
+-			__u64 dimm_dsc;
+-		};
+-		__u8 buf[ND_PDSM_PAYLOAD_MAX_SIZE];
+-	};
+-};
+-
+-/* Flags for injecting specific smart errors */
+-#define PDSM_SMART_INJECT_HEALTH_FATAL		(1 << 0)
+-#define PDSM_SMART_INJECT_BAD_SHUTDOWN		(1 << 1)
+-
+-struct nd_papr_pdsm_smart_inject {
+-	union {
+-		struct {
+-			/* One or more of PDSM_SMART_INJECT_ */
+-			__u32 flags;
+-			__u8 fatal_enable;
+-			__u8 unsafe_shutdown_enable;
+-		};
+-		__u8 buf[ND_PDSM_PAYLOAD_MAX_SIZE];
+-	};
+-};
+-
+-/*
+- * Methods to be embedded in ND_CMD_CALL request. These are sent to the kernel
+- * via 'nd_cmd_pkg.nd_command' member of the ioctl struct
+- */
+-enum papr_pdsm {
+-	PAPR_PDSM_MIN = 0x0,
+-	PAPR_PDSM_HEALTH,
+-	PAPR_PDSM_SMART_INJECT,
+-	PAPR_PDSM_MAX,
+-};
+-
+-/* Maximal union that can hold all possible payload types */
+-union nd_pdsm_payload {
+-	struct nd_papr_pdsm_health health;
+-	struct nd_papr_pdsm_smart_inject smart_inject;
+-	__u8 buf[ND_PDSM_PAYLOAD_MAX_SIZE];
+-} __packed;
+-
+-/*
+- * PDSM-header + payload expected with ND_CMD_CALL ioctl from libnvdimm
+- * Valid member of union 'payload' is identified via 'nd_cmd_pkg.nd_command'
+- * that should always precede this struct when sent to papr_scm via CMD_CALL
+- * interface.
+- */
+-struct nd_pkg_pdsm {
+-	__s32 cmd_status;	/* Out: Sub-cmd status returned back */
+-	__u16 reserved[2];	/* Ignored and to be set as '0' */
+-	union nd_pdsm_payload payload;
+-} __packed;
+-
+-#endif /* _UAPI_ASM_POWERPC_PAPR_PDSM_H_ */
+diff --git a/arch/powerpc/platforms/pseries/papr_scm.c b/arch/powerpc/platforms/pseries/papr_scm.c
+index de4cf329cfb3b..b7437c61a2704 100644
+--- a/arch/powerpc/platforms/pseries/papr_scm.c
++++ b/arch/powerpc/platforms/pseries/papr_scm.c
+@@ -16,7 +16,8 @@
+ #include <linux/nd.h>
+ 
+ #include <asm/plpar_wrappers.h>
+-#include <asm/papr_pdsm.h>
++#include <uapi/linux/papr_pdsm.h>
++#include <linux/papr_scm.h>
+ #include <asm/mce.h>
+ #include <asm/unaligned.h>
+ 
+@@ -28,46 +29,6 @@
+ 	 (1ul << ND_CMD_SET_CONFIG_DATA) | \
+ 	 (1ul << ND_CMD_CALL))
+ 
+-/* DIMM health bitmap bitmap indicators */
+-/* SCM device is unable to persist memory contents */
+-#define PAPR_PMEM_UNARMED                   (1ULL << (63 - 0))
+-/* SCM device failed to persist memory contents */
+-#define PAPR_PMEM_SHUTDOWN_DIRTY            (1ULL << (63 - 1))
+-/* SCM device contents are persisted from previous IPL */
+-#define PAPR_PMEM_SHUTDOWN_CLEAN            (1ULL << (63 - 2))
+-/* SCM device contents are not persisted from previous IPL */
+-#define PAPR_PMEM_EMPTY                     (1ULL << (63 - 3))
+-/* SCM device memory life remaining is critically low */
+-#define PAPR_PMEM_HEALTH_CRITICAL           (1ULL << (63 - 4))
+-/* SCM device will be garded off next IPL due to failure */
+-#define PAPR_PMEM_HEALTH_FATAL              (1ULL << (63 - 5))
+-/* SCM contents cannot persist due to current platform health status */
+-#define PAPR_PMEM_HEALTH_UNHEALTHY          (1ULL << (63 - 6))
+-/* SCM device is unable to persist memory contents in certain conditions */
+-#define PAPR_PMEM_HEALTH_NON_CRITICAL       (1ULL << (63 - 7))
+-/* SCM device is encrypted */
+-#define PAPR_PMEM_ENCRYPTED                 (1ULL << (63 - 8))
+-/* SCM device has been scrubbed and locked */
+-#define PAPR_PMEM_SCRUBBED_AND_LOCKED       (1ULL << (63 - 9))
+-
+-/* Bits status indicators for health bitmap indicating unarmed dimm */
+-#define PAPR_PMEM_UNARMED_MASK (PAPR_PMEM_UNARMED |		\
+-				PAPR_PMEM_HEALTH_UNHEALTHY)
+-
+-/* Bits status indicators for health bitmap indicating unflushed dimm */
+-#define PAPR_PMEM_BAD_SHUTDOWN_MASK (PAPR_PMEM_SHUTDOWN_DIRTY)
+-
+-/* Bits status indicators for health bitmap indicating unrestored dimm */
+-#define PAPR_PMEM_BAD_RESTORE_MASK  (PAPR_PMEM_EMPTY)
+-
+-/* Bit status indicators for smart event notification */
+-#define PAPR_PMEM_SMART_EVENT_MASK (PAPR_PMEM_HEALTH_CRITICAL | \
+-				    PAPR_PMEM_HEALTH_FATAL |	\
+-				    PAPR_PMEM_HEALTH_UNHEALTHY)
+-
+-#define PAPR_SCM_PERF_STATS_EYECATCHER __stringify(SCMSTATS)
+-#define PAPR_SCM_PERF_STATS_VERSION 0x1
+-
+ /* Use bitblt method to override specific bits in the '_bitmap_' */
+ #define BITBLT_BITMAP(_bitmap_, _mask_, _override_)		\
+ 	(((_bitmap_) & ~(_mask_)) | ((_mask_) & (_override_)))
+diff --git a/include/linux/papr_scm.h b/include/linux/papr_scm.h
+new file mode 100644
+index 0000000000000..f116e5ffef369
+--- /dev/null
++++ b/include/linux/papr_scm.h
+@@ -0,0 +1,48 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++#ifndef __LINUX_PAPR_SCM_H
++#define __LINUX_PAPR_SCM_H
++
++/* DIMM health bitmap bitmap indicators */
++/* SCM device is unable to persist memory contents */
++#define PAPR_PMEM_UNARMED                   (1ULL << (63 - 0))
++/* SCM device failed to persist memory contents */
++#define PAPR_PMEM_SHUTDOWN_DIRTY            (1ULL << (63 - 1))
++/* SCM device contents are persisted from previous IPL */
++#define PAPR_PMEM_SHUTDOWN_CLEAN            (1ULL << (63 - 2))
++/* SCM device contents are not persisted from previous IPL */
++#define PAPR_PMEM_EMPTY                     (1ULL << (63 - 3))
++/* SCM device memory life remaining is critically low */
++#define PAPR_PMEM_HEALTH_CRITICAL           (1ULL << (63 - 4))
++/* SCM device will be garded off next IPL due to failure */
++#define PAPR_PMEM_HEALTH_FATAL              (1ULL << (63 - 5))
++/* SCM contents cannot persist due to current platform health status */
++#define PAPR_PMEM_HEALTH_UNHEALTHY          (1ULL << (63 - 6))
++/* SCM device is unable to persist memory contents in certain conditions */
++#define PAPR_PMEM_HEALTH_NON_CRITICAL       (1ULL << (63 - 7))
++/* SCM device is encrypted */
++#define PAPR_PMEM_ENCRYPTED                 (1ULL << (63 - 8))
++/* SCM device has been scrubbed and locked */
++#define PAPR_PMEM_SCRUBBED_AND_LOCKED       (1ULL << (63 - 9))
++
++#define PAPR_PMEM_SAVE_FAILED                (1ULL << (63 - 10))
++
++/* Bits status indicators for health bitmap indicating unarmed dimm */
++#define PAPR_PMEM_UNARMED_MASK (PAPR_PMEM_UNARMED | PAPR_PMEM_HEALTH_UNHEALTHY)
++
++/* Bits status indicators for health bitmap indicating unflushed dimm */
++#define PAPR_PMEM_BAD_SHUTDOWN_MASK (PAPR_PMEM_SHUTDOWN_DIRTY)
++
++/* Bits status indicators for health bitmap indicating unrestored dimm */
++#define PAPR_PMEM_BAD_RESTORE_MASK  (PAPR_PMEM_EMPTY)
++
++/* Bit status indicators for smart event notification */
++#define PAPR_PMEM_SMART_EVENT_MASK (PAPR_PMEM_HEALTH_CRITICAL | \
++				    PAPR_PMEM_HEALTH_FATAL    | \
++				    PAPR_PMEM_HEALTH_UNHEALTHY)
++
++#define PAPR_PMEM_SAVE_MASK                (PAPR_PMEM_SAVE_FAILED)
++
++#define PAPR_SCM_PERF_STATS_EYECATCHER __stringify(SCMSTATS)
++#define PAPR_SCM_PERF_STATS_VERSION 0x1
++
++#endif /* __LINUX_PAPR_SCM_H */
+diff --git a/include/uapi/linux/papr_pdsm.h b/include/uapi/linux/papr_pdsm.h
+new file mode 100644
+index 0000000000000..1be9906f45400
+--- /dev/null
++++ b/include/uapi/linux/papr_pdsm.h
+@@ -0,0 +1,165 @@
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++/*
++ * PAPR nvDimm Specific Methods (PDSM) and structs for libndctl
++ *
++ * (C) Copyright IBM 2020-2021
++ *
++ * Author: Vaibhav Jain <vaibhav at linux.ibm.com>
++ */
++
++#ifndef _UAPI_LINUX_PAPR_PDSM_H_
++#define _UAPI_LINUX_PAPR_PDSM_H_
++
++#include <linux/types.h>
++#include <linux/ndctl.h>
++
++/*
++ * PDSM Envelope:
++ *
++ * The ioctl ND_CMD_CALL exchange data between user-space and kernel via
++ * envelope which consists of 2 headers sections and payload sections as
++ * illustrated below:
++ *  +-----------------+---------------+---------------------------+
++ *  |   64-Bytes      |   8-Bytes     |       Max 184-Bytes       |
++ *  +-----------------+---------------+---------------------------+
++ *  | ND-HEADER       |  PDSM-HEADER  |      PDSM-PAYLOAD         |
++ *  +-----------------+---------------+---------------------------+
++ *  | nd_family       |               |                           |
++ *  | nd_size_out     | cmd_status    |                           |
++ *  | nd_size_in      | reserved      |     nd_pdsm_payload       |
++ *  | nd_command      | payload   --> |                           |
++ *  | nd_fw_size      |               |                           |
++ *  | nd_payload ---> |               |                           |
++ *  +---------------+-----------------+---------------------------+
++ *
++ * ND Header:
++ * This is the generic libnvdimm header described as 'struct nd_cmd_pkg'
++ * which is interpreted by libnvdimm before passed on to papr_scm. Important
++ * member fields used are:
++ * 'nd_family'		: (In) NVDIMM_FAMILY_PAPR_SCM
++ * 'nd_size_in'		: (In) PDSM-HEADER + PDSM-IN-PAYLOAD (usually 0)
++ * 'nd_size_out'        : (In) PDSM-HEADER + PDSM-RETURN-PAYLOAD
++ * 'nd_command'         : (In) One of PAPR_PDSM_XXX
++ * 'nd_fw_size'         : (Out) PDSM-HEADER + size of actual payload returned
++ *
++ * PDSM Header:
++ * This is papr-scm specific header that precedes the payload. This is defined
++ * as nd_cmd_pdsm_pkg.  Following fields aare available in this header:
++ *
++ * 'cmd_status'		: (Out) Errors if any encountered while servicing PDSM.
++ * 'reserved'		: Not used, reserved for future and should be set to 0.
++ * 'payload'            : A union of all the possible payload structs
++ *
++ * PDSM Payload:
++ *
++ * The layout of the PDSM Payload is defined by various structs shared between
++ * papr_scm and libndctl so that contents of payload can be interpreted. As such
++ * its defined as a union of all possible payload structs as
++ * 'union nd_pdsm_payload'. Based on the value of 'nd_cmd_pkg.nd_command'
++ * appropriate member of the union is accessed.
++ */
++
++/* Max payload size that we can handle */
++#define ND_PDSM_PAYLOAD_MAX_SIZE 184
++
++/* Max payload size that we can handle */
++#define ND_PDSM_HDR_SIZE \
++	(sizeof(struct nd_pkg_pdsm) - ND_PDSM_PAYLOAD_MAX_SIZE)
++
++/* Various nvdimm health indicators */
++#define PAPR_PDSM_DIMM_HEALTHY       0
++#define PAPR_PDSM_DIMM_UNHEALTHY     1
++#define PAPR_PDSM_DIMM_CRITICAL      2
++#define PAPR_PDSM_DIMM_FATAL         3
++
++/* struct nd_papr_pdsm_health.extension_flags field flags */
++
++/* Indicate that the 'dimm_fuel_gauge' field is valid */
++#define PDSM_DIMM_HEALTH_RUN_GAUGE_VALID 1
++
++/* Indicate that the 'dimm_dsc' field is valid */
++#define PDSM_DIMM_DSC_VALID 2
++
++/*
++ * Struct exchanged between kernel & ndctl in for PAPR_PDSM_HEALTH
++ * Various flags indicate the health status of the dimm.
++ *
++ * extension_flags	: Any extension fields present in the struct.
++ * dimm_unarmed		: Dimm not armed. So contents wont persist.
++ * dimm_bad_shutdown	: Previous shutdown did not persist contents.
++ * dimm_bad_restore	: Contents from previous shutdown werent restored.
++ * dimm_scrubbed	: Contents of the dimm have been scrubbed.
++ * dimm_locked		: Contents of the dimm cant be modified until CEC reboot
++ * dimm_encrypted	: Contents of dimm are encrypted.
++ * dimm_health		: Dimm health indicator. One of PAPR_PDSM_DIMM_XXXX
++ * dimm_fuel_gauge	: Life remaining of DIMM as a percentage from 0-100
++ */
++struct nd_papr_pdsm_health {
++	union {
++		struct {
++			__u32 extension_flags;
++			__u8 dimm_unarmed;
++			__u8 dimm_bad_shutdown;
++			__u8 dimm_bad_restore;
++			__u8 dimm_scrubbed;
++			__u8 dimm_locked;
++			__u8 dimm_encrypted;
++			__u16 dimm_health;
++
++			/* Extension flag PDSM_DIMM_HEALTH_RUN_GAUGE_VALID */
++			__u16 dimm_fuel_gauge;
++
++			/* Extension flag PDSM_DIMM_DSC_VALID */
++			__u64 dimm_dsc;
++		};
++		__u8 buf[ND_PDSM_PAYLOAD_MAX_SIZE];
++	};
++};
++
++/* Flags for injecting specific smart errors */
++#define PDSM_SMART_INJECT_HEALTH_FATAL		(1 << 0)
++#define PDSM_SMART_INJECT_BAD_SHUTDOWN		(1 << 1)
++
++struct nd_papr_pdsm_smart_inject {
++	union {
++		struct {
++			/* One or more of PDSM_SMART_INJECT_ */
++			__u32 flags;
++			__u8 fatal_enable;
++			__u8 unsafe_shutdown_enable;
++		};
++		__u8 buf[ND_PDSM_PAYLOAD_MAX_SIZE];
++	};
++};
++
++/*
++ * Methods to be embedded in ND_CMD_CALL request. These are sent to the kernel
++ * via 'nd_cmd_pkg.nd_command' member of the ioctl struct
++ */
++enum papr_pdsm {
++	PAPR_PDSM_MIN = 0x0,
++	PAPR_PDSM_HEALTH,
++	PAPR_PDSM_SMART_INJECT,
++	PAPR_PDSM_MAX,
++};
++
++/* Maximal union that can hold all possible payload types */
++union nd_pdsm_payload {
++	struct nd_papr_pdsm_health health;
++	struct nd_papr_pdsm_smart_inject smart_inject;
++	__u8 buf[ND_PDSM_PAYLOAD_MAX_SIZE];
++} __packed;
++
++/*
++ * PDSM-header + payload expected with ND_CMD_CALL ioctl from libnvdimm
++ * Valid member of union 'payload' is identified via 'nd_cmd_pkg.nd_command'
++ * that should always precede this struct when sent to papr_scm via CMD_CALL
++ * interface.
++ */
++struct nd_pkg_pdsm {
++	__s32 cmd_status;	/* Out: Sub-cmd status returned back */
++	__u16 reserved[2];	/* Ignored and to be set as '0' */
++	union nd_pdsm_payload payload;
++} __packed;
++
++#endif /* _UAPI_LINUX_PAPR_PDSM_H_ */
+diff --git a/tools/testing/nvdimm/test/ndtest.c b/tools/testing/nvdimm/test/ndtest.c
+index 45d42cd25e82f..6622e8adbd112 100644
+--- a/tools/testing/nvdimm/test/ndtest.c
++++ b/tools/testing/nvdimm/test/ndtest.c
+@@ -13,6 +13,8 @@
+ #include <nd-core.h>
+ #include <linux/printk.h>
+ #include <linux/seq_buf.h>
++#include <linux/papr_scm.h>
++#include <uapi/linux/papr_pdsm.h>
+ 
+ #include "../watermark.h"
+ #include "nfit_test.h"
+diff --git a/tools/testing/nvdimm/test/ndtest.h b/tools/testing/nvdimm/test/ndtest.h
+index b9b3810213132..e18b3b006fa22 100644
+--- a/tools/testing/nvdimm/test/ndtest.h
++++ b/tools/testing/nvdimm/test/ndtest.h
+@@ -5,39 +5,6 @@
+ #include <linux/platform_device.h>
+ #include <linux/libnvdimm.h>
+ 
+-/* SCM device is unable to persist memory contents */
+-#define PAPR_PMEM_UNARMED                   (1ULL << (63 - 0))
+-/* SCM device failed to persist memory contents */
+-#define PAPR_PMEM_SHUTDOWN_DIRTY            (1ULL << (63 - 1))
+-/* SCM device contents are not persisted from previous IPL */
+-#define PAPR_PMEM_EMPTY                     (1ULL << (63 - 3))
+-#define PAPR_PMEM_HEALTH_CRITICAL           (1ULL << (63 - 4))
+-/* SCM device will be garded off next IPL due to failure */
+-#define PAPR_PMEM_HEALTH_FATAL              (1ULL << (63 - 5))
+-/* SCM contents cannot persist due to current platform health status */
+-#define PAPR_PMEM_HEALTH_UNHEALTHY          (1ULL << (63 - 6))
+-/* SCM device is unable to persist memory contents in certain conditions */
+-#define PAPR_PMEM_HEALTH_NON_CRITICAL       (1ULL << (63 - 7))
+-
+-/* Bits status indicators for health bitmap indicating unarmed dimm */
+-#define PAPR_PMEM_UNARMED_MASK (PAPR_PMEM_UNARMED |		\
+-				PAPR_PMEM_HEALTH_UNHEALTHY)
+-
+-#define PAPR_PMEM_SAVE_FAILED                (1ULL << (63 - 10))
+-
+-/* Bits status indicators for health bitmap indicating unflushed dimm */
+-#define PAPR_PMEM_BAD_SHUTDOWN_MASK (PAPR_PMEM_SHUTDOWN_DIRTY)
+-
+-/* Bits status indicators for health bitmap indicating unrestored dimm */
+-#define PAPR_PMEM_BAD_RESTORE_MASK  (PAPR_PMEM_EMPTY)
+-
+-/* Bit status indicators for smart event notification */
+-#define PAPR_PMEM_SMART_EVENT_MASK (PAPR_PMEM_HEALTH_CRITICAL | \
+-				    PAPR_PMEM_HEALTH_FATAL |	\
+-				    PAPR_PMEM_HEALTH_UNHEALTHY)
+-
+-#define PAPR_PMEM_SAVE_MASK                (PAPR_PMEM_SAVE_FAILED)
+-
+ struct ndtest_config;
+ 
+ struct ndtest_priv {
+@@ -107,93 +74,6 @@ struct ndtest_region {
+ 	u8 range_index;
+ };
+ 
+-#define ND_PDSM_PAYLOAD_MAX_SIZE 184
+-/*
+- * Methods to be embedded in ND_CMD_CALL request. These are sent to the kernel
+- * via 'nd_cmd_pkg.nd_command' member of the ioctl struct
+- */
+-enum papr_pdsm {
+-	PAPR_PDSM_MIN = 0x0,
+-	PAPR_PDSM_HEALTH,
+-	PAPR_PDSM_SMART_INJECT,
+-	PAPR_PDSM_MAX,
+-};
+-
+-/* Various nvdimm health indicators */
+-#define PAPR_PDSM_DIMM_HEALTHY       0
+-#define PAPR_PDSM_DIMM_UNHEALTHY     1
+-#define PAPR_PDSM_DIMM_CRITICAL      2
+-#define PAPR_PDSM_DIMM_FATAL         3
+-
+-/* struct nd_papr_pdsm_health.extension_flags field flags */
+-
+-/* Indicate that the 'dimm_fuel_gauge' field is valid */
+-#define PDSM_DIMM_HEALTH_RUN_GAUGE_VALID 1
+-
+-/* Indicate that the 'dimm_dsc' field is valid */
+-#define PDSM_DIMM_DSC_VALID 2
+-
+-/*
+- * Struct exchanged between kernel & ndctl in for PAPR_PDSM_HEALTH
+- * Various flags indicate the health status of the dimm.
+- */
+-struct nd_papr_pdsm_health {
+-	union {
+-		struct {
+-			__u32 extension_flags;
+-			__u8 dimm_unarmed;
+-			__u8 dimm_bad_shutdown;
+-			__u8 dimm_bad_restore;
+-			__u8 dimm_scrubbed;
+-			__u8 dimm_locked;
+-			__u8 dimm_encrypted;
+-			__u16 dimm_health;
+-
+-			/* Extension flag PDSM_DIMM_HEALTH_RUN_GAUGE_VALID */
+-			__u16 dimm_fuel_gauge;
+-
+-			/* Extension flag PDSM_DIMM_DSC_VALID */
+-			__u64 dimm_dsc;
+-		};
+-		__u8 buf[ND_PDSM_PAYLOAD_MAX_SIZE];
+-	};
+-};
+-
+-/* Flags for injecting specific smart errors */
+-#define PDSM_SMART_INJECT_HEALTH_FATAL		(1 << 0)
+-#define PDSM_SMART_INJECT_BAD_SHUTDOWN		(1 << 1)
+-
+-struct nd_papr_pdsm_smart_inject {
+-	union {
+-		struct {
+-			/* One or more of PDSM_SMART_INJECT_ */
+-			__u32 flags;
+-			__u8 fatal_enable;
+-			__u8 unsafe_shutdown_enable;
+-		};
+-		__u8 buf[ND_PDSM_PAYLOAD_MAX_SIZE];
+-	};
+-};
+-
+-/* Maximal union that can hold all possible payload types */
+-union nd_pdsm_payload {
+-	struct nd_papr_pdsm_health health;
+-	struct nd_papr_pdsm_smart_inject smart_inject;
+-	__u8 buf[ND_PDSM_PAYLOAD_MAX_SIZE];
+-} __packed;
+-
+-/*
+- * PDSM-header + payload expected with ND_CMD_CALL ioctl from libnvdimm
+- * Valid member of union 'payload' is identified via 'nd_cmd_pkg.nd_command'
+- * that should always precede this struct when sent to papr_scm via CMD_CALL
+- * interface.
+- */
+-struct nd_pkg_pdsm {
+-	__s32 cmd_status;	/* Out: Sub-cmd status returned back */
+-	__u16 reserved[2];	/* Ignored and to be set as '0' */
+-	union nd_pdsm_payload payload;
+-} __packed;
+-
+ struct ndtest_config {
+ 	struct ndtest_dimm *dimms;
+ 	struct ndtest_region *regions;
+
+
