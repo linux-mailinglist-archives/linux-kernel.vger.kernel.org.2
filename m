@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D907431D07
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:45:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B6EF431BD1
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:33:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231804AbhJRNrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:47:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40778 "EHLO mail.kernel.org"
+        id S233133AbhJRNfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:35:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42364 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233355AbhJRNor (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:44:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EAD67615A6;
-        Mon, 18 Oct 2021 13:35:16 +0000 (UTC)
+        id S232414AbhJRNbP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:31:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F0FA61260;
+        Mon, 18 Oct 2021 13:28:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634564117;
-        bh=q+Ip6i/+WzA/KoTLt78D0dcC50zHzkKA8f5+oyMaaOk=;
+        s=korg; t=1634563724;
+        bh=MS2Uw1MMjZwdjNW3SLFOaCILxBT4iMo0z9Hy+GL7sD4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fmlUKUQB1Bvp+Emd1wcqGnad+0sZFbqDvatabPkkk/Y6aokCX1SMqKfV9QV6uWh4g
-         1jiTKToXpsfkRbHLEoWHbzM8wwZxsv8EabZQrdAuen6L6Lc+ecvsMHOnSvw9c1QSHb
-         XDES7mOYVZbHBkf9S9wCgF+2+7Tv0d5/DSUh6FcM=
+        b=kgZpSCCi4egF5KdPnobq88zL4eHiy+18UXSCopZjY2MnqKCJP03vhYkPsahEN16DX
+         qsni2AE8XUFVpOGx+n7bWyfdiSjgYcUwpaVF2RjuHCVoGFd7gHZD/MG091JAYSaH6i
+         qk81yU2VmByPQLEBstlzgrr8zvebTmuBuerATR4I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Vegard Nossum <vegard.nossum@oracle.com>,
-        Florian fainelli <f.fainelli@gmail.com>,
+        stable@vger.kernel.org,
+        Ziyang Xuan <william.xuanziyang@huawei.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.10 071/103] net: korina: select CRC32
+Subject: [PATCH 4.19 40/50] NFC: digital: fix possible memory leak in digital_in_send_sdd_req()
 Date:   Mon, 18 Oct 2021 15:24:47 +0200
-Message-Id: <20211018132337.122666636@linuxfoundation.org>
+Message-Id: <20211018132327.847132122@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132334.702559133@linuxfoundation.org>
-References: <20211018132334.702559133@linuxfoundation.org>
+In-Reply-To: <20211018132326.529486647@linuxfoundation.org>
+References: <20211018132326.529486647@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,36 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vegard Nossum <vegard.nossum@oracle.com>
+From: Ziyang Xuan <william.xuanziyang@huawei.com>
 
-commit 427f974d9727ca681085ddcd0530c97ab5811ae0 upstream.
+commit 291c932fc3692e4d211a445ba8aa35663831bac7 upstream.
 
-Fix the following build/link error by adding a dependency on the CRC32
-routines:
+'skb' is allocated in digital_in_send_sdd_req(), but not free when
+digital_in_send_cmd() failed, which will cause memory leak. Fix it
+by freeing 'skb' if digital_in_send_cmd() return failed.
 
-  ld: drivers/net/ethernet/korina.o: in function `korina_multicast_list':
-  korina.c:(.text+0x1af): undefined reference to `crc32_le'
-
-Fixes: ef11291bcd5f9 ("Add support the Korina (IDT RC32434) Ethernet MAC")
-Cc: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
-Acked-by: Florian fainelli <f.fainelli@gmail.com>
-Link: https://lore.kernel.org/r/20211012152509.21771-1-vegard.nossum@oracle.com
+Fixes: 2c66daecc409 ("NFC Digital: Add NFC-A technology support")
+Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/Kconfig |    1 +
- 1 file changed, 1 insertion(+)
+ net/nfc/digital_technology.c |    8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
---- a/drivers/net/ethernet/Kconfig
-+++ b/drivers/net/ethernet/Kconfig
-@@ -99,6 +99,7 @@ config JME
- config KORINA
- 	tristate "Korina (IDT RC32434) Ethernet support"
- 	depends on MIKROTIK_RB532
-+	select CRC32
- 	help
- 	  If you have a Mikrotik RouterBoard 500 or IDT RC32434
- 	  based system say Y. Otherwise say N.
+--- a/net/nfc/digital_technology.c
++++ b/net/nfc/digital_technology.c
+@@ -474,8 +474,12 @@ static int digital_in_send_sdd_req(struc
+ 	skb_put_u8(skb, sel_cmd);
+ 	skb_put_u8(skb, DIGITAL_SDD_REQ_SEL_PAR);
+ 
+-	return digital_in_send_cmd(ddev, skb, 30, digital_in_recv_sdd_res,
+-				   target);
++	rc = digital_in_send_cmd(ddev, skb, 30, digital_in_recv_sdd_res,
++				 target);
++	if (rc)
++		kfree_skb(skb);
++
++	return rc;
+ }
+ 
+ static void digital_in_recv_sens_res(struct nfc_digital_dev *ddev, void *arg,
 
 
