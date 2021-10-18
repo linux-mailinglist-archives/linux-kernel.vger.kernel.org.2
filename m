@@ -2,115 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C80C4323B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 18:20:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 634B74323BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 18:23:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233643AbhJRQWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 12:22:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46660 "EHLO
+        id S233657AbhJRQZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 12:25:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233655AbhJRQWg (ORCPT
+        with ESMTP id S232002AbhJRQZF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 12:22:36 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22BBCC06161C
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 09:20:21 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id g10so1221765edj.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 09:20:21 -0700 (PDT)
+        Mon, 18 Oct 2021 12:25:05 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EA6DC06161C;
+        Mon, 18 Oct 2021 09:22:54 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id f5so16735413pgc.12;
+        Mon, 18 Oct 2021 09:22:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=S1TymLQzs85RWsteQyxCWHUBdjbBqj0+p83DBGcUbRA=;
-        b=OyOST35KhcFKGAdczMUOLR7Vq/TRywGXqrHTO64yHl8hZjUjJz7s8XSBtRegZ+1+u0
-         eCkb/6QiZ2ZcEuOBqVq/opHNYX6f1KsHOuZlKMfr3KM9KM87/5u2F89L73ZQkt6qWLYZ
-         M8hATyiPpwfE1zMLf2d3tElFMYBsf7ycx5dC/XA0KzMLLQ57O9ejBjGqMNm0/ZeRMe/l
-         epGQGzmkuKSrGTxOI5GFOxD73SaDjj9RBy5Mf8yJWUNIkJliVjM0XMEdjHGuN2lrYj8g
-         2/GJ6Uxse4t9MYIOOM+QGgWil80SkCHGBYOFIqBoa5TTOIddnnOaS8lUG30JI9pcNMFi
-         p4mQ==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=K9RWkzeMAfSwlhLw/IZbyIy/WvLVAmgmUE5Uc2jrZgM=;
+        b=FZ4p4ILnOq44RnNmos7gOOxBh4D+4krW5UQbP40kSYM1BaKw7cajbBbMqHKTsUFlTD
+         u2WujMP7V/jo6gorFgbfKgvy7paXnZDhewXJxO4VtHCHmauxFJKjP2dvI44xxL5oIT1b
+         3eJyoTXIZ8HaC2x0B3kEEvEmPbRW4eTQ3c+JdOVW+ZjbeV8mpMauce76LF4pe99cf40r
+         LSZNj6gM5hCOIbuoUKd6xLdsIjnVOcCKCWZgVqqMUZaPVZ8elImebqjSfF6z5/V1O6H+
+         9V5FdtTgZ7U4XKG7Qezff2UdQakb3k6oTqOSscCBxkIUx2yabA3KGiHIEjI8HHRBcMgD
+         F3jQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=S1TymLQzs85RWsteQyxCWHUBdjbBqj0+p83DBGcUbRA=;
-        b=eqG1Eo26cP+to8qIiQh609775iKcjXaSbSA71j0RlYhDdu7FbgPiHbyugz/plWfFMZ
-         msMGIhTuMc+wdUrHNkimXMQpCUdlEp5iNHwR/HX7wNzhfamAL2RMuTbDUwgtyyLLtgnX
-         0o7dLdzIJCmwv1My1vTV1yOQwlOPe/s/d3mbIf7HtVbEyVporpYNuoEl+zXN5Bl7jTxO
-         eWQURjoNSE2rGUkxvWV2me0lVJ3xz+9NQDnGjregR3HGEtcVjLTEKHfFuiAPtdWOA4CH
-         GDNAmSxIvjP91KToks+ZnVooCeLpKmDrIsWwO4fm/zse3L7iFAxwA15Bb3299dwq+scc
-         21nQ==
-X-Gm-Message-State: AOAM532BY+4R/2Y6ud02WfEHsEu2bFXvkrmVjpvIh0ggTfdnuYRXMOCe
-        3qCr2xo3vgx5oS7ylj+qLlI=
-X-Google-Smtp-Source: ABdhPJzle8YS2LF0YCPa8fswLODhY44Jm6caxbNENXJnNWbWD4SUc+wwGqHCh2ZHepvLrZm1igHUkg==
-X-Received: by 2002:a17:907:6010:: with SMTP id fs16mr30691838ejc.266.1634574014361;
-        Mon, 18 Oct 2021 09:20:14 -0700 (PDT)
-Received: from localhost.localdomain (host-79-47-104-180.retail.telecomitalia.it. [79.47.104.180])
-        by smtp.gmail.com with ESMTPSA id p7sm10045791edr.6.2021.10.18.09.20.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 09:20:13 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Martin Kaiser <martin@kaiser.cx>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Subject: [PATCH v3 3/3] staging: r8188eu: Remove redundant 'if' statement
-Date:   Mon, 18 Oct 2021 18:20:06 +0200
-Message-Id: <20211018162006.5527-4-fmdefrancesco@gmail.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211018162006.5527-1-fmdefrancesco@gmail.com>
-References: <20211018162006.5527-1-fmdefrancesco@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=K9RWkzeMAfSwlhLw/IZbyIy/WvLVAmgmUE5Uc2jrZgM=;
+        b=gMxQ6o6nzZ47evQxoiaXkHMDACyE0ZOZMK7WyybmUt7GxQ66b12ba5mzyOABRaLP22
+         H6ZfWkXLB07nsEKNjVkLPQlB0xVgsXAMS8NcI92mJqKfZk8y6UdneJGZSs9mDWmxkY8t
+         KqS5/sH0iklQAfMlhYCggFcBVcLSh6K0Sgu4G/UJnHR5W0M1+azyr8yB1qY/DzbBbza6
+         BRNVJgb6FekjGAZOUtx6eAV/GVbRBVncCOQQNqKox3IArr07lAJKrdrNMyp6p+jdRsU2
+         cpY230AT7V52Sq5ROsdMroF6OY+cJ1nILkNm2QGPpJfUcEj8yMUo8Pw4Nqt06aZpeD8P
+         EUcg==
+X-Gm-Message-State: AOAM530gCT7vbKlCHp01GrNWyPuSmlnayPUEWXoVOvz66iUCijaLmOHy
+        cF7/YH6fGDRJwhjnKDTzNL62eoAGqqw=
+X-Google-Smtp-Source: ABdhPJxRVOVDeLyMBPWn36zcpI7DgFqX6WU0NUjkv+GOII8wdKYQh2sAg+1C9Z8jboLdwXCg6BmHhg==
+X-Received: by 2002:a63:7355:: with SMTP id d21mr12764671pgn.179.1634574173231;
+        Mon, 18 Oct 2021 09:22:53 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id bb12sm350785pjb.0.2021.10.18.09.22.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Oct 2021 09:22:52 -0700 (PDT)
+Subject: Re: [PATCH net] net: dsa: mt7530: correct ds->num_ports
+To:     DENG Qingfang <dqfext@gmail.com>
+Cc:     Sean Wang <sean.wang@mediatek.com>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+References: <20211016062414.783863-1-dqfext@gmail.com>
+ <cd6a03b9-af49-97b4-6869-d51b461bf50a@gmail.com>
+ <20211018084230.6710-1-dqfext@gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <7b5e5fcf-8e7f-45ec-de3f-57b3da77b479@gmail.com>
+Date:   Mon, 18 Oct 2021 09:22:49 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211018084230.6710-1-dqfext@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove the redundant first 'if' statement of two identical ones.
+On 10/18/21 1:42 AM, DENG Qingfang wrote:
+> On Sat, Oct 16, 2021 at 07:36:14PM -0700, Florian Fainelli wrote:
+>> On 10/15/2021 11:24 PM, DENG Qingfang wrote:
+>>> Setting ds->num_ports to DSA_MAX_PORTS made DSA core allocate unnecessary
+>>> dsa_port's and call mt7530_port_disable for non-existent ports.
+>>>
+>>> Set it to MT7530_NUM_PORTS to fix that, and dsa_is_user_port check in
+>>> port_enable/disable is no longer required.
+>>>
+>>> Cc: stable@vger.kernel.org
+>>> Signed-off-by: DENG Qingfang <dqfext@gmail.com>
+>>
+>> Do you really want to target the net tree for this change?
+> 
+> Yes because I consider this a bug fix.
 
-In rtw_cmd_thread() there are two identical 'if' statement, one
-immediately after the other. They check whether or not the device is
-removed or the driver is stopped and, if true, they break a 'while'
-loop.
 
-The only noteworthy context difference is that the second statement is
-within a block labelled "_next". The code has a 'goto' to the "_next"
-label so that the checking is performed each time the above directive
-is encountered. Instead, the first 'if' is before the "_next" label.
-
-One of the two must be removed and that it must be the one before the
-label because "bSurpriseRemoved" as well as "bDriverStopped" may be
-changed asynchronously by other code of the driver and so they should be
-checked at each jump to "_next".
-
-Tested with "ASUSTek Computer, Inc. Realtek 8188EUS [USB-N10 Nano]".
-
-Acked-by: Martin Kaiser <martin@kaiser.cx>
-Acked-by: Phillip Potter <phil@philpotter.co.uk>
-Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
----
- drivers/staging/r8188eu/core/rtw_cmd.c | 6 ------
- 1 file changed, 6 deletions(-)
-
-diff --git a/drivers/staging/r8188eu/core/rtw_cmd.c b/drivers/staging/r8188eu/core/rtw_cmd.c
-index 3b07328704bb..5d5f25364b2f 100644
---- a/drivers/staging/r8188eu/core/rtw_cmd.c
-+++ b/drivers/staging/r8188eu/core/rtw_cmd.c
-@@ -252,12 +252,6 @@ int rtw_cmd_thread(void *context)
- 	while (1) {
- 		wait_for_completion(&pcmdpriv->enqueue_cmd);
- 
--		if (padapter->bDriverStopped ||
--		    padapter->bSurpriseRemoved) {
--			DBG_88E("%s: DriverStopped(%d) SurpriseRemoved(%d) break at line %d\n",
--				__func__, padapter->bDriverStopped, padapter->bSurpriseRemoved, __LINE__);
--			break;
--		}
- _next:
- 		if (padapter->bDriverStopped ||
- 		    padapter->bSurpriseRemoved) {
+OK, why not provide a Fixes tag to help with targeting the back port
+then? This has been applied anyway, so hopefully the auto selection will
+do its job and tell you where it stops applying cleanly.
 -- 
-2.33.0
-
+Florian
