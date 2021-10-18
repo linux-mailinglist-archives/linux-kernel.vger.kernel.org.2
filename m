@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93EDE431DF3
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:55:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68D00431BC1
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:33:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234455AbhJRN4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:56:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58168 "EHLO mail.kernel.org"
+        id S233074AbhJRNe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:34:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42364 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234457AbhJRNxz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:53:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 22F51619E5;
-        Mon, 18 Oct 2021 13:39:17 +0000 (UTC)
+        id S233171AbhJRNdN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:33:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 251F66139D;
+        Mon, 18 Oct 2021 13:29:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634564358;
-        bh=N2J78hwogc9FKBO7wWEoEnUM8+mUkfXV5928r1UksnQ=;
+        s=korg; t=1634563774;
+        bh=IXYRbfJWY0jx1X38fkKwwubhQ5ijdz/nnxdaewCGGgQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OSZirEdKY6wRNgTYpZI25TEumhC7pqZYmeBV7FjxG1kOlhy9ydP+yzC6oomG9GBr+
-         fY/GtKomCGDD7AMSuou+wdbBAmrcxLMYRHbG/18CS8CyPx3xbf2NMB7pfVh8L0HDmX
-         hYSEZz6eIweIgEXWL0l4FZ0HF3/nSeKd2SdUXWIU=
+        b=pqEG+7G2a5aJ6VJn67GjDwd/AlHrz8LIb3JFcL+bZHxatTZ3k8XSuW6I6jlQi3QG/
+         bYgJzdd514csEu2qVhmkb49PQlIdXcYG7oF7GDxbShfWLv4Lsz3KoStGbsLxKQtwM9
+         78ULZhIjNu8mVULzVe/AEXyMDlia9qqA2HRnCVjQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xie Yongji <xieyongji@bytedance.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>
-Subject: [PATCH 5.14 059/151] Revert "virtio-blk: Add validation for block size in config space"
-Date:   Mon, 18 Oct 2021 15:23:58 +0200
-Message-Id: <20211018132342.609512899@linuxfoundation.org>
+        stable@vger.kernel.org, Miklos Szeredi <mszeredi@redhat.com>
+Subject: [PATCH 5.4 01/69] ovl: simplify file splice
+Date:   Mon, 18 Oct 2021 15:23:59 +0200
+Message-Id: <20211018132329.502323802@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132340.682786018@linuxfoundation.org>
-References: <20211018132340.682786018@linuxfoundation.org>
+In-Reply-To: <20211018132329.453964125@linuxfoundation.org>
+References: <20211018132329.453964125@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -39,113 +40,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael S. Tsirkin <mst@redhat.com>
+From: Miklos Szeredi <mszeredi@redhat.com>
 
-commit ff63198850f33eab54b2da6905380fd4d4fc0739 upstream.
+commit 82a763e61e2b601309d696d4fa514c77d64ee1be upstream.
 
-It turns out that access to config space before completing the feature
-negotiation is broken for big endian guests at least with QEMU hosts up
-to 6.1 inclusive.  This affects any device that accesses config space in
-the validate callback: at the moment that is virtio-net with
-VIRTIO_NET_F_MTU but since 82e89ea077b9 ("virtio-blk: Add validation for
-block size in config space") that also started affecting virtio-blk with
-VIRTIO_BLK_F_BLK_SIZE. Further, unlike VIRTIO_NET_F_MTU which is off by
-default on QEMU, VIRTIO_BLK_F_BLK_SIZE is on by default, which resulted
-in lots of people not being able to boot VMs on BE.
+generic_file_splice_read() and iter_file_splice_write() will call back into
+f_op->iter_read() and f_op->iter_write() respectively.  These already do
+the real file lookup and cred override.  So the code in ovl_splice_read()
+and ovl_splice_write() is redundant.
 
-The spec is very clear that what we are doing is legal so QEMU needs to
-be fixed, but given it's been broken for so many years and no one
-noticed, we need to give QEMU a bit more time before applying this.
+In addition the ovl_file_accessed() call in ovl_splice_write() is
+incorrect, though probably harmless.
 
-Further, this patch is incomplete (does not check blk size is a power
-of two) and it duplicates the logic from nbd.
+Fix by calling generic_file_splice_read() and iter_file_splice_write()
+directly.
 
-Revert for now, and we'll reapply a cleaner logic in the next release.
-
-Cc: stable@vger.kernel.org
-Fixes: 82e89ea077b9 ("virtio-blk: Add validation for block size in config space")
-Cc: Xie Yongji <xieyongji@bytedance.com>
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
+[reported to resolve issues with 1a980b8cbf00 ("ovl: add splice file read write helper")]
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/block/virtio_blk.c |   39 ++++++---------------------------------
- 1 file changed, 6 insertions(+), 33 deletions(-)
+ fs/overlayfs/file.c |   46 ++--------------------------------------------
+ 1 file changed, 2 insertions(+), 44 deletions(-)
 
---- a/drivers/block/virtio_blk.c
-+++ b/drivers/block/virtio_blk.c
-@@ -692,28 +692,6 @@ static const struct blk_mq_ops virtio_mq
- static unsigned int virtblk_queue_depth;
- module_param_named(queue_depth, virtblk_queue_depth, uint, 0444);
+--- a/fs/overlayfs/file.c
++++ b/fs/overlayfs/file.c
+@@ -296,48 +296,6 @@ out_unlock:
+ 	return ret;
+ }
  
--static int virtblk_validate(struct virtio_device *vdev)
+-static ssize_t ovl_splice_read(struct file *in, loff_t *ppos,
+-			 struct pipe_inode_info *pipe, size_t len,
+-			 unsigned int flags)
 -{
--	u32 blk_size;
+-	ssize_t ret;
+-	struct fd real;
+-	const struct cred *old_cred;
 -
--	if (!vdev->config->get) {
--		dev_err(&vdev->dev, "%s failure: config access disabled\n",
--			__func__);
--		return -EINVAL;
--	}
+-	ret = ovl_real_fdget(in, &real);
+-	if (ret)
+-		return ret;
 -
--	if (!virtio_has_feature(vdev, VIRTIO_BLK_F_BLK_SIZE))
--		return 0;
+-	old_cred = ovl_override_creds(file_inode(in)->i_sb);
+-	ret = generic_file_splice_read(real.file, ppos, pipe, len, flags);
+-	revert_creds(old_cred);
 -
--	blk_size = virtio_cread32(vdev,
--			offsetof(struct virtio_blk_config, blk_size));
--
--	if (blk_size < SECTOR_SIZE || blk_size > PAGE_SIZE)
--		__virtio_clear_bit(vdev, VIRTIO_BLK_F_BLK_SIZE);
--
--	return 0;
+-	ovl_file_accessed(in);
+-	fdput(real);
+-	return ret;
 -}
 -
- static int virtblk_probe(struct virtio_device *vdev)
- {
- 	struct virtio_blk *vblk;
-@@ -725,6 +703,12 @@ static int virtblk_probe(struct virtio_d
- 	u8 physical_block_exp, alignment_offset;
- 	unsigned int queue_depth;
- 
-+	if (!vdev->config->get) {
-+		dev_err(&vdev->dev, "%s failure: config access disabled\n",
-+			__func__);
-+		return -EINVAL;
-+	}
-+
- 	err = ida_simple_get(&vd_index_ida, 0, minor_to_index(1 << MINORBITS),
- 			     GFP_KERNEL);
- 	if (err < 0)
-@@ -839,14 +823,6 @@ static int virtblk_probe(struct virtio_d
- 	else
- 		blk_size = queue_logical_block_size(q);
- 
--	if (blk_size < SECTOR_SIZE || blk_size > PAGE_SIZE) {
--		dev_err(&vdev->dev,
--			"block size is changed unexpectedly, now is %u\n",
--			blk_size);
--		err = -EINVAL;
--		goto err_cleanup_disk;
--	}
+-static ssize_t
+-ovl_splice_write(struct pipe_inode_info *pipe, struct file *out,
+-			  loff_t *ppos, size_t len, unsigned int flags)
+-{
+-	struct fd real;
+-	const struct cred *old_cred;
+-	ssize_t ret;
 -
- 	/* Use topology information if available */
- 	err = virtio_cread_feature(vdev, VIRTIO_BLK_F_TOPOLOGY,
- 				   struct virtio_blk_config, physical_block_exp,
-@@ -905,8 +881,6 @@ static int virtblk_probe(struct virtio_d
- 	device_add_disk(&vdev->dev, vblk->disk, virtblk_attr_groups);
- 	return 0;
+-	ret = ovl_real_fdget(out, &real);
+-	if (ret)
+-		return ret;
+-
+-	old_cred = ovl_override_creds(file_inode(out)->i_sb);
+-	ret = iter_file_splice_write(pipe, real.file, ppos, len, flags);
+-	revert_creds(old_cred);
+-
+-	ovl_file_accessed(out);
+-	fdput(real);
+-	return ret;
+-}
+-
+ static int ovl_fsync(struct file *file, loff_t start, loff_t end, int datasync)
+ {
+ 	struct fd real;
+@@ -694,8 +652,8 @@ const struct file_operations ovl_file_op
+ 	.fadvise	= ovl_fadvise,
+ 	.unlocked_ioctl	= ovl_ioctl,
+ 	.compat_ioctl	= ovl_compat_ioctl,
+-	.splice_read    = ovl_splice_read,
+-	.splice_write   = ovl_splice_write,
++	.splice_read    = generic_file_splice_read,
++	.splice_write   = iter_file_splice_write,
  
--err_cleanup_disk:
--	blk_cleanup_disk(vblk->disk);
- out_free_tags:
- 	blk_mq_free_tag_set(&vblk->tag_set);
- out_free_vq:
-@@ -1009,7 +983,6 @@ static struct virtio_driver virtio_blk =
- 	.driver.name			= KBUILD_MODNAME,
- 	.driver.owner			= THIS_MODULE,
- 	.id_table			= id_table,
--	.validate			= virtblk_validate,
- 	.probe				= virtblk_probe,
- 	.remove				= virtblk_remove,
- 	.config_changed			= virtblk_config_changed,
+ 	.copy_file_range	= ovl_copy_file_range,
+ 	.remap_file_range	= ovl_remap_file_range,
 
 
