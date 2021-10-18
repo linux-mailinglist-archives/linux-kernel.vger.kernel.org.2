@@ -2,194 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FE7E432010
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 16:40:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5054143201A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 16:42:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232294AbhJROmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 10:42:21 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:35154 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232140AbhJROmU (ORCPT
+        id S231997AbhJROo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 10:44:58 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:42936 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229833AbhJROo5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 10:42:20 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: kholk11)
-        with ESMTPSA id B4ADE1F42DD3
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-To:     robh+dt@kernel.org
-Cc:     a.hajda@samsung.com, daniel@ffwll.ch, airlied@linux.ie,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Subject: [PATCH v2] dt-bindings: display/bridge: tc358764: Convert to YAML binding
-Date:   Mon, 18 Oct 2021 16:40:03 +0200
-Message-Id: <20211018144003.878345-1-angelogioacchino.delregno@collabora.com>
-X-Mailer: git-send-email 2.33.0
+        Mon, 18 Oct 2021 10:44:57 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id C1FBF1FD7F;
+        Mon, 18 Oct 2021 14:42:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1634568165; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FskdbT9rc4yhsC6Kztj9BXRX1uuBZYuwc9JfRBoPArk=;
+        b=fG2OiZ2h2iVa5mox0a43QKRUyHc6ZDYJLDjPmtQrinyZK0Wy5I1wNIqTz8BJiC3PiZGX8J
+        VUxJzUHvP/Q+t5JUIttrRH0CIU+wYiVRCLk+FmPbbkaoJksBkqAOXDeuqdQYIOZpMUehmQ
+        gUga6E7JvAcIXWC0C8xzgPpt8F2vhD8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1634568165;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FskdbT9rc4yhsC6Kztj9BXRX1uuBZYuwc9JfRBoPArk=;
+        b=jGvaIxbndbmPkne573YeeB9r1iBODD7o4pJSR40VItRuItpXb5BKivdfC9O8EEXNCWca54
+        ld5uc+H7rshU5YAQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4784414090;
+        Mon, 18 Oct 2021 14:42:41 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id V3rrAeGHbWG9BgAAMHmgww
+        (envelope-from <colyli@suse.de>); Mon, 18 Oct 2021 14:42:41 +0000
+Subject: Re: [PATCH] [v2] bcache: hide variable-sized types from uapi header
+ check
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Jens Axboe <axboe@kernel.dk>,
+        Kent Overstreet <kmo@daterainc.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>
+References: <20210928085554.2299495-1-arnd@kernel.org>
+ <ce05e90b-f22f-bd0e-4e0f-da560bffc0c2@suse.de>
+ <CAK8P3a1brJNoq65h15-zZtNgwV92hwXH9p32cJpzAY3=ouOHnw@mail.gmail.com>
+From:   Coly Li <colyli@suse.de>
+Message-ID: <12a593bc-68bc-ac03-0307-a65a0c064af3@suse.de>
+Date:   Mon, 18 Oct 2021 22:42:37 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAK8P3a1brJNoq65h15-zZtNgwV92hwXH9p32cJpzAY3=ouOHnw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the Toshiba TC358764 txt documentation to YAML.
+On 10/18/21 10:39 PM, Arnd Bergmann wrote:
+> On Mon, Oct 18, 2021 at 4:20 PM Coly Li <colyli@suse.de> wrote:
+>> IMHO, remove bcache related header from uapi check might be better
+>> solution. So far only bcache-tools uses this header with its own copy,
+>> no application includes the header(s) so far. It makes sense to exclude
+>> bcache.h from upai headers check.
+> Should we just move it to include/linux/ and out of the uapi headers entirely
+> then? It sounds like it's not actually an ABI but just the definition of the
+> data layout that is not included by anything from user space.
+>
+> We are a bit inconsistent here already, e.g. btrfs has all its structures
+> in uapi, but ext4 does not.
 
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
----
-Note: dtbs_check on exynos5250-arndale.dts will give some warnings after
-      applying this patch: since the preferred way is to have 'ports',
-      this warning was ignored.
-      I have no Exynos5250 board, so the dts fix is left to someone who
-      is able to test on the real hw.
+I am quite open for this idea. It is in uapi directory before I maintain 
+bcache. I just though the header fines on-media format should go into 
+include/uapi/, but if this is not the restricted rule, it is fine for me 
+to move this header to drivers/md/bcache/.
 
- .../display/bridge/toshiba,tc358764.txt       | 35 -------
- .../display/bridge/toshiba,tc358764.yaml      | 94 +++++++++++++++++++
- 2 files changed, 94 insertions(+), 35 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/display/bridge/toshiba,tc358764.txt
- create mode 100644 Documentation/devicetree/bindings/display/bridge/toshiba,tc358764.yaml
-
-diff --git a/Documentation/devicetree/bindings/display/bridge/toshiba,tc358764.txt b/Documentation/devicetree/bindings/display/bridge/toshiba,tc358764.txt
-deleted file mode 100644
-index 8f9abf28a8fa..000000000000
---- a/Documentation/devicetree/bindings/display/bridge/toshiba,tc358764.txt
-+++ /dev/null
-@@ -1,35 +0,0 @@
--TC358764 MIPI-DSI to LVDS panel bridge
--
--Required properties:
--  - compatible: "toshiba,tc358764"
--  - reg: the virtual channel number of a DSI peripheral
--  - vddc-supply: core voltage supply, 1.2V
--  - vddio-supply: I/O voltage supply, 1.8V or 3.3V
--  - vddlvds-supply: LVDS1/2 voltage supply, 3.3V
--  - reset-gpios: a GPIO spec for the reset pin
--
--The device node can contain following 'port' child nodes,
--according to the OF graph bindings defined in [1]:
--  0: DSI Input, not required, if the bridge is DSI controlled
--  1: LVDS Output, mandatory
--
--[1]: Documentation/devicetree/bindings/media/video-interfaces.txt
--
--Example:
--
--	bridge@0 {
--		reg = <0>;
--		compatible = "toshiba,tc358764";
--		vddc-supply = <&vcc_1v2_reg>;
--		vddio-supply = <&vcc_1v8_reg>;
--		vddlvds-supply = <&vcc_3v3_reg>;
--		reset-gpios = <&gpd1 6 GPIO_ACTIVE_LOW>;
--		#address-cells = <1>;
--		#size-cells = <0>;
--		port@1 {
--			reg = <1>;
--			lvds_ep: endpoint {
--				remote-endpoint = <&panel_ep>;
--			};
--		};
--	};
-diff --git a/Documentation/devicetree/bindings/display/bridge/toshiba,tc358764.yaml b/Documentation/devicetree/bindings/display/bridge/toshiba,tc358764.yaml
-new file mode 100644
-index 000000000000..815eedb9094f
---- /dev/null
-+++ b/Documentation/devicetree/bindings/display/bridge/toshiba,tc358764.yaml
-@@ -0,0 +1,94 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/display/bridge/toshiba,tc358764.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Toshiba TC358764 MIPI-DSI to LVDS bridge
-+
-+maintainers:
-+  - Andrzej Hajda <a.hajda@samsung.com>
-+
-+description: |
-+  The TC358764 is bridge device which converts MIPI DSI or MIPI DPI to DP/eDP.
-+
-+properties:
-+  compatible:
-+    enum:
-+      - toshiba,tc358764
-+
-+  reg:
-+    description: Virtual channel number of a DSI peripheral
-+    maxItems: 1
-+
-+  reset-gpios:
-+    description: GPIO connected to the reset pin.
-+    maxItems: 1
-+
-+  vddc-supply:
-+    description: Core voltage supply, 1.2V
-+
-+  vddio-supply:
-+    description: I/O voltage supply, 1.8V or 3.3V
-+
-+  vddlvds-supply:
-+    description: LVDS1/2 voltage supply, 3.3V
-+
-+  ports:
-+    $ref: /schemas/graph.yaml#/properties/ports
-+
-+    properties:
-+      port@0:
-+        $ref: /schemas/graph.yaml#/properties/port
-+        description:
-+          Video port for MIPI DSI input, if the bridge DSI controlled
-+
-+      port@1:
-+        $ref: /schemas/graph.yaml#/properties/port
-+        description:
-+          Video port for LVDS output (panel or connector).
-+
-+    required:
-+      - port@1
-+
-+required:
-+  - compatible
-+  - reg
-+  - vddc-supply
-+  - vddio-supply
-+  - vddlvds-supply
-+  - ports
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/gpio/gpio.h>
-+
-+    i2c {
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+
-+      bridge@0 {
-+        compatible = "toshiba,tc358764";
-+        reg = <0>;
-+        vddc-supply = <&vcc_1v2_reg>;
-+        vddio-supply = <&vcc_1v8_reg>;
-+        vddlvds-supply = <&vcc_3v3_reg>;
-+        reset-gpios = <&gpd1 6 GPIO_ACTIVE_LOW>;
-+
-+        ports {
-+          #address-cells = <1>;
-+          #size-cells = <0>;
-+
-+          port@1 {
-+            reg = <1>;
-+            lvds_ep: endpoint {
-+              remote-endpoint = <&panel_ep>;
-+            };
-+          };
-+        };
-+      };
-+    };
-+
-+...
--- 
-2.33.0
-
+Coly Li
