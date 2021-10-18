@@ -2,94 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABD7E43234E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 17:49:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 316F0432344
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 17:48:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232636AbhJRPwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 11:52:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39758 "EHLO
+        id S232816AbhJRPu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 11:50:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231938AbhJRPwC (ORCPT
+        with ESMTP id S231986AbhJRPuY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 11:52:02 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F43EC06161C
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 08:49:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=OXhW+5RnrFYOlyPfWgjjNoff+OyuMBiPHUuJ9caaB2o=; b=JlzvxbjZX5PB4AYfSSF8zuXERS
-        EPhy4Jqz/R1TO4sKVefjZIa5RczzVLEJd7HiDUByWXJ8y/sKbQsKVT+Q8uwt5hFG+Tpl2Us7MkQmr
-        a9cLQoU8NKsZ1NZxl+FytkHqUmzPnnVJABRPgrKE+pvvgFQzfJYq8rjH4Cu4szpouhmRM1OwvfFLq
-        FsUwLjO7lXtmTCYjeNrqpQ2IR2+43TqOOmnyVYgEEMyKNJ/Hi5VmykkD4nBq4/s9FUt5aMnV1aTZY
-        BxDSNF1OP4e/6lZ486lVDzP9yLvtu53nnHyfaTi+17oPoCSNUzJa+LhJxPxam2dAoK0TW+FwRivZq
-        46Q3Hc/g==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mcUr8-00B5Bp-PT; Mon, 18 Oct 2021 15:47:28 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 140C2300242;
-        Mon, 18 Oct 2021 17:47:18 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id F4040286E09E9; Mon, 18 Oct 2021 17:47:17 +0200 (CEST)
-Date:   Mon, 18 Oct 2021 17:47:17 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Sean Christopherson <seanjc@google.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Tony Luck <tony.luck@intel.com>
-Subject: Re: [PATCH 1/3] x86/insn-eval: Introduce insn_get_modrm_reg_ptr()
-Message-ID: <YW2XBV2uHHDI2vq0@hirez.programming.kicks-ass.net>
-References: <20211018153333.8261-1-kirill.shutemov@linux.intel.com>
- <20211018153333.8261-2-kirill.shutemov@linux.intel.com>
+        Mon, 18 Oct 2021 11:50:24 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 356E2C06161C;
+        Mon, 18 Oct 2021 08:48:13 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id t16so898192eds.9;
+        Mon, 18 Oct 2021 08:48:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=v1PYM9PWLM/0wgTMMikzXAP/o0bC3fPRJxSFK9OzpC8=;
+        b=bvoVUSzWgSETBCvh833uiGY27G23tFSf/9WrtIVPLQBgwK6Rj56yHcDtEdcQXJK7Hs
+         luhJp0KZGQrxsbfoNkE5RJfauKWl2uWHDlCAiyzsGQSKxcfMUeJGY9OaCPv+uJHOiL+m
+         wQAZH9S7oAwhLLA5wx0RUsVDSPnzETI4ObrFTk5aI1/w1NhbWB9qM3MgSHEzB3Ax34jC
+         350PxSaiPWENuf/mGCHu/PNN6KbitZl5hauVjU1yPwIwyC2ocMIKVnqOwAyJMPw0zy6B
+         PvHK7ZEIoSQUR5ab1xWb+E2xpIJ7jAiZ+3Tn/RUsB66/PcXaznkyvxejJlc+6kqYxjsi
+         Ntow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=v1PYM9PWLM/0wgTMMikzXAP/o0bC3fPRJxSFK9OzpC8=;
+        b=wXpoiXSN4fgYgxpwUqXYVgUbwpbnQA7Uuq4Al8WMMJIjwzkZPPTVJY83vZhcktt4FJ
+         I+saJAfwTur23jEXE0d29i10azHhf+Gn1AhiSAL3rwqGryb3nbPBGH5TXfC7yrdVtN9a
+         qMWW44n9n+EqwH5AY99ZzingxGBg6lRJ0Czfw642XCgNFOok7auz96EiYXefyUv5BZt5
+         8Nx9rmd/s7iZhU3Gd45aW7+fBxMi7yKXYlFvQLhA6bYu3ynQvOZ94qakaneL6PFtvw5f
+         XRLz5HX7ne5Mwi3JzzUqkEPYy2nSjH9QoF1nUx+Ng9+vI2QPNY+qxIN7qXCe0m/kw2d6
+         5gdg==
+X-Gm-Message-State: AOAM532bHOQAxFHTptv2P3grQzzMKQ2jetE/OuVp540qmRuiqjXl88Vd
+        sEnFVKqADnrW4zziDeq/G9tt7j06Vs0YLRw0lCM=
+X-Google-Smtp-Source: ABdhPJz+JM3f/n/l/fo/vo7/jjTcnbAe1364W/IPs8Uv1VZE0XQpGmrpDB6SZ/1RGXPV+JzGalz543On+DjMTsOZ3lw=
+X-Received: by 2002:a05:6402:2787:: with SMTP id b7mr44842444ede.238.1634572089268;
+ Mon, 18 Oct 2021 08:48:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211018153333.8261-2-kirill.shutemov@linux.intel.com>
+References: <20211012134027.684712-1-kernel@esmil.dk> <20211012134027.684712-13-kernel@esmil.dk>
+ <CAHp75Vep+i+iyJi0LAOKuer-cUZoUoB_ZrWKcmT=EB_4hOgFGw@mail.gmail.com> <CANBLGcxHD2vy0+tXYo5Pkqri9mV7aD9jikvs3ygBJRxF4ApLMA@mail.gmail.com>
+In-Reply-To: <CANBLGcxHD2vy0+tXYo5Pkqri9mV7aD9jikvs3ygBJRxF4ApLMA@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 18 Oct 2021 18:47:17 +0300
+Message-ID: <CAHp75Vc65deoHbks-aPmnjEJzm3GdqFMfBCUqw4vVLVr=71Ncg@mail.gmail.com>
+Subject: Re: [PATCH v1 12/16] pinctrl: starfive: Add pinctrl driver for
+ StarFive SoCs
+To:     Emil Renner Berthing <kernel@esmil.dk>
+Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Sagar Kadam <sagar.kadam@sifive.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Huan Feng <huan.feng@starfivetech.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 18, 2021 at 06:33:31PM +0300, Kirill A. Shutemov wrote:
-> +/**
-> + * insn_get_modrm_reg_ptr() - Obtain register pointer based on ModRM byte
-> + * @insn:	Instruction containing the ModRM byte
-> + * @regs:	Register values as seen when entering kernel mode
-> + *
-> + * Returns:
-> + *
-> + * The register indicated by the reg part of the ModRM byte.
-> + * The register is obtained as a pointer within pt_regs.
-> + */
-> +void *insn_get_modrm_reg_ptr(struct insn *insn, struct pt_regs *regs)
+On Mon, Oct 18, 2021 at 6:35 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
+> On Tue, 12 Oct 2021 at 19:03, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> > On Tue, Oct 12, 2021 at 4:43 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
 
-Doesn't that return type want to be 'unsigned long *'?
+When answering, cut down your message to the point, please! It's a bit
+annoying to remove overquoting...
 
-> +{
-> +	int offset;
-> +
-> +	offset = insn_get_modrm_reg_off(insn, regs);
-> +	if (offset < 0)
-> +		return NULL;
-> +	return (void *)regs + offset;
-> +}
-> +
->  /**
->   * get_seg_base_limit() - obtain base address and limit of a segment
->   * @insn:	Instruction. Must be valid.
-> -- 
-> 2.32.0
-> 
+...
+
+> > > +               case PIN_CONFIG_BIAS_DISABLE:
+> >
+> > > +                       mask |= PAD_BIAS_MASK;
+> >
+> > Use it...
+> >
+> > > +                       value = (value & ~PAD_BIAS_MASK) | PAD_BIAS_DISABLE;
+> >
+> > ...here. Ditto for the similar cases in this function and elsewhere.
+>
+> I don't follow. How do you want me to use mask? If I did value =
+> (value & ~mask) | PAD_BIAS_DISABLE; then I'd wipe the previous
+> configuration. Eg. suppose the first config is the drive strength and
+> second disables bias. Then on the 2nd loop mask =
+> PAD_DRIVE_STRENGTH_MASK | PAD_BIAS_MASK and the drive strength value
+> would be wiped.
+
+Collect masks and new values in temporary variables and apply them
+once after the loop is done, no?
+
+...
+
+> > > +       ret = clk_prepare_enable(clk);
+> > > +       if (ret) {
+> >
+> > > +               reset_control_deassert(rst);
+> >
+> > Use devm_add_action_or_reset().
+>
+> I don't see how that is better.
+
+Pity. The rule of thumb is to either try to use devm_*() everywhere in
+the probe, or don't use it at all. Above is the more-or-less standard
+pattern where devn_add_action_or_reset() is being used in the entire
+kernel.
+
+> Then I'd first need to call that and
+> check for errors, but just on the line below enabling the clock the
+> reset line is deasserted anyway, so then the action isn't needed any
+> longer. So that 3 lines of code for devm_add_action_or_reset +
+> lingering unneeded action or code to remove it again vs. just the line
+> above.
+
+Then don't use devm_*() at all. What's the point?
+
+...
+
+> > > +       sfp->gc.of_node = dev->of_node;
+> >
+> > Isn't GPIO library do this for you?
+>
+> If it does I can't find it.
+
+Heh... `man git grep`
+Hint: `git grep -n 'of_node = .*of_node' -- drivers/gpio/gpiolib*`
+
+-- 
+With Best Regards,
+Andy Shevchenko
