@@ -2,155 +2,552 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 484C9431425
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 12:11:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B876A431424
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 12:11:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229992AbhJRKNu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 06:13:50 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:61242 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229985AbhJRKNt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 06:13:49 -0400
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 19I9meJY075064;
-        Mon, 18 Oct 2021 17:48:40 +0800 (GMT-8)
-        (envelope-from jammy_huang@aspeedtech.com)
-Received: from [192.168.2.115] (192.168.2.115) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 18 Oct
- 2021 18:10:35 +0800
-Message-ID: <8f20094e-506a-f03a-4dfc-669d7b0d19d8@aspeedtech.com>
-Date:   Mon, 18 Oct 2021 18:10:35 +0800
+        id S229848AbhJRKNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 06:13:44 -0400
+Received: from foss.arm.com ([217.140.110.172]:34956 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229657AbhJRKNn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 06:13:43 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8D3BEED1;
+        Mon, 18 Oct 2021 03:11:32 -0700 (PDT)
+Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 20FD43F70D;
+        Mon, 18 Oct 2021 03:11:31 -0700 (PDT)
+Date:   Mon, 18 Oct 2021 11:11:28 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>, kishon@ti.com
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Songxiaowei <songxiaowei@hisilicon.com>,
+        Binghui Wang <wangbinghui@hisilicon.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org
+Subject: Re: [PATCH v13 01/10] PCI: kirin: Reorganize the PHY logic inside
+ the driver
+Message-ID: <20211018101128.GC17152@lpieralisi>
+References: <cover.1634539769.git.mchehab+huawei@kernel.org>
+ <2ea49698626695e01ab6ecc0ef8e5d5d9bc581ab.1634539769.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH 4/6] media: aspeed: Support aspeed mode to reduce
- compressed data
-Content-Language: en-US
-To:     Paul Menzel <pmenzel@molgen.mpg.de>
-CC:     "eajames@linux.ibm.com" <eajames@linux.ibm.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        "joel@jms.id.au" <joel@jms.id.au>,
-        "andrew@aj.id.au" <andrew@aj.id.au>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20211014034819.2283-1-jammy_huang@aspeedtech.com>
- <20211014034819.2283-5-jammy_huang@aspeedtech.com>
- <ddb1e6dc-6b4f-4f67-9122-dae3dab1ae65@molgen.mpg.de>
- <5675befe-48df-9f09-f30f-d407538ad070@aspeedtech.com>
- <5466798e-32c1-81f5-3428-7bbfe31cdea7@molgen.mpg.de>
-From:   Jammy Huang <jammy_huang@aspeedtech.com>
-In-Reply-To: <5466798e-32c1-81f5-3428-7bbfe31cdea7@molgen.mpg.de>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [192.168.2.115]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 19I9meJY075064
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2ea49698626695e01ab6ecc0ef8e5d5d9bc581ab.1634539769.git.mchehab+huawei@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Paul,
+[+kishon]
 
-Thanks for your help.
+@Kishon please have a look from a PHY perspective.
 
-On 2021/10/18 下午 05:34, Paul Menzel wrote:
-> Dear Jammy,
->
->
-> Am 18.10.21 um 10:51 schrieb Jammy Huang:
->
->> On 2021/10/14 下午 02:47, Paul Menzel wrote:
->>> Am 14.10.21 um 05:48 schrieb Jammy Huang:
->>>> aspeed support differential jpeg format which only compress the parts
->>> support*s*
->>>
->>>> which are changed. In this way, it reduces both the amount of data to be
->>>> transferred by network and those to be decoded on the client side.
->>> Please mention the datasheet name and revision and section, where this
->>> functionality is described.
->> Sorry but our datasheet is confidential. The basic idea of this
->> feature is that we can just compress the blocks which is different
->> with previous frame rather than full frame. This idea is similar to
->> the I & P frame in multimedia.
-> It’s still good to have the name and revision of the datasheet, the code
-> was developed against documented. (Public datasheets would be even
-> better, also for review.)
-You can reference to the datasheet of ast2600 revision 9 at section 36, 
-Video Engine.
+Thanks,
+Lorenzo
 
->
->>> Which chips support it?
->> AST2400/2500/2600 all support it.
->>>> 4 new ctrls are added:
->>>> *Aspeed JPEG Format: to control aspeed's partial jpeg on/off
->>>> *Aspeed Compression Mode: to control aspeed's compression mode
->>>> *Aspeed HQ Mode: to control aspeed's HQ mode on/off
->>>> *Aspeed HQ Quality: to control the quality of aspeed's HQ mode
->>> Please add a space after the bullet points.
->>>
->>> Excuse my ignorance, how can these options be controlled?
->> * Aspeed JPEG Format: to control jpeg format
->>     0: standard jpeg, 1: aspeed jpeg
->> * Aspeed Compression Mode: to control aspeed's compression mode
->>     0: DCT Only, 1: DCT VQ mix 2-color, 2: DCT VQ mix 4-color
->>     This is AST2400 only. It will adapt JPEG or VQ encoding method according
->>     to the context automatically.
->> * Aspeed HQ Mode: to control aspeed's HQ mode on/off
->>     0: disabled, 1: enabled
->> * Aspeed HQ Quality: to control the quality(0~11) of aspeed's HQ mode,
->>     only usefull if Aspeed HQ mode is enabled
-> Thank you. So some sysfs file?
-This is a v4l2 based driver, so I prefer to use v4l2 control interface 
-rather than sysfs.
-The user can iterate v4l2 control by V4L2_CTRL_FLAG_NEXT_CTRL to know 
-what is
-available. For example, the following is the information that 
-aspeed_video driver supports
-
-[User Controls                 ]
-Aspeed JPEG Format             : type=1, minimum=0, maximum=2, step=1, 
-default_value=0
-Aspeed Compression Mode        : type=1, minimum=0, maximum=2, step=1, 
-default_value=0
-Aspeed HQ Mode                 : type=2, minimum=0, maximum=1, step=1, 
-default_value=0
-Aspeed HQ Quality              : type=1, minimum=0, maximum=11, step=1, 
-default_value=0
-[JPEG Compression Controls     ]
-Chroma Subsampling             : type=3, minimum=0, maximum=2, step=1, 
-default_value=0
-Compression Quality            : type=1, minimum=0, maximum=11, step=1, 
-default_value=0
-
->
->>>> Aspeed JPEG Format requires an additional buffer, called bcd, to store
->>>> the information that which macro block in the new frame is different
->>> s/that which/which/
->>>
->>>> from the old one.
->>>>
->>>> To have bcd correctly working, we need to swap the buffers for src0/1 to
->>>> make src1 refer to previous frame and src0 to the coming new frame.
->>> How did you test it? What do the clients need to support?
->>>
->>> Did you test, how much bandwidth is saved? Some numbers would be nice.
->> I tested it by aspeed's kvm client which support decoding the aspeed
->> format. Currently, I am porting this feature to novnc to have openbmc
->> support it.
-> Nice.
->> The bandwidth saved is variant. It depends on how many blocks is
->> different between new and old frame.If the new frame is identical
->> with the previous one, the compressed frame only needs 12 Bytes.
-> Thank you for the explanation.
->
->
-> Kind regards,
->
-> Paul
+On Mon, Oct 18, 2021 at 08:07:26AM +0100, Mauro Carvalho Chehab wrote:
+> The pcie-kirin PCIe driver contains internally a PHY interface for
+> Kirin 960.
+> 
+> As the next patches will add support for using an external PHY
+> driver, reorganize the driver in a way that the PHY part
+> will be self-contained.
+> 
+> This could be moved to a separate PHY driver, but a change
+> like that would mean a non-backward-compatible DT schema
+> change.
+> 
+> Acked-by: Xiaowei Song <songxiaowei@hisilicon.com>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+> 
+> See [PATCH v13 00/10] at: https://lore.kernel.org/all/cover.1634539769.git.mchehab+huawei@kernel.org/
+> 
+>  drivers/pci/controller/dwc/pcie-kirin.c | 298 ++++++++++++++----------
+>  1 file changed, 173 insertions(+), 125 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/dwc/pcie-kirin.c b/drivers/pci/controller/dwc/pcie-kirin.c
+> index 026fd1e42a55..b4063a3434df 100644
+> --- a/drivers/pci/controller/dwc/pcie-kirin.c
+> +++ b/drivers/pci/controller/dwc/pcie-kirin.c
+> @@ -28,26 +28,16 @@
+>  
+>  #define to_kirin_pcie(x) dev_get_drvdata((x)->dev)
+>  
+> -#define REF_CLK_FREQ			100000000
+> -
+>  /* PCIe ELBI registers */
+>  #define SOC_PCIECTRL_CTRL0_ADDR		0x000
+>  #define SOC_PCIECTRL_CTRL1_ADDR		0x004
+> -#define SOC_PCIEPHY_CTRL2_ADDR		0x008
+> -#define SOC_PCIEPHY_CTRL3_ADDR		0x00c
+>  #define PCIE_ELBI_SLV_DBI_ENABLE	(0x1 << 21)
+>  
+>  /* info located in APB */
+>  #define PCIE_APP_LTSSM_ENABLE	0x01c
+> -#define PCIE_APB_PHY_CTRL0	0x0
+> -#define PCIE_APB_PHY_CTRL1	0x4
+>  #define PCIE_APB_PHY_STATUS0	0x400
+>  #define PCIE_LINKUP_ENABLE	(0x8020)
+>  #define PCIE_LTSSM_ENABLE_BIT	(0x1 << 11)
+> -#define PIPE_CLK_STABLE		(0x1 << 19)
+> -#define PHY_REF_PAD_BIT		(0x1 << 8)
+> -#define PHY_PWR_DOWN_BIT	(0x1 << 22)
+> -#define PHY_RST_ACK_BIT		(0x1 << 16)
+>  
+>  /* info located in sysctrl */
+>  #define SCTRL_PCIE_CMOS_OFFSET	0x60
+> @@ -60,6 +50,29 @@
+>  #define PCIE_DEBOUNCE_PARAM	0xF0F400
+>  #define PCIE_OE_BYPASS		(0x3 << 28)
+>  
+> +struct kirin_pcie {
+> +	struct dw_pcie	*pci;
+> +	struct phy	*phy;
+> +	void __iomem	*apb_base;
+> +	void		*phy_priv;	/* Needed for Kirin 960 PHY */
+> +};
+> +
+> +/*
+> + * Kirin 960 PHY. Can't be split into a PHY driver without changing the
+> + * DT schema.
+> + */
+> +
+> +#define REF_CLK_FREQ			100000000
+> +
+> +/* PHY info located in APB */
+> +#define PCIE_APB_PHY_CTRL0	0x0
+> +#define PCIE_APB_PHY_CTRL1	0x4
+> +#define PCIE_APB_PHY_STATUS0   0x400
+> +#define PIPE_CLK_STABLE		BIT(19)
+> +#define PHY_REF_PAD_BIT		BIT(8)
+> +#define PHY_PWR_DOWN_BIT	BIT(22)
+> +#define PHY_RST_ACK_BIT		BIT(16)
+> +
+>  /* peri_crg ctrl */
+>  #define CRGCTRL_PCIE_ASSERT_OFFSET	0x88
+>  #define CRGCTRL_PCIE_ASSERT_BIT		0x8c000000
+> @@ -69,8 +82,6 @@
+>  #define REF_2_PERST_MAX		25000
+>  #define PERST_2_ACCESS_MIN	10000
+>  #define PERST_2_ACCESS_MAX	12000
+> -#define LINK_WAIT_MIN		900
+> -#define LINK_WAIT_MAX		1000
+>  #define PIPE_CLK_WAIT_MIN	550
+>  #define PIPE_CLK_WAIT_MAX	600
+>  #define TIME_CMOS_MIN		100
+> @@ -78,118 +89,112 @@
+>  #define TIME_PHY_PD_MIN		10
+>  #define TIME_PHY_PD_MAX		11
+>  
+> -struct kirin_pcie {
+> -	struct dw_pcie	*pci;
+> -	void __iomem	*apb_base;
+> -	void __iomem	*phy_base;
+> +struct hi3660_pcie_phy {
+> +	struct device	*dev;
+> +	void __iomem	*base;
+>  	struct regmap	*crgctrl;
+>  	struct regmap	*sysctrl;
+>  	struct clk	*apb_sys_clk;
+>  	struct clk	*apb_phy_clk;
+>  	struct clk	*phy_ref_clk;
+> -	struct clk	*pcie_aclk;
+> -	struct clk	*pcie_aux_clk;
+> +	struct clk	*aclk;
+> +	struct clk	*aux_clk;
+>  	int		gpio_id_reset;
+>  };
+>  
+> -/* Registers in PCIeCTRL */
+> -static inline void kirin_apb_ctrl_writel(struct kirin_pcie *kirin_pcie,
+> -					 u32 val, u32 reg)
+> -{
+> -	writel(val, kirin_pcie->apb_base + reg);
+> -}
+> -
+> -static inline u32 kirin_apb_ctrl_readl(struct kirin_pcie *kirin_pcie, u32 reg)
+> -{
+> -	return readl(kirin_pcie->apb_base + reg);
+> -}
+> -
+>  /* Registers in PCIePHY */
+> -static inline void kirin_apb_phy_writel(struct kirin_pcie *kirin_pcie,
+> +static inline void kirin_apb_phy_writel(struct hi3660_pcie_phy *hi3660_pcie_phy,
+>  					u32 val, u32 reg)
+>  {
+> -	writel(val, kirin_pcie->phy_base + reg);
+> +	writel(val, hi3660_pcie_phy->base + reg);
+>  }
+>  
+> -static inline u32 kirin_apb_phy_readl(struct kirin_pcie *kirin_pcie, u32 reg)
+> +static inline u32 kirin_apb_phy_readl(struct hi3660_pcie_phy *hi3660_pcie_phy,
+> +				      u32 reg)
+>  {
+> -	return readl(kirin_pcie->phy_base + reg);
+> +	return readl(hi3660_pcie_phy->base + reg);
+>  }
+>  
+> -static long kirin_pcie_get_clk(struct kirin_pcie *kirin_pcie,
+> -			       struct platform_device *pdev)
+> +static int hi3660_pcie_phy_get_clk(struct hi3660_pcie_phy *phy)
+>  {
+> -	struct device *dev = &pdev->dev;
+> +	struct device *dev = phy->dev;
+>  
+> -	kirin_pcie->phy_ref_clk = devm_clk_get(dev, "pcie_phy_ref");
+> -	if (IS_ERR(kirin_pcie->phy_ref_clk))
+> -		return PTR_ERR(kirin_pcie->phy_ref_clk);
+> +	phy->phy_ref_clk = devm_clk_get(dev, "pcie_phy_ref");
+> +	if (IS_ERR(phy->phy_ref_clk))
+> +		return PTR_ERR(phy->phy_ref_clk);
+>  
+> -	kirin_pcie->pcie_aux_clk = devm_clk_get(dev, "pcie_aux");
+> -	if (IS_ERR(kirin_pcie->pcie_aux_clk))
+> -		return PTR_ERR(kirin_pcie->pcie_aux_clk);
+> +	phy->aux_clk = devm_clk_get(dev, "pcie_aux");
+> +	if (IS_ERR(phy->aux_clk))
+> +		return PTR_ERR(phy->aux_clk);
+>  
+> -	kirin_pcie->apb_phy_clk = devm_clk_get(dev, "pcie_apb_phy");
+> -	if (IS_ERR(kirin_pcie->apb_phy_clk))
+> -		return PTR_ERR(kirin_pcie->apb_phy_clk);
+> +	phy->apb_phy_clk = devm_clk_get(dev, "pcie_apb_phy");
+> +	if (IS_ERR(phy->apb_phy_clk))
+> +		return PTR_ERR(phy->apb_phy_clk);
+>  
+> -	kirin_pcie->apb_sys_clk = devm_clk_get(dev, "pcie_apb_sys");
+> -	if (IS_ERR(kirin_pcie->apb_sys_clk))
+> -		return PTR_ERR(kirin_pcie->apb_sys_clk);
+> +	phy->apb_sys_clk = devm_clk_get(dev, "pcie_apb_sys");
+> +	if (IS_ERR(phy->apb_sys_clk))
+> +		return PTR_ERR(phy->apb_sys_clk);
+>  
+> -	kirin_pcie->pcie_aclk = devm_clk_get(dev, "pcie_aclk");
+> -	if (IS_ERR(kirin_pcie->pcie_aclk))
+> -		return PTR_ERR(kirin_pcie->pcie_aclk);
+> +	phy->aclk = devm_clk_get(dev, "pcie_aclk");
+> +	if (IS_ERR(phy->aclk))
+> +		return PTR_ERR(phy->aclk);
+>  
+>  	return 0;
+>  }
+>  
+> -static long kirin_pcie_get_resource(struct kirin_pcie *kirin_pcie,
+> -				    struct platform_device *pdev)
+> +static int hi3660_pcie_phy_get_resource(struct hi3660_pcie_phy *phy)
+>  {
+> -	kirin_pcie->apb_base =
+> -		devm_platform_ioremap_resource_byname(pdev, "apb");
+> -	if (IS_ERR(kirin_pcie->apb_base))
+> -		return PTR_ERR(kirin_pcie->apb_base);
+> -
+> -	kirin_pcie->phy_base =
+> -		devm_platform_ioremap_resource_byname(pdev, "phy");
+> -	if (IS_ERR(kirin_pcie->phy_base))
+> -		return PTR_ERR(kirin_pcie->phy_base);
+> -
+> -	kirin_pcie->crgctrl =
+> -		syscon_regmap_lookup_by_compatible("hisilicon,hi3660-crgctrl");
+> -	if (IS_ERR(kirin_pcie->crgctrl))
+> -		return PTR_ERR(kirin_pcie->crgctrl);
+> -
+> -	kirin_pcie->sysctrl =
+> -		syscon_regmap_lookup_by_compatible("hisilicon,hi3660-sctrl");
+> -	if (IS_ERR(kirin_pcie->sysctrl))
+> -		return PTR_ERR(kirin_pcie->sysctrl);
+> +	struct device *dev = phy->dev;
+> +	struct platform_device *pdev;
+> +
+> +	/* registers */
+> +	pdev = container_of(dev, struct platform_device, dev);
+> +
+> +	phy->base = devm_platform_ioremap_resource_byname(pdev, "phy");
+> +	if (IS_ERR(phy->base))
+> +		return PTR_ERR(phy->base);
+> +
+> +	phy->crgctrl = syscon_regmap_lookup_by_compatible("hisilicon,hi3660-crgctrl");
+> +	if (IS_ERR(phy->crgctrl))
+> +		return PTR_ERR(phy->crgctrl);
+> +
+> +	phy->sysctrl = syscon_regmap_lookup_by_compatible("hisilicon,hi3660-sctrl");
+> +	if (IS_ERR(phy->sysctrl))
+> +		return PTR_ERR(phy->sysctrl);
+> +
+> +	/* gpios */
+> +	phy->gpio_id_reset = of_get_named_gpio(dev->of_node,
+> +					       "reset-gpios", 0);
+> +	if (phy->gpio_id_reset == -EPROBE_DEFER) {
+> +		return -EPROBE_DEFER;
+> +	} else if (!gpio_is_valid(phy->gpio_id_reset)) {
+> +		dev_err(phy->dev, "unable to get a valid gpio pin\n");
+> +		return -ENODEV;
+> +	}
+>  
+>  	return 0;
+>  }
+>  
+> -static int kirin_pcie_phy_init(struct kirin_pcie *kirin_pcie)
+> +static int hi3660_pcie_phy_start(struct hi3660_pcie_phy *phy)
+>  {
+> -	struct device *dev = kirin_pcie->pci->dev;
+> +	struct device *dev = phy->dev;
+>  	u32 reg_val;
+>  
+> -	reg_val = kirin_apb_phy_readl(kirin_pcie, PCIE_APB_PHY_CTRL1);
+> +	reg_val = kirin_apb_phy_readl(phy, PCIE_APB_PHY_CTRL1);
+>  	reg_val &= ~PHY_REF_PAD_BIT;
+> -	kirin_apb_phy_writel(kirin_pcie, reg_val, PCIE_APB_PHY_CTRL1);
+> +	kirin_apb_phy_writel(phy, reg_val, PCIE_APB_PHY_CTRL1);
+>  
+> -	reg_val = kirin_apb_phy_readl(kirin_pcie, PCIE_APB_PHY_CTRL0);
+> +	reg_val = kirin_apb_phy_readl(phy, PCIE_APB_PHY_CTRL0);
+>  	reg_val &= ~PHY_PWR_DOWN_BIT;
+> -	kirin_apb_phy_writel(kirin_pcie, reg_val, PCIE_APB_PHY_CTRL0);
+> +	kirin_apb_phy_writel(phy, reg_val, PCIE_APB_PHY_CTRL0);
+>  	usleep_range(TIME_PHY_PD_MIN, TIME_PHY_PD_MAX);
+>  
+> -	reg_val = kirin_apb_phy_readl(kirin_pcie, PCIE_APB_PHY_CTRL1);
+> +	reg_val = kirin_apb_phy_readl(phy, PCIE_APB_PHY_CTRL1);
+>  	reg_val &= ~PHY_RST_ACK_BIT;
+> -	kirin_apb_phy_writel(kirin_pcie, reg_val, PCIE_APB_PHY_CTRL1);
+> +	kirin_apb_phy_writel(phy, reg_val, PCIE_APB_PHY_CTRL1);
+>  
+>  	usleep_range(PIPE_CLK_WAIT_MIN, PIPE_CLK_WAIT_MAX);
+> -	reg_val = kirin_apb_phy_readl(kirin_pcie, PCIE_APB_PHY_STATUS0);
+> +	reg_val = kirin_apb_phy_readl(phy, PCIE_APB_PHY_STATUS0);
+>  	if (reg_val & PIPE_CLK_STABLE) {
+>  		dev_err(dev, "PIPE clk is not stable\n");
+>  		return -EINVAL;
+> @@ -198,105 +203,157 @@ static int kirin_pcie_phy_init(struct kirin_pcie *kirin_pcie)
+>  	return 0;
+>  }
+>  
+> -static void kirin_pcie_oe_enable(struct kirin_pcie *kirin_pcie)
+> +static void hi3660_pcie_phy_oe_enable(struct hi3660_pcie_phy *phy)
+>  {
+>  	u32 val;
+>  
+> -	regmap_read(kirin_pcie->sysctrl, SCTRL_PCIE_OE_OFFSET, &val);
+> +	regmap_read(phy->sysctrl, SCTRL_PCIE_OE_OFFSET, &val);
+>  	val |= PCIE_DEBOUNCE_PARAM;
+>  	val &= ~PCIE_OE_BYPASS;
+> -	regmap_write(kirin_pcie->sysctrl, SCTRL_PCIE_OE_OFFSET, val);
+> +	regmap_write(phy->sysctrl, SCTRL_PCIE_OE_OFFSET, val);
+>  }
+>  
+> -static int kirin_pcie_clk_ctrl(struct kirin_pcie *kirin_pcie, bool enable)
+> +static int hi3660_pcie_phy_clk_ctrl(struct hi3660_pcie_phy *phy, bool enable)
+>  {
+>  	int ret = 0;
+>  
+>  	if (!enable)
+>  		goto close_clk;
+>  
+> -	ret = clk_set_rate(kirin_pcie->phy_ref_clk, REF_CLK_FREQ);
+> +	ret = clk_set_rate(phy->phy_ref_clk, REF_CLK_FREQ);
+>  	if (ret)
+>  		return ret;
+>  
+> -	ret = clk_prepare_enable(kirin_pcie->phy_ref_clk);
+> +	ret = clk_prepare_enable(phy->phy_ref_clk);
+>  	if (ret)
+>  		return ret;
+>  
+> -	ret = clk_prepare_enable(kirin_pcie->apb_sys_clk);
+> +	ret = clk_prepare_enable(phy->apb_sys_clk);
+>  	if (ret)
+>  		goto apb_sys_fail;
+>  
+> -	ret = clk_prepare_enable(kirin_pcie->apb_phy_clk);
+> +	ret = clk_prepare_enable(phy->apb_phy_clk);
+>  	if (ret)
+>  		goto apb_phy_fail;
+>  
+> -	ret = clk_prepare_enable(kirin_pcie->pcie_aclk);
+> +	ret = clk_prepare_enable(phy->aclk);
+>  	if (ret)
+>  		goto aclk_fail;
+>  
+> -	ret = clk_prepare_enable(kirin_pcie->pcie_aux_clk);
+> +	ret = clk_prepare_enable(phy->aux_clk);
+>  	if (ret)
+>  		goto aux_clk_fail;
+>  
+>  	return 0;
+>  
+>  close_clk:
+> -	clk_disable_unprepare(kirin_pcie->pcie_aux_clk);
+> +	clk_disable_unprepare(phy->aux_clk);
+>  aux_clk_fail:
+> -	clk_disable_unprepare(kirin_pcie->pcie_aclk);
+> +	clk_disable_unprepare(phy->aclk);
+>  aclk_fail:
+> -	clk_disable_unprepare(kirin_pcie->apb_phy_clk);
+> +	clk_disable_unprepare(phy->apb_phy_clk);
+>  apb_phy_fail:
+> -	clk_disable_unprepare(kirin_pcie->apb_sys_clk);
+> +	clk_disable_unprepare(phy->apb_sys_clk);
+>  apb_sys_fail:
+> -	clk_disable_unprepare(kirin_pcie->phy_ref_clk);
+> +	clk_disable_unprepare(phy->phy_ref_clk);
+>  
+>  	return ret;
+>  }
+>  
+> -static int kirin_pcie_power_on(struct kirin_pcie *kirin_pcie)
+> +static int hi3660_pcie_phy_power_on(struct kirin_pcie *pcie)
+>  {
+> +	struct hi3660_pcie_phy *phy = pcie->phy_priv;
+>  	int ret;
+>  
+>  	/* Power supply for Host */
+> -	regmap_write(kirin_pcie->sysctrl,
+> +	regmap_write(phy->sysctrl,
+>  		     SCTRL_PCIE_CMOS_OFFSET, SCTRL_PCIE_CMOS_BIT);
+>  	usleep_range(TIME_CMOS_MIN, TIME_CMOS_MAX);
+> -	kirin_pcie_oe_enable(kirin_pcie);
+>  
+> -	ret = kirin_pcie_clk_ctrl(kirin_pcie, true);
+> +	hi3660_pcie_phy_oe_enable(phy);
+> +
+> +	ret = hi3660_pcie_phy_clk_ctrl(phy, true);
+>  	if (ret)
+>  		return ret;
+>  
+>  	/* ISO disable, PCIeCtrl, PHY assert and clk gate clear */
+> -	regmap_write(kirin_pcie->sysctrl,
+> +	regmap_write(phy->sysctrl,
+>  		     SCTRL_PCIE_ISO_OFFSET, SCTRL_PCIE_ISO_BIT);
+> -	regmap_write(kirin_pcie->crgctrl,
+> +	regmap_write(phy->crgctrl,
+>  		     CRGCTRL_PCIE_ASSERT_OFFSET, CRGCTRL_PCIE_ASSERT_BIT);
+> -	regmap_write(kirin_pcie->sysctrl,
+> +	regmap_write(phy->sysctrl,
+>  		     SCTRL_PCIE_HPCLK_OFFSET, SCTRL_PCIE_HPCLK_BIT);
+>  
+> -	ret = kirin_pcie_phy_init(kirin_pcie);
+> +	ret = hi3660_pcie_phy_start(phy);
+>  	if (ret)
+> -		goto close_clk;
+> +		goto disable_clks;
+>  
+>  	/* perst assert Endpoint */
+> -	if (!gpio_request(kirin_pcie->gpio_id_reset, "pcie_perst")) {
+> +	if (!gpio_request(phy->gpio_id_reset, "pcie_perst")) {
+>  		usleep_range(REF_2_PERST_MIN, REF_2_PERST_MAX);
+> -		ret = gpio_direction_output(kirin_pcie->gpio_id_reset, 1);
+> +		ret = gpio_direction_output(phy->gpio_id_reset, 1);
+>  		if (ret)
+> -			goto close_clk;
+> +			goto disable_clks;
+>  		usleep_range(PERST_2_ACCESS_MIN, PERST_2_ACCESS_MAX);
+> -
+>  		return 0;
+>  	}
+>  
+> -close_clk:
+> -	kirin_pcie_clk_ctrl(kirin_pcie, false);
+> +disable_clks:
+> +	hi3660_pcie_phy_clk_ctrl(phy, false);
+>  	return ret;
+>  }
+>  
+> +static int hi3660_pcie_phy_init(struct platform_device *pdev,
+> +				struct kirin_pcie *pcie)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	struct hi3660_pcie_phy *phy;
+> +	int ret;
+> +
+> +	phy = devm_kzalloc(dev, sizeof(*phy), GFP_KERNEL);
+> +	if (!phy)
+> +		return -ENOMEM;
+> +
+> +	pcie->phy_priv = phy;
+> +	phy->dev = dev;
+> +
+> +	/* registers */
+> +	pdev = container_of(dev, struct platform_device, dev);
+> +
+> +	ret = hi3660_pcie_phy_get_clk(phy);
+> +	if (ret)
+> +		return ret;
+> +
+> +	return hi3660_pcie_phy_get_resource(phy);
+> +}
+> +
+> +/*
+> + * The non-PHY part starts here
+> + */
+> +
+> +/* Registers in PCIeCTRL */
+> +static inline void kirin_apb_ctrl_writel(struct kirin_pcie *kirin_pcie,
+> +					 u32 val, u32 reg)
+> +{
+> +	writel(val, kirin_pcie->apb_base + reg);
+> +}
+> +
+> +static inline u32 kirin_apb_ctrl_readl(struct kirin_pcie *kirin_pcie, u32 reg)
+> +{
+> +	return readl(kirin_pcie->apb_base + reg);
+> +}
+> +
+> +static long kirin_pcie_get_resource(struct kirin_pcie *kirin_pcie,
+> +				    struct platform_device *pdev)
+> +{
+> +	kirin_pcie->apb_base =
+> +		devm_platform_ioremap_resource_byname(pdev, "apb");
+> +	if (IS_ERR(kirin_pcie->apb_base))
+> +		return PTR_ERR(kirin_pcie->apb_base);
+> +
+> +	return 0;
+> +}
+> +
+>  static void kirin_pcie_sideband_dbi_w_mode(struct kirin_pcie *kirin_pcie,
+>  					   bool on)
+>  {
+> @@ -444,7 +501,7 @@ static int kirin_pcie_probe(struct platform_device *pdev)
+>  	pci->pp.ops = &kirin_pcie_host_ops;
+>  	kirin_pcie->pci = pci;
+>  
+> -	ret = kirin_pcie_get_clk(kirin_pcie, pdev);
+> +	ret = hi3660_pcie_phy_init(pdev, kirin_pcie);
+>  	if (ret)
+>  		return ret;
+>  
+> @@ -452,16 +509,7 @@ static int kirin_pcie_probe(struct platform_device *pdev)
+>  	if (ret)
+>  		return ret;
+>  
+> -	kirin_pcie->gpio_id_reset = of_get_named_gpio(dev->of_node,
+> -						      "reset-gpios", 0);
+> -	if (kirin_pcie->gpio_id_reset == -EPROBE_DEFER) {
+> -		return -EPROBE_DEFER;
+> -	} else if (!gpio_is_valid(kirin_pcie->gpio_id_reset)) {
+> -		dev_err(dev, "unable to get a valid gpio pin\n");
+> -		return -ENODEV;
+> -	}
+> -
+> -	ret = kirin_pcie_power_on(kirin_pcie);
+> +	ret = hi3660_pcie_phy_power_on(kirin_pcie);
+>  	if (ret)
+>  		return ret;
+>  
+> @@ -479,8 +527,8 @@ static struct platform_driver kirin_pcie_driver = {
+>  	.probe			= kirin_pcie_probe,
+>  	.driver			= {
+>  		.name			= "kirin-pcie",
+> -		.of_match_table = kirin_pcie_match,
+> -		.suppress_bind_attrs = true,
+> +		.of_match_table		= kirin_pcie_match,
+> +		.suppress_bind_attrs	= true,
+>  	},
+>  };
+>  builtin_platform_driver(kirin_pcie_driver);
+> -- 
+> 2.31.1
+> 
