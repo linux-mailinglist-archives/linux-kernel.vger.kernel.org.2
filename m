@@ -2,65 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A69C0431688
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 12:53:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B6B343168A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 12:53:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229915AbhJRKzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 06:55:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54440 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229491AbhJRKzd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 06:55:33 -0400
-Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF806C06161C;
-        Mon, 18 Oct 2021 03:53:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=PYEyLBKPEiLefC1Su7n2R+mYeFRQvlAM8yBTFCwjueM=; b=rUm5vNgAbVR2F1C34gVTJtaGvk
-        LCA6vlXmUdo8OXuSXVQP17YcMzmFfetDFOhd8TXwUMmuo+eWowynPchij8+M5TkAqqR9D4LwbUQX0
-        5tMRTcaoKk91bsghDtgYFbTFYmC3JAlcOe3cTXKbTftJndnbTUZHE9xuUO8wMJ+gIIMhgjPoV30Zt
-        6OeK8DLtENvhIEidAMRN7vQ9t0Q7Lx3DqAnw1gxY9/nGAHVk94freh8hGP2Beo4XBbFAa9klqzYkn
-        vSNlWVk593z1y0ciGhz5W/am3OrVbZPXjUZNHybtrPKGMNwANrD8jaJXp/Rcpv7rWclFVZfbTkU7a
-        W92gUEqA==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mcQGe-00F9Mm-NY; Mon, 18 Oct 2021 10:53:20 +0000
-Date:   Mon, 18 Oct 2021 03:53:20 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
+        id S230376AbhJRKzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 06:55:55 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:43220 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229491AbhJRKzy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 06:55:54 -0400
+Received: from zn.tnic (p200300ec2f085700846cd5acb237d67e.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:5700:846c:d5ac:b237:d67e])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 0A0601EC01DF;
+        Mon, 18 Oct 2021 12:53:42 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1634554422;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=4nuTuWqK/08nFLEj5f2FRFTNFNDe0ksMTiDCZVgq+Gc=;
+        b=Iqq5tQFZlbXKgm5HkArnT4BHUPe+d0ENpAgjLLszm9vx5V2W7Dw/763al/WYgAnKcT9L3q
+        3KdzL8n1fWr6xta49tO9XyzjrPf7plrCtZCorYUmcco6dy2ePOElCslVbuXHaQHIDFAoOr
+        eLEAb2UgmI81tz1VncC31/TPJfQaDSI=
+Date:   Mon, 18 Oct 2021 12:53:40 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Christoph Hellwig <hch@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH] irq_poll: Use raise_softirq_irqoff() in cpu_dead notifier
-Message-ID: <YW1SIE08f3X3joxe@infradead.org>
-References: <20210930103754.2128949-1-bigeasy@linutronix.de>
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
+        VMware Inc <pv-drivers@vmware.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, Peter H Anvin <hpa@zytor.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 06/11] x86/traps: Add #VE support for TDX guest
+Message-ID: <YW1SNMqBcsdqOCsF@zn.tnic>
+References: <20211005025205.1784480-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20211005025205.1784480-7-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <YV8pE+QYcS/fUe98@zn.tnic>
+ <5b7f13b9-6d32-c97c-aaea-4e256a59f90b@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210930103754.2128949-1-bigeasy@linutronix.de>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <5b7f13b9-6d32-c97c-aaea-4e256a59f90b@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 12:37:54PM +0200, Sebastian Andrzej Siewior wrote:
-> __raise_softirq_irqoff() adds a bit to the pending sofirq mask and this
-> is it. The softirq won't be handled in a deterministic way but randomly
-> when an interrupt fires and handles softirq in its irq_exit() routine or
-> if something randomly checks and handles pending softirqs in the call
-> chain before the CPU goes idle.
-> 
-> Add a local_bh_disable/enable() around the IRQ-off section which will
-> handle pending softirqs.
+On Sun, Oct 17, 2021 at 10:15:22AM -0700, Dave Hansen wrote:
+> I think it's equivalent to something like a 'pt_regs' or 'stack_info'
+> that we pass around in other exception handlers.  It's always stack
+> allocated.  It's never dynamically allocated and NULL is never passed
+> for some other semantic reason.
 
-This patch leaves me extremely confused, and it would even more if I was
-just reading the code.  local_irq_disable is supposed to disable BHs
-as well, so the code looks pretty much nonsensical to me.  But
-apparently that isn't the point if I follow your commit message as you
-don't care about an extra level of BH disabling but want to force a
-side-effect of the re-enabling?  Why not directly call the helper
-to schedule the softirq then? 
+Ok, but why is adding that check such a big deal?
+
+Are you saying that nothing else will call tdx_get_ve_info() in the
+future so we should trust the passed in *ve pointer blindly or should we
+simply add that cheap check just in case.
+
+I don't mind having it without it but wondering why a little defensive
+programming is a problem, at all.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
