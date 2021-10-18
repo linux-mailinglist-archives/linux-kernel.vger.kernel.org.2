@@ -2,96 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D075432438
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 18:52:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 815F9432439
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 18:52:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234105AbhJRQyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 12:54:08 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:43788 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234085AbhJRQxh (ORCPT
+        id S233932AbhJRQyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 12:54:13 -0400
+Received: from mail-ot1-f42.google.com ([209.85.210.42]:33711 "EHLO
+        mail-ot1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234122AbhJRQxk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 12:53:37 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 1406121966;
-        Mon, 18 Oct 2021 16:51:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1634575885; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6d1q+ubZusaXumuE3riMUHm2jTbTP959W22zG60KItg=;
-        b=fKu+qOYXhZzEp+4Webr7Gz5rjCvBK4A8tlusIDpeSd3E8XdtJaNxr8PAFbK6W9yO+rJ8pN
-        oVQLPo5TxdQHL4pK+LLbCl4u0Z1E4/d/0cwHIYBJh+eMmFEbE4ldAJ0nwZHCPEYUZBx6J/
-        E8Tohc07y3OCyC2sRGMX3CMeUir1HFw=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id C44B3A3B83;
-        Mon, 18 Oct 2021 16:51:24 +0000 (UTC)
-Date:   Mon, 18 Oct 2021 18:51:24 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Vasily Averin <vvs@virtuozzo.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, kernel@openvz.org
-Subject: Re: [PATCH memcg 0/1] false global OOM triggered by memcg-limited
- task
-Message-ID: <YW2mDDYRkXkQbZAR@dhcp22.suse.cz>
-References: <9d10df01-0127-fb40-81c3-cc53c9733c3e@virtuozzo.com>
- <YW04jWSv6pQb2Goe@dhcp22.suse.cz>
- <6b751abe-aa52-d1d8-2631-ec471975cc3a@virtuozzo.com>
- <YW1gRz0rTkJrvc4L@dhcp22.suse.cz>
- <27dc0c49-a0d6-875b-49c6-0ef5c0cc3ac8@virtuozzo.com>
- <YW1oMxNkUCaAimmg@dhcp22.suse.cz>
- <CALvZod42uwgrg83CCKn6JgYqAQtR1RLJSuybNYjtkFo4wVgT1w@mail.gmail.com>
+        Mon, 18 Oct 2021 12:53:40 -0400
+Received: by mail-ot1-f42.google.com with SMTP id 34-20020a9d0325000000b00552cae0decbso715762otv.0;
+        Mon, 18 Oct 2021 09:51:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1NTSLH3QdLvvmqj7vILAc/uiqw3GWx2FXVOv+t3O/AM=;
+        b=cuwqA0SCD0kzLEM0DfTTEgJf6XHycGjIYE7/Ur7eFU0xpow9kyW3Piv0fkLOXAX6QT
+         wzPprCglI68RuaNfvrjl/aoDHLT2I1wjGJ/L1nLNsxDoVQt06QY061wJoUj9EB0H23Mv
+         f2LROOyHZ0HVKRRa+ogInXsqpjvzhHorKiGTtXhqRICQyY/lfwVkkpEn7oiNiFoSahNn
+         9RjVSjee3zi6+TknhYQNvfYCTXmEMhj/mSoY9t9CbtXUsck7h99d+QrpYuqTVJrWv2n5
+         g4Palr7RbVAYIb+KmAx1/vXPCRXGnN8u4lqFc2LX1tvRRS7SnnNt9Cb/noe7sTUDtrLP
+         Dxog==
+X-Gm-Message-State: AOAM531I3Xf/i2PuVlXv73dhI5xxqsF6C9cIH0WzOnF2klqtnWDzb7LN
+        2XLR9ODJbVyL2ZCY7CBRAQ==
+X-Google-Smtp-Source: ABdhPJxK9TrO5botFJ05t5KKEIli/p7GGTMOOLDXufYNa+3UTvlC6ExS2JUfz4kktJbxvEPaoHkWUw==
+X-Received: by 2002:a05:6830:2258:: with SMTP id t24mr767341otd.211.1634575889223;
+        Mon, 18 Oct 2021 09:51:29 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id r5sm2589548oov.48.2021.10.18.09.51.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Oct 2021 09:51:28 -0700 (PDT)
+Received: (nullmailer pid 2545603 invoked by uid 1000);
+        Mon, 18 Oct 2021 16:51:27 -0000
+Date:   Mon, 18 Oct 2021 11:51:27 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Horatiu Vultur <horatiu.vultur@microchip.com>
+Cc:     Steen.Hegelund@microchip.com, devicetree@vger.kernel.org,
+        robh+dt@kernel.org, linus.walleij@linaro.org,
+        linux-gpio@vger.kernel.org, lars.povlsen@microchip.com,
+        p.zabel@pengutronix.de, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, UNGLinuxDriver@microchip.com
+Subject: Re: [PATCH v6 1/2] dt-bindings: pinctrl: pinctrl-microchip-sgpio:
+ Add reset binding
+Message-ID: <YW2mD3sYKa0JeJsD@robh.at.kernel.org>
+References: <20211018085754.1066056-1-horatiu.vultur@microchip.com>
+ <20211018085754.1066056-2-horatiu.vultur@microchip.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CALvZod42uwgrg83CCKn6JgYqAQtR1RLJSuybNYjtkFo4wVgT1w@mail.gmail.com>
+In-Reply-To: <20211018085754.1066056-2-horatiu.vultur@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 18-10-21 08:07:20, Shakeel Butt wrote:
-> On Mon, Oct 18, 2021 at 5:27 AM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > [restore the cc list]
-> >
-> > On Mon 18-10-21 15:14:26, Vasily Averin wrote:
-> > > On 18.10.2021 14:53, Michal Hocko wrote:
-> > > > On Mon 18-10-21 13:05:35, Vasily Averin wrote:
-> > > >> On 18.10.2021 12:04, Michal Hocko wrote:
-> > > >> Here we call try_charge_memcg() that return success and approve the allocation,
-> > > >> however then we hit into kmem limit and fail the allocation.
-> > > >
-> > > > Just to make sure I understand this would be for the v1 kmem explicit
-> > > > limit, correct?
-> > >
-> > > yes, I mean this limit.
-> >
-> > OK, thanks for the clarification. This is a known problem. Have a look
-> > at I think we consider that one to 0158115f702b ("memcg, kmem: deprecate
-> > kmem.limit_in_bytes"). We are reporting the deprecated and to-be removed
-> > status since 2019 without any actual report sugested by the kernel
-> > message. Maybe we should try and remove it and see whether that prompts
-> > some pushback.
-> >
+On Mon, 18 Oct 2021 10:57:53 +0200, Horatiu Vultur wrote:
+> This describes the new binding which allows to call a reset driver from
+> the pinctrl-microchip-sgpio driver.
 > 
-> Yes, I think now should be the right time to take the next step for
-> deprecation of kmem limits:
-> https://lore.kernel.org/all/20201118175726.2453120-1-shakeelb@google.com/
+> Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+> ---
+>  .../bindings/pinctrl/microchip,sparx5-sgpio.yaml           | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
 
-I completely forgot about your patch.  Anyway, it usually takes us years
-to deprecate something so let's stick with it and consider 2 years as
-years ;)
-
--- 
-Michal Hocko
-SUSE Labs
+Reviewed-by: Rob Herring <robh@kernel.org>
