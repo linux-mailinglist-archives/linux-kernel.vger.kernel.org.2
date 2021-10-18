@@ -2,92 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2BDB431F47
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 16:16:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58305431EF3
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 16:06:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232676AbhJROSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 10:18:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44358 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232507AbhJROSl (ORCPT
+        id S234662AbhJROHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 10:07:39 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:49196
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235577AbhJROE5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 10:18:41 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91907C08EBB4
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 07:02:39 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id 63-20020a1c0042000000b0030d60716239so10492876wma.4
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 07:02:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=xu0wFpMnPTWg2SgsHyUSQQQ2dykx7iBeuhvTdw0+bPo=;
-        b=t/0sng+l7qoH421kLSngqcTkeSOzBBBbnACXXIPA5Z6nT1d4ZWQozmAPjq0iwdttZP
-         XOGwm57RDENxODAcRQIdJEZt/m95DpFS2cWnIOSQnOP5enZT6ZUEPSIrCUIorahfoSQH
-         AV/SmpIbdya/7JKFhP5zBDHS4vNP3PvjW86wCZELjop6s1t/Oq7NDXX7z4q3PU5WIRmY
-         Mjngrm24M7FUDMq9nHRl5CfNv0RcUoHDfy1DBI+7VjT5GpoFUn47Dg3vBaaFvdhoyajk
-         jEYrtS7LKFu7LeZTNN5T+j9EQsI2t5rp/0rNxEFxVq85IKukvasEl4OIPkrL+L7QLzyP
-         QdvQ==
+        Mon, 18 Oct 2021 10:04:57 -0400
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com [209.85.167.71])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id C14D63F4A4
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 14:02:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1634565765;
+        bh=n+gqCEKRjnF32ZwCp1GL3/Z2MQYyrJF+G4qgFNA43e0=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=o4YnGiLvyx2/v8P8oVboRzacLOU8XljM3eO36ioH4y9d4V128yD69Ajkgzdd51ntP
+         IQ/4ITDVUSaGN/LgAVmaTRtwMfFxr2YjRmJjN4pBEGgy9kTWLiA0SgzDRx6uo3bM6+
+         HFv7/9CzFbT1XgOPZW7nTUMStuM4F90y+ikzkzndRa1OJ1VjZKYgXw7IqcPQZSE3UX
+         C6i4SeZqMHPVm0b6ZWd7AfYkxMl1cqHBEo8d/oy/n71GLzq3cZ8Gx4C0yGnLQxTZWU
+         GF7rld2UYmvdDWLLRpuIjUMrnyLn6VLUa8Ngqg53Uow28CTm9q9laDfvdY4iCQVHFl
+         nWD0aGc4nieKA==
+Received: by mail-lf1-f71.google.com with SMTP id b29-20020a0565120b9d00b003fdc9b2546dso4992129lfv.14
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 07:02:45 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=xu0wFpMnPTWg2SgsHyUSQQQ2dykx7iBeuhvTdw0+bPo=;
-        b=m6WocGcOyO3oA7q3429rtXROIgCnETqY88Fs2xZG7KglFAToiZVhWgUxlc+4izsfx4
-         LVnJnhydfX3HgHsm+p01o1KRBZ+q3+QFSOjXlBGWrQ94Ik/v7Yol/ETzcwGTJbN3MsOz
-         L1g2CfQ0cqWpbuZYybvBYG66hhnD5gtpF8Xq2urjh5id82LqUtIxRpqagU0UfRZGpehs
-         eQsJ1ZIlZYg+FUeOR/yiSeAyDGjbhOkYBujsvmG1Tl27zksZdW599iF5rh285bz1kSr9
-         Ft39Dz1qdEQ8nc55yl/2DQEErPrseXzPuZBj0qz50LWrJB5uqlaUy8rRcLelHkONCXFc
-         Rc2g==
-X-Gm-Message-State: AOAM5324pn8usCt+saxPPu9YdJn5uKqiRUCwR4X50b1/Xkwx2fGtXJ4w
-        IHO6FQlsuHdKc0FbqHyJ+1D+aw==
-X-Google-Smtp-Source: ABdhPJy+DNjWEsIk9DPKxeraLdCuiMO0FGqV387zfb6YutR2yGNBgTNIzmn5PPAv2wFmoTUEHVFqwA==
-X-Received: by 2002:a05:600c:2109:: with SMTP id u9mr30496641wml.68.1634565758047;
-        Mon, 18 Oct 2021 07:02:38 -0700 (PDT)
-Received: from google.com ([95.148.6.207])
-        by smtp.gmail.com with ESMTPSA id y5sm12210314wrq.85.2021.10.18.07.02.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 07:02:37 -0700 (PDT)
-Date:   Mon, 18 Oct 2021 15:02:34 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Kai Song <songkai01@inspur.com>
-Cc:     thor.thayer@linux.intel.com, zou_wei@huawei.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mfd: altera-sysmgr: Fix a mistake caused by
- resource_size function
-Message-ID: <YW1+eiaWZDRTet21@google.com>
-References: <20211006141926.6120-1-songkai01@inspur.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=n+gqCEKRjnF32ZwCp1GL3/Z2MQYyrJF+G4qgFNA43e0=;
+        b=mOEIEOkpQaXd3AKRwF1HtweoL5ibpaUjm+8+BqO9WCW8HvssWvikoVqLcmXXbZqIZj
+         LFOG04ILLUUoHMjPcmpqrBddWOjNhwTbmjU/9rsWTPXUoo0mY0ShI1cqiTok2rEhmKdI
+         FGmaI6HcOqrUfU3k/JSHH5skLqgIIH/n6QSvtEZRK4uYn0hJ35rM8tAMHOTs0Ta63Gvb
+         /YUzL7AjVIhMq/HFIRmmDZP9szZLEDTumkKLCkInpX59VNFxRsOC/5sNniIGbYtrGaQK
+         yWX2ugb5Tdg853btkji+HeGyvhb7oEhr/2EkPshv5POq3YfiphBfFqU0LW3Vfni1frgG
+         2WQw==
+X-Gm-Message-State: AOAM530+j9vgq2EywLo0LUrn+4NR1vuTaYkXLxqdAz6/SvzAkLnmIukh
+        QQSI+58vPR7UXQRNeEiB9BZWZSSiv003BGr/K3vLt3AxThnBz7TgN+qIFdoWDAIOeaafhOabPxr
+        AtKqrEOfI8FHE3VTmFiIs3eWii4pYe0GnjBAUk0LPAA==
+X-Received: by 2002:a2e:b4b3:: with SMTP id q19mr31771858ljm.508.1634565765284;
+        Mon, 18 Oct 2021 07:02:45 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwvK1fNjhyEFS2oGW6l1ztV/o6AF6Lw+s7c27H0NgbVIkuDuZ7oTlW87vyRha/egtx0W7mJFA==
+X-Received: by 2002:a2e:b4b3:: with SMTP id q19mr31771832ljm.508.1634565765137;
+        Mon, 18 Oct 2021 07:02:45 -0700 (PDT)
+Received: from [192.168.3.161] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
+        by smtp.gmail.com with ESMTPSA id d20sm1411576lfv.117.2021.10.18.07.02.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Oct 2021 07:02:44 -0700 (PDT)
+Subject: Re: [PATCH v4 00/10] regulator/mfd/clock: dt-bindings: Samsung S2M
+ and S5M to dtschema
+To:     Mark Brown <broonie@kernel.org>, Lee Jones <lee.jones@linaro.org>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Liam Girdwood <lgirdwood@gmail.com>, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org,
+        Sam Protsenko <semen.protsenko@linaro.org>
+References: <20211008113723.134648-1-krzysztof.kozlowski@canonical.com>
+ <YWCT+YL/9qHbF9f0@sirena.org.uk>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <bb1f4be0-ca2a-e327-0831-f648a2ca3ab3@canonical.com>
+Date:   Mon, 18 Oct 2021 16:02:43 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211006141926.6120-1-songkai01@inspur.com>
+In-Reply-To: <YWCT+YL/9qHbF9f0@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 06 Oct 2021, Kai Song wrote:
-
-> Fixes: d12edf9661a4 ("mfd: altera-sysmgr: Use resource_size function on resource object")
+On 08/10/2021 20:54, Mark Brown wrote:
+> On Fri, Oct 08, 2021 at 01:37:12PM +0200, Krzysztof Kozlowski wrote:
 > 
-> The resource_size defines that:
-> 	res->end - res->start + 1;
-> The origin original code is:
-> 	sysmgr_config.max_register = res->end - res->start - 3;
+>> This patchset converts all devicetree bindings of Samsung S2M and S5M
+>> PMIC devices from txt to dtschema.
 > 
-> So, the correct fix is that:
-> 	sysmgr_config.max_register = resource_size(res) - 4;
+> The following changes since commit e73f0f0ee7541171d89f2e2491130c7771ba58d3:
 > 
-> Signed-off-by: Kai Song <songkai01@inspur.com>
-> ---
->  drivers/mfd/altera-sysmgr.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>   Linux 5.14-rc1 (2021-07-11 15:07:40 -0700)
+> 
+> are available in the Git repository at:
+> 
+>   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git tags/s2m_s5m_dtschema
+> 
+> for you to fetch changes up to fab58debc137f66cf97f60c8471ff2f1e3e1b44b:
+> 
+>   regulator: dt-bindings: samsung,s5m8767: convert to dtschema (2021-10-08 17:24:37 +0100)
+> 
 
-Applied, thanks.
+Thanks Mark for the branch.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Lee, can you merge it and apply the rest (MFD)?
+
+
+Best regards,
+Krzysztof
