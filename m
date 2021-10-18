@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBAF5431E42
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:57:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D72E431CA6
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:42:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232884AbhJRN7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:59:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57776 "EHLO mail.kernel.org"
+        id S233520AbhJRNm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:42:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55140 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234116AbhJRN5Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:57:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B6E4A61A52;
-        Mon, 18 Oct 2021 13:40:59 +0000 (UTC)
+        id S232159AbhJRNkz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:40:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DAE6061374;
+        Mon, 18 Oct 2021 13:33:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634564460;
-        bh=J5hh4JfP+qOe5Gp7tcBGciG7iJE8Fdu59ov/wmhnTaY=;
+        s=korg; t=1634564017;
+        bh=H6/bz4ph6WCr8Ka1uaSQPmCtR2591g3xQ5w1Amar1uQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PwYP4SU5HWrg8qI7LzkRzePWCYRxo27QCjsw5Ifqr/SdKf4W3MfL3fMzE+aK0qnEV
-         yXfivNS1Zd5lYIqaoy4yv7jEJ8nISZWXsRkGdlqPFfCV6YYnsZUb4uFlwcQtXw4GQZ
-         zjK45bLytqrXUkQSfzTarxHhbqIKl/W12KTgjphM=
+        b=H8xkB6SXI52B2xPW5IjK1AKrx6a+IYOP3Yd5fpuE5O9h5EIh5IGe0VbwdpNxd8+x2
+         Q+9t/hdaPMcWg0ZvPInE3Gq+rHX+kBh9XB1WCitH2LF97Zf+Ui98/IOGNhnoJpbnDk
+         n1KKwJihCTxkE3/RY0XMsc9PM2vgFi6SdPNAwUyQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Alexandru Tachici <alexandru.tachici@analog.com>,
-        Stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 5.14 070/151] iio: adc: ad7793: Fix IRQ flag
+        stable@vger.kernel.org, Zhang Jianhua <chris.zjh@huawei.com>,
+        Ard Biesheuvel <ardb@kernel.org>
+Subject: [PATCH 5.10 033/103] efi: Change down_interruptible() in virt_efi_reset_system() to down_trylock()
 Date:   Mon, 18 Oct 2021 15:24:09 +0200
-Message-Id: <20211018132342.965244028@linuxfoundation.org>
+Message-Id: <20211018132335.833909572@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132340.682786018@linuxfoundation.org>
-References: <20211018132340.682786018@linuxfoundation.org>
+In-Reply-To: <20211018132334.702559133@linuxfoundation.org>
+References: <20211018132334.702559133@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,41 +39,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexandru Tachici <alexandru.tachici@analog.com>
+From: Zhang Jianhua <chris.zjh@huawei.com>
 
-commit 1a913270e57a8e7f1e3789802f1f64e6d0654626 upstream.
+commit 38fa3206bf441911258e5001ac8b6738693f8d82 upstream.
 
-In Sigma-Delta devices the SDO line is also used as an interrupt.
-Leaving IRQ on level instead of falling might trigger a sample read
-when the IRQ is enabled, as the SDO line is already low. Not sure
-if SDO line will always immediately go high in ad_sd_buffer_postenable
-before the IRQ is enabled.
+While reboot the system by sysrq, the following bug will be occur.
 
-Also the datasheet seem to explicitly say the falling edge of the SDO
-should be used as an interrupt:
->From the AD7793 datasheet: " The DOUT/RDY falling edge can be
-used as an interrupt to a processor"
+BUG: sleeping function called from invalid context at kernel/locking/semaphore.c:90
+in_atomic(): 0, irqs_disabled(): 128, non_block: 0, pid: 10052, name: rc.shutdown
+CPU: 3 PID: 10052 Comm: rc.shutdown Tainted: G        W O      5.10.0 #1
+Call trace:
+ dump_backtrace+0x0/0x1c8
+ show_stack+0x18/0x28
+ dump_stack+0xd0/0x110
+ ___might_sleep+0x14c/0x160
+ __might_sleep+0x74/0x88
+ down_interruptible+0x40/0x118
+ virt_efi_reset_system+0x3c/0xd0
+ efi_reboot+0xd4/0x11c
+ machine_restart+0x60/0x9c
+ emergency_restart+0x1c/0x2c
+ sysrq_handle_reboot+0x1c/0x2c
+ __handle_sysrq+0xd0/0x194
+ write_sysrq_trigger+0xbc/0xe4
+ proc_reg_write+0xd4/0xf0
+ vfs_write+0xa8/0x148
+ ksys_write+0x6c/0xd8
+ __arm64_sys_write+0x18/0x28
+ el0_svc_common.constprop.3+0xe4/0x16c
+ do_el0_svc+0x1c/0x2c
+ el0_svc+0x20/0x30
+ el0_sync_handler+0x80/0x17c
+ el0_sync+0x158/0x180
 
-Fixes: da4d3d6bb9f6 ("iio: adc: ad-sigma-delta: Allow custom IRQ flags")
-Signed-off-by: Alexandru Tachici <alexandru.tachici@analog.com>
-Cc: <Stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210906065630.16325-4-alexandru.tachici@analog.com
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+The reason for this problem is that irq has been disabled in
+machine_restart() and then it calls down_interruptible() in
+virt_efi_reset_system(), which would occur sleep in irq context,
+it is dangerous! Commit 99409b935c9a("locking/semaphore: Add
+might_sleep() to down_*() family") add might_sleep() in
+down_interruptible(), so the bug info is here. down_trylock()
+can solve this problem, cause there is no might_sleep.
+
+--------
+
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Zhang Jianhua <chris.zjh@huawei.com>
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/iio/adc/ad7793.c |    2 +-
+ drivers/firmware/efi/runtime-wrappers.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/iio/adc/ad7793.c
-+++ b/drivers/iio/adc/ad7793.c
-@@ -206,7 +206,7 @@ static const struct ad_sigma_delta_info
- 	.has_registers = true,
- 	.addr_shift = 3,
- 	.read_mask = BIT(6),
--	.irq_flags = IRQF_TRIGGER_LOW,
-+	.irq_flags = IRQF_TRIGGER_FALLING,
- };
- 
- static const struct ad_sd_calib_data ad7793_calib_arr[6] = {
+--- a/drivers/firmware/efi/runtime-wrappers.c
++++ b/drivers/firmware/efi/runtime-wrappers.c
+@@ -414,7 +414,7 @@ static void virt_efi_reset_system(int re
+ 				  unsigned long data_size,
+ 				  efi_char16_t *data)
+ {
+-	if (down_interruptible(&efi_runtime_lock)) {
++	if (down_trylock(&efi_runtime_lock)) {
+ 		pr_warn("failed to invoke the reset_system() runtime service:\n"
+ 			"could not get exclusive access to the firmware\n");
+ 		return;
 
 
