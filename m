@@ -2,67 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A6FB4327F4
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 21:49:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B44A84327FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 21:52:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233182AbhJRTwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 15:52:04 -0400
-Received: from mail-ot1-f47.google.com ([209.85.210.47]:45916 "EHLO
-        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230159AbhJRTwD (ORCPT
+        id S232405AbhJRTyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 15:54:54 -0400
+Received: from mail-oi1-f175.google.com ([209.85.167.175]:43832 "EHLO
+        mail-oi1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230159AbhJRTyx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 15:52:03 -0400
-Received: by mail-ot1-f47.google.com with SMTP id l16-20020a9d6a90000000b0054e7ab56f27so1181065otq.12;
-        Mon, 18 Oct 2021 12:49:51 -0700 (PDT)
+        Mon, 18 Oct 2021 15:54:53 -0400
+Received: by mail-oi1-f175.google.com with SMTP id o4so1304740oia.10;
+        Mon, 18 Oct 2021 12:52:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=21IgNcOzTW10vAg0/6zH/SOZJHt58u5z1E5yUcMpGQ4=;
-        b=RrSUsGhmJQAai5a4GE9/b1DDF70+dDQD/a2VrFclndEw6HYfFKNkH0TOL2eMwu6FWA
-         VP8k0u4aO8Xd5YgI4pcVOPcBCtUHRgfpnBxrFP4PI5/cqea5/b6H9550vZqfSH10WJw7
-         oD19z0N+5lwOWRFacQwEuLf0CTWv7oJ+ojFIvefGhmvw851+RICUw8Ne7p60de7Oa9bx
-         oA16fa79WhvuOWdLKuX0K0O/fjSNqowfth6cQ11IGdP5nepXH0d0CgoQh03ZEnlYKKDo
-         0mHs9ztGFSe4m1cfswQoiDxpDlb7uejuc4OHSCpCOEDVGDyYP6UjK6NIZm9tTDLOC4b2
-         4uZw==
-X-Gm-Message-State: AOAM532OVSYpevh2WAIfWeIqhTtpniQKgrZUcHHz128fByT66FVA+ED0
-        rk6AI98nhTWMyYUEZrl1Og==
-X-Google-Smtp-Source: ABdhPJzvzvwjO4OXfCnPr5/eILTq2Lq4LVXtAin4yo7u1XW3BSDA6T7gghsm8NbySfxKCRuzK53t9A==
-X-Received: by 2002:a05:6830:23a6:: with SMTP id m6mr1567801ots.38.1634586591549;
-        Mon, 18 Oct 2021 12:49:51 -0700 (PDT)
+        bh=Q6I6Sfuna3OD0rMWi1ff5fM0/2M4IWqYf0vFWqx6Q+A=;
+        b=7LrUi5rNaKDoHcJ36oRKf21N6iWE0o1yMQNyJDfyjdAabGtpb6PA2FBUg3TwB4ttdm
+         s75jECfQPgvXaRSEo51rehCxtu2jVJmNguUdGs7xrmQVniXrqeKWbDbyiNBQqWf6yIAm
+         oawpZDSIMCLZFlJ4Y8rRLerk+uusp8g0OOxDfwGaOUVP6zk7XeY1Z+cKmADV5UJZ3Rps
+         UD52W7+6jFLY20zpls3Msc8ejpDynNOXZr/o9AlrCJIU2z8DKBz6g1mC2ebegWEeJewh
+         HSBkoqGLvGt8rQojAE8NbDSlssTKjRd1kaTa1Fu2ONC6WyeUEKHpx8bFPFCcFnBHxciO
+         3+4A==
+X-Gm-Message-State: AOAM530rquAmIudYV0gtwt9zmkN4U8vZFB/UC9BbPa6huzfUiMr5CcsM
+        yLJZ2HQXC5N79/9SeMQ1lw==
+X-Google-Smtp-Source: ABdhPJwhFW+GuJ26cLhKeqsKsQ9+hwRrPd/sK03XOa1Y1uAJZ2hmaXpww4cKe5UJInqGIGsDKIrUkA==
+X-Received: by 2002:aca:ba41:: with SMTP id k62mr720043oif.53.1634586761453;
+        Mon, 18 Oct 2021 12:52:41 -0700 (PDT)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id j8sm2623027ooc.21.2021.10.18.12.49.50
+        by smtp.gmail.com with ESMTPSA id g29sm3136078oic.27.2021.10.18.12.52.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 12:49:51 -0700 (PDT)
-Received: (nullmailer pid 2837570 invoked by uid 1000);
-        Mon, 18 Oct 2021 19:49:50 -0000
-Date:   Mon, 18 Oct 2021 14:49:50 -0500
+        Mon, 18 Oct 2021 12:52:40 -0700 (PDT)
+Received: (nullmailer pid 2842303 invoked by uid 1000);
+        Mon, 18 Oct 2021 19:52:40 -0000
+Date:   Mon, 18 Oct 2021 14:52:40 -0500
 From:   Rob Herring <robh@kernel.org>
-To:     George Song <george.song@maximintegrated.com>
-Cc:     devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
-        steves.lee@maximintegrated.com, broonie@kernel.org,
-        george.song@analog.com, robh+dt@kernel.org,
-        ryans.lee@maximintegrated.com, lgirdwood@gmail.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [v3 1/2] ASoC: dt-bindings: max98520: add initial bindings
-Message-ID: <YW3P3ggca5CinwXH@robh.at.kernel.org>
-References: <20211018083554.5360-1-george.song@maximintegrated.com>
+To:     Vincent Whitchurch <vincent.whitchurch@axis.com>
+Cc:     kernel@axis.com, lars@metafoo.de, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, robh+dt@kernel.org, jic23@kernel.org,
+        devicetree@vger.kernel.org, peda@axentia.se
+Subject: Re: [PATCH v2 2/3] dt-bindings: iio: io-channel-mux: Add property
+ for settle time
+Message-ID: <YW3QiAcIy2wdf3OP@robh.at.kernel.org>
+References: <20211007134641.13417-1-vincent.whitchurch@axis.com>
+ <20211007134641.13417-3-vincent.whitchurch@axis.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211018083554.5360-1-george.song@maximintegrated.com>
+In-Reply-To: <20211007134641.13417-3-vincent.whitchurch@axis.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 18 Oct 2021 17:35:53 +0900, George Song wrote:
-> add initial bindings for max98520 audio amplifier
+On Thu, 07 Oct 2021 15:46:40 +0200, Vincent Whitchurch wrote:
+> Hardware may require some time for the muxed analog signals to settle
+> after the muxing is changed.  Allow this time to be specified in the
+> devicetree.
 > 
-> Signed-off-by: George Song <george.song@maximintegrated.com>
+> Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
 > ---
->  .../bindings/sound/maxim,max98520.yaml        | 36 +++++++++++++++++++
->  1 file changed, 36 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/maxim,max98520.yaml
+>  .../devicetree/bindings/iio/multiplexer/io-channel-mux.yaml  | 5 +++++
+>  1 file changed, 5 insertions(+)
 > 
 
 Reviewed-by: Rob Herring <robh@kernel.org>
