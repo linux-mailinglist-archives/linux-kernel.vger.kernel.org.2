@@ -2,143 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CCC8432207
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 17:08:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DD824321FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 17:07:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232973AbhJRPKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 11:10:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39403 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232873AbhJRPKK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 11:10:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634569678;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=S7tYvoqJuZNp85jt5vuBHAbTrQ0z769O2KLpPImxuDo=;
-        b=YlS1geh7OpzygJtWoG73S0eIAXEbgernx3EppshiS8UKqRvftM8BamEg5+EdS2AbwJTr/h
-        Ea9JdEDKFJiwwYtQcznwNsQKV0jtZaHACc2iYwJNJVg1b8TFD2vE4hmNeSXLtlEtu1cy8W
-        HMP37FO7LvPuC2OOuCLxqMIJi8KULRw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-593-02JGHUnMOKqBhV6EK9P_0g-1; Mon, 18 Oct 2021 11:07:52 -0400
-X-MC-Unique: 02JGHUnMOKqBhV6EK9P_0g-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 847E780A5C0;
-        Mon, 18 Oct 2021 15:07:50 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.36.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1CB6C5DF56;
-        Mon, 18 Oct 2021 15:06:59 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH 59/67] NFS: Convert fscache_enable_cookie and
- fscache_disable_cookie
-From:   David Howells <dhowells@redhat.com>
-To:     linux-cachefs@redhat.com
-Cc:     Dave Wysochanski <dwysocha@redhat.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        linux-nfs@vger.kernel.org, dhowells@redhat.com,
-        Trond Myklebust <trondmy@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Jeff Layton <jlayton@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Omar Sandoval <osandov@osandov.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org,
-        linux-cifs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Mon, 18 Oct 2021 16:06:59 +0100
-Message-ID: <163456961924.2614702.6166404296569864407.stgit@warthog.procyon.org.uk>
-In-Reply-To: <163456861570.2614702.14754548462706508617.stgit@warthog.procyon.org.uk>
-References: <163456861570.2614702.14754548462706508617.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        id S233103AbhJRPJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 11:09:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49016 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232957AbhJRPJa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 11:09:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E3F160EE9;
+        Mon, 18 Oct 2021 15:07:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1634569638;
+        bh=Md59R3ONCqA6DyDyeTDd7ISrl7eVjopr9ACmL5mS5tk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=1ZZaMCSaxdA/CIeNTvKesceOkoRJZ87xNoKPvQoF8AveNgeVspamgtqXWe1yCMreq
+         I3Dq7US8r58YjLqbew9KPUtpligOiMeuMby3n7CY5KW/XzxRMjZBj6q1MjMfn0wwd/
+         uNrQUjj7rpMLfURLpLjV4OiboBqfd3geSPV/i+DU=
+Date:   Mon, 18 Oct 2021 17:07:16 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Yang Yingliang <yangyingliang@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        balbi@kernel.org
+Subject: Re: [PATCH] usb: phy: isp1301: add release func to dev to avoid
+ memory leak
+Message-ID: <YW2NpDG6hGJk4UR9@kroah.com>
+References: <20211015051624.1655193-1-yangyingliang@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211015051624.1655193-1-yangyingliang@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dave Wysochanski <dwysocha@redhat.com>
+On Fri, Oct 15, 2021 at 01:16:24PM +0800, Yang Yingliang wrote:
+> After calling usb_add_phy_dev(), client->dev.type will be changed
+> to 'usb_pyh_dev_type', the release() func is null, it cause the
+> following WARNING:
+> 
+> Device '1-001c' does not have a release() function, it is broken and must be fixed. See Documentation/core-api/kobject.rst.
+> WARNING: CPU: 1 PID: 405 at device_release+0x1b7/0x240
+> Call Trace:
+>  kobject_put+0x1e5/0x540
+>  device_unregister+0x35/0xc0
+>  i2c_unregister_device+0x114/0x1f0
+> 
+> It cause 'client' leaked which is allocated in i2c_new_client_device():
+> 
+> unreferenced object 0xffff88800670b000 (size 2048):
+>   comm "xrun", pid 429, jiffies 4294946742 (age 235.248s)
+>   hex dump (first 32 bytes):
+>     00 00 1c 00 69 73 70 31 33 30 31 00 00 00 00 00  ....isp1301.....
+>     00 00 00 00 00 00 00 00 c0 e4 17 c1 ff ff ff ff  ................
+>   backtrace:
+>     [<00000000a4641100>] kmem_cache_alloc_trace+0x186/0x2b0
+>     [<00000000d9d933e7>] i2c_new_client_device+0x56/0xb40
+>     [<000000007255bed2>] new_device_store+0x1f4/0x410
+> 
+> So add release func to dev to avoid this memory leak.
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Fixes: 790d3a5ab6e36 ("usb: phy: isp1301: give it a context structure")
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+> ---
+>  drivers/usb/phy/phy-isp1301.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/usb/phy/phy-isp1301.c b/drivers/usb/phy/phy-isp1301.c
+> index ad3d57f1c273..04f005572484 100644
+> --- a/drivers/usb/phy/phy-isp1301.c
+> +++ b/drivers/usb/phy/phy-isp1301.c
+> @@ -111,6 +111,7 @@ static int isp1301_probe(struct i2c_client *client,
+>  	phy->init = isp1301_phy_init;
+>  	phy->set_vbus = isp1301_phy_set_vbus;
+>  	phy->type = USB_PHY_TYPE_USB2;
+> +	client->dev.release = client->dev.type->release;
 
-The new FS-Cache API removes the fscache_enable_cookie() and
-fscache_disable_cookie() in favor of the new APIs
-fscache_use_cookie() and fscache_unuse_cookie(), so update these
-areas as needed.
+messing with a release pointer is almost never a good idea, and a sign
+that something is really wrong.
 
-For NFS, we enable fscache on an inode only if the inode is open
-readonly and not if the inode is open for write.  Use the new
-APIs and change the existing logic slightly and make a decision
-whether to "use" an inode based fscache cookie one time, by gating
-the call to fscache_use_cookie() and fscache_unuse_cookie()
-by the NFS_INO_FSCACHE flag on the nfs_inode.
+Why is the type not set properly here so as to get the correct release
+callback when the device is created?  Why do you have to manually change
+this now after the fact?
 
-Signed-off-by: Dave Wysochanski <dwysocha@redhat.com>
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: Trond Myklebust <trond.myklebust@hammerspace.com>
-cc: Anna Schumaker <anna.schumaker@netapp.com>
-cc: linux-nfs@vger.kernel.org
----
+thanks,
 
- fs/nfs/fscache.c |   24 +++++++++++++-----------
- 1 file changed, 13 insertions(+), 11 deletions(-)
-
-diff --git a/fs/nfs/fscache.c b/fs/nfs/fscache.c
-index 514d50d079a2..5e584f2e84a9 100644
---- a/fs/nfs/fscache.c
-+++ b/fs/nfs/fscache.c
-@@ -285,7 +285,10 @@ void nfs_fscache_clear_inode(struct inode *inode)
- 
- 	dfprintk(FSCACHE, "NFS: clear cookie (0x%p/0x%p)\n", nfsi, cookie);
- 
--	nfs_fscache_update_auxdata(&auxdata, nfsi);
-+	if (test_and_clear_bit(NFS_INO_FSCACHE, &NFS_I(inode)->flags)) {
-+		nfs_fscache_update_auxdata(&auxdata, nfsi);
-+		fscache_unuse_cookie(cookie, &auxdata, NULL);
-+	}
- 	fscache_relinquish_cookie(cookie, false);
- 	nfsi->fscache = NULL;
- }
-@@ -325,18 +328,17 @@ void nfs_fscache_open_file(struct inode *inode, struct file *filp)
- 	if (!fscache_cookie_valid(cookie))
- 		return;
- 
--	nfs_fscache_update_auxdata(&auxdata, nfsi);
--
- 	if (inode_is_open_for_write(inode)) {
--		dfprintk(FSCACHE, "NFS: nfsi 0x%p disabling cache\n", nfsi);
--		clear_bit(NFS_INO_FSCACHE, &nfsi->flags);
--		fscache_disable_cookie(cookie, &auxdata, true);
-+		if (test_and_clear_bit(NFS_INO_FSCACHE, &nfsi->flags)) {
-+			dfprintk(FSCACHE, "NFS: nfsi 0x%p disabling cache\n", nfsi);
-+			nfs_fscache_update_auxdata(&auxdata, nfsi);
-+			fscache_unuse_cookie(cookie, &auxdata, NULL);
-+		}
- 	} else {
--		dfprintk(FSCACHE, "NFS: nfsi 0x%p enabling cache\n", nfsi);
--		fscache_enable_cookie(cookie, &auxdata, nfsi->vfs_inode.i_size,
--				      nfs_fscache_can_enable, inode);
--		if (fscache_cookie_enabled(cookie))
--			set_bit(NFS_INO_FSCACHE, &NFS_I(inode)->flags);
-+		if (!test_and_set_bit(NFS_INO_FSCACHE, &nfsi->flags)) {
-+			dfprintk(FSCACHE, "NFS: nfsi 0x%p enabling cache\n", nfsi);
-+			fscache_use_cookie(cookie, false);
-+		}
- 	}
- }
- EXPORT_SYMBOL_GPL(nfs_fscache_open_file);
-
-
+greg k-h
