@@ -2,204 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF1BD4321F3
+	by mail.lfdr.de (Postfix) with ESMTP id 42DC14321F2
 	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 17:07:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231676AbhJRPJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 11:09:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56790 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233162AbhJRPJA (ORCPT
+        id S233188AbhJRPJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 11:09:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24034 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233084AbhJRPIE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 11:09:00 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E281C061771
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 08:06:38 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 67-20020a1c1946000000b0030d4c90fa87so254358wmz.2
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 08:06:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2lpX8MzHrofB767bBYDr4EpmpygqZoVr7h7+rRjUfhk=;
-        b=IasgMAV6elCuzOLnYMKqhANSzWVEPIhSizJDwNbvzrKq1kU1xnURIlII5tsZDotTWu
-         mViYQeckGsLA8b+2lieuSLvz/wyUpK9ePCEo3yjNzXLC37+pTSFAMuEhnL6YpJdeCwRE
-         h7srdipUdcG4ZUVNV/vHbcKSXq4ZEt1L6ufKNmBubuKwtfraSnD+pzMpFTLu+CENm09X
-         fo9/aWJvbaYD7ez9zdGI27DpLcDTjCtvyP7yZAYfEBWKfa0SC91hL6WKIcQEc/ESeZUe
-         RD70Omx2GzeWhnhz7n9+uiU51QWf04XFddYw3LL+tNSwIYjwawZr5O5rzjeEOK50r5KD
-         NUsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2lpX8MzHrofB767bBYDr4EpmpygqZoVr7h7+rRjUfhk=;
-        b=RDbYqM69mnkKAHmR4NIL6t97GZHbcoMBPVWL4yo14ZHY80jGVx61iwzOPypXWYZuKl
-         6+HEJAYp67s3XYmymCfvxNiEs4AuWmOsDcUF6DoagfYYLHRimCU2sK9xBVM5EApdCO5f
-         TJcEULZcbvl1DxpgrEDrF0TCVXfhLm1nSv9l7BxhmKhZ45QVr99mPrXqv8B/EJEDyJ70
-         YprvHHsflfBEO6GIsuS0Xan8Vgu7L5aHPmUo/kUnJ21fQn2+g30RLFL9yXtUORjxxmCS
-         Zb1goljAKki+LrELFIVLAqdvK1bNPMCq8rHhBBt2+9mrB8C5Fgz6oZ4w9YbuSI/j1vKA
-         UC+A==
-X-Gm-Message-State: AOAM533nFIo/IE5Lw07nQ17PjzsFVLrGTNvq33S1+U6ttMlANlkWOfEW
-        MtTv8G0IXR/mmpoqH/8b+3U5zBd87zdDZTzL
-X-Google-Smtp-Source: ABdhPJy1+lA+Qhlp5oMGMVMjJUVdoRviC1k/IeyjpzGcdZwcvl8Md958DtDadR24K29v7y06hFaJ3Q==
-X-Received: by 2002:a1c:2b81:: with SMTP id r123mr22101493wmr.136.1634569596688;
-        Mon, 18 Oct 2021 08:06:36 -0700 (PDT)
-Received: from localhost.localdomain ([2a01:4b00:f411:e700:e085:8cb7:7bf6:5d62])
-        by smtp.gmail.com with ESMTPSA id u13sm4543646wri.50.2021.10.18.08.06.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 08:06:36 -0700 (PDT)
-From:   Karolina Drobnik <karolinadrobnik@gmail.com>
-To:     outreachy-kernel@googlegroups.com
-Cc:     gregkh@linuxfoundation.org, forest@alittletooquiet.net,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Karolina Drobnik <karolinadrobnik@gmail.com>
-Subject: [PATCH] staging: vt6655: Fix line wrapping in rf.c file
-Date:   Mon, 18 Oct 2021 16:05:26 +0100
-Message-Id: <20211018150526.9718-1-karolinadrobnik@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        Mon, 18 Oct 2021 11:08:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634569552;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XmPiML3uG821PVI2wOxhR6XbrMl1/IZxCyEQC1pxf2Y=;
+        b=ENfz0Zn9mMlpH1mN+z0c8hP3NNyQv0VwUN7ow3AsrhChfANBiCpBJfYvG7deL2mKaAVy7x
+        EVbqd/6OosVmRF6e3trl0N/qheO8rmgx0pQ8FuemqB9Eq9ZIWA7zHe/5aEV+kIsoBLkWPo
+        giI1+vyp3kTQtpmwnDN9og2gNYy1cGI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-221-gvU46tYSPJWxM_EDE4T5Qw-1; Mon, 18 Oct 2021 11:05:49 -0400
+X-MC-Unique: gvU46tYSPJWxM_EDE4T5Qw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 14C6480DDE4;
+        Mon, 18 Oct 2021 15:05:47 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.33.36.19])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 97529100E809;
+        Mon, 18 Oct 2021 15:05:33 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+Subject: [PATCH 56/67] afs: Make afs_write_begin() return the THP subpage
+From:   David Howells <dhowells@redhat.com>
+To:     linux-cachefs@redhat.com
+Cc:     dhowells@redhat.com, Trond Myklebust <trondmy@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Jeff Layton <jlayton@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Omar Sandoval <osandov@osandov.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org,
+        linux-cifs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        v9fs-developer@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Mon, 18 Oct 2021 16:05:32 +0100
+Message-ID: <163456953268.2614702.4818196302635334339.stgit@warthog.procyon.org.uk>
+In-Reply-To: <163456861570.2614702.14754548462706508617.stgit@warthog.procyon.org.uk>
+References: <163456861570.2614702.14754548462706508617.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix line length warnings raised by checkpatch.pl in
-rf.c file for `RFvWriteWakeProgSyn`,`RFbRawSetPower`
-and `RFbAL7230SelectChannelPostProcess`functions.
+generic_perform_write() can't handle a THP, so we have to return the
+subpage of that THP from afs_write_begin() and then convert it back into
+the head on entry to afs_write_end().
 
-Signed-off-by: Karolina Drobnik <karolinadrobnik@gmail.com>
+Signed-off-by: David Howells <dhowells@redhat.com>
 ---
- drivers/staging/vt6655/rf.c | 66 +++++++++++++++++++++++++++----------
- 1 file changed, 49 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/staging/vt6655/rf.c b/drivers/staging/vt6655/rf.c
-index a6f17162d017..206d34b555bc 100644
---- a/drivers/staging/vt6655/rf.c
-+++ b/drivers/staging/vt6655/rf.c
-@@ -699,11 +699,17 @@ bool RFvWriteWakeProgSyn(struct vnt_private *priv, unsigned char byRFType,
- 			return false;
- 
- 		for (ii = 0; ii < CB_AL2230_INIT_SEQ; ii++)
--			MACvSetMISCFifo(priv, (unsigned short)(MISCFIFO_SYNDATA_IDX + ii), dwAL2230InitTable[ii]);
-+			MACvSetMISCFifo(priv,
-+					(unsigned short)(MISCFIFO_SYNDATA_IDX + ii),
-+					dwAL2230InitTable[ii]);
- 
--		MACvSetMISCFifo(priv, (unsigned short)(MISCFIFO_SYNDATA_IDX + ii), dwAL2230ChannelTable0[uChannel - 1]);
-+		MACvSetMISCFifo(priv,
-+				(unsigned short)(MISCFIFO_SYNDATA_IDX + ii),
-+				dwAL2230ChannelTable0[uChannel - 1]);
- 		ii++;
--		MACvSetMISCFifo(priv, (unsigned short)(MISCFIFO_SYNDATA_IDX + ii), dwAL2230ChannelTable1[uChannel - 1]);
-+		MACvSetMISCFifo(priv,
-+				(unsigned short)(MISCFIFO_SYNDATA_IDX + ii),
-+				dwAL2230ChannelTable1[uChannel - 1]);
- 		break;
- 
- 		/* Need to check, PLLON need to be low for channel setting */
-@@ -716,17 +722,28 @@ bool RFvWriteWakeProgSyn(struct vnt_private *priv, unsigned char byRFType,
- 
- 		if (uChannel <= CB_MAX_CHANNEL_24G) {
- 			for (ii = 0; ii < CB_AL7230_INIT_SEQ; ii++)
--				MACvSetMISCFifo(priv, (unsigned short)(MISCFIFO_SYNDATA_IDX + ii), dwAL7230InitTable[ii]);
-+				MACvSetMISCFifo(priv,
-+						(unsigned short)(MISCFIFO_SYNDATA_IDX
-+						+ ii), dwAL7230InitTable[ii]);
- 		} else {
- 			for (ii = 0; ii < CB_AL7230_INIT_SEQ; ii++)
--				MACvSetMISCFifo(priv, (unsigned short)(MISCFIFO_SYNDATA_IDX + ii), dwAL7230InitTableAMode[ii]);
-+				MACvSetMISCFifo(priv,
-+						(unsigned short)(MISCFIFO_SYNDATA_IDX
-+						+ ii),
-+					dwAL7230InitTableAMode[ii]);
- 		}
- 
--		MACvSetMISCFifo(priv, (unsigned short)(MISCFIFO_SYNDATA_IDX + ii), dwAL7230ChannelTable0[uChannel - 1]);
-+		MACvSetMISCFifo(priv,
-+				(unsigned short)(MISCFIFO_SYNDATA_IDX + ii),
-+				dwAL7230ChannelTable0[uChannel - 1]);
- 		ii++;
--		MACvSetMISCFifo(priv, (unsigned short)(MISCFIFO_SYNDATA_IDX + ii), dwAL7230ChannelTable1[uChannel - 1]);
-+		MACvSetMISCFifo(priv,
-+				(unsigned short)(MISCFIFO_SYNDATA_IDX + ii),
-+				dwAL7230ChannelTable1[uChannel - 1]);
- 		ii++;
--		MACvSetMISCFifo(priv, (unsigned short)(MISCFIFO_SYNDATA_IDX + ii), dwAL7230ChannelTable2[uChannel - 1]);
-+		MACvSetMISCFifo(priv,
-+				(unsigned short)(MISCFIFO_SYNDATA_IDX + ii),
-+				dwAL7230ChannelTable2[uChannel - 1]);
- 		break;
- 
- 	case RF_NOTHING:
-@@ -736,7 +753,8 @@ bool RFvWriteWakeProgSyn(struct vnt_private *priv, unsigned char byRFType,
- 		return false;
+ fs/afs/write.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/fs/afs/write.c b/fs/afs/write.c
+index 281f0e93e2c6..5cd417e95029 100644
+--- a/fs/afs/write.c
++++ b/fs/afs/write.c
+@@ -90,7 +90,7 @@ int afs_write_begin(struct file *file, struct address_space *mapping,
+ 			goto flush_conflicting_write;
  	}
  
--	MACvSetMISCFifo(priv, MISCFIFO_SYNINFO_IDX, (unsigned long)MAKEWORD(bySleepCount, byInitCount));
-+	MACvSetMISCFifo(priv, MISCFIFO_SYNINFO_IDX,
-+			(unsigned long)MAKEWORD(bySleepCount, byInitCount));
+-	*_page = page;
++	*_page = find_subpage(page, pos / PAGE_SIZE);
+ 	_leave(" = 0");
+ 	return 0;
  
- 	return true;
- }
-@@ -836,20 +854,32 @@ bool RFbRawSetPower(struct vnt_private *priv, unsigned char byPwr,
- 	case RF_AIROHA:
- 		ret &= IFRFbWriteEmbedded(priv, dwAL2230PowerTable[byPwr]);
- 		if (rate <= RATE_11M)
--			ret &= IFRFbWriteEmbedded(priv, 0x0001B400 + (BY_AL2230_REG_LEN << 3) + IFREGCTL_REGW);
-+			ret &= IFRFbWriteEmbedded(priv, 0x0001B400
-+					+ (BY_AL2230_REG_LEN << 3)
-+					+ IFREGCTL_REGW);
- 		else
--			ret &= IFRFbWriteEmbedded(priv, 0x0005A400 + (BY_AL2230_REG_LEN << 3) + IFREGCTL_REGW);
-+			ret &= IFRFbWriteEmbedded(priv, 0x0005A400
-+					+ (BY_AL2230_REG_LEN << 3)
-+					+ IFREGCTL_REGW);
- 
- 		break;
- 
- 	case RF_AL2230S:
- 		ret &= IFRFbWriteEmbedded(priv, dwAL2230PowerTable[byPwr]);
- 		if (rate <= RATE_11M) {
--			ret &= IFRFbWriteEmbedded(priv, 0x040C1400 + (BY_AL2230_REG_LEN << 3) + IFREGCTL_REGW);
--			ret &= IFRFbWriteEmbedded(priv, 0x00299B00 + (BY_AL2230_REG_LEN << 3) + IFREGCTL_REGW);
-+			ret &= IFRFbWriteEmbedded(priv, 0x040C1400
-+					+ (BY_AL2230_REG_LEN << 3)
-+					+ IFREGCTL_REGW);
-+			ret &= IFRFbWriteEmbedded(priv, 0x00299B00
-+					+ (BY_AL2230_REG_LEN << 3)
-+					+ IFREGCTL_REGW);
- 		} else {
--			ret &= IFRFbWriteEmbedded(priv, 0x0005A400 + (BY_AL2230_REG_LEN << 3) + IFREGCTL_REGW);
--			ret &= IFRFbWriteEmbedded(priv, 0x00099B00 + (BY_AL2230_REG_LEN << 3) + IFREGCTL_REGW);
-+			ret &= IFRFbWriteEmbedded(priv, 0x0005A400
-+					+ (BY_AL2230_REG_LEN << 3)
-+					+ IFREGCTL_REGW);
-+			ret &= IFRFbWriteEmbedded(priv, 0x00099B00
-+					+ (BY_AL2230_REG_LEN << 3)
-+					+ IFREGCTL_REGW);
- 		}
- 
- 		break;
-@@ -921,7 +951,8 @@ bool RFbAL7230SelectChannelPostProcess(struct vnt_private *priv,
- 	 * register
- 	 * Channel Index 1~14
- 	 */
--	if ((byOldChannel <= CB_MAX_CHANNEL_24G) && (byNewChannel > CB_MAX_CHANNEL_24G)) {
-+	if ((byOldChannel <= CB_MAX_CHANNEL_24G) &&
-+	    (byNewChannel > CB_MAX_CHANNEL_24G)) {
- 		/* Change from 2.4G to 5G [Reg] */
- 		ret &= IFRFbWriteEmbedded(priv, dwAL7230InitTableAMode[2]);
- 		ret &= IFRFbWriteEmbedded(priv, dwAL7230InitTableAMode[3]);
-@@ -930,7 +961,8 @@ bool RFbAL7230SelectChannelPostProcess(struct vnt_private *priv,
- 		ret &= IFRFbWriteEmbedded(priv, dwAL7230InitTableAMode[10]);
- 		ret &= IFRFbWriteEmbedded(priv, dwAL7230InitTableAMode[12]);
- 		ret &= IFRFbWriteEmbedded(priv, dwAL7230InitTableAMode[15]);
--	} else if ((byOldChannel > CB_MAX_CHANNEL_24G) && (byNewChannel <= CB_MAX_CHANNEL_24G)) {
-+	} else if ((byOldChannel > CB_MAX_CHANNEL_24G) &&
-+		   (byNewChannel <= CB_MAX_CHANNEL_24G)) {
- 		/* Change from 5G to 2.4G [Reg] */
- 		ret &= IFRFbWriteEmbedded(priv, dwAL7230InitTable[2]);
- 		ret &= IFRFbWriteEmbedded(priv, dwAL7230InitTable[3]);
--- 
-2.30.2
+@@ -120,9 +120,10 @@ int afs_write_begin(struct file *file, struct address_space *mapping,
+  */
+ int afs_write_end(struct file *file, struct address_space *mapping,
+ 		  loff_t pos, unsigned len, unsigned copied,
+-		  struct page *page, void *fsdata)
++		  struct page *subpage, void *fsdata)
+ {
+ 	struct afs_vnode *vnode = AFS_FS_I(file_inode(file));
++	struct page *page = thp_head(subpage);
+ 	unsigned long priv;
+ 	unsigned int f, from = offset_in_thp(page, pos);
+ 	unsigned int t, to = from + copied;
+
 
