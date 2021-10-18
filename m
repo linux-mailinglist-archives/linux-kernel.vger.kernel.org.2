@@ -2,82 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56B3C43243F
+	by mail.lfdr.de (Postfix) with ESMTP id CC9C1432440
 	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 18:53:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233771AbhJRQzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 12:55:03 -0400
-Received: from mail-ot1-f41.google.com ([209.85.210.41]:37644 "EHLO
-        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231898AbhJRQzC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S233799AbhJRQzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 12:55:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52854 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232858AbhJRQzC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 18 Oct 2021 12:55:02 -0400
-Received: by mail-ot1-f41.google.com with SMTP id b4-20020a9d7544000000b00552ab826e3aso656606otl.4;
-        Mon, 18 Oct 2021 09:52:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=idu8zupzi5pS6hzrp6ynbXD+bkwdw463mG6haC2JAek=;
-        b=5T882RbW3mpWUormkWZjATfXARbYWVdPZUVnPlsRBwcrOaE+ZgpO/D8TY4Z62PhQpX
-         ANRJPNDBpxpPRZnAWrv96WJ26czU5J79UkjT9O/U5jh63Tru3zfXi/JQlg5k4Ywe2PUb
-         fYcmivTlTt+ny3SxJSVaNG2s3oMznYz1GUwYYuMTAyajc31k1PlFbh0P3nUTW6lUeQrr
-         NSoNUjElnEBA/EG62507qTTrPybwKOFqkaQ619ef8LDvc/JgbQVsjgfpU0E9Y3B2WDuK
-         lSvfgbpfTq1Xs/CNn/BnRcf5s5ePppQtBdlVY3k0XvtZccCrC4wLplhqmf3LXO+2iT2X
-         3lwg==
-X-Gm-Message-State: AOAM533K0uX28Dt1XNQ68bLZsgqf6WYWyjqz7x9fJceuuE33iLC21Nyw
-        j0iBUhcRoaGtB6zqoRvi01l0Gd3pLQ==
-X-Google-Smtp-Source: ABdhPJz0+k4rUOqUbyRuu+ug+/6QUcJdyhzNhXGmSejnHwnXvXsuF7ooaa0TCLUvpU2W5ORWSeifhA==
-X-Received: by 2002:a05:6830:19c2:: with SMTP id p2mr790868otp.27.1634575970518;
-        Mon, 18 Oct 2021 09:52:50 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id c4sm2555623ook.5.2021.10.18.09.52.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 09:52:49 -0700 (PDT)
-Received: (nullmailer pid 2547973 invoked by uid 1000);
-        Mon, 18 Oct 2021 16:52:48 -0000
-Date:   Mon, 18 Oct 2021 11:52:48 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Olivier Moysan <olivier.moysan@foss.st.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Jonathan Cameron <jic23@kernel.org>,
-        linux-kernel@vger.kernel.org,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Rob Herring <robh+dt@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        linux-iio@vger.kernel.org,
-        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v5 1/7] dt-bindings: iio: stm32-adc: add generic channel
- binding
-Message-ID: <YW2mYKpWSPzGvzUa@robh.at.kernel.org>
-References: <20211014131228.4692-1-olivier.moysan@foss.st.com>
- <20211014131228.4692-2-olivier.moysan@foss.st.com>
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B872B61002;
+        Mon, 18 Oct 2021 16:52:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634575971;
+        bh=2RnLVqd6pLkU1SLhNQPNfmrkvEPcx9yjWWBquEj6IPU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=eO7cuTwltqOxrCsPmDuKjTgRls5MGgxOTFZ1HDRMpNUIo8f4FXSBMQ3rGatQ6jRqf
+         mSbBvVVTl2GKUsn4RhXHX2u8EiGUV1QChkp+dQ0asNI/55i09TMJpiM48gQpUNcLDt
+         u42MgvFZeH6lM2cc17nWar6k4AT5rcFg2/7pCS+cNnLKAnOnypoL2BfBgArBqqDRs2
+         QLsXotOaDvdX/vsHnupMNksmWXmo4uv/J/k24yMoMGjw/aN8MdycYM/MZ5/G7t8yVd
+         mkn7n8cu09OXv+9Ha3D7WH78ABh5VmRsOQgHdGXBK5I4W2RtU4SfRuIs4lequZRZNc
+         /l8FsZqcNMMNA==
+Date:   Mon, 18 Oct 2021 09:52:49 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Francesco Dolcini <francesco.dolcini@toradex.com>
+Cc:     f.fainelli@gmail.com, Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        christophe.leroy@csgroup.eu, Stefan Agner <stefan@agner.ch>,
+        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] phy: micrel: ksz8041nl: do not use power down
+ mode
+Message-ID: <20211018095249.1219ddaf@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20211018094256.70096-1-francesco.dolcini@toradex.com>
+References: <20211018094256.70096-1-francesco.dolcini@toradex.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211014131228.4692-2-olivier.moysan@foss.st.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Oct 2021 15:12:22 +0200, Olivier Moysan wrote:
-> Add ADC generic channel binding. This binding should
-> be used as an alternate to legacy channel properties
-> whenever possible.
-> ADC generic channel binding allows to identify supported
-> internal channels through the following reserved label names:
-> "vddcore", "vrefint" and "vbat".
-> This binding also allows to set a different sampling time
-> for each channel.
+On Mon, 18 Oct 2021 11:42:58 +0200 Francesco Dolcini wrote:
+> From: Stefan Agner <stefan@agner.ch>
 > 
-> Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
-> Reviewed-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-> ---
->  .../bindings/iio/adc/st,stm32-adc.yaml        | 100 ++++++++++++++++--
->  1 file changed, 93 insertions(+), 7 deletions(-)
+> Some Micrel KSZ8041NL PHY chips exhibit continous RX errors after using
+> the power down mode bit (0.11). If the PHY is taken out of power down
+> mode in a certain temperature range, the PHY enters a weird state which
+> leads to continously reporting RX errors. In that state, the MAC is not
+> able to receive or send any Ethernet frames and the activity LED is
+> constantly blinking. Since Linux is using the suspend callback when the
+> interface is taken down, ending up in that state can easily happen
+> during a normal startup.
 > 
+> Micrel confirmed the issue in errata DS80000700A [*], caused by abnormal
+> clock recovery when using power down mode. Even the latest revision (A4,
+> Revision ID 0x1513) seems to suffer that problem, and according to the
+> errata is not going to be fixed.
+> 
+> Remove the suspend/resume callback to avoid using the power down mode
+> completely.
+> 
+> [*] https://ww1.microchip.com/downloads/en/DeviceDoc/80000700A.pdf
+> 
+> Signed-off-by: Stefan Agner <stefan@agner.ch>
+> Acked-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>
+> Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Is this the correct fixes tag?
+
+Fixes: 1a5465f5d6a2 ("phy/micrel: Add suspend/resume support to Micrel PHYs")
+
+Should we leave a comment in place of the callbacks referring 
+to the errata?
