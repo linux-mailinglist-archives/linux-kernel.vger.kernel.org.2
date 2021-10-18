@@ -2,90 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9E7943162C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 12:32:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DD94431629
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 12:32:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230438AbhJRKe4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 06:34:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49624 "EHLO
+        id S230375AbhJRKed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 06:34:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229590AbhJRKez (ORCPT
+        with ESMTP id S229491AbhJRKec (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 06:34:55 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67AC9C06161C;
-        Mon, 18 Oct 2021 03:32:44 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id ec8so69275522edb.6;
-        Mon, 18 Oct 2021 03:32:44 -0700 (PDT)
+        Mon, 18 Oct 2021 06:34:32 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36E54C06161C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 03:32:21 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id b189-20020a1c1bc6000000b0030da052dd4fso8056637wmb.3
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 03:32:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=D9oymfw+4Q4EUp1uQeLx3eQf8ONEX3UXuex+M2PDNds=;
-        b=TLcNuIRaSirV40yLnD2LydRRcHu8A7AjPD2HK+FHjwSJo6gUjyVbnCHhI+jqYN5RHD
-         hkCMWchYgbxajYsDhGhlt+CrkPWAfPxDijb1YMP8TC4k66Lx3suov6MuVE2m6gqduHu4
-         HQw58B/cY+yxTP5mypeRaeBTMdb+71GzckWUcwZkKm8FzfBeisuR4z7UzrFk1Qxd40aa
-         ZjYjX7KnlkdUNu7tvfNb0IuxpwokrP8x2o9uh+nKkQN+Xzlg0YmGVfrnBGs9wTsQiEhe
-         P8H9+ue4Cm8oMKZscaVPV7q69ZkBWWu6qbjGr2qabtJ+q2uyojF786MvSTQ+A0lykdhy
-         CjUg==
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Gy0sHksnt+PEnqqXO6xICRTdN60Lc9eTfBQpwKge7yw=;
+        b=O4of8n6X9NBPN4KWNWUJs/0mWzTc116qBuKDx3ncFthvjhtsyL5DV2kBO0oVRG2oIh
+         R23RzUj3/dJp4qwHQHvuk/y2x51na6lRlbVwxnC+9CRpBOCwDAH4UlgfsJbVmB2x5lRg
+         G2j+W0EWHRCCZkLvZP6GgzrSINGeENXTpyB0hfVC98NkB9ys1AwlyGsqdfPTfp4b0JkN
+         y5IHHrIP08Poykj/HOb4KUgeMZLIBJ66URZVb6eYlcauxcx9uNn0wIvWtyoNmHgmuqPj
+         7OosgV3O9JTZndiBJb0m0eNQEc5ibTOxG49zYgd1cERqKbT87xl5CKEuPRsyq6VOnQv9
+         fJ0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=D9oymfw+4Q4EUp1uQeLx3eQf8ONEX3UXuex+M2PDNds=;
-        b=kTQ1IW+bwqnX3OYsdBVQnfu/MO8VYKQ5o8EEtBHOHi+nkYjclnGXtEZ24yjZ1zyZyI
-         KKOyGSUZEqAHNPUdqDaA+VCCaoPHf4orQ9jv4d5ifygM5Kw2fZTn+gTEbms8ZBDBF5M7
-         43BRUWI+lPzsm4gtxV49E2BX03wi6/OeKMRa9e6Hq67roDfb2MAH6V2YhmcyeLwyxnFR
-         dOX3bqPc9EKOZc60op+qfM5lq6SsO6giFHM1Pvo25g9jxa3UjoPKiwS7fYjy9F26hMhW
-         0zRHs1ATrcPVIM5PzCAViEqfFEq1x9hppXAjKWpPCUf8OjleLI7tiRj8VmtHHrDxCalz
-         afNQ==
-X-Gm-Message-State: AOAM531GnxOiGwnsXpWi42moARVQNw7MNMKtL1YfztoJsxXjIyn9S2r6
-        Rca2oRVi47wjDxJ0wWVZwdls38NB7r69bbItzWU=
-X-Google-Smtp-Source: ABdhPJzkUhCoOFoa940+tHJH4mn3FIsJ2GpQaTuZz+KSQGvDqGpJYQy6Yc7e5QGMdefJ2ExRxqsor1ZTneugg4ohpCA=
-X-Received: by 2002:a50:e188:: with SMTP id k8mr44898028edl.119.1634553162983;
- Mon, 18 Oct 2021 03:32:42 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Gy0sHksnt+PEnqqXO6xICRTdN60Lc9eTfBQpwKge7yw=;
+        b=dIfIiANwNDlpkItJ/foXt8FW9aVzt6/8AJBxLF30eT+VrCCdbOCNLC4YtcLUsva6G8
+         qoz+lOU2m+b2EOE+U7d0icTsu1Uzx1nKGAU99j4EqM5mca4M+/fQ+Vxmq1N9pIVwH8/a
+         ailwNHd/ytY4OVsCKZIogGzaHaQvry3M/RyYn11AE8u6r7wLjBD5qYWPQ45rkgOKGTCA
+         oy9wbNDW35hxtcI8bptstWh5hR50Fv/mkuHwSvU8zwtmyHOaB+rrurkrJndqRWrS4++r
+         AnX6m+y8ZWP0COr5iKIbG8Be+hV2mmuUJsRw9lsYzHHRvZn6PuOmoehXGH2C8HHhljbz
+         9PAg==
+X-Gm-Message-State: AOAM531LIbS5QMF8iMmOlpmYfB4PrGylDqunO/0+YQrwuccGE9XMf21m
+        6uSKn9d48mZeB8q3b19caevJyA==
+X-Google-Smtp-Source: ABdhPJz+FBDbOuFngAsn1vKBnLFL7clNmJbT3DoPREC11e6c1F2lUuWQ/TmDO8FETn0vXuk/SALxwg==
+X-Received: by 2002:a1c:1d13:: with SMTP id d19mr29804562wmd.190.1634553139612;
+        Mon, 18 Oct 2021 03:32:19 -0700 (PDT)
+Received: from google.com ([2a00:79e0:d:210:ba81:6f1b:ab2e:f120])
+        by smtp.gmail.com with ESMTPSA id d24sm11609621wmb.35.2021.10.18.03.32.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Oct 2021 03:32:19 -0700 (PDT)
+Date:   Mon, 18 Oct 2021 11:32:13 +0100
+From:   Quentin Perret <qperret@google.com>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Fuad Tabba <tabba@google.com>,
+        David Brazdil <dbrazdil@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, kernel-team@android.com
+Subject: Re: [PATCH 16/16] KVM: arm64: pkvm: Unshare guest structs during
+ teardown
+Message-ID: <YW1NLb9Pn9NyEYZF@google.com>
+References: <20211013155831.943476-1-qperret@google.com>
+ <20211013155831.943476-17-qperret@google.com>
+ <87h7dhupfa.wl-maz@kernel.org>
 MIME-Version: 1.0
-References: <20211017161523.43801-1-kitakar@gmail.com> <20211017161523.43801-2-kitakar@gmail.com>
- <3e6428f1-9411-fac6-9172-1dfe6de58c28@redhat.com>
-In-Reply-To: <3e6428f1-9411-fac6-9172-1dfe6de58c28@redhat.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 18 Oct 2021 13:31:51 +0300
-Message-ID: <CAHp75VcA+=OsmX7o2WTvYgf8TNpE64qEHq=MVm5vVP-4RBk+ng@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/1] ACPI / PMIC: Add i2c address to intel_pmic_bytcrc driver
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Tsuchiya Yuto <kitakar@gmail.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>, Andy Shevchenko <andy@kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87h7dhupfa.wl-maz@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 18, 2021 at 12:16 PM Hans de Goede <hdegoede@redhat.com> wrote:
-> On 10/17/21 18:15, Tsuchiya Yuto wrote:
-> > On Microsoft Surface 3 (uses Intel's Atom Cherry Trail SoC), executing
+On Saturday 16 Oct 2021 at 13:25:45 (+0100), Marc Zyngier wrote:
+> At this stage, the old thread may have been destroyed and the memory
+> recycled. What happens if, in the interval, that memory gets shared
+> again in another context? My guts feeling is that either the sharing
+> fails, or the unshare above breaks something else (the refcounting
+> doesn't save us if the sharing is not with HYP).
 
-...
+Aha, yes, that's a good point. The problematic scenario would be: a vcpu
+runs in the context of task A, then blocks. Then task A is destroyed,
+but the vcpu isn't (possibly because e.g. userspace intends to run it in
+the context of another task or something along those lines). But the
+thread_info and fpsimd_state of task A remain shared with the hypervisor
+until the next vcpu run, even though the memory has been freed by the
+host, and is possibly reallocated to another guest in the meantime.
 
-> As Andy said we could use a DMI quirk for this, but chances are that the Microsoft Surface
-> DSDT is not the only one with the wrong HRV value. So instead it might be better to
-> just test for the SoC type as the attached patch does.
->
-> Tsuchiya, can you give the attached patch a try.
->
-> Andy, what do you think, should we go with the attached patch or would you prefer using
-> a DMI quirk ?
+So yes, at this point sharing/donating this memory range with a new
+guest will fail, and confuse the host massively :/
 
-TBH I have no strong opinion. Only one remark on your patch, I am not
-a fan of removing COMPILE_TEST but at the same time I'm not a fan of
-ifdeffery. All on all I think having COMPILE_TEST is preferable even
-if we have ifdeffery. Btw, IIRC similar code (i.e. BYT vs CHT by CPU
-ID) is being used elsewhere. Perhaps we might have some common
-(library) under arc/x86, PDx86 or so (headers?)?
+> In any case, I wonder whether we need a notification from the core
+> code that a thread for which we have a HYP mapping is gone so that we
+> can mop up the mapping at that point. That's similar to what we have
+> for MMU notifiers and S2 PTs.
+> 
+> This is doable by hooking into fpsimd_release_task() and extending
+> thread_struct to track the sharing with HYP.
 
--- 
-With Best Regards,
-Andy Shevchenko
+I've been looking into this, but struggled to find a good way to avoid
+all the races. Specifically, handling the case where a vcpu and the task
+which last ran it get destroyed at the same time isn't that easy to
+handle: you end up having to maintain pointers from the task to the vcpu
+and vice versa, but I have no obvious idea to update them both in a
+non-racy way (other than having a one big lock to serialize all
+those changes, but that would mean serializing all task destructions so
+that really doesn't scale).
+
+Another option is to take a refcount on 'current' from
+kvm_arch_vcpu_run_map_fp() before sharing thread-specific structs with
+the hyp and release the refcount of the previous task after unsharing.
+But that means we'll have to also drop the refcount when the vcpu
+gets destroyed, as well as explicitly unshare at that point. Shouldn't
+be too bad I think. Thoughts?
+
+Thanks,
+Quentin
