@@ -2,139 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC01943248A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 19:17:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DC1A43248F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 19:18:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232587AbhJRRTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 13:19:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59694 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232367AbhJRRTq (ORCPT
+        id S233872AbhJRRUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 13:20:40 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:51070
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232153AbhJRRUj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 13:19:46 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 776EFC06161C
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 10:17:35 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id m14so15212668pfc.9
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 10:17:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=FTqdM6SYdB5c8YPj/tHS3P7Dcj4ilqGB0gV45sGeKJQ=;
-        b=QJJsmgBDnRLpYtOzZb0bQLJtFzBbvduiNpm+4JWhTAI5qhRNUIPecl8KHGL0l3KU/v
-         u/yNOcStNDVuJAAtaZZv36h2u7cBL6Tn5Cs2PM6flkIZERNsXhg8DZ6f1tLanT1bnpMS
-         t+RAkytFsLWfJ9UzOlTey72cOJrIrizJDOYSVgm/s8UFkM2xuDXMgH/qph6XvItKUmRs
-         RxXo/93RqqUkxvoKSiFZcb0JCx0kIswU0BzhuOsXz7O2/XMRfGRfWYBdFJkE2EjC4YIa
-         DcdhexKR0zwEIoVuaWbEP4k1JtsHMTIAOINK4flcXN43PcIMuQvBaPT+/0/IEcKxQz+P
-         Lw0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FTqdM6SYdB5c8YPj/tHS3P7Dcj4ilqGB0gV45sGeKJQ=;
-        b=f6273Sj0qUyX4s3NCbn8Lm1Z2LVbX7bjZ+KHcS/b2hwHTcow5PfxuDn6plLvKLYj/o
-         b6VyZFE9G25tJtlPcBvlmAwZ1z4//w8ByrSAkskT95F7bs+lw0jqVEN7HcTPKSK2Kd/M
-         VANaaSGKPNH9uQDemwiG5it+z2BmmbXEpmip2S8ZX3Drr20QiwXsOHSJy3tjxTsJSGPw
-         nGzsIz6tVmKhKn/tilrMlTsrdYMPXM/HW8WKkhd4tf6EUoBniCzFnXhYdtAaklh0g+y2
-         0wMYElKgayFYxH1XCJE63jSVEkkb0sotzzN+PGXZis2RTPbvzQYow+jEfhvmNDwNyIQi
-         vIWg==
-X-Gm-Message-State: AOAM532/K6sWzkYZWDzgLxF0DsEDZtJxj3nqSkIMCR0i+y9fEJk1xIfW
-        w4Xm3JUGWkLvQDi+pqjx+FeV4Q==
-X-Google-Smtp-Source: ABdhPJxhNHp8lZjfGLIpaD4MQ2WQkT20n84OiMJVEFmHM0yBBF1h/9MtVrLabeaRVb0Ddg1/SZpF2g==
-X-Received: by 2002:a62:31c5:0:b0:447:b30c:9a79 with SMTP id x188-20020a6231c5000000b00447b30c9a79mr30007383pfx.67.1634577454796;
-        Mon, 18 Oct 2021 10:17:34 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id v13sm13690901pgt.7.2021.10.18.10.17.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 10:17:33 -0700 (PDT)
-Date:   Mon, 18 Oct 2021 17:17:30 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        dave.hansen@linux.intel.com, x86@kernel.org, yang.zhong@intel.com,
-        jarkko@kernel.org, bp@suse.de
-Subject: Re: [PATCH v3 2/2] x86: sgx_vepc: implement SGX_IOC_VEPC_REMOVE ioctl
-Message-ID: <YW2sKq1pXkuiG1rb@google.com>
-References: <20211016071434.167591-1-pbonzini@redhat.com>
- <20211016071434.167591-3-pbonzini@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211016071434.167591-3-pbonzini@redhat.com>
+        Mon, 18 Oct 2021 13:20:39 -0400
+Received: from ascalon (unknown [192.188.8.63])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 217884004F;
+        Mon, 18 Oct 2021 17:18:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1634577506;
+        bh=jdO2z6q9L58AVBBMM3jXNb/74k8IQBeYybcmjeCK7Gw=;
+        h=From:To:Cc:Subject:Date:Message-Id;
+        b=wPKdXlnWtroVp8iUZHBB9WhrsXLs71qCTPrVIwEROO4oK6wX28J/MJrcdPbwTEuBI
+         lHiNz/vccPjkvK4yYf6vOTtku5IcUW5B+zgX/7gD/wFbOl5JNTaiNsPcHasAmjFMYd
+         eP3/NoVXJBFNXOUXKyveiywcSvmzKTseRbDwUPlACPwdwmavgbGP9PY15x1WLNh2Je
+         t64ID/uXjmbmCodkK7bBpWAFpuT1Vz2RU6r2HYz5zviOO1XwPVfi7ZNIA48IgS1OaE
+         rArPNgqhx6rdw5evagxkcbcmT+l0Wv5eCsVNAoV7ng2AvSkT9AjGvvtLutLyKozukd
+         5cS+mMXg3B6zg==
+Received: from kamal by ascalon with local (Exim 4.90_1)
+        (envelope-from <kamal@ascalon>)
+        id 1mcWHH-0004ut-PP; Mon, 18 Oct 2021 10:18:23 -0700
+From:   Kamal Mostafa <kamal@canonical.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Kamal Mostafa <kamal@canonical.com>, stable@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        linux-fsdevel@vger.kernel.org, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] [linux-5.10.y] io_uring: fix splice_fd_in checks backport typo
+Date:   Mon, 18 Oct 2021 10:18:08 -0700
+Message-Id: <20211018171808.18383-1-kamal@canonical.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +static long sgx_vepc_remove_all(struct sgx_vepc *vepc)
-> +{
-> +	struct sgx_epc_page *entry;
-> +	unsigned long index;
-> +	long failures = 0;
-> +
-> +	xa_for_each(&vepc->page_array, index, entry) {
-> +		int ret = sgx_vepc_remove_page(entry);
-> +		if (ret) {
-> +			if (ret == SGX_CHILD_PRESENT) {
+The linux-5.10.y backport of commit "io_uring: add ->splice_fd_in checks"
+includes a typo: "|" where "||" should be. (The original upstream commit
+is fine.)
 
-There's a ton of documentation in the changelog and official docs, but a comment
-here would also be helpful.
+Fixes: 54eb6211b979 ("io_uring: add ->splice_fd_in checks")
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org # v5.10
+Signed-off-by: Kamal Mostafa <kamal@canonical.com>
+---
+ fs/io_uring.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> +				failures++;
-> +			} else {
-> +				/*
-> +				 * Unlike in sgx_vepc_free_page, userspace might
-> +				 * call the ioctl while logical processors are
-> +				 * running in the enclave, or cause faults due
-> +				 * to concurrent access to pages under the same
-> +				 * SECS.  So we cannot warn, we just report it.
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index 26753d0cb431..0736487165da 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -5559,7 +5559,7 @@ static int io_timeout_remove_prep(struct io_kiocb *req,
+ 		return -EINVAL;
+ 	if (unlikely(req->flags & (REQ_F_FIXED_FILE | REQ_F_BUFFER_SELECT)))
+ 		return -EINVAL;
+-	if (sqe->ioprio || sqe->buf_index || sqe->len || sqe->timeout_flags |
++	if (sqe->ioprio || sqe->buf_index || sqe->len || sqe->timeout_flags ||
+ 	    sqe->splice_fd_in)
+ 		return -EINVAL;
+ 
+-- 
+2.17.1
 
-Technically the kernel can WARN on #PF[*], as EREMOVE only hits #PF if there's a
-legitimate #PF or if the target page is not an EPC page.  FWIW, the comments are
-a little less compressed if the if statements aren't nested.
-
-		if (ret == SGX_CHILD_PRESENT) {
-			/*
-			 * Track and return the number of SECS pages that cannot
-			 * be removed because they have child EPC pages (in this
-			 * vEPC or a different vEPC).
-			 */
-			failures++;
-		} else if (ret) {
-			/*
-			 * Report errors due to #GP or SGX_ENCLAVE_ACT, but do
-			 * not WARN as userspace can induce said failures by
-			 * calling the ioctl concurrently on multiple vEPCs or
-			 * while one or more CPUs is running the enclave.  Only
-			 * a #PF on EREMOVE indicates a kernel/hardware issue.
-			 */
-			WARN_ON_ONCE(encls_faulted(ret) &&
-				     ENCLS_TRAPNR(ret) == X86_TRAP_PF);
-			return -EBUSY;
-		}
-
-[*] SGX1 hardware has an erratum where it signals #GP instead of #PF, but that's
-    ok in this case because it's a false negative, not a false positive.
-
-> +				 */
-> +				return -EBUSY;
-> +			}
-> +		}
-> +		cond_resched();
-> +	}
-> +
-> +	/*
-> +	 * Return the number of pages that failed to be removed, so
-> +	 * userspace knows that there are still SECS pages lying
-> +	 * around.
-
-Nit, the comment doesn't need to span three lines.
-
-	/*
-	 * Return the number of pages that failed to be removed, so userspace
-	 * knows that there are still SECS pages lying around.
-	 */
-
-> +	 */
-> +	return failures;
-> +}
