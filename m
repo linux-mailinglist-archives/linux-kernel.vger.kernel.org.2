@@ -2,116 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FB3843299F
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 00:14:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3FB64329B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 00:19:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232858AbhJRWRI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 18:17:08 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:39640 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229529AbhJRWRH (ORCPT
+        id S231142AbhJRWVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 18:21:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43640 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229524AbhJRWVH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 18:17:07 -0400
-Received: from [IPv6:2401:4900:1c20:2044:d49c:4fd9:7471:bb74] (unknown [IPv6:2401:4900:1c20:2044:d49c:4fd9:7471:bb74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: shreeya)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 2CD7D1F4128C;
-        Mon, 18 Oct 2021 23:14:53 +0100 (BST)
-Subject: Re: [PATCH] gpio: Return EPROBE_DEFER if gc->to_irq is NULL
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Wolfram Sang <wsa@kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>, kernel@collabora.com
-References: <20211014110437.64764-1-shreeya.patel@collabora.com>
- <CACRpkdbwx+6xB0=rwm60=2jM4OfyDKxkwAEZMgU=10LuijsW1A@mail.gmail.com>
-From:   Shreeya Patel <shreeya.patel@collabora.com>
-Message-ID: <b88701a1-65eb-83ce-81f5-9e400294cf12@collabora.com>
-Date:   Tue, 19 Oct 2021 03:44:48 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 18 Oct 2021 18:21:07 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5743C06161C;
+        Mon, 18 Oct 2021 15:18:55 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id d125so18111560iof.5;
+        Mon, 18 Oct 2021 15:18:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=O4Cl7rQY6UihJ8OG3pvvrpFfvwN0U29biQDTj754OeE=;
+        b=LIxdzhs0aXZM12qF1ewvwQiaQUJKAV48DahO7iRPZ0OcZRweOSx2shKkHSnUHKwQm9
+         ZgxClbpMOAIULfQVIlp0DWRt9namQNJBrlrrLGNDl98EUy5/Sxhg03670ukgVMX5f2YH
+         07wKGZuFj9+dQg72UZoY3JVS+SBD0aBak1OKoBwgnnWV8+lhUZqp1eB9Jg5X23Nwq/y4
+         mAD0wB2HmiWVRnMGvkZivDsuMLf1+jQ8yqvIu4Rlzoe8ge2K1v0I4eiEIoxn4C72m5Yc
+         pXT7jTxquC7vnkw+Cjvz+zIuBM9k9FwZx8uhHvP5PB2VN4Flts6fnK0Z+JHfuPaVNSUa
+         Uk9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=O4Cl7rQY6UihJ8OG3pvvrpFfvwN0U29biQDTj754OeE=;
+        b=MIksuC6fpsGDijh8TiO63fUX6dPJTKXKW3BGjslw6+rZpcnJmnicTgntLyNuN8caJK
+         Gjc2WUrygbJMCWlChqyR5+3U34OIZgy9E1h2zsZt9vLVDXzYpo8Fms/utBo36IlkBecr
+         7pzJn+EBpdsUJx7xmqpsKEriFynOJUNGMfe62juDT0/tfyC9wLVDBwEuiy+FE/CbQ742
+         8rQrU47YatGwCAV2m41bGnYTw277QbBUvGUAoBRKNJi5oOSjvhlNkjXLj1kBPBuIKbV7
+         KPZoAjPeE3QGpDm1eklwl3V+trfqUs9qcRXKa/3IZigDyAKX1z9xXegBK3YoIYkA/y1k
+         YSeA==
+X-Gm-Message-State: AOAM533GKk9O1p4Mx1XflGsE8Cl3MmKD5eRznUMfex1PvARnhJPWqPM9
+        52bEEmkFh4efdRzZDCBW6Ma28TMyBnLK3UXA+aY=
+X-Google-Smtp-Source: ABdhPJzKclVdx8J4wBZle/K9Q+8N1HaFM8sSrjTx9vzBnG1XtaICa5LvPQKFbCRveyZrv6QQyoZH2f/ve6T15+Z+7O0=
+X-Received: by 2002:a5d:8903:: with SMTP id b3mr11657664ion.44.1634595535272;
+ Mon, 18 Oct 2021 15:18:55 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CACRpkdbwx+6xB0=rwm60=2jM4OfyDKxkwAEZMgU=10LuijsW1A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20211018203023.036d8362@canb.auug.org.au> <a1b2bdda-d1cf-807b-6a84-73a3e347639c@infradead.org>
+ <20211019085811.362b4304@canb.auug.org.au>
+In-Reply-To: <20211019085811.362b4304@canb.auug.org.au>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Tue, 19 Oct 2021 00:18:44 +0200
+Message-ID: <CANiq72=+5w7KzVKmN57ud5+GGEiuRbtgezfROGAuO=b-OYeWAA@mail.gmail.com>
+Subject: Re: linux-next: Tree for Oct 18 ('make' error on ARCH=um)
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Geoffrey Thomas <geofft@ldpreload.com>,
+        Finn Behrens <me@kloenk.de>,
+        Adam Bratschi-Kaye <ark.email@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@google.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Sumera Priyadarsini <sylphrenadin@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Sven Van Asbroeck <thesven73@gmail.com>,
+        Gary Guo <gary@garyguo.net>,
+        Boris-Chengbiao Zhou <bobo1239@web.de>,
+        Fox Chen <foxhlchen@gmail.com>,
+        Ayaan Zaidi <zaidi.ayaan@gmail.com>,
+        Douglas Su <d0u9.su@outlook.com>, Yuki Okushi <jtitor@2k36.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 14/10/21 10:21 pm, Linus Walleij wrote:
-> On Thu, Oct 14, 2021 at 1:05 PM Shreeya Patel
-> <shreeya.patel@collabora.com> wrote:
+On Mon, Oct 18, 2021 at 11:58 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
 >
->> We are racing the registering of .to_irq when probing the
->> i2c driver. This results in random failure of touchscreen
->> devices.
->>
->> Following errors could be seen in dmesg logs when gc->to_irq is NULL
->>
->> [2.101857] i2c_hid i2c-FTS3528:00: HID over i2c has not been provided an Int IRQ
->> [2.101953] i2c_hid: probe of i2c-FTS3528:00 failed with error -22
->>
->> To avoid this situation, defer probing until to_irq is registered.
->>
->> This issue has been reported many times in past and people have been
->> using workarounds like changing the pinctrl_amd to built-in instead
->> of loading it as a module or by adding a softdep for pinctrl_amd into
->> the config file.
->>
->> References :-
->> https://bugzilla.kernel.org/show_bug.cgi?id=209413
->> https://github.com/Syniurge/i2c-amd-mp2/issues/3
->>
->> Signed-off-by: Shreeya Patel <shreeya.patel@collabora.com>
-> I understand the issue.
+> In commit
 >
-> There is one problem.
+>   c862c7fee526 ("Kbuild: add Rust support")
 >
->> @@ -3084,7 +3084,7 @@ int gpiod_to_irq(const struct gpio_desc *desc)
->>
->>                  return retirq;
->>          }
->> -       return -ENXIO;
->> +       return -EPROBE_DEFER;
-> If you after five minutes plug in a USB FTDI or similar UART thing
-> with a GPIO expander, and someone request an IRQ from
-> one of those lines (they do not support interrupts), why should
-> it return -EPROBE_DEFER?
+> from the rust tree, these bits should probably not be there:
 >
-> The point is that I think this will in certain circumstances return
-> a bogus error.
+> -ifneq ($(findstring clang,$(CC_VERSION_TEXT)),)
+>  include $(srctree)/scripts/Makefile.clang
+> -endif
 
-I was worried about the same but didn't really know under what scenario 
-this could occur.
-Thanks for pointing this out.
+So this was on purpose -- we need the Clang flags even in GCC builds
+for bindgen. But now there is that `$(error ...)` added there :(
 
->
-> We cannot merge this other than with a fat comment above:
->
-> /*
->   * This is semantically WRONG because the -EPROBE_DEFER
->   * is really just applicable during system bring-up.
->   */
-> return -EPROBE_DEFER;
->
-> Can we use some kind of late_initcall() to just switch this over
-> to -ENXIO after a while?
+> Miguel, does that seem reasonable?
 
+Of course, for today please feel free to apply your fix (i.e. to put
+the conditional back to where it was). I will solve it on my side
+tomorrow.
 
-I have sent a v2 which tries to fix this in an easy way. Let me know 
-what do you
-think about that approach or else we could also think about using 
-late_initcall().
-
-
-
-Thanks,
-Shreeya Patel
-
-
-> Yours,
-> Linus Walleij
+Cheers,
+Miguel
