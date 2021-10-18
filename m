@@ -2,71 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 759EE4328EE
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 23:15:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACCAD4328F1
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 23:15:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233812AbhJRVRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 17:17:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57498 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233730AbhJRVRM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 17:17:12 -0400
-Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33982C06161C;
-        Mon, 18 Oct 2021 14:15:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=3dv8mkMWsgCVE8kAOdL+ki0THnK3KShualtOVVGyBhA=; b=xv3c+rLvuXJ93/BRgWH/bdzgZe
-        AxoPWZE60XMt4MnHp995KEieE603qV72iNC6tGJrHWymj5Enmx+zmwuS58Z3SfEesvcjLA9ztJZAc
-        5GpbM0UDGtJBv8GMtHxfQ0jDtGQSP/iLhs55pkiLoi9OJma7mZ5U2YTNgNwwcp3KIb+S5bUF8yQFe
-        YQ7lBDDS+uNEyGV/ILw2g23CZOAXZ/1s12uEkR/2kV72PcYzcWmTyRzU4SDPLcIHCJFZ2zf19lDQR
-        gBVK7XMs/uOnMo8paq/msFK7KmMxSIVDAKS/ZKD4q2lNLeoA/eg7gM2Bjv6aLDb98XbUzXBuRjjPC
-        fzfyUdsg==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mcZyG-00HJ10-Ij; Mon, 18 Oct 2021 21:15:00 +0000
-Subject: Re: linux-next: Tree for Oct 18 ('make' error on ARCH=um)
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>
-References: <20211018203023.036d8362@canb.auug.org.au>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <a1b2bdda-d1cf-807b-6a84-73a3e347639c@infradead.org>
-Date:   Mon, 18 Oct 2021 14:14:59 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S233856AbhJRVRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 17:17:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34884 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232045AbhJRVR3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 17:17:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 84994610A2;
+        Mon, 18 Oct 2021 21:15:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634591717;
+        bh=B2VOWNbfr2Ec8nOMEj4yZrlFiebEDRloREOoCsz+MBM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=P/SOS8oNbx190hgij7zPHhywjewzuVnQFrXbI3+r7Ut7K828momsf9S2lDeSAW8NU
+         vY+ATUzYSI9QuPWbH5ZGoTt4q4KpYiAXKmCcZLrzjobVtK27X6rcCv1ZpnFlC1bPW/
+         ghthD98JMYwCLufVkxDqwszPyRoBpviVFZypln3kc8wYo6xy4/WMyXizvQD+HY6CTG
+         tBfSolrrepu9+dtzuLWxTC2jgWeWaQldXNcPaINq7KEwAFpzEVnriPozAKHq6vjOjg
+         r+eS96Lvza/UDUTbTl1oNzEVhaNbhLd9Z9Q+b2Ha60fiLVBcDaZ/U+Dzs2wp6U+KfS
+         b7revybRkVRXw==
+Date:   Mon, 18 Oct 2021 23:15:12 +0200
+From:   Robert Richter <rric@kernel.org>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     jan.glauber@gmail.com, wsa@kernel.org, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] i2c: thunderx: Fix some resource leak
+Message-ID: <YW3j4MF/y4T6Rtzp@rric.localdomain>
+References: <6657505309174d3ea6df14169d42b6df91298470.1634374036.git.christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
-In-Reply-To: <20211018203023.036d8362@canb.auug.org.au>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6657505309174d3ea6df14169d42b6df91298470.1634374036.git.christophe.jaillet@wanadoo.fr>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/18/21 2:30 AM, Stephen Rothwell wrote:
-> Hi all,
+On 16.10.21 10:48:26, Christophe JAILLET wrote:
+> We need to undo a 'pci_request_regions()' call in the error handling path
+> of the probe function and in the remove function.
+
+Isn't that devm and thus not needed?
+
 > 
-> Changes since 20211015:
+> Fixes: 22d40209de3b ("i2c: thunderx: Add i2c driver for ThunderX SOC")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
+>  drivers/i2c/busses/i2c-thunderx-pcidrv.c | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
 > 
+> diff --git a/drivers/i2c/busses/i2c-thunderx-pcidrv.c b/drivers/i2c/busses/i2c-thunderx-pcidrv.c
+> index 12c90aa0900e..2d37096a6968 100644
+> --- a/drivers/i2c/busses/i2c-thunderx-pcidrv.c
+> +++ b/drivers/i2c/busses/i2c-thunderx-pcidrv.c
+> @@ -177,8 +177,10 @@ static int thunder_i2c_probe_pci(struct pci_dev *pdev,
+>  		return ret;
+>  
 
-UML (arch=um) with SUBARCH of i386 or x86_64,
-using gcc, not clang:
+There is a pcim_enable_device() call before all that, so the regions
+should be removed on device release, see pcim_release().
 
-make[1]: Entering directory '/work/lnx/next/linux-next-20211018/UM64'
-../scripts/Makefile.clang:19: *** Specify CROSS_COMPILE or add '--target=' option to scripts/Makefile.clang.  Stop.
-make[1]: Leaving directory '/work/lnx/next/linux-next-20211018/UM64'
-make: *** [Makefile:226: __sub-make] Error 2
+-Robert
 
-
-Just use a make target of defconfig:
-
-make ARCH=um SUBARCH=x86_64 O=UM64 defconfig
-
--- 
-~Randy
+>  	i2c->twsi_base = pcim_iomap(pdev, 0, pci_resource_len(pdev, 0));
+> -	if (!i2c->twsi_base)
+> -		return -EINVAL;
+> +	if (!i2c->twsi_base) {
+> +		ret = -EINVAL;
+> +		goto err_release_regions;
+> +	}
+>  
+>  	thunder_i2c_clock_enable(dev, i2c);
+>  	ret = device_property_read_u32(dev, "clock-frequency", &i2c->twsi_freq);
+> @@ -231,6 +233,8 @@ static int thunder_i2c_probe_pci(struct pci_dev *pdev,
+>  
+>  error:
+>  	thunder_i2c_clock_disable(dev, i2c->clk);
+> +err_release_regions:
+> +	pci_release_regions(pdev);
+>  	return ret;
+>  }
+>  
+> @@ -241,6 +245,7 @@ static void thunder_i2c_remove_pci(struct pci_dev *pdev)
+>  	thunder_i2c_smbus_remove(i2c);
+>  	thunder_i2c_clock_disable(&pdev->dev, i2c->clk);
+>  	i2c_del_adapter(&i2c->adap);
+> +	pci_release_regions(pdev);
+>  }
+>  
+>  static const struct pci_device_id thunder_i2c_pci_id_table[] = {
+> -- 
+> 2.30.2
+> 
