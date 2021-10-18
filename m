@@ -2,324 +2,378 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1AE04329BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 00:26:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 806C14329C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 00:26:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230433AbhJRW2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 18:28:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45282 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229529AbhJRW2m (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 18:28:42 -0400
-Received: from mail-ua1-x931.google.com (mail-ua1-x931.google.com [IPv6:2607:f8b0:4864:20::931])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2E26C06161C
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 15:26:30 -0700 (PDT)
-Received: by mail-ua1-x931.google.com with SMTP id r17so4384672uaf.8
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 15:26:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HSMERUYQICWmfCm7gWkhpVWJAvw3TMR9wFwO6eYXjRI=;
-        b=C/k2Qr7KAVwLZEpPkHZgEHjTV6z0MwjrjwXEWU1HkixUhBDk5gQvGzfIId1u0Aol/B
-         j919wR6uI3LPraR80qQrDKxUTM007AKXBNRjBuFpCScgOOnUllAUzSP516ORmnFMFGG3
-         CQfUIaNFF9kT4w+DMObIf2F2E18qwlT3WGvS2QiPZZz+XixsEaoC8ajFqhKzfATs0e6k
-         xcRLk8tR++m+V+WWS9w0CrkQa51yfztX8lKjzrD9sjJWERTiSVbL8u+qNpTyZeb8QDRy
-         NHfAePyniY9rawsPM/AZSA9/iLS2/zMUGExmwIKBfUeWLNJ+g6HA3SYDVnhq+HaBFPow
-         RzLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HSMERUYQICWmfCm7gWkhpVWJAvw3TMR9wFwO6eYXjRI=;
-        b=G9VlwaX/07CWSE4csSGe+MaN3fWHpOnEljOL1OIyq3m1lAzhDENoN2ZbgH5lFbDESF
-         V8oAZIl5yrVopIg7jDcW8Yrz4f1Q+A16XmRvxWDpmPBpkAOmx0f9AuYG0ZhG/yg+PC3i
-         NeMiAtl/Kwzs6W4Y2JkE4z5zahAK/tBoyt8fo6/Vc8Ixxvo1si3sIWKcusr+z7z7C8M+
-         B+zzhZk33ebr/TRV7UDLMnxZaZ9ef9WgN0ENuU3Z2Vna+cSUBIA8RZjXz4bZbDWIJ2w3
-         Zup5cZy5Zd6YWDJBEAhh3NgEhMMzgRTn5Rrb3EfPbIqgPTrQBPWF5uDHxIh3HJG22SNU
-         Ipug==
-X-Gm-Message-State: AOAM533iwhlhxTU0JsxNMmtuGwuQhB6SG4OOxd9UCmhsd38DMT+82Jy+
-        +tYZ27Z5DxCOlk/e7XzY+e/dcLyPNYmV1OlNMQjgnQ==
-X-Google-Smtp-Source: ABdhPJyQi8WibjZM6DtkIH4qXBrg4nymQ9uhq8ipX+KDHxHFIbDzIFqD1EGHIgMLmh1b4jHaUY/rqP6CV17kH6rdroo=
-X-Received: by 2002:a05:6102:160b:: with SMTP id cu11mr16466935vsb.45.1634595989831;
- Mon, 18 Oct 2021 15:26:29 -0700 (PDT)
+        id S232412AbhJRW2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 18:28:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40648 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232134AbhJRW2s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 18:28:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 00CFA610FB;
+        Mon, 18 Oct 2021 22:26:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634595997;
+        bh=LFDjwonrMIKQFYvQW3D50toU7igQzSKFBCOtmrrDNEM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=je95s4jvr6U1Oi4QiERRxrg3sllAqn0grGaLfsxS6+7tuF3NX+fohDErKpVd55X2Z
+         Rjsu+QJ7rkXYtLR5nhU8XaxJBy2InA5m7rlhEr23kclaGeWt5ZnRC/CxvG1vGiax83
+         1RI0bHhmbxeFvGdOYgXFitun51d9thcnsZqdrSgvHlUf8F4qLXl+SICa46tmBnU1rA
+         5Wl1azAG059YG08rj46sZ1cQ52B9ShmPPjRS0PPpquQxq9DXtS+kZP+J9Xl4Iebuls
+         GsWiaF27lhNT7qsufVljQxukLnKUvprm1KIssa6zT0NkFAIGCGT9zgZ3DwwQsPZrll
+         gK7vAP+f/QHcg==
+Received: by mail-qk1-f179.google.com with SMTP id h20so12346627qko.13;
+        Mon, 18 Oct 2021 15:26:36 -0700 (PDT)
+X-Gm-Message-State: AOAM533MvWvcbJ7+ZYDFV/rAPHTVwBxmMW9vE9C9CvxJQVND1uKI9R9h
+        ppXrNntGtDfrSaKwbJJ+vxOLdRzqY5ZdGdrlew==
+X-Google-Smtp-Source: ABdhPJwl9GaHrGM1pkWFvcpt5hrExE0YCphMe1ujVy7Q2lR6hgJN74BfPkYliluTT1ll9hWQP8xdoQ7XxebDjwPsto8=
+X-Received: by 2002:a37:44cc:: with SMTP id r195mr25542555qka.77.1634595996047;
+ Mon, 18 Oct 2021 15:26:36 -0700 (PDT)
 MIME-Version: 1.0
-References: <1M9_d6wrcu6rdPe1ON0_k0lOxJMyyot3KAb1gdyuwzDPC777XVUWPHoTCEVmcK3fYfgu7sIo3PSaLe9KulUdm4TWVuqlbKyYGxRAjsf_Cpk=@protonmail.ch>
- <87ee9pa6xw.fsf@disp2133> <OJK-F2NSBlem52GqvCQYzaVxs2x9Csq3qO4QbTG4A4UUNaQpebpAQmyyKzUd70CIo27C4K7CL3bhIzcxulIzYMu067QOMXCFz8ejh3ZtFhE=@protonmail.ch>
- <U6ByMUZ9LgvxXX6eb0M9aBx8cw8GpgE1qU22LaxaJ_2bOdnGLLJHDgnLL-6cJT7dKdcG_Ms37APSutc3EIMmtpgpP_2kotVLCNRoUq-wTJ8=@protonmail.ch>
- <878rzw77i3.fsf@disp2133> <o3tuBB58KUQjyQsALqWi0s1tSPlgVPST4PNNjHewIgRB7CUOOVyFSFxSBLCOJdUH3ly21cIjBthNyqQGnDgJD7fjU8NiVHq7i0JcMvYuzUA=@protonmail.ch>
- <20210929173611.fo5traia77o63gpw@example.org> <hPgvCJ2KbKeauk78uWJEsuKJ5VfMqknPJ_oyOZe6M78-6eG7qnj0t0UKC-joPVowo_nOikIsEWP-ZDioARfI-Cl6zrHjCHPJST3drpi5ALE=@protonmail.ch>
- <20210930130640.wudkpmn3cmah2cjz@example.org> <CAOUHufZmAjuKyRcmq6GH8dfdZxchykS=BTZDsk-gDAh3LJTe1Q@mail.gmail.com>
- <878rz8wwb6.fsf@disp2133> <87v92cvhbf.fsf@disp2133> <ccbccf82-dc50-00b2-1cfd-3da5e2c81dbf@infomedia.dk>
- <87mtnavszx.fsf_-_@disp2133> <87fssytizw.fsf_-_@disp2133>
-In-Reply-To: <87fssytizw.fsf_-_@disp2133>
-From:   Yu Zhao <yuzhao@google.com>
-Date:   Mon, 18 Oct 2021 16:26:18 -0600
-Message-ID: <CAOUHufZJHXNZ1ew2nqNYcCupYXeHDa37i7ojC2k43+2eT_Tn1g@mail.gmail.com>
-Subject: Re: [PATCH v2] ucounts: Fix signal ucount refcounting
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Rune Kleveland <rune.kleveland@infomedia.dk>,
-        Alexey Gladkov <legion@kernel.org>,
-        Jordan Glover <Golden_Miller83@protonmail.ch>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        "containers\\@lists.linux-foundation.org" 
-        <containers@lists.linux-foundation.org>,
-        Hillf Danton <hdanton@sina.com>
+References: <20211003125134.2.I7733f5a849476e908cc51f0c71b8a594337fbbdf@changeid>
+ <YVtWVZDzhwMPnKj0@robh.at.kernel.org> <CAPnjgZ3hUu6AUiMtC8tSQPeeG1aH1bQMcE8SQ_T8Nd-FjY_fGQ@mail.gmail.com>
+ <CAL_JsqLT28Lp6pVYLxheZ=iK9QDOzXcezihR+sru4qLQLoUeWw@mail.gmail.com> <CAPnjgZ1accZg-G00xX7HPE8KAoh9NPAkfrb9BFrj3W5Bo_0pKg@mail.gmail.com>
+In-Reply-To: <CAPnjgZ1accZg-G00xX7HPE8KAoh9NPAkfrb9BFrj3W5Bo_0pKg@mail.gmail.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Mon, 18 Oct 2021 17:26:24 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqL5MP1efM_d5EF3x4M_qf3gee8Sc8TQFgxoVsdCWTY9uw@mail.gmail.com>
+Message-ID: <CAL_JsqL5MP1efM_d5EF3x4M_qf3gee8Sc8TQFgxoVsdCWTY9uw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] dt-bindings: u-boot: Add an initial binding for config
+To:     Simon Glass <sjg@chromium.org>
+Cc:     Devicetree Discuss <devicetree@vger.kernel.org>,
+        Tom Rini <trini@konsulko.com>,
+        U-Boot Mailing List <u-boot@lists.denx.de>,
+        lk <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 18, 2021 at 10:06 AM Eric W. Biederman
-<ebiederm@xmission.com> wrote:
+On Wed, Oct 13, 2021 at 11:33 AM Simon Glass <sjg@chromium.org> wrote:
 >
+> "
+> Hi Rob,
 >
-> In commit fda31c50292a ("signal: avoid double atomic counter
-> increments for user accounting") Linus made a clever optimization to
-> how rlimits and the struct user_struct.  Unfortunately that
-> optimization does not work in the obvious way when moved to nested
-> rlimits.  The problem is that the last decrement of the per user
-> namespace per user sigpending counter might also be the last decrement
-> of the sigpending counter in the parent user namespace as well.  Which
-> means that simply freeing the leaf ucount in __free_sigqueue is not
-> enough.
+> On Tue, 12 Oct 2021 at 09:05, Rob Herring <robh@kernel.org> wrote:
+> >
+> >  On Tue, Oct 12, 2021 at 8:41 AM Simon Glass <sjg@chromium.org> wrote:
+> > >
+> > > Hi Rob,
+> > >
+> > > On Mon, 4 Oct 2021 at 13:30, Rob Herring <robh@kernel.org> wrote:
+> > > >
+> > > > On Sun, Oct 03, 2021 at 12:51:53PM -0600, Simon Glass wrote:
+> > > > > U-Boot makes use of the devicetree for its driver model. Devices are bound
+> > > > > based on the hardware description in the devicetree.
+> > > > >
+> > > > > Since U-Boot is not an operating system, it has no command line or user
+> > > > > space to provide configuration and policy information. This must be made
+> > > > > available in some other way.
+> > > > >
+> > > > > Therefore U-Boot uses devicetree for configuration and run-time control
+> > > > > and has done for approximately 9 years. This works extremely well in the
+> > > > > project and is very flexible. However the bindings have never been
+> > > > > incorporated in the devicetree bindings in the Linux tree. This could be
+> > > > > a good time to start this work as we try to create standard bindings for
+> > > > > communicating between firmware components.
+> > > > >
+> > > > > Add an initial binding for this node, covering just the config node, which
+> > > > > is the main requirement. It is similar in concept to the chosen node, but
+> > > > > used for passing information between firmware components, instead of from
+> > > > > firmware to operating system.
+> > > > >
+> > > > > Signed-off-by: Simon Glass <sjg@chromium.org>
+> > > > > ---
+> > > > > Please be kind in your review. Some words about why this is needed are
+> > > > > included in the description in config.yaml file.
+> > > > >
+> > > > > The last attempt to add just one property needed by U-Boot went into the
+> > > > > weeds 6 years ago, with what I see as confusion about the role of the
+> > > > > chosen node in devicetree[1].
+> > > > >
+> > > > > I am trying again in the hope of reaching resolution rather than just
+> > > > > going around in circles with the 'devicetree is a hardware description'
+> > > > > argument :-)
+> > > > >
+> > > > > Quoting from the introduction to latest devicetree spec[2]:
+> > > > >
+> > > > > >>>
+> > > > > To initialize and boot a computer system, various software components
+> > > > > interact. Firmware might perform low-level initialization of the system
+> > > > > hardware before passing control to software such as an operating system,
+> > > > > bootloader, or  hypervisor. Bootloaders and hypervisors can, in turn,
+> > > > > load and transfer control to operating systems. Standard, consistent
+> > > > > interfaces and conventions facilitate the interactions between these
+> > > > > software components. In this document the term boot program is used to
+> > > > > generically refer to a software component that initializes the system
+> > > > > state and executes another software component referred to as a client
+> > > > > program.
+> > > > > <<<
+> > > > >
+> > > > > This clearly envisages multiple software components in the firmware
+> > > > > domain and in fact that is the case today. They need some way to
+> > > > > communicate configuration data such as memory setup, runtime-feature
+> > > > > selection and developer conveniences. Devicetree seems ideal, at least for
+> > > > > components where the performance / memory requirements of devicetree are
+> > > > > affordable.
+> > > > >
+> > > > > I hope that the Linux community (which owns the devicetree bindings) finds
+> > > > > this initiative valuable and acceptable.
+> > > >
+> > > > Owns? I'm having a sale and can make you a good offer. Buy 1 binding,
+> > > > get 2000 free. :)
+> > >
+> > > Yes, it's the price of that first binding that surely puts everyone off.
+> > >
+> > > (sorry for sitting on this for a week, my spam filter doesn't like
+> > > some mailing lists and I'm working on it)
+> > >
+> > > >
+> > > > >
+> > > > > [1] https://lists.denx.de/pipermail/u-boot/2015-July/218585.html
+> > > > > [2] https://github.com/devicetree-org/devicetree-specification/releases/tag/v0.3
+> > > > >
+> > > > >  .../devicetree/bindings/u-boot/config.yaml    | 137 ++++++++++++++++++
+> > > > >  1 file changed, 137 insertions(+)
+> > > > >  create mode 100644 Documentation/devicetree/bindings/u-boot/config.yaml
+> > > >
+> > > > Might as well put this into dt-schema rather than the kernel. But might
+> > > > get more review here first.
+> > >
+> > > OK, so does that mean a PR to https://github.com/robherring/dt-schema
+> >
+> > Wrong one: https://github.com/devicetree-org/dt-schema
+> >
+> > I need to update the readme there for the old one.
 >
-> Maintain the optimization and handle the tricky cases by introducing
-> inc_rlimit_get_ucounts and dec_rlimit_put_ucounts.
+> OK thanks.
 >
-> By moving the entire optimization into functions that perform all of
-> the work it becomes possible to ensure that every level is handled
-> properly.
+> >
+> > > or is there a mailing list for it? I think I am missing some
+> > > understanding here.
+> >
+> > You can send a PR or to a DT mailing list, but the mail list will get
+> > more reviews (hopefully). devicetree-spec is better than devicetree as
+> > it is not a firehose.
 >
-> The new function inc_rlimit_get_ucounts returns 0 on failure to
-> increment the ucount.  This is different than inc_rlimit_ucounts which
-> increments the ucounts and returns LONG_MAX if the ucount counter has
-> exceeded it's maximum or it wrapped (to indicate the counter needs to
-> decremented).
+> OK.
 >
-> I wish we had a single user to account all pending signals to across
-> all of the threads of a process so this complexity was not necessary
+> >
+> > > >
+> > > > > diff --git a/Documentation/devicetree/bindings/u-boot/config.yaml b/Documentation/devicetree/bindings/u-boot/config.yaml
+> > > > > new file mode 100644
+> > > > > index 00000000000000..336577a17fdf5a
+> > > > > --- /dev/null
+> > > > > +++ b/Documentation/devicetree/bindings/u-boot/config.yaml
+> > > > > @@ -0,0 +1,137 @@
+> > > > > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> > > > > +%YAML 1.2
+> > > > > +---
+> > > > > +$id: http://devicetree.org/schemas/u-boot/config.yaml#
+> > > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > > > +
+> > > > > +title: U-Boot configuration node
+> > > > > +
+> > > > > +maintainers:
+> > > > > +  - Simon Glass <sjg@chromium.org>
+> > > > > +
+> > > > > +description: |
+> > > > > +  The config node does not represent a real device, but serves as a place
+> > > > > +  for passing data between firmware elements, like memory maps. Data in the
+> > > > > +  config node does not represent the hardware. It is ignored by operating
+> > > > > +  systems.
+> > > > > +
+> > > > > +  Purpose of config node
+> > > > > +  ----------------------
+> > > > > +
+> > > > > +  A common problem with firmware is that many builds are needed to deal with the
+> > > > > +  slight variations between different, related models. For example, one model
+> > > > > +  may have a TPM and another may not. Devicetree provides an excellent solution
+> > > > > +  to this problem, in that the devicetree to actually use on a platform can be
+> > > > > +  injected in the factory based on which model is being manufactured at the time.
+> > > > > +
+> > > > > +  A related problem causing build proliferation is dealing with the differences
+> > > > > +  between development firmware, developer-friendly firmware (e.g. with all
+> > > > > +  security features present but with the ability to access the command line),
+> > > > > +  test firmware (which runs tests used in the factory), final production
+> > > > > +  firmware (before signing), signed firmware (where the signatures have been
+> > > > > +  inserted) and the like. Ideally all or most of these should use the same
+> > > > > +  U-Boot build, with just some options to determine the features available. For
+> > > > > +  example, being able to control whether the UART console or JTAG are available,
+> > > > > +  on any image, is a great debugging aid.
+> > > > > +
+> > > > > +  When the firmware consists of multiple parts (various U-Boot phases, TF-A,
+> > > > > +  OP-TEE), it is helpful that all operate the same way at runtime, regardless of
+> > > > > +  how they were built. This can be achieved by passing the runtime configuration
+> > > > > +  (e.g. 'enable UART console', 'here are your public keys') along the chain
+> > > > > +  through each firmware stage. It is frustrating to have to replicate a bug on
+> > > > > +  production firmware which does happen on developer firmware, because they are
+> > > > > +  completely different builds.
+> > > > > +
+> > > > > +  The config node provides useful functionality for this. It allows the different
+> > > > > +  controls to be 'factored out' of the U-Boot binary, so they can be controlled
+> > > > > +  separately from the initial source-code build. The node can be easily updated
+> > > > > +  by a build or factory tool and can control various features in U-Boot. It is
+> > > > > +  similar in concept to a Kconfig option, except that it can be changed after
+> > > > > +  U-Boot is built.
+> > > > > +
+> > > > > +  The config node is similar in concept to /chosen (see chosen.txt) except that
+> > > >
+> > > > chosen.yaml now (in dt-schema).
+> > >
+> > > OK
+> > >
+> > > >
+> > > > > +  it is for passing information *into* and *between) firmware components,
+> > > > > +  instead of from firmware to the Operating System. Also, while operating
+> > > > > +  systems typically have a (sometimes extremely long) command line, U-Boot does
+> > > > > +  not support this, except with sandbox. The devicetree provides a more
+> > > > > +  structured approach in any case.
+> > > >
+> > > > What about having a /chosen/u-boot/ node instead?
+> > >
+> > > What is your rationale for doing that?
+> >
+> > Simply that /chosen is where the s/w configuration for the next stage
+> > consuming the DT goes. Also, we already have bootcmd defined in chosen
+> > and don't need it in a whole other place.
 >
-> Cc: stable@vger.kernel.org
-> Fixes: d64696905554 ("Reimplement RLIMIT_SIGPENDING on top of ucounts")
-> v1: https://lkml.kernel.org/r/87mtnavszx.fsf_-_@disp2133
-> Tested-by: Rune Kleveland <rune.kleveland@infomedia.dk>
-> Tested-by: Yu Zhao <yuzhao@google.com>
-> Tested-by: Jordan Glover <Golden_Miller83@protonmail.ch>
-> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
-> ---
+> OK I see.
 >
-> This is my version of the fix with all of the feedback rolled in.
-> I have tested it and believe this is ready to send out.
+> The spec says "The /chosen node does not represent a real device in
+> the system but describes parameters chosen or specified by the system
+> firmware at run time. It shall be a child of the root node."
 >
-> If folks code take a once over and see if I have spotted things.
+> To my reading, this is not the same thing. I would prefer something like:
 >
-> For the people who are testing or have tested this I have added your
-> tested-by's please let me know if you mind.
->
-> Eric
+> "The /xxx node does not represent a real device in the system but
+> describes parameters used by the system firmware at run time. It shall
+> be a child of the root node."
 
-Retested on the latest 5.15-rc6. This patch fixes the following crash:
+The wording is from simpler times... We can reword it however we need.
 
-[ 3307.621443] ==================================================================
-[ 3307.628890] BUG: KASAN: use-after-free in dec_ucount+0x50/0xd8
-[ 3307.634903] Write of size 8 at addr ffffff80a5e4c520 by task kworker/7:3/201
-[ 3307.642149]
-[ 3307.643695] CPU: 7 PID: 201 Comm: kworker/7:3 Not tainted
-5.15.0-rc6-lockdep+ #7
-[ 3307.651291] Hardware name: Google Lazor (rev3+) with KB Backlight (DT)
-[ 3307.658001] Workqueue: events free_user_ns
-[ 3307.662231] Call trace:
-[ 3307.664750]  dump_backtrace+0x0/0x42c
-[ 3307.668522]  show_stack+0x24/0x30
-[ 3307.671935]  dump_stack_lvl+0xd0/0x100
-[ 3307.675797]  print_address_description+0x30/0x304
-[ 3307.680646]  kasan_report+0x190/0x1d8
-[ 3307.684419]  kasan_check_range+0x1ac/0x1bc
-[ 3307.688630]  __kasan_check_write+0x44/0x54
-[ 3307.692852]  dec_ucount+0x50/0xd8
-[ 3307.696266]  free_user_ns+0x1b0/0x288
-[ 3307.700036]  process_one_work+0x7b4/0x1130
-[ 3307.704251]  worker_thread+0x800/0xcf4
-[ 3307.708111]  kthread+0x2a8/0x358
-[ 3307.711437]  ret_from_fork+0x10/0x20
-[ 3307.715121]
-[ 3307.716664] Allocated by task 6564:
-[ 3307.720253]  kasan_save_stack+0x38/0x68
-[ 3307.724206]  __kasan_kmalloc+0x9c/0xb8
-[ 3307.728068]  kmem_cache_alloc_trace+0x260/0x32c
-[ 3307.732729]  alloc_ucounts+0x150/0x374
-[ 3307.736589]  set_cred_ucounts+0x178/0x240
-[ 3307.740714]  __sys_setresuid+0x31c/0x4f8
-[ 3307.744754]  __arm64_sys_setresuid+0x84/0x98
-[ 3307.749153]  invoke_syscall+0xcc/0x2bc
-[ 3307.753012]  el0_svc_common+0x118/0x1ec
-[ 3307.756961]  do_el0_svc_compat+0x50/0x60
-[ 3307.761005]  el0_svc_compat+0x5c/0xec
-[ 3307.764774]  el0t_32_sync_handler+0xc0/0xf0
-[ 3307.769083]  el0t_32_sync+0x1a4/0x1a8
-[ 3307.772852]
-[ 3307.774399] The buggy address belongs to the object at ffffff80a5e4c500
-[ 3307.774399]  which belongs to the cache kmalloc-256 of size 256
-[ 3307.787250] The buggy address is located 32 bytes inside of
-[ 3307.787250]  256-byte region [ffffff80a5e4c500, ffffff80a5e4c600)
-[ 3307.799216] The buggy address belongs to the page:
-[ 3307.804141] page:fffffffe02979200 refcount:1 mapcount:0
-mapping:0000000000000000 index:0xffffff80a5e4c100 pfn:0x125e48
-[ 3307.815127] head:fffffffe02979200 order:3 compound_mapcount:0
-compound_pincount:0
-[ 3307.822808] flags: 0x8000000000010200(slab|head|zone=2)
-[ 3307.828187] raw: 8000000000010200 fffffffe0250ba08 fffffffe00f04a08
-ffffff808000c980
-[ 3307.836148] raw: ffffff80a5e4c100 0000000000200001 00000001ffffffff
-0000000000000000
-[ 3307.844104] page dumped because: kasan: bad access detected
-[ 3307.849837]
-[ 3307.851381] Memory state around the buggy address:
-[ 3307.856307]  ffffff80a5e4c400: fc fc fc fc fc fc fc fc fc fc fc fc
-fc fc fc fc
-[ 3307.863729]  ffffff80a5e4c480: fc fc fc fc fc fc fc fc fc fc fc fc
-fc fc fc fc
-[ 3307.871146] >ffffff80a5e4c500: fb fb fb fb fb fb fb fb fb fb fb fb
-fb fb fb fb
-[ 3307.878562]                                ^
-[ 3307.882956]  ffffff80a5e4c580: fb fb fb fb fb fb fb fb fb fb fb fb
-fb fb fb fb
-[ 3307.890375]  ffffff80a5e4c600: fc fc fc fc fc fc fc fc fc fc fc fc
-fc fc fc fc
-[ 3307.897800] ==================================================================
+> Anyway, we could use /chosen, and I can see it will make a lot of
+> people happy. But I don't think it is a great plan. Here are my
+> thoughts:
+>
+> 1. This node is built, packaged and set up by and used by U-Boot
+> itself, at least in most cases, so U-Boot is not the next stage, but
+> the current stage. Conceptually, using /chosen is confusing for U-Boot
+> itself.
+>
+> 2.. bootcmd is the Operating System command line, whereas the one here
+> is for U-Boot, specifically
+>
+> 3. U-Boot does not and should not change this node, but it does change /chosen.
+>
+> 4. If we move to livetree for writing in U-Boot, we'll want to flatten
+> the tree (containing /chosen) before calling Linux. Having the config
+> under the /chosen node is an added complication there.
 
->  include/linux/user_namespace.h |  2 ++
->  kernel/signal.c                | 25 +++++------------
->  kernel/ucount.c                | 49 ++++++++++++++++++++++++++++++++++
->  3 files changed, 57 insertions(+), 19 deletions(-)
+How is deleting a node under /chosen harder than a node off of the root node?
+
+> 5.  It is slightly more efficient for U-Boot to put this at the top
+> level - this matters in SPL. But I don't think this is huge concern.
 >
-> diff --git a/include/linux/user_namespace.h b/include/linux/user_namespace.h
-> index eb70cabe6e7f..33a4240e6a6f 100644
-> --- a/include/linux/user_namespace.h
-> +++ b/include/linux/user_namespace.h
-> @@ -127,6 +127,8 @@ static inline long get_ucounts_value(struct ucounts *ucounts, enum ucount_type t
+> 6.. I very much think of /chosen as an operating system thing. Would
+> this be the first use by firmware?
 >
->  long inc_rlimit_ucounts(struct ucounts *ucounts, enum ucount_type type, long v);
->  bool dec_rlimit_ucounts(struct ucounts *ucounts, enum ucount_type type, long v);
-> +long inc_rlimit_get_ucounts(struct ucounts *ucounts, enum ucount_type type);
-> +void dec_rlimit_put_ucounts(struct ucounts *ucounts, enum ucount_type type);
->  bool is_ucounts_overlimit(struct ucounts *ucounts, enum ucount_type type, unsigned long max);
+> 7. If we want to sign the U-Boot config then it is easier if it is in
+> a separate node from /chosen, which is, after all, updated by U-Boot.
+
+Isn't it just as easy to sign /chosen/u-boot if we are signing on a
+per node basis?
+
+Or does it matter since u-boot is re-signing /chosen anyways. Do we
+need to maintain the old signature?
+
+> I'd really like to discuss whether we can break out of the /chosen
+> node straightjacket. Perhaps instead we should have something like
+> /firmware or /chosen-fw with the U-Boot node under that? I can
+> definitely see the concern about having lots of vendor-specific nodes
+> at the top level for every component, though.
+
+Well, /firmware has generally meant h/w devices implemented with
+firmware interfaces. For example, a system controller implementing
+clock provider over a mailbox interface. That said, I'd be okay with
+this under /firmware.
+
 >
->  static inline void set_rlimit_ucount_max(struct user_namespace *ns,
-> diff --git a/kernel/signal.c b/kernel/signal.c
-> index a3229add4455..13d2505a14a0 100644
-> --- a/kernel/signal.c
-> +++ b/kernel/signal.c
-> @@ -425,22 +425,10 @@ __sigqueue_alloc(int sig, struct task_struct *t, gfp_t gfp_flags,
->          */
->         rcu_read_lock();
->         ucounts = task_ucounts(t);
-> -       sigpending = inc_rlimit_ucounts(ucounts, UCOUNT_RLIMIT_SIGPENDING, 1);
-> -       switch (sigpending) {
-> -       case 1:
-> -               if (likely(get_ucounts(ucounts)))
-> -                       break;
-> -               fallthrough;
-> -       case LONG_MAX:
-> -               /*
-> -                * we need to decrease the ucount in the userns tree on any
-> -                * failure to avoid counts leaking.
-> -                */
-> -               dec_rlimit_ucounts(ucounts, UCOUNT_RLIMIT_SIGPENDING, 1);
-> -               rcu_read_unlock();
-> -               return NULL;
-> -       }
-> +       sigpending = inc_rlimit_get_ucounts(ucounts, UCOUNT_RLIMIT_SIGPENDING);
->         rcu_read_unlock();
-> +       if (!sigpending)
-> +               return NULL;
+> Do you have any other ideas?
 >
->         if (override_rlimit || likely(sigpending <= task_rlimit(t, RLIMIT_SIGPENDING))) {
->                 q = kmem_cache_alloc(sigqueue_cachep, gfp_flags);
-> @@ -449,8 +437,7 @@ __sigqueue_alloc(int sig, struct task_struct *t, gfp_t gfp_flags,
->         }
+> >
+> > Arguably, we don't even need another sub-node here. We could just say
+> > a given component is responsible for consuming /chosen and then
+> > updating it for the next component. The problem with that is if you
+> > want all the configuration to coexist at the start. Overlapping
+> > properties is also a problem. The only overlap in this case is
+> > bootcmd, but you could handle that with a 'u-boot,bootcmd'. Not saying
+> > we should do that though given we need to extend things beyond 2
+> > components.
 >
->         if (unlikely(q == NULL)) {
-> -               if (dec_rlimit_ucounts(ucounts, UCOUNT_RLIMIT_SIGPENDING, 1))
-> -                       put_ucounts(ucounts);
-> +               dec_rlimit_put_ucounts(ucounts, UCOUNT_RLIMIT_SIGPENDING);
->         } else {
->                 INIT_LIST_HEAD(&q->list);
->                 q->flags = sigqueue_flags;
-> @@ -463,8 +450,8 @@ static void __sigqueue_free(struct sigqueue *q)
->  {
->         if (q->flags & SIGQUEUE_PREALLOC)
->                 return;
-> -       if (q->ucounts && dec_rlimit_ucounts(q->ucounts, UCOUNT_RLIMIT_SIGPENDING, 1)) {
-> -               put_ucounts(q->ucounts);
-> +       if (q->ucounts) {
-> +               dec_rlimit_put_ucounts(q->ucounts, UCOUNT_RLIMIT_SIGPENDING);
->                 q->ucounts = NULL;
->         }
->         kmem_cache_free(sigqueue_cachep, q);
-> diff --git a/kernel/ucount.c b/kernel/ucount.c
-> index bb51849e6375..eb03f3c68375 100644
-> --- a/kernel/ucount.c
-> +++ b/kernel/ucount.c
-> @@ -284,6 +284,55 @@ bool dec_rlimit_ucounts(struct ucounts *ucounts, enum ucount_type type, long v)
->         return (new == 0);
->  }
+> Are we trying to conserve nodes? They are not that expensive. I like
+> the idea of separating our concerns between firmware and OS, or this
+> is going to get mighty confusing. As you say it makes it hard to use a
+> mostly static DT.
+
+As I said, not suggesting we should do that, only that it *could*
+work. And yes, it does get confusing.
+
 >
-> +static void do_dec_rlimit_put_ucounts(struct ucounts *ucounts,
-> +                               struct ucounts *last, enum ucount_type type)
-> +{
-> +       struct ucounts *iter, *next;
-> +       for (iter = ucounts; iter != last; iter = next) {
-> +               long dec = atomic_long_add_return(-1, &iter->ucount[type]);
-> +               WARN_ON_ONCE(dec < 0);
-> +               next = iter->ns->ucounts;
-> +               if (dec == 0)
-> +                       put_ucounts(iter);
-> +       }
-> +}
-> +
-> +void dec_rlimit_put_ucounts(struct ucounts *ucounts, enum ucount_type type)
-> +{
-> +       do_dec_rlimit_put_ucounts(ucounts, NULL, type);
-> +}
-> +
-> +long inc_rlimit_get_ucounts(struct ucounts *ucounts, enum ucount_type type)
-> +{
-> +       /* Caller must hold a reference to ucounts */
-> +       struct ucounts *iter;
-> +       long dec, ret = 0;
-> +
-> +       for (iter = ucounts; iter; iter = iter->ns->ucounts) {
-> +               long max = READ_ONCE(iter->ns->ucount_max[type]);
-> +               long new = atomic_long_add_return(1, &iter->ucount[type]);
-> +               if (new < 0 || new > max)
-> +                       goto unwind;
-> +               if (iter == ucounts)
-> +                       ret = new;
-> +               /*
-> +                * Grab an extra ucount reference for the caller when
-> +                * the rlimit count was previously 0.
-> +                */
-> +               if (new != 1)
-> +                       continue;
-> +               if (!get_ucounts(iter))
-> +                       goto dec_unwind;
-> +       }
-> +       return ret;
-> +dec_unwind:
-> +       dec = atomic_long_add_return(-1, &iter->ucount[type]);
-> +       WARN_ON_ONCE(dec < 0);
-> +unwind:
-> +       do_dec_rlimit_put_ucounts(ucounts, iter, type);
-> +       return 0;
-> +}
-> +
->  bool is_ucounts_overlimit(struct ucounts *ucounts, enum ucount_type type, unsigned long max)
->  {
->         struct ucounts *iter;
-> --
-> 2.20.1
+> >
+> > > Should we perhaps have a vendor/ directory for vendor-specific tags?
+> >
+> > In the kernel tree, we already have bindings/soc/<vendor> and vendors
+> > like to just dump all their stuff there when it belongs in a directory
+> > for the function.
 >
+> OK so perhaps we should leave this file where it is.
+>
+> >
+> > > Also, thinking ahead, I am interested in how we can add bindings for
+> > > firmware-to-firmware communications. There are some settings that
+> > > could be defined across projects (such as memory layout, security
+> > > level/settings) and these should ideally be harmless to pass to the
+> > > kernel (i.e. ignored by the kernel). It is possible that some of these
+> > > could be used by the kernel but then we can always recreate them using
+> > > kernel bindings as needed (and cross that bridge when we come to it).
+> > > So this would be a set of bindings used by firmware components in
+> > > general. We would not want to use "u-boot,xxx" in that case.
+> >
+> > Yes, that is also why I'm thinking about how do we extend /chosen.
+> > More generally, it's just one stage to the next. firmware-to-firmware
+> > is not really any different than bootloader to OS. /chosen serves that
+> > purpose already, so the question is how to make chosen support
+> > multiple components.
+>
+> The problem, as I see it, is that we don't have
+> /chosen/operating-system, we just have /chosen
+
+Right, redesigning from scratch would be easier. My thinking was the
+immediate properties in /chosen are owned by the OS and child nodes
+are their own namespace. That works in terms of separate namespaces as
+long as we don't need a global one which the OS can override. The one
+exception where this breaks down is simple framebuffer has already
+added a child node, but that overlap doesn't seem too problematic to
+me.
+
+>
+> So that namespace is already claimed for the OS. A clean break seems
+> better to me.
+>
+> Just a thought...if we have /chosen-fw we could have subnodes for each
+> firmware component, with the 'standard' bindings at the top level?
+
+You mean like this?:
+
+/chosen
+ + OS props
+
+/chosen-fw
+ +/u-boot
+   + u-boot props
+ +/other-fw
+ ...
+
+Rob
