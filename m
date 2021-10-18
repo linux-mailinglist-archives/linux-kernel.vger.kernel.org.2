@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E90B7431C56
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:39:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7426B431D57
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:48:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233139AbhJRNkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:40:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55128 "EHLO mail.kernel.org"
+        id S234012AbhJRNuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:50:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47682 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233378AbhJRNiM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:38:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 44BAB61411;
-        Mon, 18 Oct 2021 13:31:49 +0000 (UTC)
+        id S234015AbhJRNsU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:48:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 26E9C613D5;
+        Mon, 18 Oct 2021 13:36:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634563909;
-        bh=R5LU+vPINuAyX8FG70ZMRponF8JS2fZnFikI4/x5cE4=;
+        s=korg; t=1634564217;
+        bh=8pbmoMm1XhlbrHMxJD1caV5O4QJWhfMAtEFJXtpu3+c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=X8UTcVJcI4tKfYX91ovzRB193Zps2IEvckm1zu27zoWjonTj6+0SrB+ItfHdGKwBS
-         /G0t4Gvyr7uC8+y/ikIpZsRKbzWmUzcdn0s5I+VBuAkhFx/rZ3tnARyHsuT/3USRH0
-         x1Y0G5nQLa/iye3yCBkrc7ntptv8oPnXj9lQWv74=
+        b=Ueg9CwjBtxT8hnjU++26TyjXYvmlu0jNRSFpaDhnFgv726Qs3PpJtTrI45O5xIp29
+         jZm2RZRBlzU88nXP+EMgeKviGTlDCLxV1iHTVjtSj/vqGjnBE2Mqsn/AhwvQXwi4KU
+         tXBuCglswimi4/J8RZ5kOXzZBisdWfQyJWpAvyrA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Rob Clark <robdclark@chromium.org>
-Subject: [PATCH 5.4 63/69] drm/msm/dsi: Fix an error code in msm_dsi_modeset_init()
-Date:   Mon, 18 Oct 2021 15:25:01 +0200
-Message-Id: <20211018132331.556538903@linuxfoundation.org>
+        stable@vger.kernel.org, Vadim Pasternak <vadimp@nvidia.com>,
+        Hans de Goede <hdegoede@redhat.com>
+Subject: [PATCH 5.10 086/103] platform/mellanox: mlxreg-io: Fix read access of n-bytes size attributes
+Date:   Mon, 18 Oct 2021 15:25:02 +0200
+Message-Id: <20211018132337.642837502@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132329.453964125@linuxfoundation.org>
-References: <20211018132329.453964125@linuxfoundation.org>
+In-Reply-To: <20211018132334.702559133@linuxfoundation.org>
+References: <20211018132334.702559133@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +39,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Vadim Pasternak <vadimp@nvidia.com>
 
-commit 739b4e7756d3301dd673ca517afca46a5f635562 upstream.
+commit db9cc7d6f95e7d89b0ce57e785cfd9d67a7505d8 upstream.
 
-Return an error code if msm_dsi_manager_validate_current_config().
-Don't return success.
+Fix shift argument for function rol32(). It should be provided in bits,
+while was provided in bytes.
 
-Fixes: 8b03ad30e314 ("drm/msm/dsi: Use one connector for dual DSI mode")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Link: https://lore.kernel.org/r/20211001123308.GF2283@kili
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Signed-off-by: Rob Clark <robdclark@chromium.org>
+Fixes: 86148190a7db ("platform/mellanox: mlxreg-io: Add support for complex attributes")
+Signed-off-by: Vadim Pasternak <vadimp@nvidia.com>
+Link: https://lore.kernel.org/r/20210927142214.2613929-3-vadimp@nvidia.com
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/msm/dsi/dsi.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/platform/mellanox/mlxreg-io.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/gpu/drm/msm/dsi/dsi.c
-+++ b/drivers/gpu/drm/msm/dsi/dsi.c
-@@ -206,8 +206,10 @@ int msm_dsi_modeset_init(struct msm_dsi
- 		goto fail;
+--- a/drivers/platform/mellanox/mlxreg-io.c
++++ b/drivers/platform/mellanox/mlxreg-io.c
+@@ -98,7 +98,7 @@ mlxreg_io_get_reg(void *regmap, struct m
+ 			if (ret)
+ 				goto access_error;
+ 
+-			*regval |= rol32(val, regsize * i);
++			*regval |= rol32(val, regsize * i * 8);
+ 		}
  	}
- 
--	if (!msm_dsi_manager_validate_current_config(msm_dsi->id))
-+	if (!msm_dsi_manager_validate_current_config(msm_dsi->id)) {
-+		ret = -EINVAL;
- 		goto fail;
-+	}
- 
- 	msm_dsi->encoder = encoder;
  
 
 
