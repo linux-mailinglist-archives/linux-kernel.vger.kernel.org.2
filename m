@@ -2,40 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEE4C431CFC
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:44:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38624431B2D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:29:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232942AbhJRNqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:46:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40222 "EHLO mail.kernel.org"
+        id S232238AbhJRNbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:31:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42496 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232814AbhJRNoR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:44:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C8132613A4;
-        Mon, 18 Oct 2021 13:35:08 +0000 (UTC)
+        id S232165AbhJRN3f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:29:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 29C62610C7;
+        Mon, 18 Oct 2021 13:27:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634564109;
-        bh=pax5PZkCldFZG078Cb1+J/jZRP5k6V3ZxRuLedgHGzg=;
+        s=korg; t=1634563644;
+        bh=DkzIO5A03SRxsi4IHh9zWKcpfsQxM/uye2P9HevFwXU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=f/WQIhm8aOLCffsqiMGuYOg1KHBJsxFmh2WZpYZUfqYbnOz+gZ0zQmpdRCZLp/uvL
-         avWtHilxMnSSlyjGsMEYn7DuY/Vg86tNzfOz+kRjAA8N2twiKuMg6ADIT68g1lFBr8
-         uXbL9cGLh3y7qzdhIipyle6kYytCoG/9vkukE+dE=
+        b=qqMpIbT8iN6KJlSio25UShc9HT6GIzW1AdxYrY7Iaed3aqG4i4ZWnrBNZ7FGPwMZ5
+         fE2P4KXI4PbpbgycJ+wd0c1BX0di75zE+WbZ/cwMHHda6km1rYQP7+se+mVTolt0Jo
+         uL9Eh6yCbfFvmUTSjksKyWMOLcZ1rMQURhISEYFY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vlad Yasevich <vyasevich@gmail.com>,
-        Neil Horman <nhorman@tuxdriver.com>,
-        Eiichi Tsukata <eiichi.tsukata@nutanix.com>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        Marcelo Ricardo Leitner <mleitner@redhat.com>,
-        Xin Long <lucien.xin@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.10 068/103] sctp: account stream padding length for reconf chunk
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Rob Clark <robdclark@chromium.org>
+Subject: [PATCH 4.14 35/39] drm/msm: Fix null pointer dereference on pointer edp
 Date:   Mon, 18 Oct 2021 15:24:44 +0200
-Message-Id: <20211018132337.025412465@linuxfoundation.org>
+Message-Id: <20211018132326.564088049@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132334.702559133@linuxfoundation.org>
-References: <20211018132334.702559133@linuxfoundation.org>
+In-Reply-To: <20211018132325.426739023@linuxfoundation.org>
+References: <20211018132325.426739023@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,44 +40,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eiichi Tsukata <eiichi.tsukata@nutanix.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-commit a2d859e3fc97e79d907761550dbc03ff1b36479c upstream.
+commit 2133c4fc8e1348dcb752f267a143fe2254613b34 upstream.
 
-sctp_make_strreset_req() makes repeated calls to sctp_addto_chunk()
-which will automatically account for padding on each call. inreq and
-outreq are already 4 bytes aligned, but the payload is not and doing
-SCTP_PAD4(a + b) (which _sctp_make_chunk() did implicitly here) is
-different from SCTP_PAD4(a) + SCTP_PAD4(b) and not enough. It led to
-possible attempt to use more buffer than it was allocated and triggered
-a BUG_ON.
+The initialization of pointer dev dereferences pointer edp before
+edp is null checked, so there is a potential null pointer deference
+issue. Fix this by only dereferencing edp after edp has been null
+checked.
 
-Cc: Vlad Yasevich <vyasevich@gmail.com>
-Cc: Neil Horman <nhorman@tuxdriver.com>
-Cc: Greg KH <gregkh@linuxfoundation.org>
-Fixes: cc16f00f6529 ("sctp: add support for generating stream reconf ssn reset request chunk")
-Reported-by: Eiichi Tsukata <eiichi.tsukata@nutanix.com>
-Signed-off-by: Eiichi Tsukata <eiichi.tsukata@nutanix.com>
-Signed-off-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
-Signed-off-by: Marcelo Ricardo Leitner <mleitner@redhat.com>
-Reviewed-by: Xin Long <lucien.xin@gmail.com>
-Link: https://lore.kernel.org/r/b97c1f8b0c7ff79ac4ed206fc2c49d3612e0850c.1634156849.git.mleitner@redhat.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Addresses-Coverity: ("Dereference before null check")
+Fixes: ab5b0107ccf3 ("drm/msm: Initial add eDP support in msm drm driver (v5)")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Link: https://lore.kernel.org/r/20210929121857.213922-1-colin.king@canonical.com
+Signed-off-by: Rob Clark <robdclark@chromium.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/sctp/sm_make_chunk.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/msm/edp/edp_ctrl.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/net/sctp/sm_make_chunk.c
-+++ b/net/sctp/sm_make_chunk.c
-@@ -3651,7 +3651,7 @@ struct sctp_chunk *sctp_make_strreset_re
- 	outlen = (sizeof(outreq) + stream_len) * out;
- 	inlen = (sizeof(inreq) + stream_len) * in;
+--- a/drivers/gpu/drm/msm/edp/edp_ctrl.c
++++ b/drivers/gpu/drm/msm/edp/edp_ctrl.c
+@@ -1090,7 +1090,7 @@ void msm_edp_ctrl_power(struct edp_ctrl
+ int msm_edp_ctrl_init(struct msm_edp *edp)
+ {
+ 	struct edp_ctrl *ctrl = NULL;
+-	struct device *dev = &edp->pdev->dev;
++	struct device *dev;
+ 	int ret;
  
--	retval = sctp_make_reconf(asoc, outlen + inlen);
-+	retval = sctp_make_reconf(asoc, SCTP_PAD4(outlen) + SCTP_PAD4(inlen));
- 	if (!retval)
- 		return NULL;
+ 	if (!edp) {
+@@ -1098,6 +1098,7 @@ int msm_edp_ctrl_init(struct msm_edp *ed
+ 		return -EINVAL;
+ 	}
  
++	dev = &edp->pdev->dev;
+ 	ctrl = devm_kzalloc(dev, sizeof(*ctrl), GFP_KERNEL);
+ 	if (!ctrl)
+ 		return -ENOMEM;
 
 
