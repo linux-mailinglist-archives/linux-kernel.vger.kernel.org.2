@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47F03431E75
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:59:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B574B431C6D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:39:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234420AbhJROBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 10:01:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39660 "EHLO mail.kernel.org"
+        id S233720AbhJRNk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:40:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53902 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233977AbhJRN7T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:59:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 543F161A3B;
-        Mon, 18 Oct 2021 13:41:44 +0000 (UTC)
+        id S233806AbhJRNiv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:38:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2891861356;
+        Mon, 18 Oct 2021 13:32:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634564504;
-        bh=czaI13gQk7wRy9J0Hi5zKCZKM6yOkAkNqxw0VBmSeSw=;
+        s=korg; t=1634563940;
+        bh=wIS/+nGfYRfxZzuBiD4QPhkeWqMzIK0zUJQOPbgbDwU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kTqavzVuy0paiTpIer2iajZuN85A/qniLrRDAleqfkFADrSrh9fJqx+WW8dtO6L9X
-         /fyiuZviRTxy3i7Xn+zsGug1apOOEBXfwFbuKVAN/ztbELKMIWBgj7SG+FdXiq6hpT
-         ydiKWLq9KW3XcwkrcXeM78kXMCWbhRhqj+L/uamo=
+        b=032j5xOLb3wh7Xy+dw5l3GE8RWsJVPyNMAXwLB4bj3KB798zh2G27KLjyEhmPlAYM
+         W+ah4JWHANEwS3mDK+GgK9HBA83gccQ7pi0ZhtxuLwReqQM+gRyd1VF4R81stva87l
+         Bxze0yMI1MG0cR4CEKS2HcplAPB7v4r8KnHyXVDQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Ziyang Xuan <william.xuanziyang@huawei.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.14 115/151] nfc: fix error handling of nfc_proto_register()
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>
+Subject: [PATCH 5.4 56/69] pata_legacy: fix a couple uninitialized variable bugs
 Date:   Mon, 18 Oct 2021 15:24:54 +0200
-Message-Id: <20211018132344.415673589@linuxfoundation.org>
+Message-Id: <20211018132331.331510851@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132340.682786018@linuxfoundation.org>
-References: <20211018132340.682786018@linuxfoundation.org>
+In-Reply-To: <20211018132329.453964125@linuxfoundation.org>
+References: <20211018132329.453964125@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,35 +39,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ziyang Xuan <william.xuanziyang@huawei.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-commit 0911ab31896f0e908540746414a77dd63912748d upstream.
+commit 013923477cb311293df9079332cf8b806ed0e6f2 upstream.
 
-When nfc proto id is using, nfc_proto_register() return -EBUSY error
-code, but forgot to unregister proto. Fix it by adding proto_unregister()
-in the error handling case.
+The last byte of "pad" is used without being initialized.
 
-Fixes: c7fe3b52c128 ("NFC: add NFC socket family")
-Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Link: https://lore.kernel.org/r/20211013034932.2833737-1-william.xuanziyang@huawei.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: 55dba3120fbc ("libata: update ->data_xfer hook for ATAPI")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Damien Le Moal <damien.lemoal@wdc.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/nfc/af_nfc.c |    3 +++
- 1 file changed, 3 insertions(+)
+ drivers/ata/pata_legacy.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/net/nfc/af_nfc.c
-+++ b/net/nfc/af_nfc.c
-@@ -60,6 +60,9 @@ int nfc_proto_register(const struct nfc_
- 		proto_tab[nfc_proto->id] = nfc_proto;
- 	write_unlock(&proto_tab_lock);
+--- a/drivers/ata/pata_legacy.c
++++ b/drivers/ata/pata_legacy.c
+@@ -315,7 +315,8 @@ static unsigned int pdc_data_xfer_vlb(st
+ 			iowrite32_rep(ap->ioaddr.data_addr, buf, buflen >> 2);
  
-+	if (rc)
-+		proto_unregister(nfc_proto->proto);
+ 		if (unlikely(slop)) {
+-			__le32 pad;
++			__le32 pad = 0;
 +
- 	return rc;
- }
- EXPORT_SYMBOL(nfc_proto_register);
+ 			if (rw == READ) {
+ 				pad = cpu_to_le32(ioread32(ap->ioaddr.data_addr));
+ 				memcpy(buf + buflen - slop, &pad, slop);
+@@ -705,7 +706,8 @@ static unsigned int vlb32_data_xfer(stru
+ 			ioread32_rep(ap->ioaddr.data_addr, buf, buflen >> 2);
+ 
+ 		if (unlikely(slop)) {
+-			__le32 pad;
++			__le32 pad = 0;
++
+ 			if (rw == WRITE) {
+ 				memcpy(&pad, buf + buflen - slop, slop);
+ 				iowrite32(le32_to_cpu(pad), ap->ioaddr.data_addr);
 
 
