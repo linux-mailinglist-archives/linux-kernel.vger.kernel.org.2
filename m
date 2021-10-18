@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91B91431D5B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:48:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5A70431D2D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:47:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234058AbhJRNuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:50:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50684 "EHLO mail.kernel.org"
+        id S232893AbhJRNs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:48:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40198 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234085AbhJRNs0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:48:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8660B615E6;
-        Mon, 18 Oct 2021 13:37:02 +0000 (UTC)
+        id S233868AbhJRNqR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:46:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 820CD6162E;
+        Mon, 18 Oct 2021 13:35:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634564223;
-        bh=HsUcOVXCV/LUQslWbaEvlU0ZzUFt/94EE7hHsXdfuDw=;
+        s=korg; t=1634564157;
+        bh=czaI13gQk7wRy9J0Hi5zKCZKM6yOkAkNqxw0VBmSeSw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TNRGqcZ/0VadndppOuU8cnPYaF8DCabBwmnj5d2TtB2LT7uv1TWUDmXOMYWf8B1aa
-         VlJ33YoJ9zKPeRxxz5sPWTsAyPz+d4uev08opVnF3R4zXk3nQwowu/ug4qcle6lONx
-         nOm2KIVCjC1SzO24CPz4iMVYuwwgbP0s5riMuUMI=
+        b=KnbZWOZCO1ZfrRga1MMB2yWfoHIGPbd+UTIJ9GcALUT0G3+d9NbX74Z5oxR74SpDJ
+         +QEdQYCeTKmo3Dyk57SCxJYjHc/kEnLF/n7CJeA4vCyURTmkTUuxwp1s/EBjLJGLLj
+         bQxin8D39ooNH5InhEMho4hSnPMLNZDXtUgJhgW4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Cindy Lu <lulu@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>
-Subject: [PATCH 5.10 078/103] vhost-vdpa: Fix the wrong input in config_cb
-Date:   Mon, 18 Oct 2021 15:24:54 +0200
-Message-Id: <20211018132337.370766466@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Ziyang Xuan <william.xuanziyang@huawei.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.10 079/103] nfc: fix error handling of nfc_proto_register()
+Date:   Mon, 18 Oct 2021 15:24:55 +0200
+Message-Id: <20211018132337.410206165@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211018132334.702559133@linuxfoundation.org>
 References: <20211018132334.702559133@linuxfoundation.org>
@@ -39,33 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cindy Lu <lulu@redhat.com>
+From: Ziyang Xuan <william.xuanziyang@huawei.com>
 
-commit bcef9356fc2e1302daf373c83c826aa27954d128 upstream.
+commit 0911ab31896f0e908540746414a77dd63912748d upstream.
 
-Fix the wrong input in for config_cb. In function vhost_vdpa_config_cb,
-the input cb.private was used as struct vhost_vdpa, so the input was
-wrong here, fix this issue
+When nfc proto id is using, nfc_proto_register() return -EBUSY error
+code, but forgot to unregister proto. Fix it by adding proto_unregister()
+in the error handling case.
 
-Fixes: 776f395004d8 ("vhost_vdpa: Support config interrupt in vdpa")
-Signed-off-by: Cindy Lu <lulu@redhat.com>
-Link: https://lore.kernel.org/r/20210929090933.20465-1-lulu@redhat.com
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Fixes: c7fe3b52c128 ("NFC: add NFC socket family")
+Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Link: https://lore.kernel.org/r/20211013034932.2833737-1-william.xuanziyang@huawei.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/vhost/vdpa.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/nfc/af_nfc.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/vhost/vdpa.c
-+++ b/drivers/vhost/vdpa.c
-@@ -325,7 +325,7 @@ static long vhost_vdpa_set_config_call(s
- 	struct eventfd_ctx *ctx;
+--- a/net/nfc/af_nfc.c
++++ b/net/nfc/af_nfc.c
+@@ -60,6 +60,9 @@ int nfc_proto_register(const struct nfc_
+ 		proto_tab[nfc_proto->id] = nfc_proto;
+ 	write_unlock(&proto_tab_lock);
  
- 	cb.callback = vhost_vdpa_config_cb;
--	cb.private = v->vdpa;
-+	cb.private = v;
- 	if (copy_from_user(&fd, argp, sizeof(fd)))
- 		return  -EFAULT;
- 
++	if (rc)
++		proto_unregister(nfc_proto->proto);
++
+ 	return rc;
+ }
+ EXPORT_SYMBOL(nfc_proto_register);
 
 
