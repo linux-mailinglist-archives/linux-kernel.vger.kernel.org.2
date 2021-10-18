@@ -2,114 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5713443117F
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 09:40:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74D55431182
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 09:41:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230445AbhJRHmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 03:42:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38108 "EHLO
+        id S230448AbhJRHnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 03:43:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230419AbhJRHmQ (ORCPT
+        with ESMTP id S230328AbhJRHnV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 03:42:16 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CDB5C06161C
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 00:40:03 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id g25so39449661wrb.2
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 00:40:03 -0700 (PDT)
+        Mon, 18 Oct 2021 03:43:21 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC41AC06161C;
+        Mon, 18 Oct 2021 00:41:10 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id a25so67323631edx.8;
+        Mon, 18 Oct 2021 00:41:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=VZmNs2GkzxhCB6JvBYnlodKD9/a6gtDFwX3G4j5wn7c=;
-        b=oae7VeX5cuVbu+3yaIg3mCW2czfOxBXemxBlIV/GCmMSn7Aj2S36Cfp2Ej1UN5iZ5R
-         n59i410Rso7mM0FYctJy9Qcza9G7OPMt45JKHUkjj6gBXOXrZRQAgeNQpdFKYAcQAEz7
-         fH5nbg0HrhbN8+KrPKuJ7HuL25jtsyaBWXOj5r+0BQf3Gm4sPejcfTRk7JOD2IPARhbb
-         PTY3ehD/1Hq9lRlRsZFej21R6JCPLFZaC7iMr2NOI1bvdhADA+KQof5JmF3BjK26vzl0
-         nElkg51iqJ/x/8vso6C0mKXQNW3QhtimFsVQVB/gyiqi2UTiOrrGhPYGG3J+dq9snEA0
-         mlAw==
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zvyc7lXYEn3ZHyaBahJODZ1u5FA0Z1xlS6IA6NF8Q1Q=;
+        b=Vtm1lb1f6UKaT4L9gaV462C5J6tU0WmvwuSaV+Nm9HtR3mVpkPGb8xXZfVw/mfdoUc
+         NPOmGUQrFMyUS+SJrziYwVqgoS43dN9cc9idt/Zf8MtU7mD0sjWYa/zZy706LwbUfU4z
+         Pgfhvzn6gkQXFW2sADVbZMoufMACn16abUSTqg20Pwx9nrhTfG9RVCgrbnyInEmKJinV
+         J4iOsnbche2HpSNGOLQAVgFOfzvmfZN5NpCuH/BGC+lYiSMr8glDFMrbXmdsOHmgRm7B
+         X3qjX9vrumen4/cZD8lh2zGvlHK6ByeC1FAWr2PXLNZM7HivC4RNRznWQ7cITenQ92vG
+         snBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=VZmNs2GkzxhCB6JvBYnlodKD9/a6gtDFwX3G4j5wn7c=;
-        b=ctohRxr2A2VKzR2bYY14fAjaSTb77udgUqfjDIN+8pjn5dsxffFwrlqtpBxzPaSEtJ
-         +beewkPz1v3OYFGFmhXoaejN10Dosz5J55IMzSZXwVgV9m/CPRRXVFPq59VHgXb0KyD2
-         nRWhY0IgfAC2dXJCUXsIZfUjy1OElO3GpxQWBAJxLNhPktQ6tMhgHBOj8SY8Ts/S16CK
-         9t5UqS7RZJdFzEk/6kq917Yd798921ed7E42YZy/yLOdoD4qTBf/l9Si2m7B0NFXJcKh
-         6EkmAPNPdNos2jLPaVIsRdNTdI0SSS82dVzaRPiDKf4pDNRaeC/vAN0Y28AH/vy9oIZC
-         NvQg==
-X-Gm-Message-State: AOAM532C6HNb0OBMhkb6TIX+bY849UPAZhyI3aoV3HvreNXH+fQknmoA
-        6kgQ++HmmK9H8fJ0DTRSlLlHu0oXx4R3Cw==
-X-Google-Smtp-Source: ABdhPJyHqY72fbaXwdf2acp6AUOMOZIy/6NHYEKRPlWsRaHyfSV7hxwz4gN1tq143M0gfexGnALqSQ==
-X-Received: by 2002:adf:aad4:: with SMTP id i20mr34082320wrc.402.1634542801469;
-        Mon, 18 Oct 2021 00:40:01 -0700 (PDT)
-Received: from ?IPv6:2001:861:44c0:66c0:2dd7:d5eb:6e87:f924? ([2001:861:44c0:66c0:2dd7:d5eb:6e87:f924])
-        by smtp.gmail.com with ESMTPSA id z135sm6889997wmc.45.2021.10.18.00.40.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Oct 2021 00:40:00 -0700 (PDT)
-Subject: Re: [PATCH v2 6/6] drm/meson: encoder_cvbs: switch to bridge with
- ATTACH_NO_CONNECTOR
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        sam@ravnborg.org
-Cc:     daniel@ffwll.ch, Laurent.pinchart@ideasonboard.com,
-        dri-devel@lists.freedesktop.org, linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20211015141107.2430800-1-narmstrong@baylibre.com>
- <20211015141107.2430800-7-narmstrong@baylibre.com>
- <CAFBinCBwO0CJMPA3K6e8OxXcinzrA5LrSqaKu1XtZPWLXT8Krw@mail.gmail.com>
-From:   Neil Armstrong <narmstrong@baylibre.com>
-Organization: Baylibre
-Message-ID: <7a921d1d-84b4-c3e4-8f7c-10db5ad42ecf@baylibre.com>
-Date:   Mon, 18 Oct 2021 09:40:03 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zvyc7lXYEn3ZHyaBahJODZ1u5FA0Z1xlS6IA6NF8Q1Q=;
+        b=ZRnDt8SAdHmpcwR1L7uRkYt0fi1LXO6gmzpIbqknercXqodV99+F4GpnnWugBhPyVY
+         Z7zHWoziaSKdvpENsLZM7x6R/hP3BJN7NXvIh6va5eTXjG7F1pvNaX5Q0DKG06XaWVqz
+         kTXv3B66jZ7XqKOJNJDqhKpVnrRSsIuqJ2pZ3yzrhn75XgukildQ3vzDWCYw+y8qDj4G
+         qCa8vxI/68Am9K+KYIAofF6Cv+iJ5YvA/d2eZTxKw5ecFpbKKrwr/lpZa9jCXAvTSDoE
+         +IYwlSvHVcQl6a3ok+iNBDoK6gQ/5Bkt/fNZe43Uclnj27z/99aHcp9QpWNHrc6NUPcA
+         xHeQ==
+X-Gm-Message-State: AOAM530LvfGGaZBfqhfytFiPzQO7YJhE+46q//SwH8HLPFH6DcaxFRTL
+        cJbjnsYCSH0WwwB7ZnB0R82KJc7zgpz7GrfkFrs=
+X-Google-Smtp-Source: ABdhPJwq5/ieXR4Pnzr/MTiDtOPg8LoqM6nm/bL6cklXBPRW6C5fnicEeBXnLyHiUj0X5jOzSSdYDYjpxD5DXN3vjfI=
+X-Received: by 2002:a50:e188:: with SMTP id k8mr43786153edl.119.1634542869041;
+ Mon, 18 Oct 2021 00:41:09 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAFBinCBwO0CJMPA3K6e8OxXcinzrA5LrSqaKu1XtZPWLXT8Krw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CACAwPwb7edLzX-KO1XVNWuQ3w=U0BfA=_kwiGCjZOpKfZpc2pw@mail.gmail.com>
+ <CACAwPwYQHRcrabw9=0tvenPzAcwwW1pTaR6a+AEWBF9Hqf_wXQ@mail.gmail.com> <20211017115843.2a872fbe@jic23-huawei>
+In-Reply-To: <20211017115843.2a872fbe@jic23-huawei>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 18 Oct 2021 10:40:33 +0300
+Message-ID: <CAHp75Vct-AXnU7QQmdE7nyYZT-=n=p67COPLiiZTet7z7snL-g@mail.gmail.com>
+Subject: Re: BMI160 accelerometer on AyaNeo tablet
+To:     Jonathan Cameron <jic23@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>
+Cc:     Maxim Levitsky <maximlevitsky@gmail.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
++Cc: Hans
 
-On 16/10/2021 00:34, Martin Blumenstingl wrote:
-> Hi Neil, Hi Sam,
-> 
-> On Fri, Oct 15, 2021 at 4:11 PM Neil Armstrong <narmstrong@baylibre.com> wrote:
-> [...]
->> +static const struct drm_bridge_funcs meson_encoder_cvbs_bridge_funcs = {
->> +       .attach = meson_encoder_cvbs_attach,
->> +       .enable = meson_encoder_cvbs_enable,
->> +       .disable = meson_encoder_cvbs_disable,
->> +       .mode_valid = meson_encoder_cvbs_mode_valid,
->> +       .get_modes = meson_encoder_cvbs_get_modes,
->> +       .atomic_enable = meson_encoder_cvbs_atomic_enable,
-> I did some testing on boards where u-boot doesn't initialize the video outputs.
-> It seems that meson_encoder_cvbs_enable() is never called with this patch.
-> meson_encoder_cvbs_atomic_enable() is called though.
-> 
-> From what I can see in drm_bridge.c [0] this is even expected.
-> Does this mean that we need to move all logic from .enable to
-> .atomic_enable (and same with .disable -> moving that logic to
-> .atomic_disable)?
-> 
-> The same comment applies to the HDMI patch.
+On Mon, Oct 18, 2021 at 6:41 AM Jonathan Cameron <jic23@kernel.org> wrote:
+>
+> On Sat, 16 Oct 2021 19:27:50 +0300
+> Maxim Levitsky <maximlevitsky@gmail.com> wrote:
+>
+> >  BMI160: AYA NEA accelometer ID
 
-Good point, I'll fix that for both patches !
+accelerometer
 
-Neil
+> >     On AYA NEO, the accelerometer is BMI160 but it is exposed
+> >     via ACPI as 10EC5280
+> >
+> >     Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+>
+> I guess it is hopelessly optimistic to hope that we could let someone
+> at the supplier know that's a totally invalid ACPI id and that they
+> should clean up their act.
+>
+> Curiously it looks like a valid PCI ID pair though for a realtek device.
+>
+> Ah well.  Applied to the iio-togreg branch of iio.git and pushed out
+> as testing to see if 0-day can find any issues with it.
 
-> 
-> 
-> Best regards,
-> Martin
-> 
-> 
-> [0] https://elixir.bootlin.com/linux/v5.15-rc5/source/drivers/gpu/drm/drm_bridge.c#L717
-> 
+NAK. And I explain below why and how to make progress with it.
 
+The commit message should contain at least the link to the DSDT and
+official technical description of the platform. Besides that, it
+should have a corresponding comment near to the ID in the code.
+
+On top of that, in particular to this case, the ID is very valid from
+the ACPI specification point of view, but in this case it's a
+representation of the PCI ID 10ec:5280 which is Realtek owned. So, we
+need to hear (okay in reasonable time) from Realtek (I believe they
+are active in the Linux kernel) and that OEM.
+
+I hardly believe that Realtek has issued a special ID from the range
+where mostly PCIe ports or so are allocated, although it's possible.
+We need proof.
+
+What I believe is the case here is that OEMs are just quite diletants
+in ACPI and firmware and they messed up with BIOS somehow that it
+issued the ID for the device.
+There are also two other possibilities: OEM stole the ID (deliberately
+or accidentally), or the device is not just gyro, but something which
+contains gyro.
+
+As to the last paragraph, see above, we must see DSDT. Without it I
+have a strong NAK.
+
+P.S. Jonathan, please do not be so fast next time with ACPI IDs.
+
+-- 
+With Best Regards,
+Andy Shevchenko
