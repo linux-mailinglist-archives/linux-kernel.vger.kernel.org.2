@@ -2,118 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23D954313B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 11:42:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89CC04313C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 11:47:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231607AbhJRJoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 05:44:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37710 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231733AbhJRJnZ (ORCPT
+        id S231675AbhJRJtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 05:49:02 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3998 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231669AbhJRJsa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 05:43:25 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 791F9C061779
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 02:40:51 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id y12so70200997eda.4
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 02:40:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=pqrs.dk; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=buH7vAjMrMNiFZgCnqX8LWzTqvVQhWMwnzUc5mp4HKY=;
-        b=jXJkDGVZAzJISWZM4ruartPN4Ikgw3wlZM19cVv7i30FnZlvvwYp2opQ09OhpLSZFz
-         FZZt6Ih72r7DUPzs21Duruaa47EuRU7vByDoyLz7QVhgAbA2y1qhynxkq4R4LMyydirq
-         RqxlNpLCeF3KV99CumSdj332ay6hi//ZHJPwM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=buH7vAjMrMNiFZgCnqX8LWzTqvVQhWMwnzUc5mp4HKY=;
-        b=1y3P7qZeSheth9IhyXW20vG0U5M2W7z3K94mki2zglbdchlwoB4ILbRir3xyeSN9yc
-         5INhKO703PWAzhQdLPbt9a0DIk3uY9qrh4b/ME8iDVi69LV3ZZRw0ysnMXQQvHrjKiA+
-         ctxsY+NMMs3vPdut0oRWD7ew1+/QA1xmBNX7MwACT6af4OqrKRNF5OBlG8AAIK+aDCOa
-         jFdSBi9xT2wRod4lgD01GPsBE4XNS+uVhrKvPcNbYMY0WUA+dcPmQlYFiqV5qkh1atW5
-         xGkQMv48J6BYTlIT+j9DPNotw9iihfq/Oi32dvtN9jhW3Rg8n5CVcx1ocIloekxu3FKC
-         HR4w==
-X-Gm-Message-State: AOAM5313M54IyzVOluKqKehy9Y4DgXu9T5SE25X3nyQkv8eKWrnl87qw
-        79ggVsDRao00RljWXfZGs8Q5iw==
-X-Google-Smtp-Source: ABdhPJxEHSRz1cCu0m7TXyoTnaLc7pxPXQ3mL/GnGCFCTS9JN9vdq+H0L63oyvPUoLu9gnRZIxPPng==
-X-Received: by 2002:a05:6402:3489:: with SMTP id v9mr43316435edc.130.1634550050056;
-        Mon, 18 Oct 2021 02:40:50 -0700 (PDT)
-Received: from capella.. ([80.208.66.147])
-        by smtp.gmail.com with ESMTPSA id z1sm10134566edc.68.2021.10.18.02.40.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 02:40:49 -0700 (PDT)
-From:   =?UTF-8?q?Alvin=20=C5=A0ipraga?= <alvin@pqrs.dk>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>
-Cc:     arinc.unal@arinc9.com,
-        =?UTF-8?q?Alvin=20=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4 net-next 7/7] net: phy: realtek: add support for RTL8365MB-VC internal PHYs
-Date:   Mon, 18 Oct 2021 11:38:02 +0200
-Message-Id: <20211018093804.3115191-8-alvin@pqrs.dk>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20211018093804.3115191-1-alvin@pqrs.dk>
-References: <20211018093804.3115191-1-alvin@pqrs.dk>
+        Mon, 18 Oct 2021 05:48:30 -0400
+Received: from fraeml706-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HXsNM258yz6889v;
+        Mon, 18 Oct 2021 17:42:11 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml706-chm.china.huawei.com (10.206.15.55) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.15; Mon, 18 Oct 2021 11:46:18 +0200
+Received: from localhost.localdomain (10.69.192.58) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Mon, 18 Oct 2021 10:46:15 +0100
+From:   John Garry <john.garry@huawei.com>
+To:     <axboe@kernel.dk>
+CC:     <ming.lei@redhat.com>, <linux-block@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kashyap.desai@broadcom.com>,
+        <hare@suse.de>, John Garry <john.garry@huawei.com>
+Subject: [PATCH v2] blk-mq: Fix blk_mq_tagset_busy_iter() for shared tags
+Date:   Mon, 18 Oct 2021 17:41:23 +0800
+Message-ID: <1634550083-202815-1-git-send-email-john.garry@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.58]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alvin Šipraga <alsi@bang-olufsen.dk>
+Since it is now possible for a tagset to share a single set of tags, the
+iter function should not re-iter the tags for the count of #hw queues in
+that case. Rather it should just iter once.
 
-The RTL8365MB-VC ethernet switch controller has 4 internal PHYs for its
-user-facing ports. All that is needed is to let the PHY driver core
-pick up the IRQ made available by the switch driver.
-
-Signed-off-by: Alvin Šipraga <alsi@bang-olufsen.dk>
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Fixes: e0fdf846c7bb ("blk-mq: Use shared tags for shared sbitmap support")
+Reported-by: Kashyap Desai <kashyap.desai@broadcom.com>
+Signed-off-by: John Garry <john.garry@huawei.com>
+Reviewed-by: Ming Lei <ming.lei@redhat.com>
 ---
+Diff to v1:
+- Add Ming's RB tag
 
-v3 -> v4: no change
-
-v2 -> v3: no change
-
-v1 -> v2: no change
-
-RFC -> v1: no change; collect Reviewed-by
-
- drivers/net/phy/realtek.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/drivers/net/phy/realtek.c b/drivers/net/phy/realtek.c
-index 11be60333fa8..a5671ab896b3 100644
---- a/drivers/net/phy/realtek.c
-+++ b/drivers/net/phy/realtek.c
-@@ -1023,6 +1023,14 @@ static struct phy_driver realtek_drvs[] = {
- 		.resume		= genphy_resume,
- 		.read_page	= rtl821x_read_page,
- 		.write_page	= rtl821x_write_page,
-+	}, {
-+		PHY_ID_MATCH_EXACT(0x001cc942),
-+		.name		= "RTL8365MB-VC Gigabit Ethernet",
-+		/* Interrupt handling analogous to RTL8366RB */
-+		.config_intr	= genphy_no_config_intr,
-+		.handle_interrupt = genphy_handle_interrupt_no_ack,
-+		.suspend	= genphy_suspend,
-+		.resume		= genphy_resume,
- 	},
- };
+diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
+index 72a2724a4eee..c943b6529619 100644
+--- a/block/blk-mq-tag.c
++++ b/block/blk-mq-tag.c
+@@ -378,9 +378,12 @@ void blk_mq_all_tag_iter(struct blk_mq_tags *tags, busy_tag_iter_fn *fn,
+ void blk_mq_tagset_busy_iter(struct blk_mq_tag_set *tagset,
+ 		busy_tag_iter_fn *fn, void *priv)
+ {
+-	int i;
++	unsigned int flags = tagset->flags;
++	int i, nr_tags;
++
++	nr_tags = blk_mq_is_shared_tags(flags) ? 1 : tagset->nr_hw_queues;
  
+-	for (i = 0; i < tagset->nr_hw_queues; i++) {
++	for (i = 0; i < nr_tags; i++) {
+ 		if (tagset->tags && tagset->tags[i])
+ 			__blk_mq_all_tag_iter(tagset->tags[i], fn, priv,
+ 					      BT_TAG_ITER_STARTED);
 -- 
-2.32.0
+2.26.2
 
