@@ -2,442 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00F5B4313E4
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 11:57:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7276A4313E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 11:58:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229889AbhJRJ7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 05:59:08 -0400
-Received: from foss.arm.com ([217.140.110.172]:34746 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229473AbhJRJ7H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 05:59:07 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E8335ED1;
-        Mon, 18 Oct 2021 02:56:55 -0700 (PDT)
-Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7C48A3F70D;
-        Mon, 18 Oct 2021 02:56:54 -0700 (PDT)
-Date:   Mon, 18 Oct 2021 10:56:43 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Songxiaowei <songxiaowei@hisilicon.com>,
-        Binghui Wang <wangbinghui@hisilicon.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, kishon@ti.com
-Subject: Re: [PATCH v13 04/10] PCI: kirin: Add support for bridge slot DT
- schema
-Message-ID: <20211018095634.GA17152@lpieralisi>
-References: <cover.1634539769.git.mchehab+huawei@kernel.org>
- <2058b3059516595ec7f2e7a72197e02235943244.1634539769.git.mchehab+huawei@kernel.org>
+        id S229610AbhJRKBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 06:01:02 -0400
+Received: from mx3.molgen.mpg.de ([141.14.17.11]:57227 "EHLO mx1.molgen.mpg.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229473AbhJRKBB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 06:01:01 -0400
+Received: from [192.168.0.2] (ip5f5aef76.dynamic.kabel-deutschland.de [95.90.239.118])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 3A67F61E5FE33;
+        Mon, 18 Oct 2021 11:58:49 +0200 (CEST)
+Subject: Re: [PATCH v2 2/7] media: aspeed: use v4l2_info/v4l2_warn/v4l2_dbg
+ for log
+To:     Jammy Huang <jammy_huang@aspeedtech.com>
+References: <20211018092207.13336-1-jammy_huang@aspeedtech.com>
+ <20211018092207.13336-3-jammy_huang@aspeedtech.com>
+Cc:     eajames@linux.ibm.com, mchehab@kernel.org, joel@jms.id.au,
+        andrew@aj.id.au, linux-media@vger.kernel.org,
+        openbmc@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+Message-ID: <24ee2592-c62e-8108-58ff-56e648bdf445@molgen.mpg.de>
+Date:   Mon, 18 Oct 2021 11:58:48 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2058b3059516595ec7f2e7a72197e02235943244.1634539769.git.mchehab+huawei@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20211018092207.13336-3-jammy_huang@aspeedtech.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+Kishon for PHY changes]
+Dear Jammy,
 
-On Mon, Oct 18, 2021 at 08:07:29AM +0100, Mauro Carvalho Chehab wrote:
-> On HiKey970, there's a PEX 8606 PCI bridge on its PHY with
-> 6 lanes. Only 4 lanes are connected:
-> 
-> 	lane 0 - connected to Kirin 970;
-> 	lane 4 - M.2 slot;
-> 	lane 5 - mini PCIe slot;
-> 	lane 6 - in-board Ethernet controller.
-> 
-> Each lane has its own PERST# gpio pin, and needs a clock
-> request.
-> 
-> Add support to parse a DT schema containing the above data.
-> 
-> Acked-by: Xiaowei Song <songxiaowei@hisilicon.com>
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+
+Am 18.10.21 um 11:22 schrieb Jammy Huang:
+> The debug log level, 0~3, is controlled by module_param, debug.
+> Higher the value, more the information.
+
+Nit: *The* higher …
+
+Please mention your “conversion heuristic”? For example, level 3 is for 
+register operations (read, update, write)? Maybe that could also be 
+added to the module parameter description.
+
+
+Kind regards,
+
+Paul
+
+
+> Signed-off-by: Jammy Huang <jammy_huang@aspeedtech.com>
 > ---
+>   drivers/media/platform/aspeed-video.c | 40 +++++++++++++++------------
+>   1 file changed, 23 insertions(+), 17 deletions(-)
 > 
-> See [PATCH v13 00/10] at: https://lore.kernel.org/all/cover.1634539769.git.mchehab+huawei@kernel.org/
-> 
->  drivers/pci/controller/dwc/pcie-kirin.c | 264 +++++++++++++++++++++---
->  1 file changed, 232 insertions(+), 32 deletions(-)
-> 
-> diff --git a/drivers/pci/controller/dwc/pcie-kirin.c b/drivers/pci/controller/dwc/pcie-kirin.c
-> index 0ea92a521e1c..5c97e91adbb0 100644
-> --- a/drivers/pci/controller/dwc/pcie-kirin.c
-> +++ b/drivers/pci/controller/dwc/pcie-kirin.c
-> @@ -52,6 +52,19 @@
->  #define PCIE_DEBOUNCE_PARAM	0xF0F400
->  #define PCIE_OE_BYPASS		(0x3 << 28)
->  
-> +/*
-> + * Max number of connected PCI slots at an external PCI bridge
-> + *
-> + * This is used on HiKey 970, which has a PEX 8606 bridge with has
-> + * 4 connected lanes (lane 0 upstream, and the other tree lanes,
-> + * one connected to an in-board Ethernet adapter and the other two
-> + * connected to M.2 and mini PCI slots.
-> + *
-> + * Each slot has a different clock source and uses a separate PERST#
-> + * pin.
-> + */
-> +#define MAX_PCI_SLOTS		3
+> diff --git a/drivers/media/platform/aspeed-video.c b/drivers/media/platform/aspeed-video.c
+> index 6259cf17a7cc..642ca96c8c52 100644
+> --- a/drivers/media/platform/aspeed-video.c
+> +++ b/drivers/media/platform/aspeed-video.c
+> @@ -30,6 +30,7 @@
+>   #include <media/v4l2-event.h>
+>   #include <media/v4l2-ioctl.h>
+>   #include <media/videobuf2-dma-contig.h>
+> +#include <linux/videodev2.h>
+>   
+>   #define DEVICE_NAME			"aspeed-video"
+>   
+> @@ -390,6 +391,8 @@ static const struct v4l2_dv_timings_cap aspeed_video_timings_cap = {
+>   	},
+>   };
+>   
+> +static unsigned int debug;
 > +
->  enum pcie_kirin_phy_type {
->  	PCIE_KIRIN_INTERNAL_PHY,
->  	PCIE_KIRIN_EXTERNAL_PHY
-> @@ -64,6 +77,19 @@ struct kirin_pcie {
->  	struct regmap   *apb;
->  	struct phy	*phy;
->  	void		*phy_priv;	/* only for PCIE_KIRIN_INTERNAL_PHY */
+>   static void aspeed_video_init_jpeg_table(u32 *table, bool yuv420)
+>   {
+>   	int i;
+> @@ -437,23 +440,23 @@ static void aspeed_video_update(struct aspeed_video *video, u32 reg, u32 clear,
+>   	t &= ~clear;
+>   	t |= bits;
+>   	writel(t, video->base + reg);
+> -	dev_dbg(video->dev, "update %03x[%08x -> %08x]\n", reg, before,
+> -		readl(video->base + reg));
+> +	v4l2_dbg(3, debug, &video->v4l2_dev, "update %03x[%08x -> %08x]\n",
+> +		 reg, before, readl(video->base + reg));
+>   }
+>   
+>   static u32 aspeed_video_read(struct aspeed_video *video, u32 reg)
+>   {
+>   	u32 t = readl(video->base + reg);
+>   
+> -	dev_dbg(video->dev, "read %03x[%08x]\n", reg, t);
+> +	v4l2_dbg(3, debug, &video->v4l2_dev, "read %03x[%08x]\n", reg, t);
+>   	return t;
+>   }
+>   
+>   static void aspeed_video_write(struct aspeed_video *video, u32 reg, u32 val)
+>   {
+>   	writel(val, video->base + reg);
+> -	dev_dbg(video->dev, "write %03x[%08x]\n", reg,
+> -		readl(video->base + reg));
+> +	v4l2_dbg(3, debug, &video->v4l2_dev, "write %03x[%08x]\n", reg,
+> +		 readl(video->base + reg));
+>   }
+>   
+>   static void update_perf(struct aspeed_video_perf *p)
+> @@ -474,13 +477,13 @@ static int aspeed_video_start_frame(struct aspeed_video *video)
+>   	u32 seq_ctrl = aspeed_video_read(video, VE_SEQ_CTRL);
+>   
+>   	if (video->v4l2_input_status) {
+> -		dev_dbg(video->dev, "No signal; don't start frame\n");
+> +		v4l2_warn(&video->v4l2_dev, "No signal; don't start frame\n");
+>   		return 0;
+>   	}
+>   
+>   	if (!(seq_ctrl & VE_SEQ_CTRL_COMP_BUSY) ||
+>   	    !(seq_ctrl & VE_SEQ_CTRL_CAP_BUSY)) {
+> -		dev_dbg(video->dev, "Engine busy; don't start frame\n");
+> +		v4l2_warn(&video->v4l2_dev, "Engine busy; don't start frame\n");
+>   		return -EBUSY;
+>   	}
+>   
+> @@ -489,7 +492,7 @@ static int aspeed_video_start_frame(struct aspeed_video *video)
+>   				       struct aspeed_video_buffer, link);
+>   	if (!buf) {
+>   		spin_unlock_irqrestore(&video->lock, flags);
+> -		dev_dbg(video->dev, "No buffers; don't start frame\n");
+> +		v4l2_warn(&video->v4l2_dev, "No buffers; don't start frame\n");
+>   		return -EPROTO;
+>   	}
+>   
+> @@ -565,7 +568,7 @@ static void aspeed_video_bufs_done(struct aspeed_video *video,
+>   
+>   static void aspeed_video_irq_res_change(struct aspeed_video *video, ulong delay)
+>   {
+> -	dev_dbg(video->dev, "Resolution changed; resetting\n");
+> +	v4l2_dbg(1, debug, &video->v4l2_dev, "Resolution changed; resetting\n");
+>   
+>   	set_bit(VIDEO_RES_CHANGE, &video->flags);
+>   	clear_bit(VIDEO_FRAME_INPRG, &video->flags);
+> @@ -766,8 +769,8 @@ static void aspeed_video_calc_compressed_size(struct aspeed_video *video,
+>   	aspeed_video_write(video, VE_STREAM_BUF_SIZE,
+>   			   compression_buffer_size_reg);
+>   
+> -	dev_dbg(video->dev, "Max compressed size: %x\n",
+> -		video->max_compressed_size);
+> +	v4l2_dbg(1, debug, &video->v4l2_dev, "Max compressed size: %#x\n",
+> +		 video->max_compressed_size);
+>   }
+>   
+>   #define res_check(v) test_and_clear_bit(VIDEO_MODE_DETECT_DONE, &(v)->flags)
+> @@ -804,7 +807,7 @@ static void aspeed_video_get_resolution(struct aspeed_video *video)
+>   						      res_check(video),
+>   						      MODE_DETECT_TIMEOUT);
+>   		if (!rc) {
+> -			dev_dbg(video->dev, "Timed out; first mode detect\n");
+> +			v4l2_warn(&video->v4l2_dev, "Timed out; first mode detect\n");
+>   			clear_bit(VIDEO_RES_DETECT, &video->flags);
+>   			return;
+>   		}
+> @@ -822,7 +825,7 @@ static void aspeed_video_get_resolution(struct aspeed_video *video)
+>   						      MODE_DETECT_TIMEOUT);
+>   		clear_bit(VIDEO_RES_DETECT, &video->flags);
+>   		if (!rc) {
+> -			dev_dbg(video->dev, "Timed out; second mode detect\n");
+> +			v4l2_warn(&video->v4l2_dev, "Timed out; second mode detect\n");
+>   			return;
+>   		}
+>   
+> @@ -856,7 +859,7 @@ static void aspeed_video_get_resolution(struct aspeed_video *video)
+>   	} while (invalid_resolution && (tries++ < INVALID_RESOLUTION_RETRIES));
+>   
+>   	if (invalid_resolution) {
+> -		dev_dbg(video->dev, "Invalid resolution detected\n");
+> +		v4l2_warn(&video->v4l2_dev, "Invalid resolution detected\n");
+>   		return;
+>   	}
+>   
+> @@ -873,8 +876,8 @@ static void aspeed_video_get_resolution(struct aspeed_video *video)
+>   	aspeed_video_update(video, VE_SEQ_CTRL, 0,
+>   			    VE_SEQ_CTRL_AUTO_COMP | VE_SEQ_CTRL_EN_WATCHDOG);
+>   
+> -	dev_dbg(video->dev, "Got resolution: %dx%d\n", det->width,
+> -		det->height);
+> +	v4l2_dbg(1, debug, &video->v4l2_dev, "Got resolution: %dx%d\n",
+> +		 det->width, det->height);
+>   }
+>   
+>   static void aspeed_video_set_resolution(struct aspeed_video *video)
+> @@ -1501,7 +1504,7 @@ static void aspeed_video_stop_streaming(struct vb2_queue *q)
+>   				!test_bit(VIDEO_FRAME_INPRG, &video->flags),
+>   				STOP_TIMEOUT);
+>   	if (!rc) {
+> -		dev_dbg(video->dev, "Timed out when stopping streaming\n");
+> +		v4l2_warn(&video->v4l2_dev, "Timed out when stopping streaming\n");
+>   
+>   		/*
+>   		 * Need to force stop any DMA and try and get HW into a good
+> @@ -1856,6 +1859,9 @@ static struct platform_driver aspeed_video_driver = {
+>   
+>   module_platform_driver(aspeed_video_driver);
+>   
+> +module_param(debug, int, 0644);
+> +MODULE_PARM_DESC(debug, "Debug level (0-3)");
 > +
-> +	/* DWC PERST# */
-> +	int		gpio_id_dwc_perst;
-> +
-> +	/* Per-slot PERST# */
-> +	int		num_slots;
-> +	int		gpio_id_reset[MAX_PCI_SLOTS];
-> +	const char	*reset_names[MAX_PCI_SLOTS];
-> +
-> +	/* Per-slot clkreq */
-> +	int		n_gpio_clkreq;
-> +	int		gpio_id_clkreq[MAX_PCI_SLOTS];
-> +	const char	*clkreq_names[MAX_PCI_SLOTS];
->  };
->  
->  /*
-> @@ -87,7 +113,7 @@ struct kirin_pcie {
->  #define CRGCTRL_PCIE_ASSERT_BIT		0x8c000000
->  
->  /* Time for delay */
-> -#define REF_2_PERST_MIN		20000
-> +#define REF_2_PERST_MIN		21000
-
-This is an unrelated change - should be explained and probably
-does not belong in this patch.
-
->  #define REF_2_PERST_MAX		25000
->  #define PERST_2_ACCESS_MIN	10000
->  #define PERST_2_ACCESS_MAX	12000
-> @@ -108,7 +134,6 @@ struct hi3660_pcie_phy {
->  	struct clk	*phy_ref_clk;
->  	struct clk	*aclk;
->  	struct clk	*aux_clk;
-> -	int		gpio_id_reset;
->  };
->  
->  /* Registers in PCIePHY */
-> @@ -171,16 +196,6 @@ static int hi3660_pcie_phy_get_resource(struct hi3660_pcie_phy *phy)
->  	if (IS_ERR(phy->sysctrl))
->  		return PTR_ERR(phy->sysctrl);
->  
-> -	/* gpios */
-> -	phy->gpio_id_reset = of_get_named_gpio(dev->of_node,
-> -					       "reset-gpios", 0);
-> -	if (phy->gpio_id_reset == -EPROBE_DEFER) {
-> -		return -EPROBE_DEFER;
-> -	} else if (!gpio_is_valid(phy->gpio_id_reset)) {
-> -		dev_err(phy->dev, "unable to get a valid gpio pin\n");
-> -		return -ENODEV;
-> -	}
-> -
->  	return 0;
->  }
->  
-> @@ -297,15 +312,7 @@ static int hi3660_pcie_phy_power_on(struct kirin_pcie *pcie)
->  	if (ret)
->  		goto disable_clks;
->  
-> -	/* perst assert Endpoint */
-> -	if (!gpio_request(phy->gpio_id_reset, "pcie_perst")) {
-> -		usleep_range(REF_2_PERST_MIN, REF_2_PERST_MAX);
-> -		ret = gpio_direction_output(phy->gpio_id_reset, 1);
-> -		if (ret)
-> -			goto disable_clks;
-> -		usleep_range(PERST_2_ACCESS_MIN, PERST_2_ACCESS_MAX);
-> -		return 0;
-> -	}
-> +	return 0;
->  
->  disable_clks:
->  	hi3660_pcie_phy_clk_ctrl(phy, false);
-> @@ -347,11 +354,98 @@ static const struct regmap_config pcie_kirin_regmap_conf = {
->  	.reg_stride = 4,
->  };
->  
-> +static int kirin_pcie_get_gpio_enable(struct kirin_pcie *pcie,
-> +				      struct platform_device *pdev)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	struct device_node *np = dev->of_node;
-> +	char name[32];
-> +	int ret, i;
-> +
-> +	/* This is an optional property */
-> +	ret = of_gpio_named_count(np, "hisilicon,clken-gpios");
-> +	if (ret < 0)
-> +		return 0;
-> +
-> +	if (ret > MAX_PCI_SLOTS) {
-> +		dev_err(dev, "Too many GPIO clock requests!\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	pcie->n_gpio_clkreq = ret;
-> +
-> +	for (i = 0; i < pcie->n_gpio_clkreq; i++) {
-> +		pcie->gpio_id_clkreq[i] = of_get_named_gpio(dev->of_node,
-> +							    "hisilicon,clken-gpios", i);
-> +		if (pcie->gpio_id_clkreq[i] < 0)
-> +			return pcie->gpio_id_clkreq[i];
-> +
-> +		sprintf(name, "pcie_clkreq_%d", i);
-> +		pcie->clkreq_names[i] = devm_kstrdup_const(dev, name,
-> +							    GFP_KERNEL);
-> +		if (!pcie->clkreq_names[i])
-> +			return -ENOMEM;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int kirin_pcie_parse_port(struct kirin_pcie *pcie,
-> +				 struct platform_device *pdev,
-> +				 struct device_node *node)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	struct device_node *parent, *child;
-> +	int ret, slot, i;
-> +	char name[32];
-> +
-> +	for_each_available_child_of_node(node, parent) {
-> +		for_each_available_child_of_node(parent, child) {
-> +			i = pcie->num_slots;
-> +
-> +			pcie->gpio_id_reset[i] = of_get_named_gpio(child,
-> +								"reset-gpios", 0);
-> +			if (pcie->gpio_id_reset[i] < 0)
-> +				continue;
-> +
-> +			pcie->num_slots++;
-> +			if (pcie->num_slots > MAX_PCI_SLOTS) {
-> +				dev_err(dev, "Too many PCI slots!\n");
-> +				return -EINVAL;
-> +			}
-> +
-> +			ret = of_pci_get_devfn(child);
-> +			if (ret < 0) {
-> +				dev_err(dev, "failed to parse devfn: %d\n", ret);
-> +				goto put_node;
-> +			}
-> +
-> +			slot = PCI_SLOT(ret);
-> +
-> +			sprintf(name, "pcie_perst_%d", slot);
-> +			pcie->reset_names[i] = devm_kstrdup_const(dev, name,
-> +								GFP_KERNEL);
-> +			if (!pcie->reset_names[i]) {
-> +				ret = -ENOMEM;
-> +				goto put_node;
-> +			}
-> +		}
-> +	}
-> +
-> +	return 0;
-> +
-> +put_node:
-> +	of_node_put(child);
-> +	return ret;
-> +}
-> +
->  static long kirin_pcie_get_resource(struct kirin_pcie *kirin_pcie,
->  				    struct platform_device *pdev)
->  {
->  	struct device *dev = &pdev->dev;
-> +	struct device_node *node = dev->of_node, *child;
-
-Nit:
-
-struct device_node *child, *node = dev->of_node;
-
-Lorenzo
-
->  	void __iomem *apb_base;
-> +	int ret;
->  
->  	apb_base = devm_platform_ioremap_resource_byname(pdev, "apb");
->  	if (IS_ERR(apb_base))
-> @@ -362,7 +456,32 @@ static long kirin_pcie_get_resource(struct kirin_pcie *kirin_pcie,
->  	if (IS_ERR(kirin_pcie->apb))
->  		return PTR_ERR(kirin_pcie->apb);
->  
-> +	/* pcie internal PERST# gpio */
-> +	kirin_pcie->gpio_id_dwc_perst = of_get_named_gpio(dev->of_node,
-> +							  "reset-gpios", 0);
-> +	if (kirin_pcie->gpio_id_dwc_perst == -EPROBE_DEFER) {
-> +		return -EPROBE_DEFER;
-> +	} else if (!gpio_is_valid(kirin_pcie->gpio_id_dwc_perst)) {
-> +		dev_err(dev, "unable to get a valid gpio pin\n");
-> +		return -ENODEV;
-> +	}
-> +
-> +	ret = kirin_pcie_get_gpio_enable(kirin_pcie, pdev);
-> +	if (ret)
-> +		return ret;
-> +
-> +	/* Parse OF children */
-> +	for_each_available_child_of_node(node, child) {
-> +		ret = kirin_pcie_parse_port(kirin_pcie, pdev, child);
-> +		if (ret)
-> +			goto put_node;
-> +	}
-> +
->  	return 0;
-> +
-> +put_node:
-> +	of_node_put(child);
-> +	return ret;
->  }
->  
->  static void kirin_pcie_sideband_dbi_w_mode(struct kirin_pcie *kirin_pcie,
-> @@ -419,9 +538,33 @@ static int kirin_pcie_wr_own_conf(struct pci_bus *bus, unsigned int devfn,
->  	return PCIBIOS_SUCCESSFUL;
->  }
->  
-> +static int kirin_pcie_add_bus(struct pci_bus *bus)
-> +{
-> +	struct dw_pcie *pci = to_dw_pcie_from_pp(bus->sysdata);
-> +	struct kirin_pcie *kirin_pcie = to_kirin_pcie(pci);
-> +	int i, ret;
-> +
-> +	if (!kirin_pcie->num_slots)
-> +		return 0;
-> +
-> +	/* Send PERST# to each slot */
-> +	for (i = 0; i < kirin_pcie->num_slots; i++) {
-> +		ret = gpio_direction_output(kirin_pcie->gpio_id_reset[i], 1);
-> +		if (ret) {
-> +			dev_err(pci->dev, "PERST# %s error: %d\n",
-> +				kirin_pcie->reset_names[i], ret);
-> +		}
-> +	}
-> +	usleep_range(PERST_2_ACCESS_MIN, PERST_2_ACCESS_MAX);
-> +
-> +	return 0;
-> +}
-> +
-> +
->  static struct pci_ops kirin_pci_ops = {
->  	.read = kirin_pcie_rd_own_conf,
->  	.write = kirin_pcie_wr_own_conf,
-> +	.add_bus = kirin_pcie_add_bus,
->  };
->  
->  static u32 kirin_pcie_read_dbi(struct dw_pcie *pci, void __iomem *base,
-> @@ -477,6 +620,44 @@ static int kirin_pcie_host_init(struct pcie_port *pp)
->  	return 0;
->  }
->  
-> +static int kirin_pcie_gpio_request(struct kirin_pcie *kirin_pcie,
-> +				   struct device *dev)
-> +{
-> +	int ret, i;
-> +
-> +	for (i = 0; i < kirin_pcie->num_slots; i++) {
-> +		if (!gpio_is_valid(kirin_pcie->gpio_id_reset[i])) {
-> +			dev_err(dev, "unable to get a valid %s gpio\n",
-> +				kirin_pcie->reset_names[i]);
-> +			return -ENODEV;
-> +		}
-> +
-> +		ret = devm_gpio_request(dev, kirin_pcie->gpio_id_reset[i],
-> +					kirin_pcie->reset_names[i]);
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
-> +	for (i = 0; i < kirin_pcie->n_gpio_clkreq; i++) {
-> +		if (!gpio_is_valid(kirin_pcie->gpio_id_clkreq[i])) {
-> +			dev_err(dev, "unable to get a valid %s gpio\n",
-> +				kirin_pcie->clkreq_names[i]);
-> +			return -ENODEV;
-> +		}
-> +
-> +		ret = devm_gpio_request(dev, kirin_pcie->gpio_id_clkreq[i],
-> +					kirin_pcie->clkreq_names[i]);
-> +		if (ret)
-> +			return ret;
-> +
-> +		ret = gpio_direction_output(kirin_pcie->gpio_id_clkreq[i], 0);
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  static const struct dw_pcie_ops kirin_dw_pcie_ops = {
->  	.read_dbi = kirin_pcie_read_dbi,
->  	.write_dbi = kirin_pcie_write_dbi,
-> @@ -499,24 +680,43 @@ static int kirin_pcie_power_on(struct platform_device *pdev,
->  		if (ret)
->  			return ret;
->  
-> -		return hi3660_pcie_phy_power_on(kirin_pcie);
-> +		ret = hi3660_pcie_phy_power_on(kirin_pcie);
-> +		if (ret)
-> +			return ret;
-> +	} else {
-> +		kirin_pcie->phy = devm_of_phy_get(dev, dev->of_node, NULL);
-> +		if (IS_ERR(kirin_pcie->phy))
-> +			return PTR_ERR(kirin_pcie->phy);
-> +
-> +		ret = kirin_pcie_gpio_request(kirin_pcie, dev);
-> +		if (ret)
-> +			return ret;
-> +
-> +		ret = phy_init(kirin_pcie->phy);
-> +		if (ret)
-> +			goto err;
-> +
-> +		ret = phy_power_on(kirin_pcie->phy);
-> +		if (ret)
-> +			goto err;
->  	}
->  
-> -	kirin_pcie->phy = devm_of_phy_get(dev, dev->of_node, NULL);
-> -	if (IS_ERR(kirin_pcie->phy))
-> -		return PTR_ERR(kirin_pcie->phy);
-> +	/* perst assert Endpoint */
-> +	usleep_range(REF_2_PERST_MIN, REF_2_PERST_MAX);
->  
-> -	ret = phy_init(kirin_pcie->phy);
-> -	if (ret)
-> -		goto err;
-> +	if (!gpio_request(kirin_pcie->gpio_id_dwc_perst, "pcie_perst_bridge")) {
-> +		ret = gpio_direction_output(kirin_pcie->gpio_id_dwc_perst, 1);
-> +		if (ret)
-> +			goto err;
-> +	}
->  
-> -	ret = phy_power_on(kirin_pcie->phy);
-> -	if (ret)
-> -		goto err;
-> +	usleep_range(PERST_2_ACCESS_MIN, PERST_2_ACCESS_MAX);
->  
->  	return 0;
->  err:
-> -	phy_exit(kirin_pcie->phy);
-> +	if (kirin_pcie->type != PCIE_KIRIN_INTERNAL_PHY)
-> +		phy_exit(kirin_pcie->phy);
-> +
->  	return ret;
->  }
->  
-> -- 
-> 2.31.1
+>   MODULE_DESCRIPTION("ASPEED Video Engine Driver");
+>   MODULE_AUTHOR("Eddie James");
+>   MODULE_LICENSE("GPL v2");
 > 
