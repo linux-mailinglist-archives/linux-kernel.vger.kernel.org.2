@@ -2,103 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC5C1432523
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 19:36:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80E5F43252A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 19:39:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234116AbhJRRi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 13:38:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35792 "EHLO
+        id S233999AbhJRRla (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 13:41:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232211AbhJRRi0 (ORCPT
+        with ESMTP id S233208AbhJRRlZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 13:38:26 -0400
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7524EC06161C
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 10:36:15 -0700 (PDT)
-Received: by mail-io1-xd31.google.com with SMTP id z69so14094217iof.9
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 10:36:15 -0700 (PDT)
+        Mon, 18 Oct 2021 13:41:25 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DF41C061768
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 10:39:13 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id w19so2043162edd.2
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 10:39:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=rOtObZrff10JQnf9tPidEThLrX8L6t1TEMTSXFa90+s=;
-        b=fie39H7weO6maR9WBLQnCBKtpfhxpmPTdprVNS33JNTs3wtn/qRrpuO9wmh3D17IFg
-         TW70gkKYY5q/yibWQMvcsBm/ShaDPer5lx9yTuDSMkJlkn2pBZ/Wgxm1j8bo1xPzKlVy
-         SFYA3O6oiHLFwLCb0IgxEORr6kn2nOa+PRZQ0=
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=/jfyDf2uGQ0G4PkhWSUViq4lngXtqzf19oHYgswwn6Y=;
+        b=MDqRXpagfiRgcCXbuBgFwF7HWwNo4jTb8pYqHRqB3kUQHbQw7uvDoY0In3T0nYURUR
+         SLw/MRsHg/n9gpIVfojtC4w3KIJ2a7CBmV/rBSN/r0YqvEYQhGRtJROQ1f15mrvNEMUw
+         M1d5J/8VWcsGN1amRc1jW2sYDnzg0/EWnW7UTdVNXrplIGrDJy0nSn2LvaH5km4vHo4n
+         DaE2xEx+jacLTCM+yOZuo8pASqPKF6AnlbuV2MUQIeQVvGXXPNG2UmKKDgkPuR3sTEkO
+         6uBjimBYe0LUC2S0QYGfWdRHstU0B+tJwQnphdI+vkg3wi1UB8iiUf3svfvKL5EV6cG8
+         oT9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rOtObZrff10JQnf9tPidEThLrX8L6t1TEMTSXFa90+s=;
-        b=QfxXk4bt3W1hjwA3iXRzAS54x3ChqjYzM2JXSV1pRXLE0N4HmMmODRc+0RIUSQVmFx
-         Yzj8i3/gZ+LjNdM6h2yCRbUDeyEbdFYJfGcdofoLsxXwbohv7owgfJs7vwHY/LFpdZer
-         rS+/HSddHtRUm1CY26vhRr5j70EM9zqd1JW10McQnQGN+h/4RTwCSaStIrPMZpnATxcW
-         Rw4fkGEdkyZifBQFbhgAoDZFtcBrqq5uuLJTYGymHnl4Brw34/cXe5OmNV2A344PTEXG
-         z3KB5sD3UjkD2dVUZqv6EpVmCE506oyN2xQxZaJVr7Z1H+K3Za3+HHsNNOd2IX+1JNTM
-         n1YQ==
-X-Gm-Message-State: AOAM530IGbizNqQYyGNndxwtDZQhZu2irM/0LFqZsOPwJCDfyZ6FWf4a
-        58pE2uSJGZbuYPLNb3PK/FvUfzPeo3qXvQ==
-X-Google-Smtp-Source: ABdhPJzQGm3VnaxzFWaDhKJGwR2S7m3WQZJqm7y/EWtrh7jk3VdiTnqgGazVZ3lhElpn1KdQw+X/6g==
-X-Received: by 2002:a02:ad05:: with SMTP id s5mr811099jan.65.1634578574850;
-        Mon, 18 Oct 2021 10:36:14 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id r4sm3883991iov.25.2021.10.18.10.36.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Oct 2021 10:36:14 -0700 (PDT)
-Subject: Re: [PATCH] module: fix validate_section_offset() overflow bug on
- 64-bit
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     jeyu@kernel.org, linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20211015205741.38283-1-skhan@linuxfoundation.org>
- <20211015205741.38283-2-skhan@linuxfoundation.org>
- <YWnvN7jHdWHl/05D@bombadil.infradead.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <42f46af4-4698-f235-9d1a-749774b5cee8@linuxfoundation.org>
-Date:   Mon, 18 Oct 2021 11:36:13 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=/jfyDf2uGQ0G4PkhWSUViq4lngXtqzf19oHYgswwn6Y=;
+        b=u1aT/Mt0h5YFfPAGVoraXnl0Vf4ohJF2AaGIJ1NqW/QbD1uiFyDSDRGz3iW4L0Z8ay
+         /VGVH8gARnJyHe5BFyuF2PPWddqBo+vNmC6ik409Cp4qyAr1Q6pTDGewRxCgIQys4g/J
+         tvE/bC8oceEbSWibOAK1oseTwWBFbdvJUJBcLu1d2+q+si9x+sdzM0RlGmPBbVQsrUzp
+         eiGv5FKrKsjTCFLatVxUyoXdlgUs6DEzvtb1rZ/O2ht/SuvclzQufPid/MEopvK/YAna
+         UpM+wWv9ZzjYlDk6nQxZjde7LzwLOx71XB7UTI7ppkaGfcICtvrkxVTflO6DP19B4qhE
+         0u6A==
+X-Gm-Message-State: AOAM5315flYd9rPaRwEcp+RHqq2ivztPrFEgm4J51j/f7FHbXuIif6kO
+        +N9IEYTq68cur90h3IrGqikQYavUZ+j/39zkZVs=
+X-Google-Smtp-Source: ABdhPJwa3rgCIaN6OX0MWyNYEaX0xf+zsEL/8kKXB9PUkXp74H0peabsbciUayaVPq+UM/hs9v68DtsACFkfawczT/M=
+X-Received: by 2002:a17:906:2b90:: with SMTP id m16mr31476680ejg.344.1634578751265;
+ Mon, 18 Oct 2021 10:39:11 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YWnvN7jHdWHl/05D@bombadil.infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: by 2002:a50:36c6:0:0:0:0:0 with HTTP; Mon, 18 Oct 2021 10:39:10
+ -0700 (PDT)
+Reply-To: ahmadmustafa.7800@gmail.com
+From:   Ahmad Mustafa <issaj4559@gmail.com>
+Date:   Mon, 18 Oct 2021 18:39:10 +0100
+Message-ID: <CAF=beNvGkv_V=EGy_YWT7gTy0U=MWX9EwDTbYVT1mdsTSSd1ow@mail.gmail.com>
+Subject: LOANS AND INVESTMENT
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/15/21 3:14 PM, Luis Chamberlain wrote:
-> On Fri, Oct 15, 2021 at 02:57:41PM -0600, Shuah Khan wrote:
->> validate_section_offset() uses unsigned long local variable to
->> add/store shdr->sh_offset and shdr->sh_size on all platforms.
->> unsigned long is too short when sh_offset is Elf64_Off which
->> would be the case on 64bit ELF headers.
->>
->> Fix the overflow problem using the right size local variable when
->> CONFIG_64BIT is defined.
->>
->> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
-> 
-> Thanks for doing this! I put this through the 0-day grinder.
-> 
-> In the meantime, since this talks about a fix, can the commit log be a
-> bit more descriptive about the impact of not applying the fix? In what
-> situation would not having this patch applied create an issue? Is this
-> theoretical or can an issue really happen. Has an issue gone
-> undiscovered for a while, and if so what could the consequences
-> have been all along?
-> 
+Dear Sir,
 
-I found this when I was adding an error message to print the offset and
-size.
+Aseel Islamic finance PJSC is private joint stock company that was
+established in 2006 and has built a leading market position for itself
+in the UAE's Islamic finance market which specializes in loan finance
+and investment activities in real estate, hospitality, industrial &
+sustainable technologies, strategic financial investments, specialized
+education, healthcare services, agriculture, manufacturing,
+mining,energy and additional environmentally sustainable projects.
 
-> And it would seem this issue was found through code inspection, not
-> through a real bug, correct? If this can be clarified on the commit log
-> as well that would be great!
-> 
+My name is Mr. Ibn Ahmad Mustafa . Do you have projects that require
+funding? We have finance available for your projects with over 2
+trillion private and corporate investment portfolios.  Aseel Islamic
+finance PJSC is looking for equity partners, entrepreneur, fund
+raisers and portfolio managers who will pay up to 4.5% interest and/or
+part equity position with a 5 to 10 year hold. In 2030, we plan on
+acquiring up to 2 trillion in high-quality, low risk assets and
+investments to capitalize on the current market cycle.
 
-Sent v2 with updated commit log.
+Aseel Islamic finance PJSC is acting as a lender and the fund will be
+disbursed on a clear interest rate of 3.5% annually to the equity
+partners and entrepreneurs for their investment projects. We also give
+a 2% commission to brokers, who bring project owners for finance or
+other opportunities.
 
-thanks,
--- Shuah
+For further details, kindly send us your business plans or project summary.
+
+Regards,
+
+
+Mr. Ibn Ahmad Mustafa
+International Business Coordinator
+Aseel Islamic Finance PJSC
+Al Mankhool, Dubai C2 Tower,
+Ground floor,P.O 94669 Dubai, UAE
+Abu Dhabi - United Arab Emirates
+Email : ahmadmustafa.7800@gmail.com
