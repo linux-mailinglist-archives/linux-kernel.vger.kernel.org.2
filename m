@@ -2,136 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 837BE43119A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 09:51:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DFC243119D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 09:53:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231128AbhJRHxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 03:53:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40672 "EHLO
+        id S230473AbhJRHz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 03:55:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230375AbhJRHxe (ORCPT
+        with ESMTP id S229820AbhJRHzy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 03:53:34 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6456BC06161C
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 00:51:23 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id r18so39626252wrg.6
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 00:51:23 -0700 (PDT)
+        Mon, 18 Oct 2021 03:55:54 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA3ACC06161C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 00:53:43 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id g36so48916866lfv.3
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 00:53:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=0eS+nh6u4YxbES6EE1omllVHgreREODM6XTD9kz5628=;
-        b=selpIOhusGKyPNN3rjPEBBx6lbHWPLCPgRHAfcssgm3rP9kmIPxHeE5gclDlJY8v/m
-         np3RYei65RQqS7O06w2qb4l8/ugUjieJRmXsgXorf+vCqY4TU0Bc7d9TFhp59ABVkJXm
-         k9AQWmb3Xdh2mpmXsUdjCi5HvFayv5OOr/fhIVL/IfOMjTd9+U2uciAkXD3vscvkwQkG
-         e2asDtqNK/0xEJiseST4lgDs96mtDsKdcl6cysN1sECSUoat79tkUqbK0FxukpktcwZW
-         L+1Em47GbUYjP8RDriCx8IkzXC2F4HrHVpKh4kxKDFn+otaYfKXksv3W5v+yE6eMTCN9
-         +oXw==
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version;
+        bh=bxVfna16cxYfDlVbnANGIk1HnqAlhaGCp7nH9Gcyq9c=;
+        b=QyLwGECEiYP1tJgmurcHjGRXiqLiWofwug6J9SuebZVlwQz8UkoJoD6p9UARsKPksg
+         PvCS4852EoKb7J2dgpT1n21mSVuS9nw/yGKFRgoaIFVKr8l9lMbnCGY+GkstLoQedYuF
+         djCXmmzV2NmTnK8+h2RETDke0UdWle0a6I8a0U8dhETpFX1ncNPQhGYkmEx7wjZiiLtA
+         GUGK2Mk184V+bkVl75e2X2ALndjYH9/jaEfhcPe272pQpNHA1yghoJYEd5GMHfkHLPb/
+         fggGNtKoY+mKYJ3yLezM23G8438PvhM62289/RhY0iG1ro3arfvQneGQmGrNtFkIYROx
+         VDKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=0eS+nh6u4YxbES6EE1omllVHgreREODM6XTD9kz5628=;
-        b=0nkDPNYnHYg5DZaaGtYkRZ+XxII42BXF5qHRXMOhd85nepBKi1R8gQQ+92rSbMBH9G
-         LgAzAwV3jt1eHLXOhqghr0h9t22bPfRbRPOrG4ru1KEF9CZyMTDf/zXjWfL9OG4bhhoW
-         QAuhirk9+3Qz3CWkSOQ0GA0bSk/8xQ6EwUQO+XTZI8zlDxcEacj1+3nJMD7XqOTm5ctc
-         RYYVbj2CmbPg33T5QVdDnjdPWvRfAXHpb0GpvZnkDg1DPam0X3cXRRTh3cxAY3g8cOqo
-         UXYi28J9uDbjm+nV7STpJAQVTUJER/xRbSnMFNCaywHZ8K5qZDh7zT/VDWu2hvNwS92D
-         FeeQ==
-X-Gm-Message-State: AOAM531DPYAXwQJOG9C9ZIGgM9NFw8a00nbOBRKyek8Z3ASpHMJmquWQ
-        qTJSlnvw4GWC2rPyXFaz6yVVOQ==
-X-Google-Smtp-Source: ABdhPJyxHeAzEcoNz+uJVzN/yN5Zt0oyr+xgVCXOJuoDiA3OC43+Mq83MkT+qWHZoIJL8BOALAB/Ww==
-X-Received: by 2002:a5d:62cc:: with SMTP id o12mr33791137wrv.324.1634543481756;
-        Mon, 18 Oct 2021 00:51:21 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:b2b3:1133:5bdb:b2f2? ([2a01:e34:ed2f:f020:b2b3:1133:5bdb:b2f2])
-        by smtp.googlemail.com with ESMTPSA id y5sm11448182wrq.85.2021.10.18.00.51.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Oct 2021 00:51:21 -0700 (PDT)
-Subject: Re: [PATCH v3 00/17] clocksource/arm_arch_timer: Add basic ARMv8.6
- support
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Shier <pshier@google.com>,
-        Raghavendra Rao Ananta <rananta@google.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Oliver Upton <oupton@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        kernel-team@android.com
-References: <20211010114306.2910453-1-maz@kernel.org>
- <20211011110243.GB4068@willie-the-truck> <87mtnfptni.wl-maz@kernel.org>
- <2cf7b564-63c2-ac6c-a083-f7ac2caab6fc@linaro.org>
- <877decotwi.wl-maz@kernel.org>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <d0c55386-2f7f-a940-45bb-d80ae5e0f378@linaro.org>
-Date:   Mon, 18 Oct 2021 09:51:19 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version;
+        bh=bxVfna16cxYfDlVbnANGIk1HnqAlhaGCp7nH9Gcyq9c=;
+        b=7wH7FKdiy6XaCX0PsYt2Q+wYQd6g4XKKwpHDF0+IIcV7dIlWBlfqtgdGs0HdIrq33z
+         wZorwCjF5GpO4FQRUy9aE6id5GFzebxXoKoPS6xmV9VgbN1YtlZDEtYvXTCZ6+/VjSEB
+         uozmApD9nQoO+VVr3rbi8uEIeV0th4Etoeh/t9wFfSTUvdN96eiQVV5EgceyUBxCDY+c
+         vGRxxILgBmQWSdy/ir6v4FMixKC8Fx5sK9CqHPJ7kgb/sbBojwIzT83AGRZMeE2CNz84
+         3a5zh3MA+SXs84OyQ7rts9WbpWWDiqbTGiMsgO+lff9vufAv2Y6OLLPM8i1osf3kxFEM
+         05uw==
+X-Gm-Message-State: AOAM532ig/vdL5SRuzCSwwXOsvY6tjlKhhsMliKt4hguMHvJ9cGPOLwZ
+        ljfd2tgOgsteFNkRkwE/0sA=
+X-Google-Smtp-Source: ABdhPJwNxZP5kz/BgybStPT9EfAJaqXhusTVgcjXO5hDjCD2qbaxLsRU94qz33GF68bDyLtUOTV41g==
+X-Received: by 2002:a05:6512:31b:: with SMTP id t27mr28619056lfp.688.1634543622240;
+        Mon, 18 Oct 2021 00:53:42 -0700 (PDT)
+Received: from eldfell ([194.136.85.206])
+        by smtp.gmail.com with ESMTPSA id h23sm1541000ljl.35.2021.10.18.00.53.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Oct 2021 00:53:41 -0700 (PDT)
+Date:   Mon, 18 Oct 2021 10:53:33 +0300
+From:   Pekka Paalanen <ppaalanen@gmail.com>
+To:     Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
+Cc:     rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com,
+        hamohammed.sa@gmail.com, daniel@ffwll.ch, airlied@linux.ie,
+        contact@emersion.fr, leandro.ribeiro@collabora.com,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        lkcamp@lists.libreplanetbr.org
+Subject: Re: [PATCH 0/6] Refactor the vkms to accept new formats
+Message-ID: <20211018105333.5f1bf9fe@eldfell>
+In-Reply-To: <20211005201637.58563-1-igormtorrente@gmail.com>
+References: <20211005201637.58563-1-igormtorrente@gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <877decotwi.wl-maz@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/R_1IcPyF+kFhqCYh6Korsfw";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/10/2021 11:57, Marc Zyngier wrote:
-> Hi Daniel,
-> 
-> On Sat, 16 Oct 2021 22:59:33 +0100,
-> Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
->>
->>
->> Hi Marc,
->>
->>
->> On 11/10/2021 15:39, Marc Zyngier wrote:
->>
->> [ ... ]
->>
->>> Thanks for that. All addressed now. I'll repost the series once we've
->>> addressed the question below.
->>>
->>>> How do you want to merge this series? It would be nice to have the arch
->>>> bits in the arm64 tree, if possible, as we'll be tripping over the cpucaps
->>>> stuff otherwise.
->>>
->>> I think we should keep the series together, as asm/arch_timer.h gets a
->>> beating all over the place, and there is no chance the arm64 bits at
->>> the end can apply (let alone work) on their own.
->>>
->>> So either Daniel would ack the series for it to go via arm64, or
->>> create a stable branch with the first 13 patches that would go in both
->>> the clocksource and arm64 trees.
->>>
->>> Daniel, any preference?
->>
->> yes, I prefer a stable branch for this series.
->>
->> https://git.linaro.org/people/daniel.lezcano/linux.git/log/?h=timers/drivers/armv8.6_arch_timer
->>
-> 
-> OK, this branch is now slightly outdated, since I have reworked it at
-> Will's request. -rc5 is also too recent a base for arm64, which is
-> usually based on -rc3.
-> 
-> I'll repost a new series today or tomorrow and provide tags for both
-> you and Will to pull from.
+--Sig_/R_1IcPyF+kFhqCYh6Korsfw
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Ok, thanks. I've updated the branch accordingly.
+On Tue,  5 Oct 2021 17:16:31 -0300
+Igor Matheus Andrade Torrente <igormtorrente@gmail.com> wrote:
 
-Let me know if everything is fine, so I can prepare a PR for the 'tip' tree.
+> XRGB to ARGB behavior
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> During the development, I decided to always fill the alpha channel of
+> the output pixel whenever the conversion from a format without an alpha
+> channel to ARGB16161616 is necessary. Therefore, I ignore the value
+> received from the XRGB and overwrite the value with 0xFFFF.
+>=20
+> My question is, is this behavior acceptable?
+
+Hi,
+
+that is the expected behaviour. X channel values must never affect
+anything on screen, hence they must never affect other channels'
+values. You are free to completely ignore X channel values, and if your
+output buffer has X channel, then you are free to write (or not write,
+unless for security reasons) whatever into it.
 
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+Thanks,
+pq
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+>=20
+> [1] https://lists.freedesktop.org/archives/igt-dev/2021-October/036125.ht=
+ml
+>=20
+> Igor Matheus Andrade Torrente (6):
+>   drm: vkms: Replace the deprecated drm_mode_config_init
+>   drm: vkms: Alloc the compose frame using vzalloc
+>   drm: vkms: Replace hardcoded value of `vkms_composer.map` to
+>     DRM_FORMAT_MAX_PLANES
+>   drm: vkms: Add fb information to `vkms_writeback_job`
+>   drm: vkms: Prepare `vkms_wb_encoder_atomic_check` to accept multiple
+>     formats
+>   drm: vkms: Refactor the plane composer to accept new formats
+>=20
+>  drivers/gpu/drm/vkms/vkms_composer.c  | 275 ++++++++++++++------------
+>  drivers/gpu/drm/vkms/vkms_drv.c       |   5 +-
+>  drivers/gpu/drm/vkms/vkms_drv.h       |  12 +-
+>  drivers/gpu/drm/vkms/vkms_formats.h   | 125 ++++++++++++
+>  drivers/gpu/drm/vkms/vkms_writeback.c |  27 ++-
+>  5 files changed, 304 insertions(+), 140 deletions(-)
+>  create mode 100644 drivers/gpu/drm/vkms/vkms_formats.h
+>=20
+
+
+--Sig_/R_1IcPyF+kFhqCYh6Korsfw
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmFtJ/0ACgkQI1/ltBGq
+qqf0HRAArta1tWtQSDyslMERLLK3UK0+yHfQBtIIII8mW2/1JMShM7dwdnB/CJGb
+7J+135bmSCr0WV1pm2LTSOjfSN5Z+9OZvdUgqY2/l7aWGRcK9jMfm6sndwI+PW1y
+WOXhpmkT0dKAjPMAKRKpnUSi9+msjEMqBc/vB4rWYciYNc3vhS1Mj5HWJTUT8FUg
+cCWSNUfzjCZ8zBWEvEQODJDUXK/XhND9OhFN83PYcDKcalSt1sA6waVDbi0IlH/S
+l7Qm2MwdGrF3KsHqwqciMHyo8i2B5+Ty1u4TBC7pB9NXv4U7jx6osfHhMThsnHRH
+ZMf17yMftnZMYgH3WSLGPoRswWwl/J6X72CbHhAz3TKrjDPkbNFxH1pLfSUeosLz
+3gRNgJ3noTSTV/0Zbd9AXX61R4MoyWoiW6+k0Sh4GQxu9drNkUrcXnvj3tsst5c6
+MFEiQoOeVoaSSrc1w3oJ1TS8HFpS831NLuSg2zG3H1OBSkEWLLU3Sc1fi3APYfzd
+xWHZFUUN9waAZhqqD3T50FTkgGyvCT+Y2Nim/PDdMZAL8IZq8ZTFB1vSrK+/sN91
+/YlJOvXvWVZW1BWvf/8jZTcLjxOGP+PVxj+wZypA1EhFNIE0MhMbsOsfjrOOYdE4
+y2T6KudEskkKtG9e9VzrGAI1c0MajORuqAtuaUOQJyAtDh5gUKo=
+=Xvh9
+-----END PGP SIGNATURE-----
+
+--Sig_/R_1IcPyF+kFhqCYh6Korsfw--
