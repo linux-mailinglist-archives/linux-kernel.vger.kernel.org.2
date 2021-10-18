@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F1E9431BC7
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:33:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 349B6431E56
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:58:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232672AbhJRNfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:35:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43870 "EHLO mail.kernel.org"
+        id S233429AbhJROAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 10:00:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59060 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231466AbhJRNd1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:33:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 98319613A1;
-        Mon, 18 Oct 2021 13:29:41 +0000 (UTC)
+        id S234569AbhJRN6Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:58:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 24A0461A3A;
+        Mon, 18 Oct 2021 13:41:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634563782;
-        bh=9+innFchi7nMG3G1YRsSQf9uc33NyufQfU/9fVnnjds=;
+        s=korg; t=1634564481;
+        bh=UPo2vUMpgPMX4CcfMB7wLs5NFHOo5Db/er6Z7OtjNDI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l0PHFNSIelzEDoE70vIKwDf++c5Xo+iL/Q3MyOUwnZH3azdN/wrqUhRMl+a9yIWM9
-         nQFb2fub2I1SFilGTj8v9ICrLQK2qMTJzues6zzxu/oeqI+fh91ctLRVdgF7EbuZHA
-         AtC2oI4VSgS2SJDHi/cGgM8cuZYDJEdjZ+ZSkv3Q=
+        b=PGOfY7BOAcA+SP/X2Zofx6y43Y3jTRMJYsSuHioQNCe92OU+eAm98TBm+fGxxreLk
+         yfU7BvScV7P0JuX1u1vTSWwHd3B8FMZ7DbZ1ZK/lXNefZuPpmnvya9B15Hgzs2kRG1
+         gY2mZ2kEzZXajk4O5xqQq9DzBx4+iuIevINr7VXI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hao Sun <sunhao.th@gmail.com>,
-        Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>
-Subject: [PATCH 5.4 12/69] btrfs: unlock newly allocated extent buffer after error
-Date:   Mon, 18 Oct 2021 15:24:10 +0200
-Message-Id: <20211018132329.856285977@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Alexandru Ardelean <ardeleanalex@gmail.com>,
+        Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH 5.14 072/151] iio: adc128s052: Fix the error handling path of adc128_probe()
+Date:   Mon, 18 Oct 2021 15:24:11 +0200
+Message-Id: <20211018132343.024116132@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132329.453964125@linuxfoundation.org>
-References: <20211018132329.453964125@linuxfoundation.org>
+In-Reply-To: <20211018132340.682786018@linuxfoundation.org>
+References: <20211018132340.682786018@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,96 +42,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qu Wenruo <wqu@suse.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-commit 19ea40dddf1833db868533958ca066f368862211 upstream.
+commit bbcf40816b547b3c37af49168950491d20d81ce1 upstream.
 
-[BUG]
-There is a bug report that injected ENOMEM error could leave a tree
-block locked while we return to user-space:
+A successful 'regulator_enable()' call should be balanced by a
+corresponding 'regulator_disable()' call in the error handling path of the
+probe, as already done in the remove function.
 
-  BTRFS info (device loop0): enabling ssd optimizations
-  FAULT_INJECTION: forcing a failure.
-  name failslab, interval 1, probability 0, space 0, times 0
-  CPU: 0 PID: 7579 Comm: syz-executor Not tainted 5.15.0-rc1 #16
-  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-  rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-  Call Trace:
-   __dump_stack lib/dump_stack.c:88 [inline]
-   dump_stack_lvl+0x8d/0xcf lib/dump_stack.c:106
-   fail_dump lib/fault-inject.c:52 [inline]
-   should_fail+0x13c/0x160 lib/fault-inject.c:146
-   should_failslab+0x5/0x10 mm/slab_common.c:1328
-   slab_pre_alloc_hook.constprop.99+0x4e/0xc0 mm/slab.h:494
-   slab_alloc_node mm/slub.c:3120 [inline]
-   slab_alloc mm/slub.c:3214 [inline]
-   kmem_cache_alloc+0x44/0x280 mm/slub.c:3219
-   btrfs_alloc_delayed_extent_op fs/btrfs/delayed-ref.h:299 [inline]
-   btrfs_alloc_tree_block+0x38c/0x670 fs/btrfs/extent-tree.c:4833
-   __btrfs_cow_block+0x16f/0x7d0 fs/btrfs/ctree.c:415
-   btrfs_cow_block+0x12a/0x300 fs/btrfs/ctree.c:570
-   btrfs_search_slot+0x6b0/0xee0 fs/btrfs/ctree.c:1768
-   btrfs_insert_empty_items+0x80/0xf0 fs/btrfs/ctree.c:3905
-   btrfs_new_inode+0x311/0xa60 fs/btrfs/inode.c:6530
-   btrfs_create+0x12b/0x270 fs/btrfs/inode.c:6783
-   lookup_open+0x660/0x780 fs/namei.c:3282
-   open_last_lookups fs/namei.c:3352 [inline]
-   path_openat+0x465/0xe20 fs/namei.c:3557
-   do_filp_open+0xe3/0x170 fs/namei.c:3588
-   do_sys_openat2+0x357/0x4a0 fs/open.c:1200
-   do_sys_open+0x87/0xd0 fs/open.c:1216
-   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-   do_syscall_64+0x34/0xb0 arch/x86/entry/common.c:80
-   entry_SYSCALL_64_after_hwframe+0x44/0xae
-  RIP: 0033:0x46ae99
-  Code: f7 d8 64 89 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 48 89 f8 48
-  89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
-  01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-  RSP: 002b:00007f46711b9c48 EFLAGS: 00000246 ORIG_RAX: 0000000000000055
-  RAX: ffffffffffffffda RBX: 000000000078c0a0 RCX: 000000000046ae99
-  RDX: 0000000000000000 RSI: 00000000000000a1 RDI: 0000000020005800
-  RBP: 00007f46711b9c80 R08: 0000000000000000 R09: 0000000000000000
-  R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000017
-  R13: 0000000000000000 R14: 000000000078c0a0 R15: 00007ffc129da6e0
+Update the error handling path accordingly.
 
-  ================================================
-  WARNING: lock held when returning to user space!
-  5.15.0-rc1 #16 Not tainted
-  ------------------------------------------------
-  syz-executor/7579 is leaving the kernel with locks still held!
-  1 lock held by syz-executor/7579:
-   #0: ffff888104b73da8 (btrfs-tree-01/1){+.+.}-{3:3}, at:
-  __btrfs_tree_lock+0x2e/0x1a0 fs/btrfs/locking.c:112
-
-[CAUSE]
-In btrfs_alloc_tree_block(), after btrfs_init_new_buffer(), the new
-extent buffer @buf is locked, but if later operations like adding
-delayed tree ref fail, we just free @buf without unlocking it,
-resulting above warning.
-
-[FIX]
-Unlock @buf in out_free_buf: label.
-
-Reported-by: Hao Sun <sunhao.th@gmail.com>
-Link: https://lore.kernel.org/linux-btrfs/CACkBjsZ9O6Zr0KK1yGn=1rQi6Crh1yeCRdTSBxx9R99L4xdn-Q@mail.gmail.com/
-CC: stable@vger.kernel.org # 5.4+
-Signed-off-by: Qu Wenruo <wqu@suse.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+Fixes: 913b86468674 ("iio: adc: Add TI ADC128S052")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Reviewed-by: Alexandru Ardelean <ardeleanalex@gmail.com>
+Link: https://lore.kernel.org/r/85189f1cfcf6f5f7b42d8730966f2a074b07b5f5.1629542160.git.christophe.jaillet@wanadoo.fr
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/btrfs/extent-tree.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/iio/adc/ti-adc128s052.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -4596,6 +4596,7 @@ struct extent_buffer *btrfs_alloc_tree_b
- out_free_delayed:
- 	btrfs_free_delayed_extent_op(extent_op);
- out_free_buf:
-+	btrfs_tree_unlock(buf);
- 	free_extent_buffer(buf);
- out_free_reserved:
- 	btrfs_free_reserved_extent(fs_info, ins.objectid, ins.offset, 0);
+--- a/drivers/iio/adc/ti-adc128s052.c
++++ b/drivers/iio/adc/ti-adc128s052.c
+@@ -171,7 +171,13 @@ static int adc128_probe(struct spi_devic
+ 	mutex_init(&adc->lock);
+ 
+ 	ret = iio_device_register(indio_dev);
++	if (ret)
++		goto err_disable_regulator;
+ 
++	return 0;
++
++err_disable_regulator:
++	regulator_disable(adc->reg);
+ 	return ret;
+ }
+ 
 
 
