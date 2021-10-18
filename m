@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B41EA431B13
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:28:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D78A9431B56
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:30:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232598AbhJRNag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:30:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41210 "EHLO mail.kernel.org"
+        id S232571AbhJRNc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:32:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42612 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231941AbhJRN3K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:29:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BE85F6103D;
-        Mon, 18 Oct 2021 13:26:58 +0000 (UTC)
+        id S232190AbhJRNaf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:30:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 952BF61374;
+        Mon, 18 Oct 2021 13:28:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634563619;
-        bh=x1uy6RIjpwMMLSGg25DhVeftTvCQsgZSHU3x1TuOvsA=;
+        s=korg; t=1634563695;
+        bh=PL84pX1c/SYmOTMDdk2tNqwEo98/KqHlko0wlc0Nmoo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=06s+dl8h+Gwcuut0cWztvQ6yt6BIKBKU3GGxlWcRCDdAU7SdZOa5b1d8iZ40z0pzO
-         EJ2wEhoRsKb4qsBfb32UnYv2qPpEbtfE9SsMKWCXiBDuWhujqkLAPTZnv02s2q2yG9
-         DfBbEz0bacT6oU19iegSNHcJlb6DzOdaHVoCrAYU=
+        b=1TY9KxkDldjIOxbAh3SYFkAYcDAUjTb1DDmDaBTGApnGhEPMaMIWb5k/JsOa4RIlK
+         rCjMwQZfvWNPfk1aZ5NKqbLJ7O3XRsrIxuXaluM6STSnAVOPPXGGQBOQ8xl2P4uZSD
+         SZlVBQHfpP4Q/5oLEVGMPy2qSKLDOGZyILA4DOGM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Filipe Manana <fdmanana@suse.com>,
         David Sterba <dsterba@suse.com>
-Subject: [PATCH 4.14 05/39] btrfs: deal with errors when adding inode reference during log replay
-Date:   Mon, 18 Oct 2021 15:24:14 +0200
-Message-Id: <20211018132325.599820842@linuxfoundation.org>
+Subject: [PATCH 4.19 08/50] btrfs: deal with errors when adding inode reference during log replay
+Date:   Mon, 18 Oct 2021 15:24:15 +0200
+Message-Id: <20211018132326.808243379@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132325.426739023@linuxfoundation.org>
-References: <20211018132325.426739023@linuxfoundation.org>
+In-Reply-To: <20211018132326.529486647@linuxfoundation.org>
+References: <20211018132326.529486647@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -62,7 +62,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/fs/btrfs/tree-log.c
 +++ b/fs/btrfs/tree-log.c
-@@ -1161,7 +1161,10 @@ next:
+@@ -1141,7 +1141,10 @@ next:
  	/* look for a conflicting sequence number */
  	di = btrfs_lookup_dir_index_item(trans, root, path, btrfs_ino(dir),
  					 ref_index, name, namelen, 0);
@@ -74,7 +74,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  		ret = drop_one_dir_item(trans, root, path, dir, di);
  		if (ret)
  			return ret;
-@@ -1171,7 +1174,9 @@ next:
+@@ -1151,7 +1154,9 @@ next:
  	/* look for a conflicing name */
  	di = btrfs_lookup_dir_item(trans, root, path, btrfs_ino(dir),
  				   name, namelen, 0);
