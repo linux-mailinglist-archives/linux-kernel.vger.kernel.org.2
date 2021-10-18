@@ -2,76 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE00343274B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 21:11:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4414C432768
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 21:18:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233066AbhJRTNr convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 18 Oct 2021 15:13:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57896 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232813AbhJRTNp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 15:13:45 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDAFCC06161C;
-        Mon, 18 Oct 2021 12:11:33 -0700 (PDT)
-Received: from bigeasy by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <sebastian@breakpoint.cc>)
-        id 1mcY2E-0000T4-Rv; Mon, 18 Oct 2021 21:10:58 +0200
-Date:   Mon, 18 Oct 2021 21:10:58 +0200
-From:   Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Antonio Terceiro <antonio.terceiro@linaro.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Matthias Klose <doko@debian.org>, stable@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ARM: drop cc-option fallbacks for architecture selection
-Message-ID: <20211018191058.3zn5l7ocgh2twy5d@flow>
-References: <20211018140735.3714254-1-arnd@kernel.org>
+        id S232888AbhJRTU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 15:20:28 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:36098 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230159AbhJRTU0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 15:20:26 -0400
+Received: from zn.tnic (p200300ec2f085700af6a7a3215758573.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:5700:af6a:7a32:1575:8573])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id CA2981EC04A9;
+        Mon, 18 Oct 2021 21:18:13 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1634584693;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=H0D9fMYiemWaywKhrFeRx22doUmAUI5poz1BHecVEck=;
+        b=aaPBSilQLVoxx5ZYTymlL1LpcFbbTPdvT1VQjLz4BWf9YVHrCwCMueZkzHVjXeysrg0/eo
+        EpZ0n8bosyKFGw3HgTiyge1sVQRj2H/scBFwyVzUsSGSBApNBZPU/wVXSMAAfNGzdpIW8A
+        e30476Q54MX2AXNg4o+ioUpfa98cro8=
+Date:   Mon, 18 Oct 2021 21:18:13 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Michael Roth <michael.roth@amd.com>
+Cc:     Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        tony.luck@intel.com, marcorr@google.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com
+Subject: Re: [PATCH v6 08/42] x86/sev-es: initialize sev_status/features
+ within #VC handler
+Message-ID: <YW3IdfMs61191qnU@zn.tnic>
+References: <20211008180453.462291-1-brijesh.singh@amd.com>
+ <20211008180453.462291-9-brijesh.singh@amd.com>
+ <YW2EsxcqBucuyoal@zn.tnic>
+ <20211018184003.3ob2uxcpd2rpee3s@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <20211018140735.3714254-1-arnd@kernel.org>
+In-Reply-To: <20211018184003.3ob2uxcpd2rpee3s@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-10-18 16:07:12 [+0200], Arnd Bergmann wrote:
-…
-> Passing e.g. -march=armv6k+fp in place of -march=armv6k would avoid this
-> issue, but the fallback logic is already broken because all supported
-> compilers (gcc-5 and higher) are much more recent than these options,
-> and building with -march=armv5t as a fallback no longer works.
+On Mon, Oct 18, 2021 at 01:40:03PM -0500, Michael Roth wrote:
+> If CPUID has lied, that would result in a #GP, rather than a controlled
+> termination in the various checkers/callers. The latter is easier to
+> debug.
 > 
-> The best way forward that I see is to just remove all the checks, which
-> also has the nice side-effect of slightly improving the startup time for
-> 'make'.
-> 
-…
-> This should be safe to apply on all stable kernels, and will be required
-> in order to keep building them with gcc-11 and higher.
+> Additionally, #VC is arguably a better indicator of SEV MSR availability
+> for SEV-ES/SEV-SNP guests, since it is only generated by ES/SNP hardware
+> and doesn't rely directly on hypervisor/EFI-provided CPUID values. It
+> doesn't work for SEV guests, but I don't think it's a bad idea to allow
+> SEV-ES/SEV-SNP guests to initialize sev_status in #VC handler to make
+> use of the added assurance.
 
-Yes, please.
+Ok, let's take a step back and analyze what we're trying to solve first.
+So I'm looking at sme_enable():
 
-> Reported-by: Antonio Terceiro <antonio.terceiro@linaro.org>
-> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-> Reported-by: Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
-> Link: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=996419
-> Cc: Matthias Klose <doko@debian.org>
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+1. Code checks SME/SEV support leaf. HV lies and says there's none. So
+guest doesn't boot encrypted. Oh well, not a big deal, the cloud vendor
+won't be able to give confidentiality to its users => users go away or
+do unencrypted like now.
 
-Reviewed-by: Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
+Problem is solved by political and economical pressure.
 
-Just booted Debian 9/ Stretch which ships
-   gcc version 6.3.0 20170516 (Debian 6.3.0-18) 
+2. Check SEV and SME bit. HV lies here. Oh well, same as the above.
 
-to confirm that it fails to compile with the armv5t fallback.
+3. HV lies about 1. and 2. but says that SME/SEV is supported.
 
-Sebastian
+Guest attempts to read the MSR Guest explodes due to the #GP. The same
+political/economical pressure thing happens.
+
+If the MSR is really there, we've landed at the place where we read the
+SEV MSR. Moment of truth - SEV/SNP guests have a communication protocol
+which is independent from the HV and all good.
+
+Now, which case am I missing here which justifies the need to do those
+acrobatics of causing #VCs just to detect the SEV MSR?
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
