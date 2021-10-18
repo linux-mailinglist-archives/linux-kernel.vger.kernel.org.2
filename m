@@ -2,96 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82754431A15
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 14:51:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 997AC431A22
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 14:54:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231796AbhJRMxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 08:53:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50562 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231755AbhJRMxr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 08:53:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 804B060FF2;
-        Mon, 18 Oct 2021 12:51:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634561496;
-        bh=wSAPygQazTQCxuDvZ0F3rHqQvWlL/kR4Uo4hpNZSHw0=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=BOSqgA/MH3tMfhEB9L562M5BHU1uTYoUIt8/LMzwgwy2F/MV55RnC1iZQmOYtdzhj
-         /fwuYbnZ1cEGA+yQExXby+49sUFGNclVDm96J+vZzllszL1s03/ddB8BoRz1ikovyf
-         mVd1VGZrv6gEzwJpZa9a2C9Yc1Yo0+t+5Q7kxo3NaIGSUol6viOWkdA+Jnehh6N3CC
-         C4Vr4sTrlKEeys/LoOAtjKL30BnRCcLZMsQ/rnDotTJyDU/xEF6OO7wrOtLAVW4xhF
-         +3vYBGEKazh7aqf+luCKGKtO6f6hRd5a9YtjJPx8W7so/j9wIbr/JpZtN+wtNK8zzh
-         MT4YD5Xj4m9Xw==
-Message-ID: <5f816a61bb95c5d3ea4c26251bb0a4b044aba0e6.camel@kernel.org>
-Subject: Re: [PATCH v3 0/2] x86: sgx_vepc: implement ioctl to EREMOVE all
- pages
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     dave.hansen@linux.intel.com, seanjc@google.com, x86@kernel.org,
-        yang.zhong@intel.com, bp@suse.de
-Date:   Mon, 18 Oct 2021 15:51:33 +0300
-In-Reply-To: <20211016071434.167591-1-pbonzini@redhat.com>
-References: <20211016071434.167591-1-pbonzini@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.40.0-1 
+        id S231727AbhJRM45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 08:56:57 -0400
+Received: from mail-lf1-f42.google.com ([209.85.167.42]:34617 "EHLO
+        mail-lf1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231565AbhJRM4z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 08:56:55 -0400
+Received: by mail-lf1-f42.google.com with SMTP id t9so66670067lfd.1;
+        Mon, 18 Oct 2021 05:54:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=d3d/ZodwKf+LfB06q+MpENgtZZXbaLIVI1CL9dS/gAI=;
+        b=pMy6YsFcsHCDQD4vhv34AG9PSPyFO3DbeJmKDxP3/O48rOvYdCbcsLxVrNiG+kcPES
+         OoZ+0jDdmQeyIVO0RrrBr51nC1BNO/VUhcv8estDzmviAMPz09WPypk8CcHrYjPP/wld
+         RaqebDjSb+1bXI9aLokaSzEAR/SWiJNHvK9IF0LehuOJt2FIzlkUni1DaeG6SCO7cgxP
+         Sq+QF6kNr8rMjHWcj9GYK7r+6Srctw/F9z6FAz3IgxWD+JxeyznXBURi6zgFHKKCf32w
+         sar/LZ5Rc+4/0BR/2Q+TxlbBscg7k5x+T2FesE5nwQm3W7V+NPkFWGgRqRWh2jfZQVcK
+         clng==
+X-Gm-Message-State: AOAM532g13l6RU4cbF08GAsRcKUD308SWXMCMCukXQk27UUoGHDWceer
+        Vu+D1n7inEAPOm6RUO9sgts=
+X-Google-Smtp-Source: ABdhPJydxzN1AKhYuskbrzvqZZj+v2XG19n0ixHc6gmpz+aLK+i7JvPUfler6VF6Q/0UODaFtRwDsw==
+X-Received: by 2002:a05:6512:2256:: with SMTP id i22mr29177642lfu.158.1634561683621;
+        Mon, 18 Oct 2021 05:54:43 -0700 (PDT)
+Received: from rocinante ([95.155.85.46])
+        by smtp.gmail.com with ESMTPSA id g18sm833372lfu.4.2021.10.18.05.54.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Oct 2021 05:54:43 -0700 (PDT)
+Date:   Mon, 18 Oct 2021 14:54:41 +0200
+From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To:     Cai Huoqing <caihuoqing@baidu.com>
+Cc:     hch@infradead.org, Bjorn Helgaas <bhelgaas@google.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] PCI: Remove the unused pci wrappers pci_pool_xxx()
+Message-ID: <YW1ukUjaFRLdkbNV@rocinante>
+References: <20211018124110.214-1-caihuoqing@baidu.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211018124110.214-1-caihuoqing@baidu.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2021-10-16 at 03:14 -0400, Paolo Bonzini wrote:
-> Add to /dev/sgx_vepc a ioctl that brings vEPC pages back to uninitialized
-> state with EREMOVE.=C2=A0 This is useful in order to match the expectatio=
-ns
-> of guests after reboot, and to match the behavior of real hardware.
->=20
-> The ioctl is a cleaner alternative to closing and reopening the
-> /dev/sgx_vepc device; reopening /dev/sgx_vepc could be problematic in
-> case userspace has sandboxed itself since the time it first opened the
-> device, and has thus lost permissions to do so.
->=20
-> If possible, I would like these patches to be included in 5.15 through
-> either the x86 or the KVM tree.
->=20
-> Thanks,
->=20
-> Paolo
->=20
-> Changes from RFC:
-> - improved commit messages, added documentation
-> - renamed ioctl from SGX_IOC_VEPC_REMOVE to SGX_IOC_VEPC_REMOVE_ALL
->=20
-> Change from v1:
-> - fixed documentation and code to cover SGX_ENCLAVE_ACT errors
-> - removed Tested-by since the code is quite different now
->=20
-> Changes from v2:
-> - return EBUSY also if EREMOVE causes a general protection fault
->=20
-> Paolo Bonzini (2):
-> =C2=A0 x86: sgx_vepc: extract sgx_vepc_remove_page
-> =C2=A0 x86: sgx_vepc: implement SGX_IOC_VEPC_REMOVE_ALL ioctl
->=20
-> =C2=A0Documentation/x86/sgx.rst=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 35 =
-+++++++++++++++++++++
-> =C2=A0arch/x86/include/uapi/asm/sgx.h |=C2=A0 2 ++
-> =C2=A0arch/x86/kernel/cpu/sgx/virt.c=C2=A0 | 63 +++++++++++++++++++++++++=
-+++++---
-> =C2=A03 files changed, 95 insertions(+), 5 deletions(-)
->=20
+Hello!
 
-BTW, do you already have patch for QEMU somewhere, which uses
-this new functionality? Would like to peek at it just to see
-the usage pattern.
+[...]
+> v1->v2: *Revert the implicit inclusion of dma_pool.h
 
-Also, can you provide some way to stress test QEMU so that this
-code path gets executed? I'm already using QEMU as my main test
-platform for SGX, so it's not a huge stretch for me to test it.
+I wonder how much of a rabbit hole (or a wild goose chase) would be to
+remove this include from linux/pci.h and add it where the users are...
 
-This way I can also provide tested-by for the corresponding QEMU
-path.
+Probably not worth the time.
 
-/Jarkko
+	Krzysztof
