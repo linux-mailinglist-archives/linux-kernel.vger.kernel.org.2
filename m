@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37C87431CCE
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:43:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDD4B431B39
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:29:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232343AbhJRNos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:44:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35684 "EHLO mail.kernel.org"
+        id S232850AbhJRNbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:31:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42924 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231811AbhJRNmt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:42:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FEEE61462;
-        Mon, 18 Oct 2021 13:34:21 +0000 (UTC)
+        id S232263AbhJRN3t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:29:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 862EE6128E;
+        Mon, 18 Oct 2021 13:27:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634564061;
-        bh=xcm88V4qz/Vi+mBo+bYCJplxLMrG5yKt//o0lZUkjDw=;
+        s=korg; t=1634563658;
+        bh=5fkEOeRKMpAv1rt8DKebXAXjaN3huRnJpE8l2uHkoJ4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tgtJWqH5TVKLPw0/BebgaxreO9U1y6VtC6dKYc/FfCXYAdOm2sicOw38qk0/lrxo3
-         8QZYn9GqVSK0oD5nN6hROjIt/vON4puzjQeDmwh0a8fLOJLECvHLaYW2vEQ5lVU5df
-         on4tkxR7plTFoszoqbhoYVNiNo8KraNuBVrUzCwo=
+        b=fLBohUsTt3ww61mE/2U+70vmX05LZkDyrdA6uSows7JXrTww2OqMpRBuM0xFQWX6f
+         WdLUebjH0UtEACMMS8rQH5E21hTJ3gTn50smQs0/6XDDX1asedkMsGDSgmcELTzW39
+         UuNx6ANjabmwckiRmqGLCwSFy0fbtV4px9POPaNc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Douglas Anderson <dianders@chromium.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 5.10 043/103] nvmem: Fix shift-out-of-bound (UBSAN) with byte size cells
-Date:   Mon, 18 Oct 2021 15:24:19 +0200
-Message-Id: <20211018132336.177900053@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Pavankumar Kondeti <pkondeti@codeaurora.org>,
+        Mathias Nyman <mathias.nyman@linux.intel.com>
+Subject: [PATCH 4.19 13/50] xhci: Fix command ring pointer corruption while aborting a command
+Date:   Mon, 18 Oct 2021 15:24:20 +0200
+Message-Id: <20211018132326.980569595@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132334.702559133@linuxfoundation.org>
-References: <20211018132334.702559133@linuxfoundation.org>
+In-Reply-To: <20211018132326.529486647@linuxfoundation.org>
+References: <20211018132326.529486647@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,85 +40,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stephen Boyd <swboyd@chromium.org>
+From: Pavankumar Kondeti <pkondeti@codeaurora.org>
 
-commit 5d388fa01fa6eb310ac023a363a6cb216d9d8fe9 upstream.
+commit ff0e50d3564f33b7f4b35cadeabd951d66cfc570 upstream.
 
-If a cell has 'nbits' equal to a multiple of BITS_PER_BYTE the logic
+The command ring pointer is located at [6:63] bits of the command
+ring control register (CRCR). All the control bits like command stop,
+abort are located at [0:3] bits. While aborting a command, we read the
+CRCR and set the abort bit and write to the CRCR. The read will always
+give command ring pointer as all zeros. So we essentially write only
+the control bits. Since we split the 64 bit write into two 32 bit writes,
+there is a possibility of xHC command ring stopped before the upper
+dword (all zeros) is written. If that happens, xHC updates the upper
+dword of its internal command ring pointer with all zeros. Next time,
+when the command ring is restarted, we see xHC memory access failures.
+Fix this issue by only writing to the lower dword of CRCR where all
+control bits are located.
 
- *p &= GENMASK((cell->nbits%BITS_PER_BYTE) - 1, 0);
-
-will become undefined behavior because nbits modulo BITS_PER_BYTE is 0, and we
-subtract one from that making a large number that is then shifted more than the
-number of bits that fit into an unsigned long.
-
-UBSAN reports this problem:
-
- UBSAN: shift-out-of-bounds in drivers/nvmem/core.c:1386:8
- shift exponent 64 is too large for 64-bit type 'unsigned long'
- CPU: 6 PID: 7 Comm: kworker/u16:0 Not tainted 5.15.0-rc3+ #9
- Hardware name: Google Lazor (rev3+) with KB Backlight (DT)
- Workqueue: events_unbound deferred_probe_work_func
- Call trace:
-  dump_backtrace+0x0/0x170
-  show_stack+0x24/0x30
-  dump_stack_lvl+0x64/0x7c
-  dump_stack+0x18/0x38
-  ubsan_epilogue+0x10/0x54
-  __ubsan_handle_shift_out_of_bounds+0x180/0x194
-  __nvmem_cell_read+0x1ec/0x21c
-  nvmem_cell_read+0x58/0x94
-  nvmem_cell_read_variable_common+0x4c/0xb0
-  nvmem_cell_read_variable_le_u32+0x40/0x100
-  a6xx_gpu_init+0x170/0x2f4
-  adreno_bind+0x174/0x284
-  component_bind_all+0xf0/0x264
-  msm_drm_bind+0x1d8/0x7a0
-  try_to_bring_up_master+0x164/0x1ac
-  __component_add+0xbc/0x13c
-  component_add+0x20/0x2c
-  dp_display_probe+0x340/0x384
-  platform_probe+0xc0/0x100
-  really_probe+0x110/0x304
-  __driver_probe_device+0xb8/0x120
-  driver_probe_device+0x4c/0xfc
-  __device_attach_driver+0xb0/0x128
-  bus_for_each_drv+0x90/0xdc
-  __device_attach+0xc8/0x174
-  device_initial_probe+0x20/0x2c
-  bus_probe_device+0x40/0xa4
-  deferred_probe_work_func+0x7c/0xb8
-  process_one_work+0x128/0x21c
-  process_scheduled_works+0x40/0x54
-  worker_thread+0x1ec/0x2a8
-  kthread+0x138/0x158
-  ret_from_fork+0x10/0x20
-
-Fix it by making sure there are any bits to mask out.
-
-Fixes: 69aba7948cbe ("nvmem: Add a simple NVMEM framework for consumers")
-Cc: Douglas Anderson <dianders@chromium.org>
 Cc: stable@vger.kernel.org
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Link: https://lore.kernel.org/r/20211013124511.18726-1-srinivas.kandagatla@linaro.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Pavankumar Kondeti <pkondeti@codeaurora.org>
+Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+Link: https://lore.kernel.org/r/20211008092547.3996295-5-mathias.nyman@linux.intel.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/nvmem/core.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/usb/host/xhci-ring.c |   14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
 
---- a/drivers/nvmem/core.c
-+++ b/drivers/nvmem/core.c
-@@ -1229,7 +1229,8 @@ static void nvmem_shift_read_buffer_in_p
- 		*p-- = 0;
+--- a/drivers/usb/host/xhci-ring.c
++++ b/drivers/usb/host/xhci-ring.c
+@@ -339,16 +339,22 @@ static void xhci_handle_stopped_cmd_ring
+ /* Must be called with xhci->lock held, releases and aquires lock back */
+ static int xhci_abort_cmd_ring(struct xhci_hcd *xhci, unsigned long flags)
+ {
+-	u64 temp_64;
++	u32 temp_32;
+ 	int ret;
  
- 	/* clear msb bits if any leftover in the last byte */
--	*p &= GENMASK((cell->nbits%BITS_PER_BYTE) - 1, 0);
-+	if (cell->nbits % BITS_PER_BYTE)
-+		*p &= GENMASK((cell->nbits % BITS_PER_BYTE) - 1, 0);
- }
+ 	xhci_dbg(xhci, "Abort command ring\n");
  
- static int __nvmem_cell_read(struct nvmem_device *nvmem,
+ 	reinit_completion(&xhci->cmd_ring_stop_completion);
+ 
+-	temp_64 = xhci_read_64(xhci, &xhci->op_regs->cmd_ring);
+-	xhci_write_64(xhci, temp_64 | CMD_RING_ABORT,
+-			&xhci->op_regs->cmd_ring);
++	/*
++	 * The control bits like command stop, abort are located in lower
++	 * dword of the command ring control register. Limit the write
++	 * to the lower dword to avoid corrupting the command ring pointer
++	 * in case if the command ring is stopped by the time upper dword
++	 * is written.
++	 */
++	temp_32 = readl(&xhci->op_regs->cmd_ring);
++	writel(temp_32 | CMD_RING_ABORT, &xhci->op_regs->cmd_ring);
+ 
+ 	/* Section 4.6.1.2 of xHCI 1.0 spec says software should also time the
+ 	 * completion of the Command Abort operation. If CRR is not negated in 5
 
 
