@@ -2,128 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2862E432391
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 18:14:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51A3D432393
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 18:14:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233228AbhJRQQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 12:16:29 -0400
-Received: from vern.gendns.com ([98.142.107.122]:40362 "EHLO vern.gendns.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229634AbhJRQQ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 12:16:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=lechnology.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=/di40QAvs9FSfvQLcMkMeDro61kriZm8xprT8l0yyOY=; b=W95MTsvlN2nrvkU1q88Eu+flWa
-        v2I3XyUK9dnL9wNwZl6dGw25gPF88XvMe22UBuHQkS2YjcVH4IfiXkBNUzPqD/2q3E79W2Q7rS+zR
-        immqMWJr1tJbHKBvueV3ksG+ZGY5YCD9rWO01fE8Qq32+k+Cjc0byE4G9pTzECXNpttc+ev8lFozE
-        GVl+WC7UFtkKXJBeGt+XQvsT85GkthxYELpU58LINKmko1wJlUih8X74JDy8DwKcx+D6jREwDxwu+
-        Bw/BKGDcZ3wR5tyl4YF6CPRy7b38h42uyA5tSn+HcFtDM01kvGJ2kSKjzm3NnqxbLGS5Q1mSmI+A7
-        e1imORyQ==;
-Received: from 108-198-5-147.lightspeed.okcbok.sbcglobal.net ([108.198.5.147]:32950 helo=[192.168.0.134])
-        by vern.gendns.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <david@lechnology.com>)
-        id 1mcVHA-0006qM-Jj; Mon, 18 Oct 2021 12:14:15 -0400
-Subject: Re: [PATCH] counter: drop chrdev_lock
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>
-Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20211017185521.3468640-1-david@lechnology.com>
- <YW0PVYT/GCKAnjN9@kroah.com> <YW03PSmpMkMVnHdp@shinobu>
- <YW06rLixA2Uush+n@kroah.com> <YW1Dl7ylRqyPxH2c@shinobu>
-From:   David Lechner <david@lechnology.com>
-Message-ID: <6aa0e966-478c-4233-fe9b-d16c3c9d4989@lechnology.com>
-Date:   Mon, 18 Oct 2021 11:14:15 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S233435AbhJRQRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 12:17:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45342 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232118AbhJRQQ5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 12:16:57 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16232C06161C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 09:14:46 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id w23so699387lje.7
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 09:14:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=39kEco6YUPZQeLiBTH5juEbmjZF1/s82FjRHzL/nA70=;
+        b=mRjscxU0/V04/PRAzPqrZxXCuXysK06p8VtMGNGNM36W7cwxiTNFl2lrpM3vF7WM4O
+         K4l8lwBnmDjCBkHBEGhMy34EqfJ1CfAXRoiKpkcswJOKjiMbJi2PIp6Rp0jdaxVTBkEB
+         AvvIhiq0Sba4hVXoKnpPDy4cDRzWeikNjo5wImCPa6YZnSaDOD+gYWDVQV0XTAc0ORq1
+         I1kU87aPvdR6eW8xr+sve+P07wy6wNfCaNlFpC6/YH0sLt9idjigmXncnNl6LyZMCsP9
+         C0vyRZFxO0rgz6WO9WHp4icR5cUHVoDa/32J469Rn4pfZS2LTTNsW1IiwMqjhfZSDYyK
+         dwrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=39kEco6YUPZQeLiBTH5juEbmjZF1/s82FjRHzL/nA70=;
+        b=OUvfKKbS93JuYfS1IUQVVnVfxg1rxkU6+ulJaOIRdJ4CUDI8KtMO1u0yTLGeI9y5AA
+         nCnjDUkb02+jLAlNt/bL0LpuO8oRByaetcvScrg/CLqcTZP+cjyHnyj7M3jNvdEK/rZN
+         1F7tBRNNRK+wnqqY2EesJJkd1gMOAwXqR8TUiXolkQL5lttkLuPzqYCpGeQciaHwQaf0
+         0tX5jB7JPRssAdWaICW8QPm7cRSgjsluK+mOMtNS/iOxjc875OazhbXZXMnuRKq/BEkh
+         MK0jtgIChaFXXrukNJyu9r5PmMCP0gf9CbhoayPK7qX0Gi85aHcYyx3VdOTbi1X2wQn1
+         aJyA==
+X-Gm-Message-State: AOAM530xck/FVFqOA/Efd0tDqPH/AUcvo+CIipO/DVolZodsxG75aMDf
+        m1YGwKb2tRtF5jo6zCB/VIX5RuXoW6mv7a8sJF6XDQ==
+X-Google-Smtp-Source: ABdhPJxrT9tI+YztQ/AimZD3Irs7I1GeAkAnj90pm0LU1mraIPQSWD9+esN/6cL7TJ1UIguquJ6yakcuJufGMjVda84=
+X-Received: by 2002:a2e:9616:: with SMTP id v22mr715661ljh.25.1634573684439;
+ Mon, 18 Oct 2021 09:14:44 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YW1Dl7ylRqyPxH2c@shinobu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - vern.gendns.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lechnology.com
-X-Get-Message-Sender-Via: vern.gendns.com: authenticated_id: davidmain+lechnology.com/only user confirmed/virtual account not confirmed
-X-Authenticated-Sender: vern.gendns.com: davidmain@lechnology.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+References: <20211008080305.13401-1-yanghui.def@bytedance.com>
+ <CALAqxLWUNFozhfhuVFAPo9xGgO+xsXPQ=i5w1Y0E9-w-PdHXgw@mail.gmail.com>
+ <c70a418d-4748-6876-ac8a-c9d1b7e94e78@gmail.com> <CALAqxLVgQ6QEThWaN65nOW9F_XCh7885n9RigAQDU+OgDntS5g@mail.gmail.com>
+ <6b715fb7-9850-04f3-4ab8-1a2a8a2cdfbf@gmail.com> <CALAqxLWgw8tA1Lrg27JUUFrGWCQqPQXmhjHyjsTRA5a4qingkg@mail.gmail.com>
+ <95c1a031-6751-f90f-d003-b74fbec0e9d8@gmail.com>
+In-Reply-To: <95c1a031-6751-f90f-d003-b74fbec0e9d8@gmail.com>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Mon, 18 Oct 2021 09:14:33 -0700
+Message-ID: <CALAqxLVcc9nscuWT-qFH=JbatVL0c5AxH5B9y3qE1ekG=BZ0aA@mail.gmail.com>
+Subject: Re: [PATCH] Clocksource: Avoid misjudgment of clocksource
+To:     brookxu <brookxu.cn@gmail.com>
+Cc:     yanghui <yanghui.def@bytedance.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/18/21 4:51 AM, William Breathitt Gray wrote:
-> On Mon, Oct 18, 2021 at 11:13:16AM +0200, Greg KH wrote:
->> On Mon, Oct 18, 2021 at 05:58:37PM +0900, William Breathitt Gray wrote:
->>> On Mon, Oct 18, 2021 at 08:08:21AM +0200, Greg KH wrote:
->>>> On Sun, Oct 17, 2021 at 01:55:21PM -0500, David Lechner wrote:
->>>>> This removes the chrdev_lock from the counter subsystem. This was
->>>>> intended to prevent opening the chrdev more than once. However, this
->>>>> doesn't work in practice since userspace can duplicate file descriptors
->>>>> and pass file descriptors to other processes. Since this protection
->>>>> can't be relied on, it is best to just remove it.
->>>>
->>>> Much better, thanks!
->>>>
->>>> One remaining question:
->>>>
->>>>> --- a/include/linux/counter.h
->>>>> +++ b/include/linux/counter.h
->>>>> @@ -297,7 +297,6 @@ struct counter_ops {
->>>>>    * @events:		queue of detected Counter events
->>>>>    * @events_wait:	wait queue to allow blocking reads of Counter events
->>>>>    * @events_lock:	lock to protect Counter events queue read operations
->>>>> - * @chrdev_lock:	lock to limit chrdev to a single open at a time
->>>>>    * @ops_exist_lock:	lock to prevent use during removal
->>>>
->>>> Why do you still need 2 locks for the same structure?
->>>>
->>>> thanks,
->>>>
->>>> greg k-h
->>>
->>> Originally there was only the events_lock mutex. Initially I tried using
->>> it to also limit the chrdev to a single open, but then came across a
->>> "lock held when returning to user space" warning:
->>> https://lore.kernel.org/linux-arm-kernel/YOq19zTsOzKA8v7c@shinobu/T/#m6072133d418d598a5f368bb942c945e46cfab9a5
->>>
->>> Instead of losing the benefits of a mutex lock for protecting the
->>> events, I ultimately implemented the chrdev_lock separately as an
->>> atomic_t. If the chrdev_lock is removed, then we'll use events_lock
->>> solely from now on for this structure.
->>
->> chrdev_lock should be removed, it doesn't really do what you think it
->> does, as per the thread yesterday :)
->>
->> So does this mean you can also drop the ops_exist_lock?
->>
->> thanks,
->>
->> greg k-h
-> 
-> When counter_unregister is called, the ops member is set to NULL to
-> indicate that the driver will be removed and that no new device
-> operations should occur (because the ops callbacks will no longer be
-> valid). The ops_exist_lock is used to allow existing ops callback
-> dereferences to complete before the driver is removed so that we do not
-> suffer a page fault.
-> 
-> I don't believe we can remove this protection (or can we?) but perhaps
-> we can merge the three mutex locks (n_events_list_lock, events_lock, and
-> ops_exist_lock) into a single "counter_lock" that handles all mutex
-> locking for this structure.
-> 
+On Tue, Oct 12, 2021 at 1:06 AM brookxu <brookxu.cn@gmail.com> wrote:
+> John Stultz wrote on 2021/10/12 13:29:
+> > On Mon, Oct 11, 2021 at 10:23 PM brookxu <brookxu.cn@gmail.com> wrote:
+> >> John Stultz wrote on 2021/10/12 12:52 =E4=B8=8B=E5=8D=88:
+> >>> On Sat, Oct 9, 2021 at 7:04 AM brookxu <brookxu.cn@gmail.com> wrote:
+> >> If we record the watchdog's start_time in clocksource_start_watchdog()=
+, and then
+> >> when we verify cycles in clocksource_watchdog(), check whether the clo=
+cksource
+> >> watchdog is blocked. Due to MSB verification, if the blocked time is g=
+reater than
+> >> half of the watchdog timer max_cycles, then we can safely ignore the c=
+urrent
+> >> verification? Do you think this idea is okay?
+> >
+> > I can't say I totally understand the idea. Maybe could you clarify with=
+ a patch?
+> >
+>
+> Sorry, it looks almost as follows:
+>
+> diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
+> index b8a14d2..87f3b67 100644
+> --- a/kernel/time/clocksource.c
+> +++ b/kernel/time/clocksource.c
+> @@ -119,6 +119,7 @@
+>  static DECLARE_WORK(watchdog_work, clocksource_watchdog_work);
+>  static DEFINE_SPINLOCK(watchdog_lock);
+>  static int watchdog_running;
+> +static unsigned long watchdog_start_time;
+>  static atomic_t watchdog_reset_pending;
+>
+>  static inline void clocksource_watchdog_lock(unsigned long *flags)
+> @@ -356,6 +357,7 @@ static void clocksource_watchdog(struct timer_list *u=
+nused)
+>         int next_cpu, reset_pending;
+>         int64_t wd_nsec, cs_nsec;
+>         struct clocksource *cs;
+> +       unsigned long max_jiffies;
+>         u32 md;
+>
+>         spin_lock(&watchdog_lock);
+> @@ -402,6 +404,10 @@ static void clocksource_watchdog(struct timer_list *=
+unused)
+>                 if (atomic_read(&watchdog_reset_pending))
+>                         continue;
+>
+> +               max_jiffies =3D nsecs_to_jiffies(cs->max_idle_ns);
+> +               if (time_is_before_jiffies(watchdog_start_time + max_jiff=
+ies))
+> +                       continue;
+> +
 
-The different mutexes protect individual parts of the counter struct
-rather than the struct as a whole (a linked list, kfifo reads, and
-callback ops), so I think it makes the code clearer having individual
-mutexes for each rather than having a global mutex for unrelated
-actions.
+Sorry, what is the benefit of using jiffies here?   Jiffies are
+updated by counting the number of tick intervals on the current
+clocksource.
 
+This seems like circular logic, where we're trying to judge the
+current clocksource by using something we derived from the current
+clocksource.
+That's why the watchdog clocksource is important, as it's supposed to
+be a separate counter that is more reliable (but likely slower) then
+the preferred clocksource.
+
+So I'm not really sure how this helps.
+
+The earlier patch by yanghui at least used the watchdog interval to
+decide if the watchdog timer had expired late. Which seemed
+reasonable, but I thought it might be helpful to add some sort of a
+counter so if the case is happening repeatedly (timers constantly
+being delayed) we have a better signal that the watchdog and current
+clocksource are out of sync.  Because again, timers are fired based on
+the current clocksource. So constant delays likely mean things are
+wrong.
+
+thanks
+-john
+
+thanks
+-john
