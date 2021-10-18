@@ -2,292 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CB6943116A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 09:32:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80314431168
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 09:30:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230395AbhJRHeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 03:34:46 -0400
-Received: from mail.nearlyone.de ([46.163.114.145]:49460 "EHLO
-        mail.nearlyone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229847AbhJRHep (ORCPT
+        id S230378AbhJRHc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 03:32:28 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:46212
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230114AbhJRHc1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 03:34:45 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 048FF5E41F;
-        Mon, 18 Oct 2021 09:32:30 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=monom.org; s=dkim;
-        t=1634542353; h=from:subject:date:message-id:to;
-        bh=htHBl7LTVtrun8Qh6LDU13m6PCVLoGfxzMI00HofErY=;
-        b=KTS3ANkapDNjHuz7EeOzQf1Y9rclX9RhcGHuupJfg7mdMLCphyofjwL3wb6XRKmfz4BlkI
-        RZEy47/1XGyGpt82dpqJNuOEeR47/G04JP6k5RBZiihMZG9DDyjlS0k4nUwpSxqY1sucyt
-        748FlMDbNPBXhhkrv2Q8PbhUB5crqZhuUWi3XIEgmM7/XcpgA5o/ugFlSmHV518LP8jJkM
-        863aFSmCJ6NlQ4l/VvPmTorhldh+nA+LOUc7lR80jn/9Er6rttZpdEz31Re8p24hTQUyZp
-        3pgm+ifnKGGBlSmkQlHvyFsAQy549Iijj5hUjbZkpCnWlktm/L5VKcig0UYICw==
-From:   Daniel Wagner <wagi@monom.org>
-Subject: [ANNOUNCE] 4.4.289-rt227
-Date:   Mon, 18 Oct 2021 07:29:23 -0000
-Message-ID: <163454216364.8829.1868721617239541377@beryllium.lan>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
+        Mon, 18 Oct 2021 03:32:27 -0400
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com [209.85.128.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 4DB5A40002
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 07:30:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1634542215;
+        bh=wFXVQ4KEtw8nWvUmZe9/ReIrDj2qrzV0p0234hn1yAw=;
+        h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+         In-Reply-To:Content-Type;
+        b=TUakONoLSJEVL0hrnWof73bOVJjzIkn6QswUigN2imkl53sUMC9zaLaULXXmbyvvu
+         9zntkI8qcg3nAKyP+czLVZn9pc7/41e2dMR99KH1qC8ZiIGUGs27vrnSy7BKqmda4w
+         F9DW99J9btEmnfNL7RqKHmBiXsu6yzqTi07xOvfkKvz4GDjDW9Z4qN4OpIbWjIMk28
+         7idIwqTNWIp6l9Ovi8ueS3knlpXkCqGEI8mrXQjeLqfQl56gpMUPSfAWJbwVfYv8C+
+         QgpUaLvod8+PHMWpaxobcUlTDKMYAg2EDSAW26Z+t6LCWJEpyPo4Ay4xl9kHmdKCRG
+         S53vX87R4Ii8g==
+Received: by mail-wm1-f69.google.com with SMTP id d7-20020a1c7307000000b0030d6982305bso2868172wmb.5
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 00:30:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=wFXVQ4KEtw8nWvUmZe9/ReIrDj2qrzV0p0234hn1yAw=;
+        b=VwmsdCiAKtC2DoBsY8DBIh6pTY3BoIZ2YWmHESkbpV6il40kCNEDIQbyEDXvDL0/pn
+         uchfxgADls3Gpc6fC/x7LDpbctrwzg22dYxRmSa0Q2IHlKmMiLTqatMAy47rrM+wt8ZC
+         i577Fdv8as4gMvtOwdartCYhEASHBnXulRvtUoe0MP5NkHO+FHgJvqZNYUSrPRGCnP5U
+         e/0LzNlOig2WwdezCe/iCgtxktvwo4RvR7SLrk8j8SynCb0StD798w6wdPU2XdWNNCfE
+         d/GP2Kzf/4WVOB2k1BuhetcxNEjhUbXTsszgw3fc8yprqin62MzsTMoWInLJbkAxyPs3
+         M6tA==
+X-Gm-Message-State: AOAM533VwqS6oEpQ7PqBL1HcwRiCFPHSrHgmPSD3jlxoWkK0dj8AEPM5
+        yDvfPsUlBnKkutlq80v5jRnpGcw1pEWJhBvOrVHqdeGqZGpdmfubIzd61+OPJ2MkhgP79FIDJUA
+        NT+bwDQdDLjT9QrnQCGHuxmKNk6Top9uR/J4kHm0AAA==
+X-Received: by 2002:adf:e3d0:: with SMTP id k16mr30306594wrm.385.1634542214845;
+        Mon, 18 Oct 2021 00:30:14 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxun+2EYZRd01wBMtxCIoQaC2e86t9mH9UcN0AyvQbSJarL/g5QoX3ssvsEHJB6Oa38TLHG/Q==
+X-Received: by 2002:adf:e3d0:: with SMTP id k16mr30306572wrm.385.1634542214639;
+        Mon, 18 Oct 2021 00:30:14 -0700 (PDT)
+Received: from [192.168.123.55] (ip-88-152-144-157.hsi03.unitymediagroup.de. [88.152.144.157])
+        by smtp.gmail.com with ESMTPSA id w26sm11594434wmk.34.2021.10.18.00.30.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Oct 2021 00:30:14 -0700 (PDT)
+Message-ID: <7361287f-9c07-8b76-d405-35f287ac1706@canonical.com>
+Date:   Mon, 18 Oct 2021 09:30:13 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.2
+Subject: Re: [PATCH v2 1/1] dt-bindings: reg-io-width for SiFive CLINT
+Content-Language: en-US
+To:     Anup Patel <anup@brainfault.org>
+Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Carsten Emde <C.Emde@osadl.org>,
-        John Kacur <jkacur@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Tom Zanussi <tom.zanussi@linux.intel.com>,
-        Clark Williams <williams@redhat.com>,
-        Pavel Machek <pavel@denx.de>
-X-Last-TLS-Session-Version: TLSv1.3
+        Guo Ren <guoren@linux.alibaba.com>,
+        Bin Meng <bmeng.cn@gmail.com>, Xiang W <wxjstz@126.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Atish Patra <atish.patra@wdc.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        OpenSBI <opensbi@lists.infradead.org>
+References: <20211015120735.27972-1-heinrich.schuchardt@canonical.com>
+ <CAAhSdy3JU6jitTWFk4CVRG5Xc7P7ueZzd=xmnKBNpx8eGaR6hw@mail.gmail.com>
+From:   Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
+In-Reply-To: <CAAhSdy3JU6jitTWFk4CVRG5Xc7P7ueZzd=xmnKBNpx8eGaR6hw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello RT-list!
+On 10/18/21 06:33, Anup Patel wrote:
+> On Fri, Oct 15, 2021 at 5:37 PM Heinrich Schuchardt
+> <heinrich.schuchardt@canonical.com> wrote:
+>>
+>> The CLINT in the T-HEAD 9xx processors do not support 64bit mmio access to
+>> the MTIMER device. The current schema does not allow to specify this.
+>>
+>> OpenSBI currently uses a property 'clint,has-no-64bit-mmio' to indicate the
+>> restriction. Samuael Holland suggested in
+>> lib: utils/timer: Use standard property to specify 32-bit I/O
+>> https://github.com/smaeul/opensbi/commit/b95e9cf7cf93b0af16fc89204378bc59ff30008e
+>> to use "reg-io-width = <4>;" as the reg-io-width property is generally used
+>> in the devicetree schema for such a condition.
+>>
+>> A release candidate of the ACLINT specification is available at
+>> https://github.com/riscv/riscv-aclint/releases
+>>
+>> Add reg-io-width as optional property to the SiFive Core Local Interruptor.
+>> Add a new compatible string "allwinner,sun20i-d1-clint" for the CLINT of
+>> the Allwinner D1 SoC.
+>>
+>> Signed-off-by: Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
+>> ---
+>>   .../devicetree/bindings/timer/sifive,clint.yaml     | 13 +++++++++++--
+>>   1 file changed, 11 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/timer/sifive,clint.yaml b/Documentation/devicetree/bindings/timer/sifive,clint.yaml
+>> index a35952f48742..d3b4c6844e2f 100644
+>> --- a/Documentation/devicetree/bindings/timer/sifive,clint.yaml
+>> +++ b/Documentation/devicetree/bindings/timer/sifive,clint.yaml
+>> @@ -26,6 +26,7 @@ properties:
+>>         - enum:
+>>             - sifive,fu540-c000-clint
+>>             - canaan,k210-clint
+>> +          - allwinner,sun20i-d1-clint
+>>         - const: sifive,clint0
+>>
+>>       description:
+>> @@ -33,14 +34,22 @@ properties:
+>>         Supported compatible strings are -
+>>         "sifive,fu540-c000-clint" for the SiFive CLINT v0 as integrated
+>>         onto the SiFive FU540 chip, "canaan,k210-clint" for the SiFive
+>> -      CLINT v0 as integrated onto the Canaan Kendryte K210 chip, and
+>> -      "sifive,clint0" for the SiFive CLINT v0 IP block with no chip
+>> +      CLINT v0 as integrated onto the Canaan Kendryte K210 chip,
+>> +      "allwinner,sun20i-d1-clint" for the CLINT in the Allwinner D1 SoC,
+>> +      and "sifive,clint0" for the SiFive CLINT v0 IP block with no chip
+>>         integration tweaks.
+>>         Please refer to sifive-blocks-ip-versioning.txt for details
+>>
+>>     reg:
+>>       maxItems: 1
+>>
+>> +  reg-io-width:
+>> +    description: |
+>> +      Some CLINT implementations, e.g. on the T-HEAD 9xx, only support
+>> +      32bit access for MTIMER.
+>> +    $ref: /schemas/types.yaml#/definitions/uint32
+>> +    const: 4
+>> +
+> 
+> Please drop the "reg-io-width" DT property.
+> 
+> Based on discussion on ACLINT MTIMER DT bindings, Rob suggested
+> using implementation specific compatible string for detecting register IO
+> width. We should follow the same strategy here as well.
 
-I'm pleased to announce the 4.4.289-rt227 stable release.
-This is just an update the latest stable release. No RT
-specific changes.
+Should we create a completely separated yaml document for 
+"allwinner,sun20i-d1-clint", "thead,clint0"? Or should we integrate all 
+in sifive,clint.yaml?
 
-You can get this release via the git tree at:
+Best regards
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
+Heinrich
 
-  branch: v4.4-rt
-  Head SHA1: e3a040806a55a1d307693e64f1f9e5fcb0221570
+> 
+> Regards,
+> Anup
+> 
+>>     interrupts-extended:
+>>       minItems: 1
+>>
+>> --
+>> 2.32.0
+>>
 
-I've still not resolved the upload issue. I've post my new gpg key but
-havent' heard anything yet. Will write to the helpdesk see if this
-helps.
-
-Enjoy!
-Daniel
-
-Changes from v4.4.285-rt226:
----
-
-Anand K Mistry (1):
-      perf/x86: Reset destroy callback on event init failure
-
-Andrea Claudi (1):
-      ipvs: check that ip_vs_conn_tab_bits is between 8 and 20
-
-Andy Shevchenko (1):
-      ptp_pch: Load module automatically if ID matches
-
-Anirudh Rayabharam (1):
-      HID: usbhid: free raw_report buffers in usbhid_stop
-
-Aya Levin (1):
-      net/mlx4_en: Don't allow aRFS for encapsulated packets
-
-Baokun Li (1):
-      scsi: iscsi: Adjust iface sysfs attr detection
-
-Carlo Lobrano (1):
-      USB: serial: option: add Telit LN920 compositions
-
-Colin Ian King (1):
-      scsi: virtio_scsi: Fix spelling mistake "Unsupport" -> "Unsupported"
-
-Dan Carpenter (3):
-      usb: gadget: r8a66597: fix a loop in set_feature()
-      usb: musb: tusb6010: uninitialized data in tusb_fifo_write_unaligned()
-      ext2: fix sleeping in atomic bugs on error
-
-Dan Li (1):
-      arm64: Mark __stack_chk_guard as __ro_after_init
-
-Daniel Wagner (2):
-      Merge tag 'v4.4.289' into v4.4-rt
-      Linux 4.4.289-rt227
-
-Eric Dumazet (3):
-      af_unix: fix races in sk_peer_pid and sk_peer_cred accesses
-      net_sched: fix NULL deref in fifo_set_limit()
-      netlink: annotate data races around nlk->bound
-
-F.A.Sulaiman (1):
-      HID: betop: fix slab-out-of-bounds Write in betop_probe
-
-Faizel K B (1):
-      usb: testusb: Fix for showing the connection speed
-
-Greg Kroah-Hartman (5):
-      Linux 4.4.286
-      Revert "arm64: Mark __stack_chk_guard as __ro_after_init"
-      Linux 4.4.287
-      Linux 4.4.288
-      Linux 4.4.289
-
-Guenter Roeck (5):
-      m68k: Double cast io functions to unsigned long
-      compiler.h: Introduce absolute_pointer macro
-      net: i825xx: Use absolute_pointer for memcpy from fixed memory location
-      alpha: Declare virt_to_phys and virt_to_bus parameter as pointer to volatile
-      net: 6pack: Fix tx timeout and slot time
-
-Helge Deller (1):
-      parisc: Use absolute_pointer() to define PAGE0
-
-Igor Matheus Andrade Torrente (1):
-      tty: Fix out-of-bound vmalloc access in imageblit
-
-Jacob Keller (2):
-      e100: fix length calculation in e100_get_regs_len
-      e100: fix buffer overrun in e100_get_regs
-
-Jan Beulich (2):
-      xen/x86: fix PV trap handling on secondary processors
-      xen-netback: correct success/error reporting for the SKB-with-fraglist case
-
-Jeremy Sowden (1):
-      netfilter: ip6_tables: zero-initialize fragment offset
-
-Jiapeng Chong (1):
-      scsi: ses: Fix unsigned comparison with less than zero
-
-Jiri Benc (1):
-      i40e: fix endless loop under rtnl
-
-Johan Hovold (8):
-      net: hso: fix muxed tty registration
-      ipack: ipoctal: fix stack information leak
-      ipack: ipoctal: fix tty registration race
-      ipack: ipoctal: fix tty-registration error handling
-      ipack: ipoctal: fix missing allocation-failure check
-      ipack: ipoctal: fix module reference leak
-      USB: cdc-acm: fix racy tty buffer accesses
-      USB: cdc-acm: fix break reporting
-
-Johannes Berg (1):
-      mac80211: fix use-after-free in CCMP/GCMP RX
-
-Jozsef Kadlecsik (1):
-      netfilter: ipset: Fix oversized kvmalloc() calls
-
-Kate Hsuan (1):
-      libata: Add ATA_HORKAGE_NO_NCQ_ON_ATI for Samsung 860 and 870 SSD.
-
-Krzysztof Kozlowski (2):
-      USB: serial: mos7840: remove duplicated 0xac24 device ID
-      USB: serial: option: remove duplicate USB device ID
-
-Linus Torvalds (6):
-      sparc: avoid stringop-overread errors
-      qnx4: avoid stringop-overread errors
-      spi: Fix tegra20 build with CONFIG_PM=n
-      qnx4: work around gcc false positive warning bug
-      sparc64: fix pci_iounmap() when CONFIG_PCI is not set
-      gup: document and work around "COW can break either way" issue
-
-Lorenzo Stoakes (1):
-      mm: check VMA flags to avoid invalid PROT_NONE NUMA balancing
-
-Max Filippov (1):
-      xtensa: call irqchip_init only when CONFIG_USE_OF is selected
-
-Ming Lei (1):
-      scsi: sd: Free scsi_disk device via put_device()
-
-Mizuho Mori (1):
-      HID: apple: Fix logical maximum and usage maximum of Magic Keyboard JIS
-
-NeilBrown (1):
-      cred: allow get_cred() and put_cred() to be given NULL.
-
-Oleksij Rempel (1):
-      ARM: imx6: disable the GIC CPU interface before calling stby-poweroff sequence
-
-Pavel Skripkin (1):
-      phy: mdio: fix memory leak
-
-Sai Krishna Potthuri (1):
-      EDAC/synopsys: Fix wrong value type assignment for edac_mode
-
-Slark Xiao (1):
-      USB: serial: option: add device id for Foxconn T99W265
-
-Steve French (1):
-      cifs: fix incorrect check for null pointer in header_assemble
-
-Suzuki K Poulose (1):
-      arm64: Extend workaround for erratum 1024718 to all versions of Cortex-A55
-
-Trond Myklebust (1):
-      nfsd4: Handle the NFSv4 READDIR 'dircount' hint being zero
-
-Uwe Brandt (1):
-      USB: serial: cp210x: add ID for GW Instek GDM-834x Digital Multimeter
-
-YueHaibing (1):
-      mac80211: Drop frames from invalid MAC address in ad-hoc mode
-
-Zhihao Cheng (1):
-      blktrace: Fix uaf in blk_trace access after removing by sysfs
-
-yangerkun (1):
-      ext4: fix potential infinite loop in ext4_dx_readdir()
----
-Makefile                                       |  2 +-
- arch/alpha/include/asm/io.h                    |  6 +--
- arch/arm/mach-imx/pm-imx6.c                    |  2 +
- arch/arm64/Kconfig                             |  2 +-
- arch/arm64/mm/proc.S                           |  4 +-
- arch/m68k/include/asm/raw_io.h                 | 20 ++++----
- arch/parisc/include/asm/page.h                 |  2 +-
- arch/sparc/kernel/mdesc.c                      |  3 +-
- arch/sparc/lib/iomap.c                         |  2 +
- arch/x86/kernel/cpu/perf_event.c               |  1 +
- arch/x86/xen/enlighten.c                       | 15 +++---
- arch/xtensa/kernel/irq.c                       |  2 +-
- drivers/ata/libata-core.c                      | 34 ++++++++++++-
- drivers/edac/synopsys_edac.c                   |  2 +-
- drivers/hid/hid-apple.c                        |  7 +++
- drivers/hid/hid-betopff.c                      | 13 +++--
- drivers/hid/usbhid/hid-core.c                  | 13 ++++-
- drivers/ipack/devices/ipoctal.c                | 63 +++++++++++++++++------
- drivers/net/ethernet/i825xx/82596.c            |  2 +-
- drivers/net/ethernet/intel/e100.c              | 22 +++++---
- drivers/net/ethernet/intel/i40e/i40e_main.c    |  2 +-
- drivers/net/ethernet/mellanox/mlx4/en_netdev.c |  3 ++
- drivers/net/hamradio/6pack.c                   |  4 +-
- drivers/net/phy/mdio_bus.c                     |  7 +++
- drivers/net/usb/hso.c                          | 12 ++---
- drivers/net/xen-netback/netback.c              |  2 +-
- drivers/ptp/ptp_pch.c                          |  1 +
- drivers/scsi/scsi_transport_iscsi.c            |  8 +--
- drivers/scsi/sd.c                              |  9 ++--
- drivers/scsi/ses.c                             |  2 +-
- drivers/scsi/virtio_scsi.c                     |  4 +-
- drivers/spi/spi-tegra20-slink.c                |  4 +-
- drivers/tty/vt/vt.c                            | 21 +++++++-
- drivers/usb/class/cdc-acm.c                    |  8 +++
- drivers/usb/gadget/udc/r8a66597-udc.c          |  2 +-
- drivers/usb/musb/tusb6010.c                    |  1 +
- drivers/usb/serial/cp210x.c                    |  1 +
- drivers/usb/serial/mos7840.c                   |  2 -
- drivers/usb/serial/option.c                    | 11 +++-
- fs/cifs/connect.c                              |  5 +-
- fs/ext2/balloc.c                               | 14 +++---
- fs/ext4/dir.c                                  |  6 +--
- fs/nfsd/nfs4xdr.c                              | 19 ++++---
- fs/qnx4/dir.c                                  | 69 +++++++++++++++++++-------
- include/linux/compiler.h                       |  2 +
- include/linux/cred.h                           | 14 ++++--
- include/linux/libata.h                         |  1 +
- include/net/sock.h                             |  2 +
- kernel/trace/blktrace.c                        |  8 +++
- localversion-rt                                |  2 +-
- mm/gup.c                                       | 48 +++++++++++++++---
- mm/huge_memory.c                               | 10 ++--
- mm/memory.c                                    | 12 +++--
- net/core/sock.c                                | 12 +++--
- net/ipv6/netfilter/ip6_tables.c                |  1 +
- net/mac80211/rx.c                              |  3 +-
- net/mac80211/wpa.c                             |  6 +++
- net/netfilter/ipset/ip_set_hash_gen.h          |  4 +-
- net/netfilter/ipvs/ip_vs_conn.c                |  4 ++
- net/netlink/af_netlink.c                       | 14 ++++--
- net/sched/sch_fifo.c                           |  3 ++
- net/unix/af_unix.c                             | 34 ++++++++++---
- tools/usb/testusb.c                            | 14 +++---
- 63 files changed, 455 insertions(+), 173 deletions(-)
