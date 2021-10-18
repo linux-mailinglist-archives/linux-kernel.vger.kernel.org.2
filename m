@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9516C431E8C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 16:00:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1C99431D58
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:48:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232089AbhJROCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 10:02:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41656 "EHLO mail.kernel.org"
+        id S234023AbhJRNuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:50:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47684 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234399AbhJROAR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 10:00:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3509860F56;
-        Mon, 18 Oct 2021 13:42:11 +0000 (UTC)
+        id S234014AbhJRNsU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:48:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D3B196135F;
+        Mon, 18 Oct 2021 13:36:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634564531;
+        s=korg; t=1634564220;
         bh=PcqQIb1IhiaRoWComIAtp2rMlcfK8hqwRoXaYragQ1c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B1QvUQtAcRDAzde4ZmbjIKzOx41rsl4+DLGaGnfA1EV+kqIe+Vh3K/RqpfArZh6gp
-         vvxWECL0miM699onXJiua8qw2G0Lh9JRgDiHxkF5Dmqm2ImcCGQr+g0nsCwd/aGUZK
-         HtQFFhVQk7GihvQn64OV1OLJ8R9t4SHz2m+QphCE=
+        b=jUGggrULULqLi1rDtfVIKeZNd+xvil9S9hR7C10/MUd99iY6PjJlrj6ZwqI4pfG/a
+         2ZAcESugcAa7ZObDHjiHmDg4uZXif5yr7mUHbOdnwIRZ+mz7w+40LE96WyPQ3+eLLV
+         MCugUFnG7W4Oy1oE4LxWfLYPRm1gEyyFAV1QbtUs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Kamal Dasu <kdasu@broadcom.com>,
         Florian Fainelli <f.fainelli@gmail.com>,
         Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.14 124/151] spi: bcm-qspi: clear MSPI spifie interrupt during probe
+Subject: [PATCH 5.10 087/103] spi: bcm-qspi: clear MSPI spifie interrupt during probe
 Date:   Mon, 18 Oct 2021 15:25:03 +0200
-Message-Id: <20211018132344.700584835@linuxfoundation.org>
+Message-Id: <20211018132337.674188687@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132340.682786018@linuxfoundation.org>
-References: <20211018132340.682786018@linuxfoundation.org>
+In-Reply-To: <20211018132334.702559133@linuxfoundation.org>
+References: <20211018132334.702559133@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
