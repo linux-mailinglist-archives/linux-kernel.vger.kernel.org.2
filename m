@@ -2,120 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21E99431F37
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 16:15:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A004431EE8
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 16:06:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233354AbhJRORs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 10:17:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44280 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232417AbhJROR3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 10:17:29 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D0BFC03545A;
-        Mon, 18 Oct 2021 06:56:43 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id r18so41585784wrg.6;
-        Mon, 18 Oct 2021 06:56:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ooh8xy1o0eZVm8LodhjQadtOCGvJsUvk+tIL6iaJCMA=;
-        b=WX2YlDanFpIyfDOAFuLOlEXPyJ2WruxRZCsiJ1nZj5KKKf8dhrWYG3EM3lpbjQHg7J
-         Wnz0pA5IJU32V0S8hipRY9Zow56ZkdfYALwT6MtdZ1R+4YKrdFkLZ1L4KqeqiJJJWdPa
-         8atnOMS3pgEs2d/bfg5TujZB/mr8wipLcFIfhzlNDQx7ND1NsBWcriwuoe5KKtjcu+/x
-         OAPHo6S0cueNtQs5/EeoXokooXD7H19j4hAEXR+7L7oYum+d2YtTcW7U7hht32YF980o
-         4e82FbRpEr0WjTTL2IH/bNGAeuqcuG3W/ja7nJ5JRGLKtDyJWOpCDuj6doVFMU4x2xBY
-         cEDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ooh8xy1o0eZVm8LodhjQadtOCGvJsUvk+tIL6iaJCMA=;
-        b=v/tka9b5HxxvakfQ8tYo/TgZT7sWAZhsOTVp2YQ2xwBv8QPP/+NWX+7srZNMWzm1gs
-         oVNX/fEJohMWtRVT8RMem6KThdW4yD1guwObe3yCXTfJoGn0CTwHCugh96Rgpd7SAo/x
-         ZoJAMLNYPqtlAChATojMdm4Aba5AW5u8qDXKiGvZmdbN1RpQuT1hZx+AEgRFfFlzzEns
-         RY3Erpe7chClGc8t2ROTcuC2/CRv+KuqYPzHtY3jjU9KrQQhMw4MCjpwQNNZ/n8Lg+2V
-         DOo2RSu+wN70lL+tdb6gvZhf1DNDlNCUzxtuWdIi3AgjoHvGuhwVm3lBlWugNRzjYwE7
-         Jm2Q==
-X-Gm-Message-State: AOAM533G6flM3u1XhSBJlxIlQoZpzJhq6dbOKusKMrgFcC6/K7YA4uTQ
-        JB3PKO35O3z5/9uDGQ3Hh0s=
-X-Google-Smtp-Source: ABdhPJzOa0iEN935FLwUlLzFLgjTTp636rZR321KHGh8ALm9P+znqwL1m5XfaswuUMqAtFGzd4LncQ==
-X-Received: by 2002:a5d:6410:: with SMTP id z16mr11753421wru.354.1634565401896;
-        Mon, 18 Oct 2021 06:56:41 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id j206sm15639001wmj.23.2021.10.18.06.56.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 06:56:41 -0700 (PDT)
-Date:   Mon, 18 Oct 2021 15:56:40 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>, dri-devel@lists.freedesktop.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/tegra: mark nvdec PM functions as __maybe_unused
-Message-ID: <YW19GAWY5ERnSZ7Q@orome.fritz.box>
-References: <20211013144148.2208472-1-arnd@kernel.org>
+        id S235032AbhJROHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 10:07:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47166 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234998AbhJRODn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 10:03:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B3C8F60FC3;
+        Mon, 18 Oct 2021 13:57:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634565468;
+        bh=EfoxAVenA0WoMoS/uETiAWnWnsU939TQT9a4GDNMURM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=UFXFK+4wesp0e6xVIKglwqHDqn/VlhKwxWsGuRPSi0YiJ3TPPJueUb9QJJpV7saXl
+         SKeEsYxRjSaTFxSRaHZXEuFnCMsnBvhhz7cOw68q5y2Gb2RaS/hLu6n10KGgF28pwp
+         WsXDgNi+WQgdywc88jPWvItWnZetz5dq0+SHlNOpLMnCL/SYSVuGRMHMfrA7NNkrIq
+         TksmmiIWw1xOQV4StzpsmLn/YTu2+2u8kc3tj6BJx90yTiSxnaeLbKnT1/6+27Bd33
+         OK6iIHiNGFPS68NvGRqJNJ7meLDIXvh8jrfPCA2nh/DbfYncDQAhNeToQN1IcEw+JQ
+         vwu2LlEfd0sRQ==
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Jarkko Sakkinen <jarkko@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
+Cc:     reinette.chatre@intel.com, tony.luck@intel.com,
+        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v8 1/2] x86/sgx: Rename fallback labels in sgx_init()
+Date:   Mon, 18 Oct 2021 16:57:43 +0300
+Message-Id: <20211018135744.45527-1-jarkko@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="SIz/mzrlb6EwMjfb"
-Content-Disposition: inline
-In-Reply-To: <20211013144148.2208472-1-arnd@kernel.org>
-User-Agent: Mutt/2.1.3 (987dde4c) (2021-09-10)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+It's hard to add new content to this function because it is time
+consuming to match fallback and its cause. Rename labels in a way
+that the name of error label refers to the site where failure
+happened. This way it is easier to keep on track what is going
+on.
 
---SIz/mzrlb6EwMjfb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+---
+v5:
+* A new patch.
+---
+ arch/x86/kernel/cpu/sgx/main.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-On Wed, Oct 13, 2021 at 04:41:36PM +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
->=20
-> The resume helper is called conditionally and causes a harmless
-> warning when stubbed out:
->=20
-> drivers/gpu/drm/tegra/nvdec.c:240:12: error: 'nvdec_runtime_resume' defin=
-ed but not used [-Werror=3Dunused-function]
->   240 | static int nvdec_runtime_resume(struct device *dev)
->=20
-> Mark both suspend and resume as __maybe_unused for consistency
-> to avoid this warning.
->=20
-> Fixes: e76599df354d ("drm/tegra: Add NVDEC driver")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/gpu/drm/tegra/nvdec.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+index 63d3de02bbcc..a6e313f1a82d 100644
+--- a/arch/x86/kernel/cpu/sgx/main.c
++++ b/arch/x86/kernel/cpu/sgx/main.c
+@@ -803,12 +803,12 @@ static int __init sgx_init(void)
+ 
+ 	if (!sgx_page_reclaimer_init()) {
+ 		ret = -ENOMEM;
+-		goto err_page_cache;
++		goto err_reclaimer;
+ 	}
+ 
+ 	ret = misc_register(&sgx_dev_provision);
+ 	if (ret)
+-		goto err_kthread;
++		goto err_provision;
+ 
+ 	/*
+ 	 * Always try to initialize the native *and* KVM drivers.
+@@ -821,17 +821,17 @@ static int __init sgx_init(void)
+ 	ret = sgx_drv_init();
+ 
+ 	if (sgx_vepc_init() && ret)
+-		goto err_provision;
++		goto err_driver;
+ 
+ 	return 0;
+ 
+-err_provision:
++err_driver:
+ 	misc_deregister(&sgx_dev_provision);
+ 
+-err_kthread:
++err_provision:
+ 	kthread_stop(ksgxd_tsk);
+ 
+-err_page_cache:
++err_reclaimer:
+ 	for (i = 0; i < sgx_nr_epc_sections; i++) {
+ 		vfree(sgx_epc_sections[i].pages);
+ 		memunmap(sgx_epc_sections[i].virt_addr);
+-- 
+2.30.2
 
-Applied, thanks.
-
-Thierry
-
---SIz/mzrlb6EwMjfb
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmFtfRgACgkQ3SOs138+
-s6F41hAAnsX3GlRbrAKlFAvpLqbBgE62IAisdMeL1RKwu0HpkBBhKqdo5dqjui+r
-P1B9e+DP2HxvICgbje3wAWU11Xh2HG8YefdA9QBZpwGH5SVRQRsteKVom39vdB2f
-YjZusbsMD0cucypBW3EOdw7UXsy64v0Vg5dvv3TfXR4WYkQCOacCzQrxLMp81tPw
-0Zb1xjkPLMpkevZwTuV7cBJB7lVQS+JuvyXxKiRgbHjqm5YnErlA5KFFXRp+jxAC
-c1qHKx5UG9a3Lmp8Rt4BIQCEX7nFDUxQYBRb212Mx2EvFzEvM5uQO1u6SkMK9Iw5
-ZRaFD3TmcAVOTQ9vrfQ8HWq5n5jCGHx2FynjqJeQC+qxRtx2iXjO/MPWxyLKbMbs
-6KamG04yYmdICx3VCLEijSBMwkpjGju1xPCyd83GGVawRm7pzqLqlw4rVoyz3RE4
-i6W0N4spcamHgK+3sOR6wz2I8cp9jYKFqijecenS/RBc85kbcH4BhnCyxL1fXDbS
-nJRIDfSJj/K8WkTxnYQ6nWMFMwwXsyEllR4X4JGugxwGRfWJNfNmgJxpOyHGxQc+
-o72AtLYyUJaJWE9Jf0OGIoI7EoZ/OIsxcHUQt+WiIpswl6u0qVxEclfsr34jpyaJ
-MTDtJ7zFO7ML5Vb/6smNbkpWkTh6uzlHAsId9eU1Uk5311F3VQA=
-=NRLn
------END PGP SIGNATURE-----
-
---SIz/mzrlb6EwMjfb--
