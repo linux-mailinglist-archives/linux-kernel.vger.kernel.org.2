@@ -2,89 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95A5043174F
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 13:29:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D06C431755
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 13:31:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230436AbhJRLbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 07:31:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34502 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229581AbhJRLbe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 07:31:34 -0400
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E7DBC06161C
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 04:29:23 -0700 (PDT)
-Received: by mail-io1-xd30.google.com with SMTP id o184so3794108iof.6
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 04:29:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1fgJvh7+bSF88TXWBTb/Xbqee/xjp/eoCpakVfL7f8k=;
-        b=pWR+cmdqQ1S+sZU5CD0esrs+zcURncs679mesQuijLeN5ded7WKFnBdG6+Zg0WRwWH
-         ND5pVMDMpWqUmmY7di1XpHqH5GYUsEBIoRAiH1NMma73ilsx+FCbZdHGcCiyRbwQloKr
-         paVmuDod1wt3S/koS4qg5EOE5n1YxbIGSjpEaZc7+VWGk4sPlk4hL0uKXdl8y31mZs49
-         lcfQcmsgPagPDiNsjXCtnN8CS+Vul4hjVYSLxCwgTmBjkQ8BRv+l2UsN7tm0cLO16LRg
-         Ap2wS5iZ/LZcE2a14sFwD5tR0IgWMTX41D4JoNec53D7pHb6F3dceerygigbOfT8juNz
-         aGGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1fgJvh7+bSF88TXWBTb/Xbqee/xjp/eoCpakVfL7f8k=;
-        b=MmXSqasVo+6mjq4PYKagIIwmhwekLhWNcz2SPr10lKz/WsiPoz9R4Ytdu2g/c5JcT+
-         cb3gItZfWqbBTuA31AXrIxedIXufaZPzPxLIwhDN15Wpf7yeSM8Uhbmz76VyEzcNjpuD
-         kQW9f+FQj7/x/4pfN6VwnKYFGtzyCHcrufpYDTR4MZ99V8wwnG9NxB9PzFUnF4EMBqFP
-         jf6vuy8H3kh/VeqyuheaqssH1aN5CZ74UbKhTb27pGeow3nkmCihyzzDsR6hRm3JF0fP
-         GnOEdrx3p5jAMbod9C2i22Js4hzF7HyxfG5xFtcaLWDlPHXHj+yKBC28Yf20ML7Ho8dN
-         ptGw==
-X-Gm-Message-State: AOAM532GETO8QLp+iOeMEBTdZmOEJRuX7t0Q8UVBA+1IP3R1OtllsFPA
-        3/77GLEcDmxFZHj0NDYtqMDfqu7rRQomGxGb91o=
-X-Google-Smtp-Source: ABdhPJyKHIqYxcEDOJxIFDZU83YefWRmmA+KsfpFKY2bNjgfLFOxQC2TZSNcX1Hug3OgkqMQa0rCxachvW80MfZnTWE=
-X-Received: by 2002:a02:9149:: with SMTP id b9mr17887225jag.46.1634556562990;
- Mon, 18 Oct 2021 04:29:22 -0700 (PDT)
+        id S230013AbhJRLdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 07:33:15 -0400
+Received: from mail-eopbgr1300127.outbound.protection.outlook.com ([40.107.130.127]:9876
+        "EHLO APC01-HK2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229491AbhJRLdO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 07:33:14 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VUWPYV3BR1m0LHnMPIAlryWU3Ol8ulFCl00P0u3RpbcSyUgVlD0YIsIuKwY/xGVc7oVZlRUpOULc8hyEFquhmQr7Bian7h7BP9s7EsCgbY3guZZsZ9/TE5gV0MPMuKMBMp8ik5fV9dIGNV9gKwahP8csJs4NERaJnxR/MXcl3oBl2/wIeBK2MtWrD89eDVldQIW2t2qXQ5WTgMAUwLO59dkRoz8QaHlI3O9zahV7PcggEQUVLPM6gc8vqa7V/T8piSPf7tqW5UvVXyMkKQddLONNUqmwEqpELY/t4xl8TNT2aP6YR4SAEq2FeuOJKUEu35Vp1JgpTW7SY2BtpGzLYA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=dlhWNaFd6qORY7uFhL5+jFdI7EssNdoefkfCIBPICc4=;
+ b=Mpl6F80ktrP83Ep3W7x9XoHvjqh6aAJ/8ZT7L4Myz8CPTESpCerY5g8Kq0DZlGMQwIlBHJAGU83FAYvGPUHDuzEXrpW8orTZFO5MPBToE8ZOl79sRkF9h9vn3teibv1KOpd0XBXwnsJNJk9QONjT62dX+9XCUn4aSbIfo2Wo3YcubJ87uLktr0Jj+xeBeOIZJvs08T+Fi0XXfZQlvvTmghbtOC96l/w3Wram5y+QAQovsKl1v9CGcBsjhjlmlzN1jCJK1Dyw9aCBEsgNFYEGEHzOsl8+e9E7jKNyzppD7q6ljppGWVR3ri9oV4zjrBfM4MlukhtMy/6thsW5pNN9Lg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
+ s=selector2-vivo0-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dlhWNaFd6qORY7uFhL5+jFdI7EssNdoefkfCIBPICc4=;
+ b=pDYYgI0BBdxsN+83yW8GsNbovuyA4oBXXBtLvqoWqkEUw/BQ7wjYXes8AWjclyyVAqdFyBMRWN/mdnpl8LeeGqVRTCa3TVKP5jq8cdhSldXV/xikhhI5EdVYjNx96y5ZNhkE14MXSkYp1NrU6DSeh0XGBnyK9+2M/RR9D1JPkBE=
+Authentication-Results: davemloft.net; dkim=none (message not signed)
+ header.d=none;davemloft.net; dmarc=none action=none header.from=vivo.com;
+Received: from SL2PR06MB3082.apcprd06.prod.outlook.com (2603:1096:100:37::17)
+ by SL2PR06MB2986.apcprd06.prod.outlook.com (2603:1096:100:2e::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.16; Mon, 18 Oct
+ 2021 11:30:59 +0000
+Received: from SL2PR06MB3082.apcprd06.prod.outlook.com
+ ([fe80::4c9b:b71f:fb67:6414]) by SL2PR06MB3082.apcprd06.prod.outlook.com
+ ([fe80::4c9b:b71f:fb67:6414%6]) with mapi id 15.20.4608.018; Mon, 18 Oct 2021
+ 11:30:59 +0000
+From:   Qing Wang <wangqing@vivo.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Qing Wang <wangqing@vivo.com>
+Subject: [PATCH V2] net: bpf: switch over to memdup_user()
+Date:   Mon, 18 Oct 2021 04:30:48 -0700
+Message-Id: <1634556651-38702-1-git-send-email-wangqing@vivo.com>
+X-Mailer: git-send-email 2.7.4
+Content-Type: text/plain
+X-ClientProxiedBy: HK2PR0401CA0011.apcprd04.prod.outlook.com
+ (2603:1096:202:2::21) To SL2PR06MB3082.apcprd06.prod.outlook.com
+ (2603:1096:100:37::17)
 MIME-Version: 1.0
-References: <20211014031413.14471-1-jiangshanlai@gmail.com>
- <20211014033414.16321-1-jiangshanlai@gmail.com> <CAKwvOd=znqwGT_FmUPbWPodjrnFHf+FtHMaYCTfvUeukBCM3xw@mail.gmail.com>
- <CANiq72k7E2ahWoFQWSUo6CWNd7iWVh-5sdqtTQ=5JPTHN_tzyw@mail.gmail.com> <8d2f0a4f-80e0-36c1-9421-d2c1af282a12@linux.alibaba.com>
-In-Reply-To: <8d2f0a4f-80e0-36c1-9421-d2c1af282a12@linux.alibaba.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Mon, 18 Oct 2021 13:29:11 +0200
-Message-ID: <CANiq72kkk6-eN3hN7OfSA5r03df42j7pAueMZurY_rTvq518Dw@mail.gmail.com>
-Subject: Re: [PATCH V3 06/49] compiler_types.h: Add __noinstr_section() for noinstr
-To:     Lai Jiangshan <laijs@linux.alibaba.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Marco Elver <elver@google.com>, Arnd Bergmann <arnd@arndb.de>,
-        Ard Biesheuvel <ardb@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Received: from ubuntu.localdomain (103.220.76.181) by HK2PR0401CA0011.apcprd04.prod.outlook.com (2603:1096:202:2::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.4608.16 via Frontend Transport; Mon, 18 Oct 2021 11:30:57 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 235f7320-2875-4233-7138-08d9922ac1d8
+X-MS-TrafficTypeDiagnostic: SL2PR06MB2986:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SL2PR06MB29861BB79614A6783F2FAA95BDBC9@SL2PR06MB2986.apcprd06.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3513;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 2umuLxo0HDiI1jP65GVdxLMg6QX4sNBT7I+/87vndh5JJ0xjUa9s1AeGpvRKuN8J69S7A2oykOdP7PCvZTkjoQ3vR3k/Uu1bZNgfuOiF4EDhvmahyL7qexURRtksVBCAZa086Kdo+JQI7TQ+1mmb1oF7lXQBva/4FVzrr3GH9BF7sLTMUFQYdXrLXfYLFcCMXABpn9673juCKIJSUPOoadN5tRHk/QNVVNj1uSttBmx0trppQttZGlhtHIAcw6bywVW1zHwot8EjW0DM1M1Maa3uVPpDLt9ny7g2iV2ve7E8ODJrJbH9teECtOnOfyntkeNSwEUGRHkTiF0MevmLt5Ju1U5b4Px60EuciyMYK9oF+ej/af/+qo5q1/PFcMX2UZZbQoDRoL/8B6C1T79pICCZ7+QKzkNaFb/w/C2rx/t/OzmITzJVwcWEWiBSErIhOfhoewRDd6LzPkzX9at5ahvw35b86lyEe5ZUE3a4/vW9smDA2UUhyIOUouR5Phrv9CLHwLh5nOoOYJf3Fi92gHYBSdwybVPks/p1+9bHzIBw1nF/brNsGhsjN8rG+8WiREaXIPnA7vjkeKdy83cGT0F0KXAYbQ0Jw9xjyMCVP4LG6twL/y+Xcntivs/Ye/aXSmlKCLy51v7SOPYi+dqkRgJ6tEV7neR/wVct7sw/qJLb2SrefAomV2YLyO4GRF/pGe0yCdLA+MjLi+JaVYXR8geXgf4UsE34qbzrgGcglTY=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SL2PR06MB3082.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(6666004)(2616005)(956004)(107886003)(5660300002)(8676002)(8936002)(83380400001)(26005)(7416002)(86362001)(110136005)(66476007)(921005)(36756003)(4326008)(186003)(66556008)(66946007)(6512007)(6486002)(316002)(38350700002)(508600001)(2906002)(6506007)(52116002)(38100700002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Vju7zFr3rcn8+DJvIMk02a2Ruuf91tEZdYqKKUUZ5rB9KBt2PmLdYGGxhXax?=
+ =?us-ascii?Q?YNVGb+Fe3fzokn8qTYFygK04Ngfw5MJTPrhUjXw+n+yMVak17GDU5ofvo2a2?=
+ =?us-ascii?Q?dS81J+WQ/GhFLXCkpKrGN2h4S/nXR38LjZuXD4BhKalye9NdILc4SyiknBmC?=
+ =?us-ascii?Q?gaJYZ/E601JY7R7uZD8+ZJSN8G9HlSWFynJ1GOD8XRfAA6CAisUaQGYTMrAZ?=
+ =?us-ascii?Q?B7YpmWOktvdtyATf3z7IC23p0exdcpKftMNYcKpy+3p6d5i5nFPh+17pPfQs?=
+ =?us-ascii?Q?VBkbBSVI5lmXzjB1pfdVYbX8BpotccmNTeUwpmprfazPRNpTKIMbg7aERCCJ?=
+ =?us-ascii?Q?dzpyRTU8xEf/udMLKdzsVAuQcZAnfyy1t/OB0cJyeR3+YeBIhb7W2XmovC7F?=
+ =?us-ascii?Q?YwZ6lsaZEaUHW+7ubgPiaTdyzyveeD+hLv3ZB5oi9clVoAiPB4Df6QY/6s/f?=
+ =?us-ascii?Q?PkMqm0Zw8itCeiETOJXh7Z8ZkKrYmOkDVGnQjV94hkf75iVpU/0jX30QgaRx?=
+ =?us-ascii?Q?lgLzSha+QAV5rksBkDnWF6RhuTUL1OLIHy3DrEHfNTvOF93dU5EgFNKwjpSU?=
+ =?us-ascii?Q?UISWoGbDsFOmuSjVlHZY1iiMMt54u37FTJVdyrGFAJSdjgCvcS6f+KED95xG?=
+ =?us-ascii?Q?rgTnK1xCx39Wy7bri27CvglBvnmhK0dK+vg6/J5plVlBCz9q+V05mmO2EmhU?=
+ =?us-ascii?Q?ilMKW9Wv8uUjFRRWN0W54ToL3oST431okBan3hoxyaGG2rInZhC6o4s793pl?=
+ =?us-ascii?Q?PqhcQsTuJNvfBwsYecD+4ayDW/RDdJ+xQYYCdSInbyhnUUqtty9+id6TRC8X?=
+ =?us-ascii?Q?YjvxGJuMlmDgHy2V+ugmXpFV0bGg6z0WFxumP95Wosm9ol/y2jeuieVELBll?=
+ =?us-ascii?Q?BqNX9ChkZl4gT7tP56YEJI+WXL4PW8A0GA2IrxpKJj4GNuplhQKNyz0mtNmi?=
+ =?us-ascii?Q?bWvD1E3W1Ofud3alC623nPb9ldhEAei3WVvVp0ScYkct5M18e+TKkviCecaj?=
+ =?us-ascii?Q?mrq/9WUy26dSrv4XZUPJa6jJK+OUUjeOAFl1IXanpmEyxOO/tN72ZvfUUAIy?=
+ =?us-ascii?Q?xF6/X8w+hyWwMuMQwzq0UegmLwEtZRQ5k3mctcMWO1lTxh3jzNEW8kH8QVSp?=
+ =?us-ascii?Q?PZxy82adG5gCYkuFgQTjpZjaysOEllAWLL8yylOwywVRsMj8T+euUnqgCZQz?=
+ =?us-ascii?Q?Hf//XheXokzXZ7E2tWj3KbIbwVqwOa/sWqhEgIfC4SB34ndzRVJbw8fyLLwQ?=
+ =?us-ascii?Q?UG2cOCqKUhh4tvvfxaRaHiY3I14ibF1K7DjFabhhafDLVZZIPgmGiXh+cARq?=
+ =?us-ascii?Q?ceUh/cy/sdypr98dCasMZpCt?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 235f7320-2875-4233-7138-08d9922ac1d8
+X-MS-Exchange-CrossTenant-AuthSource: SL2PR06MB3082.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Oct 2021 11:30:59.0223
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: wpBYFFVt3oTpFLx7uwjVKm79WlMQgqU1HOU2qPkNQ20DccgLjwchlFSTAGPwu7Bbgoetz2InuofHRQ3/8hSqWg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SL2PR06MB2986
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 18, 2021 at 11:16 AM Lai Jiangshan <laijs@linux.alibaba.com> wrote:
->
-> I will use __section(section) in the updated patch.
->
-> I don't know whether it is worth for a new version for a relatively large patchset
-> with almost 50 patches since the feedback becomes less or I should wait for more
-> reviews from the x86 maintainers.  Especially the second half of the patchset which
-> is all about IST exceptions has no feedback since V2.
+This patch fixes the following Coccinelle warning:
 
-Yeah, what I meant by independent patch is that you may avoid worrying
-about that fix within the series, and send it as a completely
-different patch (we can also do it for you, if you prefer). It is,
-after all, not really related to either this commit nor the series.
+net/bpf/test_run.c:361:8-15: WARNING opportunity for memdup_user
+net/bpf/test_run.c:1055:8-15: WARNING opportunity for memdup_user
 
-Cheers,
-Miguel
+Use memdup_user rather than duplicating its implementation
+This is a little bit restricted to reduce false positives
+
+Signed-off-by: Qing Wang <wangqing@vivo.com>
+---
+ net/bpf/test_run.c | 21 ++++++---------------
+ 1 file changed, 6 insertions(+), 15 deletions(-)
+
+diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+index 5296087..fbda8f5
+--- a/net/bpf/test_run.c
++++ b/net/bpf/test_run.c
+@@ -358,13 +358,9 @@ int bpf_prog_test_run_raw_tp(struct bpf_prog *prog,
+ 		return -EINVAL;
+ 
+ 	if (ctx_size_in) {
+-		info.ctx = kzalloc(ctx_size_in, GFP_USER);
+-		if (!info.ctx)
+-			return -ENOMEM;
+-		if (copy_from_user(info.ctx, ctx_in, ctx_size_in)) {
+-			err = -EFAULT;
+-			goto out;
+-		}
++		info.ctx = memdup_user(ctx_in, ctx_size_in);
++		if (IS_ERR(info.ctx))
++			return PTR_ERR(info.ctx);
+ 	} else {
+ 		info.ctx = NULL;
+ 	}
+@@ -392,7 +388,6 @@ int bpf_prog_test_run_raw_tp(struct bpf_prog *prog,
+ 	    copy_to_user(&uattr->test.retval, &info.retval, sizeof(u32)))
+ 		err = -EFAULT;
+ 
+-out:
+ 	kfree(info.ctx);
+ 	return err;
+ }
+@@ -1052,13 +1047,9 @@ int bpf_prog_test_run_syscall(struct bpf_prog *prog,
+ 		return -EINVAL;
+ 
+ 	if (ctx_size_in) {
+-		ctx = kzalloc(ctx_size_in, GFP_USER);
+-		if (!ctx)
+-			return -ENOMEM;
+-		if (copy_from_user(ctx, ctx_in, ctx_size_in)) {
+-			err = -EFAULT;
+-			goto out;
+-		}
++		ctx = memdup_user(ctx_in, ctx_size_in);
++		if (IS_ERR(ctx))
++			return PTR_ERR(ctx);
+ 	}
+ 
+ 	rcu_read_lock_trace();
+-- 
+2.7.4
+
