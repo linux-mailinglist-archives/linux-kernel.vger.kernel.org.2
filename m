@@ -2,280 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EF21431700
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 13:11:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FC2D4316FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 13:11:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231232AbhJRLN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 07:13:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58714 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230515AbhJRLN4 (ORCPT
+        id S230439AbhJRLNP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 07:13:15 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:3023 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229862AbhJRLNN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 07:13:56 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB269C061745
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 04:11:44 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id g2so8390765wme.4
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 04:11:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=6LMkvC8rUvNEYJAWr0jeALL8Sd8+8yvSqunhnCPBHGc=;
-        b=agLE4W3w9cBeJBQob7LTEJI0PJSKdgKYVN93zezYOtv4ulZm+YthWc0jxZPudwKmgd
-         HhaFpLc9lDZsrBGTVJc4eu8c/s+QdoXAuQxp+kw+nqO45qaxVFenNXohqiAsEhfBlFt9
-         2Ye/RN9sOYSNG4KoI23TBDWjsxofIUvVlcUmwPNe1TGzon+NGNZyoeR4uE+116F2BgHZ
-         zD7d1hrK2UIVWvb3OFsHaTruZdT5j4ctTgC9hhxxfMh1bo9eRtThWV/ycxJukrvwwHIS
-         Mk4qu6YJ7wRV8lITDrCVJZ1VTXZ0hDCfqpweVsQJsn8/q514hViqWYSG/06rofS6mW1E
-         fcVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=6LMkvC8rUvNEYJAWr0jeALL8Sd8+8yvSqunhnCPBHGc=;
-        b=QYEp5VNLzpdd28k+w/kDLjUUNar3FnBp4obJkpDA3NUPdwg63aZWaPzg2+8Y5fpQQX
-         NOKs+mt8rWdkzjDG3h4jJve70iikYd+T7+CEonNvK3+kq43rlc3jD8LSXNK9Vc1SqWHe
-         RV6iV++F+0/P6BObjuqK4QpTCJBZvH8YvVpO+g1NxDQOBWfQrB4CMjrGgREc5Fxyjg8d
-         jqw4QI5UtEyKufCeDx2Ma8e2hxFfqV3KBqdb6A0A01pei5AzD7cOY65Ghm/4FV0LyKDx
-         d9CU9UUP/wRMAGLqyGhA2kxbOrYLsZbLPtDymbE+5O0BRPSlkFSrHNRpGCfFkV6FWpmS
-         egQg==
-X-Gm-Message-State: AOAM533fksxEJmc4v3fY1d/bsyRmG4xaM+1PbmOlh+ryly6AckeMmSU1
-        zYZOzFVaAAAmcs7rg8Gn4uHY2g==
-X-Google-Smtp-Source: ABdhPJwpFob4ROiW1u8XbTUkLDwo1BxmCCvDx3FUCb1tdEaSznuACTaOj4Hp1+i/EBHVaPsug5pCWg==
-X-Received: by 2002:a1c:7f0c:: with SMTP id a12mr30218368wmd.14.1634555502995;
-        Mon, 18 Oct 2021 04:11:42 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:b2b3:1133:5bdb:b2f2? ([2a01:e34:ed2f:f020:b2b3:1133:5bdb:b2f2])
-        by smtp.googlemail.com with ESMTPSA id b19sm18906146wmj.9.2021.10.18.04.11.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Oct 2021 04:11:42 -0700 (PDT)
-Subject: Re: [PATCH] thermal: imx: Fix temperature measurements on i.MX6 after
- alarm
-To:     Petr Benes <petrben@gmail.com>
-Cc:     =?UTF-8?B?TWljaGFsIFZva8OhxI0=?= <michal.vokac@ysoft.com>,
-        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        linux-pm@vger.kernel.org, Shawn Guo <shawnguo@kernel.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?Q?Petr_Bene=c5=a1?= <petr.benes@ysoft.com>,
-        stable@vger.kernel.org
-References: <20211008081137.1948848-1-michal.vokac@ysoft.com>
- <df545947-2f5b-a355-859d-7f61eab14dcb@linaro.org>
- <CAPwXO5Z0OkmXuy=e6JDjFwqJMqOC4FDjs3uiwdZcJSxy5SPtVw@mail.gmail.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <7a02cb0a-3360-4512-2425-8096d153ae48@linaro.org>
-Date:   Mon, 18 Oct 2021 13:11:40 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Mon, 18 Oct 2021 07:13:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1634555462; x=1666091462;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=3rFzn6wwbDESQYh8EcGd4Ye4cyLLN80I47DChxu6Dvw=;
+  b=PyxWMobrVy9ST8BehSeu0Yfre+augSAUSNVS1ZfC2wZA+VB3KokV0pT2
+   pE3b20O2ewL3v0vY1VgFHYocz7FxOpX/uqRegi20EwPluaUAjEAlvH6EQ
+   MH+DAmk2AnR+2aq25SnA1DypLEcPaZ1qMm4WyzqYJ/FxSayTlVrxvVQP4
+   VHJipnTdMpZfRiXpqhRXQWHu/tq59hFwp5RNlZYgoRBBhl6z6m4QfjPvD
+   GPa2ypFP38+KDqRcjoMDWA0+Y6KVuA/tSM/uAw2CLX2wp9m4/Txqvlj2G
+   hi4CPFzjQZIv4Yb1f6qS0MzijBOkdRci0SyEYdkuKPhKZ4HxddaT7wncc
+   g==;
+IronPort-SDR: PyJL5AbtUlCTotobBHoqHBwaQXjXvxJq5wU35nEfjUK+457nerOYyfrH5c6kfTR6t+Z3nx0KvW
+ l3tMHE1YVakrGUxRPpb9LJG0hrlJ/Cc/JoWviEutxD3dQiJX23G9HAoLW0XSD3tP6hQzjRsBMs
+ ApgfL7oEShMlyDhvkimCOKqx5KMWmXCE6NkNluebbqkUx5SsMjyrpVI1NZzwKX+dJbuEs0mc2e
+ vD9tHEXPxzbQlBp4KiyAxKfxAmcYjYWWbYQMLk8nCZFjU5LjcqsvaxZ2yHDGSoEuYVDtW2NVRv
+ GnKxxrHI4Rv+peN2hr5usj/0
+X-IronPort-AV: E=Sophos;i="5.85,381,1624345200"; 
+   d="scan'208";a="148534364"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 18 Oct 2021 04:11:01 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
+ chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Mon, 18 Oct 2021 04:11:00 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex02.mchp-main.com
+ (10.10.85.144) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
+ Transport; Mon, 18 Oct 2021 04:11:00 -0700
+Date:   Mon, 18 Oct 2021 13:12:31 +0200
+From:   Horatiu Vultur <horatiu.vultur@microchip.com>
+To:     Philipp Zabel <p.zabel@pengutronix.de>
+CC:     <linus.walleij@linaro.org>, <robh+dt@kernel.org>,
+        <lars.povlsen@microchip.com>, <Steen.Hegelund@microchip.com>,
+        <UNGLinuxDriver@microchip.com>, <linux-gpio@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v6 2/2] pinctrl: microchip sgpio: use reset driver
+Message-ID: <20211018111231.bawmvre4dqow65dy@soft-dev3-1.localhost>
+References: <20211018085754.1066056-1-horatiu.vultur@microchip.com>
+ <20211018085754.1066056-3-horatiu.vultur@microchip.com>
+ <6f46c5ab7458e1368abfeb8dee6e24271f39d236.camel@pengutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <CAPwXO5Z0OkmXuy=e6JDjFwqJMqOC4FDjs3uiwdZcJSxy5SPtVw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <6f46c5ab7458e1368abfeb8dee6e24271f39d236.camel@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The 10/18/2021 12:37, Philipp Zabel wrote:
 
-I'm not seeing any thermal zone definitions in the DT for imx6 and imx7.
+Hi Philipp,
+> 
+> Hi Horatiu,
+> 
+> On Mon, 2021-10-18 at 10:57 +0200, Horatiu Vultur wrote:
+> > On lan966x platform when the switch gets reseted then also the sgpio
+> > gets reseted. The fix for this is to extend also the sgpio driver to
+> > call the reset driver which will be reseted only once by the first
+> > driver that is probed.
+> >
+> > Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+> > ---
+> >  drivers/pinctrl/pinctrl-microchip-sgpio.c | 7 +++++++
+> >  1 file changed, 7 insertions(+)
+> >
+> > diff --git a/drivers/pinctrl/pinctrl-microchip-sgpio.c b/drivers/pinctrl/pinctrl-microchip-sgpio.c
+> > index 072bccdea2a5..78765faa245a 100644
+> > --- a/drivers/pinctrl/pinctrl-microchip-sgpio.c
+> > +++ b/drivers/pinctrl/pinctrl-microchip-sgpio.c
+> > @@ -17,6 +17,7 @@
+> >  #include <linux/pinctrl/pinmux.h>
+> >  #include <linux/platform_device.h>
+> >  #include <linux/property.h>
+> > +#include <linux/reset.h>
+> >
+> >  #include "core.h"
+> >  #include "pinconf.h"
+> > @@ -803,6 +804,7 @@ static int microchip_sgpio_probe(struct platform_device *pdev)
+> >       int div_clock = 0, ret, port, i, nbanks;
+> >       struct device *dev = &pdev->dev;
+> >       struct fwnode_handle *fwnode;
+> > +     struct reset_control *reset;
+> >       struct sgpio_priv *priv;
+> >       struct clk *clk;
+> >       u32 val;
+> > @@ -813,6 +815,11 @@ static int microchip_sgpio_probe(struct platform_device *pdev)
+> >
+> >       priv->dev = dev;
+> >
+> > +     reset = devm_reset_control_get_optional_shared(&pdev->dev, "switch");
+> 
+> This is the first GPIO driver that I am aware of that requests a named
+> reset control, so I'm still not sure if this should be called "switch"
+> instead of "gpio" or just "reset", just in case there is a future model
+> where the GPIO controller reset is not shared with the switch reset.
 
-Am I missing something ?
+I agree, it is not the best name. But the name "switch" was already used
+in DT by sparx5[1], so I just went with this name.
 
+> 
+> > +     if (IS_ERR(reset))
+> > +             return dev_err_probe(dev, PTR_ERR(reset), "Failed to get reset\n");
+> > +     reset_control_reset(reset);
+> > +
+> >       clk = devm_clk_get(dev, NULL);
+> >       if (IS_ERR(clk))
+> >               return dev_err_probe(dev, PTR_ERR(clk), "Failed to get clock\n");
+> 
+> But whichever name you choose, the code is
+> 
+> Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
+> 
+> regards
+> Philipp
 
-On 18/10/2021 10:36, Petr Benes wrote:
-> On Sun, 17 Oct 2021 at 00:23, Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
->>
->> On 08/10/2021 10:11, Michal Vokáč wrote:
->>> From: Petr Beneš <petr.benes@ysoft.com>
->>>
->>> SoC temperature readout may not work after thermal alarm fires interrupt.
->>> This harms userspace as well as CPU cooling device.
->>>
->>> Two issues with the logic involved. First, there is no protection against
->>> concurent measurements, hence one can switch the sensor off while
->>> the other one tries to read temperature later. Second, the interrupt path
->>> usually fails. At the end the sensor is powered off and thermal IRQ is
->>> disabled. One has to reenable the thermal zone by the sysfs interface.
->>>
->>> Most of troubles come from commit d92ed2c9d3ff ("thermal: imx: Use
->>> driver's local data to decide whether to run a measurement")
->>
->> Are these troubles observed and reproduced ? Or is it your understanding
->> from reading the code ?
-> 
-> Yes, it is observed. We are using:
-> CONFIG_CPU_THERMAL=y
-> CONFIG_CPU_FREQ_THERMAL=y
-> If the SoC temperature oscillates  around the passive trip point, it is not
-> possible to read out /sys/class/thermal/thermal_zone0/temp after
-> a while (minutes). For reproduction either heat the device up a bit or set
-> the passive trip point lower.
-> 
->>
->> get_temp() and tz enable/disable are protected against races in the core
->> code via the tz mutex
-> 
-> imx_get_temp() itself doesn't handle concurrent invocations properly, despite
-> it may seem it does. The sensor is switched on/off without control.
-> That is a flaw in imx_get_temp().
-> No evidence the core locking is wrong.
-> 
-> data->irq_enabled is set to false in imx_thermal_alarm_irq() each time
-> the interrupt arrives. imx_get_temp() does wrong decision based
-> on the value later.
-> 
->>
->>> It uses data->irq_enabled as the "local data". Indeed, its value is
->>> related to the state of the sensor loosely under normal operation and,
->>> frankly, gets unleashed when the thermal interrupt arrives.
->>>
->>> Current patch adds the "local data" (new member sensor_on in
->>> imx_thermal_data) and sets its value in controlled manner.>
->>> Fixes: d92ed2c9d3ff ("thermal: imx: Use driver's local data to decide whether to run a measurement")
->>> Cc: petrben@gmail.com
->>> Cc: stable@vger.kernel.org
->>> Signed-off-by: Petr Beneš <petr.benes@ysoft.com>
->>> Signed-off-by: Michal Vokáč <michal.vokac@ysoft.com>
->>> ---
->>>  drivers/thermal/imx_thermal.c | 30 ++++++++++++++++++++++++++----
->>>  1 file changed, 26 insertions(+), 4 deletions(-)
->>>
->>> diff --git a/drivers/thermal/imx_thermal.c b/drivers/thermal/imx_thermal.c
->>> index 2c7473d86a59..df5658e21828 100644
->>> --- a/drivers/thermal/imx_thermal.c
->>> +++ b/drivers/thermal/imx_thermal.c
->>> @@ -209,6 +209,8 @@ struct imx_thermal_data {
->>>       struct clk *thermal_clk;
->>>       const struct thermal_soc_data *socdata;
->>>       const char *temp_grade;
->>> +     struct mutex sensor_lock;
->>> +     bool sensor_on;
->>>  };
->>>
->>>  static void imx_set_panic_temp(struct imx_thermal_data *data,
->>> @@ -252,11 +254,12 @@ static int imx_get_temp(struct thermal_zone_device *tz, int *temp)
->>>       const struct thermal_soc_data *soc_data = data->socdata;
->>>       struct regmap *map = data->tempmon;
->>>       unsigned int n_meas;
->>> -     bool wait, run_measurement;
->>> +     bool wait;
->>>       u32 val;
->>>
->>> -     run_measurement = !data->irq_enabled;
->>> -     if (!run_measurement) {
->>> +     mutex_lock(&data->sensor_lock);
->>> +
->>> +     if (data->sensor_on) {
->>>               /* Check if a measurement is currently in progress */
->>>               regmap_read(map, soc_data->temp_data, &val);
->>>               wait = !(val & soc_data->temp_valid_mask);
->>> @@ -283,13 +286,15 @@ static int imx_get_temp(struct thermal_zone_device *tz, int *temp)
->>>
->>>       regmap_read(map, soc_data->temp_data, &val);
->>>
->>> -     if (run_measurement) {
->>> +     if (!data->sensor_on) {
->>>               regmap_write(map, soc_data->sensor_ctrl + REG_CLR,
->>>                            soc_data->measure_temp_mask);
->>>               regmap_write(map, soc_data->sensor_ctrl + REG_SET,
->>>                            soc_data->power_down_mask);
->>>       }
->>>
->>> +     mutex_unlock(&data->sensor_lock);
->>> +
->>>       if ((val & soc_data->temp_valid_mask) == 0) {
->>>               dev_dbg(&tz->device, "temp measurement never finished\n");
->>>               return -EAGAIN;
->>> @@ -339,20 +344,26 @@ static int imx_change_mode(struct thermal_zone_device *tz,
->>>       const struct thermal_soc_data *soc_data = data->socdata;
->>>
->>>       if (mode == THERMAL_DEVICE_ENABLED) {
->>> +             mutex_lock(&data->sensor_lock);
->>>               regmap_write(map, soc_data->sensor_ctrl + REG_CLR,
->>>                            soc_data->power_down_mask);
->>>               regmap_write(map, soc_data->sensor_ctrl + REG_SET,
->>>                            soc_data->measure_temp_mask);
->>> +             data->sensor_on = true;
->>> +             mutex_unlock(&data->sensor_lock);
->>>
->>>               if (!data->irq_enabled) {
->>>                       data->irq_enabled = true;
->>>                       enable_irq(data->irq);
->>>               }
->>>       } else {
->>> +             mutex_lock(&data->sensor_lock);
->>>               regmap_write(map, soc_data->sensor_ctrl + REG_CLR,
->>>                            soc_data->measure_temp_mask);
->>>               regmap_write(map, soc_data->sensor_ctrl + REG_SET,
->>>                            soc_data->power_down_mask);
->>> +             data->sensor_on = false;
->>> +             mutex_unlock(&data->sensor_lock);
->>>
->>>               if (data->irq_enabled) {
->>>                       disable_irq(data->irq);
->>> @@ -728,6 +739,8 @@ static int imx_thermal_probe(struct platform_device *pdev)
->>>       }
->>>
->>>       /* Make sure sensor is in known good state for measurements */
->>> +     mutex_init(&data->sensor_lock);
->>> +     mutex_lock(&data->sensor_lock);
->>>       regmap_write(map, data->socdata->sensor_ctrl + REG_CLR,
->>>                    data->socdata->power_down_mask);
->>>       regmap_write(map, data->socdata->sensor_ctrl + REG_CLR,
->>> @@ -739,6 +752,8 @@ static int imx_thermal_probe(struct platform_device *pdev)
->>>                       IMX6_MISC0_REFTOP_SELBIASOFF);
->>>       regmap_write(map, data->socdata->sensor_ctrl + REG_SET,
->>>                    data->socdata->power_down_mask);
->>> +     data->sensor_on = false;
->>> +     mutex_unlock(&data->sensor_lock);
->>>
->>>       ret = imx_thermal_register_legacy_cooling(data);
->>>       if (ret)
->>> @@ -796,10 +811,13 @@ static int imx_thermal_probe(struct platform_device *pdev)
->>>       if (data->socdata->version == TEMPMON_IMX6SX)
->>>               imx_set_panic_temp(data, data->temp_critical);
->>>
->>> +     mutex_lock(&data->sensor_lock);
->>>       regmap_write(map, data->socdata->sensor_ctrl + REG_CLR,
->>>                    data->socdata->power_down_mask);
->>>       regmap_write(map, data->socdata->sensor_ctrl + REG_SET,
->>>                    data->socdata->measure_temp_mask);
->>> +     data->sensor_on = true;
->>> +     mutex_unlock(&data->sensor_lock);
->>>
->>>       data->irq_enabled = true;
->>>       ret = thermal_zone_device_enable(data->tz);
->>> @@ -832,8 +850,12 @@ static int imx_thermal_remove(struct platform_device *pdev)
->>>       struct regmap *map = data->tempmon;
->>>
->>>       /* Disable measurements */
->>> +     mutex_lock(&data->sensor_lock);
->>>       regmap_write(map, data->socdata->sensor_ctrl + REG_SET,
->>>                    data->socdata->power_down_mask);
->>> +     data->sensor_on = false;
->>> +     mutex_unlock(&data->sensor_lock);
->>> +
->>>       if (!IS_ERR(data->thermal_clk))
->>>               clk_disable_unprepare(data->thermal_clk);
->>>
->>>
->>
->>
->> --
->> <http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
->>
->> Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
->> <http://twitter.com/#!/linaroorg> Twitter |
->> <http://www.linaro.org/linaro-blog/> Blog
-
+[1] https://elixir.bootlin.com/linux/v5.15-rc5/source/arch/arm64/boot/dts/microchip/sparx5.dtsi#L307
 
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+/Horatiu
