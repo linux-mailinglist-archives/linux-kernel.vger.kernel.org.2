@@ -2,206 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CCB84327BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 21:32:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3551F4327C2
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 21:32:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233424AbhJRTeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 15:34:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34416 "EHLO
+        id S233510AbhJRTe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 15:34:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231969AbhJRTem (ORCPT
+        with ESMTP id S233524AbhJRTe5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 15:34:42 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7260CC06161C;
-        Mon, 18 Oct 2021 12:32:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=B9bByHMOUaNb4hIzLjt6ee5iMVKuoAuSSlDfjNfXcVw=; b=XtN6iHFYDXFCgENpbEdGOr2pmU
-        yFFYqYJYUwhdr5Zlp2UsdTC2rL+hCJS1bFB6SdwLPL8YHN2d2igwldOx4aN39GeV7zWYehrfXe2jn
-        xPp8Wbs+3g4hxTSveCN7QqtgeFHuYXz8JAy/ZGSgg4zr67ZKFiZkEZvtfzpv+LZY72zafXjqhxeu+
-        5Fsq/DwQleE7J00WQFTjv7uxD1NogvR0qdqKtmAPsd2KXSwIcnQ3dqcWurIfkTXkOc6O9SU7pasYf
-        Jps0O7g4MB47gCoKXLrVqcnjY2O026y80dKCw6tVa5/wa0aFv5cYUejuIFIsV/jimkvEoP7FdHUzf
-        FB3gz3QQ==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mcYMl-00H11w-Tb; Mon, 18 Oct 2021 19:32:11 +0000
-Date:   Mon, 18 Oct 2021 12:32:11 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Ming Lei <ming.lei@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>
-Cc:     tj@kernel.org, gregkh@linuxfoundation.org,
-        akpm@linux-foundation.org, minchan@kernel.org, jeyu@kernel.org,
-        shuah@kernel.org, bvanassche@acm.org, dan.j.williams@intel.com,
-        joe@perches.com, tglx@linutronix.de, keescook@chromium.org,
-        rostedt@goodmis.org, linux-spdx@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 11/12] zram: fix crashes with cpu hotplug multistate
-Message-ID: <YW3LuzaPhW96jSBK@bombadil.infradead.org>
-References: <20210927163805.808907-1-mcgrof@kernel.org>
- <20210927163805.808907-12-mcgrof@kernel.org>
- <YWeOJP2UJWYF94fu@T590>
- <YWeR4moCRh+ZHOmH@T590>
- <YWiSAN6xfYcUDJCb@bombadil.infradead.org>
- <YWjCpLUNPF3s4P2U@T590>
- <YWjJ0O7K+31Iz3ox@bombadil.infradead.org>
- <YWk9e957Hb+I7HvR@T590>
- <YWm68xUnAofop3PZ@bombadil.infradead.org>
- <YWq3Z++uoJ/kcp+3@T590>
+        Mon, 18 Oct 2021 15:34:57 -0400
+Received: from mail-ua1-x933.google.com (mail-ua1-x933.google.com [IPv6:2607:f8b0:4864:20::933])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A014C06161C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 12:32:45 -0700 (PDT)
+Received: by mail-ua1-x933.google.com with SMTP id u5so9239431uao.13
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 12:32:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=c16Ybt2AqXiaOhX2V1lJPOyD208pF8xRjT38M77BT20=;
+        b=fd7Ivm4GRSsoYpEAYMntY7uQaqmQSojjanP9E/F+RiH3NJ0eQdNlx0weN66YmymMab
+         +/5lWIyf8P6m1fhgmAsNpf1u2v7rh4/KbtsIPz+N/GkFjiN4TLHXuiBMBuz+GiFMW5nN
+         CQ2zFw3Mzm/i5h0chbgScxmn/kAVPYLUhiIcLTfr+u8lxrho74ZhKBc0/Qz1vHDz+AbH
+         Dqpg/+QtSCXrQs5oj4gU5xJ3TLkIFtlWOGb1B5tIrljANfYlXBiismRM0iE/a2SnS5Vb
+         zLkXCp/1SZyfBLKzdR5tFqvcta82NQG0kBDsI311zn1hRd4vWbp2WaZenLlsX4Ot8QR+
+         9c1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=c16Ybt2AqXiaOhX2V1lJPOyD208pF8xRjT38M77BT20=;
+        b=AzDk4I3zK7wJe9IW8LcOAalFJ3KM2KWH0W9wxn7KiDdJJkPjcxqqT9+nGV/7btmcKn
+         p4ijKeU2uZV0j+ss04JAVgNXqsZD9jvNNGZ8rN59keYD64FEV/MhhsA49MkstCcbLytR
+         D55QXPTFtiCfgWf5nYgCbGbEt1hJ6M554bUqd8IP8XQLwtPl9qvbDr4oa/67u+TxRqSd
+         NQGgg0M5CnrXxfvnD9yknwyLDLXnEKHy4RrBatXCI/D/XhSkrn/TaEJLoJd5kU1RKxDy
+         z5KuRCpk5zS9mtyLuC4etGcyiqnH0XZmqNbuCuJYiSdyUpzPJF5DOaGPRCePpMRcUuYS
+         Ii0w==
+X-Gm-Message-State: AOAM530Aarx9ZVot6JMImdOzMvw7bv2kV9P3kfG/G8i6Q4Lxs7G68Ot3
+        Lm6o6F0KunuC1ZQHB55j/MRFeqexSmw=
+X-Google-Smtp-Source: ABdhPJyzyba6f1GxxfDfPyedB9l6vRqhnxGF48HcjXZ/DE2DFKa7lZ51htlO6aA+EukvgF+ebFnMbA==
+X-Received: by 2002:ab0:5741:: with SMTP id t1mr28021168uac.72.1634585564512;
+        Mon, 18 Oct 2021 12:32:44 -0700 (PDT)
+Received: from ?IPv6:2804:431:c7f4:b20b:2ce0:3c04:a56a:40cc? ([2804:431:c7f4:b20b:2ce0:3c04:a56a:40cc])
+        by smtp.gmail.com with ESMTPSA id j64sm9736221vkc.6.2021.10.18.12.32.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Oct 2021 12:32:44 -0700 (PDT)
+Subject: Re: [PATCH 5/6] drm: vkms: Prepare `vkms_wb_encoder_atomic_check` to
+ accept multiple formats
+To:     Thomas Zimmermann <tzimmermann@suse.de>,
+        rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com
+Cc:     hamohammed.sa@gmail.com, daniel@ffwll.ch, airlied@linux.ie,
+        contact@emersion.fr, leandro.ribeiro@collabora.com,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20211005201637.58563-1-igormtorrente@gmail.com>
+ <20211005201637.58563-6-igormtorrente@gmail.com>
+ <5507450a-eb69-b24c-9f43-a1780dafbfa9@suse.de>
+ <e9cbdad7-416a-65fe-eb50-1cbb42a01e7b@gmail.com>
+ <9dbd2c55-2c29-eb12-94d0-dbd5110c302e@suse.de>
+From:   Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
+Message-ID: <4d573cd9-ac1b-59d6-fb97-e5c24152892b@gmail.com>
+Date:   Mon, 18 Oct 2021 16:32:40 -0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YWq3Z++uoJ/kcp+3@T590>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+In-Reply-To: <9dbd2c55-2c29-eb12-94d0-dbd5110c302e@suse.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 16, 2021 at 07:28:39PM +0800, Ming Lei wrote:
-> On Fri, Oct 15, 2021 at 10:31:31AM -0700, Luis Chamberlain wrote:
-> > On Fri, Oct 15, 2021 at 04:36:11PM +0800, Ming Lei wrote:
-> > > On Thu, Oct 14, 2021 at 05:22:40PM -0700, Luis Chamberlain wrote:
-> > > > On Fri, Oct 15, 2021 at 07:52:04AM +0800, Ming Lei wrote:
-> > > ...
-> > > > > 
-> > > > > We need to understand the exact reason why there is still cpuhp node
-> > > > > left, can you share us the exact steps for reproducing the issue?
-> > > > > Otherwise we may have to trace and narrow down the reason.
-> > > > 
-> > > > See my commit log for my own fix for this issue.
-> > > 
-> > > OK, thanks!
-> > > 
-> > > I can reproduce the issue, and the reason is that reset_store fails
-> > > zram_remove() when unloading module, then the warning is caused.
-> > > 
-> > > The top 3 patches in the following tree can fix the issue:
-> > > 
-> > > https://github.com/ming1/linux/commits/my_v5.15-blk-dev
-> > 
-> > Thanks for trying an alternative fix! A crash stops yes, however this
+Hi Thomas,
+
+On 10/18/21 3:06 PM, Thomas Zimmermann wrote:
+> Hi
 > 
-> I doubt it is alternative since your patchset doesn't mention the exact
-> reason of 'Error: Removing state 63 which has instances left.', that is
-> simply caused by failing to remove zram because ->claim is set during
-> unloading module.
-
-Well I disagree because it does explain how the race can happen, and it
-also explains how since the sysfs interface is exposed until module
-removal completes, it leaves exposed knobs to allow re-initializing of a
-struct zcomp for a zram device before the exit.
-
-> Yeah, you mentioned the race between disksize_store() vs. zram_remove(),
-> however I don't think it is reproduced easily in the test because the race
-> window is pretty small, also it can be fixed easily in my 3rd path
-> without any complicated tricks.
-
-Reproducing for me is... extremely easy.
-
-> Not dig into details of your patchset via grabbing module reference
-> count during show/store attribute of kernfs which is done in your patch
-> 9, but IMO this way isn't necessary:
-
-That's to address the deadlock only.
-
-> 1) any driver module has to cleanup anything which may refer to symbols
-> or data defined in module_exit of this driver
-
-Yes, and as the cpu multistate hotplug documentation warns (although
-such documentation is kind of hidden) that driver authors need to be
-careful with module removal too, refer to the warning at the end of
-__cpuhp_remove_state_cpuslocked() about module removal.
-
-> 2) device_del() is often done in module_exit(), once device_del()
-> returns, no any new show/store on the device's kobject attribute
-> is possible.
-
-Right and if a syfs knob is exposed before device_del() completely
-and is allowed to do things, the driver should take care to prevent
-races for CPU multistate support. The small state machine I added ensures
-we don't run over any expectations from cpu hotplug multistate support.
-
-I've *never* suggested there cannot be alternatives to my solution with
-the small state machine, but for you to say it is incorrect is simply
-not right either.
-
-> 3) it is _not_ a must or pattern for fixing bugs to hold one lock before
-> calling device_del(), meantime the lock is required in the device's
-> attribute show()/store(), which causes AA deadlock easily. Your approach
-> just avoids the issue by not releasing module until all show/store are
-> done.
-
-Right, there are two approaches here:
-
-a) Your approach is to accept the deadlock as a requirement and so
-you would prefer to implement an alternative to using a shared lock
-on module exit and sysfs op.
-
-b) While I address such a deadlock head on as I think this sort of locking
-be allowed for two reasons:
-   b1) as we never documented such requirement otherwise.
-   b2) There is a possibility that other drivers already exist too
-       which *do* use a shared lock on module removal and sysfs ops
-       (and I just confirmed this to be true)
-
-By you only addressing the deadlock as a requirement on approach a) you are
-forgetting that there *may* already be present drivers which *do* implement
-such patterns in the kernel. I worked on addressing the deadlock because
-I was informed livepatching *did* have that issue as well and so very
-likely a generic solution to the deadlock could be beneficial to other
-random drivers.
-
-So I *really* don't think it is wise for us to simply accept this new
-found deadlock as a *new* requirement, specially if we can fix it easily.
-
-A cursory review using Coccinelle potential issues with mutex lock
-directly used on module exit (so this doesn't cover drivers like zram
-which uses a routine and then grabs the lock through indirection) and a
-sysfs op shows these drivers are also affected by this deadlock:
-
-  * arch/powerpc/sysdev/fsl_mpic_timer_wakeup.c
-  * lib/test_firmware.c
-
-Note that this cursory review does not cover spin_lock uses, and other
-forms locks. Consider the case where a routine is used and then that
-routine grabs a lock, so one level indirection. There are many levels
-of indirections possible here. And likewise there are different types
-of locks.
-
-> > also ends up leaving the driver in an unrecoverable state after a few
-> > tries. Ie, you CTRL-C the scripts and try again over and over again and
-> > the driver ends up in a situation where it just says:
-> > 
-> > zram: Can't change algorithm for initialized device
+> Am 18.10.21 um 19:41 schrieb Igor Matheus Andrade Torrente:
+>> Hello,
+>>
+>> On 10/18/21 7:14 AM, Thomas Zimmermann wrote:
+>>> Hi
+>>>
+>>> Am 05.10.21 um 22:16 schrieb Igor Matheus Andrade Torrente:
+>>>> Currently, the vkms atomic check only goes through the first 
+>>>> position of
+>>>> the `vkms_wb_formats` vector.
+>>>>
+>>>> This change prepares the atomic_check to check the entire vector.
+>>>>
+>>>> Signed-off-by: Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
+>>>> ---
+>>>>   drivers/gpu/drm/vkms/vkms_writeback.c | 11 ++++++++++-
+>>>>   1 file changed, 10 insertions(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/drivers/gpu/drm/vkms/vkms_writeback.c 
+>>>> b/drivers/gpu/drm/vkms/vkms_writeback.c
+>>>> index 5a3e12f105dc..56978f499203 100644
+>>>> --- a/drivers/gpu/drm/vkms/vkms_writeback.c
+>>>> +++ b/drivers/gpu/drm/vkms/vkms_writeback.c
+>>>> @@ -30,6 +30,8 @@ static int vkms_wb_encoder_atomic_check(struct 
+>>>> drm_encoder *encoder,
+>>>>   {
+>>>>       struct drm_framebuffer *fb;
+>>>>       const struct drm_display_mode *mode = &crtc_state->mode;
+>>>> +    bool format_supported = false;
+>>>> +    int i;
+>>>>       if (!conn_state->writeback_job || !conn_state->writeback_job->fb)
+>>>>           return 0;
+>>>> @@ -41,7 +43,14 @@ static int vkms_wb_encoder_atomic_check(struct 
+>>>> drm_encoder *encoder,
+>>>>           return -EINVAL;
+>>>>       }
+>>>> -    if (fb->format->format != vkms_wb_formats[0]) {
+>>>> +    for (i = 0; i < ARRAY_SIZE(vkms_wb_formats); i++) {
+>>>> +        if (fb->format->format == vkms_wb_formats[i]) {
+>>>> +            format_supported = true;
+>>>> +            break;
+>>>> +        }
+>>>> +    }
+>>>
+>>> At a minimum, this loop should be in a helper function. But more 
+>>> generally, I'm surprised that this isn't already covered by the DRM's 
+>>> atomic helpers.
+>>
+>> Ok, I can wrap it in a new function.
+>>
+>> AFAIK the DRM doesn't cover it. But I may be wrong...
 > 
-> It means the algorithm can't be changed for one initialized device
-> at the exact time. That is understandable because two zram02.sh are
-> running concurrently.
-
-Indeed but with your patch it can get stuck and cannot be taken out of this
-state.
-
-> Your test script just runs two ./zram02.sh tasks concurrently forever,
-> so what is your expected result for the test? Of course, it can't be
-> over.
->
-> I can't reproduce the 'unrecoverable' state in my test, can you share the
-> stack trace log after that happens?
-
-Try a bit harder, cancel the scripts after running for a while randomly
-(CTRL C a few times until the script finishes) and have them race again.
-Do this a few times.
-
-> > And the zram module can't be removed at that point.
+> I couldn't find anything either.
 > 
-> It is just that systemd opens the zram or the disk is opened as swap
-> disk, and once systemd closes it or after you run swapoff, it can be
-> unloaded.
+> Other drivers do similar format and frambuffer checks. So I guess a 
+> helper could be implemented. All plane's are supposed to call 
+> drm_atomic_helper_check_plane_state() in their atomic_check() code. You 
+> could add a similar helper, say 
+> drm_atomic_helper_check_writeback_encoder_state(), that tests for the 
+> format and maybe other things as well.
 
-With my patch this issues does not happen.
+Do you think this should be done before or after this patch series?
 
-  Luis
+> 
+> Best regards
+> Thomas
+> 
+>>
+>>>
+>>> Best regards
+>>> Thomas
+>>>
+>>>> +
+>>>> +    if (!format_supported) {
+>>>>           DRM_DEBUG_KMS("Invalid pixel format %p4cc\n",
+>>>>                     &fb->format->format);
+>>>>           return -EINVAL;
+>>>>
+>>>
+> 
+
+Thanks,
+Igor Torrente
