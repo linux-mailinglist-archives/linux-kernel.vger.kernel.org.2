@@ -2,90 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5054143201A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 16:42:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83FF443201B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 16:42:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231997AbhJROo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 10:44:58 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:42936 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229833AbhJROo5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 10:44:57 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id C1FBF1FD7F;
-        Mon, 18 Oct 2021 14:42:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1634568165; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FskdbT9rc4yhsC6Kztj9BXRX1uuBZYuwc9JfRBoPArk=;
-        b=fG2OiZ2h2iVa5mox0a43QKRUyHc6ZDYJLDjPmtQrinyZK0Wy5I1wNIqTz8BJiC3PiZGX8J
-        VUxJzUHvP/Q+t5JUIttrRH0CIU+wYiVRCLk+FmPbbkaoJksBkqAOXDeuqdQYIOZpMUehmQ
-        gUga6E7JvAcIXWC0C8xzgPpt8F2vhD8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1634568165;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FskdbT9rc4yhsC6Kztj9BXRX1uuBZYuwc9JfRBoPArk=;
-        b=jGvaIxbndbmPkne573YeeB9r1iBODD7o4pJSR40VItRuItpXb5BKivdfC9O8EEXNCWca54
-        ld5uc+H7rshU5YAQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4784414090;
-        Mon, 18 Oct 2021 14:42:41 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id V3rrAeGHbWG9BgAAMHmgww
-        (envelope-from <colyli@suse.de>); Mon, 18 Oct 2021 14:42:41 +0000
-Subject: Re: [PATCH] [v2] bcache: hide variable-sized types from uapi header
- check
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Jens Axboe <axboe@kernel.dk>,
-        Kent Overstreet <kmo@daterainc.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>
-References: <20210928085554.2299495-1-arnd@kernel.org>
- <ce05e90b-f22f-bd0e-4e0f-da560bffc0c2@suse.de>
- <CAK8P3a1brJNoq65h15-zZtNgwV92hwXH9p32cJpzAY3=ouOHnw@mail.gmail.com>
-From:   Coly Li <colyli@suse.de>
-Message-ID: <12a593bc-68bc-ac03-0307-a65a0c064af3@suse.de>
-Date:   Mon, 18 Oct 2021 22:42:37 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
-MIME-Version: 1.0
-In-Reply-To: <CAK8P3a1brJNoq65h15-zZtNgwV92hwXH9p32cJpzAY3=ouOHnw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S232115AbhJROpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 10:45:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34392 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229833AbhJROpB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 10:45:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0630261074;
+        Mon, 18 Oct 2021 14:42:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634568170;
+        bh=b0WcO9MLJWpHZ4FmInErqJ+VF0uqpa3q8Gmuc8BEwqg=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=vMKSptpSWm3jG2Jbu4Mu98RM+UEjrg/gy5ej5svl6D1WBsABkJ1D+9sXvQH8Yfyy3
+         Ys722y3ig5Z1mD7v/LsbJ78lpQSycqQuwcYDaaleVFGAd1GS3PYuaScpq0el5IV195
+         nIMmTPaKenbFEEW7LElg2e/5trw0CO/U/j092mg7RQV0E0Rx8yiTUDJeZD946YSfPJ
+         6K6x75XhYZkfv7ofpS9CjlNg7eYWBcFsOm8PlvSxEwaQ1+s1y35BFDJvgVMSWavHND
+         GvCONDYtW7fA4Tc+VcmgQGjHnoJFAQpJJZndEaK31nrIpSkxHl20TupqjQ96PtHpB6
+         zN7T3vgX5z5KA==
+Message-ID: <d4ad897585ddc815c188bbf0b3b8cec1cb40b7a4.camel@kernel.org>
+Subject: Re: [PATCH] [v2] tracing: use %ps format string to print symbols
+From:   Tom Zanussi <zanussi@kernel.org>
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        Qiujun Huang <hqjagain@gmail.com>,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+Date:   Mon, 18 Oct 2021 09:42:47 -0500
+In-Reply-To: <20211018132538.2468989-1-arnd@kernel.org>
+References: <20211018132538.2468989-1-arnd@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/18/21 10:39 PM, Arnd Bergmann wrote:
-> On Mon, Oct 18, 2021 at 4:20 PM Coly Li <colyli@suse.de> wrote:
->> IMHO, remove bcache related header from uapi check might be better
->> solution. So far only bcache-tools uses this header with its own copy,
->> no application includes the header(s) so far. It makes sense to exclude
->> bcache.h from upai headers check.
-> Should we just move it to include/linux/ and out of the uapi headers entirely
-> then? It sounds like it's not actually an ABI but just the definition of the
-> data layout that is not included by anything from user space.
->
-> We are a bit inconsistent here already, e.g. btrfs has all its structures
-> in uapi, but ext4 does not.
+Hi Arnd,
 
-I am quite open for this idea. It is in uapi directory before I maintain 
-bcache. I just though the header fines on-media format should go into 
-include/uapi/, but if this is not the restricted rule, it is fine for me 
-to move this header to drivers/md/bcache/.
+On Mon, 2021-10-18 at 15:25 +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> clang started warning about excessive stack usage in
+> hist_trigger_print_key()
+> 
+> kernel/trace/trace_events_hist.c:4723:13: error: stack frame size
+> (1336) exceeds limit (1024) in function 'hist_trigger_print_key' [-
+> Werror,-Wframe-larger-than]
+> 
+> The problem is that there are two 512-byte arrays on the stack if
+> hist_trigger_stacktrace_print() gets inlined. I don't think this has
+> changed in the past five years, but something probably changed the
+> inlining decisions made by the compiler, so the problem is now made
+> more obvious.
+> 
+> Rather than printing the symbol names into separate buffers, it
+> seems we can simply use the special %ps format string modifier
+> to print the pointers symbolically and get rid of both buffers.
+> 
+> Marking hist_trigger_stacktrace_print() would be a simpler
+> way of avoiding the warning, but that would not address the
+> excessive stack usage.
+> 
+> Fixes: 69a0200c2e25 ("tracing: Add hist trigger support for
+> stacktraces as keys")
+> Link: 
+> https://lore.kernel.org/all/20211015095704.49a99859@gandalf.local.home/
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+> Changes in v2:
+>  - Use %pS instead of %ps to include offset in third string
+>  - add (void*) cast to avoid compile-time warnings
+> 
+> This is still only compile-tested to ensure that the warning
+> goes away, I have not validated what it does to the formatting.
 
-Coly Li
+
+This looks fine to me, thanks for the patch!
+
+Reviewed-by: Tom Zanussi <zanussi@kernel.org>
+Tested-by: Tom Zanussi <zanussi@kernel.org>
+
+
+> ---
+>  kernel/trace/trace_events_hist.c | 15 +++++----------
+>  1 file changed, 5 insertions(+), 10 deletions(-)
+> 
+> diff --git a/kernel/trace/trace_events_hist.c
+> b/kernel/trace/trace_events_hist.c
+> index a6061a69aa84..d6d4362c273c 100644
+> --- a/kernel/trace/trace_events_hist.c
+> +++ b/kernel/trace/trace_events_hist.c
+> @@ -4706,7 +4706,6 @@ static void
+> hist_trigger_stacktrace_print(struct seq_file *m,
+>  					  unsigned long
+> *stacktrace_entries,
+>  					  unsigned int max_entries)
+>  {
+> -	char str[KSYM_SYMBOL_LEN];
+>  	unsigned int spaces = 8;
+>  	unsigned int i;
+>  
+> @@ -4715,8 +4714,7 @@ static void
+> hist_trigger_stacktrace_print(struct seq_file *m,
+>  			return;
+>  
+>  		seq_printf(m, "%*c", 1 + spaces, ' ');
+> -		sprint_symbol(str, stacktrace_entries[i]);
+> -		seq_printf(m, "%s\n", str);
+> +		seq_printf(m, "%pS\n", (void*)stacktrace_entries[i]);
+>  	}
+>  }
+>  
+> @@ -4726,7 +4724,6 @@ static void hist_trigger_print_key(struct
+> seq_file *m,
+>  				   struct tracing_map_elt *elt)
+>  {
+>  	struct hist_field *key_field;
+> -	char str[KSYM_SYMBOL_LEN];
+>  	bool multiline = false;
+>  	const char *field_name;
+>  	unsigned int i;
+> @@ -4747,14 +4744,12 @@ static void hist_trigger_print_key(struct
+> seq_file *m,
+>  			seq_printf(m, "%s: %llx", field_name, uval);
+>  		} else if (key_field->flags & HIST_FIELD_FL_SYM) {
+>  			uval = *(u64 *)(key + key_field->offset);
+> -			sprint_symbol_no_offset(str, uval);
+> -			seq_printf(m, "%s: [%llx] %-45s", field_name,
+> -				   uval, str);
+> +			seq_printf(m, "%s: [%llx] %-45ps", field_name,
+> +				   uval, (void *)uval);
+>  		} else if (key_field->flags & HIST_FIELD_FL_SYM_OFFSET)
+> {
+>  			uval = *(u64 *)(key + key_field->offset);
+> -			sprint_symbol(str, uval);
+> -			seq_printf(m, "%s: [%llx] %-55s", field_name,
+> -				   uval, str);
+> +			seq_printf(m, "%s: [%llx] %-55pS", field_name,
+> +				   uval, (void *)uval);
+>  		} else if (key_field->flags & HIST_FIELD_FL_EXECNAME) {
+>  			struct hist_elt_data *elt_data = elt-
+> >private_data;
+>  			char *comm;
+
