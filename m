@@ -2,92 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C31924328B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 23:01:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 493904328BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 23:01:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233893AbhJRVDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 17:03:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54392 "EHLO
+        id S229544AbhJRVDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 17:03:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231920AbhJRVDO (ORCPT
+        with ESMTP id S231920AbhJRVDW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 17:03:14 -0400
-Received: from mail-vk1-xa2b.google.com (mail-vk1-xa2b.google.com [IPv6:2607:f8b0:4864:20::a2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89320C06161C
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 14:01:02 -0700 (PDT)
-Received: by mail-vk1-xa2b.google.com with SMTP id x207so9306434vke.2
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 14:01:02 -0700 (PDT)
+        Mon, 18 Oct 2021 17:03:22 -0400
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5557C06161C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 14:01:10 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id n7so17962921iod.0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 14:01:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=LBWXJiOY2N3UDtzoeZIPjHRlsPyA16TTeIu0O7GzSI4=;
-        b=Anl+k1o3nihkiSIRW1EeoneU5y2dYM+LiPjxtjRW5YeNJxZGjWLMOJjGwAkUekQrkr
-         FqVCumJk5+eOCrYBTZZzYCY2lv22qUt0VpJdxBJ9eIuboVpfjbjYuk6g6fjXZmBLUCP2
-         6ON3dvXwluxOjmmXqmGwhA0wBDNVA8VKNEafrGhLnkm0LtB1uT+pG6TU7XdWwPdwWZxw
-         jfi1bJNgQFHuifNnrg3/yrpEvRxR8ZKWMlG0nKnELvBiZXIGXED1csXE1SuEtlVSLH7H
-         7z6w+1mOw04aij6wUIT87TTQZdqTYI4xmyxT5MgVLUBSXXC3qOpZIhFj473rYnJu2JmT
-         Yz/w==
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=bRxvY13BaQDrIpCoIzVkm1t6Rick4MWC+glJt8uRjOQ=;
+        b=NuKECKwVSveNAI49Vke6aZiNOsAmU8Oki14wSAsdnplYusloNVLkcTGNaSllMV9Zpq
+         EzMmctztw5AAG22d3qsB5kLpt5urWWntzMYPc5LoE8wwStvH9eAADsC+pARte3QJbx3E
+         0/c2rbtI3/ZyHnlkDudAVDzEv3okNvDjTIGCA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=LBWXJiOY2N3UDtzoeZIPjHRlsPyA16TTeIu0O7GzSI4=;
-        b=P9qaKcN1GcKV+TnAmY7SaN6V5FZLE8BBRLK6VKWkFbyUeBigH8OphFEgdSm52+bLO2
-         KdqDwkCY46IBRHEXAqk+d3aWTG0fAaJhs6lBVxSD5xG1FpCrndLPE01Lzyk2J8yDdi3T
-         lJX0wRU84fKr6uL9QmqhnlGy5QIlnPMwcPEy/rt0FSBIYUf3xm7YFhFqtdBpmiE+LetB
-         9+3LmBZNj6+jFt24EQ5FHtxd/4LUAA/r5vLSE9GOCo4PITLF7OJezw/eLKlnjzNVnZZi
-         OvXN4Sv6XHfv84E7bPaTV8dM3l5D9L5rn+1moAAXDVCOFVukmajFxGusJVY0Uy80juEH
-         YOzg==
-X-Gm-Message-State: AOAM5324Q6gAi4YX5M8ZQ4fiOeqWJF5iYJY7NAMiaTnGfpwQHTZXCfoB
-        18b3JtXeNv7ej0Vq0VKpeJJ1m/dWXuX83/0d28AA3Ywmt94=
-X-Google-Smtp-Source: ABdhPJxdStWsA9KUl2nJOjMRt/FnLFB9h0hI/38FN/HmiiatW4gPRk7f179qSQdpTwCRbDNnUKr/i5dTEtxGAYFP6O8=
-X-Received: by 2002:a05:6122:201f:: with SMTP id l31mr27705980vkd.22.1634590861609;
- Mon, 18 Oct 2021 14:01:01 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=bRxvY13BaQDrIpCoIzVkm1t6Rick4MWC+glJt8uRjOQ=;
+        b=WbRkia6YHZ0/+hXG7TTVtExvjKFg3sRYuppdmoHN2tKoPbmp1CWXjwrkNR3Xz3v911
+         9klNs2izQRmanMx1cr740kLdVpwfgE6vsm9EXRQ+94R5DoFUsmRVvLWuwZCeJu4D2pNW
+         iAyF+PGA6XPy9ed+VfWO5Y/0P20P0qFSGlvdHpD6ZRHuiosljM2zK7IZktrq8LOU5Xi0
+         zIRl1PsWG2h/c9HIIdi3TxllA8v+tM5grdR6ejDFnF1qQXEt2O+hpFexg0YLWu3f6gSk
+         YiUF6LhB6FyZe65GT5XknCuQr9zeJ7Un0GVKkKCvapbtBHm1LFzaVdDBG52DjoJQy37b
+         ZShQ==
+X-Gm-Message-State: AOAM532HbKXTbPYVFbbuMjww4p3mPDUKfovNfpgjg+bqMZjKsuOFNWDe
+        YRnAm22U/+NFZjVwnKGY0Cl1tg==
+X-Google-Smtp-Source: ABdhPJynjyytBbjrfjV2SukNgQXi/pfvhWQupabqgaqf8lQxwA8eNXnvALI80wXIr/9uuaK68JHuRQ==
+X-Received: by 2002:a6b:5814:: with SMTP id m20mr16077148iob.188.1634590870245;
+        Mon, 18 Oct 2021 14:01:10 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id g9sm4196011ila.20.2021.10.18.14.01.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Oct 2021 14:01:09 -0700 (PDT)
+Subject: Re: [PATCH 4.19 00/49] 4.19.213-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20211018143033.725101193@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <32f8fce9-bcd0-1b8e-5ec4-c1a6ea811b5d@linuxfoundation.org>
+Date:   Mon, 18 Oct 2021 15:01:09 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <CAD-N9QWd6Orm8d9AMk7mybByAKZod=GJ-HSNPOfhFDStSPwSUA@mail.gmail.com>
-In-Reply-To: <CAD-N9QWd6Orm8d9AMk7mybByAKZod=GJ-HSNPOfhFDStSPwSUA@mail.gmail.com>
-From:   jim.cromie@gmail.com
-Date:   Mon, 18 Oct 2021 15:00:35 -0600
-Message-ID: <CAJfuBxz6-cF6pYNS0-o_xixoKBzBn5AuXTNOW3x20rXo4Ox5Cw@mail.gmail.com>
-Subject: Re: Any tracing mechanism can track the executed instructions of a
- user process in the kernel?
-To:     Dongliang Mu <mudongliangabcd@gmail.com>
-Cc:     kernelnewbies <kernelnewbies@kernelnewbies.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Pavel Skripkin <paskripkin@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20211018143033.725101193@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 17, 2021 at 8:46 PM Dongliang Mu <mudongliangabcd@gmail.com> wr=
-ote:
->
-> Hi all,
->
-> I am writing to kindly ask one question: is there any tracing
-> mechanism in Linux kernel that can trace all the executed instructions
-> of a user process? If this user process is run on different
-> processors, traces of this process on different processors should be
-> also recorded.
->
-> Any comment is welcome.
->
+On 10/18/21 8:30 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.19.213 release.
+> There are 49 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 20 Oct 2021 14:30:23 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.213-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-take a look at rr-project.org
+Compiled and booted on my test system. No dmesg regressions.
 
-what rr does
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 
-rr aspires to be your primary C/C++ debugging tool for Linux,
-replacing =E2=80=94 well, enhancing =E2=80=94 gdb. You record a failure onc=
-e, then
-debug the recording, deterministically, as many times as you want. The
-same execution is replayed every time.
-
-rr also provides efficient reverse execution under gdb. Set
-breakpoints and data watchpoints and quickly reverse-execute to where
-they were hit.
+thanks,
+-- Shuah
