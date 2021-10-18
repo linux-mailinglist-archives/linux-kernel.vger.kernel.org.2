@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05F17431BD6
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:33:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1861431DFC
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:55:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232823AbhJRNfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:35:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42496 "EHLO mail.kernel.org"
+        id S233681AbhJRN4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:56:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59130 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232153AbhJRNdv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:33:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 41BEF613A6;
-        Mon, 18 Oct 2021 13:29:51 +0000 (UTC)
+        id S232045AbhJRNyY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:54:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 34562619EE;
+        Mon, 18 Oct 2021 13:39:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634563791;
-        bh=GLRdsquCCr8X1QxdvC5P0DDtu7IxKrAlwic1VxZPw5M=;
+        s=korg; t=1634564377;
+        bh=0/NXyCFCgLjRaDEMu+8WjjgjPm1AQmy6JSx8rfNlOi8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XcyAnAbF273ITy1IRyqsTo9m982Y0mwSfunANSsA0BQdyukm33DtHlLQGTIiPN3so
-         aU4ehjcnIUmLe45AspCkp5mp3qw27q7Ih67dALPI70QnU1N4I82jWsGF90nFe1lsvd
-         mJuiPxunD0CcZ+3n6Wv7AHVgdM5144dM9CcK3Uwk=
+        b=cImr1bvD6wkV9SczOUSnKh2LQPOM/L/1kJ6Kn6M02bmMpixGv6yhX1T8YigAkjDGg
+         J454sWmTft7IovQ09VnhXEa4hfxuHT1kFdgAvc8kOjYnTEZnwC+skNCupheF9drLTR
+         Xmt9i9nnv9kIq7GFFSKsvT4U8XgM2reaWbHLF/ng=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Werner Sembach <wse@tuxedocomputers.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.4 05/69] ALSA: hda/realtek: Add quirk for Clevo X170KM-G
-Date:   Mon, 18 Oct 2021 15:24:03 +0200
-Message-Id: <20211018132329.628523694@linuxfoundation.org>
+        stable@vger.kernel.org, Billy Tsai <billy_tsai@aspeedtech.com>,
+        Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH 5.14 065/151] iio: adc: aspeed: set driver data when adc probe.
+Date:   Mon, 18 Oct 2021 15:24:04 +0200
+Message-Id: <20211018132342.807743544@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132329.453964125@linuxfoundation.org>
-References: <20211018132329.453964125@linuxfoundation.org>
+In-Reply-To: <20211018132340.682786018@linuxfoundation.org>
+References: <20211018132340.682786018@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,31 +40,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Werner Sembach <wse@tuxedocomputers.com>
+From: Billy Tsai <billy_tsai@aspeedtech.com>
 
-commit cc03069a397005da24f6783835c274d5aedf6043 upstream.
+commit eb795cd97365a3d3d9da3926d234a7bc32a3bb15 upstream.
 
-This applies a SND_PCI_QUIRK(...) to the Clevo X170KM-G barebone. This
-fixes the issue of the devices internal Speaker not working.
+Fix the issue when adc remove will get the null driver data.
 
-Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20211001133111.428249-3-wse@tuxedocomputers.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Fixed: commit 573803234e72 ("iio: Aspeed ADC")
+Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
+Link: https://lore.kernel.org/r/20210831071458.2334-2-billy_tsai@aspeedtech.com
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/pci/hda/patch_realtek.c |    1 +
+ drivers/iio/adc/aspeed_adc.c |    1 +
  1 file changed, 1 insertion(+)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -2540,6 +2540,7 @@ static const struct snd_pci_quirk alc882
- 	SND_PCI_QUIRK(0x1558, 0x67e5, "Clevo PC70D[PRS](?:-D|-G)?", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
- 	SND_PCI_QUIRK(0x1558, 0x70d1, "Clevo PC70[ER][CDF]", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
- 	SND_PCI_QUIRK(0x1558, 0x7714, "Clevo X170SM", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
-+	SND_PCI_QUIRK(0x1558, 0x7715, "Clevo X170KM-G", ALC1220_FIXUP_CLEVO_PB51ED),
- 	SND_PCI_QUIRK(0x1558, 0x9501, "Clevo P950HR", ALC1220_FIXUP_CLEVO_P950),
- 	SND_PCI_QUIRK(0x1558, 0x9506, "Clevo P955HQ", ALC1220_FIXUP_CLEVO_P950),
- 	SND_PCI_QUIRK(0x1558, 0x950a, "Clevo P955H[PR]", ALC1220_FIXUP_CLEVO_P950),
+--- a/drivers/iio/adc/aspeed_adc.c
++++ b/drivers/iio/adc/aspeed_adc.c
+@@ -183,6 +183,7 @@ static int aspeed_adc_probe(struct platf
+ 
+ 	data = iio_priv(indio_dev);
+ 	data->dev = &pdev->dev;
++	platform_set_drvdata(pdev, indio_dev);
+ 
+ 	data->base = devm_platform_ioremap_resource(pdev, 0);
+ 	if (IS_ERR(data->base))
 
 
