@@ -2,78 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02136431315
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 11:16:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 958A9431316
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 11:16:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231464AbhJRJSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 05:18:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60120 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231501AbhJRJS0 (ORCPT
+        id S231428AbhJRJSo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 05:18:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34128 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231490AbhJRJS0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 18 Oct 2021 05:18:26 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D45B8C06161C;
-        Mon, 18 Oct 2021 02:16:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=vp/9tbDt+u2+sZpQokequu0uJ3PAIfwBSiCgHpUgdOA=; b=h/G5/eJqjajNwGI+Ryhs04ZyI0
-        cqjMYuAQszoeX9StonOmLtaYRa4J0gsf5t0wnmWIvLKT1B2DeTanabuStNsjcHOQ5KX1wN1sfxOz7
-        sr7qsmzI0RkBfMdb84/HOlXg9A1pEZ/gs6wkJH6O2mQvNanPGcuv13kizrMpelcWu5PeOhYLRkPSJ
-        9JlP2+6miHuDSGfQT96+nYmW/E8l6C3myv9C0KmtbLTopuacEzRGeK0z7JzdXjq1X1pxZusV8AhjH
-        58gTs2lUEB23dgwHhM3unoEDzpbo78iHwLUprdOiVczpPK8WKbyJyDt+sYBL/06q56hNuwsNnrCWj
-        7ymy9B3Q==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mcOk9-00AWJv-HQ; Mon, 18 Oct 2021 09:15:41 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2EFC2300221;
-        Mon, 18 Oct 2021 11:15:40 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 11F292CDA89B2; Mon, 18 Oct 2021 11:15:40 +0200 (CEST)
-Date:   Mon, 18 Oct 2021 11:15:39 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, linux-kernel@vger.kernel.org, rafael@kernel.org,
-        len.brown@intel.com, linux-pm@vger.kernel.org,
-        sfr@canb.auug.org.au, gor@linux.ibm.com
-Subject: Re: next-20211015: suspend to ram on x86-32 broken
-Message-ID: <YW07O8ZPLVnbGLR7@hirez.programming.kicks-ass.net>
-References: <20211017093905.GA3069@amd>
- <20211017102547.GA3818@amd>
- <20211018071349.GA16631@duo.ucw.cz>
- <20211018081300.GA18193@duo.ucw.cz>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634548573;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3ng8kdqJ23aQK4vPsifW4Pte806k5USxiuKbYRKOPYw=;
+        b=d2MtW8Y4d3kTJBOEEPWlvoD/8xUYiey+RA54Rajf19eY/qlBwG/fN97TUFGYybzsVyB7i9
+        MZ8BEXVIXuh7DfOzPqCrxJSt987kYFcgaYwDn9xWbR2oXfX5znTvfas+LkQsOptX0a79kf
+        hrWD/PNQpjCf3CdKn/j5vVCF/Hb2ev0=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-329-A-gvD1YKPS-SejCKl038rg-1; Mon, 18 Oct 2021 05:16:12 -0400
+X-MC-Unique: A-gvD1YKPS-SejCKl038rg-1
+Received: by mail-ed1-f69.google.com with SMTP id i7-20020a50d747000000b003db0225d219so9144900edj.0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 02:16:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to;
+        bh=3ng8kdqJ23aQK4vPsifW4Pte806k5USxiuKbYRKOPYw=;
+        b=ItbDWDyk8fndHE7+q2h5troFWAalWo/SElxxsOzR46X9Bae+79XhQUngJZMo2qeFfU
+         znz5S1WB+5UYY+gAe+c2DwLh4FMzJa715w/n/i0BweVLqKsaAeOwkcOQv2PEWwGlB9uG
+         r2H5xZ89szjc7U3tSUzAY2DKqSkb8b8zQkM9pImjjLA+219n+dgKI4sgzP0FZ0G9snKw
+         LwvhNYovtt17wHdgs1a1yCzcwAqSumyQ+dwe3ohZA9mwCAmVp3HHofas/tbAWM0z1qzx
+         uY9DpvVDpC4120FCE+sWIp6F8uQv9fpV073Of9xP7DhUS9ysIEJ3vFgnk6rlyZ1cN72R
+         TyuQ==
+X-Gm-Message-State: AOAM532RbZBMwYsy5DNpwjyyck73cOiZGQsqU2DvzjMispzUDVavy/zC
+        9zYhWgh0KiekfV/Pp3/b7OcjsICv1Pl62TQFBGZD/N9MyBQVh1r6wLMWwJVcKSwIRXF+0YTcaBe
+        sTwEcOxI3xYaWZgH42D0Oe643
+X-Received: by 2002:a17:907:7d8b:: with SMTP id oz11mr27085445ejc.476.1634548570459;
+        Mon, 18 Oct 2021 02:16:10 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxh5ZSAiySnnprMuvel5RUKPpIObGbAeUv0uGxnwMU3vlM6/CquWzrbaJ+2hyp+LXQJFt+1tw==
+X-Received: by 2002:a17:907:7d8b:: with SMTP id oz11mr27085428ejc.476.1634548570254;
+        Mon, 18 Oct 2021 02:16:10 -0700 (PDT)
+Received: from [10.40.1.223] ([81.30.35.201])
+        by smtp.gmail.com with ESMTPSA id y8sm8603072ejm.104.2021.10.18.02.16.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Oct 2021 02:16:09 -0700 (PDT)
+Content-Type: multipart/mixed; boundary="------------VbaGbtKrdFXPX28iJEYW9CfG"
+Message-ID: <3e6428f1-9411-fac6-9172-1dfe6de58c28@redhat.com>
+Date:   Mon, 18 Oct 2021 11:16:09 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211018081300.GA18193@duo.ucw.cz>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [RFC PATCH 1/1] ACPI / PMIC: Add i2c address to intel_pmic_bytcrc
+ driver
+Content-Language: en-US
+To:     Tsuchiya Yuto <kitakar@gmail.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>, Andy Shevchenko <andy@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20211017161523.43801-1-kitakar@gmail.com>
+ <20211017161523.43801-2-kitakar@gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20211017161523.43801-2-kitakar@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 18, 2021 at 10:13:00AM +0200, Pavel Machek wrote:
-> Hi!
-> > It said
-> > 
-> > commit 8850cb663b5cda04d33f9cfbc38889d73d3c8e24 (HEAD)
-> > Author: Peter Zijlstra <peterz@infradead.org>
-> > Date:   Tue Sep 21 22:16:02 2021 +0200
-> > 
-> >     sched: Simplify wake_up_*idle*()
-> > 
-> > is first bad commit.
-> 
-> And reverting that one on the top of -next indeed fixes resume on
-> thinkpad x60.
+This is a multi-part message in MIME format.
+--------------VbaGbtKrdFXPX28iJEYW9CfG
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Can you try with just reverting the smp.c hunk and leaving the sched
-hunk in place? I've got a hotplug lock related splat in my inbox from
-late last week that I didn't get around to yet, I suspect they're
-related.
+Hi,
+
+On 10/17/21 18:15, Tsuchiya Yuto wrote:
+> On Microsoft Surface 3 (uses Intel's Atom Cherry Trail SoC), executing
+> intel_soc_pmic_exec_mipi_pmic_seq_element() results in the following
+> error message:
+> 
+>         [ 7196.356682] intel_soc_pmic_exec_mipi_pmic_seq_element: Not implemented
+>         [ 7196.356686] intel_soc_pmic_exec_mipi_pmic_seq_element: i2c-addr: 0x6e reg-addr 0x57 value 0x63 mask 0xff
+> 
+> Surface 3 uses the PMIC device INT33FD, and the DSDT describes its _HRV
+> value is 0x02 [1]:
+> 
+>         Scope (PCI0.I2C7)
+>         {
+>             Device (PMIC)
+>             {
+>                 Name (_ADR, Zero)  // _ADR: Address
+>                 Name (_HID, "INT33FD" /* Intel Baytrail Power Management IC */)  // _HID: Hardware ID
+>                 Name (_CID, "INT33FD" /* Intel Baytrail Power Management IC */)  // _CID: Compatible ID
+>                 Name (_DDN, "CRYSTAL COVE+ AIC")  // _DDN: DOS Device Name
+>                 Name (_HRV, 0x02)  // _HRV: Hardware Revision
+>                 Name (_UID, One)  // _UID: Unique ID
+>                 Name (_DEP, Package (0x01)  // _DEP: Dependencies
+>                 {
+>                     I2C7
+>                 })
+>         [...]
+> 
+> Due to this _HRV value, intel_pmic_bytcrc is used as the PMIC driver.
+> However, the i2c address is currently not defined in this driver.
+> This commit adds the missing i2c address 0x6e to the intel_pmic_bytcrc
+> driver.
+> 
+> [1] https://github.com/linux-surface/acpidumps/blob/f8db3d150815aa21530635b7e646eee271e3b8fe/surface_3/dsdt.dsl#L10868
+> 
+> References: cc0594c4b0ef ("ACPI / PMIC: Add i2c address for thermal control")
+> Signed-off-by: Tsuchiya Yuto <kitakar@gmail.com>
+
+I believe that it is very unlikely that a device with a Cherry Trail SoC is actually using
+the Bay Trail version of the PMIC, I would expect that to not necessarily work all that well.
+
+So as Andy said, the right fix here is something like the:
+
++	hrv = 0x03;
+
+Workaround from your cover-letter.
+
+As Andy said we could use a DMI quirk for this, but chances are that the Microsoft Surface
+DSDT is not the only one with the wrong HRV value. So instead it might be better to
+just test for the SoC type as the attached patch does.
+
+Tsuchiya, can you give the attached patch a try.
+
+Andy, what do you think, should we go with the attached patch or would you prefer using
+a DMI quirk ?
+
+Regards,
+
+Hans
+
+
+
+
+
+
+> ---
+>  drivers/acpi/pmic/intel_pmic_bytcrc.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/acpi/pmic/intel_pmic_bytcrc.c b/drivers/acpi/pmic/intel_pmic_bytcrc.c
+> index 2a692cc4b7ae..a64f50a42c54 100644
+> --- a/drivers/acpi/pmic/intel_pmic_bytcrc.c
+> +++ b/drivers/acpi/pmic/intel_pmic_bytcrc.c
+> @@ -282,6 +282,7 @@ static struct intel_pmic_opregion_data intel_crc_pmic_opregion_data = {
+>  	.power_table_count= ARRAY_SIZE(power_table),
+>  	.thermal_table	= thermal_table,
+>  	.thermal_table_count = ARRAY_SIZE(thermal_table),
+> +	.pmic_i2c_address = 0x6e,
+>  };
+>  
+>  static int intel_crc_pmic_opregion_probe(struct platform_device *pdev)
+> 
+--------------VbaGbtKrdFXPX28iJEYW9CfG
+Content-Type: text/x-patch; charset=UTF-8;
+ name="0001-mfd-intel_soc_pmic-Use-CPU-id-check-instead-of-_HRV-.patch"
+Content-Disposition: attachment;
+ filename*0="0001-mfd-intel_soc_pmic-Use-CPU-id-check-instead-of-_HRV-.pa";
+ filename*1="tch"
+Content-Transfer-Encoding: base64
+
+RnJvbSBjNjU2YTAxYWQ4ZDkyNTJlYjU3NDdjM2YzYzFjODYxNTM0YWNiY2JkIE1vbiBTZXAg
+MTcgMDA6MDA6MDAgMjAwMQpGcm9tOiBIYW5zIGRlIEdvZWRlIDxoZGVnb2VkZUByZWRoYXQu
+Y29tPgpEYXRlOiBNb24sIDE4IE9jdCAyMDIxIDExOjExOjM0ICswMjAwClN1YmplY3Q6IFtQ
+QVRDSF0gbWZkOiBpbnRlbF9zb2NfcG1pYzogVXNlIENQVS1pZCBjaGVjayBpbnN0ZWFkIG9m
+IF9IUlYgY2hlY2sKIHRvIGRpZmZlcmVudGlhdGUgdmFyaWFudHMKClRoZSBJbnRlbCBDcnlz
+dGFsIENvdmUgUE1JQyBoYXMgMiBkaWZmZXJlbnQgdmFyaWFudHMsIG9uZSBmb3IgdXNlIHdp
+dGgKQmF5IFRyYWlsIChCWVQpIFNvQ3MgYW5kIG9uZSBmb3IgdXNlIHdpdGggQ2hlcnJ5IFRy
+YWlsIChDSFQpIFNvQ3MuCgpTbyBmYXIgd2UgaGF2ZSBiZWVuIHVzaW5nIGFuIEFDUEkgX0hS
+ViBjaGVjayB0byBkaWZmZXJlbnRpYXRlIGJldHdlZW4KdGhlIDIsIGJ1dCBhdCBsZWFzdCBv
+biB0aGUgTWljcm9zb2Z0IFN1cmZhY2UgMywgd2hpY2ggaXMgYSBDSFQgZGV2aWNlLAp0aGUg
+d3JvbmcgX0hSViB2YWx1ZSBpcyByZXBvcnRlZCBieSBBQ1BJLgoKU28gaW5zdGVhZCBzd2l0
+Y2ggdG8gYSBDUFUtSUQgY2hlY2sgd2hpY2ggYXZvaWRzIHVzIHJlbHlpbmcgb24gdGhlCnBv
+c3NpYmx5IHdyb25nIEFDUEkgX0hSViB2YWx1ZS4KClJlcG9ydGVkLWJ5OiBUc3VjaGl5YSBZ
+dXRvIDxraXRha2FyQGdtYWlsLmNvbT4KU2lnbmVkLW9mZi1ieTogSGFucyBkZSBHb2VkZSA8
+aGRlZ29lZGVAcmVkaGF0LmNvbT4KLS0tCiBkcml2ZXJzL21mZC9LY29uZmlnICAgICAgICAg
+ICAgICAgfCAgMiArLQogZHJpdmVycy9tZmQvaW50ZWxfc29jX3BtaWNfY29yZS5jIHwgMzUg
+KysrKysrKysrLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQogMiBmaWxlcyBjaGFuZ2VkLCAxMSBp
+bnNlcnRpb25zKCspLCAyNiBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9kcml2ZXJzL21m
+ZC9LY29uZmlnIGIvZHJpdmVycy9tZmQvS2NvbmZpZwppbmRleCBjYTBlZGFiOTFhZWIuLjU4
+ODY2YzQyNTQ5NCAxMDA2NDQKLS0tIGEvZHJpdmVycy9tZmQvS2NvbmZpZworKysgYi9kcml2
+ZXJzL21mZC9LY29uZmlnCkBAIC01ODcsNyArNTg3LDcgQEAgY29uZmlnIExQQ19TQ0gKIGNv
+bmZpZyBJTlRFTF9TT0NfUE1JQwogCWJvb2wgIlN1cHBvcnQgZm9yIENyeXN0YWwgQ292ZSBQ
+TUlDIgogCWRlcGVuZHMgb24gQUNQSSAmJiBIQVNfSU9NRU0gJiYgSTJDPXkgJiYgR1BJT0xJ
+QiAmJiBDT01NT05fQ0xLCi0JZGVwZW5kcyBvbiBYODYgfHwgQ09NUElMRV9URVNUCisJZGVw
+ZW5kcyBvbiBYODYKIAlkZXBlbmRzIG9uIEkyQ19ERVNJR05XQVJFX1BMQVRGT1JNPXkKIAlz
+ZWxlY3QgTUZEX0NPUkUKIAlzZWxlY3QgUkVHTUFQX0kyQwpkaWZmIC0tZ2l0IGEvZHJpdmVy
+cy9tZmQvaW50ZWxfc29jX3BtaWNfY29yZS5jIGIvZHJpdmVycy9tZmQvaW50ZWxfc29jX3Bt
+aWNfY29yZS5jCmluZGV4IGRkZDY0ZjllMzM0MS4uOWUxNTg4ZDRjODJlIDEwMDY0NAotLS0g
+YS9kcml2ZXJzL21mZC9pbnRlbF9zb2NfcG1pY19jb3JlLmMKKysrIGIvZHJpdmVycy9tZmQv
+aW50ZWxfc29jX3BtaWNfY29yZS5jCkBAIC0xNyw0OCArMTcsMzMgQEAKICNpbmNsdWRlIDxs
+aW51eC9wd20uaD4KICNpbmNsdWRlIDxsaW51eC9yZWdtYXAuaD4KIAotI2luY2x1ZGUgImlu
+dGVsX3NvY19wbWljX2NvcmUuaCIKKyNpbmNsdWRlIDxhc20vY3B1X2RldmljZV9pZC5oPgor
+I2luY2x1ZGUgPGFzbS9pbnRlbC1mYW1pbHkuaD4KIAotLyogQ3J5c3RhbCBDb3ZlIFBNSUMg
+c2hhcmVzIHNhbWUgQUNQSSBJRCBiZXR3ZWVuIGRpZmZlcmVudCBwbGF0Zm9ybXMgKi8KLSNk
+ZWZpbmUgQllUX0NSQ19IUlYJCTIKLSNkZWZpbmUgQ0hUX0NSQ19IUlYJCTMKKyNpbmNsdWRl
+ICJpbnRlbF9zb2NfcG1pY19jb3JlLmgiCiAKIC8qIFBXTSBjb25zdW1lZCBieSB0aGUgSW50
+ZWwgR0ZYICovCiBzdGF0aWMgc3RydWN0IHB3bV9sb29rdXAgY3JjX3B3bV9sb29rdXBbXSA9
+IHsKIAlQV01fTE9PS1VQKCJjcnlzdGFsX2NvdmVfcHdtIiwgMCwgIjAwMDA6MDA6MDIuMCIs
+ICJwd21fcG1pY19iYWNrbGlnaHQiLCAwLCBQV01fUE9MQVJJVFlfTk9STUFMKSwKIH07CiAK
+K3N0YXRpYyBjb25zdCBzdHJ1Y3QgeDg2X2NwdV9pZCBieXRfY3B1X2lkc1tdID0geworCVg4
+Nl9NQVRDSF9JTlRFTF9GQU02X01PREVMKEFUT01fU0lMVkVSTU9OVCwgTlVMTCksCisJe30K
+K307CisKIHN0YXRpYyBpbnQgaW50ZWxfc29jX3BtaWNfaTJjX3Byb2JlKHN0cnVjdCBpMmNf
+Y2xpZW50ICppMmMsCiAJCQkJICAgIGNvbnN0IHN0cnVjdCBpMmNfZGV2aWNlX2lkICppMmNf
+aWQpCiB7CiAJc3RydWN0IGRldmljZSAqZGV2ID0gJmkyYy0+ZGV2OwogCXN0cnVjdCBpbnRl
+bF9zb2NfcG1pY19jb25maWcgKmNvbmZpZzsKIAlzdHJ1Y3QgaW50ZWxfc29jX3BtaWMgKnBt
+aWM7Ci0JdW5zaWduZWQgbG9uZyBsb25nIGhydjsKLQlhY3BpX3N0YXR1cyBzdGF0dXM7CiAJ
+aW50IHJldDsKIAotCS8qCi0JICogVGhlcmUgYXJlIDIgZGlmZmVyZW50IENyeXN0YWwgQ292
+ZSBQTUlDcyBhIEJheSBUcmFpbCBhbmQgQ2hlcnJ5Ci0JICogVHJhaWwgdmVyc2lvbiwgdXNl
+IF9IUlYgdG8gZGlmZmVyZW50aWF0ZSBiZXR3ZWVuIHRoZSAyLgotCSAqLwotCXN0YXR1cyA9
+IGFjcGlfZXZhbHVhdGVfaW50ZWdlcihBQ1BJX0hBTkRMRShkZXYpLCAiX0hSViIsIE5VTEws
+ICZocnYpOwotCWlmIChBQ1BJX0ZBSUxVUkUoc3RhdHVzKSkgewotCQlkZXZfZXJyKGRldiwg
+IkZhaWxlZCB0byBnZXQgUE1JQyBoYXJkd2FyZSByZXZpc2lvblxuIik7Ci0JCXJldHVybiAt
+RU5PREVWOwotCX0KLQotCXN3aXRjaCAoaHJ2KSB7Ci0JY2FzZSBCWVRfQ1JDX0hSVjoKKwlp
+ZiAoeDg2X21hdGNoX2NwdShieXRfY3B1X2lkcykpCiAJCWNvbmZpZyA9ICZpbnRlbF9zb2Nf
+cG1pY19jb25maWdfYnl0X2NyYzsKLQkJYnJlYWs7Ci0JY2FzZSBDSFRfQ1JDX0hSVjoKKwll
+bHNlCiAJCWNvbmZpZyA9ICZpbnRlbF9zb2NfcG1pY19jb25maWdfY2h0X2NyYzsKLQkJYnJl
+YWs7Ci0JZGVmYXVsdDoKLQkJZGV2X3dhcm4oZGV2LCAiVW5rbm93biBoYXJkd2FyZSByZXYg
+JWxsdSwgYXNzdW1pbmcgQllUXG4iLCBocnYpOwotCQljb25maWcgPSAmaW50ZWxfc29jX3Bt
+aWNfY29uZmlnX2J5dF9jcmM7Ci0JfQogCiAJcG1pYyA9IGRldm1fa3phbGxvYyhkZXYsIHNp
+emVvZigqcG1pYyksIEdGUF9LRVJORUwpOwogCWlmICghcG1pYykKLS0gCjIuMzEuMQoK
+--------------VbaGbtKrdFXPX28iJEYW9CfG--
 
