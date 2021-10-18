@@ -2,34 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAB1E431E25
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:56:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 309EC431D1B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:47:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234410AbhJRN6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:58:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56110 "EHLO mail.kernel.org"
+        id S232271AbhJRNsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:48:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39094 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234398AbhJRNz5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:55:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C5016613A1;
-        Mon, 18 Oct 2021 13:40:21 +0000 (UTC)
+        id S233707AbhJRNpq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:45:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EDE65613AB;
+        Mon, 18 Oct 2021 13:35:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634564422;
-        bh=5uAmbIsyWlNJmxe5/Mf4Itd1jbhwgkNurGQCEKrmiCs=;
+        s=korg; t=1634564141;
+        bh=inY9IIMJd9Wq6FfiKzkCwGuhP2O5pebn4SWvFLz1tU0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rRZigrnzY4xFegGcJp06o0ie/UKC++nxzEV6Rsqb5LiYHnUq0XFr9qSwEA8/W+dKC
-         tGlMWdAX5hZ2lgY+aI0ADtGl7UdVs9NTQWLa+GP3Mqy6Y+wpUG/uoIuZalV7e24g2h
-         G/LbqbfiJGOV91lB3a7n8bwHLH9KtXJzcUz8f3bg=
+        b=dQXIjODiVI8M6cOz/EhTvdFog94Yuseb97KICB9VhI4+/bImfUnuyjzBaFBieCeKi
+         66yBE5e1jHrFv95RlgBXEPu+id+ucxcRaBa/ugBoLTIUjDoGLiT+VWZogu+42lYVAL
+         isbkDT4/zQ9DytvqDaycpNK0FuAoYBuLPeVaYyxY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.14 084/151] eeprom: at25: Add SPI ID table
+        stable@vger.kernel.org,
+        =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>,
+        seeteena <s1seetee@linux.vnet.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.10 047/103] powerpc/xive: Discard disabled interrupts in get_irqchip_state()
 Date:   Mon, 18 Oct 2021 15:24:23 +0200
-Message-Id: <20211018132343.416133030@linuxfoundation.org>
+Message-Id: <20211018132336.327939100@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132340.682786018@linuxfoundation.org>
-References: <20211018132340.682786018@linuxfoundation.org>
+In-Reply-To: <20211018132334.702559133@linuxfoundation.org>
+References: <20211018132334.702559133@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,47 +41,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Brown <broonie@kernel.org>
+From: Cédric Le Goater <clg@kaod.org>
 
-commit 9e2cd444909b3c93f5cc83463d12291e3e0f990b upstream.
+commit 6f779e1d359b8d5801f677c1d49dcfa10bf95674 upstream.
 
-Currently autoloading for SPI devices does not use the DT ID table, it uses
-SPI modalises. Supporting OF modalises is going to be difficult if not
-impractical, an attempt was made but has been reverted, so ensure that
-module autoloading works for this driver by adding an id_table listing the
-SPI IDs for everything.
+When an interrupt is passed through, the KVM XIVE device calls the
+set_vcpu_affinity() handler which raises the P bit to mask the
+interrupt and to catch any in-flight interrupts while routing the
+interrupt to the guest.
 
-Fixes: 96c8395e2166 ("spi: Revert modalias changes")
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Link: https://lore.kernel.org/r/20210923172453.4921-1-broonie@kernel.org
+On the guest side, drivers (like some Intels) can request at probe
+time some MSIs and call synchronize_irq() to check that there are no
+in flight interrupts. This will call the XIVE get_irqchip_state()
+handler which will always return true as the interrupt P bit has been
+set on the host side and lock the CPU in an infinite loop.
+
+Fix that by discarding disabled interrupts in get_irqchip_state().
+
+Fixes: da15c03b047d ("powerpc/xive: Implement get_irqchip_state method for XIVE to fix shutdown race")
+Cc: stable@vger.kernel.org #v5.4+
+Signed-off-by: Cédric Le Goater <clg@kaod.org>
+Tested-by: seeteena <s1seetee@linux.vnet.ibm.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20211011070203.99726-1-clg@kaod.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/misc/eeprom/at25.c |    8 ++++++++
- 1 file changed, 8 insertions(+)
+ arch/powerpc/sysdev/xive/common.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/misc/eeprom/at25.c
-+++ b/drivers/misc/eeprom/at25.c
-@@ -366,6 +366,13 @@ static const struct of_device_id at25_of
- };
- MODULE_DEVICE_TABLE(of, at25_of_match);
- 
-+static const struct spi_device_id at25_spi_ids[] = {
-+	{ .name = "at25",},
-+	{ .name = "fm25",},
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(spi, at25_spi_ids);
-+
- static int at25_probe(struct spi_device *spi)
- {
- 	struct at25_data	*at25 = NULL;
-@@ -491,6 +498,7 @@ static struct spi_driver at25_driver = {
- 		.dev_groups	= sernum_groups,
- 	},
- 	.probe		= at25_probe,
-+	.id_table	= at25_spi_ids,
- };
- 
- module_spi_driver(at25_driver);
+--- a/arch/powerpc/sysdev/xive/common.c
++++ b/arch/powerpc/sysdev/xive/common.c
+@@ -997,7 +997,8 @@ static int xive_get_irqchip_state(struct
+ 		 * interrupt to be inactive in that case.
+ 		 */
+ 		*state = (pq != XIVE_ESB_INVALID) && !xd->stale_p &&
+-			(xd->saved_p || !!(pq & XIVE_ESB_VAL_P));
++			(xd->saved_p || (!!(pq & XIVE_ESB_VAL_P) &&
++			 !irqd_irq_disabled(data)));
+ 		return 0;
+ 	default:
+ 		return -EINVAL;
 
 
