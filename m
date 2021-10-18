@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E3CC431AF4
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:28:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABAE7431AF2
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:28:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232282AbhJRN3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:29:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41210 "EHLO mail.kernel.org"
+        id S232262AbhJRN3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:29:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41354 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231888AbhJRN3G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231896AbhJRN3G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 18 Oct 2021 09:29:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5017061354;
-        Mon, 18 Oct 2021 13:26:19 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BACA461352;
+        Mon, 18 Oct 2021 13:26:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634563579;
-        bh=rIWa6rpM1wQOJGDR0U8LT59T6BkSDLn1mxZj4v0jirU=;
+        s=korg; t=1634563582;
+        bh=gU2vMTAAa3nBkBTgSpYWKFBTfdz2wmsODH7b8zx5kvw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SRZLmLvVUn9yUPVSoFhvbAp/fvVXYtkd3Gz3sokxnVPQOWxoR+KZzO+ee3vHDd+Gi
-         wr9Zpp/1A6cloDvQ4gB7EBZ/Um39wELe7WROX/DOrbd3XzSp7SauqG/mGWrqi+A6kK
-         H0u5U96Vzx/pWQiY8DzZVO433MwJHcxWpyuZJz4Y=
+        b=hVN9TZHfgCVj5Z220Y7M7vTaZBSuGwBAP/GSB9ZsqWinkaE2VerTaeOLtFNvNt9ut
+         2Yo1WYGoer5H9EneoKE+GyIS1uhAaqOfseR5Rztj1l3XKWMPgIfOC1eHe+Le0wPQvO
+         AganEZLeHT11Z6whI+HPi3hLHB6tpAKe+TDXEetE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Billy Tsai <billy_tsai@aspeedtech.com>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Alexandru Ardelean <ardeleanalex@gmail.com>,
         Stable@vger.kernel.org,
         Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 4.14 21/39] iio: adc: aspeed: set driver data when adc probe.
-Date:   Mon, 18 Oct 2021 15:24:30 +0200
-Message-Id: <20211018132326.131210487@linuxfoundation.org>
+Subject: [PATCH 4.14 22/39] iio: adc128s052: Fix the error handling path of adc128_probe()
+Date:   Mon, 18 Oct 2021 15:24:31 +0200
+Message-Id: <20211018132326.160507916@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211018132325.426739023@linuxfoundation.org>
 References: <20211018132325.426739023@linuxfoundation.org>
@@ -40,31 +42,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Billy Tsai <billy_tsai@aspeedtech.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-commit eb795cd97365a3d3d9da3926d234a7bc32a3bb15 upstream.
+commit bbcf40816b547b3c37af49168950491d20d81ce1 upstream.
 
-Fix the issue when adc remove will get the null driver data.
+A successful 'regulator_enable()' call should be balanced by a
+corresponding 'regulator_disable()' call in the error handling path of the
+probe, as already done in the remove function.
 
-Fixed: commit 573803234e72 ("iio: Aspeed ADC")
-Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
-Link: https://lore.kernel.org/r/20210831071458.2334-2-billy_tsai@aspeedtech.com
+Update the error handling path accordingly.
+
+Fixes: 913b86468674 ("iio: adc: Add TI ADC128S052")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Reviewed-by: Alexandru Ardelean <ardeleanalex@gmail.com>
+Link: https://lore.kernel.org/r/85189f1cfcf6f5f7b42d8730966f2a074b07b5f5.1629542160.git.christophe.jaillet@wanadoo.fr
 Cc: <Stable@vger.kernel.org>
 Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/iio/adc/aspeed_adc.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/iio/adc/ti-adc128s052.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/drivers/iio/adc/aspeed_adc.c
-+++ b/drivers/iio/adc/aspeed_adc.c
-@@ -187,6 +187,7 @@ static int aspeed_adc_probe(struct platf
+--- a/drivers/iio/adc/ti-adc128s052.c
++++ b/drivers/iio/adc/ti-adc128s052.c
+@@ -169,7 +169,13 @@ static int adc128_probe(struct spi_devic
+ 	mutex_init(&adc->lock);
  
- 	data = iio_priv(indio_dev);
- 	data->dev = &pdev->dev;
-+	platform_set_drvdata(pdev, indio_dev);
+ 	ret = iio_device_register(indio_dev);
++	if (ret)
++		goto err_disable_regulator;
  
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	data->base = devm_ioremap_resource(&pdev->dev, res);
++	return 0;
++
++err_disable_regulator:
++	regulator_disable(adc->reg);
+ 	return ret;
+ }
+ 
 
 
