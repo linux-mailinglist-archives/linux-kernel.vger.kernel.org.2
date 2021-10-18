@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B434C431C0D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:37:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3038D431E4F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:58:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232917AbhJRNhy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:37:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54404 "EHLO mail.kernel.org"
+        id S234237AbhJRN77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:59:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58170 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233205AbhJRNfr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:35:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 62DE5613B1;
-        Mon, 18 Oct 2021 13:30:54 +0000 (UTC)
+        id S234304AbhJRN5z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:57:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E61306139E;
+        Mon, 18 Oct 2021 13:41:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634563854;
-        bh=lZ6e+SSnM1TUAUTuKQCwy6hZ3pcXZx5MHel341hCe4Y=;
+        s=korg; t=1634564468;
+        bh=rEet7YUxuIXeiVZf3/YE6pPboeMS3BSY1qV4RzFQQlE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GqDRo3rGKnwVzU4BuyGXkTNZkwgXJBDQbTm6ho26Dt67zZjgQybVwyUYKprQJE5qo
-         vMQmw/BJdFUrIpSE54oBzVdK2osGubov/xcOB9L9TP9N56WE3WrpwlOPoHngiY7TRT
-         CpgjgOrOZJ793g0TLMKPg3SwVcY/VjpCnfVjjZwg=
+        b=yTzm4lVMy0BUXetqWNeprlUrB8ZG1Q/WvMftp8ziVpba2udnulJCUgF3bbcicWAqT
+         s3TDO1kG1bxWYkijEGLbnVA6iXdBjdVRE6Rn7QzqKUFzUKSu/4X1Gd43gMJ6zeSDRQ
+         4OJI9UwVkpke7GQVjEFsnjVUhlzzQxMAG5i8K4nc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hui Liu <hui.liu@mediatek.com>,
-        Stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 5.4 40/69] iio: mtk-auxadc: fix case IIO_CHAN_INFO_PROCESSED
+        stable@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>
+Subject: [PATCH 5.14 099/151] gpio: 74x164: Add SPI device ID table
 Date:   Mon, 18 Oct 2021 15:24:38 +0200
-Message-Id: <20211018132330.801284592@linuxfoundation.org>
+Message-Id: <20211018132343.887300062@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132329.453964125@linuxfoundation.org>
-References: <20211018132329.453964125@linuxfoundation.org>
+In-Reply-To: <20211018132340.682786018@linuxfoundation.org>
+References: <20211018132340.682786018@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,48 +40,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hui Liu <hui.liu@mediatek.com>
+From: Mark Brown <broonie@kernel.org>
 
-commit c2980c64c7fd4585d684574c92d1624d44961edd upstream.
+commit be4491838359e78e42e88db4ac479e21c5eda1e0 upstream.
 
-The previous driver does't apply the necessary scaling to take the
-voltage range into account.
-We change readback value from raw data to input voltage to fix case
-IIO_CHAN_INFO_PROCESSED.
+Currently autoloading for SPI devices does not use the DT ID table, it uses
+SPI modalises. Supporting OF modalises is going to be difficult if not
+impractical, an attempt was made but has been reverted, so ensure that
+module autoloading works for this driver by adding a SPI device ID table.
 
-Fixes: ace4cdfe67be ("iio: adc: mt2701: Add Mediatek auxadc driver for mt2701.")
-Signed-off-by: Hui Liu <hui.liu@mediatek.com>
-Link: https://lore.kernel.org/r/20210926073028.11045-2-hui.liu@mediatek.com
-Cc: <Stable@vger.kernel.org>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Fixes: 96c8395e2166 ("spi: Revert modalias changes")
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Bartosz Golaszewski <brgl@bgdev.pl>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/iio/adc/mt6577_auxadc.c |    8 ++++++++
+ drivers/gpio/gpio-74x164.c |    8 ++++++++
  1 file changed, 8 insertions(+)
 
---- a/drivers/iio/adc/mt6577_auxadc.c
-+++ b/drivers/iio/adc/mt6577_auxadc.c
-@@ -82,6 +82,10 @@ static const struct iio_chan_spec mt6577
- 	MT6577_AUXADC_CHANNEL(15),
+--- a/drivers/gpio/gpio-74x164.c
++++ b/drivers/gpio/gpio-74x164.c
+@@ -174,6 +174,13 @@ static int gen_74x164_remove(struct spi_
+ 	return 0;
+ }
+ 
++static const struct spi_device_id gen_74x164_spi_ids[] = {
++	{ .name = "74hc595" },
++	{ .name = "74lvc594" },
++	{},
++};
++MODULE_DEVICE_TABLE(spi, gen_74x164_spi_ids);
++
+ static const struct of_device_id gen_74x164_dt_ids[] = {
+ 	{ .compatible = "fairchild,74hc595" },
+ 	{ .compatible = "nxp,74lvc594" },
+@@ -188,6 +195,7 @@ static struct spi_driver gen_74x164_driv
+ 	},
+ 	.probe		= gen_74x164_probe,
+ 	.remove		= gen_74x164_remove,
++	.id_table	= gen_74x164_spi_ids,
  };
+ module_spi_driver(gen_74x164_driver);
  
-+/* For Voltage calculation */
-+#define VOLTAGE_FULL_RANGE  1500	/* VA voltage */
-+#define AUXADC_PRECISE      4096	/* 12 bits */
-+
- static int mt_auxadc_get_cali_data(int rawdata, bool enable_cali)
- {
- 	return rawdata;
-@@ -191,6 +195,10 @@ static int mt6577_auxadc_read_raw(struct
- 		}
- 		if (adc_dev->dev_comp->sample_data_cali)
- 			*val = mt_auxadc_get_cali_data(*val, true);
-+
-+		/* Convert adc raw data to voltage: 0 - 1500 mV */
-+		*val = *val * VOLTAGE_FULL_RANGE / AUXADC_PRECISE;
-+
- 		return IIO_VAL_INT;
- 
- 	default:
 
 
