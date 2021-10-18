@@ -2,104 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEF41430FB6
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 07:22:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B35A7430FB7
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 07:22:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229952AbhJRFYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 01:24:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35702 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229666AbhJRFYG (ORCPT
+        id S230010AbhJRFZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 01:25:07 -0400
+Received: from smtpbguseast3.qq.com ([54.243.244.52]:52403 "EHLO
+        smtpbguseast3.qq.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229634AbhJRFZG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 01:24:06 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25C22C061745
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 22:21:56 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id l24-20020a9d1c98000000b00552a5c6b23cso1008123ota.9
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 22:21:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jfN5TQ22U2KTDvkMiOGUKIajMf8GYobcA00Dr8Mt+CY=;
-        b=tS8ToojrQ4pmJBf1PdisCQBfJHtzq32axihoCCbxboNp7zEJM50K6zHjUHNR/Wcw4y
-         mfOPm0O4w6F2Pm6BG5Og2/JCfSSOfMqbtHE9O/LDvUgCUty1YoqsykWCzaGEWwFbR893
-         KknzVhfDxA70cMQQ0KO5eOunhje+tM+vctrFOBcSZCM8D2rOMQ5rWly5bAkZ/JUGO/lr
-         iZO+esqkbAM9UuYeCP4+kWe+1qjNx96fVlOk9a5mWGxMV4ikDRoLUBAN3dmdLtB+qpBX
-         EnpXzYQKinlIRrCnqKp2dGjNTS9ptYDsGQGEbIghTnjumV/otuIAQcXANsg6/lYQDzSb
-         uXuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jfN5TQ22U2KTDvkMiOGUKIajMf8GYobcA00Dr8Mt+CY=;
-        b=VuWHMcsXUcKNkoTy/o/Mj5D6kPB3pYzVR6bwlz3r9Nl2ZNv6MOj/2nx4e6KKM8h1jy
-         vi7a81euPKZHd9Mc7pTH2Y1VtBJicioBVgtdeQobZncuOAXHdHgNpNU3g5N07PFpzITW
-         rGerEom7Ai7b4wwzjRXXCKcZJY6cxgdW0SU6gkqz0/7H0alh3IpeAYT9JkmhcdrpJsQR
-         r3xdMyLNEfN7VuFop6J+Yi/lSzWDgYtX4faxkmMMa8eg3k05tdHR1bB4tBiQS7Q/aAmQ
-         v6jbtfBmixjsv3qqgoEbHa67IM5k/7HQpmcLTrshGQqRJ99wEyfO74U1R3TtvCioN21I
-         hCHw==
-X-Gm-Message-State: AOAM533a+eukwslv8UX4yuLU8xPNP8scS4crIdHpvgr6tPL3shWEHn8E
-        geR2HgCb+rOavy76fMnRf46O7jIlW9JL7SQ9tlwHrA==
-X-Google-Smtp-Source: ABdhPJw95k5KegGUv5YGfjdWaUckEAabcBIHOIenlhum4/S/scJJlhCp/9gw6fX9QebXdznc9O34rreiCUWCzbkNOa4=
-X-Received: by 2002:a05:6830:1c26:: with SMTP id f6mr19614185ote.28.1634534515216;
- Sun, 17 Oct 2021 22:21:55 -0700 (PDT)
+        Mon, 18 Oct 2021 01:25:06 -0400
+X-QQ-mid: bizesmtp33t1634534565twpnz1q1
+Received: from pcl66.. (unknown [218.17.115.194])
+        by esmtp6.qq.com (ESMTP) with 
+        id ; Mon, 18 Oct 2021 13:22:39 +0800 (CST)
+X-QQ-SSF: 01400000002000F0O000000B0000000
+X-QQ-FEAT: sAyD0HLl0PAPF9h2XXao3xBCuwKIX1GvyL9/k10otrZOpvTx2dLnas1dTvxks
+        AcbIRiF+Nwn4z4tU9GRsmFEbA0VyRqZzJZYXHPGLhvclumq0XNEDIxCZmNJV2yelYObLymb
+        zzHmmpuZRU9okNwO4uUy1ZCpH3Y5lBAYjoNkRcUy8ZGeW4PhhnZHn33NZfiGVRT44Rnamj2
+        +wLyV0mHD5AylhTMIKMAPoh/OwKUgD6pVHJ1lvf1z71Bhyul0Qk2I248psCInFC+SMQtP2v
+        8y086yFfAQ5mKLdzl341uNliAZrSzTM0KxC2a8loHFu9v5RVbYHPeMsDWm3swdaAU7kck8v
+        iEjizGLo4fK0ruS9mOKcrXmRG2DrKwTCqdDkba+
+X-QQ-GoodBg: 1
+From:   Chen Lu <181250012@smail.nju.edu.cn>
+To:     palmer@dabbelt.com
+Cc:     paul.walmsley@sifive.com, aou@eecs.berkeley.edu, alex@ghiti.fr,
+        vitaly.wool@konsulko.com, anup@brainfault.org, seanga2@gmail.com,
+        wangkefeng.wang@huawei.com, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, yuzihao@ict.ac.cn,
+        Chen Lu <181250012@smail.nju.edu.cn>
+Subject: [PATCH] riscv: fix misalgned trap vector base address
+Date:   Mon, 18 Oct 2021 13:22:38 +0800
+Message-Id: <20211018052238.522905-1-181250012@smail.nju.edu.cn>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20211017204036.2761122-1-bjorn.andersson@linaro.org> <CAH=2Nty2yyVa1ow_zEOv3nsjjWg9Cb0CpTyDXAenMPMiBs4NQg@mail.gmail.com>
-In-Reply-To: <CAH=2Nty2yyVa1ow_zEOv3nsjjWg9Cb0CpTyDXAenMPMiBs4NQg@mail.gmail.com>
-From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
-Date:   Mon, 18 Oct 2021 10:51:44 +0530
-Message-ID: <CAH=2NtypnKZsBva93yCQgBa-9pufkn0-vGAH04mOezfo4496AA@mail.gmail.com>
-Subject: Re: [PATCH] arm64: defconfig: Enable Qualcomm LMH driver
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Thara Gopinath <thara.gopinath@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        MSM <linux-arm-msm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:smail.nju.edu.cn:qybgforeign:qybgforeign5
+X-QQ-Bgrelay: 1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 18 Oct 2021 at 10:47, Bhupesh Sharma <bhupesh.sharma@linaro.org> wrote:
->
-> Hi,
->
-> On Mon, 18 Oct 2021 at 02:08, Bjorn Andersson
-> <bjorn.andersson@linaro.org> wrote:
-> >
-> > With the introduction of LMH in '36c6581214c4 ("arm64: dts: qcom:
-> > sdm845: Add support for LMh node")' the CPUfreq gained a reference for
-> > the two interrupts from the LMh. This means that if the LMh driver isn't
-> > enabled CPUfreq will not probe and there's no frequency scaling.
-> >
-> > Enable LMh to make CPUfreq functional again on SDM845.
-> >
-> > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > ---
-> >  arch/arm64/configs/defconfig | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-> > index 86224aa3a74b..0ae6cd2748d2 100644
-> > --- a/arch/arm64/configs/defconfig
-> > +++ b/arch/arm64/configs/defconfig
-> > @@ -577,6 +577,7 @@ CONFIG_TEGRA_BPMP_THERMAL=m
-> >  CONFIG_TEGRA_SOCTHERM=m
-> >  CONFIG_QCOM_TSENS=y
-> >  CONFIG_QCOM_SPMI_TEMP_ALARM=m
-> > +CONFIG_QCOM_LMH=m
-> >  CONFIG_UNIPHIER_THERMAL=y
-> >  CONFIG_WATCHDOG=y
-> >  CONFIG_SL28CPLD_WATCHDOG=m
-> > --
->
-> Tested on SA8155p-ADP board, so:
+* The trap vector marked by label .Lsecondary_park should align on a
+  4-byte boundary. If not, CSR_TVEC may be set to an incorrect address.
+* This bug is introduced at commit e011995e826f8 ("RISC-V: Move relocate
+  and few other functions out of __init").
+* This bug is exposed with an educational emualtor.
 
-Sorry, a typo here, I meant the patch was tested on the sdm845-mtp board here :)
+Signed-off-by: Chen Lu <181250012@smail.nju.edu.cn>
+---
+ arch/riscv/kernel/head.S | 1 +
+ 1 file changed, 1 insertion(+)
 
-> Reviewed-and-Tested-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
->
-> Regards.
+diff --git a/arch/riscv/kernel/head.S b/arch/riscv/kernel/head.S
+index fce5184b22c3..52c5ff9804c5 100644
+--- a/arch/riscv/kernel/head.S
++++ b/arch/riscv/kernel/head.S
+@@ -193,6 +193,7 @@ setup_trap_vector:
+ 	csrw CSR_SCRATCH, zero
+ 	ret
+ 
++.align 2
+ .Lsecondary_park:
+ 	/* We lack SMP support or have too many harts, so park this hart */
+ 	wfi
+-- 
+2.30.2
+
+
+
