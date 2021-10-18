@@ -2,107 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8772E4317D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 13:47:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6B374317EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 13:48:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231512AbhJRLtb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 07:49:31 -0400
-Received: from mail-vk1-f171.google.com ([209.85.221.171]:39899 "EHLO
-        mail-vk1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231167AbhJRLt3 (ORCPT
+        id S231723AbhJRLt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 07:49:56 -0400
+Received: from mail-ed1-f49.google.com ([209.85.208.49]:37552 "EHLO
+        mail-ed1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231623AbhJRLti (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 07:49:29 -0400
-Received: by mail-vk1-f171.google.com with SMTP id m199so8424689vka.6;
-        Mon, 18 Oct 2021 04:47:18 -0700 (PDT)
+        Mon, 18 Oct 2021 07:49:38 -0400
+Received: by mail-ed1-f49.google.com with SMTP id y12so71691924eda.4;
+        Mon, 18 Oct 2021 04:47:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=41YRmB8CyGiXEaoxvPxP09LoXDT5L6K5fs5InVZb2qU=;
-        b=XsGkoxlmSHLwFYZJo9VU1fjYRlyet/3xi8lSQtC3n8eju67gvoZuxebLvcZjHCXBoj
-         ufip/IID23FwxrX6PdN6fFK4gqTzJ1ct+xAQ8Tu+Vq0X1ivftIMBCwNPcGy5jbEQ5T+q
-         Rhja/FWN/AcypEXSFH45wQP29lGWfCCLW0ZCtiKcpgMjYJwVoZIrtR9tt2H5nx4EiDOo
-         p2Sgo+hsla5odNhW4I3M6V9UcmLa8nDmARVqJiOTxEk3Hrjl4T27nz2sQFxcCXzoMw7G
-         JWyyjlgBS9SI+G6SOtOsMmq41Lu1USJF/odnhRO/vNvyQ6IY4x7nd+5HF5MqcbQaZ4Xa
-         FeSQ==
-X-Gm-Message-State: AOAM531ysDB/ySyuxLNm8LU5U+E1Hkmm0pDHtjTyyGSTUrRkloKdqCQx
-        Djfh3NV0mfjgFvNrmiPt1XDFE4HcWRZbaA==
-X-Google-Smtp-Source: ABdhPJyy8zH6WVMdUXUcggK3HuF5v4WrQ0Yz8JSmRg0bP+qMuX7mt/0HYMfA3j0gFglOtaoscMhMyQ==
-X-Received: by 2002:a1f:9d09:: with SMTP id g9mr23884849vke.4.1634557638286;
-        Mon, 18 Oct 2021 04:47:18 -0700 (PDT)
-Received: from mail-vk1-f172.google.com (mail-vk1-f172.google.com. [209.85.221.172])
-        by smtp.gmail.com with ESMTPSA id v3sm8754913vkv.19.2021.10.18.04.47.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Oct 2021 04:47:17 -0700 (PDT)
-Received: by mail-vk1-f172.google.com with SMTP id 34so8396071vkl.13;
-        Mon, 18 Oct 2021 04:47:17 -0700 (PDT)
-X-Received: by 2002:a05:6122:d05:: with SMTP id az5mr7503109vkb.19.1634557637704;
- Mon, 18 Oct 2021 04:47:17 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=p2Caj50fH5C8evqIQEUe2oy5AoVdzAaa+Xkp8NzJGwQ=;
+        b=oBOVQL7NCSgZBbfndjOtUMW4xhCymInXqxCbSXM5Fjo2ogG9uP7eAfkQ+6hNdAAgpm
+         wJawMAYr5zGht9cOzU04MCgp7QljEh5Ctb+VKHUxVKOB+iLPIaRh47exv4zQ42gafep+
+         duyGAR7mPXoYoT3S5LAaEPqjShD3QCC6TG+IHo28G0KuVbZOLj2nV43HB9/exy8+jmb7
+         P677808+WK494CDpWwMxOM4R6EMnbhmM8tXb1Md8sEXumOduzzk4GtqmPz+gsI8zsmME
+         wObGp/VY4UHYUDwagOczxaBFYnf9AYnmVTzsuRlGarbLCXFvy5lAccWI3Ya+x015bhFj
+         nIDg==
+X-Gm-Message-State: AOAM531TifbWZOU9u8pIzAAwmlbAcRjzX7TxLrSpNBp8ksUbxZ5RNkZT
+        oHHrvreu3JWKAUkE7OsFo4miOVcIPRE=
+X-Google-Smtp-Source: ABdhPJxE+GzNWreIYMvEQ3Fwjp2wm2GTvRFJhQ+CYaGY86q9R2fwFjTfhgtA8KkCi9+Tbj4vZ84H4Q==
+X-Received: by 2002:a05:6402:5188:: with SMTP id q8mr5470110edd.332.1634557645946;
+        Mon, 18 Oct 2021 04:47:25 -0700 (PDT)
+Received: from localhost.localdomain (ip-85-160-35-99.eurotel.cz. [85.160.35.99])
+        by smtp.gmail.com with ESMTPSA id b2sm9587458edv.73.2021.10.18.04.47.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Oct 2021 04:47:25 -0700 (PDT)
+From:   Michal Hocko <mhocko@kernel.org>
+To:     <linux-mm@kvack.org>
+Cc:     Dave Chinner <david@fromorbit.com>, Neil Brown <neilb@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>
+Subject: [RFC 0/3] extend vmalloc support for constrained allocations
+Date:   Mon, 18 Oct 2021 13:47:09 +0200
+Message-Id: <20211018114712.9802-1-mhocko@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <f1728883a5bf4481eb1d45e7b7a71005e29e259a.1632467859.git.geert+renesas@glider.be>
- <YWpkYWCFMtR40A6m@google.com>
-In-Reply-To: <YWpkYWCFMtR40A6m@google.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 18 Oct 2021 13:47:06 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdV+-_xPiR+wsUOqyprV8-A8151b35ej7nXdHJwGMGSoPw@mail.gmail.com>
-Message-ID: <CAMuHMdV+-_xPiR+wsUOqyprV8-A8151b35ej7nXdHJwGMGSoPw@mail.gmail.com>
-Subject: Re: [PATCH] Input: gpio-keys - print button label in IRQ button error messages
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     linux-input <linux-input@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dmitry,
+Hi,
+based on a recent discussion with Dave and Neil [1] I have tried to
+implement NOFS, NOIO, NOFAIL support for the vmalloc to make
+life of kvmalloc users easier.
 
-On Sat, Oct 16, 2021 at 7:34 AM Dmitry Torokhov
-<dmitry.torokhov@gmail.com> wrote:
-> On Fri, Sep 24, 2021 at 09:18:02AM +0200, Geert Uytterhoeven wrote:
-> > When an error message related to IRQ buttons is printed, no clue is
-> > given about the actual button that caused the failure.  Fix this by
-> > including the button label, to make it more obvious which button has an
-> > incomplete or incorrect hardware description.
-> >
-> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> > ---
-> >  drivers/input/keyboard/gpio_keys.c | 6 ++++--
-> >  1 file changed, 4 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/input/keyboard/gpio_keys.c b/drivers/input/keyboard/gpio_keys.c
-> > index 0f2250c6aa4978d5..fc706918d7b103cb 100644
-> > --- a/drivers/input/keyboard/gpio_keys.c
-> > +++ b/drivers/input/keyboard/gpio_keys.c
-> > @@ -617,14 +617,16 @@ static int gpio_keys_setup_key(struct platform_device *pdev,
-> >               }
-> >       } else {
-> >               if (!button->irq) {
-> > -                     dev_err(dev, "Found button without gpio or irq\n");
-> > +                     dev_err(dev, "Found button %s without gpio or irq\n",
-> > +                             desc);
->
-> I do not believe description is mandatory, so we may end up printing
-> "gpio_keys" here. I wonder if it would not be more reliable to print the
-> index of the problematic key?
+A requirement for NOFAIL support for kvmalloc was new to me but this
+seems to be really needed by the xfs code.
 
-The description (label) is indeed not mandatory, so without that it is
-as good as before ;-)
+NOFS/NOIO was a known and a long term problem which was hoped to be
+handled by the scope API. Those scope should have been used at the
+reclaim recursion boundaries both to document them and also to remove
+the necessity of NOFS/NOIO constrains for all allocations within that
+scope. Instead workarounds were developed to wrap a single allocation
+instead (like ceph_kvmalloc).
 
-For the index, I'm wondering if the iteration order is unambiguous,
-and cannot change?
+First patch implements NOFS/NOIO support for vmalloc. The second one
+adds NOFAIL support and the third one bundles all together into kvmalloc
+and drops ceph_kvmalloc which can use kvmalloc directly now.
 
-So perhaps we want to print both ("button %u (%s)")?
+Please note that this is RFC and I haven't done any testing on this yet.
+I hope I haven't missed anything in the vmalloc allocator. It would be
+really great if Christoph and Uladzislau could have a look.
 
 Thanks!
 
-Gr{oetje,eeting}s,
+[1] http://lkml.kernel.org/r/163184741778.29351.16920832234899124642.stgit@noble.brown
 
-                        Geert
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
