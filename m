@@ -2,115 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2561431899
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 14:13:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B897843189D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 14:14:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231535AbhJRMPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 08:15:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60426 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231310AbhJRMPp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 08:15:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F24B60FC3;
-        Mon, 18 Oct 2021 12:13:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634559214;
-        bh=JZE/18szAvUy5mVaCGRgXJrrABVRJ4b0rsi8noFT/gc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IkZ3b0MSfLm82OzxCOU7adYJFi02YagmoJazhg7LEntEzfOQdqHwsXijFZPe4QPtw
-         xwtKn2ZJjvqdKSJbh+62rRNRcDQXH+5QrQDVWusQU+/IlmLPXzykFgeISq0R7Wk3Gh
-         hblMyMVpPBCIxh/4VYKjOCHOCmFjBQ3qVCvJK2UA=
-Date:   Mon, 18 Oct 2021 14:13:31 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Andi Kleen <ak@linux.intel.com>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        X86 ML <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        "Reshetova, Elena" <elena.reshetova@intel.com>
-Subject: Re: [PATCH v5 12/16] PCI: Add pci_iomap_host_shared(),
- pci_iomap_host_shared_range()
-Message-ID: <YW1k69vzJr5kbViv@kroah.com>
-References: <20211009003711.1390019-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211009003711.1390019-13-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211009053103-mutt-send-email-mst@kernel.org>
- <CAPcyv4hDhjRXYCX_aiOboLF0eaTo6VySbZDa5NQu2ed9Ty2Ekw@mail.gmail.com>
- <0e6664ac-cbb2-96ff-0106-9301735c0836@linux.intel.com>
- <CAPcyv4g0v0YHZ-okxf4wwVCYxHotxdKwsJpZGkoT+fhvvAJEFg@mail.gmail.com>
- <9302f1c2-b3f8-2c9e-52c5-d5a4a2987409@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9302f1c2-b3f8-2c9e-52c5-d5a4a2987409@linux.intel.com>
+        id S231569AbhJRMQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 08:16:07 -0400
+Received: from mail-oi1-f181.google.com ([209.85.167.181]:44004 "EHLO
+        mail-oi1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229581AbhJRMQG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 08:16:06 -0400
+Received: by mail-oi1-f181.google.com with SMTP id o4so24021645oia.10;
+        Mon, 18 Oct 2021 05:13:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=o3tDIMhbFnjnaWFNKY8OECJ7Mjc3HAYXOLncYD0rywA=;
+        b=o7hJkwPv6G++9HRhIkpG2yoS+LW2Ji/0Y3eUUccL7D0VefcDPRJaUEEV8ZpskqIcix
+         GkQywUZTZvzf1k9NKuexTiNUq2I8cFKS7y+LacPurym5ExgluHLy8eA3yx3gkDLR33ey
+         D4Kxx9PeNs91fgucG/+CytfyKBUVj/OE4DRVz8Qo8Viv7HOMNtr0qURz6H2KpRQZii5N
+         hH/AU0qSobgzT+BJVPQhXZA7+1A5BwXDRQdmnryONYFTvxFLqEAGxgiQG3SAiS0BS9iy
+         2k6y7GRUGBQilTH5/UoIjWowOu/hY9RHsb6CLXLoo33bzxAaeujqMHensWhbPeI4oUm4
+         BnJA==
+X-Gm-Message-State: AOAM531iIs068tN9+dr+RUL4YuKCrcabUj9E0j5nBSWPxASG6hdUifDt
+        5Rh3bWo8tfGhDNqJIlqzPw==
+X-Google-Smtp-Source: ABdhPJxV7uU4axirSj0liNe2NLPhByiv9fWa6hEbSEpOSjIoe+pp9Fhp6hojMfVWh0viqHFC56vw7A==
+X-Received: by 2002:aca:a94c:: with SMTP id s73mr28462897oie.93.1634559234829;
+        Mon, 18 Oct 2021 05:13:54 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id s5sm1828281ois.55.2021.10.18.05.13.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Oct 2021 05:13:54 -0700 (PDT)
+Received: (nullmailer pid 2074238 invoked by uid 1000);
+        Mon, 18 Oct 2021 12:13:53 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-kernel@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        linux-phy@lists.infradead.org, Rob Herring <robh+dt@kernel.org>
+In-Reply-To: <1634521033-17003-8-git-send-email-hayashi.kunihiko@socionext.com>
+References: <1634521033-17003-1-git-send-email-hayashi.kunihiko@socionext.com> <1634521033-17003-8-git-send-email-hayashi.kunihiko@socionext.com>
+Subject: Re: [PATCH 7/8] dt-bindings: phy: uniphier-ahci: Add bindings for Pro4 SoC
+Date:   Mon, 18 Oct 2021 07:13:53 -0500
+Message-Id: <1634559233.449347.2074237.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 11:35:04AM -0700, Andi Kleen wrote:
-> > I'd rather see more concerted efforts focused/limited core changes
-> > rather than leaf driver changes until there is a clearer definition of
-> > hardened.
+On Mon, 18 Oct 2021 10:37:12 +0900, Kunihiko Hayashi wrote:
+> Update AHCI-PHY binding document for UniPhier Pro4 SoC. Pro4 AHCI-PHY
+> needs to control additional reset lines, "pm", "tx", and "rx" and
+> additional I/O clock line "gio".
 > 
-> A hardened driver is a driver that
+> Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+> ---
+>  .../bindings/phy/socionext,uniphier-ahci-phy.yaml    | 20 ++++++++++++++++----
+>  1 file changed, 16 insertions(+), 4 deletions(-)
+> 
 
-Ah, you do define this, thank you!
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-> - Had similar security (not API) oriented review of its IO operations
-> (mainly MMIO access, but also PCI config space) as a non privileged user
-> interface (like a ioctl). That review should be focused on memory safety.
+yamllint warnings/errors:
+./Documentation/devicetree/bindings/phy/socionext,uniphier-ahci-phy.yaml:35:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
+./Documentation/devicetree/bindings/phy/socionext,uniphier-ahci-phy.yaml:50:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
+./Documentation/devicetree/bindings/phy/socionext,uniphier-ahci-phy.yaml:56:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
 
-Where is this review done?  Where is is documented?  Who is responsible
-for keeping it up to date with every code change to the driver, and to
-the code that the driver calls and the code that calls the driver?
+dtschema/dtc warnings/errors:
 
-> - Had some fuzzing on these IO interfaces using to be released tools.
+doc reference errors (make refcheckdocs):
 
-"some"?  What tools?  What is the input, and where is that defined?  How
-much fuzzing do you claim is "good enough"?
+See https://patchwork.ozlabs.org/patch/1542355
 
-> Right now it's only three virtio drivers (console, net, block)
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
 
-Where was this work done and published?  And why only 3?
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
 
-> Really it's no different than what we do for every new unprivileged user
-> interface.
+pip3 install dtschema --upgrade
 
-Really?  I have seen loads of new drivers from Intel submitted in the
-past months that would fail any of the above things just based on
-obvious code reviews that I end up having to do...
+Please check and re-submit.
 
-If you want to start a "hardened driver" effort, there's a lot of real
-work that needs to be done here and documented, and explained why it can
-not just be done for the whole kernel...
-
-greg k-h
