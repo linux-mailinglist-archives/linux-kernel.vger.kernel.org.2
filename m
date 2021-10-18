@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E2CF431D51
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:48:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08039431C45
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:37:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233933AbhJRNuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:50:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50494 "EHLO mail.kernel.org"
+        id S231928AbhJRNju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:39:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54404 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233967AbhJRNsQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:48:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C263617E3;
-        Mon, 18 Oct 2021 13:36:48 +0000 (UTC)
+        id S232046AbhJRNht (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:37:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C03BC61406;
+        Mon, 18 Oct 2021 13:31:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634564209;
-        bh=hdVSouO5q40i5sExSswgZBr9F2tSWw0r0jMFgRHJJXA=;
+        s=korg; t=1634563907;
+        bh=CS7lBRG8htqAz8XxsUtDD/3GX6/yIWK4FJdkaiNnStE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=U11Tiu4fq9u8dIEiXNaAhgJZyrwrX+f8P6/mM/QUd5MC+0WMSKo7RbdlZ2t2tjI/m
-         BE2s8P8n6vIN6S6QU6Y4s16ehsldObWA2mY0sFvsgfZejLTgZ7G4bjG2WFu4VDif81
-         c/NE07hyClLzGVmTEZwkE+bIWF574PQDzCq2A+yM=
+        b=FPlLa30agRrG/JGgOvvkpFl2arlxpWFQYv7cpldtHnptILtKMiG2LAQiRK/kmLWiQ
+         ee6ZATS+QlbYkMSTiwCwMND0kHs8IKFLiL2m9Dp2DceGkynRfPuj9DXRVMFGfDBR9z
+         QNByBwKe4jvqDK0OMLjMODnSeTcrpPC24gD0YjVM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Wang Hai <wanghai38@huawei.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>
-Subject: [PATCH 5.10 083/103] ata: ahci_platform: fix null-ptr-deref in ahci_platform_enable_regulators()
-Date:   Mon, 18 Oct 2021 15:24:59 +0200
-Message-Id: <20211018132337.545305044@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Rob Clark <robdclark@chromium.org>
+Subject: [PATCH 5.4 62/69] drm/msm/mdp5: fix cursor-related warnings
+Date:   Mon, 18 Oct 2021 15:25:00 +0200
+Message-Id: <20211018132331.525166588@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132334.702559133@linuxfoundation.org>
-References: <20211018132334.702559133@linuxfoundation.org>
+In-Reply-To: <20211018132329.453964125@linuxfoundation.org>
+References: <20211018132329.453964125@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,63 +40,144 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wang Hai <wanghai38@huawei.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-commit 776c75010803849c1cc4f11031a2b3960ab05202 upstream.
+commit c491a0c7bbf3a64732cb8414021429d15ec08eec upstream.
 
-I got a null-ptr-deref report:
+Since f35a2a99100f ("drm/encoder: make encoder control functions
+optional") drm_mode_config_validate would print warnings if both cursor
+plane and cursor functions are provided. Restore separate set of
+drm_crtc_funcs to be used if separate cursor plane is provided.
 
-KASAN: null-ptr-deref in range [0x0000000000000090-0x0000000000000097]
-...
-RIP: 0010:regulator_enable+0x84/0x260
-...
-Call Trace:
- ahci_platform_enable_regulators+0xae/0x320
- ahci_platform_enable_resources+0x1a/0x120
- ahci_probe+0x4f/0x1b9
- platform_probe+0x10b/0x280
-...
- entry_SYSCALL_64_after_hwframe+0x44/0xae
+[    6.556046] ------------[ cut here ]------------
+[    6.556071] [CRTC:93:crtc-0] must not have both a cursor plane and a cursor_set func
+[    6.556091] WARNING: CPU: 1 PID: 76 at drivers/gpu/drm/drm_mode_config.c:648 drm_mode_config_validate+0x238/0x4d0
+[    6.567453] Modules linked in:
+[    6.577604] CPU: 1 PID: 76 Comm: kworker/u8:2 Not tainted 5.15.0-rc1-dirty #43
+[    6.580557] Hardware name: Qualcomm Technologies, Inc. DB820c (DT)
+[    6.587763] Workqueue: events_unbound deferred_probe_work_func
+[    6.593926] pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+[    6.599740] pc : drm_mode_config_validate+0x238/0x4d0
+[    6.606596] lr : drm_mode_config_validate+0x238/0x4d0
+[    6.611804] sp : ffff8000121b3980
+[    6.616838] x29: ffff8000121b3990 x28: 0000000000000000 x27: 0000000000000001
+[    6.620140] x26: ffff8000114cde50 x25: ffff8000114cdd40 x24: ffff0000987282d8
+[    6.627258] x23: 0000000000000000 x22: 0000000000000000 x21: 0000000000000001
+[    6.634376] x20: ffff000098728000 x19: ffff000080a39000 x18: ffffffffffffffff
+[    6.641494] x17: 3136564e3631564e x16: 0000000000000324 x15: ffff800011c78709
+[    6.648613] x14: 0000000000000000 x13: ffff800011a22850 x12: 00000000000009ab
+[    6.655730] x11: 0000000000000339 x10: ffff800011a22850 x9 : ffff800011a22850
+[    6.662848] x8 : 00000000ffffefff x7 : ffff800011a7a850 x6 : ffff800011a7a850
+[    6.669966] x5 : 000000000000bff4 x4 : 40000000fffff339 x3 : 0000000000000000
+[    6.677084] x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffff00008093b800
+[    6.684205] Call trace:
+[    6.691319]  drm_mode_config_validate+0x238/0x4d0
+[    6.693577]  drm_dev_register+0x17c/0x210
+[    6.698435]  msm_drm_bind+0x4b4/0x694
+[    6.702429]  try_to_bring_up_master+0x164/0x1d0
+[    6.706075]  __component_add+0xa0/0x170
+[    6.710415]  component_add+0x14/0x20
+[    6.714234]  msm_hdmi_dev_probe+0x1c/0x2c
+[    6.718053]  platform_probe+0x68/0xe0
+[    6.721959]  really_probe.part.0+0x9c/0x30c
+[    6.725606]  __driver_probe_device+0x98/0x144
+[    6.729600]  driver_probe_device+0xc8/0x15c
+[    6.734114]  __device_attach_driver+0xb4/0x120
+[    6.738106]  bus_for_each_drv+0x78/0xd0
+[    6.742619]  __device_attach+0xdc/0x184
+[    6.746351]  device_initial_probe+0x14/0x20
+[    6.750172]  bus_probe_device+0x9c/0xa4
+[    6.754337]  deferred_probe_work_func+0x88/0xc0
+[    6.758158]  process_one_work+0x1d0/0x370
+[    6.762671]  worker_thread+0x2c8/0x470
+[    6.766839]  kthread+0x15c/0x170
+[    6.770483]  ret_from_fork+0x10/0x20
+[    6.773870] ---[ end trace 5884eb76cd26d274 ]---
+[    6.777500] ------------[ cut here ]------------
+[    6.782043] [CRTC:93:crtc-0] must not have both a cursor plane and a cursor_move func
+[    6.782063] WARNING: CPU: 1 PID: 76 at drivers/gpu/drm/drm_mode_config.c:654 drm_mode_config_validate+0x290/0x4d0
+[    6.794362] Modules linked in:
+[    6.804600] CPU: 1 PID: 76 Comm: kworker/u8:2 Tainted: G        W         5.15.0-rc1-dirty #43
+[    6.807555] Hardware name: Qualcomm Technologies, Inc. DB820c (DT)
+[    6.816148] Workqueue: events_unbound deferred_probe_work_func
+[    6.822311] pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+[    6.828126] pc : drm_mode_config_validate+0x290/0x4d0
+[    6.834981] lr : drm_mode_config_validate+0x290/0x4d0
+[    6.840189] sp : ffff8000121b3980
+[    6.845223] x29: ffff8000121b3990 x28: 0000000000000000 x27: 0000000000000001
+[    6.848525] x26: ffff8000114cde50 x25: ffff8000114cdd40 x24: ffff0000987282d8
+[    6.855643] x23: 0000000000000000 x22: 0000000000000000 x21: 0000000000000001
+[    6.862763] x20: ffff000098728000 x19: ffff000080a39000 x18: ffffffffffffffff
+[    6.869879] x17: 3136564e3631564e x16: 0000000000000324 x15: ffff800011c790c2
+[    6.876998] x14: 0000000000000000 x13: ffff800011a22850 x12: 0000000000000a2f
+[    6.884116] x11: 0000000000000365 x10: ffff800011a22850 x9 : ffff800011a22850
+[    6.891234] x8 : 00000000ffffefff x7 : ffff800011a7a850 x6 : ffff800011a7a850
+[    6.898351] x5 : 000000000000bff4 x4 : 40000000fffff365 x3 : 0000000000000000
+[    6.905470] x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffff00008093b800
+[    6.912590] Call trace:
+[    6.919702]  drm_mode_config_validate+0x290/0x4d0
+[    6.921960]  drm_dev_register+0x17c/0x210
+[    6.926821]  msm_drm_bind+0x4b4/0x694
+[    6.930813]  try_to_bring_up_master+0x164/0x1d0
+[    6.934459]  __component_add+0xa0/0x170
+[    6.938799]  component_add+0x14/0x20
+[    6.942619]  msm_hdmi_dev_probe+0x1c/0x2c
+[    6.946438]  platform_probe+0x68/0xe0
+[    6.950345]  really_probe.part.0+0x9c/0x30c
+[    6.953991]  __driver_probe_device+0x98/0x144
+[    6.957984]  driver_probe_device+0xc8/0x15c
+[    6.962498]  __device_attach_driver+0xb4/0x120
+[    6.966492]  bus_for_each_drv+0x78/0xd0
+[    6.971004]  __device_attach+0xdc/0x184
+[    6.974737]  device_initial_probe+0x14/0x20
+[    6.978556]  bus_probe_device+0x9c/0xa4
+[    6.982722]  deferred_probe_work_func+0x88/0xc0
+[    6.986543]  process_one_work+0x1d0/0x370
+[    6.991057]  worker_thread+0x2c8/0x470
+[    6.995223]  kthread+0x15c/0x170
+[    6.998869]  ret_from_fork+0x10/0x20
+[    7.002255] ---[ end trace 5884eb76cd26d275 ]---
 
-If devm_regulator_get() in ahci_platform_get_resources() fails,
-hpriv->phy_regulator will point to NULL, when enabling or disabling it,
-null-ptr-deref will occur.
-
-ahci_probe()
-	ahci_platform_get_resources()
-		devm_regulator_get(, "phy") // failed, let phy_regulator = NULL
-	ahci_platform_enable_resources()
-		ahci_platform_enable_regulators()
-			regulator_enable(hpriv->phy_regulator) // null-ptr-deref
-
-commit 962399bb7fbf ("ata: libahci_platform: Fix regulator_get_optional()
-misuse") replaces devm_regulator_get_optional() with devm_regulator_get(),
-but PHY regulator omits to delete "hpriv->phy_regulator = NULL;" like AHCI.
-Delete it like AHCI regulator to fix this bug.
-
-Fixes: commit 962399bb7fbf ("ata: libahci_platform: Fix regulator_get_optional() misuse")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Damien Le Moal <damien.lemoal@wdc.com>
+Fixes: aa649e875daf ("drm/msm/mdp5: mdp5_crtc: Restore cursor state only if LM cursors are enabled")
+Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Link: https://lore.kernel.org/r/20210925192824.3416259-1-dmitry.baryshkov@linaro.org
+Signed-off-by: Rob Clark <robdclark@chromium.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/ata/libahci_platform.c |    5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ drivers/gpu/drm/msm/disp/mdp5/mdp5_crtc.c |   16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
---- a/drivers/ata/libahci_platform.c
-+++ b/drivers/ata/libahci_platform.c
-@@ -440,10 +440,7 @@ struct ahci_host_priv *ahci_platform_get
- 	hpriv->phy_regulator = devm_regulator_get(dev, "phy");
- 	if (IS_ERR(hpriv->phy_regulator)) {
- 		rc = PTR_ERR(hpriv->phy_regulator);
--		if (rc == -EPROBE_DEFER)
--			goto err_out;
--		rc = 0;
--		hpriv->phy_regulator = NULL;
-+		goto err_out;
- 	}
+--- a/drivers/gpu/drm/msm/disp/mdp5/mdp5_crtc.c
++++ b/drivers/gpu/drm/msm/disp/mdp5/mdp5_crtc.c
+@@ -1047,6 +1047,20 @@ static void mdp5_crtc_reset(struct drm_c
+ 	drm_crtc_vblank_reset(crtc);
+ }
  
- 	if (flags & AHCI_PLATFORM_GET_RESETS) {
++static const struct drm_crtc_funcs mdp5_crtc_no_lm_cursor_funcs = {
++	.set_config = drm_atomic_helper_set_config,
++	.destroy = mdp5_crtc_destroy,
++	.page_flip = drm_atomic_helper_page_flip,
++	.reset = mdp5_crtc_reset,
++	.atomic_duplicate_state = mdp5_crtc_duplicate_state,
++	.atomic_destroy_state = mdp5_crtc_destroy_state,
++	.atomic_print_state = mdp5_crtc_atomic_print_state,
++	.get_vblank_counter = mdp5_crtc_get_vblank_counter,
++	.enable_vblank  = msm_crtc_enable_vblank,
++	.disable_vblank = msm_crtc_disable_vblank,
++	.get_vblank_timestamp = drm_crtc_vblank_helper_get_vblank_timestamp,
++};
++
+ static const struct drm_crtc_funcs mdp5_crtc_funcs = {
+ 	.set_config = drm_atomic_helper_set_config,
+ 	.destroy = mdp5_crtc_destroy,
+@@ -1230,6 +1244,8 @@ struct drm_crtc *mdp5_crtc_init(struct d
+ 	mdp5_crtc->lm_cursor_enabled = cursor_plane ? false : true;
+ 
+ 	drm_crtc_init_with_planes(dev, crtc, plane, cursor_plane,
++				  cursor_plane ?
++				  &mdp5_crtc_no_lm_cursor_funcs :
+ 				  &mdp5_crtc_funcs, NULL);
+ 
+ 	drm_flip_work_init(&mdp5_crtc->unref_cursor_work,
 
 
