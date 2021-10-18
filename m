@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E188C431DE2
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:53:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5EF0431C7C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:39:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234081AbhJRNzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:55:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57658 "EHLO mail.kernel.org"
+        id S233905AbhJRNlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:41:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52546 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234174AbhJRNxQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:53:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E1A961A0C;
-        Mon, 18 Oct 2021 13:39:00 +0000 (UTC)
+        id S232483AbhJRNjM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:39:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B443D61425;
+        Mon, 18 Oct 2021 13:32:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634564340;
-        bh=DNlUJedpY1d8ERHjy1N7bkYZo8U0LtRGe4n5jCwrsuc=;
+        s=korg; t=1634563969;
+        bh=lcwRPUcabWI/oHCuv+AeBCxzvN0fHoxJIzhdZGTtKNM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OUSELgumUQejG2/wQmVQU/dT8SKINdr70zmo5UNUhfIO1f9H1TUIsW+oidOeGaUmX
-         HeA4MPAigU9lCurVD18qFQV/Wkg5EhUXhYKZ6kgHUgQNJdYadUa6cK8Izc04o6qMvv
-         QVk+a0K4UN55ROwCtB/MnrI9rHzGevENCuwqZ1i8=
+        b=W/TWfuSSAP9VGIW2BjrlMhSMiSVY3OaO0PZ8a6PYiAuVRumRKYUIvLE2U9v2htzXk
+         0H8Kw9guoQj3stdpyl+3vj14X9VJ+LlkyLJG4ubS3DTUQtsUjDpaU2Fg4N1EAyipbP
+         KBW1qLixRXYH5xpaxP9z/5bMNaslLJRO9Kh9HN/k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Daniele Palmas <dnlplm@gmail.com>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 5.14 052/151] USB: serial: option: add Telit LE910Cx composition 0x1204
-Date:   Mon, 18 Oct 2021 15:23:51 +0200
-Message-Id: <20211018132342.379554974@linuxfoundation.org>
+        stable@vger.kernel.org, Guo Ren <guoren@linux.alibaba.com>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: [PATCH 5.10 016/103] csky: Fixup regs.sr broken in ptrace
+Date:   Mon, 18 Oct 2021 15:23:52 +0200
+Message-Id: <20211018132335.240620848@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132340.682786018@linuxfoundation.org>
-References: <20211018132340.682786018@linuxfoundation.org>
+In-Reply-To: <20211018132334.702559133@linuxfoundation.org>
+References: <20211018132334.702559133@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,33 +39,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniele Palmas <dnlplm@gmail.com>
+From: Guo Ren <guoren@linux.alibaba.com>
 
-commit f5a8a07edafed8bede17a95ef8940fe3a57a77d5 upstream.
+commit af89ebaa64de726ca0a39bbb0bf0c81a1f43ad50 upstream.
 
-Add the following Telit LE910Cx composition:
+gpr_get() return the entire pt_regs (include sr) to userspace, if we
+don't restore the C bit in gpr_set, it may break the ALU result in
+that context. So the C flag bit is part of gpr context, that's why
+riscv totally remove the C bit in the ISA. That makes sr reg clear
+from userspace to supervisor privilege.
 
-0x1204: tty, adb, mbim, tty, tty, tty, tty
-
-Signed-off-by: Daniele Palmas <dnlplm@gmail.com>
-Link: https://lore.kernel.org/r/20211004105655.8515-1-dnlplm@gmail.com
+Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
 Cc: stable@vger.kernel.org
-Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/serial/option.c |    2 ++
- 1 file changed, 2 insertions(+)
+ arch/csky/kernel/ptrace.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/usb/serial/option.c
-+++ b/drivers/usb/serial/option.c
-@@ -1229,6 +1229,8 @@ static const struct usb_device_id option
- 	  .driver_info = NCTRL(0) | RSVD(1) | RSVD(2) },
- 	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x1203, 0xff),	/* Telit LE910Cx (RNDIS) */
- 	  .driver_info = NCTRL(2) | RSVD(3) },
-+	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x1204, 0xff),	/* Telit LE910Cx (MBIM) */
-+	  .driver_info = NCTRL(0) | RSVD(1) },
- 	{ USB_DEVICE(TELIT_VENDOR_ID, TELIT_PRODUCT_LE910_USBCFG4),
- 	  .driver_info = NCTRL(0) | RSVD(1) | RSVD(2) | RSVD(3) },
- 	{ USB_DEVICE(TELIT_VENDOR_ID, TELIT_PRODUCT_LE920),
+--- a/arch/csky/kernel/ptrace.c
++++ b/arch/csky/kernel/ptrace.c
+@@ -98,7 +98,8 @@ static int gpr_set(struct task_struct *t
+ 	if (ret)
+ 		return ret;
+ 
+-	regs.sr = task_pt_regs(target)->sr;
++	/* BIT(0) of regs.sr is Condition Code/Carry bit */
++	regs.sr = (regs.sr & BIT(0)) | (task_pt_regs(target)->sr & ~BIT(0));
+ #ifdef CONFIG_CPU_HAS_HILO
+ 	regs.dcsr = task_pt_regs(target)->dcsr;
+ #endif
 
 
