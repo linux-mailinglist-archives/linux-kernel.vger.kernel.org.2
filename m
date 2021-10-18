@@ -2,332 +2,432 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14C52432560
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 19:48:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8A1C43259F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 19:53:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234238AbhJRRu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 13:50:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37930 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233374AbhJRRuY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 13:50:24 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S232105AbhJRRzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 13:55:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21589 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231739AbhJRRzw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 13:55:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634579620;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Yk5KC7cabGB5ioBT5grOhTqLbo3haSFS+hGcgczdb/w=;
+        b=jJgmqc1bvmmgXb1KsmUe+hUwn8hkJ1jB7cA2rujJOxTqfTe7xbf0lbbs2u9wp6gLdvF5qj
+        RMb73+YDgpfNg2CyXZnz27roqfcZS3vpxMXAUN3aDZ9uBz/X8sgEoVE5AnImenG/t+t69E
+        gaPMIQ96E7JyMbAm3aL8DMxe3/u41UM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-604-mJKa_UYrPr-mtKzXQyLL9Q-1; Mon, 18 Oct 2021 13:53:35 -0400
+X-MC-Unique: mJKa_UYrPr-mtKzXQyLL9Q-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 22C9B60F11;
-        Mon, 18 Oct 2021 17:48:10 +0000 (UTC)
-Date:   Mon, 18 Oct 2021 18:52:25 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Roan van Dijk <roan@protonic.nl>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Tomasz Duszynski <tomasz.duszynski@octakon.com>,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, david@protonic.nl,
-        Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH v5 0/4] iio: chemical: Add support for Sensirion SCD4x
- CO2 sensor
-Message-ID: <20211018185225.11396bb0@jic23-huawei>
-In-Reply-To: <2c7f8b7c-3070-5763-7b74-3811cdbfcabc@protonic.nl>
-References: <20211008101706.755942-1-roan@protonic.nl>
-        <20211010165919.51f06938@jic23-huawei>
-        <20211013183828.521f043f@jic23-huawei>
-        <3ecfe246-b942-0c1e-08e6-17eff4c5cc16@protonic.nl>
-        <20211014181932.5f70d2e4@jic23-huawei>
-        <2c7f8b7c-3070-5763-7b74-3811cdbfcabc@protonic.nl>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 00E391006AB7;
+        Mon, 18 Oct 2021 17:53:34 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7D854E706;
+        Mon, 18 Oct 2021 17:53:33 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     seanjc@google.com, David Stevens <stevensd@chromium.org>
+Subject: [PATCH] KVM: cleanup allocation of rmaps and page tracking data
+Date:   Mon, 18 Oct 2021 13:53:33 -0400
+Message-Id: <20211018175333.582417-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 18 Oct 2021 10:19:42 +0200
-Roan van Dijk <roan@protonic.nl> wrote:
+From: David Stevens <stevensd@chromium.org>
 
-> On 14-10-2021 19:19, Jonathan Cameron wrote:
-> > On Thu, 14 Oct 2021 10:24:54 +0200
-> > Roan van Dijk <roan@protonic.nl> wrote:
-> >   
-> >> On 13-10-2021 19:38, Jonathan Cameron wrote:  
-> >>> On Sun, 10 Oct 2021 16:59:19 +0100
-> >>> Jonathan Cameron <jic23@kernel.org> wrote:
-> >>>      
-> >>>> On Fri,  8 Oct 2021 12:17:02 +0200
-> >>>> Roan van Dijk <roan@protonic.nl> wrote:
-> >>>>     
-> >>>>> This series adds support for the Sensirion SCD4x sensor.
-> >>>>>
-> >>>>> The driver supports continuous reads of temperature, relative humdity and CO2
-> >>>>> concentration. There is an interval of 5 seconds between readings. During
-> >>>>> this interval the drivers checks if the sensor has new data available.
-> >>>>>
-> >>>>> The driver is based on the scd30 driver. However, The scd4x has become too
-> >>>>> different to just expand the scd30 driver. I made a new driver instead of
-> >>>>> expanding the scd30 driver. I hope I made the right choice by doing so?  
-> >>>>
-> >>>> Applied to the togreg branch of iio.git with the issues Randy mentioned tidied
-> >>>> up. Pushed out as testing for 0-day to see if it can find anything we missed  
-> >>>
-> >>> And indeed - I missed a bunch of places where explicit __be16 types should have
-> >>> been used.
-> >>>
-> >>> I've applied the following fixup, shout if it's wrong.
-> >>>     
-> >> Thank you Jonathan for applying this fixup. No need to shout :) Your
-> >> changes should fix the issue.
-> >>
-> >> However, I have a question about something else. The co2 concentration
-> >> is an IIO_CHAN_INFO_RAW, but doesn't have a scale or offset at this
-> >> moment. Is an _scale always required for an _raw in the ABI? I could not
-> >> find anything in the documentation if there is a rule for this. Someone
-> >> mentioned this to me, so I want to check if I did this right.
-> >>
-> >> The sensor returns the actual co2 value upon reading, like 450 ppm. We
-> >> can set an offset of this co2 value with the calibration_forced_value
-> >> through the ABI, but this offset is handled internally by the sensor. So
-> >> there isn't anything with scaling or an offset needed at the driver side.  
-> > 
-> > Ah. We could have mapped this to calibbias, though here it's made more
-> > complex by other calibrations existing that don't use the value so let's
-> > leave it as it is.
-> >   
-> >>
-> >> Was I right by making it of type RAW? If needed we could make it more
-> >> like the scd30 driver, keeping it of type RAW but with scale = 1. What
-> >> should I do or is it fine as it is?  
-> > 
-> > Hmm. Interesting corner case in the ABI.  A _raw value without a scale
-> > normally means we don't know it for some reason.  The most common case
-> > of this is light sensors where several _raw intensity values are combined
-> > in some (typically non linear) transform to form a single measure of illuminance.
-> > Those intensity_raw channels don't have an meaningful units, but devices
-> > often have threshold events on them so we have to expose them.
-> > 
-> > I would say make it a processed value, but there is a quirk.
-> > concentrations in IIO are expressed in percent not per million, so you need
-> > a scale anyway, I guess 10000?  See Documentation/ABI/testing/sysfs-bus-iio
-> > 
-> > 
-> > No need to do a new driver version, just send a patch tidying up this corner.
-> >   
-> 
-> Hi Jonathan,
-> 
-> As you suggested, these are my fixes for the concentration reading.
-> 
-> The co2 reading is now a processed value and has a scale. I also added 
-> the information in sysfs-bus-iio documentation, because this type of 
-> processed value is new in the ABI.
-> 
-> diff --git a/Documentation/ABI/testing/sysfs-bus-iio 
-> b/Documentation/ABI/testing/sysfs-bus-iio
-> index c27347d3608e..66a17f4c831e 100644
-> --- a/Documentation/ABI/testing/sysfs-bus-iio
-> +++ b/Documentation/ABI/testing/sysfs-bus-iio
-> @@ -1716,6 +1716,7 @@ Description:
-> 
->   What:          /sys/bus/iio/devices/iio:deviceX/in_concentration_raw
->   What:          /sys/bus/iio/devices/iio:deviceX/in_concentrationX_raw
-> +What:          /sys/bus/iio/devices/iio:deviceX/in_concentration_co2_input
->   What:          /sys/bus/iio/devices/iio:deviceX/in_concentration_co2_raw
->   What:          /sys/bus/iio/devices/iio:deviceX/in_concentrationX_co2_raw
->   What: 
-> /sys/bus/iio/devices/iio:deviceX/in_concentration_ethanol_raw
-> diff --git a/drivers/iio/chemical/scd4x.c b/drivers/iio/chemical/scd4x.c
-> index 09b34201c42b..bc1c6676029d 100644
-> --- a/drivers/iio/chemical/scd4x.c
-> +++ b/drivers/iio/chemical/scd4x.c
-> @@ -337,6 +337,7 @@ static int scd4x_read_raw(struct iio_dev *indio_dev,
-> 
->          switch (mask) {
->          case IIO_CHAN_INFO_RAW:
-> +       case IIO_CHAN_INFO_PROCESSED:
->                  ret = iio_device_claim_direct_mode(indio_dev);
->                  if (ret)
->                          return ret;
-> @@ -352,7 +353,11 @@ static int scd4x_read_raw(struct iio_dev *indio_dev,
->                  *val = ret;
->                  return IIO_VAL_INT;
->          case IIO_CHAN_INFO_SCALE:
-> -               if (chan->type == IIO_TEMP) {
-> +               if (chan->type == IIO_CONCENTRATION) {
-> +                       *val = 0;
-> +                       *val2 = 100;
-> +                       return IIO_VAL_INT_PLUS_MICRO;
-> +               } else if (chan->type == IIO_TEMP) {
->                          *val = 175000;
->                          *val2 = 65536;
->                          return IIO_VAL_FRACTIONAL;
-> @@ -501,7 +506,8 @@ static const struct iio_chan_spec scd4x_channels[] = {
->                  .type = IIO_CONCENTRATION,
->                  .channel2 = IIO_MOD_CO2,
->                  .modified = 1,
-> -               .info_mask_separate = BIT(IIO_CHAN_INFO_RAW),
-> +               .info_mask_separate = BIT(IIO_CHAN_INFO_PROCESSED) |
-> +                                       BIT(IIO_CHAN_INFO_SCALE),
-You shouldn't have scale and processed.  If we need a scale, then it should
-be _RAW.
+Unify the flags for rmaps and page tracking data, using a
+single flag in struct kvm_arch and a single loop to go
+over all the address spaces and memslots.  This avoids
+code duplication between alloc_all_memslots_rmaps and
+kvm_page_track_enable_mmu_write_tracking.
 
-Jonathan
+Signed-off-by: David Stevens <stevensd@chromium.org>
+[This patch is the delta between David's v2 and v3, with conflicts
+ fixed and my own commit message. - Paolo]
+Co-developed-by: Sean Christopherson <seanjc@google.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+---
+ arch/x86/include/asm/kvm_host.h       | 17 ++----
+ arch/x86/include/asm/kvm_page_track.h |  3 +-
+ arch/x86/kvm/mmu.h                    | 16 ++++--
+ arch/x86/kvm/mmu/mmu.c                | 78 +++++++++++++++++++++------
+ arch/x86/kvm/mmu/page_track.c         | 59 ++++++--------------
+ arch/x86/kvm/x86.c                    | 47 +---------------
+ 6 files changed, 97 insertions(+), 123 deletions(-)
 
->                  .address = SCD4X_CO2,
->                  .scan_index = SCD4X_CO2,
->                  .scan_type = {
-> 
-> Thanks,
-> 
-> Roan
-> 
-> > Thanks,
-> > 
-> > Jonathan
-> > 
-> >   
-> >> Sorry for not asking this earlier.
-> >>
-> >> Thanks,
-> >>
-> >> Roan
-> >>  
-> >>> diff --git a/drivers/iio/chemical/scd4x.c b/drivers/iio/chemical/scd4x.c
-> >>> index 09b34201c42b..ebebcb117ba2 100644
-> >>> --- a/drivers/iio/chemical/scd4x.c
-> >>> +++ b/drivers/iio/chemical/scd4x.c
-> >>> @@ -263,7 +263,7 @@ static int scd4x_write_and_fetch(struct scd4x_state *state, enum scd4x_cmd cmd,
-> >>>    static int scd4x_read_meas(struct scd4x_state *state, uint16_t *meas)
-> >>>    {
-> >>>    	int i, ret;
-> >>> -	uint16_t buf[3];
-> >>> +	__be16 buf[3];
-> >>>    
-> >>>    	ret = scd4x_read(state, CMD_READ_MEAS, buf, sizeof(buf));
-> >>>    	if (ret)
-> >>> @@ -282,12 +282,13 @@ static int scd4x_wait_meas_poll(struct scd4x_state *state)
-> >>>    	int ret;
-> >>>    
-> >>>    	do {
-> >>> +		__be16 bval;
-> >>>    		uint16_t val;
-> >>>    
-> >>> -		ret = scd4x_read(state, CMD_GET_DATA_READY, &val, sizeof(val));
-> >>> +		ret = scd4x_read(state, CMD_GET_DATA_READY, &bval, sizeof(bval));
-> >>>    		if (ret)
-> >>>    			return -EIO;
-> >>> -		val = be16_to_cpu(val);
-> >>> +		val = be16_to_cpu(bval);
-> >>>    
-> >>>    		/* new measurement available */
-> >>>    		if (val & 0x7FF)
-> >>> @@ -333,7 +334,7 @@ static int scd4x_read_raw(struct iio_dev *indio_dev,
-> >>>    {
-> >>>    	struct scd4x_state *state = iio_priv(indio_dev);
-> >>>    	int ret;
-> >>> -	uint16_t tmp;
-> >>> +	__be16 tmp;
-> >>>    
-> >>>    	switch (mask) {
-> >>>    	case IIO_CHAN_INFO_RAW:
-> >>> @@ -405,17 +406,18 @@ static ssize_t calibration_auto_enable_show(struct device *dev,
-> >>>    	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
-> >>>    	struct scd4x_state *state = iio_priv(indio_dev);
-> >>>    	int ret;
-> >>> -	uint16_t val;
-> >>> +	__be16 bval;
-> >>> +	u16 val;
-> >>>    
-> >>>    	mutex_lock(&state->lock);
-> >>> -	ret = scd4x_read(state, CMD_GET_ASC, &val, sizeof(val));
-> >>> +	ret = scd4x_read(state, CMD_GET_ASC, &bval, sizeof(bval));
-> >>>    	mutex_unlock(&state->lock);
-> >>>    	if (ret) {
-> >>>    		dev_err(dev, "failed to read automatic calibration");
-> >>>    		return ret;
-> >>>    	}
-> >>>    
-> >>> -	val = (be16_to_cpu(val) & SCD4X_READY_MASK) ? 1 : 0;
-> >>> +	val = (be16_to_cpu(bval) & SCD4X_READY_MASK) ? 1 : 0;
-> >>>    
-> >>>    	return sprintf(buf, "%d\n", val);
-> >>>    }
-> >>>
-> >>>      
-> >>>>
-> >>>> Thanks,
-> >>>>
-> >>>> Jonathan
-> >>>>     
-> >>>>>
-> >>>>> Changes since v5:
-> >>>>> scd4x.c:
-> >>>>>     - Fix bug in trigger_handler
-> >>>>>
-> >>>>> Changes since v4:
-> >>>>> scd4x.c:
-> >>>>>     - Minor fixes in documentation
-> >>>>>     - Reorder trigger_handler so memcpy is not needed anymore
-> >>>>> Documentation:
-> >>>>>     - Change information about the KernelVersion for the
-> >>>>>       calibration_forced_value_available
-> >>>>>
-> >>>>> Changes since v3:
-> >>>>> scd4x.c
-> >>>>>     - Change read and write_and_fetch function parameter. CRC byte is now
-> >>>>>       hidden inside the function.
-> >>>>>     - Fix minor style issues
-> >>>>>     - Add calibration_forced_value_available attribute to the driver
-> >>>>>     - Remove including BUFFER_TRIGGERED
-> >>>>>     - Change calibbias to raw ADC readings rather than converting it to
-> >>>>>       milli degrees C.
-> >>>>> Documentation:
-> >>>>>     - Change description of driver attributes
-> >>>>>     - Add calibration_forced_value_available documentation
-> >>>>>
-> >>>>> Changes since v2:
-> >>>>> scd4x.c:
-> >>>>>     - Change boolean operations
-> >>>>>     - Document scope of lock
-> >>>>>     - Remove device *dev from struct
-> >>>>>     - Add goto block for errror handling
-> >>>>>     - Add function to read value per channel in read_raw
-> >>>>>     - Fix bug with lock in error paths
-> >>>>>     - Remove conversion of humidity and temperature values
-> >>>>>     - Add scale and offset to temperature channel
-> >>>>>     - Add scale to humidity channel
-> >>>>>     - Move memset out of locked section
-> >>>>>     - Remove unused irq functions
-> >>>>>     - Move device register at end of probe function
-> >>>>> Documentation:
-> >>>>>     - Copy content of sysfs-bus-iio-scd30 to sysfs-bus-iio
-> >>>>>     - Remove Documentation/ABI/testing/sysfs-bus-iio-scd30
-> >>>>>
-> >>>>> Changes since v1:
-> >>>>> dt-bindings:
-> >>>>>     - Separated compatible string for each sensor type
-> >>>>> scd4x.c:
-> >>>>>     - Changed probe, resume and suspend functions to static
-> >>>>>     - Added SIMPLE_DEV_PM_OPS function call for power management
-> >>>>>       operations.
-> >>>>>
-> >>>>> Roan van Dijk (4):
-> >>>>>     dt-bindings: iio: chemical: sensirion,scd4x: Add yaml description
-> >>>>>     MAINTAINERS: Add myself as maintainer of the scd4x driver
-> >>>>>     drivers: iio: chemical: Add support for Sensirion SCD4x CO2 sensor
-> >>>>>     iio: documentation: Document scd4x calibration use
-> >>>>>
-> >>>>>    Documentation/ABI/testing/sysfs-bus-iio       |  41 ++
-> >>>>>    Documentation/ABI/testing/sysfs-bus-iio-scd30 |  34 -
-> >>>>>    .../iio/chemical/sensirion,scd4x.yaml         |  46 ++
-> >>>>>    MAINTAINERS                                   |   6 +
-> >>>>>    drivers/iio/chemical/Kconfig                  |  13 +
-> >>>>>    drivers/iio/chemical/Makefile                 |   1 +
-> >>>>>    drivers/iio/chemical/scd4x.c                  | 689 ++++++++++++++++++
-> >>>>>    7 files changed, 796 insertions(+), 34 deletions(-)
-> >>>>>    delete mode 100644 Documentation/ABI/testing/sysfs-bus-iio-scd30
-> >>>>>    create mode 100644 Documentation/devicetree/bindings/iio/chemical/sensirion,scd4x.yaml
-> >>>>>    create mode 100644 drivers/iio/chemical/scd4x.c
-> >>>>>         
-> >>>>     
-> >>>      
-> >   
+diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+index 88f0326c184a..80f4b8a9233c 100644
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -1212,18 +1212,11 @@ struct kvm_arch {
+ #endif /* CONFIG_X86_64 */
+ 
+ 	/*
+-	 * If set, rmaps have been allocated for all memslots and should be
+-	 * allocated for any newly created or modified memslots.
++	 * If set, at least one shadow root has been allocated. This flag
++	 * is used as one input when determining whether certain memslot
++	 * related allocations are necessary.
+ 	 */
+-	bool memslots_have_rmaps;
+-
+-	/*
+-	 * Set when the KVM mmu needs guest write access page tracking. If
+-	 * set, the necessary gfn_track arrays have been allocated for
+-	 * all memslots and should be allocated for any newly created or
+-	 * modified memslots.
+-	 */
+-	bool memslots_mmu_write_tracking;
++	bool shadow_root_alloced;
+ 
+ #if IS_ENABLED(CONFIG_HYPERV)
+ 	hpa_t	hv_root_tdp;
+@@ -1946,7 +1939,7 @@ static inline int kvm_cpu_get_apicid(int mps_cpu)
+ 
+ int kvm_cpu_dirty_log_size(void);
+ 
+-int alloc_all_memslots_rmaps(struct kvm *kvm);
++int memslot_rmap_alloc(struct kvm_memory_slot *slot, unsigned long npages);
+ 
+ #define KVM_CLOCK_VALID_FLAGS						\
+ 	(KVM_CLOCK_TSC_STABLE | KVM_CLOCK_REALTIME | KVM_CLOCK_HOST_TSC)
+diff --git a/arch/x86/include/asm/kvm_page_track.h b/arch/x86/include/asm/kvm_page_track.h
+index 79d84a94f8eb..9d4a3b1b25b9 100644
+--- a/arch/x86/include/asm/kvm_page_track.h
++++ b/arch/x86/include/asm/kvm_page_track.h
+@@ -49,7 +49,8 @@ struct kvm_page_track_notifier_node {
+ int kvm_page_track_init(struct kvm *kvm);
+ void kvm_page_track_cleanup(struct kvm *kvm);
+ 
+-int kvm_page_track_enable_mmu_write_tracking(struct kvm *kvm);
++bool kvm_page_track_write_tracking_enabled(struct kvm *kvm);
++int kvm_page_track_write_tracking_alloc(struct kvm_memory_slot *slot);
+ 
+ void kvm_page_track_free_memslot(struct kvm_memory_slot *slot);
+ int kvm_page_track_create_memslot(struct kvm *kvm,
+diff --git a/arch/x86/kvm/mmu.h b/arch/x86/kvm/mmu.h
+index e53ef2ae958f..1ae70efedcf4 100644
+--- a/arch/x86/kvm/mmu.h
++++ b/arch/x86/kvm/mmu.h
+@@ -303,14 +303,20 @@ int kvm_arch_write_log_dirty(struct kvm_vcpu *vcpu);
+ int kvm_mmu_post_init_vm(struct kvm *kvm);
+ void kvm_mmu_pre_destroy_vm(struct kvm *kvm);
+ 
+-static inline bool kvm_memslots_have_rmaps(struct kvm *kvm)
++static inline bool kvm_shadow_root_alloced(struct kvm *kvm)
+ {
+ 	/*
+-	 * Read memslot_have_rmaps before rmap pointers.  Hence, threads reading
+-	 * memslots_have_rmaps in any lock context are guaranteed to see the
+-	 * pointers.  Pairs with smp_store_release in alloc_all_memslots_rmaps.
++	 * Read shadow_root_alloced before related pointers. Hence, threads
++	 * reading shadow_root_alloced in any lock context are guaranteed to
++	 * see the pointers. Pairs with smp_store_release in
++	 * mmu_first_shadow_root_alloc.
+ 	 */
+-	return smp_load_acquire(&kvm->arch.memslots_have_rmaps);
++	return smp_load_acquire(&kvm->arch.shadow_root_alloced);
++}
++
++static inline bool kvm_memslots_have_rmaps(struct kvm *kvm)
++{
++	return !kvm->arch.tdp_mmu_enabled || kvm_shadow_root_alloced(kvm);
+ }
+ 
+ static inline gfn_t gfn_to_index(gfn_t gfn, gfn_t base_gfn, int level)
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index 29e7a4bb26e9..757e2a1ed149 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -3397,6 +3397,67 @@ static int mmu_alloc_direct_roots(struct kvm_vcpu *vcpu)
+ 	return r;
+ }
+ 
++static int mmu_first_shadow_root_alloc(struct kvm *kvm)
++{
++	struct kvm_memslots *slots;
++	struct kvm_memory_slot *slot;
++	int r = 0, i;
++
++	/*
++	 * Check if this is the first shadow root being allocated before
++	 * taking the lock.
++	 */
++	if (kvm_shadow_root_alloced(kvm))
++		return 0;
++
++	mutex_lock(&kvm->slots_arch_lock);
++
++	/* Recheck, under the lock, whether this is the first shadow root. */
++	if (kvm_shadow_root_alloced(kvm))
++		goto out_unlock;
++
++	/*
++	 * Check if anything actually needs to be allocated, e.g. all metadata
++	 * will be allocated upfront if TDP is disabled.
++	 */
++	if (kvm_memslots_have_rmaps(kvm) &&
++	    kvm_page_track_write_tracking_enabled(kvm))
++		goto out_success;
++
++	for (i = 0; i < KVM_ADDRESS_SPACE_NUM; i++) {
++		slots = __kvm_memslots(kvm, i);
++		kvm_for_each_memslot(slot, slots) {
++			/*
++			 * Both of these functions are no-ops if the target is
++			 * already allocated, so unconditionally calling both
++			 * is safe.  Intentionally do NOT free allocations on
++			 * failure to avoid having to track which allocations
++			 * were made now versus when the memslot was created.
++			 * The metadata is guaranteed to be freed when the slot
++			 * is freed, and will be kept/used if userspace retries
++			 * KVM_RUN instead of killing the VM.
++			 */
++			r = memslot_rmap_alloc(slot, slot->npages);
++			if (r)
++				goto out_unlock;
++			r = kvm_page_track_write_tracking_alloc(slot);
++			if (r)
++				goto out_unlock;
++		}
++	}
++
++	/*
++	 * Ensure that shadow_root_alloced becomes true strictly after
++	 * all the related pointers are set.
++	 */
++out_success:
++	smp_store_release(&kvm->arch.shadow_root_alloced, true);
++
++out_unlock:
++	mutex_unlock(&kvm->slots_arch_lock);
++	return r;
++}
++
+ static int mmu_alloc_shadow_roots(struct kvm_vcpu *vcpu)
+ {
+ 	struct kvm_mmu *mmu = vcpu->arch.mmu;
+@@ -3427,11 +3488,7 @@ static int mmu_alloc_shadow_roots(struct kvm_vcpu *vcpu)
+ 		}
+ 	}
+ 
+-	r = alloc_all_memslots_rmaps(vcpu->kvm);
+-	if (r)
+-		return r;
+-
+-	r = kvm_page_track_enable_mmu_write_tracking(vcpu->kvm);
++	r = mmu_first_shadow_root_alloc(vcpu->kvm);
+ 	if (r)
+ 		return r;
+ 
+@@ -5604,16 +5661,7 @@ void kvm_mmu_init_vm(struct kvm *kvm)
+ 
+ 	spin_lock_init(&kvm->arch.mmu_unsync_pages_lock);
+ 
+-	if (!kvm_mmu_init_tdp_mmu(kvm))
+-		/*
+-		 * No smp_load/store wrappers needed here as we are in
+-		 * VM init and there cannot be any memslots / other threads
+-		 * accessing this struct kvm yet.
+-		 */
+-		kvm->arch.memslots_have_rmaps = true;
+-
+-	if (!tdp_enabled)
+-		kvm->arch.memslots_mmu_write_tracking = true;
++	kvm_mmu_init_tdp_mmu(kvm);
+ 
+ 	node->track_write = kvm_mmu_pte_write;
+ 	node->track_flush_slot = kvm_mmu_invalidate_zap_pages_in_memslot;
+diff --git a/arch/x86/kvm/mmu/page_track.c b/arch/x86/kvm/mmu/page_track.c
+index 357605809825..5e0684460930 100644
+--- a/arch/x86/kvm/mmu/page_track.c
++++ b/arch/x86/kvm/mmu/page_track.c
+@@ -19,14 +19,10 @@
+ #include "mmu.h"
+ #include "mmu_internal.h"
+ 
+-static bool write_tracking_enabled(struct kvm *kvm)
++bool kvm_page_track_write_tracking_enabled(struct kvm *kvm)
+ {
+-	/*
+-	 * Read memslots_mmu_write_tracking before gfn_track pointers. Pairs
+-	 * with smp_store_release in kvm_page_track_enable_mmu_write_tracking.
+-	 */
+ 	return IS_ENABLED(CONFIG_KVM_EXTERNAL_WRITE_TRACKING) ||
+-	       smp_load_acquire(&kvm->arch.memslots_mmu_write_tracking);
++	       !tdp_enabled || kvm_shadow_root_alloced(kvm);
+ }
+ 
+ void kvm_page_track_free_memslot(struct kvm_memory_slot *slot)
+@@ -46,7 +42,8 @@ int kvm_page_track_create_memslot(struct kvm *kvm,
+ 	int i;
+ 
+ 	for (i = 0; i < KVM_PAGE_TRACK_MAX; i++) {
+-		if (i == KVM_PAGE_TRACK_WRITE && !write_tracking_enabled(kvm))
++		if (i == KVM_PAGE_TRACK_WRITE &&
++		    !kvm_page_track_write_tracking_enabled(kvm))
+ 			continue;
+ 
+ 		slot->arch.gfn_track[i] =
+@@ -70,45 +67,18 @@ static inline bool page_track_mode_is_valid(enum kvm_page_track_mode mode)
+ 	return true;
+ }
+ 
+-int kvm_page_track_enable_mmu_write_tracking(struct kvm *kvm)
++int kvm_page_track_write_tracking_alloc(struct kvm_memory_slot *slot)
+ {
+-	struct kvm_memslots *slots;
+-	struct kvm_memory_slot *slot;
+-	unsigned short **gfn_track;
+-	int i;
++	unsigned short *gfn_track;
+ 
+-	if (write_tracking_enabled(kvm))
++	if (slot->arch.gfn_track[KVM_PAGE_TRACK_WRITE])
+ 		return 0;
+ 
+-	mutex_lock(&kvm->slots_arch_lock);
+-
+-	if (write_tracking_enabled(kvm)) {
+-		mutex_unlock(&kvm->slots_arch_lock);
+-		return 0;
+-	}
+-
+-	for (i = 0; i < KVM_ADDRESS_SPACE_NUM; i++) {
+-		slots = __kvm_memslots(kvm, i);
+-		kvm_for_each_memslot(slot, slots) {
+-			gfn_track = slot->arch.gfn_track + KVM_PAGE_TRACK_WRITE;
+-			if (*gfn_track)
+-				continue;
+-
+-			*gfn_track = vcalloc(slot->npages, sizeof(**gfn_track));
+-			if (*gfn_track == NULL) {
+-				mutex_unlock(&kvm->slots_arch_lock);
+-				return -ENOMEM;
+-			}
+-		}
+-	}
+-
+-	/*
+-	 * Ensure that memslots_mmu_write_tracking becomes true strictly
+-	 * after all the pointers are set.
+-	 */
+-	smp_store_release(&kvm->arch.memslots_mmu_write_tracking, true);
+-	mutex_unlock(&kvm->slots_arch_lock);
++	gfn_track = vcalloc(slot->npages, sizeof(*gfn_track));
++	if (gfn_track == NULL)
++		return -ENOMEM;
+ 
++	slot->arch.gfn_track[KVM_PAGE_TRACK_WRITE] = gfn_track;
+ 	return 0;
+ }
+ 
+@@ -148,7 +118,7 @@ void kvm_slot_page_track_add_page(struct kvm *kvm,
+ 		return;
+ 
+ 	if (WARN_ON(mode == KVM_PAGE_TRACK_WRITE &&
+-		    !write_tracking_enabled(kvm)))
++		    !kvm_page_track_write_tracking_enabled(kvm)))
+ 		return;
+ 
+ 	update_gfn_track(slot, gfn, mode, 1);
+@@ -186,7 +156,7 @@ void kvm_slot_page_track_remove_page(struct kvm *kvm,
+ 		return;
+ 
+ 	if (WARN_ON(mode == KVM_PAGE_TRACK_WRITE &&
+-		    !write_tracking_enabled(kvm)))
++		    !kvm_page_track_write_tracking_enabled(kvm)))
+ 		return;
+ 
+ 	update_gfn_track(slot, gfn, mode, -1);
+@@ -214,7 +184,8 @@ bool kvm_slot_page_track_is_active(struct kvm_vcpu *vcpu,
+ 	if (!slot)
+ 		return false;
+ 
+-	if (mode == KVM_PAGE_TRACK_WRITE && !write_tracking_enabled(vcpu->kvm))
++	if (mode == KVM_PAGE_TRACK_WRITE &&
++	    !kvm_page_track_write_tracking_enabled(vcpu->kvm))
+ 		return false;
+ 
+ 	index = gfn_to_index(gfn, slot->base_gfn, PG_LEVEL_4K);
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index fce4d2eb69e6..b515a3d85a46 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -11516,8 +11516,7 @@ void kvm_arch_free_memslot(struct kvm *kvm, struct kvm_memory_slot *slot)
+ 	kvm_page_track_free_memslot(slot);
+ }
+ 
+-static int memslot_rmap_alloc(struct kvm_memory_slot *slot,
+-			      unsigned long npages)
++int memslot_rmap_alloc(struct kvm_memory_slot *slot, unsigned long npages)
+ {
+ 	const int sz = sizeof(*slot->arch.rmap[0]);
+ 	int i;
+@@ -11539,50 +11538,6 @@ static int memslot_rmap_alloc(struct kvm_memory_slot *slot,
+ 	return 0;
+ }
+ 
+-int alloc_all_memslots_rmaps(struct kvm *kvm)
+-{
+-	struct kvm_memslots *slots;
+-	struct kvm_memory_slot *slot;
+-	int r, i;
+-
+-	/*
+-	 * Check if memslots alreday have rmaps early before acquiring
+-	 * the slots_arch_lock below.
+-	 */
+-	if (kvm_memslots_have_rmaps(kvm))
+-		return 0;
+-
+-	mutex_lock(&kvm->slots_arch_lock);
+-
+-	/*
+-	 * Read memslots_have_rmaps again, under the slots arch lock,
+-	 * before allocating the rmaps
+-	 */
+-	if (kvm_memslots_have_rmaps(kvm)) {
+-		mutex_unlock(&kvm->slots_arch_lock);
+-		return 0;
+-	}
+-
+-	for (i = 0; i < KVM_ADDRESS_SPACE_NUM; i++) {
+-		slots = __kvm_memslots(kvm, i);
+-		kvm_for_each_memslot(slot, slots) {
+-			r = memslot_rmap_alloc(slot, slot->npages);
+-			if (r) {
+-				mutex_unlock(&kvm->slots_arch_lock);
+-				return r;
+-			}
+-		}
+-	}
+-
+-	/*
+-	 * Ensure that memslots_have_rmaps becomes true strictly after
+-	 * all the rmap pointers are set.
+-	 */
+-	smp_store_release(&kvm->arch.memslots_have_rmaps, true);
+-	mutex_unlock(&kvm->slots_arch_lock);
+-	return 0;
+-}
+-
+ static int kvm_alloc_memslot_metadata(struct kvm *kvm,
+ 				      struct kvm_memory_slot *slot,
+ 				      unsigned long npages)
+-- 
+2.27.0
 
