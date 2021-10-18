@@ -2,267 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA2AC43222A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 17:09:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DB32432220
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 17:08:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231976AbhJRPLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 11:11:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33689 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233366AbhJRPKq (ORCPT
+        id S233469AbhJRPKw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 11:10:52 -0400
+Received: from brightrain.aerifal.cx ([216.12.86.13]:54990 "EHLO
+        brightrain.aerifal.cx" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232989AbhJRPKh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 11:10:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634569714;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DtI7Re191AUvPZ/vtkvuZ2gD0a/mQddwHsEF9A3Bt0M=;
-        b=Ac1zkp2rs3z3Yrda+eTH7JJB/HUtD/nd4NV/li98SeXT05SNB6/Z50ujtAI2GZ8JtE2yfs
-        C0EcqfPrqjaXclSegD4KQnBQVM/3bfavU1x+GZwhj3TZtFsms9ksYpBrJgrj9xdeybnFia
-        I/PWuBXeb1uqze0tDmu8Z5eQp0wnWDA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-149-vP4jBK5XNHiQwY3ewo9Qbg-1; Mon, 18 Oct 2021 11:08:31 -0400
-X-MC-Unique: vP4jBK5XNHiQwY3ewo9Qbg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 05D99107B27D;
-        Mon, 18 Oct 2021 15:08:29 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.36.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8060E60D30;
-        Mon, 18 Oct 2021 15:08:25 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH 63/67] 9p: Copy local writes to the cache when writing to the
- server
-From:   David Howells <dhowells@redhat.com>
-To:     linux-cachefs@redhat.com
-Cc:     Eric Van Hensbergen <ericvh@gmail.com>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        v9fs-developer@lists.sourceforge.net, dhowells@redhat.com,
-        Trond Myklebust <trondmy@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Jeff Layton <jlayton@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Omar Sandoval <osandov@osandov.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org,
-        linux-cifs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Mon, 18 Oct 2021 16:08:24 +0100
-Message-ID: <163456970473.2614702.16723673129113194320.stgit@warthog.procyon.org.uk>
-In-Reply-To: <163456861570.2614702.14754548462706508617.stgit@warthog.procyon.org.uk>
-References: <163456861570.2614702.14754548462706508617.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        Mon, 18 Oct 2021 11:10:37 -0400
+Date:   Mon, 18 Oct 2021 11:08:24 -0400
+From:   Rich Felker <dalias@libc.org>
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     Arnd Bergmann <arnd@arndb.de>, musl@lists.openwall.com,
+        Michael Forney <mforney@mforney.org>,
+        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+        Takashi Iwai <tiwai@suse.com>,
+        Baolin Wang <baolin.wang@linaro.org>,
+        y2038 Mailman List <y2038@lists.linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Baolin Wang <baolin.wang7@gmail.com>
+Subject: Re: [musl] Re: [alsa-devel] [PATCH v7 8/9] ALSA: add new 32-bit
+ layout for snd_pcm_mmap_status/control
+Message-ID: <20211018150824.GL7074@brightrain.aerifal.cx>
+References: <20211007160634.GB7074@brightrain.aerifal.cx>
+ <s5hr1cw95ar.wl-tiwai@suse.de>
+ <20211007165158.GC7074@brightrain.aerifal.cx>
+ <s5h5yu79aab.wl-tiwai@suse.de>
+ <CAK8P3a0qxNLv3_RcR5COcRGPcTnYMcfbOjdWKiT2hKdcof9WUg@mail.gmail.com>
+ <s5hv9277oux.wl-tiwai@suse.de>
+ <20211008120736.GF7074@brightrain.aerifal.cx>
+ <s5hsfx95n99.wl-tiwai@suse.de>
+ <20211018144259.GK7074@brightrain.aerifal.cx>
+ <s5hlf2q4byc.wl-tiwai@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: multipart/mixed; boundary="+HP7ph2BbKc20aGI"
+Content-Disposition: inline
+In-Reply-To: <s5hlf2q4byc.wl-tiwai@suse.de>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When writing to the server from v9fs_vfs_writepage(), copy the data to the
-cache object too.
 
-To make this possible, the cookie must have its active users count
-incremented when the page is dirtied and kept incremented until we manage
-to clean up all the pages.  This allows the writeback to take place after
-the last file struct is released.
+--+HP7ph2BbKc20aGI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-This is done by taking a use on the cookie in v9fs_set_page_dirty() if we
-haven't already done so (controlled by the I_PINNING_FSCACHE_WB flag) and
-dropping the pin in v9fs_write_inode() if __writeback_single_inode() clears
-all the outstanding dirty pages (conveyed by the unpinned_fscache_wb flag
-in the writeback_control struct).
+On Mon, Oct 18, 2021 at 04:58:03PM +0200, Takashi Iwai wrote:
+> On Mon, 18 Oct 2021 16:43:00 +0200,
+> Rich Felker wrote:
+> > 
+> > On Sun, Oct 10, 2021 at 09:53:38AM +0200, Takashi Iwai wrote:
+> > > On Fri, 08 Oct 2021 14:07:39 +0200,
+> > > Rich Felker wrote:
+> > > > 
+> > > > On Fri, Oct 08, 2021 at 01:11:34PM +0200, Takashi Iwai wrote:
+> > > > > On Fri, 08 Oct 2021 11:24:39 +0200,
+> > > > > Arnd Bergmann wrote:
+> > > > > > 
+> > > > > > On Fri, Oct 8, 2021 at 10:43 AM Takashi Iwai <tiwai@suse.de> wrote:
+> > > > > > > On Thu, 07 Oct 2021 18:51:58 +0200, Rich Felker wrote:
+> > > > > > > > On Thu, Oct 07, 2021 at 06:18:52PM +0200, Takashi Iwai wrote:
+> > > > > > >
+> > > > > > > @@ -557,11 +558,15 @@ struct __snd_pcm_sync_ptr {
+> > > > > > >  #if defined(__BYTE_ORDER) ? __BYTE_ORDER == __BIG_ENDIAN : defined(__BIG_ENDIAN)
+> > > > > > >  typedef char __pad_before_uframe[sizeof(__u64) - sizeof(snd_pcm_uframes_t)];
+> > > > > > >  typedef char __pad_after_uframe[0];
+> > > > > > > +typedef char __pad_before_u32[4];
+> > > > > > > +typedef char __pad_after_u32[0];
+> > > > > > >  #endif
+> > > > > > >
+> > > > > > >  #if defined(__BYTE_ORDER) ? __BYTE_ORDER == __LITTLE_ENDIAN : defined(__LITTLE_ENDIAN)
+> > > > > > >  typedef char __pad_before_uframe[0];
+> > > > > > >  typedef char __pad_after_uframe[sizeof(__u64) - sizeof(snd_pcm_uframes_t)];
+> > > > > > > +typedef char __pad_before_u32[0];
+> > > > > > > +typedef char __pad_after_u32[4];
+> > > > > > >  #endif
+> > > > > > 
+> > > > > > I think these should remain unchanged, the complex expression was intentionally
+> > > > > > done so the structures are laid out the same way on 64-bit
+> > > > > > architectures, so that
+> > > > > > the kernel can use the __SND_STRUCT_TIME64 path internally on both 32-bit
+> > > > > > and 64-bit architectures.
+> > > > > 
+> > > > > That was explicitly defined, but OK, this isn't necessarily defined
+> > > > > here.
+> > > > > 
+> > > > > > > @@ -2970,8 +2981,17 @@ static int snd_pcm_sync_ptr(struct snd_pcm_substream *substream,
+> > > > > > >         memset(&sync_ptr, 0, sizeof(sync_ptr));
+> > > > > > >         if (get_user(sync_ptr.flags, (unsigned __user *)&(_sync_ptr->flags)))
+> > > > > > >                 return -EFAULT;
+> > > > > > > -       if (copy_from_user(&sync_ptr.c.control, &(_sync_ptr->c.control), sizeof(struct snd_pcm_mmap_control)))
+> > > > > > > -               return -EFAULT;
+> > > > > > > +       if (buggy_control) {
+> > > > > > > +               if (copy_from_user(&sync_ptr.c.control_api_2_0_15,
+> > > > > > > +                                  &(_sync_ptr->c.control_api_2_0_15),
+> > > > > > > +                                  sizeof(sync_ptr.c.control_api_2_0_15)))
+> > > > > > > +                       return -EFAULT;
+> > > > > > > +       } else {
+> > > > > > > +               if (copy_from_user(&sync_ptr.c.control,
+> > > > > > > +                                  &(_sync_ptr->c.control),
+> > > > > > > +                                  sizeof(sync_ptr.c.control)))
+> > > > > > > +                       return -EFAULT;
+> > > > > > > +       }
+> > > > > > 
+> > > > > > The problem I see with this is that it might break musl's ability to
+> > > > > > emulate the new
+> > > > > > interface on top of the old (time32) one for linux-4.x and older
+> > > > > > kernels, as the conversion
+> > > > > > function is no longer stateless but has to know the negotiated
+> > > > > > interface version.
+> > > > > > 
+> > > > > > It's probably fine as long as we can be sure that the 2.0.16+ API
+> > > > > > version only gets
+> > > > > > negotiated if both the kernel and user sides support it, and musl only emulates
+> > > > > > the 2.0.15 API version from the current kernels.
+> > > > > > 
+> > > > > > I've tried to understand this part of musl's convert_ioctl_struct(), but I just
+> > > > > > can't figure out whether it does the conversion based the on the layout that
+> > > > > > is currently used in the kernel, or based on the layout we should have been
+> > > > > > using, and would use with the above fix. Rich, can you help me here?
+> > > > > 
+> > > > > So, at this moment, I'm not sure whether we should correct the struct
+> > > > > at all.  This will lead to yet more breakage, and basically the struct
+> > > > > itself *works* -- the only bug is in 32bit compat handling in the
+> > > > > kernel (again).
+> > > > > 
+> > > > > The below is a revised kernel patch (again untested), just correcting
+> > > > > the behavior of 32bit compat mode.  32bit apps on 32bit kernel work
+> > > > > fine as is, as well as 64bit apps on 64bit kernel.
+> > > > 
+> > > > I'm perfectly okay with this if Arnd is! It's probably the least
+> > > > invasive and has the least long-term maintenance cost and fallout on
+> > > > other projects.
+> > > 
+> > > OK, I'll submit a proper patch now, to be included in the next PR for
+> > > 5.15-rc.  For further fixes, let's think carefully.
+> > 
+> > Am I correct in my understanding that the fix of keeping the "broken"
+> > definition (and having the 64-bit kernel honor it for 32-bit binaries)
+> > has been accepted?
+> 
+> Yes, as it was already set in stone, we accept the broken definition
+> as is.
+> 
+> > Since musl's translation for pre-time64 kernels
+> > seems to have been using the "non-broken" definition, I think
+> > completing the fix requires a change in musl too.
+> 
+> Hm, musl translator contains the own definition of ioctl?
+> 
+> If so, we may reconsider about renumbering ioctls altogether.
 
-Inode eviction must also clear the flag after truncating away all the
-outstanding pages.
+No, I don't think so. The musl translator is to translate between the
+time64 ioctl structures and the old time32 ones for the sake of
+executing on an old kernel. Up til now, it has been broken comparably
+to how 32-bit binaries running in compat mode on a 64-bit kernel were
+broken: the code in musl translated the time64 structure to (and back
+from) the time32 one assuming the intended padding. But the
+application was using the actual kernel uapi struct where the padding
+was (and still is) illogical. Thus, nothing was built with the wrong
+ABI; it's only the musl-internal translation logic that was wrong (and
+only pre-time64 kernels are affected).
 
-In the future this will be handled more gracefully by netfslib.
+The attached patch should fix it, I think.
 
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: Eric Van Hensbergen <ericvh@gmail.com>
-cc: Latchesar Ionkov <lucho@ionkov.net>
-cc: Dominique Martinet <asmadeus@codewreck.org>
-cc: v9fs-developer@lists.sourceforge.net
----
+Rich
 
- fs/9p/vfs_addr.c  |   53 ++++++++++++++++++++++++++++++++++++++++++++++++-----
- fs/9p/vfs_inode.c |    2 ++
- fs/9p/vfs_super.c |    3 +++
- 3 files changed, 53 insertions(+), 5 deletions(-)
+--+HP7ph2BbKc20aGI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="musl_snd_pcm_mmap_control.diff"
 
-diff --git a/fs/9p/vfs_addr.c b/fs/9p/vfs_addr.c
-index de857fa4629b..2d1577538cde 100644
---- a/fs/9p/vfs_addr.c
-+++ b/fs/9p/vfs_addr.c
-@@ -132,15 +132,17 @@ static void v9fs_vfs_readahead(struct readahead_control *ractl)
+diff --git a/src/misc/ioctl.c b/src/misc/ioctl.c
+index 49282811..6d3e5095 100644
+--- a/src/misc/ioctl.c
++++ b/src/misc/ioctl.c
+@@ -6,6 +6,7 @@
+ #include <stddef.h>
+ #include <stdint.h>
+ #include <string.h>
++#include <endian.h>
+ #include "syscall.h"
  
- static int v9fs_release_page(struct page *page, gfp_t gfp)
- {
-+	struct inode *inode = page->mapping->host;
-+	struct v9fs_inode *v9inode = V9FS_I(inode);
-+
- 	if (PagePrivate(page))
- 		return 0;
--#ifdef CONFIG_9P_FSCACHE
- 	if (PageFsCache(page)) {
- 		if (!(gfp & __GFP_DIRECT_RECLAIM) || !(gfp & __GFP_FS))
- 			return 0;
- 		wait_on_page_fscache(page);
+ #define alignof(t) offsetof(struct { char c; t x; }, x)
+@@ -90,7 +91,14 @@ static void convert_ioctl_struct(const struct ioctl_compat_map *map, char *old,
+ 		 * if another exception appears this needs changing. */
+ 		convert_ioctl_struct(map+1, old, new, dir);
+ 		convert_ioctl_struct(map+2, old+4, new+8, dir);
+-		convert_ioctl_struct(map+3, old+68, new+72, dir);
++		int adj = BYTE_ORDER==BIG_ENDIAN ? 4 : 0;
++		if (dir==W) {
++			memcpy(old+68, new+72+adj, 4);
++			memcpy(old+72, new+72+4+2*adj, 4);
++		} else {
++			memcpy(new+72+adj, old+68, 4);
++			memcpy(new+72+4+2*adj, old+72, 4);
++		}
+ 		return;
  	}
--#endif
-+	fscache_note_page_release(v9fs_inode_cookie(v9inode));
- 	return 1;
- }
- 
-@@ -157,10 +159,23 @@ static void v9fs_invalidate_page(struct page *page, unsigned int offset,
- 	wait_on_page_fscache(page);
- }
- 
-+static void v9fs_write_to_cache_done(void *priv, ssize_t transferred_or_error,
-+				     bool was_async)
-+{
-+	struct v9fs_inode *v9inode = priv;
-+
-+	if (IS_ERR_VALUE(transferred_or_error) &&
-+	    transferred_or_error != -ENOBUFS)
-+		fscache_invalidate(v9fs_inode_cookie(v9inode),
-+				   &v9inode->qid.version,
-+				   i_size_read(&v9inode->vfs_inode), 0);
-+}
-+
- static int v9fs_vfs_writepage_locked(struct page *page)
- {
- 	struct inode *inode = page->mapping->host;
- 	struct v9fs_inode *v9inode = V9FS_I(inode);
-+	struct fscache_cookie *cookie = v9fs_inode_cookie(v9inode);
- 	loff_t start = page_offset(page);
- 	loff_t size = i_size_read(inode);
- 	struct iov_iter from;
-@@ -176,10 +191,21 @@ static int v9fs_vfs_writepage_locked(struct page *page)
- 	/* We should have writeback_fid always set */
- 	BUG_ON(!v9inode->writeback_fid);
- 
-+	wait_on_page_fscache(page);
-+
- 	set_page_writeback(page);
- 
- 	p9_client_write(v9inode->writeback_fid, start, &from, &err);
- 
-+	if (err == 0 &&
-+	    fscache_cookie_enabled(cookie) &&
-+	    test_bit(FSCACHE_COOKIE_IS_CACHING, &cookie->flags)) {
-+		set_page_fscache(page);
-+		fscache_write_to_cache(v9fs_inode_cookie(v9inode),
-+				       page->mapping, start, len, size,
-+				       v9fs_write_to_cache_done, v9inode);
-+	}
-+
- 	end_page_writeback(page);
- 	return err;
- }
-@@ -290,10 +316,12 @@ static int v9fs_write_begin(struct file *filp, struct address_space *mapping,
- 
- static int v9fs_write_end(struct file *filp, struct address_space *mapping,
- 			  loff_t pos, unsigned len, unsigned copied,
--			  struct page *page, void *fsdata)
-+			  struct page *subpage, void *fsdata)
- {
-+	struct page *page = thp_head(subpage);
- 	loff_t last_pos = pos + copied;
--	struct inode *inode = page->mapping->host;
-+	struct inode *inode = mapping->host;
-+	struct v9fs_inode *v9inode = V9FS_I(inode);
- 
- 	p9_debug(P9_DEBUG_VFS, "filp %p, mapping %p\n", filp, mapping);
- 
-@@ -313,6 +341,7 @@ static int v9fs_write_end(struct file *filp, struct address_space *mapping,
- 	if (last_pos > inode->i_size) {
- 		inode_add_bytes(inode, last_pos - inode->i_size);
- 		i_size_write(inode, last_pos);
-+		fscache_update_cookie(v9fs_inode_cookie(v9inode), NULL, &last_pos);
- 	}
- 	set_page_dirty(page);
- out:
-@@ -322,11 +351,25 @@ static int v9fs_write_end(struct file *filp, struct address_space *mapping,
- 	return copied;
- }
- 
-+#ifdef CONFIG_9P_FSCACHE
-+/*
-+ * Mark a page as having been made dirty and thus needing writeback.  We also
-+ * need to pin the cache object to write back to.
-+ */
-+static int v9fs_set_page_dirty(struct page *page)
-+{
-+	struct v9fs_inode *v9inode = V9FS_I(page->mapping->host);
-+
-+	return fscache_set_page_dirty(page, v9fs_inode_cookie(v9inode));
-+}
-+#else
-+#define v9fs_set_page_dirty __set_page_dirty_nobuffers
-+#endif
- 
- const struct address_space_operations v9fs_addr_operations = {
- 	.readpage = v9fs_vfs_readpage,
- 	.readahead = v9fs_vfs_readahead,
--	.set_page_dirty = __set_page_dirty_nobuffers,
-+	.set_page_dirty = v9fs_set_page_dirty,
- 	.writepage = v9fs_vfs_writepage,
- 	.write_begin = v9fs_write_begin,
- 	.write_end = v9fs_write_end,
-diff --git a/fs/9p/vfs_inode.c b/fs/9p/vfs_inode.c
-index 83db37bd4252..a990c50cc27d 100644
---- a/fs/9p/vfs_inode.c
-+++ b/fs/9p/vfs_inode.c
-@@ -377,6 +377,8 @@ void v9fs_evict_inode(struct inode *inode)
- 	struct v9fs_inode *v9inode = V9FS_I(inode);
- 
- 	truncate_inode_pages_final(&inode->i_data);
-+	fscache_clear_inode_writeback(v9fs_inode_cookie(v9inode), inode,
-+				      &v9inode->qid.version);
- 	clear_inode(inode);
- 	filemap_fdatawrite(&inode->i_data);
- 
-diff --git a/fs/9p/vfs_super.c b/fs/9p/vfs_super.c
-index 5fce6e30bc5a..3721098e0992 100644
---- a/fs/9p/vfs_super.c
-+++ b/fs/9p/vfs_super.c
-@@ -24,6 +24,7 @@
- #include <linux/slab.h>
- #include <linux/statfs.h>
- #include <linux/magic.h>
-+#include <linux/fscache.h>
- #include <net/9p/9p.h>
- #include <net/9p/client.h>
- 
-@@ -307,6 +308,7 @@ static int v9fs_write_inode(struct inode *inode,
- 		__mark_inode_dirty(inode, I_DIRTY_DATASYNC);
- 		return ret;
- 	}
-+	fscache_unpin_writeback(wbc, v9fs_inode_cookie(v9inode));
- 	return 0;
- }
- 
-@@ -330,6 +332,7 @@ static int v9fs_write_inode_dotl(struct inode *inode,
- 		__mark_inode_dirty(inode, I_DIRTY_DATASYNC);
- 		return ret;
- 	}
-+	fscache_unpin_writeback(wbc, v9fs_inode_cookie(v9inode));
- 	return 0;
- }
- 
+ 	for (int i=0; i < map->noffs; i++) {
 
-
+--+HP7ph2BbKc20aGI--
