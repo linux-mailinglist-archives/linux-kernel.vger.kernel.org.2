@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 309EC431D1B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:47:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 171D7431B00
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:28:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232271AbhJRNsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:48:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39094 "EHLO mail.kernel.org"
+        id S232404AbhJRNaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:30:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41284 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233707AbhJRNpq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:45:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EDE65613AB;
-        Mon, 18 Oct 2021 13:35:40 +0000 (UTC)
+        id S230005AbhJRN3E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:29:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 638726128B;
+        Mon, 18 Oct 2021 13:26:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634564141;
-        bh=inY9IIMJd9Wq6FfiKzkCwGuhP2O5pebn4SWvFLz1tU0=;
+        s=korg; t=1634563562;
+        bh=chcz+leP09AY6DyBZT7N+ipg9Q/8nU/lqMOIKZhmkgY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dQXIjODiVI8M6cOz/EhTvdFog94Yuseb97KICB9VhI4+/bImfUnuyjzBaFBieCeKi
-         66yBE5e1jHrFv95RlgBXEPu+id+ucxcRaBa/ugBoLTIUjDoGLiT+VWZogu+42lYVAL
-         isbkDT4/zQ9DytvqDaycpNK0FuAoYBuLPeVaYyxY=
+        b=jtc8RUJgLfOR9xhQwdzl3ESF06o+/vitXnpkReS2qjgyxmmdvL57QaP1fFVijXmxh
+         81y8Bz6wWBemkfVwdzcLT3UeANd/dv1wvs9Jxmw7DNEYgXnqxbC6N7HvSwfVyvSihv
+         9LS4JKBpvidQGsBgYEIOr/WZKI2UR93WfUHGGJ/k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>,
-        seeteena <s1seetee@linux.vnet.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.10 047/103] powerpc/xive: Discard disabled interrupts in get_irqchip_state()
-Date:   Mon, 18 Oct 2021 15:24:23 +0200
-Message-Id: <20211018132336.327939100@linuxfoundation.org>
+        stable@vger.kernel.org, Yu-Tung Chang <mtwget@gmail.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.14 15/39] USB: serial: option: add Quectel EC200S-CN module support
+Date:   Mon, 18 Oct 2021 15:24:24 +0200
+Message-Id: <20211018132325.945019508@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132334.702559133@linuxfoundation.org>
-References: <20211018132334.702559133@linuxfoundation.org>
+In-Reply-To: <20211018132325.426739023@linuxfoundation.org>
+References: <20211018132325.426739023@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,45 +39,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cédric Le Goater <clg@kaod.org>
+From: Yu-Tung Chang <mtwget@gmail.com>
 
-commit 6f779e1d359b8d5801f677c1d49dcfa10bf95674 upstream.
+commit 2263eb7370060bdb0013bc14e1a7c9bf33617a55 upstream.
 
-When an interrupt is passed through, the KVM XIVE device calls the
-set_vcpu_affinity() handler which raises the P bit to mask the
-interrupt and to catch any in-flight interrupts while routing the
-interrupt to the guest.
+Add usb product id of the Quectel EC200S-CN module.
 
-On the guest side, drivers (like some Intels) can request at probe
-time some MSIs and call synchronize_irq() to check that there are no
-in flight interrupts. This will call the XIVE get_irqchip_state()
-handler which will always return true as the interrupt P bit has been
-set on the host side and lock the CPU in an infinite loop.
+usb-devices output for 0x6002:
+T:  Bus=01 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#=  3 Spd=480 MxCh= 0
+D:  Ver= 2.00 Cls=ef(misc ) Sub=02 Prot=01 MxPS=64 #Cfgs=  1
+P:  Vendor=2c7c ProdID=6002 Rev=03.18
+S:  Manufacturer=Android
+S:  Product=Android
+S:  SerialNumber=0000
+C:  #Ifs= 5 Cfg#= 1 Atr=e0 MxPwr=500mA
+I:  If#=0x0 Alt= 0 #EPs= 1 Cls=02(commc) Sub=06 Prot=00 Driver=cdc_ether
+I:  If#=0x1 Alt= 1 #EPs= 2 Cls=0a(data ) Sub=00 Prot=00 Driver=cdc_ether
+I:  If#=0x2 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=00 Prot=00 Driver=(none)
+I:  If#=0x3 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=(none)
+I:  If#=0x4 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=(none)
 
-Fix that by discarding disabled interrupts in get_irqchip_state().
-
-Fixes: da15c03b047d ("powerpc/xive: Implement get_irqchip_state method for XIVE to fix shutdown race")
-Cc: stable@vger.kernel.org #v5.4+
-Signed-off-by: Cédric Le Goater <clg@kaod.org>
-Tested-by: seeteena <s1seetee@linux.vnet.ibm.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20211011070203.99726-1-clg@kaod.org
+Signed-off-by: Yu-Tung Chang <mtwget@gmail.com>
+Link: https://lore.kernel.org/r/20210930021112.330396-1-mtwget@gmail.com
+Cc: stable@vger.kernel.org
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/powerpc/sysdev/xive/common.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/usb/serial/option.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/arch/powerpc/sysdev/xive/common.c
-+++ b/arch/powerpc/sysdev/xive/common.c
-@@ -997,7 +997,8 @@ static int xive_get_irqchip_state(struct
- 		 * interrupt to be inactive in that case.
- 		 */
- 		*state = (pq != XIVE_ESB_INVALID) && !xd->stale_p &&
--			(xd->saved_p || !!(pq & XIVE_ESB_VAL_P));
-+			(xd->saved_p || (!!(pq & XIVE_ESB_VAL_P) &&
-+			 !irqd_irq_disabled(data)));
- 		return 0;
- 	default:
- 		return -EINVAL;
+--- a/drivers/usb/serial/option.c
++++ b/drivers/usb/serial/option.c
+@@ -254,6 +254,7 @@ static void option_instat_callback(struc
+ #define QUECTEL_PRODUCT_EP06			0x0306
+ #define QUECTEL_PRODUCT_EM12			0x0512
+ #define QUECTEL_PRODUCT_RM500Q			0x0800
++#define QUECTEL_PRODUCT_EC200S_CN		0x6002
+ #define QUECTEL_PRODUCT_EC200T			0x6026
+ 
+ #define CMOTECH_VENDOR_ID			0x16d8
+@@ -1131,6 +1132,7 @@ static const struct usb_device_id option
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_RM500Q, 0xff, 0, 0) },
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_RM500Q, 0xff, 0xff, 0x10),
+ 	  .driver_info = ZLP },
++	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_EC200S_CN, 0xff, 0, 0) },
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_EC200T, 0xff, 0, 0) },
+ 
+ 	{ USB_DEVICE(CMOTECH_VENDOR_ID, CMOTECH_PRODUCT_6001) },
 
 
