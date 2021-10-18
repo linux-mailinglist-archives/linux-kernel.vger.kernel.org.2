@@ -2,85 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6594243298B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 00:04:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E378432991
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 00:05:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233821AbhJRWG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 18:06:26 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:45396 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233633AbhJRWGW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 18:06:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=0jATFIJZGaGNJtI9nrB9A/vH/sBn6bZ/u4kev59KQDU=; b=TlE0CpnflLLrtpn7Q37GMlaV49
-        0/yZ9p1p5gDe31wEsAI/I9pIXpIccKfhPZld5y2zAF2Kr/uM7WnT/jXnhkSx3RQ5AXH0+O2GMlpfO
-        Y06hNiqZ9BIzV+oQV2x33bR5AZAHTZ6vBIbxJCfTr9tk0Zd4h/q9atKp4PvaFpDek3tg=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mcajm-00B0y8-8D; Tue, 19 Oct 2021 00:04:06 +0200
-Date:   Tue, 19 Oct 2021 00:04:06 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Luo Jie <luoj@codeaurora.org>
-Cc:     hkallweit1@gmail.com, linux@armlinux.org.uk, davem@davemloft.net,
-        kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sricharan@codeaurora.org
-Subject: Re: [PATCH v3 12/13] net: phy: adjust qca8081 master/slave seed
- value if link down
-Message-ID: <YW3vVt99i7TNCzaC@lunn.ch>
-References: <20211018033333.17677-1-luoj@codeaurora.org>
- <20211018033333.17677-13-luoj@codeaurora.org>
+        id S233658AbhJRWIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 18:08:02 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:39594 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232139AbhJRWIB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 18:08:01 -0400
+Received: from localhost.localdomain (unknown [IPv6:2401:4900:1c20:2044:d49c:4fd9:7471:bb74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: shreeya)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id EB76F1F432B7;
+        Mon, 18 Oct 2021 23:05:45 +0100 (BST)
+From:   Shreeya Patel <shreeya.patel@collabora.com>
+To:     linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        wsa@kernel.org, krisman@collabora.com,
+        sebastian.reichel@collabora.com
+Cc:     kernel@collabora.com, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
+        Shreeya Patel <shreeya.patel@collabora.com>
+Subject: [PATCH v2] gpio: Return EPROBE_DEFER if gc->to_irq is NULL
+Date:   Tue, 19 Oct 2021 03:35:04 +0530
+Message-Id: <20211018220504.8301-1-shreeya.patel@collabora.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211018033333.17677-13-luoj@codeaurora.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 18, 2021 at 11:33:32AM +0800, Luo Jie wrote:
-> 1. The master/slave seed needs to be updated when the link can't
-> be created.
-> 
-> 2. The case where two qca8081 PHYs are connected each other and
-> master/slave seed is generated as the same value also needs
-> to be considered, so adding this code change into read_status
-> instead of link_change_notify.
-> 
-> Signed-off-by: Luo Jie <luoj@codeaurora.org>
-> ---
->  drivers/net/phy/at803x.c | 16 ++++++++++++++++
->  1 file changed, 16 insertions(+)
-> 
-> diff --git a/drivers/net/phy/at803x.c b/drivers/net/phy/at803x.c
-> index 5d007f89e9d3..77aaf9e72781 100644
-> --- a/drivers/net/phy/at803x.c
-> +++ b/drivers/net/phy/at803x.c
-> @@ -1556,6 +1556,22 @@ static int qca808x_read_status(struct phy_device *phydev)
->  	else
->  		phydev->interface = PHY_INTERFACE_MODE_SMII;
->  
-> +	/* generate seed as a lower random value to make PHY linked as SLAVE easily,
-> +	 * except for master/slave configuration fault detected.
-> +	 * the reason for not putting this code into the function link_change_notify is
-> +	 * the corner case where the link partner is also the qca8081 PHY and the seed
-> +	 * value is configured as the same value, the link can't be up and no link change
-> +	 * occurs.
-> +	 */
-> +	if (!phydev->link) {
-> +		if (phydev->master_slave_state == MASTER_SLAVE_STATE_ERR) {
-> +			qca808x_phy_ms_seed_enable(phydev, false);
-> +		} else {
-> +			qca808x_phy_ms_random_seed_set(phydev);
-> +			qca808x_phy_ms_seed_enable(phydev, true);
-> +		}
-> +	}
+We are racing the registering of .to_irq when probing the
+i2c driver. This results in random failure of touchscreen
+devices.
 
-Are you assuming here that the status is polled once a second, and
-each poll you choose a new seed and see if it succeeds? What happens
-when interrupts are used, not polling?
+Following errors could be seen in dmesg logs when gc->to_irq is NULL
 
-     Andrew
+[2.101857] i2c_hid i2c-FTS3528:00: HID over i2c has not been provided an Int IRQ
+[2.101953] i2c_hid: probe of i2c-FTS3528:00 failed with error -22
+
+To avoid this situation, defer probing until to_irq is registered.
+
+This issue has been reported many times in past and people have been
+using workarounds like changing the pinctrl_amd to built-in instead
+of loading it as a module or by adding a softdep for pinctrl_amd into
+the config file.
+
+References :-
+https://bugzilla.kernel.org/show_bug.cgi?id=209413
+https://github.com/Syniurge/i2c-amd-mp2/issues/3
+
+Signed-off-by: Shreeya Patel <shreeya.patel@collabora.com>
+
+---
+Changes in v2
+  - Add a condition to check for irq chip to avoid bogus error.
+
+---
+ drivers/gpio/gpiolib.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
+index 27c07108496d..12c088706167 100644
+--- a/drivers/gpio/gpiolib.c
++++ b/drivers/gpio/gpiolib.c
+@@ -3084,6 +3084,14 @@ int gpiod_to_irq(const struct gpio_desc *desc)
+ 
+ 		return retirq;
+ 	}
++	if (gc->irq.chip) {
++		/* avoid race condition with other code, which tries to lookup
++		 * an IRQ before the irqchip has been properly registered
++		 * (i.e. while gpiochip is still being brought up).
++		 */
++		return -EPROBE_DEFER;
++	}
++
+ 	return -ENXIO;
+ }
+ EXPORT_SYMBOL_GPL(gpiod_to_irq);
+-- 
+2.30.2
+
