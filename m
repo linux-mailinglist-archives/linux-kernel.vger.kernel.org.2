@@ -2,63 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0AC5432009
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 16:39:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD0F843200C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 16:40:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232230AbhJROmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 10:42:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60030 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232183AbhJROmB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 10:42:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7CEB560232
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 14:39:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634567990;
-        bh=P+5pP9FFLfruURRWj+Zkev0wVkp9BvtVIXrYS4fyWfo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=J1uwnxn9L8NI611AAJAnZyi76VR/0S62fZD7R5k06IampVJysvN49L0tnRIZ5lKf+
-         8iMjJSnsq7K/v92zQV9PzMg29gZEhcxKShRz1iVIOEZ9zBtf/Xmw8EvAw7QK5On1p7
-         wiMBY7a9qegebESj1NznKvJo2kzjfTAiIUvOaJ9odhC0WhhKvFI3RAAeKnTxBtRZd9
-         jlYdgoHKg8Yb+S1THdUkZCsr2zuWCAKv9dX2aWTLneTimS4Df71Qp5HkNyfNhVETKG
-         D1y7SqC7ySRz/TYhNSGJ9lCfo56bWfVmsiadgipTJeGFLNakRHv3nK5IDoUhk37CNt
-         oBFSv3U2dL38w==
-Received: by mail-wr1-f49.google.com with SMTP id e12so41856597wra.4
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 07:39:50 -0700 (PDT)
-X-Gm-Message-State: AOAM5317FgO3QFlB1OZ0aPGzzJtuAbPv+PwauFoQu8QI5e8snootE1DF
-        18HyMjEeU52EPSjc6xSaP0eMjfxZ+lRDzKG5aSA=
-X-Google-Smtp-Source: ABdhPJyR4Ho5dze+aJyCCCjg6V+tn/9q8VqwKp8sVkskgDgA5fWc9VHvcdEdmzcjUO2Mw52GML+ywaMuJVqpKq9XLLM=
-X-Received: by 2002:adf:b1c4:: with SMTP id r4mr35986260wra.428.1634567988998;
- Mon, 18 Oct 2021 07:39:48 -0700 (PDT)
+        id S232285AbhJROmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 10:42:13 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:35142 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232183AbhJROmL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 10:42:11 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: kholk11)
+        with ESMTPSA id 5C73D1F42DD3
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+To:     robh+dt@kernel.org
+Cc:     a.hajda@samsung.com, daniel@ffwll.ch, airlied@linux.ie,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH v2] dt-bindings: display/bridge: tc358767: Convert to YAML binding
+Date:   Mon, 18 Oct 2021 16:39:51 +0200
+Message-Id: <20211018143951.878143-1-angelogioacchino.delregno@collabora.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-References: <20210928085554.2299495-1-arnd@kernel.org> <ce05e90b-f22f-bd0e-4e0f-da560bffc0c2@suse.de>
-In-Reply-To: <ce05e90b-f22f-bd0e-4e0f-da560bffc0c2@suse.de>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Mon, 18 Oct 2021 16:39:32 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1brJNoq65h15-zZtNgwV92hwXH9p32cJpzAY3=ouOHnw@mail.gmail.com>
-Message-ID: <CAK8P3a1brJNoq65h15-zZtNgwV92hwXH9p32cJpzAY3=ouOHnw@mail.gmail.com>
-Subject: Re: [PATCH] [v2] bcache: hide variable-sized types from uapi header check
-To:     Coly Li <colyli@suse.de>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Jens Axboe <axboe@kernel.dk>,
-        Kent Overstreet <kmo@daterainc.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 18, 2021 at 4:20 PM Coly Li <colyli@suse.de> wrote:
->
-> IMHO, remove bcache related header from uapi check might be better
-> solution. So far only bcache-tools uses this header with its own copy,
-> no application includes the header(s) so far. It makes sense to exclude
-> bcache.h from upai headers check.
+Convert the Toshiba TC358767 txt documentation to YAML.
 
-Should we just move it to include/linux/ and out of the uapi headers entirely
-then? It sounds like it's not actually an ABI but just the definition of the
-data layout that is not included by anything from user space.
+Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
+---
+ .../display/bridge/toshiba,tc358767.txt       |  54 --------
+ .../display/bridge/toshiba,tc358767.yaml      | 118 ++++++++++++++++++
+ 2 files changed, 118 insertions(+), 54 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/display/bridge/toshiba,tc358767.txt
+ create mode 100644 Documentation/devicetree/bindings/display/bridge/toshiba,tc358767.yaml
 
-We are a bit inconsistent here already, e.g. btrfs has all its structures
-in uapi, but ext4 does not.
+diff --git a/Documentation/devicetree/bindings/display/bridge/toshiba,tc358767.txt b/Documentation/devicetree/bindings/display/bridge/toshiba,tc358767.txt
+deleted file mode 100644
+index 583c5e9dbe6b..000000000000
+--- a/Documentation/devicetree/bindings/display/bridge/toshiba,tc358767.txt
++++ /dev/null
+@@ -1,54 +0,0 @@
+-Toshiba TC358767 eDP bridge bindings
+-
+-Required properties:
+- - compatible: "toshiba,tc358767"
+- - reg: i2c address of the bridge, 0x68 or 0x0f, depending on bootstrap pins
+- - clock-names: should be "ref"
+- - clocks: OF device-tree clock specification for refclk input. The reference
+-   clock rate must be 13 MHz, 19.2 MHz, 26 MHz, or 38.4 MHz.
+-
+-Optional properties:
+- - shutdown-gpios: OF device-tree gpio specification for SD pin
+-                   (active high shutdown input)
+- - reset-gpios: OF device-tree gpio specification for RSTX pin
+-                (active low system reset)
+- - toshiba,hpd-pin: TC358767 GPIO pin number to which HPD is connected to (0 or 1)
+- - ports: the ports node can contain video interface port nodes to connect
+-   to a DPI/DSI source and to an eDP/DP sink according to [1][2]:
+-    - port@0: DSI input port
+-    - port@1: DPI input port
+-    - port@2: eDP/DP output port
+-
+-[1]: Documentation/devicetree/bindings/graph.txt
+-[2]: Documentation/devicetree/bindings/media/video-interfaces.txt
+-
+-Example:
+-	edp-bridge@68 {
+-		compatible = "toshiba,tc358767";
+-		reg = <0x68>;
+-		shutdown-gpios = <&gpio3 23 GPIO_ACTIVE_HIGH>;
+-		reset-gpios = <&gpio3 24 GPIO_ACTIVE_LOW>;
+-		clock-names = "ref";
+-		clocks = <&edp_refclk>;
+-
+-		ports {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-
+-			port@1 {
+-				reg = <1>;
+-
+-				bridge_in: endpoint {
+-					remote-endpoint = <&dpi_out>;
+-				};
+-			};
+-
+-			port@2 {
+-				reg = <2>;
+-
+-				bridge_out: endpoint {
+-					remote-endpoint = <&panel_in>;
+-				};
+-			};
+-		};
+-	};
+diff --git a/Documentation/devicetree/bindings/display/bridge/toshiba,tc358767.yaml b/Documentation/devicetree/bindings/display/bridge/toshiba,tc358767.yaml
+new file mode 100644
+index 000000000000..b2692f0e971b
+--- /dev/null
++++ b/Documentation/devicetree/bindings/display/bridge/toshiba,tc358767.yaml
+@@ -0,0 +1,118 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/display/bridge/toshiba,tc358767.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Toshiba TC358767 MIPI-DSI or MIPI-DPI to DP/eDP bridge
++
++maintainers:
++  - Tomi Valkeinen <tomi.valkeinen@ti.com>
++
++properties:
++  compatible:
++    enum:
++      - toshiba,tc358767
++
++  reg:
++    description: I2C address of the bridge
++    enum: [0x68, 0x0f]
++
++  clocks:
++    description:
++      Reference clock input. The reference clock rate must be 13MHz, 19.2MHz,
++      26MHz, or 38.4MHz.
++    maxItems: 1
++
++  clock-names:
++    const: ref
++
++  reset-gpios:
++    description: GPIO connected to the RSTX signal.
++    maxItems: 1
++
++  shutdown-gpios:
++    description: GPIO connected to the SD signal.
++    maxItems: 1
++
++  toshiba,hpd-pin:
++    $ref: "/schemas/types.yaml#/definitions/uint32"
++    description: TC356767 GPIO pin number to which HPD is connected
++    enum:
++      - 0
++      - 1
++
++  ports:
++    $ref: /schemas/graph.yaml#/properties/ports
++
++    properties:
++      port@0:
++        $ref: /schemas/graph.yaml#/properties/port
++        description:
++          Video port for MIPI DSI input
++
++      port@1:
++        $ref: /schemas/graph.yaml#/properties/port
++        description:
++          Video port for MIPI DPI input
++
++      port@2:
++        $ref: /schemas/graph.yaml#/properties/port
++        description:
++          Video port for DP/eDP output (panel or connector).
++
++    oneOf:
++      - required:
++          - port@0
++      - required:
++          - port@1
++    required:
++      - port@2
++
++required:
++  - compatible
++  - reg
++  - clock-names
++  - clocks
++  - ports
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++
++    i2c {
++      #address-cells = <1>;
++      #size-cells = <0>;
++
++      bridge@68 {
++        compatible = "toshiba,tc358767";
++        reg = <0x68>;
++        clock-names = "ref";
++        clocks = <&edp_refclk>;
++        reset-gpios = <&gpio3 24 GPIO_ACTIVE_LOW>;
++        shutdown-gpios = <&gpio3 23 GPIO_ACTIVE_HIGH>;
++
++        ports {
++          #address-cells = <1>;
++          #size-cells = <0>;
++
++          port@1 {
++            reg = <1>;
++            bridge_in: endpoint {
++              remote-endpoint = <&dpi_out>;
++            };
++          };
++
++          port@2 {
++            reg = <2>;
++            bridge_out: endpoint {
++              remote-endpoint = <&panel_in>;
++            };
++          };
++        };
++      };
++    };
++
++...
+-- 
+2.33.0
 
-       Arnd
