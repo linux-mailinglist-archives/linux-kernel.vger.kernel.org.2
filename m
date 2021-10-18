@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B83A6431B67
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:30:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB982431B23
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:28:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231861AbhJRNc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:32:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43392 "EHLO mail.kernel.org"
+        id S232324AbhJRNa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:30:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41422 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232361AbhJRNbD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:31:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 23D496136A;
-        Mon, 18 Oct 2021 13:28:38 +0000 (UTC)
+        id S231944AbhJRN3Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:29:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F150D610A6;
+        Mon, 18 Oct 2021 13:27:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634563719;
-        bh=mIfWHTo6F5vNmIUpGiI4Mgv2twSJ0V9JjEE+iJXG1q8=;
+        s=korg; t=1634563634;
+        bh=C2RPkzixyaNcGVj03lzWbgDunOp2osk6YocFI6dRBVU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mYNf+4T+IFKRaizpfv9QLNLuLNgl+pnPlTBUEO3/3Xl2VmmtqoN3anM6dBAlF88or
-         EuEzUkgZ1I4FES2wOb2CmYZj6R1K4lwmfebqt0s6qMb0sGRktgwSucxGykBCVzwabb
-         lZMNrOBfE3fGrFxVRWMYNhaYCpKIKAcTz0qHtF5I=
+        b=UYmv8PepNTTNoNdtcKVSoDynRaB15fehpLOOvCNorCJN+wjciagMTdG/IQxXddksA
+         b0b9hfzWJ2fogdxou7VTnQEwAVKuDJ5sZ6Ch/qBi5n1hC4eNwpKbQie0Ie7trbG+a6
+         JZaq6m2FhFurjr4PpsxSp+DYbjvsIZq2fmBkIFoA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Ziyang Xuan <william.xuanziyang@huawei.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.19 38/50] nfc: fix error handling of nfc_proto_register()
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Rob Clark <robdclark@chromium.org>
+Subject: [PATCH 4.14 36/39] drm/msm/dsi: fix off by one in dsi_bus_clk_enable error handling
 Date:   Mon, 18 Oct 2021 15:24:45 +0200
-Message-Id: <20211018132327.785476316@linuxfoundation.org>
+Message-Id: <20211018132326.594547790@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132326.529486647@linuxfoundation.org>
-References: <20211018132326.529486647@linuxfoundation.org>
+In-Reply-To: <20211018132325.426739023@linuxfoundation.org>
+References: <20211018132325.426739023@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,35 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ziyang Xuan <william.xuanziyang@huawei.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-commit 0911ab31896f0e908540746414a77dd63912748d upstream.
+commit c8f01ffc83923a91e8087aaa077de13354a7aa59 upstream.
 
-When nfc proto id is using, nfc_proto_register() return -EBUSY error
-code, but forgot to unregister proto. Fix it by adding proto_unregister()
-in the error handling case.
+This disables a lock which wasn't enabled and it does not disable
+the first lock in the array.
 
-Fixes: c7fe3b52c128 ("NFC: add NFC socket family")
-Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Link: https://lore.kernel.org/r/20211013034932.2833737-1-william.xuanziyang@huawei.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: 6e0eb52eba9e ("drm/msm/dsi: Parse bus clocks from a list")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Link: https://lore.kernel.org/r/20211001123409.GG2283@kili
+Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Signed-off-by: Rob Clark <robdclark@chromium.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/nfc/af_nfc.c |    3 +++
- 1 file changed, 3 insertions(+)
+ drivers/gpu/drm/msm/dsi/dsi_host.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/nfc/af_nfc.c
-+++ b/net/nfc/af_nfc.c
-@@ -72,6 +72,9 @@ int nfc_proto_register(const struct nfc_
- 		proto_tab[nfc_proto->id] = nfc_proto;
- 	write_unlock(&proto_tab_lock);
+--- a/drivers/gpu/drm/msm/dsi/dsi_host.c
++++ b/drivers/gpu/drm/msm/dsi/dsi_host.c
+@@ -442,7 +442,7 @@ static int dsi_bus_clk_enable(struct msm
  
-+	if (rc)
-+		proto_unregister(nfc_proto->proto);
-+
- 	return rc;
- }
- EXPORT_SYMBOL(nfc_proto_register);
+ 	return 0;
+ err:
+-	for (; i > 0; i--)
++	while (--i >= 0)
+ 		clk_disable_unprepare(msm_host->bus_clks[i]);
+ 
+ 	return ret;
 
 
