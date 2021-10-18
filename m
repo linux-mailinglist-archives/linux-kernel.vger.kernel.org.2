@@ -2,115 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A1FD431664
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 12:46:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06C83431668
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 12:47:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230397AbhJRKs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 06:48:29 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:57413 "EHLO pegase2.c-s.fr"
+        id S230471AbhJRKtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 06:49:15 -0400
+Received: from mga04.intel.com ([192.55.52.120]:41792 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229603AbhJRKs1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 06:48:27 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4HXtpH2mnzz9sSY;
-        Mon, 18 Oct 2021 12:46:15 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id ANnJZly2ob87; Mon, 18 Oct 2021 12:46:15 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4HXtpH1wwVz9sSD;
-        Mon, 18 Oct 2021 12:46:15 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 29DC68B76C;
-        Mon, 18 Oct 2021 12:46:15 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id qhZjXg78Wf90; Mon, 18 Oct 2021 12:46:15 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (unknown [172.25.230.103])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id EA6688B763;
-        Mon, 18 Oct 2021 12:46:14 +0200 (CEST)
-Subject: Re: [PATCH net-next] phy: micrel: ksz8041nl: do not use power down
- mode
-To:     Francesco Dolcini <francesco.dolcini@toradex.com>
-Cc:     f.fainelli@gmail.com, Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stefan Agner <stefan@agner.ch>,
-        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20211018094256.70096-1-francesco.dolcini@toradex.com>
- <180289ac-4480-1e4c-d679-df4f0478ec65@csgroup.eu>
- <20211018101802.GA7669@francesco-nb.int.toradex.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <a06104cf-d634-a25a-cf54-975689ad3e91@csgroup.eu>
-Date:   Mon, 18 Oct 2021 12:46:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S229519AbhJRKtO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 06:49:14 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10140"; a="226990106"
+X-IronPort-AV: E=Sophos;i="5.85,381,1624345200"; 
+   d="scan'208";a="226990106"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2021 03:47:03 -0700
+X-IronPort-AV: E=Sophos;i="5.85,381,1624345200"; 
+   d="scan'208";a="444008167"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.72.159])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2021 03:47:00 -0700
+Received: from andy by smile with local (Exim 4.95)
+        (envelope-from <andy.shevchenko@gmail.com>)
+        id 1mcQAE-0001qc-DA;
+        Mon, 18 Oct 2021 13:46:42 +0300
+Date:   Mon, 18 Oct 2021 13:46:42 +0300
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Tsuchiya Yuto <kitakar@gmail.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>, Andy Shevchenko <andy@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH 1/1] ACPI / PMIC: Add i2c address to
+ intel_pmic_bytcrc driver
+Message-ID: <YW1QkidNKa79MCBb@smile.fi.intel.com>
+References: <20211017161523.43801-1-kitakar@gmail.com>
+ <20211017161523.43801-2-kitakar@gmail.com>
+ <3e6428f1-9411-fac6-9172-1dfe6de58c28@redhat.com>
+ <CAHp75VcA+=OsmX7o2WTvYgf8TNpE64qEHq=MVm5vVP-4RBk+ng@mail.gmail.com>
+ <3c9d4f9b-26c2-a135-eb2e-67963aa0bc0b@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20211018101802.GA7669@francesco-nb.int.toradex.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr-FR
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3c9d4f9b-26c2-a135-eb2e-67963aa0bc0b@redhat.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Oct 18, 2021 at 12:38:51PM +0200, Hans de Goede wrote:
+> On 10/18/21 12:31, Andy Shevchenko wrote:
+> > On Mon, Oct 18, 2021 at 12:16 PM Hans de Goede <hdegoede@redhat.com> wrote:
 
+...
 
-Le 18/10/2021 à 12:18, Francesco Dolcini a écrit :
-> Hello Christophe,
+> > Btw, IIRC similar code (i.e. BYT vs CHT by CPU
+> > ID) is being used elsewhere. Perhaps we might have some common
+> > (library) under arc/x86, PDx86 or so (headers?)?
 > 
-> On Mon, Oct 18, 2021 at 11:53:03AM +0200, Christophe Leroy wrote:
->>
->>
->> Le 18/10/2021 à 11:42, Francesco Dolcini a écrit :
->>> From: Stefan Agner <stefan@agner.ch>
->>>
->>> Some Micrel KSZ8041NL PHY chips exhibit continous RX errors after using
->>> the power down mode bit (0.11). If the PHY is taken out of power down
->>> mode in a certain temperature range, the PHY enters a weird state which
->>> leads to continously reporting RX errors. In that state, the MAC is not
->>> able to receive or send any Ethernet frames and the activity LED is
->>> constantly blinking. Since Linux is using the suspend callback when the
->>> interface is taken down, ending up in that state can easily happen
->>> during a normal startup.
->>>
->>> Micrel confirmed the issue in errata DS80000700A [*], caused by abnormal
->>> clock recovery when using power down mode. Even the latest revision (A4,
->>> Revision ID 0x1513) seems to suffer that problem, and according to the
->>> errata is not going to be fixed.
->>>
->>> Remove the suspend/resume callback to avoid using the power down mode
->>> completely.
->>
->> As far as I can see in the ERRATA, KSZ8041 RNLI also has the bug.
->> Shoudn't you also remove the suspend/resume on that one (which follows in
->> ksphy_driver[])
+> We already have helpers for this defined in:
 > 
-> Yes, I could, however this patch is coming out of a real issue we had with
-> KSZ8041NL with this specific phy id (and we have such a patch in our linux
-> branch since years).
+> sound/soc/intel/common/soc-intel-quirks.h
 > 
-> On the other hand the entry for KSZ8041RNLI in the driver is somehow weird,
-> since the phy id according to the original commit does not even exists on
-> the datasheet. Would you be confident applying such errata for that phyid
-> without having a way of testing it?
+> We could move those to some header under include, maybe:
+> 
+> include/linux/platform_data/x86/atom.h
+> 
+> And add #ifdef-ery there so that things will also build on
+> non x86 ?
+> 
+> Then we could do a 2 patch series adding the
+> include/linux/platform_data/x86/atom.h
+> file + the drivers/mfd/intel_soc_pmic_core.c
+> change and Lee can merge both through the MFD tree.
+> 
+> And then we can do further clean-ups of e.g. sound/soc
+> on top (we can ask Lee to provide an immutable branch).
+> 
+> How does that sound ?
+
+Sounds like a good plan to me!
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
-If your patch was to add the suspend/resume capability I would agree 
-with you, but here we are talking about removing it, so what risk are we 
-taking ?
-
-In addition, commit 4bd7b5127bd0 ("micrel: add support for KSZ8041RNLI") 
-clearly tells that the only thing it did was to copy KSZ8041NL entry, so 
-for me updating both entries would really make sense.
-
-It looks odd to me that you refer in your commit log to an ERRATA that 
-tells you that the bug also exists on the KSZ8041RNLI and you apply it 
-only partly.
-
-Christophe
