@@ -2,45 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A5414322BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 17:22:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58E6F4322C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 17:23:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232953AbhJRPYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 11:24:42 -0400
-Received: from verein.lst.de ([213.95.11.211]:34796 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232844AbhJRPYh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 11:24:37 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id A661268AFE; Mon, 18 Oct 2021 17:22:24 +0200 (CEST)
-Date:   Mon, 18 Oct 2021 17:22:24 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Coly Li <colyli@suse.de>
-Cc:     Arnd Bergmann <arnd@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Jens Axboe <axboe@kernel.dk>,
-        Kent Overstreet <kmo@daterainc.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH] [v2] bcache: hide variable-sized types from uapi
- header check
-Message-ID: <20211018152224.GB31195@lst.de>
-References: <20210928085554.2299495-1-arnd@kernel.org> <ce05e90b-f22f-bd0e-4e0f-da560bffc0c2@suse.de> <CAK8P3a1brJNoq65h15-zZtNgwV92hwXH9p32cJpzAY3=ouOHnw@mail.gmail.com> <12a593bc-68bc-ac03-0307-a65a0c064af3@suse.de>
+        id S233244AbhJRPZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 11:25:55 -0400
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:58753 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232818AbhJRPZw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 11:25:52 -0400
+Received: (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 8C0841BF218;
+        Mon, 18 Oct 2021 15:23:39 +0000 (UTC)
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] rtc: expose RTC_FEATURE_UPDATE_INTERRUPT
+Date:   Mon, 18 Oct 2021 17:23:36 +0200
+Message-Id: <20211018152337.78732-1-alexandre.belloni@bootlin.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <12a593bc-68bc-ac03-0307-a65a0c064af3@suse.de>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 18, 2021 at 10:42:37PM +0800, Coly Li wrote:
-> I am quite open for this idea. It is in uapi directory before I maintain 
-> bcache. I just though the header fines on-media format should go into 
-> include/uapi/, but if this is not the restricted rule, it is fine for me to 
-> move this header to drivers/md/bcache/.
+Set RTC_FEATURE_UPDATE_INTERRUPT by default and clear it when it is not
+supported.
 
-Treating the on-disk definitions as a UAPI doesn't make much sense to
-me.  I like keeping it in a separate header to make clear what is the
-on-disk format and what is just in core, but it should normally live
-with the rest of the code.
+Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+---
+ drivers/rtc/class.c     | 4 ++++
+ drivers/rtc/interface.c | 3 ++-
+ 2 files changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/rtc/class.c b/drivers/rtc/class.c
+index 2e0cbc190a8a..4b460c61f1d8 100644
+--- a/drivers/rtc/class.c
++++ b/drivers/rtc/class.c
+@@ -232,6 +232,7 @@ static struct rtc_device *rtc_allocate_device(void)
+ 	rtc->pie_enabled = 0;
+ 
+ 	set_bit(RTC_FEATURE_ALARM, rtc->features);
++	set_bit(RTC_FEATURE_UPDATE_INTERRUPT, rtc->features);
+ 
+ 	return rtc;
+ }
+@@ -389,6 +390,9 @@ int __devm_rtc_register_device(struct module *owner, struct rtc_device *rtc)
+ 	if (!rtc->ops->set_alarm)
+ 		clear_bit(RTC_FEATURE_ALARM, rtc->features);
+ 
++	if (rtc->uie_unsupported)
++		clear_bit(RTC_FEATURE_UPDATE_INTERRUPT, rtc->features);
++
+ 	if (rtc->ops->set_offset)
+ 		set_bit(RTC_FEATURE_CORRECTION, rtc->features);
+ 
+diff --git a/drivers/rtc/interface.c b/drivers/rtc/interface.c
+index 9a2bd4947007..d005623e6eb3 100644
+--- a/drivers/rtc/interface.c
++++ b/drivers/rtc/interface.c
+@@ -561,7 +561,8 @@ int rtc_update_irq_enable(struct rtc_device *rtc, unsigned int enabled)
+ 	if (rtc->uie_rtctimer.enabled == enabled)
+ 		goto out;
+ 
+-	if (rtc->uie_unsupported || !test_bit(RTC_FEATURE_ALARM, rtc->features)) {
++	if (!test_bit(RTC_FEATURE_UPDATE_INTERRUPT, rtc->features) ||
++	    !test_bit(RTC_FEATURE_ALARM, rtc->features)) {
+ 		mutex_unlock(&rtc->ops_lock);
+ #ifdef CONFIG_RTC_INTF_DEV_UIE_EMUL
+ 		return rtc_dev_update_irq_enable_emul(rtc, enabled);
+-- 
+2.31.1
+
