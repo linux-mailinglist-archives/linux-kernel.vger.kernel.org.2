@@ -2,71 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96B0D4310DA
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 08:51:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 571884310DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 08:51:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230342AbhJRGxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 02:53:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55394 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230222AbhJRGxI (ORCPT
+        id S230373AbhJRGx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 02:53:27 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:14824 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230222AbhJRGxZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 02:53:08 -0400
-Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B730EC06161C;
-        Sun, 17 Oct 2021 23:50:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=uXEB/JS8NCDVfNV3a8g8vQ/HIHrJoEIRIzXIpC6nNvA=; b=JWCo8NmIaP43uv+GJWcAeZz7MP
-        kkh//kMf7JLNz0rcfbue5t65WurWmMxqc4+omq0UdwLq2L18LLgjAJroqORYbsUI8XWV5SuLZ7eCQ
-        fFdm4F41OGfyG2ofW8d1B74Ut4DvpOptvs/AZ4p7TYtADjk4JcfCqR9nodnZ+MVSY95by/dWaLeB8
-        XGXZDacunhDVeFdSFxiC0ilQF3IU2bZNPS4cv/31MkwdfurPS9C0hdBxRKyse3mLe7DDRMfVBUGUY
-        nyDX8peOn4cpJ5gKrBmaHcUWeazQKOHUEv2QdCbDwResVgqmzF30Gkq8ELaFa8WLRQAsdD3zTCtc/
-        YAEaSM4w==;
-Received: from [2001:4bb8:199:73c5:3de2:2f89:c99b:8fe2] (helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mcMU4-00ENxT-K6; Mon, 18 Oct 2021 06:50:57 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] target: stop using bdevname
-Date:   Mon, 18 Oct 2021 08:50:52 +0200
-Message-Id: <20211018065052.1822500-1-hch@lst.de>
-X-Mailer: git-send-email 2.30.2
+        Mon, 18 Oct 2021 02:53:25 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HXnTQ5srLz90F9;
+        Mon, 18 Oct 2021 14:46:18 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Mon, 18 Oct 2021 14:51:13 +0800
+Received: from linux-suspe12sp5.huawei.com (10.67.133.83) by
+ dggpeml500017.china.huawei.com (7.185.36.243) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Mon, 18 Oct 2021 14:51:12 +0800
+From:   ChenJingwen <chenjingwen6@huawei.com>
+To:     <keescook@chromium.org>
+CC:     <akpm@linux-foundation.org>, <avagin@openvz.org>,
+        <chenjingwen6@huawei.com>, <khalid.aziz@oracle.com>,
+        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <mhocko@suse.com>, <mpe@ellerman.id.au>,
+        <torvalds@linux-foundation.org>, <viro@zeniv.linux.org.uk>
+Subject: [PATCH] elf: don't use MAP_FIXED_NOREPLACE for elf interpreter mappings
+Date:   Mon, 18 Oct 2021 14:51:12 +0800
+Message-ID: <20211018065112.170631-1-chenjingwen6@huawei.com>
+X-Mailer: git-send-email 2.12.3
+In-Reply-To: <202110041255.83A6616D9@keescook>
+References: <202110041255.83A6616D9@keescook>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain
+X-Originating-IP: [10.67.133.83]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Just use the %pg format specifier instead.
+> >  The reason is that the elf interpreter (ld.so) has overlapping segments.
+> >
+> Ewww. What toolchain generated this (and what caused it to just start
+> happening)? (This was added in v4.17; it's been 3 years.)
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- drivers/target/target_core_iblock.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+gcc 7.3.0 for powerpc Book3E (e5500).
 
-diff --git a/drivers/target/target_core_iblock.c b/drivers/target/target_core_iblock.c
-index 4069a1edcfa34..3113c4440735a 100644
---- a/drivers/target/target_core_iblock.c
-+++ b/drivers/target/target_core_iblock.c
-@@ -634,12 +634,10 @@ static ssize_t iblock_show_configfs_dev_params(struct se_device *dev, char *b)
- {
- 	struct iblock_dev *ib_dev = IBLOCK_DEV(dev);
- 	struct block_device *bd = ib_dev->ibd_bd;
--	char buf[BDEVNAME_SIZE];
- 	ssize_t bl = 0;
- 
- 	if (bd)
--		bl += sprintf(b + bl, "iBlock device: %s",
--				bdevname(bd, buf));
-+		bl += sprintf(b + bl, "iBlock device: %pg", bd);
- 	if (ib_dev->ibd_flags & IBDF_HAS_UDEV_PATH)
- 		bl += sprintf(b + bl, "  UDEV PATH: %s",
- 				ib_dev->ibd_udev_path);
--- 
-2.30.2
+I wonder if there are some linker options related to the overlapping segments.
+I tried to find it out why but I failed. And I also didn't see the answer in the
+previous discussion yet (Maybe I missed it).
 
+What confuses me is why the other reports only have overlapping sections for
+executable binaries or dynamic libraries, but not for their ld.so.
+I can keep looking for the reason but it may take a longe time for me.
+
+> > readelf -l ld-2.31.so
+> > Program Headers:
+> >   Type           Offset             VirtAddr           PhysAddr
+> >                  FileSiz            MemSiz              Flags  Align
+> >   LOAD           0x0000000000000000 0x0000000000000000 0x0000000000000000
+> >                  0x000000000002c94c 0x000000000002c94c  R E    0x10000
+> >   LOAD           0x000000000002dae0 0x000000000003dae0 0x000000000003dae0
+> >                  0x00000000000021e8 0x0000000000002320  RW     0x10000
+> >   LOAD           0x000000000002fe00 0x000000000003fe00 0x000000000003fe00
+> >                  0x00000000000011ac 0x0000000000001328  RW     0x10000
+> > 
+> > The reason for this problem is the same as described in
+> > commit ad55eac74f20 ("elf: enforce MAP_FIXED on overlaying elf segments").
+> > Not only executable binaries, elf interpreters (e.g. ld.so) can have
+> > overlapping elf segments, so we better drop MAP_FIXED_NOREPLACE and go
+> > back to MAP_FIXED in load_elf_interp.
+>
+> We could also just expand the logic that fixed[1] this for ELF, yes?
+>
+> Andrew, are you able to pick up [1], BTW? It seems to have fallen
+> through the cracks.
+>
+> [1] https://lore.kernel.org/all/20210916215947.3993776-1-keescook@chromium.org/T/#u
+
+Yes, I expand the logic[1] to load_elf_interp and "init" succeeds to start.
+Should I submit another patch?
