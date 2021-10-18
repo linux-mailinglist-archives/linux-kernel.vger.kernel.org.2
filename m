@@ -2,68 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B44A84327FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 21:52:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 027324327FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 21:53:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232405AbhJRTyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 15:54:54 -0400
-Received: from mail-oi1-f175.google.com ([209.85.167.175]:43832 "EHLO
-        mail-oi1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230159AbhJRTyx (ORCPT
+        id S233279AbhJRTzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 15:55:17 -0400
+Received: from mail-oo1-f41.google.com ([209.85.161.41]:47023 "EHLO
+        mail-oo1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230159AbhJRTzP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 15:54:53 -0400
-Received: by mail-oi1-f175.google.com with SMTP id o4so1304740oia.10;
-        Mon, 18 Oct 2021 12:52:41 -0700 (PDT)
+        Mon, 18 Oct 2021 15:55:15 -0400
+Received: by mail-oo1-f41.google.com with SMTP id c29-20020a4ad21d000000b002b6cf3f9aceso296326oos.13;
+        Mon, 18 Oct 2021 12:53:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=Q6I6Sfuna3OD0rMWi1ff5fM0/2M4IWqYf0vFWqx6Q+A=;
-        b=7LrUi5rNaKDoHcJ36oRKf21N6iWE0o1yMQNyJDfyjdAabGtpb6PA2FBUg3TwB4ttdm
-         s75jECfQPgvXaRSEo51rehCxtu2jVJmNguUdGs7xrmQVniXrqeKWbDbyiNBQqWf6yIAm
-         oawpZDSIMCLZFlJ4Y8rRLerk+uusp8g0OOxDfwGaOUVP6zk7XeY1Z+cKmADV5UJZ3Rps
-         UD52W7+6jFLY20zpls3Msc8ejpDynNOXZr/o9AlrCJIU2z8DKBz6g1mC2ebegWEeJewh
-         HSBkoqGLvGt8rQojAE8NbDSlssTKjRd1kaTa1Fu2ONC6WyeUEKHpx8bFPFCcFnBHxciO
-         3+4A==
-X-Gm-Message-State: AOAM530rquAmIudYV0gtwt9zmkN4U8vZFB/UC9BbPa6huzfUiMr5CcsM
-        yLJZ2HQXC5N79/9SeMQ1lw==
-X-Google-Smtp-Source: ABdhPJwhFW+GuJ26cLhKeqsKsQ9+hwRrPd/sK03XOa1Y1uAJZ2hmaXpww4cKe5UJInqGIGsDKIrUkA==
-X-Received: by 2002:aca:ba41:: with SMTP id k62mr720043oif.53.1634586761453;
-        Mon, 18 Oct 2021 12:52:41 -0700 (PDT)
+        bh=Jc2FxaRgL1njdwtsQI/o3XdkSBi4yk7Rx3B3v7i1+VQ=;
+        b=FXJQ+C11dzFaS5kbGF13yWYhlLsfymO3df4+ghb5V4IbqYV3OdtPl6PxtxnVW3YLea
+         3PYyfHdbTAKg2ojEbNozcl0+0W6UgdFaMX3ZKDdAAzk9e9v/p2DoR5uR9XMELAiwMsZv
+         UaqqeZ1U0iozTaPQmzu9qiJATkJ3pwRQVtjC4kcxEi0TVXmfqztWNdEleVGcPY6b6+W/
+         iapROvkLsdQ7+sdws96AQeRj59R3U1kxPd5gQJuTJdo7wL1PvpvJlC05LNQZxO44HO4L
+         ill7QhVmlF8eeuduA37pUFjNBsfjobMkiXJU/sopCCzfF6Gd6lX5NjSls0IbpOm2jLNs
+         MqlA==
+X-Gm-Message-State: AOAM532MilbKSwf2lRyUNIdBv6gyZna5SsW1CAU7MJ0wqEoWJRcdPHzF
+        bOejDLc5Hv3U/0MQWsCKtQ==
+X-Google-Smtp-Source: ABdhPJw+7j5G+H31RvX9lnlVmSu7O6kxudvN3FnoGLCqWlzGxVhv4fst1OMZZ2iotKqHSJScjGdXAg==
+X-Received: by 2002:a4a:4548:: with SMTP id y69mr1401994ooa.52.1634586783676;
+        Mon, 18 Oct 2021 12:53:03 -0700 (PDT)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id g29sm3136078oic.27.2021.10.18.12.52.40
+        by smtp.gmail.com with ESMTPSA id l10sm3132430otj.9.2021.10.18.12.53.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 12:52:40 -0700 (PDT)
-Received: (nullmailer pid 2842303 invoked by uid 1000);
-        Mon, 18 Oct 2021 19:52:40 -0000
-Date:   Mon, 18 Oct 2021 14:52:40 -0500
+        Mon, 18 Oct 2021 12:53:03 -0700 (PDT)
+Received: (nullmailer pid 2842981 invoked by uid 1000);
+        Mon, 18 Oct 2021 19:53:02 -0000
+Date:   Mon, 18 Oct 2021 14:53:02 -0500
 From:   Rob Herring <robh@kernel.org>
-To:     Vincent Whitchurch <vincent.whitchurch@axis.com>
-Cc:     kernel@axis.com, lars@metafoo.de, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, robh+dt@kernel.org, jic23@kernel.org,
-        devicetree@vger.kernel.org, peda@axentia.se
-Subject: Re: [PATCH v2 2/3] dt-bindings: iio: io-channel-mux: Add property
- for settle time
-Message-ID: <YW3QiAcIy2wdf3OP@robh.at.kernel.org>
-References: <20211007134641.13417-1-vincent.whitchurch@axis.com>
- <20211007134641.13417-3-vincent.whitchurch@axis.com>
+To:     Luca Weiss <luca@z3ntu.xyz>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        David Collins <collinsd@codeaurora.org>,
+        linux-kernel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        linux-arm-msm@vger.kernel.org, konrad.dybcio@somainline.org,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        devicetree@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mark Brown <broonie@kernel.org>, Andy Gross <agross@kernel.org>
+Subject: Re: [PATCH v2 02/11] dt-bindings: regulator: qcom,rpmh: Add
+ compatible for PM6350
+Message-ID: <YW3QnsAsQ/7m9kQK@robh.at.kernel.org>
+References: <20211007212444.328034-1-luca@z3ntu.xyz>
+ <20211007212444.328034-3-luca@z3ntu.xyz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211007134641.13417-3-vincent.whitchurch@axis.com>
+In-Reply-To: <20211007212444.328034-3-luca@z3ntu.xyz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 07 Oct 2021 15:46:40 +0200, Vincent Whitchurch wrote:
-> Hardware may require some time for the muxed analog signals to settle
-> after the muxing is changed.  Allow this time to be specified in the
-> devicetree.
+On Thu, 07 Oct 2021 23:24:29 +0200, Luca Weiss wrote:
+> Add compatible string for pm6350 used in sm6350 boards.
 > 
-> Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
+> Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
 > ---
->  .../devicetree/bindings/iio/multiplexer/io-channel-mux.yaml  | 5 +++++
->  1 file changed, 5 insertions(+)
+>  .../devicetree/bindings/regulator/qcom,rpmh-regulator.yaml      | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Acked-by: Rob Herring <robh@kernel.org>
