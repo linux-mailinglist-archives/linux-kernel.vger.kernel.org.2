@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A3A0431C09
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:37:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC572431CD6
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:43:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232029AbhJRNhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:37:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54084 "EHLO mail.kernel.org"
+        id S232916AbhJRNp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:45:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37404 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232195AbhJRNfh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:35:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ABAD6610C7;
-        Mon, 18 Oct 2021 13:30:41 +0000 (UTC)
+        id S233740AbhJRNn1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:43:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F3D261528;
+        Mon, 18 Oct 2021 13:34:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634563842;
-        bh=rJboFWYOlFxCjJ2sD+ydfZ3t2qyUBerEkypslsxgIkw=;
+        s=korg; t=1634564077;
+        bh=eTnfVWKlsW/i6qDvROrWWj7teRSCUAukI+LYIxwu9zI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=srAgZQUaYUj6dGI6VtDe/yKYRutFeOYOywNNivsNOsv0BcyuF6YBlE2NwX6RKNPX+
-         md+Ar9QGgvv5pl26B5dccyH4LI7mENNL7KNsPjb/YcA0wXrHLzRV30JQfgqn3ewgH9
-         vVGwR6FNwrsHIM4y9XQyiknZI4Jxtc1wSAKgDImY=
+        b=Eu++V8Cv/lEPyHsgie5VC4Cm3Akn1/xmHJ/lcjH7MmmGlwFZKJPrtiPmjukTkPrFU
+         qoMZyqZGXo34HBiD1zCJGpSz8GJRt5CjeqsGVWbbh8BMMesIbxxtxorrj6yiojvoe5
+         87WXb/yH78qYB5lpI2To9uKnmzr5FUtwsT9toZJk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.4 35/69] KVM: PPC: Book3S HV: Make idle_kvm_start_guest() return 0 if it went to guest
+        stable@vger.kernel.org, Jiri Valek - 2N <valek@2n.cz>,
+        Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH 5.10 057/103] iio: light: opt3001: Fixed timeout error when 0 lux
 Date:   Mon, 18 Oct 2021 15:24:33 +0200
-Message-Id: <20211018132330.646217210@linuxfoundation.org>
+Message-Id: <20211018132336.676176310@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132329.453964125@linuxfoundation.org>
-References: <20211018132329.453964125@linuxfoundation.org>
+In-Reply-To: <20211018132334.702559133@linuxfoundation.org>
+References: <20211018132334.702559133@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,71 +40,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Ellerman <mpe@ellerman.id.au>
+From: Jiri Valek - 2N <valek@2n.cz>
 
-commit cdeb5d7d890e14f3b70e8087e745c4a6a7d9f337 upstream.
+commit 26d90b5590579def54382a2fc34cfbe8518a9851 upstream.
 
-We call idle_kvm_start_guest() from power7_offline() if the thread has
-been requested to enter KVM. We pass it the SRR1 value that was returned
-from power7_idle_insn() which tells us what sort of wakeup we're
-processing.
+Reading from sensor returned timeout error under
+zero light conditions.
 
-Depending on the SRR1 value we pass in, the KVM code might enter the
-guest, or it might return to us to do some host action if the wakeup
-requires it.
-
-If idle_kvm_start_guest() is able to handle the wakeup, and enter the
-guest it is supposed to indicate that by returning a zero SRR1 value to
-us.
-
-That was the behaviour prior to commit 10d91611f426 ("powerpc/64s:
-Reimplement book3s idle code in C"), however in that commit the
-handling of SRR1 was reworked, and the zeroing behaviour was lost.
-
-Returning from idle_kvm_start_guest() without zeroing the SRR1 value can
-confuse the host offline code, causing the guest to crash and other
-weirdness.
-
-Fixes: 10d91611f426 ("powerpc/64s: Reimplement book3s idle code in C")
-Cc: stable@vger.kernel.org # v5.2+
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20211015133929.832061-2-mpe@ellerman.id.au
+Signed-off-by: Jiri Valek - 2N <valek@2n.cz>
+Fixes: ac663db3678a ("iio: light: opt3001: enable operation w/o IRQ")
+Link: https://lore.kernel.org/r/20210920125351.6569-1-valek@2n.cz
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/powerpc/kvm/book3s_hv_rmhandlers.S |    9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ drivers/iio/light/opt3001.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/arch/powerpc/kvm/book3s_hv_rmhandlers.S
-+++ b/arch/powerpc/kvm/book3s_hv_rmhandlers.S
-@@ -301,6 +301,7 @@ _GLOBAL(idle_kvm_start_guest)
- 	stdu	r1, -SWITCH_FRAME_SIZE(r4)
- 	// Switch to new frame on emergency stack
- 	mr	r1, r4
-+	std	r3, 32(r1)	// Save SRR1 wakeup value
- 	SAVE_NVGPRS(r1)
+--- a/drivers/iio/light/opt3001.c
++++ b/drivers/iio/light/opt3001.c
+@@ -276,6 +276,8 @@ static int opt3001_get_lux(struct opt300
+ 		ret = wait_event_timeout(opt->result_ready_queue,
+ 				opt->result_ready,
+ 				msecs_to_jiffies(OPT3001_RESULT_READY_LONG));
++		if (ret == 0)
++			return -ETIMEDOUT;
+ 	} else {
+ 		/* Sleep for result ready time */
+ 		timeout = (opt->int_time == OPT3001_INT_TIME_SHORT) ?
+@@ -312,9 +314,7 @@ err:
+ 		/* Disallow IRQ to access the device while lock is active */
+ 		opt->ok_to_ignore_lock = false;
  
- 	/*
-@@ -352,6 +353,10 @@ kvm_unsplit_wakeup:
+-	if (ret == 0)
+-		return -ETIMEDOUT;
+-	else if (ret < 0)
++	if (ret < 0)
+ 		return ret;
  
- kvm_secondary_got_guest:
- 
-+	// About to go to guest, clear saved SRR1
-+	li	r0, 0
-+	std	r0, 32(r1)
-+
- 	/* Set HSTATE_DSCR(r13) to something sensible */
- 	ld	r6, PACA_DSCR_DEFAULT(r13)
- 	std	r6, HSTATE_DSCR(r13)
-@@ -443,8 +448,8 @@ kvm_no_guest:
- 	mfspr	r4, SPRN_LPCR
- 	rlwimi	r4, r3, 0, LPCR_PECE0 | LPCR_PECE1
- 	mtspr	SPRN_LPCR, r4
--	/* set up r3 for return */
--	mfspr	r3,SPRN_SRR1
-+	// Return SRR1 wakeup value, or 0 if we went into the guest
-+	ld	r3, 32(r1)
- 	REST_NVGPRS(r1)
- 	ld	r1, 0(r1)	// Switch back to caller stack
- 	ld	r0, 16(r1)	// Reload LR
+ 	if (opt->use_irq) {
 
 
