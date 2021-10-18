@@ -2,83 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D797F4329C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 00:29:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03C164329C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 00:29:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232161AbhJRWbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 18:31:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45866 "EHLO
+        id S232705AbhJRWbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 18:31:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229941AbhJRWbU (ORCPT
+        with ESMTP id S229524AbhJRWbT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 18:31:20 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C02CC061745
+        Mon, 18 Oct 2021 18:31:19 -0400
+Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com [IPv6:2607:f8b0:4864:20::92e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B370C06161C
         for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 15:29:08 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id w19so4868430edd.2
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 15:29:08 -0700 (PDT)
+Received: by mail-ua1-x92e.google.com with SMTP id f3so10955500uap.6
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 15:29:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
+        d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=9zuoZMKbiKNaH3XCwS1R+3sTXVzpWLyuoW871drFzkY=;
-        b=vgTflpxrKVgoupN0TqS1G+MlxzzTMNQ4cy0i6FsdRsw2JtJSfFg9cyPkIzPXdjnvk4
-         kYaOvVEPAq9oVlkU64zq8+aOqCBFgzp4uCbGvfWEVhNJ/thHuzmzVwnvx6urAjGprYvs
-         9DlrONk1sQ8l0KykDCbCmLzAnDQbKpGLYisagMZOb0UdLsB0QhLrkbRsKGTJsYQ7ZC2W
-         NLBrpyFFtv1+gzfIvdKnlshG+Bd/nVSwV9KIIE5NNAkYqKnbNLVP/wN0JpM5L0Z37v7n
-         X01Xy156gkFDRedPZPwhB+D+3KplU494K102kmSLHmrDXIcRPp8GDx3FhFN3o14DY8IN
-         0wJg==
+        bh=XMD63kGqlNMIm2FKXXcH/6opQFRwCGdWT3zmw0bkJrA=;
+        b=aKYJXtCHjg2UnpSBovbegHvrjQiiX3aR+c/HFkMZBU2WdysI4FgFgIb+VhXYJYJ/Fk
+         iK2oY2LGnIt902esFd+ID+e7zq5LkydVbKsiV4NsYawJaxuGHILadEQxbrVslmZAQjAK
+         E2cMzdN7w4+72V9KvpnzfS4jOQdQZLDL/EtYaMUX94zllgePPaTFyNfUCcbFw82PS8tL
+         OD/1GlZNj69MvquEwQKhJCmDayJDO0iAiNvrTUvFtdIP71EaESI0iqsw2SLpdb2UUqTW
+         oeulcO37ldGjq5//rxfNwSv8k4TZV8QovvZM7JioV9JGWuk9f4unkLNtw/36UY/R3CQQ
+         5cPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=9zuoZMKbiKNaH3XCwS1R+3sTXVzpWLyuoW871drFzkY=;
-        b=ZEi+Qf4Wb4nNJIY9qYYizVNv8z2NazS364juojzpi5pg+gbV1dsRp8NwxKfoexlRHE
-         HNCAQTemFAes+ss7hpUi+Ry0/SuYdXzw+D2ynVw1/f4Y/fOMPX5ny9QIeg49lPQOmU1C
-         XH+P+yFNs+3llj1acrYmjOwefFJLz6Q/QggYh2jx/GePr2DGmZPqxIKmtsZD3AEZoJeu
-         FY1Kul1qSUH8D4D3+QtqMg0NuAQ1geVw4z1aeVsdJ6QeSj2Dog0KbN+a72cPosdLhwBP
-         MijFlAY+mjojwyrIr1ned4dUJ9WONgtwmzpmN/e+D36ZV+IfSy+iVepfdrvC48I85Lgt
-         CiCA==
-X-Gm-Message-State: AOAM530n9lj8sO8M+dFQfDUVXujNf0GdDPR52HH5KPccAVE7ABUOzhjE
-        Jhjqdi56c2nGKvQzpi6wpsH+LtzDWts737x67K7w
-X-Google-Smtp-Source: ABdhPJzbpf9mdL4XAObhLSgLto4FuDw6K0yFGOIT9nqJHNaTcdUyKFisd7iHJVnov0GR1iqXFMnlGG3k7/xdJN2c5uY=
-X-Received: by 2002:a05:6402:5114:: with SMTP id m20mr47737847edd.256.1634596146578;
- Mon, 18 Oct 2021 15:29:06 -0700 (PDT)
+        bh=XMD63kGqlNMIm2FKXXcH/6opQFRwCGdWT3zmw0bkJrA=;
+        b=srgrEASGb9w5guGUj4poTFXMlHMsSdCHQiLsJ25oZCwqvMhidU1ncRd3ccdrUY9Taq
+         TB4DrinRlgNcueczAu/y1b1CwrT4gYB6yuNX2nF3Tngf52gQ71UwgpUfl51OpNpzRAYt
+         qoLB/NdPQFngVBdi2wVrpxxHe8ZcBcSB4xASgrWqx4vW8mFfXCMvsp5Fx44QDTitmMRK
+         8Gb75PuDuYlldo+G+wb+Dk6mHAVxvm97DdXnbHI71wZAGLF0oAfVXxXjhFGHs5yKR7Xl
+         nSA70+BcQO2e1+0XuHY/W7/sgqbtp+IP7+RD1n6Vc4Ra0DB0bXWcodi1qs29PPvV1tHZ
+         kOZA==
+X-Gm-Message-State: AOAM530jSdHb08cPiuoydxY3Lef38aIRjo0yc4UMAyZSvvUMHf4yNcjf
+        Njd9Y67QGWLDzGBiMP+7aUr63Mfq/EUlDaKX4vVb6A==
+X-Google-Smtp-Source: ABdhPJzo0CfetTCPrXkMaZh15zQ32H+Uc/w23A3wWlFLZgyQ214JKsoGDlpvpzAuhdk/f2lsqyFwk935WRE9e4LzKoc=
+X-Received: by 2002:a9f:23d0:: with SMTP id 74mr28388250uao.131.1634596147043;
+ Mon, 18 Oct 2021 15:29:07 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211016072351.237745-1-cuigaosheng1@huawei.com> <20211016072351.237745-2-cuigaosheng1@huawei.com>
-In-Reply-To: <20211016072351.237745-2-cuigaosheng1@huawei.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Mon, 18 Oct 2021 18:28:55 -0400
-Message-ID: <CAHC9VhRrVoKn43F4KdWVp9_mJ8Kv9azvptiBkSTdBx+YcnW5ww@mail.gmail.com>
-Subject: Re: [PATCH -next,v3 1/2] audit: fix possible null-pointer dereference
- in audit_filter_rules
-To:     Gaosheng Cui <cuigaosheng1@huawei.com>
-Cc:     Eric Paris <eparis@redhat.com>, rgb@redhat.com,
-        linux-audit@redhat.com, linux-kernel@vger.kernel.org,
-        wangweiyang2@huawei.com
+References: <1M9_d6wrcu6rdPe1ON0_k0lOxJMyyot3KAb1gdyuwzDPC777XVUWPHoTCEVmcK3fYfgu7sIo3PSaLe9KulUdm4TWVuqlbKyYGxRAjsf_Cpk=@protonmail.ch>
+ <87ee9pa6xw.fsf@disp2133> <OJK-F2NSBlem52GqvCQYzaVxs2x9Csq3qO4QbTG4A4UUNaQpebpAQmyyKzUd70CIo27C4K7CL3bhIzcxulIzYMu067QOMXCFz8ejh3ZtFhE=@protonmail.ch>
+ <U6ByMUZ9LgvxXX6eb0M9aBx8cw8GpgE1qU22LaxaJ_2bOdnGLLJHDgnLL-6cJT7dKdcG_Ms37APSutc3EIMmtpgpP_2kotVLCNRoUq-wTJ8=@protonmail.ch>
+ <878rzw77i3.fsf@disp2133> <o3tuBB58KUQjyQsALqWi0s1tSPlgVPST4PNNjHewIgRB7CUOOVyFSFxSBLCOJdUH3ly21cIjBthNyqQGnDgJD7fjU8NiVHq7i0JcMvYuzUA=@protonmail.ch>
+ <20210929173611.fo5traia77o63gpw@example.org> <hPgvCJ2KbKeauk78uWJEsuKJ5VfMqknPJ_oyOZe6M78-6eG7qnj0t0UKC-joPVowo_nOikIsEWP-ZDioARfI-Cl6zrHjCHPJST3drpi5ALE=@protonmail.ch>
+ <20210930130640.wudkpmn3cmah2cjz@example.org> <CAOUHufZmAjuKyRcmq6GH8dfdZxchykS=BTZDsk-gDAh3LJTe1Q@mail.gmail.com>
+ <878rz8wwb6.fsf@disp2133> <87v92cvhbf.fsf@disp2133> <ccbccf82-dc50-00b2-1cfd-3da5e2c81dbf@infomedia.dk>
+ <87mtnavszx.fsf_-_@disp2133> <87fssytizw.fsf_-_@disp2133> <871r4itfjw.fsf_-_@disp2133>
+In-Reply-To: <871r4itfjw.fsf_-_@disp2133>
+From:   Yu Zhao <yuzhao@google.com>
+Date:   Mon, 18 Oct 2021 16:28:56 -0600
+Message-ID: <CAOUHufafm96SU8UCxFgU_1y9KrxMxCeX=OZAceeZ0gH7mMRdvQ@mail.gmail.com>
+Subject: Re: [PATCH 0/3] ucounts: misc fixes
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Alexey Gladkov <legion@kernel.org>,
+        Rune Kleveland <rune.kleveland@infomedia.dk>,
+        Jordan Glover <Golden_Miller83@protonmail.ch>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        "containers\\@lists.linux-foundation.org" 
+        <containers@lists.linux-foundation.org>,
+        Hillf Danton <hdanton@sina.com>,
+        David Howells <dhowells@redhat.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 16, 2021 at 3:21 AM Gaosheng Cui <cuigaosheng1@huawei.com> wrote:
+On Mon, Oct 18, 2021 at 11:21 AM Eric W. Biederman
+<ebiederm@xmission.com> wrote:
 >
-> Fix  possible null-pointer dereference in audit_filter_rules.
 >
-> audit_filter_rules() error: we previously assumed 'ctx' could be null
+> While digging into the previous ucount kernel crashes I found some minor
+> bugs in the ucount code.  When hit these bugs all result in a ucount
+> either being counted in the wrong location or leak of a struct ucounts.
 >
-> Fixes: bf361231c295 ("audit: add saddr_fam filter field")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-> Signed-off-by: Gaosheng Cui <cuigaosheng1@huawei.com>
-> ---
->  kernel/auditsc.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Nothing particularly serious but certainly things that should be fixed.
+>
+> Eric W. Biederman (3):
+>       ucounts: Pair inc_rlimit_ucounts with dec_rlimit_ucoutns in commit_creds
+>       ucounts: Proper error handling in set_cred_ucounts
+>       ucounts: Move get_ucounts from cred_alloc_blank to key_change_session_keyring
+>
+>  kernel/cred.c                | 9 ++++-----
+>  security/keys/process_keys.c | 8 ++++++++
+>  2 files changed, 12 insertions(+), 5 deletions(-)
 
-Thank you for the patch; I added a stable tag and merged it into
-audit/stable-5.15, I'll send it up to Linus later this week once it
-has gone through some additional testing.
+Thanks for the fixes. Tested the whole series on the latest 5.15-rc6.
 
--- 
-paul moore
-www.paul-moore.com
+Tested-by: Yu Zhao <yuzhao@google.com>
