@@ -2,87 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9435A432834
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 22:13:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8499A43282E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 22:09:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231739AbhJRUPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 16:15:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45484 "EHLO mail.kernel.org"
+        id S233644AbhJRUL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 16:11:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44544 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230298AbhJRUPS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 16:15:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 534D4610A1;
-        Mon, 18 Oct 2021 20:13:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634587986;
-        bh=+lS5kHIyjwnfYHKgJMTUauxWdHZgSV9xSrTbK54/hj4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hvPMuTr60m7GPIQet8CRTOHntnvIggo1HyHAkse+yblsZZ0vemub+ArHz+GQwazsx
-         6FDAAlLuaGGTvkfqCuYQANqrMewR+NnpM5t0YLwInA3HGw9yKzqVflh+TVI/uw3Lyw
-         xfWZLnWhpyEUcBHQLrSzoskvoGDQYlgpx2zwl1vmc5zV+0q9Tx/emr4URFcVvplE5b
-         fxFSihtDn39mvMhq7EQAmbuzKwdp7seZ1uZVR3XQCPh4Ku0C7oTTRen16Vaif49o2R
-         +nAqg/nCL/1WnVzwkxHWXWTjHAC7WdQlP1EikjRMvCR8Jb07siRXhEdFBGN1RmRJ8F
-         UWQLupkcd+zww==
-Date:   Mon, 18 Oct 2021 21:13:04 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>
-Cc:     alsa-devel@alsa-project.org, Vijendar.Mukunda@amd.com,
-        Basavaraj.Hiregoudar@amd.com, Sunil-kumar.Dommati@amd.com,
-        Alexander.Deucher@amd.com, Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 1/8] ASoC: amd: Add common framework to support I2S on
- ACP SOC
-Message-ID: <YW3VUMT9Rjs2+A1G@sirena.org.uk>
-References: <20211012071939.97002-1-AjitKumar.Pandey@amd.com>
- <20211012071939.97002-2-AjitKumar.Pandey@amd.com>
+        id S229941AbhJRULZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 16:11:25 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D22AE611EF;
+        Mon, 18 Oct 2021 20:09:11 +0000 (UTC)
+Date:   Mon, 18 Oct 2021 21:13:26 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Peter Rosin <peda@axentia.se>
+Cc:     Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        devicetree@vger.kernel.org, kernel@axis.com, lars@metafoo.de,
+        linux-iio@vger.kernel.org, robh+dt@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/3] Add settle time support to iio-mux
+Message-ID: <20211018211326.7148b03e@jic23-huawei>
+In-Reply-To: <5f3b6dd9-b90c-9e54-1772-56a79cc8c1cc@axentia.se>
+References: <20211007134641.13417-1-vincent.whitchurch@axis.com>
+        <7c14fabc-8811-5875-15a0-67884e2da78d@axentia.se>
+        <20211017183108.1797d416@jic23-huawei>
+        <5f3b6dd9-b90c-9e54-1772-56a79cc8c1cc@axentia.se>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="UAG1RRAEZBUpbXJS"
-Content-Disposition: inline
-In-Reply-To: <20211012071939.97002-2-AjitKumar.Pandey@amd.com>
-X-Cookie: An idle mind is worth two in the bush.
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, 17 Oct 2021 23:08:06 +0200
+Peter Rosin <peda@axentia.se> wrote:
 
---UAG1RRAEZBUpbXJS
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> On 2021-10-17 19:31, Jonathan Cameron wrote:
+> > On Sat, 9 Oct 2021 01:09:56 +0200
+> > Peter Rosin <peda@axentia.se> wrote:
+> >   
+> >> Hi Vincent!
+> >>
+> >> On 2021-10-07 15:46, Vincent Whitchurch wrote:  
+> >>> On one of our boards we use gpio-mux with iio-mux to read voltages using an ADC
+> >>> from a few different channels, and on this board the input voltage needs some
+> >>> time to stabilize after a switch of the mux.
+> >>>
+> >>> This series add devicetree and driver support for this kind of hardware which
+> >>> requries a settle time after muxing.
+> >>>
+> >>> v1 -> v2:
+> >>> - Move property support to iio-mux and delay handling to mux core as suggested
+> >>>   by Peter.
+> >>>
+> >>> v1: https://lore.kernel.org/all/20211004153640.20650-1-vincent.whitchurch@axis.com/
+> >>>
+> >>> Vincent Whitchurch (3):
+> >>>   mux: add support for delay after muxing
+> >>>   dt-bindings: iio: io-channel-mux: Add property for settle time
+> >>>   iio: multiplexer: iio-mux: Support settle-time-us property
+> >>>
+> >>>  .../iio/multiplexer/io-channel-mux.yaml       |  5 +++
+> >>>  drivers/iio/multiplexer/iio-mux.c             |  7 +++-
+> >>>  drivers/mux/core.c                            | 36 ++++++++++++++++---
+> >>>  include/linux/mux/consumer.h                  | 23 +++++++++---
+> >>>  include/linux/mux/driver.h                    |  4 +++
+> >>>  5 files changed, 65 insertions(+), 10 deletions(-)
+> >>>     
+> >>
+> >> This looks really nice, thank you! The only question I see is if it should
+> >> go via my (virtually unused) mux tree or via the iio tree. Yes, the meat is
+> >> in mux/core.c, but I'm happy to just ack these patches and have Jonathan
+> >> handle them. But, I'm also fine with handling it in the mux tree (but I'm
+> >> getting old and forgetful, and it's been so many moons that I need to
+> >> re-learn the steps).
+> >>
+> >> Jonathan, you or me? If you, you can add:
+> >>
+> >> Acked-by: Peter Rosin <peda@axentia.se>  
+> > 
+> > I don't really mind, but the 4/3 and 5/3 have broken my b4 based flow + Rob
+> > hasn't yet given an Ack on those two, so I'll not pick any of them up just yet.
+> > I can sort out the two oddly numbered patches if Rob is happy, though they'll
+> > probably not have the nice link tags that b4 automates.
+> > 
+> > Note Rob didn't actually say he was happy with patch 2 yet as far as I can tell.  
+> 
+> Getting Rob's ack on 2/3 is of course a prerequisite to 1/3 and 3/3.
+Given Rob has now given that, I'll queue these 3 patches up.
 
-On Tue, Oct 12, 2021 at 12:49:32PM +0530, Ajit Kumar Pandey wrote:
-> We are using legacy way of exposing dais and DMA configuration that
-> requires separate driver modules for various ACP SOC with almost
-> similar hw configuration. Moreover the legacy approach requires
-> separate I2S and DMA module platform devices registration and need
-> machine specific quirk to control various I2S endpoints. Add generic
-> dai driver and platform driver for I2S controller on ACP hw block.
+Applied to the iio-togreg branch of iio.git and pushed out as testing for 0-day
+to poke at.
 
-This doesn't apply against current code, please check and resend:
+> 
+> Just ignore 4/3 and 5/3 if they are holding things back or are making things
+> difficult in any way. I'll resend them later if need be, as they really have
+> very little to do with this series.
+> 
+> With hindsight I should probably have sent them as a fresh series, and I can
+> re-post them as such immediately if that helps? But then again, maybe that
+> just muddies the water even further...
 
-pplying: ASoC: amd: Add common framework to support I2S on ACP SOC
-Using index info to reconstruct a base tree...
-M	sound/soc/amd/Kconfig
-Falling back to patching base and 3-way merge...
-Auto-merging sound/soc/amd/Kconfig
-CONFLICT (content): Merge conflict in sound/soc/amd/Kconfig
+Let's deal with those two separately.  I can pick them off list if Rob is happy
+with those two.  The dt bindings patchwork has them as needing review so 
+I'm sure they'll get it shortly.
 
---UAG1RRAEZBUpbXJS
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks,
 
------BEGIN PGP SIGNATURE-----
+Jonathan
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFt1U8ACgkQJNaLcl1U
-h9A4FQf/aEjjqZ34431puWcsp5Booidsz7yFPt1mzexZ/OJS9X5ZnyqhENI4+2CW
-6/TTKq1ktGKVHGP5Ty+06MTY3CKH0Z8OEBWi6tu7hsWdVBji4yNT/jKfzJDlRm8j
-jx86ZJjt7VLTtmjxY5crM/K0hProILbfKk0KnBBJs5VFHfHgxX2yvNzhVy81dMcj
-G0XVnC+fAEUyBYWZ0Y5ZMOG6Nx3ufkLhpEwqqEPeyEuETtftSaN67n30aUNUeeo5
-mnvEto51AE/Stk5s9M9sNlt7gLQRDs6ifBBRORH1VkRN+E4g/R6F8KO5LILU3k/O
-1fHxa2r4XHLpqFL12BjLyj06+plLug==
-=dfrz
------END PGP SIGNATURE-----
+> 
+> Cheers,
+> Peter
 
---UAG1RRAEZBUpbXJS--
