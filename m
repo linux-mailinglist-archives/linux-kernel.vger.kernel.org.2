@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFA06431CC9
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:43:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E188C431DE2
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:53:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233242AbhJRNoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:44:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40222 "EHLO mail.kernel.org"
+        id S234081AbhJRNzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:55:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57658 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233363AbhJRNmn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:42:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1D2F861439;
-        Mon, 18 Oct 2021 13:34:15 +0000 (UTC)
+        id S234174AbhJRNxQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:53:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E1A961A0C;
+        Mon, 18 Oct 2021 13:39:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634564056;
-        bh=tKdSaJ4ky4rkcucRDq96qoY0E2exYgCClISb3PmPDUY=;
+        s=korg; t=1634564340;
+        bh=DNlUJedpY1d8ERHjy1N7bkYZo8U0LtRGe4n5jCwrsuc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=L7biSQsIXLf2t8nmBx1dD3GDvFFGcxKdjgRKsks1SzPGZj47WCZfF1NCiudXUiCJb
-         wndu0J4MKBITHEGjS+sflkCEMh13CCH7GC+KosbacfrecipjKFhkq3liXAaCjJdm5V
-         EMRqhcMN/KVPwBI7cvwOwqjkiAAw+uqORXCuERtY=
+        b=OUSELgumUQejG2/wQmVQU/dT8SKINdr70zmo5UNUhfIO1f9H1TUIsW+oidOeGaUmX
+         HeA4MPAigU9lCurVD18qFQV/Wkg5EhUXhYKZ6kgHUgQNJdYadUa6cK8Izc04o6qMvv
+         QVk+a0K4UN55ROwCtB/MnrI9rHzGevENCuwqZ1i8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
-        Guo Ren <guoren@kernel.org>
-Subject: [PATCH 5.10 015/103] csky: dont let sigreturn play with priveleged bits of status register
+        stable@vger.kernel.org, Daniele Palmas <dnlplm@gmail.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 5.14 052/151] USB: serial: option: add Telit LE910Cx composition 0x1204
 Date:   Mon, 18 Oct 2021 15:23:51 +0200
-Message-Id: <20211018132335.209394743@linuxfoundation.org>
+Message-Id: <20211018132342.379554974@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132334.702559133@linuxfoundation.org>
-References: <20211018132334.702559133@linuxfoundation.org>
+In-Reply-To: <20211018132340.682786018@linuxfoundation.org>
+References: <20211018132340.682786018@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,43 +39,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Al Viro <viro@zeniv.linux.org.uk>
+From: Daniele Palmas <dnlplm@gmail.com>
 
-commit fbd63c08cdcca5fb1315aca3172b3c9c272cfb4f upstream.
+commit f5a8a07edafed8bede17a95ef8940fe3a57a77d5 upstream.
 
-csky restore_sigcontext() blindly overwrites regs->sr with the value
-it finds in sigcontext.  Attacker can store whatever they want in there,
-which includes things like S-bit.  Userland shouldn't be able to set
-that, or anything other than C flag (bit 0).
+Add the following Telit LE910Cx composition:
 
-Do the same thing other architectures with protected bits in flags
-register do - preserve everything that shouldn't be settable in
-user mode, picking the rest from the value saved is sigcontext.
+0x1204: tty, adb, mbim, tty, tty, tty, tty
 
-Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
-Signed-off-by: Guo Ren <guoren@kernel.org>
+Signed-off-by: Daniele Palmas <dnlplm@gmail.com>
+Link: https://lore.kernel.org/r/20211004105655.8515-1-dnlplm@gmail.com
 Cc: stable@vger.kernel.org
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/csky/kernel/signal.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/usb/serial/option.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/arch/csky/kernel/signal.c
-+++ b/arch/csky/kernel/signal.c
-@@ -52,10 +52,14 @@ static long restore_sigcontext(struct pt
- 	struct sigcontext __user *sc)
- {
- 	int err = 0;
-+	unsigned long sr = regs->sr;
- 
- 	/* sc_pt_regs is structured the same as the start of pt_regs */
- 	err |= __copy_from_user(regs, &sc->sc_pt_regs, sizeof(struct pt_regs));
- 
-+	/* BIT(0) of regs->sr is Condition Code/Carry bit */
-+	regs->sr = (sr & ~1) | (regs->sr & 1);
-+
- 	/* Restore the floating-point state. */
- 	err |= restore_fpu_state(sc);
- 
+--- a/drivers/usb/serial/option.c
++++ b/drivers/usb/serial/option.c
+@@ -1229,6 +1229,8 @@ static const struct usb_device_id option
+ 	  .driver_info = NCTRL(0) | RSVD(1) | RSVD(2) },
+ 	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x1203, 0xff),	/* Telit LE910Cx (RNDIS) */
+ 	  .driver_info = NCTRL(2) | RSVD(3) },
++	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x1204, 0xff),	/* Telit LE910Cx (MBIM) */
++	  .driver_info = NCTRL(0) | RSVD(1) },
+ 	{ USB_DEVICE(TELIT_VENDOR_ID, TELIT_PRODUCT_LE910_USBCFG4),
+ 	  .driver_info = NCTRL(0) | RSVD(1) | RSVD(2) | RSVD(3) },
+ 	{ USB_DEVICE(TELIT_VENDOR_ID, TELIT_PRODUCT_LE920),
 
 
