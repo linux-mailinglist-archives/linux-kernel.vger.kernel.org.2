@@ -2,100 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1910643112F
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 09:10:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B9DA431133
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 09:11:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230349AbhJRHMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 03:12:01 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:37342 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230419AbhJRHMA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 03:12:00 -0400
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19I0Pg0C021737;
-        Mon, 18 Oct 2021 09:09:40 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=PVPUry39WCKQ8aJ+bKK0+Bp3HnBuEcws7c4ZZVZtcVQ=;
- b=HBvFAocbd0uLUS//m/GtRv98rEAeP4nXVjA8yOMY+LgzOzRKRGYsChgKRaSG1/yHPVgd
- pbDDJrH2ilpN/evknwWF5tCE2jif4bbneA5OYQFEm83vogNzuOufs859uuKiJCd4SJtu
- zZXNm9PcUkmZomdD2umNnvPrBtnVz9NaeQWhI9RnUe3isIbA4i4mmT5bPlGVNwFaYLEl
- KD35LN67uiNrBgUjaPSghSoFcixo08dVZEqVGyv8kk+YfLspLzpgbe2iE1CHL9cR1+B8
- XMBBJc3opD/SWTDFBFnwuRe6t4sh7MlK8fvXYHm6by80+Dte8IuL62rHjFOiGUKw4gL2 Ng== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 3brxbm1s51-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 18 Oct 2021 09:09:40 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id D5EA7100034;
-        Mon, 18 Oct 2021 09:09:39 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 4E016210F61;
-        Mon, 18 Oct 2021 09:09:39 +0200 (CEST)
-Received: from lmecxl0889.lme.st.com (10.75.127.44) by SFHDAG2NODE2.st.com
- (10.75.127.5) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Mon, 18 Oct
- 2021 09:09:38 +0200
-Subject: Re: [PATCH] remoteproc: core: fix potential memory leakage
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>
-CC:     <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>
-References: <20211015124010.4075-1-arnaud.pouliquen@foss.st.com>
-From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
-Message-ID: <c4fc93a5-22d5-303e-d032-d578ebfb48fe@foss.st.com>
-Date:   Mon, 18 Oct 2021 09:09:38 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S230327AbhJRHOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 03:14:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59198 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229708AbhJRHOD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 03:14:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8BD2760F46;
+        Mon, 18 Oct 2021 07:11:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634541112;
+        bh=YuHQREwHg5QEL8Elw/QVagN7Yj1O6FCyx4TJPRwDUag=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Izq04WHZKvoaeWxq2Vfxb0cE6R62itvL4cZseXTS7DGlTZiqRff1NGXQnAghJQWZi
+         xy6wCRS7X3XPZL3yIyiz8PXx53bcMFiqIpZTtVYchs7nXdNN4f0Lo2CXkowfTcoycl
+         8DM6Xb13/5kIegYAbBnKbbW7bKyEoLfhG+rK2nNfEd4CHiu7DjI3Z2eqVgIq/N7cqn
+         OhnrHn+Y7pXv2Qq+4wH+mSUcorP0QArzEp4ka9nd3HktuPv9R25U3glJQ5DHB9SO/H
+         8h2CvLAratKMk0nZFPhN8XCDbIpto4+uQoJ8u/OfEKYcoHafaNmOuS5uIK/5JxC7kA
+         05DNF5qv/wGtw==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1mcMoA-0000AO-VJ; Mon, 18 Oct 2021 09:11:43 +0200
+Date:   Mon, 18 Oct 2021 09:11:42 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Tony Lindgren <tony@atomide.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-serial@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCHv3 0/4] Get rid of pm_runtime_irq_safe() for 8250_omap
+Message-ID: <YW0eLr1N15JsCWd9@hovoldconsulting.com>
+References: <20211015112626.35359-1-tony@atomide.com>
 MIME-Version: 1.0
-In-Reply-To: <20211015124010.4075-1-arnaud.pouliquen@foss.st.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.44]
-X-ClientProxiedBy: SFHDAG1NODE3.st.com (10.75.127.3) To SFHDAG2NODE2.st.com
- (10.75.127.5)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-18_02,2021-10-14_02,2020-04-07_01
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211015112626.35359-1-tony@atomide.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/15/21 2:40 PM, Arnaud Pouliquen wrote:
-> If copy_dma_range_map returns an error, the rvdev structure must
-> be freed.
+On Fri, Oct 15, 2021 at 02:26:22PM +0300, Tony Lindgren wrote:
+> Hi,
 > 
-> Fixes: e0d072782c73 ("dma-mapping: introduce DMA range map, supplanting dma_pfn_offset")
+> Here are v3 patches to get rid of pm_runtime_irq_safe() for the 8250_omap
+> driver. Based on comments from Andy, Johan and Greg, I improved a bunch of
+> things as listed below.
 > 
-> Suggested-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+> For removing the pm_runtime_irq_safe() usage, serial TX is the last
+> remaining issue. We deal with TX by waking up the port and returning 0
+> bytes written from write_room() and write() if the port is not available
+> because of PM runtime autoidle.
 
-Patch to ignore as already fixed by Christophe JAILLET
+Oh, there's a lot more than TX that needs fixing... And I believe the
+second sentence no longer applies since v1.
 
-https://lore.kernel.org/all/163431847249.251657.11309404044031278395.b4-ty@linaro.org/T/
-
-
-> ---
->  drivers/remoteproc/remoteproc_core.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+> Chganges since v2:
 > 
-> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
-> index 502b6604b757..aaa281c8fc82 100644
-> --- a/drivers/remoteproc/remoteproc_core.c
-> +++ b/drivers/remoteproc/remoteproc_core.c
-> @@ -557,8 +557,10 @@ static int rproc_handle_vdev(struct rproc *rproc, void *ptr,
->  	snprintf(name, sizeof(name), "vdev%dbuffer", rvdev->index);
->  	rvdev->dev.parent = &rproc->dev;
->  	ret = copy_dma_range_map(&rvdev->dev, rproc->dev.parent);
-> -	if (ret)
-> +	if (ret) {
-> +		kfree(rvdev);
->  		return ret;
-> +	}
->  	rvdev->dev.release = rproc_rvdev_release;
->  	dev_set_name(&rvdev->dev, "%s#%s", dev_name(rvdev->dev.parent), name);
->  	dev_set_drvdata(&rvdev->dev, rvdev);
+> - Use locking instead of atomic_t as suggested by Greg
 > 
+> Changes since v1:
+> 
+> - Separated out line discipline patches, n_tty -EAGAIN change I still
+>   need to retest
+> 
+> - Changed prep_tx() to more generic wakeup() as also flow control needs it
+> 
+> - Changed over to using wakeup() with device driver runtime PM instead
+>   of write_room()
+> 
+> - Added runtime_suspended flag for drivers and generic serial layer PM
+>   to use
+
+Johan
