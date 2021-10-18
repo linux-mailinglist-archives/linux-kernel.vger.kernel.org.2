@@ -2,194 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 003FD432633
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 20:17:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD4FB432639
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 20:18:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232406AbhJRSTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 14:19:44 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:55762 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229696AbhJRSTn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 14:19:43 -0400
-Received: from zn.tnic (p200300ec2f085700af6a7a3215758573.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:5700:af6a:7a32:1575:8573])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A27881EC04A9;
-        Mon, 18 Oct 2021 20:17:30 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1634581050;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=uFKMgdVJFuAMxHN1IAGm/xRW2JT89EOF3TPA/iPD/r8=;
-        b=UBh+Z8F0bkePuoPFqIcoUJ6KW5uHh7CLk6xjRzKnW6VnRmMxUGvUXbyxmBaDV/mGbWuzv2
-        7dDm774ZELg8Ws6lhkQJGwr1KrX2t8nFkyt4+a6lD4fQa4mHQtUWf18hVMXFSpZCHcS/+4
-        hWm8Za7ekoa4sR9nwA2jG7goM93tbrU=
-Date:   Mon, 18 Oct 2021 20:17:30 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Jane Malalane <jane.malalane@citrix.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Pu Wen <puwen@hygon.cn>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Yazen Ghannam <Yazen.Ghannam@amd.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Huang Rui <ray.huang@amd.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Kim Phillips <kim.phillips@amd.com>, stable@vger.kernel.org
-Subject: Re: [PATCH v2] x86/cpu: Fix migration safety with X86_BUG_NULL_SEL
-Message-ID: <YW25x7AYiM1f1HQA@zn.tnic>
-References: <20211013142230.10129-1-jane.malalane@citrix.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211013142230.10129-1-jane.malalane@citrix.com>
+        id S232556AbhJRSUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 14:20:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45750 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231215AbhJRSUj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 14:20:39 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4C89C06161C;
+        Mon, 18 Oct 2021 11:18:27 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id y7so15363915pfg.8;
+        Mon, 18 Oct 2021 11:18:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:content-transfer-encoding:cc:subject:from:to:date
+         :message-id:in-reply-to;
+        bh=I8eEPb2FqiwPQ4HYeCCY1YPZcmyJICcVlQjpfk8OOEE=;
+        b=iZMjYXFe6xK5J7aOqt8QhrCA8velLxHk98RCtfJKWl2nNvP8/UDCNC4AP8kkWgpDUG
+         FbUPGA0Ut4PNHbFSGAH/vTdUXOg04AovOpYc3MiHL81PyzhxpcjT7S/+iqz2olx4QmUa
+         5TGP5tq/y+dq3g9bY4YD4R0hcjWFWVVgmEPDSolSQ0AfgwK9g2Ca7j1+nRqbBi2uUXHA
+         3arLaHJb+5ktWpf2lP9I6e7MnDIhwsgAZW6WLC6X76p6ajRIBgQO+oc7AEP18oI319H2
+         3h7nFIYwmVl3R5CZCY5D0o69hS/J5KjYWQGJrLHky6ZEk2hU9VKId8sdp1zxAVdiX+eP
+         497g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:content-transfer-encoding:cc
+         :subject:from:to:date:message-id:in-reply-to;
+        bh=I8eEPb2FqiwPQ4HYeCCY1YPZcmyJICcVlQjpfk8OOEE=;
+        b=aGCFNO96/dD+RKG2MxF4RYogmzhTn3dCrEp5h2v/fV7zg4a4Vf8uIqzSXsZlqVNjY3
+         5HqdixUz3QC9/+mRDoyqdueErKKL5ZKWBMfy26MUz0Qh17kw4bFcgv/9XVhJycOnndxb
+         /raQbBNw2gz28WECXqmhmfgfJT4gl6IAXgFvqVlNnFUG9gSFv65qYD9sddOnc+FvMY4c
+         jJvuKVzs+ItFTLiXX2tbfAS0uPwvXqwlyGpasvsn6iIhO/nhwfHZOpk74LYu733o2xb3
+         xBY7WmtGlhaZM7Nn8PKaIihWteskVdiIdnymKE8JNuj/KxQ+K8ZqFE7AcWP6IvegXSBT
+         p98Q==
+X-Gm-Message-State: AOAM531OntbYPyScea+hjLbJm/g5g0hN2b7HQzBV37hEAeOiG+VQxFBL
+        /70GlEDOJx6UQMP7qVAD0Rk=
+X-Google-Smtp-Source: ABdhPJz9dFYeFFI4Ac2Ycbc/w57bwzAHNLAf6rhG59m4qh/469KWWUgu5rntGT6E8cQNmJ41Z7+LqQ==
+X-Received: by 2002:a05:6a00:17a9:b0:44c:b95f:50a4 with SMTP id s41-20020a056a0017a900b0044cb95f50a4mr30116644pfg.6.1634581107246;
+        Mon, 18 Oct 2021 11:18:27 -0700 (PDT)
+Received: from localhost ([117.200.53.211])
+        by smtp.gmail.com with ESMTPSA id e9sm122350pjl.41.2021.10.18.11.18.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Oct 2021 11:18:26 -0700 (PDT)
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        "Jakub Kicinski" <kuba@kernel.org>
+Subject: Re: [RFC PATCH 11/17] net: ipa: Add support for IPA v2.x endpoints
+From:   "Sireesh Kodali" <sireeshkodali1@gmail.com>
+To:     "Alex Elder" <elder@ieee.org>, <phone-devel@vger.kernel.org>,
+        <~postmarketos/upstreaming@lists.sr.ht>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <elder@kernel.org>
+Date:   Mon, 18 Oct 2021 23:47:58 +0530
+Message-Id: <CF2QMSR815VC.5M3RMZULGVEV@skynet-linux>
+In-Reply-To: <3f6c17a8-b901-c64f-2fbb-48faabccd255@ieee.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 03:22:30PM +0100, Jane Malalane wrote:
-> @@ -650,6 +651,27 @@ static void early_init_amd(struct cpuinfo_x86 *c)
->  	if (c->x86_power & BIT(14))
->  		set_cpu_cap(c, X86_FEATURE_RAPL);
->  
-> +	/*
-> +	 * Zen1 and earlier CPUs don't clear segment base/limits when
-> +	 * loading a NULL selector.  This has been designated
-> +	 * X86_BUG_NULL_SEG.
-> +	 *
-> +	 * Zen3 CPUs advertise Null Selector Clears Base in CPUID.
-> +	 * Zen2 CPUs also have this behaviour, but no CPUID bit.
-> +	 *
-> +	 * A hypervisor may sythesize the bit, but may also hide it
-> +	 * for migration safety, so we must not probe for model
-> +	 * specific behaviour when virtualised.
-> +	 */
-> +	if (c->extended_cpuid_level >= 0x80000021 && cpuid_eax(0x80000021) & BIT(6))
-> +		nscb = true;
-> +
-> +	if (!cpu_has(c, X86_FEATURE_HYPERVISOR) && !nscb && c->x86 == 0x17)
-> +		nscb = check_null_seg_clears_base(c);
-> +
-> +	if (!nscb)
-> +		set_cpu_bug(c, X86_BUG_NULL_SEG);
-> +
->  #ifdef CONFIG_X86_64
->  	set_cpu_cap(c, X86_FEATURE_SYSCALL32);
->  #else
+On Thu Oct 14, 2021 at 4:00 AM IST, Alex Elder wrote:
+> On 9/19/21 10:08 PM, Sireesh Kodali wrote:
+> > IPA v2.x endpoints are the same as the endpoints on later versions. The
+> > only big change was the addition of the "skip_config" flag. The only
+> > other change is the backlog limit, which is a fixed number for IPA v2.6=
+L
+>
+> Not much to say here. Your patches are reasonably small, which
+> makes them easier to review (thank you).
+>
+> -Alex
 
-Can we do something like this?
+I'm glad splitting them up paid off!
 
-It is carved out into a separate function which you can simply call from
-early_init_amd() and early_init_hygon().
+Regards,
+Sireesh
+>
+> > Signed-off-by: Sireesh Kodali <sireeshkodali1@gmail.com>
+> > ---
+> >   drivers/net/ipa/ipa_endpoint.c | 65 ++++++++++++++++++++++-----------=
+-
+> >   1 file changed, 43 insertions(+), 22 deletions(-)
+> >=20
+> > diff --git a/drivers/net/ipa/ipa_endpoint.c b/drivers/net/ipa/ipa_endpo=
+int.c
+> > index 7d3ab61cd890..024cf3a0ded0 100644
+> > --- a/drivers/net/ipa/ipa_endpoint.c
+> > +++ b/drivers/net/ipa/ipa_endpoint.c
+> > @@ -360,8 +360,10 @@ void ipa_endpoint_modem_pause_all(struct ipa *ipa,=
+ bool enable)
+> >   {
+> >   	u32 endpoint_id;
+> >  =20
+> > -	/* DELAY mode doesn't work correctly on IPA v4.2 */
+> > -	if (ipa->version =3D=3D IPA_VERSION_4_2)
+> > +	/* DELAY mode doesn't work correctly on IPA v4.2
+> > +	 * Pausing is not supported on IPA v2.6L
+> > +	 */
+> > +	if (ipa->version =3D=3D IPA_VERSION_4_2 || ipa->version <=3D IPA_VERS=
+ION_2_6L)
+> >   		return;
+> >  =20
+> >   	for (endpoint_id =3D 0; endpoint_id < IPA_ENDPOINT_MAX; endpoint_id+=
++) {
+> > @@ -383,6 +385,7 @@ int ipa_endpoint_modem_exception_reset_all(struct i=
+pa *ipa)
+> >   {
+> >   	u32 initialized =3D ipa->initialized;
+> >   	struct ipa_trans *trans;
+> > +	u32 value =3D 0, value_mask =3D ~0;
+> >   	u32 count;
+> >  =20
+> >   	/* We need one command per modem TX endpoint.  We can get an upper
+> > @@ -398,6 +401,11 @@ int ipa_endpoint_modem_exception_reset_all(struct =
+ipa *ipa)
+> >   		return -EBUSY;
+> >   	}
+> >  =20
+> > +	if (ipa->version <=3D IPA_VERSION_2_6L) {
+> > +		value =3D aggr_force_close_fmask(true);
+> > +		value_mask =3D aggr_force_close_fmask(true);
+> > +	}
+> > +
+> >   	while (initialized) {
+> >   		u32 endpoint_id =3D __ffs(initialized);
+> >   		struct ipa_endpoint *endpoint;
+> > @@ -416,7 +424,7 @@ int ipa_endpoint_modem_exception_reset_all(struct i=
+pa *ipa)
+> >   		 * means status is disabled on the endpoint, and as a
+> >   		 * result all other fields in the register are ignored.
+> >   		 */
+> > -		ipa_cmd_register_write_add(trans, offset, 0, ~0, false);
+> > +		ipa_cmd_register_write_add(trans, offset, value, value_mask, false);
+> >   	}
+> >  =20
+> >   	ipa_cmd_pipeline_clear_add(trans);
+> > @@ -1531,8 +1539,10 @@ static void ipa_endpoint_program(struct ipa_endp=
+oint *endpoint)
+> >   	ipa_endpoint_init_mode(endpoint);
+> >   	ipa_endpoint_init_aggr(endpoint);
+> >   	ipa_endpoint_init_deaggr(endpoint);
+> > -	ipa_endpoint_init_rsrc_grp(endpoint);
+> > -	ipa_endpoint_init_seq(endpoint);
+> > +	if (endpoint->ipa->version > IPA_VERSION_2_6L) {
+> > +		ipa_endpoint_init_rsrc_grp(endpoint);
+> > +		ipa_endpoint_init_seq(endpoint);
+> > +	}
+> >   	ipa_endpoint_status(endpoint);
+> >   }
+> >  =20
+> > @@ -1592,7 +1602,6 @@ void ipa_endpoint_suspend_one(struct ipa_endpoint=
+ *endpoint)
+> >   {
+> >   	struct device *dev =3D &endpoint->ipa->pdev->dev;
+> >   	struct ipa_dma *gsi =3D &endpoint->ipa->dma_subsys;
+> > -	bool stop_channel;
+> >   	int ret;
+> >  =20
+> >   	if (!(endpoint->ipa->enabled & BIT(endpoint->endpoint_id)))
+> > @@ -1613,7 +1622,6 @@ void ipa_endpoint_resume_one(struct ipa_endpoint =
+*endpoint)
+> >   {
+> >   	struct device *dev =3D &endpoint->ipa->pdev->dev;
+> >   	struct ipa_dma *gsi =3D &endpoint->ipa->dma_subsys;
+> > -	bool start_channel;
+> >   	int ret;
+> >  =20
+> >   	if (!(endpoint->ipa->enabled & BIT(endpoint->endpoint_id)))
+> > @@ -1750,23 +1758,33 @@ int ipa_endpoint_config(struct ipa *ipa)
+> >   	/* Find out about the endpoints supplied by the hardware, and ensure
+> >   	 * the highest one doesn't exceed the number we support.
+> >   	 */
+> > -	val =3D ioread32(ipa->reg_virt + IPA_REG_FLAVOR_0_OFFSET);
+> > -
+> > -	/* Our RX is an IPA producer */
+> > -	rx_base =3D u32_get_bits(val, IPA_PROD_LOWEST_FMASK);
+> > -	max =3D rx_base + u32_get_bits(val, IPA_MAX_PROD_PIPES_FMASK);
+> > -	if (max > IPA_ENDPOINT_MAX) {
+> > -		dev_err(dev, "too many endpoints (%u > %u)\n",
+> > -			max, IPA_ENDPOINT_MAX);
+> > -		return -EINVAL;
+> > -	}
+> > -	rx_mask =3D GENMASK(max - 1, rx_base);
+> > +	if (ipa->version <=3D IPA_VERSION_2_6L) {
+> > +		// FIXME Not used anywhere?
+> > +		if (ipa->version =3D=3D IPA_VERSION_2_6L)
+> > +			val =3D ioread32(ipa->reg_virt +
+> > +					IPA_REG_V2_ENABLED_PIPES_OFFSET);
+> > +		/* IPA v2.6L supports 20 pipes */
+> > +		ipa->available =3D ipa->filter_map;
+> > +		return 0;
+> > +	} else {
+> > +		val =3D ioread32(ipa->reg_virt + IPA_REG_FLAVOR_0_OFFSET);
+> > +
+> > +		/* Our RX is an IPA producer */
+> > +		rx_base =3D u32_get_bits(val, IPA_PROD_LOWEST_FMASK);
+> > +		max =3D rx_base + u32_get_bits(val, IPA_MAX_PROD_PIPES_FMASK);
+> > +		if (max > IPA_ENDPOINT_MAX) {
+> > +			dev_err(dev, "too many endpoints (%u > %u)\n",
+> > +					max, IPA_ENDPOINT_MAX);
+> > +			return -EINVAL;
+> > +		}
+> > +		rx_mask =3D GENMASK(max - 1, rx_base);
+> >  =20
+> > -	/* Our TX is an IPA consumer */
+> > -	max =3D u32_get_bits(val, IPA_MAX_CONS_PIPES_FMASK);
+> > -	tx_mask =3D GENMASK(max - 1, 0);
+> > +		/* Our TX is an IPA consumer */
+> > +		max =3D u32_get_bits(val, IPA_MAX_CONS_PIPES_FMASK);
+> > +		tx_mask =3D GENMASK(max - 1, 0);
+> >  =20
+> > -	ipa->available =3D rx_mask | tx_mask;
+> > +		ipa->available =3D rx_mask | tx_mask;
+> > +	}
+> >  =20
+> >   	/* Check for initialized endpoints not supported by the hardware */
+> >   	if (ipa->initialized & ~ipa->available) {
+> > @@ -1865,6 +1883,9 @@ u32 ipa_endpoint_init(struct ipa *ipa, u32 count,
+> >   			filter_map |=3D BIT(data->endpoint_id);
+> >   	}
+> >  =20
+> > +	if (ipa->version <=3D IPA_VERSION_2_6L)
+> > +		filter_map =3D 0x1fffff;
+> > +
+> >   	if (!ipa_filter_map_valid(ipa, filter_map))
+> >   		goto err_endpoint_exit;
+> >  =20
+> >=20
 
-I guess you can put that function in arch/x86/kernel/cpu/common.c or so.
-
-Then, you should put the comments right over the code like I've done
-below so that one can follow what's going on with each particular check.
-
-I've also flipped the logic a bit and it is simpler this way.
-
-Totally untested of course.
-
-static void early_probe_null_seg_clearing_base(struct cpuinfo_x86 *c)
-{
-	/*
-	 * A hypervisor may sythesize the bit, but may also hide it
-	 * for migration safety, so do not probe for model-specific
-	 * behaviour when virtualised.
-	 */
-	if (cpu_has(c, X86_FEATURE_HYPERVISOR))
-		return;
-
-	/* Zen3 CPUs advertise Null Selector Clears Base in CPUID. */
-	if (c->extended_cpuid_level >= 0x80000021 && cpuid_eax(0x80000021) & BIT(6))
-		return;
-
-	/* Zen2 CPUs also have this behaviour, but no CPUID bit. */
-	if (c->x86 == 0x17 && check_null_seg_clears_base(c))
-		return;
-
-	/* All the remaining ones are affected */
-	set_cpu_bug(c, X86_BUG_NULL_SEG);
-}
-
-> diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
-> index 0f8885949e8c..2ca4afb97247 100644
-> --- a/arch/x86/kernel/cpu/common.c
-> +++ b/arch/x86/kernel/cpu/common.c
-> @@ -1395,7 +1395,7 @@ void __init early_cpu_init(void)
->  	early_identify_cpu(&boot_cpu_data);
->  }
->  
-> -static void detect_null_seg_behavior(struct cpuinfo_x86 *c)
-> +bool check_null_seg_clears_base(struct cpuinfo_x86 *c)
->  {
->  #ifdef CONFIG_X86_64
->  	/*
-> @@ -1418,10 +1418,10 @@ static void detect_null_seg_behavior(struct cpuinfo_x86 *c)
->  	wrmsrl(MSR_FS_BASE, 1);
->  	loadsegment(fs, 0);
->  	rdmsrl(MSR_FS_BASE, tmp);
-> -	if (tmp != 0)
-> -		set_cpu_bug(c, X86_BUG_NULL_SEG);
->  	wrmsrl(MSR_FS_BASE, old_base);
-> +	return tmp == 0;
->  #endif
-> +	return true;
->  }
->  
->  static void generic_identify(struct cpuinfo_x86 *c)
-> @@ -1457,8 +1457,6 @@ static void generic_identify(struct cpuinfo_x86 *c)
->  
->  	get_model_name(c); /* Default name */
->  
-> -	detect_null_seg_behavior(c);
-> -
->  	/*
->  	 * ESPFIX is a strange bug.  All real CPUs have it.  Paravirt
->  	 * systems that run Linux at CPL > 0 may or may not have the
-
-So this function is called on all x86 CPUs. Are you sure others besides
-AMD and Hygon do not have the same issue?
-
-IOW, I wouldn't remove that call here.
-
-But then this is the identify() phase in the boot process and you've
-moved it to early_identify() by putting it in the ->c_early_init()
-function pointer on AMD and Hygon.
-
-Is there any particular reasoning for this or can that detection remain
-in ->c_identify()?
-
-Because if this null seg behavior detection should happen on all
-CPUs - and I think it should, because, well, it has been that way
-until now - then the vendor specific identification minus what
-detect_null_seg_behavior() does should run first and then after
-->c_identify() is done, you should do something like:
-
-	if (!cpu_has_bug(c, X86_BUG_NULL_SEG)) {
-		if (!check_null_seg_clears_base(c))
-			set_cpu_bug(c, X86_BUG_NULL_SEG);
-	}
-
-so that it still takes place on all CPUs.
-
-I.e., you should split the detection.
-
-I hope I'm making sense ...
-
-Ah, btw, that @c parameter to detect_null_seg_behavior() is unused - you
-should remove it in a pre-patch.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
