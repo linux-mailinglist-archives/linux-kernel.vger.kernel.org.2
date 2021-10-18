@@ -2,152 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F41E043182D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 13:52:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE4D3431832
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 13:53:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231336AbhJRLyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 07:54:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40080 "EHLO
+        id S230354AbhJRLzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 07:55:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229569AbhJRLyX (ORCPT
+        with ESMTP id S229870AbhJRLzQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 07:54:23 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AFF8C06161C;
-        Mon, 18 Oct 2021 04:52:12 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id k26so14529856pfi.5;
-        Mon, 18 Oct 2021 04:52:12 -0700 (PDT)
+        Mon, 18 Oct 2021 07:55:16 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 920D7C06161C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 04:53:05 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id v127so8488659wme.5
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 04:53:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=uRAY4X8owdY8nPICo6sM8mmRScQ57odxEdrE5BZO3fg=;
-        b=lLW/sx9seF41ns6WqHqVgRo4ZIDaXamsZ+4e3CxEEI4Zzu6ej9A6NL0VFlxASZR37P
-         pFABjVc76JTsA1lvjm6YgbvdMzD4cP5s5sucJcyqlc3qSS1IM3v20f6DfShDmdaqOcON
-         BdzOgG0nUGA+XmA9qY5xk8mxkybUk8w21dprzQ9acSm72Yq8LeUO2DPhgo0YhkRYRh9t
-         egt8GFz0s0i47ZeUQOpD+aPgn0SL5JIOo6Mi9yMkahq1cFS2gFPt+VF1eOXkJKJcJPfV
-         sSx5WymcT0ty40x83D3Z8T2OwiTzWmuSO6RfUO78MpqoCOKp1YBvzb0v/fMHFu4BHXz+
-         OO/w==
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=OjLEjB+66gVcYoeS09uTUDIcrNaPGWu2B8UnkmdnjH8=;
+        b=TrNwmmZrgahcTims1xWqWBxeCqU683WDHAH56sTYfn6zV/+JBJBqAkYxq70Kp6jhAW
+         z7Mixy3n1K/zgsRFYDzvaZ8625DAyCGnq8EO08kv2D75JFgexb69aSm4EsjjDnUUI5gr
+         rcSguRag8AfHNcvcJKLmO14BTI+pOnwajLKEGTVW6JXbDMrt+HCsl6gPs7AHud8HuokL
+         NPfai1qTH4gzcucVUgaAbI/ygD+WdYGMUUiW0OK0hX1RfYeQJlIJ/MDrhgwxUAYNTPfj
+         Sz4UKZkkRWRetl9dWGMANObQyChq1e1bNzFV8jenVLEMCcCfgnUjMrPMSUBtcrQRlj7p
+         DCUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=uRAY4X8owdY8nPICo6sM8mmRScQ57odxEdrE5BZO3fg=;
-        b=AK5cJZ9tAeoG7sXt0xCQyE+e9lnS9tlc6+EbLH1EZFnCfN+xd5fc0i+jl6XYLbetHa
-         dJUszlIid6Gu3kB96pcPK13aWQv7117Zw6suNczj9I+Bm1/jGY/ICoFi5XWqC/5+JYZG
-         bO/2K5qq+DSZZSMJzL6rfGkCJg+zN45hfOdN3rV4Mns2WjfiPV7GDAPYdy7UOrLC1+v0
-         0QMRqGzMudqk036VknCQvI9FRr9Yg++1pBaqsfKOuQk5Ll9JWHUk1L6Hm9N6dkEyl/C8
-         IdeHl8n/h69A1MrerhWTByGwHb/Ko57zFT/q+/FkzPXK+V2EFR57fnajpXZzsuyIaK2T
-         ZJug==
-X-Gm-Message-State: AOAM530tYKdRD5+Y4+YAsP3MkLA0RtE95SQLZlawHPzWgNPUzqH6BW9p
-        iSszPkhA3BYNzgUm+UPdsx0=
-X-Google-Smtp-Source: ABdhPJxtvO8Bq4YHHd6MoeEGykVU5WbXUmVMDCgGnwY4ZJm9lm+MyUAhrP7H1Nm5UUhNPn+8CHQX3Q==
-X-Received: by 2002:a63:ed13:: with SMTP id d19mr23042349pgi.430.1634557932111;
-        Mon, 18 Oct 2021 04:52:12 -0700 (PDT)
-Received: from theprophet ([2406:7400:63:eae8:5466:4cd4:63af:c661])
-        by smtp.gmail.com with ESMTPSA id m22sm13297924pfo.176.2021.10.18.04.52.08
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=OjLEjB+66gVcYoeS09uTUDIcrNaPGWu2B8UnkmdnjH8=;
+        b=wC5w1CVeRDLzjuO8psGN2XnABR2kDocBKcffQWxmHOAWSX+j6z6zQuF4VGzSLjbr7t
+         W/Cv/9MbUdRmAsl6IsyXwNIxYv7Hp5gySL+f+pfranlDBboNVIef7aV8rRA+aybWsupN
+         COUidF95MWcZGW73KFy/Ve+oxgqbg9DScvhXaYWwE2xe8jJLQZ7aNGz5WOu1fuAiWeqN
+         E5Pt4edAmFfWSBpp83LcEKOonbaFYOJi/OmIKEgxfYQYsnYVf8EOPMsMpiBtjZ3uKGb6
+         /J821n1FiwJAP6eQJwoUafAu1elYrI993BopzPutXferxgr3hTZjC4OI6LqYQUfZcH4Q
+         c6yQ==
+X-Gm-Message-State: AOAM533Kry4bmD+YgXg5rHtJ4xTA+ZamqlHa42ToyZZq5GqHon9oFFv4
+        6a+bu8onbWyc7WTAjFAxgr6utQ==
+X-Google-Smtp-Source: ABdhPJxItLyyofC2JRkGeF4ExPOPrkr01IZHTPDrzV2bHDZsePkNF5ptZ6iL8Bcj5Nl9CdILuFVcvw==
+X-Received: by 2002:a1c:2309:: with SMTP id j9mr42794361wmj.189.1634557984169;
+        Mon, 18 Oct 2021 04:53:04 -0700 (PDT)
+Received: from google.com ([95.148.6.207])
+        by smtp.gmail.com with ESMTPSA id a16sm12223529wrs.30.2021.10.18.04.53.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 04:52:11 -0700 (PDT)
-Date:   Mon, 18 Oct 2021 17:21:48 +0530
-From:   Naveen Naidu <naveennaidu479@gmail.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Marek Vasut <marek.vasut+renesas@gmail.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        "open list:PCI DRIVER FOR RENESAS R-CAR" 
-        <linux-renesas-soc@vger.kernel.org>
-Subject: Re: [PATCH v2 14/24] PCI: rcar: Remove redundant error fabrication
- when device read fails
-Message-ID: <20211018115148.iwhiknpd6o4okudq@theprophet>
-References: <cover.1634306198.git.naveennaidu479@gmail.com>
- <2544a93bf8725eecbea510e7ddbff6b5a5593c84.1634306198.git.naveennaidu479@gmail.com>
- <CAMuHMdVh79gvAZn+nBeWWtkJqvUb3woi1rRY=BkY+bc4YXFj1Q@mail.gmail.com>
+        Mon, 18 Oct 2021 04:53:03 -0700 (PDT)
+Date:   Mon, 18 Oct 2021 12:53:01 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Baolin Wang <baolin.wang7@gmail.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 2/4] dt-bindings: mfd: sprd: Add bindings for ums512
+ global registers
+Message-ID: <YW1gHXKLIe6nyVOd@google.com>
+References: <20210923064137.60722-1-zhang.lyra@gmail.com>
+ <20210923064137.60722-3-zhang.lyra@gmail.com>
+ <YV1XpL7ibF1y4LbV@google.com>
+ <CAL_Jsq+eqqv=qtKOiNdEpYGi2amek_m+Q-Z9A769pXXqJ4R88A@mail.gmail.com>
+ <YWVD0RXHVLxuXEIN@google.com>
+ <CAMuHMdWqYVp1JyzZoidAJhPy9ypRnSOWHJLz5knDUMcFHPOzAw@mail.gmail.com>
+ <YWfSz00Rj5AVhkgT@google.com>
+ <CAL_Jsq+GHt+DqHa0GeLKWoni+Lghg5wg5ssREZBdSD-=K3XQ1A@mail.gmail.com>
+ <YWl33gCy1ac29WSs@google.com>
+ <CAL_JsqJNzA4iX2V5FnSg+phNh72JeRxn+D4250aKmOhngZO9yA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAMuHMdVh79gvAZn+nBeWWtkJqvUb3woi1rRY=BkY+bc4YXFj1Q@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAL_JsqJNzA4iX2V5FnSg+phNh72JeRxn+D4250aKmOhngZO9yA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/10, Geert Uytterhoeven wrote:
-> Hi Naveen,
-> 
-> On Sat, Oct 16, 2021 at 5:33 PM Naveen Naidu <naveennaidu479@gmail.com> wrote:
-> > An MMIO read from a PCI device that doesn't exist or doesn't respond
-> > causes a PCI error. There's no real data to return to satisfy the
-> > CPU read, so most hardware fabricates ~0 data.
+On Fri, 15 Oct 2021, Rob Herring wrote:
+
+> On Fri, Oct 15, 2021 at 7:45 AM Lee Jones <lee.jones@linaro.org> wrote:
 > >
-> > The host controller drivers sets the error response values (~0) and
-> > returns an error when faulty hardware read occurs. But the error
-> > response value (~0) is already being set in PCI_OP_READ and
-> > PCI_USER_READ_CONFIG whenever a read by host controller driver fails.
+> > On Thu, 14 Oct 2021, Rob Herring wrote:
 > >
-> > Thus, it's no longer necessary for the host controller drivers to
-> > fabricate any error response.
+> > > On Thu, Oct 14, 2021 at 1:48 AM Lee Jones <lee.jones@linaro.org> wrote:
+> > > >
+> > > > On Wed, 13 Oct 2021, Geert Uytterhoeven wrote:
+> > > >
+> > > > > Hi Lee,
+> > > > >
+> > > > > On Tue, Oct 12, 2021 at 10:15 AM Lee Jones <lee.jones@linaro.org> wrote:
+> > > > > > On Mon, 11 Oct 2021, Rob Herring wrote:
+> > > > > > > On Wed, Oct 6, 2021 at 3:00 AM Lee Jones <lee.jones@linaro.org> wrote:
+> > > > > > > > On Thu, 23 Sep 2021, Chunyan Zhang wrote:
+> > > > > > > >
+> > > > > > > > > From: Chunyan Zhang <chunyan.zhang@unisoc.com>
+> > > > > > > > >
+> > > > > > > > > Add bindings for Unisoc system global register which provide register map
+> > > > > > > > > for clocks.
+> > > > > > > > >
+> > > > > > > > > Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
+> > > > > > > > > Reviewed-by: Rob Herring <robh@kernel.org>
+> > > > > > > > > ---
+> > > > > > > > >  .../bindings/mfd/sprd,ums512-glbreg.yaml      | 68 +++++++++++++++++++
+> > > > > > > > >  1 file changed, 68 insertions(+)
+> > > > > > > > >  create mode 100644 Documentation/devicetree/bindings/mfd/sprd,ums512-glbreg.yaml
+> > > > > > > >
+> > > > > > > > Unapplied v3 and applied this (v4) instead, thanks.
+> > > > > > >
+> > > > > > > What about the clock binding this depends on:
+> > > > > > >
+> > > > > > > Unknown file referenced: [Errno 2] No such file or directory:
+> > > > > > > '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/clock/sprd,ums512-clk.yaml'
+> > > > > > > xargs: dt-doc-validate: exited with status 255; aborting
+> > > > > > > make[1]: *** Deleting file
+> > > > > > > 'Documentation/devicetree/bindings/mfd/sprd,ums512-glbreg.example.dt.yaml'
+> > > > > > > Unknown file referenced: [Errno 2] No such file or directory:
+> > > > > > > '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/clock/sprd,ums512-clk.yaml'
+> > > > > > > make[1]: *** [scripts/Makefile.lib:385:
+> > > > > > > Documentation/devicetree/bindings/mfd/sprd,ums512-glbreg.example.dt.yaml]
+> > > > > > > Error 255
+> > > > > > >
+> > > > > > >
+> > > > > > > Once again, all the components of MFD bindings need to be applied together.
+> > > > >
+> > > > > Just ran into this, too...
+> > > > >
+> > > > > > I can't apply what is not sent to me.
+> > > > > >
+> > > > > > This patch came in on its own.
+> > > > >
+> > > > > Then please reject/postpone patches that don't build (yet) ;-)
+> > > >
+> > > > I don't explicitly build DT documentation.
+> > > >
+> > > > Since I use the build bots to let me know if there are strange !(C,
+> > > > ASM, arm, aarch64, mips, ppc, x86) build issues or ones with odd
+> > > > configuration possibilities (randconfig) in the repos I maintain, you
+> > > > might have to convince them that this is important too.
+> > >
+> > > It's really just a matter of turning on the build in
+> > > allyesconfig/allmodconfig builds. I've not done that primarily because
+> > > there's one person I don't want to yell at me, but I could probably
+> > > make it arm and/or arm64 only. It's really arch and config
+> > > independent, so doing it multiple times is kind of pointless.
+> > >
+> > > I assume for bots you mean kernel-ci mainly? Do you run that before
+> > > stuff gets into linux-next? IMO, that's too late. But still a slight
+> > > improvement if things go in via one tree. Otherwise, I see the
+> > > breakage twice, 1st linux-next then the merge window.
 > >
-> > This helps unify PCI error response checking and make error check
-> > consistent and easier to find.
-> >
-> > Signed-off-by: Naveen Naidu <naveennaidu479@gmail.com>
+> > Kernel test robot <lkp@intel.com> is the one that springs to mind.
 > 
-> Thanks for your patch!
+> It already does sometimes. I haven't figured out when, but I randomly
+> see some reports and doesn't report a lot of the cases.
+
+It would be great if it can be figured it out.
+
+Apart from my W=1 work, I seldom build/test/run obscure/specialist
+compiler flags/options.  If someone can convince the 0-day builder
+bots that testing DT docs is a good idea when building for the
+appropriate architectures, I'm all in.
+
+> > Although, I'm sure there are other, less prolific implementations.
 > 
-> > --- a/drivers/pci/controller/pcie-rcar-host.c
-> > +++ b/drivers/pci/controller/pcie-rcar-host.c
-> > @@ -161,10 +161,8 @@ static int rcar_pcie_read_conf(struct pci_bus *bus, unsigned int devfn,
-> >
-> >         ret = rcar_pcie_config_access(host, RCAR_PCI_ACCESS_READ,
-> >                                       bus, devfn, where, val);
-> > -       if (ret != PCIBIOS_SUCCESSFUL) {
-> > -               *val = 0xffffffff;
-> 
-> I don't see the behavior you describe in PCI_OP_READ(), so dropping
-> this will lead to returning an uninitialized value?
->
+> Rob's bot, but that checks patches (not branches) and applies series
+> so you won't get errors unless the series is in the wrong patch order.
 
-Hello Geert,
+Right.  Good tool, but solves a different problem.
 
-Thank you for looking into the patch.
-
-The described behaviour for PCI_OP_READ is part of the 01/24 [1] patch of
-the series. 
-
-[1]:
-https://lore.kernel.org/linux-pci/b913b4966938b7cad8c049dc34093e6c4b2fae68.1634306198.git.naveennaidu479@gmail.com/T/#u
-
-It looks like, I did not add proper receipients for that patch and hence
-is leading to confusion. I really apologize for that.
-
-I do not know what the right approach here should be, should I resend
-the entire patch series, adding proper receipients OR should I reply to
-each of the patches for the drivers and add the link to the patch. I did
-not want to spam people with a lot of mails so I was confused as to what
-the right option is.
-
-Thanks,
-Naveen
-
-> > +       if (ret != PCIBIOS_SUCCESSFUL)
-> >                 return ret;
-> > -       }
-> >
-> >         if (size == 1)
-> >                 *val = (*val >> (BITS_PER_BYTE * (where & 3))) & 0xff;
-> 
-> Gr{oetje,eeting}s,
-> 
->                         Geert
-> 
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-> 
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
