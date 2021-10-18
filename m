@@ -2,199 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FE2C431076
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 08:25:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99A1F431082
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 08:26:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230156AbhJRG1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 02:27:20 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:53768 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229708AbhJRG1T (ORCPT
+        id S230264AbhJRG2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 02:28:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49782 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230091AbhJRG2Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 02:27:19 -0400
-X-UUID: 4abdf5926bd348d49b111988a4e947ab-20211018
-X-UUID: 4abdf5926bd348d49b111988a4e947ab-20211018
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
-        (envelope-from <guangming.cao@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 164250816; Mon, 18 Oct 2021 14:25:04 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.2.792.15; Mon, 18 Oct 2021 14:25:03 +0800
-Received: from mszswglt01.gcn.mediatek.inc (10.16.20.20) by
- mtkcas11.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.0.1497.2 via Frontend Transport; Mon, 18 Oct 2021 14:25:02 +0800
-From:   <guangming.cao@mediatek.com>
-To:     <daniel@ffwll.ch>
-CC:     <Brian.Starkey@arm.com>, <benjamin.gaignard@linaro.org>,
-        <christian.koenig@amd.com>, <dri-devel@lists.freedesktop.org>,
-        <guangming.cao@mediatek.com>, <hridya@google.com>,
-        <isaacm@codeaurora.org>, <john.stultz@linaro.org>,
-        <labbott@redhat.com>, <linaro-mm-sig@lists.linaro.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <lmark@codeaurora.org>,
-        <matthias.bgg@gmail.com>, <sspatil@google.com>,
-        <sumit.semwal@linaro.org>, <wsd_upstream@mediatek.com>,
-        Guangming Cao <Guangming.Cao@mediatek.com>
-Subject: Re: [PATCH] dma-buf: Add support for mapping buffers with DMA attributes
-Date:   Mon, 18 Oct 2021 14:25:04 +0800
-Message-ID: <20211018062504.116652-1-guangming.cao@mediatek.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <YS4kx3thdJOu3uHX@phenom.ffwll.local>
-References: <YS4kx3thdJOu3uHX@phenom.ffwll.local>
+        Mon, 18 Oct 2021 02:28:16 -0400
+Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DBDDC06161C
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 23:26:06 -0700 (PDT)
+Received: by mail-ua1-x92c.google.com with SMTP id f4so3783396uad.4
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 23:26:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5hyNbtoXj6gpz4GVzyiBy/BcrMKlU7PR5ScmW7Ah/0c=;
+        b=fUoWDbarHptRaSJPZZmT2Ezo0RZISM9rh5s8evrCkVqnsmUDqct9pNJCt6UgP34gsu
+         //k3IqFxT6I1pFaSnTEdzarl4ScQw4UqJSZb7AZp2uB4i9PWTHRi7dddDE8Bm5U2/y6X
+         TrWAoVlheTVniBRFlgV5OPQuyXUzo03PX27Frzoqm9RPPlLSaKwAt3AUi8mYHf0cbpac
+         ItwK1PtmtJpg/6gkYvNKt6Zpg8sU+1xsFRQWxdH8M/7MJBnqVA/+Hh6pXv9O2tJoUnXO
+         HyTJ0FdgHfp2aGnq+CsMhhFoHWlBVuEGH77ze9DERaTmv/Gfj4QN8CK3FDDCwClcnuY2
+         D4mw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5hyNbtoXj6gpz4GVzyiBy/BcrMKlU7PR5ScmW7Ah/0c=;
+        b=65vC5EPcraSWPJgcQ7AC92dmxi+utwwquV76sVSWRwlAfvwPqABbpyOTOcxpqRp69p
+         DgL+C1kI6ze3zPik1CZnkPXQQ3hn14Yy9fTqYpfSzSebYJZOEU26zk1YNJ4HIdV+uN+t
+         0WBJlie8Qe3bniyEOofL7/fAAuYJsGn5rIlHnIiQtftWPH/19mSYibCRmU0FHsWH6FN7
+         jmSa8RH69naDQQtWT+/+ln9fI38s7optVSf1mLy5pUy5msbhUguNYNPYLTS/BfMT7rJv
+         H2ag6jkI+ztBurUK/1L28QHx3g/COXwqg0AmO1cpLhkTx5YttWFsUtwwI1xNPOYPsa5w
+         A1Lg==
+X-Gm-Message-State: AOAM533fmoF06g33deNnB4TxTQujgD4FoRkRmXIsJ3ezIgopPoOWdmKZ
+        /RjaGttdzp7n3GZnVBQR0OQsfBCVyP0o/aMGOkgu0Q==
+X-Google-Smtp-Source: ABdhPJwLVSsvksTT5AZxm0evVbJT73BF/2Vlm124e/F9zu//3HXW69tjV+llW2vhLcKMEXT5XQWM34JmpeIdNDgHo80=
+X-Received: by 2002:ab0:49ca:: with SMTP id f10mr23313822uad.61.1634538365121;
+ Sun, 17 Oct 2021 23:26:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+References: <1M9_d6wrcu6rdPe1ON0_k0lOxJMyyot3KAb1gdyuwzDPC777XVUWPHoTCEVmcK3fYfgu7sIo3PSaLe9KulUdm4TWVuqlbKyYGxRAjsf_Cpk=@protonmail.ch>
+ <87ee9pa6xw.fsf@disp2133> <OJK-F2NSBlem52GqvCQYzaVxs2x9Csq3qO4QbTG4A4UUNaQpebpAQmyyKzUd70CIo27C4K7CL3bhIzcxulIzYMu067QOMXCFz8ejh3ZtFhE=@protonmail.ch>
+ <U6ByMUZ9LgvxXX6eb0M9aBx8cw8GpgE1qU22LaxaJ_2bOdnGLLJHDgnLL-6cJT7dKdcG_Ms37APSutc3EIMmtpgpP_2kotVLCNRoUq-wTJ8=@protonmail.ch>
+ <878rzw77i3.fsf@disp2133> <o3tuBB58KUQjyQsALqWi0s1tSPlgVPST4PNNjHewIgRB7CUOOVyFSFxSBLCOJdUH3ly21cIjBthNyqQGnDgJD7fjU8NiVHq7i0JcMvYuzUA=@protonmail.ch>
+ <20210929173611.fo5traia77o63gpw@example.org> <hPgvCJ2KbKeauk78uWJEsuKJ5VfMqknPJ_oyOZe6M78-6eG7qnj0t0UKC-joPVowo_nOikIsEWP-ZDioARfI-Cl6zrHjCHPJST3drpi5ALE=@protonmail.ch>
+ <20210930130640.wudkpmn3cmah2cjz@example.org> <CAOUHufZmAjuKyRcmq6GH8dfdZxchykS=BTZDsk-gDAh3LJTe1Q@mail.gmail.com>
+ <878rz8wwb6.fsf@disp2133> <87v92cvhbf.fsf@disp2133> <ccbccf82-dc50-00b2-1cfd-3da5e2c81dbf@infomedia.dk>
+ <87mtnavszx.fsf_-_@disp2133> <24192747-7f69-ef22-7bf1-96b2e7c2bca1@infomedia.dk>
+In-Reply-To: <24192747-7f69-ef22-7bf1-96b2e7c2bca1@infomedia.dk>
+From:   Yu Zhao <yuzhao@google.com>
+Date:   Mon, 18 Oct 2021 00:25:54 -0600
+Message-ID: <CAOUHufZJFAK3uBma0kgEjb7YK6Fq4vQqdGNFz6_=QkFBbqGBCw@mail.gmail.com>
+Subject: Re: [CFT][PATCH] ucounts: Fix signal ucount refcounting
+To:     Rune Kleveland <rune.kleveland@infomedia.dk>,
+        "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Alexey Gladkov <legion@kernel.org>,
+        Jordan Glover <Golden_Miller83@protonmail.ch>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        "containers\\@lists.linux-foundation.org" 
+        <containers@lists.linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guangming Cao <Guangming.Cao@mediatek.com>
+On Sun, Oct 17, 2021 at 10:47 AM Rune Kleveland
+<rune.kleveland@infomedia.dk> wrote:
+>
+> Hi!
+>
+> After applying the below patch, the 5 most problematic servers have run
+> without any issues for 23 hours. That never happened before the patch on
+> 5.14, so the patch seems to have fixed the issue for me.
 
-On Tue, 2021-08-31 at 14:47 +0200, Daniel Vetter wrote:
-> On Mon, Aug 30, 2021 at 10:39:11AM +0800, guangming.cao@mediatek.com
-> wrote:
-> > From: Guangming Cao <Guangming.Cao@mediatek.com>
-> > 
-> > When mapping the memory represented by a dma-buf into a device's
-> > address space, it might be desireable to map the memory with
-> > certain DMA attributes. Thus, introduce the dma_mapping_attrs
-> > field in the dma_buf_attachment structure so that when
-> > the memory is mapped with dma_buf_map_attachment, it is mapped
-> > with the desired DMA attributes.
-> > 
-> > Signed-off-by: Isaac J. Manjarres <isaacm@codeaurora.org>
-> > Signed-off-by: Sandeep Patil <sspatil@google.com>
-> > Signed-off-by: Guangming Cao <Guangming.Cao@mediatek.com>
-> 
-> Can you pls include the code that's going to use this here too?
-> 
-> At a glance all the attributes you might want to set are supposed to
-> be
-> under the control of the exporter, not the importer.
-> -Daniel
-> 
-Hi Daniel,
+Confirm. I couldn't reproduce the problem on 5.14 either.
 
-Sorry for the late. Currently I couldn't upload the coding going to use
-this part because of some miscellaneous reasons.
-
-Just as I said in commit message, for dma_heap, users can't skip cache
-sync or other opetrations when map iova[dma_buf_map_attachment] by
-fill (struct dma_buf_attachment).dma_map_attrs, it's not dma_map_attrs
-expected(link: 
-https://github.com/torvalds/linux/blob/master/Documentation/core-api/dma-attributes.rst#dma_attr_skip_cpu_sync
-).
-
-Correspondingly, if they use dma_buf to map iova[dma_buf_map_attrs],
-they will not meet this issue. So, I think it's a design flaw for
-dma_heap.
-
-BRs!
-Guangming
-> > ---
-> >  drivers/dma-buf/heaps/cma_heap.c    | 6 ++++--
-> >  drivers/dma-buf/heaps/system_heap.c | 6 ++++--
-> >  include/linux/dma-buf.h             | 3 +++
-> >  3 files changed, 11 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/drivers/dma-buf/heaps/cma_heap.c b/drivers/dma-
-> > buf/heaps/cma_heap.c
-> > index 0c05b79870f9..2c9feb3bfc3e 100644
-> > --- a/drivers/dma-buf/heaps/cma_heap.c
-> > +++ b/drivers/dma-buf/heaps/cma_heap.c
-> > @@ -99,9 +99,10 @@ static struct sg_table
-> > *cma_heap_map_dma_buf(struct dma_buf_attachment *attachme
-> >  {
-> >     struct dma_heap_attachment *a = attachment->priv;
-> >     struct sg_table *table = &a->table;
-> > +   int attrs = attachment->dma_map_attrs;
-> >     int ret;
-> >  
-> > -   ret = dma_map_sgtable(attachment->dev, table, direction, 0);
-> > +   ret = dma_map_sgtable(attachment->dev, table, direction,
-> > attrs);
-> >     if (ret)
-> >             return ERR_PTR(-ENOMEM);
-> >     a->mapped = true;
-> > @@ -113,9 +114,10 @@ static void cma_heap_unmap_dma_buf(struct
-> > dma_buf_attachment *attachment,
-> >                                enum dma_data_direction direction)
-> >  {
-> >     struct dma_heap_attachment *a = attachment->priv;
-> > +   int attrs = attachment->dma_map_attrs;
-> >  
-> >     a->mapped = false;
-> > -   dma_unmap_sgtable(attachment->dev, table, direction, 0);
-> > +   dma_unmap_sgtable(attachment->dev, table, direction, attrs);
-> >  }
-> >  
-> >  static int cma_heap_dma_buf_begin_cpu_access(struct dma_buf
-> > *dmabuf,
-> > diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-
-> > buf/heaps/system_heap.c
-> > index 23a7e74ef966..fc7b1e02988e 100644
-> > --- a/drivers/dma-buf/heaps/system_heap.c
-> > +++ b/drivers/dma-buf/heaps/system_heap.c
-> > @@ -130,9 +130,10 @@ static struct sg_table
-> > *system_heap_map_dma_buf(struct dma_buf_attachment *attac
-> >  {
-> >     struct dma_heap_attachment *a = attachment->priv;
-> >     struct sg_table *table = a->table;
-> > +   int attrs = attachment->dma_map_attrs;
-> >     int ret;
-> >  
-> > -   ret = dma_map_sgtable(attachment->dev, table, direction, 0);
-> > +   ret = dma_map_sgtable(attachment->dev, table, direction,
-> > attrs);
-> >     if (ret)
-> >             return ERR_PTR(ret);
-> >  
-> > @@ -145,9 +146,10 @@ static void system_heap_unmap_dma_buf(struct
-> > dma_buf_attachment *attachment,
-> >                                   enum dma_data_direction
-> > direction)
-> >  {
-> >     struct dma_heap_attachment *a = attachment->priv;
-> > +   int attrs = attachment->dma_map_attrs;
-> >  
-> >     a->mapped = false;
-> > -   dma_unmap_sgtable(attachment->dev, table, direction, 0);
-> > +   dma_unmap_sgtable(attachment->dev, table, direction, attrs);
-> >  }
-> >  
-> >  static int system_heap_dma_buf_begin_cpu_access(struct dma_buf
-> > *dmabuf,
-> > diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
-> > index efdc56b9d95f..4d650731766e 100644
-> > --- a/include/linux/dma-buf.h
-> > +++ b/include/linux/dma-buf.h
-> > @@ -379,6 +379,8 @@ struct dma_buf_attach_ops {
-> >   * @importer_ops: importer operations for this attachment, if
-> > provided
-> >   * dma_buf_map/unmap_attachment() must be called with the dma_resv
-> > lock held.
-> >   * @importer_priv: importer specific attachment data.
-> > + * @dma_map_attrs: DMA attributes to be used when the exporter
-> > maps the buffer
-> > + * through dma_buf_map_attachment.
-> >   *
-> >   * This structure holds the attachment information between the
-> > dma_buf buffer
-> >   * and its user device(s). The list contains one attachment struct
-> > per device
-> > @@ -399,6 +401,7 @@ struct dma_buf_attachment {
-> >     const struct dma_buf_attach_ops *importer_ops;
-> >     void *importer_priv;
-> >     void *priv;
-> > +   unsigned long dma_map_attrs;
-> >  };
-> >  
-> >  /**
-> > -- 
-> > 2.17.1
-> > 
-> 
-> 
+> On Monday there will be more load on the servers, which caused them to
+> crash faster without the patch. I will let you know if it happens again.
+>
+> Best regards,
+> Rune
+>
+> On 16/10/2021 00:10, Eric W. Biederman wrote:
+> >
+> > In commit fda31c50292a ("signal: avoid double atomic counter
+> > increments for user accounting") Linus made a clever optimization to
+> > how rlimits and the struct user_struct.  Unfortunately that
+> > optimization does not work in the obvious way when moved to nested
+> > rlimits.  The problem is that the last decrement of the per user
+> > namespace per user sigpending counter might also be the last decrement
+> > of the sigpending counter in the parent user namespace as well.  Which
+> > means that simply freeing the leaf ucount in __free_sigqueue is not
+> > enough.
+> >
+> > Maintain the optimization and handle the tricky cases by introducing
+> > inc_rlimit_get_ucounts and dec_rlimit_put_ucounts.
+> >
+> > By moving the entire optimization into functions that perform all of
+> > the work it becomes possible to ensure that every level is handled
+> > properly.
+> >
+> > I wish we had a single user across all of the threads whose rlimit
+> > could be charged so we did not need this complexity.
