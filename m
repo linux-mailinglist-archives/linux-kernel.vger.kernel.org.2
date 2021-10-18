@@ -2,98 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0BC74327B3
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 21:31:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 162344327B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 21:31:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233436AbhJRTdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 15:33:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49210 "EHLO mail.kernel.org"
+        id S233759AbhJRTdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 15:33:40 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:38412 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232659AbhJRTd3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 15:33:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C68BB6128B;
-        Mon, 18 Oct 2021 19:31:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634585477;
-        bh=kL+xvgtJucVN4cFRoEIBRAEL92uNVUroLxqy6YYCqFE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Zwf9r/8UZz6gNf2WZx2ZtEDDZxD6hhqa7tf+X5YVgqhSzDKboXg+OEL0sBsjy7HZh
-         YxCy1HQaFDKXUEHEr5JNNIoZOrLjScbSXvdWkjiX7EHZzc2M7Wz741RgL4n6axrXT3
-         RiyxwIETKFqOdBCqcoqHk2tPVYrSCYPZz4BHXL2LMf+Op5stL7WhmJxP0k8sVvkukh
-         zoD6kI6BzDp2XNgim1i3Y5x68gj6KVRMdi6Vt4sceyxqcIZP8xatc8bwHuusX1xLtJ
-         W5pLwJI5C1pQWBb+ymmst3p2WDsEyOMe/llZdbWY9SESUoJCYxIu55D4VPTwUXUMW8
-         xJWZyMn/m8qXA==
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Simon Horman <simon.horman@corigine.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        oss-drivers@corigine.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        llvm@lists.linux.dev, Nathan Chancellor <nathan@kernel.org>
-Subject: [PATCH] nfp: bpf: Fix bitwise vs. logical OR warning
-Date:   Mon, 18 Oct 2021 12:31:01 -0700
-Message-Id: <20211018193101.2340261-1-nathan@kernel.org>
-X-Mailer: git-send-email 2.33.1.637.gf443b226ca
+        id S233664AbhJRTdb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 15:33:31 -0400
+Received: from zn.tnic (p200300ec2f085700af6a7a3215758573.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:5700:af6a:7a32:1575:8573])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 2B0B41EC04A9;
+        Mon, 18 Oct 2021 21:31:19 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1634585479;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=+nsWWqmqSGVwOQE+JOrowpz/RZu30zxbCfysGoaRocY=;
+        b=AEy/cLfrJofq6e20RF5dDlNHxet/AbvG36qGdU/gkziMRPWYRmUgWpWnip/LLdTtmpciPR
+        PglnkOoc8OsryDpRzkUPM0NaMJVY2jId2RymJZw1YEnxCCo0xbARdhtgl8M8xJ+lm/9xpH
+        MB12xABMXDNGjuYxsj9xYWJ3S6v9Wy8=
+Date:   Mon, 18 Oct 2021 21:31:19 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     "H. Peter Anvin" <hpa@zytor.com>
+Cc:     Jane Malalane <jane.malalane@citrix.com>,
+        LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Pu Wen <puwen@hygon.cn>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Yazen Ghannam <Yazen.Ghannam@amd.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Huang Rui <ray.huang@amd.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Kim Phillips <kim.phillips@amd.com>, stable@vger.kernel.org
+Subject: Re: [PATCH v2] x86/cpu: Fix migration safety with X86_BUG_NULL_SEL
+Message-ID: <YW3Lhwzux0K1P72e@zn.tnic>
+References: <20211013142230.10129-1-jane.malalane@citrix.com>
+ <YW25x7AYiM1f1HQA@zn.tnic>
+ <35CA4584-4CFD-4E47-9825-6438D9ED4ECC@zytor.com>
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <35CA4584-4CFD-4E47-9825-6438D9ED4ECC@zytor.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A new warning in clang points out two places in this driver where
-boolean expressions are being used with a bitwise OR instead of a
-logical one:
+On Mon, Oct 18, 2021 at 12:10:20PM -0700, H. Peter Anvin wrote:
+> AFAIK no Intel CPU has ever had that behavior, and always cleared the
+> segments; I don't Intel has any plans of supporting such a CPUID bit
+> (although I'd certainly be willing to take such a request back to the
+> CPU teams on request.)
 
-drivers/net/ethernet/netronome/nfp/nfp_asm.c:199:20: error: use of bitwise '|' with boolean operands [-Werror,-Wbitwise-instead-of-logical]
-        reg->src_lmextn = swreg_lmextn(lreg) | swreg_lmextn(rreg);
-                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                                             ||
-drivers/net/ethernet/netronome/nfp/nfp_asm.c:199:20: note: cast one or both operands to int to silence this warning
-drivers/net/ethernet/netronome/nfp/nfp_asm.c:280:20: error: use of bitwise '|' with boolean operands [-Werror,-Wbitwise-instead-of-logical]
-        reg->src_lmextn = swreg_lmextn(lreg) | swreg_lmextn(rreg);
-                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                                             ||
-drivers/net/ethernet/netronome/nfp/nfp_asm.c:280:20: note: cast one or both operands to int to silence this warning
-2 errors generated.
+No need - we can always set or clear a flag on Intel, depending on what
+we do.
 
-The motivation for the warning is that logical operations short circuit
-while bitwise operations do not. In this case, it does not seem like
-short circuiting is harmful so implement the suggested fix of changing
-to a logical operation to fix the warning.
+> That being said, this sounds like an ideal use for the hypervisor CPU
+> feature flag.
 
-Link: https://github.com/ClangBuiltLinux/linux/issues/1479
-Reported-by: Nick Desaulniers <ndesaulniers@google.com>
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
----
- drivers/net/ethernet/netronome/nfp/nfp_asm.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Yap, it uses it.
 
-diff --git a/drivers/net/ethernet/netronome/nfp/nfp_asm.c b/drivers/net/ethernet/netronome/nfp/nfp_asm.c
-index 2643ea5948f4..154399c5453f 100644
---- a/drivers/net/ethernet/netronome/nfp/nfp_asm.c
-+++ b/drivers/net/ethernet/netronome/nfp/nfp_asm.c
-@@ -196,7 +196,7 @@ int swreg_to_unrestricted(swreg dst, swreg lreg, swreg rreg,
- 	}
- 
- 	reg->dst_lmextn = swreg_lmextn(dst);
--	reg->src_lmextn = swreg_lmextn(lreg) | swreg_lmextn(rreg);
-+	reg->src_lmextn = swreg_lmextn(lreg) || swreg_lmextn(rreg);
- 
- 	return 0;
- }
-@@ -277,7 +277,7 @@ int swreg_to_restricted(swreg dst, swreg lreg, swreg rreg,
- 	}
- 
- 	reg->dst_lmextn = swreg_lmextn(dst);
--	reg->src_lmextn = swreg_lmextn(lreg) | swreg_lmextn(rreg);
-+	reg->src_lmextn = swreg_lmextn(lreg) || swreg_lmextn(rreg);
- 
- 	return 0;
- }
+> Maybe we should consider a migration hypervisor flag too to explicitly
+> tell the kernel not to rely on hardware probing that breaks migration
+> in general.
 
-base-commit: 041c61488236a5a84789083e3d9f0a51139b6edf
+Meh, migration-specific flag calls for all kinds of nasty when each
+HV would want different things to happen in the guest, for migration.
+And then the patch flood will come. I mean, we already do a bunch of
+X86_FEATURE_HYPERVISOR all over the place and apparently it is enough
+here too...
+
+> Now, with a CPUID but being introduced, the right thing would be to
+> use the CPUID bit as a feature instead of using a bug flag, and add
+> whitelisting in the vendor-specific code as applicable.
+
+I guess we can flip all that logic checking X86_BUG_NULL_SEG... it
+sounds like a lot of churn to me, though and I don't see a pressing need
+for it unless someone is bored and wants to do some kernel patching
+exercises but whatever...
+
 -- 
-2.33.1.637.gf443b226ca
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
