@@ -2,102 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47CD54324FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 19:26:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDCCE432502
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 19:28:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233987AbhJRR26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 13:28:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231969AbhJRR25 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 13:28:57 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5407BC061745
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 10:26:46 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id f5so16888657pgc.12
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 10:26:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=H26XgAKSyXMi5EsE0IrTEpUxoqQGIi6HhStgdc+Rcd4=;
-        b=Jf1dUBBLoXfZ62kg+5xHWRihOgsJ/2RNF3xC4LXWVxs665D5eHdz/MxVyH/WSQZEXV
-         QYf1q6MqumZ0307fjCbJdb9BfpgnQ/Ld7FT5Zog6v84Jo+Zx8BMkJWSqgs0smXZJdlbL
-         TnBF6mZEhXSbMdjxz/xrbFYTCaYASBnrPjNFqSO0IuQjc/tyDqmJbP1ezJ9zc+vILufB
-         sgcttw7o9tDAa6aSLgl9brGTkukAIduj+j1HTxiJZz+Z1Kw+mUMD3Le+kX9x1vsmMiC8
-         5IzNmlcXMPIPTMyz1Y/8N8AEW5nW0NigLb1/pbDNRvRsPKo0H0Wzk9YAzf7z1dfyq24C
-         zAlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=H26XgAKSyXMi5EsE0IrTEpUxoqQGIi6HhStgdc+Rcd4=;
-        b=cWSkIezQenY8j3skj6dnkLrcPd97Be6ux1PXCpOKtrQur6DhP21O2oz6pT7s8lxcMA
-         mSirm4l498Ng5s1hTeof2XKjanEP5//bWosiP++U8PqD9PjJ+GKKVtwqjbLiZIflSa8r
-         56VcUP1S4psLeinbJk//nnnhA6MrUS1UhgcAQqAN9/F7yh0aPWAXvKOWtCRzxpkPVlXX
-         cjbWVgH9uOPeOlljMmghP0iebJIPTYve92nM/WkJtdvpqp2FQ1hdIax7wKOCxA26PxRN
-         sNgIvstzDq0d5HOzcqbf4RxD2zfm53XEJMBGepObpxU6dXz0q4QUygjDZSvRsCe+hPJS
-         5VhQ==
-X-Gm-Message-State: AOAM532t8BB7cQbydVJJVeZXePjlDjRwlSAWYQuEIWWgLG1WCm2U3yge
-        vy8Q65N6qIWAH4mfhdsdY0W/jA==
-X-Google-Smtp-Source: ABdhPJwPK5yDwYS69j2DgbI4iGQED39/ST4jIBvqJdcuNtGdSeYu6YlIPxZFHZoXFp0/PUVX6gpYOA==
-X-Received: by 2002:a62:8f53:0:b0:44c:5d10:9378 with SMTP id n80-20020a628f53000000b0044c5d109378mr29876734pfd.19.1634578005650;
-        Mon, 18 Oct 2021 10:26:45 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id g17sm13608578pfu.22.2021.10.18.10.26.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 10:26:45 -0700 (PDT)
-Date:   Mon, 18 Oct 2021 17:26:41 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Xiaoyao Li <xiaoyao.li@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 6/7] KVM: VMX: Check Intel PT related CPUID leaves
-Message-ID: <YW2uUcor5nhDZ3DS@google.com>
-References: <20210827070249.924633-1-xiaoyao.li@intel.com>
- <20210827070249.924633-7-xiaoyao.li@intel.com>
- <YTp/oGmiin19q4sQ@google.com>
- <a7988439-5a4c-3d5a-ea4a-0fad181ad733@intel.com>
- <486f0075-494d-1d84-2d85-1d451496d1f0@redhat.com>
- <157ba65d-bd2a-288a-6091-9427e2809b02@intel.com>
+        id S234119AbhJRRaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 13:30:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60868 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234099AbhJRRaH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 13:30:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 50DF561077;
+        Mon, 18 Oct 2021 17:27:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634578075;
+        bh=Bsrx7g92tYLygYaWvgBumvWoPy04BmyJB9LZTCvOM18=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=seIYQL5uL8PPzuTaOW4/RHE62JKmI6k72bsGcR5TYnoJl68cM0Ot/evAuoX3UlV4C
+         HkPgxGxDFolW5e0FOFCTFeLJoPfxrq3XnwEFsUTzy8p5lZELAJ9yZbaw+vWCEEklRm
+         iNmSMop9UOkCinkg0ozyB4EqI8t/vqkn56oG6Uz2nlG0ETn2KHQmlfE1VLeTd15/4O
+         /hl19OooHsSkM5IDwSTztxJrAoNEkcK8rnrlDH5nDiRcf2eo7W+MmfMC6fzNuai0E2
+         IVRyVSr6Z76dtBluKJZe7RNCQIrn+UEiGdcJlUM1n1S8EMzGGcnwwj1Znof4ckhUSz
+         UwrkCfDaZGV3w==
+Date:   Mon, 18 Oct 2021 10:27:54 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Francesco Dolcini <francesco.dolcini@toradex.com>
+Cc:     f.fainelli@gmail.com, Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        christophe.leroy@csgroup.eu, Stefan Agner <stefan@agner.ch>,
+        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] phy: micrel: ksz8041nl: do not use power down
+ mode
+Message-ID: <20211018102754.5b097ae4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20211018171621.GC7669@francesco-nb.int.toradex.com>
+References: <20211018094256.70096-1-francesco.dolcini@toradex.com>
+        <20211018095249.1219ddaf@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <20211018171621.GC7669@francesco-nb.int.toradex.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <157ba65d-bd2a-288a-6091-9427e2809b02@intel.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 18, 2021, Xiaoyao Li wrote:
-> On 10/18/2021 8:47 PM, Paolo Bonzini wrote:
-> > > > One option would be to bump that to the theoretical max of 15,
-> > > > which doesn't seem too horrible, especially if pt_desc as a whole
-> > > > is allocated on-demand, which it probably should be since it isn't
-> > > > exactly tiny (nor ubiquitous)
-> > > > 
-> > > > A different option would be to let userspace define whatever it
-> > > > wants for guest CPUID, and instead cap nr_addr_ranges at
-> > > > min(host.cpuid, guest.cpuid, RTIT_ADDR_RANGE).
-> > 
-> > This is the safest option.
-> 
-> My concern was that change userspace's input silently is not good.
+On Mon, 18 Oct 2021 19:16:21 +0200 Francesco Dolcini wrote:
+> > Fixes: 1a5465f5d6a2 ("phy/micrel: Add suspend/resume support to Micrel PHYs")  
+> The errata is from 2016, while this commit is from 2013, weird?
+> Apart of that I can add the Fixes tag, should we send this also to stable?
 
-Technically KVM isn't changing userspace's input, as KVM will still enumerate
-CPUID as defined by userspace.  What KVM is doing is refusing to emulate/virtualize
-a bogus vCPU model, e.g. by injecting #GP on an MSR access that userspace
-incorrectly told the guest was legal.  That is standard operation procedure for
-KVM, e.g. there are any number of instructions that will fault if userspace lies
-about the vCPU model.
+I'd lean towards sending it to stable, yes.
 
-> prefer this, we certainly need to extend the userspace to query what value
-> is finally accepted and set by KVM.
-
-That would be __do_cpuid_func()'s responsibility to cap leaf 0x14 output with
-RTIT_ADDR_RANGE.  I.e. enumerate the supported ranges in KVM_GET_SUPPORTED_CPUID,
-after that it's userspace's responsibility to not mess up.
+> > Should we leave a comment in place of the callbacks referring 
+> > to the errata?  
+> I think is a good idea, I'll add it.
