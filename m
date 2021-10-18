@@ -2,285 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EE31431190
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 09:48:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD9D0431194
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 09:50:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230462AbhJRHu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 03:50:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51417 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230392AbhJRHu4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 03:50:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634543325;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=WaOwUkzvUfDBDDt6WE1kP1FIHYFffA0AKAkBoFnY0UQ=;
-        b=Gzxh80tedZCTnWWG/UeGdbrq8JmHMlEUVyebO1rGdthdeGEWAtD5JQiZaTnPe9RNZpxiSy
-        Wd07MzhxRC+pKQ9FWIK+PFXlAzRq1M4Umnbt9uVwkRbg/S8e8bD7o4U0N6taC5SGVvyHoV
-        CdqoefTYVtt5r2vUIvuTghSVRVAI/yU=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-199-sTH-nZpTOsqK-BTdLukDQQ-1; Mon, 18 Oct 2021 03:48:43 -0400
-X-MC-Unique: sTH-nZpTOsqK-BTdLukDQQ-1
-Received: by mail-ed1-f72.google.com with SMTP id u23-20020a50a417000000b003db23c7e5e2so13572848edb.8
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 00:48:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=WaOwUkzvUfDBDDt6WE1kP1FIHYFffA0AKAkBoFnY0UQ=;
-        b=Xx0/jTaAGTo19h/R1rR+nM0p9WhTnVj4eNUjYRexmdQ7dxI9KzbPRjFawxy2omiVln
-         wksG8PtGizbY0XIbk+IZleDmicLKnEkgH/jYuIJpmesuNeQn7iV0OGvw8lzByv2eGSe8
-         Z85BcN1Rr0XDsM3nd9WboWWxICCiqLNoldcrwXr8Z+BSPkVHZRepkFokXjHqu+uZu9gW
-         grO5MhW3I9Vvvtg5jLC+al8MZC3CxoBFYtRavL1HjxBXA1Ky/8ymumbdEenKoNoY0em1
-         n2SvFEI6NAqMiDufPCGSdlRcKORq4fXsMVXWJblXnhnkwYYNiAJPEeNMycWSP1sIruwY
-         Od9Q==
-X-Gm-Message-State: AOAM531lFMhWoBviizBVZBd7rpW9zuezqZS2irFJ9jznv0Nz/9vBUFit
-        AimQ8zZtASuUa9bbhqbQy8DHzbJ/78ldAF4SL5PNnibNfm3R+9MK2vwsKfj5eRD6bnByzxpunR3
-        k/SfP+2gt2BtynoaItgaVKVVH
-X-Received: by 2002:a05:6402:b15:: with SMTP id bm21mr41922169edb.380.1634543322713;
-        Mon, 18 Oct 2021 00:48:42 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxyKwcnqh+/fwP6JwadbpQWBXm1JRQdQv8BAuZbgM0HXwdav80fx44w6a4nrNrwpHcigfVA6A==
-X-Received: by 2002:a05:6402:b15:: with SMTP id bm21mr41922135edb.380.1634543322427;
-        Mon, 18 Oct 2021 00:48:42 -0700 (PDT)
-Received: from [10.40.1.223] ([81.30.35.201])
-        by smtp.gmail.com with ESMTPSA id z19sm8310692ejp.97.2021.10.18.00.48.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Oct 2021 00:48:42 -0700 (PDT)
-Message-ID: <bc7f699d-d77d-83ad-ce5b-6082f30881c1@redhat.com>
-Date:   Mon, 18 Oct 2021 09:48:41 +0200
+        id S230490AbhJRHwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 03:52:11 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:36894 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230471AbhJRHwK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 03:52:10 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1634543400; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=6HipczTezmULgaScktOZMpGhxT1DDNz2p3RjJWu6EVQ=;
+ b=em1iqM7JPu2B65k5YlDft7Du+x9+V091ZbiEhYVS7oh9TREtW+JHV1CEbKopLCoc3rBG+9M6
+ X8hjU8gK+kMrfunHzfjz/vyavNgUcduhPKoDMrtqrNU/hM3Tn9fkkVMlD2I2FotzbHQYTVmx
+ a/tRBCiB786M3Dlrj8ygK4GagmM=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 616d271c0605239689401cae (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 18 Oct 2021 07:49:48
+ GMT
+Sender: tjiang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A115BC4360C; Mon, 18 Oct 2021 07:49:47 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: tjiang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C9A66C4338F;
+        Mon, 18 Oct 2021 07:49:46 +0000 (UTC)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH 00/17] various fixes for atomisp to make it work
-Content-Language: en-US
-To:     Tsuchiya Yuto <kitakar@gmail.com>
-Cc:     Patrik Gfeller <patrik.gfeller@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>,
-        Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Alan <alan@linux.intel.com>, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Nable <nable.maininbox@googlemail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Fabio Aiuto <fabioaiuto83@gmail.com>,
-        "andrey.i.trufanov" <andrey.i.trufanov@gmail.com>
-References: <20211017161958.44351-1-kitakar@gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20211017161958.44351-1-kitakar@gmail.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Mon, 18 Oct 2021 15:49:46 +0800
+From:   tjiang@codeaurora.org
+To:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com
+Cc:     linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
+        c-hbandi@codeaurora.org, hemantg@codeaurora.org, mka@chromium.org,
+        rjliao@codeaurora.org, zijuhu@codeaurora.org
+Subject: Re: [PATCH v2] Bluetooth: btusb: Add support for variant WCN6855 by
+ using different nvm
+In-Reply-To: <81add00a4a038008e9f734c5f5e5b712@codeaurora.org>
+References: <81add00a4a038008e9f734c5f5e5b712@codeaurora.org>
+Message-ID: <03517c8d44e6c20d28b9c9f285d8f857@codeaurora.org>
+X-Sender: tjiang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-<Added some more people to the Cc who are also definitely interested in this>
+marcel:
+   sorry to disturb you , could you help review this patch ? thank you.
 
-Hi Tsuchiya,
+regards.
+tim
 
-On 10/17/21 18:19, Tsuchiya Yuto wrote:
-> Hi all,
+
+On 2021-10-12 15:55, tjiang@codeaurora.org wrote:
+> the RF performance of wcn6855 soc chip from different foundries will be
+> difference, so we should use different nvm to configure them.
 > 
-> This patch series contains fixes for atomisp to work (again). Tested on
-> Microsoft Surface 3 (Windows) and Xiaomi Mi Pad 2 (Android model) with
-> v5.15-rc5. Both are Cherry Trail (ISP2401) devices.
+> Signed-off-by: Tim Jiang <tjiang@codeaurora.org>
+> ---
+>  drivers/bluetooth/btusb.c | 56 
+> +++++++++++++++++++++++++++++++++++------------
+>  1 file changed, 42 insertions(+), 14 deletions(-)
 > 
-> I'm still not used to Linux patch sending flow. Sorry in advance
-> if there is some weirdness :-) but I did my best.
-
-You actually did pretty good AFAICT.
-
-Also thank you so much for working on this. Finally getting working
-atomisp2 support is awesome!
-
-I actually have been working on and off on this myself
-(even did a bit of work on it this weekend). My plan was to:
-
-1. Find android (5.1) x86 kernel sources which I can build from
-source and get a working Android (on a device with Android pre-installed)
-with a kernel build from source -> Done
-
-2. Get a regular Linux distro to boot with the kernel from 1. -> Done
-   (normal Linux v4l2 utils do not give a picture, might be the need
-    to set preview mode)
-
-3. Add ioctl debugging to the kernel from 1. capture a trace to see what
-Android userspace is doing -> Done .  See here for an example log:
-
-https://fedorapeople.org/~jwrdegoede/atomisp-logs-t116/
-
-4. Write a userspace utility mimicking Android userspace, I started on
-this this weekend
-
-5. Once I've 4. working the plan was a bit vague, the idea was to see if
-I could use that to quickly get the mainline staging version to work; or
-alternatively forward port the working Android kernel sources to
-mainline from scratch.
-
-But it looks like 4 and 5 will no longer be necessary, which is awesome,
-thank you so much!
-
-I'll try to look into this series in more detail; and try to get thing
-working on one of my own devices when I can make some time for this.
-
-
-
-
-
-
-
-
-
+> diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+> index 75c83768c257..f352ff351b61 100644
+> --- a/drivers/bluetooth/btusb.c
+> +++ b/drivers/bluetooth/btusb.c
+> @@ -3190,6 +3190,9 @@ static int btusb_set_bdaddr_wcn6855(struct 
+> hci_dev *hdev,
+>  #define QCA_DFU_TIMEOUT		3000
+>  #define QCA_FLAG_MULTI_NVM      0x80
 > 
-> I'll send another series that contains RFC patches later named ("bug
-> reports for atomisp to make it work"). To try to capture images, applying
-> those RFC patches are also needed.
+> +#define WCN6855_2_0_RAM_VERSION_GF 0x400c1200
+> +#define WCN6855_2_1_RAM_VERSION_GF 0x400c1211
+> +
+>  struct qca_version {
+>  	__le32	rom_version;
+>  	__le32	patch_version;
+> @@ -3221,6 +3224,7 @@ static const struct qca_device_info
+> qca_devices_table[] = {
+>  	{ 0x00000302, 28, 4, 16 }, /* Rome 3.2 */
+>  	{ 0x00130100, 40, 4, 16 }, /* WCN6855 1.0 */
+>  	{ 0x00130200, 40, 4, 16 }, /* WCN6855 2.0 */
+> +	{ 0x00130201, 40, 4, 16 }, /* WCN6855 2.1 */
+>  };
 > 
-> The following 1st-7th patches are fixes for the upstreamed atomisp:
+>  static int btusb_qca_send_vendor_req(struct usb_device *udev, u8 
+> request,
+> @@ -3375,6 +3379,43 @@ static int btusb_setup_qca_load_rampatch(struct
+> hci_dev *hdev,
+>  	return err;
+>  }
 > 
->     media: atomisp: pci: add missing media_device_cleanup() in
->       atomisp_unregister_entities()
->     media: atomisp: pci: fix punit_ddr_dvfs_enable() argument for
->       mrfld_power up case
->     media: atomisp: pci: fix inverted logic in buffers_needed()
->     media: atomisp: pci: do not use err var when checking port validity
->       for ISP2400
->     media: atomisp: pci: fix inverted error check for
->       ia_css_mipi_is_source_port_valid()
->     media: atomisp: pci: use IA_CSS_ERROR() for error messages in
->       sh_css_mipi.c
->     media: atomisp: pci: fix ifdefs in sh_css.c
+> +static void btusb_generate_qca_nvm_name(char *fwname,
+> +					size_t max_size,
+> +					struct qca_version *ver)
+> +{
+> +	u32 rom_version = le32_to_cpu(ver->rom_version);
+> +	u16 flag = le16_to_cpu(ver->flag);
+> +
+> +	if (((flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
+> +		u16 board_id = le16_to_cpu(ver->board_id);
+> +		u32 ram_version = le32_to_cpu(ver->ram_version);
+> +		const char *variant;
+> +
+> +		switch (ram_version) {
+> +		case WCN6855_2_0_RAM_VERSION_GF:
+> +		case WCN6855_2_1_RAM_VERSION_GF:
+> +			variant = "_gf";
+> +			break;
+> +		default:
+> +			variant = "";
+> +			break;
+> +		}
+> +
+> +		/* if boardid equal 0, use default nvm without suffix */
+> +		if (board_id == 0x0) {
+> +			snprintf(fwname, max_size, "qca/nvm_usb_%08x%s.bin",
+> +				rom_version, variant);
+> +		} else {
+> +			snprintf(fwname, max_size, "qca/nvm_usb_%08x%s_%04x.bin",
+> +				rom_version, variant, board_id);
+> +		}
+> +	} else {
+> +		snprintf(fwname, max_size, "qca/nvm_usb_%08x.bin",
+> +			rom_version);
+> +	}
+> +
+> +}
+> +
+>  static int btusb_setup_qca_load_nvm(struct hci_dev *hdev,
+>  				    struct qca_version *ver,
+>  				    const struct qca_device_info *info)
+> @@ -3383,20 +3424,7 @@ static int btusb_setup_qca_load_nvm(struct 
+> hci_dev *hdev,
+>  	char fwname[64];
+>  	int err;
 > 
-> The following 8th-13th patches partially reverts driver version back
-> to irci_stable_candrpv_0415_20150521_0458:
+> -	if (((ver->flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
+> -		/* if boardid equal 0, use default nvm without surfix */
+> -		if (le16_to_cpu(ver->board_id) == 0x0) {
+> -			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
+> -				 le32_to_cpu(ver->rom_version));
+> -		} else {
+> -			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x_%04x.bin",
+> -				le32_to_cpu(ver->rom_version),
+> -				le16_to_cpu(ver->board_id));
+> -		}
+> -	} else {
+> -		snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
+> -			 le32_to_cpu(ver->rom_version));
+> -	}
+> +	btusb_generate_qca_nvm_name(fwname, sizeof(fwname), ver);
 > 
->     media: atomisp: pci: make fw ver
->       irci_stable_candrpv_0415_20150521_0458 work - 1/5
->     media: atomisp: pci: make fw ver
->       irci_stable_candrpv_0415_20150521_0458 work - 2/5
->     media: atomisp: pci: make fw ver
->       irci_stable_candrpv_0415_20150521_0458 work - 3/5
->     media: atomisp: pci: make fw ver
->       irci_stable_candrpv_0415_20150521_0458 work - 4/5
->     media: atomisp: pci: make fw ver
->       irci_stable_candrpv_0415_20150521_0458 work - 5/5
->     media: atomisp: pci: release_version is now
->       irci_stable_candrpv_0415_20150521_0458
-> 
-> One of the issues on the upstreamed atomisp is, the driver is a result
-> of the following two different versions of driver merged by tools using
-> `ifdef ISP2401`:
-> 
->     - ISP2400: irci_stable_candrpv_0415_20150521_0458
->     - ISP2401: irci_master_20150911_0724
-> 
-> and we don't have such firmware made for irci_master_20150911_0724.
-
-Right this is something which I also noticed (but I did not do anything with /
-about yet)
-
-> I confirmed that the driver version irci_stable_candrpv_0415_20150521_0458
-> works well on the intel-aero version atomisp for ISP2401, too.
-
-"irci_stable_candrpv_0415_20150521_0458" is also the version of the atomisp
-firmware shipped in CHT tablets which come with Android pre-installed. So
-I agree that this is the version which we should go for.
-
-
-> Here is
-> my port, if someone is interested [2]:
-> 
-> So, eventually, such ISP version tests caused by just the driver version
-> difference can be removed (not just being unified but removed).
-
-Ack.
-
-> 
-> That said, it may take longer time until we remove such tests. So, for
-> now I thought it may be better to focus on just making atomisp work by
-> partially reverting the incompatible things for the firmware version
-> irci_stable_candrpv_0415_20150521_0458.
-
-Ack.
-
-<snip>
-
->   ## about (a lot of) ISP2401 ifdef tests
-> 
-> When porting intel-aero version atomisp to mainline, I thought almost
-> all the `ifdef ISP2401` things are the result of two different driver
-> version merged by tools.
-> 
-> To confirm that, I tried removing ifdefs for the initial commit of
-> upstreamed atomisp [1]. And I can successfully take a picture there on
-> surface3.
-> 
-> Currently, I can remove ifdefs up to commit bd674b5a413c ("media: atomisp:
-> cleanup ifdefs from ia_css_debug.c") [2] which is before 641c2292bf19 ("media:
-> atomisp: get rid of version-dependent globals"). Up to there, I stopped
-> and realized it may take some time to remove ifdefs for current atomisp.
-> So, instead of removing ifdefs, I partially reverted incompatible parts
-> in this series for now.
-> 
-> The ifdefs for the real hardware difference is like the following which
-> were removed or integrated into `ifdef ISP2401` on commit 641c2292bf19
-> ("media: atomisp: get rid of version-dependent globals") and bd674b5a413c
-> ("media: atomisp: cleanup ifdefs from ia_css_debug.c"):
-> 
->   - HAS_NO_INPUT_FORMATTER
->   - USE_INPUT_SYSTEM_VERSION_2
->   - USE_INPUT_SYSTEM_VERSION_2401
->   ...
-> 
-> I need to elaborate on this ifdef thing later (and I'll do later), but
-> for now, let's focus on make it just work...
-
-Just focusing on making it work sounds good to me. I also have quite a few
-Bay Trail devices, so I would love to also see the 2400 version working.
-
-But one step at a time lets focus on CHT / the 2401 for now.
-
-> For devices which use intel_pmic_bytcrc driver, you need to add i2c
-> address. I sent RFC patch earlier named ("ACPI / PMIC: Add i2c address
-> to intel_pmic_bytcrc driver").
-
-I'll reply to that patch in its own thread (it needs some work,
-but we should be able to get something ready for upstream easily).
-
-> Also, sensor drivers are not upstream. Take a look at my working tree
-> if someone is interested [1].
-> 
-> I made world-facing camera (OV8835) work, which the driver is from the
-> old Android kernel tree. Unfortunately, the user-facing camera (AR0330)
-> is not working yet; the output is completely black. I'm not sure why,
-> maybe the sensor power issue (atomisp_gmin_platform) or sensor driver
-> issue, which the driver is from non-atomisp driver.
-> 
-> [1] https://github.com/kitakar5525/linux-kernel/commits/mainline+upst_atomisp
-> 
->   ## for mipad2 (and whiskey cove pmic based devices)
-> 
-> For devices which equip whiskey cove PMIC, you need to add non-upstream
-> regulator driver [1].
-> 
-> [1] work done by jekhor, which seems to be from intel-aero or old
->     Android kernel
->     https://github.com/jekhor/yogabook-linux-kernel/commit/11c05b365fb2eeb4fced5aa66b362c511be32a34
->     ("intel_soc_pmic_chtwc: Add regulator driver and definition for VPROG1B")
-
-Interesting I recently bought a 2nd hand mipad2 myself too. I still need
-to put Linux on there. I'm definitely motivated to do that now :)
-
-Regards,
-
-Hans
-
+>  	err = request_firmware(&fw, fwname, &hdev->dev);
+>  	if (err) {
