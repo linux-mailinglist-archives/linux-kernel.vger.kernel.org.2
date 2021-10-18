@@ -2,102 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBB22432551
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 19:43:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEFBE432555
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 19:45:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234231AbhJRRpf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 13:45:35 -0400
-Received: from ms.lwn.net ([45.79.88.28]:53248 "EHLO ms.lwn.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233885AbhJRRpd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 13:45:33 -0400
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 453EC199E;
-        Mon, 18 Oct 2021 17:43:21 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 453EC199E
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1634579001; bh=On+vvnIjlnwvwqpWycMcn1ROTsL6lLApirxr0LG35Hc=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=PCQbilsAPBGb9A8Bhld9iPvc9Y3nQkIEdCrRqkBLedLMTJ0Mye+BL1n7CQTI4LV4A
-         +Oo1KC5qp/kW2elZwZQO3uf0th15q8T58ta/EKpKUcAb2z21/pOFkV0k+mEW75syoW
-         0HMNjHHd8eucsEVKVmiWd7bRXlc+5me7ycXiMCbVJmNdNt35dhqPBtLGVsmPlrQCJa
-         wWkCa1pFgOgFvIcO1pb4uKc2tzzLgDenhRXp/TfVMffrAFcnhT+j2uybjljEKcmxoH
-         XrtuxH1cGK7PKl8rZlzl2dLKNuvkvF6wL5ON/PvAbfkKpzW/urkin0zIaU6BE6l2sF
-         lBo7b8/w+Jopw==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Clark Williams <williams@redhat.com>,
-        John Kacur <jkacur@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V3 13/19] rtla: Add Documentation
-In-Reply-To: <7e205854656f41afe9a35e6390d3e3cbd724706f.1634574261.git.bristot@kernel.org>
-References: <cover.1634574261.git.bristot@kernel.org>
- <7e205854656f41afe9a35e6390d3e3cbd724706f.1634574261.git.bristot@kernel.org>
-Date:   Mon, 18 Oct 2021 11:43:20 -0600
-Message-ID: <877deaut3b.fsf@meer.lwn.net>
+        id S232458AbhJRRr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 13:47:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40843 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232277AbhJRRrx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 13:47:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634579141;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=n2ED4js5lS0lxq3Ati1A3TDBCk1NySWWfjAQp8swFKk=;
+        b=Nlzhcpb7JsiClQTGG6+SKUkjkgM8vdD93nYdR3rYTImjLCmaDSjiFDoKDjdVlJ6SLPQG+4
+        /wELIIlHP4ap/l8mWqWy3bXNC2/+kXxY+nPN6VELRdsZsbH+1p74ncgKeTUgZbxRAzFeyG
+        Ez5lwp0VBAdX0WA3tlNOSeGqzPOnMq8=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-138-pz_mOnSLPKeZlu0lI2NNpA-1; Mon, 18 Oct 2021 13:45:40 -0400
+X-MC-Unique: pz_mOnSLPKeZlu0lI2NNpA-1
+Received: by mail-wm1-f69.google.com with SMTP id h22-20020a7bc936000000b0030d998aa15eso3427475wml.4
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 10:45:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=n2ED4js5lS0lxq3Ati1A3TDBCk1NySWWfjAQp8swFKk=;
+        b=JgjKlGBg+dTET9bxcin8xQL6jw1l+B2RPBnIClDkfVrreN2Ry65oKpgCq4/ov6SyB2
+         9UnIrGZXUCu1ygabDttMN32ryo2a5my9NUs01jYmfe2iRCq50ePwCKkLQYsghPujDly5
+         qpnwzX5BU2SHAFc+/a0+rUgTvjwoLpcWeCy5KGRoaTBvk6lo9g34EARwt0q9pKlBm0QB
+         yH3gSVb4U0ADELUlDl8eBzveyaLC+Thl/EQYWLxr0WJGcsFwIt8I5AfAnZGHEsvyiTvE
+         CKiZD/5m+cywFq9wNGXXkZR7rT2qtNPteOVuzJ6V+zvvVJPsU6vOAiWyiM1LfhwBS/dh
+         6e1g==
+X-Gm-Message-State: AOAM5331A5LvOWXONVkI+mY5ThQgnIfCO1N80Bo2rY6uR8RgWyio2G7C
+        szsZP5L9TYLaIY8suvfC2zOJZFYdBUPlUbdeNpYhSgvPkEWL0P0+6lNLwSRa6lSmYlvU+gXthyx
+        xqzC3xnYYokpuLe0nBISPRWGF
+X-Received: by 2002:adf:9bce:: with SMTP id e14mr37390911wrc.353.1634579138894;
+        Mon, 18 Oct 2021 10:45:38 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwb3V17dtLU+oGhGUjA+36f3EHbAZynBn9/WOoQF719tD7ufpt4f37VqVGYlkWuNnsselkE1A==
+X-Received: by 2002:adf:9bce:: with SMTP id e14mr37390885wrc.353.1634579138691;
+        Mon, 18 Oct 2021 10:45:38 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id q12sm9473183wrp.13.2021.10.18.10.45.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Oct 2021 10:45:38 -0700 (PDT)
+Message-ID: <e9af2f2e-a0cf-1916-c960-2a663e6f4596@redhat.com>
+Date:   Mon, 18 Oct 2021 19:45:36 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH v3 2/2] x86: sgx_vepc: implement SGX_IOC_VEPC_REMOVE ioctl
+Content-Language: en-US
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        dave.hansen@linux.intel.com, x86@kernel.org, yang.zhong@intel.com,
+        jarkko@kernel.org, bp@suse.de
+References: <20211016071434.167591-1-pbonzini@redhat.com>
+ <20211016071434.167591-3-pbonzini@redhat.com> <YW2sKq1pXkuiG1rb@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <YW2sKq1pXkuiG1rb@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Daniel Bristot de Oliveira <bristot@kernel.org> writes:
+On 18/10/21 19:17, Sean Christopherson wrote:
+> 			/*
+> 			 * Report errors due to #GP or SGX_ENCLAVE_ACT, but do
+> 			 * not WARN as userspace can induce said failures by
+> 			 * calling the ioctl concurrently on multiple vEPCs or
+> 			 * while one or more CPUs is running the enclave.  Only
+> 			 * a #PF on EREMOVE indicates a kernel/hardware issue.
+> 			 */
+> 			WARN_ON_ONCE(encls_faulted(ret) &&
+> 				     ENCLS_TRAPNR(ret) == X86_TRAP_PF);
 
-> Adds the basis for rtla documentation. It is based on libtracefs
-> Documentation as suggested by Steven Rostedt. This patch also
-> includes the rtla(1) man page.
->
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Tom Zanussi <zanussi@kernel.org>
-> Cc: Masami Hiramatsu <mhiramat@kernel.org>
-> Cc: Juri Lelli <juri.lelli@redhat.com>
-> Cc: Clark Williams <williams@redhat.com>
-> Cc: John Kacur <jkacur@redhat.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> Cc: Daniel Bristot de Oliveira <bristot@kernel.org>
-> Cc: linux-rt-users@vger.kernel.org
-> Cc: linux-trace-devel@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Suggested-by: Steven Rostedt <rostedt@goodmis.org>
-> Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
-> ---
->  tools/tracing/rtla/Documentation/Makefile     | 223 ++++++++++++++++++
->  .../tracing/rtla/Documentation/asciidoc.conf  | 118 +++++++++
->  .../rtla/Documentation/manpage-base.xsl       |  35 +++
->  .../rtla/Documentation/manpage-normal.xsl     |  13 +
->  tools/tracing/rtla/Documentation/rtla.txt     |  56 +++++
->  tools/tracing/rtla/Documentation/utils.mk     | 144 +++++++++++
->  tools/tracing/rtla/Makefile                   |  20 +-
->  7 files changed, 604 insertions(+), 5 deletions(-)
->  create mode 100644 tools/tracing/rtla/Documentation/Makefile
->  create mode 100644 tools/tracing/rtla/Documentation/asciidoc.conf
->  create mode 100644 tools/tracing/rtla/Documentation/manpage-base.xsl
->  create mode 100644 tools/tracing/rtla/Documentation/manpage-normal.xsl
->  create mode 100644 tools/tracing/rtla/Documentation/rtla.txt
->  create mode 100644 tools/tracing/rtla/Documentation/utils.mk
+or != X86_TRAP_GP, just to avoid having a v5? :)
 
-So please forgive me for being obnoxious but I have to ask...do we
-*really* need to add yet another markup language and docs build
-infrastructure to the kernel?  I'm glad to see documentation, of course,
-but I would be gladder if it weren't a silo completely separate from the
-rest of the kernel docs.  Is there a reason why this couldn't have been
-done with Sphinx?
+Paolo
 
-Thanks,
-
-jon
