@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DF59431B1A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:28:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D388431B66
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:30:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231953AbhJRNan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:30:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41294 "EHLO mail.kernel.org"
+        id S232375AbhJRNc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:32:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43310 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230346AbhJRN3I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:29:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E0CEC610A6;
-        Mon, 18 Oct 2021 13:26:53 +0000 (UTC)
+        id S232338AbhJRNa5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:30:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B2F396126A;
+        Mon, 18 Oct 2021 13:28:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634563614;
-        bh=OSSrq3kmOhkyY4KrOeBAVTFjERmPuwDFj8ZvTdyL8G0=;
+        s=korg; t=1634563717;
+        bh=FrulWWV95bOgHvwQq5mfjUQD/xgKkNZrPDp8n4SED4M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XXOviqNGffSXBPsR49mPqAy5WRXlypP+X4D02WvHkA+Mph5XhAULEK7fORVY8JZXG
-         XRccbtxsD+6kxY0ib2PA/LukNNH1bQXwUtpGQ4oXUVVSD1LBfpOPgs5PfEPYqYWFug
-         E+hl2eK7WziAa/NadnGs4qetcFdSJzjUhMb7IOq8=
+        b=kmORUwkpDqjuIQ7nlIE5c4UEzouSVkAPhonTYKwK+jXQgcUe2RyhHBTh3CU7Yxkd9
+         2XujjvN+c15f+FMLJcJmpjOgAydHmn6p6PW8U8/jkpiIZtWSXiFabQks/SZG6Zq1lR
+         BoaAPQ9CM7Fhp1VF1YtfyN9MPJgEPki2PJ/rm9ac=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>
-Subject: [PATCH 4.14 34/39] pata_legacy: fix a couple uninitialized variable bugs
-Date:   Mon, 18 Oct 2021 15:24:43 +0200
-Message-Id: <20211018132326.533187432@linuxfoundation.org>
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.19 37/50] ethernet: s2io: fix setting mac address during resume
+Date:   Mon, 18 Oct 2021 15:24:44 +0200
+Message-Id: <20211018132327.754586968@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132325.426739023@linuxfoundation.org>
-References: <20211018132325.426739023@linuxfoundation.org>
+In-Reply-To: <20211018132326.529486647@linuxfoundation.org>
+References: <20211018132326.529486647@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,41 +39,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-commit 013923477cb311293df9079332cf8b806ed0e6f2 upstream.
+commit 40507e7aada8422c38aafa0c8a1a09e4623c712a upstream.
 
-The last byte of "pad" is used without being initialized.
+After recent cleanups, gcc started warning about a suspicious
+memcpy() call during the s2io_io_resume() function:
 
-Fixes: 55dba3120fbc ("libata: update ->data_xfer hook for ATAPI")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Damien Le Moal <damien.lemoal@wdc.com>
+In function '__dev_addr_set',
+    inlined from 'eth_hw_addr_set' at include/linux/etherdevice.h:318:2,
+    inlined from 's2io_set_mac_addr' at drivers/net/ethernet/neterion/s2io.c:5205:2,
+    inlined from 's2io_io_resume' at drivers/net/ethernet/neterion/s2io.c:8569:7:
+arch/x86/include/asm/string_32.h:182:25: error: '__builtin_memcpy' accessing 6 bytes at offsets 0 and 2 overlaps 4 bytes at offset 2 [-Werror=restrict]
+  182 | #define memcpy(t, f, n) __builtin_memcpy(t, f, n)
+      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/netdevice.h:4648:9: note: in expansion of macro 'memcpy'
+ 4648 |         memcpy(dev->dev_addr, addr, len);
+      |         ^~~~~~
+
+What apparently happened is that an old cleanup changed the calling
+conventions for s2io_set_mac_addr() from taking an ethernet address
+as a character array to taking a struct sockaddr, but one of the
+callers was not changed at the same time.
+
+Change it to instead call the low-level do_s2io_prog_unicast() function
+that still takes the old argument type.
+
+Fixes: 2fd376884558 ("S2io: Added support set_mac_address driver entry point")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Link: https://lore.kernel.org/r/20211013143613.2049096-1-arnd@kernel.org
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/ata/pata_legacy.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/neterion/s2io.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/ata/pata_legacy.c
-+++ b/drivers/ata/pata_legacy.c
-@@ -329,7 +329,8 @@ static unsigned int pdc_data_xfer_vlb(st
- 			iowrite32_rep(ap->ioaddr.data_addr, buf, buflen >> 2);
+--- a/drivers/net/ethernet/neterion/s2io.c
++++ b/drivers/net/ethernet/neterion/s2io.c
+@@ -8569,7 +8569,7 @@ static void s2io_io_resume(struct pci_de
+ 			return;
+ 		}
  
- 		if (unlikely(slop)) {
--			__le32 pad;
-+			__le32 pad = 0;
-+
- 			if (rw == READ) {
- 				pad = cpu_to_le32(ioread32(ap->ioaddr.data_addr));
- 				memcpy(buf + buflen - slop, &pad, slop);
-@@ -719,7 +720,8 @@ static unsigned int vlb32_data_xfer(stru
- 			ioread32_rep(ap->ioaddr.data_addr, buf, buflen >> 2);
- 
- 		if (unlikely(slop)) {
--			__le32 pad;
-+			__le32 pad = 0;
-+
- 			if (rw == WRITE) {
- 				memcpy(&pad, buf + buflen - slop, slop);
- 				iowrite32(le32_to_cpu(pad), ap->ioaddr.data_addr);
+-		if (s2io_set_mac_addr(netdev, netdev->dev_addr) == FAILURE) {
++		if (do_s2io_prog_unicast(netdev, netdev->dev_addr) == FAILURE) {
+ 			s2io_card_down(sp);
+ 			pr_err("Can't restore mac addr after reset.\n");
+ 			return;
 
 
