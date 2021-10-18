@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2AD1431CEB
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:44:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD4C4431AE7
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:27:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233870AbhJRNqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:46:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39220 "EHLO mail.kernel.org"
+        id S232128AbhJRN3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:29:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41288 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234115AbhJRNnu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:43:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7FF3A6126A;
-        Mon, 18 Oct 2021 13:34:55 +0000 (UTC)
+        id S231741AbhJRN3I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:29:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 203C76135E;
+        Mon, 18 Oct 2021 13:26:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634564096;
-        bh=lB4QadlMJcP/QLGrEF8yrCOEdFe50p2EV3pbD1Krnpk=;
+        s=korg; t=1634563604;
+        bh=UAuJ+XFjulNuwFyzr3C3KCMt/vayPpsiizpGnWb0q50=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ale5Ms7nKVuF2G10e7tF5p3O5/oOpPRcFP6/TV4+l1q2qlcs1pYhWMoEIIXERmGFU
-         L7OzdvRlM9M9DXTq9i+AQcx6HWQiJkdSOtdyIyAs6VQ+Wksuc40TJvnc5gNm1ba5Yi
-         /BaMbL0gf/gWRfEnvv0WiI0XvYJQpMwpqXS4Vkq0=
+        b=ZDaDXorLInoUeBoRFl6mBke5i1+42XKtQdRWfMctAQ14Sz6zZXQPDxWP5eJvS44GQ
+         y2xYmRwbTLj/ic/IrnVGl/hCM3H+CFqTZaRw8Z5o6IKSXH2k0AZ8J1y/tUSIYa/zhq
+         /ywasVyh/TSR1TfikdU/DqJMsc/W/m0v2jc7Iods=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Rob Herring <robh@kernel.org>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>
-Subject: [PATCH 5.10 063/103] ARM: dts: bcm2711-rpi-4-b: Fix usbs unit address
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.14 30/39] ethernet: s2io: fix setting mac address during resume
 Date:   Mon, 18 Oct 2021 15:24:39 +0200
-Message-Id: <20211018132336.870092585@linuxfoundation.org>
+Message-Id: <20211018132326.404642606@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132334.702559133@linuxfoundation.org>
-References: <20211018132334.702559133@linuxfoundation.org>
+In-Reply-To: <20211018132325.426739023@linuxfoundation.org>
+References: <20211018132325.426739023@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,38 +39,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicolas Saenz Julienne <nsaenz@kernel.org>
+From: Arnd Bergmann <arnd@arndb.de>
 
-commit 3f32472854614d6f53b09b4812372dba9fc5c7de upstream.
+commit 40507e7aada8422c38aafa0c8a1a09e4623c712a upstream.
 
-The unit address is supposed to represent '<device>,<function>'. Which
-are both 0 for RPi4b's XHCI controller. On top of that although
-OpenFirmware states bus number goes in the high part of the last reg
-parameter, FDT doesn't seem to care for it[1], so remove it.
+After recent cleanups, gcc started warning about a suspicious
+memcpy() call during the s2io_io_resume() function:
 
-[1] https://patchwork.kernel.org/project/linux-arm-kernel/patch/20210830103909.323356-1-nsaenzju@redhat.com/#24414633
-Fixes: 258f92d2f840 ("ARM: dts: bcm2711: Add reset controller to xHCI node")
-Suggested-by: Rob Herring <robh@kernel.org>
-Reviewed-by: Rob Herring <robh@kernel.org>
-Link: https://lore.kernel.org/r/20210831125843.1233488-2-nsaenzju@redhat.com
-Signed-off-by: Nicolas Saenz Julienne <nsaenz@kernel.org>
+In function '__dev_addr_set',
+    inlined from 'eth_hw_addr_set' at include/linux/etherdevice.h:318:2,
+    inlined from 's2io_set_mac_addr' at drivers/net/ethernet/neterion/s2io.c:5205:2,
+    inlined from 's2io_io_resume' at drivers/net/ethernet/neterion/s2io.c:8569:7:
+arch/x86/include/asm/string_32.h:182:25: error: '__builtin_memcpy' accessing 6 bytes at offsets 0 and 2 overlaps 4 bytes at offset 2 [-Werror=restrict]
+  182 | #define memcpy(t, f, n) __builtin_memcpy(t, f, n)
+      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/netdevice.h:4648:9: note: in expansion of macro 'memcpy'
+ 4648 |         memcpy(dev->dev_addr, addr, len);
+      |         ^~~~~~
+
+What apparently happened is that an old cleanup changed the calling
+conventions for s2io_set_mac_addr() from taking an ethernet address
+as a character array to taking a struct sockaddr, but one of the
+callers was not changed at the same time.
+
+Change it to instead call the low-level do_s2io_prog_unicast() function
+that still takes the old argument type.
+
+Fixes: 2fd376884558 ("S2io: Added support set_mac_address driver entry point")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Link: https://lore.kernel.org/r/20211013143613.2049096-1-arnd@kernel.org
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm/boot/dts/bcm2711-rpi-4-b.dts |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/neterion/s2io.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/arm/boot/dts/bcm2711-rpi-4-b.dts
-+++ b/arch/arm/boot/dts/bcm2711-rpi-4-b.dts
-@@ -262,8 +262,8 @@
+--- a/drivers/net/ethernet/neterion/s2io.c
++++ b/drivers/net/ethernet/neterion/s2io.c
+@@ -8574,7 +8574,7 @@ static void s2io_io_resume(struct pci_de
+ 			return;
+ 		}
  
- 		reg = <0 0 0 0 0>;
- 
--		usb@1,0 {
--			reg = <0x10000 0 0 0 0>;
-+		usb@0,0 {
-+			reg = <0 0 0 0 0>;
- 			resets = <&reset RASPBERRYPI_FIRMWARE_RESET_ID_USB>;
- 		};
- 	};
+-		if (s2io_set_mac_addr(netdev, netdev->dev_addr) == FAILURE) {
++		if (do_s2io_prog_unicast(netdev, netdev->dev_addr) == FAILURE) {
+ 			s2io_card_down(sp);
+ 			pr_err("Can't restore mac addr after reset.\n");
+ 			return;
 
 
