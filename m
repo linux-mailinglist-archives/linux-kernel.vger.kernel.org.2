@@ -2,159 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8E0E431363
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 11:24:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82D9443136D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 11:25:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231651AbhJRJ0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 05:26:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35063 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231495AbhJRJ02 (ORCPT
+        id S231422AbhJRJ15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 05:27:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231149AbhJRJ14 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 05:26:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634549057;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tcERYHsACD8OiG9LERSlpQxmHuHdSGg0GMtHO86OE84=;
-        b=AyGrhM8i9mDj3QLHcrg+gTGbyI6PHy3rsEeHVq8VDXGYGu8MKhRpG6G4e1za8iIahRJSem
-        WZmylplqll/25D0gmJhQS0Y2i2mkaAL1YV71IMKQo2F3fi0MVrkyLsHjuswYn6C8NVbQj/
-        LN7ep9+EZV6FqsxRENUTaW6PrU91h+U=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-223-lEZw-QyrPQ68kYvcYbVDow-1; Mon, 18 Oct 2021 05:24:15 -0400
-X-MC-Unique: lEZw-QyrPQ68kYvcYbVDow-1
-Received: by mail-ed1-f72.google.com with SMTP id f4-20020a50e084000000b003db585bc274so13735988edl.17
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 02:24:15 -0700 (PDT)
+        Mon, 18 Oct 2021 05:27:56 -0400
+Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E89F0C06161C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 02:25:45 -0700 (PDT)
+Received: by mail-qv1-xf2a.google.com with SMTP id z15so9848986qvj.7
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 02:25:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=c6G1gDX0KodcT+B+IPaHcSNxCrI3CJV8Wo022zcTGwY=;
+        b=Ra8WWSozEac0AuCeiOFrRWfgnppu7WS7DGNDykXOGxBpKM1P9lpzj0zeBRV+r8AAXB
+         VGFTxH9IKRhNmKZgsKGUGsI4txUCjgu86skcnWNDN64otXTKjqx4Ta1sQLN/1RkeCTzc
+         Tppdw1eP+rBA3NZd+OXQvPCaij5XrGSslvH+uETiD3fOUgfVgaSuYFvs2Pi++HKuQW+q
+         wKmrS0UQqrxBPXfs6z3YrRDkdwuSVYUDsvwMIO/lhJJpvU0/zng4eenKIGRd8gxd111B
+         Wv1HcmygVlSROQEImkNou0WL06hWkltfwj7XsuvTIKxCI+Nk6APl0idJq/Dc2y/I5W9D
+         YfYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tcERYHsACD8OiG9LERSlpQxmHuHdSGg0GMtHO86OE84=;
-        b=je6bev5EZ7XmcW/Q3fVLq+kKREA7v4mmrpUg07hcmjv8gla/wnh8cA4Rb7Jil055JQ
-         DGnPSS/Ow3lWdPZArwM3sWpH2JbBXKc1xN1RJ+4C2iqWXGUOigRdLfumjEsx8ay6Nauq
-         Uny2m+uIHn0o0L73tRlE3lr/YYakp9NW7PflbxtMzADdmwkpxyBhyHuy2cE/esyO1aHo
-         7rTWdK19fyxmDBhUqBOmMRSKlwfKgNJfdJ8kT1PEdjcj1HgSnfKnCvxFrpkIS8KXe/s9
-         SN/9pBjAKAVsTwvru0TcU+U8iOKePwJ4xhdc20vNtjNAxiZy3sBBdgz9qDe44XtaSxc9
-         VvaA==
-X-Gm-Message-State: AOAM532/vmbL5Khaw3tDyPlTsoZijSW4xgVUWu4U9XlZWcriwP4IiPpt
-        6bOYudauWNl7Zz5fTrdORDH5ZkGubhhbVuRhnKVQUZv0pH1TSOPNBQzVetKaNa/4/F3a5euqS/R
-        r8PU9p3E5Ee38pBnOBVLXiOLu
-X-Received: by 2002:a50:9d8e:: with SMTP id w14mr42193528ede.74.1634549054555;
-        Mon, 18 Oct 2021 02:24:14 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxUJYrHxvUXjdPELjIDpPtrZ181C1I4vTJbRWD4jS3vqGv74zCzzGw5AmjDAdcPLpxevcG2mg==
-X-Received: by 2002:a50:9d8e:: with SMTP id w14mr42193472ede.74.1634549054384;
-        Mon, 18 Oct 2021 02:24:14 -0700 (PDT)
-Received: from steredhat (host-79-34-250-211.business.telecomitalia.it. [79.34.250.211])
-        by smtp.gmail.com with ESMTPSA id lm14sm8629911ejb.24.2021.10.18.02.24.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 02:24:13 -0700 (PDT)
-Date:   Mon, 18 Oct 2021 11:24:10 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Matt Mackall <mpm@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Amit Shah <amit@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Gonglei <arei.gonglei@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        David Airlie <airlied@linux.ie>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Daniel Vetter <daniel@ffwll.ch>, Jie Deng <jie.deng@intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        David Hildenbrand <david@redhat.com>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Eric Van Hensbergen <ericvh@gmail.com>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Anton Yakovlev <anton.yakovlev@opensynergy.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, linux-um@lists.infradead.org,
-        virtualization@lists.linux-foundation.org,
-        linux-block@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-gpio@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-i2c@vger.kernel.org, iommu@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
-        nvdimm@lists.linux.dev, linux-remoteproc@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        v9fs-developer@lists.sourceforge.net, kvm@vger.kernel.org,
-        alsa-devel@alsa-project.org
-Subject: Re: [PATCH RFC] virtio: wrap config->reset calls
-Message-ID: <20211018092410.t5hilzz7kbto2mhy@steredhat>
-References: <20211013105226.20225-1-mst@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=c6G1gDX0KodcT+B+IPaHcSNxCrI3CJV8Wo022zcTGwY=;
+        b=QohUyBJ1mkhYLAvQ3BRXxppfXUFxQJ9ots4wXFK9CHLdgN/PpKszyLIcsW+6mQNa6V
+         xmqUl52IQ11t/jaqS2z83RcrC6a+y76EbV2BH6gKjpwnfcpEiKDunOW7SWneZTqCVzVm
+         wEjKLDeB+sVDEhtW/1BcnrwYJ76QUkPo8OGqjaT//s9ffC5iNSFPruiShzZLF/IS5Ymj
+         rQdVw+d2q7gYrzKF8Tb/+hukFF/6Ovjlkg7IbGbDokEMfkgaV+sZRbh4Q2+DMyS6bPy8
+         KafRDHjcst4IOie+IjBBgPgxEBXFzkutYzjjN1j7QkgGEsNC38GyVHT7yL4DCebql2g7
+         f5gA==
+X-Gm-Message-State: AOAM533xqvr97KCM/sgxb1rXXPASAZ8GOGaZeUBF6VVwHfEXcuGexmJZ
+        EZol/u/llKH4t2nyDxEAIvYnTQYkoiy//FAwnfY=
+X-Google-Smtp-Source: ABdhPJxh7KWyCF/ta4V76CsvEyYDOdY1etMkJj+9Gv3xB9MkugEQQMgU5eo75x/AYAiXImlr0O7LXcyJi9mdnDKuOZU=
+X-Received: by 2002:ad4:5621:: with SMTP id cb1mr24448220qvb.6.1634549145111;
+ Mon, 18 Oct 2021 02:25:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20211013105226.20225-1-mst@redhat.com>
+References: <1634278529-16983-1-git-send-email-huangzhaoyang@gmail.com> <YW0u67o8wl3CGikP@dhcp22.suse.cz>
+In-Reply-To: <YW0u67o8wl3CGikP@dhcp22.suse.cz>
+From:   Zhaoyang Huang <huangzhaoyang@gmail.com>
+Date:   Mon, 18 Oct 2021 17:25:23 +0800
+Message-ID: <CAGWkznEO9SyNFEBqL8=JxewVTvaUhwFLPow69mi=R1MJ=XCpow@mail.gmail.com>
+Subject: Re: [PATCH] mm: skip current when memcg reclaim
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
+        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 06:55:31AM -0400, Michael S. Tsirkin wrote:
->This will enable cleanups down the road.
->The idea is to disable cbs, then add "flush_queued_cbs" callback
->as a parameter, this way drivers can flush any work
->queued after callbacks have been disabled.
+On Mon, Oct 18, 2021 at 4:23 PM Michal Hocko <mhocko@suse.com> wrote:
 >
->Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
->---
-> arch/um/drivers/virt-pci.c                 | 2 +-
-> drivers/block/virtio_blk.c                 | 4 ++--
-> drivers/bluetooth/virtio_bt.c              | 2 +-
-> drivers/char/hw_random/virtio-rng.c        | 2 +-
-> drivers/char/virtio_console.c              | 4 ++--
-> drivers/crypto/virtio/virtio_crypto_core.c | 8 ++++----
-> drivers/firmware/arm_scmi/virtio.c         | 2 +-
-> drivers/gpio/gpio-virtio.c                 | 2 +-
-> drivers/gpu/drm/virtio/virtgpu_kms.c       | 2 +-
-> drivers/i2c/busses/i2c-virtio.c            | 2 +-
-> drivers/iommu/virtio-iommu.c               | 2 +-
-> drivers/net/caif/caif_virtio.c             | 2 +-
-> drivers/net/virtio_net.c                   | 4 ++--
-> drivers/net/wireless/mac80211_hwsim.c      | 2 +-
-> drivers/nvdimm/virtio_pmem.c               | 2 +-
-> drivers/rpmsg/virtio_rpmsg_bus.c           | 2 +-
-> drivers/scsi/virtio_scsi.c                 | 2 +-
-> drivers/virtio/virtio.c                    | 5 +++++
-> drivers/virtio/virtio_balloon.c            | 2 +-
-> drivers/virtio/virtio_input.c              | 2 +-
-> drivers/virtio/virtio_mem.c                | 2 +-
-> fs/fuse/virtio_fs.c                        | 4 ++--
-> include/linux/virtio.h                     | 1 +
-> net/9p/trans_virtio.c                      | 2 +-
-> net/vmw_vsock/virtio_transport.c           | 4 ++--
-
-Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
-
+> On Fri 15-10-21 14:15:29, Huangzhaoyang wrote:
+> > From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+> >
+> > Sibling thread of the same process could refault the reclaimed pages
+> > in the same time, which would be typical in None global reclaim and
+> > introduce thrashing.
+>
+> It is hard to understand what kind of problem you see (ideally along
+> with some numbers) and how the proposed patch addresses that problem
+>
+> Also you are missing Signed-off-by tag (please have a look at
+> Documentation/process/submitting-patches.rst which is much more
+> comprehensive about the process).
+sorry for that, I will fix it.
+>
+> > ---
+> >  mm/vmscan.c | 5 +++++
+> >  1 file changed, 5 insertions(+)
+> >
+> > diff --git a/mm/vmscan.c b/mm/vmscan.c
+> > index 5199b96..ebbdc37 100644
+> > --- a/mm/vmscan.c
+> > +++ b/mm/vmscan.c
+> > @@ -2841,6 +2841,11 @@ static void shrink_node_memcgs(pg_data_t *pgdat, struct scan_control *sc)
+> >                               sc->memcg_low_skipped = 1;
+> >                               continue;
+> >                       }
+> > +                     /*
+> > +                      * Don't bother current when its memcg is below low
+> > +                      */
+> > +                     if (get_mem_cgroup_from_mm(current->mm) == memcg)
+> > +                             continue;
+>
+> This code is executed when none of memcg in the reclaimed hierarchy
+> could be reclaimed. Low limit is then ignored and this change is
+> tweaking that behavior without any description of the effect. A very
+> vague note about trashing would indicate that you have something like
+> the following
+>
+>         A (hiting hard limit)
+>        / \
+>       B   C
+>
+> Both B and C low limit protected and current task associated with B. As
+> none of the two could be reclaimed due to soft protection yuu prefer to
+> reclaim from C as you do not want to reclaim from the current process as
+> that could reclaim current's working set. Correct?
+>
+> I would be really curious about more specifics of the used hierarchy.
+What I am facing is a typical scenario on Android, that is a big
+memory consuming APP(camera etc) launched while background filled by
+other processes. The hierarchy is like what you describe above where B
+represents the APP and memory.low is set to help warm restart. Both of
+kswapd and direct reclaim work together to reclaim pages under this
+scenario, which can cause 20MB file page delete from LRU in several
+second. This change could help to have current process's page escape
+from being reclaimed and cause page thrashing. We observed the result
+via systrace which shows that the Uninterruptible sleep(block on page
+bit) and iowait get smaller than usual.
+>
+> Thanks!
+>
+> >                       memcg_memory_event(memcg, MEMCG_LOW);
+> >               }
+> >
+> > --
+> > 1.9.1
+>
+> --
+> Michal Hocko
+> SUSE Labs
