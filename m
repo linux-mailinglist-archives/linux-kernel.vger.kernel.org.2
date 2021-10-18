@@ -2,99 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0ADE431D72
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:50:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0136A431AB3
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:23:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232859AbhJRNv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:51:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49664 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233437AbhJRNtW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:49:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 923E86187C;
-        Mon, 18 Oct 2021 13:37:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634564244;
-        bh=X8T8nJdcfjDb9RMfDqAHqm8OX/AnvRnsLpuBQOCD6aY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fY7jZYvbgkiSVdLaFtCdonGZwCg1T/qGGDfcbI+BsnjGZZe60wLgTiudQfeLD/ycC
-         hMqi1uSixO6L/8oxRHO1dj7OW/yGSyTvJXwmtO+EXgFPJywEg8+1JrE44WnbawQHu+
-         Mqc0u3Nh6HYLM3SYN/OF1lgc+a+T7B0h/9SSjxfc=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, stable@kernel.org,
-        Md Sadre Alam <mdalam@codeaurora.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 5.14 016/151] mtd: rawnand: qcom: Update code word value for raw read
-Date:   Mon, 18 Oct 2021 15:23:15 +0200
-Message-Id: <20211018132341.212664447@linuxfoundation.org>
+        id S231781AbhJRNZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:25:46 -0400
+Received: from mail-eopbgr1310138.outbound.protection.outlook.com ([40.107.131.138]:10976
+        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229519AbhJRNZo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:25:44 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XBfqi+jW8V56MKCd60/LCHsxrkvQqOuZmnKLJNHGh/Rn2svJhamN/xaZ2VsUNPWF6iZGdgaGQMYpAYKzzKH0B1Uxs/sdJFzfYIvb35yX5k7kJGM791C4JikQWB88cvD4C9btsq/dG/kJNMbRTwdO7xNtRZWaLjzlhz9fujZELSMrRGwtHPhfMEP2qe0W6VTHdd8+i2qJb70tqCuQao4ZfuXgfyDBvCfdr+8MVW9nOPiXBtO+tf+++i5kxQzkb8Q3WNfRuSJhF8Ff/RBauwiyliwyzKcT/N6P2I60PXxTsHQcgPTITlLkfDdMKKnE/jBdkd+ImQaY7W8OXnuscCNnNg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=64/BOLIWFoLD5VDVt+JbI0+cyngDGXsO4d5qdfgEZCc=;
+ b=IVxjcvBHF8ws+69U4BOCbSukAwxUVCDj4HuGrNTC2Z5Gwc5ACslK8niZsPzeczfa/cviILIUv1JVcs6HJPJF6ynqB0qlgOxY/rTFoocUo6b9Sd9AP2kTn860ZcWv/ce1bmDF3wAVUGOrT6nO9xlMmLXmRSonqtyRFw2bDT1tzNi6r+3rVsudgYfQfWHQZxqxL86YhAS7fHSORs1GMY1g/1gs0YZegax16bYVfGkNwTWUgXEQcjiA3Lj4aifQA1u5+C9ZA/eHo4mISwncdXjqKhNM+o3n4xagwRcDYFnqicXmqKoik+Gk84tPc+G4G7tBzXVJbCwJfbmnedDNN9Z00A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
+ s=selector2-vivo0-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=64/BOLIWFoLD5VDVt+JbI0+cyngDGXsO4d5qdfgEZCc=;
+ b=LoQSj7olrpr80BBZpxabKYWxISQ1jNbmlD2tJ29knHnrYFvEEjLPbt6OuKJwOyHRigEYHTq18tpWTd7AjfQiYiN+jpssfCzJNZIWIbccUQ9B7orBAtYwDaExrZbIK7hAywD0aT6hKKGENQGg1CkqnvglKid1DGXjI7V7kdeQiic=
+Authentication-Results: mit.edu; dkim=none (message not signed)
+ header.d=none;mit.edu; dmarc=none action=none header.from=vivo.com;
+Received: from PSAPR06MB4021.apcprd06.prod.outlook.com (2603:1096:301:37::11)
+ by PSAPR06MB3960.apcprd06.prod.outlook.com (2603:1096:301:3a::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.17; Mon, 18 Oct
+ 2021 13:23:30 +0000
+Received: from PSAPR06MB4021.apcprd06.prod.outlook.com
+ ([fe80::395a:f2d7:d67f:b385]) by PSAPR06MB4021.apcprd06.prod.outlook.com
+ ([fe80::395a:f2d7:d67f:b385%5]) with mapi id 15.20.4608.018; Mon, 18 Oct 2021
+ 13:23:30 +0000
+From:   Bernard Zhao <bernard@vivo.com>
+To:     "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Bernard Zhao <bernard@vivo.com>
+Subject: [PATCH] =?UTF-8?q?fs/ext4=EF=BC=9Abug=20fix=20of=20memory=20leak?= =?UTF-8?q?=20in=20ext4=5Fmb=5Fpa=5Falloc?=
+Date:   Mon, 18 Oct 2021 06:23:15 -0700
+Message-Id: <20211018132319.45350-1-bernard@vivo.com>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132340.682786018@linuxfoundation.org>
-References: <20211018132340.682786018@linuxfoundation.org>
-User-Agent: quilt/0.66
-MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: HK2PR02CA0195.apcprd02.prod.outlook.com
+ (2603:1096:201:21::31) To PSAPR06MB4021.apcprd06.prod.outlook.com
+ (2603:1096:301:37::11)
+MIME-Version: 1.0
+Received: from ubuntu.localdomain (203.90.234.87) by HK2PR02CA0195.apcprd02.prod.outlook.com (2603:1096:201:21::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.4608.16 via Frontend Transport; Mon, 18 Oct 2021 13:23:29 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 4f42702a-5144-4162-bcfa-08d9923a79ab
+X-MS-TrafficTypeDiagnostic: PSAPR06MB3960:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <PSAPR06MB39600386230E367530BAE28CDFBC9@PSAPR06MB3960.apcprd06.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:632;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: M4/wV9xxL7yNlPR09ABTjLeP1FJ9AafMLkvy9TZw5uZEMFPuL0qZwOoC38QN4QkZ+L4FKHH0cDk5V4ZqgN2xabhmgEznnm5Wweial5RminewRBn8qkdVhFD528ixxmKnhYjXKApEpeCvXRIdS1wJVbCgEWrjqTo/rxeYzXec3jWuNWb721F/+7alHWRwTwHB7ggjTteed5KVwn2Zi6NIgDJ0TFbmjNsWVW13Pd5OZsXaoOgNH6VPtv3xm/DUx8VqAqFtqIX7aj2wqtksH6WH2sehDqjJXNJ+PZHfezM+RAJairnLPs4ZbXhq6lq4ZoSHP++krzQRZTjjAgcf6DSJUGG42bJOiGrRLeDVYLO+8fFEXgrZ2w+xOQ0cS/MAcVITOCHoBJQ/T9knbDtJRjzgsDL4FLQPhNKyneLzMPGPGzCM6JopNxL95gUmVHZmpUc8Yb4e74XLN2m0qWcKSiiuc/bTd/YNOZklHiN3jpxVTq6i5+adJzXAJQWR/BS6yaKM2IezSEBeKZzIQbNiGbYpsL8Y/SrhccY6rtfFR1cpsrcrGBtKFOfT97QzpDsxAPi0xd5nFPjNGE/6OAZ4qaGXfIJSGgjc+6cyWQuMV0z7b74+U3OTCLhS4XXgHM854a2qPFH9e6z9Gt4/se671JdL6FdLi1mOpZgN3pxxa7Vg+c/L+Wo9GPvUy2PikiE+yfyUGdBN8ChDQCQmn3PjnElNfL3IFHo9uBLYxaUVlaam8sJ6fXN0KzNWHbf4jdmka22ypqnuIXx9dx24nD1jf7/RdUwMGjKXQGjUdE0RpN4G5tI4Fh2oNvnMCNrAYuQFA+ke
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PSAPR06MB4021.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(6506007)(66476007)(66556008)(2906002)(38350700002)(38100700002)(186003)(6486002)(52116002)(83380400001)(2616005)(956004)(6512007)(508600001)(26005)(66946007)(36756003)(5660300002)(1076003)(4326008)(86362001)(6666004)(107886003)(966005)(8936002)(316002)(110136005)(99710200001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: HPoNfz6J9alIi7jN/xKoMl32a63Td/MJ9XSef3JwSrYDolz10z9BlyWm0hZAfI7P4/8Ael3OXdhUZc5A0AnGIVEO0SsD1QbeNIyNrUOQBEX76dk9oRRy098AoKW5MP3H1azzE/jRm6PUEwJqKDwWTEch52ET7a/WQYtb5dt7Ynxa9sOb3Qlk6YJip9gilXwrwrnWlCks1LjZdHyZOp1JkFcVovnLUN9IccYpJskFU0Pd1teJbAOakP13CYEQ28TMY8Wm1rYeF5t0HoNBJdKGvHdCRdxXW0rlirJz7ged7btVtyMYRRpSGgAfe+xFy83VQhtQFU4LIWuj/r/JkKgvzV1/mqaw5KnEnyFQPLef/Jx2K4YrNnRp5zqurNPcoDwODTxb8KpgGzAom1DJSHlhWqDudWOCfGb8h4R9sf7trVOYeGEYP/66kG6eLIo0I+LqGa1f7INu++Vf9SR9B565biQoAVL/sSBV8rqh5y2Num0/In9FTC0RVSSWYmfaXJNHUtTyflNFZ9jGCO80+vK45EDfypCMNNNM5kSdFS4w7cL3z74YTL35cooc49SdAFWhXw3lsYuQ1+n7esKwnCJwTqmgYAz3EbtHa1U2C/oisalT1X8X2opRWN6a2fhqt2+dV6EEDwAuY9K6RnGP9VjmBYZjxDVrr7AYUtvCTUcNlnPqaiW+lVGiKR8pD2g1p9Fxb6oC5WtqUbgFpbz8f3Aw/Q==
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4f42702a-5144-4162-bcfa-08d9923a79ab
+X-MS-Exchange-CrossTenant-AuthSource: PSAPR06MB4021.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Oct 2021 13:23:29.8902
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: AlS+yW/wIBuY/j2L/9Y6ESZscm7v8aL6cZvDCxR+a9rw6YilQ0VM3rTZCg36lZK5Z2RW3I0fl3QtyxhA9JZ3zw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PSAPR06MB3960
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Md Sadre Alam <mdalam@codeaurora.org>
+This patch try to fix bug reported by syzkaller:
+BUG: memory leak
+unreferenced object 0xffff888112a84a28 (size 104):
+  comm "kworker/u4:3", pid 948, jiffies 4294943272 (age 473.370s)
+  hex dump (first 32 bytes):
+    c0 53 8a 12 81 88 ff ff 22 01 00 00 00 00 ad de  .S......".......
+    00 01 00 00 00 00 ad de 22 01 00 00 00 00 ad de  ........".......
+  backtrace:
+    [<ffffffff817773cb>] kmem_cache_zalloc include/linux/slab.h:711 [inline]
+    [<ffffffff817773cb>] ext4_mb_pa_alloc fs/ext4/mballoc.c:5046 [inline]
+    [<ffffffff817773cb>] ext4_mb_new_blocks+0xd5b/0x18b0 fs/ext4/mballoc.c:5581
+    [<ffffffff81731d2d>] ext4_ext_map_blocks+0xdfd/0x2940 fs/ext4/extents.c:4250
+    [<ffffffff81754a03>] ext4_map_blocks+0x333/0xb10 fs/ext4/inode.c:637
+    [<ffffffff8175c22b>] mpage_map_one_extent fs/ext4/inode.c:2393 [inline]
+    [<ffffffff8175c22b>] mpage_map_and_submit_extent fs/ext4/inode.c:2446 [inline]
+    [<ffffffff8175c22b>] ext4_writepages+0xc8b/0x19c0 fs/ext4/inode.c:2798
+    [<ffffffff8145d19a>] do_writepages+0xfa/0x2a0 mm/page-writeback.c:2364
+    [<ffffffff815cbdbe>] __writeback_single_inode+0x6e/0x520 fs/fs-writeback.c:1616
+    [<ffffffff815cc924>] writeback_sb_inodes+0x2d4/0x710 fs/fs-writeback.c:1881
+    [<ffffffff815ccdbb>] __writeback_inodes_wb+0x5b/0x150 fs/fs-writeback.c:1950
+    [<ffffffff815cd2af>] wb_writeback+0x3ff/0x470 fs/fs-writeback.c:2055
+    [<ffffffff815ced0a>] wb_check_old_data_flush fs/fs-writeback.c:2155 [inline]
+    [<ffffffff815ced0a>] wb_do_writeback fs/fs-writeback.c:2208 [inline]
+    [<ffffffff815ced0a>] wb_workfn+0x3fa/0x760 fs/fs-writeback.c:2237
+    [<ffffffff81265d0f>] process_one_work+0x2cf/0x620 kernel/workqueue.c:2297
+    [<ffffffff81266619>] worker_thread+0x59/0x5d0 kernel/workqueue.c:2444
+    [<ffffffff8126fb18>] kthread+0x188/0x1d0 kernel/kthread.c:319
+    [<ffffffff810022cf>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
 
-commit f60f5741002b9fde748cff65fd09bd6222c5db0c upstream.
+BUG: memory leak
+unreferenced object 0xffff888112a84a90 (size 104):
+  comm "kworker/u4:3", pid 948, jiffies 4294943272 (age 473.370s)
+  hex dump (first 32 bytes):
+    98 98 8a 12 81 88 ff ff 22 01 00 00 00 00 ad de  ........".......
+    00 01 00 00 00 00 ad de 22 01 00 00 00 00 ad de  ........".......
+  backtrace:
+    [<ffffffff817773cb>] kmem_cache_zalloc include/linux/slab.h:711 [inline]
+    [<ffffffff817773cb>] ext4_mb_pa_alloc fs/ext4/mballoc.c:5046 [inline]
+    [<ffffffff817773cb>] ext4_mb_new_blocks+0xd5b/0x18b0 fs/ext4/mballoc.c:5581
+    [<ffffffff81731d2d>] ext4_ext_map_blocks+0xdfd/0x2940 fs/ext4/extents.c:4250
+    [<ffffffff81754a03>] ext4_map_blocks+0x333/0xb10 fs/ext4/inode.c:637
+    [<ffffffff8175c22b>] mpage_map_one_extent fs/ext4/inode.c:2393 [inline]
+    [<ffffffff8175c22b>] mpage_map_and_submit_extent fs/ext4/inode.c:2446 [inline]
+    [<ffffffff8175c22b>] ext4_writepages+0xc8b/0x19c0 fs/ext4/inode.c:2798
+    [<ffffffff8145d19a>] do_writepages+0xfa/0x2a0 mm/page-writeback.c:2364
+    [<ffffffff815cbdbe>] __writeback_single_inode+0x6e/0x520 fs/fs-writeback.c:1616
+    [<ffffffff815cc924>] writeback_sb_inodes+0x2d4/0x710 fs/fs-writeback.c:1881
+    [<ffffffff815ccdbb>] __writeback_inodes_wb+0x5b/0x150 fs/fs-writeback.c:1950
+    [<ffffffff815cd2af>] wb_writeback+0x3ff/0x470 fs/fs-writeback.c:2055
+    [<ffffffff815ced0a>] wb_check_old_data_flush fs/fs-writeback.c:2155 [inline]
+    [<ffffffff815ced0a>] wb_do_writeback fs/fs-writeback.c:2208 [inline]
+    [<ffffffff815ced0a>] wb_workfn+0x3fa/0x760 fs/fs-writeback.c:2237
+    [<ffffffff81265d0f>] process_one_work+0x2cf/0x620 kernel/workqueue.c:2297
+    [<ffffffff81266619>] worker_thread+0x59/0x5d0 kernel/workqueue.c:2444
+    [<ffffffff8126fb18>] kthread+0x188/0x1d0 kernel/kthread.c:319
+    [<ffffffff810022cf>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
 
->From QPIC V2 onwards there is a separate register to read
-last code word "QPIC_NAND_READ_LOCATION_LAST_CW_n".
+The full link:
+https://syzkaller.appspot.com/bug?id=6b3fa085566c7c8c64e32a6747c0a2b2c039e364
 
-qcom_nandc_read_cw_raw() is used to read only one code word
-at a time. If we will configure number of code words to 1 in
-in QPIC_NAND_DEV0_CFG0 register then QPIC controller thinks
-its reading the last code word, since from QPIC V2 onwards
-we are having separate register to read the last code word,
-we have to configure "QPIC_NAND_READ_LOCATION_LAST_CW_n"
-register to fetch data from controller buffer to system
-memory.
-
-Fixes: 503ee5aad430 ("mtd: rawnand: qcom: update last code word register")
-Cc: stable@kernel.org
-Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/linux-mtd/1630998357-1359-1-git-send-email-mdalam@codeaurora.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Bernard Zhao <bernard@vivo.com>
 ---
- drivers/mtd/nand/raw/qcom_nandc.c |    8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ fs/ext4/mballoc.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/mtd/nand/raw/qcom_nandc.c
-+++ b/drivers/mtd/nand/raw/qcom_nandc.c
-@@ -1676,13 +1676,17 @@ qcom_nandc_read_cw_raw(struct mtd_info *
- 	struct nand_ecc_ctrl *ecc = &chip->ecc;
- 	int data_size1, data_size2, oob_size1, oob_size2;
- 	int ret, reg_off = FLASH_BUF_ACC, read_loc = 0;
-+	int raw_cw = cw;
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index 72bfac2d6dce..e767aacebdf0 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -5439,6 +5439,7 @@ static int ext4_mb_release_context(struct ext4_allocation_context *ac)
+ 		}
  
- 	nand_read_page_op(chip, page, 0, NULL, 0);
- 	host->use_ecc = false;
- 
-+	if (nandc->props->qpic_v2)
-+		raw_cw = ecc->steps - 1;
-+
- 	clear_bam_transaction(nandc);
- 	set_address(host, host->cw_size * cw, page);
--	update_rw_regs(host, 1, true, cw);
-+	update_rw_regs(host, 1, true, raw_cw);
- 	config_nand_page_read(chip);
- 
- 	data_size1 = mtd->writesize - host->cw_size * (ecc->steps - 1);
-@@ -1711,7 +1715,7 @@ qcom_nandc_read_cw_raw(struct mtd_info *
- 		nandc_set_read_loc(chip, cw, 3, read_loc, oob_size2, 1);
+ 		ext4_mb_put_pa(ac, ac->ac_sb, pa);
++		ext4_mb_pa_free(ac);
  	}
- 
--	config_nand_cw_read(chip, false, cw);
-+	config_nand_cw_read(chip, false, raw_cw);
- 
- 	read_data_dma(nandc, reg_off, data_buf, data_size1, 0);
- 	reg_off += data_size1;
-
+ 	if (ac->ac_bitmap_page)
+ 		put_page(ac->ac_bitmap_page);
+-- 
+2.31.0
 
