@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35CD6431B3D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:29:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F29F431E27
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:56:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232848AbhJRNbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:31:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43210 "EHLO mail.kernel.org"
+        id S234277AbhJRN6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:58:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56112 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232330AbhJRN37 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:29:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D32960295;
-        Mon, 18 Oct 2021 13:27:47 +0000 (UTC)
+        id S234403AbhJRNz6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:55:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B50DF61A0B;
+        Mon, 18 Oct 2021 13:40:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634563668;
-        bh=v0qt75fXEfZDx0pU2hWoiPCdS13jBNKzxMVUeErd/2w=;
+        s=korg; t=1634564425;
+        bh=Hsr8yR3apzln3frfbIipz2wD/w8DAgrCvd6kDWRWrEY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IztfQ51ePWWwepSJARfTEG36+usfnAUA/N4vT9YAzogflwYT805LrIWt/0D2mrV/o
-         XVKUr13uKNuJq2rzLT5VHRngdZ4zY4P8rrYQvINkIkwdivdVzguiWsOnuztVA8mWeI
-         V4O8X/okTRwBNmUY5ZiOdhbg9ButhzRfRMZgBUfo=
+        b=Xuj8NTNmDeKRVDL+0cgK9L4GP7X9m/CYkjUphOjpeP73qeCoZ/0k1rr1vvijtKpEs
+         sfYeq63yNF39F/fUE6z+CSzjmdF5CshPGWCM+N3Vjm/Bv8Y8TE54J9YMEsdvPsefwN
+         Q2bHbUXB9DVsDsYRxSHCGd0aMykoAxamcy944hvM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhang Jianhua <chris.zjh@huawei.com>,
-        Ard Biesheuvel <ardb@kernel.org>
-Subject: [PATCH 4.19 17/50] efi: Change down_interruptible() in virt_efi_reset_system() to down_trylock()
+        stable@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+        Moritz Fischer <mdf@kernel.org>
+Subject: [PATCH 5.14 085/151] fpga: ice40-spi: Add SPI device ID table
 Date:   Mon, 18 Oct 2021 15:24:24 +0200
-Message-Id: <20211018132327.112350628@linuxfoundation.org>
+Message-Id: <20211018132343.456508711@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132326.529486647@linuxfoundation.org>
-References: <20211018132326.529486647@linuxfoundation.org>
+In-Reply-To: <20211018132340.682786018@linuxfoundation.org>
+References: <20211018132340.682786018@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,67 +39,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Jianhua <chris.zjh@huawei.com>
+From: Mark Brown <broonie@kernel.org>
 
-commit 38fa3206bf441911258e5001ac8b6738693f8d82 upstream.
+commit 2a2a79577ddae7d5314b2f57ca86b44d794403d5 upstream.
 
-While reboot the system by sysrq, the following bug will be occur.
+Currently autoloading for SPI devices does not use the DT ID table, it uses
+SPI modalises. Supporting OF modalises is going to be difficult if not
+impractical, an attempt was made but has been reverted, so ensure that
+module autoloading works for this driver by adding a SPI ID table.
 
-BUG: sleeping function called from invalid context at kernel/locking/semaphore.c:90
-in_atomic(): 0, irqs_disabled(): 128, non_block: 0, pid: 10052, name: rc.shutdown
-CPU: 3 PID: 10052 Comm: rc.shutdown Tainted: G        W O      5.10.0 #1
-Call trace:
- dump_backtrace+0x0/0x1c8
- show_stack+0x18/0x28
- dump_stack+0xd0/0x110
- ___might_sleep+0x14c/0x160
- __might_sleep+0x74/0x88
- down_interruptible+0x40/0x118
- virt_efi_reset_system+0x3c/0xd0
- efi_reboot+0xd4/0x11c
- machine_restart+0x60/0x9c
- emergency_restart+0x1c/0x2c
- sysrq_handle_reboot+0x1c/0x2c
- __handle_sysrq+0xd0/0x194
- write_sysrq_trigger+0xbc/0xe4
- proc_reg_write+0xd4/0xf0
- vfs_write+0xa8/0x148
- ksys_write+0x6c/0xd8
- __arm64_sys_write+0x18/0x28
- el0_svc_common.constprop.3+0xe4/0x16c
- do_el0_svc+0x1c/0x2c
- el0_svc+0x20/0x30
- el0_sync_handler+0x80/0x17c
- el0_sync+0x158/0x180
-
-The reason for this problem is that irq has been disabled in
-machine_restart() and then it calls down_interruptible() in
-virt_efi_reset_system(), which would occur sleep in irq context,
-it is dangerous! Commit 99409b935c9a("locking/semaphore: Add
-might_sleep() to down_*() family") add might_sleep() in
-down_interruptible(), so the bug info is here. down_trylock()
-can solve this problem, cause there is no might_sleep.
-
---------
-
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Zhang Jianhua <chris.zjh@huawei.com>
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Fixes: 96c8395e2166 ("spi: Revert modalias changes")
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Moritz Fischer <mdf@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/firmware/efi/runtime-wrappers.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/fpga/ice40-spi.c |    7 +++++++
+ 1 file changed, 7 insertions(+)
 
---- a/drivers/firmware/efi/runtime-wrappers.c
-+++ b/drivers/firmware/efi/runtime-wrappers.c
-@@ -395,7 +395,7 @@ static void virt_efi_reset_system(int re
- 				  unsigned long data_size,
- 				  efi_char16_t *data)
- {
--	if (down_interruptible(&efi_runtime_lock)) {
-+	if (down_trylock(&efi_runtime_lock)) {
- 		pr_warn("failed to invoke the reset_system() runtime service:\n"
- 			"could not get exclusive access to the firmware\n");
- 		return;
+--- a/drivers/fpga/ice40-spi.c
++++ b/drivers/fpga/ice40-spi.c
+@@ -192,12 +192,19 @@ static const struct of_device_id ice40_f
+ };
+ MODULE_DEVICE_TABLE(of, ice40_fpga_of_match);
+ 
++static const struct spi_device_id ice40_fpga_spi_ids[] = {
++	{ .name = "ice40-fpga-mgr", },
++	{},
++};
++MODULE_DEVICE_TABLE(spi, ice40_fpga_spi_ids);
++
+ static struct spi_driver ice40_fpga_driver = {
+ 	.probe = ice40_fpga_probe,
+ 	.driver = {
+ 		.name = "ice40spi",
+ 		.of_match_table = of_match_ptr(ice40_fpga_of_match),
+ 	},
++	.id_table = ice40_fpga_spi_ids,
+ };
+ 
+ module_spi_driver(ice40_fpga_driver);
 
 
