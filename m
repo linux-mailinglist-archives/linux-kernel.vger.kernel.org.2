@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BA5F431AF1
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:28:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A2C0431E40
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:57:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232258AbhJRN3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:29:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41356 "EHLO mail.kernel.org"
+        id S232647AbhJRN7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:59:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57710 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231894AbhJRN3G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:29:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BC09261353;
-        Mon, 18 Oct 2021 13:26:26 +0000 (UTC)
+        id S233680AbhJRN5U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:57:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4ECDF61374;
+        Mon, 18 Oct 2021 13:40:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634563587;
-        bh=gNRHkcxNAhkS63JpCBusgv0NtAF1h969xehizz1tV6U=;
+        s=korg; t=1634564454;
+        bh=fw1p2m2lRNqach1F5s9MyhHFyCNNlPSBlh3+Ml3rJMo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=G48HRhIrhBABI6DASlnnoHcQ6yPK/OYheDC2UFoYpBORqQxP7Lk++fDK+Mc5s1HFW
-         MR/eJcqnpl9chICvrcSVdJ/V1HgvOY3gu9tUv2Gpox1a0va4F8nc4nP1C/mHmrIRtz
-         zJkK5CTkKiqfnpwQaTfhdz7V30wgkYu2Lg22O+IU=
+        b=XV8RI9xvU90D+iEPnOGcn7bNEU+x9l6QoeptYf74KAHYQ5cysptZ7mx/bLVWTYfE7
+         UqnSL0fi2iiAfPal9Wn64ac7by4VtlkOND+QLtA61ikgaGgM83TGJEt13uuUu85hI3
+         AnZlSg0xT5sg75DaWR8HXgaX7GD6y2uRSPzVm6iY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 4.14 24/39] iio: ssp_sensors: add more range checking in ssp_parse_dataframe()
-Date:   Mon, 18 Oct 2021 15:24:33 +0200
-Message-Id: <20211018132326.219670699@linuxfoundation.org>
+        stable@vger.kernel.org, Rob Herring <robh@kernel.org>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>
+Subject: [PATCH 5.14 095/151] ARM: dts: bcm2711-rpi-4-b: Fix pcie0s unit address formatting
+Date:   Mon, 18 Oct 2021 15:24:34 +0200
+Message-Id: <20211018132343.766009909@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132325.426739023@linuxfoundation.org>
-References: <20211018132325.426739023@linuxfoundation.org>
+In-Reply-To: <20211018132340.682786018@linuxfoundation.org>
+References: <20211018132340.682786018@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,57 +39,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Nicolas Saenz Julienne <nsaenz@kernel.org>
 
-commit 8167c9a375ccceed19048ad9d68cb2d02ed276e0 upstream.
+commit 13dbc954b3c9a9de0ad5b7279e8d3b708d31068b upstream.
 
-The "idx" is validated at the start of the loop but it gets incremented
-during the iteration so it needs to be checked again.
+dtbs_check currently complains that:
 
-Fixes: 50dd64d57eee ("iio: common: ssp_sensors: Add sensorhub driver")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Link: https://lore.kernel.org/r/20210909091336.GA26312@kili
-Cc: <Stable@vger.kernel.org>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+arch/arm/boot/dts/bcm2711-rpi-4-b.dts:220.10-231.4: Warning
+(pci_device_reg): /scb/pcie@7d500000/pci@1,0: PCI unit address format
+error, expected "0,0"
+
+Unsurprisingly pci@0,0 is the right address, as illustrated by its reg
+property:
+
+    &pcie0 {
+	    pci@0,0 {
+		    /*
+		     * As defined in the IEEE Std 1275-1994 document,
+		     * reg is a five-cell address encoded as (phys.hi
+		     * phys.mid phys.lo size.hi size.lo). phys.hi
+		     * should contain the device's BDF as 0b00000000
+		     * bbbbbbbb dddddfff 00000000. The other cells
+		     * should be zero.
+		     */
+		    reg = <0 0 0 0 0>;
+	    };
+    };
+
+The device is clearly 0. So fix it.
+
+Also add a missing 'device_type = "pci"'.
+
+Fixes: 258f92d2f840 ("ARM: dts: bcm2711: Add reset controller to xHCI node")
+Suggested-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
+Link: https://lore.kernel.org/r/20210831125843.1233488-1-nsaenzju@redhat.com
+Signed-off-by: Nicolas Saenz Julienne <nsaenz@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/iio/common/ssp_sensors/ssp_spi.c |    9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ arch/arm/boot/dts/bcm2711-rpi-4-b.dts |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/iio/common/ssp_sensors/ssp_spi.c
-+++ b/drivers/iio/common/ssp_sensors/ssp_spi.c
-@@ -286,6 +286,8 @@ static int ssp_parse_dataframe(struct ss
- 	for (idx = 0; idx < len;) {
- 		switch (dataframe[idx++]) {
- 		case SSP_MSG2AP_INST_BYPASS_DATA:
-+			if (idx >= len)
-+				return -EPROTO;
- 			sd = dataframe[idx++];
- 			if (sd < 0 || sd >= SSP_SENSOR_MAX) {
- 				dev_err(SSP_DEV,
-@@ -295,10 +297,13 @@ static int ssp_parse_dataframe(struct ss
+--- a/arch/arm/boot/dts/bcm2711-rpi-4-b.dts
++++ b/arch/arm/boot/dts/bcm2711-rpi-4-b.dts
+@@ -217,7 +217,8 @@
+ };
  
- 			if (indio_devs[sd]) {
- 				spd = iio_priv(indio_devs[sd]);
--				if (spd->process_data)
-+				if (spd->process_data) {
-+					if (idx >= len)
-+						return -EPROTO;
- 					spd->process_data(indio_devs[sd],
- 							  &dataframe[idx],
- 							  data->timestamp);
-+				}
- 			} else {
- 				dev_err(SSP_DEV, "no client for frame\n");
- 			}
-@@ -306,6 +311,8 @@ static int ssp_parse_dataframe(struct ss
- 			idx += ssp_offset_map[sd];
- 			break;
- 		case SSP_MSG2AP_INST_DEBUG_DATA:
-+			if (idx >= len)
-+				return -EPROTO;
- 			sd = ssp_print_mcu_debug(dataframe, &idx, len);
- 			if (sd) {
- 				dev_err(SSP_DEV,
+ &pcie0 {
+-	pci@1,0 {
++	pci@0,0 {
++		device_type = "pci";
+ 		#address-cells = <3>;
+ 		#size-cells = <2>;
+ 		ranges;
 
 
