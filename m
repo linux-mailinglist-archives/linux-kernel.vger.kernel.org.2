@@ -2,138 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8249A430DB6
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 03:54:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73DC2430DB9
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 03:56:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243124AbhJRB47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 21:56:59 -0400
-Received: from mail-eopbgr1310128.outbound.protection.outlook.com ([40.107.131.128]:15904
-        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235368AbhJRB4z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 21:56:55 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bLjPZ8I8Z4nrKbNonswa92lct3iHFoM/sblj3FwsVjv6J84ttr4ywGDN/NenClm3AWbGwDm3JuZjH1BmhBm9qtyu6xv6dd/r5FP9Sy01pbfvnuedHzU7OUVkPsCRk5M+CXXYh8ufA+S827GONRnXCVQ424AMjGm26M0uaxbEl5srS5mQdnFkcbuzIrpX3JfxQh9yEgFb4Pz1XF20Iu9VHkpUozXXXhrtpy+RNBZGTLoGJuCv94IV1q7Ex5s0KH73cgFaIEWgVm7CMbrnws65mNCdIBdTj6WwoEK+RWQt8cBsaTAsVbkvhHob2IDdfY/6lsj88vrO8B/M+lATwStBcw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=hiPAQx7Yalo3+yW+TtllXznNci2N4E3p3top9m/iFrQ=;
- b=lrumNDD6dpJN3DYWAPT4URmlyskhGHtqH+hVR2GWseGPzMMvipgh/WoIytntGBA5ueV2iEahfDRhpc9sjC7iLO4G7z5k4PkQRnRhBplNwvEhIj/Lz0cWjNFTkY5KrXrl9pgIBrPISWX++ThSqby+bXe2l2OAtDTWduRCqnsfKHZfKW0FfvytRM3JUS2PjZjhkZZDgZq87K9Ncm7dFe/H0rssMl5jsuNlefCjzF9UwDmwZ4HVzq4u6+MqmTQGH5snADLO4CracftP5PRq5Zd3QVXqDN/x/Prhhxv2HBlVH4VfHSeg5AblZmU08T/8YcQlIy6nHNIHn8Pd8kySTyu4NA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
- s=selector2-vivo0-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hiPAQx7Yalo3+yW+TtllXznNci2N4E3p3top9m/iFrQ=;
- b=L2Qek9K8fs9cS7kPBVxpOyzddoPEuV0b6Tw/+9FiHFRKt4zHCZlnaPQQWY4nytoHriLVhdfcTK2dbU3xxcR5Arhl+ehRvx5vAAOtBRpeUZ6/lNvjHD041vqC5nyA7JX5p5LAUn2aHSvhcQ5b1Q8qZ/ew59ilDYxkpr+pBiHDxCw=
-Authentication-Results: ellerman.id.au; dkim=none (message not signed)
- header.d=none;ellerman.id.au; dmarc=none action=none header.from=vivo.com;
-Received: from SG2PR06MB3367.apcprd06.prod.outlook.com (2603:1096:4:78::19) by
- SG2PR06MB3079.apcprd06.prod.outlook.com (2603:1096:4:75::12) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4608.18; Mon, 18 Oct 2021 01:54:37 +0000
-Received: from SG2PR06MB3367.apcprd06.prod.outlook.com
- ([fe80::fc12:4e1b:cc77:6c0]) by SG2PR06MB3367.apcprd06.prod.outlook.com
- ([fe80::fc12:4e1b:cc77:6c0%6]) with mapi id 15.20.4608.018; Mon, 18 Oct 2021
- 01:54:36 +0000
-From:   Wan Jiabing <wanjiabing@vivo.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Rob Herring <robh@kernel.org>,
-        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Hari Bathini <hbathini@linux.ibm.com>,
-        Wan Jiabing <wanjiabing@vivo.com>,
-        Sourabh Jain <sourabhjain@linux.ibm.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Cc:     kael_w@yeah.net
-Subject: [PATCH] powerpc/kexec_file: Add of_node_put() before goto
-Date:   Sun, 17 Oct 2021 21:54:16 -0400
-Message-Id: <20211018015418.10182-1-wanjiabing@vivo.com>
-X-Mailer: git-send-email 2.20.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: HK2PR02CA0168.apcprd02.prod.outlook.com
- (2603:1096:201:1f::28) To SG2PR06MB3367.apcprd06.prod.outlook.com
- (2603:1096:4:78::19)
-MIME-Version: 1.0
-Received: from localhost.localdomain (203.90.234.87) by HK2PR02CA0168.apcprd02.prod.outlook.com (2603:1096:201:1f::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.16 via Frontend Transport; Mon, 18 Oct 2021 01:54:35 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 9f344563-17a9-4a59-4259-08d991da3d25
-X-MS-TrafficTypeDiagnostic: SG2PR06MB3079:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SG2PR06MB3079E015DD52ADC2EFAEE29DABBC9@SG2PR06MB3079.apcprd06.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4502;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: WwjLaSMtJTCmgQMUKI9oaFezfKYYP9wJIU5lH9MikreMvUjedyfRoyEZM+IoOOLb1dd70DgPh1zxJeFVIa2Y6PPBB5vE/r8TPMWETNHQaAamUFE5xoaizo7jqPY/Lr1nR30rRn77CT8oaGyh1FH07nX0UkClsJfs0VUY70B+OGHmrDdkbF6dqMMJYnicvjUZ37ocdDv5VHA37P0kQqx03dC5K9veZjUCq3iMu/ILR4l1JVtfxfz8pHtAHywddK4hlpofOnbkj2falIqhJN8jyNiIw2XSbCn9WbmFhAHP2wNZEC7nuqsLskbAQolJzrjCmy+/6B0t4pZ6N3sJQgiNyDnZuIXXRmvFDeD79uVf8I+9Pe8CSXGOWoU19Mt8x8mXyQQbpHAb68aWFtD0n/9316+XIpibYpx2sqzJqp8xsUYVDpXG8KaDMa6NNkOGyeVZ25frjzmAkvrm15CQ0Zu+mei5vA8uLn0n3Q9wIM5JmQGjx/faSuBoilyVpi8vMQCN1HvMAxo4mvivu3fVxOVEj5tWkIYY838Nz7qg8Q847BqcD8Z4Mfc/gRqjZ5bYFysiAmg2Y88WgP5ZGgifkRPzdklXAApbAKO5jvoD/seDlBmeJnR6U8Xu4y0mU2hcIF3MevlNcOksgdtUtR71TFDPukoHyz7K9+292gc+/214VZZTFIEprA/uCI+Nw0a6cb26exIrP8QIIP2CVY3SAH8HDAhCHKbS9ROk4WrJjLPh5NU=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR06MB3367.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66476007)(8936002)(38350700002)(36756003)(66556008)(5660300002)(83380400001)(7416002)(66946007)(38100700002)(2616005)(52116002)(110136005)(316002)(6506007)(508600001)(6512007)(921005)(26005)(2906002)(4326008)(186003)(1076003)(4744005)(6486002)(6666004)(956004)(8676002)(86362001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?vBQQ/EpQLSzT+OqZs/Q5C5mY6AOMTBGe9lWm9be2233IxgIUx4s/yKemMAyz?=
- =?us-ascii?Q?jTO0FEcow/o76y6v2brXDcKtpUNdsBgxJo8sK9Pm2//75yh/T9Cr5vGHO4GH?=
- =?us-ascii?Q?XkbG09a5Jt/IwDKDbV1cXZunpO7+9w1I7zbbEYjTUZ2Gk5zZ6fXyp/yNTf0C?=
- =?us-ascii?Q?ThNNRGxPUAj3audyoRg3tcsR66Rx+YGYne8DucscH0jSB+sSJi1UkZetrKNv?=
- =?us-ascii?Q?y3/zcd/jyitYGxeT/pq4E52X7NtTyhPWcoJ5Mdy5C2chP+qDlgrWpp8OtlXS?=
- =?us-ascii?Q?+y3nyJNSe4LBxKLim7FzQ4vvMROp0M1sHrrtzw27I61+Kd82vIWc4CvNMrHD?=
- =?us-ascii?Q?7T2i6hyKFCowaUb5D1o6vWQz6MfotHpV1Tq9OyAs5RiIMml7qKxlNxRiryMl?=
- =?us-ascii?Q?NWPGkDzzlXBpPbVHrhzF7vH2EMNY95Wt2/TUHW3yMD4vnXv0mKYMRjEa9MXd?=
- =?us-ascii?Q?+1el+vvnMx6KtQnObHhsy6YjoN8W+9/kUF3M6fuNI182IbG/FWsn4L5fUXpL?=
- =?us-ascii?Q?x3h6IPLcDZZiQqO28DXk5WoVtAa216ZP6aiNsTEFbvAHxle0d6tc6WVUeGs4?=
- =?us-ascii?Q?FjqVSY9ciuhMiOY+rTc0idPv3KR/tjkhSw1ufzM680aSI5DNboFiu3xRU3Yc?=
- =?us-ascii?Q?Ioj5/D91rgrzcP8KhTYRu9m4ZeazqymqvTgIaQKGLmiyQ60d4pyZjdyqWy6n?=
- =?us-ascii?Q?wzFgMic6DntQUhZfRW1l5BVDPV4VULTukGSGhNOzDuuOdkeWRKEVk0xjOxLf?=
- =?us-ascii?Q?udlMitnSz15xZFPfMdZ8kKTKEKZSrVsUyTdXyZtrXFcsPdJ858up2Wzh2+CH?=
- =?us-ascii?Q?pbOtbc3YcDXLxuZHsyGPyirXIDLfMy/MqXAXOryiOtlmLdDinQyRh7ojqm9y?=
- =?us-ascii?Q?WPSO6TWEdAuWLM45b0rkW5sGdBIzZOymQbdrV1nYUIhC9a8mIW2KQWhF6woO?=
- =?us-ascii?Q?B3+99PSjdH1H57/2Ok9P/3buYcCbGTb9s3J2TsUaWzK5NXrBo8SgbWHtBK9w?=
- =?us-ascii?Q?CqVTHoRIwW/1pdoe0BD1mAjntrt1cKUT2qrw8yu7h/OCKLRMxXmPpNF/h/ku?=
- =?us-ascii?Q?ffkXn/mW0o/7q5PlOnWuuir/AV5vHIem6MNRser4baVE0OxY6aKsGxun/M+q?=
- =?us-ascii?Q?jC9Pv+Vy0484hlLu+HhmB+ayh1BeyhjYQb3xWjn42+D072U4O+KunNK4AUb8?=
- =?us-ascii?Q?plqe0aZ3iVJdpiXeZWnkPMrh5ihkRAbOH+yJyX49Fn1qIE61q4eJ14JsihKA?=
- =?us-ascii?Q?t3iI8fHeYths+kSvABBt8OI6Hp2XhmD/MADWUodOBB1CxP+eBE0YnfUN4FWj?=
- =?us-ascii?Q?CIYj9L1w47EQxLUVYfYy0/jf?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9f344563-17a9-4a59-4259-08d991da3d25
-X-MS-Exchange-CrossTenant-AuthSource: SG2PR06MB3367.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Oct 2021 01:54:36.6684
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: W3tSK59OIIqTELYev5HwcOwUS81KBPJQhovCMZmfSbiXXDV6Uom6g20ksOIoEAN2gZZDQuCHiNZoqLLyF0eS2w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SG2PR06MB3079
+        id S243143AbhJRB6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 21:58:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47180 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235368AbhJRB6n (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Oct 2021 21:58:43 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E10A2C06161C;
+        Sun, 17 Oct 2021 18:56:32 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id i76so11342069pfe.13;
+        Sun, 17 Oct 2021 18:56:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id;
+        bh=/FugdVHFR3AUqAVRaU4hvpNt7FLfAHIXJPLel1NYKBk=;
+        b=kdwbrb625O1ndpj8DAnj+IqS61DrhIdtmSVEE/QW+V+pLuLxiiLXP9MuSdApaQD8Hv
+         hL2wWkEZ1vDfqPituao3gTUlSxo4U9XWXYNp0p2yF8iJCpnoqMoHjlwDuQ3ajD+sXkuo
+         bClLF9DH7O8M9S6wIhEAMI/X5sMhMtOlfwzKAhFK3/WtS7EM5Z++JCxV6By161WqcWao
+         NC5XrIa35k/0g8dAqn6N8pFw4iBI2va7S++mx+6DfU0eR8INqpSSWXiuwKSlSUJU3QWA
+         8SkSe1cH9fqwNTK6ojbYcs6V0RVIfpyNxQwnJySqSD8JlCjMgov1VExMB3H0hTxvsUrO
+         vuYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=/FugdVHFR3AUqAVRaU4hvpNt7FLfAHIXJPLel1NYKBk=;
+        b=HDOsoXYiRPT7TYvRwGNQcasMrnsn6vu6mVzb0MAAsTlvd3ZIohZuu1y8dY68HSMTDF
+         WsI93wLvEAjAssO9BBp8BV63YgkSiiiO77gvYA4HgQi9P2NYQr6KufcXbOOXlCorC6d+
+         xC6XAmjQFSpKsv+978cgE+S4FGWU5PzITHbqHhahLcGfwixxFXjOlwFSIyGaxI53MtfS
+         D7St9/EWDA4hkuqi1xWnqKCOz/wyfBb75UpfRsdxMzfN2MY08Q0C8lZnDmj9bKC513vU
+         1NImT9krRlfIZDeJWkNuQHA79O59AEkYS3JVi897MdrybsuOmbi1y/9SJkoaegUw46jS
+         hXFw==
+X-Gm-Message-State: AOAM5316ZKxyIqyaxScRHWEv/mFi8uTlr1Rnc1q4c/XWl9e4cjmws4Of
+        h4V6DCHhY1+UsAU23GDCWwkWR6wK3HtX
+X-Google-Smtp-Source: ABdhPJy/mkeqh+I2Fx/XXIrfDOeafYPH2XerbRGFjUcxpG3OGAZebt6ixGhDhikK+qBps11VrbmgFQ==
+X-Received: by 2002:a05:6a00:16d4:b0:44c:22c4:eb88 with SMTP id l20-20020a056a0016d400b0044c22c4eb88mr25702743pfc.75.1634522192466;
+        Sun, 17 Oct 2021 18:56:32 -0700 (PDT)
+Received: from vultr.guest ([107.191.53.97])
+        by smtp.gmail.com with ESMTPSA id pj12sm11956887pjb.19.2021.10.17.18.56.30
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 17 Oct 2021 18:56:32 -0700 (PDT)
+From:   Zheyu Ma <zheyuma97@gmail.com>
+To:     njavali@marvell.com, GR-QLogic-Storage-Upstream@marvell.com,
+        jejb@linux.ibm.com, martin.petersen@oracle.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Zheyu Ma <zheyuma97@gmail.com>
+Subject: [PATCH] scsi: qla2xxx: Return -ENOMEM if kzalloc() fails
+Date:   Mon, 18 Oct 2021 01:56:21 +0000
+Message-Id: <1634522181-31166-1-git-send-email-zheyuma97@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix following coccicheck warning:
-./arch/powerpc/kexec/file_load_64.c:698:1-22: WARNING: Function
-for_each_node_by_type should have of_node_put() before goto
+During the process of driver probing, probe function should return < 0
+for failure, otherwise kernel will treat value > 0 as success.
 
-Early exits from for_each_node_by_type should decrement the
-node reference counter.
-
-Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
 ---
- arch/powerpc/kexec/file_load_64.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/scsi/qla2xxx/qla_os.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/powerpc/kexec/file_load_64.c b/arch/powerpc/kexec/file_load_64.c
-index 5056e175ca2c..b4981b651d9a 100644
---- a/arch/powerpc/kexec/file_load_64.c
-+++ b/arch/powerpc/kexec/file_load_64.c
-@@ -700,6 +700,7 @@ static int update_usable_mem_fdt(void *fdt, struct crash_mem *usable_mem)
- 		if (ret) {
- 			pr_err("Failed to set linux,usable-memory property for %s node",
- 			       dn->full_name);
-+			of_node_put(dn);
- 			goto out;
- 		}
- 	}
+diff --git a/drivers/scsi/qla2xxx/qla_os.c b/drivers/scsi/qla2xxx/qla_os.c
+index d2e40aaba734..836fedcea241 100644
+--- a/drivers/scsi/qla2xxx/qla_os.c
++++ b/drivers/scsi/qla2xxx/qla_os.c
+@@ -4157,7 +4157,7 @@ qla2x00_mem_alloc(struct qla_hw_data *ha, uint16_t req_len, uint16_t rsp_len,
+ 					ql_dbg_pci(ql_dbg_init, ha->pdev,
+ 					    0xe0ee, "%s: failed alloc dsd\n",
+ 					    __func__);
+-					return 1;
++					return -ENOMEM;
+ 				}
+ 				ha->dif_bundle_kallocs++;
+ 
 -- 
-2.20.1
+2.17.6
 
