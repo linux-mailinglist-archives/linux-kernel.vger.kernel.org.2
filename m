@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4F11431DC3
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:53:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C78C431CC3
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:43:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234040AbhJRNys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:54:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50686 "EHLO mail.kernel.org"
+        id S232728AbhJRNo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:44:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39900 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234212AbhJRNwX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:52:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CADA26137B;
-        Mon, 18 Oct 2021 13:38:46 +0000 (UTC)
+        id S232283AbhJRNmf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:42:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 33F8F61505;
+        Mon, 18 Oct 2021 13:34:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634564327;
-        bh=Vw6ttr68ZCstAPpVVICipZAA0bc2xWlXeF1vrKCNfus=;
+        s=korg; t=1634564048;
+        bh=6Vp21lSexe6z120mdDelmfwJ35ap7XXTqN+VwLxH3y0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NGLlRiT97yjjhWbcoNF7lhZXuXyIdvynWBDFCItkzKwHvQEP0+bgiL/Pa+DEsIVVz
-         gk8iwWJvx3Y75qoU+Pgk/1OSA24HRtizEzcuDJBA0evpN1VY84UvT8wsnzm+kp8f5b
-         wC6FSsLxnzae9DQfjydQu0HjihY6zHIdS8BzClTs=
+        b=q3UZjzG/JLjJNNEBo1B8P3cM402bsJtC70W+In08oqrptJ38HQk7ZoNn6f8T1xTOk
+         rLOF5ki6BwNwFb1r+v8pqM/w7Zod9Pv84/OPxwLPGZW39Cv6RY7pJrJssgHcI55Bas
+         ArRUSVxrWlZlAnF7RZKElv7nS+TUR6cegLPbrAIE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 5.14 048/151] usb: musb: dsps: Fix the probe error path
-Date:   Mon, 18 Oct 2021 15:23:47 +0200
-Message-Id: <20211018132342.260270497@linuxfoundation.org>
+        stable@vger.kernel.org, Greentime Hu <green.hu@gmail.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 5.10 012/103] nds32/ftrace: Fix Error: invalid operands (*UND* and *UND* sections) for `^
+Date:   Mon, 18 Oct 2021 15:23:48 +0200
+Message-Id: <20211018132335.103161754@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132340.682786018@linuxfoundation.org>
-References: <20211018132340.682786018@linuxfoundation.org>
+In-Reply-To: <20211018132334.702559133@linuxfoundation.org>
+References: <20211018132334.702559133@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,65 +39,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miquel Raynal <miquel.raynal@bootlin.com>
+From: Steven Rostedt <rostedt@goodmis.org>
 
-commit c2115b2b16421d93d4993f3fe4c520e91d6fe801 upstream.
+commit be358af1191b1b2fedebd8f3421cafdc8edacc7d upstream.
 
-Commit 7c75bde329d7 ("usb: musb: musb_dsps: request_irq() after
-initializing musb") has inverted the calls to
-dsps_setup_optional_vbus_irq() and dsps_create_musb_pdev() without
-updating correctly the error path. dsps_create_musb_pdev() allocates and
-registers a new platform device which must be unregistered and freed
-with platform_device_unregister(), and this is missing upon
-dsps_setup_optional_vbus_irq() error.
+I received a build failure for a new patch I'm working on the nds32
+architecture, and when I went to test it, I couldn't get to my build error,
+because it failed to build with a bunch of:
 
-While on the master branch it seems not to trigger any issue, I observed
-a kernel crash because of a NULL pointer dereference with a v5.10.70
-stable kernel where the patch mentioned above was backported. With this
-kernel version, -EPROBE_DEFER is returned the first time
-dsps_setup_optional_vbus_irq() is called which triggers the probe to
-error out without unregistering the platform device. Unfortunately, on
-the Beagle Bone Black Wireless, the platform device still living in the
-system is being used by the USB Ethernet gadget driver, which during the
-boot phase triggers the crash.
+  Error: invalid operands (*UND* and *UND* sections) for `^'
 
-My limited knowledge of the musb world prevents me to revert this commit
-which was sent to silence a robot warning which, as far as I understand,
-does not make sense. The goal of this patch was to prevent an IRQ to
-fire before the platform device being registered. I think this cannot
-ever happen due to the fact that enabling the interrupts is done by the
-->enable() callback of the platform musb device, and this platform
-device must be already registered in order for the core or any other
-user to use this callback.
+issues with various files. Those files were temporary asm files that looked
+like:  kernel/.tmp_mc_fork.s
 
-Hence, I decided to fix the error path, which might prevent future
-errors on mainline kernels while also fixing older ones.
+I decided to look deeper, and found that the "mc" portion of that name
+stood for "mcount", and was created by the recordmcount.pl script. One that
+I wrote over a decade ago. Once I knew the source of the problem, I was
+able to investigate it further.
 
-Fixes: 7c75bde329d7 ("usb: musb: musb_dsps: request_irq() after initializing musb")
+The way the recordmcount.pl script works (BTW, there's a C version that
+simply modifies the ELF object) is by doing an "objdump" on the object
+file. Looks for all the calls to "mcount", and creates an offset of those
+locations from some global variable it can use (usually a global function
+name, found with <.*>:). Creates a asm file that is a table of references
+to these locations, using the found variable/function. Compiles it and
+links it back into the original object file. This asm file is called
+".tmp_mc_<object_base_name>.s".
+
+The problem here is that the objdump produced by the nds32 object file,
+contains things that look like:
+
+ 0000159a <.L3^B1>:
+    159a:       c6 00           beqz38 $r6, 159a <.L3^B1>
+                        159a: R_NDS32_9_PCREL_RELA      .text+0x159e
+    159c:       84 d2           movi55 $r6, #-14
+    159e:       80 06           mov55 $r0, $r6
+    15a0:       ec 3c           addi10.sp #0x3c
+
+Where ".L3^B1 is somehow selected as the "global" variable to index off of.
+
+Then the assembly file that holds the mcount locations looks like this:
+
+        .section __mcount_loc,"a",@progbits
+        .align 2
+        .long .L3^B1 + -5522
+        .long .L3^B1 + -5384
+        .long .L3^B1 + -5270
+        .long .L3^B1 + -5098
+        .long .L3^B1 + -4970
+        .long .L3^B1 + -4758
+        .long .L3^B1 + -4122
+        [...]
+
+And when it is compiled back to an object to link to the original object,
+the compile fails on the "^" symbol.
+
+Simple solution for now, is to have the perl script ignore using function
+symbols that have an "^" in the name.
+
+Link: https://lkml.kernel.org/r/20211014143507.4ad2c0f7@gandalf.local.home
+
 Cc: stable@vger.kernel.org
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/r/20211005221631.1529448-1-miquel.raynal@bootlin.com
+Acked-by: Greentime Hu <green.hu@gmail.com>
+Fixes: fbf58a52ac088 ("nds32/ftrace: Add RECORD_MCOUNT support")
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/musb/musb_dsps.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ scripts/recordmcount.pl |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/usb/musb/musb_dsps.c
-+++ b/drivers/usb/musb/musb_dsps.c
-@@ -899,11 +899,13 @@ static int dsps_probe(struct platform_de
- 	if (usb_get_dr_mode(&pdev->dev) == USB_DR_MODE_PERIPHERAL) {
- 		ret = dsps_setup_optional_vbus_irq(pdev, glue);
- 		if (ret)
--			goto err;
-+			goto unregister_pdev;
- 	}
- 
- 	return 0;
- 
-+unregister_pdev:
-+	platform_device_unregister(glue->musb);
- err:
- 	pm_runtime_disable(&pdev->dev);
- 	iounmap(glue->usbss_base);
+--- a/scripts/recordmcount.pl
++++ b/scripts/recordmcount.pl
+@@ -222,7 +222,7 @@ if ($arch =~ /(x86(_64)?)|(i386)/) {
+ $local_regex = "^[0-9a-fA-F]+\\s+t\\s+(\\S+)";
+ $weak_regex = "^[0-9a-fA-F]+\\s+([wW])\\s+(\\S+)";
+ $section_regex = "Disassembly of section\\s+(\\S+):";
+-$function_regex = "^([0-9a-fA-F]+)\\s+<(.*?)>:";
++$function_regex = "^([0-9a-fA-F]+)\\s+<([^^]*?)>:";
+ $mcount_regex = "^\\s*([0-9a-fA-F]+):.*\\s(mcount|__fentry__)\$";
+ $section_type = '@progbits';
+ $mcount_adjust = 0;
 
 
