@@ -2,59 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 838874311D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 10:07:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BCAF4311C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 10:02:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231201AbhJRIJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 04:09:29 -0400
-Received: from mail.myonlineoffice.pl ([195.231.80.102]:34562 "EHLO
-        mail.myonlineoffice.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230392AbhJRIJ2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 04:09:28 -0400
-X-Greylist: delayed 594 seconds by postgrey-1.27 at vger.kernel.org; Mon, 18 Oct 2021 04:09:27 EDT
-Received: by mail.myonlineoffice.pl (Postfix, from userid 1001)
-        id 419B1A2246; Mon, 18 Oct 2021 08:56:47 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=myonlineoffice.pl;
-        s=mail; t=1634543834;
-        bh=duZFBdrY85B6A6cfGpjoHC8vf8PeTH0f7jPsy12Udwc=;
-        h=Date:From:To:Subject:From;
-        b=dy8ft5x7wujE0s/pglfj9MsR8d1A77/B/lD3uIEx3inaAY+mQmZkfCq7DHHcQ01Is
-         Lbp3TszEnVogbnvJu40C6Qtw/1rrzGeG/EVrrI/zl0AO8d49+3gzGiHyvLlY8hYStL
-         s4aAO1iWx2ijqIdyLS/JQM57/8fDqGgXhM6NDUr/o/KDud9qrHsUbhmMB/Ur2TJphy
-         gFLCkZCcSAOeMLZL4ZHc++XdPbVHfc0edhtNR7NfEpin6tbpGoDNE+HD4uncqneXWZ
-         Ek7g/5dkcv+Jwet2Ubw+t+e+RIq+kve01Nad/1gfQDQeyceB/tQjBpAhddiu/gNM1y
-         V2okac9gUR2hA==
-Received: by mail.myonlineoffice.pl for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 07:56:30 GMT
-Message-ID: <20211018074501-0.1.5d.eit7.0.ifs02q420p@myonlineoffice.pl>
-Date:   Mon, 18 Oct 2021 07:56:30 GMT
-From:   =?UTF-8?Q? "Arkadiusz_Soko=C5=82owski" ?= 
-        <arkadiusz.sokolowski@myonlineoffice.pl>
-To:     <linux-kernel@vger.kernel.org>
-Subject: Koszty instalacji fotowoltaicznej
-X-Mailer: mail.myonlineoffice.pl
+        id S231342AbhJRIEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 04:04:52 -0400
+Received: from mail-eopbgr1310094.outbound.protection.outlook.com ([40.107.131.94]:13608
+        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231130AbhJRIEZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 04:04:25 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=J6SifAGdABadd0PJQrAtEPxTwPBu3hHOwlhyaWQvjCTyOo0DPoRXZcfF2u2pgheq5ks28PtHDzimzsctN9sn2kB7pMZXi8nxS16H7aIyahVkbF4sl6a9PVB6BueiH5Qz7t9Eu7ONIKx5NwfqTYN8fcGUvVcX+AN4SvBgtKi+JtkdRGPJDOiXubZMg8VTs/bag1AXhKJVTF/yLGsOeESMcfQ7XIdQqpBbcQAZ/pk6VEfbMSUDmC/eF65J+Kmr9ILOAKwTOE8MRfW2nWa7OgMV+vwPk2XcmcuNzpEHEbqBi+s0ZUvd2aYGhLWX0NLjxzYTZlD/P/tg4BM60DbJGtK8fg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=f4O86sOQAbabQgTUcFLdZ41x44OMVi9CmoYEOs8wZO0=;
+ b=PwuwwmIwc0swl3b/S2GEhVQQi7rA58roZYYhHVF5yL7P15K9YJut1YsaWwp6e6o/EDEX2OnosopalQhyjoedN0zofCvuhvIXWBCqsUQewduzer91ORexO45Qb5PLzFSQHWWIGK2p589LsRGDpsNA0PlMGEKYqwDgooK769MDT/wM1Fjtqaju21MeX9ASiIZV3rfOqoTfkY16NCem5ZRSJr4fgIQSVAFpr2jbxUGWcLwlFD296x/4bCtQd4jwFqPStaOXjHiagu6z2n7sWbyl3jbbOp9VmAI4ridZfPiX1wp7K7IgMH+jN6j+PhYnhKCFdFVKkOPHI65KwOwgUjzamQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
+ s=selector2-vivo0-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=f4O86sOQAbabQgTUcFLdZ41x44OMVi9CmoYEOs8wZO0=;
+ b=nr3ha10QGu8vvq6OA1kNAXVy5KpqI70wQJSgkGqfSAWd6pygrUzzxqGJFS0Fmf6sSDnmYrspK1AtC72XS3Ac3tYQLGH2N3fTwXfuWf45tGsfBc4LwIc3L9BSp4Uclmicrd/tJmufuWSdXvALqvSxVuF5KkdGPZTdp1OieInyurs=
+Authentication-Results: linux.intel.com; dkim=none (message not signed)
+ header.d=none;linux.intel.com; dmarc=none action=none header.from=vivo.com;
+Received: from SL2PR06MB3082.apcprd06.prod.outlook.com (2603:1096:100:37::17)
+ by SL2PR06MB3387.apcprd06.prod.outlook.com (2603:1096:100:3d::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.14; Mon, 18 Oct
+ 2021 08:00:47 +0000
+Received: from SL2PR06MB3082.apcprd06.prod.outlook.com
+ ([fe80::4c9b:b71f:fb67:6414]) by SL2PR06MB3082.apcprd06.prod.outlook.com
+ ([fe80::4c9b:b71f:fb67:6414%6]) with mapi id 15.20.4608.018; Mon, 18 Oct 2021
+ 08:00:47 +0000
+From:   Qing Wang <wangqing@vivo.com>
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Qing Wang <wangqing@vivo.com>
+Subject: [PATCH V2] media: i2c: ccs: replace snprintf in show functions with sysfs_emit
+Date:   Mon, 18 Oct 2021 01:00:36 -0700
+Message-Id: <1634544036-36868-1-git-send-email-wangqing@vivo.com>
+X-Mailer: git-send-email 2.7.4
+Content-Type: text/plain
+X-ClientProxiedBy: SG2PR01CA0143.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:8f::23) To SL2PR06MB3082.apcprd06.prod.outlook.com
+ (2603:1096:100:37::17)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Received: from ubuntu.localdomain (218.213.202.189) by SG2PR01CA0143.apcprd01.prod.exchangelabs.com (2603:1096:4:8f::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.4608.17 via Frontend Transport; Mon, 18 Oct 2021 08:00:46 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 8199ea28-50ee-4e74-6a76-08d9920d64cd
+X-MS-TrafficTypeDiagnostic: SL2PR06MB3387:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SL2PR06MB338796D09A9249C8A28697E4BDBC9@SL2PR06MB3387.apcprd06.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2657;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: q8EExe0be9OsB3RJZcy9XruFoLJLjwytio3Sm23pe/ik2b6hiUdFHrCj/MLKQUTtTpOxCtBDNBAQCESTbj5RaWpfSgOz+WZMzqCERS3OGbaJjb6aUhlA/cHKFYC8DRT5reYzWF11W5tlPQmAlH9wNjDFXU+12P/tcZEkPaFN6k6M9mbHCttZNMYVU3oZTddLT/aFBWSMm/TtHjqH0VssW/E1v17/l3s9s1AMEjyuE6IigW6V+QcFwq6km8XDbb1CDHuZ2w33/iz85TOqyJcEIKGKXOh9smOc+rZsBFnI47+OfMDEcYFVwg/5u6dh8Fv8cfFKJ++Rb46cwtb3hHeb6sxIj/vJdVYOmeYMB1OiWLF4CqWYRYp+K2n7fnEn55tA1K1hE/i7tmp1Re+mMAmcGjeoQJoj7Y+LSxfNeOYwtlUw+9Zn5v82FGoUS6g51BN3n+yqsZhd7g+ROEXQX01Tc4xxP4zyIS2xrDjNu1NtVmvBZd2xYsA3EoK8CSUQV0gMkj3HTWVv8sJpnsISCPpw9DN/RNC2zhljxy3jpb8vlcAFkfozzBIvGy7ZhrvjtWm/yuvfWUrfxD1AukKeXHhceN/xfM+Uw6Jf+E/i2V5aOVQfxGz2jP8DLMt4qdXZdBvqKGlNICjvbgFx9v80Cd5x/0uae6OsLWdZI0Q1/h3CDH+eAP0VS4Z+x2oV0wDttNli+0m7FW9KRUUT2kxng1WzBg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SL2PR06MB3082.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(83380400001)(36756003)(52116002)(6666004)(316002)(5660300002)(110136005)(2906002)(8676002)(186003)(38100700002)(4326008)(38350700002)(86362001)(6486002)(8936002)(508600001)(6512007)(26005)(6506007)(107886003)(956004)(2616005)(66946007)(66476007)(66556008);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?MPcXa7KzrtrqlSIiIIN5LgkAYgIz9v8Nj13bfDgYokQF85bzAhYMxIig5vR0?=
+ =?us-ascii?Q?vX1UQqouNKh3AdhvXQ8Q2hvCI9pUI7+y8pk4IwgB2xPQfcm02XUBtdX9KTkC?=
+ =?us-ascii?Q?hv80sSr9WaQsIEgcT0G6uuJmytyI5UdCpuM4QzxpZ+//uBFUzxXYwlRBXeWI?=
+ =?us-ascii?Q?i8fB40GVzxBSWp/TA2vb5oEvl5FQWZPzgmFq0+AJ0dpvBwwUHsCEFP2A2++f?=
+ =?us-ascii?Q?ueXO3932p4LP656jHqwyLakLPgPYotS5ksbNbNGFY8FBaORtN4rdtE5HsGIi?=
+ =?us-ascii?Q?6czc6mPWub+j8JH9a8R3y6kwd+Wc98BlVxiO+PS7bLiN/aTvbi1BoUCiSjq/?=
+ =?us-ascii?Q?2b8kijgwzoKqYW/GuBtKBGSQPWb3lyNwI+B2Bqs+aqi7kaL4hlc9lO2AOEl4?=
+ =?us-ascii?Q?p1ib68fVfK3LIMl7HGjGDcrHI2dIW+Hth11hrI8vnJdKwdK/8+mbj9ZBUbRt?=
+ =?us-ascii?Q?Zm/gxVnBj7Dl3z6wbyNDX/RPbYeKaz1ac4Z1BR9ns9tDxR3Dn/TXiiSg8XFg?=
+ =?us-ascii?Q?PnXMfMXvuFussg3uIvskEDaQk2rJ2NYFJgx7qPt1iiZrrgC/acUXdfnfIB9g?=
+ =?us-ascii?Q?03CGL+kMtIesQ4LSdb51c0Ke/CrsUhB6CDuV/7wdJ/7yOitbwwzvxPjCLsF3?=
+ =?us-ascii?Q?C0du6JfJawKNDPeKAHoAH0S8+IdtwlnDqMwdtOCbxKxnWobHANVhmwtPM6sN?=
+ =?us-ascii?Q?uMjCBAWnHMBGTEC5ga0B216Cm87B4M1USJ7ltC1YEzoMDyRaili88G7nvEUo?=
+ =?us-ascii?Q?9HGVZ6tSQcJq9grSlUP1jpjABCIB6yoYsCxSyGr+tNSD8IrSXpOSb6h1edCq?=
+ =?us-ascii?Q?udaEqP9KwNIhVoxaXGssTDdFhJETgAgvGvRnFxQJI6S6anyOBb7GG7oWesKF?=
+ =?us-ascii?Q?oeMwVGIvR85J5DpByy02rHIsvBTSNqgAusoDa4WLl23zlp4Qjsce8AiibpO8?=
+ =?us-ascii?Q?TqoOXZTIYxBcKas1bxcq5gftuIeJLCJbdFRyrbk1Sefc0ACN9f1G+aKfd2cr?=
+ =?us-ascii?Q?zRE+EDYNZ4e5QoAcU0BzWAp1K+/ajzEzLwj23BA/qVeUBTWi6NEqOmQl40vb?=
+ =?us-ascii?Q?xTXXvhAcmleG1p96rT8YzijAAC37WtqjmccVCFCDpLXh9Xd3wGo4FxrEq8kk?=
+ =?us-ascii?Q?WEpNHCdmtwirlLapQ/S40zTRTCQYAQwjXaD6DKuB7VEBtI9G4kyVRkDSdd+k?=
+ =?us-ascii?Q?ZvUOUiBoJGqcGTWvQvfNZ8ZKMWIC1mg4vgEJ9ANlMG0JMRYK7RtXApUZSXoy?=
+ =?us-ascii?Q?PkDPOUVSfsfjs5PTLbwVDQG2jKdo5yLvPo0buO/CEa4cuVoDTougaKmZaAS+?=
+ =?us-ascii?Q?JwpeUfDgjFQwCn5hpCIOmFDi?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8199ea28-50ee-4e74-6a76-08d9920d64cd
+X-MS-Exchange-CrossTenant-AuthSource: SL2PR06MB3082.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Oct 2021 08:00:47.4598
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 4P+Fq1C2KYZqSb4csRpMgbnftYBIC3rhe9FAdEmFV8Bob7X+yMRte9dQRlRZ/CeOBiGgfRFmTialiepILoMXZA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SL2PR06MB3387
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dzie=C5=84 dobry,
+show() should not use snprintf() when formatting the value to be
+returned to user space.
 
-stworzyli=C5=9Bmy specjaln=C4=85 ofert=C4=99 dla firm, na kompleksow=C4=85=
- obs=C5=82ug=C4=99 inwestycji w fotowoltaik=C4=99. =20
+Fix the following coccicheck warning:
+drivers/media/i2c/ccs/ccs-core.c:3761: WARNING: use scnprintf or sprintf.
 
-Specjalizujemy si=C4=99 w zakresie doboru, monta=C5=BCu i serwisie instal=
-acji fotowoltaicznych, dysponujemy najnowocze=C5=9Bniejszymi rozwi=C4=85z=
-ania, kt=C3=B3re zapewni=C4=85 Pa=C5=84stwu oczekiwane rezultaty.
+Signed-off-by: Qing Wang <wangqing@vivo.com>
+---
+ drivers/media/i2c/ccs/ccs-core.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-Mo=C5=BCemy przygotowa=C4=87 dla Pa=C5=84stwa wst=C4=99pn=C4=85 kalkulacj=
-=C4=99 i przeanalizowa=C4=87 efekty mo=C5=BCliwe do osi=C4=85gni=C4=99cia=
-=2E
+diff --git a/drivers/media/i2c/ccs/ccs-core.c b/drivers/media/i2c/ccs/ccs-core.c
+index 5363f3b..9158d3c
+--- a/drivers/media/i2c/ccs/ccs-core.c
++++ b/drivers/media/i2c/ccs/ccs-core.c
+@@ -2758,13 +2758,13 @@ ident_show(struct device *dev, struct device_attribute *attr, char *buf)
+ 	struct ccs_module_info *minfo = &sensor->minfo;
+ 
+ 	if (minfo->mipi_manufacturer_id)
+-		return snprintf(buf, PAGE_SIZE, "%4.4x%4.4x%2.2x\n",
+-				minfo->mipi_manufacturer_id, minfo->model_id,
+-				minfo->revision_number) + 1;
++		return sysfs_emit(buf, "%4.4x%4.4x%2.2x\n",
++				    minfo->mipi_manufacturer_id, minfo->model_id,
++				    minfo->revision_number) + 1;
+ 	else
+-		return snprintf(buf, PAGE_SIZE, "%2.2x%4.4x%2.2x\n",
+-				minfo->smia_manufacturer_id, minfo->model_id,
+-				minfo->revision_number) + 1;
++		return sysfs_emit(buf, "%2.2x%4.4x%2.2x\n",
++				    minfo->smia_manufacturer_id, minfo->model_id,
++				    minfo->revision_number) + 1;
+ }
+ static DEVICE_ATTR_RO(ident);
+ 
+-- 
+2.7.4
 
-Czy s=C4=85 Pa=C5=84stwo otwarci na wst=C4=99pn=C4=85 rozmow=C4=99 w tym =
-temacie?
-
-Pozdrawiam,
-Arkadiusz Soko=C5=82owski
