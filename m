@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B4E3431DFA
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:55:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68438431BD4
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:33:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234486AbhJRN4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:56:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56112 "EHLO mail.kernel.org"
+        id S232300AbhJRNf1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:35:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44136 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234489AbhJRNx5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:53:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B223E619EA;
-        Mon, 18 Oct 2021 13:39:31 +0000 (UTC)
+        id S231920AbhJRNdn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:33:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C75AB613A2;
+        Mon, 18 Oct 2021 13:29:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634564372;
-        bh=lXLlfCbQtkhdbVNrtf5/tFKWDC0fpl7Ovh1a+dwRxO0=;
+        s=korg; t=1634563789;
+        bh=lVGRcUxuNG8VYcjGc7wukEMRP1kP+6Sw8XaemAC4Nfo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KHXL6IC6WUbMSFBuBn1rAl2u/GVMhujQgZBuGj0EqzeugmjKuWVh7HC8GJeRIJT6i
-         b+wiFaH22xGs7XH8jOAPQESpqq9J7qQJr5kz0aEebCriunM+ye0tXDYp68waudikkl
-         W999DDzfUixgqNYefVTJ5pcFW3mu0RW1EjK5wOn8=
+        b=u8kSbZgD6sEANr2cff7WcJGYiTMaeqtVWBk3xWm2Q249vmoMKQtgbHSSOz0kFpGQY
+         yFY6sRrThiBpRptyjsdpB2dp9W7hVT1oJ567oeikto08fcpFHFUsxun+REE9TeBv7e
+         sgIPP3HKl4d0xekPyjO4AB6LNUe9v7PXGTINDKLg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paul Menzel <pmenzel@molgen.mpg.de>,
-        Borislav Petkov <bp@suse.de>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>
-Subject: [PATCH 5.14 063/151] x86/Kconfig: Do not enable AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT automatically
+        stable@vger.kernel.org, Werner Sembach <wse@tuxedocomputers.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.4 04/69] ALSA: hda/realtek: Complete partial device name to avoid ambiguity
 Date:   Mon, 18 Oct 2021 15:24:02 +0200
-Message-Id: <20211018132342.745738031@linuxfoundation.org>
+Message-Id: <20211018132329.596209366@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132340.682786018@linuxfoundation.org>
-References: <20211018132340.682786018@linuxfoundation.org>
+In-Reply-To: <20211018132329.453964125@linuxfoundation.org>
+References: <20211018132329.453964125@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,68 +39,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Borislav Petkov <bp@suse.de>
+From: Werner Sembach <wse@tuxedocomputers.com>
 
-commit 711885906b5c2df90746a51f4cd674f1ab9fbb1d upstream.
+commit 1f8d398e1cd8813f8ec16d55c086e8270a9c18ab upstream.
 
-This Kconfig option was added initially so that memory encryption is
-enabled by default on machines which support it.
+The string "Clevo X170" is not enough to unambiguously identify the correct
+device.
 
-However, devices which have DMA masks that are less than the bit
-position of the encryption bit, aka C-bit, require the use of an IOMMU
-or the use of SWIOTLB.
+Fixing it so another Clevo barebone name starting with "X170" can be added
+without causing confusion.
 
-If the IOMMU is disabled or in passthrough mode, the kernel would switch
-to SWIOTLB bounce-buffering for those transfers.
-
-In order to avoid that,
-
-  2cc13bb4f59f ("iommu: Disable passthrough mode when SME is active")
-
-disables the default IOMMU passthrough mode so that devices for which the
-default 256K DMA is insufficient, can use the IOMMU instead.
-
-However 2, there are cases where the IOMMU is disabled in the BIOS, etc.
-(think the usual hardware folk "oops, I dropped the ball there" cases) or a
-driver doesn't properly use the DMA APIs or a device has a firmware or
-hardware bug, e.g.:
-
-  ea68573d408f ("drm/amdgpu: Fail to load on RAVEN if SME is active")
-
-However 3, in the above GPU use case, there are APIs like Vulkan and
-some OpenGL/OpenCL extensions which are under the assumption that
-user-allocated memory can be passed in to the kernel driver and both the
-GPU and CPU can do coherent and concurrent access to the same memory.
-That cannot work with SWIOTLB bounce buffers, of course.
-
-So, in order for those devices to function, drop the "default y" for the
-SME by default active option so that users who want to have SME enabled,
-will need to either enable it in their config or use "mem_encrypt=on" on
-the kernel command line.
-
- [ tlendacky: Generalize commit message. ]
-
-Fixes: 7744ccdbc16f ("x86/mm: Add Secure Memory Encryption (SME) support")
-Reported-by: Paul Menzel <pmenzel@molgen.mpg.de>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Acked-by: Alex Deucher <alexander.deucher@amd.com>
-Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
+Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
 Cc: <stable@vger.kernel.org>
-Link: https://lkml.kernel.org/r/8bbacd0e-4580-3194-19d2-a0ecad7df09c@molgen.mpg.de
+Link: https://lore.kernel.org/r/20211001133111.428249-2-wse@tuxedocomputers.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/Kconfig |    1 -
- 1 file changed, 1 deletion(-)
+ sound/pci/hda/patch_realtek.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -1520,7 +1520,6 @@ config AMD_MEM_ENCRYPT
- 
- config AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT
- 	bool "Activate AMD Secure Memory Encryption (SME) by default"
--	default y
- 	depends on AMD_MEM_ENCRYPT
- 	help
- 	  Say yes to have system memory encrypted by default if running on
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -2539,7 +2539,7 @@ static const struct snd_pci_quirk alc882
+ 	SND_PCI_QUIRK(0x1558, 0x67e1, "Clevo PB71[DE][CDF]", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
+ 	SND_PCI_QUIRK(0x1558, 0x67e5, "Clevo PC70D[PRS](?:-D|-G)?", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
+ 	SND_PCI_QUIRK(0x1558, 0x70d1, "Clevo PC70[ER][CDF]", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
+-	SND_PCI_QUIRK(0x1558, 0x7714, "Clevo X170", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
++	SND_PCI_QUIRK(0x1558, 0x7714, "Clevo X170SM", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
+ 	SND_PCI_QUIRK(0x1558, 0x9501, "Clevo P950HR", ALC1220_FIXUP_CLEVO_P950),
+ 	SND_PCI_QUIRK(0x1558, 0x9506, "Clevo P955HQ", ALC1220_FIXUP_CLEVO_P950),
+ 	SND_PCI_QUIRK(0x1558, 0x950a, "Clevo P955H[PR]", ALC1220_FIXUP_CLEVO_P950),
 
 
