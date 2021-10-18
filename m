@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E72D9431E37
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:57:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BED28431B45
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:30:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233700AbhJRN7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:59:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56876 "EHLO mail.kernel.org"
+        id S232965AbhJRNcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:32:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43688 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233797AbhJRN4k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:56:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C250613A2;
-        Mon, 18 Oct 2021 13:40:37 +0000 (UTC)
+        id S232122AbhJRNaL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:30:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BB90961250;
+        Mon, 18 Oct 2021 13:27:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634564438;
-        bh=mqE/Kn9CQDdlKx57o1s6845Vsk2YcTVhS3tBKOKrbw0=;
+        s=korg; t=1634563680;
+        bh=90kXehvpQUPWrT0A1olxvxENgHo8g6UIskVWuso48Bo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=c3ie46Th6WiLU0qI5wNEGIdS8NwG4q57dCkS0wudKHjyOiFQLcS6vmEzmZLUsAgb+
-         CH/H7eNDEU2t+0lhbuwDz4JCq4Yq0RBLK8v/Zh/Wm8NsSuAKipiYUEfuMN5PQh3E29
-         xpWo9aXcVKJmv/Cy8nXb8fokljqlHJmNXBPE3Ri4=
+        b=qZdgCYKT6qH2jbA9IfDUIizR75W2wtQa4V348E8h+iNmOeKYs3RIpLc3KHHJxgFah
+         F0ZQyxxPGwMx396XPj+T6CzTXyATeqoyeqTw9u7vcY+N+JiWB+DCXX7lFqHbVYZpUt
+         8myFVOjHCtAXpxVJXyWqOY9Lvgn1HgxmxbD5BY1Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Rob Herring <robh@kernel.org>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>
-Subject: [PATCH 5.14 089/151] ARM: dts: bcm2711-rpi-4-b: Fix usbs unit address
+        stable@vger.kernel.org, Yu-Tung Chang <mtwget@gmail.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.19 21/50] USB: serial: option: add Quectel EC200S-CN module support
 Date:   Mon, 18 Oct 2021 15:24:28 +0200
-Message-Id: <20211018132343.577569587@linuxfoundation.org>
+Message-Id: <20211018132327.248565541@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132340.682786018@linuxfoundation.org>
-References: <20211018132340.682786018@linuxfoundation.org>
+In-Reply-To: <20211018132326.529486647@linuxfoundation.org>
+References: <20211018132326.529486647@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,38 +39,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicolas Saenz Julienne <nsaenz@kernel.org>
+From: Yu-Tung Chang <mtwget@gmail.com>
 
-commit 3f32472854614d6f53b09b4812372dba9fc5c7de upstream.
+commit 2263eb7370060bdb0013bc14e1a7c9bf33617a55 upstream.
 
-The unit address is supposed to represent '<device>,<function>'. Which
-are both 0 for RPi4b's XHCI controller. On top of that although
-OpenFirmware states bus number goes in the high part of the last reg
-parameter, FDT doesn't seem to care for it[1], so remove it.
+Add usb product id of the Quectel EC200S-CN module.
 
-[1] https://patchwork.kernel.org/project/linux-arm-kernel/patch/20210830103909.323356-1-nsaenzju@redhat.com/#24414633
-Fixes: 258f92d2f840 ("ARM: dts: bcm2711: Add reset controller to xHCI node")
-Suggested-by: Rob Herring <robh@kernel.org>
-Reviewed-by: Rob Herring <robh@kernel.org>
-Link: https://lore.kernel.org/r/20210831125843.1233488-2-nsaenzju@redhat.com
-Signed-off-by: Nicolas Saenz Julienne <nsaenz@kernel.org>
+usb-devices output for 0x6002:
+T:  Bus=01 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#=  3 Spd=480 MxCh= 0
+D:  Ver= 2.00 Cls=ef(misc ) Sub=02 Prot=01 MxPS=64 #Cfgs=  1
+P:  Vendor=2c7c ProdID=6002 Rev=03.18
+S:  Manufacturer=Android
+S:  Product=Android
+S:  SerialNumber=0000
+C:  #Ifs= 5 Cfg#= 1 Atr=e0 MxPwr=500mA
+I:  If#=0x0 Alt= 0 #EPs= 1 Cls=02(commc) Sub=06 Prot=00 Driver=cdc_ether
+I:  If#=0x1 Alt= 1 #EPs= 2 Cls=0a(data ) Sub=00 Prot=00 Driver=cdc_ether
+I:  If#=0x2 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=00 Prot=00 Driver=(none)
+I:  If#=0x3 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=(none)
+I:  If#=0x4 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=(none)
+
+Signed-off-by: Yu-Tung Chang <mtwget@gmail.com>
+Link: https://lore.kernel.org/r/20210930021112.330396-1-mtwget@gmail.com
+Cc: stable@vger.kernel.org
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm/boot/dts/bcm2711-rpi-4-b.dts |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/usb/serial/option.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/arch/arm/boot/dts/bcm2711-rpi-4-b.dts
-+++ b/arch/arm/boot/dts/bcm2711-rpi-4-b.dts
-@@ -224,8 +224,8 @@
+--- a/drivers/usb/serial/option.c
++++ b/drivers/usb/serial/option.c
+@@ -251,6 +251,7 @@ static void option_instat_callback(struc
+ #define QUECTEL_PRODUCT_EP06			0x0306
+ #define QUECTEL_PRODUCT_EM12			0x0512
+ #define QUECTEL_PRODUCT_RM500Q			0x0800
++#define QUECTEL_PRODUCT_EC200S_CN		0x6002
+ #define QUECTEL_PRODUCT_EC200T			0x6026
  
- 		reg = <0 0 0 0 0>;
+ #define CMOTECH_VENDOR_ID			0x16d8
+@@ -1128,6 +1129,7 @@ static const struct usb_device_id option
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_RM500Q, 0xff, 0, 0) },
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_RM500Q, 0xff, 0xff, 0x10),
+ 	  .driver_info = ZLP },
++	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_EC200S_CN, 0xff, 0, 0) },
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_EC200T, 0xff, 0, 0) },
  
--		usb@1,0 {
--			reg = <0x10000 0 0 0 0>;
-+		usb@0,0 {
-+			reg = <0 0 0 0 0>;
- 			resets = <&reset RASPBERRYPI_FIRMWARE_RESET_ID_USB>;
- 		};
- 	};
+ 	{ USB_DEVICE(CMOTECH_VENDOR_ID, CMOTECH_PRODUCT_6001) },
 
 
