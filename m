@@ -2,110 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEA7D43285C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 22:20:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F46A432862
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 22:22:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233166AbhJRUWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 16:22:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45258 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229941AbhJRUWT (ORCPT
+        id S233373AbhJRUYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 16:24:40 -0400
+Received: from mail-oi1-f182.google.com ([209.85.167.182]:37668 "EHLO
+        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229941AbhJRUYj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 16:22:19 -0400
-Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32F38C06161C
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 13:20:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=uLsq3Q5ho+nb6+yvZSaF8DkHFKTenYkgYtLA2QYe3v8=; b=DZWs0bUlAXl+2U7nPd77I8su7s
-        inpb62hVDpAkREhOOgZU1JEOpMBFHz7Av8AIFOniagjyshKJdCI2E+2K2h0IKRzwR3Yb2dKB4fNBB
-        x6h3SRdiYteRbQR4K9TYM4UjM241LHnCWy3uXSVF3I4AqC87/N6LMSLs91VXMSe9NUkgwAxoH6CsQ
-        4o+buV496sqHSVsQg1PjPWNlRokU3jJGuDSk1tEYrEbgaJynoV8+I2TU0QWQ0iNLJXczGNzbxyIT2
-        Mwmq+lt1wi7kNLB7+p7v73ij/adUMHHHnL5V8NBhEOuHIsXJSDYHLMAAQAV4maxK1WLcoKGHF07m9
-        V74zS5lw==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mcZ78-00HDXm-P8; Mon, 18 Oct 2021 20:20:06 +0000
-Date:   Mon, 18 Oct 2021 13:20:06 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     jeyu@kernel.org, linux-kernel@vger.kernel.org, mbenes@suse.com
-Subject: Re: [PATCH v2] module: fix validate_section_offset() overflow bug on
- 64-bit
-Message-ID: <YW3W9t/0axMDXAjv@bombadil.infradead.org>
-References: <20211018173511.26542-1-skhan@linuxfoundation.org>
+        Mon, 18 Oct 2021 16:24:39 -0400
+Received: by mail-oi1-f182.google.com with SMTP id o83so1456867oif.4;
+        Mon, 18 Oct 2021 13:22:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7Q1GESrNzI0X9p3dbyTYede0NsPh2RkVpjoyNwEn14I=;
+        b=x4Z13bWpVwvH+YZ/BOFlsi8iNmaSA8px8mUadz+CAyraTMjxuCefwSH8tDqSEB82ih
+         uG4dVmj/WRJIKwV90NP7uxV/Dv2H16SZmbc6VRd3ws2o0VzLgDtOVP4sMSnRwux2QDIP
+         3kFAec6Deo9Cwm3Jls6PXrYg2aqqzF+jFSWKBQqWkIAbRVCbcC+6L5lBk9yA0Y6hG03V
+         35g9RvUWnak/vpr9QyyeHcYxL1Jj44wNRw0vlTyaWMbn2T34c7tZHNZ//dGZE0ihvzf5
+         ETZ//65x7KIGiTEe4I5IoKwnpc3As/lHxdaUAxyqfuI9nRz0Zo1kuQdgpzXsPDN7z2nN
+         EphQ==
+X-Gm-Message-State: AOAM533xErNttb6dQAEb0J+GoL7Fq1yRALytPrpOXIx5s+viZcd4+ZXS
+        BCM32eTelmfJjEFLRLyoGg==
+X-Google-Smtp-Source: ABdhPJz2TgiPYPSZQfHCvzrzeimiszDamV/kXPLPJ7Dawc4pZ9Fig2c8c62WwLuBZK9znvtdyAAo0g==
+X-Received: by 2002:a05:6808:2106:: with SMTP id r6mr880818oiw.72.1634588547022;
+        Mon, 18 Oct 2021 13:22:27 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id l19sm3273136otr.22.2021.10.18.13.22.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Oct 2021 13:22:26 -0700 (PDT)
+Received: (nullmailer pid 2892359 invoked by uid 1000);
+        Mon, 18 Oct 2021 20:22:25 -0000
+Date:   Mon, 18 Oct 2021 15:22:25 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Stephan Gerhold <stephan@gerhold.net>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+        Aleksander Morgado <aleksander@aleksander.es>,
+        netdev@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
+Subject: Re: [PATCH net-next v2 3/4] dt-bindings: net: Add schema for
+ Qualcomm BAM-DMUX
+Message-ID: <YW3XgaiT2jBv4D+L@robh.at.kernel.org>
+References: <20211011141733.3999-1-stephan@gerhold.net>
+ <20211011141733.3999-4-stephan@gerhold.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211018173511.26542-1-skhan@linuxfoundation.org>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+In-Reply-To: <20211011141733.3999-4-stephan@gerhold.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 18, 2021 at 11:35:11AM -0600, Shuah Khan wrote:
-> validate_section_offset() uses unsigned long local variable to
-> add/store shdr->sh_offset and shdr->sh_size on all platforms.
-> unsigned long is too short when sh_offset is Elf64_Off which
-> would be the case on 64bit ELF headers.
+On Mon, Oct 11, 2021 at 04:17:35PM +0200, Stephan Gerhold wrote:
+> The BAM Data Multiplexer provides access to the network data channels of
+> modems integrated into many older Qualcomm SoCs, e.g. Qualcomm MSM8916 or
+> MSM8974. It is built using a simple protocol layer on top of a DMA engine
+> (Qualcomm BAM) and bidirectional interrupts to coordinate power control.
 > 
-> This problem was found while adding an error message to print
-> sh_offset and sh_size. If sh_offset + sh_size exceed the size
-> of the local variable, the checks for overflow and offset/size
-> being too large will not find the problem and call the section
-> offset valid. This failure might cause problems later on.
+> The device tree node combines the incoming interrupt with the outgoing
+> interrupts (smem-states) as well as the two DMA channels, which allows
+> the BAM-DMUX driver to request all necessary resources.
 > 
-> Fix the overflow problem using the right size local variable when
-> CONFIG_64BIT is defined.
-> 
-> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+> Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
 > ---
-> Changes since v1:
-> - Updated commit log to describe the fix clearly. No code
->   changes.
-
-Thanks! But the implications of your fix is beyond what is described.
-Although not a real issue today in practice.
-
-I think we should extend it with something like this, let me know
-what you think (I can just ammend the commit log, no resend would
-be needed):
-
-Without this fix applied we were shorting the design of modules to
-have section headers placed within the 32-bit boundary (4 GiB) instead of
-64-bits when on 64-bit architectures (which allows for up to 16,777,216
-TiB). In practice this just meant we were limiting modules to below 
-4 GiB even on 64-bit systems. This then should not really affect any
-real-world use case as modules these days obviously should likely never
-exceed 1 GiB in size. A specially crafted invalid module might succeed to
-skip validation in validate_section_offset() due to this mistake, but in such
-case no impact is observed through code inspection given the correct data
-types are used for the copy of the module when needed on move_module() when
-the section type is not SHT_NOBITS (which indicates no the section
-occupies no space on the file).
-
-  Luis
-
->  kernel/module.c | 4 ++++
->  1 file changed, 4 insertions(+)
+> Changes since RFC: None.
+> ---
+>  .../bindings/net/qcom,bam-dmux.yaml           | 87 +++++++++++++++++++
+>  1 file changed, 87 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/net/qcom,bam-dmux.yaml
 > 
-> diff --git a/kernel/module.c b/kernel/module.c
-> index ad03a2357377..84a9141a5e15 100644
-> --- a/kernel/module.c
-> +++ b/kernel/module.c
-> @@ -2942,7 +2942,11 @@ static int module_sig_check(struct load_info *info, int flags)
->  
->  static int validate_section_offset(struct load_info *info, Elf_Shdr *shdr)
->  {
-> +#if defined(CONFIG_64BIT)
-> +	unsigned long long secend;
-> +#else
->  	unsigned long secend;
-> +#endif
->  
->  	/*
->  	 * Check for both overflow and offset/size being
+> diff --git a/Documentation/devicetree/bindings/net/qcom,bam-dmux.yaml b/Documentation/devicetree/bindings/net/qcom,bam-dmux.yaml
+> new file mode 100644
+> index 000000000000..33e125e70cb4
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/net/qcom,bam-dmux.yaml
+> @@ -0,0 +1,87 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/net/qcom,bam-dmux.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Qualcomm BAM Data Multiplexer
+> +
+> +maintainers:
+> +  - Stephan Gerhold <stephan@gerhold.net>
+> +
+> +description: |
+> +  The BAM Data Multiplexer provides access to the network data channels
+> +  of modems integrated into many older Qualcomm SoCs, e.g. Qualcomm MSM8916
+> +  or MSM8974. It is built using a simple protocol layer on top of a DMA engine
+> +  (Qualcomm BAM DMA) and bidirectional interrupts to coordinate power control.
+> +
+> +properties:
+> +  compatible:
+> +    const: qcom,bam-dmux
+
+Is this block the same on every SoC? It needs to be SoC specific.
+
+> +
+> +  interrupts:
+> +    description:
+> +      Interrupts used by the modem to signal the AP.
+> +      Both interrupts must be declared as IRQ_TYPE_EDGE_BOTH.
+> +    items:
+> +      - description: Power control
+> +      - description: Power control acknowledgment
+> +
+> +  interrupt-names:
+> +    items:
+> +      - const: pc
+> +      - const: pc-ack
+> +
+> +  qcom,smem-states:
+> +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> +    description: State bits used by the AP to signal the modem.
+> +    items:
+> +      - description: Power control
+> +      - description: Power control acknowledgment
+> +
+> +  qcom,smem-state-names:
+> +    description: Names for the state bits used by the AP to signal the modem.
+> +    items:
+> +      - const: pc
+> +      - const: pc-ack
+> +
+> +  dmas:
+> +    items:
+> +      - description: TX DMA channel phandle
+> +      - description: RX DMA channel phandle
+> +
+> +  dma-names:
+> +    items:
+> +      - const: tx
+> +      - const: rx
+> +
+> +required:
+> +  - compatible
+> +  - interrupts
+> +  - interrupt-names
+> +  - qcom,smem-states
+> +  - qcom,smem-state-names
+> +  - dmas
+> +  - dma-names
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +
+> +    mpss: remoteproc {
+> +        bam-dmux {
+> +            compatible = "qcom,bam-dmux";
+> +
+> +            interrupt-parent = <&modem_smsm>;
+> +            interrupts = <1 IRQ_TYPE_EDGE_BOTH>, <11 IRQ_TYPE_EDGE_BOTH>;
+> +            interrupt-names = "pc", "pc-ack";
+> +
+> +            qcom,smem-states = <&apps_smsm 1>, <&apps_smsm 11>;
+> +            qcom,smem-state-names = "pc", "pc-ack";
+> +
+> +            dmas = <&bam_dmux_dma 4>, <&bam_dmux_dma 5>;
+> +            dma-names = "tx", "rx";
+> +        };
+> +    };
 > -- 
-> 2.30.2
+> 2.33.0
+> 
 > 
