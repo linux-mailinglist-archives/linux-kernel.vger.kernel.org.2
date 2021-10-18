@@ -2,282 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9FB7431814
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 13:50:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72B944317A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 13:41:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231585AbhJRLwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 07:52:35 -0400
-Received: from mailgw01.mediatek.com ([216.200.240.184]:59619 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229833AbhJRLwc (ORCPT
+        id S231494AbhJRLn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 07:43:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37328 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231336AbhJRLnZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 07:52:32 -0400
-X-UUID: 58031b3a165d42438237dec41239b6b0-20211018
-X-UUID: 58031b3a165d42438237dec41239b6b0-20211018
-Received: from mtkcas66.mediatek.inc [(172.29.193.44)] by mailgw01.mediatek.com
-        (envelope-from <sam.shih@mediatek.com>)
-        (musrelay.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1552800078; Mon, 18 Oct 2021 04:50:20 -0700
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- MTKMBS62N1.mediatek.inc (172.29.193.41) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 18 Oct 2021 04:40:28 -0700
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 18 Oct 2021 19:40:28 +0800
-From:   Sam Shih <sam.shih@mediatek.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Fabien Parent <fparent@baylibre.com>,
-        Seiya Wang <seiya.wang@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>
-CC:     John Crispin <john@phrozen.org>,
-        Ryder Lee <Ryder.Lee@mediatek.com>,
-        Sam Shih <sam.shih@mediatek.com>
-Subject: [PATCH v7 3/3] arm64: dts: mediatek: add basic mt7986b support
-Date:   Mon, 18 Oct 2021 19:40:09 +0800
-Message-ID: <20211018114009.13350-4-sam.shih@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20211018114009.13350-1-sam.shih@mediatek.com>
-References: <20211018114009.13350-1-sam.shih@mediatek.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+        Mon, 18 Oct 2021 07:43:25 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA40CC061745
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 04:41:14 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id a140-20020a1c7f92000000b0030d8315b593so10035075wmd.5
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 04:41:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=zPIojQ5RzeuaqadWrZEbZpzRMQdeFPgWbBMit52fPcI=;
+        b=iCURnxjSOhHzfeFZMPq+Dv1DY6v6VIS3+6ETqypb9yCgscHKOnVOrAjPtOXGulwZZ2
+         yquC/Z7szQ0Pbn8pcuG2VwlscpvoQFBAow+6UllYlmDBMG6/iFxXQ9lFYt1MyLAjWlq6
+         BUmpKU3pHW5R0lbJNFXHAruQLO4gMIHiIgLqbvwSCbf7ciqBk4RAgSUdaw18GYyk1J1m
+         NDyg3RV8Pr4iQu7EGa6rhrQ8BeuXTHex8Sr1n+EmVC9UHBICEYG4gYK1M4phkDGV8ci4
+         Sx6dx/uoqydpfWYpXElfxKfXAfrHNTWx4KjMxNiKLULnoYk+h1WKbi0zjFNbQXDJxo3H
+         bzvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=zPIojQ5RzeuaqadWrZEbZpzRMQdeFPgWbBMit52fPcI=;
+        b=Ejv0GOT473YKoCkw6byEHH/mv72uSTGcCEdebP/6tpN5fx0MvMU2UFVPAl3ZxYRXOd
+         /OgBTHqnZaP2hwAKZITdikknHm4+TMQe7KXBdks8obQCsAdi2qJUUYRBK5EmSANfwF3I
+         04e4VevdXS7f/9bI3RI8mO6mz4NYV/cIq8BzOc5c2rLfEDJN9iRfwAu79ePf58kKRGhl
+         nm1S50JJp/RU1ML4QEnCGMW/vFmLQH6F2j2w9TsRAvZIjmoZYIjU2YVM/MBu8rPKLC5g
+         IgL7NXujA/za54eDKx3OYLjWzuvq3mul4ESm+WpGbokPkxi9yhQjjmqhZhh47hDki+o/
+         kHxA==
+X-Gm-Message-State: AOAM533QXep5/4UQUUS8PufW9C7RIeNSyNB29lTg6sLUelFmc0EnBS6/
+        nkYqBD2tCHtqqgxU8EqOCwBeVLowO5S3iQ==
+X-Google-Smtp-Source: ABdhPJzmo20Ty+p4ZX0gCo3egFMPZJcbNMmW5ipqMgSzq8bz3svkpuRRIWcVRhAEXuO93/GkyzaueQ==
+X-Received: by 2002:a05:600c:1d1f:: with SMTP id l31mr42782729wms.44.1634557272930;
+        Mon, 18 Oct 2021 04:41:12 -0700 (PDT)
+Received: from lmecxl0524.lme.st.com ([2a04:cec0:1042:58b3:f8bd:7b81:c866:9456])
+        by smtp.gmail.com with ESMTPSA id p18sm13595588wrt.54.2021.10.18.04.41.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Oct 2021 04:41:12 -0700 (PDT)
+From:   Etienne Carriere <etienne.carriere@linaro.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Etienne Carriere <etienne.carriere@linaro.org>,
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>
+Subject: [PATCH v3 1/2] dt-bindings: arm: Add OP-TEE transport for SCMI
+Date:   Mon, 18 Oct 2021 13:40:45 +0200
+Message-Id: <20211018114046.25571-1-etienne.carriere@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add basic chip support for Mediatek mt7986b, include
-basic uart nodes, rng node and watchdog node.
+Introduce compatible "linaro,scmi-optee" for SCMI transport channel
+based on an OP-TEE service invocation. The compatible mandates a
+channel ID defined with property "linaro,optee-channel-id".
 
-Add cpu node, timer node, gic node, psci and reserved-memory node
-for ARM Trusted Firmware.
-
-Signed-off-by: Sam Shih <sam.shih@mediatek.com>
-
+Cc: devicetree@vger.kernel.org
+Cc: Rob Herring <robh+dt@kernel.org>
+Signed-off-by: Etienne Carriere <etienne.carriere@linaro.org>
 ---
-v7: added memory node back to dts
-v6: separate basic part into a single patch series
-v5: follow reviewr's comment: removed clock freqency node in timer due to
-    we have set CNTFRQ_EL0 in ATF firmware, and also corrected GICD range
-v4: added missing gic register bases, and fixed range of GICR
-v3: used the stdout-path instead of console=ttyS0
-v2: modified clock and uart node due to clock driver updated
----
- arch/arm64/boot/dts/mediatek/Makefile        |   1 +
- arch/arm64/boot/dts/mediatek/mt7986b-rfb.dts |  30 ++++
- arch/arm64/boot/dts/mediatek/mt7986b.dtsi    | 149 +++++++++++++++++++
- 3 files changed, 180 insertions(+)
- create mode 100644 arch/arm64/boot/dts/mediatek/mt7986b-rfb.dts
- create mode 100644 arch/arm64/boot/dts/mediatek/mt7986b.dtsi
+Changes since v2:
+ - Define mandatory property linaro,optee-channel-id
+ - Rebased on yaml description file
 
-diff --git a/arch/arm64/boot/dts/mediatek/Makefile b/arch/arm64/boot/dts/mediatek/Makefile
-index e6c3a73b9e4a..d555e43d1ccc 100644
---- a/arch/arm64/boot/dts/mediatek/Makefile
-+++ b/arch/arm64/boot/dts/mediatek/Makefile
-@@ -8,6 +8,7 @@ dtb-$(CONFIG_ARCH_MEDIATEK) += mt6797-x20-dev.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt7622-rfb1.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt7622-bananapi-bpi-r64.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt7986a-rfb.dtb
-+dtb-$(CONFIG_ARCH_MEDIATEK) += mt7986b-rfb.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8167-pumpkin.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8173-elm.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8173-elm-hana.dtb
-diff --git a/arch/arm64/boot/dts/mediatek/mt7986b-rfb.dts b/arch/arm64/boot/dts/mediatek/mt7986b-rfb.dts
-new file mode 100644
-index 000000000000..0f2f337bef4e
---- /dev/null
-+++ b/arch/arm64/boot/dts/mediatek/mt7986b-rfb.dts
-@@ -0,0 +1,30 @@
-+// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-+/*
-+ * Copyright (C) 2021 MediaTek Inc.
-+ * Author: Sam.Shih <sam.shih@mediatek.com>
-+ */
+Changes since v1:
+ - Removed modification regarding mboxes property description.
+---
+ .../bindings/firmware/arm,scmi.yaml           | 44 +++++++++++++++++++
+ 1 file changed, 44 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/firmware/arm,scmi.yaml b/Documentation/devicetree/bindings/firmware/arm,scmi.yaml
+index 5c4c6782e052..12154ecc081b 100644
+--- a/Documentation/devicetree/bindings/firmware/arm,scmi.yaml
++++ b/Documentation/devicetree/bindings/firmware/arm,scmi.yaml
+@@ -38,6 +38,9 @@ properties:
+                      The virtio transport only supports a single device.
+         items:
+           - const: arm,scmi-virtio
++      - description: SCMI compliant firmware with OP-TEE transport
++        items:
++          - const: linaro,scmi-optee
+ 
+   interrupts:
+     description:
+@@ -83,6 +86,11 @@ properties:
+     description:
+       SMC id required when using smc or hvc transports
+ 
++  linaro,optee-channel-id:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description:
++      Channel id required when using OP-TEE transports
 +
-+/dts-v1/;
-+#include "mt7986b.dtsi"
+   protocol@11:
+     type: object
+     properties:
+@@ -195,6 +203,9 @@ patternProperties:
+         minItems: 1
+         maxItems: 2
+ 
++      linaro,optee-channel-id:
++        maxItems: 1
 +
-+/ {
-+	model = "MediaTek MT7986b RFB";
-+	compatible = "mediatek,mt7986b-rfb";
+     required:
+       - reg
+ 
+@@ -226,6 +237,16 @@ else:
+       - arm,smc-id
+       - shmem
+ 
++  else:
++    if:
++      properties:
++        compatible:
++          contains:
++            const: linaro,scmi-optee
++    then:
++      required:
++        - linaro,optee-channel-id
 +
-+	aliases {
-+		serial0 = &uart0;
-+	};
+ examples:
+   - |
+     firmware {
+@@ -340,7 +361,30 @@ examples:
+                 reg = <0x11>;
+                 #power-domain-cells = <1>;
+             };
++        };
++    };
 +
-+	chosen {
-+		stdout-path = "serial0:115200n8";
-+		bootargs = "earlycon=uart8250,mmio32,0x11002000 swiotlb=512";
-+	};
++  - |
++    firmware {
++        scmi {
++            compatible = "linaro,scmi-optee";
++            linaro,optee-channel = <0>;
 +
-+	memory {
-+		reg = <0 0x40000000 0 0x10000000>;
-+	};
-+};
++            #address-cells = <1>;
++            #size-cells = <0>;
 +
-+&uart0 {
-+	status = "okay";
-+};
-diff --git a/arch/arm64/boot/dts/mediatek/mt7986b.dtsi b/arch/arm64/boot/dts/mediatek/mt7986b.dtsi
-new file mode 100644
-index 000000000000..2b8e0a382398
---- /dev/null
-+++ b/arch/arm64/boot/dts/mediatek/mt7986b.dtsi
-@@ -0,0 +1,149 @@
-+// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-+/*
-+ * Copyright (C) 2021 MediaTek Inc.
-+ * Author: Sam.Shih <sam.shih@mediatek.com>
-+ */
++            scmi_clk: protocol@14 {
++                reg = <0x14>;
++                #clock-cells = <1>;
++            };
 +
-+#include <dt-bindings/interrupt-controller/irq.h>
-+#include <dt-bindings/interrupt-controller/arm-gic.h>
-+
-+/ {
-+	compatible = "mediatek,mt7986b";
-+	interrupt-parent = <&gic>;
-+	#address-cells = <2>;
-+	#size-cells = <2>;
-+
-+	system_clk: dummy40m {
-+		compatible = "fixed-clock";
-+		clock-frequency = <40000000>;
-+		#clock-cells = <0>;
-+	};
-+
-+	cpus {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		cpu0: cpu@0 {
-+			device_type = "cpu";
-+			compatible = "arm,cortex-a53";
-+			enable-method = "psci";
-+			reg = <0x0>;
-+			#cooling-cells = <2>;
-+		};
-+
-+		cpu1: cpu@1 {
-+			device_type = "cpu";
-+			compatible = "arm,cortex-a53";
-+			enable-method = "psci";
-+			reg = <0x1>;
-+			#cooling-cells = <2>;
-+		};
-+
-+		cpu2: cpu@2 {
-+			device_type = "cpu";
-+			compatible = "arm,cortex-a53";
-+			enable-method = "psci";
-+			reg = <0x2>;
-+			#cooling-cells = <2>;
-+		};
-+
-+		cpu3: cpu@3 {
-+			device_type = "cpu";
-+			enable-method = "psci";
-+			compatible = "arm,cortex-a53";
-+			reg = <0x3>;
-+			#cooling-cells = <2>;
-+		};
-+	};
-+
-+	psci {
-+		compatible  = "arm,psci-0.2";
-+		method      = "smc";
-+	};
-+
-+	reserved-memory {
-+		#address-cells = <2>;
-+		#size-cells = <2>;
-+		ranges;
-+		/* 192 KiB reserved for ARM Trusted Firmware (BL31) */
-+		secmon_reserved: secmon@43000000 {
-+			reg = <0 0x43000000 0 0x30000>;
-+			no-map;
-+		};
-+	};
-+
-+	timer {
-+		compatible = "arm,armv8-timer";
-+		interrupt-parent = <&gic>;
-+		interrupts = <GIC_PPI 13 IRQ_TYPE_LEVEL_LOW>,
-+			     <GIC_PPI 14 IRQ_TYPE_LEVEL_LOW>,
-+			     <GIC_PPI 11 IRQ_TYPE_LEVEL_LOW>,
-+			     <GIC_PPI 10 IRQ_TYPE_LEVEL_LOW>;
-+	};
-+
-+	soc {
-+		#address-cells = <2>;
-+		#size-cells = <2>;
-+		compatible = "simple-bus";
-+		ranges;
-+
-+		gic: interrupt-controller@c000000 {
-+			compatible = "arm,gic-v3";
-+			#interrupt-cells = <3>;
-+			interrupt-parent = <&gic>;
-+			interrupt-controller;
-+			reg = <0 0x0c000000 0 0x10000>,  /* GICD */
-+			      <0 0x0c080000 0 0x80000>,  /* GICR */
-+			      <0 0x0c400000 0 0x2000>,   /* GICC */
-+			      <0 0x0c410000 0 0x1000>,   /* GICH */
-+			      <0 0x0c420000 0 0x2000>;   /* GICV */
-+			interrupts = <GIC_PPI 9 IRQ_TYPE_LEVEL_HIGH>;
-+		};
-+
-+		watchdog: watchdog@1001c000 {
-+			compatible = "mediatek,mt7986-wdt",
-+				     "mediatek,mt6589-wdt";
-+			reg = <0 0x1001c000 0 0x1000>;
-+			interrupts = <GIC_SPI 110 IRQ_TYPE_LEVEL_HIGH>;
-+			#reset-cells = <1>;
-+			status = "disabled";
-+		};
-+
-+		trng: trng@1020f000 {
-+			compatible = "mediatek,mt7986-rng",
-+				     "mediatek,mt7623-rng";
-+			reg = <0 0x1020f000 0 0x100>;
-+			clocks = <&system_clk>;
-+			clock-names = "rng";
-+			status = "disabled";
-+		};
-+
-+		uart0: serial@11002000 {
-+			compatible = "mediatek,mt7986-uart",
-+				     "mediatek,mt6577-uart";
-+			reg = <0 0x11002000 0 0x400>;
-+			interrupts = <GIC_SPI 123 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&system_clk>;
-+			status = "disabled";
-+		};
-+
-+		uart1: serial@11003000 {
-+			compatible = "mediatek,mt7986-uart",
-+				     "mediatek,mt6577-uart";
-+			reg = <0 0x11003000 0 0x400>;
-+			interrupts = <GIC_SPI 124 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&system_clk>;
-+			status = "disabled";
-+		};
-+
-+		uart2: serial@11004000 {
-+			compatible = "mediatek,mt7986-uart",
-+				     "mediatek,mt6577-uart";
-+			reg = <0 0x11004000 0 0x400>;
-+			interrupts = <GIC_SPI 125 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&system_clk>;
-+			status = "disabled";
-+		};
-+
-+	};
-+
-+};
++            scmi_dvfs: protocol@13 {
++                reg = <0x13>;
+ 
++                #clock-cells = <1>;
++                linaro,optee-channel = <1>;
++                shmem = <&cpu_scp_hpri0>;
++            };
+         };
+     };
+ 
 -- 
-2.29.2
+2.17.1
 
