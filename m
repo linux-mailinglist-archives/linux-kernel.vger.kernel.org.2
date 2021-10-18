@@ -2,106 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A9804312C1
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 11:10:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A0D64312C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 11:10:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231344AbhJRJMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 05:12:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231149AbhJRJMM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 05:12:12 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29FB9C06161C
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 02:10:02 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id m26so14241298pff.3
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 02:10:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xioT+koXIxebA9dspAm78A75nR8cRoqI0SF6RXcJ5RI=;
-        b=ndajlqSWHaZlQB94T2zSV/2oF/POlNDLh4sHSMX1VYoaQK/DcxxIWZFMkEaPEihcRu
-         a4sKtBIXRAyK0ThUKX4iC6iMspSo0DiGCa+PzyeLeALzknBHQCrPXFTfhs9BYRgZ8VyS
-         OCk2W4IvZjSYg8PDOmUAnKFRcuz1D2vzBl25x9gxB2+YrpZDkoYINcoq0KMwNv1B7Ol/
-         0A3KGhemmwPlt1eAKIwW/fF0aeIDpIIucf5b51XGIJ0HaZnva7LeaYs9NuLJYW06KswI
-         gqbhPm7/QEqP+NB0lU4WWjY5e3g77FWwN0Jtk6HoY/70jjZk/+j76z6DZzH0b3qKGTCr
-         y4fw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xioT+koXIxebA9dspAm78A75nR8cRoqI0SF6RXcJ5RI=;
-        b=F6CzTJlVnGcLfyPEGdMXBlkuAE2PHwBNfLM+f3UtjcRlxjMEGq00ylTa6nY5ZH0i9g
-         SugqyXBkyqq1bsJkjFTg1QXymRBB6F25L4Xy7+ba+IWRmFi2aFtjnK9U4Ed12RJiUQnI
-         21XQfGuGtwd2Q3xUwoxd6iYEu/ChilDQl28nb82IwABVcKZaZrVvorN1ddumLwVnUSaQ
-         RjIyRpWEFgzDh4zLXcksOcA3MCKHMlGrdG/ho6xNAWnd8zgx0W/PZ3nzaiJyMshpKxtY
-         1WEW8T5DNsH7nl9BkpJ/VZRVkBGUoOLPW4TazFU6vWbUHkTggKlcZ5R9qhHfKVG/fIh+
-         r+fg==
-X-Gm-Message-State: AOAM532f7068zBbzzVVI6H87EHLlYNxe8baQsw658Afd+5kdci+qWTb8
-        IxUVJ56vKPfhCZNcz1US1vg=
-X-Google-Smtp-Source: ABdhPJzPhb9/VAhFuUK1JCWy5DyAO3aciKsybxFH6aVt3H8C6TeL3QHPzDv/I7RJYRUD3IewBK+1uw==
-X-Received: by 2002:a63:e516:: with SMTP id r22mr22994185pgh.197.1634548201705;
-        Mon, 18 Oct 2021 02:10:01 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id j198sm12264705pgc.4.2021.10.18.02.09.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 02:10:01 -0700 (PDT)
-From:   luo penghao <cgel.zte@gmail.com>
-X-Google-Original-From: luo penghao <luo.penghao@zte.com.cn>
-To:     Jani Nikula <jani.nikula@linux.intel.com>
-Cc:     Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        id S231380AbhJRJND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 05:13:03 -0400
+Received: from mga09.intel.com ([134.134.136.24]:32397 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231149AbhJRJNA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 05:13:00 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10140"; a="228087115"
+X-IronPort-AV: E=Sophos;i="5.85,381,1624345200"; 
+   d="scan'208";a="228087115"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2021 02:10:44 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,381,1624345200"; 
+   d="scan'208";a="443330095"
+Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.171])
+  by orsmga006.jf.intel.com with SMTP; 18 Oct 2021 02:10:41 -0700
+Received: by stinkbox (sSMTP sendmail emulation); Mon, 18 Oct 2021 12:10:40 +0300
+Date:   Mon, 18 Oct 2021 12:10:40 +0300
+From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
         Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
         intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, penghao luo <luo.penghao@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] drm/i915: Remove redundant assignments
-Date:   Mon, 18 Oct 2021 09:09:55 +0000
-Message-Id: <20211018090955.857276-1-luo.penghao@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        =?iso-8859-1?Q?D=E1vid_Bolvansk=FD?= <david.bolvansky@gmail.com>
+Subject: Re: [PATCH] drm/i915: Avoid bitwise vs logical OR warning in
+ snb_wm_latency_quirk()
+Message-ID: <YW06ED6XvTcrD9wP@intel.com>
+References: <20211014211916.3550122-1-nathan@kernel.org>
+ <CAKwvOdmSFP98Mc1u2b+=_Dux9eB_yumRvxOx7UTXuyXOYzG3uA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAKwvOdmSFP98Mc1u2b+=_Dux9eB_yumRvxOx7UTXuyXOYzG3uA@mail.gmail.com>
+X-Patchwork-Hint: comment
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: penghao luo <luo.penghao@zte.com.cn>
+On Thu, Oct 14, 2021 at 02:21:43PM -0700, Nick Desaulniers wrote:
+> On Thu, Oct 14, 2021 at 2:19 PM Nathan Chancellor <nathan@kernel.org> wrote:
+> >
+> > A new warning in clang points out a place in this file where a bitwise
+> > OR is being used with boolean types:
+> >
+> > drivers/gpu/drm/i915/intel_pm.c:3066:12: warning: use of bitwise '|' with boolean operands [-Wbitwise-instead-of-logical]
+> >         changed = ilk_increase_wm_latency(dev_priv, dev_priv->wm.pri_latency, 12) |
+> >                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> >
+> > This construct is intentional, as it allows every one of the calls to
+> > ilk_increase_wm_latency() to occur (instead of short circuiting with
+> > logical OR) while still caring about the result of each call.
+> >
+> > To make this clearer to the compiler, use the '|=' operator to assign
+> > the result of each ilk_increase_wm_latency() call to changed, which
+> > keeps the meaning of the code the same but makes it obvious that every
+> > one of these calls is expected to happen.
 
-The assignment of variables will be overwritten later, so the
-assignment here is meaningless.
+Sure, why not.
 
-The clang_analyzer complains as follows:
+> >
+> > Link: https://github.com/ClangBuiltLinux/linux/issues/1473
+> > Reported-by: Nick Desaulniers <ndesaulniers@google.com>
+> 
+> Thanks for the patch!
+> Suggested-by: Dávid Bolvanský <david.bolvansky@gmail.com>
+> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+> 
 
-drivers/gpu/drm/i915/gem/i915_gem_userptr.c:291: warning:
+Thanks for the patch+review. Applied to drm-intel-next.
 
-Although the value stored to 'ret' is used in the enclosing expression,
-the value is never actually read from 'retÃ¢â‚¬â„¢.
+> > Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+> > ---
+> >  drivers/gpu/drm/i915/intel_pm.c | 6 +++---
+> >  1 file changed, 3 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/i915/intel_pm.c b/drivers/gpu/drm/i915/intel_pm.c
+> > index f90fe39cf8ca..aaa3a0998e4c 100644
+> > --- a/drivers/gpu/drm/i915/intel_pm.c
+> > +++ b/drivers/gpu/drm/i915/intel_pm.c
+> > @@ -3050,9 +3050,9 @@ static void snb_wm_latency_quirk(struct drm_i915_private *dev_priv)
+> >          * The BIOS provided WM memory latency values are often
+> >          * inadequate for high resolution displays. Adjust them.
+> >          */
+> > -       changed = ilk_increase_wm_latency(dev_priv, dev_priv->wm.pri_latency, 12) |
+> > -               ilk_increase_wm_latency(dev_priv, dev_priv->wm.spr_latency, 12) |
+> > -               ilk_increase_wm_latency(dev_priv, dev_priv->wm.cur_latency, 12);
+> > +       changed = ilk_increase_wm_latency(dev_priv, dev_priv->wm.pri_latency, 12);
+> > +       changed |= ilk_increase_wm_latency(dev_priv, dev_priv->wm.spr_latency, 12);
+> > +       changed |= ilk_increase_wm_latency(dev_priv, dev_priv->wm.cur_latency, 12);
+> >
+> >         if (!changed)
+> >                 return;
+> >
+> > base-commit: d73b17465d6da0a94bc0fcc86b150e1e923e8f71
+> > --
+> > 2.33.1.637.gf443b226ca
+> >
+> 
+> 
+> -- 
+> Thanks,
+> ~Nick Desaulniers
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: penghao luo <luo.penghao@zte.com.cn>
----
- drivers/gpu/drm/i915/gem/i915_gem_userptr.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/gpu/drm/i915/gem/i915_gem_userptr.c b/drivers/gpu/drm/i915/gem/i915_gem_userptr.c
-index 8ea0fa6..f6f944d 100644
---- a/drivers/gpu/drm/i915/gem/i915_gem_userptr.c
-+++ b/drivers/gpu/drm/i915/gem/i915_gem_userptr.c
-@@ -288,7 +288,7 @@ int i915_gem_object_userptr_submit_init(struct drm_i915_gem_object *obj)
- 	if (!i915_gem_object_is_readonly(obj))
- 		gup_flags |= FOLL_WRITE;
- 
--	pinned = ret = 0;
-+	pinned = 0;
- 	while (pinned < num_pages) {
- 		ret = pin_user_pages_fast(obj->userptr.ptr + pinned * PAGE_SIZE,
- 					  num_pages - pinned, gup_flags,
 -- 
-2.15.2
-
-
+Ville Syrjälä
+Intel
