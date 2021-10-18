@@ -2,173 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F5EA43183F
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 13:55:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27A88431841
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 13:56:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231523AbhJRL6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 07:58:05 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:26873 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbhJRL6E (ORCPT
+        id S231621AbhJRL6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 07:58:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48528 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231623AbhJRL6I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 07:58:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1634558153; x=1666094153;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=scwDj207MIPOMz6QLQAXQ7ECvfgrIrVUQAzYDMTZuxg=;
-  b=oUSxKqn4B9+99sU9izemxjJGZUY9/vyJsvSl+A0TDpTMuImwQelpZc2b
-   lWE/t8epoBf+LSok5+DQ4MJSTZPtcf1hi6HYI4fZ2GF2ZJf7wmfWHZXo/
-   erJ5y23EK9qibhtVFuoBQ+ZWrSpiS3AkeCfypTgdESJeGHWsH5KMBo/iR
-   QhKfepZE0uLBc9SshMsWhAsQOSxdcb9pqDEXdHcIBqaEStsIXWFcKLSjf
-   cp4WfY42RB/aprCxSFqs2tb2/pzo6aGAQ5pQaGIPjtZf0ny9S7QO/SY3f
-   Uzho5DEWKudPbW7Nno7XoFjdZJeezh4fBCQANQDYyIhhdVv+oPXxoKLQw
-   A==;
-IronPort-SDR: tGBXMkmoyYRHZlZESqgtnQ2Q74cKe722DeHSyLj3hmpwyM0y2lhimqy7Sut0XzCTtvckD6t1m+
- hPG8tQbsrsqNAfCLtr33EZG+StF/YBZmQE4jIu407z1rnZSI0njJAL4uAFCVR/xv7dqsd70xah
- tldc2xt2j1KQBFdL1l20zbVn5ecJdTBOrPueXOF6mxpTxKvNxizhIIULeTyXm/pNBad15hAj/M
- 0+2Yrh73yPjKC1IJSM0dUti8I+HxaSKIf0KDQSuMG/cnRV1Z1D5LOzGiZW5teJ42ZxCy6q4uiR
- 8KLmFRLKuTU+cwFJ9548HoCq
-X-IronPort-AV: E=Sophos;i="5.85,381,1624345200"; 
-   d="scan'208";a="140140509"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 18 Oct 2021 04:55:53 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Mon, 18 Oct 2021 04:55:52 -0700
-Received: from [10.159.245.112] (10.10.115.15) by chn-vm-ex02.mchp-main.com
- (10.10.85.144) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
- Transport; Mon, 18 Oct 2021 04:55:50 -0700
-Subject: Re: [PATCH v8 2/3] dt-bindings: clock: lan966x: Add LAN966X Clock
- Controller
-To:     Kavyasree Kotagiri <kavyasree.kotagiri@microchip.com>,
-        <robh+dt@kernel.org>, <mturquette@baylibre.com>, <sboyd@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-clk@vger.kernel.org>, <UNGLinuxDriver@microchip.com>,
-        <Eugen.Hristev@microchip.com>, <Manohar.Puri@microchip.com>
-References: <20211008082635.31774-1-kavyasree.kotagiri@microchip.com>
- <20211008082635.31774-3-kavyasree.kotagiri@microchip.com>
-From:   Nicolas Ferre <nicolas.ferre@microchip.com>
-Organization: microchip
-Message-ID: <c17e542f-3216-b251-11e4-ade6cc02f055@microchip.com>
-Date:   Mon, 18 Oct 2021 13:55:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 18 Oct 2021 07:58:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634558157;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fCM/GUGbXTstduw5A7ZtGYQzITbTV7AQFdkBboCynIE=;
+        b=fatAZExHlkYvjov0gS602mfrLcbtAWjSCRMszS/Y814ERwhnT9Yt4LdLP85Lh4PVChBkJZ
+        XcZbMu5UZhqYK3zl/JJY3k1SgcbYYwGz6YoQboekVBLlDxA5KebRhUcec46gck5Q41aYDn
+        zoI/Dr0RJGnGCFNTxsWdIuYWTG85HIA=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-443-W4gMF3P6NvCD9oNC0c803A-1; Mon, 18 Oct 2021 07:55:56 -0400
+X-MC-Unique: W4gMF3P6NvCD9oNC0c803A-1
+Received: by mail-wr1-f70.google.com with SMTP id l8-20020a5d6d88000000b001611b5de796so8757246wrs.10
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 04:55:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=fCM/GUGbXTstduw5A7ZtGYQzITbTV7AQFdkBboCynIE=;
+        b=HtDz3fzTpqFBB+QgL+8+LaJFeK5bnbDrCnoS3nc6z8mU/EPwAydDZf17D5TA9slgq2
+         rby7et3+7TsjIRUgWssV4/0eNNyQb5utoRfjvrD6BoJrG+T67Ql6pOs3ZYtwtj2PUqoT
+         lc3JDja5SymXHgFkR+AoZl/60j4cOoBCxOVLM895eGE2obNvfPk0cJrllu4/CuT42CUL
+         1B44ISaC5Vdtt9nxbze0jPnGobBSEeU3bBFsk13mLSmXpXa5MFjgPnBtqRjbBMGROzMb
+         lWSpmEbGe0mKmnWn2wFTfH6aAkgqdiQJoXHCD0QcTmHKV22xQ0tAoy/YcNVhTJCqDlXm
+         ZzXA==
+X-Gm-Message-State: AOAM533Zo3bn66nDNbcN48DTst4d+T/vLgbcvJHh81KwfEkMng+nNw8I
+        WP2RIpMemPjEpWlQIre/q7DyLFGh8XmK5ZxRHWeFwhwjM6YzcE0ykjZ8NcW123KLgiAm3KuJ6GI
+        j8FcCVPmWvq/QycDBbyBbz/LW
+X-Received: by 2002:a5d:598a:: with SMTP id n10mr34535608wri.93.1634558155065;
+        Mon, 18 Oct 2021 04:55:55 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxiVA0bTdZn/OFUfGqxOypsZ4ysp85b1Jd23TcQIsqU26rnc4Y3pUGQXL9xTCEja8xMGZgAYg==
+X-Received: by 2002:a5d:598a:: with SMTP id n10mr34535587wri.93.1634558154877;
+        Mon, 18 Oct 2021 04:55:54 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id x7sm12108195wrq.69.2021.10.18.04.55.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Oct 2021 04:55:54 -0700 (PDT)
+Message-ID: <b1c49069-437c-7aa6-531d-6651dad72015@redhat.com>
+Date:   Mon, 18 Oct 2021 13:55:53 +0200
 MIME-Version: 1.0
-In-Reply-To: <20211008082635.31774-3-kavyasree.kotagiri@microchip.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [patch 3/4] x86/kvm: Convert FPU handling to a single swap buffer
 Content-Language: en-US
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, "Liu, Jing2" <jing2.liu@intel.com>,
+        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        kvm@vger.kernel.org, "Nakajima, Jun" <jun.nakajima@intel.com>,
+        Sean Christopherson <seanjc@google.com>
+References: <20211017151447.829495362@linutronix.de>
+ <20211017152048.666354328@linutronix.de>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <20211017152048.666354328@linutronix.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/10/2021 at 10:26, Kavyasree Kotagiri wrote:
-> This adds the DT bindings documentation for lan966x SoC
-> generic clock controller.
-> 
-> Signed-off-by: Kavyasree Kotagiri <kavyasree.kotagiri@microchip.com>
-> Reviewed-by: Rob Herring <robh@kernel.org>
+On 17/10/21 19:03, Thomas Gleixner wrote:
+>   	 */
+> -	fpu_swap_kvm_fpu(vcpu->arch.user_fpu, vcpu->arch.guest_fpu,
+> -			 ~XFEATURE_MASK_PKRU);
+> +	fpu_swap_kvm_fpstate(&vcpu->arch.guest_fpu, true, ~XFEATURE_MASK_PKRU);
+>   	trace_kvm_fpu(1);
+>   }
+>   
+>   /* When vcpu_run ends, restore user space FPU context. */
+>   static void kvm_put_guest_fpu(struct kvm_vcpu *vcpu)
+>   {
+> -	/*
+> -	 * Guests with protected state have guest_fpu == NULL which makes
+> -	 * swap only restore the host state.
+> -	 */
+> -	fpu_swap_kvm_fpu(vcpu->arch.guest_fpu, vcpu->arch.user_fpu, ~0ULL);
+> +	fpu_swap_kvm_fpstate(&vcpu->arch.guest_fpu, false, ~0ULL);
 
-If it can speed-up adoption:
-Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+The restore mask can be ~XFEATURE_MASK_PKRU in this case tool this way 
+it's constant and you can drop the third argument to the function.
 
-> ---
-> v7 -> v8:
-> - No changes.
-> 
-> v6 -> v7:
-> - No changes.
-> 
-> v5 -> v6:
-> - Removed "_clk" in clock-names.
-> - Added Reviewed-by.
-> 
-> v4 -> v5:
-> - In v4 dt-bindings, missed adding "clock-names" in required
->    properties and example. So, added them.
-> 
-> v3 -> v4:
-> - Updated "clocks" description.
-> - Added "clock-names".
-> 
-> v2 -> v3:
-> - Fixed dt_binding_check errors.
-> 
-> v1 -> v2:
-> - Updated example provided for clk controller DT node.
-> 
->   .../bindings/clock/microchip,lan966x-gck.yaml | 57 +++++++++++++++++++
->   1 file changed, 57 insertions(+)
->   create mode 100644 Documentation/devicetree/bindings/clock/microchip,lan966x-gck.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/clock/microchip,lan966x-gck.yaml b/Documentation/devicetree/bindings/clock/microchip,lan966x-gck.yaml
-> new file mode 100644
-> index 000000000000..fca83bd68e26
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/clock/microchip,lan966x-gck.yaml
-> @@ -0,0 +1,57 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/clock/microchip,lan966x-gck.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Microchip LAN966X Generic Clock Controller
-> +
-> +maintainers:
-> +  - Kavyasree Kotagiri <kavyasree.kotagiri@microchip.com>
-> +
-> +description: |
-> +  The LAN966X Generic clock controller contains 3 PLLs - cpu_clk,
-> +  ddr_clk and sys_clk. This clock controller generates and supplies
-> +  clock to various peripherals within the SoC.
-> +
-> +properties:
-> +  compatible:
-> +    const: microchip,lan966x-gck
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    items:
-> +      - description: CPU clock source
-> +      - description: DDR clock source
-> +      - description: System clock source
-> +
-> +  clock-names:
-> +    items:
-> +      - const: cpu
-> +      - const: ddr
-> +      - const: sys
-> +
-> +  '#clock-cells':
-> +    const: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +  - clock-names
-> +  - '#clock-cells'
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    clks: clock-controller@e00c00a8 {
-> +        compatible = "microchip,lan966x-gck";
-> +        #clock-cells = <1>;
-> +        clocks = <&cpu_clk>, <&ddr_clk>, <&sys_clk>;
-> +        clock-names = "cpu", "ddr", "sys";
-> +        reg = <0xe00c00a8 0x38>;
-> +    };
-> +...
-> 
+Also perhaps it could be useful to add an
 
+if (WARN_ON_ONCE(cur_fps->is_guest == enter_guest))
+	return;
 
--- 
-Nicolas Ferre
+at the top of fpu_swap_kvm_fpstate, since the is_guest member (at least 
+for now?) is only used for such kind of assertion.
+
+Paolo
+
