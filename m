@@ -2,106 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5549431F84
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 16:28:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2C2F431F87
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 16:28:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231962AbhJROa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 10:30:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48118 "EHLO
+        id S232000AbhJRObA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 10:31:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231874AbhJROa1 (ORCPT
+        with ESMTP id S231883AbhJROa5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 10:30:27 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63E5FC061745;
-        Mon, 18 Oct 2021 07:28:16 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id o83so66072oif.4;
-        Mon, 18 Oct 2021 07:28:16 -0700 (PDT)
+        Mon, 18 Oct 2021 10:30:57 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85FC7C061765
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 07:28:46 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id m22so41970024wrb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 07:28:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ZGg9iP3770g2EGM+xsq5tq0SBh55t8OHrqyNWoeF1KQ=;
-        b=DDc/pT68TnGI66oQeUqELRZOvhwwhtzr1x2skL2VX4yOtc4uzTosySLReAhhEnEJ1q
-         xxgxdXyK2MSg/KiiLNe9Ey5H0YIB9oE7rGTAKDbTx8XJqlFIx9z9N8uKXBaRKaNylD6F
-         YTsqqCyVXSq74xJgOgTG0etfSZ/AbG0MJ5Iz3h3/oMjJ9vEFaxlY2q8Vp8eDdeBM5LSR
-         2Q6JmXQMFuT7FWY1birPg3HyzNguXYPn+ImMq0flOwj2Zzkwsq4VFaLQS5TJiXtyEhXY
-         qlYFCvfEsGMIuZV4jJJGhU6RrJGmtiR6jkl991ZWhry4fT5SL26+eFpbSqVvHtbGKTVC
-         vdWg==
+        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XyYaNMyG0h2GRFSHh3MvaiQhHBrpmc1k1spDZIbhBKw=;
+        b=0/NGh/p3sVcXxesecSYKBMn+eToUPj771KYfsNeQCDLhfvuEUJ5FP1n91Fc0PZIifD
+         glWKqHP+V0kSU4kSqmrZPGYo96bTVrA70NoDVbsln11HONolpEu553ByvveFwRB8c/Fw
+         bQwrsEvm+Qbx7sXQhU+2T6fDsNzNCMexYfeC/aJAxKoRWyuLI36YhQrS15aZv83JTxx1
+         w6tTRbbqZ4QciTX8PjRykKnc1tBKLYm06iFTOjExWzDkvLrdfXvfpMh7+ZPZRMUDJLgC
+         NmPVgavhPxE3MtmgK5I7VCgIIbjkVwiXqs8C/KrkrJ8wcsy6gus0sFGar9CncJpOHePM
+         uDtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=ZGg9iP3770g2EGM+xsq5tq0SBh55t8OHrqyNWoeF1KQ=;
-        b=P31AwcFoQW/4XYy1JLMky4kRtkEl+jBXhz0/mBwUp7vxjK+bbRsgDZsDJJcF5ml2/9
-         4XYSEmvdu9hE7CENyt0x18iSbK+aPGf+wpvqKbg1NUas7nq8iO3cUA7H0Ss2NI9kB1hn
-         hxWivSH/sZwtC8yLn0mm3DCaA3FFVEn10+M5IgmJogI5e52Kipg45nqHsrYWnit6J2Bk
-         /vWNDJF1LfSX0nBvmanHVxFk57369Ck8maGryoYzgQWSqyDF6R3GYZ8j/6uSuKSNywGJ
-         iT9Qt2JDcoOsuMoCjusPLW0zvL++Nr4ANZRE7eJHTdkrRWVKpQ8MNS4xxVJuYlTIJ0CM
-         /oXg==
-X-Gm-Message-State: AOAM533G+uDuYxPZ0NUtiYSFw81GLa5y6y1Mqr5L9/oOYT/ki683KBu2
-        kFNBTGqjRN2Pbni1rs4BPB4VwJN8YpY=
-X-Google-Smtp-Source: ABdhPJy6QZ2bMZfw8u+3hxNFxr+P3pasdzH+Flb/Ln2wIhbN5Ax9kr1tYOufKGG6BhyqWoHkNc7bhw==
-X-Received: by 2002:aca:6142:: with SMTP id v63mr19374oib.58.1634567295508;
-        Mon, 18 Oct 2021 07:28:15 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id f8sm3004112otp.63.2021.10.18.07.28.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Oct 2021 07:28:15 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH] spi: tegra20: fix build with CONFIG_PM_SLEEP=n
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Arnd Bergmann <arnd@kernel.org>
-Cc:     Laxman Dewangan <ldewangan@nvidia.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Zhang Qilong <zhangqilong3@huawei.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        linux-spi@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211013144538.2346533-1-arnd@kernel.org>
- <YW19Z4gF7UCECF1H@orome.fritz.box>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <65625987-9b8b-d0bc-5413-b8cd1f8ed14f@roeck-us.net>
-Date:   Mon, 18 Oct 2021 07:28:12 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        bh=XyYaNMyG0h2GRFSHh3MvaiQhHBrpmc1k1spDZIbhBKw=;
+        b=KUV5g7ADGU/iSo6+0uomAylni/LRwJn1QJWPCU5y+D//VCw0SvLltIl/Mcrj46UjTL
+         Ea3R1rRbY1pvwxia1pRQbcd9IcFb35TCpQDPqJvZpzU9e3yMc9Og+kTNzygAh1it0MpX
+         yrUpVgIWADcSSxU2M2Z53L5cTXd5meFJ7MMPQHGEjASMvhJIR0204GHL0ApomklhjZDI
+         kaM1K/WJs9ynXXxSodsqk/OZn7sgVDDg+ZjeB73D6+BldR5k+wLMfPbnChz1Iq0gTwSG
+         4+31mLZ38x3Hkob+KQOVKJ7hMqBwm0C8wTzKko4flLVW4WSgx/k/wqnG0lJxd89/Xh2w
+         YaWQ==
+X-Gm-Message-State: AOAM530slPn/ivSOG5idQAdEhdaticQXwPUcyS/d1wQsWPBhi11cisfN
+        IX2o06rY9WAW3LOYimo6IBz36hX0Ml0pCA==
+X-Google-Smtp-Source: ABdhPJyViJMpa/W4XVDOttFAuL4XjTh4Xpqfxmvfmp+8DIEc+cUbvjdyhyeeVlkoab278Zr8gTsD5w==
+X-Received: by 2002:adf:a29c:: with SMTP id s28mr34700738wra.116.1634567324983;
+        Mon, 18 Oct 2021 07:28:44 -0700 (PDT)
+Received: from localhost.localdomain ([2001:861:44c0:66c0:2dd7:d5eb:6e87:f924])
+        by smtp.gmail.com with ESMTPSA id b3sm12908495wrp.52.2021.10.18.07.28.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Oct 2021 07:28:44 -0700 (PDT)
+From:   Neil Armstrong <narmstrong@baylibre.com>
+To:     tomba@kernel.org
+Cc:     linux-omap@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, khilman@baylibre.com,
+        Neil Armstrong <narmstrong@baylibre.com>
+Subject: [PATCH v6 0/9] drm/omap: Add virtual-planes support
+Date:   Mon, 18 Oct 2021 16:28:33 +0200
+Message-Id: <20211018142842.2511200-1-narmstrong@baylibre.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <YW19Z4gF7UCECF1H@orome.fritz.box>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3506; h=from:subject; bh=UU6BPOlg4iHte6Z0SQwKO9S7iu4F/v+orl4BrCXP76I=; b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBhbYSDvJh2P7dCncuXx9XXB5XZq1TOiLt4NlmqYdL7 ZjqbziiJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCYW2EgwAKCRB33NvayMhJ0UZ3D/ 9IMt2RQ0aOt34ulcoQ3whtM/uULj4rGoYkjO8z6elwcZ1GMJlJMIPMPYSFffDsJMN7inPkjX2FLlhN 9FB+qHap9O4b4Yne5iHd7IFO97kn8z5vDH3NmOChUJB/mDmJ+ZLnEvxPZ1OwvIJuPc+14rrdPS2+hT GyF7OVExSePxnqmgOOSI+1hsm0oIQe8+dWF1xD78Tw2YUmbBfOrF5iLOvL2x1rfu+lb9ZqPDctiaO0 ckTDgwZINvQWk2BD2lKHgNc68Uvg7d5GiL2wGEJjk53XNTfn+932d0AQnG4yxAVujJAwIZzYW9Fqyl eQjjFuJ11R+BzXIJbWtTZfw3ehOtw1zm15MaHLOO331wO+08FqoJB8rlaEPlEcEAxjqOn7N8zQKdvQ O39d44UazaVdyf3omKzzQZmumTZ+RpkkmDfCoKguSkygj317BKTeP4k6NMVMvg1HZ+8uvB7PFrazya WM/MCfgagiwsrXZ3Q5jc8v5ZC4/ZdRIndefdyycRg3V4fH4NrdpVZulVE7yy0qHiqX15LJTTBo2XHP nhGmhOMp1jpkZHvkdB+EYPJjbs91puNu6DmWp1qnXcd5UJZonA4o15BARunAtlO+tfkDvzYcT1nLNm fCuGkQi+EwkcgXN/nEWNPI7J9SwvjtVmaBYjgIoaHwyTMuC7iDpHlheYTjVw==
+X-Developer-Key: i=narmstrong@baylibre.com; a=openpgp; fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/18/21 6:57 AM, Thierry Reding wrote:
-> On Wed, Oct 13, 2021 at 04:45:23PM +0200, Arnd Bergmann wrote:
->> From: Arnd Bergmann <arnd@arndb.de>
->>
->> There is another one of these warnings:
->>
->> drivers/spi/spi-tegra20-slink.c:1197:12: error: 'tegra_slink_runtime_resume' defined but not used [-Werror=unused-function]
->>   1197 | static int tegra_slink_runtime_resume(struct device *dev)
->>        |            ^~~~~~~~~~~~~~~~~~~~~~~~~~
->>
->> Give it the same treatment as the other functions in this file.
->>
->> Fixes: efafec27c565 ("spi: Fix tegra20 build with CONFIG_PM=n")
->> Fixes: 2bab94090b01 ("spi: tegra20-slink: Declare runtime suspend and resume functions conditionally")
->> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
->> ---
->>   drivers/spi/spi-tegra20-slink.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> Acked-by: Thierry Reding <treding@nvidia.com>
-> 
+This patchset is the follow-up the v4 patchset from Benoit Parrot at [1].
 
-The problem has now been (re-)introduced into the mainline kernel
-and causes various test build failures there.
+This patch series adds virtual-plane support to omapdrm driver to allow the use
+of display wider than 2048 pixels.
 
-Guenter
+In order to do so we introduce the concept of hw_overlay which can then be
+dynamically allocated to a plane. When the requested output width exceed what
+be supported by one overlay a second is then allocated if possible to handle
+display wider then 2048.
+
+This series replaces an earlier series which was DT based and using statically
+allocated resources.
+
+This implementation is inspired from the work done in msm/disp/mdp5
+driver.
+
+Changes since v5 at [2]:
+- Patch 1: renamed width/height_fp to max_width/height
+- Patch 2: no changes
+- Patch 3: removed possible_crtcs stuff,
+	added cleanup on failure to allocate,
+	removed name in omap_plane struct & plane_id_to_name in omap_plane.c,
+	switched all omap_plane->name to plane->name or omap_plane->id
+- Patch 4: aligned omap_plane_atomic_duplicate_state the the crtc style
+- Patch 5: removed glob_obj_lock & reformated global state declaration in omap_drv.h
+- Patch 6: moved drm_atomic_helper_check_plane_state() from atomic_check() in separate commit,
+	removed zpos change, updated debug messages to be useful,
+	renamed omap_overlay_disable() to omap_overlay_update_state(),
+	added useful comments for omap_overlay_assign() & omap_overlay_update_state(),
+	simplified omap_overlay_assign() & omap_overlay_update_state() for actual use-cases,
+	refactored omap_plane_atomic_check() changes to be cleaner & simpler
+- Patch 7: no changes (except possible_crtcs print removal)
+- Patch 8: Reformated omap_plane_atomic_check() & omap_overlay_assign() changes to match previous patches layout 
+
+Changes since v4 at [1]:
+- rebased on v5.15-rc2
+- adapted to drm_atomic_get_new/old_plane_state()
+- tested on Beagle-x15
+- checked for non-regression on Beagle-x15
+- removed unused "state" variable in omap_global_state
+
+[1] https://lore.kernel.org/all/20181012201703.29065-1-bparrot@ti.com/
+[2] https://lore.kernel.org/all/20210923070701.145377-1-narmstrong@baylibre.com/
+
+Benoit Parrot (8):
+  drm/omap: Add ability to check if requested plane modes can be
+    supported
+  drm/omap: Add ovl checking funcs to dispc_ops
+  drm/omap: introduce omap_hw_overlay
+  drm/omap: omap_plane: subclass drm_plane_state
+  drm/omap: Add global state as a private atomic object
+  drm/omap: dynamically assign hw overlays to planes
+  drm/omap: add plane_atomic_print_state support
+  drm/omap: Add a 'right overlay' to plane state
+
+Neil Armstrong (1):
+  drm/omap: add sanity plane state check
+
+ drivers/gpu/drm/omapdrm/Makefile       |   1 +
+ drivers/gpu/drm/omapdrm/dss/dispc.c    |  31 ++-
+ drivers/gpu/drm/omapdrm/dss/dss.h      |   5 +
+ drivers/gpu/drm/omapdrm/omap_drv.c     | 189 ++++++++++++-
+ drivers/gpu/drm/omapdrm/omap_drv.h     |  24 ++
+ drivers/gpu/drm/omapdrm/omap_fb.c      |  33 ++-
+ drivers/gpu/drm/omapdrm/omap_fb.h      |   4 +-
+ drivers/gpu/drm/omapdrm/omap_overlay.c | 212 +++++++++++++++
+ drivers/gpu/drm/omapdrm/omap_overlay.h |  35 +++
+ drivers/gpu/drm/omapdrm/omap_plane.c   | 354 +++++++++++++++++++++----
+ drivers/gpu/drm/omapdrm/omap_plane.h   |   1 +
+ 11 files changed, 830 insertions(+), 59 deletions(-)
+ create mode 100644 drivers/gpu/drm/omapdrm/omap_overlay.c
+ create mode 100644 drivers/gpu/drm/omapdrm/omap_overlay.h
+
+
+base-commit: e4e737bb5c170df6135a127739a9e6148ee3da82
+-- 
+2.25.1
+
