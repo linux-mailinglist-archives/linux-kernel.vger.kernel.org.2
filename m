@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C10B431D42
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:48:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB554431BB1
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:32:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231839AbhJRNt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:49:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49552 "EHLO mail.kernel.org"
+        id S232643AbhJRNeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:34:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42714 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232736AbhJRNrl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:47:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 516006136A;
-        Mon, 18 Oct 2021 13:36:25 +0000 (UTC)
+        id S233054AbhJRNcX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:32:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0BA4861372;
+        Mon, 18 Oct 2021 13:29:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634564185;
-        bh=F6/j8CSR2cmasNkSLypwl3nDj6yUpxbHCMsipKhXnyU=;
+        s=korg; t=1634563749;
+        bh=Nfg6DfDOjFlji1UjBLmwf4WuJV7mNphv5Ne5xefMy/w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ak6SplnjeB0wkoXhWKsFoYM7kEoVX6aUDkxrpfyQ8zJLOWxjlF3XynX0QB1QNFz0W
-         su8XBRLfa/3NMKwA+lLnw9KMzkZlRECRx8U6Gf1SxqyF0AVqhZ2EiLZhJsnrv9auAd
-         sp6/EUMukSgzEqpmQ5gQ/f99aCjMEMkM68ZKWYpY=
+        b=IrTushxc2E6wIJdGWXeWwaf0SalyNj7YpokHbYrq4Mxd6DmH1RRETlQJm1gHUDDo9
+         i1QLbLhAwlVX8eSIWhK/ryviNoNvYY5oB1Wu4AxkdivNU+nlM4+WhOBehz46SEXQHr
+         E6/F+egMDYkE7hsr9EP1dEoDhyEWPM05md5aocNQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Ziyang Xuan <william.xuanziyang@huawei.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.10 080/103] NFC: digital: fix possible memory leak in digital_tg_listen_mdaa()
+        stable@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>,
+        chongjiapeng <jiapeng.chong@linux.alibaba.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.19 49/50] qed: Fix missing error code in qed_slowpath_start()
 Date:   Mon, 18 Oct 2021 15:24:56 +0200
-Message-Id: <20211018132337.441069012@linuxfoundation.org>
+Message-Id: <20211018132328.150096498@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132334.702559133@linuxfoundation.org>
-References: <20211018132334.702559133@linuxfoundation.org>
+In-Reply-To: <20211018132326.529486647@linuxfoundation.org>
+References: <20211018132326.529486647@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,47 +40,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ziyang Xuan <william.xuanziyang@huawei.com>
+From: chongjiapeng <jiapeng.chong@linux.alibaba.com>
 
-commit 58e7dcc9ca29c14e44267a4d0ea61e3229124907 upstream.
+commit a5a14ea7b4e55604acb0dc9d88fdb4cb6945bc77 upstream.
 
-'params' is allocated in digital_tg_listen_mdaa(), but not free when
-digital_send_cmd() failed, which will cause memory leak. Fix it by
-freeing 'params' if digital_send_cmd() return failed.
+The error code is missing in this code scenario, add the error code
+'-EINVAL' to the return value 'rc'.
 
-Fixes: 1c7a4c24fbfd ("NFC Digital: Add target NFC-DEP support")
-Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Eliminate the follow smatch warning:
+
+drivers/net/ethernet/qlogic/qed/qed_main.c:1298 qed_slowpath_start()
+warn: missing error code 'rc'.
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Fixes: d51e4af5c209 ("qed: aRFS infrastructure support")
+Signed-off-by: chongjiapeng <jiapeng.chong@linux.alibaba.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/nfc/digital_core.c |    9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/qlogic/qed/qed_main.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/net/nfc/digital_core.c
-+++ b/net/nfc/digital_core.c
-@@ -277,6 +277,7 @@ int digital_tg_configure_hw(struct nfc_d
- static int digital_tg_listen_mdaa(struct nfc_digital_dev *ddev, u8 rf_tech)
- {
- 	struct digital_tg_mdaa_params *params;
-+	int rc;
- 
- 	params = kzalloc(sizeof(*params), GFP_KERNEL);
- 	if (!params)
-@@ -291,8 +292,12 @@ static int digital_tg_listen_mdaa(struct
- 	get_random_bytes(params->nfcid2 + 2, NFC_NFCID2_MAXSIZE - 2);
- 	params->sc = DIGITAL_SENSF_FELICA_SC;
- 
--	return digital_send_cmd(ddev, DIGITAL_CMD_TG_LISTEN_MDAA, NULL, params,
--				500, digital_tg_recv_atr_req, NULL);
-+	rc = digital_send_cmd(ddev, DIGITAL_CMD_TG_LISTEN_MDAA, NULL, params,
-+			      500, digital_tg_recv_atr_req, NULL);
-+	if (rc)
-+		kfree(params);
-+
-+	return rc;
- }
- 
- static int digital_tg_listen_md(struct nfc_digital_dev *ddev, u8 rf_tech)
+--- a/drivers/net/ethernet/qlogic/qed/qed_main.c
++++ b/drivers/net/ethernet/qlogic/qed/qed_main.c
+@@ -1067,6 +1067,7 @@ static int qed_slowpath_start(struct qed
+ 			} else {
+ 				DP_NOTICE(cdev,
+ 					  "Failed to acquire PTT for aRFS\n");
++				rc = -EINVAL;
+ 				goto err;
+ 			}
+ 		}
 
 
