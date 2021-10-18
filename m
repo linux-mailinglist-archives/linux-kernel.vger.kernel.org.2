@@ -2,190 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4823C432477
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 19:14:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC1E1432486
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 19:16:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233883AbhJRRRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 13:17:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59026 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232199AbhJRRRD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 13:17:03 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34FA9C06161C;
-        Mon, 18 Oct 2021 10:14:52 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id n65so3036691ybb.7;
-        Mon, 18 Oct 2021 10:14:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=WONSvi72olzI8+Wcr8S4IbIIfzASDpg4WboV6YdaeiM=;
-        b=PLwYBODJlIIWG8/TUtWIq71XqpsDD0GUenM0WM4yW9tTKgDqupQKJ1WNDnLNuxs4GY
-         ZkS+ZaxKdzesNNB4Py/W8MFmiHleHB0CdKRxrZbwi+YxuwYJeE30aWpqigqVI/NDz8hk
-         kSpJbWeNYJ3LPXP9HQk312UmQE/62sg8nlifSyf2hGja5R8tXwmklh0PGi+e2vzr+mYs
-         /qUkaWfRV5c1aGDJUtslgTzVv0y2g5gz1kBpA+F0pfuWLWdwAIvDORySM/cd4cfK1a2k
-         sPKmfSpP+8R9u2ftjfz/R/uUkOTPxwHnk2gLy3U9kPKZx/5Z14boU7Hhavw9kFVE5SOG
-         cu/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=WONSvi72olzI8+Wcr8S4IbIIfzASDpg4WboV6YdaeiM=;
-        b=WIZCzDZJ1Kl/wf2hq0IORU4QXvHJjBSUt6MZoFgdeMOfJ7BWvARz2J62K3Z4x4WBUo
-         y/Sba0RGa0Xh/nZ+wU/LevZK3GZnUb+v9Z/mRztMrYF/rNbLo0mIVn2x/8mzaoLcFfr4
-         MECMS3IC1yB88L+S6djIBdUh6vTTSAP1wX/OSaaw0HEm2wpe+XGQ4/ipW+RikWuauLMg
-         ufvYhkNqIVb98L53kqdig8+FCoAjACzbE/x848+n2i7rdCuHK7LfJSRFYxp0UFKVtMku
-         XA7+KarbQCghd0l6eU+e/AKAc7tjgPn/DiWnoK8LCIgGwpAtSsXaok27tq6u9PN/NNvU
-         Rfmw==
-X-Gm-Message-State: AOAM533JHnnXPM73SAZYbyRB2F3L/ZeqONywKDz62RirTmwRFeTWZaVi
-        gL74B4D51wdMzOKPdfF2SXYcVyF9nENwYVVDgoRi4uRHCroNyA==
-X-Google-Smtp-Source: ABdhPJwzhX8p4YTD5NEf2LuUbtqWH8Bj8ekAJ7zS61tER1PkR8dhVaGPpC8XsK457nN0nExvJ6VEnqB/sEvMp4s/yTk=
-X-Received: by 2002:a25:d290:: with SMTP id j138mr33885450ybg.381.1634577291390;
- Mon, 18 Oct 2021 10:14:51 -0700 (PDT)
+        id S233902AbhJRRSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 13:18:40 -0400
+Received: from mail-eopbgr140120.outbound.protection.outlook.com ([40.107.14.120]:17421
+        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232587AbhJRRSj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 13:18:39 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AvXr1ThTpRpnJD0GgNtu9I4gyDAfbEP3UPjn/YZqFDpe8qcQaVCZxlCqrTsDjq1eGMniDd0UD86IaQycewkxasDvnv8kE3xWBwEIX7gRfhW1nF4vKgt/vnKXDXvIMj6uQHncGB3SbfPBB8yrYwk//8JQ3SYY8gOAUDDchpqaqQT7IHA2Bgkbv0CzMRvS9B9b5O/MEhg+3fE86SGUDcnt/FT0eVHNl8qt8JT1JK0KcHMPg61GBUdh1lPzF4Gjz84Fd25jfjQ7Y3m5GrOK+dQ2pwB1967G8GTAFPfqd6RSAVZtztvR5ACcPZ+qplkLvtesBmY7oiKdxgCCFL9VhWXcVw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Ec5L5TptzAHNm7Luda5hyHGvR3q/QQo+EUU4YJgc+Gk=;
+ b=BucSG4pGiGYPgLZp06clW/KwMmZh7YZkJofnJxFsOijwPKHdg1Ra3/cYGoNgGpkt/y7L7j9CtCkaOU0SbO/l8iPD+YsvBHDxOFDnOSwSkwNsqsO5238uG5Y7VuiZl6rZyGK/3EBaKbfQ1/g8W33S/E/0HU+Sit4CxcRxbNyBY90cA3eDYyjkSS1rluHGY4xaSBdMVsxZr6FsE2lQG/vP9pHx/54VdDC+/RBUJxrNtJ2fIxOO+NSPRLnCqk+DndDHOgciAO7K/0qWYHFRwcASDCdgk7pUnO1ZEwyn3gB5XDHx6Yjnt4CtlITcn3wLxkX6nI/2HyIYqffWJsBocT3aeg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=toradex.com; dmarc=pass action=none header.from=toradex.com;
+ dkim=pass header.d=toradex.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=toradex.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Ec5L5TptzAHNm7Luda5hyHGvR3q/QQo+EUU4YJgc+Gk=;
+ b=MXPW6ZakWfVDkTm/hkKyBaPlxiYifctJw3ehv+gv9Wi8I75AYr5VfnNkqgXQfiYBLtQZO4F6NEtAaFTKTvuG/e4QpiHhGc35RXs6mvQgsrf/sv3MhJjGLweKXVeM/ZNcOEFTZMQ7cFHP/aXxZuu13NJ/ga95WZyIRIxapmDC60M=
+Authentication-Results: agner.ch; dkim=none (message not signed)
+ header.d=none;agner.ch; dmarc=none action=none header.from=toradex.com;
+Received: from DBAPR05MB7445.eurprd05.prod.outlook.com (2603:10a6:10:1a0::8)
+ by DB6PR05MB4549.eurprd05.prod.outlook.com (2603:10a6:6:4e::31) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.18; Mon, 18 Oct
+ 2021 17:16:24 +0000
+Received: from DBAPR05MB7445.eurprd05.prod.outlook.com
+ ([fe80::98f8:53ac:8110:c783]) by DBAPR05MB7445.eurprd05.prod.outlook.com
+ ([fe80::98f8:53ac:8110:c783%3]) with mapi id 15.20.4608.018; Mon, 18 Oct 2021
+ 17:16:24 +0000
+Date:   Mon, 18 Oct 2021 19:16:21 +0200
+From:   Francesco Dolcini <francesco.dolcini@toradex.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Francesco Dolcini <francesco.dolcini@toradex.com>,
+        f.fainelli@gmail.com, Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        christophe.leroy@csgroup.eu, Stefan Agner <stefan@agner.ch>,
+        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] phy: micrel: ksz8041nl: do not use power down
+ mode
+Message-ID: <20211018171621.GC7669@francesco-nb.int.toradex.com>
+References: <20211018094256.70096-1-francesco.dolcini@toradex.com>
+ <20211018095249.1219ddaf@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211018095249.1219ddaf@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+X-ClientProxiedBy: GVAP278CA0011.CHEP278.PROD.OUTLOOK.COM
+ (2603:10a6:710:20::21) To DBAPR05MB7445.eurprd05.prod.outlook.com
+ (2603:10a6:10:1a0::8)
 MIME-Version: 1.0
-From:   butt3rflyh4ck <butterflyhuangxx@gmail.com>
-Date:   Tue, 19 Oct 2021 01:14:40 +0800
-Message-ID: <CAFcO6XOmoS7EacN_n6v4Txk7xL7iqRa2gABg3F7E3Naf5uG94g@mail.gmail.com>
-Subject: There is a null-ptr-deref bug in kvm_dirty_ring_get in virt/kvm/dirty_ring.c
-To:     pbonzini@redhat.com
-Cc:     kvm@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Received: from francesco-nb.toradex.int (93.49.2.63) by GVAP278CA0011.CHEP278.PROD.OUTLOOK.COM (2603:10a6:710:20::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.15 via Frontend Transport; Mon, 18 Oct 2021 17:16:23 +0000
+Received: by francesco-nb.toradex.int (Postfix, from userid 1000)       id F2F4510A0FF3; Mon, 18 Oct 2021 19:16:21 +0200 (CEST)
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 870c04fe-7966-434e-932d-08d9925b02e3
+X-MS-TrafficTypeDiagnostic: DB6PR05MB4549:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DB6PR05MB454959C2A8D29638F2E67D12E2BC9@DB6PR05MB4549.eurprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:820;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: V+R5/qsqgVS3QOAKrggarbJRDaXXVt/r36+ZUOB+crduWnLTg8fbjz1k+22eKmo4uhzdvo9OayW9buT8ZJQ3Kmv8gRBVtvhoXCyAjVGNkLal64pY9TGjC3T5jTzwGfL0aWlKKiP6uG5SrAPFgKkSApw8QDbAidsncvNh46tuWBsZvlLCn+CUq5zkNselkkn51isl21gjo172CNKeC8ifrgTMe408AFUg8rt9UYyUdeLEWicSCKEEl4os1PH6ogDxu6Fwrn5jFwTm3eueLDCV579AsfvHgdS2d+ySMEj7us7blDKGrjeSyz1j2LaYaSmCk6zYVshOD2iQG7zvMb70/v6Imve+0sOHi6wtOacVCqRxNrTKazneUOL7llmq/rfV9vr5UvZAYMly9Kt5AMpDT+tARTXVyUOSSJz3+Xxk/jWt8VSJ/CUnQSfuhFxEqMaU1tncs1/AFD6ppBvZNV0NvN9qM3INnmoL+mSlyF8i1yDvcb0zJESQt1mMnsAFI0MdT4cugyRoUpJSGTwdGvM++B7/FBucbxJA2R99Hcj9Ees1yNnAmmvoYHId7nZ5BSTw876UWlV2DrqI/Wj3II4PDqXyY/DOz6mOEMrKtJ+LDfdEWzOjOchCb1oV1Oy2iLAKzYbt7hDUMws3tqITIx/gMUMONzVX6AjtxzvQ8uqMRrwCH1aCHudZ/sx2vq8aIZ0EgMaZ1apk2My5QbZE4+3AzAIcL7wwL9U3WsHbYy4+xVm+do6JstPfD3uNjzbs/7w1QlfZwtTKvJl2XYoS5UtAmLo/hW38CiVdsW3WGic51G8=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DBAPR05MB7445.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(4326008)(52116002)(44832011)(8936002)(8676002)(966005)(42186006)(316002)(33656002)(6266002)(54906003)(86362001)(5660300002)(1076003)(38100700002)(38350700002)(7416002)(66946007)(508600001)(6916009)(83380400001)(26005)(2906002)(66556008)(66476007)(186003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?moS3REKXWjcGsmRkPGXT+h7iYSEyut7t+4lfFv6Ql/fzqNN1epucV8RSTWWh?=
+ =?us-ascii?Q?UZxc0uld03zqizB0+JNxni6qknU9Qss+DT7xEd2qAyy405ap6EKEr4gU/RVj?=
+ =?us-ascii?Q?J+4/sM9d82tBc+0dvJdxZlLQfvR5t82pvQixzXeU1MChiBIyBslE+viK2TLu?=
+ =?us-ascii?Q?NfBQkVS93Y/dvoNcFy3ivHYujQCEZIhMVZ71XXZsBWvX9CfW6lcNXQn3ipHp?=
+ =?us-ascii?Q?SbplQRJ0c3SGunkiK4AbJ5eS1kuA0qd9uL5xF6nN+tTPQKWZHg45k2uW9EnC?=
+ =?us-ascii?Q?i2TV/P0dcFihKygBxt3ympvAhg5hFVD1EwV8ia8lI6e3h2RSo8MCRrteSvQf?=
+ =?us-ascii?Q?GZo/NZwaC5RgWP9bfTnIdBjCfEBH5aQGX6S2b/eGU5W9tSuZUMPWtyawYT0p?=
+ =?us-ascii?Q?/2FpM4GrEUNWqvXIJwmhRvQKlf+EByDdE1w9FqdGWY3pnbvMvqHmsw2h0mTS?=
+ =?us-ascii?Q?GIAtRvOTavY9Sy19FwM4Qv+6NO25kQUh9JUqP06GDUUfEqbE5nGJ589xq7Gp?=
+ =?us-ascii?Q?mv4Yws9yXhuJFt/orlPaXTVZGBnNeEwsrMX9hyJDSSQNvhdnY91cjttftu6+?=
+ =?us-ascii?Q?OiKGX+WGILEY5JOmw5dk4/gxYitXwC3IJItjGTKF06TIjCo/OzZZUkE5RMSY?=
+ =?us-ascii?Q?TxLdeciMY6xnQWeIQDAmWSEhaA/RT1s9cUNIYP7tEMvMQOn9MF00D1c5N7+b?=
+ =?us-ascii?Q?rPZ+S1JQHMeRkiK2UoGXYJNaReM1oD5v+/4smuv/iNl4AFGXCJbPl5zWme8P?=
+ =?us-ascii?Q?Galh3OgX9tzMC8uFjdDT8Qg4fiPEttN91Okrp/NahD/y3LM+Fu6Veb1Jovrp?=
+ =?us-ascii?Q?5eFFtrSbMrjKmfFJmWjDdsph/mTDe6LYcPbQKy6HWpYINAuUz234VkXhb4qg?=
+ =?us-ascii?Q?dErH6U1YNy58DYeMDVq4kB4x12gqvSNAwA1qQQMq3JMlqN6ZCCmyTkpYdJqh?=
+ =?us-ascii?Q?X6brS3s1k00zw/+NxVfKG4Ik49cUAZy3oypPhNMwyfqcJQRpmH2cLwHEbId6?=
+ =?us-ascii?Q?ng14k+Bdt9CcEBv2reYtYj6m9jGjQnNrUS8OOvYrdMnEr5Own5oAA540TebH?=
+ =?us-ascii?Q?eyKBZeEJFmaUyoVC7aL8I1IjEVY33JsUwkvT9h4xmsDGn3Z9Jw8PBjBdsJz4?=
+ =?us-ascii?Q?9WXVvWdroY8Zgi8I2qy1KCM6K6EK4deObntdkH+d4o6tNtbZ9WzXr0oZM+Wo?=
+ =?us-ascii?Q?HzncXN0h5TcgibwICrJRJOVNWiH2ivyLyI5cXR6SPSO/xB4S4pjIt0qCEa6L?=
+ =?us-ascii?Q?GyKkr7yfUGLwvdMUcUNJiyw4wRdHVayW3+TdYbvHulHxaInSwuKGZ2s6gGJK?=
+ =?us-ascii?Q?OFd3YzfYa4qzdzMjBqZT8iFl?=
+X-OriginatorOrg: toradex.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 870c04fe-7966-434e-932d-08d9925b02e3
+X-MS-Exchange-CrossTenant-AuthSource: DBAPR05MB7445.eurprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Oct 2021 17:16:23.8859
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: d9995866-0d9b-4251-8315-093f062abab4
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 3N9tU1Zc4rD2RiNdVyKJMWr3mzc15lKD1on6zmCzBxghbHJB23y3Xzlie46ScZNocXcEcQEUyZI6GeAOEPj2/916PBmHlrpcgrCGtlr5v5o=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR05MB4549
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, there is a null-ptr-deref bug in kvm_dirty_ring_get in
-virt/kvm/dirty_ring.c and I reproduce it on 5.15.0-rc5+.
+Hello Jakub,
 
-###analyze
-we can call KVM_XEN_HVM_SET_ATTR ioctl and it would invoke
-kvm_xen_hvm_set_attr(), it would call mark_page_dirty_in_slot().
-mark_page_dirty_in_slot()
-```
-void mark_page_dirty_in_slot(struct kvm *kvm,
-     struct kvm_memory_slot *memslot,
-     gfn_t gfn)
-{
-if (memslot && kvm_slot_dirty_track_enabled(memslot)) {
-unsigned long rel_gfn = gfn - memslot->base_gfn;
-u32 slot = (memslot->as_id << 16) | memslot->id;
+On Mon, Oct 18, 2021 at 09:52:49AM -0700, Jakub Kicinski wrote:
+> On Mon, 18 Oct 2021 11:42:58 +0200 Francesco Dolcini wrote:
+> > From: Stefan Agner <stefan@agner.ch>
+> > 
+> > Some Micrel KSZ8041NL PHY chips exhibit continous RX errors after using
+> > the power down mode bit (0.11). If the PHY is taken out of power down
+> > mode in a certain temperature range, the PHY enters a weird state which
+> > leads to continously reporting RX errors. In that state, the MAC is not
+> > able to receive or send any Ethernet frames and the activity LED is
+> > constantly blinking. Since Linux is using the suspend callback when the
+> > interface is taken down, ending up in that state can easily happen
+> > during a normal startup.
+> > 
+> > Micrel confirmed the issue in errata DS80000700A [*], caused by abnormal
+> > clock recovery when using power down mode. Even the latest revision (A4,
+> > Revision ID 0x1513) seems to suffer that problem, and according to the
+> > errata is not going to be fixed.
+> > 
+> > Remove the suspend/resume callback to avoid using the power down mode
+> > completely.
+> > 
+> > [*] https://ww1.microchip.com/downloads/en/DeviceDoc/80000700A.pdf
+> > 
+> > Signed-off-by: Stefan Agner <stefan@agner.ch>
+> > Acked-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>
+> > Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
+> 
+> Is this the correct fixes tag?
+> 
+> Fixes: 1a5465f5d6a2 ("phy/micrel: Add suspend/resume support to Micrel PHYs")
+The errata is from 2016, while this commit is from 2013, weird? Apart of that I
+can add the Fixes tag, should we send this also to stable?
 
-if (kvm->dirty_ring_size)
-kvm_dirty_ring_push(kvm_dirty_ring_get(kvm),
-    slot, rel_gfn);
-else
-set_bit_le(rel_gfn, memslot->dirty_bitmap);
-}
-}
-```
-mark_page_dirty_in_slot() would call kvm_dirty_ring_get() to get
-vcpu->dirty_ring.
-kvm_dirty_ring_get()
-```
-struct kvm_dirty_ring *kvm_dirty_ring_get(struct kvm *kvm)
-{
-struct kvm_vcpu *vcpu = kvm_get_running_vcpu();  //-------> invoke
-kvm_get_running_vcpu() to get a vcpu.
+> Should we leave a comment in place of the callbacks referring 
+> to the errata?
+I think is a good idea, I'll add it.
 
-WARN_ON_ONCE(vcpu->kvm != kvm); [1]
-
-return &vcpu->dirty_ring;
-}
-```
-but we had not called KVM_CREATE_VCPU ioctl to create a kvm_vcpu so
-vcpu is NULL.
-
-[1].vcpu->kvm caused a null pointer dereference.
-
-###Crash log
-root@syzkaller:/home/user# ./kvm_dirty_ring_get
-[ 2608.490187][ T6513] BUG: kernel NULL pointer dereference, address:
-0000000000000000
-[ 2608.491652][ T6513] #PF: supervisor read access in kernel mode
-[ 2608.492713][ T6513] #PF: error_code(0x0000) - not-present page
-[ 2608.493770][ T6513] PGD 15944067 P4D 15944067 PUD 1589d067 PMD 0
-[ 2608.495568][ T6513] Oops: 0000 [#1] PREEMPT SMP
-[ 2608.496355][ T6513] CPU: 1 PID: 6513 Comm: kvm_dirty_ring_ Not
-tainted 5.15.0-rc5+ #14
-[ 2608.497755][ T6513] Hardware name: QEMU Standard PC (i440FX + PIIX,
-1996), BIOS 1.13.0-1ubuntu1 04/01/2014
-[ 2608.499451][ T6513] RIP: 0010:kvm_dirty_ring_get+0x9/0x20
-[ 2608.500480][ T6513] Code: 90 e8 5b bb 04 00 83 c0 40 c3 0f 1f 80 00
-00 00 00 8b 07 8b 57 04 29 d0 39 47 0c 0f 96 c0 c3 66 90 cc 48 89 fb
-e8 17 06 ff ff <48> b
-[ 2608.503997][ T6513] RSP: 0018:ffffc90000ab3c08 EFLAGS: 00010286
-[ 2608.505054][ T6513] RAX: 0000000000000000 RBX: ffffc90000abd000
-RCX: 0000000000000000
-[ 2608.506346][ T6513] RDX: 0000000000000001 RSI: ffffffff84fc5baf
-RDI: 00000000ffffffff
-[ 2608.507705][ T6513] RBP: 0000000000000000 R08: 0000000000000000
-R09: 0000000000050198
-[ 2608.509119][ T6513] R10: 0000000000000001 R11: 0000000000000000
-R12: 0000000000000000
-[ 2608.510527][ T6513] R13: 0000000020fff000 R14: 0000000000000000
-R15: 0000000000000004
-[ 2608.512259][ T6513] FS:  0000000001cb0880(0000)
-GS:ffff88807ec00000(0000) knlGS:0000000000000000
-[ 2608.513848][ T6513] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[ 2608.515061][ T6513] CR2: 0000000000000000 CR3: 000000001583c000
-CR4: 00000000000006e0
-[ 2608.516506][ T6513] Call Trace:
-[ 2608.517110][ T6513]  mark_page_dirty_in_slot.part.0+0x21/0x50
-[ 2608.518163][ T6513]  __kvm_write_guest_page+0xa1/0xc0
-[ 2608.519078][ T6513]  kvm_write_guest+0x42/0x80
-[ 2608.519901][ T6513]  kvm_write_wall_clock+0x7f/0x140
-[ 2608.520835][ T6513]  kvm_xen_hvm_set_attr+0x13d/0x190
-[ 2608.521775][ T6513]  kvm_arch_vm_ioctl+0xa8b/0xc50
-[ 2608.522762][ T6513]  ? tomoyo_path_number_perm+0xee/0x290
-[ 2608.523771][ T6513]  kvm_vm_ioctl+0x716/0xe10
-[ 2608.524545][ T6513]  __x64_sys_ioctl+0x7b/0xb0
-[ 2608.525362][ T6513]  do_syscall_64+0x35/0xb0
-[ 2608.530275][ T6513]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-[ 2608.531327][ T6513] RIP: 0033:0x44953d
-[ 2608.532096][ T6513] Code: 28 c3 e8 36 29 00 00 66 0f 1f 44 00 00 f3
-0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b
-4c 24 08 0f 05 <48> 8
-[ 2608.535565][ T6513] RSP: 002b:00007ffeb22c2238 EFLAGS: 00000202
-ORIG_RAX: 0000000000000010
-[ 2608.537028][ T6513] RAX: ffffffffffffffda RBX: 0000000000400518
-RCX: 000000000044953d
-[ 2608.538436][ T6513] RDX: 0000000020001080 RSI: 000000004048aec9
-RDI: 0000000000000004
-[ 2608.539851][ T6513] RBP: 00007ffeb22c2250 R08: 0000000000000000
-R09: 0000000000000000
-[ 2608.541273][ T6513] R10: 0000000000000000 R11: 0000000000000202
-R12: 0000000000402fb0
-[ 2608.542845][ T6513] R13: 0000000000000000 R14: 00000000004c0018
-R15: 0000000000000000
-[ 2608.544260][ T6513] Modules linked in:
-[ 2608.544965][ T6513] CR2: 0000000000000000
-[ 2608.547791][ T6513] ---[ end trace 69dbdf44c6028ede ]---
-[ 2608.548674][ T6513] RIP: 0010:kvm_dirty_ring_get+0x9/0x20
-[ 2608.549513][ T6513] Code: 90 e8 5b bb 04 00 83 c0 40 c3 0f 1f 80 00
-00 00 00 8b 07 8b 57 04 29 d0 39 47 0c 0f 96 c0 c3 66 90 cc 48 89 fb
-e8 17 06 ff ff <48> b
-[ 2608.552808][ T6513] RSP: 0018:ffffc90000ab3c08 EFLAGS: 00010286
-[ 2608.553702][ T6513] RAX: 0000000000000000 RBX: ffffc90000abd000
-RCX: 0000000000000000
-[ 2608.556308][ T6513] RDX: 0000000000000001 RSI: ffffffff84fc5baf
-RDI: 00000000ffffffff
-[ 2608.557778][ T6513] RBP: 0000000000000000 R08: 0000000000000000
-R09: 0000000000050198
-[ 2608.559314][ T6513] R10: 0000000000000001 R11: 0000000000000000
-R12: 0000000000000000
-[ 2608.560877][ T6513] R13: 0000000020fff000 R14: 0000000000000000
-R15: 0000000000000004
-[ 2608.562799][ T6513] FS:  0000000001cb0880(0000)
-GS:ffff88803ec00000(0000) knlGS:0000000000000000
-[ 2608.564529][ T6513] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[ 2608.565864][ T6513] CR2: 0000000020000001 CR3: 000000001583c000
-CR4: 00000000000006f0
-[ 2608.567378][ T6513] Kernel panic - not syncing: Fatal exception
-[ 2608.568551][ T6513] Kernel Offset: disabled
-[ 2608.574584][ T6513] Rebooting in 86400 seconds..
-
-Regards,
- butt3rflyh4ck.
-
--- 
-Active Defense Lab of Venustech
+Francesco
