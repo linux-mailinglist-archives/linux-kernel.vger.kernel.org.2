@@ -2,116 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 519F3431835
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 13:53:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6080431838
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 13:55:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231474AbhJRL4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 07:56:07 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:37654 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230048AbhJRL4F (ORCPT
+        id S230525AbhJRL51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 07:57:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40778 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229644AbhJRL5Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 07:56:05 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id C710221A88;
-        Mon, 18 Oct 2021 11:53:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1634558033; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=z0UuFhyEIjaBwP5r+PsHqxA5xRPhuNYdcMZlskEMrGY=;
-        b=ZjqWXdfXKMHPd/7dT3ZBbyBYZT0GvgAZ5uFgml9vKheBX4/odRHnrEAofs7gvFBKL4fXSS
-        QqzjjM9mDqd1EmrGjEllilhLo4/Pl972XwkKlQ/ZZD5galvGZzeue6+WzkaFo16XZqbkRh
-        O4YcNdXLvw0yWOgMbWzLZcivjA/nvDg=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 642DDA3B89;
-        Mon, 18 Oct 2021 11:53:53 +0000 (UTC)
-Date:   Mon, 18 Oct 2021 13:53:43 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Vasily Averin <vvs@virtuozzo.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Shakeel Butt <shakeelb@google.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel@openvz.org
-Subject: Re: [PATCH memcg 0/1] false global OOM triggered by memcg-limited
- task
-Message-ID: <YW1gRz0rTkJrvc4L@dhcp22.suse.cz>
-References: <9d10df01-0127-fb40-81c3-cc53c9733c3e@virtuozzo.com>
- <YW04jWSv6pQb2Goe@dhcp22.suse.cz>
- <6b751abe-aa52-d1d8-2631-ec471975cc3a@virtuozzo.com>
+        Mon, 18 Oct 2021 07:57:25 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12CE3C06161C;
+        Mon, 18 Oct 2021 04:55:14 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: kholk11)
+        with ESMTPSA id BC85B1F42CFE
+Subject: Re: [PATCH] dt-bindings: mfd: change naming of mediatek rpmsg
+ property
+To:     Tinghan Shen <tinghan.shen@mediatek.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com
+References: <20211018115111.14096-1-tinghan.shen@mediatek.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Message-ID: <b7fe804b-b795-11a5-4751-6338ae4c2f53@collabora.com>
+Date:   Mon, 18 Oct 2021 13:55:09 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6b751abe-aa52-d1d8-2631-ec471975cc3a@virtuozzo.com>
+In-Reply-To: <20211018115111.14096-1-tinghan.shen@mediatek.com>
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 18-10-21 13:05:35, Vasily Averin wrote:
-> On 18.10.2021 12:04, Michal Hocko wrote:
-> > On Mon 18-10-21 11:13:52, Vasily Averin wrote:
-> > [...]
-> >> How could this happen?
-> >>
-> >> User-space task inside the memcg-limited container generated a page fault,
-> >> its handler do_user_addr_fault() called handle_mm_fault which could not
-> >> allocate the page due to exceeding the memcg limit and returned VM_FAULT_OOM.
-> >> Then do_user_addr_fault() called pagefault_out_of_memory() which executed
-> >> out_of_memory() without set of memcg.
-> >>
-> >> Partially this problem depends on one of my recent patches, disabled unlimited
-> >> memory allocation for dying tasks. However I think the problem can happen
-> >> on non-killed tasks too, for example because of kmem limit.
-> > 
-> > Could you be more specific on how this can happen without your patch? I
-> > have to say I haven't realized this side effect when discussing it.
+> Change from "mtk,rpmsg-name" to "mediatek,rpmsg-name" to sync with the
+> vendor name defined in vendor-prefixes.yaml.
 > 
-> We can reach obj_cgroup_charge_pages() for example via
+> Signed-off-by: Tinghan Shen <tinghan.shen@mediatek.com>
+> ---
+>   Documentation/devicetree/bindings/mfd/google,cros-ec.yaml | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> do_user_addr_fault
-> handle_mm_fault
-> __handle_mm_fault
-> p4d_alloc
-> __p4d_alloc
-> p4d_alloc_one
-> get_zeroed_page
-> __get_free_pages
-> alloc_pages
-> __alloc_pages
-> __memcg_kmem_charge_page
-> obj_cgroup_charge_pages
-> 
-> Here we call try_charge_memcg() that return success and approve the allocation,
-> however then we hit into kmem limit and fail the allocation.
 
-Just to make sure I understand this would be for the v1 kmem explicit
-limit, correct?
 
-> If required I can try to search how try_charge_memcg() can reject page allocation 
-> of non-dying task too.
-
-Yes.
-
-> > I will be honest that I am not really happy about pagefault_out_of_memory.
-> > I have tried to remove it in the past. Without much success back then,
-> > unfortunately[1]. 
-> > Maybe we should get rid of it finally. The OOM is always triggered from
-> > inside the allocator where we have much more infromation about the
-> > allocation context. A first step would be to skip pagefault_out_of_memory
-> > for killed or exiting processes.
-> 
-> I like this idea, however it may be not enough, at least in scenario described above.
-
-I original patch has removed the oom killer completely.
-
--- 
-Michal Hocko
-SUSE Labs
+Reviewed-By: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
