@@ -2,136 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADB2A431846
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 13:57:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4EC1431849
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 13:58:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231337AbhJRL7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 07:59:40 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:46085 "EHLO pegase2.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229519AbhJRL7j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 07:59:39 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4HXwNQ3pXVz9sSg;
-        Mon, 18 Oct 2021 13:57:26 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id RL3x8vznDKhL; Mon, 18 Oct 2021 13:57:26 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4HXwNQ2lbsz9sSY;
-        Mon, 18 Oct 2021 13:57:26 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 466508B76C;
-        Mon, 18 Oct 2021 13:57:26 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id MRjVM3w8MEjt; Mon, 18 Oct 2021 13:57:26 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (unknown [172.25.230.103])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 102D18B763;
-        Mon, 18 Oct 2021 13:57:26 +0200 (CEST)
-Subject: Re: [PATCH net-next] phy: micrel: ksz8041nl: do not use power down
- mode
-To:     Francesco Dolcini <francesco.dolcini@toradex.com>,
-        f.fainelli@gmail.com, Andrew Lunn <andrew@lunn.ch>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stefan Agner <stefan@agner.ch>,
-        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20211018094256.70096-1-francesco.dolcini@toradex.com>
- <180289ac-4480-1e4c-d679-df4f0478ec65@csgroup.eu>
- <20211018101802.GA7669@francesco-nb.int.toradex.com>
- <a06104cf-d634-a25a-cf54-975689ad3e91@csgroup.eu>
- <20211018112735.GB7669@francesco-nb.int.toradex.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <efb25ac0-a5f6-fc88-ce6d-f93a174c65f1@csgroup.eu>
-Date:   Mon, 18 Oct 2021 13:57:25 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <20211018112735.GB7669@francesco-nb.int.toradex.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr-FR
-Content-Transfer-Encoding: 8bit
+        id S231459AbhJRMA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 08:00:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41486 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231165AbhJRMAY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 08:00:24 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8567C06161C;
+        Mon, 18 Oct 2021 04:58:13 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id f11so10651164pfc.12;
+        Mon, 18 Oct 2021 04:58:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id;
+        bh=SuFOxZl4+HH69viYIp+PkDxoOY0BPw8gzbppwpli0cs=;
+        b=XZYvJm/CBRdfr55abbtGKo3QQ2debO5VqEhs2PJuIV7rsBSecPpoJkVX4NKw0uZjWd
+         NVKcH7XaTPS5AdUvJSTjLJNmj98awqHxENTZ/EYMaK1P3ltgCzEVswEM0zfdsXX9geSp
+         P6FuKzDV4jaGfenNBzxMgaWD1m2+QGe57CTkrfFKJggq5UAeq5A4uYW3gc3iZ3b+OYe+
+         MfQZesqbd1jhE1nJWZaSQgsOBBqywU5bOryj/b5OVdOgCW3/wZeL3Bfac/fS0gqtYhXk
+         llz87F7jzY8NT2kxbIsh017J5OQ7nIKsgHZUog24Ns1paFhz2CHcmkRyOZ7Ym2b+zgfx
+         QEOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=SuFOxZl4+HH69viYIp+PkDxoOY0BPw8gzbppwpli0cs=;
+        b=HIvz4F3hTtDjmcbZs8XXrC0esab2Pa9vz63NpgYHTXcKJ7oaWspLZtOdbPT6IYqsHc
+         ZyqmzadtyGeGdm/EufyTe1CgtKbTAlB+zPp7geGaJY+tQi5YAeDtXvNdxbXmYF37/rAl
+         PUIX7Q/FwoI/PsQLWge1SYy/VULB+OwS3lBx00GIpZXsXFO13weGB8UIc7res9HLVe3X
+         YmX7a0vsqj4SAZ8wCrPzsFe0DjUiLj5oEarFhnGCa3ZYFTEy3KGG2uO/jnrkzaHWRNpa
+         f2XcmvPjclEb/xQebXThZ1Byhuh8toFI2rSiaNTsFq6IweqEELR20BYbQvIbTo/3UfNb
+         Ah4g==
+X-Gm-Message-State: AOAM530bMraNsC/bpzOINwnqocWP3/ibTH68PBfRCQbVDt3kx6244vCT
+        owNkeeK6HGJmIbg6WulzKbwfMQGoEt6G+j6s
+X-Google-Smtp-Source: ABdhPJztPygk/CipWYSHV7wHwvh/c8bpjiMTQ8DKltuYtItsgFJu1gfWNxkNbCcDzQo4uPUJhwa58w==
+X-Received: by 2002:a63:6b03:: with SMTP id g3mr23216912pgc.123.1634558293387;
+        Mon, 18 Oct 2021 04:58:13 -0700 (PDT)
+Received: from BJ-zhangqiang.qcraft.lan ([137.59.101.13])
+        by smtp.gmail.com with ESMTPSA id d60sm18910124pjk.49.2021.10.18.04.58.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Oct 2021 04:58:13 -0700 (PDT)
+From:   Zqiang <qiang.zhang1211@gmail.com>
+To:     axboe@kernel.dk, hch@lst.de, willy@infradead.org,
+        sunhao.th@gmail.com, hch@infradead.org
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Zqiang <qiang.zhang1211@gmail.com>
+Subject: [PATCH v3] block: fix incorrect references to disk objects
+Date:   Mon, 18 Oct 2021 19:58:07 +0800
+Message-Id: <20211018115807.21103-1-qiang.zhang1211@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Sergei Shtylyov
+When adding partitions to the disk, the reference count of the disk
+object is increased. then alloc partition device and called
+device_add(), if the device_add() return error, the reference
+count of the disk object will be reduced twice, at put_device(pdev)
+and put_disk(disk). this leads to the end of the object's life cycle
+prematurely, and trigger following calltrace.
 
-Adding Sergei Shtylyov in the discussion, as he submitted the patch for 
-the support of KSZ8041RNLI.
+  __init_work+0x2d/0x50 kernel/workqueue.c:519
+  synchronize_rcu_expedited+0x3af/0x650 kernel/rcu/tree_exp.h:847
+  bdi_remove_from_list mm/backing-dev.c:938 [inline]
+  bdi_unregister+0x17f/0x5c0 mm/backing-dev.c:946
+  release_bdi+0xa1/0xc0 mm/backing-dev.c:968
+  kref_put include/linux/kref.h:65 [inline]
+  bdi_put+0x72/0xa0 mm/backing-dev.c:976
+  bdev_free_inode+0x11e/0x220 block/bdev.c:408
+  i_callback+0x3f/0x70 fs/inode.c:226
+  rcu_do_batch kernel/rcu/tree.c:2508 [inline]
+  rcu_core+0x76d/0x16c0 kernel/rcu/tree.c:2743
+  __do_softirq+0x1d7/0x93b kernel/softirq.c:558
+  invoke_softirq kernel/softirq.c:432 [inline]
+  __irq_exit_rcu kernel/softirq.c:636 [inline]
+  irq_exit_rcu+0xf2/0x130 kernel/softirq.c:648
+  sysvec_apic_timer_interrupt+0x93/0xc0
 
+Return directly after calling the put_device().
 
-Le 18/10/2021 à 13:27, Francesco Dolcini a écrit :
-> On Mon, Oct 18, 2021 at 12:46:14PM +0200, Christophe Leroy wrote:
->>
->>
->> Le 18/10/2021 à 12:18, Francesco Dolcini a écrit :
->>> Hello Christophe,
->>>
->>> On Mon, Oct 18, 2021 at 11:53:03AM +0200, Christophe Leroy wrote:
->>>>
->>>>
->>>> Le 18/10/2021 à 11:42, Francesco Dolcini a écrit :
->>>>> From: Stefan Agner <stefan@agner.ch>
->>>>>
->>>>> Some Micrel KSZ8041NL PHY chips exhibit continous RX errors after using
->>>>> the power down mode bit (0.11). If the PHY is taken out of power down
->>>>> mode in a certain temperature range, the PHY enters a weird state which
->>>>> leads to continously reporting RX errors. In that state, the MAC is not
->>>>> able to receive or send any Ethernet frames and the activity LED is
->>>>> constantly blinking. Since Linux is using the suspend callback when the
->>>>> interface is taken down, ending up in that state can easily happen
->>>>> during a normal startup.
->>>>>
->>>>> Micrel confirmed the issue in errata DS80000700A [*], caused by abnormal
->>>>> clock recovery when using power down mode. Even the latest revision (A4,
->>>>> Revision ID 0x1513) seems to suffer that problem, and according to the
->>>>> errata is not going to be fixed.
->>>>>
->>>>> Remove the suspend/resume callback to avoid using the power down mode
->>>>> completely.
->>>>
->>>> As far as I can see in the ERRATA, KSZ8041 RNLI also has the bug.
->>>> Shoudn't you also remove the suspend/resume on that one (which follows in
->>>> ksphy_driver[])
->>>
->>> Yes, I could, however this patch is coming out of a real issue we had with
->>> KSZ8041NL with this specific phy id (and we have such a patch in our linux
->>> branch since years).
->>>
->>> On the other hand the entry for KSZ8041RNLI in the driver is somehow weird,
->>> since the phy id according to the original commit does not even exists on
->>> the datasheet. Would you be confident applying such errata for that phyid
->>> without having a way of testing it?
->>
->>
->> If your patch was to add the suspend/resume capability I would agree with
->> you, but here we are talking about removing it, so what risk are we taking ?
-> yes, you are right.
-> 
->> In addition, commit 4bd7b5127bd0 ("micrel: add support for KSZ8041RNLI")
->> clearly tells that the only thing it did was to copy KSZ8041NL entry, so for
->> me updating both entries would really make sense.
->>
->> It looks odd to me that you refer in your commit log to an ERRATA that tells
->> you that the bug also exists on the KSZ8041RNLI and you apply it only
->> partly.
-> 
-> I think I was not clear enough, the entry I changed should already cover
-> KSZ8041RNLI, the phyid is supposed to be just the same according to the
-> datasheet. This entry for KSZ8041RNLI seems really special with this
-> un-documented phyid.
-> But I'm just speculating, I do not have access to these hardware.
-> 
-> Said that if there are no concern from anybody else, to be on the safe/cautious
-> side, I can just update also this entry.
-> 
-> Francesco
-> 
+Reported-by: Hao Sun <sunhao.th@gmail.com>
+Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+---
+ v1->v2:
+ directly returning instead of assigning disk to NULL
+ v2->v3:
+ modify description information
+
+ block/partitions/core.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/block/partitions/core.c b/block/partitions/core.c
+index 9dbddc355b40..ed5deef1d7e1 100644
+--- a/block/partitions/core.c
++++ b/block/partitions/core.c
+@@ -424,6 +424,7 @@ static struct block_device *add_partition(struct gendisk *disk, int partno,
+ 	device_del(pdev);
+ out_put:
+ 	put_device(pdev);
++	return ERR_PTR(err);
+ out_put_disk:
+ 	put_disk(disk);
+ 	return ERR_PTR(err);
+-- 
+2.17.1
+
