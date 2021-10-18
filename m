@@ -2,145 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4AB643175F
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 13:32:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99942431766
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 13:32:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231264AbhJRLeO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 07:34:14 -0400
-Received: from mail-eopbgr1320133.outbound.protection.outlook.com ([40.107.132.133]:16544
-        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231295AbhJRLeN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 07:34:13 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NvXVHepxleBtm6jXRNZzNy5q86Vz6VmpqbrhztFNDNGZGd2lC1vehZvbk1gD46udz+r55RxcS/k6ybJiDhDauL3Z9XtPhn6SvgKSbMSH608tgCdOj7OXyJFWuSJA1tFfCbKr6yU7Ka5b23qEqWjn8cg6+AYPvWY6vdOy4K4G87Uoy885SD2W84yxtG4xt4TdG/7DC47bp4JlSXb+4gNPAGJg49BnWad6KLBDiGk0cx6a+x0U1U5OvfRF+0h1QGNGbVcLYULvZG1YDDtSyJO9s+WnZlIKrvBAYBMcWsDtn6yPkMayqq72sE5/yZK0KfxC0s5PiIsghERJvD23Ymmtxg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=HwRWRQuXGEWztIpC/0Gp12P2+H+occ4TX9qPQXjR3Ik=;
- b=Giv7RDto8D6XB5BjURPVXVtQSrLJ9KOsq3TsO6cu3FkkoqlFHhyJmHQsPApVf5tcFnXRgGK180cldAKimYYW/ZAAybrYBBy/ki6KoezBHo4HFN7K8QCSr9PXtah9/xdRG7SoXU6NiYyHAxz5YbBaxjpwSwoZSOw+MeAyW657SxeKgujdZKpYeLDZBt/AOqRM+h2NMJTA7RysmaCND9PoaB1H6UftF6Zx84rODij1weyNCIwLILKRYdyWpqqEUO17HIVh92IqGmezAX9i3iE0lMfTQGRHzdx65M/rYcaMolKmMENQ2gx6fN5oZY/HcPOFciAno4CWOjWE3T2I3vGEFg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
- s=selector2-vivo0-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HwRWRQuXGEWztIpC/0Gp12P2+H+occ4TX9qPQXjR3Ik=;
- b=m8BNqNazeFqdhHzob7TJ5cgqvATYXIwkBS0c/0fbmfvjGIy2U9jAAo+544Sx5Tyy9AZZYBFjeJuCBI5Jwq7qkHXboprvvKqJ9iGPFG2AKbIyQM+cRkViddzDsuxWQ+m1gycvWWyBS1x3RN+nQQk7uQuaoKxLy7MOUjyR9l/OdWI=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=vivo.com;
-Received: from SL2PR06MB3082.apcprd06.prod.outlook.com (2603:1096:100:37::17)
- by SL2PR06MB3034.apcprd06.prod.outlook.com (2603:1096:100:31::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.16; Mon, 18 Oct
- 2021 11:32:00 +0000
-Received: from SL2PR06MB3082.apcprd06.prod.outlook.com
- ([fe80::4c9b:b71f:fb67:6414]) by SL2PR06MB3082.apcprd06.prod.outlook.com
- ([fe80::4c9b:b71f:fb67:6414%6]) with mapi id 15.20.4608.018; Mon, 18 Oct 2021
- 11:32:00 +0000
-From:   Qing Wang <wangqing@vivo.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Qing Wang <wangqing@vivo.com>
-Subject: [PATCH] firmware: tegra: switch over to memdup_user()
-Date:   Mon, 18 Oct 2021 04:31:52 -0700
-Message-Id: <1634556712-38938-1-git-send-email-wangqing@vivo.com>
-X-Mailer: git-send-email 2.7.4
-Content-Type: text/plain
-X-ClientProxiedBy: HK2PR02CA0141.apcprd02.prod.outlook.com
- (2603:1096:202:16::25) To SL2PR06MB3082.apcprd06.prod.outlook.com
- (2603:1096:100:37::17)
+        id S231455AbhJRLe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 07:34:57 -0400
+Received: from mail-ua1-f45.google.com ([209.85.222.45]:45895 "EHLO
+        mail-ua1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229519AbhJRLez (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 07:34:55 -0400
+Received: by mail-ua1-f45.google.com with SMTP id a17so1378710uax.12;
+        Mon, 18 Oct 2021 04:32:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=C0ObgRrATtrPSK/G4VV3LCyZwiCeoUzdzpzXNcktwlM=;
+        b=OPhI2GQUOUf/z6GJ0EyL7zohIqlYAVyq+fBJduNp9Z6Ksc6QUNEmDcYAG3zg0gQGWc
+         ycTgb2uIoJgOZGB3B+lZ70PuMxpoqbUZZxR56V0QZYYL8dZ1+meUPqDWasbR40xl8BAy
+         xsqGtS6AsWt+0eWLJm3FylMWQPSlVL4YMtYCA8bp/z2BpbUDIIomk4MHMdeCHPc5d9w5
+         O32ThN6h/wJZFJSfZRtLiWdM49LeZ3F7r2OUOtDu8oXwZ2u4n6jxoBSysEINVYmsA2BV
+         WvdMFy5Gbz5oKUWF04HMU/C0Bjk2GnU83qN7MEevFnUZ7NMDLM19HNtQWS2HJDltKCPg
+         JIiQ==
+X-Gm-Message-State: AOAM5329s8tHM17sJrZeR6qmRbhlMQNe9TGvYjkTFHNURM+TvDMGABXR
+        GwtKhcza1XSVwTb8jzV9cHJb591q598lBw==
+X-Google-Smtp-Source: ABdhPJxpuWLTNTjDJUNeXSEF5hgcFu5tSKuC/aiMdGy4Z316nwX2zg697Padya+s82NkljAxaR8QXw==
+X-Received: by 2002:ab0:6546:: with SMTP id x6mr24460407uap.1.1634556764247;
+        Mon, 18 Oct 2021 04:32:44 -0700 (PDT)
+Received: from mail-ua1-f46.google.com (mail-ua1-f46.google.com. [209.85.222.46])
+        by smtp.gmail.com with ESMTPSA id w8sm8845280vkh.36.2021.10.18.04.32.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Oct 2021 04:32:43 -0700 (PDT)
+Received: by mail-ua1-f46.google.com with SMTP id f4so5100184uad.4;
+        Mon, 18 Oct 2021 04:32:43 -0700 (PDT)
+X-Received: by 2002:a67:d583:: with SMTP id m3mr26629786vsj.41.1634556763010;
+ Mon, 18 Oct 2021 04:32:43 -0700 (PDT)
 MIME-Version: 1.0
-Received: from ubuntu.localdomain (218.213.202.189) by HK2PR02CA0141.apcprd02.prod.outlook.com (2603:1096:202:16::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.4608.15 via Frontend Transport; Mon, 18 Oct 2021 11:31:59 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d8bb75b2-eca5-440a-d067-08d9922ae69d
-X-MS-TrafficTypeDiagnostic: SL2PR06MB3034:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SL2PR06MB3034C35E3392F0A3654676BBBDBC9@SL2PR06MB3034.apcprd06.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2657;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: fTHlIWX7H0D+zOik1LzC096YRjG2qLS1FbBYnIYVy0O94joF+YsLOOtR6UuasLcHPYjgmsgVvfktIurb20ZFANLYhb23GmTgAv/46B354N6am8PzorxY0xuZf4lmighbOYPpbEYtahblE6Ks7rkIdlyuQ3u7+H1j8pVz+LEqw1OttF2dq3ggcVvUYInQlcVDGm31cL/BQZ+93Nmq45gYxV5OO3YgLtpO1NvrElaE3ZStWHceN3WQ31SVYZ0XBPjnEPCy1JcZUWDePov5nGUHkGh2LrXZThvHsVvAtE5CtiYy5pYJWd2+a69tT7nAQG3/nGVti3RgR+yL5bdaa9h15MQv5/gDMoJ9c1cOi6nx5dWWXU4wcq7OXSrRKh/CCWuPU4Ex8h/drpwpIPwEOXkGH6gxqoE19E4atHGMYLPYpX54B6hJ9OuHSLAjK8sHHzYB4VQjlrlKfHPEIouI9vuuH0cBrYTxfJ5zggeStLRm1bDdBMcXm9wMnukSv71lJzfItqbrMdiuMBLln8dmikU22neQnl1v6LKgof0J5Qs+dV+2mugIU5M2p3X10RI7xC9HmYD8N/uS36P0FocBnMRW2F5IJcdES5eRL+yKbXBSxSb76zDt94lF54nOqQyQ5KibLdVmrQE+u+FAY1xIOpndsZ/54MjCjL6QUxpgrIkNjnhzCr0iUZZ2ofnxFcb6FEYuBGigUozhMS5lJUm7K6AL2w==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SL2PR06MB3082.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(8936002)(6486002)(52116002)(8676002)(66476007)(2906002)(6666004)(186003)(6512007)(4326008)(6506007)(26005)(66946007)(66556008)(36756003)(107886003)(316002)(83380400001)(956004)(5660300002)(110136005)(2616005)(86362001)(508600001)(38350700002)(38100700002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?i7f2BdbGsN4VDaNViBgSZKmx2rj4RiwCS7BiEXdo53NtoIUEhZkPefCcroXD?=
- =?us-ascii?Q?kg9U5VsMH+7V3M6oyXZ/oNGnA9nIPCAPXA1gxeacH0/6s5kDKLD0yvrxfAdc?=
- =?us-ascii?Q?osHvGfPvaR4Zl7SXPTXAOBqXwPJ1E/ijFonuGXMcFWG7PGG3o9m3riDWDa3t?=
- =?us-ascii?Q?YK4fcvb1BEGayQqXW26K1uTDtRdzb0c73uWwcD/wD5TSKyJQyYx1V4en/cjw?=
- =?us-ascii?Q?ZfDyNqrfhKLQYbIMTSGhi8L/wx4h1J8/dr2VkhuIlNPHNwwQ1DVyKDSb4yDI?=
- =?us-ascii?Q?s4Nf+TpFRL7pOH1j7scWSu0ZO9rp+cH2n/JMqxIdKDwp1de/EciNVWyKpChd?=
- =?us-ascii?Q?BStf9GgE0Z0aPXJDdCuhPVO7CIdMeuVo9tRFXzACOEOWHgUU5/ix2QOjSdhG?=
- =?us-ascii?Q?MOWrKQIvG3M8ZYOxy7JEKDqR6ZMHryoborzwk95CLbnXkWe0u0HdLvRkYtyX?=
- =?us-ascii?Q?ss6ZwxS84SfvGaNz6XGnYimYhnyH0Synr+wnN1Lr/tsLFbFyv7+0TAY5svvU?=
- =?us-ascii?Q?z2W6oaBBC6iGSPs3m9BByDdrN4C0NcJdctkv/sc5/lrRc/XS3sY+wUZtvAax?=
- =?us-ascii?Q?+uMuCZTah4XOJcn6TkQ1bvxfRV3TVmqUyMwXTnyUB/kB58FgGFk12UbJHrgP?=
- =?us-ascii?Q?mRRfAH4m+t3VWaWeDFQfYNu4qQcSyBiHwWmyb0YNEXxkHEjINp35Iqwqa9AR?=
- =?us-ascii?Q?gniaHBQqMXfAPs8YN2jHlvLzy9w8izQaprkfqlrs8DxtUGqo6tZy9QGBgmsK?=
- =?us-ascii?Q?d9Mm2k3IgfMOUINGyp8FfGReHVX4jK5GAlHlt1FCOVDNXT2IGV2E/5qsHWX3?=
- =?us-ascii?Q?o+xzAmJGiBenqSasZNH2YInsy3QVWcUNBrdYId6JR47HaqdUIGo2uY1ZNrnP?=
- =?us-ascii?Q?bpUzF3arsDR1fIBOGuBHpdswakAgMxWYxVYI2XEgvbIwOl/O1kSn3Hd9WiBn?=
- =?us-ascii?Q?g5wl2vh7hsCJl07BxlEgs01UTqM2EytEvwS+f6IpqnHBKY3ZjVm2fnbTfQCO?=
- =?us-ascii?Q?jTloBIvFmRTshSi2LutbPwYre6SbI+oQitpCPkhylW3Tu0pUXA0542+h3vLZ?=
- =?us-ascii?Q?sSwgFxDPcJmRKEoCEYjgep5GW/Z9qL5xmZ4K8kLy5/g3SwPBNJtb3MSc979A?=
- =?us-ascii?Q?WpPyYin6RBC3boBRGknbZKbWhnTZEJQiI+SaIxdz7rX3QFAagzcvjQEuUQvA?=
- =?us-ascii?Q?7T+A99OO0tAGjR01krUMwvyIOkBIAFOTo8l6j2z93tQDddWfVfuDiSeXdcuJ?=
- =?us-ascii?Q?wqCVCx35iMvlebJw9rRwNo3f9elLnF+cf9qloiOeS0FRQyj1wwRj0plo/BNG?=
- =?us-ascii?Q?/JG8EYWQPe6j+Glaw75SogLN?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d8bb75b2-eca5-440a-d067-08d9922ae69d
-X-MS-Exchange-CrossTenant-AuthSource: SL2PR06MB3082.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Oct 2021 11:32:00.6678
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: qPto1Y4r1l8ausPDzAjp03F0v8myH3TRpz9BQwrLwmbuoaHv2QM3GSeaA4E+dorXEkJbeZwbmOFse+JCONt1ng==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SL2PR06MB3034
+References: <cover.1634306198.git.naveennaidu479@gmail.com> <2544a93bf8725eecbea510e7ddbff6b5a5593c84.1634306198.git.naveennaidu479@gmail.com>
+In-Reply-To: <2544a93bf8725eecbea510e7ddbff6b5a5593c84.1634306198.git.naveennaidu479@gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 18 Oct 2021 13:32:31 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdVh79gvAZn+nBeWWtkJqvUb3woi1rRY=BkY+bc4YXFj1Q@mail.gmail.com>
+Message-ID: <CAMuHMdVh79gvAZn+nBeWWtkJqvUb3woi1rRY=BkY+bc4YXFj1Q@mail.gmail.com>
+Subject: Re: [PATCH v2 14/24] PCI: rcar: Remove redundant error fabrication
+ when device read fails
+To:     Naveen Naidu <naveennaidu479@gmail.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Marek Vasut <marek.vasut+renesas@gmail.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        "open list:PCI DRIVER FOR RENESAS R-CAR" 
+        <linux-renesas-soc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes the following Coccinelle warning:
+Hi Naveen,
 
-drivers/firmware/tegra/bpmp-debugfs.c:379: WARNING opportunity for memdup_user
+On Sat, Oct 16, 2021 at 5:33 PM Naveen Naidu <naveennaidu479@gmail.com> wrote:
+> An MMIO read from a PCI device that doesn't exist or doesn't respond
+> causes a PCI error. There's no real data to return to satisfy the
+> CPU read, so most hardware fabricates ~0 data.
+>
+> The host controller drivers sets the error response values (~0) and
+> returns an error when faulty hardware read occurs. But the error
+> response value (~0) is already being set in PCI_OP_READ and
+> PCI_USER_READ_CONFIG whenever a read by host controller driver fails.
+>
+> Thus, it's no longer necessary for the host controller drivers to
+> fabricate any error response.
+>
+> This helps unify PCI error response checking and make error check
+> consistent and easier to find.
+>
+> Signed-off-by: Naveen Naidu <naveennaidu479@gmail.com>
 
-Use memdup_user rather than duplicating its implementation
-This is a little bit restricted to reduce false positives
+Thanks for your patch!
 
-Signed-off-by: Qing Wang <wangqing@vivo.com>
----
- drivers/firmware/tegra/bpmp-debugfs.c | 13 +++----------
- 1 file changed, 3 insertions(+), 10 deletions(-)
+> --- a/drivers/pci/controller/pcie-rcar-host.c
+> +++ b/drivers/pci/controller/pcie-rcar-host.c
+> @@ -161,10 +161,8 @@ static int rcar_pcie_read_conf(struct pci_bus *bus, unsigned int devfn,
+>
+>         ret = rcar_pcie_config_access(host, RCAR_PCI_ACCESS_READ,
+>                                       bus, devfn, where, val);
+> -       if (ret != PCIBIOS_SUCCESSFUL) {
+> -               *val = 0xffffffff;
 
-diff --git a/drivers/firmware/tegra/bpmp-debugfs.c b/drivers/firmware/tegra/bpmp-debugfs.c
-index 6d66fe0..0435709
---- a/drivers/firmware/tegra/bpmp-debugfs.c
-+++ b/drivers/firmware/tegra/bpmp-debugfs.c
-@@ -376,18 +376,11 @@ static ssize_t bpmp_debug_store(struct file *file, const char __user *buf,
- 	if (!filename)
- 		return -ENOENT;
- 
--	databuf = kmalloc(count, GFP_KERNEL);
--	if (!databuf)
--		return -ENOMEM;
--
--	if (copy_from_user(databuf, buf, count)) {
--		err = -EFAULT;
--		goto free_ret;
--	}
-+	databuf = memdup_user(buf, count);
-+	if (IS_ERR(databuf))
-+		return PTR_ERR(databuf);
- 
- 	err = mrq_debug_write(bpmp, filename, databuf, count);
--
--free_ret:
- 	kfree(databuf);
- 
- 	return err ?: count;
--- 
-2.7.4
+I don't see the behavior you describe in PCI_OP_READ(), so dropping
+this will lead to returning an uninitialized value?
 
+> +       if (ret != PCIBIOS_SUCCESSFUL)
+>                 return ret;
+> -       }
+>
+>         if (size == 1)
+>                 *val = (*val >> (BITS_PER_BYTE * (where & 3))) & 0xff;
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
