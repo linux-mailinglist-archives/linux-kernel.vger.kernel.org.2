@@ -2,144 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15EF34327D4
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 21:41:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6A044327D6
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 21:41:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233360AbhJRTnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 15:43:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36346 "EHLO
+        id S232810AbhJRTns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 15:43:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233182AbhJRTnQ (ORCPT
+        with ESMTP id S230159AbhJRTnq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 15:43:16 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F18AC061745
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 12:41:04 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id n8so2111022lfk.6
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 12:41:04 -0700 (PDT)
+        Mon, 18 Oct 2021 15:43:46 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 288F4C06161C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 12:41:35 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id z11so2127858lfj.4
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 12:41:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=rYHsusTbkwFk7JVuDdYhrxYd3Oez/UvdkWTXcYHAjQg=;
-        b=puzIN8gggSDMtRiBbPLKaFTvqQy7PZ8lkaBt48DLOPtDNScgLO0caCDFtegsdUQKjh
-         Zc/9C9T+HcnA0SgWMfyVRL5Ow0do6yh926ZWvkvrHFCiJIURdHJtffZVyrlXtKUVxPEL
-         CFb9eFu99VyaFY/bIua4CuBGKaeQJd9DYeCQ9wzlGimgK1EBifwsZ4CshgBhoOAqjOme
-         WyfGuhjDxSnqdzwsVnrYBnFFxr2SP2/Ywj2aWK9DfxgAcTsIbf6faxSP4UQxnwkMqo0N
-         95L5ciwCdpwEX0pPghtf7pHBFRZu12Yw7rmn+RDW6wvQrGNPlTd/rQsHYm5aSXcFWhWr
-         tvbw==
+        bh=ItTJzIFWSeB5rmBU+FendnKoekV76l/1a/X4v9add+Q=;
+        b=H4wXr5SRERJdoNSWITjR7bS9JJ8gLITCpg+vMJXq4qXSwFNbSx+gnHK00Jms65B6jT
+         6Yv6vYSSgJewe1TqJXzXQnFNcavuIwp7zfz/BmMtcec0LgF/iFtBPT749K8tZ6/mkEEz
+         q4Dmw54k4oY18+0+EyRdL5k2D8dBprCxl9S4s=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=rYHsusTbkwFk7JVuDdYhrxYd3Oez/UvdkWTXcYHAjQg=;
-        b=aZaBa56Qi4OOXZWOdoVK5cq6/MhruXmHHN+iYuUNoBaqAcfC07+dtfE51itLvG0vEu
-         XbEZ3s+rVx+WkuzFwhLbGpZT9rIQHZSeGZjwn0KTcd+l58S+LXM0FgV6a2uy3NpYuAtB
-         vtVEQzpCdQ11P10I5FixKiGAo+LzJDSv4j3QBT/qNHZl+qE4Q5MN7Q7ax5zDoNUHOrFo
-         Wiu4iIS5pOKJTvDHp/hICKUp9Uoc8gvSi9N5cUPSt/cazAZXSnDO1Cyb/H0h8BlolacZ
-         XgqjBNXLjLxXez3de+AWMwjOxa2QPaEBMfcCmOJcKYwoTb7QImtU1nlB+qJaA5Q9UXUo
-         TCnw==
-X-Gm-Message-State: AOAM5335NeUOIkooTSougW5wOjq4L8IEL235ydDCAH73QQm9+0MtXk1L
-        8xhYTPnCoH1gWuvN6cDCGaVUXFWHxU15mraoHf+tiA==
-X-Google-Smtp-Source: ABdhPJyhMahraNf2vp8DJ4sc/jlu5fnRYt3e62ZjpzrZ9VLuGLfJNm+hpN+x+Ll9+fL0V9xGE9QmZpphGSMSBvkZMUs=
-X-Received: by 2002:a05:6512:398f:: with SMTP id j15mr1512665lfu.523.1634586062336;
- Mon, 18 Oct 2021 12:41:02 -0700 (PDT)
+        bh=ItTJzIFWSeB5rmBU+FendnKoekV76l/1a/X4v9add+Q=;
+        b=xErSFFmm435oDPs8pVzTJ4puYbg7R11RfOCRHkOO+Hm5AghJRjoxyQh3hf/etsXPYu
+         Bq2/4LWw+xJzN3SKg+UzlcWrcoA+pwwyLuo/RvCMuHAAdAEmE2Jl8rYhEpxJAuBPgdCe
+         EsdMS7oZkGjbT4D1N5hGHw0ldHRcSd8KSnBFa0jrigqgMCWO8H+HwJ3vZs7F5zhGNseK
+         Zeg57KnY8sVgtiSFEA3T6E/uf9psHvVC/2C4wocvrPZn9UxHT7Dih/7QwJNS66MNyq/Q
+         sGzx/Hp1wAqjCLQZdR615OtaOQIJkZQduN3GU6D+mzryLC7Qcv2tSgqr9xjN1R/yYx5P
+         d57w==
+X-Gm-Message-State: AOAM5321YCE63IdNJUMW6BymOD5JCcQ4L+4OKO7PPn4CPpgGgNVpRoZh
+        zRtO45ukl/t0whrIpC1b9r3A0uQN2S2PyA==
+X-Google-Smtp-Source: ABdhPJxngp3qAyETbHqYslv2txUzqs5SKStN7uM2A0aRjbJMZO8UUtNhqXgHo4RaoaHMpdCPizkkeg==
+X-Received: by 2002:a05:6512:304b:: with SMTP id b11mr1697806lfb.259.1634586093320;
+        Mon, 18 Oct 2021 12:41:33 -0700 (PDT)
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com. [209.85.208.170])
+        by smtp.gmail.com with ESMTPSA id o15sm234715ljm.139.2021.10.18.12.41.31
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Oct 2021 12:41:32 -0700 (PDT)
+Received: by mail-lj1-f170.google.com with SMTP id n7so1734351ljp.5
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 12:41:31 -0700 (PDT)
+X-Received: by 2002:a2e:5cc7:: with SMTP id q190mr1848523ljb.494.1634586091557;
+ Mon, 18 Oct 2021 12:41:31 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211018193101.2340261-1-nathan@kernel.org> <CAKwvOdnPotXBRWW4JEEhEYrL1oRv++bQOge8wQCBNbGuA9HYAw@mail.gmail.com>
-In-Reply-To: <CAKwvOdnPotXBRWW4JEEhEYrL1oRv++bQOge8wQCBNbGuA9HYAw@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 18 Oct 2021 12:40:51 -0700
-Message-ID: <CAKwvOdm5F1LhgyCtJTYYSQMw47FxxE0m+tOnuUgKXwBHEVxS+g@mail.gmail.com>
-Subject: Re: [PATCH] nfp: bpf: Fix bitwise vs. logical OR warning
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Simon Horman <simon.horman@corigine.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>, oss-drivers@corigine.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, llvm@lists.linux.dev
+References: <20211018182537.2316800-1-nathan@kernel.org> <CAKwvOdn4_DrgaZoAo-v7CbYurNUpfAK5tnzT023=WCDzkmYQVg@mail.gmail.com>
+In-Reply-To: <CAKwvOdn4_DrgaZoAo-v7CbYurNUpfAK5tnzT023=WCDzkmYQVg@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 18 Oct 2021 09:41:15 -1000
+X-Gmail-Original-Message-ID: <CAHk-=wi7hUsTTcmPfZCkUEw51Y3ayq3JJxzFsNgodsxxDyk9Ww@mail.gmail.com>
+Message-ID: <CAHk-=wi7hUsTTcmPfZCkUEw51Y3ayq3JJxzFsNgodsxxDyk9Ww@mail.gmail.com>
+Subject: Re: [PATCH] platform/x86: thinkpad_acpi: Fix bitwise vs. logical warning
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Henrique de Moraes Holschuh <hmh@hmh.eng.br>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        ibm-acpi-devel@lists.sourceforge.net,
+        platform-driver-x86@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        llvm@lists.linux.dev, Tor Vic <torvic9@mailbox.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 18, 2021 at 12:39 PM Nick Desaulniers
+On Mon, Oct 18, 2021 at 8:34 AM Nick Desaulniers
 <ndesaulniers@google.com> wrote:
 >
-> On Mon, Oct 18, 2021 at 12:31 PM Nathan Chancellor <nathan@kernel.org> wrote:
-> >
-> > A new warning in clang points out two places in this driver where
-> > boolean expressions are being used with a bitwise OR instead of a
-> > logical one:
-> >
-> > drivers/net/ethernet/netronome/nfp/nfp_asm.c:199:20: error: use of bitwise '|' with boolean operands [-Werror,-Wbitwise-instead-of-logical]
-> >         reg->src_lmextn = swreg_lmextn(lreg) | swreg_lmextn(rreg);
-> >                           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> >                                              ||
-> > drivers/net/ethernet/netronome/nfp/nfp_asm.c:199:20: note: cast one or both operands to int to silence this warning
-> > drivers/net/ethernet/netronome/nfp/nfp_asm.c:280:20: error: use of bitwise '|' with boolean operands [-Werror,-Wbitwise-instead-of-logical]
-> >         reg->src_lmextn = swreg_lmextn(lreg) | swreg_lmextn(rreg);
-> >                           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> >                                              ||
-> > drivers/net/ethernet/netronome/nfp/nfp_asm.c:280:20: note: cast one or both operands to int to silence this warning
-> > 2 errors generated.
-> >
-> > The motivation for the warning is that logical operations short circuit
-> > while bitwise operations do not. In this case, it does not seem like
-> > short circuiting is harmful so implement the suggested fix of changing
-> > to a logical operation to fix the warning.
->
-> I agree. Thanks for the patch.
-> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+> LGTM, thanks for the patch! I guess this would be the first
+> "interesting" case this warning has found in kernel sources?
 
-Perhaps:
+The patch looks obviously correct (tm), but I'm not convinced that the
+warning is actually all that interesting.
 
-Fixes: 995e101ffa71 ("nfp: bpf: encode extended LM pointer operands")
+The thing is, using bitwise operators for booleans is _exactly_ the
+same as using logical ones as long as there are no side effects. In
+fact, any compiler worth its salt will already convert some cases
+between the two as an optimization just as part of code generation.
 
->
-> >
-> > Link: https://github.com/ClangBuiltLinux/linux/issues/1479
-> > Reported-by: Nick Desaulniers <ndesaulniers@google.com>
-> > Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-> > ---
-> >  drivers/net/ethernet/netronome/nfp/nfp_asm.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/net/ethernet/netronome/nfp/nfp_asm.c b/drivers/net/ethernet/netronome/nfp/nfp_asm.c
-> > index 2643ea5948f4..154399c5453f 100644
-> > --- a/drivers/net/ethernet/netronome/nfp/nfp_asm.c
-> > +++ b/drivers/net/ethernet/netronome/nfp/nfp_asm.c
-> > @@ -196,7 +196,7 @@ int swreg_to_unrestricted(swreg dst, swreg lreg, swreg rreg,
-> >         }
-> >
-> >         reg->dst_lmextn = swreg_lmextn(dst);
-> > -       reg->src_lmextn = swreg_lmextn(lreg) | swreg_lmextn(rreg);
-> > +       reg->src_lmextn = swreg_lmextn(lreg) || swreg_lmextn(rreg);
-> >
-> >         return 0;
-> >  }
-> > @@ -277,7 +277,7 @@ int swreg_to_restricted(swreg dst, swreg lreg, swreg rreg,
-> >         }
-> >
-> >         reg->dst_lmextn = swreg_lmextn(dst);
-> > -       reg->src_lmextn = swreg_lmextn(lreg) | swreg_lmextn(rreg);
-> > +       reg->src_lmextn = swreg_lmextn(lreg) || swreg_lmextn(rreg);
-> >
-> >         return 0;
-> >  }
-> >
-> > base-commit: 041c61488236a5a84789083e3d9f0a51139b6edf
-> > --
-> > 2.33.1.637.gf443b226ca
-> >
-> >
->
->
-> --
-> Thanks,
-> ~Nick Desaulniers
+Of course, that "as long as there are no side effects" is the big
+thing - then the short-circuiting of the actual logical operations
+clearly matters. But that wasn't actually the case in this situation
+(or in the kvm situation elsewhere).
 
+So in both of these cases, the difference between "|" and "||" ends up
+purely being a hint to the compiler.
 
+In this case, even if there are no side effects, it's clearly
+pointless to do the second strlencmp() if the first one already
+matched, and the "||" is unquestionably the right hint (and honestly,
+most compilers probably wouldn't even be able to tell "no side
+effects" because it's a fairly complex expression - but since it's
+inlined and uses compiler intrinsics, the compiler _might_ actually be
+able to see that the two are equivalent).
 
--- 
-Thanks,
-~Nick Desaulniers
+But no, I don't think that warning is very interesting. In fact, the
+warning might be overall detrimental, in case the hints were
+intentional (like the kvm case - although I'm not convinced the kvm
+hinting was actually meaningful).
+
+                 Linus
