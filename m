@@ -2,34 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32C20431CA8
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:42:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C104431E53
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:58:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232592AbhJRNnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:43:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55246 "EHLO mail.kernel.org"
+        id S233311AbhJROAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 10:00:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37464 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233736AbhJRNk6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:40:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 540906138B;
-        Mon, 18 Oct 2021 13:33:39 +0000 (UTC)
+        id S234340AbhJRN55 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:57:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5AFC261A05;
+        Mon, 18 Oct 2021 13:41:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634564019;
-        bh=Vw6ttr68ZCstAPpVVICipZAA0bc2xWlXeF1vrKCNfus=;
+        s=korg; t=1634564479;
+        bh=FTq9aKxtvC9DABeHCnl/DgR+38H1FTLYtm0hVD7HkYQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZRIPo804LX3OPGtYZ+PTViu53MXsn5QLz1eriQORkeoJAt+9vxBbbeAw29D+1vnYF
-         ja5t37PP/NnESyy98h1EKIb9cVByPS6pjzXcnmygbLsjZ2pKVRG1ZHhJ9WwyrWFbhf
-         gihBs2rhazTU64eSa83k+5+HBWnH0V7jtKGmLQkk=
+        b=f8+PmlVVOyZEBl9tEwbvM9Xa4jety/r5aCB7TnNTq+P0w9OfgIrdrSK1q6f9oQ9JM
+         8gAbMJgHkzkXVhirX+LH3PKlUff7tEhw91hsSE6wmJFTG49g8jb0hdKxdkSJ2oli0A
+         sD5U3qN3reQgT91H0SrNUwgobepQ1/72K0faqJUQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 5.10 034/103] usb: musb: dsps: Fix the probe error path
+        stable@vger.kernel.org,
+        =?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>,
+        Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH 5.14 071/151] iio: adis16480: fix devices that do not support sleep mode
 Date:   Mon, 18 Oct 2021 15:24:10 +0200
-Message-Id: <20211018132335.864944908@linuxfoundation.org>
+Message-Id: <20211018132342.994281537@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132334.702559133@linuxfoundation.org>
-References: <20211018132334.702559133@linuxfoundation.org>
+In-Reply-To: <20211018132340.682786018@linuxfoundation.org>
+References: <20211018132340.682786018@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,65 +41,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miquel Raynal <miquel.raynal@bootlin.com>
+From: Nuno Sá <nuno.sa@analog.com>
 
-commit c2115b2b16421d93d4993f3fe4c520e91d6fe801 upstream.
+commit ea1945c2f72d7bd253e2ebaa97cdd8d9ffcde076 upstream.
 
-Commit 7c75bde329d7 ("usb: musb: musb_dsps: request_irq() after
-initializing musb") has inverted the calls to
-dsps_setup_optional_vbus_irq() and dsps_create_musb_pdev() without
-updating correctly the error path. dsps_create_musb_pdev() allocates and
-registers a new platform device which must be unregistered and freed
-with platform_device_unregister(), and this is missing upon
-dsps_setup_optional_vbus_irq() error.
+Not all devices supported by this driver support being put to sleep
+mode. For those devices, when calling 'adis16480_stop_device()' on the
+unbind path, we where actually writing in the SYNC_SCALE register.
 
-While on the master branch it seems not to trigger any issue, I observed
-a kernel crash because of a NULL pointer dereference with a v5.10.70
-stable kernel where the patch mentioned above was backported. With this
-kernel version, -EPROBE_DEFER is returned the first time
-dsps_setup_optional_vbus_irq() is called which triggers the probe to
-error out without unregistering the platform device. Unfortunately, on
-the Beagle Bone Black Wireless, the platform device still living in the
-system is being used by the USB Ethernet gadget driver, which during the
-boot phase triggers the crash.
-
-My limited knowledge of the musb world prevents me to revert this commit
-which was sent to silence a robot warning which, as far as I understand,
-does not make sense. The goal of this patch was to prevent an IRQ to
-fire before the platform device being registered. I think this cannot
-ever happen due to the fact that enabling the interrupts is done by the
-->enable() callback of the platform musb device, and this platform
-device must be already registered in order for the core or any other
-user to use this callback.
-
-Hence, I decided to fix the error path, which might prevent future
-errors on mainline kernels while also fixing older ones.
-
-Fixes: 7c75bde329d7 ("usb: musb: musb_dsps: request_irq() after initializing musb")
-Cc: stable@vger.kernel.org
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/r/20211005221631.1529448-1-miquel.raynal@bootlin.com
+Fixes: 80cbc848c4fa0 ("iio: imu: adis16480: Add support for ADIS16490")
+Fixes: 82e7a1b250170 ("iio: imu: adis16480: Add support for ADIS1649x family of devices")
+Signed-off-by: Nuno Sá <nuno.sa@analog.com>
+Link: https://lore.kernel.org/r/20210903141423.517028-6-nuno.sa@analog.com
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/musb/musb_dsps.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/iio/imu/adis16480.c |   14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
---- a/drivers/usb/musb/musb_dsps.c
-+++ b/drivers/usb/musb/musb_dsps.c
-@@ -899,11 +899,13 @@ static int dsps_probe(struct platform_de
- 	if (usb_get_dr_mode(&pdev->dev) == USB_DR_MODE_PERIPHERAL) {
- 		ret = dsps_setup_optional_vbus_irq(pdev, glue);
- 		if (ret)
--			goto err;
-+			goto unregister_pdev;
- 	}
+--- a/drivers/iio/imu/adis16480.c
++++ b/drivers/iio/imu/adis16480.c
+@@ -144,6 +144,7 @@ struct adis16480_chip_info {
+ 	unsigned int max_dec_rate;
+ 	const unsigned int *filter_freqs;
+ 	bool has_pps_clk_mode;
++	bool has_sleep_cnt;
+ 	const struct adis_data adis_data;
+ };
  
- 	return 0;
+@@ -939,6 +940,7 @@ static const struct adis16480_chip_info
+ 		.temp_scale = 5650, /* 5.65 milli degree Celsius */
+ 		.int_clk = 2460000,
+ 		.max_dec_rate = 2048,
++		.has_sleep_cnt = true,
+ 		.filter_freqs = adis16480_def_filter_freqs,
+ 		.adis_data = ADIS16480_DATA(16375, &adis16485_timeouts, 0),
+ 	},
+@@ -952,6 +954,7 @@ static const struct adis16480_chip_info
+ 		.temp_scale = 5650, /* 5.65 milli degree Celsius */
+ 		.int_clk = 2460000,
+ 		.max_dec_rate = 2048,
++		.has_sleep_cnt = true,
+ 		.filter_freqs = adis16480_def_filter_freqs,
+ 		.adis_data = ADIS16480_DATA(16480, &adis16480_timeouts, 0),
+ 	},
+@@ -965,6 +968,7 @@ static const struct adis16480_chip_info
+ 		.temp_scale = 5650, /* 5.65 milli degree Celsius */
+ 		.int_clk = 2460000,
+ 		.max_dec_rate = 2048,
++		.has_sleep_cnt = true,
+ 		.filter_freqs = adis16480_def_filter_freqs,
+ 		.adis_data = ADIS16480_DATA(16485, &adis16485_timeouts, 0),
+ 	},
+@@ -978,6 +982,7 @@ static const struct adis16480_chip_info
+ 		.temp_scale = 5650, /* 5.65 milli degree Celsius */
+ 		.int_clk = 2460000,
+ 		.max_dec_rate = 2048,
++		.has_sleep_cnt = true,
+ 		.filter_freqs = adis16480_def_filter_freqs,
+ 		.adis_data = ADIS16480_DATA(16488, &adis16485_timeouts, 0),
+ 	},
+@@ -1425,9 +1430,12 @@ static int adis16480_probe(struct spi_de
+ 	if (ret)
+ 		return ret;
  
-+unregister_pdev:
-+	platform_device_unregister(glue->musb);
- err:
- 	pm_runtime_disable(&pdev->dev);
- 	iounmap(glue->usbss_base);
+-	ret = devm_add_action_or_reset(&spi->dev, adis16480_stop, indio_dev);
+-	if (ret)
+-		return ret;
++	if (st->chip_info->has_sleep_cnt) {
++		ret = devm_add_action_or_reset(&spi->dev, adis16480_stop,
++					       indio_dev);
++		if (ret)
++			return ret;
++	}
+ 
+ 	ret = adis16480_config_irq_pin(spi->dev.of_node, st);
+ 	if (ret)
 
 
