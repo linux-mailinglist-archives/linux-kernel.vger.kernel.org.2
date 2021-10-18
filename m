@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E566A431BD3
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:33:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B4E3431DFA
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:55:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233137AbhJRNfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:35:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44044 "EHLO mail.kernel.org"
+        id S234486AbhJRN4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:56:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56112 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232527AbhJRNdk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:33:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4083C6137F;
-        Mon, 18 Oct 2021 13:29:46 +0000 (UTC)
+        id S234489AbhJRNx5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:53:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B223E619EA;
+        Mon, 18 Oct 2021 13:39:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634563786;
-        bh=glO5kOTvHBBqUKJHWg7JUF+Q8f3ht5WQPL8YaDXYzo0=;
+        s=korg; t=1634564372;
+        bh=lXLlfCbQtkhdbVNrtf5/tFKWDC0fpl7Ovh1a+dwRxO0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MbFfXzBgXO1+XMDSAbfJApNo6Da8L/nAVudXEl5ZRUopzCen2L4c0Ir5y5tzXmx2H
-         134L2ZNUY80WpPhh+/HYZzSZRBR+aVL8cS/TfBbRMJffod/2Yy/yE9gC1+vdzVSlK6
-         7KdoUxqhpCyVRqicVX6Z3P1Fs1hy8V3zv/ClWL4I=
+        b=KHXL6IC6WUbMSFBuBn1rAl2u/GVMhujQgZBuGj0EqzeugmjKuWVh7HC8GJeRIJT6i
+         b+wiFaH22xGs7XH8jOAPQESpqq9J7qQJr5kz0aEebCriunM+ye0tXDYp68waudikkl
+         W999DDzfUixgqNYefVTJ5pcFW3mu0RW1EjK5wOn8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
-        John Keeping <john@metanate.com>
-Subject: [PATCH 5.4 03/69] ALSA: seq: Fix a potential UAF by wrong private_free call order
-Date:   Mon, 18 Oct 2021 15:24:01 +0200
-Message-Id: <20211018132329.566413001@linuxfoundation.org>
+        stable@vger.kernel.org, Paul Menzel <pmenzel@molgen.mpg.de>,
+        Borislav Petkov <bp@suse.de>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>
+Subject: [PATCH 5.14 063/151] x86/Kconfig: Do not enable AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT automatically
+Date:   Mon, 18 Oct 2021 15:24:02 +0200
+Message-Id: <20211018132342.745738031@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132329.453964125@linuxfoundation.org>
-References: <20211018132329.453964125@linuxfoundation.org>
+In-Reply-To: <20211018132340.682786018@linuxfoundation.org>
+References: <20211018132340.682786018@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,59 +41,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Borislav Petkov <bp@suse.de>
 
-commit 1f8763c59c4ec6254d629fe77c0a52220bd907aa upstream.
+commit 711885906b5c2df90746a51f4cd674f1ab9fbb1d upstream.
 
-John Keeping reported and posted a patch for a potential UAF in
-rawmidi sequencer destruction: the snd_rawmidi_dev_seq_free() may be
-called after the associated rawmidi object got already freed.
-After a deeper look, it turned out that the bug is rather the
-incorrect private_free call order for a snd_seq_device.  The
-snd_seq_device private_free gets called at the release callback of the
-sequencer device object, while this was rather expected to be executed
-at the snd_device call chains that runs at the beginning of the whole
-card-free procedure.  It's been broken since the rewrite of
-sequencer-device binding (although it hasn't surfaced because the
-sequencer device release happens usually right along with the card
-device release).
+This Kconfig option was added initially so that memory encryption is
+enabled by default on machines which support it.
 
-This patch corrects the private_free call to be done in the right
-place, at snd_seq_device_dev_free().
+However, devices which have DMA masks that are less than the bit
+position of the encryption bit, aka C-bit, require the use of an IOMMU
+or the use of SWIOTLB.
 
-Fixes: 7c37ae5c625a ("ALSA: seq: Rewrite sequencer device binding with standard bus")
-Reported-and-tested-by: John Keeping <john@metanate.com>
+If the IOMMU is disabled or in passthrough mode, the kernel would switch
+to SWIOTLB bounce-buffering for those transfers.
+
+In order to avoid that,
+
+  2cc13bb4f59f ("iommu: Disable passthrough mode when SME is active")
+
+disables the default IOMMU passthrough mode so that devices for which the
+default 256K DMA is insufficient, can use the IOMMU instead.
+
+However 2, there are cases where the IOMMU is disabled in the BIOS, etc.
+(think the usual hardware folk "oops, I dropped the ball there" cases) or a
+driver doesn't properly use the DMA APIs or a device has a firmware or
+hardware bug, e.g.:
+
+  ea68573d408f ("drm/amdgpu: Fail to load on RAVEN if SME is active")
+
+However 3, in the above GPU use case, there are APIs like Vulkan and
+some OpenGL/OpenCL extensions which are under the assumption that
+user-allocated memory can be passed in to the kernel driver and both the
+GPU and CPU can do coherent and concurrent access to the same memory.
+That cannot work with SWIOTLB bounce buffers, of course.
+
+So, in order for those devices to function, drop the "default y" for the
+SME by default active option so that users who want to have SME enabled,
+will need to either enable it in their config or use "mem_encrypt=on" on
+the kernel command line.
+
+ [ tlendacky: Generalize commit message. ]
+
+Fixes: 7744ccdbc16f ("x86/mm: Add Secure Memory Encryption (SME) support")
+Reported-by: Paul Menzel <pmenzel@molgen.mpg.de>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Acked-by: Alex Deucher <alexander.deucher@amd.com>
+Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
 Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210930114114.8645-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Link: https://lkml.kernel.org/r/8bbacd0e-4580-3194-19d2-a0ecad7df09c@molgen.mpg.de
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/core/seq_device.c |    8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ arch/x86/Kconfig |    1 -
+ 1 file changed, 1 deletion(-)
 
---- a/sound/core/seq_device.c
-+++ b/sound/core/seq_device.c
-@@ -147,6 +147,8 @@ static int snd_seq_device_dev_free(struc
- 	struct snd_seq_device *dev = device->device_data;
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -1520,7 +1520,6 @@ config AMD_MEM_ENCRYPT
  
- 	cancel_autoload_drivers();
-+	if (dev->private_free)
-+		dev->private_free(dev);
- 	put_device(&dev->dev);
- 	return 0;
- }
-@@ -174,11 +176,7 @@ static int snd_seq_device_dev_disconnect
- 
- static void snd_seq_dev_release(struct device *dev)
- {
--	struct snd_seq_device *sdev = to_seq_dev(dev);
--
--	if (sdev->private_free)
--		sdev->private_free(sdev);
--	kfree(sdev);
-+	kfree(to_seq_dev(dev));
- }
- 
- /*
+ config AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT
+ 	bool "Activate AMD Secure Memory Encryption (SME) by default"
+-	default y
+ 	depends on AMD_MEM_ENCRYPT
+ 	help
+ 	  Say yes to have system memory encrypted by default if running on
 
 
