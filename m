@@ -2,109 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6A044327D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 21:41:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A06B4327D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 21:42:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232810AbhJRTns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 15:43:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36468 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230159AbhJRTnq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 15:43:46 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 288F4C06161C
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 12:41:35 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id z11so2127858lfj.4
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 12:41:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ItTJzIFWSeB5rmBU+FendnKoekV76l/1a/X4v9add+Q=;
-        b=H4wXr5SRERJdoNSWITjR7bS9JJ8gLITCpg+vMJXq4qXSwFNbSx+gnHK00Jms65B6jT
-         6Yv6vYSSgJewe1TqJXzXQnFNcavuIwp7zfz/BmMtcec0LgF/iFtBPT749K8tZ6/mkEEz
-         q4Dmw54k4oY18+0+EyRdL5k2D8dBprCxl9S4s=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ItTJzIFWSeB5rmBU+FendnKoekV76l/1a/X4v9add+Q=;
-        b=xErSFFmm435oDPs8pVzTJ4puYbg7R11RfOCRHkOO+Hm5AghJRjoxyQh3hf/etsXPYu
-         Bq2/4LWw+xJzN3SKg+UzlcWrcoA+pwwyLuo/RvCMuHAAdAEmE2Jl8rYhEpxJAuBPgdCe
-         EsdMS7oZkGjbT4D1N5hGHw0ldHRcSd8KSnBFa0jrigqgMCWO8H+HwJ3vZs7F5zhGNseK
-         Zeg57KnY8sVgtiSFEA3T6E/uf9psHvVC/2C4wocvrPZn9UxHT7Dih/7QwJNS66MNyq/Q
-         sGzx/Hp1wAqjCLQZdR615OtaOQIJkZQduN3GU6D+mzryLC7Qcv2tSgqr9xjN1R/yYx5P
-         d57w==
-X-Gm-Message-State: AOAM5321YCE63IdNJUMW6BymOD5JCcQ4L+4OKO7PPn4CPpgGgNVpRoZh
-        zRtO45ukl/t0whrIpC1b9r3A0uQN2S2PyA==
-X-Google-Smtp-Source: ABdhPJxngp3qAyETbHqYslv2txUzqs5SKStN7uM2A0aRjbJMZO8UUtNhqXgHo4RaoaHMpdCPizkkeg==
-X-Received: by 2002:a05:6512:304b:: with SMTP id b11mr1697806lfb.259.1634586093320;
-        Mon, 18 Oct 2021 12:41:33 -0700 (PDT)
-Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com. [209.85.208.170])
-        by smtp.gmail.com with ESMTPSA id o15sm234715ljm.139.2021.10.18.12.41.31
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Oct 2021 12:41:32 -0700 (PDT)
-Received: by mail-lj1-f170.google.com with SMTP id n7so1734351ljp.5
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 12:41:31 -0700 (PDT)
-X-Received: by 2002:a2e:5cc7:: with SMTP id q190mr1848523ljb.494.1634586091557;
- Mon, 18 Oct 2021 12:41:31 -0700 (PDT)
+        id S233017AbhJRToc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 15:44:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60670 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230159AbhJRTob (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 15:44:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9485E60F57;
+        Mon, 18 Oct 2021 19:42:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634586139;
+        bh=sL9bIISzFWXLmkxiyBctOfsH3HvP/CyNjDg9oXri6sw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=swOvq8MdtbJ0gdSpPW1iV1a4gLL6xWh1VP4h+WRTK3nC930K8SL2AVILnvOEAf8Sf
+         5UrRJwwFlHUy3NdAHL7REtWQd6KiMW2RrZQ/QPbPCLOvJTE2tSLWppOHFa5XQrBWsh
+         AqQeLuaUAFHIPFZWgIXEYIaLpV5VBC5PYU36O8wVqZOUzO4Yiz0HIh2FUpcKCT0Lxl
+         0oXObKITDoEHU+rhJLhyX14BoOYFSEdbPcNVybr3UMNWvWRJi8cYUvtVT9gXmJzf5K
+         RszevF2H7zHLyV9Q9ev7s+YPpIcxMvNV6o4P/dhXesLlngpGwgNcw83rRBLUynRMyv
+         0i4jVj1xvDoqA==
+Date:   Mon, 18 Oct 2021 14:42:18 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Parshuram Raju Thombare <pthombar@cadence.com>
+Cc:     kishon@ti.com, tjoseph@cadence.com, lorenzo.pieralisi@arm.com,
+        robh@kernel.org, kw@linux.com, bhelgaas@google.com,
+        linux-omap@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        mparab@cadence.com
+Subject: Re: [PATCH] PCI: cadence: Disable Function Level Reset support
+Message-ID: <20211018194218.GA2248370@bhelgaas>
 MIME-Version: 1.0
-References: <20211018182537.2316800-1-nathan@kernel.org> <CAKwvOdn4_DrgaZoAo-v7CbYurNUpfAK5tnzT023=WCDzkmYQVg@mail.gmail.com>
-In-Reply-To: <CAKwvOdn4_DrgaZoAo-v7CbYurNUpfAK5tnzT023=WCDzkmYQVg@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 18 Oct 2021 09:41:15 -1000
-X-Gmail-Original-Message-ID: <CAHk-=wi7hUsTTcmPfZCkUEw51Y3ayq3JJxzFsNgodsxxDyk9Ww@mail.gmail.com>
-Message-ID: <CAHk-=wi7hUsTTcmPfZCkUEw51Y3ayq3JJxzFsNgodsxxDyk9Ww@mail.gmail.com>
-Subject: Re: [PATCH] platform/x86: thinkpad_acpi: Fix bitwise vs. logical warning
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Henrique de Moraes Holschuh <hmh@hmh.eng.br>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        ibm-acpi-devel@lists.sourceforge.net,
-        platform-driver-x86@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        llvm@lists.linux.dev, Tor Vic <torvic9@mailbox.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1634580445-89772-1-git-send-email-pthombar@cadence.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 18, 2021 at 8:34 AM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
->
-> LGTM, thanks for the patch! I guess this would be the first
-> "interesting" case this warning has found in kernel sources?
+On Mon, Oct 18, 2021 at 11:07:25AM -0700, Parshuram Raju Thombare wrote:
+> From: Parshuram Thombare <pthombar@cadence.com>
+> 
+> This patch disables FLR (Function Level Reset) support on all physical
+> functions.
+> During FLR, the Margining Lane Status and Margining Lane Control
+> registers should not be reset, as per PCIe specification.
+> However, the Controller incorrectly resets these registers upon FLR.
+> This causes PCISIG compliance FLR test to fail. Hence disabling
+> FLR on all functions using quirk flag.
 
-The patch looks obviously correct (tm), but I'm not convinced that the
-warning is actually all that interesting.
+Add blank lines between paragraphs.
 
-The thing is, using bitwise operators for booleans is _exactly_ the
-same as using logical ones as long as there are no side effects. In
-fact, any compiler worth its salt will already convert some cases
-between the two as an optimization just as part of code generation.
+Write the text in imperative mood, e.g.,
 
-Of course, that "as long as there are no side effects" is the big
-thing - then the short-circuiting of the actual logical operations
-clearly matters. But that wasn't actually the case in this situation
-(or in the kvm situation elsewhere).
+  Disable FLR (Function Level Reset) support on all functions.
 
-So in both of these cases, the difference between "|" and "||" ends up
-purely being a hint to the compiler.
+It looks like this patch clears PCI_EXP_DEVCAP_FLR in the Device
+Capabilities register.  From the point of view of Linux, that means
+the device doesn't *advertise* FLR support.
 
-In this case, even if there are no side effects, it's clearly
-pointless to do the second strlencmp() if the first one already
-matched, and the "||" is unquestionably the right hint (and honestly,
-most compilers probably wouldn't even be able to tell "no side
-effects" because it's a fairly complex expression - but since it's
-inlined and uses compiler intrinsics, the compiler _might_ actually be
-able to see that the two are equivalent).
+That's different from actualy *disabling* FLR support, but maybe
+there's internal logic in the device that ignores
+PCI_EXP_DEVCTL_BCR_FLR when PCI_EXP_DEVCAP_FLR is cleared?
 
-But no, I don't think that warning is very interesting. In fact, the
-warning might be overall detrimental, in case the hints were
-intentional (like the kvm case - although I'm not convinced the kvm
-hinting was actually meaningful).
-
-                 Linus
+> Signed-off-by: Parshuram Thombare <pthombar@cadence.com>
+> ---
+>  drivers/pci/controller/cadence/pci-j721e.c       |  3 +++
+>  drivers/pci/controller/cadence/pcie-cadence-ep.c | 18 +++++++++++++++++-
+>  drivers/pci/controller/cadence/pcie-cadence.h    |  3 +++
+>  3 files changed, 23 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/controller/cadence/pci-j721e.c b/drivers/pci/controller/cadence/pci-j721e.c
+> index ffb176d..635e36c 100644
+> --- a/drivers/pci/controller/cadence/pci-j721e.c
+> +++ b/drivers/pci/controller/cadence/pci-j721e.c
+> @@ -70,6 +70,7 @@ struct j721e_pcie_data {
+>  	enum j721e_pcie_mode	mode;
+>  	unsigned int		quirk_retrain_flag:1;
+>  	unsigned int		quirk_detect_quiet_flag:1;
+> +	unsigned int		quirk_disable_flr:1;
+>  	u32			linkdown_irq_regfield;
+>  	unsigned int		byte_access_allowed:1;
+>  };
+> @@ -308,6 +309,7 @@ static int cdns_ti_pcie_config_write(struct pci_bus *bus, unsigned int devfn,
+>  static const struct j721e_pcie_data j7200_pcie_ep_data = {
+>  	.mode = PCI_MODE_EP,
+>  	.quirk_detect_quiet_flag = true,
+> +	.quirk_disable_flr = true,
+>  };
+>  
+>  static const struct j721e_pcie_data am64_pcie_rc_data = {
+> @@ -510,6 +512,7 @@ static int j721e_pcie_probe(struct platform_device *pdev)
+>  			goto err_get_sync;
+>  		}
+>  		ep->quirk_detect_quiet_flag = data->quirk_detect_quiet_flag;
+> +		ep->quirk_disable_flr = data->quirk_disable_flr;
+>  
+>  		cdns_pcie = &ep->pcie;
+>  		cdns_pcie->dev = dev;
+> diff --git a/drivers/pci/controller/cadence/pcie-cadence-ep.c b/drivers/pci/controller/cadence/pcie-cadence-ep.c
+> index 88e05b9..4b1c4bc 100644
+> --- a/drivers/pci/controller/cadence/pcie-cadence-ep.c
+> +++ b/drivers/pci/controller/cadence/pcie-cadence-ep.c
+> @@ -565,7 +565,8 @@ static int cdns_pcie_ep_start(struct pci_epc *epc)
+>  	struct cdns_pcie_ep *ep = epc_get_drvdata(epc);
+>  	struct cdns_pcie *pcie = &ep->pcie;
+>  	struct device *dev = pcie->dev;
+> -	int ret;
+> +	int max_epfs = sizeof(epc->function_num_map) * 8;
+> +	int ret, value, epf;
+>  
+>  	/*
+>  	 * BIT(0) is hardwired to 1, hence function 0 is always enabled
+> @@ -573,6 +574,21 @@ static int cdns_pcie_ep_start(struct pci_epc *epc)
+>  	 */
+>  	cdns_pcie_writel(pcie, CDNS_PCIE_LM_EP_FUNC_CFG, epc->function_num_map);
+>  
+> +	if (ep->quirk_disable_flr) {
+> +		for (epf = 0; epf < max_epfs; epf++) {
+> +			if (!(epc->function_num_map & BIT(epf)))
+> +				continue;
+> +
+> +			value = cdns_pcie_ep_fn_readl(pcie, epf,
+> +					CDNS_PCIE_EP_FUNC_DEV_CAP_OFFSET +
+> +					PCI_EXP_DEVCAP);
+> +			value &= ~PCI_EXP_DEVCAP_FLR;
+> +			cdns_pcie_ep_fn_writel(pcie, epf,
+> +					CDNS_PCIE_EP_FUNC_DEV_CAP_OFFSET +
+> +					PCI_EXP_DEVCAP, value);
+> +		}
+> +	}
+> +
+>  	ret = cdns_pcie_start_link(pcie);
+>  	if (ret) {
+>  		dev_err(dev, "Failed to start link\n");
+> diff --git a/drivers/pci/controller/cadence/pcie-cadence.h b/drivers/pci/controller/cadence/pcie-cadence.h
+> index 262421e..e978e7c 100644
+> --- a/drivers/pci/controller/cadence/pcie-cadence.h
+> +++ b/drivers/pci/controller/cadence/pcie-cadence.h
+> @@ -123,6 +123,7 @@
+>  
+>  #define CDNS_PCIE_EP_FUNC_MSI_CAP_OFFSET	0x90
+>  #define CDNS_PCIE_EP_FUNC_MSIX_CAP_OFFSET	0xb0
+> +#define CDNS_PCIE_EP_FUNC_DEV_CAP_OFFSET	0xc0
+>  #define CDNS_PCIE_EP_FUNC_SRIOV_CAP_OFFSET	0x200
+>  
+>  /*
+> @@ -357,6 +358,7 @@ struct cdns_pcie_epf {
+>   *        minimize time between read and write
+>   * @epf: Structure to hold info about endpoint function
+>   * @quirk_detect_quiet_flag: LTSSM Detect Quiet min delay set as quirk
+> + * @quirk_disable_flr: Disable FLR (Function Level Reset) quirk flag
+>   */
+>  struct cdns_pcie_ep {
+>  	struct cdns_pcie	pcie;
+> @@ -372,6 +374,7 @@ struct cdns_pcie_ep {
+>  	spinlock_t		lock;
+>  	struct cdns_pcie_epf	*epf;
+>  	unsigned int		quirk_detect_quiet_flag:1;
+> +	unsigned int		quirk_disable_flr:1;
+>  };
+>  
+>  
+> -- 
+> 1.9.1
+> 
