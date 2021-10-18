@@ -2,736 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B83E54311D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 10:07:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2B4A4311E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 10:08:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231222AbhJRIJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 04:09:37 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:14148 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230392AbhJRIJg (ORCPT
+        id S231274AbhJRIKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 04:10:41 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:51022 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231176AbhJRIKj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 04:09:36 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19I7kvhx005360;
-        Mon, 18 Oct 2021 04:07:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : from : to : cc
- : date : message-id : content-type : content-transfer-encoding :
- mime-version; s=pp1; bh=PjP0LVxEVD7rdZG+/WunyUrJmkQDZ0ipTCYGHQiqS9k=;
- b=NPfveTw5I3nBuzPqlze9vwA6whYvjHF5qtGNeKiU0kXRavhtMZwD4M3KYcRnAq3dAdMl
- xAMIfhAy5ADAlqUUJIcJULPqyJ4YA+cy48GdtSs7jyrAfTvW0hmiMb9TS7gtU9n136eh
- YT/66gG5BHU5KnEVELdIRJEcCyN9NP+N5llA/o12+NxS4VYhxihqDt5LMXpJCF7woeiM
- Zl3hqzhuF5IjvJrgWcUZRuszMBCQ3co5BJYZOQxa37lWnC5DkStQfenRhP3FRtXN3DKm
- weeEuwJuvvttkWS02SYlq2LDH/ml4fChM0dkklWMKaWj+YvdJFk+ynFhHkC15kRV2lWW zg== 
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bs1u53uyu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 18 Oct 2021 04:07:15 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19I843kM027035;
-        Mon, 18 Oct 2021 08:07:13 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma04ams.nl.ibm.com with ESMTP id 3bqpca3ryk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 18 Oct 2021 08:07:12 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19I879kk45023508
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 18 Oct 2021 08:07:09 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5F516A4059;
-        Mon, 18 Oct 2021 08:07:09 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 21A67A4051;
-        Mon, 18 Oct 2021 08:07:08 +0000 (GMT)
-Received: from lep8c.aus.stglabs.ibm.com (unknown [9.40.192.207])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 18 Oct 2021 08:07:07 +0000 (GMT)
-Subject: [REPOST RFC PATCH v2] powerpc/papr_scm: Move duplicate definitions to
- common header files
-From:   Shivaprasad G Bhat <sbhat@linux.ibm.com>
-To:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        mpe@ellerman.id.au
-Cc:     nvdimm@lists.linux.dev, aneesh.kumar@linux.ibm.com,
-        sbhat@linux.ibm.com, vaibhav@linux.ibm.com,
-        dan.j.williams@intel.com
-Date:   Mon, 18 Oct 2021 03:07:07 -0500
-Message-ID: <163454440296.431294.2368481747380790011.stgit@lep8c.aus.stglabs.ibm.com>
-User-Agent: StGit/1.1+40.g1b20
-Content-Type: text/plain; charset="utf-8"
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: UosL8jcmtyi-HL5FcCvOOKDOhYym0cep
-X-Proofpoint-ORIG-GUID: UosL8jcmtyi-HL5FcCvOOKDOhYym0cep
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Mon, 18 Oct 2021 04:10:39 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 0EE311FD6E;
+        Mon, 18 Oct 2021 08:08:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1634544508; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JePU6+2oN7GhGNMVBxegpSr/+E0CIq9+0z2jEMw0y24=;
+        b=YxS5QfnCGnhXwKLkAiDaa9YOpt28unqmdaLTNLLCJS2a52Rpy91AdvGAaCv1vG85fSvIZo
+        eYE8nQ5g6uRfViPFlKxLq/nutsyMv1N/vzzmxto1G8aNc/CjihJJ/rTuZ0q89KQx0syzy0
+        +x7dx2X26yw1SDEdaclqco72YzLFL/g=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id CC463A3B83;
+        Mon, 18 Oct 2021 08:08:27 +0000 (UTC)
+Date:   Mon, 18 Oct 2021 10:08:27 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     david@redhat.com, guro@fb.com, hannes@cmpxchg.org,
+        mm-commits@vger.kernel.org, stable@vger.kernel.org,
+        vvs@virtuozzo.com
+Subject: Re: + memcg-enable-memory-accounting-in-__alloc_pages_bulk.patch
+ added to -mm tree
+Message-ID: <YW0rezDJsSdfT79U@dhcp22.suse.cz>
+References: <20211015213421.XJL-wQMwi%akpm@linux-foundation.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-18_02,2021-10-14_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- impostorscore=0 mlxlogscore=999 bulkscore=0 spamscore=0 clxscore=1011
- adultscore=0 suspectscore=0 mlxscore=0 phishscore=0 malwarescore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110180050
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211015213421.XJL-wQMwi%akpm@linux-foundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-papr_scm and ndtest share common PDSM payload structs like
-nd_papr_pdsm_health. Presently these structs are duplicated across
-papr_pdsm.h and ndtest.h header files. Since 'ndtest' is essentially
-arch independent and can run on platforms other than PPC64, a way
-needs to be deviced to avoid redundancy and duplication of PDSM
-structs in future.
+On Fri 15-10-21 14:34:21, Andrew Morton wrote:
+> 
+> The patch titled
+>      Subject: memcg: enable memory accounting in __alloc_pages_bulk
+> has been added to the -mm tree.  Its filename is
+>      memcg-enable-memory-accounting-in-__alloc_pages_bulk.patch
+> 
+> This patch should soon appear at
+>     https://ozlabs.org/~akpm/mmots/broken-out/memcg-enable-memory-accounting-in-__alloc_pages_bulk.patch
+> and later at
+>     https://ozlabs.org/~akpm/mmotm/broken-out/memcg-enable-memory-accounting-in-__alloc_pages_bulk.patch
+> 
+> Before you just go and hit "reply", please:
+>    a) Consider who else should be cc'ed
+>    b) Prefer to cc a suitable mailing list as well
+>    c) Ideally: find the original patch on the mailing list and do a
+>       reply-to-all to that, adding suitable additional cc's
+> 
+> *** Remember to use Documentation/process/submit-checklist.rst when testing your code ***
+> 
+> The -mm tree is included into linux-next and is updated
+> there every 3-4 working days
+> 
+> ------------------------------------------------------
+> From: Vasily Averin <vvs@virtuozzo.com>
+> Subject: memcg: enable memory accounting in __alloc_pages_bulk
+> 
+> Bulk page allocator is used in vmalloc where it can be called
+> with __GFP_ACCOUNT and must charge allocated pages into memory cgroup.
+> 
+> Link: https://lkml.kernel.org/r/65c1afaf-7947-ce28-55b7-06bde7aeb278@virtuozzo.com
+> Fixes: 387ba26fb1cb ("mm/page_alloc: add a bulk page allocator")
+> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+> Acked-by: David Hildenbrand <david@redhat.com>
+> Acked-by: Michal Hocko <mhocko@suse.com>
 
-So the patch proposes moving the PDSM header from arch/powerpc/include-
--/uapi/ to the generic include/uapi/linux directory. Also, there are
-some #defines common between papr_scm and ndtest which are not exported
-to the user space. So, move them to a header file which can be shared
-across ndtest and papr_scm via newly introduced include/linux/papr_scm.h.
+I haven't acked this patch. Have you mixed this with Shakeel's patch
+http://lkml.kernel.org/r/20211014151607.2171970-1-shakeelb@google.com?
 
-Signed-off-by: Shivaprasad G Bhat <sbhat@linux.ibm.com>
-Signed-off-by: Vaibhav Jain <vaibhav@linux.ibm.com>
-Suggested-by: "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
----
-Changelog:
+> Acked-by: Roman Gushchin <guro@fb.com>
+> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+> ---
+> 
+>  include/linux/memcontrol.h |    9 ++++++
+>  mm/memcontrol.c            |   50 +++++++++++++++++++++++++++++++++++
+>  mm/page_alloc.c            |   12 +++++++-
+>  3 files changed, 69 insertions(+), 2 deletions(-)
+> 
+> --- a/include/linux/memcontrol.h~memcg-enable-memory-accounting-in-__alloc_pages_bulk
+> +++ a/include/linux/memcontrol.h
+> @@ -1692,6 +1692,9 @@ static inline int memcg_cache_id(struct
+>  
+>  struct mem_cgroup *mem_cgroup_from_obj(void *p);
+>  
+> +int memcg_charge_bulk_pages(gfp_t gfp, int nr_pages,
+> +			    struct list_head *page_list,
+> +			    struct page **page_array);
+>  #else
+>  static inline bool mem_cgroup_kmem_disabled(void)
+>  {
+> @@ -1744,6 +1747,12 @@ static inline struct mem_cgroup *mem_cgr
+>         return NULL;
+>  }
+>  
+> +int memcg_charge_bulk_pages(gfp_t gfp, int nr_pages,
+> +			    struct list_head *page_list,
+> +			    struct page **page_array)
+> +{
+> +	return 0;
+> +}
+>  #endif /* CONFIG_MEMCG_KMEM */
+>  
+>  #endif /* _LINUX_MEMCONTROL_H */
+> --- a/mm/memcontrol.c~memcg-enable-memory-accounting-in-__alloc_pages_bulk
+> +++ a/mm/memcontrol.c
+> @@ -3288,6 +3288,56 @@ void obj_cgroup_uncharge(struct obj_cgro
+>  	refill_obj_stock(objcg, size, true);
+>  }
+>  
+> +/*
+> + * memcg_charge_bulk_pages - Charge pages allocated by bulk allocator
+> + * @gfp: GFP flags for the allocation
+> + * @nr_pages: The number of pages added into the list or array
+> + * @page_list: Optional list of allocated pages
+> + * @page_array: Optional array of allocated pages
+> + *
+> + * Walks through array or list of allocated pages.
+> + * For each page tries to charge it.
+> + * If charge fails removes page from of array/list, frees it,
+> + * and repeat it till end of array/list
+> + *
+> + * Returns the number of freed pages.
+> + */
+> +int memcg_charge_bulk_pages(gfp_t gfp, int nr_pages,
+> +			    struct list_head *page_list,
+> +			    struct page **page_array)
+> +{
+> +	struct page *page, *np = NULL;
+> +	bool charge = true;
+> +	int i, nr_freed = 0;
+> +
+> +	if (page_list)
+> +		page = list_first_entry(page_list, struct page, lru);
+> +
+> +	for (i = 0; i < nr_pages; i++) {
+> +		if (page_list) {
+> +			if (np)
+> +				page = np;
+> +			np = list_next_entry(page, lru);
+> +		} else {
+> +			page = page_array[i];
+> +		}
+> +		/* some pages in incoming array can be charged already */
+> +		if (!page->memcg_data) {
+> +			if (charge && __memcg_kmem_charge_page(page, gfp, 0))
+> +				charge = false;
+> +
+> +			if (!charge) {
+> +				if (page_list)
+> +					list_del(&page->lru);
+> +				else
+> +					page_array[i] = NULL;
+> +				__free_pages(page, 0);
+> +				nr_freed++;
+> +			}
+> +		}
+> +	}
+> +	return nr_freed;
+> +}
+>  #endif /* CONFIG_MEMCG_KMEM */
+>  
+>  /*
+> --- a/mm/page_alloc.c~memcg-enable-memory-accounting-in-__alloc_pages_bulk
+> +++ a/mm/page_alloc.c
+> @@ -5203,10 +5203,11 @@ unsigned long __alloc_pages_bulk(gfp_t g
+>  	struct zoneref *z;
+>  	struct per_cpu_pages *pcp;
+>  	struct list_head *pcp_list;
+> +	LIST_HEAD(tpl);
+>  	struct alloc_context ac;
+>  	gfp_t alloc_gfp;
+>  	unsigned int alloc_flags = ALLOC_WMARK_LOW;
+> -	int nr_populated = 0, nr_account = 0;
+> +	int nr_populated = 0, nr_account = 0, nr_freed = 0;
+>  
+>  	/*
+>  	 * Skip populated array elements to determine if any pages need
+> @@ -5300,7 +5301,7 @@ unsigned long __alloc_pages_bulk(gfp_t g
+>  
+>  		prep_new_page(page, 0, gfp, 0);
+>  		if (page_list)
+> -			list_add(&page->lru, page_list);
+> +			list_add(&page->lru, &tpl);
+>  		else
+>  			page_array[nr_populated] = page;
+>  		nr_populated++;
+> @@ -5308,6 +5309,13 @@ unsigned long __alloc_pages_bulk(gfp_t g
+>  
+>  	local_unlock_irqrestore(&pagesets.lock, flags);
+>  
+> +	if (memcg_kmem_enabled() && (gfp & __GFP_ACCOUNT) && nr_account)
+> +       		nr_freed = memcg_charge_bulk_pages(gfp, nr_populated,
+> +						   page_list ? &tpl : NULL,
+> +						   page_array);
+> +	nr_account -= nr_freed;
+> +	nr_populated -= nr_freed;
+> +	list_splice(&tpl, page_list);
+>  	__count_zid_vm_events(PGALLOC, zone_idx(zone), nr_account);
+>  	zone_statistics(ac.preferred_zoneref->zone, zone, nr_account);
+>  
+> _
+> 
+> Patches currently in -mm which might be from vvs@virtuozzo.com are
+> 
+> memcg-prohibit-unconditional-exceeding-the-limit-of-dying-tasks.patch
+> memcg-enable-memory-accounting-in-__alloc_pages_bulk.patch
+> mm-vmalloc-repair-warn_allocs-in-__vmalloc_area_node.patch
+> vmalloc-back-off-when-the-current-task-is-oom-killed.patch
 
-Since v1:
-Link: https://patchwork.kernel.org/project/linux-nvdimm/patch/162505488483.72147.12741153746322191381.stgit@56e104a48989/
-* Removed dependency on this patch for the other patches
-
- MAINTAINERS                               |    2 
- arch/powerpc/include/uapi/asm/papr_pdsm.h |  165 -----------------------------
- arch/powerpc/platforms/pseries/papr_scm.c |   43 --------
- include/linux/papr_scm.h                  |   48 ++++++++
- include/uapi/linux/papr_pdsm.h            |  165 +++++++++++++++++++++++++++++
- tools/testing/nvdimm/test/ndtest.c        |    2 
- tools/testing/nvdimm/test/ndtest.h        |  120 ---------------------
- 7 files changed, 219 insertions(+), 326 deletions(-)
- delete mode 100644 arch/powerpc/include/uapi/asm/papr_pdsm.h
- create mode 100644 include/linux/papr_scm.h
- create mode 100644 include/uapi/linux/papr_pdsm.h
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 5b33791bb8e97..3e78f595f3d91 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -10746,6 +10746,8 @@ F:	drivers/rtc/rtc-opal.c
- F:	drivers/scsi/ibmvscsi/
- F:	drivers/tty/hvc/hvc_opal.c
- F:	drivers/watchdog/wdrtas.c
-+F:	include/linux/papr_scm.h
-+F:	include/uapi/linux/papr_pdsm.h
- F:	tools/testing/selftests/powerpc
- N:	/pmac
- N:	powermac
-diff --git a/arch/powerpc/include/uapi/asm/papr_pdsm.h b/arch/powerpc/include/uapi/asm/papr_pdsm.h
-deleted file mode 100644
-index 17439925045cf..0000000000000
---- a/arch/powerpc/include/uapi/asm/papr_pdsm.h
-+++ /dev/null
-@@ -1,165 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
--/*
-- * PAPR nvDimm Specific Methods (PDSM) and structs for libndctl
-- *
-- * (C) Copyright IBM 2020
-- *
-- * Author: Vaibhav Jain <vaibhav at linux.ibm.com>
-- */
--
--#ifndef _UAPI_ASM_POWERPC_PAPR_PDSM_H_
--#define _UAPI_ASM_POWERPC_PAPR_PDSM_H_
--
--#include <linux/types.h>
--#include <linux/ndctl.h>
--
--/*
-- * PDSM Envelope:
-- *
-- * The ioctl ND_CMD_CALL exchange data between user-space and kernel via
-- * envelope which consists of 2 headers sections and payload sections as
-- * illustrated below:
-- *  +-----------------+---------------+---------------------------+
-- *  |   64-Bytes      |   8-Bytes     |       Max 184-Bytes       |
-- *  +-----------------+---------------+---------------------------+
-- *  | ND-HEADER       |  PDSM-HEADER  |      PDSM-PAYLOAD         |
-- *  +-----------------+---------------+---------------------------+
-- *  | nd_family       |               |                           |
-- *  | nd_size_out     | cmd_status    |                           |
-- *  | nd_size_in      | reserved      |     nd_pdsm_payload       |
-- *  | nd_command      | payload   --> |                           |
-- *  | nd_fw_size      |               |                           |
-- *  | nd_payload ---> |               |                           |
-- *  +---------------+-----------------+---------------------------+
-- *
-- * ND Header:
-- * This is the generic libnvdimm header described as 'struct nd_cmd_pkg'
-- * which is interpreted by libnvdimm before passed on to papr_scm. Important
-- * member fields used are:
-- * 'nd_family'		: (In) NVDIMM_FAMILY_PAPR_SCM
-- * 'nd_size_in'		: (In) PDSM-HEADER + PDSM-IN-PAYLOAD (usually 0)
-- * 'nd_size_out'        : (In) PDSM-HEADER + PDSM-RETURN-PAYLOAD
-- * 'nd_command'         : (In) One of PAPR_PDSM_XXX
-- * 'nd_fw_size'         : (Out) PDSM-HEADER + size of actual payload returned
-- *
-- * PDSM Header:
-- * This is papr-scm specific header that precedes the payload. This is defined
-- * as nd_cmd_pdsm_pkg.  Following fields aare available in this header:
-- *
-- * 'cmd_status'		: (Out) Errors if any encountered while servicing PDSM.
-- * 'reserved'		: Not used, reserved for future and should be set to 0.
-- * 'payload'            : A union of all the possible payload structs
-- *
-- * PDSM Payload:
-- *
-- * The layout of the PDSM Payload is defined by various structs shared between
-- * papr_scm and libndctl so that contents of payload can be interpreted. As such
-- * its defined as a union of all possible payload structs as
-- * 'union nd_pdsm_payload'. Based on the value of 'nd_cmd_pkg.nd_command'
-- * appropriate member of the union is accessed.
-- */
--
--/* Max payload size that we can handle */
--#define ND_PDSM_PAYLOAD_MAX_SIZE 184
--
--/* Max payload size that we can handle */
--#define ND_PDSM_HDR_SIZE \
--	(sizeof(struct nd_pkg_pdsm) - ND_PDSM_PAYLOAD_MAX_SIZE)
--
--/* Various nvdimm health indicators */
--#define PAPR_PDSM_DIMM_HEALTHY       0
--#define PAPR_PDSM_DIMM_UNHEALTHY     1
--#define PAPR_PDSM_DIMM_CRITICAL      2
--#define PAPR_PDSM_DIMM_FATAL         3
--
--/* struct nd_papr_pdsm_health.extension_flags field flags */
--
--/* Indicate that the 'dimm_fuel_gauge' field is valid */
--#define PDSM_DIMM_HEALTH_RUN_GAUGE_VALID 1
--
--/* Indicate that the 'dimm_dsc' field is valid */
--#define PDSM_DIMM_DSC_VALID 2
--
--/*
-- * Struct exchanged between kernel & ndctl in for PAPR_PDSM_HEALTH
-- * Various flags indicate the health status of the dimm.
-- *
-- * extension_flags	: Any extension fields present in the struct.
-- * dimm_unarmed		: Dimm not armed. So contents wont persist.
-- * dimm_bad_shutdown	: Previous shutdown did not persist contents.
-- * dimm_bad_restore	: Contents from previous shutdown werent restored.
-- * dimm_scrubbed	: Contents of the dimm have been scrubbed.
-- * dimm_locked		: Contents of the dimm cant be modified until CEC reboot
-- * dimm_encrypted	: Contents of dimm are encrypted.
-- * dimm_health		: Dimm health indicator. One of PAPR_PDSM_DIMM_XXXX
-- * dimm_fuel_gauge	: Life remaining of DIMM as a percentage from 0-100
-- */
--struct nd_papr_pdsm_health {
--	union {
--		struct {
--			__u32 extension_flags;
--			__u8 dimm_unarmed;
--			__u8 dimm_bad_shutdown;
--			__u8 dimm_bad_restore;
--			__u8 dimm_scrubbed;
--			__u8 dimm_locked;
--			__u8 dimm_encrypted;
--			__u16 dimm_health;
--
--			/* Extension flag PDSM_DIMM_HEALTH_RUN_GAUGE_VALID */
--			__u16 dimm_fuel_gauge;
--
--			/* Extension flag PDSM_DIMM_DSC_VALID */
--			__u64 dimm_dsc;
--		};
--		__u8 buf[ND_PDSM_PAYLOAD_MAX_SIZE];
--	};
--};
--
--/* Flags for injecting specific smart errors */
--#define PDSM_SMART_INJECT_HEALTH_FATAL		(1 << 0)
--#define PDSM_SMART_INJECT_BAD_SHUTDOWN		(1 << 1)
--
--struct nd_papr_pdsm_smart_inject {
--	union {
--		struct {
--			/* One or more of PDSM_SMART_INJECT_ */
--			__u32 flags;
--			__u8 fatal_enable;
--			__u8 unsafe_shutdown_enable;
--		};
--		__u8 buf[ND_PDSM_PAYLOAD_MAX_SIZE];
--	};
--};
--
--/*
-- * Methods to be embedded in ND_CMD_CALL request. These are sent to the kernel
-- * via 'nd_cmd_pkg.nd_command' member of the ioctl struct
-- */
--enum papr_pdsm {
--	PAPR_PDSM_MIN = 0x0,
--	PAPR_PDSM_HEALTH,
--	PAPR_PDSM_SMART_INJECT,
--	PAPR_PDSM_MAX,
--};
--
--/* Maximal union that can hold all possible payload types */
--union nd_pdsm_payload {
--	struct nd_papr_pdsm_health health;
--	struct nd_papr_pdsm_smart_inject smart_inject;
--	__u8 buf[ND_PDSM_PAYLOAD_MAX_SIZE];
--} __packed;
--
--/*
-- * PDSM-header + payload expected with ND_CMD_CALL ioctl from libnvdimm
-- * Valid member of union 'payload' is identified via 'nd_cmd_pkg.nd_command'
-- * that should always precede this struct when sent to papr_scm via CMD_CALL
-- * interface.
-- */
--struct nd_pkg_pdsm {
--	__s32 cmd_status;	/* Out: Sub-cmd status returned back */
--	__u16 reserved[2];	/* Ignored and to be set as '0' */
--	union nd_pdsm_payload payload;
--} __packed;
--
--#endif /* _UAPI_ASM_POWERPC_PAPR_PDSM_H_ */
-diff --git a/arch/powerpc/platforms/pseries/papr_scm.c b/arch/powerpc/platforms/pseries/papr_scm.c
-index de4cf329cfb3b..b7437c61a2704 100644
---- a/arch/powerpc/platforms/pseries/papr_scm.c
-+++ b/arch/powerpc/platforms/pseries/papr_scm.c
-@@ -16,7 +16,8 @@
- #include <linux/nd.h>
- 
- #include <asm/plpar_wrappers.h>
--#include <asm/papr_pdsm.h>
-+#include <uapi/linux/papr_pdsm.h>
-+#include <linux/papr_scm.h>
- #include <asm/mce.h>
- #include <asm/unaligned.h>
- 
-@@ -28,46 +29,6 @@
- 	 (1ul << ND_CMD_SET_CONFIG_DATA) | \
- 	 (1ul << ND_CMD_CALL))
- 
--/* DIMM health bitmap bitmap indicators */
--/* SCM device is unable to persist memory contents */
--#define PAPR_PMEM_UNARMED                   (1ULL << (63 - 0))
--/* SCM device failed to persist memory contents */
--#define PAPR_PMEM_SHUTDOWN_DIRTY            (1ULL << (63 - 1))
--/* SCM device contents are persisted from previous IPL */
--#define PAPR_PMEM_SHUTDOWN_CLEAN            (1ULL << (63 - 2))
--/* SCM device contents are not persisted from previous IPL */
--#define PAPR_PMEM_EMPTY                     (1ULL << (63 - 3))
--/* SCM device memory life remaining is critically low */
--#define PAPR_PMEM_HEALTH_CRITICAL           (1ULL << (63 - 4))
--/* SCM device will be garded off next IPL due to failure */
--#define PAPR_PMEM_HEALTH_FATAL              (1ULL << (63 - 5))
--/* SCM contents cannot persist due to current platform health status */
--#define PAPR_PMEM_HEALTH_UNHEALTHY          (1ULL << (63 - 6))
--/* SCM device is unable to persist memory contents in certain conditions */
--#define PAPR_PMEM_HEALTH_NON_CRITICAL       (1ULL << (63 - 7))
--/* SCM device is encrypted */
--#define PAPR_PMEM_ENCRYPTED                 (1ULL << (63 - 8))
--/* SCM device has been scrubbed and locked */
--#define PAPR_PMEM_SCRUBBED_AND_LOCKED       (1ULL << (63 - 9))
--
--/* Bits status indicators for health bitmap indicating unarmed dimm */
--#define PAPR_PMEM_UNARMED_MASK (PAPR_PMEM_UNARMED |		\
--				PAPR_PMEM_HEALTH_UNHEALTHY)
--
--/* Bits status indicators for health bitmap indicating unflushed dimm */
--#define PAPR_PMEM_BAD_SHUTDOWN_MASK (PAPR_PMEM_SHUTDOWN_DIRTY)
--
--/* Bits status indicators for health bitmap indicating unrestored dimm */
--#define PAPR_PMEM_BAD_RESTORE_MASK  (PAPR_PMEM_EMPTY)
--
--/* Bit status indicators for smart event notification */
--#define PAPR_PMEM_SMART_EVENT_MASK (PAPR_PMEM_HEALTH_CRITICAL | \
--				    PAPR_PMEM_HEALTH_FATAL |	\
--				    PAPR_PMEM_HEALTH_UNHEALTHY)
--
--#define PAPR_SCM_PERF_STATS_EYECATCHER __stringify(SCMSTATS)
--#define PAPR_SCM_PERF_STATS_VERSION 0x1
--
- /* Use bitblt method to override specific bits in the '_bitmap_' */
- #define BITBLT_BITMAP(_bitmap_, _mask_, _override_)		\
- 	(((_bitmap_) & ~(_mask_)) | ((_mask_) & (_override_)))
-diff --git a/include/linux/papr_scm.h b/include/linux/papr_scm.h
-new file mode 100644
-index 0000000000000..f116e5ffef369
---- /dev/null
-+++ b/include/linux/papr_scm.h
-@@ -0,0 +1,48 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+#ifndef __LINUX_PAPR_SCM_H
-+#define __LINUX_PAPR_SCM_H
-+
-+/* DIMM health bitmap bitmap indicators */
-+/* SCM device is unable to persist memory contents */
-+#define PAPR_PMEM_UNARMED                   (1ULL << (63 - 0))
-+/* SCM device failed to persist memory contents */
-+#define PAPR_PMEM_SHUTDOWN_DIRTY            (1ULL << (63 - 1))
-+/* SCM device contents are persisted from previous IPL */
-+#define PAPR_PMEM_SHUTDOWN_CLEAN            (1ULL << (63 - 2))
-+/* SCM device contents are not persisted from previous IPL */
-+#define PAPR_PMEM_EMPTY                     (1ULL << (63 - 3))
-+/* SCM device memory life remaining is critically low */
-+#define PAPR_PMEM_HEALTH_CRITICAL           (1ULL << (63 - 4))
-+/* SCM device will be garded off next IPL due to failure */
-+#define PAPR_PMEM_HEALTH_FATAL              (1ULL << (63 - 5))
-+/* SCM contents cannot persist due to current platform health status */
-+#define PAPR_PMEM_HEALTH_UNHEALTHY          (1ULL << (63 - 6))
-+/* SCM device is unable to persist memory contents in certain conditions */
-+#define PAPR_PMEM_HEALTH_NON_CRITICAL       (1ULL << (63 - 7))
-+/* SCM device is encrypted */
-+#define PAPR_PMEM_ENCRYPTED                 (1ULL << (63 - 8))
-+/* SCM device has been scrubbed and locked */
-+#define PAPR_PMEM_SCRUBBED_AND_LOCKED       (1ULL << (63 - 9))
-+
-+#define PAPR_PMEM_SAVE_FAILED                (1ULL << (63 - 10))
-+
-+/* Bits status indicators for health bitmap indicating unarmed dimm */
-+#define PAPR_PMEM_UNARMED_MASK (PAPR_PMEM_UNARMED | PAPR_PMEM_HEALTH_UNHEALTHY)
-+
-+/* Bits status indicators for health bitmap indicating unflushed dimm */
-+#define PAPR_PMEM_BAD_SHUTDOWN_MASK (PAPR_PMEM_SHUTDOWN_DIRTY)
-+
-+/* Bits status indicators for health bitmap indicating unrestored dimm */
-+#define PAPR_PMEM_BAD_RESTORE_MASK  (PAPR_PMEM_EMPTY)
-+
-+/* Bit status indicators for smart event notification */
-+#define PAPR_PMEM_SMART_EVENT_MASK (PAPR_PMEM_HEALTH_CRITICAL | \
-+				    PAPR_PMEM_HEALTH_FATAL    | \
-+				    PAPR_PMEM_HEALTH_UNHEALTHY)
-+
-+#define PAPR_PMEM_SAVE_MASK                (PAPR_PMEM_SAVE_FAILED)
-+
-+#define PAPR_SCM_PERF_STATS_EYECATCHER __stringify(SCMSTATS)
-+#define PAPR_SCM_PERF_STATS_VERSION 0x1
-+
-+#endif /* __LINUX_PAPR_SCM_H */
-diff --git a/include/uapi/linux/papr_pdsm.h b/include/uapi/linux/papr_pdsm.h
-new file mode 100644
-index 0000000000000..1be9906f45400
---- /dev/null
-+++ b/include/uapi/linux/papr_pdsm.h
-@@ -0,0 +1,165 @@
-+/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-+/*
-+ * PAPR nvDimm Specific Methods (PDSM) and structs for libndctl
-+ *
-+ * (C) Copyright IBM 2020-2021
-+ *
-+ * Author: Vaibhav Jain <vaibhav at linux.ibm.com>
-+ */
-+
-+#ifndef _UAPI_LINUX_PAPR_PDSM_H_
-+#define _UAPI_LINUX_PAPR_PDSM_H_
-+
-+#include <linux/types.h>
-+#include <linux/ndctl.h>
-+
-+/*
-+ * PDSM Envelope:
-+ *
-+ * The ioctl ND_CMD_CALL exchange data between user-space and kernel via
-+ * envelope which consists of 2 headers sections and payload sections as
-+ * illustrated below:
-+ *  +-----------------+---------------+---------------------------+
-+ *  |   64-Bytes      |   8-Bytes     |       Max 184-Bytes       |
-+ *  +-----------------+---------------+---------------------------+
-+ *  | ND-HEADER       |  PDSM-HEADER  |      PDSM-PAYLOAD         |
-+ *  +-----------------+---------------+---------------------------+
-+ *  | nd_family       |               |                           |
-+ *  | nd_size_out     | cmd_status    |                           |
-+ *  | nd_size_in      | reserved      |     nd_pdsm_payload       |
-+ *  | nd_command      | payload   --> |                           |
-+ *  | nd_fw_size      |               |                           |
-+ *  | nd_payload ---> |               |                           |
-+ *  +---------------+-----------------+---------------------------+
-+ *
-+ * ND Header:
-+ * This is the generic libnvdimm header described as 'struct nd_cmd_pkg'
-+ * which is interpreted by libnvdimm before passed on to papr_scm. Important
-+ * member fields used are:
-+ * 'nd_family'		: (In) NVDIMM_FAMILY_PAPR_SCM
-+ * 'nd_size_in'		: (In) PDSM-HEADER + PDSM-IN-PAYLOAD (usually 0)
-+ * 'nd_size_out'        : (In) PDSM-HEADER + PDSM-RETURN-PAYLOAD
-+ * 'nd_command'         : (In) One of PAPR_PDSM_XXX
-+ * 'nd_fw_size'         : (Out) PDSM-HEADER + size of actual payload returned
-+ *
-+ * PDSM Header:
-+ * This is papr-scm specific header that precedes the payload. This is defined
-+ * as nd_cmd_pdsm_pkg.  Following fields aare available in this header:
-+ *
-+ * 'cmd_status'		: (Out) Errors if any encountered while servicing PDSM.
-+ * 'reserved'		: Not used, reserved for future and should be set to 0.
-+ * 'payload'            : A union of all the possible payload structs
-+ *
-+ * PDSM Payload:
-+ *
-+ * The layout of the PDSM Payload is defined by various structs shared between
-+ * papr_scm and libndctl so that contents of payload can be interpreted. As such
-+ * its defined as a union of all possible payload structs as
-+ * 'union nd_pdsm_payload'. Based on the value of 'nd_cmd_pkg.nd_command'
-+ * appropriate member of the union is accessed.
-+ */
-+
-+/* Max payload size that we can handle */
-+#define ND_PDSM_PAYLOAD_MAX_SIZE 184
-+
-+/* Max payload size that we can handle */
-+#define ND_PDSM_HDR_SIZE \
-+	(sizeof(struct nd_pkg_pdsm) - ND_PDSM_PAYLOAD_MAX_SIZE)
-+
-+/* Various nvdimm health indicators */
-+#define PAPR_PDSM_DIMM_HEALTHY       0
-+#define PAPR_PDSM_DIMM_UNHEALTHY     1
-+#define PAPR_PDSM_DIMM_CRITICAL      2
-+#define PAPR_PDSM_DIMM_FATAL         3
-+
-+/* struct nd_papr_pdsm_health.extension_flags field flags */
-+
-+/* Indicate that the 'dimm_fuel_gauge' field is valid */
-+#define PDSM_DIMM_HEALTH_RUN_GAUGE_VALID 1
-+
-+/* Indicate that the 'dimm_dsc' field is valid */
-+#define PDSM_DIMM_DSC_VALID 2
-+
-+/*
-+ * Struct exchanged between kernel & ndctl in for PAPR_PDSM_HEALTH
-+ * Various flags indicate the health status of the dimm.
-+ *
-+ * extension_flags	: Any extension fields present in the struct.
-+ * dimm_unarmed		: Dimm not armed. So contents wont persist.
-+ * dimm_bad_shutdown	: Previous shutdown did not persist contents.
-+ * dimm_bad_restore	: Contents from previous shutdown werent restored.
-+ * dimm_scrubbed	: Contents of the dimm have been scrubbed.
-+ * dimm_locked		: Contents of the dimm cant be modified until CEC reboot
-+ * dimm_encrypted	: Contents of dimm are encrypted.
-+ * dimm_health		: Dimm health indicator. One of PAPR_PDSM_DIMM_XXXX
-+ * dimm_fuel_gauge	: Life remaining of DIMM as a percentage from 0-100
-+ */
-+struct nd_papr_pdsm_health {
-+	union {
-+		struct {
-+			__u32 extension_flags;
-+			__u8 dimm_unarmed;
-+			__u8 dimm_bad_shutdown;
-+			__u8 dimm_bad_restore;
-+			__u8 dimm_scrubbed;
-+			__u8 dimm_locked;
-+			__u8 dimm_encrypted;
-+			__u16 dimm_health;
-+
-+			/* Extension flag PDSM_DIMM_HEALTH_RUN_GAUGE_VALID */
-+			__u16 dimm_fuel_gauge;
-+
-+			/* Extension flag PDSM_DIMM_DSC_VALID */
-+			__u64 dimm_dsc;
-+		};
-+		__u8 buf[ND_PDSM_PAYLOAD_MAX_SIZE];
-+	};
-+};
-+
-+/* Flags for injecting specific smart errors */
-+#define PDSM_SMART_INJECT_HEALTH_FATAL		(1 << 0)
-+#define PDSM_SMART_INJECT_BAD_SHUTDOWN		(1 << 1)
-+
-+struct nd_papr_pdsm_smart_inject {
-+	union {
-+		struct {
-+			/* One or more of PDSM_SMART_INJECT_ */
-+			__u32 flags;
-+			__u8 fatal_enable;
-+			__u8 unsafe_shutdown_enable;
-+		};
-+		__u8 buf[ND_PDSM_PAYLOAD_MAX_SIZE];
-+	};
-+};
-+
-+/*
-+ * Methods to be embedded in ND_CMD_CALL request. These are sent to the kernel
-+ * via 'nd_cmd_pkg.nd_command' member of the ioctl struct
-+ */
-+enum papr_pdsm {
-+	PAPR_PDSM_MIN = 0x0,
-+	PAPR_PDSM_HEALTH,
-+	PAPR_PDSM_SMART_INJECT,
-+	PAPR_PDSM_MAX,
-+};
-+
-+/* Maximal union that can hold all possible payload types */
-+union nd_pdsm_payload {
-+	struct nd_papr_pdsm_health health;
-+	struct nd_papr_pdsm_smart_inject smart_inject;
-+	__u8 buf[ND_PDSM_PAYLOAD_MAX_SIZE];
-+} __packed;
-+
-+/*
-+ * PDSM-header + payload expected with ND_CMD_CALL ioctl from libnvdimm
-+ * Valid member of union 'payload' is identified via 'nd_cmd_pkg.nd_command'
-+ * that should always precede this struct when sent to papr_scm via CMD_CALL
-+ * interface.
-+ */
-+struct nd_pkg_pdsm {
-+	__s32 cmd_status;	/* Out: Sub-cmd status returned back */
-+	__u16 reserved[2];	/* Ignored and to be set as '0' */
-+	union nd_pdsm_payload payload;
-+} __packed;
-+
-+#endif /* _UAPI_LINUX_PAPR_PDSM_H_ */
-diff --git a/tools/testing/nvdimm/test/ndtest.c b/tools/testing/nvdimm/test/ndtest.c
-index 45d42cd25e82f..6622e8adbd112 100644
---- a/tools/testing/nvdimm/test/ndtest.c
-+++ b/tools/testing/nvdimm/test/ndtest.c
-@@ -13,6 +13,8 @@
- #include <nd-core.h>
- #include <linux/printk.h>
- #include <linux/seq_buf.h>
-+#include <linux/papr_scm.h>
-+#include <uapi/linux/papr_pdsm.h>
- 
- #include "../watermark.h"
- #include "nfit_test.h"
-diff --git a/tools/testing/nvdimm/test/ndtest.h b/tools/testing/nvdimm/test/ndtest.h
-index b9b3810213132..e18b3b006fa22 100644
---- a/tools/testing/nvdimm/test/ndtest.h
-+++ b/tools/testing/nvdimm/test/ndtest.h
-@@ -5,39 +5,6 @@
- #include <linux/platform_device.h>
- #include <linux/libnvdimm.h>
- 
--/* SCM device is unable to persist memory contents */
--#define PAPR_PMEM_UNARMED                   (1ULL << (63 - 0))
--/* SCM device failed to persist memory contents */
--#define PAPR_PMEM_SHUTDOWN_DIRTY            (1ULL << (63 - 1))
--/* SCM device contents are not persisted from previous IPL */
--#define PAPR_PMEM_EMPTY                     (1ULL << (63 - 3))
--#define PAPR_PMEM_HEALTH_CRITICAL           (1ULL << (63 - 4))
--/* SCM device will be garded off next IPL due to failure */
--#define PAPR_PMEM_HEALTH_FATAL              (1ULL << (63 - 5))
--/* SCM contents cannot persist due to current platform health status */
--#define PAPR_PMEM_HEALTH_UNHEALTHY          (1ULL << (63 - 6))
--/* SCM device is unable to persist memory contents in certain conditions */
--#define PAPR_PMEM_HEALTH_NON_CRITICAL       (1ULL << (63 - 7))
--
--/* Bits status indicators for health bitmap indicating unarmed dimm */
--#define PAPR_PMEM_UNARMED_MASK (PAPR_PMEM_UNARMED |		\
--				PAPR_PMEM_HEALTH_UNHEALTHY)
--
--#define PAPR_PMEM_SAVE_FAILED                (1ULL << (63 - 10))
--
--/* Bits status indicators for health bitmap indicating unflushed dimm */
--#define PAPR_PMEM_BAD_SHUTDOWN_MASK (PAPR_PMEM_SHUTDOWN_DIRTY)
--
--/* Bits status indicators for health bitmap indicating unrestored dimm */
--#define PAPR_PMEM_BAD_RESTORE_MASK  (PAPR_PMEM_EMPTY)
--
--/* Bit status indicators for smart event notification */
--#define PAPR_PMEM_SMART_EVENT_MASK (PAPR_PMEM_HEALTH_CRITICAL | \
--				    PAPR_PMEM_HEALTH_FATAL |	\
--				    PAPR_PMEM_HEALTH_UNHEALTHY)
--
--#define PAPR_PMEM_SAVE_MASK                (PAPR_PMEM_SAVE_FAILED)
--
- struct ndtest_config;
- 
- struct ndtest_priv {
-@@ -107,93 +74,6 @@ struct ndtest_region {
- 	u8 range_index;
- };
- 
--#define ND_PDSM_PAYLOAD_MAX_SIZE 184
--/*
-- * Methods to be embedded in ND_CMD_CALL request. These are sent to the kernel
-- * via 'nd_cmd_pkg.nd_command' member of the ioctl struct
-- */
--enum papr_pdsm {
--	PAPR_PDSM_MIN = 0x0,
--	PAPR_PDSM_HEALTH,
--	PAPR_PDSM_SMART_INJECT,
--	PAPR_PDSM_MAX,
--};
--
--/* Various nvdimm health indicators */
--#define PAPR_PDSM_DIMM_HEALTHY       0
--#define PAPR_PDSM_DIMM_UNHEALTHY     1
--#define PAPR_PDSM_DIMM_CRITICAL      2
--#define PAPR_PDSM_DIMM_FATAL         3
--
--/* struct nd_papr_pdsm_health.extension_flags field flags */
--
--/* Indicate that the 'dimm_fuel_gauge' field is valid */
--#define PDSM_DIMM_HEALTH_RUN_GAUGE_VALID 1
--
--/* Indicate that the 'dimm_dsc' field is valid */
--#define PDSM_DIMM_DSC_VALID 2
--
--/*
-- * Struct exchanged between kernel & ndctl in for PAPR_PDSM_HEALTH
-- * Various flags indicate the health status of the dimm.
-- */
--struct nd_papr_pdsm_health {
--	union {
--		struct {
--			__u32 extension_flags;
--			__u8 dimm_unarmed;
--			__u8 dimm_bad_shutdown;
--			__u8 dimm_bad_restore;
--			__u8 dimm_scrubbed;
--			__u8 dimm_locked;
--			__u8 dimm_encrypted;
--			__u16 dimm_health;
--
--			/* Extension flag PDSM_DIMM_HEALTH_RUN_GAUGE_VALID */
--			__u16 dimm_fuel_gauge;
--
--			/* Extension flag PDSM_DIMM_DSC_VALID */
--			__u64 dimm_dsc;
--		};
--		__u8 buf[ND_PDSM_PAYLOAD_MAX_SIZE];
--	};
--};
--
--/* Flags for injecting specific smart errors */
--#define PDSM_SMART_INJECT_HEALTH_FATAL		(1 << 0)
--#define PDSM_SMART_INJECT_BAD_SHUTDOWN		(1 << 1)
--
--struct nd_papr_pdsm_smart_inject {
--	union {
--		struct {
--			/* One or more of PDSM_SMART_INJECT_ */
--			__u32 flags;
--			__u8 fatal_enable;
--			__u8 unsafe_shutdown_enable;
--		};
--		__u8 buf[ND_PDSM_PAYLOAD_MAX_SIZE];
--	};
--};
--
--/* Maximal union that can hold all possible payload types */
--union nd_pdsm_payload {
--	struct nd_papr_pdsm_health health;
--	struct nd_papr_pdsm_smart_inject smart_inject;
--	__u8 buf[ND_PDSM_PAYLOAD_MAX_SIZE];
--} __packed;
--
--/*
-- * PDSM-header + payload expected with ND_CMD_CALL ioctl from libnvdimm
-- * Valid member of union 'payload' is identified via 'nd_cmd_pkg.nd_command'
-- * that should always precede this struct when sent to papr_scm via CMD_CALL
-- * interface.
-- */
--struct nd_pkg_pdsm {
--	__s32 cmd_status;	/* Out: Sub-cmd status returned back */
--	__u16 reserved[2];	/* Ignored and to be set as '0' */
--	union nd_pdsm_payload payload;
--} __packed;
--
- struct ndtest_config {
- 	struct ndtest_dimm *dimms;
- 	struct ndtest_region *regions;
-
-
+-- 
+Michal Hocko
+SUSE Labs
