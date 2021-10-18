@@ -2,234 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92B70431403
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 12:02:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14E05431405
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 12:02:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230232AbhJRKEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 06:04:48 -0400
-Received: from foss.arm.com ([217.140.110.172]:34824 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231213AbhJRKEj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 06:04:39 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C2C5AED1;
-        Mon, 18 Oct 2021 03:02:28 -0700 (PDT)
-Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 55BCA3F70D;
-        Mon, 18 Oct 2021 03:02:27 -0700 (PDT)
-Date:   Mon, 18 Oct 2021 11:02:24 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>, kishon@ti.com
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Songxiaowei <songxiaowei@hisilicon.com>,
-        Binghui Wang <wangbinghui@hisilicon.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org
-Subject: Re: [PATCH v13 02/10] PCI: kirin: Add support for a PHY layer
-Message-ID: <20211018100224.GB17152@lpieralisi>
-References: <cover.1634539769.git.mchehab+huawei@kernel.org>
- <a71b60d2c35ba9c2c5398380bc8ad5533e8160f1.1634539769.git.mchehab+huawei@kernel.org>
+        id S231127AbhJRKFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 06:05:01 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:36114 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229773AbhJRKEx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 06:04:53 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 7CB9A1FD6D;
+        Mon, 18 Oct 2021 10:02:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1634551361; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4LE2XnoDd93shSdXnFcB5mdAxtyex8WZOGCV661COJQ=;
+        b=qkaIxHgdf9rNQ6p7t2UyQgmjt4nOBjLTK+YjGf7iJOJ6K5XtdLTkyfv6pEzrco2nu3wtr7
+        ZP9yUguZ4CPANy1LlDirZCzoQulMBkziPX5XJjn+2fmCV58zKeq0qxD3fzLovgoIIMTzQz
+        xFSucLP+NrmhZvRfiOH545Ng5pamHgA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1634551361;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4LE2XnoDd93shSdXnFcB5mdAxtyex8WZOGCV661COJQ=;
+        b=gdxufcHDp6xAV6EKnuzBDuAxjGxCABVtEVUW4yE5hSsuY6PT9X6jMCxGPmKZw8XUhHQsVH
+        dXlqAu2Xrdi+vEAA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 34F1C13CC9;
+        Mon, 18 Oct 2021 10:02:41 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id tIO6C0FGbWH+YwAAMHmgww
+        (envelope-from <tzimmermann@suse.de>); Mon, 18 Oct 2021 10:02:41 +0000
+Message-ID: <87f347bf-801f-7fba-bb52-009367cd30a0@suse.de>
+Date:   Mon, 18 Oct 2021 12:02:40 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a71b60d2c35ba9c2c5398380bc8ad5533e8160f1.1634539769.git.mchehab+huawei@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH 1/6] drm: vkms: Replace the deprecated
+ drm_mode_config_init
+Content-Language: en-US
+To:     Igor Matheus Andrade Torrente <igormtorrente@gmail.com>,
+        rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com
+Cc:     hamohammed.sa@gmail.com, daniel@ffwll.ch, airlied@linux.ie,
+        contact@emersion.fr, leandro.ribeiro@collabora.com,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        lkcamp@lists.libreplanetbr.org
+References: <20211005201637.58563-1-igormtorrente@gmail.com>
+ <20211005201637.58563-2-igormtorrente@gmail.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+In-Reply-To: <20211005201637.58563-2-igormtorrente@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------BIiV4QcdVMhZMoK9nuGx1JYL"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+kishon]
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------BIiV4QcdVMhZMoK9nuGx1JYL
+Content-Type: multipart/mixed; boundary="------------AjdwBHD0ODWd46YzR8rEggoa";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Igor Matheus Andrade Torrente <igormtorrente@gmail.com>,
+ rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com
+Cc: hamohammed.sa@gmail.com, daniel@ffwll.ch, airlied@linux.ie,
+ contact@emersion.fr, leandro.ribeiro@collabora.com,
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+ lkcamp@lists.libreplanetbr.org
+Message-ID: <87f347bf-801f-7fba-bb52-009367cd30a0@suse.de>
+Subject: Re: [PATCH 1/6] drm: vkms: Replace the deprecated
+ drm_mode_config_init
+References: <20211005201637.58563-1-igormtorrente@gmail.com>
+ <20211005201637.58563-2-igormtorrente@gmail.com>
+In-Reply-To: <20211005201637.58563-2-igormtorrente@gmail.com>
 
-@Kishon, please can you review from a PHY perspective ?
+--------------AjdwBHD0ODWd46YzR8rEggoa
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-Thanks,
-Lorenzo
+SGkNCg0KQW0gMDUuMTAuMjEgdW0gMjI6MTYgc2NocmllYiBJZ29yIE1hdGhldXMgQW5kcmFk
+ZSBUb3JyZW50ZToNCj4gVGhlIGBkcm1fbW9kZV9jb25maWdfaW5pdGAgd2FzIGRlcHJlY2F0
+ZWQgc2luY2UgYzNiNzkwZSBjb21taXQsIGFuZCBpdCdzDQo+IGJlaW5nIHJlcGxhY2VkIGJ5
+IHRoZSBgZHJtbV9tb2RlX2NvbmZpZ19pbml0YC4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IEln
+b3IgTWF0aGV1cyBBbmRyYWRlIFRvcnJlbnRlIDxpZ29ybXRvcnJlbnRlQGdtYWlsLmNvbT4N
+Cj4gLS0tDQo+ICAgZHJpdmVycy9ncHUvZHJtL3ZrbXMvdmttc19kcnYuYyB8IDUgKysrKy0N
+Cj4gICAxIGZpbGUgY2hhbmdlZCwgNCBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pDQo+
+IA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL3ZrbXMvdmttc19kcnYuYyBiL2Ry
+aXZlcnMvZ3B1L2RybS92a21zL3ZrbXNfZHJ2LmMNCj4gaW5kZXggMGZmZTVmMGUzM2Y3Li44
+Mjg4Njg5MjA0OTQgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS92a21zL3ZrbXNf
+ZHJ2LmMNCj4gKysrIGIvZHJpdmVycy9ncHUvZHJtL3ZrbXMvdmttc19kcnYuYw0KPiBAQCAt
+MTQwLDggKzE0MCwxMSBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IGRybV9tb2RlX2NvbmZpZ19o
+ZWxwZXJfZnVuY3Mgdmttc19tb2RlX2NvbmZpZ19oZWxwZXJzID0gew0KPiAgIHN0YXRpYyBp
+bnQgdmttc19tb2Rlc2V0X2luaXQoc3RydWN0IHZrbXNfZGV2aWNlICp2a21zZGV2KQ0KPiAg
+IHsNCj4gICAJc3RydWN0IGRybV9kZXZpY2UgKmRldiA9ICZ2a21zZGV2LT5kcm07DQo+ICsJ
+aW50IHJldCA9IGRybW1fbW9kZV9jb25maWdfaW5pdChkZXYpOw0KPiArDQo+ICsJaWYgKHJl
+dCA8IDApDQo+ICsJCXJldHVybiByZXQ7DQoNClRoZSBzdHlsZSBsb29rcyBhd2t3YXJkIElN
+SE8uIFJhdGhlciB1c2UNCg0KICBpbnQgcmV0DQoNCiAgcmV0ID0gZHJtbV9tb2RlX2NvbmZp
+Z19pbml0KCkNCiAgaWYgKHJldCkNCiAgICAgcmV0dXJuIHJldDsNCg0KPiAgIA0KPiAtCWRy
+bV9tb2RlX2NvbmZpZ19pbml0KGRldik7DQo+ICAgCWRldi0+bW9kZV9jb25maWcuZnVuY3Mg
+PSAmdmttc19tb2RlX2Z1bmNzOw0KPiAgIAlkZXYtPm1vZGVfY29uZmlnLm1pbl93aWR0aCA9
+IFhSRVNfTUlOOw0KPiAgIAlkZXYtPm1vZGVfY29uZmlnLm1pbl9oZWlnaHQgPSBZUkVTX01J
+TjsNCj4gDQoNCi0tIA0KVGhvbWFzIFppbW1lcm1hbm4NCkdyYXBoaWNzIERyaXZlciBEZXZl
+bG9wZXINClNVU0UgU29mdHdhcmUgU29sdXRpb25zIEdlcm1hbnkgR21iSA0KTWF4ZmVsZHN0
+ci4gNSwgOTA0MDkgTsO8cm5iZXJnLCBHZXJtYW55DQooSFJCIDM2ODA5LCBBRyBOw7xybmJl
+cmcpDQpHZXNjaMOkZnRzZsO8aHJlcjogRmVsaXggSW1lbmTDtnJmZmVyDQo=
 
-On Mon, Oct 18, 2021 at 08:07:27AM +0100, Mauro Carvalho Chehab wrote:
-> The pcie-kirin driver contains both PHY and generic PCI driver
-> on it.
-> 
-> The best would be, instead, to support a PCI PHY driver, making
-> the driver more generic.
-> 
-> However, it is too late to remove the Kirin 960 PHY, as a change
-> like that would make the DT schema incompatible with past versions.
-> 
-> So, add support for an external PHY driver without removing the
-> existing Kirin 960 PHY from it.
-> 
-> Acked-by: Xiaowei Song <songxiaowei@hisilicon.com>
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
-> 
-> See [PATCH v13 00/10] at: https://lore.kernel.org/all/cover.1634539769.git.mchehab+huawei@kernel.org/
-> 
->  drivers/pci/controller/dwc/pcie-kirin.c | 95 +++++++++++++++++++++----
->  1 file changed, 80 insertions(+), 15 deletions(-)
-> 
-> diff --git a/drivers/pci/controller/dwc/pcie-kirin.c b/drivers/pci/controller/dwc/pcie-kirin.c
-> index b4063a3434df..31514a5d4bb4 100644
-> --- a/drivers/pci/controller/dwc/pcie-kirin.c
-> +++ b/drivers/pci/controller/dwc/pcie-kirin.c
-> @@ -8,16 +8,18 @@
->   * Author: Xiaowei Song <songxiaowei@huawei.com>
->   */
->  
-> -#include <linux/compiler.h>
->  #include <linux/clk.h>
-> +#include <linux/compiler.h>
->  #include <linux/delay.h>
->  #include <linux/err.h>
->  #include <linux/gpio.h>
->  #include <linux/interrupt.h>
->  #include <linux/mfd/syscon.h>
->  #include <linux/of_address.h>
-> +#include <linux/of_device.h>
->  #include <linux/of_gpio.h>
->  #include <linux/of_pci.h>
-> +#include <linux/phy/phy.h>
->  #include <linux/pci.h>
->  #include <linux/pci_regs.h>
->  #include <linux/platform_device.h>
-> @@ -50,11 +52,18 @@
->  #define PCIE_DEBOUNCE_PARAM	0xF0F400
->  #define PCIE_OE_BYPASS		(0x3 << 28)
->  
-> +enum pcie_kirin_phy_type {
-> +	PCIE_KIRIN_INTERNAL_PHY,
-> +	PCIE_KIRIN_EXTERNAL_PHY
-> +};
-> +
->  struct kirin_pcie {
-> +	enum pcie_kirin_phy_type	type;
-> +
->  	struct dw_pcie	*pci;
->  	struct phy	*phy;
->  	void __iomem	*apb_base;
-> -	void		*phy_priv;	/* Needed for Kirin 960 PHY */
-> +	void		*phy_priv;	/* only for PCIE_KIRIN_INTERNAL_PHY */
->  };
->  
->  /*
-> @@ -476,8 +485,63 @@ static const struct dw_pcie_host_ops kirin_pcie_host_ops = {
->  	.host_init = kirin_pcie_host_init,
->  };
->  
-> +static int kirin_pcie_power_on(struct platform_device *pdev,
-> +			       struct kirin_pcie *kirin_pcie)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	int ret;
-> +
-> +	if (kirin_pcie->type == PCIE_KIRIN_INTERNAL_PHY) {
-> +		ret = hi3660_pcie_phy_init(pdev, kirin_pcie);
-> +		if (ret)
-> +			return ret;
-> +
-> +		return hi3660_pcie_phy_power_on(kirin_pcie);
-> +	}
-> +
-> +	kirin_pcie->phy = devm_of_phy_get(dev, dev->of_node, NULL);
-> +	if (IS_ERR(kirin_pcie->phy))
-> +		return PTR_ERR(kirin_pcie->phy);
-> +
-> +	ret = phy_init(kirin_pcie->phy);
-> +	if (ret)
-> +		goto err;
-> +
-> +	ret = phy_power_on(kirin_pcie->phy);
-> +	if (ret)
-> +		goto err;
-> +
-> +	return 0;
-> +err:
-> +	phy_exit(kirin_pcie->phy);
-> +	return ret;
-> +}
-> +
-> +static int __exit kirin_pcie_remove(struct platform_device *pdev)
-> +{
-> +	struct kirin_pcie *kirin_pcie = platform_get_drvdata(pdev);
-> +
-> +	if (kirin_pcie->type == PCIE_KIRIN_INTERNAL_PHY)
-> +		return 0;
-> +
-> +	phy_power_off(kirin_pcie->phy);
-> +	phy_exit(kirin_pcie->phy);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct of_device_id kirin_pcie_match[] = {
-> +	{
-> +		.compatible = "hisilicon,kirin960-pcie",
-> +		.data = (void *)PCIE_KIRIN_INTERNAL_PHY
-> +	},
-> +	{},
-> +};
-> +
->  static int kirin_pcie_probe(struct platform_device *pdev)
->  {
-> +	enum pcie_kirin_phy_type phy_type;
-> +	const struct of_device_id *of_id;
->  	struct device *dev = &pdev->dev;
->  	struct kirin_pcie *kirin_pcie;
->  	struct dw_pcie *pci;
-> @@ -488,6 +552,14 @@ static int kirin_pcie_probe(struct platform_device *pdev)
->  		return -EINVAL;
->  	}
->  
-> +	of_id = of_match_device(kirin_pcie_match, dev);
-> +	if (!of_id) {
-> +		dev_err(dev, "OF data missing\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	phy_type = (enum pcie_kirin_phy_type)of_id->data;
-> +
->  	kirin_pcie = devm_kzalloc(dev, sizeof(struct kirin_pcie), GFP_KERNEL);
->  	if (!kirin_pcie)
->  		return -ENOMEM;
-> @@ -500,31 +572,24 @@ static int kirin_pcie_probe(struct platform_device *pdev)
->  	pci->ops = &kirin_dw_pcie_ops;
->  	pci->pp.ops = &kirin_pcie_host_ops;
->  	kirin_pcie->pci = pci;
-> -
-> -	ret = hi3660_pcie_phy_init(pdev, kirin_pcie);
-> -	if (ret)
-> -		return ret;
-> +	kirin_pcie->type = phy_type;
->  
->  	ret = kirin_pcie_get_resource(kirin_pcie, pdev);
->  	if (ret)
->  		return ret;
->  
-> -	ret = hi3660_pcie_phy_power_on(kirin_pcie);
-> -	if (ret)
-> -		return ret;
-> -
->  	platform_set_drvdata(pdev, kirin_pcie);
->  
-> +	ret = kirin_pcie_power_on(pdev, kirin_pcie);
-> +	if (ret)
-> +		return ret;
-> +
->  	return dw_pcie_host_init(&pci->pp);
->  }
->  
-> -static const struct of_device_id kirin_pcie_match[] = {
-> -	{ .compatible = "hisilicon,kirin960-pcie" },
-> -	{},
-> -};
-> -
->  static struct platform_driver kirin_pcie_driver = {
->  	.probe			= kirin_pcie_probe,
-> +	.remove	        	= __exit_p(kirin_pcie_remove),
->  	.driver			= {
->  		.name			= "kirin-pcie",
->  		.of_match_table		= kirin_pcie_match,
-> -- 
-> 2.31.1
-> 
+--------------AjdwBHD0ODWd46YzR8rEggoa--
+
+--------------BIiV4QcdVMhZMoK9nuGx1JYL
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmFtRkAFAwAAAAAACgkQlh/E3EQov+Dh
+HQ//YLBjCwEKcI6OxzPyUqGSxNmlKi8XR1TOPzGKT1rnTXzDdsBjdBWeaKc2qeJk5cnzWnr4HzY3
+Y/zOT/Vl3vV4MHc7x1rMtj11CaKEK6oXd42pwHAzDHRAcaHtvkK8Lyr+we7sHiFCpOrcNSxU1CYV
+R+q2VfL53QfLs24WdhQX3fZGoDcUiwYBVIFde4C9MdCb8PmTi/Bw1jGBmA+NUkSlfreQ4LG9y2GL
+7rZsCGiyUmDoBLzaX4ysLpiReNkRub/s4sdiZ6Lk8owpWq/KjIy/ii8D9vhVKvD32yj3WM1V7cOu
+harXm+FpSsTBFZuKwGxkW7cE1p9aPDgvU8bTPN8mgVLq++Bq29S7IE4aoWH4tG77CA5s/22HN6Xp
+Ivpr3+GupbRGxHPpxXVdKgKpZTIqcDl+cq8GuxlQtt3oyxTHO2I2Ab0Ig4kHqQrN0UEIEZ7VtBP3
+La+BMnfYKhFKt8BzrPajGeFEjlRWnclEXQ55sAYDLkxo46+czOwSwgO7+TD416sif3HAv9gtWVnT
++y3igEPG2wCY7LMDQD4Vh20SJtLGBcDNpEhB57b3udCwjiLu6b4NxHIASX69rw7IRBncnEwNrCSc
+6wN7ZrqrsUU0ri21azrCT7BcsAlotOQIjMa/EPH120IXl6iuFAmZ1v+wp8QhvYDVK+k5eZcVOkIw
+26w=
+=ft9+
+-----END PGP SIGNATURE-----
+
+--------------BIiV4QcdVMhZMoK9nuGx1JYL--
