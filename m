@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB4B0431CBD
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:42:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3576431B59
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:30:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231887AbhJRNoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:44:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39096 "EHLO mail.kernel.org"
+        id S232695AbhJRNcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:32:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42664 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232937AbhJRNmN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:42:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8605C61458;
-        Mon, 18 Oct 2021 13:33:57 +0000 (UTC)
+        id S232615AbhJRNah (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:30:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EC9E7610A6;
+        Mon, 18 Oct 2021 13:28:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634564038;
-        bh=suoiWp44/xr67QDUriN6p/vWMX8spM2MaexFh89YP7A=;
+        s=korg; t=1634563697;
+        bh=NXc3d0PwEMEkITokcwa3/NneKOV66jJsGKA91i2KZB0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=goORiLAo7VgFgT4gbXKyMWeBafn3bmDpMu1QMRmkHX+/b2H4Fh4EgFk0mh6Wyujwh
-         1N3MqPd1Awo4IYNZUTdR/RyAeWyBmJMNSfM1cw+wOaeIwwZe+SEihim2RsegsLDod3
-         /qXnJXtrOku/gNaBzyRjUeAKveolm5oDFWwOFtoE=
+        b=rXBPa43UWCE30Zqy2ut7lwvFUlNS2yWs0C0qHnafLoZbXJgTV0lRaG+ck1WWcealm
+         J6ZfiLbHBnV0nymjQcRCbjztD0EOhHuACPugDN5+PjEXymL7kIwNbF7cmtNguXEiIj
+         Hz/6duCF76bS4z7mrJ9xqxwu1XRgbs8x21Oyw3I0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 5.10 040/103] misc: fastrpc: Add missing lock before accessing find_vma()
+        stable@vger.kernel.org, Filipe Manana <fdmanana@suse.com>,
+        David Sterba <dsterba@suse.com>
+Subject: [PATCH 4.19 09/50] btrfs: check for error when looking up inode during dir entry replay
 Date:   Mon, 18 Oct 2021 15:24:16 +0200
-Message-Id: <20211018132336.056196090@linuxfoundation.org>
+Message-Id: <20211018132326.840532967@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132334.702559133@linuxfoundation.org>
-References: <20211018132334.702559133@linuxfoundation.org>
+In-Reply-To: <20211018132326.529486647@linuxfoundation.org>
+References: <20211018132326.529486647@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,61 +39,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+From: Filipe Manana <fdmanana@suse.com>
 
-commit f9a470db2736b01538ad193c316eb3f26be37d58 upstream.
+commit cfd312695b71df04c3a2597859ff12c470d1e2e4 upstream.
 
-fastrpc driver is using find_vma() without any protection, as a
-result we see below warning due to recent patch 5b78ed24e8ec
-("mm/pagemap: add mmap_assert_locked() annotations to find_vma*()")
-which added mmap_assert_locked() in find_vma() function.
+At replay_one_name(), we are treating any error from btrfs_lookup_inode()
+as if the inode does not exists. Fix this by checking for an error and
+returning it to the caller.
 
-This bug went un-noticed in previous versions. Fix this issue by adding
-required protection while calling find_vma().
-
-CPU: 0 PID: 209746 Comm: benchmark_model Not tainted 5.15.0-rc2-00445-ge14fe2bf817a-dirty #969
-Hardware name: Qualcomm Technologies, Inc. Robotics RB5 (DT)
-pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-pc : find_vma+0x64/0xd0
-lr : find_vma+0x60/0xd0
-sp : ffff8000158ebc40
-...
-
-Call trace:
- find_vma+0x64/0xd0
- fastrpc_internal_invoke+0x570/0xda8
- fastrpc_device_ioctl+0x3e0/0x928
- __arm64_sys_ioctl+0xac/0xf0
- invoke_syscall+0x44/0x100
- el0_svc_common.constprop.3+0x70/0xf8
- do_el0_svc+0x24/0x88
- el0_svc+0x3c/0x138
- el0t_64_sync_handler+0x90/0xb8
- el0t_64_sync+0x180/0x184
-
-Fixes: 80f3afd72bd4 ("misc: fastrpc: consider address offset before sending to DSP")
-Cc: stable@vger.kernel.org
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Link: https://lore.kernel.org/r/20210922154326.8927-1-srinivas.kandagatla@linaro.org
+CC: stable@vger.kernel.org # 4.14+
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/misc/fastrpc.c |    2 ++
- 1 file changed, 2 insertions(+)
+ fs/btrfs/tree-log.c |   14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
---- a/drivers/misc/fastrpc.c
-+++ b/drivers/misc/fastrpc.c
-@@ -812,10 +812,12 @@ static int fastrpc_get_args(u32 kernel,
- 			rpra[i].pv = (u64) ctx->args[i].ptr;
- 			pages[i].addr = ctx->maps[i]->phys;
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -1871,8 +1871,8 @@ static noinline int replay_one_name(stru
+ 	struct btrfs_key log_key;
+ 	struct inode *dir;
+ 	u8 log_type;
+-	int exists;
+-	int ret = 0;
++	bool exists;
++	int ret;
+ 	bool update_size = (key->type == BTRFS_DIR_INDEX_KEY);
+ 	bool name_added = false;
  
-+			mmap_read_lock(current->mm);
- 			vma = find_vma(current->mm, ctx->args[i].ptr);
- 			if (vma)
- 				pages[i].addr += ctx->args[i].ptr -
- 						 vma->vm_start;
-+			mmap_read_unlock(current->mm);
+@@ -1892,12 +1892,12 @@ static noinline int replay_one_name(stru
+ 		   name_len);
  
- 			pg_start = (ctx->args[i].ptr & PAGE_MASK) >> PAGE_SHIFT;
- 			pg_end = ((ctx->args[i].ptr + len - 1) & PAGE_MASK) >>
+ 	btrfs_dir_item_key_to_cpu(eb, di, &log_key);
+-	exists = btrfs_lookup_inode(trans, root, path, &log_key, 0);
+-	if (exists == 0)
+-		exists = 1;
+-	else
+-		exists = 0;
++	ret = btrfs_lookup_inode(trans, root, path, &log_key, 0);
+ 	btrfs_release_path(path);
++	if (ret < 0)
++		goto out;
++	exists = (ret == 0);
++	ret = 0;
+ 
+ 	if (key->type == BTRFS_DIR_ITEM_KEY) {
+ 		dst_di = btrfs_lookup_dir_item(trans, root, path, key->objectid,
 
 
