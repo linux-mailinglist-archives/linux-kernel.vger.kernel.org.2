@@ -2,159 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA9FB4313F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 12:00:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 559C44313F8
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 12:00:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230058AbhJRKCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 06:02:31 -0400
-Received: from mx3.molgen.mpg.de ([141.14.17.11]:40263 "EHLO mx1.molgen.mpg.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229629AbhJRKCH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 06:02:07 -0400
-Received: from [192.168.0.2] (ip5f5aef76.dynamic.kabel-deutschland.de [95.90.239.118])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 7009761E5FE33;
-        Mon, 18 Oct 2021 11:59:55 +0200 (CEST)
-Subject: Re: [PATCH v2 3/7] media: aspeed: add more debug log message
-To:     Jammy Huang <jammy_huang@aspeedtech.com>
-References: <20211018092207.13336-1-jammy_huang@aspeedtech.com>
- <20211018092207.13336-4-jammy_huang@aspeedtech.com>
-Cc:     eajames@linux.ibm.com, mchehab@kernel.org, joel@jms.id.au,
-        andrew@aj.id.au, linux-media@vger.kernel.org,
-        openbmc@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-Message-ID: <8212f2f5-d661-b598-1490-0ad5266ff2ca@molgen.mpg.de>
-Date:   Mon, 18 Oct 2021 11:59:55 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S230040AbhJRKCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 06:02:51 -0400
+Received: from mga06.intel.com ([134.134.136.31]:3995 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229848AbhJRKCu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 06:02:50 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10140"; a="289068112"
+X-IronPort-AV: E=Sophos;i="5.85,381,1624345200"; 
+   d="scan'208";a="289068112"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2021 03:00:11 -0700
+X-IronPort-AV: E=Sophos;i="5.85,381,1624345200"; 
+   d="scan'208";a="493521361"
+Received: from foboril-mobl1.ger.corp.intel.com (HELO localhost) ([10.249.44.188])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2021 03:00:04 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Len Baker <len.baker@gmx.com>, Daniel Vetter <daniel@ffwll.ch>
+Cc:     Len Baker <len.baker@gmx.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Kees Cook <keescook@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/i915: Prefer struct_size over open coded arithmetic
+In-Reply-To: <20211016111602.GA1996@titan>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20211003104258.18550-1-len.baker@gmx.com> <20211011092304.GA5790@titan> <87k0ihxj56.fsf@intel.com> <YWbIQmD1TGikpRm2@phenom.ffwll.local> <20211016111602.GA1996@titan>
+Date:   Mon, 18 Oct 2021 13:00:01 +0300
+Message-ID: <877deatzz2.fsf@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20211018092207.13336-4-jammy_huang@aspeedtech.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Jammy:
+On Sat, 16 Oct 2021, Len Baker <len.baker@gmx.com> wrote:
+> Hi Daniel and Jani,
+>
+> On Wed, Oct 13, 2021 at 01:51:30PM +0200, Daniel Vetter wrote:
+>> On Wed, Oct 13, 2021 at 02:24:05PM +0300, Jani Nikula wrote:
+>> > On Mon, 11 Oct 2021, Len Baker <len.baker@gmx.com> wrote:
+>> > > Hi,
+>> > >
+>> > > On Sun, Oct 03, 2021 at 12:42:58PM +0200, Len Baker wrote:
+>> > >> As noted in the "Deprecated Interfaces, Language Features, Attributes,
+>> > >> and Conventions" documentation [1], size calculations (especially
+>> > >> multiplication) should not be performed in memory allocator (or similar)
+>> > >> function arguments due to the risk of them overflowing. This could lead
+>> > >> to values wrapping around and a smaller allocation being made than the
+>> > >> caller was expecting. Using those allocations could lead to linear
+>> > >> overflows of heap memory and other misbehaviors.
+>> > >>
+>> > >> In this case these are not actually dynamic sizes: all the operands
+>> > >> involved in the calculation are constant values. However it is better to
+>> > >> refactor them anyway, just to keep the open-coded math idiom out of
+>> > >> code.
+>> > >>
+>> > >> So, add at the end of the struct i915_syncmap a union with two flexible
+>> > >> array members (these arrays share the same memory layout). This is
+>> > >> possible using the new DECLARE_FLEX_ARRAY macro. And then, use the
+>> > >> struct_size() helper to do the arithmetic instead of the argument
+>> > >> "size + count * size" in the kmalloc and kzalloc() functions.
+>> > >>
+>> > >> Also, take the opportunity to refactor the __sync_seqno and __sync_child
+>> > >> making them more readable.
+>> > >>
+>> > >> This code was detected with the help of Coccinelle and audited and fixed
+>> > >> manually.
+>> > >>
+>> > >> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments
+>> > >>
+>> > >> Signed-off-by: Len Baker <len.baker@gmx.com>
+>> > >> ---
+>> > >>  drivers/gpu/drm/i915/i915_syncmap.c | 12 ++++++++----
+>> > >>  1 file changed, 8 insertions(+), 4 deletions(-)
+>> > >
+>> > > I received a mail telling that this patch doesn't build:
+>> > >
+>> > > == Series Details ==
+>> > >
+>> > > Series: drm/i915: Prefer struct_size over open coded arithmetic
+>> > > URL   : https://patchwork.freedesktop.org/series/95408/
+>> > > State : failure
+>> > >
+>> > > But it builds without error against linux-next (tag next-20211001). Against
+>> > > which tree and branch do I need to build?
+>> >
+>> > drm-tip [1]. It's a sort of linux-next for graphics. I think there are
+>> > still some branches that don't feed to linux-next.
+>>
+>> Yeah we need to get gt-next in linux-next asap. Joonas promised to send
+>> out his patch to make that happen in dim.
+>> -Daniel
+>
+> Is there a possibility that you give an "Acked-by" tag? And then this patch
+> goes to the mainline through the Kees' tree or Gustavo's tree?
+
+If this does not apply to drm-intel-gt-next (or drm-tip), applying it to
+some other branch will just cause unnecessary conflicts later on. It's
+unnecessary extra work. It's not an urgent fix or anything, there is no
+reason to do that. So that's a NAK.
+
+> Or is it better to wait for drm-tip to update?
+
+drm-tip is up to date, it's just that one of the branches that feed to
+it is (was?) not feeding to linux-next.
+
+If you're contributing to drm, please consider basing your patches on
+top of drm-tip.
 
 
-Am 18.10.21 um 11:22 schrieb Jammy Huang:
-
-Nit (summary/suject:: message*s*
-
-Could you add an excerpt of the new log messages please?
+BR,
+Jani.
 
 
-Kind regards,
+>
+> Regards,
+> Len
+>
+>>
+>> >
+>> > BR,
+>> > Jani.
+>> >
+>> >
+>> > [1] https://cgit.freedesktop.org/drm/drm-tip
+>> >
+>> >
+>> > >
+>> > > Regards,
+>> > > Len
+>> >
+>> > --
+>> > Jani Nikula, Intel Open Source Graphics Center
+>>
+>> --
+>> Daniel Vetter
+>> Software Engineer, Intel Corporation
+>> http://blog.ffwll.ch
 
-Paul
-
-
-> Signed-off-by: Jammy Huang <jammy_huang@aspeedtech.com>
-> ---
->   drivers/media/platform/aspeed-video.c | 24 ++++++++++++++++++++++++
->   1 file changed, 24 insertions(+)
-> 
-> diff --git a/drivers/media/platform/aspeed-video.c b/drivers/media/platform/aspeed-video.c
-> index 642ca96c8c52..24ca07f40f14 100644
-> --- a/drivers/media/platform/aspeed-video.c
-> +++ b/drivers/media/platform/aspeed-video.c
-> @@ -461,12 +461,17 @@ static void aspeed_video_write(struct aspeed_video *video, u32 reg, u32 val)
->   
->   static void update_perf(struct aspeed_video_perf *p)
->   {
-> +	struct aspeed_video *v = container_of(p, struct aspeed_video,
-> +					      perf);
-> +
->   	p->duration =
->   		ktime_to_ms(ktime_sub(ktime_get(),  p->last_sample));
->   	p->totaltime += p->duration;
->   
->   	p->duration_max = max(p->duration, p->duration_max);
->   	p->duration_min = min(p->duration, p->duration_min);
-> +	v4l2_dbg(2, debug, &v->v4l2_dev, "time consumed: %d ms\n",
-> +		 p->duration);
->   }
->   
->   static int aspeed_video_start_frame(struct aspeed_video *video)
-> @@ -593,6 +598,12 @@ static irqreturn_t aspeed_video_irq(int irq, void *arg)
->   	struct aspeed_video *video = arg;
->   	u32 sts = aspeed_video_read(video, VE_INTERRUPT_STATUS);
->   
-> +	v4l2_dbg(1, debug, &video->v4l2_dev, "irq sts=%#x %s%s%s%s\n", sts,
-> +		 sts & VE_INTERRUPT_MODE_DETECT_WD ? ", unlock" : "",
-> +		 sts & VE_INTERRUPT_MODE_DETECT ? ", lock" : "",
-> +		 sts & VE_INTERRUPT_CAPTURE_COMPLETE ? ", capture-done" : "",
-> +		 sts & VE_INTERRUPT_COMP_COMPLETE ? ", comp-done" : "");
-> +
->   	/*
->   	 * Resolution changed or signal was lost; reset the engine and
->   	 * re-initialize
-> @@ -910,6 +921,7 @@ static void aspeed_video_set_resolution(struct aspeed_video *video)
->   
->   	/* Don't use direct mode below 1024 x 768 (irqs don't fire) */
->   	if (size < DIRECT_FETCH_THRESHOLD) {
-> +		v4l2_dbg(1, debug, &video->v4l2_dev, "Capture: Sync Mode\n");
->   		aspeed_video_write(video, VE_TGS_0,
->   				   FIELD_PREP(VE_TGS_FIRST,
->   					      video->frame_left - 1) |
-> @@ -921,6 +933,7 @@ static void aspeed_video_set_resolution(struct aspeed_video *video)
->   					      video->frame_bottom + 1));
->   		aspeed_video_update(video, VE_CTRL, 0, VE_CTRL_INT_DE);
->   	} else {
-> +		v4l2_dbg(1, debug, &video->v4l2_dev, "Capture: Direct Mode\n");
->   		aspeed_video_update(video, VE_CTRL, 0, VE_CTRL_DIRECT_FETCH);
->   	}
->   
-> @@ -937,6 +950,10 @@ static void aspeed_video_set_resolution(struct aspeed_video *video)
->   		if (!aspeed_video_alloc_buf(video, &video->srcs[1], size))
->   			goto err_mem;
->   
-> +		v4l2_dbg(1, debug, &video->v4l2_dev, "src buf0 addr(%#x) size(%d)\n",
-> +			 video->srcs[0].dma, video->srcs[0].size);
-> +		v4l2_dbg(1, debug, &video->v4l2_dev, "src buf1 addr(%#x) size(%d)\n",
-> +			 video->srcs[1].dma, video->srcs[1].size);
->   		aspeed_video_write(video, VE_SRC0_ADDR, video->srcs[0].dma);
->   		aspeed_video_write(video, VE_SRC1_ADDR, video->srcs[1].dma);
->   	}
-> @@ -1201,6 +1218,9 @@ static int aspeed_video_set_dv_timings(struct file *file, void *fh,
->   
->   	timings->type = V4L2_DV_BT_656_1120;
->   
-> +	v4l2_dbg(1, debug, &video->v4l2_dev, "set new timings(%dx%d)\n",
-> +		 timings->bt.width, timings->bt.height);
-> +
->   	return 0;
->   }
->   
-> @@ -1383,6 +1403,7 @@ static void aspeed_video_resolution_work(struct work_struct *work)
->   			.u.src_change.changes = V4L2_EVENT_SRC_CH_RESOLUTION,
->   		};
->   
-> +		v4l2_dbg(1, debug, &video->v4l2_dev, "fire source change event\n");
->   		v4l2_event_queue(&video->vdev, &ev);
->   	} else if (test_bit(VIDEO_STREAMING, &video->flags)) {
->   		/* No resolution change so just restart streaming */
-> @@ -1718,6 +1739,7 @@ static int aspeed_video_init(struct aspeed_video *video)
->   		dev_err(dev, "Unable to request IRQ %d\n", irq);
->   		return rc;
->   	}
-> +	dev_info(video->dev, "irq %d\n", irq);
->   
->   	video->eclk = devm_clk_get(dev, "eclk");
->   	if (IS_ERR(video->eclk)) {
-> @@ -1754,6 +1776,8 @@ static int aspeed_video_init(struct aspeed_video *video)
->   		rc = -ENOMEM;
->   		goto err_release_reserved_mem;
->   	}
-> +	dev_info(video->dev, "alloc mem size(%d) at %#x for jpeg header\n",
-> +		 VE_JPEG_HEADER_SIZE, video->jpeg.dma);
->   
->   	aspeed_video_init_jpeg_table(video->jpeg.virt, video->yuv420);
->   
-> 
+-- 
+Jani Nikula, Intel Open Source Graphics Center
