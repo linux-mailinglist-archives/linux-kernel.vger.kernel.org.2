@@ -2,98 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 376A5431073
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 08:23:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FE2C431076
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 08:25:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230283AbhJRGZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 02:25:46 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:54089 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230209AbhJRGZp (ORCPT
+        id S230156AbhJRG1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 02:27:20 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:53768 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229708AbhJRG1T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 02:25:45 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HXmz76vZ3z4xbb;
-        Mon, 18 Oct 2021 17:23:31 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1634538213;
-        bh=wFfQjUVSlELzOvVkwtPiuSslpY32vT0yZ5KFAyxwfJM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=S2I3769UHtKQSIKjlTtREtiNO0V3mWxbx49CH93im3taeevNTKwv8PEXecm1SbfpY
-         /dCyNXtI3OnY0532lvk4yiBpXN86+q0XWaWxF62TUKD3aRAKsBa4hFUzJzRs9LRwGq
-         nq7Mh+PGQWwx2a0RtgG0DhdQLZ3xIS53kkOW37sMDEtobSckGhzhyNHRRwY6VyVN+t
-         ITO/SqDo+IcHqf/frL9UgsLiNxk3joeAdVJKdhCRx5dL9ooRqc/PvgCSVD8J6I5CT9
-         yL6jwSJ2XGQgeMMyNe0BJjO8lX0FO0b21beHVnaKBW2E7e5Xu3Sy5mtnf7P7XXsIJB
-         b9ILZHynV9A/g==
-Date:   Mon, 18 Oct 2021 17:23:30 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Qi Zheng <zhengqi.arch@bytedance.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the tip tree
-Message-ID: <20211018172330.379b2061@canb.auug.org.au>
+        Mon, 18 Oct 2021 02:27:19 -0400
+X-UUID: 4abdf5926bd348d49b111988a4e947ab-20211018
+X-UUID: 4abdf5926bd348d49b111988a4e947ab-20211018
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <guangming.cao@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 164250816; Mon, 18 Oct 2021 14:25:04 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.2.792.15; Mon, 18 Oct 2021 14:25:03 +0800
+Received: from mszswglt01.gcn.mediatek.inc (10.16.20.20) by
+ mtkcas11.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.0.1497.2 via Frontend Transport; Mon, 18 Oct 2021 14:25:02 +0800
+From:   <guangming.cao@mediatek.com>
+To:     <daniel@ffwll.ch>
+CC:     <Brian.Starkey@arm.com>, <benjamin.gaignard@linaro.org>,
+        <christian.koenig@amd.com>, <dri-devel@lists.freedesktop.org>,
+        <guangming.cao@mediatek.com>, <hridya@google.com>,
+        <isaacm@codeaurora.org>, <john.stultz@linaro.org>,
+        <labbott@redhat.com>, <linaro-mm-sig@lists.linaro.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>, <lmark@codeaurora.org>,
+        <matthias.bgg@gmail.com>, <sspatil@google.com>,
+        <sumit.semwal@linaro.org>, <wsd_upstream@mediatek.com>,
+        Guangming Cao <Guangming.Cao@mediatek.com>
+Subject: Re: [PATCH] dma-buf: Add support for mapping buffers with DMA attributes
+Date:   Mon, 18 Oct 2021 14:25:04 +0800
+Message-ID: <20211018062504.116652-1-guangming.cao@mediatek.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <YS4kx3thdJOu3uHX@phenom.ffwll.local>
+References: <YS4kx3thdJOu3uHX@phenom.ffwll.local>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/iea/yGZ+7Qs/j230w26yVX1";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/iea/yGZ+7Qs/j230w26yVX1
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+From: Guangming Cao <Guangming.Cao@mediatek.com>
 
-Hi all,
+On Tue, 2021-08-31 at 14:47 +0200, Daniel Vetter wrote:
+> On Mon, Aug 30, 2021 at 10:39:11AM +0800, guangming.cao@mediatek.com
+> wrote:
+> > From: Guangming Cao <Guangming.Cao@mediatek.com>
+> > 
+> > When mapping the memory represented by a dma-buf into a device's
+> > address space, it might be desireable to map the memory with
+> > certain DMA attributes. Thus, introduce the dma_mapping_attrs
+> > field in the dma_buf_attachment structure so that when
+> > the memory is mapped with dma_buf_map_attachment, it is mapped
+> > with the desired DMA attributes.
+> > 
+> > Signed-off-by: Isaac J. Manjarres <isaacm@codeaurora.org>
+> > Signed-off-by: Sandeep Patil <sspatil@google.com>
+> > Signed-off-by: Guangming Cao <Guangming.Cao@mediatek.com>
+> 
+> Can you pls include the code that's going to use this here too?
+> 
+> At a glance all the attributes you might want to set are supposed to
+> be
+> under the control of the exporter, not the importer.
+> -Daniel
+> 
+Hi Daniel,
 
-After merging the tip tree, today's linux-next build (x86_64 allnoconfig)
-failed like this:
+Sorry for the late. Currently I couldn't upload the coding going to use
+this part because of some miscellaneous reasons.
 
-arch/x86/kernel/process.c: In function '__get_wchan':
-arch/x86/kernel/process.c:950:2: error: implicit declaration of function 's=
-tack_trace_save_tsk' [-Werror=3Dimplicit-function-declaration]
-  950 |  stack_trace_save_tsk(p, &entry, 1, 0);
-      |  ^~~~~~~~~~~~~~~~~~~~
-cc1: some warnings being treated as errors
+Just as I said in commit message, for dma_heap, users can't skip cache
+sync or other opetrations when map iova[dma_buf_map_attachment] by
+fill (struct dma_buf_attachment).dma_map_attrs, it's not dma_map_attrs
+expected(link: 
+https://github.com/torvalds/linux/blob/master/Documentation/core-api/dma-attributes.rst#dma_attr_skip_cpu_sync
+).
 
-Caused by commit
+Correspondingly, if they use dma_buf to map iova[dma_buf_map_attrs],
+they will not meet this issue. So, I think it's a design flaw for
+dma_heap.
 
-  bc9bbb81730e ("x86: Fix get_wchan() to support the ORC unwinder")
-
-stack_trace_save_tsk() requires CONFIG_STACKTRACE which is not set for
-this build.
-
-I have reverted that commit, and commit
-
-  42a20f86dc19 ("sched: Add wrapper for get_wchan() to keep task blocked")
-
-which follows it, for today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/iea/yGZ+7Qs/j230w26yVX1
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFtEuIACgkQAVBC80lX
-0GyLewf+JxIj44eOOvF0/ffEXEESx61ZtHmzjJJrILL8JDr5NJz3eQKe211B9IzM
-OqHEGZOTuFiJx0sp1hrOYFpeoi3Dm7ebVk7c5M2vQczwGBgfIT2R+y266Pfb30Ed
-zMdEH34D28vakMHb5Ts7yl9wevpPoA3/mJgxiAHCjWAH3xMwRAHUg9Oi8+NEXgF+
-PctvZaxODWGhkQXYNmPmSdx1fPguUO2TDHtIjZwhfp/TYQLvCw8Pzwtd7q8Ar8sp
-Hf3tYgBaESppjPA4IFuablPhZXZKUUJclEYkLMEJKQ8H+fnWYS3EC5D/1m2uohjt
-eIuddEBm+qvm1nGwSGhUlq8VG2t3Sg==
-=0fe8
------END PGP SIGNATURE-----
-
---Sig_/iea/yGZ+7Qs/j230w26yVX1--
+BRs!
+Guangming
+> > ---
+> >  drivers/dma-buf/heaps/cma_heap.c    | 6 ++++--
+> >  drivers/dma-buf/heaps/system_heap.c | 6 ++++--
+> >  include/linux/dma-buf.h             | 3 +++
+> >  3 files changed, 11 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/drivers/dma-buf/heaps/cma_heap.c b/drivers/dma-
+> > buf/heaps/cma_heap.c
+> > index 0c05b79870f9..2c9feb3bfc3e 100644
+> > --- a/drivers/dma-buf/heaps/cma_heap.c
+> > +++ b/drivers/dma-buf/heaps/cma_heap.c
+> > @@ -99,9 +99,10 @@ static struct sg_table
+> > *cma_heap_map_dma_buf(struct dma_buf_attachment *attachme
+> >  {
+> >     struct dma_heap_attachment *a = attachment->priv;
+> >     struct sg_table *table = &a->table;
+> > +   int attrs = attachment->dma_map_attrs;
+> >     int ret;
+> >  
+> > -   ret = dma_map_sgtable(attachment->dev, table, direction, 0);
+> > +   ret = dma_map_sgtable(attachment->dev, table, direction,
+> > attrs);
+> >     if (ret)
+> >             return ERR_PTR(-ENOMEM);
+> >     a->mapped = true;
+> > @@ -113,9 +114,10 @@ static void cma_heap_unmap_dma_buf(struct
+> > dma_buf_attachment *attachment,
+> >                                enum dma_data_direction direction)
+> >  {
+> >     struct dma_heap_attachment *a = attachment->priv;
+> > +   int attrs = attachment->dma_map_attrs;
+> >  
+> >     a->mapped = false;
+> > -   dma_unmap_sgtable(attachment->dev, table, direction, 0);
+> > +   dma_unmap_sgtable(attachment->dev, table, direction, attrs);
+> >  }
+> >  
+> >  static int cma_heap_dma_buf_begin_cpu_access(struct dma_buf
+> > *dmabuf,
+> > diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-
+> > buf/heaps/system_heap.c
+> > index 23a7e74ef966..fc7b1e02988e 100644
+> > --- a/drivers/dma-buf/heaps/system_heap.c
+> > +++ b/drivers/dma-buf/heaps/system_heap.c
+> > @@ -130,9 +130,10 @@ static struct sg_table
+> > *system_heap_map_dma_buf(struct dma_buf_attachment *attac
+> >  {
+> >     struct dma_heap_attachment *a = attachment->priv;
+> >     struct sg_table *table = a->table;
+> > +   int attrs = attachment->dma_map_attrs;
+> >     int ret;
+> >  
+> > -   ret = dma_map_sgtable(attachment->dev, table, direction, 0);
+> > +   ret = dma_map_sgtable(attachment->dev, table, direction,
+> > attrs);
+> >     if (ret)
+> >             return ERR_PTR(ret);
+> >  
+> > @@ -145,9 +146,10 @@ static void system_heap_unmap_dma_buf(struct
+> > dma_buf_attachment *attachment,
+> >                                   enum dma_data_direction
+> > direction)
+> >  {
+> >     struct dma_heap_attachment *a = attachment->priv;
+> > +   int attrs = attachment->dma_map_attrs;
+> >  
+> >     a->mapped = false;
+> > -   dma_unmap_sgtable(attachment->dev, table, direction, 0);
+> > +   dma_unmap_sgtable(attachment->dev, table, direction, attrs);
+> >  }
+> >  
+> >  static int system_heap_dma_buf_begin_cpu_access(struct dma_buf
+> > *dmabuf,
+> > diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
+> > index efdc56b9d95f..4d650731766e 100644
+> > --- a/include/linux/dma-buf.h
+> > +++ b/include/linux/dma-buf.h
+> > @@ -379,6 +379,8 @@ struct dma_buf_attach_ops {
+> >   * @importer_ops: importer operations for this attachment, if
+> > provided
+> >   * dma_buf_map/unmap_attachment() must be called with the dma_resv
+> > lock held.
+> >   * @importer_priv: importer specific attachment data.
+> > + * @dma_map_attrs: DMA attributes to be used when the exporter
+> > maps the buffer
+> > + * through dma_buf_map_attachment.
+> >   *
+> >   * This structure holds the attachment information between the
+> > dma_buf buffer
+> >   * and its user device(s). The list contains one attachment struct
+> > per device
+> > @@ -399,6 +401,7 @@ struct dma_buf_attachment {
+> >     const struct dma_buf_attach_ops *importer_ops;
+> >     void *importer_priv;
+> >     void *priv;
+> > +   unsigned long dma_map_attrs;
+> >  };
+> >  
+> >  /**
+> > -- 
+> > 2.17.1
+> > 
+> 
+> 
