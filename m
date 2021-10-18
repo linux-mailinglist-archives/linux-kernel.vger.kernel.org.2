@@ -2,189 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D448431138
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 09:13:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91E3F43113B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 09:13:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230355AbhJRHPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 03:15:45 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:58568 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230006AbhJRHPi (ORCPT
+        id S230379AbhJRHQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 03:16:02 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:48714 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230346AbhJRHQB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 03:15:38 -0400
-Received: from [IPv6:2a02:810a:880:f54:88bb:da86:4533:43d6] (unknown [IPv6:2a02:810a:880:f54:88bb:da86:4533:43d6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: dafna)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id BE80A1F42642;
-        Mon, 18 Oct 2021 08:13:25 +0100 (BST)
-Subject: Re: [PATCH v8 04/12] iommu/mediatek: Add device_link between the
- consumer and the larb devices
-To:     Yong Wu <yong.wu@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        David Airlie <airlied@linux.ie>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Evan Green <evgreen@chromium.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Will Deacon <will.deacon@arm.com>,
-        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org, youlin.pei@mediatek.com,
-        Matthias Kaehlcke <mka@chromium.org>, anan.sun@mediatek.com,
-        yi.kuo@mediatek.com, acourbot@chromium.org,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Tiffany Lin <tiffany.lin@mediatek.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Eizan Miyamoto <eizan@chromium.org>,
-        anthony.huang@mediatek.com,
-        Frank Wunderlich <frank-w@public-files.de>
-References: <20210929013719.25120-1-yong.wu@mediatek.com>
- <20210929013719.25120-5-yong.wu@mediatek.com>
- <e00b92db-0562-27ca-2f96-1f03ff824988@collabora.com>
- <e4c98036dd73b91b8352a162f80240171e2b3f0f.camel@mediatek.com>
-From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-Message-ID: <da5934de-65ad-4bac-c510-eb0d40d96d70@collabora.com>
-Date:   Mon, 18 Oct 2021 09:13:22 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Mon, 18 Oct 2021 03:16:01 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 827521C0B76; Mon, 18 Oct 2021 09:13:49 +0200 (CEST)
+Date:   Mon, 18 Oct 2021 09:13:49 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, linux-kernel@vger.kernel.org, rafael@kernel.org,
+        len.brown@intel.com, linux-pm@vger.kernel.org,
+        sfr@canb.auug.org.au, peterz@infradead.org, gor@linux.ibm.com
+Subject: Re: next-20211015: suspend to ram on x86-32 broken
+Message-ID: <20211018071349.GA16631@duo.ucw.cz>
+References: <20211017093905.GA3069@amd>
+ <20211017102547.GA3818@amd>
 MIME-Version: 1.0
-In-Reply-To: <e4c98036dd73b91b8352a162f80240171e2b3f0f.camel@mediatek.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="TB36FDmn/VVEgNH/"
+Content-Disposition: inline
+In-Reply-To: <20211017102547.GA3818@amd>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--TB36FDmn/VVEgNH/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 16.10.21 04:23, Yong Wu wrote:
-> On Mon, 2021-10-11 at 14:36 +0200, Dafna Hirschfeld wrote:
->>
->> On 29.09.21 03:37, Yong Wu wrote:
->>> MediaTek IOMMU-SMI diagram is like below. all the consumer connect
->>> with
->>> smi-larb, then connect with smi-common.
->>>
->>>           M4U
->>>            |
->>>       smi-common
->>>            |
->>>     -------------
->>>     |         |    ...
->>>     |         |
->>> larb1     larb2
->>>     |         |
->>> vdec       venc
->>>
->>> When the consumer works, it should enable the smi-larb's power
->>> which
->>> also need enable the smi-common's power firstly.
->>>
->>> Thus, First of all, use the device link connect the consumer and
->>> the
->>> smi-larbs. then add device link between the smi-larb and smi-
->>> common.
->>>
->>> This patch adds device_link between the consumer and the larbs.
->>>
->>> When device_link_add, I add the flag DL_FLAG_STATELESS to avoid
->>> calling
->>> pm_runtime_xx to keep the original status of clocks. It can avoid
->>> two
->>> issues:
->>> 1) Display HW show fastlogo abnormally reported in [1]. At the
->>> beggining,
->>> all the clocks are enabled before entering kernel, but the clocks
->>> for
->>> display HW(always in larb0) will be gated after clk_enable and
->>> clk_disable
->>> called from device_link_add(->pm_runtime_resume) and rpm_idle. The
->>> clock
->>> operation happened before display driver probe. At that time, the
->>> display
->>> HW will be abnormal.
->>>
->>> 2) A deadlock issue reported in [2]. Use DL_FLAG_STATELESS to skip
->>> pm_runtime_xx to avoid the deadlock.
->>>
->>> Corresponding, DL_FLAG_AUTOREMOVE_CONSUMER can't be added, then
->>> device_link_removed should be added explicitly.
->>>
->>> [1]
->>> https://lore.kernel.org/linux-mediatek/1564213888.22908.4.camel@mhfsdcap03/
->>> [2] https://lore.kernel.org/patchwork/patch/1086569/
->>>
->>> Suggested-by: Tomasz Figa <tfiga@chromium.org>
->>> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
->>> Tested-by: Frank Wunderlich <frank-w@public-files.de> # BPI-
->>> R2/MT7623
->>> ---
->>>    drivers/iommu/mtk_iommu.c    | 22 ++++++++++++++++++++++
->>>    drivers/iommu/mtk_iommu_v1.c | 20 +++++++++++++++++++-
->>>    2 files changed, 41 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
->>> index d5848f78a677..a2fa55899434 100644
->>> --- a/drivers/iommu/mtk_iommu.c
->>> +++ b/drivers/iommu/mtk_iommu.c
->>> @@ -560,22 +560,44 @@ static struct iommu_device
->>> *mtk_iommu_probe_device(struct device *dev)
->>>    {
->>>    	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
->>>    	struct mtk_iommu_data *data;
->>> +	struct device_link *link;
->>> +	struct device *larbdev;
->>> +	unsigned int larbid;
->>>    
->>>    	if (!fwspec || fwspec->ops != &mtk_iommu_ops)
->>>    		return ERR_PTR(-ENODEV); /* Not a iommu client device
->>> */
->>>    
->>>    	data = dev_iommu_priv_get(dev);
->>>    
->>> +	/*
->>> +	 * Link the consumer device with the smi-larb device(supplier)
->>> +	 * The device in each a larb is a independent HW. thus only
->>> link
->>> +	 * one larb here.
->>> +	 */
->>> +	larbid = MTK_M4U_TO_LARB(fwspec->ids[0]);
->>
->> so larbid is always the same for all the ids of a device?
-> 
-> Yes. For me, each a dtsi node should represent a HW unit which can only
-> connect one larb.
-> 
->> If so maybe it worth testing it and return error if this is not the
->> case.
-> 
-> Thanks for the suggestion. This is very helpful. I did see someone put
-> the different larbs in one node. I will check this, and add return
+Hi!
 
-I am working on bugs found on media drivers, could you please point me to
-that wrong node?
-Will you send a fix to that node in the dtsi?
+> On Thinkpad X60, suspend to ram no longer works. Suspend is okay, and
+> there are some signs of resume attempts for second or so, but screen
+> stays black and sleep LED stays on.
 
+I did a bisection:
 
-Thanks,
-Dafna
+# bad: [7c832d2f9b959e3181370c8b0dacaf9efe13fc05] Add linux-next specific f=
+iles for 20211015
+# good: [64570fbc14f8d7cb3fe3995f20e26bc25ce4b2cc] Linux 5.15-rc5
+git bisect start 'next-20211015' 'HEAD'
+# good: [048c22e37f3dee5adf67e97c48735c325edbb178] Merge branch 'master' of=
+ git://git.kernel.org/pub/scm/linux/kernel/git/herbert/cryptodev-2.6.git
+git bisect good 048c22e37f3dee5adf67e97c48735c325edbb178
+# bad: [ff4d6dddf948544ef8fa7e5b539ced1f854c0a7f] Merge branch 'auto-latest=
+' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git
+git bisect bad ff4d6dddf948544ef8fa7e5b539ced1f854c0a7f
+# good: [3d4352bd49acf0f81a2dae28e910e80c80aec115] Merge branch 'drm-next' =
+of https://gitlab.freedesktop.org/agd5f/linux
+git bisect good 3d4352bd49acf0f81a2dae28e910e80c80aec115
+# good: [5e135c8bb89c9f83e7db6216b2bff96c5433728c] Merge branch 'for-next' =
+of git://git.kernel.dk/linux-block.git
+git bisect good 5e135c8bb89c9f83e7db6216b2bff96c5433728c
+# good: [6e85e7634927384c362395bda82e3759ae94c7c6] Merge branch 'for-next' =
+of git://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git
+git bisect good 6e85e7634927384c362395bda82e3759ae94c7c6
+# good: [ac716d0d92cbb48cd635a4ac41829f8ebd7f369c] Merge remote-tracking br=
+anch 'tip/locking/core' into tip-master
+git bisect good ac716d0d92cbb48cd635a4ac41829f8ebd7f369c
+# bad: [a5dd661e53635877debbf48045913266b429950a] Merge remote-tracking bra=
+nch 'tip/sched/core' into tip-master
+git bisect bad a5dd661e53635877debbf48045913266b429950a
+# good: [16d364ba6ef2aa59b409df70682770f3ed23f7c0] sched/topology: Introduc=
+e sched_group::flags
+git bisect good 16d364ba6ef2aa59b409df70682770f3ed23f7c0
+# good: [769fdf83df57b373660343ef4270b3ada91ef434] sched: Fix DEBUG && !SCH=
+EDSTATS warn
+git bisect good 769fdf83df57b373660343ef4270b3ada91ef434
+# bad: [b6153093de41186e2c534ffffb8ce81b1666b110] sched/numa: Replace hard-=
+coded number by a define in numa_task_group()
+git bisect bad b6153093de41186e2c534ffffb8ce81b1666b110
+# good: [00619f7c650e4e46c650cb2e2fd5f438b32dc64b] sched,livepatch: Use tas=
+k_call_func()
+git bisect good 00619f7c650e4e46c650cb2e2fd5f438b32dc64b
+# bad: [2aa45be430a031c10d5f4a5bf3329ff8413a9187] sched,livepatch: Use wake=
+_up_if_idle()
+git bisect bad 2aa45be430a031c10d5f4a5bf3329ff8413a9187
 
-> EINVAL for this case.
+It said
 
+commit 8850cb663b5cda04d33f9cfbc38889d73d3c8e24 (HEAD)
+Author: Peter Zijlstra <peterz@infradead.org>
+Date:   Tue Sep 21 22:16:02 2021 +0200
 
+    sched: Simplify wake_up_*idle*()
 
-> 
->>
->> Thanks,
->> Dafna
->   
->>>
+is first bad commit.
+
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--TB36FDmn/VVEgNH/
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYW0erQAKCRAw5/Bqldv6
+8j23AJ90gv1rPzZSPyOcDnrPUtjSAiPHyQCeKWYbwxF2/u6JBAwsrZIRLY/RzXc=
+=RK32
+-----END PGP SIGNATURE-----
+
+--TB36FDmn/VVEgNH/--
