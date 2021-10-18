@@ -2,233 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D3A84319BD
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 14:46:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 744F84319C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 14:46:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229843AbhJRMsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 08:48:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55605 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229519AbhJRMsW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 08:48:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634561170;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=H6ER0yaSWMpzMbiBOBsThEGJi6+tWVkiEl6DXpHEDYM=;
-        b=g+h0dkPjUtZBSjkr1vZqiw8fbZ9t9KRq+0NKpPnneHmp441Y9RUHOj/8Pp3pJZTFTTMfot
-        BwnA9N3m+ZgjJNA4Spwvcst48dHkTY58qoISrtcF+OTil3QbWgU8BCjWlyL5zQf2lh8HiQ
-        72/VJmHIKx2MBRkvF0y30A4Y0HrHCWI=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-463-dUvhU6AYMKGl-ROUIZRrxQ-1; Mon, 18 Oct 2021 08:46:09 -0400
-X-MC-Unique: dUvhU6AYMKGl-ROUIZRrxQ-1
-Received: by mail-wr1-f69.google.com with SMTP id 10-20020a5d47aa000000b001610cbda93dso8762428wrb.23
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 05:46:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=H6ER0yaSWMpzMbiBOBsThEGJi6+tWVkiEl6DXpHEDYM=;
-        b=awluMuyDUmwqDu5jYNDEXB2U3Ht3+6G2MDAWukEYce2Jzg2irYiYE3JAirghKM7nx/
-         U5DbVAJsCXMBYEJXk7RHC/5ymesorALyQBvnYIWEiFAriJDMWUtdbLqt1Bs/U56b42wJ
-         0PxXn959HpQsH53OyXXebsE5bGL+vEsj2zMQmQDOUhmUokwpj7PeBDlsgyMqs/OUV9up
-         7tFgQa8hhG4bYmLw3GyiSgmvjcW/mSLgUFP6JKK9nFIymWjYF8XiaRz4ojmQZxUdm1l+
-         Twr+H/r54wQdnm6g5DGfSzGgjh9OlFa02z04wQHwqIWzRxU4FnRwo0RDsUYpNl6vskq7
-         DydQ==
-X-Gm-Message-State: AOAM532U7XKq9sNLcWiz66cruDL38+mHrQ15hymy77P8SgU4b8UPlkkb
-        9noGkUA7HOt5Maa8P8djiJihtgbkFaqb6Rw6ev3U4tZcSce8/T49rTqbibT2JEEXOMO5LAyy06a
-        cSx8X/Lw162kV2nYPjD4VCq1y
-X-Received: by 2002:a05:6000:1683:: with SMTP id y3mr21250716wrd.314.1634561168354;
-        Mon, 18 Oct 2021 05:46:08 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwfM09qTKJcvWscLRFWVnoHx5yzSko0ksxB0vJB6nCSF1nMb6pvJCfIrfAEooR/QXcANewGJQ==
-X-Received: by 2002:a05:6000:1683:: with SMTP id y3mr21250688wrd.314.1634561168125;
-        Mon, 18 Oct 2021 05:46:08 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id a2sm14358433wrq.9.2021.10.18.05.46.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Oct 2021 05:46:07 -0700 (PDT)
-Message-ID: <265883f8-83a4-6386-fa56-b53b4897f5e1@redhat.com>
-Date:   Mon, 18 Oct 2021 14:46:06 +0200
+        id S231724AbhJRMtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 08:49:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49098 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231548AbhJRMtG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 08:49:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A48160F8F;
+        Mon, 18 Oct 2021 12:46:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634561214;
+        bh=G+OtVSihKHgS3rS/qDD5HXpv3eDV+Hn9lxSng8pjIB0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dkUwXAuB5mLgOixx5LY7oUOpM2KezFLhdaVcdBsGeHANlA3B9aAqlsN0S/cfbvBVf
+         kuHSG8felsWBIwwuC5kRgDHgN6oAbjuCVgBM5Ugb6wZrEdXieWp9GRqluj9kF5WM3u
+         hXcKkyjgyize8KNVfyrekZ9FHrPNBFJn7E4OIXq71AyvIERRk9czHV7FB1I3fErZeU
+         CklDxxcChO8YiQHdos/MqrmUgsLtYIOxZrqA8tI+JnLRB1+fxL+URqlXsOH/5s1pWI
+         EV+uM/NfVqmc3RWYAa4bNLNR22jUQun+VaJGc5AYeCNk8K4/kJT2qSVLavuLkvg7SA
+         CMvK31BQlzWRw==
+Date:   Mon, 18 Oct 2021 13:46:52 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     John Keeping <john@metanate.com>
+Cc:     alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Heiko Stuebner <heiko@sntech.de>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org,
+        Jianqun Xu <jay.xu@rock-chips.com>
+Subject: Re: [PATCH] ASoC: rockchip: use generic DMA engine configuration
+Message-ID: <YW1svMVSgBJygfpV@sirena.org.uk>
+References: <20211018114844.1746351-1-john@metanate.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH v2 5/7] KVM: VMX: Disallow PT MSRs accessing if PT is not
- exposed to guest
-Content-Language: en-US
-To:     Xiaoyao Li <xiaoyao.li@intel.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210827070249.924633-1-xiaoyao.li@intel.com>
- <20210827070249.924633-6-xiaoyao.li@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <20210827070249.924633-6-xiaoyao.li@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="LLIdPGt+BVjw3+wI"
+Content-Disposition: inline
+In-Reply-To: <20211018114844.1746351-1-john@metanate.com>
+X-Cookie: Here there be tygers.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/08/21 09:02, Xiaoyao Li wrote:
-> Per SDM, it triggers #GP for all the accessing of PT MSRs, if
-> X86_FEATURE_INTEL_PT is not available.
-> 
-> Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
+
+--LLIdPGt+BVjw3+wI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Oct 18, 2021 at 12:48:44PM +0100, John Keeping wrote:
+> This effectively reverts commit 75b31192fe6a ("ASoC: rockchip: add
+> config for rockchip dmaengine pcm register").
+
+> There doesn't seem to be any rationale given for why these specific
+> values are helpful.  The generic DMA engine provides sensible defaults
+> here and works well with Rockchip I2S.
+
+> In fact the period size here is really quite restrictive when dealing
+> with 8 channels of 32-bit data as the effective period size is just 256
+> frames.
+
+Copying in Jianqun who wrote that patch.  If you're reverting a patch
+it's generally good to make sure the original author is aware,
+particularly if you're unsure as to why the patch does what it does.
+
+> Signed-off-by: John Keeping <john@metanate.com>
 > ---
-> Changes in v2:
->   - allow userspace/host access regradless of PT bit, (Sean)
-> ---
->   arch/x86/kvm/vmx/vmx.c | 38 +++++++++++++++++++++++++-------------
->   1 file changed, 25 insertions(+), 13 deletions(-)
+>  sound/soc/rockchip/Makefile       |  3 +--
+>  sound/soc/rockchip/rockchip_i2s.c |  3 +--
+>  sound/soc/rockchip/rockchip_pcm.c | 44 -------------------------------
+>  sound/soc/rockchip/rockchip_pcm.h | 11 --------
+>  4 files changed, 2 insertions(+), 59 deletions(-)
+>  delete mode 100644 sound/soc/rockchip/rockchip_pcm.c
+>  delete mode 100644 sound/soc/rockchip/rockchip_pcm.h
+>=20
+> diff --git a/sound/soc/rockchip/Makefile b/sound/soc/rockchip/Makefile
+> index b10f5e7b136d..6a3e61178152 100644
+> --- a/sound/soc/rockchip/Makefile
+> +++ b/sound/soc/rockchip/Makefile
+> @@ -2,11 +2,10 @@
+>  # ROCKCHIP Platform Support
+>  snd-soc-rockchip-i2s-objs :=3D rockchip_i2s.o
+>  snd-soc-rockchip-i2s-tdm-objs :=3D rockchip_i2s_tdm.o
+> -snd-soc-rockchip-pcm-objs :=3D rockchip_pcm.o
+>  snd-soc-rockchip-pdm-objs :=3D rockchip_pdm.o
+>  snd-soc-rockchip-spdif-objs :=3D rockchip_spdif.o
+> =20
+> -obj-$(CONFIG_SND_SOC_ROCKCHIP_I2S) +=3D snd-soc-rockchip-i2s.o snd-soc-r=
+ockchip-pcm.o
+> +obj-$(CONFIG_SND_SOC_ROCKCHIP_I2S) +=3D snd-soc-rockchip-i2s.o
+>  obj-$(CONFIG_SND_SOC_ROCKCHIP_I2S_TDM) +=3D snd-soc-rockchip-i2s-tdm.o
+>  obj-$(CONFIG_SND_SOC_ROCKCHIP_PDM) +=3D snd-soc-rockchip-pdm.o
+>  obj-$(CONFIG_SND_SOC_ROCKCHIP_SPDIF) +=3D snd-soc-rockchip-spdif.o
+> diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockc=
+hip_i2s.c
+> index 7e89f5b0c237..a6d7656c206e 100644
+> --- a/sound/soc/rockchip/rockchip_i2s.c
+> +++ b/sound/soc/rockchip/rockchip_i2s.c
+> @@ -20,7 +20,6 @@
+>  #include <sound/dmaengine_pcm.h>
+> =20
+>  #include "rockchip_i2s.h"
+> -#include "rockchip_pcm.h"
+> =20
+>  #define DRV_NAME "rockchip-i2s"
+> =20
+> @@ -756,7 +755,7 @@ static int rockchip_i2s_probe(struct platform_device =
+*pdev)
+>  		goto err_suspend;
+>  	}
+> =20
+> -	ret =3D rockchip_pcm_platform_register(&pdev->dev);
+> +	ret =3D devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
+>  	if (ret) {
+>  		dev_err(&pdev->dev, "Could not register PCM\n");
+>  		goto err_suspend;
+> diff --git a/sound/soc/rockchip/rockchip_pcm.c b/sound/soc/rockchip/rockc=
+hip_pcm.c
+> deleted file mode 100644
+> index 02254e42135e..000000000000
+> --- a/sound/soc/rockchip/rockchip_pcm.c
+> +++ /dev/null
+> @@ -1,44 +0,0 @@
+> -// SPDX-License-Identifier: GPL-2.0-only
+> -/*
+> - * Copyright (c) 2018 Rockchip Electronics Co. Ltd.
+> - */
+> -
+> -#include <linux/device.h>
+> -#include <linux/init.h>
+> -#include <linux/module.h>
+> -
+> -#include <sound/core.h>
+> -#include <sound/pcm.h>
+> -#include <sound/soc.h>
+> -#include <sound/dmaengine_pcm.h>
+> -
+> -#include "rockchip_pcm.h"
+> -
+> -static const struct snd_pcm_hardware snd_rockchip_hardware =3D {
+> -	.info			=3D SNDRV_PCM_INFO_MMAP |
+> -				  SNDRV_PCM_INFO_MMAP_VALID |
+> -				  SNDRV_PCM_INFO_PAUSE |
+> -				  SNDRV_PCM_INFO_RESUME |
+> -				  SNDRV_PCM_INFO_INTERLEAVED,
+> -	.period_bytes_min	=3D 32,
+> -	.period_bytes_max	=3D 8192,
+> -	.periods_min		=3D 1,
+> -	.periods_max		=3D 52,
+> -	.buffer_bytes_max	=3D 64 * 1024,
+> -	.fifo_size		=3D 32,
+> -};
+> -
+> -static const struct snd_dmaengine_pcm_config rk_dmaengine_pcm_config =3D=
+ {
+> -	.pcm_hardware =3D &snd_rockchip_hardware,
+> -	.prepare_slave_config =3D snd_dmaengine_pcm_prepare_slave_config,
+> -	.prealloc_buffer_size =3D 32 * 1024,
+> -};
+> -
+> -int rockchip_pcm_platform_register(struct device *dev)
+> -{
+> -	return devm_snd_dmaengine_pcm_register(dev, &rk_dmaengine_pcm_config,
+> -		SND_DMAENGINE_PCM_FLAG_COMPAT);
+> -}
+> -EXPORT_SYMBOL_GPL(rockchip_pcm_platform_register);
+> -
+> -MODULE_LICENSE("GPL v2");
+> diff --git a/sound/soc/rockchip/rockchip_pcm.h b/sound/soc/rockchip/rockc=
+hip_pcm.h
+> deleted file mode 100644
+> index 7f00e2ce3603..000000000000
+> --- a/sound/soc/rockchip/rockchip_pcm.h
+> +++ /dev/null
+> @@ -1,11 +0,0 @@
+> -/* SPDX-License-Identifier: GPL-2.0-only */
+> -/*
+> - * Copyright (c) 2018 Rockchip Electronics Co. Ltd.
+> - */
+> -
+> -#ifndef _ROCKCHIP_PCM_H
+> -#define _ROCKCHIP_PCM_H
+> -
+> -int rockchip_pcm_platform_register(struct device *dev);
+> -
+> -#endif
+> --=20
+> 2.33.1
+>=20
 
-Let's cache this in vmx->pt_desc.  More precisely:
+--LLIdPGt+BVjw3+wI
+Content-Type: application/pgp-signature; name="signature.asc"
 
-- always call update_intel_pt_cfg from vmx_vcpu_after_set_cpuid
+-----BEGIN PGP SIGNATURE-----
 
-- add a field vmx->pt_desc.available matching guest_cpuid_has(vcpu, 
-X86_FEATURE_INTEL_PT)
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFtbLsACgkQJNaLcl1U
+h9CjRgf9F+1fSarPqDt2LrsQCEJcgFE78KkSwsP7XCT32GaDY2NnjgXK+nVA67eD
+VD1St/hwPnZEeVfebQ8xA/koS9D3KVThkt6UEpoD1XOI3BIBhc2pFMCifaZC+rFX
+IO8CV0Uh/AEIR8rjjnvXp1UfAHJcwhh9bNuveQKrIksLn0ugcGam0PauIYHpIgQU
+6hunuhaO7qH9lwW2Ba5mRB3/+q5bvKIL/6yBmAqLIxBpitqrTaLsTBr2J1D7mFJU
+yHkdigqW5y05+RMkJ/csW/ile0qeWQZ9fMSN5epOVpkMob7nuO37gXcfze5Lq0AY
+elcIUkNlkR+iYcbu0ruxERwy9tjq6Q==
+=ej6A
+-----END PGP SIGNATURE-----
 
-- if it is false, clear _all_ of vmx->pt_desc (with memcpy) and return 
-early from update_intel_pt_cfg
-
-Thanks,
-
-Paolo
-
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index b9d640029c40..394ef4732838 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -1007,10 +1007,21 @@ static unsigned long segment_base(u16 selector)
->   }
->   #endif
->   
-> -static inline bool pt_can_write_msr(struct vcpu_vmx *vmx)
-> +static inline bool pt_can_write_msr(struct vcpu_vmx *vmx,
-> +				    struct msr_data *msr_info)
->   {
->   	return vmx_pt_mode_is_host_guest() &&
-> -	       !(vmx->pt_desc.guest.ctl & RTIT_CTL_TRACEEN);
-> +	       !(vmx->pt_desc.guest.ctl & RTIT_CTL_TRACEEN) &&
-> +	       (msr_info->host_initiated ||
-> +		guest_cpuid_has(&vmx->vcpu, X86_FEATURE_INTEL_PT));
-> +}
-> +
-> +static inline bool pt_can_read_msr(struct kvm_vcpu *vcpu,
-> +				   struct msr_data *msr_info)
-> +{
-> +	return vmx_pt_mode_is_host_guest() &&
-> +	       (msr_info->host_initiated ||
-> +		guest_cpuid_has(vcpu, X86_FEATURE_INTEL_PT));
->   }
->   
->   static inline bool pt_output_base_valid(struct kvm_vcpu *vcpu, u64 base)
-> @@ -1852,24 +1863,24 @@ static int vmx_get_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
->   							&msr_info->data);
->   		break;
->   	case MSR_IA32_RTIT_CTL:
-> -		if (!vmx_pt_mode_is_host_guest())
-> +		if (!pt_can_read_msr(vcpu, msr_info))
->   			return 1;
->   		msr_info->data = vmx->pt_desc.guest.ctl;
->   		break;
->   	case MSR_IA32_RTIT_STATUS:
-> -		if (!vmx_pt_mode_is_host_guest())
-> +		if (!pt_can_read_msr(vcpu, msr_info))
->   			return 1;
->   		msr_info->data = vmx->pt_desc.guest.status;
->   		break;
->   	case MSR_IA32_RTIT_CR3_MATCH:
-> -		if (!vmx_pt_mode_is_host_guest() ||
-> +		if (!pt_can_read_msr(vcpu, msr_info) ||
->   			!intel_pt_validate_cap(vmx->pt_desc.caps,
->   						PT_CAP_cr3_filtering))
->   			return 1;
->   		msr_info->data = vmx->pt_desc.guest.cr3_match;
->   		break;
->   	case MSR_IA32_RTIT_OUTPUT_BASE:
-> -		if (!vmx_pt_mode_is_host_guest() ||
-> +		if (!pt_can_read_msr(vcpu, msr_info) ||
->   			(!intel_pt_validate_cap(vmx->pt_desc.caps,
->   					PT_CAP_topa_output) &&
->   			 !intel_pt_validate_cap(vmx->pt_desc.caps,
-> @@ -1878,7 +1889,7 @@ static int vmx_get_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
->   		msr_info->data = vmx->pt_desc.guest.output_base;
->   		break;
->   	case MSR_IA32_RTIT_OUTPUT_MASK:
-> -		if (!vmx_pt_mode_is_host_guest() ||
-> +		if (!pt_can_read_msr(vcpu, msr_info) ||
->   			(!intel_pt_validate_cap(vmx->pt_desc.caps,
->   					PT_CAP_topa_output) &&
->   			 !intel_pt_validate_cap(vmx->pt_desc.caps,
-> @@ -1888,7 +1899,7 @@ static int vmx_get_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
->   		break;
->   	case MSR_IA32_RTIT_ADDR0_A ... MSR_IA32_RTIT_ADDR3_B:
->   		index = msr_info->index - MSR_IA32_RTIT_ADDR0_A;
-> -		if (!vmx_pt_mode_is_host_guest() ||
-> +		if (!pt_can_read_msr(vcpu, msr_info) ||
->   		    (index >= 2 * vmx->pt_desc.nr_addr_ranges))
->   			return 1;
->   		if (index % 2)
-> @@ -2156,6 +2167,7 @@ static int vmx_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
->   		return vmx_set_vmx_msr(vcpu, msr_index, data);
->   	case MSR_IA32_RTIT_CTL:
->   		if (!vmx_pt_mode_is_host_guest() ||
-> +		    !guest_cpuid_has(vcpu, X86_FEATURE_INTEL_PT) ||
->   			vmx_rtit_ctl_check(vcpu, data) ||
->   			vmx->nested.vmxon)
->   			return 1;
-> @@ -2164,14 +2176,14 @@ static int vmx_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
->   		pt_update_intercept_for_msr(vcpu);
->   		break;
->   	case MSR_IA32_RTIT_STATUS:
-> -		if (!pt_can_write_msr(vmx))
-> +		if (!pt_can_write_msr(vmx, msr_info))
->   			return 1;
->   		if (data & MSR_IA32_RTIT_STATUS_MASK)
->   			return 1;
->   		vmx->pt_desc.guest.status = data;
->   		break;
->   	case MSR_IA32_RTIT_CR3_MATCH:
-> -		if (!pt_can_write_msr(vmx))
-> +		if (!pt_can_write_msr(vmx, msr_info))
->   			return 1;
->   		if (!intel_pt_validate_cap(vmx->pt_desc.caps,
->   					   PT_CAP_cr3_filtering))
-> @@ -2179,7 +2191,7 @@ static int vmx_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
->   		vmx->pt_desc.guest.cr3_match = data;
->   		break;
->   	case MSR_IA32_RTIT_OUTPUT_BASE:
-> -		if (!pt_can_write_msr(vmx))
-> +		if (!pt_can_write_msr(vmx, msr_info))
->   			return 1;
->   		if (!intel_pt_validate_cap(vmx->pt_desc.caps,
->   					   PT_CAP_topa_output) &&
-> @@ -2191,7 +2203,7 @@ static int vmx_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
->   		vmx->pt_desc.guest.output_base = data;
->   		break;
->   	case MSR_IA32_RTIT_OUTPUT_MASK:
-> -		if (!pt_can_write_msr(vmx))
-> +		if (!pt_can_write_msr(vmx, msr_info))
->   			return 1;
->   		if (!intel_pt_validate_cap(vmx->pt_desc.caps,
->   					   PT_CAP_topa_output) &&
-> @@ -2201,7 +2213,7 @@ static int vmx_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
->   		vmx->pt_desc.guest.output_mask = data;
->   		break;
->   	case MSR_IA32_RTIT_ADDR0_A ... MSR_IA32_RTIT_ADDR3_B:
-> -		if (!pt_can_write_msr(vmx))
-> +		if (!pt_can_write_msr(vmx, msr_info))
->   			return 1;
->   		index = msr_info->index - MSR_IA32_RTIT_ADDR0_A;
->   		if (index >= 2 * vmx->pt_desc.nr_addr_ranges)
-> 
-
+--LLIdPGt+BVjw3+wI--
