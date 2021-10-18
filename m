@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD4C4431AE7
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:27:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6806A431C11
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:37:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232128AbhJRN3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:29:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41288 "EHLO mail.kernel.org"
+        id S232390AbhJRNh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:37:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54416 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231741AbhJRN3I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:29:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 203C76135E;
-        Mon, 18 Oct 2021 13:26:43 +0000 (UTC)
+        id S232268AbhJRNfr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:35:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E6A2D613D2;
+        Mon, 18 Oct 2021 13:30:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634563604;
-        bh=UAuJ+XFjulNuwFyzr3C3KCMt/vayPpsiizpGnWb0q50=;
+        s=korg; t=1634563857;
+        bh=JRqW8D8D8QdZEeN/GjVfhrsbkurNMzio3cjQr8dVSDk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZDaDXorLInoUeBoRFl6mBke5i1+42XKtQdRWfMctAQ14Sz6zZXQPDxWP5eJvS44GQ
-         y2xYmRwbTLj/ic/IrnVGl/hCM3H+CFqTZaRw8Z5o6IKSXH2k0AZ8J1y/tUSIYa/zhq
-         /ywasVyh/TSR1TfikdU/DqJMsc/W/m0v2jc7Iods=
+        b=XVPDMW8BxDAdh+vYKegxyp0nGcOMUsX4QmsZAdL6BRA/ICcXsjm+ZRlXJxVz2B8l3
+         5SK1EUNvp+p6+ybEhIIZvia2wgZY0xKrr9QeSLQF+7wvIK3ldZVwEFI1B/zx46sApA
+         Ca2FfrD5vI1MdGSLlOecNcm55lOx/v0XCz/mGnAc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.14 30/39] ethernet: s2io: fix setting mac address during resume
+        stable@vger.kernel.org, Jiri Valek - 2N <valek@2n.cz>,
+        Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH 5.4 41/69] iio: light: opt3001: Fixed timeout error when 0 lux
 Date:   Mon, 18 Oct 2021 15:24:39 +0200
-Message-Id: <20211018132326.404642606@linuxfoundation.org>
+Message-Id: <20211018132330.832981044@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132325.426739023@linuxfoundation.org>
-References: <20211018132325.426739023@linuxfoundation.org>
+In-Reply-To: <20211018132329.453964125@linuxfoundation.org>
+References: <20211018132329.453964125@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,51 +40,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Jiri Valek - 2N <valek@2n.cz>
 
-commit 40507e7aada8422c38aafa0c8a1a09e4623c712a upstream.
+commit 26d90b5590579def54382a2fc34cfbe8518a9851 upstream.
 
-After recent cleanups, gcc started warning about a suspicious
-memcpy() call during the s2io_io_resume() function:
+Reading from sensor returned timeout error under
+zero light conditions.
 
-In function '__dev_addr_set',
-    inlined from 'eth_hw_addr_set' at include/linux/etherdevice.h:318:2,
-    inlined from 's2io_set_mac_addr' at drivers/net/ethernet/neterion/s2io.c:5205:2,
-    inlined from 's2io_io_resume' at drivers/net/ethernet/neterion/s2io.c:8569:7:
-arch/x86/include/asm/string_32.h:182:25: error: '__builtin_memcpy' accessing 6 bytes at offsets 0 and 2 overlaps 4 bytes at offset 2 [-Werror=restrict]
-  182 | #define memcpy(t, f, n) __builtin_memcpy(t, f, n)
-      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~
-include/linux/netdevice.h:4648:9: note: in expansion of macro 'memcpy'
- 4648 |         memcpy(dev->dev_addr, addr, len);
-      |         ^~~~~~
-
-What apparently happened is that an old cleanup changed the calling
-conventions for s2io_set_mac_addr() from taking an ethernet address
-as a character array to taking a struct sockaddr, but one of the
-callers was not changed at the same time.
-
-Change it to instead call the low-level do_s2io_prog_unicast() function
-that still takes the old argument type.
-
-Fixes: 2fd376884558 ("S2io: Added support set_mac_address driver entry point")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Link: https://lore.kernel.org/r/20211013143613.2049096-1-arnd@kernel.org
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Jiri Valek - 2N <valek@2n.cz>
+Fixes: ac663db3678a ("iio: light: opt3001: enable operation w/o IRQ")
+Link: https://lore.kernel.org/r/20210920125351.6569-1-valek@2n.cz
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/neterion/s2io.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/iio/light/opt3001.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/drivers/net/ethernet/neterion/s2io.c
-+++ b/drivers/net/ethernet/neterion/s2io.c
-@@ -8574,7 +8574,7 @@ static void s2io_io_resume(struct pci_de
- 			return;
- 		}
+--- a/drivers/iio/light/opt3001.c
++++ b/drivers/iio/light/opt3001.c
+@@ -275,6 +275,8 @@ static int opt3001_get_lux(struct opt300
+ 		ret = wait_event_timeout(opt->result_ready_queue,
+ 				opt->result_ready,
+ 				msecs_to_jiffies(OPT3001_RESULT_READY_LONG));
++		if (ret == 0)
++			return -ETIMEDOUT;
+ 	} else {
+ 		/* Sleep for result ready time */
+ 		timeout = (opt->int_time == OPT3001_INT_TIME_SHORT) ?
+@@ -311,9 +313,7 @@ err:
+ 		/* Disallow IRQ to access the device while lock is active */
+ 		opt->ok_to_ignore_lock = false;
  
--		if (s2io_set_mac_addr(netdev, netdev->dev_addr) == FAILURE) {
-+		if (do_s2io_prog_unicast(netdev, netdev->dev_addr) == FAILURE) {
- 			s2io_card_down(sp);
- 			pr_err("Can't restore mac addr after reset.\n");
- 			return;
+-	if (ret == 0)
+-		return -ETIMEDOUT;
+-	else if (ret < 0)
++	if (ret < 0)
+ 		return ret;
+ 
+ 	if (opt->use_irq) {
 
 
