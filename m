@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 410F5431DC7
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:53:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 097AF431CC8
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:43:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234129AbhJRNyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:54:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56876 "EHLO mail.kernel.org"
+        id S232949AbhJRNob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:44:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40198 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234287AbhJRNwj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:52:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F21BD6197A;
-        Mon, 18 Oct 2021 13:38:51 +0000 (UTC)
+        id S233353AbhJRNmn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:42:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 68D72613B3;
+        Mon, 18 Oct 2021 13:34:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634564332;
-        bh=q3lh+gjflrBJV2rRqgypOb877B06Z8aBqZPWVjeDlFs=;
+        s=korg; t=1634564053;
+        bh=mrECW77YNpFfyAFFbu+Xb7yKyaL65IOjavrB4Z9svcM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xlzsgKwMihJHm3v+UbnoKADO7zZnsxo9bmqqgLGZuK7Aqnxnnr+CYZ0YTYppsOPO4
-         z5twLp35+P1KhAz0w74mSttNceJZbd9bqGMaGKs1CBD3C7eG3A882SwH4XX8dGGH+s
-         eCAHSianssJyyZ3x62/jX2n07SjhZja7k9uxYAdA=
+        b=IIEE4seB+DRhBPm1l/SYXG+Dp9Q/HGJPsOboxNTSkmKuo/ixJacYH/eaCDUXmugvr
+         mXS/K1qnZuGAvCUFMSenQB0enVrfrWdhkOdkjlrEvO95bn0jBZP7wz8uuzo0Ob7evc
+         p7/ffPtwMhpiK+z3l6KkFziUHg6iCCF4yGbJaOSs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Aleksander Morgado <aleksander@aleksander.es>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 5.14 050/151] USB: serial: qcserial: add EM9191 QDL support
-Date:   Mon, 18 Oct 2021 15:23:49 +0200
-Message-Id: <20211018132342.320923979@linuxfoundation.org>
+        stable@vger.kernel.org, Dinh Nguyen <dinguyen@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>
+Subject: [PATCH 5.10 014/103] clk: socfpga: agilex: fix duplicate s2f_user0_clk
+Date:   Mon, 18 Oct 2021 15:23:50 +0200
+Message-Id: <20211018132335.172826065@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132340.682786018@linuxfoundation.org>
-References: <20211018132340.682786018@linuxfoundation.org>
+In-Reply-To: <20211018132334.702559133@linuxfoundation.org>
+References: <20211018132334.702559133@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,40 +39,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aleksander Morgado <aleksander@aleksander.es>
+From: Dinh Nguyen <dinguyen@kernel.org>
 
-commit 11c52d250b34a0862edc29db03fbec23b30db6da upstream.
+commit 09540fa337196be20e9f0241652364f09275d374 upstream.
 
-When the module boots into QDL download mode it exposes the 1199:90d2
-ids, which can be mapped to the qcserial driver, and used to run
-firmware upgrades (e.g. with the qmi-firmware-update program).
+Remove the duplicate s2f_user0_clk and the unused s2f_usr0_mux define.
 
-  T:  Bus=01 Lev=03 Prnt=08 Port=03 Cnt=01 Dev#= 10 Spd=480 MxCh= 0
-  D:  Ver= 2.10 Cls=00(>ifc ) Sub=00 Prot=00 MxPS=64 #Cfgs=  1
-  P:  Vendor=1199 ProdID=90d2 Rev=00.00
-  S:  Manufacturer=Sierra Wireless, Incorporated
-  S:  Product=Sierra Wireless EM9191
-  S:  SerialNumber=8W0382004102A109
-  C:  #Ifs= 1 Cfg#= 1 Atr=a0 MxPwr=2mA
-  I:  If#=0x0 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=10 Driver=qcserial
-
-Signed-off-by: Aleksander Morgado <aleksander@aleksander.es>
+Fixes: f817c132db67 ("clk: socfpga: agilex: fix up s2f_user0_clk representation")
 Cc: stable@vger.kernel.org
-Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
+Link: https://lore.kernel.org/r/20210916225126.1427700-1-dinguyen@kernel.org
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/serial/qcserial.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/clk/socfpga/clk-agilex.c |    9 ---------
+ 1 file changed, 9 deletions(-)
 
---- a/drivers/usb/serial/qcserial.c
-+++ b/drivers/usb/serial/qcserial.c
-@@ -165,6 +165,7 @@ static const struct usb_device_id id_tab
- 	{DEVICE_SWI(0x1199, 0x907b)},	/* Sierra Wireless EM74xx */
- 	{DEVICE_SWI(0x1199, 0x9090)},	/* Sierra Wireless EM7565 QDL */
- 	{DEVICE_SWI(0x1199, 0x9091)},	/* Sierra Wireless EM7565 */
-+	{DEVICE_SWI(0x1199, 0x90d2)},	/* Sierra Wireless EM9191 QDL */
- 	{DEVICE_SWI(0x413c, 0x81a2)},	/* Dell Wireless 5806 Gobi(TM) 4G LTE Mobile Broadband Card */
- 	{DEVICE_SWI(0x413c, 0x81a3)},	/* Dell Wireless 5570 HSPA+ (42Mbps) Mobile Broadband Card */
- 	{DEVICE_SWI(0x413c, 0x81a4)},	/* Dell Wireless 5570e HSPA+ (42Mbps) Mobile Broadband Card */
+--- a/drivers/clk/socfpga/clk-agilex.c
++++ b/drivers/clk/socfpga/clk-agilex.c
+@@ -165,13 +165,6 @@ static const struct clk_parent_data mpu_
+ 	  .name = "boot_clk", },
+ };
+ 
+-static const struct clk_parent_data s2f_usr0_mux[] = {
+-	{ .fw_name = "f2s-free-clk",
+-	  .name = "f2s-free-clk", },
+-	{ .fw_name = "boot_clk",
+-	  .name = "boot_clk", },
+-};
+-
+ static const struct clk_parent_data emac_mux[] = {
+ 	{ .fw_name = "emaca_free_clk",
+ 	  .name = "emaca_free_clk", },
+@@ -299,8 +292,6 @@ static const struct stratix10_gate_clock
+ 	  4, 0x44, 28, 1, 0, 0, 0},
+ 	{ AGILEX_CS_TIMER_CLK, "cs_timer_clk", NULL, noc_mux, ARRAY_SIZE(noc_mux), 0, 0x24,
+ 	  5, 0, 0, 0, 0x30, 1, 0},
+-	{ AGILEX_S2F_USER0_CLK, "s2f_user0_clk", NULL, s2f_usr0_mux, ARRAY_SIZE(s2f_usr0_mux), 0, 0x24,
+-	  6, 0, 0, 0, 0, 0, 0},
+ 	{ AGILEX_EMAC0_CLK, "emac0_clk", NULL, emac_mux, ARRAY_SIZE(emac_mux), 0, 0x7C,
+ 	  0, 0, 0, 0, 0x94, 26, 0},
+ 	{ AGILEX_EMAC1_CLK, "emac1_clk", NULL, emac_mux, ARRAY_SIZE(emac_mux), 0, 0x7C,
 
 
