@@ -2,83 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB4B3431EDA
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 16:04:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2597431F0F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 16:10:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234372AbhJROGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 10:06:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39032 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234791AbhJROC4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 10:02:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F13BE61528;
-        Mon, 18 Oct 2021 13:43:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634564600;
-        bh=AgX+EiQDbW4aI/vscvozxBVzAXEqnYe8BPDY9tG2feM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jIcavwUj8Hgi4jICGoX3hor2k5Si6MGJaLuRJtkwLqM+G0G3O+dbqTovQ7Ag/xYQ4
-         1CthUswwOSKd2bTLwpFB4NDMNAeByIO7ExMOxytXepKpskAD8B4YNYWqtaeRdKhRXC
-         m1A1Jy1IXME45qeGYjFjhRLLEXqMM0ElJdGi/khU=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shannon Nelson <snelson@pensando.io>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.14 151/151] ionic: dont remove netdev->dev_addr when syncing uc list
-Date:   Mon, 18 Oct 2021 15:25:30 +0200
-Message-Id: <20211018132345.570450849@linuxfoundation.org>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132340.682786018@linuxfoundation.org>
-References: <20211018132340.682786018@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S232005AbhJROM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 10:12:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43176 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232437AbhJROMx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 10:12:53 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 265B4C0613B0;
+        Mon, 18 Oct 2021 06:37:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=/AJ1aZvoD1O8XJ2XgWz5KdpFOHjRcXj1qqyyjYotoWU=; b=G9+PkVb6L21imdVFvxCbke9v+j
+        u05jBR2JSK5hGt09YAkFeoIEn2xxxMQ0dQ6quDx/xB57zu6iBMhAOaf1IsmNFVmGLJP0GA5NdtYK+
+        MkJ7NAMsfCbtp3YP/4u9QXZOC9iUapeqFNugBiHh3C0Ro3k/JLMfeeTmgmqpJnJjGH8a8De68g5n7
+        aqJ9v2pli1T4DpuCcd57jTUs4mdt4KF2ixc9uOJpF5soGg+lys97+WZVRsJOcYbQZc1yJugXST7MV
+        xbg1wWmadYeoRNHsjnzHAXUvAxrXEcJ0z77uh131B/hjzxFPDSr6yOlIgQypOMx6mZzFusbI/DKS3
+        8OH2AQmA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mcSot-00AYmx-UB; Mon, 18 Oct 2021 13:36:53 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6199D300221;
+        Mon, 18 Oct 2021 15:36:50 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 227952CF42A2E; Mon, 18 Oct 2021 15:36:50 +0200 (CEST)
+Date:   Mon, 18 Oct 2021 15:36:50 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     rjw@rjwysocki.net, oleg@redhat.com, mingo@kernel.org,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, mgorman@suse.de, Will Deacon <will@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, tj@kernel.org,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH v3 6/6] freezer,sched: Rewrite core freezer logic
+Message-ID: <YW14cgrrRWSAzmYn@hirez.programming.kicks-ass.net>
+References: <20211009100754.690769957@infradead.org>
+ <20211009101445.151888246@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211009101445.151888246@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shannon Nelson <snelson@pensando.io>
+On Sat, Oct 09, 2021 at 12:08:00PM +0200, Peter Zijlstra wrote:
 
-commit 5c976a56570f29aaf4a2f9a1bf99789c252183c9 upstream.
+> +static inline unsigned int __can_freeze(struct task_struct *p)
+> +{
+> +	unsigned int state = READ_ONCE(p->__state);
+> +
+> +	if (!(state & (TASK_FREEZABLE | __TASK_STOPPED | __TASK_TRACED)))
+> +		return 0;
+> +
+> +	/*
+> +	 * Only TASK_NORMAL can be augmented with TASK_FREEZABLE, since they
+> +	 * can suffer spurious wakeups.
+> +	 */
+> +	if (state & TASK_FREEZABLE)
+> +		WARN_ON_ONCE(!(state & TASK_NORMAL));
+> +
+> +#ifdef CONFIG_LOCKDEP
+> +	/*
+> +	 * It's dangerous to freeze with locks held; there be dragons there.
+> +	 */
+> +	if (!(state & __TASK_FREEZABLE_UNSAFE))
+> +		WARN_ON_ONCE(debug_locks && p->lockdep_depth);
+> +#endif
+> +
+> +	return TASK_FROZEN;
+> +}
+> +
+> +/* See task_cond_set_special_state(); serializes against ttwu() */
+> +static bool __freeze_task(struct task_struct *p)
+> +{
+> +	return task_cond_set_special_state(p, __can_freeze(p));
+> +}
 
-Bridging, and possibly other upper stack gizmos, adds the
-lower device's netdev->dev_addr to its own uc list, and
-then requests it be deleted when the upper bridge device is
-removed.  This delete request also happens with the bridging
-vlan_filtering is enabled and then disabled.
+Will found an issue with this, notably task_cond_set_special() only
+takes ->pi_lock and as such doesn't serialize against __schedule(),
+which then yields the following fun scenario:
 
-Bonding has a similar behavior with the uc list, but since it
-also uses set_mac to manage netdev->dev_addr, it doesn't have
-the same the failure case.
 
-Because we store our netdev->dev_addr in our uc list, we need
-to ignore the delete request from dev_uc_sync so as to not
-lose the address and all hope of communicating.  Note that
-ndo_set_mac_address is expressly changing netdev->dev_addr,
-so no limitation is set there.
+	__schedule()					__freeze_task()
 
-Fixes: 2a654540be10 ("ionic: Add Rx filter and rx_mode ndo support")
-Signed-off-by: Shannon Nelson <snelson@pensando.io>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/net/ethernet/pensando/ionic/ionic_lif.c |    4 ++++
- 1 file changed, 4 insertions(+)
 
---- a/drivers/net/ethernet/pensando/ionic/ionic_lif.c
-+++ b/drivers/net/ethernet/pensando/ionic/ionic_lif.c
-@@ -1357,6 +1357,10 @@ static int ionic_addr_add(struct net_dev
+	prev_state = READ_ONCE(prev->__state); // INTERRUPTIBLE
+
+							task_cond_set_special_state()
+							  ...
+							  WRITE_ONCE(prev->__state, TASK_FROZEN);
+
+	if (signal_pending_state(prev_state, prev)) // SIGPENDING
+	  WRITE_ONCE(prev->__state, TASK_RUNNING)
+
+
+
+
+And *whoopsie*, freezer things we're frozen, but we're back in the game.
+
+
+AFAICT the below, which uses the brand-spanking-new task_call_func()
+which currently sits in tip/sched/core to also serialize against
+rq->lock should avoid this scenario.
+
+
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -233,25 +233,6 @@ struct task_group;
+ 	} while (0)
  
- static int ionic_addr_del(struct net_device *netdev, const u8 *addr)
- {
-+	/* Don't delete our own address from the uc list */
-+	if (ether_addr_equal(addr, netdev->dev_addr))
-+		return 0;
-+
- 	return ionic_lif_addr(netdev_priv(netdev), addr, DEL_ADDR);
+ /*
+- * task_cond_set_special_state() is a cmpxchg like operation on task->state.
+- *
+- * This operation isn't safe in general and should only be used to transform
+- * one (special) blocked state into another, such as:
+- *   TASK_STOPPED <-> TASK_FROZEN.
+- */
+-#define task_cond_set_special_state(task, cond_state)			\
+-	({								\
+-		struct task_struct *__p = (task);			\
+-		unsigned long __flags; /* may shadow */			\
+-		unsigned int __state;					\
+-		raw_spin_lock_irqsave(&__p->pi_lock, __flags);		\
+-		if ((__state = (cond_state)))				\
+-			WRITE_ONCE(__p->__state, __state);		\
+-		raw_spin_unlock_irqrestore(&__p->pi_lock, __flags);	\
+-		!!__state;						\
+-	})
+-
+-/*
+  * PREEMPT_RT specific variants for "sleeping" spin/rwlocks
+  *
+  * RT's spin/rwlock substitutions are state preserving. The state of the
+--- a/kernel/freezer.c
++++ b/kernel/freezer.c
+@@ -101,7 +101,7 @@ static void fake_signal_wake_up(struct t
+ 	}
  }
  
-
-
+-static inline unsigned int __can_freeze(struct task_struct *p)
++static int __set_task_frozen(struct task_struct *p, void *arg)
+ {
+ 	unsigned int state = READ_ONCE(p->__state);
+ 
+@@ -123,13 +123,14 @@ static inline unsigned int __can_freeze(
+ 		WARN_ON_ONCE(debug_locks && p->lockdep_depth);
+ #endif
+ 
++	WRITE_ONCE(p->__state, TASK_FROZEN);
+ 	return TASK_FROZEN;
+ }
+ 
+-/* See task_cond_set_special_state(); serializes against ttwu() */
+ static bool __freeze_task(struct task_struct *p)
+ {
+-	return task_cond_set_special_state(p, __can_freeze(p));
++	/* TASK_FREEZABLE|TASK_STOPPED|TASK_TRACED -> TASK_FROZEN */
++	return task_call_func(p, __set_task_frozen, NULL);
+ }
+ 
+ /**
+@@ -169,7 +170,7 @@ bool freeze_task(struct task_struct *p)
+  * reflects that and the below will refuse to restore the special state and
+  * instead issue the wakeup.
+  */
+-static inline unsigned int __thaw_special(struct task_struct *p)
++static int __set_task_special(struct task_struct *p, void *arg)
+ {
+ 	unsigned int state = 0;
+ 
+@@ -188,6 +189,9 @@ static inline unsigned int __thaw_specia
+ 		state = TASK_STOPPED;
+ 	}
+ 
++	if (state)
++		WRITE_ONCE(p->__state, state);
++
+ 	return state;
+ }
+ 
+@@ -200,7 +204,8 @@ void __thaw_task(struct task_struct *p)
+ 		goto unlock;
+ 
+ 	if (lock_task_sighand(p, &flags2)) {
+-		bool ret = task_cond_set_special_state(p, __thaw_special(p));
++		/* TASK_FROZEN -> TASK_{STOPPED,TRACED} */
++		bool ret = task_call_func(p, __set_task_special, NULL);
+ 		unlock_task_sighand(p, &flags2);
+ 		if (ret)
+ 			goto unlock;
+--- a/kernel/ptrace.c
++++ b/kernel/ptrace.c
+@@ -193,6 +193,17 @@ static bool looks_like_a_spurious_pid(st
+ 	return true;
+ }
+ 
++static int __set_task_traced(struct task_struct *task, void *arg)
++{
++	unsigned int *state = arg;
++
++	if (!(task->__state & __TASK_TRACED))
++		return 0;
++
++	WRITE_ONCE(task->__state, *state);
++	return *state;
++}
++
+ /* Ensure that nothing can wake it up, even SIGKILL */
+ static bool ptrace_freeze_traced(struct task_struct *task)
+ {
+@@ -205,10 +216,12 @@ static bool ptrace_freeze_traced(struct
+ 	spin_lock_irq(&task->sighand->siglock);
+ 	if (task_is_traced(task) && !looks_like_a_spurious_pid(task) &&
+ 	    !__fatal_signal_pending(task)) {
++		unsigned int state = __TASK_TRACED;
++
+ 		task->ptrace &= ~PT_STOPPED_MASK;
+ 		task->ptrace |= PT_STOPPED;
+ 		/* *TASK_TRACED -> __TASK_TRACED */
+-		task_cond_set_special_state(task, !!(task->__state & __TASK_TRACED) * __TASK_TRACED);
++		task_call_func(task, __set_task_traced, &state);
+ 		ret = true;
+ 	}
+ 	spin_unlock_irq(&task->sighand->siglock);
+@@ -233,9 +246,11 @@ static void ptrace_unfreeze_traced(struc
+ 			task->ptrace &= ~PT_STOPPED_MASK;
+ 			wake_up_state(task, __TASK_TRACED);
+ 		} else {
++			unsigned int state = TASK_TRACED;
++
+ 			task->ptrace |= PT_STOPPED_MASK;
+ 			/* *TASK_TRACED -> TASK_TRACED */
+-			task_cond_set_special_state(task, !!(task->__state & __TASK_TRACED) * TASK_TRACED);
++			task_call_func(task, __set_task_traced, &state);
+ 		}
+ 	}
+ 	spin_unlock_irq(&task->sighand->siglock);
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -3181,7 +3181,7 @@ int migrate_swap(struct task_struct *cur
+ }
+ #endif /* CONFIG_NUMA_BALANCING */
+ 
+-static inline __wti_match(struct task_struct *p, unsigned int match_state)
++static inline bool __wti_match(struct task_struct *p, unsigned int match_state)
+ {
+ 	unsigned int state = READ_ONCE(p->__state);
+ 
