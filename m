@@ -2,480 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 578364313FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 12:01:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A68784315D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 12:19:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230091AbhJRKEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 06:04:00 -0400
-Received: from mx3.molgen.mpg.de ([141.14.17.11]:45395 "EHLO mx1.molgen.mpg.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229519AbhJRKD7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 06:03:59 -0400
-Received: from [192.168.0.2] (ip5f5aef76.dynamic.kabel-deutschland.de [95.90.239.118])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 3CF2761E5FE33;
-        Mon, 18 Oct 2021 12:01:47 +0200 (CEST)
-Subject: Re: [PATCH v2 5/7] media: aspeed: Support aspeed mode to reduce
- compressed data
-To:     Jammy Huang <jammy_huang@aspeedtech.com>
-References: <20211018092207.13336-1-jammy_huang@aspeedtech.com>
- <20211018092207.13336-6-jammy_huang@aspeedtech.com>
-Cc:     eajames@linux.ibm.com, mchehab@kernel.org, joel@jms.id.au,
-        andrew@aj.id.au, linux-media@vger.kernel.org,
-        openbmc@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-Message-ID: <fa2d3387-09f5-f6e1-37a4-40237523c44d@molgen.mpg.de>
-Date:   Mon, 18 Oct 2021 12:01:46 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S231439AbhJRKVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 06:21:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46434 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229770AbhJRKVt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 06:21:49 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB8CBC06161C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 03:19:38 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id r7so40414961wrc.10
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 03:19:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
+        h=references:user-agent:from:to:cc:subject:date:in-reply-to
+         :message-id:mime-version;
+        bh=Nt/DsbKNf/U6oEyp70zMTCvXerDbHSsEBUDTCVY5SZk=;
+        b=5prZanh3ZiXhFVmZwmd5KUugHHD62JYZdj6kbC7LvJgiZdHYH0s0vO011ti4DMcnZr
+         qlQoIAao/4qCYznRVSDHoZM1iigy+9qF1q1pHveIgmx4x9E8sURQmiSwMXdNhZ673ljE
+         lELpcTfmf2l7n07+dqsYEyopKg+GWb9oXfd3rdgRzmwhAspBbEUI+6eiCUtEx13p3Qu4
+         7qKY17EBlz1W9WgxHQhHYTOPzTOmkEVcwlLSoEbDg8lRec4pojWfGdBm6h+KohIOQFt/
+         a8dobw/8/6VTGUerqw4ruNgiT07VNLCwUJeCNAVqjT+IDLpPaN4kFqqimnd2lG+vGAJe
+         EcGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject:date
+         :in-reply-to:message-id:mime-version;
+        bh=Nt/DsbKNf/U6oEyp70zMTCvXerDbHSsEBUDTCVY5SZk=;
+        b=5DEtOY/JuyYCrLdmRqRme7orxRRLQ68WSo4t7bGnw8tFP9WS9DgfYPlkqJkvF8FnGf
+         vFx/0FoQpcdoZwzmKBQdBJhFtXw1+dWgdJbPnzsMZXjn9ugRfNfInu+BUMW8D7b93//o
+         E7A48vxQ6jf7RnidUDDyPW/COqjVTN3WBYJwiXyTq3x9TNy0PEqRunJOQrAiaGRHsNSn
+         4lEIb1LSvms38ormuFYDirE5AsWJxcvc376WDHn2AaRXIaMP25AjrFpi+jEZ7ms5fHxy
+         HckzFSFhf6cvTUlqLTQQlZDnMFFIuNn//vhQXKisQCVoieYWomCiL2HApGV5MnXUDH+A
+         DiOA==
+X-Gm-Message-State: AOAM5307hnMSzebpJbYoFUg2F4C1XXY1ILQslsm41v6/i2fAjGOYiuwx
+        vlcp8Sa3wPB6HqAeKcyQ74Gglg==
+X-Google-Smtp-Source: ABdhPJzDG8zynX/vI4wK2ttElJLD5TxdXfRAChpQdZOTiLhuvQVv+a2L+hRjAsFbPLNZJPD3ux8LKA==
+X-Received: by 2002:adf:a54f:: with SMTP id j15mr34068977wrb.218.1634552377158;
+        Mon, 18 Oct 2021 03:19:37 -0700 (PDT)
+Received: from localhost (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
+        by smtp.gmail.com with ESMTPSA id r5sm3208324wmh.28.2021.10.18.03.19.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Oct 2021 03:19:36 -0700 (PDT)
+References: <20211016145939.15643-1-martin.blumenstingl@googlemail.com>
+User-agent: mu4e 1.6.6; emacs 27.1
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        linux-amlogic@lists.infradead.org
+Cc:     narmstrong@baylibre.com, linux-clk@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Christian Hewitt <christianshewitt@gmail.com>
+Subject: Re: [PATCH] clk: meson: gxbb: Add the spread spectrum bit for MPLL0
+ on GXBB
+Date:   Mon, 18 Oct 2021 11:54:45 +0200
+In-reply-to: <20211016145939.15643-1-martin.blumenstingl@googlemail.com>
+Message-ID: <1j5ytuvdmw.fsf@starbuckisacylon.baylibre.com>
 MIME-Version: 1.0
-In-Reply-To: <20211018092207.13336-6-jammy_huang@aspeedtech.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Jammy,
 
+On Sat 16 Oct 2021 at 16:59, Martin Blumenstingl <martin.blumenstingl@googlemail.com> wrote:
 
-Am 18.10.21 um 11:22 schrieb Jammy Huang:
-> aspeed supports differential jpeg format which only compress the parts
-> which are changed. In this way, it reduces both the amount of data to be
-> transferred by network and those to be decoded on the client side.
-> 
-> 4 new ctrls are added:
-> * Aspeed JPEG Format: to control aspeed's partial jpeg on/off
->    0: standard jpeg, 1: aspeed jpeg
-> * Aspeed Compression Mode: to control aspeed's compression mode
->    0: DCT Only, 1: DCT VQ mix 2-color, 2: DCT VQ mix 4-color
->    This is AST2400 only. It will adapt JPEG or VQ encoding method according
->    to the context automatically.
-> * Aspeed HQ Mode: to control aspeed's HQ mode on/off
->    0: disabled, 1: enabled
-> * Aspeed HQ Quality: to control the quality of aspeed's HQ mode
->    only useful if Aspeed HQ mode is enabled
+> Christian reports that 48kHz audio does not work on his WeTek Play 2
+> (which uses a GXBB SoC), while 44.1kHz audio works fine on the same
+> board. He also reports that 48kHz audio works on GXL and GXM SoCs,
+> which are using an (almost) identical AIU (audio controller).
 
-Please add one example, how to control that via sysfs.
+The above is a bit "personal" - it is not great fit for the commit
+description. Please rephrase or put it in comment section bellow
 
-> Aspeed JPEG Format requires an additional buffer, called bcd, to store
-> the information about which macro block in the new frame is different
-> from the previous one.
-> 
-> To have bcd correctly working, we need to swap the buffers for src0/1 to
-> make src1 refer to previous frame and src0 to the coming new frame.
+>
+> Experimenting has shown that MPLL0 is causing this problem. In the .dts
+> we have by default:
+> 	assigned-clocks = <&clkc CLKID_MPLL0>,
+> 			  <&clkc CLKID_MPLL1>,
+> 			  <&clkc CLKID_MPLL2>;
+> 	assigned-clock-rates = <294912000>,
+> 			       <270950400>,
+> 			       <393216000>;
+> The MPLL0 rate is divisible by 48kHz without remainder and the MPLL1
+> rate is divisible by 44.1kHz without remainder. Swapping these two clock
+> rates "fixes" 48kHz audio but breaks 44.1kHz audio.
+>
+> Everything looks normal when looking at the info provided by the common
+> clock framework while playing 48kHz audio (via I2S with mclk-fs = 256):
+>         mpll_prediv                 1        1        0  2000000000
+>            mpll0_div                1        1        0   294909641
+>               mpll0                 1        1        0   294909641
+>                  cts_amclk_sel       1        1        0   294909641
+>                     cts_amclk_div       1        1        0    12287902
+>                        cts_amclk       1        1        0    12287902
+>
+> meson-clk-msr however shows that the actual MPLL0 clock is off by more
+> than 38MHz:
+>         mp0_out               333322917    +/-10416Hz
+>
+> The 3.14 vendor kernel uses the following code to enable SSEN only for
+> MPLL0 (where con_reg2 is HHI_MPLL_CNTL and SSEN_shift is 25):
+> 	if (strncmp(hw->clk->name, "mpll_clk_out0", 13) == 0) {
+> 		val = readl(mpll->con_reg2);
+> 		val |= 1 <<  mpll->SSEN_shift;
+> 		writel(val, mpll->con_reg2);
+> 	}
+>
+> Add the SSEN (spread spectrum enable) bit and add the
+> CLK_MESON_MPLL_SPREAD_SPECTRUM flag to enable this bit for MPLL0. Do
+> this for GXBB *only* since GXL doesn't seem to care if this bit is set
+> or not, meaning that meson-clk-msr always sees (approximately) the same
+> frequency as common clock framework.
 
+ 1 - it is odd that we need to poke a bit in the register related to the
+ fixed PLL but ok ...
+ 2 - 3.14 does yes, 4.9 does not soooo ... no real proof there
+ 3 - That is the most important to me: the effect you described clearly is
+ not spread spectrum.
 
-Kind regards,
+Spread spectrum varies the frequencies quickly, IOW it makes the
+frequencies unstable. Some stuff do not need a particularly stable rate
+and it can help with EM compatibility. This is not desirable for audio.
 
-Paul
+So 2 things:
+ - If this bit really enables spread spectrum on MPLL0 (or worse, the
+ Fixed PLL) - checking clk measure is not enough. It is just a mean of
+ the rate seen by the SoC itself. You would not see the effect of the
+ spread spectrum here ... you need to capture the clock output with a
+ scope for that.
 
+ - Or the bit is incorrectly documented (or DDS0_SSEN does not mean
+ spread spectrum). If it is not a spread spectrum function, then this
+ patch seems to indicate it is and it is misleading.
 
-> Signed-off-by: Jammy Huang <jammy_huang@aspeedtech.com>
+Either way, I'm not OK with it.
+
+To me, the rate drop that happens when you flip this bit looks more like
+the effect SDM_EN should have.
+
+Could you check the internal values (n2 and sdm) compare this to the
+output rate you actually get ? see if this leads to anything ? does
+SDM_EN really has an effect on this MPLL ? it is a combination of both ?
+
+>
+> Fixes: 8925dbd03bb29b ("clk: meson: gxbb: no spread spectrum on mpll")
+> Reported-by: Christian Hewitt <christianshewitt@gmail.com>
+> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 > ---
->   drivers/media/platform/aspeed-video.c | 218 +++++++++++++++++++++++---
->   1 file changed, 199 insertions(+), 19 deletions(-)
-> 
-> diff --git a/drivers/media/platform/aspeed-video.c b/drivers/media/platform/aspeed-video.c
-> index 00ce4f26b068..a4fc31c93bde 100644
-> --- a/drivers/media/platform/aspeed-video.c
-> +++ b/drivers/media/platform/aspeed-video.c
-> @@ -32,6 +32,12 @@
->   #include <media/videobuf2-dma-contig.h>
->   #include <linux/videodev2.h>
->   
-> +#define ASPEED_CID_CUSTOM_BASE			(V4L2_CID_USER_BASE | 0xf000)
-> +#define V4L2_CID_ASPEED_FORMAT			(ASPEED_CID_CUSTOM_BASE  + 1)
-> +#define V4L2_CID_ASPEED_COMPRESSION_MODE	(ASPEED_CID_CUSTOM_BASE  + 2)
-> +#define V4L2_CID_ASPEED_HQ_MODE			(ASPEED_CID_CUSTOM_BASE  + 3)
-> +#define V4L2_CID_ASPEED_HQ_JPEG_QUALITY		(ASPEED_CID_CUSTOM_BASE  + 4)
+>  drivers/clk/meson/gxbb.c | 50 +++++++++++++++++++++++++++++++++++++---
+>  1 file changed, 47 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/clk/meson/gxbb.c b/drivers/clk/meson/gxbb.c
+> index d6eed760327d..673bc915c7d9 100644
+> --- a/drivers/clk/meson/gxbb.c
+> +++ b/drivers/clk/meson/gxbb.c
+> @@ -713,6 +713,41 @@ static struct clk_regmap gxbb_mpll_prediv = {
+>  };
+>  
+>  static struct clk_regmap gxbb_mpll0_div = {
+> +	.data = &(struct meson_clk_mpll_data){
+> +		.sdm = {
+> +			.reg_off = HHI_MPLL_CNTL7,
+> +			.shift   = 0,
+> +			.width   = 14,
+> +		},
+> +		.sdm_en = {
+> +			.reg_off = HHI_MPLL_CNTL7,
+> +			.shift   = 15,
+> +			.width	 = 1,
+> +		},
+> +		.n2 = {
+> +			.reg_off = HHI_MPLL_CNTL7,
+> +			.shift   = 16,
+> +			.width   = 9,
+> +		},
+> +		.ssen = {
+> +			.reg_off = HHI_MPLL_CNTL,
+> +			.shift   = 25,
+> +			.width   = 1,
+> +		},
+> +		.flags = CLK_MESON_MPLL_SPREAD_SPECTRUM,
+> +		.lock = &meson_clk_lock,
+> +	},
+> +	.hw.init = &(struct clk_init_data){
+> +		.name = "mpll0_div",
+> +		.ops = &meson_clk_mpll_ops,
+> +		.parent_hws = (const struct clk_hw *[]) {
+> +			&gxbb_mpll_prediv.hw
+> +		},
+> +		.num_parents = 1,
+> +	},
+> +};
 > +
->   #define DEVICE_NAME			"aspeed-video"
->   
->   #define ASPEED_VIDEO_JPEG_NUM_QUALITIES	12
-> @@ -55,6 +61,7 @@
->   
->   #define VE_MAX_SRC_BUFFER_SIZE		0x8ca000 /* 1920 * 1200, 32bpp */
->   #define VE_JPEG_HEADER_SIZE		0x006000 /* 512 * 12 * 4 */
-> +#define VE_BCD_BUFF_SIZE		0x100000
->   
->   #define VE_PROTECTION_KEY		0x000
->   #define  VE_PROTECTION_KEY_UNLOCK	0x1a038aa8
-> @@ -108,6 +115,13 @@
->   #define VE_SCALING_FILTER2		0x020
->   #define VE_SCALING_FILTER3		0x024
->   
-> +#define VE_BCD_CTRL			0x02C
-> +#define  VE_BCD_CTRL_EN_BCD		BIT(0)
-> +#define  VE_BCD_CTRL_EN_ABCD		BIT(1)
-> +#define  VE_BCD_CTRL_EN_CB		BIT(2)
-> +#define  VE_BCD_CTRL_THR		GENMASK(23, 16)
-> +#define  VE_BCD_CTRL_ABCD_THR		GENMASK(31, 24)
-> +
->   #define VE_CAP_WINDOW			0x030
->   #define VE_COMP_WINDOW			0x034
->   #define VE_COMP_PROC_OFFSET		0x038
-> @@ -116,6 +130,7 @@
->   #define VE_SRC0_ADDR			0x044
->   #define VE_SRC_SCANLINE_OFFSET		0x048
->   #define VE_SRC1_ADDR			0x04c
-> +#define VE_BCD_ADDR			0x050
->   #define VE_COMP_ADDR			0x054
->   
->   #define VE_STREAM_BUF_SIZE		0x058
-> @@ -136,6 +151,8 @@
->   #define  VE_COMP_CTRL_HQ_DCT_CHR	GENMASK(26, 22)
->   #define  VE_COMP_CTRL_HQ_DCT_LUM	GENMASK(31, 27)
->   
-> +#define VE_CB_ADDR			0x06C
-> +
->   #define VE_OFFSET_COMP_STREAM		0x078
->   
->   #define VE_JPEG_COMP_SIZE_READ_BACK	0x084
-> @@ -243,10 +260,15 @@ struct aspeed_video {
->   	unsigned int max_compressed_size;
->   	struct aspeed_video_addr srcs[2];
->   	struct aspeed_video_addr jpeg;
-> +	struct aspeed_video_addr bcd;
->   
->   	bool yuv420;
-> +	bool partial_jpeg;
-> +	bool hq_mode;
->   	unsigned int frame_rate;
->   	unsigned int jpeg_quality;
-> +	unsigned int jpeg_hq_quality;
-> +	unsigned int compression_mode;
->   
->   	unsigned int frame_bottom;
->   	unsigned int frame_left;
-> @@ -258,6 +280,13 @@ struct aspeed_video {
->   
->   #define to_aspeed_video(x) container_of((x), struct aspeed_video, v4l2_dev)
->   
-> +static bool aspeed_video_alloc_buf(struct aspeed_video *video,
-> +				   struct aspeed_video_addr *addr,
-> +				   unsigned int size);
-> +
-> +static void aspeed_video_free_buf(struct aspeed_video *video,
-> +				  struct aspeed_video_addr *addr);
-> +
->   static const u32 aspeed_video_jpeg_header[ASPEED_VIDEO_JPEG_HEADER_SIZE] = {
->   	0xe0ffd8ff, 0x464a1000, 0x01004649, 0x60000101, 0x00006000, 0x0f00feff,
->   	0x00002d05, 0x00000000, 0x00000000, 0x00dbff00
-> @@ -492,6 +521,20 @@ static int aspeed_video_start_frame(struct aspeed_video *video)
->   		return -EBUSY;
->   	}
->   
-> +	if (video->partial_jpeg && !video->bcd.size) {
-> +		if (!aspeed_video_alloc_buf(video, &video->bcd,
-> +					    VE_BCD_BUFF_SIZE)) {
-> +			dev_err(video->dev, "Failed to allocate BCD buffer\n");
-> +			dev_err(video->dev, "don't start frame\n");
-> +			return -ENOMEM;
-> +		}
-> +		aspeed_video_write(video, VE_BCD_ADDR, video->bcd.dma);
-> +		v4l2_dbg(1, debug, &video->v4l2_dev, "bcd addr(%#x) size(%d)\n",
-> +			video->bcd.dma, video->bcd.size);
-> +	} else if (!video->partial_jpeg && video->bcd.size) {
-> +		aspeed_video_free_buf(video, &video->bcd);
-> +	}
-> +
->   	spin_lock_irqsave(&video->lock, flags);
->   	buf = list_first_entry_or_null(&video->buffers,
->   				       struct aspeed_video_buffer, link);
-> @@ -635,6 +678,7 @@ static irqreturn_t aspeed_video_irq(int irq, void *arg)
->   
->   	if (sts & VE_INTERRUPT_COMP_COMPLETE) {
->   		struct aspeed_video_buffer *buf;
-> +		bool empty = true;
->   		u32 frame_size = aspeed_video_read(video,
->   						   VE_JPEG_COMP_SIZE_READ_BACK);
->   
-> @@ -648,13 +692,23 @@ static irqreturn_t aspeed_video_irq(int irq, void *arg)
->   		if (buf) {
->   			vb2_set_plane_payload(&buf->vb.vb2_buf, 0, frame_size);
->   
-> -			if (!list_is_last(&buf->link, &video->buffers)) {
+> +static struct clk_regmap gxl_mpll0_div = {
+>  	.data = &(struct meson_clk_mpll_data){
+>  		.sdm = {
+>  			.reg_off = HHI_MPLL_CNTL7,
+> @@ -749,7 +784,16 @@ static struct clk_regmap gxbb_mpll0 = {
+>  	.hw.init = &(struct clk_init_data){
+>  		.name = "mpll0",
+>  		.ops = &clk_regmap_gate_ops,
+> -		.parent_hws = (const struct clk_hw *[]) { &gxbb_mpll0_div.hw },
+> +		.parent_data = &(const struct clk_parent_data) {
 > +			/*
-> +			 * partial_jpeg requires continuous update.
-> +			 * On the contrary, standard jpeg can keep last buffer
-> +			 * to always have the latest result.
+> +			 * Note:
+> +			 * GXL and GXBB have different SSEN requirements. We
+> +			 * fallback to the global naming string mechanism so
+> +			 * mpll0_div picks up the appropriate one.
 > +			 */
-> +			if (!video->partial_jpeg &&
-> +			    list_is_last(&buf->link, &video->buffers)) {
-> +				empty = false;
-> +				v4l2_warn(&video->v4l2_dev, "skip to keep last frame updated\n");
-> +			} else {
->   				buf->vb.vb2_buf.timestamp = ktime_get_ns();
->   				buf->vb.sequence = video->sequence++;
->   				buf->vb.field = V4L2_FIELD_NONE;
->   				vb2_buffer_done(&buf->vb.vb2_buf,
->   						VB2_BUF_STATE_DONE);
->   				list_del(&buf->link);
-> +				empty = list_empty(&video->buffers);
->   			}
->   		}
->   		spin_unlock(&video->lock);
-> @@ -668,7 +722,18 @@ static irqreturn_t aspeed_video_irq(int irq, void *arg)
->   		aspeed_video_write(video, VE_INTERRUPT_STATUS,
->   				   VE_INTERRUPT_COMP_COMPLETE);
->   		sts &= ~VE_INTERRUPT_COMP_COMPLETE;
-> -		if (test_bit(VIDEO_STREAMING, &video->flags) && buf)
-> +
-> +		// swap src buffer if partial_jpeg
-> +		if (video->partial_jpeg) {
-> +			u32 src0, src1;
-> +
-> +			src0 = aspeed_video_read(video, VE_SRC0_ADDR);
-> +			src1 = aspeed_video_read(video, VE_SRC1_ADDR);
-> +			aspeed_video_write(video, VE_SRC0_ADDR, src1);
-> +			aspeed_video_write(video, VE_SRC1_ADDR, src0);
-> +		}
-> +
-> +		if (test_bit(VIDEO_STREAMING, &video->flags) && !empty)
->   			aspeed_video_start_frame(video);
->   	}
->   
-> @@ -931,10 +996,14 @@ static void aspeed_video_set_resolution(struct aspeed_video *video)
->   				   FIELD_PREP(VE_TGS_FIRST, video->frame_top) |
->   				   FIELD_PREP(VE_TGS_LAST,
->   					      video->frame_bottom + 1));
-> -		aspeed_video_update(video, VE_CTRL, 0, VE_CTRL_INT_DE);
-> +		aspeed_video_update(video, VE_CTRL,
-> +				    VE_CTRL_INT_DE | VE_CTRL_DIRECT_FETCH,
-> +				    VE_CTRL_INT_DE);
->   	} else {
->   		v4l2_dbg(1, debug, &video->v4l2_dev, "Capture: Direct Mode\n");
-> -		aspeed_video_update(video, VE_CTRL, 0, VE_CTRL_DIRECT_FETCH);
-> +		aspeed_video_update(video, VE_CTRL,
-> +				    VE_CTRL_INT_DE | VE_CTRL_DIRECT_FETCH,
-> +				    VE_CTRL_DIRECT_FETCH);
->   	}
->   
->   	size *= 4;
-> @@ -969,35 +1038,70 @@ static void aspeed_video_set_resolution(struct aspeed_video *video)
->   
->   static void aspeed_video_update_regs(struct aspeed_video *video)
->   {
-> -	u32 comp_ctrl = VE_COMP_CTRL_RSVD |
-> -		FIELD_PREP(VE_COMP_CTRL_DCT_LUM, video->jpeg_quality) |
-> -		FIELD_PREP(VE_COMP_CTRL_DCT_CHR, video->jpeg_quality | 0x10);
-> +	static const char * const compress_mode_str[] = {"DCT Only",
-> +		"DCT VQ mix 2-color", "DCT VQ mix 4-color"};
-> +	u32 comp_ctrl =	FIELD_PREP(VE_COMP_CTRL_DCT_LUM, video->jpeg_quality) |
-> +		FIELD_PREP(VE_COMP_CTRL_DCT_CHR, video->jpeg_quality | 0x10) |
-> +		FIELD_PREP(VE_COMP_CTRL_EN_HQ, video->hq_mode) |
-> +		FIELD_PREP(VE_COMP_CTRL_HQ_DCT_LUM, video->jpeg_hq_quality) |
-> +		FIELD_PREP(VE_COMP_CTRL_HQ_DCT_CHR, video->jpeg_hq_quality |
-> +			   0x10);
->   	u32 ctrl = 0;
-> -	u32 seq_ctrl = VE_SEQ_CTRL_JPEG_MODE;
-> +	u32 seq_ctrl = 0;
->   
-> -	v4l2_dbg(1, debug, &video->v4l2_dev, "framerate(%d)\n",
-> -		 video->frame_rate);
-> -	v4l2_dbg(1, debug, &video->v4l2_dev, "subsample(%s)\n",
-> +	v4l2_dbg(1, debug, &video->v4l2_dev, "framerate(%d)\n", video->frame_rate);
-> +	v4l2_dbg(1, debug, &video->v4l2_dev, "jpeg format(%s) subsample(%s)\n",
-> +		 video->partial_jpeg ? "partial" : "standard",
->   		 video->yuv420 ? "420" : "444");
-> -	v4l2_dbg(1, debug, &video->v4l2_dev, "compression quality(%d)\n",
-> -		 video->jpeg_quality);
-> +	v4l2_dbg(1, debug, &video->v4l2_dev, "compression quality(%d) hq(%s) hq_quality(%d)\n",
-> +		 video->jpeg_quality, video->hq_mode ? "on" : "off",
-> +		 video->jpeg_hq_quality);
-> +	v4l2_dbg(1, debug, &video->v4l2_dev, "compression mode(%s)\n",
-> +		 compress_mode_str[video->compression_mode]);
-> +
-> +	if (video->partial_jpeg)
-> +		aspeed_video_update(video, VE_BCD_CTRL, 0, VE_BCD_CTRL_EN_BCD);
-> +	else
-> +		aspeed_video_update(video, VE_BCD_CTRL, VE_BCD_CTRL_EN_BCD, 0);
->   
->   	if (video->frame_rate)
->   		ctrl |= FIELD_PREP(VE_CTRL_FRC, video->frame_rate);
->   
-> +	if (!video->partial_jpeg) {
-> +		comp_ctrl &= ~FIELD_PREP(VE_COMP_CTRL_EN_HQ, video->hq_mode);
-> +		seq_ctrl |= VE_SEQ_CTRL_JPEG_MODE;
-> +	}
-> +
->   	if (video->yuv420)
->   		seq_ctrl |= VE_SEQ_CTRL_YUV420;
->   
->   	if (video->jpeg.virt)
->   		aspeed_video_update_jpeg_table(video->jpeg.virt, video->yuv420);
->   
-> +#ifdef CONFIG_MACH_ASPEED_G4
-> +	switch (video->compression_mode) {
-> +	case 0:	//DCT only
-> +		comp_ctrl |= VE_COMP_CTRL_VQ_DCT_ONLY;
-> +		break;
-> +	case 1:	//DCT VQ mix 2-color
-> +		comp_ctrl &= ~(VE_COMP_CTRL_VQ_4COLOR | VE_COMP_CTRL_VQ_DCT_ONLY);
-> +		break;
-> +	case 2:	//DCT VQ mix 4-color
-> +		comp_ctrl |= VE_COMP_CTRL_VQ_4COLOR;
-> +		break;
-> +	}
-> +#endif
-> +
->   	/* Set control registers */
->   	aspeed_video_update(video, VE_SEQ_CTRL,
->   			    VE_SEQ_CTRL_JPEG_MODE | VE_SEQ_CTRL_YUV420,
->   			    seq_ctrl);
->   	aspeed_video_update(video, VE_CTRL, VE_CTRL_FRC, ctrl);
->   	aspeed_video_update(video, VE_COMP_CTRL,
-> -			    VE_COMP_CTRL_DCT_LUM | VE_COMP_CTRL_DCT_CHR,
-> +			    VE_COMP_CTRL_DCT_LUM | VE_COMP_CTRL_DCT_CHR |
-> +			    VE_COMP_CTRL_EN_HQ | VE_COMP_CTRL_HQ_DCT_LUM |
-> +			    VE_COMP_CTRL_HQ_DCT_CHR | VE_COMP_CTRL_VQ_4COLOR |
-> +			    VE_COMP_CTRL_VQ_DCT_ONLY,
->   			    comp_ctrl);
->   }
->   
-> @@ -1029,6 +1133,8 @@ static void aspeed_video_init_regs(struct aspeed_video *video)
->   
->   	/* Set mode detection defaults */
->   	aspeed_video_write(video, VE_MODE_DETECT, 0x22666500);
-> +
-> +	aspeed_video_write(video, VE_BCD_CTRL, 0);
->   }
->   
->   static void aspeed_video_start(struct aspeed_video *video)
-> @@ -1062,6 +1168,9 @@ static void aspeed_video_stop(struct aspeed_video *video)
->   	if (video->srcs[1].size)
->   		aspeed_video_free_buf(video, &video->srcs[1]);
->   
-> +	if (video->bcd.size)
-> +		aspeed_video_free_buf(video, &video->bcd);
-> +
->   	video->v4l2_input_status = V4L2_IN_ST_NO_SIGNAL;
->   	video->flags = 0;
->   }
-> @@ -1364,6 +1473,28 @@ static int aspeed_video_set_ctrl(struct v4l2_ctrl *ctrl)
->   		if (test_bit(VIDEO_STREAMING, &video->flags))
->   			aspeed_video_update_regs(video);
->   		break;
-> +	case V4L2_CID_ASPEED_FORMAT:
-> +		video->partial_jpeg = ctrl->val;
-> +		if (test_bit(VIDEO_STREAMING, &video->flags))
-> +			aspeed_video_update_regs(video);
-> +		break;
-> +#ifdef CONFIG_MACH_ASPEED_G4
-> +	case V4L2_CID_ASPEED_COMPRESSION_MODE:
-> +		video->compression_mode = ctrl->val;
-> +		if (test_bit(VIDEO_STREAMING, &video->flags))
-> +			aspeed_video_update_regs(video);
-> +		break;
-> +#endif
-> +	case V4L2_CID_ASPEED_HQ_MODE:
-> +		video->hq_mode = ctrl->val;
-> +		if (test_bit(VIDEO_STREAMING, &video->flags))
-> +			aspeed_video_update_regs(video);
-> +		break;
-> +	case V4L2_CID_ASPEED_HQ_JPEG_QUALITY:
-> +		video->jpeg_hq_quality = ctrl->val;
-> +		if (test_bit(VIDEO_STREAMING, &video->flags))
-> +			aspeed_video_update_regs(video);
-> +		break;
->   	default:
->   		return -EINVAL;
->   	}
-> @@ -1375,6 +1506,50 @@ static const struct v4l2_ctrl_ops aspeed_video_ctrl_ops = {
->   	.s_ctrl = aspeed_video_set_ctrl,
->   };
->   
-> +static const struct v4l2_ctrl_config aspeed_ctrl_format = {
-> +	.ops = &aspeed_video_ctrl_ops,
-> +	.id = V4L2_CID_ASPEED_FORMAT,
-> +	.name = "Aspeed JPEG Format",
-> +	.type = V4L2_CTRL_TYPE_BOOLEAN,
-> +	.min = false,
-> +	.max = true,
-> +	.step = 1,
-> +	.def = false,
-> +};
-> +
-> +static const struct v4l2_ctrl_config aspeed_ctrl_compression_mode = {
-> +	.ops = &aspeed_video_ctrl_ops,
-> +	.id = V4L2_CID_ASPEED_COMPRESSION_MODE,
-> +	.name = "Aspeed Compression Mode",
-> +	.type = V4L2_CTRL_TYPE_INTEGER,
-> +	.min = 0,
-> +	.max = 2,
-> +	.step = 1,
-> +	.def = 0,
-> +};
-> +
-> +static const struct v4l2_ctrl_config aspeed_ctrl_HQ_mode = {
-> +	.ops = &aspeed_video_ctrl_ops,
-> +	.id = V4L2_CID_ASPEED_HQ_MODE,
-> +	.name = "Aspeed HQ Mode",
-> +	.type = V4L2_CTRL_TYPE_BOOLEAN,
-> +	.min = false,
-> +	.max = true,
-> +	.step = 1,
-> +	.def = false,
-> +};
-> +
-> +static const struct v4l2_ctrl_config aspeed_ctrl_HQ_jpeg_quality = {
-> +	.ops = &aspeed_video_ctrl_ops,
-> +	.id = V4L2_CID_ASPEED_HQ_JPEG_QUALITY,
-> +	.name = "Aspeed HQ Quality",
-> +	.type = V4L2_CTRL_TYPE_INTEGER,
-> +	.min = 0,
-> +	.max = ASPEED_VIDEO_JPEG_NUM_QUALITIES - 1,
-> +	.step = 1,
-> +	.def = 0,
-> +};
-> +
->   static void aspeed_video_resolution_work(struct work_struct *work)
->   {
->   	struct delayed_work *dwork = to_delayed_work(work);
-> @@ -1644,6 +1819,7 @@ static int aspeed_video_setup_video(struct aspeed_video *video)
->   	struct v4l2_device *v4l2_dev = &video->v4l2_dev;
->   	struct vb2_queue *vbq = &video->queue;
->   	struct video_device *vdev = &video->vdev;
-> +	struct v4l2_ctrl_handler *hdl = &video->ctrl_handler;
->   	int rc;
->   
->   	video->pix_fmt.pixelformat = V4L2_PIX_FMT_JPEG;
-> @@ -1658,22 +1834,26 @@ static int aspeed_video_setup_video(struct aspeed_video *video)
->   		return rc;
->   	}
->   
-> -	v4l2_ctrl_handler_init(&video->ctrl_handler, 2);
-> -	v4l2_ctrl_new_std(&video->ctrl_handler, &aspeed_video_ctrl_ops,
-> +	v4l2_ctrl_handler_init(hdl, 6);
-> +	v4l2_ctrl_new_std(hdl, &aspeed_video_ctrl_ops,
->   			  V4L2_CID_JPEG_COMPRESSION_QUALITY, 0,
->   			  ASPEED_VIDEO_JPEG_NUM_QUALITIES - 1, 1, 0);
-> -	v4l2_ctrl_new_std_menu(&video->ctrl_handler, &aspeed_video_ctrl_ops,
-> +	v4l2_ctrl_new_std_menu(hdl, &aspeed_video_ctrl_ops,
->   			       V4L2_CID_JPEG_CHROMA_SUBSAMPLING,
->   			       V4L2_JPEG_CHROMA_SUBSAMPLING_420, mask,
->   			       V4L2_JPEG_CHROMA_SUBSAMPLING_444);
-> +	v4l2_ctrl_new_custom(hdl, &aspeed_ctrl_format, NULL);
-> +	v4l2_ctrl_new_custom(hdl, &aspeed_ctrl_compression_mode, NULL);
-> +	v4l2_ctrl_new_custom(hdl, &aspeed_ctrl_HQ_mode, NULL);
-> +	v4l2_ctrl_new_custom(hdl, &aspeed_ctrl_HQ_jpeg_quality, NULL);
->   
-> -	rc = video->ctrl_handler.error;
-> +	rc = hdl->error;
->   	if (rc) {
->   		dev_err(video->dev, "Failed to init controls: %d\n", rc);
->   		goto err_ctrl_init;
->   	}
->   
-> -	v4l2_dev->ctrl_handler = &video->ctrl_handler;
-> +	v4l2_dev->ctrl_handler = hdl;
->   
->   	vbq->type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
->   	vbq->io_modes = VB2_MMAP | VB2_READ | VB2_DMABUF;
-> 
+> +			.name = "mpll0_div",
+> +			.index = -1,
+> +		},
+>  		.num_parents = 1,
+>  		.flags = CLK_SET_RATE_PARENT,
+>  	},
+> @@ -3044,7 +3088,7 @@ static struct clk_hw_onecell_data gxl_hw_onecell_data = {
+>  		[CLKID_VAPB_1]		    = &gxbb_vapb_1.hw,
+>  		[CLKID_VAPB_SEL]	    = &gxbb_vapb_sel.hw,
+>  		[CLKID_VAPB]		    = &gxbb_vapb.hw,
+> -		[CLKID_MPLL0_DIV]	    = &gxbb_mpll0_div.hw,
+> +		[CLKID_MPLL0_DIV]	    = &gxl_mpll0_div.hw,
+>  		[CLKID_MPLL1_DIV]	    = &gxbb_mpll1_div.hw,
+>  		[CLKID_MPLL2_DIV]	    = &gxbb_mpll2_div.hw,
+>  		[CLKID_MPLL_PREDIV]	    = &gxbb_mpll_prediv.hw,
+> @@ -3439,7 +3483,7 @@ static struct clk_regmap *const gxl_clk_regmaps[] = {
+>  	&gxbb_mpll0,
+>  	&gxbb_mpll1,
+>  	&gxbb_mpll2,
+> -	&gxbb_mpll0_div,
+> +	&gxl_mpll0_div,
+>  	&gxbb_mpll1_div,
+>  	&gxbb_mpll2_div,
+>  	&gxbb_cts_amclk_div,
+
