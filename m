@@ -2,164 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3551F4327C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 21:32:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26D9A4327C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 21:37:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233510AbhJRTe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 15:34:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34484 "EHLO
+        id S232602AbhJRTjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 15:39:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233524AbhJRTe5 (ORCPT
+        with ESMTP id S231542AbhJRTjQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 15:34:57 -0400
-Received: from mail-ua1-x933.google.com (mail-ua1-x933.google.com [IPv6:2607:f8b0:4864:20::933])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A014C06161C
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 12:32:45 -0700 (PDT)
-Received: by mail-ua1-x933.google.com with SMTP id u5so9239431uao.13
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 12:32:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=c16Ybt2AqXiaOhX2V1lJPOyD208pF8xRjT38M77BT20=;
-        b=fd7Ivm4GRSsoYpEAYMntY7uQaqmQSojjanP9E/F+RiH3NJ0eQdNlx0weN66YmymMab
-         +/5lWIyf8P6m1fhgmAsNpf1u2v7rh4/KbtsIPz+N/GkFjiN4TLHXuiBMBuz+GiFMW5nN
-         CQ2zFw3Mzm/i5h0chbgScxmn/kAVPYLUhiIcLTfr+u8lxrho74ZhKBc0/Qz1vHDz+AbH
-         Dqpg/+QtSCXrQs5oj4gU5xJ3TLkIFtlWOGb1B5tIrljANfYlXBiismRM0iE/a2SnS5Vb
-         zLkXCp/1SZyfBLKzdR5tFqvcta82NQG0kBDsI311zn1hRd4vWbp2WaZenLlsX4Ot8QR+
-         9c1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=c16Ybt2AqXiaOhX2V1lJPOyD208pF8xRjT38M77BT20=;
-        b=AzDk4I3zK7wJe9IW8LcOAalFJ3KM2KWH0W9wxn7KiDdJJkPjcxqqT9+nGV/7btmcKn
-         p4ijKeU2uZV0j+ss04JAVgNXqsZD9jvNNGZ8rN59keYD64FEV/MhhsA49MkstCcbLytR
-         D55QXPTFtiCfgWf5nYgCbGbEt1hJ6M554bUqd8IP8XQLwtPl9qvbDr4oa/67u+TxRqSd
-         NQGgg0M5CnrXxfvnD9yknwyLDLXnEKHy4RrBatXCI/D/XhSkrn/TaEJLoJd5kU1RKxDy
-         z5KuRCpk5zS9mtyLuC4etGcyiqnH0XZmqNbuCuJYiSdyUpzPJF5DOaGPRCePpMRcUuYS
-         Ii0w==
-X-Gm-Message-State: AOAM530Aarx9ZVot6JMImdOzMvw7bv2kV9P3kfG/G8i6Q4Lxs7G68Ot3
-        Lm6o6F0KunuC1ZQHB55j/MRFeqexSmw=
-X-Google-Smtp-Source: ABdhPJyzyba6f1GxxfDfPyedB9l6vRqhnxGF48HcjXZ/DE2DFKa7lZ51htlO6aA+EukvgF+ebFnMbA==
-X-Received: by 2002:ab0:5741:: with SMTP id t1mr28021168uac.72.1634585564512;
-        Mon, 18 Oct 2021 12:32:44 -0700 (PDT)
-Received: from ?IPv6:2804:431:c7f4:b20b:2ce0:3c04:a56a:40cc? ([2804:431:c7f4:b20b:2ce0:3c04:a56a:40cc])
-        by smtp.gmail.com with ESMTPSA id j64sm9736221vkc.6.2021.10.18.12.32.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Oct 2021 12:32:44 -0700 (PDT)
-Subject: Re: [PATCH 5/6] drm: vkms: Prepare `vkms_wb_encoder_atomic_check` to
- accept multiple formats
-To:     Thomas Zimmermann <tzimmermann@suse.de>,
-        rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com
-Cc:     hamohammed.sa@gmail.com, daniel@ffwll.ch, airlied@linux.ie,
-        contact@emersion.fr, leandro.ribeiro@collabora.com,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20211005201637.58563-1-igormtorrente@gmail.com>
- <20211005201637.58563-6-igormtorrente@gmail.com>
- <5507450a-eb69-b24c-9f43-a1780dafbfa9@suse.de>
- <e9cbdad7-416a-65fe-eb50-1cbb42a01e7b@gmail.com>
- <9dbd2c55-2c29-eb12-94d0-dbd5110c302e@suse.de>
-From:   Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
-Message-ID: <4d573cd9-ac1b-59d6-fb97-e5c24152892b@gmail.com>
-Date:   Mon, 18 Oct 2021 16:32:40 -0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Mon, 18 Oct 2021 15:39:16 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A80BC06161C;
+        Mon, 18 Oct 2021 12:37:05 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f085700af6a7a3215758573.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:5700:af6a:7a32:1575:8573])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 98A2F1EC04A9;
+        Mon, 18 Oct 2021 21:37:03 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1634585823;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=E/uKBTWke5UW0bUBb2EBl2Aml26+VGEAZuawTlCp+4Q=;
+        b=aWzc8Jik5Gn0fKiVZtRMmEqBXF1zDeih6+2kRwwDVvBmf5zj75XXu9dsb9yZDZNFRzIvKa
+        aR3cgh7pwxtPgSdTNfjG/cVj7v9Jx+/AQUQb3nY3/MnOBKaquplZg2Y+oUtOOinU+xs2Y4
+        IN9pbxm60qqOWYhwlBg7c1ddlz8QJ9o=
+Date:   Mon, 18 Oct 2021 21:37:07 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Jane Malalane <jane.malalane@citrix.com>,
+        LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Pu Wen <puwen@hygon.cn>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Yazen Ghannam <Yazen.Ghannam@amd.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Huang Rui <ray.huang@amd.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Kim Phillips <kim.phillips@amd.com>, stable@vger.kernel.org
+Subject: Re: [PATCH v2] x86/cpu: Fix migration safety with X86_BUG_NULL_SEL
+Message-ID: <YW3M40tOILjI3DiD@zn.tnic>
+References: <20211013142230.10129-1-jane.malalane@citrix.com>
+ <YW25x7AYiM1f1HQA@zn.tnic>
+ <YW3LJdztZom+xQHv@google.com>
 MIME-Version: 1.0
-In-Reply-To: <9dbd2c55-2c29-eb12-94d0-dbd5110c302e@suse.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YW3LJdztZom+xQHv@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas,
+On Mon, Oct 18, 2021 at 07:29:41PM +0000, Sean Christopherson wrote:
+> This isn't correct.  When running as a guest, the intended behavior is to fully
+> trust the CPUID.0x80000021 bit.
 
-On 10/18/21 3:06 PM, Thomas Zimmermann wrote:
-> Hi
-> 
-> Am 18.10.21 um 19:41 schrieb Igor Matheus Andrade Torrente:
->> Hello,
->>
->> On 10/18/21 7:14 AM, Thomas Zimmermann wrote:
->>> Hi
->>>
->>> Am 05.10.21 um 22:16 schrieb Igor Matheus Andrade Torrente:
->>>> Currently, the vkms atomic check only goes through the first 
->>>> position of
->>>> the `vkms_wb_formats` vector.
->>>>
->>>> This change prepares the atomic_check to check the entire vector.
->>>>
->>>> Signed-off-by: Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
->>>> ---
->>>>   drivers/gpu/drm/vkms/vkms_writeback.c | 11 ++++++++++-
->>>>   1 file changed, 10 insertions(+), 1 deletion(-)
->>>>
->>>> diff --git a/drivers/gpu/drm/vkms/vkms_writeback.c 
->>>> b/drivers/gpu/drm/vkms/vkms_writeback.c
->>>> index 5a3e12f105dc..56978f499203 100644
->>>> --- a/drivers/gpu/drm/vkms/vkms_writeback.c
->>>> +++ b/drivers/gpu/drm/vkms/vkms_writeback.c
->>>> @@ -30,6 +30,8 @@ static int vkms_wb_encoder_atomic_check(struct 
->>>> drm_encoder *encoder,
->>>>   {
->>>>       struct drm_framebuffer *fb;
->>>>       const struct drm_display_mode *mode = &crtc_state->mode;
->>>> +    bool format_supported = false;
->>>> +    int i;
->>>>       if (!conn_state->writeback_job || !conn_state->writeback_job->fb)
->>>>           return 0;
->>>> @@ -41,7 +43,14 @@ static int vkms_wb_encoder_atomic_check(struct 
->>>> drm_encoder *encoder,
->>>>           return -EINVAL;
->>>>       }
->>>> -    if (fb->format->format != vkms_wb_formats[0]) {
->>>> +    for (i = 0; i < ARRAY_SIZE(vkms_wb_formats); i++) {
->>>> +        if (fb->format->format == vkms_wb_formats[i]) {
->>>> +            format_supported = true;
->>>> +            break;
->>>> +        }
->>>> +    }
->>>
->>> At a minimum, this loop should be in a helper function. But more 
->>> generally, I'm surprised that this isn't already covered by the DRM's 
->>> atomic helpers.
->>
->> Ok, I can wrap it in a new function.
->>
->> AFAIK the DRM doesn't cover it. But I may be wrong...
-> 
-> I couldn't find anything either.
-> 
-> Other drivers do similar format and frambuffer checks. So I guess a 
-> helper could be implemented. All plane's are supposed to call 
-> drm_atomic_helper_check_plane_state() in their atomic_check() code. You 
-> could add a similar helper, say 
-> drm_atomic_helper_check_writeback_encoder_state(), that tests for the 
-> format and maybe other things as well.
+Really? Because I'm coming from an SEV-SNP mail thread where we don't
+trust the HV at all and we even hand in a CPUID page into the guest...
 
-Do you think this should be done before or after this patch series?
+:-P
 
-> 
-> Best regards
-> Thomas
-> 
->>
->>>
->>> Best regards
->>> Thomas
->>>
->>>> +
->>>> +    if (!format_supported) {
->>>>           DRM_DEBUG_KMS("Invalid pixel format %p4cc\n",
->>>>                     &fb->format->format);
->>>>           return -EINVAL;
->>>>
->>>
-> 
+> If bit 6 is set, yay, the hypervisor has told the kernel that it
+> will only ever run on hardware without the bug. If bit 6 is clear
+> and HYPERVISOR is true, then the FMS crud can't be trusted because
+> the kernel _may_ run on affected hardware in the future even if the
+> current underlying hardware is not affected.
 
-Thanks,
-Igor Torrente
+Ok, I see, then the CPUID check needs to go first, makes sense.
+
+> I agree.  If the argument for this patch is that the kernel can be migrated to
+> older hardware, then it stands to reason that the kernel could also be migrated
+> to a different CPU vendor entirely.  E.g. start on Intel, migrate to Zen1, kaboom.
+
+Migration across vendors? Really, that works?
+
+I'll believe it only when I see it with my own eyes.
+
+:-)
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
