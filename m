@@ -2,113 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE7E5431F50
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 16:17:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72B21431F02
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 16:08:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231859AbhJROTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 10:19:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44236 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232046AbhJROTY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 10:19:24 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22A38C061771;
-        Mon, 18 Oct 2021 07:06:26 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id y3so41804973wrl.1;
-        Mon, 18 Oct 2021 07:06:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ctO4zq8IpgYTVh72xzk49ULxst8DyrJanX/KNIyApso=;
-        b=hX1AyJeT1N3FIefr7T2nh7wiUp3BCiHO8A6cawxFS17fnt6IUGFNq5vSsV+gghucwl
-         +5pUm+9r32DOcvm25mTN61/3PSdADo2QPkuqdfwdYNqJlk12J6EyJD/6UIGBHmPnYNSH
-         VFU1pmVV7uyGgKfMjElIMGknUqWkJdCE5BrKjE4u+Sn73nFYHV6eKo4njYrdRGeVT7CU
-         KqBaS4RYlp1UvEtdmjCoeNI7zqeNAJNf79vuhL96T4gPZ4U148CZqnFxKfzlSUzfxpmC
-         kViwnwvvKu3AS4tCR6pPROzzaK9RZrznyOe6Z+n+PYnES9aZTgT8pR+KUpoPThVNMptw
-         WmBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ctO4zq8IpgYTVh72xzk49ULxst8DyrJanX/KNIyApso=;
-        b=sT/NXDaaTcL2wdqxzRza6ivpaSAdMXcUwxF1XAsL9hr1I7n0n9coXcULNhmC+dA1ki
-         T1X5HmFW+vhcSSBtioHJvg/qVNqa2KhLogoPDUBkvT+eHUXOlFt2x6c3VUAgQ/t9A65G
-         net4S45zGtuHvWv6IlEQPIkesUPvbI7DHvNtwOyNvtKntvo+tbfdUwxyH4FxV4mc9tzz
-         Id9V7vYADuhlU6UECUAz25xZhXofDZNcrx87dZJHeGAyvBRaP1jIsCgo/XTp6wXxCn7K
-         1L84l18zUkXBy/pJjGXRCkT+Nm1hBhN34HsrfnmvSlKo3bLNC/nlQs+IOdUbtgJGVnPp
-         Hpvw==
-X-Gm-Message-State: AOAM531wH1r0GL7koUqhfk3B7PL2NPqnLjmTD9Gu3+K1jOzutHhpVsyK
-        kK6hb3GQd7Pzflz/1ATAQDk=
-X-Google-Smtp-Source: ABdhPJzzpP9Fn0rtRda1JhGlAPlfwa2XUJKIzjIzxbcMGSV2EZC5m0LzPqXgNPD466hRMQxe6d/I7w==
-X-Received: by 2002:adf:ba87:: with SMTP id p7mr9642381wrg.282.1634565984751;
-        Mon, 18 Oct 2021 07:06:24 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id r128sm12122508wma.44.2021.10.18.07.06.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 07:06:24 -0700 (PDT)
-Date:   Mon, 18 Oct 2021 16:06:23 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     cgel.zte@gmail.com
-Cc:     jonathanh@nvidia.com, arnd@arndb.de, lv.ruyi@zte.com.cn,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: Re: [PATCH V1] firmware: tegra: fix error application of sizeof to
- pointer
-Message-ID: <YW1/X73f99H6g5sY@orome.fritz.box>
-References: <20211009085900.509697-1-lv.ruyi@zte.com.cn>
+        id S234203AbhJROKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 10:10:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55570 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233284AbhJROJv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 10:09:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D89460F24;
+        Mon, 18 Oct 2021 14:07:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634566060;
+        bh=u2Wb3sMDEmnjhwN797cZJ0tSxj9xbZZK17ZdlQ/Ot74=;
+        h=From:To:Cc:Subject:Date:From;
+        b=s9B2wLosQY4utctr8jCbf5R7MB/kdeRdXVr1AHAOzghFoUKtVYaDtFMhGwjWjvLH6
+         fhpv/GRQC8vL9pOC1FTwGXkKK6cSl8Rq5+5+/Qz3Nlswbrxieem7vGg6FVQ6n5h95G
+         wO7kpNI4BrSSV837MF69trFUY9c1e7Rr72+JpmiEZQDk2jGqpuKeghsVCdXhlPCQL8
+         DNbOlDXUWuUkZIdVVlsdAvB9SZhRRJZXVCQPZ1JknrjYAa7EfoDrN91rXvaUUcYFsE
+         qVXXoSzHrGJO8EhnTymguGwZBbrCEn794nGdy81bUDvmPcHJh3gsUGXhp+bd0nOvXe
+         kS6DC8uewwQJw==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Russell King <linux@armlinux.org.uk>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Antonio Terceiro <antonio.terceiro@linaro.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Sebastian Andrzej Siewior <sebastian@breakpoint.cc>,
+        Matthias Klose <doko@debian.org>, stable@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ARM: drop cc-option fallbacks for architecture selection
+Date:   Mon, 18 Oct 2021 16:07:12 +0200
+Message-Id: <20211018140735.3714254-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="9EZvROls9+qhIkmG"
-Content-Disposition: inline
-In-Reply-To: <20211009085900.509697-1-lv.ruyi@zte.com.cn>
-User-Agent: Mutt/2.1.3 (987dde4c) (2021-09-10)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Arnd Bergmann <arnd@arndb.de>
 
---9EZvROls9+qhIkmG
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Naresh and Antonio ran into a build failure with latest Debian
+armhf compilers, with lots of output like
 
-On Sat, Oct 09, 2021 at 08:59:00AM +0000, cgel.zte@gmail.com wrote:
-> From: Lv Ruyi <lv.ruyi@zte.com.cn>
->=20
-> Application of sizeof to pointer yields the number of bytes of the pointe=
-r,
-> but it should use the length of buffer in the code.
->=20
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: Lv Ruyi <lv.ruyi@zte.com.cn>
-> ---
->  drivers/firmware/tegra/bpmp-debugfs.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
+ tmp/ccY3nOAs.s:2215: Error: selected processor does not support `cpsid i' in ARM mode
 
-Applied, thanks.
+As it turns out, $(cc-option) fails early here when the FPU is not
+selected before CPU architecture is selected, as the compiler
+option check runs before enabling -msoft-float, which causes
+a problem when testing a target architecture level without an FPU:
 
-Thierry
+cc1: error: '-mfloat-abi=hard': selected architecture lacks an FPU
 
---9EZvROls9+qhIkmG
-Content-Type: application/pgp-signature; name="signature.asc"
+Passing e.g. -march=armv6k+fp in place of -march=armv6k would avoid this
+issue, but the fallback logic is already broken because all supported
+compilers (gcc-5 and higher) are much more recent than these options,
+and building with -march=armv5t as a fallback no longer works.
 
------BEGIN PGP SIGNATURE-----
+The best way forward that I see is to just remove all the checks, which
+also has the nice side-effect of slightly improving the startup time for
+'make'.
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmFtf14ACgkQ3SOs138+
-s6H5ug/9FLj5zhORL6+b+QtAk9HD10Jn8WWme8mWgqSWf+IsMVDVY1+LAN2cmQIh
-/Es1ztKAMAFwhhAG2+CO1YETaXsNQ5HkNLdQ7B5qOQ9a9NqxVmqpGCmPp4roPuR7
-4kjaIFA/2RwaOoFpZB3+kq6mQ24UYVpfTy4OnBo1K2z/nZFBCevvUOHjnffwUnPn
-efNauvv9zwdVZdMfOn4wdNl5tBQMR6Wqe8BJkIdbTBJ0425h9aursjBY/Fmufxjt
-FrLNpumxOpZwxa3xqwEWyR3uGQa+NTORASSOKCwSUDw1SL3CE/2yEYL3XljYGC5A
-TbjvqAMTIVxlfJPq+iVcj+AItzmLrzJ+5BuOnDHj6cyZ3QMe5mTkLgGFgDb/hlMA
-pkDn39nXUPm9BXtC8Sqc/XQMskYp1K9jsl07XE0clefRIBEPHeefiuPCGUlkn3e3
-kMcEZ4bk9FSrsHD2Wia9J0K7mbmRAfFx5+crxhm4SYUnd+w3cYhIkC2PYCU0DqOf
-QR4e9HHOh4Ywo9+BpEmywlm1MNr7ww60rwXE6n70oBiRBlHujmtl9ahMc3akbe9D
-s3/ppPm0enKBhc3JBPA43XryURSmArJ/Qx/XXoa5usANKD++bilbKBwShsxa1ADk
-7hERG1AFrjvAUjTbfz6/pReU05axtEMLKuiWV9xo8sikzKedDFI=
-=xxjN
------END PGP SIGNATURE-----
+The -mtune=marvell-f option was apparently never supported by any mainline
+compiler, and the custom Codesourcery gcc build that did support is
+now too old to build kernels, so just use -mtune=xscale unconditionally
+for those.
 
---9EZvROls9+qhIkmG--
+This should be safe to apply on all stable kernels, and will be required
+in order to keep building them with gcc-11 and higher.
+
+Reported-by: Antonio Terceiro <antonio.terceiro@linaro.org>
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+Reported-by: Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
+Link: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=996419
+Cc: Matthias Klose <doko@debian.org>
+Cc: stable@vger.kernel.org
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ arch/arm/Makefile | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
+
+diff --git a/arch/arm/Makefile b/arch/arm/Makefile
+index 847c31e7c368..fa45837b8065 100644
+--- a/arch/arm/Makefile
++++ b/arch/arm/Makefile
+@@ -60,15 +60,15 @@ KBUILD_CFLAGS	+= $(call cc-option,-fno-ipa-sra)
+ # Note that GCC does not numerically define an architecture version
+ # macro, but instead defines a whole series of macros which makes
+ # testing for a specific architecture or later rather impossible.
+-arch-$(CONFIG_CPU_32v7M)	=-D__LINUX_ARM_ARCH__=7 -march=armv7-m -Wa,-march=armv7-m
+-arch-$(CONFIG_CPU_32v7)		=-D__LINUX_ARM_ARCH__=7 $(call cc-option,-march=armv7-a,-march=armv5t -Wa$(comma)-march=armv7-a)
+-arch-$(CONFIG_CPU_32v6)		=-D__LINUX_ARM_ARCH__=6 $(call cc-option,-march=armv6,-march=armv5t -Wa$(comma)-march=armv6)
++arch-$(CONFIG_CPU_32v7M)	=-D__LINUX_ARM_ARCH__=7 -march=armv7-m
++arch-$(CONFIG_CPU_32v7)		=-D__LINUX_ARM_ARCH__=7 -march=armv7-a
++arch-$(CONFIG_CPU_32v6)		=-D__LINUX_ARM_ARCH__=6 -march=armv6
+ # Only override the compiler option if ARMv6. The ARMv6K extensions are
+ # always available in ARMv7
+ ifeq ($(CONFIG_CPU_32v6),y)
+-arch-$(CONFIG_CPU_32v6K)	=-D__LINUX_ARM_ARCH__=6 $(call cc-option,-march=armv6k,-march=armv5t -Wa$(comma)-march=armv6k)
++arch-$(CONFIG_CPU_32v6K)	=-D__LINUX_ARM_ARCH__=6 -march=armv6k
+ endif
+-arch-$(CONFIG_CPU_32v5)		=-D__LINUX_ARM_ARCH__=5 $(call cc-option,-march=armv5te,-march=armv4t)
++arch-$(CONFIG_CPU_32v5)		=-D__LINUX_ARM_ARCH__=5 -march=armv5te
+ arch-$(CONFIG_CPU_32v4T)	=-D__LINUX_ARM_ARCH__=4 -march=armv4t
+ arch-$(CONFIG_CPU_32v4)		=-D__LINUX_ARM_ARCH__=4 -march=armv4
+ arch-$(CONFIG_CPU_32v3)		=-D__LINUX_ARM_ARCH__=3 -march=armv3m
+@@ -82,7 +82,7 @@ tune-$(CONFIG_CPU_ARM720T)	=-mtune=arm7tdmi
+ tune-$(CONFIG_CPU_ARM740T)	=-mtune=arm7tdmi
+ tune-$(CONFIG_CPU_ARM9TDMI)	=-mtune=arm9tdmi
+ tune-$(CONFIG_CPU_ARM940T)	=-mtune=arm9tdmi
+-tune-$(CONFIG_CPU_ARM946E)	=$(call cc-option,-mtune=arm9e,-mtune=arm9tdmi)
++tune-$(CONFIG_CPU_ARM946E)	=-mtune=arm9e
+ tune-$(CONFIG_CPU_ARM920T)	=-mtune=arm9tdmi
+ tune-$(CONFIG_CPU_ARM922T)	=-mtune=arm9tdmi
+ tune-$(CONFIG_CPU_ARM925T)	=-mtune=arm9tdmi
+@@ -90,11 +90,11 @@ tune-$(CONFIG_CPU_ARM926T)	=-mtune=arm9tdmi
+ tune-$(CONFIG_CPU_FA526)	=-mtune=arm9tdmi
+ tune-$(CONFIG_CPU_SA110)	=-mtune=strongarm110
+ tune-$(CONFIG_CPU_SA1100)	=-mtune=strongarm1100
+-tune-$(CONFIG_CPU_XSCALE)	=$(call cc-option,-mtune=xscale,-mtune=strongarm110) -Wa,-mcpu=xscale
+-tune-$(CONFIG_CPU_XSC3)		=$(call cc-option,-mtune=xscale,-mtune=strongarm110) -Wa,-mcpu=xscale
+-tune-$(CONFIG_CPU_FEROCEON)	=$(call cc-option,-mtune=marvell-f,-mtune=xscale)
+-tune-$(CONFIG_CPU_V6)		=$(call cc-option,-mtune=arm1136j-s,-mtune=strongarm)
+-tune-$(CONFIG_CPU_V6K)		=$(call cc-option,-mtune=arm1136j-s,-mtune=strongarm)
++tune-$(CONFIG_CPU_XSCALE)	=-mtune=xscale
++tune-$(CONFIG_CPU_XSC3)		=-mtune=xscale
++tune-$(CONFIG_CPU_FEROCEON)	=-mtune=xscale
++tune-$(CONFIG_CPU_V6)		=-mtune=arm1136j-s
++tune-$(CONFIG_CPU_V6K)		=-mtune=arm1136j-s
+ 
+ # Evaluate tune cc-option calls now
+ tune-y := $(tune-y)
+-- 
+2.29.2
+
