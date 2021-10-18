@@ -2,97 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E84574315E4
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 12:21:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60A694315E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 12:21:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231743AbhJRKX7 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 18 Oct 2021 06:23:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46898 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232080AbhJRKXg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 06:23:36 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6B3AC06161C
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 03:21:25 -0700 (PDT)
-Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1mcPlb-0000YE-Kn; Mon, 18 Oct 2021 12:21:15 +0200
-Received: from pza by lupine with local (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1mcPlb-0005J3-76; Mon, 18 Oct 2021 12:21:15 +0200
-Message-ID: <b99705233d4a79c22d99c41568477491a51f48c6.camel@pengutronix.de>
-Subject: Re: [PATCH] media: imx: Round line size to 4 bytes
-From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     Dorota Czaplejewicz <dorota.czaplejewicz@puri.sm>
-Cc:     Steve Longerbeam <slongerbeam@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel@puri.sm, phone-devel@vger.kernel.org
-Date:   Mon, 18 Oct 2021 12:21:15 +0200
-In-Reply-To: <20211017130713.4668c616.dorota.czaplejewicz@puri.sm>
-References: <20211006110207.256325-1-dorota.czaplejewicz@puri.sm>
-         <7d61fdbd161fce40874766bde5f95c3b73f1a96d.camel@pengutronix.de>
-         <20211013112636.6963344d.dorota.czaplejewicz@puri.sm>
-         <1d8878e86b862ae8d551b6796e86c4fb1eb5d671.camel@pengutronix.de>
-         <20211017130713.4668c616.dorota.czaplejewicz@puri.sm>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.30.5-1.1 
+        id S231766AbhJRKYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 06:24:01 -0400
+Received: from foss.arm.com ([217.140.110.172]:35108 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232132AbhJRKXm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 06:23:42 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 25C6FED1;
+        Mon, 18 Oct 2021 03:21:31 -0700 (PDT)
+Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C7E173F70D;
+        Mon, 18 Oct 2021 03:21:29 -0700 (PDT)
+Date:   Mon, 18 Oct 2021 11:21:27 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Songxiaowei <songxiaowei@hisilicon.com>,
+        Binghui Wang <wangbinghui@hisilicon.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org
+Subject: Re: [PATCH v13 09/10] PCI: kirin: fix poweroff sequence
+Message-ID: <20211018102127.GD17152@lpieralisi>
+References: <cover.1634539769.git.mchehab+huawei@kernel.org>
+ <8116a4ddaaeda8dd056e80fa0ee506c5c6f42ca7.1634539769.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8116a4ddaaeda8dd056e80fa0ee506c5c6f42ca7.1634539769.git.mchehab+huawei@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2021-10-17 at 13:07 +0200, Dorota Czaplejewicz wrote:
-> Hello,
-> 
-> On Thu, 14 Oct 2021 13:26:26 +0200
-> Philipp Zabel <p.zabel@pengutronix.de> wrote:
-> 
-> > Hi Dorota,
-> > 
-> > On Wed, 2021-10-13 at 11:26 +0200, Dorota Czaplejewicz wrote:
-> > > On Fri, 08 Oct 2021 14:19:41 +0200 Philipp Zabel <p.zabel@pengutronix.de> wrote:  
-> > [...]
-> > > > I wonder: if you use 4-byte aligned width and odd height, does the CSI
-> > > > write over the end of the buffer?  
-> > > 
-> > > I tested this case, and found a glitch which suggests the last 4 bytes are ignored:
-> > > 
-> > > https://source.puri.sm/Librem5/linux-next/uploads/cfb59e3832431aaa3a69549455502568/image.png  
-> > 
-> > Thank you for testing, so it appears that at least without FBUF_STRIDE
-> > the only requirement is that the whole image size must be a multiple of
-> > 8 bytes.
-> > 
-> > > That would be taken care of rounding up towards a number decided at runtime, like:
-> > > 
-> > > divisor = 8 >> (mbus->height % 2);  
-> > 
-> > Which would then cause the CSI to write past the end of the buffer?
-> > 
-> I'm not sure if you point out the mistake here (should be "4 <<"), or
-> the fact that rounding is happening. If it's the latter, then it's of
-> no concern: the values derived here are used to calculate buffer size.
-> 
-> I'm submitting a new series where this is fixed.
+On Mon, Oct 18, 2021 at 08:07:34AM +0100, Mauro Carvalho Chehab wrote:
+> This driver currently doesn't call dw_pcie_host_deinit()
+> at the .remove() callback. This can cause an OOPS if the driver
+> is unbound.
 
-Thanks, I just didn't understand your intention. The name "divisor"
-threw me off, see the comment in the new series.
+This looks like a fix, it has to be marked as such.
 
-regards
-Philipp
+> While here, add a poweroff function, in order to abstract
+> between the internal and external PHY logic.
+> 
+> Acked-by: Xiaowei Song <songxiaowei@hisilicon.com>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+> 
+> See [PATCH v13 00/10] at: https://lore.kernel.org/all/cover.1634539769.git.mchehab+huawei@kernel.org/
+> 
+>  drivers/pci/controller/dwc/pcie-kirin.c | 30 ++++++++++++++++---------
+>  1 file changed, 20 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/dwc/pcie-kirin.c b/drivers/pci/controller/dwc/pcie-kirin.c
+> index b17a194cf78d..ffc63d12f8ed 100644
+> --- a/drivers/pci/controller/dwc/pcie-kirin.c
+> +++ b/drivers/pci/controller/dwc/pcie-kirin.c
+> @@ -680,6 +680,23 @@ static const struct dw_pcie_host_ops kirin_pcie_host_ops = {
+>  	.host_init = kirin_pcie_host_init,
+>  };
+>  
+> +static int kirin_pcie_power_off(struct kirin_pcie *kirin_pcie)
+> +{
+> +	int i;
+> +
+> +	if (kirin_pcie->type == PCIE_KIRIN_INTERNAL_PHY)
+> +		return hi3660_pcie_phy_power_off(kirin_pcie);
+> +
+> +	for (i = 0; i < kirin_pcie->n_gpio_clkreq; i++) {
+> +		gpio_direction_output(kirin_pcie->gpio_id_clkreq[i], 1);
+> +	}
+
+It looks like you are adding functionality here (ie gpio), not
+just wrapping common code in a function.
+
+Also, remove the braces, they aren't needed.
+
+Lorenzo
+
+> +
+> +	phy_power_off(kirin_pcie->phy);
+> +	phy_exit(kirin_pcie->phy);
+> +
+> +	return 0;
+> +}
+> +
+>  static int kirin_pcie_power_on(struct platform_device *pdev,
+>  			       struct kirin_pcie *kirin_pcie)
+>  {
+> @@ -725,12 +742,7 @@ static int kirin_pcie_power_on(struct platform_device *pdev,
+>  
+>  	return 0;
+>  err:
+> -	if (kirin_pcie->type == PCIE_KIRIN_INTERNAL_PHY) {
+> -		hi3660_pcie_phy_power_off(kirin_pcie);
+> -	} else {
+> -		phy_power_off(kirin_pcie->phy);
+> -		phy_exit(kirin_pcie->phy);
+> -	}
+> +	kirin_pcie_power_off(kirin_pcie);
+>  
+>  	return ret;
+>  }
+> @@ -739,11 +751,9 @@ static int __exit kirin_pcie_remove(struct platform_device *pdev)
+>  {
+>  	struct kirin_pcie *kirin_pcie = platform_get_drvdata(pdev);
+>  
+> -	if (kirin_pcie->type == PCIE_KIRIN_INTERNAL_PHY)
+> -		return hi3660_pcie_phy_power_off(kirin_pcie);
+> +	dw_pcie_host_deinit(&kirin_pcie->pci->pp);
+>  
+> -	phy_power_off(kirin_pcie->phy);
+> -	phy_exit(kirin_pcie->phy);
+> +	kirin_pcie_power_off(kirin_pcie);
+>  
+>  	return 0;
+>  }
+> -- 
+> 2.31.1
+> 
