@@ -2,432 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8A1C43259F
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 19:53:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 202B64325A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 19:55:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232105AbhJRRzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 13:55:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21589 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231739AbhJRRzw (ORCPT
+        id S231991AbhJRR5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 13:57:22 -0400
+Received: from out03.mta.xmission.com ([166.70.13.233]:59572 "EHLO
+        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231961AbhJRR5V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 13:55:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634579620;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=Yk5KC7cabGB5ioBT5grOhTqLbo3haSFS+hGcgczdb/w=;
-        b=jJgmqc1bvmmgXb1KsmUe+hUwn8hkJ1jB7cA2rujJOxTqfTe7xbf0lbbs2u9wp6gLdvF5qj
-        RMb73+YDgpfNg2CyXZnz27roqfcZS3vpxMXAUN3aDZ9uBz/X8sgEoVE5AnImenG/t+t69E
-        gaPMIQ96E7JyMbAm3aL8DMxe3/u41UM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-604-mJKa_UYrPr-mtKzXQyLL9Q-1; Mon, 18 Oct 2021 13:53:35 -0400
-X-MC-Unique: mJKa_UYrPr-mtKzXQyLL9Q-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 00E391006AB7;
-        Mon, 18 Oct 2021 17:53:34 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7D854E706;
-        Mon, 18 Oct 2021 17:53:33 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     seanjc@google.com, David Stevens <stevensd@chromium.org>
-Subject: [PATCH] KVM: cleanup allocation of rmaps and page tracking data
-Date:   Mon, 18 Oct 2021 13:53:33 -0400
-Message-Id: <20211018175333.582417-1-pbonzini@redhat.com>
+        Mon, 18 Oct 2021 13:57:21 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51]:44280)
+        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mcWqp-00ESzV-HC; Mon, 18 Oct 2021 11:55:07 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:47614 helo=email.xmission.com)
+        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mcWqo-004AnW-NK; Mon, 18 Oct 2021 11:55:07 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Alexey Gladkov <legion@kernel.org>
+Cc:     Rune Kleveland <rune.kleveland@infomedia.dk>,
+        Yu Zhao <yuzhao@google.com>,
+        Jordan Glover <Golden_Miller83@protonmail.ch>,
+        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
+        containers@lists.linux-foundation.org,
+        Hillf Danton <hdanton@sina.com>
+References: <1M9_d6wrcu6rdPe1ON0_k0lOxJMyyot3KAb1gdyuwzDPC777XVUWPHoTCEVmcK3fYfgu7sIo3PSaLe9KulUdm4TWVuqlbKyYGxRAjsf_Cpk=@protonmail.ch>
+        <87ee9pa6xw.fsf@disp2133>
+        <OJK-F2NSBlem52GqvCQYzaVxs2x9Csq3qO4QbTG4A4UUNaQpebpAQmyyKzUd70CIo27C4K7CL3bhIzcxulIzYMu067QOMXCFz8ejh3ZtFhE=@protonmail.ch>
+        <U6ByMUZ9LgvxXX6eb0M9aBx8cw8GpgE1qU22LaxaJ_2bOdnGLLJHDgnLL-6cJT7dKdcG_Ms37APSutc3EIMmtpgpP_2kotVLCNRoUq-wTJ8=@protonmail.ch>
+        <878rzw77i3.fsf@disp2133>
+        <o3tuBB58KUQjyQsALqWi0s1tSPlgVPST4PNNjHewIgRB7CUOOVyFSFxSBLCOJdUH3ly21cIjBthNyqQGnDgJD7fjU8NiVHq7i0JcMvYuzUA=@protonmail.ch>
+        <20210929173611.fo5traia77o63gpw@example.org>
+        <hPgvCJ2KbKeauk78uWJEsuKJ5VfMqknPJ_oyOZe6M78-6eG7qnj0t0UKC-joPVowo_nOikIsEWP-ZDioARfI-Cl6zrHjCHPJST3drpi5ALE=@protonmail.ch>
+        <20210930130640.wudkpmn3cmah2cjz@example.org>
+        <CAOUHufZmAjuKyRcmq6GH8dfdZxchykS=BTZDsk-gDAh3LJTe1Q@mail.gmail.com>
+        <878rz8wwb6.fsf@disp2133> <87v92cvhbf.fsf@disp2133>
+        <ccbccf82-dc50-00b2-1cfd-3da5e2c81dbf@infomedia.dk>
+        <87mtnavszx.fsf_-_@disp2133> <87fssytizw.fsf_-_@disp2133>
+        <871r4itfjw.fsf_-_@disp2133>
+Date:   Mon, 18 Oct 2021 12:54:35 -0500
+In-Reply-To: <871r4itfjw.fsf_-_@disp2133> (Eric W. Biederman's message of
+        "Mon, 18 Oct 2021 12:21:07 -0500")
+Message-ID: <877dearzfo.fsf_-_@disp2133>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain
+X-XM-SPF: eid=1mcWqo-004AnW-NK;;;mid=<877dearzfo.fsf_-_@disp2133>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1/tEUz60tuIgGwnBsMjtXOnMtSfTAnHyoE=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
+X-Spam-Level: *
+X-Spam-Status: No, score=1.3 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,XMNoVowels autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4618]
+        *  1.5 XMNoVowels Alpha-numberic number with no vowels
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: *;Alexey Gladkov <legion@kernel.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 234 ms - load_scoreonly_sql: 0.04 (0.0%),
+        signal_user_changed: 11 (4.5%), b_tie_ro: 9 (4.0%), parse: 0.78 (0.3%),
+         extract_message_metadata: 2.1 (0.9%), get_uri_detail_list: 0.44
+        (0.2%), tests_pri_-1000: 3.3 (1.4%), tests_pri_-950: 1.22 (0.5%),
+        tests_pri_-900: 0.94 (0.4%), tests_pri_-90: 54 (23.2%), check_bayes:
+        53 (22.6%), b_tokenize: 4.4 (1.9%), b_tok_get_all: 6 (2.4%),
+        b_comp_prob: 1.58 (0.7%), b_tok_touch_all: 39 (16.5%), b_finish: 0.76
+        (0.3%), tests_pri_0: 143 (61.0%), check_dkim_signature: 0.45 (0.2%),
+        check_dkim_adsp: 2.3 (1.0%), poll_dns_idle: 0.64 (0.3%), tests_pri_10:
+        2.3 (1.0%), tests_pri_500: 8 (3.6%), rewrite_mail: 0.00 (0.0%)
+Subject: [PATCH 0/4] ucounts: misc cleanups
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Stevens <stevensd@chromium.org>
 
-Unify the flags for rmaps and page tracking data, using a
-single flag in struct kvm_arch and a single loop to go
-over all the address spaces and memslots.  This avoids
-code duplication between alloc_all_memslots_rmaps and
-kvm_page_track_enable_mmu_write_tracking.
+The following changes are a set of miscellaneous fixes that makes
+the ucount code a little bit easier to read.  There are all things
+that I ran into while helping hunt the crazy reference count
+bug.
 
-Signed-off-by: David Stevens <stevensd@chromium.org>
-[This patch is the delta between David's v2 and v3, with conflicts
- fixed and my own commit message. - Paolo]
-Co-developed-by: Sean Christopherson <seanjc@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- arch/x86/include/asm/kvm_host.h       | 17 ++----
- arch/x86/include/asm/kvm_page_track.h |  3 +-
- arch/x86/kvm/mmu.h                    | 16 ++++--
- arch/x86/kvm/mmu/mmu.c                | 78 +++++++++++++++++++++------
- arch/x86/kvm/mmu/page_track.c         | 59 ++++++--------------
- arch/x86/kvm/x86.c                    | 47 +---------------
- 6 files changed, 97 insertions(+), 123 deletions(-)
+I am aiming these at the next merge window and 5.16 rather than bug
+fixes to get into the current 5.15.
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 88f0326c184a..80f4b8a9233c 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1212,18 +1212,11 @@ struct kvm_arch {
- #endif /* CONFIG_X86_64 */
- 
- 	/*
--	 * If set, rmaps have been allocated for all memslots and should be
--	 * allocated for any newly created or modified memslots.
-+	 * If set, at least one shadow root has been allocated. This flag
-+	 * is used as one input when determining whether certain memslot
-+	 * related allocations are necessary.
- 	 */
--	bool memslots_have_rmaps;
--
--	/*
--	 * Set when the KVM mmu needs guest write access page tracking. If
--	 * set, the necessary gfn_track arrays have been allocated for
--	 * all memslots and should be allocated for any newly created or
--	 * modified memslots.
--	 */
--	bool memslots_mmu_write_tracking;
-+	bool shadow_root_alloced;
- 
- #if IS_ENABLED(CONFIG_HYPERV)
- 	hpa_t	hv_root_tdp;
-@@ -1946,7 +1939,7 @@ static inline int kvm_cpu_get_apicid(int mps_cpu)
- 
- int kvm_cpu_dirty_log_size(void);
- 
--int alloc_all_memslots_rmaps(struct kvm *kvm);
-+int memslot_rmap_alloc(struct kvm_memory_slot *slot, unsigned long npages);
- 
- #define KVM_CLOCK_VALID_FLAGS						\
- 	(KVM_CLOCK_TSC_STABLE | KVM_CLOCK_REALTIME | KVM_CLOCK_HOST_TSC)
-diff --git a/arch/x86/include/asm/kvm_page_track.h b/arch/x86/include/asm/kvm_page_track.h
-index 79d84a94f8eb..9d4a3b1b25b9 100644
---- a/arch/x86/include/asm/kvm_page_track.h
-+++ b/arch/x86/include/asm/kvm_page_track.h
-@@ -49,7 +49,8 @@ struct kvm_page_track_notifier_node {
- int kvm_page_track_init(struct kvm *kvm);
- void kvm_page_track_cleanup(struct kvm *kvm);
- 
--int kvm_page_track_enable_mmu_write_tracking(struct kvm *kvm);
-+bool kvm_page_track_write_tracking_enabled(struct kvm *kvm);
-+int kvm_page_track_write_tracking_alloc(struct kvm_memory_slot *slot);
- 
- void kvm_page_track_free_memslot(struct kvm_memory_slot *slot);
- int kvm_page_track_create_memslot(struct kvm *kvm,
-diff --git a/arch/x86/kvm/mmu.h b/arch/x86/kvm/mmu.h
-index e53ef2ae958f..1ae70efedcf4 100644
---- a/arch/x86/kvm/mmu.h
-+++ b/arch/x86/kvm/mmu.h
-@@ -303,14 +303,20 @@ int kvm_arch_write_log_dirty(struct kvm_vcpu *vcpu);
- int kvm_mmu_post_init_vm(struct kvm *kvm);
- void kvm_mmu_pre_destroy_vm(struct kvm *kvm);
- 
--static inline bool kvm_memslots_have_rmaps(struct kvm *kvm)
-+static inline bool kvm_shadow_root_alloced(struct kvm *kvm)
- {
- 	/*
--	 * Read memslot_have_rmaps before rmap pointers.  Hence, threads reading
--	 * memslots_have_rmaps in any lock context are guaranteed to see the
--	 * pointers.  Pairs with smp_store_release in alloc_all_memslots_rmaps.
-+	 * Read shadow_root_alloced before related pointers. Hence, threads
-+	 * reading shadow_root_alloced in any lock context are guaranteed to
-+	 * see the pointers. Pairs with smp_store_release in
-+	 * mmu_first_shadow_root_alloc.
- 	 */
--	return smp_load_acquire(&kvm->arch.memslots_have_rmaps);
-+	return smp_load_acquire(&kvm->arch.shadow_root_alloced);
-+}
-+
-+static inline bool kvm_memslots_have_rmaps(struct kvm *kvm)
-+{
-+	return !kvm->arch.tdp_mmu_enabled || kvm_shadow_root_alloced(kvm);
- }
- 
- static inline gfn_t gfn_to_index(gfn_t gfn, gfn_t base_gfn, int level)
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 29e7a4bb26e9..757e2a1ed149 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -3397,6 +3397,67 @@ static int mmu_alloc_direct_roots(struct kvm_vcpu *vcpu)
- 	return r;
- }
- 
-+static int mmu_first_shadow_root_alloc(struct kvm *kvm)
-+{
-+	struct kvm_memslots *slots;
-+	struct kvm_memory_slot *slot;
-+	int r = 0, i;
-+
-+	/*
-+	 * Check if this is the first shadow root being allocated before
-+	 * taking the lock.
-+	 */
-+	if (kvm_shadow_root_alloced(kvm))
-+		return 0;
-+
-+	mutex_lock(&kvm->slots_arch_lock);
-+
-+	/* Recheck, under the lock, whether this is the first shadow root. */
-+	if (kvm_shadow_root_alloced(kvm))
-+		goto out_unlock;
-+
-+	/*
-+	 * Check if anything actually needs to be allocated, e.g. all metadata
-+	 * will be allocated upfront if TDP is disabled.
-+	 */
-+	if (kvm_memslots_have_rmaps(kvm) &&
-+	    kvm_page_track_write_tracking_enabled(kvm))
-+		goto out_success;
-+
-+	for (i = 0; i < KVM_ADDRESS_SPACE_NUM; i++) {
-+		slots = __kvm_memslots(kvm, i);
-+		kvm_for_each_memslot(slot, slots) {
-+			/*
-+			 * Both of these functions are no-ops if the target is
-+			 * already allocated, so unconditionally calling both
-+			 * is safe.  Intentionally do NOT free allocations on
-+			 * failure to avoid having to track which allocations
-+			 * were made now versus when the memslot was created.
-+			 * The metadata is guaranteed to be freed when the slot
-+			 * is freed, and will be kept/used if userspace retries
-+			 * KVM_RUN instead of killing the VM.
-+			 */
-+			r = memslot_rmap_alloc(slot, slot->npages);
-+			if (r)
-+				goto out_unlock;
-+			r = kvm_page_track_write_tracking_alloc(slot);
-+			if (r)
-+				goto out_unlock;
-+		}
-+	}
-+
-+	/*
-+	 * Ensure that shadow_root_alloced becomes true strictly after
-+	 * all the related pointers are set.
-+	 */
-+out_success:
-+	smp_store_release(&kvm->arch.shadow_root_alloced, true);
-+
-+out_unlock:
-+	mutex_unlock(&kvm->slots_arch_lock);
-+	return r;
-+}
-+
- static int mmu_alloc_shadow_roots(struct kvm_vcpu *vcpu)
- {
- 	struct kvm_mmu *mmu = vcpu->arch.mmu;
-@@ -3427,11 +3488,7 @@ static int mmu_alloc_shadow_roots(struct kvm_vcpu *vcpu)
- 		}
- 	}
- 
--	r = alloc_all_memslots_rmaps(vcpu->kvm);
--	if (r)
--		return r;
--
--	r = kvm_page_track_enable_mmu_write_tracking(vcpu->kvm);
-+	r = mmu_first_shadow_root_alloc(vcpu->kvm);
- 	if (r)
- 		return r;
- 
-@@ -5604,16 +5661,7 @@ void kvm_mmu_init_vm(struct kvm *kvm)
- 
- 	spin_lock_init(&kvm->arch.mmu_unsync_pages_lock);
- 
--	if (!kvm_mmu_init_tdp_mmu(kvm))
--		/*
--		 * No smp_load/store wrappers needed here as we are in
--		 * VM init and there cannot be any memslots / other threads
--		 * accessing this struct kvm yet.
--		 */
--		kvm->arch.memslots_have_rmaps = true;
--
--	if (!tdp_enabled)
--		kvm->arch.memslots_mmu_write_tracking = true;
-+	kvm_mmu_init_tdp_mmu(kvm);
- 
- 	node->track_write = kvm_mmu_pte_write;
- 	node->track_flush_slot = kvm_mmu_invalidate_zap_pages_in_memslot;
-diff --git a/arch/x86/kvm/mmu/page_track.c b/arch/x86/kvm/mmu/page_track.c
-index 357605809825..5e0684460930 100644
---- a/arch/x86/kvm/mmu/page_track.c
-+++ b/arch/x86/kvm/mmu/page_track.c
-@@ -19,14 +19,10 @@
- #include "mmu.h"
- #include "mmu_internal.h"
- 
--static bool write_tracking_enabled(struct kvm *kvm)
-+bool kvm_page_track_write_tracking_enabled(struct kvm *kvm)
- {
--	/*
--	 * Read memslots_mmu_write_tracking before gfn_track pointers. Pairs
--	 * with smp_store_release in kvm_page_track_enable_mmu_write_tracking.
--	 */
- 	return IS_ENABLED(CONFIG_KVM_EXTERNAL_WRITE_TRACKING) ||
--	       smp_load_acquire(&kvm->arch.memslots_mmu_write_tracking);
-+	       !tdp_enabled || kvm_shadow_root_alloced(kvm);
- }
- 
- void kvm_page_track_free_memslot(struct kvm_memory_slot *slot)
-@@ -46,7 +42,8 @@ int kvm_page_track_create_memslot(struct kvm *kvm,
- 	int i;
- 
- 	for (i = 0; i < KVM_PAGE_TRACK_MAX; i++) {
--		if (i == KVM_PAGE_TRACK_WRITE && !write_tracking_enabled(kvm))
-+		if (i == KVM_PAGE_TRACK_WRITE &&
-+		    !kvm_page_track_write_tracking_enabled(kvm))
- 			continue;
- 
- 		slot->arch.gfn_track[i] =
-@@ -70,45 +67,18 @@ static inline bool page_track_mode_is_valid(enum kvm_page_track_mode mode)
- 	return true;
- }
- 
--int kvm_page_track_enable_mmu_write_tracking(struct kvm *kvm)
-+int kvm_page_track_write_tracking_alloc(struct kvm_memory_slot *slot)
- {
--	struct kvm_memslots *slots;
--	struct kvm_memory_slot *slot;
--	unsigned short **gfn_track;
--	int i;
-+	unsigned short *gfn_track;
- 
--	if (write_tracking_enabled(kvm))
-+	if (slot->arch.gfn_track[KVM_PAGE_TRACK_WRITE])
- 		return 0;
- 
--	mutex_lock(&kvm->slots_arch_lock);
--
--	if (write_tracking_enabled(kvm)) {
--		mutex_unlock(&kvm->slots_arch_lock);
--		return 0;
--	}
--
--	for (i = 0; i < KVM_ADDRESS_SPACE_NUM; i++) {
--		slots = __kvm_memslots(kvm, i);
--		kvm_for_each_memslot(slot, slots) {
--			gfn_track = slot->arch.gfn_track + KVM_PAGE_TRACK_WRITE;
--			if (*gfn_track)
--				continue;
--
--			*gfn_track = vcalloc(slot->npages, sizeof(**gfn_track));
--			if (*gfn_track == NULL) {
--				mutex_unlock(&kvm->slots_arch_lock);
--				return -ENOMEM;
--			}
--		}
--	}
--
--	/*
--	 * Ensure that memslots_mmu_write_tracking becomes true strictly
--	 * after all the pointers are set.
--	 */
--	smp_store_release(&kvm->arch.memslots_mmu_write_tracking, true);
--	mutex_unlock(&kvm->slots_arch_lock);
-+	gfn_track = vcalloc(slot->npages, sizeof(*gfn_track));
-+	if (gfn_track == NULL)
-+		return -ENOMEM;
- 
-+	slot->arch.gfn_track[KVM_PAGE_TRACK_WRITE] = gfn_track;
- 	return 0;
- }
- 
-@@ -148,7 +118,7 @@ void kvm_slot_page_track_add_page(struct kvm *kvm,
- 		return;
- 
- 	if (WARN_ON(mode == KVM_PAGE_TRACK_WRITE &&
--		    !write_tracking_enabled(kvm)))
-+		    !kvm_page_track_write_tracking_enabled(kvm)))
- 		return;
- 
- 	update_gfn_track(slot, gfn, mode, 1);
-@@ -186,7 +156,7 @@ void kvm_slot_page_track_remove_page(struct kvm *kvm,
- 		return;
- 
- 	if (WARN_ON(mode == KVM_PAGE_TRACK_WRITE &&
--		    !write_tracking_enabled(kvm)))
-+		    !kvm_page_track_write_tracking_enabled(kvm)))
- 		return;
- 
- 	update_gfn_track(slot, gfn, mode, -1);
-@@ -214,7 +184,8 @@ bool kvm_slot_page_track_is_active(struct kvm_vcpu *vcpu,
- 	if (!slot)
- 		return false;
- 
--	if (mode == KVM_PAGE_TRACK_WRITE && !write_tracking_enabled(vcpu->kvm))
-+	if (mode == KVM_PAGE_TRACK_WRITE &&
-+	    !kvm_page_track_write_tracking_enabled(vcpu->kvm))
- 		return false;
- 
- 	index = gfn_to_index(gfn, slot->base_gfn, PG_LEVEL_4K);
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index fce4d2eb69e6..b515a3d85a46 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -11516,8 +11516,7 @@ void kvm_arch_free_memslot(struct kvm *kvm, struct kvm_memory_slot *slot)
- 	kvm_page_track_free_memslot(slot);
- }
- 
--static int memslot_rmap_alloc(struct kvm_memory_slot *slot,
--			      unsigned long npages)
-+int memslot_rmap_alloc(struct kvm_memory_slot *slot, unsigned long npages)
- {
- 	const int sz = sizeof(*slot->arch.rmap[0]);
- 	int i;
-@@ -11539,50 +11538,6 @@ static int memslot_rmap_alloc(struct kvm_memory_slot *slot,
- 	return 0;
- }
- 
--int alloc_all_memslots_rmaps(struct kvm *kvm)
--{
--	struct kvm_memslots *slots;
--	struct kvm_memory_slot *slot;
--	int r, i;
--
--	/*
--	 * Check if memslots alreday have rmaps early before acquiring
--	 * the slots_arch_lock below.
--	 */
--	if (kvm_memslots_have_rmaps(kvm))
--		return 0;
--
--	mutex_lock(&kvm->slots_arch_lock);
--
--	/*
--	 * Read memslots_have_rmaps again, under the slots arch lock,
--	 * before allocating the rmaps
--	 */
--	if (kvm_memslots_have_rmaps(kvm)) {
--		mutex_unlock(&kvm->slots_arch_lock);
--		return 0;
--	}
--
--	for (i = 0; i < KVM_ADDRESS_SPACE_NUM; i++) {
--		slots = __kvm_memslots(kvm, i);
--		kvm_for_each_memslot(slot, slots) {
--			r = memslot_rmap_alloc(slot, slot->npages);
--			if (r) {
--				mutex_unlock(&kvm->slots_arch_lock);
--				return r;
--			}
--		}
--	}
--
--	/*
--	 * Ensure that memslots_have_rmaps becomes true strictly after
--	 * all the rmap pointers are set.
--	 */
--	smp_store_release(&kvm->arch.memslots_have_rmaps, true);
--	mutex_unlock(&kvm->slots_arch_lock);
--	return 0;
--}
--
- static int kvm_alloc_memslot_metadata(struct kvm *kvm,
- 				      struct kvm_memory_slot *slot,
- 				      unsigned long npages)
--- 
-2.27.0
+Eric W. Biederman (4):
+      ucounts: In set_cred_ucounts assume new->ucounts is non-NULL
+      ucounts: Remove unnecessary test for NULL ucount in get_ucounts
+      ucounts: Add get_ucounts_or_wrap for clarity
+      ucounts: Use atomic_long_sub_return for clarity
 
+ kernel/cred.c   |  5 ++---
+ kernel/ucount.c | 20 +++++++++++++-------
+ 2 files changed, 15 insertions(+), 10 deletions(-)
+
+Eric
