@@ -2,108 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6769A432322
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 17:40:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 851E0432324
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 17:41:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232462AbhJRPm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 11:42:59 -0400
-Received: from mga06.intel.com ([134.134.136.31]:31329 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232209AbhJRPmt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 11:42:49 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10141"; a="289127326"
-X-IronPort-AV: E=Sophos;i="5.85,382,1624345200"; 
-   d="scan'208";a="289127326"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2021 08:40:31 -0700
-X-IronPort-AV: E=Sophos;i="5.85,382,1624345200"; 
-   d="scan'208";a="482789500"
-Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.146])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2021 08:40:31 -0700
-Date:   Mon, 18 Oct 2021 08:40:30 -0700
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Shuai Xue <xueshuai@linux.alibaba.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "james.morse@arm.com" <james.morse@arm.com>,
-        "lenb@kernel.org" <lenb@kernel.org>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "zhangliguang@linux.alibaba.com" <zhangliguang@linux.alibaba.com>,
-        "zhuo.song@linux.alibaba.com" <zhuo.song@linux.alibaba.com>
-Subject: Re: [PATCH] ACPI, APEI, EINJ: Relax platform response timeout to 1
- second.
-Message-ID: <YW2Vbkn5d6r3Y4LA@agluck-desk2.amr.corp.intel.com>
-References: <20211015033817.16719-1-xueshuai@linux.alibaba.com>
- <4d492cef3640414d85ecfdb602ad6fa0@intel.com>
- <869f0c92-0800-b24e-9de8-d8c9cb6972a7@linux.alibaba.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <869f0c92-0800-b24e-9de8-d8c9cb6972a7@linux.alibaba.com>
+        id S232785AbhJRPno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 11:43:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37904 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232209AbhJRPnl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 11:43:41 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA39FC06161C;
+        Mon, 18 Oct 2021 08:41:30 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id r2so16625423pgl.10;
+        Mon, 18 Oct 2021 08:41:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=e2c2jS2FrJNz2g2mQLqY/djnjI6hageyLGZiZ51JrFA=;
+        b=B0yNCsmlEjlEqqJmYDGGVX8eRBpnA0UZ72+fIvTAr/QDkkAEqiP7otU2dPnhkxNZYX
+         TbaxREVIC7ERaYt28ELhLfVJSDTBvpQ6d14thJDO1z5vAfS0KvPFCuRKS6DkA5C2AH4n
+         kbStD9ta7eYbxylYHF7tJl35XMrF9rt5ZNHhCa53MIS+nOJO7z6YgcjudqDthWQ5CvD+
+         JX7yxaljn08B/LbSHLsLQSY/IWuecSyAsBHReiJt1j30uLQ0u+iQkFjya1Dr2xgGyWu+
+         5WGTNEQ2EGqAqTsmbz6G4g958nCSSCSunx9aXVHQuGnUK8VDLCqr9CVrsCcZ7d3qjV15
+         Ij6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=e2c2jS2FrJNz2g2mQLqY/djnjI6hageyLGZiZ51JrFA=;
+        b=4jzClMs+pPDQHI7Gw5gCJAS7N5QJTZ+oOrbUe23AocLHaqXtQseAJWC+KwY3k21ylF
+         llq19rsa2HSkQdQpDflXo8c/Ni4IwzcfL+V5/7kFsuynJa62JqQLkrC368UeTaDz0Nxn
+         M6m9hbB/aj0TiviFxpVyiUoPCzEig0RW/4Zvhc50XBQzRi7fZhPvatqdi189xaIZdl6M
+         fh/06O3DDPqVtqE65TdrDJbsUs338W+R5nQkQMEgsBsXZz898FOyFX2257/grvOmme9k
+         8mJCDrrn0BvCDd7grgTwD+vsEAITzT6JJT218xjwt2oGI9S11r17kt+HEdAaU7Dqs5N0
+         59Vg==
+X-Gm-Message-State: AOAM531FmyIWXc2Mt/meACJ/lZmNg6oXSYamaAld3cmffeYB+DdongVZ
+        JZ0f4RV16RtSRbPMEQNdzdryYsFoZLayo8sZ6II=
+X-Google-Smtp-Source: ABdhPJwBZYesskDJVr40zrVeAU2kr9mjJC+H1ix1FsMLMfOj2fcaGrteLU/CUoaMOqhpqtKHZ6iQ6A==
+X-Received: by 2002:a65:6389:: with SMTP id h9mr24542202pgv.83.1634571689597;
+        Mon, 18 Oct 2021 08:41:29 -0700 (PDT)
+Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
+        by smtp.gmail.com with ESMTPSA id v7sm13137233pjk.37.2021.10.18.08.41.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Oct 2021 08:41:28 -0700 (PDT)
+Message-ID: <616d95a8.1c69fb81.cffcf.451d@mx.google.com>
+Date:   Mon, 18 Oct 2021 08:41:28 -0700 (PDT)
+X-Google-Original-Date: Mon, 18 Oct 2021 15:41:27 GMT
+From:   Fox Chen <foxhlchen@gmail.com>
+In-Reply-To: <20211018132340.682786018@linuxfoundation.org>
+Subject: RE: [PATCH 5.14 000/151] 5.14.14-rc1 review
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Fox Chen <foxhlchen@gmail.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 17, 2021 at 12:06:52PM +0800, Shuai Xue wrote:
-> Hi, Tony,
+On Mon, 18 Oct 2021 15:22:59 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> This is the start of the stable review cycle for the 5.14.14 release.
+> There are 151 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Thank you for your reply.
+> Responses should be made by Wed, 20 Oct 2021 13:23:15 +0000.
+> Anything received after that time might be too late.
 > 
-> > Spinning for 1ms was maybe ok. Spinning for up to 1s seems like a bad idea.
-> >
-> > This code is executed inside a mutex ... so maybe it is safe to sleep instead of spin?
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.14-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
+> and the diffstat can be found below.
 > 
-> May the email Subject misled you. This code do NOT spin for 1 sec. The period of the
-> spinning depends on the SPIN_UNIT.
-
-Not just the subject line. See the comment you changed here:
-
-> > -#define SPIN_UNIT		100			/* 100ns */
-> > -/* Firmware should respond within 1 milliseconds */
-> > -#define FIRMWARE_TIMEOUT	(1 * NSEC_PER_MSEC)
-> > +#define SPIN_UNIT		100			/* 100us */
-> > +/* Firmware should respond within 1 seconds */
-> > +#define FIRMWARE_TIMEOUT	(1 * USEC_PER_SEC)
-
-That definitely reads to me that the timeout was increased from
-1 millisecond to 1 second. With the old code polling for completion
-every 100ns, and the new code polling every 100us
+> thanks,
 > 
-> The period was 100 ns and changed to 100 us now. In my opinion, spinning for 100 ns or 100 us is OK :)
+> greg k-h
+> 
 
-But what does the code do in between polls? The calling code is:
+5.14.14-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
+                
+Tested-by: Fox Chen <foxhlchen@gmail.com>
 
-        for (;;) {
-                rc = apei_exec_run(&ctx, ACPI_EINJ_CHECK_BUSY_STATUS);
-                if (rc)
-                        return rc;
-                val = apei_exec_ctx_get_output(&ctx);
-                if (!(val & EINJ_OP_BUSY))
-                        break;
-                if (einj_timedout(&timeout))
-                        return -EIO;
-        }
-
-Now apei_exec_run() and apei_exec_ctx_get_output() are a maze of
-functions & macros. But I don't think they can block, sleep, or
-context switch.
-
-So this code is "spinning" until either BIOS says the operation is
-complete, or the FIRMWARE_TIMEOUT is reached.
-
-It avoids triggering a watchdog by the call to touch_nmi_watchdog()
-after each spin between polls. But the whole thing may be spinning
-for a second.
-
-I'm not at all sure that I'm right that the spin could be replaced
-with an msleep(). It will certainly slow things down for systems
-and EINJ operations that actually complete quickly (because instead
-of returnining within 100ns (or 100us with your patch) it will sleep
-for 1 ms (rounded up to next jiffie ... so 4 ms of HZ=250 systems.
-
-But I don't care if my error injections take 4ms.
-
-I do care that one logical CPU spins for 1 second.
-
--Tony
