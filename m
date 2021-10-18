@@ -2,114 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 522A64311D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 10:06:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACF014311EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 10:10:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231144AbhJRIIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 04:08:19 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3993 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230472AbhJRIIS (ORCPT
+        id S231302AbhJRINB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 04:13:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45086 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231232AbhJRINA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 04:08:18 -0400
-Received: from fraeml715-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HXq9B2gjpz67Mww;
-        Mon, 18 Oct 2021 16:02:22 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml715-chm.china.huawei.com (10.206.15.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Mon, 18 Oct 2021 10:06:06 +0200
-Received: from [10.47.85.98] (10.47.85.98) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Mon, 18 Oct
- 2021 09:06:05 +0100
-Subject: Re: [PATCH] blk-mq: Fix blk_mq_tagset_busy_iter() for shared tags
-From:   John Garry <john.garry@huawei.com>
-To:     Ming Lei <ming.lei@redhat.com>
-CC:     "axboe@kernel.dk" <axboe@kernel.dk>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kashyap.desai@broadcom.com" <kashyap.desai@broadcom.com>,
-        "hare@suse.de" <hare@suse.de>
-References: <1634114459-143003-1-git-send-email-john.garry@huawei.com>
- <YWalYoOZmpkmAZNK@T590> <79266509-f327-9de3-d22e-0e9fe00387ee@huawei.com>
- <YWay/n+BJTLm1Alb@T590> <9f3c4d57-6b77-5345-0d4c-275962214b2a@huawei.com>
- <YWbtRm22vohvY0Ca@T590> <7e142559-1c96-8d84-081a-378c1f6d1306@huawei.com>
-Message-ID: <1065f517-c94b-5a47-34f6-52015b3ef907@huawei.com>
-Date:   Mon, 18 Oct 2021 09:08:57 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        Mon, 18 Oct 2021 04:13:00 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B2E7C06161C;
+        Mon, 18 Oct 2021 01:10:49 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id w14so67321271edv.11;
+        Mon, 18 Oct 2021 01:10:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ler5K+pi/RWyNTk3cRDoyW3msmkIcvt+niCNYs4vhI4=;
+        b=j25VgagUB0XYzVEYEMPeJiO/TxQgx4vUjZ1vJzNTVYzzFxwNpZiHYbYIZcYCiKmY86
+         dw4KLo07GDBDzw9E0ktxZ0tNoL4N/SX4LmArkhZRBhleZMXKofuyAoZrzrDV3xQhEUVV
+         9Zt99t4HAWrrY5Goet+JLrN8RbxgU/S4Ch86gZT6lhTr65lyuTcHFZt5TdOPxUhGqs2f
+         umFOeDIraJH9RwWWWPXJKpNdidiaP6tQ3FV9S4RpXwPpqTCYNyaD+mgun9Xe/K9U4xz3
+         9UElWEdASnaELeZdpJ79gH4gFChkkRBSDsPF6QbnBe5VRbPK42v36XCgQcz8iJhWbT3Q
+         x4vg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ler5K+pi/RWyNTk3cRDoyW3msmkIcvt+niCNYs4vhI4=;
+        b=a2Mikyf/1fSNTsw3pOvcagxNIG2vRjvSj/0QuWX/Z6iTYVo8qZA3LsbYvRXT43gv8C
+         cuCPlvjaKuAjk25X1pCDkJA/XD8Tcf9C01xdtaqLKFGVOEY8Sdchbc0DmJaROnOS4c5e
+         8y4a9OFIAl4QGjZvrUumPOKW8rN2NY7HFPQamV/cQ7pRbdxh6nisZatZC1uOsenOYwXO
+         rk5RB6EFh4qE1tfBaDbN35R5BDUih6vg8I8Opl9P+GzcFfoos3zzslJ3biooN98ZRhcx
+         l3ICC1spYweiOPypK0OadwBCULbG7qe1NUh2WvkR2gP8QC9QPPSoIgHdsQgZJDlNG+aS
+         lRjg==
+X-Gm-Message-State: AOAM533HPNyVQKaKDnK+ln0VSPXdiF1IAHo3K7wjR58rA+PMX1Bl0HQy
+        CnHH7irO4SLzrazVvAvyO+Cp1itDpIMLUA6w63o=
+X-Google-Smtp-Source: ABdhPJy98YOgiwxqoJsGmmJSOytB8DDjqipDtrX/LGPiIMliZzf5JlHUV9Y9vtMJzLjKrx3epk62PT68fO06WMeJ7k4=
+X-Received: by 2002:a05:6402:2787:: with SMTP id b7mr41868843ede.238.1634544648018;
+ Mon, 18 Oct 2021 01:10:48 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <7e142559-1c96-8d84-081a-378c1f6d1306@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.47.85.98]
-X-ClientProxiedBy: lhreml718-chm.china.huawei.com (10.201.108.69) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+References: <20211017162337.44860-1-kitakar@gmail.com> <2170cfdf-767f-969c-f241-4e61bfafd1f5@redhat.com>
+In-Reply-To: <2170cfdf-767f-969c-f241-4e61bfafd1f5@redhat.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 18 Oct 2021 11:10:11 +0300
+Message-ID: <CAHp75VcuP4NTYYL6FreW-bdB549T1WNwty74PUFm+LYLeLkdhA@mail.gmail.com>
+Subject: Re: [BUG 0/5] bug reports for atomisp to make it work
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Tsuchiya Yuto <kitakar@gmail.com>,
+        Patrik Gfeller <patrik.gfeller@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Kaixu Xia <kaixuxia@tencent.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linux-staging@lists.linux.dev,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Nable <nable.maininbox@googlemail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Fabio Aiuto <fabioaiuto83@gmail.com>,
+        "andrey.i.trufanov" <andrey.i.trufanov@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/10/2021 16:13, John Garry wrote:
->> diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
->> index 72a2724a4eee..2a2ad6dfcc33 100644
->> --- a/block/blk-mq-tag.c
->> +++ b/block/blk-mq-tag.c
->> @@ -232,8 +232,9 @@ static bool bt_iter(struct sbitmap *bitmap, 
->> unsigned int bitnr, void *data)
->>       if (!rq)
->>           return true;
->> -    if (rq->q == hctx->queue && rq->mq_hctx == hctx)
->> -        ret = iter_data->fn(hctx, rq, iter_data->data, reserved);
->> +    if (rq->q == hctx->queue && (rq->mq_hctx == hctx ||
->> +                blk_mq_is_shared_tags(hctx->flags)))
->> +        ret = iter_data->fn(rq->mq_hctx, rq, iter_data->data, reserved);
->>       blk_mq_put_rq_ref(rq);
->>       return ret;
->>   }
->> @@ -460,6 +461,9 @@ void blk_mq_queue_tag_busy_iter(struct 
->> request_queue *q, busy_iter_fn *fn,
->>           if (tags->nr_reserved_tags)
->>               bt_for_each(hctx, &tags->breserved_tags, fn, priv, true);
->>           bt_for_each(hctx, &tags->bitmap_tags, fn, priv, false);
->> +
->> +        if (blk_mq_is_shared_tags(hctx->flags))
->> +            break;
->>       }
->>       blk_queue_exit(q);
->>   }
->>
-> 
-> I suppose that is ok, and means that we iter once.
-> 
-> However, I have to ask, where is the big user of 
-> blk_mq_queue_tag_busy_iter() coming from? I saw this from Kashyap's mail:
-> 
->  > 1.31%     1.31%  kworker/57:1H-k  [kernel.vmlinux]
->  >       native_queued_spin_lock_slowpath
->  >       ret_from_fork
->  >       kthread
->  >       worker_thread
->  >       process_one_work
->  >       blk_mq_timeout_work
->  >       blk_mq_queue_tag_busy_iter
->  >       bt_iter
->  >       blk_mq_find_and_get_req
->  >       _raw_spin_lock_irqsave
->  >       native_queued_spin_lock_slowpath
-> 
-> How or why blk_mq_timeout_work()?
+On Mon, Oct 18, 2021 at 10:51 AM Hans de Goede <hdegoede@redhat.com> wrote:
 
-Just some update: I tried hisi_sas with 10x SAS SSDs, megaraid sas with 
-1x SATA HDD (that's all I have), and null blk with lots of devices, and 
-I still can't see high usage of blk_mq_queue_tag_busy_iter().
+> Just adding some folks to the Cc.
 
-So how about we get this patch processed (to fix 
-blk_mq_tagset_busy_iter()), as it is independent of 
-blk_mq_queue_tag_busy_iter()? And then wait for some update or some more 
-info from Kashyap regarding blk_mq_queue_tag_busy_iter()
+A hint to the newly added folks, there is an archive of the Linux
+kernel related emails located on lore.kernel.org. The quite famous
+distros already have in their repositories the `b4` tool that helps to
+access that archive. So, after installing that tool you may download
+the whole thread as a mailbox or as a bundle ready for `git am` just
+using the Message-ID value.
 
-Thanks,
-John
+-- 
+With Best Regards,
+Andy Shevchenko
