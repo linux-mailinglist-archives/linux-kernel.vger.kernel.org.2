@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9743431AEC
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:27:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8351431CDF
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:43:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232168AbhJRN3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:29:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41358 "EHLO mail.kernel.org"
+        id S233686AbhJRNpq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:45:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38720 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231905AbhJRN3G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:29:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C383961360;
-        Mon, 18 Oct 2021 13:26:31 +0000 (UTC)
+        id S234037AbhJRNnn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:43:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C372961527;
+        Mon, 18 Oct 2021 13:34:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634563592;
-        bh=yTXYksWALTOicAmW7Xp/4CmMRNVSYyCtVd2SaLSzTN4=;
+        s=korg; t=1634564085;
+        bh=EUB55AvFWO8DodrRnQswPvZgR9JY2IDW6eTIF3qt21g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=y+m4En9qjqr7SVdw+gKQauWwYb+wg9UMgSe+I8HIBsl8lhM8qBLAdkzoWiv6HWTP0
-         WaM2TyzecaBfQj8+t/lzLlh3H2F1vD7+RQT4HyTs9byCQ2MEgXPtnjd2IFj9MPIXYe
-         ckcVlqHXjhOh8069hz1aesP5FhjWrOf4sLD2SaAg=
+        b=kuYDe/ysxhdjRg5zKrScsxsRkiXpS8iMNpqIj3SvKUHXj0MD2zw0UiYsLFpxvhsAG
+         kzY8jzoiyD3rISoj7wMy6i8VoFUKFJ/4V/qB5/o8450UhBd1ZUpcjExwbtP4pLn/ME
+         OdVpxhJv96UB89RfPr4KhtV3FBMqICXQEnoeZlC8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vlad Yasevich <vyasevich@gmail.com>,
-        Neil Horman <nhorman@tuxdriver.com>,
-        Eiichi Tsukata <eiichi.tsukata@nutanix.com>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        Marcelo Ricardo Leitner <mleitner@redhat.com>,
-        Xin Long <lucien.xin@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.14 26/39] sctp: account stream padding length for reconf chunk
-Date:   Mon, 18 Oct 2021 15:24:35 +0200
-Message-Id: <20211018132326.282921923@linuxfoundation.org>
+        stable@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH 5.10 060/103] iio: ssp_sensors: fix error code in ssp_print_mcu_debug()
+Date:   Mon, 18 Oct 2021 15:24:36 +0200
+Message-Id: <20211018132336.778101599@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132325.426739023@linuxfoundation.org>
-References: <20211018132325.426739023@linuxfoundation.org>
+In-Reply-To: <20211018132334.702559133@linuxfoundation.org>
+References: <20211018132334.702559133@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,44 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eiichi Tsukata <eiichi.tsukata@nutanix.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-commit a2d859e3fc97e79d907761550dbc03ff1b36479c upstream.
+commit 4170d3dd1467e9d78cb9af374b19357dc324b328 upstream.
 
-sctp_make_strreset_req() makes repeated calls to sctp_addto_chunk()
-which will automatically account for padding on each call. inreq and
-outreq are already 4 bytes aligned, but the payload is not and doing
-SCTP_PAD4(a + b) (which _sctp_make_chunk() did implicitly here) is
-different from SCTP_PAD4(a) + SCTP_PAD4(b) and not enough. It led to
-possible attempt to use more buffer than it was allocated and triggered
-a BUG_ON.
+The ssp_print_mcu_debug() function should return negative error codes on
+error.  Returning "length" is meaningless.  This change does not affect
+runtime because the callers only care about zero/non-zero.
 
-Cc: Vlad Yasevich <vyasevich@gmail.com>
-Cc: Neil Horman <nhorman@tuxdriver.com>
-Cc: Greg KH <gregkh@linuxfoundation.org>
-Fixes: cc16f00f6529 ("sctp: add support for generating stream reconf ssn reset request chunk")
-Reported-by: Eiichi Tsukata <eiichi.tsukata@nutanix.com>
-Signed-off-by: Eiichi Tsukata <eiichi.tsukata@nutanix.com>
-Signed-off-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
-Signed-off-by: Marcelo Ricardo Leitner <mleitner@redhat.com>
-Reviewed-by: Xin Long <lucien.xin@gmail.com>
-Link: https://lore.kernel.org/r/b97c1f8b0c7ff79ac4ed206fc2c49d3612e0850c.1634156849.git.mleitner@redhat.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Reported-by: Jonathan Cameron <jic23@kernel.org>
+Fixes: 50dd64d57eee ("iio: common: ssp_sensors: Add sensorhub driver")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Link: https://lore.kernel.org/r/20210914105333.GA11657@kili
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/sctp/sm_make_chunk.c |    2 +-
+ drivers/iio/common/ssp_sensors/ssp_spi.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/sctp/sm_make_chunk.c
-+++ b/net/sctp/sm_make_chunk.c
-@@ -3623,7 +3623,7 @@ struct sctp_chunk *sctp_make_strreset_re
- 	outlen = (sizeof(outreq) + stream_len) * out;
- 	inlen = (sizeof(inreq) + stream_len) * in;
+--- a/drivers/iio/common/ssp_sensors/ssp_spi.c
++++ b/drivers/iio/common/ssp_sensors/ssp_spi.c
+@@ -137,7 +137,7 @@ static int ssp_print_mcu_debug(char *dat
+ 	if (length > received_len - *data_index || length <= 0) {
+ 		ssp_dbg("[SSP]: MSG From MCU-invalid debug length(%d/%d)\n",
+ 			length, received_len);
+-		return length ? length : -EPROTO;
++		return -EPROTO;
+ 	}
  
--	retval = sctp_make_reconf(asoc, outlen + inlen);
-+	retval = sctp_make_reconf(asoc, SCTP_PAD4(outlen) + SCTP_PAD4(inlen));
- 	if (!retval)
- 		return NULL;
- 
+ 	ssp_dbg("[SSP]: MSG From MCU - %s\n", &data_frame[*data_index]);
 
 
