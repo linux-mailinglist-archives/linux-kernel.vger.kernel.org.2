@@ -2,117 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECFFA430D84
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 03:31:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDE80430D87
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 03:31:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345005AbhJRBdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 21:33:22 -0400
-Received: from rtits2.realtek.com ([211.75.126.72]:42233 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344984AbhJRBdU (ORCPT
+        id S1345010AbhJRBdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 21:33:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41658 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242987AbhJRBdv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 21:33:20 -0400
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 19I1UvbnE003571, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36503.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 19I1UvbnE003571
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 18 Oct 2021 09:30:57 +0800
-Received: from RTEXMBS06.realtek.com.tw (172.21.6.99) by
- RTEXH36503.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Mon, 18 Oct 2021 09:30:56 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXMBS06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Mon, 18 Oct 2021 09:30:56 +0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::cdd5:82a3:e854:7098]) by
- RTEXMBS04.realtek.com.tw ([fe80::cdd5:82a3:e854:7098%5]) with mapi id
- 15.01.2106.013; Mon, 18 Oct 2021 09:30:56 +0800
-From:   Pkshih <pkshih@realtek.com>
-To:     Colin King <colin.king@canonical.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-CC:     "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH][next] rtw89: Remove redundant check of ret after call to rtw89_mac_enable_bb_rf
-Thread-Topic: [PATCH][next] rtw89: Remove redundant check of ret after call to
- rtw89_mac_enable_bb_rf
-Thread-Index: AQHXwdhPDlA3YyhjVkeaAkBOHtLbNqvX+9Ag
-Date:   Mon, 18 Oct 2021 01:30:56 +0000
-Message-ID: <d136802937c24fca9e4823ace692a57a@realtek.com>
-References: <20211015152113.33179-1-colin.king@canonical.com>
-In-Reply-To: <20211015152113.33179-1-colin.king@canonical.com>
-Accept-Language: en-US, zh-TW
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.21.69.188]
-x-kse-serverinfo: RTEXMBS06.realtek.com.tw, 9
-x-kse-attachmentfiltering-interceptor-info: no applicable attachment filtering
- rules found
-x-kse-antivirus-interceptor-info: scan successful
-x-kse-antivirus-info: =?utf-8?B?Q2xlYW4sIGJhc2VzOiAyMDIxLzEwLzE3IOS4i+WNiCAwNzozOTowMA==?=
-x-kse-bulkmessagesfiltering-scan-result: protection disabled
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Sun, 17 Oct 2021 21:33:51 -0400
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29AADC06161C;
+        Sun, 17 Oct 2021 18:31:41 -0700 (PDT)
+Received: by mail-il1-x130.google.com with SMTP id y17so13202679ilb.9;
+        Sun, 17 Oct 2021 18:31:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=itLvXSj0egwKycv7hBiTETZl/qGBc0N5NpF6/aBGmVc=;
+        b=orLHn8u4jjhyFCfzKFpAzi2rQJmd88jiYGaqjb92RBSMNszikVp+zQtLmaE3roqg78
+         EzATwJKjM1rcnZP4R+e5Nqzdr0/GZn1brABXGYWdJOQfrT6fcl5/SvG4xv6s0eNG2ChV
+         sSCzphvdSlNcoiJx0qGJBU7uosns0QomXzSJxwW9EWro0RozXnHJrSPCMVRHq/SBPe1I
+         vMh60KNI5PAf8DqI5OI6ciEe4jdBMS0XtVvpTzUVIk6SrbT9wdFOMj8rtdWXg/SDoeG6
+         FKWP7y0zExIOPakwt5fgEpHmnHostGeoz2hZ094ZpJGkpG9D8NqvWbYUJCtNwbMvc2zz
+         bxYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=itLvXSj0egwKycv7hBiTETZl/qGBc0N5NpF6/aBGmVc=;
+        b=MkEXBQ5jzHw8ANddVqR2idMb6UXrE8aHisHy5p6BEGHWdtZJTiRkfj/uRaxu18qinz
+         XBI0pMYKZ/Nazo2w7W5vgtB3Vl6oxro7Z4hzUHx8IgithZt7CBz+xq+84DOCuIuJji5N
+         erwLXNK3EWrQIwjG70oGu4eRn9bhSvP0nrT/E+bpYIiGgFH3R1ruZ0h9gj+nbr1WL3VW
+         qbYgdz0K0rEk9k9N29vPWw922gMLKt973uwJk2E1rAxi1gw9Cgax5VElnKbFci9Zj8/R
+         bhDAvYRtituTbehZNabN0x5J3XwNmP4sGfs0YjNKtz09ydQHkr3tPt/JX+sXgxjUxqDT
+         Kicw==
+X-Gm-Message-State: AOAM531gsUzCOAOfSWXXqDUnnj6sQPRLkVVEoP1VasVQeKAsNwzxZCY1
+        nhRrDFwr/4fdU2PWcFfZIiw=
+X-Google-Smtp-Source: ABdhPJwQlEHrXTGaOUuVuaKbb9jxTFAFbQUZeoZie34DIKawGs0W6o8NGfigxsaTf3yIw3rCdAWSUg==
+X-Received: by 2002:a05:6e02:1a61:: with SMTP id w1mr12669237ilv.197.1634520700570;
+        Sun, 17 Oct 2021 18:31:40 -0700 (PDT)
+Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
+        by smtp.gmail.com with ESMTPSA id y16sm6207914iln.74.2021.10.17.18.31.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 Oct 2021 18:31:39 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 67CCE27C0054;
+        Sun, 17 Oct 2021 21:31:38 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Sun, 17 Oct 2021 21:31:38 -0400
+X-ME-Sender: <xms:ec5sYYoFjjPQScP7LZH8BCjdAkMzIYTtV91ktgA12_tlL_KcQYan_A>
+    <xme:ec5sYepzoJu5v9dEYE7YcoJXIetf_RUCfFXKFjQk0VH1sr740iV41brykOifwXao2
+    qpiChAOfzmEBfhzJA>
+X-ME-Received: <xmr:ec5sYdPujSo2jMwY_kP9W6VmHc-ztFvGENHr9DYxdgnPUbiiRuzdR2MTLQDiKQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvdduledggeduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeeuohhquhhnucfh
+    vghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrthhtvg
+    hrnhepieeuveejleehudetfeevfeelgfejteefhedvkedukefggedugefhudfhteevjedu
+    necuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtne
+    curfgrrhgrmhepmhgrihhlfhhrohhmpegsohhquhhnodhmvghsmhhtphgruhhthhhpvghr
+    shhonhgrlhhithihqdeiledvgeehtdeigedqudejjeekheehhedvqdgsohhquhhnrdhfvg
+    hngheppehgmhgrihhlrdgtohhmsehfihigmhgvrdhnrghmvg
+X-ME-Proxy: <xmx:ec5sYf6tZwwQ1E4mdr2zVrHFcAGV-uaSspSI9tL8HdrBIqMUdZdxYw>
+    <xmx:ec5sYX4N41RaTJPOrWS2nWdIjByQWlhNKvnzdU_Ut4z6fMV30SkwBQ>
+    <xmx:ec5sYfiO2ldkjHTgRM07PoQb2wroXlAmXHHSEzL32FzbIHW2vnh7zA>
+    <xmx:es5sYRsyMnnc1b78eJFnlOttbe0KBxZpiwuktZzT3pL7lmCo4dY3Jg>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 17 Oct 2021 21:31:37 -0400 (EDT)
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Cc:     Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Boqun Feng <boqun.feng@gmail.com>
+Subject: [PATCH] workqueue: doc: Call out the non-reentrance conditions
+Date:   Mon, 18 Oct 2021 09:31:17 +0800
+Message-Id: <20211018013117.256284-1-boqun.feng@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-X-KSE-ServerInfo: RTEXH36503.realtek.com.tw, 9
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
-X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 10/18/2021 01:22:07
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 166777 [Oct 17 2021]
-X-KSE-AntiSpam-Info: Version: 5.9.20.0
-X-KSE-AntiSpam-Info: Envelope from: pkshih@realtek.com
-X-KSE-AntiSpam-Info: LuaCore: 463 463 5854868460de3f0d8e8c0a4df98aeb05fb764a09
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;realtek.com:7.1.1;127.0.0.199:7.1.2
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 10/18/2021 01:24:00
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IENvbGluIEtpbmcgPGNvbGlu
-LmtpbmdAY2Fub25pY2FsLmNvbT4NCj4gU2VudDogRnJpZGF5LCBPY3RvYmVyIDE1LCAyMDIxIDEx
-OjIxIFBNDQo+IFRvOiBLYWxsZSBWYWxvIDxrdmFsb0Bjb2RlYXVyb3JhLm9yZz47IERhdmlkIFMg
-LiBNaWxsZXIgPGRhdmVtQGRhdmVtbG9mdC5uZXQ+OyBKYWt1YiBLaWNpbnNraQ0KPiA8a3ViYUBr
-ZXJuZWwub3JnPjsgUGtzaGloIDxwa3NoaWhAcmVhbHRlay5jb20+OyBsaW51eC13aXJlbGVzc0B2
-Z2VyLmtlcm5lbC5vcmc7DQo+IG5ldGRldkB2Z2VyLmtlcm5lbC5vcmcNCj4gQ2M6IGtlcm5lbC1q
-YW5pdG9yc0B2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcNCj4g
-U3ViamVjdDogW1BBVENIXVtuZXh0XSBydHc4OTogUmVtb3ZlIHJlZHVuZGFudCBjaGVjayBvZiBy
-ZXQgYWZ0ZXIgY2FsbCB0byBydHc4OV9tYWNfZW5hYmxlX2JiX3JmDQo+IA0KPiBGcm9tOiBDb2xp
-biBJYW4gS2luZyA8Y29saW4ua2luZ0BjYW5vbmljYWwuY29tPg0KPiANCj4gVGhlIGZ1bmN0aW9u
-IHJ0dzg5X21hY19lbmFibGVfYmJfcmYgaXMgYSB2b2lkIHJldHVybiB0eXBlLCBzbyB0aGVyZSBp
-cw0KPiBubyByZXR1cm4gZXJyb3IgY29kZSB0byByZXQsIHNvIHRoZSBmb2xsb3dpbmcgY2hlY2sg
-Zm9yIGFuIGVycm9yIGluIHJldA0KPiBpcyByZWR1bmRhbnQgZGVhZCBjb2RlIGFuZCBjYW4gYmUg
-cmVtb3ZlZC4NCj4gDQo+IEFkZHJlc3Nlcy1Db3Zlcml0eTogKCJMb2dpY2FsbHkgZGVhZCBjb2Rl
-IikNCj4gRml4ZXM6IGUzZWM3MDE3ZjZhMiAoInJ0dzg5OiBhZGQgUmVhbHRlayA4MDIuMTFheCBk
-cml2ZXIiKQ0KPiBTaWduZWQtb2ZmLWJ5OiBDb2xpbiBJYW4gS2luZyA8Y29saW4ua2luZ0BjYW5v
-bmljYWwuY29tPg0KDQpBY2tlZC1ieTogUGluZy1LZSBTaGloIDxwa3NoaWhAcmVhbHRlay5jb20+
-DQoNCj4gLS0tDQo+ICBkcml2ZXJzL25ldC93aXJlbGVzcy9yZWFsdGVrL3J0dzg5L21hYy5jIHwg
-MiAtLQ0KPiAgMSBmaWxlIGNoYW5nZWQsIDIgZGVsZXRpb25zKC0pDQo+IA0KPiBkaWZmIC0tZ2l0
-IGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvcmVhbHRlay9ydHc4OS9tYWMuYw0KPiBiL2RyaXZlcnMv
-bmV0L3dpcmVsZXNzL3JlYWx0ZWsvcnR3ODkvbWFjLmMNCj4gaW5kZXggMDE3MWE1YTdiMWRlLi42
-OTM4NGM0M2MwNDYgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL3JlYWx0ZWsv
-cnR3ODkvbWFjLmMNCj4gKysrIGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvcmVhbHRlay9ydHc4OS9t
-YWMuYw0KPiBAQCAtMjY1Niw4ICsyNjU2LDYgQEAgaW50IHJ0dzg5X21hY19pbml0KHN0cnVjdCBy
-dHc4OV9kZXYgKnJ0d2RldikNCj4gIAkJZ290byBmYWlsOw0KPiANCj4gIAlydHc4OV9tYWNfZW5h
-YmxlX2JiX3JmKHJ0d2Rldik7DQo+IC0JaWYgKHJldCkNCj4gLQkJZ290byBmYWlsOw0KPiANCj4g
-IAlyZXQgPSBydHc4OV9tYWNfc3lzX2luaXQocnR3ZGV2KTsNCj4gIAlpZiAocmV0KQ0KPiAtLQ0K
-PiAyLjMyLjANCj4gDQo+IC0tLS0tLVBsZWFzZSBjb25zaWRlciB0aGUgZW52aXJvbm1lbnQgYmVm
-b3JlIHByaW50aW5nIHRoaXMgZS1tYWlsLg0K
+The current doc of workqueue API suggests that work items are
+non-reentrant: any work item is guaranteed to be executed by at most one
+worker system-wide at any given time. However this is not true, the
+following case can cause a work item W executed by two workers at
+the same time:
+
+        queue_work_on(0, WQ1, W);
+        // after a worker picks up W and clear the pending bit
+        queue_work_on(1, WQ2, W);
+        // workers on CPU0 and CPU1 will execute W in the same time.
+
+, which means the non-reentrance of a work item is conditional, and
+Lai Jiangshan provided a nice summary[1] of the conditions, therefore
+use it to improve the doc.
+
+[1]: https://lore.kernel.org/lkml/CAJhGHyDudet_xyNk=8xnuO2==o-u06s0E0GZVP4Q67nmQ84Ceg@mail.gmail.com/
+
+Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+---
+ Documentation/core-api/workqueue.rst | 21 +++++++++++++++++----
+ 1 file changed, 17 insertions(+), 4 deletions(-)
+
+diff --git a/Documentation/core-api/workqueue.rst b/Documentation/core-api/workqueue.rst
+index 541d31de8926..3b22ed137662 100644
+--- a/Documentation/core-api/workqueue.rst
++++ b/Documentation/core-api/workqueue.rst
+@@ -216,10 +216,6 @@ resources, scheduled and executed.
+ 
+   This flag is meaningless for unbound wq.
+ 
+-Note that the flag ``WQ_NON_REENTRANT`` no longer exists as all
+-workqueues are now non-reentrant - any work item is guaranteed to be
+-executed by at most one worker system-wide at any given time.
+-
+ 
+ ``max_active``
+ --------------
+@@ -391,6 +387,23 @@ the stack trace of the offending worker thread. ::
+ The work item's function should be trivially visible in the stack
+ trace.
+ 
++Non-reentrance Conditions
++=========================
++
++Workqueue guarantees that a work item cannot be re-entrant if the following
++conditions hold after a work item gets queued:
++
++        1. The work function hasn't been changed.
++        2. No one queues the work item to another workqueue.
++        3. The work item hasn't been reinitiated.
++
++In other words, if the above conditions hold, the work item is guaranteed to be
++executed by at most one worker system-wide at any given time.
++
++Note that requeuing the work item (to the same queue) in the self function
++doesn't break these conditions, so it's safe to do. Otherwise, caution is
++required when breaking the conditions inside a work function.
++
+ 
+ Kernel Inline Documentations Reference
+ ======================================
+-- 
+2.33.0
+
