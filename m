@@ -2,48 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03C164329C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 00:29:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9816C4329C5
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 00:29:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232705AbhJRWbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 18:31:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45864 "EHLO
+        id S232990AbhJRWbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 18:31:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229524AbhJRWbT (ORCPT
+        with ESMTP id S229524AbhJRWbm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 18:31:19 -0400
+        Mon, 18 Oct 2021 18:31:42 -0400
 Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com [IPv6:2607:f8b0:4864:20::92e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B370C06161C
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 15:29:08 -0700 (PDT)
-Received: by mail-ua1-x92e.google.com with SMTP id f3so10955500uap.6
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 15:29:07 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BCCEC06161C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 15:29:30 -0700 (PDT)
+Received: by mail-ua1-x92e.google.com with SMTP id h19so5072526uax.5
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 15:29:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=XMD63kGqlNMIm2FKXXcH/6opQFRwCGdWT3zmw0bkJrA=;
-        b=aKYJXtCHjg2UnpSBovbegHvrjQiiX3aR+c/HFkMZBU2WdysI4FgFgIb+VhXYJYJ/Fk
-         iK2oY2LGnIt902esFd+ID+e7zq5LkydVbKsiV4NsYawJaxuGHILadEQxbrVslmZAQjAK
-         E2cMzdN7w4+72V9KvpnzfS4jOQdQZLDL/EtYaMUX94zllgePPaTFyNfUCcbFw82PS8tL
-         OD/1GlZNj69MvquEwQKhJCmDayJDO0iAiNvrTUvFtdIP71EaESI0iqsw2SLpdb2UUqTW
-         oeulcO37ldGjq5//rxfNwSv8k4TZV8QovvZM7JioV9JGWuk9f4unkLNtw/36UY/R3CQQ
-         5cPw==
+        bh=WItCIYqsbUPD72nHnvN17yFYFOS1ObilaTg0MnWhimM=;
+        b=dfoc7S8/Ww6cb3NZc2WR8BnkW61SdjoUUknDFAqPDsTjN2OGWw5ekLyXgujJ1yiH56
+         xodp4yJUDU7UjrsrhGXw5UsRD8R646yFugInFb1Y8ANaKFhmod9D4CPiDOX/miZa39Gi
+         BgL9Pxb2c593rdhJAsq/ItBTN3tdvyDE/cpQZmh+55gJZ1ZVumx0Pdkd8DS4fLae+D5v
+         3PPyB2ykikWT8CgLz+3XUfcR/GMKTdiHkdz39If8nz4Joj6c9nhKSvWqXga1XhdQsqPT
+         Eh+/Bt80zk2VboT+ji0IjxTOU2kTvHu2Sd09C3XXmc9GVYmc4hUziJMnWbuUfn7tIYpn
+         ccuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=XMD63kGqlNMIm2FKXXcH/6opQFRwCGdWT3zmw0bkJrA=;
-        b=srgrEASGb9w5guGUj4poTFXMlHMsSdCHQiLsJ25oZCwqvMhidU1ncRd3ccdrUY9Taq
-         TB4DrinRlgNcueczAu/y1b1CwrT4gYB6yuNX2nF3Tngf52gQ71UwgpUfl51OpNpzRAYt
-         qoLB/NdPQFngVBdi2wVrpxxHe8ZcBcSB4xASgrWqx4vW8mFfXCMvsp5Fx44QDTitmMRK
-         8Gb75PuDuYlldo+G+wb+Dk6mHAVxvm97DdXnbHI71wZAGLF0oAfVXxXjhFGHs5yKR7Xl
-         nSA70+BcQO2e1+0XuHY/W7/sgqbtp+IP7+RD1n6Vc4Ra0DB0bXWcodi1qs29PPvV1tHZ
-         kOZA==
-X-Gm-Message-State: AOAM530jSdHb08cPiuoydxY3Lef38aIRjo0yc4UMAyZSvvUMHf4yNcjf
-        Njd9Y67QGWLDzGBiMP+7aUr63Mfq/EUlDaKX4vVb6A==
-X-Google-Smtp-Source: ABdhPJzo0CfetTCPrXkMaZh15zQ32H+Uc/w23A3wWlFLZgyQ214JKsoGDlpvpzAuhdk/f2lsqyFwk935WRE9e4LzKoc=
-X-Received: by 2002:a9f:23d0:: with SMTP id 74mr28388250uao.131.1634596147043;
- Mon, 18 Oct 2021 15:29:07 -0700 (PDT)
+        bh=WItCIYqsbUPD72nHnvN17yFYFOS1ObilaTg0MnWhimM=;
+        b=eDWRq9L7dYRC71bjlyaWOlySM39wkoI7yJTGUrio+NGfjQBVchxrKD0kqZIJVBfCmP
+         l8aTUPFKYkZA5vlYApGZBlr4D1OPTvL2O8jIPFfLu5LMtyAFLfQ/ZdFZpxdK3b54yTeT
+         NO8/6/DQnA5Ag5r6371CyYCVITkhr92k3RsjJKRdY6iE6XCciJ5FD4Zud8dRQLbjSTZp
+         wjCo3Cp8DIsDewOwJ8QABL79FQ9lh5bhFM/D36B+ex5z2lTG1dwmTX8lw4XpnBP01ET+
+         XN5pZF8qiBTL7kj9iTiDc9sScDaW/ogN/6fk78fMEEd+7/vxSZ8/QbkqeikAxuzCnRs2
+         cF6w==
+X-Gm-Message-State: AOAM531jeSnLrvI79kzA/dEtZbGA/O3ZXuCaux4M7vJPn28YYoDztHUD
+        Sq6l3Yt2CVCK1xKoaq9p/LiNDDeiFxJEyywh/P7nzw==
+X-Google-Smtp-Source: ABdhPJxKfsOl9FEnAEeKJ0XGXYrwHdf/vb/TXC58stZbzaYrFfwE0gRvb37yCTeOMtYt2iO6UMwF0yEC69mwE801bY4=
+X-Received: by 2002:ab0:49ca:: with SMTP id f10mr28590033uad.61.1634596169392;
+ Mon, 18 Oct 2021 15:29:29 -0700 (PDT)
 MIME-Version: 1.0
 References: <1M9_d6wrcu6rdPe1ON0_k0lOxJMyyot3KAb1gdyuwzDPC777XVUWPHoTCEVmcK3fYfgu7sIo3PSaLe9KulUdm4TWVuqlbKyYGxRAjsf_Cpk=@protonmail.ch>
  <87ee9pa6xw.fsf@disp2133> <OJK-F2NSBlem52GqvCQYzaVxs2x9Csq3qO4QbTG4A4UUNaQpebpAQmyyKzUd70CIo27C4K7CL3bhIzcxulIzYMu067QOMXCFz8ejh3ZtFhE=@protonmail.ch>
@@ -53,11 +53,12 @@ References: <1M9_d6wrcu6rdPe1ON0_k0lOxJMyyot3KAb1gdyuwzDPC777XVUWPHoTCEVmcK3fYfg
  <20210930130640.wudkpmn3cmah2cjz@example.org> <CAOUHufZmAjuKyRcmq6GH8dfdZxchykS=BTZDsk-gDAh3LJTe1Q@mail.gmail.com>
  <878rz8wwb6.fsf@disp2133> <87v92cvhbf.fsf@disp2133> <ccbccf82-dc50-00b2-1cfd-3da5e2c81dbf@infomedia.dk>
  <87mtnavszx.fsf_-_@disp2133> <87fssytizw.fsf_-_@disp2133> <871r4itfjw.fsf_-_@disp2133>
-In-Reply-To: <871r4itfjw.fsf_-_@disp2133>
+ <877dearzfo.fsf_-_@disp2133>
+In-Reply-To: <877dearzfo.fsf_-_@disp2133>
 From:   Yu Zhao <yuzhao@google.com>
-Date:   Mon, 18 Oct 2021 16:28:56 -0600
-Message-ID: <CAOUHufafm96SU8UCxFgU_1y9KrxMxCeX=OZAceeZ0gH7mMRdvQ@mail.gmail.com>
-Subject: Re: [PATCH 0/3] ucounts: misc fixes
+Date:   Mon, 18 Oct 2021 16:29:18 -0600
+Message-ID: <CAOUHufbWriGhH-CVZYF-WSH6H7Y7QvFen1_bOG_dQ15ozXhoFQ@mail.gmail.com>
+Subject: Re: [PATCH 0/4] ucounts: misc cleanups
 To:     "Eric W. Biederman" <ebiederm@xmission.com>
 Cc:     Alexey Gladkov <legion@kernel.org>,
         Rune Kleveland <rune.kleveland@infomedia.dk>,
@@ -66,33 +67,34 @@ Cc:     Alexey Gladkov <legion@kernel.org>,
         Linux-MM <linux-mm@kvack.org>,
         "containers\\@lists.linux-foundation.org" 
         <containers@lists.linux-foundation.org>,
-        Hillf Danton <hdanton@sina.com>,
-        David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>
+        Hillf Danton <hdanton@sina.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 18, 2021 at 11:21 AM Eric W. Biederman
+On Mon, Oct 18, 2021 at 11:55 AM Eric W. Biederman
 <ebiederm@xmission.com> wrote:
 >
 >
-> While digging into the previous ucount kernel crashes I found some minor
-> bugs in the ucount code.  When hit these bugs all result in a ucount
-> either being counted in the wrong location or leak of a struct ucounts.
+> The following changes are a set of miscellaneous fixes that makes
+> the ucount code a little bit easier to read.  There are all things
+> that I ran into while helping hunt the crazy reference count
+> bug.
 >
-> Nothing particularly serious but certainly things that should be fixed.
+> I am aiming these at the next merge window and 5.16 rather than bug
+> fixes to get into the current 5.15.
 >
-> Eric W. Biederman (3):
->       ucounts: Pair inc_rlimit_ucounts with dec_rlimit_ucoutns in commit_creds
->       ucounts: Proper error handling in set_cred_ucounts
->       ucounts: Move get_ucounts from cred_alloc_blank to key_change_session_keyring
+> Eric W. Biederman (4):
+>       ucounts: In set_cred_ucounts assume new->ucounts is non-NULL
+>       ucounts: Remove unnecessary test for NULL ucount in get_ucounts
+>       ucounts: Add get_ucounts_or_wrap for clarity
+>       ucounts: Use atomic_long_sub_return for clarity
 >
->  kernel/cred.c                | 9 ++++-----
->  security/keys/process_keys.c | 8 ++++++++
->  2 files changed, 12 insertions(+), 5 deletions(-)
+>  kernel/cred.c   |  5 ++---
+>  kernel/ucount.c | 20 +++++++++++++-------
+>  2 files changed, 15 insertions(+), 10 deletions(-)
 
-Thanks for the fixes. Tested the whole series on the latest 5.15-rc6.
+Thanks for the cleanups. Tested the whole series on the latest 5.15-rc6.
 
 Tested-by: Yu Zhao <yuzhao@google.com>
