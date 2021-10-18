@@ -2,137 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E418431C1C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:37:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18BCB431D03
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:45:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232190AbhJRNjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:39:11 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:59496 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232986AbhJRNgR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:36:17 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19IDRqwT029706;
-        Mon, 18 Oct 2021 09:33:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : reply-to : to : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=JDAp/QbIUWGCikoHHAVy/7phqz6YT5n7K/jogqJx72k=;
- b=W6cSZlLC8ZL82ktWHjvmUt2m2MwyVnapxep0BkpttuI2YOqPzfW7edsFxIqBUcXx1AQ/
- GC67ImNcgwRwVj8p7sZtKS8ymdLmAxGbQ0Q7r0KGZn0neUvffCS7dzd0p8/k6phJs9cq
- oYkq9m4YnG2gkXNSvsaTyBulCbnu1vywh/UNVVUnbacB+ExQMhgnNtaTC8WGjpgVaPG1
- 7i/HJ1fHKmQFm1NGpENVwRJLgcb7rkreRrGeBTxsNJZhs5AWQjcNd9mBEXw60Zp1Bqif
- +TCRSsoxExq60HJq9IRaKLV9BcZVhe13vjtiuZVRG/b05oW2NHucb6BVeTnb+yjlh+bG EQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bs7yg30xf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 18 Oct 2021 09:33:45 -0400
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19ID761B001790;
-        Mon, 18 Oct 2021 09:33:45 -0400
-Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bs7yg30x1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 18 Oct 2021 09:33:44 -0400
-Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
-        by ppma05wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19IDE1JB024045;
-        Mon, 18 Oct 2021 13:33:43 GMT
-Received: from b03cxnp08027.gho.boulder.ibm.com (b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
-        by ppma05wdc.us.ibm.com with ESMTP id 3bqpcap83r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 18 Oct 2021 13:33:43 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19IDWgLh13369606
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 18 Oct 2021 13:32:42 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E605A7807F;
-        Mon, 18 Oct 2021 13:32:41 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 68BF8780A5;
-        Mon, 18 Oct 2021 13:32:38 +0000 (GMT)
-Received: from jarvis.int.hansenpartnership.com (unknown [9.211.92.132])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Mon, 18 Oct 2021 13:32:38 +0000 (GMT)
-Message-ID: <af8c2098c4cfe23b941a191f7b4ec0e3a5251760.camel@linux.ibm.com>
-Subject: Re: [PATCH 1/2] crypto: use SM3 instead of SM3_256
-From:   James Bottomley <jejb@linux.ibm.com>
-Reply-To: jejb@linux.ibm.com
-To:     Jarkko Sakkinen <jarkko@kernel.org>,
-        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        David Howells <dhowells@redhat.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Jerry Snitselaar <jsnitsel@redhat.com>,
-        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-security-module@vger.kernel.org
-Date:   Mon, 18 Oct 2021 09:32:37 -0400
-In-Reply-To: <dbac037710d711959d5ce0969f80ea0dd18a176e.camel@kernel.org>
-References: <20211009130828.101396-1-tianjia.zhang@linux.alibaba.com>
-         <20211009130828.101396-2-tianjia.zhang@linux.alibaba.com>
-         <7035153d58e220473fe3cd17c9f574f2d91c740b.camel@linux.ibm.com>
-         <dbac037710d711959d5ce0969f80ea0dd18a176e.camel@kernel.org>
+        id S232217AbhJRNrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:47:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35670 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232544AbhJRNo2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:44:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BB3BC61506;
+        Mon, 18 Oct 2021 13:35:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634564115;
+        bh=tLlmrcpE9T19JG8z6ljxodSS/pQwrpYkvqtifvX+ESw=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=XwUBZ4fcIJWQ+LqXzKYopTgVUjBKY6/fcl5B00avg6Y6dtGGNPfViRvIxZVWiLhhy
+         8eRkFFMviLGgvaCX1mGEwbMsimnxcgo6qhQ5dDhpuVjiVQEOU29brFitSQcQ74W0Xc
+         J18PpThfxQ9N1/hg6wAfQvCGZRR05a6nRBm+gfno6ujb8qlGdCNimY1L+nJ1GhZdbH
+         DW+AsR+eL9ldADG8XHHGJ9XrAz479y+nJCP3JZ4lfuU+JCse/+vkX89Fkds/IGzY9H
+         ft6Ya9Vk42HmY7nEceEoQk+NGWRCR8PBo2IzBHt+1inC3sj+2QIobcVRACb2f9C1wm
+         9G4vX0LA93IXQ==
+Message-ID: <eee87b139519684c1b2eb7d5f259580b29fc6841.camel@kernel.org>
+Subject: Re: [PATCH v7 2/2] x86/sgx: Add an attribute for the amount of SGX
+ memory in a NUMA node
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
+Cc:     reinette.chatre@intel.com, tony.luck@intel.com,
+        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org
+Date:   Mon, 18 Oct 2021 16:35:12 +0300
+In-Reply-To: <20211008203308.20963-2-jarkko@kernel.org>
+References: <20211008203308.20963-1-jarkko@kernel.org>
+         <20211008203308.20963-2-jarkko@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+Content-Transfer-Encoding: base64
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: SW8QK8L-lxQ-ruyGXMnXT-K1EUevH8uK
-X-Proofpoint-GUID: lEph34QWP6JE0R4eJ-ufOwZ10GN16i8D
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-18_05,2021-10-14_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxlogscore=999
- mlxscore=0 suspectscore=0 lowpriorityscore=0 bulkscore=0 phishscore=0
- impostorscore=0 priorityscore=1501 clxscore=1015 adultscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110180084
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-10-18 at 16:27 +0300, Jarkko Sakkinen wrote:
-> On Mon, 2021-10-18 at 09:05 -0400, James Bottomley wrote:
-> > On Sat, 2021-10-09 at 21:08 +0800, Tianjia Zhang wrote:
-> > [...]
-> > > diff --git a/include/uapi/linux/hash_info.h
-> > > b/include/uapi/linux/hash_info.h
-> > > index 74a8609fcb4d..1355525dd4aa 100644
-> > > --- a/include/uapi/linux/hash_info.h
-> > > +++ b/include/uapi/linux/hash_info.h
-> > > @@ -32,7 +32,7 @@ enum hash_algo {
-> > >         HASH_ALGO_TGR_128,
-> > >         HASH_ALGO_TGR_160,
-> > >         HASH_ALGO_TGR_192,
-> > > -       HASH_ALGO_SM3_256,
-> > > +       HASH_ALGO_SM3,
-> > >         HASH_ALGO_STREEBOG_256,
-> > >         HASH_ALGO_STREEBOG_512,
-> > >         HASH_ALGO__LAST
-> > 
-> > This is another one you can't do: all headers in UAPI are exports
-> > to userspace and the definitions constitute an ABI.  If you simply
-> > do a rename, every userspace program that uses the current
-> > definition will immediately break on compile.  You could add
-> > HASH_ALGO_SM3, but you can't remove HASH_ALGO_SM3_256
-> > 
-> > James
-> 
-> So: shouldn't then also the old symbol continue to work also
-> semantically?
-
-Yes, that's the point: you can add a new definition ... in this case an
-alias for the old one, but you can't remove a definition that's been
-previously exported.
-
-James
-
+T24gRnJpLCAyMDIxLTEwLTA4IGF0IDIzOjMzICswMzAwLCBKYXJra28gU2Fra2luZW4gd3JvdGU6
+Cj4gK3N0YXRpYyB2b2lkIHNneF9udW1hX2V4aXQodm9pZCkKPiArewo+ICvCoMKgwqDCoMKgwqDC
+oHN0cnVjdCBkZXZpY2UgKmRldjsKPiArwqDCoMKgwqDCoMKgwqBpbnQgbmlkOwo+ICsKPiArwqDC
+oMKgwqDCoMKgwqBmb3IgKG5pZCA9IDA7IG5pZCA8IG51bV9wb3NzaWJsZV9ub2RlcygpOyBuaWQr
+Kykgewo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBkZXYgPSAmbm9kZV9kZXZpY2Vz
+W25pZF0tPmRldjsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgaWYgKGRldikKPiAr
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHN5c2ZzX3JlbW92
+ZV9ncm91cCgmZGV2LT5rb2JqLCAmc2d4X25vZGVfYXR0cl9ncm91cCk7Cj4gK8KgwqDCoMKgwqDC
+oMKgfQo+ICt9Cj4gKwo+ICtzdGF0aWMgYm9vbCBzZ3hfbnVtYV9pbml0KHZvaWQpCj4gK3sKPiAr
+wqDCoMKgwqDCoMKgwqBzdHJ1Y3Qgc2d4X251bWFfbm9kZSAqbm9kZTsKPiArwqDCoMKgwqDCoMKg
+wqBpbnQgbmlkOwo+ICvCoMKgwqDCoMKgwqDCoGludCByZXQ7Cj4gKwo+ICvCoMKgwqDCoMKgwqDC
+oGZvciAobmlkID0gMDsgbmlkIDwgbnVtX3Bvc3NpYmxlX25vZGVzKCk7IG5pZCsrKSB7Cj4gK8Kg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGlmICghc2d4X251bWFfbm9kZXNbbmlkXS5zaXpl
+KQo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgY29udGlu
+dWU7Cj4gKwo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBub2RlID0gJnNneF9udW1h
+X25vZGVzW25pZF07Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoG5vZGUtPmRldiA9
+ICZub2RlX2RldmljZXNbbmlkXS0+ZGV2Owo+ICsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgcmV0ID0gc3lzZnNfY3JlYXRlX2dyb3VwKCZub2RlLT5kZXYtPmtvYmosICZzZ3hfbm9k
+ZV9hdHRyX2dyb3VwKTsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgaWYgKHJldCkg
+ewo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgc2d4X251
+bWFfZXhpdCgpOwo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgcmV0dXJuIGZhbHNlOwo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqB9Cj4gK8Kg
+wqDCoMKgwqDCoMKgfQoKSGVyZSdzIGEgbWlzdGFrZTogbm9kZS0+ZGV2IHNob3VsZCBiZSBvbmx5
+IHNldCBhZnRlciBzeXNmZV9jcmVhdGVfZ3JvdXAoKS4KT3RoZXJ3aXNlLCBzeXNmc19yZW1vdmVf
+Z3JvdXAoKSB3aWxsIGlzc3VlIGEgd2FybmluZyBpbiBzZ3hfbnVtYV9leGl0KCksIHdoZW4Kc2d4
+X2NyZWF0ZV9ncm91cCgpIGlzIHVuc3VjY2Vzc2Z1bCwgYmVjYXVzZSB0aGUgZ3JvdXAgZG9lcyBu
+b3QgZXhpc3QuCgpJJ2xsIGZpeCB0aGlzLCBhbmQgc2VuZCBhIG5ldyB2ZXJzaW9uLgoKL0phcmtr
+bwoK
 
