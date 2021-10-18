@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8DA3431D02
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:45:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B10C431B64
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:30:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231814AbhJRNrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:47:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40186 "EHLO mail.kernel.org"
+        id S232365AbhJRNcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:32:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43210 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232533AbhJRNoQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:44:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 849B261526;
-        Mon, 18 Oct 2021 13:35:03 +0000 (UTC)
+        id S232692AbhJRNa4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:30:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2719D610C7;
+        Mon, 18 Oct 2021 13:28:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634564104;
-        bh=MpoZJ9scGot9fKKZXIgpwTlyB8cZr2ozyuVQrAiQarM=;
+        s=korg; t=1634563714;
+        bh=o9RFfwI0sv4AmSk4/RdXvL+qifTo6Le6igbD1msL6pc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lcD/l/YVizh3ca6pW7gRwADoGjNVapR+i7ORyipOTg/7tNU193yxF9J/hLXInmQIb
-         3Xmsuk9Eb2u3NWlf8HICqqxfhmZw54Jnop+n9rEjIg5GrGs1pDsYKLpYa3r6GHsvrp
-         oy7NkyUOF5laADJUQkaBBZxjjMUO5r0yVfupKArc=
+        b=gNwWUCj0bYzfUZAG1nvVNLCxgo4Ax2Urgj1y2VUXBMjUvepLKtLajtV+pNQhkRfuP
+         /yWaWyu95mrQBjmMDL/t8EGdyhL7zPmRGEBvJVsULcpmWRG1tuJMlxhO+c55Zq3Cz5
+         giAfT9GGGEUf4A2nhQIvNUPTvHy4Pt6gemJgwqyQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Rob Herring <robh@kernel.org>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>
-Subject: [PATCH 5.10 066/103] ARM: dts: bcm2711-rpi-4-b: Fix pcie0s unit address formatting
-Date:   Mon, 18 Oct 2021 15:24:42 +0200
-Message-Id: <20211018132336.962856067@linuxfoundation.org>
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Nanyong Sun <sunnanyong@huawei.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.19 36/50] net: encx24j600: check error in devm_regmap_init_encx24j600
+Date:   Mon, 18 Oct 2021 15:24:43 +0200
+Message-Id: <20211018132327.723489073@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132334.702559133@linuxfoundation.org>
-References: <20211018132334.702559133@linuxfoundation.org>
+In-Reply-To: <20211018132326.529486647@linuxfoundation.org>
+References: <20211018132326.529486647@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,58 +40,123 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicolas Saenz Julienne <nsaenz@kernel.org>
+From: Nanyong Sun <sunnanyong@huawei.com>
 
-commit 13dbc954b3c9a9de0ad5b7279e8d3b708d31068b upstream.
+commit f03dca0c9e2297c84a018e306f8a9cd534ee4287 upstream.
 
-dtbs_check currently complains that:
+devm_regmap_init may return error which caused by like out of memory,
+this will results in null pointer dereference later when reading
+or writing register:
 
-arch/arm/boot/dts/bcm2711-rpi-4-b.dts:220.10-231.4: Warning
-(pci_device_reg): /scb/pcie@7d500000/pci@1,0: PCI unit address format
-error, expected "0,0"
+general protection fault in encx24j600_spi_probe
+KASAN: null-ptr-deref in range [0x0000000000000090-0x0000000000000097]
+CPU: 0 PID: 286 Comm: spi-encx24j600- Not tainted 5.15.0-rc2-00142-g9978db750e31-dirty #11 9c53a778c1306b1b02359f3c2bbedc0222cba652
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1.1 04/01/2014
+RIP: 0010:regcache_cache_bypass drivers/base/regmap/regcache.c:540
+Code: 54 41 89 f4 55 53 48 89 fb 48 83 ec 08 e8 26 94 a8 fe 48 8d bb a0 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 4a 03 00 00 4c 8d ab b0 00 00 00 48 8b ab a0 00
+RSP: 0018:ffffc900010476b8 EFLAGS: 00010207
+RAX: dffffc0000000000 RBX: fffffffffffffff4 RCX: 0000000000000000
+RDX: 0000000000000012 RSI: ffff888002de0000 RDI: 0000000000000094
+RBP: ffff888013c9a000 R08: 0000000000000000 R09: fffffbfff3f9cc6a
+R10: ffffc900010476e8 R11: fffffbfff3f9cc69 R12: 0000000000000001
+R13: 000000000000000a R14: ffff888013c9af54 R15: ffff888013c9ad08
+FS:  00007ffa984ab580(0000) GS:ffff88801fe00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055a6384136c8 CR3: 000000003bbe6003 CR4: 0000000000770ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+PKRU: 55555554
+Call Trace:
+ encx24j600_spi_probe drivers/net/ethernet/microchip/encx24j600.c:459
+ spi_probe drivers/spi/spi.c:397
+ really_probe drivers/base/dd.c:517
+ __driver_probe_device drivers/base/dd.c:751
+ driver_probe_device drivers/base/dd.c:782
+ __device_attach_driver drivers/base/dd.c:899
+ bus_for_each_drv drivers/base/bus.c:427
+ __device_attach drivers/base/dd.c:971
+ bus_probe_device drivers/base/bus.c:487
+ device_add drivers/base/core.c:3364
+ __spi_add_device drivers/spi/spi.c:599
+ spi_add_device drivers/spi/spi.c:641
+ spi_new_device drivers/spi/spi.c:717
+ new_device_store+0x18c/0x1f1 [spi_stub 4e02719357f1ff33f5a43d00630982840568e85e]
+ dev_attr_store drivers/base/core.c:2074
+ sysfs_kf_write fs/sysfs/file.c:139
+ kernfs_fop_write_iter fs/kernfs/file.c:300
+ new_sync_write fs/read_write.c:508 (discriminator 4)
+ vfs_write fs/read_write.c:594
+ ksys_write fs/read_write.c:648
+ do_syscall_64 arch/x86/entry/common.c:50
+ entry_SYSCALL_64_after_hwframe arch/x86/entry/entry_64.S:113
 
-Unsurprisingly pci@0,0 is the right address, as illustrated by its reg
-property:
+Add error check in devm_regmap_init_encx24j600 to avoid this situation.
 
-    &pcie0 {
-	    pci@0,0 {
-		    /*
-		     * As defined in the IEEE Std 1275-1994 document,
-		     * reg is a five-cell address encoded as (phys.hi
-		     * phys.mid phys.lo size.hi size.lo). phys.hi
-		     * should contain the device's BDF as 0b00000000
-		     * bbbbbbbb dddddfff 00000000. The other cells
-		     * should be zero.
-		     */
-		    reg = <0 0 0 0 0>;
-	    };
-    };
-
-The device is clearly 0. So fix it.
-
-Also add a missing 'device_type = "pci"'.
-
-Fixes: 258f92d2f840 ("ARM: dts: bcm2711: Add reset controller to xHCI node")
-Suggested-by: Rob Herring <robh@kernel.org>
-Reviewed-by: Rob Herring <robh@kernel.org>
-Link: https://lore.kernel.org/r/20210831125843.1233488-1-nsaenzju@redhat.com
-Signed-off-by: Nicolas Saenz Julienne <nsaenz@kernel.org>
+Fixes: 04fbfce7a222 ("net: Microchip encx24j600 driver")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Nanyong Sun <sunnanyong@huawei.com>
+Link: https://lore.kernel.org/r/20211012125901.3623144-1-sunnanyong@huawei.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm/boot/dts/bcm2711-rpi-4-b.dts |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/microchip/encx24j600-regmap.c |   10 ++++++++--
+ drivers/net/ethernet/microchip/encx24j600.c        |    5 ++++-
+ drivers/net/ethernet/microchip/encx24j600_hw.h     |    4 ++--
+ 3 files changed, 14 insertions(+), 5 deletions(-)
 
---- a/arch/arm/boot/dts/bcm2711-rpi-4-b.dts
-+++ b/arch/arm/boot/dts/bcm2711-rpi-4-b.dts
-@@ -255,7 +255,8 @@
+--- a/drivers/net/ethernet/microchip/encx24j600-regmap.c
++++ b/drivers/net/ethernet/microchip/encx24j600-regmap.c
+@@ -505,13 +505,19 @@ static struct regmap_bus phymap_encx24j6
+ 	.reg_read = regmap_encx24j600_phy_reg_read,
  };
  
- &pcie0 {
--	pci@1,0 {
-+	pci@0,0 {
-+		device_type = "pci";
- 		#address-cells = <3>;
- 		#size-cells = <2>;
- 		ranges;
+-void devm_regmap_init_encx24j600(struct device *dev,
+-				 struct encx24j600_context *ctx)
++int devm_regmap_init_encx24j600(struct device *dev,
++				struct encx24j600_context *ctx)
+ {
+ 	mutex_init(&ctx->mutex);
+ 	regcfg.lock_arg = ctx;
+ 	ctx->regmap = devm_regmap_init(dev, &regmap_encx24j600, ctx, &regcfg);
++	if (IS_ERR(ctx->regmap))
++		return PTR_ERR(ctx->regmap);
+ 	ctx->phymap = devm_regmap_init(dev, &phymap_encx24j600, ctx, &phycfg);
++	if (IS_ERR(ctx->phymap))
++		return PTR_ERR(ctx->phymap);
++
++	return 0;
+ }
+ EXPORT_SYMBOL_GPL(devm_regmap_init_encx24j600);
+ 
+--- a/drivers/net/ethernet/microchip/encx24j600.c
++++ b/drivers/net/ethernet/microchip/encx24j600.c
+@@ -1032,10 +1032,13 @@ static int encx24j600_spi_probe(struct s
+ 	priv->speed = SPEED_100;
+ 
+ 	priv->ctx.spi = spi;
+-	devm_regmap_init_encx24j600(&spi->dev, &priv->ctx);
+ 	ndev->irq = spi->irq;
+ 	ndev->netdev_ops = &encx24j600_netdev_ops;
+ 
++	ret = devm_regmap_init_encx24j600(&spi->dev, &priv->ctx);
++	if (ret)
++		goto out_free;
++
+ 	mutex_init(&priv->lock);
+ 
+ 	/* Reset device and check if it is connected */
+--- a/drivers/net/ethernet/microchip/encx24j600_hw.h
++++ b/drivers/net/ethernet/microchip/encx24j600_hw.h
+@@ -15,8 +15,8 @@ struct encx24j600_context {
+ 	int bank;
+ };
+ 
+-void devm_regmap_init_encx24j600(struct device *dev,
+-				 struct encx24j600_context *ctx);
++int devm_regmap_init_encx24j600(struct device *dev,
++				struct encx24j600_context *ctx);
+ 
+ /* Single-byte instructions */
+ #define BANK_SELECT(bank) (0xC0 | ((bank & (BANK_MASK >> BANK_SHIFT)) << 1))
 
 
