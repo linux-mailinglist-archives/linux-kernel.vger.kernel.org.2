@@ -2,160 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 525A44310A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 08:37:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82B6743108F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 08:29:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230183AbhJRGjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 02:39:22 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:56926 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229533AbhJRGjV (ORCPT
+        id S230293AbhJRGcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 02:32:00 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:14823 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230219AbhJRGb7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 02:39:21 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 8EB2921A6B;
-        Mon, 18 Oct 2021 06:37:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1634539029; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=axkVwMCJWGOjTC2SPYws1bBoVFyPgvGOg+EGo3bGeEc=;
-        b=G1in2rQNCWV3Zq4oJ6CRFZnWQxNt2qNX6fSByLuILS+S1XH0lH9uKsnraRDjnJfuCe5qeY
-        B4927tstZNkRhXvhI5kWRaR0rK+mbMjs4ut3vXNgZvfUG8IN4yfVs/FtaGAmiXinjC71n4
-        FOZRkd9jKV9aVgykAFoGjX+7HZE6r7Y=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1634539029;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=axkVwMCJWGOjTC2SPYws1bBoVFyPgvGOg+EGo3bGeEc=;
-        b=i17mdPTgwkhGgZKMOWKjtKWlcS4xFcE0jm0FwMDn+/5p9aFKlig5xgLY4lhRrQAOdKE7DZ
-        /LyMi5GKmMIlrtBA==
-Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
-        by relay2.suse.de (Postfix) with ESMTP id 7AB09A3B84;
-        Mon, 18 Oct 2021 06:37:09 +0000 (UTC)
-From:   Takashi Iwai <tiwai@suse.de>
-To:     alsa-devel@alsa-project.org
-Cc:     Takashi Sakamoto <o-takashi@sakamocchi.jp>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        linux-next@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ALSA: firewire: Fix C++ style comments in uapi header
-Date:   Mon, 18 Oct 2021 08:37:00 +0200
-Message-Id: <20211018063700.30834-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.26.2
+        Mon, 18 Oct 2021 02:31:59 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HXn0g6P86z90Ff;
+        Mon, 18 Oct 2021 14:24:51 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Mon, 18 Oct 2021 14:29:45 +0800
+Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
+ (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Mon, 18 Oct
+ 2021 14:29:44 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>
+CC:     <lars@metafoo.de>, <jic23@kernel.org>, <ardeleanalex@gmail.com>
+Subject: [PATCH v2] iio: buffer: Fix memory leak in iio_buffers_alloc_sysfs_and_mask()
+Date:   Mon, 18 Oct 2021 14:37:18 +0800
+Message-ID: <20211018063718.1971240-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-UAPI headers are built with -std=c90 and C++ style comments are
-explicitly prohibited.  The recent commit overlooked the rule and
-caused the error at header installation.  This patch corrects those.
+When 'iio_dev_opaque->buffer_ioctl_handler' alloc fails in
+iio_buffers_alloc_sysfs_and_mask(), the 'attrs' allocated in
+iio_buffer_register_legacy_sysfs_groups() will be leaked:
 
-Fixes: bea36afa102e ("ALSA: firewire-motu: add message parser to gather meter information in register DSP model")
-Fixes: 90b28f3bb85c ("ALSA: firewire-motu: add message parser for meter information in command DSP model")
-Fixes: 634ec0b2906e ("ALSA: firewire-motu: notify event for parameter change in register DSP model")
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Link: https://lore.kernel.org/r/20211018113812.0a16efb0@canb.auug.org.au
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+unreferenced object 0xffff888108568d00 (size 128):
+  comm "88", pid 2014, jiffies 4294963294 (age 26.920s)
+  hex dump (first 32 bytes):
+    80 3e da 02 80 88 ff ff 00 3a da 02 80 88 ff ff  .>.......:......
+    00 35 da 02 80 88 ff ff 00 38 da 02 80 88 ff ff  .5.......8......
+  backtrace:
+    [<0000000095a9e51e>] __kmalloc+0x1a3/0x2f0
+    [<00000000faa3735e>] iio_buffers_alloc_sysfs_and_mask+0xfa3/0x1480 [industrialio]
+    [<00000000a46384dc>] __iio_device_register+0x52e/0x1b40 [industrialio]
+    [<00000000210af05e>] __devm_iio_device_register+0x22/0x80 [industrialio]
+    [<00000000730d7b41>] adjd_s311_probe+0x195/0x200 [adjd_s311]
+    [<00000000c0f70eb9>] i2c_device_probe+0xa07/0xbb0
+
+The iio_buffer_register_legacy_sysfs_groups() is
+called in __iio_buffer_alloc_sysfs_and_mask(),
+so move the iio_buffer_unregister_legacy_sysfs_groups()
+into __iio_buffer_free_sysfs_and_mask(), then the memory
+will be freed.
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Fixes: d9a625744ed0 ("iio: core: merge buffer/ & scan_elements/ attributes")
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 ---
- include/uapi/sound/firewire.h | 70 ++++++++++++++++++-----------------
- 1 file changed, 37 insertions(+), 33 deletions(-)
+v2:
+  move iio_buffer_unregister_legacy_sysfs_groups() into
+  __iio_buffer_free_sysfs_and_mask()
+---
+ drivers/iio/industrialio-buffer.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/include/uapi/sound/firewire.h b/include/uapi/sound/firewire.h
-index 76190a0cb069..e52a97b3ceaa 100644
---- a/include/uapi/sound/firewire.h
-+++ b/include/uapi/sound/firewire.h
-@@ -68,8 +68,8 @@ struct snd_firewire_event_tascam_control {
+diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
+index a95cc2da56be..b29d105a75fe 100644
+--- a/drivers/iio/industrialio-buffer.c
++++ b/drivers/iio/industrialio-buffer.c
+@@ -1583,8 +1583,12 @@ static int __iio_buffer_alloc_sysfs_and_mask(struct iio_buffer *buffer,
+ 	return ret;
+ }
  
- struct snd_firewire_event_motu_register_dsp_change {
- 	unsigned int type;
--	__u32 count;		// The number of changes.
--	__u32 changes[];	// Encoded event for change of register DSP.
-+	__u32 count;		/* The number of changes. */
-+	__u32 changes[];	/* Encoded event for change of register DSP. */
- };
+-static void __iio_buffer_free_sysfs_and_mask(struct iio_buffer *buffer)
++static void __iio_buffer_free_sysfs_and_mask(struct iio_buffer *buffer,
++					     struct iio_dev *indio_dev,
++					     int index)
+ {
++	if (index == 0)
++		iio_buffer_unregister_legacy_sysfs_groups(indio_dev);
+ 	bitmap_free(buffer->scan_mask);
+ 	kfree(buffer->buffer_group.name);
+ 	kfree(buffer->buffer_group.attrs);
+@@ -1638,7 +1642,7 @@ int iio_buffers_alloc_sysfs_and_mask(struct iio_dev *indio_dev)
+ error_unwind_sysfs_and_mask:
+ 	for (; unwind_idx >= 0; unwind_idx--) {
+ 		buffer = iio_dev_opaque->attached_buffers[unwind_idx];
+-		__iio_buffer_free_sysfs_and_mask(buffer);
++		__iio_buffer_free_sysfs_and_mask(buffer, indio_dev, unwind_idx);
+ 	}
+ 	return ret;
+ }
+@@ -1655,11 +1659,9 @@ void iio_buffers_free_sysfs_and_mask(struct iio_dev *indio_dev)
+ 	iio_device_ioctl_handler_unregister(iio_dev_opaque->buffer_ioctl_handler);
+ 	kfree(iio_dev_opaque->buffer_ioctl_handler);
  
- union snd_firewire_event {
-@@ -119,25 +119,27 @@ struct snd_firewire_tascam_state {
- 	__be32 data[SNDRV_FIREWIRE_TASCAM_STATE_COUNT];
- };
- 
--// In below MOTU models, software is allowed to control their DSP by accessing to registers.
--//  - 828mk2
--//  - 896hd
--//  - Traveler
--//  - 8 pre
--//  - Ultralite
--//  - 4 pre
--//  - Audio Express
--//
--// On the other hand, the status of DSP is split into specific messages included in the sequence of
--// isochronous packet. ALSA firewire-motu driver gathers the messages and allow userspace applications
--// to read it via ioctl. In 828mk2, 896hd, and Traveler, hardware meter for all of physical inputs
--// are put into the message, while one pair of physical outputs is selected. The selection is done by
--// LSB one byte in asynchronous write quadlet transaction to 0x'ffff'f000'0b2c.
--//
--// I note that V3HD/V4HD uses asynchronous transaction for the purpose. The destination address is
--// registered to 0x'ffff'f000'0b38 and '0b3c by asynchronous write quadlet request. The size of
--// message differs between 23 and 51 quadlets. For the case, the number of mixer bus can be extended
--// up to 12.
-+/*
-+ * In below MOTU models, software is allowed to control their DSP by accessing to registers.
-+ *  - 828mk2
-+ *  - 896hd
-+ *  - Traveler
-+ *  - 8 pre
-+ *  - Ultralite
-+ *  - 4 pre
-+ *  - Audio Express
-+ *
-+ * On the other hand, the status of DSP is split into specific messages included in the sequence of
-+ * isochronous packet. ALSA firewire-motu driver gathers the messages and allow userspace applications
-+ * to read it via ioctl. In 828mk2, 896hd, and Traveler, hardware meter for all of physical inputs
-+ * are put into the message, while one pair of physical outputs is selected. The selection is done by
-+ * LSB one byte in asynchronous write quadlet transaction to 0x'ffff'f000'0b2c.
-+ *
-+ * I note that V3HD/V4HD uses asynchronous transaction for the purpose. The destination address is
-+ * registered to 0x'ffff'f000'0b38 and '0b3c by asynchronous write quadlet request. The size of
-+ * message differs between 23 and 51 quadlets. For the case, the number of mixer bus can be extended
-+ * up to 12.
-+ */
- 
- #define SNDRV_FIREWIRE_MOTU_REGISTER_DSP_METER_COUNT	40
- 
-@@ -219,18 +221,20 @@ struct snd_firewire_motu_register_dsp_parameter {
- 	__u8 reserved[64];
- };
- 
--// In below MOTU models, software is allowed to control their DSP by command in frame of
--// asynchronous transaction to 0x'ffff'0001'0000:
--//
--//  - 828 mk3 (FireWire only and Hybrid)
--//  - 896 mk3 (FireWire only and Hybrid)
--//  - Ultralite mk3 (FireWire only and Hybrid)
--//  - Traveler mk3
--//  - Track 16
--//
--// On the other hand, the states of hardware meter is split into specific messages included in the
--// sequence of isochronous packet. ALSA firewire-motu driver gathers the message and allow userspace
--// application to read it via ioctl.
-+/*
-+ * In below MOTU models, software is allowed to control their DSP by command in frame of
-+ * asynchronous transaction to 0x'ffff'0001'0000:
-+ *
-+ *  - 828 mk3 (FireWire only and Hybrid)
-+ *  - 896 mk3 (FireWire only and Hybrid)
-+ *  - Ultralite mk3 (FireWire only and Hybrid)
-+ *  - Traveler mk3
-+ *  - Track 16
-+ *
-+ * On the other hand, the states of hardware meter is split into specific messages included in the
-+ * sequence of isochronous packet. ALSA firewire-motu driver gathers the message and allow userspace
-+ * application to read it via ioctl.
-+ */
- 
- #define SNDRV_FIREWIRE_MOTU_COMMAND_DSP_METER_COUNT	400
+-	iio_buffer_unregister_legacy_sysfs_groups(indio_dev);
+-
+ 	for (i = iio_dev_opaque->attached_buffers_cnt - 1; i >= 0; i--) {
+ 		buffer = iio_dev_opaque->attached_buffers[i];
+-		__iio_buffer_free_sysfs_and_mask(buffer);
++		__iio_buffer_free_sysfs_and_mask(buffer, indio_dev, i);
+ 	}
+ }
  
 -- 
-2.26.2
+2.25.1
 
