@@ -2,62 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ABFC431322
+	by mail.lfdr.de (Postfix) with ESMTP id B4C4B431323
 	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 11:18:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231433AbhJRJUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 05:20:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60542 "EHLO
+        id S231463AbhJRJUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 05:20:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231375AbhJRJUI (ORCPT
+        with ESMTP id S231230AbhJRJUO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 05:20:08 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67066C06161C;
-        Mon, 18 Oct 2021 02:17:57 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id ls18-20020a17090b351200b001a00250584aso14020288pjb.4;
-        Mon, 18 Oct 2021 02:17:57 -0700 (PDT)
+        Mon, 18 Oct 2021 05:20:14 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65ED6C06161C;
+        Mon, 18 Oct 2021 02:18:03 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id t7so1048160pgl.9;
+        Mon, 18 Oct 2021 02:18:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=dEPTi1IjpGGaCxlyJFB6iV1bIw/FMmc/gW7AFZwRvk8=;
-        b=VL3fki0KsshkeYZcxHAfMGRr4wUvB80IPXjXA24efe8jrQmG6sM91MmMumonZhw2ZX
-         D/Niqk0ZJt9hL4/R2DMEa431x0b5CIRqSNEE8vNnq6WrsHc7UUhY657ufX2nKU9vdOav
-         ex9Jz5NaMkuZElJIISPqrMczQfz0oe4jBzuDkCC2ejOR7Uyb225+KouEhD34gObp0dHO
-         iQWi20nv4sDoDIvdj2hjRK2sZY0OB8oh/5D5l3AcWvdhYah2pSHpHenTBAL/RoiPjGg8
-         WanJKHcw0ESBNjti764263+WsOo1IiTaJFaBYPdP3l5FsIgdJp6EI5J3TOEzZ2JcEmxu
-         PrHQ==
+        bh=TL8MKdaHHltkSLJJhEgpOYC4/+7FPpkVJIhEqgGDpIo=;
+        b=FDma6FSH9LVf6Tx0LTXBlp+fTXB+WsjAO5X2hE3fxAwi0EqpBVbbEzdl7jKBLJPiSp
+         S3httpAytp70wJxB9hInu3xbXytyCE3KKZGuAy6QXqoVZTLvzr/5WJqZzCtuHXS1ETyt
+         lEl8cuYbT8XaERbHySMN/UhA89OsxtjWzAaq8oju4RjBtWMaFhSq0ZYnOvS5S1EO0DY8
+         JBej4E6yHHVrHKUK1DHtXfsaRCZfHY5EkwYgUGYBgw3Jm/3qSt7SeBVekiQS4VNX/0ax
+         MlSdRnVGENCcL38Wbdzh0FS3l5X5GyDNkX0oQeBuqBXGsl7VZYbzsbaw4hQgjtJWeIL0
+         Q3qQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=dEPTi1IjpGGaCxlyJFB6iV1bIw/FMmc/gW7AFZwRvk8=;
-        b=BFKWkL0peKsWpsBC789pUKXvBSoe6YP0h5Xpj86aXcrnJlodM/isQS1aM+7tpwJgkx
-         wTnXll+iiy74+3OAJClmdK6vxfcdH5jlststMUzYwCuvMxm00I2wQR7s9RiRtB6MBUin
-         bxcAXMmryYJOtiP0S4TooyPG+MafdilYuQlPYVj1zG+TAK2lQBoWxa9zdPWQhOzGm5hy
-         XUiO9BvLW8bc9D+Owj+qzFf5IF1TD6jCQV2WeX8I7/SAz+SyzJ9cHChAIwMM474nTL50
-         otejDMx6UCkJL1hUgCj+cEoO9izuu/86gC/oSgCMmKi+t63kUK68MnojXrg89uH69r6c
-         hMzw==
-X-Gm-Message-State: AOAM533G9vR87ZH5y5PGpNg28OIUmpviKKGe0qf9irZnaBg/cIgpb9Zj
-        tITomEZ3FEhw7UynaiGde2A=
-X-Google-Smtp-Source: ABdhPJyTUAJsqyaPHHMhqyyIADxc6L72xpFBQjE+mWWyed6Kq2PGMb4OzU2DNRle4903v0NEAX6s2w==
-X-Received: by 2002:a17:90b:4b46:: with SMTP id mi6mr31566870pjb.161.1634548676947;
-        Mon, 18 Oct 2021 02:17:56 -0700 (PDT)
+        bh=TL8MKdaHHltkSLJJhEgpOYC4/+7FPpkVJIhEqgGDpIo=;
+        b=GuSdyMKO2d8Vk6wFKYtb0raSAc3xzPufb82a9uEx2rl+7ojb+oX2jUBLLNWMJsdNhN
+         brAuoFftqOMXXEY3oXSxkAD0/EZAFf+im8KhNeJhMjlT8gaNyu6y1L+oqJByJNKd4Bny
+         rDjC9VI6sIViWKyauRYKBvwYf2B/7YeNf3QoXIy3XDWgIIDdivOgtZj493ErnuVTWndL
+         xF+csXrhGk7qc+bmP8fZkMU4yqWynQq/CdoKK75Zc8UfE5AglDVyCJ1xcqLI+zwHBAG3
+         Y4Tg3kpSiSKqKhgXabziDLHIyhuwNpw34JMFrKbYbgRv8kuUXeuADVvu2iJMVRoggSdh
+         Vt/A==
+X-Gm-Message-State: AOAM530dqyiZw3dhlkEZK+ZdvdWuCYFVlXeClhGviuoyvV3vCvKdTQtp
+        ozokbM51FZaXRiZ4Nf14Dj5He7m0U94=
+X-Google-Smtp-Source: ABdhPJxrqx37vnGZwzi86d06c52M+BYYUENbKxHgRLWQxR9hkllJAe8xAQQIWtHKgmVDPT85Y6dz0Q==
+X-Received: by 2002:a63:3e84:: with SMTP id l126mr18260763pga.55.1634548683006;
+        Mon, 18 Oct 2021 02:18:03 -0700 (PDT)
 Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id u16sm12317290pfn.187.2021.10.18.02.17.55
+        by smtp.gmail.com with ESMTPSA id s30sm11644608pgn.38.2021.10.18.02.18.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 02:17:56 -0700 (PDT)
-From:   Ye Guojin <cgel.zte@gmail.com>
-X-Google-Original-From: Ye Guojin <ye.guojin@zte.com.cn>
-To:     hmh@hmh.eng.br
-Cc:     hdegoede@redhat.com, markgross@kernel.org,
-        ibm-acpi-devel@lists.sourceforge.net,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zealci@zte.com.cn, Ye Guojin <ye.guojin@zte.com.cn>
-Subject: [PATCH] platform/x86: thinkpad_acpi: fix coccinelle warnings
-Date:   Mon, 18 Oct 2021 09:17:50 +0000
-Message-Id: <20211018091750.858826-1-ye.guojin@zte.com.cn>
+        Mon, 18 Oct 2021 02:18:02 -0700 (PDT)
+From:   luo penghao <cgel.zte@gmail.com>
+X-Google-Original-From: luo penghao <luo.penghao@zte.com.cn>
+To:     Steffen Klassert <steffen.klassert@secunet.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, penghao luo <luo.penghao@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH linux-next] xfrm: Remove redundant fields
+Date:   Mon, 18 Oct 2021 09:17:58 +0000
+Message-Id: <20211018091758.858899-1-luo.penghao@zte.com.cn>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -65,266 +66,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-coccicheck complains about the use of snprintf() in sysfs show
-functions:
+From: penghao luo <luo.penghao@zte.com.cn>
 
-WARNING  use scnprintf or sprintf
+the variable err is not necessary in such places. It should be revmoved
+for the simplicity of the code.
 
-Use sysfs_emit instead of scnprintf or sprintf makes more sense.
+The clang_analyzer complains as follows:
+
+net/xfrm/xfrm_input.c:530: warning:
+
+Although the value stored to 'err' is used in the enclosing expression,
+the value is never actually read from 'err'.
 
 Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Ye Guojin <ye.guojin@zte.com.cn>
+Signed-off-by: penghao luo <luo.penghao@zte.com.cn>
 ---
- drivers/platform/x86/thinkpad_acpi.c | 54 ++++++++++++++--------------
- 1 file changed, 27 insertions(+), 27 deletions(-)
+ net/xfrm/xfrm_input.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
-index 882e994658f1..338a848d6dd0 100644
---- a/drivers/platform/x86/thinkpad_acpi.c
-+++ b/drivers/platform/x86/thinkpad_acpi.c
-@@ -1277,7 +1277,7 @@ static ssize_t tpacpi_rfk_sysfs_enable_show(const enum tpacpi_rfk_id id,
- 			return status;
+diff --git a/net/xfrm/xfrm_input.c b/net/xfrm/xfrm_input.c
+index 3df0861..ff34667 100644
+--- a/net/xfrm/xfrm_input.c
++++ b/net/xfrm/xfrm_input.c
+@@ -530,7 +530,7 @@ int xfrm_input(struct sk_buff *skb, int nexthdr, __be32 spi, int encap_type)
+ 				goto drop;
+ 			}
+ 
+-			if ((err = xfrm_parse_spi(skb, nexthdr, &spi, &seq)) != 0) {
++			if ((xfrm_parse_spi(skb, nexthdr, &spi, &seq)) != 0) {
+ 				XFRM_INC_STATS(net, LINUX_MIB_XFRMINHDRERROR);
+ 				goto drop;
+ 			}
+@@ -560,7 +560,7 @@ int xfrm_input(struct sk_buff *skb, int nexthdr, __be32 spi, int encap_type)
  	}
  
--	return snprintf(buf, PAGE_SIZE, "%d\n",
-+	return sysfs_emit(buf, "%d\n",
- 			(status == TPACPI_RFK_RADIO_ON) ? 1 : 0);
- }
- 
-@@ -1370,14 +1370,14 @@ static int tpacpi_rfk_procfs_write(const enum tpacpi_rfk_id id, char *buf)
- /* interface_version --------------------------------------------------- */
- static ssize_t interface_version_show(struct device_driver *drv, char *buf)
- {
--	return snprintf(buf, PAGE_SIZE, "0x%08x\n", TPACPI_SYSFS_VERSION);
-+	return sysfs_emit(buf, "0x%08x\n", TPACPI_SYSFS_VERSION);
- }
- static DRIVER_ATTR_RO(interface_version);
- 
- /* debug_level --------------------------------------------------------- */
- static ssize_t debug_level_show(struct device_driver *drv, char *buf)
- {
--	return snprintf(buf, PAGE_SIZE, "0x%04x\n", dbg_level);
-+	return sysfs_emit(buf, "0x%04x\n", dbg_level);
- }
- 
- static ssize_t debug_level_store(struct device_driver *drv, const char *buf,
-@@ -1397,7 +1397,7 @@ static DRIVER_ATTR_RW(debug_level);
- /* version ------------------------------------------------------------- */
- static ssize_t version_show(struct device_driver *drv, char *buf)
- {
--	return snprintf(buf, PAGE_SIZE, "%s v%s\n",
-+	return sysfs_emit(buf, "%s v%s\n",
- 			TPACPI_DESC, TPACPI_VERSION);
- }
- static DRIVER_ATTR_RO(version);
-@@ -1409,7 +1409,7 @@ static DRIVER_ATTR_RO(version);
- /* wlsw_emulstate ------------------------------------------------------ */
- static ssize_t wlsw_emulstate_show(struct device_driver *drv, char *buf)
- {
--	return snprintf(buf, PAGE_SIZE, "%d\n", !!tpacpi_wlsw_emulstate);
-+	return sysfs_emit(buf, "%d\n", !!tpacpi_wlsw_emulstate);
- }
- 
- static ssize_t wlsw_emulstate_store(struct device_driver *drv, const char *buf,
-@@ -1432,7 +1432,7 @@ static DRIVER_ATTR_RW(wlsw_emulstate);
- /* bluetooth_emulstate ------------------------------------------------- */
- static ssize_t bluetooth_emulstate_show(struct device_driver *drv, char *buf)
- {
--	return snprintf(buf, PAGE_SIZE, "%d\n", !!tpacpi_bluetooth_emulstate);
-+	return sysfs_emit(buf, "%d\n", !!tpacpi_bluetooth_emulstate);
- }
- 
- static ssize_t bluetooth_emulstate_store(struct device_driver *drv,
-@@ -1452,7 +1452,7 @@ static DRIVER_ATTR_RW(bluetooth_emulstate);
- /* wwan_emulstate ------------------------------------------------- */
- static ssize_t wwan_emulstate_show(struct device_driver *drv, char *buf)
- {
--	return snprintf(buf, PAGE_SIZE, "%d\n", !!tpacpi_wwan_emulstate);
-+	return sysfs_emit(buf, "%d\n", !!tpacpi_wwan_emulstate);
- }
- 
- static ssize_t wwan_emulstate_store(struct device_driver *drv, const char *buf,
-@@ -1472,7 +1472,7 @@ static DRIVER_ATTR_RW(wwan_emulstate);
- /* uwb_emulstate ------------------------------------------------- */
- static ssize_t uwb_emulstate_show(struct device_driver *drv, char *buf)
- {
--	return snprintf(buf, PAGE_SIZE, "%d\n", !!tpacpi_uwb_emulstate);
-+	return sysfs_emit(buf, "%d\n", !!tpacpi_uwb_emulstate);
- }
- 
- static ssize_t uwb_emulstate_store(struct device_driver *drv, const char *buf,
-@@ -2680,7 +2680,7 @@ static ssize_t hotkey_enable_show(struct device *dev,
- 	if (res)
- 		return res;
- 
--	return snprintf(buf, PAGE_SIZE, "%d\n", status);
-+	return sysfs_emit(buf, "%d\n", status);
- }
- 
- static ssize_t hotkey_enable_store(struct device *dev,
-@@ -2708,7 +2708,7 @@ static ssize_t hotkey_mask_show(struct device *dev,
- 			   struct device_attribute *attr,
- 			   char *buf)
- {
--	return snprintf(buf, PAGE_SIZE, "0x%08x\n", hotkey_user_mask);
-+	return sysfs_emit(buf, "0x%08x\n", hotkey_user_mask);
- }
- 
- static ssize_t hotkey_mask_store(struct device *dev,
-@@ -2756,7 +2756,7 @@ static ssize_t hotkey_bios_mask_show(struct device *dev,
- {
- 	printk_deprecated_attribute("hotkey_bios_mask",
- 			"This attribute is useless.");
--	return snprintf(buf, PAGE_SIZE, "0x%08x\n", hotkey_orig_mask);
-+	return sysfs_emit(buf, "0x%08x\n", hotkey_orig_mask);
- }
- 
- static DEVICE_ATTR_RO(hotkey_bios_mask);
-@@ -2766,7 +2766,7 @@ static ssize_t hotkey_all_mask_show(struct device *dev,
- 			   struct device_attribute *attr,
- 			   char *buf)
- {
--	return snprintf(buf, PAGE_SIZE, "0x%08x\n",
-+	return sysfs_emit(buf, "0x%08x\n",
- 				hotkey_all_mask | hotkey_source_mask);
- }
- 
-@@ -2777,7 +2777,7 @@ static ssize_t hotkey_adaptive_all_mask_show(struct device *dev,
- 			   struct device_attribute *attr,
- 			   char *buf)
- {
--	return snprintf(buf, PAGE_SIZE, "0x%08x\n",
-+	return sysfs_emit(buf, "0x%08x\n",
- 			hotkey_adaptive_all_mask | hotkey_source_mask);
- }
- 
-@@ -2788,7 +2788,7 @@ static ssize_t hotkey_recommended_mask_show(struct device *dev,
- 					    struct device_attribute *attr,
- 					    char *buf)
- {
--	return snprintf(buf, PAGE_SIZE, "0x%08x\n",
-+	return sysfs_emit(buf, "0x%08x\n",
- 			(hotkey_all_mask | hotkey_source_mask)
- 			& ~hotkey_reserved_mask);
- }
-@@ -2802,7 +2802,7 @@ static ssize_t hotkey_source_mask_show(struct device *dev,
- 			   struct device_attribute *attr,
- 			   char *buf)
- {
--	return snprintf(buf, PAGE_SIZE, "0x%08x\n", hotkey_source_mask);
-+	return sysfs_emit(buf, "0x%08x\n", hotkey_source_mask);
- }
- 
- static ssize_t hotkey_source_mask_store(struct device *dev,
-@@ -2853,7 +2853,7 @@ static ssize_t hotkey_poll_freq_show(struct device *dev,
- 			   struct device_attribute *attr,
- 			   char *buf)
- {
--	return snprintf(buf, PAGE_SIZE, "%d\n", hotkey_poll_freq);
-+	return sysfs_emit(buf, "%d\n", hotkey_poll_freq);
- }
- 
- static ssize_t hotkey_poll_freq_store(struct device *dev,
-@@ -2895,7 +2895,7 @@ static ssize_t hotkey_radio_sw_show(struct device *dev,
- 	/* Opportunistic update */
- 	tpacpi_rfk_update_hwblock_state((res == TPACPI_RFK_RADIO_OFF));
- 
--	return snprintf(buf, PAGE_SIZE, "%d\n",
-+	return sysfs_emit(buf, "%d\n",
- 			(res == TPACPI_RFK_RADIO_OFF) ? 0 : 1);
- }
- 
-@@ -2918,7 +2918,7 @@ static ssize_t hotkey_tablet_mode_show(struct device *dev,
- 	if (res < 0)
- 		return res;
- 
--	return snprintf(buf, PAGE_SIZE, "%d\n", !!s);
-+	return sysfs_emit(buf, "%d\n", !!s);
- }
- 
- static DEVICE_ATTR_RO(hotkey_tablet_mode);
-@@ -2935,7 +2935,7 @@ static ssize_t hotkey_wakeup_reason_show(struct device *dev,
- 			   struct device_attribute *attr,
- 			   char *buf)
- {
--	return snprintf(buf, PAGE_SIZE, "%d\n", hotkey_wakeup_reason);
-+	return sysfs_emit(buf, "%d\n", hotkey_wakeup_reason);
- }
- 
- static DEVICE_ATTR(wakeup_reason, S_IRUGO, hotkey_wakeup_reason_show, NULL);
-@@ -2951,7 +2951,7 @@ static ssize_t hotkey_wakeup_hotunplug_complete_show(struct device *dev,
- 			   struct device_attribute *attr,
- 			   char *buf)
- {
--	return snprintf(buf, PAGE_SIZE, "%d\n", hotkey_autosleep_ack);
-+	return sysfs_emit(buf, "%d\n", hotkey_autosleep_ack);
- }
- 
- static DEVICE_ATTR(wakeup_hotunplug_complete, S_IRUGO,
-@@ -2986,7 +2986,7 @@ static ssize_t adaptive_kbd_mode_show(struct device *dev,
- 	if (current_mode < 0)
- 		return current_mode;
- 
--	return snprintf(buf, PAGE_SIZE, "%d\n", current_mode);
-+	return sysfs_emit(buf, "%d\n", current_mode);
- }
- 
- static ssize_t adaptive_kbd_mode_store(struct device *dev,
-@@ -6350,7 +6350,7 @@ static ssize_t thermal_temp_input_show(struct device *dev,
- 	if (value == TPACPI_THERMAL_SENSOR_NA)
- 		return -ENXIO;
- 
--	return snprintf(buf, PAGE_SIZE, "%d\n", value);
-+	return sysfs_emit(buf, "%d\n", value);
- }
- 
- #define THERMAL_SENSOR_ATTR_TEMP(_idxA, _idxB) \
-@@ -8583,7 +8583,7 @@ static ssize_t fan_pwm1_enable_show(struct device *dev,
- 	} else
- 		mode = 1;
- 
--	return snprintf(buf, PAGE_SIZE, "%d\n", mode);
-+	return sysfs_emit(buf, "%d\n", mode);
- }
- 
- static ssize_t fan_pwm1_enable_store(struct device *dev,
-@@ -8649,7 +8649,7 @@ static ssize_t fan_pwm1_show(struct device *dev,
- 	if (status > 7)
- 		status = 7;
- 
--	return snprintf(buf, PAGE_SIZE, "%u\n", (status * 255) / 7);
-+	return sysfs_emit(buf, "%u\n", (status * 255) / 7);
- }
- 
- static ssize_t fan_pwm1_store(struct device *dev,
-@@ -8702,7 +8702,7 @@ static ssize_t fan_fan1_input_show(struct device *dev,
- 	if (res < 0)
- 		return res;
- 
--	return snprintf(buf, PAGE_SIZE, "%u\n", speed);
-+	return sysfs_emit(buf, "%u\n", speed);
- }
- 
- static DEVICE_ATTR(fan1_input, S_IRUGO, fan_fan1_input_show, NULL);
-@@ -8719,7 +8719,7 @@ static ssize_t fan_fan2_input_show(struct device *dev,
- 	if (res < 0)
- 		return res;
- 
--	return snprintf(buf, PAGE_SIZE, "%u\n", speed);
-+	return sysfs_emit(buf, "%u\n", speed);
- }
- 
- static DEVICE_ATTR(fan2_input, S_IRUGO, fan_fan2_input_show, NULL);
-@@ -8727,7 +8727,7 @@ static DEVICE_ATTR(fan2_input, S_IRUGO, fan_fan2_input_show, NULL);
- /* sysfs fan fan_watchdog (hwmon driver) ------------------------------- */
- static ssize_t fan_watchdog_show(struct device_driver *drv, char *buf)
- {
--	return snprintf(buf, PAGE_SIZE, "%u\n", fan_watchdog_maxinterval);
-+	return sysfs_emit(buf, "%u\n", fan_watchdog_maxinterval);
- }
- 
- static ssize_t fan_watchdog_store(struct device_driver *drv, const char *buf,
+ 	seq = 0;
+-	if (!spi && (err = xfrm_parse_spi(skb, nexthdr, &spi, &seq)) != 0) {
++	if (!spi && (xfrm_parse_spi(skb, nexthdr, &spi, &seq)) != 0) {
+ 		secpath_reset(skb);
+ 		XFRM_INC_STATS(net, LINUX_MIB_XFRMINHDRERROR);
+ 		goto drop;
 -- 
-2.25.1
+2.15.2
 
 
