@@ -2,57 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 515C0431985
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 14:41:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DAE7431975
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 14:40:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231628AbhJRMoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 08:44:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51890 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231750AbhJRMn7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 08:43:59 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04741C061769
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 05:41:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=D0on4HUpG42haSYLV1uyg0Ra8eavO6yawrcHNA7JqNE=; b=l1tP7h9zicMHO1Xl3MTeMZbAT1
-        gJVT86FtE9nPC2sc0ibmEvIPQEDPSU0V9hJxWPOyjPMkYKziza66AzI69pZyuAYFyQmLn/Gtow2zi
-        HIA/Q4qJWRePWGKRP451c/rVvpMvkiPcNYi4pybAPoyzP2sqERIJjGrejKDzxBEAQMZDAtmpyn9mN
-        dsADP2grJEGxFGHqjYrgM5+M6s8/Fu6PJE2mfG6HmSwBeGjUk++9HM2GdDqymQRBM5lkUkpZna6rC
-        ShpjksJnog80uPOXkahDcSaKZA3SJnFqYbgyEqNZy2fb6/7xA69CBpteX6UROr1fL48yrSkaDenGt
-        GPo4lN8A==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mcRve-00Awmf-Uo; Mon, 18 Oct 2021 12:40:06 +0000
-Date:   Mon, 18 Oct 2021 13:39:46 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Chen Wandun <chenwandun@huawei.com>
-Cc:     akpm@linux-foundation.org, npiggin@gmail.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, edumazet@google.com,
-        wangkefeng.wang@huawei.com, guohanjun@huawei.com,
-        shakeelb@google.com, urezki@gmail.com
-Subject: Re: [PATCH v2 1/2] mm/vmalloc: fix numa spreading for large hash
- tables
-Message-ID: <YW1rEt0u2CSCYgnJ@casper.infradead.org>
-References: <20211018123710.1540996-1-chenwandun@huawei.com>
- <20211018123710.1540996-2-chenwandun@huawei.com>
+        id S231730AbhJRMmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 08:42:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46732 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230515AbhJRMmR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 08:42:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id BF29360FC3;
+        Mon, 18 Oct 2021 12:40:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634560806;
+        bh=gjqZ3TRhYfzAWUt0j34PYC6gVKhTDNAxS7IgmynFDUo=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=Blf2Men3p3FlZYESMxiSFKRutARItt3TWM++4mlnxrCDqBPcxUt7P/a1ZY7xHvmDK
+         06/Kkwk9AH2Rm+fbvPpaZyJaFKkMFSkGoEcoeWfMUF70cTdImKBKQUCSu+r3VHeF/c
+         cjQ+V85kq0wydxurhRHMpiGtugajj4zaR9iQHv1t9o6LuB/uVXd0vPb0YPC0Yk3eH3
+         KDQ3u0DCR60SL1/rscsslzQ7WXOIzpVcAxk9+jgSBAT3cteMiNGyWHdltLmyWs+kMc
+         /l+szQP9J8xQyLdSZbKnffMU9yyRsAQI6nGTEwUS5/+wooIBW4PNrOEfExAtvdluCb
+         ix3m3IQroRB6w==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id B0867609F7;
+        Mon, 18 Oct 2021 12:40:06 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211018123710.1540996-2-chenwandun@huawei.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net] net: dsa: lantiq_gswip: fix register definition
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163456080671.22515.9929678118226387428.git-patchwork-notify@kernel.org>
+Date:   Mon, 18 Oct 2021 12:40:06 +0000
+References: <20211015221020.3590-1-olek2@wp.pl>
+In-Reply-To: <20211015221020.3590-1-olek2@wp.pl>
+To:     Aleksander Jan Bajkowski <olek2@wp.pl>
+Cc:     hauke@hauke-m.de, andrew@lunn.ch, vivien.didelot@gmail.com,
+        f.fainelli@gmail.com, olteanv@gmail.com, davem@davemloft.net,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 18, 2021 at 08:37:09PM +0800, Chen Wandun wrote:
-> Eric Dumazet reported a strange numa spreading info in [1], and found
-> commit 121e6f3258fe ("mm/vmalloc: hugepage vmalloc mappings") introduced
-> this issue [2].
+Hello:
 
-I think the root problem here is that we have two meanings for
-NUMA_NO_NODE.  I tend to read it as "The memory can be allocated from
-any node", but here it's used to mean "The memory should be spread over
-every node".  Should we split those out as -1 and -2?
+This patch was applied to netdev/net.git (master)
+by David S. Miller <davem@davemloft.net>:
+
+On Sat, 16 Oct 2021 00:10:20 +0200 you wrote:
+> I compared the register definitions with the D-Link DWR-966
+> GPL sources and found that the PUAFD field definition was
+> incorrect. This definition is unused and causes no issues.
+> 
+> Fixes: 14fceff4771e ("net: dsa: Add Lantiq / Intel DSA driver for vrx200")
+> Signed-off-by: Aleksander Jan Bajkowski <olek2@wp.pl>
+> 
+> [...]
+
+Here is the summary with links:
+  - [net] net: dsa: lantiq_gswip: fix register definition
+    https://git.kernel.org/netdev/net/c/66d262804a22
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
