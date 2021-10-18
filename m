@@ -2,169 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DE1B4311A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 09:56:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06D8A4311AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 09:57:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231137AbhJRH7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 03:59:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43171 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230469AbhJRH7G (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 03:59:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634543815;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pW1J9ofif2zOmnDiVcKxrIN5ntR57Bu+Zk3Ktoioz/k=;
-        b=HTu6PwG50sa4c80pB6TnziH2zSK291uT1aH0Fr638cFVM76dZKREcfYrGVF6oRCbew/BBJ
-        bZjdlLEgs466ip5KCvVcDUeL1FeVqwBbguBQyqSAMUOTjIcg9LbqUJffY2Y50ESwsF1cex
-        4I/7Ksplo7UGPoKz6sluap0shbgu18Y=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-139-FcukVLoAPzuHGl8DumVA-w-1; Mon, 18 Oct 2021 03:56:54 -0400
-X-MC-Unique: FcukVLoAPzuHGl8DumVA-w-1
-Received: by mail-ed1-f71.google.com with SMTP id e14-20020a056402088e00b003db6ebb9526so13498259edy.22
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 00:56:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=pW1J9ofif2zOmnDiVcKxrIN5ntR57Bu+Zk3Ktoioz/k=;
-        b=fsks9+wgNgkf04iBmyR3+FPJ8/FOi/iFxUyUF9K4h9Nym4z6toeAA9PBg5l7kjCfDT
-         cwZMzhp9/kGV7QplVutMi5RPQaHwJHvFj97vlqwIqvSzudotjzUCdpIUTTZdGXCtpyJw
-         TYjdI6Fsh2JM5NdwBG9ifoxvYKzBtqTl+Pn7MAt/75aDmeGU2ZnOFtzbIu7D8v/9Z1+V
-         CHkw3Wb1VDQllHc+6DF/4PxKk7f2pPtsrAbKJBPj4y/+OID+DC1uDcallk8ck0hgiZXX
-         9BQ/5AKugl0/VgzHmaxUa5FH55pH8Xs7VFk+vNarrr35VQqy5VHdbbSryeiIndbLzPbk
-         XK8g==
-X-Gm-Message-State: AOAM533AGrVnWUpT0gwXzmpqO1Na8L94x46YrRIA/WTCPgsjFr0nwQV5
-        N2Iev/aYSFrQQnp24BRDDY8O0OCVE/DJBC6+L5s6t/NPLjEG7ROdO/zFDWotaZaDiUtS8WrfXec
-        ccz1McZAWXuQKOJ11r8fZtzsn
-X-Received: by 2002:a17:906:2346:: with SMTP id m6mr27676657eja.512.1634543813115;
-        Mon, 18 Oct 2021 00:56:53 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyMAfba/aRuzrULmiVfI2mevsZfFAWys1fo4WzU1WEccjOT3FVMM/D0QV8aWm6hTOUVtiKILA==
-X-Received: by 2002:a17:906:2346:: with SMTP id m6mr27676640eja.512.1634543812932;
-        Mon, 18 Oct 2021 00:56:52 -0700 (PDT)
-Received: from [10.40.1.223] ([81.30.35.201])
-        by smtp.gmail.com with ESMTPSA id j3sm3614741ejo.2.2021.10.18.00.56.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Oct 2021 00:56:52 -0700 (PDT)
-Message-ID: <4ef1f770-f15f-ff11-bc64-ccd461dfdf61@redhat.com>
-Date:   Mon, 18 Oct 2021 09:56:52 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH 16/17] [NOT-FOR-MERGE] media: atomsip: pci: add DMI match
- for Microsoft Surface 3 with broken DMI (OEMB)
-Content-Language: en-US
-To:     Tsuchiya Yuto <kitakar@gmail.com>
-Cc:     Patrik Gfeller <patrik.gfeller@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Aniket Bhattacharyea <aniketmail669@gmail.com>,
-        Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Alan <alan@linux.intel.com>,
-        Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        id S231196AbhJRH7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 03:59:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35502 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231183AbhJRH7k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 03:59:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AECFF60E76;
+        Mon, 18 Oct 2021 07:57:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634543847;
+        bh=wizAlz3nkzwk1hhzFyfhTjq3YJTZcPcoMIebpmvCLu8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=K/f4aW3unDdT8GlzNEw/RQ+Ddk6bp9mLbJIW23NRg8eHvca2eH6SmmBzgihck6KMy
+         fsGaUtFbzZoJTQGT7nPQOcrj4nF7XVBK757ChWAKx9MDySmB2aQT3zntHttBQ+YR+U
+         WWBpF0y6ZBb4AbLi8pc1+SbfG8fzCYmTnmK82i6nL45Dwa171uOyz3IUI4JN//0NNe
+         mHMZ7Z5bM4BB+lKsiEglv6NhMTEdqAqZbpccxpw+YfOERWCmQEbEC9MQ5TrMmyo+Qq
+         DO//whpovw0TIGaF7L7fKKMQwNXv+dy47NMMnZ0+WsH3Q094YArH31OrP5/dDQTNeu
+         0nCOsGlxck2Fw==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1mcNWI-0002e0-50; Mon, 18 Oct 2021 09:57:18 +0200
+Date:   Mon, 18 Oct 2021 09:57:18 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Wang Hai <wanghai38@huawei.com>
+Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20211017161958.44351-1-kitakar@gmail.com>
- <20211017161958.44351-17-kitakar@gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20211017161958.44351-17-kitakar@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH v2] USB: serial: Fix possible memleak in
+ keyspan_port_probe()
+Message-ID: <YW0o3hv6mG+NQ3f5@hovoldconsulting.com>
+References: <20211015085543.1203011-1-wanghai38@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211015085543.1203011-1-wanghai38@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 10/17/21 18:19, Tsuchiya Yuto wrote:
-> This commit is added for Surface 3 with broken DMI table. HACK-ish.
-> Not intended for upstreaming. Thus, NOT-FOR-MERGE. But, if someone
-> knows a nicer way to address this, comments are welcome...
+On Fri, Oct 15, 2021 at 04:55:43PM +0800, Wang Hai wrote:
+> I got memory leak as follows when doing fault injection test:
 > 
->> 8-----------------------------------------------------------------8<
+> unreferenced object 0xffff888258228440 (size 64):
+>   comm "kworker/7:2", pid 2005, jiffies 4294989509 (age 824.540s)
+>   hex dump (first 32 bytes):
+>     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>   backtrace:
+>     [<ffffffff8167939c>] slab_post_alloc_hook+0x9c/0x490
+>     [<ffffffff8167f627>] kmem_cache_alloc_trace+0x1f7/0x470
+>     [<ffffffffa02ac0e4>] keyspan_port_probe+0xa4/0x5d0 [keyspan]
+>     [<ffffffffa0294c07>] usb_serial_device_probe+0x97/0x1d0 [usbserial]
+>     [<ffffffff82b50ca7>] really_probe+0x167/0x460
+>     [<ffffffff82b51099>] __driver_probe_device+0xf9/0x180
+>     [<ffffffff82b51173>] driver_probe_device+0x53/0x130
+>     [<ffffffff82b516f5>] __device_attach_driver+0x105/0x130
+>     [<ffffffff82b4cfe9>] bus_for_each_drv+0x129/0x190
+>     [<ffffffff82b50a69>] __device_attach+0x1c9/0x270
+>     [<ffffffff82b518d0>] device_initial_probe+0x20/0x30
+>     [<ffffffff82b4f062>] bus_probe_device+0x142/0x160
+>     [<ffffffff82b4a4e9>] device_add+0x829/0x1300
+>     [<ffffffffa0295fda>] usb_serial_probe.cold+0xc9b/0x14ac [usbserial]
+>     [<ffffffffa02266aa>] usb_probe_interface+0x1aa/0x3c0 [usbcore]
+>     [<ffffffff82b50ca7>] really_probe+0x167/0x460
 > 
-> On some Microsoft Surface 3, the DMI table gets corrupted for unknown
-> reasons and breaks existing DMI matching used for device-specific quirks.
+> If it fails to allocate memory for an out_buffer[i] or in_buffer[i],
+> the previously allocated memory for out_buffer or in_buffer needs to
+> be freed on the error handling path, otherwise a memory leak will result.
 > 
-> This commit adds the (broken) DMI data into dmi_system_id tables used
-> for quirks so that the driver can enable quirks even on the affected
-> systems.
-> 
-> On affected systems, the DMI data will look like this:
-> 
->         $ grep . /sys/devices/virtual/dmi/id/{bios_vendor,board_name,board_vendor,\
->         chassis_vendor,product_name,sys_vendor}
->         /sys/devices/virtual/dmi/id/bios_vendor:American Megatrends Inc.
->         /sys/devices/virtual/dmi/id/board_name:OEMB
->         /sys/devices/virtual/dmi/id/board_vendor:OEMB
->         /sys/devices/virtual/dmi/id/chassis_vendor:OEMB
->         /sys/devices/virtual/dmi/id/product_name:OEMB
->         /sys/devices/virtual/dmi/id/sys_vendor:OEMB
-
-I wonder what the bios_date field contains ? Typically when the DMI strings
-are no good (e.g. often they contain "Default String" or "To be filled by OEM")
-we add a check on the bios-date, which together with the broken strings is
-considered unique enough to still allow a match with broken strings in the
-kernel.
-
-Also have you tried doing something like "load bios/setup defaults" in
-the BIOS setup ? Maybe that helps ?
-
-Regards,
-
-Hans
-
-
-
-
-
-> 
-> Expected:
-> 
->         $ grep . /sys/devices/virtual/dmi/id/{bios_vendor,board_name,board_vendor,\
->         chassis_vendor,product_name,sys_vendor}
->         /sys/devices/virtual/dmi/id/bios_vendor:American Megatrends Inc.
->         /sys/devices/virtual/dmi/id/board_name:Surface 3
->         /sys/devices/virtual/dmi/id/board_vendor:Microsoft Corporation
->         /sys/devices/virtual/dmi/id/chassis_vendor:Microsoft Corporation
->         /sys/devices/virtual/dmi/id/product_name:Surface 3
->         /sys/devices/virtual/dmi/id/sys_vendor:Microsoft Corporation
-> 
-> Signed-off-by: Tsuchiya Yuto <kitakar@gmail.com>
+> Fixes: bad41a5bf177 ("USB: keyspan: fix port DMA-buffer allocations")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Wang Hai <wanghai38@huawei.com>
 > ---
->  .../staging/media/atomisp/pci/atomisp_gmin_platform.c | 11 +++++++++++
->  1 file changed, 11 insertions(+)
-> 
-> diff --git a/drivers/staging/media/atomisp/pci/atomisp_gmin_platform.c b/drivers/staging/media/atomisp/pci/atomisp_gmin_platform.c
-> index 948eb6f809f5..3868d64cbc2b 100644
-> --- a/drivers/staging/media/atomisp/pci/atomisp_gmin_platform.c
-> +++ b/drivers/staging/media/atomisp/pci/atomisp_gmin_platform.c
-> @@ -377,6 +377,17 @@ static const struct dmi_system_id gmin_vars[] = {
->  		},
->  		.driver_data = surface3_vars,
->  	},
-> +	{
-> +		.ident = "Surface 3",
-> +		.matches = {
-> +			/* DMI data for Surface 3 with broken DMI table */
-> +			DMI_MATCH(DMI_BIOS_VENDOR, "American Megatrends Inc."),
-> +			DMI_MATCH(DMI_BOARD_NAME, "OEMB"),
-> +			DMI_MATCH(DMI_PRODUCT_NAME, "OEMB"),
-> +			DMI_MATCH(DMI_SYS_VENDOR, "OEMB"),
-> +		},
-> +		.driver_data = surface3_vars,
-> +	},
->  	{}
->  };
->  
-> 
+> v1->v2: rename error labels
 
+Thanks for the update. Now applied with a slightly amended commit
+message:
+
+	USB: serial: keyspan: fix memleak on probe errors
+
+	...
+
+	If keyspan_port_probe() fails...
+
+Johan
