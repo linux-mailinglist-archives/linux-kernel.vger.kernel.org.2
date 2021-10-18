@@ -2,112 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D349F432318
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 17:38:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6769A432322
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 17:40:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233023AbhJRPlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 11:41:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37282 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232523AbhJRPk5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 11:40:57 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4F6DC06161C
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 08:38:45 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id o20so42295074wro.3
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 08:38:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=iODCAuyGzNXLGc8sQELNl8YUufgdbXaQ5qOyoIw0DG0=;
-        b=vdVCDrS7aDv/1QmIP+jVThM1GW9led1F2mtEI+Ix8UMu1HdPCJR6bS2ZFTOWoWHerQ
-         JLK2OyaqHG7bRTCoG/udn5WRTjuaz2xGyjq49zNxP79asgQk2ey3/TlL/1hGR4dx5atx
-         cswDIKcsxqBpoOnbfTsTYFIvoWCVwIa8PbQlEpl99GibrRwajZbCO7KqTqD/pmnxcTsI
-         GcYjx8158fz2iK95Myh+K0674pgAqRkI5rRgt5Aq6v6uhg33yPUVaBZozFjy53nlCLNj
-         iBeP+SPZ79Qah7fxhXXzejlBwU3WCFkY3spumxHWy5HF8l1gJRU2aWZNDPm6T5NEdZRh
-         uFBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=iODCAuyGzNXLGc8sQELNl8YUufgdbXaQ5qOyoIw0DG0=;
-        b=KubmKveGBHtBU0FyN9KEUeJ7SBz0Z/KUEh0XNHlXLkChTcWClTtRF+Em2hRgYopEV/
-         MJhOzdt7XXyyXjVr2x8gW6pNa7Y6vXsJeojheCPjYKC0owVV6zTLfcm6LMIvaZseRrsE
-         brD5neTGOybPwH1VjVYa8P4JNQfURcBHQyNBWZInJwNgNDC02Pv006QLt4Pp1OLe7aQW
-         +3peFTJ5uuDQBk6nRYiSUeQFXddVp+QTXVfSngI2dB1TyDAidQWfhOlZHE06vWEWX/Jo
-         bHcNn3SPJsKsrlpSFb7kd1G6ZwJedzaZ0gO7wRCEoV2PnvTrWMkrZm+7fR1ZWKeUyrVA
-         SbWw==
-X-Gm-Message-State: AOAM532KezoM7RwZ+yp6CpMjFKBlv/4S0kDt/z/ZJgbz6JVRtHPBOSR+
-        3Stq6X4157/qeBhjsPEhBB1Mew==
-X-Google-Smtp-Source: ABdhPJyZ++AJmrO3OWPFJqKeMZEiXaxcE+1DPUg0ecmoMlnp5uT5grAq6ha21GZUHmPtdvESgrWO7A==
-X-Received: by 2002:adf:fa8b:: with SMTP id h11mr37055518wrr.74.1634571524488;
-        Mon, 18 Oct 2021 08:38:44 -0700 (PDT)
-Received: from google.com ([95.148.6.207])
-        by smtp.gmail.com with ESMTPSA id c17sm13062760wrq.4.2021.10.18.08.38.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 08:38:44 -0700 (PDT)
-Date:   Mon, 18 Oct 2021 16:38:41 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Liam Girdwood <lgirdwood@gmail.com>, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org,
-        Sam Protsenko <semen.protsenko@linaro.org>
-Subject: Re: [PATCH v4 00/10] regulator/mfd/clock: dt-bindings: Samsung S2M
- and S5M to dtschema
-Message-ID: <YW2VAfa6koB4+eN9@google.com>
-References: <20211008113723.134648-1-krzysztof.kozlowski@canonical.com>
- <YWCT+YL/9qHbF9f0@sirena.org.uk>
- <bb1f4be0-ca2a-e327-0831-f648a2ca3ab3@canonical.com>
+        id S232462AbhJRPm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 11:42:59 -0400
+Received: from mga06.intel.com ([134.134.136.31]:31329 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232209AbhJRPmt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 11:42:49 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10141"; a="289127326"
+X-IronPort-AV: E=Sophos;i="5.85,382,1624345200"; 
+   d="scan'208";a="289127326"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2021 08:40:31 -0700
+X-IronPort-AV: E=Sophos;i="5.85,382,1624345200"; 
+   d="scan'208";a="482789500"
+Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.146])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2021 08:40:31 -0700
+Date:   Mon, 18 Oct 2021 08:40:30 -0700
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     Shuai Xue <xueshuai@linux.alibaba.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "james.morse@arm.com" <james.morse@arm.com>,
+        "lenb@kernel.org" <lenb@kernel.org>,
+        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
+        "zhangliguang@linux.alibaba.com" <zhangliguang@linux.alibaba.com>,
+        "zhuo.song@linux.alibaba.com" <zhuo.song@linux.alibaba.com>
+Subject: Re: [PATCH] ACPI, APEI, EINJ: Relax platform response timeout to 1
+ second.
+Message-ID: <YW2Vbkn5d6r3Y4LA@agluck-desk2.amr.corp.intel.com>
+References: <20211015033817.16719-1-xueshuai@linux.alibaba.com>
+ <4d492cef3640414d85ecfdb602ad6fa0@intel.com>
+ <869f0c92-0800-b24e-9de8-d8c9cb6972a7@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <bb1f4be0-ca2a-e327-0831-f648a2ca3ab3@canonical.com>
+In-Reply-To: <869f0c92-0800-b24e-9de8-d8c9cb6972a7@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 18 Oct 2021, Krzysztof Kozlowski wrote:
-
-> On 08/10/2021 20:54, Mark Brown wrote:
-> > On Fri, Oct 08, 2021 at 01:37:12PM +0200, Krzysztof Kozlowski wrote:
-> > 
-> >> This patchset converts all devicetree bindings of Samsung S2M and S5M
-> >> PMIC devices from txt to dtschema.
-> > 
-> > The following changes since commit e73f0f0ee7541171d89f2e2491130c7771ba58d3:
-> > 
-> >   Linux 5.14-rc1 (2021-07-11 15:07:40 -0700)
-> > 
-> > are available in the Git repository at:
-> > 
-> >   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git tags/s2m_s5m_dtschema
-> > 
-> > for you to fetch changes up to fab58debc137f66cf97f60c8471ff2f1e3e1b44b:
-> > 
-> >   regulator: dt-bindings: samsung,s5m8767: convert to dtschema (2021-10-08 17:24:37 +0100)
-> > 
+On Sun, Oct 17, 2021 at 12:06:52PM +0800, Shuai Xue wrote:
+> Hi, Tony,
 > 
-> Thanks Mark for the branch.
+> Thank you for your reply.
 > 
-> Lee, can you merge it and apply the rest (MFD)?
+> > Spinning for 1ms was maybe ok. Spinning for up to 1s seems like a bad idea.
+> >
+> > This code is executed inside a mutex ... so maybe it is safe to sleep instead of spin?
+> 
+> May the email Subject misled you. This code do NOT spin for 1 sec. The period of the
+> spinning depends on the SPIN_UNIT.
 
-Sure.  I'll take a look in a bit.
+Not just the subject line. See the comment you changed here:
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+> > -#define SPIN_UNIT		100			/* 100ns */
+> > -/* Firmware should respond within 1 milliseconds */
+> > -#define FIRMWARE_TIMEOUT	(1 * NSEC_PER_MSEC)
+> > +#define SPIN_UNIT		100			/* 100us */
+> > +/* Firmware should respond within 1 seconds */
+> > +#define FIRMWARE_TIMEOUT	(1 * USEC_PER_SEC)
+
+That definitely reads to me that the timeout was increased from
+1 millisecond to 1 second. With the old code polling for completion
+every 100ns, and the new code polling every 100us
+> 
+> The period was 100 ns and changed to 100 us now. In my opinion, spinning for 100 ns or 100 us is OK :)
+
+But what does the code do in between polls? The calling code is:
+
+        for (;;) {
+                rc = apei_exec_run(&ctx, ACPI_EINJ_CHECK_BUSY_STATUS);
+                if (rc)
+                        return rc;
+                val = apei_exec_ctx_get_output(&ctx);
+                if (!(val & EINJ_OP_BUSY))
+                        break;
+                if (einj_timedout(&timeout))
+                        return -EIO;
+        }
+
+Now apei_exec_run() and apei_exec_ctx_get_output() are a maze of
+functions & macros. But I don't think they can block, sleep, or
+context switch.
+
+So this code is "spinning" until either BIOS says the operation is
+complete, or the FIRMWARE_TIMEOUT is reached.
+
+It avoids triggering a watchdog by the call to touch_nmi_watchdog()
+after each spin between polls. But the whole thing may be spinning
+for a second.
+
+I'm not at all sure that I'm right that the spin could be replaced
+with an msleep(). It will certainly slow things down for systems
+and EINJ operations that actually complete quickly (because instead
+of returnining within 100ns (or 100us with your patch) it will sleep
+for 1 ms (rounded up to next jiffie ... so 4 ms of HZ=250 systems.
+
+But I don't care if my error injections take 4ms.
+
+I do care that one logical CPU spins for 1 second.
+
+-Tony
