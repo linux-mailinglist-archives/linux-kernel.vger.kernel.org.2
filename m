@@ -2,145 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A0B643139A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 11:37:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BB0343139F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 11:40:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231490AbhJRJjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 05:39:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36860 "EHLO
+        id S231411AbhJRJmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 05:42:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231443AbhJRJjy (ORCPT
+        with ESMTP id S231420AbhJRJmg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 05:39:54 -0400
-Received: from lb1-smtp-cloud7.xs4all.net (lb1-smtp-cloud7.xs4all.net [IPv6:2001:888:0:108::1a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61011C061745;
-        Mon, 18 Oct 2021 02:37:41 -0700 (PDT)
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud7.xs4all.net with ESMTPA
-        id cP5MmtodIk3b0cP5PmhCaU; Mon, 18 Oct 2021 11:37:40 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1634549860; bh=NxXn58f8Oe+CrFtq795xZOZeWXo5STeA9om7IcmnNyA=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=NHzWX3UP7FaFfRqjDTNI6HFbAp3bvE3bLWRHLmbbXm6nPA8M/NwNp48Hph0L/6mhg
-         1JuAM5Lb37NDSHT5iMLOKsLD53MbHHkj4hTx6CGF7bGf1n4X1SOQm+7gHVgMPnzldW
-         Pm/vt/LMhpzHOvERFMW03UYk8e/cnfsp7GjRrT/dz5WapQPA2SBOW2GwjhW6gvFQ8J
-         9YEq/fUMzKp/RjwsmKx5k5InUfIY7n2XZOY524tZhyuwJwkuqlFuSXbB76FiNaH9Qe
-         qsOYmLsEJU8m7b5HGkKeyesSYylCBNGSRSuCUaGRh7fQfY2N9oP2jrL3Eu0riJnEMA
-         AbgTU/mCBKDEg==
-Subject: Re: [PATCH v5 09/10] clk: stm32: Fix ltdc's clock turn off by
- clk_disable_unused() after system enter shell
-To:     dillon.minfei@gmail.com, mchehab@kernel.org,
-        mchehab+huawei@kernel.org, ezequiel@collabora.com,
-        gnurou@gmail.com, pihsun@chromium.org, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@foss.st.com, mturquette@baylibre.com,
-        sboyd@kernel.org, robh+dt@kernel.org, gabriel.fernandez@st.com,
-        gabriel.fernandez@foss.st.com
-Cc:     patrice.chotard@foss.st.com, hugues.fruchet@foss.st.com,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org
-References: <1634533488-25334-1-git-send-email-dillon.minfei@gmail.com>
- <1634533488-25334-10-git-send-email-dillon.minfei@gmail.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <1159ec06-cf36-efef-e87a-5d826b6b44d3@xs4all.nl>
-Date:   Mon, 18 Oct 2021 11:37:36 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.14.0
+        Mon, 18 Oct 2021 05:42:36 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E76EC061768
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 02:40:25 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id i20so67618650edj.10
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 02:40:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=pqrs.dk; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=v684pXQvnkH726GvM19gurGAI9+/mguWyz76aeI12nQ=;
+        b=enVdtu4Ng/rJMl7F33WtKZfyqHpGPpmGgMQGLTZKITVoVCD7Y15MqRZOCUwOfeW2mj
+         MjVbzYu1CZdT29ZoNL9c1Rqb8GsQmKTPBmER1hMPQ/wvbEVBOlZ7Vl3HJcahDqGiBGUO
+         nLrbjfDy7hUI5SPcyxM7pit16ZJ4r+Sfh5DaM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=v684pXQvnkH726GvM19gurGAI9+/mguWyz76aeI12nQ=;
+        b=mqJcTqrgnz4gjbx5HkF911fhNHUo6YyUZJvxB90sTwsbt1ADA0tAZJDDz2/9ru7PL8
+         7NnWwQFlKl8E4VbwDHZcW1VljZLMMbkcxM9JBhnjMXvEwi400r8OaSEL8JDdVcc/iwaF
+         pfVoKshsdsnm+VQDJRudSgK+LEkt5tTapJrVBong/2Pu5kHw3bwzPnCZwVslVbpWCldq
+         Hw4HnJk6+SNaaPFJxewpdhjnQs/0h3wqr/Dez8bgL4/pHr3bAjTzpHrZrogdQ6Pnjtsf
+         XkU3m1r6dIh9WU+Dj6OPIv3lxWqYTbh6O2eRn51D2me+mvhljBxWesNwHf/IJE6MPLQH
+         aTNg==
+X-Gm-Message-State: AOAM53118nKEBAyTsvEx9mEnRC5qK8xiAKR1TZQ7sAKFcCP3GBZzXMM5
+        EMwq/fysJbvju4eR0K0i7U9zT8RKfteRI/Kh
+X-Google-Smtp-Source: ABdhPJzBB7YTB7MrW7/tBR4KxKM1u3tyU8HcGiYpIx1tkRTMJYOxp+6V+RvgKeVFF8OJ5VlgNytE2Q==
+X-Received: by 2002:a50:e1c3:: with SMTP id m3mr43306642edl.28.1634550023234;
+        Mon, 18 Oct 2021 02:40:23 -0700 (PDT)
+Received: from capella.. ([80.208.66.147])
+        by smtp.gmail.com with ESMTPSA id z1sm10134566edc.68.2021.10.18.02.40.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Oct 2021 02:40:22 -0700 (PDT)
+From:   =?UTF-8?q?Alvin=20=C5=A0ipraga?= <alvin@pqrs.dk>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>
+Cc:     arinc.unal@arinc9.com,
+        =?UTF-8?q?Alvin=20=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v4 net-next 0/7] net: dsa: add support for RTL8365MB-VC
+Date:   Mon, 18 Oct 2021 11:37:55 +0200
+Message-Id: <20211018093804.3115191-1-alvin@pqrs.dk>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <1634533488-25334-10-git-send-email-dillon.minfei@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfOl2ErOMpmPSxtXTC2aZoM5FBesFtm2XHy5IIYTU9xh2boMRz5eDSNX5KCsSgdoZTG3xf9sX7LRpg1hGhWVDxYrCxq9uuS0syN8CxK/AweI1sdj9hfQ2
- XhaBTGfn2LtUyCCQkZ+jSbaMH1zi8bRoY42Jz97j40p7qhcm98urYJ+mkx+dFQzJRoN2ac+mloZcV6KaJvysM8CT8dphGqhmXaToRVZbJPvUKQbRQQqsx7rP
- hAn3k5VnD2n3tJIdiSc0+nW9nNNTFEgJJfwmze4IANtaRLmO+GG8Y5lngaf03fNmH9g+Uc4IPng5Cl1iJSmTTMcSxtb7t/BSWS/L73wjoY3L0NqW11CCAAFJ
- 0wGQUREWbbfxglX2D/FAR11FltGHWpb94hErpQ6dzwbKSI9uUTs1NwacQNrIL2/EQc77f+9MQwg1gVFMDI6C/+Bt33J3sYfwX4M6//pnk7Xa6eTGsitd1VT7
- VzcysJvz7UlRGiluk+TUxBIHV2t9k3VABxMdF187TM0TfRic3nVWWGlGS7J+rVCU8ftmSfvA7eNcq387gKWivMCv7pp1phx52E4e+2LPM1ZzXi09ZyTphLaf
- KuHJqIvcqoVPyH36psej0P2+F9nqLW7eMk97aS9zwLEg/QDY+wrugy8oS8hOcAnRLbp0eHuXc+HG4v0GZdn0QBKqAHgcsMdxLRqUEOHWJ8FYbWagwpLlr+JE
- tATfk4Ly6J6hXp9zM6JbU4GF0gzqe1WREkjaMTPwzPeP1C5/q80vVCRZ2ic2kjxuJc9CAPe0dI9Zj5xzY1IecjS8TKxafPOAA4M+JOir0clDNJMO+3L37W7y
- qVPb1QlsSfKUzFLTT9+bSVeE2RrISZ5KTkqdJIeAtKEN+tjAsCbDSeYf738pbor7ybZYxMuzE1CWEVfRfCvA8kF6yKiinpPNum3++t5Edmq7PtMyKXnII10G
- 2cZL7w1h+v/7En2tBbLIqeQkgvI=
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dillon,
+From: Alvin Šipraga <alsi@bang-olufsen.dk>
 
-On 18/10/2021 07:04, dillon.minfei@gmail.com wrote:
-> From: Dillon Min <dillon.minfei@gmail.com>
-> 
-> stm32's clk driver register two ltdc gate clk to clk core by
-> clk_hw_register_gate() and clk_hw_register_composite()
-> 
-> first: 'stm32f429_gates[]', clk name is 'ltdc', which no user to use.
-> second: 'stm32f429_aux_clk[]', clk name is 'lcd-tft', used by ltdc driver
-> 
-> both of them point to the same offset of stm32's RCC register. after
-> kernel enter console, clk core turn off ltdc's clk as 'stm32f429_gates[]'
-> is no one to use. but, actually 'stm32f429_aux_clk[]' is in use.
-> 
-> stm32f469/746/769 have the same issue, fix it.
-> 
-> Fixes: daf2d117cbca ("clk: stm32f4: Add lcd-tft clock")
-> Acked-by: Stephen Boyd <sboyd@kernel.org>
+This series adds support for Realtek's RTL8365MB-VC, a 4+1 port
+10/100/1000M Ethernet switch. The driver - rtl8365mb - was developed by
+Michael Ramussen and myself.
 
-Just to double check (I asked as well when v1 was posted, but that's a long time ago):
-I can ignore this patch, right? If so, then make sure you follow up on this in the clk
-subsystem since it is not yet merged in mainline.
+This version of the driver is relatively slim, implementing only the
+standalone port functionality and no offload capabilities. It is based
+on a previous RFC series [1] from August, and the main difference is the
+removal of some spurious VLAN operations. Otherwise I have simply
+addressed most of the feedback. Please see the respective patches for
+more detail.
 
-If you DO want me to pick it up, then I see that the clk maintainer has already Acked
-it, so I take it as well.
+In parallel I am working on offloading the bridge layer capabilities,
+but I would like to get the basic stuff upstreamed as soon as possible.
 
-Regards,
+v3 -> v4:
+  - get irq before setting virq parents (fixes kernel test robot
+    warning)
+  - remove pad-to-72-bytes logic in tagger xmit (fixes DENG Qingfang's
+    suggestion); no longer needed as we set CPU minimum RX size to 64
+    bytes
+  - use mutex to protect MIB counter access instead of a spinlock (fixes
+    Jakub's feedback on v3 statistics refactoring)
 
-	Hans
+v2 -> v3:
+  - move IRQ setup earlier in probe per Florian's suggestion
+  - fix compilation error on some archs due to FIELD_PREP use in v1
+  - follow Jakub's suggestion and use the standard ethtool stats API;
+    NOTE: new patch in the series for relevant DSA plumbing
+  - following the stats change, it became apparent that the rtl8366
+    helper library is no longer that helpful; scrap it and implement
+    the ethtool ops specifically for this chip
 
-> Link: https://lore.kernel.org/linux-arm-kernel/1590564453-24499-7-git-send-email-dillon.minfei@gmail.com/
-> Link: https://lore.kernel.org/lkml/CAPTRvHkf0cK_4ZidM17rPo99gWDmxgqFt4CDUjqFFwkOeQeFDg@mail.gmail.com/
-> Signed-off-by: Dillon Min <dillon.minfei@gmail.com>
-> ---
-> v5: no change.
-> 
->  drivers/clk/clk-stm32f4.c | 4 ----
->  1 file changed, 4 deletions(-)
-> 
-> diff --git a/drivers/clk/clk-stm32f4.c b/drivers/clk/clk-stm32f4.c
-> index af46176ad053..473dfe632cc5 100644
-> --- a/drivers/clk/clk-stm32f4.c
-> +++ b/drivers/clk/clk-stm32f4.c
-> @@ -129,7 +129,6 @@ static const struct stm32f4_gate_data stm32f429_gates[] __initconst = {
->  	{ STM32F4_RCC_APB2ENR, 20,	"spi5",		"apb2_div" },
->  	{ STM32F4_RCC_APB2ENR, 21,	"spi6",		"apb2_div" },
->  	{ STM32F4_RCC_APB2ENR, 22,	"sai1",		"apb2_div" },
-> -	{ STM32F4_RCC_APB2ENR, 26,	"ltdc",		"apb2_div" },
->  };
->  
->  static const struct stm32f4_gate_data stm32f469_gates[] __initconst = {
-> @@ -211,7 +210,6 @@ static const struct stm32f4_gate_data stm32f469_gates[] __initconst = {
->  	{ STM32F4_RCC_APB2ENR, 20,	"spi5",		"apb2_div" },
->  	{ STM32F4_RCC_APB2ENR, 21,	"spi6",		"apb2_div" },
->  	{ STM32F4_RCC_APB2ENR, 22,	"sai1",		"apb2_div" },
-> -	{ STM32F4_RCC_APB2ENR, 26,	"ltdc",		"apb2_div" },
->  };
->  
->  static const struct stm32f4_gate_data stm32f746_gates[] __initconst = {
-> @@ -286,7 +284,6 @@ static const struct stm32f4_gate_data stm32f746_gates[] __initconst = {
->  	{ STM32F4_RCC_APB2ENR, 21,	"spi6",		"apb2_div" },
->  	{ STM32F4_RCC_APB2ENR, 22,	"sai1",		"apb2_div" },
->  	{ STM32F4_RCC_APB2ENR, 23,	"sai2",		"apb2_div" },
-> -	{ STM32F4_RCC_APB2ENR, 26,	"ltdc",		"apb2_div" },
->  };
->  
->  static const struct stm32f4_gate_data stm32f769_gates[] __initconst = {
-> @@ -364,7 +361,6 @@ static const struct stm32f4_gate_data stm32f769_gates[] __initconst = {
->  	{ STM32F4_RCC_APB2ENR, 21,	"spi6",		"apb2_div" },
->  	{ STM32F4_RCC_APB2ENR, 22,	"sai1",		"apb2_div" },
->  	{ STM32F4_RCC_APB2ENR, 23,	"sai2",		"apb2_div" },
-> -	{ STM32F4_RCC_APB2ENR, 26,	"ltdc",		"apb2_div" },
->  	{ STM32F4_RCC_APB2ENR, 30,	"mdio",		"apb2_div" },
->  };
->  
-> 
+v1 -> v2:
+  - drop DSA port type checks during MAC configuration
+  - use OF properties to configure RGMII TX/RX delay
+  - don't set default fwd_offload_mark if packet is trapped to CPU
+  - remove port mapping macros
+  - update device tree bindings documentation with an example
+  - cosmetic changes to the tagging driver using FIELD_* macros
+
+[1] https://lore.kernel.org/netdev/20210822193145.1312668-1-alvin@pqrs.dk/
+
+Alvin Šipraga (7):
+  ether: add EtherType for proprietary Realtek protocols
+  net: dsa: allow reporting of standard ethtool stats for slave devices
+  net: dsa: move NET_DSA_TAG_RTL4_A to right place in Kconfig/Makefile
+  dt-bindings: net: dsa: realtek-smi: document new compatible rtl8365mb
+  net: dsa: tag_rtl8_4: add realtek 8 byte protocol 4 tag
+  net: dsa: realtek-smi: add rtl8365mb subdriver for RTL8365MB-VC
+  net: phy: realtek: add support for RTL8365MB-VC internal PHYs
+
+ .../bindings/net/dsa/realtek-smi.txt          |   87 +
+ drivers/net/dsa/Kconfig                       |    1 +
+ drivers/net/dsa/Makefile                      |    2 +-
+ drivers/net/dsa/realtek-smi-core.c            |    4 +
+ drivers/net/dsa/realtek-smi-core.h            |    1 +
+ drivers/net/dsa/rtl8365mb.c                   | 1982 +++++++++++++++++
+ drivers/net/phy/realtek.c                     |    8 +
+ include/net/dsa.h                             |    8 +
+ include/uapi/linux/if_ether.h                 |    1 +
+ net/dsa/Kconfig                               |   20 +-
+ net/dsa/Makefile                              |    3 +-
+ net/dsa/slave.c                               |   34 +
+ net/dsa/tag_rtl8_4.c                          |  178 ++
+ 13 files changed, 2320 insertions(+), 9 deletions(-)
+ create mode 100644 drivers/net/dsa/rtl8365mb.c
+ create mode 100644 net/dsa/tag_rtl8_4.c
+
+-- 
+2.32.0
 
