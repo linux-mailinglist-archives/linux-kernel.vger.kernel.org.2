@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BBBC431E38
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:57:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9A34431AF7
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:28:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233732AbhJRN7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:59:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57384 "EHLO mail.kernel.org"
+        id S232322AbhJRN34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:29:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41308 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232993AbhJRN5A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:57:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DD9D86140B;
-        Mon, 18 Oct 2021 13:40:40 +0000 (UTC)
+        id S231862AbhJRN3E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:29:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E7EC661351;
+        Mon, 18 Oct 2021 13:26:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634564441;
-        bh=ApDastnvPLq2YFZ2J2d8fh7UgJoGtFenx9l778amDpI=;
+        s=korg; t=1634563577;
+        bh=+ib9zcQrYowbooh3z6A8+w+XpmLuLVcQcMhGzWYHZ64=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hx94ZoikoQYgNi63TY9il4CRE7vHGuNuiI9BBtqdITemj6ZFGGfxBIKENRzhsXWDT
-         yzMMgKNG9w+36lTuGpHRQpko0gT/kKCTcOoqB40UiQIGT+p5ni4W/8w94BplQF7eti
-         asloglDWnw7EMPvmGTJ5WcPR96BZ5QrO3N1b5t2Y=
+        b=ZRNMUxvSwU1ivqo1P+ZeFFbf07CdBrqtUety0coy6NZ1HJa57ygt61ZCO5xnUXWsG
+         VcEPW9/k79Y5K6EwUGHfuki0qlhfJQrNoV0fOUVABcX2QSEiONwboGGPiROVFN794+
+         09jsqD7WbGY2tgix7lnm8HoVIdRTCZHtdpfhWu2I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mateusz Kwiatkowski <kfyatek+publicgit@gmail.com>,
-        Stefan Wahren <stefan.wahren@i2se.com>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>
-Subject: [PATCH 5.14 090/151] ARM: dts: bcm283x: Fix VEC address for BCM2711
+        stable@vger.kernel.org, Paul Menzel <pmenzel@molgen.mpg.de>,
+        Borislav Petkov <bp@suse.de>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>
+Subject: [PATCH 4.14 20/39] x86/Kconfig: Do not enable AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT automatically
 Date:   Mon, 18 Oct 2021 15:24:29 +0200
-Message-Id: <20211018132343.607079864@linuxfoundation.org>
+Message-Id: <20211018132326.100974635@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132340.682786018@linuxfoundation.org>
-References: <20211018132340.682786018@linuxfoundation.org>
+In-Reply-To: <20211018132325.426739023@linuxfoundation.org>
+References: <20211018132325.426739023@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,80 +41,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mateusz Kwiatkowski <kfyatek+publicgit@gmail.com>
+From: Borislav Petkov <bp@suse.de>
 
-commit 9287e91e9019d4bc1018adb55ab791ae672e0b14 upstream.
+commit 711885906b5c2df90746a51f4cd674f1ab9fbb1d upstream.
 
-The VEC has a different address (0x7ec13000) on the BCM2711 (used in
-e.g. Raspberry Pi 4) compared to BCM283x (e.g. Pi 3 and earlier). This
-was erroneously not taken account for.
+This Kconfig option was added initially so that memory encryption is
+enabled by default on machines which support it.
 
-Definition of the VEC in the devicetrees had to be moved from
-bcm283x.dtsi to bcm2711.dtsi and bcm2835-common.dtsi to allow for this
-differentiation.
+However, devices which have DMA masks that are less than the bit
+position of the encryption bit, aka C-bit, require the use of an IOMMU
+or the use of SWIOTLB.
 
-Fixes: 7894bdc6228f ("ARM: boot: dts: bcm2711: Add BCM2711 VEC compatible")
-Signed-off-by: Mateusz Kwiatkowski <kfyatek+publicgit@gmail.com>
-Signed-off-by: Stefan Wahren <stefan.wahren@i2se.com>
-Link: https://lore.kernel.org/r/1626980528-3835-1-git-send-email-stefan.wahren@i2se.com
-Signed-off-by: Nicolas Saenz Julienne <nsaenz@kernel.org>
+If the IOMMU is disabled or in passthrough mode, the kernel would switch
+to SWIOTLB bounce-buffering for those transfers.
+
+In order to avoid that,
+
+  2cc13bb4f59f ("iommu: Disable passthrough mode when SME is active")
+
+disables the default IOMMU passthrough mode so that devices for which the
+default 256K DMA is insufficient, can use the IOMMU instead.
+
+However 2, there are cases where the IOMMU is disabled in the BIOS, etc.
+(think the usual hardware folk "oops, I dropped the ball there" cases) or a
+driver doesn't properly use the DMA APIs or a device has a firmware or
+hardware bug, e.g.:
+
+  ea68573d408f ("drm/amdgpu: Fail to load on RAVEN if SME is active")
+
+However 3, in the above GPU use case, there are APIs like Vulkan and
+some OpenGL/OpenCL extensions which are under the assumption that
+user-allocated memory can be passed in to the kernel driver and both the
+GPU and CPU can do coherent and concurrent access to the same memory.
+That cannot work with SWIOTLB bounce buffers, of course.
+
+So, in order for those devices to function, drop the "default y" for the
+SME by default active option so that users who want to have SME enabled,
+will need to either enable it in their config or use "mem_encrypt=on" on
+the kernel command line.
+
+ [ tlendacky: Generalize commit message. ]
+
+Fixes: 7744ccdbc16f ("x86/mm: Add Secure Memory Encryption (SME) support")
+Reported-by: Paul Menzel <pmenzel@molgen.mpg.de>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Acked-by: Alex Deucher <alexander.deucher@amd.com>
+Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lkml.kernel.org/r/8bbacd0e-4580-3194-19d2-a0ecad7df09c@molgen.mpg.de
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm/boot/dts/bcm2711.dtsi        |    8 ++++++++
- arch/arm/boot/dts/bcm2835-common.dtsi |    8 ++++++++
- arch/arm/boot/dts/bcm283x.dtsi        |    8 --------
- 3 files changed, 16 insertions(+), 8 deletions(-)
+ arch/x86/Kconfig |    1 -
+ 1 file changed, 1 deletion(-)
 
---- a/arch/arm/boot/dts/bcm2711.dtsi
-+++ b/arch/arm/boot/dts/bcm2711.dtsi
-@@ -300,6 +300,14 @@
- 			status = "disabled";
- 		};
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -1456,7 +1456,6 @@ config AMD_MEM_ENCRYPT
  
-+		vec: vec@7ec13000 {
-+			compatible = "brcm,bcm2711-vec";
-+			reg = <0x7ec13000 0x1000>;
-+			clocks = <&clocks BCM2835_CLOCK_VEC>;
-+			interrupts = <GIC_SPI 123 IRQ_TYPE_LEVEL_HIGH>;
-+			status = "disabled";
-+		};
-+
- 		dvp: clock@7ef00000 {
- 			compatible = "brcm,brcm2711-dvp";
- 			reg = <0x7ef00000 0x10>;
---- a/arch/arm/boot/dts/bcm2835-common.dtsi
-+++ b/arch/arm/boot/dts/bcm2835-common.dtsi
-@@ -106,6 +106,14 @@
- 			status = "okay";
- 		};
- 
-+		vec: vec@7e806000 {
-+			compatible = "brcm,bcm2835-vec";
-+			reg = <0x7e806000 0x1000>;
-+			clocks = <&clocks BCM2835_CLOCK_VEC>;
-+			interrupts = <2 27>;
-+			status = "disabled";
-+		};
-+
- 		pixelvalve@7e807000 {
- 			compatible = "brcm,bcm2835-pixelvalve2";
- 			reg = <0x7e807000 0x100>;
---- a/arch/arm/boot/dts/bcm283x.dtsi
-+++ b/arch/arm/boot/dts/bcm283x.dtsi
-@@ -464,14 +464,6 @@
- 			status = "disabled";
- 		};
- 
--		vec: vec@7e806000 {
--			compatible = "brcm,bcm2835-vec";
--			reg = <0x7e806000 0x1000>;
--			clocks = <&clocks BCM2835_CLOCK_VEC>;
--			interrupts = <2 27>;
--			status = "disabled";
--		};
--
- 		usb: usb@7e980000 {
- 			compatible = "brcm,bcm2835-usb";
- 			reg = <0x7e980000 0x10000>;
+ config AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT
+ 	bool "Activate AMD Secure Memory Encryption (SME) by default"
+-	default y
+ 	depends on AMD_MEM_ENCRYPT
+ 	---help---
+ 	  Say yes to have system memory encrypted by default if running on
 
 
