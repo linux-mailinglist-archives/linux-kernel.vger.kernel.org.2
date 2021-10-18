@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA2FA431D28
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:47:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD591431E8F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 16:00:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232055AbhJRNsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:48:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40222 "EHLO mail.kernel.org"
+        id S234446AbhJROCY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 10:02:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41920 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232019AbhJRNqR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:46:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CA345615E3;
-        Mon, 18 Oct 2021 13:36:01 +0000 (UTC)
+        id S234519AbhJROAY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 10:00:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4206461353;
+        Mon, 18 Oct 2021 13:42:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634564162;
-        bh=LPBpZ1pxDWZuPDwEUK+cZZQ+4RE9MfJW6xmxK5RsY88=;
+        s=korg; t=1634564536;
+        bh=SyN04pPK4PBEiS8Av1SoZaec2ubE95+27Hq9MKHlG14=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DyM78QTxF8rTuZII7dVQnN4R0+1RbAC4F/Q7aAN/ohSz71Nx/dnalbAtz1tYUUOOh
-         O5PlotfmmzMa2mpJiKDoyfQPBL1TVyRH29XsDDHCSljg1iQiMBFsx68q6xnramlU0d
-         2kSAxW5/Ia7TkSIrVUZVA+8q0wVcwqyHsfDnadeQ=
+        b=Ah3bkGoHCdN871P1QBYcIINPbR/WCDAETufW2FxbwRdMs95Y6kGHRFQwlEuWqE0oo
+         g0s0hWCaj67EuwLXIwnTwizJFYsM2x2w7SJzWAEsnyS7/ZC9gduA7trfwJZppbfmjL
+         axFJjR20VRiCHY6ocpsHyAUfoeIFn7u40m4pBIxs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -28,12 +28,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         <ville.syrjala@linux.intel.com>,
         Douglas Anderson <dianders@chromium.org>,
         Dave Airlie <airlied@redhat.com>
-Subject: [PATCH 5.10 089/103] drm/edid: In connector_bad_edid() cap num_of_ext by num_blocks read
+Subject: [PATCH 5.14 126/151] drm/edid: In connector_bad_edid() cap num_of_ext by num_blocks read
 Date:   Mon, 18 Oct 2021 15:25:05 +0200
-Message-Id: <20211018132337.740474080@linuxfoundation.org>
+Message-Id: <20211018132344.770075577@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132334.702559133@linuxfoundation.org>
-References: <20211018132334.702559133@linuxfoundation.org>
+In-Reply-To: <20211018132340.682786018@linuxfoundation.org>
+References: <20211018132340.682786018@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -73,7 +73,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/drivers/gpu/drm/drm_edid.c
 +++ b/drivers/gpu/drm/drm_edid.c
-@@ -1835,11 +1835,20 @@ static void connector_bad_edid(struct dr
+@@ -1834,11 +1834,20 @@ static void connector_bad_edid(struct dr
  			       u8 *edid, int num_blocks)
  {
  	int i;
