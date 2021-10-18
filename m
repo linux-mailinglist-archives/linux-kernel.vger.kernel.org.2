@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A6B7431BB6
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:32:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBCCD431CE6
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:44:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233019AbhJRNea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:34:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41820 "EHLO mail.kernel.org"
+        id S232565AbhJRNpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:45:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38642 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232592AbhJRNc2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:32:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C887C613A3;
-        Mon, 18 Oct 2021 13:29:18 +0000 (UTC)
+        id S234013AbhJRNnl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:43:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 33EFE6135E;
+        Mon, 18 Oct 2021 13:34:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634563759;
-        bh=ua89X3wkJH7YUfLcL3sxpZ8BGsUVN7KsUotGZZ66I9M=;
+        s=korg; t=1634564082;
+        bh=sH1yKxxos5/co1fIbgisEwbOaF8zHZ/40AoBPTdz9SU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uEVsfMAyRaeS4SduEzIiSkV6Vm+Jxyat0Sgy1TCzQeoAB2my8h+HJmldMATloSSoy
-         N5RfxdhwlFqUz4o3gAjKW4I//SGwdbtOonvA+e89XVpGoJo/UUCGioXupzacZseVTG
-         5ZfhBf1g0S4/sOUuDB0E/ps3G5E9AZOWvfPA+dDo=
+        b=RQb+W5i70Ye+jR6+A++dHEdL4y3kW+9QOOprOhxqUnGB2eQlcQfqWqPen1FW3QyXG
+         /9KCOSm5DMo2ci7tJbODEaasesXzkMAJK08m0EBtdIIMv6j/KDaZcY0WlpituYQaGZ
+         4sHddfQGfqTc9OG5OaxihjOtx3hpjlqIJrf1Y3qA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Billy Tsai <billy_tsai@aspeedtech.com>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
         Stable@vger.kernel.org,
         Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 4.19 27/50] iio: adc: aspeed: set driver data when adc probe.
-Date:   Mon, 18 Oct 2021 15:24:34 +0200
-Message-Id: <20211018132327.442140159@linuxfoundation.org>
+Subject: [PATCH 5.10 059/103] iio: ssp_sensors: add more range checking in ssp_parse_dataframe()
+Date:   Mon, 18 Oct 2021 15:24:35 +0200
+Message-Id: <20211018132336.744917698@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132326.529486647@linuxfoundation.org>
-References: <20211018132326.529486647@linuxfoundation.org>
+In-Reply-To: <20211018132334.702559133@linuxfoundation.org>
+References: <20211018132334.702559133@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,31 +40,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Billy Tsai <billy_tsai@aspeedtech.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-commit eb795cd97365a3d3d9da3926d234a7bc32a3bb15 upstream.
+commit 8167c9a375ccceed19048ad9d68cb2d02ed276e0 upstream.
 
-Fix the issue when adc remove will get the null driver data.
+The "idx" is validated at the start of the loop but it gets incremented
+during the iteration so it needs to be checked again.
 
-Fixed: commit 573803234e72 ("iio: Aspeed ADC")
-Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
-Link: https://lore.kernel.org/r/20210831071458.2334-2-billy_tsai@aspeedtech.com
+Fixes: 50dd64d57eee ("iio: common: ssp_sensors: Add sensorhub driver")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Link: https://lore.kernel.org/r/20210909091336.GA26312@kili
 Cc: <Stable@vger.kernel.org>
 Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/iio/adc/aspeed_adc.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/iio/common/ssp_sensors/ssp_spi.c |    9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
---- a/drivers/iio/adc/aspeed_adc.c
-+++ b/drivers/iio/adc/aspeed_adc.c
-@@ -188,6 +188,7 @@ static int aspeed_adc_probe(struct platf
+--- a/drivers/iio/common/ssp_sensors/ssp_spi.c
++++ b/drivers/iio/common/ssp_sensors/ssp_spi.c
+@@ -273,6 +273,8 @@ static int ssp_parse_dataframe(struct ss
+ 	for (idx = 0; idx < len;) {
+ 		switch (dataframe[idx++]) {
+ 		case SSP_MSG2AP_INST_BYPASS_DATA:
++			if (idx >= len)
++				return -EPROTO;
+ 			sd = dataframe[idx++];
+ 			if (sd < 0 || sd >= SSP_SENSOR_MAX) {
+ 				dev_err(SSP_DEV,
+@@ -282,10 +284,13 @@ static int ssp_parse_dataframe(struct ss
  
- 	data = iio_priv(indio_dev);
- 	data->dev = &pdev->dev;
-+	platform_set_drvdata(pdev, indio_dev);
- 
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	data->base = devm_ioremap_resource(&pdev->dev, res);
+ 			if (indio_devs[sd]) {
+ 				spd = iio_priv(indio_devs[sd]);
+-				if (spd->process_data)
++				if (spd->process_data) {
++					if (idx >= len)
++						return -EPROTO;
+ 					spd->process_data(indio_devs[sd],
+ 							  &dataframe[idx],
+ 							  data->timestamp);
++				}
+ 			} else {
+ 				dev_err(SSP_DEV, "no client for frame\n");
+ 			}
+@@ -293,6 +298,8 @@ static int ssp_parse_dataframe(struct ss
+ 			idx += ssp_offset_map[sd];
+ 			break;
+ 		case SSP_MSG2AP_INST_DEBUG_DATA:
++			if (idx >= len)
++				return -EPROTO;
+ 			sd = ssp_print_mcu_debug(dataframe, &idx, len);
+ 			if (sd) {
+ 				dev_err(SSP_DEV,
 
 
