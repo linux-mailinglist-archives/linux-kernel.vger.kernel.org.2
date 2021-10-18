@@ -2,116 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A0D64312C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 11:10:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B7044312C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 11:11:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231380AbhJRJND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 05:13:03 -0400
-Received: from mga09.intel.com ([134.134.136.24]:32397 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231149AbhJRJNA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 05:13:00 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10140"; a="228087115"
-X-IronPort-AV: E=Sophos;i="5.85,381,1624345200"; 
-   d="scan'208";a="228087115"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2021 02:10:44 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,381,1624345200"; 
-   d="scan'208";a="443330095"
-Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.171])
-  by orsmga006.jf.intel.com with SMTP; 18 Oct 2021 02:10:41 -0700
-Received: by stinkbox (sSMTP sendmail emulation); Mon, 18 Oct 2021 12:10:40 +0300
-Date:   Mon, 18 Oct 2021 12:10:40 +0300
-From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        =?iso-8859-1?Q?D=E1vid_Bolvansk=FD?= <david.bolvansky@gmail.com>
-Subject: Re: [PATCH] drm/i915: Avoid bitwise vs logical OR warning in
- snb_wm_latency_quirk()
-Message-ID: <YW06ED6XvTcrD9wP@intel.com>
-References: <20211014211916.3550122-1-nathan@kernel.org>
- <CAKwvOdmSFP98Mc1u2b+=_Dux9eB_yumRvxOx7UTXuyXOYzG3uA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAKwvOdmSFP98Mc1u2b+=_Dux9eB_yumRvxOx7UTXuyXOYzG3uA@mail.gmail.com>
-X-Patchwork-Hint: comment
+        id S231383AbhJRJNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 05:13:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231149AbhJRJNe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 05:13:34 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79BE6C06161C;
+        Mon, 18 Oct 2021 02:11:23 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id m21so15439850pgu.13;
+        Mon, 18 Oct 2021 02:11:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id;
+        bh=Ewy/OKswLYPZAgNcZXQwvve5zSIn1eK4olZjK+6v5cE=;
+        b=DrVPf6LaBZ2rOkH0DPMaGRbRtFfL8B0052hB2ZYe1ZIcJXeTl9ncExV9IOQTRVkx7K
+         DxYQv1sN8p9ZTf3hcNGtVxmnrB+XAqGBGino9YvXL4wMkQTR2EIYY0XEnll8iuwmqtP1
+         KzzqZeoDJsVjgYvIh2pHcE3YqKmaUSe6gEOtDdWyDE2QCDv5V3tVwRgXCzP1TeRqPEK4
+         SmKk2ONaJh2UvO82sFAYjqQX3ScFLT1wUmyYeKVuyJjjTE+y5S05UMrk9KsTjj+uDRAa
+         KcZouhu7ixR0FHjxD5+qw8rsrfWdK/d59UpztXGkkJmEfy7nZeanBH0sIOad/LH9ol8M
+         hM0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=Ewy/OKswLYPZAgNcZXQwvve5zSIn1eK4olZjK+6v5cE=;
+        b=cIYT/5c9eJC/jkBkoiuwlntewdDaObv6pIDcxVuIljDNEbaXbB8uwnUU1Hh0sFQ+Tc
+         o0LCldu0/c/2DauEQ4AXIb/UjisInLuYZYUPh1h8ky424OVoZR/rnTiQ3UV2bsrohJSR
+         gxFI/WpV5uq47FZIeXiDMa087D6t8i8i3HrUqo6TayMOPAHtdoFOXI/DdntEmDzXq58t
+         HUUP7rU9e1hhDR4fjJ670dO3NheV3NmjLddqwyjcBoazQ5o1tmvaBO8DDNmPAQ0i+q8T
+         lEN/tDrNWjYteypoVfTONxUmvqHR8tmx6+r4KZFzszJ+GLBUzKCvkGa6q3z9SlAAPhld
+         SBIQ==
+X-Gm-Message-State: AOAM533IG/RC4S0e/hI8rAG+sw838I5oKaPxlNAjU/9z+K+ebxIoBlrG
+        Iyi1Vb8WRUiJIPtw3aGbc6E=
+X-Google-Smtp-Source: ABdhPJwspwvNNJxse0N4olrSeBZoCa5R9srL0m3FyRh5mIUP+AWhbt97viHoUfYL6Xp9xXnrrAFfNA==
+X-Received: by 2002:a05:6a00:9a2:b0:44c:b979:afe3 with SMTP id u34-20020a056a0009a200b0044cb979afe3mr11666105pfg.61.1634548283020;
+        Mon, 18 Oct 2021 02:11:23 -0700 (PDT)
+Received: from BJ-zhangqiang.qcraft.lan ([137.59.101.13])
+        by smtp.gmail.com with ESMTPSA id oc8sm12916951pjb.15.2021.10.18.02.11.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Oct 2021 02:11:22 -0700 (PDT)
+From:   Zqiang <qiang.zhang1211@gmail.com>
+To:     axboe@kernel.dk, hch@lst.de, willy@infradead.org,
+        sunhao.th@gmail.com, hch@infradead.org
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Zqiang <qiang.zhang1211@gmail.com>
+Subject: [PATCH] block: fix incorrect references to disk objects
+Date:   Mon, 18 Oct 2021 17:11:16 +0800
+Message-Id: <20211018091116.16874-1-qiang.zhang1211@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 02:21:43PM -0700, Nick Desaulniers wrote:
-> On Thu, Oct 14, 2021 at 2:19 PM Nathan Chancellor <nathan@kernel.org> wrote:
-> >
-> > A new warning in clang points out a place in this file where a bitwise
-> > OR is being used with boolean types:
-> >
-> > drivers/gpu/drm/i915/intel_pm.c:3066:12: warning: use of bitwise '|' with boolean operands [-Wbitwise-instead-of-logical]
-> >         changed = ilk_increase_wm_latency(dev_priv, dev_priv->wm.pri_latency, 12) |
-> >                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> >
-> > This construct is intentional, as it allows every one of the calls to
-> > ilk_increase_wm_latency() to occur (instead of short circuiting with
-> > logical OR) while still caring about the result of each call.
-> >
-> > To make this clearer to the compiler, use the '|=' operator to assign
-> > the result of each ilk_increase_wm_latency() call to changed, which
-> > keeps the meaning of the code the same but makes it obvious that every
-> > one of these calls is expected to happen.
+When adding partitions to the disk, the reference count of the disk
+object is increased. then alloc partition device and called
+device_add(), if the device_add() return error, the reference
+count of the disk object will be reduced twice, at put_device(pdev)
+and put_disk(disk). this leads to the end of the object's life cycle
+prematurely, and trigger following calltrace.
 
-Sure, why not.
+  __init_work+0x2d/0x50 kernel/workqueue.c:519
+  synchronize_rcu_expedited+0x3af/0x650 kernel/rcu/tree_exp.h:847
+  bdi_remove_from_list mm/backing-dev.c:938 [inline]
+  bdi_unregister+0x17f/0x5c0 mm/backing-dev.c:946
+  release_bdi+0xa1/0xc0 mm/backing-dev.c:968
+  kref_put include/linux/kref.h:65 [inline]
+  bdi_put+0x72/0xa0 mm/backing-dev.c:976
+  bdev_free_inode+0x11e/0x220 block/bdev.c:408
+  i_callback+0x3f/0x70 fs/inode.c:226
+  rcu_do_batch kernel/rcu/tree.c:2508 [inline]
+  rcu_core+0x76d/0x16c0 kernel/rcu/tree.c:2743
+  __do_softirq+0x1d7/0x93b kernel/softirq.c:558
+  invoke_softirq kernel/softirq.c:432 [inline]
+  __irq_exit_rcu kernel/softirq.c:636 [inline]
+  irq_exit_rcu+0xf2/0x130 kernel/softirq.c:648
+  sysvec_apic_timer_interrupt+0x93/0xc0
 
-> >
-> > Link: https://github.com/ClangBuiltLinux/linux/issues/1473
-> > Reported-by: Nick Desaulniers <ndesaulniers@google.com>
-> 
-> Thanks for the patch!
-> Suggested-by: Dávid Bolvanský <david.bolvansky@gmail.com>
-> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-> 
+making disk is NULL when calling put_disk().
 
-Thanks for the patch+review. Applied to drm-intel-next.
+Reported-by: Hao Sun <sunhao.th@gmail.com>
+Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+---
+ block/partitions/core.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-> > Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-> > ---
-> >  drivers/gpu/drm/i915/intel_pm.c | 6 +++---
-> >  1 file changed, 3 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/drivers/gpu/drm/i915/intel_pm.c b/drivers/gpu/drm/i915/intel_pm.c
-> > index f90fe39cf8ca..aaa3a0998e4c 100644
-> > --- a/drivers/gpu/drm/i915/intel_pm.c
-> > +++ b/drivers/gpu/drm/i915/intel_pm.c
-> > @@ -3050,9 +3050,9 @@ static void snb_wm_latency_quirk(struct drm_i915_private *dev_priv)
-> >          * The BIOS provided WM memory latency values are often
-> >          * inadequate for high resolution displays. Adjust them.
-> >          */
-> > -       changed = ilk_increase_wm_latency(dev_priv, dev_priv->wm.pri_latency, 12) |
-> > -               ilk_increase_wm_latency(dev_priv, dev_priv->wm.spr_latency, 12) |
-> > -               ilk_increase_wm_latency(dev_priv, dev_priv->wm.cur_latency, 12);
-> > +       changed = ilk_increase_wm_latency(dev_priv, dev_priv->wm.pri_latency, 12);
-> > +       changed |= ilk_increase_wm_latency(dev_priv, dev_priv->wm.spr_latency, 12);
-> > +       changed |= ilk_increase_wm_latency(dev_priv, dev_priv->wm.cur_latency, 12);
-> >
-> >         if (!changed)
-> >                 return;
-> >
-> > base-commit: d73b17465d6da0a94bc0fcc86b150e1e923e8f71
-> > --
-> > 2.33.1.637.gf443b226ca
-> >
-> 
-> 
-> -- 
-> Thanks,
-> ~Nick Desaulniers
-
+diff --git a/block/partitions/core.c b/block/partitions/core.c
+index 3a4898433c43..4cb6803e7021 100644
+--- a/block/partitions/core.c
++++ b/block/partitions/core.c
+@@ -424,6 +424,7 @@ static struct block_device *add_partition(struct gendisk *disk, int partno,
+ 	device_del(pdev);
+ out_put:
+ 	put_device(pdev);
++	disk = NULL;
+ out_put_disk:
+ 	put_disk(disk);
+ 	return ERR_PTR(err);
 -- 
-Ville Syrjälä
-Intel
+2.17.1
+
