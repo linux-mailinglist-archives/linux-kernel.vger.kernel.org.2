@@ -2,70 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D70CD431A08
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 14:50:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3833D431A13
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 14:51:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231611AbhJRMwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 08:52:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50076 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229833AbhJRMwS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 08:52:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 3F62B60FD9;
-        Mon, 18 Oct 2021 12:50:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634561407;
-        bh=Ds0JNRtVk6u3hGs8FEGVHgmbZ7RmfBbS2aG3v6pF0iM=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=gZbVE0F3A2TkbMJeLCMs7OGgUI8KSPlwG8puLlzVqszlEbRK58chHV4oa/cAF+vOM
-         78a5aE53kJx9E4SuXhLGGH0+IIaXwHwqzNmNApTlbxFAlbdQn/To1L6fP2G+6R9wLW
-         iI6H8vkstwpLd4qvqGqat5mGXHE21SIFq9FUi/LXNVulzKMouKqec6b2Rxrwr2ASLr
-         KhL+CC6jGhOpa9KdKDKv/0p1c59JWGzo3adUr576NR97FDnxYbAuhTa/52ga1Gmg33
-         t52Rx+6sR+Rj7ZoUkbBbvyn4ADquS9WZNm+Vd5SfpyCUES/03dqxFp0LlWkJpS1haA
-         uNEl3FUa22CQQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 32AA6609AD;
-        Mon, 18 Oct 2021 12:50:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S231773AbhJRMxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 08:53:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54324 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229519AbhJRMxp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 08:53:45 -0400
+Received: from mail-ua1-x931.google.com (mail-ua1-x931.google.com [IPv6:2607:f8b0:4864:20::931])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7773C06161C;
+        Mon, 18 Oct 2021 05:51:34 -0700 (PDT)
+Received: by mail-ua1-x931.google.com with SMTP id a17so1850676uax.12;
+        Mon, 18 Oct 2021 05:51:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/nfbXXf+EuyVINKupRSDZdDXc4S8gFPqrfjLCLl4V00=;
+        b=MAGHPcnb/9gYIWnkZcbnZFNp8uEqcMIjJR2Zl2CB2FEqNkWOgE6+wCROpoiBf29Hh5
+         IgpCnQbP86IJUarKUL6VdnfemqNWHr3/RuOOxtu9xkfjI6rmvlkgGBxcw2pO20UOnRtV
+         X/xS5pMigMfWQmaBzLHtdoU8WiR94BM4xzfGSIYbLmSd2qwW/utsCGxkLXA0CMPxVI4j
+         5XdQbvCfYONT/JBUQrIg6B5ZBaCnrlvzRuqREEKKGVjWCzqJc+TsJDLNX+Jn0vzzxVDY
+         hgQ75DvGz2T9e9W6YTGOWczeuB/oE90yO9NsyOlqMFRsal0d0D9ACTG0i0CK4k4FSFMW
+         5BXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/nfbXXf+EuyVINKupRSDZdDXc4S8gFPqrfjLCLl4V00=;
+        b=BMAdRn9olyFdIvkj136DPPO7AX4hw45h5LHdutc01IGRgTZSJRTi/bfG+BkNl6SWaO
+         /fxj8NTewmjBa8hrZCGge8eTsoUDOXs1S4plpyFq6SH23skeSwlvpBNnnQe6MndoLqvT
+         rE1RYpUkkC1kQGtQFCaZ2Dr2oeYoyNVeeQD9GHDJMxxw85mmEPfIM+qM/Fxky2ceGxlo
+         8D1o0CmYVE8eUL1nwNkRS7c5ChefVapCBhzRWZzHDSMComRrNGELSGCwpPkWCMO2dlHL
+         LUgqeoew4TEL0W1ldOQCxsy4oT61PEffVxI6c1URjSlXKZEAPE7mBcZo1FL9P9kfCtJz
+         axEw==
+X-Gm-Message-State: AOAM530YPpRZQC0B+yu1TgWGMarBwYFlTa56OfVTBme1PT+sEI3C2/1X
+        6He7M8KEo+D61rMdQN9Ht/U=
+X-Google-Smtp-Source: ABdhPJykCtIT1u9WUnVsysQNWFH1/Q7hBEPJNpDptCqrD3goNwNNMu/3PJAMQiQRSdBF2usXQQrmgA==
+X-Received: by 2002:a67:6044:: with SMTP id u65mr27001050vsb.41.1634561493877;
+        Mon, 18 Oct 2021 05:51:33 -0700 (PDT)
+Received: from rog-zephyrus.. ([201.46.20.90])
+        by smtp.gmail.com with ESMTPSA id f27sm8812128vsl.7.2021.10.18.05.51.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Oct 2021 05:51:33 -0700 (PDT)
+From:   "Vinicius A. Reis" <angiolucci@gmail.com>
+To:     jikos@kernel.org
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Vinicius A. Reis" <angiolucci@gmail.com>
+Subject: [PATCH] HID: hid-asus: Maps 0x35 to KEY_SCREENLOCK
+Date:   Mon, 18 Oct 2021 09:51:10 -0300
+Message-Id: <20211018125110.3224-1-angiolucci@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net: mscc: ocelot: Add of_node_put() before goto
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163456140720.28486.17264466971265998997.git-patchwork-notify@kernel.org>
-Date:   Mon, 18 Oct 2021 12:50:07 +0000
-References: <20211018013232.3732-1-wanjiabing@vivo.com>
-In-Reply-To: <20211018013232.3732-1-wanjiabing@vivo.com>
-To:     Wan Jiabing <wanjiabing@vivo.com>
-Cc:     vladimir.oltean@nxp.com, claudiu.manoil@nxp.com,
-        alexandre.belloni@bootlin.com, UNGLinuxDriver@microchip.com,
-        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kael_w@yeah.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Asus laptops are able to turn both the display and keyboard backlit off
+by pressing a dedicated "turn display off" key (usually fn+f6). However,
+on Linux systems, this key has no effect at all since most desktop
+environments don't deal with KEY_DISPLAY_OFF. By mapping that key to
+KEY_SCREENLOCK instead, would enable it to work as close as intended by
+the manufacturer, since desktop envirorments would handle this as a
+screen lock request by the user, locking the screen (and turning both
+the display and keyboard backlit off on environments that support it).
 
-This patch was applied to netdev/net.git (master)
-by David S. Miller <davem@davemloft.net>:
+Signed-off-by: Vinicius A. Reis <angiolucci@gmail.com>
+---
+ drivers/hid/hid-asus.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-On Sun, 17 Oct 2021 21:32:32 -0400 you wrote:
-> Fix following coccicheck warning:
-> ./drivers/net/ethernet/mscc/ocelot_vsc7514.c:946:1-33: WARNING: Function
-> for_each_available_child_of_node should have of_node_put() before goto.
-> 
-> Early exits from for_each_available_child_of_node should decrement the
-> node reference counter.
-> 
-> [...]
-
-Here is the summary with links:
-  - net: mscc: ocelot: Add of_node_put() before goto
-    https://git.kernel.org/netdev/net/c/d1a7b9e46965
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+diff --git a/drivers/hid/hid-asus.c b/drivers/hid/hid-asus.c
+index f3ecddc519ee..e5c7bfa68cd6 100644
+--- a/drivers/hid/hid-asus.c
++++ b/drivers/hid/hid-asus.c
+@@ -854,7 +854,9 @@ static int asus_input_mapping(struct hid_device *hdev,
+ 		switch (usage->hid & HID_USAGE) {
+ 		case 0x10: asus_map_key_clear(KEY_BRIGHTNESSDOWN);	break;
+ 		case 0x20: asus_map_key_clear(KEY_BRIGHTNESSUP);		break;
+-		case 0x35: asus_map_key_clear(KEY_DISPLAY_OFF);		break;
++		case 0x35:
++			asus_map_key_clear(KEY_SCREENLOCK);
++			break;
+ 		case 0x6c: asus_map_key_clear(KEY_SLEEP);		break;
+ 		case 0x7c: asus_map_key_clear(KEY_MICMUTE);		break;
+ 		case 0x82: asus_map_key_clear(KEY_CAMERA);		break;
+-- 
+2.32.0
 
