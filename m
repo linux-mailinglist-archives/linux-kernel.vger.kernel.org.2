@@ -2,109 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 059EE4328F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 23:15:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFC724328F9
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 23:18:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233867AbhJRVRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 17:17:48 -0400
-Received: from foss.arm.com ([217.140.110.172]:42942 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229554AbhJRVRr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 17:17:47 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A2D0AD6E;
-        Mon, 18 Oct 2021 14:15:35 -0700 (PDT)
-Received: from [10.57.25.70] (unknown [10.57.25.70])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 203773F73D;
-        Mon, 18 Oct 2021 14:15:33 -0700 (PDT)
-Subject: Re: [PATCH v5 10/15] coresight: trbe: Workaround TRBE errata
- overwrite in FILL mode
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     will@kernel.org, catalin.marinas@arm.com,
-        anshuman.khandual@arm.com, mike.leach@linaro.org,
-        leo.yan@linaro.org, maz@kernel.org, coresight@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20211014223125.2605031-1-suzuki.poulose@arm.com>
- <20211014223125.2605031-11-suzuki.poulose@arm.com>
- <20211018155154.GB3163131@p14s>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <d7072a9b-542d-08af-6e7c-64f81e0a1e17@arm.com>
-Date:   Mon, 18 Oct 2021 22:15:32 +0100
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        id S231883AbhJRVUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 17:20:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58326 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229524AbhJRVUv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 17:20:51 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFC51C06161C;
+        Mon, 18 Oct 2021 14:18:39 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id kk10so13128447pjb.1;
+        Mon, 18 Oct 2021 14:18:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=whn6ElcSPtvDWMaZcHna4NLQGucnXh773vssx95SaXg=;
+        b=U3Zq/SO6Mvpo0ucY8KLXAOZeZzg1RL9qb2J51WIvqJ4ElmtdQqXDGG6LKDEZqny/RD
+         Jri1ImAOeEf4uKsJO2Wep3ZAeGPdgJRpooEl31l434Ly+KOfA51rY9TVXtOUYOh9p7uK
+         jpIO4ZpaD2Uw5/dK1FTbAXgfW3zKksJU62J+cQnj6FBN8TY+YmZRw8X62VcXFQdhgVVv
+         0VBSQ0n2VpCB/Q0fMjPQHFkNCstqO61reRHdD/6MVtdS/5XZzvMIosYOCdoOz7mD0N/J
+         1Z+7qlUROObHfJpsRQSqPDGUW1PSRly4lCmeR6091iYOmkdo2OaOU79wHwElvGAsBMoS
+         YKpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=whn6ElcSPtvDWMaZcHna4NLQGucnXh773vssx95SaXg=;
+        b=xCh8POWMDla7eur6PP2/ZJHDgd6IPwp7vxAYRSbCX6hbLWHpfI8cN3lkKnJtClB45B
+         GlN8Rd7bxWpic0UnsspsMaMwVCYeMU0fg+sGUH6k6cwTcWXMVm8/l2w6f2ELzgVAIvPY
+         /Wg0WRngQ7MYwBk/WUVekL2JytuzIz9PclLYJh8kz+l2mLzYNVNFLuCE+1xzfKMNQD64
+         RCFlFH15N4/XeUZXsvXAFBdRyQIvjU5vjNNw6Rr3BzmwMC6YdQVy5EKmG2Hqv5yw0k0k
+         569Z34ELkXLJMxBKl7uDzqsSPRRk/OwzJeopW/xrRNfZdbZ2dUosMrmrudL7VrPTJidd
+         6Dww==
+X-Gm-Message-State: AOAM530ZxyuqocNBtlM82zd1w6tGxwl5NKqEL0iC7/3Bqqe/evUeorv5
+        xqeJ/T+Hs9vU2zuf1MAg9ZdXLQ7JCKI=
+X-Google-Smtp-Source: ABdhPJwUp+rqMdKaKHS2VCWPGKnofGXfCx3XP69QeSfxPuO9PZCmeYrZAbzI1p4rx6/FVG0gNrQ5pA==
+X-Received: by 2002:a17:902:e0d5:b0:13f:25a0:d26b with SMTP id e21-20020a170902e0d500b0013f25a0d26bmr29742458pla.53.1634591919010;
+        Mon, 18 Oct 2021 14:18:39 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id q1sm10141721pgt.90.2021.10.18.14.18.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Oct 2021 14:18:38 -0700 (PDT)
+Subject: Re: [PATCH 5.10 000/103] 5.10.75-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20211018132334.702559133@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <1251692e-ef14-21f0-f863-acd718bc634e@gmail.com>
+Date:   Mon, 18 Oct 2021 14:18:36 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20211018155154.GB3163131@p14s>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+In-Reply-To: <20211018132334.702559133@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/10/2021 16:51, Mathieu Poirier wrote:
-> On Thu, Oct 14, 2021 at 11:31:20PM +0100, Suzuki K Poulose wrote:
->> ARM Neoverse-N2 (#2139208) and Cortex-A710(##2119858) suffers from
->> an erratum, which when triggered, might cause the TRBE to overwrite
->> the trace data already collected in FILL mode, in the event of a WRAP.
->> i.e, the TRBE doesn't stop writing the data, instead wraps to the base
->> and could write upto 3 cache line size worth trace. Thus, this could
->> corrupt the trace at the "BASE" pointer.
->>
->> The workaround is to program the write pointer 256bytes from the
->> base, such that if the erratum is triggered, it doesn't overwrite
->> the trace data that was captured. This skipped region could be
->> padded with ignore packets at the end of the session, so that
->> the decoder sees a continuous buffer with some padding at the
->> beginning. The trace data written at the base is considered
->> lost as the limit could have been in the middle of the perf
->> ring buffer, and jumping to the "base" is not acceptable.
->> We set the flags already to indicate that some amount of trace
->> was lost during the FILL event IRQ. So this is fine.
->>
->> One important change with the work around is, we program the
->> TRBBASER_EL1 to current page where we are allowed to write.
->> Otherwise, it could overwrite a region that may be consumed
->> by the perf. Towards this, we always make sure that the
->> "handle->head" and thus the trbe_write is PAGE_SIZE aligned,
->> so that we can set the BASE to the PAGE base and move the
->> TRBPTR to the 256bytes offset.
->>
->> Cc: Mike Leach <mike.leach@linaro.org>
->> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
->> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
->> Cc: Leo Yan <leo.yan@linaro.org>
->> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
->> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
->> ---
->> Changes since v2:
->>   - Updated the ASCII art to include better description of
->>     all the steps in the work around
->> Change since v1:
->>   - Updated comment with ASCII art
->>   - Add _BYTES suffix for the space to skip for the work around.
->> ---
->>   drivers/hwtracing/coresight/coresight-trbe.c | 169 +++++++++++++++++--
->>   1 file changed, 158 insertions(+), 11 deletions(-)
->>
->> diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
->> index 314e5e7374c7..b56b166b2dec 100644
->> --- a/drivers/hwtracing/coresight/coresight-trbe.c
->> +++ b/drivers/hwtracing/coresight/coresight-trbe.c
->> @@ -16,6 +16,7 @@
->>   #define pr_fmt(fmt) DRVNAME ": " fmt
->>   
->>   #include <asm/barrier.h>
->> +#include <asm/cpufeature.h>
+On 10/18/21 6:23 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.75 release.
+> There are 103 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Here too I get a checkpatch warning...
+> Responses should be made by Wed, 20 Oct 2021 13:23:15 +0000.
+> Anything received after that time might be too late.
 > 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.75-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-That is a false alarm. I guess that warns for including
-linux/cpufeature.h? It is a bit odd, we include this
-for the arm64 cpucaps, not the generic linux feature
-checks. (They are used for "loading modules" based
-on "features" which are more like ELF HWCAPs).
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
 
-As such I chose to ignore it.
-
-Suzuki
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
