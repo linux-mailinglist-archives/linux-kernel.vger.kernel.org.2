@@ -2,171 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94FFE43130D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 11:15:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02136431315
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 11:16:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231549AbhJRJRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 05:17:12 -0400
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:16906 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231567AbhJRJQy (ORCPT
+        id S231464AbhJRJSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 05:18:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60120 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231501AbhJRJS0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 05:16:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1634548483; x=1666084483;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=+GOBKGZE8qV030U5WlyM99ORTXZIFIqw7hbODktZ6b4=;
-  b=Ro57GLv7L4mUQKs1cTKdiwBRY7vEEA53PEtSYXor0bKkxTJ08M5qg9R7
-   qZHCixjmRO10rHTen+ccR3bIYSbD2k++3ycg6Bw7dFhk+OPgm4B11hFdi
-   oofF4jr/RZpoY3kPsN3nWHwCcONMTG/WXQiVghmDEcnKOeAC/W7v8hLZn
-   CsGJgfWnz6BQlv29x/KLQyYniZoqqb/vCYOD+8WGOGConDceqvJe1Ljwe
-   7V5DEwjJyDCV0g2360XnN/EELCC/B7o9lAjHO29l8ey9fsI/z1cQ43hCg
-   X4fqsoEK3hWZ28JNAGP0jfaPk8fUMDo4nMwN868MFmnI85NZBxlVE3sNZ
-   g==;
-IronPort-SDR: JqDL+hl7PNWSAe1qF7MA55FkX+1IvFQ5Tz2mDf89jfsEIERx6uVpRIwBVeP4rWCECyUF+D3OKk
- NGEYwzXyWdqu3dZ86RxWkDMX99kDYwV1U4MgEoYFCIkERoKH6wa5cghOmIAQaaOTvOHgoOEn9S
- 7D1sUEKcuyKL67w91MCj1Po4JvXPDrxBgQ+7VAApu0XAjem0lG+l4tob1lpk8SfwDDfHE2RVbf
- yfPGkE9yFKLw1FB5XoiIKXg05Jjuy1Fnj+xWo/acd7hI4plalhqQUVectVaqy2Nkji1qAcfViC
- yVwQkL12XXUrilyf3cxqDfqq
-X-IronPort-AV: E=Sophos;i="5.85,381,1624345200"; 
-   d="scan'208";a="133411118"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 18 Oct 2021 02:14:43 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Mon, 18 Oct 2021 02:14:42 -0700
-Received: from soft-dev3-1.microsemi.net (10.10.115.15) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Mon, 18 Oct 2021 02:14:40 -0700
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     <p.zabel@pengutronix.de>, <robh+dt@kernel.org>,
-        <lars.povlsen@microchip.com>, <Steen.Hegelund@microchip.com>,
-        <UNGLinuxDriver@microchip.com>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-CC:     Horatiu Vultur <horatiu.vultur@microchip.com>,
-        Andrew Lunn <andrew@lunn.ch>
-Subject: [PATCH v4 2/2] reset: mchp: sparx5: Extend support for lan966x
-Date:   Mon, 18 Oct 2021 11:15:22 +0200
-Message-ID: <20211018091522.1113510-3-horatiu.vultur@microchip.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211018091522.1113510-1-horatiu.vultur@microchip.com>
-References: <20211018091522.1113510-1-horatiu.vultur@microchip.com>
+        Mon, 18 Oct 2021 05:18:26 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D45B8C06161C;
+        Mon, 18 Oct 2021 02:16:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=vp/9tbDt+u2+sZpQokequu0uJ3PAIfwBSiCgHpUgdOA=; b=h/G5/eJqjajNwGI+Ryhs04ZyI0
+        cqjMYuAQszoeX9StonOmLtaYRa4J0gsf5t0wnmWIvLKT1B2DeTanabuStNsjcHOQ5KX1wN1sfxOz7
+        sr7qsmzI0RkBfMdb84/HOlXg9A1pEZ/gs6wkJH6O2mQvNanPGcuv13kizrMpelcWu5PeOhYLRkPSJ
+        9JlP2+6miHuDSGfQT96+nYmW/E8l6C3myv9C0KmtbLTopuacEzRGeK0z7JzdXjq1X1pxZusV8AhjH
+        58gTs2lUEB23dgwHhM3unoEDzpbo78iHwLUprdOiVczpPK8WKbyJyDt+sYBL/06q56hNuwsNnrCWj
+        7ymy9B3Q==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mcOk9-00AWJv-HQ; Mon, 18 Oct 2021 09:15:41 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2EFC2300221;
+        Mon, 18 Oct 2021 11:15:40 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 11F292CDA89B2; Mon, 18 Oct 2021 11:15:40 +0200 (CEST)
+Date:   Mon, 18 Oct 2021 11:15:39 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, linux-kernel@vger.kernel.org, rafael@kernel.org,
+        len.brown@intel.com, linux-pm@vger.kernel.org,
+        sfr@canb.auug.org.au, gor@linux.ibm.com
+Subject: Re: next-20211015: suspend to ram on x86-32 broken
+Message-ID: <YW07O8ZPLVnbGLR7@hirez.programming.kicks-ass.net>
+References: <20211017093905.GA3069@amd>
+ <20211017102547.GA3818@amd>
+ <20211018071349.GA16631@duo.ucw.cz>
+ <20211018081300.GA18193@duo.ucw.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211018081300.GA18193@duo.ucw.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch extends sparx5 driver to support also the lan966x. The
-process to reset the switch is the same only it has different offsets.
-Therefore make the driver more generic and add support for lan966x.
+On Mon, Oct 18, 2021 at 10:13:00AM +0200, Pavel Machek wrote:
+> Hi!
+> > It said
+> > 
+> > commit 8850cb663b5cda04d33f9cfbc38889d73d3c8e24 (HEAD)
+> > Author: Peter Zijlstra <peterz@infradead.org>
+> > Date:   Tue Sep 21 22:16:02 2021 +0200
+> > 
+> >     sched: Simplify wake_up_*idle*()
+> > 
+> > is first bad commit.
+> 
+> And reverting that one on the top of -next indeed fixes resume on
+> thinkpad x60.
 
-Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
----
- drivers/reset/Kconfig                  |  2 +-
- drivers/reset/reset-microchip-sparx5.c | 40 ++++++++++++++++++++------
- 2 files changed, 33 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
-index be799a5abf8a..36ce6c8bcf1e 100644
---- a/drivers/reset/Kconfig
-+++ b/drivers/reset/Kconfig
-@@ -116,7 +116,7 @@ config RESET_LPC18XX
- 
- config RESET_MCHP_SPARX5
- 	bool "Microchip Sparx5 reset driver"
--	depends on ARCH_SPARX5 || COMPILE_TEST
-+	depends on ARCH_SPARX5 || SOC_LAN966 || COMPILE_TEST
- 	default y if SPARX5_SWITCH
- 	select MFD_SYSCON
- 	help
-diff --git a/drivers/reset/reset-microchip-sparx5.c b/drivers/reset/reset-microchip-sparx5.c
-index f01e7db8e83b..00b612a0effa 100644
---- a/drivers/reset/reset-microchip-sparx5.c
-+++ b/drivers/reset/reset-microchip-sparx5.c
-@@ -13,15 +13,18 @@
- #include <linux/regmap.h>
- #include <linux/reset-controller.h>
- 
--#define PROTECT_REG    0x84
--#define PROTECT_BIT    BIT(10)
--#define SOFT_RESET_REG 0x00
--#define SOFT_RESET_BIT BIT(1)
-+struct reset_props {
-+	u32 protect_reg;
-+	u32 protect_bit;
-+	u32 reset_reg;
-+	u32 reset_bit;
-+};
- 
- struct mchp_reset_context {
- 	struct regmap *cpu_ctrl;
- 	struct regmap *gcb_ctrl;
- 	struct reset_controller_dev rcdev;
-+	const struct reset_props *props;
- };
- 
- static struct regmap_config sparx5_reset_regmap_config = {
-@@ -38,14 +41,16 @@ static int sparx5_switch_reset(struct reset_controller_dev *rcdev,
- 	u32 val;
- 
- 	/* Make sure the core is PROTECTED from reset */
--	regmap_update_bits(ctx->cpu_ctrl, PROTECT_REG, PROTECT_BIT, PROTECT_BIT);
-+	regmap_update_bits(ctx->cpu_ctrl, ctx->props->protect_reg,
-+			   ctx->props->protect_bit, ctx->props->protect_bit);
- 
- 	/* Start soft reset */
--	regmap_write(ctx->gcb_ctrl, SOFT_RESET_REG, SOFT_RESET_BIT);
-+	regmap_write(ctx->gcb_ctrl, ctx->props->reset_reg,
-+		     ctx->props->reset_bit);
- 
- 	/* Wait for soft reset done */
--	return regmap_read_poll_timeout(ctx->gcb_ctrl, SOFT_RESET_REG, val,
--					(val & SOFT_RESET_BIT) == 0,
-+	return regmap_read_poll_timeout(ctx->gcb_ctrl, ctx->props->reset_reg, val,
-+					(val & ctx->props->reset_bit) == 0,
- 					1, 100);
- }
- 
-@@ -115,13 +120,32 @@ static int mchp_sparx5_reset_probe(struct platform_device *pdev)
- 	ctx->rcdev.nr_resets = 1;
- 	ctx->rcdev.ops = &sparx5_reset_ops;
- 	ctx->rcdev.of_node = dn;
-+	ctx->props = device_get_match_data(&pdev->dev);
- 
- 	return devm_reset_controller_register(&pdev->dev, &ctx->rcdev);
- }
- 
-+static const struct reset_props reset_props_sparx5 = {
-+	.protect_reg    = 0x84,
-+	.protect_bit    = BIT(10),
-+	.reset_reg      = 0x0,
-+	.reset_bit      = BIT(1),
-+};
-+
-+static const struct reset_props reset_props_lan966x = {
-+	.protect_reg    = 0x88,
-+	.protect_bit    = BIT(5),
-+	.reset_reg      = 0x0,
-+	.reset_bit      = BIT(1),
-+};
-+
- static const struct of_device_id mchp_sparx5_reset_of_match[] = {
- 	{
- 		.compatible = "microchip,sparx5-switch-reset",
-+		.data = &reset_props_sparx5,
-+	}, {
-+		.compatible = "microchip,lan966x-switch-reset",
-+		.data = &reset_props_lan966x,
- 	},
- 	{ }
- };
--- 
-2.33.0
+Can you try with just reverting the smp.c hunk and leaving the sched
+hunk in place? I've got a hotplug lock related splat in my inbox from
+late last week that I didn't get around to yet, I suspect they're
+related.
 
