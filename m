@@ -2,134 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B1DA431F25
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 16:14:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63DD6431EF6
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 16:06:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233666AbhJROQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 10:16:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44280 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232093AbhJROQT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 10:16:19 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B2C3C037A52;
-        Mon, 18 Oct 2021 06:51:03 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: kholk11)
-        with ESMTPSA id 2D3F81F420D4
-Subject: Re: [PATCH v8 1/7] soc: mediatek: mmsys: add support for MDP
-To:     Moudy Ho <moudy.ho@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Jernej Skrabec <jernej.skrabec@siol.net>
-Cc:     Maoguang Meng <maoguang.meng@mediatek.com>,
-        daoyuan huang <daoyuan.huang@mediatek.com>,
-        Ping-Hsun Wu <ping-hsun.wu@mediatek.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Rob Landley <rob@landley.net>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        tfiga@chromium.org, drinkcat@chromium.org, acourbot@chromium.org,
-        pihsun@chromium.org, menghui.lin@mediatek.com,
-        sj.huang@mediatek.com, allen-kh.cheng@mediatek.com,
-        randy.wu@mediatek.com, srv_heupstream@mediatek.com,
-        hsinyi@google.com
-References: <20211015123832.17914-1-moudy.ho@mediatek.com>
- <20211015123832.17914-2-moudy.ho@mediatek.com>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Message-ID: <31577e05-34b8-2e5e-14f0-db9949ffdd3d@collabora.com>
-Date:   Mon, 18 Oct 2021 15:50:58 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S232761AbhJROIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 10:08:55 -0400
+Received: from mga05.intel.com ([192.55.52.43]:63165 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234743AbhJROGW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 10:06:22 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10140"; a="314448694"
+X-IronPort-AV: E=Sophos;i="5.85,382,1624345200"; 
+   d="scan'208";a="314448694"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2021 06:56:16 -0700
+X-IronPort-AV: E=Sophos;i="5.85,382,1624345200"; 
+   d="scan'208";a="493595860"
+Received: from xiaoyaol-mobl.ccr.corp.intel.com (HELO [10.249.173.213]) ([10.249.173.213])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2021 06:56:14 -0700
+Message-ID: <157ba65d-bd2a-288a-6091-9427e2809b02@intel.com>
+Date:   Mon, 18 Oct 2021 21:56:12 +0800
 MIME-Version: 1.0
-In-Reply-To: <20211015123832.17914-2-moudy.ho@mediatek.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Firefox/91.0 Thunderbird/91.2.0
+Subject: Re: [PATCH v2 6/7] KVM: VMX: Check Intel PT related CPUID leaves
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210827070249.924633-1-xiaoyao.li@intel.com>
+ <20210827070249.924633-7-xiaoyao.li@intel.com> <YTp/oGmiin19q4sQ@google.com>
+ <a7988439-5a4c-3d5a-ea4a-0fad181ad733@intel.com>
+ <486f0075-494d-1d84-2d85-1d451496d1f0@redhat.com>
+From:   Xiaoyao Li <xiaoyao.li@intel.com>
+In-Reply-To: <486f0075-494d-1d84-2d85-1d451496d1f0@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 15/10/21 14:38, Moudy Ho ha scritto:
-> For the purpose of module independence, related settings should be moved
-> from MDP to the corresponding driver.
-> This patch adds more 8183 MDP settings and interface. and MDP
-> related settings must be set via CMDQ to avoid frame unsynchronized.
+On 10/18/2021 8:47 PM, Paolo Bonzini wrote:
+> On 10/09/21 03:59, Xiaoyao Li wrote:
+>>>
+>>> Ugh, looking at the rest of the code, even this isn't sufficient
+>>> because pt_desc.guest.addr_{a,b} are hardcoded at 4 entries, i.e.
+>>> running KVM on hardware with >4 entries will lead to buffer
+>>> overflows.
+>>
+>> it's hardcoded to 4 because there is a note of "no processors support
+>>  more than 4 address ranges" in SDM vol.3 Chapter 31.3.1, table
+>> 31-11
 > 
-> Signed-off-by: Moudy Ho <moudy.ho@mediatek.com>
-> ---
->   drivers/soc/mediatek/Kconfig           |   1 +
->   drivers/soc/mediatek/mt8183-mmsys.h    | 219 +++++++++++++++++++++++++
->   drivers/soc/mediatek/mtk-mmsys.c       |  52 ++++++
->   drivers/soc/mediatek/mtk-mmsys.h       |   2 +
->   include/linux/soc/mediatek/mtk-mmsys.h |  56 +++++++
->   5 files changed, 330 insertions(+)
+> True, but I agree with Sean that it's not pretty.
+
+Yes. We can add the check to validate the hardware is not bigger than 4 
+for future processors. Intel folks are supposed to send new patches 
+before silicon with more than 4 PT_ADDR_RANGE delivered.
+
+>>> One option would be to bump that to the theoretical max of 15,
+>>> which doesn't seem too horrible, especially if pt_desc as a whole
+>>> is allocated on-demand, which it probably should be since it isn't
+>>> exactly tiny (nor ubiquitous)
+>>>
+>>> A different option would be to let userspace define whatever it
+>>> wants for guest CPUID, and instead cap nr_addr_ranges at
+>>> min(host.cpuid, guest.cpuid, RTIT_ADDR_RANGE).
 > 
+> This is the safest option.
 
-snip...
+My concern was that change userspace's input silently is not good. If 
+you prefer this, we certainly need to extend the userspace to query what 
+value is finally accepted and set by KVM.
 
-> diff --git a/drivers/soc/mediatek/mtk-mmsys.c b/drivers/soc/mediatek/mtk-mmsys.c
-> index a78e88f27b62..31fec490617e 100644
-> --- a/drivers/soc/mediatek/mtk-mmsys.c
-> +++ b/drivers/soc/mediatek/mtk-mmsys.c
-> @@ -7,8 +7,10 @@
->   #include <linux/device.h>
->   #include <linux/io.h>
->   #include <linux/of_device.h>
-> +#include <linux/of_address.h>
->   #include <linux/platform_device.h>
->   #include <linux/soc/mediatek/mtk-mmsys.h>
-> +#include <linux/soc/mediatek/mtk-cmdq.h>
->   
->   #include "mtk-mmsys.h"
->   #include "mt8167-mmsys.h"
-> @@ -51,6 +53,8 @@ static const struct mtk_mmsys_driver_data mt8183_mmsys_driver_data = {
->   	.clk_driver = "clk-mt8183-mm",
->   	.routes = mmsys_mt8183_routing_table,
->   	.num_routes = ARRAY_SIZE(mmsys_mt8183_routing_table),
-> +	.mdp_routes = mmsys_mt8183_mdp_routing_table,
-> +	.mdp_num_routes = ARRAY_SIZE(mmsys_mt8183_mdp_routing_table),
->   };
->   
->   static const struct mtk_mmsys_driver_data mt8365_mmsys_driver_data = {
-> @@ -62,6 +66,8 @@ static const struct mtk_mmsys_driver_data mt8365_mmsys_driver_data = {
->   struct mtk_mmsys {
->   	void __iomem *regs;
->   	const struct mtk_mmsys_driver_data *data;
-> +	phys_addr_t addr;
-> +	u8 subsys_id;
->   };
->   
->   void mtk_mmsys_ddp_connect(struct device *dev,
-> @@ -101,12 +107,49 @@ void mtk_mmsys_ddp_disconnect(struct device *dev,
->   }
->   EXPORT_SYMBOL_GPL(mtk_mmsys_ddp_disconnect);
->   
-> +void mtk_mmsys_mdp_connect(struct device *dev, struct mmsys_cmdq_cmd *cmd,
-> +			   enum mtk_mdp_comp_id cur,
-> +			   enum mtk_mdp_comp_id next)
-> +{
-> +	struct mtk_mmsys *mmsys = dev_get_drvdata(dev);
-> +	const struct mtk_mmsys_routes *routes = mmsys->data->mdp_routes;
-> +	int i;
-> +
-> +	WARN_ON(!routes);
-
-Sorry, I didn't notice this one in the previous version review.
-
-> +	WARN_ON(mmsys->subsys_id == 0);
-> +	for (i = 0; i < mmsys->data->mdp_num_routes; i++)
-> +		if (cur == routes[i].from_comp && next == routes[i].to_comp)
-
-If routes is NULL, you'll get a NULL pointer kernel panic here, so you should
-avoid reaching this point if that happens.
-
-After fixing that,
-Acked-By: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> Paolo
+> 
 
