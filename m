@@ -2,89 +2,286 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CC34432413
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 18:45:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 817EB432418
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 18:47:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233748AbhJRQr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 12:47:58 -0400
-Received: from mail-ot1-f45.google.com ([209.85.210.45]:43970 "EHLO
-        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233507AbhJRQr4 (ORCPT
+        id S233310AbhJRQtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 12:49:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52846 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232180AbhJRQtv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 12:47:56 -0400
-Received: by mail-ot1-f45.google.com with SMTP id x33-20020a9d37a4000000b0054733a85462so544995otb.10;
-        Mon, 18 Oct 2021 09:45:44 -0700 (PDT)
+        Mon, 18 Oct 2021 12:49:51 -0400
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CF24C06161C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 09:47:40 -0700 (PDT)
+Received: by mail-qt1-x82a.google.com with SMTP id z24so15800212qtv.9
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 09:47:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=vVoEj4FpzWuRYVTtT2kVLQ0v62okoy92JquXkv+faYA=;
+        b=Qip6++a3Re69KqbZR+/U+8NTkmjdaQ4owDan2ygPuQ78S81aLt50MNyqVcYGXno1yF
+         asDVCdQiA/CQJyvH2Mu8a2CwOjtuZZcVWK5UotuqSfTzhXpPNlRSYL9qAwXE/Lna9As0
+         T4l7vgk4qqlhYOj0a/28ygNkHtOOjZv3bfQe46KlKO3twnb4viaNHoKn680d+xqoPk3g
+         CSG4S+8nqc57m7yGbSFissjZGZDz5Vh0MWB77jU/OtKIdrAWahdPDLP89XtAWVc1qBQf
+         8DQkh7kmDNiGyTrjVyLmZ9hHvt9aqU3x778soevA+k+CsZx7I2CdG1aeKOlHyG2sDu55
+         ZXmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=v7SIvYsyxTrrhTfqbIcpqFyMaDz24Upct6dezLpWgMA=;
-        b=txw2q4nooN+JvDavut05jOsUnTp3+mSZ5lJ51zwie3JfNiSx4BBf7qo3I7UoSvcaBJ
-         MvT2ALO0mu3JbEJGJCwzXU/nZTLDtAvWZXqM+bw3l4FR3lxElu7q+Z/S97rW1ZaLJz0L
-         aW2gPJl6Ej7s5DFZB4xU3BzX2F+JdTRRvEeioyHZ5vIb4UjaqJDJuO834WfWNu5luiQO
-         sFQDd4O8OrGmW54ms0KTAnH1rzyXsyptQ1mRjlS7KC1Oqu5Lf+1vYZzBCBvdTSdNv/9y
-         JT0Hm/VPDnC7p5gKUi+0GfiK4SnI61SrMaUYDDdIYvs5D06P0hkonmj54sxNOEtM4hDX
-         SPpQ==
-X-Gm-Message-State: AOAM532fu0azn6+AsHTBY2WZ174T0958j3L4l06mS5NnyZ5O2FrHJmEF
-        phgRMy0fthbE3o4e7A7ZWw==
-X-Google-Smtp-Source: ABdhPJzTN6vcyj7UTW/IiMw7/IQYBgBx/ZG1GMXDcGPS9qtqf97y2RanabonT6M91w/bBg4vnfYovg==
-X-Received: by 2002:a05:6830:4488:: with SMTP id r8mr777956otv.155.1634575544330;
-        Mon, 18 Oct 2021 09:45:44 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id v17sm3056429otk.56.2021.10.18.09.45.42
+        bh=vVoEj4FpzWuRYVTtT2kVLQ0v62okoy92JquXkv+faYA=;
+        b=QgL2/dNMPDxXeixo9gaHL15TmtJbG1phVqd/T1o9b1L9aoIWpXuN1CX+RArgvXcT3S
+         Zn0m37a3N+sQmdNn5Fhh9usK83r4sj8MPD8jRPuMKdnSw9hiJ+TLAsv9LUkMYpb1ddpM
+         wqHObYCgAEUPKZkqlVg/aDCu3subHO+93pl+Ara1uxsY3RRgl7nZ1sn9B8xRjxE/a6Ru
+         14/oDK5q6/6PCTza1oLbb6jPK1HTs6CQSky8Dbaef9xmPmfS8T/KgLVRlqoWy9qumZOY
+         oxuhZmRAQiQ7nbD6Wo1AXFohxl4MfhkoWsQLSXetKEt7E1ehnct0f+RF5fad8HgyhKg7
+         Pavw==
+X-Gm-Message-State: AOAM533HAU3oYAtB8PZkcKXQzHijQapn6Ly5VhF1Ci5ohcog/y6PcEn2
+        ZUbkyM/iX9HOyVPMXEhw02PQqg==
+X-Google-Smtp-Source: ABdhPJxbJdXmCDvREwaQZoi0yXv1ItXbWsTxGWayc1K8F2bwirxfOIzTRON/xIYaquHbtTTdv84Odg==
+X-Received: by 2002:ac8:7dc6:: with SMTP id c6mr24806897qte.333.1634575659455;
+        Mon, 18 Oct 2021 09:47:39 -0700 (PDT)
+Received: from localhost (cpe-98-15-154-102.hvc.res.rr.com. [98.15.154.102])
+        by smtp.gmail.com with ESMTPSA id f15sm6467222qtm.37.2021.10.18.09.47.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 09:45:43 -0700 (PDT)
-Received: (nullmailer pid 2535996 invoked by uid 1000);
-        Mon, 18 Oct 2021 16:45:41 -0000
-Date:   Mon, 18 Oct 2021 11:45:41 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Sam Shih <sam.shih@mediatek.com>
-Cc:     Ryder Lee <Ryder.Lee@mediatek.com>,
-        John Crispin <john@phrozen.org>,
-        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Sean Wang <sean.wang@kernel.org>
-Subject: Re: [PATCH v8 1/4] dt-bindings: pinctrl: update bindings for MT7986
- SoC
-Message-ID: <YW2ktTdHivBGbkwW@robh.at.kernel.org>
-References: <20211018114739.14026-1-sam.shih@mediatek.com>
- <20211018114739.14026-2-sam.shih@mediatek.com>
+        Mon, 18 Oct 2021 09:47:38 -0700 (PDT)
+Date:   Mon, 18 Oct 2021 12:47:37 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Kent Overstreet <kent.overstreet@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        David Howells <dhowells@redhat.com>
+Subject: Re: Folios for 5.15 request - Was: re: Folio discussion recap -
+Message-ID: <YW2lKcqwBZGDCz6T@cmpxchg.org>
+References: <YSPwmNNuuQhXNToQ@casper.infradead.org>
+ <YTu9HIu+wWWvZLxp@moria.home.lan>
+ <YUfvK3h8w+MmirDF@casper.infradead.org>
+ <YUo20TzAlqz8Tceg@cmpxchg.org>
+ <YUpC3oV4II+u+lzQ@casper.infradead.org>
+ <YUpKbWDYqRB6eBV+@moria.home.lan>
+ <YUpNLtlbNwdjTko0@moria.home.lan>
+ <YUtHCle/giwHvLN1@cmpxchg.org>
+ <YWpG1xlPbm7Jpf2b@casper.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211018114739.14026-2-sam.shih@mediatek.com>
+In-Reply-To: <YWpG1xlPbm7Jpf2b@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 18 Oct 2021 19:47:36 +0800, Sam Shih wrote:
-> This updates bindings for MT7986 pinctrl driver. The
-> difference of pinctrl between mt7986a and mt7986b is that pin-41 to
-> pin-65 do not exist on mt7986b
+On Sat, Oct 16, 2021 at 04:28:23AM +0100, Matthew Wilcox wrote:
+> On Wed, Sep 22, 2021 at 11:08:58AM -0400, Johannes Weiner wrote:
+> >       mm/memcg: Add folio_memcg() and related functions
+> >       mm/memcg: Convert commit_charge() to take a folio
+> >       mm/memcg: Convert mem_cgroup_charge() to take a folio
+> >       mm/memcg: Convert uncharge_page() to uncharge_folio()
+> >       mm/memcg: Convert mem_cgroup_uncharge() to take a folio
+> >       mm/memcg: Convert mem_cgroup_migrate() to take folios
+> >       mm/memcg: Convert mem_cgroup_track_foreign_dirty_slowpath() to folio
+> >       mm/memcg: Add folio_memcg_lock() and folio_memcg_unlock()
+> >       mm/memcg: Convert mem_cgroup_move_account() to use a folio
+> >       mm/memcg: Add folio_lruvec()
+> >       mm/memcg: Add folio_lruvec_lock() and similar functions
+> >       mm/memcg: Add folio_lruvec_relock_irq() and folio_lruvec_relock_irqsave()
+> >       mm/workingset: Convert workingset_activation to take a folio	
+> > 
+> > 		This is all anon+file stuff, not needed for filesystem
+> > 		folios.
 > 
-> Signed-off-by: Sam Shih <sam.shih@mediatek.com>
-> 
-> ---
-> v8: fixed uart node in yaml dts example
-> v7: updated pinctcl node binding description, and separate pinctrl
->      part into a single patch series
-> 
-> Original thread:
-> https://lore.kernel.org/all/8348ed3e-c561-ad7e-fe9e-a31ed346d8d0@gmail.com/
-> 
-> v6: fixed yamllint warnings/errors v2
-> v5: fixed yamllint warnings/errors v1
-> v4: used yaml format instead of txt format document
-> v3: make mt7986 pinctrl bindings as a separate file
-> v2: deleted the redundant description of mt7986a/mt7986b
-> ---
->  .../pinctrl/mediatek,mt7986-pinctrl.yaml      | 363 ++++++++++++++++++
->  1 file changed, 363 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pinctrl/mediatek,mt7986-pinctrl.yaml
-> 
+> No, that's not true.  A number of these functions are called from
+> filesystem code. mem_cgroup_track_foreign_dirty() is only called
+> from filesystem code. We at the very least need wrappers like
+> folio_cgroup_charge(), and folio_memcg_lock().
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Well, a handful of exceptions don't refute the broader point.
+
+No objection from me to convert mem_cgroup_track_foreign_dirty().
+
+No objection to add a mem_cgroup_charge_folio(). But I insist on the
+subsystem prefix, because that's in line with how we're charging a
+whole bunch of other different things (swap, skmem, etc.). It'll also
+match a mem_cgroup_charge_anon() if we agree to an anon type.
+
+folio_memcg_lock() sounds good to me.
+
+> > 		As per the other email, no conceptual entry point for
+> > 		tail pages into either subsystem, so no ambiguity
+> > 		around the necessity of any compound_head() calls,
+> > 		directly or indirectly. It's easy to rule out
+> > 		wholesale, so there is no justification for
+> > 		incrementally annotating every single use of the page.
+> 
+> The justification is that we can remove all those hidden calls to
+> compound_head().  Hundreds of bytes of text spread throughout this file.
+
+I find this line of argument highly disingenuous.
+
+No new type is necessary to remove these calls inside MM code. Migrate
+them into the callsites and remove the 99.9% very obviously bogus
+ones. The process is the same whether you switch to a new type or not.
+
+(I'll send more patches like the PageSlab() ones to that effect. It's
+easy. The only reason nobody has bothered removing those until now is
+that nobody reported regressions when they were added.)
+
+But typesafety is an entirely different argument. And to reiterate the
+main point of contention on these patches: there is no concensus among
+MM people how (or whether) we want MM-internal typesafety for pages.
+
+Personally, I think we do, but I don't think head vs tail is the most
+important or the most error-prone aspect of the many identities struct
+page can have. In most cases it's not even in the top 5 of questions I
+have about the page when I see it in a random MM context (outside of
+the very few places that do virt_to_page or pfn_to_page). Therefor
+"folio" is not a very poignant way to name the object that is passed
+around in most MM code. struct anon_page and struct file_page would be
+way more descriptive and would imply the head/tail aspect.
+
+Anyway, the email you are responding to was an offer to split the
+uncontroversial "large pages backing filesystems" part from the
+controversial "MM-internal typesafety" discussion. Several people in
+both the fs space and the mm space have now asked to do this to move
+ahead. Since you have stated in another subthread that you "want to
+get back to working on large pages in the page cache," and you never
+wanted to get involved that deeply in the struct page subtyping
+efforts, it's not clear to me why you are not taking this offer.
+
+> >       mm: Add folio_young and folio_idle
+> >       mm/swap: Add folio_activate()
+> >       mm/swap: Add folio_mark_accessed()
+> > 
+> > 		This is anon+file aging stuff, not needed.
+> 
+> Again, very much needed.  Take a look at pagecache_get_page().  In Linus'
+> tree today, it calls if (page_is_idle(page)) clear_page_idle(page);
+> So either we need wrappers (which are needlessly complicated thanks to
+> how page_is_idle() is defined) or we just convert it.
+
+I'm not sure I understand the complication. That you'd have to do
+
+	if (page_is_idle(folio->page))
+		clear_page_idle(folio->page)
+
+inside code in mm/?
+
+It's either that, or
+
+a) generic code shared with anon pages has to do:
+
+	if (folio_is_idle(page->folio))
+		clear_folio_idle(page->folio)
+
+which is a weird, or
+
+b) both types work with their own wrappers:
+
+	if (page_is_idle(page))
+		clear_page_idle(page)
+
+	if (folio_is_idle(folio))
+		clear_folio_idle(folio)
+
+and it's not obvious at all that they are in fact tracking the same
+state.
+
+State which is exported to userspace through the "page_idle" feature.
+
+Doing the folio->page translation in mm/-private code, and keeping
+this a page interface, is by far the most preferable solution.
+
+> >       mm/rmap: Add folio_mkclean()
+> > 
+> >       mm/migrate: Add folio_migrate_mapping()
+> >       mm/migrate: Add folio_migrate_flags()
+> >       mm/migrate: Add folio_migrate_copy()
+> > 
+> > 		More anon+file conversion, not needed.
+> 
+> As far as I can tell, anon never calls any of these three functions.
+> anon calls migrate_page(), which calls migrate_page_move_mapping(),
+> but several filesystems do call these individual functions.
+
+In the current series, migrate_page_move_mapping() has been replaced,
+and anon pages go through them:
+
+int folio_migrate_mapping(struct address_space *mapping,
+                struct folio *newfolio, struct folio *folio, int extra_count)
+{
+	[...]
+        if (!mapping) {
+                /* Anonymous page without mapping */
+                if (folio_ref_count(folio) != expected_count)
+                        return -EAGAIN;
+
+                /* No turning back from here */
+                newfolio->index = folio->index;
+                newfolio->mapping = folio->mapping;
+                if (folio_test_swapbacked(folio))
+                        __folio_set_swapbacked(newfolio);
+
+That's what I'm objecting to.
+
+I'm not objecting to adding these to the filesystem interface as thin
+folio->page wrappers that call the page implementation.
+
+> >       mm/lru: Add folio_add_lru()
+> > 
+> > 		LRU code, not needed.
+> 
+> Again, we need folio_add_lru() for filemap.  This one's more
+> tractable as a wrapper function.
+
+Please don't quote selectively to the point of it being misleading.
+
+The original block my statement applied to was this:
+
+      mm: Add folio_evictable()
+      mm/lru: Convert __pagevec_lru_add_fn to take a folio
+      mm/lru: Add folio_add_lru()
+
+which goes way behond just being filesystem-interfacing.
+
+I have no objection to a cache interface function for adding a folio
+to the LRU (a wrapper to encapsulate the folio->page transition).
+
+However, like with the memcg code above, the API is called lru_cache:
+we have had lru_cache_add_file() and lru_cache_add_anon() in the past,
+so lru_cache_add_folio() seems more appropriate - especially as long
+as we still have one for pages (and maybe later one for anon pages).
+
+---
+
+All that to say, adding folio as a new type for file headpages with
+API functions like this:
+
+	mem_cgroup_charge_folio()
+	lru_cache_add_folio()
+
+now THAT would be an incremental change to the kernel code.
+
+And if that new type proves like a great idea, we can do the same for
+anon - whether with a shared type or with separate types.
+
+And if it does end up the same type, in the interfaces and in the
+implementation, we can merge
+
+	mem_cgroup_charge_page()	# generic bits
+	mem_cgroup_charge_folio()	# file bits
+	mem_cgroup_charge_anon()	# anon bits
+
+back into a single function, just like we've done it already for the
+anon and file variants of those functions that we have had before.
+
+And if we then want to rename that function to something we agree is
+more appropriate, we can do that as yet another step.
+
+That would actually be incremental refactoring.
