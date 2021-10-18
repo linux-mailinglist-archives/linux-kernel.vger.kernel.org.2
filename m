@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 061BD431AFA
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:28:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BE7F431E33
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:57:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232336AbhJRNaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:30:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41294 "EHLO mail.kernel.org"
+        id S234462AbhJRN7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:59:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56732 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231859AbhJRN3E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:29:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B25BC6128A;
-        Mon, 18 Oct 2021 13:26:09 +0000 (UTC)
+        id S234212AbhJRN4f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:56:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E4746141B;
+        Mon, 18 Oct 2021 13:40:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634563570;
-        bh=1ADLGrEstFCqSsIQZXS9I2KSEQd1t78SzVMETSn9TUI=;
+        s=korg; t=1634564435;
+        bh=X3ObWkAPaz0Q6ij8Vde/caH4aQ/NT4FzE0Y0IRNZV5k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jJf3wNfcixgzaJtrwb/VqQwytLWt4cgxTjXG5YdN+124+SJKvw8U7YFuw0+H2xnSr
-         9F0Imp5rgD3T2VbtyaL1aEIaN71UqtdydOe8c/2659L4yhBNQj6rP/42L22vkOQM4m
-         f/1ZIUe1TSh7IU7BT5hGKbE3qcgO3UudA/loVfbc=
+        b=MgR0f3K8xXe0pFRKzzAVSnSpuP/7Zp/CGJZIoJTBbHcOE0CLxIa8k3tgY3zU8Sy8y
+         PCTUQVUlLyvG0LwqQkX2fyb061SvcoCa/mTKR4ft6rN7vlnjcuCZX8eTGtDj5wu/oL
+         0ww/jND++ngFzmvlt45LYCTlQ7SQYtefTb94W3ig=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Halil Pasic <pasic@linux.ibm.com>,
-        markver@us.ibm.com, Cornelia Huck <cohuck@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>
-Subject: [PATCH 4.14 18/39] virtio: write back F_VERSION_1 before validate
+        stable@vger.kernel.org, Sudeep Holla <sudeep.holla@arm.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Jens Wiklander <jens.wiklander@linaro.org>
+Subject: [PATCH 5.14 088/151] tee: optee: Fix missing devices unregister during optee_remove
 Date:   Mon, 18 Oct 2021 15:24:27 +0200
-Message-Id: <20211018132326.040656070@linuxfoundation.org>
+Message-Id: <20211018132343.546471372@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132325.426739023@linuxfoundation.org>
-References: <20211018132325.426739023@linuxfoundation.org>
+In-Reply-To: <20211018132340.682786018@linuxfoundation.org>
+References: <20211018132340.682786018@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,80 +40,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Halil Pasic <pasic@linux.ibm.com>
+From: Sumit Garg <sumit.garg@linaro.org>
 
-commit 2f9a174f918e29608564c7a4e8329893ab604fb4 upstream.
+commit 7f565d0ead264329749c0da488de9c8dfa2f18ce upstream.
 
-The virtio specification virtio-v1.1-cs01 states: "Transitional devices
-MUST detect Legacy drivers by detecting that VIRTIO_F_VERSION_1 has not
-been acknowledged by the driver."  This is exactly what QEMU as of 6.1
-has done relying solely on VIRTIO_F_VERSION_1 for detecting that.
+When OP-TEE driver is built as a module, OP-TEE client devices
+registered on TEE bus during probe should be unregistered during
+optee_remove. So implement optee_unregister_devices() accordingly.
 
-However, the specification also says: "... the driver MAY read (but MUST
-NOT write) the device-specific configuration fields to check that it can
-support the device ..." before setting FEATURES_OK.
-
-In that case, any transitional device relying solely on
-VIRTIO_F_VERSION_1 for detecting legacy drivers will return data in
-legacy format.  In particular, this implies that it is in big endian
-format for big endian guests. This naturally confuses the driver which
-expects little endian in the modern mode.
-
-It is probably a good idea to amend the spec to clarify that
-VIRTIO_F_VERSION_1 can only be relied on after the feature negotiation
-is complete. Before validate callback existed, config space was only
-read after FEATURES_OK. However, we already have two regressions, so
-let's address this here as well.
-
-The regressions affect the VIRTIO_NET_F_MTU feature of virtio-net and
-the VIRTIO_BLK_F_BLK_SIZE feature of virtio-blk for BE guests when
-virtio 1.0 is used on both sides. The latter renders virtio-blk unusable
-with DASD backing, because things simply don't work with the default.
-See Fixes tags for relevant commits.
-
-For QEMU, we can work around the issue by writing out the feature bits
-with VIRTIO_F_VERSION_1 bit set.  We (ab)use the finalize_features
-config op for this. This isn't enough to address all vhost devices since
-these do not get the features until FEATURES_OK, however it looks like
-the affected devices actually never handled the endianness for legacy
-mode correctly, so at least that's not a regression.
-
-No devices except virtio net and virtio blk seem to be affected.
-
-Long term the right thing to do is to fix the hypervisors.
-
-Cc: <stable@vger.kernel.org> #v4.11
-Signed-off-by: Halil Pasic <pasic@linux.ibm.com>
-Fixes: 82e89ea077b9 ("virtio-blk: Add validation for block size in config space")
-Fixes: fe36cbe0671e ("virtio_net: clear MTU when out of range")
-Reported-by: markver@us.ibm.com
-Reviewed-by: Cornelia Huck <cohuck@redhat.com>
-Link: https://lore.kernel.org/r/20211011053921.1198936-1-pasic@linux.ibm.com
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Fixes: c3fa24af9244 ("tee: optee: add TEE bus device enumeration support")
+Reported-by: Sudeep Holla <sudeep.holla@arm.com>
+Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/virtio/virtio.c |   11 +++++++++++
- 1 file changed, 11 insertions(+)
+ drivers/tee/optee/core.c          |    3 +++
+ drivers/tee/optee/device.c        |   22 ++++++++++++++++++++++
+ drivers/tee/optee/optee_private.h |    1 +
+ 3 files changed, 26 insertions(+)
 
---- a/drivers/virtio/virtio.c
-+++ b/drivers/virtio/virtio.c
-@@ -222,6 +222,17 @@ static int virtio_dev_probe(struct devic
- 		driver_features_legacy = driver_features;
- 	}
+--- a/drivers/tee/optee/core.c
++++ b/drivers/tee/optee/core.c
+@@ -585,6 +585,9 @@ static int optee_remove(struct platform_
+ {
+ 	struct optee *optee = platform_get_drvdata(pdev);
  
-+	/*
-+	 * Some devices detect legacy solely via F_VERSION_1. Write
-+	 * F_VERSION_1 to force LE config space accesses before FEATURES_OK for
-+	 * these when needed.
-+	 */
-+	if (drv->validate && !virtio_legacy_is_little_endian()
-+			  && device_features & BIT_ULL(VIRTIO_F_VERSION_1)) {
-+		dev->features = BIT_ULL(VIRTIO_F_VERSION_1);
-+		dev->config->finalize_features(dev);
-+	}
++	/* Unregister OP-TEE specific client devices on TEE bus */
++	optee_unregister_devices();
 +
- 	if (device_features & (1ULL << VIRTIO_F_VERSION_1))
- 		dev->features = driver_features & device_features;
- 	else
+ 	/*
+ 	 * Ask OP-TEE to free all cached shared memory objects to decrease
+ 	 * reference counters and also avoid wild pointers in secure world
+--- a/drivers/tee/optee/device.c
++++ b/drivers/tee/optee/device.c
+@@ -53,6 +53,13 @@ static int get_devices(struct tee_contex
+ 	return 0;
+ }
+ 
++static void optee_release_device(struct device *dev)
++{
++	struct tee_client_device *optee_device = to_tee_client_device(dev);
++
++	kfree(optee_device);
++}
++
+ static int optee_register_device(const uuid_t *device_uuid)
+ {
+ 	struct tee_client_device *optee_device = NULL;
+@@ -63,6 +70,7 @@ static int optee_register_device(const u
+ 		return -ENOMEM;
+ 
+ 	optee_device->dev.bus = &tee_bus_type;
++	optee_device->dev.release = optee_release_device;
+ 	if (dev_set_name(&optee_device->dev, "optee-ta-%pUb", device_uuid)) {
+ 		kfree(optee_device);
+ 		return -ENOMEM;
+@@ -154,3 +162,17 @@ int optee_enumerate_devices(u32 func)
+ {
+ 	return  __optee_enumerate_devices(func);
+ }
++
++static int __optee_unregister_device(struct device *dev, void *data)
++{
++	if (!strncmp(dev_name(dev), "optee-ta", strlen("optee-ta")))
++		device_unregister(dev);
++
++	return 0;
++}
++
++void optee_unregister_devices(void)
++{
++	bus_for_each_dev(&tee_bus_type, NULL, NULL,
++			 __optee_unregister_device);
++}
+--- a/drivers/tee/optee/optee_private.h
++++ b/drivers/tee/optee/optee_private.h
+@@ -184,6 +184,7 @@ void optee_fill_pages_list(u64 *dst, str
+ #define PTA_CMD_GET_DEVICES		0x0
+ #define PTA_CMD_GET_DEVICES_SUPP	0x1
+ int optee_enumerate_devices(u32 func);
++void optee_unregister_devices(void);
+ 
+ /*
+  * Small helpers
 
 
