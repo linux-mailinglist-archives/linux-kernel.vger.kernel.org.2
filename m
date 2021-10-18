@@ -2,114 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5E5D43277B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 21:21:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E87743277D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 21:21:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232417AbhJRTX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 15:23:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60036 "EHLO
+        id S232854AbhJRTXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 15:23:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230159AbhJRTX0 (ORCPT
+        with ESMTP id S230159AbhJRTXl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 15:23:26 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BCE5C06161C
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 12:21:14 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id p6-20020a9d7446000000b0054e6bb223f3so1185154otk.3
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 12:21:14 -0700 (PDT)
+        Mon, 18 Oct 2021 15:23:41 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23FB0C06161C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 12:21:30 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id r18so3381382edv.12
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 12:21:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
+        h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=w44//2eXLGXS5FENoyNj0OHUbjoQNnYElfzxl74VOjo=;
-        b=jLZyB8aMRvPdMJaWoNU3+BFC+pVFwJRmkpMlPBkeyIokpbWc3bIIDslTir1pRFkqy7
-         VGOMucNZC9U2YGAC4b/424uCKH+FmA33Bazgd1xPD1cul8BhHR7e47+iGshye5er4Qku
-         41jA4aNKc/+1Zq0w7fHUM+jNSu08J1/mROceJOcvtlY1zVA1tBbLvsNUjcqYYaGVqfxu
-         fqrpdBinBet2a7fgLE8rvqkpp3pAKTGJuSAyncJY1FuPZ/qggzKtcRVu/P5/wFx0WmIM
-         e+V3XPSstyFmsmQnc1fnQlSh7kW3tLi2SoOWo3pTGKOduhpgx44NJ7z2RlwliqzIX5sw
-         BCTg==
+        bh=RFVgC2nTbZsJbOdA8XEIaDw30XWcWrdE6dI/+NoIrsw=;
+        b=NMzYBaYhhNx30kEwvF4Az8faCclg9hmx/4E7njB57F9EGavIVsMUc4T63TW5t9qQSU
+         lrh/j4PBi9YN9ql7ZH4b8+hPCOd/6451gZImx45sJCGw2qud67FueCriSC64nxE+6oFT
+         vkuaNosxOqQrePtP6ZgOClNUroQW1ZRJlUlzpv3EhyWiUzrPWGCTuJdShQo7lg/ISZb0
+         19a/jKvOb7sLqb+YoZ85eEErx2uOhysS6SeLX5Bt/wJAw04XEKDuNEbNVdMC8eD8gXmn
+         unXgqZJS2fLtCUlJRPL1jI/OHAF/T4NvUA618pPF2Qy6d9a34ajOwHTf8vFXATbqX7/F
+         2YAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=w44//2eXLGXS5FENoyNj0OHUbjoQNnYElfzxl74VOjo=;
-        b=7+/giyukYoDVHN1jDNXc63mCzzsPU+8IrCI5q+knp+N+eUu5tOEcu8OEa/x3b8z7If
-         jMsfKdEvjU0he0S8Qz8LDBclHAutbYD/e5rRY2V659sUApFxaMldVMRxSaYtUGjhmaYW
-         i0SKddahVVGR39Tq9ZGkNOQa6M8CbrMkk/TKRuKKL19A9xICXzlKa6oDEKGqB9wWRS9r
-         eUvePSvOl8L/4eDt+9zHdVTCQBUc9qmIlKDqfnteHDG5oKYtkK+I9f7FDcH0SEp0xFp0
-         6KSTxz9AJmNeFFWhurl/U75pAw3h2zyGmf9DNaUDdEOO19IK9jk1eUaUiJmf2pZHrU3q
-         CYjA==
-X-Gm-Message-State: AOAM532Bub2ir3OeES/JsLyg7oxZZQbFCPnjtEH16uA/jGhgAreBFRYz
-        DVuIkoOFhAz1l2+k15qyaUcwtzLjfGJDaSbsmvs=
-X-Google-Smtp-Source: ABdhPJzau9WkWxmEhxgfrxB+g7RKeATDk8ZOV4+5r28KVX7ZNwbch9QkbOHb52RrRgpiaciKHieLVGFo8IFKhqn1X/8=
-X-Received: by 2002:a9d:4616:: with SMTP id y22mr1398483ote.215.1634584873489;
- Mon, 18 Oct 2021 12:21:13 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RFVgC2nTbZsJbOdA8XEIaDw30XWcWrdE6dI/+NoIrsw=;
+        b=bg/8KOADlGNUeKaOXC7/47QHBhkTIBn3+qihu8PoMjRSjpBETicyBtHLEn9IC+lczs
+         R1V8aglUA4CzI1prOTgpWXYPWH+wFdq7KyQ9s7U2aKBJ7QdxWTkQ8uNNZIi9k0XFLim2
+         6URbtoElNx3wrGA0j1XTqZ68m1zNHZ7Xg5+71kdAhdYqTxk4S3XOmbH9Y9t050ZJh0RU
+         V6/zAD89NsdMNNyAU4LChcka/+Sj5E5dv7SGkHHIdDEUujS8mF2HNYuSjseCwsjpCDQl
+         JhjYUuKTgqUDFfUO4DR6L71KUgNcIz9Dka/aiU536ZroUq+JOGYIut15SheVCElKkrtt
+         yltw==
+X-Gm-Message-State: AOAM530cBPkEDTHPlV9xLLVb27082mudZuAlhnTdLHpzevrlBvafwgcC
+        x3FHj1ogHvLeTfCgcuzBEMUaK5IAvAw=
+X-Google-Smtp-Source: ABdhPJz8+6AN4HCVy3xIyRxnrmOVpQE4T1XjJA6vsFZuKo9+Ce07vCDtOY2JzdKTnJd2SQ+H/edPQA==
+X-Received: by 2002:aa7:ccc1:: with SMTP id y1mr47967896edt.177.1634584888711;
+        Mon, 18 Oct 2021 12:21:28 -0700 (PDT)
+Received: from tom-desktop.station (net-188-153-110-208.cust.vodafonedsl.it. [188.153.110.208])
+        by smtp.gmail.com with ESMTPSA id j3sm9101291ejy.65.2021.10.18.12.21.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Oct 2021 12:21:28 -0700 (PDT)
+From:   Tommaso Merciai <tomm.merciai@gmail.com>
+Cc:     tomm.merciai@gmail.com, Forest Bond <forest@alittletooquiet.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Marcos Antonio de Jesus Filho <mdejesusfilho@gmail.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Lucas Henneman <lucas.henneman@linaro.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] staging: vt6655: fix camelcase byData in card.c
+Date:   Mon, 18 Oct 2021 21:21:22 +0200
+Message-Id: <20211018192124.8738-1-tomm.merciai@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Received: by 2002:a05:6820:203:0:0:0:0 with HTTP; Mon, 18 Oct 2021 12:21:12
- -0700 (PDT)
-Reply-To: uchennailobitenone@gmail.com
-From:   uchenna <uchekalu0211@gmail.com>
-Date:   Mon, 18 Oct 2021 12:21:12 -0700
-Message-ID: <CADXpZ39y6VKGDNPrpVEtF=MFWWtr_Dsc6wAKodBG0ShZEpbiJA@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Caro amigo,
+Replace camelcase variable "byData" into linux kernel coding style
+equivalent variable "data" in card.c.
+"by" prefix in hungarian notation stands for byte or unsigned char
 
-Como voc=C3=AA est=C3=A1? Eu acho que voc=C3=AA est=C3=A1 bem e saud=C3=A1v=
-el. Isto =C3=A9 para informar
-voc=C3=AA que conclu=C3=AD a transa=C3=A7=C3=A3o com sucesso. Tem sido um l=
-ongo
-tempo desde a nossa =C3=BAltima comunica=C3=A7=C3=A3o. Foi uma pena que sua=
- parceria
-comigo n=C3=A3o conseguiu concluir a transfer=C3=AAncia do fundo. Acho que =
-chegou a hora
-quando havia tanta press=C3=A3o e confus=C3=A3o que voc=C3=AA se tornou men=
-os
-interessado na transa=C3=A7=C3=A3o.
+References:
+ - https://www.cse.iitk.ac.in/users/dsrkg/cs245/html/Guide.htm
+ - https://www.kernel.org/doc/html/v4.10/process/coding-style.html
 
+Signed-off-by: Tommaso Merciai <tomm.merciai@gmail.com>
+---
+Changes since v1:
+ - Make the commit body message more clearer
 
-Em qualquer caso, tenho o prazer de inform=C3=A1-lo sobre meu sucesso em
-obter o fundo
-transferidos sob a coopera=C3=A7=C3=A3o do novo parceiro. Estou atualmente =
-em
-Venezuela em investimento. No entanto; eu n=C3=A3o esqueci seu esfor=C3=A7o=
- passado e
-tenta me ajudar na transfer=C3=AAncia do fundo, apesar do fato de que
-n=C3=A3o conseguiu chegar a uma conclus=C3=A3o espec=C3=ADfica.
+ drivers/staging/vt6655/card.c | 32 ++++++++++++++++----------------
+ 1 file changed, 16 insertions(+), 16 deletions(-)
 
-Em agradecimento por sua tentativa de ajudar, eu e meu novo parceiro
-chegamos a um
-decis=C3=A3o que voc=C3=AA merece ser compensado, esta carta =C3=A9, portan=
-to, para
-informo que deixei uma indeniza=C3=A7=C3=A3o de $ 350.000,00 em seu nome pa=
-ra que
-voc=C3=AA vai compartilhar a alegria comigo. Aconselho voc=C3=AA a entrar e=
-m
-contato com o banco BTCI para o
-transfer=C3=AAncia dos $ 350.000,00. Para evitar um longo atraso do fundo
-de compensa=C3=A7=C3=A3o
-transfer=C3=AAncia, instru=C3=AD o banco BTCI a emitir um cart=C3=A3o inter=
-nacional
-de visto de ATM
-e envie-o para o seu endere=C3=A7o residencial por meio de uma empresa de e=
-ntregas.
+diff --git a/drivers/staging/vt6655/card.c b/drivers/staging/vt6655/card.c
+index 26e08fec6e6a..fac2d0566d2e 100644
+--- a/drivers/staging/vt6655/card.c
++++ b/drivers/staging/vt6655/card.c
+@@ -183,7 +183,7 @@ bool CARDbSetPhyParameter(struct vnt_private *priv, u8 bb_type)
+ 	unsigned char bySlot = 0;
+ 	unsigned char bySIFS = 0;
+ 	unsigned char byDIFS = 0;
+-	unsigned char byData;
++	unsigned char data;
+ 	int i;
+ 
+ 	/* Set SIFS, DIFS, EIFS, SlotTime, CwMin */
+@@ -194,15 +194,15 @@ bool CARDbSetPhyParameter(struct vnt_private *priv, u8 bb_type)
+ 			priv->abyBBVGA[0] = 0x20;
+ 			priv->abyBBVGA[2] = 0x10;
+ 			priv->abyBBVGA[3] = 0x10;
+-			bb_read_embedded(priv, 0xE7, &byData);
+-			if (byData == 0x1C)
++			bb_read_embedded(priv, 0xE7, &data);
++			if (data == 0x1C)
+ 				bb_write_embedded(priv, 0xE7, priv->abyBBVGA[0]);
+ 
+ 		} else if (priv->byRFType == RF_UW2452) {
+ 			MACvSetBBType(priv->port_offset, BB_TYPE_11A);
+ 			priv->abyBBVGA[0] = 0x18;
+-			bb_read_embedded(priv, 0xE7, &byData);
+-			if (byData == 0x14) {
++			bb_read_embedded(priv, 0xE7, &data);
++			if (data == 0x14) {
+ 				bb_write_embedded(priv, 0xE7, priv->abyBBVGA[0]);
+ 				bb_write_embedded(priv, 0xE1, 0x57);
+ 			}
+@@ -220,14 +220,14 @@ bool CARDbSetPhyParameter(struct vnt_private *priv, u8 bb_type)
+ 			priv->abyBBVGA[0] = 0x1C;
+ 			priv->abyBBVGA[2] = 0x00;
+ 			priv->abyBBVGA[3] = 0x00;
+-			bb_read_embedded(priv, 0xE7, &byData);
+-			if (byData == 0x20)
++			bb_read_embedded(priv, 0xE7, &data);
++			if (data == 0x20)
+ 				bb_write_embedded(priv, 0xE7, priv->abyBBVGA[0]);
+ 
+ 		} else if (priv->byRFType == RF_UW2452) {
+ 			priv->abyBBVGA[0] = 0x14;
+-			bb_read_embedded(priv, 0xE7, &byData);
+-			if (byData == 0x18) {
++			bb_read_embedded(priv, 0xE7, &data);
++			if (data == 0x18) {
+ 				bb_write_embedded(priv, 0xE7, priv->abyBBVGA[0]);
+ 				bb_write_embedded(priv, 0xE1, 0xD3);
+ 			}
+@@ -243,14 +243,14 @@ bool CARDbSetPhyParameter(struct vnt_private *priv, u8 bb_type)
+ 			priv->abyBBVGA[0] = 0x1C;
+ 			priv->abyBBVGA[2] = 0x00;
+ 			priv->abyBBVGA[3] = 0x00;
+-			bb_read_embedded(priv, 0xE7, &byData);
+-			if (byData == 0x20)
++			bb_read_embedded(priv, 0xE7, &data);
++			if (data == 0x20)
+ 				bb_write_embedded(priv, 0xE7, priv->abyBBVGA[0]);
+ 
+ 		} else if (priv->byRFType == RF_UW2452) {
+ 			priv->abyBBVGA[0] = 0x14;
+-			bb_read_embedded(priv, 0xE7, &byData);
+-			if (byData == 0x18) {
++			bb_read_embedded(priv, 0xE7, &data);
++			if (data == 0x18) {
+ 				bb_write_embedded(priv, 0xE7, priv->abyBBVGA[0]);
+ 				bb_write_embedded(priv, 0xE1, 0xD3);
+ 			}
+@@ -798,12 +798,12 @@ bool CARDbGetCurrentTSF(struct vnt_private *priv, u64 *pqwCurrTSF)
+ {
+ 	void __iomem *iobase = priv->port_offset;
+ 	unsigned short ww;
+-	unsigned char byData;
++	unsigned char data;
+ 
+ 	MACvRegBitsOn(iobase, MAC_REG_TFTCTL, TFTCTL_TSFCNTRRD);
+ 	for (ww = 0; ww < W_MAX_TIMEOUT; ww++) {
+-		VNSvInPortB(iobase + MAC_REG_TFTCTL, &byData);
+-		if (!(byData & TFTCTL_TSFCNTRRD))
++		VNSvInPortB(iobase + MAC_REG_TFTCTL, &data);
++		if (!(data & TFTCTL_TSFCNTRRD))
+ 			break;
+ 	}
+ 	if (ww == W_MAX_TIMEOUT)
+-- 
+2.25.1
 
-As informa=C3=A7=C3=B5es de contato do banco s=C3=A3o indicadas abaixo:
-
-Nome do banco: Banco BTCI
-Endere=C3=A7o de e-mail: btcbanktg478@gmail.com
-Endere=C3=A7o: 169, Boulevard du 13 janvier BP 363 Lom=C3=A9, Togo
-Pessoa de contato: Sr. Leonard Mathias
-
-Informe-me assim que receber o cart=C3=A3o Visa ATM do banco BTCI. eu desej=
-o
-voc=C3=AA sucesso em todos os seus empreendimentos.
-
-Cumprimentos
-Barrister uchenna ilobi
