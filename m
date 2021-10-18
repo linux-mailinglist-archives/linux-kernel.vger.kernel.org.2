@@ -2,185 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D2B143117D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 09:39:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5713443117F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 09:40:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230407AbhJRHl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 03:41:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46934 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230173AbhJRHlz (ORCPT
+        id S230445AbhJRHmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 03:42:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38108 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230419AbhJRHmQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 03:41:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634542784;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gq/e4iQK0pmS4v2ScRZGktMJTRyYytBPyL7+HOq1baE=;
-        b=Ur5tbP2ICjep6tk3li1xdoByxtgGgKYSovE6zgwRjM3BlJ2cUDOal8VT8bdrpxfADQb+14
-        awMfqaedtRcb6aPy+FbI/B895yuclhvqPRzwrF+nAzA9UTegVpsy5Znfql049ZkYxjUi6D
-        DZrGJA+fGsGFvzanp917aNAcoY0U0EA=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-366-Sr1fLNyUO0i_pyM0IcoR9A-1; Mon, 18 Oct 2021 03:39:43 -0400
-X-MC-Unique: Sr1fLNyUO0i_pyM0IcoR9A-1
-Received: by mail-wr1-f69.google.com with SMTP id s18-20020adfbc12000000b00160b2d4d5ebso8552388wrg.7
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 00:39:43 -0700 (PDT)
+        Mon, 18 Oct 2021 03:42:16 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CDB5C06161C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 00:40:03 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id g25so39449661wrb.2
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 00:40:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=VZmNs2GkzxhCB6JvBYnlodKD9/a6gtDFwX3G4j5wn7c=;
+        b=oae7VeX5cuVbu+3yaIg3mCW2czfOxBXemxBlIV/GCmMSn7Aj2S36Cfp2Ej1UN5iZ5R
+         n59i410Rso7mM0FYctJy9Qcza9G7OPMt45JKHUkjj6gBXOXrZRQAgeNQpdFKYAcQAEz7
+         fH5nbg0HrhbN8+KrPKuJ7HuL25jtsyaBWXOj5r+0BQf3Gm4sPejcfTRk7JOD2IPARhbb
+         PTY3ehD/1Hq9lRlRsZFej21R6JCPLFZaC7iMr2NOI1bvdhADA+KQof5JmF3BjK26vzl0
+         nElkg51iqJ/x/8vso6C0mKXQNW3QhtimFsVQVB/gyiqi2UTiOrrGhPYGG3J+dq9snEA0
+         mlAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=gq/e4iQK0pmS4v2ScRZGktMJTRyYytBPyL7+HOq1baE=;
-        b=A46/Q9zFz6L0eKOVpPcYIq6ub7N54lJ4NmALqmax0ozgk/h97srTAcl30BHcBK3ofj
-         zXfywi19hF4xaxed2M5DPMXNhCWTMTG1HryyT0N9xENCsa7oaUElg55vgv5ioFHueWJV
-         lZXEh7aV/H6gg3rVE5LJgnODTvw9AOhVZNMWvB2mvBIeYtBq4UahD/Kc/SHXCzZGkFQr
-         UyzvWODl6uYE9D1CxeEUlodckx+sVe9G9McnvQezUIqvPdqETDw3dDwEgKnbJJVx7slr
-         9ePCcCh4/Lx8exnMbWozdeSl4Q0hZxKAU+IrcmVWe/gD+nZ9FTpRzbEY1MQ+83B0O9yN
-         nXzA==
-X-Gm-Message-State: AOAM533Nz/xnyIK6BOncktrun+rpGVeK+BknTZIVDH1M5K41fNVIf+1F
-        TlryHOutlHd7QPZCcLPH7IinwXWfAmJXQCUX1Zv+WDNweMd077QDB7TFfXzE9XgwpWiaXKBLE9v
-        PXGiQu8YQSm9WzdwgPc8RvhyblJyJEFnEPS1P1Z5pSy3lCjLBS476i5awuD35tlY0fG745EtV1J
-        +f
-X-Received: by 2002:a1c:a747:: with SMTP id q68mr43206719wme.139.1634542781907;
-        Mon, 18 Oct 2021 00:39:41 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxxJjxnbbGnpuWkMwlvtfPm90td1oFICeVZPmZtTAXd6JBKYmrWg3hLPkpjoNqm2TmnRvAOAA==
-X-Received: by 2002:a1c:a747:: with SMTP id q68mr43206694wme.139.1634542781666;
-        Mon, 18 Oct 2021 00:39:41 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id z6sm12059165wro.25.2021.10.18.00.39.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 00:39:41 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     kvm@vger.kernel.org, Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        David Matlack <dmatlack@google.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC] KVM: SVM: reduce guest MAXPHYADDR by one in case
- C-bit is a physical bit
-In-Reply-To: <YWmdLPsa6qccxtEa@google.com>
-References: <20211015150524.2030966-1-vkuznets@redhat.com>
- <YWmdLPsa6qccxtEa@google.com>
-Date:   Mon, 18 Oct 2021 09:39:40 +0200
-Message-ID: <87ee8iye6b.fsf@vitty.brq.redhat.com>
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=VZmNs2GkzxhCB6JvBYnlodKD9/a6gtDFwX3G4j5wn7c=;
+        b=ctohRxr2A2VKzR2bYY14fAjaSTb77udgUqfjDIN+8pjn5dsxffFwrlqtpBxzPaSEtJ
+         +beewkPz1v3OYFGFmhXoaejN10Dosz5J55IMzSZXwVgV9m/CPRRXVFPq59VHgXb0KyD2
+         nRWhY0IgfAC2dXJCUXsIZfUjy1OElO3GpxQWBAJxLNhPktQ6tMhgHBOj8SY8Ts/S16CK
+         9t5UqS7RZJdFzEk/6kq917Yd798921ed7E42YZy/yLOdoD4qTBf/l9Si2m7B0NFXJcKh
+         6EkmAPNPdNos2jLPaVIsRdNTdI0SSS82dVzaRPiDKf4pDNRaeC/vAN0Y28AH/vy9oIZC
+         NvQg==
+X-Gm-Message-State: AOAM532C6HNb0OBMhkb6TIX+bY849UPAZhyI3aoV3HvreNXH+fQknmoA
+        6kgQ++HmmK9H8fJ0DTRSlLlHu0oXx4R3Cw==
+X-Google-Smtp-Source: ABdhPJyHqY72fbaXwdf2acp6AUOMOZIy/6NHYEKRPlWsRaHyfSV7hxwz4gN1tq143M0gfexGnALqSQ==
+X-Received: by 2002:adf:aad4:: with SMTP id i20mr34082320wrc.402.1634542801469;
+        Mon, 18 Oct 2021 00:40:01 -0700 (PDT)
+Received: from ?IPv6:2001:861:44c0:66c0:2dd7:d5eb:6e87:f924? ([2001:861:44c0:66c0:2dd7:d5eb:6e87:f924])
+        by smtp.gmail.com with ESMTPSA id z135sm6889997wmc.45.2021.10.18.00.40.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Oct 2021 00:40:00 -0700 (PDT)
+Subject: Re: [PATCH v2 6/6] drm/meson: encoder_cvbs: switch to bridge with
+ ATTACH_NO_CONNECTOR
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        sam@ravnborg.org
+Cc:     daniel@ffwll.ch, Laurent.pinchart@ideasonboard.com,
+        dri-devel@lists.freedesktop.org, linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20211015141107.2430800-1-narmstrong@baylibre.com>
+ <20211015141107.2430800-7-narmstrong@baylibre.com>
+ <CAFBinCBwO0CJMPA3K6e8OxXcinzrA5LrSqaKu1XtZPWLXT8Krw@mail.gmail.com>
+From:   Neil Armstrong <narmstrong@baylibre.com>
+Organization: Baylibre
+Message-ID: <7a921d1d-84b4-c3e4-8f7c-10db5ad42ecf@baylibre.com>
+Date:   Mon, 18 Oct 2021 09:40:03 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <CAFBinCBwO0CJMPA3K6e8OxXcinzrA5LrSqaKu1XtZPWLXT8Krw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sean Christopherson <seanjc@google.com> writes:
+Hi,
 
-> On Fri, Oct 15, 2021, Vitaly Kuznetsov wrote:
->> Several selftests (memslot_modification_stress_test, kvm_page_table_test,
->> dirty_log_perf_test,.. ) which rely on vm_get_max_gfn() started to fail
->> since commit ef4c9f4f65462 ("KVM: selftests: Fix 32-bit truncation of
->> vm_get_max_gfn()") on AMD EPYC 7401P:
->> 
->>  ./tools/testing/selftests/kvm/demand_paging_test
->>  Testing guest mode: PA-bits:ANY, VA-bits:48,  4K pages
->>  guest physical test memory offset: 0xffffbffff000
->
-> This look a lot like the signature I remember from the original bug[1].  I assume
-> you're hitting the magic HyperTransport region[2].  I thought that was fixed, but
-> the hack-a-fix for selftests never got applied[3].
->
-> [1] https://lore.kernel.org/lkml/20210623230552.4027702-4-seanjc@google.com/
+On 16/10/2021 00:34, Martin Blumenstingl wrote:
+> Hi Neil, Hi Sam,
+> 
+> On Fri, Oct 15, 2021 at 4:11 PM Neil Armstrong <narmstrong@baylibre.com> wrote:
+> [...]
+>> +static const struct drm_bridge_funcs meson_encoder_cvbs_bridge_funcs = {
+>> +       .attach = meson_encoder_cvbs_attach,
+>> +       .enable = meson_encoder_cvbs_enable,
+>> +       .disable = meson_encoder_cvbs_disable,
+>> +       .mode_valid = meson_encoder_cvbs_mode_valid,
+>> +       .get_modes = meson_encoder_cvbs_get_modes,
+>> +       .atomic_enable = meson_encoder_cvbs_atomic_enable,
+> I did some testing on boards where u-boot doesn't initialize the video outputs.
+> It seems that meson_encoder_cvbs_enable() is never called with this patch.
+> meson_encoder_cvbs_atomic_enable() is called though.
+> 
+> From what I can see in drm_bridge.c [0] this is even expected.
+> Does this mean that we need to move all logic from .enable to
+> .atomic_enable (and same with .disable -> moving that logic to
+> .atomic_disable)?
+> 
+> The same comment applies to the HDMI patch.
 
-Hey,
+Good point, I'll fix that for both patches !
 
-it seems I'm only three months late to the party!
+Neil
 
-> [2] https://lkml.kernel.org/r/7e3a90c0-75a1-b8fe-dbcf-bda16502ace9@amd.com
-> [3] https://lkml.kernel.org/r/20210805105423.412878-1-pbonzini@redhat.com
->
-
-This patch helps indeed, thanks! Paolo, any particular reason you
-haven't queued it yet?
-
->>  Finished creating vCPUs and starting uffd threads
->>  Started all vCPUs
->>  ==== Test Assertion Failure ====
->>    demand_paging_test.c:63: false
->>    pid=47131 tid=47134 errno=0 - Success
->>       1	0x000000000040281b: vcpu_worker at demand_paging_test.c:63
->>       2	0x00007fb36716e431: ?? ??:0
->>       3	0x00007fb36709c912: ?? ??:0
->>    Invalid guest sync status: exit_reason=SHUTDOWN
->> 
->> The commit, however, seems to be correct, it just revealed an already
->> present issue. AMD CPUs which support SEV may have a reduced physical
->> address space, e.g. on AMD EPYC 7401P I see:
->> 
->>  Address sizes:  43 bits physical, 48 bits virtual
->> 
->> The guest physical address space, however, is not reduced as stated in
->> commit e39f00f60ebd ("KVM: x86: Use kernel's x86_phys_bits to handle
->> reduced MAXPHYADDR"). This seems to be almost correct, however, APM has one
->> more clause (15.34.6):
->> 
->>   Note that because guest physical addresses are always translated through
->>   the nested page tables, the size of the guest physical address space is
->>   not impacted by any physical address space reduction indicated in CPUID
->>   8000_001F[EBX]. If the C-bit is a physical address bit however, the guest
->>   physical address space is effectively reduced by 1 bit.
->> 
->> Implement the reduction.
->> 
->> Fixes: e39f00f60ebd (KVM: x86: Use kernel's x86_phys_bits to handle reduced MAXPHYADDR)
->> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
->> ---
->> - RFC: I may have misdiagnosed the problem as I didn't dig to where exactly
->>  the guest crashes.
->> ---
->>  arch/x86/kvm/cpuid.c | 13 ++++++++++---
->>  1 file changed, 10 insertions(+), 3 deletions(-)
->> 
->> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
->> index 751aa85a3001..04ae280a0b66 100644
->> --- a/arch/x86/kvm/cpuid.c
->> +++ b/arch/x86/kvm/cpuid.c
->> @@ -923,13 +923,20 @@ static inline int __do_cpuid_func(struct kvm_cpuid_array *array, u32 function)
->>  		 *
->>  		 * If TDP is enabled but an explicit guest MAXPHYADDR is not
->>  		 * provided, use the raw bare metal MAXPHYADDR as reductions to
->> -		 * the HPAs do not affect GPAs.
->> +		 * the HPAs do not affect GPAs. The value, however, has to be
->> +		 * reduced by 1 in case C-bit is a physical bit (APM section
->> +		 * 15.34.6).
->>  		 */
->> -		if (!tdp_enabled)
->> +		if (!tdp_enabled) {
->>  			g_phys_as = boot_cpu_data.x86_phys_bits;
->> -		else if (!g_phys_as)
->> +		} else if (!g_phys_as) {
->>  			g_phys_as = phys_as;
->>  
->> +			if (kvm_cpu_cap_has(X86_FEATURE_SEV) &&
->> +			    (cpuid_ebx(0x8000001f) & 0x3f) < g_phys_as)
->> +				g_phys_as -= 1;
->
-> This is incorrect, non-SEV guests do not see a reduced address space.  See Tom's
-> explanation[*]
->
-> [*] https://lkml.kernel.org/r/324a95ee-b962-acdf-9bd7-b8b23b9fb991@amd.com
->
-
-I see, thanks for the pointer.
-
->> +		}
->> +
->>  		entry->eax = g_phys_as | (virt_as << 8);
->>  		entry->edx = 0;
->>  		cpuid_entry_override(entry, CPUID_8000_0008_EBX);
->> -- 
->> 2.31.1
->> 
->
-
--- 
-Vitaly
+> 
+> 
+> Best regards,
+> Martin
+> 
+> 
+> [0] https://elixir.bootlin.com/linux/v5.15-rc5/source/drivers/gpu/drm/drm_bridge.c#L717
+> 
 
