@@ -2,145 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 779964311BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 10:02:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 105BF4311C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 10:02:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231157AbhJRIEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 04:04:31 -0400
-Received: from mail-eopbgr1310139.outbound.protection.outlook.com ([40.107.131.139]:1589
-        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230525AbhJRIEC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 04:04:02 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ir3w5SSoSqWvXy9el+anYf3jpMxYL6mommQmIY5Sw5p7ft3prFwjfFogfoPEUrgJjLAdT30nCHVrb8u3IGhJdPPJkbnh53EFW5OXsVg/y4sCfzm8r99u44h0d4XMO7cGUEz8kBwpd5J+2erasXRH5WJbrpsASYtrGkHxRyitK3f9yT8nXJnA1RaTrjlypzVFtK9IjQATy+gAeX7FpiB1CECgRVDM4h7hn9lktG6Dw7xmFxMughgMkYt5tJMAaOOhPhED5cEY6g85TkXuJQQ9CORU+5vJWKJ6efPD9ftDxatrLFfLErQRMyY6WrcyyPH98++Nk2P+JqHowBDJRsc3Kg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=7N5ohZGvjJi3k+WmKw4uI+z/e0NY311QI1EOE7jz2Gg=;
- b=Q+UVyBJYqWASOpOhgznM2xakPgc5OXCTSlnVyA68nRsShbntKacmud6sz8CMpl++oI3QvcEWhHiD1sMEW0dRfFtgTMN7RQiHD7DlWtf+Uv+xKiO8kBLX00bWwyHqki3UJ7itLzmJ9Vj9tCGqBiKW+K9EFpN3tjBD5LuIL/k3dZXPuY3RUqKyIxh7nmQW1U/MQXOw7ONj6DjUTQOI6JeP6IET5/7/qpgXGymbVEm2aWDI1RqnOXWIvyY+CZk8C8yGQ5m+rNnH0+PgLI/29/cp2icnOPWVpuVgo1WeRrFBw3lVfyvSY2BGGp9Tqk0mHgmm7/qftXRYtPxZav2QgDluGw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
- s=selector2-vivo0-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7N5ohZGvjJi3k+WmKw4uI+z/e0NY311QI1EOE7jz2Gg=;
- b=eBOYHLyYOwkxGdZXm09ZAi0zHs6bHeX6b3R/kS2lgEEqs4RsqwsAV6t2wv7x4eSLALTR2VtWFNh/nOmMDFloyIB1n4QLfrHXma/EVhJZ6Ysf2yW7pniSvme7EK2uHJw3VT8kMFA1Z21a2xgw7GNVPqj7X+2XDlcIyqGSyIewcIg=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=vivo.com;
-Received: from SL2PR06MB3082.apcprd06.prod.outlook.com (2603:1096:100:37::17)
- by SL2PR06MB3387.apcprd06.prod.outlook.com (2603:1096:100:3d::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.14; Mon, 18 Oct
- 2021 08:00:30 +0000
-Received: from SL2PR06MB3082.apcprd06.prod.outlook.com
- ([fe80::4c9b:b71f:fb67:6414]) by SL2PR06MB3082.apcprd06.prod.outlook.com
- ([fe80::4c9b:b71f:fb67:6414%6]) with mapi id 15.20.4608.018; Mon, 18 Oct 2021
- 08:00:30 +0000
-From:   Qing Wang <wangqing@vivo.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Qing Wang <wangqing@vivo.com>
-Subject: [PATCH] gpu: drm: tegra: switch over to vmemdup_user()
-Date:   Mon, 18 Oct 2021 01:00:19 -0700
-Message-Id: <1634544019-36822-1-git-send-email-wangqing@vivo.com>
-X-Mailer: git-send-email 2.7.4
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR01CA0145.apcprd01.prod.exchangelabs.com
- (2603:1096:4:8f::25) To SL2PR06MB3082.apcprd06.prod.outlook.com
- (2603:1096:100:37::17)
+        id S231228AbhJRIEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 04:04:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43038 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231222AbhJRIEZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 04:04:25 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D027C06161C;
+        Mon, 18 Oct 2021 01:01:56 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id ec8so67616041edb.6;
+        Mon, 18 Oct 2021 01:01:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ib1GURrYRt0KmD3mck0TUZJ8oysi6z7ZzWmIcJUfDzo=;
+        b=qmMjIirDeuP5bI+PkEaqVafjIRq77p7GJ8hZQ6iHNIbCrFQaW3x1SZnx8GkNGMJcMn
+         CcgIX7Xo+FC3O2mrKVGBPR8rItY2TCJTR1NOmrhO8IneTGS6MjMpRTxQmUtJj143GXfN
+         KTwNtMtnaZmTPONGUKxWKfWL4eeWLG+3ZyYmtSUnW4UKckMum0uy8fDIO6QvqnCg0U7s
+         UT8raNxLjWJB3A6ViVdzz7FDCfbBAD1hc8iGZzsVqObfjJpYrqtoswuETketRT+Sq45v
+         vnqqwWeOK/lCbTZuk1l0LrVtGf+CpRa8DFQmTfh3s3ol4goKERemmAX1xcmYr68bv8WI
+         FfJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ib1GURrYRt0KmD3mck0TUZJ8oysi6z7ZzWmIcJUfDzo=;
+        b=AK5sP2qfrhIvBSTukN8e5hPqV0aFHvZLkGN03R7Aqt5LJEaxEy4d+cBK5vKicL/cFl
+         8gE8Sa6ZdC9+1fhpnXRoAo1SlBsZdekQqWu3cWwzItq5WbYUOAXaLDcNvTyN4EvxR1Hj
+         dM5YWMLvXMTWInIDIXJpIe5o1FDE+N/rVfXGF2drYsi8BIEO79zqtTDSbHebPHQx5aP4
+         QMWUkXdJVGvrAAaw9HES3NEOiL0MrmAyPtcyF/zsjvFXWO1Oz3SCRJddGScLnCffJz9H
+         DlnLRDz04JPeyUBy1wRRLFpnT7G3tcaKCIwHOcEQSmi96c3TbYGBiQ9XhduS6mTH6mCD
+         7oAQ==
+X-Gm-Message-State: AOAM5300R+aLZ+OqTjV0u1iYcdTl5pil33rZFUvD6ZsHEDQDHViibWNZ
+        AuEmnqVhXFTlOkR6xQXb/OimiIwKJLe86AeCukU=
+X-Google-Smtp-Source: ABdhPJzw2mlJJyF+4ETFc6PjhIldLhEVTWD27wtjv0VWtaRKEjyRiBDp2ryxCMwbkdoAfX+zu/3/3EFUF8/VK7lnPUM=
+X-Received: by 2002:a17:906:a158:: with SMTP id bu24mr25997655ejb.356.1634544114335;
+ Mon, 18 Oct 2021 01:01:54 -0700 (PDT)
 MIME-Version: 1.0
-Received: from ubuntu.localdomain (218.213.202.189) by SG2PR01CA0145.apcprd01.prod.exchangelabs.com (2603:1096:4:8f::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.4608.18 via Frontend Transport; Mon, 18 Oct 2021 08:00:28 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 7f682449-3069-4294-a144-08d9920d5abf
-X-MS-TrafficTypeDiagnostic: SL2PR06MB3387:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SL2PR06MB33877AB14D7276796E7F6843BDBC9@SL2PR06MB3387.apcprd06.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2657;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: UMOMXQvfCpBjbalKpEHpuuu6nqRs9SlkzonzLTos5WGCCqhdpJ4srnzyOdJ5ZXL5U20aRlhnJK29B0KUyWfRMip2/8YdrBRN4dTeoXxg5yTzJlCRkE5s69lfKsSlsfufiBTBPovFIfwIPwAOJcYbagGazAWlegrEIkkh7JiN9oZKRM/QQyV4FDioTWKdGaWpD+apsS6mIW1DFpJIfMYR3EsnDTBHU2uUfOyzSiFaWreD7vhM2Uc8VTfquNchYQSUzV+2cNUjchQqDbknzgFbMtZb2LRDZ7qQo7K8+wEi29mcuYGMbITJoARUWwEipQBTqVtNvbdbKXoEQ/jRqtE2YAcrN/dWzxlAK9PnI6W7q+fZ74/j56BaVkpQuLPFTrlt8XdtmQcK+89QfaL/G/CAtm4eTYFPL1S+PgIT3DWbB0y7bEz7PLKckhE6tizNlCH6zR2uwVL1xPz2ujYQhdSppmpa05S+yB1W9rSh0ZSJKh6KfN63MXlg+t0DboSAmbCy28mf3h2XN65wo3TU1vaRO7TVhoEH1WEr6BS5g4EAPI/tI8h5vJ87jwU9wtqw5zFdlLycQxB15soTUgvrrM5s+9QJQh8ghbitX9axbSnta3JH0lPl2adm90hmjhVgvBNAgCpIGZr5TucSDECjBZfF1g+T0I1NFumk2C1kOCdDSKFtScm+CbP8cxY9ZL5YGsFoWlT6VaRcVMdKW+OKAB3mTA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SL2PR06MB3082.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(508600001)(6512007)(6506007)(26005)(6486002)(86362001)(8936002)(66556008)(66476007)(66946007)(107886003)(2616005)(956004)(6666004)(316002)(5660300002)(110136005)(2906002)(36756003)(83380400001)(52116002)(38100700002)(4326008)(38350700002)(8676002)(186003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?5BWaxM9B6IR9gcTGeIfRQDJAmkE/Z1NyQvzmd51uP0oDAzp1yXUC1pn0RZf3?=
- =?us-ascii?Q?tkcHgsRsAOMeKLUCqiJ3lliCk5XdCi+l7QEaDF4ZtlP+5pXuZQJzd1O/OxT7?=
- =?us-ascii?Q?XweVVhfdqJD6Yki+DcTzHQD09umliKUXRwFWVhUEZsUCI/1YtJIOGruiYUpf?=
- =?us-ascii?Q?cLmtwjmHk77ZbKCdZN9zV/oxoheJw/BTxsthYYKLxdhYk1ohlaYBALUR6q5E?=
- =?us-ascii?Q?Ndx16wONUp/j5eluDzg/hduWFyC/uC0fi0ZoxVJ5sMWFl5Zo/b2ridN2vOl0?=
- =?us-ascii?Q?x6tqpavSYH/FeBbMhMbFZznbEWg7jdF+o4OGfhhna65Z5UeQl5nl/9ogzzDY?=
- =?us-ascii?Q?anLQ/CS4porOHX0VORRHgZWIdTwBy94RTO8lJXnOon1MDlqPInGz3EGvdYZU?=
- =?us-ascii?Q?i9WsK8C2BdcL7mjokHx5canfLou1IYx0Bu7R4RV2qCD8MhygWZ3j409Ed+2j?=
- =?us-ascii?Q?BIDKE+pg/Tc8nN0oCmmnXuACjgdY4HtQjjbNv7OAH4q0aBifongXY7AYtAAj?=
- =?us-ascii?Q?9MORLSPVxz+vdHc44LguHy+MordLYv/wEGuEIIvDgUYnfELj8nCaQfwDo+ah?=
- =?us-ascii?Q?VYNb4ljcsNhhjkH9qRpQe2OpFw6ZdY8725Ptef3hv/3GF1TTbjoAXEMxolyE?=
- =?us-ascii?Q?N3uniaGHsRkBsWekpGuDv2jKnqEiWJMQj7F5GX9Suj+owYGb936yVA1JzFxn?=
- =?us-ascii?Q?hz+SFPbqs0OvJbZi+uFuX1MYPeLJAEO+xjjN7embcahDi/p0Vp9RURmoGd3w?=
- =?us-ascii?Q?AZhBGgl6IJYKgnb9fo3PiczlcUfc1C5Xa2gQg49A6wuFeMtazi/vsvfykAYx?=
- =?us-ascii?Q?PMrSKrG/TxzmjWxKzfhc6dVN6GOFcWTjcR/AblexTnvx/mbgfcyb9LeWPAt3?=
- =?us-ascii?Q?cFHdkb8dA1GECDMXElcHHdpDREGRErQLnc/my3gTroDIQ99bOtxRnyHhA+Q0?=
- =?us-ascii?Q?7HPdUsN/UnIb5PIKo62rt9acFAcLx8Cse2TstGRHAHYNurII3vyufjoPXFRY?=
- =?us-ascii?Q?X+2kp84yGLoqIIYlNAnVwqd2ChFmNg0Kg1PIM28nFTm4e0isWPnHyMG8phau?=
- =?us-ascii?Q?ycln7CJtg7M7BCKuC1eDfLtPJpRBs2QB/N80iMsNN5pg62XSwbPwnr6AkgVS?=
- =?us-ascii?Q?OXzBSWg1Jd+l4mQ7+Cd09Ewx1zpaPiH2nN8/kvJZz7/trfKxzqQmu4ufPHnH?=
- =?us-ascii?Q?shi4PUFXSD2JfCNts4Auikmb8I5VCb6IXQ82xM097ykyAojsuKkURpCpIrch?=
- =?us-ascii?Q?9J2JDbO0vaMOZDzlYZfwMA2vJh48XWFJUtVwwW4p1Pu6ihuCZvrK+E5rizOd?=
- =?us-ascii?Q?2vob5zHv9RqdR2/WunYQCpaD?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7f682449-3069-4294-a144-08d9920d5abf
-X-MS-Exchange-CrossTenant-AuthSource: SL2PR06MB3082.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Oct 2021 08:00:30.7242
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: qA08X/2HPxbukceuBN+i0dtWuRqV3ksj6EIzmFeLM+cnJbohh4PWYL0ToZDdC1CKCkaNasu0amrakESuCKt85g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SL2PR06MB3387
+References: <20211015202908.1c417ae2@canb.auug.org.au> <YWl+0PFixaNqgIxb@smile.fi.intel.com>
+ <20211018133538.2a0dec43@canb.auug.org.au>
+In-Reply-To: <20211018133538.2a0dec43@canb.auug.org.au>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 18 Oct 2021 11:01:18 +0300
+Message-ID: <CAHp75VcDwBkwL4+cFmeJt7b-p6V0w283ai9T9K02y0Sej0WLxg@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the akpm-current tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes the following Coccinelle warning:
+On Mon, Oct 18, 2021 at 6:49 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> On Fri, 15 Oct 2021 16:14:56 +0300 Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+> >
+> > Thanks! As a quick fix looks good, but I think we need a separate header for
+> > those _*_IP_ macros.
+>
+> Like this (on top of my previous fix - which I assume Andrew will
+> squash out of existence)?
 
-drivers/gpu/drm/tegra/submit.c:173:8-15: WARNING \
-	opportunity for vmemdup_user
-	
-Use vmemdup_user rather than duplicating its implementation
-This is a little bit restricted to reduce false positives
+Yep, thanks!
+I thought that it makes sense to have STACK_MAGIC also in this header. Thoughts?
 
-Signed-off-by: Qing Wang <wangqing@vivo.com>
----
- drivers/gpu/drm/tegra/submit.c | 11 +++--------
- 1 file changed, 3 insertions(+), 8 deletions(-)
+One spelling correction below.
 
-diff --git a/drivers/gpu/drm/tegra/submit.c b/drivers/gpu/drm/tegra/submit.c
-index c326984..0b11f1a
---- a/drivers/gpu/drm/tegra/submit.c
-+++ b/drivers/gpu/drm/tegra/submit.c
-@@ -169,14 +169,9 @@ static void *alloc_copy_user_array(void __user *from, size_t count, size_t size)
- 	if (copy_len > 0x4000)
- 		return ERR_PTR(-E2BIG);
- 
--	data = kvmalloc(copy_len, GFP_KERNEL);
--	if (!data)
--		return ERR_PTR(-ENOMEM);
--
--	if (copy_from_user(data, from, copy_len)) {
--		kvfree(data);
--		return ERR_PTR(-EFAULT);
--	}
-+	data = vmemdup_user(from, copy_len);
-+	if (IS_ERR(data))
-+		return ERR_PTR(PTR_ERR(data));
- 
- 	return data;
- }
+> From: Stephen Rothwell <sfr@canb.auug.org.au>
+> Date: Mon, 18 Oct 2021 13:27:54 +1100
+> Subject: [PATCH] kernel.h: split out instrcutions pointer accessors
+
+instructions
+
+> botton_half.h needs _THIS_IP_ to be standalone, so split that and _RET_IP_
+> out from kernel.h into the new instruction_pointer.h.  kernel.h directly
+> needs them, so include it there and replace the include of kernel.h with
+> this new file in bottom_half.h.
+>
+> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> ---
+>  include/linux/bottom_half.h         | 2 +-
+>  include/linux/instruction_pointer.h | 8 ++++++++
+>  include/linux/kernel.h              | 4 +---
+>  3 files changed, 10 insertions(+), 4 deletions(-)
+>  create mode 100644 include/linux/instruction_pointer.h
+>
+> diff --git a/include/linux/bottom_half.h b/include/linux/bottom_half.h
+> index 11d107d88d03..fc53e0ad56d9 100644
+> --- a/include/linux/bottom_half.h
+> +++ b/include/linux/bottom_half.h
+> @@ -2,7 +2,7 @@
+>  #ifndef _LINUX_BH_H
+>  #define _LINUX_BH_H
+>
+> -#include <linux/kernel.h>
+> +#include <linux/instruction_pointer.h>
+>  #include <linux/preempt.h>
+>
+>  #if defined(CONFIG_PREEMPT_RT) || defined(CONFIG_TRACE_IRQFLAGS)
+> diff --git a/include/linux/instruction_pointer.h b/include/linux/instruction_pointer.h
+> new file mode 100644
+> index 000000000000..19e979425bda
+> --- /dev/null
+> +++ b/include/linux/instruction_pointer.h
+> @@ -0,0 +1,8 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef _LINUX_INSTRUCTION_POINTER_H
+> +#define _LINUX_INSTRUCTION_POINTER_H
+> +
+> +#define _RET_IP_               (unsigned long)__builtin_return_address(0)
+> +#define _THIS_IP_  ({ __label__ __here; __here: (unsigned long)&&__here; })
+> +
+> +#enfif /* _LINUX_INSTRUCTION_POINTER_H */
+> diff --git a/include/linux/kernel.h b/include/linux/kernel.h
+> index 973c61ff2ef9..be84ab369650 100644
+> --- a/include/linux/kernel.h
+> +++ b/include/linux/kernel.h
+> @@ -20,6 +20,7 @@
+>  #include <linux/printk.h>
+>  #include <linux/build_bug.h>
+>  #include <linux/static_call_types.h>
+> +#include <linux/instruction_pointer.h>
+>  #include <asm/byteorder.h>
+>
+>  #include <uapi/linux/kernel.h>
+> @@ -53,9 +54,6 @@
+>  }                                      \
+>  )
+>
+> -#define _RET_IP_               (unsigned long)__builtin_return_address(0)
+> -#define _THIS_IP_  ({ __label__ __here; __here: (unsigned long)&&__here; })
+> -
+>  /**
+>   * upper_32_bits - return bits 32-63 of a number
+>   * @n: the number we're accessing
+> --
+> 2.33.0
+>
+> There are, presumably, other places this new file can be included ...
+>
+> --
+> Cheers,
+> Stephen Rothwell
+
+
+
 -- 
-2.7.4
-
+With Best Regards,
+Andy Shevchenko
