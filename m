@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A2B9431D2E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:47:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC4F2431B20
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:28:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232559AbhJRNtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:49:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40186 "EHLO mail.kernel.org"
+        id S232675AbhJRNax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:30:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41820 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233867AbhJRNqR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:46:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F1617615E2;
-        Mon, 18 Oct 2021 13:35:53 +0000 (UTC)
+        id S232029AbhJRN3U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:29:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D51C460295;
+        Mon, 18 Oct 2021 13:27:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634564154;
-        bh=e8qQFMpLhHNOyVhKGd/xjg6BC5ZtnpHOFVL2vcM3arY=;
+        s=korg; t=1634563629;
+        bh=lO0DuIKUZ5zkgHkfV2sRjPBl0xkSfEwWiAYLq1/9Cq4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pIYBRxk2mPGcLQeFf+fJG3UREgee0VIHniYKDsKyiI/LJPMoXjTI34OwfBuMSWfXu
-         5TpSa58poD8G1NwBRZNvaWXs35UQXkP9FJiYWTbT3ysoXl0vU+qmwenjf7nyvhw7C5
-         Ik9g+wIDFys6XATUDhjNvg/1b6YhaV+LGPC37nIo=
+        b=OOn8uW3tsgB79PpTisrrLjj1++QVj83kGSAA1xAFqqsUCcjrJ3VKMCffp+SKjCOBr
+         7b6YhZacFbiBZ1I7H62KJoRTjHDqYHqZOLz13aHmaAEV3N2j1i1NIuzfav1vA5RCca
+         xspRYn2QqvBTM6BfxpA4HoG2TLx18QXlVeIZmvTI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans Potsch <hans.potsch@nokia.com>,
-        Borislav Petkov <bp@suse.de>
-Subject: [PATCH 5.10 042/103] EDAC/armada-xp: Fix output of uncorrectable error counter
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH 4.14 09/39] cb710: avoid NULL pointer subtraction
 Date:   Mon, 18 Oct 2021 15:24:18 +0200
-Message-Id: <20211018132336.138083507@linuxfoundation.org>
+Message-Id: <20211018132325.751304440@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132334.702559133@linuxfoundation.org>
-References: <20211018132334.702559133@linuxfoundation.org>
+In-Reply-To: <20211018132325.426739023@linuxfoundation.org>
+References: <20211018132325.426739023@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,39 +38,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans Potsch <hans.potsch@nokia.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-commit d9b7748ffc45250b4d7bcf22404383229bc495f5 upstream.
+commit 42641042c10c757fe10cc09088cf3f436cec5007 upstream.
 
-The number of correctable errors is displayed as uncorrectable
-errors because the "SBE" error count is passed to both calls of
-edac_mc_handle_error().
+clang-14 complains about an unusual way of converting a pointer to
+an integer:
 
-Pass the correct uncorrectable error count to the second
-edac_mc_handle_error() call when logging uncorrectable errors.
+drivers/misc/cb710/sgbuf2.c:50:15: error: performing pointer subtraction with a null pointer has undefined behavior [-Werror,-Wnull-pointer-subtraction]
+        return ((ptr - NULL) & 3) != 0;
 
- [ bp: Massage commit message. ]
+Replace this with a normal cast to uintptr_t.
 
-Fixes: 7f6998a41257 ("ARM: 8888/1: EDAC: Add driver for the Marvell Armada XP SDRAM and L2 cache ECC")
-Signed-off-by: Hans Potsch <hans.potsch@nokia.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Cc: <stable@vger.kernel.org>
-Link: https://lkml.kernel.org/r/20211006121332.58788-1-hans.potsch@nokia.com
+Fixes: 5f5bac8272be ("mmc: Driver for CB710/720 memory card reader (MMC part)")
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Link: https://lore.kernel.org/r/20210927121408.939246-1-arnd@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/edac/armada_xp_edac.c |    2 +-
+ drivers/misc/cb710/sgbuf2.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/edac/armada_xp_edac.c
-+++ b/drivers/edac/armada_xp_edac.c
-@@ -178,7 +178,7 @@ static void axp_mc_check(struct mem_ctl_
- 				     "details unavailable (multiple errors)");
- 	if (cnt_dbe)
- 		edac_mc_handle_error(HW_EVENT_ERR_UNCORRECTED, mci,
--				     cnt_sbe, /* error count */
-+				     cnt_dbe, /* error count */
- 				     0, 0, 0, /* pfn, offset, syndrome */
- 				     -1, -1, -1, /* top, mid, low layer */
- 				     mci->ctl_name,
+--- a/drivers/misc/cb710/sgbuf2.c
++++ b/drivers/misc/cb710/sgbuf2.c
+@@ -50,7 +50,7 @@ static inline bool needs_unaligned_copy(
+ #ifdef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
+ 	return false;
+ #else
+-	return ((ptr - NULL) & 3) != 0;
++	return ((uintptr_t)ptr & 3) != 0;
+ #endif
+ }
+ 
 
 
