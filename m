@@ -2,136 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF6CA4312BD
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 11:08:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A7A64312BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 11:08:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231361AbhJRJKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 05:10:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31107 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231327AbhJRJKP (ORCPT
+        id S231387AbhJRJK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 05:10:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58088 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231149AbhJRJKM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 05:10:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634548083;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SYhE5y9SYVehwomW1tK9izimp0Fp9sjsJ29UQfuMIu8=;
-        b=J/0TLWh7Vq0dhNdJ5/Dp7Rck7YKlqRp5IIFX4Nw4r06x85uyM4TEcuQnBn3n0i40szVVRC
-        KgathynRZUc2I1A6BVUB2RIGZAuOnS5KlwW2mX8z3gOY/6CfiJNiUPEjxV+/KtQwO+AYuf
-        0+1a4rH645wElAZwnW1a1SJDAa2LA9Y=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-203-tJPLIy7HOfiOON5Vde2j8Q-1; Mon, 18 Oct 2021 05:08:00 -0400
-X-MC-Unique: tJPLIy7HOfiOON5Vde2j8Q-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BDBCEA40C0;
-        Mon, 18 Oct 2021 09:07:58 +0000 (UTC)
-Received: from T590 (ovpn-8-37.pek2.redhat.com [10.72.8.37])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8A9B3794A0;
-        Mon, 18 Oct 2021 09:07:45 +0000 (UTC)
-Date:   Mon, 18 Oct 2021 17:07:40 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     John Garry <john.garry@huawei.com>
-Cc:     "axboe@kernel.dk" <axboe@kernel.dk>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kashyap.desai@broadcom.com" <kashyap.desai@broadcom.com>,
-        "hare@suse.de" <hare@suse.de>
-Subject: Re: [PATCH] blk-mq: Fix blk_mq_tagset_busy_iter() for shared tags
-Message-ID: <YW05XGjO8KfYp9xp@T590>
-References: <1634114459-143003-1-git-send-email-john.garry@huawei.com>
- <YWalYoOZmpkmAZNK@T590>
- <79266509-f327-9de3-d22e-0e9fe00387ee@huawei.com>
- <YWay/n+BJTLm1Alb@T590>
- <9f3c4d57-6b77-5345-0d4c-275962214b2a@huawei.com>
- <YWbtRm22vohvY0Ca@T590>
- <7e142559-1c96-8d84-081a-378c1f6d1306@huawei.com>
- <1065f517-c94b-5a47-34f6-52015b3ef907@huawei.com>
+        Mon, 18 Oct 2021 05:10:12 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08032C06161C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 02:08:01 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id s19so7692744ljj.11
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 02:08:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=FA9zkt3TRCoLZEtoi5DA7JBeuBmLeLzb666axnIkoUg=;
+        b=VNn2U114+hk6nRmOivu3Hv4vcO48jtV8cWK0GEHFllOfu+ZOnAXCYQRqIjfTa2i4+g
+         jzTx3HoYefSoMh9U3xcqeMKmWEIwGZmovmDOUAb0O4wScj862eSrct4PomI+UyND92UY
+         6/MoM9IRA6qf4BaRjQRJvxObPCrTJ62fj+UaU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=FA9zkt3TRCoLZEtoi5DA7JBeuBmLeLzb666axnIkoUg=;
+        b=WXwUTXV7gqq9ajATtpxxUO3EoZbAhz+hqO+zIdy2NjKkMlptbc0w9YbbTSnKQC09/A
+         g4TEOU2G5zZv9B4V0yGKF18CTqRasK7TO23ouHZpqOyvZgxPvsI2YM3NBIjGFrXmFr++
+         U+l+bVF67ovEzRGhDy8Lsh2ccZmKCZRK7yy5NUEhLn94x75hF0Dxh8neNil9AMwVHJDT
+         5ONIc8+zNF2Sr9Olb3ZbiNxh2o5RTBNcV+NYfhdPpTHVAxLKi3gR1XiQtJ3kPrDyqclL
+         7GPvC7O2uCO4e1YAGYn+wxqmOePnVOKA9sfnZYe4erAswmdvbmeXb1pxQqm/NPInofRz
+         kVfg==
+X-Gm-Message-State: AOAM531qOAR6wNGfurE/a4t8hP3hx0ceEmkr9MKynoX5o3X4QD0paKi/
+        1Cf/2mHtlWgNfHlJcl3/seuffQ==
+X-Google-Smtp-Source: ABdhPJxZRjygPEv5V7JiCxqCgKp8PxPH5shz7BERIf3PY4aUGbBNSdsMghWoXsxDpCEErYGIVHtIQQ==
+X-Received: by 2002:a05:651c:158a:: with SMTP id h10mr32588819ljq.455.1634548079309;
+        Mon, 18 Oct 2021 02:07:59 -0700 (PDT)
+Received: from [172.16.11.1] ([81.216.59.226])
+        by smtp.gmail.com with ESMTPSA id bf20sm1262944ljb.137.2021.10.18.02.07.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Oct 2021 02:07:58 -0700 (PDT)
+Subject: Re: linux-next: build failure after merge of the akpm-current tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20211015202908.1c417ae2@canb.auug.org.au>
+ <YWl+0PFixaNqgIxb@smile.fi.intel.com>
+ <20211018133538.2a0dec43@canb.auug.org.au>
+ <CAHp75VcDwBkwL4+cFmeJt7b-p6V0w283ai9T9K02y0Sej0WLxg@mail.gmail.com>
+ <20211018194533.7af364fa@canb.auug.org.au>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <e262286b-ce0d-d46f-17be-2b59d9d42cd0@rasmusvillemoes.dk>
+Date:   Mon, 18 Oct 2021 11:07:57 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1065f517-c94b-5a47-34f6-52015b3ef907@huawei.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <20211018194533.7af364fa@canb.auug.org.au>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 18, 2021 at 09:08:57AM +0100, John Garry wrote:
-> On 13/10/2021 16:13, John Garry wrote:
-> > > diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
-> > > index 72a2724a4eee..2a2ad6dfcc33 100644
-> > > --- a/block/blk-mq-tag.c
-> > > +++ b/block/blk-mq-tag.c
-> > > @@ -232,8 +232,9 @@ static bool bt_iter(struct sbitmap *bitmap,
-> > > unsigned int bitnr, void *data)
-> > >       if (!rq)
-> > >           return true;
-> > > -    if (rq->q == hctx->queue && rq->mq_hctx == hctx)
-> > > -        ret = iter_data->fn(hctx, rq, iter_data->data, reserved);
-> > > +    if (rq->q == hctx->queue && (rq->mq_hctx == hctx ||
-> > > +                blk_mq_is_shared_tags(hctx->flags)))
-> > > +        ret = iter_data->fn(rq->mq_hctx, rq, iter_data->data, reserved);
-> > >       blk_mq_put_rq_ref(rq);
-> > >       return ret;
-> > >   }
-> > > @@ -460,6 +461,9 @@ void blk_mq_queue_tag_busy_iter(struct
-> > > request_queue *q, busy_iter_fn *fn,
-> > >           if (tags->nr_reserved_tags)
-> > >               bt_for_each(hctx, &tags->breserved_tags, fn, priv, true);
-> > >           bt_for_each(hctx, &tags->bitmap_tags, fn, priv, false);
-> > > +
-> > > +        if (blk_mq_is_shared_tags(hctx->flags))
-> > > +            break;
-> > >       }
-> > >       blk_queue_exit(q);
-> > >   }
-> > > 
-> > 
-> > I suppose that is ok, and means that we iter once.
-> > 
-> > However, I have to ask, where is the big user of
-> > blk_mq_queue_tag_busy_iter() coming from? I saw this from Kashyap's
-> > mail:
-> > 
-> >  > 1.31%     1.31%  kworker/57:1H-k  [kernel.vmlinux]
-> >  >       native_queued_spin_lock_slowpath
-> >  >       ret_from_fork
-> >  >       kthread
-> >  >       worker_thread
-> >  >       process_one_work
-> >  >       blk_mq_timeout_work
-> >  >       blk_mq_queue_tag_busy_iter
-> >  >       bt_iter
-> >  >       blk_mq_find_and_get_req
-> >  >       _raw_spin_lock_irqsave
-> >  >       native_queued_spin_lock_slowpath
-> > 
-> > How or why blk_mq_timeout_work()?
+On 18/10/2021 10.45, Stephen Rothwell wrote:
+> Hi Andy,
 > 
-> Just some update: I tried hisi_sas with 10x SAS SSDs, megaraid sas with 1x
-> SATA HDD (that's all I have), and null blk with lots of devices, and I still
-> can't see high usage of blk_mq_queue_tag_busy_iter().
+> On Mon, 18 Oct 2021 11:01:18 +0300 Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+>>
+>> On Mon, Oct 18, 2021 at 6:49 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>>> On Fri, 15 Oct 2021 16:14:56 +0300 Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:  
+>>>>
+>>>> Thanks! As a quick fix looks good, but I think we need a separate header for
+>>>> those _*_IP_ macros.  
+>>>
+>>> Like this (on top of my previous fix - which I assume Andrew will
+>>> squash out of existence)?  
+>>
+>> Yep, thanks!
+>> I thought that it makes sense to have STACK_MAGIC also in this header. Thoughts?
+> 
+> You might want to think of a different name for the header file then.
 
-It should be triggered easily in case of heavy io accounting:
+Eh, it seems more reasonable to leave it in kernel.h, then figure out
+how to get rid of it completely. AFAICT it's only used in one single
+place under arch/ (and I can't figure out how that magic value is
+supposed to get there in the first place... that arch was thrown out in
+2013 and resurrected in 2015, but that particular line doesn't make
+sense), and then in some i915 code which might as well define their own
+cookie.
 
-while true; do cat /proc/diskstats; done
-
-
-> So how about we get this patch processed (to fix blk_mq_tagset_busy_iter()),
-> as it is independent of blk_mq_queue_tag_busy_iter()? And then wait for some
-> update or some more info from Kashyap regarding blk_mq_queue_tag_busy_iter()
-
-Looks fine:
-
-Reviewed-by: Ming Lei <ming.lei@redhat.com>
-
-
-Thanks,
-Ming
-
+Rasmus
