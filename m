@@ -2,119 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 315E243178F
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 13:37:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3E9C431793
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 13:38:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231254AbhJRLj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 07:39:29 -0400
-Received: from mail-ua1-f54.google.com ([209.85.222.54]:37382 "EHLO
-        mail-ua1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231295AbhJRLj2 (ORCPT
+        id S230398AbhJRLkh convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 18 Oct 2021 07:40:37 -0400
+Received: from mail-vk1-f174.google.com ([209.85.221.174]:42898 "EHLO
+        mail-vk1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229491AbhJRLkf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 07:39:28 -0400
-Received: by mail-ua1-f54.google.com with SMTP id f4so5124904uad.4;
-        Mon, 18 Oct 2021 04:37:17 -0700 (PDT)
+        Mon, 18 Oct 2021 07:40:35 -0400
+Received: by mail-vk1-f174.google.com with SMTP id o42so8390342vkf.9;
+        Mon, 18 Oct 2021 04:38:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yoiylfhsu7vOzWaVrb8Sfpqi1MCIs1ryTZwMWyEH6Ag=;
-        b=Bcen5t89gEoZ6eoroXnsq1Mk7Q4yFwfaYv+3P41TrqBwwGwl67CaWO0xOtEeZeLb/m
-         1RU/+Ca9flBr94WEBsskisVTGI59N8bKM+TU3zwPhKTUldAhvr0b8mZtIrDUUTFfGbfh
-         7sMdpFc/dZuAInSct28pjRrbYD/epxA7ZPxEL+Pkl/wHHCnTMkUEiWtsUVMfqGSb0rqX
-         jmFxUrMm6cuj7933Ys3K2fjvNCdqDHve4Yx7QfB7hMROTjiyN8XjC0l7yRAyr+0Dj5Nh
-         1ru86qU2/tGnM+CGF80nQF4rqiWgTa0OhBM5HgwkayyOwHbCVKT33huM2QeABTStmvHG
-         EJ7Q==
-X-Gm-Message-State: AOAM531dn9lx344lXGlobSEuULUbTpE65CufM/q4Mdo1fTlfbfZ54aRh
-        6B6GiNRV8Ai+kVTzwPFB6n4gAe0uRuQp9w==
-X-Google-Smtp-Source: ABdhPJydUuu55vT6vkPDOdiZ7jMcFEzd+CMbA4JZz4mJY4f2LLn2V1q80p/42Pgpc5nGRORgyn47Zw==
-X-Received: by 2002:ab0:3c48:: with SMTP id u8mr25896475uaw.124.1634557036521;
-        Mon, 18 Oct 2021 04:37:16 -0700 (PDT)
-Received: from mail-vk1-f179.google.com (mail-vk1-f179.google.com. [209.85.221.179])
-        by smtp.gmail.com with ESMTPSA id p26sm1646092uaa.18.2021.10.18.04.37.15
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=MmeKk08TSs7bRjJ5MxCz8dFyhSFfnwP05dCVlXuAOs4=;
+        b=rGJ19l4ep+FCrF2i6ZFriMYoWZUTxFLwCdpyZetabcNvtIt7x8ieOi4KCBmtMN344/
+         //a3/ViUAoesZhOAJ4qH1RkkjNg8Mn1ZczWNQXUJoefM9e1DbZmZ5CYmeE17sCuFwaO5
+         i8bcjYtAlW3NV/NaREoKXRGqDpCwK9gTLjD3dt5ZIRkLK2PnB0wOfUpJNRnx95h8Z/Ca
+         Pcxyyv4nT48CHVCA0frisNQvXJCHRkxm+cGJ1UlFJRTnNxC2mW1EdY4kBBzeBfAQtgcZ
+         G5cPgwI49PaXOPaky0yZxK6jSDJed2pFP5xTItjW4X3MuKW4pyooORFvKds5/zv9s5pg
+         DEKw==
+X-Gm-Message-State: AOAM532FEIz7Hr1qlf05V9VlB6bpbLV5tno7SsFX6wbevdXp0FiYBg9o
+        9U8rCZSAVTqpyN00sLvvqke4FP29dTJk1A==
+X-Google-Smtp-Source: ABdhPJwAQE2i81QclXtGa9rFQpHYXaAm4dJIUzoQW46+F+SGZm0PSWq5hwrp2KwDcv+KVLyHJwz+ug==
+X-Received: by 2002:a1f:bf86:: with SMTP id p128mr23532712vkf.23.1634557104233;
+        Mon, 18 Oct 2021 04:38:24 -0700 (PDT)
+Received: from mail-ua1-f54.google.com (mail-ua1-f54.google.com. [209.85.222.54])
+        by smtp.gmail.com with ESMTPSA id k1sm8483749uaq.0.2021.10.18.04.38.23
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Oct 2021 04:37:16 -0700 (PDT)
-Received: by mail-vk1-f179.google.com with SMTP id x207so8421804vke.2;
-        Mon, 18 Oct 2021 04:37:15 -0700 (PDT)
-X-Received: by 2002:a1f:1841:: with SMTP id 62mr23885899vky.26.1634557035711;
- Mon, 18 Oct 2021 04:37:15 -0700 (PDT)
+        Mon, 18 Oct 2021 04:38:23 -0700 (PDT)
+Received: by mail-ua1-f54.google.com with SMTP id e10so5137111uab.3;
+        Mon, 18 Oct 2021 04:38:23 -0700 (PDT)
+X-Received: by 2002:a9f:29a5:: with SMTP id s34mr19126482uas.122.1634557103412;
+ Mon, 18 Oct 2021 04:38:23 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210923064137.60722-1-zhang.lyra@gmail.com> <YV1XpL7ibF1y4LbV@google.com>
- <CAL_Jsq+eqqv=qtKOiNdEpYGi2amek_m+Q-Z9A769pXXqJ4R88A@mail.gmail.com>
- <YWVD0RXHVLxuXEIN@google.com> <CAMuHMdWqYVp1JyzZoidAJhPy9ypRnSOWHJLz5knDUMcFHPOzAw@mail.gmail.com>
- <YWfSz00Rj5AVhkgT@google.com> <CAL_Jsq+GHt+DqHa0GeLKWoni+Lghg5wg5ssREZBdSD-=K3XQ1A@mail.gmail.com>
- <163425256290.1688384.5646232860050218479@swboyd.mtv.corp.google.com>
- <CAL_JsqJV_CoPH7VrX-D5=u2WsoUpp-pTKbcR2y+gWxhv+WKcEg@mail.gmail.com>
- <CAMuHMdU1TCOvDwx6pjg=0-hLkFywRGQsZUNM+0aJLb96fZGAQA@mail.gmail.com> <163433541408.1688384.16269113818432626325@swboyd.mtv.corp.google.com>
-In-Reply-To: <163433541408.1688384.16269113818432626325@swboyd.mtv.corp.google.com>
+References: <20211013144308.2248978-1-arnd@kernel.org> <25ccdc75-67da-a955-b8ef-641a2f007d13@amd.com>
+In-Reply-To: <25ccdc75-67da-a955-b8ef-641a2f007d13@amd.com>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 18 Oct 2021 13:37:04 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdUuB1JfDXJiC281xanzW1zoq-LeTRmWtRDzn3vn2Z6wFw@mail.gmail.com>
-Message-ID: <CAMuHMdUuB1JfDXJiC281xanzW1zoq-LeTRmWtRDzn3vn2Z6wFw@mail.gmail.com>
-Subject: Re: [PATCH v4 2/4] dt-bindings: mfd: sprd: Add bindings for ums512
- global registers
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, Lee Jones <lee.jones@linaro.org>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS 
-        <devicetree@vger.kernel.org>, Baolin Wang <baolin.wang7@gmail.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>,
-        LKML <linux-kernel@vger.kernel.org>
+Date:   Mon, 18 Oct 2021 13:38:12 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdWKp-v=df0JA_tr-YgNnyfu7NS9dA3Zr+bqwZX9JuBAGQ@mail.gmail.com>
+Message-ID: <CAMuHMdWKp-v=df0JA_tr-YgNnyfu7NS9dA3Zr+bqwZX9JuBAGQ@mail.gmail.com>
+Subject: Re: [PATCH] drm: msm: fix building without CONFIG_COMMON_CLK
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     Arnd Bergmann <arnd@kernel.org>, Rob Clark <robdclark@gmail.com>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Arnd Bergmann <arnd@arndb.de>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Alex Elder <elder@linaro.org>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        Rajeev Nandan <rajeevny@codeaurora.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        freedreno@lists.freedesktop.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
+Hi Christian,
 
-On Sat, Oct 16, 2021 at 12:03 AM Stephen Boyd <sboyd@kernel.org> wrote:
-> Quoting Geert Uytterhoeven (2021-10-15 10:09:10)
-> > On Fri, Oct 15, 2021 at 3:59 PM Rob Herring <robh+dt@kernel.org> wrote:
-> > > On Thu, Oct 14, 2021 at 6:02 PM Stephen Boyd <sboyd@kernel.org> wrote:
-> > > > Quoting Rob Herring (2021-10-14 09:18:16)
-> > > > > On Thu, Oct 14, 2021 at 1:48 AM Lee Jones <lee.jones@linaro.org> wrote:
-> > > > > >
-> > > > > > I don't explicitly build DT documentation.
-> > > > > >
-> > > > > > Since I use the build bots to let me know if there are strange !(C,
-> > > > > > ASM, arm, aarch64, mips, ppc, x86) build issues or ones with odd
-> > > > > > configuration possibilities (randconfig) in the repos I maintain, you
-> > > > > > might have to convince them that this is important too.
-> > > > >
-> > > > > It's really just a matter of turning on the build in
-> > > > > allyesconfig/allmodconfig builds. I've not done that primarily because
-> > > > > there's one person I don't want to yell at me, but I could probably
-> > > > > make it arm and/or arm64 only. It's really arch and config
-> > > > > independent, so doing it multiple times is kind of pointless.
-> > > > >
-> > > > > I assume for bots you mean kernel-ci mainly? Do you run that before
-> > > > > stuff gets into linux-next? IMO, that's too late. But still a slight
-> > > > > improvement if things go in via one tree. Otherwise, I see the
-> > > > > breakage twice, 1st linux-next then the merge window.
-> > > > >
-> > > >
-> > > > I run `make dt_binding_check DT_SCHEMA_FILES="<path to yaml file>"` but
-> > > > nowadays this seems to check all the bindings and not just the one
-> > > > binding I care to check. Did something break?
-> > >
-> > > It should apply all the schemas to the example in DT_SCHEMA_FILES.
-> > > Originally, it only applied DT_SCHEMA_FILES schema to the example in
-> > > DT_SCHEMA_FILES.
+On Mon, Oct 18, 2021 at 1:37 PM Christian König
+<christian.koenig@amd.com> wrote:
+> Am 13.10.21 um 16:42 schrieb Arnd Bergmann:
+> > From: Arnd Bergmann <arnd@arndb.de>
 > >
-> > Probably Stephen means that yamllint is still run on all files, which
-> > I tried to fix in [1]?
+> > When CONFIG_COMMON_CLOCK is disabled, the 8996 specific
+> > phy code is left out, which results in a link failure:
 > >
-> > I've been running an improved version for months, but I haven't sent
-> > it out yet.
+> > ld: drivers/gpu/drm/msm/hdmi/hdmi_phy.o:(.rodata+0x3f0): undefined reference to `msm_hdmi_phy_8996_cfg'
 > >
+> > This was only exposed after it became possible to build
+> > test the driver without the clock interfaces.
+> >
+> > Make COMMON_CLK a hard dependency for compile testing,
+> > and simplify it a little based on that.
+> >
+> > Fixes: b3ed524f84f5 ("drm/msm: allow compile_test on !ARM")
+> > Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> > Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> > ---
+> >   drivers/gpu/drm/msm/Kconfig  | 2 +-
+> >   drivers/gpu/drm/msm/Makefile | 6 +++---
+> >   2 files changed, 4 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/msm/Kconfig b/drivers/gpu/drm/msm/Kconfig
+> > index f5107b6ded7b..cb204912e0f4 100644
+> > --- a/drivers/gpu/drm/msm/Kconfig
+> > +++ b/drivers/gpu/drm/msm/Kconfig
+> > @@ -4,8 +4,8 @@ config DRM_MSM
+> >       tristate "MSM DRM"
+> >       depends on DRM
+> >       depends on ARCH_QCOM || SOC_IMX5 || COMPILE_TEST
+> > +     depends on COMMON_CLK
+> >       depends on IOMMU_SUPPORT
 >
-> Oh yeah probably. Do I need to carry this patch locally until it is
-> fixed?
+> We also need a "depends on MMU" here because some automated test is now
+> trying to compile the driver on parisc as well.
+>
+> I have absolutely no idea how a platform can have IOMMU but no MMU
+> support but it indeed seems to be the case here.
 
-Submitted the improved version:
-https://lore.kernel.org/all/cover.1634551582.git.geert+renesas@glider.be
+Huh?
+
+Parisc has config MMU def_bool y?
 
 Gr{oetje,eeting}s,
 
