@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36446431C40
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:37:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE705431D0A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:45:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233298AbhJRNjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:39:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54246 "EHLO mail.kernel.org"
+        id S232442AbhJRNr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:47:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36772 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233168AbhJRNho (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:37:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DFA7461350;
-        Mon, 18 Oct 2021 13:31:36 +0000 (UTC)
+        id S232414AbhJRNpJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:45:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CA288615A4;
+        Mon, 18 Oct 2021 13:35:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634563897;
-        bh=U5EPDvDxRwuwGLAyLFC9t8K9bDCR/g4m+1dzIVed0L8=;
+        s=korg; t=1634564126;
+        bh=HuHe8S83WxmmoP4Hyx+MT5LkkF+fxuSCD8kog9q8rsY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ski7QIoyWrnXSZSv9EeNCI2GchnQkHSn3dGn7TZ1eHfhF5AcK4MUOD1qwmKAxUAX5
-         chyWawq/BhgKwH4qufbqvpyktom8nvTG3Qot37Od8VaveS1INnNERQu6NmY+v7fM9J
-         86jn7zy74ToRCDeDSR2VZOhJEUMrjbccMH+J0CKM=
+        b=GFZ95Utgsl4jA/mQZJd8ynik4uBN54KpB2USQd22dUPdvRKvD65f80uWBBfOgNSRk
+         KiedLu4/6/oIIi2AEwwe2xxvBywUpHJyuBLvS1YFZfN3O8SPSAgKNhIxK2bRXwqEZ+
+         G6BcdeJK+OBAUEjED8dzc8btu/VvAAo6UScswYfE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Herve Codina <herve.codina@bootlin.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 50/69] net: stmmac: fix get_hw_feature() on old hardware
-Date:   Mon, 18 Oct 2021 15:24:48 +0200
-Message-Id: <20211018132331.145499722@linuxfoundation.org>
+        stable@vger.kernel.org, Aya Levin <ayal@nvidia.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Moshe Shemesh <moshe@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>
+Subject: [PATCH 5.10 073/103] net/mlx5e: Mutually exclude RX-FCS and RX-port-timestamp
+Date:   Mon, 18 Oct 2021 15:24:49 +0200
+Message-Id: <20211018132337.205366925@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132329.453964125@linuxfoundation.org>
-References: <20211018132329.453964125@linuxfoundation.org>
+In-Reply-To: <20211018132334.702559133@linuxfoundation.org>
+References: <20211018132334.702559133@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,132 +41,129 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Herve Codina <herve.codina@bootlin.com>
+From: Aya Levin <ayal@nvidia.com>
 
-commit 075da584bae2da6a37428d59a477b6bdad430ac3 upstream.
+commit 0bc73ad46a76ed6ece4dcacb28858e7b38561e1c upstream.
 
-Some old IPs do not provide the hardware feature register.
-On these IPs, this register is read 0x00000000.
+Due to current HW arch limitations, RX-FCS (scattering FCS frame field
+to software) and RX-port-timestamp (improved timestamp accuracy on the
+receive side) can't work together.
+RX-port-timestamp is not controlled by the user and it is enabled by
+default when supported by the HW/FW.
+This patch sets RX-port-timestamp opposite to RX-FCS configuration.
 
-In old driver version, this feature was handled but a regression came
-with the commit f10a6a3541b4 ("stmmac: rework get_hw_feature function").
-Indeed, this commit removes the return value in dma->get_hw_feature().
-This return value was used to indicate the validity of retrieved
-information and used later on in stmmac_hw_init() to override
-priv->plat data if this hardware feature were valid.
-
-This patch restores the return code in ->get_hw_feature() in order
-to indicate the hardware feature validity and override priv->plat
-data only if this hardware feature is valid.
-
-Fixes: f10a6a3541b4 ("stmmac: rework get_hw_feature function")
-Signed-off-by: Herve Codina <herve.codina@bootlin.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 102722fc6832 ("net/mlx5e: Add support for RXFCS feature flag")
+Signed-off-by: Aya Levin <ayal@nvidia.com>
+Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
+Reviewed-by: Moshe Shemesh <moshe@nvidia.com>
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/stmicro/stmmac/dwmac1000_dma.c |   13 +++++++++++--
- drivers/net/ethernet/stmicro/stmmac/dwmac4_dma.c    |    6 ++++--
- drivers/net/ethernet/stmicro/stmmac/dwxgmac2_dma.c  |    6 ++++--
- drivers/net/ethernet/stmicro/stmmac/hwif.h          |    6 +++---
- 4 files changed, 22 insertions(+), 9 deletions(-)
+ drivers/net/ethernet/mellanox/mlx5/core/en_main.c |   57 ++++++++++++++++++++--
+ include/linux/mlx5/mlx5_ifc.h                     |   10 +++
+ 2 files changed, 60 insertions(+), 7 deletions(-)
 
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac1000_dma.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac1000_dma.c
-@@ -218,11 +218,18 @@ static void dwmac1000_dump_dma_regs(void
- 				readl(ioaddr + DMA_BUS_MODE + i * 4);
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+@@ -3819,20 +3819,67 @@ static int set_feature_rx_all(struct net
+ 	return mlx5_set_port_fcs(mdev, !enable);
  }
  
--static void dwmac1000_get_hw_feature(void __iomem *ioaddr,
--				     struct dma_features *dma_cap)
-+static int dwmac1000_get_hw_feature(void __iomem *ioaddr,
-+				    struct dma_features *dma_cap)
++static int mlx5e_set_rx_port_ts(struct mlx5_core_dev *mdev, bool enable)
++{
++	u32 in[MLX5_ST_SZ_DW(pcmr_reg)] = {};
++	bool supported, curr_state;
++	int err;
++
++	if (!MLX5_CAP_GEN(mdev, ports_check))
++		return 0;
++
++	err = mlx5_query_ports_check(mdev, in, sizeof(in));
++	if (err)
++		return err;
++
++	supported = MLX5_GET(pcmr_reg, in, rx_ts_over_crc_cap);
++	curr_state = MLX5_GET(pcmr_reg, in, rx_ts_over_crc);
++
++	if (!supported || enable == curr_state)
++		return 0;
++
++	MLX5_SET(pcmr_reg, in, local_port, 1);
++	MLX5_SET(pcmr_reg, in, rx_ts_over_crc, enable);
++
++	return mlx5_set_ports_check(mdev, in, sizeof(in));
++}
++
+ static int set_feature_rx_fcs(struct net_device *netdev, bool enable)
  {
- 	u32 hw_cap = readl(ioaddr + DMA_HW_FEATURE);
+ 	struct mlx5e_priv *priv = netdev_priv(netdev);
++	struct mlx5e_channels *chs = &priv->channels;
++	struct mlx5_core_dev *mdev = priv->mdev;
+ 	int err;
  
-+	if (!hw_cap) {
-+		/* 0x00000000 is the value read on old hardware that does not
-+		 * implement this register
-+		 */
-+		return -EOPNOTSUPP;
+ 	mutex_lock(&priv->state_lock);
+ 
+-	priv->channels.params.scatter_fcs_en = enable;
+-	err = mlx5e_modify_channels_scatter_fcs(&priv->channels, enable);
+-	if (err)
+-		priv->channels.params.scatter_fcs_en = !enable;
++	if (enable) {
++		err = mlx5e_set_rx_port_ts(mdev, false);
++		if (err)
++			goto out;
++
++		chs->params.scatter_fcs_en = true;
++		err = mlx5e_modify_channels_scatter_fcs(chs, true);
++		if (err) {
++			chs->params.scatter_fcs_en = false;
++			mlx5e_set_rx_port_ts(mdev, true);
++		}
++	} else {
++		chs->params.scatter_fcs_en = false;
++		err = mlx5e_modify_channels_scatter_fcs(chs, false);
++		if (err) {
++			chs->params.scatter_fcs_en = true;
++			goto out;
++		}
++		err = mlx5e_set_rx_port_ts(mdev, true);
++		if (err) {
++			mlx5_core_warn(mdev, "Failed to set RX port timestamp %d\n", err);
++			err = 0;
++		}
 +	}
+ 
++out:
+ 	mutex_unlock(&priv->state_lock);
+-
+ 	return err;
+ }
+ 
+--- a/include/linux/mlx5/mlx5_ifc.h
++++ b/include/linux/mlx5/mlx5_ifc.h
+@@ -9274,16 +9274,22 @@ struct mlx5_ifc_pcmr_reg_bits {
+ 	u8         reserved_at_0[0x8];
+ 	u8         local_port[0x8];
+ 	u8         reserved_at_10[0x10];
 +
- 	dma_cap->mbps_10_100 = (hw_cap & DMA_HW_FEAT_MIISEL);
- 	dma_cap->mbps_1000 = (hw_cap & DMA_HW_FEAT_GMIISEL) >> 1;
- 	dma_cap->half_duplex = (hw_cap & DMA_HW_FEAT_HDSEL) >> 2;
-@@ -252,6 +259,8 @@ static void dwmac1000_get_hw_feature(voi
- 	dma_cap->number_tx_channel = (hw_cap & DMA_HW_FEAT_TXCHCNT) >> 22;
- 	/* Alternate (enhanced) DESC mode */
- 	dma_cap->enh_desc = (hw_cap & DMA_HW_FEAT_ENHDESSEL) >> 24;
+ 	u8         entropy_force_cap[0x1];
+ 	u8         entropy_calc_cap[0x1];
+ 	u8         entropy_gre_calc_cap[0x1];
+-	u8         reserved_at_23[0x1b];
++	u8         reserved_at_23[0xf];
++	u8         rx_ts_over_crc_cap[0x1];
++	u8         reserved_at_33[0xb];
+ 	u8         fcs_cap[0x1];
+ 	u8         reserved_at_3f[0x1];
 +
-+	return 0;
- }
- 
- static void dwmac1000_rx_watchdog(void __iomem *ioaddr, u32 riwt,
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac4_dma.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac4_dma.c
-@@ -336,8 +336,8 @@ static void dwmac4_dma_tx_chan_op_mode(v
- 	writel(mtl_tx_op, ioaddr +  MTL_CHAN_TX_OP_MODE(channel));
- }
- 
--static void dwmac4_get_hw_feature(void __iomem *ioaddr,
--				  struct dma_features *dma_cap)
-+static int dwmac4_get_hw_feature(void __iomem *ioaddr,
-+				 struct dma_features *dma_cap)
- {
- 	u32 hw_cap = readl(ioaddr + GMAC_HW_FEATURE0);
- 
-@@ -400,6 +400,8 @@ static void dwmac4_get_hw_feature(void _
- 	dma_cap->frpbs = (hw_cap & GMAC_HW_FEAT_FRPBS) >> 11;
- 	dma_cap->frpsel = (hw_cap & GMAC_HW_FEAT_FRPSEL) >> 10;
- 	dma_cap->dvlan = (hw_cap & GMAC_HW_FEAT_DVLAN) >> 5;
-+
-+	return 0;
- }
- 
- /* Enable/disable TSO feature and set MSS */
---- a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_dma.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_dma.c
-@@ -356,8 +356,8 @@ static int dwxgmac2_dma_interrupt(void _
- 	return ret;
- }
- 
--static void dwxgmac2_get_hw_feature(void __iomem *ioaddr,
--				    struct dma_features *dma_cap)
-+static int dwxgmac2_get_hw_feature(void __iomem *ioaddr,
-+				   struct dma_features *dma_cap)
- {
- 	u32 hw_cap;
- 
-@@ -425,6 +425,8 @@ static void dwxgmac2_get_hw_feature(void
- 	dma_cap->frpes = (hw_cap & XGMAC_HWFEAT_FRPES) >> 11;
- 	dma_cap->frpbs = (hw_cap & XGMAC_HWFEAT_FRPPB) >> 9;
- 	dma_cap->frpsel = (hw_cap & XGMAC_HWFEAT_FRPSEL) >> 3;
-+
-+	return 0;
- }
- 
- static void dwxgmac2_rx_watchdog(void __iomem *ioaddr, u32 riwt, u32 nchan)
---- a/drivers/net/ethernet/stmicro/stmmac/hwif.h
-+++ b/drivers/net/ethernet/stmicro/stmmac/hwif.h
-@@ -196,8 +196,8 @@ struct stmmac_dma_ops {
- 	int (*dma_interrupt) (void __iomem *ioaddr,
- 			      struct stmmac_extra_stats *x, u32 chan);
- 	/* If supported then get the optional core features */
--	void (*get_hw_feature)(void __iomem *ioaddr,
--			       struct dma_features *dma_cap);
-+	int (*get_hw_feature)(void __iomem *ioaddr,
-+			      struct dma_features *dma_cap);
- 	/* Program the HW RX Watchdog */
- 	void (*rx_watchdog)(void __iomem *ioaddr, u32 riwt, u32 number_chan);
- 	void (*set_tx_ring_len)(void __iomem *ioaddr, u32 len, u32 chan);
-@@ -247,7 +247,7 @@ struct stmmac_dma_ops {
- #define stmmac_dma_interrupt_status(__priv, __args...) \
- 	stmmac_do_callback(__priv, dma, dma_interrupt, __args)
- #define stmmac_get_hw_feature(__priv, __args...) \
--	stmmac_do_void_callback(__priv, dma, get_hw_feature, __args)
-+	stmmac_do_callback(__priv, dma, get_hw_feature, __args)
- #define stmmac_rx_watchdog(__priv, __args...) \
- 	stmmac_do_void_callback(__priv, dma, rx_watchdog, __args)
- #define stmmac_set_tx_ring_len(__priv, __args...) \
+ 	u8         entropy_force[0x1];
+ 	u8         entropy_calc[0x1];
+ 	u8         entropy_gre_calc[0x1];
+-	u8         reserved_at_43[0x1b];
++	u8         reserved_at_43[0xf];
++	u8         rx_ts_over_crc[0x1];
++	u8         reserved_at_53[0xb];
+ 	u8         fcs_chk[0x1];
+ 	u8         reserved_at_5f[0x1];
+ };
 
 
