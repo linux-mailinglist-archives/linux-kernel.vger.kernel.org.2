@@ -2,95 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3833D431A13
+	by mail.lfdr.de (Postfix) with ESMTP id 82754431A15
 	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 14:51:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231773AbhJRMxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S231796AbhJRMxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 08:53:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50562 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231755AbhJRMxr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 18 Oct 2021 08:53:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54324 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbhJRMxp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 08:53:45 -0400
-Received: from mail-ua1-x931.google.com (mail-ua1-x931.google.com [IPv6:2607:f8b0:4864:20::931])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7773C06161C;
-        Mon, 18 Oct 2021 05:51:34 -0700 (PDT)
-Received: by mail-ua1-x931.google.com with SMTP id a17so1850676uax.12;
-        Mon, 18 Oct 2021 05:51:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/nfbXXf+EuyVINKupRSDZdDXc4S8gFPqrfjLCLl4V00=;
-        b=MAGHPcnb/9gYIWnkZcbnZFNp8uEqcMIjJR2Zl2CB2FEqNkWOgE6+wCROpoiBf29Hh5
-         IgpCnQbP86IJUarKUL6VdnfemqNWHr3/RuOOxtu9xkfjI6rmvlkgGBxcw2pO20UOnRtV
-         X/xS5pMigMfWQmaBzLHtdoU8WiR94BM4xzfGSIYbLmSd2qwW/utsCGxkLXA0CMPxVI4j
-         5XdQbvCfYONT/JBUQrIg6B5ZBaCnrlvzRuqREEKKGVjWCzqJc+TsJDLNX+Jn0vzzxVDY
-         hgQ75DvGz2T9e9W6YTGOWczeuB/oE90yO9NsyOlqMFRsal0d0D9ACTG0i0CK4k4FSFMW
-         5BXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/nfbXXf+EuyVINKupRSDZdDXc4S8gFPqrfjLCLl4V00=;
-        b=BMAdRn9olyFdIvkj136DPPO7AX4hw45h5LHdutc01IGRgTZSJRTi/bfG+BkNl6SWaO
-         /fxj8NTewmjBa8hrZCGge8eTsoUDOXs1S4plpyFq6SH23skeSwlvpBNnnQe6MndoLqvT
-         rE1RYpUkkC1kQGtQFCaZ2Dr2oeYoyNVeeQD9GHDJMxxw85mmEPfIM+qM/Fxky2ceGxlo
-         8D1o0CmYVE8eUL1nwNkRS7c5ChefVapCBhzRWZzHDSMComRrNGELSGCwpPkWCMO2dlHL
-         LUgqeoew4TEL0W1ldOQCxsy4oT61PEffVxI6c1URjSlXKZEAPE7mBcZo1FL9P9kfCtJz
-         axEw==
-X-Gm-Message-State: AOAM530YPpRZQC0B+yu1TgWGMarBwYFlTa56OfVTBme1PT+sEI3C2/1X
-        6He7M8KEo+D61rMdQN9Ht/U=
-X-Google-Smtp-Source: ABdhPJykCtIT1u9WUnVsysQNWFH1/Q7hBEPJNpDptCqrD3goNwNNMu/3PJAMQiQRSdBF2usXQQrmgA==
-X-Received: by 2002:a67:6044:: with SMTP id u65mr27001050vsb.41.1634561493877;
-        Mon, 18 Oct 2021 05:51:33 -0700 (PDT)
-Received: from rog-zephyrus.. ([201.46.20.90])
-        by smtp.gmail.com with ESMTPSA id f27sm8812128vsl.7.2021.10.18.05.51.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 05:51:33 -0700 (PDT)
-From:   "Vinicius A. Reis" <angiolucci@gmail.com>
-To:     jikos@kernel.org
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Vinicius A. Reis" <angiolucci@gmail.com>
-Subject: [PATCH] HID: hid-asus: Maps 0x35 to KEY_SCREENLOCK
-Date:   Mon, 18 Oct 2021 09:51:10 -0300
-Message-Id: <20211018125110.3224-1-angiolucci@gmail.com>
-X-Mailer: git-send-email 2.32.0
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 804B060FF2;
+        Mon, 18 Oct 2021 12:51:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634561496;
+        bh=wSAPygQazTQCxuDvZ0F3rHqQvWlL/kR4Uo4hpNZSHw0=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=BOSqgA/MH3tMfhEB9L562M5BHU1uTYoUIt8/LMzwgwy2F/MV55RnC1iZQmOYtdzhj
+         /fwuYbnZ1cEGA+yQExXby+49sUFGNclVDm96J+vZzllszL1s03/ddB8BoRz1ikovyf
+         mVd1VGZrv6gEzwJpZa9a2C9Yc1Yo0+t+5Q7kxo3NaIGSUol6viOWkdA+Jnehh6N3CC
+         C4Vr4sTrlKEeys/LoOAtjKL30BnRCcLZMsQ/rnDotTJyDU/xEF6OO7wrOtLAVW4xhF
+         +3vYBGEKazh7aqf+luCKGKtO6f6hRd5a9YtjJPx8W7so/j9wIbr/JpZtN+wtNK8zzh
+         MT4YD5Xj4m9Xw==
+Message-ID: <5f816a61bb95c5d3ea4c26251bb0a4b044aba0e6.camel@kernel.org>
+Subject: Re: [PATCH v3 0/2] x86: sgx_vepc: implement ioctl to EREMOVE all
+ pages
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     dave.hansen@linux.intel.com, seanjc@google.com, x86@kernel.org,
+        yang.zhong@intel.com, bp@suse.de
+Date:   Mon, 18 Oct 2021 15:51:33 +0300
+In-Reply-To: <20211016071434.167591-1-pbonzini@redhat.com>
+References: <20211016071434.167591-1-pbonzini@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Asus laptops are able to turn both the display and keyboard backlit off
-by pressing a dedicated "turn display off" key (usually fn+f6). However,
-on Linux systems, this key has no effect at all since most desktop
-environments don't deal with KEY_DISPLAY_OFF. By mapping that key to
-KEY_SCREENLOCK instead, would enable it to work as close as intended by
-the manufacturer, since desktop envirorments would handle this as a
-screen lock request by the user, locking the screen (and turning both
-the display and keyboard backlit off on environments that support it).
+On Sat, 2021-10-16 at 03:14 -0400, Paolo Bonzini wrote:
+> Add to /dev/sgx_vepc a ioctl that brings vEPC pages back to uninitialized
+> state with EREMOVE.=C2=A0 This is useful in order to match the expectatio=
+ns
+> of guests after reboot, and to match the behavior of real hardware.
+>=20
+> The ioctl is a cleaner alternative to closing and reopening the
+> /dev/sgx_vepc device; reopening /dev/sgx_vepc could be problematic in
+> case userspace has sandboxed itself since the time it first opened the
+> device, and has thus lost permissions to do so.
+>=20
+> If possible, I would like these patches to be included in 5.15 through
+> either the x86 or the KVM tree.
+>=20
+> Thanks,
+>=20
+> Paolo
+>=20
+> Changes from RFC:
+> - improved commit messages, added documentation
+> - renamed ioctl from SGX_IOC_VEPC_REMOVE to SGX_IOC_VEPC_REMOVE_ALL
+>=20
+> Change from v1:
+> - fixed documentation and code to cover SGX_ENCLAVE_ACT errors
+> - removed Tested-by since the code is quite different now
+>=20
+> Changes from v2:
+> - return EBUSY also if EREMOVE causes a general protection fault
+>=20
+> Paolo Bonzini (2):
+> =C2=A0 x86: sgx_vepc: extract sgx_vepc_remove_page
+> =C2=A0 x86: sgx_vepc: implement SGX_IOC_VEPC_REMOVE_ALL ioctl
+>=20
+> =C2=A0Documentation/x86/sgx.rst=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 35 =
++++++++++++++++++++++
+> =C2=A0arch/x86/include/uapi/asm/sgx.h |=C2=A0 2 ++
+> =C2=A0arch/x86/kernel/cpu/sgx/virt.c=C2=A0 | 63 +++++++++++++++++++++++++=
++++++---
+> =C2=A03 files changed, 95 insertions(+), 5 deletions(-)
+>=20
 
-Signed-off-by: Vinicius A. Reis <angiolucci@gmail.com>
----
- drivers/hid/hid-asus.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+BTW, do you already have patch for QEMU somewhere, which uses
+this new functionality? Would like to peek at it just to see
+the usage pattern.
 
-diff --git a/drivers/hid/hid-asus.c b/drivers/hid/hid-asus.c
-index f3ecddc519ee..e5c7bfa68cd6 100644
---- a/drivers/hid/hid-asus.c
-+++ b/drivers/hid/hid-asus.c
-@@ -854,7 +854,9 @@ static int asus_input_mapping(struct hid_device *hdev,
- 		switch (usage->hid & HID_USAGE) {
- 		case 0x10: asus_map_key_clear(KEY_BRIGHTNESSDOWN);	break;
- 		case 0x20: asus_map_key_clear(KEY_BRIGHTNESSUP);		break;
--		case 0x35: asus_map_key_clear(KEY_DISPLAY_OFF);		break;
-+		case 0x35:
-+			asus_map_key_clear(KEY_SCREENLOCK);
-+			break;
- 		case 0x6c: asus_map_key_clear(KEY_SLEEP);		break;
- 		case 0x7c: asus_map_key_clear(KEY_MICMUTE);		break;
- 		case 0x82: asus_map_key_clear(KEY_CAMERA);		break;
--- 
-2.32.0
+Also, can you provide some way to stress test QEMU so that this
+code path gets executed? I'm already using QEMU as my main test
+platform for SGX, so it's not a huge stretch for me to test it.
 
+This way I can also provide tested-by for the corresponding QEMU
+path.
+
+/Jarkko
