@@ -2,146 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90294430D2B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 02:55:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A108D430D33
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 02:55:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344883AbhJRA5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 20:57:00 -0400
-Received: from mail-eopbgr1300119.outbound.protection.outlook.com ([40.107.130.119]:10492
-        "EHLO APC01-HK2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S242878AbhJRA45 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 20:56:57 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UPncjuRLsjAQ5cKORLKCgx3qgIqXuVbZpVmmYLvzVjfcPKkOwSD/sRIg/hltMDdMdiCMc5Hip0gAvS0v1LLGMWcEPSMqEZYEBaYBthezPoCsAK52XO8AIPKcopL43AXTwduJ+DfbaB4FlbznVqf7QVToVN1u46IclTcVKufmSFZVr8UBT4VmDsKaJVIq0zS/LT9XDsZgN+s0bxUVhrmIvcYxQ4YnHE0NXXmiWeq8lftU3G/FUqjyzCGOs0UuaTJ5+BTtyi7+o7uoHigEy0kJeYuwnkR9LXrXbtUZI3jbpTMlxNnwdv//httUt5ORQ3LXIc4S2O9xALh1L6yz9j049w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=xuAH2OQSya9fJHBgug3CwEG+K3kDl4XxOC5dvdGjYR0=;
- b=Mza1aagMkPNmGs5g0J6mfRQ8zKIJoJDlMGmiKIuGxhxmugTphMcZq0ktx6mHEDN1uEEkEUU5PzA/bOoxLCGL4PDw/En4iDSraF/NNh6lxCer+H4F6dUb4YKhxXoFKGnqK8pvbif8ARo8e/RYE+6ciRhC27RQHb8WcHBM+Im3786l9antG0pcjrT5GGvenRd2BeJFz8PDfkAsjQhXZWEebWUCPOiH5EEudtlTMjixfSPhn9enFuAcuNoc3S5+FRn0gTJzev3Yu9CZge9pBfXVhYu+oNlxxBfWEaHDJg6PNnKEaOnpUnxahXpLO37UBD6y0AgLVvqcTjsHaAgR0ZRHvQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=aspeedtech.com; dmarc=pass action=none
- header.from=aspeedtech.com; dkim=pass header.d=aspeedtech.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aspeedtech.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xuAH2OQSya9fJHBgug3CwEG+K3kDl4XxOC5dvdGjYR0=;
- b=jri9yqDVQAtKx0+Hn8GMvCzFCrZdtCQhc5EkHwdW/JqjBqMSJlImy4vXh6CKK0ltCQpKqQ9ZvJzis2BP3SYE8sf5vP80b5QECGkzGi9UWVZMRMxKcM7ZYiDA44U7p2sZaRbCDGbZhMV/+S//jhurYzRXxrMHhUJfdvis9r+Luz5csSf13CfdJyze0Ly4z9X9brwkkpVs1eELH4Rn+/imIcVA5Gr06gbBDuJwjlgb/1MQjhjyn0b5ANyQ+9tui8S6iD3Su1HWecFIR+JWJCc2gVJQEG+NoHFH6dYXEbKVdzRjr14ziZJk4zdwkzGBYucHFliurfZ7rbjMCKXWMXICSQ==
-Received: from HK0PR06MB3380.apcprd06.prod.outlook.com (2603:1096:203:82::18)
- by HK2PR06MB3572.apcprd06.prod.outlook.com (2603:1096:202:33::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.17; Mon, 18 Oct
- 2021 00:54:43 +0000
-Received: from HK0PR06MB3380.apcprd06.prod.outlook.com
- ([fe80::cc12:f6f8:7dc5:8c18]) by HK0PR06MB3380.apcprd06.prod.outlook.com
- ([fe80::cc12:f6f8:7dc5:8c18%6]) with mapi id 15.20.4608.018; Mon, 18 Oct 2021
- 00:54:43 +0000
-From:   Ryan Chen <ryan_chen@aspeedtech.com>
-To:     Stephen Boyd <sboyd@kernel.org>, Andrew Jeffery <andrew@aj.id.au>,
-        Joel Stanley <joel@jms.id.au>,
-        Michael Turquette <mturquette@baylibre.com>,
-        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] clk:aspeed:Fix reset driver probe from builtin_platform
- to core_initcal
-Thread-Topic: [PATCH] clk:aspeed:Fix reset driver probe from builtin_platform
- to core_initcal
-Thread-Index: AQHXubSPvR0AkHOyAUiNxiUKBKrwgqvWfeGAgAGB4JA=
-Date:   Mon, 18 Oct 2021 00:54:42 +0000
-Message-ID: <HK0PR06MB33804909AFB349EEECAF9D4BF2BC9@HK0PR06MB3380.apcprd06.prod.outlook.com>
-References: <20211005064513.27655-1-ryan_chen@aspeedtech.com>
- <163443512161.1557475.9840437799108931135@swboyd.mtv.corp.google.com>
-In-Reply-To: <163443512161.1557475.9840437799108931135@swboyd.mtv.corp.google.com>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=aspeedtech.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 4b7d01a2-8cb7-4f66-2c68-08d991d1df57
-x-ms-traffictypediagnostic: HK2PR06MB3572:
-x-microsoft-antispam-prvs: <HK2PR06MB3572A256C1B0E420E24431F9F2BC9@HK2PR06MB3572.apcprd06.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: fDa4UyM+Wv4BSkTDHBWRdlTi92F0xOnbxgEcDDfX3zb7XMNqZSXPFqvWeU4W7PjKKp8n3/Sqrx1sG32Obj6WN0/oP8fQXESdPIo4P/FgDk+3OuUkRv3/x5pGr5RDU8a2Nsyn4qH3zwplCPM955K/B4E4OzdBbHSVB8VMZXOY0tgtirx6Gtb6/S8F5QIXZfXHMY9sV4VK0HYPpGsEYhV5Ati7KNgYGuW7ybFauwIeQY0yqKUOWAqYwx7e9h22lWGMQveUKkEaA6cHFsye4s5+DQRoWzKraYuqY4+D2kOAw7PJ93t3aRzUUefyAv5URe0jXpbm+9cg1BSEcAbOs973U/dp4fxL4PH7Y5Gl9ZCVxs7sU0uSnOGzDUVYXHWBShwefpDHKjb74j4+eF8d/GuuabCCj8Bo7vUNIuYJzmbCpzc9+q1FXvzEKkzGpAq9DcrWf4ifFYiqjnChpIDP5TSl0xdVcsTG8Wizrq0NEjnk9YNFgZPOuvtYrM7Hzn9JMYgW9nK/PeulLt6vdE/3aoCQrExEqyk50lscUPNNEEWVy2WdR6akA4lUvxMSn+eZZKMf8LERgnLaPoPMIXFp9jaK0JeAp8M9muujsZnvdJB1pmGlQQrVwokhVojjEs2ZYpzQDW8NDKEr/b3lx0e31ffQ+NvudVN2xg7xfRTOxHiDP2tJfV6gUYsf19G/ceGEZ5R5mGUchs6ZCL9yJlYYwv2ftw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HK0PR06MB3380.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(39830400003)(136003)(376002)(366004)(346002)(396003)(9686003)(8676002)(316002)(66556008)(66446008)(2906002)(6506007)(508600001)(38100700002)(66476007)(122000001)(64756008)(71200400001)(7696005)(86362001)(38070700005)(5660300002)(110136005)(66946007)(76116006)(186003)(83380400001)(33656002)(8936002)(26005)(53546011)(52536014)(55016002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?VWt2WEpmZ2xrN21NMVVmYWpzdjBCMUo5emQrVS9BWTh1ODgxMUE4MnNPeFFQ?=
- =?utf-8?B?VXVBNk95YUY3VWY5ZUZuWTArSWthN043YTNKeGZTeFM0N2MyZjhyTHI0NFo3?=
- =?utf-8?B?OVQ4V0t6UFQ3OExaeURKMEkwMHlTbGN4dmJKUkpOYSttS2kzSEg4ZS9PbmQy?=
- =?utf-8?B?ZWxhTWhqM3NjdWJuOVdJY1ZFdkYwQ01GOGZrZEpOcmhTWXVIMGZkdzBJREpS?=
- =?utf-8?B?UjdCR0k0MlJyU3pKTmZRTnlKckoyWUlBYWxBSzlQcStKT3JxM1pVUjlLRkZw?=
- =?utf-8?B?STFNWGlMenZUUk1uYmpmbStGdUNOUUhuYnJWYVhlOXF6OFhqQWFLMjZlckJY?=
- =?utf-8?B?dUxkZVB0ZGNNZVpHTFVhNjlUNm03ZHBDSlMrRUxTTElWUmJKRTllakVIR2ph?=
- =?utf-8?B?SzB4V3BueVlSS1k1Rk5LM2dSUWlzaVNSS0s3TmxLRS9wcUVwWElZVGxoUmhU?=
- =?utf-8?B?TVhGcXdiakNpM3NxcFc4alJpOTdZeEpKWW4yQ1N2OW5nSC93ZDJxYUVaR3F1?=
- =?utf-8?B?cTBFQys5ODJrZ1RtU3NFcUk2dlA3eXY5N1dpdkMrNGhuWUdOWGpoRGVoSGQx?=
- =?utf-8?B?V0Q1U0xXbndNYmM4V3F6MU1MYXRwRTRKa3ZGeFRoWFQyMzFSczZoVngxYm1Z?=
- =?utf-8?B?d2h2eHRZSGJYWlFKc2VZeWh0N0NpRVNTb3hvZVRaN1hPNE16WjhRQnAvNVpD?=
- =?utf-8?B?SWMySDZFcUpiYmlxV29CL2xMTjExSlFWNjZnYWZ6QUVKOTZUcVV2QzQ1amNG?=
- =?utf-8?B?K01IbEc0dHdtd0VGZDdYOE04RmFDT0tJQVYydmxQeVB2WG4zekFQRTlKeGtJ?=
- =?utf-8?B?YkplN2RYK2xhSktxUlZ5N3Z6WnkwRFk3RFp0MUVRZ0VXTnNNcHBic2o5VVdx?=
- =?utf-8?B?OEdiLzYrZDV4ZmQvK3VrN29FU0xxQkNDRSswY29kSk5ZVGNqVVgrUWZEaENy?=
- =?utf-8?B?OTdoU3lDWVNweFJLY0ZkY2JESkkxU3R5SDZtUXhNYklTQzJrNDJ2eG5MSnRC?=
- =?utf-8?B?ckdoNE4zTnVjbjJxcWhOMnBoalFVNU9OaDA0R09LcjNraVZjTkhNdkVJR2tP?=
- =?utf-8?B?ZThFSnA4enJ6SFZnTkVRZzdsQzIyemFjVGZjakhOUy9mYTM5OXZTZEp3NGxL?=
- =?utf-8?B?M21PYnRIUElTK1lVWXdvQUlYaFpHcnp1YnBNRkpPY2NJVytXZG1GUEFiU3RM?=
- =?utf-8?B?TldXKzEzaFR2OVFNSlhHL005UE9GR3B5MDZkWkNHRDM4aVQxbGJtZnJJK0Zl?=
- =?utf-8?B?TWNQWUR3amc3cFNIZGlCekUySFFBc3JOTUtkcDB6eU05YlVDRVlablZsWnpj?=
- =?utf-8?B?M3J3QVBtZVovN3drL3IxZXQ1MWhsUlF1MkxxUXEyTzk2dDMwN0ZsTG82TC9U?=
- =?utf-8?B?MzF1aWoyYm0rKytEdkxpSERPaDV5aTUzUjdFbUxyQXBVR0JSdFFoZDJQWnN3?=
- =?utf-8?B?NlNaWmJOTnY4K0JLN2dFaDNDcHVUQjI5TTBkT0NXdzl2UGt0bWU4QjZjL2VV?=
- =?utf-8?B?YjNKUHl3V3Bsb1hLeEVqZCtIZ0xOVUxmRzN0TnRDcEdXejlVRytjd0dHWEM3?=
- =?utf-8?B?U3laK3djd09sTzRPMG5jZ1o3UFozUExOM0hYRElnS2NTUUZxZDAzQXRLVW9M?=
- =?utf-8?B?TWtKL2FXN0FkR3ZHYW0rOFIxWHNjK1VzbVpWa0JjWGwyOCtOVHNVeUc4RmlR?=
- =?utf-8?B?K0JjQXRQL0I1d3k5OC8wb3FSUVpubHQvZmlQRjdwei9KdnJQOXp5bWNucW8v?=
- =?utf-8?Q?tQfQ0v8tnnAqRUBlPoMWM/ePf/n70i3ZL2uHuDg?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1344900AbhJRA53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 20:57:29 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:34970 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344888AbhJRA5Z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 17 Oct 2021 20:57:25 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1634518512;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to; bh=Gay8VmFyss97KfWC5visbOqdWAYqK9/j2DbvMiqFQuY=;
+        b=XHU/uT6rxY83cF7h/S8R1Or7JEZysnYFiMTBcvx5KoySp5QBAdL72qHvO/eAZ44b/oq3vE
+        btNorRbowan8FRVNNpXH6+aXAmG0xXy2yRXzb6ymU0722PLjY2grnFZ0xyYhFuMZt8oj34
+        nVCwWohCP3WCdN+qHMYPSPAQitSOPg+8BNuqxg2PGTNKfNzy8XO1aG4MVazipjYuTM5Hfg
+        rPKozNgBgpjTgQTFwURKcICK+nkcOLZyV12wAWjfISaiPSEk3dwNafUw/aNGmJrVIt60fW
+        QrDeG4HB/o/g+NtgFglnBrD3XJ+VscmgTDiwoLvTPsn1H2T4v4+ErS5lir8cLg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1634518512;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to; bh=Gay8VmFyss97KfWC5visbOqdWAYqK9/j2DbvMiqFQuY=;
+        b=bkeSQfcwuKqiSyUYQR5UJ5dUTJnV3GfJ5hn2kv4dlsE7Q5KIsp4P7VACv6mECyInrd/hXO
+        2M0zlxRqSRVXWIAA==
+To:     Andi Kleen <ak@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        X86 ML <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        "Reshetova, Elena" <elena.reshetova@intel.com>
+Subject: Re: [PATCH v5 12/16] PCI: Add pci_iomap_host_shared(),
+ pci_iomap_host_shared_range()
+In-Reply-To: <0e6664ac-cbb2-96ff-0106-9301735c0836@linux.intel.com>
+Date:   Mon, 18 Oct 2021 02:55:11 +0200
+Message-ID: <875ytv2lu8.ffs@tglx>
 MIME-Version: 1.0
-X-OriginatorOrg: aspeedtech.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: HK0PR06MB3380.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4b7d01a2-8cb7-4f66-2c68-08d991d1df57
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Oct 2021 00:54:42.9821
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43d4aa98-e35b-4575-8939-080e90d5a249
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: CHxNtSNlp9jA+k77SXvfMwJsfdA8B9lgFiBDAE8T6odD44yueG/ijNrV+XlzBzlCCA7LX88SRvlt5SxqeZj8WhM2r/ykQsguBG6Bs7n3WEs=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK2PR06MB3572
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGVsbG8sDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IFN0ZXBoZW4gQm95
-ZCA8c2JveWRAa2VybmVsLm9yZz4NCj4gU2VudDogU3VuZGF5LCBPY3RvYmVyIDE3LCAyMDIxIDk6
-NDUgQU0NCj4gVG86IEFuZHJldyBKZWZmZXJ5IDxhbmRyZXdAYWouaWQuYXU+OyBKb2VsIFN0YW5s
-ZXkgPGpvZWxAam1zLmlkLmF1PjsgTWljaGFlbA0KPiBUdXJxdWV0dGUgPG10dXJxdWV0dGVAYmF5
-bGlicmUuY29tPjsgbGludXgtY2xrQHZnZXIua2VybmVsLm9yZzsNCj4gbGludXgta2VybmVsQHZn
-ZXIua2VybmVsLm9yZzsgUnlhbiBDaGVuIDxyeWFuX2NoZW5AYXNwZWVkdGVjaC5jb20+DQo+IFN1
-YmplY3Q6IFJlOiBbUEFUQ0hdIGNsazphc3BlZWQ6Rml4IHJlc2V0IGRyaXZlciBwcm9iZSBmcm9t
-IGJ1aWx0aW5fcGxhdGZvcm0gdG8NCj4gY29yZV9pbml0Y2FsDQo+IA0KPiBRdW90aW5nIFJ5YW4g
-Q2hlbiAoMjAyMS0xMC0wNCAyMzo0NToxMykNCj4gPiBDaGFuZ2UgdGhlIHJlc2V0IHByb2JlIHNl
-cXVlbmNlIGZyb20gYnVpbHRpbl9wbGF0Zm9ybSB0byBjb3JlX2luaXRjYWwuDQo+ID4gRm9yIGF2
-b2lkIHNvbWUgZHJpdmVyIGlzIHByb2JlIGJ1dCBmYWlsZWQgZHVlIHRvIHJlc2V0IGRyaXZlciBu
-b3QgcHJvYmUuDQo+IA0KPiBJIGRvbid0IGdldCBpdC4gRG9lcyBzb21ldGhpbmcgbmV2ZXIgdHJ5
-IHByb2JlIGFnYWluIGJlY2F1c2UgaXQgY2FuJ3QgZ2V0IHRoZQ0KPiByZXNldCBpdCB3YW50cz8g
-SSB1bmRlcnN0YW5kIHRoYXQgYnVpbHRpbl9wbGF0Zm9ybV9kcml2ZXIoKSBtb3ZlcyB0aGUgaW5p
-dGNhbGwNCj4gbGV2ZWwgbGF0ZXIgdGhhbiBjb3JlX2luaXRjYWxsKCkgc28gdGhpcyBpcyBhIHdv
-cmthcm91bmQgZm9yIHNvbWUgZHJpdmVyIHByb2JlDQo+IG9yZGVyaW5nIHByb2JsZW0/DQpUaGUg
-bW9zdCBvZiBkcml2ZXIgaGF2ZSByZXNldCBmdW5jdGlvbiBpbiBwcm9iZS4gaWYgZHJpdmVyIHBy
-b2JlIG5lZWQgZG8gdGhlIHJlc2V0IA0KKGV4OiBkZXZtX3Jlc2V0X2NvbnRyb2xfZ2V0X3NoYXJl
-ZCkgYnV0IHJlc2V0IGRyaXZlciBub3QgcmVhZHkgKGRldm1fcmVzZXRfY29udHJvbGxlcl9yZWdp
-c3RlciksDQp0aGF0IGRyaXZlciBwcm9iZSB3aWxsIGNhdXNlIHRoZSBmYWlsLCB0aGFuIGFmdGVy
-IHJlc2V0IGRyaXZlciBwcm9iZSwgdGhlcmUgd2lsbCBoYXZlIHNlY29uZCBwcm9iZSBJbiBkcml2
-ZXIuIA0KVGhhdCB0aGUgcmVhc29uIEkgcHV0IHJlc2V0IHByb2JlIGluIGNvcmVfaW5pdGNhbGwu
-DQpBbmQgYWxzbyB5b3UgY2FuIHNlZSB0aGF0IHRoZSByZWFzb24gbW9zdCBzb2MgY2hpcCBkbyB0
-aGUgZGV2bV9yZXNldF9jb250cm9sbGVyX3JlZ2lzdGVyIGluIGNvcmVfaW5pdGNhbGwuDQoNCj4g
-DQo+ID4NCj4gPiBGaXhlczogZDNkMDRmNmMzMzBhICgiY2xrOiBBZGQgc3VwcG9ydCBmb3IgQVNU
-MjYwMCBTb0MiKQ0KPiA+IFNpZ25lZC1vZmYtYnk6IFJ5YW4gQ2hlbiA8cnlhbl9jaGVuQGFzcGVl
-ZHRlY2guY29tPg0K
+Andi,
+
+On Sun, Oct 10 2021 at 15:11, Andi Kleen wrote:
+> On 10/9/2021 1:39 PM, Dan Williams wrote:
+>> I agree with you and Greg here. If a driver is accessing hardware
+>> resources outside of the bind lifetime of one of the devices it
+>> supports, and in a way that neither modrobe-policy nor
+>> device-authorization -policy infrastructure can block, that sounds
+>> like a bug report.
+>
+> The 5.15 tree has something like ~2.4k IO accesses (including MMIO and 
+> others) in init functions that also register drivers (thanks Elena for 
+> the number)
+
+These numbers are completely useless simply because they are based on
+nonsensical criteria. See:
+
+  https://lore.kernel.org/r/87r1cj2uad.ffs@tglx
+
+> My point is just that the ecosystem of devices that Linux supports is 
+> messy enough that there are legitimate exceptions from the "First IO 
+> only in probe call only" rule.
+
+Your point is based on your outright refusal to actualy do a proper
+analysis and your outright refusal to help fixing the real problems.
+
+All you have provided so far is handwaving based on a completely useless
+analysis.
+
+Sure, your goal is to get this TDX problem solved, but it's not going to
+be solved by:
+
+  1) Providing a nonsensical analysis
+
+  2) Using #1 as an argument to hack some half baken interfaces into the
+     kernel which allow you to tick off your checkbox and then leave the
+     resulting mess for others to clean up.
+ 
+Try again when you have factual data to back up your claims and factual
+arguments which prove that the problem can't be fixed otherwise.
+
+I might be repeating myself, but kernel development works this way:
+
+  1) Hack your private POC - Yay!
+
+  2) Sit down and think hard about the problems you identified in step
+     #1. Do a thorough analysis.
+  
+  3) Come up with a sensible integration plan.
+
+  4) Do the necessary grump work of cleanups all over the place
+
+  5) Add sensible infrastructure which is understandable for the bulk
+     of kernel/driver developers
+
+  6) Let your feature fall in place
+
+and not in the way you are insisting on:
+
+  1) Hack your private POC - Yay!
+
+  2) Define that this is the only way to do it and try to shove it down
+     the throat of everyone.
+
+  3) Getting told that this is not the way it works
+
+  4) Insist on it forever and blame the grumpy maintainers who are just
+     not understanding the great value of your approach.
+
+  5) Go back to #2
+
+You should know that already, but I have no problem to give that lecture
+to you over and over again. I probably should create a form letter.
+
+And no, you can bitch about me as much as you want. These are not my
+personal rules and personal pet pieves. These are rules Linus cares
+about very much and aside of that they just reflect common sense.
+
+  The kernel is a common good and not the dump ground for your personal
+  brain waste.
+
+  The kernel does not serve Intel. Quite the contrary Intel depends on
+  the kernel to work nicely with it's hardware. Ergo, Intel should have
+  a vested interest to serve the kernel and take responsibility for it
+  as a whole. And so should you as an Intel employee.
+
+Just dumping your next half baken workaround does not cut it especially
+not when it is not backed up by sensible arguments.
+
+Please try again, but not before you have something substantial to back
+up your claims.
+
+Thanks,
+
+	Thomas
