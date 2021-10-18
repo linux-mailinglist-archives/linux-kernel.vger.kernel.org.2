@@ -2,114 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 321E34310FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 09:05:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2E2D4310F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 09:03:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230246AbhJRHHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 03:07:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58530 "EHLO
+        id S230317AbhJRHFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 03:05:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229533AbhJRHHR (ORCPT
+        with ESMTP id S229533AbhJRHFr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 03:07:17 -0400
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74FAFC06161C;
-        Mon, 18 Oct 2021 00:05:06 -0700 (PDT)
-Received: by mail-io1-xd34.google.com with SMTP id m20so14999601iol.4;
-        Mon, 18 Oct 2021 00:05:06 -0700 (PDT)
+        Mon, 18 Oct 2021 03:05:47 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0EFAC06161C;
+        Mon, 18 Oct 2021 00:03:36 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id l6so10547224plh.9;
+        Mon, 18 Oct 2021 00:03:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jXX2fvCmjdLfrYBH5s0iu5Hk0ygNOTdaxa2SFqxVg2o=;
-        b=KwRUqOxq0BaLUI4zLOEo1NnfrM/jGSTl3YvpCpYuUJR7qlW5HB1/vSGExx8EXOKNyg
-         t4Vqi+2FowA/fBESkiIm2RyKCnJSE4tFeCFmYDqAjCgCH2T7n2/voLU9lapGbijgMlk9
-         rR/w+9B5pYujdbteQUJhCcc26X/SKO9RyLWJMt11djVlmx59QDQoZKhNrR59oF+8arcW
-         1BBJzvWpvUlEMd0GOnHYpVyE7g9svRvluXVad+dZLSoUD1JtGf1kJJS1ArzlZJPw6INj
-         +8nqw9hxLCGj1rye2xtA3JHklDGTvh7eSGv4G5KqRAd2/MgMaVz2IkxYBvcEnagBN9oB
-         ezxg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2WKS3UWTvHLltEevv16ivDfoiU4SB6jGAHtOvmnbIXY=;
+        b=kDrIC2srxuZa87Qhh22XaAV+r/5Lj7GxtBPY2LhSj9gHO8/euF+1dXwPCjQhU5GiIl
+         GTEqwE1ViBOtkU49iwrUJMEgxD1ALCYB/nLU99ASOKfWQI2+UQqjGkr5toeMDMC+Xt7E
+         YFoXM69CX7K3DYwIIJcvFbyymg3Q6B7HUIDhB5+JLd8OISYNdGaGhjaT1Sv1dBeeocdW
+         qDRFmdHBTfNQ38/+YGm7HkG8OM2OyJw8S3w8VxZBscY9umeZsnz+ms8HKH/SF0UVBSk7
+         EUemL2WeKLoYmPsBtFBaAD5bWN3c0j94zcbRnbQ+xha/Fs5YRpFG7ljax/vH8fuohEFh
+         bBvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jXX2fvCmjdLfrYBH5s0iu5Hk0ygNOTdaxa2SFqxVg2o=;
-        b=xkHXybl9MaC0U8NjE+RFdLDqeGXAmPo5nipJrU9maPo0hU3t3zaglWkyJyHbT7oVeG
-         42a38ddCrcQWP9e8JkkLBsORI6J4w8WqPUwA3QgG4Tu/arF9a2rbeOVK34ZXJUPlKWgX
-         tPQMj77AqXpr6QHvWIGa3+Jtl3mTZnZNLifpYEqD423GBLzVxHOum0D82huObWr7nvpO
-         Lj56PnpFOUgxjkQvtIcMeJrRHrhcRkGw9BO3a9U4zSPxy10KlSmskMoMmITMvIGFGw0C
-         Lawbau/S+au8RHWw11EunvoZsfZ4kS5HUWxCMwC7J9D1ndn+DJQz3ezZ81ksXfh1wi/N
-         6IlA==
-X-Gm-Message-State: AOAM533W9hxLM6/GNmke9VeMLG04eX30uQs1TzMXbcL0u5KnZE4vjcFP
-        NftN0UtYdqDih3Mh3NtWSSo=
-X-Google-Smtp-Source: ABdhPJxTFSBXKNvkHFBIftPsm1AnvyVbhWIRNBoda1E/eesEY/lLMI/Z8r0sUYtkQhFxLMVr4bpUWw==
-X-Received: by 2002:a05:6602:2d85:: with SMTP id k5mr13266775iow.92.1634540705528;
-        Mon, 18 Oct 2021 00:05:05 -0700 (PDT)
-Received: from localhost.localdomain (node-17-161.flex.volo.net. [76.191.17.161])
-        by smtp.googlemail.com with ESMTPSA id g3sm6782727ile.61.2021.10.18.00.05.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 00:05:05 -0700 (PDT)
-From:   Noah Goldstein <goldstein.w.n@gmail.com>
-Cc:     goldstein.w.n@gmail.com, axboe@kernel.dk, asml.silence@gmail.com,
-        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1] fs/io_uring: Hoist ret2 == -EAGAIN check in tail of io_write
-Date:   Mon, 18 Oct 2021 03:02:43 -0400
-Message-Id: <20211018070242.20325-1-goldstein.w.n@gmail.com>
-X-Mailer: git-send-email 2.29.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2WKS3UWTvHLltEevv16ivDfoiU4SB6jGAHtOvmnbIXY=;
+        b=5M1+esjNuJMfYJJI75MFYOgfZot4VkIrnLRUhR1BH3NGcNUo004tDjdgb7QfkQ0Zic
+         pI+KbVeKN872u35ma7WJJxmjEH/Qq6xlpitLAeSuyXLIKEySA7WeQZscse7KUSbAxp5v
+         5OssJMExcD+lrGeEuvWQFzG9SItRZGauTg2K4JiRUbwTjyJauiOIDYM2K1bZ1D/fzDN3
+         H/uMSI1RZg4lqyMEaRYrRBcD/UNcPKzCMiD3bsOHjZgF3iyaafSYBCkP/jLNWEfxAeRY
+         FcLNcyM/DenHQyKFxYue6d4ZidodS3/ZAgacFZDfWThFp7RRFV4TiJikrSzgzd7VFN+0
+         uCqw==
+X-Gm-Message-State: AOAM530qyyDT5RGB+8cmFEVui51HQRB626XpOf9g4OgcontSeVxDiOx8
+        2AEuvH63zw4Goz+OvukgEZzFBbaZ2EWfISf1YSY=
+X-Google-Smtp-Source: ABdhPJxYDgbrokDoO5rLtqxq6J2hLyCUG+O60Qpp4BAQ7IgO/ryoW41n26ljrDT3KpL1wzinTdnTDnQ+GnmxPeOLEwE=
+X-Received: by 2002:a17:90a:7d11:: with SMTP id g17mr31658613pjl.150.1634540616425;
+ Mon, 18 Oct 2021 00:03:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+References: <20211013094343.315275-1-yangyingliang@huawei.com> <20211017151623.47a66ea9@jic23-huawei>
+In-Reply-To: <20211017151623.47a66ea9@jic23-huawei>
+From:   Alexandru Ardelean <ardeleanalex@gmail.com>
+Date:   Mon, 18 Oct 2021 10:03:25 +0300
+Message-ID: <CA+U=DspGn7m8wz=a3Dr6VdD57DNc=+tS-fGZmr7m_JcEYADwdg@mail.gmail.com>
+Subject: Re: [PATCH] iio: buffer: Fix memory leak in __iio_buffer_alloc_sysfs_and_mask()
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Yang Yingliang <yangyingliang@huawei.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit reorganizes the branches in the tail of io_write so that
-the 'ret2 == -EAGAIN' check is not repeated and done first.
+On Sun, Oct 17, 2021 at 5:12 PM Jonathan Cameron <jic23@kernel.org> wrote:
+>
+> On Wed, 13 Oct 2021 17:43:43 +0800
+> Yang Yingliang <yangyingliang@huawei.com> wrote:
+>
+> > When iio_buffer_wrap_attr() returns NULL or buffer->buffer_group.name alloc
+> > fails, the 'attr' which is allocated in __iio_buffer_alloc_sysfs_and_mask()
+> > is not freed, and cause memory leak.
+> >
+> > unreferenced object 0xffff888014882a00 (size 64):
+> >   comm "i2c-adjd_s311-8", pid 424, jiffies 4294907737 (age 44.396s)
+> >   hex dump (first 32 bytes):
+> >     00 0f 8a 15 80 88 ff ff 00 0e 8a 15 80 88 ff ff  ................
+> >     80 04 8a 15 80 88 ff ff 80 05 8a 15 80 88 ff ff  ................
+> >   backtrace:
+> >     [<0000000021752e67>] __kmalloc+0x1af/0x3c0
+> >     [<0000000043e8305c>] iio_buffers_alloc_sysfs_and_mask+0xe73/0x1570 [industrialio]
+> >     [<00000000b7aa5a17>] __iio_device_register+0x483/0x1a30 [industrialio]
+> >     [<000000003fa0fb2f>] __devm_iio_device_register+0x23/0x90 [industrialio]
+> >     [<000000003ab040cf>] adjd_s311_probe+0x19c/0x200 [adjd_s311]
+> >     [<0000000080458969>] i2c_device_probe+0xa31/0xbe0
+> >     [<00000000e20678ad>] really_probe+0x299/0xc30
+> >     [<000000006bea9b27>] __driver_probe_device+0x357/0x500
+> >     [<00000000e1df10d4>] driver_probe_device+0x4e/0x140
+> >     [<0000000003661beb>] __device_attach_driver+0x257/0x340
+> >     [<000000005bb4aa26>] bus_for_each_drv+0x166/0x1e0
+> >     [<00000000272c5236>] __device_attach+0x272/0x420
+> >     [<00000000d52a96ae>] bus_probe_device+0x1eb/0x2a0
+> >     [<00000000129f7737>] device_add+0xbf0/0x1f90
+> >     [<000000005eed4e52>] i2c_new_client_device+0x622/0xb20
+> >     [<00000000b85a9c43>] new_device_store+0x1fa/0x420
+> >
+> > This patch fix to free it before the error return.
+> >
+> > Reported-by: Hulk Robot <hulkci@huawei.com>
+> > Fixes: 15097c7a1adc ("iio: buffer: wrap all buffer attributes into iio_dev_attr")
+> > Fixes: d9a625744ed0 ("iio: core: merge buffer/ & scan_elements/ attributes")
+> > Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+>
+> Good find.  This function is clearly trying to do too many things and hence has become
+> rather error prone.  Still fixing that is a job for another day.
+>
+> Alex, if you have a chance to take a look at this as well it would be great.
+> In the meantime I've queued it up in the fixes-togreg branch of iio.git
 
-The previous version was duplicating the 'ret2 == -EAGAIN'. As well
-'ret2 != -EAGAIN' gurantees the 'done:' path so it makes sense to
-move that check to the front before the likely more expensive branches
-which require memory derefences.
+Yeah, this fix looks good.
+It took me a while to follow the change.
 
-Signed-off-by: Noah Goldstein <goldstein.w.n@gmail.com>
----
-Generally I would want to rewrite this as:
-```
-if (ret2 != -EAGAIN
-    || (req->flags & REQ_F_NOWAIT)
-    || (!force_nonblock && !(req->ctx->flags & IORING_SETUP_IOPOLL)))
-        kiocb_done(kiocb, ret2, issue_flags);
-else {
-    ...
-```
+No need to add my tag [anywhere] since this was sent already.
 
-But the style of the file seems to be to use gotos. If the above is
-prefereable, let me know and I'll post a new version.    
- fs/io_uring.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+Looking at all these leak fixes coming in, I'm wondering where my head
+was at, when doing these changes.
 
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index d1e672e7a2d1..932fc84d70d3 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -3648,12 +3648,15 @@ static int io_write(struct io_kiocb *req, unsigned int issue_flags)
- 	 */
- 	if (ret2 == -EOPNOTSUPP && (kiocb->ki_flags & IOCB_NOWAIT))
- 		ret2 = -EAGAIN;
-+
-+	if (ret2 != -EAGAIN)
-+		goto done;
- 	/* no retry on NONBLOCK nor RWF_NOWAIT */
--	if (ret2 == -EAGAIN && (req->flags & REQ_F_NOWAIT))
-+	if (req->flags & REQ_F_NOWAIT)
- 		goto done;
--	if (!force_nonblock || ret2 != -EAGAIN) {
-+	if (!force_nonblock) {
- 		/* IOPOLL retry should happen for io-wq threads */
--		if (ret2 == -EAGAIN && (req->ctx->flags & IORING_SETUP_IOPOLL))
-+		if (req->ctx->flags & IORING_SETUP_IOPOLL)
- 			goto copy_iov;
- done:
- 		kiocb_done(kiocb, ret2, issue_flags);
--- 
-2.29.2
+Thanks
+Alex
 
+>
+> Thanks,
+>
+> Jonathan
+>
+> > ---
+> >  drivers/iio/industrialio-buffer.c | 5 ++---
+> >  1 file changed, 2 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
+> > index 547a92d469ae..ae0912a14578 100644
+> > --- a/drivers/iio/industrialio-buffer.c
+> > +++ b/drivers/iio/industrialio-buffer.c
+> > @@ -1536,6 +1536,7 @@ static int __iio_buffer_alloc_sysfs_and_mask(struct iio_buffer *buffer,
+> >                      sizeof(struct attribute *) * buffer_attrcount);
+> >
+> >       buffer_attrcount += ARRAY_SIZE(iio_buffer_attrs);
+> > +     buffer->buffer_group.attrs = attr;
+> >
+> >       for (i = 0; i < buffer_attrcount; i++) {
+> >               struct attribute *wrapped;
+> > @@ -1543,7 +1544,7 @@ static int __iio_buffer_alloc_sysfs_and_mask(struct iio_buffer *buffer,
+> >               wrapped = iio_buffer_wrap_attr(buffer, attr[i]);
+> >               if (!wrapped) {
+> >                       ret = -ENOMEM;
+> > -                     goto error_free_scan_mask;
+> > +                     goto error_free_buffer_attrs;
+> >               }
+> >               attr[i] = wrapped;
+> >       }
+> > @@ -1558,8 +1559,6 @@ static int __iio_buffer_alloc_sysfs_and_mask(struct iio_buffer *buffer,
+> >               goto error_free_buffer_attrs;
+> >       }
+> >
+> > -     buffer->buffer_group.attrs = attr;
+> > -
+> >       ret = iio_device_register_sysfs_group(indio_dev, &buffer->buffer_group);
+> >       if (ret)
+> >               goto error_free_buffer_attr_group_name;
+>
