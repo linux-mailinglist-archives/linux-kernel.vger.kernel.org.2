@@ -2,122 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B869D432405
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 18:43:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 590F9432407
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 18:43:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233597AbhJRQpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 12:45:41 -0400
-Received: from mail-oi1-f177.google.com ([209.85.167.177]:35451 "EHLO
-        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231793AbhJRQpk (ORCPT
+        id S233725AbhJRQpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 12:45:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51882 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233704AbhJRQpn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 12:45:40 -0400
-Received: by mail-oi1-f177.google.com with SMTP id r6so628455oiw.2;
-        Mon, 18 Oct 2021 09:43:28 -0700 (PDT)
+        Mon, 18 Oct 2021 12:45:43 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2357CC061745
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 09:43:32 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id r10so42493328wra.12
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 09:43:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=fLqIPEBaRNOdjfMHVTUzcLno6ImGHaWY2L/hpqGEyjA=;
+        b=SXHO/6+HBY76BkVRUx+ROamghkp1ypDCJXpkFapzp7Nkt75GezNQ2L5j1s5tvVY3rw
+         Se0818Htn0H6/jcAIkZzI7qP2OZXVmgCacJ22EaT8pBiNIkxoUrWXZdEJ/9qXllpYf4B
+         eOr5rLOB5W1OtmlhnOfKI9+7/ihlslJTpoEK7/CVyqNS0l3KzfskEPQJbScdqjq+djPC
+         QdaBgeNRcXzl0XY4vwOgrvSeivwVsHDoQd5ngw/q0gT2ei6NuE2lY2pByMTIipDLqlEb
+         IjyO54PgFruxTUsm639OK2WIzRp6NMKVt519x4yCSJsc4C48OK6JLQXKh08CPcGMFqqS
+         Tc9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/vsPv2SD1Rt8WbOkNW13ZNWlyAjKc3bg4K4BxMrdTKc=;
-        b=Pa6GomVbVXYYe/9ExmVV6kjIEgfq6uTGu8OoluinqdpUSOiTZd7nMFcCHluXIbqmw4
-         I5DpeX3U/Hcg8fg8zzx1e6bfYfHVq99iQ81E8LhiOgidhHSY4ha32kTCz7H91erY0qE7
-         uDYZMpjGrMBGdeWquNXi+BSv3ibalgE1WQGlOeOVwmIpq2An5FlypjmQdse26FIF86Yb
-         UzBI+lAU1YFaI1OU7bXE+hKwSPzps/qLc3cXONFyTNalf3XegM+AqzNGwOtJf9XSDnyN
-         MchZC3ppEXyZ2yaaQVusE/3b85XoSUPcebpE8KIw3PZvZAydLhE04NUy5RoJHXeNT9ff
-         kowg==
-X-Gm-Message-State: AOAM530uSZt1A8JjgzJW0dcWQTK14lrQTnc13P/SPvDAyydjuieXmwfS
-        hQdMOICgtICvx7+J7JBmFQ==
-X-Google-Smtp-Source: ABdhPJxOfGc66L0/rXjSFdldE/BLsaDwndHWOMX5LeqJpkR4KftoMRAgJrb4lXRb41d95MOC+xLB+g==
-X-Received: by 2002:a05:6808:7c8:: with SMTP id f8mr638949oij.146.1634575408315;
-        Mon, 18 Oct 2021 09:43:28 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id ay42sm3156043oib.22.2021.10.18.09.43.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 09:43:27 -0700 (PDT)
-Received: (nullmailer pid 2532419 invoked by uid 1000);
-        Mon, 18 Oct 2021 16:43:26 -0000
-Date:   Mon, 18 Oct 2021 11:43:26 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Sean Anderson <sean.anderson@seco.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Alvaro Gamez <alvaro.gamez@hazent.com>,
-        devicetree@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        michal.simek@xilinx.com, linux-pwm@vger.kernel.org
-Subject: Re: [PATCH v8 2/3] dt-bindings: pwm: Add Xilinx AXI Timer
-Message-ID: <YW2kLjjbAYdaDI0l@robh.at.kernel.org>
-References: <20211015190025.409426-1-sean.anderson@seco.com>
- <20211015190025.409426-2-sean.anderson@seco.com>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=fLqIPEBaRNOdjfMHVTUzcLno6ImGHaWY2L/hpqGEyjA=;
+        b=G0nb9NpN8HfjiT+RF4mvVFiODH+vqsfvl9I8KjrRVC68QGT3YcFHJnwG9dZYMtanMl
+         kweVIwNKqA5F9brfbU1s0gSo2V84xKHpDm/gm4tJfTo7A8JLbKhb6EM+8QjdcFoxoE+J
+         AdFfvqIQRj8YOIA2c15HuMfhrWJTUcj1xRmaupxfpvew3qtD3psJc7GQ8zuds+nLiOqA
+         3fW9hnN2CHaCqmxzX9yjeW14M6N/GoFwvg02W5ii+I3DiLjSQIFy12J7QHSa5dXzlGI2
+         s3W1k9WC9CKq3TAhgAvHcaNzhyl0zTuSySGEa6nI7I2KXeuq1BGC359HgAzoWO5gccL3
+         M/8g==
+X-Gm-Message-State: AOAM533Fi6s1ZAqtcXgAd/ypm/kDbq9DN+NVeoy0h/NZ9Rm9tAMoQuh8
+        aRNv32OtmDdCijOgTbx+KYMwvFsXDH2KgvijZ8U=
+X-Google-Smtp-Source: ABdhPJxCbT5kbbmy0+um8u9ohZPNODeAZPAIJ29zM18tS0a7sFAa2/OOTjq+Eeb5h31Foo5Z4riAKQTMZI2IHswpaM4=
+X-Received: by 2002:a5d:4281:: with SMTP id k1mr17827219wrq.89.1634575410730;
+ Mon, 18 Oct 2021 09:43:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211015190025.409426-2-sean.anderson@seco.com>
+Received: by 2002:a5d:4385:0:0:0:0:0 with HTTP; Mon, 18 Oct 2021 09:43:30
+ -0700 (PDT)
+Reply-To: mrjoshuakunte@gmail.com
+From:   Mr Joshua Kunte <kuntemrjoshua@gmail.com>
+Date:   Mon, 18 Oct 2021 17:43:30 +0100
+Message-ID: <CAFhr1xC4Lede1HJfM9fJ00cfBGveXpQZph3p3O5b_R7ifb4UCw@mail.gmail.com>
+Subject: =?UTF-8?B?7JWI64WV7ZWY7Iut64uI6rmM?=
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 15 Oct 2021 15:00:24 -0400, Sean Anderson wrote:
-> This adds a binding for the Xilinx LogiCORE IP AXI Timer. This device is a
-> "soft" block, so it has some parameters which would not be configurable in
-> most hardware. This binding is usually automatically generated by Xilinx's
-> tools, so the names and values of some properties should be kept as they
-> are, if possible. In addition, this binding is already in the kernel at
-> arch/microblaze/boot/dts/system.dts, and in user software such as QEMU.
-> 
-> The existing driver uses the clock-frequency property, or alternatively the
-> /cpus/timebase-frequency property as its frequency input. Because these
-> properties are deprecated, they have not been included with this schema.
-> All new bindings should use the clocks/clock-names properties to specify
-> the parent clock.
-> 
-> Because we need to init timer devices so early in boot, we determine if we
-> should use the PWM driver or the clocksource/clockevent driver by the
-> presence/absence, respectively, of #pwm-cells. Because both counters are
-> used by the PWM, there is no need for a separate property specifying which
-> counters are to be used for the PWM.
-> 
-> Signed-off-by: Sean Anderson <sean.anderson@seco.com>
-> ---
-> 
-> Changes in v8:
-> - Set additionalProperties: false
-> 
-> Changes in v7:
-> - Add #pwm-cells to properties
-> - Document why additionalProperties is true
-> 
-> Changes in v6:
-> - Enumerate possible counter widths
-> - Fix incorrect schema id
-> 
-> Changes in v5:
-> - Add example for timer binding
-> - Fix indentation lint
-> - Move schema into the timer directory
-> - Remove xlnx,axi-timer-2.0 compatible string
-> - Update commit message to reflect revisions
-> 
-> Changes in v4:
-> - Make some properties optional for clocksource drivers
-> - Predicate PWM driver on the presence of #pwm-cells
-> - Remove references to generate polarity so this can get merged
-> 
-> Changes in v3:
-> - Add an example with non-deprecated properties only.
-> - Add xlnx,pwm and xlnx,gen?-active-low properties.
-> - Make newer replacement properties mutually-exclusive with what they
->   replace
-> - Mark all boolean-as-int properties as deprecated
-> 
-> Changes in v2:
-> - Use 32-bit addresses for example binding
-> 
->  .../bindings/timer/xlnx,xps-timer.yaml        | 92 +++++++++++++++++++
->  1 file changed, 92 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/timer/xlnx,xps-timer.yaml
-> 
-
-Reviewed-by: Rob Herring <robh@kernel.org>
+LS0gDQrsp4Drgpwg7KO8IOyWtOuKkCDrgqAg64u57Iug7JeQ6rKMIOuplOydvOydtCDrsJzshqHr
+kJjsl4jsirXri4jri6QuDQrri7nsi6Dsl5DqsozshJwg7ZqM7IugIOuplOydvOydhCDrsJvslZjs
+p4Drp4wg64aA656N6rKM64+EIOuLueyLoOydgCDtmozsi6DtlZjsp4Ag7JWK7JWY7Iq164uI64uk
+Lg0K7J6Q7IS47ZWcIOyEpOuqheydgCDtmozsi6Ag67aA7YOB65Oc66a964uI64ukLg0KDQrsoJXs
+pJHtnogg64u57Iug7J2YLA0K7KGw7IqI7JWEIOy/pO2FjCDslKguDQo=
