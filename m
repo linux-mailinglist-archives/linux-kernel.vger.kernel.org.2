@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C104431E53
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:58:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75783431AC2
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:26:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233311AbhJROAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 10:00:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37464 "EHLO mail.kernel.org"
+        id S231880AbhJRN3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:29:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40174 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234340AbhJRN55 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:57:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5AFC261A05;
-        Mon, 18 Oct 2021 13:41:18 +0000 (UTC)
+        id S231310AbhJRN16 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:27:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F20F16103D;
+        Mon, 18 Oct 2021 13:25:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634564479;
-        bh=FTq9aKxtvC9DABeHCnl/DgR+38H1FTLYtm0hVD7HkYQ=;
+        s=korg; t=1634563547;
+        bh=rvsvVO5Xy1rsi14PHe8eAjf9UGx0G65KJ+aNPwgGFNA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=f8+PmlVVOyZEBl9tEwbvM9Xa4jety/r5aCB7TnNTq+P0w9OfgIrdrSK1q6f9oQ9JM
-         8gAbMJgHkzkXVhirX+LH3PKlUff7tEhw91hsSE6wmJFTG49g8jb0hdKxdkSJ2oli0A
-         sD5U3qN3reQgT91H0SrNUwgobepQ1/72K0faqJUQ=
+        b=Dfj0tmWgXL0p15VeTqAyN9AgHSuurvqsXmobjrqhT2sYYXOKHMyEBJfG/9l+2go46
+         FgPPyWcsWQMC6n6EFtpQ1Ga7qRQNipSCrVq8f0+C+iiKACsTt7iAWH2G2jPsSr2GcG
+         Y/+NDWjmrWfcU766qR0dExnQjmxsVdAxkJg5XP24=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>,
-        Stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 5.14 071/151] iio: adis16480: fix devices that do not support sleep mode
+        stable@vger.kernel.org, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 01/39] stable: clamp SUBLEVEL in 4.14
 Date:   Mon, 18 Oct 2021 15:24:10 +0200
-Message-Id: <20211018132342.994281537@linuxfoundation.org>
+Message-Id: <20211018132325.476752539@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132340.682786018@linuxfoundation.org>
-References: <20211018132340.682786018@linuxfoundation.org>
+In-Reply-To: <20211018132325.426739023@linuxfoundation.org>
+References: <20211018132325.426739023@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -41,82 +40,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nuno Sá <nuno.sa@analog.com>
+From: Sasha Levin <sashal@kernel.org>
 
-commit ea1945c2f72d7bd253e2ebaa97cdd8d9ffcde076 upstream.
+Right now SUBLEVEL is overflowing, and some userspace may start treating
+4.14.256 as 4.15. While out of tree modules have different ways of
+extracting the version number (and we're generally ok with breaking
+them), we do care about breaking userspace and it would appear that this
+overflow might do just that.
 
-Not all devices supported by this driver support being put to sleep
-mode. For those devices, when calling 'adis16480_stop_device()' on the
-unbind path, we where actually writing in the SYNC_SCALE register.
+Our rules around userspace ABI in the stable kernel are pretty simple:
+we don't break it. Thus, while userspace may be checking major/minor, it
+shouldn't be doing anything with sublevel.
 
-Fixes: 80cbc848c4fa0 ("iio: imu: adis16480: Add support for ADIS16490")
-Fixes: 82e7a1b250170 ("iio: imu: adis16480: Add support for ADIS1649x family of devices")
-Signed-off-by: Nuno Sá <nuno.sa@analog.com>
-Link: https://lore.kernel.org/r/20210903141423.517028-6-nuno.sa@analog.com
-Cc: <Stable@vger.kernel.org>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+This patch applies a big band-aid to the 4.14 kernel in the form of
+clamping the sublevel to 255.
+
+The clamp is done for the purpose of LINUX_VERSION_CODE only, and
+extracting the version number from the Makefile or "make kernelversion"
+will continue to work as intended.
+
+We might need to do it later in newer trees, but maybe we'll have a
+better solution by then, so I'm ignoring that problem for now.
+
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/iio/imu/adis16480.c |   14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+ Makefile |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/iio/imu/adis16480.c
-+++ b/drivers/iio/imu/adis16480.c
-@@ -144,6 +144,7 @@ struct adis16480_chip_info {
- 	unsigned int max_dec_rate;
- 	const unsigned int *filter_freqs;
- 	bool has_pps_clk_mode;
-+	bool has_sleep_cnt;
- 	const struct adis_data adis_data;
- };
+--- a/Makefile
++++ b/Makefile
+@@ -1162,7 +1162,7 @@ endef
  
-@@ -939,6 +940,7 @@ static const struct adis16480_chip_info
- 		.temp_scale = 5650, /* 5.65 milli degree Celsius */
- 		.int_clk = 2460000,
- 		.max_dec_rate = 2048,
-+		.has_sleep_cnt = true,
- 		.filter_freqs = adis16480_def_filter_freqs,
- 		.adis_data = ADIS16480_DATA(16375, &adis16485_timeouts, 0),
- 	},
-@@ -952,6 +954,7 @@ static const struct adis16480_chip_info
- 		.temp_scale = 5650, /* 5.65 milli degree Celsius */
- 		.int_clk = 2460000,
- 		.max_dec_rate = 2048,
-+		.has_sleep_cnt = true,
- 		.filter_freqs = adis16480_def_filter_freqs,
- 		.adis_data = ADIS16480_DATA(16480, &adis16480_timeouts, 0),
- 	},
-@@ -965,6 +968,7 @@ static const struct adis16480_chip_info
- 		.temp_scale = 5650, /* 5.65 milli degree Celsius */
- 		.int_clk = 2460000,
- 		.max_dec_rate = 2048,
-+		.has_sleep_cnt = true,
- 		.filter_freqs = adis16480_def_filter_freqs,
- 		.adis_data = ADIS16480_DATA(16485, &adis16485_timeouts, 0),
- 	},
-@@ -978,6 +982,7 @@ static const struct adis16480_chip_info
- 		.temp_scale = 5650, /* 5.65 milli degree Celsius */
- 		.int_clk = 2460000,
- 		.max_dec_rate = 2048,
-+		.has_sleep_cnt = true,
- 		.filter_freqs = adis16480_def_filter_freqs,
- 		.adis_data = ADIS16480_DATA(16488, &adis16485_timeouts, 0),
- 	},
-@@ -1425,9 +1430,12 @@ static int adis16480_probe(struct spi_de
- 	if (ret)
- 		return ret;
+ define filechk_version.h
+ 	(echo \#define LINUX_VERSION_CODE $(shell                         \
+-	expr $(VERSION) \* 65536 + 0$(PATCHLEVEL) \* 256 + 0$(SUBLEVEL)); \
++	expr $(VERSION) \* 65536 + 0$(PATCHLEVEL) \* 256 + 255); \
+ 	echo '#define KERNEL_VERSION(a,b,c) (((a) << 16) + ((b) << 8) + (c))';)
+ endef
  
--	ret = devm_add_action_or_reset(&spi->dev, adis16480_stop, indio_dev);
--	if (ret)
--		return ret;
-+	if (st->chip_info->has_sleep_cnt) {
-+		ret = devm_add_action_or_reset(&spi->dev, adis16480_stop,
-+					       indio_dev);
-+		if (ret)
-+			return ret;
-+	}
- 
- 	ret = adis16480_config_irq_pin(spi->dev.of_node, st);
- 	if (ret)
 
 
