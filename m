@@ -2,94 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6638431694
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 12:54:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28E8043169B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 12:55:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230501AbhJRK4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 06:56:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45038 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229473AbhJRK4R (ORCPT
+        id S231210AbhJRK5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 06:57:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54814 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229843AbhJRK5E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 06:56:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634554446;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0UGHEy0KSirReAesLAC81k90uijHa8m3tA+7RLpvJyE=;
-        b=cE0Xt1kVHlmDMIKUmLQ97Ifn/F9tNi76Hl/HO4D25UQgRUEewHZfA/ngA6BGNO8ec3g6Hv
-        Udbr5l1Ky1tuQhvrHqnOv/g9wgixPs8pr5/or5zprknkuonrgOGqjVfdtq7KTYRJxjR1v6
-        qBwAh4sr88rWU7IKrcmu/pSGrdIVIv0=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-286-brxOuAIwMZam_K6JL4lLoA-1; Mon, 18 Oct 2021 06:54:05 -0400
-X-MC-Unique: brxOuAIwMZam_K6JL4lLoA-1
-Received: by mail-ed1-f69.google.com with SMTP id g28-20020a50d0dc000000b003dae69dfe3aso13978929edf.7
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 03:54:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=0UGHEy0KSirReAesLAC81k90uijHa8m3tA+7RLpvJyE=;
-        b=f418OQXZMP93MErNBokkynKjyoQiNU7igPuwu7Cca403XWYWOJwyf6QrSFLY/qzYNl
-         Ijn2Qip/dSn+lollbSEATGzwJF/OwkS0V4/TBpByjD4UyNkK6I8XCj+K7oOPO+xrLv8z
-         9sM7JJsT9bv+QIHQQ1imxk9S1k+p13MKQBRGh0nb3D57zSq+nkqcCJNPUcegoOfqVVVp
-         LPTnl83m+HzysfQJZ44Nv/m7DInWAyO5jHh+i+kqKbeZ1ywP5Sl33bvKo9bUDpVCrFkL
-         hBoiyySAUWzM6Odr9i5vd/QI6D9h0nv+G/I6spImKM3Zcy9JgiSMQ27Bsrbx+FOnFOyk
-         ZJ2Q==
-X-Gm-Message-State: AOAM531cJdqGRPIN+V0ODK1BzAXNW3TFOrDp9jQxSmvcuvnsUO/91xPv
-        dx/GbB0cRL63GT0jeUXoYrRb3Inl6MCfaFM2G+Kuo73pER/XDJJdAcfF51Ni/rnmBUZhe2RTr7I
-        jhIsmLvSd8Mh9M0KoSIgLpcfw
-X-Received: by 2002:a05:6402:5c2:: with SMTP id n2mr43155540edx.239.1634554444231;
-        Mon, 18 Oct 2021 03:54:04 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzbl37EsBUhONWzuO27hrT5ZHC1cXxi9YO8Bwu86QC8GVaSRChD1xgLAyG+l/wNJUb3pkjEiA==
-X-Received: by 2002:a05:6402:5c2:: with SMTP id n2mr43155511edx.239.1634554444025;
-        Mon, 18 Oct 2021 03:54:04 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id t19sm8824456ejb.115.2021.10.18.03.54.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Oct 2021 03:54:03 -0700 (PDT)
-Message-ID: <3da8fd50-bdb3-93bd-3d27-0b3f961bd531@redhat.com>
-Date:   Mon, 18 Oct 2021 12:54:01 +0200
+        Mon, 18 Oct 2021 06:57:04 -0400
+Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73D59C061714
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 03:54:53 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:e87a:7c37:aec5:5884])
+        by andre.telenet-ops.be with bizsmtp
+        id 7Nuq2600P22VXnz01Nuq2g; Mon, 18 Oct 2021 12:54:50 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1mcQI5-005sWI-T1; Mon, 18 Oct 2021 12:54:49 +0200
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1mcQI5-00DbGP-E1; Mon, 18 Oct 2021 12:54:49 +0200
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Stephen Boyd <sboyd@kernel.org>, Joey Gouly <joey.gouly@arm.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH 0/2] dt-bindings: Improve yamllint performance
+Date:   Mon, 18 Oct 2021 12:54:46 +0200
+Message-Id: <cover.1634551582.git.geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH 1/8] KVM: SEV-ES: fix length of string I/O
-Content-Language: en-US
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        thomas.lendacky@amd.com, fwilhelm@google.com,
-        kvm list <kvm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>, oupton@google.com,
-        Sean Christopherson <seanjc@google.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-References: <CA+G9fYt7FMXbp47ObVZ4B7X917186Fu39+LM04PcbqZ2-f7-qg@mail.gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <CA+G9fYt7FMXbp47ObVZ4B7X917186Fu39+LM04PcbqZ2-f7-qg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/10/21 12:21, Naresh Kamboju wrote:
-> [Please ignore this email if it already reported ]
-> 
-> Following build errors noticed while building Linux next 20211018
-> with gcc-11 for i386 architecture.
-> 
-> i686-linux-gnu-ld: arch/x86/kvm/svm/sev.o: in function `sev_es_string_io':
-> sev.c:(.text+0x110f): undefined reference to `__udivdi3'
-> make[1]: *** [/builds/linux/Makefile:1247: vmlinux] Error 1
-> make[1]: Target '__all' not remade because of errors.
-> make: *** [Makefile:226: __sub-make] Error 2
+	Hi Rob,
 
-Thank you very much, I have sent a simple fix of changing the variable 
-to u32.
+This series improves yamllint performance by parallelizing the
+operation, and by restricting the checked files to those specified using
+DT_SCHEMA_FILES.
 
-Paolo
+Changes compared to v1:
+  - New patch to parallelize yamllint,
+  - Introduce find_all_cmd,
+  - Only use the restricted set for yamllint.
 
+I've been using this for the past 6 months, as it helps a lot when
+writing or updating DT bindings.  Combined, this reduces the execution
+time of
+
+    make dt_binding_check DT_SCHEMA_FILES=Documentation/devicetree/bindings/your/binding/file.yaml
+
+from ca. 30 to 10 s on i7-8700K.
+
+Thanks for your comments!
+
+Geert Uytterhoeven (2):
+  dt-bindings: Parallelize yamllint
+  dt-bindings: Consider DT_SCHEMA_FILES when finding all json-schema
+
+ Documentation/devicetree/bindings/Makefile | 16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
+
+-- 
+2.25.1
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
