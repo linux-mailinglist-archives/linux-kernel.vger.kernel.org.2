@@ -2,90 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D237432260
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 17:12:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFF0A432263
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 17:14:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232649AbhJRPOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 11:14:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54530 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232056AbhJRPOp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 11:14:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D3D060F22;
-        Mon, 18 Oct 2021 15:12:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634569953;
-        bh=pqgf0b2infPHvF1hEZ3I0eVHSrDJKa5zOrYnSSNObZI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CYkyL3rfJCrhqojP1ocfsK+OCBjOljn2iXpKXopRPivYa8rwVfZPRAaUvnSRaMr0R
-         KJkHIz08r7RMtPlWlMwIZSGHmZJclxVu2HR77dCbg96P4h0gYiLWNGZnbgVO8daL17
-         zLl+vCvjRilyes/ckMs9WuF8CuMkUiIxkBNxB2bA=
-Date:   Mon, 18 Oct 2021 17:12:31 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Karolina Drobnik <karolinadrobnik@gmail.com>
-Cc:     outreachy-kernel@googlegroups.com, forest@alittletooquiet.net,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: vt6655: Fix line wrapping in rf.c file
-Message-ID: <YW2O3wC8wMEKS3Ub@kroah.com>
-References: <20211018150526.9718-1-karolinadrobnik@gmail.com>
+        id S232098AbhJRPQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 11:16:33 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37985 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231921AbhJRPQa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 11:16:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634570058;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=ITZwjENSq81FiJiI76HRsEVj0Df1FfhM1x0DN4yhQYw=;
+        b=CMw6RjctB9GlHBaa2b/jxXM55VtQ9+Sj2iCpZXi//YnIozo5PKDp1GTUwKewc7TOk3zLhr
+        A9NSPwLTo94HHACX+EpEhaXob548QTcqKtO12gBzyu4nwn80D974kdaVAJ9yvC+RCEBt7I
+        Y756i36My67mpyXJT3vl29D32tGOMoM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-10-gqBotatuOLS0cCSnivgCyw-1; Mon, 18 Oct 2021 11:14:12 -0400
+X-MC-Unique: gqBotatuOLS0cCSnivgCyw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C0663362FC;
+        Mon, 18 Oct 2021 15:14:10 +0000 (UTC)
+Received: from vitty.brq.redhat.com (unknown [10.40.194.147])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7D2215DF35;
+        Mon, 18 Oct 2021 15:14:08 +0000 (UTC)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Marc Zyngier <maz@kernel.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH] KVM: Drop stale kvm_is_transparent_hugepage() declaration
+Date:   Mon, 18 Oct 2021 17:14:07 +0200
+Message-Id: <20211018151407.2107363-1-vkuznets@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211018150526.9718-1-karolinadrobnik@gmail.com>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 18, 2021 at 04:05:26PM +0100, Karolina Drobnik wrote:
-> Fix line length warnings raised by checkpatch.pl in
-> rf.c file for `RFvWriteWakeProgSyn`,`RFbRawSetPower`
-> and `RFbAL7230SelectChannelPostProcess`functions.
-> 
-> Signed-off-by: Karolina Drobnik <karolinadrobnik@gmail.com>
-> ---
->  drivers/staging/vt6655/rf.c | 66 +++++++++++++++++++++++++++----------
->  1 file changed, 49 insertions(+), 17 deletions(-)
-> 
-> diff --git a/drivers/staging/vt6655/rf.c b/drivers/staging/vt6655/rf.c
-> index a6f17162d017..206d34b555bc 100644
-> --- a/drivers/staging/vt6655/rf.c
-> +++ b/drivers/staging/vt6655/rf.c
-> @@ -699,11 +699,17 @@ bool RFvWriteWakeProgSyn(struct vnt_private *priv, unsigned char byRFType,
->  			return false;
->  
->  		for (ii = 0; ii < CB_AL2230_INIT_SEQ; ii++)
-> -			MACvSetMISCFifo(priv, (unsigned short)(MISCFIFO_SYNDATA_IDX + ii), dwAL2230InitTable[ii]);
-> +			MACvSetMISCFifo(priv,
-> +					(unsigned short)(MISCFIFO_SYNDATA_IDX + ii),
-> +					dwAL2230InitTable[ii]);
->  
-> -		MACvSetMISCFifo(priv, (unsigned short)(MISCFIFO_SYNDATA_IDX + ii), dwAL2230ChannelTable0[uChannel - 1]);
-> +		MACvSetMISCFifo(priv,
-> +				(unsigned short)(MISCFIFO_SYNDATA_IDX + ii),
-> +				dwAL2230ChannelTable0[uChannel - 1]);
->  		ii++;
-> -		MACvSetMISCFifo(priv, (unsigned short)(MISCFIFO_SYNDATA_IDX + ii), dwAL2230ChannelTable1[uChannel - 1]);
-> +		MACvSetMISCFifo(priv,
-> +				(unsigned short)(MISCFIFO_SYNDATA_IDX + ii),
-> +				dwAL2230ChannelTable1[uChannel - 1]);
->  		break;
->  
->  		/* Need to check, PLLON need to be low for channel setting */
-> @@ -716,17 +722,28 @@ bool RFvWriteWakeProgSyn(struct vnt_private *priv, unsigned char byRFType,
->  
->  		if (uChannel <= CB_MAX_CHANNEL_24G) {
->  			for (ii = 0; ii < CB_AL7230_INIT_SEQ; ii++)
-> -				MACvSetMISCFifo(priv, (unsigned short)(MISCFIFO_SYNDATA_IDX + ii), dwAL7230InitTable[ii]);
-> +				MACvSetMISCFifo(priv,
-> +						(unsigned short)(MISCFIFO_SYNDATA_IDX
-> +						+ ii), dwAL7230InitTable[ii]);
+kvm_is_transparent_hugepage() was removed in commit 205d76ff0684 ("KVM:
+Remove kvm_is_transparent_hugepage() and PageTransCompoundMap()") but its
+declaration in include/linux/kvm_host.h persisted. Drop it.
 
-You shouldn't put the "+" on the start of a new line.
+Fixes: 205d76ff0684 (""KVM: Remove kvm_is_transparent_hugepage() and PageTransCompoundMap()")
+Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+---
+ include/linux/kvm_host.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-Also, these are all just fine as-is for now.  A better way to make these
-lines smaller is to use better variable and function names that are
-shorter and make sense :)
+diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+index 0f18df7fe874..2dc62a8cc96c 100644
+--- a/include/linux/kvm_host.h
++++ b/include/linux/kvm_host.h
+@@ -1164,7 +1164,6 @@ int kvm_cpu_has_pending_timer(struct kvm_vcpu *vcpu);
+ 
+ bool kvm_is_reserved_pfn(kvm_pfn_t pfn);
+ bool kvm_is_zone_device_pfn(kvm_pfn_t pfn);
+-bool kvm_is_transparent_hugepage(kvm_pfn_t pfn);
+ 
+ struct kvm_irq_ack_notifier {
+ 	struct hlist_node link;
+-- 
+2.31.1
 
-thanks,
-
-greg k-h
