@@ -2,156 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6AA34323E5
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 18:32:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87D904323EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 18:35:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232729AbhJRQez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 12:34:55 -0400
-Received: from mail-mw2nam12on2068.outbound.protection.outlook.com ([40.107.244.68]:10208
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231896AbhJRQew (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 12:34:52 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AFn3zHCROyBHiEbRJkRD2xUna3lJ17DjixvlMKnPY0FrZH375xt9McGaNXcyJv4L5Ng355U8LhdlNesbq5+wtPNSVSE1b8MinORZk/KOs/JD50hSg92TVcwdS3t+3d/3uYoWUtRw4cX8lItykx2m5wxSTopu7R4ehj3v9oorrQN191ecKQWEFHrQxKvVRFj24EiBu/QOkNtE06YeRI0r+XL1f/Cpr0vAR1Rs4t9awHpXNcK0jRReRlyLcP0NMx8USDVIdPGVcunQHv0YB6I0kTjBZ9VjNOQC9S3GEkBgNwtuK0mZZ2YbALZo7NWe3NndJrsAL+pUgaWT/unnveMkAw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=nApis2aZVIrtzFuEXVjWa3t4o12OGFGmqXe8A9/+uWg=;
- b=UkiAek+1SQN/1tDgCJ9gEg/u8RJKAm/pm/lMgJVb4SAbcxRcLSwyfnDQXXJAmF3tHeU8RIwZzZQh7neECMp6t2etrPcvqW1SfGHuGiw9H5e6McJwp5T/j7PhyjFPa69h7tGpfLhELT2lnyGoA7Czxa6SXeEgyLRoYNQm8zv/CyaqXQcSsC0giHHdxR2i9USavRscLktBbUaeZCIfPI+eweHJsArtemj57rHLH9g3yKOm1c/h3M4kypwXpM0VISZJCedCeOBKUsc3rFbefSWSX+3kBexwQuhHTPRkf8JJZZ3z2XwAqFBJ1z8EY+HEQFHaXjNHxuXqCb+1Ma61Ps50mA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nApis2aZVIrtzFuEXVjWa3t4o12OGFGmqXe8A9/+uWg=;
- b=k4jiOcsOqBGrxWhBaY5KNkCnS16YQ3yi2KkaSnzxtK1v98lnnAaA9sTo49l3Wgo8nvWP00ln4tcEsxwcbKCcEcFeeIhRwk2wa//+KeWnE2ZJIhWr9s1W5RDW8q5yFScoPJ3QpGWnu9Ln6LVvOjv0HvQNs0zGriCmDOK212F+t8WbwjRjJfylAxh8N23jhnyE1/+2nmlJQJiBn2D8ZYIc83OEnQTfipTIDql/vExxFmGMnXtjCwO/lyoAKa5Ag9vrRELigIHUWdzN+WA5SwQq3eSlXPIzf8TYueSB/ncV7PD5avR9BqyQxFqAGiIJKwh+UydE3ibTLL9/TiQau9hBaQ==
-Authentication-Results: gibson.dropbear.id.au; dkim=none (message not signed)
- header.d=none;gibson.dropbear.id.au; dmarc=none action=none
- header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5189.namprd12.prod.outlook.com (2603:10b6:208:308::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.17; Mon, 18 Oct
- 2021 16:32:40 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95%6]) with mapi id 15.20.4608.018; Mon, 18 Oct 2021
- 16:32:40 +0000
-Date:   Mon, 18 Oct 2021 13:32:38 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     David Gibson <david@gibson.dropbear.id.au>
-Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "hch@lst.de" <hch@lst.de>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "lkml@metux.net" <lkml@metux.net>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "lushenming@huawei.com" <lushenming@huawei.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "yi.l.liu@linux.intel.com" <yi.l.liu@linux.intel.com>,
-        "Tian, Jun J" <jun.j.tian@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "dwmw2@infradead.org" <dwmw2@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
-        "nicolinc@nvidia.com" <nicolinc@nvidia.com>
-Subject: Re: [RFC 13/20] iommu: Extend iommu_at[de]tach_device() for multiple
- devices group
-Message-ID: <20211018163238.GO2744544@nvidia.com>
-References: <20210919063848.1476776-1-yi.l.liu@intel.com>
- <20210919063848.1476776-14-yi.l.liu@intel.com>
- <YWe+88sfCbxgMYPN@yekko>
- <BN9PR11MB54337A8E65C789D038D875C68CB89@BN9PR11MB5433.namprd11.prod.outlook.com>
- <YWzwmAQDB9Qwu2uQ@yekko>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YWzwmAQDB9Qwu2uQ@yekko>
-X-ClientProxiedBy: MN2PR03CA0023.namprd03.prod.outlook.com
- (2603:10b6:208:23a::28) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S233324AbhJRQhe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 12:37:34 -0400
+Received: from mail-pj1-f50.google.com ([209.85.216.50]:54958 "EHLO
+        mail-pj1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229924AbhJRQhd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 12:37:33 -0400
+Received: by mail-pj1-f50.google.com with SMTP id np13so12599211pjb.4;
+        Mon, 18 Oct 2021 09:35:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=t0ejuGV5Mekv33Ke5yZ2hDIuNqOJx8vNh5URYlHnJto=;
+        b=6gJgbjgOz8H1lvQqWP/wAmtY+y/pqX+6z+6K3PbPnXm+FZqvHp1IfZ3forvshPWJz+
+         paM31sN7f7HAKISYLy0CQVSRH9CZWbVn1HNEOpwcaspXayWD83mUDscDhvQTOZossZwB
+         9o7z/AoBevUzOramcUFrp1FyxwqHyiUzvtEz1wenNK9NfnY/Y954tyaLw9jCuGUcUORb
+         DtJa1VD4ezGvlZiSWQQ/43uHQ6pghFWJ9CeGp00SM2m4AClNnfjBpaatLDQj5dpOFEeO
+         gXXYzAa95fdCq5SdaS0JqEfF532DdHwlhTWNQpWVpSqMrv5IRUGt208DnegCkK5pmJ88
+         igMA==
+X-Gm-Message-State: AOAM532rLKtk1+J952sNkMhbosBBnvWLhRUVNy+OMNnSw+oLmClUur5l
+        rwptyeuuLnmZEg8PQ1Ae88R2TDcYVUA+TvxtccA=
+X-Google-Smtp-Source: ABdhPJwvaMOxnoenZJe9/ILtrcFiCQv9WRvnnA+r4NIrZLRlZciSQOo/t9cppApR2frz6pS5hFOQgQA/Yz9/Zrjvuhw=
+X-Received: by 2002:a17:902:7783:b0:13d:fee6:8095 with SMTP id
+ o3-20020a170902778300b0013dfee68095mr28042663pll.7.1634574921896; Mon, 18 Oct
+ 2021 09:35:21 -0700 (PDT)
 MIME-Version: 1.0
-Received: from mlx.ziepe.ca (142.162.113.129) by MN2PR03CA0023.namprd03.prod.outlook.com (2603:10b6:208:23a::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.16 via Frontend Transport; Mon, 18 Oct 2021 16:32:39 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mcVZ0-00GJcA-JT; Mon, 18 Oct 2021 13:32:38 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 22787174-f942-44c2-a9dd-08d99254e6c1
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5189:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL1PR12MB518954087AE09A8ADDCCB1B9C2BC9@BL1PR12MB5189.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 7bXNmdrVx0st7HfqR7kqaFO9H9NXiqLGjWYyLVViX1Oshwlul+q/PEzCGGBcZFnIy+8qZmgDrHiQpFcWaINT32HzcHMwcbweUS90wIg78NNf+xph382n9st9x2bVw5TWnwx/+JEHda3JpJkyNGHdWr5OkkTSomr4IATLR1FMdsYtyRU6ysMXWkNTFFPGV3VYKDrwAXXb8ahsAnirZQ8qURPGKr5E7IiHNISCCSl0z4WvsyStwsIOIYIeC74iP3yB6OJ2Fe5zSXIafFFISjbnxzAFb78WPLqqEVjwX/8bQDa0SDy/DGtgK+wdIHdS4mEs8jpKmqCgWS5iabx05AavICddhP7I7IHKM8caXaUwETChlCUJhsqrI+OADSfrbnbaMF5P3Is4hB95/2b7FMF/wRbBriybbOjqqYygpEu1rtJ1kQbZwaoCROxPwtqB2tLqokEsbb9SWBO449ucyn7JA+IRFKQnZ5sXUL7OwvE2X7m23iJRcNu1kG7bRW8GxKZocj2gkxFsdHCndr/0krLFUjCM+z2S0GZwrESFVSM1pQUOY+V1IDOS8D6BCplr5Iqz53h78zBh+kfgKl+BeU33iEEpmrdZlrAlJOOQcO932hmsxDIKiGhNt4lMKn/u+4pWy5o7ohBMw2QPS5CWgapyKw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(2906002)(9746002)(9786002)(54906003)(8936002)(107886003)(7416002)(38100700002)(426003)(86362001)(2616005)(5660300002)(6916009)(8676002)(508600001)(33656002)(4326008)(186003)(1076003)(36756003)(26005)(66946007)(4744005)(316002)(83380400001)(66476007)(66556008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?TqxMH6n+Uz6DHoQTOoxfQk6bDDxkLV1G6uvtN+OG0FJfYxM1YHiZCVtsOwU4?=
- =?us-ascii?Q?XmSfcstbWPjOpMx6yImgAcRS/iwirWEsGhLUenb5s42JlVcp75dJ/JMOaX/M?=
- =?us-ascii?Q?QXLjuNpYtfI8W6HANghEndf2BOZavYbYcCIUcKxXdTrHLoJ6raSpeeE/yNgj?=
- =?us-ascii?Q?F7qTscnNp2MpoGvY+PYZ9JAml98dwjj29Vygn3frqHkPnQCug+e+qQqr46cS?=
- =?us-ascii?Q?JQGEAy27vhTfvrFbrgofxhQY0mgvPnY+MdSGw/grBtkRib8AlSCo49LvwZHt?=
- =?us-ascii?Q?xvKv7SU1crSAnOQLC5he9JAP9Kkq+i0kF/Kw8a1GjbuE8d+oJjWuPQoP9lFF?=
- =?us-ascii?Q?2mepulUnjK8PTAqQbn3ccVjRe+y2tMd4abax+18ta7jP0BPeN7IytjYf4M+p?=
- =?us-ascii?Q?FXLs67agaaV+D0hTpDABx/VSOyZeIXUAKkkhoXL6YE5nhhLhm/X0YB9ICwCx?=
- =?us-ascii?Q?yE5+49N/Bf7QwZX4I4UxvXGxKqSVh2Jkls6Pp7JOI5C9uZqhFcXDH2iMdZas?=
- =?us-ascii?Q?aTL2gfqR2bO6GH4HqFpN4FdsHBINlZ4cGM1IFjXgp+K6AmlIHsGw896MllRJ?=
- =?us-ascii?Q?0V0giDcSV1m1/YexGHPUeDXnl0U27kIbclKr7CmF/ZcPIzMR6r8ndneaY1//?=
- =?us-ascii?Q?Fmk6D35oir0iEHMwOgkSCgYpKoMNYmPNxOdxbWxO1R8Xxk1pQxByJvVuIZdl?=
- =?us-ascii?Q?4oba7IsQ2F6wVVjOk0mhGq4+ArI0TMj33pZrOklYSnMoyUMldZ8bzoCS6ffr?=
- =?us-ascii?Q?HVDIydxoyUPPrAI1Zvnd+kmfaDz/gjNt0k9dh3lPIGZy5OqKAca1DdGJTvlb?=
- =?us-ascii?Q?zMN8o1cxjYf4P1RPp01SWxyJr2kcRjpwjXco1bVexEcME9uc9/LWrVQJTbLC?=
- =?us-ascii?Q?p0dFF00LQ42jeB3lJISs2GWTSHFz4cu+uSjuPaV4PymstRrVpexb5A+6A8aE?=
- =?us-ascii?Q?NF7pKvnl4V9yRnRJZ0tL5b7eLE68vnaAAfGvcGnMnmkpfqVPhcCLXLDssZ8M?=
- =?us-ascii?Q?NFqnPmJ7EJCIoYsHwLSQkCCBWbOyB0DfI5D3Fz4N9OhJlrlKo4IZgWiExMMm?=
- =?us-ascii?Q?Q/s7lVyVq3NGYWkWWzNGPvoCkzDCUUHSHm2IE2gosXfXJwUsfV7yyNhPRKne?=
- =?us-ascii?Q?UXo8Sj6bF1t3+xDbc7C8wlYllCNGHBIigRtfqbmdjRnnxiuVp+qiGfc8M2sr?=
- =?us-ascii?Q?M7qSOrMn45ioDlSnYm+X4cH8ATq+vqvd6FRNEloOjfMnByYuDMx5ua2+rqAa?=
- =?us-ascii?Q?Nz0jtcpsR0+wu5AygrDADIzClrl7Z3QMNMquWxdvbWrqm8e3O5Gk+vraH+L9?=
- =?us-ascii?Q?YKygxlb13conmEvAXrXvY31J?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 22787174-f942-44c2-a9dd-08d99254e6c1
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Oct 2021 16:32:39.8514
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: AO5IyDUDMAt2GkyZCNVlv7xvSOPKhRmbrkrX3ioCknIA4n661umvtjne0vUerUbH
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5189
+References: <20211012134027.684712-1-kernel@esmil.dk> <20211012134027.684712-13-kernel@esmil.dk>
+ <CAHp75Vep+i+iyJi0LAOKuer-cUZoUoB_ZrWKcmT=EB_4hOgFGw@mail.gmail.com>
+ <CANBLGcxHD2vy0+tXYo5Pkqri9mV7aD9jikvs3ygBJRxF4ApLMA@mail.gmail.com>
+ <CAHp75Vc65deoHbks-aPmnjEJzm3GdqFMfBCUqw4vVLVr=71Ncg@mail.gmail.com>
+ <CANBLGcxriKLZ+CKUsj5sviW8FdHnWTF2koROwmAb=G2tbmE6vQ@mail.gmail.com> <CAHp75VccSDLVbs1sF_-1zghWyLKtKKV1qtxOxZZ-cS0e6S-sBA@mail.gmail.com>
+In-Reply-To: <CAHp75VccSDLVbs1sF_-1zghWyLKtKKV1qtxOxZZ-cS0e6S-sBA@mail.gmail.com>
+From:   Emil Renner Berthing <kernel@esmil.dk>
+Date:   Mon, 18 Oct 2021 18:35:10 +0200
+Message-ID: <CANBLGcw1qMB7r7TbuQEevOPHq94wAtZNs=yFQ3UP_DEREvGz6g@mail.gmail.com>
+Subject: Re: [PATCH v1 12/16] pinctrl: starfive: Add pinctrl driver for
+ StarFive SoCs
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Sagar Kadam <sagar.kadam@sifive.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Huan Feng <huan.feng@starfivetech.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 18, 2021 at 02:57:12PM +1100, David Gibson wrote:
+On Mon, 18 Oct 2021 at 18:24, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> On Mon, Oct 18, 2021 at 6:56 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
+> > On Mon, 18 Oct 2021 at 17:48, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> > > On Mon, Oct 18, 2021 at 6:35 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
+> > > > On Tue, 12 Oct 2021 at 19:03, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> > > > > On Tue, Oct 12, 2021 at 4:43 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
+>
+> ...
+>
+> > > > > > +               case PIN_CONFIG_BIAS_DISABLE:
+> > > > >
+> > > > > > +                       mask |= PAD_BIAS_MASK;
+> > > > >
+> > > > > Use it...
+> > > > >
+> > > > > > +                       value = (value & ~PAD_BIAS_MASK) | PAD_BIAS_DISABLE;
+> > > > >
+> > > > > ...here. Ditto for the similar cases in this function and elsewhere.
+> > > >
+> > > > I don't follow. How do you want me to use mask? If I did value =
+> > > > (value & ~mask) | PAD_BIAS_DISABLE; then I'd wipe the previous
+> > > > configuration. Eg. suppose the first config is the drive strength and
+> > > > second disables bias. Then on the 2nd loop mask =
+> > > > PAD_DRIVE_STRENGTH_MASK | PAD_BIAS_MASK and the drive strength value
+> > > > would be wiped.
+> > >
+> > > Collect masks and new values in temporary variables and apply them
+> > > once after the loop is done, no?
+> >
+> > But that's exactly what the code does. It merges all the config
+> > options into a single mask and value so we only need to do rmw on the
+> > register once.
+>
+> Then masking the value makes no sense.
+> What you should have is simply as
+>
+>   mask |= FOO;
+>   value |= BAR;
 
-> The first user might read this.  Subsequent users are likely to just
-> copy paste examples from earlier things without fully understanding
-> them.  In general documenting restrictions somewhere is never as
-> effective as making those restrictions part of the interface signature
-> itself.
+Yeah, but then we could get into weird states if the device tree
+specifies both bias-disable and bias-pull-up by mistake. This code is
+written so that only the last valid state is chosen.
 
-I'd think this argument would hold more water if you could point to
-someplace in existing userspace that cares about the VFIO grouping.
 
-From what I see the applications do what the admin tells them to do -
-and if the admin says to use a certain VFIO device then that is
-excatly what they do. I don't know of any applications that ask the
-admin to tell them group information.
+> ...
+>
+> > > > > > +       ret = clk_prepare_enable(clk);
+> > > > > > +       if (ret) {
+> > > > >
+> > > > > > +               reset_control_deassert(rst);
+> > > > >
+> > > > > Use devm_add_action_or_reset().
+> > > >
+> > > > I don't see how that is better.
+> > >
+> > > Pity. The rule of thumb is to either try to use devm_*() everywhere in
+> > > the probe, or don't use it at all. Above is the more-or-less standard
+> > > pattern where devn_add_action_or_reset() is being used in the entire
+> > > kernel.
+> > >
+> > > > Then I'd first need to call that and
+> > > > check for errors, but just on the line below enabling the clock the
+> > > > reset line is deasserted anyway, so then the action isn't needed any
+> > > > longer. So that 3 lines of code for devm_add_action_or_reset +
+> > > > lingering unneeded action or code to remove it again vs. just the line
+> > > > above.
+> > >
+> > > Then don't use devm_*() at all. What's the point?
+> >
+> > I'm confused. So you wan't an unneeded action to linger because the
+> > probe function temporarily asserts reset for 3 lines of code?
+>
+> I;m talking about clk_prepare_enable().
 
-What I see is aligning what the kernel provides to the APIs the
-applications have already built.
+Ok, you wrote your comment under the reset_control_deassert call. How
+would devm_add_action_or_reset for clk_prepare_enable work?
 
-Jason
+> ...
+>
+> > > > > > +       sfp->gc.of_node = dev->of_node;
+> > > > >
+> > > > > Isn't GPIO library do this for you?
+> > > >
+> > > > If it does I can't find it.
+> > >
+> > > Heh... `man git grep`
+> > > Hint: `git grep -n 'of_node = .*of_node' -- drivers/gpio/gpiolib*`
+> >
+> > That's exactly what I did.
+>
+> Now look at the result and find the correct place where it's done.
+> Btw, all hits are in the very same function.
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
