@@ -2,291 +2,332 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2796E432590
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 19:52:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14C52432560
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 19:48:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233478AbhJRRyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 13:54:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39688 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231318AbhJRRyl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 13:54:41 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB29FC06161C
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 10:52:29 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id m14so15289659pfc.9
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 10:52:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3f87BNFWvM1pfhva02mnChXWbxmDyc7utICiS9qk7qE=;
-        b=B8DUAZpSUHucHYlrOFumei2CRRhDlfoAfKzKMZUmHzIJKOECoyCRa4ugHByNbyAbkK
-         F0czHsr3RqHVLWz5ul2sJmivSVOZow0R0iFbK/l1/b6102fl94i1gQGo5+SwNqJmQrJX
-         4Zr4xQYadUVYUa09+X4jkayjipcs5Bf8GnBPM1SH8vifyUgq9Z9Dkulg2omgyaSzg3Z/
-         N6m2lSiLshaiGFacuybUnEQgl9j1Se30nQWWUHuQqKi5ZT59aFIMUm6a63xb9HkZ7L8B
-         WjU0fZnhPIcWSHlACPAB0fjcg6HQBpkqSvFIEnQRBcDzqqp/Ard9XS7+b1V6a8qa1wtT
-         jeog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3f87BNFWvM1pfhva02mnChXWbxmDyc7utICiS9qk7qE=;
-        b=Ex2qTuCtkoqyVzgM48L0WbxgRtsvhpClrsUWhkIMsq/u0BWSRiUDoO1Jb5MUvvvvVQ
-         HGduW4LgONjzGt8Vo1BaSMTN9iC/LapipRCHu21rH7vTGoQbdtDOwdy32bXn/APRPal2
-         OqZhqlStbTfXBZbiba59jZTBFA2hFKXFz/LgnfCPVYyAEQwigjptHGpxOY0oE2umT3fU
-         nsEQr8r5dpFQrmiHrGd8mVBZ+eg9QXmAz+8mZqO4hb+6WtOfqHTWzljIXpfxHezGRbVR
-         WNIj6XNztnUV9oV/PQbaCziy0KDXpsssbKrxWgrX+TeMdWdbTQcRgJKeGOcVA5nv922s
-         kdNQ==
-X-Gm-Message-State: AOAM533XqoXWMKvbxlF3N5ySoXO13mau1XcLO2emNhZ9FQNnGNxUQfHI
-        Ie/NzAeRjQIY5LHIl5qk93fLtQ==
-X-Google-Smtp-Source: ABdhPJyLkgIR8wb4rOSy7OTHOWTnGTav1oyfVvtiV5jSTPQ/PL4j5hLmVhk/AHcchk5IYRsPtc3G+g==
-X-Received: by 2002:a63:b00e:: with SMTP id h14mr24826468pgf.135.1634579549233;
-        Mon, 18 Oct 2021 10:52:29 -0700 (PDT)
-Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id r8sm13872346pgp.30.2021.10.18.10.52.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 10:52:28 -0700 (PDT)
-Date:   Mon, 18 Oct 2021 11:52:25 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Deepak Kumar Singh <deesin@codeaurora.org>, swboyd@chromium.org,
-        clew@codeaurora.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        Ohad Ben-Cohen <ohad@wizery.com>
-Subject: Re: [PATCH V1 1/3] rpmsg: core: Add signal API support
-Message-ID: <20211018175225.GF3163131@p14s>
-References: <1633015924-881-1-git-send-email-deesin@codeaurora.org>
- <1633015924-881-2-git-send-email-deesin@codeaurora.org>
- <20211011180245.GA3817586@p14s>
- <YWpcq2Uy9wM1voRH@yoga>
+        id S234238AbhJRRu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 13:50:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37930 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233374AbhJRRuY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 13:50:24 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 22C9B60F11;
+        Mon, 18 Oct 2021 17:48:10 +0000 (UTC)
+Date:   Mon, 18 Oct 2021 18:52:25 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Roan van Dijk <roan@protonic.nl>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Tomasz Duszynski <tomasz.duszynski@octakon.com>,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, david@protonic.nl,
+        Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH v5 0/4] iio: chemical: Add support for Sensirion SCD4x
+ CO2 sensor
+Message-ID: <20211018185225.11396bb0@jic23-huawei>
+In-Reply-To: <2c7f8b7c-3070-5763-7b74-3811cdbfcabc@protonic.nl>
+References: <20211008101706.755942-1-roan@protonic.nl>
+        <20211010165919.51f06938@jic23-huawei>
+        <20211013183828.521f043f@jic23-huawei>
+        <3ecfe246-b942-0c1e-08e6-17eff4c5cc16@protonic.nl>
+        <20211014181932.5f70d2e4@jic23-huawei>
+        <2c7f8b7c-3070-5763-7b74-3811cdbfcabc@protonic.nl>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YWpcq2Uy9wM1voRH@yoga>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 16, 2021 at 12:01:31AM -0500, Bjorn Andersson wrote:
-> On Mon 11 Oct 13:02 CDT 2021, Mathieu Poirier wrote:
-> 
-> > Good day Deepak,
+On Mon, 18 Oct 2021 10:19:42 +0200
+Roan van Dijk <roan@protonic.nl> wrote:
+
+> On 14-10-2021 19:19, Jonathan Cameron wrote:
+> > On Thu, 14 Oct 2021 10:24:54 +0200
+> > Roan van Dijk <roan@protonic.nl> wrote:
+> >   
+> >> On 13-10-2021 19:38, Jonathan Cameron wrote:  
+> >>> On Sun, 10 Oct 2021 16:59:19 +0100
+> >>> Jonathan Cameron <jic23@kernel.org> wrote:
+> >>>      
+> >>>> On Fri,  8 Oct 2021 12:17:02 +0200
+> >>>> Roan van Dijk <roan@protonic.nl> wrote:
+> >>>>     
+> >>>>> This series adds support for the Sensirion SCD4x sensor.
+> >>>>>
+> >>>>> The driver supports continuous reads of temperature, relative humdity and CO2
+> >>>>> concentration. There is an interval of 5 seconds between readings. During
+> >>>>> this interval the drivers checks if the sensor has new data available.
+> >>>>>
+> >>>>> The driver is based on the scd30 driver. However, The scd4x has become too
+> >>>>> different to just expand the scd30 driver. I made a new driver instead of
+> >>>>> expanding the scd30 driver. I hope I made the right choice by doing so?  
+> >>>>
+> >>>> Applied to the togreg branch of iio.git with the issues Randy mentioned tidied
+> >>>> up. Pushed out as testing for 0-day to see if it can find anything we missed  
+> >>>
+> >>> And indeed - I missed a bunch of places where explicit __be16 types should have
+> >>> been used.
+> >>>
+> >>> I've applied the following fixup, shout if it's wrong.
+> >>>     
+> >> Thank you Jonathan for applying this fixup. No need to shout :) Your
+> >> changes should fix the issue.
+> >>
+> >> However, I have a question about something else. The co2 concentration
+> >> is an IIO_CHAN_INFO_RAW, but doesn't have a scale or offset at this
+> >> moment. Is an _scale always required for an _raw in the ABI? I could not
+> >> find anything in the documentation if there is a rule for this. Someone
+> >> mentioned this to me, so I want to check if I did this right.
+> >>
+> >> The sensor returns the actual co2 value upon reading, like 450 ppm. We
+> >> can set an offset of this co2 value with the calibration_forced_value
+> >> through the ABI, but this offset is handled internally by the sensor. So
+> >> there isn't anything with scaling or an offset needed at the driver side.  
 > > 
-> > On Thu, Sep 30, 2021 at 09:02:01PM +0530, Deepak Kumar Singh wrote:
-> > > Some transports like Glink support the state notifications between
-> > > clients using signals similar to serial protocol signals.
-> > > Local glink client drivers can send and receive signals to glink
-> > > clients running on remote processors.
-> > > 
-> > > Add apis to support sending and receiving of signals by rpmsg clients.
-> > > 
-> > > Signed-off-by: Deepak Kumar Singh <deesin@codeaurora.org>
-> > > ---
-> > >  drivers/rpmsg/rpmsg_core.c     | 21 +++++++++++++++++++++
-> > >  drivers/rpmsg/rpmsg_internal.h |  2 ++
-> > >  include/linux/rpmsg.h          | 15 +++++++++++++++
-> > >  3 files changed, 38 insertions(+)
-> > > 
-> > > diff --git a/drivers/rpmsg/rpmsg_core.c b/drivers/rpmsg/rpmsg_core.c
-> > > index 9151836..5cae50c 100644
-> > > --- a/drivers/rpmsg/rpmsg_core.c
-> > > +++ b/drivers/rpmsg/rpmsg_core.c
-> > > @@ -327,6 +327,24 @@ int rpmsg_trysend_offchannel(struct rpmsg_endpoint *ept, u32 src, u32 dst,
-> > >  }
-> > >  EXPORT_SYMBOL(rpmsg_trysend_offchannel);
-> > >  
-> > > +/**
-> > > + * rpmsg_set_flow_control() - sets/clears searial flow control signals
-> > > + * @ept:	the rpmsg endpoint
-> > > + * @enable:	enable or disable serial flow control
-> > > + *
-> > > + * Returns 0 on success and an appropriate error value on failure.
-> > > + */
-> > > +int rpmsg_set_flow_control(struct rpmsg_endpoint *ept, bool enable)
-> > > +{
-> > > +	if (WARN_ON(!ept))
-> > > +		return -EINVAL;
-> > > +	if (!ept->ops->set_flow_control)
-> > > +		return -ENXIO;
-> > > +
-> > > +	return ept->ops->set_flow_control(ept, enable);
-> > > +}
-> > > +EXPORT_SYMBOL(rpmsg_set_flow_control);
-> > > +
+> > Ah. We could have mapped this to calibbias, though here it's made more
+> > complex by other calibrations existing that don't use the value so let's
+> > leave it as it is.
+> >   
+> >>
+> >> Was I right by making it of type RAW? If needed we could make it more
+> >> like the scd30 driver, keeping it of type RAW but with scale = 1. What
+> >> should I do or is it fine as it is?  
 > > 
-> > I'm looking at this patchset as the introduction of an out-of-bound
-> > control interface.  But looking at the implementation of the GLINK's
-> > set_flow_control() the data is sent in-band, making me perplexed about
-> > introducing a new rpmsg_endpoint_ops for something that could be done
-> > from user space.  Especially when user space is triggering the message
-> > with an ioctl in patch 3.
+> > Hmm. Interesting corner case in the ABI.  A _raw value without a scale
+> > normally means we don't know it for some reason.  The most common case
+> > of this is light sensors where several _raw intensity values are combined
+> > in some (typically non linear) transform to form a single measure of illuminance.
+> > Those intensity_raw channels don't have an meaningful units, but devices
+> > often have threshold events on them so we have to expose them.
 > > 
-> 
-> GLINK is built around one fifo per processor pair, similar to a
-> virtqueue. So the signal request is muxed in the same pipe as data
-> requests, but the signal goes alongside data request, not within them.
->
-
-I reflected more on this and I can see scenarios where sending control flow
-messages alongside other data packet could be the only solution.  How the signal
-is implemented is a platform specific choice.  I believe the same kind of
-delivery mechanism implemented by kick() functions would be the best way to go
-but if that isn't possible then in-band, as suggested in this patchset, is
-better than nothing. 
-
-> > Moreover this interface is case specific and doesn't reflect the
-> > generic nature found in ept->sig_cb.
+> > I would say make it a processed value, but there is a quirk.
+> > concentrations in IIO are expressed in percent not per million, so you need
+> > a scale anyway, I guess 10000?  See Documentation/ABI/testing/sysfs-bus-iio
 > > 
+> > 
+> > No need to do a new driver version, just send a patch tidying up this corner.
+> >   
 > 
-> The previous proposal from Deepak was to essentially expose the normal
-> tty flags all the way down to the rpmsg driver. But I wasn't sure how
-> those various flags should be interpreted in the typical rpmsg driver.
-
-That is interesting.  I was hoping to keep the user level signal interfaces
-generic and let the drivers do as they please with them.  I see your point
-though and this might be one of those cases where there isn't a right or wrong
-answer.
-
+> Hi Jonathan,
 > 
-> I therefor asked Deepak to change it so the rpmsg api would contain a
-> single "pause incoming data"/"resume incoming data" - given that this is
-> a wish that we've seen in a number of discussions.
->
-
-This will work for as long as we have a single usecase for it, i.e flow control.
-I fear things will quickly get out of hands when more messages are needed, hence
-the idea of keeping things as generic as possible.  
-
+> As you suggested, these are my fixes for the concentration reading.
 > 
-> Unfortunately I don't have any good suggestion for how we could
-> implement this in the virtio backend at this time, but with the muxing
-> of all the different channels in the same virtqueue it would be good for
-> a driver to able to pause the inflow on a specific endpoint, to avoid
-> stalling other communication when a driver can't receive more messages.
-
-Humm...
-
-For application to remote processor things would work the same as it does for
-GLINK, whether the communication is done from a rpmsg_driver (as in
-rpmsg_client_sample.c) or from user space via something like the rpmsg_char.c
-driver.  
-
-For remote processor to application processor the interruptions would need to
-carry the destination address of the endpoint, which might not be possible.
-
-All this discussion proves that we really need to think about this before moving
-forward, especially with Arnaud's ongoing refactoring of the rpmsg_char driver.
-
-Thanks,
-Mathieu
-
+> The co2 reading is now a processed value and has a scale. I also added 
+> the information in sysfs-bus-iio documentation, because this type of 
+> processed value is new in the ABI.
 > 
-> Regards,
-> Bjorn
+> diff --git a/Documentation/ABI/testing/sysfs-bus-iio 
+> b/Documentation/ABI/testing/sysfs-bus-iio
+> index c27347d3608e..66a17f4c831e 100644
+> --- a/Documentation/ABI/testing/sysfs-bus-iio
+> +++ b/Documentation/ABI/testing/sysfs-bus-iio
+> @@ -1716,6 +1716,7 @@ Description:
 > 
-> > >  /*
-> > >   * match a rpmsg channel with a channel info struct.
-> > >   * this is used to make sure we're not creating rpmsg devices for channels
-> > > @@ -514,6 +532,9 @@ static int rpmsg_dev_probe(struct device *dev)
-> > >  
-> > >  		rpdev->ept = ept;
-> > >  		rpdev->src = ept->addr;
-> > > +
-> > > +		if (rpdrv->signals)
-> > > +			ept->sig_cb = rpdrv->signals;
-> > >  	}
-> > >  
-> > >  	err = rpdrv->probe(rpdev);
-> > > diff --git a/drivers/rpmsg/rpmsg_internal.h b/drivers/rpmsg/rpmsg_internal.h
-> > > index a76c344..dcb2ec1 100644
-> > > --- a/drivers/rpmsg/rpmsg_internal.h
-> > > +++ b/drivers/rpmsg/rpmsg_internal.h
-> > > @@ -53,6 +53,7 @@ struct rpmsg_device_ops {
-> > >   * @trysendto:		see @rpmsg_trysendto(), optional
-> > >   * @trysend_offchannel:	see @rpmsg_trysend_offchannel(), optional
-> > >   * @poll:		see @rpmsg_poll(), optional
-> > > + * @set_flow_control:	see @rpmsg_set_flow_control(), optional
-> > >   *
-> > >   * Indirection table for the operations that a rpmsg backend should implement.
-> > >   * In addition to @destroy_ept, the backend must at least implement @send and
-> > > @@ -72,6 +73,7 @@ struct rpmsg_endpoint_ops {
-> > >  			     void *data, int len);
-> > >  	__poll_t (*poll)(struct rpmsg_endpoint *ept, struct file *filp,
-> > >  			     poll_table *wait);
-> > > +	int (*set_flow_control)(struct rpmsg_endpoint *ept, bool enable);
-> > >  };
-> > >  
-> > >  struct device *rpmsg_find_device(struct device *parent,
-> > > diff --git a/include/linux/rpmsg.h b/include/linux/rpmsg.h
-> > > index d97dcd0..b805c70 100644
-> > > --- a/include/linux/rpmsg.h
-> > > +++ b/include/linux/rpmsg.h
-> > > @@ -62,12 +62,14 @@ struct rpmsg_device {
-> > >  };
-> > >  
-> > >  typedef int (*rpmsg_rx_cb_t)(struct rpmsg_device *, void *, int, void *, u32);
-> > > +typedef int (*rpmsg_rx_sig_t)(struct rpmsg_device *, void *, u32);
-> > >  
-> > >  /**
-> > >   * struct rpmsg_endpoint - binds a local rpmsg address to its user
-> > >   * @rpdev: rpmsg channel device
-> > >   * @refcount: when this drops to zero, the ept is deallocated
-> > >   * @cb: rx callback handler
-> > > + * @sig_cb: rx serial signal handler
-> > >   * @cb_lock: must be taken before accessing/changing @cb
-> > >   * @addr: local rpmsg address
-> > >   * @priv: private data for the driver's use
-> > > @@ -90,6 +92,7 @@ struct rpmsg_endpoint {
-> > >  	struct rpmsg_device *rpdev;
-> > >  	struct kref refcount;
-> > >  	rpmsg_rx_cb_t cb;
-> > > +	rpmsg_rx_sig_t sig_cb;
-> > >  	struct mutex cb_lock;
-> > >  	u32 addr;
-> > >  	void *priv;
-> > > @@ -104,6 +107,7 @@ struct rpmsg_endpoint {
-> > >   * @probe: invoked when a matching rpmsg channel (i.e. device) is found
-> > >   * @remove: invoked when the rpmsg channel is removed
-> > >   * @callback: invoked when an inbound message is received on the channel
-> > > + * @signals: invoked when a serial signal change is received on the channel
-> > >   */
-> > >  struct rpmsg_driver {
-> > >  	struct device_driver drv;
-> > > @@ -111,6 +115,7 @@ struct rpmsg_driver {
-> > >  	int (*probe)(struct rpmsg_device *dev);
-> > >  	void (*remove)(struct rpmsg_device *dev);
-> > >  	int (*callback)(struct rpmsg_device *, void *, int, void *, u32);
-> > > +	int (*signals)(struct rpmsg_device *rpdev, void *priv, u32);
-> > >  };
-> > >  
-> > >  static inline u16 rpmsg16_to_cpu(struct rpmsg_device *rpdev, __rpmsg16 val)
-> > > @@ -186,6 +191,8 @@ int rpmsg_trysend_offchannel(struct rpmsg_endpoint *ept, u32 src, u32 dst,
-> > >  __poll_t rpmsg_poll(struct rpmsg_endpoint *ept, struct file *filp,
-> > >  			poll_table *wait);
-> > >  
-> > > +int rpmsg_set_flow_control(struct rpmsg_endpoint *ept, bool enable);
-> > > +
-> > >  #else
-> > >  
-> > >  static inline int rpmsg_register_device(struct rpmsg_device *rpdev)
-> > > @@ -296,6 +303,14 @@ static inline __poll_t rpmsg_poll(struct rpmsg_endpoint *ept,
-> > >  	return 0;
-> > >  }
-> > >  
-> > > +static inline int rpmsg_set_flow_control(struct rpmsg_endpoint *ept, bool enable);
-> > > +{
-> > > +	/* This shouldn't be possible */
-> > > +	WARN_ON(1);
-> > > +
-> > > +	return -ENXIO;
-> > > +}
-> > > +
-> > >  #endif /* IS_ENABLED(CONFIG_RPMSG) */
-> > >  
-> > >  /* use a macro to avoid include chaining to get THIS_MODULE */
-> > > -- 
-> > > The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> > > a Linux Foundation Collaborative Project
-> > > 
+>   What:          /sys/bus/iio/devices/iio:deviceX/in_concentration_raw
+>   What:          /sys/bus/iio/devices/iio:deviceX/in_concentrationX_raw
+> +What:          /sys/bus/iio/devices/iio:deviceX/in_concentration_co2_input
+>   What:          /sys/bus/iio/devices/iio:deviceX/in_concentration_co2_raw
+>   What:          /sys/bus/iio/devices/iio:deviceX/in_concentrationX_co2_raw
+>   What: 
+> /sys/bus/iio/devices/iio:deviceX/in_concentration_ethanol_raw
+> diff --git a/drivers/iio/chemical/scd4x.c b/drivers/iio/chemical/scd4x.c
+> index 09b34201c42b..bc1c6676029d 100644
+> --- a/drivers/iio/chemical/scd4x.c
+> +++ b/drivers/iio/chemical/scd4x.c
+> @@ -337,6 +337,7 @@ static int scd4x_read_raw(struct iio_dev *indio_dev,
+> 
+>          switch (mask) {
+>          case IIO_CHAN_INFO_RAW:
+> +       case IIO_CHAN_INFO_PROCESSED:
+>                  ret = iio_device_claim_direct_mode(indio_dev);
+>                  if (ret)
+>                          return ret;
+> @@ -352,7 +353,11 @@ static int scd4x_read_raw(struct iio_dev *indio_dev,
+>                  *val = ret;
+>                  return IIO_VAL_INT;
+>          case IIO_CHAN_INFO_SCALE:
+> -               if (chan->type == IIO_TEMP) {
+> +               if (chan->type == IIO_CONCENTRATION) {
+> +                       *val = 0;
+> +                       *val2 = 100;
+> +                       return IIO_VAL_INT_PLUS_MICRO;
+> +               } else if (chan->type == IIO_TEMP) {
+>                          *val = 175000;
+>                          *val2 = 65536;
+>                          return IIO_VAL_FRACTIONAL;
+> @@ -501,7 +506,8 @@ static const struct iio_chan_spec scd4x_channels[] = {
+>                  .type = IIO_CONCENTRATION,
+>                  .channel2 = IIO_MOD_CO2,
+>                  .modified = 1,
+> -               .info_mask_separate = BIT(IIO_CHAN_INFO_RAW),
+> +               .info_mask_separate = BIT(IIO_CHAN_INFO_PROCESSED) |
+> +                                       BIT(IIO_CHAN_INFO_SCALE),
+You shouldn't have scale and processed.  If we need a scale, then it should
+be _RAW.
+
+Jonathan
+
+>                  .address = SCD4X_CO2,
+>                  .scan_index = SCD4X_CO2,
+>                  .scan_type = {
+> 
+> Thanks,
+> 
+> Roan
+> 
+> > Thanks,
+> > 
+> > Jonathan
+> > 
+> >   
+> >> Sorry for not asking this earlier.
+> >>
+> >> Thanks,
+> >>
+> >> Roan
+> >>  
+> >>> diff --git a/drivers/iio/chemical/scd4x.c b/drivers/iio/chemical/scd4x.c
+> >>> index 09b34201c42b..ebebcb117ba2 100644
+> >>> --- a/drivers/iio/chemical/scd4x.c
+> >>> +++ b/drivers/iio/chemical/scd4x.c
+> >>> @@ -263,7 +263,7 @@ static int scd4x_write_and_fetch(struct scd4x_state *state, enum scd4x_cmd cmd,
+> >>>    static int scd4x_read_meas(struct scd4x_state *state, uint16_t *meas)
+> >>>    {
+> >>>    	int i, ret;
+> >>> -	uint16_t buf[3];
+> >>> +	__be16 buf[3];
+> >>>    
+> >>>    	ret = scd4x_read(state, CMD_READ_MEAS, buf, sizeof(buf));
+> >>>    	if (ret)
+> >>> @@ -282,12 +282,13 @@ static int scd4x_wait_meas_poll(struct scd4x_state *state)
+> >>>    	int ret;
+> >>>    
+> >>>    	do {
+> >>> +		__be16 bval;
+> >>>    		uint16_t val;
+> >>>    
+> >>> -		ret = scd4x_read(state, CMD_GET_DATA_READY, &val, sizeof(val));
+> >>> +		ret = scd4x_read(state, CMD_GET_DATA_READY, &bval, sizeof(bval));
+> >>>    		if (ret)
+> >>>    			return -EIO;
+> >>> -		val = be16_to_cpu(val);
+> >>> +		val = be16_to_cpu(bval);
+> >>>    
+> >>>    		/* new measurement available */
+> >>>    		if (val & 0x7FF)
+> >>> @@ -333,7 +334,7 @@ static int scd4x_read_raw(struct iio_dev *indio_dev,
+> >>>    {
+> >>>    	struct scd4x_state *state = iio_priv(indio_dev);
+> >>>    	int ret;
+> >>> -	uint16_t tmp;
+> >>> +	__be16 tmp;
+> >>>    
+> >>>    	switch (mask) {
+> >>>    	case IIO_CHAN_INFO_RAW:
+> >>> @@ -405,17 +406,18 @@ static ssize_t calibration_auto_enable_show(struct device *dev,
+> >>>    	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+> >>>    	struct scd4x_state *state = iio_priv(indio_dev);
+> >>>    	int ret;
+> >>> -	uint16_t val;
+> >>> +	__be16 bval;
+> >>> +	u16 val;
+> >>>    
+> >>>    	mutex_lock(&state->lock);
+> >>> -	ret = scd4x_read(state, CMD_GET_ASC, &val, sizeof(val));
+> >>> +	ret = scd4x_read(state, CMD_GET_ASC, &bval, sizeof(bval));
+> >>>    	mutex_unlock(&state->lock);
+> >>>    	if (ret) {
+> >>>    		dev_err(dev, "failed to read automatic calibration");
+> >>>    		return ret;
+> >>>    	}
+> >>>    
+> >>> -	val = (be16_to_cpu(val) & SCD4X_READY_MASK) ? 1 : 0;
+> >>> +	val = (be16_to_cpu(bval) & SCD4X_READY_MASK) ? 1 : 0;
+> >>>    
+> >>>    	return sprintf(buf, "%d\n", val);
+> >>>    }
+> >>>
+> >>>      
+> >>>>
+> >>>> Thanks,
+> >>>>
+> >>>> Jonathan
+> >>>>     
+> >>>>>
+> >>>>> Changes since v5:
+> >>>>> scd4x.c:
+> >>>>>     - Fix bug in trigger_handler
+> >>>>>
+> >>>>> Changes since v4:
+> >>>>> scd4x.c:
+> >>>>>     - Minor fixes in documentation
+> >>>>>     - Reorder trigger_handler so memcpy is not needed anymore
+> >>>>> Documentation:
+> >>>>>     - Change information about the KernelVersion for the
+> >>>>>       calibration_forced_value_available
+> >>>>>
+> >>>>> Changes since v3:
+> >>>>> scd4x.c
+> >>>>>     - Change read and write_and_fetch function parameter. CRC byte is now
+> >>>>>       hidden inside the function.
+> >>>>>     - Fix minor style issues
+> >>>>>     - Add calibration_forced_value_available attribute to the driver
+> >>>>>     - Remove including BUFFER_TRIGGERED
+> >>>>>     - Change calibbias to raw ADC readings rather than converting it to
+> >>>>>       milli degrees C.
+> >>>>> Documentation:
+> >>>>>     - Change description of driver attributes
+> >>>>>     - Add calibration_forced_value_available documentation
+> >>>>>
+> >>>>> Changes since v2:
+> >>>>> scd4x.c:
+> >>>>>     - Change boolean operations
+> >>>>>     - Document scope of lock
+> >>>>>     - Remove device *dev from struct
+> >>>>>     - Add goto block for errror handling
+> >>>>>     - Add function to read value per channel in read_raw
+> >>>>>     - Fix bug with lock in error paths
+> >>>>>     - Remove conversion of humidity and temperature values
+> >>>>>     - Add scale and offset to temperature channel
+> >>>>>     - Add scale to humidity channel
+> >>>>>     - Move memset out of locked section
+> >>>>>     - Remove unused irq functions
+> >>>>>     - Move device register at end of probe function
+> >>>>> Documentation:
+> >>>>>     - Copy content of sysfs-bus-iio-scd30 to sysfs-bus-iio
+> >>>>>     - Remove Documentation/ABI/testing/sysfs-bus-iio-scd30
+> >>>>>
+> >>>>> Changes since v1:
+> >>>>> dt-bindings:
+> >>>>>     - Separated compatible string for each sensor type
+> >>>>> scd4x.c:
+> >>>>>     - Changed probe, resume and suspend functions to static
+> >>>>>     - Added SIMPLE_DEV_PM_OPS function call for power management
+> >>>>>       operations.
+> >>>>>
+> >>>>> Roan van Dijk (4):
+> >>>>>     dt-bindings: iio: chemical: sensirion,scd4x: Add yaml description
+> >>>>>     MAINTAINERS: Add myself as maintainer of the scd4x driver
+> >>>>>     drivers: iio: chemical: Add support for Sensirion SCD4x CO2 sensor
+> >>>>>     iio: documentation: Document scd4x calibration use
+> >>>>>
+> >>>>>    Documentation/ABI/testing/sysfs-bus-iio       |  41 ++
+> >>>>>    Documentation/ABI/testing/sysfs-bus-iio-scd30 |  34 -
+> >>>>>    .../iio/chemical/sensirion,scd4x.yaml         |  46 ++
+> >>>>>    MAINTAINERS                                   |   6 +
+> >>>>>    drivers/iio/chemical/Kconfig                  |  13 +
+> >>>>>    drivers/iio/chemical/Makefile                 |   1 +
+> >>>>>    drivers/iio/chemical/scd4x.c                  | 689 ++++++++++++++++++
+> >>>>>    7 files changed, 796 insertions(+), 34 deletions(-)
+> >>>>>    delete mode 100644 Documentation/ABI/testing/sysfs-bus-iio-scd30
+> >>>>>    create mode 100644 Documentation/devicetree/bindings/iio/chemical/sensirion,scd4x.yaml
+> >>>>>    create mode 100644 drivers/iio/chemical/scd4x.c
+> >>>>>         
+> >>>>     
+> >>>      
+> >   
+
