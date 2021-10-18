@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1217B431C74
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:39:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26503431C77
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:39:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233769AbhJRNlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:41:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54296 "EHLO mail.kernel.org"
+        id S232621AbhJRNlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:41:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54416 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233888AbhJRNjB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:39:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A89A16137D;
-        Mon, 18 Oct 2021 13:32:33 +0000 (UTC)
+        id S233911AbhJRNjC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:39:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 540696137C;
+        Mon, 18 Oct 2021 13:32:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634563954;
-        bh=xFmfLoO2O4l1cMfHMK1+xrokbMEHWF1hx/rxHI9y9jg=;
+        s=korg; t=1634563956;
+        bh=glO5kOTvHBBqUKJHWg7JUF+Q8f3ht5WQPL8YaDXYzo0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u1VL/cEkxZzI9bWn1pT4M0paLeslAr+ze2/BWsg7qw8Hw2dvJXVu3reA4qGUTlF6G
-         4/EgZd9Ni4RSuDziRTSwkYX03C0EDgBKbU9MNOtfUE616mx/eN7/NTmDBI7OQdtHcB
-         32YDi+SFcBwhzxrkurN8X4mmboYrC1Ii6qqV88kY=
+        b=BHsIILP7rfZRzi29XBPcef9qeRpZoK0Dzp+qT53GXQqZM60rBoIw+Pn+4w9b3aZKh
+         FwZH80MDUSF/GDnZEnH4+tylQmFGDm9Vo4ueH/dP1zpwwBYT++3h4P/SBJrkniIkqE
+         NLyL3NTh4ECUuHtjiCjzicZfGEDjUKl3U9Scq4IQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Forney <mforney@mforney.org>,
-        Arnd Bergmann <arnd@arndb.de>, Rich Felker <dalias@libc.org>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.10 002/103] ALSA: pcm: Workaround for a wrong offset in SYNC_PTR compat ioctl
-Date:   Mon, 18 Oct 2021 15:23:38 +0200
-Message-Id: <20211018132334.785305623@linuxfoundation.org>
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
+        John Keeping <john@metanate.com>
+Subject: [PATCH 5.10 003/103] ALSA: seq: Fix a potential UAF by wrong private_free call order
+Date:   Mon, 18 Oct 2021 15:23:39 +0200
+Message-Id: <20211018132334.816106271@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211018132334.702559133@linuxfoundation.org>
 References: <20211018132334.702559133@linuxfoundation.org>
@@ -42,150 +41,57 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Takashi Iwai <tiwai@suse.de>
 
-commit 228af5a4fa3a8293bd8b7ac5cf59548ee29627bf upstream.
+commit 1f8763c59c4ec6254d629fe77c0a52220bd907aa upstream.
 
-Michael Forney reported an incorrect padding type that was defined in
-the commit 80fe7430c708 ("ALSA: add new 32-bit layout for
-snd_pcm_mmap_status/control") for PCM control mmap data.
-His analysis is correct, and this caused the misplacements of PCM
-control data on 32bit arch and 32bit compat mode.
+John Keeping reported and posted a patch for a potential UAF in
+rawmidi sequencer destruction: the snd_rawmidi_dev_seq_free() may be
+called after the associated rawmidi object got already freed.
+After a deeper look, it turned out that the bug is rather the
+incorrect private_free call order for a snd_seq_device.  The
+snd_seq_device private_free gets called at the release callback of the
+sequencer device object, while this was rather expected to be executed
+at the snd_device call chains that runs at the beginning of the whole
+card-free procedure.  It's been broken since the rewrite of
+sequencer-device binding (although it hasn't surfaced because the
+sequencer device release happens usually right along with the card
+device release).
 
-The bug is that the __pad2 definition in __snd_pcm_mmap_control64
-struct was wrongly with __pad_before_uframe, which should have been
-__pad_after_uframe instead.  This struct is used in SYNC_PTR ioctl and
-control mmap.  Basically this bug leads to two problems:
+This patch corrects the private_free call to be done in the right
+place, at snd_seq_device_dev_free().
 
-- The offset of avail_min field becomes wrong, it's placed right after
-  appl_ptr without padding on little-endian
-
-- When appl_ptr and avail_min are read as 64bit values in kernel side,
-  the values become either zero or corrupted (mixed up)
-
-One good news is that, because both user-space and kernel
-misunderstand the wrong offset, at least, 32bit application running on
-32bit kernel works as is.  Also, 64bit applications are unaffected
-because the padding size is zero.  The remaining problem is the 32bit
-compat mode; as mentioned in the above, avail_min is placed right
-after appl_ptr on little-endian archs, 64bit kernel reads bogus values
-for appl_ptr updates, which may lead to streaming bugs like jumping,
-XRUN or whatever unexpected.
-(However, we haven't heard any serious bug reports due to this over
-years, so practically seen, it's fairly safe to assume that the impact
-by this bug is limited.)
-
-Ideally speaking, we should correct the wrong mmap status control
-definition.  But this would cause again incompatibility with the
-existing binaries, and fixing it (e.g. by renumbering ioctls) would be
-really messy.
-
-So, as of this patch, we only correct the behavior of 32bit compat
-mode and keep the rest as is.  Namely, the SYNC_PTR ioctl is now
-handled differently in compat mode to read/write the 32bit values at
-the right offsets.  The control mmap of 32bit apps on 64bit kernels
-has been already disabled (which is likely rather an overlook, but
-this worked fine at this time :), so covering SYNC_PTR ioctl should
-suffice as a fallback.
-
-Fixes: 80fe7430c708 ("ALSA: add new 32-bit layout for snd_pcm_mmap_status/control")
-Reported-by: Michael Forney <mforney@mforney.org>
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+Fixes: 7c37ae5c625a ("ALSA: seq: Rewrite sequencer device binding with standard bus")
+Reported-and-tested-by: John Keeping <john@metanate.com>
 Cc: <stable@vger.kernel.org>
-Cc: Rich Felker <dalias@libc.org>
-Link: https://lore.kernel.org/r/29QBMJU8DE71E.2YZSH8IHT5HMH@mforney.org
-Link: https://lore.kernel.org/r/20211010075546.23220-1-tiwai@suse.de
+Link: https://lore.kernel.org/r/20210930114114.8645-1-tiwai@suse.de
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/core/pcm_compat.c |   72 +++++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 71 insertions(+), 1 deletion(-)
+ sound/core/seq_device.c |    8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
---- a/sound/core/pcm_compat.c
-+++ b/sound/core/pcm_compat.c
-@@ -466,6 +466,76 @@ static int snd_pcm_ioctl_sync_ptr_x32(st
- }
- #endif /* CONFIG_X86_X32 */
+--- a/sound/core/seq_device.c
++++ b/sound/core/seq_device.c
+@@ -147,6 +147,8 @@ static int snd_seq_device_dev_free(struc
+ 	struct snd_seq_device *dev = device->device_data;
  
-+#ifdef __BIG_ENDIAN
-+typedef char __pad_before_u32[4];
-+typedef char __pad_after_u32[0];
-+#else
-+typedef char __pad_before_u32[0];
-+typedef char __pad_after_u32[4];
-+#endif
-+
-+/* PCM 2.0.15 API definition had a bug in mmap control; it puts the avail_min
-+ * at the wrong offset due to a typo in padding type.
-+ * The bug hits only 32bit.
-+ * A workaround for incorrect read/write is needed only in 32bit compat mode.
-+ */
-+struct __snd_pcm_mmap_control64_buggy {
-+	__pad_before_u32 __pad1;
-+	__u32 appl_ptr;
-+	__pad_before_u32 __pad2;	/* SiC! here is the bug */
-+	__pad_before_u32 __pad3;
-+	__u32 avail_min;
-+	__pad_after_uframe __pad4;
-+};
-+
-+static int snd_pcm_ioctl_sync_ptr_buggy(struct snd_pcm_substream *substream,
-+					struct snd_pcm_sync_ptr __user *_sync_ptr)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct snd_pcm_sync_ptr sync_ptr;
-+	struct __snd_pcm_mmap_control64_buggy *sync_cp;
-+	volatile struct snd_pcm_mmap_status *status;
-+	volatile struct snd_pcm_mmap_control *control;
-+	int err;
-+
-+	memset(&sync_ptr, 0, sizeof(sync_ptr));
-+	sync_cp = (struct __snd_pcm_mmap_control64_buggy *)&sync_ptr.c.control;
-+	if (get_user(sync_ptr.flags, (unsigned __user *)&(_sync_ptr->flags)))
-+		return -EFAULT;
-+	if (copy_from_user(sync_cp, &(_sync_ptr->c.control), sizeof(*sync_cp)))
-+		return -EFAULT;
-+	status = runtime->status;
-+	control = runtime->control;
-+	if (sync_ptr.flags & SNDRV_PCM_SYNC_PTR_HWSYNC) {
-+		err = snd_pcm_hwsync(substream);
-+		if (err < 0)
-+			return err;
-+	}
-+	snd_pcm_stream_lock_irq(substream);
-+	if (!(sync_ptr.flags & SNDRV_PCM_SYNC_PTR_APPL)) {
-+		err = pcm_lib_apply_appl_ptr(substream, sync_cp->appl_ptr);
-+		if (err < 0) {
-+			snd_pcm_stream_unlock_irq(substream);
-+			return err;
-+		}
-+	} else {
-+		sync_cp->appl_ptr = control->appl_ptr;
-+	}
-+	if (!(sync_ptr.flags & SNDRV_PCM_SYNC_PTR_AVAIL_MIN))
-+		control->avail_min = sync_cp->avail_min;
-+	else
-+		sync_cp->avail_min = control->avail_min;
-+	sync_ptr.s.status.state = status->state;
-+	sync_ptr.s.status.hw_ptr = status->hw_ptr;
-+	sync_ptr.s.status.tstamp = status->tstamp;
-+	sync_ptr.s.status.suspended_state = status->suspended_state;
-+	sync_ptr.s.status.audio_tstamp = status->audio_tstamp;
-+	snd_pcm_stream_unlock_irq(substream);
-+	if (copy_to_user(_sync_ptr, &sync_ptr, sizeof(sync_ptr)))
-+		return -EFAULT;
-+	return 0;
-+}
-+
+ 	cancel_autoload_drivers();
++	if (dev->private_free)
++		dev->private_free(dev);
+ 	put_device(&dev->dev);
+ 	return 0;
+ }
+@@ -174,11 +176,7 @@ static int snd_seq_device_dev_disconnect
+ 
+ static void snd_seq_dev_release(struct device *dev)
+ {
+-	struct snd_seq_device *sdev = to_seq_dev(dev);
+-
+-	if (sdev->private_free)
+-		sdev->private_free(sdev);
+-	kfree(sdev);
++	kfree(to_seq_dev(dev));
+ }
+ 
  /*
-  */
- enum {
-@@ -535,7 +605,7 @@ static long snd_pcm_ioctl_compat(struct
- 		if (in_x32_syscall())
- 			return snd_pcm_ioctl_sync_ptr_x32(substream, argp);
- #endif /* CONFIG_X86_X32 */
--		return snd_pcm_common_ioctl(file, substream, cmd, argp);
-+		return snd_pcm_ioctl_sync_ptr_buggy(substream, argp);
- 	case SNDRV_PCM_IOCTL_HW_REFINE32:
- 		return snd_pcm_ioctl_hw_params_compat(substream, 1, argp);
- 	case SNDRV_PCM_IOCTL_HW_PARAMS32:
 
 
