@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FE20431E57
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:58:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32C81431CB3
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:42:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234493AbhJROAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 10:00:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59130 "EHLO mail.kernel.org"
+        id S232660AbhJRNoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:44:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38242 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234577AbhJRN6R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:58:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C635561391;
-        Mon, 18 Oct 2021 13:41:23 +0000 (UTC)
+        id S232248AbhJRNlt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:41:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CC2BB61414;
+        Mon, 18 Oct 2021 13:33:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634564484;
-        bh=d4mqd3nmx/pe/KPLfNiqal5aAW2JmfUWtp/RMsjIN7o=;
+        s=korg; t=1634564027;
+        bh=q3lh+gjflrBJV2rRqgypOb877B06Z8aBqZPWVjeDlFs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ib0beblPaqJZAMJgv9GNoGzk7TXFYTkXBUfjBDupv5RQ43orIA7FqoLN6oNdfppWo
-         Ia8ycQ8snJJc9bm9cNMbkZR4uQMIMQrWnIvWO7p8Av46kSWkRU6OzrKt0Fdkks+AvP
-         kIop2oWkArZxix9RmcrXDrETf4dPd4l7y3qRx1lc=
+        b=sp9T7kKyZc7N5QwHON+uG+TOb8uwwRZHr458J8ys3CZl5kB0AypSKNJmMKYpf/V8M
+         /2R/NZq0aJTMf4DPbfIKm+ywZYN8GKemLB5BrualTXT3l+446sZEZ3jS90mxyamMeg
+         KJZbW0R0lvnSW6KUSvdr7e8LJKYrJfLZ9kGPC5uk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>,
-        =?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 5.14 073/151] iio: adc: max1027: Fix wrong shift with 12-bit devices
+        stable@vger.kernel.org,
+        Aleksander Morgado <aleksander@aleksander.es>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 5.10 036/103] USB: serial: qcserial: add EM9191 QDL support
 Date:   Mon, 18 Oct 2021 15:24:12 +0200
-Message-Id: <20211018132343.058624724@linuxfoundation.org>
+Message-Id: <20211018132335.925814919@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132340.682786018@linuxfoundation.org>
-References: <20211018132340.682786018@linuxfoundation.org>
+In-Reply-To: <20211018132334.702559133@linuxfoundation.org>
+References: <20211018132334.702559133@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,34 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miquel Raynal <miquel.raynal@bootlin.com>
+From: Aleksander Morgado <aleksander@aleksander.es>
 
-commit 732ae19ee8f58ecaf30cbc1bbbda5cbee6a45043 upstream.
+commit 11c52d250b34a0862edc29db03fbec23b30db6da upstream.
 
-10-bit devices must shift the value twice.
-This is not needed anymore on 12-bit devices.
+When the module boots into QDL download mode it exposes the 1199:90d2
+ids, which can be mapped to the qcserial driver, and used to run
+firmware upgrades (e.g. with the qmi-firmware-update program).
 
-Fixes: ae47d009b508 ("iio: adc: max1027: Introduce 12-bit devices support")
+  T:  Bus=01 Lev=03 Prnt=08 Port=03 Cnt=01 Dev#= 10 Spd=480 MxCh= 0
+  D:  Ver= 2.10 Cls=00(>ifc ) Sub=00 Prot=00 MxPS=64 #Cfgs=  1
+  P:  Vendor=1199 ProdID=90d2 Rev=00.00
+  S:  Manufacturer=Sierra Wireless, Incorporated
+  S:  Product=Sierra Wireless EM9191
+  S:  SerialNumber=8W0382004102A109
+  C:  #Ifs= 1 Cfg#= 1 Atr=a0 MxPwr=2mA
+  I:  If#=0x0 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=10 Driver=qcserial
+
+Signed-off-by: Aleksander Morgado <aleksander@aleksander.es>
 Cc: stable@vger.kernel.org
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Reviewed-by: Nuno Sá <nuno.sa@analog.com>
-Link: https://lore.kernel.org/r/20210818111139.330636-2-miquel.raynal@bootlin.com
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/iio/adc/max1027.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/serial/qcserial.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/iio/adc/max1027.c
-+++ b/drivers/iio/adc/max1027.c
-@@ -103,7 +103,7 @@ MODULE_DEVICE_TABLE(of, max1027_adc_dt_i
- 			.sign = 'u',					\
- 			.realbits = depth,				\
- 			.storagebits = 16,				\
--			.shift = 2,					\
-+			.shift = (depth == 10) ? 2 : 0,			\
- 			.endianness = IIO_BE,				\
- 		},							\
- 	}
+--- a/drivers/usb/serial/qcserial.c
++++ b/drivers/usb/serial/qcserial.c
+@@ -165,6 +165,7 @@ static const struct usb_device_id id_tab
+ 	{DEVICE_SWI(0x1199, 0x907b)},	/* Sierra Wireless EM74xx */
+ 	{DEVICE_SWI(0x1199, 0x9090)},	/* Sierra Wireless EM7565 QDL */
+ 	{DEVICE_SWI(0x1199, 0x9091)},	/* Sierra Wireless EM7565 */
++	{DEVICE_SWI(0x1199, 0x90d2)},	/* Sierra Wireless EM9191 QDL */
+ 	{DEVICE_SWI(0x413c, 0x81a2)},	/* Dell Wireless 5806 Gobi(TM) 4G LTE Mobile Broadband Card */
+ 	{DEVICE_SWI(0x413c, 0x81a3)},	/* Dell Wireless 5570 HSPA+ (42Mbps) Mobile Broadband Card */
+ 	{DEVICE_SWI(0x413c, 0x81a4)},	/* Dell Wireless 5570e HSPA+ (42Mbps) Mobile Broadband Card */
 
 
