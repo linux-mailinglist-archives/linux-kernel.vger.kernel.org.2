@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79A08431B5D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:30:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2AD1431CEB
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:44:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232069AbhJRNcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:32:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42924 "EHLO mail.kernel.org"
+        id S233870AbhJRNqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:46:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39220 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232630AbhJRNam (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:30:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A93F61283;
-        Mon, 18 Oct 2021 13:28:24 +0000 (UTC)
+        id S234115AbhJRNnu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:43:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7FF3A6126A;
+        Mon, 18 Oct 2021 13:34:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634563704;
-        bh=Fi+MQuVZW2s4eIkrf/YXM+gZO3s7kYjC9jYF868VHTY=;
+        s=korg; t=1634564096;
+        bh=lB4QadlMJcP/QLGrEF8yrCOEdFe50p2EV3pbD1Krnpk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qeYjh4Dp3vQVoF7F6jEqEfXvetKZihv/JuVLhGm4mRdGv5H1sMBOt18JyiuzEDUH6
-         x2i6jJJwF/Km8t/u5lnhd25qGj2Vqnkt+8zzrQXLbK5GSgoNSlFmbW0vlDC7IiyctX
-         ghtXOtNNpn9zEgysACqqmVHXK+9ZtrlM5WEItqsM=
+        b=Ale5Ms7nKVuF2G10e7tF5p3O5/oOpPRcFP6/TV4+l1q2qlcs1pYhWMoEIIXERmGFU
+         L7OzdvRlM9M9DXTq9i+AQcx6HWQiJkdSOtdyIyAs6VQ+Wksuc40TJvnc5gNm1ba5Yi
+         /BaMbL0gf/gWRfEnvv0WiI0XvYJQpMwpqXS4Vkq0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 4.19 32/50] iio: dac: ti-dac5571: fix an error code in probe()
+        stable@vger.kernel.org, Rob Herring <robh@kernel.org>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>
+Subject: [PATCH 5.10 063/103] ARM: dts: bcm2711-rpi-4-b: Fix usbs unit address
 Date:   Mon, 18 Oct 2021 15:24:39 +0200
-Message-Id: <20211018132327.597027663@linuxfoundation.org>
+Message-Id: <20211018132336.870092585@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132326.529486647@linuxfoundation.org>
-References: <20211018132326.529486647@linuxfoundation.org>
+In-Reply-To: <20211018132334.702559133@linuxfoundation.org>
+References: <20211018132334.702559133@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,31 +39,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Nicolas Saenz Julienne <nsaenz@kernel.org>
 
-commit f7a28df7db84eb3410e9eca37832efa5aed93338 upstream.
+commit 3f32472854614d6f53b09b4812372dba9fc5c7de upstream.
 
-If we have an unexpected number of channels then return -EINVAL instead
-of returning success.
+The unit address is supposed to represent '<device>,<function>'. Which
+are both 0 for RPi4b's XHCI controller. On top of that although
+OpenFirmware states bus number goes in the high part of the last reg
+parameter, FDT doesn't seem to care for it[1], so remove it.
 
-Fixes: df38a4a72a3b ("iio: dac: add TI DAC5571 family support")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Link: https://lore.kernel.org/r/20210816183954.GB2068@kili
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+[1] https://patchwork.kernel.org/project/linux-arm-kernel/patch/20210830103909.323356-1-nsaenzju@redhat.com/#24414633
+Fixes: 258f92d2f840 ("ARM: dts: bcm2711: Add reset controller to xHCI node")
+Suggested-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
+Link: https://lore.kernel.org/r/20210831125843.1233488-2-nsaenzju@redhat.com
+Signed-off-by: Nicolas Saenz Julienne <nsaenz@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/iio/dac/ti-dac5571.c |    1 +
- 1 file changed, 1 insertion(+)
+ arch/arm/boot/dts/bcm2711-rpi-4-b.dts |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/iio/dac/ti-dac5571.c
-+++ b/drivers/iio/dac/ti-dac5571.c
-@@ -355,6 +355,7 @@ static int dac5571_probe(struct i2c_clie
- 		data->dac5571_pwrdwn = dac5571_pwrdwn_quad;
- 		break;
- 	default:
-+		ret = -EINVAL;
- 		goto err;
- 	}
+--- a/arch/arm/boot/dts/bcm2711-rpi-4-b.dts
++++ b/arch/arm/boot/dts/bcm2711-rpi-4-b.dts
+@@ -262,8 +262,8 @@
  
+ 		reg = <0 0 0 0 0>;
+ 
+-		usb@1,0 {
+-			reg = <0x10000 0 0 0 0>;
++		usb@0,0 {
++			reg = <0 0 0 0 0>;
+ 			resets = <&reset RASPBERRYPI_FIRMWARE_RESET_ID_USB>;
+ 		};
+ 	};
 
 
