@@ -2,121 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74D55431182
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 09:41:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED799431185
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 09:42:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230448AbhJRHnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 03:43:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38362 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230328AbhJRHnV (ORCPT
+        id S230328AbhJRHo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 03:44:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25729 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230326AbhJRHo1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 03:43:21 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC41AC06161C;
-        Mon, 18 Oct 2021 00:41:10 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id a25so67323631edx.8;
-        Mon, 18 Oct 2021 00:41:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zvyc7lXYEn3ZHyaBahJODZ1u5FA0Z1xlS6IA6NF8Q1Q=;
-        b=Vtm1lb1f6UKaT4L9gaV462C5J6tU0WmvwuSaV+Nm9HtR3mVpkPGb8xXZfVw/mfdoUc
-         NPOmGUQrFMyUS+SJrziYwVqgoS43dN9cc9idt/Zf8MtU7mD0sjWYa/zZy706LwbUfU4z
-         Pgfhvzn6gkQXFW2sADVbZMoufMACn16abUSTqg20Pwx9nrhTfG9RVCgrbnyInEmKJinV
-         J4iOsnbche2HpSNGOLQAVgFOfzvmfZN5NpCuH/BGC+lYiSMr8glDFMrbXmdsOHmgRm7B
-         X3qjX9vrumen4/cZD8lh2zGvlHK6ByeC1FAWr2PXLNZM7HivC4RNRznWQ7cITenQ92vG
-         snBg==
+        Mon, 18 Oct 2021 03:44:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634542936;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PkKZR0ydWpQcV2cI2b2paL4JcmSe2Tsq+vsPxwTuJW4=;
+        b=iu5rp/sTIH5wQFnYYyicWmoWBv29Qyi7+5VDK0t15Pwvdy5GI/DSn5XwimF7D7a2Nm+HXF
+        L6I+znWzCtHTj/0UrLswgUtGAfSFH5pP2+GVPscLhoWFt3AGrdDKCz607wy6156g0vn7tJ
+        AATg6e4fUktkNjoArLe73Z/r/6tbO5c=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-72-ZKks3XWuN8GQdPj264T53Q-1; Mon, 18 Oct 2021 03:42:15 -0400
+X-MC-Unique: ZKks3XWuN8GQdPj264T53Q-1
+Received: by mail-wr1-f72.google.com with SMTP id j12-20020adf910c000000b0015e4260febdso1510206wrj.20
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 00:42:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zvyc7lXYEn3ZHyaBahJODZ1u5FA0Z1xlS6IA6NF8Q1Q=;
-        b=ZRnDt8SAdHmpcwR1L7uRkYt0fi1LXO6gmzpIbqknercXqodV99+F4GpnnWugBhPyVY
-         Z7zHWoziaSKdvpENsLZM7x6R/hP3BJN7NXvIh6va5eTXjG7F1pvNaX5Q0DKG06XaWVqz
-         kTXv3B66jZ7XqKOJNJDqhKpVnrRSsIuqJ2pZ3yzrhn75XgukildQ3vzDWCYw+y8qDj4G
-         qCa8vxI/68Am9K+KYIAofF6Cv+iJ5YvA/d2eZTxKw5ecFpbKKrwr/lpZa9jCXAvTSDoE
-         +IYwlSvHVcQl6a3ok+iNBDoK6gQ/5Bkt/fNZe43Uclnj27z/99aHcp9QpWNHrc6NUPcA
-         xHeQ==
-X-Gm-Message-State: AOAM530LvfGGaZBfqhfytFiPzQO7YJhE+46q//SwH8HLPFH6DcaxFRTL
-        cJbjnsYCSH0WwwB7ZnB0R82KJc7zgpz7GrfkFrs=
-X-Google-Smtp-Source: ABdhPJwq5/ieXR4Pnzr/MTiDtOPg8LoqM6nm/bL6cklXBPRW6C5fnicEeBXnLyHiUj0X5jOzSSdYDYjpxD5DXN3vjfI=
-X-Received: by 2002:a50:e188:: with SMTP id k8mr43786153edl.119.1634542869041;
- Mon, 18 Oct 2021 00:41:09 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=PkKZR0ydWpQcV2cI2b2paL4JcmSe2Tsq+vsPxwTuJW4=;
+        b=PlPVISXJGGhhRivlv6gNIpHTKEr4J47m5qNh44NTEWCrn3i2wY3dnONA+fcrqP12sb
+         S48Hnq9m3L7CisBubP65v7EE1vLKRSbIpPjziiDJUJgmO5Y7VEczmyEQlV5eDBi+4d1Z
+         6UTFc5XLGlxUlvx6GKXYYhaQMyBKTgYmUryd4l/FKaXftYaOhI1Vx3SBf68oYr7Rd9Nz
+         mIndI2TcziUc78xLwUVJNcJRF3MhF8QgWS/EF7+6kt364PcVSouqURovkepbohtjVaMp
+         JFXFcElLb0nPsVGpxRLbmSLJMzSyFwde0a2PZ502CfqP5pIUvWPcModmxIZePKZLONNW
+         TDHQ==
+X-Gm-Message-State: AOAM530h0GbynmO4dk8HKZR5z1u3spIG95eyUhN1uUr+64kRPIkBSR79
+        AI3m4Hv5go0tjevWqqHcErzbyj7uPJHtk/6jECwBcoOtZZ1HanzDxMzK/SmTMyM5I4nNtE3+Qfb
+        f4f6kVnWkuTB+BHg1+peSDoFnqetJGV0fd+fP1gfOvqVUd+35Q7RD93FYexKsvO3cZzRROZHc3U
+        /E
+X-Received: by 2002:adf:8919:: with SMTP id s25mr34633388wrs.185.1634542934129;
+        Mon, 18 Oct 2021 00:42:14 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyuY2oK9YuFg+e4sq5jURUHpJRG0fumvJ1oDp86UxpmKWeEHZ3cXuEXwjo5HOMeI92dMlrxmA==
+X-Received: by 2002:adf:8919:: with SMTP id s25mr34633353wrs.185.1634542933873;
+        Mon, 18 Oct 2021 00:42:13 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id z6sm12065728wro.25.2021.10.18.00.42.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Oct 2021 00:42:13 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Maxim Levitsky <mlevitsk@redhat.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        David Matlack <dmatlack@google.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC] KVM: SVM: reduce guest MAXPHYADDR by one in case
+ C-bit is a physical bit
+In-Reply-To: <eaddf15f13aa688c03d53831c2309a60957bb7f4.camel@redhat.com>
+References: <20211015150524.2030966-1-vkuznets@redhat.com>
+ <YWmdLPsa6qccxtEa@google.com>
+ <eaddf15f13aa688c03d53831c2309a60957bb7f4.camel@redhat.com>
+Date:   Mon, 18 Oct 2021 09:42:12 +0200
+Message-ID: <87bl3mye23.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-References: <CACAwPwb7edLzX-KO1XVNWuQ3w=U0BfA=_kwiGCjZOpKfZpc2pw@mail.gmail.com>
- <CACAwPwYQHRcrabw9=0tvenPzAcwwW1pTaR6a+AEWBF9Hqf_wXQ@mail.gmail.com> <20211017115843.2a872fbe@jic23-huawei>
-In-Reply-To: <20211017115843.2a872fbe@jic23-huawei>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 18 Oct 2021 10:40:33 +0300
-Message-ID: <CAHp75Vct-AXnU7QQmdE7nyYZT-=n=p67COPLiiZTet7z7snL-g@mail.gmail.com>
-Subject: Re: BMI160 accelerometer on AyaNeo tablet
-To:     Jonathan Cameron <jic23@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>
-Cc:     Maxim Levitsky <maximlevitsky@gmail.com>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Cc: Hans
+Maxim Levitsky <mlevitsk@redhat.com> writes:
 
-On Mon, Oct 18, 2021 at 6:41 AM Jonathan Cameron <jic23@kernel.org> wrote:
+> On Fri, 2021-10-15 at 15:24 +0000, Sean Christopherson wrote:
+>> On Fri, Oct 15, 2021, Vitaly Kuznetsov wrote:
+>> > Several selftests (memslot_modification_stress_test, kvm_page_table_test,
+>> > dirty_log_perf_test,.. ) which rely on vm_get_max_gfn() started to fail
+>> > since commit ef4c9f4f65462 ("KVM: selftests: Fix 32-bit truncation of
+>> > vm_get_max_gfn()") on AMD EPYC 7401P:
+>> > 
+>> >  ./tools/testing/selftests/kvm/demand_paging_test
+>> >  Testing guest mode: PA-bits:ANY, VA-bits:48,  4K pages
+>> >  guest physical test memory offset: 0xffffbffff000
+>> 
+>> This look a lot like the signature I remember from the original bug[1].  I assume
+>> you're hitting the magic HyperTransport region[2].  I thought that was fixed, but
+>> the hack-a-fix for selftests never got applied[3].
 >
-> On Sat, 16 Oct 2021 19:27:50 +0300
-> Maxim Levitsky <maximlevitsky@gmail.com> wrote:
+> Hi Vitaly and everyone!
 >
-> >  BMI160: AYA NEA accelometer ID
-
-accelerometer
-
-> >     On AYA NEO, the accelerometer is BMI160 but it is exposed
-> >     via ACPI as 10EC5280
-> >
-> >     Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+> You are the 3rd person to suffer from this issue :-( Sean Christopherson was first, I was second.
 >
-> I guess it is hopelessly optimistic to hope that we could let someone
-> at the supplier know that's a totally invalid ACPI id and that they
-> should clean up their act.
+> I reported this, then I think we found out that it is not the HyperTransport region after all,
+> and I think that the whole thing lost in 'trying to get answers from AMD'.
 >
-> Curiously it looks like a valid PCI ID pair though for a realtek device.
+> https://lore.kernel.org/lkml/ac72b77c-f633-923b-8019-69347db706be@redhat.com/
 >
-> Ah well.  Applied to the iio-togreg branch of iio.git and pushed out
-> as testing to see if 0-day can find any issues with it.
+>
+> I'll say, a hack to reduce it by 1 bit is still better that failing tests,
+> at least until AMD explains to us, about what is going on.
+>
+> Sorry that you had to debug this.
 
-NAK. And I explain below why and how to make progress with it.
-
-The commit message should contain at least the link to the DSDT and
-official technical description of the platform. Besides that, it
-should have a corresponding comment near to the ID in the code.
-
-On top of that, in particular to this case, the ID is very valid from
-the ACPI specification point of view, but in this case it's a
-representation of the PCI ID 10ec:5280 which is Realtek owned. So, we
-need to hear (okay in reasonable time) from Realtek (I believe they
-are active in the Linux kernel) and that OEM.
-
-I hardly believe that Realtek has issued a special ID from the range
-where mostly PCIe ports or so are allocated, although it's possible.
-We need proof.
-
-What I believe is the case here is that OEMs are just quite diletants
-in ACPI and firmware and they messed up with BIOS somehow that it
-issued the ID for the device.
-There are also two other possibilities: OEM stole the ID (deliberately
-or accidentally), or the device is not just gyro, but something which
-contains gyro.
-
-As to the last paragraph, see above, we must see DSDT. Without it I
-have a strong NAK.
-
-P.S. Jonathan, please do not be so fast next time with ACPI IDs.
+I didn't spend too much time on this, that's the reson for 'RFC' :-) I
+agree we need at least a short-term solution as permanently failing
+tests may start masking newly introduces issues.
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Vitaly
+
