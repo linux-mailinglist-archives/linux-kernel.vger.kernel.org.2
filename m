@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 294C8431C59
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:39:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AE7C431D2C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:47:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233529AbhJRNkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:40:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55246 "EHLO mail.kernel.org"
+        id S232779AbhJRNsy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:48:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40226 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233409AbhJRNiO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:38:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 22636613D3;
-        Mon, 18 Oct 2021 13:31:53 +0000 (UTC)
+        id S232717AbhJRNqR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:46:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 22779613D2;
+        Mon, 18 Oct 2021 13:35:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634563914;
-        bh=VIdxFtqdmZjsJnavCV+3i8M+BDIPD+wDhXUWr5cD+xA=;
+        s=korg; t=1634564159;
+        bh=hgMGe4nzlQLDBy/snzkJQDmTs3EaaYatJgM75VBBZQY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uynTItFb8UmtCtGrgYnndGn+hOHvmWF+KaHmKYWlDeYWhkYoKwNkuUyjdeeqygehn
-         ddAZC77aNOi7l9YIuU26IP3c38+CbYnIaDeDmKu/wTc8ZPT++AHq+XRfnok6pmrS1X
-         CtstI1C209n7urwtz0K4INGRlrNfwyRHrVoywSxk=
+        b=0rHYgbfeUellYgUYXIsPyDd/41Vy7R+svF5suxy4ySkCqYWQp4Q+YcKl/lUFvy6ts
+         EtkrEycpvywDESXJX60Z17hJHpOfz6vdG2inK/vdAOdekPivCzhojbdbzb2/nftcdh
+         vW4OcGrXG1gljdpeAKcs86Hha+bKi/OINzrongGo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jackie Liu <liuyun01@kylinos.cn>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Subject: [PATCH 5.4 65/69] acpi/arm64: fix next_platform_timer() section mismatch error
-Date:   Mon, 18 Oct 2021 15:25:03 +0200
-Message-Id: <20211018132331.625566608@linuxfoundation.org>
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Vegard Nossum <vegard.nossum@oracle.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Dave Airlie <airlied@redhat.com>
+Subject: [PATCH 5.10 088/103] drm/panel: olimex-lcd-olinuxino: select CRC32
+Date:   Mon, 18 Oct 2021 15:25:04 +0200
+Message-Id: <20211018132337.709354324@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132329.453964125@linuxfoundation.org>
-References: <20211018132329.453964125@linuxfoundation.org>
+In-Reply-To: <20211018132334.702559133@linuxfoundation.org>
+References: <20211018132334.702559133@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,52 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jackie Liu <liuyun01@kylinos.cn>
+From: Vegard Nossum <vegard.nossum@oracle.com>
 
-commit 596143e3aec35c93508d6b7a05ddc999ee209b61 upstream.
+commit a14bc107edd0c108bda2245e50daa22f91c95d20 upstream.
 
-Fix modpost Section mismatch error in next_platform_timer().
+Fix the following build/link error by adding a dependency on the CRC32
+routines:
 
-  [...]
-  WARNING: modpost: vmlinux.o(.text.unlikely+0x26e60): Section mismatch in reference from the function next_platform_timer() to the variable .init.data:acpi_gtdt_desc
-  The function next_platform_timer() references
-  the variable __initdata acpi_gtdt_desc.
-  This is often because next_platform_timer lacks a __initdata
-  annotation or the annotation of acpi_gtdt_desc is wrong.
+  ld: drivers/gpu/drm/panel/panel-olimex-lcd-olinuxino.o: in function `lcd_olinuxino_probe':
+  panel-olimex-lcd-olinuxino.c:(.text+0x303): undefined reference to `crc32_le'
 
-  WARNING: modpost: vmlinux.o(.text.unlikely+0x26e64): Section mismatch in reference from the function next_platform_timer() to the variable .init.data:acpi_gtdt_desc
-  The function next_platform_timer() references
-  the variable __initdata acpi_gtdt_desc.
-  This is often because next_platform_timer lacks a __initdata
-  annotation or the annotation of acpi_gtdt_desc is wrong.
-
-  ERROR: modpost: Section mismatches detected.
-  Set CONFIG_SECTION_MISMATCH_WARN_ONLY=y to allow them.
-  make[1]: *** [scripts/Makefile.modpost:59: vmlinux.symvers] Error 1
-  make[1]: *** Deleting file 'vmlinux.symvers'
-  make: *** [Makefile:1176: vmlinux] Error 2
-  [...]
-
-Fixes: a712c3ed9b8a ("acpi/arm64: Add memory-mapped timer support in GTDT driver")
-Signed-off-by: Jackie Liu <liuyun01@kylinos.cn>
-Acked-by: Hanjun Guo <guohanjun@huawei.com>
-Link: https://lore.kernel.org/r/20210823092526.2407526-1-liu.yun@linux.dev
-Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
+Fixes: 17fd7a9d324fd ("drm/panel: Add support for Olimex LCD-OLinuXino panel")
+Cc: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
+Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
+Link: https://patchwork.freedesktop.org/patch/msgid/20211012115242.10325-1-vegard.nossum@oracle.com
+Signed-off-by: Dave Airlie <airlied@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/acpi/arm64/gtdt.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/panel/Kconfig |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/acpi/arm64/gtdt.c
-+++ b/drivers/acpi/arm64/gtdt.c
-@@ -36,7 +36,7 @@ struct acpi_gtdt_descriptor {
- 
- static struct acpi_gtdt_descriptor acpi_gtdt_desc __initdata;
- 
--static inline void *next_platform_timer(void *platform_timer)
-+static inline __init void *next_platform_timer(void *platform_timer)
- {
- 	struct acpi_gtdt_header *gh = platform_timer;
- 
+--- a/drivers/gpu/drm/panel/Kconfig
++++ b/drivers/gpu/drm/panel/Kconfig
+@@ -233,6 +233,7 @@ config DRM_PANEL_OLIMEX_LCD_OLINUXINO
+ 	depends on OF
+ 	depends on I2C
+ 	depends on BACKLIGHT_CLASS_DEVICE
++	select CRC32
+ 	help
+ 	  The panel is used with different sizes LCDs, from 480x272 to
+ 	  1280x800, and 24 bit per pixel.
 
 
