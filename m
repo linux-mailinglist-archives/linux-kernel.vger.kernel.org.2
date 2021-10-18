@@ -2,81 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E6F34318BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 14:16:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABFFF4318C1
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 14:16:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231420AbhJRMSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 08:18:31 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:59861 "EHLO m43-7.mailgun.net"
+        id S231716AbhJRMSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 08:18:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34206 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229833AbhJRMS1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 08:18:27 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1634559376; h=Date: Message-ID: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=hHOTyhKY+jF9m2eMBr2/9tn1FPmbSZyijxUuMni71YQ=;
- b=kzd4AAuVtoF823hf+eEZOZObQq7DPJPEOtINyN6yzavpxXer3YjifjhK7xZCqSEnsnwBzW89
- 8LiPh2NpKRELJD0vpsbCESyeGEJkY/72K3Xb12f2oR4HQuqc7dAzb4DYj6jIzGi9M8Iskm3m
- QmHCl2AyzQLueBJO6fFSLduCZ2k=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 616d65878ea00a941fc4a75a (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 18 Oct 2021 12:16:07
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 44428C43616; Mon, 18 Oct 2021 12:16:07 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.5 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 19B50C4338F;
-        Mon, 18 Oct 2021 12:16:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 19B50C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        id S231707AbhJRMSh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 08:18:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EBDD461354;
+        Mon, 18 Oct 2021 12:16:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634559386;
+        bh=fWptUGJ5IdZINQwiH3OSf5m8VgEC4zat/KLzZgCXdPw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Y1fLYdAClZhRT5EhGhdrU7lPaPpeBd+CtICtTvdTO2ubspRYKyF5hCM/KWKPYfKPJ
+         p1auVklicywWlVXMlhFKswUQARvrTdU8DA8sY81YfCk2Za0hP8243DJu3dqiRdgdvZ
+         oDNtRLHjMZc0a1ICqwjFGVTl3g5MiERfg+clxedXqiB7uA60y3706v4hOOcNopPAP3
+         JR5U9BED0boSC6Ssn/NuOhpumHanUs/mqYjr8Z8jUdNlQrJTondM80SsiFkVtoO/So
+         7uRaTcj5CApcPs3hOygcWlPiSiBVtDQo9w5OBHnsbgIYLMWwjXahUpKXVXjyfzqEJB
+         7cn01/MV7j1ZA==
+Date:   Mon, 18 Oct 2021 13:16:23 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 1/2] dt-bindings: regulator: uniphier: Add binding for
+ NX1 SoC
+Message-ID: <YW1ll5pvNXnwYRjc@sirena.org.uk>
+References: <1634520605-16583-1-git-send-email-hayashi.kunihiko@socionext.com>
+ <1634520605-16583-2-git-send-email-hayashi.kunihiko@socionext.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH net-next] rtw89: fix return value check in
- rtw89_cam_send_sec_key_cmd()
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20211018033102.1813058-1-yangyingliang@huawei.com>
-References: <20211018033102.1813058-1-yangyingliang@huawei.com>
-To:     Yang Yingliang <yangyingliang@huawei.com>
-Cc:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-wireless@vger.kernel.org>, <pkshih@realtek.com>,
-        <kuba@kernel.org>, <davem@davemloft.net>
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
-Message-ID: <163455936283.19217.11931035159424062771.kvalo@codeaurora.org>
-Date:   Mon, 18 Oct 2021 12:16:07 +0000 (UTC)
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="nq99JZ2FCgi5bIAG"
+Content-Disposition: inline
+In-Reply-To: <1634520605-16583-2-git-send-email-hayashi.kunihiko@socionext.com>
+X-Cookie: Here there be tygers.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yang Yingliang <yangyingliang@huawei.com> wrote:
 
-> Fix the return value check which testing the wrong variable
-> in rtw89_cam_send_sec_key_cmd().
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Fixes: e3ec7017f6a2 ("rtw89: add Realtek 802.11ax driver")
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-> Acked-by: Ping-Ke Shih <pkshih@realtek.com>
+--nq99JZ2FCgi5bIAG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-rtw89 patches are applied wireless-drivers-next, not net-next. rtw89 is not
-even in net-next yet.
+On Mon, Oct 18, 2021 at 10:30:04AM +0900, Kunihiko Hayashi wrote:
+> Update USB-VBUS binding document for UniPhier NX1 SoC.
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20211018033102.1813058-1-yangyingliang@huawei.com/
+Please submit patches using subject lines reflecting the style for the
+subsystem, this makes it easier for people to identify relevant patches.
+Look at what existing commits in the area you're changing are doing and
+make sure your subject lines visually resemble what they're doing.
+There's no need to resubmit to fix this alone.
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+--nq99JZ2FCgi5bIAG
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFtZZYACgkQJNaLcl1U
+h9Aabgf/Yln07AvE4RekBaJh/ZK/d/jpt9zpGBDxNwp3tZmqIbYNE6pnem+7M3K1
+MnHPJaCocVURqQsAaR0Y+sEGbge+PqDcpO4GlD+WxfCUp2wmAGzKuNOmUQPHHqe9
+9KQGU99VaeJRBzalLNk0fkLULLSvODfbcob1V5x4sA6lh7D7Oh1t4JFs+C3yGs7c
+6EpKVBgpb8IyO/Ka4KLDR4NYg2yy9h48RtyFO8FqzKgl8rwNW5ipEXC9DOTv3BPp
+o/VOn17uGc/ddFvC2rtAaJ0Fonw6b884lDrTUAZbSx/wJmemlQxQ/RnT+FnquX3j
+uQryHyI+YElF29JQqKkjKCPFefrrkA==
+=ToDZ
+-----END PGP SIGNATURE-----
+
+--nq99JZ2FCgi5bIAG--
