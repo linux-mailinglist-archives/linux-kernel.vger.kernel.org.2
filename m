@@ -2,110 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AE954319FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 14:48:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 618F0431A0A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 14:50:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231761AbhJRMuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 08:50:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49614 "EHLO mail.kernel.org"
+        id S231782AbhJRMwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 08:52:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50086 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231645AbhJRMui (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 08:50:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 949BA60FF2;
-        Mon, 18 Oct 2021 12:48:26 +0000 (UTC)
+        id S230005AbhJRMwS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 08:52:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 4B80D6103C;
+        Mon, 18 Oct 2021 12:50:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634561307;
-        bh=iUCyCMM2FKcF5aARf6r4eS3ztMciGwsmxK7BcZeTtVk=;
-        h=Subject:From:To:Date:In-Reply-To:References:From;
-        b=gNeC13ZwtB4aP0GVC8EgFI6A/3typ7w2TZhIW25frk/eJt30bN4wWuqlxE0vfI4Py
-         g36RTS9q5p6tpusanojngeCX2QvAR2WSAd0gzNNtCB6dySZ15JsQ92DnPug9UhpqLO
-         8sWzkzYs5j29+WndETA1q/YPhL9+tUx71UWengpSk6JDx1nv/humDJWP8MkNbi5bAc
-         t4jLioiVWCIR9Y6vI1CD1jN0uHyKRsNN3Afng0ijl41JShDCocPeHgG7MROD/m8K9t
-         683qVN6imLGqPDz6rAP13QFkAoftLbGZhPiSsNT6U5YpDv6psc6/526NGWJ9TrqgLS
-         qSxJpGoNpK8UA==
-Message-ID: <8ca00c48a987278a85435d6e046ce9a12bc9050b.camel@kernel.org>
-Subject: Re: [PATCH 2/2] tpm: use SM3 instead of SM3_256
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        David Howells <dhowells@redhat.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Jerry Snitselaar <jsnitsel@redhat.com>,
-        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-security-module@vger.kernel.org
-Date:   Mon, 18 Oct 2021 15:48:24 +0300
-In-Reply-To: <5b0bc02a-eeb5-9d86-852b-d3041f3c6286@linux.alibaba.com>
-References: <20211009130828.101396-1-tianjia.zhang@linux.alibaba.com>
-         <20211009130828.101396-3-tianjia.zhang@linux.alibaba.com>
-         <c6c2337ed83c237f70716cb4c62794d1d3da31f2.camel@kernel.org>
-         <5db32f21-1df7-c92e-42a1-a2a85b29dfbf@linux.alibaba.com>
-         <31d49f7785dd82fd2f0c1078c9a94153e3c389ac.camel@kernel.org>
-         <5b0bc02a-eeb5-9d86-852b-d3041f3c6286@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.40.0-1 
+        s=k20201202; t=1634561407;
+        bh=JnYYRYLbC5Sj+JWdGzdxNR/oyUX3SCHmbG8fqsaFADM=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=TcDN0R7DW/D984OXRguGlwOelWCUKaOId1iPfheXffhUsSF0KsCtIxct/lPp6FxqY
+         laDazJABjKHudn4SZceKJhuFGBKq67xiCpngJNTrgf0xqnUfD1XjzcfCy9iR9BSnGR
+         zkEAhEvZ+Dy8r+Rh/5fkP6CCyP/SduSrVV1JEpCmTSDwB7Fbcv1m6VKpkm4m2F4jR3
+         2KCiRQugpfRTpKChRjZulUsPDuhsX3qI0kRwssnpPtqI15RZyFIR3ENCnLsh+7exh7
+         ubNCxyCkK+IJ9jZONm/XBhmvfi7BYY9nMTpvErZGU2117r1p+fFquLlEYhjkxUHC9w
+         +nO5Q/a3KlvmA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 3F5A160A2E;
+        Mon, 18 Oct 2021 12:50:07 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] net: sparx5: Add of_node_put() before goto
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163456140725.28486.14644227841066747140.git-patchwork-notify@kernel.org>
+Date:   Mon, 18 Oct 2021 12:50:07 +0000
+References: <20211018013138.2956-1-wanjiabing@vivo.com>
+In-Reply-To: <20211018013138.2956-1-wanjiabing@vivo.com>
+To:     Wan Jiabing <wanjiabing@vivo.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, lars.povlsen@microchip.com,
+        Steen.Hegelund@microchip.com, UNGLinuxDriver@microchip.com,
+        bjarni.jonasson@microchip.com, yangyingliang@huawei.com,
+        yang.lee@linux.alibaba.com, nathan@kernel.org,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kael_w@yeah.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-10-18 at 10:37 +0800, Tianjia Zhang wrote:
-> Hi Jarkko,
->=20
-> On 10/15/21 11:19 PM, Jarkko Sakkinen wrote:
-> > On Thu, 2021-10-14 at 17:46 +0800, Tianjia Zhang wrote:
-> > > Hi Jarkko,
-> > >=20
-> > > On 10/12/21 11:21 PM, Jarkko Sakkinen wrote:
-> > > > On Sat, 2021-10-09 at 21:08 +0800, Tianjia Zhang wrote:
-> > > > > According to https://tools.ietf.org/id/draft-oscca-cfrg-sm3-01.ht=
-ml,
-> > > > > SM3 always produces a 256-bit hash value and there are no plans f=
-or
-> > > > > other length development, so there is no ambiguity in the name of=
- sm3.
-> > > > >=20
-> > > > > Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-> > > >=20
-> > > > This is not enough to make any changes because the commit message
-> > > > does not describe what goes wrong if we keep it as it was.
-> > > >=20
-> > > > /Jarkko
-> > > >=20
-> > >=20
-> > > This did not cause an error, just to use a more standard algorithm na=
-me.
-> > > If it is possible to use the SM3 name instead of SM3_256 if it can be
-> > > specified from the source, it is of course better. I have contacted t=
-he
-> > > trustedcomputinggroup and have not yet received a reply.
-> > >=20
-> > > Best regards,
-> > > Tianjia
-> >=20
-> > Why don't you then create a patch set that fully removes SM3_256, if it
-> > is incorrect?
-> >=20
-> > This looks a bit half-baked patch set.
-> >=20
-> > /Jarkko
-> >=20
->=20
-> This series of patch is a complete replacement. Patch 1 is a replacement=
-=20
-> of the crypto subsystem, and patch 2 is a replacement of the tpm driver.
->=20
-> Best regards,
-> Tianjia
+Hello:
 
-In which patch that symbol is removed?
+This patch was applied to netdev/net.git (master)
+by David S. Miller <davem@davemloft.net>:
 
-/Jarkko
+On Sun, 17 Oct 2021 21:31:30 -0400 you wrote:
+> Fix following coccicheck warning:
+> ./drivers/net/ethernet/microchip/sparx5/s4parx5_main.c:723:1-33: WARNING: Function
+> for_each_available_child_of_node should have of_node_put() before goto
+> 
+> Early exits from for_each_available_child_of_node should decrement the
+> node reference counter.
+> 
+> [...]
+
+Here is the summary with links:
+  - net: sparx5: Add of_node_put() before goto
+    https://git.kernel.org/netdev/net/c/d9fd7e9fccfa
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
