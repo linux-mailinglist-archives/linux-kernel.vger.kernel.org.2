@@ -2,99 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A1974328B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 23:00:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C31924328B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 23:01:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232164AbhJRVCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 17:02:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54308 "EHLO
+        id S233893AbhJRVDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 17:03:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232088AbhJRVCw (ORCPT
+        with ESMTP id S231920AbhJRVDO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 17:02:52 -0400
-Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2C85C06161C;
-        Mon, 18 Oct 2021 14:00:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=vLA6NvpHs1ov/wgNN4Rab4l5sS4rboEGv0iuEduXVbY=; b=iUT+DG6cCvFIzIKucTso+2Ougp
-        Fci5S7Y/smV3JigsBicWZK0xeRpcI0OObnF6g0WWc4B90SGX4LIhfXUwenB0aVXby+l49+dXLF0Dp
-        KJTFNdTn4rj3s5hDGrqfrqx7K3aRt8iTDHGmd8Dp9VNzxR/YxLcTXztzNhHdRycaM7YJfx0qyUasX
-        02Mwvp+athQKKv2q4XM4+nh9VaH7SzfFarj6DgGueWM7XYQt0DrGsYYqduGiVSLEAgEHwG1aonf+q
-        ZRfB6QtXUYxQl81R1uHKAoF3AepcMFJoyMh1Wl4c21KEts26bAZO5XgZJU2GqkmXPkdcgJ51qXadc
-        /0NTPxBA==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mcZk9-00HG7q-8A; Mon, 18 Oct 2021 21:00:25 +0000
-Date:   Mon, 18 Oct 2021 14:00:25 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     bp@suse.de, akpm@linux-foundation.org, josh@joshtriplett.org,
-        rishabhb@codeaurora.org, kubakici@wp.pl, maco@android.com,
-        david.brown@linaro.org, bjorn.andersson@linaro.org,
-        linux-wireless@vger.kernel.org, keescook@chromium.org,
-        shuah@kernel.org, mfuzzey@parkeon.com, zohar@linux.vnet.ibm.com,
-        dhowells@redhat.com, pali.rohar@gmail.com, tiwai@suse.de,
-        arend.vanspriel@broadcom.com, zajec5@gmail.com, nbroeking@me.com,
-        broonie@kernel.org, dmitry.torokhov@gmail.com, dwmw2@infradead.org,
-        torvalds@linux-foundation.org, Abhay_Salunke@dell.com,
-        jewalt@lgsinnovations.com, cantabile.desu@gmail.com, ast@fb.com,
-        andresx7@gmail.com, dan.rue@linaro.org, brendanhiggins@google.com,
-        yzaikin@google.com, sfr@canb.auug.org.au, rdunlap@infradead.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 04/14] firmware_loader: add built-in firmware kconfig
- entry
-Message-ID: <YW3gae4HoUd9izyj@bombadil.infradead.org>
-References: <20210917182226.3532898-1-mcgrof@kernel.org>
- <20210917182226.3532898-5-mcgrof@kernel.org>
- <YVxhbhmNd7tahLV7@kroah.com>
- <YWR16e/seTx/wxE+@bombadil.infradead.org>
- <YWR4XKrC2Bkr4qKQ@kroah.com>
- <YWS7ABDdBIpdt/84@bombadil.infradead.org>
+        Mon, 18 Oct 2021 17:03:14 -0400
+Received: from mail-vk1-xa2b.google.com (mail-vk1-xa2b.google.com [IPv6:2607:f8b0:4864:20::a2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89320C06161C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 14:01:02 -0700 (PDT)
+Received: by mail-vk1-xa2b.google.com with SMTP id x207so9306434vke.2
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 14:01:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=LBWXJiOY2N3UDtzoeZIPjHRlsPyA16TTeIu0O7GzSI4=;
+        b=Anl+k1o3nihkiSIRW1EeoneU5y2dYM+LiPjxtjRW5YeNJxZGjWLMOJjGwAkUekQrkr
+         FqVCumJk5+eOCrYBTZZzYCY2lv22qUt0VpJdxBJ9eIuboVpfjbjYuk6g6fjXZmBLUCP2
+         6ON3dvXwluxOjmmXqmGwhA0wBDNVA8VKNEafrGhLnkm0LtB1uT+pG6TU7XdWwPdwWZxw
+         jfi1bJNgQFHuifNnrg3/yrpEvRxR8ZKWMlG0nKnELvBiZXIGXED1csXE1SuEtlVSLH7H
+         7z6w+1mOw04aij6wUIT87TTQZdqTYI4xmyxT5MgVLUBSXXC3qOpZIhFj473rYnJu2JmT
+         Yz/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=LBWXJiOY2N3UDtzoeZIPjHRlsPyA16TTeIu0O7GzSI4=;
+        b=P9qaKcN1GcKV+TnAmY7SaN6V5FZLE8BBRLK6VKWkFbyUeBigH8OphFEgdSm52+bLO2
+         KdqDwkCY46IBRHEXAqk+d3aWTG0fAaJhs6lBVxSD5xG1FpCrndLPE01Lzyk2J8yDdi3T
+         lJX0wRU84fKr6uL9QmqhnlGy5QIlnPMwcPEy/rt0FSBIYUf3xm7YFhFqtdBpmiE+LetB
+         9+3LmBZNj6+jFt24EQ5FHtxd/4LUAA/r5vLSE9GOCo4PITLF7OJezw/eLKlnjzNVnZZi
+         OvXN4Sv6XHfv84E7bPaTV8dM3l5D9L5rn+1moAAXDVCOFVukmajFxGusJVY0Uy80juEH
+         YOzg==
+X-Gm-Message-State: AOAM5324Q6gAi4YX5M8ZQ4fiOeqWJF5iYJY7NAMiaTnGfpwQHTZXCfoB
+        18b3JtXeNv7ej0Vq0VKpeJJ1m/dWXuX83/0d28AA3Ywmt94=
+X-Google-Smtp-Source: ABdhPJxdStWsA9KUl2nJOjMRt/FnLFB9h0hI/38FN/HmiiatW4gPRk7f179qSQdpTwCRbDNnUKr/i5dTEtxGAYFP6O8=
+X-Received: by 2002:a05:6122:201f:: with SMTP id l31mr27705980vkd.22.1634590861609;
+ Mon, 18 Oct 2021 14:01:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YWS7ABDdBIpdt/84@bombadil.infradead.org>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+References: <CAD-N9QWd6Orm8d9AMk7mybByAKZod=GJ-HSNPOfhFDStSPwSUA@mail.gmail.com>
+In-Reply-To: <CAD-N9QWd6Orm8d9AMk7mybByAKZod=GJ-HSNPOfhFDStSPwSUA@mail.gmail.com>
+From:   jim.cromie@gmail.com
+Date:   Mon, 18 Oct 2021 15:00:35 -0600
+Message-ID: <CAJfuBxz6-cF6pYNS0-o_xixoKBzBn5AuXTNOW3x20rXo4Ox5Cw@mail.gmail.com>
+Subject: Re: Any tracing mechanism can track the executed instructions of a
+ user process in the kernel?
+To:     Dongliang Mu <mudongliangabcd@gmail.com>
+Cc:     kernelnewbies <kernelnewbies@kernelnewbies.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Pavel Skripkin <paskripkin@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 11, 2021 at 03:30:24PM -0700, Luis Chamberlain wrote:
-> On Mon, Oct 11, 2021 at 07:46:04PM +0200, Greg KH wrote:
-> > >   o By default we now always skip built-in firmware even if a FW_LOADER=y
-> > 
-> > I do not understand, why would we ever want to skip built-in firmware?
-> 
-> Because it is done this way today only implicitly because
-> EXTRA_FIRMWARE is empty. Using a kconfig entry makes this
-> more obvious.
+On Sun, Oct 17, 2021 at 8:46 PM Dongliang Mu <mudongliangabcd@gmail.com> wr=
+ote:
+>
+> Hi all,
+>
+> I am writing to kindly ask one question: is there any tracing
+> mechanism in Linux kernel that can trace all the executed instructions
+> of a user process? If this user process is run on different
+> processors, traces of this process on different processors should be
+> also recorded.
+>
+> Any comment is welcome.
+>
 
-Greg,
+take a look at rr-project.org
 
-The fact that it was not obvious to you we were effectively disabling
-the built-in firmware functionality by default using side kconfig
-symbols is a good reason to clarify this situation with its own kconfig
-symbol.
+what rr does
 
-And consider what I started below as well.
+rr aspires to be your primary C/C++ debugging tool for Linux,
+replacing =E2=80=94 well, enhancing =E2=80=94 gdb. You record a failure onc=
+e, then
+debug the recording, deterministically, as many times as you want. The
+same execution is replayed every time.
 
-Please let me know why on the other hand we should *not* add this new
-kconfig symbol?
-
-> > >   o This also lets us make it clear that the EXTRA_FIRMWARE_DIR
-> > >     kconfig entry is only used for built-in firmware
-> > 
-> > How was it ever used for anything else?  :)
-> 
-> Well later this patch set also renames this to something more
-> sensible, and so that change is clearer through this patch.
-> 
-> > I can not take this as-is, so yes :)
-> 
-> Well please let me know again once you read the above explanations.
-> 
-> I think the new kconfig is very well justified given the above.
-> 
->   Luis
+rr also provides efficient reverse execution under gdb. Set
+breakpoints and data watchpoints and quickly reverse-execute to where
+they were hit.
