@@ -2,115 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C52B243267E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 20:34:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 314C7432681
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 20:35:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232934AbhJRSg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 14:36:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49490 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232873AbhJRSg6 (ORCPT
+        id S233080AbhJRShD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 14:37:03 -0400
+Received: from mail-oi1-f172.google.com ([209.85.167.172]:40493 "EHLO
+        mail-oi1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232871AbhJRShB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 14:36:58 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BF31C06161C
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 11:34:46 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id g36so1757988lfv.3
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 11:34:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3yIhmbyQ2Bjkk7ltMaflrF9iqPQ0fQAIQa9ANGo7kQY=;
-        b=mDxHYkIrPyFlZcLd5Lmf1h58osaKBBKImi0vwaR9AA+Z6wjTxmrsnvuHuvVSnRqO5O
-         tcs5Wjp2GKH1xK6CecmcUeqjV0xPYjjQPc/2K35jolYlUmWxJxpq6MBFkoC2E/Amf6FN
-         YVJERs/vNIyNQ4HZAyDsgejKJWne6YVrLoISBqmJ3HjwHmGU0h6mgx7WDmU+yFmLPIj6
-         w0QCSEKlDkaSFaMpyV8+KXG/bcRYC/oLFFZxRrMXl2UAIVUeLBbgFXVxoziea9wdTfKN
-         Ok659w6Q+wE/o34cHM90CHcGMjN/VA2l+VOBT73rCrXANUNGs8fOrqxrzdK0tLNRjeoU
-         lcPg==
+        Mon, 18 Oct 2021 14:37:01 -0400
+Received: by mail-oi1-f172.google.com with SMTP id n63so1029236oif.7;
+        Mon, 18 Oct 2021 11:34:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3yIhmbyQ2Bjkk7ltMaflrF9iqPQ0fQAIQa9ANGo7kQY=;
-        b=U5NgOZR/0wE9abN+s5gNRwDc1dCzoWKr2oHtNKzWR2s66djKY9xcJBXKi5ogVgTwmi
-         7g9xJl6lZoLTTAd1nEu3s/HOzkXUCQ/GZW55w+CJXrpC8cFNrZgzBpK2ss/vtLJazri0
-         YcbdTZG0VFy23DfQVHoQzmBODb5jwItjm8GGu8byywNPq/JYhn9cW+XCeCkbX7IO3W78
-         3eRpZcC50/JTz+tMg7QYUYfzY6QfkigoaGrXRKeKqYAM5YegPPmbLSQtE8dF3jELzaQN
-         phaHp5Ll/1neiaLqsIJVxWJMXSSwcRwss5EEXgISUH05vWOm/RWCvfq20pJaXeSaSoa6
-         9cQA==
-X-Gm-Message-State: AOAM530KjJ6UYxmbGtJZXlB8nr5V9zwGj2op+SHPEelfdnXbE3ig0/ct
-        vevqXH/waTVXDR+gehykmAof3hKiNbHrUiwSz2HJmA==
-X-Google-Smtp-Source: ABdhPJxhiujb58an/syD4wS+0Veklak5dKdvkCcFTUL6Moc+I4DMxvUUPWzB27PibGVVK8AIsW60KddeGG8GuSGi05s=
-X-Received: by 2002:a05:6512:b0a:: with SMTP id w10mr1323928lfu.240.1634582084713;
- Mon, 18 Oct 2021 11:34:44 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BXwNrG4eTVKzZpIRCarHGGXmlKSomOiTra/AD02w75c=;
+        b=7VlNV8FWPkUjBb0oU0/UKu0j+6nH945hLFFhwK0pJYMh/0EBKobvyoJnTk7mDoV2y9
+         Lags/V2LT1yogHoqyWPNGUKdjruMlr8zyZ1LKF2MTnkceGWjy7m5NtdqlqkcfKl/npqL
+         qZY3bgbfEI1L+kmQ14CA/Ucdth6QKziW8X5NSJ8rrP5fHpAzPwEn6qlGgVcYxy7fENqq
+         Ary2i1yOOo/UOu2SQjfCfH9Xkq6lMUG1+8m5L3fLs4G+Zy2tSiY9oPTaPVOkSQ5IvQLz
+         7/Hm5TjX46vPzlWj7QXSIwgvfzmjBd4YL8D1AhBUjB7d3w/CjQFNf7LuFiYwGsLZjYpT
+         1mDA==
+X-Gm-Message-State: AOAM532T8hrPTXUxMXWJjUNxWCpy/3SExM3UK3zYnXreYAIPbT5dDY9c
+        nx9QkmeMXeLp/6HR7RNLWA==
+X-Google-Smtp-Source: ABdhPJzytjS8WufNOS6c5DnQSwiC9AtiJ0xXtCDkJKcuKA4GJ0hB8mYCuU118OYBmfgq1xUbUP7g1A==
+X-Received: by 2002:a05:6808:10cc:: with SMTP id s12mr453511ois.164.1634582089247;
+        Mon, 18 Oct 2021 11:34:49 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id r14sm1276825oiw.44.2021.10.18.11.34.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Oct 2021 11:34:48 -0700 (PDT)
+Received: (nullmailer pid 2717501 invoked by uid 1000);
+        Mon, 18 Oct 2021 18:34:47 -0000
+Date:   Mon, 18 Oct 2021 13:34:47 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     David Heidelberg <david@ixit.cz>
+Cc:     linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        ~okias/devicetree@lists.sr.ht, devicetree@vger.kernel.org
+Subject: Re: [PATCH v4] dt-bindings: net: nfc: nxp,pn544: Convert txt
+ bindings to yaml
+Message-ID: <YW2+R4drCwcmzKMK@robh.at.kernel.org>
+References: <20211017160210.85543-1-david@ixit.cz>
+ <1634559233.484644.2074240.nullmailer@robh.at.kernel.org>
+ <RAC61R.YOBPB57076K71@ixit.cz>
 MIME-Version: 1.0
-References: <20211018182537.2316800-1-nathan@kernel.org>
-In-Reply-To: <20211018182537.2316800-1-nathan@kernel.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 18 Oct 2021 11:34:33 -0700
-Message-ID: <CAKwvOdn4_DrgaZoAo-v7CbYurNUpfAK5tnzT023=WCDzkmYQVg@mail.gmail.com>
-Subject: Re: [PATCH] platform/x86: thinkpad_acpi: Fix bitwise vs. logical warning
-To:     Nathan Chancellor <nathan@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Henrique de Moraes Holschuh <hmh@hmh.eng.br>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        ibm-acpi-devel@lists.sourceforge.net,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, Tor Vic <torvic9@mailbox.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <RAC61R.YOBPB57076K71@ixit.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 18, 2021 at 11:26 AM Nathan Chancellor <nathan@kernel.org> wrote:
->
-> A new warning in clang points out a use of bitwise OR with boolean
-> expressions in this driver:
->
-> drivers/platform/x86/thinkpad_acpi.c:9061:11: error: use of bitwise '|' with boolean operands [-Werror,-Wbitwise-instead-of-logical]
->         else if ((strlencmp(cmd, "level disengaged") == 0) |
->                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->                                                            ||
-> drivers/platform/x86/thinkpad_acpi.c:9061:11: note: cast one or both operands to int to silence this warning
-> 1 error generated.
->
-> This should clearly be a logical OR so change it to fix the warning.
->
-> Fixes: fe98a52ce754 ("ACPI: thinkpad-acpi: add sysfs support to fan subdriver")
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1476
-> Reported-by: Tor Vic <torvic9@mailbox.org>
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+On Mon, Oct 18, 2021 at 03:04:03PM +0200, David Heidelberg wrote:
+> 
+> 
+> 
+> On Mon, Oct 18 2021 at 07:13:53 -0500, Rob Herring <robh@kernel.org> wrote:
+> > On Sun, 17 Oct 2021 18:02:10 +0200, David Heidelberg wrote:
+> > >  Convert bindings for NXP PN544 NFC driver to YAML syntax.
+> > > 
+> > >  Signed-off-by: David Heidelberg <david@ixit.cz>
+> > >  ---
+> > >  v2
+> > >   - Krzysztof is a maintainer
+> > >   - pintctrl dropped
+> > >   - 4 space indent for example
+> > >   - nfc node name
+> > >  v3
+> > >   - remove whole pinctrl
+> > >  v4
+> > >   - drop clock-frequency, which is inherited by i2c bus
+> > > 
+> > >   .../bindings/net/nfc/nxp,pn544.yaml           | 56
+> > > +++++++++++++++++++
+> > >   .../devicetree/bindings/net/nfc/pn544.txt     | 33 -----------
+> > >   2 files changed, 56 insertions(+), 33 deletions(-)
+> > >   create mode 100644
+> > > Documentation/devicetree/bindings/net/nfc/nxp,pn544.yaml
+> > >   delete mode 100644
+> > > Documentation/devicetree/bindings/net/nfc/pn544.txt
+> > > 
+> Full log is available here: https://patchwork.ozlabs.org/patch/1542257
+> > 
+> > Running 'make dtbs_check' with the schema in this patch gives the
+> > following warnings. Consider if they are expected or the schema is
+> > incorrect. These may not be new warnings.
+> > 
+> > Note that it is not yet a requirement to have 0 warnings for dtbs_check.
+> > This will change in the future.
+> > 
+> > 
+> > 
+> > nfc@28: 'clock-frequency' does not match any of the regexes:
+> > 'pinctrl-[0-9]+'
+> > 	arch/arm/boot/dts/tegra30-asus-nexus7-grouper-E1565.dt.yaml
+> > 	arch/arm/boot/dts/tegra30-asus-nexus7-grouper-PM269.dt.yaml
+> > 
+> > nfc@2a: 'clock-frequency' does not match any of the regexes:
+> > 'pinctrl-[0-9]+'
+> > 	arch/arm/boot/dts/tegra30-asus-nexus7-tilapia-E1565.dt.yaml
+> > 
+> 
+> Patches for this are already in grate repository and will be sent to
+> mainline soon! :)
 
-LGTM, thanks for the patch! I guess this would be the first
-"interesting" case this warning has found in kernel sources?
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Okay. I was under the impression 'clock-frequency' was removed thinking 
+it is in the i2c bus schema already. It is, but unfortunately you need 
+it here too if used because all properties for a node have to be listed 
+in the schema for the node. 'unevaluatedProperties' can't evaluate 
+properties in the child nodes of the parent schema with the properties 
+of the child schema.
 
-> ---
->  drivers/platform/x86/thinkpad_acpi.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
-> index 07b9710d500e..7442c3bb446a 100644
-> --- a/drivers/platform/x86/thinkpad_acpi.c
-> +++ b/drivers/platform/x86/thinkpad_acpi.c
-> @@ -9058,7 +9058,7 @@ static int fan_write_cmd_level(const char *cmd, int *rc)
->
->         if (strlencmp(cmd, "level auto") == 0)
->                 level = TP_EC_FAN_AUTO;
-> -       else if ((strlencmp(cmd, "level disengaged") == 0) |
-> +       else if ((strlencmp(cmd, "level disengaged") == 0) ||
->                         (strlencmp(cmd, "level full-speed") == 0))
->                 level = TP_EC_FAN_FULLSPEED;
->         else if (sscanf(cmd, "level %d", &level) != 1)
->
-> base-commit: 85303db36b6e170917a7bc6aae4898c31a5272a0
-> --
-> 2.33.1.637.gf443b226ca
->
-
-
--- 
-Thanks,
-~Nick Desaulniers
+Rob
