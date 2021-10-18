@@ -2,89 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EF574315C0
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 12:17:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4E244315C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 12:17:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229987AbhJRKTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 06:19:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45034 "EHLO
+        id S231573AbhJRKTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 06:19:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229985AbhJRKTG (ORCPT
+        with ESMTP id S229873AbhJRKTc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 06:19:06 -0400
-Received: from nbd.name (nbd.name [IPv6:2a01:4f8:221:3d45::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8986EC0617AA;
-        Mon, 18 Oct 2021 03:16:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nbd.name;
-         s=20160729; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-        References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=iosnmQOJWI7XWNeYhYR243+qqN8R1RCG0Hp7iVJ4bxg=; b=gf2eLeWZLk2w6Vi2AU54sQvFrX
-        injMvWZyhfNraHIvhffFnRRdadeqE37Xj62GGt9/Izgpf3dB5/q/mBr51WUuTMBCKsgdlZizPMsT6
-        yT4yNeT+JOFR377JuEUf8Z/dw7Q7e74JzYaP1D/Mr30DrH9//0C+RF9X69ZpGqZ+1bX4=;
-Received: from p4ff1322b.dip0.t-ipconnect.de ([79.241.50.43] helo=nf.local)
-        by ds12 with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <nbd@nbd.name>)
-        id 1mcPgX-0004ZM-2s; Mon, 18 Oct 2021 12:16:01 +0200
-Message-ID: <569d434d-cf5b-6ab0-5931-41b21ab047b7@nbd.name>
-Date:   Mon, 18 Oct 2021 12:16:00 +0200
+        Mon, 18 Oct 2021 06:19:32 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC0C2C06161C;
+        Mon, 18 Oct 2021 03:17:20 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id g10so69078598edj.1;
+        Mon, 18 Oct 2021 03:17:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AF8zJDwkmL3U0dYZWX9w0CywhRwPtYFEXZ0BftyJOus=;
+        b=IFo4fUtBz0VHl4u/5ZPcxZHeDfsJd5b3GysRHqmA//ShgahllYmfQCt3VAthx/qSa0
+         9oNdqHamhYOUmxbvJSjpL8pqiwg5jap7A49BWktDCDBDJdHwNk82ooyYmbqZ6bnCVoe7
+         TnwPwOplcSUj/uz6t3JnjR9z2n6J/HdT1WVLQfkrgbp2rNXlMwlZT/CEvL1YO1gb0UN3
+         FQeSkr9J6JS87UHyVvr7veYPlUeA6fuJaXj7HG6EZbJhZnAmT6PTuTpjVnU8YhZhMsql
+         IPpUGusFI3SbFSFMQq6/4al2sWBeaqRyII067+2GjgND3f585PewfnSydKia05FWCj17
+         o2OA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AF8zJDwkmL3U0dYZWX9w0CywhRwPtYFEXZ0BftyJOus=;
+        b=u9en/d0lFmDbJPMCahuyOqjsm3ML/qVbkiX1CbT4YSs1QqQ5vH4VOFbDDLYjVFfris
+         wLcv+JNyzmy+hrCeRpgVqmv3hlMiUbzkNJvT/CcIAcc2dv/ZZ7qRKX5ooqA1MzEeoQRL
+         pamm8T09mfJkm2lJ6L2203e7t6s13WojJHKq0cABSnPXC6Y5rw5ba8LiVKJn+IFdjPt4
+         p94wPP3Tmxm0YhSLCWFhWnVtI+1RL0jg+hUot/ZEDTYxCjwJEarz0w/bnuj6504L2ncK
+         mG3B79rDl3mBgzFdpfNLQuXQrEEH+2i2w3J3SasMPDn0FiNgoX9K3YDAzecLa8mRXQXn
+         DqLw==
+X-Gm-Message-State: AOAM5316zn1FCydSk3g9E01ThLb9t1T6t7WlaU7BvJaT23h+oLLl5ZsK
+        S0AgLeLnYxCM4A0G5RtSHgyyyn4gwcWwYeWjABo=
+X-Google-Smtp-Source: ABdhPJz+vyjPwJqWXqIh5bMNONdeWZ8fWw2APyBJxwa8bf9pMTI8bOmtT/xFnuH36hIW0ln7V9KqAwItxd1VODtp7k8=
+X-Received: by 2002:a50:e188:: with SMTP id k8mr44789399edl.119.1634552239370;
+ Mon, 18 Oct 2021 03:17:19 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.2.0
-Subject: Re: [RFC v2] mt76: mt7615: mt7622: fix ibss and meshpoint
-Content-Language: en-US
-To:     Kalle Valo <kvalo@codeaurora.org>,
-        Nick Hainke <vincent@systemli.org>
-Cc:     lorenzo.bianconi83@gmail.com, ryder.lee@mediatek.com,
-        davem@davemloft.net, kuba@kernel.org, matthias.bgg@gmail.com,
-        sean.wang@mediatek.com, shayne.chen@mediatek.com,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Robert Foss <robert.foss@linaro.org>
-References: <20211007225725.2615-1-vincent@systemli.org>
- <87czoe61kh.fsf@codeaurora.org>
-From:   Felix Fietkau <nbd@nbd.name>
-In-Reply-To: <87czoe61kh.fsf@codeaurora.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20211015202908.1c417ae2@canb.auug.org.au> <YWl+0PFixaNqgIxb@smile.fi.intel.com>
+ <20211018133538.2a0dec43@canb.auug.org.au> <CAHp75VcDwBkwL4+cFmeJt7b-p6V0w283ai9T9K02y0Sej0WLxg@mail.gmail.com>
+ <20211018194533.7af364fa@canb.auug.org.au> <e262286b-ce0d-d46f-17be-2b59d9d42cd0@rasmusvillemoes.dk>
+In-Reply-To: <e262286b-ce0d-d46f-17be-2b59d9d42cd0@rasmusvillemoes.dk>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 18 Oct 2021 13:16:27 +0300
+Message-ID: <CAHp75VdrEdyHg1QNyLx7=FHrSnieWm-o_XufNk1tn354vO7mxw@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the akpm-current tree
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-10-09 10:32, Kalle Valo wrote:
-> Nick Hainke <vincent@systemli.org> writes:
-> 
->> Fixes: d8d59f66d136 ("mt76: mt7615: support 16 interfaces").
-> 
-> The fixes tag should be in the end, before Signed-off-by tags. But I can
-> fix that during commit.
-> 
->> commit 7f4b7920318b ("mt76: mt7615: add ibss support") introduced IBSS
->> and commit f4ec7fdf7f83 ("mt76: mt7615: enable support for mesh")
->> meshpoint support.
->>
->> Both used in the "get_omac_idx"-function:
->>
->> 	if (~mask & BIT(HW_BSSID_0))
->> 		return HW_BSSID_0;
->>
->> With commit d8d59f66d136 ("mt76: mt7615: support 16 interfaces") the
->> ibss and meshpoint mode should "prefer hw bssid slot 1-3". However,
->> with that change the ibss or meshpoint mode will not send any beacon on
->> the mt7622 wifi anymore. Devices were still able to exchange data but
->> only if a bssid already existed. Two mt7622 devices will never be able
->> to communicate.
->>
->> This commits reverts the preferation of slot 1-3 for ibss and
->> meshpoint. Only NL80211_IFTYPE_STATION will still prefer slot 1-3.
->>
->> Tested on Banana Pi R64.
->>
->> Signed-off-by: Nick Hainke <vincent@systemli.org>
-> 
-> Felix, can I take this to wireless-drivers? Ack?
-Acked-by: Felix Fietkau <nbd@nbd.name>
+On Mon, Oct 18, 2021 at 12:07 PM Rasmus Villemoes
+<linux@rasmusvillemoes.dk> wrote:
+> On 18/10/2021 10.45, Stephen Rothwell wrote:
+> > On Mon, 18 Oct 2021 11:01:18 +0300 Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> >> On Mon, Oct 18, 2021 at 6:49 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+
+...
+
+> >> I thought that it makes sense to have STACK_MAGIC also in this header. Thoughts?
+> >
+> > You might want to think of a different name for the header file then.
+>
+> Eh, it seems more reasonable to leave it in kernel.h, then figure out
+> how to get rid of it completely. AFAICT it's only used in one single
+> place under arch/ (and I can't figure out how that magic value is
+> supposed to get there in the first place... that arch was thrown out in
+> 2013 and resurrected in 2015, but that particular line doesn't make
+> sense), and then in some i915 code which might as well define their own
+> cookie.
+
+It's used in two places and probably we may just move it to these two
+users, I don't believe will we ever have i915 together with h8300.
+
+-- 
+With Best Regards,
+Andy Shevchenko
