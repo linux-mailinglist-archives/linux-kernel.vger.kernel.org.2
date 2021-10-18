@@ -2,165 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFEB44321F1
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 17:07:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF1BD4321F3
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 17:07:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232597AbhJRPJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 11:09:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35426 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233238AbhJRPHo (ORCPT
+        id S231676AbhJRPJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 11:09:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56790 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233162AbhJRPJA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 11:07:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634569532;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lCtXt/S98B8O04e5eLfCRcYEGlq2GeHKHWlj3+Qmlnw=;
-        b=dSG9lLilqzKM9fuQ8O4Fw/z8dv7uwZNHWVctLdMobhbJapuyq3uYQmMdPdB8o6fCXn9UPR
-        u3zzA9RmUdNC9Zh2sHS1TN+kX0A0o3XPErCq483N0A7LNWQOSzZIl7Drsz6IxzvQXcVGuX
-        EHs1BqZjeQ64TJHnhic2YFiyL5KEDjw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-428-eqeM14vVO2quZOXq8ExUyA-1; Mon, 18 Oct 2021 11:05:29 -0400
-X-MC-Unique: eqeM14vVO2quZOXq8ExUyA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7272910151E0;
-        Mon, 18 Oct 2021 15:05:27 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.36.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A12FE57CA4;
-        Mon, 18 Oct 2021 15:05:12 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH 55/67] afs: Skip truncation on the server of data we haven't
- written yet
-From:   David Howells <dhowells@redhat.com>
-To:     linux-cachefs@redhat.com
-Cc:     dhowells@redhat.com, Trond Myklebust <trondmy@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Jeff Layton <jlayton@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Omar Sandoval <osandov@osandov.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org,
-        linux-cifs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Mon, 18 Oct 2021 16:05:11 +0100
-Message-ID: <163456951186.2614702.16840420880926305225.stgit@warthog.procyon.org.uk>
-In-Reply-To: <163456861570.2614702.14754548462706508617.stgit@warthog.procyon.org.uk>
-References: <163456861570.2614702.14754548462706508617.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        Mon, 18 Oct 2021 11:09:00 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E281C061771
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 08:06:38 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 67-20020a1c1946000000b0030d4c90fa87so254358wmz.2
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 08:06:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2lpX8MzHrofB767bBYDr4EpmpygqZoVr7h7+rRjUfhk=;
+        b=IasgMAV6elCuzOLnYMKqhANSzWVEPIhSizJDwNbvzrKq1kU1xnURIlII5tsZDotTWu
+         mViYQeckGsLA8b+2lieuSLvz/wyUpK9ePCEo3yjNzXLC37+pTSFAMuEhnL6YpJdeCwRE
+         h7srdipUdcG4ZUVNV/vHbcKSXq4ZEt1L6ufKNmBubuKwtfraSnD+pzMpFTLu+CENm09X
+         fo9/aWJvbaYD7ez9zdGI27DpLcDTjCtvyP7yZAYfEBWKfa0SC91hL6WKIcQEc/ESeZUe
+         RD70Omx2GzeWhnhz7n9+uiU51QWf04XFddYw3LL+tNSwIYjwawZr5O5rzjeEOK50r5KD
+         NUsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2lpX8MzHrofB767bBYDr4EpmpygqZoVr7h7+rRjUfhk=;
+        b=RDbYqM69mnkKAHmR4NIL6t97GZHbcoMBPVWL4yo14ZHY80jGVx61iwzOPypXWYZuKl
+         6+HEJAYp67s3XYmymCfvxNiEs4AuWmOsDcUF6DoagfYYLHRimCU2sK9xBVM5EApdCO5f
+         TJcEULZcbvl1DxpgrEDrF0TCVXfhLm1nSv9l7BxhmKhZ45QVr99mPrXqv8B/EJEDyJ70
+         YprvHHsflfBEO6GIsuS0Xan8Vgu7L5aHPmUo/kUnJ21fQn2+g30RLFL9yXtUORjxxmCS
+         Zb1goljAKki+LrELFIVLAqdvK1bNPMCq8rHhBBt2+9mrB8C5Fgz6oZ4w9YbuSI/j1vKA
+         UC+A==
+X-Gm-Message-State: AOAM533nFIo/IE5Lw07nQ17PjzsFVLrGTNvq33S1+U6ttMlANlkWOfEW
+        MtTv8G0IXR/mmpoqH/8b+3U5zBd87zdDZTzL
+X-Google-Smtp-Source: ABdhPJy1+lA+Qhlp5oMGMVMjJUVdoRviC1k/IeyjpzGcdZwcvl8Md958DtDadR24K29v7y06hFaJ3Q==
+X-Received: by 2002:a1c:2b81:: with SMTP id r123mr22101493wmr.136.1634569596688;
+        Mon, 18 Oct 2021 08:06:36 -0700 (PDT)
+Received: from localhost.localdomain ([2a01:4b00:f411:e700:e085:8cb7:7bf6:5d62])
+        by smtp.gmail.com with ESMTPSA id u13sm4543646wri.50.2021.10.18.08.06.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Oct 2021 08:06:36 -0700 (PDT)
+From:   Karolina Drobnik <karolinadrobnik@gmail.com>
+To:     outreachy-kernel@googlegroups.com
+Cc:     gregkh@linuxfoundation.org, forest@alittletooquiet.net,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Karolina Drobnik <karolinadrobnik@gmail.com>
+Subject: [PATCH] staging: vt6655: Fix line wrapping in rf.c file
+Date:   Mon, 18 Oct 2021 16:05:26 +0100
+Message-Id: <20211018150526.9718-1-karolinadrobnik@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Don't send a truncation RPC to the server if we're only shortening data
-that's in the pagecache and is beyond the server's EOF.
+Fix line length warnings raised by checkpatch.pl in
+rf.c file for `RFvWriteWakeProgSyn`,`RFbRawSetPower`
+and `RFbAL7230SelectChannelPostProcess`functions.
 
-Also don't automatically force writeback on setattr, but do wait to store
-RPCs that are in the region to be removed on a shortening truncation.
-
-Signed-off-by: David Howells <dhowells@redhat.com>
+Signed-off-by: Karolina Drobnik <karolinadrobnik@gmail.com>
 ---
+ drivers/staging/vt6655/rf.c | 66 +++++++++++++++++++++++++++----------
+ 1 file changed, 49 insertions(+), 17 deletions(-)
 
- fs/afs/inode.c |   45 +++++++++++++++++++++++++++++++++++----------
- 1 file changed, 35 insertions(+), 10 deletions(-)
-
-diff --git a/fs/afs/inode.c b/fs/afs/inode.c
-index c4af4fda37dd..4c66a2b86add 100644
---- a/fs/afs/inode.c
-+++ b/fs/afs/inode.c
-@@ -848,42 +848,67 @@ static const struct afs_operation_ops afs_setattr_operation = {
- int afs_setattr(struct user_namespace *mnt_userns, struct dentry *dentry,
- 		struct iattr *attr)
- {
-+	const unsigned int supported =
-+		ATTR_SIZE | ATTR_MODE | ATTR_UID | ATTR_GID |
-+		ATTR_MTIME | ATTR_MTIME_SET | ATTR_TIMES_SET | ATTR_TOUCH;
- 	struct afs_operation *op;
- 	struct afs_vnode *vnode = AFS_FS_I(d_inode(dentry));
-+	struct inode *inode = &vnode->vfs_inode;
-+	loff_t i_size;
- 	int ret;
+diff --git a/drivers/staging/vt6655/rf.c b/drivers/staging/vt6655/rf.c
+index a6f17162d017..206d34b555bc 100644
+--- a/drivers/staging/vt6655/rf.c
++++ b/drivers/staging/vt6655/rf.c
+@@ -699,11 +699,17 @@ bool RFvWriteWakeProgSyn(struct vnt_private *priv, unsigned char byRFType,
+ 			return false;
  
- 	_enter("{%llx:%llu},{n=%pd},%x",
- 	       vnode->fid.vid, vnode->fid.vnode, dentry,
- 	       attr->ia_valid);
+ 		for (ii = 0; ii < CB_AL2230_INIT_SEQ; ii++)
+-			MACvSetMISCFifo(priv, (unsigned short)(MISCFIFO_SYNDATA_IDX + ii), dwAL2230InitTable[ii]);
++			MACvSetMISCFifo(priv,
++					(unsigned short)(MISCFIFO_SYNDATA_IDX + ii),
++					dwAL2230InitTable[ii]);
  
--	if (!(attr->ia_valid & (ATTR_SIZE | ATTR_MODE | ATTR_UID | ATTR_GID |
--				ATTR_MTIME | ATTR_MTIME_SET | ATTR_TIMES_SET |
--				ATTR_TOUCH))) {
-+	if (!(attr->ia_valid & supported)) {
- 		_leave(" = 0 [unsupported]");
- 		return 0;
+-		MACvSetMISCFifo(priv, (unsigned short)(MISCFIFO_SYNDATA_IDX + ii), dwAL2230ChannelTable0[uChannel - 1]);
++		MACvSetMISCFifo(priv,
++				(unsigned short)(MISCFIFO_SYNDATA_IDX + ii),
++				dwAL2230ChannelTable0[uChannel - 1]);
+ 		ii++;
+-		MACvSetMISCFifo(priv, (unsigned short)(MISCFIFO_SYNDATA_IDX + ii), dwAL2230ChannelTable1[uChannel - 1]);
++		MACvSetMISCFifo(priv,
++				(unsigned short)(MISCFIFO_SYNDATA_IDX + ii),
++				dwAL2230ChannelTable1[uChannel - 1]);
+ 		break;
+ 
+ 		/* Need to check, PLLON need to be low for channel setting */
+@@ -716,17 +722,28 @@ bool RFvWriteWakeProgSyn(struct vnt_private *priv, unsigned char byRFType,
+ 
+ 		if (uChannel <= CB_MAX_CHANNEL_24G) {
+ 			for (ii = 0; ii < CB_AL7230_INIT_SEQ; ii++)
+-				MACvSetMISCFifo(priv, (unsigned short)(MISCFIFO_SYNDATA_IDX + ii), dwAL7230InitTable[ii]);
++				MACvSetMISCFifo(priv,
++						(unsigned short)(MISCFIFO_SYNDATA_IDX
++						+ ii), dwAL7230InitTable[ii]);
+ 		} else {
+ 			for (ii = 0; ii < CB_AL7230_INIT_SEQ; ii++)
+-				MACvSetMISCFifo(priv, (unsigned short)(MISCFIFO_SYNDATA_IDX + ii), dwAL7230InitTableAMode[ii]);
++				MACvSetMISCFifo(priv,
++						(unsigned short)(MISCFIFO_SYNDATA_IDX
++						+ ii),
++					dwAL7230InitTableAMode[ii]);
+ 		}
+ 
+-		MACvSetMISCFifo(priv, (unsigned short)(MISCFIFO_SYNDATA_IDX + ii), dwAL7230ChannelTable0[uChannel - 1]);
++		MACvSetMISCFifo(priv,
++				(unsigned short)(MISCFIFO_SYNDATA_IDX + ii),
++				dwAL7230ChannelTable0[uChannel - 1]);
+ 		ii++;
+-		MACvSetMISCFifo(priv, (unsigned short)(MISCFIFO_SYNDATA_IDX + ii), dwAL7230ChannelTable1[uChannel - 1]);
++		MACvSetMISCFifo(priv,
++				(unsigned short)(MISCFIFO_SYNDATA_IDX + ii),
++				dwAL7230ChannelTable1[uChannel - 1]);
+ 		ii++;
+-		MACvSetMISCFifo(priv, (unsigned short)(MISCFIFO_SYNDATA_IDX + ii), dwAL7230ChannelTable2[uChannel - 1]);
++		MACvSetMISCFifo(priv,
++				(unsigned short)(MISCFIFO_SYNDATA_IDX + ii),
++				dwAL7230ChannelTable2[uChannel - 1]);
+ 		break;
+ 
+ 	case RF_NOTHING:
+@@ -736,7 +753,8 @@ bool RFvWriteWakeProgSyn(struct vnt_private *priv, unsigned char byRFType,
+ 		return false;
  	}
  
-+	i_size = i_size_read(inode);
- 	if (attr->ia_valid & ATTR_SIZE) {
--		if (!S_ISREG(vnode->vfs_inode.i_mode))
-+		if (!S_ISREG(inode->i_mode))
- 			return -EISDIR;
+-	MACvSetMISCFifo(priv, MISCFIFO_SYNINFO_IDX, (unsigned long)MAKEWORD(bySleepCount, byInitCount));
++	MACvSetMISCFifo(priv, MISCFIFO_SYNINFO_IDX,
++			(unsigned long)MAKEWORD(bySleepCount, byInitCount));
  
--		ret = inode_newsize_ok(&vnode->vfs_inode, attr->ia_size);
-+		ret = inode_newsize_ok(inode, attr->ia_size);
- 		if (ret)
- 			return ret;
+ 	return true;
+ }
+@@ -836,20 +854,32 @@ bool RFbRawSetPower(struct vnt_private *priv, unsigned char byPwr,
+ 	case RF_AIROHA:
+ 		ret &= IFRFbWriteEmbedded(priv, dwAL2230PowerTable[byPwr]);
+ 		if (rate <= RATE_11M)
+-			ret &= IFRFbWriteEmbedded(priv, 0x0001B400 + (BY_AL2230_REG_LEN << 3) + IFREGCTL_REGW);
++			ret &= IFRFbWriteEmbedded(priv, 0x0001B400
++					+ (BY_AL2230_REG_LEN << 3)
++					+ IFREGCTL_REGW);
+ 		else
+-			ret &= IFRFbWriteEmbedded(priv, 0x0005A400 + (BY_AL2230_REG_LEN << 3) + IFREGCTL_REGW);
++			ret &= IFRFbWriteEmbedded(priv, 0x0005A400
++					+ (BY_AL2230_REG_LEN << 3)
++					+ IFREGCTL_REGW);
  
--		if (attr->ia_size == i_size_read(&vnode->vfs_inode))
-+		if (attr->ia_size == i_size)
- 			attr->ia_valid &= ~ATTR_SIZE;
- 	}
+ 		break;
  
- 	fscache_use_cookie(afs_vnode_cache(vnode), true);
+ 	case RF_AL2230S:
+ 		ret &= IFRFbWriteEmbedded(priv, dwAL2230PowerTable[byPwr]);
+ 		if (rate <= RATE_11M) {
+-			ret &= IFRFbWriteEmbedded(priv, 0x040C1400 + (BY_AL2230_REG_LEN << 3) + IFREGCTL_REGW);
+-			ret &= IFRFbWriteEmbedded(priv, 0x00299B00 + (BY_AL2230_REG_LEN << 3) + IFREGCTL_REGW);
++			ret &= IFRFbWriteEmbedded(priv, 0x040C1400
++					+ (BY_AL2230_REG_LEN << 3)
++					+ IFREGCTL_REGW);
++			ret &= IFRFbWriteEmbedded(priv, 0x00299B00
++					+ (BY_AL2230_REG_LEN << 3)
++					+ IFREGCTL_REGW);
+ 		} else {
+-			ret &= IFRFbWriteEmbedded(priv, 0x0005A400 + (BY_AL2230_REG_LEN << 3) + IFREGCTL_REGW);
+-			ret &= IFRFbWriteEmbedded(priv, 0x00099B00 + (BY_AL2230_REG_LEN << 3) + IFREGCTL_REGW);
++			ret &= IFRFbWriteEmbedded(priv, 0x0005A400
++					+ (BY_AL2230_REG_LEN << 3)
++					+ IFREGCTL_REGW);
++			ret &= IFRFbWriteEmbedded(priv, 0x00099B00
++					+ (BY_AL2230_REG_LEN << 3)
++					+ IFREGCTL_REGW);
+ 		}
  
--	/* flush any dirty data outstanding on a regular file */
--	if (S_ISREG(vnode->vfs_inode.i_mode))
--		filemap_write_and_wait(vnode->vfs_inode.i_mapping);
--
- 	/* Prevent any new writebacks from starting whilst we do this. */
- 	down_write(&vnode->validate_lock);
- 
-+	if ((attr->ia_valid & ATTR_SIZE) && S_ISREG(inode->i_mode)) {
-+		loff_t size = attr->ia_size;
-+
-+		/* Wait for any outstanding writes to the server to complete */
-+		loff_t from = min(size, i_size);
-+		loff_t to = max(size, i_size);
-+		ret = filemap_fdatawait_range(inode->i_mapping, from, to);
-+		if (ret < 0)
-+			goto out_unlock;
-+
-+		/* Don't talk to the server if we're just shortening in-memory
-+		 * writes that haven't gone to the server yet.
-+		 */
-+		if (!(attr->ia_valid & (supported & ~ATTR_SIZE & ~ATTR_MTIME)) &&
-+		    attr->ia_size < i_size &&
-+		    attr->ia_size > vnode->status.size) {
-+			truncate_pagecache(inode, attr->ia_size);
-+			fscache_resize_cookie(afs_vnode_cache(vnode),
-+					      attr->ia_size);
-+			i_size_write(inode, attr->ia_size);
-+			ret = 0;
-+			goto out_unlock;
-+		}
-+	}
-+
- 	op = afs_alloc_operation(((attr->ia_valid & ATTR_FILE) ?
- 				  afs_file_key(attr->ia_file) : NULL),
- 				 vnode->volume);
-
+ 		break;
+@@ -921,7 +951,8 @@ bool RFbAL7230SelectChannelPostProcess(struct vnt_private *priv,
+ 	 * register
+ 	 * Channel Index 1~14
+ 	 */
+-	if ((byOldChannel <= CB_MAX_CHANNEL_24G) && (byNewChannel > CB_MAX_CHANNEL_24G)) {
++	if ((byOldChannel <= CB_MAX_CHANNEL_24G) &&
++	    (byNewChannel > CB_MAX_CHANNEL_24G)) {
+ 		/* Change from 2.4G to 5G [Reg] */
+ 		ret &= IFRFbWriteEmbedded(priv, dwAL7230InitTableAMode[2]);
+ 		ret &= IFRFbWriteEmbedded(priv, dwAL7230InitTableAMode[3]);
+@@ -930,7 +961,8 @@ bool RFbAL7230SelectChannelPostProcess(struct vnt_private *priv,
+ 		ret &= IFRFbWriteEmbedded(priv, dwAL7230InitTableAMode[10]);
+ 		ret &= IFRFbWriteEmbedded(priv, dwAL7230InitTableAMode[12]);
+ 		ret &= IFRFbWriteEmbedded(priv, dwAL7230InitTableAMode[15]);
+-	} else if ((byOldChannel > CB_MAX_CHANNEL_24G) && (byNewChannel <= CB_MAX_CHANNEL_24G)) {
++	} else if ((byOldChannel > CB_MAX_CHANNEL_24G) &&
++		   (byNewChannel <= CB_MAX_CHANNEL_24G)) {
+ 		/* Change from 5G to 2.4G [Reg] */
+ 		ret &= IFRFbWriteEmbedded(priv, dwAL7230InitTable[2]);
+ 		ret &= IFRFbWriteEmbedded(priv, dwAL7230InitTable[3]);
+-- 
+2.30.2
 
