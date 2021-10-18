@@ -2,143 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14E05431405
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 12:02:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59907431406
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 12:02:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231127AbhJRKFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 06:05:01 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:36114 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229773AbhJRKEx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 06:04:53 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 7CB9A1FD6D;
-        Mon, 18 Oct 2021 10:02:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1634551361; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4LE2XnoDd93shSdXnFcB5mdAxtyex8WZOGCV661COJQ=;
-        b=qkaIxHgdf9rNQ6p7t2UyQgmjt4nOBjLTK+YjGf7iJOJ6K5XtdLTkyfv6pEzrco2nu3wtr7
-        ZP9yUguZ4CPANy1LlDirZCzoQulMBkziPX5XJjn+2fmCV58zKeq0qxD3fzLovgoIIMTzQz
-        xFSucLP+NrmhZvRfiOH545Ng5pamHgA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1634551361;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4LE2XnoDd93shSdXnFcB5mdAxtyex8WZOGCV661COJQ=;
-        b=gdxufcHDp6xAV6EKnuzBDuAxjGxCABVtEVUW4yE5hSsuY6PT9X6jMCxGPmKZw8XUhHQsVH
-        dXlqAu2Xrdi+vEAA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 34F1C13CC9;
-        Mon, 18 Oct 2021 10:02:41 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id tIO6C0FGbWH+YwAAMHmgww
-        (envelope-from <tzimmermann@suse.de>); Mon, 18 Oct 2021 10:02:41 +0000
-Message-ID: <87f347bf-801f-7fba-bb52-009367cd30a0@suse.de>
-Date:   Mon, 18 Oct 2021 12:02:40 +0200
+        id S231134AbhJRKFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 06:05:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43736 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229519AbhJRKFF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 06:05:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5719660F57;
+        Mon, 18 Oct 2021 10:02:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634551375;
+        bh=y0mro2FgkRIxQ83VpxLayD94+80WbOviBdvzfdUkVj8=;
+        h=Date:From:To:Cc:Subject:From;
+        b=ZME0cI/vqwyuz5uaKrraPgGjlC5287lj33t4JZcsbhud3VoktK545wTFu+516HWDz
+         3z+hXYu/mkJ75PscG2Zuy+jQinjMd2qx/aAeXFRrnIEkjssLa4s5eSqyGIkoJNP3bh
+         BRnntKw+3JTJGrQ2Ewc+hMOSxzggdMvNDvwC06cGNradeSRK9g5gMOTz5RwRIE6fzz
+         90TYZfhTulMrAqT/FHNceZA9/qdv252z32kxsMlUg1HsQ5Cif78bq/1Bo8mjzPG6Xm
+         Iru8vFQmvUMiQthu4LTeL5gWfIem4hjxKCDeVPbEiYokmvDlUEYstOt8814lIKi4xz
+         XgnIlJXuMMRuA==
+Date:   Mon, 18 Oct 2021 13:02:50 +0300
+From:   Oded Gabbay <ogabbay@kernel.org>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org, jgg@ziepe.ca, daniel.vetter@ffwll.ch,
+        ogabbay@habana.ai, airlied@gmail.com
+Subject: [git pull] habanalabs pull request for kernel 5.16
+Message-ID: <20211018100250.GA1132625@ogabbay-vm-u20.habana-labs.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH 1/6] drm: vkms: Replace the deprecated
- drm_mode_config_init
-Content-Language: en-US
-To:     Igor Matheus Andrade Torrente <igormtorrente@gmail.com>,
-        rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com
-Cc:     hamohammed.sa@gmail.com, daniel@ffwll.ch, airlied@linux.ie,
-        contact@emersion.fr, leandro.ribeiro@collabora.com,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        lkcamp@lists.libreplanetbr.org
-References: <20211005201637.58563-1-igormtorrente@gmail.com>
- <20211005201637.58563-2-igormtorrente@gmail.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-In-Reply-To: <20211005201637.58563-2-igormtorrente@gmail.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------BIiV4QcdVMhZMoK9nuGx1JYL"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------BIiV4QcdVMhZMoK9nuGx1JYL
-Content-Type: multipart/mixed; boundary="------------AjdwBHD0ODWd46YzR8rEggoa";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Igor Matheus Andrade Torrente <igormtorrente@gmail.com>,
- rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com
-Cc: hamohammed.sa@gmail.com, daniel@ffwll.ch, airlied@linux.ie,
- contact@emersion.fr, leandro.ribeiro@collabora.com,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- lkcamp@lists.libreplanetbr.org
-Message-ID: <87f347bf-801f-7fba-bb52-009367cd30a0@suse.de>
-Subject: Re: [PATCH 1/6] drm: vkms: Replace the deprecated
- drm_mode_config_init
-References: <20211005201637.58563-1-igormtorrente@gmail.com>
- <20211005201637.58563-2-igormtorrente@gmail.com>
-In-Reply-To: <20211005201637.58563-2-igormtorrente@gmail.com>
+Hi Greg,
 
---------------AjdwBHD0ODWd46YzR8rEggoa
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+This is habanalabs pull request for the merge window of kernel 5.16.
+It's a relatively small pull request as Gaudi code is mostly mature.
+Please note this contains the peer-to-peer support with DMA-BUF code.
 
-SGkNCg0KQW0gMDUuMTAuMjEgdW0gMjI6MTYgc2NocmllYiBJZ29yIE1hdGhldXMgQW5kcmFk
-ZSBUb3JyZW50ZToNCj4gVGhlIGBkcm1fbW9kZV9jb25maWdfaW5pdGAgd2FzIGRlcHJlY2F0
-ZWQgc2luY2UgYzNiNzkwZSBjb21taXQsIGFuZCBpdCdzDQo+IGJlaW5nIHJlcGxhY2VkIGJ5
-IHRoZSBgZHJtbV9tb2RlX2NvbmZpZ19pbml0YC4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IEln
-b3IgTWF0aGV1cyBBbmRyYWRlIFRvcnJlbnRlIDxpZ29ybXRvcnJlbnRlQGdtYWlsLmNvbT4N
-Cj4gLS0tDQo+ICAgZHJpdmVycy9ncHUvZHJtL3ZrbXMvdmttc19kcnYuYyB8IDUgKysrKy0N
-Cj4gICAxIGZpbGUgY2hhbmdlZCwgNCBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pDQo+
-IA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL3ZrbXMvdmttc19kcnYuYyBiL2Ry
-aXZlcnMvZ3B1L2RybS92a21zL3ZrbXNfZHJ2LmMNCj4gaW5kZXggMGZmZTVmMGUzM2Y3Li44
-Mjg4Njg5MjA0OTQgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS92a21zL3ZrbXNf
-ZHJ2LmMNCj4gKysrIGIvZHJpdmVycy9ncHUvZHJtL3ZrbXMvdmttc19kcnYuYw0KPiBAQCAt
-MTQwLDggKzE0MCwxMSBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IGRybV9tb2RlX2NvbmZpZ19o
-ZWxwZXJfZnVuY3Mgdmttc19tb2RlX2NvbmZpZ19oZWxwZXJzID0gew0KPiAgIHN0YXRpYyBp
-bnQgdmttc19tb2Rlc2V0X2luaXQoc3RydWN0IHZrbXNfZGV2aWNlICp2a21zZGV2KQ0KPiAg
-IHsNCj4gICAJc3RydWN0IGRybV9kZXZpY2UgKmRldiA9ICZ2a21zZGV2LT5kcm07DQo+ICsJ
-aW50IHJldCA9IGRybW1fbW9kZV9jb25maWdfaW5pdChkZXYpOw0KPiArDQo+ICsJaWYgKHJl
-dCA8IDApDQo+ICsJCXJldHVybiByZXQ7DQoNClRoZSBzdHlsZSBsb29rcyBhd2t3YXJkIElN
-SE8uIFJhdGhlciB1c2UNCg0KICBpbnQgcmV0DQoNCiAgcmV0ID0gZHJtbV9tb2RlX2NvbmZp
-Z19pbml0KCkNCiAgaWYgKHJldCkNCiAgICAgcmV0dXJuIHJldDsNCg0KPiAgIA0KPiAtCWRy
-bV9tb2RlX2NvbmZpZ19pbml0KGRldik7DQo+ICAgCWRldi0+bW9kZV9jb25maWcuZnVuY3Mg
-PSAmdmttc19tb2RlX2Z1bmNzOw0KPiAgIAlkZXYtPm1vZGVfY29uZmlnLm1pbl93aWR0aCA9
-IFhSRVNfTUlOOw0KPiAgIAlkZXYtPm1vZGVfY29uZmlnLm1pbl9oZWlnaHQgPSBZUkVTX01J
-TjsNCj4gDQoNCi0tIA0KVGhvbWFzIFppbW1lcm1hbm4NCkdyYXBoaWNzIERyaXZlciBEZXZl
-bG9wZXINClNVU0UgU29mdHdhcmUgU29sdXRpb25zIEdlcm1hbnkgR21iSA0KTWF4ZmVsZHN0
-ci4gNSwgOTA0MDkgTsO8cm5iZXJnLCBHZXJtYW55DQooSFJCIDM2ODA5LCBBRyBOw7xybmJl
-cmcpDQpHZXNjaMOkZnRzZsO8aHJlcjogRmVsaXggSW1lbmTDtnJmZmVyDQo=
+Full details are in the tag.
 
---------------AjdwBHD0ODWd46YzR8rEggoa--
+Thanks,
+Oded
 
---------------BIiV4QcdVMhZMoK9nuGx1JYL
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
+The following changes since commit 22d4f9beaf32a7cda9edeafdf5e99bec3de32c51:
 
------BEGIN PGP SIGNATURE-----
+  Merge 5.15-rc6 into char-misc-next (2021-10-18 09:29:27 +0200)
 
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmFtRkAFAwAAAAAACgkQlh/E3EQov+Dh
-HQ//YLBjCwEKcI6OxzPyUqGSxNmlKi8XR1TOPzGKT1rnTXzDdsBjdBWeaKc2qeJk5cnzWnr4HzY3
-Y/zOT/Vl3vV4MHc7x1rMtj11CaKEK6oXd42pwHAzDHRAcaHtvkK8Lyr+we7sHiFCpOrcNSxU1CYV
-R+q2VfL53QfLs24WdhQX3fZGoDcUiwYBVIFde4C9MdCb8PmTi/Bw1jGBmA+NUkSlfreQ4LG9y2GL
-7rZsCGiyUmDoBLzaX4ysLpiReNkRub/s4sdiZ6Lk8owpWq/KjIy/ii8D9vhVKvD32yj3WM1V7cOu
-harXm+FpSsTBFZuKwGxkW7cE1p9aPDgvU8bTPN8mgVLq++Bq29S7IE4aoWH4tG77CA5s/22HN6Xp
-Ivpr3+GupbRGxHPpxXVdKgKpZTIqcDl+cq8GuxlQtt3oyxTHO2I2Ab0Ig4kHqQrN0UEIEZ7VtBP3
-La+BMnfYKhFKt8BzrPajGeFEjlRWnclEXQ55sAYDLkxo46+czOwSwgO7+TD416sif3HAv9gtWVnT
-+y3igEPG2wCY7LMDQD4Vh20SJtLGBcDNpEhB57b3udCwjiLu6b4NxHIASX69rw7IRBncnEwNrCSc
-6wN7ZrqrsUU0ri21azrCT7BcsAlotOQIjMa/EPH120IXl6iuFAmZ1v+wp8QhvYDVK+k5eZcVOkIw
-26w=
-=ft9+
------END PGP SIGNATURE-----
+are available in the Git repository at:
 
---------------BIiV4QcdVMhZMoK9nuGx1JYL--
+  https://git.kernel.org/pub/scm/linux/kernel/git/ogabbay/linux.git tags/misc-habanalabs-next-2021-10-18
+
+for you to fetch changes up to b2faac3887df87a6e4bc3356280ea35dc7459c0b:
+
+  habanalabs: refactor fence handling in hl_cs_poll_fences (2021-10-18 12:05:48 +0300)
+
+----------------------------------------------------------------
+This tag contains habanalabs driver changes for v5.16:
+
+- Add a new uAPI (under the memory ioctl) to request from the driver
+  to export a DMA-BUF object that represents a memory region on
+  the device's DRAM. This is needed to enable peer-to-peer over PCIe
+  between habana device and an RDMA adapter (e.g. mlnx5 or efa
+  rdma adapter).
+
+- Add debugfs node to dynamically configure CS timeout. Up until now,
+  it was only configurable through kernel module parameter.
+
+- Fetch more comprehensive power information from the firmware.
+
+- Always take timestamp when waiting for user interrupt, as the user
+  needs that information to optimize the graph runtime compilation.
+
+- Modify user interrupt to look on 64-bit user value as fence, instead
+  of 32-bit.
+
+- Bypass reset in case of repeated h/w error event after device reset.
+  This is to prevent endless loop of resets to the device.
+
+- Fix several bugs in multi CS completion code.
+
+- Fix race condition in fd close/open.
+
+- Update to latest firmware headers
+
+- Add select CRC32 in kconfig
+
+- Small fixes, cosmetics
+
+----------------------------------------------------------------
+Alon Mizrahi (1):
+      habanalabs: generalize COMMS message sending procedure
+
+Bharat Jauhari (1):
+      habanalabs: bypass reset for continuous h/w error event
+
+Dani Liberman (3):
+      habanalabs: fix race condition in multi CS completion
+      habanalabs: fix NULL pointer dereference
+      habanalabs: refactor fence handling in hl_cs_poll_fences
+
+Moti Haimovski (1):
+      habanalabs: initialize hpriv fields before adding new node
+
+Oded Gabbay (7):
+      habanalabs: add kernel-doc style comments
+      habanalabs: define soft-reset as inference op
+      habanalabs: refactor reset log message
+      habanalabs: prevent race between fd close/open
+      habanalabs: update firmware files
+      habanalabs: use only u32
+      habanalabs: define uAPI to export FD for DMA-BUF
+
+Ofir Bitton (3):
+      habanalabs: add debugfs node for configuring CS timeout
+      habanalabs: remove redundant cs validity checks
+      habanalabs: add support for a long interrupt target value
+
+Omer Shpigelman (1):
+      habanalabs: context cleanup cosmetics
+
+Rajaravi Krishna Katta (3):
+      habanalabs: create static map of f/w hwmon enums
+      habanalabs: enable power info via HWMON framework
+      habanalabs: Unify frequency set/get functionality
+
+Tomer Tayar (1):
+      habanalabs: add support for dma-buf exporter
+
+Vegard Nossum (1):
+      habanalabs: select CRC32
+
+Yuri Nudelman (3):
+      habanalabs: fix debugfs device memory MMU VA translation
+      habanalabs: take timestamp on wait for interrupt
+      habanalabs: simplify wait for interrupt with timestamp flow
+
+ .../ABI/testing/debugfs-driver-habanalabs          |   6 +
+ drivers/misc/habanalabs/Kconfig                    |   2 +
+ drivers/misc/habanalabs/common/Makefile            |   2 +-
+ .../misc/habanalabs/common/command_submission.c    | 105 +++--
+ drivers/misc/habanalabs/common/context.c           |   8 +-
+ drivers/misc/habanalabs/common/debugfs.c           |  51 ++
+ drivers/misc/habanalabs/common/device.c            | 159 +++++--
+ drivers/misc/habanalabs/common/firmware_if.c       |  28 +-
+ drivers/misc/habanalabs/common/habanalabs.h        |  64 ++-
+ drivers/misc/habanalabs/common/habanalabs_drv.c    |  24 +-
+ .../{gaudi/gaudi_hwmgr.c => common/hwmgr.c}        |  38 +-
+ drivers/misc/habanalabs/common/hwmon.c             | 194 +++++++-
+ drivers/misc/habanalabs/common/irq.c               |   5 +-
+ drivers/misc/habanalabs/common/memory.c            | 513 ++++++++++++++++++++-
+ drivers/misc/habanalabs/common/mmu/mmu.c           |  30 +-
+ drivers/misc/habanalabs/common/sysfs.c             |   6 +-
+ drivers/misc/habanalabs/gaudi/Makefile             |   2 +-
+ drivers/misc/habanalabs/gaudi/gaudi.c              |  22 +-
+ drivers/misc/habanalabs/gaudi/gaudiP.h             |   4 -
+ drivers/misc/habanalabs/goya/goya.c                |  13 +-
+ drivers/misc/habanalabs/goya/goyaP.h               |   1 -
+ drivers/misc/habanalabs/goya/goya_hwmgr.c          |  31 --
+ drivers/misc/habanalabs/include/common/cpucp_if.h  |  22 +-
+ .../misc/habanalabs/include/common/hl_boot_if.h    | 189 +++++---
+ .../misc/habanalabs/include/gaudi/gaudi_fw_if.h    |  10 +-
+ .../misc/habanalabs/include/gaudi/gaudi_reg_map.h  |   1 +
+ include/uapi/misc/habanalabs.h                     |  84 +++-
+ 27 files changed, 1309 insertions(+), 305 deletions(-)
+ rename drivers/misc/habanalabs/{gaudi/gaudi_hwmgr.c => common/hwmgr.c} (61%)
