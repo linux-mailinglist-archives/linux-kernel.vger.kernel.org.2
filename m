@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BE7F431E33
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:57:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2EE0431B43
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:30:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234462AbhJRN7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:59:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56732 "EHLO mail.kernel.org"
+        id S232924AbhJRNbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:31:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42364 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234212AbhJRN4f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:56:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E4746141B;
-        Mon, 18 Oct 2021 13:40:35 +0000 (UTC)
+        id S232425AbhJRNaI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:30:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4BFDA60EFE;
+        Mon, 18 Oct 2021 13:27:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634564435;
-        bh=X3ObWkAPaz0Q6ij8Vde/caH4aQ/NT4FzE0Y0IRNZV5k=;
+        s=korg; t=1634563677;
+        bh=q3lh+gjflrBJV2rRqgypOb877B06Z8aBqZPWVjeDlFs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MgR0f3K8xXe0pFRKzzAVSnSpuP/7Zp/CGJZIoJTBbHcOE0CLxIa8k3tgY3zU8Sy8y
-         PCTUQVUlLyvG0LwqQkX2fyb061SvcoCa/mTKR4ft6rN7vlnjcuCZX8eTGtDj5wu/oL
-         0ww/jND++ngFzmvlt45LYCTlQ7SQYtefTb94W3ig=
+        b=Lj5OpsjIty28Jh/pdFWlAnNgryUD90HRNoh+IODyFZ/NsotDNyK76dcx0+/l1cxVn
+         pseYptaDsV5US5vfdqewoBQ967my6UjNRYYXCn9cjhSgNjJEJpduIuZzeyUUUwCtO7
+         x1qCXRngDA4o4MXIQWwE0I9ngpTZUVHe9ov1lBls=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sudeep Holla <sudeep.holla@arm.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>
-Subject: [PATCH 5.14 088/151] tee: optee: Fix missing devices unregister during optee_remove
+        stable@vger.kernel.org,
+        Aleksander Morgado <aleksander@aleksander.es>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.19 20/50] USB: serial: qcserial: add EM9191 QDL support
 Date:   Mon, 18 Oct 2021 15:24:27 +0200
-Message-Id: <20211018132343.546471372@linuxfoundation.org>
+Message-Id: <20211018132327.217339995@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132340.682786018@linuxfoundation.org>
-References: <20211018132340.682786018@linuxfoundation.org>
+In-Reply-To: <20211018132326.529486647@linuxfoundation.org>
+References: <20211018132326.529486647@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,88 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sumit Garg <sumit.garg@linaro.org>
+From: Aleksander Morgado <aleksander@aleksander.es>
 
-commit 7f565d0ead264329749c0da488de9c8dfa2f18ce upstream.
+commit 11c52d250b34a0862edc29db03fbec23b30db6da upstream.
 
-When OP-TEE driver is built as a module, OP-TEE client devices
-registered on TEE bus during probe should be unregistered during
-optee_remove. So implement optee_unregister_devices() accordingly.
+When the module boots into QDL download mode it exposes the 1199:90d2
+ids, which can be mapped to the qcserial driver, and used to run
+firmware upgrades (e.g. with the qmi-firmware-update program).
 
-Fixes: c3fa24af9244 ("tee: optee: add TEE bus device enumeration support")
-Reported-by: Sudeep Holla <sudeep.holla@arm.com>
-Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
+  T:  Bus=01 Lev=03 Prnt=08 Port=03 Cnt=01 Dev#= 10 Spd=480 MxCh= 0
+  D:  Ver= 2.10 Cls=00(>ifc ) Sub=00 Prot=00 MxPS=64 #Cfgs=  1
+  P:  Vendor=1199 ProdID=90d2 Rev=00.00
+  S:  Manufacturer=Sierra Wireless, Incorporated
+  S:  Product=Sierra Wireless EM9191
+  S:  SerialNumber=8W0382004102A109
+  C:  #Ifs= 1 Cfg#= 1 Atr=a0 MxPwr=2mA
+  I:  If#=0x0 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=10 Driver=qcserial
+
+Signed-off-by: Aleksander Morgado <aleksander@aleksander.es>
+Cc: stable@vger.kernel.org
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/tee/optee/core.c          |    3 +++
- drivers/tee/optee/device.c        |   22 ++++++++++++++++++++++
- drivers/tee/optee/optee_private.h |    1 +
- 3 files changed, 26 insertions(+)
+ drivers/usb/serial/qcserial.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/tee/optee/core.c
-+++ b/drivers/tee/optee/core.c
-@@ -585,6 +585,9 @@ static int optee_remove(struct platform_
- {
- 	struct optee *optee = platform_get_drvdata(pdev);
- 
-+	/* Unregister OP-TEE specific client devices on TEE bus */
-+	optee_unregister_devices();
-+
- 	/*
- 	 * Ask OP-TEE to free all cached shared memory objects to decrease
- 	 * reference counters and also avoid wild pointers in secure world
---- a/drivers/tee/optee/device.c
-+++ b/drivers/tee/optee/device.c
-@@ -53,6 +53,13 @@ static int get_devices(struct tee_contex
- 	return 0;
- }
- 
-+static void optee_release_device(struct device *dev)
-+{
-+	struct tee_client_device *optee_device = to_tee_client_device(dev);
-+
-+	kfree(optee_device);
-+}
-+
- static int optee_register_device(const uuid_t *device_uuid)
- {
- 	struct tee_client_device *optee_device = NULL;
-@@ -63,6 +70,7 @@ static int optee_register_device(const u
- 		return -ENOMEM;
- 
- 	optee_device->dev.bus = &tee_bus_type;
-+	optee_device->dev.release = optee_release_device;
- 	if (dev_set_name(&optee_device->dev, "optee-ta-%pUb", device_uuid)) {
- 		kfree(optee_device);
- 		return -ENOMEM;
-@@ -154,3 +162,17 @@ int optee_enumerate_devices(u32 func)
- {
- 	return  __optee_enumerate_devices(func);
- }
-+
-+static int __optee_unregister_device(struct device *dev, void *data)
-+{
-+	if (!strncmp(dev_name(dev), "optee-ta", strlen("optee-ta")))
-+		device_unregister(dev);
-+
-+	return 0;
-+}
-+
-+void optee_unregister_devices(void)
-+{
-+	bus_for_each_dev(&tee_bus_type, NULL, NULL,
-+			 __optee_unregister_device);
-+}
---- a/drivers/tee/optee/optee_private.h
-+++ b/drivers/tee/optee/optee_private.h
-@@ -184,6 +184,7 @@ void optee_fill_pages_list(u64 *dst, str
- #define PTA_CMD_GET_DEVICES		0x0
- #define PTA_CMD_GET_DEVICES_SUPP	0x1
- int optee_enumerate_devices(u32 func);
-+void optee_unregister_devices(void);
- 
- /*
-  * Small helpers
+--- a/drivers/usb/serial/qcserial.c
++++ b/drivers/usb/serial/qcserial.c
+@@ -165,6 +165,7 @@ static const struct usb_device_id id_tab
+ 	{DEVICE_SWI(0x1199, 0x907b)},	/* Sierra Wireless EM74xx */
+ 	{DEVICE_SWI(0x1199, 0x9090)},	/* Sierra Wireless EM7565 QDL */
+ 	{DEVICE_SWI(0x1199, 0x9091)},	/* Sierra Wireless EM7565 */
++	{DEVICE_SWI(0x1199, 0x90d2)},	/* Sierra Wireless EM9191 QDL */
+ 	{DEVICE_SWI(0x413c, 0x81a2)},	/* Dell Wireless 5806 Gobi(TM) 4G LTE Mobile Broadband Card */
+ 	{DEVICE_SWI(0x413c, 0x81a3)},	/* Dell Wireless 5570 HSPA+ (42Mbps) Mobile Broadband Card */
+ 	{DEVICE_SWI(0x413c, 0x81a4)},	/* Dell Wireless 5570e HSPA+ (42Mbps) Mobile Broadband Card */
 
 
