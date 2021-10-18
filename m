@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12988431E2A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:57:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D91C431BF3
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:34:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234828AbhJRN6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:58:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59060 "EHLO mail.kernel.org"
+        id S232789AbhJRNgo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:36:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43688 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234474AbhJRN4T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:56:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8222761A07;
-        Mon, 18 Oct 2021 13:40:27 +0000 (UTC)
+        id S231795AbhJRNfD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:35:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 512BE610A6;
+        Mon, 18 Oct 2021 13:30:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634564428;
-        bh=fwWc1vHc++P7U8++KRpjhEkjrQAy4ulOHvPESQ1xhfw=;
+        s=korg; t=1634563821;
+        bh=90kXehvpQUPWrT0A1olxvxENgHo8g6UIskVWuso48Bo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=y81LCEA6RAuFm6f/IX599cR4aKiaG296Ao0W0rBahl8aUG6sMQuOe7I9LzJXcTcHq
-         1+513bCrZdY67ITMiSisz2+v08LFrLIYcnmPf5SaCnrCLoZ7oBuS835pDfLl9Ohoct
-         GsuQIfI9J7X7hWQ/Le5H76IG0/XKO4iz10BPIIMY=
+        b=nJp+tSagKJa7uuFyz0ApNbSpmGTmuonkFTti4gQ9G9xrBDGRff4426R4TN5rkk3Wz
+         Kyr5uwh1oCBvfY++GkUe6V31wbyayWCYpxS6EzEUbRlVHvBRURvk2Li+5pAoVsFEPG
+         iXWvqP07eqOGgKbk0fcmyk0kLNAmwWWXVe/FjOUQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 5.14 086/151] iio: dac: ti-dac5571: fix an error code in probe()
-Date:   Mon, 18 Oct 2021 15:24:25 +0200
-Message-Id: <20211018132343.488553361@linuxfoundation.org>
+        stable@vger.kernel.org, Yu-Tung Chang <mtwget@gmail.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 5.4 28/69] USB: serial: option: add Quectel EC200S-CN module support
+Date:   Mon, 18 Oct 2021 15:24:26 +0200
+Message-Id: <20211018132330.395325606@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132340.682786018@linuxfoundation.org>
-References: <20211018132340.682786018@linuxfoundation.org>
+In-Reply-To: <20211018132329.453964125@linuxfoundation.org>
+References: <20211018132329.453964125@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,31 +39,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Yu-Tung Chang <mtwget@gmail.com>
 
-commit f7a28df7db84eb3410e9eca37832efa5aed93338 upstream.
+commit 2263eb7370060bdb0013bc14e1a7c9bf33617a55 upstream.
 
-If we have an unexpected number of channels then return -EINVAL instead
-of returning success.
+Add usb product id of the Quectel EC200S-CN module.
 
-Fixes: df38a4a72a3b ("iio: dac: add TI DAC5571 family support")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Link: https://lore.kernel.org/r/20210816183954.GB2068@kili
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+usb-devices output for 0x6002:
+T:  Bus=01 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#=  3 Spd=480 MxCh= 0
+D:  Ver= 2.00 Cls=ef(misc ) Sub=02 Prot=01 MxPS=64 #Cfgs=  1
+P:  Vendor=2c7c ProdID=6002 Rev=03.18
+S:  Manufacturer=Android
+S:  Product=Android
+S:  SerialNumber=0000
+C:  #Ifs= 5 Cfg#= 1 Atr=e0 MxPwr=500mA
+I:  If#=0x0 Alt= 0 #EPs= 1 Cls=02(commc) Sub=06 Prot=00 Driver=cdc_ether
+I:  If#=0x1 Alt= 1 #EPs= 2 Cls=0a(data ) Sub=00 Prot=00 Driver=cdc_ether
+I:  If#=0x2 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=00 Prot=00 Driver=(none)
+I:  If#=0x3 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=(none)
+I:  If#=0x4 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=(none)
+
+Signed-off-by: Yu-Tung Chang <mtwget@gmail.com>
+Link: https://lore.kernel.org/r/20210930021112.330396-1-mtwget@gmail.com
+Cc: stable@vger.kernel.org
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/iio/dac/ti-dac5571.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/usb/serial/option.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/iio/dac/ti-dac5571.c
-+++ b/drivers/iio/dac/ti-dac5571.c
-@@ -350,6 +350,7 @@ static int dac5571_probe(struct i2c_clie
- 		data->dac5571_pwrdwn = dac5571_pwrdwn_quad;
- 		break;
- 	default:
-+		ret = -EINVAL;
- 		goto err;
- 	}
+--- a/drivers/usb/serial/option.c
++++ b/drivers/usb/serial/option.c
+@@ -251,6 +251,7 @@ static void option_instat_callback(struc
+ #define QUECTEL_PRODUCT_EP06			0x0306
+ #define QUECTEL_PRODUCT_EM12			0x0512
+ #define QUECTEL_PRODUCT_RM500Q			0x0800
++#define QUECTEL_PRODUCT_EC200S_CN		0x6002
+ #define QUECTEL_PRODUCT_EC200T			0x6026
  
+ #define CMOTECH_VENDOR_ID			0x16d8
+@@ -1128,6 +1129,7 @@ static const struct usb_device_id option
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_RM500Q, 0xff, 0, 0) },
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_RM500Q, 0xff, 0xff, 0x10),
+ 	  .driver_info = ZLP },
++	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_EC200S_CN, 0xff, 0, 0) },
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_EC200T, 0xff, 0, 0) },
+ 
+ 	{ USB_DEVICE(CMOTECH_VENDOR_ID, CMOTECH_PRODUCT_6001) },
 
 
