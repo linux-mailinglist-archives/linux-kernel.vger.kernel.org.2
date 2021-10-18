@@ -2,52 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E988430E81
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 06:08:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2786A430E82
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 06:08:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229741AbhJREKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 00:10:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40486 "EHLO mail.kernel.org"
+        id S229823AbhJREKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 00:10:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40948 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229445AbhJREK1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 00:10:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CDC7F61054;
-        Mon, 18 Oct 2021 04:08:15 +0000 (UTC)
+        id S229768AbhJREKh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 00:10:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 7925861054;
+        Mon, 18 Oct 2021 04:08:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634530096;
-        bh=rSBoFOHyf4uqvRd9N6DL3e/GslL/J03tC/7EHWaZi3E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GNiq8RJFaXXbFz8y3UGY65yPyeavMA5V5D6q6NO0OlvtDz+pAZi0ZZx0hQR5v+NMG
-         ODHw5JHoUqoL4Hu6vpC4ksx6ML1/YTwDT3/Znc6DktuI4f+h5/3bfclf21kgALKv0R
-         lttRimYPr6ikF8CM0i1irSUDtZoxGQggzb3QwTPsOozMxlkkHi3NHItGsuiJEPgy8p
-         tiPPTpDzwfz8rripUu2d4todpZIXSxkLpojZ6F5yxThIRv06O20CR1UqJ6BB/s2tck
-         wnPNaJuKdnIqELqQUhMoap6oQc+mzOjItyINEVnJCMxszKhYuA8BTcUxbz1SJMM0ud
-         DRos4LOInoqnA==
-Date:   Mon, 18 Oct 2021 09:38:12 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Colin King <colin.king@canonical.com>
-Cc:     dmaengine@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        s=k20201202; t=1634530107;
+        bh=3bSPGPcKzcEhWt529A5k5kbzfG89oZ+osFs5F5FzCm4=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=cI7idon2XWodWMRUesYcSQh4D/0WsSPTtTUYHwW3SGlkitA8g/hu8obV0fq2GzLtE
+         x0nxE9imaJ6F6nRMNjCdQr9/JKPTvhguY6kK14pqUD00ckGLdber8mCRXQBICVQwGE
+         Bt0AJsx9MTtP11ULYYbhDOGG9wwu8XaRciZZ7f4CeWtRMkDlLH6ADcrNu8RcxpiLfV
+         jFfHIXR6ZX98jiWUbqr/p9Dai617NDG8FIHcmawZjxbFCSq6Tu2sK+p52hkPaHAPQs
+         BHWIxcY53BpSmTHfOfnb466iJ01JbkmlX1iSfOpLQr7ckEYAJmnQWo/Z1J16fbhKPs
+         QanG5k+x6wGpA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 63AA36095B;
+        Mon, 18 Oct 2021 04:08:27 +0000 (UTC)
+Subject: Re: [GIT PULL] Please pull powerpc/linux.git powerpc-5.15-4 tag
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <87sfwzde0r.fsf@mpe.ellerman.id.au>
+References: <87sfwzde0r.fsf@mpe.ellerman.id.au>
+X-PR-Tracked-List-Id: Linux on PowerPC Developers Mail List <linuxppc-dev.lists.ozlabs.org>
+X-PR-Tracked-Message-Id: <87sfwzde0r.fsf@mpe.ellerman.id.au>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-5.15-4
+X-PR-Tracked-Commit-Id: cdeb5d7d890e14f3b70e8087e745c4a6a7d9f337
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: be9eb2f00fa7245116d49f76614054cce8e07af8
+Message-Id: <163453010734.24310.13422809439190787074.pr-tracker-bot@kernel.org>
+Date:   Mon, 18 Oct 2021 04:08:27 +0000
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linuxppc-dev@lists.ozlabs.org, clg@kaod.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dmaengine: Remove redundant initialization of variable
- err
-Message-ID: <YWzzLIcVfsl2TK9K@matsya>
-References: <20211015123447.27560-1-colin.king@canonical.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211015123447.27560-1-colin.king@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15-10-21, 13:34, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> The variable err is being initialized with a value that is never read, it
-> is being updated later on. The assignment is redundant and can be removed
-> and move the declaration into the local scope.
+The pull request you sent on Sun, 17 Oct 2021 23:36:20 +1100:
 
-Applied, thanks
+> https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-5.15-4
+
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/be9eb2f00fa7245116d49f76614054cce8e07af8
+
+Thank you!
 
 -- 
-~Vinod
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
