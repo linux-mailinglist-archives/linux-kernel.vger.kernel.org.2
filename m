@@ -2,121 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 296F0432464
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 19:06:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D4A743246A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 19:08:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233041AbhJRRJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 13:09:05 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:57394 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231922AbhJRRJE (ORCPT
+        id S233855AbhJRRK7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 13:10:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57658 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233828AbhJRRK6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 13:09:04 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 825691FD7F;
-        Mon, 18 Oct 2021 17:06:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1634576812; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=g+xEncPLzGx9ZCLG9ruFPU6W88FhG8Xg3tx8dZBe/xU=;
-        b=y0EDyqcDOsCrk1vKiyIg/AuKOoB0r0I3EXF4nXhCj54KmtJmQiNN+iOzHMGwe/Q7/Q/uJj
-        NYH5fn7QQLHcdZbh92bzNkyJBn6k/8IQL6oYD2StyBolME3mMiCWDHh6yocqnEzlrNzR/D
-        gtl2P+9T+nWW6zGlraejSDj2cWv0hc0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1634576812;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=g+xEncPLzGx9ZCLG9ruFPU6W88FhG8Xg3tx8dZBe/xU=;
-        b=b0DV2eKqDyWp2HUHhAN8fFwVy5suKshGIJtkq/wuEGeiZgvm2xoZRBP9NxjexR7Xk77Gu5
-        YVNoEj0OqdA438DA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2970B140D1;
-        Mon, 18 Oct 2021 17:06:52 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id A8svB6ypbWENSgAAMHmgww
-        (envelope-from <dkirjanov@suse.de>); Mon, 18 Oct 2021 17:06:52 +0000
-Subject: Re: [PATCH] mISDN: Fix return values of the probe function
-To:     Zheyu Ma <zheyuma97@gmail.com>, isdn@linux-pingi.de,
-        davem@davemloft.net
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1634566838-3804-1-git-send-email-zheyuma97@gmail.com>
-From:   Denis Kirjanov <dkirjanov@suse.de>
-Message-ID: <02fe8f6c-e332-5286-a759-750f47c3512a@suse.de>
-Date:   Mon, 18 Oct 2021 20:06:51 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Mon, 18 Oct 2021 13:10:58 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21C30C06161C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 10:08:47 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id t127so3821244ybf.13
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 10:08:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=I3j7UqVjgTnmYPUxSgIR20gTOiacgwPLmKSZwLzYul8=;
+        b=T5Pw+RiwBW0N+FA93+IrhIMG1kPW4MVVbfdu2jTP/u7c+g4dPXF8PfXCK9G6YMVjlg
+         4WBEK7CbMJ2YpifOHQOiqexaMfkQqx0wrbMIwnP/zKXXJM3xygIpqyxUIbkOB7O8gYry
+         Wghn2Lr/eW6HV2j1+W3nbouocFWV3SSefJYqOREZysmOknCOqwNOH7fubwK8+vbkK78n
+         OAKy9rYiqfbz9X4BNQdjPKY+Y1J8q9a8fniKahUfSLNiZD+AGSOkz707Sml9IzDsonZM
+         aHJcBfPFDQhe3miOudj9n1EAkgIs6nUDqTR2rOzUeQd4UZ/WJqEuHMIDWnhTm61VnoTb
+         xyjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=I3j7UqVjgTnmYPUxSgIR20gTOiacgwPLmKSZwLzYul8=;
+        b=WkZ2GEdSKizAmQsWuLPdKfaBxyC+vXzFy/DLy6Zw8BFMuzL/W3n2XIrHn6yO1VbiAu
+         CWH7SBz6i30zomF20aeBxVSgBkjXpRe8uYcnVlDXZECGo20nsF8sScANrdL/PJ+2bGY/
+         V9Dy+M5DJQEaO0771BxGD436y97/a2d0wX2U3eiVU+/qR9IbytxLxnovRX7vxnSH2C72
+         1Y6TZB6ma2VTxiJ3wGui/RGcWfDaxvwFoTmqtMKciVT8CKpnBWnvow8J3pcxiI1fE17n
+         doQrZ+TUWtqx5+K+kbbXCsz1/v0zma71QaZAf6IWOzTKrKLTZCCWPyNAw5HHBit2Brgm
+         0soQ==
+X-Gm-Message-State: AOAM530OHgtDWdC4V2TKSXjGaDI185M2oEsPIuF1a4yTMGeo7maJ8i/Y
+        YYEPIKCGUxqzHGMyF580BVqb4VZhoFe1Xxo/jQ/TNA==
+X-Google-Smtp-Source: ABdhPJychZS1c4zhuCsT0UtT+C4l6qM+ZY4CmBXeM4lYI/sMnDtuR1ghwld8PShjuKs6rpu3+7PA3C4qIiDjV1EUidw=
+X-Received: by 2002:a25:6908:: with SMTP id e8mr30172247ybc.289.1634576925983;
+ Mon, 18 Oct 2021 10:08:45 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1634566838-3804-1-git-send-email-zheyuma97@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: ru
-Content-Transfer-Encoding: 8bit
+References: <20211013181658.1020262-1-samitolvanen@google.com>
+ <20211013181658.1020262-4-samitolvanen@google.com> <7377e6b9-7130-4c20-a0c8-16de4620c995@www.fastmail.com>
+ <8735p25llh.ffs@tglx> <87zgra41dh.ffs@tglx> <CABCJKuc+mN4vw_sanZQKcb1=SyfT4h3JK2wpBuaB2qZH3Croxg@mail.gmail.com>
+ <ecbe49c8-b30b-456c-931a-cc65647b0958@www.fastmail.com> <CABCJKucuun-n8w3=U6i43kVGkCgYL7kmz5wx8nYxsxUOCfzBFw@mail.gmail.com>
+ <20211016211200.umf7okyvtet5ayrd@treble>
+In-Reply-To: <20211016211200.umf7okyvtet5ayrd@treble>
+From:   Sami Tolvanen <samitolvanen@google.com>
+Date:   Mon, 18 Oct 2021 10:08:34 -0700
+Message-ID: <CABCJKucVy3eKJbq8cnKZJDE-5L3xmo=S=1GUQVW+-QF3Hg=iWQ@mail.gmail.com>
+Subject: Re: [PATCH v5 03/15] linkage: Add DECLARE_NOT_CALLED_FROM_C
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-hardening@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Oct 16, 2021 at 2:12 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+>
+> On Fri, Oct 15, 2021 at 01:37:02PM -0700, Sami Tolvanen wrote:
+> > > But we *also* have the read-the-address thing:
+> > >
+> > > void something(void)
+> > > {
+> > >   /* actual C body */
+> > > }
+> > > alternative_call(something, someotherthing, ...);
+> > >
+> > > That wants to expand to assembly code that does:
+> > >
+> > > CALL [target]
+> > >
+> > > where [target] is the actual first instruction of real code and not
+> > > a CFI prologue.
+> >
+> > Yes, here we would ideally want to avoid the CFI stub for better
+> > performance, but nothing actually breaks even if we don't.
+>
+> That's because there's no CFI involved in alternative_call().  It
+> doesn't use function pointers.  It uses direct calls.
 
+Ah, you're right. alternative_call() uses the function name instead of
+the address, so it's not actually affected by CFI.
 
-10/18/21 5:20 PM, Zheyu Ma пишет:
-> During the process of driver probing, the probe function should return < 0
-> for failure, otherwise, the kernel will treat value > 0 as success.
+> > > I kind of thing we want the attributes and the builtin, along the lines of:
+> > >
+> > > asm("call %m", function_nocfi_address(something));
+> > >
+> > > or however else we wire it up.
+> > >
+> > > (And, of course, the things that aren't C functions at all, like
+> > > exception entries, should be opaque.)
+> >
+> > I agree, there are cases where having a function attribute and/or a
+> > built-in to stop the compiler from interfering would be useful. I'll
+> > dust off my patch series and see how the LLVM folks feel about it.
+>
+> With all the talk about function attributes I still haven't heard a
+> clear and specific case where one is needed.
+>
+> If you take out the things that don't actually need the
+> DEFINE_NOT_CALLED_FROM_C() annotation then all you have left is the need
+> for opaque structs as far as I can tell.
 
-setup_card() checks for the return value.
-Thus it makes sense to submit the patch with net-next tag
+Correct.
 
-> 
-> Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
-> ---
->   drivers/isdn/hardware/mISDN/hfcpci.c | 8 ++++----
->   1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/isdn/hardware/mISDN/hfcpci.c b/drivers/isdn/hardware/mISDN/hfcpci.c
-> index e501cb03f211..bd087cca1c1d 100644
-> --- a/drivers/isdn/hardware/mISDN/hfcpci.c
-> +++ b/drivers/isdn/hardware/mISDN/hfcpci.c
-> @@ -1994,14 +1994,14 @@ setup_hw(struct hfc_pci *hc)
->   	pci_set_master(hc->pdev);
->   	if (!hc->irq) {
->   		printk(KERN_WARNING "HFC-PCI: No IRQ for PCI card found\n");
-> -		return 1;
-> +		return -EINVAL;
->   	}
->   	hc->hw.pci_io =
->   		(char __iomem *)(unsigned long)hc->pdev->resource[1].start;
->   
->   	if (!hc->hw.pci_io) {
->   		printk(KERN_WARNING "HFC-PCI: No IO-Mem for PCI card found\n");
-> -		return 1;
-> +		return -ENOMEM;
->   	}
->   	/* Allocate memory for FIFOS */
->   	/* the memory needs to be on a 32k boundary within the first 4G */
-> @@ -2012,7 +2012,7 @@ setup_hw(struct hfc_pci *hc)
->   	if (!buffer) {
->   		printk(KERN_WARNING
->   		       "HFC-PCI: Error allocating memory for FIFO!\n");
-> -		return 1;
-> +		return -ENOMEM;
->   	}
->   	hc->hw.fifos = buffer;
->   	pci_write_config_dword(hc->pdev, 0x80, hc->hw.dmahandle);
-> @@ -2022,7 +2022,7 @@ setup_hw(struct hfc_pci *hc)
->   		       "HFC-PCI: Error in ioremap for PCI!\n");
->   		dma_free_coherent(&hc->pdev->dev, 0x8000, hc->hw.fifos,
->   				  hc->hw.dmahandle);
-> -		return 1;
-> +		return -ENOMEM;
->   	}
->   
->   	printk(KERN_INFO
-> 
+Sami
