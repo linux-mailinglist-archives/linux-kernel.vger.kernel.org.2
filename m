@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C73D8431BF1
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:34:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2B37431B3E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:29:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231945AbhJRNgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:36:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52856 "EHLO mail.kernel.org"
+        id S232047AbhJRNbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:31:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43310 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232753AbhJRNe4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:34:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E13B86058D;
-        Mon, 18 Oct 2021 13:30:18 +0000 (UTC)
+        id S232357AbhJRNaB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:30:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E239B61371;
+        Mon, 18 Oct 2021 13:27:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634563819;
-        bh=q3lh+gjflrBJV2rRqgypOb877B06Z8aBqZPWVjeDlFs=;
+        s=korg; t=1634563670;
+        bh=0It4JOOzgnKHbcrcc2XMXzDqW/2yk8htv0WdXjeYluc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WDhW7Wj5XPEXzbZfLEojKyCg7KGCRDohtRO5f434J7IvNiuzyw7SbWoZif11TkqgX
-         Msa6xApGrwvi+kjjY6CGV9QqUK2/2fFomlXyz7tkbjUCnoZUrryO7zlRu9qlQaLTNi
-         zjczeaEQUV70wsCJvs4kxqYAxnY3+kKtc9cNKBDQ=
+        b=CZmBzIlB5gWmdWQLpb7g11I+upgOSYItUCp5zqBqsZJK1BKLFo8nH0kJjDBEgNg5q
+         +Ggx0xB6Kidm3QabKhipPf8rVIyKyz8RcpBe226VAEOHYwW/ou5unvnlYNqtL1nCwj
+         2u8IVNDXFN5gmqUCKYjGf5Hg+TQ0nMiWuHfHfzRM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Aleksander Morgado <aleksander@aleksander.es>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 5.4 27/69] USB: serial: qcserial: add EM9191 QDL support
+        stable@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH 4.19 18/50] usb: musb: dsps: Fix the probe error path
 Date:   Mon, 18 Oct 2021 15:24:25 +0200
-Message-Id: <20211018132330.363134228@linuxfoundation.org>
+Message-Id: <20211018132327.142225652@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132329.453964125@linuxfoundation.org>
-References: <20211018132329.453964125@linuxfoundation.org>
+In-Reply-To: <20211018132326.529486647@linuxfoundation.org>
+References: <20211018132326.529486647@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,40 +38,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aleksander Morgado <aleksander@aleksander.es>
+From: Miquel Raynal <miquel.raynal@bootlin.com>
 
-commit 11c52d250b34a0862edc29db03fbec23b30db6da upstream.
+commit c2115b2b16421d93d4993f3fe4c520e91d6fe801 upstream.
 
-When the module boots into QDL download mode it exposes the 1199:90d2
-ids, which can be mapped to the qcserial driver, and used to run
-firmware upgrades (e.g. with the qmi-firmware-update program).
+Commit 7c75bde329d7 ("usb: musb: musb_dsps: request_irq() after
+initializing musb") has inverted the calls to
+dsps_setup_optional_vbus_irq() and dsps_create_musb_pdev() without
+updating correctly the error path. dsps_create_musb_pdev() allocates and
+registers a new platform device which must be unregistered and freed
+with platform_device_unregister(), and this is missing upon
+dsps_setup_optional_vbus_irq() error.
 
-  T:  Bus=01 Lev=03 Prnt=08 Port=03 Cnt=01 Dev#= 10 Spd=480 MxCh= 0
-  D:  Ver= 2.10 Cls=00(>ifc ) Sub=00 Prot=00 MxPS=64 #Cfgs=  1
-  P:  Vendor=1199 ProdID=90d2 Rev=00.00
-  S:  Manufacturer=Sierra Wireless, Incorporated
-  S:  Product=Sierra Wireless EM9191
-  S:  SerialNumber=8W0382004102A109
-  C:  #Ifs= 1 Cfg#= 1 Atr=a0 MxPwr=2mA
-  I:  If#=0x0 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=10 Driver=qcserial
+While on the master branch it seems not to trigger any issue, I observed
+a kernel crash because of a NULL pointer dereference with a v5.10.70
+stable kernel where the patch mentioned above was backported. With this
+kernel version, -EPROBE_DEFER is returned the first time
+dsps_setup_optional_vbus_irq() is called which triggers the probe to
+error out without unregistering the platform device. Unfortunately, on
+the Beagle Bone Black Wireless, the platform device still living in the
+system is being used by the USB Ethernet gadget driver, which during the
+boot phase triggers the crash.
 
-Signed-off-by: Aleksander Morgado <aleksander@aleksander.es>
+My limited knowledge of the musb world prevents me to revert this commit
+which was sent to silence a robot warning which, as far as I understand,
+does not make sense. The goal of this patch was to prevent an IRQ to
+fire before the platform device being registered. I think this cannot
+ever happen due to the fact that enabling the interrupts is done by the
+->enable() callback of the platform musb device, and this platform
+device must be already registered in order for the core or any other
+user to use this callback.
+
+Hence, I decided to fix the error path, which might prevent future
+errors on mainline kernels while also fixing older ones.
+
+Fixes: 7c75bde329d7 ("usb: musb: musb_dsps: request_irq() after initializing musb")
 Cc: stable@vger.kernel.org
-Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Link: https://lore.kernel.org/r/20211005221631.1529448-1-miquel.raynal@bootlin.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/serial/qcserial.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/usb/musb/musb_dsps.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/drivers/usb/serial/qcserial.c
-+++ b/drivers/usb/serial/qcserial.c
-@@ -165,6 +165,7 @@ static const struct usb_device_id id_tab
- 	{DEVICE_SWI(0x1199, 0x907b)},	/* Sierra Wireless EM74xx */
- 	{DEVICE_SWI(0x1199, 0x9090)},	/* Sierra Wireless EM7565 QDL */
- 	{DEVICE_SWI(0x1199, 0x9091)},	/* Sierra Wireless EM7565 */
-+	{DEVICE_SWI(0x1199, 0x90d2)},	/* Sierra Wireless EM9191 QDL */
- 	{DEVICE_SWI(0x413c, 0x81a2)},	/* Dell Wireless 5806 Gobi(TM) 4G LTE Mobile Broadband Card */
- 	{DEVICE_SWI(0x413c, 0x81a3)},	/* Dell Wireless 5570 HSPA+ (42Mbps) Mobile Broadband Card */
- 	{DEVICE_SWI(0x413c, 0x81a4)},	/* Dell Wireless 5570e HSPA+ (42Mbps) Mobile Broadband Card */
+--- a/drivers/usb/musb/musb_dsps.c
++++ b/drivers/usb/musb/musb_dsps.c
+@@ -901,11 +901,13 @@ static int dsps_probe(struct platform_de
+ 	if (usb_get_dr_mode(&pdev->dev) == USB_DR_MODE_PERIPHERAL) {
+ 		ret = dsps_setup_optional_vbus_irq(pdev, glue);
+ 		if (ret)
+-			goto err;
++			goto unregister_pdev;
+ 	}
+ 
+ 	return 0;
+ 
++unregister_pdev:
++	platform_device_unregister(glue->musb);
+ err:
+ 	pm_runtime_disable(&pdev->dev);
+ 	iounmap(glue->usbss_base);
 
 
