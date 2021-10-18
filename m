@@ -2,68 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 885234315B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 12:16:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46D434315B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 12:16:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231669AbhJRKSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 06:18:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45006 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231953AbhJRKQi (ORCPT
+        id S231338AbhJRKSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 06:18:36 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:37672 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232098AbhJRKRE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 06:16:38 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B8A6C061772
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 03:13:45 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: kholk11)
-        with ESMTPSA id 3A1E71F42B3B
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     catalin.marinas@arm.com, will@kernel.org, shawnguo@kernel.org,
-        bjorn.andersson@linaro.org, krzk@kernel.org,
-        geert+renesas@glider.be, vkoul@kernel.org,
-        jagan@amarulasolutions.com, agx@sigxcpu.org,
-        biju.das.jz@bp.renesas.com, enric.balletbo@collabora.com,
-        aford173@gmail.com, nm@ti.com,
-        andrey.zhizhikin@leica-geosystems.com, saravanak@google.com,
-        linux-kernel@vger.kernel.org,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Subject: [PATCH] arm64: defconfig: Enable RTC_DRV_MT6397 as module
-Date:   Mon, 18 Oct 2021 12:13:29 +0200
-Message-Id: <20211018101329.360892-1-angelogioacchino.delregno@collabora.com>
-X-Mailer: git-send-email 2.33.0
+        Mon, 18 Oct 2021 06:17:04 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id E5C921FD6D;
+        Mon, 18 Oct 2021 10:14:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1634552092; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=wZItZ6/4LqmOsaf1zl+IRk+CQv7Jy41ALPA0U4WwRco=;
+        b=JRxiQePUMafbBtNceaJkxKnT/cgCWIviLmXkDaFjBx2KVQPfRjhRDR6c6QJ9W2NStx2cDP
+        BR3shNYRHWQiBKRBV1kWH+hBOCUpTN1QcOY37ywMI3UNKXOSDPI6dKbBKtKRVeoIVoP8ns
+        sK+Bjc+DH+sws/XfgiGUuyspEer982I=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1634552092;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=wZItZ6/4LqmOsaf1zl+IRk+CQv7Jy41ALPA0U4WwRco=;
+        b=7DlEYFBu4PYvkw9tYamYM/3r5gfmfh/bMTzgaGqfo3i74l3jEqqJXxN/D1quWDFy0S7/aN
+        IrU+jk0+cAKiU/Bw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id ACA4413CC9;
+        Mon, 18 Oct 2021 10:14:52 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id QFkEKRxJbWGobAAAMHmgww
+        (envelope-from <tzimmermann@suse.de>); Mon, 18 Oct 2021 10:14:52 +0000
+Message-ID: <5507450a-eb69-b24c-9f43-a1780dafbfa9@suse.de>
+Date:   Mon, 18 Oct 2021 12:14:52 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH 5/6] drm: vkms: Prepare `vkms_wb_encoder_atomic_check` to
+ accept multiple formats
+Content-Language: en-US
+To:     Igor Matheus Andrade Torrente <igormtorrente@gmail.com>,
+        rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com
+Cc:     hamohammed.sa@gmail.com, daniel@ffwll.ch, airlied@linux.ie,
+        contact@emersion.fr, leandro.ribeiro@collabora.com,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        lkcamp@lists.libreplanetbr.org
+References: <20211005201637.58563-1-igormtorrente@gmail.com>
+ <20211005201637.58563-6-igormtorrente@gmail.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+In-Reply-To: <20211005201637.58563-6-igormtorrente@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------BeE4Z8perMNS2U3q0azovsqE"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable this driver to let RTC probe on various MediaTek SoCs, including
-mt6358, mt6795 and mt8173: these all have a DT node to probe the RTC.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------BeE4Z8perMNS2U3q0azovsqE
+Content-Type: multipart/mixed; boundary="------------FTy0l00Mw0qs0WF6y3A6ABza";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Igor Matheus Andrade Torrente <igormtorrente@gmail.com>,
+ rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com
+Cc: hamohammed.sa@gmail.com, daniel@ffwll.ch, airlied@linux.ie,
+ contact@emersion.fr, leandro.ribeiro@collabora.com,
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+ lkcamp@lists.libreplanetbr.org
+Message-ID: <5507450a-eb69-b24c-9f43-a1780dafbfa9@suse.de>
+Subject: Re: [PATCH 5/6] drm: vkms: Prepare `vkms_wb_encoder_atomic_check` to
+ accept multiple formats
+References: <20211005201637.58563-1-igormtorrente@gmail.com>
+ <20211005201637.58563-6-igormtorrente@gmail.com>
+In-Reply-To: <20211005201637.58563-6-igormtorrente@gmail.com>
 
-Also, having a RTC in place is necessary for certain KernelCI suspend
-tests to run.
+--------------FTy0l00Mw0qs0WF6y3A6ABza
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
----
- arch/arm64/configs/defconfig | 1 +
- 1 file changed, 1 insertion(+)
+SGkNCg0KQW0gMDUuMTAuMjEgdW0gMjI6MTYgc2NocmllYiBJZ29yIE1hdGhldXMgQW5kcmFk
+ZSBUb3JyZW50ZToNCj4gQ3VycmVudGx5LCB0aGUgdmttcyBhdG9taWMgY2hlY2sgb25seSBn
+b2VzIHRocm91Z2ggdGhlIGZpcnN0IHBvc2l0aW9uIG9mDQo+IHRoZSBgdmttc193Yl9mb3Jt
+YXRzYCB2ZWN0b3IuDQo+IA0KPiBUaGlzIGNoYW5nZSBwcmVwYXJlcyB0aGUgYXRvbWljX2No
+ZWNrIHRvIGNoZWNrIHRoZSBlbnRpcmUgdmVjdG9yLg0KPiANCj4gU2lnbmVkLW9mZi1ieTog
+SWdvciBNYXRoZXVzIEFuZHJhZGUgVG9ycmVudGUgPGlnb3JtdG9ycmVudGVAZ21haWwuY29t
+Pg0KPiAtLS0NCj4gICBkcml2ZXJzL2dwdS9kcm0vdmttcy92a21zX3dyaXRlYmFjay5jIHwg
+MTEgKysrKysrKysrKy0NCj4gICAxIGZpbGUgY2hhbmdlZCwgMTAgaW5zZXJ0aW9ucygrKSwg
+MSBkZWxldGlvbigtKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS92a21z
+L3ZrbXNfd3JpdGViYWNrLmMgYi9kcml2ZXJzL2dwdS9kcm0vdmttcy92a21zX3dyaXRlYmFj
+ay5jDQo+IGluZGV4IDVhM2UxMmYxMDVkYy4uNTY5NzhmNDk5MjAzIDEwMDY0NA0KPiAtLS0g
+YS9kcml2ZXJzL2dwdS9kcm0vdmttcy92a21zX3dyaXRlYmFjay5jDQo+ICsrKyBiL2RyaXZl
+cnMvZ3B1L2RybS92a21zL3ZrbXNfd3JpdGViYWNrLmMNCj4gQEAgLTMwLDYgKzMwLDggQEAg
+c3RhdGljIGludCB2a21zX3diX2VuY29kZXJfYXRvbWljX2NoZWNrKHN0cnVjdCBkcm1fZW5j
+b2RlciAqZW5jb2RlciwNCj4gICB7DQo+ICAgCXN0cnVjdCBkcm1fZnJhbWVidWZmZXIgKmZi
+Ow0KPiAgIAljb25zdCBzdHJ1Y3QgZHJtX2Rpc3BsYXlfbW9kZSAqbW9kZSA9ICZjcnRjX3N0
+YXRlLT5tb2RlOw0KPiArCWJvb2wgZm9ybWF0X3N1cHBvcnRlZCA9IGZhbHNlOw0KPiArCWlu
+dCBpOw0KPiAgIA0KPiAgIAlpZiAoIWNvbm5fc3RhdGUtPndyaXRlYmFja19qb2IgfHwgIWNv
+bm5fc3RhdGUtPndyaXRlYmFja19qb2ItPmZiKQ0KPiAgIAkJcmV0dXJuIDA7DQo+IEBAIC00
+MSw3ICs0MywxNCBAQCBzdGF0aWMgaW50IHZrbXNfd2JfZW5jb2Rlcl9hdG9taWNfY2hlY2so
+c3RydWN0IGRybV9lbmNvZGVyICplbmNvZGVyLA0KPiAgIAkJcmV0dXJuIC1FSU5WQUw7DQo+
+ICAgCX0NCj4gICANCj4gLQlpZiAoZmItPmZvcm1hdC0+Zm9ybWF0ICE9IHZrbXNfd2JfZm9y
+bWF0c1swXSkgew0KPiArCWZvciAoaSA9IDA7IGkgPCBBUlJBWV9TSVpFKHZrbXNfd2JfZm9y
+bWF0cyk7IGkrKykgew0KPiArCQlpZiAoZmItPmZvcm1hdC0+Zm9ybWF0ID09IHZrbXNfd2Jf
+Zm9ybWF0c1tpXSkgew0KPiArCQkJZm9ybWF0X3N1cHBvcnRlZCA9IHRydWU7DQo+ICsJCQli
+cmVhazsNCj4gKwkJfQ0KPiArCX0NCg0KQXQgYSBtaW5pbXVtLCB0aGlzIGxvb3Agc2hvdWxk
+IGJlIGluIGEgaGVscGVyIGZ1bmN0aW9uLiBCdXQgbW9yZSANCmdlbmVyYWxseSwgSSdtIHN1
+cnByaXNlZCB0aGF0IHRoaXMgaXNuJ3QgYWxyZWFkeSBjb3ZlcmVkIGJ5IHRoZSBEUk0ncyAN
+CmF0b21pYyBoZWxwZXJzLg0KDQpCZXN0IHJlZ2FyZHMNClRob21hcw0KDQo+ICsNCj4gKwlp
+ZiAoIWZvcm1hdF9zdXBwb3J0ZWQpIHsNCj4gICAJCURSTV9ERUJVR19LTVMoIkludmFsaWQg
+cGl4ZWwgZm9ybWF0ICVwNGNjXG4iLA0KPiAgIAkJCSAgICAgICZmYi0+Zm9ybWF0LT5mb3Jt
+YXQpOw0KPiAgIAkJcmV0dXJuIC1FSU5WQUw7DQo+IA0KDQotLSANClRob21hcyBaaW1tZXJt
+YW5uDQpHcmFwaGljcyBEcml2ZXIgRGV2ZWxvcGVyDQpTVVNFIFNvZnR3YXJlIFNvbHV0aW9u
+cyBHZXJtYW55IEdtYkgNCk1heGZlbGRzdHIuIDUsIDkwNDA5IE7DvHJuYmVyZywgR2VybWFu
+eQ0KKEhSQiAzNjgwOSwgQUcgTsO8cm5iZXJnKQ0KR2VzY2jDpGZ0c2bDvGhyZXI6IEZlbGl4
+IEltZW5kw7ZyZmZlcg0K
 
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index 86224aa3a74b..be132058a1ed 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -922,6 +922,7 @@ CONFIG_RTC_DRV_PM8XXX=m
- CONFIG_RTC_DRV_TEGRA=y
- CONFIG_RTC_DRV_SNVS=m
- CONFIG_RTC_DRV_IMX_SC=m
-+CONFIG_RTC_DRV_MT6397=m
- CONFIG_RTC_DRV_XGENE=y
- CONFIG_DMADEVICES=y
- CONFIG_DMA_BCM2835=y
--- 
-2.33.0
+--------------FTy0l00Mw0qs0WF6y3A6ABza--
 
+--------------BeE4Z8perMNS2U3q0azovsqE
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF4BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmFtSRwFAwAAAAAACgkQlh/E3EQov+Ao
+wA/2LBJjjKhS1Bv+A3OmYgLbVDE7WU4/a8jeySLCXsBY8y4aDqhbW7pX4PenXHWGtsz7i0GLq/vH
+UN1c/6vg0YdLiwvXv/zeSraLs84d+9khk9KK/7xJ2hXN7BbwecPHivfz1gsZyzCnw6TsJS1Fv1th
+MxOu3va9FSGpKQrSMZrlxgFKBQhCgpqIF4UgFayjHf1hAPmrK+sA3IaPcAV8KWv/kPq/jSAWWYdg
+Cq1kKUHdYJo6BghPivQTLTuDVpTWcG0W6x/O6mKno6KbZCnuqTrA9Obmeyjc/tddJN37e2k0es3y
+pkPvEhBYQJF3GmqqVmeMagwnwOugMBOrIV+ylPeAEBomJ3BOayChOkvTKmA4+rkUULYYN6ETYj00
+kXgMZmwLd0ZDScM9epS+01jLkgpjLZ5NCAXj09RdcXPph/H1+i6KHsy5HTuLJ5NuaKcD6PTqquB3
+7ZGwZ1TY/eAOQtXk8rymEg60om0dUc0CL3UtTlKxLPi2+DqUtlJ19oO4GkyRWzfz6l8FD6Kxs0Du
+HfGABaFJNVejnEbEdmcFZQd4I9C9LYHCZP6aFGKSz3U3AV4aHVsZcgUqtdSM8b0AlI645uGb2qSX
+vqDx3VaLmpmIUiOkjq0xvD3zgfeeDEfvWYU0nWGbbRiFyHCr0RH/jyATYnBNyMEg+wFbYXfE9pnf
+XQ==
+=8P/L
+-----END PGP SIGNATURE-----
+
+--------------BeE4Z8perMNS2U3q0azovsqE--
