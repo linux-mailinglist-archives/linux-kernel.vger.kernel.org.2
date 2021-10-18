@@ -2,240 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A68784315D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 12:19:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23664431408
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 12:03:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231439AbhJRKVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 06:21:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46434 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229770AbhJRKVt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 06:21:49 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB8CBC06161C
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 03:19:38 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id r7so40414961wrc.10
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 03:19:38 -0700 (PDT)
+        id S229851AbhJRKFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 06:05:13 -0400
+Received: from mail-eopbgr100121.outbound.protection.outlook.com ([40.107.10.121]:7141
+        "EHLO GBR01-LO2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231166AbhJRKFK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 06:05:10 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DLMOEHIn+fom6OS/u9nCreRDMqEq53LBYpBI6Q62lrLe0xX4Nod4VwLHTtJhUori4l9BuyUCicp4mIUDzyIO/zztVki/Kq32J6HzPx57QPEe+xANNkeduOKCn4/NyEIcOUot5XQbuXJhfNRujRPy0bFYagEojoehQGstAa7HpJ8uWQxWf/ylWOQiEvIAU+4DkQeMuenCYtPvJPhQMLE+ZbSmoAoBj848HGs25HdgTEKVJgP9ft7iEIF59SKL94anWwR71Qodpl4VuJkr4+Q1THd17hyV3b3dZy0M87EedoBW2xw4D7W3xi5S2hS8nN9anrwI/Px11iX8vtLIK5XeuQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=47QOp4OCwurkL1kJ4wbU8D/xrWkyWJVBeDH53wf9KdQ=;
+ b=VU30tk9hF2hW4BEInBaX0zoMjPdqumFmK4oFzjZpR+nN3mld5uPC1JU2ono12VdQQiVTdPw47ZDQKTxWZRUN1+cJV9UkdJlY/OVN+nRXljqrKNfltOdyAFQ9FfnvF5iz5mS5m7E8NWMqqzLyagtWrF9Ps80EGr8LvuuuI5fJJZHZ8NGBFdy0gwuNJ7wH7j5JDF0LmFpqjqeoD+QaXQJ4NuGTB91kDA7/jWw1/NWFnA50/JRhPne/ALVttaMTkc8G85fyGCb9olMGkP09EbOcRZjYeBdYsR5/lxaP5D8ziV/0FPcfHqRjmD4EflUwsINnmQrUGCFpHa2exzTooWKNDA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=purelifi.com; dmarc=pass action=none header.from=purelifi.com;
+ dkim=pass header.d=purelifi.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
-        h=references:user-agent:from:to:cc:subject:date:in-reply-to
-         :message-id:mime-version;
-        bh=Nt/DsbKNf/U6oEyp70zMTCvXerDbHSsEBUDTCVY5SZk=;
-        b=5prZanh3ZiXhFVmZwmd5KUugHHD62JYZdj6kbC7LvJgiZdHYH0s0vO011ti4DMcnZr
-         qlQoIAao/4qCYznRVSDHoZM1iigy+9qF1q1pHveIgmx4x9E8sURQmiSwMXdNhZ673ljE
-         lELpcTfmf2l7n07+dqsYEyopKg+GWb9oXfd3rdgRzmwhAspBbEUI+6eiCUtEx13p3Qu4
-         7qKY17EBlz1W9WgxHQhHYTOPzTOmkEVcwlLSoEbDg8lRec4pojWfGdBm6h+KohIOQFt/
-         a8dobw/8/6VTGUerqw4ruNgiT07VNLCwUJeCNAVqjT+IDLpPaN4kFqqimnd2lG+vGAJe
-         EcGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject:date
-         :in-reply-to:message-id:mime-version;
-        bh=Nt/DsbKNf/U6oEyp70zMTCvXerDbHSsEBUDTCVY5SZk=;
-        b=5DEtOY/JuyYCrLdmRqRme7orxRRLQ68WSo4t7bGnw8tFP9WS9DgfYPlkqJkvF8FnGf
-         vFx/0FoQpcdoZwzmKBQdBJhFtXw1+dWgdJbPnzsMZXjn9ugRfNfInu+BUMW8D7b93//o
-         E7A48vxQ6jf7RnidUDDyPW/COqjVTN3WBYJwiXyTq3x9TNy0PEqRunJOQrAiaGRHsNSn
-         4lEIb1LSvms38ormuFYDirE5AsWJxcvc376WDHn2AaRXIaMP25AjrFpi+jEZ7ms5fHxy
-         HckzFSFhf6cvTUlqLTQQlZDnMFFIuNn//vhQXKisQCVoieYWomCiL2HApGV5MnXUDH+A
-         DiOA==
-X-Gm-Message-State: AOAM5307hnMSzebpJbYoFUg2F4C1XXY1ILQslsm41v6/i2fAjGOYiuwx
-        vlcp8Sa3wPB6HqAeKcyQ74Gglg==
-X-Google-Smtp-Source: ABdhPJzDG8zynX/vI4wK2ttElJLD5TxdXfRAChpQdZOTiLhuvQVv+a2L+hRjAsFbPLNZJPD3ux8LKA==
-X-Received: by 2002:adf:a54f:: with SMTP id j15mr34068977wrb.218.1634552377158;
-        Mon, 18 Oct 2021 03:19:37 -0700 (PDT)
-Received: from localhost (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
-        by smtp.gmail.com with ESMTPSA id r5sm3208324wmh.28.2021.10.18.03.19.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 03:19:36 -0700 (PDT)
-References: <20211016145939.15643-1-martin.blumenstingl@googlemail.com>
-User-agent: mu4e 1.6.6; emacs 27.1
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        linux-amlogic@lists.infradead.org
-Cc:     narmstrong@baylibre.com, linux-clk@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Christian Hewitt <christianshewitt@gmail.com>
-Subject: Re: [PATCH] clk: meson: gxbb: Add the spread spectrum bit for MPLL0
- on GXBB
-Date:   Mon, 18 Oct 2021 11:54:45 +0200
-In-reply-to: <20211016145939.15643-1-martin.blumenstingl@googlemail.com>
-Message-ID: <1j5ytuvdmw.fsf@starbuckisacylon.baylibre.com>
-MIME-Version: 1.0
+ d=purevlc.onmicrosoft.com; s=selector2-purevlc-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=47QOp4OCwurkL1kJ4wbU8D/xrWkyWJVBeDH53wf9KdQ=;
+ b=phrMSC6i9j63X5+iK2tdFAd/xO6WiTAJKEZKCEtq/SRjbiCSS8FIPS6S2jtYR67MArgwfp9x2rYCmFqGGusGRAwKDNxJMdFP4ExwJbRXqC9M8RtoEJ0rNxcHwa9nDijNjOeT4rtoapUHw9Rh7hHcMxLN5jAqhz3ll71S//v2zxs=
+Authentication-Results: purelifi.com; dkim=none (message not signed)
+ header.d=none;purelifi.com; dmarc=none action=none header.from=purelifi.com;
+Received: from CWLP265MB3217.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:bb::9) by
+ CWLP265MB2244.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:61::15) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4608.17; Mon, 18 Oct 2021 10:02:57 +0000
+Received: from CWLP265MB3217.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::f424:5607:7815:ac8e]) by CWLP265MB3217.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::f424:5607:7815:ac8e%5]) with mapi id 15.20.4608.018; Mon, 18 Oct 2021
+ 10:02:57 +0000
+From:   Srinivasan Raju <srini.raju@purelifi.com>
+Cc:     mostafa.afgani@purelifi.com,
+        Srinivasan Raju <srini.raju@purelifi.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        linux-kernel@vger.kernel.org (open list),
+        linux-wireless@vger.kernel.org (open list:NETWORKING DRIVERS (WIRELESS)),
+        netdev@vger.kernel.org (open list:NETWORKING DRIVERS)
+Subject: [PATCH v20 1/2] nl80211: Add LC placeholder band definition to nl80211_band
+Date:   Mon, 18 Oct 2021 11:00:54 +0100
+Message-Id: <20211018100143.7565-2-srini.raju@purelifi.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20211018100143.7565-1-srini.raju@purelifi.com>
+References: <20200928102008.32568-1-srini.raju@purelifi.com>
+ <20211018100143.7565-1-srini.raju@purelifi.com>
+Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
+X-ClientProxiedBy: LO2P265CA0046.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:61::34) To CWLP265MB3217.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:400:bb::9)
+MIME-Version: 1.0
+Received: from localhost.localdomain (82.34.80.192) by LO2P265CA0046.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:61::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.18 via Frontend Transport; Mon, 18 Oct 2021 10:02:57 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 397c5273-f685-409d-281f-08d9921e7610
+X-MS-TrafficTypeDiagnostic: CWLP265MB2244:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <CWLP265MB224448BCB7AAD33E385BA735E0BC9@CWLP265MB2244.GBRP265.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: j9TJhOBu3RuBCIVWc0cKc2uMCglcd09pXcuYeITCmomRnWdPwE4ELD06Tnea9Ris3CTpwEccZyPYYFcs0oMsIzVe2GTQnXCa0SC/F9x/6a9BmE7OMHcYz+y+C7xIK/1e7FKlWtWEZavOpvtMW333h/PqQrA0/0juGn8tQic27tBsWpyLN4iEkOB1PO4+AebJgv1n1bJnmSNJlUCO+3BMrhv7g28GrIZ3/qF+6e3xtP5HIatFdzZwWmCICCZ+hP5HuZ3BlxASa7b2W33UsEP2mUvtI0eZTHk1Z4iSuzYXW70F3UEBLTOVnkvvxoZxX/y6+fEHEw04rxcUxi2aAGysDsvgSkFQAQjFJsBTyhbTDUPaC02Mi5TxrmkJeFjYq5JLkBXKb18aXvjKt8QdxjrLXja6mkc4hclsjuU6wkcxpUUZfpc/g/as70WnvQtEdarlQ/JNF2KQGaToXNMIAxMm8n02KwN4htsS/cNjsTwhxiYX4EEebZ5bfWzIPCD9Y3+zvbrpj/cdPJGX0BTOMmLZpa0vlKMlaNze1ZdbUpqwZPnvG7qgAfAzrGWmKDYhZT6/p6cX7lGr3bT++Yl1S5Gi37y0h4ew5B/IFPw9NrhOvxfKIQGNOjKLPS/OyTYLegCeMYXBXAHGPDxoObF2T7Wm9e9Qg0ndR6eTHOlt0mbdKnol6q8jIMiu6rxUAjLTQHqlKkT0mDLWeZGAOiCSszyfHibmdDxiybJwEaRz2tyL9m4=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CWLP265MB3217.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(366004)(8676002)(508600001)(6506007)(26005)(66476007)(38350700002)(52116002)(6486002)(5660300002)(1076003)(109986005)(186003)(6666004)(83380400001)(86362001)(54906003)(2616005)(38100700002)(6512007)(66556008)(956004)(4326008)(2906002)(66946007)(316002)(8936002)(36756003)(266003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?HPuLjtbokgNozkpGAhBIR0LaRRfcbXSP2gXb/qMdUE7tpRtQGXVbUdorVqdY?=
+ =?us-ascii?Q?fBIyO/QmWB3uLZzxrxKzTIj1U14/yeUfIqO8CLME9nd/YrYhoEbpMrOioLBb?=
+ =?us-ascii?Q?kmm3ycsTmsVkgQ2fhGTBTvx00m5Sg9w9zLSA0diW4rYicO4xkNCR9zi/Aw6d?=
+ =?us-ascii?Q?fdtvB1YGnEYhEFCk6Q6a7UowQk64fCvU8ySF9EsAENv1GW7UqLKKHxjqtmdI?=
+ =?us-ascii?Q?WkvOdv7yUt7NozfJyBI//yRIFOHUFPZLMXAfEYhz5/WRSY7ujKFM6oMxmPDr?=
+ =?us-ascii?Q?gnPnwU96lFxUJTQ5HLKHygjEGQ4yCnh+wwkVt0DJn/MJYu6jgwZ1Jv4HZMFz?=
+ =?us-ascii?Q?pagckE55QOgkHORRLq1P2s0VSXDLZioCxnPl1VUpwMpmOlJoIOL64a/uruil?=
+ =?us-ascii?Q?dj7MUQ6xP+OAIlM+Ri5K8SXAbmD97VZXOGImSHGNfKQJUlgQjh5eIP51wb+6?=
+ =?us-ascii?Q?0mvssN/sIKD7Baru6PkFvzW0TIJyyy8n0B7L6JPKavXY2YC5Cgs8qU7Xj9ku?=
+ =?us-ascii?Q?7bRwoAPn4VqbPO6Npah2j6pdLH15LBfNwdaD+KvFXUSSymMUSIK85WjA0Xxv?=
+ =?us-ascii?Q?dSgtY6eIfVTMDzygtnifFJpGJf8mmNEenFWyYNN1L23kP+wRJjTYPt0f8IT0?=
+ =?us-ascii?Q?F/am2Ma3x8LL0okXgE/F0eEbsAfdotqr+xnYGhhsLnV9ezZ0UfTlFzoPB43X?=
+ =?us-ascii?Q?TGfilYdr9v6aLONbZORT7j9uPahffQazwM0jGu51P8xhApeq/zI1n9b3t+Qo?=
+ =?us-ascii?Q?e3iCELxtmMlLK4z1lS2W/nt/VHQbyDq2aLwbBQu1IUGmWh6bE0ahX1JaUvte?=
+ =?us-ascii?Q?Nej33Q8dff9AFFm9mWNZ9hV6vfXGAWiMY8xKEhokJL41l8e0BIE0N7CoMkcr?=
+ =?us-ascii?Q?V4SEkSIW91CRalgem6FXwOo1jc5Wi6LOFh7gR9sA27eZR/hNCyB9lyFfOURt?=
+ =?us-ascii?Q?TzWUEgKxMmCvF1C9/8KY4ht9FPPFjnyUtIeTGuozbEYKNDoDXxno22nm8BI5?=
+ =?us-ascii?Q?wCCma6z/XvCEpPm8+7swOuUcpNrlofJNIf5ply2LihtGyt49ldr5+XnBwi96?=
+ =?us-ascii?Q?Y4kX5CjCztyFnU3CwjLqPwHa23QQPGja51Qrz1f8C3nW/FZFCAgYI/GVyvuy?=
+ =?us-ascii?Q?J2/2xeln+S+YWJ0ElLEG8o5XRIS3uJhJ0kZxtqo4CTm5vwpgeYXEiJo9QfkD?=
+ =?us-ascii?Q?0cNn4oxY0bOA9vc51AOKh467xyGPjVmniOWg7Uh9L0+mcTm6X+X7XvnA5njD?=
+ =?us-ascii?Q?oPBlUp7acyO/LMkIsbO+Er54zjk8uDEM94+SOGQvMtWt8Dvs/Bf1/RNeT+7p?=
+ =?us-ascii?Q?psXA96qsJAyfgdZ5PVO/ViP1?=
+X-OriginatorOrg: purelifi.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 397c5273-f685-409d-281f-08d9921e7610
+X-MS-Exchange-CrossTenant-AuthSource: CWLP265MB3217.GBRP265.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Oct 2021 10:02:57.8215
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 5cf4eba2-7b8f-4236-bed4-a2ac41f1a6dc
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: eQMPyPgsvy0hFsBG3c6A87M5hiYs6v4oSZ9gAickMeZu9FpakCvZ0dtSqo8w62ylVzxd/rTJqtO8gXaaf2LhYw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CWLP265MB2244
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Define LC band which is a draft under IEEE 802.11 bb
+Current NL80211_BAND_LC is a placeholder band
+The band will be redefined as IEEE 802.11 bb progresses
 
-On Sat 16 Oct 2021 at 16:59, Martin Blumenstingl <martin.blumenstingl@googlemail.com> wrote:
+Signed-off-by: Srinivasan Raju <srini.raju@purelifi.com>
+---
+ include/uapi/linux/nl80211.h | 2 ++
+ net/mac80211/mlme.c          | 1 +
+ net/mac80211/sta_info.c      | 1 +
+ net/mac80211/tx.c            | 3 ++-
+ net/wireless/nl80211.c       | 1 +
+ net/wireless/util.c          | 2 ++
+ 6 files changed, 9 insertions(+), 1 deletion(-)
 
-> Christian reports that 48kHz audio does not work on his WeTek Play 2
-> (which uses a GXBB SoC), while 44.1kHz audio works fine on the same
-> board. He also reports that 48kHz audio works on GXL and GXM SoCs,
-> which are using an (almost) identical AIU (audio controller).
-
-The above is a bit "personal" - it is not great fit for the commit
-description. Please rephrase or put it in comment section bellow
-
->
-> Experimenting has shown that MPLL0 is causing this problem. In the .dts
-> we have by default:
-> 	assigned-clocks = <&clkc CLKID_MPLL0>,
-> 			  <&clkc CLKID_MPLL1>,
-> 			  <&clkc CLKID_MPLL2>;
-> 	assigned-clock-rates = <294912000>,
-> 			       <270950400>,
-> 			       <393216000>;
-> The MPLL0 rate is divisible by 48kHz without remainder and the MPLL1
-> rate is divisible by 44.1kHz without remainder. Swapping these two clock
-> rates "fixes" 48kHz audio but breaks 44.1kHz audio.
->
-> Everything looks normal when looking at the info provided by the common
-> clock framework while playing 48kHz audio (via I2S with mclk-fs = 256):
->         mpll_prediv                 1        1        0  2000000000
->            mpll0_div                1        1        0   294909641
->               mpll0                 1        1        0   294909641
->                  cts_amclk_sel       1        1        0   294909641
->                     cts_amclk_div       1        1        0    12287902
->                        cts_amclk       1        1        0    12287902
->
-> meson-clk-msr however shows that the actual MPLL0 clock is off by more
-> than 38MHz:
->         mp0_out               333322917    +/-10416Hz
->
-> The 3.14 vendor kernel uses the following code to enable SSEN only for
-> MPLL0 (where con_reg2 is HHI_MPLL_CNTL and SSEN_shift is 25):
-> 	if (strncmp(hw->clk->name, "mpll_clk_out0", 13) == 0) {
-> 		val = readl(mpll->con_reg2);
-> 		val |= 1 <<  mpll->SSEN_shift;
-> 		writel(val, mpll->con_reg2);
-> 	}
->
-> Add the SSEN (spread spectrum enable) bit and add the
-> CLK_MESON_MPLL_SPREAD_SPECTRUM flag to enable this bit for MPLL0. Do
-> this for GXBB *only* since GXL doesn't seem to care if this bit is set
-> or not, meaning that meson-clk-msr always sees (approximately) the same
-> frequency as common clock framework.
-
- 1 - it is odd that we need to poke a bit in the register related to the
- fixed PLL but ok ...
- 2 - 3.14 does yes, 4.9 does not soooo ... no real proof there
- 3 - That is the most important to me: the effect you described clearly is
- not spread spectrum.
-
-Spread spectrum varies the frequencies quickly, IOW it makes the
-frequencies unstable. Some stuff do not need a particularly stable rate
-and it can help with EM compatibility. This is not desirable for audio.
-
-So 2 things:
- - If this bit really enables spread spectrum on MPLL0 (or worse, the
- Fixed PLL) - checking clk measure is not enough. It is just a mean of
- the rate seen by the SoC itself. You would not see the effect of the
- spread spectrum here ... you need to capture the clock output with a
- scope for that.
-
- - Or the bit is incorrectly documented (or DDS0_SSEN does not mean
- spread spectrum). If it is not a spread spectrum function, then this
- patch seems to indicate it is and it is misleading.
-
-Either way, I'm not OK with it.
-
-To me, the rate drop that happens when you flip this bit looks more like
-the effect SDM_EN should have.
-
-Could you check the internal values (n2 and sdm) compare this to the
-output rate you actually get ? see if this leads to anything ? does
-SDM_EN really has an effect on this MPLL ? it is a combination of both ?
-
->
-> Fixes: 8925dbd03bb29b ("clk: meson: gxbb: no spread spectrum on mpll")
-> Reported-by: Christian Hewitt <christianshewitt@gmail.com>
-> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-> ---
->  drivers/clk/meson/gxbb.c | 50 +++++++++++++++++++++++++++++++++++++---
->  1 file changed, 47 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/clk/meson/gxbb.c b/drivers/clk/meson/gxbb.c
-> index d6eed760327d..673bc915c7d9 100644
-> --- a/drivers/clk/meson/gxbb.c
-> +++ b/drivers/clk/meson/gxbb.c
-> @@ -713,6 +713,41 @@ static struct clk_regmap gxbb_mpll_prediv = {
->  };
->  
->  static struct clk_regmap gxbb_mpll0_div = {
-> +	.data = &(struct meson_clk_mpll_data){
-> +		.sdm = {
-> +			.reg_off = HHI_MPLL_CNTL7,
-> +			.shift   = 0,
-> +			.width   = 14,
-> +		},
-> +		.sdm_en = {
-> +			.reg_off = HHI_MPLL_CNTL7,
-> +			.shift   = 15,
-> +			.width	 = 1,
-> +		},
-> +		.n2 = {
-> +			.reg_off = HHI_MPLL_CNTL7,
-> +			.shift   = 16,
-> +			.width   = 9,
-> +		},
-> +		.ssen = {
-> +			.reg_off = HHI_MPLL_CNTL,
-> +			.shift   = 25,
-> +			.width   = 1,
-> +		},
-> +		.flags = CLK_MESON_MPLL_SPREAD_SPECTRUM,
-> +		.lock = &meson_clk_lock,
-> +	},
-> +	.hw.init = &(struct clk_init_data){
-> +		.name = "mpll0_div",
-> +		.ops = &meson_clk_mpll_ops,
-> +		.parent_hws = (const struct clk_hw *[]) {
-> +			&gxbb_mpll_prediv.hw
-> +		},
-> +		.num_parents = 1,
-> +	},
-> +};
-> +
-> +static struct clk_regmap gxl_mpll0_div = {
->  	.data = &(struct meson_clk_mpll_data){
->  		.sdm = {
->  			.reg_off = HHI_MPLL_CNTL7,
-> @@ -749,7 +784,16 @@ static struct clk_regmap gxbb_mpll0 = {
->  	.hw.init = &(struct clk_init_data){
->  		.name = "mpll0",
->  		.ops = &clk_regmap_gate_ops,
-> -		.parent_hws = (const struct clk_hw *[]) { &gxbb_mpll0_div.hw },
-> +		.parent_data = &(const struct clk_parent_data) {
-> +			/*
-> +			 * Note:
-> +			 * GXL and GXBB have different SSEN requirements. We
-> +			 * fallback to the global naming string mechanism so
-> +			 * mpll0_div picks up the appropriate one.
-> +			 */
-> +			.name = "mpll0_div",
-> +			.index = -1,
-> +		},
->  		.num_parents = 1,
->  		.flags = CLK_SET_RATE_PARENT,
->  	},
-> @@ -3044,7 +3088,7 @@ static struct clk_hw_onecell_data gxl_hw_onecell_data = {
->  		[CLKID_VAPB_1]		    = &gxbb_vapb_1.hw,
->  		[CLKID_VAPB_SEL]	    = &gxbb_vapb_sel.hw,
->  		[CLKID_VAPB]		    = &gxbb_vapb.hw,
-> -		[CLKID_MPLL0_DIV]	    = &gxbb_mpll0_div.hw,
-> +		[CLKID_MPLL0_DIV]	    = &gxl_mpll0_div.hw,
->  		[CLKID_MPLL1_DIV]	    = &gxbb_mpll1_div.hw,
->  		[CLKID_MPLL2_DIV]	    = &gxbb_mpll2_div.hw,
->  		[CLKID_MPLL_PREDIV]	    = &gxbb_mpll_prediv.hw,
-> @@ -3439,7 +3483,7 @@ static struct clk_regmap *const gxl_clk_regmaps[] = {
->  	&gxbb_mpll0,
->  	&gxbb_mpll1,
->  	&gxbb_mpll2,
-> -	&gxbb_mpll0_div,
-> +	&gxl_mpll0_div,
->  	&gxbb_mpll1_div,
->  	&gxbb_mpll2_div,
->  	&gxbb_cts_amclk_div,
+diff --git a/include/uapi/linux/nl80211.h b/include/uapi/linux/nl80211.h
+index c2efea98e060..cb06fb604a60 100644
+--- a/include/uapi/linux/nl80211.h
++++ b/include/uapi/linux/nl80211.h
+@@ -4929,6 +4929,7 @@ enum nl80211_txrate_gi {
+  * @NL80211_BAND_60GHZ: around 60 GHz band (58.32 - 69.12 GHz)
+  * @NL80211_BAND_6GHZ: around 6 GHz band (5.9 - 7.2 GHz)
+  * @NL80211_BAND_S1GHZ: around 900MHz, supported by S1G PHYs
++ * @NL80211_BAND_LC: light communication band (placeholder)
+  * @NUM_NL80211_BANDS: number of bands, avoid using this in userspace
+  *	since newer kernel versions may support more bands
+  */
+@@ -4938,6 +4939,7 @@ enum nl80211_band {
+ 	NL80211_BAND_60GHZ,
+ 	NL80211_BAND_6GHZ,
+ 	NL80211_BAND_S1GHZ,
++	NL80211_BAND_LC,
+ 
+ 	NUM_NL80211_BANDS,
+ };
+diff --git a/net/mac80211/mlme.c b/net/mac80211/mlme.c
+index c0ea3b1aa9e1..c577d03ab128 100644
+--- a/net/mac80211/mlme.c
++++ b/net/mac80211/mlme.c
+@@ -1490,6 +1490,7 @@ ieee80211_find_80211h_pwr_constr(struct ieee80211_sub_if_data *sdata,
+ 		fallthrough;
+ 	case NL80211_BAND_2GHZ:
+ 	case NL80211_BAND_60GHZ:
++	case NL80211_BAND_LC:
+ 		chan_increment = 1;
+ 		break;
+ 	case NL80211_BAND_5GHZ:
+diff --git a/net/mac80211/sta_info.c b/net/mac80211/sta_info.c
+index 2b5acb37587f..36524101d11f 100644
+--- a/net/mac80211/sta_info.c
++++ b/net/mac80211/sta_info.c
+@@ -444,6 +444,7 @@ struct sta_info *sta_info_alloc(struct ieee80211_sub_if_data *sdata,
+ 
+ 		switch (i) {
+ 		case NL80211_BAND_2GHZ:
++		case NL80211_BAND_LC:
+ 			/*
+ 			 * We use both here, even if we cannot really know for
+ 			 * sure the station will support both, but the only use
+diff --git a/net/mac80211/tx.c b/net/mac80211/tx.c
+index 2d1193ed3eb5..d311937f2add 100644
+--- a/net/mac80211/tx.c
++++ b/net/mac80211/tx.c
+@@ -146,7 +146,8 @@ static __le16 ieee80211_duration(struct ieee80211_tx_data *tx,
+ 			rate = DIV_ROUND_UP(r->bitrate, 1 << shift);
+ 
+ 		switch (sband->band) {
+-		case NL80211_BAND_2GHZ: {
++		case NL80211_BAND_2GHZ:
++		case NL80211_BAND_LC: {
+ 			u32 flag;
+ 			if (tx->sdata->flags & IEEE80211_SDATA_OPERATING_GMODE)
+ 				flag = IEEE80211_RATE_MANDATORY_G;
+diff --git a/net/wireless/nl80211.c b/net/wireless/nl80211.c
+index bf7cd4752547..cf1434049abb 100644
+--- a/net/wireless/nl80211.c
++++ b/net/wireless/nl80211.c
+@@ -853,6 +853,7 @@ nl80211_match_band_rssi_policy[NUM_NL80211_BANDS] = {
+ 	[NL80211_BAND_5GHZ] = { .type = NLA_S32 },
+ 	[NL80211_BAND_6GHZ] = { .type = NLA_S32 },
+ 	[NL80211_BAND_60GHZ] = { .type = NLA_S32 },
++	[NL80211_BAND_LC]    = { .type = NLA_S32 },
+ };
+ 
+ static const struct nla_policy
+diff --git a/net/wireless/util.c b/net/wireless/util.c
+index 18dba3d7c638..2991f711491a 100644
+--- a/net/wireless/util.c
++++ b/net/wireless/util.c
+@@ -80,6 +80,7 @@ u32 ieee80211_channel_to_freq_khz(int chan, enum nl80211_band band)
+ 		return 0; /* not supported */
+ 	switch (band) {
+ 	case NL80211_BAND_2GHZ:
++	case NL80211_BAND_LC:
+ 		if (chan == 14)
+ 			return MHZ_TO_KHZ(2484);
+ 		else if (chan < 14)
+@@ -209,6 +210,7 @@ static void set_mandatory_flags_band(struct ieee80211_supported_band *sband)
+ 		WARN_ON(want);
+ 		break;
+ 	case NL80211_BAND_2GHZ:
++	case NL80211_BAND_LC:
+ 		want = 7;
+ 		for (i = 0; i < sband->n_bitrates; i++) {
+ 			switch (sband->bitrates[i].bitrate) {
+-- 
+2.25.1
 
