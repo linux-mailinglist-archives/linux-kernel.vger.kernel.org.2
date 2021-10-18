@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5952C431BDA
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:33:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6263B431C9C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:42:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232923AbhJRNfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:35:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42664 "EHLO mail.kernel.org"
+        id S233401AbhJRNmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:42:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54296 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232390AbhJRNeI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:34:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F3A361354;
-        Mon, 18 Oct 2021 13:29:56 +0000 (UTC)
+        id S233544AbhJRNkn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:40:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 371516141B;
+        Mon, 18 Oct 2021 13:33:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634563796;
-        bh=+rm77VMA07kGpepxIYwls/OaoeJjBtAI1v3bXgCzprU=;
+        s=korg; t=1634564006;
+        bh=pDu/IPnPapPSK6jz7xzmTWYUqFAKslTvZWZMu84OoVA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eLVkcRbaYE1atR+YY/A4CRnPFpCxg/+e/TtMeTT3FQ4xXpfWdcu8Xqkg1Fwg+PB9c
-         VtQDGlVmrETPMRp8nrM7cqU6ImX9oGq3w0areyCRQNzcjZOHGq+lakGIpImg/TcVFJ
-         kQmmhMO0tLmTIctV1kLoyoEpJRjLSI6vXORVO7Ks=
+        b=WGxhNejTD16Slb67xKGKDe259knVqpdsmNaM+SnQZqKBAAJC7fozauLyYD6KfKHUa
+         hx1+4oO00Ne8J+F2cMJH5P+RKKtROMVPsDNBOadP1pqY4rRwP1AbVyGDq3O1wsxddQ
+         SW2SB2Bg4bpknnD1luobO5ErOstrRpwV4XYQQle8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hui Wang <hui.wang@canonical.com>,
-        Takashi Iwai <tiwai@suse.de>, msd <msd.mmq@gmail.com>
-Subject: [PATCH 5.4 07/69] ALSA: hda/realtek: Fix the mic type detection issue for ASUS G551JW
+        stable@vger.kernel.org,
+        Pavankumar Kondeti <pkondeti@codeaurora.org>,
+        Mathias Nyman <mathias.nyman@linux.intel.com>
+Subject: [PATCH 5.10 029/103] xhci: Fix command ring pointer corruption while aborting a command
 Date:   Mon, 18 Oct 2021 15:24:05 +0200
-Message-Id: <20211018132329.705332055@linuxfoundation.org>
+Message-Id: <20211018132335.696362149@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132329.453964125@linuxfoundation.org>
-References: <20211018132329.453964125@linuxfoundation.org>
+In-Reply-To: <20211018132334.702559133@linuxfoundation.org>
+References: <20211018132334.702559133@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,82 +40,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hui Wang <hui.wang@canonical.com>
+From: Pavankumar Kondeti <pkondeti@codeaurora.org>
 
-commit a3fd1a986e499a06ac5ef95c3a39aa4611e7444c upstream.
+commit ff0e50d3564f33b7f4b35cadeabd951d66cfc570 upstream.
 
-We need to define the codec pin 0x1b to be the mic, but somehow
-the mic doesn't support hot plugging detection, and Windows also has
-this issue, so we set it to phantom headset-mic.
+The command ring pointer is located at [6:63] bits of the command
+ring control register (CRCR). All the control bits like command stop,
+abort are located at [0:3] bits. While aborting a command, we read the
+CRCR and set the abort bit and write to the CRCR. The read will always
+give command ring pointer as all zeros. So we essentially write only
+the control bits. Since we split the 64 bit write into two 32 bit writes,
+there is a possibility of xHC command ring stopped before the upper
+dword (all zeros) is written. If that happens, xHC updates the upper
+dword of its internal command ring pointer with all zeros. Next time,
+when the command ring is restarted, we see xHC memory access failures.
+Fix this issue by only writing to the lower dword of CRCR where all
+control bits are located.
 
-Also the determine_headset_type() often returns the omtp type by a
-mistake when we plug a ctia headset, this makes the mic can't record
-sound at all. Because most of the headset are ctia type nowadays and
-some machines have the fixed ctia type audio jack, it is possible this
-machine has the fixed ctia jack too. Here we set this mic jack to
-fixed ctia type, this could avoid the mic type detection mistake and
-make the ctia headset work stable.
-
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=214537
-Reported-and-tested-by: msd <msd.mmq@gmail.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
-Link: https://lore.kernel.org/r/20211012114748.5238-1-hui.wang@canonical.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Cc: stable@vger.kernel.org
+Signed-off-by: Pavankumar Kondeti <pkondeti@codeaurora.org>
+Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+Link: https://lore.kernel.org/r/20211008092547.3996295-5-mathias.nyman@linux.intel.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/pci/hda/patch_realtek.c |   27 +++++++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
+ drivers/usb/host/xhci-ring.c |   14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -9692,6 +9692,9 @@ enum {
- 	ALC671_FIXUP_HP_HEADSET_MIC2,
- 	ALC662_FIXUP_ACER_X2660G_HEADSET_MODE,
- 	ALC662_FIXUP_ACER_NITRO_HEADSET_MODE,
-+	ALC668_FIXUP_ASUS_NO_HEADSET_MIC,
-+	ALC668_FIXUP_HEADSET_MIC,
-+	ALC668_FIXUP_MIC_DET_COEF,
- };
+--- a/drivers/usb/host/xhci-ring.c
++++ b/drivers/usb/host/xhci-ring.c
+@@ -342,16 +342,22 @@ static void xhci_handle_stopped_cmd_ring
+ /* Must be called with xhci->lock held, releases and aquires lock back */
+ static int xhci_abort_cmd_ring(struct xhci_hcd *xhci, unsigned long flags)
+ {
+-	u64 temp_64;
++	u32 temp_32;
+ 	int ret;
  
- static const struct hda_fixup alc662_fixups[] = {
-@@ -10075,6 +10078,29 @@ static const struct hda_fixup alc662_fix
- 		.chained = true,
- 		.chain_id = ALC662_FIXUP_USI_FUNC
- 	},
-+	[ALC668_FIXUP_ASUS_NO_HEADSET_MIC] = {
-+		.type = HDA_FIXUP_PINS,
-+		.v.pins = (const struct hda_pintbl[]) {
-+			{ 0x1b, 0x04a1112c },
-+			{ }
-+		},
-+		.chained = true,
-+		.chain_id = ALC668_FIXUP_HEADSET_MIC
-+	},
-+	[ALC668_FIXUP_HEADSET_MIC] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc269_fixup_headset_mic,
-+		.chained = true,
-+		.chain_id = ALC668_FIXUP_MIC_DET_COEF
-+	},
-+	[ALC668_FIXUP_MIC_DET_COEF] = {
-+		.type = HDA_FIXUP_VERBS,
-+		.v.verbs = (const struct hda_verb[]) {
-+			{ 0x20, AC_VERB_SET_COEF_INDEX, 0x15 },
-+			{ 0x20, AC_VERB_SET_PROC_COEF, 0x0d60 },
-+			{}
-+		},
-+	},
- };
+ 	xhci_dbg(xhci, "Abort command ring\n");
  
- static const struct snd_pci_quirk alc662_fixup_tbl[] = {
-@@ -10110,6 +10136,7 @@ static const struct snd_pci_quirk alc662
- 	SND_PCI_QUIRK(0x1043, 0x15a7, "ASUS UX51VZH", ALC662_FIXUP_BASS_16),
- 	SND_PCI_QUIRK(0x1043, 0x177d, "ASUS N551", ALC668_FIXUP_ASUS_Nx51),
- 	SND_PCI_QUIRK(0x1043, 0x17bd, "ASUS N751", ALC668_FIXUP_ASUS_Nx51),
-+	SND_PCI_QUIRK(0x1043, 0x185d, "ASUS G551JW", ALC668_FIXUP_ASUS_NO_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x1043, 0x1963, "ASUS X71SL", ALC662_FIXUP_ASUS_MODE8),
- 	SND_PCI_QUIRK(0x1043, 0x1b73, "ASUS N55SF", ALC662_FIXUP_BASS_16),
- 	SND_PCI_QUIRK(0x1043, 0x1bf3, "ASUS N76VZ", ALC662_FIXUP_BASS_MODE4_CHMAP),
+ 	reinit_completion(&xhci->cmd_ring_stop_completion);
+ 
+-	temp_64 = xhci_read_64(xhci, &xhci->op_regs->cmd_ring);
+-	xhci_write_64(xhci, temp_64 | CMD_RING_ABORT,
+-			&xhci->op_regs->cmd_ring);
++	/*
++	 * The control bits like command stop, abort are located in lower
++	 * dword of the command ring control register. Limit the write
++	 * to the lower dword to avoid corrupting the command ring pointer
++	 * in case if the command ring is stopped by the time upper dword
++	 * is written.
++	 */
++	temp_32 = readl(&xhci->op_regs->cmd_ring);
++	writel(temp_32 | CMD_RING_ABORT, &xhci->op_regs->cmd_ring);
+ 
+ 	/* Section 4.6.1.2 of xHCI 1.0 spec says software should also time the
+ 	 * completion of the Command Abort operation. If CRR is not negated in 5
 
 
