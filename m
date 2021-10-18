@@ -2,81 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 777B0432686
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 20:36:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BD6D43267C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 20:34:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233015AbhJRSi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 14:38:27 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28600 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231590AbhJRSiZ (ORCPT
+        id S232452AbhJRSgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 14:36:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49414 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231899AbhJRSgl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 14:38:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634582173;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=fNnXaAF3agw8VaX480AMuK94cWpmSSUZAApFuOi+wRA=;
-        b=fbWWJkJp7uq4vVRoYwvukzClN3hdDil5ZjNU/6TL9n7CqnO6RRUrxNJTEq0q9HT68Hzxo6
-        SAaLrdbxUFPsZ7NOTX71uuisPDG2CPFw9QyNql91FVISrISM1V97/XKDDz7rUH1FqDgTPB
-        dB6XsRSjNCIxxbymeTAk5YuRHAfZFdA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-602-b7gh9ljzOIeX8FgktKivmw-1; Mon, 18 Oct 2021 14:36:10 -0400
-X-MC-Unique: b7gh9ljzOIeX8FgktKivmw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7B85919200C2;
-        Mon, 18 Oct 2021 18:36:09 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2A1C717F72;
-        Mon, 18 Oct 2021 18:36:09 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     torvic9@mailbox.org
-Subject: [PATCH v2] KVM: x86: avoid warning with -Wbitwise-instead-of-logical
-Date:   Mon, 18 Oct 2021 14:36:08 -0400
-Message-Id: <20211018183608.589083-1-pbonzini@redhat.com>
+        Mon, 18 Oct 2021 14:36:41 -0400
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A526C06161C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 11:34:30 -0700 (PDT)
+Received: by mail-oi1-x231.google.com with SMTP id z126so998719oiz.12
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 11:34:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=tKaMbG/HjQb1/sn/s5rHZFomdMxjFwW4dEMmTzlPHS8=;
+        b=yN/H6xPd86rnApymhFQ7SZ+78t8zzeTlEtB19Gx3zH0IOa4dPbQwLIRIQNZWtwER6B
+         CwNQeSs8aSPGiCcLbgXxlKofjNbexue2Wa7HzgsQBMJZiSj5QE/fYcW/zx6zWXp81K/z
+         HZCgN0yDcBV4adpjsuxpWsEaIwzLu+SZawX3fxx1kBBDMW+4ghExRu5an6pjh/6xWLcc
+         US2bDN/+VA26re2zGwmRVtn0tbIuHvC+7uToFpoVb3ppEfkMpJvo+1WbCPtQIitF+fZN
+         pyZlzBqnjrzaykZ2d9qf0ak0rgG+Pgzc6f+0eMYqTknVy+MTB8hv2peHKNC2lw3iPLPm
+         KnMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=tKaMbG/HjQb1/sn/s5rHZFomdMxjFwW4dEMmTzlPHS8=;
+        b=pS1hrC2BO0s0vn6m4G3+upng1sAreASZVwwr+fx3Rtmg/1y2FVwH6z8TqbsWDh8Wmo
+         00ICYfDxY+LP9wbV5NDWzLXLm3k4mrKLzTnDgOmNdhh3E5qoXIbGB/nYdKF571+8xMna
+         qpj5Pu5GGstpxsrNdovYaQY8RPuYTseViTt+l+HMce9iMLsZ5ddwJIr9ivNqGiEjlHkj
+         fCAr/BoIKubg9sBvpzKqxW3gwURTCHffYjD9SgzkaB+q5F7CUeVreWolAPhRZ3+U8nan
+         XYEFT71qOeZoEV81N2QCZqWkf/lyYBBYnTiVfcSxfXgJ3daTnV/wPuzb2ex0G15Bw24M
+         CYEA==
+X-Gm-Message-State: AOAM53088GUPEjb1EFuR0VW//n3uEFEjD4dlV2U72091BHLD6lmOlUgC
+        3ZBfk4zLg5dVrQv3TTCsq8MqaA==
+X-Google-Smtp-Source: ABdhPJzK20lcnPtdHXO77ypwnn+a88tKFbfx7sDYPV4ofif5vDe2lzQoPS9sWvyhKw8jWcUFjUIMTA==
+X-Received: by 2002:aca:b787:: with SMTP id h129mr484432oif.86.1634582069791;
+        Mon, 18 Oct 2021 11:34:29 -0700 (PDT)
+Received: from ripper ([2600:1700:a0:3dc8:205:1bff:fec0:b9b3])
+        by smtp.gmail.com with ESMTPSA id o80sm3115568ota.68.2021.10.18.11.34.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Oct 2021 11:34:29 -0700 (PDT)
+Date:   Mon, 18 Oct 2021 11:36:16 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     abhinavk@codeaurora.org
+Cc:     Rob Clark <robdclark@gmail.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [Freedreno] [PATCH] drm/msm/dp: Move debugfs files into
+ subdirectory
+Message-ID: <YW2+oPIaVPO7QsqK@ripper>
+References: <20211015231702.1784254-1-bjorn.andersson@linaro.org>
+ <f72263e0d4c118653fff8b1341dc487b@codeaurora.org>
+ <YWxSWlRp+log+Trz@ripper>
+ <7a77045f4069a21305e5c3614a6739f0@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7a77045f4069a21305e5c3614a6739f0@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a new warning in clang top-of-tree (will be clang 14):
+On Mon 18 Oct 11:07 PDT 2021, abhinavk@codeaurora.org wrote:
 
-In file included from arch/x86/kvm/mmu/mmu.c:27:
-arch/x86/kvm/mmu/spte.h:318:9: error: use of bitwise '|' with boolean operands [-Werror,-Wbitwise-instead-of-logical]
-        return __is_bad_mt_xwr(rsvd_check, spte) |
-               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                                                 ||
-arch/x86/kvm/mmu/spte.h:318:9: note: cast one or both operands to int to silence this warning
+> Hi Bjorn
+> 
+> On 2021-10-17 09:42, Bjorn Andersson wrote:
+> > On Fri 15 Oct 16:53 PDT 2021, abhinavk@codeaurora.org wrote:
+> > 
+> > > On 2021-10-15 16:17, Bjorn Andersson wrote:
+> > > > In the cleanup path of the MSM DP driver the DP driver's debugfs files
+> > > > are destroyed by invoking debugfs_remove_recursive() on debug->root,
+> > > > which during initialization has been set to minor->debugfs_root.
+> > > >
+> > > > To allow cleaning up the DP driver's debugfs files either each dentry
+> > > > needs to be kept track of or the files needs to be put in a subdirectory
+> > > > which can be removed in one go.
+> > > >
+> > > > By choosing to put the debugfs files in a subdirectory, based on the
+> > > > name of the associated connector this also solves the problem that these
+> > > > names would collide as support for multiple DP instances are introduced.
+> > > >
+> > > > One alternative solution to the problem with colliding file names would
+> > > > have been to put keep track of the individual files and put them under
+> > > > the connector's debugfs directory. But while the drm_connector has been
+> > > > allocated, its associated debugfs directory has not been created at the
+> > > > time of initialization of the dp_debug.
+> > > >
+> > > > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > > 
+> > > I have been thinking about this problem ever since multi-DP has been
+> > > posted
+> > > :)
+> > > Creating sub-directories seems right but at the moment it looks like
+> > > IGT
+> > > which
+> > > uses these debugfs nodes doesnt check sub-directories:
+> > > 
+> > > https://gitlab.freedesktop.org/drm/igt-gpu-tools/-/blob/master/tools/msm_dp_compliance.c#L215
+> > > 
+> > > It looks for the DP debugfs nodes under /sys/kernel/debug/dri/*/
+> > > 
+> > > We have to fix IGT too to be able to handle multi-DP cases. I will
+> > > try to
+> > > come up
+> > > with a proposal to address this.
+> > > 
+> > > Till then, can we go with the other solution to keep track of the
+> > > dentries?
+> > > 
+> > 
+> > I'm afraid I don't see what you're proposing.
+> > 
+> > Afaict we need one set of dp_test{type,active,data} per DP controller,
+> > so even doing this by keeping track of the dentries requires that we
+> > rename the files based on some identifier (id or connector name) - which
+> > will cause igt to break.
+> 
+> Yes, I also thought the same that there needs to be some identifier.
+> 
+> "To allow cleaning up the DP driver's debugfs files either each dentry
+> needs to be kept track of or the files needs to be put in a subdirectory
+> which can be removed in one go"
+> 
+> I guess I misunderstood your statement in the commit text thinking that you
+> had some other way to keep track of the dentries as it mentioned that
+> use a subdirectory OR keep track of each dentry.
+> 
 
-The code is fine, but change it anyway to shut up this clever clogs
-of a compiler.
+No, I did write that code as well and then ditched it.
 
-Reported-by: torvic9@mailbox.org
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- arch/x86/kvm/mmu/spte.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Unfortunately I don't think it would help you, because we still need to
+add some identifier to the file names and preferably we should add that
+to the single case as well to make things consistent.
 
-diff --git a/arch/x86/kvm/mmu/spte.h b/arch/x86/kvm/mmu/spte.h
-index 7c0b09461349..66782e796c0a 100644
---- a/arch/x86/kvm/mmu/spte.h
-+++ b/arch/x86/kvm/mmu/spte.h
-@@ -315,7 +315,7 @@ static __always_inline bool is_rsvd_spte(struct rsvd_bits_validate *rsvd_check,
- 	 * bits and EPT's invalid memtype/XWR checks to avoid an extra Jcc
- 	 * (this is extremely unlikely to be short-circuited as true).
- 	 */
--	return __is_bad_mt_xwr(rsvd_check, spte) |
-+	return __is_bad_mt_xwr(rsvd_check, spte) ||
- 	       __is_rsvd_bits_set(rsvd_check, spte, level);
- }
- 
--- 
-2.27.0
+> > 
+> > As such, I think the practical path forward is that we merge the
+> > multi-DP series as currently proposed. This will not cause any issues on
+> > single-DP systems, but on multi-DP systems we will have warnings about
+> > duplicate debugfs entries in the kernel logs.
+> > 
+> > Then you can figure out how to rework igt to deal with the multiple DP
+> > instances and update the dp_debug interface accordingly.
+> > 
+> 
+> Fine with me, I will take care of this.
+> 
 
+Cool, thanks.
+
+Regards,
+Bjorn
+
+> > 
+> > Which also implies that we should hold this patch back. But if we go
+> > that path, I think we should fix dp_debug_deinit() so that it doesn't
+> > remove /sys/kernel/debug/dri/128 when the DP driver is unloaded.
+> Yes, lets hold this patch back till I fix multi-DP for IGT.
+> > 
+> > Regards,
+> > Bjorn
+> > 
+> > > > ---
+> > > >
+> > > > This depends on
+> > > > https://lore.kernel.org/linux-arm-msm/20211010030435.4000642-1-bjorn.andersson@linaro.org/
+> > > > reducing the connector from a double pointer.
+> > > >
+> > > >  drivers/gpu/drm/msm/dp/dp_debug.c | 15 +++++++++------
+> > > >  1 file changed, 9 insertions(+), 6 deletions(-)
+> > > >
+> > > > diff --git a/drivers/gpu/drm/msm/dp/dp_debug.c
+> > > > b/drivers/gpu/drm/msm/dp/dp_debug.c
+> > > > index da4323556ef3..67da4c69eca1 100644
+> > > > --- a/drivers/gpu/drm/msm/dp/dp_debug.c
+> > > > +++ b/drivers/gpu/drm/msm/dp/dp_debug.c
+> > > > @@ -210,26 +210,29 @@ static const struct file_operations
+> > > > test_active_fops = {
+> > > >  static int dp_debug_init(struct dp_debug *dp_debug, struct drm_minor
+> > > > *minor)
+> > > >  {
+> > > >  	int rc = 0;
+> > > > +	char path[64];
+> > > >  	struct dp_debug_private *debug = container_of(dp_debug,
+> > > >  			struct dp_debug_private, dp_debug);
+> > > >
+> > > > -	debugfs_create_file("dp_debug", 0444, minor->debugfs_root,
+> > > > +	snprintf(path, sizeof(path), "msm_dp-%s", debug->connector->name);
+> > > > +
+> > > > +	debug->root = debugfs_create_dir(path, minor->debugfs_root);
+> > > > +
+> > > > +	debugfs_create_file("dp_debug", 0444, debug->root,
+> > > >  			debug, &dp_debug_fops);
+> > > >
+> > > >  	debugfs_create_file("msm_dp_test_active", 0444,
+> > > > -			minor->debugfs_root,
+> > > > +			debug->root,
+> > > >  			debug, &test_active_fops);
+> > > >
+> > > >  	debugfs_create_file("msm_dp_test_data", 0444,
+> > > > -			minor->debugfs_root,
+> > > > +			debug->root,
+> > > >  			debug, &dp_test_data_fops);
+> > > >
+> > > >  	debugfs_create_file("msm_dp_test_type", 0444,
+> > > > -			minor->debugfs_root,
+> > > > +			debug->root,
+> > > >  			debug, &dp_test_type_fops);
+> > > >
+> > > > -	debug->root = minor->debugfs_root;
+> > > > -
+> > > >  	return rc;
+> > > >  }
