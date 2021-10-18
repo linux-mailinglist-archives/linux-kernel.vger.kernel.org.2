@@ -2,130 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAB5F431648
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 12:38:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A4FA43164F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 12:40:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230440AbhJRKlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 06:41:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41538 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229569AbhJRKlG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 06:41:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634553534;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GJpjwYzBEePfLIvqc/wA36RQv/Hj/p+rbazzXrU5BSU=;
-        b=HMPCIBB1uTbUspvgOgDxcibjAYVRjW0kKMixnCU8xA/izEy5ksgwTUQ+Z1eyZVJP7WLeOe
-        1E/1RoFqz59+oCs9vwAPtydF8lVi7XQlbM34Szmh7KK+eKCVw2yUuZ/0czSV7Y1N15I7H1
-        qrWuvZbdHda2+QlHl9bK/7VZ3sIArAU=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-306-Dd6Sby7jMWOvnzBtw1EGjw-1; Mon, 18 Oct 2021 06:38:53 -0400
-X-MC-Unique: Dd6Sby7jMWOvnzBtw1EGjw-1
-Received: by mail-ed1-f70.google.com with SMTP id l22-20020aa7c316000000b003dbbced0731so13967402edq.6
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 03:38:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=GJpjwYzBEePfLIvqc/wA36RQv/Hj/p+rbazzXrU5BSU=;
-        b=mqbVPCtF5vEfEt0V8DUiEZY3tqywi1VyCB3TbiaJdH6targYnpMDxclOfJ3HEuG8rV
-         QwasJrrNlLaqL1451kfOH3WelXIGQTL4I8njLA48nrAfaUOzNutSbNykXg/K9xSsSeUg
-         2JRgEVqvS6rTu1Bv3rT++mSEnw8xVRNz1xQcHHJBzmHEU+DaDyBfw28rOeQeGtEA/EKd
-         gKoFQjXHiG0Ud65cbcfJurQ9piDt8d3V1wISauH5Fxs/iok0xqC8LzJe33GdzxkudrP+
-         Vi0S44O9Gee+0LEEJR4568g0TP4DaVyKwzeRzBZqZJLzJnCZY52ezkrztYE5u4madj2M
-         T1RA==
-X-Gm-Message-State: AOAM5331jYzeN9NQr/R0O/a8UUFrfbGAT0x8wFcgzMmA4fUslZp5FY//
-        ERUgCYJoYLffXaytAfHZYJVxYU6gvuzvM02iFb7KtCae1nFNIpuvAXp0dNTOUzd9yEDfvC4/1Fg
-        +wVyK1asQwzF+u9Jq6BZuQh8b
-X-Received: by 2002:a17:906:180a:: with SMTP id v10mr28975208eje.112.1634553532170;
-        Mon, 18 Oct 2021 03:38:52 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyvmIzC9O5OnhTRWtlgSgEVOb1rej/eg3p3hqWp1+bsmCinM+Ngm6dO9xcehdy0EVTAOjpAcQ==
-X-Received: by 2002:a17:906:180a:: with SMTP id v10mr28975190eje.112.1634553531989;
-        Mon, 18 Oct 2021 03:38:51 -0700 (PDT)
-Received: from [10.40.1.223] ([81.30.35.201])
-        by smtp.gmail.com with ESMTPSA id x16sm8909256ejj.8.2021.10.18.03.38.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Oct 2021 03:38:51 -0700 (PDT)
-Message-ID: <3c9d4f9b-26c2-a135-eb2e-67963aa0bc0b@redhat.com>
-Date:   Mon, 18 Oct 2021 12:38:51 +0200
+        id S230122AbhJRKm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 06:42:56 -0400
+Received: from mga12.intel.com ([192.55.52.136]:2882 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229590AbhJRKmz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 06:42:55 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10140"; a="208324571"
+X-IronPort-AV: E=Sophos;i="5.85,381,1624345200"; 
+   d="scan'208";a="208324571"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2021 03:40:41 -0700
+X-IronPort-AV: E=Sophos;i="5.85,381,1624345200"; 
+   d="scan'208";a="489364092"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.72.159])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2021 03:40:37 -0700
+Received: from andy by smile with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mcQ42-0001m6-75;
+        Mon, 18 Oct 2021 13:40:18 +0300
+Date:   Mon, 18 Oct 2021 13:40:18 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Joel Becker <jlbec@evilplan.org>, Christoph Hellwig <hch@lst.de>,
+        Shuah Khan <shuah@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Kent Gibson <warthog618@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Jack Winch <sunt.un.morcov@gmail.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org,
+        Colin Ian King <colin.king@canonical.com>
+Subject: Re: [PATCH v7 5/8] gpio: sim: new testing module
+Message-ID: <YW1PEvTyqdhiRYR6@smile.fi.intel.com>
+References: <20211008081739.26807-1-brgl@bgdev.pl>
+ <20211008081739.26807-6-brgl@bgdev.pl>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [RFC PATCH 1/1] ACPI / PMIC: Add i2c address to intel_pmic_bytcrc
- driver
-Content-Language: en-US
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Tsuchiya Yuto <kitakar@gmail.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>, Andy Shevchenko <andy@kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20211017161523.43801-1-kitakar@gmail.com>
- <20211017161523.43801-2-kitakar@gmail.com>
- <3e6428f1-9411-fac6-9172-1dfe6de58c28@redhat.com>
- <CAHp75VcA+=OsmX7o2WTvYgf8TNpE64qEHq=MVm5vVP-4RBk+ng@mail.gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <CAHp75VcA+=OsmX7o2WTvYgf8TNpE64qEHq=MVm5vVP-4RBk+ng@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211008081739.26807-6-brgl@bgdev.pl>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 10/18/21 12:31, Andy Shevchenko wrote:
-> On Mon, Oct 18, 2021 at 12:16 PM Hans de Goede <hdegoede@redhat.com> wrote:
->> On 10/17/21 18:15, Tsuchiya Yuto wrote:
->>> On Microsoft Surface 3 (uses Intel's Atom Cherry Trail SoC), executing
+On Fri, Oct 08, 2021 at 10:17:36AM +0200, Bartosz Golaszewski wrote:
+> Implement a new, modern GPIO testing module controlled by configfs
+> attributes instead of module parameters. The goal of this driver is
+> to provide a replacement for gpio-mockup that will be easily extensible
+> with new features and doesn't require reloading the module to change
+> the setup.
 > 
-> ...
-> 
->> As Andy said we could use a DMI quirk for this, but chances are that the Microsoft Surface
->> DSDT is not the only one with the wrong HRV value. So instead it might be better to
->> just test for the SoC type as the attached patch does.
->>
->> Tsuchiya, can you give the attached patch a try.
->>
->> Andy, what do you think, should we go with the attached patch or would you prefer using
->> a DMI quirk ?
-> 
-> TBH I have no strong opinion. Only one remark on your patch, I am not
-> a fan of removing COMPILE_TEST but at the same time I'm not a fan of
-> ifdeffery. All on all I think having COMPILE_TEST is preferable even
-> if we have ifdeffery. Btw, IIRC similar code (i.e. BYT vs CHT by CPU
-> ID) is being used elsewhere. Perhaps we might have some common
-> (library) under arc/x86, PDx86 or so (headers?)?
+> Signed-off-by: Bartosz Golaszewski <brgl@bgdev.pl>
+> [Andy: Initialize attribute allocated on the heap]
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> [Colin: Fix dereference of free'd pointer config]
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-We already have helpers for this defined in:
+Some nit-picks below, up to you to address.
 
-sound/soc/intel/common/soc-intel-quirks.h
+...
 
-We could move those to some header under include, maybe:
+> +	ret = gpio_sim_setup_sysfs(chip);
+> +	if (ret)
+> +		return ret;
+> +
+> +	return 0;
 
-include/linux/platform_data/x86/atom.h
+return gpio_sim_...(chip); ?
 
-And add #ifdef-ery there so that things will also build on
-non x86 ?
+...
 
-Then we could do a 2 patch series adding the
-include/linux/platform_data/x86/atom.h
-file + the drivers/mfd/intel_soc_pmic_core.c
-change and Lee can merge both through the MFD tree.
+> +
 
-And then we can do further clean-ups of e.g. sound/soc
-on top (we can ask Lee to provide an immutable branch).
+Redundant empty line.
 
-How does that sound ?
+> +CONFIGFS_ATTR_RO(gpio_sim_config_, dev_name);
 
-Regards,
+...
 
-Hans
+> +
+
+Ditto.
+
+> +CONFIGFS_ATTR_RO(gpio_sim_config_, chip_name);
+
+...
+
+> +
+
+Ditto.
+
+> +CONFIGFS_ATTR(gpio_sim_config_, label);
+
+...
+
+> +
+
+Ditto.
+
+> +CONFIGFS_ATTR(gpio_sim_config_, num_lines);
+
+...
+
+> +
+
+Ditto.
+
+> +CONFIGFS_ATTR(gpio_sim_config_, line_names);
+
+...
+
+> +	fwnode = fwnode_create_software_node(properties, NULL);
+> +	if (IS_ERR(fwnode))
+> +		return PTR_ERR(fwnode);
+
+
+> +	fwnode = dev_fwnode(&config->pdev->dev);
+> +	platform_device_unregister(config->pdev);
+> +	fwnode_remove_software_node(fwnode);
+
+This seems correct, thank you for modifying the code.
+
+...
+
+> +	config->pdev = NULL;
+> +	mutex_unlock(&config->lock);
+
+mutex_destroy() ?
+Or is it done in the upper level?
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
