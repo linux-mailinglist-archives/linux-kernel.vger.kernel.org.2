@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E890C431CA2
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:42:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D607431BE0
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:33:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233414AbhJRNm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:42:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35670 "EHLO mail.kernel.org"
+        id S233201AbhJRNfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:35:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42714 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233591AbhJRNks (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:40:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F1EA361354;
-        Mon, 18 Oct 2021 13:33:28 +0000 (UTC)
+        id S232059AbhJRNeK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:34:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4DAA36138B;
+        Mon, 18 Oct 2021 13:30:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634564009;
-        bh=/awy34kJy4IbzjAmDuVQRImRg06SYH2OxxPFIPT1nuc=;
+        s=korg; t=1634563801;
+        bh=cesyj4anBa+P1NwYCsv+OIjAb5LzGTtCQDFHTqD9RZc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oMM9n6bo5+9Cl+YRCCA20EdLJTKojtZ22p6aMe46Owofs+sP9QsNZOes3kBh3eu1I
-         q3d+1jW4hQKYKbss/UT8bjyrKKZ8IdDFy1JZPDAEMdsc55BQzRNY2zHa4wsA8wmTot
-         /5BW7OX/136+fd6wzW+4etqNUcGUw8spUQBt4LhE=
+        b=eL13aILfPqatwZAuDQz+8s+HmFkjcDRR2RsgfZzMmCSk7a5AFykUDTkgnDgLtBHlb
+         ZbPoU+7Jyg04fkD0emqVLkm3QQHpB60mTvARJx4nPJo5nidpZ7Gx82pn35x/shNqml
+         y215xsYZhv2RZwDCFs0de0x6sXqkJI8NwyA7D4Pk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nikolay Martynov <mar.kolya@gmail.com>,
-        Mathias Nyman <mathias.nyman@linux.intel.com>
-Subject: [PATCH 5.10 030/103] xhci: Enable trust tx length quirk for Fresco FL11 USB controller
-Date:   Mon, 18 Oct 2021 15:24:06 +0200
-Message-Id: <20211018132335.734084429@linuxfoundation.org>
+        stable@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Subject: [PATCH 5.4 09/69] s390: fix strrchr() implementation
+Date:   Mon, 18 Oct 2021 15:24:07 +0200
+Message-Id: <20211018132329.765908869@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132334.702559133@linuxfoundation.org>
-References: <20211018132334.702559133@linuxfoundation.org>
+In-Reply-To: <20211018132329.453964125@linuxfoundation.org>
+References: <20211018132329.453964125@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,43 +40,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nikolay Martynov <mar.kolya@gmail.com>
+From: Roberto Sassu <roberto.sassu@huawei.com>
 
-commit ea0f69d8211963c4b2cc1998b86779a500adb502 upstream.
+commit 8e0ab8e26b72a80e991c66a8abc16e6c856abe3d upstream.
 
-Tested on SD5200T TB3 dock which has Fresco Logic FL1100 USB 3.0 Host
-Controller.
-Before this patch streaming video from USB cam made mouse and keyboard
-connected to the same USB bus unusable. Also video was jerky.
-With this patch streaming video doesn't have any effect on other
-periferals and video is smooth.
+Fix two problems found in the strrchr() implementation for s390
+architectures: evaluate empty strings (return the string address instead of
+NULL, if '\0' is passed as second argument); evaluate the first character
+of non-empty strings (the current implementation stops at the second).
 
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
 Cc: stable@vger.kernel.org
-Signed-off-by: Nikolay Martynov <mar.kolya@gmail.com>
-Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
-Link: https://lore.kernel.org/r/20211008092547.3996295-6-mathias.nyman@linux.intel.com
+Reported-by: Heiko Carstens <hca@linux.ibm.com> (incorrect behavior with empty strings)
+Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+Link: https://lore.kernel.org/r/20211005120836.60630-1-roberto.sassu@huawei.com
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/host/xhci-pci.c |    2 ++
- 1 file changed, 2 insertions(+)
+ arch/s390/lib/string.c |   13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
---- a/drivers/usb/host/xhci-pci.c
-+++ b/drivers/usb/host/xhci-pci.c
-@@ -30,6 +30,7 @@
- #define PCI_VENDOR_ID_FRESCO_LOGIC	0x1b73
- #define PCI_DEVICE_ID_FRESCO_LOGIC_PDK	0x1000
- #define PCI_DEVICE_ID_FRESCO_LOGIC_FL1009	0x1009
-+#define PCI_DEVICE_ID_FRESCO_LOGIC_FL1100	0x1100
- #define PCI_DEVICE_ID_FRESCO_LOGIC_FL1400	0x1400
+--- a/arch/s390/lib/string.c
++++ b/arch/s390/lib/string.c
+@@ -246,14 +246,13 @@ EXPORT_SYMBOL(strcmp);
+ #ifdef __HAVE_ARCH_STRRCHR
+ char *strrchr(const char *s, int c)
+ {
+-       size_t len = __strend(s) - s;
++	ssize_t len = __strend(s) - s;
  
- #define PCI_VENDOR_ID_ETRON		0x1b6f
-@@ -112,6 +113,7 @@ static void xhci_pci_quirks(struct devic
- 	/* Look for vendor-specific quirks */
- 	if (pdev->vendor == PCI_VENDOR_ID_FRESCO_LOGIC &&
- 			(pdev->device == PCI_DEVICE_ID_FRESCO_LOGIC_PDK ||
-+			 pdev->device == PCI_DEVICE_ID_FRESCO_LOGIC_FL1100 ||
- 			 pdev->device == PCI_DEVICE_ID_FRESCO_LOGIC_FL1400)) {
- 		if (pdev->device == PCI_DEVICE_ID_FRESCO_LOGIC_PDK &&
- 				pdev->revision == 0x0) {
+-       if (len)
+-	       do {
+-		       if (s[len] == (char) c)
+-			       return (char *) s + len;
+-	       } while (--len > 0);
+-       return NULL;
++	do {
++		if (s[len] == (char)c)
++			return (char *)s + len;
++	} while (--len >= 0);
++	return NULL;
+ }
+ EXPORT_SYMBOL(strrchr);
+ #endif
 
 
