@@ -2,127 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60A694315E5
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 12:21:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F2F24315EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 12:22:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231766AbhJRKYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 06:24:01 -0400
-Received: from foss.arm.com ([217.140.110.172]:35108 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232132AbhJRKXm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 06:23:42 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 25C6FED1;
-        Mon, 18 Oct 2021 03:21:31 -0700 (PDT)
-Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C7E173F70D;
-        Mon, 18 Oct 2021 03:21:29 -0700 (PDT)
-Date:   Mon, 18 Oct 2021 11:21:27 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Songxiaowei <songxiaowei@hisilicon.com>,
-        Binghui Wang <wangbinghui@hisilicon.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org
-Subject: Re: [PATCH v13 09/10] PCI: kirin: fix poweroff sequence
-Message-ID: <20211018102127.GD17152@lpieralisi>
-References: <cover.1634539769.git.mchehab+huawei@kernel.org>
- <8116a4ddaaeda8dd056e80fa0ee506c5c6f42ca7.1634539769.git.mchehab+huawei@kernel.org>
+        id S231664AbhJRKY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 06:24:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47024 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231721AbhJRKYU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 06:24:20 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A006C06161C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 03:22:09 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id g10so69133097edj.1
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 03:22:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=87x3nqoZyNhvlsZlpX5QGgh9vIwgmThCTmliRoh6zy0=;
+        b=iJRrv6+DeADalL6e6sEgX6OZ6xgVXl/Sz9ErRw2tpVXgs8+kDU0VfBoi6+ROzgKfpW
+         CpYLNnaTR8PvCbcc0vOr53bLH38CdPU/UeFHTY43F7QMdjR1hkS/e652Y7jeaox2nJHs
+         fcW4q89zMywSuuhdUEgipqRyhfChsH4vZaO0/RS1Gj9MKnMa3+pRM3G39AS5eRUBZh/r
+         q5gKVmprsFkYG0kgrOFC7hWkp+oOtNSVdAtLuvIzJwX3JUizMtxipNVBQ3cDGeQWA1CQ
+         hHFVRB694phEt9Tixu2rqX9ybNRxTOMWBQTja3fZ1AuRwZYjeBB6mWJkkCm0Odx/RGms
+         7niQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=87x3nqoZyNhvlsZlpX5QGgh9vIwgmThCTmliRoh6zy0=;
+        b=RZ7o9aRqFmn7VtiowzUuTIbvTw2sGZ4WrNm/pabWdvixbZzMbA5vEDuZYYhrlwVIrv
+         rWlVBVOyIjFHYrPRxADQrO98ATjJ7zYaI9Zm/njfjoPb3YgtPumeCjiLEMsxlywtSoiV
+         VYySF5QNSTXVc83XCXUuiOcJr886R4xAdCPzpT2jvUvBHqw+A/x19T9zdwZ0xd9CPjr1
+         ebK1PTDAGI+QDb04+L4yg2ZQUAQVyBfBhrd/B3pWiyBTg4pF8QMA5FR3brPOMKTZlhnt
+         JTRxemDaXyOvbZWlAecMxve/W7rIyF6nx/FczQMt7V+tfg65XuDPX9U4O1Su9lvvQ/SE
+         bOIg==
+X-Gm-Message-State: AOAM5310GHEfPNIAH6I/sYta1SaDTbSJJSRnepMpFGyUqfYk+bRGMYbX
+        LWPp9f4MACD+MbvO6HN7c7KE4T5TBgAYNkrRlhuEFw==
+X-Google-Smtp-Source: ABdhPJy32ABQOwaX1ssk2eKl9PCN4su84bBKky3gjvsYOJ6tNLN5oylFXfhinb1P3QpJig5YOyWvyLNE+21x53vRTos=
+X-Received: by 2002:a17:906:c7c1:: with SMTP id dc1mr29499177ejb.6.1634552527783;
+ Mon, 18 Oct 2021 03:22:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8116a4ddaaeda8dd056e80fa0ee506c5c6f42ca7.1634539769.git.mchehab+huawei@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Mon, 18 Oct 2021 15:51:55 +0530
+Message-ID: <CA+G9fYt7FMXbp47ObVZ4B7X917186Fu39+LM04PcbqZ2-f7-qg@mail.gmail.com>
+Subject: Re: [PATCH 1/8] KVM: SEV-ES: fix length of string I/O
+To:     thomas.lendacky@amd.com, fwilhelm@google.com,
+        kvm list <kvm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>, oupton@google.com,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 18, 2021 at 08:07:34AM +0100, Mauro Carvalho Chehab wrote:
-> This driver currently doesn't call dw_pcie_host_deinit()
-> at the .remove() callback. This can cause an OOPS if the driver
-> is unbound.
+[Please ignore this email if it already reported ]
 
-This looks like a fix, it has to be marked as such.
+Following build errors noticed while building Linux next 20211018
+with gcc-11 for i386 architecture.
 
-> While here, add a poweroff function, in order to abstract
-> between the internal and external PHY logic.
-> 
-> Acked-by: Xiaowei Song <songxiaowei@hisilicon.com>
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
-> 
-> See [PATCH v13 00/10] at: https://lore.kernel.org/all/cover.1634539769.git.mchehab+huawei@kernel.org/
-> 
->  drivers/pci/controller/dwc/pcie-kirin.c | 30 ++++++++++++++++---------
->  1 file changed, 20 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/pci/controller/dwc/pcie-kirin.c b/drivers/pci/controller/dwc/pcie-kirin.c
-> index b17a194cf78d..ffc63d12f8ed 100644
-> --- a/drivers/pci/controller/dwc/pcie-kirin.c
-> +++ b/drivers/pci/controller/dwc/pcie-kirin.c
-> @@ -680,6 +680,23 @@ static const struct dw_pcie_host_ops kirin_pcie_host_ops = {
->  	.host_init = kirin_pcie_host_init,
->  };
->  
-> +static int kirin_pcie_power_off(struct kirin_pcie *kirin_pcie)
-> +{
-> +	int i;
-> +
-> +	if (kirin_pcie->type == PCIE_KIRIN_INTERNAL_PHY)
-> +		return hi3660_pcie_phy_power_off(kirin_pcie);
-> +
-> +	for (i = 0; i < kirin_pcie->n_gpio_clkreq; i++) {
-> +		gpio_direction_output(kirin_pcie->gpio_id_clkreq[i], 1);
-> +	}
+i686-linux-gnu-ld: arch/x86/kvm/svm/sev.o: in function `sev_es_string_io':
+sev.c:(.text+0x110f): undefined reference to `__udivdi3'
+make[1]: *** [/builds/linux/Makefile:1247: vmlinux] Error 1
+make[1]: Target '__all' not remade because of errors.
+make: *** [Makefile:226: __sub-make] Error 2
 
-It looks like you are adding functionality here (ie gpio), not
-just wrapping common code in a function.
+Build config:
+https://builds.tuxbuild.com/1zftLfjR2AyF4rsIfyUCnCTLKFs/config
 
-Also, remove the braces, they aren't needed.
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Lorenzo
+meta data:
+-----------
+    git_describe: next-20211018
+    git_repo: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+    git_sha: 60e8840126bdcb60bccef74c3f962742183c681f
+    git_short_log: 60e8840126bd (\"Add linux-next specific files for 20211018\")
+    kernel_version: 5.15.0-rc5
+    target_arch: i386
+    toolchain: gcc-11
 
-> +
-> +	phy_power_off(kirin_pcie->phy);
-> +	phy_exit(kirin_pcie->phy);
-> +
-> +	return 0;
-> +}
-> +
->  static int kirin_pcie_power_on(struct platform_device *pdev,
->  			       struct kirin_pcie *kirin_pcie)
->  {
-> @@ -725,12 +742,7 @@ static int kirin_pcie_power_on(struct platform_device *pdev,
->  
->  	return 0;
->  err:
-> -	if (kirin_pcie->type == PCIE_KIRIN_INTERNAL_PHY) {
-> -		hi3660_pcie_phy_power_off(kirin_pcie);
-> -	} else {
-> -		phy_power_off(kirin_pcie->phy);
-> -		phy_exit(kirin_pcie->phy);
-> -	}
-> +	kirin_pcie_power_off(kirin_pcie);
->  
->  	return ret;
->  }
-> @@ -739,11 +751,9 @@ static int __exit kirin_pcie_remove(struct platform_device *pdev)
->  {
->  	struct kirin_pcie *kirin_pcie = platform_get_drvdata(pdev);
->  
-> -	if (kirin_pcie->type == PCIE_KIRIN_INTERNAL_PHY)
-> -		return hi3660_pcie_phy_power_off(kirin_pcie);
-> +	dw_pcie_host_deinit(&kirin_pcie->pci->pp);
->  
-> -	phy_power_off(kirin_pcie->phy);
-> -	phy_exit(kirin_pcie->phy);
-> +	kirin_pcie_power_off(kirin_pcie);
->  
->  	return 0;
->  }
-> -- 
-> 2.31.1
-> 
+steps to reproduce:
+https://builds.tuxbuild.com/1zftLfjR2AyF4rsIfyUCnCTLKFs/tuxmake_reproducer.sh
+
+--
+Linaro LKFT
+https://lkft.linaro.org
