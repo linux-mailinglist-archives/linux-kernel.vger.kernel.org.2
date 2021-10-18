@@ -2,126 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CF164310F1
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 09:01:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 321E34310FF
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 09:05:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230265AbhJRHD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 03:03:27 -0400
-Received: from mga18.intel.com ([134.134.136.126]:15296 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229533AbhJRHD0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 03:03:26 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10140"; a="215112526"
-X-IronPort-AV: E=Sophos;i="5.85,381,1624345200"; 
-   d="scan'208";a="215112526"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2021 00:01:15 -0700
-X-IronPort-AV: E=Sophos;i="5.85,381,1624345200"; 
-   d="scan'208";a="493466998"
-Received: from xiaoyaol-mobl.ccr.corp.intel.com (HELO [10.239.13.123]) ([10.239.13.123])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2021 00:01:13 -0700
-Message-ID: <e202f238-2a9f-7196-5323-8b0f77073e4a@intel.com>
-Date:   Mon, 18 Oct 2021 15:01:09 +0800
+        id S230246AbhJRHHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 03:07:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58530 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229533AbhJRHHR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 03:07:17 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74FAFC06161C;
+        Mon, 18 Oct 2021 00:05:06 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id m20so14999601iol.4;
+        Mon, 18 Oct 2021 00:05:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jXX2fvCmjdLfrYBH5s0iu5Hk0ygNOTdaxa2SFqxVg2o=;
+        b=KwRUqOxq0BaLUI4zLOEo1NnfrM/jGSTl3YvpCpYuUJR7qlW5HB1/vSGExx8EXOKNyg
+         t4Vqi+2FowA/fBESkiIm2RyKCnJSE4tFeCFmYDqAjCgCH2T7n2/voLU9lapGbijgMlk9
+         rR/w+9B5pYujdbteQUJhCcc26X/SKO9RyLWJMt11djVlmx59QDQoZKhNrR59oF+8arcW
+         1BBJzvWpvUlEMd0GOnHYpVyE7g9svRvluXVad+dZLSoUD1JtGf1kJJS1ArzlZJPw6INj
+         +8nqw9hxLCGj1rye2xtA3JHklDGTvh7eSGv4G5KqRAd2/MgMaVz2IkxYBvcEnagBN9oB
+         ezxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jXX2fvCmjdLfrYBH5s0iu5Hk0ygNOTdaxa2SFqxVg2o=;
+        b=xkHXybl9MaC0U8NjE+RFdLDqeGXAmPo5nipJrU9maPo0hU3t3zaglWkyJyHbT7oVeG
+         42a38ddCrcQWP9e8JkkLBsORI6J4w8WqPUwA3QgG4Tu/arF9a2rbeOVK34ZXJUPlKWgX
+         tPQMj77AqXpr6QHvWIGa3+Jtl3mTZnZNLifpYEqD423GBLzVxHOum0D82huObWr7nvpO
+         Lj56PnpFOUgxjkQvtIcMeJrRHrhcRkGw9BO3a9U4zSPxy10KlSmskMoMmITMvIGFGw0C
+         Lawbau/S+au8RHWw11EunvoZsfZ4kS5HUWxCMwC7J9D1ndn+DJQz3ezZ81ksXfh1wi/N
+         6IlA==
+X-Gm-Message-State: AOAM533W9hxLM6/GNmke9VeMLG04eX30uQs1TzMXbcL0u5KnZE4vjcFP
+        NftN0UtYdqDih3Mh3NtWSSo=
+X-Google-Smtp-Source: ABdhPJxTFSBXKNvkHFBIftPsm1AnvyVbhWIRNBoda1E/eesEY/lLMI/Z8r0sUYtkQhFxLMVr4bpUWw==
+X-Received: by 2002:a05:6602:2d85:: with SMTP id k5mr13266775iow.92.1634540705528;
+        Mon, 18 Oct 2021 00:05:05 -0700 (PDT)
+Received: from localhost.localdomain (node-17-161.flex.volo.net. [76.191.17.161])
+        by smtp.googlemail.com with ESMTPSA id g3sm6782727ile.61.2021.10.18.00.05.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Oct 2021 00:05:05 -0700 (PDT)
+From:   Noah Goldstein <goldstein.w.n@gmail.com>
+Cc:     goldstein.w.n@gmail.com, axboe@kernel.dk, asml.silence@gmail.com,
+        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v1] fs/io_uring: Hoist ret2 == -EAGAIN check in tail of io_write
+Date:   Mon, 18 Oct 2021 03:02:43 -0400
+Message-Id: <20211018070242.20325-1-goldstein.w.n@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Firefox/91.0 Thunderbird/91.2.0
-Subject: Re: [PATCH v2 6/7] KVM: VMX: Check Intel PT related CPUID leaves
-Content-Language: en-US
-From:   Xiaoyao Li <xiaoyao.li@intel.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210827070249.924633-1-xiaoyao.li@intel.com>
- <20210827070249.924633-7-xiaoyao.li@intel.com> <YTp/oGmiin19q4sQ@google.com>
- <a7988439-5a4c-3d5a-ea4a-0fad181ad733@intel.com>
-In-Reply-To: <a7988439-5a4c-3d5a-ea4a-0fad181ad733@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/10/2021 9:59 AM, Xiaoyao Li wrote:
-> On 9/10/2021 5:41 AM, Sean Christopherson wrote:
->> On Fri, Aug 27, 2021, Xiaoyao Li wrote:
->>> CPUID 0xD leaves reports the capabilities of Intel PT, e.g. it decides
->>> which bits are valid to be set in MSR_IA32_RTIT_CTL, and reports the
->>> number of PT ADDR ranges.
->>>
->>> KVM needs to check that guest CPUID values set by userspace doesn't
->>> enable any bit which is not supported by bare metal. Otherwise,
->>> 1. it will trigger vm-entry failure if hardware unsupported bit is
->>>     exposed to guest and set by guest.
->>> 2. it triggers #GP when context switch PT MSRs if exposing more
->>>     RTIT_ADDR* MSRs than hardware capacity.
->>>
->>> Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
-..
-> 
->>> +     * pt_desc.ctl_bitmask in later update_intel_pt_cfg().
->>> +     *
->>> +     * pt_desc.ctl_bitmask decides the legal value for guest
->>> +     * MSR_IA32_RTIT_CTL. KVM cannot support PT capabilities beyond 
->>> native,
->>> +     * otherwise it will trigger vm-entry failure if guest sets native
->>> +     * unsupported bits in MSR_IA32_RTIT_CTL.
->>> +     */
->>> +    best = cpuid_entry2_find(entries, nent, 0xD, 0);
->>> +    if (best) {
->>> +        cpuid_count(0xD, 0, &eax, &ebx, &ecx, &edx);
->>> +        if (best->ebx & ~ebx || best->ecx & ~ecx)
->>> +            return -EINVAL;
->>> +    }
->>> +    best = cpuid_entry2_find(entries, nent, 0xD, 1);
->>> +    if (best) {
->>> +        cpuid_count(0xD, 0, &eax, &ebx, &ecx, &edx);
->>> +        if (((best->eax & 0x7) > (eax & 0x7)) ||
->>
->> Ugh, looking at the rest of the code, even this isn't sufficient because
->> pt_desc.guest.addr_{a,b} are hardcoded at 4 entries, i.e. running KVM 
->> on hardware
->> with >4 entries will lead to buffer overflows.
-> 
-> it's hardcoded to 4 because there is a note of "no processors support 
-> more than 4 address ranges" in SDM vol.3 Chapter 31.3.1, table 31-11
-> 
->> One option would be to bump that to the theoretical max of 15, which 
->> doesn't seem
->> too horrible, especially if pt_desc as a whole is allocated on-demand, 
->> which it
->> probably should be since it isn't exactly tiny (nor ubiquitous)
->>
->> A different option would be to let userspace define whatever it wants 
->> for guest
->> CPUID, and instead cap nr_addr_ranges at min(host.cpuid, guest.cpuid, 
->> RTIT_ADDR_RANGE).
->>
->> Letting userspace generate a bad MSR_IA32_RTIT_CTL is not problematic, 
->> there are
->> plenty of ways userspace can deliberately trigger VM-Entry failure due 
->> to invalid
->> guest state (even if this is a VM-Fail condition, it's not a danger to 
->> KVM).
-> 
-> I'm fine to only safe guard the nr_addr_range if VM-Entry failure 
-> doesn't matter.
+This commit reorganizes the branches in the tail of io_write so that
+the 'ret2 == -EAGAIN' check is not repeated and done first.
 
-Hi Sean.
+The previous version was duplicating the 'ret2 == -EAGAIN'. As well
+'ret2 != -EAGAIN' gurantees the 'done:' path so it makes sense to
+move that check to the front before the likely more expensive branches
+which require memory derefences.
 
-It seems I misread your comment. All above you were talking about the 
-check on nr_addr_range. Did you want to say the check is not necessary 
-if it's to avoid VM-entry failure?
+Signed-off-by: Noah Goldstein <goldstein.w.n@gmail.com>
+---
+Generally I would want to rewrite this as:
+```
+if (ret2 != -EAGAIN
+    || (req->flags & REQ_F_NOWAIT)
+    || (!force_nonblock && !(req->ctx->flags & IORING_SETUP_IOPOLL)))
+        kiocb_done(kiocb, ret2, issue_flags);
+else {
+    ...
+```
 
-The problem is 1) the check on nr_addr_range is to avoid MSR read #GP, 
-thought kernel will fix the #GP. It still prints the warning message.
+But the style of the file seems to be to use gotos. If the above is
+prefereable, let me know and I'll post a new version.    
+ fs/io_uring.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-2) Other check of this Patch on guest CPUID 0x14 is to avoid VM-entry 
-failure.
-
-So I want to ask that do you think both 1) and 2) are unnecessary, or 
-only 2) ?
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index d1e672e7a2d1..932fc84d70d3 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -3648,12 +3648,15 @@ static int io_write(struct io_kiocb *req, unsigned int issue_flags)
+ 	 */
+ 	if (ret2 == -EOPNOTSUPP && (kiocb->ki_flags & IOCB_NOWAIT))
+ 		ret2 = -EAGAIN;
++
++	if (ret2 != -EAGAIN)
++		goto done;
+ 	/* no retry on NONBLOCK nor RWF_NOWAIT */
+-	if (ret2 == -EAGAIN && (req->flags & REQ_F_NOWAIT))
++	if (req->flags & REQ_F_NOWAIT)
+ 		goto done;
+-	if (!force_nonblock || ret2 != -EAGAIN) {
++	if (!force_nonblock) {
+ 		/* IOPOLL retry should happen for io-wq threads */
+-		if (ret2 == -EAGAIN && (req->ctx->flags & IORING_SETUP_IOPOLL))
++		if (req->ctx->flags & IORING_SETUP_IOPOLL)
+ 			goto copy_iov;
+ done:
+ 		kiocb_done(kiocb, ret2, issue_flags);
+-- 
+2.29.2
 
