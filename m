@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7542D431C6B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:39:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 553BF431E73
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:59:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233701AbhJRNkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:40:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53502 "EHLO mail.kernel.org"
+        id S233862AbhJROBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 10:01:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39544 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233716AbhJRNij (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:38:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C04561373;
-        Mon, 18 Oct 2021 13:32:17 +0000 (UTC)
+        id S231775AbhJRN7R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:59:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CAF6461458;
+        Mon, 18 Oct 2021 13:41:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634563937;
-        bh=5dlnK4dzyi2Jw1z3okBIXu8lZDl/jvlRZV3/+8AL1S8=;
+        s=korg; t=1634564502;
+        bh=zcbKeoz81sQDHvnq/SiQbn4QYyl4Aqi3Pgn42io0wuQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1FKPYz8v618zD6fs4Qjt3W/5dglgfTYezS0gqVPJ7PtcYXtK4vIforaWsSHGlfnCB
-         B2VyiV5VcqXU96TdaOagQgrK365BX+xyr3vNFy6KRxxdoSkYWppTmah3E/5XSKhPlZ
-         RT6qsxmoHBh8Y8BnklGVJWttu3PafzJs+s0cMfkk=
+        b=2rfw19Wrz+A40n5M51S60C+RlTnc8LFBsO192H5RyY3WfOKevtuNcsy1rRHZR47QO
+         52ER+AZV56/0wReB4F6Lc+VrDYQ8fXAwWyZDOO8RaQFGw+uNF8VXzoxEqoExYVSaCM
+         mO7eQ9HSV3t5pvAoA6fuqZb0Lu6YwogpdPu8Mqz0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Ziyang Xuan <william.xuanziyang@huawei.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.4 55/69] NFC: digital: fix possible memory leak in digital_in_send_sdd_req()
+        stable@vger.kernel.org, Cindy Lu <lulu@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>
+Subject: [PATCH 5.14 114/151] vhost-vdpa: Fix the wrong input in config_cb
 Date:   Mon, 18 Oct 2021 15:24:53 +0200
-Message-Id: <20211018132331.302290292@linuxfoundation.org>
+Message-Id: <20211018132344.384968061@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132329.453964125@linuxfoundation.org>
-References: <20211018132329.453964125@linuxfoundation.org>
+In-Reply-To: <20211018132340.682786018@linuxfoundation.org>
+References: <20211018132340.682786018@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,39 +39,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ziyang Xuan <william.xuanziyang@huawei.com>
+From: Cindy Lu <lulu@redhat.com>
 
-commit 291c932fc3692e4d211a445ba8aa35663831bac7 upstream.
+commit bcef9356fc2e1302daf373c83c826aa27954d128 upstream.
 
-'skb' is allocated in digital_in_send_sdd_req(), but not free when
-digital_in_send_cmd() failed, which will cause memory leak. Fix it
-by freeing 'skb' if digital_in_send_cmd() return failed.
+Fix the wrong input in for config_cb. In function vhost_vdpa_config_cb,
+the input cb.private was used as struct vhost_vdpa, so the input was
+wrong here, fix this issue
 
-Fixes: 2c66daecc409 ("NFC Digital: Add NFC-A technology support")
-Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: 776f395004d8 ("vhost_vdpa: Support config interrupt in vdpa")
+Signed-off-by: Cindy Lu <lulu@redhat.com>
+Link: https://lore.kernel.org/r/20210929090933.20465-1-lulu@redhat.com
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/nfc/digital_technology.c |    8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/vhost/vdpa.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/nfc/digital_technology.c
-+++ b/net/nfc/digital_technology.c
-@@ -465,8 +465,12 @@ static int digital_in_send_sdd_req(struc
- 	skb_put_u8(skb, sel_cmd);
- 	skb_put_u8(skb, DIGITAL_SDD_REQ_SEL_PAR);
+--- a/drivers/vhost/vdpa.c
++++ b/drivers/vhost/vdpa.c
+@@ -316,7 +316,7 @@ static long vhost_vdpa_set_config_call(s
+ 	struct eventfd_ctx *ctx;
  
--	return digital_in_send_cmd(ddev, skb, 30, digital_in_recv_sdd_res,
--				   target);
-+	rc = digital_in_send_cmd(ddev, skb, 30, digital_in_recv_sdd_res,
-+				 target);
-+	if (rc)
-+		kfree_skb(skb);
-+
-+	return rc;
- }
+ 	cb.callback = vhost_vdpa_config_cb;
+-	cb.private = v->vdpa;
++	cb.private = v;
+ 	if (copy_from_user(&fd, argp, sizeof(fd)))
+ 		return  -EFAULT;
  
- static void digital_in_recv_sens_res(struct nfc_digital_dev *ddev, void *arg,
 
 
