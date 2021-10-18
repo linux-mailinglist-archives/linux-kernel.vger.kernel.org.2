@@ -2,153 +2,410 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A72A43227B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 17:17:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4A7C431ED5
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 16:04:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232870AbhJRPTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 11:19:13 -0400
-Received: from mga02.intel.com ([134.134.136.20]:64674 "EHLO mga02.intel.com"
+        id S233926AbhJROF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 10:05:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41920 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232303AbhJRPTI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 11:19:08 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10141"; a="215435697"
-X-IronPort-AV: E=Sophos;i="5.85,382,1624345200"; 
-   d="scan'208";a="215435697"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2021 08:14:57 -0700
-X-IronPort-AV: E=Sophos;i="5.85,382,1624345200"; 
-   d="scan'208";a="566102855"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2021 08:14:53 -0700
-Received: from punajuuri.localdomain (punajuuri.localdomain [192.168.240.130])
-        by paasikivi.fi.intel.com (Postfix) with ESMTP id BB78920840;
-        Mon, 18 Oct 2021 15:17:33 +0300 (EEST)
-Received: from sailus by punajuuri.localdomain with local (Exim 4.94.2)
-        (envelope-from <sakari.ailus@linux.intel.com>)
-        id 1mcRa5-0001fh-PB; Mon, 18 Oct 2021 15:17:29 +0300
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     linux-i2c@vger.kernel.org
-Cc:     Wolfram Sang <wsa@the-dreams.de>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rajmohan.mani@intel.com, Tomasz Figa <tfiga@chromium.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Chiranjeevi Rapolu <chiranjeevi.rapolu@intel.com>,
-        Hyungwoo Yang <hyungwoo.yang@intel.com>,
-        linux-media@vger.kernel.org
-Subject: [PATCH 6/6] at24: Support probing while in non-zero ACPI D state
-Date:   Mon, 18 Oct 2021 15:17:29 +0300
-Message-Id: <20211018121729.6357-7-sakari.ailus@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211018121729.6357-1-sakari.ailus@linux.intel.com>
-References: <20211018121729.6357-1-sakari.ailus@linux.intel.com>
+        id S234399AbhJROCW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 10:02:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C7DAE61A4F;
+        Mon, 18 Oct 2021 13:43:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1634564587;
+        bh=n8Y8orHOJZk6HlF9eOnhR4oJJ4dAf7zafslDH8GuH7I=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=eO56bIVIGTNKlhScORAQk2x8tjsH5c6/kl+XS0iGuf+cO23Yb3n6kXt6T6CMnH0kt
+         o8P8W6Q1PJY4oyrTk1GonrYtTV9rHo08lCuh62DkZ0UFPZwGKFXy5MCNiUAx/M2ufj
+         0RxM01nObDqOtzfVTWGq5ELThz6JmhMoWO0Jzkyk=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Karsten Graul <kgraul@linux.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.14 103/151] net/smc: improved fix wait on already cleared link
+Date:   Mon, 18 Oct 2021 15:24:42 +0200
+Message-Id: <20211018132344.024828114@linuxfoundation.org>
+X-Mailer: git-send-email 2.33.1
+In-Reply-To: <20211018132340.682786018@linuxfoundation.org>
+References: <20211018132340.682786018@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In certain use cases (where the chip is part of a camera module, and the
-camera module is wired together with a camera privacy LED), powering on
-the device during probe is undesirable. Add support for the at24 to
-execute probe while being in ACPI D state other than 0 (which means fully
-powered on).
+From: Karsten Graul <kgraul@linux.ibm.com>
 
-Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-Reviewed-by: Tomasz Figa <tfiga@chromium.org>
-Acked-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+commit 95f7f3e7dc6bd2e735cb5de11734ea2222b1e05a upstream.
+
+Commit 8f3d65c16679 ("net/smc: fix wait on already cleared link")
+introduced link refcounting to avoid waits on already cleared links.
+This patch extents and improves the refcounting to cover all
+remaining possible cases for this kind of error situation.
+
+Fixes: 15e1b99aadfb ("net/smc: no WR buffer wait for terminating link group")
+Signed-off-by: Karsten Graul <kgraul@linux.ibm.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/misc/eeprom/at24.c | 45 +++++++++++++++++++++++---------------
- 1 file changed, 27 insertions(+), 18 deletions(-)
+ net/smc/smc_cdc.c  |    7 +++++
+ net/smc/smc_core.c |   20 +++++++++-------
+ net/smc/smc_llc.c  |   63 +++++++++++++++++++++++++++++++++++++++++------------
+ net/smc/smc_tx.c   |   22 ++++--------------
+ net/smc/smc_wr.h   |   14 +++++++++++
+ 5 files changed, 85 insertions(+), 41 deletions(-)
 
-diff --git a/drivers/misc/eeprom/at24.c b/drivers/misc/eeprom/at24.c
-index 305ffad131a29..49ab656e8a96e 100644
---- a/drivers/misc/eeprom/at24.c
-+++ b/drivers/misc/eeprom/at24.c
-@@ -595,6 +595,7 @@ static int at24_probe(struct i2c_client *client)
- 	bool i2c_fn_i2c, i2c_fn_block;
- 	unsigned int i, num_addresses;
- 	struct at24_data *at24;
-+	bool full_power;
- 	struct regmap *regmap;
- 	bool writable;
- 	u8 test_byte;
-@@ -747,14 +748,16 @@ static int at24_probe(struct i2c_client *client)
+--- a/net/smc/smc_cdc.c
++++ b/net/smc/smc_cdc.c
+@@ -150,9 +150,11 @@ static int smcr_cdc_get_slot_and_msg_sen
  
- 	i2c_set_clientdata(client, at24);
+ again:
+ 	link = conn->lnk;
++	if (!smc_wr_tx_link_hold(link))
++		return -ENOLINK;
+ 	rc = smc_cdc_get_free_slot(conn, link, &wr_buf, NULL, &pend);
+ 	if (rc)
+-		return rc;
++		goto put_out;
  
--	err = regulator_enable(at24->vcc_reg);
--	if (err) {
--		dev_err(dev, "Failed to enable vcc regulator\n");
--		return err;
--	}
-+	full_power = acpi_dev_state_d0(&client->dev);
-+	if (full_power) {
-+		err = regulator_enable(at24->vcc_reg);
-+		if (err) {
-+			dev_err(dev, "Failed to enable vcc regulator\n");
-+			return err;
-+		}
- 
--	/* enable runtime pm */
--	pm_runtime_set_active(dev);
-+		pm_runtime_set_active(dev);
-+	}
- 	pm_runtime_enable(dev);
- 
- 	at24->nvmem = devm_nvmem_register(dev, &nvmem_config);
-@@ -766,15 +769,18 @@ static int at24_probe(struct i2c_client *client)
+ 	spin_lock_bh(&conn->send_lock);
+ 	if (link != conn->lnk) {
+@@ -160,6 +162,7 @@ again:
+ 		spin_unlock_bh(&conn->send_lock);
+ 		smc_wr_tx_put_slot(link,
+ 				   (struct smc_wr_tx_pend_priv *)pend);
++		smc_wr_tx_link_put(link);
+ 		if (again)
+ 			return -ENOLINK;
+ 		again = true;
+@@ -167,6 +170,8 @@ again:
  	}
- 
- 	/*
--	 * Perform a one-byte test read to verify that the
--	 * chip is functional.
-+	 * Perform a one-byte test read to verify that the chip is functional,
-+	 * unless powering on the device is to be avoided during probe (i.e.
-+	 * it's powered off right now).
- 	 */
--	err = at24_read(at24, 0, &test_byte, 1);
--	if (err) {
--		pm_runtime_disable(dev);
--		if (!pm_runtime_status_suspended(dev))
--			regulator_disable(at24->vcc_reg);
--		return -ENODEV;
-+	if (full_power) {
-+		err = at24_read(at24, 0, &test_byte, 1);
-+		if (err) {
-+			pm_runtime_disable(dev);
-+			if (!pm_runtime_status_suspended(dev))
-+				regulator_disable(at24->vcc_reg);
-+			return -ENODEV;
-+		}
- 	}
- 
- 	pm_runtime_idle(dev);
-@@ -794,9 +800,11 @@ static int at24_remove(struct i2c_client *client)
- 	struct at24_data *at24 = i2c_get_clientdata(client);
- 
- 	pm_runtime_disable(&client->dev);
--	if (!pm_runtime_status_suspended(&client->dev))
--		regulator_disable(at24->vcc_reg);
--	pm_runtime_set_suspended(&client->dev);
-+	if (acpi_dev_state_d0(&client->dev)) {
-+		if (!pm_runtime_status_suspended(&client->dev))
-+			regulator_disable(at24->vcc_reg);
-+		pm_runtime_set_suspended(&client->dev);
-+	}
- 
- 	return 0;
+ 	rc = smc_cdc_msg_send(conn, wr_buf, pend);
+ 	spin_unlock_bh(&conn->send_lock);
++put_out:
++	smc_wr_tx_link_put(link);
+ 	return rc;
  }
-@@ -833,6 +841,7 @@ static struct i2c_driver at24_driver = {
- 	.probe_new = at24_probe,
- 	.remove = at24_remove,
- 	.id_table = at24_ids,
-+	.flags = I2C_DRV_ACPI_WAIVE_D0_PROBE,
- };
  
- static int __init at24_init(void)
--- 
-2.30.2
+--- a/net/smc/smc_core.c
++++ b/net/smc/smc_core.c
+@@ -949,7 +949,7 @@ struct smc_link *smc_switch_conns(struct
+ 		to_lnk = &lgr->lnk[i];
+ 		break;
+ 	}
+-	if (!to_lnk) {
++	if (!to_lnk || !smc_wr_tx_link_hold(to_lnk)) {
+ 		smc_lgr_terminate_sched(lgr);
+ 		return NULL;
+ 	}
+@@ -981,24 +981,26 @@ again:
+ 		read_unlock_bh(&lgr->conns_lock);
+ 		/* pre-fetch buffer outside of send_lock, might sleep */
+ 		rc = smc_cdc_get_free_slot(conn, to_lnk, &wr_buf, NULL, &pend);
+-		if (rc) {
+-			smcr_link_down_cond_sched(to_lnk);
+-			return NULL;
+-		}
++		if (rc)
++			goto err_out;
+ 		/* avoid race with smcr_tx_sndbuf_nonempty() */
+ 		spin_lock_bh(&conn->send_lock);
+ 		smc_switch_link_and_count(conn, to_lnk);
+ 		rc = smc_switch_cursor(smc, pend, wr_buf);
+ 		spin_unlock_bh(&conn->send_lock);
+ 		sock_put(&smc->sk);
+-		if (rc) {
+-			smcr_link_down_cond_sched(to_lnk);
+-			return NULL;
+-		}
++		if (rc)
++			goto err_out;
+ 		goto again;
+ 	}
+ 	read_unlock_bh(&lgr->conns_lock);
++	smc_wr_tx_link_put(to_lnk);
+ 	return to_lnk;
++
++err_out:
++	smcr_link_down_cond_sched(to_lnk);
++	smc_wr_tx_link_put(to_lnk);
++	return NULL;
+ }
+ 
+ static void smcr_buf_unuse(struct smc_buf_desc *rmb_desc,
+--- a/net/smc/smc_llc.c
++++ b/net/smc/smc_llc.c
+@@ -383,9 +383,11 @@ int smc_llc_send_confirm_link(struct smc
+ 	struct smc_wr_buf *wr_buf;
+ 	int rc;
+ 
++	if (!smc_wr_tx_link_hold(link))
++		return -ENOLINK;
+ 	rc = smc_llc_add_pending_send(link, &wr_buf, &pend);
+ 	if (rc)
+-		return rc;
++		goto put_out;
+ 	confllc = (struct smc_llc_msg_confirm_link *)wr_buf;
+ 	memset(confllc, 0, sizeof(*confllc));
+ 	confllc->hd.common.type = SMC_LLC_CONFIRM_LINK;
+@@ -402,6 +404,8 @@ int smc_llc_send_confirm_link(struct smc
+ 	confllc->max_links = SMC_LLC_ADD_LNK_MAX_LINKS;
+ 	/* send llc message */
+ 	rc = smc_wr_tx_send(link, pend);
++put_out:
++	smc_wr_tx_link_put(link);
+ 	return rc;
+ }
+ 
+@@ -415,9 +419,11 @@ static int smc_llc_send_confirm_rkey(str
+ 	struct smc_link *link;
+ 	int i, rc, rtok_ix;
+ 
++	if (!smc_wr_tx_link_hold(send_link))
++		return -ENOLINK;
+ 	rc = smc_llc_add_pending_send(send_link, &wr_buf, &pend);
+ 	if (rc)
+-		return rc;
++		goto put_out;
+ 	rkeyllc = (struct smc_llc_msg_confirm_rkey *)wr_buf;
+ 	memset(rkeyllc, 0, sizeof(*rkeyllc));
+ 	rkeyllc->hd.common.type = SMC_LLC_CONFIRM_RKEY;
+@@ -444,6 +450,8 @@ static int smc_llc_send_confirm_rkey(str
+ 		(u64)sg_dma_address(rmb_desc->sgt[send_link->link_idx].sgl));
+ 	/* send llc message */
+ 	rc = smc_wr_tx_send(send_link, pend);
++put_out:
++	smc_wr_tx_link_put(send_link);
+ 	return rc;
+ }
+ 
+@@ -456,9 +464,11 @@ static int smc_llc_send_delete_rkey(stru
+ 	struct smc_wr_buf *wr_buf;
+ 	int rc;
+ 
++	if (!smc_wr_tx_link_hold(link))
++		return -ENOLINK;
+ 	rc = smc_llc_add_pending_send(link, &wr_buf, &pend);
+ 	if (rc)
+-		return rc;
++		goto put_out;
+ 	rkeyllc = (struct smc_llc_msg_delete_rkey *)wr_buf;
+ 	memset(rkeyllc, 0, sizeof(*rkeyllc));
+ 	rkeyllc->hd.common.type = SMC_LLC_DELETE_RKEY;
+@@ -467,6 +477,8 @@ static int smc_llc_send_delete_rkey(stru
+ 	rkeyllc->rkey[0] = htonl(rmb_desc->mr_rx[link->link_idx]->rkey);
+ 	/* send llc message */
+ 	rc = smc_wr_tx_send(link, pend);
++put_out:
++	smc_wr_tx_link_put(link);
+ 	return rc;
+ }
+ 
+@@ -480,9 +492,11 @@ int smc_llc_send_add_link(struct smc_lin
+ 	struct smc_wr_buf *wr_buf;
+ 	int rc;
+ 
++	if (!smc_wr_tx_link_hold(link))
++		return -ENOLINK;
+ 	rc = smc_llc_add_pending_send(link, &wr_buf, &pend);
+ 	if (rc)
+-		return rc;
++		goto put_out;
+ 	addllc = (struct smc_llc_msg_add_link *)wr_buf;
+ 
+ 	memset(addllc, 0, sizeof(*addllc));
+@@ -504,6 +518,8 @@ int smc_llc_send_add_link(struct smc_lin
+ 	}
+ 	/* send llc message */
+ 	rc = smc_wr_tx_send(link, pend);
++put_out:
++	smc_wr_tx_link_put(link);
+ 	return rc;
+ }
+ 
+@@ -517,9 +533,11 @@ int smc_llc_send_delete_link(struct smc_
+ 	struct smc_wr_buf *wr_buf;
+ 	int rc;
+ 
++	if (!smc_wr_tx_link_hold(link))
++		return -ENOLINK;
+ 	rc = smc_llc_add_pending_send(link, &wr_buf, &pend);
+ 	if (rc)
+-		return rc;
++		goto put_out;
+ 	delllc = (struct smc_llc_msg_del_link *)wr_buf;
+ 
+ 	memset(delllc, 0, sizeof(*delllc));
+@@ -536,6 +554,8 @@ int smc_llc_send_delete_link(struct smc_
+ 	delllc->reason = htonl(reason);
+ 	/* send llc message */
+ 	rc = smc_wr_tx_send(link, pend);
++put_out:
++	smc_wr_tx_link_put(link);
+ 	return rc;
+ }
+ 
+@@ -547,9 +567,11 @@ static int smc_llc_send_test_link(struct
+ 	struct smc_wr_buf *wr_buf;
+ 	int rc;
+ 
++	if (!smc_wr_tx_link_hold(link))
++		return -ENOLINK;
+ 	rc = smc_llc_add_pending_send(link, &wr_buf, &pend);
+ 	if (rc)
+-		return rc;
++		goto put_out;
+ 	testllc = (struct smc_llc_msg_test_link *)wr_buf;
+ 	memset(testllc, 0, sizeof(*testllc));
+ 	testllc->hd.common.type = SMC_LLC_TEST_LINK;
+@@ -557,6 +579,8 @@ static int smc_llc_send_test_link(struct
+ 	memcpy(testllc->user_data, user_data, sizeof(testllc->user_data));
+ 	/* send llc message */
+ 	rc = smc_wr_tx_send(link, pend);
++put_out:
++	smc_wr_tx_link_put(link);
+ 	return rc;
+ }
+ 
+@@ -567,13 +591,16 @@ static int smc_llc_send_message(struct s
+ 	struct smc_wr_buf *wr_buf;
+ 	int rc;
+ 
+-	if (!smc_link_usable(link))
++	if (!smc_wr_tx_link_hold(link))
+ 		return -ENOLINK;
+ 	rc = smc_llc_add_pending_send(link, &wr_buf, &pend);
+ 	if (rc)
+-		return rc;
++		goto put_out;
+ 	memcpy(wr_buf, llcbuf, sizeof(union smc_llc_msg));
+-	return smc_wr_tx_send(link, pend);
++	rc = smc_wr_tx_send(link, pend);
++put_out:
++	smc_wr_tx_link_put(link);
++	return rc;
+ }
+ 
+ /* schedule an llc send on link, may wait for buffers,
+@@ -586,13 +613,16 @@ static int smc_llc_send_message_wait(str
+ 	struct smc_wr_buf *wr_buf;
+ 	int rc;
+ 
+-	if (!smc_link_usable(link))
++	if (!smc_wr_tx_link_hold(link))
+ 		return -ENOLINK;
+ 	rc = smc_llc_add_pending_send(link, &wr_buf, &pend);
+ 	if (rc)
+-		return rc;
++		goto put_out;
+ 	memcpy(wr_buf, llcbuf, sizeof(union smc_llc_msg));
+-	return smc_wr_tx_send_wait(link, pend, SMC_LLC_WAIT_TIME);
++	rc = smc_wr_tx_send_wait(link, pend, SMC_LLC_WAIT_TIME);
++put_out:
++	smc_wr_tx_link_put(link);
++	return rc;
+ }
+ 
+ /********************************* receive ***********************************/
+@@ -672,9 +702,11 @@ static int smc_llc_add_link_cont(struct
+ 	struct smc_buf_desc *rmb;
+ 	u8 n;
+ 
++	if (!smc_wr_tx_link_hold(link))
++		return -ENOLINK;
+ 	rc = smc_llc_add_pending_send(link, &wr_buf, &pend);
+ 	if (rc)
+-		return rc;
++		goto put_out;
+ 	addc_llc = (struct smc_llc_msg_add_link_cont *)wr_buf;
+ 	memset(addc_llc, 0, sizeof(*addc_llc));
+ 
+@@ -706,7 +738,10 @@ static int smc_llc_add_link_cont(struct
+ 	addc_llc->hd.length = sizeof(struct smc_llc_msg_add_link_cont);
+ 	if (lgr->role == SMC_CLNT)
+ 		addc_llc->hd.flags |= SMC_LLC_FLAG_RESP;
+-	return smc_wr_tx_send(link, pend);
++	rc = smc_wr_tx_send(link, pend);
++put_out:
++	smc_wr_tx_link_put(link);
++	return rc;
+ }
+ 
+ static int smc_llc_cli_rkey_exchange(struct smc_link *link,
+--- a/net/smc/smc_tx.c
++++ b/net/smc/smc_tx.c
+@@ -496,7 +496,7 @@ static int smc_tx_rdma_writes(struct smc
+ /* Wakeup sndbuf consumers from any context (IRQ or process)
+  * since there is more data to transmit; usable snd_wnd as max transmit
+  */
+-static int _smcr_tx_sndbuf_nonempty(struct smc_connection *conn)
++static int smcr_tx_sndbuf_nonempty(struct smc_connection *conn)
+ {
+ 	struct smc_cdc_producer_flags *pflags = &conn->local_tx_ctrl.prod_flags;
+ 	struct smc_link *link = conn->lnk;
+@@ -505,8 +505,11 @@ static int _smcr_tx_sndbuf_nonempty(stru
+ 	struct smc_wr_buf *wr_buf;
+ 	int rc;
+ 
++	if (!link || !smc_wr_tx_link_hold(link))
++		return -ENOLINK;
+ 	rc = smc_cdc_get_free_slot(conn, link, &wr_buf, &wr_rdma_buf, &pend);
+ 	if (rc < 0) {
++		smc_wr_tx_link_put(link);
+ 		if (rc == -EBUSY) {
+ 			struct smc_sock *smc =
+ 				container_of(conn, struct smc_sock, conn);
+@@ -547,22 +550,7 @@ static int _smcr_tx_sndbuf_nonempty(stru
+ 
+ out_unlock:
+ 	spin_unlock_bh(&conn->send_lock);
+-	return rc;
+-}
+-
+-static int smcr_tx_sndbuf_nonempty(struct smc_connection *conn)
+-{
+-	struct smc_link *link = conn->lnk;
+-	int rc = -ENOLINK;
+-
+-	if (!link)
+-		return rc;
+-
+-	atomic_inc(&link->wr_tx_refcnt);
+-	if (smc_link_usable(link))
+-		rc = _smcr_tx_sndbuf_nonempty(conn);
+-	if (atomic_dec_and_test(&link->wr_tx_refcnt))
+-		wake_up_all(&link->wr_tx_wait);
++	smc_wr_tx_link_put(link);
+ 	return rc;
+ }
+ 
+--- a/net/smc/smc_wr.h
++++ b/net/smc/smc_wr.h
+@@ -60,6 +60,20 @@ static inline void smc_wr_tx_set_wr_id(a
+ 	atomic_long_set(wr_tx_id, val);
+ }
+ 
++static inline bool smc_wr_tx_link_hold(struct smc_link *link)
++{
++	if (!smc_link_usable(link))
++		return false;
++	atomic_inc(&link->wr_tx_refcnt);
++	return true;
++}
++
++static inline void smc_wr_tx_link_put(struct smc_link *link)
++{
++	if (atomic_dec_and_test(&link->wr_tx_refcnt))
++		wake_up_all(&link->wr_tx_wait);
++}
++
+ static inline void smc_wr_wakeup_tx_wait(struct smc_link *lnk)
+ {
+ 	wake_up_all(&lnk->wr_tx_wait);
+
 
