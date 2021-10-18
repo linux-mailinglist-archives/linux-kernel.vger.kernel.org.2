@@ -2,31 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB2C8431E89
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 16:00:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9516C431E8C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 16:00:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234473AbhJROCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 10:02:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37464 "EHLO mail.kernel.org"
+        id S232089AbhJROCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 10:02:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41656 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234206AbhJRN76 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:59:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F1B261A70;
-        Mon, 18 Oct 2021 13:42:08 +0000 (UTC)
+        id S234399AbhJROAR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 10:00:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3509860F56;
+        Mon, 18 Oct 2021 13:42:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634564529;
-        bh=qRlZ3O2fCZAUNFvO+4h5GtexXDjDgVaufbLgT+qB8JU=;
+        s=korg; t=1634564531;
+        bh=PcqQIb1IhiaRoWComIAtp2rMlcfK8hqwRoXaYragQ1c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IYkZ64VGxDkf1cF1Scp8tjKCnZtiwMMKdWbuZ2WVg3xH0kIMAUKinj3t+lRFRQbs4
-         QvaIcIH9YJpqGX1AQOeCcvF2C8OH6eyN4FtxiPcKmPuorwGRH0enHgkC8CpOL3qcJo
-         QgPuv0yX/mc1ktaEHrEpM1JH9iLQbaWYBSUqj/1k=
+        b=B1QvUQtAcRDAzde4ZmbjIKzOx41rsl4+DLGaGnfA1EV+kqIe+Vh3K/RqpfArZh6gp
+         vvxWECL0miM699onXJiua8qw2G0Lh9JRgDiHxkF5Dmqm2ImcCGQr+g0nsCwd/aGUZK
+         HtQFFhVQk7GihvQn64OV1OLJ8R9t4SHz2m+QphCE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.14 123/151] spi: spidev: Add SPI ID table
-Date:   Mon, 18 Oct 2021 15:25:02 +0200
-Message-Id: <20211018132344.669365810@linuxfoundation.org>
+        stable@vger.kernel.org, Kamal Dasu <kdasu@broadcom.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 5.14 124/151] spi: bcm-qspi: clear MSPI spifie interrupt during probe
+Date:   Mon, 18 Oct 2021 15:25:03 +0200
+Message-Id: <20211018132344.700584835@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211018132340.682786018@linuxfoundation.org>
 References: <20211018132340.682786018@linuxfoundation.org>
@@ -38,54 +40,130 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Brown <broonie@kernel.org>
+From: Kamal Dasu <kdasu@broadcom.com>
 
-commit 6840615f85f6046039ebc4989870ddb12892b7fc upstream.
+commit 75b3cb97eb1f05042745c0655a7145b0262d4c5c upstream.
 
-Currently autoloading for SPI devices does not use the DT ID table, it uses
-SPI modalises. Supporting OF modalises is going to be difficult if not
-impractical, an attempt was made but has been reverted, so ensure that
-module autoloading works for this driver by adding an id_table listing the
-SPI IDs for everything.
+Intermittent Kernel crash has been observed on probe in
+bcm_qspi_mspi_l2_isr() handler when the MSPI spifie interrupt bit
+has not been cleared before registering for interrupts.
+Fix the driver to move SoC specific custom interrupt handling code
+before we register IRQ in probe. Also clear MSPI interrupt status
+resgiter prior to registering IRQ handlers.
 
-Fixes: 96c8395e2166 ("spi: Revert modalias changes")
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Link: https://lore.kernel.org/r/20210923170023.1683-1-broonie@kernel.org
+Fixes: cc20a38612db ("spi: iproc-qspi: Add Broadcom iProc SoCs support")
+Signed-off-by: Kamal Dasu <kdasu@broadcom.com>
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+Link: https://lore.kernel.org/r/20211008203603.40915-3-kdasu.kdev@gmail.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/spi/spidev.c |   14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ drivers/spi/spi-bcm-qspi.c |   77 ++++++++++++++++++++++++++-------------------
+ 1 file changed, 45 insertions(+), 32 deletions(-)
 
---- a/drivers/spi/spidev.c
-+++ b/drivers/spi/spidev.c
-@@ -673,6 +673,19 @@ static const struct file_operations spid
+--- a/drivers/spi/spi-bcm-qspi.c
++++ b/drivers/spi/spi-bcm-qspi.c
+@@ -1250,10 +1250,14 @@ static void bcm_qspi_hw_init(struct bcm_
  
- static struct class *spidev_class;
- 
-+static const struct spi_device_id spidev_spi_ids[] = {
-+	{ .name = "dh2228fv" },
-+	{ .name = "ltc2488" },
-+	{ .name = "sx1301" },
-+	{ .name = "bk4" },
-+	{ .name = "dhcom-board" },
-+	{ .name = "m53cpld" },
-+	{ .name = "spi-petra" },
-+	{ .name = "spi-authenta" },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(spi, spidev_spi_ids);
+ static void bcm_qspi_hw_uninit(struct bcm_qspi *qspi)
+ {
++	u32 status = bcm_qspi_read(qspi, MSPI, MSPI_MSPI_STATUS);
 +
- #ifdef CONFIG_OF
- static const struct of_device_id spidev_dt_ids[] = {
- 	{ .compatible = "rohm,dh2228fv" },
-@@ -819,6 +832,7 @@ static struct spi_driver spidev_spi_driv
- 	},
- 	.probe =	spidev_probe,
- 	.remove =	spidev_remove,
-+	.id_table =	spidev_spi_ids,
+ 	bcm_qspi_write(qspi, MSPI, MSPI_SPCR2, 0);
+ 	if (has_bspi(qspi))
+ 		bcm_qspi_write(qspi, MSPI, MSPI_WRITE_LOCK, 0);
  
- 	/* NOTE:  suspend/resume methods are not necessary here.
- 	 * We don't do anything except pass the requests to/from
++	/* clear interrupt */
++	bcm_qspi_write(qspi, MSPI, MSPI_MSPI_STATUS, status & ~1);
+ }
+ 
+ static const struct spi_controller_mem_ops bcm_qspi_mem_ops = {
+@@ -1397,6 +1401,47 @@ int bcm_qspi_probe(struct platform_devic
+ 	if (!qspi->dev_ids)
+ 		return -ENOMEM;
+ 
++	/*
++	 * Some SoCs integrate spi controller (e.g., its interrupt bits)
++	 * in specific ways
++	 */
++	if (soc_intc) {
++		qspi->soc_intc = soc_intc;
++		soc_intc->bcm_qspi_int_set(soc_intc, MSPI_DONE, true);
++	} else {
++		qspi->soc_intc = NULL;
++	}
++
++	if (qspi->clk) {
++		ret = clk_prepare_enable(qspi->clk);
++		if (ret) {
++			dev_err(dev, "failed to prepare clock\n");
++			goto qspi_probe_err;
++		}
++		qspi->base_clk = clk_get_rate(qspi->clk);
++	} else {
++		qspi->base_clk = MSPI_BASE_FREQ;
++	}
++
++	if (data->has_mspi_rev) {
++		rev = bcm_qspi_read(qspi, MSPI, MSPI_REV);
++		/* some older revs do not have a MSPI_REV register */
++		if ((rev & 0xff) == 0xff)
++			rev = 0;
++	}
++
++	qspi->mspi_maj_rev = (rev >> 4) & 0xf;
++	qspi->mspi_min_rev = rev & 0xf;
++	qspi->mspi_spcr3_sysclk = data->has_spcr3_sysclk;
++
++	qspi->max_speed_hz = qspi->base_clk / (bcm_qspi_spbr_min(qspi) * 2);
++
++	/*
++	 * On SW resets it is possible to have the mask still enabled
++	 * Need to disable the mask and clear the status while we init
++	 */
++	bcm_qspi_hw_uninit(qspi);
++
+ 	for (val = 0; val < num_irqs; val++) {
+ 		irq = -1;
+ 		name = qspi_irq_tab[val].irq_name;
+@@ -1433,38 +1478,6 @@ int bcm_qspi_probe(struct platform_devic
+ 		goto qspi_probe_err;
+ 	}
+ 
+-	/*
+-	 * Some SoCs integrate spi controller (e.g., its interrupt bits)
+-	 * in specific ways
+-	 */
+-	if (soc_intc) {
+-		qspi->soc_intc = soc_intc;
+-		soc_intc->bcm_qspi_int_set(soc_intc, MSPI_DONE, true);
+-	} else {
+-		qspi->soc_intc = NULL;
+-	}
+-
+-	ret = clk_prepare_enable(qspi->clk);
+-	if (ret) {
+-		dev_err(dev, "failed to prepare clock\n");
+-		goto qspi_probe_err;
+-	}
+-
+-	qspi->base_clk = clk_get_rate(qspi->clk);
+-
+-	if (data->has_mspi_rev) {
+-		rev = bcm_qspi_read(qspi, MSPI, MSPI_REV);
+-		/* some older revs do not have a MSPI_REV register */
+-		if ((rev & 0xff) == 0xff)
+-			rev = 0;
+-	}
+-
+-	qspi->mspi_maj_rev = (rev >> 4) & 0xf;
+-	qspi->mspi_min_rev = rev & 0xf;
+-	qspi->mspi_spcr3_sysclk = data->has_spcr3_sysclk;
+-
+-	qspi->max_speed_hz = qspi->base_clk / (bcm_qspi_spbr_min(qspi) * 2);
+-
+ 	bcm_qspi_hw_init(qspi);
+ 	init_completion(&qspi->mspi_done);
+ 	init_completion(&qspi->bspi_done);
 
 
