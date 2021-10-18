@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2B37431B3E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:29:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9E54431AFC
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:28:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232047AbhJRNbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:31:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43310 "EHLO mail.kernel.org"
+        id S232377AbhJRNaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:30:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41286 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232357AbhJRNaB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:30:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E239B61371;
-        Mon, 18 Oct 2021 13:27:49 +0000 (UTC)
+        id S231814AbhJRN3E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:29:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D0E7D6126A;
+        Mon, 18 Oct 2021 13:26:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634563670;
-        bh=0It4JOOzgnKHbcrcc2XMXzDqW/2yk8htv0WdXjeYluc=;
+        s=korg; t=1634563565;
+        bh=fkLPY7D9vvimptUrms5/Tzk6a7i10hEAQWGSl3JQVvo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CZmBzIlB5gWmdWQLpb7g11I+upgOSYItUCp5zqBqsZJK1BKLFo8nH0kJjDBEgNg5q
-         +Ggx0xB6Kidm3QabKhipPf8rVIyKyz8RcpBe226VAEOHYwW/ou5unvnlYNqtL1nCwj
-         2u8IVNDXFN5gmqUCKYjGf5Hg+TQ0nMiWuHfHfzRM=
+        b=n1l7//nT/yoCO3Ik0wex8brEGJkfCiKO9YwMyd/YS+tYbTED2qDCJRqS/4iBy4Pfm
+         X2O+DJtMbB92Bf9oRCmOgWsYqgHRDuwplsi7qDr8Z3/Wfg39riQw6/kS85nQRt/BYO
+         YKx4A+XLMILSTx/yZAQpaI9O3njPeTEbRXYA4cD8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 4.19 18/50] usb: musb: dsps: Fix the probe error path
+        stable@vger.kernel.org, Daniele Palmas <dnlplm@gmail.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.14 16/39] USB: serial: option: add Telit LE910Cx composition 0x1204
 Date:   Mon, 18 Oct 2021 15:24:25 +0200
-Message-Id: <20211018132327.142225652@linuxfoundation.org>
+Message-Id: <20211018132325.975819377@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132326.529486647@linuxfoundation.org>
-References: <20211018132326.529486647@linuxfoundation.org>
+In-Reply-To: <20211018132325.426739023@linuxfoundation.org>
+References: <20211018132325.426739023@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,65 +39,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miquel Raynal <miquel.raynal@bootlin.com>
+From: Daniele Palmas <dnlplm@gmail.com>
 
-commit c2115b2b16421d93d4993f3fe4c520e91d6fe801 upstream.
+commit f5a8a07edafed8bede17a95ef8940fe3a57a77d5 upstream.
 
-Commit 7c75bde329d7 ("usb: musb: musb_dsps: request_irq() after
-initializing musb") has inverted the calls to
-dsps_setup_optional_vbus_irq() and dsps_create_musb_pdev() without
-updating correctly the error path. dsps_create_musb_pdev() allocates and
-registers a new platform device which must be unregistered and freed
-with platform_device_unregister(), and this is missing upon
-dsps_setup_optional_vbus_irq() error.
+Add the following Telit LE910Cx composition:
 
-While on the master branch it seems not to trigger any issue, I observed
-a kernel crash because of a NULL pointer dereference with a v5.10.70
-stable kernel where the patch mentioned above was backported. With this
-kernel version, -EPROBE_DEFER is returned the first time
-dsps_setup_optional_vbus_irq() is called which triggers the probe to
-error out without unregistering the platform device. Unfortunately, on
-the Beagle Bone Black Wireless, the platform device still living in the
-system is being used by the USB Ethernet gadget driver, which during the
-boot phase triggers the crash.
+0x1204: tty, adb, mbim, tty, tty, tty, tty
 
-My limited knowledge of the musb world prevents me to revert this commit
-which was sent to silence a robot warning which, as far as I understand,
-does not make sense. The goal of this patch was to prevent an IRQ to
-fire before the platform device being registered. I think this cannot
-ever happen due to the fact that enabling the interrupts is done by the
-->enable() callback of the platform musb device, and this platform
-device must be already registered in order for the core or any other
-user to use this callback.
-
-Hence, I decided to fix the error path, which might prevent future
-errors on mainline kernels while also fixing older ones.
-
-Fixes: 7c75bde329d7 ("usb: musb: musb_dsps: request_irq() after initializing musb")
+Signed-off-by: Daniele Palmas <dnlplm@gmail.com>
+Link: https://lore.kernel.org/r/20211004105655.8515-1-dnlplm@gmail.com
 Cc: stable@vger.kernel.org
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/r/20211005221631.1529448-1-miquel.raynal@bootlin.com
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/musb/musb_dsps.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/usb/serial/option.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/usb/musb/musb_dsps.c
-+++ b/drivers/usb/musb/musb_dsps.c
-@@ -901,11 +901,13 @@ static int dsps_probe(struct platform_de
- 	if (usb_get_dr_mode(&pdev->dev) == USB_DR_MODE_PERIPHERAL) {
- 		ret = dsps_setup_optional_vbus_irq(pdev, glue);
- 		if (ret)
--			goto err;
-+			goto unregister_pdev;
- 	}
- 
- 	return 0;
- 
-+unregister_pdev:
-+	platform_device_unregister(glue->musb);
- err:
- 	pm_runtime_disable(&pdev->dev);
- 	iounmap(glue->usbss_base);
+--- a/drivers/usb/serial/option.c
++++ b/drivers/usb/serial/option.c
+@@ -1232,6 +1232,8 @@ static const struct usb_device_id option
+ 	  .driver_info = NCTRL(0) | RSVD(1) | RSVD(2) },
+ 	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x1203, 0xff),	/* Telit LE910Cx (RNDIS) */
+ 	  .driver_info = NCTRL(2) | RSVD(3) },
++	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x1204, 0xff),	/* Telit LE910Cx (MBIM) */
++	  .driver_info = NCTRL(0) | RSVD(1) },
+ 	{ USB_DEVICE(TELIT_VENDOR_ID, TELIT_PRODUCT_LE910_USBCFG4),
+ 	  .driver_info = NCTRL(0) | RSVD(1) | RSVD(2) | RSVD(3) },
+ 	{ USB_DEVICE(TELIT_VENDOR_ID, TELIT_PRODUCT_LE920),
 
 
