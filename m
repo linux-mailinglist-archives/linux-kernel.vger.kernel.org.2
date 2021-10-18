@@ -2,958 +2,647 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0B224325EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 20:06:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B05CB4325DE
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 20:02:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232240AbhJRSIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 14:08:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42884 "EHLO
+        id S231917AbhJRSFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 14:05:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232050AbhJRSIP (ORCPT
+        with ESMTP id S230266AbhJRSFE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 14:08:15 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B5E9C06161C;
-        Mon, 18 Oct 2021 11:06:03 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id 75so17010339pga.3;
-        Mon, 18 Oct 2021 11:06:03 -0700 (PDT)
+        Mon, 18 Oct 2021 14:05:04 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB97CC06161C;
+        Mon, 18 Oct 2021 11:02:52 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id v195so779548ybb.0;
+        Mon, 18 Oct 2021 11:02:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:content-transfer-encoding:cc:subject:from:to:date
-         :message-id:in-reply-to;
-        bh=MDZnET9wzgwL4fGoRVVyBCz2yvmPrWn7CLYkFM78kdk=;
-        b=FBgERF4HEV+pCi58YkcLFzbT7bXosLTSwYqy0ntAIzUE/r21r9FLo4qe6PfpjvJqqJ
-         0AZbHunwTQeqX+mqKj0cHHFZiSDpWt2sdTmgmcDEqlpRAa2H3lQqtIhE4H4LeOBpRnI+
-         238ymlb+b+Upt9AIktZmbhI+qdD19fJWgI2qV+fs99pLwWkNBPJF15FfuXraR/gZU4a2
-         mv6oXqfeVMY2ztZTGUyZhLUzIZS24FOLvx4/SqttZF3K8ePm+MEMTB3kWH+waEHz9r63
-         gqR+jbUIwMZDDFMQ/mGnPnVEYTkUeXyQI6e7KM2vxfkWDyOi+uMQGvWViCu7xK3gXDai
-         W4xA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kAMB7Xmn8+IYcLQFrEW6sbLa2LeEbKiMgBQaD4PNKpg=;
+        b=DyJpwT85GtQAKkTwaPPvcJaISQxAxPwQbsmVPJwKYCoHimOmoQbKSsLlUIZUwWO5Fx
+         Kmi4tRezBNeIhcUOGFFWUWO8v20h95LEzZKiGmt1hyh5Z+BdkU9nCnms/15BXQw0PEU6
+         w6H6itDDVn7f8uaWp4/qSefFwuaysayk6nQb5CanHxuPBLPMCOWuETZRKAlde1+uQJC+
+         IqbCPF+HXclpoleBwnQx9ANRfzt3/fz0aPesntkF6aJoVwhaHh4hajkoYUzyJsI+LPfA
+         xD1+k8ZpfYcVnSB1Ri6ouHeybewcNX9F3BMjSUof/DeoMcisEYc8bVVL+0EoxOWSbM8Q
+         WAcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:content-transfer-encoding:cc
-         :subject:from:to:date:message-id:in-reply-to;
-        bh=MDZnET9wzgwL4fGoRVVyBCz2yvmPrWn7CLYkFM78kdk=;
-        b=pUvvqmKVeN+OlgtqQ9oscbrLRJMDViP4cULoXvwyISRWaBvdfV5jWOIZsR9fmBO1wO
-         BcKR5TnQ8cXsZvPb4ZxUS4YPBT4SyPakS+KIDmYwC8YDEX9R1JeM2vpRIS8BybssjuaW
-         pAXusmeiUgoQYiSdhRtgGzbnTY4bGJNopRkgIVXtLgHe5tTlqkMncbgWNyUJHeWZ7vdC
-         xyzHr+TCGWbuNbaB86IpHbUhgK+G7J6MrlMqj537WZvBuwN8ZNPFVBCUCdOeUb7tW8lA
-         yb/TUz9VE1Ka6lwbaTSK6ANuink0pOZ4DETCZ1jVc1KWhQx4VNYtUCFMjaBdxYRTupbK
-         eQcg==
-X-Gm-Message-State: AOAM5310Ed19rCjITVfpfW7+5d/cXHT21bib8rH9TvJB4vMrdGSEzPbv
-        P4DWwTcvfkFAolfAjQYbG4o=
-X-Google-Smtp-Source: ABdhPJyN16z+427yH1UqxdmivqE7wnpILKH/SJkW2LdqShq9j/qRSKeaEueA6n1s2GEsP5vtUhXvPA==
-X-Received: by 2002:a05:6a00:1a46:b0:44d:7a3f:2043 with SMTP id h6-20020a056a001a4600b0044d7a3f2043mr28335064pfv.56.1634580362832;
-        Mon, 18 Oct 2021 11:06:02 -0700 (PDT)
-Received: from localhost ([117.200.53.211])
-        by smtp.gmail.com with ESMTPSA id 63sm14050784pfv.192.2021.10.18.11.05.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Oct 2021 11:06:02 -0700 (PDT)
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        "Jakub Kicinski" <kuba@kernel.org>
-Subject: Re: [RFC PATCH 09/17] net: ipa: Add support for using BAM as a DMA
- transport
-From:   "Sireesh Kodali" <sireeshkodali1@gmail.com>
-To:     "Alex Elder" <elder@ieee.org>, <phone-devel@vger.kernel.org>,
-        <~postmarketos/upstreaming@lists.sr.ht>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <elder@kernel.org>
-Date:   Mon, 18 Oct 2021 23:00:18 +0530
-Message-Id: <CF2PMAWK64QJ.110OLIYYWWRIF@skynet-linux>
-In-Reply-To: <794ca401-294f-54ed-0af2-e3c763723340@ieee.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kAMB7Xmn8+IYcLQFrEW6sbLa2LeEbKiMgBQaD4PNKpg=;
+        b=rtT1KpROFNmjDgToF8rRgFY7JCQ49iG0hn8QOufGaDJ/StqIfXpRMM7sPZtRp8TJKo
+         t912+gA+jHJsDdl3D45zgHTgsCJEFwkUDEP5fUq3rKV3roNlbSB+YyDQk3AM0Z4it6M1
+         r8Krk5kdMCYs2nVq2NxqO2Cag3mnM4V+aWiTOpbfLlNHxc6xqVsOv5aSAuq1JwYXX1l2
+         GLAS419E/N60cBwnb6rmcFS1ZQLfi0CxXrQSlCboAfY2rEjLwYO7aLhx12TH+j7ruixT
+         vlv/A7CNOZ8NNjXUQeI0VzTddF98r3+ii7fQqs/yEFzBKqKXWd5SUOx5loAN1VALK6gx
+         3tkw==
+X-Gm-Message-State: AOAM532ABQRC2sXq4vpKuGqMpTgYjxsl3lca0laVyjxsUHS3xUjoOwtJ
+        X59F3JmQBDkMTZ+lj7y4odFoLTmxLpuXee6JqFz+acF6tAg=
+X-Google-Smtp-Source: ABdhPJzVH6l5RIRKpPxiF0wDUXiC3nJ1TNtQysJX1+7E9QXSH+LD0QTlH4UEsSBr44y8HIYQeknIlVOU+qElKNs0+K8=
+X-Received: by 2002:a25:ddc7:: with SMTP id u190mr30231523ybg.37.1634580171901;
+ Mon, 18 Oct 2021 11:02:51 -0700 (PDT)
+MIME-Version: 1.0
+References: <CACAwPwb7edLzX-KO1XVNWuQ3w=U0BfA=_kwiGCjZOpKfZpc2pw@mail.gmail.com>
+ <CACAwPwYQHRcrabw9=0tvenPzAcwwW1pTaR6a+AEWBF9Hqf_wXQ@mail.gmail.com> <CAHp75VcEZ19zUU-Ps=kAYJDX1bkxmOqmHii36HE2ujC3gROkNQ@mail.gmail.com>
+In-Reply-To: <CAHp75VcEZ19zUU-Ps=kAYJDX1bkxmOqmHii36HE2ujC3gROkNQ@mail.gmail.com>
+From:   Maxim Levitsky <maximlevitsky@gmail.com>
+Date:   Mon, 18 Oct 2021 21:02:40 +0300
+Message-ID: <CACAwPwaj_ekK6j9S4CRu6tRTPyjffgDhL3UFnhoYSyJSkAkmpw@mail.gmail.com>
+Subject: Re: BMI160 accelerometer on AyaNeo tablet
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        linux-realtek-soc@lists.infradead.org,
+        Oder Chiou <oder_chiou@realtek.com>,
+        Ping-Ke Shih <pkshih@realtek.com>, nic_swsd@realtek.com,
+        Derek Fang <derek.fang@realtek.com>,
+        Hayes Wang <hayeswang@realtek.com>,
+        Kailang Yang <kailang@realtek.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>, info@ayaneo.com
+Content-Type: multipart/mixed; boundary="00000000000080f86305cea45aa7"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu Oct 14, 2021 at 4:00 AM IST, Alex Elder wrote:
-> On 9/19/21 10:08 PM, Sireesh Kodali wrote:
-> > BAM is used on IPA v2.x. Since BAM already has a nice dmaengine driver,
-> > the IPA driver only makes calls the dmaengine API.
-> > Also add BAM transaction support to IPA's trasaction abstraction layer.
-> >=20
-> > BAM transactions should use NAPI just like GSI transactions, but just
-> > use callbacks on each transaction for now.
+--00000000000080f86305cea45aa7
+Content-Type: text/plain; charset="UTF-8"
+
+I also suspect a mistake from the hardware vendors.
+
+I attached all DSDT decompiled, which shows that they indeed use that
+ID, and I also attached the windows driver .INF which was published on
+their website  with the driver (https://www.ayaneo.com/downloads)
+
+
+They are a small startup so they might have used the realtek ID by mistake.
+I added them to the CC.
+
+BTW, I also notice a rotation matrix embedded in DSTD, but the linux's
+BMI160 driver doesn't recognize it.
+
+Best regards,
+    Maxim Levitsky
+
+
+On Mon, Oct 18, 2021 at 6:31 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
 >
-> This is where things get a little more complicated. I'm not really
-> familiar with the BAM interface and would really like to give this
-> a much deeper review, and I won't be doing that now.
+> +Cc: Realtek people whom I found in MAINTAINERS or so. Please
+> waterfall to the people inside Realtek who can answer the question.
+> (Note, you may access this discussion in full via:
+> https://lore.kernel.org/linux-iio/CACAwPwYQHRcrabw9=0tvenPzAcwwW1pTaR6a+AEWBF9Hqf_wXQ@mail.gmail.com/T/#u)
 >
-> At first glance, it looks reasonably clean to me, and it surprises
-> me a little that this different system can be used with a relatively
-> small amount of change. Much looks duplicated, so it could be that
-> a little more work abstracting might avoid that (but I haven't looked
-> that closely).
+> The problem here is to have an official confirmation of what 10ec:5280
+> ID is from Realtek's point of view. Context: the current discussion
+> and a patch state that it's related to gyro sensor. Is it so?
 >
-
-BAM is handled by the bam_dma driver, which supports the dmaengine API, so
-all the functions are like so:
-
-bam_function()
-{
-	bookkeeping();
-	dmaengine_api_call();
-	bookkeeping();
-}
-
-gsi_function()
-{
-	bookkeeping();
-	gsi_register_rws();
-	gsi_misc_ops();
-	bookkeeping();
-}
-
-Some of the bookkeeping code is common between BAM and GSI, but the
-current abstraction doesn't allow sharing that code. As I stated
-previously, we might be able to share more code (or possibly all code)
-between BAM and GSI if GSI was implemented as a dmaengine driver. But
-reimplementing GSI like this might be rather time consuming, and there
-might be easier solutions to improve code sharing between BAM and GSI.
-
-Regards,
-Sireesh
-
-> -Alex
+> On Mon, Oct 18, 2021 at 6:36 AM Maxim Levitsky <maximlevitsky@gmail.com> wrote:
+> >
+> > On Sat, Oct 16, 2021 at 7:19 PM Maxim Levitsky <maximlevitsky@gmail.com> wrote:
+> > >
+> > > I recently bought this device, and it has this accelerometer/gyroscope.
+> > >
+> > > Unfortunately, the device is advertised in ACPI as 10EC5280, instead of BMI0160
+> > >
+> > > I attached a patch that does add this 10EC5280 to the list of ACPI ids of this driver, and the device seems to work fine, showing both acceleration and angular velocity in /sys IIO attributes with reasonable values.
+> > >
+> >
+> > ( resend using plain text - reminds me to never use Gmail's web
+> > interface, even on weekends .)
 >
-> >=20
-> > Signed-off-by: Sireesh Kodali <sireeshkodali1@gmail.com>
-> > ---
-> >   drivers/net/ipa/Makefile          |   2 +-
-> >   drivers/net/ipa/bam.c             | 525 +++++++++++++++++++++++++++++=
-+
-> >   drivers/net/ipa/gsi.c             |   1 +
-> >   drivers/net/ipa/ipa_data.h        |   1 +
-> >   drivers/net/ipa/ipa_dma.h         |  18 +-
-> >   drivers/net/ipa/ipa_dma_private.h |   2 +
-> >   drivers/net/ipa/ipa_main.c        |  20 +-
-> >   drivers/net/ipa/ipa_trans.c       |  14 +-
-> >   drivers/net/ipa/ipa_trans.h       |   4 +
-> >   9 files changed, 569 insertions(+), 18 deletions(-)
-> >   create mode 100644 drivers/net/ipa/bam.c
-> >=20
-> > diff --git a/drivers/net/ipa/Makefile b/drivers/net/ipa/Makefile
-> > index 3cd021fb992e..4abebc667f77 100644
-> > --- a/drivers/net/ipa/Makefile
-> > +++ b/drivers/net/ipa/Makefile
-> > @@ -2,7 +2,7 @@ obj-$(CONFIG_QCOM_IPA)	+=3D	ipa.o
-> >  =20
-> >   ipa-y			:=3D	ipa_main.o ipa_power.o ipa_reg.o ipa_mem.o \
-> >   				ipa_table.o ipa_interrupt.o gsi.o ipa_trans.o \
-> > -				ipa_gsi.o ipa_smp2p.o ipa_uc.o \
-> > +				ipa_gsi.o ipa_smp2p.o ipa_uc.o bam.o \
-> >   				ipa_endpoint.o ipa_cmd.o ipa_modem.o \
-> >   				ipa_resource.o ipa_qmi.o ipa_qmi_msg.o \
-> >   				ipa_sysfs.o
-> > diff --git a/drivers/net/ipa/bam.c b/drivers/net/ipa/bam.c
-> > new file mode 100644
-> > index 000000000000..0726e385fee5
-> > --- /dev/null
-> > +++ b/drivers/net/ipa/bam.c
-> > @@ -0,0 +1,525 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +
-> > +/* Copyright (c) 2020, The Linux Foundation. All rights reserved.
-> > + */
-> > +
-> > +#include <linux/completion.h>
-> > +#include <linux/dma-mapping.h>
-> > +#include <linux/dmaengine.h>
-> > +#include <linux/interrupt.h>
-> > +#include <linux/io.h>
-> > +#include <linux/kernel.h>
-> > +#include <linux/mutex.h>
-> > +#include <linux/netdevice.h>
-> > +#include <linux/platform_device.h>
-> > +
-> > +#include "ipa_gsi.h"
-> > +#include "ipa.h"
-> > +#include "ipa_dma.h"
-> > +#include "ipa_dma_private.h"
-> > +#include "ipa_gsi.h"
-> > +#include "ipa_trans.h"
-> > +#include "ipa_data.h"
-> > +
-> > +/**
-> > + * DOC: The IPA Smart Peripheral System Interface
-> > + *
-> > + * The Smart Peripheral System is a means to communicate over BAM pipe=
-s to
-> > + * the IPA block. The Modem also uses BAM pipes to communicate with th=
-e IPA
-> > + * core.
-> > + *
-> > + * Refer the GSI documentation, because BAM is a precursor to GSI and =
-more or less
-> > + * the same, conceptually (maybe, IDK, I have no docs to go through).
-> > + *
-> > + * Each channel here corresponds to 1 BAM pipe configured in BAM2BAM m=
-ode
-> > + *
-> > + * IPA cmds are transferred one at a time, each in one BAM transfer.
-> > + */
-> > +
-> > +/* Get and configure the BAM DMA channel */
-> > +int bam_channel_init_one(struct ipa_dma *bam,
-> > +			 const struct ipa_gsi_endpoint_data *data, bool command)
-> > +{
-> > +	struct dma_slave_config bam_config;
-> > +	u32 channel_id =3D data->channel_id;
-> > +	struct ipa_channel *channel =3D &bam->channel[channel_id];
-> > +	int ret;
-> > +
-> > +	/*TODO: if (!bam_channel_data_valid(bam, data))
-> > +		return -EINVAL;*/
-> > +
-> > +	channel->dma_subsys =3D bam;
-> > +	channel->dma_chan =3D dma_request_chan(bam->dev, data->channel_name);
-> > +	channel->toward_ipa =3D data->toward_ipa;
-> > +	channel->tlv_count =3D data->channel.tlv_count;
-> > +	channel->tre_count =3D data->channel.tre_count;
-> > +	if (IS_ERR(channel->dma_chan)) {
-> > +		dev_err(bam->dev, "failed to request BAM channel %s: %d\n",
-> > +				data->channel_name,
-> > +				(int) PTR_ERR(channel->dma_chan));
-> > +		return PTR_ERR(channel->dma_chan);
-> > +	}
-> > +
-> > +	ret =3D ipa_channel_trans_init(bam, data->channel_id);
-> > +	if (ret)
-> > +		goto err_dma_chan_free;
-> > +
-> > +	if (data->toward_ipa) {
-> > +		bam_config.direction =3D DMA_MEM_TO_DEV;
-> > +		bam_config.dst_maxburst =3D channel->tlv_count;
-> > +	} else {
-> > +		bam_config.direction =3D DMA_DEV_TO_MEM;
-> > +		bam_config.src_maxburst =3D channel->tlv_count;
-> > +	}
-> > +
-> > +	dmaengine_slave_config(channel->dma_chan, &bam_config);
-> > +
-> > +	if (command)
-> > +		ret =3D ipa_cmd_pool_init(channel, 256);
-> > +
-> > +	if (!ret)
-> > +		return 0;
-> > +
-> > +err_dma_chan_free:
-> > +	dma_release_channel(channel->dma_chan);
-> > +	return ret;
-> > +}
-> > +
-> > +static void bam_channel_exit_one(struct ipa_channel *channel)
-> > +{
-> > +	if (channel->dma_chan) {
-> > +		dmaengine_terminate_sync(channel->dma_chan);
-> > +		dma_release_channel(channel->dma_chan);
-> > +	}
-> > +}
-> > +
-> > +/* Get channels from BAM_DMA */
-> > +int bam_channel_init(struct ipa_dma *bam, u32 count,
-> > +		const struct ipa_gsi_endpoint_data *data)
-> > +{
-> > +	int ret =3D 0;
-> > +	u32 i;
-> > +
-> > +	for (i =3D 0; i < count; ++i) {
-> > +		bool command =3D i =3D=3D IPA_ENDPOINT_AP_COMMAND_TX;
-> > +
-> > +		if (!data[i].channel_name || data[i].ee_id =3D=3D GSI_EE_MODEM)
-> > +			continue;
-> > +
-> > +		ret =3D bam_channel_init_one(bam, &data[i], command);
-> > +		if (ret)
-> > +			goto err_unwind;
-> > +	}
-> > +
-> > +	return ret;
-> > +
-> > +err_unwind:
-> > +	while (i--) {
-> > +		if (ipa_gsi_endpoint_data_empty(&data[i]))
-> > +			continue;
-> > +
-> > +		bam_channel_exit_one(&bam->channel[i]);
-> > +	}
-> > +	return ret;
-> > +}
-> > +
-> > +/* Inverse of bam_channel_init() */
-> > +void bam_channel_exit(struct ipa_dma *bam)
-> > +{
-> > +	u32 channel_id =3D BAM_CHANNEL_COUNT_MAX - 1;
-> > +
-> > +	do
-> > +		bam_channel_exit_one(&bam->channel[channel_id]);
-> > +	while (channel_id--);
-> > +}
-> > +
-> > +/* Inverse of bam_init() */
-> > +static void bam_exit(struct ipa_dma *bam)
-> > +{
-> > +	mutex_destroy(&bam->mutex);
-> > +	bam_channel_exit(bam);
-> > +}
-> > +
-> > +/* Return the channel id associated with a given channel */
-> > +static u32 bam_channel_id(struct ipa_channel *channel)
-> > +{
-> > +	return channel - &channel->dma_subsys->channel[0];
-> > +}
-> > +
-> > +static void
-> > +bam_channel_tx_update(struct ipa_channel *channel, struct ipa_trans *t=
-rans)
-> > +{
-> > +	u64 byte_count =3D trans->byte_count + trans->len;
-> > +	u64 trans_count =3D trans->trans_count + 1;
-> > +
-> > +	byte_count -=3D channel->compl_byte_count;
-> > +	channel->compl_byte_count +=3D byte_count;
-> > +	trans_count -=3D channel->compl_trans_count;
-> > +	channel->compl_trans_count +=3D trans_count;
-> > +
-> > +	ipa_gsi_channel_tx_completed(channel->dma_subsys, bam_channel_id(chan=
-nel),
-> > +					   trans_count, byte_count);
-> > +}
-> > +
-> > +static void
-> > +bam_channel_rx_update(struct ipa_channel *channel, struct ipa_trans *t=
-rans)
-> > +{
-> > +	/* FIXME */
-> > +	u64 byte_count =3D trans->byte_count + trans->len;
-> > +
-> > +	channel->byte_count +=3D byte_count;
-> > +	channel->trans_count++;
-> > +}
-> > +
-> > +/* Consult hardware, move any newly completed transactions to complete=
-d list */
-> > +static void bam_channel_update(struct ipa_channel *channel)
-> > +{
-> > +	struct ipa_trans *trans;
-> > +
-> > +	list_for_each_entry(trans, &channel->trans_info.pending, links) {
-> > +		enum dma_status trans_status =3D
-> > +				dma_async_is_tx_complete(channel->dma_chan,
-> > +					trans->cookie, NULL, NULL);
-> > +		if (trans_status =3D=3D DMA_COMPLETE)
-> > +			break;
-> > +	}
-> > +	/* Get the transaction for the latest completed event.  Take a
-> > +	 * reference to keep it from completing before we give the events
-> > +	 * for this and previous transactions back to the hardware.
-> > +	 */
-> > +	refcount_inc(&trans->refcount);
-> > +
-> > +	/* For RX channels, update each completed transaction with the number
-> > +	 * of bytes that were actually received.  For TX channels, report
-> > +	 * the number of transactions and bytes this completion represents
-> > +	 * up the network stack.
-> > +	 */
-> > +	if (channel->toward_ipa)
-> > +		bam_channel_tx_update(channel, trans);
-> > +	else
-> > +		bam_channel_rx_update(channel, trans);
-> > +
-> > +	ipa_trans_move_complete(trans);
-> > +
-> > +	ipa_trans_free(trans);
-> > +}
-> > +
-> > +/**
-> > + * bam_channel_poll_one() - Return a single completed transaction on a=
- channel
-> > + * @channel:	Channel to be polled
-> > + *
-> > + * Return:	Transaction pointer, or null if none are available
-> > + *
-> > + * This function returns the first entry on a channel's completed tran=
-saction
-> > + * list.  If that list is empty, the hardware is consulted to determin=
-e
-> > + * whether any new transactions have completed.  If so, they're moved =
-to the
-> > + * completed list and the new first entry is returned.  If there are n=
-o more
-> > + * completed transactions, a null pointer is returned.
-> > + */
-> > +static struct ipa_trans *bam_channel_poll_one(struct ipa_channel *chan=
-nel)
-> > +{
-> > +	struct ipa_trans *trans;
-> > +
-> > +	/* Get the first transaction from the completed list */
-> > +	trans =3D ipa_channel_trans_complete(channel);
-> > +	if (!trans) {
-> > +		bam_channel_update(channel);
-> > +		trans =3D ipa_channel_trans_complete(channel);
-> > +	}
-> > +
-> > +	if (trans)
-> > +		ipa_trans_move_polled(trans);
-> > +
-> > +	return trans;
-> > +}
-> > +
-> > +/**
-> > + * bam_channel_poll() - NAPI poll function for a channel
-> > + * @napi:	NAPI structure for the channel
-> > + * @budget:	Budget supplied by NAPI core
-> > + *
-> > + * Return:	Number of items polled (<=3D budget)
-> > + *
-> > + * Single transactions completed by hardware are polled until either
-> > + * the budget is exhausted, or there are no more.  Each transaction
-> > + * polled is passed to ipa_trans_complete(), to perform remaining
-> > + * completion processing and retire/free the transaction.
-> > + */
-> > +static int bam_channel_poll(struct napi_struct *napi, int budget)
-> > +{
-> > +	struct ipa_channel *channel;
-> > +	int count =3D 0;
-> > +
-> > +	channel =3D container_of(napi, struct ipa_channel, napi);
-> > +	while (count < budget) {
-> > +		struct ipa_trans *trans;
-> > +
-> > +		count++;
-> > +		trans =3D bam_channel_poll_one(channel);
-> > +		if (!trans)
-> > +			break;
-> > +		ipa_trans_complete(trans);
-> > +	}
-> > +
-> > +	if (count < budget)
-> > +		napi_complete(&channel->napi);
-> > +
-> > +	return count;
-> > +}
-> > +
-> > +/* Setup function for a single channel */
-> > +static void bam_channel_setup_one(struct ipa_dma *bam, u32 channel_id)
-> > +{
-> > +	struct ipa_channel *channel =3D &bam->channel[channel_id];
-> > +
-> > +	if (!channel->dma_subsys)
-> > +		return;	/* Ignore uninitialized channels */
-> > +
-> > +	if (channel->toward_ipa) {
-> > +		netif_tx_napi_add(&bam->dummy_dev, &channel->napi,
-> > +				  bam_channel_poll, NAPI_POLL_WEIGHT);
-> > +	} else {
-> > +		netif_napi_add(&bam->dummy_dev, &channel->napi,
-> > +			       bam_channel_poll, NAPI_POLL_WEIGHT);
-> > +	}
-> > +	napi_enable(&channel->napi);
-> > +}
-> > +
-> > +static void bam_channel_teardown_one(struct ipa_dma *bam, u32 channel_=
-id)
-> > +{
-> > +	struct ipa_channel *channel =3D &bam->channel[channel_id];
-> > +
-> > +	if (!channel->dma_subsys)
-> > +		return;		/* Ignore uninitialized channels */
-> > +
-> > +	netif_napi_del(&channel->napi);
-> > +}
-> > +
-> > +/* Setup function for channels */
-> > +static int bam_channel_setup(struct ipa_dma *bam)
-> > +{
-> > +	u32 channel_id =3D 0;
-> > +	int ret;
-> > +
-> > +	mutex_lock(&bam->mutex);
-> > +
-> > +	do
-> > +		bam_channel_setup_one(bam, channel_id);
-> > +	while (++channel_id < BAM_CHANNEL_COUNT_MAX);
-> > +
-> > +	/* Make sure no channels were defined that hardware does not support =
-*/
-> > +	while (channel_id < BAM_CHANNEL_COUNT_MAX) {
-> > +		struct ipa_channel *channel =3D &bam->channel[channel_id++];
-> > +
-> > +		if (!channel->dma_subsys)
-> > +			continue;	/* Ignore uninitialized channels */
-> > +
-> > +		dev_err(bam->dev, "channel %u not supported by hardware\n",
-> > +			channel_id - 1);
-> > +		channel_id =3D BAM_CHANNEL_COUNT_MAX;
-> > +		goto err_unwind;
-> > +	}
-> > +
-> > +	mutex_unlock(&bam->mutex);
-> > +
-> > +	return 0;
-> > +
-> > +err_unwind:
-> > +	while (channel_id--)
-> > +		bam_channel_teardown_one(bam, channel_id);
-> > +
-> > +	mutex_unlock(&bam->mutex);
-> > +
-> > +	return ret;
-> > +}
-> > +
-> > +/* Inverse of bam_channel_setup() */
-> > +static void bam_channel_teardown(struct ipa_dma *bam)
-> > +{
-> > +	u32 channel_id;
-> > +
-> > +	mutex_lock(&bam->mutex);
-> > +
-> > +	channel_id =3D BAM_CHANNEL_COUNT_MAX;
-> > +	do
-> > +		bam_channel_teardown_one(bam, channel_id);
-> > +	while (channel_id--);
-> > +
-> > +	mutex_unlock(&bam->mutex);
-> > +}
-> > +
-> > +static int bam_setup(struct ipa_dma *bam)
-> > +{
-> > +	return bam_channel_setup(bam);
-> > +}
-> > +
-> > +static void bam_teardown(struct ipa_dma *bam)
-> > +{
-> > +	bam_channel_teardown(bam);
-> > +}
-> > +
-> > +static u32 bam_channel_tre_max(struct ipa_dma *bam, u32 channel_id)
-> > +{
-> > +	struct ipa_channel *channel =3D &bam->channel[channel_id];
-> > +
-> > +	/* Hardware limit is channel->tre_count - 1 */
-> > +	return channel->tre_count - (channel->tlv_count - 1);
-> > +}
-> > +
-> > +static u32 bam_channel_trans_tre_max(struct ipa_dma *bam, u32 channel_=
-id)
-> > +{
-> > +	struct ipa_channel *channel =3D &bam->channel[channel_id];
-> > +
-> > +	return channel->tlv_count;
-> > +}
-> > +
-> > +static int bam_channel_start(struct ipa_dma *bam, u32 channel_id)
-> > +{
-> > +	return 0;
-> > +}
-> > +
-> > +static int bam_channel_stop(struct ipa_dma *bam, u32 channel_id)
-> > +{
-> > +	struct ipa_channel *channel =3D &bam->channel[channel_id];
-> > +
-> > +	return dmaengine_terminate_sync(channel->dma_chan);
-> > +}
-> > +
-> > +static void bam_channel_reset(struct ipa_dma *bam, u32 channel_id, boo=
-l doorbell)
-> > +{
-> > +	bam_channel_stop(bam, channel_id);
-> > +}
-> > +
-> > +static int bam_channel_suspend(struct ipa_dma *bam, u32 channel_id)
-> > +{
-> > +	struct ipa_channel *channel =3D &bam->channel[channel_id];
-> > +
-> > +	return dmaengine_pause(channel->dma_chan);
-> > +}
-> > +
-> > +static int bam_channel_resume(struct ipa_dma *bam, u32 channel_id)
-> > +{
-> > +	struct ipa_channel *channel =3D &bam->channel[channel_id];
-> > +
-> > +	return dmaengine_resume(channel->dma_chan);
-> > +}
-> > +
-> > +static void bam_suspend(struct ipa_dma *bam)
-> > +{
-> > +	/* No-op for now */
-> > +}
-> > +
-> > +static void bam_resume(struct ipa_dma *bam)
-> > +{
-> > +	/* No-op for now */
-> > +}
-> > +
-> > +static void bam_trans_callback(void *arg)
-> > +{
-> > +	ipa_trans_complete(arg);
-> > +}
-> > +
-> > +static void bam_trans_commit(struct ipa_trans *trans, bool unused)
-> > +{
-> > +	struct ipa_channel *channel =3D &trans->dma_subsys->channel[trans->ch=
-annel_id];
-> > +	enum ipa_cmd_opcode opcode =3D IPA_CMD_NONE;
-> > +	struct ipa_cmd_info *info;
-> > +	struct scatterlist *sg;
-> > +	u32 byte_count =3D 0;
-> > +	u32 i;
-> > +	enum dma_transfer_direction direction;
-> > +
-> > +	if (channel->toward_ipa)
-> > +		direction =3D DMA_MEM_TO_DEV;
-> > +	else
-> > +		direction =3D DMA_DEV_TO_MEM;
-> > +
-> > +	/* assert(trans->used > 0); */
-> > +
-> > +	info =3D trans->info ? &trans->info[0] : NULL;
-> > +	for_each_sg(trans->sgl, sg, trans->used, i) {
-> > +		bool last_tre =3D i =3D=3D trans->used - 1;
-> > +		dma_addr_t addr =3D sg_dma_address(sg);
-> > +		u32 len =3D sg_dma_len(sg);
-> > +		u32 dma_flags =3D 0;
-> > +		struct dma_async_tx_descriptor *desc;
-> > +
-> > +		byte_count +=3D len;
-> > +		if (info)
-> > +			opcode =3D info++->opcode;
-> > +
-> > +		if (opcode !=3D IPA_CMD_NONE) {
-> > +			len =3D opcode;
-> > +			dma_flags |=3D DMA_PREP_IMM_CMD;
-> > +		}
-> > +
-> > +		if (last_tre)
-> > +			dma_flags |=3D DMA_PREP_INTERRUPT;
-> > +
-> > +		desc =3D dmaengine_prep_slave_single(channel->dma_chan, addr, len,
-> > +				direction, dma_flags);
-> > +
-> > +		if (last_tre) {
-> > +			desc->callback =3D bam_trans_callback;
-> > +			desc->callback_param =3D trans;
-> > +		}
-> > +
-> > +		desc->cookie =3D dmaengine_submit(desc);
-> > +
-> > +		if (last_tre)
-> > +			trans->cookie =3D desc->cookie;
-> > +
-> > +		if (direction =3D=3D DMA_DEV_TO_MEM)
-> > +			dmaengine_desc_attach_metadata(desc, &trans->len, sizeof(trans->len=
-));
-> > +	}
-> > +
-> > +	if (channel->toward_ipa) {
-> > +		/* We record TX bytes when they are sent */
-> > +		trans->len =3D byte_count;
-> > +		trans->trans_count =3D channel->trans_count;
-> > +		trans->byte_count =3D channel->byte_count;
-> > +		channel->trans_count++;
-> > +		channel->byte_count +=3D byte_count;
-> > +	}
-> > +
-> > +	ipa_trans_move_pending(trans);
-> > +
-> > +	dma_async_issue_pending(channel->dma_chan);
-> > +}
-> > +
-> > +/* Initialize the BAM DMA channels
-> > + * Actual hw init is handled by the BAM_DMA driver
-> > + */
-> > +int bam_init(struct ipa_dma *bam, struct platform_device *pdev,
-> > +		enum ipa_version version, u32 count,
-> > +		const struct ipa_gsi_endpoint_data *data)
-> > +{
-> > +	struct device *dev =3D &pdev->dev;
-> > +	int ret;
-> > +
-> > +	bam->dev =3D dev;
-> > +	bam->version =3D version;
-> > +	bam->setup =3D bam_setup;
-> > +	bam->teardown =3D bam_teardown;
-> > +	bam->exit =3D bam_exit;
-> > +	bam->suspend =3D bam_suspend;
-> > +	bam->resume =3D bam_resume;
-> > +	bam->channel_tre_max =3D bam_channel_tre_max;
-> > +	bam->channel_trans_tre_max =3D bam_channel_trans_tre_max;
-> > +	bam->channel_start =3D bam_channel_start;
-> > +	bam->channel_stop =3D bam_channel_stop;
-> > +	bam->channel_reset =3D bam_channel_reset;
-> > +	bam->channel_suspend =3D bam_channel_suspend;
-> > +	bam->channel_resume =3D bam_channel_resume;
-> > +	bam->trans_commit =3D bam_trans_commit;
-> > +
-> > +	init_dummy_netdev(&bam->dummy_dev);
-> > +
-> > +	ret =3D bam_channel_init(bam, count, data);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	mutex_init(&bam->mutex);
-> > +
-> > +	return 0;
-> > +}
-> > diff --git a/drivers/net/ipa/gsi.c b/drivers/net/ipa/gsi.c
-> > index 39d9ca620a9f..ac0b9e748fa1 100644
-> > --- a/drivers/net/ipa/gsi.c
-> > +++ b/drivers/net/ipa/gsi.c
-> > @@ -2210,6 +2210,7 @@ int gsi_init(struct ipa_dma *gsi, struct platform=
-_device *pdev,
-> >   	gsi->channel_reset =3D gsi_channel_reset;
-> >   	gsi->channel_suspend =3D gsi_channel_suspend;
-> >   	gsi->channel_resume =3D gsi_channel_resume;
-> > +	gsi->trans_commit =3D gsi_trans_commit;
-> >  =20
-> >   	/* GSI uses NAPI on all channels.  Create a dummy network device
-> >   	 * for the channel NAPI contexts to be associated with.
-> > diff --git a/drivers/net/ipa/ipa_data.h b/drivers/net/ipa/ipa_data.h
-> > index 6d329e9ce5d2..7d62d49f414f 100644
-> > --- a/drivers/net/ipa/ipa_data.h
-> > +++ b/drivers/net/ipa/ipa_data.h
-> > @@ -188,6 +188,7 @@ struct ipa_gsi_endpoint_data {
-> >   	u8 channel_id;
-> >   	u8 endpoint_id;
-> >   	bool toward_ipa;
-> > +	const char *channel_name;	/* used only for BAM DMA channels */
-> >  =20
-> >   	struct gsi_channel_data channel;
-> >   	struct ipa_endpoint_data endpoint;
-> > diff --git a/drivers/net/ipa/ipa_dma.h b/drivers/net/ipa/ipa_dma.h
-> > index 1a23e6ac5785..3000182ae689 100644
-> > --- a/drivers/net/ipa/ipa_dma.h
-> > +++ b/drivers/net/ipa/ipa_dma.h
-> > @@ -17,7 +17,11 @@
-> >  =20
-> >   /* Maximum number of channels and event rings supported by the driver=
- */
-> >   #define GSI_CHANNEL_COUNT_MAX	23
-> > +#define BAM_CHANNEL_COUNT_MAX	20
-> >   #define GSI_EVT_RING_COUNT_MAX	24
-> > +#define IPA_CHANNEL_COUNT_MAX	MAX(GSI_CHANNEL_COUNT_MAX, \
-> > +				    BAM_CHANNEL_COUNT_MAX)
-> > +#define MAX(a, b)		((a > b) ? a : b)
-> >  =20
-> >   /* Maximum TLV FIFO size for a channel; 64 here is arbitrary (and hig=
-h) */
-> >   #define GSI_TLV_MAX		64
-> > @@ -119,6 +123,8 @@ struct ipa_channel {
-> >   	struct gsi_ring tre_ring;
-> >   	u32 evt_ring_id;
-> >  =20
-> > +	struct dma_chan *dma_chan;
-> > +
-> >   	u64 byte_count;			/* total # bytes transferred */
-> >   	u64 trans_count;		/* total # transactions */
-> >   	/* The following counts are used only for TX endpoints */
-> > @@ -154,7 +160,7 @@ struct ipa_dma {
-> >   	u32 irq;
-> >   	u32 channel_count;
-> >   	u32 evt_ring_count;
-> > -	struct ipa_channel channel[GSI_CHANNEL_COUNT_MAX];
-> > +	struct ipa_channel channel[IPA_CHANNEL_COUNT_MAX];
-> >   	struct gsi_evt_ring evt_ring[GSI_EVT_RING_COUNT_MAX];
-> >   	u32 event_bitmap;		/* allocated event rings */
-> >   	u32 modem_channel_bitmap;	/* modem channels to allocate */
-> > @@ -303,7 +309,7 @@ static inline void ipa_dma_resume(struct ipa_dma *d=
-ma_subsys)
-> >   }
-> >  =20
-> >   /**
-> > - * ipa_dma_init() - Initialize the GSI subsystem
-> > + * ipa_init/bam_init() - Initialize the GSI/BAM subsystem
-> >    * @dma_subsys:	Address of ipa_dma structure embedded in an IPA struc=
-ture
-> >    * @pdev:	IPA platform device
-> >    * @version:	IPA hardware version (implies GSI version)
-> > @@ -312,14 +318,18 @@ static inline void ipa_dma_resume(struct ipa_dma =
-*dma_subsys)
-> >    *
-> >    * Return:	0 if successful, or a negative error code
-> >    *
-> > - * Early stage initialization of the GSI subsystem, performing tasks
-> > - * that can be done before the GSI hardware is ready to use.
-> > + * Early stage initialization of the GSI/BAM subsystem, performing tas=
-ks
-> > + * that can be done before the GSI/BAM hardware is ready to use.
-> >    */
-> >  =20
-> >   int gsi_init(struct ipa_dma *dma_subsys, struct platform_device *pdev=
-,
-> >   	     enum ipa_version version, u32 count,
-> >   	     const struct ipa_gsi_endpoint_data *data);
-> >  =20
-> > +int bam_init(struct ipa_dma *dma_subsys, struct platform_device *pdev,
-> > +	     enum ipa_version version, u32 count,
-> > +	     const struct ipa_gsi_endpoint_data *data);
-> > +
-> >   /**
-> >    * ipa_dma_exit() - Exit the DMA subsystem
-> >    * @dma_subsys:	ipa_dma address previously passed to a successful gsi=
-_init() call
-> > diff --git a/drivers/net/ipa/ipa_dma_private.h b/drivers/net/ipa/ipa_dm=
-a_private.h
-> > index 40148a551b47..1db53e597a61 100644
-> > --- a/drivers/net/ipa/ipa_dma_private.h
-> > +++ b/drivers/net/ipa/ipa_dma_private.h
-> > @@ -16,6 +16,8 @@ struct ipa_channel;
-> >  =20
-> >   #define GSI_RING_ELEMENT_SIZE	16	/* bytes; must be a power of 2 */
-> >  =20
-> > +void gsi_trans_commit(struct ipa_trans *trans, bool ring_db);
-> > +
-> >   /* Return the entry that follows one provided in a transaction pool *=
-/
-> >   void *ipa_trans_pool_next(struct ipa_trans_pool *pool, void *element)=
-;
-> >  =20
-> > diff --git a/drivers/net/ipa/ipa_main.c b/drivers/net/ipa/ipa_main.c
-> > index ba06e3ad554c..ea6c4347f2c6 100644
-> > --- a/drivers/net/ipa/ipa_main.c
-> > +++ b/drivers/net/ipa/ipa_main.c
-> > @@ -60,12 +60,15 @@
-> >    * core.  The GSI implements a set of "channels" used for communicati=
-on
-> >    * between the AP and the IPA.
-> >    *
-> > - * The IPA layer uses GSI channels to implement its "endpoints".  And =
-while
-> > - * a GSI channel carries data between the AP and the IPA, a pair of IP=
-A
-> > - * endpoints is used to carry traffic between two EEs.  Specifically, =
-the main
-> > - * modem network interface is implemented by two pairs of endpoints:  =
-a TX
-> > + * The IPA layer uses GSI channels or BAM pipes to implement its "endp=
-oints".
-> > + * And while a GSI channel carries data between the AP and the IPA, a =
-pair of
-> > + * IPA endpoints is used to carry traffic between two EEs.  Specifical=
-ly, the
-> > + * main modem network interface is implemented by two pairs of endpoin=
-ts:  a TX
-> >    * endpoint on the AP coupled with an RX endpoint on the modem; and a=
-nother
-> >    * RX endpoint on the AP receiving data from a TX endpoint on the mod=
-em.
-> > + *
-> > + * For BAM based transport, a pair of BAM pipes are used for TX and RX=
- between
-> > + * the AP and IPA, and between IPA and other EEs.
-> >    */
-> >  =20
-> >   /* The name of the GSI firmware file relative to /lib/firmware */
-> > @@ -716,8 +719,13 @@ static int ipa_probe(struct platform_device *pdev)
-> >   	if (ret)
-> >   		goto err_reg_exit;
-> >  =20
-> > -	ret =3D gsi_init(&ipa->dma_subsys, pdev, ipa->version, data->endpoint=
-_count,
-> > -		       data->endpoint_data);
-> > +	if (IPA_HAS_GSI(ipa->version))
-> > +		ret =3D gsi_init(&ipa->dma_subsys, pdev, ipa->version, data->endpoin=
-t_count,
-> > +			       data->endpoint_data);
-> > +	else
-> > +		ret =3D bam_init(&ipa->dma_subsys, pdev, ipa->version, data->endpoin=
-t_count,
-> > +			       data->endpoint_data);
-> > +
-> >   	if (ret)
-> >   		goto err_mem_exit;
-> >  =20
-> > diff --git a/drivers/net/ipa/ipa_trans.c b/drivers/net/ipa/ipa_trans.c
-> > index 22755f3ce3da..444f44846da8 100644
-> > --- a/drivers/net/ipa/ipa_trans.c
-> > +++ b/drivers/net/ipa/ipa_trans.c
-> > @@ -254,7 +254,7 @@ struct ipa_trans *ipa_channel_trans_complete(struct=
- ipa_channel *channel)
-> >   }
-> >  =20
-> >   /* Move a transaction from the allocated list to the pending list */
-> > -static void ipa_trans_move_pending(struct ipa_trans *trans)
-> > +void ipa_trans_move_pending(struct ipa_trans *trans)
-> >   {
-> >   	struct ipa_channel *channel =3D &trans->dma_subsys->channel[trans->c=
-hannel_id];
-> >   	struct ipa_trans_info *trans_info =3D &channel->trans_info;
-> > @@ -539,7 +539,7 @@ static void gsi_trans_tre_fill(struct gsi_tre *dest=
-_tre, dma_addr_t addr,
-> >    * pending list.  Finally, updates the channel ring pointer and optio=
-nally
-> >    * rings the doorbell.
-> >    */
-> > -static void __gsi_trans_commit(struct ipa_trans *trans, bool ring_db)
-> > +void gsi_trans_commit(struct ipa_trans *trans, bool ring_db)
-> >   {
-> >   	struct ipa_channel *channel =3D &trans->dma_subsys->channel[trans->c=
-hannel_id];
-> >   	struct gsi_ring *ring =3D &channel->tre_ring;
-> > @@ -604,9 +604,9 @@ static void __gsi_trans_commit(struct ipa_trans *tr=
-ans, bool ring_db)
-> >   /* Commit a GSI transaction */
-> >   void ipa_trans_commit(struct ipa_trans *trans, bool ring_db)
-> >   {
-> > -	if (trans->used)
-> > -		__gsi_trans_commit(trans, ring_db);
-> > -	else
-> > +	if (trans->used) {
-> > +		trans->dma_subsys->trans_commit(trans, ring_db);
-> > +	} else
-> >   		ipa_trans_free(trans);
-> >   }
-> >  =20
-> > @@ -618,7 +618,7 @@ void ipa_trans_commit_wait(struct ipa_trans *trans)
-> >  =20
-> >   	refcount_inc(&trans->refcount);
-> >  =20
-> > -	__gsi_trans_commit(trans, true);
-> > +	trans->dma_subsys->trans_commit(trans, true);
-> >  =20
-> >   	wait_for_completion(&trans->completion);
-> >  =20
-> > @@ -638,7 +638,7 @@ int ipa_trans_commit_wait_timeout(struct ipa_trans =
-*trans,
-> >  =20
-> >   	refcount_inc(&trans->refcount);
-> >  =20
-> > -	__gsi_trans_commit(trans, true);
-> > +	trans->dma_subsys->trans_commit(trans, true);
-> >  =20
-> >   	remaining =3D wait_for_completion_timeout(&trans->completion,
-> >   						timeout_jiffies);
-> > diff --git a/drivers/net/ipa/ipa_trans.h b/drivers/net/ipa/ipa_trans.h
-> > index b93342414360..5f41e3e6f92a 100644
-> > --- a/drivers/net/ipa/ipa_trans.h
-> > +++ b/drivers/net/ipa/ipa_trans.h
-> > @@ -10,6 +10,7 @@
-> >   #include <linux/refcount.h>
-> >   #include <linux/completion.h>
-> >   #include <linux/dma-direction.h>
-> > +#include <linux/dmaengine.h>
-> >  =20
-> >   #include "ipa_cmd.h"
-> >  =20
-> > @@ -61,6 +62,7 @@ struct ipa_trans {
-> >   	struct scatterlist *sgl;
-> >   	struct ipa_cmd_info *info;	/* array of entries, or null */
-> >   	enum dma_data_direction direction;
-> > +	dma_cookie_t cookie;
-> >  =20
-> >   	refcount_t refcount;
-> >   	struct completion completion;
-> > @@ -149,6 +151,8 @@ struct ipa_trans *ipa_channel_trans_alloc(struct ip=
-a_dma *dma_subsys, u32 channe
-> >    */
-> >   void ipa_trans_free(struct ipa_trans *trans);
-> >  =20
-> > +void ipa_trans_move_pending(struct ipa_trans *trans);
-> > +
-> >   /**
-> >    * ipa_trans_cmd_add() - Add an immediate command to a transaction
-> >    * @trans:	Transaction
-> >=20
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
 
+--00000000000080f86305cea45aa7
+Content-Type: application/octet-stream; name="BMI160.inf"
+Content-Disposition: attachment; filename="BMI160.inf"
+Content-Transfer-Encoding: base64
+Content-ID: <f_kuwyqjnl1>
+X-Attachment-Id: f_kuwyqjnl1
+
+LyorKw0KOw0KO0NvcHlyaWdodCAoYykgTWljcm9zb2Z0IENvcnBvcmF0aW9uLiAgQWxsIHJpZ2h0
+cyByZXNlcnZlZC4NCjsNCjtNb2R1bGUgTmFtZToNCjsgICAgQk1JMTYwLklORg0KOw0KO0Fic3Ry
+YWN0Og0KOyAgICBJTkYgZmlsZSBmb3IgaW5zdGFsbGluZyB0aGUgU2Vuc29ycyAyLjAgQk1JMTYw
+IHNhbXBsZSBkcml2ZXINCjsNCjtJbnN0YWxsYXRpb24gTm90ZXM6DQo7ICAgIFVzaW5nIERldmNv
+bjogVHlwZSAiZGV2Y29uIGluc3RhbGwgQk1JMTYwLmluZiB1bWRmMlxCTUkxNjAiIHRvIGluc3Rh
+bGwNCjsNCjstLSovDQoNCltWZXJzaW9uXQ0KU2lnbmF0dXJlICAgPSAiJFdJTkRPV1MgTlQkIg0K
+Q2xhc3MgICAgICAgPSBTZW5zb3INCkNsYXNzR3VpZCAgID0gezUxNzVEMzM0LUMzNzEtNDgwNi1C
+M0JBLTcxRkQ1M0M5MjU4RH0NClByb3ZpZGVyICAgID0gJUJPU0NIJQ0KQ2F0YWxvZ0ZpbGUgPSBC
+TUkxNjAuY2F0DQpEcml2ZXJWZXIgPSAwNy8wNi8yMDIwLDEuMC4wLjE3DQoNCltTb3VyY2VEaXNr
+c05hbWVzXQ0KMSA9ICVNZWRpYURlc2NyaXB0aW9uJSwsLCIiDQoNCltTb3VyY2VEaXNrc0ZpbGVz
+XQ0KQk1JMTYwLmRsbCAgID0gMSwsDQoNCltNYW51ZmFjdHVyZXJdDQolTWFudWZhY3R1cmVyTmFt
+ZSUgPSBCTUkxNjBfRGV2aWNlLCBOVGFtZDY0DQoNCjsqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqDQo7IEJNSTE2MCBJbnN0YWxsIFNlY3Rpb24NCjsqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqDQoNCltCTUkxNjBfRGV2aWNlLk5UYW1kNjRdDQo7IERpc3BsYXlOYW1lICAgICAg
+IFNlY3Rpb24gICAgICAgICAgRGV2aWNlSWQNCjsgLS0tLS0tLS0tLS0gICAgICAgLS0tLS0tLSAg
+ICAgICAgICAtLS0tLS0tLQ0KJUJNSTE2MF9EZXZEZXNjJSA9IEJNSTE2MF9JbnN0LCBBQ1BJXDEw
+RUM1MjgwDQoNCltCTUkxNjBfSW5zdC5OVF0NCkNvcHlGaWxlcyA9IEJNSTE2MERyaXZlckNvcHkN
+Cg0KW0JNSTE2MERyaXZlckNvcHldDQpCTUkxNjAuZGxsDQoNCltEZXN0aW5hdGlvbkRpcnNdDQpC
+TUkxNjBEcml2ZXJDb3B5ID0gMTIsVU1ERg0KDQo7LS0tLS0tLS0tLS0tLS0gU2VydmljZSBpbnN0
+YWxsYXRpb24NCg0KW0JNSTE2MF9JbnN0Lk5ULlNlcnZpY2VzXQ0KQWRkU2VydmljZSA9IFdVREZS
+ZCwweDAwMDAwMWZhLFdVREZSRF9TZXJ2aWNlSW5zdGFsbA0KDQpbQk1JMTYwX0luc3QuTlQuQ29J
+bnN0YWxsZXJzXQ0KQWRkUmVnID0gQ29JbnN0YWxsZXJzX0FkZFJlZw0KDQpbV1VERlJEX1NlcnZp
+Y2VJbnN0YWxsXQ0KRGlzcGxheU5hbWUgICA9ICVXdWRmUmREaXNwbGF5TmFtZSUNClNlcnZpY2VU
+eXBlICAgPSAlU0VSVklDRV9LRVJORUxfRFJJVkVSJQ0KU3RhcnRUeXBlICAgICA9ICVTRVJWSUNF
+X0RFTUFORF9TVEFSVCUNCkVycm9yQ29udHJvbCAgPSAlU0VSVklDRV9FUlJPUl9OT1JNQUwlDQpT
+ZXJ2aWNlQmluYXJ5ID0gJTEyJVxXVURGUmQuc3lzDQoNCjstLS0tLS0tLS0tLS0tLSBXREYgc3Bl
+Y2lmaWMgc2VjdGlvbg0KDQpbQk1JMTYwX0luc3QuTlQuV2RmXQ0KVW1kZlNlcnZpY2UgICAgICAg
+ICAgICAgID0gQk1JMTYwLCBCTUkxNjBfSW5zdGFsbA0KVW1kZlNlcnZpY2VPcmRlciAgICAgICAg
+ID0gQk1JMTYwDQpVbWRmRGlyZWN0SGFyZHdhcmVBY2Nlc3MgPSBBbGxvd0RpcmVjdEhhcmR3YXJl
+QWNjZXNzDQpVbWRmRmlsZU9iamVjdFBvbGljeSAgICAgPSBBbGxvd051bGxBbmRVbmtub3duRmls
+ZU9iamVjdHMNClVtZGZGc0NvbnRleHRVc2VQb2xpY3kgICA9IENhbm5vdFVzZUZzQ29udGV4dHMN
+Cg0KW0JNSTE2MF9JbnN0YWxsXQ0KVW1kZkxpYnJhcnlWZXJzaW9uICAgICAgID0gMi4xNS4wDQpT
+ZXJ2aWNlQmluYXJ5ICAgICAgICAgICAgPSAlMTIlXFVNREZcQk1JMTYwLmRsbA0KVW1kZkV4dGVu
+c2lvbnMgICAgICAgICAgID0gU2Vuc29yc0N4MDEwMg0KDQpbQ29JbnN0YWxsZXJzX0FkZFJlZ10N
+CkhLUiwsQ29JbnN0YWxsZXJzMzIsMHgwMDAxMDAwMCwiV3VkZkNvaW5zdGFsbGVyLmRsbCINCg0K
+W1N0cmluZ3NdDQpNZWRpYURlc2NyaXB0aW9uICAgICAgICAgPSAiV2luZG93cyBCTUkxNjAgRHJp
+dmVyIg0KQk9TQ0ggICAgICAgICAgICAgICAgICAgID0gIkJvc2NoIg0KTWFudWZhY3R1cmVyTmFt
+ZSAgICAgICAgID0gIkJvc2NoIg0KQk1JMTYwX0RldkRlc2MgICAgICAgID0gIkJNSTE2MCINCld1
+ZGZSZERpc3BsYXlOYW1lICAgICAgICA9ICJXaW5kb3dzIERyaXZlciBGb3VuZGF0aW9uIC0gVXNl
+ci1tb2RlIERyaXZlciBGcmFtZXdvcmsgUmVmbGVjdG9yIg0KDQpTRVJWSUNFX0tFUk5FTF9EUklW
+RVIgICAgPSAxDQpTRVJWSUNFX0RFTUFORF9TVEFSVCAgICAgPSAzDQpTRVJWSUNFX0VSUk9SX05P
+Uk1BTCAgICAgPSAxDQo=
+--00000000000080f86305cea45aa7
+Content-Type: application/zip; name="DSDT.zip"
+Content-Disposition: attachment; filename="DSDT.zip"
+Content-Transfer-Encoding: base64
+Content-ID: <f_kuwys5ug2>
+X-Attachment-Id: f_kuwys5ug2
+
+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
+BDiWAQBQSwUGAAAAAAEAAQBWAAAA42cAAAAA
+--00000000000080f86305cea45aa7--
