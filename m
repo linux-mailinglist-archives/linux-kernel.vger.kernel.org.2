@@ -2,85 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9D3243288E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 22:41:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F69543288F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 22:42:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233110AbhJRUnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 16:43:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49934 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229674AbhJRUnc (ORCPT
+        id S233448AbhJRUo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 16:44:27 -0400
+Received: from brightrain.aerifal.cx ([216.12.86.13]:59816 "EHLO
+        brightrain.aerifal.cx" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232116AbhJRUoV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 16:43:32 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42580C06161C;
-        Mon, 18 Oct 2021 13:41:21 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HY80v5v87z4xbP;
-        Tue, 19 Oct 2021 07:41:19 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1634589680;
-        bh=h5mqZCkGGQIMnUa8fz7ccWbQq7gWUaHg7i5STy2aJIs=;
-        h=Date:From:To:Cc:Subject:From;
-        b=t2KNzf9r/5KcDCAZAkQWTrfGjIkASw6wId1v+NshgRGBjST2cnBw0a/LL/gXv/WJK
-         N7knBvogqiZHQLh2+DENCG2J+9dkup4i0kDDX5RwasmNdUPNEHbG/0MuifQ7dN7wf9
-         TWLplDhfs6hQDSYfTF5slXv4ZjlGSwzg670Et8ZE0iln0m9G7jfWSkMgdkfoeWvn8A
-         kUTUzmCk3aCZTsvq1QA1CjhY4/RzLeU4bM5GsaZE2w75KI77SubmMx67/M7U/3tCSk
-         J+h2HtooLTSIkjnDpYrraGR7Q9/do48OaNA5XZudpEEln3pdaeda2nDY9BP3Dc/Nhz
-         iCFBYNIHtki4g==
-Date:   Tue, 19 Oct 2021 07:41:19 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     Bart Van Assche <bvanassche@acm.org>,
+        Mon, 18 Oct 2021 16:44:21 -0400
+Date:   Mon, 18 Oct 2021 16:42:04 -0400
+From:   Rich Felker <dalias@libc.org>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     musl@lists.openwall.com, Takashi Iwai <tiwai@suse.de>,
+        Michael Forney <mforney@mforney.org>,
+        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+        Takashi Iwai <tiwai@suse.com>,
+        Baolin Wang <baolin.wang@linaro.org>,
+        y2038 Mailman List <y2038@lists.linaro.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the scsi-mkp tree
-Message-ID: <20211019074119.6e180896@canb.auug.org.au>
+        Mark Brown <broonie@kernel.org>,
+        Baolin Wang <baolin.wang7@gmail.com>
+Subject: Re: [musl] Re: [alsa-devel] [PATCH v7 8/9] ALSA: add new 32-bit
+ layout for snd_pcm_mmap_status/control
+Message-ID: <20211018204203.GM7074@brightrain.aerifal.cx>
+References: <20211007165158.GC7074@brightrain.aerifal.cx>
+ <s5h5yu79aab.wl-tiwai@suse.de>
+ <CAK8P3a0qxNLv3_RcR5COcRGPcTnYMcfbOjdWKiT2hKdcof9WUg@mail.gmail.com>
+ <s5hv9277oux.wl-tiwai@suse.de>
+ <20211008120736.GF7074@brightrain.aerifal.cx>
+ <s5hsfx95n99.wl-tiwai@suse.de>
+ <20211018144259.GK7074@brightrain.aerifal.cx>
+ <s5hlf2q4byc.wl-tiwai@suse.de>
+ <20211018150824.GL7074@brightrain.aerifal.cx>
+ <CAK8P3a1RAk5WRtMjqV6QZ1eHtFu_sxhSBJn0Uv-MhRA5WGiJqQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/fuIV8MTANc.=PpBsb.hLN53";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a1RAk5WRtMjqV6QZ1eHtFu_sxhSBJn0Uv-MhRA5WGiJqQ@mail.gmail.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/fuIV8MTANc.=PpBsb.hLN53
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, Oct 18, 2021 at 05:26:35PM +0200, Arnd Bergmann wrote:
+> On Mon, Oct 18, 2021 at 5:08 PM Rich Felker <dalias@libc.org> wrote:
+> > On Mon, Oct 18, 2021 at 04:58:03PM +0200, Takashi Iwai wrote:
+> > > On Mon, 18 Oct 2021 16:43:00 +0200, Rich Felker wrote:
+> >
+> > No, I don't think so. The musl translator is to translate between the
+> > time64 ioctl structures and the old time32 ones for the sake of
+> > executing on an old kernel. Up til now, it has been broken comparably
+> > to how 32-bit binaries running in compat mode on a 64-bit kernel were
+> > broken: the code in musl translated the time64 structure to (and back
+> > from) the time32 one assuming the intended padding. But the
+> > application was using the actual kernel uapi struct where the padding
+> > was (and still is) illogical. Thus, nothing was built with the wrong
+> > ABI; it's only the musl-internal translation logic that was wrong (and
+> > only pre-time64 kernels are affected).
+> >
+> > The attached patch should fix it, I think.
+> >
+> > + int adj = BYTE_ORDER==BIG_ENDIAN ? 4 : 0;
+> > + if (dir==W) {
+> > +     memcpy(old+68, new+72+adj, 4);
+> > +     memcpy(old+72, new+72+4+2*adj, 4);
+> 
+> I think that should be "new+72+4+3*adj": the "2*adj" would
+> be what the code does already for the originally intended
+> format.
 
-Hi all,
+Well for little endian either would work (because adj is 0 :) but yes
+there are 3 such paddings before the second member on big endian, so
+it should be 3.
 
-After merging the scsi-mkp tree, today's linux-next build (htmldocs)
-produced this warning:
-
-drivers/scsi/scsi_scan.c:129: warning: Function parameter or member 'dev' n=
-ot described in 'scsi_enable_async_suspend'
-
-Introduced by commit
-
-  a19a93e4c6a9 ("scsi: core: pm: Rely on the device driver core for async p=
-ower management")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/fuIV8MTANc.=PpBsb.hLN53
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFt2+8ACgkQAVBC80lX
-0GxxmQf/SR8ah6PsNLSd09STuDR06IgyWf7Wcv6+sKu2PhjqLT3gR2k496rq/ai/
-2qb7KLuKlOY8aly9F0P5cYjyzBC88thaKqjMo/1XLYnJ+coTUasafk9UHcw1VGYJ
-/UeWFyWOChhxMsLIV7AvSwtBoxUOY964nhMNOQlS5MCs1po0yd3Dq+Ugn2jWztzx
-i0vSLSf2A82Go0Z0m/HgSoY6vnrz/ciCwVteYPAgC5xYF8zkUuL2Ui2rroq0RawT
-gRhs6Bz7TW398VoI6ycM55wPvcG8UvlRcht9fYGK/UQBd6SFoCJ451LBYcuu5Z+8
-qeDrdyJGpbCNU/3z0qDHZvBPKEWKSA==
-=ah0y
------END PGP SIGNATURE-----
-
---Sig_/fuIV8MTANc.=PpBsb.hLN53--
+Rich
