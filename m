@@ -2,92 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1FBE431FC7
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 16:33:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7957431FDA
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 16:35:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232054AbhJROfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 10:35:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49416 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231634AbhJROfS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 10:35:18 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 192D6C06161C;
-        Mon, 18 Oct 2021 07:33:07 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id ez7-20020a17090ae14700b001a132a1679bso4760375pjb.0;
-        Mon, 18 Oct 2021 07:33:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id;
-        bh=onF4hmW8ZH95EB856Ri4m8yoghjYbaHUCFiH6N60H08=;
-        b=UaGejdWHICPQznn/3ylFkZwh7hackIAt1/8i4qImkRk9MnJCzJNadZRrZ7RsBJm5AC
-         E5voL2UVHp/xoiV73DX/2Ww7OpJUX7XY7o+8c1OiP66ojXufB6vypyz+aFsQELPTUpeO
-         iw6Z66LAvax5nmML9P6IKP1rAFg0gHK3eqEDQ4kDM1rEwmG55D90dX97WwjTgaYwUmhi
-         XNhiBGnAUXobA3iaIC0UpwqBK+ODui53g+Qh7WGRGvQlnY7vEv4E2/GFC0D7kvVl5Ev2
-         MwHrZt5euDadI65URle8N5o+L5aYpXpLzdluIOnCwpGSKOShTN4Vg+Nd0zbNAJODFPNa
-         huwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=onF4hmW8ZH95EB856Ri4m8yoghjYbaHUCFiH6N60H08=;
-        b=HZwO2ShCbwy2pbjNlleXasKTD0bn4Ml3nNHhVOj0ixdrrLYBaBoBQY4+ugcGz14Q0V
-         Xxl0bCz2+LbAniDGhEoy9jNRePrHGeovQ8F6xmCr5ARdIxbOHMpn4iwPgXerU+yv/HTq
-         uilxrDDJyC/5OPe0q0J8gkpDmwMALFKO5Zy3KogUjp+XKj11JopbUKmJ5VWMlRtNoomb
-         KClbcjhw4g3NIR3jIjFgTTWddl84Ra00VM2fYfXdychaHtNzenIJlq9uTSTIgnsjOIQI
-         aoMmGMIBzV0f9aWw8hyf+wGV6HxbAA+qqJoV2C1EnO3DA3DL1voQdH/VPhJPOZdz9uCD
-         T+BA==
-X-Gm-Message-State: AOAM532jnTdmc4cbPuzrP/l0mw8rd1zZkAXJeFK3BOc+onCEo0FGMU5D
-        WWl8JEz/yNdBEeQtyrVAPA==
-X-Google-Smtp-Source: ABdhPJz7iCXevqjw8+WfBIHed8GTuSwGhzDaLOGw285GU6Df470RNLn50c1PIKk7g992CyohynHtHA==
-X-Received: by 2002:a17:90b:4f46:: with SMTP id pj6mr33886455pjb.63.1634567586599;
-        Mon, 18 Oct 2021 07:33:06 -0700 (PDT)
-Received: from vultr.guest ([107.191.53.97])
-        by smtp.gmail.com with ESMTPSA id k14sm13455059pfh.154.2021.10.18.07.33.04
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 18 Oct 2021 07:33:06 -0700 (PDT)
-From:   Zheyu Ma <zheyuma97@gmail.com>
-To:     sgoutham@marvell.com, davem@davemloft.net, kuba@kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Zheyu Ma <zheyuma97@gmail.com>
-Subject: [PATCH] cavium: Fix return values of the probe function
-Date:   Mon, 18 Oct 2021 14:32:57 +0000
-Message-Id: <1634567577-4033-1-git-send-email-zheyuma97@gmail.com>
-X-Mailer: git-send-email 2.7.4
+        id S231871AbhJROhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 10:37:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56342 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231495AbhJROhh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 10:37:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 469E060F93;
+        Mon, 18 Oct 2021 14:35:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1634567726;
+        bh=KInWsI4wuwlzjBz/5eE+01JEOq1xYNH9oLLv8t2jPIs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AFEZBNqNwFVvpuz1B/JJezzTujUyfCsQ0Zk02SR5yJhmORODj2U0jqnnRE5YeAUdR
+         kQyzeocfAHaT6cl2x9IlM0MSgjZvT7+B/uXQWyXyjaF2qyJOSm5Xs9W5MsssvBnQn4
+         tJPPerNcXjys3ij1WHC1HtijhSyJiArWpO8BWZeQ=
+Date:   Mon, 18 Oct 2021 16:35:24 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        reinette.chatre@intel.com, tony.luck@intel.com,
+        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org
+Subject: Re: [PATCH v8 2/2] x86/sgx: Add an attribute for the amount of SGX
+ memory in a NUMA node
+Message-ID: <YW2GLE89WxAeMZH4@kroah.com>
+References: <20211018135744.45527-1-jarkko@kernel.org>
+ <20211018135744.45527-2-jarkko@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211018135744.45527-2-jarkko@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During the process of driver probing, the probe function should return < 0
-for failure, otherwise, the kernel will treat value > 0 as success.
+On Mon, Oct 18, 2021 at 04:57:44PM +0300, Jarkko Sakkinen wrote:
+> The amount of SGX memory on the system is determined by the BIOS and it
+> varies wildly between systems.  It can be from dozens of MB's on desktops
+> or VM's, up to many GB's on servers.  Just like for regular memory, it is
+> sometimes useful to know the amount of usable SGX memory in the system.
+> 
+> Add an attribute for the amount of SGX memory in bytes to each NUMA
+> node. The path is /sys/devices/system/node/node[0-9]*/sgx/size.
+> Calculate these values by summing up EPC section sizes for each node
+> during the driver initalization.
+> 
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+> ---
+> v8:
+> * Fix a bug in sgx_numa_init(): node->dev should be only set after
+>   sysfe_create_group().  Otherwise, sysfs_remove_group() will issue a
+>   warning in sgx_numa_exit(), when sgx_create_group() is unsuccessful,
+>   because the group does not exist.
+> 
+> v7:
+> * Shorten memory_size to size. The prefix makes the name only longer
+>   but does not clarify things more than "size" would.
+> * Use device_attribute instead of kobj_attribute.
+> * Use named attribute group instead of creating raw kobject just for
+>   the "sgx" subdirectory.
+> 
+> v6:
+> * Initialize node->size to zero in sgx_setup_epc_section(), when the
+>   node is first accessed.
+> 
+> v5
+> * A new patch based on the discussion on
+>   https://lore.kernel.org/linux-sgx/3a7cab4115b4f902f3509ad8652e616b91703e1d.camel@kernel.org/T/#t
+> ---
+>  Documentation/ABI/stable/sysfs-devices-node |  7 ++
+>  arch/x86/kernel/cpu/sgx/main.c              | 85 +++++++++++++++++++++
+>  arch/x86/kernel/cpu/sgx/sgx.h               |  2 +
+>  3 files changed, 94 insertions(+)
+> 
+> diff --git a/Documentation/ABI/stable/sysfs-devices-node b/Documentation/ABI/stable/sysfs-devices-node
+> index 484fc04bcc25..12dc2149e8e0 100644
+> --- a/Documentation/ABI/stable/sysfs-devices-node
+> +++ b/Documentation/ABI/stable/sysfs-devices-node
+> @@ -176,3 +176,10 @@ Contact:	Keith Busch <keith.busch@intel.com>
+>  Description:
+>  		The cache write policy: 0 for write-back, 1 for write-through,
+>  		other or unknown.
+> +
+> +What:		/sys/devices/system/node/nodeX/sgx/size
+> +Date:		October 2021
+> +Contact:	Jarkko Sakkinen <jarkko@kernel.org>
+> +Description:
+> +		Total available physical SGX memory, also known as Enclave Page
+> +		Cache (EPC), in bytes.
+> diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+> index a6e313f1a82d..dc1d46c51323 100644
+> --- a/arch/x86/kernel/cpu/sgx/main.c
+> +++ b/arch/x86/kernel/cpu/sgx/main.c
+> @@ -714,9 +714,11 @@ static bool __init sgx_page_cache_init(void)
+>  			spin_lock_init(&sgx_numa_nodes[nid].lock);
+>  			INIT_LIST_HEAD(&sgx_numa_nodes[nid].free_page_list);
+>  			node_set(nid, sgx_numa_mask);
+> +			sgx_numa_nodes[nid].size = 0;
+>  		}
+>  
+>  		sgx_epc_sections[i].node =  &sgx_numa_nodes[nid];
+> +		sgx_numa_nodes[nid].size += size;
+>  
+>  		sgx_nr_epc_sections++;
+>  	}
+> @@ -790,6 +792,81 @@ int sgx_set_attribute(unsigned long *allowed_attributes,
+>  }
+>  EXPORT_SYMBOL_GPL(sgx_set_attribute);
+>  
+> +#ifdef CONFIG_NUMA
+> +static ssize_t size_show(struct device *dev, struct device_attribute *attr, char *buf)
+> +{
+> +	unsigned long size = 0;
+> +	int nid;
+> +
+> +	for (nid = 0; nid < num_possible_nodes(); nid++) {
+> +		if (dev == sgx_numa_nodes[nid].dev) {
+> +			size = sgx_numa_nodes[nid].size;
+> +			break;
+> +		}
+> +	}
+> +
+> +	return sysfs_emit(buf, "%lu\n", size);
+> +}
+> +DEVICE_ATTR_RO(size);
+> +
+> +static struct attribute *sgx_node_attrs[] = {
+> +	&dev_attr_size.attr,
+> +	NULL,
+> +};
+> +
+> +static const struct attribute_group sgx_node_attr_group = {
+> +	.name = "sgx",
+> +	.attrs = sgx_node_attrs,
+> +};
+> +
+> +static void sgx_numa_exit(void)
+> +{
+> +	struct device *dev;
+> +	int nid;
+> +
+> +	for (nid = 0; nid < num_possible_nodes(); nid++) {
+> +		dev = &node_devices[nid]->dev;
+> +		if (dev)
+> +			sysfs_remove_group(&dev->kobj, &sgx_node_attr_group);
+> +	}
+> +}
+> +
+> +static bool sgx_numa_init(void)
+> +{
+> +	struct sgx_numa_node *node;
+> +	struct device *dev;
+> +	int nid;
+> +	int ret;
+> +
+> +	for (nid = 0; nid < num_possible_nodes(); nid++) {
+> +		if (!sgx_numa_nodes[nid].size)
+> +			continue;
+> +
+> +		node = &sgx_numa_nodes[nid];
+> +		dev = &node_devices[nid]->dev;
+> +
+> +		ret = sysfs_create_group(&dev->kobj, &sgx_node_attr_group);
 
-Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
----
- drivers/net/ethernet/cavium/thunder/nicvf_main.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+A huge hint, if a driver has to call a sysfs_* call, something is wrong.
 
-diff --git a/drivers/net/ethernet/cavium/thunder/nicvf_main.c b/drivers/net/ethernet/cavium/thunder/nicvf_main.c
-index d1667b759522..a27227aeae88 100644
---- a/drivers/net/ethernet/cavium/thunder/nicvf_main.c
-+++ b/drivers/net/ethernet/cavium/thunder/nicvf_main.c
-@@ -1224,7 +1224,7 @@ static int nicvf_register_misc_interrupt(struct nicvf *nic)
- 	if (ret < 0) {
- 		netdev_err(nic->netdev,
- 			   "Req for #%d msix vectors failed\n", nic->num_vec);
--		return 1;
-+		return ret;
- 	}
- 
- 	sprintf(nic->irq_name[irq], "%s Mbox", "NICVF");
-@@ -1243,7 +1243,7 @@ static int nicvf_register_misc_interrupt(struct nicvf *nic)
- 	if (!nicvf_check_pf_ready(nic)) {
- 		nicvf_disable_intr(nic, NICVF_INTR_MBOX, 0);
- 		nicvf_unregister_interrupts(nic);
--		return 1;
-+		return -EIO;
- 	}
- 
- 	return 0;
--- 
-2.17.6
+Something is wrong here.
 
+Why are you messing around with a kobject?  This is a device, that you
+control, you can just set the default attribute group for it and then
+the driver core will add and remove the sysfs group at the proper time,
+in the proper way.  Right now you are racing userspace and loosing.
+
+Use the default group list, that is what it is there for.
+
+thanks,
+
+greg k-h
