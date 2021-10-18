@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BB07431E1C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:55:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25AD5431B34
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:29:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234291AbhJRN5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:57:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58168 "EHLO mail.kernel.org"
+        id S232845AbhJRNbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:31:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42838 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234375AbhJRNzz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:55:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1396E613A0;
-        Mon, 18 Oct 2021 13:40:10 +0000 (UTC)
+        id S232256AbhJRN3q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:29:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 066186134F;
+        Mon, 18 Oct 2021 13:27:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634564411;
-        bh=EUB55AvFWO8DodrRnQswPvZgR9JY2IDW6eTIF3qt21g=;
+        s=korg; t=1634563655;
+        bh=cuF6qoX845GPbrXvYCyGXSuzswlFTkRg9SUzLdl0FDc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SvQXYxxSo8ADwLoo+BV6gjbxcKfXnleEv8G0nZ+BREqGbtOWvPJTP51qYt/sNkHmw
-         OH1HgmfQ8FyaIlp0uTLpn7ry6Htb2tG63tRLV5gH+JxgFM3Y9i9mBysVQIoc8cQG4X
-         DXlsgR5FIns4I/gJme66JJADln+py1m3c9KEZofk=
+        b=gp7smcmonrLlBJKEGS/dmigBcZWqBVI3swZWpHsyPpKDEAMgqSba+T3GWcNynIaTF
+         6ap3HT7Xb6NihFM4MlvFVsu4taLtk1bKj0/Yri9KBi22zed64vjD4h13JdtGQ+v/qd
+         cJ3fwwikLR3498FGjLlcHdI46eb1TTzCjnNt+tuU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 5.14 080/151] iio: ssp_sensors: fix error code in ssp_print_mcu_debug()
+        stable@vger.kernel.org, Jonathan Bell <jonathan@raspberrypi.com>,
+        Mathias Nyman <mathias.nyman@linux.intel.com>
+Subject: [PATCH 4.19 12/50] xhci: guard accesses to ep_state in xhci_endpoint_reset()
 Date:   Mon, 18 Oct 2021 15:24:19 +0200
-Message-Id: <20211018132343.288461350@linuxfoundation.org>
+Message-Id: <20211018132326.935583884@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132340.682786018@linuxfoundation.org>
-References: <20211018132340.682786018@linuxfoundation.org>
+In-Reply-To: <20211018132326.529486647@linuxfoundation.org>
+References: <20211018132326.529486647@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,35 +39,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Jonathan Bell <jonathan@raspberrypi.com>
 
-commit 4170d3dd1467e9d78cb9af374b19357dc324b328 upstream.
+commit a01ba2a3378be85538e0183ae5367c1bc1d5aaf3 upstream.
 
-The ssp_print_mcu_debug() function should return negative error codes on
-error.  Returning "length" is meaningless.  This change does not affect
-runtime because the callers only care about zero/non-zero.
+See https://github.com/raspberrypi/linux/issues/3981
 
-Reported-by: Jonathan Cameron <jic23@kernel.org>
-Fixes: 50dd64d57eee ("iio: common: ssp_sensors: Add sensorhub driver")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Link: https://lore.kernel.org/r/20210914105333.GA11657@kili
-Cc: <Stable@vger.kernel.org>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Two read-modify-write cycles on ep->ep_state are not guarded by
+xhci->lock. Fix these.
+
+Fixes: f5249461b504 ("xhci: Clear the host side toggle manually when endpoint is soft reset")
+Cc: stable@vger.kernel.org
+Signed-off-by: Jonathan Bell <jonathan@raspberrypi.com>
+Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+Link: https://lore.kernel.org/r/20211008092547.3996295-2-mathias.nyman@linux.intel.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/iio/common/ssp_sensors/ssp_spi.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/host/xhci.c |    5 +++++
+ 1 file changed, 5 insertions(+)
 
---- a/drivers/iio/common/ssp_sensors/ssp_spi.c
-+++ b/drivers/iio/common/ssp_sensors/ssp_spi.c
-@@ -137,7 +137,7 @@ static int ssp_print_mcu_debug(char *dat
- 	if (length > received_len - *data_index || length <= 0) {
- 		ssp_dbg("[SSP]: MSG From MCU-invalid debug length(%d/%d)\n",
- 			length, received_len);
--		return length ? length : -EPROTO;
-+		return -EPROTO;
- 	}
+--- a/drivers/usb/host/xhci.c
++++ b/drivers/usb/host/xhci.c
+@@ -3093,10 +3093,13 @@ static void xhci_endpoint_reset(struct u
+ 	ep = &vdev->eps[ep_index];
  
- 	ssp_dbg("[SSP]: MSG From MCU - %s\n", &data_frame[*data_index]);
+ 	/* Bail out if toggle is already being cleared by a endpoint reset */
++	spin_lock_irqsave(&xhci->lock, flags);
+ 	if (ep->ep_state & EP_HARD_CLEAR_TOGGLE) {
+ 		ep->ep_state &= ~EP_HARD_CLEAR_TOGGLE;
++		spin_unlock_irqrestore(&xhci->lock, flags);
+ 		return;
+ 	}
++	spin_unlock_irqrestore(&xhci->lock, flags);
+ 	/* Only interrupt and bulk ep's use data toggle, USB2 spec 5.5.4-> */
+ 	if (usb_endpoint_xfer_control(&host_ep->desc) ||
+ 	    usb_endpoint_xfer_isoc(&host_ep->desc))
+@@ -3182,8 +3185,10 @@ static void xhci_endpoint_reset(struct u
+ 	xhci_free_command(xhci, cfg_cmd);
+ cleanup:
+ 	xhci_free_command(xhci, stop_cmd);
++	spin_lock_irqsave(&xhci->lock, flags);
+ 	if (ep->ep_state & EP_SOFT_CLEAR_TOGGLE)
+ 		ep->ep_state &= ~EP_SOFT_CLEAR_TOGGLE;
++	spin_unlock_irqrestore(&xhci->lock, flags);
+ }
+ 
+ static int xhci_check_streams_endpoint(struct xhci_hcd *xhci,
 
 
