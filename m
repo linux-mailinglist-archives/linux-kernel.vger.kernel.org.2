@@ -2,113 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4414C432768
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 21:18:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C7D543276B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 21:18:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232888AbhJRTU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 15:20:28 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:36098 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230159AbhJRTU0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 15:20:26 -0400
-Received: from zn.tnic (p200300ec2f085700af6a7a3215758573.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:5700:af6a:7a32:1575:8573])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id CA2981EC04A9;
-        Mon, 18 Oct 2021 21:18:13 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1634584693;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=H0D9fMYiemWaywKhrFeRx22doUmAUI5poz1BHecVEck=;
-        b=aaPBSilQLVoxx5ZYTymlL1LpcFbbTPdvT1VQjLz4BWf9YVHrCwCMueZkzHVjXeysrg0/eo
-        EpZ0n8bosyKFGw3HgTiyge1sVQRj2H/scBFwyVzUsSGSBApNBZPU/wVXSMAAfNGzdpIW8A
-        e30476Q54MX2AXNg4o+ioUpfa98cro8=
-Date:   Mon, 18 Oct 2021 21:18:13 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Michael Roth <michael.roth@amd.com>
-Cc:     Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        tony.luck@intel.com, marcorr@google.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com
-Subject: Re: [PATCH v6 08/42] x86/sev-es: initialize sev_status/features
- within #VC handler
-Message-ID: <YW3IdfMs61191qnU@zn.tnic>
-References: <20211008180453.462291-1-brijesh.singh@amd.com>
- <20211008180453.462291-9-brijesh.singh@amd.com>
- <YW2EsxcqBucuyoal@zn.tnic>
- <20211018184003.3ob2uxcpd2rpee3s@amd.com>
+        id S232915AbhJRTUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 15:20:30 -0400
+Received: from mail-oi1-f179.google.com ([209.85.167.179]:36509 "EHLO
+        mail-oi1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232424AbhJRTU1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 15:20:27 -0400
+Received: by mail-oi1-f179.google.com with SMTP id u69so1227653oie.3;
+        Mon, 18 Oct 2021 12:18:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bt90VyLc6tV9HrByFLUwNOwZWxF8o3tcqxJtoTeeT4c=;
+        b=KHhbshhIuHQHJo7kuF2ZWpUB5NcyNdh07W/tk8Y8Xbs6GvyO4wPDQ22B4Qth2hYKY7
+         YSIu3sWBSWgT85dd/VlIB1EieB6AoRtjGK96j8Yy3zrKPyKWqV7LGjKUXP/bbXab7tBa
+         VCQ5XMMYqb1901lRYQTOxMq6grKIGc3IH4eFJHYWqNNK+iiE/IydNp27QEOPuENTpsqs
+         fYv/ttnt5wb5NelGbhRpgKWgz+Ko1gdk/EkuP5uDJRKKBpsiCSwKqQLcTwdMP2FtOnc9
+         I1/vJSyriFnEf4jBlfjJkYbvaH1D/aYnm3xiLHkCsKtOurjXhL7nZ1YPkyvzn7/wB914
+         oOfg==
+X-Gm-Message-State: AOAM533HcHJdFctIk1wWncC6G55SOL2SIiOotvDRD8IG4+5YGE6qIdiy
+        aRMXgIxWsDocJom4M4OMTg==
+X-Google-Smtp-Source: ABdhPJyZEqV1avqCfkUrHC67E7MCfPVFDi4bd9rsxQN5tV/OzzjLhlX1HsHCIW605xDgj3sEaXrbyQ==
+X-Received: by 2002:aca:5b56:: with SMTP id p83mr605204oib.119.1634584696145;
+        Mon, 18 Oct 2021 12:18:16 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id h91sm3137144otb.38.2021.10.18.12.18.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Oct 2021 12:18:15 -0700 (PDT)
+Received: (nullmailer pid 2787169 invoked by uid 1000);
+        Mon, 18 Oct 2021 19:18:14 -0000
+Date:   Mon, 18 Oct 2021 14:18:14 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Richard Zhu <hongxing.zhu@nxp.com>
+Cc:     l.stach@pengutronix.de, tharvey@gateworks.com, kishon@ti.com,
+        vkoul@kernel.org, galak@kernel.crashing.org, shawnguo@kernel.org,
+        linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de, linux-imx@nxp.com
+Subject: Re: [PATCH v3 6/9] dt-bindings: imx6q-pcie: Add PHY phandles and
+ name properties
+Message-ID: <YW3IdoS+zHa4x70Z@robh.at.kernel.org>
+References: <1634028078-2387-1-git-send-email-hongxing.zhu@nxp.com>
+ <1634028078-2387-7-git-send-email-hongxing.zhu@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211018184003.3ob2uxcpd2rpee3s@amd.com>
+In-Reply-To: <1634028078-2387-7-git-send-email-hongxing.zhu@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 18, 2021 at 01:40:03PM -0500, Michael Roth wrote:
-> If CPUID has lied, that would result in a #GP, rather than a controlled
-> termination in the various checkers/callers. The latter is easier to
-> debug.
+On Tue, Oct 12, 2021 at 04:41:15PM +0800, Richard Zhu wrote:
+> i.MX8MM PCIe has the PHY. Add a PHY phandle and name properties
+> in the binding document.
 > 
-> Additionally, #VC is arguably a better indicator of SEV MSR availability
-> for SEV-ES/SEV-SNP guests, since it is only generated by ES/SNP hardware
-> and doesn't rely directly on hypervisor/EFI-provided CPUID values. It
-> doesn't work for SEV guests, but I don't think it's a bad idea to allow
-> SEV-ES/SEV-SNP guests to initialize sev_status in #VC handler to make
-> use of the added assurance.
+> Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
+> ---
+>  Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.yaml | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.yaml b/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.yaml
+> index 2911e565b260..99d9863a69cd 100644
+> --- a/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.yaml
+> +++ b/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.yaml
+> @@ -128,6 +128,12 @@ properties:
+>      enum: [1, 2, 3, 4]
+>      default: 1
+>  
+> +  phys:
+> +    description: Phandle of the Generic PHY to the PCIe PHY.
 
-Ok, let's take a step back and analyze what we're trying to solve first.
-So I'm looking at sme_enable():
+maxItems: 1
 
-1. Code checks SME/SEV support leaf. HV lies and says there's none. So
-guest doesn't boot encrypted. Oh well, not a big deal, the cloud vendor
-won't be able to give confidentiality to its users => users go away or
-do unencrypted like now.
+And drop 'description'
 
-Problem is solved by political and economical pressure.
-
-2. Check SEV and SME bit. HV lies here. Oh well, same as the above.
-
-3. HV lies about 1. and 2. but says that SME/SEV is supported.
-
-Guest attempts to read the MSR Guest explodes due to the #GP. The same
-political/economical pressure thing happens.
-
-If the MSR is really there, we've landed at the place where we read the
-SEV MSR. Moment of truth - SEV/SNP guests have a communication protocol
-which is independent from the HV and all good.
-
-Now, which case am I missing here which justifies the need to do those
-acrobatics of causing #VCs just to detect the SEV MSR?
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+> +
+> +  phy-names:
+> +    const: pcie-phy
+> +
+>    reset-gpio:
+>      description: Should specify the GPIO for controlling the PCI bus device
+>        reset signal. It's not polarity aware and defaults to active-low reset
+> -- 
+> 2.25.1
+> 
+> 
