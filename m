@@ -2,74 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FD85430D01
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 02:12:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD35E430D04
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 02:13:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344823AbhJRAPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 20:15:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52726 "EHLO
+        id S1344836AbhJRAQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 20:16:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344816AbhJRAPB (ORCPT
+        with ESMTP id S1344826AbhJRAQH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 20:15:01 -0400
-Received: from mail-ua1-x92a.google.com (mail-ua1-x92a.google.com [IPv6:2607:f8b0:4864:20::92a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 998C3C06161C
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 17:12:51 -0700 (PDT)
-Received: by mail-ua1-x92a.google.com with SMTP id e2so501733uax.7
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 17:12:51 -0700 (PDT)
+        Sun, 17 Oct 2021 20:16:07 -0400
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22A8AC061765
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 17:13:57 -0700 (PDT)
+Received: by mail-oi1-x22b.google.com with SMTP id n63so22092005oif.7
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 17:13:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=IRkpf/d1mf8MW435X/QcufwaXmrc8KW2h/7hYZfZxdc=;
-        b=GXjuQuCue9++UGpsH1IbATO2fSKseo62clxL51PhFDf0Fyf82v8NNdRGOB0E+1wnjr
-         SGbdZHprW3LNc/qg2kmYs6Aamu+RQo55P7qPTrXqsNrH7yJCxjekqvtCo+FvUvcvTIUz
-         1H7xJ24u5uKq1PDsYLgdPDFaDp/8TwxD5s8dROwWRb4FKodsFZpxdbXsBytcxbP2KBF3
-         aoN4douZ4jQiG7YsxuuNiOVxjL/SfDxXcuucwRNksYchL9ROqhjl0DI8ADwWoEDopoEm
-         EA0WOUJcV9aHmvLpcTuu5WjiKpA8XugsZsF6h97a+fiMw/jSuz5Zob2GYNbTHVpOfnwA
-         NCEA==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=by+ieTTmuyDSriuTe138Ihlo/MV2ONswmXg6TUAPeOI=;
+        b=Xk38DdpFgMJxeifcBOeyXsSCv2v4EYFe5zZ7TIy+SRYzc82FReD9CDoVcxg9OfAZse
+         J1WBRD1pmDPg6dKMAOd6gO2d/KDauWHBek9iXFLAUsrRHgoOZ1wAjp6Bsi4IwNTAgApO
+         69pzrq2hvUJVTNBwHyhIUfkWePJxXFQASRFGp5MJSbeOvPCXX736Ob3LozQ0sHa30bgU
+         Czm57Oxk+ViEYhJWXHF/V3aVO/jITn4NW1hapBG8LOqGKGzFu5LStIoz9FDG1Py2kMoN
+         IMN0uYHF5c8my7IRzEtxu4rAaRDKtlbjQm1d0VZ2x605vLyvSxeXKhVIXa48Eev21IfK
+         9nqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=IRkpf/d1mf8MW435X/QcufwaXmrc8KW2h/7hYZfZxdc=;
-        b=2NJJ9iPAGCg2Zz63iUYHI92GDFXBvdVNFudQx+f617WKP5+jWhe/CbigEiQIXgwf2P
-         axuWZyqYUxwMDjRJNy4JrrQtF8yYukQ5YFuXQM6sq5uAJBUTgDD0U6iTVCQFwrSxY1nw
-         RLnKwaXe7mh/dqyLCx8yoEUcidexu55xOVnGrjvhHu3LdiM9tknXmWQA7xH5AY0z8bgK
-         iw9/jxmSbiAgY2nhXqfgyLYkD/pnN6BFmGwIrNW86adT3zCEOoM93kFYmgwpKlBtWpMI
-         lUVG3pieIQOPLJgkNkBy+aDIFPA0XVk5iH2ubAL9EFfLCYqw3hksU5q76dEdK/h4ry0r
-         MZgA==
-X-Gm-Message-State: AOAM532wNthLUk9N3i2Ft4oTAcUuyL/XXaNXZ5RAa3cNh+xUR6Vnxx7H
-        Vh2qnkJ2icLO7SYNvRtQOSpiHMpiw7UXlaynCW8=
-X-Google-Smtp-Source: ABdhPJwRJ9vUgwpjIhBJExaceZ8AY0hsHOIufHdex/O8wTTB46z7aCH/r41j93x20Fi/rh6PjWfRHPwKO18TCr6bwbw=
-X-Received: by 2002:a67:ec41:: with SMTP id z1mr24588934vso.11.1634515970805;
- Sun, 17 Oct 2021 17:12:50 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=by+ieTTmuyDSriuTe138Ihlo/MV2ONswmXg6TUAPeOI=;
+        b=3TCs38mknx+6PKOfJTz9CE1p4+aI2TgzSNaqJLHFjv3hJ44Cjte9roP4oxQsHR+w4j
+         ttfAuXTYDXf6hG3wNHio6FTcODCa+POnQRqWQROmYYOQYzXYgAo8ZfZJNLVKi4KpPpLL
+         Q//TtQ889qYTtmTQIgZJ9xCd+XwIOy57lGRyl6ruwykQn3tRroNIUN0sYkk14NezouyU
+         IMEsQedRjFZHXFcCbJZkVRWsIbePx0JTnZYrNmJDu2OXOKBb4+LyfpGBgGsnnGyF0kkR
+         YNkpB5E85O/l4cSshXCctqRY2Zcm+Ku8Fo9DM5dm9ULB0So8yQOCef/JKOz++KZc8BbL
+         /MnA==
+X-Gm-Message-State: AOAM531iG58H51RUZKEIVZvXmd0SNY6+paHuP0tzr1bJ2yqPGMkCVXQa
+        LHbZsbv7CXaZ9w4zHKwDvBbO+w==
+X-Google-Smtp-Source: ABdhPJwFcIikHfk/i4pYlpa1QTYFDGW9zMwyoLnJ2/Jjhw98ZeGn2zA+Gb5OkwrqTkGEjCDCj28tNw==
+X-Received: by 2002:aca:be54:: with SMTP id o81mr17661659oif.64.1634516036239;
+        Sun, 17 Oct 2021 17:13:56 -0700 (PDT)
+Received: from builder.lan ([2600:1700:a0:3dc8:3697:f6ff:fe85:aac9])
+        by smtp.gmail.com with ESMTPSA id l10sm2670189otj.9.2021.10.17.17.13.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 Oct 2021 17:13:55 -0700 (PDT)
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     clew@codeaurora.org, Deepak Kumar Singh <deesin@codeaurora.org>
+Cc:     Andy Gross <agross@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org
+Subject: Re: (subset) [PATCH V2 1/1] soc: qcom: smp2p: add feature negotiation and ssr ack feature support
+Date:   Sun, 17 Oct 2021 19:13:54 -0500
+Message-Id: <163451593812.443375.14432148732623995552.b4-ty@linaro.org>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <1633450403-21281-1-git-send-email-deesin@codeaurora.org>
+References: <1633450403-21281-1-git-send-email-deesin@codeaurora.org>
 MIME-Version: 1.0
-Received: by 2002:a59:d645:0:b0:237:f468:eb80 with HTTP; Sun, 17 Oct 2021
- 17:12:50 -0700 (PDT)
-Reply-To: goveradamsa@gmail.com
-From:   Gover Adams <goveradams2012@gmail.com>
-Date:   Mon, 18 Oct 2021 02:12:50 +0200
-Message-ID: <CAH_JG7M84XB32Tt0s3H9w7k9kvFttsj9yQHB69jf_i220RKq+A@mail.gmail.com>
-Subject: Check message and respond urgently.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend,
+On Tue, 5 Oct 2021 21:43:23 +0530, Deepak Kumar Singh wrote:
+> From: Chris Lew <clew@codeaurora.org>
+> 
+> This patch adds feature negotiation and ssr ack feature between
+> local host and remote processor. Local host can negotiate on common
+> features supported with remote processor.
+> 
+> When ssr ack feature bit is set, the remote processor will tell local
+> host when it is reinitialized. All clients registered for falling edge
+> interrupts will be notified when the smp2p entries are cleared for ssr.
+> 
+> [...]
 
-Compliment of the day to you. I am Mr Gover Adams.I am sending this
-brief letter to solicit your sincere partnership to transfer  an
-abandoned $10.2 Million US
-Dollars from our bank office here into your own bank account for us to
-share.I shall send you more information and procedures when I receive
-positive response.
+Applied, thanks!
 
-Please send me your response into my private email address
-(adamsgover@yahoo.com).
+[1/1] soc: qcom: smp2p: add feature negotiation and ssr ack feature support
+      commit: 85f755083b23b1ee59c96df80f148e6203bb078f
 
-Waiting ,
-
-Best Regards
-Mr Gover Adams.
+Best regards,
+-- 
+Bjorn Andersson <bjorn.andersson@linaro.org>
