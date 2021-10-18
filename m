@@ -2,216 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 612C4431100
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 09:05:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CAF0431118
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 09:08:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230336AbhJRHHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 03:07:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51248 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229533AbhJRHHf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 03:07:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EC59F6124F
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 07:05:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634540725;
-        bh=Zm8Ho9eB1/3/Ub8lBLbn/YGxOibWZkDMEC+h7+q0RnQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=kRpG0lBpmI2MUi1jbdnLd/ffxja2zx8lMB0Dif7wy0vlFBaLv64Unf6FZ+csNfABU
-         cox3paU1DKIylQ28hZLROjuYDQdYbAkTWYTsTM5TnHNXxXpqWgk1OrUNpZho6YhvdI
-         hwoPvxvRj1+NdWMUcIoWGl5D6fQ1JZr414i3tQVLR/0vjQxMuGW+IUkFtOeh7e5bDl
-         vipKxSRPVP9AGQNzw8S9I7KpgeE3v40qeHryangC5D5VXRRBe21rPlb+TfKRLJAZHm
-         K5UhiGW7oD20hTlGO7DrcFWJaKabaDJ453vd62cdeIA2eaB6MfQeY3YfRu7hNtkvyh
-         kSi+ts30E86Cg==
-Received: by mail-ua1-f54.google.com with SMTP id e10so3930144uab.3
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 00:05:24 -0700 (PDT)
-X-Gm-Message-State: AOAM532u+jfDiKErsFlOZ4MQA6I1iKgwY68pf6iQxhcEXpO8EItJfXDX
-        DlxbD0Mxo9DMgLysPbKPZZvAsuyYbrxiMW9HMFw=
-X-Google-Smtp-Source: ABdhPJyLENNfKQTvM76ddqJx5TPSGUaAAVd35qI9UQ0ZhKH9bb0iZHVMhlF3L32wUY3JMKctzXGyVIPJF9+5lvh4Izk=
-X-Received: by 2002:ab0:3c4d:: with SMTP id u13mr24939921uaw.66.1634540724073;
- Mon, 18 Oct 2021 00:05:24 -0700 (PDT)
+        id S231203AbhJRHKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 03:10:09 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:50584 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230416AbhJRHJw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 03:09:52 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19I4pE9d014606;
+        Mon, 18 Oct 2021 03:07:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=vbrSzoBt7X4TL99HrXT0Mtl3aZl0ABB0RSF7M+qQSl8=;
+ b=MnNlhCJy33wIAyc/XjCsTkALtUOBz9rQ7S3l38ftwFqXIVNVMZwGQpsqr7tmlDmHBNIJ
+ iWy/MhQS83u2wHCaEquxE7nfxGX2BeHPf1/VmjTsD96QWIr82LnuAOlW7v6qlKFIHYsQ
+ kGww69Mnmvgn7CXQcSVlaXC9p9UZ3DmtGG6nu1cZ+eJvL9Ogg98DQBtKPdL9MLQEc5JO
+ IzM6SfAcKojvakJLA1tdWSE4Xeb0r9W+IF6lhMqFXDSu91In0OdDWZuZtnCKOjuE5rUM
+ CmU96UVxo4n4uVslABT0YN3C2yF9XNE9T2Rkz3iH4h5Uat58bpXqx61LwQwdtJ3CsZLm aQ== 
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bs28xj72f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 18 Oct 2021 03:07:17 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19I71joI023363;
+        Mon, 18 Oct 2021 07:07:15 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma03ams.nl.ibm.com with ESMTP id 3bqpc9b6pd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 18 Oct 2021 07:07:15 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19I77C2w51380588
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 18 Oct 2021 07:07:12 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4063BAE04D;
+        Mon, 18 Oct 2021 07:07:12 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AE62EAE045;
+        Mon, 18 Oct 2021 07:07:07 +0000 (GMT)
+Received: from [9.43.101.92] (unknown [9.43.101.92])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 18 Oct 2021 07:07:07 +0000 (GMT)
+Message-ID: <cb0dba37-f3e4-acd7-444f-01a6dc737919@linux.ibm.com>
+Date:   Mon, 18 Oct 2021 12:37:06 +0530
 MIME-Version: 1.0
-References: <20211016032200.2869998-1-guoren@kernel.org> <20211016032200.2869998-2-guoren@kernel.org>
- <8be1bdbd-365d-cd28-79d7-b924908f9e39@sholland.org>
-In-Reply-To: <8be1bdbd-365d-cd28-79d7-b924908f9e39@sholland.org>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Mon, 18 Oct 2021 15:05:12 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTR1Oo=ERti69_SpcAyGe83PcfbjD5_3D1VrjNLBoftecw@mail.gmail.com>
-Message-ID: <CAJF2gTR1Oo=ERti69_SpcAyGe83PcfbjD5_3D1VrjNLBoftecw@mail.gmail.com>
-Subject: Re: [PATCH V4 1/3] irqchip/sifive-plic: Add thead,c900-plic support
-To:     Samuel Holland <samuel@sholland.org>
-Cc:     Anup Patel <anup@brainfault.org>,
-        Atish Patra <atish.patra@wdc.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH] powerpc/kexec_file: Add of_node_put() before goto
+Content-Language: en-US
+To:     Wan Jiabing <wanjiabing@vivo.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
         Rob Herring <robh@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Guo Ren <guoren@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
+        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        Sourabh Jain <sourabhjain@linux.ibm.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Cc:     kael_w@yeah.net
+References: <20211018015418.10182-1-wanjiabing@vivo.com>
+From:   Hari Bathini <hbathini@linux.ibm.com>
+In-Reply-To: <20211018015418.10182-1-wanjiabing@vivo.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: bJ4ZEjuBgK1SpSvn5A6XlfYvhsN2CbRR
+X-Proofpoint-GUID: bJ4ZEjuBgK1SpSvn5A6XlfYvhsN2CbRR
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-18_02,2021-10-14_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
+ mlxlogscore=999 impostorscore=0 lowpriorityscore=0 spamscore=0
+ clxscore=1011 mlxscore=0 phishscore=0 priorityscore=1501 adultscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110180043
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Samuel,
-
-On Mon, Oct 18, 2021 at 1:17 PM Samuel Holland <samuel@sholland.org> wrote:
->
-> On 10/15/21 10:21 PM, guoren@kernel.org wrote:
-> > From: Guo Ren <guoren@linux.alibaba.com>
-> >
-> > 1) The irq_mask/unmask() is used by handle_fasteoi_irq() is mostly
-> > for ONESHOT irqs and there is no limitation in the RISC-V PLIC driver
-> > due to use of irq_mask/unmask() callbacks. In fact, a lot of irqchip
-> > drivers using handle_fasteoi_irq() also implement irq_mask/unmask().
-> >
-> > 2) The C9xx PLIC does not comply with the interrupt claim/completion
-> > process defined by the RISC-V PLIC specification because C9xx PLIC
-> > will mask an IRQ when it is claimed by PLIC driver (i.e. readl(claim)
-> > and the IRQ will be unmasked upon completion by PLIC driver (i.e.
-> > writel(claim). This behaviour breaks the handling of IRQS_ONESHOT by
-> > the generic handle_fasteoi_irq() used in the PLIC driver.
-> >
-> > 3) This patch adds an errata fix for IRQS_ONESHOT handling on
-> > C9xx PLIC by using irq_enable/disable() callbacks instead of
-> > irq_mask/unmask().
-> >
-> > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> > Cc: Anup Patel <anup@brainfault.org>
-> > Cc: Thomas Gleixner <tglx@linutronix.de>
-> > Cc: Marc Zyngier <maz@kernel.org>
-> > Cc: Palmer Dabbelt <palmer@dabbelt.com>
-> > Cc: Atish Patra <atish.patra@wdc.com>
-> >
-> > ---
-> >
-> > Changes since V4:
-> >  - Update comment by Anup
-> >
-> > Changes since V3:
-> >  - Rename "c9xx" to "c900"
-> >  - Add sifive_plic_chip and thead_plic_chip for difference
-> >
-> > Changes since V2:
-> >  - Add a separate compatible string "thead,c9xx-plic"
-> >  - set irq_mask/unmask of "plic_chip" to NULL and point
-> >    irq_enable/disable of "plic_chip" to plic_irq_mask/unmask
-> >  - Add a detailed comment block in plic_init() about the
-> >    differences in Claim/Completion process of RISC-V PLIC and C9xx
-> >    PLIC.
-> > ---
-> >  drivers/irqchip/irq-sifive-plic.c | 34 +++++++++++++++++++++++++++++--
-> >  1 file changed, 32 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/irqchip/irq-sifive-plic.c b/drivers/irqchip/irq-sifive-plic.c
-> > index cf74cfa82045..960b29d02070 100644
-> > --- a/drivers/irqchip/irq-sifive-plic.c
-> > +++ b/drivers/irqchip/irq-sifive-plic.c
-> > @@ -166,7 +166,7 @@ static void plic_irq_eoi(struct irq_data *d)
-> >       writel(d->hwirq, handler->hart_base + CONTEXT_CLAIM);
-> >  }
-> >
-> > -static struct irq_chip plic_chip = {
-> > +static struct irq_chip sifive_plic_chip = {
-> >       .name           = "SiFive PLIC",
-> >       .irq_mask       = plic_irq_mask,
-> >       .irq_unmask     = plic_irq_unmask,
-> > @@ -176,12 +176,32 @@ static struct irq_chip plic_chip = {
-> >  #endif
-> >  };
-> >
-> > +/*
-> > + * The C9xx PLIC does not comply with the interrupt claim/completion
-> > + * process defined by the RISC-V PLIC specification because C9xx PLIC
-> > + * will mask an IRQ when it is claimed by PLIC driver (i.e. readl(claim)
-> > + * and the IRQ will be unmasked upon completion by PLIC driver (i.e.
-> > + * writel(claim). This behaviour breaks the handling of IRQS_ONESHOT by
-> > + * the generic handle_fasteoi_irq() used in the PLIC driver.
-> > + */
-> > +static struct irq_chip thead_plic_chip = {
-> > +     .name           = "T-Head PLIC",
-> > +     .irq_disable    = plic_irq_mask,
-> > +     .irq_enable     = plic_irq_unmask,
-> > +     .irq_eoi        = plic_irq_eoi,
-> > +#ifdef CONFIG_SMP
-> > +     .irq_set_affinity = plic_set_affinity,
-> > +#endif
-> I tested this, and it doesn't work. Without IRQCHIP_EOI_THREADED,
-> .irq_eoi is called at the end of the hard IRQ handler. This unmasks the
-> IRQ before the irqthread has a chance to run, so it causes an interrupt
-> storm for any threaded level IRQ (I saw this happen for sun8i_thermal).
-devm_request_threaded_irq(struct device *dev, unsigned int irq,
-irq_handler_t handler, irq_handler_t thread_fn
-
-I think you should pull down the IRQ level signal in "handler" and put
-the backend progress into "thread_fn".
-
-Could you give out your driver code?
-
->
-> With IRQCHIP_EOI_THREADED, .irq_eoi is delayed until after the irqthread
-> runs. This is good. Except that the call to unmask_threaded_irq() is
-> inside a check for IRQD_IRQ_MASKED. And IRQD_IRQ_MASKED will never be
-> set because .irq_mask is NULL. So the end result is that the IRQ is
-> never EOI'd and is masked permanently.
-I don't think we should use IRQCHIP_EOI_THREADED because it makes the
-IRQ path complex, we need to let the driver separate their "handler" &
-"thread_fn" properly.
-
-How do you think?
-
->
-> If you set .flags = IRQCHIP_EOI_THREADED, and additionally set .irq_mask
-> and .irq_unmask to a dummy function that does nothing, the IRQ core will
-> properly set/unset IRQD_IRQ_MASKED, and the IRQs will flow as expected.
-> But adding dummy functions seems not so ideal, so I am not sure if this
-> is the best solution.
-It's ununderstandable, we need to find a way.
-
-Thx for the test & the question.
-
->
-> Regards,
-> Samuel
->
-> > +};
-> > +
-> > +static struct irq_chip *def_plic_chip = &sifive_plic_chip;
-> > +
-> >  static int plic_irqdomain_map(struct irq_domain *d, unsigned int irq,
-> >                             irq_hw_number_t hwirq)
-> >  {
-> >       struct plic_priv *priv = d->host_data;
-> >
-> > -     irq_domain_set_info(d, irq, hwirq, &plic_chip, d->host_data,
-> > +     irq_domain_set_info(d, irq, hwirq, def_plic_chip, d->host_data,
-> >                           handle_fasteoi_irq, NULL, NULL);
-> >       irq_set_noprobe(irq);
-> >       irq_set_affinity(irq, &priv->lmask);
-> > @@ -390,5 +410,15 @@ static int __init plic_init(struct device_node *node,
-> >       return error;
-> >  }
-> >
-> > +static int __init thead_c900_plic_init(struct device_node *node,
-> > +             struct device_node *parent)
-> > +{
-> > +     def_plic_chip = &thead_plic_chip;
-> > +
-> > +     return plic_init(node, parent);
-> > +}
-> > +
-> >  IRQCHIP_DECLARE(sifive_plic, "sifive,plic-1.0.0", plic_init);
-> >  IRQCHIP_DECLARE(riscv_plic0, "riscv,plic0", plic_init); /* for legacy systems */
-> > +IRQCHIP_DECLARE(thead_c900_plic, "thead,c900-plic", thead_c900_plic_init);
-> > +IRQCHIP_DECLARE(allwinner_sun20i_d1_plic, "allwinner,sun20i-d1-plic", thead_c900_plic_init);
-> >
->
 
 
--- 
-Best Regards
- Guo Ren
+On 18/10/21 7:24 am, Wan Jiabing wrote:
+> Fix following coccicheck warning:
+> ./arch/powerpc/kexec/file_load_64.c:698:1-22: WARNING: Function
+> for_each_node_by_type should have of_node_put() before goto
+> 
+> Early exits from for_each_node_by_type should decrement the
+> node reference counter.
+> 
+> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
 
-ML: https://lore.kernel.org/linux-csky/
+Thanks for fixing this!
+
+Acked-by: Hari Bathini <hbathini@linux.ibm.com>
+
+> ---
+>   arch/powerpc/kexec/file_load_64.c | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/powerpc/kexec/file_load_64.c b/arch/powerpc/kexec/file_load_64.c
+> index 5056e175ca2c..b4981b651d9a 100644
+> --- a/arch/powerpc/kexec/file_load_64.c
+> +++ b/arch/powerpc/kexec/file_load_64.c
+> @@ -700,6 +700,7 @@ static int update_usable_mem_fdt(void *fdt, struct crash_mem *usable_mem)
+>   		if (ret) {
+>   			pr_err("Failed to set linux,usable-memory property for %s node",
+>   			       dn->full_name);
+> +			of_node_put(dn);
+>   			goto out;
+>   		}
+>   	}
+> 
