@@ -2,128 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F129A431655
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 12:42:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C637443165B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 12:43:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231143AbhJRKo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 06:44:29 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:55780 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230495AbhJRKoZ (ORCPT
+        id S230499AbhJRKpp convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 18 Oct 2021 06:45:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52152 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229653AbhJRKpo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 06:44:25 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 979F921A6F;
-        Mon, 18 Oct 2021 10:42:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1634553733; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=J9Pdzba2rTGf3Fzk/4LtwMGM6jtKJ5A/oT6ACRgzSOA=;
-        b=rsC61MYb2caCdT2b8LX1W4Hw4TlvW95iZUFmGeQ8GrxyREcJk+LVhF9IDjrCctmCjJ/3lu
-        bQ5HbSxlCQjuTO7uh8wAueHm5qjv0owOulfWnnNJbASRRR/Bv3MCsYzwbO4NN+OJMpLyA+
-        iYtCWXLmfx0wVV48AcX4QbstcFMRUqI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1634553733;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=J9Pdzba2rTGf3Fzk/4LtwMGM6jtKJ5A/oT6ACRgzSOA=;
-        b=+IXDTNFuKjXTsiEBhKT9pBIODKCtSKZVcu8QREeVdnethyPDnC2HvWMTwH364RRbOk4+Fu
-        xQZ5t+zYlv3xAQAw==
-Received: from quack2.suse.cz (unknown [10.100.200.198])
-        by relay2.suse.de (Postfix) with ESMTP id 83678A3B83;
-        Mon, 18 Oct 2021 10:42:13 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 52A011E0875; Mon, 18 Oct 2021 12:42:13 +0200 (CEST)
-Date:   Mon, 18 Oct 2021 12:42:13 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     syzbot <syzbot+6fc7fb214625d82af7d1@syzkaller.appspotmail.com>
-Cc:     bingjingc@synology.com, cccheng@synology.com, jack@suse.cz,
-        linux-kernel@vger.kernel.org, pali@kernel.org,
-        robbieko@synology.com, syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] KASAN: use-after-free Read in __isofs_iget
-Message-ID: <20211018104213.GD29715@quack2.suse.cz>
-References: <00000000000081a7bc05ce6d7c7a@google.com>
+        Mon, 18 Oct 2021 06:45:44 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 300EBC06161C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 03:43:33 -0700 (PDT)
+Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1mcQ73-0002kW-4N; Mon, 18 Oct 2021 12:43:25 +0200
+Received: from pza by lupine with local (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1mcQ72-0006Cg-PW; Mon, 18 Oct 2021 12:43:24 +0200
+Message-ID: <0b319e9a397d3c8299761a65393a69b0a45be22b.camel@pengutronix.de>
+Subject: Re: [PATCH v3 2/2] reset: mchp: sparx5: Extend support for lan966x
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     Horatiu Vultur <horatiu.vultur@microchip.com>
+Cc:     robh+dt@kernel.org, andrew@lunn.ch, lars.povlsen@microchip.com,
+        Steen.Hegelund@microchip.com, UNGLinuxDriver@microchip.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Date:   Mon, 18 Oct 2021 12:43:24 +0200
+In-Reply-To: <20211014154000.jxnzeq6lnlkmnxzf@soft-dev3-1.localhost>
+References: <20211013073807.2282230-1-horatiu.vultur@microchip.com>
+         <20211013073807.2282230-3-horatiu.vultur@microchip.com>
+         <8241fb1053df3583d9f4f0698907038c8f4ac769.camel@pengutronix.de>
+         <20211014154000.jxnzeq6lnlkmnxzf@soft-dev3-1.localhost>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.30.5-1.1 
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="C7zPtVaVf+AK4Oqc"
-Content-Disposition: inline
-In-Reply-To: <00000000000081a7bc05ce6d7c7a@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---C7zPtVaVf+AK4Oqc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri 15-10-21 17:35:19, syzbot wrote:
-> Hello,
+On Thu, 2021-10-14 at 17:40 +0200, Horatiu Vultur wrote:
 > 
-> syzbot found the following issue on:
+> > > +      */
+> > > +     err = mchp_sparx5_map_syscon(pdev, "cuphy-syscon", &ctx->cuphy_ctrl);
+> > > +     if (err && err != -ENODEV)
+> > > +             return err;
+> > 
+> > So -ENODEV should return an error if .cuphy_reg is set?
 > 
-> HEAD commit:    d3134eb5de85 Add linux-next specific files for 20211011
-> git tree:       linux-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=13f5fd98b00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=b9662326d2be383b
-> dashboard link: https://syzkaller.appspot.com/bug?extid=6fc7fb214625d82af7d1
-> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15ca2e47300000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17869bd4b00000
-> 
-> Bisection is inconclusive: the issue happens on the oldest tested release.
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10808570b00000
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=12808570b00000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=14808570b00000
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+6fc7fb214625d82af7d1@syzkaller.appspotmail.com
+> I am not sure I follow this.
+> If cuphy-syscon is not set then mchp_sparx5_map_syscon will return
+> -ENODEV. This can be ignored for sparx5 as this is not required.
+> If cuphy-syscon is set then if mchp_sparx5_map_syscon returns an error
+> then report this error.
 
-Let's try this:
+My point was that in case of cuphy-syscon missing from the DT, the
+lan966x compatible reset controller should probably throw the error
+instead of ignoring it. With v4 this is not relevant any more.
 
-#sys test 519d81956ee277b4419c723adfb154603c2565ba
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
-
---C7zPtVaVf+AK4Oqc
-Content-Type: text/x-patch; charset=us-ascii
-Content-Disposition: attachment; filename="0001-isofs-Fix-out-of-bound-access-for-corrupted-isofs-im.patch"
-
-From 5d06a4f26133fa8d45254febce7a46085e998ee7 Mon Sep 17 00:00:00 2001
-From: Jan Kara <jack@suse.cz>
-Date: Mon, 18 Oct 2021 12:37:41 +0200
-Subject: [PATCH] isofs: Fix out of bound access for corrupted isofs image
-
-When isofs image is suitably corrupted isofs_read_inode() can read data
-beyond the end of buffer. Sanity-check the directory entry length before
-using it.
-
-Signed-off-by: Jan Kara <jack@suse.cz>
----
- fs/isofs/inode.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/fs/isofs/inode.c b/fs/isofs/inode.c
-index 678e2c51b855..0c6eacfcbeef 100644
---- a/fs/isofs/inode.c
-+++ b/fs/isofs/inode.c
-@@ -1322,6 +1322,8 @@ static int isofs_read_inode(struct inode *inode, int relocated)
- 
- 	de = (struct iso_directory_record *) (bh->b_data + offset);
- 	de_len = *(unsigned char *) de;
-+	if (de_len < sizeof(struct iso_directory_record))
-+		goto fail;
- 
- 	if (offset + de_len > bufsize) {
- 		int frag1 = bufsize - offset;
--- 
-2.26.2
-
-
---C7zPtVaVf+AK4Oqc--
+regards
+Philipp
