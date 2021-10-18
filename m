@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38624431B2D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:29:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 625EB431E88
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 16:00:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232238AbhJRNbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:31:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42496 "EHLO mail.kernel.org"
+        id S232792AbhJROCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 10:02:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37454 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232165AbhJRN3f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:29:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 29C62610C7;
-        Mon, 18 Oct 2021 13:27:24 +0000 (UTC)
+        id S234191AbhJRN75 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:59:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A9CF1603E9;
+        Mon, 18 Oct 2021 13:42:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634563644;
-        bh=DkzIO5A03SRxsi4IHh9zWKcpfsQxM/uye2P9HevFwXU=;
+        s=korg; t=1634564526;
+        bh=mXKmmQQCAwxfe5g1ACkZxK1Zh9Ex5U2kSAAveCaiuM4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qqMpIbT8iN6KJlSio25UShc9HT6GIzW1AdxYrY7Iaed3aqG4i4ZWnrBNZ7FGPwMZ5
-         fE2P4KXI4PbpbgycJ+wd0c1BX0di75zE+WbZ/cwMHHda6km1rYQP7+se+mVTolt0Jo
-         uL9Eh6yCbfFvmUTSjksKyWMOLcZ1rMQURhISEYFY=
+        b=Yb2s3Z323ZcXkptS+CKnB5D0tUA8MnCzekZ//A9r0BUmvEklf0cjmfKwgoBNR4v5M
+         FaN/GqLFF/hzw7gHEvVrgEwk3zcCaC6LJpCdq6RL/llJ2G+gk0P3gmZG7KEzJfXdx9
+         HRogGgoiyC1lCxMqoDC6TSgvMhEsg9WoyYZhGRGc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Rob Clark <robdclark@chromium.org>
-Subject: [PATCH 4.14 35/39] drm/msm: Fix null pointer dereference on pointer edp
+        stable@vger.kernel.org, Aya Levin <ayal@nvidia.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Moshe Shemesh <moshe@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>
+Subject: [PATCH 5.14 105/151] net/mlx5e: Mutually exclude RX-FCS and RX-port-timestamp
 Date:   Mon, 18 Oct 2021 15:24:44 +0200
-Message-Id: <20211018132326.564088049@linuxfoundation.org>
+Message-Id: <20211018132344.093391591@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132325.426739023@linuxfoundation.org>
-References: <20211018132325.426739023@linuxfoundation.org>
+In-Reply-To: <20211018132340.682786018@linuxfoundation.org>
+References: <20211018132340.682786018@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,44 +41,129 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Aya Levin <ayal@nvidia.com>
 
-commit 2133c4fc8e1348dcb752f267a143fe2254613b34 upstream.
+commit 0bc73ad46a76ed6ece4dcacb28858e7b38561e1c upstream.
 
-The initialization of pointer dev dereferences pointer edp before
-edp is null checked, so there is a potential null pointer deference
-issue. Fix this by only dereferencing edp after edp has been null
-checked.
+Due to current HW arch limitations, RX-FCS (scattering FCS frame field
+to software) and RX-port-timestamp (improved timestamp accuracy on the
+receive side) can't work together.
+RX-port-timestamp is not controlled by the user and it is enabled by
+default when supported by the HW/FW.
+This patch sets RX-port-timestamp opposite to RX-FCS configuration.
 
-Addresses-Coverity: ("Dereference before null check")
-Fixes: ab5b0107ccf3 ("drm/msm: Initial add eDP support in msm drm driver (v5)")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Link: https://lore.kernel.org/r/20210929121857.213922-1-colin.king@canonical.com
-Signed-off-by: Rob Clark <robdclark@chromium.org>
+Fixes: 102722fc6832 ("net/mlx5e: Add support for RXFCS feature flag")
+Signed-off-by: Aya Levin <ayal@nvidia.com>
+Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
+Reviewed-by: Moshe Shemesh <moshe@nvidia.com>
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/msm/edp/edp_ctrl.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/mellanox/mlx5/core/en_main.c |   57 ++++++++++++++++++++--
+ include/linux/mlx5/mlx5_ifc.h                     |   10 +++
+ 2 files changed, 60 insertions(+), 7 deletions(-)
 
---- a/drivers/gpu/drm/msm/edp/edp_ctrl.c
-+++ b/drivers/gpu/drm/msm/edp/edp_ctrl.c
-@@ -1090,7 +1090,7 @@ void msm_edp_ctrl_power(struct edp_ctrl
- int msm_edp_ctrl_init(struct msm_edp *edp)
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+@@ -3724,20 +3724,67 @@ static int set_feature_rx_all(struct net
+ 	return mlx5_set_port_fcs(mdev, !enable);
+ }
+ 
++static int mlx5e_set_rx_port_ts(struct mlx5_core_dev *mdev, bool enable)
++{
++	u32 in[MLX5_ST_SZ_DW(pcmr_reg)] = {};
++	bool supported, curr_state;
++	int err;
++
++	if (!MLX5_CAP_GEN(mdev, ports_check))
++		return 0;
++
++	err = mlx5_query_ports_check(mdev, in, sizeof(in));
++	if (err)
++		return err;
++
++	supported = MLX5_GET(pcmr_reg, in, rx_ts_over_crc_cap);
++	curr_state = MLX5_GET(pcmr_reg, in, rx_ts_over_crc);
++
++	if (!supported || enable == curr_state)
++		return 0;
++
++	MLX5_SET(pcmr_reg, in, local_port, 1);
++	MLX5_SET(pcmr_reg, in, rx_ts_over_crc, enable);
++
++	return mlx5_set_ports_check(mdev, in, sizeof(in));
++}
++
+ static int set_feature_rx_fcs(struct net_device *netdev, bool enable)
  {
- 	struct edp_ctrl *ctrl = NULL;
--	struct device *dev = &edp->pdev->dev;
-+	struct device *dev;
- 	int ret;
+ 	struct mlx5e_priv *priv = netdev_priv(netdev);
++	struct mlx5e_channels *chs = &priv->channels;
++	struct mlx5_core_dev *mdev = priv->mdev;
+ 	int err;
  
- 	if (!edp) {
-@@ -1098,6 +1098,7 @@ int msm_edp_ctrl_init(struct msm_edp *ed
- 		return -EINVAL;
- 	}
+ 	mutex_lock(&priv->state_lock);
  
-+	dev = &edp->pdev->dev;
- 	ctrl = devm_kzalloc(dev, sizeof(*ctrl), GFP_KERNEL);
- 	if (!ctrl)
- 		return -ENOMEM;
+-	priv->channels.params.scatter_fcs_en = enable;
+-	err = mlx5e_modify_channels_scatter_fcs(&priv->channels, enable);
+-	if (err)
+-		priv->channels.params.scatter_fcs_en = !enable;
++	if (enable) {
++		err = mlx5e_set_rx_port_ts(mdev, false);
++		if (err)
++			goto out;
++
++		chs->params.scatter_fcs_en = true;
++		err = mlx5e_modify_channels_scatter_fcs(chs, true);
++		if (err) {
++			chs->params.scatter_fcs_en = false;
++			mlx5e_set_rx_port_ts(mdev, true);
++		}
++	} else {
++		chs->params.scatter_fcs_en = false;
++		err = mlx5e_modify_channels_scatter_fcs(chs, false);
++		if (err) {
++			chs->params.scatter_fcs_en = true;
++			goto out;
++		}
++		err = mlx5e_set_rx_port_ts(mdev, true);
++		if (err) {
++			mlx5_core_warn(mdev, "Failed to set RX port timestamp %d\n", err);
++			err = 0;
++		}
++	}
+ 
++out:
+ 	mutex_unlock(&priv->state_lock);
+-
+ 	return err;
+ }
+ 
+--- a/include/linux/mlx5/mlx5_ifc.h
++++ b/include/linux/mlx5/mlx5_ifc.h
+@@ -9467,16 +9467,22 @@ struct mlx5_ifc_pcmr_reg_bits {
+ 	u8         reserved_at_0[0x8];
+ 	u8         local_port[0x8];
+ 	u8         reserved_at_10[0x10];
++
+ 	u8         entropy_force_cap[0x1];
+ 	u8         entropy_calc_cap[0x1];
+ 	u8         entropy_gre_calc_cap[0x1];
+-	u8         reserved_at_23[0x1b];
++	u8         reserved_at_23[0xf];
++	u8         rx_ts_over_crc_cap[0x1];
++	u8         reserved_at_33[0xb];
+ 	u8         fcs_cap[0x1];
+ 	u8         reserved_at_3f[0x1];
++
+ 	u8         entropy_force[0x1];
+ 	u8         entropy_calc[0x1];
+ 	u8         entropy_gre_calc[0x1];
+-	u8         reserved_at_43[0x1b];
++	u8         reserved_at_43[0xf];
++	u8         rx_ts_over_crc[0x1];
++	u8         reserved_at_53[0xb];
+ 	u8         fcs_chk[0x1];
+ 	u8         reserved_at_5f[0x1];
+ };
 
 
