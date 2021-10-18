@@ -2,93 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2A0F432700
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 21:03:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94D16432711
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 21:06:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232048AbhJRTFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 15:05:09 -0400
-Received: from mga04.intel.com ([192.55.52.120]:22880 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231234AbhJRTFI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 15:05:08 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10141"; a="227111594"
-X-IronPort-AV: E=Sophos;i="5.85,382,1624345200"; 
-   d="scan'208";a="227111594"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2021 12:02:27 -0700
-X-IronPort-AV: E=Sophos;i="5.85,382,1624345200"; 
-   d="scan'208";a="566192249"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.72.159])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2021 12:02:23 -0700
-Received: from andy by smile with local (Exim 4.95)
-        (envelope-from <andy.shevchenko@gmail.com>)
-        id 1mcXtc-000IvV-Jz;
-        Mon, 18 Oct 2021 22:02:04 +0300
-Date:   Mon, 18 Oct 2021 22:02:04 +0300
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-To:     Maxim Levitsky <maximlevitsky@gmail.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        linux-realtek-soc@lists.infradead.org,
-        Oder Chiou <oder_chiou@realtek.com>,
-        Ping-Ke Shih <pkshih@realtek.com>, nic_swsd@realtek.com,
-        Derek Fang <derek.fang@realtek.com>,
-        Hayes Wang <hayeswang@realtek.com>,
-        Kailang Yang <kailang@realtek.com>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        LKML <linux-kernel@vger.kernel.org>, info@ayaneo.com
-Subject: Re: BMI160 accelerometer on AyaNeo tablet
-Message-ID: <YW3ErLKGtmyhSFd3@smile.fi.intel.com>
-References: <CACAwPwb7edLzX-KO1XVNWuQ3w=U0BfA=_kwiGCjZOpKfZpc2pw@mail.gmail.com>
- <CACAwPwYQHRcrabw9=0tvenPzAcwwW1pTaR6a+AEWBF9Hqf_wXQ@mail.gmail.com>
- <CAHp75VcEZ19zUU-Ps=kAYJDX1bkxmOqmHii36HE2ujC3gROkNQ@mail.gmail.com>
- <CACAwPwaj_ekK6j9S4CRu6tRTPyjffgDhL3UFnhoYSyJSkAkmpw@mail.gmail.com>
+        id S232181AbhJRTIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 15:08:35 -0400
+Received: from mail-oi1-f177.google.com ([209.85.167.177]:33727 "EHLO
+        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229924AbhJRTId (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 15:08:33 -0400
+Received: by mail-oi1-f177.google.com with SMTP id q129so1253751oib.0;
+        Mon, 18 Oct 2021 12:06:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0I1DAhQIKT4b0pGsLrOdgZbYNlOKF2oGK8nCiwpxq/4=;
+        b=TJp3avwpDQloYnKny63dI1DULFzFi+eyD+wpLPqfXPVQoV2SLZ4fcu14vvNG5jI969
+         q7tajBvKuehQF2+sATQKD3O0a+hpSLc0ELGVbYiwzcHFHmzKwXv21K0pn0HLgIDkcVE7
+         LJHB9hFwBdGqNwCRW/uc8vbafABTkaIAQhCNyn6dNSYxd2lg55S1VY5sVzjWDB1bbTls
+         CRAil+DmfwhWSet3vD4Wf9v/TxoJvfWkDIdiwgu1/ykurt72B7nQBR6aQlmkFobzf93j
+         qrVy/GwdutuFlByUi7j7JJSBuygD/Sv0b6Si57kdAoC7NWhhqjyFKaHe+7cHJhrsLBn1
+         0UsA==
+X-Gm-Message-State: AOAM531lKd0N47E51M4ajv6EGV+WPKLQzAyhGeZwp6QtrY2bYeX4/CYG
+        I6m1uKN1wzqUP+88cYJnag==
+X-Google-Smtp-Source: ABdhPJwysvwj0Ekaq9rEf6Tx2wem4iU1C46ZVkUTn+PlkM6hNg8/as7TKlmiuZlTtK9UDjucgY2cVw==
+X-Received: by 2002:aca:d6d2:: with SMTP id n201mr554420oig.120.1634583981928;
+        Mon, 18 Oct 2021 12:06:21 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id bp21sm3065315oib.31.2021.10.18.12.06.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Oct 2021 12:06:21 -0700 (PDT)
+Received: (nullmailer pid 2767853 invoked by uid 1000);
+        Mon, 18 Oct 2021 19:06:19 -0000
+Date:   Mon, 18 Oct 2021 14:06:19 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     alexandru.tachici@analog.com
+Cc:     andrew@lunn.ch, o.rempel@pengutronix.de, davem@davemloft.net,
+        devicetree@vger.kernel.org, hkallweit1@gmail.com, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux@armlinux.org.uk,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH v3 7/8] dt-bindings: net: phy: Add 10-baseT1L 2.4 Vpp
+Message-ID: <YW3Fq7WMSB+TL2u4@robh.at.kernel.org>
+References: <20211011142215.9013-1-alexandru.tachici@analog.com>
+ <20211011142215.9013-8-alexandru.tachici@analog.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CACAwPwaj_ekK6j9S4CRu6tRTPyjffgDhL3UFnhoYSyJSkAkmpw@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20211011142215.9013-8-alexandru.tachici@analog.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 18, 2021 at 09:02:40PM +0300, Maxim Levitsky wrote:
-> I also suspect a mistake from the hardware vendors.
+On Mon, Oct 11, 2021 at 05:22:14PM +0300, alexandru.tachici@analog.com wrote:
+> From: Alexandru Tachici <alexandru.tachici@analog.com>
 > 
-> I attached all DSDT decompiled, which shows that they indeed use that
-> ID, and I also attached the windows driver .INF which was published on
-> their website  with the driver (https://www.ayaneo.com/downloads)
+> Add a tristate property to advertise desired transmit level.
 > 
-> They are a small startup so they might have used the realtek ID by mistake.
-> I added them to the CC.
+> If the device supports the 2.4 Vpp operating mode for 10BASE-T1L,
+> as defined in 802.3gc, and the 2.4 Vpp transmit voltage operation
+> is desired, property should be set to 1. This property is used
+> to select whether Auto-Negotiation advertises a request to
+> operate the 10BASE-T1L PHY in increased transmit level mode.
+> 
+> If property is set to 1, the PHY shall advertise a request
+> to operate the 10BASE-T1L PHY in increased transmit level mode.
+> If property is set to zero, the PHY shall not advertise
+> a request to operate the 10BASE-T1L PHY in increased transmit level mode.
+> 
+> Signed-off-by: Alexandru Tachici <alexandru.tachici@analog.com>
+> ---
+>  Documentation/devicetree/bindings/net/ethernet-phy.yaml | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/net/ethernet-phy.yaml b/Documentation/devicetree/bindings/net/ethernet-phy.yaml
+> index 2766fe45bb98..2bb3a96612a2 100644
+> --- a/Documentation/devicetree/bindings/net/ethernet-phy.yaml
+> +++ b/Documentation/devicetree/bindings/net/ethernet-phy.yaml
+> @@ -77,6 +77,15 @@ properties:
+>      description:
+>        Maximum PHY supported speed in Mbits / seconds.
+>  
+> +  an-10base-t1l-2.4vpp:
 
-Thank you for sharing. Seems they indeed used (deliberately or not) the wrong
-ID. So there are questions I have:
-- Is the firmware available in the wild?
-- Do they plan to update firmware to fix this?
-- Can we make sure that guys got their mistake and will be more careful
-  in the future?
+What does 'an' mean?
 
-Realtek probably should make this ID marked somehow broken and not use
-in their products in case the answer to the first of the above question
-is "yes". (Of course in case the ID will be used for solely PCI enumerated
-product there will be no conflict, I just propose to be on the safest side,
-but remark should be made somewhere).
+> +    description: |
+> +      tristate, request/disable 2.4 Vpp operating mode. The values are:
+> +      0: Disable 2.4 Vpp operating mode.
+> +      1: Request 2.4 Vpp operating mode from link partner.
+> +      Absence of this property will leave configuration to default values.
+> +    $ref: "/schemas/types.yaml#/definitions/uint32"
+> +    enum: [0, 1]
 
-> BTW, I also notice a rotation matrix embedded in DSTD, but the linux's
-> BMI160 driver doesn't recognize it.
+What happened to this one doing the same thing?:
 
-This is done by the commit 8a0672003421 ("iio: accel: bmc150: Get
-mount-matrix from ACPI") which needs to be amended to take care about
-more devices, somewhere in drivers/iio/industialio-acpi.c ? Jonathan,
-Hans, what do you think?
-
-P.S. As I said, the commit message and the code (in the comments) should
-be very well elaborated and only accepted in case the firmware is already
-in the wild on the market.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+https://lore.kernel.org/lkml/20201117201555.26723-3-dmurphy@ti.com/
 
