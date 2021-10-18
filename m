@@ -2,173 +2,312 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E87743277D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 21:21:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 373CE432789
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 21:26:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232854AbhJRTXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 15:23:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60104 "EHLO
+        id S231894AbhJRT2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 15:28:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230159AbhJRTXl (ORCPT
+        with ESMTP id S229836AbhJRT2W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 15:23:41 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23FB0C06161C
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 12:21:30 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id r18so3381382edv.12
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 12:21:30 -0700 (PDT)
+        Mon, 18 Oct 2021 15:28:22 -0400
+Received: from mail-ua1-x931.google.com (mail-ua1-x931.google.com [IPv6:2607:f8b0:4864:20::931])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5CF3C06161C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 12:26:10 -0700 (PDT)
+Received: by mail-ua1-x931.google.com with SMTP id f4so2732443uad.4
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 12:26:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RFVgC2nTbZsJbOdA8XEIaDw30XWcWrdE6dI/+NoIrsw=;
-        b=NMzYBaYhhNx30kEwvF4Az8faCclg9hmx/4E7njB57F9EGavIVsMUc4T63TW5t9qQSU
-         lrh/j4PBi9YN9ql7ZH4b8+hPCOd/6451gZImx45sJCGw2qud67FueCriSC64nxE+6oFT
-         vkuaNosxOqQrePtP6ZgOClNUroQW1ZRJlUlzpv3EhyWiUzrPWGCTuJdShQo7lg/ISZb0
-         19a/jKvOb7sLqb+YoZ85eEErx2uOhysS6SeLX5Bt/wJAw04XEKDuNEbNVdMC8eD8gXmn
-         unXgqZJS2fLtCUlJRPL1jI/OHAF/T4NvUA618pPF2Qy6d9a34ajOwHTf8vFXATbqX7/F
-         2YAg==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=6q9mrYREhy1PS0zxwbz6IygpGUtwaBnRqvZjeZk381w=;
+        b=RY1BYPX+CGClIeAb+4/EKVV7QzBSx+Goqe566R5NqfrEOUXLrCu3Hvnnwy8XBJzh7e
+         B+MnaxDaPfX7pXad4XBu57TlLMefrNJhhxLhkMjGlBLK+niAN0Ga+dtgfjwgl0LGI4D3
+         1ge1AAMXAVjSWilE0IJVM3FkNYgJNtocaVt1qxbXll6EqU1GnydyY43QkZBdoqpNT6C3
+         qMg03sMNpNS4QGsD15wxRf28mNBFcRyiPsndOC3H8VZobuAntm94xG5+TAqfpp502e1+
+         f+80VEqwGwEpANSIuxnnFW6yd0jvI+Dy4rYwmwDBgHdKdtdbswNGa17beHlt5FfRXl0o
+         rKDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=RFVgC2nTbZsJbOdA8XEIaDw30XWcWrdE6dI/+NoIrsw=;
-        b=bg/8KOADlGNUeKaOXC7/47QHBhkTIBn3+qihu8PoMjRSjpBETicyBtHLEn9IC+lczs
-         R1V8aglUA4CzI1prOTgpWXYPWH+wFdq7KyQ9s7U2aKBJ7QdxWTkQ8uNNZIi9k0XFLim2
-         6URbtoElNx3wrGA0j1XTqZ68m1zNHZ7Xg5+71kdAhdYqTxk4S3XOmbH9Y9t050ZJh0RU
-         V6/zAD89NsdMNNyAU4LChcka/+Sj5E5dv7SGkHHIdDEUujS8mF2HNYuSjseCwsjpCDQl
-         JhjYUuKTgqUDFfUO4DR6L71KUgNcIz9Dka/aiU536ZroUq+JOGYIut15SheVCElKkrtt
-         yltw==
-X-Gm-Message-State: AOAM530cBPkEDTHPlV9xLLVb27082mudZuAlhnTdLHpzevrlBvafwgcC
-        x3FHj1ogHvLeTfCgcuzBEMUaK5IAvAw=
-X-Google-Smtp-Source: ABdhPJz8+6AN4HCVy3xIyRxnrmOVpQE4T1XjJA6vsFZuKo9+Ce07vCDtOY2JzdKTnJd2SQ+H/edPQA==
-X-Received: by 2002:aa7:ccc1:: with SMTP id y1mr47967896edt.177.1634584888711;
-        Mon, 18 Oct 2021 12:21:28 -0700 (PDT)
-Received: from tom-desktop.station (net-188-153-110-208.cust.vodafonedsl.it. [188.153.110.208])
-        by smtp.gmail.com with ESMTPSA id j3sm9101291ejy.65.2021.10.18.12.21.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 12:21:28 -0700 (PDT)
-From:   Tommaso Merciai <tomm.merciai@gmail.com>
-Cc:     tomm.merciai@gmail.com, Forest Bond <forest@alittletooquiet.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Marcos Antonio de Jesus Filho <mdejesusfilho@gmail.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Lucas Henneman <lucas.henneman@linaro.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] staging: vt6655: fix camelcase byData in card.c
-Date:   Mon, 18 Oct 2021 21:21:22 +0200
-Message-Id: <20211018192124.8738-1-tomm.merciai@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        bh=6q9mrYREhy1PS0zxwbz6IygpGUtwaBnRqvZjeZk381w=;
+        b=VH357+TgkjoB9cxV59aOKpwznmgYAPKv9bwQD6iG3ODOFnErjEbcy0umCDrwVk/HDO
+         uim/SHMebUhlb6E6wPXePmlu8tmgHu6tJPQILLya6nAIT0UTZG5Sls6dZN5qje96d780
+         V95qpA0Gs95A64cvcN/flbnKYncSYT6kW2M0LlrKSt63rwNDkypVOyEm/yR9O0rCt8g8
+         Xy+JjEBM01AcFM16rpC+RyCN98trajyVBhNqZwJw1/bMxf1s7gJfJZRwO6F52zMYrQZX
+         qKP8W4VcAoo+Ux71qXfcZOn+3bF18PwbzGEXqw8dDBrz7/VSSQ8WZOePueWqCsicYs+4
+         pVxQ==
+X-Gm-Message-State: AOAM533p9zs8CcHIqm0KkevbcmvG5B6eE0yPo/CYLX/FR/ba58EFqmxy
+        o2amLOYB9xwbZC+0lgz3EyI=
+X-Google-Smtp-Source: ABdhPJwQr9j8xnumy0Lb0UXlWqho1sFEyszT/pmlUflLpUXCEybORWiM8jx9B3HdIg4ppQ18QhAw5Q==
+X-Received: by 2002:a67:d504:: with SMTP id l4mr29712049vsj.42.1634585169691;
+        Mon, 18 Oct 2021 12:26:09 -0700 (PDT)
+Received: from ?IPv6:2804:431:c7f4:b20b:2ce0:3c04:a56a:40cc? ([2804:431:c7f4:b20b:2ce0:3c04:a56a:40cc])
+        by smtp.gmail.com with ESMTPSA id x21sm9571007uao.2.2021.10.18.12.26.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Oct 2021 12:26:09 -0700 (PDT)
+Subject: Re: [PATCH 6/6] drm: vkms: Refactor the plane composer to accept new
+ formats
+To:     Pekka Paalanen <ppaalanen@gmail.com>
+Cc:     rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com,
+        hamohammed.sa@gmail.com, daniel@ffwll.ch, airlied@linux.ie,
+        contact@emersion.fr, leandro.ribeiro@collabora.com,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        lkcamp@lists.libreplanetbr.org
+References: <20211005201637.58563-1-igormtorrente@gmail.com>
+ <20211005201637.58563-7-igormtorrente@gmail.com>
+ <20211018113009.5519457c@eldfell>
+From:   Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
+Message-ID: <d5f92494-9c55-2b7d-6107-6048abb41759@gmail.com>
+Date:   Mon, 18 Oct 2021 16:26:06 -0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+In-Reply-To: <20211018113009.5519457c@eldfell>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace camelcase variable "byData" into linux kernel coding style
-equivalent variable "data" in card.c.
-"by" prefix in hungarian notation stands for byte or unsigned char
+Hi Pekka,
 
-References:
- - https://www.cse.iitk.ac.in/users/dsrkg/cs245/html/Guide.htm
- - https://www.kernel.org/doc/html/v4.10/process/coding-style.html
+On 10/18/21 5:30 AM, Pekka Paalanen wrote:
+> On Tue,  5 Oct 2021 17:16:37 -0300
+> Igor Matheus Andrade Torrente <igormtorrente@gmail.com> wrote:
+> 
+>> Currently the blend function only accepts XRGB_8888 and ARGB_8888
+>> as a color input.
+>>
+>> This patch refactors all the functions related to the plane composition
+>> to overcome this limitation.
+>>
+>> Now the blend function receives a format handler to each plane and a
+>> blend function pointer. It will take two ARGB_1616161616 pixels, one
+>> for each handler, and will use the blend function to calculate and
+>> store the final color in the output buffer.
+>>
+>> These format handlers will receive the `vkms_composer` and a pair of
+>> coordinates. And they should return the respective pixel in the
+>> ARGB_16161616 format.
+>>
+>> The blend function will receive two ARGB_16161616 pixels, x, y, and
+>> the vkms_composer of the output buffer. The method should perform the
+>> blend operation and store output to the format aforementioned
+>> ARGB_16161616.
+> 
+> Hi,
+> 
+> here are some drive-by comments which you are free to take or leave.
+> 
+> To find more efficient ways to do this, you might want research Pixman
+> library. It's MIT licensed.
+> 
+> IIRC, the elementary operations there operate on pixel lines (pointer +
+> length), not individual pixels (image, x, y). Input conversion function
+> reads and converts a whole line a time. Blending function blends two
+> lines and writes the output into back one of the lines. Output
+> conversion function takes a line and converts it into destination
+> buffer. That way the elementary operations do not need to take stride
+> into account, and blending does not need to deal with varying memory
+> alignment FWIW. The inner loops involve much less function calls and
+> state, probably.
 
-Signed-off-by: Tommaso Merciai <tomm.merciai@gmail.com>
----
-Changes since v1:
- - Make the commit body message more clearer
+I was doing some rudimentary profiling, and I noticed that the code 
+spends most of the time with the indirect system call overhead and not 
+the actual computation. This can definitively help with it.
 
- drivers/staging/vt6655/card.c | 32 ++++++++++++++++----------------
- 1 file changed, 16 insertions(+), 16 deletions(-)
+> 
+> Pixman may not do exactly this, but it does something very similar.
+> Pixman also has multiple different levels of optimisations, which may
+> not be necessary for VKMS.
+> 
+> It's a trade-off between speed and temporary memory consumed. You need
+> temporary buffers for two lines, but not more (not a whole image in
+> full intermediate precision). Further optimisation could determine
+> whether to process whole image rows as lines, or split a row into
+> multiple lines to stay within CPU cache size.
+> 
 
-diff --git a/drivers/staging/vt6655/card.c b/drivers/staging/vt6655/card.c
-index 26e08fec6e6a..fac2d0566d2e 100644
---- a/drivers/staging/vt6655/card.c
-+++ b/drivers/staging/vt6655/card.c
-@@ -183,7 +183,7 @@ bool CARDbSetPhyParameter(struct vnt_private *priv, u8 bb_type)
- 	unsigned char bySlot = 0;
- 	unsigned char bySIFS = 0;
- 	unsigned char byDIFS = 0;
--	unsigned char byData;
-+	unsigned char data;
- 	int i;
- 
- 	/* Set SIFS, DIFS, EIFS, SlotTime, CwMin */
-@@ -194,15 +194,15 @@ bool CARDbSetPhyParameter(struct vnt_private *priv, u8 bb_type)
- 			priv->abyBBVGA[0] = 0x20;
- 			priv->abyBBVGA[2] = 0x10;
- 			priv->abyBBVGA[3] = 0x10;
--			bb_read_embedded(priv, 0xE7, &byData);
--			if (byData == 0x1C)
-+			bb_read_embedded(priv, 0xE7, &data);
-+			if (data == 0x1C)
- 				bb_write_embedded(priv, 0xE7, priv->abyBBVGA[0]);
- 
- 		} else if (priv->byRFType == RF_UW2452) {
- 			MACvSetBBType(priv->port_offset, BB_TYPE_11A);
- 			priv->abyBBVGA[0] = 0x18;
--			bb_read_embedded(priv, 0xE7, &byData);
--			if (byData == 0x14) {
-+			bb_read_embedded(priv, 0xE7, &data);
-+			if (data == 0x14) {
- 				bb_write_embedded(priv, 0xE7, priv->abyBBVGA[0]);
- 				bb_write_embedded(priv, 0xE1, 0x57);
- 			}
-@@ -220,14 +220,14 @@ bool CARDbSetPhyParameter(struct vnt_private *priv, u8 bb_type)
- 			priv->abyBBVGA[0] = 0x1C;
- 			priv->abyBBVGA[2] = 0x00;
- 			priv->abyBBVGA[3] = 0x00;
--			bb_read_embedded(priv, 0xE7, &byData);
--			if (byData == 0x20)
-+			bb_read_embedded(priv, 0xE7, &data);
-+			if (data == 0x20)
- 				bb_write_embedded(priv, 0xE7, priv->abyBBVGA[0]);
- 
- 		} else if (priv->byRFType == RF_UW2452) {
- 			priv->abyBBVGA[0] = 0x14;
--			bb_read_embedded(priv, 0xE7, &byData);
--			if (byData == 0x18) {
-+			bb_read_embedded(priv, 0xE7, &data);
-+			if (data == 0x18) {
- 				bb_write_embedded(priv, 0xE7, priv->abyBBVGA[0]);
- 				bb_write_embedded(priv, 0xE1, 0xD3);
- 			}
-@@ -243,14 +243,14 @@ bool CARDbSetPhyParameter(struct vnt_private *priv, u8 bb_type)
- 			priv->abyBBVGA[0] = 0x1C;
- 			priv->abyBBVGA[2] = 0x00;
- 			priv->abyBBVGA[3] = 0x00;
--			bb_read_embedded(priv, 0xE7, &byData);
--			if (byData == 0x20)
-+			bb_read_embedded(priv, 0xE7, &data);
-+			if (data == 0x20)
- 				bb_write_embedded(priv, 0xE7, priv->abyBBVGA[0]);
- 
- 		} else if (priv->byRFType == RF_UW2452) {
- 			priv->abyBBVGA[0] = 0x14;
--			bb_read_embedded(priv, 0xE7, &byData);
--			if (byData == 0x18) {
-+			bb_read_embedded(priv, 0xE7, &data);
-+			if (data == 0x18) {
- 				bb_write_embedded(priv, 0xE7, priv->abyBBVGA[0]);
- 				bb_write_embedded(priv, 0xE1, 0xD3);
- 			}
-@@ -798,12 +798,12 @@ bool CARDbGetCurrentTSF(struct vnt_private *priv, u64 *pqwCurrTSF)
- {
- 	void __iomem *iobase = priv->port_offset;
- 	unsigned short ww;
--	unsigned char byData;
-+	unsigned char data;
- 
- 	MACvRegBitsOn(iobase, MAC_REG_TFTCTL, TFTCTL_TSFCNTRRD);
- 	for (ww = 0; ww < W_MAX_TIMEOUT; ww++) {
--		VNSvInPortB(iobase + MAC_REG_TFTCTL, &byData);
--		if (!(byData & TFTCTL_TSFCNTRRD))
-+		VNSvInPortB(iobase + MAC_REG_TFTCTL, &data);
-+		if (!(data & TFTCTL_TSFCNTRRD))
- 			break;
- 	}
- 	if (ww == W_MAX_TIMEOUT)
--- 
-2.25.1
+Sorry, I didn't understand the idea of the last sentence.
 
+> Since it seems you are blending multiple planes into a single
+> destination which is assumed to be opaque, you might also be able to do
+> the multiple blends without convert-writing and read-converting to/from
+> the destination between every plane. I think that might be possible to
+> architect on top of the per-line operations still.
+
+I tried it. But I don't know how to do this without looking like a mess. 
+Does the pixman perform some similar?
+
+> 
+>> Signed-off-by: Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
+>> ---
+>>   drivers/gpu/drm/vkms/vkms_composer.c | 275 ++++++++++++++-------------
+>>   drivers/gpu/drm/vkms/vkms_formats.h  | 125 ++++++++++++
+>>   2 files changed, 271 insertions(+), 129 deletions(-)
+>>   create mode 100644 drivers/gpu/drm/vkms/vkms_formats.h
+> 
+> ...
+> 
+>> +
+>> +u64 ARGB8888_to_ARGB16161616(struct vkms_composer *composer, int x, int y)
+>> +{
+>> +	u8 *pixel_addr = packed_pixels_addr(composer, x, y);
+>> +
+>> +	/*
+>> +	 * Organizes the channels in their respective positions and converts
+>> +	 * the 8 bits channel to 16.
+>> +	 * The 257 is the "conversion ratio". This number is obtained by the
+>> +	 * (2^16 - 1) / (2^8 - 1) division. Which, in this case, tries to get
+>> +	 * the best color value in a color space with more possibilities.
+> 
+> Pixel format, not color space. >
+>> +	 * And a similar idea applies to others RGB color conversions.
+>> +	 */
+>> +	return ((u64)pixel_addr[3] * 257) << 48 |
+>> +	       ((u64)pixel_addr[2] * 257) << 32 |
+>> +	       ((u64)pixel_addr[1] * 257) << 16 |
+>> +	       ((u64)pixel_addr[0] * 257);
+> 
+> I wonder if the compiler is smart enough to choose between "mul 257"
+> and "(v << 8) | v" operations... but that's probably totally drowning
+> under the overhead of per (x,y) looping.
+
+I disassembled the code to check it. And looks like the compiler is 
+replacing the multiplication with shifts and additions.
+
+ARGB8888_to_ARGB16161616:
+    0xffffffff816ad660 <+0>:     imul   0x12c(%rdi),%edx
+    0xffffffff816ad667 <+7>:     imul   0x130(%rdi),%esi
+    0xffffffff816ad66e <+14>:    add    %edx,%esi
+    0xffffffff816ad670 <+16>:    add    0x128(%rdi),%esi
+    0xffffffff816ad676 <+22>:    movslq %esi,%rax
+    0xffffffff816ad679 <+25>:    add    0xe8(%rdi),%rax
+    0xffffffff816ad680 <+32>:    movzbl 0x3(%rax),%ecx
+    0xffffffff816ad684 <+36>:    movzbl 0x2(%rax),%esi
+    0xffffffff816ad688 <+40>:    mov    %rcx,%rdx
+    0xffffffff816ad68b <+43>:    shl    $0x8,%rdx
+    0xffffffff816ad68f <+47>:    add    %rcx,%rdx
+    0xffffffff816ad692 <+50>:    mov    %rsi,%rcx
+    0xffffffff816ad695 <+53>:    shl    $0x8,%rcx
+    0xffffffff816ad699 <+57>:    shl    $0x30,%rdx
+    0xffffffff816ad69d <+61>:    add    %rsi,%rcx
+    0xffffffff816ad6a0 <+64>:    movzbl (%rax),%esi
+    0xffffffff816ad6a3 <+67>:    shl    $0x20,%rcx
+    0xffffffff816ad6a7 <+71>:    or     %rcx,%rdx
+    0xffffffff816ad6aa <+74>:    mov    %rsi,%rcx
+    0xffffffff816ad6ad <+77>:    shl    $0x8,%rcx
+    0xffffffff816ad6b1 <+81>:    add    %rsi,%rcx
+    0xffffffff816ad6b4 <+84>:    or     %rcx,%rdx
+    0xffffffff816ad6b7 <+87>:    movzbl 0x1(%rax),%ecx
+    0xffffffff816ad6bb <+91>:    mov    %rcx,%rax
+    0xffffffff816ad6be <+94>:    shl    $0x8,%rax
+    0xffffffff816ad6c2 <+98>:    add    %rcx,%rax
+    0xffffffff816ad6c5 <+101>:   shl    $0x10,%rax
+    0xffffffff816ad6c9 <+105>:   or     %rdx,%rax
+    0xffffffff816ad6cc <+108>:   ret
+
+> 
+>> +}
+>> +
+>> +u64 XRGB8888_to_ARGB16161616(struct vkms_composer *composer, int x, int y)
+>> +{
+>> +	u8 *pixel_addr = packed_pixels_addr(composer, x, y);
+>> +
+>> +	/*
+>> +	 * The same as the ARGB8888 but with the alpha channel as the
+>> +	 * maximum value as possible.
+>> +	 */
+>> +	return 0xffffllu << 48 |
+>> +	       ((u64)pixel_addr[2] * 257) << 32 |
+>> +	       ((u64)pixel_addr[1] * 257) << 16 |
+>> +	       ((u64)pixel_addr[0] * 257);
+>> +}
+>> +
+>> +u64 get_ARGB16161616(struct vkms_composer *composer, int x, int y)
+>> +{
+>> +	__le64 *pixel_addr = packed_pixels_addr(composer, x, y);
+>> +
+>> +	/*
+>> +	 * Because the format byte order is in little-endian and this code
+>> +	 * needs to run on big-endian machines too, we need modify
+>> +	 * the byte order from little-endian to the CPU native byte order.
+>> +	 */
+>> +	return le64_to_cpu(*pixel_addr);
+>> +}
+>> +
+>> +/*
+>> + * The following functions are used as blend operations. But unlike the
+>> + * `alpha_blend`, these functions take an ARGB16161616 pixel from the
+>> + * source, convert it to a specific format, and store it in the destination.
+>> + *
+>> + * They are used in the `compose_active_planes` and `write_wb_buffer` to
+>> + * copy and convert one pixel from/to the output buffer to/from
+>> + * another buffer (e.g. writeback buffer, primary plane buffer).
+>> + */
+>> +
+>> +void convert_to_ARGB8888(u64 argb_src1, u64 argb_src2, int x, int y,
+>> +			 struct vkms_composer *dst_composer)
+>> +{
+>> +	u8 *pixel_addr = packed_pixels_addr(dst_composer, x, y);
+>> +
+>> +	/*
+>> +	 * This sequence below is important because the format's byte order is
+>> +	 * in little-endian. In the case of the ARGB8888 the memory is
+>> +	 * organized this way:
+>> +	 *
+>> +	 * | Addr     | = blue channel
+>> +	 * | Addr + 1 | = green channel
+>> +	 * | Addr + 2 | = Red channel
+>> +	 * | Addr + 3 | = Alpha channel
+>> +	 */
+>> +	pixel_addr[0] = DIV_ROUND_UP(argb_src1 & 0xffffllu, 257);
+>> +	pixel_addr[1] = DIV_ROUND_UP((argb_src1 & (0xffffllu << 16)) >> 16, 257);
+>> +	pixel_addr[2] = DIV_ROUND_UP((argb_src1 & (0xffffllu << 32)) >> 32, 257);
+>> +	pixel_addr[3] = DIV_ROUND_UP((argb_src1 & (0xffffllu << 48)) >> 48, 257);
+> 
+> This could be potentially expensive if the compiler ends up using an
+> actual div instruction.
+> 
+Yes, I'm using the DIV_ROUND_UP because I couldn't figure out how the 
+"Faster div by 255" works to adapt to 16 bits.
+
+> Btw. this would be shorter to write as
+> 
+> 	(argb_src1 >> 16) & 0xffff
+> 
+> etc.
+I will use it in the V2. Thanks.
+
+> 
+> Thanks,
+> pq
+> 
+>> +}
+>> +
+>> +void convert_to_XRGB8888(u64 argb_src1, u64 argb_src2, int x, int y,
+>> +			 struct vkms_composer *dst_composer)
+>> +{
+>> +	u8 *pixel_addr = packed_pixels_addr(dst_composer, x, y);
+>> +
+>> +	pixel_addr[0] = DIV_ROUND_UP(argb_src1 & 0xffffllu, 257);
+>> +	pixel_addr[1] = DIV_ROUND_UP((argb_src1 & (0xffffllu << 16)) >> 16, 257);
+>> +	pixel_addr[2] = DIV_ROUND_UP((argb_src1 & (0xffffllu << 32)) >> 32, 257);
+>> +	pixel_addr[3] = 0xff;
+>> +}
+>> +
+>> +void convert_to_ARGB16161616(u64 argb_src1, u64 argb_src2, int x, int y,
+>> +			     struct vkms_composer *dst_composer)
+>> +{
+>> +	__le64 *pixel_addr = packed_pixels_addr(dst_composer, x, y);
+>> +
+>> +	*pixel_addr = cpu_to_le64(argb_src1);
+>> +}
+>> +
+>> +#endif /* _VKMS_FORMATS_H_ */
+> 
