@@ -2,100 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC43943162F
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 12:33:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65CD4431630
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 12:33:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230137AbhJRKfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 06:35:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49820 "EHLO
+        id S230484AbhJRKfr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 06:35:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229473AbhJRKfo (ORCPT
+        with ESMTP id S230324AbhJRKfp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 06:35:44 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8407C06161C
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 03:33:33 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id t2so40492492wrb.8
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 03:33:33 -0700 (PDT)
+        Mon, 18 Oct 2021 06:35:45 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBAE8C06161C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 03:33:34 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id t2so40492654wrb.8
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 03:33:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=moJQ78F9oXsWwcjsOjRc3VK50C8FMLYVsh1+aqFOWVI=;
-        b=SGbLdHaCHPafWnkcsKJrt8C7uSJJKjuE1s0WSZxitXueyV10vheKPI1GlKLjamhR/h
-         mzJe7a7FXuugyTVhDzqGFD5GuQghM67V3ISQDyrU8nPg/cQiSrXe3J66oFyhkHih/NF0
-         BdCrNdo5R+hFb42+dri9MqiCvzR/dhNPv8Q+J4EMAb8qm7RRslzt4ax60VC8rcXsi9ge
-         MC/DGjcXXBt3mjSLfYrF2HDt9weYL8Rh2SeZVHeczTZ9PyR4Si7FmCJgZGUwxVUGCVe9
-         nyiMg/NnHmrPgQSEx1pL2fXo2x/kqd4BbGTYkSfhDE3Sx5hBcAx/dLpadpjASFYPGjp8
-         Ku5A==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=cGn43/LGWV9yHPcjMkf3TCrUECrY0/XNXt2QNLZSx3Y=;
+        b=GxmpyZ8aS8/cSgSoLniK7/q4OxJ45GEcM3HKfOdecelTtSYraAqBZd1BCaT5wBDswF
+         8Y9fMfDIUWaLh6fkzpv2NfyNjA1J5SnrK5NkMFpdBiy2QeEf/jl7d68d+ZXeO1fLXDYz
+         4AotQeZLj/fs4ihw36rPE3iloDRcfW9V8Py+IFWetqX6Uc3g3JgT/NKJDGBJzjXCQleP
+         YyCcrvRyaGLnPGtyinYwTr2cxJdSmqUIXTc414vSuqRaggTskG3iIZjOmfhVsODPwXO3
+         I/gAvBIIn1Y+c4Xnp9l5sodFMCvwn9Lkd2KYov1RANmRVCR6pKUJCmM23xwvvOu1+54U
+         VXiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=moJQ78F9oXsWwcjsOjRc3VK50C8FMLYVsh1+aqFOWVI=;
-        b=YGqz9JKvkjVdpzvMTgSww/j4eK82UJ8X9MkvrJMoA7GVejovtmQxd/9JFjW8iggAis
-         KUuT0QkliILaB0cgf57cVIH18zk+/WlAMG1rutgdK5AqNk4WSO/u2bLJyXncdz9hOrpU
-         aD9sjWJOLD6u7jCtBnICHOL4X3iIy5erKl1fl1N/O2U1JsET64YAoC7MEQPTh5vPiakD
-         mCNWW5DspDNQhuPg6OyVXJOonPzwRFmNLQUI0Na1NvDPmKv5IjOz0uuiu40STcNO0a0+
-         aX3Q5AqbkafliKmK72Rx+Ugdr27z38Zm3h4Q5Hp1T3vzC5gJ8cHAWXMkdPc2mk0/3SP1
-         fQmw==
-X-Gm-Message-State: AOAM5325NKGXF34CmCHToVgHdnsXne7rYrTDFJ1OLWbZ/h229bqXCu6H
-        3fbU4sJ4KP2SmuQLrN0lLeg=
-X-Google-Smtp-Source: ABdhPJx+JeHhyFTrMDRiVtMFDM8Kd4upVKRwte0zT1MHPBh7pH9grloOuAgxFRGNtd41Is/2nY1F8g==
-X-Received: by 2002:a5d:6888:: with SMTP id h8mr16880082wru.395.1634553212482;
-        Mon, 18 Oct 2021 03:33:32 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=cGn43/LGWV9yHPcjMkf3TCrUECrY0/XNXt2QNLZSx3Y=;
+        b=7nFF2b1AGhlFlhAWI8IA82F5fBp8ooYI+mgXVipRsMGO/GzKK/qwR7Gwi3jJBNqf2R
+         8p1KvRYfgeCNJOa43KbdTrAVQssKsv37ntds2fjMpyi0JpA/9NmA2+dBuwIxRy3IoZtz
+         EvGl+ZWz8OhF/68DAROaPkkSLK3qqtiqzim+cSgEZwE+upUO6O1hPHGHQtn0r5uOdDmb
+         nuYpLdMWTYcCYbuqUymvsiiWDBTXlKv4KY3S2Ok51olQgnIMnY+4wRHMtJfFQlgRNvdO
+         VH5t3LVYwjjHfAhFnNSKMAfCD/CbmeEn/5WmUC0aFqzQaPbXzFM5qOA3MPVxDmyVzBke
+         kEKA==
+X-Gm-Message-State: AOAM532dDxK0ntZhMssVGGqNAoGioIQnzfoqDmLghTjDaqTnDWfEeytK
+        m5dg36vhmgH7qCJKH+cb06uXDPq7oTg=
+X-Google-Smtp-Source: ABdhPJxBlzTAQpkU3yiExmcuxDUQHvrCikPJsCPEIqWTQoJ+xLeFEuRno453UyTdReHeyeOmlTGrtw==
+X-Received: by 2002:a5d:64c5:: with SMTP id f5mr33763933wri.321.1634553213568;
+        Mon, 18 Oct 2021 03:33:33 -0700 (PDT)
 Received: from localhost.localdomain ([195.245.16.219])
-        by smtp.gmail.com with ESMTPSA id o8sm19062252wme.38.2021.10.18.03.33.30
+        by smtp.gmail.com with ESMTPSA id o8sm19062252wme.38.2021.10.18.03.33.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 03:33:31 -0700 (PDT)
+        Mon, 18 Oct 2021 03:33:33 -0700 (PDT)
 From:   Alexander Sverdlin <alexander.sverdlin@gmail.com>
 To:     soc@kernel.org
 Cc:     Alexander Sverdlin <alexander.sverdlin@gmail.com>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
         Nikita Shubin <nikita.shubin@maquefel.me>,
-        Hartley Sweeten <hsweeten@visionengravers.com>,
-        Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Liam Girdwood <lgirdwood@gmail.com>,
         Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
-Subject: [PATCH v3 0/2] arm: ep93xx: CCF conversion
-Date:   Mon, 18 Oct 2021 12:31:03 +0200
-Message-Id: <20211018103105.146380-1-alexander.sverdlin@gmail.com>
+        Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
+        alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH v3 1/2] ASoC: cirrus: i2s: Prepare clock before using it
+Date:   Mon, 18 Oct 2021 12:31:04 +0200
+Message-Id: <20211018103105.146380-2-alexander.sverdlin@gmail.com>
 X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20211018103105.146380-1-alexander.sverdlin@gmail.com>
+References: <20211018103105.146380-1-alexander.sverdlin@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series series of patches converts ep93xx to Common Clock Framework.
+Use clk_prepare_enable()/clk_disable_unprepare() in preparation for switch
+to Common Clock Framework, otherwise the following is visible:
 
-It consists of preparation patches to use clk_prepare_enable where it is
-needed, instead of clk_enable used in ep93xx drivers prior to CCF and
-a patch converting mach-ep93xx/clock.c to CCF.
+WARNING: CPU: 0 PID: 97 at drivers/clk/clk.c:1011 clk_core_enable+0x9c/0xbc
+Enabling unprepared mclk
+...
+Hardware name: Cirrus Logic EDB9302 Evaluation Board
+...
+clk_core_enable
+clk_core_enable_lock
+ep93xx_i2s_hw_params
+snd_soc_dai_hw_params
+soc_pcm_hw_params
+snd_pcm_hw_params
+snd_pcm_ioctl
+...
 
-Link: https://lore.kernel.org/patchwork/cover/1445563/
-Link: https://lore.kernel.org/patchwork/patch/1435884/
+Acked-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+---
+ sound/soc/cirrus/ep93xx-i2s.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-v2->v3:
-Rebased the series onto v5.15-rc5
-v1->v2:
-- added SoB
-
-Alexander Sverdlin (1):
-  ASoC: cirrus: i2s: Prepare clock before using it
-
-Nikita Shubin (1):
-  ep93xx: clock: convert in-place to COMMON_CLK
-
- arch/arm/Kconfig              |   2 +-
- arch/arm/mach-ep93xx/clock.c  | 975 +++++++++++++++++++---------------
- arch/arm/mach-ep93xx/core.c   |   2 +-
- arch/arm/mach-ep93xx/soc.h    |  42 +-
- sound/soc/cirrus/ep93xx-i2s.c |  12 +-
- 5 files changed, 587 insertions(+), 446 deletions(-)
-
+diff --git a/sound/soc/cirrus/ep93xx-i2s.c b/sound/soc/cirrus/ep93xx-i2s.c
+index 0d26550d0df8..4d3179f03202 100644
+--- a/sound/soc/cirrus/ep93xx-i2s.c
++++ b/sound/soc/cirrus/ep93xx-i2s.c
+@@ -111,9 +111,9 @@ static void ep93xx_i2s_enable(struct ep93xx_i2s_info *info, int stream)
+ 	if ((ep93xx_i2s_read_reg(info, EP93XX_I2S_TX0EN) & 0x1) == 0 &&
+ 	    (ep93xx_i2s_read_reg(info, EP93XX_I2S_RX0EN) & 0x1) == 0) {
+ 		/* Enable clocks */
+-		clk_enable(info->mclk);
+-		clk_enable(info->sclk);
+-		clk_enable(info->lrclk);
++		clk_prepare_enable(info->mclk);
++		clk_prepare_enable(info->sclk);
++		clk_prepare_enable(info->lrclk);
+ 
+ 		/* Enable i2s */
+ 		ep93xx_i2s_write_reg(info, EP93XX_I2S_GLCTRL, 1);
+@@ -156,9 +156,9 @@ static void ep93xx_i2s_disable(struct ep93xx_i2s_info *info, int stream)
+ 		ep93xx_i2s_write_reg(info, EP93XX_I2S_GLCTRL, 0);
+ 
+ 		/* Disable clocks */
+-		clk_disable(info->lrclk);
+-		clk_disable(info->sclk);
+-		clk_disable(info->mclk);
++		clk_disable_unprepare(info->lrclk);
++		clk_disable_unprepare(info->sclk);
++		clk_disable_unprepare(info->mclk);
+ 	}
+ }
+ 
 -- 
 2.33.0
 
