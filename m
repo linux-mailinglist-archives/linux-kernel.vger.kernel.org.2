@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 448EB431AC9
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:27:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BB07431E1C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:55:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231882AbhJRN3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:29:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40202 "EHLO mail.kernel.org"
+        id S234291AbhJRN5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:57:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58168 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231466AbhJRN2B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:28:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 51950610A6;
-        Mon, 18 Oct 2021 13:25:49 +0000 (UTC)
+        id S234375AbhJRNzz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:55:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1396E613A0;
+        Mon, 18 Oct 2021 13:40:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634563549;
-        bh=gwf85fOy7j8DhKMPpqhixiWrQsR1biewJ0ii4/nlrcg=;
+        s=korg; t=1634564411;
+        bh=EUB55AvFWO8DodrRnQswPvZgR9JY2IDW6eTIF3qt21g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bCCvJGXR+1GM2MttC++x3S/+Uv/lHeNznEXLuJ7sZagx7p9ypUGCGxGA0C4nN34eA
-         BtISKGKFx+LJtiMrgonrObj2zOWGW/Sc/539PxYXtmaCuBmpBPiE1+1BFMuaEyr/n2
-         CoeqPKxDUhB15em9LaBEyBpHOOUcWEQfl8+Z+NLQ=
+        b=SvQXYxxSo8ADwLoo+BV6gjbxcKfXnleEv8G0nZ+BREqGbtOWvPJTP51qYt/sNkHmw
+         OH1HgmfQ8FyaIlp0uTLpn7ry6Htb2tG63tRLV5gH+JxgFM3Y9i9mBysVQIoc8cQG4X
+         DXlsgR5FIns4I/gJme66JJADln+py1m3c9KEZofk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Joe Perches <joe@perches.com>,
-        Ard Biesheuvel <ardb@kernel.org>
-Subject: [PATCH 4.14 10/39] efi/cper: use stack buffer for error record decoding
+        stable@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH 5.14 080/151] iio: ssp_sensors: fix error code in ssp_print_mcu_debug()
 Date:   Mon, 18 Oct 2021 15:24:19 +0200
-Message-Id: <20211018132325.782421137@linuxfoundation.org>
+Message-Id: <20211018132343.288461350@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132325.426739023@linuxfoundation.org>
-References: <20211018132325.426739023@linuxfoundation.org>
+In-Reply-To: <20211018132340.682786018@linuxfoundation.org>
+References: <20211018132340.682786018@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,50 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ard Biesheuvel <ardb@kernel.org>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-commit b3a72ca80351917cc23f9e24c35f3c3979d3c121 upstream.
+commit 4170d3dd1467e9d78cb9af374b19357dc324b328 upstream.
 
-Joe reports that using a statically allocated buffer for converting CPER
-error records into human readable text is probably a bad idea. Even
-though we are not aware of any actual issues, a stack buffer is clearly
-a better choice here anyway, so let's move the buffer into the stack
-frames of the two functions that refer to it.
+The ssp_print_mcu_debug() function should return negative error codes on
+error.  Returning "length" is meaningless.  This change does not affect
+runtime because the callers only care about zero/non-zero.
 
-Cc: <stable@vger.kernel.org>
-Reported-by: Joe Perches <joe@perches.com>
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Reported-by: Jonathan Cameron <jic23@kernel.org>
+Fixes: 50dd64d57eee ("iio: common: ssp_sensors: Add sensorhub driver")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Link: https://lore.kernel.org/r/20210914105333.GA11657@kili
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/firmware/efi/cper.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/iio/common/ssp_sensors/ssp_spi.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/firmware/efi/cper.c
-+++ b/drivers/firmware/efi/cper.c
-@@ -39,8 +39,6 @@
+--- a/drivers/iio/common/ssp_sensors/ssp_spi.c
++++ b/drivers/iio/common/ssp_sensors/ssp_spi.c
+@@ -137,7 +137,7 @@ static int ssp_print_mcu_debug(char *dat
+ 	if (length > received_len - *data_index || length <= 0) {
+ 		ssp_dbg("[SSP]: MSG From MCU-invalid debug length(%d/%d)\n",
+ 			length, received_len);
+-		return length ? length : -EPROTO;
++		return -EPROTO;
+ 	}
  
- #define INDENT_SP	" "
- 
--static char rcd_decode_str[CPER_REC_LEN];
--
- /*
-  * CPER record ID need to be unique even after reboot, because record
-  * ID is used as index for ERST storage, while CPER records from
-@@ -416,6 +414,7 @@ const char *cper_mem_err_unpack(struct t
- 				struct cper_mem_err_compact *cmem)
- {
- 	const char *ret = trace_seq_buffer_ptr(p);
-+	char rcd_decode_str[CPER_REC_LEN];
- 
- 	if (cper_mem_err_location(cmem, rcd_decode_str))
- 		trace_seq_printf(p, "%s", rcd_decode_str);
-@@ -430,6 +429,7 @@ static void cper_print_mem(const char *p
- 	int len)
- {
- 	struct cper_mem_err_compact cmem;
-+	char rcd_decode_str[CPER_REC_LEN];
- 
- 	/* Don't trust UEFI 2.1/2.2 structure with bad validation bits */
- 	if (len == sizeof(struct cper_sec_mem_err_old) &&
+ 	ssp_dbg("[SSP]: MSG From MCU - %s\n", &data_frame[*data_index]);
 
 
