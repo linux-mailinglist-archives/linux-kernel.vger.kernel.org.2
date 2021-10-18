@@ -2,88 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AA4943278D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 21:27:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A5BB432790
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 21:28:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232759AbhJRT3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 15:29:18 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:53029 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231234AbhJRT3R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 15:29:17 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1634585225; h=Content-Transfer-Encoding: MIME-Version:
- Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=MqCoBymOpj4mTjFi46DnD69+dpPudEakQsa4njd6B0g=; b=ah/IWg3nCITn74AoXiRQmiUqwTGu4RuboSWC5Zh+A8vtbHZRhWUEdB266Zdlc5xXBd4iQGNi
- arzuJ/hU7p+XUm1DyRqPJs0mZL+01t4N0eIY6D37bI9eDC0mZncHwg4g1bB+VJMpKzgPCpuj
- cEz8e2Asp0H+vJHQByW6UvhVIDs=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 616dca7c8ea00a941fd94a03 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 18 Oct 2021 19:26:52
- GMT
-Sender: wcheng=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 05C1BC43618; Mon, 18 Oct 2021 19:26:52 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from wcheng-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: wcheng)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 333FDC43460;
-        Mon, 18 Oct 2021 19:26:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 333FDC43460
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Wesley Cheng <wcheng@codeaurora.org>
-To:     balbi@kernel.org, gregkh@linuxfoundation.org
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jackp@codeaurora.org, Wesley Cheng <wcheng@codeaurora.org>
-Subject: [PATCH v2] usb: dwc3: gadget: Change to dev_dbg() when queuing to inactive gadget/ep
-Date:   Mon, 18 Oct 2021 12:26:47 -0700
-Message-Id: <20211018192647.32121-1-wcheng@codeaurora.org>
-X-Mailer: git-send-email 2.33.0
+        id S229836AbhJRTa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 15:30:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33334 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231263AbhJRTaZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 15:30:25 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EE4AC06161C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 12:28:14 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id na16-20020a17090b4c1000b0019f5bb661f9so810727pjb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 12:28:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=T17Zx5b+9cZpZ2b2XmW+zfPtibEmmpshlWxKBV4MDzM=;
+        b=TZ1/KPtQoYkVktZdrLnmAUt3Xt+Yl/n4oACnfVoXP8srs1kET1CPyXfdDW9mxolIso
+         ytcf1512ADi86r/4854+CiERO/U8Vb+dKemq7SPbiZ0E0Xw4C9k6IPrMdQAX484+P1Fz
+         hIphG9vwoMayv9/tVBkymSEIb9v0eJTtV5j/E=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=T17Zx5b+9cZpZ2b2XmW+zfPtibEmmpshlWxKBV4MDzM=;
+        b=fyc2C9fQMCWHmDxg5DQrCDzqVF8xKisRdUa9aDFH/El4l7XupCjE+0amawBD5kFymi
+         vHDyTZuBVe17V3DglTp1hDFujETH5r865wrNu9+6q9h/AlWsVvqRpqjAc+nqt0mTzOJM
+         jz/x8ATsaUdwXJLL969mC4jczHFSiLE3gdAEntuKGFmSI1ugza1bKpLuOhLLo9otIzIo
+         j9HdKLQ5Xmq3WskldxUVNrZ8rdtyJVl7UvAh8KSodc1sUFO9B529BkDX8vLR97gz8wJM
+         JJlIXqoDusM/S8l+87Hv49zqhxhk9d1bfVgb9uHEKlUXFnHpbwU6pGHJEgnuO0GPZ43D
+         Kvlg==
+X-Gm-Message-State: AOAM530FJlOZ4ZskqwpyjnBvF0xI1tQgBo8om+RqamuKF+HIOu90dfSI
+        tVB4Rb97X0Pn3AQEJQzXVVnfYMstfLqDsQ==
+X-Google-Smtp-Source: ABdhPJyQWXpyp8PGkVchG0m3Q5r5UvHI3hWDDD7MwqFIbT/BbmPwUxhIsbhwMH+mFw+4XJqrBdvkrw==
+X-Received: by 2002:a17:903:1112:b0:13d:ce49:e275 with SMTP id n18-20020a170903111200b0013dce49e275mr29826166plh.5.1634585293673;
+        Mon, 18 Oct 2021 12:28:13 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id ng5sm211359pjb.51.2021.10.18.12.28.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Oct 2021 12:28:13 -0700 (PDT)
+Date:   Mon, 18 Oct 2021 12:28:11 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Daniel Micay <danielmicay@gmail.com>,
+        Francis Laniel <laniel_francis@privacyrequired.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        David Gow <davidgow@google.com>, Linux-MM <linux-mm@kvack.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH for-next 21/25] lib: Introduce CONFIG_TEST_MEMCPY
+Message-ID: <202110181227.534491C34@keescook>
+References: <20210822075122.864511-1-keescook@chromium.org>
+ <20210822075122.864511-22-keescook@chromium.org>
+ <CAK8P3a1o58qeUsn9_+o1v1POZ9=3p17TCEba4-TRQ7Hf5mRg1A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a1o58qeUsn9_+o1v1POZ9=3p17TCEba4-TRQ7Hf5mRg1A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since function drivers will still be active until dwc3_disconnect_gadget()
-is called, some applications will continue to queue packets to DWC3
-gadget.  This can lead to a flood of messages regarding failed ep queue,
-as the endpoint is in the process of being disabled.  Change the log
-level to debug, so that it can be enabled when debugging issues.
+On Mon, Oct 18, 2021 at 05:46:09PM +0200, Arnd Bergmann wrote:
+> On Sun, Aug 22, 2021 at 9:56 AM Kees Cook <keescook@chromium.org> wrote:
+> > +FORTIFY_SOURCE
+> > +M:     Kees Cook <keescook@chomium.org>
+> > +L:     linux-hardening@vger.kernel.org
+> > +S:     Supported
+> 
+> I had added you to Cc on a patch because of this entry, and the email
+> bounced. It looks like you need an extra 'r' in the address.
 
-Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
----
-Changes from v1:
- - Modified dev_err() to dev_dbg()
+*facepalm*
 
- drivers/usb/dwc3/gadget.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thank you, fixing...
 
-diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
-index 4845682a0408..0d32e97f11cd 100644
---- a/drivers/usb/dwc3/gadget.c
-+++ b/drivers/usb/dwc3/gadget.c
-@@ -1813,7 +1813,7 @@ static int __dwc3_gadget_ep_queue(struct dwc3_ep *dep, struct dwc3_request *req)
- 	struct dwc3		*dwc = dep->dwc;
- 
- 	if (!dep->endpoint.desc || !dwc->pullups_connected || !dwc->connected) {
--		dev_err(dwc->dev, "%s: can't queue to disabled endpoint\n",
-+		dev_dbg(dwc->dev, "%s: can't queue to disabled endpoint\n",
- 				dep->name);
- 		return -ESHUTDOWN;
- 	}
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+Kees Cook
