@@ -2,160 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E2134322AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 17:20:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF9BD4322AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 17:21:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233654AbhJRPWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 11:22:08 -0400
-Received: from relay1-d.mail.gandi.net ([217.70.183.193]:53463 "EHLO
-        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233395AbhJRPV6 (ORCPT
+        id S232960AbhJRPXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 11:23:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39498 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232367AbhJRPXE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 11:21:58 -0400
-Received: (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id E334024000C;
-        Mon, 18 Oct 2021 15:19:44 +0000 (UTC)
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 7/7] rtc: rv3032: allow setting BSM
-Date:   Mon, 18 Oct 2021 17:19:33 +0200
-Message-Id: <20211018151933.76865-8-alexandre.belloni@bootlin.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211018151933.76865-1-alexandre.belloni@bootlin.com>
-References: <20211018151933.76865-1-alexandre.belloni@bootlin.com>
+        Mon, 18 Oct 2021 11:23:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634570452;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=weGzz/RU3tcYXCDKayytqHwl63UjBOGSEo1p1tbZCGw=;
+        b=VbbEvpCD5d2Xx0XsKJ7xF9WF7kd5JITxQ4vQWSEcoGZSuXWHLWSg0gh21BBBu+CBzkxGEC
+        BCqFNXQVbjhR/zwyPAPcH40X+v+4w1PirQhorxAOh0EgO2CaSnsP4wFcPKlVNnMYEiYTUZ
+        WYmgoC2bXIRYylIKvN4Hwm8HghwBZGQ=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-496-mhGL_1x_Mza_Z1KZ2jbLQw-1; Mon, 18 Oct 2021 11:20:51 -0400
+X-MC-Unique: mhGL_1x_Mza_Z1KZ2jbLQw-1
+Received: by mail-wr1-f71.google.com with SMTP id 41-20020adf812c000000b00160dfbfe1a2so8995492wrm.3
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 08:20:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=weGzz/RU3tcYXCDKayytqHwl63UjBOGSEo1p1tbZCGw=;
+        b=HO6lZcksZgZ4HdgZ8QSLNfk5q0+P+mosLCrdyuM0HNLy16p7SF1UpxiW2suqYYx6Ea
+         2urVfjQNJK1DCN2eGFBav4og4lwjLk4LmVi8UsU2+ura5Bbl85bHfjzmSZ9JpYLgz1AY
+         0IINHq1oPuOXW6Q67sMeOr4pKEuG57BjlfZzWNKlQHffxQltx7Ej565mkriGNtmyOxnt
+         AxNKx1vyhGsLWg2cQ90Bgqaxo5YYuS39vWVOhh/PMW84VT23Sudk+Eco0mNW3cXti8Zk
+         B/2MPN2B1qxdiyGF633LgG9vTNMf3LzfWM3iGhHQOMxK7+drJNCTO0sGDoqXQT+hjH2f
+         eyDA==
+X-Gm-Message-State: AOAM530oCbWKu3cNHYWnTWnHWyWHCy+jL+n0AM3f7xr8IfVrTrX5Jfkr
+        u+Kr6n1eEZ4njIF3W/+yeIfZF/FAEVE09AFhhH1lQCCmNjwg/oZ8iZ/ZwGVGnOjBJ+fE48cI5SV
+        sm0z0f6Hy+DqpCAqI7BSqF8jr
+X-Received: by 2002:adf:b348:: with SMTP id k8mr36302723wrd.435.1634570450119;
+        Mon, 18 Oct 2021 08:20:50 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxSU9ALI4vxdT0LUFYoXuruFKnLY/vFTpcmEgvyCKPpz+nFfh4q+eQTHiETxKUF6r7bU2FsEA==
+X-Received: by 2002:adf:b348:: with SMTP id k8mr36302694wrd.435.1634570449934;
+        Mon, 18 Oct 2021 08:20:49 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id l5sm12672972wrq.77.2021.10.18.08.20.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Oct 2021 08:20:49 -0700 (PDT)
+Message-ID: <96d0ff43-9b25-5f07-3fe8-7bd245ce06e4@redhat.com>
+Date:   Mon, 18 Oct 2021 17:20:48 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH v2 7/7] KVM: VMX: Only context switch some PT MSRs when
+ they exist
+Content-Language: en-US
+To:     Xiaoyao Li <xiaoyao.li@intel.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210827070249.924633-1-xiaoyao.li@intel.com>
+ <20210827070249.924633-8-xiaoyao.li@intel.com>
+ <50b4c1f0-be96-c1b5-aab1-69f4f61ec43f@redhat.com>
+ <d54269db-d0ea-bcc3-935f-d29eb7c7d039@intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <d54269db-d0ea-bcc3-935f-d29eb7c7d039@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Backup Switch Mode is currently set properly when the trickle charger is
-enabled. However, in the case of a non-rechargeable battery, it is
-necessary to be able to enable it, only allow that when the trickle charger
-is disabled.
+On 18/10/21 16:04, Xiaoyao Li wrote:
+>>
+>> If intel_pt_validate_hw_cap is not fast enough, it should be optimized.
+>> Something like this:
+> 
+> If I understand correctly, you mean we don't need to cache the existence 
+> with two variable, right?
+> 
 
-Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
----
- drivers/rtc/rtc-rv3032.c | 76 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 76 insertions(+)
+Yes, exactly.
 
-diff --git a/drivers/rtc/rtc-rv3032.c b/drivers/rtc/rtc-rv3032.c
-index 1b62ed2f1459..a3c73179ecb1 100644
---- a/drivers/rtc/rtc-rv3032.c
-+++ b/drivers/rtc/rtc-rv3032.c
-@@ -106,6 +106,7 @@
- struct rv3032_data {
- 	struct regmap *regmap;
- 	struct rtc_device *rtc;
-+	bool trickle_charger_set;
- #ifdef CONFIG_COMMON_CLK
- 	struct clk_hw clkout_hw;
- #endif
-@@ -402,6 +403,75 @@ static int rv3032_set_offset(struct device *dev, long offset)
- 				 FIELD_PREP(RV3032_OFFSET_MSK, offset));
- }
- 
-+static int rv3032_param_get(struct device *dev, struct rtc_param *param)
-+{
-+	struct rv3032_data *rv3032 = dev_get_drvdata(dev);
-+	int ret;
-+
-+	switch(param->param) {
-+		u32 value;
-+
-+	case RTC_PARAM_BACKUP_SWITCH_MODE:
-+		ret = regmap_read(rv3032->regmap, RV3032_PMU, &value);
-+		if (ret < 0)
-+			return ret;
-+
-+		value = FIELD_GET(RV3032_PMU_BSM, value);
-+
-+		switch(value) {
-+		case RV3032_PMU_BSM_DSM:
-+			param->uvalue = RTC_BSM_DIRECT;
-+			break;
-+		case RV3032_PMU_BSM_LSM:
-+			param->uvalue = RTC_BSM_LEVEL;
-+			break;
-+		default:
-+			param->uvalue = RTC_BSM_DISABLED;
-+		}
-+
-+		break;
-+
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static int rv3032_param_set(struct device *dev, struct rtc_param *param)
-+{
-+	struct rv3032_data *rv3032 = dev_get_drvdata(dev);
-+
-+	switch(param->param) {
-+		u8 mode;
-+	case RTC_PARAM_BACKUP_SWITCH_MODE:
-+		if (rv3032->trickle_charger_set)
-+			return -EINVAL;
-+
-+		switch (param->uvalue) {
-+		case RTC_BSM_DISABLED:
-+			mode = 0;
-+			break;
-+		case RTC_BSM_DIRECT:
-+			mode = RV3032_PMU_BSM_DSM;
-+			break;
-+		case RTC_BSM_LEVEL:
-+			mode = RV3032_PMU_BSM_LSM;
-+			break;
-+		default:
-+			return -EINVAL;
-+		}
-+
-+		return rv3032_update_cfg(rv3032, RV3032_PMU, RV3032_PMU_BSM,
-+					 FIELD_PREP(RV3032_PMU_BSM, mode));
-+
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
- static int rv3032_ioctl(struct device *dev, unsigned int cmd, unsigned long arg)
- {
- 	struct rv3032_data *rv3032 = dev_get_drvdata(dev);
-@@ -541,6 +611,8 @@ static int rv3032_trickle_charger_setup(struct device *dev, struct rv3032_data *
- 		return 0;
- 	}
- 
-+	rv3032->trickle_charger_set = true;
-+
- 	return rv3032_update_cfg(rv3032, RV3032_PMU,
- 				 RV3032_PMU_TCR | RV3032_PMU_TCM | RV3032_PMU_BSM,
- 				 val | FIELD_PREP(RV3032_PMU_TCR, i));
-@@ -813,6 +885,8 @@ static const struct rtc_class_ops rv3032_rtc_ops = {
- 	.read_alarm = rv3032_get_alarm,
- 	.set_alarm = rv3032_set_alarm,
- 	.alarm_irq_enable = rv3032_alarm_irq_enable,
-+	.param_get = rv3032_param_get,
-+	.param_set = rv3032_param_set,
- };
- 
- static const struct regmap_config regmap_config = {
-@@ -883,6 +957,8 @@ static int rv3032_probe(struct i2c_client *client)
- 
- 	rv3032_trickle_charger_setup(&client->dev, rv3032);
- 
-+	set_bit(RTC_FEATURE_BACKUP_SWITCH_MODE, rv3032->rtc->features);
-+
- 	rv3032->rtc->range_min = RTC_TIMESTAMP_BEGIN_2000;
- 	rv3032->rtc->range_max = RTC_TIMESTAMP_END_2099;
- 	rv3032->rtc->ops = &rv3032_rtc_ops;
--- 
-2.31.1
+Paolo
 
