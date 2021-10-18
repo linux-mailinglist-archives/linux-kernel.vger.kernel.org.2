@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25ECC431B1C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:28:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21E99431E16
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:55:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232276AbhJRNap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:30:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41702 "EHLO mail.kernel.org"
+        id S233955AbhJRN5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:57:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57730 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231986AbhJRN3P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:29:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D85DC6126A;
-        Mon, 18 Oct 2021 13:27:03 +0000 (UTC)
+        id S234183AbhJRNzU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:55:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6829A6137F;
+        Mon, 18 Oct 2021 13:40:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634563624;
-        bh=XQdSf5ZkGN84ZrUHB1PcYb/UmBZmE6ysDA+QmBgjBMA=;
+        s=korg; t=1634564403;
+        bh=IEVXBQ/6xZ+vbYCVhttAvoLjwdG6FbycEd4remA6ftM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=euav33Dv51YLbnuAdNgd7qdPm4K6Q0eUnXeALO00ka+JpbN54ZZac+oR+t9UKJaal
-         UftbZXDP86aZ90ph/MIyGmB71cdl+/oPeUNAvZPr6Fe2A54PqFeeyRJZ0vKWu66lCB
-         KpMbSpTsXgR1BlSlvAEAmAYOghwlo27WuIOIaXnA=
+        b=e/nyoIpLGZmyO4atlS1zxf6ZPcpq9p8w0tIEAFvyN4JcaMx67k/aG3oDQ8BWwnYXP
+         sNyQBdx9+5U/RISrltn+iPQisXmqCAJl+z4cZmE6CAsigQQAisHkwJxTHwYJGVw6ho
+         8zbFYqBevIC90RIyncwGJxjDI1zaksCj6T7bIBrs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Pavankumar Kondeti <pkondeti@codeaurora.org>,
-        Mathias Nyman <mathias.nyman@linux.intel.com>
-Subject: [PATCH 4.14 07/39] xhci: Fix command ring pointer corruption while aborting a command
+        stable@vger.kernel.org, Sean Nyekjaer <sean@geanix.com>,
+        Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH 5.14 077/151] iio: accel: fxls8962af: return IRQ_HANDLED when fifo is flushed
 Date:   Mon, 18 Oct 2021 15:24:16 +0200
-Message-Id: <20211018132325.684286252@linuxfoundation.org>
+Message-Id: <20211018132343.186253685@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132325.426739023@linuxfoundation.org>
-References: <20211018132325.426739023@linuxfoundation.org>
+In-Reply-To: <20211018132340.682786018@linuxfoundation.org>
+References: <20211018132340.682786018@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,60 +40,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavankumar Kondeti <pkondeti@codeaurora.org>
+From: Sean Nyekjaer <sean@geanix.com>
 
-commit ff0e50d3564f33b7f4b35cadeabd951d66cfc570 upstream.
+commit 9033c7a357481fb5bcc1737bafa4aec572dca5c6 upstream.
 
-The command ring pointer is located at [6:63] bits of the command
-ring control register (CRCR). All the control bits like command stop,
-abort are located at [0:3] bits. While aborting a command, we read the
-CRCR and set the abort bit and write to the CRCR. The read will always
-give command ring pointer as all zeros. So we essentially write only
-the control bits. Since we split the 64 bit write into two 32 bit writes,
-there is a possibility of xHC command ring stopped before the upper
-dword (all zeros) is written. If that happens, xHC updates the upper
-dword of its internal command ring pointer with all zeros. Next time,
-when the command ring is restarted, we see xHC memory access failures.
-Fix this issue by only writing to the lower dword of CRCR where all
-control bits are located.
+fxls8962af_fifo_flush() will return the samples flushed.
+So return IRQ_NONE only if an error is returned.
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Pavankumar Kondeti <pkondeti@codeaurora.org>
-Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
-Link: https://lore.kernel.org/r/20211008092547.3996295-5-mathias.nyman@linux.intel.com
+Fixes: 79e3a5bdd9ef ("iio: accel: fxls8962af: add hw buffered sampling")
+Signed-off-by: Sean Nyekjaer <sean@geanix.com>
+Link: https://lore.kernel.org/r/20210817124336.1672169-1-sean@geanix.com
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/host/xhci-ring.c |   14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+ drivers/iio/accel/fxls8962af-core.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/usb/host/xhci-ring.c
-+++ b/drivers/usb/host/xhci-ring.c
-@@ -350,16 +350,22 @@ static void xhci_handle_stopped_cmd_ring
- /* Must be called with xhci->lock held, releases and aquires lock back */
- static int xhci_abort_cmd_ring(struct xhci_hcd *xhci, unsigned long flags)
- {
--	u64 temp_64;
-+	u32 temp_32;
- 	int ret;
+--- a/drivers/iio/accel/fxls8962af-core.c
++++ b/drivers/iio/accel/fxls8962af-core.c
+@@ -738,7 +738,7 @@ static irqreturn_t fxls8962af_interrupt(
  
- 	xhci_dbg(xhci, "Abort command ring\n");
+ 	if (reg & FXLS8962AF_INT_STATUS_SRC_BUF) {
+ 		ret = fxls8962af_fifo_flush(indio_dev);
+-		if (ret)
++		if (ret < 0)
+ 			return IRQ_NONE;
  
- 	reinit_completion(&xhci->cmd_ring_stop_completion);
- 
--	temp_64 = xhci_read_64(xhci, &xhci->op_regs->cmd_ring);
--	xhci_write_64(xhci, temp_64 | CMD_RING_ABORT,
--			&xhci->op_regs->cmd_ring);
-+	/*
-+	 * The control bits like command stop, abort are located in lower
-+	 * dword of the command ring control register. Limit the write
-+	 * to the lower dword to avoid corrupting the command ring pointer
-+	 * in case if the command ring is stopped by the time upper dword
-+	 * is written.
-+	 */
-+	temp_32 = readl(&xhci->op_regs->cmd_ring);
-+	writel(temp_32 | CMD_RING_ABORT, &xhci->op_regs->cmd_ring);
- 
- 	/* Section 4.6.1.2 of xHCI 1.0 spec says software should also time the
- 	 * completion of the Command Abort operation. If CRR is not negated in 5
+ 		return IRQ_HANDLED;
 
 
