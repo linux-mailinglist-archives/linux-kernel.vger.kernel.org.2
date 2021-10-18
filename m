@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2EE0431B43
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:30:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA7E0431AFE
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:28:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232924AbhJRNbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:31:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42364 "EHLO mail.kernel.org"
+        id S232388AbhJRNaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:30:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41302 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232425AbhJRNaI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:30:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4BFDA60EFE;
-        Mon, 18 Oct 2021 13:27:57 +0000 (UTC)
+        id S231861AbhJRN3E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:29:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 193F061350;
+        Mon, 18 Oct 2021 13:26:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634563677;
-        bh=q3lh+gjflrBJV2rRqgypOb877B06Z8aBqZPWVjeDlFs=;
+        s=korg; t=1634563572;
+        bh=TpO4EEaob/fjJr5adrfsWNVyULAMtGkS3nXv4F9xMJI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Lj5OpsjIty28Jh/pdFWlAnNgryUD90HRNoh+IODyFZ/NsotDNyK76dcx0+/l1cxVn
-         pseYptaDsV5US5vfdqewoBQ967my6UjNRYYXCn9cjhSgNjJEJpduIuZzeyUUUwCtO7
-         x1qCXRngDA4o4MXIQWwE0I9ngpTZUVHe9ov1lBls=
+        b=vQC7iS3exSRdD4clquxnU89tdh2m4fzD1izV/FCrbYaH7J+8IhDx4ba5ZvH/fkmpw
+         ViymS1NwFGdqRNckTKXrFqkO8tXYRxTseflaj3QZdJ/tkx4KmSpHBYGQxFqaU7faa9
+         jxnGjJMnPGO13j9ySZ9D4ZOf7WereywREgoDsI4E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Aleksander Morgado <aleksander@aleksander.es>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.19 20/50] USB: serial: qcserial: add EM9191 QDL support
-Date:   Mon, 18 Oct 2021 15:24:27 +0200
-Message-Id: <20211018132327.217339995@linuxfoundation.org>
+        stable@vger.kernel.org, Douglas Anderson <dianders@chromium.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH 4.14 19/39] nvmem: Fix shift-out-of-bound (UBSAN) with byte size cells
+Date:   Mon, 18 Oct 2021 15:24:28 +0200
+Message-Id: <20211018132326.071442459@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132326.529486647@linuxfoundation.org>
-References: <20211018132326.529486647@linuxfoundation.org>
+In-Reply-To: <20211018132325.426739023@linuxfoundation.org>
+References: <20211018132325.426739023@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,40 +40,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aleksander Morgado <aleksander@aleksander.es>
+From: Stephen Boyd <swboyd@chromium.org>
 
-commit 11c52d250b34a0862edc29db03fbec23b30db6da upstream.
+commit 5d388fa01fa6eb310ac023a363a6cb216d9d8fe9 upstream.
 
-When the module boots into QDL download mode it exposes the 1199:90d2
-ids, which can be mapped to the qcserial driver, and used to run
-firmware upgrades (e.g. with the qmi-firmware-update program).
+If a cell has 'nbits' equal to a multiple of BITS_PER_BYTE the logic
 
-  T:  Bus=01 Lev=03 Prnt=08 Port=03 Cnt=01 Dev#= 10 Spd=480 MxCh= 0
-  D:  Ver= 2.10 Cls=00(>ifc ) Sub=00 Prot=00 MxPS=64 #Cfgs=  1
-  P:  Vendor=1199 ProdID=90d2 Rev=00.00
-  S:  Manufacturer=Sierra Wireless, Incorporated
-  S:  Product=Sierra Wireless EM9191
-  S:  SerialNumber=8W0382004102A109
-  C:  #Ifs= 1 Cfg#= 1 Atr=a0 MxPwr=2mA
-  I:  If#=0x0 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=10 Driver=qcserial
+ *p &= GENMASK((cell->nbits%BITS_PER_BYTE) - 1, 0);
 
-Signed-off-by: Aleksander Morgado <aleksander@aleksander.es>
+will become undefined behavior because nbits modulo BITS_PER_BYTE is 0, and we
+subtract one from that making a large number that is then shifted more than the
+number of bits that fit into an unsigned long.
+
+UBSAN reports this problem:
+
+ UBSAN: shift-out-of-bounds in drivers/nvmem/core.c:1386:8
+ shift exponent 64 is too large for 64-bit type 'unsigned long'
+ CPU: 6 PID: 7 Comm: kworker/u16:0 Not tainted 5.15.0-rc3+ #9
+ Hardware name: Google Lazor (rev3+) with KB Backlight (DT)
+ Workqueue: events_unbound deferred_probe_work_func
+ Call trace:
+  dump_backtrace+0x0/0x170
+  show_stack+0x24/0x30
+  dump_stack_lvl+0x64/0x7c
+  dump_stack+0x18/0x38
+  ubsan_epilogue+0x10/0x54
+  __ubsan_handle_shift_out_of_bounds+0x180/0x194
+  __nvmem_cell_read+0x1ec/0x21c
+  nvmem_cell_read+0x58/0x94
+  nvmem_cell_read_variable_common+0x4c/0xb0
+  nvmem_cell_read_variable_le_u32+0x40/0x100
+  a6xx_gpu_init+0x170/0x2f4
+  adreno_bind+0x174/0x284
+  component_bind_all+0xf0/0x264
+  msm_drm_bind+0x1d8/0x7a0
+  try_to_bring_up_master+0x164/0x1ac
+  __component_add+0xbc/0x13c
+  component_add+0x20/0x2c
+  dp_display_probe+0x340/0x384
+  platform_probe+0xc0/0x100
+  really_probe+0x110/0x304
+  __driver_probe_device+0xb8/0x120
+  driver_probe_device+0x4c/0xfc
+  __device_attach_driver+0xb0/0x128
+  bus_for_each_drv+0x90/0xdc
+  __device_attach+0xc8/0x174
+  device_initial_probe+0x20/0x2c
+  bus_probe_device+0x40/0xa4
+  deferred_probe_work_func+0x7c/0xb8
+  process_one_work+0x128/0x21c
+  process_scheduled_works+0x40/0x54
+  worker_thread+0x1ec/0x2a8
+  kthread+0x138/0x158
+  ret_from_fork+0x10/0x20
+
+Fix it by making sure there are any bits to mask out.
+
+Fixes: 69aba7948cbe ("nvmem: Add a simple NVMEM framework for consumers")
+Cc: Douglas Anderson <dianders@chromium.org>
 Cc: stable@vger.kernel.org
-Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Link: https://lore.kernel.org/r/20211013124511.18726-1-srinivas.kandagatla@linaro.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/serial/qcserial.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/nvmem/core.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/usb/serial/qcserial.c
-+++ b/drivers/usb/serial/qcserial.c
-@@ -165,6 +165,7 @@ static const struct usb_device_id id_tab
- 	{DEVICE_SWI(0x1199, 0x907b)},	/* Sierra Wireless EM74xx */
- 	{DEVICE_SWI(0x1199, 0x9090)},	/* Sierra Wireless EM7565 QDL */
- 	{DEVICE_SWI(0x1199, 0x9091)},	/* Sierra Wireless EM7565 */
-+	{DEVICE_SWI(0x1199, 0x90d2)},	/* Sierra Wireless EM9191 QDL */
- 	{DEVICE_SWI(0x413c, 0x81a2)},	/* Dell Wireless 5806 Gobi(TM) 4G LTE Mobile Broadband Card */
- 	{DEVICE_SWI(0x413c, 0x81a3)},	/* Dell Wireless 5570 HSPA+ (42Mbps) Mobile Broadband Card */
- 	{DEVICE_SWI(0x413c, 0x81a4)},	/* Dell Wireless 5570e HSPA+ (42Mbps) Mobile Broadband Card */
+--- a/drivers/nvmem/core.c
++++ b/drivers/nvmem/core.c
+@@ -987,7 +987,8 @@ static inline void nvmem_shift_read_buff
+ 		*p-- = 0;
+ 
+ 	/* clear msb bits if any leftover in the last byte */
+-	*p &= GENMASK((cell->nbits%BITS_PER_BYTE) - 1, 0);
++	if (cell->nbits % BITS_PER_BYTE)
++		*p &= GENMASK((cell->nbits % BITS_PER_BYTE) - 1, 0);
+ }
+ 
+ static int __nvmem_cell_read(struct nvmem_device *nvmem,
 
 
