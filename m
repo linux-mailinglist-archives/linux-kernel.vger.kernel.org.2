@@ -2,80 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3758E430DD2
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 04:21:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0F80430DD6
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 04:27:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237223AbhJRCXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 22:23:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52586 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236699AbhJRCXq (ORCPT
+        id S237579AbhJRC3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 22:29:15 -0400
+Received: from conssluserg-04.nifty.com ([210.131.2.83]:20267 "EHLO
+        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236699AbhJRC3O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 22:23:46 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13226C06161C;
-        Sun, 17 Oct 2021 19:21:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=DIQKw3qwkDPCsXVrAmS0+BsNjJtAvTsvtObVynrX8dE=; b=Zv7pV55a57UKMjZhSUwkrg2KGh
-        VBRiEcVefW0t2tUlf1qKwUHL6GUV5xRkBaktWkpwxQDyxZ0IlOEvrMQY750p505ZTKoOssDYxDawM
-        0RHstdRi+dHMhY8O8SH7+HTnaXscH+N60iUHmM9qVmv325S4eF9LyTP061d0+6WXG4VgLKNhrlXXY
-        cVNi/b94tY/RfqNMdZBH1GEBy5cUWXDiarvHB58cWmV24xggRj6L8nYfr5g8cs/JEXTL3nfgtA7Ex
-        vIqnMv6w5R+r2aA7Th39dOsXyswzTWe7DP2WnHQw5/4AurkCnb6E/gBJwKRctmIiLOTNy18dP/an4
-        JjhEJ7FQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mcIDp-00AdoF-Mt; Mon, 18 Oct 2021 02:18:41 +0000
-Date:   Mon, 18 Oct 2021 03:17:53 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Boqun Feng <boqun.feng@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        Tejun Heo <tj@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [PATCH] workqueue: doc: Call out the non-reentrance conditions
-Message-ID: <YWzZUZILdhAGba8I@casper.infradead.org>
-References: <20211018013117.256284-1-boqun.feng@gmail.com>
+        Sun, 17 Oct 2021 22:29:14 -0400
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176]) (authenticated)
+        by conssluserg-04.nifty.com with ESMTP id 19I2Ql7B017729;
+        Mon, 18 Oct 2021 11:26:48 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 19I2Ql7B017729
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1634524008;
+        bh=CiKo8CHQVDAYWhyEvx7oI0REWtFRrpPJ7yxT1ESbFKg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=gaLRaXIfNuPKnPWutWzEdKQpcjA3jnLWOJOmS7BRjbzTc6Fxe+uQrpcSt3jkL35HT
+         d4WxqL8R6GBQELN+N5sK7ycgG6d7eoETC4ZrsH8uTvvhSPwFlaFYGbH1JPaMNoXymK
+         h++ut5c92z2kWES4R3ehNexoGVAuU7ZXzL7AH/aSylJUWHoh78DlprM9TIA33ipJdc
+         +i1GfNR5G4o5RpV4hM/SRBTmN1Y4JRHJML3fVTxDKufhJQQ5Tf7ZmFbLulJDATCRFS
+         RmuDBUsCK5OD17YeJDclGJ2QMzaG2xRhVmYLvB3YyMkSyjgl/ZGr+pUPIVw3Bzn7rI
+         AOSdzL9hZTy/Q==
+X-Nifty-SrcIP: [209.85.210.176]
+Received: by mail-pf1-f176.google.com with SMTP id d5so706120pfu.1;
+        Sun, 17 Oct 2021 19:26:47 -0700 (PDT)
+X-Gm-Message-State: AOAM533S/0oWYZZKBp1NDDf9W/8IPYO1IB/ZW0OIv/lulG76WqK2BPEW
+        aY0ejss4OGS2L9nMTFhYP8/CGGUyJ8yMlX+hdOI=
+X-Google-Smtp-Source: ABdhPJy9gm8P7B1asPwCiUSjXBUtJ16OpMwhLR6MZDeTRjWK6YoBBOXbASiDe5KBfewnaNhwdyByUY5AidZhLJPoBWw=
+X-Received: by 2002:a63:d64c:: with SMTP id d12mr21299144pgj.186.1634524007031;
+ Sun, 17 Oct 2021 19:26:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211018013117.256284-1-boqun.feng@gmail.com>
+References: <alpine.DEB.2.22.394.2110172002450.4761@hadrien>
+ <7e5485df-a17b-304b-627d-9a85d2464df3@infradead.org> <alpine.DEB.2.22.394.2110172041010.4761@hadrien>
+In-Reply-To: <alpine.DEB.2.22.394.2110172041010.4761@hadrien>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Mon, 18 Oct 2021 11:26:10 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAS2H9n9NSpmMk_AkX1N9JRa_5Rk9Sgeguq_9uepzd1f5w@mail.gmail.com>
+Message-ID: <CAK7LNAS2H9n9NSpmMk_AkX1N9JRa_5Rk9Sgeguq_9uepzd1f5w@mail.gmail.com>
+Subject: Re: build reproducibility
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 18, 2021 at 09:31:17AM +0800, Boqun Feng wrote:
-> @@ -391,6 +387,23 @@ the stack trace of the offending worker thread. ::
->  The work item's function should be trivially visible in the stack
->  trace.
->  
-> +Non-reentrance Conditions
-> +=========================
-> +
-> +Workqueue guarantees that a work item cannot be re-entrant if the following
-> +conditions hold after a work item gets queued:
-> +
-> +        1. The work function hasn't been changed.
-> +        2. No one queues the work item to another workqueue.
-> +        3. The work item hasn't been reinitiated.
-> +
-> +In other words, if the above conditions hold, the work item is guaranteed to be
-> +executed by at most one worker system-wide at any given time.
-> +
-> +Note that requeuing the work item (to the same queue) in the self function
-> +doesn't break these conditions, so it's safe to do. Otherwise, caution is
-> +required when breaking the conditions inside a work function.
-> +
+On Mon, Oct 18, 2021 at 3:42 AM Julia Lawall <julia.lawall@inria.fr> wrote:
+>
+>
+>
+> On Sun, 17 Oct 2021, Randy Dunlap wrote:
+>
+> > On 10/17/21 11:12 AM, Julia Lawall wrote:
+> > > Hello,
+> > >
+> > > If I do the following:
+> > >
+> > > git clean -dfx
+> > > cp saved_config .config
+> > > make olddefconfig && make && make modules_install && make install
+> > >
+> > > Should I always end up with the same kernel, regardless of the kernel that
+> > > is currently running on the machine?
+> > >
+> > > I see a large performance difference between Linux 5.10 and all versions
+> > > afterwards for a particular benchmark.  I am unable to bisect the problem
+> > > eg between 5.10 and 5.11, because as soon as I come to a kernel that gives
+> > > the bad performance, all of the kernels that I generate subsequently in
+> > > the bisecting process (using the above commands) also have the bad
+> > > performance.
+> > >
+> > > It could of course be that I have completely misinterpreted the problem,
+> > > and it has nothing to do with the kernel.  But I have tested the program a
+> > > lot when only working on variants of Linux 5.9.  I only start to have
+> > > problems when I use versions >= 5.11.
+> >
+> > Hi,
+> >
+> > My "guess" is that this has something to do with the build
+> > reusing some current file(s) that need to be rebuilt.
+> > I.e., adding a "make clean" or "make proper" might be needed.
+>
+> This was my guess too.  But I have the git clean -dfx.  I did a comparison
+> with make distclean and this does a little more (mostly some files in
+> tools).
+>
+> thanks,
+> julia
+>
 
-I'd like to suggest that this be added to the Guidelines section
-instead:
 
-* A work item will not normally be processed on multiple CPUs at the
-  same time.  It can happen if the work function is changed, the work
-  item is queued to multiple queues or the work function is
-  reinitialised after being queued.
+'git clean -dfx' is a very hard cleaning.
+So, you are doing a full build in every step of bisecting.
+
+I have no idea to explain the symptom you observed:
+ "as soon as I come to a kernel that gives
+ the bad performance, all of the kernels that I generate subsequently in
+ the bisecting process"
+
+
+If you desire perfect reproducibility, you can check
+   Documentation/kbuild/reproducible-builds.rst
+But, I doubt slight differences such as timestamps
+can explain the large performance difference.
+
+
+If you are chasing the performance issue,
+commit cf536e185869d4815 said
+CONFIG_DEBUG_FORCE_FUNCTION_ALIGN_*
+might be useful to eliminate the possibility
+of code alignment.
+
+
+Otherwise, I have no more idea...
+
+
+
+
+
+
+-- 
+Best Regards
+Masahiro Yamada
