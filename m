@@ -2,51 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36B084326E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 20:52:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D10254326EC
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 20:55:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232263AbhJRSyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 14:54:54 -0400
-Received: from relay.sw.ru ([185.231.240.75]:41446 "EHLO relay.sw.ru"
+        id S233186AbhJRS5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 14:57:41 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:29787 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229696AbhJRSyx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 14:54:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
-        Subject; bh=FPgXvNFflId9yCiSM6OEGXB6bm9D5jdYlM4GUOjXptc=; b=v/v1+2RL7th4TFOnM
-        fhrDxDe2acIKqtpc/j7V0VI1fVrBkbj21s8dd4LheDZScQgLdKmtYflcsRXLsjWd3tzBQ1U9m2TeO
-        eV2Mmz3edrVXgCbJNvm61m/GG3jhpXKbRcQ8HtGkJsUa8m4paFL9LstT16cvS9/g0lYMfLTwK/bBo
-        =;
-Received: from [172.29.1.17]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1mcXkS-006OdK-EG; Mon, 18 Oct 2021 21:52:36 +0300
-Subject: Re: [PATCH memcg 0/1] false global OOM triggered by memcg-limited
- task
-To:     Shakeel Butt <shakeelb@google.com>, Michal Hocko <mhocko@suse.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, kernel@openvz.org
-References: <9d10df01-0127-fb40-81c3-cc53c9733c3e@virtuozzo.com>
- <YW04jWSv6pQb2Goe@dhcp22.suse.cz>
- <6b751abe-aa52-d1d8-2631-ec471975cc3a@virtuozzo.com>
- <YW1gRz0rTkJrvc4L@dhcp22.suse.cz>
- <27dc0c49-a0d6-875b-49c6-0ef5c0cc3ac8@virtuozzo.com>
- <YW1oMxNkUCaAimmg@dhcp22.suse.cz>
- <CALvZod42uwgrg83CCKn6JgYqAQtR1RLJSuybNYjtkFo4wVgT1w@mail.gmail.com>
-From:   Vasily Averin <vvs@virtuozzo.com>
-Message-ID: <153f7aa6-39ef-f064-8745-a9489e088239@virtuozzo.com>
-Date:   Mon, 18 Oct 2021 21:52:14 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S229696AbhJRS5i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 14:57:38 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1634583326; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=3gWQDMOuujkjj+troUNOJF7V7xpsV6jWYUnT7VwrR5g=; b=VaeHyoipFmz3UR4ceyxZKcNphdUvqU+C7WCH81Ffmh32uW2pjRSSWGeMOgtj8I2xnXnsZytY
+ XtNeE5FE4dsc40AC5hC4dnQD6YTNHnUX8nNal1NxTnpt6ZjrWVohLOO8AW9fGURZ0CUkwF9R
+ JuiLpEBm4QeO8zXbqY0uHxKVPvc=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 616dc30a03355859c8a4b199 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 18 Oct 2021 18:55:06
+ GMT
+Sender: wcheng=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id ED865C4360D; Mon, 18 Oct 2021 18:55:05 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-5.8 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.1.13] (cpe-75-80-185-151.san.res.rr.com [75.80.185.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: wcheng)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D1CC6C4338F;
+        Mon, 18 Oct 2021 18:55:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org D1CC6C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Subject: Re: [PATCH] usb: dwc3: gadget: Remove dev_err() when queuing to
+ inactive gadget/ep
+To:     Felipe Balbi <balbi@kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jackp@codeaurora.org
+References: <20211014233534.2382-1-wcheng@codeaurora.org>
+ <YWkh1NXmmMbf59Ee@kroah.com> <87bl3qbkfz.fsf@kernel.org>
+From:   Wesley Cheng <wcheng@codeaurora.org>
+Message-ID: <75fe2695-0441-3aa9-41c5-92cd04054e71@codeaurora.org>
+Date:   Mon, 18 Oct 2021 11:55:03 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <CALvZod42uwgrg83CCKn6JgYqAQtR1RLJSuybNYjtkFo4wVgT1w@mail.gmail.com>
+In-Reply-To: <87bl3qbkfz.fsf@kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -54,37 +64,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18.10.2021 18:07, Shakeel Butt wrote:
-> On Mon, Oct 18, 2021 at 5:27 AM Michal Hocko <mhocko@suse.com> wrote:
->>
->> [restore the cc list]
->>
->> On Mon 18-10-21 15:14:26, Vasily Averin wrote:
->>> On 18.10.2021 14:53, Michal Hocko wrote:
->>>> On Mon 18-10-21 13:05:35, Vasily Averin wrote:
->>>>> On 18.10.2021 12:04, Michal Hocko wrote:
->>>>> Here we call try_charge_memcg() that return success and approve the allocation,
->>>>> however then we hit into kmem limit and fail the allocation.
->>>>
->>>> Just to make sure I understand this would be for the v1 kmem explicit
->>>> limit, correct?
->>>
->>> yes, I mean this limit.
->>
->> OK, thanks for the clarification. This is a known problem. Have a look
->> at I think we consider that one to 0158115f702b ("memcg, kmem: deprecate
->> kmem.limit_in_bytes"). We are reporting the deprecated and to-be removed
->> status since 2019 without any actual report sugested by the kernel
->> message. Maybe we should try and remove it and see whether that prompts
->> some pushback.
->>
+Hi,
+
+On 10/15/2021 4:23 AM, Felipe Balbi wrote:
 > 
-> Yes, I think now should be the right time to take the next step for
-> deprecation of kmem limits:
-> https://lore.kernel.org/all/20201118175726.2453120-1-shakeelb@google.com/
+> Greg KH <gregkh@linuxfoundation.org> writes:
+> 
+>> On Thu, Oct 14, 2021 at 04:35:34PM -0700, Wesley Cheng wrote:
+>>> Since function drivers will still be active until dwc3_disconnect_gadget()
+>>> is called, some applications will continue to queue packets to DWC3
+>>> gadget.  This can lead to a flood of messages regarding failed ep queue,
+>>> as the endpoint is in the process of being disabled.  Remove the print as
+>>> function drivers will likely log queuing errors as well.
+>>>
+>>> Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
+>>> ---
+>>>  drivers/usb/dwc3/gadget.c | 5 +----
+>>>  1 file changed, 1 insertion(+), 4 deletions(-)
+>>>
+>>> diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
+>>> index 4845682a0408..674a9a527125 100644
+>>> --- a/drivers/usb/dwc3/gadget.c
+>>> +++ b/drivers/usb/dwc3/gadget.c
+>>> @@ -1812,11 +1812,8 @@ static int __dwc3_gadget_ep_queue(struct dwc3_ep *dep, struct dwc3_request *req)
+>>>  {
+>>>  	struct dwc3		*dwc = dep->dwc;
+>>>  
+>>> -	if (!dep->endpoint.desc || !dwc->pullups_connected || !dwc->connected) {
+>>> -		dev_err(dwc->dev, "%s: can't queue to disabled endpoint\n",
+>>> -				dep->name);
+>>
+>> Why not just change this to dev_dbg() instead?
+> 
+> I agree. A dev_dbg() would be better here. We don't want to loose this
+> message forever as it may prevent us from finding buggy function
+> drivers.
+> 
 
-Are you going to push it to stable kernels too?
+Thanks Greg/Felipe, will change it to a dev_dbg().
 
-Thank you,
-	Vasily Averin
+Thanks
+Wesley Cheng
 
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
