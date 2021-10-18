@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9685A431C46
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:37:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F1F6431CB8
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:42:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233065AbhJRNjy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:39:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55140 "EHLO mail.kernel.org"
+        id S233630AbhJRNoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:44:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38720 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232972AbhJRNgP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:36:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EA16A613BD;
-        Mon, 18 Oct 2021 13:31:01 +0000 (UTC)
+        id S232395AbhJRNmD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:42:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1DCE261501;
+        Mon, 18 Oct 2021 13:33:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634563862;
-        bh=8Yv8DfGlHSd0F1x2NLq7qL26rhiIUTD5Ci5LMFjrKWo=;
+        s=korg; t=1634564032;
+        bh=DNlUJedpY1d8ERHjy1N7bkYZo8U0LtRGe4n5jCwrsuc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gVMG9eD1+7JeBW2ycAMSixzCJZrmut172O0yOpoY0jJy2yjkC1Y5+0DWdqbcpfhVl
-         oi0c0IhTRAuqRWeBG0d8MheM53MjfvX1ib5B7MQ3TCTuydO+2IEREquDUGv6iLt72V
-         mzDs5v1BUcnStAz2rNABE1Qdx0IUSPCTGfaQEzqY=
+        b=RCg4mejJVWTSe+8yBaerG1kViRVOjfING7NnxDC9GIyqcHu8QAhKHu3NVVBgdEMON
+         HVCUi8fBx5ZyNWP366x5roVvfX3ZPEkKpM7kw1VGxCt7FpOp5nSnysIgJD/QZWondP
+         ZcbWAdIXxLRAjRso6Ej/4bvUfRkUj9SYYznxBRLQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>
-Subject: [PATCH 5.4 16/69] watchdog: orion: use 0 for unset heartbeat
+        stable@vger.kernel.org, Daniele Palmas <dnlplm@gmail.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 5.10 038/103] USB: serial: option: add Telit LE910Cx composition 0x1204
 Date:   Mon, 18 Oct 2021 15:24:14 +0200
-Message-Id: <20211018132330.000309595@linuxfoundation.org>
+Message-Id: <20211018132335.986649700@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132329.453964125@linuxfoundation.org>
-References: <20211018132329.453964125@linuxfoundation.org>
+In-Reply-To: <20211018132334.702559133@linuxfoundation.org>
+References: <20211018132334.702559133@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,41 +39,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Packham <chris.packham@alliedtelesis.co.nz>
+From: Daniele Palmas <dnlplm@gmail.com>
 
-commit bb914088bd8a91c382f54d469367b2e5508b5493 upstream.
+commit f5a8a07edafed8bede17a95ef8940fe3a57a77d5 upstream.
 
-If the heartbeat module param is not specified we would get an error
-message
+Add the following Telit LE910Cx composition:
 
-  watchdog: f1020300.watchdog: driver supplied timeout (4294967295) out of range
-  watchdog: f1020300.watchdog: falling back to default timeout (171)
+0x1204: tty, adb, mbim, tty, tty, tty, tty
 
-This is because we were initialising heartbeat to -1. By removing the
-initialisation (thus letting the C run time initialise it to 0) we
-silence the warning message and the default timeout is still used.
-
-Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-Link: https://lore.kernel.org/r/20200313031312.1485-1-chris.packham@alliedtelesis.co.nz
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
-Signed-off-by: Marek Behún <kabel@kernel.org>
+Signed-off-by: Daniele Palmas <dnlplm@gmail.com>
+Link: https://lore.kernel.org/r/20211004105655.8515-1-dnlplm@gmail.com
+Cc: stable@vger.kernel.org
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/watchdog/orion_wdt.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/serial/option.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/watchdog/orion_wdt.c
-+++ b/drivers/watchdog/orion_wdt.c
-@@ -52,7 +52,7 @@
- #define WDT_A370_RATIO		(1 << WDT_A370_RATIO_SHIFT)
- 
- static bool nowayout = WATCHDOG_NOWAYOUT;
--static int heartbeat = -1;		/* module parameter (seconds) */
-+static int heartbeat;		/* module parameter (seconds) */
- 
- struct orion_watchdog;
- 
+--- a/drivers/usb/serial/option.c
++++ b/drivers/usb/serial/option.c
+@@ -1229,6 +1229,8 @@ static const struct usb_device_id option
+ 	  .driver_info = NCTRL(0) | RSVD(1) | RSVD(2) },
+ 	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x1203, 0xff),	/* Telit LE910Cx (RNDIS) */
+ 	  .driver_info = NCTRL(2) | RSVD(3) },
++	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x1204, 0xff),	/* Telit LE910Cx (MBIM) */
++	  .driver_info = NCTRL(0) | RSVD(1) },
+ 	{ USB_DEVICE(TELIT_VENDOR_ID, TELIT_PRODUCT_LE910_USBCFG4),
+ 	  .driver_info = NCTRL(0) | RSVD(1) | RSVD(2) | RSVD(3) },
+ 	{ USB_DEVICE(TELIT_VENDOR_ID, TELIT_PRODUCT_LE920),
 
 
