@@ -2,139 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C937430F5B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 06:51:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B2F8430F66
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 06:56:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229809AbhJRExe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 00:53:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57196 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229583AbhJRExd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 00:53:33 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B91FBC06161C;
-        Sun, 17 Oct 2021 21:51:22 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HXkwh29Rbz4xbT;
-        Mon, 18 Oct 2021 15:51:16 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1634532680;
-        bh=6zAiMGt9lN3fX/YpWxecPHWsTqnDTeNDIYa0BPeLy5s=;
-        h=Date:From:To:Cc:Subject:From;
-        b=fW4c7a4S/JgodkeUS5uKVtw8Q4E3ao37mrDmKYENGIKvDmHGQey+1kYSbznxuC2jN
-         +R1BbKYoCf20pZgPrc3++8oCq3NIEf+fKQjdkNNKuV/0iciMqpO/H4xCXXt6aySG6E
-         lgblEFmvcyvR2s9cWE625J+uCGyfWrLYAdH+XaX3cQrZX0jUPc76JkTeizvxmYXR8M
-         ec+oxNixp4voipZj1qrECGmfKnu5hiviVUT8EKuuFr4/nf656dnyBAiwXfo8cfIgqo
-         P+s2sBOceoCxGgieQO4uTfaiLGoKAYxRitm/VByYu0zH2Wf4mpjvBQH/EEPmYzHeAM
-         +VTaOnI3aknoA==
-Date:   Mon, 18 Oct 2021 15:51:13 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>
-Cc:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>,
-        Adam Bratschi-Kaye <ark.email@gmail.com>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Ayaan Zaidi <zaidi.ayaan@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Boris-Chengbiao Zhou <bobo1239@web.de>,
-        Douglas Su <d0u9.su@outlook.com>, Finn Behrens <me@kloenk.de>,
-        Fox Chen <foxhlchen@gmail.com>, Gary Guo <gary@garyguo.net>,
-        Geoffrey Thomas <geofft@ldpreload.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Sumera Priyadarsini <sylphrenadin@gmail.com>,
-        Sven Van Asbroeck <thesven73@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@google.com>,
-        Yuki Okushi <jtitor@2k36.org>
-Subject: linux-next: manual merge of the rust tree with the bpf-next tree
-Message-ID: <20211018155113.1303fa5e@canb.auug.org.au>
+        id S229643AbhJRE6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 00:58:08 -0400
+Received: from mail-mw2nam12on2060.outbound.protection.outlook.com ([40.107.244.60]:32480
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229481AbhJRE6H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 00:58:07 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EKp5LD13LoovNA06+AhMHKFyv83UFZ2Himc/yZPmOZq+ZrIiq327A/fmNRxWoliI/JuLPqA2F+oIeBgJ5R9Ye3rP3ar/4iablUKkOZS+H5Ei7OOh+901pGcHCZGkERPmem8OGSTtc+65KfK/9rqG2kFm4OsMRQaYsTPtoavPyB+7D7N7Bd7ED/eQEBFqYYTesN1EvajvFcnhpwu2s+EqKHsn8ilFHyPc6J+m3XWG9ks7+VYaSzxJ54FwJn7Wthdod+NpemE2LejAFqQwAZJvQdcQud0Pcn8oo9Vq97mf/ZNBiLG/UCWIqS+WHq8CkgA75o3OhhJswU/6LmjVrAbYzg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=bbye1nzo2652wgMAuaPvp1Dv0qBpyHX1EF0F40dxTm4=;
+ b=lP06eXYDS55tbsbqUt7dlLloPITmda2SZyVplkEVCaP5RpQ7g0nLpz1esJWDrH3ZVCra3UqnKIhhBcSJ/TTz8wL1BO8zlolaDhY5mdNDqFGhjOuvQBItNuRfX7lsRlVIIpgZF+nCGO+Dfb6ZdxlFi7DwqGMCjb50o3WKQCmFqDn47xmNWxxGMGz+LGdSVA5UxaI9+LkGBYpOlpAKz9W3H5ep9FIsvC4ahaEl+vr2v5h/sKaAl7xfEqnD++5BMrLi9x9hn9Mxv0i8bLqzfmVL99SyeXdN1IlCGwRi/VzGsnlbvB026AiG7AIeLeLFL5eGxulIgqUUkW6BLEUomnS/7Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=nvidia.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bbye1nzo2652wgMAuaPvp1Dv0qBpyHX1EF0F40dxTm4=;
+ b=cTp+RBAqOZbOrJFlmi8dAQmT3kDqiA6hgXWfHFMxcMkWWbbjx/cqwF2Ed9aypt7Z+BS6H6LC2FJiPB2dXblHGGcre2NHyfZqZf3c89u+pc9qlrSU89VXnKwp6rMgYL8nVdx1r5yhRZsU2ov4ZFFrhu8/PcwAPWAVvk5mJhXr8z0e9QeYRiM8uqFwfiKGnaui4hqhdmNhBU1V/GyBbLsJbQsjNHFdvmuiYf0USvH3X7YRPwR1eymhWLO8J0oEMhnw+EUTmz4RHY6n2GkOtJMklLiu230wCJclEBhFcytBSq5sE8raaL/aFXO9wopcvVuZYgd218cl60bzz55k3vTD0Q==
+Received: from DM5PR06CA0030.namprd06.prod.outlook.com (2603:10b6:3:5d::16) by
+ DM5PR1201MB0265.namprd12.prod.outlook.com (2603:10b6:4:58::11) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4608.18; Mon, 18 Oct 2021 04:55:55 +0000
+Received: from DM6NAM11FT029.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:3:5d:cafe::fa) by DM5PR06CA0030.outlook.office365.com
+ (2603:10b6:3:5d::16) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.15 via Frontend
+ Transport; Mon, 18 Oct 2021 04:55:55 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ DM6NAM11FT029.mail.protection.outlook.com (10.13.173.23) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4608.15 via Frontend Transport; Mon, 18 Oct 2021 04:55:55 +0000
+Received: from localhost (172.20.187.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Mon, 18 Oct
+ 2021 04:55:54 +0000
+From:   Alistair Popple <apopple@nvidia.com>
+To:     <linux-mm@kvack.org>, <akpm@linux-foundation.org>
+CC:     <linux-kernel@vger.kernel.org>, <rcampbell@nvidia.com>,
+        <jhubbard@nvidia.com>, <jglisse@redhat.com>,
+        Alistair Popple <apopple@nvidia.com>
+Subject: [PATCH] mm/rmap.c: Avoid double faults migrating device private pages
+Date:   Mon, 18 Oct 2021 15:52:47 +1100
+Message-ID: <20211018045247.3128058-1-apopple@nvidia.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/czlDD6Zf2uoH0zh=yDxuLMx";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [172.20.187.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: afddb031-84bb-47ec-e4b9-08d991f39199
+X-MS-TrafficTypeDiagnostic: DM5PR1201MB0265:
+X-Microsoft-Antispam-PRVS: <DM5PR1201MB026576D107A0F60E28A35354DFBC9@DM5PR1201MB0265.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: g5Tc5tksbDNcXIzqbZjsckTlmsROMwKwX3pU26XZCTguZR3IdmMK2uJC/LIDFPwvGsEVUobp4RBXrjNrh+JH2ziBmHbMfEIDMqtYHiw5HEiASgh72YkO/LVoQw5VG5FxYg4c3sz3F1MRdG9w6w3CIUNONsViXDTT7nF6aBZgR2ZV7/ksn7TPMCSVYbEaf+eW2KMsnWjlP83x68N3gHPUKwLnnEP6Qyvc+PGPziEXO9E4IYipr40Ww/mp9KSeddJ/fP3PyMdsRGFLWGGlz77lK+Zobamhyo0snr0uinqAWOs5PxJ5JqU3AzHHHM3jxDHkjgmpQ29+jfHpVln9kZIogZk16lDUC6N6DFbz+cx3liitaaFaSGFE6tjfTpxEGmoon8C7Jszgkw8OdgH8h+/tFQBvT5D2QOBaAl3gBJ0X/Nn0zHjDjKZ0YS4Po3zo5YScwxVE62dCsWP8aN3MYI9ArSPmE6ZNsM6EpAqzhhNXMyyRYLHtNw2/H2CEuAodpEZY2J6l/CKXdVdH0vdx6yOC2oiaFOjry0cXPRcGemNcKT43kIAELSrqCfstTK0ytcg07w9audEjLznW8q6+HFqZGF9AMF3IoTPx4VHMWvcAFv7S3/RcG+KYKCa07lTWI0lIThfG29T+J8/6TNc9prozRZsO2E03OfgIeoIZwcmec61hiugvdiDQgRn5lx6fB5p/bhLxo5g5ra6pWkhH/lfLcA==
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(46966006)(36840700001)(336012)(86362001)(2616005)(426003)(2906002)(107886003)(36756003)(6666004)(316002)(5660300002)(54906003)(36906005)(110136005)(70206006)(70586007)(4326008)(8676002)(508600001)(8936002)(186003)(16526019)(36860700001)(83380400001)(47076005)(26005)(1076003)(356005)(7636003)(82310400003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Oct 2021 04:55:55.4488
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: afddb031-84bb-47ec-e4b9-08d991f39199
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT029.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1201MB0265
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/czlDD6Zf2uoH0zh=yDxuLMx
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+During migration special page table entries are installed for each page
+being migrated. These entries store the pfn and associated permissions
+of ptes mapping the page being migarted.
 
-Hi all,
+Device-private pages use special swap pte entries to distinguish
+read-only vs. writeable pages which the migration code checks when
+creating migration entries. Normally this follows a fast path in
+migrate_vma_collect_pmd() which correctly copies the permissions of
+device-private pages over to migration entries when migrating pages back
+to the CPU.
 
-Today's linux-next merge of the rust tree got a conflict in:
+However the slow-path falls back to using try_to_migrate() which
+unconditionally creates read-only migration entries for device-private
+pages. This leads to unnecessary double faults on the CPU as the new
+pages are always mapped read-only even when they could be mapped
+writeable. Fix this by correctly copying device-private permissions in
+try_to_migrate_one().
 
-  scripts/Makefile.modfinal
+Signed-off-by: Alistair Popple <apopple@nvidia.com>
+Reported-by: Ralph Campbell <rcampbell@nvidia.com>
+---
+ mm/rmap.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-between commit:
+diff --git a/mm/rmap.c b/mm/rmap.c
+index b9eb5c12f3fe..271de8118cdd 100644
+--- a/mm/rmap.c
++++ b/mm/rmap.c
+@@ -1804,6 +1804,7 @@ static bool try_to_migrate_one(struct page *page, struct vm_area_struct *vma,
+ 		update_hiwater_rss(mm);
+ 
+ 		if (is_zone_device_page(page)) {
++			unsigned long pfn = page_to_pfn(page);
+ 			swp_entry_t entry;
+ 			pte_t swp_pte;
+ 
+@@ -1812,8 +1813,11 @@ static bool try_to_migrate_one(struct page *page, struct vm_area_struct *vma,
+ 			 * pte. do_swap_page() will wait until the migration
+ 			 * pte is removed and then restart fault handling.
+ 			 */
+-			entry = make_readable_migration_entry(
+-							page_to_pfn(page));
++			entry = pte_to_swp_entry(pteval);
++			if (is_writable_device_private_entry(entry))
++				entry = make_writable_migration_entry(pfn);
++			else
++				entry = make_readable_migration_entry(pfn);
+ 			swp_pte = swp_entry_to_pte(entry);
+ 
+ 			/*
+-- 
+2.30.2
 
-  0e32dfc80bae ("bpf: Enable TCP congestion control kfunc from modules")
-
-from the bpf-next tree and commit:
-
-  c862c7fee526 ("Kbuild: add Rust support")
-
-from the rust tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc scripts/Makefile.modfinal
-index 1fb45b011e4b,c0842e999a75..000000000000
---- a/scripts/Makefile.modfinal
-+++ b/scripts/Makefile.modfinal
-@@@ -39,11 -39,12 +39,13 @@@ quiet_cmd_ld_ko_o =3D LD [M]  $
- =20
-  quiet_cmd_btf_ko =3D BTF [M] $@
-        cmd_btf_ko =3D 							\
-- 	if [ -f vmlinux ]; then						\
-+ 	if [ ! -f vmlinux ]; then					\
-+ 		printf "Skipping BTF generation for %s due to unavailability of vmlinux=
-\n" $@ 1>&2; \
-+ 	elif $(srctree)/scripts/is_rust_module.sh $@; then 		\
-+ 		printf "Skipping BTF generation for %s because it's a Rust module\n" $@=
- 1>&2; \
-+ 	else								\
-  		LLVM_OBJCOPY=3D"$(OBJCOPY)" $(PAHOLE) -J --btf_base vmlinux $@; \
- +		$(RESOLVE_BTFIDS) -b vmlinux $@; 			\
-- 	else								\
-- 		printf "Skipping BTF generation for %s due to unavailability of vmlinux=
-\n" $@ 1>&2; \
-  	fi;
- =20
-  # Same as newer-prereqs, but allows to exclude specified extra dependenci=
-es
-
---Sig_/czlDD6Zf2uoH0zh=yDxuLMx
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFs/UIACgkQAVBC80lX
-0GxNKgf+OIlNISH1VEOt5ZFH7WDK6buIRBYIG2BHwHx1dUiyJMiMHktLCMlDJ36L
-Z8J8FubHOY7GCUz5OC3UBISL5xq6kBvKi8/Hw0synGDkIeKXl17KP+AbBfwxwOWo
-leeUZg7rXERwRjJymxwluVtqexBGkOJVN7iADHDrxPpbgHjBgsAkVi4MtgT4AQPG
-RdXRE/ody2JDMd86XFJY+0gao4ruhK6EDjtFUjtmqFG969aSILrE2AzUJNypY6SD
-d35lCGJwsxVQ9xhCoyQIziOfaNicJJoKe5I8dlvnGH5Vh6hE1+5qD/20QPwIZArq
-mIWpExST/gS8FYz1iTuvDxgO0Vnn5Q==
-=KBES
------END PGP SIGNATURE-----
-
---Sig_/czlDD6Zf2uoH0zh=yDxuLMx--
