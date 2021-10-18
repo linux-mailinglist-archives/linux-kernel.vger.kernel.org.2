@@ -2,109 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88128431FE6
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 16:37:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8319D431FFB
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 16:38:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232006AbhJROje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 10:39:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58316 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231736AbhJROjd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 10:39:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EC10E60FD8;
-        Mon, 18 Oct 2021 14:37:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634567842;
-        bh=zdZ1w32XEmm3gSqpjvDQ0HryAwERxjgClkMifksRYPk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=n9zantTnTpLbfPqXml7p25GAjC0m8XF9D5pIQQ1f0MdJ0ihxYwryK2as+KclEqgbr
-         lv2QNBtsacoXHoHepR1PZC2dqvQ61Sa7VjH4UzjFQpnUmfhKT0M1ulTHQdDLTBkPCL
-         y2M5Dva4Tj6DCMOvsfh6tWmpuTSGlv1eoizTetTLwas/bBqN4ClwVRuE/FRvWcKymf
-         4bK2Yt6gRGLaiztBNpssse58VrRF5axHVVbDxhQXa2bM96zry5uD8a1/kRdWvKtdAK
-         m/4P2vg/q1oI2cIvhHXLXwQTJSH++/E+RozpjCnZ7Y8rwisonY3rmP1aaLDJM1eB+j
-         I7MUscLIzOIaA==
-Date:   Mon, 18 Oct 2021 15:37:16 +0100
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Krzysztof =?UTF-8?B?V2ls?= =?UTF-8?B?Y3p5xYRza2k=?= 
-        <kw@linux.com>, Songxiaowei <songxiaowei@hisilicon.com>,
-        Binghui Wang <wangbinghui@hisilicon.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org
-Subject: Re: [PATCH v13 09/10] PCI: kirin: fix poweroff sequence
-Message-ID: <20211018153716.0370a66c@sal.lan>
-In-Reply-To: <20211018102127.GD17152@lpieralisi>
-References: <cover.1634539769.git.mchehab+huawei@kernel.org>
-        <8116a4ddaaeda8dd056e80fa0ee506c5c6f42ca7.1634539769.git.mchehab+huawei@kernel.org>
-        <20211018102127.GD17152@lpieralisi>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S232160AbhJROlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 10:41:03 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:42536 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231736AbhJROlB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 10:41:01 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 8CD271FD6D;
+        Mon, 18 Oct 2021 14:38:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1634567929; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=p8UvXsr4YdfQ7VgkGnQdWA+e9mE7dE4zVzaWSBBF8jg=;
+        b=o+9Zvqxd1zuDScRmj5FHQAN5pzElDNi2/StYJl4146XL/kcktUIt6iI5buFYaaStGsLoId
+        q26b9xdO5mJGwYUW6G+4UwKTe66LzW8kgYWg7u/bNB2Wye1RLAyNvlN2SC9RQOyHgWFujW
+        rNFAhqufro2+zDXaSSLwmVzS2uOgItM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1634567929;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=p8UvXsr4YdfQ7VgkGnQdWA+e9mE7dE4zVzaWSBBF8jg=;
+        b=Y21sqWMsX6UPj4zZfaRctayVo4D1ZzUauurUOtVIDqXr5Zsh6PpBCgYf3jYW7MdYc+oedo
+        B+cZPHL3f9Hx95Cg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B212114090;
+        Mon, 18 Oct 2021 14:38:45 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id hCNhG/WGbWGlBAAAMHmgww
+        (envelope-from <colyli@suse.de>); Mon, 18 Oct 2021 14:38:45 +0000
+Subject: Re: [PATCH] bcache: move calc_cached_dev_sectors to proper place on
+ backing device detach
+To:     Lin Feng <linf@wangsu.com>
+Cc:     linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kent.overstreet@gmail.com
+References: <20211015101600.91109-1-linf@wangsu.com>
+From:   Coly Li <colyli@suse.de>
+Message-ID: <fcae5dd6-ddd7-d402-fed2-a42a473cf823@suse.de>
+Date:   Mon, 18 Oct 2021 22:38:37 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20211015101600.91109-1-linf@wangsu.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, 18 Oct 2021 11:21:27 +0100
-Lorenzo Pieralisi <lorenzo.pieralisi@arm.com> escreveu:
+On 10/15/21 6:16 PM, Lin Feng wrote:
+> Calculation of cache_set's cached sectors is done by travelling
+> cached_devs list as shown below:
+>
+> static void calc_cached_dev_sectors(struct cache_set *c)
+> {
+> ...
+>          list_for_each_entry(dc, &c->cached_devs, list)
+>                  sectors += bdev_sectors(dc->bdev);
+>
+>          c->cached_dev_sectors = sectors;
+> }
+>
+> But cached_dev won't be unlinked from c->cached_devs list until we call
+> following list_move(&dc->list, &uncached_devices),
+> so previous fix in 'commit 46010141da6677b81cc77f9b47f8ac62bd1cbfd3
+> ("bcache: recal cached_dev_sectors on detach")' is wrong, now we move
+> it to its right palce.
+>
+> Signed-off-by: Lin Feng <linf@wangsu.com>
 
-> On Mon, Oct 18, 2021 at 08:07:34AM +0100, Mauro Carvalho Chehab wrote:
-> > This driver currently doesn't call dw_pcie_host_deinit()
-> > at the .remove() callback. This can cause an OOPS if the driver
-> > is unbound.  
-> 
-> This looks like a fix, it has to be marked as such.
+Nice catch! I added it in my testing series. Thanks.
 
-Well, without patch 10/10, the .remove() ops won't be called,
-so, it is not really a fix, but I can surely add a c/c
-stable@vger.kernel.org and add a Fixes: tag here.
+Coly Li
 
-> 
-> > While here, add a poweroff function, in order to abstract
-> > between the internal and external PHY logic.
-> > 
-> > Acked-by: Xiaowei Song <songxiaowei@hisilicon.com>
-> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> > ---
-> > 
-> > See [PATCH v13 00/10] at: https://lore.kernel.org/all/cover.1634539769.git.mchehab+huawei@kernel.org/
-> > 
-> >  drivers/pci/controller/dwc/pcie-kirin.c | 30 ++++++++++++++++---------
-> >  1 file changed, 20 insertions(+), 10 deletions(-)
-> > 
-> > diff --git a/drivers/pci/controller/dwc/pcie-kirin.c b/drivers/pci/controller/dwc/pcie-kirin.c
-> > index b17a194cf78d..ffc63d12f8ed 100644
-> > --- a/drivers/pci/controller/dwc/pcie-kirin.c
-> > +++ b/drivers/pci/controller/dwc/pcie-kirin.c
-> > @@ -680,6 +680,23 @@ static const struct dw_pcie_host_ops kirin_pcie_host_ops = {
-> >  	.host_init = kirin_pcie_host_init,
-> >  };
-> >  
-> > +static int kirin_pcie_power_off(struct kirin_pcie *kirin_pcie)
-> > +{
-> > +	int i;
-> > +
-> > +	if (kirin_pcie->type == PCIE_KIRIN_INTERNAL_PHY)
-> > +		return hi3660_pcie_phy_power_off(kirin_pcie);
-> > +
-> > +	for (i = 0; i < kirin_pcie->n_gpio_clkreq; i++) {
-> > +		gpio_direction_output(kirin_pcie->gpio_id_clkreq[i], 1);
-> > +	}  
-> 
-> It looks like you are adding functionality here (ie gpio), not
-> just wrapping common code in a function.
+> ---
+>   drivers/md/bcache/super.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
+> index f2874c77ff79..8543e6997770 100644
+> --- a/drivers/md/bcache/super.c
+> +++ b/drivers/md/bcache/super.c
+> @@ -1154,9 +1154,9 @@ static void cached_dev_detach_finish(struct work_struct *w)
+>   
+>   	mutex_lock(&bch_register_lock);
+>   
+> -	calc_cached_dev_sectors(dc->disk.c);
+>   	bcache_device_detach(&dc->disk);
+>   	list_move(&dc->list, &uncached_devices);
+> +	calc_cached_dev_sectors(dc->disk.c);
+>   
+>   	clear_bit(BCACHE_DEV_DETACHING, &dc->disk.flags);
+>   	clear_bit(BCACHE_DEV_UNLINK_DONE, &dc->disk.flags);
 
-It is just reverting the power on logic there.
-
-> 
-> Also, remove the braces, they aren't needed.
-
-Yeah, I forgot to drop it, when I dropped a tem code that had some
-dev_dbg() on it.
-
-I'll drop on v14.
-
-Regards,
-Mauro
