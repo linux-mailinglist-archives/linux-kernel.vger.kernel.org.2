@@ -2,116 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4FE9432282
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 17:17:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EDCC432286
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 17:17:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232927AbhJRPTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 11:19:52 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3999 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232619AbhJRPTs (ORCPT
+        id S233081AbhJRPTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 11:19:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60422 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232852AbhJRPTu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 11:19:48 -0400
-Received: from fraeml701-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HY0kZ23m4z6899G;
-        Mon, 18 Oct 2021 23:13:26 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml701-chm.china.huawei.com (10.206.15.50) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.15; Mon, 18 Oct 2021 17:17:33 +0200
-Received: from localhost (10.202.226.41) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Mon, 18 Oct
- 2021 16:17:33 +0100
-Date:   Mon, 18 Oct 2021 16:17:32 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-CC:     Jonathan Cameron <jic23@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Maxim Levitsky <maximlevitsky@gmail.com>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        "Andy Shevchenko" <andriy.shevchenko@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: BMI160 accelerometer on AyaNeo tablet
-Message-ID: <20211018161732.0000565f@Huawei.com>
-In-Reply-To: <CAHp75Vct-AXnU7QQmdE7nyYZT-=n=p67COPLiiZTet7z7snL-g@mail.gmail.com>
-References: <CACAwPwb7edLzX-KO1XVNWuQ3w=U0BfA=_kwiGCjZOpKfZpc2pw@mail.gmail.com>
-        <CACAwPwYQHRcrabw9=0tvenPzAcwwW1pTaR6a+AEWBF9Hqf_wXQ@mail.gmail.com>
-        <20211017115843.2a872fbe@jic23-huawei>
-        <CAHp75Vct-AXnU7QQmdE7nyYZT-=n=p67COPLiiZTet7z7snL-g@mail.gmail.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
+        Mon, 18 Oct 2021 11:19:50 -0400
+Received: from mail-ua1-x929.google.com (mail-ua1-x929.google.com [IPv6:2607:f8b0:4864:20::929])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4CD3C061769
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 08:17:38 -0700 (PDT)
+Received: by mail-ua1-x929.google.com with SMTP id q13so4467590uaq.2
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 08:17:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=2Y8NayuLnfX3GwLkDMn7ZTyD7RtMsOyjIifS8+INynY=;
+        b=fIL3CMvlAAWryIgO72N8vNJvnlNFFagyPsEe2rwq4hFFSphyjCkzugTx5YWhjw0xvG
+         tkYmv/okVirY6EPKePKy8Zw97KG2cxt6wQTpLUHx2aQG8lHlaWI4exJaUzWixo/byOx8
+         tCZsV8RmZLPBAREZkJnGvo+97PbriWJHSDuAQjvclTx1Aqa1oaY3GAy75PAeDgcOiN+c
+         cUPBy/wZd6z58pPSY5CXK1VFPoQwIQITX5ST3C0ed6G4fDvu1Gb4ei+RtIsS18csG+p3
+         zMXZAsuLX+m8AtVV1TpKQe+pnfSfzsbwDRW1n37/1bHJE57FLEI1KMwPWX+7egQ5mOZK
+         ra7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=2Y8NayuLnfX3GwLkDMn7ZTyD7RtMsOyjIifS8+INynY=;
+        b=e3nPHljwKv7cK5sf8lnBCHeQUAlEg7wvjAjg+Q5rU7vT1vKBmpHRWryVHi6qEmgbfg
+         VfuAXfO+L2VsMW3aC6oXqpTOk4P+u3r3BnoRpzFCIoXtjw+T1TiYf+wS929XgNqIpiJk
+         MpXRqZjXQfw7LCLa1gF+Amsk41ETMGSp4LhxTz705emttPkFsePXEq/M528io3rlA56I
+         Cw3XeAkkKntnBiSu5QHje0DMKeq0XhsyLNzhYjTFe+KwSrIcnUwiRbnai08+Uv8Rul9k
+         lD0ezHPk7Cfef5GQdSKuWIUMO65VADFs6dd6TRCXsGy4qqPNtGJWiIxk72OQbBcQz2zd
+         iTKg==
+X-Gm-Message-State: AOAM533jJ2/zUQgrNJLZSI6Bf9nA0IgTiA6Z9ziZpIEh0K5nV1C0RW2m
+        cLGc14QBH0yaQRAq7Nb2wDhf84hn8mem2uyBjr8=
+X-Google-Smtp-Source: ABdhPJyty9rbPv8UL46flq3Kn1OHrkADsnV0N5XREMQhdDhtHpie3+8B8e+wGUvDkU3cM3g4pR+NaD8oQgrbndLRw6I=
+X-Received: by 2002:a67:d38e:: with SMTP id b14mr28403750vsj.34.1634570257912;
+ Mon, 18 Oct 2021 08:17:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.226.41]
-X-ClientProxiedBy: lhreml718-chm.china.huawei.com (10.201.108.69) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Received: by 2002:a67:cb08:0:0:0:0:0 with HTTP; Mon, 18 Oct 2021 08:17:37
+ -0700 (PDT)
+Reply-To: mrsaishag45@gmail.com
+From:   Mrs Aisha Al-Qaddafi <faridafarah924@gmail.com>
+Date:   Mon, 18 Oct 2021 08:17:37 -0700
+Message-ID: <CAJAEg+sp5YL5mUYnqF2rUVDS3gzsOTdY=wPsKp89nC3YRg-bMA@mail.gmail.com>
+Subject: Dear Friend,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 18 Oct 2021 10:40:33 +0300
-Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+Dear Friend,
 
-> +Cc: Hans
-> 
-> On Mon, Oct 18, 2021 at 6:41 AM Jonathan Cameron <jic23@kernel.org> wrote:
-> >
-> > On Sat, 16 Oct 2021 19:27:50 +0300
-> > Maxim Levitsky <maximlevitsky@gmail.com> wrote:
-> >  
-> > >  BMI160: AYA NEA accelometer ID  
-> 
-> accelerometer
-> 
-> > >     On AYA NEO, the accelerometer is BMI160 but it is exposed
-> > >     via ACPI as 10EC5280
-> > >
-> > >     Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>  
-> >
-> > I guess it is hopelessly optimistic to hope that we could let someone
-> > at the supplier know that's a totally invalid ACPI id and that they
-> > should clean up their act.
-> >
-> > Curiously it looks like a valid PCI ID pair though for a realtek device.
-> >
-> > Ah well.  Applied to the iio-togreg branch of iio.git and pushed out
-> > as testing to see if 0-day can find any issues with it.  
-> 
-> NAK. And I explain below why and how to make progress with it.
-> 
-> The commit message should contain at least the link to the DSDT and
-> official technical description of the platform. Besides that, it
-> should have a corresponding comment near to the ID in the code.
-> 
-> On top of that, in particular to this case, the ID is very valid from
-> the ACPI specification point of view, but in this case it's a
-> representation of the PCI ID 10ec:5280 which is Realtek owned. So, we
-> need to hear (okay in reasonable time) from Realtek (I believe they
-> are active in the Linux kernel) and that OEM.
-> 
-> I hardly believe that Realtek has issued a special ID from the range
-> where mostly PCIe ports or so are allocated, although it's possible.
-> We need proof.
-> 
-> What I believe is the case here is that OEMs are just quite diletants
-> in ACPI and firmware and they messed up with BIOS somehow that it
-> issued the ID for the device.
-> There are also two other possibilities: OEM stole the ID (deliberately
-> or accidentally), or the device is not just gyro, but something which
-> contains gyro.
-> 
-> As to the last paragraph, see above, we must see DSDT. Without it I
-> have a strong NAK.
-> 
-> P.S. Jonathan, please do not be so fast next time with ACPI IDs.
+I came across your e-mail contact prior to a private search while in
+need of your assistance. I am Aisha Al-Qaddafi, the only biological
+Daughter of Former President of Libya Col. Muammar Al-Qaddafi. Am a
+single Mother and a Widow with three Children.
 
-No problem.  Will pull this one once I'm back on correct PC.
+I have investment funds worth Twenty Seven Million Five Hundred
+Thousand United State Dollar ($27.500.000.00 ) and i need a trusted
+investment Manager/Partner because of my current refugee status,
+however, I am interested in you for investment project assistance in
+your country, may be from there, we can build business relationship in
+the nearest future.
 
-Jonathan
+I am willing to negotiate an investment/business profit sharing ratio
+with you based on the future investment earning profits.
 
-> 
-
+If you are willing to handle this project on my behalf kindly reply
+urgently to enable me to provide you more information about the
+investment funds.
+Best Regards
+Mrs Aisha Al-Qaddafi
