@@ -2,156 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE76E432251
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 17:10:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22ACC432261
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 17:12:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232533AbhJRPMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 11:12:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58142 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232890AbhJRPMf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 11:12:35 -0400
-Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8615AC06161C
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 08:10:21 -0700 (PDT)
-Received: by mail-qv1-xf2d.google.com with SMTP id d20so10400383qvm.8
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 08:10:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vt-edu.20210112.gappssmtp.com; s=20210112;
-        h=sender:from:to:cc:subject:in-reply-to:references:mime-version
-         :content-transfer-encoding:date:message-id;
-        bh=bjUQsS/JhsFJ7A/LEPaXRPi0vFqsL9QJaIIVS2Ss/90=;
-        b=tQE6cJE0pnAsHfyrGzoPORr9usUSs4bYLfxYaZXCWEWCfUev0+FAX9wWRn2z3hxFiJ
-         IMRvu72Udfno46/tccNewEb3SPOZKyD93p2DdD2U5M/phSeC8Xs2tc6sXwyE9A6pzLaW
-         g093t8LCJRNcUhvVFUM7JjwL0ldbok/F3KIdCnr/JhbDz0dPUtPP/jARynNCS7a4rmBJ
-         JbD+xOYf4nJxoyjatr/Z0GN7moliDxxUwHf0s3ZS4SVkUEK7Jp7hNq2wjykQgnNVECxJ
-         Hpzj3tVyJc6VXVI7GhZoXi7cTrNNlWVl/i6VI9HKLPOZvis7fJ3li4Ml9FdhBLI9f0g3
-         ON2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:from:to:cc:subject:in-reply-to:references
-         :mime-version:content-transfer-encoding:date:message-id;
-        bh=bjUQsS/JhsFJ7A/LEPaXRPi0vFqsL9QJaIIVS2Ss/90=;
-        b=swmYKP4RPK50CXXUTCFQKOocS6BTONpWb1DcTYHCimSrJ93wN30D7wU7fYdwqQaJ5O
-         hfDYMxSwlQNV0jQziL+aJZVruElv3hJ+E3lG/rIhw3rHZxDFxdqCUZ9ZsxDZItM+j+a2
-         etLIebLI6bcSLY40s3oL/gq6Hi5J0Ij62rBtPXHS2c1b1DzCTBwHc0qQDf7zOn+RUXxU
-         9EC19eGZefTllxB8PBLqXkxQSBCD8Pcyx+NqtKOOSR0a1iOVcUTzZMMb1EMmOTr5gOAT
-         GaDWNjSJ/gYH0wr2Dz4xYDZSQI3F+nd8rvGJA91cJCNkIxV5rCaXajjarUvK0zSWWqgW
-         RZuA==
-X-Gm-Message-State: AOAM533dADl4pV0j5HaDzDqWo5K2owTcI9sPrIuStbQsxhTuEpdqR2Zm
-        H7EWXX+Y5bkm0/x6G0WHwi4cNgQGNC9tSQ==
-X-Google-Smtp-Source: ABdhPJxCgJ9x/5CETUThrOojYpCRJrGzCCvX3YPSssc5SYgXzwTMWfby3XSl47MeFHr0w5mPqjdE1w==
-X-Received: by 2002:a05:6214:c26:: with SMTP id a6mr25938114qvd.40.1634569820662;
-        Mon, 18 Oct 2021 08:10:20 -0700 (PDT)
-Received: from turing-police ([2601:5c0:c380:d61::359])
-        by smtp.gmail.com with ESMTPSA id p22sm6308436qtl.83.2021.10.18.08.10.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 08:10:20 -0700 (PDT)
-Sender: Valdis Kletnieks <valdis@vt.edu>
-From:   "Valdis Kl=?utf-8?Q?=c4=93?=tnieks" <valdis.kletnieks@vt.edu>
-X-Google-Original-From: "Valdis Kl=?utf-8?Q?=c4=93?=tnieks" <Valdis.Kletnieks@vt.edu>
-X-Mailer: exmh version 2.10.0-pre 07/05/2021 with nmh-1.7+dev
-To:     Dongliang Mu <mudongliangabcd@gmail.com>
-Cc:     FMDF <fmdefrancesco@gmail.com>,
-        kernelnewbies <kernelnewbies@kernelnewbies.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Pavel Skripkin <paskripkin@gmail.com>
-Subject: Re: Any tracing mechanism can track the executed instructions of a user process in the kernel?
-In-Reply-To: <CAD-N9QW0NEi6Jzh-bu0Bb=RFB6405G28t_jtctk_t8Kw+HUpVQ@mail.gmail.com>
-References: <CAD-N9QWd6Orm8d9AMk7mybByAKZod=GJ-HSNPOfhFDStSPwSUA@mail.gmail.com> <CAPj211vRdmJZBQvM-DE+saiY=LwoQdOu0hV-YFcny6worQ46rg@mail.gmail.com>
- <CAD-N9QW0NEi6Jzh-bu0Bb=RFB6405G28t_jtctk_t8Kw+HUpVQ@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="==_Exmh_1634569818_99419P";
-         micalg=pgp-sha256; protocol="application/pgp-signature"
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 18 Oct 2021 11:10:19 -0400
-Message-ID: <104502.1634569819@turing-police>
+        id S233130AbhJRPNJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 11:13:09 -0400
+Received: from mail-am6eur05on2079.outbound.protection.outlook.com ([40.107.22.79]:23649
+        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231966AbhJRPNH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 11:13:07 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Q1nEyG3Iv87rppVV0AddUMoFWQE8z655bdTWpMA0jTpQ32EzW4H2c1kOdq4izvUjuCp/AiDTVmp53JhUDg7EO2Pk/TfktZAj246YIJp1xtZ2g967fEWTUCXlrcm9jLPatDL8BRjFCuBdem/VdLW+XULxhSUZAsnnKEDzEC86AgsHMoVRv8pbHRM2uW/EQ/Gah3v52wJhp+WB1E/kws0zlNNgO3h0flhJcDjbCKim8y3MkSGw1Mwapd59QU179sIO6358hn7uofY69q7Pg0x4SqCmG13sbFyyVO3lTvb+FK5d2WaIIx3mal2gxjLArhAIBHPnjS5pU3L31w3wRn9bWw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=HbGEfbGjKzD2DjPS1loUnLZu2ElmAcK/jOzeSFl4Bic=;
+ b=dtLinF6O/cbTPCfgmicIYaejriZhzVrCAg/i8ov73RvEpdns4/kfA1+EuQShtZPE1E9KmVzxAS+30Pm15UlELMyY1lBq4RPBHZbMbgtomIR0w0i21NGDg/dkSVoaAYJtiKMMrPUU8ubRC5PHGDi81+ZIVmxW69w4FdTdHhqMc6CO+fOpMjomejXGAoSK2dB0Ud9SQt0iXWn+IGryyRM1A7Ob44ysxlSuXOcQxW7PYrBbtRa/+F9AFQ5kXGllzraPJ9roRpNrbWngK9v0C+A4NUK0aFrKQ7qwPR2vgxopNNlkL+zRhcUqFvHPVxrYX3YPJvamUGssoZKClvZCZCGYNw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HbGEfbGjKzD2DjPS1loUnLZu2ElmAcK/jOzeSFl4Bic=;
+ b=fy6ZjHA15pb+F4WN2id806BZ/E34bc+K9NTvgWN6/WGxWKUUdhFUI66dRAcifDYgbLp83TAXS4X8PGPV8/MVg1kAgYbjFiRAXp9rBPX8RgSU867L+tcY4GBx8cPmb5YIGl82BW2FiycVeEfqRUVmXQotbKS2C7C7/GsaM0W1VxY=
+Authentication-Results: nxp.com; dkim=none (message not signed)
+ header.d=none;nxp.com; dmarc=none action=none header.from=nxp.com;
+Received: from AM4PR0401MB2308.eurprd04.prod.outlook.com
+ (2603:10a6:200:4f::13) by AM8PR04MB7268.eurprd04.prod.outlook.com
+ (2603:10a6:20b:1de::24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.16; Mon, 18 Oct
+ 2021 15:10:55 +0000
+Received: from AM4PR0401MB2308.eurprd04.prod.outlook.com
+ ([fe80::6476:5ddb:7bf2:e726]) by AM4PR0401MB2308.eurprd04.prod.outlook.com
+ ([fe80::6476:5ddb:7bf2:e726%8]) with mapi id 15.20.4608.018; Mon, 18 Oct 2021
+ 15:10:54 +0000
+From:   Ioana Ciornei <ioana.ciornei@nxp.com>
+To:     leoyang.li@nxp.com
+Cc:     youri.querry_1@nxp.com, linux-kernel@vger.kernel.org,
+        Ioana Ciornei <ioana.ciornei@nxp.com>
+Subject: [PATCH 0/5] soc: fsl: various fixes
+Date:   Mon, 18 Oct 2021 18:10:29 +0300
+Message-Id: <20211018151034.137918-1-ioana.ciornei@nxp.com>
+X-Mailer: git-send-email 2.33.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: AM8P190CA0015.EURP190.PROD.OUTLOOK.COM
+ (2603:10a6:20b:219::20) To AM4PR0401MB2308.eurprd04.prod.outlook.com
+ (2603:10a6:200:4f::13)
+MIME-Version: 1.0
+Received: from yoga-910.localhost (188.26.184.231) by AM8P190CA0015.EURP190.PROD.OUTLOOK.COM (2603:10a6:20b:219::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.14 via Frontend Transport; Mon, 18 Oct 2021 15:10:53 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ec1b0be0-0dab-496a-6d7f-08d992497ae9
+X-MS-TrafficTypeDiagnostic: AM8PR04MB7268:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM8PR04MB7268514607B2524EEBCFD704E0BC9@AM8PR04MB7268.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 2a6pMBjvrjit3prFI2R7sPSRTpfZfrR/AHImMZqsezpbmQ8ZZdgSgCPb5BJZBvoydJKFivcwkJL4H51+jaORIhuemB0div4EBYufB6CaghZI3/NRGZDcLhCBYI6TgjXV/RZHEftV8TBZtnAUAmTl/NVaOydGyVmw/C55Op0IjtYJmfw2ywp8Lii79L7JLrnRbbNU3MeOKToopoRt7FBfGgAqtG6b3QoQ1rVBz0R+XDVeGyKgrDaq4zKi293I+KJCNTOMB9izM3Q1YyzuysRfbQ5H2YjS5HLIvYkRVOw4/iIyVTGstMm99klnis7Fqbk2Uo9CcGYJDhbfHw4o9XEmypR07zhauEYkqWRk567uF42LGNP6A0/XE8uPSQ8tMwzZvf3q+cmsQAPGNAlenovniriYHoEobtqpgmuZOYVyk8fDo7PD1oGYxU1yNuugx+O4up07B81K+qJWcYWv0cc10VPv2Tek9J7VpR9Y3CIGBGTvuXnY+Ufo83U5+3+pQI8yRcq8AqKtxVer/xhBYvv27iUQ9XOEXNiWl1AavsmzkC3bfRWPxbJB/a8lRYKLmCvdR8XkoWLcLDrkPCCLS+anjtswWV7OYdpqxdmkQBG7SjCYgC0iakjFqXCbufB5nNhUmOuKXoMhnI1YxhQ2GO769vlmZPepjcAhLW8hbBqgcJX4X7JAQk+sbGyfVnAtUhE/XffotgRV4HCuKlfAw3Pr9g==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM4PR0401MB2308.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66556008)(1076003)(83380400001)(66946007)(66476007)(2616005)(956004)(86362001)(6512007)(508600001)(4744005)(44832011)(6636002)(38100700002)(8936002)(186003)(4326008)(37006003)(8676002)(5660300002)(52116002)(2906002)(26005)(6506007)(38350700002)(6666004)(316002)(34206002)(36756003)(6486002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?TL2DC03W1M9dIEHOXmwqY9ICAAqx8XTOGzX5AUiLkfJaW74eg/mCSX03HdAP?=
+ =?us-ascii?Q?gGiw0SYWqV/yRW3IQsXeGxOuuo6nRXyIgK9Dub3Q2BHI6mvyQQJUf8wY3rMv?=
+ =?us-ascii?Q?PB/nhZgKJDM8RRLQ+TZxRqbyTpo2mOTdVlJRtGkWD5+1e2eVGp+wV03o3uYw?=
+ =?us-ascii?Q?VPgKpoeNrUUxGopGIlPtRILusFiVwMQyNN82FQbJf/SNkEIkxgqzA9TGU8L/?=
+ =?us-ascii?Q?vBhXWCp1hzxjwMxT96/YioZMRbBD7wMMzV/lnwYpIIb5GD51r+GWMCgiDqdf?=
+ =?us-ascii?Q?UiHtCbBeeNq2AnFhPDrGgCb9fDJkHASsXwLS8a1N1wjRDUSE3P37PxTAfuLH?=
+ =?us-ascii?Q?EiZpcXmRO6TdBrEhQS4X5Id+lS79CwjR7wEEcVAZ/91KfdT7/RObj3yjrSSF?=
+ =?us-ascii?Q?iXt+vamcrD0M7RUK4OyfIRbV8Gk/rcKh3De6SjO/C5pnIxpJAfIlriuF2S5+?=
+ =?us-ascii?Q?yRCtj/YszB0wUnax8an9rK6jGM43tlkqB4GkhBh07rPwahQKUfg6OvyYwFlb?=
+ =?us-ascii?Q?xLfYyFRISGyxguxfM5mqqXZ6Ts7akBRW2lIW+g0EWX8AdHpZ1xdFEycJIVch?=
+ =?us-ascii?Q?jhqTnRmluD10JHRiAUO3mee3SpA7JOMsdiyVkJHBChRevT0ybAwuzjS8T9Sz?=
+ =?us-ascii?Q?kVJSZk/yTEU98dGDep9H0BK+k4hu02faR/9f3jmSD/o70cY9OSpD4wPxoP3M?=
+ =?us-ascii?Q?DXa9L3PGXZ4Zkr4Qg5Vu8eI0Wiohi+RUd4yEOE+6NCOE+ycs1bzXThwhM1SJ?=
+ =?us-ascii?Q?OI6dcMNF79MidRL6f0cQY5nR/Hi8ZyK4i9DCsHLtWIvkCzrfabF/qCT+H2pi?=
+ =?us-ascii?Q?vqrJwJ+LJn11abFIH+EB6l9xoTUMSGr2k39iw4EhyiwmwFiRGvuYmHGaKm5g?=
+ =?us-ascii?Q?tG2hUduwTdgU4uLzEKVJSmMUlvJdEoOvB0L+zg5NGpMdcIoES9HkEdsYyWWK?=
+ =?us-ascii?Q?jYHtZWUf91rPci8J0GzGh1ob3/1ehg5AnmCLK9ZRsePFq9CXr9XIhKxNt+0o?=
+ =?us-ascii?Q?yRjLExehlCZQUnO7Fan5fjqi4HchUigEryVW2SEJ+zv1slvVZMeBtz3tCDuJ?=
+ =?us-ascii?Q?sdjQR5ct7aKaHFim5IRvjuuP2SJQsKeXDGzjQXotZa9bCO51eq103PrLS20C?=
+ =?us-ascii?Q?ZRo4meNQP2r3hwQLdQwhEMOQfLmWrf+n/t97tiTpOaIBMSIz8ZtvmOM6klgB?=
+ =?us-ascii?Q?C5brTYuvc27j2pY2q/UK+JLkxWHtpqLZ85tL/Ux6LVDBLKr19EAcOmd9lspz?=
+ =?us-ascii?Q?ZTMO0LGPbn5kE3nzVsn4IdcE1dlZtz5QwER4nlnc3l5GK9Qx7rX54PLAsQX+?=
+ =?us-ascii?Q?IUrERmjdxujKq94INrKbRI1m?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ec1b0be0-0dab-496a-6d7f-08d992497ae9
+X-MS-Exchange-CrossTenant-AuthSource: AM4PR0401MB2308.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Oct 2021 15:10:54.7529
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: nm7i7if8dFs4WaDbSNRXFuQ9vqaR0JoqVVxXyDP8vIB0jqOl1ujFG2GIlGW3iVKeLBmQj8C53I3qxOgQa26sLg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR04MB7268
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---==_Exmh_1634569818_99419P
-Content-Type: text/plain; charset=us-ascii
+This patch set has various unrelated fixes in the dpio driver and the
+dpaa2-console one.
+Patches were applied on latest linux-next and formatted from there.
 
-On Mon, 18 Oct 2021 16:41:14 +0800, Dongliang Mu said:
+Diana Craciun (1):
+  soc: fsl: dpio: fix qbman alignment error in the virtualization
+    context
 
-> I want to log all the executed instructions of a user process (e.g.,
-> poc.c in syzkaller) in the kernel mode and then would like to leverage
-> backward analysis to capture the root cause of kernel panic/crash.
+Ioana Ciornei (2):
+  soc: fsl: dpio: use an explicit NULL instead of 0
+  soc: fsl: dpio: fix kernel-doc warnings
 
-> Therefore, I need the instruction-level tracing mechanisms or tools.
+Robert-Ionut Alexa (1):
+  soc: fsl: dpaa2-console: free buffer before returning from
+    dpaa2_console_read
 
-Tracing just the instructions won't get you where you want to be if
-you're going through this approach.
+Youri Querry (1):
+  soc: fsl: dpio: rename the enqueue descriptor variable
 
-You *also* need to track all the data - the instruction path inside two
-different runs of syzkaller may be essentially identical, but pass 2 different
-values as the 3rd parameter of a syscall.
+ drivers/soc/fsl/dpaa2-console.c     |  1 +
+ drivers/soc/fsl/dpio/dpio-service.c | 42 ++++++++--------
+ drivers/soc/fsl/dpio/qbman-portal.c | 76 ++++++++++++++---------------
+ drivers/soc/fsl/dpio/qbman-portal.h | 39 +++++++++------
+ 4 files changed, 85 insertions(+), 73 deletions(-)
 
-You may also have to deal with insane amounts of data - the actual error could
-have been minutes or even hours before, or the interaction between two
-different processes.
+-- 
+2.33.1
 
-You probably want to take a *really* close look at how prof and friends avoid
-infinite regress when code execution drops inside the prof code, because you're
-going to hit the same issues.
-
-Or....
-
-You can work smarter rather than harder, and ask yourself what's the minimum
-amount and type of additional information to make a significant improvement in
-the debugging of system crashes.
-
-For example, 95% of the time, you can figure out what the bug is by merely
-looking at the stack traceback. For most of the rest of the cases, simply
-capturing the parameter values from the syscall and the basic info for page
-faults and other interrupts is probably sufficient, and you can probably
-leverage the audit subsystem for most of that. It can already record syscall
-parameters, while logging page faults and other interrupts can probably be done
-with prof.
-
-At that point, you don't actually *need* every instruction - only tracing
-branch and call instructions is sufficient, because you already know that each
-instruction between the target of a branch/call and the next branch/call will
-be executed.
-
-Similarly, the lockdep code will catch most locking issues. But it won't flag
-issues with data that should be protected with a lock, but are bereft of any
-locking. So ask yourself: What ways are there to analyze the code and detect
-critical sections prone to race conditions? Is there a sparse-on-steroids
-approach that wil do the heavy lifting for those? (Note that this isn't an easy
-task for the general case, but identifying two or three specific common
-patterns and finding a way to detect them may be worthwhile)
-
-And many of the rest of crashes are timing related, and "let's trace every single
-instruction" is almost guaranteed to make things slow enough to change/bypass
-the timing issue.
-
-So... What's left that would be the most helpful with the least amount of data?
-
-Go look at some threads on linux-kernel.  Look at the kernel bugs that were the
-result of a Homer Simpson "D'oh!" moment.  What can we do to make those
-bugs less likely to make it into the code in the first place? For the more subtle
-bugs, what data finally made the debugging come together?
-
-
-
---==_Exmh_1634569818_99419P
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Comment: Exmh version 2.9.0 11/07/2018
-
-iQEcBAEBCAAGBQJhbY5aAAoJEI0DS38y7CIc4OkH/ROXT+P1YCrstg2hlsp5PFd8
-L23nVJEO3BM+1vp7B/GLKZ/cGuRc8vdNWRWOnvAnCPFzlk/DfSUSkL8f2qaI12qB
-uDqzhjGhaAnoSbQuiwWlaqYUMIklF0LFui7r1kMHWG7ZjjoFR07cdRkOykhZrD1D
-NfLZ/P6v4ySQeGCUa/QcYKWHMLaHzNFdSytS/4LKtB6UCbnNy/zLc3x/LFw1LtVj
-ySBkjIUSFWsV/KVdg7mE8ADm6u8vMFe93W6eQUNUMPHay1Nsj7pne/Db+5wCwDSU
-M8krCrGeHesN8EaQJvgKbj5oXXoCbU35ViLQ7+ih1/nQ4iGAkc0YJfG91IDSduM=
-=Y//A
------END PGP SIGNATURE-----
-
---==_Exmh_1634569818_99419P--
