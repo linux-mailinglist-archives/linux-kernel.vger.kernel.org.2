@@ -2,88 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 571884310DC
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 08:51:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 672644310E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 08:52:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230373AbhJRGx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 02:53:27 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:14824 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230222AbhJRGxZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 02:53:25 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HXnTQ5srLz90F9;
-        Mon, 18 Oct 2021 14:46:18 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Mon, 18 Oct 2021 14:51:13 +0800
-Received: from linux-suspe12sp5.huawei.com (10.67.133.83) by
- dggpeml500017.china.huawei.com (7.185.36.243) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Mon, 18 Oct 2021 14:51:12 +0800
-From:   ChenJingwen <chenjingwen6@huawei.com>
-To:     <keescook@chromium.org>
-CC:     <akpm@linux-foundation.org>, <avagin@openvz.org>,
-        <chenjingwen6@huawei.com>, <khalid.aziz@oracle.com>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <mhocko@suse.com>, <mpe@ellerman.id.au>,
-        <torvalds@linux-foundation.org>, <viro@zeniv.linux.org.uk>
-Subject: [PATCH] elf: don't use MAP_FIXED_NOREPLACE for elf interpreter mappings
-Date:   Mon, 18 Oct 2021 14:51:12 +0800
-Message-ID: <20211018065112.170631-1-chenjingwen6@huawei.com>
-X-Mailer: git-send-email 2.12.3
-In-Reply-To: <202110041255.83A6616D9@keescook>
-References: <202110041255.83A6616D9@keescook>
+        id S230222AbhJRGyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 02:54:32 -0400
+Received: from foss.arm.com ([217.140.110.172]:33032 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229708AbhJRGy2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 02:54:28 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 79547106F;
+        Sun, 17 Oct 2021 23:52:17 -0700 (PDT)
+Received: from [10.163.74.6] (unknown [10.163.74.6])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8AB0D3F70D;
+        Sun, 17 Oct 2021 23:52:15 -0700 (PDT)
+Subject: Re: [PATCH 2/2] mm/memory_failure: constify static mm_walk_ops
+To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        SeongJae Park <sj@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20211014075042.17174-1-rikard.falkeborn@gmail.com>
+ <20211014075042.17174-3-rikard.falkeborn@gmail.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <7cd5c685-834f-46ce-969d-7dfc2d1368a8@arm.com>
+Date:   Mon, 18 Oct 2021 12:22:14 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.133.83]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+In-Reply-To: <20211014075042.17174-3-rikard.falkeborn@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> >  The reason is that the elf interpreter (ld.so) has overlapping segments.
-> >
-> Ewww. What toolchain generated this (and what caused it to just start
-> happening)? (This was added in v4.17; it's been 3 years.)
 
-gcc 7.3.0 for powerpc Book3E (e5500).
 
-I wonder if there are some linker options related to the overlapping segments.
-I tried to find it out why but I failed. And I also didn't see the answer in the
-previous discussion yet (Maybe I missed it).
+On 10/14/21 1:20 PM, Rikard Falkeborn wrote:
+> The only usage of hwp_walk_ops is to pass its address to
+> walk_page_range() which takes a pointer to const mm_walk_ops as
+> argument. Make it const to allow the compiler to put it in read-only
+> memory.
+> 
+> Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+> ---
+>  mm/memory-failure.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/mm/memory-failure.c b/mm/memory-failure.c
+> index 92eeb317adf4..8d5faf347ed1 100644
+> --- a/mm/memory-failure.c
+> +++ b/mm/memory-failure.c
+> @@ -674,7 +674,7 @@ static int hwpoison_hugetlb_range(pte_t *ptep, unsigned long hmask,
+>  #define hwpoison_hugetlb_range	NULL
+>  #endif
+>  
+> -static struct mm_walk_ops hwp_walk_ops = {
+> +static const struct mm_walk_ops hwp_walk_ops = {
+>  	.pmd_entry = hwpoison_pte_range,
+>  	.hugetlb_entry = hwpoison_hugetlb_range,
+>  };
+> 
 
-What confuses me is why the other reports only have overlapping sections for
-executable binaries or dynamic libraries, but not for their ld.so.
-I can keep looking for the reason but it may take a longe time for me.
-
-> > readelf -l ld-2.31.so
-> > Program Headers:
-> >   Type           Offset             VirtAddr           PhysAddr
-> >                  FileSiz            MemSiz              Flags  Align
-> >   LOAD           0x0000000000000000 0x0000000000000000 0x0000000000000000
-> >                  0x000000000002c94c 0x000000000002c94c  R E    0x10000
-> >   LOAD           0x000000000002dae0 0x000000000003dae0 0x000000000003dae0
-> >                  0x00000000000021e8 0x0000000000002320  RW     0x10000
-> >   LOAD           0x000000000002fe00 0x000000000003fe00 0x000000000003fe00
-> >                  0x00000000000011ac 0x0000000000001328  RW     0x10000
-> > 
-> > The reason for this problem is the same as described in
-> > commit ad55eac74f20 ("elf: enforce MAP_FIXED on overlaying elf segments").
-> > Not only executable binaries, elf interpreters (e.g. ld.so) can have
-> > overlapping elf segments, so we better drop MAP_FIXED_NOREPLACE and go
-> > back to MAP_FIXED in load_elf_interp.
->
-> We could also just expand the logic that fixed[1] this for ELF, yes?
->
-> Andrew, are you able to pick up [1], BTW? It seems to have fallen
-> through the cracks.
->
-> [1] https://lore.kernel.org/all/20210916215947.3993776-1-keescook@chromium.org/T/#u
-
-Yes, I expand the logic[1] to load_elf_interp and "init" succeeds to start.
-Should I submit another patch?
+Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
