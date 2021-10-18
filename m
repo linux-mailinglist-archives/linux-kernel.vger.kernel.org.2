@@ -2,159 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 835B4430D61
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 03:17:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BE13430D6D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 03:26:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242936AbhJRBTX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 21:19:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38396 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231983AbhJRBTT (ORCPT
+        id S238575AbhJRB2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 21:28:38 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:29893 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234360AbhJRB2g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 21:19:19 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1702C06161C
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 18:17:08 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id 5so33930119edw.7
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 18:17:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hnqEn1CtLr/NiyhAgmO/8MRbeaoY3H6FysR0WE07eMI=;
-        b=CAzzpQc8d6pvPmR8WujIwnG/8mp9OOfW/GJEz0cHJFQGuE8vZAdGMpq7oD2rT8f2jD
-         el8GQzh6RWyx9yp8C3agLrBlGNRm/6mrCWeM085GlIU6LOuzzZIXL67R2Ocri5EBx/kW
-         jaf4Qk9+6r5KuIqpO7H/L3MXKgoxk+ZJQs65w=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hnqEn1CtLr/NiyhAgmO/8MRbeaoY3H6FysR0WE07eMI=;
-        b=BI1q43T+udrfFJ+EZZHuQ37f50vdLuuC55np6+a3BsHkyvcXP0Azs4AZlW5vILIHra
-         CwJu7xBYqGE7Ysc/kvqsHLoN/XaVekmeC+VVr6ncpIZKi6DHwt9GRsUAbQPlISczhDZ0
-         HvSJJZoneK30jdVgTofcGUBHrbbiM1jOV92ZCXmQfDID/IzCZIHTrUjTf8KzhQSAk4zY
-         +y2lYhdCmkU+Cd7AIaBDoCjtsirWqDWUXB+RKUdcxKDdJKqj3MkO98U0dPLInNf9gIOk
-         z5fpsbhQ8XQmLZd7PDakU7o9+MJINCFktp9c6++y/atiD0Zw69LLlfPHOQ1UvwyQMuWL
-         uGcg==
-X-Gm-Message-State: AOAM532C2XvkUWgoClInizy6xQGcU45tESVgWT3hdT56dX7R90+/WwkY
-        Q3X/Ih5L4mN801QErynqsgghfMgx6dhkcQ==
-X-Google-Smtp-Source: ABdhPJxQQG/83bjVUNuSXk808uHcrw/RSPGWmrhwly6ew66OLux+NySXk1fbxFND/ORjPOvMTUAdYQ==
-X-Received: by 2002:a05:6402:51cf:: with SMTP id r15mr39932336edd.60.1634519827299;
-        Sun, 17 Oct 2021 18:17:07 -0700 (PDT)
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com. [209.85.208.51])
-        by smtp.gmail.com with ESMTPSA id jy25sm8035826ejc.100.2021.10.17.18.17.05
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 17 Oct 2021 18:17:06 -0700 (PDT)
-Received: by mail-ed1-f51.google.com with SMTP id y30so46530631edi.0
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Oct 2021 18:17:05 -0700 (PDT)
-X-Received: by 2002:a17:906:912:: with SMTP id i18mr25269308ejd.131.1634519824911;
- Sun, 17 Oct 2021 18:17:04 -0700 (PDT)
+        Sun, 17 Oct 2021 21:28:36 -0400
+Received: from dggeml757-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HXfH50Qxqzbn7S;
+        Mon, 18 Oct 2021 09:21:53 +0800 (CST)
+Received: from [10.174.179.200] (10.174.179.200) by
+ dggeml757-chm.china.huawei.com (10.1.199.137) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.15; Mon, 18 Oct 2021 09:26:24 +0800
+Subject: Re: [PATCH v2] thermal/core: fix a UAF bug in
+ __thermal_cooling_device_register()
+To:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>
+CC:     Amit Kucheria <amitk@kernel.org>,
+        "Zhang, Rui" <rui.zhang@intel.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20211015024504.947520-1-william.xuanziyang@huawei.com>
+ <CAJZ5v0h5-P+br-+44hv82jKdd=5Y-46daXMWLwsg9WDoEfG17g@mail.gmail.com>
+From:   "Ziyang Xuan (William)" <william.xuanziyang@huawei.com>
+Message-ID: <88e43530-7b5e-4190-a5dc-961cf2df8c23@huawei.com>
+Date:   Mon, 18 Oct 2021 09:26:23 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210920170408.1561-1-dafna.hirschfeld@collabora.com> <c59b7f40-d99e-370a-b797-5dc72979df46@xs4all.nl>
-In-Reply-To: <c59b7f40-d99e-370a-b797-5dc72979df46@xs4all.nl>
-From:   Alexandre Courbot <acourbot@chromium.org>
-Date:   Mon, 18 Oct 2021 10:16:54 +0900
-X-Gmail-Original-Message-ID: <CAPBb6MW_i1_Lh2ZaF8jGjcV-4XBhjswtyKkZCk3HxKO7LX79Og@mail.gmail.com>
-Message-ID: <CAPBb6MW_i1_Lh2ZaF8jGjcV-4XBhjswtyKkZCk3HxKO7LX79Og@mail.gmail.com>
-Subject: Re: [PATCH v4] media: mtk-vpu: Ensure alignment of 8 for DTCM buffer
-To:     Hans Verkuil <hverkuil@xs4all.nl>
-Cc:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>, kernel@collabora.com,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Dafna Hirschfeld <dafna3@gmail.com>,
-        Tiffany Lin <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        minghsiu.tsai@mediatek.com, houlong.wei@mediatek.com,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAJZ5v0h5-P+br-+44hv82jKdd=5Y-46daXMWLwsg9WDoEfG17g@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.200]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggeml757-chm.china.huawei.com (10.1.199.137)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hans!
+> On Fri, Oct 15, 2021 at 4:46 AM Ziyang Xuan
+> <william.xuanziyang@huawei.com> wrote:
+>>
+>> When device_register() return failed, program will goto out_kfree_type
+>> to release 'cdev->device' by put_device(). That will call thermal_release()
+>> to free 'cdev'. But the follow-up processes access 'cdev' continually.
+>> That trggers the UAF bug.
+>>
+>> ====================================================================
+>> BUG: KASAN: use-after-free in __thermal_cooling_device_register+0x75b/0xa90
+>> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1.1 04/01/2014
+>> Call Trace:
+>>  dump_stack_lvl+0xe2/0x152
+>>  print_address_description.constprop.0+0x21/0x140
+>>  ? __thermal_cooling_device_register+0x75b/0xa90
+>>  kasan_report.cold+0x7f/0x11b
+>>  ? __thermal_cooling_device_register+0x75b/0xa90
+>>  __thermal_cooling_device_register+0x75b/0xa90
+>>  ? memset+0x20/0x40
+>>  ? __sanitizer_cov_trace_pc+0x1d/0x50
+>>  ? __devres_alloc_node+0x130/0x180
+>>  devm_thermal_of_cooling_device_register+0x67/0xf0
+>>  max6650_probe.cold+0x557/0x6aa
+>> ......
+>>
+>> Freed by task 258:
+>>  kasan_save_stack+0x1b/0x40
+>>  kasan_set_track+0x1c/0x30
+>>  kasan_set_free_info+0x20/0x30
+>>  __kasan_slab_free+0x109/0x140
+>>  kfree+0x117/0x4c0
+>>  thermal_release+0xa0/0x110
+>>  device_release+0xa7/0x240
+>>  kobject_put+0x1ce/0x540
+>>  put_device+0x20/0x30
+>>  __thermal_cooling_device_register+0x731/0xa90
+>>  devm_thermal_of_cooling_device_register+0x67/0xf0
+>>  max6650_probe.cold+0x557/0x6aa [max6650]
+>>
+>> Do not use 'cdev' again after put_device() to fix the problem like doing
+>> in thermal_zone_device_register().
+>>
+>> Fixes: 584837618100 ("thermal/drivers/core: Use a char pointer for the cooling device name")
+>> Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
+>> Reported-by: kernel test robot <lkp@intel.com>
+>> Reported-by: kernel test robot <lkp@intel.com>
+>> ---
+>>  drivers/thermal/thermal_core.c | 7 ++++---
+>>  1 file changed, 4 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
+>> index 97ef9b040b84..d2c196b298c1 100644
+>> --- a/drivers/thermal/thermal_core.c
+>> +++ b/drivers/thermal/thermal_core.c
+>> @@ -888,7 +888,7 @@ __thermal_cooling_device_register(struct device_node *np,
+>>  {
+>>         struct thermal_cooling_device *cdev;
+>>         struct thermal_zone_device *pos = NULL;
+>> -       int ret;
+>> +       int id, ret;
+>>
+>>         if (!ops || !ops->get_max_state || !ops->get_cur_state ||
+>>             !ops->set_cur_state)
+>> @@ -901,7 +901,7 @@ __thermal_cooling_device_register(struct device_node *np,
+>>         ret = ida_simple_get(&thermal_cdev_ida, 0, 0, GFP_KERNEL);
+>>         if (ret < 0)
+>>                 goto out_kfree_cdev;
+>> -       cdev->id = ret;
+>> +       cdev->id = id = ret;
+> 
+> I'd prefer this to be two statements, but I can fix it up.
+> 
+> Daniel, would there be any issues if I applied it?
+> 
+OK, no problem.
 
-On Mon, Oct 4, 2021 at 6:37 PM Hans Verkuil <hverkuil@xs4all.nl> wrote:
->
-> On 20/09/2021 19:04, Dafna Hirschfeld wrote:
-> > From: Alexandre Courbot <acourbot@chromium.org>
-> >
-> > When running memcpy_toio:
-> > memcpy_toio(send_obj->share_buf, buf, len);
-> > it was found that errors appear if len is not a multiple of 8:
-> >
-> > [58.350841] mtk-mdp 14001000.rdma: processing failed: -22
->
-> Why do errors appear? Is that due to a HW bug? Some other reason?
-
-MTK folks would be the best placed to answer this, but since the
-failure is reported by the firmware I'd suspect either a firmware or
-hardware limitation.
-
->
-> >
-> > This patch ensures the copy of a multiple of 8 size by calling
-> > round_up(len, 8) when copying
-> >
-> > Fixes: e6599adfad30 ("media: mtk-vpu: avoid unaligned access to DTCM buffer.")
-> > Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
-> > Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-> > Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-> > Reviewed-by: Houlong Wei <houlong.wei@mediatek.com>
-> > ---
-> > changes since v3:
-> > 1. multile -> multiple
-> > 2. add inline doc
-> >
-> > changes since v2:
-> > 1. do the extra copy only if len is not multiple of 8
-> >
-> > changes since v1:
-> > 1. change sign-off-by tags
-> > 2. change values to memset
-> >
-> >  drivers/media/platform/mtk-vpu/mtk_vpu.c | 15 ++++++++++++++-
-> >  1 file changed, 14 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/media/platform/mtk-vpu/mtk_vpu.c b/drivers/media/platform/mtk-vpu/mtk_vpu.c
-> > index ec290dde59cf..1df031716c8f 100644
-> > --- a/drivers/media/platform/mtk-vpu/mtk_vpu.c
-> > +++ b/drivers/media/platform/mtk-vpu/mtk_vpu.c
-> > @@ -349,7 +349,20 @@ int vpu_ipi_send(struct platform_device *pdev,
-> >               }
-> >       } while (vpu_cfg_readl(vpu, HOST_TO_VPU));
-> >
-> > -     memcpy_toio(send_obj->share_buf, buf, len);
-> > +     /*
-> > +      * when copying data to the vpu hardware, the memcpy_toio operation must copy
-> > +      * a multiple of 8. Otherwise the processing fails
->
-> Same here: it needs to explain why the processing fails.
->
-> > +      */
-> > +     if (len % 8 != 0) {
-> > +             unsigned char data[SHARE_BUF_SIZE];
->
-> Wouldn't it be more robust if you say:
->
->                 unsigned char data[sizeof(send_obj->share_buf)];
-
-Definitely yes.
-
->
-> I also think that the SHARE_BUF_SIZE define needs a comment stating that it must be a
-> multiple of 8, otherwise unexpected things can happen.
->
-> You also noticed that the current SHARE_BUF_SIZE define is too low, but I saw
-> no patch correcting this. Shouldn't that be fixed as well?
-
-AFAICT the firmware expects this exact size on its end, so I don't
-believe it can be changed that easily. But maybe someone from MTK can
-prove me wrong.
-
-Cheers,
-Alex.
+>>
+>>         cdev->type = kstrdup(type ? type : "", GFP_KERNEL);
+>>         if (!cdev->type) {
+>> @@ -942,8 +942,9 @@ __thermal_cooling_device_register(struct device_node *np,
+>>  out_kfree_type:
+>>         kfree(cdev->type);
+>>         put_device(&cdev->device);
+>> +       cdev = NULL;
+>>  out_ida_remove:
+>> -       ida_simple_remove(&thermal_cdev_ida, cdev->id);
+>> +       ida_simple_remove(&thermal_cdev_ida, id);
+>>  out_kfree_cdev:
+>>         kfree(cdev);
+>>         return ERR_PTR(ret);
+>> --
+>> 2.25.1
+>>
+> .
+> 
