@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAE96431CA7
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:42:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33811431E30
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:57:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233557AbhJRNnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:43:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55128 "EHLO mail.kernel.org"
+        id S233226AbhJRN65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:58:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59130 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233696AbhJRNkz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:40:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2EF9E61352;
-        Mon, 18 Oct 2021 13:33:34 +0000 (UTC)
+        id S234481AbhJRN4U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:56:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E89A761A2E;
+        Mon, 18 Oct 2021 13:40:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634564014;
-        bh=b3aGtohO717TSNZ0ihvaEzIUwQ0LZ7WFoe7mE075hAY=;
+        s=korg; t=1634564430;
+        bh=arOuavtSGezhyOzRSIbU4OJWoNzqOS8N+i+b0aA6J/8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Cr26N5ljBAWrXe1lt4rP65eQMWsZmefgZ3ygLW0UW4WMTATDFVRgeee8Ghu8cP9r/
-         IYK8881R68OBJBOdbc1XvvL+Y3B2pAAVwSkpA2SiGNCaY4WGiddGq+SkCUExXjpBFl
-         PzjLxF8nW7zKHRGwo4VCfS1JJsSXBxREC37QiE5w=
+        b=QsMDlrj6gJL15A4PyxK8GovWDlwq9mIJnwOM1Es0VtndZE9Ng8ParrZmkUy2PEfwg
+         B+gC8VA+tK9WJLpnlAWl7R0Zos+pN5ZSb2g51kU58oH9+fPe7in0JLRhNTbF4qgQVT
+         wz2D2wi1zZ8GObPtdGPh/lOtShI+gmAjzEa4dZmc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Joe Perches <joe@perches.com>,
-        Ard Biesheuvel <ardb@kernel.org>
-Subject: [PATCH 5.10 032/103] efi/cper: use stack buffer for error record decoding
+        stable@vger.kernel.org,
+        Alexandru Tachici <alexandru.tachici@analog.com>,
+        Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH 5.14 069/151] iio: adc: ad7780: Fix IRQ flag
 Date:   Mon, 18 Oct 2021 15:24:08 +0200
-Message-Id: <20211018132335.801978431@linuxfoundation.org>
+Message-Id: <20211018132342.933028240@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132334.702559133@linuxfoundation.org>
-References: <20211018132334.702559133@linuxfoundation.org>
+In-Reply-To: <20211018132340.682786018@linuxfoundation.org>
+References: <20211018132340.682786018@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,50 +41,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ard Biesheuvel <ardb@kernel.org>
+From: Alexandru Tachici <alexandru.tachici@analog.com>
 
-commit b3a72ca80351917cc23f9e24c35f3c3979d3c121 upstream.
+commit e081102f3077aa716974ccebec97003c890d5641 upstream.
 
-Joe reports that using a statically allocated buffer for converting CPER
-error records into human readable text is probably a bad idea. Even
-though we are not aware of any actual issues, a stack buffer is clearly
-a better choice here anyway, so let's move the buffer into the stack
-frames of the two functions that refer to it.
+Correct IRQ flag here is falling.
 
-Cc: <stable@vger.kernel.org>
-Reported-by: Joe Perches <joe@perches.com>
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+In Sigma-Delta devices the SDO line is also used as an interrupt.
+Leaving IRQ on level instead of falling might trigger a sample read
+when the IRQ is enabled, as the SDO line is already low. Not sure
+if SDO line will always immediately go high in ad_sd_buffer_postenable
+before the IRQ is enabled.
+
+Also the datasheet seem to explicitly say the falling edge of the SDO
+should be used as an interrupt:
+>From the AD7780 datasheet: " The DOUT/Figure 22 RDY falling edge
+can be used as an interrupt to a processor"
+
+Fixes: da4d3d6bb9f6 ("iio: adc: ad-sigma-delta: Allow custom IRQ flags")
+Signed-off-by: Alexandru Tachici <alexandru.tachici@analog.com>
+Cc: <Stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210906065630.16325-3-alexandru.tachici@analog.com
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/firmware/efi/cper.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/iio/adc/ad7780.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/firmware/efi/cper.c
-+++ b/drivers/firmware/efi/cper.c
-@@ -25,8 +25,6 @@
- #include <acpi/ghes.h>
- #include <ras/ras_event.h>
+--- a/drivers/iio/adc/ad7780.c
++++ b/drivers/iio/adc/ad7780.c
+@@ -203,7 +203,7 @@ static const struct ad_sigma_delta_info
+ 	.set_mode = ad7780_set_mode,
+ 	.postprocess_sample = ad7780_postprocess_sample,
+ 	.has_registers = false,
+-	.irq_flags = IRQF_TRIGGER_LOW,
++	.irq_flags = IRQF_TRIGGER_FALLING,
+ };
  
--static char rcd_decode_str[CPER_REC_LEN];
--
- /*
-  * CPER record ID need to be unique even after reboot, because record
-  * ID is used as index for ERST storage, while CPER records from
-@@ -313,6 +311,7 @@ const char *cper_mem_err_unpack(struct t
- 				struct cper_mem_err_compact *cmem)
- {
- 	const char *ret = trace_seq_buffer_ptr(p);
-+	char rcd_decode_str[CPER_REC_LEN];
- 
- 	if (cper_mem_err_location(cmem, rcd_decode_str))
- 		trace_seq_printf(p, "%s", rcd_decode_str);
-@@ -327,6 +326,7 @@ static void cper_print_mem(const char *p
- 	int len)
- {
- 	struct cper_mem_err_compact cmem;
-+	char rcd_decode_str[CPER_REC_LEN];
- 
- 	/* Don't trust UEFI 2.1/2.2 structure with bad validation bits */
- 	if (len == sizeof(struct cper_sec_mem_err_old) &&
+ #define _AD7780_CHANNEL(_bits, _wordsize, _mask_all)		\
 
 
