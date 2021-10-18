@@ -2,181 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EC23432A8F
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 01:56:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5851C432A91
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Oct 2021 01:57:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231520AbhJRX6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 19:58:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36734 "EHLO
+        id S233126AbhJRX7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 19:59:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229524AbhJRX6j (ORCPT
+        with ESMTP id S229524AbhJRX7H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 19:58:39 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1032DC06161C;
-        Mon, 18 Oct 2021 16:56:27 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id pi19-20020a17090b1e5300b0019fdd3557d3so1232826pjb.5;
-        Mon, 18 Oct 2021 16:56:27 -0700 (PDT)
+        Mon, 18 Oct 2021 19:59:07 -0400
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06478C06161C;
+        Mon, 18 Oct 2021 16:56:56 -0700 (PDT)
+Received: by mail-il1-x132.google.com with SMTP id y17so16665550ilb.9;
+        Mon, 18 Oct 2021 16:56:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=gCQ4GlIZMf0OeQdKaOI0Ryzlg2e9xalfBTKxlGb2CDY=;
-        b=dWF4g/D4FeOGCP9RwWe9ibOb+CqGp3AbSbosCBtsjrkU6Ym+7tTzfjlTzJtOVKCYGo
-         UBqdDPElgL9ht6Mmwu847MddtgPTBUyGHOZu+EgXVAz6IwB9Q9rAczmPDbnWcPPD7qpZ
-         RAWQ4hKBZUrUgzioMd+pMLWbhn7Pf8j1NrpyPj5uL+7qGqphz4bMDdOKg29UPOIPeRki
-         OY0jAE+GJdV/6dFQNzh/TQ8DLHHJsoKyI3XXVbU+/+3Ul3UUpHCtvRq3unhqizMi68UO
-         V7cWDEnzwDKll0V4i5lliTtJa6Etv9zMpcuVK5jRvP2uKEvfXePT1ogZ1BIhKJU9Amel
-         5N1g==
+        bh=e4lJzHCjbL40UuRVMeLU7XO3siB1JTUtpasDRh5RGfw=;
+        b=AfBGmzCg2COIbh27/ujvvW1HWgDzIC2G7kud2uh1zxpkBNrR6L2ErQMwCdCAE7AWBP
+         TxSWIhFeynU5SVeONkVP1Cy5pwo/MHgq4RnlZgAsDREqFwy4KGsXdd4LB+U1SGD+NXCZ
+         vvlh/LNxpM5xo6LZ76zsgZn+6s5oTH+If7e+5z5j7BrdTrVmz8ahYvGCCY4RJMn4fJV2
+         UJc/O3z8ipThB+XaDo6bHzTLnhPb7qOrlGOUz0wD+HSe04kkZrjGIvno5TVGuVDBPnOC
+         JKPL9bt3eCqN/nosuACMBlEGBvrVV7X5g7cImeiKQWvWJB2jRAQ/0AD+6XGyqVtEicTN
+         XPyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=gCQ4GlIZMf0OeQdKaOI0Ryzlg2e9xalfBTKxlGb2CDY=;
-        b=p8ke4LK4hlfLE5Ft//+ek/3Y4zbqk6KOlyFv2RieifqXPfcAnT0hkPDScg1DF4J0Sq
-         n0yI5jH5YK/uhrZf8CCHe94PaBDOxbHLNungwFQAlPzWaEho/RSoLfkvVdhi7B038FmP
-         swHQQrRCqPHTTv8BA1SJKxSIgQa9Xf3Q+epmWjhqEWPUz4bM1jjL8zro9fOw1dUY94y8
-         DHgOiDFr53ITC8Hzxq0BbQAmcBOpIXJjO1mMeAFnON6dDtRe14wTo8p9KgMRpwRTx+aH
-         AOsrc6E19E0zbkK99sSpze9NLKW7/i3P/QBKg0TR2p8s0wgXE8hqDgZHAju8DWb/Om7C
-         nGVA==
-X-Gm-Message-State: AOAM531x/KcymjX88lK3llGAazGjchLzvv0ZoVc6P3iBGmoDMjziPxPc
-        0Hy0yQnZep531FLF1TXI+IOJOqMWMWc=
-X-Google-Smtp-Source: ABdhPJxLe6AyJ3leYFjWFK3SNmetjh1gEOluU2spUU9eTqkuJ42UR92A1fnZMEG9Ilr2zGVLffXguQ==
-X-Received: by 2002:a17:90a:7d11:: with SMTP id g17mr2416955pjl.150.1634601386546;
-        Mon, 18 Oct 2021 16:56:26 -0700 (PDT)
-Received: from shinobu ([156.146.35.76])
-        by smtp.gmail.com with ESMTPSA id t9sm523364pjm.36.2021.10.18.16.56.23
+        bh=e4lJzHCjbL40UuRVMeLU7XO3siB1JTUtpasDRh5RGfw=;
+        b=IYT7nzYUH52DR7Bnj7T8Z5tbJ2u05tGLgsgLwNBwvSkhkEDcFFlC5pwZPWHtAhgoDH
+         8y0X2Jc1IUCC5eol0QDu8hAgDYEz1RlZIDmVmyrsnNx2HycXPyDQ4dAFQyPWYGlTtg2b
+         Sl21BRL6cfNPUcSDmZxrCo1ZQ0IEjTl111imOJuuIUZoH2uyZf4e1HoLLgAgOlX4Htd3
+         YH06iO/iuklwmdzNMSpm9myJX7ezGofd46hWKAXQpCGMuTf/ABcV20ciQyAaEnCVfLfv
+         LyXDKSxU2iMyWLnJFvXTjJBxIqc08KV/+dp4a2J85c/2x/uOq4qygWBaj5/VoerH9j+a
+         7eVg==
+X-Gm-Message-State: AOAM532EJBTxsa5MtQ0hlQj3o/jfcvNw1zz+sCHHaE4AVplfH7KTVqeD
+        +IFZRI7BhMh7MlbVP45LaNk=
+X-Google-Smtp-Source: ABdhPJwIA9peed1smVJcMA1U9/fCsc8L6bk4gnlCnxyCfy37JHBhG2qtvAPBCRMliaSDUsJ2E3g4Uw==
+X-Received: by 2002:a05:6e02:1be8:: with SMTP id y8mr16115123ilv.24.1634601415443;
+        Mon, 18 Oct 2021 16:56:55 -0700 (PDT)
+Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
+        by smtp.gmail.com with ESMTPSA id w15sm7952553ill.23.2021.10.18.16.56.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 16:56:25 -0700 (PDT)
-Date:   Tue, 19 Oct 2021 08:56:21 +0900
-From:   William Breathitt Gray <vilhelm.gray@gmail.com>
-To:     David Lechner <david@lechnology.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] counter: drop chrdev_lock
-Message-ID: <YW4JpTaj20j9Flus@shinobu>
-References: <20211017185521.3468640-1-david@lechnology.com>
- <YW0PVYT/GCKAnjN9@kroah.com>
- <YW03PSmpMkMVnHdp@shinobu>
- <YW06rLixA2Uush+n@kroah.com>
- <YW1Dl7ylRqyPxH2c@shinobu>
- <6aa0e966-478c-4233-fe9b-d16c3c9d4989@lechnology.com>
+        Mon, 18 Oct 2021 16:56:54 -0700 (PDT)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 9A57227C0054;
+        Mon, 18 Oct 2021 19:56:53 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Mon, 18 Oct 2021 19:56:53 -0400
+X-ME-Sender: <xms:xQluYdKKD93ED5qelCrZDbDn4blifi7e4UBNB7BTLHhzdRF4CJjK4A>
+    <xme:xQluYZLj5HNFNSOFslzt0Bgh5SagwqHJLGnbK9fu8cM3MaQ0tLEdAc1Z5rjWLWH-S
+    emlZacDqZy0fHeX8g>
+X-ME-Received: <xmr:xQluYVtp4lp0D8NHKlLAYW_lTKD6WhmsSnbPlBiiogl5ppoBnl9XvnnYqgg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvddvuddgvdejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    goufhushhpvggtthffohhmrghinhculdegledmnecujfgurhepfffhvffukfhfgggtuggj
+    sehttdertddttddvnecuhfhrohhmpeeuohhquhhnucfhvghnghcuoegsohhquhhnrdhfvg
+    hnghesghhmrghilhdrtghomheqnecuggftrfgrthhtvghrnheptdegueevjedufffgvefg
+    udefkeevvdejjeeiheduhfelgffhueeitdejueffvefhnecuffhomhgrihhnpehlihhvvg
+    hjohhurhhnrghlrdgtohhmnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehm
+    rghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthi
+    dqieelvdeghedtieegqddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghi
+    lhdrtghomhesfhhigihmvgdrnhgrmhgv
+X-ME-Proxy: <xmx:xQluYeYJ1mtb52ZH92td-36wwE3KTqm0IO4MNLRy1Yu3wI5FpJiMrw>
+    <xmx:xQluYUafUgfMSDSAUvNkrz6W8UWauWHz2_8YI7WVt5YEtGevBzUVKg>
+    <xmx:xQluYSBRtWLKtUDM-_hLQvls2WGI5C5eRfjfi1yTFxa2oJF5Xgj0uA>
+    <xmx:xQluYUpf0Vd713puZyEaNxbvgTByBz0J9aNmeBnb5j9o_W11tkb2lHmqCCg>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 18 Oct 2021 19:56:52 -0400 (EDT)
+Date:   Tue, 19 Oct 2021 07:56:35 +0800
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     stern@rowland.harvard.edu, parri.andrea@gmail.com, will@kernel.org,
+        peterz@infradead.org, npiggin@gmail.com, dhowells@redhat.com,
+        j.alglave@ucl.ac.uk, luc.maranget@inria.fr, akiyks@gmail.com,
+        dlustig@nvidia.com, joel@joelfernandes.org,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
+Subject: Re: Another possible use for LKMM, or a subset (strengthening)
+ thereof
+Message-ID: <YW4Jsw2y4BWTH5YS@boqun-archlinux>
+References: <20211007205621.GA584182@paulmck-ThinkPad-P17-Gen-1>
+ <20211018225313.GA855976@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="b58fb5KMbhxV/18m"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6aa0e966-478c-4233-fe9b-d16c3c9d4989@lechnology.com>
+In-Reply-To: <20211018225313.GA855976@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Paul,
 
---b58fb5KMbhxV/18m
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Mon, Oct 18, 2021 at 03:53:13PM -0700, Paul E. McKenney wrote:
+> On Thu, Oct 07, 2021 at 01:56:21PM -0700, Paul E. McKenney wrote:
+> > Hello!
+> > 
+> > On the perhaps unlikely chance that this is new news of interest...
+> > 
+> > I have finally prototyped the full "So You Want to Rust the Linux
+> > Kernel?" series (as in marked "under construction").
+> > 
+> > https://paulmck.livejournal.com/62436.html
+> 
+> And this blog series is now proclaimed to be feature complete.
+> 
+> Recommendations (both short- and long-term) may be found in the last post,
+> "TL;DR: Memory-Model Recommendations for Rusting the Linux Kernel",
+> at https://paulmck.livejournal.com/65341.html.
+> 
 
-On Mon, Oct 18, 2021 at 11:14:15AM -0500, David Lechner wrote:
-> On 10/18/21 4:51 AM, William Breathitt Gray wrote:
-> > On Mon, Oct 18, 2021 at 11:13:16AM +0200, Greg KH wrote:
-> >> On Mon, Oct 18, 2021 at 05:58:37PM +0900, William Breathitt Gray wrote:
-> >>> On Mon, Oct 18, 2021 at 08:08:21AM +0200, Greg KH wrote:
-> >>>> On Sun, Oct 17, 2021 at 01:55:21PM -0500, David Lechner wrote:
-> >>>>> This removes the chrdev_lock from the counter subsystem. This was
-> >>>>> intended to prevent opening the chrdev more than once. However, this
-> >>>>> doesn't work in practice since userspace can duplicate file descrip=
-tors
-> >>>>> and pass file descriptors to other processes. Since this protection
-> >>>>> can't be relied on, it is best to just remove it.
-> >>>>
-> >>>> Much better, thanks!
-> >>>>
-> >>>> One remaining question:
-> >>>>
-> >>>>> --- a/include/linux/counter.h
-> >>>>> +++ b/include/linux/counter.h
-> >>>>> @@ -297,7 +297,6 @@ struct counter_ops {
-> >>>>>    * @events:		queue of detected Counter events
-> >>>>>    * @events_wait:	wait queue to allow blocking reads of Counter ev=
-ents
-> >>>>>    * @events_lock:	lock to protect Counter events queue read operat=
-ions
-> >>>>> - * @chrdev_lock:	lock to limit chrdev to a single open at a time
-> >>>>>    * @ops_exist_lock:	lock to prevent use during removal
-> >>>>
-> >>>> Why do you still need 2 locks for the same structure?
-> >>>>
-> >>>> thanks,
-> >>>>
-> >>>> greg k-h
-> >>>
-> >>> Originally there was only the events_lock mutex. Initially I tried us=
-ing
-> >>> it to also limit the chrdev to a single open, but then came across a
-> >>> "lock held when returning to user space" warning:
-> >>> https://lore.kernel.org/linux-arm-kernel/YOq19zTsOzKA8v7c@shinobu/T/#=
-m6072133d418d598a5f368bb942c945e46cfab9a5
-> >>>
-> >>> Instead of losing the benefits of a mutex lock for protecting the
-> >>> events, I ultimately implemented the chrdev_lock separately as an
-> >>> atomic_t. If the chrdev_lock is removed, then we'll use events_lock
-> >>> solely from now on for this structure.
-> >>
-> >> chrdev_lock should be removed, it doesn't really do what you think it
-> >> does, as per the thread yesterday :)
-> >>
-> >> So does this mean you can also drop the ops_exist_lock?
-> >>
-> >> thanks,
-> >>
-> >> greg k-h
-> >=20
-> > When counter_unregister is called, the ops member is set to NULL to
-> > indicate that the driver will be removed and that no new device
-> > operations should occur (because the ops callbacks will no longer be
-> > valid). The ops_exist_lock is used to allow existing ops callback
-> > dereferences to complete before the driver is removed so that we do not
-> > suffer a page fault.
-> >=20
-> > I don't believe we can remove this protection (or can we?) but perhaps
-> > we can merge the three mutex locks (n_events_list_lock, events_lock, and
-> > ops_exist_lock) into a single "counter_lock" that handles all mutex
-> > locking for this structure.
-> >=20
->=20
-> The different mutexes protect individual parts of the counter struct
-> rather than the struct as a whole (a linked list, kfifo reads, and
-> callback ops), so I think it makes the code clearer having individual
-> mutexes for each rather than having a global mutex for unrelated
-> actions.
+Thanks for putting this together! For the short-term recommendations, I
+think one practical goal would be having the equivalent (or stronger)
+litmus tests in Rust for the ones in tools/memory-model/litmus-tests.
+The translation of litmus tests may be trivial, but it at least ensure
+us that Rust can support the existing patterns widely used in Linux
+kernel. Of course, the Rust litmus tests don't have to be able to run
+with herd, we just need some code snippest to check our understanding of
+Rust memory model. ;-)
 
-That's a fair point. Because these operations are independent of each
-other, keeping the mutexes separate would allow users to configure the
-next events watch list without necessarily stalling the current read()
-of events. I doubt the difference is significant, but if the purpose of
-these locks are well enough defined then independent mutex locks may not
-be a problem.
+Besides, it's interesting to how things react with each if one function
+in the litmus test is in Rust and the other is in C ;-) Maybe this is a
+long-term goal.
 
-William Breathitt Gray
+Thoughts?
 
---b58fb5KMbhxV/18m
-Content-Type: application/pgp-signature; name="signature.asc"
+Regards,
+Boqun
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAmFuCZoACgkQhvpINdm7
-VJJKMQ//fTXJ04FMXKrHomD7DqIgMlq+w8uC1Mcr97R3oNBg7r6HLN321eWPz/rn
-4bC1V3ww9dj3WzMOMtE7dKILJyCCmnbue/+1v694Phj3DppsZ/bN8RLo2c0K5ObF
-YS6evT9LZ/frqDOMAYm0b0g6HRxg9GF1A31Td1bwK2YmN4h1mfA351n+0sqxScF0
-r7qs8T9fPdB9YngI7VwIe0WAMT1C1rjl5rCVTus3Y+ojQa8Xd9Ua3OgdNOlPiAcN
-l62tl4R58BFztmsqtY4DtOabeYV85n8bBnUBpF7bcptpUcB9elU2imhNYXUcUxnT
-6h1rbhn+bNdq0ClVZmyAD22JVg9RyAl2iJ8XvlAg3t5CGM9N6rFMnXpH+W6YiI7q
-KXYA+JBksyAfuifhsv89AogTj3maf0vzrifz6UkkYLcBmkzed9h+qDHyBGW7qirI
-TApiRqQMMMV/wd6h0U5Ai5C5O4dteOnOeNhYxjul+Xm2G87bFWXtPUT4xPWkkVb1
-mxV9+K6YuX/ny4MH+55B1a0oa6o2hpfga09YSeSkuX2Ci6hq/K1ZEgHd+XMNptlz
-PCl+ezqsxz7FQUoi5+ne3/8+HC9qI3zk049m3GrIDuMh27E0M6Ccj5zpT+JociXs
-XnPPCg8RPThi7EUEdVB5zEWTdAg3IPsV7XVLNAALHN1CyQWsSac=
-=zW9x
------END PGP SIGNATURE-----
-
---b58fb5KMbhxV/18m--
+> Thoughts?
+> 
+> 							Thanx, Paul
