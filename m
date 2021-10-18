@@ -2,137 +2,272 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF1B3431FA9
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 16:30:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B941C431FBE
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 16:31:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232410AbhJROb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 10:31:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48364 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232260AbhJRObj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 10:31:39 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CFADC06176D;
-        Mon, 18 Oct 2021 07:29:09 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f085700a5f06031787ecc0a.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:5700:a5f0:6031:787e:cc0a])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id D2FC91EC04C2;
-        Mon, 18 Oct 2021 16:29:07 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1634567347;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=c9xEu9dyx4wrnGD++qak7Rf0JfD9ujFQ9E5yOZB19Q0=;
-        b=aKWwYTlr9cCQu7ia5dZP/kuxrxzN93CyPBgOxttie/QBj3Td/GyHk64AiEAbXaIbAsIGqx
-        BgGTrkPaemD3IjwBuWI2GydbibFzG2kuXi6yqjHnJLtsSpqF8n17AX6r45/y+wPNjuoNcV
-        Bkj7MRJet38z0l3P6cMLUbOfmJ1xF50=
-Date:   Mon, 18 Oct 2021 16:29:07 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        tony.luck@intel.com, marcorr@google.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com
-Subject: Re: [PATCH v6 08/42] x86/sev-es: initialize sev_status/features
- within #VC handler
-Message-ID: <YW2EsxcqBucuyoal@zn.tnic>
-References: <20211008180453.462291-1-brijesh.singh@amd.com>
- <20211008180453.462291-9-brijesh.singh@amd.com>
+        id S232152AbhJROdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 10:33:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51924 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232042AbhJROdF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 10:33:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D1C0060FC3;
+        Mon, 18 Oct 2021 14:30:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1634567454;
+        bh=ovyGrIMwQL8dg86Jk8gWanJYidtAl3EEhZhW3izA2zU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=tSyi3LvEGkxd7ndglOlkoIWT/oq2CaJ0eu711xjbDcITy9zee1FTgB1qLvGhjIPLS
+         CZXZP4m1kQu41d3E+2swZ0yz/+Kxbg8qYIv7n6xBW7zI48KCI9CJ+2gRQczpk17iAv
+         Z2PGR9dpr5MOHZWR/HVY9qHdN5+Sd7XBEGmZ+nHY=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: [PATCH 4.19 00/49] 4.19.213-rc2 review
+Date:   Mon, 18 Oct 2021 16:30:51 +0200
+Message-Id: <20211018143033.725101193@linuxfoundation.org>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211008180453.462291-9-brijesh.singh@amd.com>
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.213-rc2.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-4.19.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 4.19.213-rc2
+X-KernelTest-Deadline: 2021-10-20T14:30+00:00
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 08, 2021 at 01:04:19PM -0500, Brijesh Singh wrote:
-> From: Michael Roth <michael.roth@amd.com>
-> 
-> Generally access to MSR_AMD64_SEV is only safe if the 0x8000001F CPUID
-> leaf indicates SEV support. With SEV-SNP, CPUID responses from the
-> hypervisor are not considered trustworthy, particularly for 0x8000001F.
-> SEV-SNP provides a firmware-validated CPUID table to use as an
-> alternative, but prior to checking MSR_AMD64_SEV there are no
-> guarantees that this is even an SEV-SNP guest.
-> 
-> Rather than relying on these CPUID values early on, allow SEV-ES and
-> SEV-SNP guests to instead use a cpuid instruction to trigger a #VC and
-> have it cache MSR_AMD64_SEV in sev_status, since it is known to be safe
-> to access MSR_AMD64_SEV if a #VC has triggered.
-> 
-> Signed-off-by: Michael Roth <michael.roth@amd.com>
-> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
-> ---
->  arch/x86/kernel/sev-shared.c | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
-> 
-> diff --git a/arch/x86/kernel/sev-shared.c b/arch/x86/kernel/sev-shared.c
-> index 8ee27d07c1cd..2796c524d174 100644
-> --- a/arch/x86/kernel/sev-shared.c
-> +++ b/arch/x86/kernel/sev-shared.c
-> @@ -191,6 +191,20 @@ void __init do_vc_no_ghcb(struct pt_regs *regs, unsigned long exit_code)
->  	if (exit_code != SVM_EXIT_CPUID)
->  		goto fail;
->  
-> +	/*
-> +	 * A #VC implies that either SEV-ES or SEV-SNP are enabled, so the SEV
-> +	 * MSR is also available. Go ahead and initialize sev_status here to
-> +	 * allow SEV features to be checked without relying solely on the SEV
-> +	 * cpuid bit to indicate whether it is safe to do so.
-> +	 */
-> +	if (!sev_status) {
-> +		unsigned long lo, hi;
-> +
-> +		asm volatile("rdmsr" : "=a" (lo), "=d" (hi)
-> +				     : "c" (MSR_AMD64_SEV));
-> +		sev_status = (hi << 32) | lo;
-> +	}
-> +
->  	sev_es_wr_ghcb_msr(GHCB_CPUID_REQ(fn, GHCB_CPUID_REQ_EAX));
->  	VMGEXIT();
->  	val = sev_es_rd_ghcb_msr();
-> -- 
+This is the start of the stable review cycle for the 4.19.213 release.
+There are 49 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-Ok, you guys are killing me. ;-\
+Responses should be made by Wed, 20 Oct 2021 14:30:23 +0000.
+Anything received after that time might be too late.
 
-How is bolting some pretty much unrelated code into the early #VC
-handler not a hack? Do you not see it?
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.213-rc2.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+and the diffstat can be found below.
 
-So sme_enable() is reading MSR_AMD64_SEV and setting up everything
-there, including sev_status. If a SNP guest does not trust CPUID, why
-can't you attempt to read that MSR there, even if CPUID has lied to the
-guest?
+thanks,
 
-And not just slap it somewhere just because it works?
+greg k-h
 
--- 
-Regards/Gruss,
-    Boris.
+-------------
+Pseudo-Shortlog of commits:
 
-https://people.kernel.org/tglx/notes-about-netiquette
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 4.19.213-rc2
+
+Vegard Nossum <vegard.nossum@oracle.com>
+    r8152: select CRC32 and CRYPTO/CRYPTO_HASH/CRYPTO_SHA256
+
+chongjiapeng <jiapeng.chong@linux.alibaba.com>
+    qed: Fix missing error code in qed_slowpath_start()
+
+Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+    mqprio: Correct stats in mqprio_dump_class_stats().
+
+Jackie Liu <liuyun01@kylinos.cn>
+    acpi/arm64: fix next_platform_timer() section mismatch error
+
+Dan Carpenter <dan.carpenter@oracle.com>
+    drm/msm/dsi: fix off by one in dsi_bus_clk_enable error handling
+
+Dan Carpenter <dan.carpenter@oracle.com>
+    drm/msm/dsi: Fix an error code in msm_dsi_modeset_init()
+
+Colin Ian King <colin.king@canonical.com>
+    drm/msm: Fix null pointer dereference on pointer edp
+
+Vadim Pasternak <vadimp@nvidia.com>
+    platform/mellanox: mlxreg-io: Fix argument base in kstrtou32() call
+
+Dan Carpenter <dan.carpenter@oracle.com>
+    pata_legacy: fix a couple uninitialized variable bugs
+
+Ziyang Xuan <william.xuanziyang@huawei.com>
+    NFC: digital: fix possible memory leak in digital_in_send_sdd_req()
+
+Ziyang Xuan <william.xuanziyang@huawei.com>
+    NFC: digital: fix possible memory leak in digital_tg_listen_mdaa()
+
+Ziyang Xuan <william.xuanziyang@huawei.com>
+    nfc: fix error handling of nfc_proto_register()
+
+Arnd Bergmann <arnd@arndb.de>
+    ethernet: s2io: fix setting mac address during resume
+
+Nanyong Sun <sunnanyong@huawei.com>
+    net: encx24j600: check error in devm_regmap_init_encx24j600
+
+Vegard Nossum <vegard.nossum@oracle.com>
+    net: korina: select CRC32
+
+Vegard Nossum <vegard.nossum@oracle.com>
+    net: arc: select CRC32
+
+Eiichi Tsukata <eiichi.tsukata@nutanix.com>
+    sctp: account stream padding length for reconf chunk
+
+Dan Carpenter <dan.carpenter@oracle.com>
+    iio: dac: ti-dac5571: fix an error code in probe()
+
+Dan Carpenter <dan.carpenter@oracle.com>
+    iio: ssp_sensors: fix error code in ssp_print_mcu_debug()
+
+Dan Carpenter <dan.carpenter@oracle.com>
+    iio: ssp_sensors: add more range checking in ssp_parse_dataframe()
+
+Jiri Valek - 2N <valek@2n.cz>
+    iio: light: opt3001: Fixed timeout error when 0 lux
+
+Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+    iio: adc128s052: Fix the error handling path of 'adc128_probe()'
+
+Billy Tsai <billy_tsai@aspeedtech.com>
+    iio: adc: aspeed: set driver data when adc probe.
+
+Borislav Petkov <bp@suse.de>
+    x86/Kconfig: Do not enable AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT automatically
+
+Stephen Boyd <swboyd@chromium.org>
+    nvmem: Fix shift-out-of-bound (UBSAN) with byte size cells
+
+Halil Pasic <pasic@linux.ibm.com>
+    virtio: write back F_VERSION_1 before validate
+
+Tomaz Solc <tomaz.solc@tablix.org>
+    USB: serial: option: add prod. id for Quectel EG91
+
+Daniele Palmas <dnlplm@gmail.com>
+    USB: serial: option: add Telit LE910Cx composition 0x1204
+
+Yu-Tung Chang <mtwget@gmail.com>
+    USB: serial: option: add Quectel EC200S-CN module support
+
+Aleksander Morgado <aleksander@aleksander.es>
+    USB: serial: qcserial: add EM9191 QDL support
+
+Michael Cullen <michael@michaelcullen.name>
+    Input: xpad - add support for another USB ID of Nacon GC-100
+
+Miquel Raynal <miquel.raynal@bootlin.com>
+    usb: musb: dsps: Fix the probe error path
+
+Zhang Jianhua <chris.zjh@huawei.com>
+    efi: Change down_interruptible() in virt_efi_reset_system() to down_trylock()
+
+Ard Biesheuvel <ardb@kernel.org>
+    efi/cper: use stack buffer for error record decoding
+
+Arnd Bergmann <arnd@arndb.de>
+    cb710: avoid NULL pointer subtraction
+
+Nikolay Martynov <mar.kolya@gmail.com>
+    xhci: Enable trust tx length quirk for Fresco FL11 USB controller
+
+Pavankumar Kondeti <pkondeti@codeaurora.org>
+    xhci: Fix command ring pointer corruption while aborting a command
+
+Jonathan Bell <jonathan@raspberrypi.com>
+    xhci: guard accesses to ep_state in xhci_endpoint_reset()
+
+Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+    mei: me: add Ice Lake-N device id.
+
+James Morse <james.morse@arm.com>
+    x86/resctrl: Free the ctrlval arrays when domain_setup_mon_state() fails
+
+Filipe Manana <fdmanana@suse.com>
+    btrfs: check for error when looking up inode during dir entry replay
+
+Filipe Manana <fdmanana@suse.com>
+    btrfs: deal with errors when adding inode reference during log replay
+
+Filipe Manana <fdmanana@suse.com>
+    btrfs: deal with errors when replaying dir entry during log replay
+
+Roberto Sassu <roberto.sassu@huawei.com>
+    s390: fix strrchr() implementation
+
+Steven Rostedt <rostedt@goodmis.org>
+    nds32/ftrace: Fix Error: invalid operands (*UND* and *UND* sections) for `^'
+
+Kailang Yang <kailang@realtek.com>
+    ALSA: hda/realtek - ALC236 headset MIC recording issue
+
+Werner Sembach <wse@tuxedocomputers.com>
+    ALSA: hda/realtek: Add quirk for Clevo X170KM-G
+
+Werner Sembach <wse@tuxedocomputers.com>
+    ALSA: hda/realtek: Complete partial device name to avoid ambiguity
+
+Takashi Iwai <tiwai@suse.de>
+    ALSA: seq: Fix a potential UAF by wrong private_free call order
+
+
+-------------
+
+Diffstat:
+
+ Makefile                                           |  4 +--
+ arch/s390/lib/string.c                             | 15 +++++-----
+ arch/x86/Kconfig                                   |  1 -
+ arch/x86/kernel/cpu/intel_rdt.c                    |  2 ++
+ drivers/acpi/arm64/gtdt.c                          |  2 +-
+ drivers/ata/pata_legacy.c                          |  6 ++--
+ drivers/firmware/efi/cper.c                        |  4 +--
+ drivers/firmware/efi/runtime-wrappers.c            |  2 +-
+ drivers/gpu/drm/msm/dsi/dsi.c                      |  4 ++-
+ drivers/gpu/drm/msm/dsi/dsi_host.c                 |  2 +-
+ drivers/gpu/drm/msm/edp/edp_ctrl.c                 |  3 +-
+ drivers/iio/adc/aspeed_adc.c                       |  1 +
+ drivers/iio/adc/ti-adc128s052.c                    |  6 ++++
+ drivers/iio/common/ssp_sensors/ssp_spi.c           | 11 ++++++--
+ drivers/iio/dac/ti-dac5571.c                       |  1 +
+ drivers/iio/light/opt3001.c                        |  6 ++--
+ drivers/input/joystick/xpad.c                      |  2 ++
+ drivers/misc/cb710/sgbuf2.c                        |  2 +-
+ drivers/misc/mei/hw-me-regs.h                      |  1 +
+ drivers/misc/mei/pci-me.c                          |  1 +
+ drivers/net/ethernet/Kconfig                       |  1 +
+ drivers/net/ethernet/arc/Kconfig                   |  1 +
+ drivers/net/ethernet/microchip/encx24j600-regmap.c | 10 +++++--
+ drivers/net/ethernet/microchip/encx24j600.c        |  5 +++-
+ drivers/net/ethernet/microchip/encx24j600_hw.h     |  4 +--
+ drivers/net/ethernet/neterion/s2io.c               |  2 +-
+ drivers/net/ethernet/qlogic/qed/qed_main.c         |  1 +
+ drivers/net/usb/Kconfig                            |  4 +++
+ drivers/nvmem/core.c                               |  3 +-
+ drivers/platform/mellanox/mlxreg-io.c              |  2 +-
+ drivers/usb/host/xhci-pci.c                        |  2 ++
+ drivers/usb/host/xhci-ring.c                       | 14 +++++++---
+ drivers/usb/host/xhci.c                            |  5 ++++
+ drivers/usb/musb/musb_dsps.c                       |  4 ++-
+ drivers/usb/serial/option.c                        |  8 ++++++
+ drivers/usb/serial/qcserial.c                      |  1 +
+ drivers/virtio/virtio.c                            | 11 ++++++++
+ fs/btrfs/tree-log.c                                | 32 +++++++++++++++-------
+ net/nfc/af_nfc.c                                   |  3 ++
+ net/nfc/digital_core.c                             |  9 ++++--
+ net/nfc/digital_technology.c                       |  8 ++++--
+ net/sched/sch_mqprio.c                             | 30 ++++++++++++--------
+ net/sctp/sm_make_chunk.c                           |  2 +-
+ scripts/recordmcount.pl                            |  2 +-
+ sound/core/seq_device.c                            |  8 ++----
+ sound/pci/hda/patch_realtek.c                      |  8 ++++--
+ 46 files changed, 182 insertions(+), 74 deletions(-)
+
+
