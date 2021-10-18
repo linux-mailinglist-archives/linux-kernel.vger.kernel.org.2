@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CCBD431B0A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:28:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85F62431CF1
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:44:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232500AbhJRNaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:30:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41422 "EHLO mail.kernel.org"
+        id S233908AbhJRNq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:46:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39668 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231920AbhJRN3I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:29:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 74E2761362;
-        Mon, 18 Oct 2021 13:26:46 +0000 (UTC)
+        id S232606AbhJRNoA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:44:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4261961507;
+        Mon, 18 Oct 2021 13:34:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634563606;
-        bh=mIfWHTo6F5vNmIUpGiI4Mgv2twSJ0V9JjEE+iJXG1q8=;
+        s=korg; t=1634564098;
+        bh=zJAkJoWlHczIkuAjVPyHBbMLKA7zZA9sWHfvsC6rSWE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ULr0xe5jTc36/lCozQEsAtfAFAHmvxgOjYbjBbbjE+9TSXGDi6lb5J7JMSxPfM6OF
-         JfYacT9D5IIVyzq0jpHUdn8sUXKzaTZfPv5mrWDikOVUQZmoD6UdqS73nTyyHeJ94r
-         auN2bWHWFWHAPGWc1Aow7IFDgOkq5qpb7uq8viJI=
+        b=SsjYxSL2yUvUK6fe1tULK/7yFQ+pdVAyp76TVdC4b0wiAv/aYx1ncT9IeEMOPw1ty
+         exsUWt+zoKnWNBP8OwcnNCG8GF3Y0hgnkBp8Qj+tOShxmESTErvYxjYh4eXXz3PXN/
+         tz9B7ExVQa26seMM6cXtJjEQRttZsThWOtDFhFkM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Ziyang Xuan <william.xuanziyang@huawei.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.14 31/39] nfc: fix error handling of nfc_proto_register()
+        stable@vger.kernel.org, Stefan Wahren <stefan.wahren@i2se.com>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>
+Subject: [PATCH 5.10 064/103] ARM: dts: bcm2711: fix MDIO #address- and #size-cells
 Date:   Mon, 18 Oct 2021 15:24:40 +0200
-Message-Id: <20211018132326.441888479@linuxfoundation.org>
+Message-Id: <20211018132336.902700070@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132325.426739023@linuxfoundation.org>
-References: <20211018132325.426739023@linuxfoundation.org>
+In-Reply-To: <20211018132334.702559133@linuxfoundation.org>
+References: <20211018132334.702559133@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,35 +39,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ziyang Xuan <william.xuanziyang@huawei.com>
+From: Stefan Wahren <stefan.wahren@i2se.com>
 
-commit 0911ab31896f0e908540746414a77dd63912748d upstream.
+commit 2faff6737a8a684b077264f0aed131526c99eec4 upstream.
 
-When nfc proto id is using, nfc_proto_register() return -EBUSY error
-code, but forgot to unregister proto. Fix it by adding proto_unregister()
-in the error handling case.
+The values of #address-cells and #size-cells are swapped. Fix this
+and avoid the following DT schema warnings for mdio@e14:
 
-Fixes: c7fe3b52c128 ("NFC: add NFC socket family")
-Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Link: https://lore.kernel.org/r/20211013034932.2833737-1-william.xuanziyang@huawei.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+ #address-cells:0:0: 1 was expected
+ #size-cells:0:0: 0 was expected
+
+Fixes: be8af7a9e3cc ("ARM: dts: bcm2711-rpi-4: Enable GENET support")
+Signed-off-by: Stefan Wahren <stefan.wahren@i2se.com>
+Link: https://lore.kernel.org/r/1628334401-6577-2-git-send-email-stefan.wahren@i2se.com
+Signed-off-by: Nicolas Saenz Julienne <nsaenz@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/nfc/af_nfc.c |    3 +++
- 1 file changed, 3 insertions(+)
+ arch/arm/boot/dts/bcm2711.dtsi |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/net/nfc/af_nfc.c
-+++ b/net/nfc/af_nfc.c
-@@ -72,6 +72,9 @@ int nfc_proto_register(const struct nfc_
- 		proto_tab[nfc_proto->id] = nfc_proto;
- 	write_unlock(&proto_tab_lock);
- 
-+	if (rc)
-+		proto_unregister(nfc_proto->proto);
-+
- 	return rc;
- }
- EXPORT_SYMBOL(nfc_proto_register);
+--- a/arch/arm/boot/dts/bcm2711.dtsi
++++ b/arch/arm/boot/dts/bcm2711.dtsi
+@@ -514,8 +514,8 @@
+ 				compatible = "brcm,genet-mdio-v5";
+ 				reg = <0xe14 0x8>;
+ 				reg-names = "mdio";
+-				#address-cells = <0x0>;
+-				#size-cells = <0x1>;
++				#address-cells = <0x1>;
++				#size-cells = <0x0>;
+ 			};
+ 		};
+ 	};
 
 
