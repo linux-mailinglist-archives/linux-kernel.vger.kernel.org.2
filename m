@@ -2,120 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AB8E43263E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 20:21:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47EB543266D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 20:33:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232465AbhJRSXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 14:23:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46454 "EHLO
+        id S232778AbhJRSfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 14:35:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231947AbhJRSXt (ORCPT
+        with ESMTP id S229696AbhJRSfP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 14:23:49 -0400
-Received: from mail-ua1-x932.google.com (mail-ua1-x932.google.com [IPv6:2607:f8b0:4864:20::932])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A2F4C06161C
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 11:21:38 -0700 (PDT)
-Received: by mail-ua1-x932.google.com with SMTP id i15so6953276uap.0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 11:21:38 -0700 (PDT)
+        Mon, 18 Oct 2021 14:35:15 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BACDC06161C;
+        Mon, 18 Oct 2021 11:33:04 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id g5so11895101plg.1;
+        Mon, 18 Oct 2021 11:33:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=lZDaJ6I97l+zgpuqXCY7HKN0+kSM7lYmy2Jajm6goGM=;
-        b=q1R7VbyvwV8jMq0ZqNhoj0dNLW/yngbqdggMKb+Wm6DRZ2pRqp8nd2gQXjXQH58zm0
-         x1GZoNG3/qMMHdPpBNS8OV+A7lgWbcFJe5V3oZFhFt3dIUs776ZflY22RQwZs4+V2N8w
-         Uv+yBcA2WBH7VF2N8t9Y9teyPhSt7DU43HXpLlQAbwFj1+70WJpb0kr3L6wb0FOF6QXn
-         yVE7CvNfWkZulbP2vuo5mus4MmS+uc1SmzSLrCyW3svG2M1SaIE08BohFEFI5fEyOxOs
-         ev3fzkn/oa+iaovc9PaOHNG+28fz1SPjJXyAwMlOzLXv0YBopEZfhopXWtFi+Rc+lWnl
-         HjOw==
+        h=mime-version:content-transfer-encoding:from:to:cc:subject:date
+         :message-id:in-reply-to;
+        bh=QHlN/204mE0WcKuSOglcG6xZsaKzcaN6bu3nCZc3A54=;
+        b=f8mAhQDAjRALeuc1BUBw4uKKKeKxyC0PIYlnXV8DCvR9/D6aqJW0knsDvzIElj6S9j
+         zspOFAKG/Q0SEHx3R1aooXGxlMGZ5FdkqMySGrE2fhNgRQDNmUhfFzSuTmeQ23q84OGU
+         /eDAdOYIWMyPjXGiYU9E3WllxJlUh2RUMgwBTLcOxnQcjQg5GP6nNAu29DhDVXkedjE8
+         nekNRWyQXk/zmY9HtfnFFzSixWH/G5VK1CYPGLoPvFEOMZckhZ+g76VMBTx7+rglNmFD
+         lzWs0EytG1IEui4gsKxceOwr/G5QxG4rGD1SYRbc0HF5QQf0YNyMad5xoFGNmRumuPnr
+         UN4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=lZDaJ6I97l+zgpuqXCY7HKN0+kSM7lYmy2Jajm6goGM=;
-        b=iqc2AQ45+sxDUVGni+dHFNloQj1V4aCiAwMUgRaUe6h2LzlxSMo1rYGxLfnY8e3VH2
-         M/QZpiKlTW5sZJIfYb3B3vTx5V7IuWAwLEXcJ26lNtnUDy7hVYfYV1r6kcOQrN91z5oF
-         5Ctmr9wygN0aCROApS/uyC8n/T1ha4b0rz/xzX/NAGA7B6mu1WbIQQk8fyT5G3Mn3HxC
-         pJ9behcyS7cxaWdtMGndw7JbSyUrFrUah2OEPYyf4oioaecXdUKz0nYbBJSDGR5YG19T
-         U7xw2vWN5FUtFHxXFNM3LhVOdCtuNv6/f/+qceZsiso7Jl5ZOQ6XVcW6NYOHigMQQRxD
-         1SWw==
-X-Gm-Message-State: AOAM531aKaAI6hmVz60LJYxIs1tFxiKjtMhbdSIkqpQXVWpPhOikDL/p
-        /HAdXfuWQqas71WKJPm5Wew=
-X-Google-Smtp-Source: ABdhPJxczTrnCdY8VAkqDM1eNfTk/NiwWc/PeGLRzLa4qVrkYXoC2q7O3lKzF7nHEsJkoHqeA/7W6w==
-X-Received: by 2002:a67:7282:: with SMTP id n124mr28662890vsc.15.1634581297564;
-        Mon, 18 Oct 2021 11:21:37 -0700 (PDT)
-Received: from ?IPv6:2804:431:c7f4:b20b:2ce0:3c04:a56a:40cc? ([2804:431:c7f4:b20b:2ce0:3c04:a56a:40cc])
-        by smtp.gmail.com with ESMTPSA id o40sm8655507vkf.3.2021.10.18.11.21.34
+        h=x-gm-message-state:mime-version:content-transfer-encoding:from:to
+         :cc:subject:date:message-id:in-reply-to;
+        bh=QHlN/204mE0WcKuSOglcG6xZsaKzcaN6bu3nCZc3A54=;
+        b=eHLL+PQfo5rkegDuVQqzDW1IPGOY/YbhNN2V3SKGZA4BCiyqeQ8B72/IfaVJLQTXQS
+         p+aNbmrd9/Ce+ADzAdNPPF9DMD9GPcGJVeYspvUx04qaJfhfkZPW/JV8nY4/R8YYve8E
+         YefynqRCKsI9ySUNEfTl4MSbnsnsIzEDJTlGe1mUlOXEZ/lqkik4OPASVFp59XR1sbdt
+         s5PyRcQTgrTbNXP9k929ekXrk9f6FLgPAKEnbO3/cY9vmMm+0NDDi5l33lspagEEV10E
+         Dc9Z3fvhgbkfMTWtFVz/xHBUErj7RhN7sW81dUxt3dRVytix/GXpZLbRalhB45UOYRkQ
+         zJUw==
+X-Gm-Message-State: AOAM531xFHu3aVD6noTMy2OuZR3sXSx5GawcfwAUYYbBNa4gvgDz1Sf2
+        YjC3e+ter4RDQm/IezClVp4=
+X-Google-Smtp-Source: ABdhPJzohKb+BBfkUsYjIM+G8WLgV2xm9AqEYmGnRbdffL+zGwv4a4+mOnFDLhM+OZxczD36QUInvg==
+X-Received: by 2002:a17:902:db01:b0:13e:d9ac:b8ff with SMTP id m1-20020a170902db0100b0013ed9acb8ffmr29181455plx.46.1634581983804;
+        Mon, 18 Oct 2021 11:33:03 -0700 (PDT)
+Received: from localhost ([117.200.53.211])
+        by smtp.gmail.com with ESMTPSA id g7sm9701710pgp.17.2021.10.18.11.32.59
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Oct 2021 11:21:36 -0700 (PDT)
-Subject: Re: [PATCH 1/6] drm: vkms: Replace the deprecated
- drm_mode_config_init
-To:     Thomas Zimmermann <tzimmermann@suse.de>,
-        rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com
-Cc:     hamohammed.sa@gmail.com, daniel@ffwll.ch, airlied@linux.ie,
-        contact@emersion.fr, leandro.ribeiro@collabora.com,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        lkcamp@lists.libreplanetbr.org
-References: <20211005201637.58563-1-igormtorrente@gmail.com>
- <20211005201637.58563-2-igormtorrente@gmail.com>
- <87f347bf-801f-7fba-bb52-009367cd30a0@suse.de>
-From:   Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
-Message-ID: <644a375d-18b4-e2c7-0e2a-6eb1471b4d07@gmail.com>
-Date:   Mon, 18 Oct 2021 15:21:33 -0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <87f347bf-801f-7fba-bb52-009367cd30a0@suse.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        Mon, 18 Oct 2021 11:33:03 -0700 (PDT)
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+From:   "Sireesh Kodali" <sireeshkodali1@gmail.com>
+To:     "Alex Elder" <elder@ieee.org>, <phone-devel@vger.kernel.org>,
+        <~postmarketos/upstreaming@lists.sr.ht>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <elder@kernel.org>
+Cc:     "Vladimir Lypak" <vladimir.lypak@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Jakub Kicinski" <kuba@kernel.org>
+Subject: Re: [RFC PATCH 13/17] net: ipa: Add support for IPA v2.x in the
+ driver's QMI interface
+Date:   Mon, 18 Oct 2021 23:52:31 +0530
+Message-Id: <CF2QQACAFQQ9.3H61DJ29ALVVI@skynet-linux>
+In-Reply-To: <d50312f8-823d-01b1-47a5-7190be93408d@ieee.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas,
+On Thu Oct 14, 2021 at 4:00 AM IST, Alex Elder wrote:
+> On 9/19/21 10:08 PM, Sireesh Kodali wrote:
+> > On IPA v2.x, the modem doesn't send a DRIVER_INIT_COMPLETED, so we have
+> > to rely on the uc's IPA_UC_RESPONSE_INIT_COMPLETED to know when its
+> > ready. We add a function here that marks uc_ready =3D true. This functi=
+on
+> > is called by ipa_uc.c when IPA_UC_RESPONSE_INIT_COMPLETED is handled.
+>
+> This should use the new ipa_mem_find() interface for getting the
+> memory information for the ZIP region.
+>
 
-On 10/18/21 7:02 AM, Thomas Zimmermann wrote:
-> Hi
-> 
-> Am 05.10.21 um 22:16 schrieb Igor Matheus Andrade Torrente:
->> The `drm_mode_config_init` was deprecated since c3b790e commit, and it's
->> being replaced by the `drmm_mode_config_init`.
->>
->> Signed-off-by: Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
->> ---
->>   drivers/gpu/drm/vkms/vkms_drv.c | 5 ++++-
->>   1 file changed, 4 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/gpu/drm/vkms/vkms_drv.c 
->> b/drivers/gpu/drm/vkms/vkms_drv.c
->> index 0ffe5f0e33f7..828868920494 100644
->> --- a/drivers/gpu/drm/vkms/vkms_drv.c
->> +++ b/drivers/gpu/drm/vkms/vkms_drv.c
->> @@ -140,8 +140,11 @@ static const struct drm_mode_config_helper_funcs 
->> vkms_mode_config_helpers = {
->>   static int vkms_modeset_init(struct vkms_device *vkmsdev)
->>   {
->>       struct drm_device *dev = &vkmsdev->drm;
->> +    int ret = drmm_mode_config_init(dev);
->> +
->> +    if (ret < 0)
->> +        return ret;
-> 
-> The style looks awkward IMHO. Rather use
-I don't think it's awkward. But I don't mind change it anyway.
+Got it, thanks
 
-> 
->   int ret
-> 
->   ret = drmm_mode_config_init()
->   if (ret)
->      return ret;
-> 
->> -    drm_mode_config_init(dev);
->>       dev->mode_config.funcs = &vkms_mode_funcs;
->>       dev->mode_config.min_width = XRES_MIN;
->>       dev->mode_config.min_height = YRES_MIN;
->>
-> 
+> I don't know where the IPA_UC_RESPONSE_INIT_COMPLETED gets sent
+> but I presume it ends up calling ipa_qmi_signal_uc_loaded().
+>
+
+IPA_UC_RESPONSE_INIT_COMPLETED is handled by the ipa_uc sub-driver. The
+handler calls ipa_qmi_signal_uc_loaded() once the response is received,
+at which point we know the uc has been inited.
+
+> I think actually the DRIVER_INIT_COMPLETE message from the modem
+> is saying "I finished initializing the microcontroller." And
+> I've wondered why there is a duplicate mechanism. Maybe there
+> was a race or something.
+>
+
+This makes sense. Given that some modems rely on the IPA block for
+initialization, I wonder if Qualcomm decided it would be easier to allow
+the modem to complete the uc initialization and send the signal instead.
+
+Regards,
+Sireesh
+> -Alex
+>
+> > Signed-off-by: Sireesh Kodali <sireeshkodali1@gmail.com>
+> > Signed-off-by: Vladimir Lypak <vladimir.lypak@gmail.com>
+> > ---
+> >   drivers/net/ipa/ipa_qmi.c | 27 ++++++++++++++++++++++++++-
+> >   drivers/net/ipa/ipa_qmi.h | 10 ++++++++++
+> >   2 files changed, 36 insertions(+), 1 deletion(-)
+> >=20
+> > diff --git a/drivers/net/ipa/ipa_qmi.c b/drivers/net/ipa/ipa_qmi.c
+> > index 7e2fe701cc4d..876e2a004f70 100644
+> > --- a/drivers/net/ipa/ipa_qmi.c
+> > +++ b/drivers/net/ipa/ipa_qmi.c
+> > @@ -68,6 +68,11 @@
+> >    * - The INDICATION_REGISTER request and INIT_COMPLETE indication are
+> >    *   optional for non-initial modem boots, and have no bearing on the
+> >    *   determination of when things are "ready"
+> > + *
+> > + * Note that on IPA v2.x, the modem doesn't send a DRIVER_INIT_COMPLET=
+E
+> > + * request. Thus, we rely on the uc's IPA_UC_RESPONSE_INIT_COMPLETED t=
+o know
+> > + * when the uc is ready. The rest of the process is the same on IPA v2=
+.x and
+> > + * later IPA versions
+> >    */
+> >  =20
+> >   #define IPA_HOST_SERVICE_SVC_ID		0x31
+> > @@ -345,7 +350,12 @@ init_modem_driver_req(struct ipa_qmi *ipa_qmi)
+> >   			req.hdr_proc_ctx_tbl_info.start + mem->size - 1;
+> >   	}
+> >  =20
+> > -	/* Nothing to report for the compression table (zip_tbl_info) */
+> > +	mem =3D &ipa->mem[IPA_MEM_ZIP];
+> > +	if (mem->size) {
+> > +		req.zip_tbl_info_valid =3D 1;
+> > +		req.zip_tbl_info.start =3D ipa->mem_offset + mem->offset;
+> > +		req.zip_tbl_info.end =3D ipa->mem_offset + mem->size - 1;
+> > +	}
+> >  =20
+> >   	mem =3D ipa_mem_find(ipa, IPA_MEM_V4_ROUTE_HASHED);
+> >   	if (mem->size) {
+> > @@ -525,6 +535,21 @@ int ipa_qmi_setup(struct ipa *ipa)
+> >   	return ret;
+> >   }
+> >  =20
+> > +/* With IPA v2 modem is not required to send DRIVER_INIT_COMPLETE requ=
+est to AP.
+> > + * We start operation as soon as IPA_UC_RESPONSE_INIT_COMPLETED irq is=
+ triggered.
+> > + */
+> > +void ipa_qmi_signal_uc_loaded(struct ipa *ipa)
+> > +{
+> > +	struct ipa_qmi *ipa_qmi =3D &ipa->qmi;
+> > +
+> > +	/* This is needed only on IPA 2.x */
+> > +	if (ipa->version > IPA_VERSION_2_6L)
+> > +		return;
+> > +
+> > +	ipa_qmi->uc_ready =3D true;
+> > +	ipa_qmi_ready(ipa_qmi);
+> > +}
+> > +
+> >   /* Tear down IPA QMI handles */
+> >   void ipa_qmi_teardown(struct ipa *ipa)
+> >   {
+> > diff --git a/drivers/net/ipa/ipa_qmi.h b/drivers/net/ipa/ipa_qmi.h
+> > index 856ef629ccc8..4962d88b0d22 100644
+> > --- a/drivers/net/ipa/ipa_qmi.h
+> > +++ b/drivers/net/ipa/ipa_qmi.h
+> > @@ -55,6 +55,16 @@ struct ipa_qmi {
+> >    */
+> >   int ipa_qmi_setup(struct ipa *ipa);
+> >  =20
+> > +/**
+> > + * ipa_qmi_signal_uc_loaded() - Signal that the UC has been loaded
+> > + * @ipa:		IPA pointer
+> > + *
+> > + * This is called when the uc indicates that it is ready. This exists,=
+ because
+> > + * on IPA v2.x, the modem does not send a DRIVER_INIT_COMPLETED. Thus =
+we have
+> > + * to rely on the uc's INIT_COMPLETED response to know if it was initi=
+alized
+> > + */
+> > +void ipa_qmi_signal_uc_loaded(struct ipa *ipa);
+> > +
+> >   /**
+> >    * ipa_qmi_teardown() - Tear down IPA QMI handles
+> >    * @ipa:		IPA pointer
+> >=20
+
