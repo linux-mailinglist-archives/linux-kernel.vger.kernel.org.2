@@ -2,112 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4EC1431849
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 13:58:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA56D43184D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 13:58:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231459AbhJRMA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 08:00:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41486 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231165AbhJRMAY (ORCPT
+        id S231216AbhJRMBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 08:01:01 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:49496 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229781AbhJRMBA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 08:00:24 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8567C06161C;
-        Mon, 18 Oct 2021 04:58:13 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id f11so10651164pfc.12;
-        Mon, 18 Oct 2021 04:58:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id;
-        bh=SuFOxZl4+HH69viYIp+PkDxoOY0BPw8gzbppwpli0cs=;
-        b=XZYvJm/CBRdfr55abbtGKo3QQ2debO5VqEhs2PJuIV7rsBSecPpoJkVX4NKw0uZjWd
-         NVKcH7XaTPS5AdUvJSTjLJNmj98awqHxENTZ/EYMaK1P3ltgCzEVswEM0zfdsXX9geSp
-         P6FuKzDV4jaGfenNBzxMgaWD1m2+QGe57CTkrfFKJggq5UAeq5A4uYW3gc3iZ3b+OYe+
-         MfQZesqbd1jhE1nJWZaSQgsOBBqywU5bOryj/b5OVdOgCW3/wZeL3Bfac/fS0gqtYhXk
-         llz87F7jzY8NT2kxbIsh017J5OQ7nIKsgHZUog24Ns1paFhz2CHcmkRyOZ7Ym2b+zgfx
-         QEOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=SuFOxZl4+HH69viYIp+PkDxoOY0BPw8gzbppwpli0cs=;
-        b=HIvz4F3hTtDjmcbZs8XXrC0esab2Pa9vz63NpgYHTXcKJ7oaWspLZtOdbPT6IYqsHc
-         ZyqmzadtyGeGdm/EufyTe1CgtKbTAlB+zPp7geGaJY+tQi5YAeDtXvNdxbXmYF37/rAl
-         PUIX7Q/FwoI/PsQLWge1SYy/VULB+OwS3lBx00GIpZXsXFO13weGB8UIc7res9HLVe3X
-         YmX7a0vsqj4SAZ8wCrPzsFe0DjUiLj5oEarFhnGCa3ZYFTEy3KGG2uO/jnrkzaHWRNpa
-         f2XcmvPjclEb/xQebXThZ1Byhuh8toFI2rSiaNTsFq6IweqEELR20BYbQvIbTo/3UfNb
-         Ah4g==
-X-Gm-Message-State: AOAM530bMraNsC/bpzOINwnqocWP3/ibTH68PBfRCQbVDt3kx6244vCT
-        owNkeeK6HGJmIbg6WulzKbwfMQGoEt6G+j6s
-X-Google-Smtp-Source: ABdhPJztPygk/CipWYSHV7wHwvh/c8bpjiMTQ8DKltuYtItsgFJu1gfWNxkNbCcDzQo4uPUJhwa58w==
-X-Received: by 2002:a63:6b03:: with SMTP id g3mr23216912pgc.123.1634558293387;
-        Mon, 18 Oct 2021 04:58:13 -0700 (PDT)
-Received: from BJ-zhangqiang.qcraft.lan ([137.59.101.13])
-        by smtp.gmail.com with ESMTPSA id d60sm18910124pjk.49.2021.10.18.04.58.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 04:58:13 -0700 (PDT)
-From:   Zqiang <qiang.zhang1211@gmail.com>
-To:     axboe@kernel.dk, hch@lst.de, willy@infradead.org,
-        sunhao.th@gmail.com, hch@infradead.org
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Zqiang <qiang.zhang1211@gmail.com>
-Subject: [PATCH v3] block: fix incorrect references to disk objects
-Date:   Mon, 18 Oct 2021 19:58:07 +0800
-Message-Id: <20211018115807.21103-1-qiang.zhang1211@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 18 Oct 2021 08:01:00 -0400
+Received: from pendragon.ideasonboard.com (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id A43AB8C6;
+        Mon, 18 Oct 2021 13:58:47 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1634558327;
+        bh=VO53NUXpVpxk/i/v3NczIQT48srH7kX+QlKH+aMbtMc=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=pIhfoL6N/JROU8/hNhymJYffG/VFkscXSPUqZftQNempnt5E3uQNxxclIibuD3ipa
+         D4R/utKvNG4xhBVd28Jjk0HJPUDrm1ZyZ6hed7eRFjrQ1Rn5xxsmyu9LYTbocITBpC
+         fQILki3OSL3uVwFoVJ7a/A+OEqh3ik69TkLs+HO0=
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210926155356.23861-1-nikita.yoush@cogentembedded.com>
+References: <20210926155356.23861-1-nikita.yoush@cogentembedded.com>
+Subject: Re: [PATCH] media: vsp1: mask interrupts before enabling
+From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Cc:     linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Koji Matsuoka <koji.matsuoka.xm@renesas.com>,
+        Nikita Yushchenko <nikita.yoush@cogentembedded.com>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Nikita Yushchenko <nikita.yoush@cogentembedded.com>
+Date:   Mon, 18 Oct 2021 12:58:45 +0100
+Message-ID: <163455832550.1371157.18009256492359430197@Monstersaurus>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When adding partitions to the disk, the reference count of the disk
-object is increased. then alloc partition device and called
-device_add(), if the device_add() return error, the reference
-count of the disk object will be reduced twice, at put_device(pdev)
-and put_disk(disk). this leads to the end of the object's life cycle
-prematurely, and trigger following calltrace.
+Hi Nikita,
 
-  __init_work+0x2d/0x50 kernel/workqueue.c:519
-  synchronize_rcu_expedited+0x3af/0x650 kernel/rcu/tree_exp.h:847
-  bdi_remove_from_list mm/backing-dev.c:938 [inline]
-  bdi_unregister+0x17f/0x5c0 mm/backing-dev.c:946
-  release_bdi+0xa1/0xc0 mm/backing-dev.c:968
-  kref_put include/linux/kref.h:65 [inline]
-  bdi_put+0x72/0xa0 mm/backing-dev.c:976
-  bdev_free_inode+0x11e/0x220 block/bdev.c:408
-  i_callback+0x3f/0x70 fs/inode.c:226
-  rcu_do_batch kernel/rcu/tree.c:2508 [inline]
-  rcu_core+0x76d/0x16c0 kernel/rcu/tree.c:2743
-  __do_softirq+0x1d7/0x93b kernel/softirq.c:558
-  invoke_softirq kernel/softirq.c:432 [inline]
-  __irq_exit_rcu kernel/softirq.c:636 [inline]
-  irq_exit_rcu+0xf2/0x130 kernel/softirq.c:648
-  sysvec_apic_timer_interrupt+0x93/0xc0
+Quoting Nikita Yushchenko (2021-09-26 16:53:56)
+> Setting up VSP interrupt handler without masking interrupt before causes
+> interrupt handler to be immediately called (and crash due to null pointer
+> dereference) on r8a77951-ulcb-kf board.
+>=20
+> Fix that by explicitly masking all interrupts before setting the interrupt
+> handler. To do so, have to set the interrupt handler later, after hw
+> revision is already detected and number of interrupts to mask gets
+> known.
+>=20
+> Based on patch by Koji Matsuoka <koji.matsuoka.xm@renesas.com> included
+> in the Renesas BSP kernel. Updated that to use wfp_count as the number of
 
-Return directly after calling the put_device().
+s/wfp_count/wpf_count/
 
-Reported-by: Hao Sun <sunhao.th@gmail.com>
-Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
----
- v1->v2:
- directly returning instead of assigning disk to NULL
- v2->v3:
- modify description information
+> WPF interrupts to mask.
+>=20
+> Signed-off-by: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
+> ---
+>  drivers/media/platform/vsp1/vsp1_drv.c | 23 +++++++++++++++--------
+>  1 file changed, 15 insertions(+), 8 deletions(-)
+>=20
+> diff --git a/drivers/media/platform/vsp1/vsp1_drv.c b/drivers/media/platf=
+orm/vsp1/vsp1_drv.c
+> index de442d6c9926..0e9a6fad54f8 100644
+> --- a/drivers/media/platform/vsp1/vsp1_drv.c
+> +++ b/drivers/media/platform/vsp1/vsp1_drv.c
+> @@ -811,13 +811,6 @@ static int vsp1_probe(struct platform_device *pdev)
+>                 return -EINVAL;
+>         }
+> =20
+> -       ret =3D devm_request_irq(&pdev->dev, irq->start, vsp1_irq_handler,
+> -                             IRQF_SHARED, dev_name(&pdev->dev), vsp1);
+> -       if (ret < 0) {
+> -               dev_err(&pdev->dev, "failed to request IRQ\n");
+> -               return ret;
+> -       }
+> -
+>         /* FCP (optional). */
+>         fcp_node =3D of_parse_phandle(pdev->dev.of_node, "renesas,fcp", 0=
+);
+>         if (fcp_node) {
+> @@ -847,7 +840,6 @@ static int vsp1_probe(struct platform_device *pdev)
+>                 goto done;
+> =20
+>         vsp1->version =3D vsp1_read(vsp1, VI6_IP_VERSION);
+> -       vsp1_device_put(vsp1);
+> =20
+>         for (i =3D 0; i < ARRAY_SIZE(vsp1_device_infos); ++i) {
+>                 if ((vsp1->version & VI6_IP_VERSION_MODEL_MASK) =3D=3D
+> @@ -861,11 +853,26 @@ static int vsp1_probe(struct platform_device *pdev)
+>                 dev_err(&pdev->dev, "unsupported IP version 0x%08x\n",
+>                         vsp1->version);
+>                 ret =3D -ENXIO;
+> +               vsp1_device_put(vsp1);
+>                 goto done;
+>         }
+> =20
+>         dev_dbg(&pdev->dev, "IP version 0x%08x\n", vsp1->version);
+> =20
+> +       for (i =3D 0; i < vsp1->info->lif_count; ++i)
+> +               vsp1_write(vsp1, VI6_DISP_IRQ_ENB(i), 0);
+> +       for (i =3D 0; i < vsp1->info->wpf_count; ++i)
+> +               vsp1_write(vsp1, VI6_WPF_IRQ_ENB(i), 0);
 
- block/partitions/core.c | 1 +
- 1 file changed, 1 insertion(+)
+Should any other state or context on the hardware be manually reset?
 
-diff --git a/block/partitions/core.c b/block/partitions/core.c
-index 9dbddc355b40..ed5deef1d7e1 100644
---- a/block/partitions/core.c
-+++ b/block/partitions/core.c
-@@ -424,6 +424,7 @@ static struct block_device *add_partition(struct gendisk *disk, int partno,
- 	device_del(pdev);
- out_put:
- 	put_device(pdev);
-+	return ERR_PTR(err);
- out_put_disk:
- 	put_disk(disk);
- 	return ERR_PTR(err);
--- 
-2.17.1
+The initial value of VI6_WPFn_IRQ_ENB and VI6_DISPn_IRQ_ENB is
+explicitly stated as H'00000000 in the datasheet. So perhaps that
+implies that something else is going on here.
 
+Perhaps the display is already used before the kernel boots to handle a
+bootsplash screen or such ?
+
+Will the 'pending' interrupts have otherwise been cleared by the time we
+get to come to enable them? or will we still have a race...
+
+Otherwise we should be clearing the status bits too. And if we need to
+do a whole software reset, we should use the software reset controls
+instead.
+
+Looking at vsp1_device_init(), which does a vsp1_reset_wpf for any WPF
+running, and is called at vsp1_pm_runtime_resume() means that everything
+should already be getting reset by software at the first call to
+pm_runtime_enable I think...
+
+That said, I can see how there could still be a race so requesting the
+IRQ below /after/ the device is initialised is a good thing. I just
+don't think we need the manual resets that you've added above.
+
+Could you test to see if those lines to explicitly set VI6_DISP_IRQ_ENB
+and VI6_WPF_IRQ_ENB are really needed in your use case please?
+
+--
+Kieran
+
+
+> +
+> +       vsp1_device_put(vsp1);
+> +
+> +       ret =3D devm_request_irq(&pdev->dev, irq->start, vsp1_irq_handler,
+> +                              IRQF_SHARED, dev_name(&pdev->dev), vsp1);
+> +       if (ret < 0) {
+> +               dev_err(&pdev->dev, "failed to request IRQ\n");
+> +               goto done;
+> +       }
+> +
+>         /* Instantiate entities. */
+>         ret =3D vsp1_create_entities(vsp1);
+>         if (ret < 0) {
+> --=20
+> 2.30.2
+>
