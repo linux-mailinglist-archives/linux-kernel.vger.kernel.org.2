@@ -2,132 +2,395 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3CCF431980
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 14:41:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D43CE431984
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 14:41:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230350AbhJRMng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 08:43:36 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:43824 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231736AbhJRMnf (ORCPT
+        id S231180AbhJRMoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 08:44:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51920 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231727AbhJRMn5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 08:43:35 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id C48E4218E0;
-        Mon, 18 Oct 2021 12:41:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1634560883; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qqVyTJszOpR5oxY7f2Bd82OpVm8eX8E8zKmQpxWFVyg=;
-        b=U64AWQJ3eycEDWMPrFzhGZsS3z3WA2raDYyAP3jdLSxqjBxvqpSrj2OnQKTfmzfmb0UwEj
-        CXgQpvmRjbcsZlX4V91GcmWj+YXgbkuJYAXt1ucpzpMgpjiH4c65n04Ctvc8yDTBxdDpXi
-        X/dg1o2Y8YVzvurGmfmfCnpegKvZ7pU=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 55B47A3B81;
-        Mon, 18 Oct 2021 12:41:23 +0000 (UTC)
-Date:   Mon, 18 Oct 2021 14:41:22 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Zhaoyang Huang <huangzhaoyang@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mm: skip current when memcg reclaim
-Message-ID: <YW1rcv4bN1WWhzLD@dhcp22.suse.cz>
-References: <1634278529-16983-1-git-send-email-huangzhaoyang@gmail.com>
- <YW0u67o8wl3CGikP@dhcp22.suse.cz>
- <CAGWkznEO9SyNFEBqL8=JxewVTvaUhwFLPow69mi=R1MJ=XCpow@mail.gmail.com>
+        Mon, 18 Oct 2021 08:43:57 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5F10C06161C;
+        Mon, 18 Oct 2021 05:41:44 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id d3so70448126edp.3;
+        Mon, 18 Oct 2021 05:41:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6ma438rY78GdjEHQdrb6TeuEWVkfDff3eVr92rQK25g=;
+        b=bcAtQSZOMt385CqDWdkLB/tKrt5rRPBKhcbch35IBWT6Sr3WLk901jzIlD+48ZjV8w
+         KAH93yJNsDq7DOIUt7l6UXvAnST7EhOYi8fVfOjB1sBx1P8ou9IomX99wgP1XJHlE2Kk
+         LHINYnzr/F3bwU9rcVPUAWRdk8MrKSqERp+nuzTC4/kJMrI/BFk9mck8zRNIEccdURJ0
+         DIlJRTGc4WB6uKaPwdgtVYpgJyZH0k5Ppwbq6MFG66zZ7mk/7AU0D9B6xpUxofVl/ikK
+         HgUQu/wcXzHsfRLhPrJTunXyNMh4Y5/HD4enWwsx3d0VDuwnMbuKzBROppO6C1iKT029
+         Japg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6ma438rY78GdjEHQdrb6TeuEWVkfDff3eVr92rQK25g=;
+        b=IaXf34Mux0AyglbI+aiu5x4/MFKymGPPK6YKWfiNIme/H/syr4UqF5OqC1/KF5o4SJ
+         u8BCy9LHOnilQOeyJEawgkyFCJ1qX9qfqyEviBNCybmXeGwzMjjsrjDDg18ifIp2JgIf
+         +zlnbeQylHNPxmTmc7J6wDFS+0PHjLmQ2hSC8OV55NoT501jPfIOsgAuajHqvlVyHOnI
+         JboUXwgv6idmYKuEi0reURRP9afLqS06exyqPtIyi7pDGuDbuH7NRoU8xcDf4zcCi/Rd
+         v6M7mL/6IkbRb/UhloWnJ6qFggVPiI0SDe3ne/8Q+zw3Q+QIzpE7x0mFOWGMAOZJNdK7
+         PMnw==
+X-Gm-Message-State: AOAM531JQhrxu85GaHZWxChJ5411678sJQloecgl/Yv/PM3XPlysyAp3
+        IteBj3GKrXDD4dG+V4kv6ocKwUk1PhkFBdEc/24=
+X-Google-Smtp-Source: ABdhPJz1PLsDQarVE2punUuKVpCeV/TAxHyeu/Efl7gijXadKdGcoiL62B//S44l/8LUBAQnLezt1XPCjgNtrvKbCk8=
+X-Received: by 2002:a17:907:2bdf:: with SMTP id gv31mr28802835ejc.521.1634560902659;
+ Mon, 18 Oct 2021 05:41:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGWkznEO9SyNFEBqL8=JxewVTvaUhwFLPow69mi=R1MJ=XCpow@mail.gmail.com>
+References: <1631554694-9599-1-git-send-email-abel.vesa@nxp.com> <1631554694-9599-9-git-send-email-abel.vesa@nxp.com>
+In-Reply-To: <1631554694-9599-9-git-send-email-abel.vesa@nxp.com>
+From:   Adam Ford <aford173@gmail.com>
+Date:   Mon, 18 Oct 2021 07:41:31 -0500
+Message-ID: <CAHCN7xLpdLY06vUDW0-oAVWDk-VYf_8kZh2F8f5+jd0RS0y74w@mail.gmail.com>
+Subject: Re: [RFC 08/19] interconnect: imx8: Remove the imx_icc_node_adj_desc
+To:     Abel Vesa <abel.vesa@nxp.com>
+Cc:     Rob Herring <robh@kernel.org>, Dong Aisheng <aisheng.dong@nxp.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Georgi Djakov <djakov@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        linux-serial@vger.kernel.org, NXP Linux Team <linux-imx@nxp.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-pm@vger.kernel.org,
+        arm-soc <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 18-10-21 17:25:23, Zhaoyang Huang wrote:
-> On Mon, Oct 18, 2021 at 4:23 PM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Fri 15-10-21 14:15:29, Huangzhaoyang wrote:
-> > > From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
-> > >
-> > > Sibling thread of the same process could refault the reclaimed pages
-> > > in the same time, which would be typical in None global reclaim and
-> > > introduce thrashing.
-> >
-> > It is hard to understand what kind of problem you see (ideally along
-> > with some numbers) and how the proposed patch addresses that problem
-> >
-> > Also you are missing Signed-off-by tag (please have a look at
-> > Documentation/process/submitting-patches.rst which is much more
-> > comprehensive about the process).
-> sorry for that, I will fix it.
-> >
-> > > ---
-> > >  mm/vmscan.c | 5 +++++
-> > >  1 file changed, 5 insertions(+)
-> > >
-> > > diff --git a/mm/vmscan.c b/mm/vmscan.c
-> > > index 5199b96..ebbdc37 100644
-> > > --- a/mm/vmscan.c
-> > > +++ b/mm/vmscan.c
-> > > @@ -2841,6 +2841,11 @@ static void shrink_node_memcgs(pg_data_t *pgdat, struct scan_control *sc)
-> > >                               sc->memcg_low_skipped = 1;
-> > >                               continue;
-> > >                       }
-> > > +                     /*
-> > > +                      * Don't bother current when its memcg is below low
-> > > +                      */
-> > > +                     if (get_mem_cgroup_from_mm(current->mm) == memcg)
-> > > +                             continue;
-> >
-> > This code is executed when none of memcg in the reclaimed hierarchy
-> > could be reclaimed. Low limit is then ignored and this change is
-> > tweaking that behavior without any description of the effect. A very
-> > vague note about trashing would indicate that you have something like
-> > the following
-> >
-> >         A (hiting hard limit)
-> >        / \
-> >       B   C
-> >
-> > Both B and C low limit protected and current task associated with B. As
-> > none of the two could be reclaimed due to soft protection yuu prefer to
-> > reclaim from C as you do not want to reclaim from the current process as
-> > that could reclaim current's working set. Correct?
-> >
-> > I would be really curious about more specifics of the used hierarchy.
-> What I am facing is a typical scenario on Android, that is a big
-> memory consuming APP(camera etc) launched while background filled by
-> other processes. The hierarchy is like what you describe above where B
-> represents the APP and memory.low is set to help warm restart. Both of
-> kswapd and direct reclaim work together to reclaim pages under this
-> scenario, which can cause 20MB file page delete from LRU in several
-> second. This change could help to have current process's page escape
-> from being reclaimed and cause page thrashing. We observed the result
-> via systrace which shows that the Uninterruptible sleep(block on page
-> bit) and iowait get smaller than usual.
+On Mon, Sep 13, 2021 at 12:39 PM Abel Vesa <abel.vesa@nxp.com> wrote:
+>
+> Now that the imx generic interconnect doesn't use the
+> imx_icc_node_adj_desc, we remove it from all the i.MX8M
+> platform drivers.
+>
+> Signed-off-by: Abel Vesa <abel.vesa@nxp.com>
+> ---
+>  drivers/interconnect/imx/imx.h    | 19 ++++-------------
+>  drivers/interconnect/imx/imx8mm.c | 32 +++++++++-------------------
+>  drivers/interconnect/imx/imx8mn.c | 28 +++++++------------------
+>  drivers/interconnect/imx/imx8mq.c | 35 ++++++++++---------------------
+>  4 files changed, 33 insertions(+), 81 deletions(-)
+>
 
-I still have hard time to understand the exact setup and why the patch
-helps you. If you want to protect B more than the low limit would allow
-for by stealiong from C then the same thing can happen from anybody
-reclaiming from C so in the end there is no protection. The same would
-apply for any global direct memory reclaim done by a 3rd party. So I
-suspect that your patch just happens to work by a luck.
+I noticed there are no interconnect nodes in the imx8mm nor the
+imx8mn, so it appears to me like the mini and nano code won't do
+anything.
 
-Why both B and C have low limit setup and they both cannot be reclaimed?
-Isn't that a weird setup where A hard limit is too close to sum of low
-limits of B and C?
 
-In other words could you share a more detailed configuration you are
-using and some more details why both B and C have been skipped during
-the first pass of the reclaim?
-
--- 
-Michal Hocko
-SUSE Labs
+adam
+> diff --git a/drivers/interconnect/imx/imx.h b/drivers/interconnect/imx/imx.h
+> index 75da51076c68..5c9f5138f6aa 100644
+> --- a/drivers/interconnect/imx/imx.h
+> +++ b/drivers/interconnect/imx/imx.h
+> @@ -14,15 +14,6 @@
+>
+>  #define IMX_ICC_MAX_LINKS      4
+>
+> -/*
+> - * struct imx_icc_node_adj - Describe a dynamic adjustable node
+> - */
+> -struct imx_icc_node_adj_desc {
+> -       unsigned int bw_mul, bw_div;
+> -       const char *phandle_name;
+> -       bool main_noc;
+> -};
+> -
+>  /*
+>   * struct imx_icc_node - Describe an interconnect node
+>   * @name: name of the node
+> @@ -35,23 +26,21 @@ struct imx_icc_node_desc {
+>         u16 id;
+>         u16 links[IMX_ICC_MAX_LINKS];
+>         u16 num_links;
+> -       const struct imx_icc_node_adj_desc *adj;
+>  };
+>
+> -#define DEFINE_BUS_INTERCONNECT(_name, _id, _adj, ...)                 \
+> +#define DEFINE_BUS_INTERCONNECT(_name, _id, ...)                       \
+>         {                                                               \
+>                 .id = _id,                                              \
+>                 .name = _name,                                          \
+> -               .adj = _adj,                                            \
+>                 .num_links = ARRAY_SIZE(((int[]){ __VA_ARGS__ })),      \
+>                 .links = { __VA_ARGS__ },                               \
+>         }
+>
+>  #define DEFINE_BUS_MASTER(_name, _id, _dest_id)                                \
+> -       DEFINE_BUS_INTERCONNECT(_name, _id, NULL, _dest_id)
+> +       DEFINE_BUS_INTERCONNECT(_name, _id, _dest_id)
+>
+> -#define DEFINE_BUS_SLAVE(_name, _id, _adj)                             \
+> -       DEFINE_BUS_INTERCONNECT(_name, _id, _adj)
+> +#define DEFINE_BUS_SLAVE(_name, _id)                                   \
+> +       DEFINE_BUS_INTERCONNECT(_name, _id)
+>
+>  int imx_icc_register(struct platform_device *pdev,
+>                      struct imx_icc_node_desc *nodes,
+> diff --git a/drivers/interconnect/imx/imx8mm.c b/drivers/interconnect/imx/imx8mm.c
+> index 1083490bb391..0c16110bef9d 100644
+> --- a/drivers/interconnect/imx/imx8mm.c
+> +++ b/drivers/interconnect/imx/imx8mm.c
+> @@ -14,18 +14,6 @@
+>
+>  #include "imx.h"
+>
+> -static const struct imx_icc_node_adj_desc imx8mm_dram_adj = {
+> -       .bw_mul = 1,
+> -       .bw_div = 16,
+> -       .phandle_name = "fsl,ddrc",
+> -};
+> -
+> -static const struct imx_icc_node_adj_desc imx8mm_noc_adj = {
+> -       .bw_mul = 1,
+> -       .bw_div = 16,
+> -       .main_noc = true,
+> -};
+> -
+>  /*
+>   * Describe bus masters, slaves and connections between them
+>   *
+> @@ -33,43 +21,43 @@ static const struct imx_icc_node_adj_desc imx8mm_noc_adj = {
+>   * PL301 nics which are skipped/merged into PL301_MAIN
+>   */
+>  static struct imx_icc_node_desc nodes[] = {
+> -       DEFINE_BUS_INTERCONNECT("NOC", IMX8MM_ICN_NOC, &imx8mm_noc_adj,
+> +       DEFINE_BUS_INTERCONNECT("NOC", IMX8MM_ICN_NOC,
+>                         IMX8MM_ICS_DRAM, IMX8MM_ICN_MAIN),
+>
+> -       DEFINE_BUS_SLAVE("DRAM", IMX8MM_ICS_DRAM, &imx8mm_dram_adj),
+> -       DEFINE_BUS_SLAVE("OCRAM", IMX8MM_ICS_OCRAM, NULL),
+> +       DEFINE_BUS_SLAVE("DRAM", IMX8MM_ICS_DRAM),
+> +       DEFINE_BUS_SLAVE("OCRAM", IMX8MM_ICS_OCRAM),
+>         DEFINE_BUS_MASTER("A53", IMX8MM_ICM_A53, IMX8MM_ICN_NOC),
+>
+>         /* VPUMIX */
+>         DEFINE_BUS_MASTER("VPU H1", IMX8MM_ICM_VPU_H1, IMX8MM_ICN_VIDEO),
+>         DEFINE_BUS_MASTER("VPU G1", IMX8MM_ICM_VPU_G1, IMX8MM_ICN_VIDEO),
+>         DEFINE_BUS_MASTER("VPU G2", IMX8MM_ICM_VPU_G2, IMX8MM_ICN_VIDEO),
+> -       DEFINE_BUS_INTERCONNECT("PL301_VIDEO", IMX8MM_ICN_VIDEO, NULL, IMX8MM_ICN_NOC),
+> +       DEFINE_BUS_INTERCONNECT("PL301_VIDEO", IMX8MM_ICN_VIDEO, IMX8MM_ICN_NOC),
+>
+>         /* GPUMIX */
+>         DEFINE_BUS_MASTER("GPU 2D", IMX8MM_ICM_GPU2D, IMX8MM_ICN_GPU),
+>         DEFINE_BUS_MASTER("GPU 3D", IMX8MM_ICM_GPU3D, IMX8MM_ICN_GPU),
+> -       DEFINE_BUS_INTERCONNECT("PL301_GPU", IMX8MM_ICN_GPU, NULL, IMX8MM_ICN_NOC),
+> +       DEFINE_BUS_INTERCONNECT("PL301_GPU", IMX8MM_ICN_GPU, IMX8MM_ICN_NOC),
+>
+>         /* DISPLAYMIX */
+>         DEFINE_BUS_MASTER("CSI", IMX8MM_ICM_CSI, IMX8MM_ICN_MIPI),
+>         DEFINE_BUS_MASTER("LCDIF", IMX8MM_ICM_LCDIF, IMX8MM_ICN_MIPI),
+> -       DEFINE_BUS_INTERCONNECT("PL301_MIPI", IMX8MM_ICN_MIPI, NULL, IMX8MM_ICN_NOC),
+> +       DEFINE_BUS_INTERCONNECT("PL301_MIPI", IMX8MM_ICN_MIPI, IMX8MM_ICN_NOC),
+>
+>         /* HSIO */
+>         DEFINE_BUS_MASTER("USB1", IMX8MM_ICM_USB1, IMX8MM_ICN_HSIO),
+>         DEFINE_BUS_MASTER("USB2", IMX8MM_ICM_USB2, IMX8MM_ICN_HSIO),
+>         DEFINE_BUS_MASTER("PCIE", IMX8MM_ICM_PCIE, IMX8MM_ICN_HSIO),
+> -       DEFINE_BUS_INTERCONNECT("PL301_HSIO", IMX8MM_ICN_HSIO, NULL, IMX8MM_ICN_NOC),
+> +       DEFINE_BUS_INTERCONNECT("PL301_HSIO", IMX8MM_ICN_HSIO, IMX8MM_ICN_NOC),
+>
+>         /* Audio */
+>         DEFINE_BUS_MASTER("SDMA2", IMX8MM_ICM_SDMA2, IMX8MM_ICN_AUDIO),
+>         DEFINE_BUS_MASTER("SDMA3", IMX8MM_ICM_SDMA3, IMX8MM_ICN_AUDIO),
+> -       DEFINE_BUS_INTERCONNECT("PL301_AUDIO", IMX8MM_ICN_AUDIO, NULL, IMX8MM_ICN_MAIN),
+> +       DEFINE_BUS_INTERCONNECT("PL301_AUDIO", IMX8MM_ICN_AUDIO, IMX8MM_ICN_MAIN),
+>
+>         /* Ethernet */
+>         DEFINE_BUS_MASTER("ENET", IMX8MM_ICM_ENET, IMX8MM_ICN_ENET),
+> -       DEFINE_BUS_INTERCONNECT("PL301_ENET", IMX8MM_ICN_ENET, NULL, IMX8MM_ICN_MAIN),
+> +       DEFINE_BUS_INTERCONNECT("PL301_ENET", IMX8MM_ICN_ENET, IMX8MM_ICN_MAIN),
+>
+>         /* Other */
+>         DEFINE_BUS_MASTER("SDMA1", IMX8MM_ICM_SDMA1, IMX8MM_ICN_MAIN),
+> @@ -77,7 +65,7 @@ static struct imx_icc_node_desc nodes[] = {
+>         DEFINE_BUS_MASTER("USDHC1", IMX8MM_ICM_USDHC1, IMX8MM_ICN_MAIN),
+>         DEFINE_BUS_MASTER("USDHC2", IMX8MM_ICM_USDHC2, IMX8MM_ICN_MAIN),
+>         DEFINE_BUS_MASTER("USDHC3", IMX8MM_ICM_USDHC3, IMX8MM_ICN_MAIN),
+> -       DEFINE_BUS_INTERCONNECT("PL301_MAIN", IMX8MM_ICN_MAIN, NULL,
+> +       DEFINE_BUS_INTERCONNECT("PL301_MAIN", IMX8MM_ICN_MAIN,
+>                         IMX8MM_ICN_NOC, IMX8MM_ICS_OCRAM),
+>  };
+>
+> diff --git a/drivers/interconnect/imx/imx8mn.c b/drivers/interconnect/imx/imx8mn.c
+> index ad97e55fd4e5..8d16bd5cf006 100644
+> --- a/drivers/interconnect/imx/imx8mn.c
+> +++ b/drivers/interconnect/imx/imx8mn.c
+> @@ -11,18 +11,6 @@
+>
+>  #include "imx.h"
+>
+> -static const struct imx_icc_node_adj_desc imx8mn_dram_adj = {
+> -       .bw_mul = 1,
+> -       .bw_div = 4,
+> -       .phandle_name = "fsl,ddrc",
+> -};
+> -
+> -static const struct imx_icc_node_adj_desc imx8mn_noc_adj = {
+> -       .bw_mul = 1,
+> -       .bw_div = 4,
+> -       .main_noc = true,
+> -};
+> -
+>  /*
+>   * Describe bus masters, slaves and connections between them
+>   *
+> @@ -30,23 +18,23 @@ static const struct imx_icc_node_adj_desc imx8mn_noc_adj = {
+>   * PL301 nics which are skipped/merged into PL301_MAIN
+>   */
+>  static struct imx_icc_node_desc nodes[] = {
+> -       DEFINE_BUS_INTERCONNECT("NOC", IMX8MN_ICN_NOC, &imx8mn_noc_adj,
+> +       DEFINE_BUS_INTERCONNECT("NOC", IMX8MN_ICN_NOC,
+>                         IMX8MN_ICS_DRAM, IMX8MN_ICN_MAIN),
+>
+> -       DEFINE_BUS_SLAVE("DRAM", IMX8MN_ICS_DRAM, &imx8mn_dram_adj),
+> -       DEFINE_BUS_SLAVE("OCRAM", IMX8MN_ICS_OCRAM, NULL),
+> +       DEFINE_BUS_SLAVE("DRAM", IMX8MN_ICS_DRAM),
+> +       DEFINE_BUS_SLAVE("OCRAM", IMX8MN_ICS_OCRAM),
+>         DEFINE_BUS_MASTER("A53", IMX8MN_ICM_A53, IMX8MN_ICN_NOC),
+>
+>         /* GPUMIX */
+>         DEFINE_BUS_MASTER("GPU", IMX8MN_ICM_GPU, IMX8MN_ICN_GPU),
+> -       DEFINE_BUS_INTERCONNECT("PL301_GPU", IMX8MN_ICN_GPU, NULL, IMX8MN_ICN_NOC),
+> +       DEFINE_BUS_INTERCONNECT("PL301_GPU", IMX8MN_ICN_GPU, IMX8MN_ICN_NOC),
+>
+>         /* DISPLAYMIX */
+>         DEFINE_BUS_MASTER("CSI1", IMX8MN_ICM_CSI1, IMX8MN_ICN_MIPI),
+>         DEFINE_BUS_MASTER("CSI2", IMX8MN_ICM_CSI2, IMX8MN_ICN_MIPI),
+>         DEFINE_BUS_MASTER("ISI", IMX8MN_ICM_ISI, IMX8MN_ICN_MIPI),
+>         DEFINE_BUS_MASTER("LCDIF", IMX8MN_ICM_LCDIF, IMX8MN_ICN_MIPI),
+> -       DEFINE_BUS_INTERCONNECT("PL301_MIPI", IMX8MN_ICN_MIPI, NULL, IMX8MN_ICN_NOC),
+> +       DEFINE_BUS_INTERCONNECT("PL301_MIPI", IMX8MN_ICN_MIPI, IMX8MN_ICN_NOC),
+>
+>         /* USB goes straight to NOC */
+>         DEFINE_BUS_MASTER("USB", IMX8MN_ICM_USB, IMX8MN_ICN_NOC),
+> @@ -54,11 +42,11 @@ static struct imx_icc_node_desc nodes[] = {
+>         /* Audio */
+>         DEFINE_BUS_MASTER("SDMA2", IMX8MN_ICM_SDMA2, IMX8MN_ICN_AUDIO),
+>         DEFINE_BUS_MASTER("SDMA3", IMX8MN_ICM_SDMA3, IMX8MN_ICN_AUDIO),
+> -       DEFINE_BUS_INTERCONNECT("PL301_AUDIO", IMX8MN_ICN_AUDIO, NULL, IMX8MN_ICN_MAIN),
+> +       DEFINE_BUS_INTERCONNECT("PL301_AUDIO", IMX8MN_ICN_AUDIO, IMX8MN_ICN_MAIN),
+>
+>         /* Ethernet */
+>         DEFINE_BUS_MASTER("ENET", IMX8MN_ICM_ENET, IMX8MN_ICN_ENET),
+> -       DEFINE_BUS_INTERCONNECT("PL301_ENET", IMX8MN_ICN_ENET, NULL, IMX8MN_ICN_MAIN),
+> +       DEFINE_BUS_INTERCONNECT("PL301_ENET", IMX8MN_ICN_ENET, IMX8MN_ICN_MAIN),
+>
+>         /* Other */
+>         DEFINE_BUS_MASTER("SDMA1", IMX8MN_ICM_SDMA1, IMX8MN_ICN_MAIN),
+> @@ -66,7 +54,7 @@ static struct imx_icc_node_desc nodes[] = {
+>         DEFINE_BUS_MASTER("USDHC1", IMX8MN_ICM_USDHC1, IMX8MN_ICN_MAIN),
+>         DEFINE_BUS_MASTER("USDHC2", IMX8MN_ICM_USDHC2, IMX8MN_ICN_MAIN),
+>         DEFINE_BUS_MASTER("USDHC3", IMX8MN_ICM_USDHC3, IMX8MN_ICN_MAIN),
+> -       DEFINE_BUS_INTERCONNECT("PL301_MAIN", IMX8MN_ICN_MAIN, NULL,
+> +       DEFINE_BUS_INTERCONNECT("PL301_MAIN", IMX8MN_ICN_MAIN
+>                         IMX8MN_ICN_NOC, IMX8MN_ICS_OCRAM),
+>  };
+>
+> diff --git a/drivers/interconnect/imx/imx8mq.c b/drivers/interconnect/imx/imx8mq.c
+> index d7768d3c6d8a..b8c36d668946 100644
+> --- a/drivers/interconnect/imx/imx8mq.c
+> +++ b/drivers/interconnect/imx/imx8mq.c
+> @@ -12,18 +12,6 @@
+>
+>  #include "imx.h"
+>
+> -static const struct imx_icc_node_adj_desc imx8mq_dram_adj = {
+> -       .bw_mul = 1,
+> -       .bw_div = 4,
+> -       .phandle_name = "fsl,ddrc",
+> -};
+> -
+> -static const struct imx_icc_node_adj_desc imx8mq_noc_adj = {
+> -       .bw_mul = 1,
+> -       .bw_div = 4,
+> -       .main_noc = true,
+> -};
+> -
+>  /*
+>   * Describe bus masters, slaves and connections between them
+>   *
+> @@ -31,43 +19,42 @@ static const struct imx_icc_node_adj_desc imx8mq_noc_adj = {
+>   * PL301 nics which are skipped/merged into PL301_MAIN
+>   */
+>  static struct imx_icc_node_desc nodes[] = {
+> -       DEFINE_BUS_INTERCONNECT("NOC", IMX8MQ_ICN_NOC, &imx8mq_noc_adj,
+> -                       IMX8MQ_ICS_DRAM, IMX8MQ_ICN_MAIN),
+> +       DEFINE_BUS_INTERCONNECT("NOC", IMX8MQ_ICN_NOC, IMX8MQ_ICS_DRAM, IMX8MQ_ICN_MAIN),
+>
+> -       DEFINE_BUS_SLAVE("DRAM", IMX8MQ_ICS_DRAM, &imx8mq_dram_adj),
+> -       DEFINE_BUS_SLAVE("OCRAM", IMX8MQ_ICS_OCRAM, NULL),
+> +       DEFINE_BUS_SLAVE("DRAM", IMX8MQ_ICS_DRAM),
+> +       DEFINE_BUS_SLAVE("OCRAM", IMX8MQ_ICS_OCRAM),
+>         DEFINE_BUS_MASTER("A53", IMX8MQ_ICM_A53, IMX8MQ_ICN_NOC),
+>
+>         /* VPUMIX */
+>         DEFINE_BUS_MASTER("VPU", IMX8MQ_ICM_VPU, IMX8MQ_ICN_VIDEO),
+> -       DEFINE_BUS_INTERCONNECT("PL301_VIDEO", IMX8MQ_ICN_VIDEO, NULL, IMX8MQ_ICN_NOC),
+> +       DEFINE_BUS_INTERCONNECT("PL301_VIDEO", IMX8MQ_ICN_VIDEO, IMX8MQ_ICN_NOC),
+>
+>         /* GPUMIX */
+>         DEFINE_BUS_MASTER("GPU", IMX8MQ_ICM_GPU, IMX8MQ_ICN_GPU),
+> -       DEFINE_BUS_INTERCONNECT("PL301_GPU", IMX8MQ_ICN_GPU, NULL, IMX8MQ_ICN_NOC),
+> +       DEFINE_BUS_INTERCONNECT("PL301_GPU", IMX8MQ_ICN_GPU, IMX8MQ_ICN_NOC),
+>
+>         /* DISPMIX (only for DCSS) */
+>         DEFINE_BUS_MASTER("DC", IMX8MQ_ICM_DCSS, IMX8MQ_ICN_DCSS),
+> -       DEFINE_BUS_INTERCONNECT("PL301_DC", IMX8MQ_ICN_DCSS, NULL, IMX8MQ_ICN_NOC),
+> +       DEFINE_BUS_INTERCONNECT("PL301_DC", IMX8MQ_ICN_DCSS, IMX8MQ_ICN_NOC),
+>
+>         /* USBMIX */
+>         DEFINE_BUS_MASTER("USB1", IMX8MQ_ICM_USB1, IMX8MQ_ICN_USB),
+>         DEFINE_BUS_MASTER("USB2", IMX8MQ_ICM_USB2, IMX8MQ_ICN_USB),
+> -       DEFINE_BUS_INTERCONNECT("PL301_USB", IMX8MQ_ICN_USB, NULL, IMX8MQ_ICN_NOC),
+> +       DEFINE_BUS_INTERCONNECT("PL301_USB", IMX8MQ_ICN_USB, IMX8MQ_ICN_NOC),
+>
+>         /* PL301_DISPLAY (IPs other than DCSS, inside SUPERMIX) */
+>         DEFINE_BUS_MASTER("CSI1", IMX8MQ_ICM_CSI1, IMX8MQ_ICN_DISPLAY),
+>         DEFINE_BUS_MASTER("CSI2", IMX8MQ_ICM_CSI2, IMX8MQ_ICN_DISPLAY),
+>         DEFINE_BUS_MASTER("LCDIF", IMX8MQ_ICM_LCDIF, IMX8MQ_ICN_DISPLAY),
+> -       DEFINE_BUS_INTERCONNECT("PL301_DISPLAY", IMX8MQ_ICN_DISPLAY, NULL, IMX8MQ_ICN_MAIN),
+> +       DEFINE_BUS_INTERCONNECT("PL301_DISPLAY", IMX8MQ_ICN_DISPLAY, IMX8MQ_ICN_MAIN),
+>
+>         /* AUDIO */
+>         DEFINE_BUS_MASTER("SDMA2", IMX8MQ_ICM_SDMA2, IMX8MQ_ICN_AUDIO),
+> -       DEFINE_BUS_INTERCONNECT("PL301_AUDIO", IMX8MQ_ICN_AUDIO, NULL, IMX8MQ_ICN_DISPLAY),
+> +       DEFINE_BUS_INTERCONNECT("PL301_AUDIO", IMX8MQ_ICN_AUDIO, IMX8MQ_ICN_DISPLAY),
+>
+>         /* ENET */
+>         DEFINE_BUS_MASTER("ENET", IMX8MQ_ICM_ENET, IMX8MQ_ICN_ENET),
+> -       DEFINE_BUS_INTERCONNECT("PL301_ENET", IMX8MQ_ICN_ENET, NULL, IMX8MQ_ICN_MAIN),
+> +       DEFINE_BUS_INTERCONNECT("PL301_ENET", IMX8MQ_ICN_ENET, IMX8MQ_ICN_MAIN),
+>
+>         /* OTHER */
+>         DEFINE_BUS_MASTER("SDMA1", IMX8MQ_ICM_SDMA1, IMX8MQ_ICN_MAIN),
+> @@ -76,7 +63,7 @@ static struct imx_icc_node_desc nodes[] = {
+>         DEFINE_BUS_MASTER("USDHC2", IMX8MQ_ICM_USDHC2, IMX8MQ_ICN_MAIN),
+>         DEFINE_BUS_MASTER("PCIE1", IMX8MQ_ICM_PCIE1, IMX8MQ_ICN_MAIN),
+>         DEFINE_BUS_MASTER("PCIE2", IMX8MQ_ICM_PCIE2, IMX8MQ_ICN_MAIN),
+> -       DEFINE_BUS_INTERCONNECT("PL301_MAIN", IMX8MQ_ICN_MAIN, NULL,
+> +       DEFINE_BUS_INTERCONNECT("PL301_MAIN", IMX8MQ_ICN_MAIN,
+>                         IMX8MQ_ICN_NOC, IMX8MQ_ICS_OCRAM),
+>  };
+>
+> --
+> 2.31.1
+>
