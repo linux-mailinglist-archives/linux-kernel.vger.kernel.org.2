@@ -2,173 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87D904323EE
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 18:35:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 804084323F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 18:35:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233324AbhJRQhe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 12:37:34 -0400
-Received: from mail-pj1-f50.google.com ([209.85.216.50]:54958 "EHLO
-        mail-pj1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229924AbhJRQhd (ORCPT
+        id S233615AbhJRQhi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 12:37:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50066 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233478AbhJRQhh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 12:37:33 -0400
-Received: by mail-pj1-f50.google.com with SMTP id np13so12599211pjb.4;
-        Mon, 18 Oct 2021 09:35:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=t0ejuGV5Mekv33Ke5yZ2hDIuNqOJx8vNh5URYlHnJto=;
-        b=6gJgbjgOz8H1lvQqWP/wAmtY+y/pqX+6z+6K3PbPnXm+FZqvHp1IfZ3forvshPWJz+
-         paM31sN7f7HAKISYLy0CQVSRH9CZWbVn1HNEOpwcaspXayWD83mUDscDhvQTOZossZwB
-         9o7z/AoBevUzOramcUFrp1FyxwqHyiUzvtEz1wenNK9NfnY/Y954tyaLw9jCuGUcUORb
-         DtJa1VD4ezGvlZiSWQQ/43uHQ6pghFWJ9CeGp00SM2m4AClNnfjBpaatLDQj5dpOFEeO
-         gXXYzAa95fdCq5SdaS0JqEfF532DdHwlhTWNQpWVpSqMrv5IRUGt208DnegCkK5pmJ88
-         igMA==
-X-Gm-Message-State: AOAM532rLKtk1+J952sNkMhbosBBnvWLhRUVNy+OMNnSw+oLmClUur5l
-        rwptyeuuLnmZEg8PQ1Ae88R2TDcYVUA+TvxtccA=
-X-Google-Smtp-Source: ABdhPJwvaMOxnoenZJe9/ILtrcFiCQv9WRvnnA+r4NIrZLRlZciSQOo/t9cppApR2frz6pS5hFOQgQA/Yz9/Zrjvuhw=
-X-Received: by 2002:a17:902:7783:b0:13d:fee6:8095 with SMTP id
- o3-20020a170902778300b0013dfee68095mr28042663pll.7.1634574921896; Mon, 18 Oct
- 2021 09:35:21 -0700 (PDT)
+        Mon, 18 Oct 2021 12:37:37 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D76FBC061745;
+        Mon, 18 Oct 2021 09:35:25 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id C21B31F41B9D
+Received: by earth.universe (Postfix, from userid 1000)
+        id 353043C0CA8; Mon, 18 Oct 2021 18:35:22 +0200 (CEST)
+Date:   Mon, 18 Oct 2021 18:35:22 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Martin Kepplinger <martin.kepplinger@puri.sm>
+Cc:     linux-pm@vger.kernel.org, kernel@puri.sm,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] power: bq25890: add return values to error messages
+Message-ID: <20211018163522.rbvv35ddilumc3uu@earth.universe>
+References: <20211014094533.4169157-1-martin.kepplinger@puri.sm>
 MIME-Version: 1.0
-References: <20211012134027.684712-1-kernel@esmil.dk> <20211012134027.684712-13-kernel@esmil.dk>
- <CAHp75Vep+i+iyJi0LAOKuer-cUZoUoB_ZrWKcmT=EB_4hOgFGw@mail.gmail.com>
- <CANBLGcxHD2vy0+tXYo5Pkqri9mV7aD9jikvs3ygBJRxF4ApLMA@mail.gmail.com>
- <CAHp75Vc65deoHbks-aPmnjEJzm3GdqFMfBCUqw4vVLVr=71Ncg@mail.gmail.com>
- <CANBLGcxriKLZ+CKUsj5sviW8FdHnWTF2koROwmAb=G2tbmE6vQ@mail.gmail.com> <CAHp75VccSDLVbs1sF_-1zghWyLKtKKV1qtxOxZZ-cS0e6S-sBA@mail.gmail.com>
-In-Reply-To: <CAHp75VccSDLVbs1sF_-1zghWyLKtKKV1qtxOxZZ-cS0e6S-sBA@mail.gmail.com>
-From:   Emil Renner Berthing <kernel@esmil.dk>
-Date:   Mon, 18 Oct 2021 18:35:10 +0200
-Message-ID: <CANBLGcw1qMB7r7TbuQEevOPHq94wAtZNs=yFQ3UP_DEREvGz6g@mail.gmail.com>
-Subject: Re: [PATCH v1 12/16] pinctrl: starfive: Add pinctrl driver for
- StarFive SoCs
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Sagar Kadam <sagar.kadam@sifive.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Anup Patel <anup.patel@wdc.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Matteo Croce <mcroce@microsoft.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Huan Feng <huan.feng@starfivetech.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="7fszvvmprm57xvod"
+Content-Disposition: inline
+In-Reply-To: <20211014094533.4169157-1-martin.kepplinger@puri.sm>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 18 Oct 2021 at 18:24, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
-> On Mon, Oct 18, 2021 at 6:56 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
-> > On Mon, 18 Oct 2021 at 17:48, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
-> > > On Mon, Oct 18, 2021 at 6:35 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
-> > > > On Tue, 12 Oct 2021 at 19:03, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
-> > > > > On Tue, Oct 12, 2021 at 4:43 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
->
-> ...
->
-> > > > > > +               case PIN_CONFIG_BIAS_DISABLE:
-> > > > >
-> > > > > > +                       mask |= PAD_BIAS_MASK;
-> > > > >
-> > > > > Use it...
-> > > > >
-> > > > > > +                       value = (value & ~PAD_BIAS_MASK) | PAD_BIAS_DISABLE;
-> > > > >
-> > > > > ...here. Ditto for the similar cases in this function and elsewhere.
-> > > >
-> > > > I don't follow. How do you want me to use mask? If I did value =
-> > > > (value & ~mask) | PAD_BIAS_DISABLE; then I'd wipe the previous
-> > > > configuration. Eg. suppose the first config is the drive strength and
-> > > > second disables bias. Then on the 2nd loop mask =
-> > > > PAD_DRIVE_STRENGTH_MASK | PAD_BIAS_MASK and the drive strength value
-> > > > would be wiped.
-> > >
-> > > Collect masks and new values in temporary variables and apply them
-> > > once after the loop is done, no?
-> >
-> > But that's exactly what the code does. It merges all the config
-> > options into a single mask and value so we only need to do rmw on the
-> > register once.
->
-> Then masking the value makes no sense.
-> What you should have is simply as
->
->   mask |= FOO;
->   value |= BAR;
 
-Yeah, but then we could get into weird states if the device tree
-specifies both bias-disable and bias-pull-up by mistake. This code is
-written so that only the last valid state is chosen.
+--7fszvvmprm57xvod
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+Hi,
 
-> ...
->
-> > > > > > +       ret = clk_prepare_enable(clk);
-> > > > > > +       if (ret) {
-> > > > >
-> > > > > > +               reset_control_deassert(rst);
-> > > > >
-> > > > > Use devm_add_action_or_reset().
-> > > >
-> > > > I don't see how that is better.
-> > >
-> > > Pity. The rule of thumb is to either try to use devm_*() everywhere in
-> > > the probe, or don't use it at all. Above is the more-or-less standard
-> > > pattern where devn_add_action_or_reset() is being used in the entire
-> > > kernel.
-> > >
-> > > > Then I'd first need to call that and
-> > > > check for errors, but just on the line below enabling the clock the
-> > > > reset line is deasserted anyway, so then the action isn't needed any
-> > > > longer. So that 3 lines of code for devm_add_action_or_reset +
-> > > > lingering unneeded action or code to remove it again vs. just the line
-> > > > above.
-> > >
-> > > Then don't use devm_*() at all. What's the point?
-> >
-> > I'm confused. So you wan't an unneeded action to linger because the
-> > probe function temporarily asserts reset for 3 lines of code?
->
-> I;m talking about clk_prepare_enable().
+On Thu, Oct 14, 2021 at 11:45:33AM +0200, Martin Kepplinger wrote:
+> Add more details to the error messages that indicate what went wrong
+> and use dev_err_probe() at a few places in the probe() path in order
+> to avoid error messages for deferred probe after which the driver probes
+> correctly.
+>=20
+> Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
+> ---
 
-Ok, you wrote your comment under the reset_control_deassert call. How
-would devm_add_action_or_reset for clk_prepare_enable work?
+Thanks, queued.
 
-> ...
->
-> > > > > > +       sfp->gc.of_node = dev->of_node;
-> > > > >
-> > > > > Isn't GPIO library do this for you?
-> > > >
-> > > > If it does I can't find it.
-> > >
-> > > Heh... `man git grep`
-> > > Hint: `git grep -n 'of_node = .*of_node' -- drivers/gpio/gpiolib*`
-> >
-> > That's exactly what I did.
->
-> Now look at the result and find the correct place where it's done.
-> Btw, all hits are in the very same function.
->
-> --
-> With Best Regards,
-> Andy Shevchenko
+-- Sebastian
+
+>  drivers/power/supply/bq25890_charger.c | 34 ++++++++++++--------------
+>  1 file changed, 16 insertions(+), 18 deletions(-)
+>=20
+> diff --git a/drivers/power/supply/bq25890_charger.c b/drivers/power/suppl=
+y/bq25890_charger.c
+> index 0e23d2db0fc4..ec81653e58c0 100644
+> --- a/drivers/power/supply/bq25890_charger.c
+> +++ b/drivers/power/supply/bq25890_charger.c
+> @@ -979,13 +979,13 @@ static int bq25890_get_chip_version(struct bq25890_=
+device *bq)
+> =20
+>  	id =3D bq25890_field_read(bq, F_PN);
+>  	if (id < 0) {
+> -		dev_err(bq->dev, "Cannot read chip ID.\n");
+> +		dev_err(bq->dev, "Cannot read chip ID: %d\n", id);
+>  		return id;
+>  	}
+> =20
+>  	rev =3D bq25890_field_read(bq, F_DEV_REV);
+>  	if (rev < 0) {
+> -		dev_err(bq->dev, "Cannot read chip revision.\n");
+> +		dev_err(bq->dev, "Cannot read chip revision: %d\n", rev);
+>  		return rev;
+>  	}
+> =20
+> @@ -1028,10 +1028,9 @@ static int bq25890_irq_probe(struct bq25890_device=
+ *bq)
+>  	struct gpio_desc *irq;
+> =20
+>  	irq =3D devm_gpiod_get(bq->dev, BQ25890_IRQ_PIN, GPIOD_IN);
+> -	if (IS_ERR(irq)) {
+> -		dev_err(bq->dev, "Could not probe irq pin.\n");
+> -		return PTR_ERR(irq);
+> -	}
+> +	if (IS_ERR(irq))
+> +		return dev_err_probe(bq->dev, PTR_ERR(irq),
+> +				     "Could not probe irq pin.\n");
+> =20
+>  	return gpiod_to_irq(irq);
+>  }
+> @@ -1153,34 +1152,33 @@ static int bq25890_probe(struct i2c_client *clien=
+t,
+>  	mutex_init(&bq->lock);
+> =20
+>  	bq->rmap =3D devm_regmap_init_i2c(client, &bq25890_regmap_config);
+> -	if (IS_ERR(bq->rmap)) {
+> -		dev_err(dev, "failed to allocate register map\n");
+> -		return PTR_ERR(bq->rmap);
+> -	}
+> +	if (IS_ERR(bq->rmap))
+> +		return dev_err_probe(dev, PTR_ERR(bq->rmap),
+> +				     "failed to allocate register map\n");
+> =20
+>  	for (i =3D 0; i < ARRAY_SIZE(bq25890_reg_fields); i++) {
+>  		const struct reg_field *reg_fields =3D bq25890_reg_fields;
+> =20
+>  		bq->rmap_fields[i] =3D devm_regmap_field_alloc(dev, bq->rmap,
+>  							     reg_fields[i]);
+> -		if (IS_ERR(bq->rmap_fields[i])) {
+> -			dev_err(dev, "cannot allocate regmap field\n");
+> -			return PTR_ERR(bq->rmap_fields[i]);
+> -		}
+> +		if (IS_ERR(bq->rmap_fields[i]))
+> +			return dev_err_probe(dev, PTR_ERR(bq->rmap_fields[i]),
+> +					     "cannot allocate regmap field\n");
+>  	}
+> =20
+>  	i2c_set_clientdata(client, bq);
+> =20
+>  	ret =3D bq25890_get_chip_version(bq);
+>  	if (ret) {
+> -		dev_err(dev, "Cannot read chip ID or unknown chip.\n");
+> +		dev_err(dev, "Cannot read chip ID or unknown chip: %d\n", ret);
+>  		return ret;
+>  	}
+> =20
+>  	if (!dev->platform_data) {
+>  		ret =3D bq25890_fw_probe(bq);
+>  		if (ret < 0) {
+> -			dev_err(dev, "Cannot read device properties.\n");
+> +			dev_err(dev, "Cannot read device properties: %d\n",
+> +				ret);
+>  			return ret;
+>  		}
+>  	} else {
+> @@ -1189,7 +1187,7 @@ static int bq25890_probe(struct i2c_client *client,
+> =20
+>  	ret =3D bq25890_hw_init(bq);
+>  	if (ret < 0) {
+> -		dev_err(dev, "Cannot initialize the chip.\n");
+> +		dev_err(dev, "Cannot initialize the chip: %d\n", ret);
+>  		return ret;
+>  	}
+> =20
+> @@ -1225,7 +1223,7 @@ static int bq25890_probe(struct i2c_client *client,
+> =20
+>  	ret =3D bq25890_power_supply_init(bq);
+>  	if (ret < 0) {
+> -		dev_err(dev, "Failed to register power supply\n");
+> +		dev_err_probe(dev, ret, "Failed to register power supply.\n");
+>  		goto irq_fail;
+>  	}
+> =20
+> --=20
+> 2.30.2
+>=20
+
+--7fszvvmprm57xvod
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmFtokoACgkQ2O7X88g7
++prOFQ/+MZvD8b0bUexF2b7y/t508/n0ler/vgjTsly7Z1voSREo/3sNjg29gXdC
+hcMzlaomuLvdrfNvoeXDqvGWasIzX/HrFybKhbi0aQLs5K3llYp8VABnr0mFyGc2
+iAZnd2HFMuR/PdXvCeeIs4LYBOq2aTf3KyjPjlJ0WMFrk9GHZ/upNQR2ilahISuT
+mSFyFcYvp6ZtDcuq99uY6umKD03LKt5X/5HaDcu7EFQyCZXJ184fX8cTkXSRU/CF
+iD6ICQYV7ReuJ0J+XyCkaw26rZX+86JcHJFLwLLFpyxhHxBxpAxYrwwq5RNXWWXX
+R00T/3I97EDQuhXyZwHlSCmPlbfArPLQoKQoz4B4SF8Cgrn7I1ps7nemauxCYWn3
+DWWdmfkbK+29K+MrRiFVeWd6XX7d73v9bij3uItynnnMdgdUaLMYUJ8CvA+6TM96
+sEh4OTdTAmOj5D/+jqaRpv4V+XigzB8Pz3/KEZ7jvBZ6zKM2ocypoHxP6+Jdaad9
+icqymXTPzix3jClOudodFEPDWbX7Vn0p5mwMuvQALVivpJcK14pfteSpc0mza2mC
+IvSg/NaqwLuJsrD7KsKioMUeg4I9YrhXbCp8KLpxGqprd4BMlo/UaRGJuD2Gte1+
+KpiUApLWdscjgzCDkoeZTah9EWEjS34SS3NmzxPYmcsUSAKT/Wg=
+=HBZp
+-----END PGP SIGNATURE-----
+
+--7fszvvmprm57xvod--
