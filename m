@@ -2,159 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B63284313C9
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 11:47:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EC744313C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 11:45:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231582AbhJRJuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 05:50:00 -0400
-Received: from mail-eopbgr70107.outbound.protection.outlook.com ([40.107.7.107]:38266
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231468AbhJRJt6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 05:49:58 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CAdBEHdRDyTaWrSRO8wEbWpU5SUs8GGZegXWOvG8Dbdmfcjv4KXv2Uk9lOtyC5wvqII0olmImWQEQ103iXt1ZXBo9N0fi+/vLTi2f5i1SifiTiybvHGyY9aceAA4NXSaWEtJx2s4ZJzuiTOZuz098Tkr0BJC26vyyo/bnxU1NMvk17wiAnqzymz2EBIFTQN793tNC5czzFDTa0EJk7RODEjpR5j25YjhVyNjzy45ieZprH7l6TZ5mqJBvmiZUkTrYkwC5hVmOf9rEHO18YkIzfl+SpqlCzEYmc28sWsUafHFdlZ9R1rUo6LY3ciKh9HgQCvUbmi9ws6+ct2PjvBmlA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=hKBFXW8PBkYDZt5ElBVQTJ7oBDS3mtrETh1Hop4Q/fY=;
- b=XuzqkOk6LHwPuWX/BpwqvAgXHYZDUQfXNDTsIb0gL8CxBIjAaJ9TiKUP/ubbqbcSR7ZUCmA2kXXRRnouf3XEstXuyXwqcGb8RjhnRyxbV50cELyfTzQUygmm2gxIGDCy8cVEJmwlJE1sidk2pHCOdXT2p3pqLb8oy/SujBaJE7Y+d0noteRXUegC80DG6ypySdlCKoPttcjUN8Srq6aK+zhfxiG6lHfx1cHEBzagTdlnTdQKoQYrH4REgw64B+fhl3E3eDsiA9M6it36ItvXb4dku65l/A2AOzLzJxmM3KjEjjsBC9qGPnm4cU2JzFuHo7XK993xtX3NOFbCxADUGw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=toradex.com; dmarc=pass action=none header.from=toradex.com;
- dkim=pass header.d=toradex.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=toradex.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hKBFXW8PBkYDZt5ElBVQTJ7oBDS3mtrETh1Hop4Q/fY=;
- b=D2XOxc97G2rT56HleXVxRoRfi2Wx9HR9v61/qZbRxrHRmc/387761m/FzxRUli6bGHh0Vt7ap6JMxFIzmUkgUb3SRpMjXNhtCsUjp9tzY8TU3GrVa3qcgmt2tXNqGLln2Nk63qvNOu1uIbDnqG8YA2qbb4vBgtpvts+Ijkjplgo=
-Authentication-Results: agner.ch; dkim=none (message not signed)
- header.d=none;agner.ch; dmarc=none action=none header.from=toradex.com;
-Received: from DBAPR05MB7445.eurprd05.prod.outlook.com (2603:10a6:10:1a0::8)
- by DB6PR05MB3238.eurprd05.prod.outlook.com (2603:10a6:6:25::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.17; Mon, 18 Oct
- 2021 09:47:44 +0000
-Received: from DBAPR05MB7445.eurprd05.prod.outlook.com
- ([fe80::98f8:53ac:8110:c783]) by DBAPR05MB7445.eurprd05.prod.outlook.com
- ([fe80::98f8:53ac:8110:c783%3]) with mapi id 15.20.4608.018; Mon, 18 Oct 2021
- 09:47:44 +0000
-From:   Francesco Dolcini <francesco.dolcini@toradex.com>
-To:     f.fainelli@gmail.com, Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     christophe.leroy@csgroup.eu, Stefan Agner <stefan@agner.ch>,
-        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
-        Francesco Dolcini <francesco.dolcini@toradex.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next] phy: micrel: ksz8041nl: do not use power down mode
-Date:   Mon, 18 Oct 2021 11:42:58 +0200
-Message-Id: <20211018094256.70096-1-francesco.dolcini@toradex.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: ZR0P278CA0151.CHEP278.PROD.OUTLOOK.COM
- (2603:10a6:910:41::12) To DBAPR05MB7445.eurprd05.prod.outlook.com
- (2603:10a6:10:1a0::8)
+        id S231527AbhJRJsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 05:48:06 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:34356 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231502AbhJRJsE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 05:48:04 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id D70F91FD6D;
+        Mon, 18 Oct 2021 09:45:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1634550352; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HSqSWdYZHwDJMR2nnmt6Z+iMd6dthkHw4jJTW3QfW+Q=;
+        b=PAn3RUoZi2s0u+HshJ+xn5B53Uf9e8XqBLOcJLeQDyVuM1x9xdKT99jktIu4n1dZP1+I48
+        ofa1Wie9DZf3Vn5V74EQQOelrPlTayr4nRTUEyW4uNbEVGVPE6b84v8Llf3iQHrT1+ra4O
+        W+qfJBZh8b9apyumBNo/qoHZ4bvfHH4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1634550352;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HSqSWdYZHwDJMR2nnmt6Z+iMd6dthkHw4jJTW3QfW+Q=;
+        b=3uBmJGBFGJOnDR6DiLhuPWSbBQ2lIfkQk2yonJVXPY/7LODx1KWwDwNu+yJXrEtWT8t0DJ
+        5y59tym+5QcYBRBg==
+Received: from quack2.suse.cz (unknown [10.100.200.198])
+        by relay2.suse.de (Postfix) with ESMTP id 8C59DA3B81;
+        Mon, 18 Oct 2021 09:45:52 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 0FAA51E0875; Mon, 18 Oct 2021 11:45:52 +0200 (CEST)
+Date:   Mon, 18 Oct 2021 11:45:52 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     rong wang <wangrong@uniontech.com>
+Cc:     jack@suse.cz, amir73il@gmail.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] fsnotify: extend fsnotify for event broadcast
+Message-ID: <20211018094552.GC29715@quack2.suse.cz>
+References: <20211018064411.10269-1-wangrong@uniontech.com>
 MIME-Version: 1.0
-Received: from francesco-nb.toradex.int (93.49.2.63) by ZR0P278CA0151.CHEP278.PROD.OUTLOOK.COM (2603:10a6:910:41::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.15 via Frontend Transport; Mon, 18 Oct 2021 09:47:44 +0000
-Received: by francesco-nb.toradex.int (Postfix, from userid 1000)       id EB74710A08AC; Mon, 18 Oct 2021 11:47:42 +0200 (CEST)
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a3129c3f-1838-4c07-93d1-08d9921c55b1
-X-MS-TrafficTypeDiagnostic: DB6PR05MB3238:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DB6PR05MB3238A0E62C486EC9CEAF68C7E2BC9@DB6PR05MB3238.eurprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Tisc5kfhQ7j7dCCptNyPGeDkyPjx+qQIx5isTUi6xAGmtE8j7GzR6a88w88G85eoBED6dRfoJjMC5xNy5/ZnxrHbSGtYlYteM/MyveSGywC2DPjxOD/wJ+0OhqMsSbFiV8QHeC14XqYEdChNT5PqC1uD5g+deFL524BPLyN886jDqZu4gYnqd4he/S3Z32i7CyRG5P5MmpgGREGPM0joPghd8tV3PqCH9lYXdz4gtEk+sdocCP/1aTh3w/hlIDVdWzjrx1namq8UihrM5qZDdefF2Zg9Ou9cUEpqYp0nVaYMPxvewiAKpKb6PE4Dj4OAjZ4cx+9yO/VOF+nBNe5oG24eq2DCUW41EAbCSCE94/7w/e4paEOK7yPgFmXRlb1pWEONUHa8lwg5e/5ITmQa16Thj2/1RDQ1rl4EzAG/x8bphdm9ds/jNX0eEVZceGD2haIkfCKMxRYNDEpu9JV/0pNmQ2Ouef9iIVFnPoXH9D6ZMT6t9SZKr/wlHO17FBv13kvanN6kkgZWk9bV0HQPatCb+kr5Cxv7sPPC7njLv08jS/BtmRTCvbUS9KLbTixE8lHi7rkoO1Ff7x1ZFOjITW1t+VX/ulQI5s8gBFVYZ0wjRjX0m4Y1XUshsOSw3s73ggNSsl1/jEV1zPnRQYiw41dihogHAoElyrl27N4zUaqe/oc+B7prb/pCY6IjkF4D61vUY7LEBbApG2Z87HsA7JHpfhJmbNFsnRSBU/jYIjk+/ICa4GDA7YCV2YOaqtUc34tKRjGOKjNaN1j3xUowHpR79B0mOC/nYzMVAKxJgfY=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DBAPR05MB7445.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39850400004)(376002)(396003)(346002)(366004)(136003)(508600001)(66556008)(52116002)(7416002)(66476007)(66946007)(83380400001)(8676002)(966005)(186003)(5660300002)(6666004)(8936002)(2906002)(26005)(86362001)(54906003)(4326008)(36756003)(38350700002)(38100700002)(42186006)(316002)(110136005)(6266002)(1076003)(2616005)(44832011);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?PnYLSskQfCcbwrCxk7AlRtcDR6e9r9pWTV/VbGQru3iL122xVF9tkT72Xl4m?=
- =?us-ascii?Q?wLL/lE2SUtGemPGOLVw1DUY0xrgZMTCAD4kKdcYb01fHRwC4ZrOVDim0XhaF?=
- =?us-ascii?Q?TMnyygINWOovdq6+mrO/KDdjb2pB9/1yo66ui43o+E1I6fW2UlIDtEh8c4Nx?=
- =?us-ascii?Q?E46R1EGm9LTTXtpYNcloVZrwBBn3QQXH2YMDwP7f5cPpscEC590TiQnhnFG3?=
- =?us-ascii?Q?QI0j0i+yBbMg6gdihXDJJD/+1r11N64nvGImx5IGx+rXBpG/RBqW7IOg7QJO?=
- =?us-ascii?Q?WF5mk9QAs6YQO2x1WCBWuRccPuVBPhtIUqzMPU55vOY0H6vrr/zN7idGm1F/?=
- =?us-ascii?Q?PPCc747vXD6yao+b//GXjgJJjfQ4AEx7gV99pl+5oATtMQ47aHrSUol6dbbq?=
- =?us-ascii?Q?eyTsmS+P4q05Ul8UcYEpSX2tq41Xj54Zjz2Ckk/+4C+KACM5Tph5g/r4LeNt?=
- =?us-ascii?Q?6E1+PoJIlCcAyRhdi98QX0BKqnQ0RoyPlECkTPK4mIp3KObZjypz1DnPlurT?=
- =?us-ascii?Q?X0XGwmfAwP/QBfTLD3ews1uGryyq/n3Zzcp+axIkdE07wioQCsUwDeTdCS48?=
- =?us-ascii?Q?VO0yyS8sXFvjCnFHoSfBvR4wzhXlrZxRvzXntisWHT63yARD8MM1WMBAT1zQ?=
- =?us-ascii?Q?gRqbJRTypq6ERC6+/8io7TWZ9Nk6zjprZjYfR6H0BJq3Fk/kr/J1hvXSXrCV?=
- =?us-ascii?Q?Mb6rI1E4u1yNuBCYgqRLIVkWV+n6VZcb+C5zt4LQafQNw4aPMzr4phScAvAs?=
- =?us-ascii?Q?NMN0Vmgb3r73hVBEPfZFfOvrLVzOTJYzaJxYqmQ+TLW3A1RQMsm20jn7rzxB?=
- =?us-ascii?Q?NHqxZ+TGBNsPtiqDD5j8+mbrqxefIsEbn9H8+QOFnlFZ0pD2o4OQTNZUKfAi?=
- =?us-ascii?Q?/FhVQW3sDwfIQ3Rs040qwFTKs/s4wu2g8jJ5uwucJA7JCrnNv6Y453KzMm7Z?=
- =?us-ascii?Q?oSMk+8Z68jUXRQQDg3z0za+finXofAhbcKxa/Sn31Sk2a5ZMgIOGdZmcFTKg?=
- =?us-ascii?Q?0O18xf4cgDMMZhEMvaIUK8gOaVwvgmq0vI1VzTruzJneEoynEAG0rJCKIehz?=
- =?us-ascii?Q?FbX4KztAqDafHejUniC+HYzlaOAHcid7w2WZva3bEnIxwX7JTkCLWN3H9m69?=
- =?us-ascii?Q?3GnDuUALltV2aMQ+hBDSVuKv6EBAHUAG1T7UXUwN8EOk7buLCk4clS2TVtDH?=
- =?us-ascii?Q?wOAIT9s24CnY/rCophGBetvK/RjnUDiVJPK9qebWj9mrS2CIS0/js3rhawDP?=
- =?us-ascii?Q?tB9XsboITpuKwGHvic65SkPtEhSdRe7VSmECTw9CfCqPOflIQ4BM81YBdnxM?=
- =?us-ascii?Q?3DD+SvSpawN8uGGqlufBPWDz?=
-X-OriginatorOrg: toradex.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a3129c3f-1838-4c07-93d1-08d9921c55b1
-X-MS-Exchange-CrossTenant-AuthSource: DBAPR05MB7445.eurprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Oct 2021 09:47:44.4783
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: d9995866-0d9b-4251-8315-093f062abab4
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: rRu/JrdCPWjYxvkeEmdrE/sVKzpSgbjIaJ4XRBByKDZLEfZFeKDE4AzwZP39M6hoEsUie6MMnV6ZFVcPDtwMxqUsA3Psmx5rdas2EbKxFfg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR05MB3238
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211018064411.10269-1-wangrong@uniontech.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Agner <stefan@agner.ch>
+On Mon 18-10-21 14:44:11, rong wang wrote:
+> In practical applications, a common requirement is to monitor the changes
+> of the entire file system, but the current inotify can only monitor the
+> specified target and cannot do anything to monitor the entire file system.
+> The limited monitoring of inotify originates from the inode-based event
+> dispatch mechanism of fsnotify. In order to monitor the changes of the
+> entire file system, consider adding a new event dispatch mechanism, the
+> core of which is to broadcast the event once before the event is filtered.
+> That is, other modules of the kernel first register the broadcast listener
+> with fsnotify. After receiving the event, fsnotify will send the event to
+> all the listeners without filtering.
+> 
+> Signed-off-by: rong wang <wangrong@uniontech.com>
 
-Some Micrel KSZ8041NL PHY chips exhibit continous RX errors after using
-the power down mode bit (0.11). If the PHY is taken out of power down
-mode in a certain temperature range, the PHY enters a weird state which
-leads to continously reporting RX errors. In that state, the MAC is not
-able to receive or send any Ethernet frames and the activity LED is
-constantly blinking. Since Linux is using the suspend callback when the
-interface is taken down, ending up in that state can easily happen
-during a normal startup.
+Thanks for the patch but can you ellaborate a bit more on why exactly you
+need this mechanism? What would be using it? Without in kernel users it is
+useless anyway. Also, since this will execute on each and every filesystem
+operation, there will be noticeable overhead on the system unless you are
+really careful. So more details please...
 
-Micrel confirmed the issue in errata DS80000700A [*], caused by abnormal
-clock recovery when using power down mode. Even the latest revision (A4,
-Revision ID 0x1513) seems to suffer that problem, and according to the
-errata is not going to be fixed.
+Finally also note that fanotify already does support filesystem
+(superblock) wide notification events so maybe that is enough for your
+purposes?
 
-Remove the suspend/resume callback to avoid using the power down mode
-completely.
+								Honza
 
-[*] https://ww1.microchip.com/downloads/en/DeviceDoc/80000700A.pdf
-
-Signed-off-by: Stefan Agner <stefan@agner.ch>
-Acked-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>
-Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
-
----
-There was a previous attempt to merge a similar patch, see
-https://lore.kernel.org/all/2ee9441d-1b3b-de6d-691d-b615c04c69d0@gmail.com/.
----
- drivers/net/phy/micrel.c | 2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/drivers/net/phy/micrel.c b/drivers/net/phy/micrel.c
-index ff452669130a..1f28d5fae677 100644
---- a/drivers/net/phy/micrel.c
-+++ b/drivers/net/phy/micrel.c
-@@ -1676,8 +1676,6 @@ static struct phy_driver ksphy_driver[] = {
- 	.get_sset_count = kszphy_get_sset_count,
- 	.get_strings	= kszphy_get_strings,
- 	.get_stats	= kszphy_get_stats,
--	.suspend	= genphy_suspend,
--	.resume		= genphy_resume,
- }, {
- 	.phy_id		= PHY_ID_KSZ8041RNLI,
- 	.phy_id_mask	= MICREL_PHY_ID_MASK,
+> ---
+>  fs/notify/fsnotify.c             | 72 ++++++++++++++++++++++++++++++++
+>  include/linux/fsnotify.h         |  8 ++++
+>  include/linux/fsnotify_backend.h | 16 +++++++
+>  3 files changed, 96 insertions(+)
+> 
+> diff --git a/fs/notify/fsnotify.c b/fs/notify/fsnotify.c
+> index 963e6ce75b96..cd235af8c24b 100644
+> --- a/fs/notify/fsnotify.c
+> +++ b/fs/notify/fsnotify.c
+> @@ -14,6 +14,78 @@
+>  #include <linux/fsnotify_backend.h>
+>  #include "fsnotify.h"
+>  
+> +/* fs event broadcast */
+> +static unsigned int fsnotify_broadcast_listeners_count;
+> +static DEFINE_RWLOCK(fsnotify_broadcast_listeners_lock);
+> +static LIST_HEAD(fsnotify_broadcast_listeners);
+> +
+> +struct fsnotify_broadcast_listener {
+> +	struct list_head list;
+> +	fsnotify_broadcast_listener_t listener;
+> +};
+> +
+> +int fsnotify_register_broadcast_listener(fsnotify_broadcast_listener_t listener)
+> +{
+> +	struct fsnotify_broadcast_listener *event_listener;
+> +
+> +	if (unlikely(listener == 0))
+> +		return -EINVAL;
+> +
+> +	event_listener = kmalloc(sizeof(*event_listener), GFP_KERNEL);
+> +	if (unlikely(!event_listener))
+> +		return -ENOMEM;
+> +	event_listener->listener = listener;
+> +
+> +	write_lock(&fsnotify_broadcast_listeners_lock);
+> +	list_add_tail(&event_listener->list, &fsnotify_broadcast_listeners);
+> +	++fsnotify_broadcast_listeners_count;
+> +	write_unlock(&fsnotify_broadcast_listeners_lock);
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(fsnotify_register_broadcast_listener);
+> +
+> +void fsnotify_unregister_broadcast_listener(fsnotify_broadcast_listener_t listener)
+> +{
+> +	struct list_head *p, *next;
+> +	struct fsnotify_broadcast_listener *event_listener;
+> +
+> +	write_lock(&fsnotify_broadcast_listeners_lock);
+> +	list_for_each_safe(p, next, &fsnotify_broadcast_listeners) {
+> +		event_listener = list_entry(p, struct fsnotify_broadcast_listener, list);
+> +		if (listener == event_listener->listener) {
+> +			list_del(p);
+> +			kfree(event_listener);
+> +			--fsnotify_broadcast_listeners_count;
+> +			break;
+> +		}
+> +	}
+> +	write_unlock(&fsnotify_broadcast_listeners_lock);
+> +}
+> +EXPORT_SYMBOL_GPL(fsnotify_unregister_broadcast_listener);
+> +
+> +void fsnotify_broadcast(__u32 mask, const void *data, int data_type,
+> +			struct inode *dir, const struct qstr *file_name,
+> +			struct inode *inode, u32 cookie)
+> +{
+> +	struct fsnotify_broadcast_listener *event_listener;
+> +
+> +	if (!fsnotify_broadcast_listeners_count)
+> +		return;
+> +
+> +	if (inode && S_ISDIR(inode->i_mode))
+> +		mask |= FS_ISDIR;
+> +
+> +	read_lock(&fsnotify_broadcast_listeners_lock);
+> +	list_for_each_entry(event_listener,
+> +			    &fsnotify_broadcast_listeners, list) {
+> +		event_listener->listener(mask, data, data_type, dir,
+> +				       file_name, inode, cookie);
+> +	}
+> +	read_unlock(&fsnotify_broadcast_listeners_lock);
+> +}
+> +EXPORT_SYMBOL_GPL(fsnotify_broadcast);
+> +
+>  /*
+>   * Clear all of the marks on an inode when it is being evicted from core
+>   */
+> diff --git a/include/linux/fsnotify.h b/include/linux/fsnotify.h
+> index 12d3a7d308ab..22924cb22102 100644
+> --- a/include/linux/fsnotify.h
+> +++ b/include/linux/fsnotify.h
+> @@ -30,6 +30,9 @@ static inline void fsnotify_name(struct inode *dir, __u32 mask,
+>  				 struct inode *child,
+>  				 const struct qstr *name, u32 cookie)
+>  {
+> +	fsnotify_broadcast(mask, child, FSNOTIFY_EVENT_INODE,
+> +			   dir, name, NULL, cookie);
+> +
+>  	if (atomic_long_read(&dir->i_sb->s_fsnotify_connectors) == 0)
+>  		return;
+>  
+> @@ -44,6 +47,9 @@ static inline void fsnotify_dirent(struct inode *dir, struct dentry *dentry,
+>  
+>  static inline void fsnotify_inode(struct inode *inode, __u32 mask)
+>  {
+> +	fsnotify_broadcast(mask, inode, FSNOTIFY_EVENT_INODE,
+> +			   NULL, NULL, inode, 0);
+> +
+>  	if (atomic_long_read(&inode->i_sb->s_fsnotify_connectors) == 0)
+>  		return;
+>  
+> @@ -59,6 +65,8 @@ static inline int fsnotify_parent(struct dentry *dentry, __u32 mask,
+>  {
+>  	struct inode *inode = d_inode(dentry);
+>  
+> +	fsnotify_broadcast(mask, data, data_type, NULL, NULL, inode, 0);
+> +
+>  	if (atomic_long_read(&inode->i_sb->s_fsnotify_connectors) == 0)
+>  		return 0;
+>  
+> diff --git a/include/linux/fsnotify_backend.h b/include/linux/fsnotify_backend.h
+> index 1ce66748a2d2..27d926c38eb5 100644
+> --- a/include/linux/fsnotify_backend.h
+> +++ b/include/linux/fsnotify_backend.h
+> @@ -418,6 +418,9 @@ extern void __fsnotify_inode_delete(struct inode *inode);
+>  extern void __fsnotify_vfsmount_delete(struct vfsmount *mnt);
+>  extern void fsnotify_sb_delete(struct super_block *sb);
+>  extern u32 fsnotify_get_cookie(void);
+> +extern void fsnotify_broadcast(__u32 mask, const void *data, int data_type,
+> +			struct inode *dir, const struct qstr *file_name,
+> +			struct inode *inode, u32 cookie);
+>  
+>  static inline __u32 fsnotify_parent_needed_mask(__u32 mask)
+>  {
+> @@ -586,6 +589,13 @@ static inline void fsnotify_init_event(struct fsnotify_event *event)
+>  	INIT_LIST_HEAD(&event->list);
+>  }
+>  
+> +/* fs event broadcast */
+> +typedef void (*fsnotify_broadcast_listener_t) (__u32 mask, const void *data, int data_type,
+> +				    struct inode *dir, const struct qstr *file_name,
+> +				    struct inode *inode, u32 cookie);
+> +extern int fsnotify_register_broadcast_listener(fsnotify_broadcast_listener_t listener);
+> +extern void fsnotify_unregister_broadcast_listener(fsnotify_broadcast_listener_t listener);
+> +
+>  #else
+>  
+>  static inline int fsnotify(__u32 mask, const void *data, int data_type,
+> @@ -618,6 +628,12 @@ static inline u32 fsnotify_get_cookie(void)
+>  	return 0;
+>  }
+>  
+> +static inline void fsnotify_broadcast(__u32 mask, const void *data,
+> +				      int data_type, struct inode *dir,
+> +				      const struct qstr *file_name,
+> +				      struct inode *inode, u32 cookie)
+> +{}
+> +
+>  static inline void fsnotify_unmount_inodes(struct super_block *sb)
+>  {}
+>  
+> -- 
+> 2.20.1
+> 
 -- 
-2.25.1
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
