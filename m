@@ -2,131 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E24514326F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 20:56:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB5964326F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 20:57:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233396AbhJRS6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 14:58:38 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:51022 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232740AbhJRS6g (ORCPT
+        id S233011AbhJRS7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 14:59:32 -0400
+Received: from relay10.mail.gandi.net ([217.70.178.230]:58791 "EHLO
+        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229924AbhJRS7a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 14:58:36 -0400
-Received: by mail-il1-f197.google.com with SMTP id o6-20020a92a806000000b002590430fa32so8575540ilh.17
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 11:56:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=qrfb55jZpNwVAqJrVbLH1XCEOAgnpcHdVrtGXnqAP20=;
-        b=IftA/4U1JG60E+vjZIVg5WbBlMwyUYDH21NfkdTE8MIkQxfZBwi08Q5AJ2qA/NEEk4
-         +tTX9DlKr79rosYLR8cgPt23Y/yqgqE5BrHkHRP+/C19KOjGyTygJNP5ruLDk2p1Xc59
-         qlW7JxS3fOEskx36NV9HaBxTs92xMZXmnFUZYWaLrLlA5XZcEmtSf2PQkvBr0d2kgpE6
-         xG7CIn/8lqd7gbX5tWTPPnoocjbMhB4MaXUexOWXiVqlgw9eIALyR0hrBrjgFiuWS3yo
-         h4+qgSKEO5b9dGCwiPMiB83IoKza1NVF+TbfIqtHG8pC+zhZju2SgyEwApzmzmA0xyjd
-         AjYw==
-X-Gm-Message-State: AOAM5320C02CON7CgvZeNrkN+i5Nm3WKaesNGKXNAAouA7CXb+JhFzJX
-        DPr2V0k8DONCZ+BNkteudP8a41Tv6uyTtH+VffRUaprA/oIf
-X-Google-Smtp-Source: ABdhPJz72nBghGjLut9waCZkNKD4/yd8i4XkP3TKRiLBsPdj890qMfwAgKdV6HQx4TqEH+t1LRkeYI5J7411P66ZLngomq4cbb9l
+        Mon, 18 Oct 2021 14:59:30 -0400
+Received: (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay10.mail.gandi.net (Postfix) with ESMTPSA id D2BAC240006;
+        Mon, 18 Oct 2021 18:57:16 +0000 (UTC)
+Date:   Mon, 18 Oct 2021 20:57:16 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Sam Protsenko <semen.protsenko@linaro.org>
+Cc:     Alessandro Zummo <a.zummo@towertech.it>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        linux-rtc@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rtc: s3c: Remove usage of devm_rtc_device_register()
+Message-ID: <YW3DjEuszEZ1Uw6/@piout.net>
+References: <20211018173201.2166-1-semen.protsenko@linaro.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:ac6:: with SMTP id m6mr1115607jab.28.1634583383840;
- Mon, 18 Oct 2021 11:56:23 -0700 (PDT)
-Date:   Mon, 18 Oct 2021 11:56:23 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f3259005cea5199e@google.com>
-Subject: [syzbot] divide error in mac80211_hwsim_bss_info_changed (2)
-From:   syzbot <syzbot+5f110beab9fb01e48be5@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
-        kvalo@codeaurora.org, linux-kernel@vger.kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211018173201.2166-1-semen.protsenko@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 18/10/2021 20:32:01+0300, Sam Protsenko wrote:
+> devm_rtc_device_register() is deprecated. Use devm_rtc_allocate_device()
+> and devm_rtc_register_device() API instead.
+> 
 
-syzbot found the following issue on:
+If you do that, please also set the range properly, either in the same
+patch or as a follow-up.
 
-HEAD commit:    fac3cb82a54a net: bridge: mcast: use multicast_membership_..
-git tree:       net
-console output: https://syzkaller.appspot.com/x/log.txt?x=144efe78b00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=bab9d35f204746a7
-dashboard link: https://syzkaller.appspot.com/bug?extid=5f110beab9fb01e48be5
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> ---
+>  drivers/rtc/rtc-s3c.c | 11 +++++++----
+>  1 file changed, 7 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/rtc/rtc-s3c.c b/drivers/rtc/rtc-s3c.c
+> index e57d3ca70a78..10e591794276 100644
+> --- a/drivers/rtc/rtc-s3c.c
+> +++ b/drivers/rtc/rtc-s3c.c
+> @@ -447,15 +447,18 @@ static int s3c_rtc_probe(struct platform_device *pdev)
+>  
+>  	device_init_wakeup(&pdev->dev, 1);
+>  
+> -	/* register RTC and exit */
+> -	info->rtc = devm_rtc_device_register(&pdev->dev, "s3c", &s3c_rtcops,
+> -					     THIS_MODULE);
+> +	info->rtc = devm_rtc_allocate_device(&pdev->dev);
+>  	if (IS_ERR(info->rtc)) {
+> -		dev_err(&pdev->dev, "cannot attach rtc\n");
+>  		ret = PTR_ERR(info->rtc);
+>  		goto err_nortc;
+>  	}
+>  
+> +	info->rtc->ops = &s3c_rtcops;
+> +
+> +	ret = devm_rtc_register_device(info->rtc);
+> +	if (ret)
+> +		goto err_nortc;
+> +
+>  	ret = devm_request_irq(&pdev->dev, info->irq_alarm, s3c_rtc_alarmirq,
+>  			       0, "s3c2410-rtc alarm", info);
+>  	if (ret) {
+> -- 
+> 2.30.2
+> 
 
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+5f110beab9fb01e48be5@syzkaller.appspotmail.com
-
-divide error: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 1140 Comm: kworker/u4:4 Not tainted 5.15.0-rc5-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: phy9 ieee80211_roc_work
-RIP: 0010:mac80211_hwsim_bss_info_changed+0xd37/0xf10 drivers/net/wireless/mac80211_hwsim.c:2033
-Code: 48 ba 00 00 00 00 00 fc ff df 48 c1 e9 03 80 3c 11 00 0f 85 96 01 00 00 49 8b b6 a0 3c 00 00 49 8d be 40 3d 00 00 31 d2 89 f1 <48> f7 f1 29 d6 b9 05 00 00 00 31 d2 48 69 f6 e8 03 00 00 e8 d1 1f
-RSP: 0018:ffffc9000550fb70 EFLAGS: 00010246
-RAX: 0005ce87f3fb02a5 RBX: 0000000000000200 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff88807783efe0
-RBP: ffff88801af8e088 R08: 000000000000f8c6 R09: ffffffff8fcffa47
-R10: ffffffff8167242f R11: 0000000000000000 R12: ffff888077838d60
-R13: ffff88807783ef40 R14: ffff88807783b2a0 R15: ffff88807783b2a0
-FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ffee3e2afcc CR3: 000000004efc2000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- drv_bss_info_changed+0x2c6/0x5f0 net/mac80211/driver-ops.h:177
- ieee80211_bss_info_change_notify+0x9a/0xc0 net/mac80211/main.c:210
- ieee80211_offchannel_return+0x330/0x4a0 net/mac80211/offchannel.c:158
- __ieee80211_roc_work+0x35a/0x3d0 net/mac80211/offchannel.c:444
- ieee80211_roc_work+0x2b/0x40 net/mac80211/offchannel.c:458
- process_one_work+0x9bf/0x16b0 kernel/workqueue.c:2297
- worker_thread+0x658/0x11f0 kernel/workqueue.c:2444
- kthread+0x3e5/0x4d0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-Modules linked in:
----[ end trace ff9a982d4a81be98 ]---
-RIP: 0010:mac80211_hwsim_bss_info_changed+0xd37/0xf10 drivers/net/wireless/mac80211_hwsim.c:2033
-Code: 48 ba 00 00 00 00 00 fc ff df 48 c1 e9 03 80 3c 11 00 0f 85 96 01 00 00 49 8b b6 a0 3c 00 00 49 8d be 40 3d 00 00 31 d2 89 f1 <48> f7 f1 29 d6 b9 05 00 00 00 31 d2 48 69 f6 e8 03 00 00 e8 d1 1f
-RSP: 0018:ffffc9000550fb70 EFLAGS: 00010246
-RAX: 0005ce87f3fb02a5 RBX: 0000000000000200 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff88807783efe0
-RBP: ffff88801af8e088 R08: 000000000000f8c6 R09: ffffffff8fcffa47
-R10: ffffffff8167242f R11: 0000000000000000 R12: ffff888077838d60
-R13: ffff88807783ef40 R14: ffff88807783b2a0 R15: ffff88807783b2a0
-FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f1b6573a218 CR3: 00000000271f2000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess):
-   0:	48 ba 00 00 00 00 00 	movabs $0xdffffc0000000000,%rdx
-   7:	fc ff df
-   a:	48 c1 e9 03          	shr    $0x3,%rcx
-   e:	80 3c 11 00          	cmpb   $0x0,(%rcx,%rdx,1)
-  12:	0f 85 96 01 00 00    	jne    0x1ae
-  18:	49 8b b6 a0 3c 00 00 	mov    0x3ca0(%r14),%rsi
-  1f:	49 8d be 40 3d 00 00 	lea    0x3d40(%r14),%rdi
-  26:	31 d2                	xor    %edx,%edx
-  28:	89 f1                	mov    %esi,%ecx
-* 2a:	48 f7 f1             	div    %rcx <-- trapping instruction
-  2d:	29 d6                	sub    %edx,%esi
-  2f:	b9 05 00 00 00       	mov    $0x5,%ecx
-  34:	31 d2                	xor    %edx,%edx
-  36:	48 69 f6 e8 03 00 00 	imul   $0x3e8,%rsi,%rsi
-  3d:	e8                   	.byte 0xe8
-  3e:	d1 1f                	rcrl   (%rdi)
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+-- 
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
