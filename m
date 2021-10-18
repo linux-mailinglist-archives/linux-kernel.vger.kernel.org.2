@@ -2,102 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 705694318C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 14:17:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B0AF4318CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 14:18:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231468AbhJRMTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 08:19:45 -0400
-Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:33537 "EHLO
-        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229519AbhJRMTo (ORCPT
+        id S231533AbhJRMUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 08:20:11 -0400
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:51819 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229519AbhJRMUK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 08:19:44 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id C5B203200FA2;
-        Mon, 18 Oct 2021 08:17:30 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Mon, 18 Oct 2021 08:17:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
-         h=date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=x0KJzCbJFSe9C/yj3j/2aCCzcsO
-        x35f4682NnWdDluM=; b=sv+KtCGoqPyFXurcu/jhFUUGEPCC8ADKapb/x3ENyqW
-        2nwWr5Aqhpj6lelCO3nJiEA2iqQrutJIMgAY5b/gbWwCJ7979rYAytlc9i8MJxm7
-        ptLG+Q6uKlSMug+OBT53gfqlRx5WhLIV1lspdJULCTR8UzJCuT7QlV446o69dIxn
-        c+7hkSMEYQhhRNrdQJHYvc6BRzJ06fpECnoKQnT+6WzEEJt51KiXdG3/uB3W582g
-        LVuux3noxAXGNqycqJ68jfFIcKyO6MjCIjtD1202QTs+C9P7G2kXxL7ONEsJqZ6s
-        UoI86VD/+ZSCuA03m4A1sPTt4mAsDaaYLE9P+GEzFtQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=x0KJzC
-        bJFSe9C/yj3j/2aCCzcsOx35f4682NnWdDluM=; b=SZUPvv8fYnOJVLiYv1jfnJ
-        HzgHCWzjAlewIb5eFz4lcg4/jW/IfTauwFQnMs9j1FP7YXsgd9QHbZHQn/Geq/hy
-        gqXwLIGBeXdgyS9O4k+14ms6yNXmztB0rwWDwlN8YHKooRyoXQOW2JWH8SJ5bvip
-        ktKNHLIzLgjNf1RvswLGiGrGou24w65mLa/ea8R5HJcm4ryT+LwffKLTjXPYhj5w
-        AorHgk/tuF1QCfxZqm5FvRQ/QpmD5Ej4KyY4BCmY6pyP5El/f6mnpTvRuNpa1bA9
-        vlxCrsTCoE0eQiENC+8NM9Beh1w0DtCmYQRbsdHbOO+D0UjruaLf/qk9BEbvF8bA
-        ==
-X-ME-Sender: <xms:2WVtYfCsvcW4h2HK9hw5dWULdtJGVKJwYjaAU2CbCJ8ftLOwHrtvow>
-    <xme:2WVtYVheWHDRaCMA_SbWnxzClLucAtVOaj__QUq02xF1tAvvIClMuUjhuHvX1VxCB
-    Rq0c92Lxkd9eKNebd4>
-X-ME-Received: <xmr:2WVtYamT43prbW0ssdCgWzFIYl0CfUNRo4W-JhlP6qPZWlu9Uel4s0zkZXvP-tk1blULWdnKLjIZMKoiWSrXPHNmvTftRT_zfw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvddvtddggeejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefvrghkrghs
-    hhhiucfurghkrghmohhtohcuoehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjh
-    hpqeenucggtffrrghtthgvrhhnpeejgeeifeeuveeufeeigeegjeelvdfgjeegffejgfdv
-    keelhefgtdefteejleekjeenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluh
-    hsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepohdqthgrkhgrshhh
-    ihesshgrkhgrmhhotggthhhirdhjph
-X-ME-Proxy: <xmx:2WVtYRwhP7zdoYsZyqlXfJd99YA86nvHBKI7-vw29yahZ59EJ9Fzzw>
-    <xmx:2WVtYUQFtOgaMv8SPT0Dx2j2UDJvbcz1LEthaeMIYVvlACvIfYjJHg>
-    <xmx:2WVtYUby9ySOXAJJEKtck0i9bIlivMKUZVmvOJ3ZgzoGjSE-jYsSlg>
-    <xmx:2mVtYacaNifuXk4OTJo6E5wa4Gutpkp3crxOfidH4wUnbf53asWx7A>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 18 Oct 2021 08:17:28 -0400 (EDT)
-Date:   Mon, 18 Oct 2021 21:17:25 +0900
-From:   Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     alsa-devel@alsa-project.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        linux-next@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ALSA: firewire: Fix C++ style comments in uapi header
-Message-ID: <YW1l1U4/isAd2xzc@workstation>
-Mail-Followup-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>, linux-next@vger.kernel.org,
+        Mon, 18 Oct 2021 08:20:10 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R231e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=haoxu@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UsfKwST_1634559477;
+Received: from B-25KNML85-0107.local(mailfrom:haoxu@linux.alibaba.com fp:SMTPD_---0UsfKwST_1634559477)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 18 Oct 2021 20:17:57 +0800
+Subject: Re: [PATCH v1] fs/io_uring: Hoist ret2 == -EAGAIN check in tail of
+ io_write
+To:     Noah Goldstein <goldstein.w.n@gmail.com>
+Cc:     axboe@kernel.dk, asml.silence@gmail.com, io-uring@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20211018063700.30834-1-tiwai@suse.de>
+References: <20211018070242.20325-1-goldstein.w.n@gmail.com>
+From:   Hao Xu <haoxu@linux.alibaba.com>
+Message-ID: <f27e1842-f22e-a40d-7055-6f924b13100f@linux.alibaba.com>
+Date:   Mon, 18 Oct 2021 20:17:57 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211018063700.30834-1-tiwai@suse.de>
+In-Reply-To: <20211018070242.20325-1-goldstein.w.n@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Mon, Oct 18, 2021 at 08:37:00AM +0200, Takashi Iwai wrote:
-> UAPI headers are built with -std=c90 and C++ style comments are
-> explicitly prohibited.  The recent commit overlooked the rule and
-> caused the error at header installation.  This patch corrects those.
+在 2021/10/18 下午3:02, Noah Goldstein 写道:
+> This commit reorganizes the branches in the tail of io_write so that
+> the 'ret2 == -EAGAIN' check is not repeated and done first.
 > 
-> Fixes: bea36afa102e ("ALSA: firewire-motu: add message parser to gather meter information in register DSP model")
-> Fixes: 90b28f3bb85c ("ALSA: firewire-motu: add message parser for meter information in command DSP model")
-> Fixes: 634ec0b2906e ("ALSA: firewire-motu: notify event for parameter change in register DSP model")
-> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> Link: https://lore.kernel.org/r/20211018113812.0a16efb0@canb.auug.org.au
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> The previous version was duplicating the 'ret2 == -EAGAIN'. As well
+> 'ret2 != -EAGAIN' gurantees the 'done:' path so it makes sense to
+> move that check to the front before the likely more expensive branches
+> which require memory derefences.
+> 
+> Signed-off-by: Noah Goldstein <goldstein.w.n@gmail.com>
 > ---
->  include/uapi/sound/firewire.h | 70 ++++++++++++++++++-----------------
->  1 file changed, 37 insertions(+), 33 deletions(-)
+> Generally I would want to rewrite this as:
+> ```
+> if (ret2 != -EAGAIN
+>      || (req->flags & REQ_F_NOWAIT)
+>      || (!force_nonblock && !(req->ctx->flags & IORING_SETUP_IOPOLL)))
+>          kiocb_done(kiocb, ret2, issue_flags);
+> else {
+>      ...
+> ```
+To me, this one is clear enough and short, but I think better to:
+if (ret2 != -EAGAIN || (req->flags & REQ_F_NOWAIT) ||
+     (!force_nonblock && !(req->ctx->flags & IORING_SETUP_IOPOLL))
 
-I completely overlooked it. Thanks for your reporting.
+if the first line doesn't exceed the line limit.
 
-Acked-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Reviewed-by: Hao Xu <haoxu@linux.alibaba.com>
+> 
+> But the style of the file seems to be to use gotos. If the above is
+> prefereable, let me know and I'll post a new version.
+>   fs/io_uring.c | 9 ++++++---
+>   1 file changed, 6 insertions(+), 3 deletions(-)
+> 
+> diff --git a/fs/io_uring.c b/fs/io_uring.c
+> index d1e672e7a2d1..932fc84d70d3 100644
+> --- a/fs/io_uring.c
+> +++ b/fs/io_uring.c
+> @@ -3648,12 +3648,15 @@ static int io_write(struct io_kiocb *req, unsigned int issue_flags)
+>   	 */
+>   	if (ret2 == -EOPNOTSUPP && (kiocb->ki_flags & IOCB_NOWAIT))
+>   		ret2 = -EAGAIN;
+> +
+> +	if (ret2 != -EAGAIN)
+> +		goto done;
+>   	/* no retry on NONBLOCK nor RWF_NOWAIT */
+> -	if (ret2 == -EAGAIN && (req->flags & REQ_F_NOWAIT))
+> +	if (req->flags & REQ_F_NOWAIT)
+>   		goto done;
+> -	if (!force_nonblock || ret2 != -EAGAIN) {
+> +	if (!force_nonblock) {
+>   		/* IOPOLL retry should happen for io-wq threads */
+> -		if (ret2 == -EAGAIN && (req->ctx->flags & IORING_SETUP_IOPOLL))
+> +		if (req->ctx->flags & IORING_SETUP_IOPOLL)
+>   			goto copy_iov;
+>   done:
+>   		kiocb_done(kiocb, ret2, issue_flags);
+> 
 
-
-Regards
-
-Takashi Sakamoto
