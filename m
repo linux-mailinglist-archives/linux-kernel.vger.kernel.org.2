@@ -2,132 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D95E44324ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 19:23:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5A5843245F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 19:02:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234042AbhJRRZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 13:25:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60944 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232272AbhJRRZO (ORCPT
+        id S233073AbhJRRFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 13:05:08 -0400
+Received: from mail-pf1-f173.google.com ([209.85.210.173]:41893 "EHLO
+        mail-pf1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232114AbhJRRFG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 13:25:14 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DE00C06161C;
-        Mon, 18 Oct 2021 10:23:03 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id v20so11723902plo.7;
-        Mon, 18 Oct 2021 10:23:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:content-transfer-encoding:to:cc:subject:from:date
-         :message-id:in-reply-to;
-        bh=KDtNvROv/emFHAIcdrMJhdJgVC4zcXHGcLaLCPrH1OA=;
-        b=Zj5uiURO92L8XvERHEm0QTtpUBIK8I8U+kgMLUJMWArshfy4CuQ5qBBwv35ptCjh/u
-         0bwhw0+PSc5VO4G+EybDHgTrCFqIkTnha8ixKGazLDoFliUWDRWkgQLSBmmwPxtv+hmB
-         FpnABZG5YW4HBAc3a27OkFcSv3y8YG5wvoHrQ4vZl3TNaNnXBx/KnXimjezsTPiwY8jB
-         +TiGQ7NbyV2CZ6b02DjkHtDe7E4NWUGW/Vyb7ZtNyx1mKTDs9NrEpmbsMvvXR+CKPwtb
-         7HBZ763ZdBuIOX04zmADDYA6KAEGlKnHq7OaAvfDkR+hOSVQ5IiiHjg5kR7BM/QLYk4I
-         FFUg==
+        Mon, 18 Oct 2021 13:05:06 -0400
+Received: by mail-pf1-f173.google.com with SMTP id y7so15192543pfg.8;
+        Mon, 18 Oct 2021 10:02:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:content-transfer-encoding:to:cc
-         :subject:from:date:message-id:in-reply-to;
-        bh=KDtNvROv/emFHAIcdrMJhdJgVC4zcXHGcLaLCPrH1OA=;
-        b=W5HllaLhDv0tx0ocUAMYW4Y3/Wg8oxmsmVGDsl3hh86cuwnttQnAMutMnoPe+zz6zp
-         ajI5xkSxGZc3pXbUFyQKyIZz2xVqtx/0Hksz/llOcJA01EL/jGLMeQIjRVhGcOjEn07t
-         ZJP2d/Bp9sBIkYwUFRftQnGqAKHnwWgCvPZuyEs8ibXu6tXBXmPWKl+6f5LRFs4OwWjU
-         aLuXrUSfzNSC8X54kSKP4ttB0XsBUSai4OQ4oGtFsnyCs7xQEkpdifxhVA4I3DJ9HK47
-         S5vnRXZQowBMpQ076XfX78CAgDNIbOPxpM8I4NhjEgKqFuZeEdtYeKAzeSmPwL8wz0hn
-         XXbA==
-X-Gm-Message-State: AOAM530r8yBr3bGWEb/JWa7g7bhZ7Wu+DwveZ3BlY73BldmgQkd/WwsQ
-        oNeTDQGsHBb/gKAvVIgVv/Q=
-X-Google-Smtp-Source: ABdhPJx40xJU8YE1isP+oL8/lINyv5pBl24icWiCna71nEI8P6QEHIWo7YAGX9JEZRNhlcZrYal87A==
-X-Received: by 2002:a17:902:e74a:b0:13f:3538:fca0 with SMTP id p10-20020a170902e74a00b0013f3538fca0mr28311600plf.22.1634577782509;
-        Mon, 18 Oct 2021 10:23:02 -0700 (PDT)
-Received: from localhost ([117.200.53.211])
-        by smtp.gmail.com with ESMTPSA id ip10sm34849pjb.40.2021.10.18.10.22.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Oct 2021 10:23:01 -0700 (PDT)
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-To:     "Alex Elder" <elder@ieee.org>, <phone-devel@vger.kernel.org>,
-        <~postmarketos/upstreaming@lists.sr.ht>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <elder@kernel.org>
-Cc:     "Vladimir Lypak" <vladimir.lypak@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Jakub Kicinski" <kuba@kernel.org>
-Subject: Re: [RFC PATCH 06/17] net: ipa: Add timeout for
- ipa_cmd_pipeline_clear_wait
-From:   "Sireesh Kodali" <sireeshkodali1@gmail.com>
-Date:   Mon, 18 Oct 2021 22:32:31 +0530
-Message-Id: <CF2P11HZE0H2.S4II3PH6QLCF@skynet-linux>
-In-Reply-To: <5219dde9-665d-a813-a9b8-3db51aea97b5@ieee.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pncH/JsFyTOuX1MFN8WrmdDdgAe+iOiHDqyec0cvtsI=;
+        b=jpI6zqbUv5bYjw+0TiJ9PcQLG5GIjIweGDTDknk6tm4ga9WwBQ6AVdYIe0ISeWfDF4
+         NoocRpl43EqLFWRNtbTnK3vK9YR86tICdCPUuKYNhSi1Wxke8ZpjrFa1ARcE701irSM/
+         aIE7O1rpZj65bgpwdC2QZebC6ZrZ0DNsr+xJFW5NV0Ac2fTkcQhjf8Yd40grYxRvNCuB
+         zA0Hb4+e3x17ubmSdScf+Y2g4THsbAc2R2EQN9M0mXFArGqBXKNWMM/CT3uYAMTpKLGa
+         YgdDteTV144E4JNJo0m4rsOef9metjGU2dbD27gYF4w+MZm/CbLOdgnmSOZ26aoUDD0G
+         RP5g==
+X-Gm-Message-State: AOAM530tzxhnQriLZip/hq4OAOqOXE1gw+TiOWFY4GjnqRPYtR0UxDHF
+        8PV1K/7je9Z2mvoCSNQxGf87V1go/kFlSTIfUlLUDY+pIn0=
+X-Google-Smtp-Source: ABdhPJxBbRec2jyrrXkEQANfBfNhCIEoy1Kd52kI2aZkYtXf49W7q1r7dD5sz5uKW7JBTdSKP3O7I/8meCQjtrHn/bY=
+X-Received: by 2002:a05:6a00:1707:b0:44d:47e1:9ffe with SMTP id
+ h7-20020a056a00170700b0044d47e19ffemr30112553pfc.53.1634576575002; Mon, 18
+ Oct 2021 10:02:55 -0700 (PDT)
+MIME-Version: 1.0
+References: <20211012134027.684712-1-kernel@esmil.dk> <20211012134027.684712-13-kernel@esmil.dk>
+ <CAHp75Vep+i+iyJi0LAOKuer-cUZoUoB_ZrWKcmT=EB_4hOgFGw@mail.gmail.com>
+ <CANBLGcxHD2vy0+tXYo5Pkqri9mV7aD9jikvs3ygBJRxF4ApLMA@mail.gmail.com>
+ <CAHp75Vc65deoHbks-aPmnjEJzm3GdqFMfBCUqw4vVLVr=71Ncg@mail.gmail.com>
+ <CANBLGcxriKLZ+CKUsj5sviW8FdHnWTF2koROwmAb=G2tbmE6vQ@mail.gmail.com>
+ <CAHp75VccSDLVbs1sF_-1zghWyLKtKKV1qtxOxZZ-cS0e6S-sBA@mail.gmail.com> <CAHp75VcgFRGpca-pSU9T5Oo1fT4aWQJd5EQfyZscGYx0mDMJ_Q@mail.gmail.com>
+In-Reply-To: <CAHp75VcgFRGpca-pSU9T5Oo1fT4aWQJd5EQfyZscGYx0mDMJ_Q@mail.gmail.com>
+From:   Emil Renner Berthing <kernel@esmil.dk>
+Date:   Mon, 18 Oct 2021 19:02:43 +0200
+Message-ID: <CANBLGcxHLQZygX9CHsXK4aYS9m4VE5OnLNROOmvP1ps5UP-xAw@mail.gmail.com>
+Subject: Re: [PATCH v1 12/16] pinctrl: starfive: Add pinctrl driver for
+ StarFive SoCs
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Sagar Kadam <sagar.kadam@sifive.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Huan Feng <huan.feng@starfivetech.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu Oct 14, 2021 at 3:59 AM IST, Alex Elder wrote:
-> On 9/19/21 10:08 PM, Sireesh Kodali wrote:
-> > From: Vladimir Lypak <vladimir.lypak@gmail.com>
-> >=20
-> > Sometimes the pipeline clear fails, and when it does, having a hang in
-> > kernel is ugly. The timeout gives us a nice error message. Note that
-> > this shouldn't actually hang, ever. It only hangs if there is a mistake
-> > in the config, and the timeout is only useful when debugging.
-> >=20
-> > Signed-off-by: Vladimir Lypak <vladimir.lypak@gmail.com>
-> > Signed-off-by: Sireesh Kodali <sireeshkodali1@gmail.com>
+On Mon, 18 Oct 2021 at 18:29, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> On Mon, Oct 18, 2021 at 7:23 PM Andy Shevchenko
+> <andy.shevchenko@gmail.com> wrote:
+> > On Mon, Oct 18, 2021 at 6:56 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
+> > > On Mon, 18 Oct 2021 at 17:48, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> > > > On Mon, Oct 18, 2021 at 6:35 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
+> > > > > On Tue, 12 Oct 2021 at 19:03, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> > > > > > On Tue, Oct 12, 2021 at 4:43 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
 >
-> This is actually an item on my to-do list. All of the waits
-> for GSI completions should have timeouts. The only reason it
-> hasn't been implemented already is that I would like to be sure
-> all paths that could have a timeout actually have a reasonable
-> recovery.
+> ...
 >
-> I'd say an error message after a timeout is better than a hung
-> task panic, but if this does time out, I'm not sure the state
-> of the hardware is well-defined.
-
-Early on while wiring up BAM support, I handn't quite figured out the
-IPA init sequence, and some of the BAM opcode stuff. This caused the
-driver to hang when it would reach the completion. Since this particular
-completion was waited for just before the probe function retured, it
-prevented hung up the kernel thread, and prevented the module from being
-`modprobe -r`ed.
-
-Since then, I've properly fixed the BAM code, the completion always
-returns, making the patch kinda useless for now. Since its only for
-debugging, I'll just drop this patch. I think the only error handling we
-can do at this stage is to return -EIO, and get the callee to handle
-de-initing everything.
-
-Regards,
-Sireesh
-
+> > > > > > > +       ret = clk_prepare_enable(clk);
+> > > > > > > +       if (ret) {
+> > > > > >
+> > > > > > > +               reset_control_deassert(rst);
+> > > > > >
+> > > > > > Use devm_add_action_or_reset().
+> > > > >
+> > > > > I don't see how that is better.
+> > > >
+> > > > Pity. The rule of thumb is to either try to use devm_*() everywhere in
+> > > > the probe, or don't use it at all. Above is the more-or-less standard
+> > > > pattern where devn_add_action_or_reset() is being used in the entire
+> > > > kernel.
+> > > >
+> > > > > Then I'd first need to call that and
+> > > > > check for errors, but just on the line below enabling the clock the
+> > > > > reset line is deasserted anyway, so then the action isn't needed any
+> > > > > longer. So that 3 lines of code for devm_add_action_or_reset +
+> > > > > lingering unneeded action or code to remove it again vs. just the line
+> > > > > above.
+> > > >
+> > > > Then don't use devm_*() at all. What's the point?
+> > >
+> > > I'm confused. So you wan't an unneeded action to linger because the
+> > > probe function temporarily asserts reset for 3 lines of code?
+> >
+> > I;m talking about clk_prepare_enable().
 >
-> -Alex
->
-> > ---
-> >   drivers/net/ipa/ipa_cmd.c | 5 ++++-
-> >   1 file changed, 4 insertions(+), 1 deletion(-)
-> >=20
-> > diff --git a/drivers/net/ipa/ipa_cmd.c b/drivers/net/ipa/ipa_cmd.c
-> > index 3db9e94e484f..0bdbc331fa78 100644
-> > --- a/drivers/net/ipa/ipa_cmd.c
-> > +++ b/drivers/net/ipa/ipa_cmd.c
-> > @@ -658,7 +658,10 @@ u32 ipa_cmd_pipeline_clear_count(void)
-> >  =20
-> >   void ipa_cmd_pipeline_clear_wait(struct ipa *ipa)
-> >   {
-> > -	wait_for_completion(&ipa->completion);
-> > +	unsigned long timeout_jiffies =3D msecs_to_jiffies(1000);
-> > +
-> > +	if (!wait_for_completion_timeout(&ipa->completion, timeout_jiffies))
-> > +		dev_err(&ipa->pdev->dev, "%s time out\n", __func__);
-> >   }
-> >  =20
-> >   void ipa_cmd_pipeline_clear(struct ipa *ipa)
-> >=20
+> Having a second look I found even problematic error paths because of
+> mixing devm_*() with non-devm_*() calls, which only assures me that
+> your ->probe() error path is broken and should be revisited.
 
+So do you want to expand on that now or should I send v2 first?
