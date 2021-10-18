@@ -2,119 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4EFA431093
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 08:30:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ABD843109D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 08:33:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230316AbhJRGcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 02:32:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50680 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230114AbhJRGcP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 02:32:15 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE13CC06161C;
-        Sun, 17 Oct 2021 23:30:04 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id r2so15034523pgl.10;
-        Sun, 17 Oct 2021 23:30:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=SrZhhuie2LYb+DH8DnKTrW/zbTOuYNfpSWs+Jg+B7ZI=;
-        b=EaHY4+nxzBbXnw4re2cGF5gs8wOdjWhvwRQb3eDdLNljCkNp8D3Cdglit6b/DEdvI2
-         ey56INCUK8p9wnePBtmhufxokbGfkq/bNQtz2eGE9C1+N1+IZcLiivrjaHi+fbFyw9Sm
-         CIG7/CN1JQ+NPRu8XrkCHXO75w/J8IzbZLZsXNgIgGrssc22eKmoEH650zN1aNt6fb/E
-         RQyug5mhR8JxjCa8hxG/oKYeTCXUcl0CnsOg/Ox97LP7sL0xsADVjLigIWesCf7KolDZ
-         X9a2zF1I9AHYK6mcfZmGIOyZknnbra8wW42jtGvX7ZmhL6HnsRn8jCA4kg5Bq6CKLMz9
-         Bq+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=SrZhhuie2LYb+DH8DnKTrW/zbTOuYNfpSWs+Jg+B7ZI=;
-        b=DjWfjN1MktEs7CpTvZwfgwcn28qR4yI6n+S1VdLBgBnugHl/PtozCE/aNtdzb+oxVx
-         Lyv4Z7yjIlZtsrbawEK/RI4a+OcYXvKm2Wt1Sa7zcplikNb6VIRam8w4J0aOytBxefP7
-         7SR51Vwh4BY77HkSn8ZU610BjROl3kZ3FLXngnW7XfuhJykza9WHPdqMZnjwxsebTtib
-         DbNt6aQZM1aHfY4XYRrFnNnh6/CoFysXXHi7tIoJQhZtLvhO/n6w9IO7w30cCUb3Zo/p
-         rqYx/WQsVFRqS7KLjInSkJXfHz9euAvIZcQSoJzZTqUk965tCZhXLvNMTnGdlD3NAcNl
-         c2lw==
-X-Gm-Message-State: AOAM530pRLBQ1aDHXZlNR4S1BDRD+Png5qPV+bvwIcxMMd63BfPo9uMQ
-        ZThxClyxs5GDdlOmYDQaFd0=
-X-Google-Smtp-Source: ABdhPJzH86hY+t32jbrJWE1dxVltQNRhTT8NQFAijIbO8sR0zCmyZjDW9Fs93D5vJD/a+7+qImFigg==
-X-Received: by 2002:aa7:86d9:0:b0:44d:a354:b803 with SMTP id h25-20020aa786d9000000b0044da354b803mr15773350pfo.21.1634538604529;
-        Sun, 17 Oct 2021 23:30:04 -0700 (PDT)
-Received: from localhost ([1.128.244.1])
-        by smtp.gmail.com with ESMTPSA id a12sm18027761pjq.16.2021.10.17.23.30.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 Oct 2021 23:30:04 -0700 (PDT)
-Date:   Mon, 18 Oct 2021 16:29:57 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH v3 07/12] asm-generic: Define 'func_desc_t' to commonly
- describe function descriptors
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Helge Deller <deller@gmx.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Kees Cook <keescook@chromium.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Mackerras <paulus@samba.org>
-Cc:     linux-arch@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-References: <cover.1634457599.git.christophe.leroy@csgroup.eu>
-        <a33107c5b82580862510cc20af0d61e33a2b841d.1634457599.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <a33107c5b82580862510cc20af0d61e33a2b841d.1634457599.git.christophe.leroy@csgroup.eu>
+        id S230179AbhJRGgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 02:36:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38462 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230001AbhJRGf6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 02:35:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C7DC2610E8;
+        Mon, 18 Oct 2021 06:33:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634538827;
+        bh=8Duvbt7Tr+2iGsTsmx8skOoyJai429Qy3uMCGXSBySA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=e4FZ1PWQO/Uip/YT4S6mgAiC8jjEugYD0gkMGyxz5gPLfmy8aojycaQPpuQJbCVjQ
+         3hzirrqdt6pKz4WtdJOkRn8xFEfx2cn7kSpdWFpUJ3KVusBmKQwR0uXpoKbouE7S25
+         lzdReyNtBEoMjgTudnjeK7hE7lFQ1q84rtmB5W05uySFMWn6sKXDm0uxqm9xbNvDws
+         fLf4guJxmEjyvXk3LogtJrnLRAzuLkoQ8WX2dI0hFB0n3KxKajZJ0DUEl2aofMG15C
+         VeEf26DEHz/OaMw8rAYA01soKQylUZLJm5K7PfytpMClgd0vwCw847s4V6NFRhVGIl
+         7B6/1e9RqlvoQ==
+Date:   Mon, 18 Oct 2021 12:03:42 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Rob Herring <robh+dt@kernel.org>, list@opendingux.net,
+        dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org
+Subject: Re: [PATCH 5/5] dmaengine: jz4780: Support bidirectional I/O on one
+ channel
+Message-ID: <YW0VRnFGcYFY0+XZ@matsya>
+References: <20211011143652.51976-1-paul@crapouillou.net>
+ <20211011143652.51976-6-paul@crapouillou.net>
 MIME-Version: 1.0
-Message-Id: <1634538449.eah9b31bbz.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211011143652.51976-6-paul@crapouillou.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Christophe Leroy's message of October 17, 2021 10:38 pm:
-> We have three architectures using function descriptors, each with its
-> own type and name.
->=20
-> Add a common typedef that can be used in generic code.
->=20
-> Also add a stub typedef for architecture without function descriptors,
-> to avoid a forest of #ifdefs.
->=20
-> It replaces the similar 'func_desc_t' previously defined in
-> arch/powerpc/kernel/module_64.c
->=20
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> Acked-by: Arnd Bergmann <arnd@arndb.de>
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+On 11-10-21, 16:36, Paul Cercueil wrote:
+> For some devices with only half-duplex capabilities, it doesn't make
+> much sense to use one DMA channel per direction, as both channels will
+> never be active at the same time.
+> 
+> Add support for bidirectional I/O on DMA channels. The client drivers
+> can then request a "tx-rx" DMA channel which will be used for both
+> directions.
+> 
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 > ---
+>  drivers/dma/dma-jz4780.c | 48 ++++++++++++++++++++++++++--------------
+>  1 file changed, 32 insertions(+), 16 deletions(-)
+> 
+> diff --git a/drivers/dma/dma-jz4780.c b/drivers/dma/dma-jz4780.c
+> index 4d62e24ebff9..ee1d50792c32 100644
+> --- a/drivers/dma/dma-jz4780.c
+> +++ b/drivers/dma/dma-jz4780.c
+> @@ -122,6 +122,7 @@ struct jz4780_dma_desc {
+>  	dma_addr_t desc_phys;
+>  	unsigned int count;
+>  	enum dma_transaction_type type;
+> +	uint32_t transfer_type;
 
-[...]
+why not u32?
 
-> diff --git a/include/asm-generic/sections.h b/include/asm-generic/section=
-s.h
-> index a918388d9bf6..33b51efe3a24 100644
-> --- a/include/asm-generic/sections.h
-> +++ b/include/asm-generic/sections.h
-> @@ -63,6 +63,9 @@ extern __visible const void __nosave_begin, __nosave_en=
-d;
->  #else
->  #define dereference_function_descriptor(p) ((void *)(p))
->  #define dereference_kernel_function_descriptor(p) ((void *)(p))
-> +typedef struct {
-> +	unsigned long addr;
-> +} func_desc_t;
->  #endif
-> =20
+>  	uint32_t status;
+>  };
+>  
+> @@ -130,7 +131,7 @@ struct jz4780_dma_chan {
+>  	unsigned int id;
+>  	struct dma_pool *desc_pool;
+>  
+> -	uint32_t transfer_type;
+> +	uint32_t transfer_type_tx, transfer_type_rx;
+>  	uint32_t transfer_shift;
+>  	struct dma_slave_config	config;
+>  
+> @@ -157,7 +158,7 @@ struct jz4780_dma_dev {
+>  };
+>  
+>  struct jz4780_dma_filter_data {
+> -	uint32_t transfer_type;
+> +	uint32_t transfer_type_tx, transfer_type_rx;
+>  	int channel;
+>  };
+>  
+> @@ -226,9 +227,10 @@ static inline void jz4780_dma_chan_disable(struct jz4780_dma_dev *jzdma,
+>  		jz4780_dma_ctrl_writel(jzdma, JZ_DMA_REG_DCKEC, BIT(chn));
+>  }
+>  
+> -static struct jz4780_dma_desc *jz4780_dma_desc_alloc(
+> -	struct jz4780_dma_chan *jzchan, unsigned int count,
+> -	enum dma_transaction_type type)
+> +static struct jz4780_dma_desc *
+> +jz4780_dma_desc_alloc(struct jz4780_dma_chan *jzchan, unsigned int count,
+> +		      enum dma_transaction_type type,
+> +		      enum dma_transfer_direction direction)
+>  {
+>  	struct jz4780_dma_desc *desc;
+>  
+> @@ -248,6 +250,12 @@ static struct jz4780_dma_desc *jz4780_dma_desc_alloc(
+>  
+>  	desc->count = count;
+>  	desc->type = type;
+> +
+> +	if (direction == DMA_DEV_TO_MEM)
+> +		desc->transfer_type = jzchan->transfer_type_rx;
+> +	else
+> +		desc->transfer_type = jzchan->transfer_type_tx;
+> +
+>  	return desc;
+>  }
+>  
+> @@ -361,7 +369,7 @@ static struct dma_async_tx_descriptor *jz4780_dma_prep_slave_sg(
+>  	unsigned int i;
+>  	int err;
+>  
+> -	desc = jz4780_dma_desc_alloc(jzchan, sg_len, DMA_SLAVE);
+> +	desc = jz4780_dma_desc_alloc(jzchan, sg_len, DMA_SLAVE, direction);
+>  	if (!desc)
+>  		return NULL;
+>  
+> @@ -410,7 +418,7 @@ static struct dma_async_tx_descriptor *jz4780_dma_prep_dma_cyclic(
+>  
+>  	periods = buf_len / period_len;
+>  
+> -	desc = jz4780_dma_desc_alloc(jzchan, periods, DMA_CYCLIC);
+> +	desc = jz4780_dma_desc_alloc(jzchan, periods, DMA_CYCLIC, direction);
+>  	if (!desc)
+>  		return NULL;
+>  
+> @@ -455,14 +463,14 @@ static struct dma_async_tx_descriptor *jz4780_dma_prep_dma_memcpy(
+>  	struct jz4780_dma_desc *desc;
+>  	uint32_t tsz;
+>  
+> -	desc = jz4780_dma_desc_alloc(jzchan, 1, DMA_MEMCPY);
+> +	desc = jz4780_dma_desc_alloc(jzchan, 1, DMA_MEMCPY, 0);
+>  	if (!desc)
+>  		return NULL;
+>  
+>  	tsz = jz4780_dma_transfer_size(jzchan, dest | src | len,
+>  				       &jzchan->transfer_shift);
+>  
+> -	jzchan->transfer_type = JZ_DMA_DRT_AUTO;
+> +	desc->transfer_type = JZ_DMA_DRT_AUTO;
+>  
+>  	desc->desc[0].dsa = src;
+>  	desc->desc[0].dta = dest;
+> @@ -528,7 +536,7 @@ static void jz4780_dma_begin(struct jz4780_dma_chan *jzchan)
+>  
+>  	/* Set transfer type. */
+>  	jz4780_dma_chn_writel(jzdma, jzchan->id, JZ_DMA_REG_DRT,
+> -			      jzchan->transfer_type);
+> +			      jzchan->desc->transfer_type);
+>  
+>  	/*
+>  	 * Set the transfer count. This is redundant for a descriptor-driven
+> @@ -788,7 +796,8 @@ static bool jz4780_dma_filter_fn(struct dma_chan *chan, void *param)
+>  		return false;
+>  	}
+>  
+> -	jzchan->transfer_type = data->transfer_type;
+> +	jzchan->transfer_type_tx = data->transfer_type_tx;
+> +	jzchan->transfer_type_rx = data->transfer_type_rx;
+>  
+>  	return true;
+>  }
+> @@ -800,11 +809,17 @@ static struct dma_chan *jz4780_of_dma_xlate(struct of_phandle_args *dma_spec,
+>  	dma_cap_mask_t mask = jzdma->dma_device.cap_mask;
+>  	struct jz4780_dma_filter_data data;
+>  
+> -	if (dma_spec->args_count != 2)
+> +	if (dma_spec->args_count == 2) {
+> +		data.transfer_type_tx = dma_spec->args[0];
+> +		data.transfer_type_rx = dma_spec->args[0];
+> +		data.channel = dma_spec->args[1];
+> +	} else if (dma_spec->args_count == 3) {
+> +		data.transfer_type_tx = dma_spec->args[0];
+> +		data.transfer_type_rx = dma_spec->args[1];
 
-I think that deserves a comment. If it's just to allow ifdef to be=20
-avoided, I guess that's okay with a comment. Would be nice if you could=20
-cause it to generate a link time error if it was ever used like
-undefined functions, but I guess you can't. It's not a necessity though.
+aha so you have a different values for tx and rx, that seems okay. Maybe
+word a better in binding and also add examples in binding for this
 
-Thanks,
-Nick
+> +		data.channel = dma_spec->args[2];
+> +	} else {
+>  		return NULL;
+> -
+> -	data.transfer_type = dma_spec->args[0];
+> -	data.channel = dma_spec->args[1];
+> +	}
+>  
+>  	if (data.channel > -1) {
+>  		if (data.channel >= jzdma->soc_data->nb_channels) {
+> @@ -822,7 +837,8 @@ static struct dma_chan *jz4780_of_dma_xlate(struct of_phandle_args *dma_spec,
+>  			return NULL;
+>  		}
+>  
+> -		jzdma->chan[data.channel].transfer_type = data.transfer_type;
+> +		jzdma->chan[data.channel].transfer_type_tx = data.transfer_type_tx;
+> +		jzdma->chan[data.channel].transfer_type_rx = data.transfer_type_rx;
+>  
+>  		return dma_get_slave_channel(
+>  			&jzdma->chan[data.channel].vchan.chan);
+> -- 
+> 2.33.0
+
+-- 
+~Vinod
