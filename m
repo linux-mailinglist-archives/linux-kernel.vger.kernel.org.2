@@ -2,96 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24E07432929
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 23:37:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BA3E43292B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 23:38:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233467AbhJRVjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 17:39:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34242 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233128AbhJRVju (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 17:39:50 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65156C06161C;
-        Mon, 18 Oct 2021 14:37:38 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id g184so17435149pgc.6;
-        Mon, 18 Oct 2021 14:37:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=cNHl2gTAxcYmC+4CDwOzqqvlyygv7UZJti6PDMgFJCs=;
-        b=qLgh/2uOi3Bofcgc0fncwLuzcLsShHDS1PkYp77PdXZa6T0omrhOU1OgDklK4KOyez
-         4PjWtqoIAwlxHY8hAwFDEkbz0F93SBhJ9wsNzqIvS9MnAGyongvJvVJ6OYs6s7NANnCm
-         +dYR7gdkUw+fJqeufohpqsSNf1TqL0E4PaI0Vwgmfaiu4w+zYQtxEy9OjSeSkmVyxnF3
-         0+x3g5vCoJPF88tcerwmlKFaHm9XHk62TD+/vJLdpYhufshYcXJAAMvJX8dYi3xu9F/w
-         hm7Qb9U/W37/Ru3FlP3Hd+Vhz0OygBehbZU/TxRaHOnLzXG40RRcd2zWEaCY1jeSA5qR
-         Bvuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=cNHl2gTAxcYmC+4CDwOzqqvlyygv7UZJti6PDMgFJCs=;
-        b=XZFmkGEPfS0q7n2kWh+oV/thFLBrBHAxFok1EyS3s9O8OrMGmy+q7IMnprzJWDJesb
-         aKpixkiMROhyYDIQGux7RxymUT6d6PL6H/KXsxC+HLVLDqcllBulQD62GFzu8mqexylM
-         wcipTDaxI7y7L0TwZN3cV4gxNK3x0aw1BrGrqtNzd14JlWr7R3HbcprNI3586jsE5eWF
-         leZBBv7svosMrsMgHH2CNkeET/DXQHA0DAtj8pw7qFk2GLebwk8qsMYLYO5zj/nzZ5cC
-         US/eiv1QIJhKPuwJZC8Gy0uoZYqjPhBRZkelLJI3EsDdl8k9DbIubTB3nQ6RGSuLBsa5
-         DvOA==
-X-Gm-Message-State: AOAM532R5hT6dmnU1OUGmCGeHfRewrXKmTFUeozfSK5hbaWhyLxlTfy+
-        fug0iefQA61DBZtBvJUIHnlry6YOhCk=
-X-Google-Smtp-Source: ABdhPJwt7bN1uQfW2KONKHWES0vmzgYizVsvI1RPYjGakHS1JKTwiPRbdfXxN6ozTm9YGNX7eGsUtw==
-X-Received: by 2002:a62:188c:0:b0:44d:6660:212b with SMTP id 134-20020a62188c000000b0044d6660212bmr31658434pfy.8.1634593057464;
-        Mon, 18 Oct 2021 14:37:37 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id v9sm360861pjc.55.2021.10.18.14.37.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Oct 2021 14:37:36 -0700 (PDT)
-Subject: Re: [PATCH 5.14 000/151] 5.14.14-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20211018132340.682786018@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <69f619e2-868a-6825-47cd-11071c4a8d56@gmail.com>
-Date:   Mon, 18 Oct 2021 14:37:29 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S233807AbhJRVkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 17:40:23 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:45292 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233899AbhJRVkM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 17:40:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=WgZVH2o58S2b3z+JLYDkc0nTLqWy8/84Xlffw5Y2nuQ=; b=TEKI4v8zBXvSqIsZ0q6cWiLB1H
+        ci08Ty4rj4zxQ29sKpqLyv/lIe2V5NZpJZMLiqJGy+nuMu3dUm3GU0jGeL5SuRqMbWVTaSxbDnkMw
+        1mHkEiYJIsnGZu4SVfJ+T/wZ986bl0Y0X/T/9DAQCViWH+JVTeJgoEXD+MitjWQycmQE=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mcaKO-00B0ml-NW; Mon, 18 Oct 2021 23:37:52 +0200
+Date:   Mon, 18 Oct 2021 23:37:52 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Luo Jie <luoj@codeaurora.org>
+Cc:     hkallweit1@gmail.com, linux@armlinux.org.uk, davem@davemloft.net,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sricharan@codeaurora.org
+Subject: Re: [PATCH v3 08/13] net: phy: add qca8081 config_aneg
+Message-ID: <YW3pMD7PD2M3lD3o@lunn.ch>
+References: <20211018033333.17677-1-luoj@codeaurora.org>
+ <20211018033333.17677-9-luoj@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <20211018132340.682786018@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211018033333.17677-9-luoj@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/18/21 6:22 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.14.14 release.
-> There are 151 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Mon, Oct 18, 2021 at 11:33:28AM +0800, Luo Jie wrote:
+> Reuse at803x phy driver config_aneg excepting
+> adding 2500M auto-negotiation.
 > 
-> Responses should be made by Wed, 20 Oct 2021 13:23:15 +0000.
-> Anything received after that time might be too late.
+> Signed-off-by: Luo Jie <luoj@codeaurora.org>
+> ---
+>  drivers/net/phy/at803x.c | 26 +++++++++++++++++++++++++-
+>  1 file changed, 25 insertions(+), 1 deletion(-)
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.14-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+> diff --git a/drivers/net/phy/at803x.c b/drivers/net/phy/at803x.c
+> index 0c22ef735230..c124d3fe40fb 100644
+> --- a/drivers/net/phy/at803x.c
+> +++ b/drivers/net/phy/at803x.c
+> @@ -1084,7 +1084,30 @@ static int at803x_config_aneg(struct phy_device *phydev)
+>  			return ret;
+>  	}
+>  
+> -	return genphy_config_aneg(phydev);
+> +	/* Do not restart auto-negotiation by setting ret to 0 defautly,
+> +	 * when calling __genphy_config_aneg later.
+> +	 */
+> +	ret = 0;
+> +
+> +	if (phydev->drv->phy_id == QCA8081_PHY_ID) {
+> +		int phy_ctrl = 0;
+> +
+> +		/* The reg MII_BMCR also needs to be configured for force mode, the
+> +		 * genphy_config_aneg is also needed.
+> +		 */
+> +		if (phydev->autoneg == AUTONEG_DISABLE)
+> +			genphy_c45_pma_setup_forced(phydev);
+> +
+> +		if (linkmode_test_bit(ETHTOOL_LINK_MODE_2500baseT_Full_BIT, phydev->advertising))
+> +			phy_ctrl = MDIO_AN_10GBT_CTRL_ADV2_5G;
+> +
+> +		ret = phy_modify_mmd_changed(phydev, MDIO_MMD_AN, MDIO_AN_10GBT_CTRL,
+> +				MDIO_AN_10GBT_CTRL_ADV2_5G, phy_ctrl);
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
+Does the PHY also have MDIO_MMD_AN, MDIO_AN_ADVERTISE ? I'm wondering
+if you can use genphy_c45_an_config_aneg()
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+   Andrew
