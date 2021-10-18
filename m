@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95A044322F2
+	by mail.lfdr.de (Postfix) with ESMTP id DE5EC4322F3
 	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 17:33:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233369AbhJRPfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 11:35:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36062 "EHLO
+        id S233416AbhJRPfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 11:35:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231946AbhJRPfq (ORCPT
+        with ESMTP id S232110AbhJRPfq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 18 Oct 2021 11:35:46 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50B15C061768
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ABBFC061765
         for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 08:33:35 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id y15so543304lfk.7
+Received: by mail-lj1-x22a.google.com with SMTP id s19so437042ljj.11
         for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 08:33:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=shutemov-name.20210112.gappssmtp.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=WPrVir84s/zbJNutNzpoxgVyHO6kagrc6ojPFi/IqQ0=;
-        b=VTisOhP30BHjvkVDUzf+ZIyF2SIBMJFQf76pz8OVD/73fQFB1lCtWD777KHjzaJgx5
-         Tgvo02RQrNZJYt4uR0Vj+yg/fQ1EHgMJrxRmWTz9RPEa9RWJnBN2kK5rxH5lZDpKmBDi
-         Jo+kTKhYJl25o57m8so/K7lO898Gnqo0AXxIuYY+OUc0ssphsJCwth//6fQn+uqAuRTR
-         rDHNuPWQJhgBMSpG8nrTwNVi1Kw1UMkSz06bmLr5h3adqxjRX+rmCSJ+LzqhVN02mOZn
-         ezVymsUOXmQeHfWaKCUa3w6rdZ/ihsZDWLRguV+6kQ97YTKBLWsNc4lopanVaPwAimj/
-         XRcQ==
+        bh=Av2yU1eH/+KVUhWiYq4bjMFQGpgX8uwkDZTA6ABYzWY=;
+        b=NKIm+cWGj5a+XEDMCjOVrwiz9aF+Cp1ma9+AokJDmqe6fhoXPGOFBE0XGEobILcYSB
+         mo/1eYqtlQRvv324mXRyCOwweyXGFvo3hl4jYK+EUtGP0sS5ES/ywAyz/tlSmB5B4b30
+         k+HMd1XvxyIrYfBLBEQrZS9+S0vbuwp511wpMw/3zFECqEIq/VZstddDJIhBWNjW6HDh
+         NsFVVOI5f5U3crG6D+eJ9O6zIB5p8+sZ5xP6CbF7W+r3Zk9QxncyB5BKFugIu9oNs8Yg
+         eJ7LRZ68O5RwCkwiDV7hfogCzbPSI9/E8h7r08/+x8CIfjhBuMibhebMUl8GGq2Pgzi0
+         b3CA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=WPrVir84s/zbJNutNzpoxgVyHO6kagrc6ojPFi/IqQ0=;
-        b=IGoSSfhCfKotcCtKzPfnlgHuaQTlslYlEC8FyUHiyBb4k+g8RWr3piuSPttClhQslD
-         7Pij4oKHt8HT618xKGbfDZdRoAZ+ZHrgmv7BWM5ewTUWUqycax9dLE1exnYNAdRURE1h
-         7jyIgv2H6v3HF3kVmkVZJEn/BdB8bvtSVn6e8Pm5v9H56Lu6hOBuCnw/ztnLGwIyCkko
-         XeFu8tkJDGx7EOR65DuZCDmUzuFwPxq5jlwiEVUZLY4BioVeM9uhfHLbXaepaauHxmSc
-         ik3/fw28P/MBU9Un9PcwlObEF5dqm6RMofwE0dWRfvv7C0gCax7pbw4JaycvIQjRJotB
-         DACQ==
-X-Gm-Message-State: AOAM531gKhQvtUg6RYeMtYVNKZlQDSdMSYmC7DLqW97IAsBnSiyBfa7S
-        +XOCBBfZzzd2JxCp3+OzBmxDXA==
-X-Google-Smtp-Source: ABdhPJztAtP4r1nNygR9q8XAfX/3sT7mfInDhZdw7OaDBfjKszIggfXOimryFXjAf2egHk9m+83ZDw==
-X-Received: by 2002:a05:6512:32c2:: with SMTP id f2mr381723lfg.503.1634571213665;
+        bh=Av2yU1eH/+KVUhWiYq4bjMFQGpgX8uwkDZTA6ABYzWY=;
+        b=hgzSiLwhJu5y7B8uGVUoeJT56TPLn64W/u9Zt5j7S1fk7vvH0/zBZ5vt/btUm3+0Fx
+         8ZEU3WkMvvc14rQfFnH7yFhdEr0+K2/GIb6sJBf+QjWJHDhAxUE0RcwL+/axif0S8mvU
+         yBjgf1pL2zvPy6iBzG2NlS/yHir/XxNOLt2o5qMnAmYfbY+d8P1S+aqpIJsRMFaATbyB
+         l6fUG31vV7KzdXgTKPppjqVjaGVKy5Hin7MFhknLQGohgV4Vi8LF9JR82P46vnYdr5l3
+         zwrVg9ai6us9TyzgF6SArZwdD5xJub2v1HB+HUKYoQGz8YtxwJ8sBVeHO9M5zyUiAjlc
+         IJFQ==
+X-Gm-Message-State: AOAM5312wVkFdzzNzVnc+qYyx/xl4qmpYAcul8qaG8OYac3IcvjZvS0b
+        gV1LZKmYxY+D1+3EbXRPjSME+A==
+X-Google-Smtp-Source: ABdhPJx9tvpFsienGK6SSLxf241aVzKI5xD+sVhGZwr5cWtfqQ1k4oIHOweVghqdNnZCq2jqr1TeuQ==
+X-Received: by 2002:a2e:2f19:: with SMTP id v25mr448390ljv.281.1634571213301;
         Mon, 18 Oct 2021 08:33:33 -0700 (PDT)
 Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id w16sm1431750lfl.189.2021.10.18.08.33.31
+        by smtp.gmail.com with ESMTPSA id o19sm797614ljp.16.2021.10.18.08.33.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Mon, 18 Oct 2021 08:33:31 -0700 (PDT)
 From:   "Kirill A. Shutemov" <kirill@shutemov.name>
 X-Google-Original-From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 Received: by box.localdomain (Postfix, from userid 1000)
-        id 19C4D10309C; Mon, 18 Oct 2021 18:33:35 +0300 (+03)
+        id 20F9E10309D; Mon, 18 Oct 2021 18:33:35 +0300 (+03)
 To:     Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         Tom Lendacky <thomas.lendacky@amd.com>,
@@ -64,9 +64,9 @@ Cc:     Kuppuswamy Sathyanarayanan
         linux-kernel@vger.kernel.org,
         "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
         Tony Luck <tony.luck@intel.com>
-Subject: [PATCH 2/3] x86/insn-eval: Introduce insn_decode_mmio()
-Date:   Mon, 18 Oct 2021 18:33:32 +0300
-Message-Id: <20211018153333.8261-3-kirill.shutemov@linux.intel.com>
+Subject: [PATCH 3/3] x86/sev-es: Use insn_decode_mmio() for MMIO implementation
+Date:   Mon, 18 Oct 2021 18:33:33 +0300
+Message-Id: <20211018153333.8261-4-kirill.shutemov@linux.intel.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20211018153333.8261-1-kirill.shutemov@linux.intel.com>
 References: <20211018153333.8261-1-kirill.shutemov@linux.intel.com>
@@ -76,137 +76,248 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation for sharing MMIO instruction decode between SEV-ES and
-TDX, factor out the common decode into a new insn_decode_mmio() helper.
+Switch SEV implementation to insn_decode_mmio(). The helper is going
+to be used by TDX too.
 
-For regular virtual machine, MMIO is handled by the VMM and KVM
-emulates instructions that caused MMIO. But, this model doesn't work
-for a secure VMs (like SEV or TDX) as VMM doesn't have access to the
-guest memory and register state. So, for TDX or SEV VMM needs
-assistance in handling MMIO. It induces exception in the guest. Guest
-has to decode the instruction and handle it on its own.
+No functional changes. It is only build-tested.
 
-The code is based on the current SEV MMIO implementation.
-
+Cc: Tom Lendacky <thomas.lendacky@amd.com>
+Cc: Joerg Roedel <jroedel@suse.de>
 Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 Reviewed-by: Andi Kleen <ak@linux.intel.com>
 Reviewed-by: Tony Luck <tony.luck@intel.com>
 ---
- arch/x86/include/asm/insn-eval.h | 12 +++++
- arch/x86/lib/insn-eval.c         | 82 ++++++++++++++++++++++++++++++++
- 2 files changed, 94 insertions(+)
+ arch/x86/kernel/sev.c | 171 ++++++++++--------------------------------
+ 1 file changed, 40 insertions(+), 131 deletions(-)
 
-diff --git a/arch/x86/include/asm/insn-eval.h b/arch/x86/include/asm/insn-eval.h
-index 041f399153b9..4a4ca7e7be66 100644
---- a/arch/x86/include/asm/insn-eval.h
-+++ b/arch/x86/include/asm/insn-eval.h
-@@ -29,4 +29,16 @@ int insn_fetch_from_user_inatomic(struct pt_regs *regs,
- bool insn_decode_from_regs(struct insn *insn, struct pt_regs *regs,
- 			   unsigned char buf[MAX_INSN_SIZE], int buf_size);
- 
-+enum mmio_type {
-+	MMIO_DECODE_FAILED,
-+	MMIO_WRITE,
-+	MMIO_WRITE_IMM,
-+	MMIO_READ,
-+	MMIO_READ_ZERO_EXTEND,
-+	MMIO_READ_SIGN_EXTEND,
-+	MMIO_MOVS,
-+};
-+
-+enum mmio_type insn_decode_mmio(struct insn *insn, int *bytes);
-+
- #endif /* _ASM_X86_INSN_EVAL_H */
-diff --git a/arch/x86/lib/insn-eval.c b/arch/x86/lib/insn-eval.c
-index fbaa3fa24bde..2ab29d8d6731 100644
---- a/arch/x86/lib/insn-eval.c
-+++ b/arch/x86/lib/insn-eval.c
-@@ -1559,3 +1559,85 @@ bool insn_decode_from_regs(struct insn *insn, struct pt_regs *regs,
- 
- 	return true;
+diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
+index a6895e440bc3..8fea7ea67c67 100644
+--- a/arch/x86/kernel/sev.c
++++ b/arch/x86/kernel/sev.c
+@@ -807,22 +807,6 @@ static void __init vc_early_forward_exception(struct es_em_ctxt *ctxt)
+ 	do_early_exception(ctxt->regs, trapnr);
  }
-+
-+/**
-+ * insn_decode_mmio() - Decode a MMIO instruction
-+ * @insn:	Structure to store decoded instruction
-+ * @bytes:	Returns size of memory operand
-+ *
-+ * Decodes instruction that used for Memory-mapped I/O.
-+ *
-+ * Returns:
-+ *
-+ * Type of the instruction. Size of the memory operand is stored in
-+ * @bytes. If decode failed, MMIO_DECODE_FAILED returned.
-+ */
-+enum mmio_type insn_decode_mmio(struct insn *insn, int *bytes)
-+{
-+	int type = MMIO_DECODE_FAILED;
-+
-+	*bytes = 0;
-+
-+	insn_get_opcode(insn);
-+	switch (insn->opcode.bytes[0]) {
-+	case 0x88: /* MOV m8,r8 */
-+		*bytes = 1;
-+		fallthrough;
-+	case 0x89: /* MOV m16/m32/m64, r16/m32/m64 */
-+		if (!*bytes)
-+			*bytes = insn->opnd_bytes;
-+		type = MMIO_WRITE;
-+		break;
-+
-+	case 0xc6: /* MOV m8, imm8 */
-+		*bytes = 1;
-+		fallthrough;
-+	case 0xc7: /* MOV m16/m32/m64, imm16/imm32/imm64 */
-+		if (!*bytes)
-+			*bytes = insn->opnd_bytes;
-+		type = MMIO_WRITE_IMM;
-+		break;
-+
-+	case 0x8a: /* MOV r8, m8 */
-+		*bytes = 1;
-+		fallthrough;
-+	case 0x8b: /* MOV r16/r32/r64, m16/m32/m64 */
-+		if (!*bytes)
-+			*bytes = insn->opnd_bytes;
-+		type = MMIO_READ;
-+		break;
-+
-+	case 0xa4: /* MOVS m8, m8 */
-+		*bytes = 1;
-+		fallthrough;
-+	case 0xa5: /* MOVS m16/m32/m64, m16/m32/m64 */
-+		if (!*bytes)
-+			*bytes = insn->opnd_bytes;
-+		type = MMIO_MOVS;
-+		break;
-+
-+	case 0x0f: /* Two-byte instruction */
-+		switch (insn->opcode.bytes[1]) {
-+		case 0xb6: /* MOVZX r16/r32/r64, m8 */
-+			*bytes = 1;
-+			fallthrough;
-+		case 0xb7: /* MOVZX r32/r64, m16 */
-+			if (!*bytes)
-+				*bytes = 2;
-+			type = MMIO_READ_ZERO_EXTEND;
-+			break;
-+
-+		case 0xbe: /* MOVSX r16/r32/r64, m8 */
-+			*bytes = 1;
-+			fallthrough;
-+		case 0xbf: /* MOVSX r32/r64, m16 */
-+			if (!*bytes)
-+				*bytes = 2;
-+			type = MMIO_READ_SIGN_EXTEND;
-+			break;
-+		}
-+		break;
+ 
+-static long *vc_insn_get_reg(struct es_em_ctxt *ctxt)
+-{
+-	long *reg_array;
+-	int offset;
+-
+-	reg_array = (long *)ctxt->regs;
+-	offset    = insn_get_modrm_reg_off(&ctxt->insn, ctxt->regs);
+-
+-	if (offset < 0)
+-		return NULL;
+-
+-	offset /= sizeof(long);
+-
+-	return reg_array + offset;
+-}
+-
+ static long *vc_insn_get_rm(struct es_em_ctxt *ctxt)
+ {
+ 	long *reg_array;
+@@ -870,76 +854,6 @@ static enum es_result vc_do_mmio(struct ghcb *ghcb, struct es_em_ctxt *ctxt,
+ 	return sev_es_ghcb_hv_call(ghcb, ctxt, exit_code, exit_info_1, exit_info_2);
+ }
+ 
+-static enum es_result vc_handle_mmio_twobyte_ops(struct ghcb *ghcb,
+-						 struct es_em_ctxt *ctxt)
+-{
+-	struct insn *insn = &ctxt->insn;
+-	unsigned int bytes = 0;
+-	enum es_result ret;
+-	int sign_byte;
+-	long *reg_data;
+-
+-	switch (insn->opcode.bytes[1]) {
+-		/* MMIO Read w/ zero-extension */
+-	case 0xb6:
+-		bytes = 1;
+-		fallthrough;
+-	case 0xb7:
+-		if (!bytes)
+-			bytes = 2;
+-
+-		ret = vc_do_mmio(ghcb, ctxt, bytes, true);
+-		if (ret)
+-			break;
+-
+-		/* Zero extend based on operand size */
+-		reg_data = vc_insn_get_reg(ctxt);
+-		if (!reg_data)
+-			return ES_DECODE_FAILED;
+-
+-		memset(reg_data, 0, insn->opnd_bytes);
+-
+-		memcpy(reg_data, ghcb->shared_buffer, bytes);
+-		break;
+-
+-		/* MMIO Read w/ sign-extension */
+-	case 0xbe:
+-		bytes = 1;
+-		fallthrough;
+-	case 0xbf:
+-		if (!bytes)
+-			bytes = 2;
+-
+-		ret = vc_do_mmio(ghcb, ctxt, bytes, true);
+-		if (ret)
+-			break;
+-
+-		/* Sign extend based on operand size */
+-		reg_data = vc_insn_get_reg(ctxt);
+-		if (!reg_data)
+-			return ES_DECODE_FAILED;
+-
+-		if (bytes == 1) {
+-			u8 *val = (u8 *)ghcb->shared_buffer;
+-
+-			sign_byte = (*val & 0x80) ? 0xff : 0x00;
+-		} else {
+-			u16 *val = (u16 *)ghcb->shared_buffer;
+-
+-			sign_byte = (*val & 0x8000) ? 0xff : 0x00;
+-		}
+-		memset(reg_data, sign_byte, insn->opnd_bytes);
+-
+-		memcpy(reg_data, ghcb->shared_buffer, bytes);
+-		break;
+-
+-	default:
+-		ret = ES_UNSUPPORTED;
+-	}
+-
+-	return ret;
+-}
+-
+ /*
+  * The MOVS instruction has two memory operands, which raises the
+  * problem that it is not known whether the access to the source or the
+@@ -1007,83 +921,78 @@ static enum es_result vc_handle_mmio_movs(struct es_em_ctxt *ctxt,
+ 		return ES_RETRY;
+ }
+ 
+-static enum es_result vc_handle_mmio(struct ghcb *ghcb,
+-				     struct es_em_ctxt *ctxt)
++static enum es_result vc_handle_mmio(struct ghcb *ghcb, struct es_em_ctxt *ctxt)
+ {
+ 	struct insn *insn = &ctxt->insn;
+ 	unsigned int bytes = 0;
++	enum mmio_type mmio;
+ 	enum es_result ret;
++	u8 sign_byte;
+ 	long *reg_data;
+ 
+-	switch (insn->opcode.bytes[0]) {
+-	/* MMIO Write */
+-	case 0x88:
+-		bytes = 1;
+-		fallthrough;
+-	case 0x89:
+-		if (!bytes)
+-			bytes = insn->opnd_bytes;
++	mmio = insn_decode_mmio(insn, &bytes);
++	if (mmio == MMIO_DECODE_FAILED)
++		return ES_DECODE_FAILED;
+ 
+-		reg_data = vc_insn_get_reg(ctxt);
++	if (mmio != MMIO_WRITE_IMM && mmio != MMIO_MOVS) {
++		reg_data = insn_get_modrm_reg_ptr(insn, ctxt->regs);
+ 		if (!reg_data)
+ 			return ES_DECODE_FAILED;
 +	}
+ 
++	switch (mmio) {
++	case MMIO_WRITE:
+ 		memcpy(ghcb->shared_buffer, reg_data, bytes);
+-
+ 		ret = vc_do_mmio(ghcb, ctxt, bytes, false);
+ 		break;
+-
+-	case 0xc6:
+-		bytes = 1;
+-		fallthrough;
+-	case 0xc7:
+-		if (!bytes)
+-			bytes = insn->opnd_bytes;
+-
++	case MMIO_WRITE_IMM:
+ 		memcpy(ghcb->shared_buffer, insn->immediate1.bytes, bytes);
+-
+ 		ret = vc_do_mmio(ghcb, ctxt, bytes, false);
+ 		break;
+-
+-		/* MMIO Read */
+-	case 0x8a:
+-		bytes = 1;
+-		fallthrough;
+-	case 0x8b:
+-		if (!bytes)
+-			bytes = insn->opnd_bytes;
+-
++	case MMIO_READ:
+ 		ret = vc_do_mmio(ghcb, ctxt, bytes, true);
+ 		if (ret)
+ 			break;
+ 
+-		reg_data = vc_insn_get_reg(ctxt);
+-		if (!reg_data)
+-			return ES_DECODE_FAILED;
+-
+ 		/* Zero-extend for 32-bit operation */
+ 		if (bytes == 4)
+ 			*reg_data = 0;
+ 
+ 		memcpy(reg_data, ghcb->shared_buffer, bytes);
+ 		break;
++	case MMIO_READ_ZERO_EXTEND:
++		ret = vc_do_mmio(ghcb, ctxt, bytes, true);
++		if (ret)
++			break;
 +
-+	return type;
-+}
++		memset(reg_data, 0, insn->opnd_bytes);
++		memcpy(reg_data, ghcb->shared_buffer, bytes);
++		break;
++	case MMIO_READ_SIGN_EXTEND:
++		ret = vc_do_mmio(ghcb, ctxt, bytes, true);
++		if (ret)
++			break;
+ 
+-		/* MOVS instruction */
+-	case 0xa4:
+-		bytes = 1;
+-		fallthrough;
+-	case 0xa5:
+-		if (!bytes)
+-			bytes = insn->opnd_bytes;
++		if (bytes == 1) {
++			u8 *val = (u8 *)ghcb->shared_buffer;
+ 
+-		ret = vc_handle_mmio_movs(ctxt, bytes);
++			sign_byte = (*val & 0x80) ? 0xff : 0x00;
++		} else {
++			u16 *val = (u16 *)ghcb->shared_buffer;
++
++			sign_byte = (*val & 0x8000) ? 0xff : 0x00;
++		}
++
++		/* Sign extend based on operand size */
++		memset(reg_data, sign_byte, insn->opnd_bytes);
++		memcpy(reg_data, ghcb->shared_buffer, bytes);
+ 		break;
+-		/* Two-Byte Opcodes */
+-	case 0x0f:
+-		ret = vc_handle_mmio_twobyte_ops(ghcb, ctxt);
++	case MMIO_MOVS:
++		ret = vc_handle_mmio_movs(ctxt, bytes);
+ 		break;
+ 	default:
+ 		ret = ES_UNSUPPORTED;
++		break;
+ 	}
+ 
+ 	return ret;
 -- 
 2.32.0
 
