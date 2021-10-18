@@ -2,94 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 262CF431025
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 08:05:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4B9B431028
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 08:07:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230109AbhJRGHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 02:07:32 -0400
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:57759 "EHLO
-        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229533AbhJRGHb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 02:07:31 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id 432EA5C018A;
-        Mon, 18 Oct 2021 02:05:20 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Mon, 18 Oct 2021 02:05:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=BiWPny
-        J/W+lzFpsP4kXiVnmaGa3SLmP1Bl/bcwhD1UY=; b=jTIEOoHVnEUayQTRbpBaan
-        KefSyLPT/gZ0EiuNiOapntqTTPkqYio3JmgOloaCx3e4sU+hd0V/y5FxRXP9HIPu
-        A54sU4ZrXPcjQ1hRxafJh9qP024Q2616V6N/WC2s9X2ZmNB+hFax0BcN8wB4w3ek
-        o9qnoNi3XbYuJncE0xtMxTLysb2VOW27OnI/o08tXSZejhIJn1rkj0YkdSoZ22V7
-        6WEr+RCt0zDkAd/9FqJ4iQHSl4gWWGkyJLcRoquuMm/LMkCZpHsHmT8Jv93A0PHi
-        tEvXapuHF6jwcfykmEX84b1Un7L4LK6eK3TgL1mYtEILp7kjX/CaliKmcsUpc2iw
-        ==
-X-ME-Sender: <xms:nw5tYQuMs9U2jAGVK_xSHsTk4MnS5gjxAIRdK8GIS6c-v-w0goNXrQ>
-    <xme:nw5tYdeeXjlsXEmHBnU_UvfwJ99-aWbImKXmwRNSLeuaofGqqmq9w_FRE9STFO5Pe
-    yjiNGvRGTkdJAI>
-X-ME-Received: <xmr:nw5tYbwjk0cuXPmMGi-P7y-BAXC5IYyD157vQ_TcDFG_RZalCKPAV7i1wgKqMsIEu8mg7LRvqY3s3j5xMoEJtFAZf-Y>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvdduledgleeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefkughoucfu
-    tghhihhmmhgvlhcuoehiughoshgthhesihguohhstghhrdhorhhgqeenucggtffrrghtth
-    gvrhhnpedtffekkeefudffveegueejffejhfetgfeuuefgvedtieehudeuueekhfduheel
-    teenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehiug
-    hoshgthhesihguohhstghhrdhorhhg
-X-ME-Proxy: <xmx:nw5tYTOL9OmZ3PmAMXice8QF5qxTlVKZ3hNoYa7QdOkSDSUL6jeUVw>
-    <xmx:nw5tYQ_bdhsiXEhrm2RcsiX3UpYQoylGnI77afAQ7NZxqH3mFXu94Q>
-    <xmx:nw5tYbVbJe_c0he6UmVNlhr_1mv5yuUL-apqehzF-dy2hY0pVdYjww>
-    <xmx:oA5tYQwKGOqfRk3kOFQge4C_N9Ejxk1nQBZ6SnT6AknJ0_w8_GeG1Q>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 18 Oct 2021 02:05:19 -0400 (EDT)
-Date:   Mon, 18 Oct 2021 09:05:14 +0300
-From:   Ido Schimmel <idosch@idosch.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>,
-        Amit Cohen <amcohen@nvidia.com>,
-        Ido Schimmel <idosch@nvidia.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Stephen Suryaputra <ssuryaextr@gmail.com>
-Subject: Re: linux-next: manual merge of the net-next tree with the net tree
-Message-ID: <YW0OmrRN0uFc6oiz@shredder>
-References: <20211018105151.16ff248d@canb.auug.org.au>
+        id S230116AbhJRGJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 02:09:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57782 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229533AbhJRGJO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 02:09:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D276560FDA;
+        Mon, 18 Oct 2021 06:07:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1634537223;
+        bh=u907fzJGCsW/K6d5JyjX2Ui9UtSyEQKwnAT2EYW7Pp8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZvS45Rt8c1MYzmcQOJ5ZL+Xnid14XHbZ4nQN1OSvV7GFJK68abA56od933BXZuybZ
+         XiE9Uxl790ir16SIGctONe0KXZA+bejlOgqGrAemg9RCYUIWqlmxZz/lMsjo0iKm4M
+         eME4XzzKXf0UIbGEd8waNVUYj9CcqV9FGxhMn/jU=
+Date:   Mon, 18 Oct 2021 08:06:58 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     William Breathitt Gray <vilhelm.gray@gmail.com>
+Cc:     David Lechner <david@lechnology.com>, jic23@kernel.org,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] counter/counter-sysfs: use sysfs_emit everywhere
+Message-ID: <YW0PAq8nB6FcLwZd@kroah.com>
+References: <20211017190106.3472645-1-david@lechnology.com>
+ <YWyyzmNGxWKyKiAD@shinobu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211018105151.16ff248d@canb.auug.org.au>
+In-Reply-To: <YWyyzmNGxWKyKiAD@shinobu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 18, 2021 at 10:51:51AM +1100, Stephen Rothwell wrote:
-> Hi all,
+On Mon, Oct 18, 2021 at 08:33:34AM +0900, William Breathitt Gray wrote:
+> On Sun, Oct 17, 2021 at 02:01:06PM -0500, David Lechner wrote:
+> > In the counter subsystem, we are already using sysfs_emit(), but there
+> > were a few places where we were still using sprintf() in *_show()
+> > functions. For consistency and added protections, use sysfs_emit()
+> > everywhere.
+> > 
+> > Suggested-by: Greg KH <gregkh@linuxfoundation.org>
+> > Signed-off-by: David Lechner <david@lechnology.com>
 > 
-> Today's linux-next merge of the net-next tree got a conflict in:
-> 
->   tools/testing/selftests/net/forwarding/forwarding.config.sample
-> 
-> between commit:
-> 
->   0857d6f8c759 ("ipv6: When forwarding count rx stats on the orig netdev")
-> 
-> from the net tree and commit:
-> 
->   45d45e5323a9 ("testing: selftests: forwarding.config.sample: Add tc flag")
-> 
-> from the net-next tree.
-> 
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
+> Acked-by: William Breathitt Gray <vilhelm.gray@gmail.com>
 
-Looks good to me. Thanks!
+Thanks, want me to take this directly on top of the previous pull
+request?
+
+greg k-h
