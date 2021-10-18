@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAC3B431B42
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:30:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0DE4431BC5
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:33:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232920AbhJRNbv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:31:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42144 "EHLO mail.kernel.org"
+        id S232111AbhJRNfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:35:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43774 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232394AbhJRNaG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:30:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B7B1F6128A;
-        Mon, 18 Oct 2021 13:27:54 +0000 (UTC)
+        id S233172AbhJRNdX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:33:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2859861357;
+        Mon, 18 Oct 2021 13:29:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634563675;
-        bh=Pnd140F+b9z0EMR1yeAav9y6csGANzavYQhvsqmgbkc=;
+        s=korg; t=1634563779;
+        bh=ftJcYa5tYRmlDTN9v6teyzo1AQ+5+Sb5uPNE16kOzk8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GvlbA5WfMued+K2b/oi7FowCclEHBWEMvf6XyWnK7BN4ziqwuWVSMGmOQekEYBGph
-         mZkRKqprbSq9LTPm40ht/V1HNQwVSnbFQD9e76s4/CmqkOkXRUiZ7yKRMMmdBlSuqS
-         h+G0KXQhWZe6v14EQ/fFoHL7FzklDmBq5vTex7Oc=
+        b=yobzgN81rb57r9e1qJaL7QMURrNvEMcb/Rr7kqj7RmtMvK1cLhVo8XT8h7HJnfjWH
+         oNZrJQp7U42jZmiymQN3EPMh1sTWbm3wcrYtn0R+uD6ygbEmX5Np4wC7ysDNjXUuXs
+         o2vvIJ1BfALZgcnheCaNLosCueuT5LXkdOEoLHN8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Werner Sembach <wse@tuxedocomputers.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.19 02/50] ALSA: hda/realtek: Complete partial device name to avoid ambiguity
+        stable@vger.kernel.org, Guo Ren <guoren@linux.alibaba.com>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: [PATCH 5.4 11/69] csky: Fixup regs.sr broken in ptrace
 Date:   Mon, 18 Oct 2021 15:24:09 +0200
-Message-Id: <20211018132326.606802055@linuxfoundation.org>
+Message-Id: <20211018132329.825628897@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132326.529486647@linuxfoundation.org>
-References: <20211018132326.529486647@linuxfoundation.org>
+In-Reply-To: <20211018132329.453964125@linuxfoundation.org>
+References: <20211018132329.453964125@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,35 +39,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Werner Sembach <wse@tuxedocomputers.com>
+From: Guo Ren <guoren@linux.alibaba.com>
 
-commit 1f8d398e1cd8813f8ec16d55c086e8270a9c18ab upstream.
+commit af89ebaa64de726ca0a39bbb0bf0c81a1f43ad50 upstream.
 
-The string "Clevo X170" is not enough to unambiguously identify the correct
-device.
+gpr_get() return the entire pt_regs (include sr) to userspace, if we
+don't restore the C bit in gpr_set, it may break the ALU result in
+that context. So the C flag bit is part of gpr context, that's why
+riscv totally remove the C bit in the ISA. That makes sr reg clear
+from userspace to supervisor privilege.
 
-Fixing it so another Clevo barebone name starting with "X170" can be added
-without causing confusion.
-
-Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20211001133111.428249-2-wse@tuxedocomputers.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/pci/hda/patch_realtek.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/csky/kernel/ptrace.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -2523,7 +2523,7 @@ static const struct snd_pci_quirk alc882
- 	SND_PCI_QUIRK(0x1558, 0x67e1, "Clevo PB71[DE][CDF]", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
- 	SND_PCI_QUIRK(0x1558, 0x67e5, "Clevo PC70D[PRS](?:-D|-G)?", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
- 	SND_PCI_QUIRK(0x1558, 0x70d1, "Clevo PC70[ER][CDF]", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
--	SND_PCI_QUIRK(0x1558, 0x7714, "Clevo X170", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
-+	SND_PCI_QUIRK(0x1558, 0x7714, "Clevo X170SM", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
- 	SND_PCI_QUIRK(0x1558, 0x9501, "Clevo P950HR", ALC1220_FIXUP_CLEVO_P950),
- 	SND_PCI_QUIRK(0x1558, 0x9506, "Clevo P955HQ", ALC1220_FIXUP_CLEVO_P950),
- 	SND_PCI_QUIRK(0x1558, 0x950a, "Clevo P955H[PR]", ALC1220_FIXUP_CLEVO_P950),
+--- a/arch/csky/kernel/ptrace.c
++++ b/arch/csky/kernel/ptrace.c
+@@ -96,7 +96,8 @@ static int gpr_set(struct task_struct *t
+ 	if (ret)
+ 		return ret;
+ 
+-	regs.sr = task_pt_regs(target)->sr;
++	/* BIT(0) of regs.sr is Condition Code/Carry bit */
++	regs.sr = (regs.sr & BIT(0)) | (task_pt_regs(target)->sr & ~BIT(0));
+ #ifdef CONFIG_CPU_HAS_HILO
+ 	regs.dcsr = task_pt_regs(target)->dcsr;
+ #endif
 
 
