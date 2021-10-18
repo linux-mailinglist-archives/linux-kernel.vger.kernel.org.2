@@ -2,108 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED751431216
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 10:23:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 219EE431220
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 10:26:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231282AbhJRIZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 04:25:22 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:37734 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230525AbhJRIZU (ORCPT
+        id S231326AbhJRI25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 04:28:57 -0400
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:50378 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231130AbhJRI2t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 04:25:20 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id CA5DA21A63;
-        Mon, 18 Oct 2021 08:23:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1634545388; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=n8PkorG0rCUkv4MmnAhqOK1ZEI4Jw++yy8mZkTDdcBY=;
-        b=sTlb8kIYeuTgIr34wxMDBzxeP68T2Me3IN0Kqaeb8v1FEM8eSvdeVjOfUal6BmBGWiEYzi
-        O5k9TSYNI+B0adYIKhT04yHrSwEjzpPEaMZexUFTxL+94zyfC4XNO0Zs3DqmesiQYcpLZs
-        /Pdin1dEmKR/iAR8eBy8LoLB0/U89As=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 60490A3B84;
-        Mon, 18 Oct 2021 08:23:08 +0000 (UTC)
-Date:   Mon, 18 Oct 2021 10:23:07 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Huangzhaoyang <huangzhaoyang@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Zhaoyang Huang <zhaoyang.huang@unisoc.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm: skip current when memcg reclaim
-Message-ID: <YW0u67o8wl3CGikP@dhcp22.suse.cz>
-References: <1634278529-16983-1-git-send-email-huangzhaoyang@gmail.com>
+        Mon, 18 Oct 2021 04:28:49 -0400
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20211018082636euoutp014f8a89c5e8dc7cb0cf81655e8a471983~vEo9kSZkL2562625626euoutp018
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 08:26:36 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20211018082636euoutp014f8a89c5e8dc7cb0cf81655e8a471983~vEo9kSZkL2562625626euoutp018
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1634545596;
+        bh=KkaKX1e1Dd7h4BZnYesJfdk1PFf+z9be2kqdgsNommY=;
+        h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
+        b=rmbgoKkZDyBnoqXc2mmgHhI4M9DzKVoVaRcLsNWx6tHRtUQKW4fhamDY5zRn5UIQS
+         ffiXknxS1FusxWGKhYAN4OfFtFQgwdYx/lBRmooMFZi3YpGJl9JNUxCkR/Jpq57ABr
+         vqkSNHBZaHY5M5IwVtWHwsN9qKX4VGUgw/xhU4dg=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20211018082636eucas1p16bab41b13f40446e6cb43aefa56c7bb2~vEo9Nq8oF1318013180eucas1p18;
+        Mon, 18 Oct 2021 08:26:36 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id 38.C7.42068.CBF2D616; Mon, 18
+        Oct 2021 09:26:36 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20211018082635eucas1p1f65471364499ea8e370024892655703c~vEo8yPJV22797127971eucas1p1F;
+        Mon, 18 Oct 2021 08:26:35 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20211018082635eusmtrp12fc0234431dfcd8cbc843883e76712dc~vEo8xiBBO1790017900eusmtrp1I;
+        Mon, 18 Oct 2021 08:26:35 +0000 (GMT)
+X-AuditID: cbfec7f4-c89ff7000002a454-e7-616d2fbc5cad
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id 6A.B1.31287.BBF2D616; Mon, 18
+        Oct 2021 09:26:35 +0100 (BST)
+Received: from [106.210.134.141] (unknown [106.210.134.141]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20211018082635eusmtip18ac6d84561f998c722baa75b5c78a75b~vEo8KR8eA2094420944eusmtip1o;
+        Mon, 18 Oct 2021 08:26:35 +0000 (GMT)
+Message-ID: <7a72a9a6-b250-7072-bfb3-a8dd90643c65@samsung.com>
+Date:   Mon, 18 Oct 2021 10:26:34 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1634278529-16983-1-git-send-email-huangzhaoyang@gmail.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0)
+        Gecko/20100101 Thunderbird/91.2.0
+Subject: Re: [PATCH] clk: samsung: describe drivers in KConfig
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org
+From:   Sylwester Nawrocki <s.nawrocki@samsung.com>
+In-Reply-To: <20210924133624.112593-1-krzysztof.kozlowski@canonical.com>
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrAKsWRmVeSWpSXmKPExsWy7djPc7p79HMTDQ5uk7C4/uU5q8XGtz+Y
+        LDY9vsZq8bHnHqvF5V1z2CxmnN/HZHHxlKvFv2sbWSxW7frD6MDp8f5GK7vHrIZeNo+ds+6y
+        e2xa1cnmsXlJvUffllWMHp83yQWwR3HZpKTmZJalFunbJXBlvL96na3gP2PFrFlrWRsYrzF2
+        MXJySAiYSPza/IMFxBYSWMEosWCfQBcjF5D9hVHi29NbTBDOZ6DEsf/sMB1HT1xng0gsZ5T4
+        erCBFaL9I6PE9M4gEJtXwE7i5tO/TCA2i4CqxNbXsxgh4oISJ2c+AVsnKpAkMX/2A6ChHBzC
+        QPXH5guDhJkFxCVuPZkPtlhEYBmjxOlv38CWMQvsYpT4fXwi2BVsAoYSvUf7wIZyCnhIzPm4
+        kBGiW15i+9s5zCANEgLNnBI/r+1mhjjbReLKhmNMELawxKvjW6DekZE4PbmHBaqBUaJn9212
+        CGcCo8T94wugwWQtcefcLzaQW5kFNCXW79KHCDtKfG2bwAoSlhDgk7jxVhDiCD6JSdumM0OE
+        eSU62oQgqlUkfq+aDnWClET3k/8sExiVZiGFyyykAJiF5J1ZCHsXMLKsYhRPLS3OTU8tNspL
+        LdcrTswtLs1L10vOz93ECExUp/8d/7KDcfmrj3qHGJk4GA8xSnAwK4nw8n3MSRTiTUmsrEot
+        yo8vKs1JLT7EKM3BoiTOm7RlTbyQQHpiSWp2ampBahFMlomDU6qBqeKV6cEZttzsOyqVNKQ5
+        0+50+6y51/sw98YE5qYs+fUzLM+zqGpVvhFguMI0aeO8GIVDDRd8RKc8u7jzxe6pTj/dO2QE
+        +ityU9Xmf5vhxF3tJ6VuLGMjfKxV4ljc/+/tq78vuss8K2LLKTshzxVSH+wfHmFe/O7gmz3H
+        uO8esS0Q9rrVNcfGU35pzYo7Tydq+kyR2NIY+eWqw9Jvojx8IWc9jor9C+loXegbKawgbjM5
+        d0bOy+XftrVO4LJw0TvVsT6dW2PzZ8Fa0WkvYkv2uS3JeqO5/N7VjOtKujctX/KF7nk1T6jU
+        7/rfjtZQzSVh2ybqzpH7ZH5Fx83o2xypjM0re+73Gk0Oejr5o+bhY0osxRmJhlrMRcWJADaT
+        MbzDAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrIIsWRmVeSWpSXmKPExsVy+t/xu7q79XMTDRa2Wlpc//Kc1WLj2x9M
+        FpseX2O1+Nhzj9Xi8q45bBYzzu9jsrh4ytXi37WNLBardv1hdOD0eH+jld1jVkMvm8fOWXfZ
+        PTat6mTz2Lyk3qNvyypGj8+b5ALYo/RsivJLS1IVMvKLS2yVog0tjPQMLS30jEws9QyNzWOt
+        jEyV9O1sUlJzMstSi/TtEvQy3l+9zlbwn7Fi1qy1rA2M1xi7GDk5JARMJI6euM7WxcjFISSw
+        lFFi1b/9LF2MHEAJKYn5LUoQNcISf651QdW8Z5Q4fbSPGSTBK2AncfPpXyYQm0VAVWLr61mM
+        EHFBiZMzn7CA2KICSRIfN8xgBpkpDFR/bL4wSJhZQFzi1pP5TCAzRQSWMUrsW/kPbAGzwC5G
+        iT/rDzNCbJvNKHHi60k2kBY2AUOJ3qN9YBs4BTwk5nxcyAgylVlAXWL9PCGIqfIS29/OYZ7A
+        KDQLyR2zkCychdAxC0nHAkaWVYwiqaXFuem5xYZ6xYm5xaV56XrJ+bmbGIFxue3Yz807GOe9
+        +qh3iJGJg/EQowQHs5IIL9/HnEQh3pTEyqrUovz4otKc1OJDjKbAsJjILCWanA9MDHkl8YZm
+        BqaGJmaWBqaWZsZK4rxb566JFxJITyxJzU5NLUgtgulj4uCUamDq83q9atLclI17Nb/na0s/
+        3Te9y+1VYd3zbzMjOmdd+Schdef1Fc0zyeuTI7UuHt3y1SeyoEDh73qDlWtvPbn2cPPeSxlP
+        3n7MrmtLacmMb/8YWml5Z/KGN8er/3D7Nq5RuxPgsJxb8ZnDug0zlY0bd/Ml3yzY/Jblqnh3
+        vlpIvJcvqw772ceVf2Vutb6qL75ntfxYmfA+seRHu8oqWYxSvpw1X6f3g2/Wyuz1/oeNJm/R
+        z5FZkOei2BbQo56bZLpRIPTXrvLcm123V6v/uPzzXtrTfe13u5njs81/MhmI8LBwTb+yf2rX
+        1SUuSyYu/GIizMu5kiFjkfVucxbFqzOX72I8++0Juwv/Wea+GpZ7SizFGYmGWsxFxYkAVstm
+        MFQDAAA=
+X-CMS-MailID: 20211018082635eucas1p1f65471364499ea8e370024892655703c
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20210924133716eucas1p192fed7e3e993c0759d2bb7a8f8af7367
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20210924133716eucas1p192fed7e3e993c0759d2bb7a8f8af7367
+References: <CGME20210924133716eucas1p192fed7e3e993c0759d2bb7a8f8af7367@eucas1p1.samsung.com>
+        <20210924133624.112593-1-krzysztof.kozlowski@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 15-10-21 14:15:29, Huangzhaoyang wrote:
-> From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+On 24.09.2021 15:36, Krzysztof Kozlowski wrote:
+> Describe better which driver applies to which SoC, to make configuring
+> kernel for Samsung SoC easier.
 > 
-> Sibling thread of the same process could refault the reclaimed pages
-> in the same time, which would be typical in None global reclaim and
-> introduce thrashing.
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-It is hard to understand what kind of problem you see (ideally along
-with some numbers) and how the proposed patch addresses that problem
-
-Also you are missing Signed-off-by tag (please have a look at
-Documentation/process/submitting-patches.rst which is much more
-comprehensive about the process).
-
-> ---
->  mm/vmscan.c | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index 5199b96..ebbdc37 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -2841,6 +2841,11 @@ static void shrink_node_memcgs(pg_data_t *pgdat, struct scan_control *sc)
->  				sc->memcg_low_skipped = 1;
->  				continue;
->  			}
-> +			/*
-> +			 * Don't bother current when its memcg is below low
-> +			 */
-> +			if (get_mem_cgroup_from_mm(current->mm) == memcg)
-> +				continue;
-
-This code is executed when none of memcg in the reclaimed hierarchy
-could be reclaimed. Low limit is then ignored and this change is
-tweaking that behavior without any description of the effect. A very
-vague note about trashing would indicate that you have something like
-the following
-
-	A (hiting hard limit)
-       / \
-      B   C
-
-Both B and C low limit protected and current task associated with B. As
-none of the two could be reclaimed due to soft protection yuu prefer to
-reclaim from C as you do not want to reclaim from the current process as
-that could reclaim current's working set. Correct?
-
-I would be really curious about more specifics of the used hierarchy.
-
-Thanks!
-
->  			memcg_memory_event(memcg, MEMCG_LOW);
->  		}
->  
-> -- 
-> 1.9.1
-
--- 
-Michal Hocko
-SUSE Labs
+Applied, thanks.
