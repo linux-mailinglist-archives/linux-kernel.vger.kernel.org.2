@@ -2,78 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21D26431685
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 12:52:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A69C0431688
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 12:53:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230472AbhJRKyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 06:54:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43902 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230346AbhJRKyt (ORCPT
+        id S229915AbhJRKzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 06:55:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54440 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229491AbhJRKzd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 06:54:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634554358;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=mxMuVhTXpiGknTe7DXuPL8kxDD5PjBKCi+ZHV2Oflr0=;
-        b=WbiK7+V4ZeRPM+8gVrwZ6lG/WQv5STqKnsCuHP/DXT2zDryUc8t1riS70vQx9FbTew0wLf
-        r0sqQ1+1rZw3TLyjMeB1i+uXmM7e0aKKtMRS6TlPaHeLrb/bWu7e1RvvFPzbofIqHfFC4O
-        z0rGQjhc/AvEdvhybiR2QJtP0ZwwY64=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-500-AfcqGGkAMveA0_IaFPmhWg-1; Mon, 18 Oct 2021 06:52:33 -0400
-X-MC-Unique: AfcqGGkAMveA0_IaFPmhWg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1F5F8801FCE;
-        Mon, 18 Oct 2021 10:52:32 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9E6F55DF35;
-        Mon, 18 Oct 2021 10:52:31 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     stable@vger.kernel.org, Naresh Kamboju <naresh.kamboju@linaro.org>
-Subject: [PATCH] KVM: SEV-ES: reduce ghcb_sa_len to 32 bits
-Date:   Mon, 18 Oct 2021 06:52:31 -0400
-Message-Id: <20211018105231.517041-1-pbonzini@redhat.com>
+        Mon, 18 Oct 2021 06:55:33 -0400
+Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF806C06161C;
+        Mon, 18 Oct 2021 03:53:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=PYEyLBKPEiLefC1Su7n2R+mYeFRQvlAM8yBTFCwjueM=; b=rUm5vNgAbVR2F1C34gVTJtaGvk
+        LCA6vlXmUdo8OXuSXVQP17YcMzmFfetDFOhd8TXwUMmuo+eWowynPchij8+M5TkAqqR9D4LwbUQX0
+        5tMRTcaoKk91bsghDtgYFbTFYmC3JAlcOe3cTXKbTftJndnbTUZHE9xuUO8wMJ+gIIMhgjPoV30Zt
+        6OeK8DLtENvhIEidAMRN7vQ9t0Q7Lx3DqAnw1gxY9/nGAHVk94freh8hGP2Beo4XBbFAa9klqzYkn
+        vSNlWVk593z1y0ciGhz5W/am3OrVbZPXjUZNHybtrPKGMNwANrD8jaJXp/Rcpv7rWclFVZfbTkU7a
+        W92gUEqA==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mcQGe-00F9Mm-NY; Mon, 18 Oct 2021 10:53:20 +0000
+Date:   Mon, 18 Oct 2021 03:53:20 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Christoph Hellwig <hch@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH] irq_poll: Use raise_softirq_irqoff() in cpu_dead notifier
+Message-ID: <YW1SIE08f3X3joxe@infradead.org>
+References: <20210930103754.2128949-1-bigeasy@linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210930103754.2128949-1-bigeasy@linutronix.de>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The size of the GHCB scratch area is limited to 16 KiB (GHCB_SCRATCH_AREA_LIMIT),
-so there is no need for it to be a u64.  This fixes a build error on 32-bit
-systems:
+On Thu, Sep 30, 2021 at 12:37:54PM +0200, Sebastian Andrzej Siewior wrote:
+> __raise_softirq_irqoff() adds a bit to the pending sofirq mask and this
+> is it. The softirq won't be handled in a deterministic way but randomly
+> when an interrupt fires and handles softirq in its irq_exit() routine or
+> if something randomly checks and handles pending softirqs in the call
+> chain before the CPU goes idle.
+> 
+> Add a local_bh_disable/enable() around the IRQ-off section which will
+> handle pending softirqs.
 
-i686-linux-gnu-ld: arch/x86/kvm/svm/sev.o: in function `sev_es_string_io:
-sev.c:(.text+0x110f): undefined reference to `__udivdi3'
-
-Cc: stable@vger.kernel.org
-Fixes: 019057bd73d1 ("KVM: SEV-ES: fix length of string I/O")
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- arch/x86/kvm/svm/svm.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-index 128a54b1fbf1..5d30db599e10 100644
---- a/arch/x86/kvm/svm/svm.h
-+++ b/arch/x86/kvm/svm/svm.h
-@@ -191,7 +191,7 @@ struct vcpu_svm {
- 
- 	/* SEV-ES scratch area support */
- 	void *ghcb_sa;
--	u64 ghcb_sa_len;
-+	u32 ghcb_sa_len;
- 	bool ghcb_sa_sync;
- 	bool ghcb_sa_free;
- 
--- 
-2.27.0
-
+This patch leaves me extremely confused, and it would even more if I was
+just reading the code.  local_irq_disable is supposed to disable BHs
+as well, so the code looks pretty much nonsensical to me.  But
+apparently that isn't the point if I follow your commit message as you
+don't care about an extra level of BH disabling but want to force a
+side-effect of the re-enabling?  Why not directly call the helper
+to schedule the softirq then? 
