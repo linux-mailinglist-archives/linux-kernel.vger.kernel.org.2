@@ -2,131 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0F80430DD6
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 04:27:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9496430DDE
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 04:35:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237579AbhJRC3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 22:29:15 -0400
-Received: from conssluserg-04.nifty.com ([210.131.2.83]:20267 "EHLO
-        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236699AbhJRC3O (ORCPT
+        id S238698AbhJRChy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 22:37:54 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:57085 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234406AbhJRChx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 22:29:14 -0400
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176]) (authenticated)
-        by conssluserg-04.nifty.com with ESMTP id 19I2Ql7B017729;
-        Mon, 18 Oct 2021 11:26:48 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 19I2Ql7B017729
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1634524008;
-        bh=CiKo8CHQVDAYWhyEvx7oI0REWtFRrpPJ7yxT1ESbFKg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=gaLRaXIfNuPKnPWutWzEdKQpcjA3jnLWOJOmS7BRjbzTc6Fxe+uQrpcSt3jkL35HT
-         d4WxqL8R6GBQELN+N5sK7ycgG6d7eoETC4ZrsH8uTvvhSPwFlaFYGbH1JPaMNoXymK
-         h++ut5c92z2kWES4R3ehNexoGVAuU7ZXzL7AH/aSylJUWHoh78DlprM9TIA33ipJdc
-         +i1GfNR5G4o5RpV4hM/SRBTmN1Y4JRHJML3fVTxDKufhJQQ5Tf7ZmFbLulJDATCRFS
-         RmuDBUsCK5OD17YeJDclGJ2QMzaG2xRhVmYLvB3YyMkSyjgl/ZGr+pUPIVw3Bzn7rI
-         AOSdzL9hZTy/Q==
-X-Nifty-SrcIP: [209.85.210.176]
-Received: by mail-pf1-f176.google.com with SMTP id d5so706120pfu.1;
-        Sun, 17 Oct 2021 19:26:47 -0700 (PDT)
-X-Gm-Message-State: AOAM533S/0oWYZZKBp1NDDf9W/8IPYO1IB/ZW0OIv/lulG76WqK2BPEW
-        aY0ejss4OGS2L9nMTFhYP8/CGGUyJ8yMlX+hdOI=
-X-Google-Smtp-Source: ABdhPJy9gm8P7B1asPwCiUSjXBUtJ16OpMwhLR6MZDeTRjWK6YoBBOXbASiDe5KBfewnaNhwdyByUY5AidZhLJPoBWw=
-X-Received: by 2002:a63:d64c:: with SMTP id d12mr21299144pgj.186.1634524007031;
- Sun, 17 Oct 2021 19:26:47 -0700 (PDT)
-MIME-Version: 1.0
-References: <alpine.DEB.2.22.394.2110172002450.4761@hadrien>
- <7e5485df-a17b-304b-627d-9a85d2464df3@infradead.org> <alpine.DEB.2.22.394.2110172041010.4761@hadrien>
-In-Reply-To: <alpine.DEB.2.22.394.2110172041010.4761@hadrien>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Mon, 18 Oct 2021 11:26:10 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAS2H9n9NSpmMk_AkX1N9JRa_5Rk9Sgeguq_9uepzd1f5w@mail.gmail.com>
-Message-ID: <CAK7LNAS2H9n9NSpmMk_AkX1N9JRa_5Rk9Sgeguq_9uepzd1f5w@mail.gmail.com>
-Subject: Re: build reproducibility
-To:     Julia Lawall <julia.lawall@inria.fr>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Sun, 17 Oct 2021 22:37:53 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HXgwD4C5bz4xbL;
+        Mon, 18 Oct 2021 13:35:39 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1634524541;
+        bh=ei5+KbAdb1qdjYIroNHcJtk+ULUrHithw8AGM+I+Hes=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=cGquabEpNei/vw8wXdsbaB5JUu95HQ2fw/s8bd905HYskuBtvcvdNRl/JGl4XLjr9
+         qxFPlMXuBbG/TryF46sHTIbW4FMqi8PGZScG/7bHw/Vz9rwIoytyjB6ezQSWeI6SYw
+         yWIWsfks7hjxYuNSxI1FXlMZr0Iz6q7SVnTwZYdSOVdcD3kSWlRdbKCBTmiYTwMZgc
+         oF64LalBmF3dx+LKTlsoKv2LA5Bxe1s8DOB1jnRxd5VFv8Gbv8K565gvlkMrdoLX2m
+         HUd58cyFGn231sx7BzrCQOmOipsf0zeKtQs1DG56++JDpF48k5IDIauk6ZuNmBYh8M
+         1fTo8eIHULuPA==
+Date:   Mon, 18 Oct 2021 13:35:38 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Andrew Morton <akpm@linux-foundation.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the akpm-current tree
+Message-ID: <20211018133538.2a0dec43@canb.auug.org.au>
+In-Reply-To: <YWl+0PFixaNqgIxb@smile.fi.intel.com>
+References: <20211015202908.1c417ae2@canb.auug.org.au>
+        <YWl+0PFixaNqgIxb@smile.fi.intel.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/7vcLm23FUTr0AN8x54MuUun";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 18, 2021 at 3:42 AM Julia Lawall <julia.lawall@inria.fr> wrote:
+--Sig_/7vcLm23FUTr0AN8x54MuUun
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+
+Hi Andy,
+
+On Fri, 15 Oct 2021 16:14:56 +0300 Andy Shevchenko <andriy.shevchenko@linux=
+.intel.com> wrote:
 >
->
->
-> On Sun, 17 Oct 2021, Randy Dunlap wrote:
->
-> > On 10/17/21 11:12 AM, Julia Lawall wrote:
-> > > Hello,
-> > >
-> > > If I do the following:
-> > >
-> > > git clean -dfx
-> > > cp saved_config .config
-> > > make olddefconfig && make && make modules_install && make install
-> > >
-> > > Should I always end up with the same kernel, regardless of the kernel that
-> > > is currently running on the machine?
-> > >
-> > > I see a large performance difference between Linux 5.10 and all versions
-> > > afterwards for a particular benchmark.  I am unable to bisect the problem
-> > > eg between 5.10 and 5.11, because as soon as I come to a kernel that gives
-> > > the bad performance, all of the kernels that I generate subsequently in
-> > > the bisecting process (using the above commands) also have the bad
-> > > performance.
-> > >
-> > > It could of course be that I have completely misinterpreted the problem,
-> > > and it has nothing to do with the kernel.  But I have tested the program a
-> > > lot when only working on variants of Linux 5.9.  I only start to have
-> > > problems when I use versions >= 5.11.
-> >
-> > Hi,
-> >
-> > My "guess" is that this has something to do with the build
-> > reusing some current file(s) that need to be rebuilt.
-> > I.e., adding a "make clean" or "make proper" might be needed.
->
-> This was my guess too.  But I have the git clean -dfx.  I did a comparison
-> with make distclean and this does a little more (mostly some files in
-> tools).
->
-> thanks,
-> julia
->
+> Thanks! As a quick fix looks good, but I think we need a separate header =
+for
+> those _*_IP_ macros.
 
+Like this (on top of my previous fix - which I assume Andrew will
+squash out of existence)?
 
-'git clean -dfx' is a very hard cleaning.
-So, you are doing a full build in every step of bisecting.
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Mon, 18 Oct 2021 13:27:54 +1100
+Subject: [PATCH] kernel.h: split out instrcutions pointer accessors
 
-I have no idea to explain the symptom you observed:
- "as soon as I come to a kernel that gives
- the bad performance, all of the kernels that I generate subsequently in
- the bisecting process"
+botton_half.h needs _THIS_IP_ to be standalone, so split that and _RET_IP_
+out from kernel.h into the new instruction_pointer.h.  kernel.h directly
+needs them, so include it there and replace the include of kernel.h with
+this new file in bottom_half.h.
 
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ include/linux/bottom_half.h         | 2 +-
+ include/linux/instruction_pointer.h | 8 ++++++++
+ include/linux/kernel.h              | 4 +---
+ 3 files changed, 10 insertions(+), 4 deletions(-)
+ create mode 100644 include/linux/instruction_pointer.h
 
-If you desire perfect reproducibility, you can check
-   Documentation/kbuild/reproducible-builds.rst
-But, I doubt slight differences such as timestamps
-can explain the large performance difference.
+diff --git a/include/linux/bottom_half.h b/include/linux/bottom_half.h
+index 11d107d88d03..fc53e0ad56d9 100644
+--- a/include/linux/bottom_half.h
++++ b/include/linux/bottom_half.h
+@@ -2,7 +2,7 @@
+ #ifndef _LINUX_BH_H
+ #define _LINUX_BH_H
+=20
+-#include <linux/kernel.h>
++#include <linux/instruction_pointer.h>
+ #include <linux/preempt.h>
+=20
+ #if defined(CONFIG_PREEMPT_RT) || defined(CONFIG_TRACE_IRQFLAGS)
+diff --git a/include/linux/instruction_pointer.h b/include/linux/instructio=
+n_pointer.h
+new file mode 100644
+index 000000000000..19e979425bda
+--- /dev/null
++++ b/include/linux/instruction_pointer.h
+@@ -0,0 +1,8 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _LINUX_INSTRUCTION_POINTER_H
++#define _LINUX_INSTRUCTION_POINTER_H
++
++#define _RET_IP_		(unsigned long)__builtin_return_address(0)
++#define _THIS_IP_  ({ __label__ __here; __here: (unsigned long)&&__here; })
++
++#enfif /* _LINUX_INSTRUCTION_POINTER_H */
+diff --git a/include/linux/kernel.h b/include/linux/kernel.h
+index 973c61ff2ef9..be84ab369650 100644
+--- a/include/linux/kernel.h
++++ b/include/linux/kernel.h
+@@ -20,6 +20,7 @@
+ #include <linux/printk.h>
+ #include <linux/build_bug.h>
+ #include <linux/static_call_types.h>
++#include <linux/instruction_pointer.h>
+ #include <asm/byteorder.h>
+=20
+ #include <uapi/linux/kernel.h>
+@@ -53,9 +54,6 @@
+ }					\
+ )
+=20
+-#define _RET_IP_		(unsigned long)__builtin_return_address(0)
+-#define _THIS_IP_  ({ __label__ __here; __here: (unsigned long)&&__here; })
+-
+ /**
+  * upper_32_bits - return bits 32-63 of a number
+  * @n: the number we're accessing
+--=20
+2.33.0
 
+There are, presumably, other places this new file can be included ...
 
-If you are chasing the performance issue,
-commit cf536e185869d4815 said
-CONFIG_DEBUG_FORCE_FUNCTION_ALIGN_*
-might be useful to eliminate the possibility
-of code alignment.
+--=20
+Cheers,
+Stephen Rothwell
 
+--Sig_/7vcLm23FUTr0AN8x54MuUun
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-Otherwise, I have no more idea...
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFs3XoACgkQAVBC80lX
+0GxsGQf/QYDOeiXb+RzZNGiZy3/fiIWwphCpUOBuVsFrdX7y0Bt0oQkt3SSEWxuF
+XeBiRO/sGINEicmFE3rxBTKVOeZgow3Xhlghr8+n8lOvnwTBK0YVDLNpYMKPVMe6
+AN4k3bIe3lar1udAENbwHY4slyGJxWYMgx87XVGDxkgvaTTkLN+Tln3M0c708D+4
+DRnaOuit0XIG0lnJVqTLbaaEbuNrergKG5rnKN86hdW16plx2XfWW/02999NykMe
+MH/StTcnYJ7nP4OtzgFO2kyz0wYx+/CGHd3IDUU0BcZHgOFRdxk4wPdDPyktjsmB
+wrRr+i/c+oU/kX5380sXDjnW71zB/A==
+=EyBf
+-----END PGP SIGNATURE-----
 
-
-
-
-
--- 
-Best Regards
-Masahiro Yamada
+--Sig_/7vcLm23FUTr0AN8x54MuUun--
