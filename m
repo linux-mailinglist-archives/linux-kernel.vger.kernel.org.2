@@ -2,108 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE5E6431E67
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:58:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C5CD431D14
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:45:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234618AbhJROAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 10:00:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38242 "EHLO mail.kernel.org"
+        id S232921AbhJRNrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:47:47 -0400
+Received: from comms.puri.sm ([159.203.221.185]:41028 "EHLO comms.puri.sm"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234664AbhJRN63 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:58:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BAF7F61A40;
-        Mon, 18 Oct 2021 13:41:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634564489;
-        bh=iyQNCJw3F2btWylGkoSsJbiuAqzwxr7VZp84T8arEwk=;
-        h=Subject:From:To:Date:In-Reply-To:References:From;
-        b=Muk1xW0O5fPkNs1SObNldVoKqidRwndzDDCkNEC0B0lO2IyZKUCtY8K+mMfUuaYZd
-         cL0KbWMGwXTcZritJ7+AqX/i/Slq2vQ3TFT8qH4dnzifxwAlHnTB0R7fXbt/9Ydo6o
-         R6TW5vdR2I6vipcf13Wm9iIo7VWkS1eEmHIv3H14gJR2CmDKO2uFtJ4JYn5d5YXnpq
-         vEb7U3LYwRzjycvD69cavPuejBiYJODJwHhnF1zOLy2p7gCguIkj9PfbV2Ef/Rzk88
-         Ktx6XBGnB9cYIhgCbMozT4+fkladPBDQqNT0gUOFJuK42Tvn0S19FEBuRX06p0kTdR
-         7iRo20kZTREzw==
-Message-ID: <41aba1e1c5849b58f83108eb9f9f115d0cd5826f.camel@kernel.org>
-Subject: Re: [PATCH 1/2] crypto: use SM3 instead of SM3_256
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     jejb@linux.ibm.com,
-        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        David Howells <dhowells@redhat.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Jerry Snitselaar <jsnitsel@redhat.com>,
-        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-security-module@vger.kernel.org
-Date:   Mon, 18 Oct 2021 16:41:26 +0300
-In-Reply-To: <af8c2098c4cfe23b941a191f7b4ec0e3a5251760.camel@linux.ibm.com>
-References: <20211009130828.101396-1-tianjia.zhang@linux.alibaba.com>
-         <20211009130828.101396-2-tianjia.zhang@linux.alibaba.com>
-         <7035153d58e220473fe3cd17c9f574f2d91c740b.camel@linux.ibm.com>
-         <dbac037710d711959d5ce0969f80ea0dd18a176e.camel@kernel.org>
-         <af8c2098c4cfe23b941a191f7b4ec0e3a5251760.camel@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.40.0-1 
+        id S233644AbhJRNpm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:45:42 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by comms.puri.sm (Postfix) with ESMTP id C67ACDF65B;
+        Mon, 18 Oct 2021 06:43:00 -0700 (PDT)
+Received: from comms.puri.sm ([127.0.0.1])
+        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id dfhyj4HWaJBO; Mon, 18 Oct 2021 06:43:00 -0700 (PDT)
+From:   Martin Kepplinger <martin.kepplinger@puri.sm>
+To:     martin.kepplinger@puri.sm
+Cc:     kernel@puri.sm, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, mchehab@kernel.org,
+        paul.kocialkowski@bootlin.com, sakari.ailus@linux.intel.com,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH v2] media: hi846: depend on OF
+Date:   Mon, 18 Oct 2021 15:42:46 +0200
+Message-Id: <20211018134246.383594-1-martin.kepplinger@puri.sm>
+In-Reply-To: <20211018095859.255912-1-martin.kepplinger@puri.sm>
+References: <20211018095859.255912-1-martin.kepplinger@puri.sm>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-10-18 at 09:32 -0400, James Bottomley wrote:
-> On Mon, 2021-10-18 at 16:27 +0300, Jarkko Sakkinen wrote:
-> > On Mon, 2021-10-18 at 09:05 -0400, James Bottomley wrote:
-> > > On Sat, 2021-10-09 at 21:08 +0800, Tianjia Zhang wrote:
-> > > [...]
-> > > > diff --git a/include/uapi/linux/hash_info.h
-> > > > b/include/uapi/linux/hash_info.h
-> > > > index 74a8609fcb4d..1355525dd4aa 100644
-> > > > --- a/include/uapi/linux/hash_info.h
-> > > > +++ b/include/uapi/linux/hash_info.h
-> > > > @@ -32,7 +32,7 @@ enum hash_algo {
-> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 HASH_ALGO_TGR_128,
-> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 HASH_ALGO_TGR_160,
-> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 HASH_ALGO_TGR_192,
-> > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 HASH_ALGO_SM3_256,
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 HASH_ALGO_SM3,
-> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 HASH_ALGO_STREEBOG_256,
-> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 HASH_ALGO_STREEBOG_512,
-> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 HASH_ALGO__LAST
-> > >=20
-> > > This is another one you can't do: all headers in UAPI are exports
-> > > to userspace and the definitions constitute an ABI.=C2=A0 If you simp=
-ly
-> > > do a rename, every userspace program that uses the current
-> > > definition will immediately break on compile.=C2=A0 You could add
-> > > HASH_ALGO_SM3, but you can't remove HASH_ALGO_SM3_256
-> > >=20
-> > > James
-> >=20
-> > So: shouldn't then also the old symbol continue to work also
-> > semantically?
->=20
-> Yes, that's the point: you can add a new definition ... in this case an
-> alias for the old one, but you can't remove a definition that's been
-> previously exported.
+Since other device enumerate mechanisms are currently not implemented,
+make the hi846 sensor driver depend on CONFIG_OF.
 
-Thanks, this of course obvious :-) I forgot temporarily that crypto
-has uapi interface. Tianjia, this patch set break production systems,
-so no chance we would ever merge it in this form.
+Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
+Reported-by: kernel test robot <lkp@intel.com>
+---
 
-Why not just do this:
+revision history
+----------------
+v2:
+* added the reported-by tag
 
-...
-HASH_ALGO_SM3_256,
-HASH_ALOG_SM3 =3D HASH_ALOG_SM_256,
-...
+v1:
+https://lore.kernel.org/linux-media/20211018095859.255912-1-martin.kepplinger@puri.sm/
 
-There is not good reason to mod the implementation because both symbols
-are kept.
 
-/Jarkko
+
+ drivers/media/i2c/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/media/i2c/Kconfig b/drivers/media/i2c/Kconfig
+index 0e56489c97fb..53268f1f761f 100644
+--- a/drivers/media/i2c/Kconfig
++++ b/drivers/media/i2c/Kconfig
+@@ -746,6 +746,7 @@ config VIDEO_HI556
+ config VIDEO_HI846
+ 	tristate "Hynix Hi-846 sensor support"
+ 	depends on I2C && VIDEO_V4L2
++	depends on OF
+ 	select MEDIA_CONTROLLER
+ 	select VIDEO_V4L2_SUBDEV_API
+ 	select V4L2_FWNODE
+-- 
+2.30.2
+
