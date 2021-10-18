@@ -2,118 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DD94431629
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 12:32:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64AA043162E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 12:33:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230375AbhJRKed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 06:34:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49526 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229491AbhJRKec (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 06:34:32 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36E54C06161C
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 03:32:21 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id b189-20020a1c1bc6000000b0030da052dd4fso8056637wmb.3
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 03:32:21 -0700 (PDT)
+        id S230345AbhJRKfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 06:35:09 -0400
+Received: from mx1.tq-group.com ([93.104.207.81]:11056 "EHLO mx1.tq-group.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230446AbhJRKfI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 06:35:08 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Gy0sHksnt+PEnqqXO6xICRTdN60Lc9eTfBQpwKge7yw=;
-        b=O4of8n6X9NBPN4KWNWUJs/0mWzTc116qBuKDx3ncFthvjhtsyL5DV2kBO0oVRG2oIh
-         R23RzUj3/dJp4qwHQHvuk/y2x51na6lRlbVwxnC+9CRpBOCwDAH4UlgfsJbVmB2x5lRg
-         G2j+W0EWHRCCZkLvZP6GgzrSINGeENXTpyB0hfVC98NkB9ys1AwlyGsqdfPTfp4b0JkN
-         y5IHHrIP08Poykj/HOb4KUgeMZLIBJ66URZVb6eYlcauxcx9uNn0wIvWtyoNmHgmuqPj
-         7OosgV3O9JTZndiBJb0m0eNQEc5ibTOxG49zYgd1cERqKbT87xl5CKEuPRsyq6VOnQv9
-         fJ0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Gy0sHksnt+PEnqqXO6xICRTdN60Lc9eTfBQpwKge7yw=;
-        b=dIfIiANwNDlpkItJ/foXt8FW9aVzt6/8AJBxLF30eT+VrCCdbOCNLC4YtcLUsva6G8
-         qoz+lOU2m+b2EOE+U7d0icTsu1Uzx1nKGAU99j4EqM5mca4M+/fQ+Vxmq1N9pIVwH8/a
-         ailwNHd/ytY4OVsCKZIogGzaHaQvry3M/RyYn11AE8u6r7wLjBD5qYWPQ45rkgOKGTCA
-         oy9wbNDW35hxtcI8bptstWh5hR50Fv/mkuHwSvU8zwtmyHOaB+rrurkrJndqRWrS4++r
-         AnX6m+y8ZWP0COr5iKIbG8Be+hV2mmuUJsRw9lsYzHHRvZn6PuOmoehXGH2C8HHhljbz
-         9PAg==
-X-Gm-Message-State: AOAM531LIbS5QMF8iMmOlpmYfB4PrGylDqunO/0+YQrwuccGE9XMf21m
-        6uSKn9d48mZeB8q3b19caevJyA==
-X-Google-Smtp-Source: ABdhPJz+FBDbOuFngAsn1vKBnLFL7clNmJbT3DoPREC11e6c1F2lUuWQ/TmDO8FETn0vXuk/SALxwg==
-X-Received: by 2002:a1c:1d13:: with SMTP id d19mr29804562wmd.190.1634553139612;
-        Mon, 18 Oct 2021 03:32:19 -0700 (PDT)
-Received: from google.com ([2a00:79e0:d:210:ba81:6f1b:ab2e:f120])
-        by smtp.gmail.com with ESMTPSA id d24sm11609621wmb.35.2021.10.18.03.32.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 03:32:19 -0700 (PDT)
-Date:   Mon, 18 Oct 2021 11:32:13 +0100
-From:   Quentin Perret <qperret@google.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Fuad Tabba <tabba@google.com>,
-        David Brazdil <dbrazdil@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, kernel-team@android.com
-Subject: Re: [PATCH 16/16] KVM: arm64: pkvm: Unshare guest structs during
- teardown
-Message-ID: <YW1NLb9Pn9NyEYZF@google.com>
-References: <20211013155831.943476-1-qperret@google.com>
- <20211013155831.943476-17-qperret@google.com>
- <87h7dhupfa.wl-maz@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87h7dhupfa.wl-maz@kernel.org>
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1634553177; x=1666089177;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=7TuARXSI3wTGfh7jWlkLb/D7la4yilknZ2ZdyGEzh0U=;
+  b=Am09TH449mxfAIuL9ccwNYujk+9g3k4dGBbEXeFHTFGrzstqtzpzqFzB
+   exPxbrgPEfpT0WUWNZwChR3dhnla7HH4MW9zOzz/ff9b93DOM4CE7SBP8
+   99zTS3VgfUjWNwsImlKQJuJ6L1rdGyGev7Bd7g8BZPcAt3hg1ytfQxaIq
+   jc5EPgY0LecyDvXHzlTCqLm7xyYZtCNLEvwSIZJbLMUycHGA50aziT2N1
+   NEwZwrIJ82FXFQtwyiWahB6JrJD4VC0Dn2c/Rhk6mFYR/V2gevqNlpcT/
+   QbDSPzAit6T+IVL8fU0gl78Ne5En9nHd75wf4/kCgC2vegsyKtpsdHTIV
+   A==;
+X-IronPort-AV: E=Sophos;i="5.85,381,1624312800"; 
+   d="scan'208";a="20102957"
+Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
+  by mx1-pgp.tq-group.com with ESMTP; 18 Oct 2021 12:32:55 +0200
+Received: from mx1.tq-group.com ([192.168.6.7])
+  by tq-pgp-pr1.tq-net.de (PGP Universal service);
+  Mon, 18 Oct 2021 12:32:55 +0200
+X-PGP-Universal: processed;
+        by tq-pgp-pr1.tq-net.de on Mon, 18 Oct 2021 12:32:55 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1634553175; x=1666089175;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=7TuARXSI3wTGfh7jWlkLb/D7la4yilknZ2ZdyGEzh0U=;
+  b=GiApMPZuDIDbGMwkp7Ci7+Ogc6AyVpkh9DNtNt5ko7UFzVCBzjn9WeUI
+   rrn4gMJaCHh7TxMJ2ouAx3aeP6pPV91sJYIrXK0O/M70Wx92VwqGdf5ns
+   p+dqLk/vXLOhHpIR396zUP3L4jTm+p/sNV77dtVAfzVZKzp+H55p8sLTJ
+   czrXyw9lgROdDcijCrvsqZ1yBwUB+DHkE4gWdEt/mgyOV4scGA9WQVKIs
+   25gJ5wIsd12ECjn7/AmXFncoBQAkG85DynmtEHCx3KnIt+pK0SVH+SL2Q
+   r+bjiIzUUDUFIiteUBgcI1bweQ/I9ngFfATBSildFv0EtBX90RhKs+ItS
+   Q==;
+X-IronPort-AV: E=Sophos;i="5.85,381,1624312800"; 
+   d="scan'208";a="20102956"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 18 Oct 2021 12:32:55 +0200
+Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.121.48.12])
+        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 9AC22280065;
+        Mon, 18 Oct 2021 12:32:55 +0200 (CEST)
+Message-ID: <0dd0eb96ce6509b944d1a0b3cfa78e692409edc5.camel@ew.tq-group.com>
+Subject: RE: [PATCH] net: fec: defer probe if PHY on external MDIO bus is
+ not available
+From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+To:     Joakim Zhang <qiangqing.zhang@nxp.com>
+Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Date:   Mon, 18 Oct 2021 12:32:53 +0200
+In-Reply-To: <DB8PR04MB679504F7E61252F3FC62FBFEE6BC9@DB8PR04MB6795.eurprd04.prod.outlook.com>
+References: <20211014113043.3518-1-matthias.schiffer@ew.tq-group.com>
+         <DB8PR04MB679504F7E61252F3FC62FBFEE6BC9@DB8PR04MB6795.eurprd04.prod.outlook.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Saturday 16 Oct 2021 at 13:25:45 (+0100), Marc Zyngier wrote:
-> At this stage, the old thread may have been destroyed and the memory
-> recycled. What happens if, in the interval, that memory gets shared
-> again in another context? My guts feeling is that either the sharing
-> fails, or the unshare above breaks something else (the refcounting
-> doesn't save us if the sharing is not with HYP).
-
-Aha, yes, that's a good point. The problematic scenario would be: a vcpu
-runs in the context of task A, then blocks. Then task A is destroyed,
-but the vcpu isn't (possibly because e.g. userspace intends to run it in
-the context of another task or something along those lines). But the
-thread_info and fpsimd_state of task A remain shared with the hypervisor
-until the next vcpu run, even though the memory has been freed by the
-host, and is possibly reallocated to another guest in the meantime.
-
-So yes, at this point sharing/donating this memory range with a new
-guest will fail, and confuse the host massively :/
-
-> In any case, I wonder whether we need a notification from the core
-> code that a thread for which we have a HYP mapping is gone so that we
-> can mop up the mapping at that point. That's similar to what we have
-> for MMU notifiers and S2 PTs.
+On Mon, 2021-10-18 at 10:20 +0000, Joakim Zhang wrote:
+> Hi Matthias,
 > 
-> This is doable by hooking into fpsimd_release_task() and extending
-> thread_struct to track the sharing with HYP.
+> > -----Original Message-----
+> > From: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+> > Sent: 2021年10月14日 19:31
+> > To: Joakim Zhang <qiangqing.zhang@nxp.com>; David S. Miller
+> > <davem@davemloft.net>; Jakub Kicinski <kuba@kernel.org>
+> > Cc: netdev@vger.kernel.org; linux-kernel@vger.kernel.org; Matthias Schiffer
+> > <matthias.schiffer@ew.tq-group.com>
+> > Subject: [PATCH] net: fec: defer probe if PHY on external MDIO bus is not
+> > available
+> > 
+> > On some SoCs like i.MX6UL it is common to use the same MDIO bus for PHYs
+> > on both Ethernet controllers. Currently device trees for such setups have to
+> > make assumptions regarding the probe order of the controllers:
+> > 
+> > For example in imx6ul-14x14-evk.dtsi, the MDIO bus of fec2 is used for the
+> > PHYs of both fec1 and fec2. The reason is that fec2 has a lower address than
+> > fec1 and is thus loaded first, so the bus is already available when fec1 is
+> > probed.
+> 
+> It's not correct, I think, we have board designed to use fec1(which is lower address) to controller MDIO interface, such as,
+> https://source.codeaurora.org/external/imx/linux-imx/tree/arch/arm64/boot/dts/freescale/imx8qm-mek.dts?h=lf-5.10.y#n948
+> that means our driver can handle these cases, not related to the order.
 
-I've been looking into this, but struggled to find a good way to avoid
-all the races. Specifically, handling the case where a vcpu and the task
-which last ran it get destroyed at the same time isn't that easy to
-handle: you end up having to maintain pointers from the task to the vcpu
-and vice versa, but I have no obvious idea to update them both in a
-non-racy way (other than having a one big lock to serialize all
-those changes, but that would mean serializing all task destructions so
-that really doesn't scale).
+Yes, not all SoC have FEC2 at the lower address, but this is the case
+on i.MX6UL. As far as I can tell my patch should not hurt when the
+order is already correct, as the added code will never retern
+EPROBE_DEFER in these cases.
 
-Another option is to take a refcount on 'current' from
-kvm_arch_vcpu_run_map_fp() before sharing thread-specific structs with
-the hyp and release the refcount of the previous task after unsharing.
-But that means we'll have to also drop the refcount when the vcpu
-gets destroyed, as well as explicitly unshare at that point. Shouldn't
-be too bad I think. Thoughts?
+Obviously all existing Device Trees in the mainline kernel are defined
+in a way that already works with the existing code, by using the FEC2
+MDIO on i.MX6UL-based designs, or their Ethernet would not work
+correctly.
 
-Thanks,
-Quentin
+
+> 
+> > Besides being confusing, this limitation also makes it impossible to use the
+> > same device tree for variants of the i.MX6UL with one Ethernet controller
+> > (which have to use the MDIO of fec1, as fec2 does not exist) and variants with
+> > two controllers (which have to use fec2 because of the load order).
+> 
+> Generally speaking, you should only include imx6ul.dtsi for your board design to cover SoC definition,
+> and imx6ul-14x14-evk.dtsi/ imx6ul-14x14-evk.dts is for our 14x14 EVK board. So do we really need this
+> defer probe?
+
+I only mentioned imx6ul-14x14-evk.dtsi as an example. The issue affects
+the TQ-Systems MBa6ULx board, which I'm currently preparing for
+mainline submission.
+
+The bootloader disables the non-existing FEC2 node on MCIMX6G1, but
+when the MDIO of FEC2 is used for both interfacse, this will also break
+FEC1, so a separate Device Tree is currently needed for the MCIMX6G1.
+We would prefer to use the same Device Tree for both variants, which is
+possible by using the MDIO of FEC1 and applying this patch.
+
+
+> 
+> > 
+> > To fix this, defer the probe of the Ethernet controller when the PHY is not on
+> > our own MDIO bus and not available.
+> > 
+> > Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+> > ---
+> >  drivers/net/ethernet/freescale/fec_main.c | 23 ++++++++++++++++++++++-
+> >  1 file changed, 22 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/net/ethernet/freescale/fec_main.c
+> > b/drivers/net/ethernet/freescale/fec_main.c
+> > index 47a6fc702ac7..dc070dd216e8 100644
+> > --- a/drivers/net/ethernet/freescale/fec_main.c
+> > +++ b/drivers/net/ethernet/freescale/fec_main.c
+> > @@ -3820,7 +3820,28 @@ fec_probe(struct platform_device *pdev)
+> >  		goto failed_stop_mode;
+> > 
+> >  	phy_node = of_parse_phandle(np, "phy-handle", 0);
+> > -	if (!phy_node && of_phy_is_fixed_link(np)) {
+> > +	if (phy_node) {
+> > +		struct device_node *mdio_parent =
+> > +			of_get_next_parent(of_get_parent(phy_node));
+> > +
+> > +		ret = 0;
+> > +
+> > +		/* Skip PHY availability check for our own MDIO bus to avoid
+> > +		 * cyclic dependency
+> > +		 */
+> > +		if (mdio_parent != np) {
+> > +			struct phy_device *phy = of_phy_find_device(phy_node);
+> > +
+> > +			if (phy)
+> > +				put_device(&phy->mdio.dev);
+> > +			else
+> > +				ret = -EPROBE_DEFER;
+> > +		}
+> > +
+> > +		of_node_put(mdio_parent);
+> > +		if (ret)
+> > +			goto failed_phy;
+> > +	} else if (of_phy_is_fixed_link(np)) {
+> >  		ret = of_phy_register_fixed_link(np);
+> >  		if (ret < 0) {
+> >  			dev_err(&pdev->dev,
+> > --
+> > 2.17.1
+> 
+> Best Regards,
+> Joakim Zhang
+
