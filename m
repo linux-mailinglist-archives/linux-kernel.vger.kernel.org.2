@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DDA9431E24
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:56:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3467F431B03
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:28:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234383AbhJRN6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:58:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58186 "EHLO mail.kernel.org"
+        id S231310AbhJRNaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:30:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41210 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234381AbhJRNz5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:55:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0FB7861A03;
-        Mon, 18 Oct 2021 13:40:15 +0000 (UTC)
+        id S231800AbhJRN3B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:29:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6784861260;
+        Mon, 18 Oct 2021 13:25:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634564417;
-        bh=DTVAeuq2AdtyIHNnOObDtjxX+Zf6lc5YAEEVS2lGK80=;
+        s=korg; t=1634563555;
+        bh=ttEj3R8FWWnF6pqIXRRfckoDNy1c35Yo/tBGpVCeGc8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=k6FDdw2PkgwjUjoWDaE+x74jBI+oVaeEulST4QeH2OIP4VlVCao3yfuHddRt4CnrA
-         OWSwcelUXgyJSXVLfhO63nSVaupnFG4Aqp+K1pQJpCZO0KccJLqh+IygCktxQw1Xc9
-         CnIEsJrmREqNw5Gm5QVJ25/zBDtITOsnxfhmfC3Y=
+        b=n5FAJHHe4ue2rke1LRop9OEW+aUP4H8qtnw79DvtGRGhhEyV8ihXennY+hS6o2SaV
+         07yYbF/dwMm+Uu8nUmlrb88815z6T6woGhtRxnebHItHjq9YSpF+E5oKATdZqHer+C
+         dozwpB+rd9CBa+9SelixtOicnIbntS8JRorPy6EQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.14 082/151] eeprom: 93xx46: Add SPI device ID table
+        stable@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH 4.14 12/39] usb: musb: dsps: Fix the probe error path
 Date:   Mon, 18 Oct 2021 15:24:21 +0200
-Message-Id: <20211018132343.355899156@linuxfoundation.org>
+Message-Id: <20211018132325.854408952@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132340.682786018@linuxfoundation.org>
-References: <20211018132340.682786018@linuxfoundation.org>
+In-Reply-To: <20211018132325.426739023@linuxfoundation.org>
+References: <20211018132325.426739023@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,56 +38,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Brown <broonie@kernel.org>
+From: Miquel Raynal <miquel.raynal@bootlin.com>
 
-commit 137879f7ff23c635d2c6b2e43f4b39e2d305c3e2 upstream.
+commit c2115b2b16421d93d4993f3fe4c520e91d6fe801 upstream.
 
-Currently autoloading for SPI devices does not use the DT ID table, it uses
-SPI modalises. Supporting OF modalises is going to be difficult if not
-impractical, an attempt was made but has been reverted, so ensure that
-module autoloading works for this driver by adding a SPI device ID table.
+Commit 7c75bde329d7 ("usb: musb: musb_dsps: request_irq() after
+initializing musb") has inverted the calls to
+dsps_setup_optional_vbus_irq() and dsps_create_musb_pdev() without
+updating correctly the error path. dsps_create_musb_pdev() allocates and
+registers a new platform device which must be unregistered and freed
+with platform_device_unregister(), and this is missing upon
+dsps_setup_optional_vbus_irq() error.
 
-Fixes: 96c8395e2166 ("spi: Revert modalias changes")
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Link: https://lore.kernel.org/r/20210922184048.34770-1-broonie@kernel.org
+While on the master branch it seems not to trigger any issue, I observed
+a kernel crash because of a NULL pointer dereference with a v5.10.70
+stable kernel where the patch mentioned above was backported. With this
+kernel version, -EPROBE_DEFER is returned the first time
+dsps_setup_optional_vbus_irq() is called which triggers the probe to
+error out without unregistering the platform device. Unfortunately, on
+the Beagle Bone Black Wireless, the platform device still living in the
+system is being used by the USB Ethernet gadget driver, which during the
+boot phase triggers the crash.
+
+My limited knowledge of the musb world prevents me to revert this commit
+which was sent to silence a robot warning which, as far as I understand,
+does not make sense. The goal of this patch was to prevent an IRQ to
+fire before the platform device being registered. I think this cannot
+ever happen due to the fact that enabling the interrupts is done by the
+->enable() callback of the platform musb device, and this platform
+device must be already registered in order for the core or any other
+user to use this callback.
+
+Hence, I decided to fix the error path, which might prevent future
+errors on mainline kernels while also fixing older ones.
+
+Fixes: 7c75bde329d7 ("usb: musb: musb_dsps: request_irq() after initializing musb")
+Cc: stable@vger.kernel.org
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Link: https://lore.kernel.org/r/20211005221631.1529448-1-miquel.raynal@bootlin.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/misc/eeprom/eeprom_93xx46.c |   18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ drivers/usb/musb/musb_dsps.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/drivers/misc/eeprom/eeprom_93xx46.c
-+++ b/drivers/misc/eeprom/eeprom_93xx46.c
-@@ -406,6 +406,23 @@ static const struct of_device_id eeprom_
- };
- MODULE_DEVICE_TABLE(of, eeprom_93xx46_of_table);
+--- a/drivers/usb/musb/musb_dsps.c
++++ b/drivers/usb/musb/musb_dsps.c
+@@ -939,11 +939,13 @@ static int dsps_probe(struct platform_de
+ 	if (usb_get_dr_mode(&pdev->dev) == USB_DR_MODE_PERIPHERAL) {
+ 		ret = dsps_setup_optional_vbus_irq(pdev, glue);
+ 		if (ret)
+-			goto err;
++			goto unregister_pdev;
+ 	}
  
-+static const struct spi_device_id eeprom_93xx46_spi_ids[] = {
-+	{ .name = "eeprom-93xx46",
-+	  .driver_data = (kernel_ulong_t)&at93c46_data, },
-+	{ .name = "at93c46",
-+	  .driver_data = (kernel_ulong_t)&at93c46_data, },
-+	{ .name = "at93c46d",
-+	  .driver_data = (kernel_ulong_t)&atmel_at93c46d_data, },
-+	{ .name = "at93c56",
-+	  .driver_data = (kernel_ulong_t)&at93c56_data, },
-+	{ .name = "at93c66",
-+	  .driver_data = (kernel_ulong_t)&at93c66_data, },
-+	{ .name = "93lc46b",
-+	  .driver_data = (kernel_ulong_t)&microchip_93lc46b_data, },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, eeprom_93xx46_of_table);
-+
- static int eeprom_93xx46_probe_dt(struct spi_device *spi)
- {
- 	const struct of_device_id *of_id =
-@@ -555,6 +572,7 @@ static struct spi_driver eeprom_93xx46_d
- 	},
- 	.probe		= eeprom_93xx46_probe,
- 	.remove		= eeprom_93xx46_remove,
-+	.id_table	= eeprom_93xx46_spi_ids,
- };
+ 	return 0;
  
- module_spi_driver(eeprom_93xx46_driver);
++unregister_pdev:
++	platform_device_unregister(glue->musb);
+ err:
+ 	pm_runtime_disable(&pdev->dev);
+ 	iounmap(glue->usbss_base);
 
 
