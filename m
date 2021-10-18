@@ -2,124 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5245431226
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 10:29:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94DA3431228
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 10:30:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230414AbhJRIb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 04:31:56 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:42743 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229820AbhJRIby (ORCPT
+        id S230447AbhJRIcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 04:32:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52833 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230439AbhJRIcT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 04:31:54 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HXqmj4s4Bz4xbT;
-        Mon, 18 Oct 2021 19:29:41 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1634545782;
-        bh=It3hFh75EWdaSrblOEeRmbA3hm969xn3FcN5G2/xSpw=;
-        h=Date:From:To:Cc:Subject:From;
-        b=uua6/4gdBpVMVKwzzawhRkFXJ7qAOsVHyUMi24bqFmaFm2KwmlUIO1QvwgMFmPyez
-         7UlRRF/62kOhRiCf4NwaKPGl0NqJ8sPKBfNMAfkM9Y7UEc0nO/Oa6ZnyoeWCWux+ux
-         ZrbW3aQ6VdW94P7ZA2XwZ2QyQEC4MLiI8S6uDr5hX61TrvEZZhZVVgSsVbEWK6Nt9r
-         6HrdPGa/xB/HP4bcCIkg3kNVUEdVqMagEh/5YIHlI/Hym+gk5vXURpUb/srO5PAZqa
-         fPIBi2nhsP21CQL3U+kAHPUtazJ1kLMonne4lx0IdE841Wg/nWA40djf9fCvqV1naX
-         /hijtFDf4ITRg==
-Date:   Mon, 18 Oct 2021 19:29:40 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the akpm-current tree
-Message-ID: <20211018192940.3d1d532f@canb.auug.org.au>
+        Mon, 18 Oct 2021 04:32:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634545808;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=lR6lHYfqRurTTNb2hz8P0iYHasRUVyst8KmFnIo9LRo=;
+        b=KsQUqau4JshIEk29QH2az6xsdJ+EvM8hAz22BwLMXzDgC72EV0YnqU3XiRuB5CzEJrYh8c
+        U2VoLTcgdK372KtPzQm9Wgjg3u0ClF/dxP+xMukRWp0OP0ZDUX26oe/FExSqVkENJyJFKx
+        bHtdeG5TlrFaeThwVVh6ne3oOVmB9FI=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-257-h26DcC2QNmS5tH6FnD_YiA-1; Mon, 18 Oct 2021 04:30:06 -0400
+X-MC-Unique: h26DcC2QNmS5tH6FnD_YiA-1
+Received: by mail-ed1-f71.google.com with SMTP id z23-20020aa7cf97000000b003db7be405e1so13703296edx.13
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 01:30:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=lR6lHYfqRurTTNb2hz8P0iYHasRUVyst8KmFnIo9LRo=;
+        b=DV+G8mAFFsU7FSz1mf2P3PofBkRU/VfjOQoNLwVv0z5JId7P2oRQINFC9/ah30tbHt
+         Dx608Wm5NWpTqjg6XV2UPLkdR2tpf6WdmJ9kuYmLV20rjf6jHsGL7Ak4f+0+9EYqMHwg
+         NfvaiM//Jlx1aObZ2PvoenoCV2UQKBnW+uvpJmg8k0gK7hS430Pfyem3pdrddEjlvPcK
+         Psxa7T6Mdu6Lg0RF3OqN/aVgCdcRZaC/xQ6vn6tuAl1ZorMVkzja9QG/miDdirSJi4jc
+         Obv2GsYetH8h5FiKFihjpktbqm7Bg/So2aJOvoBmxxki7adtRjS/x/sw+DfZX2yxx1oO
+         ZUkQ==
+X-Gm-Message-State: AOAM531xWqoCthGqraNKKjk8vbJxQ/54zRFSKigBuj9sZCD7KqIjfYmo
+        GtKAZ6Ez7uPo4DPdT2bgqpe9PumxNjfPfgwqyybEwUqpKH+FOQIsNxyBImdSFe4d5yeVS1koJR9
+        1H1sZVPH88tghHy5Du536tRL0
+X-Received: by 2002:a50:fc17:: with SMTP id i23mr41133539edr.213.1634545805608;
+        Mon, 18 Oct 2021 01:30:05 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwrMhc7vcU2jV67qg01VSMajYU77IH44uhxXbXszh8rSXTGCseftvgmQJ1sKU52iD4gsvpnIg==
+X-Received: by 2002:a50:fc17:: with SMTP id i23mr41133507edr.213.1634545805463;
+        Mon, 18 Oct 2021 01:30:05 -0700 (PDT)
+Received: from [10.40.1.223] ([81.30.35.201])
+        by smtp.gmail.com with ESMTPSA id q23sm8925974ejr.0.2021.10.18.01.30.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Oct 2021 01:30:05 -0700 (PDT)
+Message-ID: <103b5438-9f7c-7e89-28b9-29fe11eb818c@redhat.com>
+Date:   Mon, 18 Oct 2021 10:30:04 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Mt0ujaPJ7AjyfRm5TX1_R6j";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [BUG 5/5] [BUG] media: atomisp: atomisp causes touchscreen to
+ stop working on Microsoft Surface 3
+Content-Language: en-US
+To:     Tsuchiya Yuto <kitakar@gmail.com>
+Cc:     Patrik Gfeller <patrik.gfeller@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Kaixu Xia <kaixuxia@tencent.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Arnd Bergmann <arnd@arndb.de>, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20211017162337.44860-1-kitakar@gmail.com>
+ <20211017162337.44860-6-kitakar@gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20211017162337.44860-6-kitakar@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Mt0ujaPJ7AjyfRm5TX1_R6j
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi,
 
-Hi all,
+On 10/17/21 18:23, Tsuchiya Yuto wrote:
+> Touchscreen input works fine before loading atomisp driver on Surface 3.
+> 
+> However, after loading atomisp driver, touchscreen works only when
+> capturing images. This sounds like atomisp turns off something needed
+> for touchscreen when atomisp is idle.
+> 
+> There is no useful kernel log. Just the touchscreen stops working
+> with no log.
+> 
+> I'll update if I find something further. First of all, can someone
+> reproduce this issue on the other devices?
 
-After merging the akpm-current tree, today's linux-next build (x86_64
-allmodconfig) failed like this:
+My first bet would be some regulator getting turned off.
 
-init/main.c: In function 'xbc_make_cmdline':
-init/main.c:384:3: error: implicit declaration of function 'memblock_free_p=
-tr'; did you mean 'memblock_free_late'? [-Werror=3Dimplicit-function-declar=
-ation]
-  384 |   memblock_free_ptr(new_cmdline, len + 1);
-      |   ^~~~~~~~~~~~~~~~~
-      |   memblock_free_late
-cc1: all warnings being treated as errors
+What you can do is:
 
-Caused by commit
+1. ls -l /dev/bus/i2c/devices
 
-  d6e96e5e2e23 ("memblock: use memblock_free for freeing virtual pointers")
+And then write down the number of the i2c-bus to which the
+CRC PMIC is connected, lets say it is number "4". Then:
 
-interacting with commit
+2. Before loading the atomisp drivers run:
+   "sudo i2cdump -y -f 4 0x6e > crc-regs-good"
 
-  1ae43851b18a ("bootconfig: init: Fix memblock leak in xbc_make_cmdline()")
+3. After loading the atomisp drivers run:
+   "sudo i2cdump -y -f 4 0x6e > crc-regs-bad
 
-from Linus' tree.
+4. "diff -u crc-regs-good crc-regs-bad"
 
-I have applied the following merge fix patch.
+And see what changed.
 
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Mon, 18 Oct 2021 19:25:44 +1100
-Subject: [PATCH] fixup for "memblock: use memblock_free for freeing virtual
- pointers"
+There are 2 possible root causes here:
 
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- init/main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+1. Some regulator is shared between the cameras and
+touchscreen
 
-diff --git a/init/main.c b/init/main.c
-index 9b7fdd04e8cb..2851ebbe1985 100644
---- a/init/main.c
-+++ b/init/main.c
-@@ -381,7 +381,7 @@ static char * __init xbc_make_cmdline(const char *key)
- 	ret =3D xbc_snprint_cmdline(new_cmdline, len + 1, root);
- 	if (ret < 0 || ret > len) {
- 		pr_err("Failed to print extra kernel cmdline.\n");
--		memblock_free_ptr(new_cmdline, len + 1);
-+		memblock_free(new_cmdline, len + 1);
- 		return NULL;
- 	}
-=20
---=20
-2.33.0
+2. The crc code in atomisp which you are using is
+poking registers assuming the Bay Trail version of
+the Crystal Cove PMIC (aka CRC PMIC) but your
+Surface 3 has the Cherry Trail version and we know
+that the regulators are add different register
+addresses there, see the comment in:
+drivers/acpi/pmic/intel_pmic_chtcrc.c
+so it is possible that the atomisp code is simply
+poking the wrong register for one of the regulators
 
---=20
-Cheers,
-Stephen Rothwell
+I also wonder if this goes away if you do the
 
---Sig_/Mt0ujaPJ7AjyfRm5TX1_R6j
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+	hrv = 0x03;
 
------BEGIN PGP SIGNATURE-----
+Hack inside drivers/mfd/intel_soc_pmic_core.c ?
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFtMHQACgkQAVBC80lX
-0Gw8sgf/XmyJ8lMYquuyjZAGfvEnU6MDmECHMEW3sT2d34rbdLkXRaRuE/PaG8B+
-kNYoURrLLm02cAnGrkrvk2AXYPpEJTtclqzd+pf7/quYTK6ixkvPw9Fhfi/LY9vP
-QT3qGC8qisEhV64N9DkgyBoCKG2dz5ynKsbpZ+TAmpRza5QutIQ/WR8wFkNKc+OC
-1UvkesowvY677SU90pVWCKUfbstGhUR5Ldfwj1LZUMJpF/WadISebZc7YFkF+hHB
-rbbbJ19zbozQVjL5RDlJWeMYUuTqPdenlIja6V971sIk3qquNCOt+VR6V/bL5426
-Zd2pw6Aj0s+yxB6snvT5Sh1tFyEtgw==
-=bMnQ
------END PGP SIGNATURE-----
+Without that we end up using the wrong PMIC
+OpRegion driver which also uses the wrong
+regulator addresses.
 
---Sig_/Mt0ujaPJ7AjyfRm5TX1_R6j--
+Regards,
+
+Hans
+
+
+p.s.
+
+Here are the 2 different regulator drivers the
+comment in drivers/acpi/pmic/intel_pmic_chtcrc.c
+refers to:
+
+https://github.com/Zenfone2-Dev/android_kernel_asus_moorefield-1/blob/stock/drivers/regulator/pmic_crystal_cove.c
+https://github.com/Zenfone2-Dev/android_kernel_asus_moorefield-1/blob/stock/drivers/regulator/pmic_crystal_cove_plus.c
+
