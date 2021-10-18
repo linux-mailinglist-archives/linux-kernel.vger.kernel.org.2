@@ -2,63 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C90843102E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 08:08:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5254431035
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 08:12:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230099AbhJRGKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 02:10:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59458 "EHLO mail.kernel.org"
+        id S230182AbhJRGOb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 02:14:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36510 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229533AbhJRGKi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 02:10:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F1EE610A6;
-        Mon, 18 Oct 2021 06:08:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634537307;
-        bh=r04T2c+9oBcdiXKL4Xe8gxRyhRIfiFS5MF915UNBWeg=;
+        id S229847AbhJRGOa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 02:14:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 34DC760F56;
+        Mon, 18 Oct 2021 06:12:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634537540;
+        bh=ldV0jLsQM2JKFvHcaaUIILtmSHrDJOrZau0L8CFH6ZA=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mbe79Fr3OfSob3grAPxj2XjntzeEBJWPotyEIQ2cyZDKhfk9QOJrWsZEX6nIwzZHL
-         v7n79QVfbaxauuq51wmKpbJ/yh8CZSJmPu6AaZRzIAM+sp/Ym9u6vwvGzw7D5FeLmX
-         tKpK1fgd8J62SQvEGmvpmNToitvEHdF/JB0+klVY=
-Date:   Mon, 18 Oct 2021 08:08:21 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     David Lechner <david@lechnology.com>
-Cc:     linux-iio@vger.kernel.org,
-        William Breathitt Gray <vilhelm.gray@gmail.com>,
+        b=rjVrxCgz1EuWzXvlAWSEUtehR3a8uyS8Zf9lzNtqN2LwIxIk2mDOIio4EnYQ2HIXN
+         d8bPg5kjYN/wKYXtqUwHxp0wpHs4GspzE11nvbWkkY3wUo4i7a7Ut+fnHV2qlsTck+
+         NPRMzTKSteRp1l+isU7LmOa5WOvtfStKE8MRKekhjpGLdcF3pMhQCfWLVzk4Jf/N7X
+         AisxDgZhtACqX/RVmevunWHFrzJMaCGntcf2RZreXE4fKxURBVcMqx96XxsuFYT1Do
+         MHbQ0QY2LCsUPtUlqLtzpDEET+VzVBHT4uVjXyzYo2YnRFK5BTz0g/Rz0MfKnlKTVm
+         Ya8yhxj1lCb6g==
+Date:   Mon, 18 Oct 2021 11:42:15 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Claudiu Beznea <claudiu.beznea@microchip.com>
+Cc:     ludovic.desroches@microchip.com, tudor.ambarus@microchip.com,
+        linux-arm-kernel@lists.infradead.org, dmaengine@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] counter: drop chrdev_lock
-Message-ID: <YW0PVYT/GCKAnjN9@kroah.com>
-References: <20211017185521.3468640-1-david@lechnology.com>
+Subject: Re: [PATCH 0/4] dmaengine: at_xdmac: fixes and code enhancements
+Message-ID: <YW0QPwmB2BNQb7Bl@matsya>
+References: <20211007111230.2331837-1-claudiu.beznea@microchip.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211017185521.3468640-1-david@lechnology.com>
+In-Reply-To: <20211007111230.2331837-1-claudiu.beznea@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 17, 2021 at 01:55:21PM -0500, David Lechner wrote:
-> This removes the chrdev_lock from the counter subsystem. This was
-> intended to prevent opening the chrdev more than once. However, this
-> doesn't work in practice since userspace can duplicate file descriptors
-> and pass file descriptors to other processes. Since this protection
-> can't be relied on, it is best to just remove it.
+On 07-10-21, 14:12, Claudiu Beznea wrote:
+> Hi,
+> 
+> The following series adds some fixes and code enhancements for at_xdmac
+> driver.
 
-Much better, thanks!
+Applied, thanks
 
-One remaining question:
-
-> --- a/include/linux/counter.h
-> +++ b/include/linux/counter.h
-> @@ -297,7 +297,6 @@ struct counter_ops {
->   * @events:		queue of detected Counter events
->   * @events_wait:	wait queue to allow blocking reads of Counter events
->   * @events_lock:	lock to protect Counter events queue read operations
-> - * @chrdev_lock:	lock to limit chrdev to a single open at a time
->   * @ops_exist_lock:	lock to prevent use during removal
-
-Why do you still need 2 locks for the same structure?
-
-thanks,
-
-greg k-h
+-- 
+~Vinod
