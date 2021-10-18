@@ -2,107 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFBA6431644
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 12:37:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAB5F431648
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 12:38:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230324AbhJRKjp convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 18 Oct 2021 06:39:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50772 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229473AbhJRKjo (ORCPT
+        id S230440AbhJRKlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 06:41:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41538 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229569AbhJRKlG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 06:39:44 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50A4FC061714
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 03:37:33 -0700 (PDT)
-Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1mcQ1B-0002BW-0I; Mon, 18 Oct 2021 12:37:21 +0200
-Received: from pza by lupine with local (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1mcQ19-0005y0-Mz; Mon, 18 Oct 2021 12:37:19 +0200
-Message-ID: <6f46c5ab7458e1368abfeb8dee6e24271f39d236.camel@pengutronix.de>
-Subject: Re: [PATCH v6 2/2] pinctrl: microchip sgpio: use reset driver
-From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     Horatiu Vultur <horatiu.vultur@microchip.com>,
-        linus.walleij@linaro.org, robh+dt@kernel.org,
-        lars.povlsen@microchip.com, Steen.Hegelund@microchip.com,
-        UNGLinuxDriver@microchip.com, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Date:   Mon, 18 Oct 2021 12:37:19 +0200
-In-Reply-To: <20211018085754.1066056-3-horatiu.vultur@microchip.com>
-References: <20211018085754.1066056-1-horatiu.vultur@microchip.com>
-         <20211018085754.1066056-3-horatiu.vultur@microchip.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.30.5-1.1 
+        Mon, 18 Oct 2021 06:41:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634553534;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GJpjwYzBEePfLIvqc/wA36RQv/Hj/p+rbazzXrU5BSU=;
+        b=HMPCIBB1uTbUspvgOgDxcibjAYVRjW0kKMixnCU8xA/izEy5ksgwTUQ+Z1eyZVJP7WLeOe
+        1E/1RoFqz59+oCs9vwAPtydF8lVi7XQlbM34Szmh7KK+eKCVw2yUuZ/0czSV7Y1N15I7H1
+        qrWuvZbdHda2+QlHl9bK/7VZ3sIArAU=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-306-Dd6Sby7jMWOvnzBtw1EGjw-1; Mon, 18 Oct 2021 06:38:53 -0400
+X-MC-Unique: Dd6Sby7jMWOvnzBtw1EGjw-1
+Received: by mail-ed1-f70.google.com with SMTP id l22-20020aa7c316000000b003dbbced0731so13967402edq.6
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 03:38:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=GJpjwYzBEePfLIvqc/wA36RQv/Hj/p+rbazzXrU5BSU=;
+        b=mqbVPCtF5vEfEt0V8DUiEZY3tqywi1VyCB3TbiaJdH6targYnpMDxclOfJ3HEuG8rV
+         QwasJrrNlLaqL1451kfOH3WelXIGQTL4I8njLA48nrAfaUOzNutSbNykXg/K9xSsSeUg
+         2JRgEVqvS6rTu1Bv3rT++mSEnw8xVRNz1xQcHHJBzmHEU+DaDyBfw28rOeQeGtEA/EKd
+         gKoFQjXHiG0Ud65cbcfJurQ9piDt8d3V1wISauH5Fxs/iok0xqC8LzJe33GdzxkudrP+
+         Vi0S44O9Gee+0LEEJR4568g0TP4DaVyKwzeRzBZqZJLzJnCZY52ezkrztYE5u4madj2M
+         T1RA==
+X-Gm-Message-State: AOAM5331jYzeN9NQr/R0O/a8UUFrfbGAT0x8wFcgzMmA4fUslZp5FY//
+        ERUgCYJoYLffXaytAfHZYJVxYU6gvuzvM02iFb7KtCae1nFNIpuvAXp0dNTOUzd9yEDfvC4/1Fg
+        +wVyK1asQwzF+u9Jq6BZuQh8b
+X-Received: by 2002:a17:906:180a:: with SMTP id v10mr28975208eje.112.1634553532170;
+        Mon, 18 Oct 2021 03:38:52 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyvmIzC9O5OnhTRWtlgSgEVOb1rej/eg3p3hqWp1+bsmCinM+Ngm6dO9xcehdy0EVTAOjpAcQ==
+X-Received: by 2002:a17:906:180a:: with SMTP id v10mr28975190eje.112.1634553531989;
+        Mon, 18 Oct 2021 03:38:51 -0700 (PDT)
+Received: from [10.40.1.223] ([81.30.35.201])
+        by smtp.gmail.com with ESMTPSA id x16sm8909256ejj.8.2021.10.18.03.38.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Oct 2021 03:38:51 -0700 (PDT)
+Message-ID: <3c9d4f9b-26c2-a135-eb2e-67963aa0bc0b@redhat.com>
+Date:   Mon, 18 Oct 2021 12:38:51 +0200
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [RFC PATCH 1/1] ACPI / PMIC: Add i2c address to intel_pmic_bytcrc
+ driver
+Content-Language: en-US
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Tsuchiya Yuto <kitakar@gmail.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>, Andy Shevchenko <andy@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20211017161523.43801-1-kitakar@gmail.com>
+ <20211017161523.43801-2-kitakar@gmail.com>
+ <3e6428f1-9411-fac6-9172-1dfe6de58c28@redhat.com>
+ <CAHp75VcA+=OsmX7o2WTvYgf8TNpE64qEHq=MVm5vVP-4RBk+ng@mail.gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <CAHp75VcA+=OsmX7o2WTvYgf8TNpE64qEHq=MVm5vVP-4RBk+ng@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Horatiu,
+Hi,
 
-On Mon, 2021-10-18 at 10:57 +0200, Horatiu Vultur wrote:
-> On lan966x platform when the switch gets reseted then also the sgpio
-> gets reseted. The fix for this is to extend also the sgpio driver to
-> call the reset driver which will be reseted only once by the first
-> driver that is probed.
+On 10/18/21 12:31, Andy Shevchenko wrote:
+> On Mon, Oct 18, 2021 at 12:16 PM Hans de Goede <hdegoede@redhat.com> wrote:
+>> On 10/17/21 18:15, Tsuchiya Yuto wrote:
+>>> On Microsoft Surface 3 (uses Intel's Atom Cherry Trail SoC), executing
 > 
-> Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
-> ---
->  drivers/pinctrl/pinctrl-microchip-sgpio.c | 7 +++++++
->  1 file changed, 7 insertions(+)
+> ...
 > 
-> diff --git a/drivers/pinctrl/pinctrl-microchip-sgpio.c b/drivers/pinctrl/pinctrl-microchip-sgpio.c
-> index 072bccdea2a5..78765faa245a 100644
-> --- a/drivers/pinctrl/pinctrl-microchip-sgpio.c
-> +++ b/drivers/pinctrl/pinctrl-microchip-sgpio.c
-> @@ -17,6 +17,7 @@
->  #include <linux/pinctrl/pinmux.h>
->  #include <linux/platform_device.h>
->  #include <linux/property.h>
-> +#include <linux/reset.h>
->  
->  #include "core.h"
->  #include "pinconf.h"
-> @@ -803,6 +804,7 @@ static int microchip_sgpio_probe(struct platform_device *pdev)
->  	int div_clock = 0, ret, port, i, nbanks;
->  	struct device *dev = &pdev->dev;
->  	struct fwnode_handle *fwnode;
-> +	struct reset_control *reset;
->  	struct sgpio_priv *priv;
->  	struct clk *clk;
->  	u32 val;
-> @@ -813,6 +815,11 @@ static int microchip_sgpio_probe(struct platform_device *pdev)
->  
->  	priv->dev = dev;
->  
-> +	reset = devm_reset_control_get_optional_shared(&pdev->dev, "switch");
+>> As Andy said we could use a DMI quirk for this, but chances are that the Microsoft Surface
+>> DSDT is not the only one with the wrong HRV value. So instead it might be better to
+>> just test for the SoC type as the attached patch does.
+>>
+>> Tsuchiya, can you give the attached patch a try.
+>>
+>> Andy, what do you think, should we go with the attached patch or would you prefer using
+>> a DMI quirk ?
+> 
+> TBH I have no strong opinion. Only one remark on your patch, I am not
+> a fan of removing COMPILE_TEST but at the same time I'm not a fan of
+> ifdeffery. All on all I think having COMPILE_TEST is preferable even
+> if we have ifdeffery. Btw, IIRC similar code (i.e. BYT vs CHT by CPU
+> ID) is being used elsewhere. Perhaps we might have some common
+> (library) under arc/x86, PDx86 or so (headers?)?
 
-This is the first GPIO driver that I am aware of that requests a named
-reset control, so I'm still not sure if this should be called "switch"
-instead of "gpio" or just "reset", just in case there is a future model
-where the GPIO controller reset is not shared with the switch reset.
+We already have helpers for this defined in:
 
-> +	if (IS_ERR(reset))
-> +		return dev_err_probe(dev, PTR_ERR(reset), "Failed to get reset\n");
-> +	reset_control_reset(reset);
-> +
->  	clk = devm_clk_get(dev, NULL);
->  	if (IS_ERR(clk))
->  		return dev_err_probe(dev, PTR_ERR(clk), "Failed to get clock\n");
+sound/soc/intel/common/soc-intel-quirks.h
 
-But whichever name you choose, the code is
+We could move those to some header under include, maybe:
 
-Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
+include/linux/platform_data/x86/atom.h
 
-regards
-Philipp
+And add #ifdef-ery there so that things will also build on
+non x86 ?
+
+Then we could do a 2 patch series adding the
+include/linux/platform_data/x86/atom.h
+file + the drivers/mfd/intel_soc_pmic_core.c
+change and Lee can merge both through the MFD tree.
+
+And then we can do further clean-ups of e.g. sound/soc
+on top (we can ask Lee to provide an immutable branch).
+
+How does that sound ?
+
+Regards,
+
+Hans
+
