@@ -2,120 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2AC54325D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 20:00:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ADFA432644
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 20:22:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231793AbhJRSDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 14:03:03 -0400
-Received: from mail-oi1-f173.google.com ([209.85.167.173]:39716 "EHLO
-        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229634AbhJRSDC (ORCPT
+        id S229980AbhJRSYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 14:24:48 -0400
+Received: from smtprelay0087.hostedemail.com ([216.40.44.87]:34592 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232608AbhJRSYr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 14:03:02 -0400
-Received: by mail-oi1-f173.google.com with SMTP id m67so904102oif.6;
-        Mon, 18 Oct 2021 11:00:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fJW+JPWEfavDVityhwlsFWcBG/x4wTATfK/QnHQWFdU=;
-        b=VtrkeaTzApa9g4wXc64SVOr7nDcMg4gZONPqXXXoe2J3DPW8JfFNWNtZwqzqMihKqc
-         vyrYGaYQN2ekAPYGvOAR2P8wgMY9FvvBMaWDGpH407PfbTjloSrWRfW2wyK8jzmEXIxJ
-         N4S4OQDBY9VrvK1Et05klmN9v1eu+q/17RFOaiMOWDZOjaJcLFd1Ty+G4OKbvdgB8T19
-         agjEhL7CN05Ou2Y58lJPHoyK0g2ompUcD4xcNOxcOHFeacAN9se3Gbgo46rMLLfYtiyx
-         NXwRRpKTImpRr/PyOdbILjx3jIT+VbCUaicO0dL7t07mcTQjgkytC7Br6rEXjiHxRdGb
-         qkmg==
-X-Gm-Message-State: AOAM530ObzdZG1rcBQ+u1wr3+gegQ115HnZ+Y4AsttJtfTlV/aSmMyjS
-        39t+5XX3KK200co/A3tQCw==
-X-Google-Smtp-Source: ABdhPJx0zMKQn0IsUB6FiRV3VCu0QuhyImdpIY9W6aijL2TTnDHJplBHXgjLwQiM85yFBPL95REEQA==
-X-Received: by 2002:a05:6808:14d6:: with SMTP id f22mr310894oiw.152.1634580050834;
-        Mon, 18 Oct 2021 11:00:50 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id p133sm3049367oia.11.2021.10.18.11.00.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 11:00:50 -0700 (PDT)
-Received: (nullmailer pid 2662534 invoked by uid 1000);
-        Mon, 18 Oct 2021 18:00:48 -0000
-Date:   Mon, 18 Oct 2021 13:00:48 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Prasanna Vengateshan <prasanna.vengateshan@microchip.com>,
-        netdev@vger.kernel.org, olteanv@gmail.com,
-        UNGLinuxDriver@microchip.com, Woojung.Huh@microchip.com,
-        hkallweit1@gmail.com, linux@armlinux.org.uk, davem@davemloft.net,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        vivien.didelot@gmail.com, f.fainelli@gmail.com,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v4 net-next 01/10] dt-bindings: net: dsa: dt bindings for
- microchip lan937x
-Message-ID: <YW22UEelVFoNVYrG@robh.at.kernel.org>
-References: <20211007151200.748944-1-prasanna.vengateshan@microchip.com>
- <20211007151200.748944-2-prasanna.vengateshan@microchip.com>
- <YV9pk13TT9W7X2i1@lunn.ch>
+        Mon, 18 Oct 2021 14:24:47 -0400
+Received: from omf11.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 50382181D68DB;
+        Mon, 18 Oct 2021 18:22:34 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf11.hostedemail.com (Postfix) with ESMTPA id ABD3A20A297;
+        Mon, 18 Oct 2021 18:22:32 +0000 (UTC)
+Message-ID: <fae1a43259879b797bb13ac8dcc2579246977b2e.camel@perches.com>
+Subject: Re: [PATCH] s390: replace snprintf in show functions with
+ sysfs_emit
+From:   Joe Perches <joe@perches.com>
+To:     Vineeth Vijayan <vneethv@linux.ibm.com>,
+        Qing Wang <wangqing@vivo.com>,
+        Stefan Haberland <sth@linux.ibm.com>,
+        Jan Hoeppner <hoeppner@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <2b1b939e1ea960c2268791f3007305955a70a90f.camel@linux.ibm.com>
+References: <1634280655-4908-1-git-send-email-wangqing@vivo.com>
+         <2b1b939e1ea960c2268791f3007305955a70a90f.camel@linux.ibm.com>
+Content-Type: text/plain; charset="ISO-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YV9pk13TT9W7X2i1@lunn.ch>
+Date:   Mon, 18 Oct 2021 07:20:39 -0700
+User-Agent: Evolution 3.40.4-1 
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Server: rspamout05
+X-Rspamd-Queue-Id: ABD3A20A297
+X-Spam-Status: No, score=-2.64
+X-Stat-Signature: k6gtg8qg4bm3f9b6ixg5bdepsjia3h5w
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1+E0FhiHCg+F/OTIuiyA/MW2dW4ngF7I84=
+X-HE-Tag: 1634581352-566392
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 07, 2021 at 11:41:39PM +0200, Andrew Lunn wrote:
-> > +examples:
-> > +  - |
-> > +    #include <dt-bindings/gpio/gpio.h>
-> > +
-> > +    //Ethernet switch connected via spi to the host
-> > +    ethernet {
-> > +      #address-cells = <1>;
-> > +      #size-cells = <0>;
-> > +
-> > +      fixed-link {
-> > +        speed = <1000>;
-> > +        full-duplex;
-> > +      };
-> > +    };
-> > +
-> > +    spi {
-> > +      #address-cells = <1>;
-> > +      #size-cells = <0>;
-> > +
-> > +      lan9374: switch@0 {
-> > +        compatible = "microchip,lan9374";
-> > +        reg = <0>;
-> > +
-> > +        spi-max-frequency = <44000000>;
-> > +
-> > +        ethernet-ports {
-> > +          #address-cells = <1>;
-> > +          #size-cells = <0>;
-> > +          port@0 {
-> > +            reg = <0>;
-> > +            label = "lan1";
-> > +            phy-mode = "internal";
-> > +            phy-handle = <&t1phy0>;
-> > +          };
-> 
-> ...
-> 
-> > +        mdio {
-> > +          #address-cells = <1>;
-> > +          #size-cells = <0>;
-> > +
-> > +          t1phy0: ethernet-phy@0{
-> > +            reg = <0x0>;
-> > +          };
-> 
-> Does this pass Rob's DT schema proof tools? You don't have any
-> description of the mdio properties.
+On Mon, 2021-10-18 at 13:50 +0200, Vineeth Vijayan wrote:
+> Acked-by: Vineeth Vijayan <vneethv@linux.ibm.com>  
+[]
+> On Thu, 2021-10-14 at 23:50 -0700, Qing Wang wrote:
+> > show() must not use snprintf() when formatting the value to be
+> > returned to user space.
+[]
+> > diff --git a/drivers/s390/block/dasd_devmap.c b/drivers/s390/block/dasd_devmap.c
+[]
+> > @@ -731,7 +731,7 @@ static ssize_t dasd_ff_show(struct device *dev,
+[]
+> > -	return snprintf(buf, PAGE_SIZE, ff_flag ? "1\n" : "0\n");
+> > +	return sysfs_emit(buf, ff_flag ? "1\n" : "0\n");
 
-Good catch. It will pass ATM only because 'unevaluatedProperties' is not 
-yet implemented (should be in place soon). So it needs:
+It's more common to use
 
-mdio:
-  $ref: /schemas/net/mdio.yaml#
-  unevaluatedProperties: false
+	return sysfs_emit(buf, "%d\n", ff_flag);
 
-Otherwise, this looks fine.
+> > @@ -773,7 +773,7 @@ dasd_ro_show(struct device *dev, struct
+[]
+> > -	return snprintf(buf, PAGE_SIZE, ro_flag ? "1\n" : "0\n");
+> > +	return sysfs_emit(buf, ro_flag ? "1\n" : "0\n");
 
-Rob
+etc...
+
+
