@@ -2,91 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 851E0432324
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 17:41:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18DB9432329
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 17:42:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232785AbhJRPno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 11:43:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37904 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232209AbhJRPnl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 11:43:41 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA39FC06161C;
-        Mon, 18 Oct 2021 08:41:30 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id r2so16625423pgl.10;
-        Mon, 18 Oct 2021 08:41:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=e2c2jS2FrJNz2g2mQLqY/djnjI6hageyLGZiZ51JrFA=;
-        b=B0yNCsmlEjlEqqJmYDGGVX8eRBpnA0UZ72+fIvTAr/QDkkAEqiP7otU2dPnhkxNZYX
-         TbaxREVIC7ERaYt28ELhLfVJSDTBvpQ6d14thJDO1z5vAfS0KvPFCuRKS6DkA5C2AH4n
-         kbStD9ta7eYbxylYHF7tJl35XMrF9rt5ZNHhCa53MIS+nOJO7z6YgcjudqDthWQ5CvD+
-         JX7yxaljn08B/LbSHLsLQSY/IWuecSyAsBHReiJt1j30uLQ0u+iQkFjya1Dr2xgGyWu+
-         5WGTNEQ2EGqAqTsmbz6G4g958nCSSCSunx9aXVHQuGnUK8VDLCqr9CVrsCcZ7d3qjV15
-         Ij6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=e2c2jS2FrJNz2g2mQLqY/djnjI6hageyLGZiZ51JrFA=;
-        b=4jzClMs+pPDQHI7Gw5gCJAS7N5QJTZ+oOrbUe23AocLHaqXtQseAJWC+KwY3k21ylF
-         llq19rsa2HSkQdQpDflXo8c/Ni4IwzcfL+V5/7kFsuynJa62JqQLkrC368UeTaDz0Nxn
-         M6m9hbB/aj0TiviFxpVyiUoPCzEig0RW/4Zvhc50XBQzRi7fZhPvatqdi189xaIZdl6M
-         fh/06O3DDPqVtqE65TdrDJbsUs338W+R5nQkQMEgsBsXZz898FOyFX2257/grvOmme9k
-         8mJCDrrn0BvCDd7grgTwD+vsEAITzT6JJT218xjwt2oGI9S11r17kt+HEdAaU7Dqs5N0
-         59Vg==
-X-Gm-Message-State: AOAM531FmyIWXc2Mt/meACJ/lZmNg6oXSYamaAld3cmffeYB+DdongVZ
-        JZ0f4RV16RtSRbPMEQNdzdryYsFoZLayo8sZ6II=
-X-Google-Smtp-Source: ABdhPJwBZYesskDJVr40zrVeAU2kr9mjJC+H1ix1FsMLMfOj2fcaGrteLU/CUoaMOqhpqtKHZ6iQ6A==
-X-Received: by 2002:a65:6389:: with SMTP id h9mr24542202pgv.83.1634571689597;
-        Mon, 18 Oct 2021 08:41:29 -0700 (PDT)
-Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
-        by smtp.gmail.com with ESMTPSA id v7sm13137233pjk.37.2021.10.18.08.41.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 08:41:28 -0700 (PDT)
-Message-ID: <616d95a8.1c69fb81.cffcf.451d@mx.google.com>
-Date:   Mon, 18 Oct 2021 08:41:28 -0700 (PDT)
-X-Google-Original-Date: Mon, 18 Oct 2021 15:41:27 GMT
-From:   Fox Chen <foxhlchen@gmail.com>
-In-Reply-To: <20211018132340.682786018@linuxfoundation.org>
-Subject: RE: [PATCH 5.14 000/151] 5.14.14-rc1 review
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Fox Chen <foxhlchen@gmail.com>
+        id S233269AbhJRPoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 11:44:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51756 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232417AbhJRPoO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 11:44:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B6BC260F44;
+        Mon, 18 Oct 2021 15:42:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634571723;
+        bh=plY9CKiofGs0QkpzTRLAqZRAXAqM+ZcTVwgNz5Yezcw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=WM3Hf3LHiusCJPBU/HQJNTjhrs191xBECi1QayARE6FS7QAendKd3BPH+JOE0xiOj
+         5hJMbAiw2M6wNO9tKuoP1ul/15KKA1rYRlbxGz9E7RhsIxW1zGlBGp71nwkQSZi/tj
+         tSeSTQEL+Q189zUNWZY8CXXsP9ScklRYgYxHOpwP5YMq+OAMXkVQxbcp54RHXHvQ3f
+         irnk+DTuRfLod6y7HpMS4iZ2XC8R7dwCTgebwIdxjmKY6mE05d4b9Dwen0WgfD5MTm
+         Xxp9pEfgO1OP23jJ/ta83mUiottAJF7VPN6f9vPNKlkmwpuksmNDgg4MFBZ8ErJMkC
+         qf4rP9wltmw4A==
+Date:   Mon, 18 Oct 2021 08:42:01 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Vlad Buslov <vladbu@nvidia.com>
+Cc:     Paolo Abeni <pabeni@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        syzbot <syzbot+62e474dd92a35e3060d8@syzkaller.appspotmail.com>,
+        <andrii@kernel.org>, <ast@kernel.org>, <bpf@vger.kernel.org>,
+        <davem@davemloft.net>, <hawk@kernel.org>,
+        <john.fastabend@gmail.com>, <kafai@fb.com>, <kpsingh@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <songliubraving@fb.com>, <syzkaller-bugs@googlegroups.com>,
+        <yhs@fb.com>, <toke@toke.dk>, <joamaki@gmail.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Maxim Mikityanskiy <maximmi@nvidia.com>
+Subject: Re: [syzbot] BUG: corrupted list in netif_napi_add
+Message-ID: <20211018084201.4c7e5be1@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <ygnh5ytubfa4.fsf@nvidia.com>
+References: <0000000000005639cd05ce3a6d4d@google.com>
+        <f821df00-b3e9-f5a8-3dcb-a235dd473355@iogearbox.net>
+        <f3cc125b2865cce2ea4354b3c93f45c86193545a.camel@redhat.com>
+        <ygnh5ytubfa4.fsf@nvidia.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 18 Oct 2021 15:22:59 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> This is the start of the stable review cycle for the 5.14.14 release.
-> There are 151 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Mon, 18 Oct 2021 17:04:19 +0300 Vlad Buslov wrote:
+> We got a use-after-free with very similar trace [0] during nightly
+> regression. The issue happens when ip link up/down state is flipped
+> several times in loop and doesn't reproduce for me manually. The fact
+> that it didn't reproduce for me after running test ten times suggests
+> that it is either very hard to reproduce or that it is a result of some
+> interaction between several tests in our suite.
 > 
-> Responses should be made by Wed, 20 Oct 2021 13:23:15 +0000.
-> Anything received after that time might be too late.
+> [0]:
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.14-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+> [ 3187.779569] mlx5_core 0000:08:00.0 enp8s0f0: Link up
+>  [ 3187.890694] ==================================================================
+>  [ 3187.892518] BUG: KASAN: use-after-free in __list_add_valid+0xc3/0xf0
+>  [ 3187.894132] Read of size 8 at addr ffff8881150b3fb8 by task ip/119618
 
-5.14.14-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
-                
-Tested-by: Fox Chen <foxhlchen@gmail.com>
-
+Hm, not sure how similar it is. This one looks like channel was freed
+without deleting NAPI. Do you have list debug enabled?
