@@ -2,136 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F16AD431158
+	by mail.lfdr.de (Postfix) with ESMTP id A7FC1431157
 	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 09:21:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230431AbhJRHXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 03:23:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34010 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230345AbhJRHXc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S230389AbhJRHXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 03:23:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43442 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230219AbhJRHXc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 18 Oct 2021 03:23:32 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46503C06161C
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 00:21:22 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id i76so11877776pfe.13
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 00:21:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=Waoh7FE62gxhLg87Tgkd+4LHcbVYAyUliQvnhrotbxk=;
-        b=h4Tbs5GvBbuRfGr031ZMbAh5DaUTySUYg1xnPJHqeG/ba3Il2EMzR1KHM/VEvPIJBF
-         ExTWoneFMhPcjf4ivjM4DUOlzBefb2SDn33Dm8oA0mQ3178xoHSIDJvPry2EZZBtVL5v
-         R8nSsQx+OLYn33P/yjqTgiAvYkN7uBZ9vvmb0HANUrQzTEiA568sD8aswZrWndnZe4hT
-         1qlxBN3B/z/gTOrH89uP93yM+Aw4dgNMe9H7VV7YIogeV2GFIIIL51nHEE3RQItOD+vN
-         6BHYqPegdAOh7eJVA8RrwTjao4YO678CKjWEntvMb1LzTPRVTUb8SqLtYcwGGoaD5UeR
-         NlBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=Waoh7FE62gxhLg87Tgkd+4LHcbVYAyUliQvnhrotbxk=;
-        b=K8H4IGI+kSjaAD6s/nKMdD3/xCEC0eJGnvFxf9M70fkyA5gB+/aaZGNLV0YlncVrbe
-         wWKM1Kqr9lRo8EC4Tke/y+u+CHnDwX5uHoMFonhG+nujoaQxTHNg+M2Q6A6JVoisYYkC
-         p3nHPQW8d0hmWa8El5r2xBrfVRe447/D5MvshNQivjY+srdBLeO8rgCnvepi6DFD8C73
-         RvrLANnm7WwZdsX5DjJZuwQXWPzE66a8e+2Zr0hEQCm5yxda8gkJiCtXC2Vug343j9RL
-         c27fJClAz8/KVohBwwk2zSMmFepIW/8N7pWfnvzZRS4+DIPVcVWkzIwy4M1NeZaGhTGv
-         SU3A==
-X-Gm-Message-State: AOAM532cdLy2CwfMNw7Uq2Zmk8tSpoGnO1aSasd82geXchAoNwZ5PVyq
-        N1tQe9bCubAHmFVyWvT+CXo=
-X-Google-Smtp-Source: ABdhPJw3nU8/N+oGHEw8P2MVDpVsZS7A/mRkIbKeU6e5yjmfYYJ/kOxxZLj371LVxAAnOvb/+rPL7w==
-X-Received: by 2002:aa7:83d1:0:b0:44c:654a:be1d with SMTP id j17-20020aa783d1000000b0044c654abe1dmr26871180pfn.68.1634541681824;
-        Mon, 18 Oct 2021 00:21:21 -0700 (PDT)
-Received: from [172.18.2.138] ([137.59.101.13])
-        by smtp.gmail.com with ESMTPSA id 17sm12101171pgr.10.2021.10.18.00.21.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Oct 2021 00:21:21 -0700 (PDT)
-Subject: Re: WARNING in __init_work
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Hao Sun <sunhao.th@gmail.com>, Hillf Danton <hdanton@sina.com>,
-        hch@infradead.org, willy@infradead.org,
-        Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs@googlegroups.com
-References: <CACkBjsZfAZpOFeYC8mQ03r_JB_eF-dNMEkXf3LNji7_CgOCF2Q@mail.gmail.com>
- <20210907074432.3711-1-hdanton@sina.com>
- <CACkBjsYsxNqkup1FQkP4eMzxZ_xNgifPx+gFxEo0gnBUYPp1PQ@mail.gmail.com>
- <d242861c-5c41-0d1b-3f71-43f50e5a3b68@gmail.com>
- <20211018044745.GA23657@lst.de>
-From:   Zqiang <qiang.zhang1211@gmail.com>
-Message-ID: <a46dfeb8-8217-c0cc-bdce-08a7605a5a25@gmail.com>
-Date:   Mon, 18 Oct 2021 15:21:18 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 17BC860FDC;
+        Mon, 18 Oct 2021 07:21:22 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mcMxT-00HTN0-TN; Mon, 18 Oct 2021 08:21:20 +0100
 MIME-Version: 1.0
-In-Reply-To: <20211018044745.GA23657@lst.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Date:   Mon, 18 Oct 2021 08:21:19 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Samuel Holland <samuel@sholland.org>, guoren@kernel.org
+Cc:     anup@brainfault.org, atish.patra@wdc.com, tglx@linutronix.de,
+        palmer@dabbelt.com, heiko@sntech.de, robh@kernel.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        Guo Ren <guoren@linux.alibaba.com>
+Subject: Re: [PATCH V4 1/3] irqchip/sifive-plic: Add thead,c900-plic support
+In-Reply-To: <8be1bdbd-365d-cd28-79d7-b924908f9e39@sholland.org>
+References: <20211016032200.2869998-1-guoren@kernel.org>
+ <20211016032200.2869998-2-guoren@kernel.org>
+ <8be1bdbd-365d-cd28-79d7-b924908f9e39@sholland.org>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <f850af365f2ac77af79ec59f92e6434a@kernel.org>
+X-Sender: maz@kernel.org
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: samuel@sholland.org, guoren@kernel.org, anup@brainfault.org, atish.patra@wdc.com, tglx@linutronix.de, palmer@dabbelt.com, heiko@sntech.de, robh@kernel.org, linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, guoren@linux.alibaba.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021-10-18 06:17, Samuel Holland wrote:
+> On 10/15/21 10:21 PM, guoren@kernel.org wrote:
+>> From: Guo Ren <guoren@linux.alibaba.com>
+>> 
+>> 1) The irq_mask/unmask() is used by handle_fasteoi_irq() is mostly
 
-On 2021/10/18 下午12:47, Christoph Hellwig wrote:
->
-> On Mon, Oct 18, 2021 at 12:43:38PM +0800, Zqiang wrote:
->> This is the details of the test, Hope it helps you
-> Call me stupid, but I can only find the trace and linked to unreadable
-> google sites that wan't me to log in somehow and no actual details.
->
-> If you have a direct link to the reproducer (an attachment would do
-> it as well) I'd love to try it myself.
->
-> Otherwise this commit in the block-5.15 tree should help to catch what
-> I suspect is the root cause (final ref drop before unregister) earlier
-> and with a better backtrace:
->
-> https://git.kernel.dk/cgit/linux-block/commit/?h=block-5.15&id=a20417611b98e12a724e5c828c472ea16990b71f
+Drop this useless numbering.
 
-I found the following calltrace
+>> for ONESHOT irqs and there is no limitation in the RISC-V PLIC driver
+>> due to use of irq_mask/unmask() callbacks. In fact, a lot of irqchip
+>> drivers using handle_fasteoi_irq() also implement irq_mask/unmask().
 
-Call Trace:
-[  326.460593][T27634]  dump_stack_lvl+0x8d/0xcf
-[  326.461773][T27634]  should_fail+0x13c/0x160
-[  326.462921][T27634]  should_failslab+0x5/0x10
-[  326.464038][T27634] slab_pre_alloc_hook.constprop.100+0x4e/0xc0
-[  326.466040][T27634]  kmem_cache_alloc+0x44/0x2a0
-[  326.466921][T27634]  __kernfs_new_node+0x68/0x350
-[  326.469602][T27634]  kernfs_new_node+0x5a/0x90
-[  326.470441][T27634]  __kernfs_create_file+0x56/0x150
-[  326.471386][T27634]  sysfs_add_file_mode_ns+0xe6/0x290
-[  326.472358][T27634]  internal_create_group+0x186/0x4e0
-[  326.473331][T27634]  internal_create_groups.part.4+0x4d/0xb0
-[  326.474288][T27634]  sysfs_create_groups+0x28/0x40
-[  326.474918][T27634]  device_add+0x4c3/0xc60
-[  326.476286][T27634]  add_partition+0x262/0x450
-[  326.476919][T27634]  bdev_disk_changed+0x3ec/0x800
-[  326.477615][T27634]  loop_reread_partitions+0x2d/0x70
-[  326.478515][T27634]  loop_set_status+0x274/0x320
-[  326.479373][T27634]  lo_ioctl+0x392/0x920
-[  326.481271][T27634]  blkdev_ioctl+0x2ff/0x370
-[  326.482438][T27634]  block_ioctl+0x55/0x70
-[  326.483605][T27634]  __x64_sys_ioctl+0xb6/0x100
-[  326.484241][T27634]  do_syscall_64+0x34/0xb0
-[  326.484843][T27634]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+This paragraph doesn't provide any useful information in the context
+of this patch. That's at best cover-letter material.
 
-I find in add_partition(),  if the device_add() return error, we will 
-drop disk object reference count,
+>> 2) The C9xx PLIC does not comply with the interrupt claim/completion
+>> process defined by the RISC-V PLIC specification because C9xx PLIC
+>> will mask an IRQ when it is claimed by PLIC driver (i.e. readl(claim)
+>> and the IRQ will be unmasked upon completion by PLIC driver (i.e.
+>> writel(claim). This behaviour breaks the handling of IRQS_ONESHOT by
+>> the generic handle_fasteoi_irq() used in the PLIC driver.
+>> 
+>> 3) This patch adds an errata fix for IRQS_ONESHOT handling on
 
-but i find put_device(pdev) (will call part_release())and 
-put_disk(disk), both will reduce the reference of the disk object , 
-however we call get_device(disk_to_dev(disk)) only once
+s/fix/workaround/
 
-or Did I miss something and didn't analyze it？
+>> C9xx PLIC by using irq_enable/disable() callbacks instead of
+>> irq_mask/unmask().
 
-Thanks
+ From Documentation/process/submitting-patches.rst:
 
-Zqiang
+<quote>
+Describe your changes in imperative mood, e.g. "make xyzzy do frotz"
+instead of "[This patch] makes xyzzy do frotz" or "[I] changed xyzzy
+to do frotz", as if you are giving orders to the codebase to change
+its behaviour.
+</quote>
 
+>> 
+>> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+>> Cc: Anup Patel <anup@brainfault.org>
+>> Cc: Thomas Gleixner <tglx@linutronix.de>
+>> Cc: Marc Zyngier <maz@kernel.org>
+>> Cc: Palmer Dabbelt <palmer@dabbelt.com>
+>> Cc: Atish Patra <atish.patra@wdc.com>
+>> 
+>> ---
+>> 
+>> Changes since V4:
+>>  - Update comment by Anup
+>> 
+>> Changes since V3:
+>>  - Rename "c9xx" to "c900"
+>>  - Add sifive_plic_chip and thead_plic_chip for difference
+>> 
+>> Changes since V2:
+>>  - Add a separate compatible string "thead,c9xx-plic"
+>>  - set irq_mask/unmask of "plic_chip" to NULL and point
+>>    irq_enable/disable of "plic_chip" to plic_irq_mask/unmask
+>>  - Add a detailed comment block in plic_init() about the
+>>    differences in Claim/Completion process of RISC-V PLIC and C9xx
+>>    PLIC.
+>> ---
+>>  drivers/irqchip/irq-sifive-plic.c | 34 
+>> +++++++++++++++++++++++++++++--
+>>  1 file changed, 32 insertions(+), 2 deletions(-)
+>> 
+>> diff --git a/drivers/irqchip/irq-sifive-plic.c 
+>> b/drivers/irqchip/irq-sifive-plic.c
+>> index cf74cfa82045..960b29d02070 100644
+>> --- a/drivers/irqchip/irq-sifive-plic.c
+>> +++ b/drivers/irqchip/irq-sifive-plic.c
+>> @@ -166,7 +166,7 @@ static void plic_irq_eoi(struct irq_data *d)
+>>  	writel(d->hwirq, handler->hart_base + CONTEXT_CLAIM);
+>>  }
+>> 
+>> -static struct irq_chip plic_chip = {
+>> +static struct irq_chip sifive_plic_chip = {
+>>  	.name		= "SiFive PLIC",
+>>  	.irq_mask	= plic_irq_mask,
+>>  	.irq_unmask	= plic_irq_unmask,
+>> @@ -176,12 +176,32 @@ static struct irq_chip plic_chip = {
+>>  #endif
+>>  };
+>> 
+>> +/*
+>> + * The C9xx PLIC does not comply with the interrupt claim/completion
+>> + * process defined by the RISC-V PLIC specification because C9xx PLIC
+>> + * will mask an IRQ when it is claimed by PLIC driver (i.e. 
+>> readl(claim)
+>> + * and the IRQ will be unmasked upon completion by PLIC driver (i.e.
+>> + * writel(claim). This behaviour breaks the handling of IRQS_ONESHOT 
+>> by
+>> + * the generic handle_fasteoi_irq() used in the PLIC driver.
+>> + */
+>> +static struct irq_chip thead_plic_chip = {
+>> +	.name		= "T-Head PLIC",
+>> +	.irq_disable	= plic_irq_mask,
+>> +	.irq_enable	= plic_irq_unmask,
+>> +	.irq_eoi	= plic_irq_eoi,
+>> +#ifdef CONFIG_SMP
+>> +	.irq_set_affinity = plic_set_affinity,
+>> +#endif
+> I tested this, and it doesn't work. Without IRQCHIP_EOI_THREADED,
+> .irq_eoi is called at the end of the hard IRQ handler. This unmasks the
+> IRQ before the irqthread has a chance to run, so it causes an interrupt
+> storm for any threaded level IRQ (I saw this happen for sun8i_thermal).
+> 
+> With IRQCHIP_EOI_THREADED, .irq_eoi is delayed until after the 
+> irqthread
+> runs. This is good. Except that the call to unmask_threaded_irq() is
+> inside a check for IRQD_IRQ_MASKED. And IRQD_IRQ_MASKED will never be
+> set because .irq_mask is NULL. So the end result is that the IRQ is
+> never EOI'd and is masked permanently.
+> 
+> If you set .flags = IRQCHIP_EOI_THREADED, and additionally set 
+> .irq_mask
+> and .irq_unmask to a dummy function that does nothing, the IRQ core 
+> will
+> properly set/unset IRQD_IRQ_MASKED, and the IRQs will flow as expected.
+> But adding dummy functions seems not so ideal, so I am not sure if this
+> is the best solution.
 
+This series is totally broken indeed, because it assumes that
+enable/disable are a substitute to mask/unmask. Nothing could be further
+from the truth. mask/unmask must be implemented, and enable/disable
+supplement them if the HW requires something different at startup time.
 
+If you have an 'automask' behaviour and yet the HW doesn't record this
+in a separate bit, then you need to track this by yourself in the
+irq_eoi() callback instead. I guess that you would skip the write to
+the CLAIM register in this case, though I have no idea whether this 
+breaks
+the HW interrupt state or not.
 
+There is an example of this in the Apple AIC driver.
+
+         M.
+-- 
+Jazz is not dead. It just smells funny...
