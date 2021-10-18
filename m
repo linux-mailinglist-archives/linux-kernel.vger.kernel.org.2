@@ -2,74 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F121432804
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 21:55:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 121D2432809
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 21:56:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232288AbhJRT6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 15:58:01 -0400
-Received: from mail-oi1-f177.google.com ([209.85.167.177]:43775 "EHLO
-        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230159AbhJRT6A (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 15:58:00 -0400
-Received: by mail-oi1-f177.google.com with SMTP id o4so1316747oia.10;
-        Mon, 18 Oct 2021 12:55:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=PSCQKyOmWJlnzwEps4nY9i2BIUDSjYMrlj3m/fawA+U=;
-        b=kqYAbsu8gzqQas8X9277Hmx/NEEaAYo1HQ5itnBuJtMlT7cb/aKjjCPJRsXi91XTtq
-         S+4QE10m6Pub4K1cvcg9TDqRL5PIx5Q2Bskx+RD46HFe9T/857rFyYQXFEgLce5YtqRl
-         gf+WckWS+Oaxnstmlzvt1YAZoao3j8CIlpxzPbpS7a84vefmU6jg2ReDDrVn9jtDlW+h
-         8yk2JrVcqQ9Dp8PYlCpZvEQMhw9OIUDbqlgUYaaZk1Ck+ViCqg1sGARg2XN9d3im+ajN
-         kVK/h6yTgmtIK78CflUPR2Mli+QR5qIMIhdKQnbPCOQZamrdsomzUjtsrg5fikNzGUly
-         5G2A==
-X-Gm-Message-State: AOAM533yvZgb4UmT49paLRAuV1rIAArnhreYUZIFwCDSRtF+sAv81K3l
-        vORFgvABvTjyUonQ6YvGMA==
-X-Google-Smtp-Source: ABdhPJwWYlUYPfByC8b9Pgrq0I0WnyHbprLb6tyFM5Mk7fdqQS3boJddgvFi4VwaMAAZB7NoeatJ0Q==
-X-Received: by 2002:aca:a80c:: with SMTP id r12mr766920oie.88.1634586948625;
-        Mon, 18 Oct 2021 12:55:48 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id w93sm3173998otb.78.2021.10.18.12.55.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 12:55:47 -0700 (PDT)
-Received: (nullmailer pid 2847482 invoked by uid 1000);
-        Mon, 18 Oct 2021 19:55:46 -0000
-Date:   Mon, 18 Oct 2021 14:55:46 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Luca Weiss <luca@z3ntu.xyz>
-Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        konrad.dybcio@somainline.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Hector Martin <marcan@marcan.st>,
-        Vinod Koul <vkoul@kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Subject: Re: [PATCH v2 08/11] dt-bindings: arm: cpus: Add Kryo 570 CPUs
-Message-ID: <YW3RQihKQUne3abw@robh.at.kernel.org>
-References: <20211007212444.328034-1-luca@z3ntu.xyz>
- <20211007212444.328034-9-luca@z3ntu.xyz>
+        id S233532AbhJRT6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 15:58:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40318 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233326AbhJRT6V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 15:58:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 55257611EF;
+        Mon, 18 Oct 2021 19:56:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634586969;
+        bh=mizSE5xBGArY9H4hUHcLjaxNkoiuCvEqrYP3b+c4OVA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Qga3VIFHjIyGNlkogxrbKR1Ch0/4iUjF4Jpxq/vwbv8fLxdQtjU2P4zidB38PuLFU
+         xmDKZvmRHBOj8zfd+z1VLTO5cKZDFRwbwF9Q/P6OT3g678LZJ9RmGmDfqF7dFru9hg
+         rRgvRN2ZT9xXPi09MyT2G0v67XukWDofjDsoSWRM96FnMgh1QxsPVbAfquUUcNs/aw
+         mXfCQe4hYE3ypo+7y5bQMtoYo6aV4owJIMfPISg7zw89YFiZ/ARKrBHTJI2mfslUNF
+         Mk/W5pdSYM6V2ZVgmGiFhnTZjbZEyGmodgtgeMf0qzmG05IDO92Hstlrr+eJSUHvKj
+         kymKnVy2Wcjzw==
+Received: by mail-wr1-f42.google.com with SMTP id e3so43144268wrc.11;
+        Mon, 18 Oct 2021 12:56:09 -0700 (PDT)
+X-Gm-Message-State: AOAM53189gGw9Ou1/DPY3vtZRWWtZLaLQH8m8QpLlpfrL5K9VAH5SsMx
+        TaPl5ib/Qkzlh5SFdf8NOKiwLhNPfTw6Kr+VqXE=
+X-Google-Smtp-Source: ABdhPJydyJsUzWWwJISFLo02CDRywgSn21yZ3GCOt41uSGSrZDdXqSTb4vc9BVHMFnC1YUXqQlzbL8QiLrbRSrCdDzA=
+X-Received: by 2002:adf:a3da:: with SMTP id m26mr37629747wrb.336.1634586967765;
+ Mon, 18 Oct 2021 12:56:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211007212444.328034-9-luca@z3ntu.xyz>
+References: <20211013150025.2875883-1-arnd@kernel.org> <202110181245.499CB7594B@keescook>
+In-Reply-To: <202110181245.499CB7594B@keescook>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Mon, 18 Oct 2021 21:55:51 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0huVQ+pGgHFNeeoOPAwP4+KiDfBYokVzQ=fUM-QJ+H+w@mail.gmail.com>
+Message-ID: <CAK8P3a0huVQ+pGgHFNeeoOPAwP4+KiDfBYokVzQ=fUM-QJ+H+w@mail.gmail.com>
+Subject: Re: [PATCH 1/2] kasan: test: use underlying string helpers
+To:     Kees Cook <keescook@chromium.org>
+Cc:     linux-hardening@vger.kernel.org,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Marco Elver <elver@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Patricia Alfonso <trishalfonso@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 07 Oct 2021 23:24:35 +0200, Luca Weiss wrote:
-> Document Kryo 570 CPUs found in Qualcomm Snapdragon 750G (SM7225).
-> 
-> Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
-> ---
->  Documentation/devicetree/bindings/arm/cpus.yaml | 1 +
->  1 file changed, 1 insertion(+)
-> 
+On Mon, Oct 18, 2021 at 9:47 PM Kees Cook <keescook@chromium.org> wrote:
+> On Wed, Oct 13, 2021 at 05:00:05PM +0200, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
+> >
+> > Calling memcmp() and memchr() with an intentional buffer overflow
+> > is now caught at compile time:
+> >
+> > In function 'memcmp',
+> >     inlined from 'kasan_memcmp' at lib/test_kasan.c:897:2:
+> > include/linux/fortify-string.h:263:25: error: call to '__read_overflow' declared with attribute error: detected read beyond size of object (1st parameter)
+> >   263 |                         __read_overflow();
+> >       |                         ^~~~~~~~~~~~~~~~~
+> > In function 'memchr',
+> >     inlined from 'kasan_memchr' at lib/test_kasan.c:872:2:
+> > include/linux/fortify-string.h:277:17: error: call to '__read_overflow' declared with attribute error: detected read beyond size of object (1st parameter)
+> >   277 |                 __read_overflow();
+> >       |                 ^~~~~~~~~~~~~~~~~
+> >
+> > Change the kasan tests to wrap those inside of a noinline function
+> > to prevent the compiler from noticing the bug and let kasan find
+> > it at runtime.
+>
+> Is this with W=1 ? I had explicitly disabled the read overflows for
+> "phase 1" of the overflow restriction tightening...
 
-Acked-by: Rob Herring <robh@kernel.org>
+I have a somewhat modified source tree that builds cleanly with W=1 after
+disabling all the noisy ones, so this is probably one that I would not have
+seen without it.
+
+> (And what do you think of using OPTIMIZER_HIDE_VAR() instead[1]?
+>
+> [1] https://lore.kernel.org/linux-hardening/20211006181544.1670992-1-keescook@chromium.org/T/#u
+
+Yes, that is probably better. I can try updating the patch tomorrow,
+unless you do it first.
+
+       Arnd
