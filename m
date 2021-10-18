@@ -2,93 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 162344327B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 21:31:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64BBE4327B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 21:31:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233759AbhJRTdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 15:33:40 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:38412 "EHLO mail.skyhub.de"
+        id S233391AbhJRTdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 15:33:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49272 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233664AbhJRTdb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 15:33:31 -0400
-Received: from zn.tnic (p200300ec2f085700af6a7a3215758573.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:5700:af6a:7a32:1575:8573])
+        id S233182AbhJRTdf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 15:33:35 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 2B0B41EC04A9;
-        Mon, 18 Oct 2021 21:31:19 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1634585479;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=+nsWWqmqSGVwOQE+JOrowpz/RZu30zxbCfysGoaRocY=;
-        b=AEy/cLfrJofq6e20RF5dDlNHxet/AbvG36qGdU/gkziMRPWYRmUgWpWnip/LLdTtmpciPR
-        PglnkOoc8OsryDpRzkUPM0NaMJVY2jId2RymJZw1YEnxCCo0xbARdhtgl8M8xJ+lm/9xpH
-        MB12xABMXDNGjuYxsj9xYWJ3S6v9Wy8=
-Date:   Mon, 18 Oct 2021 21:31:19 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     "H. Peter Anvin" <hpa@zytor.com>
-Cc:     Jane Malalane <jane.malalane@citrix.com>,
-        LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Pu Wen <puwen@hygon.cn>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Yazen Ghannam <Yazen.Ghannam@amd.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Huang Rui <ray.huang@amd.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Kim Phillips <kim.phillips@amd.com>, stable@vger.kernel.org
-Subject: Re: [PATCH v2] x86/cpu: Fix migration safety with X86_BUG_NULL_SEL
-Message-ID: <YW3Lhwzux0K1P72e@zn.tnic>
-References: <20211013142230.10129-1-jane.malalane@citrix.com>
- <YW25x7AYiM1f1HQA@zn.tnic>
- <35CA4584-4CFD-4E47-9825-6438D9ED4ECC@zytor.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id ECC3B60E90;
+        Mon, 18 Oct 2021 19:31:23 +0000 (UTC)
+Date:   Mon, 18 Oct 2021 15:31:22 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     llvm@lists.linux.dev,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: Some potentially uninitialized values in pid_list_refill_irq()
+Message-ID: <20211018153122.2f667226@gandalf.local.home>
+In-Reply-To: <CAKXUXMyN-9JuK4Cg+5aUPWiL-0wnAJrvD4qZX3O5nCERou_j1w@mail.gmail.com>
+References: <CAKXUXMyN-9JuK4Cg+5aUPWiL-0wnAJrvD4qZX3O5nCERou_j1w@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <35CA4584-4CFD-4E47-9825-6438D9ED4ECC@zytor.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 18, 2021 at 12:10:20PM -0700, H. Peter Anvin wrote:
-> AFAIK no Intel CPU has ever had that behavior, and always cleared the
-> segments; I don't Intel has any plans of supporting such a CPUID bit
-> (although I'd certainly be willing to take such a request back to the
-> CPU teams on request.)
+On Mon, 18 Oct 2021 18:14:53 +0200
+Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
 
-No need - we can always set or clear a flag on Intel, depending on what
-we do.
+> Dear Steven,
+> 
+> Commit 8d6e90983ade ("tracing: Create a sparse bitmask for pid
+> filtering") in linux-next adds the new function pid_list_refill_irq().
+> For this function, 'make clang-analyzer' reports potentially
+> uninitialized values for lower and upper under certain branch
+> conditions, see the full report below.
+> 
+> As far as I understand the analyzer's report and the code at hand:
+> 
+> if lower_count is zero (and upper_count is not), then lower_next is
+> not assigned (because the while lower_count loop is not entered) and
+> lower is pointing to an address with an uninitialized value and hence,
+> the if (lower) conditional reads this uninitialized value.
+> 
+> Analogously for upper_count:
+> 
+> if upper_count is zero (and lower_count is not), then upper_count is
+> not assigned (because the while upper_count loop is not entered) and
+> upper is pointing to an address with an uninitialized value and hence,
+> the if (upper) conditional reads this uninitialized value.
+> 
+> I think this can be resolved by initializing upper and lower to point
+> to an address carrying a zero; but I really fight understanding the
+> whole pointer magic, you did :)
+> 
+> Let me know if clang-analyzer found something buggy here or if the
+> tool and I misunderstood the code; we are certainly interested.
+> 
 
-> That being said, this sounds like an ideal use for the hypervisor CPU
-> feature flag.
+No, you are the third (or fourth) person to report this. I just haven't
+gotten around to pushing my fixes to linux-next, as my test boxes have been
+busy testing stuff for current 5.15-rc. And the fixes are still in the
+queue to be tested.
 
-Yap, it uses it.
+I'll have that fixed in a couple of days at most.
 
-> Maybe we should consider a migration hypervisor flag too to explicitly
-> tell the kernel not to rely on hardware probing that breaks migration
-> in general.
+Thanks,
 
-Meh, migration-specific flag calls for all kinds of nasty when each
-HV would want different things to happen in the guest, for migration.
-And then the patch flood will come. I mean, we already do a bunch of
-X86_FEATURE_HYPERVISOR all over the place and apparently it is enough
-here too...
-
-> Now, with a CPUID but being introduced, the right thing would be to
-> use the CPUID bit as a feature instead of using a bug flag, and add
-> whitelisting in the vendor-specific code as applicable.
-
-I guess we can flip all that logic checking X86_BUG_NULL_SEG... it
-sounds like a lot of churn to me, though and I don't see a pressing need
-for it unless someone is bored and wants to do some kernel patching
-exercises but whatever...
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+-- Steve
