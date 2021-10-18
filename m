@@ -2,223 +2,677 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C1F8431AAD
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:22:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 166CC431DB5
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:53:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231686AbhJRNYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:24:39 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:34491 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbhJRNYh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:24:37 -0400
-Received: by mail-il1-f197.google.com with SMTP id b4-20020a056e02048400b0025932d71f2fso7957545ils.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 06:22:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=Pbp76wAdmlPNEinvDjKUNycFErp4tXhEE+oW6UED/78=;
-        b=4qmbgmrUQuSQzsdVdVky4xnAAgsM7kVI4U7nqM79x7PkLSleD6LGyLEugKjXE820Ig
-         yGvGve6XCA8tlOzsnYAzAso6o+9N7K7hVekPAWeT0v897AV12e0N13z1MppALZEw9GfS
-         WzYak4/YWBmW8XzAL2Qc2wWoeo6jHQY6OjdFRvJImjYb0RJY38ms9kybVqxcpKqstxTA
-         WbfwqEWPhlwwgRwZamf/3Hu4ZQWgpMxzRwWpQpSbmkNRj5Ue56oc0EZBGXpVQQ2G0yik
-         bR7q3lunmOkAZD+X6oDIXq+pzw8aCb8ClD4w6aX5oXXSdt6B7ssCP75MQV1Y2u9ifSkp
-         fSRA==
-X-Gm-Message-State: AOAM532BgsLiX48rX9XgfPz+A3J5cRmkCK1ay4OZMZyl5HqEsfHjL15w
-        O0TpbxtNe9GNZG8j1DJH/Y6Lb36Ss2+ooGJOmGRPZxeIziWT
-X-Google-Smtp-Source: ABdhPJzsuCxCbhz8eAIzQE2YEQ4KjsXeASOLGAltm1YEYuBBK3qt9N/uLHBxMz9oBcZpJ99irp7aL/ZaR06iGPl+gg1iRFoFmcz4
+        id S233357AbhJRNyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:54:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50006 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233565AbhJRNvg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:51:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BC4BB61884;
+        Mon, 18 Oct 2021 13:38:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1634564303;
+        bh=Of6Fmrs5Q2H20f4hPOom83IbpjFtu7vRe85niD+2FDA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=CwIVK273gH//ZSLYaNzxTksQurmr7SNBKniIMLiBh9/bWjBOgfRZJl0GhUwM+RA0U
+         LG514gPcDC9YJ6fJ3E5mmIZzBcPzbVGnQfg/JR2RFTLU0w7O+59Oq9T6SfTSGCiRlK
+         1umYaXKOspRYFz+wlgCt2tDRsV/JMevCzGdezQaI=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: [PATCH 5.14 000/151] 5.14.14-rc1 review
+Date:   Mon, 18 Oct 2021 15:22:59 +0200
+Message-Id: <20211018132340.682786018@linuxfoundation.org>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-X-Received: by 2002:a02:1688:: with SMTP id a130mr18181135jaa.40.1634563345979;
- Mon, 18 Oct 2021 06:22:25 -0700 (PDT)
-Date:   Mon, 18 Oct 2021 06:22:25 -0700
-In-Reply-To: <0000000000008c06dd05cc9003df@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000099a92c05cea06f27@google.com>
-Subject: Re: [syzbot] KASAN: use-after-free Read in kernfs_add_one
-From:   syzbot <syzbot+ef17b5b364116518fd65@syzkaller.appspotmail.com>
-To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, tj@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.14-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-5.14.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 5.14.14-rc1
+X-KernelTest-Deadline: 2021-10-20T13:23+00:00
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+This is the start of the stable review cycle for the 5.14.14 release.
+There are 151 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-HEAD commit:    cf52ad5ff16c Merge tag 'driver-core-5.15-rc6' of git://git..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=16db5734b00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=9479508d7bb83ad9
-dashboard link: https://syzkaller.appspot.com/bug?extid=ef17b5b364116518fd65
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11af3768b00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16788f94b00000
+Responses should be made by Wed, 20 Oct 2021 13:23:15 +0000.
+Anything received after that time might be too late.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+ef17b5b364116518fd65@syzkaller.appspotmail.com
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.14-rc1.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
+and the diffstat can be found below.
 
-usb 1-1: Direct firmware load for ueagle-atm/eagleI.fw failed with error -2
-usb 1-1: Falling back to sysfs fallback for: ueagle-atm/eagleI.fw
-==================================================================
-BUG: KASAN: use-after-free in kernfs_root fs/kernfs/kernfs-internal.h:48 [inline]
-BUG: KASAN: use-after-free in kernfs_add_one+0x480/0x4c0 fs/kernfs/dir.c:765
-Read of size 8 at addr ffff88807d1cf200 by task kworker/1:0/20
+thanks,
 
-CPU: 1 PID: 20 Comm: kworker/1:0 Not tainted 5.15.0-rc5-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: events request_firmware_work_func
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
- print_address_description.constprop.0.cold+0x6c/0x309 mm/kasan/report.c:256
- __kasan_report mm/kasan/report.c:442 [inline]
- kasan_report.cold+0x83/0xdf mm/kasan/report.c:459
- kernfs_root fs/kernfs/kernfs-internal.h:48 [inline]
- kernfs_add_one+0x480/0x4c0 fs/kernfs/dir.c:765
- kernfs_create_dir_ns+0x18b/0x220 fs/kernfs/dir.c:994
- sysfs_create_dir_ns+0x128/0x290 fs/sysfs/dir.c:59
- create_dir lib/kobject.c:89 [inline]
- kobject_add_internal+0x2d2/0xa60 lib/kobject.c:255
- kobject_add_varg lib/kobject.c:390 [inline]
- kobject_add+0x150/0x1c0 lib/kobject.c:442
- class_dir_create_and_add drivers/base/core.c:2950 [inline]
- get_device_parent+0x3de/0x590 drivers/base/core.c:3005
- device_add+0x2a8/0x1ee0 drivers/base/core.c:3317
- fw_load_sysfs_fallback drivers/base/firmware_loader/fallback.c:507 [inline]
- fw_load_from_user_helper drivers/base/firmware_loader/fallback.c:583 [inline]
- firmware_fallback_sysfs+0x408/0xe70 drivers/base/firmware_loader/fallback.c:659
- _request_firmware+0xbb5/0x1040 drivers/base/firmware_loader/main.c:833
- request_firmware_work_func+0xdd/0x230 drivers/base/firmware_loader/main.c:1079
- process_one_work+0x9bf/0x16b0 kernel/workqueue.c:2297
- worker_thread+0x658/0x11f0 kernel/workqueue.c:2444
- kthread+0x3e5/0x4d0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+greg k-h
 
-Allocated by task 20:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track mm/kasan/common.c:46 [inline]
- set_alloc_info mm/kasan/common.c:434 [inline]
- __kasan_slab_alloc+0x83/0xb0 mm/kasan/common.c:467
- kasan_slab_alloc include/linux/kasan.h:254 [inline]
- slab_post_alloc_hook mm/slab.h:519 [inline]
- slab_alloc_node mm/slub.c:3206 [inline]
- slab_alloc mm/slub.c:3214 [inline]
- kmem_cache_alloc+0x209/0x390 mm/slub.c:3219
- kmem_cache_zalloc include/linux/slab.h:711 [inline]
- __kernfs_new_node+0xd4/0x8b0 fs/kernfs/dir.c:585
- kernfs_new_node fs/kernfs/dir.c:647 [inline]
- kernfs_create_dir_ns+0x9c/0x220 fs/kernfs/dir.c:984
- sysfs_create_dir_ns+0x128/0x290 fs/sysfs/dir.c:59
- create_dir lib/kobject.c:89 [inline]
- kobject_add_internal+0x2d2/0xa60 lib/kobject.c:255
- kobject_add_varg lib/kobject.c:390 [inline]
- kobject_add+0x150/0x1c0 lib/kobject.c:442
- class_dir_create_and_add drivers/base/core.c:2950 [inline]
- get_device_parent+0x3de/0x590 drivers/base/core.c:3005
- device_add+0x2a8/0x1ee0 drivers/base/core.c:3317
- fw_load_sysfs_fallback drivers/base/firmware_loader/fallback.c:507 [inline]
- fw_load_from_user_helper drivers/base/firmware_loader/fallback.c:583 [inline]
- firmware_fallback_sysfs+0x408/0xe70 drivers/base/firmware_loader/fallback.c:659
- _request_firmware+0xbb5/0x1040 drivers/base/firmware_loader/main.c:833
- request_firmware_work_func+0xdd/0x230 drivers/base/firmware_loader/main.c:1079
- process_one_work+0x9bf/0x16b0 kernel/workqueue.c:2297
- worker_thread+0x658/0x11f0 kernel/workqueue.c:2444
- kthread+0x3e5/0x4d0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+-------------
+Pseudo-Shortlog of commits:
 
-Freed by task 1053:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
- kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:360
- ____kasan_slab_free mm/kasan/common.c:366 [inline]
- ____kasan_slab_free mm/kasan/common.c:328 [inline]
- __kasan_slab_free+0xff/0x130 mm/kasan/common.c:374
- kasan_slab_free include/linux/kasan.h:230 [inline]
- slab_free_hook mm/slub.c:1700 [inline]
- slab_free_freelist_hook+0x81/0x190 mm/slub.c:1725
- slab_free mm/slub.c:3483 [inline]
- kmem_cache_free+0x8a/0x5b0 mm/slub.c:3499
- kernfs_put.part.0+0x2c4/0x540 fs/kernfs/dir.c:539
- kernfs_put+0x42/0x50 fs/kernfs/dir.c:513
- __kernfs_remove+0x727/0xab0 fs/kernfs/dir.c:1372
- kernfs_remove+0x1d/0x30 fs/kernfs/dir.c:1385
- sysfs_remove_dir+0xc1/0x100 fs/sysfs/dir.c:102
- __kobject_del+0xe2/0x200 lib/kobject.c:620
- kobject_del lib/kobject.c:643 [inline]
- kobject_del+0x3c/0x60 lib/kobject.c:635
- device_del+0x834/0xd60 drivers/base/core.c:3595
- usb_disconnect.cold+0x4ba/0x78e drivers/usb/core/hub.c:2251
- hub_port_connect drivers/usb/core/hub.c:5199 [inline]
- hub_port_connect_change drivers/usb/core/hub.c:5488 [inline]
- port_event drivers/usb/core/hub.c:5634 [inline]
- hub_event+0x1c9c/0x4330 drivers/usb/core/hub.c:5716
- process_one_work+0x9bf/0x16b0 kernel/workqueue.c:2297
- process_scheduled_works kernel/workqueue.c:2360 [inline]
- worker_thread+0x85c/0x11f0 kernel/workqueue.c:2446
- kthread+0x3e5/0x4d0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 5.14.14-rc1
 
-The buggy address belongs to the object at ffff88807d1cf1d0
- which belongs to the cache kernfs_node_cache of size 168
-The buggy address is located 48 bytes inside of
- 168-byte region [ffff88807d1cf1d0, ffff88807d1cf278)
-The buggy address belongs to the page:
-page:ffffea0001f473c0 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x7d1cf
-flags: 0xfff00000000200(slab|node=0|zone=1|lastcpupid=0x7ff)
-raw: 00fff00000000200 0000000000000000 dead000000000122 ffff888010dc5a00
-raw: 0000000000000000 0000000080110011 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 0, migratetype Unmovable, gfp_mask 0x12cc0(GFP_KERNEL|__GFP_NOWARN|__GFP_NORETRY), pid 1053, ts 267312666352, free_ts 267295630227
- prep_new_page mm/page_alloc.c:2424 [inline]
- get_page_from_freelist+0xa72/0x2f80 mm/page_alloc.c:4153
- __alloc_pages+0x1b2/0x500 mm/page_alloc.c:5375
- alloc_pages+0x1a7/0x300 mm/mempolicy.c:2197
- alloc_slab_page mm/slub.c:1763 [inline]
- allocate_slab mm/slub.c:1900 [inline]
- new_slab+0x319/0x490 mm/slub.c:1963
- ___slab_alloc+0x921/0xfe0 mm/slub.c:2994
- __slab_alloc.constprop.0+0x4d/0xa0 mm/slub.c:3081
- slab_alloc_node mm/slub.c:3172 [inline]
- slab_alloc mm/slub.c:3214 [inline]
- kmem_cache_alloc+0x365/0x390 mm/slub.c:3219
- kmem_cache_zalloc include/linux/slab.h:711 [inline]
- __kernfs_new_node+0xd4/0x8b0 fs/kernfs/dir.c:585
- kernfs_new_node+0x93/0x120 fs/kernfs/dir.c:647
- __kernfs_create_file+0x51/0x350 fs/kernfs/file.c:985
- sysfs_add_file_mode_ns+0x226/0x540 fs/sysfs/file.c:317
- sysfs_merge_group+0x198/0x320 fs/sysfs/group.c:343
- dpm_sysfs_add+0x241/0x290 drivers/base/power/sysfs.c:707
- device_add+0xac4/0x1ee0 drivers/base/core.c:3353
- usb_create_ep_devs+0x15c/0x2a0 drivers/usb/core/endpoint.c:169
- usb_new_device.cold+0xc7c/0x108e drivers/usb/core/hub.c:2591
-page last free stack trace:
- reset_page_owner include/linux/page_owner.h:24 [inline]
- free_pages_prepare mm/page_alloc.c:1338 [inline]
- free_pcp_prepare+0x2c5/0x780 mm/page_alloc.c:1389
- free_unref_page_prepare mm/page_alloc.c:3315 [inline]
- free_unref_page_list+0x1a9/0xfa0 mm/page_alloc.c:3431
- release_pages+0x830/0x20b0 mm/swap.c:963
- tlb_batch_pages_flush mm/mmu_gather.c:49 [inline]
- tlb_flush_mmu_free mm/mmu_gather.c:242 [inline]
- tlb_flush_mmu mm/mmu_gather.c:249 [inline]
- tlb_finish_mmu+0x165/0x8c0 mm/mmu_gather.c:340
- exit_mmap+0x1ea/0x630 mm/mmap.c:3173
- __mmput+0x122/0x4b0 kernel/fork.c:1115
- mmput+0x58/0x60 kernel/fork.c:1136
- free_bprm+0x65/0x2e0 fs/exec.c:1483
- kernel_execve+0x380/0x460 fs/exec.c:1980
- call_usermodehelper_exec_async+0x2e3/0x580 kernel/umh.c:112
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+Shannon Nelson <snelson@pensando.io>
+    ionic: don't remove netdev->dev_addr when syncing uc list
 
-Memory state around the buggy address:
- ffff88807d1cf100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff88807d1cf180: fb fb fc fc fc fc fc fc fc fc fa fb fb fb fb fb
->ffff88807d1cf200: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fc
-                   ^
- ffff88807d1cf280: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff88807d1cf300: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-==================================================================
+Vladimir Oltean <vladimir.oltean@nxp.com>
+    net: dsa: felix: break at first CPU port during init and teardown
+
+Vladimir Oltean <vladimir.oltean@nxp.com>
+    net: mscc: ocelot: cross-check the sequence id from the timestamp FIFO with the skb PTP header
+
+Vladimir Oltean <vladimir.oltean@nxp.com>
+    net: mscc: ocelot: deny TX timestamping of non-PTP packets
+
+Vladimir Oltean <vladimir.oltean@nxp.com>
+    net: mscc: ocelot: warn when a PTP IRQ is raised for an unknown skb
+
+Vladimir Oltean <vladimir.oltean@nxp.com>
+    net: mscc: ocelot: avoid overflowing the PTP timestamp FIFO
+
+Vladimir Oltean <vladimir.oltean@nxp.com>
+    net: mscc: ocelot: make use of all 63 PTP timestamp identifiers
+
+Baowen Zheng <baowen.zheng@corigine.com>
+    nfp: flow_offload: move flow_indr_dev_register from app init to app start
+
+Dan Carpenter <dan.carpenter@oracle.com>
+    block/rnbd-clt-sysfs: fix a couple uninitialized variable bugs
+
+Jacob Keller <jacob.e.keller@intel.com>
+    ice: fix locking for Tx timestamp tracking flush
+
+Vegard Nossum <vegard.nossum@oracle.com>
+    r8152: select CRC32 and CRYPTO/CRYPTO_HASH/CRYPTO_SHA256
+
+chongjiapeng <jiapeng.chong@linux.alibaba.com>
+    qed: Fix missing error code in qed_slowpath_start()
+
+Paolo Abeni <pabeni@redhat.com>
+    mptcp: fix possible stall on recvmsg()
+
+Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+    mqprio: Correct stats in mqprio_dump_class_stats().
+
+Prashant Malani <pmalani@chromium.org>
+    platform/x86: intel_scu_ipc: Fix busy loop expiry time
+
+Jackie Liu <liuyun01@kylinos.cn>
+    acpi/arm64: fix next_platform_timer() section mismatch error
+
+Dan Carpenter <dan.carpenter@oracle.com>
+    drm/msm/dsi: fix off by one in dsi_bus_clk_enable error handling
+
+Dan Carpenter <dan.carpenter@oracle.com>
+    drm/msm/dsi: Fix an error code in msm_dsi_modeset_init()
+
+Marijn Suijten <marijn.suijten@somainline.org>
+    drm/msm/dsi: dsi_phy_14nm: Take ready-bit into account in poll_for_ready
+
+Dan Carpenter <dan.carpenter@oracle.com>
+    drm/msm/a3xx: fix error handling in a3xx_gpu_init()
+
+Dan Carpenter <dan.carpenter@oracle.com>
+    drm/msm/a4xx: fix error handling in a4xx_gpu_init()
+
+Rob Clark <robdclark@chromium.org>
+    drm/msm/a6xx: Track current ctx by seqno
+
+Arnd Bergmann <arnd@arndb.de>
+    drm/msm/submit: fix overflow check on 64-bit architectures
+
+Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+    drm/msm/mdp5: fix cursor-related warnings
+
+Colin Ian King <colin.king@canonical.com>
+    drm/msm: Fix null pointer dereference on pointer edp
+
+Douglas Anderson <dianders@chromium.org>
+    drm/edid: In connector_bad_edid() cap num_of_ext by num_blocks read
+
+Vegard Nossum <vegard.nossum@oracle.com>
+    drm/panel: olimex-lcd-olinuxino: select CRC32
+
+Kamal Dasu <kdasu@broadcom.com>
+    spi: bcm-qspi: clear MSPI spifie interrupt during probe
+
+Mark Brown <broonie@kernel.org>
+    spi: spidev: Add SPI ID table
+
+Vadim Pasternak <vadimp@nvidia.com>
+    platform/mellanox: mlxreg-io: Fix read access of n-bytes size attributes
+
+Vadim Pasternak <vadimp@nvidia.com>
+    platform/mellanox: mlxreg-io: Fix argument base in kstrtou32() call
+
+Ido Schimmel <idosch@nvidia.com>
+    mlxsw: thermal: Fix out-of-bounds memory accesses
+
+Wang Hai <wanghai38@huawei.com>
+    ata: ahci_platform: fix null-ptr-deref in ahci_platform_enable_regulators()
+
+Dan Carpenter <dan.carpenter@oracle.com>
+    pata_legacy: fix a couple uninitialized variable bugs
+
+Ziyang Xuan <william.xuanziyang@huawei.com>
+    NFC: digital: fix possible memory leak in digital_in_send_sdd_req()
+
+Ziyang Xuan <william.xuanziyang@huawei.com>
+    NFC: digital: fix possible memory leak in digital_tg_listen_mdaa()
+
+Ziyang Xuan <william.xuanziyang@huawei.com>
+    nfc: fix error handling of nfc_proto_register()
+
+Cindy Lu <lulu@redhat.com>
+    vhost-vdpa: Fix the wrong input in config_cb
+
+Arnd Bergmann <arnd@arndb.de>
+    ethernet: s2io: fix setting mac address during resume
+
+Nanyong Sun <sunnanyong@huawei.com>
+    net: encx24j600: check error in devm_regmap_init_encx24j600
+
+Alvin Šipraga <alsi@bang-olufsen.dk>
+    net: dsa: fix spurious error message when unoffloaded port leaves bridge
+
+Arun Ramadoss <arun.ramadoss@microchip.com>
+    net: dsa: microchip: Added the condition for scheduling ksz_mib_read_work
+
+Maarten Zanders <maarten.zanders@mind.be>
+    net: dsa: mv88e6xxx: don't use PHY_DETECT on internal PHY's
+
+Florian Fainelli <f.fainelli@gmail.com>
+    net: phy: Do not shutdown PHYs in READY state
+
+Herve Codina <herve.codina@bootlin.com>
+    net: stmmac: fix get_hw_feature() on old hardware
+
+Saeed Mahameed <saeedm@nvidia.com>
+    net/mlx5e: Switchdev representors are not vlan challenged
+
+Aya Levin <ayal@nvidia.com>
+    net/mlx5e: Mutually exclude RX-FCS and RX-port-timestamp
+
+Valentine Fatiev <valentinef@nvidia.com>
+    net/mlx5e: Fix memory leak in mlx5_core_destroy_cq() error path
+
+Karsten Graul <kgraul@linux.ibm.com>
+    net/smc: improved fix wait on already cleared link
+
+Vegard Nossum <vegard.nossum@oracle.com>
+    net: korina: select CRC32
+
+Vegard Nossum <vegard.nossum@oracle.com>
+    net: arc: select CRC32
+
+Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+    gpio: pca953x: Improve bias setting
+
+Mark Brown <broonie@kernel.org>
+    gpio: 74x164: Add SPI device ID table
+
+Eiichi Tsukata <eiichi.tsukata@nutanix.com>
+    sctp: account stream padding length for reconf chunk
+
+Keith Busch <kbusch@kernel.org>
+    nvme-pci: Fix abort command id
+
+Biju Das <biju.das.jz@bp.renesas.com>
+    clk: renesas: rzg2l: Fix clk status function
+
+Nicolas Saenz Julienne <nsaenz@kernel.org>
+    ARM: dts: bcm2711-rpi-4-b: Fix pcie0's unit address formatting
+
+Stefan Wahren <stefan.wahren@i2se.com>
+    ARM: dts: bcm2711-rpi-4-b: fix sd_io_1v8_reg regulator states
+
+Sudeep Holla <sudeep.holla@arm.com>
+    firmware: arm_ffa: Add missing remove callback to ffa_bus_type
+
+Sudeep Holla <sudeep.holla@arm.com>
+    firmware: arm_ffa: Fix __ffa_devices_unregister
+
+Stefan Wahren <stefan.wahren@i2se.com>
+    ARM: dts: bcm2711: fix MDIO #address- and #size-cells
+
+Mateusz Kwiatkowski <kfyatek+publicgit@gmail.com>
+    ARM: dts: bcm283x: Fix VEC address for BCM2711
+
+Nicolas Saenz Julienne <nsaenz@kernel.org>
+    ARM: dts: bcm2711-rpi-4-b: Fix usb's unit address
+
+Sumit Garg <sumit.garg@linaro.org>
+    tee: optee: Fix missing devices unregister during optee_remove
+
+Jackie Liu <liuyun01@kylinos.cn>
+    tracing: Fix missing osnoise tracer on max_latency
+
+Dan Carpenter <dan.carpenter@oracle.com>
+    iio: dac: ti-dac5571: fix an error code in probe()
+
+Mark Brown <broonie@kernel.org>
+    fpga: ice40-spi: Add SPI device ID table
+
+Mark Brown <broonie@kernel.org>
+    eeprom: at25: Add SPI ID table
+
+Arnd Bergmann <arnd@arndb.de>
+    eeprom: 93xx46: fix MODULE_DEVICE_TABLE
+
+Mark Brown <broonie@kernel.org>
+    eeprom: 93xx46: Add SPI device ID table
+
+Oleksij Rempel <linux@rempel-privat.de>
+    Input: resistive-adc-touch - fix division by zero error on z1 == 0
+
+Dan Carpenter <dan.carpenter@oracle.com>
+    iio: ssp_sensors: fix error code in ssp_print_mcu_debug()
+
+Dan Carpenter <dan.carpenter@oracle.com>
+    iio: ssp_sensors: add more range checking in ssp_parse_dataframe()
+
+Miquel Raynal <miquel.raynal@bootlin.com>
+    iio: adc: max1027: Fix the number of max1X31 channels
+
+Sean Nyekjaer <sean@geanix.com>
+    iio: accel: fxls8962af: return IRQ_HANDLED when fifo is flushed
+
+Jiri Valek - 2N <valek@2n.cz>
+    iio: light: opt3001: Fixed timeout error when 0 lux
+
+Hui Liu <hui.liu@mediatek.com>
+    iio: mtk-auxadc: fix case IIO_CHAN_INFO_PROCESSED
+
+Nuno Sá <nuno.sa@analog.com>
+    iio: adis16475: fix deadlock on frequency set
+
+Miquel Raynal <miquel.raynal@bootlin.com>
+    iio: adc: max1027: Fix wrong shift with 12-bit devices
+
+Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+    iio: adc128s052: Fix the error handling path of 'adc128_probe()'
+
+Nuno Sá <nuno.sa@analog.com>
+    iio: adis16480: fix devices that do not support sleep mode
+
+Alexandru Tachici <alexandru.tachici@analog.com>
+    iio: adc: ad7793: Fix IRQ flag
+
+Alexandru Tachici <alexandru.tachici@analog.com>
+    iio: adc: ad7780: Fix IRQ flag
+
+Alexandru Tachici <alexandru.tachici@analog.com>
+    iio: adc: ad7192: Add IRQ flag
+
+Saravana Kannan <saravanak@google.com>
+    driver core: Reject pointless SYNC_STATE_ONLY device links
+
+Saravana Kannan <saravanak@google.com>
+    drivers: bus: simple-pm-bus: Add support for probing simple bus only devices
+
+Billy Tsai <billy_tsai@aspeedtech.com>
+    iio: adc: aspeed: set driver data when adc probe.
+
+Cédric Le Goater <clg@kaod.org>
+    powerpc/xive: Discard disabled interrupts in get_irqchip_state()
+
+Borislav Petkov <bp@suse.de>
+    x86/Kconfig: Do not enable AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT automatically
+
+Borislav Petkov <bp@suse.de>
+    x86/fpu: Mask out the invalid MXCSR bits properly
+
+Michael Ellerman <mpe@ellerman.id.au>
+    KVM: PPC: Book3S HV: Make idle_kvm_start_guest() return 0 if it went to guest
+
+Michael Ellerman <mpe@ellerman.id.au>
+    KVM: PPC: Book3S HV: Fix stack handling in idle_kvm_start_guest()
+
+Michael S. Tsirkin <mst@redhat.com>
+    Revert "virtio-blk: Add validation for block size in config space"
+
+Max Gurtovoy <mgurtovoy@nvidia.com>
+    virtio-blk: remove unneeded "likely" statements
+
+Stephen Boyd <swboyd@chromium.org>
+    nvmem: Fix shift-out-of-bound (UBSAN) with byte size cells
+
+Hans Potsch <hans.potsch@nokia.com>
+    EDAC/armada-xp: Fix output of uncorrectable error counter
+
+Halil Pasic <pasic@linux.ibm.com>
+    virtio: write back F_VERSION_1 before validate
+
+Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+    misc: fastrpc: Add missing lock before accessing find_vma()
+
+Tomaz Solc <tomaz.solc@tablix.org>
+    USB: serial: option: add prod. id for Quectel EG91
+
+Daniele Palmas <dnlplm@gmail.com>
+    USB: serial: option: add Telit LE910Cx composition 0x1204
+
+Yu-Tung Chang <mtwget@gmail.com>
+    USB: serial: option: add Quectel EC200S-CN module support
+
+Aleksander Morgado <aleksander@aleksander.es>
+    USB: serial: qcserial: add EM9191 QDL support
+
+Michael Cullen <michael@michaelcullen.name>
+    Input: xpad - add support for another USB ID of Nacon GC-100
+
+Miquel Raynal <miquel.raynal@bootlin.com>
+    usb: musb: dsps: Fix the probe error path
+
+Zhang Jianhua <chris.zjh@huawei.com>
+    efi: Change down_interruptible() in virt_efi_reset_system() to down_trylock()
+
+Ard Biesheuvel <ardb@kernel.org>
+    efi/cper: use stack buffer for error record decoding
+
+Arnd Bergmann <arnd@arndb.de>
+    cb710: avoid NULL pointer subtraction
+
+Nikolay Martynov <mar.kolya@gmail.com>
+    xhci: Enable trust tx length quirk for Fresco FL11 USB controller
+
+Pavankumar Kondeti <pkondeti@codeaurora.org>
+    xhci: Fix command ring pointer corruption while aborting a command
+
+Jonathan Bell <jonathan@raspberrypi.org>
+    xhci: add quirk for host controllers that don't update endpoint DCS
+
+Jonathan Bell <jonathan@raspberrypi.com>
+    xhci: guard accesses to ep_state in xhci_endpoint_reset()
+
+Johan Hovold <johan@kernel.org>
+    USB: xhci: dbc: fix tty registration race
+
+Alexander Usyskin <alexander.usyskin@intel.com>
+    mei: hbm: drop hbm responses on early shutdown
+
+Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+    mei: me: add Ice Lake-N device id.
+
+James Morse <james.morse@arm.com>
+    x86/resctrl: Free the ctrlval arrays when domain_setup_mon_state() fails
+
+Arnd Bergmann <arnd@arndb.de>
+    module: fix clang CFI with MODULE_UNLOAD=n
+
+Josef Bacik <josef@toxicpanda.com>
+    btrfs: fix abort logic in btrfs_replace_file_extents
+
+Josef Bacik <josef@toxicpanda.com>
+    btrfs: update refs for any root except tree log roots
+
+Filipe Manana <fdmanana@suse.com>
+    btrfs: check for error when looking up inode during dir entry replay
+
+Filipe Manana <fdmanana@suse.com>
+    btrfs: deal with errors when adding inode reference during log replay
+
+Filipe Manana <fdmanana@suse.com>
+    btrfs: deal with errors when replaying dir entry during log replay
+
+Qu Wenruo <wqu@suse.com>
+    btrfs: unlock newly allocated extent buffer after error
+
+Marek Vasut <marex@denx.de>
+    drm/msm: Avoid potential overflow in timeout_to_jiffies()
+
+Fabio Estevam <festevam@gmail.com>
+    drm/msm: Do not run snapshot on non-DPU devices
+
+Marek Vasut <marex@denx.de>
+    drm/nouveau/fifo: Reinstate the correct engine bit programming
+
+Mike Kravetz <mike.kravetz@oracle.com>
+    arm64/hugetlb: fix CMA gigantic page order for non-4K PAGE_SIZE
+
+Thomas Zimmermann <tzimmermann@suse.de>
+    drm/fbdev: Clamp fbdev surface size if too large
+
+Guo Ren <guoren@linux.alibaba.com>
+    csky: Fixup regs.sr broken in ptrace
+
+Al Viro <viro@zeniv.linux.org.uk>
+    csky: don't let sigreturn play with priveleged bits of status register
+
+Dinh Nguyen <dinguyen@kernel.org>
+    clk: socfpga: agilex: fix duplicate s2f_user0_clk
+
+Roberto Sassu <roberto.sassu@huawei.com>
+    s390: fix strrchr() implementation
+
+Ming Lei <ming.lei@redhat.com>
+    dm rq: don't queue request to blk-mq during DM suspend
+
+Sachi King <nakato@nakato.io>
+    ACPI: PM: Include alternate AMDI0005 id in special behaviour
+
+Jiazi Li <jqqlijiazi@gmail.com>
+    dm: fix mempool NULL pointer race when completing IO
+
+Steven Rostedt <rostedt@goodmis.org>
+    nds32/ftrace: Fix Error: invalid operands (*UND* and *UND* sections) for `^'
+
+Md Sadre Alam <mdalam@codeaurora.org>
+    mtd: rawnand: qcom: Update code word value for raw read
+
+Ville Baillie <villeb@bytesnap.co.uk>
+    spi: atmel: Fix PDC transfer setup bug
+
+Sachi King <nakato@nakato.io>
+    platform/x86: amd-pmc: Add alternative acpi id for PMC controller
+
+Zephaniah E. Loss-Cutler-Hull <zephaniah@gmail.com>
+    platform/x86: gigabyte-wmi: add support for B550 AORUS ELITE AX V2
+
+Hui Wang <hui.wang@canonical.com>
+    ALSA: hda/realtek: Fix the mic type detection issue for ASUS G551JW
+
+Cameron Berkenpas <cam@neo-zeon.de>
+    ALSA: hda/realtek: Fix for quirk to enable speaker output on the Lenovo 13s Gen2
+
+Werner Sembach <wse@tuxedocomputers.com>
+    ALSA: hda/realtek: Add quirk for TongFang PHxTxX1
+
+Kailang Yang <kailang@realtek.com>
+    ALSA: hda/realtek - ALC236 headset MIC recording issue
+
+Werner Sembach <wse@tuxedocomputers.com>
+    ALSA: hda/realtek: Add quirk for Clevo X170KM-G
+
+Werner Sembach <wse@tuxedocomputers.com>
+    ALSA: hda/realtek: Complete partial device name to avoid ambiguity
+
+Chris Chiu <chris.chiu@canonical.com>
+    ALSA: hda - Enable headphone mic on Dell Latitude laptops with ALC3254
+
+John Liu <johnliu55tw@gmail.com>
+    ALSA: hda/realtek: Enable 4-speaker output for Dell Precision 5560 laptop
+
+Takashi Iwai <tiwai@suse.de>
+    ALSA: seq: Fix a potential UAF by wrong private_free call order
+
+Takashi Iwai <tiwai@suse.de>
+    ALSA: usb-audio: Fix a missing error check in scarlett gen2 mixer
+
+Takashi Iwai <tiwai@suse.de>
+    ALSA: pcm: Workaround for a wrong offset in SYNC_PTR compat ioctl
+
+Jonas Hahnfeld <hahnjo@hahnjo.de>
+    ALSA: usb-audio: Add quirk for VF0770
+
+
+-------------
+
+Diffstat:
+
+ Makefile                                           |  4 +-
+ arch/arm/boot/dts/bcm2711-rpi-4-b.dts              | 11 +--
+ arch/arm/boot/dts/bcm2711.dtsi                     | 12 ++-
+ arch/arm/boot/dts/bcm2835-common.dtsi              |  8 ++
+ arch/arm/boot/dts/bcm283x.dtsi                     |  8 --
+ arch/arm64/mm/hugetlbpage.c                        |  2 +-
+ arch/csky/kernel/ptrace.c                          |  3 +-
+ arch/csky/kernel/signal.c                          |  4 +
+ arch/powerpc/kvm/book3s_hv_rmhandlers.S            | 28 ++++---
+ arch/powerpc/sysdev/xive/common.c                  |  3 +-
+ arch/s390/lib/string.c                             | 15 ++--
+ arch/x86/Kconfig                                   |  1 -
+ arch/x86/kernel/cpu/resctrl/core.c                 |  2 +
+ arch/x86/kernel/fpu/signal.c                       |  2 +-
+ drivers/acpi/arm64/gtdt.c                          |  2 +-
+ drivers/acpi/x86/s2idle.c                          |  3 +-
+ drivers/ata/libahci_platform.c                     |  5 +-
+ drivers/ata/pata_legacy.c                          |  6 +-
+ drivers/base/core.c                                |  3 +-
+ drivers/block/rnbd/rnbd-clt-sysfs.c                |  4 +-
+ drivers/block/virtio_blk.c                         | 41 ++--------
+ drivers/bus/simple-pm-bus.c                        | 42 +++++++++-
+ drivers/clk/renesas/renesas-rzg2l-cpg.c            |  2 +-
+ drivers/clk/socfpga/clk-agilex.c                   |  9 ---
+ drivers/edac/armada_xp_edac.c                      |  2 +-
+ drivers/firmware/arm_ffa/bus.c                     | 10 ++-
+ drivers/firmware/efi/cper.c                        |  4 +-
+ drivers/firmware/efi/runtime-wrappers.c            |  2 +-
+ drivers/fpga/ice40-spi.c                           |  7 ++
+ drivers/gpio/gpio-74x164.c                         |  8 ++
+ drivers/gpio/gpio-pca953x.c                        | 16 ++--
+ drivers/gpu/drm/drm_edid.c                         | 15 +++-
+ drivers/gpu/drm/drm_fb_helper.c                    |  6 ++
+ drivers/gpu/drm/msm/adreno/a3xx_gpu.c              |  9 ++-
+ drivers/gpu/drm/msm/adreno/a4xx_gpu.c              |  9 ++-
+ drivers/gpu/drm/msm/adreno/a6xx_gpu.c              |  6 +-
+ drivers/gpu/drm/msm/adreno/a6xx_gpu.h              | 11 ++-
+ drivers/gpu/drm/msm/disp/mdp5/mdp5_crtc.c          | 16 ++++
+ drivers/gpu/drm/msm/dsi/dsi.c                      |  4 +-
+ drivers/gpu/drm/msm/dsi/dsi_host.c                 |  2 +-
+ drivers/gpu/drm/msm/dsi/phy/dsi_phy_14nm.c         | 30 ++++----
+ drivers/gpu/drm/msm/edp/edp_ctrl.c                 |  3 +-
+ drivers/gpu/drm/msm/msm_drv.c                      | 12 ++-
+ drivers/gpu/drm/msm/msm_drv.h                      |  5 +-
+ drivers/gpu/drm/msm/msm_gem_submit.c               |  3 +-
+ drivers/gpu/drm/nouveau/nvkm/engine/fifo/chang84.c |  2 +-
+ drivers/gpu/drm/panel/Kconfig                      |  1 +
+ drivers/iio/accel/fxls8962af-core.c                |  2 +-
+ drivers/iio/adc/ad7192.c                           |  1 +
+ drivers/iio/adc/ad7780.c                           |  2 +-
+ drivers/iio/adc/ad7793.c                           |  2 +-
+ drivers/iio/adc/aspeed_adc.c                       |  1 +
+ drivers/iio/adc/max1027.c                          |  3 +-
+ drivers/iio/adc/mt6577_auxadc.c                    |  8 ++
+ drivers/iio/adc/ti-adc128s052.c                    |  6 ++
+ drivers/iio/common/ssp_sensors/ssp_spi.c           | 11 ++-
+ drivers/iio/dac/ti-dac5571.c                       |  1 +
+ drivers/iio/imu/adis16475.c                        |  3 +-
+ drivers/iio/imu/adis16480.c                        | 14 +++-
+ drivers/iio/light/opt3001.c                        |  6 +-
+ drivers/input/joystick/xpad.c                      |  2 +
+ drivers/input/touchscreen/resistive-adc-touch.c    | 29 +++----
+ drivers/md/dm-rq.c                                 |  8 ++
+ drivers/md/dm.c                                    | 17 ++--
+ drivers/misc/cb710/sgbuf2.c                        |  2 +-
+ drivers/misc/eeprom/at25.c                         |  8 ++
+ drivers/misc/eeprom/eeprom_93xx46.c                | 18 +++++
+ drivers/misc/fastrpc.c                             |  2 +
+ drivers/misc/mei/hbm.c                             | 12 ++-
+ drivers/misc/mei/hw-me-regs.h                      |  1 +
+ drivers/misc/mei/pci-me.c                          |  1 +
+ drivers/mtd/nand/raw/qcom_nandc.c                  |  8 +-
+ drivers/net/dsa/microchip/ksz_common.c             |  4 +-
+ drivers/net/dsa/mv88e6xxx/chip.c                   | 13 +++-
+ drivers/net/dsa/ocelot/felix.c                     | 25 ++++--
+ drivers/net/ethernet/Kconfig                       |  1 +
+ drivers/net/ethernet/arc/Kconfig                   |  1 +
+ drivers/net/ethernet/intel/ice/ice_ptp.c           | 15 ++--
+ drivers/net/ethernet/mellanox/mlx5/core/cq.c       |  7 +-
+ drivers/net/ethernet/mellanox/mlx5/core/en_main.c  | 57 ++++++++++++--
+ drivers/net/ethernet/mellanox/mlx5/core/en_rep.c   |  1 -
+ drivers/net/ethernet/mellanox/mlxsw/core_thermal.c | 52 ++-----------
+ drivers/net/ethernet/microchip/encx24j600-regmap.c | 10 ++-
+ drivers/net/ethernet/microchip/encx24j600.c        |  5 +-
+ drivers/net/ethernet/microchip/encx24j600_hw.h     |  4 +-
+ drivers/net/ethernet/mscc/ocelot.c                 | 90 +++++++++++++++++-----
+ drivers/net/ethernet/neterion/s2io.c               |  2 +-
+ drivers/net/ethernet/netronome/nfp/flower/main.c   | 19 +++--
+ drivers/net/ethernet/pensando/ionic/ionic_lif.c    |  4 +
+ drivers/net/ethernet/qlogic/qed/qed_main.c         |  1 +
+ .../net/ethernet/stmicro/stmmac/dwmac1000_dma.c    | 13 +++-
+ drivers/net/ethernet/stmicro/stmmac/dwmac4_dma.c   |  6 +-
+ drivers/net/ethernet/stmicro/stmmac/dwxgmac2_dma.c |  6 +-
+ drivers/net/ethernet/stmicro/stmmac/hwif.h         |  6 +-
+ drivers/net/phy/phy_device.c                       |  3 +
+ drivers/net/usb/Kconfig                            |  4 +
+ drivers/nvme/host/pci.c                            |  2 +-
+ drivers/nvmem/core.c                               |  3 +-
+ drivers/platform/mellanox/mlxreg-io.c              |  4 +-
+ drivers/platform/x86/amd-pmc.c                     |  1 +
+ drivers/platform/x86/gigabyte-wmi.c                |  1 +
+ drivers/platform/x86/intel_scu_ipc.c               |  2 +-
+ drivers/spi/spi-atmel.c                            |  4 +-
+ drivers/spi/spi-bcm-qspi.c                         | 77 ++++++++++--------
+ drivers/spi/spidev.c                               | 14 ++++
+ drivers/tee/optee/core.c                           |  3 +
+ drivers/tee/optee/device.c                         | 22 ++++++
+ drivers/tee/optee/optee_private.h                  |  1 +
+ drivers/usb/host/xhci-dbgtty.c                     | 28 ++++---
+ drivers/usb/host/xhci-pci.c                        |  6 +-
+ drivers/usb/host/xhci-ring.c                       | 39 ++++++++--
+ drivers/usb/host/xhci.c                            |  5 ++
+ drivers/usb/host/xhci.h                            |  1 +
+ drivers/usb/musb/musb_dsps.c                       |  4 +-
+ drivers/usb/serial/option.c                        |  8 ++
+ drivers/usb/serial/qcserial.c                      |  1 +
+ drivers/vhost/vdpa.c                               |  2 +-
+ drivers/virtio/virtio.c                            | 11 +++
+ fs/btrfs/extent-tree.c                             |  1 +
+ fs/btrfs/file.c                                    | 19 ++---
+ fs/btrfs/tree-log.c                                | 32 +++++---
+ include/linux/mlx5/mlx5_ifc.h                      | 10 ++-
+ include/soc/mscc/ocelot.h                          |  6 +-
+ include/soc/mscc/ocelot_ptp.h                      |  3 +
+ kernel/module.c                                    |  2 +
+ kernel/trace/trace.c                               | 11 +--
+ net/dsa/switch.c                                   |  2 +-
+ net/mptcp/protocol.c                               | 55 ++++---------
+ net/nfc/af_nfc.c                                   |  3 +
+ net/nfc/digital_core.c                             |  9 ++-
+ net/nfc/digital_technology.c                       |  8 +-
+ net/sched/sch_mqprio.c                             | 30 +++++---
+ net/sctp/sm_make_chunk.c                           |  2 +-
+ net/smc/smc_cdc.c                                  |  7 +-
+ net/smc/smc_core.c                                 | 20 ++---
+ net/smc/smc_llc.c                                  | 63 +++++++++++----
+ net/smc/smc_tx.c                                   | 22 ++----
+ net/smc/smc_wr.h                                   | 14 ++++
+ scripts/recordmcount.pl                            |  2 +-
+ sound/core/pcm_compat.c                            | 72 ++++++++++++++++-
+ sound/core/seq_device.c                            |  8 +-
+ sound/pci/hda/patch_realtek.c                      | 66 +++++++++++++++-
+ sound/usb/mixer_scarlett_gen2.c                    |  2 +
+ sound/usb/quirks-table.h                           | 42 ++++++++++
+ 144 files changed, 1162 insertions(+), 508 deletions(-)
+
 
