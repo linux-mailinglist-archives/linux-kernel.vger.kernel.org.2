@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE705431D0A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:45:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2970F431C5F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:39:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232442AbhJRNr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:47:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36772 "EHLO mail.kernel.org"
+        id S233454AbhJRNkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:40:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55998 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232414AbhJRNpJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:45:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CA288615A4;
-        Mon, 18 Oct 2021 13:35:25 +0000 (UTC)
+        id S233597AbhJRNib (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:38:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A4C160F11;
+        Mon, 18 Oct 2021 13:32:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634564126;
-        bh=HuHe8S83WxmmoP4Hyx+MT5LkkF+fxuSCD8kog9q8rsY=;
+        s=korg; t=1634563925;
+        bh=MyamxUL7rnbBMH7hWIBxpGIjMC3SPZhKIyU77HeMGZ4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GFZ95Utgsl4jA/mQZJd8ynik4uBN54KpB2USQd22dUPdvRKvD65f80uWBBfOgNSRk
-         KiedLu4/6/oIIi2AEwwe2xxvBywUpHJyuBLvS1YFZfN3O8SPSAgKNhIxK2bRXwqEZ+
-         G6BcdeJK+OBAUEjED8dzc8btu/VvAAo6UScswYfE=
+        b=plnp4lLqwqu928GDsmZMvoZOFSb5uGGLNkO8jXXQ2tTe+3abggNoHyc5iziEGPj/O
+         JHozHHwN285kUNC+WArbs8NDIYR5Qh2YdlIB7++MrFpxNyDhcZotVBCR70n7pyOPp9
+         HMerlVnFq2Hilh4T3ifZ1GLw3FfIrsANEemMS2Q0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Aya Levin <ayal@nvidia.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Moshe Shemesh <moshe@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>
-Subject: [PATCH 5.10 073/103] net/mlx5e: Mutually exclude RX-FCS and RX-port-timestamp
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Nanyong Sun <sunnanyong@huawei.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.4 51/69] net: encx24j600: check error in devm_regmap_init_encx24j600
 Date:   Mon, 18 Oct 2021 15:24:49 +0200
-Message-Id: <20211018132337.205366925@linuxfoundation.org>
+Message-Id: <20211018132331.175303037@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132334.702559133@linuxfoundation.org>
-References: <20211018132334.702559133@linuxfoundation.org>
+In-Reply-To: <20211018132329.453964125@linuxfoundation.org>
+References: <20211018132329.453964125@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,129 +40,123 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aya Levin <ayal@nvidia.com>
+From: Nanyong Sun <sunnanyong@huawei.com>
 
-commit 0bc73ad46a76ed6ece4dcacb28858e7b38561e1c upstream.
+commit f03dca0c9e2297c84a018e306f8a9cd534ee4287 upstream.
 
-Due to current HW arch limitations, RX-FCS (scattering FCS frame field
-to software) and RX-port-timestamp (improved timestamp accuracy on the
-receive side) can't work together.
-RX-port-timestamp is not controlled by the user and it is enabled by
-default when supported by the HW/FW.
-This patch sets RX-port-timestamp opposite to RX-FCS configuration.
+devm_regmap_init may return error which caused by like out of memory,
+this will results in null pointer dereference later when reading
+or writing register:
 
-Fixes: 102722fc6832 ("net/mlx5e: Add support for RXFCS feature flag")
-Signed-off-by: Aya Levin <ayal@nvidia.com>
-Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
-Reviewed-by: Moshe Shemesh <moshe@nvidia.com>
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+general protection fault in encx24j600_spi_probe
+KASAN: null-ptr-deref in range [0x0000000000000090-0x0000000000000097]
+CPU: 0 PID: 286 Comm: spi-encx24j600- Not tainted 5.15.0-rc2-00142-g9978db750e31-dirty #11 9c53a778c1306b1b02359f3c2bbedc0222cba652
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1.1 04/01/2014
+RIP: 0010:regcache_cache_bypass drivers/base/regmap/regcache.c:540
+Code: 54 41 89 f4 55 53 48 89 fb 48 83 ec 08 e8 26 94 a8 fe 48 8d bb a0 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 4a 03 00 00 4c 8d ab b0 00 00 00 48 8b ab a0 00
+RSP: 0018:ffffc900010476b8 EFLAGS: 00010207
+RAX: dffffc0000000000 RBX: fffffffffffffff4 RCX: 0000000000000000
+RDX: 0000000000000012 RSI: ffff888002de0000 RDI: 0000000000000094
+RBP: ffff888013c9a000 R08: 0000000000000000 R09: fffffbfff3f9cc6a
+R10: ffffc900010476e8 R11: fffffbfff3f9cc69 R12: 0000000000000001
+R13: 000000000000000a R14: ffff888013c9af54 R15: ffff888013c9ad08
+FS:  00007ffa984ab580(0000) GS:ffff88801fe00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055a6384136c8 CR3: 000000003bbe6003 CR4: 0000000000770ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+PKRU: 55555554
+Call Trace:
+ encx24j600_spi_probe drivers/net/ethernet/microchip/encx24j600.c:459
+ spi_probe drivers/spi/spi.c:397
+ really_probe drivers/base/dd.c:517
+ __driver_probe_device drivers/base/dd.c:751
+ driver_probe_device drivers/base/dd.c:782
+ __device_attach_driver drivers/base/dd.c:899
+ bus_for_each_drv drivers/base/bus.c:427
+ __device_attach drivers/base/dd.c:971
+ bus_probe_device drivers/base/bus.c:487
+ device_add drivers/base/core.c:3364
+ __spi_add_device drivers/spi/spi.c:599
+ spi_add_device drivers/spi/spi.c:641
+ spi_new_device drivers/spi/spi.c:717
+ new_device_store+0x18c/0x1f1 [spi_stub 4e02719357f1ff33f5a43d00630982840568e85e]
+ dev_attr_store drivers/base/core.c:2074
+ sysfs_kf_write fs/sysfs/file.c:139
+ kernfs_fop_write_iter fs/kernfs/file.c:300
+ new_sync_write fs/read_write.c:508 (discriminator 4)
+ vfs_write fs/read_write.c:594
+ ksys_write fs/read_write.c:648
+ do_syscall_64 arch/x86/entry/common.c:50
+ entry_SYSCALL_64_after_hwframe arch/x86/entry/entry_64.S:113
+
+Add error check in devm_regmap_init_encx24j600 to avoid this situation.
+
+Fixes: 04fbfce7a222 ("net: Microchip encx24j600 driver")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Nanyong Sun <sunnanyong@huawei.com>
+Link: https://lore.kernel.org/r/20211012125901.3623144-1-sunnanyong@huawei.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en_main.c |   57 ++++++++++++++++++++--
- include/linux/mlx5/mlx5_ifc.h                     |   10 +++
- 2 files changed, 60 insertions(+), 7 deletions(-)
+ drivers/net/ethernet/microchip/encx24j600-regmap.c |   10 ++++++++--
+ drivers/net/ethernet/microchip/encx24j600.c        |    5 ++++-
+ drivers/net/ethernet/microchip/encx24j600_hw.h     |    4 ++--
+ 3 files changed, 14 insertions(+), 5 deletions(-)
 
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-@@ -3819,20 +3819,67 @@ static int set_feature_rx_all(struct net
- 	return mlx5_set_port_fcs(mdev, !enable);
- }
- 
-+static int mlx5e_set_rx_port_ts(struct mlx5_core_dev *mdev, bool enable)
-+{
-+	u32 in[MLX5_ST_SZ_DW(pcmr_reg)] = {};
-+	bool supported, curr_state;
-+	int err;
-+
-+	if (!MLX5_CAP_GEN(mdev, ports_check))
-+		return 0;
-+
-+	err = mlx5_query_ports_check(mdev, in, sizeof(in));
-+	if (err)
-+		return err;
-+
-+	supported = MLX5_GET(pcmr_reg, in, rx_ts_over_crc_cap);
-+	curr_state = MLX5_GET(pcmr_reg, in, rx_ts_over_crc);
-+
-+	if (!supported || enable == curr_state)
-+		return 0;
-+
-+	MLX5_SET(pcmr_reg, in, local_port, 1);
-+	MLX5_SET(pcmr_reg, in, rx_ts_over_crc, enable);
-+
-+	return mlx5_set_ports_check(mdev, in, sizeof(in));
-+}
-+
- static int set_feature_rx_fcs(struct net_device *netdev, bool enable)
- {
- 	struct mlx5e_priv *priv = netdev_priv(netdev);
-+	struct mlx5e_channels *chs = &priv->channels;
-+	struct mlx5_core_dev *mdev = priv->mdev;
- 	int err;
- 
- 	mutex_lock(&priv->state_lock);
- 
--	priv->channels.params.scatter_fcs_en = enable;
--	err = mlx5e_modify_channels_scatter_fcs(&priv->channels, enable);
--	if (err)
--		priv->channels.params.scatter_fcs_en = !enable;
-+	if (enable) {
-+		err = mlx5e_set_rx_port_ts(mdev, false);
-+		if (err)
-+			goto out;
-+
-+		chs->params.scatter_fcs_en = true;
-+		err = mlx5e_modify_channels_scatter_fcs(chs, true);
-+		if (err) {
-+			chs->params.scatter_fcs_en = false;
-+			mlx5e_set_rx_port_ts(mdev, true);
-+		}
-+	} else {
-+		chs->params.scatter_fcs_en = false;
-+		err = mlx5e_modify_channels_scatter_fcs(chs, false);
-+		if (err) {
-+			chs->params.scatter_fcs_en = true;
-+			goto out;
-+		}
-+		err = mlx5e_set_rx_port_ts(mdev, true);
-+		if (err) {
-+			mlx5_core_warn(mdev, "Failed to set RX port timestamp %d\n", err);
-+			err = 0;
-+		}
-+	}
- 
-+out:
- 	mutex_unlock(&priv->state_lock);
--
- 	return err;
- }
- 
---- a/include/linux/mlx5/mlx5_ifc.h
-+++ b/include/linux/mlx5/mlx5_ifc.h
-@@ -9274,16 +9274,22 @@ struct mlx5_ifc_pcmr_reg_bits {
- 	u8         reserved_at_0[0x8];
- 	u8         local_port[0x8];
- 	u8         reserved_at_10[0x10];
-+
- 	u8         entropy_force_cap[0x1];
- 	u8         entropy_calc_cap[0x1];
- 	u8         entropy_gre_calc_cap[0x1];
--	u8         reserved_at_23[0x1b];
-+	u8         reserved_at_23[0xf];
-+	u8         rx_ts_over_crc_cap[0x1];
-+	u8         reserved_at_33[0xb];
- 	u8         fcs_cap[0x1];
- 	u8         reserved_at_3f[0x1];
-+
- 	u8         entropy_force[0x1];
- 	u8         entropy_calc[0x1];
- 	u8         entropy_gre_calc[0x1];
--	u8         reserved_at_43[0x1b];
-+	u8         reserved_at_43[0xf];
-+	u8         rx_ts_over_crc[0x1];
-+	u8         reserved_at_53[0xb];
- 	u8         fcs_chk[0x1];
- 	u8         reserved_at_5f[0x1];
+--- a/drivers/net/ethernet/microchip/encx24j600-regmap.c
++++ b/drivers/net/ethernet/microchip/encx24j600-regmap.c
+@@ -502,13 +502,19 @@ static struct regmap_bus phymap_encx24j6
+ 	.reg_read = regmap_encx24j600_phy_reg_read,
  };
+ 
+-void devm_regmap_init_encx24j600(struct device *dev,
+-				 struct encx24j600_context *ctx)
++int devm_regmap_init_encx24j600(struct device *dev,
++				struct encx24j600_context *ctx)
+ {
+ 	mutex_init(&ctx->mutex);
+ 	regcfg.lock_arg = ctx;
+ 	ctx->regmap = devm_regmap_init(dev, &regmap_encx24j600, ctx, &regcfg);
++	if (IS_ERR(ctx->regmap))
++		return PTR_ERR(ctx->regmap);
+ 	ctx->phymap = devm_regmap_init(dev, &phymap_encx24j600, ctx, &phycfg);
++	if (IS_ERR(ctx->phymap))
++		return PTR_ERR(ctx->phymap);
++
++	return 0;
+ }
+ EXPORT_SYMBOL_GPL(devm_regmap_init_encx24j600);
+ 
+--- a/drivers/net/ethernet/microchip/encx24j600.c
++++ b/drivers/net/ethernet/microchip/encx24j600.c
+@@ -1027,10 +1027,13 @@ static int encx24j600_spi_probe(struct s
+ 	priv->speed = SPEED_100;
+ 
+ 	priv->ctx.spi = spi;
+-	devm_regmap_init_encx24j600(&spi->dev, &priv->ctx);
+ 	ndev->irq = spi->irq;
+ 	ndev->netdev_ops = &encx24j600_netdev_ops;
+ 
++	ret = devm_regmap_init_encx24j600(&spi->dev, &priv->ctx);
++	if (ret)
++		goto out_free;
++
+ 	mutex_init(&priv->lock);
+ 
+ 	/* Reset device and check if it is connected */
+--- a/drivers/net/ethernet/microchip/encx24j600_hw.h
++++ b/drivers/net/ethernet/microchip/encx24j600_hw.h
+@@ -15,8 +15,8 @@ struct encx24j600_context {
+ 	int bank;
+ };
+ 
+-void devm_regmap_init_encx24j600(struct device *dev,
+-				 struct encx24j600_context *ctx);
++int devm_regmap_init_encx24j600(struct device *dev,
++				struct encx24j600_context *ctx);
+ 
+ /* Single-byte instructions */
+ #define BANK_SELECT(bank) (0xC0 | ((bank & (BANK_MASK >> BANK_SHIFT)) << 1))
 
 
