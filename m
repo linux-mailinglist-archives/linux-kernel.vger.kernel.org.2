@@ -2,220 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C7F8431A66
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:08:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DABAF431A72
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:10:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231672AbhJRNKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:10:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49384 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229519AbhJRNKw (ORCPT
+        id S231503AbhJRNNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:13:06 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:35954 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231466AbhJRNNE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:10:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634562520;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=56IuT+PdlkvXl/kACCVdLw1HVql/ugf55gkE2tIkTMM=;
-        b=QJDcrA4DTImTt0JH0AzDzH07BDRd1u0eaz+TCzVWydWrMjFDqr8ie0wANFQR+ShrQk79by
-        GAudN0nStck2HzbW2y1yIME6nsLQzcpYjl/0dm5VwmV1Kn2bX60fDuO2g3fb1bxKl7fs/t
-        pn1u4RTGOtDFTmYe18TG6Fth6Nv9eYI=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-213-j1uefxwmNtuM6ZXqhf_KTg-1; Mon, 18 Oct 2021 09:08:39 -0400
-X-MC-Unique: j1uefxwmNtuM6ZXqhf_KTg-1
-Received: by mail-wr1-f71.google.com with SMTP id v15-20020adfa1cf000000b00160940b17a2so8804166wrv.19
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 06:08:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=56IuT+PdlkvXl/kACCVdLw1HVql/ugf55gkE2tIkTMM=;
-        b=55putHQwKAO21ldstcWUAG5wWlZnXtNHJ/R54mFsWj9atqGRq3IVzbHlcGmHKITs10
-         shsK7TK3WonovYVP/FhWthuRnxH1PmKnraPNV1S8u7lwyP+atUK63YNC2Fq3deJP0C2K
-         mM8Ca+Kxi2BNTlegue5nI8PSZSLhrdL/Cm0nC7xph2FVhOH6aau8k0YLvUmFXRP+rm4T
-         wYueYgJPluFhxEzbnLXpywEmCIcXnY0K2crVrqxwVy9sbB9NOwEBiYEi6nAcTtIxOLDF
-         No4uyKpy+UFHHDnEEjL8Q26mQLB6BWnmy8g6bABy/819vF7hiyZMluPG7ZNGgSxIje2D
-         6ltA==
-X-Gm-Message-State: AOAM531NkaGObbKxGntivhNIP3qCoUwaAUiz+mTeCthlKAQe7bJApvvM
-        zG6+0sDWx3+Pq3oBgismNg0sr6E8UiH9Ya7XTPUcOFTGxdsFW+WWryo578NgvGgKNvo4N7qZw1z
-        uQzcLHQvOBlvfrr/ZT5a6CaWJ
-X-Received: by 2002:a1c:e906:: with SMTP id q6mr44687535wmc.126.1634562518312;
-        Mon, 18 Oct 2021 06:08:38 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw7/6iHH2zKO8aeTMZ8TeUVukVlFcvS0CWBtbTcyYUWYiT+En4lXXHYBvpw9GD3DaLEfTDzbw==
-X-Received: by 2002:a1c:e906:: with SMTP id q6mr44687461wmc.126.1634562517850;
-        Mon, 18 Oct 2021 06:08:37 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id v191sm12513939wme.36.2021.10.18.06.08.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Oct 2021 06:08:36 -0700 (PDT)
-Message-ID: <50b4c1f0-be96-c1b5-aab1-69f4f61ec43f@redhat.com>
-Date:   Mon, 18 Oct 2021 15:08:35 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH v2 7/7] KVM: VMX: Only context switch some PT MSRs when
- they exist
-Content-Language: en-US
-To:     Xiaoyao Li <xiaoyao.li@intel.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        Mon, 18 Oct 2021 09:13:04 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1634562653; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=2iZh5xPrIPUDbVFXGh7W2cb2/hGVEE7gEkCaxI5tQ2Y=; b=W/bjc1IY7Jpw7RKCAN06T9AQW1k1hjG6fGORe3ShkaleVDk1H6HAHJdjsFQ4KPMvbO025xB+
+ X6lK1wwUHxkq+VBQEY/ohgiMtfJ/MyAcTP8wJnuW4R8pbS2AGHU2+JCEtb5ittfcp+yh9SCt
+ pm4aoa7A7LvhgnybRA8vWd6EFxA=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 616d72490605239689a079af (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 18 Oct 2021 13:10:33
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id AAA0BC4361C; Mon, 18 Oct 2021 13:10:32 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from tykki (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D04D4C4338F;
+        Mon, 18 Oct 2021 13:10:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org D04D4C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Alagu Sankar <alagusankar@silex-india.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Brian Norris <briannorris@chromium.org>,
+        Wen Gong <wgong@codeaurora.org>,
+        Tamizh Chelvam <tamizhr@codeaurora.org>,
+        Carl Huang <cjhuang@codeaurora.org>,
+        Miaoqing Pan <miaoqing@codeaurora.org>,
+        Ben Greear <greearb@candelatech.com>,
+        Erik Stromdahl <erik.stromdahl@gmail.com>,
+        Fabio Estevam <festevam@denx.de>, ath10k@lists.infradead.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20210827070249.924633-1-xiaoyao.li@intel.com>
- <20210827070249.924633-8-xiaoyao.li@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <20210827070249.924633-8-xiaoyao.li@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH] ath10k: fix invalid dma_addr_t token assignment
+References: <20211014075153.3655910-1-arnd@kernel.org>
+Date:   Mon, 18 Oct 2021 16:10:21 +0300
+In-Reply-To: <20211014075153.3655910-1-arnd@kernel.org> (Arnd Bergmann's
+        message of "Thu, 14 Oct 2021 09:51:15 +0200")
+Message-ID: <87fssytr5u.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/08/21 09:02, Xiaoyao Li wrote:
-> The enumeration of Intel PT feature doesn't guarantee the existence of
-> MSR_IA32_RTIT_OUTPUT_BASE, MSR_IA32_RTIT_OUTPUT_MASK and
-> MSR_IA32_RTIT_CR3_MATCH. They need to be detected from CPUID 0x14 PT
-> leaves.
-> 
-> Detect the existence of them in hardware_setup() and only context switch
-> them when they exist. Otherwise it will cause #GP when access them.
+Arnd Bergmann <arnd@kernel.org> writes:
 
-If intel_pt_validate_hw_cap is not fast enough, it should be optimized.
-Something like this:
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> Using a kernel pointer in place of a dma_addr_t token can
+> lead to undefined behavior if that makes it into cache
+> management functions. The compiler caught one such attempt
+> in a cast:
+>
+> drivers/net/wireless/ath/ath10k/mac.c: In function 'ath10k_add_interface':
+> drivers/net/wireless/ath/ath10k/mac.c:5586:47: error: cast from pointer to integer of different size [-Werror=pointer-to-int-cast]
+>  5586 |                         arvif->beacon_paddr = (dma_addr_t)arvif->beacon_buf;
+>       |                                               ^
+>
+> Looking through how this gets used down the way, I'm fairly
+> sure that beacon_paddr is never accessed again for ATH10K_DEV_TYPE_HL
+> devices, and if it was accessed, that would be a bug.
 
-diff --git a/arch/x86/events/intel/pt.c b/arch/x86/events/intel/pt.c
-index 7f406c14715f..9c7167dcb719 100644
---- a/arch/x86/events/intel/pt.c
-+++ b/arch/x86/events/intel/pt.c
-@@ -41,13 +41,15 @@ static struct pt_pmu pt_pmu;
-   * permitted values for certain bit fields).
-   */
-  #define PT_CAP(_n, _l, _r, _m)						\
--	[PT_CAP_ ## _n] = { .name = __stringify(_n), .leaf = _l,	\
--			    .reg = _r, .mask = _m }
-+	[PT_CAP_ ## _n] = { .name = __stringify(_n),			\
-+			    .index = _l * PT_CPUID_REGS_NUM + _r,	\
-+			    .shift = __CONSTANT_FFS_32(_m),		\
-+			    .mask = _m }
-  
-  static struct pt_cap_desc {
-  	const char	*name;
--	u32		leaf;
--	u8		reg;
-+	u16		index;
-+	u8		shift;
-  	u32		mask;
-  } pt_caps[] = {
-  	PT_CAP(max_subleaf,		0, CPUID_EAX, 0xffffffff),
-@@ -71,10 +73,8 @@ static struct pt_cap_desc {
-  u32 intel_pt_validate_cap(u32 *caps, enum pt_capabilities capability)
-  {
-  	struct pt_cap_desc *cd = &pt_caps[capability];
--	u32 c = caps[cd->leaf * PT_CPUID_REGS_NUM + cd->reg];
--	unsigned int shift = __ffs(cd->mask);
-  
--	return (c & cd->mask) >> shift;
-+	return (caps[cd->index] & cd->mask) >> cd->shift;
-  }
-  EXPORT_SYMBOL_GPL(intel_pt_validate_cap);
-  
-diff --git a/include/linux/bitops.h b/include/linux/bitops.h
-index 5e62e2383b7f..b4ee28d91b77 100644
---- a/include/linux/bitops.h
-+++ b/include/linux/bitops.h
-@@ -211,6 +211,17 @@ static inline int get_count_order_long(unsigned long l)
-  	return (int)fls_long(--l);
-  }
-  
-+#define __CONSTANT_FFS_2(w) \
-+	(((w) & 1) == 0)
-+#define __CONSTANT_FFS_4(w) \
-+	(((w) & 0x3) == 0 ? 2 + __CONSTANT_FFS_2((w) >> 2) : __CONSTANT_FFS_2((w)))
-+#define __CONSTANT_FFS_8(w) \
-+	(((w) & 0xf) == 0 ? 4 + __CONSTANT_FFS_4((w) >> 4) : __CONSTANT_FFS_4((w)))
-+#define __CONSTANT_FFS_16(w) \
-+	(((w) & 0xff) == 0 ? 8 + __CONSTANT_FFS_8((w) >> 8) : __CONSTANT_FFS_8((w)))
-+#define __CONSTANT_FFS_32(w) \
-+	(((w) & 0xffff) == 0 ? 16 + __CONSTANT_FFS_16((w) >> 16) : __CONSTANT_FFS_16((w)))
-+
-  /**
-   * __ffs64 - find first set bit in a 64 bit word
-   * @word: The 64 bit word
+That's my understanding as well. beacon_paddr is only accessed in
+ath10k_wmi_event_host_swba() and only low latency (ATH10K_DEV_TYPE_LL)
+should use that function.
 
-
-Paolo
-
-> Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
+> Change the assignment to use a known-invalid address token
+> instead, which avoids the warning and makes it easier to catch
+> bugs if it does end up getting used.
+>
+> Fixes: e263bdab9c0e ("ath10k: high latency fixes for beacon buffer")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 > ---
->   arch/x86/kvm/vmx/vmx.c | 28 +++++++++++++++++++++-------
->   1 file changed, 21 insertions(+), 7 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index 394ef4732838..6819fc470072 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -204,6 +204,9 @@ module_param(ple_window_max, uint, 0444);
->   int __read_mostly pt_mode = PT_MODE_SYSTEM;
->   module_param(pt_mode, int, S_IRUGO);
->   
-> +static bool has_msr_rtit_cr3_match;
-> +static bool has_msr_rtit_output_x;
-> +
->   static DEFINE_STATIC_KEY_FALSE(vmx_l1d_should_flush);
->   static DEFINE_STATIC_KEY_FALSE(vmx_l1d_flush_cond);
->   static DEFINE_MUTEX(vmx_l1d_flush_mutex);
-> @@ -1035,9 +1038,12 @@ static inline void pt_load_msr(struct pt_ctx *ctx, u32 addr_range)
->   	u32 i;
->   
->   	wrmsrl(MSR_IA32_RTIT_STATUS, ctx->status);
-> -	wrmsrl(MSR_IA32_RTIT_OUTPUT_BASE, ctx->output_base);
-> -	wrmsrl(MSR_IA32_RTIT_OUTPUT_MASK, ctx->output_mask);
-> -	wrmsrl(MSR_IA32_RTIT_CR3_MATCH, ctx->cr3_match);
-> +	if (has_msr_rtit_output_x) {
-> +		wrmsrl(MSR_IA32_RTIT_OUTPUT_BASE, ctx->output_base);
-> +		wrmsrl(MSR_IA32_RTIT_OUTPUT_MASK, ctx->output_mask);
-> +	}
-> +	if (has_msr_rtit_cr3_match)
-> +		wrmsrl(MSR_IA32_RTIT_CR3_MATCH, ctx->cr3_match);
->   	for (i = 0; i < addr_range; i++) {
->   		wrmsrl(MSR_IA32_RTIT_ADDR0_A + i * 2, ctx->addr_a[i]);
->   		wrmsrl(MSR_IA32_RTIT_ADDR0_B + i * 2, ctx->addr_b[i]);
-> @@ -1049,9 +1055,12 @@ static inline void pt_save_msr(struct pt_ctx *ctx, u32 addr_range)
->   	u32 i;
->   
->   	rdmsrl(MSR_IA32_RTIT_STATUS, ctx->status);
-> -	rdmsrl(MSR_IA32_RTIT_OUTPUT_BASE, ctx->output_base);
-> -	rdmsrl(MSR_IA32_RTIT_OUTPUT_MASK, ctx->output_mask);
-> -	rdmsrl(MSR_IA32_RTIT_CR3_MATCH, ctx->cr3_match);
-> +	if (has_msr_rtit_output_x) {
-> +		rdmsrl(MSR_IA32_RTIT_OUTPUT_BASE, ctx->output_base);
-> +		rdmsrl(MSR_IA32_RTIT_OUTPUT_MASK, ctx->output_mask);
-> +	}
-> +	if (has_msr_rtit_cr3_match)
-> +		rdmsrl(MSR_IA32_RTIT_CR3_MATCH, ctx->cr3_match);
->   	for (i = 0; i < addr_range; i++) {
->   		rdmsrl(MSR_IA32_RTIT_ADDR0_A + i * 2, ctx->addr_a[i]);
->   		rdmsrl(MSR_IA32_RTIT_ADDR0_B + i * 2, ctx->addr_b[i]);
-> @@ -7883,8 +7892,13 @@ static __init int hardware_setup(void)
->   
->   	if (pt_mode != PT_MODE_SYSTEM && pt_mode != PT_MODE_HOST_GUEST)
->   		return -EINVAL;
-> -	if (!enable_ept || !cpu_has_vmx_intel_pt())
-> +	if (!enable_ept || !cpu_has_vmx_intel_pt()) {
->   		pt_mode = PT_MODE_SYSTEM;
-> +	} else if (boot_cpu_has(X86_FEATURE_INTEL_PT)) {
-> +		has_msr_rtit_cr3_match = intel_pt_validate_hw_cap(PT_CAP_cr3_filtering);
-> +		has_msr_rtit_output_x = intel_pt_validate_hw_cap(PT_CAP_topa_output) ||
-> +					intel_pt_validate_hw_cap(PT_CAP_single_range_output);
-> +	}
->   
->   	setup_default_sgx_lepubkeyhash();
->   
-> 
+>  drivers/net/wireless/ath/ath10k/mac.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+> index 7ca68c81d9b6..c0e78eaa65f8 100644
+> --- a/drivers/net/wireless/ath/ath10k/mac.c
+> +++ b/drivers/net/wireless/ath/ath10k/mac.c
+> @@ -5583,7 +5583,7 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
+>  		if (ar->bus_param.dev_type == ATH10K_DEV_TYPE_HL) {
+>  			arvif->beacon_buf = kmalloc(IEEE80211_MAX_FRAME_LEN,
+>  						    GFP_KERNEL);
+> -			arvif->beacon_paddr = (dma_addr_t)arvif->beacon_buf;
+> +			arvif->beacon_paddr = DMA_MAPPING_ERROR;
 
+In the pending branch I added a comment here:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=02a383c9bf959147a95c4efeaa4edf35c4450fac
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
