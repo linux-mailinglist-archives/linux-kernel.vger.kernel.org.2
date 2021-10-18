@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F78C43244F
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 18:56:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9223432450
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 18:56:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233835AbhJRQ6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 12:58:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54888 "EHLO
+        id S233881AbhJRQ6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 12:58:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233317AbhJRQ6a (ORCPT
+        with ESMTP id S231894AbhJRQ6b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 12:58:30 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4652C06161C
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 09:56:18 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id e19so879673ljk.12
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 09:56:18 -0700 (PDT)
+        Mon, 18 Oct 2021 12:58:31 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C74D4C06161C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 09:56:19 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id x27so1070233lfa.9
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 09:56:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=shutemov-name.20210112.gappssmtp.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=CVY6sB943A0/C+1rE91nMU2/Mjjr6N7AE5dVN2kCUg4=;
-        b=ON7io7mu2Qx/zr7peaBIMYae8dcNIE45jYrxnLnlKvAMK9szl5sdSNE0sxUbihgWTY
-         Si2pCx+3bwgHgqU5U9203giZmJDLnlZ9ShARh20XLRhJ2GcOry1ikCmlURZnW+96Q0o0
-         0HLiQ8ekpu/Tv3t1drHMK/JuE8LE9n6pKmf84ADyOWaHV1JKZpSuZzFlw1ISl165oAC5
-         +8iB0iO5vGsbq70xtmPxGQp4fDubt9E6xAy9A3LqFZwkpqZDTSAVoCUlMLIQ8gVx95Tm
-         Dm1Y0vDPrULXkvWeBJYjJWmiOFyx7/vbMzamhxKerGClLgsqUVcIWIRAf2jdkOZZDV0N
-         P+Ow==
+        bh=/kO0IXbauHLHAa1pjDhs0BWqR5rXDhpyxkrmhc19wT0=;
+        b=t2nzo4JU7enSGoqSaYD4jpJfnUsSqsz9UUd490AifLNmYgL1JHUJwaqbMZW0p9oZiV
+         vCazc/UXZ7OXpYpKr0ezQWDLf5dhhHVad9KAS4EQpD/j2X29ymzrwFDErWwnbNiL5pFU
+         T/2PPu1Jm5INJ74TmFRquGSBKSo9Rxr1q22wS9ncxcPmdAqQTlqZGgHS6Cedfd/MawZU
+         fnmx1RmlsdkvS84MsBLQBL9N118SYVEkySenQipK3tUsgoR+RgpFIL32aDFhKsXCjieP
+         9+Zy/+3najf2URWTSmgeCYhddBXMIwr+nEPZBpp4OdoJ5UdlLRxVMNctM8uCb/ncs6z6
+         GbhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=CVY6sB943A0/C+1rE91nMU2/Mjjr6N7AE5dVN2kCUg4=;
-        b=CmwJfQL8vq6BIZVgGn1SibE8qWlTVA2k7yG7Fsi8e6yLBq50WUfwnxphnBZcpY62oW
-         iuuHFrRNUObMK7Xf+pS8Dkouy0jqQK5GPhVHMwLKxmCDeV380sD0UVUVh1RhLC1U3LdD
-         C1YXWlYmMfOdZfVjjpm8e7Ig/oLckDfy8R7fhpTO0699sH9XmUlZydk1EmqQpo9o07bq
-         wFLQtOpDPvORPUK2YwNvjwB3zQTXbGpsMGv9mO6Tjqdz1OsP5mu6FGY3szUVGQi5+pBa
-         Fxh2DooC98B2842QtYqsC9O2ihEkK4VwdtCSCjKfeQS+cKvwrSyBB0yX7IVENVApIPj0
-         J5qw==
-X-Gm-Message-State: AOAM530P16gUbdE542BlA5npJI+1dq2r+i7QDExSWr0a0HhV/d/2pr0f
-        IC1Yocdno8iEzQ7sqZo1r1M14g==
-X-Google-Smtp-Source: ABdhPJwZzJLwEJjA0NlLFmk3YgZom4nW1WqPH7E4/x2wOXMSNtIXEocq7VSVEfkBk0JQM0eJcGuJBg==
-X-Received: by 2002:a2e:a5c9:: with SMTP id n9mr904259ljp.512.1634576177203;
-        Mon, 18 Oct 2021 09:56:17 -0700 (PDT)
+        bh=/kO0IXbauHLHAa1pjDhs0BWqR5rXDhpyxkrmhc19wT0=;
+        b=w6su/44Zsn9QddRrTTy2G7oUdPTL3QY+2TRH7yKUJH/ByUhw0LIUqZyCqLexMeDuDi
+         0u28uIObbb2NQt/4PHNc/iiQ+m2DFSVMHL4pRScxYl0tVnvJAbuNrWTfVktxQqvGKkZu
+         6zl5sTobL2ajOy20qPWVWKIUkiKoPsmHVHXvh7wH0FE2PonLZoko507o6jc9s/zD6Qth
+         KS+kP1UBWne5GPdr65vaswoNTW+Xqxy5pXIBhdxY6wdS5F5o7HMfJnDkqM0PNOJJKcXs
+         V6T+MnvkXCSKbhoHcuLMt6A7cKUHOmDhSV5G36lqlVElFzBMCZ37NrRLrvZtwFUmZhb1
+         E8fg==
+X-Gm-Message-State: AOAM533f4/oFkPQzaQkFKiZBj58V+nj3ezdV/HWsYbCSotphvW97vU1Q
+        leL5HGzLL5UfK/BVr+H0NmLGLQ==
+X-Google-Smtp-Source: ABdhPJzs64luYq0kman9mQJRgnyq6xvbYACwZMokiqrRuNjhYPF0qsXdPjHVz4XFTa3OkzFLLIB6QQ==
+X-Received: by 2002:a05:6512:b0a:: with SMTP id w10mr837120lfu.240.1634576178147;
+        Mon, 18 Oct 2021 09:56:18 -0700 (PDT)
 Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id f13sm1442187lfq.217.2021.10.18.09.56.16
+        by smtp.gmail.com with ESMTPSA id u4sm1182431lfs.153.2021.10.18.09.56.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 09:56:16 -0700 (PDT)
+        Mon, 18 Oct 2021 09:56:17 -0700 (PDT)
 From:   "Kirill A. Shutemov" <kirill@shutemov.name>
 X-Google-Original-From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 Received: by box.localdomain (Postfix, from userid 1000)
-        id 58F1C10309B; Mon, 18 Oct 2021 19:56:20 +0300 (+03)
+        id DF87210309C; Mon, 18 Oct 2021 19:56:20 +0300 (+03)
 To:     Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         Tom Lendacky <thomas.lendacky@amd.com>,
@@ -65,9 +65,9 @@ Cc:     Kuppuswamy Sathyanarayanan
         linux-kernel@vger.kernel.org,
         "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
         Tony Luck <tony.luck@intel.com>
-Subject: [PATCHv2 1/3] x86/insn-eval: Introduce insn_get_modrm_reg_ptr()
-Date:   Mon, 18 Oct 2021 19:56:12 +0300
-Message-Id: <20211018165614.20153-2-kirill.shutemov@linux.intel.com>
+Subject: [PATCHv2 2/3] x86/insn-eval: Introduce insn_decode_mmio()
+Date:   Mon, 18 Oct 2021 19:56:13 +0300
+Message-Id: <20211018165614.20153-3-kirill.shutemov@linux.intel.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20211018165614.20153-1-kirill.shutemov@linux.intel.com>
 References: <20211018165614.20153-1-kirill.shutemov@linux.intel.com>
@@ -77,63 +77,139 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The helper returns a pointer to the register indicated by
-ModRM byte.
+In preparation for sharing MMIO instruction decode between SEV-ES and
+TDX, factor out the common decode into a new insn_decode_mmio() helper.
 
-It's going to replace vc_insn_get_reg() in the SEV MMIO
-implementation. TDX MMIO implementation will also use it.
+For regular virtual machine, MMIO is handled by the VMM and KVM
+emulates instructions that caused MMIO. But, this model doesn't work
+for a secure VMs (like SEV or TDX) as VMM doesn't have access to the
+guest memory and register state. So, for TDX or SEV VMM needs
+assistance in handling MMIO. It induces exception in the guest. Guest
+has to decode the instruction and handle it on its own.
+
+The code is based on the current SEV MMIO implementation.
 
 Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 Reviewed-by: Andi Kleen <ak@linux.intel.com>
 Reviewed-by: Tony Luck <tony.luck@intel.com>
 ---
- arch/x86/include/asm/insn-eval.h |  1 +
- arch/x86/lib/insn-eval.c         | 20 ++++++++++++++++++++
- 2 files changed, 21 insertions(+)
+ arch/x86/include/asm/insn-eval.h | 12 +++++
+ arch/x86/lib/insn-eval.c         | 84 ++++++++++++++++++++++++++++++++
+ 2 files changed, 96 insertions(+)
 
 diff --git a/arch/x86/include/asm/insn-eval.h b/arch/x86/include/asm/insn-eval.h
-index 91d7182ad2d6..5c6869565fb3 100644
+index 5c6869565fb3..010d31726d06 100644
 --- a/arch/x86/include/asm/insn-eval.h
 +++ b/arch/x86/include/asm/insn-eval.h
-@@ -19,6 +19,7 @@ bool insn_has_rep_prefix(struct insn *insn);
- void __user *insn_get_addr_ref(struct insn *insn, struct pt_regs *regs);
- int insn_get_modrm_rm_off(struct insn *insn, struct pt_regs *regs);
- int insn_get_modrm_reg_off(struct insn *insn, struct pt_regs *regs);
-+unsigned long *insn_get_modrm_reg_ptr(struct insn *insn, struct pt_regs *regs);
- unsigned long insn_get_seg_base(struct pt_regs *regs, int seg_reg_idx);
- int insn_get_code_seg_params(struct pt_regs *regs);
- int insn_fetch_from_user(struct pt_regs *regs,
+@@ -29,4 +29,16 @@ int insn_fetch_from_user_inatomic(struct pt_regs *regs,
+ bool insn_decode_from_regs(struct insn *insn, struct pt_regs *regs,
+ 			   unsigned char buf[MAX_INSN_SIZE], int buf_size);
+ 
++enum mmio_type {
++	MMIO_DECODE_FAILED,
++	MMIO_WRITE,
++	MMIO_WRITE_IMM,
++	MMIO_READ,
++	MMIO_READ_ZERO_EXTEND,
++	MMIO_READ_SIGN_EXTEND,
++	MMIO_MOVS,
++};
++
++enum mmio_type insn_decode_mmio(struct insn *insn, int *bytes);
++
+ #endif /* _ASM_X86_INSN_EVAL_H */
 diff --git a/arch/x86/lib/insn-eval.c b/arch/x86/lib/insn-eval.c
-index a1d24fdc07cf..64fbab09b966 100644
+index 64fbab09b966..1714359f48bd 100644
 --- a/arch/x86/lib/insn-eval.c
 +++ b/arch/x86/lib/insn-eval.c
-@@ -850,6 +850,26 @@ int insn_get_modrm_reg_off(struct insn *insn, struct pt_regs *regs)
- 	return get_reg_offset(insn, regs, REG_TYPE_REG);
- }
+@@ -1559,3 +1559,87 @@ bool insn_decode_from_regs(struct insn *insn, struct pt_regs *regs,
  
+ 	return true;
+ }
++
 +/**
-+ * insn_get_modrm_reg_ptr() - Obtain register pointer based on ModRM byte
-+ * @insn:	Instruction containing the ModRM byte
-+ * @regs:	Register values as seen when entering kernel mode
++ * insn_decode_mmio() - Decode a MMIO instruction
++ * @insn:	Structure to store decoded instruction
++ * @bytes:	Returns size of memory operand
++ *
++ * Decodes instruction that used for Memory-mapped I/O.
 + *
 + * Returns:
 + *
-+ * The register indicated by the reg part of the ModRM byte.
-+ * The register is obtained as a pointer within pt_regs.
++ * Type of the instruction. Size of the memory operand is stored in
++ * @bytes. If decode failed, MMIO_DECODE_FAILED returned.
 + */
-+unsigned long *insn_get_modrm_reg_ptr(struct insn *insn, struct pt_regs *regs)
++enum mmio_type insn_decode_mmio(struct insn *insn, int *bytes)
 +{
-+	int offset;
++	int type = MMIO_DECODE_FAILED;
 +
-+	offset = insn_get_modrm_reg_off(insn, regs);
-+	if (offset < 0)
-+		return NULL;
-+	return (void *)regs + offset;
++	*bytes = 0;
++
++	if (!insn_get_opcode(insn))
++		return MMIO_DECODE_FAILED;
++
++	switch (insn->opcode.bytes[0]) {
++	case 0x88: /* MOV m8,r8 */
++		*bytes = 1;
++		fallthrough;
++	case 0x89: /* MOV m16/m32/m64, r16/m32/m64 */
++		if (!*bytes)
++			*bytes = insn->opnd_bytes;
++		type = MMIO_WRITE;
++		break;
++
++	case 0xc6: /* MOV m8, imm8 */
++		*bytes = 1;
++		fallthrough;
++	case 0xc7: /* MOV m16/m32/m64, imm16/imm32/imm64 */
++		if (!*bytes)
++			*bytes = insn->opnd_bytes;
++		type = MMIO_WRITE_IMM;
++		break;
++
++	case 0x8a: /* MOV r8, m8 */
++		*bytes = 1;
++		fallthrough;
++	case 0x8b: /* MOV r16/r32/r64, m16/m32/m64 */
++		if (!*bytes)
++			*bytes = insn->opnd_bytes;
++		type = MMIO_READ;
++		break;
++
++	case 0xa4: /* MOVS m8, m8 */
++		*bytes = 1;
++		fallthrough;
++	case 0xa5: /* MOVS m16/m32/m64, m16/m32/m64 */
++		if (!*bytes)
++			*bytes = insn->opnd_bytes;
++		type = MMIO_MOVS;
++		break;
++
++	case 0x0f: /* Two-byte instruction */
++		switch (insn->opcode.bytes[1]) {
++		case 0xb6: /* MOVZX r16/r32/r64, m8 */
++			*bytes = 1;
++			fallthrough;
++		case 0xb7: /* MOVZX r32/r64, m16 */
++			if (!*bytes)
++				*bytes = 2;
++			type = MMIO_READ_ZERO_EXTEND;
++			break;
++
++		case 0xbe: /* MOVSX r16/r32/r64, m8 */
++			*bytes = 1;
++			fallthrough;
++		case 0xbf: /* MOVSX r32/r64, m16 */
++			if (!*bytes)
++				*bytes = 2;
++			type = MMIO_READ_SIGN_EXTEND;
++			break;
++		}
++		break;
++	}
++
++	return type;
 +}
-+
- /**
-  * get_seg_base_limit() - obtain base address and limit of a segment
-  * @insn:	Instruction. Must be valid.
 -- 
 2.32.0
 
