@@ -2,64 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E9884326D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 20:47:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6014B4326D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 20:47:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232241AbhJRSt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 14:49:29 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:44948 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229696AbhJRSt0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 14:49:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=rwicn//mOhJ02F5EjK/QSZSwZD0PCubIDqfmMCSwouM=; b=uQ5zNLjWkyrQy8slNmByQD9p5T
-        /vVL2U/jRiOIBztFbnAzaELbXkAJ7Z8ii1weKAs/4RLnVbM2xeEjjgwaMPtrLO/7BMRC7ou6AQP84
-        Buz+9WAji+pMaUkKJUuBClYaxHkAS7Q0HtxREPoFiSqsac4k4Q3Z3XmsrcXp0ePK4v98=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mcXfD-00Azrw-BS; Mon, 18 Oct 2021 20:47:11 +0200
-Date:   Mon, 18 Oct 2021 20:47:11 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Luo Jie <luoj@codeaurora.org>
-Cc:     hkallweit1@gmail.com, linux@armlinux.org.uk, davem@davemloft.net,
-        kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sricharan@codeaurora.org
-Subject: Re: [PATCH v3 05/13] net: phy: add qca8081 ethernet phy driver
-Message-ID: <YW3BLwiNGiQGUje9@lunn.ch>
-References: <20211018033333.17677-1-luoj@codeaurora.org>
- <20211018033333.17677-6-luoj@codeaurora.org>
+        id S233062AbhJRStd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 14:49:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52494 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232306AbhJRStb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 14:49:31 -0400
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A33CC061768
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 11:47:20 -0700 (PDT)
+Received: by mail-io1-xd2b.google.com with SMTP id b188so12559701iof.8
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 11:47:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ob0CbEwoPeJgo71AK4uZuz6MhzSfIwRl4kQrmn5LdSo=;
+        b=zryvc2+iyGSLlKZd0t8mtv3dtK+YkZ6kCiMIVzLmOCw+zbbFJuxFfHrZQGVVW8Z/TW
+         PV1pHcYGTrVezQlMjoAuu5kGNyrqdiYuG/GeRZcOJTVjmuCFTd6nNOeJroIWjkxAw5cs
+         tz3ifwG1gL2vBK74CnzmmDPB4yueweSeWo9UNlJNnpz0HAlsCTrHwqRRIqSdzkDwYI2X
+         dBVRhP7O8PO8oMRWc9iQnX913JrKtZwwuKwqFQyddPQMwlU+5371NAluDd5GA5c9mMit
+         ELtH/Ijx4V4Azrr5hn/GmkqDn57YDAR7YTtu26N4uebU98kq9NzMdobGrWTUhNqKsKTg
+         CpVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ob0CbEwoPeJgo71AK4uZuz6MhzSfIwRl4kQrmn5LdSo=;
+        b=8E/Xc9bOr3y8O89Ni22pk1E1XDiarnTwDPwvPRTHN0LavpPipdeQyIyQSKGaqGJJC/
+         VnBJf1RuHGrQWwjPMlExmJ0DypMxLleuqUTTLgZ4VrPpl4UKfHLgcdM8jh0ThMMhWx24
+         FAwYTEo44coNbm3rilO8Z/VmdYYK0L70Gxc0OMKivk0IYDx//eyXXqBWBaTdw5UBoUF8
+         teNslGt53NPX/soLnlFcLEYxhXZk8GgoNjYYv8b2EbX5iMNK8uE4Qu1EyqNUQQmLinj+
+         csSR0olXSd7Dh5qptBkTOQu7F7lSmnlKmsocuC5q5PjlaEd+VdAxsYHbtX9MBXL3Xgp7
+         x3GQ==
+X-Gm-Message-State: AOAM531zcAJqdQcOSskdQNCMZrt5Wa+1dw+x0ic9sxBLJWMmEEOfxa7l
+        vgrMArD6DsbJzK79yNawyfsY8698XKEBbg==
+X-Google-Smtp-Source: ABdhPJyDN2zfYxfknFmpN3T8LloR/QDQg7yngT5RHbjCQ8mEx+QxOBZHcTf3jfGc6fH5qUxmVu8Leg==
+X-Received: by 2002:a02:cd9c:: with SMTP id l28mr1041464jap.78.1634582839074;
+        Mon, 18 Oct 2021 11:47:19 -0700 (PDT)
+Received: from [192.168.1.30] ([207.135.234.126])
+        by smtp.gmail.com with ESMTPSA id y6sm6832160iol.11.2021.10.18.11.47.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Oct 2021 11:47:18 -0700 (PDT)
+Subject: Re: [PATCH] [linux-5.10.y] io_uring: fix splice_fd_in checks backport
+ typo
+To:     Kamal Mostafa <kamal@canonical.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        linux-fsdevel@vger.kernel.org, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211018171808.18383-1-kamal@canonical.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <056adbd3-62eb-4aca-113e-f80c27c94a3b@kernel.dk>
+Date:   Mon, 18 Oct 2021 12:47:17 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211018033333.17677-6-luoj@codeaurora.org>
+In-Reply-To: <20211018171808.18383-1-kamal@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> @@ -1441,6 +1455,7 @@ static struct mdio_device_id __maybe_unused atheros_tbl[] = {
->  	{ PHY_ID_MATCH_EXACT(ATH8032_PHY_ID) },
->  	{ PHY_ID_MATCH_EXACT(ATH8035_PHY_ID) },
->  	{ PHY_ID_MATCH_EXACT(ATH9331_PHY_ID) },
-> +	{ PHY_ID_MATCH_EXACT(QCA8081_PHY_ID) },
->  	{ }
+On 10/18/21 11:18 AM, Kamal Mostafa wrote:
+> The linux-5.10.y backport of commit "io_uring: add ->splice_fd_in checks"
+> includes a typo: "|" where "||" should be. (The original upstream commit
+> is fine.)
 
-What tree is this against? I have:
+Oops indeed! Greg, can you queue this one up?
 
-static struct mdio_device_id __maybe_unused atheros_tbl[] = {
-        { ATH8030_PHY_ID, AT8030_PHY_ID_MASK },
-        { PHY_ID_MATCH_EXACT(ATH8031_PHY_ID) },
-        { PHY_ID_MATCH_EXACT(ATH8032_PHY_ID) },
-        { PHY_ID_MATCH_EXACT(ATH8035_PHY_ID) },
-        { PHY_ID_MATCH_EXACT(ATH9331_PHY_ID) },
-        { PHY_ID_MATCH_EXACT(QCA8337_PHY_ID) },
-        { PHY_ID_MATCH_EXACT(QCA8327_A_PHY_ID) },
-        { PHY_ID_MATCH_EXACT(QCA8327_B_PHY_ID) },
-        { PHY_ID_MATCH_EXACT(QCA9561_PHY_ID) },
-        { }
-};
+-- 
+Jens Axboe
 
-	Andrew
