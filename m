@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EE4C431DE8
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:55:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 981BC431C81
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:40:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234282AbhJRNzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:55:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57710 "EHLO mail.kernel.org"
+        id S232142AbhJRNmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:42:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55998 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234308AbhJRNxS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:53:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0BF51619E1;
-        Mon, 18 Oct 2021 13:39:07 +0000 (UTC)
+        id S233227AbhJRNj7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:39:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 003746139D;
+        Mon, 18 Oct 2021 13:32:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634564348;
-        bh=wt1KKO2f0iDH4FjTaEdSsFZ8qzOlJAGvLTZBFhVvTpg=;
+        s=korg; t=1634563977;
+        bh=IaytkMrSw/XHC5kbbwXVsDr1pWvXLQt9GOvqqq+l+pc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CYGFXIe3oMDi7hCGU6gPsj8UpOBy2vnoGr3mzm0G9VoUI77WCBSDspQGjIobbb1iG
-         gDAFuA2RAtohLuE75bAGZgoNkSTl0b0oBgdE11JdypSBDY7Mq3IdiMfcOAokM9ywQa
-         vvO0hnSHV1dlXjXYCIcc3FaYuo39N1CDzwuSZ8P4=
+        b=h+l5Va45pKcoNsd0vrIfVEiDzIu9GLlI1O8LrkAY9wKZ4cVdx32SsssSABdsWDscX
+         /B0RjnNiwV+ktmlCygYoMMAz0892vmPIEAEcDdWjXSw4jTQ7xEOdH1mluPASbAUT9b
+         utLEQKi8PYohc6xkTe3j06ZXXm8QpH++dCFDfW3M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Halil Pasic <pasic@linux.ibm.com>,
-        markver@us.ibm.com, Cornelia Huck <cohuck@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>
-Subject: [PATCH 5.14 055/151] virtio: write back F_VERSION_1 before validate
-Date:   Mon, 18 Oct 2021 15:23:54 +0200
-Message-Id: <20211018132342.485325805@linuxfoundation.org>
+        stable@vger.kernel.org, Hao Sun <sunhao.th@gmail.com>,
+        Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>
+Subject: [PATCH 5.10 019/103] btrfs: unlock newly allocated extent buffer after error
+Date:   Mon, 18 Oct 2021 15:23:55 +0200
+Message-Id: <20211018132335.349097761@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132340.682786018@linuxfoundation.org>
-References: <20211018132340.682786018@linuxfoundation.org>
+In-Reply-To: <20211018132334.702559133@linuxfoundation.org>
+References: <20211018132334.702559133@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,80 +39,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Halil Pasic <pasic@linux.ibm.com>
+From: Qu Wenruo <wqu@suse.com>
 
-commit 2f9a174f918e29608564c7a4e8329893ab604fb4 upstream.
+commit 19ea40dddf1833db868533958ca066f368862211 upstream.
 
-The virtio specification virtio-v1.1-cs01 states: "Transitional devices
-MUST detect Legacy drivers by detecting that VIRTIO_F_VERSION_1 has not
-been acknowledged by the driver."  This is exactly what QEMU as of 6.1
-has done relying solely on VIRTIO_F_VERSION_1 for detecting that.
+[BUG]
+There is a bug report that injected ENOMEM error could leave a tree
+block locked while we return to user-space:
 
-However, the specification also says: "... the driver MAY read (but MUST
-NOT write) the device-specific configuration fields to check that it can
-support the device ..." before setting FEATURES_OK.
+  BTRFS info (device loop0): enabling ssd optimizations
+  FAULT_INJECTION: forcing a failure.
+  name failslab, interval 1, probability 0, space 0, times 0
+  CPU: 0 PID: 7579 Comm: syz-executor Not tainted 5.15.0-rc1 #16
+  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+  rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+  Call Trace:
+   __dump_stack lib/dump_stack.c:88 [inline]
+   dump_stack_lvl+0x8d/0xcf lib/dump_stack.c:106
+   fail_dump lib/fault-inject.c:52 [inline]
+   should_fail+0x13c/0x160 lib/fault-inject.c:146
+   should_failslab+0x5/0x10 mm/slab_common.c:1328
+   slab_pre_alloc_hook.constprop.99+0x4e/0xc0 mm/slab.h:494
+   slab_alloc_node mm/slub.c:3120 [inline]
+   slab_alloc mm/slub.c:3214 [inline]
+   kmem_cache_alloc+0x44/0x280 mm/slub.c:3219
+   btrfs_alloc_delayed_extent_op fs/btrfs/delayed-ref.h:299 [inline]
+   btrfs_alloc_tree_block+0x38c/0x670 fs/btrfs/extent-tree.c:4833
+   __btrfs_cow_block+0x16f/0x7d0 fs/btrfs/ctree.c:415
+   btrfs_cow_block+0x12a/0x300 fs/btrfs/ctree.c:570
+   btrfs_search_slot+0x6b0/0xee0 fs/btrfs/ctree.c:1768
+   btrfs_insert_empty_items+0x80/0xf0 fs/btrfs/ctree.c:3905
+   btrfs_new_inode+0x311/0xa60 fs/btrfs/inode.c:6530
+   btrfs_create+0x12b/0x270 fs/btrfs/inode.c:6783
+   lookup_open+0x660/0x780 fs/namei.c:3282
+   open_last_lookups fs/namei.c:3352 [inline]
+   path_openat+0x465/0xe20 fs/namei.c:3557
+   do_filp_open+0xe3/0x170 fs/namei.c:3588
+   do_sys_openat2+0x357/0x4a0 fs/open.c:1200
+   do_sys_open+0x87/0xd0 fs/open.c:1216
+   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+   do_syscall_64+0x34/0xb0 arch/x86/entry/common.c:80
+   entry_SYSCALL_64_after_hwframe+0x44/0xae
+  RIP: 0033:0x46ae99
+  Code: f7 d8 64 89 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 48 89 f8 48
+  89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
+  01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+  RSP: 002b:00007f46711b9c48 EFLAGS: 00000246 ORIG_RAX: 0000000000000055
+  RAX: ffffffffffffffda RBX: 000000000078c0a0 RCX: 000000000046ae99
+  RDX: 0000000000000000 RSI: 00000000000000a1 RDI: 0000000020005800
+  RBP: 00007f46711b9c80 R08: 0000000000000000 R09: 0000000000000000
+  R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000017
+  R13: 0000000000000000 R14: 000000000078c0a0 R15: 00007ffc129da6e0
 
-In that case, any transitional device relying solely on
-VIRTIO_F_VERSION_1 for detecting legacy drivers will return data in
-legacy format.  In particular, this implies that it is in big endian
-format for big endian guests. This naturally confuses the driver which
-expects little endian in the modern mode.
+  ================================================
+  WARNING: lock held when returning to user space!
+  5.15.0-rc1 #16 Not tainted
+  ------------------------------------------------
+  syz-executor/7579 is leaving the kernel with locks still held!
+  1 lock held by syz-executor/7579:
+   #0: ffff888104b73da8 (btrfs-tree-01/1){+.+.}-{3:3}, at:
+  __btrfs_tree_lock+0x2e/0x1a0 fs/btrfs/locking.c:112
 
-It is probably a good idea to amend the spec to clarify that
-VIRTIO_F_VERSION_1 can only be relied on after the feature negotiation
-is complete. Before validate callback existed, config space was only
-read after FEATURES_OK. However, we already have two regressions, so
-let's address this here as well.
+[CAUSE]
+In btrfs_alloc_tree_block(), after btrfs_init_new_buffer(), the new
+extent buffer @buf is locked, but if later operations like adding
+delayed tree ref fail, we just free @buf without unlocking it,
+resulting above warning.
 
-The regressions affect the VIRTIO_NET_F_MTU feature of virtio-net and
-the VIRTIO_BLK_F_BLK_SIZE feature of virtio-blk for BE guests when
-virtio 1.0 is used on both sides. The latter renders virtio-blk unusable
-with DASD backing, because things simply don't work with the default.
-See Fixes tags for relevant commits.
+[FIX]
+Unlock @buf in out_free_buf: label.
 
-For QEMU, we can work around the issue by writing out the feature bits
-with VIRTIO_F_VERSION_1 bit set.  We (ab)use the finalize_features
-config op for this. This isn't enough to address all vhost devices since
-these do not get the features until FEATURES_OK, however it looks like
-the affected devices actually never handled the endianness for legacy
-mode correctly, so at least that's not a regression.
-
-No devices except virtio net and virtio blk seem to be affected.
-
-Long term the right thing to do is to fix the hypervisors.
-
-Cc: <stable@vger.kernel.org> #v4.11
-Signed-off-by: Halil Pasic <pasic@linux.ibm.com>
-Fixes: 82e89ea077b9 ("virtio-blk: Add validation for block size in config space")
-Fixes: fe36cbe0671e ("virtio_net: clear MTU when out of range")
-Reported-by: markver@us.ibm.com
-Reviewed-by: Cornelia Huck <cohuck@redhat.com>
-Link: https://lore.kernel.org/r/20211011053921.1198936-1-pasic@linux.ibm.com
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Reported-by: Hao Sun <sunhao.th@gmail.com>
+Link: https://lore.kernel.org/linux-btrfs/CACkBjsZ9O6Zr0KK1yGn=1rQi6Crh1yeCRdTSBxx9R99L4xdn-Q@mail.gmail.com/
+CC: stable@vger.kernel.org # 5.4+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/virtio/virtio.c |   11 +++++++++++
- 1 file changed, 11 insertions(+)
+ fs/btrfs/extent-tree.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/virtio/virtio.c
-+++ b/drivers/virtio/virtio.c
-@@ -238,6 +238,17 @@ static int virtio_dev_probe(struct devic
- 		driver_features_legacy = driver_features;
- 	}
- 
-+	/*
-+	 * Some devices detect legacy solely via F_VERSION_1. Write
-+	 * F_VERSION_1 to force LE config space accesses before FEATURES_OK for
-+	 * these when needed.
-+	 */
-+	if (drv->validate && !virtio_legacy_is_little_endian()
-+			  && device_features & BIT_ULL(VIRTIO_F_VERSION_1)) {
-+		dev->features = BIT_ULL(VIRTIO_F_VERSION_1);
-+		dev->config->finalize_features(dev);
-+	}
-+
- 	if (device_features & (1ULL << VIRTIO_F_VERSION_1))
- 		dev->features = driver_features & device_features;
- 	else
+--- a/fs/btrfs/extent-tree.c
++++ b/fs/btrfs/extent-tree.c
+@@ -4715,6 +4715,7 @@ struct extent_buffer *btrfs_alloc_tree_b
+ out_free_delayed:
+ 	btrfs_free_delayed_extent_op(extent_op);
+ out_free_buf:
++	btrfs_tree_unlock(buf);
+ 	free_extent_buffer(buf);
+ out_free_reserved:
+ 	btrfs_free_reserved_extent(fs_info, ins.objectid, ins.offset, 0);
 
 
