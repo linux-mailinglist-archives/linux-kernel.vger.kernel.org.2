@@ -2,90 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA0CE4326FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 20:58:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2A0F432700
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 21:03:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232650AbhJRTA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 15:00:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59178 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231590AbhJRTAZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 15:00:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634583493;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YPCBK4+qqhN59Q6AXab9sUjlmniUhlFiGiZrEdBuk6s=;
-        b=JgSfjavM+lQ+BK0DZmqJAWa382fTICfypWPKH35yF3B1Dgt9/ixHmXvrzjiN0J4gqiILXq
-        EH7+ND4f3+0Wn8rpkDwjOUpNYcSi0f0IQbCO35BKcSUQu1TnkZoCmgSJobPiLFktWYCtGs
-        +gefR6YKm8UhQjEXGwjy4+q1TZ4nOmE=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-30-p3NNz3-LMS-CCPpSzNJWAw-1; Mon, 18 Oct 2021 14:58:11 -0400
-X-MC-Unique: p3NNz3-LMS-CCPpSzNJWAw-1
-Received: by mail-ed1-f70.google.com with SMTP id u10-20020a50d94a000000b003dc51565894so8584081edj.21
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 11:58:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=YPCBK4+qqhN59Q6AXab9sUjlmniUhlFiGiZrEdBuk6s=;
-        b=BeBRJ6QTEIp2D6iZhK8TAbgd4IzLWiXHuR2DFiLfCR7E0MaEpjSPpkzYkCniBvP80g
-         B2QRNTr+kG85rLBbUdUtgC0NwaCkGYxiR7SBNJsnb8xLVUXZAdWASq0Cqm/22pkBJ22X
-         uZQgpJxj334nYSnhJzauFLrVo8ib6okF9rkxlT2hAZYvlJnq+577+slFyn2NzxtlXyyd
-         qepM8U9AB+eioyiv8NAGz6kMXUuVAMBOk+MnFz5+eDssgAfOkAnSOwcG2y+NmpnAhu01
-         Xlwmcm/CLcyNbexQ4I94Nmw6oc5gV/bDWPJREOHyRlhpMh88qy0ckIBJoWkSB6I6bkEb
-         +kTg==
-X-Gm-Message-State: AOAM532IykcLcRk1GehF09Vo/RhKMTCwoKMooDr2jZLCWhzbgfkVhNc/
-        xOML2YOtXtnU8RsMgkdlgZzjfAoff88pNnNZVjl7rE2t/nV7Y0PPqn8aaKYe195qlw+zpIND0qZ
-        zWYisLrgg/O2KxpHbGCmNhFm8
-X-Received: by 2002:a05:6402:2022:: with SMTP id ay2mr48453438edb.344.1634583490631;
-        Mon, 18 Oct 2021 11:58:10 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwGzK2DGqC5lNBWwnAI2+ei1GtdSNm5wkCuN7xuHyVhKJiiPol/b31DZz0l2mHQvwfG1aPAMQ==
-X-Received: by 2002:a05:6402:2022:: with SMTP id ay2mr48453414edb.344.1634583490469;
-        Mon, 18 Oct 2021 11:58:10 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id y21sm9192732ejk.30.2021.10.18.11.58.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Oct 2021 11:58:09 -0700 (PDT)
-Message-ID: <77444c94-e88a-ab96-cbea-674375ddee5c@redhat.com>
-Date:   Mon, 18 Oct 2021 20:58:07 +0200
+        id S232048AbhJRTFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 15:05:09 -0400
+Received: from mga04.intel.com ([192.55.52.120]:22880 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231234AbhJRTFI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 15:05:08 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10141"; a="227111594"
+X-IronPort-AV: E=Sophos;i="5.85,382,1624345200"; 
+   d="scan'208";a="227111594"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2021 12:02:27 -0700
+X-IronPort-AV: E=Sophos;i="5.85,382,1624345200"; 
+   d="scan'208";a="566192249"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.72.159])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2021 12:02:23 -0700
+Received: from andy by smile with local (Exim 4.95)
+        (envelope-from <andy.shevchenko@gmail.com>)
+        id 1mcXtc-000IvV-Jz;
+        Mon, 18 Oct 2021 22:02:04 +0300
+Date:   Mon, 18 Oct 2021 22:02:04 +0300
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+To:     Maxim Levitsky <maximlevitsky@gmail.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        linux-realtek-soc@lists.infradead.org,
+        Oder Chiou <oder_chiou@realtek.com>,
+        Ping-Ke Shih <pkshih@realtek.com>, nic_swsd@realtek.com,
+        Derek Fang <derek.fang@realtek.com>,
+        Hayes Wang <hayeswang@realtek.com>,
+        Kailang Yang <kailang@realtek.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        LKML <linux-kernel@vger.kernel.org>, info@ayaneo.com
+Subject: Re: BMI160 accelerometer on AyaNeo tablet
+Message-ID: <YW3ErLKGtmyhSFd3@smile.fi.intel.com>
+References: <CACAwPwb7edLzX-KO1XVNWuQ3w=U0BfA=_kwiGCjZOpKfZpc2pw@mail.gmail.com>
+ <CACAwPwYQHRcrabw9=0tvenPzAcwwW1pTaR6a+AEWBF9Hqf_wXQ@mail.gmail.com>
+ <CAHp75VcEZ19zUU-Ps=kAYJDX1bkxmOqmHii36HE2ujC3gROkNQ@mail.gmail.com>
+ <CACAwPwaj_ekK6j9S4CRu6tRTPyjffgDhL3UFnhoYSyJSkAkmpw@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH] KVM: cleanup allocation of rmaps and page tracking data
-Content-Language: en-US
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        David Stevens <stevensd@chromium.org>
-References: <20211018175333.582417-1-pbonzini@redhat.com>
- <YW25ZiTE1N6xS4FN@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <YW25ZiTE1N6xS4FN@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACAwPwaj_ekK6j9S4CRu6tRTPyjffgDhL3UFnhoYSyJSkAkmpw@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/10/21 20:13, Sean Christopherson wrote:
->> Co-developed-by: Sean Christopherson<seanjc@google.com>
-> Checkpatch will complain about a lack of
+On Mon, Oct 18, 2021 at 09:02:40PM +0300, Maxim Levitsky wrote:
+> I also suspect a mistake from the hardware vendors.
 > 
-> 	Signed-off-by: Sean Christopherson<seanjc@google.com>
+> I attached all DSDT decompiled, which shows that they indeed use that
+> ID, and I also attached the windows driver .INF which was published on
+> their website  with the driver (https://www.ayaneo.com/downloads)
 > 
->> Signed-off-by: Paolo Bonzini<pbonzini@redhat.com>
->> ---
-> ...
-> 
->> +	bool shadow_root_alloced;
-> Maybe "allocated" instead of "alloced"?
+> They are a small startup so they might have used the realtek ID by mistake.
+> I added them to the CC.
 
-Sounds good.
+Thank you for sharing. Seems they indeed used (deliberately or not) the wrong
+ID. So there are questions I have:
+- Is the firmware available in the wild?
+- Do they plan to update firmware to fix this?
+- Can we make sure that guys got their mistake and will be more careful
+  in the future?
 
-Paolo
+Realtek probably should make this ID marked somehow broken and not use
+in their products in case the answer to the first of the above question
+is "yes". (Of course in case the ID will be used for solely PCI enumerated
+product there will be no conflict, I just propose to be on the safest side,
+but remark should be made somewhere).
+
+> BTW, I also notice a rotation matrix embedded in DSTD, but the linux's
+> BMI160 driver doesn't recognize it.
+
+This is done by the commit 8a0672003421 ("iio: accel: bmc150: Get
+mount-matrix from ACPI") which needs to be amended to take care about
+more devices, somewhere in drivers/iio/industialio-acpi.c ? Jonathan,
+Hans, what do you think?
+
+P.S. As I said, the commit message and the code (in the comments) should
+be very well elaborated and only accepted in case the firmware is already
+in the wild on the market.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
