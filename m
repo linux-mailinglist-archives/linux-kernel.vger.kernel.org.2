@@ -2,163 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C212C430D0B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 02:17:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCF16430D1F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 02:38:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344853AbhJRATI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 17 Oct 2021 20:19:08 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:63651 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344846AbhJRATH (ORCPT
+        id S1344874AbhJRAk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 17 Oct 2021 20:40:27 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:38999 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242878AbhJRAk0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 17 Oct 2021 20:19:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1634516217; x=1666052217;
-  h=subject:from:to:cc:references:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=+DqZghC6e7EKUymLWMHM4xicG8Jx1RULn6GiJV197L8=;
-  b=BvTemcqyXMWDxn/ueVvV2wbLB3rCKRc97SuhpBS0C2IGzvhl8wWk4mZH
-   2s7dt0Dw0UK6rXHx6lJN9Awz2ecuwnI5H6yt5qGY9gk0nfheP//3QgmeF
-   DZRWlY7BeBqcival50w8LTZu/WnV+OpIxT6A3rGCIPQOLo3q6fPcq5uKr
-   w=;
-Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
-  by alexa-out.qualcomm.com with ESMTP; 17 Oct 2021 17:16:56 -0700
-X-QCInternal: smtphost
-Received: from nalasex01c.na.qualcomm.com ([10.47.97.35])
-  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2021 17:16:56 -0700
-Received: from [10.231.205.174] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7; Sun, 17 Oct 2021
- 17:16:54 -0700
-Subject: Re: [RESEND PATCH v1 1/9] spmi: pmic-arb: add a print in cleanup_irq
-From:   Fenglin Wu <quic_fenglinw@quicinc.com>
-To:     Stephen Boyd <sboyd@kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <collinsd@codeaurora.org>, <subbaram@codeaurora.org>,
-        Abhijeet Dharmapurikar <adharmap@codeaurora.org>
-References: <1631860384-26608-1-git-send-email-quic_fenglinw@quicinc.com>
- <1631860384-26608-2-git-send-email-quic_fenglinw@quicinc.com>
- <163406078422.936959.12726677103787301939@swboyd.mtv.corp.google.com>
- <6c91a6ad-0ff2-a431-138a-2ec83f2bfa74@quicinc.com>
- <163415372158.936959.16897606198271075227@swboyd.mtv.corp.google.com>
- <e94d4b54-316e-220e-aaec-f60311c37745@quicinc.com>
- <163426014715.936959.6136985763712059359@swboyd.mtv.corp.google.com>
- <83fa65c8-3442-ee26-22ed-e26b013cca14@quicinc.com>
-Message-ID: <456da380-e613-14dc-6e42-5d6350dc2389@quicinc.com>
-Date:   Mon, 18 Oct 2021 08:16:52 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Sun, 17 Oct 2021 20:40:26 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HXdJj5X6Vz4xbT;
+        Mon, 18 Oct 2021 11:38:13 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1634517494;
+        bh=ZK7VcIlv2Ng5BJ5iVBdxcffpMnaoVaLShN4I5ILK0gw=;
+        h=Date:From:To:Cc:Subject:From;
+        b=TSu9ILpXbaRrNUal2l/9dvHXs9vhzyItuPAOxKC6j5FVUDkrus7xaTRNOFi4aeE+v
+         +ot2ZNSQWfEHmSfm/vwkEeGEItDDEgwcjjcCdb7AdjoeKfDlKMqqMxZE47KH/c8DW6
+         BdZrfdPceQ/jdOCJ9Oint0dppTBZiVQ342e6mij6Z5O7qtO6m27bYwwwaXcmkv6AWI
+         hAWcjeEjhUYhL4PQ43RS0LimFJ1D4N8vip1VJ8A0yyyc8AzPlFz675bjjWjwK5vPlM
+         C6yi3VErERNGa5SBEdbrCwNw8ybnVSalpEUDI8RwbaRl+oA1QdSOL8QYq7MMydo7em
+         iqEe5cfE1sPAA==
+Date:   Mon, 18 Oct 2021 11:38:12 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     Takashi Sakamoto <o-takashi@sakamocchi.jp>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the sound tree
+Message-ID: <20211018113812.0a16efb0@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <83fa65c8-3442-ee26-22ed-e26b013cca14@quicinc.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
+Content-Type: multipart/signed; boundary="Sig_/vGpGCFzNxkE0dDvlPJK4Tl3";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--Sig_/vGpGCFzNxkE0dDvlPJK4Tl3
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On 10/15/2021 9:27 AM, Fenglin Wu wrote:
->
-> On 10/15/2021 9:09 AM, Stephen Boyd wrote:
->> Quoting Fenglin Wu (2021-10-13 19:26:55)
->>> On 10/14/2021 3:35 AM, Stephen Boyd wrote:
->>>> Quoting Fenglin Wu (2021-10-12 21:15:42)
->>>>> On 10/13/2021 1:46 AM, Stephen Boyd wrote:
->>>>>> Quoting Fenglin Wu (2021-09-16 23:32:56)
->>>>>>> From: Abhijeet Dharmapurikar <adharmap@codeaurora.org>
->>>>>>>
->>>>>>> The cleanup_irq() was meant to clear and mask interrupts that were
->>>>>>> left enabled in the hardware but there was no interrupt handler
->>>>>>> registered for it. Add an error print when it gets invoked.
->>>>>> Why? Don't we get the genirq spurious irq message in this scenario?
->>>>> Thanks for reviewing the change.
->>>>>
->>>>> No, there is no existing message printed out in this special case 
->>>>> ( IRQ
->>>>> fired for not registered interrupt).
->>>> Ah I see so the irq doesn't have a flow handler? Shouldn't you call
->>>> handle_bad_irq() in this case so we get a irq descriptor print?
->>> In such case, the irq number is not valid and there won't be a valid
->>> irq_desc, hence it's not possible to call handle_bad_irq() here.
->> I mean handle_bad_irq() on the irqdesc for the spmi pmic arb chained
->> irq. Because things are not good with the chained irq.
-> Okay, how about this, Update periph_interrupt() function with a return
-> value, and return -EINVAL once an invalid IRQ is detected. In
-> pmic_arb_chained_irq(), call handle_bad_irq() if periph_interrupt()
-> returned -EINVAL.
-Combined with your comments in "[PATCH v1 3/9] spmi: pmic-arb:check apid
-againstlimits before calling irq handler",it seemslike that it can be
-a independentpatch for handling spuriousinterrupt, something like this
-in my mind:
+Hi all,
 
-diff --git a/drivers/spmi/spmi-pmic-arb.c b/drivers/spmi/spmi-pmic-arb.c
-index 295e19f..bd01ad4 100644
---- a/drivers/spmi/spmi-pmic-arb.c
-+++ b/drivers/spmi/spmi-pmic-arb.c
-@@ -504,10 +504,10 @@ static void cleanup_irq(struct spmi_pmic_arb 
-*pmic_arb, u16 apid, int id)
-                                 irq_mask, ppid);
-  }
+After merging the sound tree, today's linux-next build (x86_64
+allmodconfig) failed like this:
 
--static void periph_interrupt(struct spmi_pmic_arb *pmic_arb, u16 apid)
-+static int periph_interrupt(struct spmi_pmic_arb *pmic_arb, u16 apid)
-  {
-         unsigned int irq;
--       u32 status, id;
-+       u32 status, id, handled = 0;
-         u8 sid = (pmic_arb->apid_data[apid].ppid >> 8) & 0xF;
-         u8 per = pmic_arb->apid_data[apid].ppid & 0xFF;
+In file included from <command-line>:32:
+./usr/include/sound/firewire.h:71:16: error: C++ style comments are not all=
+owed in ISO C90
+   71 |  __u32 count;  // The number of changes.
+      |                ^
+./usr/include/sound/firewire.h:71:16: note: (this will be reported only onc=
+e per input file)
 
-@@ -522,7 +522,10 @@ static void periph_interrupt(struct spmi_pmic_arb 
-*pmic_arb, u16 apid)
-                         continue;
-                 }
-                 generic_handle_irq(irq);
-+               handled++;
-         }
-+
-+       return (handled == 0) ? -EINVAL : 0;
-  }
+Caused by commit
 
-  static void pmic_arb_chained_irq(struct irq_desc *desc)
-@@ -533,7 +536,7 @@ static void pmic_arb_chained_irq(struct irq_desc *desc)
-         int first = pmic_arb->min_apid >> 5;
-         int last = pmic_arb->max_apid >> 5;
-         u8 ee = pmic_arb->ee;
--       u32 status, enable;
-+       u32 status, enable, handled = 0;
-         int i, id, apid;
+  634ec0b2906e ("ALSA: firewire-motu: notify event for parameter change in =
+register DSP model")
 
-         chained_irq_enter(chip, desc);
-@@ -548,10 +551,14 @@ static void pmic_arb_chained_irq(struct irq_desc 
-*desc)
-                         enable = readl_relaxed(
-ver_ops->acc_enable(pmic_arb, apid));
-                         if (enable & SPMI_PIC_ACC_ENABLE_BIT)
-- periph_interrupt(pmic_arb, apid);
-+                               if (periph_interrupt(pmic_arb, apid) == 0)
-+ handled++;
-                 }
-         }
+I have used the sound tree from next-20211015 for today.
 
-+       if (handled == 0)
-+               handle_bad_irq(desc);
-+
-         chained_irq_exit(chip, desc);
-  }
+--=20
+Cheers,
+Stephen Rothwell
 
-Is this what you expected? The original patch is only for printing a 
-debug message when any
-sub-irq is detected as enabled but not registered, some other sub-IRQ 
-maybe still valid and
-be handled after that, which means the chained-irq may still be a good 
-one.Should I keep
-the original patch unchanged and submit a separate one to handle the 
-spuriousinterrupt?
+--Sig_/vGpGCFzNxkE0dDvlPJK4Tl3
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFswfQACgkQAVBC80lX
+0Gw55gf+Oq/eAqzsLxv5jEQavsCxc8zG82NKfNc1aVevYrHUFrNO/JleWKgcjUsr
+jLv0YPG3AM9vsOwdVGSGp723QR2RM1ayeezV4+6StRaFR8OIw6ESDnxIzG4lKcBh
+Hk9b+cSdjvbS+bD/5OUL+yWP889QcK+cuAQk5CX0ru1NHfGlW+6cI5SMh5ovABMu
+8pG+BcXjaurUUb4Z3FzKrahNoYZ/lhxo8P/WVnnE/03os0QY9G0j9qsq3MaWG03Q
+2JZ/ghxxzK0uSn/0FRKG4KsZ+6EDtMp8tGQJ9NNaeMxxjkDLfxdtcoqlzen3NHBU
+I0Il8u7Ht0hB9uTJz3MZIG5Id8eTbA==
+=/Wab
+-----END PGP SIGNATURE-----
+
+--Sig_/vGpGCFzNxkE0dDvlPJK4Tl3--
