@@ -2,97 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3A504318BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 14:15:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E6F34318BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 14:16:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231687AbhJRMSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 08:18:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33766 "EHLO mail.kernel.org"
+        id S231420AbhJRMSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 08:18:31 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:59861 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229569AbhJRMSA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 08:18:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2718B60FC3;
-        Mon, 18 Oct 2021 12:15:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634559349;
-        bh=utOH7FzBux08wNzkB3/bvFS2wN2XWHumibuU5/SmXqw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RLIsz1J2utLAUX4a2GrToXiY0xBfCjZ73PD3hx1N9Ok6rP0P/uoORdGSKblUyCaKv
-         YrTHN7wL8jRgbxJbVKnN0c0X1obFShrmbiad64H8b83XIybuE3HlqY0K45X4p4qAaS
-         dCSKbXRf3JcZ3d/IAO/04HW8b+ibphQ9xnPd5sVo=
-Date:   Mon, 18 Oct 2021 14:15:47 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Andi Kleen <ak@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-alpha@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-doc@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v5 12/16] PCI: Add pci_iomap_host_shared(),
- pci_iomap_host_shared_range()
-Message-ID: <YW1lc5Y2P1zRc2kp@kroah.com>
-References: <20211009003711.1390019-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211009003711.1390019-13-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211009053103-mutt-send-email-mst@kernel.org>
- <cec62ebb-87d7-d725-1096-2c97c5eedbc3@linux.intel.com>
- <20211011073614-mutt-send-email-mst@kernel.org>
+        id S229833AbhJRMS1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 08:18:27 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1634559376; h=Date: Message-ID: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=hHOTyhKY+jF9m2eMBr2/9tn1FPmbSZyijxUuMni71YQ=;
+ b=kzd4AAuVtoF823hf+eEZOZObQq7DPJPEOtINyN6yzavpxXer3YjifjhK7xZCqSEnsnwBzW89
+ 8LiPh2NpKRELJD0vpsbCESyeGEJkY/72K3Xb12f2oR4HQuqc7dAzb4DYj6jIzGi9M8Iskm3m
+ QmHCl2AyzQLueBJO6fFSLduCZ2k=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 616d65878ea00a941fc4a75a (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 18 Oct 2021 12:16:07
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 44428C43616; Mon, 18 Oct 2021 12:16:07 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.5 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 19B50C4338F;
+        Mon, 18 Oct 2021 12:16:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 19B50C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211011073614-mutt-send-email-mst@kernel.org>
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH net-next] rtw89: fix return value check in
+ rtw89_cam_send_sec_key_cmd()
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20211018033102.1813058-1-yangyingliang@huawei.com>
+References: <20211018033102.1813058-1-yangyingliang@huawei.com>
+To:     Yang Yingliang <yangyingliang@huawei.com>
+Cc:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-wireless@vger.kernel.org>, <pkshih@realtek.com>,
+        <kuba@kernel.org>, <davem@davemloft.net>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
+Message-ID: <163455936283.19217.11931035159424062771.kvalo@codeaurora.org>
+Date:   Mon, 18 Oct 2021 12:16:07 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 11, 2021 at 07:59:17AM -0400, Michael S. Tsirkin wrote:
-> On Sun, Oct 10, 2021 at 03:22:39PM -0700, Andi Kleen wrote:
-> > 
-> > > To which Andi replied
-> > > 	One problem with removing the ioremap opt-in is that
-> > > 	it's still possible for drivers to get at devices without going through probe.
-> > > 
-> > > To which Greg replied:
-> > > https://lore.kernel.org/all/YVXBNJ431YIWwZdQ@kroah.com/
-> > > 	If there are in-kernel PCI drivers that do not do this, they need to be
-> > > 	fixed today.
-> > > 
-> > > Can you guys resolve the differences here?
-> > 
-> > 
-> > I addressed this in my other mail, but we may need more discussion.
+Yang Yingliang <yangyingliang@huawei.com> wrote:
+
+> Fix the return value check which testing the wrong variable
+> in rtw89_cam_send_sec_key_cmd().
 > 
-> Hopefully Greg will reply to that one.
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Fixes: e3ec7017f6a2 ("rtw89: add Realtek 802.11ax driver")
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+> Acked-by: Ping-Ke Shih <pkshih@realtek.com>
 
-Note, when wanting Greg to reply, someone should at the very least cc:
-him.
+rtw89 patches are applied wireless-drivers-next, not net-next. rtw89 is not
+even in net-next yet.
 
-{sigh}
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/20211018033102.1813058-1-yangyingliang@huawei.com/
 
-greg k-h
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
