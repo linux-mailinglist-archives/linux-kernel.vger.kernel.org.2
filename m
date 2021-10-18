@@ -2,71 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E246E432776
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 21:19:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5E5D43277B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 21:21:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233278AbhJRTVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 15:21:38 -0400
-Received: from mail-ot1-f49.google.com ([209.85.210.49]:41550 "EHLO
-        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232518AbhJRTVh (ORCPT
+        id S232417AbhJRTX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 15:23:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60036 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230159AbhJRTX0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 15:21:37 -0400
-Received: by mail-ot1-f49.google.com with SMTP id v2-20020a05683018c200b0054e3acddd91so1105601ote.8;
-        Mon, 18 Oct 2021 12:19:26 -0700 (PDT)
+        Mon, 18 Oct 2021 15:23:26 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BCE5C06161C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 12:21:14 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id p6-20020a9d7446000000b0054e6bb223f3so1185154otk.3
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 12:21:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=w44//2eXLGXS5FENoyNj0OHUbjoQNnYElfzxl74VOjo=;
+        b=jLZyB8aMRvPdMJaWoNU3+BFC+pVFwJRmkpMlPBkeyIokpbWc3bIIDslTir1pRFkqy7
+         VGOMucNZC9U2YGAC4b/424uCKH+FmA33Bazgd1xPD1cul8BhHR7e47+iGshye5er4Qku
+         41jA4aNKc/+1Zq0w7fHUM+jNSu08J1/mROceJOcvtlY1zVA1tBbLvsNUjcqYYaGVqfxu
+         fqrpdBinBet2a7fgLE8rvqkpp3pAKTGJuSAyncJY1FuPZ/qggzKtcRVu/P5/wFx0WmIM
+         e+V3XPSstyFmsmQnc1fnQlSh7kW3tLi2SoOWo3pTGKOduhpgx44NJ7z2RlwliqzIX5sw
+         BCTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=e6arM/5Dhn7rx7N9waMT1O9TAGcCfI2K71aXcO+9YrY=;
-        b=fuEXvhZApaYmYTp229TL3ymkzrOwm/4yL1zjFUapxM42vUCw66GkeEtWLjEe35GJFK
-         tyktxJjotfuCshnFWGz2i2YV/Nr/JMRHq2UkXiN36uxdJuLSGdgyxVtmpxbHMnIoUOTJ
-         HuvPsfxaJDyxVTrWfjxw+u8cHsnWoJ7EmdPHYuaHaOg3mqlu51BWns8NnB12O8Ajzv//
-         DIL2xTb/H1t6xcizWHxTAvMYh66L+0RUHV+XGAae2uKBJwhFrai/9yW0JszaAva5Qh+2
-         46BRkO1SReZpLW+R0FyxawRYrVEdcUlD2LQX+MBu6UkxiQhw62idpPKYrB6Uxj1SP3pZ
-         I3RQ==
-X-Gm-Message-State: AOAM530HU0oGw9F44kcNZaLBmRwnsFF8USoGW4hUIC+/Usp/g9Hustwu
-        kiugrE96VYW4oN5FhyF8yQ==
-X-Google-Smtp-Source: ABdhPJxTOuyFSpJchEpUgdmoQy3eg1rOqRBnMUqaBKjstriq7xNvJaPRWzlT80xCva6GiJzaYLK6vw==
-X-Received: by 2002:a05:6830:440c:: with SMTP id q12mr1435350otv.84.1634584765960;
-        Mon, 18 Oct 2021 12:19:25 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id e22sm3189083otp.0.2021.10.18.12.19.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 12:19:25 -0700 (PDT)
-Received: (nullmailer pid 2789232 invoked by uid 1000);
-        Mon, 18 Oct 2021 19:19:24 -0000
-Date:   Mon, 18 Oct 2021 14:19:24 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-Cc:     robh+dt@kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        alexandre.torgue@foss.st.com, amelie.delaunay@foss.st.com,
-        linux-stm32@st-md-mailman.stormreply.com,
-        gregkh@linuxfoundation.org, hminas@synopsys.com
-Subject: Re: [PATCH v3 2/4] dt-bindings: usb: dwc2: adopt otg properties
- defined in usb-drd.yaml
-Message-ID: <YW3IvEwPKvkyuBMM@robh.at.kernel.org>
-References: <1634133425-25670-1-git-send-email-fabrice.gasnier@foss.st.com>
- <1634133425-25670-3-git-send-email-fabrice.gasnier@foss.st.com>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=w44//2eXLGXS5FENoyNj0OHUbjoQNnYElfzxl74VOjo=;
+        b=7+/giyukYoDVHN1jDNXc63mCzzsPU+8IrCI5q+knp+N+eUu5tOEcu8OEa/x3b8z7If
+         jMsfKdEvjU0he0S8Qz8LDBclHAutbYD/e5rRY2V659sUApFxaMldVMRxSaYtUGjhmaYW
+         i0SKddahVVGR39Tq9ZGkNOQa6M8CbrMkk/TKRuKKL19A9xICXzlKa6oDEKGqB9wWRS9r
+         eUvePSvOl8L/4eDt+9zHdVTCQBUc9qmIlKDqfnteHDG5oKYtkK+I9f7FDcH0SEp0xFp0
+         6KSTxz9AJmNeFFWhurl/U75pAw3h2zyGmf9DNaUDdEOO19IK9jk1eUaUiJmf2pZHrU3q
+         CYjA==
+X-Gm-Message-State: AOAM532Bub2ir3OeES/JsLyg7oxZZQbFCPnjtEH16uA/jGhgAreBFRYz
+        DVuIkoOFhAz1l2+k15qyaUcwtzLjfGJDaSbsmvs=
+X-Google-Smtp-Source: ABdhPJzau9WkWxmEhxgfrxB+g7RKeATDk8ZOV4+5r28KVX7ZNwbch9QkbOHb52RrRgpiaciKHieLVGFo8IFKhqn1X/8=
+X-Received: by 2002:a9d:4616:: with SMTP id y22mr1398483ote.215.1634584873489;
+ Mon, 18 Oct 2021 12:21:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1634133425-25670-3-git-send-email-fabrice.gasnier@foss.st.com>
+Received: by 2002:a05:6820:203:0:0:0:0 with HTTP; Mon, 18 Oct 2021 12:21:12
+ -0700 (PDT)
+Reply-To: uchennailobitenone@gmail.com
+From:   uchenna <uchekalu0211@gmail.com>
+Date:   Mon, 18 Oct 2021 12:21:12 -0700
+Message-ID: <CADXpZ39y6VKGDNPrpVEtF=MFWWtr_Dsc6wAKodBG0ShZEpbiJA@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Oct 2021 15:57:03 +0200, Fabrice Gasnier wrote:
-> Adopt some OTG optional properties as defined in usb-drd.yaml:
-> - otg-rev
-> - hnp-disable
-> - srp-disable
-> 
-> Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-> ---
->  Documentation/devicetree/bindings/usb/dwc2.yaml | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
+Caro amigo,
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Como voc=C3=AA est=C3=A1? Eu acho que voc=C3=AA est=C3=A1 bem e saud=C3=A1v=
+el. Isto =C3=A9 para informar
+voc=C3=AA que conclu=C3=AD a transa=C3=A7=C3=A3o com sucesso. Tem sido um l=
+ongo
+tempo desde a nossa =C3=BAltima comunica=C3=A7=C3=A3o. Foi uma pena que sua=
+ parceria
+comigo n=C3=A3o conseguiu concluir a transfer=C3=AAncia do fundo. Acho que =
+chegou a hora
+quando havia tanta press=C3=A3o e confus=C3=A3o que voc=C3=AA se tornou men=
+os
+interessado na transa=C3=A7=C3=A3o.
+
+
+Em qualquer caso, tenho o prazer de inform=C3=A1-lo sobre meu sucesso em
+obter o fundo
+transferidos sob a coopera=C3=A7=C3=A3o do novo parceiro. Estou atualmente =
+em
+Venezuela em investimento. No entanto; eu n=C3=A3o esqueci seu esfor=C3=A7o=
+ passado e
+tenta me ajudar na transfer=C3=AAncia do fundo, apesar do fato de que
+n=C3=A3o conseguiu chegar a uma conclus=C3=A3o espec=C3=ADfica.
+
+Em agradecimento por sua tentativa de ajudar, eu e meu novo parceiro
+chegamos a um
+decis=C3=A3o que voc=C3=AA merece ser compensado, esta carta =C3=A9, portan=
+to, para
+informo que deixei uma indeniza=C3=A7=C3=A3o de $ 350.000,00 em seu nome pa=
+ra que
+voc=C3=AA vai compartilhar a alegria comigo. Aconselho voc=C3=AA a entrar e=
+m
+contato com o banco BTCI para o
+transfer=C3=AAncia dos $ 350.000,00. Para evitar um longo atraso do fundo
+de compensa=C3=A7=C3=A3o
+transfer=C3=AAncia, instru=C3=AD o banco BTCI a emitir um cart=C3=A3o inter=
+nacional
+de visto de ATM
+e envie-o para o seu endere=C3=A7o residencial por meio de uma empresa de e=
+ntregas.
+
+As informa=C3=A7=C3=B5es de contato do banco s=C3=A3o indicadas abaixo:
+
+Nome do banco: Banco BTCI
+Endere=C3=A7o de e-mail: btcbanktg478@gmail.com
+Endere=C3=A7o: 169, Boulevard du 13 janvier BP 363 Lom=C3=A9, Togo
+Pessoa de contato: Sr. Leonard Mathias
+
+Informe-me assim que receber o cart=C3=A3o Visa ATM do banco BTCI. eu desej=
+o
+voc=C3=AA sucesso em todos os seus empreendimentos.
+
+Cumprimentos
+Barrister uchenna ilobi
