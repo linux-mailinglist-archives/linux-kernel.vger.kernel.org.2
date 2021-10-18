@@ -2,104 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DECA743235C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 17:54:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B3F643235D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 17:54:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232866AbhJRP4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 11:56:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40742 "EHLO
+        id S233394AbhJRP4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 11:56:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232806AbhJRP4W (ORCPT
+        with ESMTP id S233353AbhJRP4x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 11:56:22 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8F03C061745
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 08:54:11 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id c29so15050864pfp.2
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 08:54:11 -0700 (PDT)
+        Mon, 18 Oct 2021 11:56:53 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B341C06161C
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 08:54:42 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id d5so2204746pfu.1
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 08:54:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=4+kbQQwNgL3xxKMT1SpsydyoctcTo7gLQXOCl1EGU/s=;
-        b=YcoHj2M0Vy2T8O53TSFA3auuC6arG2WA7KqOlSvF5NCyBq6aBGpDfk/nt7+fJqxMoy
-         4SReHE+EQWvseA7j3Pwiz/YkluusZwtNsoBkM0a5gGD9bfzoeh1pj06cyoW4dIgGOg/i
-         SkZXzFEaaqO+xo+ifDtEH0scZ1L0sF5FE1nSCkqQCwhRyU8W47PGGrEx7CYJNfKFfK1k
-         t0O7PXhmhOSAw583Alz6sAUufSesa7/Zmv5HxR6bcJPcV+0QAvua8+aANViRUZkZMKyA
-         IQCP8fT6Nozp/cJP4d3EBH7m8Vu6nX5Yis0dBdkL5A4Kf0r8ucfCDJu7l90Di7LFdWwS
-         mWFA==
+        bh=unERHW1HoExK7cE3TmrUrU9w+tueba1bnwjKQP/MrmM=;
+        b=yYzXe/d8BJcusWfEuCzb/wTzoe8bRMuBmHCc/hEvoxuRS5W7IBsGzXbrIyntfL7P3G
+         Y/7v/rmNZd3TvUTpFL7rn8Motk2PMWpoIDHSepO8js3As+c7twHLn0xvY6S8XryB1eed
+         HRY1LjIcfqqeNgMNT2Ovm1Z72/P3s1MnrsgreVMaWF5W0X0Lf1oaT7sGBpkkSqX1OSEj
+         5nHftpXMmALgJ7/NfqBRR6Xd6GfNcbWo89xeYqO6/iJPQ7kvIZ+ldEK+tCKJyPYND2Kg
+         uCbhC6YPrhp8cX0nuNKjx/fAPoCv6Zqtv9x+9HnEIsmgKt8/SDufFLFdiQtEc5MPVAtd
+         6n4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=4+kbQQwNgL3xxKMT1SpsydyoctcTo7gLQXOCl1EGU/s=;
-        b=D6yEqOs1Q/CsLtA+stPYz+gCEQtiJ4ChbhiPfhi0AmixEXgaFG2X6gaVEjqAtmmnpl
-         jSz58UfkSRTX9mqcqav3adMTnMraITGiacYMdJJwjAieo8zFRHxhedF/VwjEZzTCoBSk
-         1f16TUGgF7ien+X99chIepSUryj868tF6aiJicdAFdB4gz8lTlTqdsR0+mzrV6Sfnegb
-         rUiGYy1FGJTUdILufriv95rql+qC3aTsxCvjKH0M9JMNFOGLR8EsX9F0WFWVnMXMx6dp
-         8yP62l/3tld5gtwyeFapHdrcxicZQDjnZcjkboY9iYGl4Yd1rWXNDUShafZyaUHO9dHZ
-         /EIA==
-X-Gm-Message-State: AOAM531uvleOftivXXwFdePrQsl+ynH4aBI42NvI3VQGH4DqO6CjiiLk
-        lmAJPbdpEONyJFyXGKrOlmXH6hClMZ3BDw==
-X-Google-Smtp-Source: ABdhPJyMTYj5yFdYSE4vwUtozWa2QKymVt6Ri/Bpfuw14zbzpsRG8cZgBWH3ZF6+tVyWCxfvJ4jBUg==
-X-Received: by 2002:a63:b10a:: with SMTP id r10mr19847573pgf.238.1634572450862;
-        Mon, 18 Oct 2021 08:54:10 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id q12sm13910538pgv.26.2021.10.18.08.54.09
+        bh=unERHW1HoExK7cE3TmrUrU9w+tueba1bnwjKQP/MrmM=;
+        b=b1p4gDzJUQzRIPaf0qoJEYaJ7bEsFiwEByNjNjioTme4MRR/AnlEGvx+gksxCzoBo8
+         qmvArTmPc8SSI1nAESFCqqMLoJIKDR3v/sPRfQEBhtv8t+avGVpSfcRSVKnlR/t4jEYK
+         e5ZLcm16PUjbypZSnm0CM5SWRFHUFczkFJkdXC4uSSLyu8/RVGsurekFsXEPcNg/N86/
+         rjLNk2frqeDwrFIWgXLbaD0KgPhxGPSsNKpkvLW2NoqXRBMc6LU6GejrZX8mgGUT3sk5
+         LHvDFp674k7JW+p/Ykxqk3+KbLToK6V8edPCkwcEmbp/+qSJ3RYnqFO+Vp29kkbTdbs/
+         6iYA==
+X-Gm-Message-State: AOAM533VoHoR9efXopNG8JRKB3UlkrQdhIFsNQYt3NyVN2jZi8aQzGMY
+        WjTBxLIcvm5FwD61N+Ht8g8gVg==
+X-Google-Smtp-Source: ABdhPJxD4G/6O1KRynFLKtR0kgEUSz0ry1ph8Sv3oApHvAD6j6GuWA0IV41013uYQpXE9KnwGJf5hg==
+X-Received: by 2002:a05:6a00:16d2:b029:300:200b:6572 with SMTP id l18-20020a056a0016d2b0290300200b6572mr29338710pfc.62.1634572481766;
+        Mon, 18 Oct 2021 08:54:41 -0700 (PDT)
+Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id e15sm13119820pfc.134.2021.10.18.08.54.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 08:54:10 -0700 (PDT)
-Date:   Mon, 18 Oct 2021 15:54:06 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Peter Gonda <pgonda@google.com>
-Subject: Re: [PATCH] KVM: SEV-ES: Set guest_state_protected after VMSA update
-Message-ID: <YW2YngqTv6//YnD5@google.com>
-References: <20211015173448.144114-1-pbonzini@redhat.com>
+        Mon, 18 Oct 2021 08:54:40 -0700 (PDT)
+Date:   Mon, 18 Oct 2021 09:54:38 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     will@kernel.org, catalin.marinas@arm.com,
+        anshuman.khandual@arm.com, mike.leach@linaro.org,
+        leo.yan@linaro.org, maz@kernel.org, coresight@lists.linaro.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 15/15] arm64: errata: Enable TRBE workaround for write
+ to out-of-range address
+Message-ID: <20211018155438.GD3163131@p14s>
+References: <20211014223125.2605031-1-suzuki.poulose@arm.com>
+ <20211014223125.2605031-16-suzuki.poulose@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211015173448.144114-1-pbonzini@redhat.com>
+In-Reply-To: <20211014223125.2605031-16-suzuki.poulose@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 15, 2021, Paolo Bonzini wrote:
-> From: Peter Gonda <pgonda@google.com>
+On Thu, Oct 14, 2021 at 11:31:25PM +0100, Suzuki K Poulose wrote:
+> With the TRBE driver workaround available, enable the config symbols
+> to be built without COMPILE_TEST
 > 
-> The refactoring in commit bb18a6777465 ("KVM: SEV: Acquire
-> vcpu mutex when updating VMSA") left behind the assignment to
-> svm->vcpu.arch.guest_state_protected; add it back.
-> 
-> Signed-off-by: Peter Gonda <pgonda@google.com>
-> [Delta between v2 and v3 of Peter's patch, which had already been
->  committed; the commit message is my own. - Paolo]
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
 > ---
->  arch/x86/kvm/svm/sev.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
+>  arch/arm64/Kconfig | 2 --
+>  1 file changed, 2 deletions(-)
 > 
-> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> index e672493b5d8d..0d21d59936e5 100644
-> --- a/arch/x86/kvm/svm/sev.c
-> +++ b/arch/x86/kvm/svm/sev.c
-> @@ -618,7 +618,12 @@ static int __sev_launch_update_vmsa(struct kvm *kvm, struct kvm_vcpu *vcpu,
->  	vmsa.handle = to_kvm_svm(kvm)->sev_info.handle;
->  	vmsa.address = __sme_pa(svm->vmsa);
->  	vmsa.len = PAGE_SIZE;
-> -	return sev_issue_cmd(kvm, SEV_CMD_LAUNCH_UPDATE_VMSA, &vmsa, error);
-> +	ret = sev_issue_cmd(kvm, SEV_CMD_LAUNCH_UPDATE_VMSA, &vmsa, error);
-> +	if (ret)
-> +	  return ret;
-
-Bad indentation.
-
-> +
-> +	vcpu->arch.guest_state_protected = true;
-> +	return 0;
->  }
+> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> index f72fa44d6182..d6383ef05871 100644
+> --- a/arch/arm64/Kconfig
+> +++ b/arch/arm64/Kconfig
+> @@ -743,7 +743,6 @@ config ARM64_WORKAROUND_TRBE_WRITE_OUT_OF_RANGE
 >  
->  static int sev_launch_update_vmsa(struct kvm *kvm, struct kvm_sev_cmd *argp)
+>  config ARM64_ERRATUM_2253138
+>  	bool "Neoverse-N2: 2253138: workaround TRBE writing to address out-of-range"
+> -	depends on COMPILE_TEST # Until the CoreSight TRBE driver changes are in
+>  	depends on CORESIGHT_TRBE
+>  	default y
+>  	select ARM64_WORKAROUND_TRBE_WRITE_OUT_OF_RANGE
+> @@ -762,7 +761,6 @@ config ARM64_ERRATUM_2253138
+>  
+>  config ARM64_ERRATUM_2224489
+>  	bool "Cortex-A710: 2224489: workaround TRBE writing to address out-of-range"
+> -	depends on COMPILE_TEST # Until the CoreSight TRBE driver changes are in
+>  	depends on CORESIGHT_TRBE
+
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+
+>  	default y
+>  	select ARM64_WORKAROUND_TRBE_WRITE_OUT_OF_RANGE
 > -- 
-> 2.27.0
+> 2.25.4
 > 
