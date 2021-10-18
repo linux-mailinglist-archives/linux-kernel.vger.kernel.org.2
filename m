@@ -2,168 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 450B043268E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 20:37:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6571C432695
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 20:38:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232345AbhJRSj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 14:39:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50202 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229924AbhJRSjz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 14:39:55 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B288C061745
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 11:37:44 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id a140-20020a1c7f92000000b0030d8315b593so84085wmd.5
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 11:37:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kryo-se.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7hfYG9ngN44n8cK8yaU0t5TJm8OEoNDtrTeVqiPoS4I=;
-        b=EqLhAXgEh92tFGr5kjK32t76DTlz+yMUUz3jHLk+X1fkwEESsHZescMt+GcyiZGu0E
-         xk12D07vdi1OBfDol6ltIk6bMRCz1jGNcpf/qkliIuG9JSKuWTpmaCQMzy0nKfLNTt3t
-         L+moys2I97dsm3SL7GCtsduzLY2lGRH+J7MvnGfVS9/xVDT1aOFKxWE6abBlzNNusTvP
-         vptWeG8qLqUUJKF9exuWgzmCah0jQFbMKzxd39eOeXfpiFdssEcYHa33CYo8JXsCyFra
-         ticuoiE1QIUdHlF1/LcASoK9izea58aFZcJA2o8pXHaCYHh50AaKjhR8m6yNbUUKF5gM
-         63TA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7hfYG9ngN44n8cK8yaU0t5TJm8OEoNDtrTeVqiPoS4I=;
-        b=Q9ktpO1ONfgovskOLL56QcPg1HSgxp1mVYTK/rbN5gpSTgscQxXHs6mPQ4XX91uWQm
-         AykDDDEU/sWJ3zDSGwmx1dDosHtaat85Pq+xRNc4emDDep7+iAKdyHton0JC/kGuZFgv
-         PN82r/1Y8FYlWIoxXIolNa7hJ4w+p9s6JBnm+JRHED+aDByvwbUvfwbOVTWMTo4uglDo
-         sOAkKxabEI+q/O+8dGJdj63vpiOqo31jQaQXh/dW5u0D5Q+gZlLRMfrPIW24xZeC8AF5
-         nWtDED2BCeLbAuwJbEMLgPLoVJRmYr9pUTznvp7DNOWZVn0xXnpLACpk/qpGbUr3xbBT
-         ZT0w==
-X-Gm-Message-State: AOAM532piXamNsl0xpFk+NiYxVWhRES2+fKJ10Pr68sLXP6TlSpZzmXy
-        sW8GM5tNAM4pwadD0Y3A8Qqa8Q==
-X-Google-Smtp-Source: ABdhPJxhh9XAYMwsqbdaS0Fb7BOKQmxT0jNrLc8s2ru4Ve4AQJHIStAqWyJrDxLBMlG0C3kCtvEfFQ==
-X-Received: by 2002:a7b:c856:: with SMTP id c22mr627144wml.178.1634582262201;
-        Mon, 18 Oct 2021 11:37:42 -0700 (PDT)
-Received: from kerfuffle.. ([2a02:168:9619:0:5497:3715:36d:f557])
-        by smtp.gmail.com with ESMTPSA id n1sm195958wmi.30.2021.10.18.11.37.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 11:37:41 -0700 (PDT)
-From:   Erik Ekman <erik@kryo.se>
-To:     Edward Cree <ecree.xilinx@gmail.com>,
-        Martin Habets <habetsm.xilinx@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Erik Ekman <erik@kryo.se>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] sfc: Export fibre-specific link modes for 1/10G
-Date:   Mon, 18 Oct 2021 20:37:08 +0200
-Message-Id: <20211018183709.124744-1-erik@kryo.se>
-X-Mailer: git-send-email 2.31.1
+        id S232846AbhJRSkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 14:40:41 -0400
+Received: from mga05.intel.com ([192.55.52.43]:29303 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229924AbhJRSkd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 14:40:33 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10141"; a="314535751"
+X-IronPort-AV: E=Sophos;i="5.85,382,1624345200"; 
+   d="scan'208";a="314535751"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2021 11:38:21 -0700
+X-IronPort-AV: E=Sophos;i="5.85,382,1624345200"; 
+   d="scan'208";a="444203257"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.72.159])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2021 11:38:15 -0700
+Received: from andy by smile with local (Exim 4.95)
+        (envelope-from <andy.shevchenko@gmail.com>)
+        id 1mcXWF-000Ide-QR;
+        Mon, 18 Oct 2021 21:37:55 +0300
+Date:   Mon, 18 Oct 2021 21:37:55 +0300
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+To:     Emil Renner Berthing <kernel@esmil.dk>
+Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Sagar Kadam <sagar.kadam@sifive.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Huan Feng <huan.feng@starfivetech.com>
+Subject: Re: [PATCH v1 12/16] pinctrl: starfive: Add pinctrl driver for
+ StarFive SoCs
+Message-ID: <YW2/A4ZQwbFX0uPB@smile.fi.intel.com>
+References: <20211012134027.684712-1-kernel@esmil.dk>
+ <20211012134027.684712-13-kernel@esmil.dk>
+ <CAHp75Vep+i+iyJi0LAOKuer-cUZoUoB_ZrWKcmT=EB_4hOgFGw@mail.gmail.com>
+ <CANBLGcxHD2vy0+tXYo5Pkqri9mV7aD9jikvs3ygBJRxF4ApLMA@mail.gmail.com>
+ <CAHp75Vc65deoHbks-aPmnjEJzm3GdqFMfBCUqw4vVLVr=71Ncg@mail.gmail.com>
+ <CANBLGcxriKLZ+CKUsj5sviW8FdHnWTF2koROwmAb=G2tbmE6vQ@mail.gmail.com>
+ <CAHp75VccSDLVbs1sF_-1zghWyLKtKKV1qtxOxZZ-cS0e6S-sBA@mail.gmail.com>
+ <CANBLGcw1qMB7r7TbuQEevOPHq94wAtZNs=yFQ3UP_DEREvGz6g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANBLGcw1qMB7r7TbuQEevOPHq94wAtZNs=yFQ3UP_DEREvGz6g@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These modes were added to ethtool.h in 5711a98221443 ("net: ethtool: add support
-for 1000BaseX and missing 10G link modes") back in 2016.
+On Mon, Oct 18, 2021 at 06:35:10PM +0200, Emil Renner Berthing wrote:
+> On Mon, 18 Oct 2021 at 18:24, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> > On Mon, Oct 18, 2021 at 6:56 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
+> > > On Mon, 18 Oct 2021 at 17:48, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> > > > On Mon, Oct 18, 2021 at 6:35 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
+> > > > > On Tue, 12 Oct 2021 at 19:03, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> > > > > > On Tue, Oct 12, 2021 at 4:43 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
 
-Only setting CR mode for 10G, similar to how 25/40/50/100G modes are set up.
+...
 
-Tested using SFN5122F-R7 (with 2 SFP+ ports) and a 1000BASE-BX10 SFP module.
-Before:
+> > > > > > > +               case PIN_CONFIG_BIAS_DISABLE:
+> > > > > >
+> > > > > > > +                       mask |= PAD_BIAS_MASK;
+> > > > > >
+> > > > > > Use it...
+> > > > > >
+> > > > > > > +                       value = (value & ~PAD_BIAS_MASK) | PAD_BIAS_DISABLE;
+> > > > > >
+> > > > > > ...here. Ditto for the similar cases in this function and elsewhere.
+> > > > >
+> > > > > I don't follow. How do you want me to use mask? If I did value =
+> > > > > (value & ~mask) | PAD_BIAS_DISABLE; then I'd wipe the previous
+> > > > > configuration. Eg. suppose the first config is the drive strength and
+> > > > > second disables bias. Then on the 2nd loop mask =
+> > > > > PAD_DRIVE_STRENGTH_MASK | PAD_BIAS_MASK and the drive strength value
+> > > > > would be wiped.
+> > > >
+> > > > Collect masks and new values in temporary variables and apply them
+> > > > once after the loop is done, no?
+> > >
+> > > But that's exactly what the code does. It merges all the config
+> > > options into a single mask and value so we only need to do rmw on the
+> > > register once.
+> >
+> > Then masking the value makes no sense.
+> > What you should have is simply as
+> >
+> >   mask |= FOO;
+> >   value |= BAR;
+> 
+> Yeah, but then we could get into weird states if the device tree
+> specifies both bias-disable and bias-pull-up by mistake. This code is
+> written so that only the last valid state is chosen.
 
-$ ethtool ext
-Settings for ext:
-	Supported ports: [ FIBRE ]
-	Supported link modes:   1000baseT/Full
-	                        10000baseT/Full
-	Supported pause frame use: Symmetric Receive-only
-	Supports auto-negotiation: No
-	Supported FEC modes: Not reported
-	Advertised link modes:  Not reported
-	Advertised pause frame use: No
-	Advertised auto-negotiation: No
-	Advertised FEC modes: Not reported
-	Link partner advertised link modes:  Not reported
-	Link partner advertised pause frame use: No
-	Link partner advertised auto-negotiation: No
-	Link partner advertised FEC modes: Not reported
-	Speed: 1000Mb/s
-	Duplex: Full
-	Auto-negotiation: off
-	Port: FIBRE
-	PHYAD: 255
-	Transceiver: internal
-        Current message level: 0x000020f7 (8439)
-                               drv probe link ifdown ifup rx_err tx_err hw
-	Link detected: yes
+But shouldn't it be disallowed by:
+ 1) DTC validator (Rob?)
+ 2) GPIO / pin control (Linus, Bart?)
+?
 
-After:
+...
 
-$ ethtool ext
-Settings for ext:
-	Supported ports: [ FIBRE ]
-	Supported link modes:   1000baseX/Full
-	                        10000baseCR/Full
-	Supported pause frame use: Symmetric Receive-only
-	Supports auto-negotiation: No
-	Supported FEC modes: Not reported
-	Advertised link modes:  Not reported
-	Advertised pause frame use: No
-	Advertised auto-negotiation: No
-	Advertised FEC modes: Not reported
-	Link partner advertised link modes:  Not reported
-	Link partner advertised pause frame use: No
-	Link partner advertised auto-negotiation: No
-	Link partner advertised FEC modes: Not reported
-	Speed: 1000Mb/s
-	Duplex: Full
-	Auto-negotiation: off
-	Port: FIBRE
-	PHYAD: 255
-	Transceiver: internal
-	Supports Wake-on: g
-	Wake-on: d
-        Current message level: 0x000020f7 (8439)
-                               drv probe link ifdown ifup rx_err tx_err hw
-	Link detected: yes
+> > > > > > > +       ret = clk_prepare_enable(clk);
+> > > > > > > +       if (ret) {
+> > > > > >
+> > > > > > > +               reset_control_deassert(rst);
+> > > > > >
+> > > > > > Use devm_add_action_or_reset().
+> > > > >
+> > > > > I don't see how that is better.
+> > > >
+> > > > Pity. The rule of thumb is to either try to use devm_*() everywhere in
+> > > > the probe, or don't use it at all. Above is the more-or-less standard
+> > > > pattern where devn_add_action_or_reset() is being used in the entire
+> > > > kernel.
+> > > >
+> > > > > Then I'd first need to call that and
+> > > > > check for errors, but just on the line below enabling the clock the
+> > > > > reset line is deasserted anyway, so then the action isn't needed any
+> > > > > longer. So that 3 lines of code for devm_add_action_or_reset +
+> > > > > lingering unneeded action or code to remove it again vs. just the line
+> > > > > above.
+> > > >
+> > > > Then don't use devm_*() at all. What's the point?
+> > >
+> > > I'm confused. So you wan't an unneeded action to linger because the
+> > > probe function temporarily asserts reset for 3 lines of code?
+> >
+> > I;m talking about clk_prepare_enable().
+> 
+> Ok, you wrote your comment under the reset_control_deassert call. How
+> would devm_add_action_or_reset for clk_prepare_enable work?
 
-Signed-off-by: Erik Ekman <erik@kryo.se>
----
- drivers/net/ethernet/sfc/mcdi_port_common.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+It seems both are needed to be converted, otherwise _everything_ after
+reset_assert() should not be devm_*().
 
-diff --git a/drivers/net/ethernet/sfc/mcdi_port_common.c b/drivers/net/ethernet/sfc/mcdi_port_common.c
-index 4bd3ef8f3384..e84cdcb6a595 100644
---- a/drivers/net/ethernet/sfc/mcdi_port_common.c
-+++ b/drivers/net/ethernet/sfc/mcdi_port_common.c
-@@ -133,9 +133,9 @@ void mcdi_to_ethtool_linkset(u32 media, u32 cap, unsigned long *linkset)
- 	case MC_CMD_MEDIA_QSFP_PLUS:
- 		SET_BIT(FIBRE);
- 		if (cap & (1 << MC_CMD_PHY_CAP_1000FDX_LBN))
--			SET_BIT(1000baseT_Full);
-+			SET_BIT(1000baseX_Full);
- 		if (cap & (1 << MC_CMD_PHY_CAP_10000FDX_LBN))
--			SET_BIT(10000baseT_Full);
-+			SET_BIT(10000baseCR_Full);
- 		if (cap & (1 << MC_CMD_PHY_CAP_40000FDX_LBN))
- 			SET_BIT(40000baseCR4_Full);
- 		if (cap & (1 << MC_CMD_PHY_CAP_100000FDX_LBN))
-@@ -192,9 +192,11 @@ u32 ethtool_linkset_to_mcdi_cap(const unsigned long *linkset)
- 		result |= (1 << MC_CMD_PHY_CAP_100FDX_LBN);
- 	if (TEST_BIT(1000baseT_Half))
- 		result |= (1 << MC_CMD_PHY_CAP_1000HDX_LBN);
--	if (TEST_BIT(1000baseT_Full) || TEST_BIT(1000baseKX_Full))
-+	if (TEST_BIT(1000baseT_Full) || TEST_BIT(1000baseKX_Full) ||
-+	    TEST_BIT(1000baseX_Full))
- 		result |= (1 << MC_CMD_PHY_CAP_1000FDX_LBN);
--	if (TEST_BIT(10000baseT_Full) || TEST_BIT(10000baseKX4_Full))
-+	if (TEST_BIT(10000baseT_Full) || TEST_BIT(10000baseKX4_Full) ||
-+	    TEST_BIT(10000baseCR_Full))
- 		result |= (1 << MC_CMD_PHY_CAP_10000FDX_LBN);
- 	if (TEST_BIT(40000baseCR4_Full) || TEST_BIT(40000baseKR4_Full))
- 		result |= (1 << MC_CMD_PHY_CAP_40000FDX_LBN);
+TL;DR: the rule is
+  Allowed:	devm_*() followed by non-devm_*()
+  NOT allowed:	devm_*() followed by non-devm_*() followed by devm_*()
+
+Of course, you may try to work the latter one, but it diminishes the whole
+idea behind it, that's why I told that may be not using devm_*() is the
+correct approach here and that what you meant (?).
+
+The example how to use above mentioned API, just grep for it.
+
+# See [1] for the sources of the used script
+$ gl4func.sh devm_add_action_or_reset clk_prepare_enable | wc -l
+101
+
+
+[1]: https://github.com/andy-shev/home-bin-tools/blob/master/gl4func.sh
+
 -- 
-2.31.1
+With Best Regards,
+Andy Shevchenko
+
 
