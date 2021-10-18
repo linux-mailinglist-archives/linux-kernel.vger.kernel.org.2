@@ -2,78 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA8454317C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 13:46:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A15984317CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 13:46:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231202AbhJRLtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 07:49:02 -0400
-Received: from m12-18.163.com ([220.181.12.18]:43843 "EHLO m12-18.163.com"
+        id S231446AbhJRLtF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 07:49:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47352 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229843AbhJRLtA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 07:49:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=05/bJ
-        O+NtsIGyjY8blfRLbktL0TQcHHFo0NtapUGyuM=; b=WFGioA8qHo7cIPe48Zt2c
-        GYpQkEVNfo7OlBjSfllvxsSkbzjVBUz8NWcHih4c37Oc1BCPUPjS3QCavHZPI1As
-        sPluFnGGQ37n3VfcfHHseE5yL02jMZ4aWxVhPYZCORKBGTfWpYTQZ9xJXwFm7AI+
-        uuBmIJOapj4tAmU0PGh3aA=
-Received: from localhost (unknown [49.235.41.28])
-        by smtp14 (Coremail) with SMTP id EsCowAA3etBzXm1hdQDxGQ--.4818S2;
-        Mon, 18 Oct 2021 19:45:56 +0800 (CST)
-Date:   Mon, 18 Oct 2021 19:45:54 +0800
-From:   Hui Su <suhui_kernel@163.com>
-To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, linux-kernel@vger.kernel.org
-Subject: [PATCH] sched/deadline: simplify SCHED_WARN_ON()
-Message-ID: <20211018114554.GA3523304@localhost.localdomain>
+        id S229843AbhJRLtE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 07:49:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 57D0961038;
+        Mon, 18 Oct 2021 11:46:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634557613;
+        bh=J9Gx0uI7w+ObGUE84Nn47QKLJdT8mYLoZGvmeUN9NJc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=d/cQ+0wSgv+vlpIqsvRTJfe/Dj3GNieSP14DEm6d7pldxs3v5BfNxHIZKBG/U1Ecy
+         dncEe5IKK/j7H9yMEu159u3kX6l4LhuAyPDoQPOVrxy445oS48mHYxSUIzvoYe7m3n
+         bx412iE6O5V+PY9D+zzG5TzdObnlaBEDq/Q2UoHeV67oMMePeHadhwggzPm+Qgi8Yh
+         3xzbSrM0XJx3hBqe06+tgTBguNZlkx1c1ssYNilTjzohoat08zaYeK90SGArhhXtpf
+         ZH2xs6metcfCBST95cplrBPpS2pjZh5qQT6VqpOLwo/fFB3juC6E19H/NEKpdeLC1q
+         XjABNeXecJPFQ==
+Received: by mail-wm1-f42.google.com with SMTP id s198-20020a1ca9cf000000b0030d6986ea9fso8232923wme.1;
+        Mon, 18 Oct 2021 04:46:53 -0700 (PDT)
+X-Gm-Message-State: AOAM5333EWhJs3cbHZlBETb0R2bIH5NPK/uaYFV3qydYSJ5ISGeBiJsY
+        Y9UeHyO9T0KJRJ4RAJhx2ou4tK7dMTrncRZ4Y7g=
+X-Google-Smtp-Source: ABdhPJw+sSTMe8TvOfF2FXGoaZcKthZkAjaQ9Hu3boxVgG+XZg1J+DOK5aKoASwYzjSrLyKfsIlJDLoitfBg8bR4cyw=
+X-Received: by 2002:a05:600c:208:: with SMTP id 8mr42229521wmi.173.1634557611719;
+ Mon, 18 Oct 2021 04:46:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-CM-TRANSID: EsCowAA3etBzXm1hdQDxGQ--.4818S2
-X-Coremail-Antispam: 1Uf129KBjvdXoW7GF48uw18Zw1kWF4kXrW5Jrb_yoWkKFb_Gw
-        1rKr1kurn3Wr1YgrW7Cr4jvrnxKw1jqFy3ur929FZ3JrZ3trZ8ArWku3WfC345WrZ7ZFnx
-        GF13WF97ArW7GjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU8Dku7UUUUU==
-X-Originating-IP: [49.235.41.28]
-X-CM-SenderInfo: 5vxk3xhbnh20lho6il2tof0z/xtbBQxQwbV++NaJ+kAAAsS
+References: <20211013144308.2248978-1-arnd@kernel.org> <25ccdc75-67da-a955-b8ef-641a2f007d13@amd.com>
+ <CAMuHMdWKp-v=df0JA_tr-YgNnyfu7NS9dA3Zr+bqwZX9JuBAGQ@mail.gmail.com> <ad5d95ab-7cb5-aef7-9904-eda0befe8519@amd.com>
+In-Reply-To: <ad5d95ab-7cb5-aef7-9904-eda0befe8519@amd.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Mon, 18 Oct 2021 13:46:35 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0E4F8eE0Py83Am-huirrvgomUqrwSSr9+vD8RuMZfSGQ@mail.gmail.com>
+Message-ID: <CAK8P3a0E4F8eE0Py83Am-huirrvgomUqrwSSr9+vD8RuMZfSGQ@mail.gmail.com>
+Subject: Re: [PATCH] drm: msm: fix building without CONFIG_COMMON_CLK
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Arnd Bergmann <arnd@arndb.de>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Alex Elder <elder@linaro.org>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        Rajeev Nandan <rajeevny@codeaurora.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-simplify SCHED_WARN_ON() code.
+On Mon, Oct 18, 2021 at 1:40 PM Christian K=C3=B6nig
+<christian.koenig@amd.com> wrote:
+> >> I have absolutely no idea how a platform can have IOMMU but no MMU
+> >> support but it indeed seems to be the case here.
+> > Huh?
+> >
+> > Parisc has config MMU def_bool y?
+>
+> Then why vmap isn't available?
+>
+> See the mail thread: [linux-next:master 3576/7806]
+> drivers/gpu/drm/msm/msm_gem.c:624:20: error: implicit declaration of
+> function 'vmap'
 
-Signed-off-by: Hui Su <suhui_kernel@163.com>
----
- kernel/sched/deadline.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+This is just a missing "#include <linux/vmalloc.h>". It must be
+included indirectly
+on some architectures but not other.
 
-diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
-index aaacd6cfd42f..f4f4b0a383c7 100644
---- a/kernel/sched/deadline.c
-+++ b/kernel/sched/deadline.c
-@@ -172,8 +172,7 @@ void __sub_running_bw(u64 dl_bw, struct dl_rq *dl_rq)
- 
- 	lockdep_assert_rq_held(rq_of_dl_rq(dl_rq));
- 	dl_rq->running_bw -= dl_bw;
--	SCHED_WARN_ON(dl_rq->running_bw > old); /* underflow */
--	if (dl_rq->running_bw > old)
-+	if (SCHED_WARN_ON(dl_rq->running_bw > old)) /* underflow */
- 		dl_rq->running_bw = 0;
- 	/* kick cpufreq (see the comment in kernel/sched/sched.h). */
- 	cpufreq_update_util(rq_of_dl_rq(dl_rq), 0);
-@@ -196,8 +195,7 @@ void __sub_rq_bw(u64 dl_bw, struct dl_rq *dl_rq)
- 
- 	lockdep_assert_rq_held(rq_of_dl_rq(dl_rq));
- 	dl_rq->this_bw -= dl_bw;
--	SCHED_WARN_ON(dl_rq->this_bw > old); /* underflow */
--	if (dl_rq->this_bw > old)
-+	if (SCHED_WARN_ON(dl_rq->this_bw > old)) /* underflow */
- 		dl_rq->this_bw = 0;
- 	SCHED_WARN_ON(dl_rq->running_bw > dl_rq->this_bw);
- }
--- 
-2.25.1
-
-
+       Arnd
