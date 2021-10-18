@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18F90431B5A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:30:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E3CC431AF4
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:28:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232210AbhJRNch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:32:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42838 "EHLO mail.kernel.org"
+        id S232282AbhJRN3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:29:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41210 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232002AbhJRNal (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:30:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D93861378;
-        Mon, 18 Oct 2021 13:28:21 +0000 (UTC)
+        id S231888AbhJRN3G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:29:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5017061354;
+        Mon, 18 Oct 2021 13:26:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634563702;
-        bh=5XQC/5gA2VzzjIOsTD3/VrSSjs40RAnchdlV1WviRlA=;
+        s=korg; t=1634563579;
+        bh=rIWa6rpM1wQOJGDR0U8LT59T6BkSDLn1mxZj4v0jirU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AB95aynJHCqY6jXm2ATqwY3ms9q65yGDnjKoMcH+v1AefTJJjismIhZPJfbEwPdNk
-         +eEMZM86tCugmF6nsYsd/PZ165N/7GvdUsOrSo+wn0KPfbgd8vhF+aoLtSajQpo0oE
-         xHaicrqpHZnIJVTp+ZA9Nax35kqhm2ITjHRbVFW8=
+        b=SRZLmLvVUn9yUPVSoFhvbAp/fvVXYtkd3Gz3sokxnVPQOWxoR+KZzO+ee3vHDd+Gi
+         wr9Zpp/1A6cloDvQ4gB7EBZ/Um39wELe7WROX/DOrbd3XzSp7SauqG/mGWrqi+A6kK
+         H0u5U96Vzx/pWQiY8DzZVO433MwJHcxWpyuZJz4Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tomaz Solc <tomaz.solc@tablix.org>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.19 23/50] USB: serial: option: add prod. id for Quectel EG91
+        stable@vger.kernel.org, Billy Tsai <billy_tsai@aspeedtech.com>,
+        Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH 4.14 21/39] iio: adc: aspeed: set driver data when adc probe.
 Date:   Mon, 18 Oct 2021 15:24:30 +0200
-Message-Id: <20211018132327.308900575@linuxfoundation.org>
+Message-Id: <20211018132326.131210487@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132326.529486647@linuxfoundation.org>
-References: <20211018132326.529486647@linuxfoundation.org>
+In-Reply-To: <20211018132325.426739023@linuxfoundation.org>
+References: <20211018132325.426739023@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,62 +40,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tomaz Solc <tomaz.solc@tablix.org>
+From: Billy Tsai <billy_tsai@aspeedtech.com>
 
-commit c184accc4a42c7872dc8e8d0fc97a740dc61fe24 upstream.
+commit eb795cd97365a3d3d9da3926d234a7bc32a3bb15 upstream.
 
-Adding support for Quectel EG91 LTE module.
+Fix the issue when adc remove will get the null driver data.
 
-The interface layout is same as for EG95.
-
-usb-devices output:
-T:  Bus=01 Lev=02 Prnt=02 Port=00 Cnt=01 Dev#=  3 Spd=480 MxCh= 0
-D:  Ver= 2.00 Cls=ef(misc ) Sub=02 Prot=01 MxPS=64 #Cfgs=  1
-P:  Vendor=2c7c ProdID=0191 Rev=03.18
-S:  Manufacturer=Android
-S:  Product=Android
-C:  #Ifs= 5 Cfg#= 1 Atr=a0 MxPwr=500mA
-I:  If#=0x0 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=(none)
-I:  If#=0x1 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=(none)
-I:  If#=0x2 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=(none)
-I:  If#=0x3 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=(none)
-I:  If#=0x4 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=ff Driver=qmi_wwan
-
-Interfaces:
-
-0: Diag
-1: GNSS
-2: AT-command interface/modem
-3: Modem
-4: QMI
-
-Signed-off-by: Tomaz Solc <tomaz.solc@tablix.org>
-Cc: stable@vger.kernel.org
-Signed-off-by: Johan Hovold <johan@kernel.org>
+Fixed: commit 573803234e72 ("iio: Aspeed ADC")
+Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
+Link: https://lore.kernel.org/r/20210831071458.2334-2-billy_tsai@aspeedtech.com
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/serial/option.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/iio/adc/aspeed_adc.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/usb/serial/option.c
-+++ b/drivers/usb/serial/option.c
-@@ -246,6 +246,7 @@ static void option_instat_callback(struc
- /* These Quectel products use Quectel's vendor ID */
- #define QUECTEL_PRODUCT_EC21			0x0121
- #define QUECTEL_PRODUCT_EC25			0x0125
-+#define QUECTEL_PRODUCT_EG91			0x0191
- #define QUECTEL_PRODUCT_EG95			0x0195
- #define QUECTEL_PRODUCT_BG96			0x0296
- #define QUECTEL_PRODUCT_EP06			0x0306
-@@ -1112,6 +1113,9 @@ static const struct usb_device_id option
- 	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_EC25, 0xff, 0xff, 0xff),
- 	  .driver_info = NUMEP2 },
- 	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_EC25, 0xff, 0, 0) },
-+	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_EG91, 0xff, 0xff, 0xff),
-+	  .driver_info = NUMEP2 },
-+	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_EG91, 0xff, 0, 0) },
- 	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_EG95, 0xff, 0xff, 0xff),
- 	  .driver_info = NUMEP2 },
- 	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_EG95, 0xff, 0, 0) },
+--- a/drivers/iio/adc/aspeed_adc.c
++++ b/drivers/iio/adc/aspeed_adc.c
+@@ -187,6 +187,7 @@ static int aspeed_adc_probe(struct platf
+ 
+ 	data = iio_priv(indio_dev);
+ 	data->dev = &pdev->dev;
++	platform_set_drvdata(pdev, indio_dev);
+ 
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	data->base = devm_ioremap_resource(&pdev->dev, res);
 
 
