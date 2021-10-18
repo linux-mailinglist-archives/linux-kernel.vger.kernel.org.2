@@ -2,94 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D90B5432628
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 20:15:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 003FD432633
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 20:17:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232483AbhJRSRn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 14:17:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45046 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229696AbhJRSRh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 14:17:37 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6821EC06161C
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 11:15:25 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id y26so1545474lfa.11
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 11:15:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ERwIJtrAxSKFmtkdla8UNA3CjrOGMlzFelchQeuneqM=;
-        b=PvFPrrHqhzLoQwugLC06OkLKAETokHq2kcRDQ2GRnjTqhztE5NwcSpFrcIF1QGvRzN
-         QojzqkjCeMTtNbkax3976xxSB8xyWgHS1GjolB/a485xoNKOFy1jFgjouwfTYFpKqT2N
-         56iFCafGyQxy4KrnM4lYvzC1ppazomKTmc7pc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ERwIJtrAxSKFmtkdla8UNA3CjrOGMlzFelchQeuneqM=;
-        b=Vc7BfGeJQsaxDpIa4/NPT5LFcg6J8L4T0qmEsGMLjV2s0/LDJON4ixdJVA/xJ6fGqP
-         j1JsV8XWzdGrqVlnwqZXp1Dg4gUyrVgDityZLBOK6ocngHoJovPeGAxmRKisMaj44HcU
-         19dAwc0u7lBif0DL+AGcNBNw5Dz+izybG/wZEvbyDyq6IfUpY2J9JpFPU7AlzYCDp0sm
-         P4v2X36ZPbzNpCOgiIBE71VTOTYuR/cCUD8wpaY4v22zxNCr2Y4yYUOa5drqrOUA1ruk
-         jokJbHmsbzMyruPNQUhI87fdPVg+++FTSsBsSuU+PDXxTNJC8o35X06vVjgfj5qBT1tu
-         3Mmg==
-X-Gm-Message-State: AOAM5309q0uzI/RED2XR4rm9CQPjoJWnrGKQnhn283mEKoo/sXY6LK4j
-        IdwKW+FhCbSRMNz/FPtry09xf+wcnSUd6tQG
-X-Google-Smtp-Source: ABdhPJyw6CUd8urYhpeaQtRrSXzfWEdV+UakyPL6f2chrd4egUjfGiVGA0DJbwZ+v3ahF4a1Q+VB6w==
-X-Received: by 2002:ac2:4c48:: with SMTP id o8mr1212344lfk.286.1634580923569;
-        Mon, 18 Oct 2021 11:15:23 -0700 (PDT)
-Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com. [209.85.208.173])
-        by smtp.gmail.com with ESMTPSA id r22sm1450916lfe.239.2021.10.18.11.15.21
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Oct 2021 11:15:22 -0700 (PDT)
-Received: by mail-lj1-f173.google.com with SMTP id u5so1310606ljo.8
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Oct 2021 11:15:21 -0700 (PDT)
-X-Received: by 2002:a2e:a407:: with SMTP id p7mr1465932ljn.68.1634580921681;
- Mon, 18 Oct 2021 11:15:21 -0700 (PDT)
+        id S232406AbhJRSTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 14:19:44 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:55762 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229696AbhJRSTn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 14:19:43 -0400
+Received: from zn.tnic (p200300ec2f085700af6a7a3215758573.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:5700:af6a:7a32:1575:8573])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A27881EC04A9;
+        Mon, 18 Oct 2021 20:17:30 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1634581050;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=uFKMgdVJFuAMxHN1IAGm/xRW2JT89EOF3TPA/iPD/r8=;
+        b=UBh+Z8F0bkePuoPFqIcoUJ6KW5uHh7CLk6xjRzKnW6VnRmMxUGvUXbyxmBaDV/mGbWuzv2
+        7dDm774ZELg8Ws6lhkQJGwr1KrX2t8nFkyt4+a6lD4fQa4mHQtUWf18hVMXFSpZCHcS/+4
+        hWm8Za7ekoa4sR9nwA2jG7goM93tbrU=
+Date:   Mon, 18 Oct 2021 20:17:30 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Jane Malalane <jane.malalane@citrix.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Pu Wen <puwen@hygon.cn>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Yazen Ghannam <Yazen.Ghannam@amd.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Huang Rui <ray.huang@amd.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Kim Phillips <kim.phillips@amd.com>, stable@vger.kernel.org
+Subject: Re: [PATCH v2] x86/cpu: Fix migration safety with X86_BUG_NULL_SEL
+Message-ID: <YW25x7AYiM1f1HQA@zn.tnic>
+References: <20211013142230.10129-1-jane.malalane@citrix.com>
 MIME-Version: 1.0
-References: <20211018174137.579907-1-pbonzini@redhat.com> <CAHk-=wg0+bWDKfApDHVR70hsaRA_7bEZfG1XtN2DxZGo+np9Ug@mail.gmail.com>
- <daba6b06-66cb-6564-b7b0-26cb994a07cd@redhat.com>
-In-Reply-To: <daba6b06-66cb-6564-b7b0-26cb994a07cd@redhat.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 18 Oct 2021 08:15:05 -1000
-X-Gmail-Original-Message-ID: <CAHk-=wgScNWP7Ohh5eEKgcs3NLp9GZOoQ6Z-Kz0aByRtHoJSrw@mail.gmail.com>
-Message-ID: <CAHk-=wgScNWP7Ohh5eEKgcs3NLp9GZOoQ6Z-Kz0aByRtHoJSrw@mail.gmail.com>
-Subject: Re: [GIT PULL] KVM fixes for Linux 5.15-rc7
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Jim Mattson <jmattson@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        KVM list <kvm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211013142230.10129-1-jane.malalane@citrix.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 18, 2021 at 8:03 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
->
-> The code is not wrong, there is a comment explaining it:
->
->          * Use a bitwise-OR instead of a logical-OR to aggregate the reserved
->          * bits and EPT's invalid memtype/XWR checks to avoid an extra Jcc
->          * (this is extremely unlikely to be short-circuited as true).
+On Wed, Oct 13, 2021 at 03:22:30PM +0100, Jane Malalane wrote:
+> @@ -650,6 +651,27 @@ static void early_init_amd(struct cpuinfo_x86 *c)
+>  	if (c->x86_power & BIT(14))
+>  		set_cpu_cap(c, X86_FEATURE_RAPL);
+>  
+> +	/*
+> +	 * Zen1 and earlier CPUs don't clear segment base/limits when
+> +	 * loading a NULL selector.  This has been designated
+> +	 * X86_BUG_NULL_SEG.
+> +	 *
+> +	 * Zen3 CPUs advertise Null Selector Clears Base in CPUID.
+> +	 * Zen2 CPUs also have this behaviour, but no CPUID bit.
+> +	 *
+> +	 * A hypervisor may sythesize the bit, but may also hide it
+> +	 * for migration safety, so we must not probe for model
+> +	 * specific behaviour when virtualised.
+> +	 */
+> +	if (c->extended_cpuid_level >= 0x80000021 && cpuid_eax(0x80000021) & BIT(6))
+> +		nscb = true;
+> +
+> +	if (!cpu_has(c, X86_FEATURE_HYPERVISOR) && !nscb && c->x86 == 0x17)
+> +		nscb = check_null_seg_clears_base(c);
+> +
+> +	if (!nscb)
+> +		set_cpu_bug(c, X86_BUG_NULL_SEG);
+> +
+>  #ifdef CONFIG_X86_64
+>  	set_cpu_cap(c, X86_FEATURE_SYSCALL32);
+>  #else
 
-That makes very little sense.
+Can we do something like this?
 
-It seems to be avoiding a 'jcc' and replace it with a 'setcc' and an
-'or'. Which is likely both bigger and slower.
+It is carved out into a separate function which you can simply call from
+early_init_amd() and early_init_hygon().
 
-If the jcc were unpredictable, maybe that would be one thing. But at
-least from a quick look, that doesn't even seem likely
+I guess you can put that function in arch/x86/kernel/cpu/common.c or so.
 
- The other use of that function has a "WARN_ONCE()" on it, so
-presumably it normally doesn't ever trigger either of the boolean
-conditions.
+Then, you should put the comments right over the code like I've done
+below so that one can follow what's going on with each particular check.
 
-Very strange code.
+I've also flipped the logic a bit and it is simpler this way.
 
-                    Linus
+Totally untested of course.
+
+static void early_probe_null_seg_clearing_base(struct cpuinfo_x86 *c)
+{
+	/*
+	 * A hypervisor may sythesize the bit, but may also hide it
+	 * for migration safety, so do not probe for model-specific
+	 * behaviour when virtualised.
+	 */
+	if (cpu_has(c, X86_FEATURE_HYPERVISOR))
+		return;
+
+	/* Zen3 CPUs advertise Null Selector Clears Base in CPUID. */
+	if (c->extended_cpuid_level >= 0x80000021 && cpuid_eax(0x80000021) & BIT(6))
+		return;
+
+	/* Zen2 CPUs also have this behaviour, but no CPUID bit. */
+	if (c->x86 == 0x17 && check_null_seg_clears_base(c))
+		return;
+
+	/* All the remaining ones are affected */
+	set_cpu_bug(c, X86_BUG_NULL_SEG);
+}
+
+> diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
+> index 0f8885949e8c..2ca4afb97247 100644
+> --- a/arch/x86/kernel/cpu/common.c
+> +++ b/arch/x86/kernel/cpu/common.c
+> @@ -1395,7 +1395,7 @@ void __init early_cpu_init(void)
+>  	early_identify_cpu(&boot_cpu_data);
+>  }
+>  
+> -static void detect_null_seg_behavior(struct cpuinfo_x86 *c)
+> +bool check_null_seg_clears_base(struct cpuinfo_x86 *c)
+>  {
+>  #ifdef CONFIG_X86_64
+>  	/*
+> @@ -1418,10 +1418,10 @@ static void detect_null_seg_behavior(struct cpuinfo_x86 *c)
+>  	wrmsrl(MSR_FS_BASE, 1);
+>  	loadsegment(fs, 0);
+>  	rdmsrl(MSR_FS_BASE, tmp);
+> -	if (tmp != 0)
+> -		set_cpu_bug(c, X86_BUG_NULL_SEG);
+>  	wrmsrl(MSR_FS_BASE, old_base);
+> +	return tmp == 0;
+>  #endif
+> +	return true;
+>  }
+>  
+>  static void generic_identify(struct cpuinfo_x86 *c)
+> @@ -1457,8 +1457,6 @@ static void generic_identify(struct cpuinfo_x86 *c)
+>  
+>  	get_model_name(c); /* Default name */
+>  
+> -	detect_null_seg_behavior(c);
+> -
+>  	/*
+>  	 * ESPFIX is a strange bug.  All real CPUs have it.  Paravirt
+>  	 * systems that run Linux at CPL > 0 may or may not have the
+
+So this function is called on all x86 CPUs. Are you sure others besides
+AMD and Hygon do not have the same issue?
+
+IOW, I wouldn't remove that call here.
+
+But then this is the identify() phase in the boot process and you've
+moved it to early_identify() by putting it in the ->c_early_init()
+function pointer on AMD and Hygon.
+
+Is there any particular reasoning for this or can that detection remain
+in ->c_identify()?
+
+Because if this null seg behavior detection should happen on all
+CPUs - and I think it should, because, well, it has been that way
+until now - then the vendor specific identification minus what
+detect_null_seg_behavior() does should run first and then after
+->c_identify() is done, you should do something like:
+
+	if (!cpu_has_bug(c, X86_BUG_NULL_SEG)) {
+		if (!check_null_seg_clears_base(c))
+			set_cpu_bug(c, X86_BUG_NULL_SEG);
+	}
+
+so that it still takes place on all CPUs.
+
+I.e., you should split the detection.
+
+I hope I'm making sense ...
+
+Ah, btw, that @c parameter to detect_null_seg_behavior() is unused - you
+should remove it in a pre-patch.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
