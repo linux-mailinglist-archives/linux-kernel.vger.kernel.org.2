@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36D6E431B61
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:30:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4393431CF3
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Oct 2021 15:44:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231996AbhJRNcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 18 Oct 2021 09:32:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41820 "EHLO mail.kernel.org"
+        id S231987AbhJRNqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 18 Oct 2021 09:46:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39900 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232661AbhJRNav (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:30:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 309766103D;
-        Mon, 18 Oct 2021 13:28:29 +0000 (UTC)
+        id S231736AbhJRNoJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 18 Oct 2021 09:44:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EE5926154B;
+        Mon, 18 Oct 2021 13:35:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634563709;
-        bh=poWCdoNUEvEov4WDV/+hoAxS62JtRRghHJHoe7duIz8=;
+        s=korg; t=1634564101;
+        bh=qJ1DdrH51gIVqn1p42Gnbh2DPShsBCmiZJb7oY7mzNw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DkJecoNn/XFSxIJVYvprU5iGcZ0y6PSaXQmydQxCJIqokqsnVmNE4ty2riZBPE4ud
-         pZfvp7cbaq+qg8q0vnfSKvcAWC9A7Nxt89wLoipj2yD9VQcJkttrBJaSeMsXjMQ4iy
-         RCXVbNcq6wE4YRg+rBD526ygFJ2IHWcmKkylcmpA=
+        b=pVDkOERCqnCC9Ta/Ozeg4kVfPCOzSQ6RwHnEe8irlNJZzEdMKiauBOOYX9YeGe/L1
+         19ePmqHmJ1Cfj3v9iLpSB2zceS11JzgqY1jLpY1goh+AUaArQ/1ja7MTJSzENGjSlk
+         wHUjqQAJkcHZaNJnL7lEQNtJ+DLPi9jcf32eFLm0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Vegard Nossum <vegard.nossum@oracle.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.19 34/50] net: arc: select CRC32
+        stable@vger.kernel.org, Stefan Wahren <stefan.wahren@i2se.com>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>
+Subject: [PATCH 5.10 065/103] ARM: dts: bcm2711-rpi-4-b: fix sd_io_1v8_reg regulator states
 Date:   Mon, 18 Oct 2021 15:24:41 +0200
-Message-Id: <20211018132327.660727254@linuxfoundation.org>
+Message-Id: <20211018132336.933675897@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211018132326.529486647@linuxfoundation.org>
-References: <20211018132326.529486647@linuxfoundation.org>
+In-Reply-To: <20211018132334.702559133@linuxfoundation.org>
+References: <20211018132334.702559133@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,43 +39,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vegard Nossum <vegard.nossum@oracle.com>
+From: Stefan Wahren <stefan.wahren@i2se.com>
 
-commit e599ee234ad4fdfe241d937bbabd96e0d8f9d868 upstream.
+commit b55ec7528879a822a4d350248daa04bbb27f25fd upstream.
 
-Fix the following build/link error by adding a dependency on the CRC32
-routines:
+DT schema check complains at sd_io_1v8_reg about the following:
 
-  ld: drivers/net/ethernet/arc/emac_main.o: in function `arc_emac_set_rx_mode':
-  emac_main.c:(.text+0xb11): undefined reference to `crc32_le'
+ [1800000, 1, 3300000, 0] is too long
+ Additional items are not allowed (3300000, 0 were unexpected)
 
-The crc32_le() call comes through the ether_crc_le() call in
-arc_emac_set_rx_mode().
+So fix the states definition.
 
-[v2: moved the select to ARC_EMAC_CORE; the Makefile is a bit confusing,
-but the error comes from emac_main.o, which is part of the arc_emac module,
-which in turn is enabled by CONFIG_ARC_EMAC_CORE. Note that arc_emac is
-different from emac_arc...]
-
-Fixes: 775dd682e2b0ec ("arc_emac: implement promiscuous mode and multicast filtering")
-Cc: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
-Link: https://lore.kernel.org/r/20211012093446.1575-1-vegard.nossum@oracle.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: 7dbe8c62ceeb ("ARM: dts: Add minimal Raspberry Pi 4 support")
+Signed-off-by: Stefan Wahren <stefan.wahren@i2se.com>
+Link: https://lore.kernel.org/r/1628334401-6577-3-git-send-email-stefan.wahren@i2se.com
+Signed-off-by: Nicolas Saenz Julienne <nsaenz@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/arc/Kconfig |    1 +
- 1 file changed, 1 insertion(+)
+ arch/arm/boot/dts/bcm2711-rpi-4-b.dts |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/net/ethernet/arc/Kconfig
-+++ b/drivers/net/ethernet/arc/Kconfig
-@@ -20,6 +20,7 @@ config ARC_EMAC_CORE
- 	depends on ARC || ARCH_ROCKCHIP || COMPILE_TEST
- 	select MII
- 	select PHYLIB
-+	select CRC32
+--- a/arch/arm/boot/dts/bcm2711-rpi-4-b.dts
++++ b/arch/arm/boot/dts/bcm2711-rpi-4-b.dts
+@@ -54,8 +54,8 @@
+ 		regulator-always-on;
+ 		regulator-settling-time-us = <5000>;
+ 		gpios = <&expgpio 4 GPIO_ACTIVE_HIGH>;
+-		states = <1800000 0x1
+-			  3300000 0x0>;
++		states = <1800000 0x1>,
++			 <3300000 0x0>;
+ 		status = "okay";
+ 	};
  
- config ARC_EMAC
- 	tristate "ARC EMAC support"
 
 
